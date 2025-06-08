@@ -1,0 +1,9 @@
+# See config.example.yml for documentation.
+object_base: orig/REXE01
+object: sys/main.dol
+hash: e51685814152f377e5c76a50067d8132e25f672b
+symbols: config/REXE01/symbols.txt
+splits: config/REXE01/splits.txt
+# Change this to match the linker version.
+# See config.example.yml for a list.
+mw_comment_version: 8
