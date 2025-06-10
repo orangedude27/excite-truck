@@ -6,4 +6,7 @@ symbols: config/REXE01/symbols.txt
 splits: config/REXE01/splits.txt
 # Change this to match the linker version.
 # See config.example.yml for a list.
-mw_comment_version: 14
+mw_comment_version: 8
+detect_objects: true
+detect_strings: true
+write_asm: true
