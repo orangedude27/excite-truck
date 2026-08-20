@@ -12,3 +12,258 @@ Sections:
 	.sbss       type:bss align:32
 	.sdata2     type:rodata align:8
 	.sbss2      type:bss align:16
+
+game/game_menu_init.c:
+	.text       start:0x800049C0 end:0x80004AB8
+
+runtime/__mem.c:
+	.init       start:0x80004000 end:0x80004134
+	.text       start:0x8002F238 end:0x8002F254
+
+runtime/__va_arg.c:
+	.text       start:0x8002F254 end:0x8002F31C
+
+runtime/global_destructor_chain.c:
+	.text       start:0x8002F31C end:0x8002F37C
+	.sbss       start:0x8055D6A0 end:0x8055D6A8
+
+runtime/array.s:
+	extab       start:0x800046B8 end:0x80004700
+	extabindex  start:0x80004964 end:0x800049A0
+	.text       start:0x8002F37C end:0x8002F790
+
+runtime/runtime.c:
+	.text       start:0x8002F790 end:0x8002FEB0
+
+runtime/__init_cpp_exceptions.cpp:
+	.text       start:0x8002FEB0 end:0x8002FF20
+	.ctors      start:0x802ED060 end:0x802ED064 rename:.ctors$10
+	.dtors      start:0x802ED640 end:0x802ED644 rename:.dtors$10
+	.dtors      start:0x802ED644 end:0x802ED648 rename:.dtors$15
+	.sdata      start:0x80558DC8 end:0x80558DD0
+
+runtime/Gecko_ExceptionPPC.c:
+	.text       start:0x8002FF20 end:0x8002FF84
+	.bss        start:0x8035BE90 end:0x8035BEA0
+
+runtime/GCN_mem_alloc.c:
+	.text       start:0x8002FF84 end:0x800300F4
+	.rodata     start:0x802EE808 end:0x802EE878
+
+MetroTRK/mtrk.c:
+	.text       start:0x800300F4 end:0x80030150
+
+revolution/AI/ai.c:
+	.text       start:0x80030150 end:0x800301FC
+	.sbss       start:0x8055D6A8 end:0x8055D6AC
+
+revolution/BASE/PPCArch.c:
+	.text       start:0x80033EF4 end:0x80034064
+	.data       start:0x80301D60 end:0x80301D98
+
+revolution/DB/db.c:
+	.text       start:0x80034064 end:0x8003414C
+	.data       start:0x80301D98 end:0x80301DB0
+	.sbss       start:0x8055D800 end:0x8055D808
+
+revolution/DSP/dsp.c:
+	.text       start:0x8003414C end:0x80034194
+
+revolution/DVD/dvdqueue.c:
+	.text       start:0x80039CE4 end:0x80039F3C
+	.bss        start:0x8037B610 end:0x8037B630
+
+revolution/EXI/EXIBios.c:
+	.text       start:0x8003BE48 end:0x8003D6DC
+	.data       start:0x80303440 end:0x80303488
+	.bss        start:0x8037B980 end:0x8037BA40
+	.sdata      start:0x80558E28 end:0x80558E2C
+	.sbss       start:0x8055D908 end:0x8055D90C
+
+revolution/OS/OSAlarmData.c:
+	.data       start:0x803041F8 end:0x80304208
+
+revolution/EXI/EXIUart.c:
+	.text       start:0x8003D6DC end:0x8003DA10
+	.sbss       start:0x8055D910 end:0x8055D920
+
+revolution/EXI/EXICommon.c:
+	.text       start:0x8003DA10 end:0x8003DB9C
+
+revolution/MTX/mtxvec.c:
+	.text       start:0x80049EF8 end:0x80049F74
+
+revolution/MTX/mtx44.c:
+	.text       start:0x80049F74 end:0x8004A0F8
+	.sdata2     start:0x80560C50 end:0x80560C68
+
+revolution/OS/OSAlarm.c:
+	.text       start:0x8004B554 end:0x8004BD38
+	.sbss       start:0x8055DA08 end:0x8055DA10
+
+revolution/OS/OSAlloc.c:
+	.text       start:0x8004BD38 end:0x8004C040
+	.sdata      start:0x80558F28 end:0x80558F2C
+	.sbss       start:0x8055DA10 end:0x8055DA20
+
+revolution/OS/OSArena.c:
+	.text       start:0x8004C040 end:0x8004C0D4
+	.sdata      start:0x80558F30 end:0x80558F38
+	.sbss       start:0x8055DA20 end:0x8055DA28
+
+revolution/OS/OSAudioSystem.c:
+	.text       start:0x8004C0D4 end:0x8004C588
+	.data       start:0x80304208 end:0x80304288
+
+revolution/OS/OSCache.c:
+	.text       start:0x8004C588 end:0x8004CC4C
+	.data       start:0x80304288 end:0x803044C0
+
+revolution/OS/OSContext.c:
+	.text       start:0x8004CC4C end:0x8004D4D4
+	.data       start:0x803044C0 end:0x803046A0
+
+revolution/OS/OSError.c:
+	.text       start:0x8004D4D4 end:0x8004DC08
+	.data       start:0x803046A0 end:0x803049BC
+	.bss        start:0x8037D8B0 end:0x8037D8F4
+	.sdata      start:0x80558F38 end:0x80558F40
+
+revolution/OS/OSInterrupt.c:
+	.text       start:0x80050ED8 end:0x80050F48
+
+revolution/OS/OSInterruptInit.c:
+	.text       start:0x80050F48 end:0x8005100C
+
+revolution/OS/OSInterruptRest.c:
+	.text       start:0x8005100C end:0x8005165C
+	.data       start:0x80305500 end:0x80305530
+	.sbss       start:0x8055DA58 end:0x8055DA6C
+
+revolution/OS/OSLink.c:
+	.text       start:0x8005165C end:0x80051674
+
+revolution/OS/OSMessage.c:
+	.text       start:0x80051674 end:0x80051878
+
+revolution/OS/OSMemory.c:
+	.text       start:0x80051878 end:0x8005208C
+	.data       start:0x80305530 end:0x80305540
+
+revolution/OS/OSMutex.c:
+	.text       start:0x8005208C end:0x80052390
+
+revolution/OS/OSExecBoot.c:
+	.text       start:0x80052390 end:0x80052404
+	.sbss       start:0x8055DA70 end:0x8055DA78
+
+revolution/OS/OSReset.c:
+	.text       start:0x80052404 end:0x80052964
+	.data       start:0x80305540 end:0x803055B8
+	.sbss       start:0x8055DA80 end:0x8055DA88
+
+revolution/OS/OSRtc.c:
+	.text       start:0x80052964 end:0x800533F0
+	.bss        start:0x8038E340 end:0x8038E398
+
+revolution/OS/OSSemaphore.c:
+	.text       start:0x800533F0 end:0x80053518
+
+revolution/OS/OSSync.c:
+	.text       start:0x80053518 end:0x80053598
+
+revolution/OS/OSThread.c:
+	.text       start:0x80053598 end:0x80054B24
+	.bss        start:0x8038E398 end:0x8038EDA0
+	.sdata      start:0x80558F60 end:0x80558F64
+	.sbss       start:0x8055DA88 end:0x8055DA94
+
+revolution/OS/OSTime.c:
+	.text       start:0x80054B24 end:0x80054F38
+	.data       start:0x803055B8 end:0x80305618
+
+revolution/OS/OSUtf.c:
+	.text       start:0x80054F38 end:0x80055170
+	.data       start:0x80305618 end:0x80311458
+
+revolution/OS/OSIpc.c:
+	.text       start:0x80055170 end:0x80055198
+	.sdata      start:0x80558F68 end:0x80558F6C
+	.sbss       start:0x8055DA98 end:0x8055DA9C
+
+revolution/OS/OSStateTM.c:
+	.text       start:0x80055198 end:0x800557E0
+	.data       start:0x80311458 end:0x80311520
+	.bss        start:0x8038EDA0 end:0x8038EE60
+	.sbss       start:0x8055DAA0 end:0x8055DAC0
+
+revolution/OS/__start.c:
+	.init       start:0x80004134 end:0x80004414
+	.sbss       start:0x8055DAC0 end:0x8055DAC8
+
+revolution/OS/OSPlayRecord.c:
+	.text       start:0x800557E0 end:0x80055EB8
+	.data       start:0x80311520 end:0x80311568
+	.bss        start:0x8038EE60 end:0x8038F060
+	.sbss       start:0x8055DAC8 end:0x8055DAF0
+
+revolution/OS/OSStateFlags.c:
+	.text       start:0x80055EB8 end:0x800560B0
+	.data       start:0x80311568 end:0x80311590
+	.bss        start:0x8038F060 end:0x8038F080
+
+revolution/OS/__ppc_eabi_init.c:
+	.init       start:0x80004414 end:0x8000446C
+	.text       start:0x800560B0 end:0x80056118
+	.text       start:0x80056118 end:0x80056164
+
+revolution/SI/SISamplingRate.c:
+	.text       start:0x80058920 end:0x80058A00
+	.data       start:0x80311658 end:0x803116F0
+	.sbss       start:0x8055DB30 end:0x8055DB38
+
+revolution/IPC/ipcMain.c:
+	.text       start:0x8009D274 end:0x8009D2F8
+	.sbss       start:0x8055DCA8 end:0x8055DCC0
+
+revolution/IPC/ipcclt.c:
+	.text       start:0x8009D2F8 end:0x8009E9F8
+	.bss        start:0x803C9278 end:0x803C92C8
+	.sdata      start:0x805590C0 end:0x805590C8
+	.sbss       start:0x8055DCC0 end:0x8055DCCC
+
+revolution/IPC/memory.c:
+	.text       start:0x8009E9F8 end:0x8009EF24
+	.bss        start:0x803C92C8 end:0x803C9348
+
+revolution/IPC/ipcProfile.c:
+	.text       start:0x8009EF24 end:0x8009F0E8
+
+revolution/FS/fs.c:
+	.text       start:0x8009F0E8 end:0x800A03A4
+	.data       start:0x8031ADA8 end:0x8031ADD0
+	.sdata      start:0x805590C8 end:0x805590D0
+	.sbss       start:0x8055DCD8 end:0x8055DCEC
+
+revolution/NAND/nand.c:
+	.text       start:0x800A03A4 end:0x800A10CC
+
+revolution/NAND/NANDOpenClose.c:
+	.text       start:0x800A10CC end:0x800A146C
+
+revolution/NAND/NANDCheck.c:
+	.text       start:0x800A27A0 end:0x800A2964
+
+revolution/SC/scsystem.c:
+	.text       start:0x800A2964 end:0x800A4294
+	.data       start:0x8031B018 end:0x8031B120
+	.bss        start:0x803C94A0 end:0x803CD640
+	.sbss       start:0x8055DCF8 end:0x8055DD10
+
+revolution/SC/scapi.c:
+	.text       start:0x800A4294 end:0x800A466C
+
+revolution/SC/scapi_prdinfo.c:
+	.text       start:0x800A466C end:0x800A485C
+	.data       start:0x8031B120 end:0x8031B168
+	.sdata      start:0x805591E8 end:0x805591F0

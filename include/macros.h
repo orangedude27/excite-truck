@@ -1,0 +1,51 @@
+#ifndef MACROS_H
+#define MACROS_H
+
+#define __CONCAT(x, y) x##y
+#define CONCAT(x, y) __CONCAT(x, y)
+
+#define MAX(x, y) ((x) > (y) ? (x) : (y))
+#define MIN(x, y) ((x) < (y) ? (x) : (y))
+
+#define CLAMP(low, high, x)                                                    \
+    ((x) > (high) ? (high) : ((x) < (low) ? (low) : (x)))
+
+#define ROUND_UP(x, align) (((x) + (align) - 1) & (-(align)))
+#define ROUND_UP_PTR(x, align)                                                 \
+    ((void*)((((u32)(x)) + (align) - 1) & (~((align) - 1))))
+
+#define ROUND_DOWN(x, align) ((x) & (-(align)))
+#define ROUND_DOWN_PTR(x, align) ((void*)(((u32)(x)) & (~((align) - 1))))
+
+#define PTR_DISTANCE(start, end) ((u8*)(end) - (u8*)(start))
+
+#define ARRAY_SIZE(x) (sizeof((x)) / sizeof((x)[0]))
+
+#define MEMCLR(x) __memclr((x), sizeof(*(x)))
+
+#define ALIGN(x) __attribute__((aligned(x)))
+
+#define DECL_SECTION(x) __declspec(section x)
+#define DECL_WEAK __declspec(weak)
+
+#define DECLTYPE(x) __decltype__(x)
+
+#ifdef DEBUG
+#define ASSERTLINE(line, cond)                                                 \
+    ((cond) || (OSPanic(__FILE__, line, "Failed assertion " #cond), 0))
+
+#define ASSERTMSGLINE(line, cond, msg)                                         \
+    ((cond) || (OSPanic(__FILE__, line, msg), 0))
+#else
+#define ASSERTLINE(line, cond) (void)0
+#define ASSERTMSGLINE(line, cond, msg) (void)0
+#endif
+
+// For VSCode
+#ifdef __INTELLISENSE__
+#define asm
+#define __attribute__(x)
+#define __declspec(x)
+#endif
+
+#endif

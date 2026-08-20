@@ -33,3 +33,12 @@ compile_commands.json
 # Miscellaneous
 /*.txt
 *.exe
+
+# Documentation: only README.md (and docs/*.md) are tracked. Other .md
+# files (TODO_*, drift notes, AGENTS.md, README.example.md) are working-only.
+*.md
+!README.md
+!docs/*.md
+
+# Tools/ is also working-only — scripts under tools/ are not tracked.
+tools/
