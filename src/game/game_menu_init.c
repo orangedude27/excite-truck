@@ -8,7 +8,7 @@ extern void fn_80130390(void);
 extern void fn_8012DDA8(void);
 extern void fn_8012E498(void);
 extern int  fn_80005158(const char*);
-extern int  fn_80027550(char*, const char*, ...);
+extern int  sprintf(char*, const char*, ...);
 extern void fn_800199B8(void);
 extern int  fn_80028F94(char*, const char*, int);
 extern void fn_80265D48(void);
