@@ -41,7 +41,7 @@ static BOOL InputBufferValid[SI_MAX_CHAN];
 static u32 InputBuffer[SI_MAX_CHAN][2];
 static OSInterruptHandler RDSTHandler[SI_MAX_CHAN];
 static u32 InputBufferVcount[SI_MAX_CHAN];
-static OSAlarm Alarm[SI_MAX_CHAN];
+extern OSAlarm Alarm[SI_MAX_CHAN];
 
 static void SIClearTCInterrupt(void) {
     u32 csr = SI_HW_REGS[SI_SICOMSCR];
