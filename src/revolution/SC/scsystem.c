@@ -8,8 +8,8 @@
 #define SC_CONF_MIN_SIZE (sizeof(SCConfHeader) + sizeof(u32))
 #define SC_CONF_MAX_SIZE 0x4000
 
-#define SC_CONF_BEGIN_MAGIC "SCv0"
-#define SC_CONF_END_MAGIC "SCed"
+#define SC_CONF_BEGIN_MAGIC s_SCv0
+#define SC_CONF_END_MAGIC s_SCed
 
 #define SC_SMALLARRAY_MAX 0xFF
 #define SC_BIGARRAY_MAX 0xFFFF
@@ -98,8 +98,13 @@ typedef struct SCItem {
     u32 itemLen;      // at 0x1C
 } SCItem;
 
-const char* __SCVersion =
-    "<< RVL_SDK - SC \trelease build: Nov 30 2006 03:33:00 (0x4199_60831) >>";
+#pragma push
+#pragma small_data on
+extern const char* __SCVersion;
+extern char s_SCv0[5];
+extern char s_SCed[5];
+#pragma small_data off
+#pragma pop
 
 static SCControl Control;
 static u8 ConfBuf[SC_CONF_MAX_SIZE] ALIGN(32);
@@ -120,21 +125,51 @@ static u8 IsDevKit = FALSE;
 static u8 DirtyFlag = FALSE;
 static u8 Initialized = FALSE;
 
+// Pooled item-name strings (live in shared sdata/data auto units; referenced via extern).
+extern const char lbl_80559114[]; // "IPL.CB"
+extern const char lbl_8055911C[]; // "IPL.AR"
+extern const char lbl_80559128[]; // "IPL.ARN"
+extern const char lbl_80559130[]; // "IPL.DH"
+extern const char lbl_80559138[]; // "IPL.E60"
+extern const char lbl_80559140[]; // "IPL.IDL"
+extern const char lbl_80559148[]; // "IPL.LNG"
+extern const char lbl_80559150[]; // "IPL.NIK"
+extern const char lbl_80559158[]; // "IPL.PC"
+extern const char lbl_80559160[]; // "IPL.PGS"
+extern const char lbl_80559168[]; // "IPL.SSV"
+extern const char lbl_8031AFE8[]; // "IPL.SADR"
+extern const char lbl_80559170[]; // "IPL.SND"
+extern const char lbl_80559178[]; // "NET.CNF"
+extern const char lbl_8031AFF4[]; // "NET.CTPC"
+extern const char lbl_8031B000[]; // "NET.PROF"
+extern const char lbl_8031B00C[]; // "NET.WCPC"
+extern const char lbl_80559180[]; // "DEV.BTM"
+extern const char lbl_80559188[]; // "DEV.VIM"
+extern const char lbl_80559190[]; // "DEV.CTC"
+extern const char lbl_80559198[]; // "DEV.DSM"
+extern const char lbl_805591A0[]; // "BT.DINF"
+extern const char lbl_805591A8[]; // "BT.SENS"
+extern const char lbl_805591B0[]; // "BT.SPKV"
+extern const char lbl_805591B8[]; // "BT.MOT"
+extern const char lbl_805591C0[]; // "BT.BAR"
+extern const char lbl_805591C8[]; // "DVD.CNF"
+extern const char lbl_805591D0[]; // "WWW.RST"
+
 static SCNameAndID NameAndIDTbl[SC_ITEM_MAX] = {
-    {"IPL.CB", SC_ITEM_IPL_CB},     {"IPL.AR", SC_ITEM_IPL_AR},
-    {"IPL.ARN", SC_ITEM_IPL_ARN},   {"IPL.DH", SC_ITEM_IPL_DH},
-    {"IPL.E60", SC_ITEM_IPL_E60},   {"IPL.IDL", SC_ITEM_IPL_IDL},
-    {"IPL.LNG", SC_ITEM_IPL_LNG},   {"IPL.NIK", SC_ITEM_IPL_NIK},
-    {"IPL.PC", SC_ITEM_IPL_PC},     {"IPL.PGS", SC_ITEM_IPL_PGS},
-    {"IPL.SSV", SC_ITEM_IPL_SSV},   {"IPL.SADR", SC_ITEM_IPL_SADR},
-    {"IPL.SND", SC_ITEM_IPL_SND},   {"NET.CNF", SC_ITEM_NET_CNF},
-    {"NET.CTPC", SC_ITEM_NET_CTPC}, {"NET.PROF", SC_ITEM_NET_PROF},
-    {"NET.WCPC", SC_ITEM_NET_WCPC}, {"DEV.BTM", SC_ITEM_DEV_BTM},
-    {"DEV.VIM", SC_ITEM_DEV_VIM},   {"DEV.CTC", SC_ITEM_DEV_CTC},
-    {"DEV.DSM", SC_ITEM_DEV_DSM},   {"BT.DINF", SC_ITEM_BT_DINF},
-    {"BT.SENS", SC_ITEM_BT_SENS},   {"BT.SPKV", SC_ITEM_BT_SPKV},
-    {"BT.MOT", SC_ITEM_BT_MOT},     {"BT.BAR", SC_ITEM_BT_BAR},
-    {"DVD.CNF", SC_ITEM_DVD_CNF},   {"WWW.RST", SC_ITEM_WWW_RST}};
+    {lbl_80559114, SC_ITEM_IPL_CB},     {lbl_8055911C, SC_ITEM_IPL_AR},
+    {lbl_80559128, SC_ITEM_IPL_ARN},    {lbl_80559130, SC_ITEM_IPL_DH},
+    {lbl_80559138, SC_ITEM_IPL_E60},    {lbl_80559140, SC_ITEM_IPL_IDL},
+    {lbl_80559148, SC_ITEM_IPL_LNG},    {lbl_80559150, SC_ITEM_IPL_NIK},
+    {lbl_80559158, SC_ITEM_IPL_PC},     {lbl_80559160, SC_ITEM_IPL_PGS},
+    {lbl_80559168, SC_ITEM_IPL_SSV},    {lbl_8031AFE8, SC_ITEM_IPL_SADR},
+    {lbl_80559170, SC_ITEM_IPL_SND},    {lbl_80559178, SC_ITEM_NET_CNF},
+    {lbl_8031AFF4, SC_ITEM_NET_CTPC},   {lbl_8031B000, SC_ITEM_NET_PROF},
+    {lbl_8031B00C, SC_ITEM_NET_WCPC},   {lbl_80559180, SC_ITEM_DEV_BTM},
+    {lbl_80559188, SC_ITEM_DEV_VIM},    {lbl_80559190, SC_ITEM_DEV_CTC},
+    {lbl_80559198, SC_ITEM_DEV_DSM},    {lbl_805591A0, SC_ITEM_BT_DINF},
+    {lbl_805591A8, SC_ITEM_BT_SENS},    {lbl_805591B0, SC_ITEM_BT_SPKV},
+    {lbl_805591B8, SC_ITEM_BT_MOT},     {lbl_805591C0, SC_ITEM_BT_BAR},
+    {lbl_805591C8, SC_ITEM_DVD_CNF},    {lbl_805591D0, SC_ITEM_WWW_RST}};
 
 static void SetBgJobStatus(SCStatus status);
 static s32 SCReloadConfFileAsync(u8* buf, u32 size, SCAsyncCallback callback);
