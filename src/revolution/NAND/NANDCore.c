@@ -14,9 +14,9 @@ typedef enum {
     NAND_LIB_INITIALIZED
 } NANDLibState;
 
-static void nandShutdownCallback(s32 result, void* arg);
 static void nandGetTypeCallback(s32 result, void* arg);
-static BOOL nandOnShutdown(BOOL final, u32 event);
+static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async, BOOL priv);
+static void nandReadDirCallback(s32 result, void* arg);
 static s32 _ES_InitLib(s32* fd);
 static s32 _ES_GetDataDir(s32* fd, u64 tid, char* dirOut) DECOMP_DONT_INLINE;
 static s32 _ES_GetTitleId(s32* fd, u64* tidOut);
@@ -27,7 +27,6 @@ const char* __NANDVersion =
 
 static NANDLibState s_libState = NAND_LIB_UNINITIALIZED;
 static char s_currentDir[64] ALIGN(32) = "/";
-static OSShutdownFunctionInfo s_shutdownFuncInfo = {nandOnShutdown, 255};
 
 static char s_homeDir[64] ALIGN(32);
 
@@ -155,7 +154,6 @@ s32 nandConvertErrorCode(s32 result) {
                             IPC_RESULT_OPENFD,                NAND_RESULT_OPENFD,
                             -117,                             NAND_RESULT_UNKNOWN,
                             IPC_RESULT_BUSY,                  NAND_RESULT_BUSY,
-                            IPC_RESULT_FATAL_ERROR,           NAND_RESULT_FATAL_ERROR,
                             IPC_RESULT_ACCESS_INTERNAL,       NAND_RESULT_ACCESS,
                             IPC_RESULT_EXISTS_INTERNAL,       NAND_RESULT_EXISTS,
                             -3,                               NAND_RESULT_UNKNOWN,
@@ -287,30 +285,53 @@ s32 NANDInit(void) {
     }
 }
 
-static BOOL nandOnShutdown(BOOL final, u32 event) {
-    if (!final) {
-        if (event == OS_SD_EVENT_SHUTDOWN) {
-            volatile BOOL shutdown = FALSE;
-            s64 start = OSGetTime();
-            ISFS_ShutdownAsync(nandShutdownCallback, (void*)&shutdown);
+static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async,
+                          BOOL priv) {
+    if (async) {
+        nandGenerateAbsPath(block->path, path);
 
-            while (OS_TICKS_TO_MSEC(OSGetTime() - start) < 500) {
-                if (shutdown) {
-                    break;
-                }
+        if (!priv) {
+            BOOL isPriv;
+            if (strncmp(block->path, "/shared2", 8) == 0) {
+                isPriv = TRUE;
+            } else {
+                isPriv = FALSE;
+            }
+            if (isPriv) {
+                return IPC_RESULT_ACCESS;
             }
         }
 
-        return TRUE;
+        return ISFS_ReadDirAsync(block->path, NULL, &block->dirFileCount,
+                                 nandReadDirCallback, block);
+    } else {
+        char absPath[64];
+        u32 numFiles = 0;
+        s32 result;
+
+        MEMCLR(&absPath);
+        nandGenerateAbsPath(absPath, path);
+
+        if (!priv) {
+            BOOL isPriv;
+            if (strncmp(absPath, "/shared2", 8) == 0) {
+                isPriv = TRUE;
+            } else {
+                isPriv = FALSE;
+            }
+            if (isPriv) {
+                return IPC_RESULT_ACCESS;
+            }
+        }
+
+        result = ISFS_ReadDir(absPath, NULL, &numFiles);
+        if (result == IPC_RESULT_OK) {
+            BOOL intr = OSDisableInterrupts();
+            strcpy(s_currentDir, absPath);
+            OSRestoreInterrupts(intr);
+        }
+        return result;
     }
-
-    return TRUE;
-}
-
-static void nandShutdownCallback(s32 result, void* arg) {
-#pragma unused(result)
-
-    *(BOOL*)arg = TRUE;
 }
 
 s32 NANDGetCurrentDir(char* out) {
@@ -387,7 +408,7 @@ s32 NANDGetType(const char* path, u8* type) {
         return NAND_RESULT_FATAL_ERROR;
     }
 
-    return nandConvertErrorCode(nandGetType(path, type, NULL, FALSE, FALSE));
+    return nandConvertErrorCode(nandOnShutdown(path, NULL, FALSE, FALSE));
 }
 
 s32 NANDPrivateGetTypeAsync(const char* path, u8* type,
@@ -419,23 +440,16 @@ const char* nandGetHomeDir(void) {
     return s_homeDir;
 }
 
-void NANDInitBanner(NANDBanner* banner, u32 flags, const wchar_t* title,
-                    const wchar_t* subtitle) {
-    memset(banner, 0, sizeof(NANDBanner));
-    banner->flags = flags;
-    banner->magic = NAND_BANNER_MAGIC;
+static void nandReadDirCallback(s32 result, void* arg) {
+    NANDCommandBlock* block = (NANDCommandBlock*)arg;
 
-    if (wcscmp(title, L"") == 0) {
-        wcsncpy(banner->title, L" ", NAND_BANNER_TITLE_MAX);
-    } else {
-        wcsncpy(banner->title, title, NAND_BANNER_TITLE_MAX);
+    if (result == IPC_RESULT_OK) {
+        BOOL enabled = OSDisableInterrupts();
+        strcpy(s_currentDir, block->path);
+        OSRestoreInterrupts(enabled);
     }
 
-    if (wcscmp(subtitle, L"") == 0) {
-        wcsncpy(banner->subtitle, L" ", NAND_BANNER_TITLE_MAX);
-    } else {
-        wcsncpy(banner->subtitle, subtitle, NAND_BANNER_TITLE_MAX);
-    }
+    block->callback(nandConvertErrorCode(result), block);
 }
 
 /**
