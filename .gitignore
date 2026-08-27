@@ -42,3 +42,5 @@ compile_commands.json
 
 # Tools/ is also working-only — scripts under tools/ are not tracked.
 tools/
+
+*.s
