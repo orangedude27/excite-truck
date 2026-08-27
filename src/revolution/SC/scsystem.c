@@ -110,7 +110,7 @@ static SCControl Control;
 static u8 ConfBuf[SC_CONF_MAX_SIZE] ALIGN(32);
 static u8 ConfBufForFlush[SC_CONF_MAX_SIZE] ALIGN(32);
 
-extern const char lbl_802EEE88[]; // "/shared2/sys"
+extern const char s_SC_ConfDir[]; // "/shared2/sys"
 extern const char ConfFileName[]; // "/shared2/sys/SYSCONF"
 extern const char ProductInfoFileName[]; // "/title/00000001/00000002/data/setting.txt"
 
@@ -126,50 +126,50 @@ static u8 DirtyFlag = FALSE;
 static u8 Initialized = FALSE;
 
 // Pooled item-name strings (live in shared sdata/data auto units; referenced via extern).
-extern const char lbl_80559114[]; // "IPL.CB"
-extern const char lbl_8055911C[]; // "IPL.AR"
-extern const char lbl_80559128[]; // "IPL.ARN"
-extern const char lbl_80559130[]; // "IPL.DH"
-extern const char lbl_80559138[]; // "IPL.E60"
-extern const char lbl_80559140[]; // "IPL.IDL"
-extern const char lbl_80559148[]; // "IPL.LNG"
-extern const char lbl_80559150[]; // "IPL.NIK"
-extern const char lbl_80559158[]; // "IPL.PC"
-extern const char lbl_80559160[]; // "IPL.PGS"
-extern const char lbl_80559168[]; // "IPL.SSV"
-extern const char lbl_8031AFE8[]; // "IPL.SADR"
-extern const char lbl_80559170[]; // "IPL.SND"
-extern const char lbl_80559178[]; // "NET.CNF"
-extern const char lbl_8031AFF4[]; // "NET.CTPC"
-extern const char lbl_8031B000[]; // "NET.PROF"
-extern const char lbl_8031B00C[]; // "NET.WCPC"
-extern const char lbl_80559180[]; // "DEV.BTM"
-extern const char lbl_80559188[]; // "DEV.VIM"
-extern const char lbl_80559190[]; // "DEV.CTC"
-extern const char lbl_80559198[]; // "DEV.DSM"
-extern const char lbl_805591A0[]; // "BT.DINF"
-extern const char lbl_805591A8[]; // "BT.SENS"
-extern const char lbl_805591B0[]; // "BT.SPKV"
-extern const char lbl_805591B8[]; // "BT.MOT"
-extern const char lbl_805591C0[]; // "BT.BAR"
-extern const char lbl_805591C8[]; // "DVD.CNF"
-extern const char lbl_805591D0[]; // "WWW.RST"
+extern const char s_ipldcb[];  // "IPL.CB"
+extern const char s_iplar[];   // "IPL.AR"
+extern const char s_iplarn[];  // "IPL.ARN"
+extern const char s_ipldh[];   // "IPL.DH"
+extern const char s_iplE60[];  // "IPL.E60"
+extern const char s_ipidl[];   // "IPL.IDL"
+extern const char s_ipllng[];  // "IPL.LNG"
+extern const char s_iplnik[];  // "IPL.NIK"
+extern const char s_iplpc[];   // "IPL.PC"
+extern const char s_iplpgs[];  // "IPL.PGS"
+extern const char s_iplssv[];  // "IPL.SSV"
+extern const char s_iplsadr[]; // "IPL.SADR"
+extern const char s_iplsnd[];  // "IPL.SND"
+extern const char s_netcnf[];  // "NET.CNF"
+extern const char s_netctpc[]; // "NET.CTPC"
+extern const char s_netprof[]; // "NET.PROF"
+extern const char s_netwcpc[]; // "NET.WCPC"
+extern const char s_devbtm[];  // "DEV.BTM"
+extern const char s_devvim[];  // "DEV.VIM"
+extern const char s_devctc[];  // "DEV.CTC"
+extern const char s_devdsm[];  // "DEV.DSM"
+extern const char s_btdinf[];  // "BT.DINF"
+extern const char s_btsens[];  // "BT.SENS"
+extern const char s_btspkv[];  // "BT.SPKV"
+extern const char s_btmot[];   // "BT.MOT"
+extern const char s_btbar[];   // "BT.BAR"
+extern const char s_dvdcnf[];  // "DVD.CNF"
+extern const char s_wwwrst[];  // "WWW.RST"
 
 static SCNameAndID NameAndIDTbl[SC_ITEM_MAX] = {
-    {lbl_80559114, SC_ITEM_IPL_CB},     {lbl_8055911C, SC_ITEM_IPL_AR},
-    {lbl_80559128, SC_ITEM_IPL_ARN},    {lbl_80559130, SC_ITEM_IPL_DH},
-    {lbl_80559138, SC_ITEM_IPL_E60},    {lbl_80559140, SC_ITEM_IPL_IDL},
-    {lbl_80559148, SC_ITEM_IPL_LNG},    {lbl_80559150, SC_ITEM_IPL_NIK},
-    {lbl_80559158, SC_ITEM_IPL_PC},     {lbl_80559160, SC_ITEM_IPL_PGS},
-    {lbl_80559168, SC_ITEM_IPL_SSV},    {lbl_8031AFE8, SC_ITEM_IPL_SADR},
-    {lbl_80559170, SC_ITEM_IPL_SND},    {lbl_80559178, SC_ITEM_NET_CNF},
-    {lbl_8031AFF4, SC_ITEM_NET_CTPC},   {lbl_8031B000, SC_ITEM_NET_PROF},
-    {lbl_8031B00C, SC_ITEM_NET_WCPC},   {lbl_80559180, SC_ITEM_DEV_BTM},
-    {lbl_80559188, SC_ITEM_DEV_VIM},    {lbl_80559190, SC_ITEM_DEV_CTC},
-    {lbl_80559198, SC_ITEM_DEV_DSM},    {lbl_805591A0, SC_ITEM_BT_DINF},
-    {lbl_805591A8, SC_ITEM_BT_SENS},    {lbl_805591B0, SC_ITEM_BT_SPKV},
-    {lbl_805591B8, SC_ITEM_BT_MOT},     {lbl_805591C0, SC_ITEM_BT_BAR},
-    {lbl_805591C8, SC_ITEM_DVD_CNF},    {lbl_805591D0, SC_ITEM_WWW_RST}};
+    {s_ipldcb, SC_ITEM_IPL_CB},     {s_iplar, SC_ITEM_IPL_AR},
+    {s_iplarn, SC_ITEM_IPL_ARN},    {s_ipldh, SC_ITEM_IPL_DH},
+    {s_iplE60, SC_ITEM_IPL_E60},    {s_ipidl, SC_ITEM_IPL_IDL},
+    {s_ipllng, SC_ITEM_IPL_LNG},    {s_iplnik, SC_ITEM_IPL_NIK},
+    {s_iplpc, SC_ITEM_IPL_PC},      {s_iplpgs, SC_ITEM_IPL_PGS},
+    {s_iplssv, SC_ITEM_IPL_SSV},    {s_iplsadr, SC_ITEM_IPL_SADR},
+    {s_iplsnd, SC_ITEM_IPL_SND},    {s_netcnf, SC_ITEM_NET_CNF},
+    {s_netctpc, SC_ITEM_NET_CTPC},  {s_netprof, SC_ITEM_NET_PROF},
+    {s_netwcpc, SC_ITEM_NET_WCPC},  {s_devbtm, SC_ITEM_DEV_BTM},
+    {s_devvim, SC_ITEM_DEV_VIM},    {s_devctc, SC_ITEM_DEV_CTC},
+    {s_devdsm, SC_ITEM_DEV_DSM},    {s_btdinf, SC_ITEM_BT_DINF},
+    {s_btsens, SC_ITEM_BT_SENS},    {s_btspkv, SC_ITEM_BT_SPKV},
+    {s_btmot, SC_ITEM_BT_MOT},      {s_btbar, SC_ITEM_BT_BAR},
+    {s_dvdcnf, SC_ITEM_DVD_CNF},    {s_wwwrst, SC_ITEM_WWW_RST}};
 
 static void SetBgJobStatus(SCStatus status);
 static s32 SCReloadConfFileAsync(u8* buf, u32 size, SCAsyncCallback callback);
@@ -1094,7 +1094,7 @@ static void MyNandCallback(s32 result, NANDCommandBlock* block) {
     case NAND_CB_STATE_2:
         ctrl->nandCbState = NAND_CB_STATE_3;
 
-        if (NANDPrivateGetTypeAsync(lbl_802EEE88, &ctrl->fileType,
+        if (NANDPrivateGetTypeAsync(s_SC_ConfDir, &ctrl->fileType,
                                     MyNandCallback,
                                     (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
             goto _error;
@@ -1108,7 +1108,7 @@ static void MyNandCallback(s32 result, NANDCommandBlock* block) {
 
         ctrl->nandCbState = NAND_CB_STATE_4;
 
-        if (NANDPrivateCreateDirAsync(lbl_802EEE88, NAND_PERM_RWALL, 0,
+        if (NANDPrivateCreateDirAsync(s_SC_ConfDir, NAND_PERM_RWALL, 0,
                                       MyNandCallback,
                                       (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
             goto _error;
