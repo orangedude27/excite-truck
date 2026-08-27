@@ -78,8 +78,22 @@ def sjiswrap_url(tag: str) -> str:
 
 
 def wibo_url(tag: str) -> str:
+    uname = platform.uname()
+    system = uname.system.lower()
+    arch = uname.machine.lower()
+    if arch == "amd64":
+        arch = "x86_64"
+    # Asset names: wibo-x86_64 / wibo-i686 / wibo-macos
+    if system == "darwin":
+        asset = "wibo-macos"
+    elif system == "linux":
+        asset = f"wibo-{arch}"
+    else:
+        # Unknown/Windows: wibo isn't used natively there, but keep the
+        # download step working by grabbing the x86_64 build.
+        asset = "wibo-x86_64"
     repo = "https://github.com/decompals/wibo"
-    return f"{repo}/releases/download/{tag}/wibo"
+    return f"{repo}/releases/download/{tag}/{asset}"
 
 
 TOOLS: Dict[str, Callable[[str], str]] = {
