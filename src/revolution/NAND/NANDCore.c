@@ -23,7 +23,7 @@ static s32 _ES_GetTitleId(s32* fd, u64* tidOut);
 static s32 _ES_CloseLib(s32* fd);
 
 const char* __NANDVersion =
-    "<< RVL_SDK - NAND \trelease build: Nov 30 2006 03:32:57 (0x4199_60831) >>";
+    "<< RVL_SDK - NAND \trelease build: Sep 22 2006 02:01:36 (0x4200_60422) >>";
 
 static NANDLibState s_libState = NAND_LIB_UNINITIALIZED;
 static char s_currentDir[64] ALIGN(32) = "/";
@@ -107,7 +107,7 @@ void nandConvertPath(char* abs, const char* dir, const char* rel) {
     }
 }
 
-BOOL nandIsRelativePath(const char* path) {
+static BOOL nandIsRelativePath(const char* path) {
     return *path == '/' ? FALSE : TRUE;
 }
 
@@ -215,7 +215,7 @@ void nandGenerateAbsPath(char* abs, const char* rel) {
     }
 }
 
-void nandGetParentDirectory(char* dir, const char* path) {
+static void nandGetParentDirectory(char* dir, const char* path) {
     int i;
 
     for (i = strlen(path); i >= 0; i--) {
@@ -326,7 +326,7 @@ s32 NANDGetCurrentDir(char* out) {
     return NAND_RESULT_OK;
 }
 
-s32 NANDGetHomeDir(char* out) {
+static s32 NANDGetHomeDir(char* out) {
     if (!nandIsInitialized()) {
         return NAND_RESULT_FATAL_ERROR;
     }
