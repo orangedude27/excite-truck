@@ -105,10 +105,9 @@ static SCControl Control;
 static u8 ConfBuf[SC_CONF_MAX_SIZE] ALIGN(32);
 static u8 ConfBufForFlush[SC_CONF_MAX_SIZE] ALIGN(32);
 
-static const char lbl_802EEE88[] = "/shared2/sys";
-static const char ConfFileName[] = "/shared2/sys/SYSCONF";
-static const char ProductInfoFileName[] =
-    "/title/00000001/00000002/data/setting.txt";
+extern const char lbl_802EEE88[]; // "/shared2/sys"
+extern const char ConfFileName[]; // "/shared2/sys/SYSCONF"
+extern const char ProductInfoFileName[]; // "/title/00000001/00000002/data/setting.txt"
 
 static u8 BgJobStatus = SC_STATUS_OK;
 
@@ -149,7 +148,7 @@ static void ClearConfBuf(u8* conf);
 static SCStatus ParseConfBuf(u8* conf, u32 size);
 static BOOL ParseGetBEValue(const u8* start, const u8* end, u32* out, u32 size);
 static BOOL UnpackItem(const SCConfItem* raw, SCItem* item);
-void MyNandCallback(s32 result, NANDCommandBlock* block);
+static void MyNandCallback(s32 result, NANDCommandBlock* block);
 static void FinishFromFlush(void);
 static void ErrorFromFlush(void);
 
@@ -978,30 +977,32 @@ void __SCFlushSyncCallback(SCStatus status) {
 }
 
 void SCFlushAsync(SCFlushCallback callback) {
+    SCControl* ctrl;
     BOOL enabled;
     u8 status;
 
+    ctrl = &Control;
     enabled = OSDisableInterrupts();
     status = BgJobStatus;
 
     if (status == SC_STATUS_OK) {
-        BgJobStatus = SC_STATUS_BUSY;
+        SetBgJobStatus(SC_STATUS_BUSY);
 
         if (callback == ((void*)NULL)) {
             callback = __SCFlushSyncCallback;
         }
 
-        Control.isFileOpen = FALSE;
-        Control.flushSize = SC_CONF_MAX_SIZE;
         Control.flushCallback = callback;
         Control.flushStatus = SC_STATUS_OK;
+        Control.isFileOpen = FALSE;
+        Control.flushSize = __SCGetConfBufSize();
 
-        if (DirtyFlag == FALSE) {
+        if (!__SCIsDirty()) {
             OSRestoreInterrupts(enabled);
             FinishFromFlush();
         } else {
-            DirtyFlag = FALSE;
-            memcpy(ConfBufForFlush, ConfBuf, SC_CONF_MAX_SIZE);
+            __SCClearDirtyFlag();
+            memcpy(ConfBufForFlush, __SCGetConfBuf(), __SCGetConfBufSize());
 
             OSRestoreInterrupts(enabled);
             Control.nandCbState = NAND_CB_STATE_0;
@@ -1021,17 +1022,19 @@ void SCFlushAsync(SCFlushCallback callback) {
     }
 }
 
-void MyNandCallback(s32 result, NANDCommandBlock* block) {
+static void MyNandCallback(s32 result, NANDCommandBlock* block) {
 #pragma unused(block)
 
-    switch (Control.nandCbState) {
+    SCControl* ctrl = &Control;
+
+    switch (ctrl->nandCbState) {
     case NAND_CB_STATE_0:
-        if (result == NAND_RESULT_OK && Control.fileType == NAND_FILE_TYPE_FILE) {
-            Control.nandCbState = NAND_CB_STATE_1;
+        if (result == NAND_RESULT_OK && ctrl->fileType == NAND_FILE_TYPE_FILE) {
+            ctrl->nandCbState = NAND_CB_STATE_1;
 
             if (NANDPrivateGetStatusAsync(
-                    ConfFileName, &Control.fileAttr, MyNandCallback,
-                    (NANDCommandBlock*)&Control.commandBlock) != NAND_RESULT_OK) {
+                    ConfFileName, &ctrl->fileAttr, MyNandCallback,
+                    (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
                 goto _error;
             }
         } else {
@@ -1041,58 +1044,58 @@ void MyNandCallback(s32 result, NANDCommandBlock* block) {
 
     case NAND_CB_STATE_1:
         if (result == NAND_RESULT_OK &&
-            Control.fileAttr.perm == NAND_PERM_RWALL) {
+            ctrl->fileAttr.perm == NAND_PERM_RWALL) {
             goto _case_5_lbl;
         }
     _case_1_lbl:
-        Control.nandCbState = NAND_CB_STATE_2;
+        ctrl->nandCbState = NAND_CB_STATE_2;
 
         if (NANDPrivateDeleteAsync(ConfFileName, MyNandCallback,
-                                   (NANDCommandBlock*)&Control.commandBlock) != NAND_RESULT_OK) {
+                                   (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
             goto _error;
         }
         return;
 
     case NAND_CB_STATE_2:
-        Control.nandCbState = NAND_CB_STATE_3;
+        ctrl->nandCbState = NAND_CB_STATE_3;
 
-        if (NANDPrivateGetTypeAsync(lbl_802EEE88, &Control.fileType,
+        if (NANDPrivateGetTypeAsync(lbl_802EEE88, &ctrl->fileType,
                                     MyNandCallback,
-                                    (NANDCommandBlock*)&Control.commandBlock) != NAND_RESULT_OK) {
+                                    (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
             goto _error;
         }
         return;
 
     case NAND_CB_STATE_3:
-        if (result == NAND_RESULT_OK && Control.fileType == NAND_FILE_TYPE_DIR) {
+        if (result == NAND_RESULT_OK && ctrl->fileType == NAND_FILE_TYPE_DIR) {
             goto _case_4_lbl;
         }
 
-        Control.nandCbState = NAND_CB_STATE_4;
+        ctrl->nandCbState = NAND_CB_STATE_4;
 
         if (NANDPrivateCreateDirAsync(lbl_802EEE88, NAND_PERM_RWALL, 0,
                                       MyNandCallback,
-                                      (NANDCommandBlock*)&Control.commandBlock) != NAND_RESULT_OK) {
+                                      (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
             goto _error;
         }
         return;
 
     case NAND_CB_STATE_4:
     _case_4_lbl:
-        Control.nandCbState = NAND_CB_STATE_5;
+        ctrl->nandCbState = NAND_CB_STATE_5;
         if (NANDPrivateCreateAsync(ConfFileName, NAND_PERM_RWALL, 0,
                                    MyNandCallback,
-                                   (NANDCommandBlock*)&Control.commandBlock) != NAND_RESULT_OK) {
+                                   (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
             goto _error;
         }
         return;
 
     case NAND_CB_STATE_5:
     _case_5_lbl:
-        Control.nandCbState = NAND_CB_STATE_6;
-        if (NANDPrivateOpenAsync(ConfFileName, &Control.fileInfo,
+        ctrl->nandCbState = NAND_CB_STATE_6;
+        if (NANDPrivateOpenAsync(ConfFileName, &ctrl->fileInfo,
                                  NAND_ACCESS_WRITE, MyNandCallback,
-                                 (NANDCommandBlock*)&Control.commandBlock) != NAND_RESULT_OK) {
+                                 (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
             goto _error;
         }
         return;
@@ -1102,26 +1105,26 @@ void MyNandCallback(s32 result, NANDCommandBlock* block) {
             goto _error;
         }
 
-        Control.isFileOpen = TRUE;
-        Control.nandCbState = NAND_CB_STATE_7;
+        ctrl->isFileOpen = TRUE;
+        ctrl->nandCbState = NAND_CB_STATE_7;
 
-        if (NANDWriteAsync(&Control.fileInfo, ConfBufForFlush, Control.flushSize,
+        if (NANDWriteAsync(&ctrl->fileInfo, ConfBufForFlush, ctrl->flushSize,
                            MyNandCallback,
-                           (NANDCommandBlock*)&Control.commandBlock) != NAND_RESULT_OK) {
+                           (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
             goto _error;
         }
         return;
 
     case NAND_CB_STATE_7:
-        if (result != Control.flushSize) {
+        if (result != ctrl->flushSize) {
             goto _error;
         }
 
-        Control.isFileOpen = FALSE;
-        Control.nandCbState = NAND_CB_STATE_8;
+        ctrl->isFileOpen = FALSE;
+        ctrl->nandCbState = NAND_CB_STATE_8;
 
-        if (NANDCloseAsync(&Control.fileInfo, MyNandCallback,
-                           (NANDCommandBlock*)&Control.commandBlock) != NAND_RESULT_OK) {
+        if (NANDCloseAsync(&ctrl->fileInfo, MyNandCallback,
+                           (NANDCommandBlock*)&ctrl->commandBlock) != NAND_RESULT_OK) {
             goto _error;
         }
         return;
@@ -1145,33 +1148,38 @@ _error:
 }
 
 static void FinishFromFlush(void) {
+    SCControl* ctrl;
     SCFlushCallback callback;
 
-    if (Control.flushStatus != SC_STATUS_OK) {
-        DirtyFlag = TRUE;
+    ctrl = &Control;
+    if (ctrl->flushStatus != SC_STATUS_OK) {
+        __SCSetDirtyFlag();
     }
 
-    callback = Control.flushCallback;
+    callback = ctrl->flushCallback;
     if (callback != NULL) {
-        Control.flushCallback = NULL;
-        callback(Control.flushStatus);
+        ctrl->flushCallback = NULL;
+        callback(ctrl->flushStatus);
 
-        if (Control.threadQueue.head != ((void*)NULL)) {
-            OSWakeupThread(&Control.threadQueue);
+        if (ctrl->threadQueue.head != ((void*)NULL)) {
+            OSWakeupThread(&ctrl->threadQueue);
         }
     }
 
-    SetBgJobStatus(Control.flushStatus);
+    SetBgJobStatus(ctrl->flushStatus);
 }
 
 static void ErrorFromFlush(void) {
-    Control.flushStatus = SC_STATUS_FATAL;
+    SCControl* ctrl;
 
-    if (Control.isFileOpen) {
-        Control.nandCbState = NAND_CB_STATE_9;
+    ctrl = &Control;
+    ctrl->flushStatus = SC_STATUS_FATAL;
 
-        if (NANDCloseAsync(&Control.fileInfo, MyNandCallback,
-                           (NANDCommandBlock*)&Control.commandBlock) == NAND_RESULT_OK) {
+    if (ctrl->isFileOpen) {
+        ctrl->nandCbState = NAND_CB_STATE_9;
+
+        if (NANDCloseAsync(&ctrl->fileInfo, MyNandCallback,
+                           (NANDCommandBlock*)&ctrl->commandBlock) == NAND_RESULT_OK) {
             return;
         }
     }
