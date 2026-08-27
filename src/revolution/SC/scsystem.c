@@ -371,7 +371,7 @@ _openFile:
         status = SC_STATUS_PARSE;
         break;
     default:
-        status = SC_STATUS_PARSE;
+        status = SC_STATUS_FATAL;
         break;
     }
 
@@ -1027,10 +1027,10 @@ void SCFlushAsync(SCFlushCallback callback) {
             callback = __SCFlushSyncCallback;
         }
 
-        Control.flushCallback = callback;
-        Control.flushStatus = SC_STATUS_OK;
-        Control.isFileOpen = FALSE;
-        Control.flushSize = __SCGetConfBufSize();
+        ctrl->flushCallback = callback;
+        ctrl->flushStatus = SC_STATUS_OK;
+        ctrl->isFileOpen = FALSE;
+        ctrl->flushSize = __SCGetConfBufSize();
 
         if (!__SCIsDirty()) {
             OSRestoreInterrupts(enabled);
@@ -1040,10 +1040,10 @@ void SCFlushAsync(SCFlushCallback callback) {
             memcpy(ConfBufForFlush, __SCGetConfBuf(), __SCGetConfBufSize());
 
             OSRestoreInterrupts(enabled);
-            Control.nandCbState = NAND_CB_STATE_0;
+            ctrl->nandCbState = NAND_CB_STATE_0;
 
-            if (NANDPrivateGetTypeAsync(ConfFileName, &Control.fileType,
-                                        MyNandCallback, (NANDCommandBlock*)&Control.commandBlock) !=
+            if (NANDPrivateGetTypeAsync(ConfFileName, &ctrl->fileType,
+                                        MyNandCallback, (NANDCommandBlock*)&ctrl->commandBlock) !=
                 NAND_RESULT_OK) {
                 ErrorFromFlush();
             }

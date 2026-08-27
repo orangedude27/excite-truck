@@ -458,7 +458,7 @@ config.libs = [
             Object(Matching, "revolution/OS/OSStateFlags.c"),
             Object(Matching, "revolution/OS/OSNet.c"),
             Object(Matching, "revolution/OS/__ppc_eabi_init.c"),
-            Object(NonMatching, "revolution/SC/scsystem.c"),
+            Object(Matching, "revolution/SC/scsystem.c"),
             Object(Matching, "revolution/SC/scapi.c"),
             Object(Matching, "revolution/SC/scapi_prdinfo.c"),
             Object(Matching, "revolution/USB/usb.c"),
