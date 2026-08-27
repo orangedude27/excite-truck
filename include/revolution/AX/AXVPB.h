@@ -57,7 +57,9 @@ typedef struct _AXVPB {
     u32 sync;                 // at 0x1C
     u32 depop;                // at 0x20
     void* itdBuffer;          // at 0x24
-    AXPB pb;                  // at 0x28
+    u8 pad24[0x138 - 0x28];   // at 0x28..0x138 (REXE01-unique region)
+    // REXE01: pb begins at 0x138 (ogws 0x28). AXPB.state at +0x10 -> 0x148.
+    AXPB pb;                  // at 0x138
 } AXVPB;
 
 s32 __AXGetNumVoices(void);
