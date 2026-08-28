@@ -27,16 +27,21 @@ typedef struct OSPlayRecord {
     char UNK_0x6E[0x80 - 0x6E];
 } OSPlayRecord;
 
-static BOOL PlayRecordGet;
-static OSPlayRecordState PlayRecordState;
-static BOOL PlayRecordError;
-static BOOL PlayRecordTerminate;
-static BOOL PlayRecordTerminated;
-static BOOL PlayRecordRetry;
+// MWCC allocates .sbss in reverse declaration order; these are declared
+// last-to-first so they land at the reference offsets:
+//   Get@0x00 State@0x04 Error@0x08 Terminate@0x0C Terminated@0x10
+//   Retry@0x14 LastError@0x18 SbssPad@0x1C LastCloseTime@0x20
+static s64 PlayRecordLastCloseTime;
+static s32 PlayRecordSbssPad;
 static s32 PlayRecordLastError;
-u32 PlayRecordSbssPad;
+static BOOL PlayRecordRetry;
+static BOOL PlayRecordTerminated;
+static BOOL PlayRecordTerminate;
+static BOOL PlayRecordError;
+static OSPlayRecordState PlayRecordState;
+static BOOL PlayRecordGet;
 
-static OSPlayRecord PlayRecord;
+static OSPlayRecord PlayRecord ALIGN(32);
 static NANDFileInfo FileInfo;
 static NANDCommandBlock Block;
 static OSAlarm PlayRecordAlarm;
@@ -55,6 +60,8 @@ static u32 RecordCheckSum(const OSPlayRecord* playRec) {
     return checksum;
 }
 
+DECOMP_FORCEACTIVE(OSPlayRecord_c, PlayRecord, PlayRecordSbssPad);
+
 static void PlayRecordAlarmCallback(OSAlarm* alarm, OSContext* ctx) {
 #pragma unused(alarm)
 #pragma unused(ctx)
@@ -64,7 +71,6 @@ static void PlayRecordAlarmCallback(OSAlarm* alarm, OSContext* ctx) {
 
 static void PlayRecordCallback(s32 result, NANDCommandBlock* block) {
 #pragma unused(block)
-    static s64 PlayRecordLastCloseTime;
     s32 error = NAND_RESULT_OK;
     PlayRecordLastError = result;
 
