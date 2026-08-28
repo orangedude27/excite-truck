@@ -27,26 +27,6 @@ typedef struct OSPlayRecord {
     char UNK_0x6E[0x80 - 0x6E];
 } OSPlayRecord;
 
-static s64 PlayRecordLastCloseTime;
-static s32 PlayRecordSbssPad;
-static s32 PlayRecordLastError;
-static BOOL PlayRecordRetry;
-static BOOL PlayRecordTerminated;
-static BOOL PlayRecordTerminate;
-static BOOL PlayRecordError;
-static OSPlayRecordState PlayRecordState;
-static BOOL PlayRecordGet;
-
-static s64 PlayRecordLastCloseTime;
-static s32 PlayRecordSbssPad;
-static s32 PlayRecordLastError;
-static BOOL PlayRecordRetry;
-static BOOL PlayRecordTerminated;
-static BOOL PlayRecordTerminate;
-static BOOL PlayRecordError;
-static OSPlayRecordState PlayRecordState;
-static BOOL PlayRecordGet;
-
 static BOOL PlayRecordGet;
 static OSPlayRecordState PlayRecordState;
 static BOOL PlayRecordError;
@@ -54,9 +34,9 @@ static BOOL PlayRecordTerminate;
 static BOOL PlayRecordTerminated;
 static BOOL PlayRecordRetry;
 static s32 PlayRecordLastError;
-static s64 PlayRecordLastCloseTime ALIGN(4);
+u32 PlayRecordSbssPad;
 
-static OSPlayRecord PlayRecord ALIGN(32);
+static OSPlayRecord PlayRecord;
 static NANDFileInfo FileInfo;
 static NANDCommandBlock Block;
 static OSAlarm PlayRecordAlarm;
@@ -75,8 +55,6 @@ static u32 RecordCheckSum(const OSPlayRecord* playRec) {
     return checksum;
 }
 
-DECOMP_FORCEACTIVE(OSPlayRecord_c, PlayRecord, PlayRecordSbssPad);
-
 static void PlayRecordAlarmCallback(OSAlarm* alarm, OSContext* ctx) {
 #pragma unused(alarm)
 #pragma unused(ctx)
@@ -86,7 +64,7 @@ static void PlayRecordAlarmCallback(OSAlarm* alarm, OSContext* ctx) {
 
 static void PlayRecordCallback(s32 result, NANDCommandBlock* block) {
 #pragma unused(block)
-
+    static s64 PlayRecordLastCloseTime;
     s32 error = NAND_RESULT_OK;
     PlayRecordLastError = result;
 
@@ -122,7 +100,7 @@ static void PlayRecordCallback(s32 result, NANDCommandBlock* block) {
         case PLAY_RECORD_STATE_READ:
             if (result == sizeof(OSPlayRecord)) {
                 PlayRecordGet = TRUE;
-                            PlayRecordLastCloseTime = PlayRecord.stopTime;
+                PlayRecordLastCloseTime = PlayRecord.stopTime;
                 PlayRecordState = PLAY_RECORD_STATE_SEEK;
             } else {
                 PlayRecordError = TRUE;
@@ -158,7 +136,7 @@ static void PlayRecordCallback(s32 result, NANDCommandBlock* block) {
                 PlayRecordState = PLAY_RECORD_STATE_CLOSED;
                 return;
             } else if (result == NAND_RESULT_OK) {
-                            PlayRecordLastCloseTime = PlayRecord.stopTime;
+                PlayRecordLastCloseTime = PlayRecord.stopTime;
                 PlayRecordState = PLAY_RECORD_STATE_OPEN;
             } else {
                 PlayRecordState = PLAY_RECORD_STATE_CLOSED;

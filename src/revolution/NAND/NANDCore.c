@@ -334,6 +334,26 @@ static s32 nandOnShutdown(const char* path, NANDCommandBlock* block, BOOL async,
     }
 }
 
+s32 NANDGetType(const char* path, u8* type) {
+    if (!nandIsInitialized()) {
+        return NAND_RESULT_FATAL_ERROR;
+    }
+
+    return nandConvertErrorCode(nandOnShutdown(path, NULL, FALSE, FALSE));
+}
+
+static void nandReadDirCallback(s32 result, void* arg) {
+    NANDCommandBlock* block = (NANDCommandBlock*)arg;
+
+    if (result == IPC_RESULT_OK) {
+        BOOL enabled = OSDisableInterrupts();
+        strcpy(s_currentDir, block->path);
+        OSRestoreInterrupts(enabled);
+    }
+
+    block->callback(nandConvertErrorCode(result), block);
+}
+
 s32 NANDGetCurrentDir(char* out) {
     BOOL enabled;
 
@@ -403,14 +423,6 @@ static s32 nandGetType(const char* path, u8* type, NANDCommandBlock* block,
     }
 }
 
-s32 NANDGetType(const char* path, u8* type) {
-    if (!nandIsInitialized()) {
-        return NAND_RESULT_FATAL_ERROR;
-    }
-
-    return nandConvertErrorCode(nandOnShutdown(path, NULL, FALSE, FALSE));
-}
-
 s32 NANDPrivateGetTypeAsync(const char* path, u8* type,
                             NANDAsyncCallback callback,
                             NANDCommandBlock* block) {
@@ -438,18 +450,6 @@ static void nandGetTypeCallback(s32 result, void* arg) {
 
 const char* nandGetHomeDir(void) {
     return s_homeDir;
-}
-
-static void nandReadDirCallback(s32 result, void* arg) {
-    NANDCommandBlock* block = (NANDCommandBlock*)arg;
-
-    if (result == IPC_RESULT_OK) {
-        BOOL enabled = OSDisableInterrupts();
-        strcpy(s_currentDir, block->path);
-        OSRestoreInterrupts(enabled);
-    }
-
-    block->callback(nandConvertErrorCode(result), block);
 }
 
 /**

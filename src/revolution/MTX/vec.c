@@ -1,51 +1,5 @@
 #include <revolution/MTX.h>
 
-asm void PSVECAdd(register const Vec* a, register const Vec* b,
-                  register Vec* sum) {
-    // clang-format off
-    nofralloc
-
-    // Sum X,Y components
-    psq_l  f2, Vec.x(a), 0, 0
-    psq_l  f4, Vec.x(b), 0, 0
-    ps_add f6, f2, f4
-
-    // Store result
-    psq_st f6, Vec.x(sum), 0, 0
-
-    // Sum Z component
-    psq_l  f3, Vec.z(a), 1, 0
-    psq_l  f5, Vec.z(b), 1, 0
-    ps_add f7, f3, f5
-
-    // Store result
-    psq_st f7, Vec.z(sum), 1, 0
-
-    blr
-    // clang-format on
-}
-
-void PSVECScale(register const Vec* in, register Vec* out, register f32 scale) {
-    register f32 xy, z;
-    register f32 sxy, sz;
-
-    // clang-format off
-    asm {
-        // Load components
-        psq_l xy, Vec.x(in), 0, 0
-        psq_l z,  Vec.z(in), 1, 0
-
-        // Scale components
-        ps_muls0 sxy, xy, scale
-        ps_muls0 sz,  z,  scale
-
-        // Store result
-        psq_st sxy, Vec.x(out), 0, 0
-        psq_st sz,  Vec.z(out), 1, 0
-    }
-    // clang-format on
-}
-
 void PSVECNormalize(register const Vec* in, register Vec* out) {
     register f32 c_half, c_three;
     register f32 xy, z;
@@ -196,29 +150,6 @@ asm void PSVECCrossProduct(register const Vec* a, register const Vec* b,
 
     blr
     // clang-format on
-}
-
-void C_VECHalfAngle(register const Vec* a, register const Vec* b,
-                    register Vec* half) {
-    Vec na, nb, ns;
-
-    na.x = -a->x;
-    na.y = -a->y;
-    na.z = -a->z;
-
-    nb.x = -b->x;
-    nb.y = -b->y;
-    nb.z = -b->z;
-
-    PSVECNormalize(&na, &na);
-    PSVECNormalize(&nb, &nb);
-    PSVECAdd(&na, &nb, &ns);
-
-    if (PSVECDotProduct(&ns, &ns) > 0.0f) {
-        PSVECNormalize(&ns, half);
-    } else {
-        *half = ns;
-    }
 }
 
 f32 PSVECSquareDistance(register const Vec* a, register const Vec* b) {

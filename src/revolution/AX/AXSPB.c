@@ -9,7 +9,7 @@ static s32 __AXSpbABL, __AXSpbABR, __AXSpbABS;
 static s32 __AXSpbACL, __AXSpbACR, __AXSpbACS;
 static s32 __AXSpbMain0, __AXSpbMain1, __AXSpbMain2, __AXSpbMain3;
 static s32 __AXSpbAux0, __AXSpbAux1, __AXSpbAux2, __AXSpbAux3;
-static AXSTUDIO __AXStudio ALIGN(32);
+AXSTUDIO __AXStudio ALIGN(32);
 
 void __AXDepopFadeMain(s32* all, s32* value, s16* depop) {
     if (*all / AX_SAMPLES_PER_FRAME != 0) {
@@ -114,6 +114,8 @@ void __AXSPBInit(void) {
 }
 
 
+void fn_80032778(void) {}
+
 void __AXDepopVoice(AXPB* pb) {
     __AXSpbAL += pb->dpop.aL;
     __AXSpbAAL += pb->dpop.aAuxAL;
@@ -140,5 +142,3 @@ void __AXDepopVoice(AXPB* pb) {
     __AXSpbAux2 += pb->rmtDpop.aAux2;
     __AXSpbAux3 += pb->rmtDpop.aAux3;
 }
-
-void fn_80032778(void) {}

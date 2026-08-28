@@ -33,7 +33,7 @@ BOOL __OSInNandBoot;
 BOOL __OSInIPL;
 
 const char* __OSVersion =
-    "<< RVL_SDK - OS \trelease build: Apr 24 2007 11:50:47 (0x4199_60831) >>";
+    "<< RVL_SDK - OS \trelease build: Sep 21 2006 14:32:13 (0x4200_60422) >>";
 
 static void OSExceptionInit(void);
 
@@ -46,8 +46,6 @@ void __OSEVStart(void);
 void __DBVECTOR(void);
 void __OSEVSetNumber(void);
 void __OSEVEnd(void);
-
-DECOMP_FORCEACTIVE(OS_c, __OSRebootParams);
 
 asm void __OSFPRInit(void) {
     // clang-format off
@@ -141,7 +139,7 @@ static void DisableWriteGatherPipe(void) {
     PPCMthid2(PPCMfhid2() & ~HID2_WPE);
 }
 
-u32 __OSGetHollywoodRev(void) {
+static inline u32 __OSGetHollywoodRev(void) {
     return *(u32*)OSPhysicalToCached(OS_PHYS_HOLLYWOOD_REV);
 }
 
@@ -337,14 +335,14 @@ static void InquiryCallback(s32 result, DVDCommandBlock* block) {
     }
 }
 
-static void ReportOSInfo(void) {
+void ReportOSInfo_8004AA40(void) {
     OSConsoleType type;
     OSIOSRev rev;
     u32 category;
     u32 tdev;
 
     OSReport("\nRevolution OS\n");
-    OSReport("Kernel built : %s %s\n", "Apr 24 2007", "11:50:47");
+    OSReport("Kernel built : %s %s\n", "Sep 21 2006", "14:32:13");
 
     OSReport("Console Type : ");
     type = OSGetConsoleType();
@@ -548,7 +546,7 @@ void OSInit(void) {
             __OSInitMemoryProtection();
         }
 
-        ReportOSInfo();
+        ReportOSInfo_8004AA40();
         OSRegisterVersion(__OSVersion);
 
         // Check for debugger just like earlier
@@ -574,7 +572,7 @@ void OSInit(void) {
             switch (*(u8*)OSPhysicalToCached(OS_PHYS_BOOT_PROGRAM_TARGET)) {
             case 0x81:
                 // clang-format off
-#line 1102
+#line 1100
                 OSReport("OS ERROR: boot program is not for RVL target. Please use "
                          "correct boot program.\n");
                 OS_ERROR("Failed to run app");
@@ -587,7 +585,7 @@ void OSInit(void) {
             switch (*(u8*)OSPhysicalToCached(OS_PHYS_APPLOADER_TARGET)) {
             case 0x81:
                 // clang-format off
-#line 1120
+#line 1118
                 OSReport("OS ERROR: apploader[D].img is not for RVL target. Please use "
                          "correct apploader[D].img.\n");
                 OS_ERROR("Failed to run app");
@@ -657,12 +655,12 @@ static void OSExceptionInit(void) {
 
             if (__DBIsExceptionMarked(i)) {
                 DBPrintf(">>> OSINIT: exception %d vectored to debugger\n", i);
-                memcpy(__DBVECTOR, __OSDBINTEND,
-                       (u32)__OSDBJUMPEND - (u32)__OSDBINTEND);
+                memcpy(__DBVECTOR, __OSDBJUMPSTART,
+                       (u32)__OSDBJUMPEND - (u32)__OSDBJUMPSTART);
             } else {
                 code = (u32*)__DBVECTOR;
                 for (j = 0;
-                     j < (u32)__OSDBJUMPEND - (u32)__OSDBINTEND;
+                     j < (u32)__OSDBJUMPEND - (u32)__OSDBJUMPSTART;
                      j += sizeof(u32), code++) {
                     // Write nop
                     *code = 0x60000000;

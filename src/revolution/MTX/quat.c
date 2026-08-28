@@ -1,64 +1,29 @@
 #include <revolution/MTX.h>
 
-/**
- * This translation unit contains a single SDK function (as linked into the
- * DOL at 0x8004A204). Despite its symbol-map name, the body computes the
- * Euclidean distance between two quaternions' xyz triples:
- *
- *   d2 = dx*dx + dy*dy + dz*dz
- *   if (d2 == 0.0f) return d2;
- *   rs = __frsqrte(d2);                       // initial estimate
- *   rs = (3.0f - d2 * rs * rs) * rs * 0.5f;   // Newton-Raphson refine
- *   return d2 * rs;                           // == sqrt(d2)
- *
- * The other PSQUAT/C_QUAT functions from the standard SDK source were
- * dead-stripped by the original link.
- */
-
-DECOMP_FORCELITERAL(quat_c, 0.5f, 3.0f);
-
-void PSQUATMultiply(register const Quaternion* a, register const Quaternion* b,
-                    register Quaternion* prod) {
-    register f32 ayz, ayzB, dyz, axyA, axyB, dxy, dot;
-    register f32 c_half, c_three, zero, rs, rs2, nr, res;
-
+asm void PSQUATMultiply(register const Quaternion* a, register const Quaternion* b,
+                        register Quaternion* prod) {
     // clang-format off
-    asm {
-        psq_l   ayz,  Quaternion.y(a), 0, 0
-        psq_l   ayzB, Quaternion.y(b), 0, 0
-    }
-
-    // lfs f3, lbl_80560C68@sda21(r0)
-    c_half = 0.5f;
-
-    asm {
-        ps_sub  dyz,  ayz,  ayzB
-        psq_l   axyA, Quaternion.x(a), 0, 0
-        psq_l   axyB, Quaternion.x(b), 0, 0
-        fsubs   zero, c_half, c_half
-        ps_mul  dyz,  dyz,  dyz
-        ps_sub  dxy,  axyA, axyB
-        ps_madd dot,  dxy,  dxy, dyz
-        ps_sum0 dot,  dot,  dyz, dyz
-        fcmpu   cr0,  zero, dot
-        beqlr
-        frsqrte rs,   dot
-    }
-
-    // lfs f4, lbl_80560C6C@sda21(r0)
-    c_three = 3.0f;
-
-    asm {
-        fmuls   rs2, rs,   rs
-        fmuls   rs,  rs,   c_half
-        fnmsubs rs2, rs2,  dot, c_three
-        fmuls   nr,  rs2,  rs
-        fmuls   res, dot,  nr
-    }
+    nofralloc
+    psq_l f0, 4(r3), 0, 0
+    psq_l f1, 4(r4), 0, 0
+    lfs f3, 0.5f
+    ps_sub f2, f0, f1
+    psq_l f0, 0(r3), 0, 0
+    psq_l f1, 0(r4), 0, 0
+    fsubs f4, f3, f3
+    ps_mul f2, f2, f2
+    ps_sub f0, f0, f1
+    ps_madd f1, f0, f0, f2
+    ps_sum0 f1, f1, f2, f2
+    fcmpu cr0, f4, f1
+    beqlr
+    frsqrte f0, f1
+    lfs f4, 3.0f
+    fmuls f2, f0, f0
+    fmuls f0, f0, f3
+    fnmsubs f2, f2, f1, f4
+    fmuls f0, f2, f0
+    fmuls f1, f1, f0
+    blr
     // clang-format on
-
-    // Silence "unused" warnings for the result registers; the compiler
-    // discards these without emitting code.
-    (void)res;
-    (void)prod;
 }
