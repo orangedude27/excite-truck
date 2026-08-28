@@ -1,13 +1,31 @@
 Excite Truck
 ============
 
-A work-in-progress decompilation of **Excite Truck** (REXE01) for Nintendo Wii.
+A work-in-progress matching decompilation of **Excite Truck** (REXE01) for Nintendo Wii.
 
 This repository does **not** contain any game assets or assembly whatsoever. An existing copy of the game is required.
 
 Supported versions:
 
-- `REXE01`: Rev 0 (USA)
+- `REXE01`: Rev 0 (USA) — Target DOL SHA-1: `e51685814152f377e5c76a50067d8132e25f672b`
+
+## Progress
+
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ Total Progress: [██████████░░░░░░░░░░░░░░░░░░░░░░░░░░░░░] 10.5% (97/922)   │
+│ SDK Code Match: [█████████████████████████████░░] 99.3% (75,736 / 76,268 B) │
+│ SDK Linked TUs: [████████████████████████████░░] 91.6% (58 / 62 files)      │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+| Metric | Matched / Total | Percentage |
+| :--- | :--- | :--- |
+| **Fully Matched Units** | 97 / 922 units | **10.52%** |
+| **SDK Code (.text)** | 75,736 / 76,268 bytes (457 / 459 functions) | **99.30%** |
+| **SDK Data (.data)** | 55,564 / 90,404 bytes | **61.46%** |
+| **Linked SDK Modules** | 58 / 62 files | **93.55%** |
+| **Named SDK Symbols** | ~1,755 resolved (11,390 placeholders) | **~70% drained** |
 
 ## Dependencies
 
