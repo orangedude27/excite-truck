@@ -1,5 +1,11 @@
 #include <revolution/MTX.h>
 
+// 0.5f / 3.0f live in the shared sdata2 pool (lbl_80560C68 / lbl_80560C6C,
+// owned by an auto data unit). Referencing them as externs keeps vec.o
+// pure-.text, matching the reference TU.
+extern const f32 lbl_80560C68; // 0.5f
+extern const f32 lbl_80560C6C; // 3.0f
+
 void PSVECNormalize(register const Vec* in, register Vec* out) {
     register f32 c_half, c_three;
     register f32 xy, z;
@@ -7,8 +13,8 @@ void PSVECNormalize(register const Vec* in, register Vec* out) {
     register f32 dot;
     register f32 work0, work1, work2;
 
-    c_half = 0.5f;
-    c_three = 3.0f;
+    c_half = lbl_80560C68;
+    c_three = lbl_80560C6C;
 
     // clang-format off
     asm {
@@ -50,7 +56,7 @@ f32 PSVECMag(register const Vec* v) {
     register f32 work0, work1;
     register f32 c_three, c_half, c_zero;
 
-    c_half = 0.5f;
+    c_half = lbl_80560C68;
     // clang-format off
     asm {
         // Load vector components
@@ -75,7 +81,7 @@ f32 PSVECMag(register const Vec* v) {
     // Estimate reciprocal square root
     rsqrt = __frsqrte(dot);
 
-    c_three = 3.0f;
+    c_three = lbl_80560C6C;
     // clang-format off
     asm {
         // Refine estimate using Newton-Raphson method
