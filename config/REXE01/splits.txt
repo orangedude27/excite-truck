@@ -57,6 +57,11 @@ revolution/AI/ai.c:
 	.text       start:0x80030150 end:0x800301FC
 	.sbss       start:0x8055D6A8 end:0x8055D6AC
 
+revolution/AX/AXSPB.c:
+	.text       start:0x800324D0 end:0x800328E8
+	.bss        start:0x80363BE0 end:0x80363C60
+	.sbss       start:0x8055D790 end:0x8055D7E0
+
 revolution/AX/AXVPB.c:
 	.text       start:0x800334C8 end:0x80033538
 

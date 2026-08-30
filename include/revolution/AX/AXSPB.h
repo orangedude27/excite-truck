@@ -66,7 +66,6 @@ typedef struct _AXSTUDIO {
 
     s32 Aux3;
     s16 dAux3;
-    u8 pad[0x80 - 0x78];
 } AXSTUDIO;
 #pragma pack(pop)
 

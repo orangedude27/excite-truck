@@ -17,30 +17,28 @@ typedef enum {
     AX_PBSYNC_MIX = (1 << 4),
     AX_PBSYNC_ITD = (1 << 5),
     AX_PBSYNC_ITD_SHIFT = (1 << 6),
-    AX_PBSYNC_DPOP = (1 << 7),
-    AX_PBSYNC_VE = (1 << 8),
-    AX_PBSYNC_VE_DELTA = (1 << 9),
-    AX_PBSYNC_ADDR = (1 << 10),
-    AX_PBSYNC_LOOP_FLAG = (1 << 11),
-    AX_PBSYNC_LOOP_ADDR = (1 << 12),
-    AX_PBSYNC_END_ADDR = (1 << 13),
-    AX_PBSYNC_CURR_ADDR = (1 << 14),
-    AX_PBSYNC_ADPCM = (1 << 15),
-    AX_PBSYNC_SRC = (1 << 16),
-    AX_PBSYNC_SRC_RATIO = (1 << 17),
-    AX_PBSYNC_ADPCM_LOOP = (1 << 18),
-    AX_PBSYNC_LPF = (1 << 19),
-    AX_PBSYNC_LPF_COEFS = (1 << 20),
-    AX_PBSYNC_BIQUAD = (1 << 21),
-    AX_PBSYNC_BIQUAD_COEFS = (1 << 22),
-    AX_PBSYNC_REMOTE = (1 << 23),
-    AX_PBSYNC_RMT_MIXER_CTRL = (1 << 24),
-    AX_PBSYNC_RMTMIX = (1 << 25),
-    AX_PBSYNC_RMTDPOP = (1 << 26),
-    AX_PBSYNC_RMTSRC = (1 << 27),
-    AX_PBSYNC_RMTIIR = (1 << 28),
-    AX_PBSYNC_RMTIIR_LPF_COEFS = (1 << 29),
-    AX_PBSYNC_RMTIIR_BIQUAD_COEFS = (1 << 30),
+    AX_PBSYNC_ITD_BUFFER = (1 << 7),
+    AX_PBSYNC_DPOP = (1 << 8),
+    AX_PBSYNC_VE = (1 << 9),
+    AX_PBSYNC_VE_DELTA = (1 << 10),
+    AX_PBSYNC_ADDR = (1 << 11),
+    AX_PBSYNC_LOOP_FLAG = (1 << 12),
+    AX_PBSYNC_LOOP_ADDR = (1 << 13),
+    AX_PBSYNC_END_ADDR = (1 << 14),
+    AX_PBSYNC_CURR_ADDR = (1 << 15),
+    AX_PBSYNC_ADPCM = (1 << 16),
+    AX_PBSYNC_SRC = (1 << 17),
+    AX_PBSYNC_SRC_RATIO = (1 << 18),
+    AX_PBSYNC_ADPCM_LOOP = (1 << 19),
+    AX_PBSYNC_LPF = (1 << 20),
+    AX_PBSYNC_LPF_COEFS = (1 << 21),
+    AX_PBSYNC_BIQUAD = (1 << 22),
+    AX_PBSYNC_BIQUAD_COEFS = (1 << 23),
+    AX_PBSYNC_REMOTE = (1 << 24),
+    AX_PBSYNC_RMT_MIXER_CTRL = (1 << 25),
+    AX_PBSYNC_RMTMIX = (1 << 26),
+    AX_PBSYNC_RMTDPOP = (1 << 27),
+    AX_PBSYNC_RMTSRC = (1 << 28),
     AX_PBSYNC_ALL = (1 << 31),
 };
 
@@ -48,16 +46,20 @@ typedef void (*AXVoiceCallback)(void* vpb);
 
 typedef struct _AXVPB {
     void* next;               // at 0x0
-    void* prev;               // at 0x4
-    void* next1;              // at 0x8
+    void* next1;              // at 0x4
+    void* prev;               // at 0x8
     u32 priority;             // at 0xC
     AXVoiceCallback callback; // at 0x10
     u32 userContext;          // at 0x14
     u32 index;                // at 0x18
     u32 sync;                 // at 0x1C
     u32 depop;                // at 0x20
-    void* itdBuffer;          // at 0x24
-    u8 pad24[0x138 - 0x28];   // at 0x28..0x138 (REXE01-unique region)
+    u32 unk24;                // at 0x24
+    u32 auxDataWords;         // at 0x28
+    u32 unk2C;                // at 0x2C
+    void* auxData;            // at 0x30 (normally points to auxDataBuffer)
+    u8 auxDataBuffer[0x100];  // at 0x34
+    void* itdBuffer;          // at 0x134
     // REXE01: pb begins at 0x138 (ogws 0x28). AXPB.state at +0x10 -> 0x148.
     AXPB pb;                  // at 0x138
 } AXVPB;

@@ -131,6 +131,8 @@ typedef struct _AXPBITD {
     u16 shiftR;       // at 0x8
     u16 targetShiftL; // at 0xA
     u16 targetShiftR; // at 0xC
+    /* REXE01 stores five additional halfwords in the PB ITD block. */
+    u16 reserved[5];  // at 0xE
 } AXPBITD;
 
 typedef struct _AXPBDPOP {
@@ -193,16 +195,14 @@ typedef struct _AXPBLPF {
 } AXPBLPF;
 
 typedef struct _AXPBBIQUAD {
-    u16 on;  // at 0x0
-    u16 xn1; // at 0x2
-    u16 xn2; // at 0x4
-    u16 yn1; // at 0x6
-    u16 yn2; // at 0x8
-    u16 b0;  // at 0xA
-    u16 b1;  // at 0xC
-    u16 b2;  // at 0xE
-    u16 a1;  // at 0x10
-    u16 a2;  // at 0x12
+    /*
+     * REXE01's main PB biquad state is eight bytes. The old SDK layout
+     * incorrectly modeled the larger 0x14-byte revision here; callers that
+     * need the individual filter-state names must be reconstructed from the
+     * REXE01 DSP protocol before those aliases are relied on.
+     */
+    u16 on;       // at 0x0
+    u16 state[3]; // at 0x2
 } AXPBBIQUAD;
 
 typedef struct _AXPBRMTMIX {
@@ -243,6 +243,7 @@ typedef struct _AXPBRMTSRC {
 typedef union __AXPBRMTIIR {
     AXPBLPF lpf;
     AXPBBIQUAD biquad;
+    u8 raw[0xE];
 } AXPBRMTIIR;
 
 typedef struct _AXPB {
@@ -257,21 +258,20 @@ typedef struct _AXPB {
     u16 type;                  // at 0x12
     AXPBMIX mix;               // at 0x14
     AXPBITD itd;               // at 0x44
-    AXPBDPOP dpop;             // at 0x52
-    AXPBVE ve;                 // at 0x6A
-    AXPBADDR addr;             // at 0x6E
-    AXPBADPCM adpcm;           // at 0x7E
-    AXPBSRC src;               // at 0xA6
-    AXPBADPCMLOOP adpcmLoop;   // at 0xB4
-    AXPBLPF lpf;               // at 0xBA
-    AXPBBIQUAD biquad;         // at 0xC2
-    u16 remote;                // at 0xD6
-    u16 rmtMixerCtrl;          // at 0xD8
-    AXPBRMTMIX rmtMix;         // at 0xDA
-    AXPBRMTDPOP rmtDpop;       // at 0xFA
-    AXPBRMTSRC rmtSrc;         // at 0x10A
-    AXPBRMTIIR rmtIIR;         // at 0x114
-    u8 padding[0x140 - 0x128]; // at 0x128
+    AXPBDPOP dpop;             // at 0x5C
+    AXPBVE ve;                 // at 0x74
+    AXPBADDR addr;             // at 0x78
+    AXPBADPCM adpcm;           // at 0x88
+    AXPBSRC src;               // at 0xB0
+    AXPBADPCMLOOP adpcmLoop;   // at 0xBE
+    AXPBLPF lpf;               // at 0xC4
+    AXPBBIQUAD biquad;         // at 0xCC
+    u16 remote;                // at 0xD4
+    u16 rmtMixerCtrl;          // at 0xD6
+    AXPBRMTMIX rmtMix;         // at 0xD8
+    AXPBRMTDPOP rmtDpop;       // at 0xF8
+    AXPBRMTSRC rmtSrc;         // at 0x108
+    AXPBRMTIIR rmtIIR;         // at 0x112
 } AXPB;
 
 #ifdef __cplusplus

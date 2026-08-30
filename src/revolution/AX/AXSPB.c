@@ -9,7 +9,13 @@ static s32 __AXSpbABL, __AXSpbABR, __AXSpbABS;
 static s32 __AXSpbACL, __AXSpbACR, __AXSpbACS;
 static s32 __AXSpbMain0, __AXSpbMain1, __AXSpbMain2, __AXSpbMain3;
 static s32 __AXSpbAux0, __AXSpbAux1, __AXSpbAux2, __AXSpbAux3;
-AXSTUDIO __AXStudio ALIGN(32);
+typedef union {
+    AXSTUDIO studio;
+    u8 reserve[0x80];
+} AXSTUDIOStorage;
+
+AXSTUDIOStorage lbl_80363BE0 ALIGN(32);
+#define __AXStudio (lbl_80363BE0.studio)
 
 void __AXDepopFadeMain(s32* all, s32* value, s16* depop) {
     if (*all / AX_SAMPLES_PER_FRAME != 0) {
