@@ -223,6 +223,9 @@ revolution/OS/__ppc_eabi_init.c:
 	.text       start:0x800560B0 end:0x80056118
 	.text       start:0x80056118 end:0x80056164
 
+revolution/SI/SIBios.c:
+	.text       start:0x80057770 end:0x80058810
+
 revolution/SI/SISamplingRate.c:
 	.text       start:0x80058920 end:0x80058A00
 	.data       start:0x80311658 end:0x803116F0
