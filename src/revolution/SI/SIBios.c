@@ -496,3 +496,17 @@ u32 SIGetType(s32 chan) {
     OSRestoreInterrupts(enabled);
     return type;
 }
+
+u32 SIEnablePolling(u32 chan) {
+    BOOL enabled;
+
+    if (chan == 0) {
+        return Si.poll;
+    }
+    enabled = OSDisableInterrupts();
+    Si.poll = (Si.poll & 0x0F000000) | (chan & 0xF0FFFFFF);
+    *(volatile u32*)0xCD006438 = 0x80000000;
+    *(volatile u32*)0xCD006430 = Si.poll;
+    OSRestoreInterrupts(enabled);
+    return Si.poll;
+}
