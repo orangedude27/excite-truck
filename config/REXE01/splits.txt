@@ -236,6 +236,9 @@ revolution/SI/SISamplingRate.c:
 	.data       start:0x80311658 end:0x803116F0
 	.sbss       start:0x8055DB30 end:0x8055DB38
 
+revolution/VI/vi.c:
+	.text       start:0x8005933C end:0x8005D0DC
+
 revolution/IPC/ipcMain.c:
 	.text       start:0x8009D274 end:0x8009D2F8
 	.sbss       start:0x8055DCA8 end:0x8055DCC0
