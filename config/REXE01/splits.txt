@@ -108,6 +108,9 @@ revolution/MTX/mtx44.c:
 revolution/MTX/vec.c:
 	.text       start:0x8004A0F8 end:0x8004A204
 
+revolution/MTX/quat.c:
+	.text       start:0x8004A204 end:0x8004A258
+
 revolution/OS/OSAlarm.c:
 	.text       start:0x8004B554 end:0x8004BD38
 	.sbss       start:0x8055DA08 end:0x8055DA10
