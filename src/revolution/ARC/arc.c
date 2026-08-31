@@ -314,7 +314,7 @@ u32 ARCGetLength(ARCFileInfo* info) {
 BOOL ARCClose(ARCFileInfo* info) {
 #pragma unused(info)
 
-    return TRUE;
+    return FALSE;
 }
 
 BOOL ARCChangeDir(ARCHandle* handle, const char* path) {

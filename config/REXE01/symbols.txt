@@ -1994,6 +1994,7 @@ fn_8006022C = .text:0x8006022C; // type:function size:0xB0
 WPADProbe = .text:0x800602DC; // type:function size:0x8C
 WPADSetSamplingCallback = .text:0x80060368; // type:function size:0x68
 WPADSetSamplingCallback_800603D0 = .text:0x800603D0; // type:function size:0x68
+WPADSetExtensionCallback = .text:0x800603D0; // type:label scope:global
 WPADSetDataFormat = .text:0x80060438; // type:function size:0xB0
 fn_800604E8 = .text:0x800604E8; // type:function size:0x19C
 WPADControlMotor = .text:0x80060684; // type:function size:0xCC

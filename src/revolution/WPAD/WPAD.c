@@ -2706,7 +2706,7 @@ extern WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
 // Global flags
 extern u8 lbl_8055DC05;
 extern void* lbl_8055DC14;
-extern u8 lbl_80393058;
+extern u8 lbl_80393058[0x468];
 extern OSAlarm lbl_8038F4C0;
 extern u8 lbl_8055DC19;
 
@@ -2730,7 +2730,7 @@ void fn_8005D0DC(s32 chan, s32 mode) {
     if (lbl_8055DC05 == 0) {
         lbl_8055DC05 = 1;
         WUDSetVisibility(0, 0);
-        memset(&lbl_80393058 + 0x2bd, 0, 0x46 * 4);
+        memset(lbl_80393058 + 0x2bd, 0, 0x46 * 4);
         OSCancelAlarm(&lbl_8038F4C0);
         fn_8006ADC4(NULL);
         fn_8006A81C();
@@ -2743,7 +2743,7 @@ void fn_8005EB44(void) {
     if (lbl_8055DC05 == 0) {
         lbl_8055DC05 = 1;
         WUDSetVisibility(0, 0);
-        memset(&lbl_80393058 + 0x2bd, 0, 0x46 * 4);
+        memset(lbl_80393058 + 0x2bd, 0, 0x46 * 4);
         OSCancelAlarm(&lbl_8038F4C0);
         fn_8006ADC4(NULL);
         fn_8006A81C();
@@ -2756,7 +2756,7 @@ void fn_8005ED8C(void) {
     if (lbl_8055DC05 == 0) {
         lbl_8055DC05 = 1;
         WUDSetVisibility(0, 0);
-        memset(&lbl_80393058 + 0x2bd, 0, 0x46 * 4);
+        memset(lbl_80393058 + 0x2bd, 0, 0x46 * 4);
         OSCancelAlarm(&lbl_8038F4C0);
         fn_8006ADC4(NULL);
         fn_8006A81C();
@@ -2915,13 +2915,11 @@ void fn_80067ECC(s32 chan, void* data) { /* stub */ }
 // fn_800684CC: WPAD data processing
 void fn_800684CC(void) { /* stub */ }
 
-// WPADSetSamplingCallback_800603D0: second sampling callback
-void WPADSetSamplingCallback_800603D0(s32 chan, WPADSamplingCallback callback) {
-    WPADSetSamplingCallback(chan, callback);
-}
-
 // WUD function stubs
-u32 WUDGetBufferStatus(void) { return 0; }
-u32 _WUDGetNotAckedSize(void) { return 0; }
-u32 _WUDGetLinkNumber(void) { return 0; }
+u8 WUDGetBufferStatus(void) { return 0; }
+u16 _WUDGetNotAckedSize(s8 handle) {
+#pragma unused(handle)
+    return 0;
+}
+u8 _WUDGetLinkNumber(void) { return 0; }
 u32 __a1_22_ack(void) { return 0; }

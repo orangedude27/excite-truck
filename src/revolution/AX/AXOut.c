@@ -161,7 +161,7 @@ void __AXOutAiCallback(void) {
 static void __AXDSPInitCallback(DSPTask* task) {
 #pragma unused(task)
 
-    __AXDSPInitFlag = TRUE;
+    __AXDSPInitFlag = FALSE;
 }
 
 static void __AXDSPResumeCallback(DSPTask* task) {

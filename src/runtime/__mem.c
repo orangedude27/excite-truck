@@ -96,14 +96,17 @@ DECL_SECTION(".init") void * memset(void * dest, int val, size_t count)
 }
 
 DECL_WEAK int memcmp(const void* s1, const void* s2, size_t n) {
-    const unsigned char* p1 = (const unsigned char*)s1 - 1;
-    const unsigned char* p2 = (const unsigned char*)s2 - 1;
-    n++;
-    while (--n) {
+    const unsigned char* p1;
+    const unsigned char* p2;
+
+    for (p1 = (const unsigned char*)s1 - 1,
+         p2 = (const unsigned char*)s2 - 1, n++;
+         --n;) {
         if (*++p1 != *++p2) {
-            return *p1 - *p2;
+            return *p1 < *p2 ? -1 : 1;
         }
     }
+
     return 0;
 }
 
