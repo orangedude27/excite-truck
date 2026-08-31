@@ -889,3 +889,4 @@ u8 OSGetAppType(void) {
 
     return *(u8*)OSPhysicalToCached(OS_PHYS_CURRENT_APP_TYPE);
 }
+
