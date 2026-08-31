@@ -242,6 +242,9 @@ revolution/SI/SISamplingRate.c:
 revolution/VI/vi.c:
 	.text       start:0x80058A00 end:0x8005D0DC
 
+revolution/WPAD/WPAD.c:
+	.text       start:0x8005D0DC end:0x80068D68
+
 revolution/IPC/ipcMain.c:
 	.text       start:0x8009D274 end:0x8009D2F8
 	.sbss       start:0x8055DCA8 end:0x8055DCC0
