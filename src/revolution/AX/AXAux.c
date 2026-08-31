@@ -270,29 +270,13 @@ void __AXProcessAux(void) {
 }
 
 void AXRegisterAuxACallback(AXAuxCallback callback, void* context) {
-    BOOL enabled = OSDisableInterrupts();
-
     __AXCallbackAuxA = callback;
     __AXContextAuxA = context;
-
-    if (callback == NULL) {
-        memset(&__clearAuxA, TRUE, AX_STEREO_MAX);
-    }
-
-    OSRestoreInterrupts(enabled);
 }
 
 void AXRegisterAuxBCallback(AXAuxCallback callback, void* context) {
-    BOOL enabled = OSDisableInterrupts();
-
     __AXCallbackAuxB = callback;
     __AXContextAuxB = context;
-
-    if (callback == NULL) {
-        memset(&__clearAuxB, TRUE, AX_STEREO_MAX);
-    }
-
-    OSRestoreInterrupts(enabled);
 }
 
 void AXRegisterAuxCCallback(AXAuxCallback callback, void* context) {
