@@ -2690,6 +2690,7 @@ void WPADRecalibrate(s32 chan) {
 // WUD internal functions referenced by WPAD
 extern void fn_8006A7D0(void);
 extern void fn_8006A940(void);
+extern void fn_8006AC4C(void);
 
 // fn_8005EE78: tail call wrapper
 void fn_8005EE78(void) { fn_8006A7D0(); }
@@ -2700,4 +2701,50 @@ void fn_8005EE7C(void) { fn_8006A940(); }
 // fn_80062458: reads a global flag
 u8 fn_80062458(void) {
     return *(u8*)0x8055DC19;
+}
+
+// Internal WPAD functions - stubs for link resolution
+// These are in the carved auto-block but not in the source
+void fn_8005EB44(void) { /* stub */ }
+BOOL fn_8005ED8C(void) { return FALSE; }
+BOOL fn_8005EE20(void) { return FALSE; }
+void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
+void fn_8005EE70(void) { fn_8006AC4C(); }
+void fn_8005EE74(void) { WUDSetSyncSimpleCallback(NULL); }
+void fn_8005EE80(void) { /* stub */ }
+void fn_8006022C(void) { /* stub */ }
+void fn_800604E8(void) { /* stub */ }
+void fn_80060750(void) { /* stub */ }
+void fn_80060784(void) { /* stub */ }
+void fn_800609E0(void) { /* stub */ }
+void fn_80060C7C(void) { /* stub */ }
+void fn_80060CC0(void) { /* stub */ }
+void fn_80062054(void) { /* stub */ }
+void fn_80062088(void) { /* stub */ }
+BOOL fn_80062278(void) { return FALSE; }
+void fn_80062460(void) { /* stub */ }
+void fn_800624A4(void) { /* stub */ }
+void fn_80063564(void) { /* stub */ }
+void fn_80064B1C(void) { /* stub */ }
+void fn_80064F64(void) { /* stub */ }
+void fn_80065524(void) { /* stub */ }
+void fn_800656E8(void) { /* stub */ }
+BOOL fn_80065934(void) { return FALSE; }
+void fn_800660E8(void) { /* stub */ }
+void fn_80066630(void) { /* stub */ }
+void fn_80066634(void) { /* stub */ }
+void fn_80066EAC(void) { /* stub */ }
+void fn_80066EB0(void) { /* stub */ }
+void fn_800678D8(void) { /* stub */ }
+BOOL fn_800678DC(void) { return FALSE; }
+void fn_80067ECC(void) { /* stub */ }
+void fn_800684CC(void) { /* stub */ }
+
+
+// fn_8005D0DC: first function in the block (WUD initialization helper)
+void fn_8005D0DC(void) { /* stub */ }
+
+// WPADSetSamplingCallback_800603D0: second sampling callback
+void WPADSetSamplingCallback_800603D0(s32 chan, WPADSamplingCallback callback) {
+    WPADSetSamplingCallback(callback);
 }
