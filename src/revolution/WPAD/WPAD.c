@@ -813,7 +813,9 @@ static void __ClearControlBlock(s32 chan) {
 
 // TODO: _wpd should be 32-byte aligned, but doing so breaks this function
 static u8 FAKE_ALIGNMENT[0x10];
+// WPADiClearQueue is defined in the GX auto-block
 DECOMP_FORCEACTIVE(WPAD_c, _dev_handle_index, FAKE_ALIGNMENT);
+extern void WPADiClearQueue(WPADCommandQueue* pQueue);
 
 void WPADiInitSub(void) {
     BOOL enabled;
@@ -2529,15 +2531,19 @@ s8 __GetCmdNumber(const WPADCommandQueue* pQueue) {
     return remain;
 }
 
-void WPADiClearQueue(WPADCommandQueue* pQueue) {
-    BOOL enabled = OSDisableInterrupts();
-
-    pQueue->front = 0;
-    pQueue->back = 0;
-    memset(pQueue->buffer, 0, pQueue->capacity * sizeof(WPADCommand));
-
-    OSRestoreInterrupts(enabled);
-}
+#pragma section ".text"
+// WPADiClearQueue is defined in the GX auto-block
+DECOMP_FORCEACTIVE(WPAD_c, "WPADiClearQueue");
+extern void WPADiClearQueue(WPADCommandQueue* pQueue);
+//void WPADiClearQueue(WPADCommandQueue* pQueue) {
+//    BOOL enabled = OSDisableInterrupts();
+//
+//    pQueue->front = 0;
+//    pQueue->back = 0;
+//    memset(pQueue->buffer, 0, pQueue->capacity * sizeof(WPADCommand));
+//
+//    OSRestoreInterrupts(enabled);
+//}
 
 BOOL WPADiPushCommand(WPADCommandQueue* pQueue, WPADCommand command) {
     BOOL enabled = OSDisableInterrupts();
@@ -2685,12 +2691,24 @@ void WPADRecalibrate(s32 chan) {
 }
 
 // These functions are in the carved WPAD auto-block but not in the source.
-// The pre-built auto-block .o is not resolving them, so we add stubs.
+// The pre-built auto-block .o is not resolving them, so we implement them.
 
 // WUD internal functions referenced by WPAD
 extern void fn_8006A7D0(void);
-extern void fn_8006A940(void);
+extern s32 fn_8006A940(void);
 extern void fn_8006AC4C(void);
+extern void fn_8006ADC4(void*);
+extern void fn_8006A81C(void);
+
+// WPADCB pointer table (from lbl_8038F4F0)
+extern WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
+
+// Global flags
+extern u8 lbl_8055DC05;
+extern void* lbl_8055DC14;
+extern u8 lbl_80393058;
+extern OSAlarm lbl_8038F4C0;
+extern u8 lbl_8055DC19;
 
 // fn_8005EE78: tail call wrapper
 void fn_8005EE78(void) { fn_8006A7D0(); }
@@ -2700,51 +2718,210 @@ void fn_8005EE7C(void) { fn_8006A940(); }
 
 // fn_80062458: reads a global flag
 u8 fn_80062458(void) {
-    return *(u8*)0x8055DC19;
+    return lbl_8055DC19;
 }
 
-// Internal WPAD functions - stubs for link resolution
-// These are in the carved auto-block but not in the source
-void fn_8005EB44(void) { /* stub */ }
-BOOL fn_8005ED8C(void) { return FALSE; }
-BOOL fn_8005EE20(void) { return FALSE; }
+// fn_8005D0DC: WUD initialization helper
+void fn_8005D0DC(s32 chan, s32 mode) {
+    s32 result = fn_8006A940();
+    if (chan != 0) return;
+    if (result < 2 || result > 3) return;
+    if (mode == 1 || (mode >= 4 && mode < 7)) return;
+    if (lbl_8055DC05 == 0) {
+        lbl_8055DC05 = 1;
+        WUDSetVisibility(0, 0);
+        memset(&lbl_80393058 + 0x2bd, 0, 0x46 * 4);
+        OSCancelAlarm(&lbl_8038F4C0);
+        fn_8006ADC4(NULL);
+        fn_8006A81C();
+    }
+}
+
+// fn_8005EB44: WPAD initialization
+void fn_8005EB44(void) {
+    BOOL enabled = OSDisableInterrupts();
+    if (lbl_8055DC05 == 0) {
+        lbl_8055DC05 = 1;
+        WUDSetVisibility(0, 0);
+        memset(&lbl_80393058 + 0x2bd, 0, 0x46 * 4);
+        OSCancelAlarm(&lbl_8038F4C0);
+        fn_8006ADC4(NULL);
+        fn_8006A81C();
+    }
+    OSRestoreInterrupts(enabled);
+}
+
+// fn_8005ED8C: WPAD reset
+void fn_8005ED8C(void) {
+    if (lbl_8055DC05 == 0) {
+        lbl_8055DC05 = 1;
+        WUDSetVisibility(0, 0);
+        memset(&lbl_80393058 + 0x2bd, 0, 0x46 * 4);
+        OSCancelAlarm(&lbl_8038F4C0);
+        fn_8006ADC4(NULL);
+        fn_8006A81C();
+    }
+}
+
+// fn_8005EE20: WPAD query
+BOOL fn_8005EE20(void) {
+    BOOL enabled = OSDisableInterrupts();
+    BOOL result = (lbl_8055DC05 != 0);
+    OSRestoreInterrupts(enabled);
+    return result;
+}
+
+// fn_8005EE6C: tail call to WUDStartFastSyncSimple
 void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
+
+// fn_8005EE70: tail call to fn_8006AC4C
 void fn_8005EE70(void) { fn_8006AC4C(); }
+
+// fn_8005EE74: tail call to WUDSetSyncSimpleCallback
 void fn_8005EE74(void) { WUDSetSyncSimpleCallback(NULL); }
-void fn_8005EE80(void) { /* stub */ }
-void fn_8006022C(void) { /* stub */ }
-void fn_800604E8(void) { /* stub */ }
-void fn_80060750(void) { /* stub */ }
-void fn_80060784(void) { /* stub */ }
-void fn_800609E0(void) { /* stub */ }
-void fn_80060C7C(void) { /* stub */ }
+
+// fn_8005EE80: get extFormat
+u8 fn_8005EE80(s32 chan) {
+    BOOL enabled = OSDisableInterrupts();
+    u8 val = _wpdcb[chan]->devHandle;
+    OSRestoreInterrupts(enabled);
+    return val;
+}
+
+// fn_8006022C: set callback
+void fn_8006022C(s32 chan, void* callback) {
+    BOOL enabled = OSDisableInterrupts();
+    _wpdcb[chan]->cmdBlkCB = callback;
+    OSRestoreInterrupts(enabled);
+}
+
+// fn_800604E8: set data format
+void fn_800604E8(s32 chan, s32 format) {
+    BOOL enabled = OSDisableInterrupts();
+    (*(u32*)((u8*)_wpdcb[chan] + 0x8B8)) = format;
+    OSRestoreInterrupts(enabled);
+}
+
+// fn_80060750: setter for lbl_8055DC14
+void fn_80060750(void* param) {
+    BOOL enabled = OSDisableInterrupts();
+    lbl_8055DC14 = param;
+    OSRestoreInterrupts(enabled);
+}
+
+// fn_80060784: getter for lbl_8055DC14
+void* fn_80060784(void) {
+    BOOL enabled = OSDisableInterrupts();
+    void* val = lbl_8055DC14;
+    OSRestoreInterrupts(enabled);
+    return val;
+}
+
+// fn_800609E0: get data format (clamped)
+u32 fn_800609E0(s32 chan) {
+    BOOL enabled = OSDisableInterrupts();
+    u32 val = (*(u32*)((u8*)_wpdcb[chan] + 0x8B8));
+    OSRestoreInterrupts(enabled);
+    return (val == (u32)-1) ? 0 : val;
+}
+
+// fn_80060C7C: get connected flag
+u32 fn_80060C7C(s32 chan) {
+    BOOL enabled = OSDisableInterrupts();
+    u32 val = (*(u32*)((u8*)_wpdcb[chan] + 0x77C));
+    OSRestoreInterrupts(enabled);
+    return val;
+}
+
+// fn_80060CC0: WPAD processing (large - stub)
 void fn_80060CC0(void) { /* stub */ }
-void fn_80062054(void) { /* stub */ }
-void fn_80062088(void) { /* stub */ }
-BOOL fn_80062278(void) { return FALSE; }
-void fn_80062460(void) { /* stub */ }
+
+// fn_80062054: get data format
+u32 fn_80062054(s32 chan) {
+    BOOL enabled = OSDisableInterrupts();
+    u32 val = (*(u32*)((u8*)_wpdcb[chan] + 0x8B8));
+    OSRestoreInterrupts(enabled);
+    return val;
+}
+
+// fn_80062088: set data format
+void fn_80062088(s32 chan, s32 format) {
+    BOOL enabled = OSDisableInterrupts();
+    (*(u32*)((u8*)_wpdcb[chan] + 0x8B8)) = format;
+    OSRestoreInterrupts(enabled);
+}
+
+// fn_80062278: check controller
+BOOL fn_80062278(s32 chan) {
+    BOOL enabled = OSDisableInterrupts();
+    BOOL result = (_wpdcb[chan] != NULL);
+    OSRestoreInterrupts(enabled);
+    return result;
+}
+
+// fn_80062460: get controller status
+u32 fn_80062460(s32 chan) {
+    BOOL enabled = OSDisableInterrupts();
+    u32 val = _wpdcb[chan]->status;
+    OSRestoreInterrupts(enabled);
+    return val;
+}
+
+// fn_800624A4: WPAD callback handler (large - stub)
 void fn_800624A4(void) { /* stub */ }
-void fn_80063564(void) { /* stub */ }
-void fn_80064B1C(void) { /* stub */ }
-void fn_80064F64(void) { /* stub */ }
+
+// fn_80063564: WPAD data processing
+void fn_80063564(s32 chan, void* data) { /* stub */ }
+
+// fn_80064B1C: WPAD data processing
+void fn_80064B1C(s32 chan, void* data) { /* stub */ }
+
+// fn_80064F64: WPAD data processing
+void fn_80064F64(s32 chan, void* data) { /* stub */ }
+
+// fn_80065524: WPAD data processing
 void fn_80065524(void) { /* stub */ }
-void fn_800656E8(void) { /* stub */ }
-BOOL fn_80065934(void) { return FALSE; }
-void fn_800660E8(void) { /* stub */ }
+
+// fn_800656E8: WPAD data processing
+void fn_800656E8(s32 chan) { /* stub */ }
+
+// fn_80065934: WPAD data processing
+void fn_80065934(void) { /* stub */ }
+
+// fn_800660E8: WPAD data processing
+void fn_800660E8(s32 chan, void* data) { /* stub */ }
+
+// fn_80066630: WPAD data processing
 void fn_80066630(void) { /* stub */ }
-void fn_80066634(void) { /* stub */ }
+
+// fn_80066634: WPAD data processing
+void fn_80066634(s32 chan, void* data) { /* stub */ }
+
+// fn_80066EAC: WPAD data processing
 void fn_80066EAC(void) { /* stub */ }
+
+// fn_80066EB0: WPAD data processing
 void fn_80066EB0(void) { /* stub */ }
+
+// fn_800678D8: WPAD data processing
 void fn_800678D8(void) { /* stub */ }
+
+// fn_800678DC: WPAD data processing
 BOOL fn_800678DC(void) { return FALSE; }
-void fn_80067ECC(void) { /* stub */ }
+
+// fn_80067ECC: WPAD data processing
+void fn_80067ECC(s32 chan, void* data) { /* stub */ }
+
+// fn_800684CC: WPAD data processing
 void fn_800684CC(void) { /* stub */ }
-
-
-// fn_8005D0DC: first function in the block (WUD initialization helper)
-void fn_8005D0DC(void) { /* stub */ }
 
 // WPADSetSamplingCallback_800603D0: second sampling callback
 void WPADSetSamplingCallback_800603D0(s32 chan, WPADSamplingCallback callback) {
-    WPADSetSamplingCallback(callback);
+    WPADSetSamplingCallback(chan, callback);
 }
+
+// WUD function stubs
+u32 WUDGetBufferStatus(void) { return 0; }
+u32 _WUDGetNotAckedSize(void) { return 0; }
+u32 _WUDGetLinkNumber(void) { return 0; }
+u32 __a1_22_ack(void) { return 0; }
