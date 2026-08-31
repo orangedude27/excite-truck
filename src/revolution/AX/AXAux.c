@@ -280,16 +280,8 @@ void AXRegisterAuxBCallback(AXAuxCallback callback, void* context) {
 }
 
 void AXRegisterAuxCCallback(AXAuxCallback callback, void* context) {
-    BOOL enabled = OSDisableInterrupts();
-
     __AXCallbackAuxC = callback;
     __AXContextAuxC = context;
-
-    if (callback == NULL) {
-        memset(&__clearAuxC, TRUE, AX_STEREO_MAX);
-    }
-
-    OSRestoreInterrupts(enabled);
 }
 
 void AXGetAuxACallback(AXAuxCallback* callback, void** context) {
