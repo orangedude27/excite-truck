@@ -1929,7 +1929,7 @@ BOOL DVDCancelAllAsync(DVDCommandCallback callback) {
 }
 
 const DVDDiskID* DVDGetCurrentDiskID(void) {
-    return &((OSBootInfo*)OSPhysicalToCached(OS_PHYS_BOOT_INFO))->diskID;
+    return &((OSBootInfo*)0x4000)->diskID;
 }
 
 static void __BS2DVDLowCallback(u32 intType) {
