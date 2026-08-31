@@ -9,6 +9,11 @@
 
 #include <string.h>
 
+// debug_msg.c is NonMatching, provide stub here
+void DEBUGPrint(const char* pFmt, ...) {
+#pragma unused(pFmt)
+}
+
 #define DPD_CONFIG1_SIZE 9
 #define DPD_CONFIG2_SIZE 2
 #define SPK_CONFIG_SIZE 7
@@ -2677,4 +2682,22 @@ void WPADRecalibrate(s32 chan) {
     p->calibrated = FALSE;
 
     OSRestoreInterrupts(enable);
+}
+
+// These functions are in the carved WPAD auto-block but not in the source.
+// The pre-built auto-block .o is not resolving them, so we add stubs.
+
+// WUD internal functions referenced by WPAD
+extern void fn_8006A7D0(void);
+extern void fn_8006A940(void);
+
+// fn_8005EE78: tail call wrapper
+void fn_8005EE78(void) { fn_8006A7D0(); }
+
+// fn_8005EE7C: tail call wrapper
+void fn_8005EE7C(void) { fn_8006A940(); }
+
+// fn_80062458: reads a global flag
+u8 fn_80062458(void) {
+    return *(u8*)0x8055DC19;
 }
