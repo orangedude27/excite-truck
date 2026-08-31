@@ -530,3 +530,17 @@ static s32 _ES_CloseLib(s32* fd) {
 
     return result;
 }
+
+
+void NANDInitBanner(NANDBanner* banner, u32 flags, const wchar_t* title,
+                    const wchar_t* subtitle) {
+    memset(banner, 0, sizeof(NANDBanner));
+    banner->magic = 0x5749424E;
+    banner->flags = flags;
+    if (title != NULL) {
+        wcsncpy(banner->title, title, 32);
+    }
+    if (subtitle != NULL) {
+        wcsncpy(banner->subtitle, subtitle, 32);
+    }
+}
