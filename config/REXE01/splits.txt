@@ -271,6 +271,9 @@ revolution/NAND/nand.c:
 revolution/NAND/NANDOpenClose.c:
 	.text       start:0x800A10CC end:0x800A146C
 
+revolution/NAND/NANDCore.c:
+	.text       start:0x800A146C end:0x800A27A0
+
 revolution/NAND/NANDCheck.c:
 	.text       start:0x800A27A0 end:0x800A2964
 
