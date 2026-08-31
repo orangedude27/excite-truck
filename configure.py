@@ -380,7 +380,9 @@ config.libs = [
             Object(Matching, "revolution/NdevExi2AD/exi2.c"),
             Object(NonMatching, "revolution/KPAD/KPAD.c"),
             Object(Matching, "revolution/PAD/Pad.c"),
-            Object(Matching, "revolution/WPAD/WPAD.c"),
+            # WPAD.c is reviewable but WPADSetSamplingCallback_800603D0 is fuzzy
+            # (extensionCB offset + DEBUGPrint reloc mismatch); keep reference object linked.
+            Object(NonMatching, "revolution/WPAD/WPAD.c"),
             Object(NonMatching, "revolution/WPAD/WPADHIDParser.c"),
             Object(NonMatching, "revolution/WPAD/WPADEncrypt.c"),
             Object(NonMatching, "revolution/WPAD/WPADMem.c"),
