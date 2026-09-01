@@ -58,6 +58,26 @@ static BOOL SIIsChanBusy(s32 chan) {
     return Packet[chan].chan != SI_CHAN_NONE || Si.chan == chan;
 }
 
+typedef void (*SISamplingCallback)(void);
+
+static SISamplingCallback __SISamplingCallback;
+
+void SamplingHandler(s16 intr, OSContext* ctx) {
+#pragma unused(intr)
+
+    if (__SISamplingCallback != NULL) {
+        OSContext tmpCtx;
+
+        OSClearContext(&tmpCtx);
+        OSSetCurrentContext(&tmpCtx);
+
+        __SISamplingCallback();
+
+        OSClearContext(&tmpCtx);
+        OSSetCurrentContext(ctx);
+    }
+}
+
 static u32 SIGetStatus(s32 chan) {
     BOOL enabled;
     u32 status;
