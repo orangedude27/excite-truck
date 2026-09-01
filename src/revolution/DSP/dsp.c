@@ -1,7 +1,13 @@
 #include <revolution/DSP.h>
 
+static BOOL __DSP_init_flag;
+
 BOOL DSPCheckMailToDSP(void) {
     return (DSP_HW_REGS[DSP_DSPMBOX_H] & DSP_DSPMBOX_H_STATUS) != 0;
+}
+
+BOOL DSPReset(void) {
+    return __DSP_init_flag;
 }
 
 BOOL DSPCheckMailFromDSP(void) {
