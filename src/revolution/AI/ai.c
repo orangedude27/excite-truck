@@ -4,6 +4,20 @@
 
 u32 lbl_8055D6A8;
 
+static AIDMACallback __AID_Callback;
+
+AIDMACallback AIRegisterDMACallback(AIDMACallback callback) {
+    AIDMACallback oldCallback;
+    BOOL enabled;
+
+    oldCallback = __AID_Callback;
+    enabled = OSDisableInterrupts();
+    __AID_Callback = callback;
+    OSRestoreInterrupts(enabled);
+
+    return oldCallback;
+}
+
 void AIInitDMA(void* buffer, u32 length) {
     BOOL enabled;
 
