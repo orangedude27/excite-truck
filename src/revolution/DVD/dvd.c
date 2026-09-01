@@ -1904,17 +1904,6 @@ static void cbForCancelSync(s32 result, DVDCommandBlock* block) {
     OSWakeupThread(&__DVDThreadQueue);
 }
 
-void cbForCancel(void) {
-    Canceling = TRUE;
-    OSWakeupThread(&__DVDThreadQueue);
-}
-
-static volatile BOOL PrepareResetDone = FALSE;
-
-void cbForPrepareReset(void) {
-    PrepareResetDone = TRUE;
-}
-
 BOOL DVDCancelAllAsync(DVDCommandCallback callback) {
     BOOL success;
     DVDCommandBlock* block;
