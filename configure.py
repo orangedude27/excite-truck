@@ -505,6 +505,7 @@ config.libs = [
             Object(Matching, "revolution/DVD/dvdidutils.c"),
             Object(Matching, "revolution/DVD/dvdFatal.c"),
             Object(Matching, "revolution/DVD/dvd_broadway.c"),
+            Object(NonMatching, "revolution/DVD/dvd_callbacks.c"),
             Object(NonMatching, "revolution/SI/SIBios.c"),
             Object(Matching, "revolution/SI/SISamplingRate.c"),
             Object(Matching, "revolution/TPL/TPL.c"),
