@@ -180,6 +180,14 @@ typedef enum _GXCITexFmt {
     GX_TF_C14X2,
 } GXCITexFmt;
 
+typedef enum _GXTexCacheSize {
+    GX_TEXCACHE_NONE,
+    GX_TEXCACHE_32K,
+    GX_TEXCACHE_128K,
+    GX_TEXCACHE_512K,
+    GX_TEXCACHE_1M,
+} GXTexCacheSize;
+
 typedef enum _GXClearZ {
     GX_CLEAR_Z_MIN = 0,
     GX_CLEAR_Z_MAX = (1 << 24) - 1,
