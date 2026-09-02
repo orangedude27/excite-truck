@@ -6,11 +6,11 @@ typedef void (*GXVerifyCallback)(GXWarningLevel level, u32 id, const char *msg);
 #define GX_WRITE_U16(us)   \
    WGPIPE.us = (u16)(us)
 
-#define GX_WRITE_U32(ui)   \
-   WGPIPE.ui = (u32)(ui)
+#define GX_WRITE_U32(__v)   \
+   WGPIPE.ui = (u32)(__v)
 
-#define GX_WRITE_F32(f)     \
-   WGPIPE.f = (f32)(f);
+#define GX_WRITE_F32(__f)     \
+   WGPIPE.f = (f32)(__f);
 
 #if DEBUG
 #define VERIF_XF_REG(addr, value) \
