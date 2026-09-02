@@ -1,5 +1,6 @@
 #include <revolution/gx.h>
 #include <revolution/os.h>
+#include <revolution/vi.h>
 #include <macros.h>
 
 #include "revolution/GX/__gx.h"
@@ -77,7 +78,7 @@ void GXAdjustForOverscan(GXRenderModeObj *rmin, GXRenderModeObj *rmout, u16 hor,
     rmout->fbWidth = rmin->fbWidth - hor2;
     verf = (ver2 * rmin->efbHeight) / (u32)rmin->xfbHeight;
     rmout->efbHeight = rmin->efbHeight - verf;
-    if (rmin->xFBmode == VI_XFBMODE_SF && (rmin->viTVmode & 2) != 2) {
+    if (rmin->xfbMode == VI_XFBMODE_SF && (rmin->tvInfo & 2) != 2) {
         rmout->xfbHeight = rmin->xfbHeight - ver;
     } else {
         rmout->xfbHeight = rmin->xfbHeight - ver2;
@@ -183,7 +184,7 @@ void GXSetDispCopyFrame2Field(GXCopyMode mode)
     SET_REG_FIELD(0x46A, gx->cpTex, 2, 12, 0);
 }
 
-void GXSetCopyClamp(GXFBClamp clamp)
+void GXSetCopyClamp(GXCopyClamp clamp)
 {
     u8 clmpB;
     u8 clmpT;

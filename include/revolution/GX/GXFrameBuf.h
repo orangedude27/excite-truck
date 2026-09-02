@@ -36,7 +36,7 @@ void GXSetCopyClamp(GXCopyClamp clamp);
 
 u32 GXGetNumXfbLines(u16 efbHeight, f32 scaleY);
 f32 GXGetYScaleFactor(u16 efbHeight, u16 xfbHeight);
-void GXSetDispCopyYScale(f32 scaleY);
+u32 GXSetDispCopyYScale(f32 scaleY);
 
 void GXSetCopyClear(GXColor color, u32 z);
 void GXSetCopyFilter(GXBool, const u8 sample_pattern[12][2], GXBool,

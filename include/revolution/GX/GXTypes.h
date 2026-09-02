@@ -241,6 +241,19 @@ typedef enum _GXCopyClamp {
     GX_CLAMP_ALL,
 } GXCopyClamp;
 
+typedef enum _GXCopyMode {
+    GX_COPY_PROGRESSIVE = 0,
+    GX_COPY_INTERLACE = 1,
+    GX_COPY_ODD_FIELDS = 2,
+    GX_COPY_EVEN_FIELDS = 3,
+} GXCopyMode;
+
+typedef enum _GXGamma {
+    GX_GM_1_0,
+    GX_GM_1_7,
+    GX_GM_2_2,
+} GXGamma;
+
 typedef enum _GXCullMode {
     GX_CULL_NONE,
     GX_CULL_FRONT,
@@ -718,6 +731,9 @@ typedef enum _GXTexFilter {
 } GXTexFilter;
 
 typedef enum _GXTexFmt {
+#define _GX_TF_CTF 0x20 /* copy-texture-format only */
+#define _GX_TF_ZTF 0x10 /* Z-texture-format */
+
     GX_TF_I4,
     GX_TF_I8,
     GX_TF_IA4,
