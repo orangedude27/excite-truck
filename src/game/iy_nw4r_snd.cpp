@@ -745,7 +745,7 @@ extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2
 /* SoundArchiveFileReader: GetPlayerCount / GetGroupCount              */
 /* ------------------------------------------------------------------ */
 extern "C" void* GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
-    u32 type, u32 arg, void* pBase);
+    s32 type, u32 arg, void* pBase);
 
 extern "C" u32 GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(
     void* this_) {
@@ -1355,5 +1355,178 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail11TaskManagerFv(void* this_,
         }
     }
 
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor clone (0x800FDFA0)                          */
+/* ------------------------------------------------------------------ */
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* snd::detail::Util clamp+table helpers                                */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern f32 lbl_805610C8; // 1.0
+extern f32 lbl_805610CC; // 2.0
+extern f32 lbl_805610D0; // 0.5
+extern f32 lbl_805610D4; // 6.0
+extern f32 lbl_805610D8; // -90.4
+extern f32 lbl_805610DC; // 10.0
+extern f32 lbl_805610E0; // -1.0
+extern f32 lbl_805610E4; // 256.0
+extern f32 lbl_805610E8; // 0.0
+extern f32 lbl_802F5210[]; // volume dB table
+extern f32 lbl_802F6124[]; // pan table
+#pragma pop
+
+extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 volume) {
+    f32 v;
+
+    if (volume > lbl_805610D4) {
+        v = lbl_805610D4;
+    } else if (volume < lbl_805610D8) {
+        v = lbl_805610D8;
+    } else {
+        v = volume;
+    }
+
+    return lbl_802F5210[(s32)(lbl_805610DC * v) + 0x388];
+}
+
+extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
+    f32 v;
+
+    if (pan > lbl_805610C8) {
+        v = lbl_805610C8;
+    } else if (pan < lbl_805610E0) {
+        v = lbl_805610E0;
+    } else {
+        v = pan;
+    }
+
+    return lbl_802F6124[(s32)(lbl_805610D0 +
+                             lbl_805610E4 * ((lbl_805610C8 + v) * lbl_805610D0))];
+}
+
+extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
+    f32 v;
+
+    if (pan > lbl_805610CC) {
+        v = lbl_805610CC;
+    } else if (pan < lbl_805610E8) {
+        v = lbl_805610E8;
+    } else {
+        v = pan;
+    }
+
+    return lbl_802F6124[(s32)(lbl_805610D0 +
+                             lbl_805610E4 * (v * lbl_805610D0))];
+}
+
+/* ------------------------------------------------------------------ */
+/* CalcLpfFreq — LPF cutoff: 32000 * 10^(2*(clamp-1))                  */
+/* ------------------------------------------------------------------ */
+extern double __ieee754_pow(double, double);
+
+#pragma push
+#pragma small_data off
+extern double lbl_805610F0; // 32000.0
+extern double lbl_805610F8; // 2.0
+extern double lbl_80561100; // 10.0
+extern double lbl_80561108; // 1.0
+#pragma pop
+
+extern "C" f32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
+    f32 v;
+    double x;
+
+    if (value > lbl_805610C8) {
+        v = lbl_805610C8;
+    } else if (value < lbl_805610E8) {
+        v = lbl_805610E8;
+    } else {
+        v = value;
+    }
+
+    x = lbl_80561100 * ((double)v - lbl_80561108);
+
+    return (f32)(lbl_805610F0 * __ieee754_pow(x, lbl_805610F8));
+}
+
+/* ------------------------------------------------------------------ */
+/* Util::GetDataRefAddressImpl(RefType, u32, const void*)              */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80327010[];
+extern u8 lbl_80327020[];
+#pragma pop
+
+extern "C" void* GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+    s32 type, u32 arg, void* pBase) {
+    if (type == 1) {
+        return (void*)(arg + (u32)pBase);
+    }
+
+    if (type == 0) {
+        return (void*)arg;
+    }
+
+    Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327010, 0x1F6,
+                                 (const char*)lbl_80327020);
+    return NULL;
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqPlayer::UpdateAllPlayers clone (0x800FF824)                      */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_8041D4AC[]; // player list head
+extern u8 lbl_80327370[];
+extern u8 lbl_8032734C[];
+#pragma pop
+
+extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(
+    void) {
+    void* pHead = *(void**)&lbl_8041D4AC[0x04];
+    void* pList = &lbl_8041D4AC[0x04];
+    void* p;
+
+    while (pHead != pList) {
+        p = pHead;
+        pHead = *(void**)pHead;
+
+        if (p == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327370, 0x23D,
+                                         (const char*)lbl_8032734C);
+        }
+
+        Update__Q46nw4hbm3snd6detail9SeqPlayerFv(&((u8*)p)[0x08]);
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor clone (0x800FF9B8)                          */
+/* ------------------------------------------------------------------ */
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FF9B8(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
     return this_;
 }
