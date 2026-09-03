@@ -674,3 +674,122 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
         (void)pList;
     }
 }
+
+/* ------------------------------------------------------------------ */
+/* SeqTrack::FreeAllChannel()                                          */
+/* ------------------------------------------------------------------ */
+extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void* this_) {
+    void* pCh;
+    u32 level;
+
+    level = OSDisableInterrupts();
+
+    pCh = *(void**)&((u8*)this_)[0xB8];
+    while (pCh != NULL) {
+        void* pNext = *(void**)&((u8*)pCh)[0xE4];
+        fn_800EAD00(pCh);
+        pCh = pNext;
+    }
+
+    *(void**)&((u8*)this_)[0xB8] = NULL;
+
+    OSRestoreInterrupts(level);
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqPlayer::SetVolume clone (0x800F1E90)                             */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_803244D4[];
+#pragma pop
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800F1E90(
+    void* this_, f32 vol) {
+    if (vol > 1.0f) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324390, 0x165,
+                                     (const char*)lbl_803244D4);
+    }
+
+    {
+        u32 level = OSDisableInterrupts();
+        *(f32*)&((u8*)this_)[0x1C] = vol;
+        OSRestoreInterrupts(level);
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundPlayer::detail_SetPlayableSoundLimit(int) clone                */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_803247E0[];
+extern u8 lbl_803247F8[];
+extern u8 lbl_80324CDC[];
+extern u8 lbl_805598A8[];
+extern u8 lbl_805598A0[];
+extern u8 lbl_80324CB0[];
+#pragma pop
+
+extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(
+    void* this_, s32 limit) {
+    if (limit == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803247E0, 0x46,
+                                     (const char*)lbl_803247F8);
+    }
+
+    ((s32*)this_)[0x04 / 4] = limit;
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundArchiveFileReader: GetPlayerCount / GetGroupCount              */
+/* ------------------------------------------------------------------ */
+extern "C" void* GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+    u32 type, u32 arg, void* pBase);
+
+extern "C" u32 GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(
+    void* this_) {
+    void* pData;
+    void* p;
+
+    pData = *(void**)&((u8*)this_)[0x28];
+    if (((u8*)pData)[0x11] != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_805598A8, 0x6F,
+                                     (const char*)lbl_80324CDC);
+    }
+
+    p = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+        ((u8*)pData)[0x10], *(u32*)&((u8*)pData)[0x14], pData);
+
+    if (p == NULL) {
+        return 0;
+    }
+
+    return *(u32*)p;
+}
+
+#pragma push
+#pragma small_data off
+extern u8 lbl_80324CB0[];
+#pragma pop
+
+extern "C" u32 GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(
+    void* this_) {
+    void* pData;
+    void* p;
+
+    pData = *(void**)&((u8*)this_)[0x28];
+    if (((u8*)pData)[0x21] != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_805598A0, 0x6F,
+                                     (const char*)lbl_80324CB0);
+    }
+
+    p = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
+        ((u8*)pData)[0x20], *(u32*)&((u8*)pData)[0x24], pData);
+
+    if (p == NULL) {
+        return 0;
+    }
+
+    return *(u32*)p - 1;
+}
