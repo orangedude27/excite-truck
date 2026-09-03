@@ -52,3 +52,9 @@ void __AXDSPInitCallback_80031F90(void) {
 void __AXDSPInitCallback_8004DDC4(void) {
     lbl_8055DA44 = 1;
 }
+/* __AXDSPInitCallback_800B7860 (auto_03_800A485C_text): zeroes a flag. */
+extern u32 lbl_8055DD10;
+
+void __AXDSPInitCallback_800B7860(void) {
+    lbl_8055DD10 = 0;
+}
