@@ -793,3 +793,108 @@ extern "C" u32 GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(
 
     return *(u32*)p - 1;
 }
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor clones (0x800F4F24 / 4F9C / 5014)           */
+/* ------------------------------------------------------------------ */
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F24(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F9C(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundArchivePlayer::GetRequiredStrmBufferSize(SoundArchive const&)  */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80324E88[];
+extern u8 lbl_80324EA4[];
+#pragma pop
+extern "C" s32 fn_800F2814(void* pArchive, void* pOut);
+
+extern "C" s32 GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(
+    void* this_, void* pArchive) {
+    s32 numStrm = 0;
+    s32 out[4];
+
+    if (pArchive == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324E88, 0x119,
+                                     (const char*)lbl_80324EA4);
+    }
+
+    if (fn_800F2814(pArchive, out) != 0) {
+        numStrm = out[0x18 / 4];
+    }
+
+    return numStrm * 0xFFFFA000;
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundArchivePlayer::GetSoundPlayer(u32)                             */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_803250C8[];
+#pragma pop
+
+extern "C" void* GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(
+    void* this_, u32 idx) {
+    if (idx >= *(u32*)&((u8*)this_)[0x70]) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324E88, 0x2B2,
+                                     (const char*)lbl_803250C8, idx,
+                                     0);
+    }
+
+    return (void*)((u8*)this_ + 0x74 + idx * 0x48);
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundArchivePlayer::InvalidateData(const void*, const void*)        */
+/* ------------------------------------------------------------------ */
+extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(
+    void* this_, void* pStart, void* pEnd) {
+    u32 i;
+    u8* pArr;
+    u8* pBase;
+
+    if (*(u32*)&((u8*)this_)[0x14] == 0) {
+        return;
+    }
+
+    pArr = *(u8**)&((u8*)this_)[0x14];
+
+    for (i = 0; i < *(u32*)pArr; i++) {
+        pBase = pArr + 0;
+        pBase += i * 8;
+
+        if ((void*)pBase[4] >= pStart && (void*)pBase[4] <= pEnd) {
+            *(u32*)&pBase[4] = 0;   /* clear cached offset */
+        }
+    }
+}
