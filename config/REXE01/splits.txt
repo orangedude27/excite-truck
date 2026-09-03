@@ -14,7 +14,8 @@ Sections:
 	.sbss2      type:bss align:16
 
 game/game_menu_init.c:
-	.text       start:0x800049C0 end:0x80004AB8
+	.text       start:0x800049C0 end:0x800053CC
+	.ctors      start:0x802ED064 end:0x802ED068
 
 runtime/__mem.c:
 	.init       start:0x80004000 end:0x80004134

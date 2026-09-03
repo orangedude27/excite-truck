@@ -2870,8 +2870,58 @@ u32 fn_80062460(s32 chan) {
 // fn_800624A4: WPAD callback handler (large - stub)
 void fn_800624A4(void) { /* stub */ }
 
-// fn_80063564: WPAD data processing
-void fn_80063564(s32 chan, void* data) { /* stub */ }
+// fn_80063564: WPADSetReportType - queues a SetDataReportMode command.
+// Functionally identical to WPADiSendSetReportType (line above) but placed at
+// a separate anonymous address by the original REXE01 build. The reference asm
+// (auto_03_8005D0DC_text.s, 0x80063564) expands the WPADCommand copy as inline
+// lfd/stfd pairs and inlines the queue-full check; MWCC emits memcpy/memset
+// library calls for this source shape. The 12-instruction delta (mine 132 vs
+// ref 120) is a source-shape gap from memcpy/queue-check inlining, not a
+// semantic difference. Marked FUZZY: same control flow, same behaviour, same
+// register choices for the queue advance.
+BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
+    WPADCommand command;
+
+    command.reportID = RPTID_SET_DATA_REPORT_MODE;
+    command.dataLength = RPT12_SIZE;
+    command.dataBuf[RPT12_CONT_REPORT] = 4;
+    command.cmdCB = pCallback;
+
+    switch (format) {
+    case WPAD_FMT_CORE_BTN:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN;
+        break;
+    case WPAD_FMT_CORE_BTN_ACC:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC;
+        break;
+    case WPAD_FMT_CORE_BTN_ACC_DPD:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD12;
+        break;
+    case WPAD_FMT_FS_BTN:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_EXT8;
+        break;
+    case WPAD_FMT_FS_BTN_ACC:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_EXT16;
+        break;
+    case WPAD_FMT_FS_BTN_ACC_DPD:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD10_EXT9;
+        break;
+    case WPAD_FMT_CLASSIC_BTN:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_EXT8;
+        break;
+    case WPAD_FMT_CLASSIC_BTN_ACC:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_EXT16;
+        break;
+    case WPAD_FMT_CLASSIC_BTN_ACC_DPD:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD10_EXT9;
+        break;
+    case WPAD_FMT_BTN_ACC_DPD_EXTENDED:
+        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD18_1;
+        break;
+    }
+
+    return WPADiPushCommand(pQueue, command);
+}
 
 // fn_80064B1C: WPAD data processing
 void fn_80064B1C(s32 chan, void* data) { /* stub */ }

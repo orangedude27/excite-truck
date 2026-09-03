@@ -22,7 +22,7 @@
  * require resolving cyclic dependencies between the auto-units and
  * the source TUs (the auto-units reference many DVD* symbols and
  * dvd.c references many DSP* symbols). That is a multi-session
- * carve project documented in TODO_DRIFTS.
+ * carve project documented in PROJECT_STATUS.md.
  */
 
 #include <revolution/DVD.h>
