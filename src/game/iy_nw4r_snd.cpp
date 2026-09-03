@@ -1142,3 +1142,134 @@ extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
         &((u8*)this_)[0x0C], &((u8*)pSound)[0xC8]);
 }
+
+/* ------------------------------------------------------------------ */
+/* SoundPlayer::detail_SetPlayableSoundLimit(int)                      */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80325D48[];
+#pragma pop
+
+extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
+    void* this_, s32 limit) {
+    if (limit < 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C50, 0x227,
+                                     (const char*)lbl_80325D48);
+    }
+
+    *(u16*)&((u8*)this_)[0x26] = (u16)limit;
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundStartable::detail_StartSound(handle,id,ambient,player,info)    */
+/* ------------------------------------------------------------------ */
+extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
+    void* this_, void* pHandle, u32 id, void* pAmbient, void* pPlayer,
+    void* pInfo) {
+    void* pSound;
+    void* (*fn)(void*, void*, u32, void*, void*, void*);
+
+    fn = *(void* (**)(void*, void*, u32, void*, void*, void*))(*(u32*)this_ +
+                                                                0x0C);
+    pSound = fn(this_, pHandle, id, pAmbient, pPlayer, pInfo);
+
+    if (pSound != NULL && *(void**)&((u8*)pSound)[0x00] == NULL) {
+        /* secondary attach */
+        void (*cb)(void*) = *(void (**)(void*))(*(u32*)pHandle + 0x14);
+        cb(pHandle);
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundThread::GetInstance()                                          */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80412CC8[]; // singleton storage
+extern u8 lbl_80412CB8[];
+#pragma pop
+extern u8 lbl_8055DE68;   // init flag
+
+extern "C" void* __dt__10TitleSceneFv(void*, s32);
+extern "C" void fn_800FA4B0(void*);
+extern "C" void __register_global_object2(void*, void*, void*);
+extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
+    if (lbl_8055DE68 == 0) {
+        ((u32*)&lbl_80412CC8[0x2384])[0x01] = 0; /* head */
+        fn_800FA4B0(&lbl_80412CC8[0x2388]);
+        __register_global_object2(&lbl_80412CC8[0x2388], (void*)&__dt__10TitleSceneFv,
+                                  (void*)&lbl_80412CB8);
+        lbl_8055DE68 = 1;
+    }
+
+    return &lbl_80412CC8[0x2388];
+}
+/* ------------------------------------------------------------------ */
+/* TitleScene dtor (SoundThread storage)                               */
+/* ------------------------------------------------------------------ */
+extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
+    if (this_) {
+        if ((u8*)this_ + 0x2384 != NULL) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(&((u8*)this_)[0x2384], 0);
+        }
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* StrmBufferPool::Free(void*)                                         */
+/* ------------------------------------------------------------------ */
+extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void* this_,
+                                                            void* pBuf) {
+    u32 level;
+    u32 idx;
+    void* pBase;
+    u32 stride;
+
+    level = OSDisableInterrupts();
+
+    pBase = *(void**)&((u8*)this_)[0x00];
+    stride = *(u32*)&((u8*)this_)[0x08];
+
+    idx = ((u32)((u8*)pBuf - (u8*)pBase)) / stride;
+
+    ((u8*)this_)[0x14 + (idx >> 3)] &= ~(1u << (idx & 7));
+
+    *(u32*)&((u8*)this_)[0x10] -= 1;
+
+    OSRestoreInterrupts(level);
+}
+
+/* ------------------------------------------------------------------ */
+/* StrmPlayer::UpdateBufferAllPlayers() — static player list           */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_8041506C[]; // player list head
+extern u8 lbl_80326B8C[];
+extern u8 lbl_80326B68[];
+#pragma pop
+extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void* this_);
+
+extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(
+    void) {
+    void* pHead = *(void**)&lbl_8041506C[0x04];
+    void* pList = &lbl_8041506C[0x04];
+    void* p;
+
+    while (pHead != pList) {
+        p = pHead;
+        pHead = *(void**)pHead;
+
+        if (p == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
+                                         (const char*)lbl_80326B68);
+        }
+
+        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)p)[0x08]);
+    }
+}
