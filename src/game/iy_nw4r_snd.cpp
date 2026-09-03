@@ -1273,3 +1273,87 @@ extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(
         UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)p)[0x08]);
     }
 }
+
+/* ------------------------------------------------------------------ */
+/* SeqPlayer::UpdateAllPlayers clone (0x800FC490) — strm players list  */
+/* ------------------------------------------------------------------ */
+extern "C" void UpdateStrm__Q46nw4hbm3snd6detail10StrmPlayerFv(void*);
+
+extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC490(
+    void) {
+    void* pHead = *(void**)&lbl_8041506C[0x04];
+    void* pList = &lbl_8041506C[0x04];
+    void* p;
+
+    while (pHead != pList) {
+        p = pHead;
+        pHead = *(void**)pHead;
+
+        if (p == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
+                                         (const char*)lbl_80326B68);
+        }
+
+        UpdateStrm__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)p)[0x08]);
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* StrmPlayer::LoadCommand::SetAdpcmLoopContext(int, u16*)             */
+/* ------------------------------------------------------------------ */
+extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(
+    void* this_, s32 n, u16* pUs) {
+    u8* pLoad;
+    u32 idx;
+    u32 i;
+
+    pLoad = *(u8**)&((u8*)this_)[0x04];
+    if (((u8*)pLoad)[0x10] != 2) {
+        return;
+    }
+
+    for (idx = 0; idx < n && idx < 2; idx++) {
+        u32 base = *(u32*)&((u8*)this_)[0x04];
+        *(u16*)&((u8*)base)[idx * 2 + 0x518] = *pUs++;
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor clone (0x800FD9C8)                          */
+/* ------------------------------------------------------------------ */
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FD9C8(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* TaskManager dtor — destructs 3 elements @0xC stride                 */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80326C28[];
+#pragma pop
+extern "C" void fn_800FDFF8(void*);
+extern "C" void* __dt__Q46nw4hbm3snd6detail11TaskManagerFv(void* this_,
+                                                         s32 flag) {
+    void* pBase;
+
+    if (this_) {
+        pBase = this_;
+
+        /* for each of 3 elements: clear back-pointer, then call dtor */
+        fn_800FDFF8(pBase);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
