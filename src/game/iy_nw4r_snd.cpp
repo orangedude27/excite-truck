@@ -1530,3 +1530,290 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FF9B8(
     }
     return this_;
 }
+
+/* ------------------------------------------------------------------ */
+/* WsdPlayer ctor — vtable+0x98 sub-vtable, seq/heap storage           */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80327AF4[]; // WsdPlayer vtable
+#pragma pop
+
+extern "C" void* __ct__Q46nw4hbm3snd6detail9WsdPlayerFv(void* this_) {
+    (void)this_;
+    ((u32*)this_)[0x00 / 4] = (u32)&lbl_80327AF4;
+    ((u32*)this_)[0x04 / 4] = (u32)-1;
+    ((u32*)this_)[0x08 / 4] = 0;
+    ((u32*)this_)[0x0C / 4] = 0;
+    ((u32*)this_)[0x10 / 4] = (u32)(&lbl_80327AF4[0x98]);
+    ((u32*)this_)[0x14 / 4] = 0;
+    ((u32*)this_)[0x18 / 4] = 0;
+    ((u8*)this_)[0x1D] = 0;
+    fn_800EC890(&((u8*)this_)[0xA8]);
+    ((u32*)this_)[0xC8 / 4] = 0;
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* WsdPlayer::Pause(bool)                                              */
+/* ------------------------------------------------------------------ */
+extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void*,
+                                                                 u32);
+
+extern "C" void Pause__Q46nw4hbm3snd6detail9WsdPlayerFb(void* this_,
+                                                        u32 flag) {
+    u32 level;
+
+    level = OSDisableInterrupts();
+    ((u8*)this_)[0x20] = flag;
+    PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(&((u8*)this_)[0x9C],
+                                                     flag);
+    OSRestoreInterrupts(level);
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqPlayer::SetVolume clones (0x80100820 @+0x24, 0x80100894 @+0x3C)  */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern f32 lbl_80561124;   // 1.0
+extern u8 lbl_80327930[];
+extern u8 lbl_80327944[];
+extern u8 lbl_8032796C[];
+#pragma pop
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100820(
+    void* this_, f32 vol) {
+    if (vol > lbl_80561124) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327930, 0xFA,
+                                     (const char*)lbl_80327944);
+    }
+
+    {
+        u32 level = OSDisableInterrupts();
+        *(f32*)&((u8*)this_)[0x24] = vol;
+        OSRestoreInterrupts(level);
+    }
+}
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_80100894(
+    void* this_, f32 vol) {
+    if (vol > lbl_80561124) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80327930, 0x101,
+                                     (const char*)lbl_8032796C);
+    }
+
+    {
+        u32 level = OSDisableInterrupts();
+        *(f32*)&((u8*)this_)[0x3C] = vol;
+        OSRestoreInterrupts(level);
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor clone (0x80101474)                          */
+/* ------------------------------------------------------------------ */
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80101474(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* WsdTrack::Close()                                                   */
+/* ------------------------------------------------------------------ */
+extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(
+    void* this_, s32);
+
+extern "C" void Close__Q46nw4hbm3snd6detail8WsdTrackFv(void* this_) {
+    void* pCh;
+    u32 level;
+
+    ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(this_, -1);
+
+    pCh = *(void**)&((u8*)this_)[0x30];
+    while (pCh != NULL) {
+        void* pNext = *(void**)&((u8*)pCh)[0xE4];
+        fn_800EAD00(pCh);
+        pCh = pNext;
+    }
+
+    *(void**)&((u8*)this_)[0x30] = NULL;
+}
+
+/* ------------------------------------------------------------------ */
+/* WsdTrack::PauseAllChannel(bool)                                     */
+/* ------------------------------------------------------------------ */
+extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void*, u32);
+
+extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(
+    void* this_, u32 flag) {
+    void* pCh;
+
+    pCh = *(void**)&((u8*)this_)[0x30];
+    while (pCh != NULL) {
+        if (((u8*)pCh)[0x3A] != 0 && flag != (((u8*)pCh)[0x39] != 0)) {
+            ((u8*)pCh)[0x39] = flag;
+            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void**)&((u8*)pCh)[0xE0],
+                                                  flag);
+        }
+
+        pCh = *(void**)&((u8*)pCh)[0xE4];
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* nw4hbm::ut::IOStream virtual wrappers (Seek/Read families)          */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80328458[];
+extern u8 lbl_8032846C[];
+extern u8 lbl_80328490[];
+extern u8 lbl_803285B8[];
+extern u8 lbl_803285C8[];
+extern u8 lbl_803285EC[];
+extern u8 lbl_80328614[];
+#pragma pop
+
+/* vtable+0x50 Seek (0x8010718C) */
+extern "C" u32 Seek__Q36nw4hbm2ut10FileStreamFlUl(void* this_, s32 off,
+                                                  u32 origin) {
+    u32 result = ((u32(*)(void*, s32, u32))((*(void***)this_)[0x50 / 4]))(
+        this_, off, origin);
+    if (result == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80328458, 0x2C,
+                                     (const char*)lbl_8032846C);
+    }
+    return result;
+}
+
+/* vtable+0x54 Seek (0x801071DC) */
+extern "C" u32 Seek__Q36nw4hbm2ut10FileStreamFlUl_801071DC(void* this_,
+                                                           s32 off,
+                                                           u32 origin) {
+    u32 result = ((u32(*)(void*, s32, u32))((*(void***)this_)[0x54 / 4]))(
+        this_, off, origin);
+    if (result == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80328458, 0x3C,
+                                     (const char*)lbl_80328490);
+    }
+    return result;
+}
+
+/* vtable+0x2C Read (0x80107494) */
+extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl(void* this_, void* buf,
+                                                u32 size) {
+    u32 result = ((u32(*)(void*, void*, u32))((*(void***)this_)[0x2C / 4]))(
+        this_, buf, size);
+    if (result == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803285B8, 0x29,
+                                     (const char*)lbl_803285C8);
+    }
+    return result;
+}
+
+/* vtable+0x30 Seek (0x80107580) */
+extern "C" u32 Seek__Q36nw4hbm2ut10FileStreamFlUl_80107580(void* this_,
+                                                           s32 off,
+                                                           u32 origin) {
+    u32 result = ((u32(*)(void*, s32, u32))((*(void***)this_)[0x30 / 4]))(
+        this_, off, origin);
+    if (result == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803285B8, 0x52,
+                                     (const char*)lbl_80328614);
+    }
+    return result;
+}
+
+/* vtable+0x28 Read (0x80107668) */
+extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl_80107668(void* this_,
+                                                         void* buf,
+                                                         u32 size) {
+    u32 result = ((u32(*)(void*, void*, u32))((*(void***)this_)[0x28 / 4]))(
+        this_, buf, size);
+    if (result == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803285B8, 0x8E,
+                                     (const char*)lbl_803285EC);
+    }
+    return result;
+}
+
+/* ------------------------------------------------------------------ */
+/* nw4hbm::ut::List init/get-next                                      */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80328828[];
+extern u8 lbl_80328834[];
+#pragma pop
+
+typedef struct utList {
+    void* head;    // at 0x0
+    void* tail;    // at 0x4
+    u16 count;     // at 0x8
+    u16 offset;    // at 0xA
+} utList;
+
+extern "C" void List_Init__Q26nw4hbm2utFPQ36nw4hbm2ut4ListUs(utList* list,
+                                                              u16 offset) {
+    if (list == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80328828, 0x29,
+                                     (const char*)lbl_80328834);
+    }
+
+    list->head = NULL;
+    list->tail = NULL;
+    list->count = 0;
+    list->offset = offset;
+}
+
+extern "C" void* List_GetNext__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListPCv(
+    const utList* list, const void* node) {
+    if (list == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80328828, 0xF5,
+                                     (const char*)lbl_80328834);
+    }
+
+    if (node == NULL) {
+        return list->head;
+    }
+
+    return *(void**)((u8*)node + list->offset + 4);
+}
+
+/* ------------------------------------------------------------------ */
+/* nw4hbm::ut::ResFont dtor                                            */
+/* ------------------------------------------------------------------ */
+extern "C" void fn_80109040(void* this_, u32 a);
+
+extern "C" void* __dt__Q36nw4hbm2ut7ResFontFv(void* this_, s32 flag) {
+    if (this_) {
+        fn_80109040(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor clone (0x80111BB8)                          */
+/* ------------------------------------------------------------------ */
+extern "C" void fn_801033F0(void* this_, u32 a);
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_801033F0(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
