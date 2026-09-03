@@ -898,3 +898,130 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(
         }
     }
 }
+
+/* ------------------------------------------------------------------ */
+/* SoundArchivePlayer::InvalidateData clone (0x800F6F18) — clears +0x8 */
+/* ------------------------------------------------------------------ */
+extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(
+    void* this_, void* pStart, void* pEnd) {
+    u32 i;
+    u8* pArr;
+
+    if (*(u32*)&((u8*)this_)[0x14] == 0) {
+        return;
+    }
+
+    pArr = *(u8**)&((u8*)this_)[0x14];
+
+    for (i = 0; i < *(u32*)pArr; i++) {
+        u8* pBase = pArr + i * 8;
+
+        if (*(void**)&pBase[4] >= pStart && *(void**)&pBase[4] <= pEnd) {
+            *(u32*)&pBase[4] = 0;   /* clear cached offset */
+        }
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundArchivePlayer::SeqLoadTask::Cancel()                           */
+/* ------------------------------------------------------------------ */
+extern "C" void OSLockMutex(void*);
+extern "C" void OSUnlockMutex(void*);
+extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void*);
+
+extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(
+    void* this_) {
+    void* mutex = *(void**)&((u8*)this_)[0x2C];
+    void* pLoader;
+
+    OSLockMutex(mutex);
+
+    pLoader = *(void**)&((u8*)this_)[0x10];
+    if (pLoader != NULL) {
+        Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(pLoader);
+    }
+
+    OSUnlockMutex(mutex);
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundArchivePlayer::detail_ConvertLabelStringToSoundId(const char*) */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80325BE8[];
+extern u8 lbl_80325BB8[];
+#pragma pop
+extern "C" u32 fn_800F27D4(void* pLoader, const char* label);
+
+extern "C" u32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(
+    void* this_, const char* label) {
+    if (*(u32*)&((u8*)this_)[0x10] == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325BE8, 0x163,
+                                     (const char*)lbl_80325BB8);
+    }
+
+    return fn_800F27D4(*(void**)&((u8*)this_)[0x10], label);
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor clone (0x800F8114) — SoundHeap base          */
+/* ------------------------------------------------------------------ */
+extern "C" void __dt__Q36nw4hbm3snd9SoundHeapFv(void*, u32);
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8114(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q36nw4hbm3snd9SoundHeapFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundHandle::detail_AttachSound(BasicSound*)                        */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80325C00[];
+extern u8 lbl_80325C18[];
+#pragma pop
+extern "C" u32 fn_800E9B88(void* pSound);
+extern "C" u32 fn_800E9B9C(void* pSound);
+
+extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(
+    void* this_, void* pSound) {
+    if (pSound == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C00, 0x55,
+                                     (const char*)lbl_80325C18);
+    }
+
+    *(void**)&((u8*)this_)[0x00] = pSound;
+
+    if (fn_800E9B88(pSound)) {
+        fn_800E9B9C(*(void**)&((u8*)this_)[0x00]);
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundHandle::DetachSound()                                          */
+/* ------------------------------------------------------------------ */
+extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void* this_) {
+    void* pSound = *(void**)&((u8*)this_)[0x00];
+
+    if (pSound != NULL) {
+        if (*(void**)&((u8*)pSound)[0x08] == this_) {
+            *(void**)&((u8*)pSound)[0x08] = NULL;
+        }
+
+        if (*(void**)&((u8*)pSound)[0x0C] == this_) {
+            *(void**)&((u8*)pSound)[0x0C] = NULL;
+        }
+    }
+
+    if (*(void**)&((u8*)this_)[0x00] != NULL) {
+        *(void**)&((u8*)this_)[0x00] = NULL;
+    }
+}
