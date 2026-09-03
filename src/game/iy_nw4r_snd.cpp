@@ -967,7 +967,8 @@ extern "C" u32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePl
 /* ------------------------------------------------------------------ */
 /* MemorySoundArchive dtor clone (0x800F8114) — SoundHeap base          */
 /* ------------------------------------------------------------------ */
-extern "C" void __dt__Q36nw4hbm3snd9SoundHeapFv(void*, u32);
+
+extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void*, s32);
 
 extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8114(
     void* this_, s32 flag) {
@@ -1024,4 +1025,120 @@ extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void* this_) {
     if (*(void**)&((u8*)this_)[0x00] != NULL) {
         *(void**)&((u8*)this_)[0x00] = NULL;
     }
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundHeap dtor                                                      */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80325C40[]; // SoundHeap vtable
+#pragma pop
+extern "C" void Destroy__Q46nw4hbm3snd6detail9FrameHeapFv(void*);
+extern "C" void __dt__Q46nw4hbm3snd6detail9FrameHeapFv(void*, s32);
+
+extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* this_, s32 flag) {
+    if (this_) {
+        *(u32*)&((u8*)this_)[0x00] = (u32)&lbl_80325C40;
+        Destroy__Q46nw4hbm3snd6detail9FrameHeapFv(&((u8*)this_)[0x1C]);
+        __dt__Q46nw4hbm3snd6detail9FrameHeapFv(&((u8*)this_)[0x1C], -1);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundHeap::DisposeCallbackFunc(void*, u32, void*)                   */
+/* ------------------------------------------------------------------ */
+extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(
+    void* this_, void*, u32, void*);
+extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(
+    void* this_, void*, u32, void*);
+
+extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(
+    void* this_, void* arg0, u32 arg1, void* arg2) {
+    Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(this_, arg0,
+                                                                 arg1, arg2);
+    DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(
+        this_, arg0, arg1, arg2);
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor clone (0x800F8540)                          */
+/* ------------------------------------------------------------------ */
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* BasicSound::SetInitialVolume clone (0x800F877C) — +0x28 store       */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80325C50[];
+extern u8 lbl_80325C64[];
+extern f32 lbl_805610BC;
+#pragma pop
+
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(
+    void* this_, f32 vol) {
+    if (vol > 1.0f) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C50, 0x99,
+                                     (const char*)lbl_80325C64);
+    }
+
+    *(f32*)&((u8*)this_)[0x28] = vol;
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundPlayer::detail_RemoveSoundList clone (0x800F8880)              */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_803262B8[];
+extern u8 lbl_80326294[];
+#pragma pop
+
+extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(
+    void* this_, void* pSound) {
+    if (pSound == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803262B8, 0x233,
+                                     (const char*)lbl_80326294);
+    }
+
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
+        this_, &((u8*)pSound)[0xC0]);
+
+    *(u32*)&((u8*)pSound)[0x10] = 0;
+}
+
+/* ------------------------------------------------------------------ */
+/* SoundPlayer::detail_RemovePriorityList                              */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80326288[];
+extern u8 lbl_80326264[];
+#pragma pop
+
+extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(
+    void* this_, void* pSound) {
+    if (pSound == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326288, 0x233,
+                                     (const char*)lbl_80326264);
+    }
+
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(
+        &((u8*)this_)[0x0C], &((u8*)pSound)[0xC8]);
 }
