@@ -1,5 +1,6 @@
 #include <types.h>
 #include <math.h>
+#include <string.h>
 
 /* Review carves for the REXE01 nw4hbm::snd cluster
  * (auto_03_800E252C_text / auto_03_800E9C38_text):
@@ -16,6 +17,7 @@
  */
 
 extern "C" u32 OSDisableInterrupts(void);
+extern "C" u32 OSGetAlarmUserData(void*);
 extern "C" void OSRestoreInterrupts(u32 level);
 extern "C" void fn_80128668(void*);
 
@@ -309,4 +311,366 @@ extern "C" void* AllocImpl__Q44nw4r3snd6detail8PoolImplFv(void* this_) {
     OSRestoreInterrupts(level);
 
     return pNode;
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor (clone at 0x800ECB38)                       */
+/* ------------------------------------------------------------------ */
+extern "C" void fn_800F26FC(void* this_, u32 a);
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800ECB38(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_800F26FC(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive::OpenStream(void*, int, u32, u32) const          */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_803231D8[]; // MemoryFileStream vtable
+#pragma pop
+
+extern "C" void* OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(
+    void* this_, void* pStream, s32 a, u32 offset, u32 size) {
+    u32 base;
+
+    base = *(u32*)&((u8*)this_)[0x108];
+    if (base == 0) {
+        return NULL;
+    }
+
+    if (offset >= 0x20 && pStream != NULL) {
+        ((u8*)pStream)[0x04] = 0;
+        ((s32*)pStream)[0x0C / 4] = 0;
+        ((s32*)pStream)[0x10 / 4] = 0;
+        *(u32*)&((u8*)pStream)[0x00] = (u32)&lbl_803231D8;
+        ((s32*)pStream)[0x14 / 4] = offset + base;
+        ((s32*)pStream)[0x18 / 4] = size;
+        ((s32*)pStream)[0x1C / 4] = 0;
+        return pStream;
+    }
+
+    return NULL;
+}
+
+/* ------------------------------------------------------------------ */
+/* MemoryFileStream::Read(void*, u32)                                  */
+/* ------------------------------------------------------------------ */
+extern "C" void* Read__Q44nw4r3snd18MemorySoundArchive16MemoryFileStreamFPvUl(
+    void* this_, void* pDst, u32 size) {
+    u32 cur = *(u32*)&((u8*)this_)[0x1C];
+    u32 len = *(u32*)&((u8*)this_)[0x18];
+    u32 base = *(u32*)&((u8*)this_)[0x14];
+    u32 n;
+
+    n = (size <= (len - cur)) ? size : (len - cur);
+
+    memcpy(pDst, (void*)(base + cur), n);
+
+    return (void*)n;
+}
+
+/* ------------------------------------------------------------------ */
+/* MmlSeqTrack ctor                                                    */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80323258[]; // MmlSeqTrack vtable
+extern u8 lbl_80323760[]; // SeqTrack vtable
+#pragma pop
+
+extern "C" void fn_800EC890(void* this_);
+extern "C" void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void* this_);
+
+extern "C" void* __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void* this_) {
+    *(u32*)&((u8*)this_)[0x00] = (u32)&lbl_80323258;
+    fn_800EC890(&((u8*)this_)[0x68]);
+
+    ((u32*)this_)[0xB4 / 4] = 0;
+
+    InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(this_);
+
+    ((u32*)this_)[0x00 / 4] = (u32)&lbl_80323760;
+    ((u8*)this_)[0xC1] = 1;
+    ((u8*)this_)[0xC2] = 0;
+    ((u8*)this_)[0xC0] = 1;
+    ((u8*)this_)[0xC6] = 0;
+
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* MmlSeqTrackAllocator::AllocTrack(SeqPlayer*)                        */
+/* ------------------------------------------------------------------ */
+extern "C" void* AllocTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm3snd6detail9SeqPlayer(
+    void* this_, void* pPlayer) {
+    void* pTrack;
+
+    pTrack = AllocImpl__Q44nw4r3snd6detail8PoolImplFv(&((u8*)this_)[0x08]);
+
+    if (pTrack != NULL) {
+        __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(pTrack);
+    }
+
+    if (pTrack != NULL) {
+        ((u32*)pTrack)[0xB4 / 4] = (u32)pPlayer;
+        ((u32*)pTrack)[0xBC / 4] = *(u32*)&((u8*)this_)[0x04];
+    }
+
+    return pTrack;
+}
+
+/* ------------------------------------------------------------------ */
+/* RemoteSpeaker::IntervalAlarmHandler(OSAlarm*, OSContext*)           */
+/* ------------------------------------------------------------------ */
+extern "C" void OSCancelAlarm(void* alarm);
+
+extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(
+    void* alarm, void* ctx) {
+    void* self;
+    u32 level;
+
+    level = OSDisableInterrupts();
+    self = (void*)OSGetAlarmUserData(alarm);
+
+    if (((u8*)self)[0x08]) {
+        OSCancelAlarm(&((u8*)self)[0x38]);
+        ((u8*)self)[0x06] = 0;
+        ((u8*)self)[0x07] = 0;
+        ((u8*)self)[0x08] = 0;
+    }
+
+    OSRestoreInterrupts(level);
+    (void)ctx;
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqFileReader::GetBaseAddress() const                               */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_803239C0[];
+extern u8 lbl_80323AF8[];
+#pragma pop
+
+extern "C" void* GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(
+    void* this_) {
+    void* pFile;
+
+    if (*(u32*)&((u8*)this_)[0x00] == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803239C0, 0x5E,
+                                     (const char*)lbl_80323AF8);
+    }
+
+    pFile = *(void**)&((u8*)this_)[0x04];
+
+    return *(void**)&((u8*)pFile)[0x08];
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqPlayer::SetVolume(float)                                         */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80323B28[];
+extern u8 lbl_80323BEC[];
+extern f32 lbl_8056106C;
+#pragma pop
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf(void* this_,
+                                                            f32 vol) {
+    if (vol > 1.0f) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x15D,
+                                     (const char*)lbl_80323BEC);
+    }
+
+    {
+        u32 level = OSDisableInterrupts();
+        *(f32*)&((u8*)this_)[0x1C] = vol;
+        OSRestoreInterrupts(level);
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqPlayer::SetVolume clone (0x800EF804)                             */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80323C14[];
+#pragma pop
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(
+    void* this_, f32 vol) {
+    if (vol > 1.0f) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x164,
+                                     (const char*)lbl_80323C14);
+    }
+
+    {
+        u32 level = OSDisableInterrupts();
+        *(f32*)&((u8*)this_)[0x1C] = vol;
+        OSRestoreInterrupts(level);
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtor clone (0x800F078C)                          */
+/* ------------------------------------------------------------------ */
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F078C(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqSound::Prepare(const void*, s32)                                 */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80324060[];
+extern u8 lbl_803240D4[];
+#pragma pop
+
+extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void*, const void*, s32);
+extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCvl(void* this_,
+                                                            const void* pSeq,
+                                                            s32 offset) {
+    if (pSeq == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324060, 0x70,
+                                     (const char*)lbl_803240D4);
+    }
+
+    SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(&((u8*)this_)[0xD8], pSeq, offset);
+}
+
+/* ------------------------------------------------------------------ */
+/* shdStateMachine dtor (Shockwave lib)                                */
+/* ------------------------------------------------------------------ */
+extern "C" void __dt__Q46nw4hbm3snd6detail9SeqPlayerFv(void*, s32);
+
+extern "C" void* __dt__15shdStateMachineFv(void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm3snd6detail9SeqPlayerFv(&((u8*)this_)[0xD8], -1);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* EnvGenerator::SetSustain clone (0x800F0E9C) — range 0..0x10         */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80324390[];
+#pragma pop
+
+extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(
+    void* this_, s32 sustain) {
+    s32 ok;
+
+    ok = (0 <= sustain && sustain <= 0x10) ? 1 : 0;
+
+    if (!ok) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324390, 0x25,
+                                     (const char*)lbl_80322C90, sustain);
+    }
+
+    ((s32*)this_)[0x04 / 4] = sustain;
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqTrack::Close()                                                   */
+/* ------------------------------------------------------------------ */
+extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(
+    void* this_, s32);
+extern "C" void fn_800EAD00(void* pChannel);
+
+extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void* this_) {
+    void* pCh;
+    u32 level;
+
+    ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(this_, -1);
+    level = OSDisableInterrupts();
+
+    pCh = *(void**)&((u8*)this_)[0xB8];
+    while (pCh != NULL) {
+        void* pNext = *(void**)&((u8*)pCh)[0xE4];
+        fn_800EAD00(pCh);
+        pCh = pNext;
+    }
+
+    OSRestoreInterrupts(level);
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqTrack::UpdateChannelLength()                                     */
+/* ------------------------------------------------------------------ */
+extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(
+    void* this_) {
+    void* pCh;
+
+    pCh = *(void**)&((u8*)this_)[0xB8];
+    while (pCh != NULL) {
+        s32 len = *(s32*)&((u8*)pCh)[0xD4];
+
+        if (len > 0) {
+            len--;
+            *(s32*)&((u8*)pCh)[0xD4] = len;
+            if (len == 0) {
+                Release__Q46nw4hbm3snd6detail7ChannelFv(pCh);
+            }
+        }
+
+        pCh = *(void**)&((u8*)pCh)[0xE4];
+    }
+}
+
+/* ------------------------------------------------------------------ */
+/* SeqPlayer::UpdateAllPlayers() — static global player list walk      */
+/* ------------------------------------------------------------------ */
+#pragma push
+#pragma small_data off
+extern u8 lbl_80412A6C[]; // player list head
+extern u8 lbl_80324024[];
+extern u8 lbl_80324000[];
+#pragma pop
+
+extern "C" void Update__Q46nw4hbm3snd6detail9SeqPlayerFv(void*);
+extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
+    void* pHead = *(void**)&lbl_80412A6C[0x04];
+    void* pList = &lbl_80412A6C[0x04];
+    void* pPlayer;
+
+    while (pHead != NULL) {
+        pPlayer = pHead;
+        pHead = *(void**)pHead;
+
+        if (pPlayer == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x233,
+                                         (const char*)lbl_80324000);
+        }
+
+        Update__Q46nw4hbm3snd6detail9SeqPlayerFv(&((u8*)pPlayer)[0x04]);
+        (void)pList;
+    }
 }
