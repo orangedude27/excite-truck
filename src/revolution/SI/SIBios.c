@@ -50,6 +50,53 @@ static u32 InputBufferVcount[SI_MAX_CHAN];
 extern OSAlarm Alarm[SI_MAX_CHAN];
 extern u32 __PADFixBits;
 
+/* ---------------------------------------------------------------------
+ * PAD code recovered into the SIBios TU.  REXE01's splits.txt assigns
+ * 0x80056164..0x80058920 to revolution/SI/SIBios.c, which includes the
+ * GameCube-era PAD helpers; the PAD statics also live in this address
+ * region (data ownership pending promotion).
+ * ------------------------------------------------------------------- */
+
+#define PAD_MAX_CONTROLLER 4
+
+#define PAD_BUTTON_A 0x0100
+#define PAD_BUTTON_B 0x0200
+#define PAD_BUTTON_X 0x0400
+#define PAD_BUTTON_Y 0x0800
+#define PAD_BUTTON_START 0x1000
+#define PAD_TRIGGER_L 0x0040
+#define PAD_TRIGGER_R 0x0020
+
+#define PAD_CHAN0_BIT 0x80000000
+#define PAD_CHAN1_BIT 0x40000000
+#define PAD_CHAN2_BIT 0x20000000
+#define PAD_CHAN3_BIT 0x10000000
+
+/* REXE01 PADStatus: u16 button @0, four centered sticks @2-5, triggers/
+ * analogs @6-9, err @0xA and one pad byte (0xC stride). */
+typedef struct PADStatus {
+    u16 button; // at 0x0
+    s8 stickX;  // at 0x2
+    s8 stickY;  // at 0x3
+    s8 substickX; // at 0x4
+    s8 substickY; // at 0x5
+    u8 triggerLeft; // at 0x6
+    u8 triggerRight; // at 0x7
+    u8 analogA; // at 0x8
+    u8 analogB; // at 0x9
+    u8 err;     // at 0xA
+    u8 unk;     // at 0xB
+} PADStatus;
+
+static PADStatus Origin[PAD_MAX_CONTROLLER];
+static u32 AnalogMode = 0x00000300;
+static u32 XPatchBits =
+    PAD_CHAN0_BIT | PAD_CHAN1_BIT | PAD_CHAN2_BIT | PAD_CHAN3_BIT;
+
+void UpdateOrigin(s32 chan);
+void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]);
+void SPEC1_MakeStatus(s32 chan, PADStatus* status, u32 data[2]);
+
 static void GetTypeCallback(s32 chan, u32 status);
 static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
                          u32 inSize, SICallback callback);
@@ -529,4 +576,153 @@ u32 SIEnablePolling(u32 chan) {
     *(volatile u32*)0xCD006430 = Si.poll;
     OSRestoreInterrupts(enabled);
     return Si.poll;
+}
+
+/* ---------------------------------------------------------------------
+ * PAD helpers (REXE01 0x80056164..0x80056D5C region)
+ * ------------------------------------------------------------------- */
+
+void UpdateOrigin(s32 chan) {
+    PADStatus* origin;
+    u32 chanBit = PAD_CHAN0_BIT >> chan;
+
+    origin = &Origin[chan];
+    switch (AnalogMode & 0x00000700u) {
+    case 0x00000000:
+    case 0x00000500:
+    case 0x00000600:
+    case 0x00000700: {
+        origin->triggerLeft &= ~15;
+        origin->triggerRight &= ~15;
+        origin->analogA &= ~15;
+        origin->analogB &= ~15;
+        break;
+    }
+    case 0x00000100: {
+        origin->substickX &= ~15;
+        origin->substickY &= ~15;
+        origin->analogA &= ~15;
+        origin->analogB &= ~15;
+        break;
+    }
+    case 0x00000200: {
+        origin->substickX &= ~15;
+        origin->substickY &= ~15;
+        origin->triggerLeft &= ~15;
+        origin->triggerRight &= ~15;
+        break;
+    }
+    case 0x00000300: {
+        break;
+    }
+    case 0x00000400: {
+        break;
+    }
+    }
+
+    origin->stickX -= 128;
+    origin->stickY -= 128;
+    origin->substickX -= 128;
+    origin->substickY -= 128;
+
+    if (XPatchBits & chanBit) {
+        if (0x40 < origin->stickX &&
+            (SIGetType(chan) & 0xFFFF0000) == 0x09000000) {
+            origin->stickX = 0;
+        }
+    }
+}
+
+void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
+    (void)chan;
+
+    status->button = 0;
+    status->button |= (data[0] & 0x00080000) ? PAD_BUTTON_A : 0;
+    status->button |= (data[0] & 0x00200000) ? PAD_BUTTON_B : 0;
+    status->button |= (data[0] & 0x01000000) ? PAD_BUTTON_X : 0;
+    status->button |= (data[0] & 0x00010000) ? PAD_BUTTON_Y : 0;
+    status->button |= (data[0] & 0x00100000) ? PAD_BUTTON_START : 0;
+
+    status->stickX = (s8)(data[1] >> 16);
+    status->stickY = (s8)(data[1] >> 24);
+    status->substickX = (s8)(data[1]);
+    status->substickY = (s8)(data[1] >> 8);
+
+    status->triggerLeft = (u8)(data[0] >> 8);
+    status->triggerRight = (u8)data[0];
+
+    status->analogA = 0;
+    status->analogB = 0;
+
+    if (0xAA <= status->triggerLeft) {
+        status->button |= PAD_TRIGGER_L;
+    }
+    if (0xAA <= status->triggerRight) {
+        status->button |= PAD_TRIGGER_R;
+    }
+
+    status->stickX -= 128;
+    status->stickY -= 128;
+    status->substickX -= 128;
+    status->substickY -= 128;
+}
+
+void SPEC1_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
+    (void)chan;
+
+    status->button = 0;
+    status->button |= (data[0] & 0x00800000) ? PAD_BUTTON_A : 0;
+    status->button |= (data[0] & 0x01000000) ? PAD_BUTTON_B : 0;
+    status->button |= (data[0] & 0x00200000) ? PAD_BUTTON_X : 0;
+    status->button |= (data[0] & 0x00100000) ? PAD_BUTTON_Y : 0;
+    status->button |= (data[0] & 0x02000000) ? PAD_BUTTON_START : 0;
+
+    status->stickX = (s8)(data[1] >> 16);
+    status->stickY = (s8)(data[1] >> 24);
+    status->substickX = (s8)(data[1]);
+    status->substickY = (s8)(data[1] >> 8);
+
+    status->triggerLeft = (u8)(data[0] >> 8);
+    status->triggerRight = (u8)data[0];
+
+    status->analogA = 0;
+    status->analogB = 0;
+
+    if (0xAA <= status->triggerLeft) {
+        status->button |= PAD_TRIGGER_L;
+    }
+    if (0xAA <= status->triggerRight) {
+        status->button |= PAD_TRIGGER_R;
+    }
+
+    status->stickX -= 128;
+    status->stickY -= 128;
+    status->substickX -= 128;
+    status->substickY -= 128;
+}
+
+u32 SIGetTypeAsync(s32 chan, SICallback callback) {
+    BOOL enabled;
+    u32 type;
+    s32 i;
+
+    enabled = OSDisableInterrupts();
+    type = SIGetType(chan);
+
+    if (Type[chan] & SI_ERROR_BUSY) {
+        for (i = 0; i < SI_MAX_TYPE; i++) {
+            if (TypeCallback[chan][i] == callback) {
+                break;
+            }
+            if (TypeCallback[chan][i] == NULL) {
+                TypeCallback[chan][i] = callback;
+                break;
+            }
+        }
+    } else {
+        callback(chan, type);
+    }
+
+    OSRestoreInterrupts(enabled);
+    return type;
 }
