@@ -1817,3 +1817,155 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(
     }
     return this_;
 }
+
+/* ------------------------------------------------------------------ */
+/* SeqHeap dtor (PSSystem::SeqHeap::~SeqHeap)                         */
+/* Vtable-write pattern + sub-dtor on this_+4, then optional free.    */
+/* ------------------------------------------------------------------ */
+extern u8 lbl_8032E46C[0x74];  /* vtable (size 0x74 = 29 vtable slots) */
+extern u8 lbl_8032E448[0x74];  /* vtable (variant) */
+extern u8 lbl_80333728[0x74];  /* vtable (SeqHeap 801A3FB8) */
+extern "C" void fn_80138AD8(void* this_, u32 a);
+extern "C" void fn_801CFF14(void* this_);
+extern "C" void fn_80179EE8(void* this_, u32 a);
+extern "C" void fn_802066C8(void* this_, u32 a);
+extern "C" void fn_80206C70(void* this_);
+extern "C" void fn_801D1008(void* this_, u32 a);
+extern "C" void fn_801EC9CC(void* this_, u32 a);
+extern "C" void fn_8012A260(void* this_, u32 a);
+extern "C" void fn_80128668(void*);
+
+extern "C" void* __dt__Q28PSSystem7SeqHeapFv_80156A4C(void* this_, s32 flag) {
+    if (this_) {
+        *(u32*)this_ = (u32)lbl_8032E46C;
+        fn_80138AD8((u8*)this_ + 4, (u32)lbl_8032E46C);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q28PSSystem7SeqHeapFv_80156AC4(void* this_, s32 flag) {
+    if (this_) {
+        *(u32*)this_ = (u32)lbl_8032E448;
+        fn_80138AD8((u8*)this_ + 4, (u32)lbl_8032E448);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+/* SeqHeap 0x801A3FB8: sub-dtor takes this->field_0x24 (a vtable pointer)
+ * rather than this+4; vtable at +0 is the new class's vtable. */
+extern "C" void* __dt__Q28PSSystem7SeqHeapFv_801A3FB8(void* this_, s32 flag) {
+    if (this_) {
+        *(u32*)this_ = (u32)lbl_80333728;
+        fn_801CFF14(*(void**)((u8*)this_ + 0x24));
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* MemorySoundArchive dtors (no vtable write, r4=0 sub-dtor flag)    */
+/* ------------------------------------------------------------------ */
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_80179EE8(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017B038(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_80179EE8(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017DA34(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_802066C8(this_, 0);
+
+        if (flag > 0) {
+            fn_80206C70(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D130C(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_801D1008(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D1AB4(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_801D1008(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801EEEEC(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_801EC9CC(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801E2FAC(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_8012A260(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
