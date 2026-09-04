@@ -2,6 +2,30 @@
 #include <math.h>
 #include <string.h>
 
+/* auto-generated missing externs for batch dtors */
+extern u8 lbl_8032E448[];
+extern u8 lbl_8032E46C[];
+extern u8 lbl_80333728[];
+extern u8 lbl_8033EFF4[];
+extern u8 lbl_8034109C[];
+extern u8 lbl_803410D8[];
+extern u8 lbl_80341448[];
+extern u8 lbl_80343780[];
+extern u8 lbl_803453B8[];
+extern u8 lbl_80345718[];
+extern u8 lbl_80349AB0[];
+extern u8 lbl_80349AD8[];
+extern u8 lbl_80349B00[];
+extern u8 lbl_80349B28[];
+extern "C" void fn_801E323C(void* this_, u32 a);
+extern "C" void fn_801E4A2C(void* this_, u32 a);
+extern "C" void fn_801E7888(void* this_, u32 a);
+extern "C" void fn_80235380(void* this_, u32 a);
+extern "C" void fn_8028E398(void* this_, u32 a);
+extern "C" void fn_802C6CF8(void* this_, u32 a);
+extern "C" void fn_802C9D88(void* this_);
+
+
 /* Review carves for the REXE01 nw4hbm::snd cluster
  * (auto_03_800E252C_text / auto_03_800E9C38_text):
  *
@@ -577,7 +601,7 @@ extern "C" void* __dt__15shdStateMachineFv(void* this_, s32 flag) {
 }
 
 /* ------------------------------------------------------------------ */
-/* EnvGenerator::SetSustain clone (0x800F0E9C) — range 0..0x10         */
+/* EnvGenerator::SetSustain clone (0x800F0E9C) â€” range 0..0x10         */
 /* ------------------------------------------------------------------ */
 #pragma push
 #pragma small_data off
@@ -646,7 +670,7 @@ extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(
 }
 
 /* ------------------------------------------------------------------ */
-/* SeqPlayer::UpdateAllPlayers() — static global player list walk      */
+/* SeqPlayer::UpdateAllPlayers() â€” static global player list walk      */
 /* ------------------------------------------------------------------ */
 #pragma push
 #pragma small_data off
@@ -900,7 +924,7 @@ extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(
 }
 
 /* ------------------------------------------------------------------ */
-/* SoundArchivePlayer::InvalidateData clone (0x800F6F18) — clears +0x8 */
+/* SoundArchivePlayer::InvalidateData clone (0x800F6F18) â€” clears +0x8 */
 /* ------------------------------------------------------------------ */
 extern "C" void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(
     void* this_, void* pStart, void* pEnd) {
@@ -965,7 +989,7 @@ extern "C" u32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePl
 }
 
 /* ------------------------------------------------------------------ */
-/* MemorySoundArchive dtor clone (0x800F8114) — SoundHeap base          */
+/* MemorySoundArchive dtor clone (0x800F8114) â€” SoundHeap base          */
 /* ------------------------------------------------------------------ */
 
 extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void*, s32);
@@ -1082,7 +1106,7 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(
 }
 
 /* ------------------------------------------------------------------ */
-/* BasicSound::SetInitialVolume clone (0x800F877C) — +0x28 store       */
+/* BasicSound::SetInitialVolume clone (0x800F877C) â€” +0x28 store       */
 /* ------------------------------------------------------------------ */
 #pragma push
 #pragma small_data off
@@ -1245,7 +1269,7 @@ extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void* this_,
 }
 
 /* ------------------------------------------------------------------ */
-/* StrmPlayer::UpdateBufferAllPlayers() — static player list           */
+/* StrmPlayer::UpdateBufferAllPlayers() â€” static player list           */
 /* ------------------------------------------------------------------ */
 #pragma push
 #pragma small_data off
@@ -1275,7 +1299,7 @@ extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(
 }
 
 /* ------------------------------------------------------------------ */
-/* SeqPlayer::UpdateAllPlayers clone (0x800FC490) — strm players list  */
+/* SeqPlayer::UpdateAllPlayers clone (0x800FC490) â€” strm players list  */
 /* ------------------------------------------------------------------ */
 extern "C" void UpdateStrm__Q46nw4hbm3snd6detail10StrmPlayerFv(void*);
 
@@ -1333,7 +1357,7 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FD9C8(
 }
 
 /* ------------------------------------------------------------------ */
-/* TaskManager dtor — destructs 3 elements @0xC stride                 */
+/* TaskManager dtor â€” destructs 3 elements @0xC stride                 */
 /* ------------------------------------------------------------------ */
 #pragma push
 #pragma small_data off
@@ -1435,7 +1459,7 @@ extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
 }
 
 /* ------------------------------------------------------------------ */
-/* CalcLpfFreq — LPF cutoff: 32000 * 10^(2*(clamp-1))                  */
+/* CalcLpfFreq â€” LPF cutoff: 32000 * 10^(2*(clamp-1))                  */
 /* ------------------------------------------------------------------ */
 extern double __ieee754_pow(double, double);
 
@@ -1532,7 +1556,7 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FF9B8(
 }
 
 /* ------------------------------------------------------------------ */
-/* WsdPlayer ctor — vtable+0x98 sub-vtable, seq/heap storage           */
+/* WsdPlayer ctor â€” vtable+0x98 sub-vtable, seq/heap storage           */
 /* ------------------------------------------------------------------ */
 #pragma push
 #pragma small_data off
@@ -2633,3 +2657,250 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229D64(v
     return this_;
 }
 
+extern "C" void* __dt__12PhysicsWorldFv_801E7730(void* this_, s32 flag) {
+    if (this_) {
+        fn_80128670(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_80349B28;
+        void* field_0x4;
+        *(u32*)this_ = (u32)vtable;
+        field_0x4 = *(void**)((u8*)this_ + 0x4);
+        fn_8028E398(field_0x4, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__14CollisionSpaceFv_802A366C(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_80349B00;
+        void* field_0x4;
+        *(u32*)this_ = (u32)vtable;
+        field_0x4 = *(void**)((u8*)this_ + 0x4);
+        fn_8028E398(field_0x4, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__14CollisionSpaceFv_802A392C(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_80349AD8;
+        void* field_0x4;
+        *(u32*)this_ = (u32)vtable;
+        field_0x4 = *(void**)((u8*)this_ + 0x4);
+        fn_8028E398(field_0x4, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_80349AB0;
+        void* field_0x4;
+        *(u32*)this_ = (u32)vtable;
+        field_0x4 = *(void**)((u8*)this_ + 0x4);
+        fn_8028E398(field_0x4, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(void* this_, s32 flag) {
+    if (this_) {
+        fn_801E323C(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q210JASDrumSet5TPercFv(void* this_, s32 flag) {
+    if (this_) {
+        fn_802CAC54(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(void* this_, s32 flag) {
+    if (this_) {
+        fn_80128670(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(void* this_, s32 flag) {
+    if (this_) {
+        fn_801E7888(this_, 0);
+
+        if (flag > 0) {
+            fn_802C9D88(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q28PSSystem7SeqHeapFv_8023A774(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_8034109C;
+        void* field_0x10;
+        *(u32*)((u8*)this_ + 0xc) = (u32)vtable;
+        field_0x10 = *(void**)((u8*)this_ + 0x10);
+        fn_80128670(field_0x10, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q28PSSystem7SeqHeapFv_8023A7D8(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_803410D8;
+        void* field_0x10;
+        *(u32*)((u8*)this_ + 0xc) = (u32)vtable;
+        field_0x10 = *(void**)((u8*)this_ + 0x10);
+        fn_80128670(field_0x10, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q28PSSystem7SeqHeapFv_8023C79C(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_80341448;
+        void* field_0x10;
+        *(u32*)((u8*)this_ + 0xc) = (u32)vtable;
+        field_0x10 = *(void**)((u8*)this_ + 0x10);
+        fn_80128670(field_0x10, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q28PSSystem7SeqHeapFv_80246C48(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_80343780;
+        void* field_0x18;
+        *(u32*)this_ = (u32)vtable;
+        field_0x18 = *(void**)((u8*)this_ + 0x18);
+        fn_80235380(field_0x18, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q28PSSystem7SeqHeapFv_8025CC14(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_803453B8;
+        void* field_0x28;
+        *(u32*)this_ = (u32)vtable;
+        field_0x28 = *(void**)((u8*)this_ + 0x28);
+        fn_80235380(field_0x28, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q28PSSystem7SeqHeapFv_8025DA88(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_80345718;
+        void* field_0x28;
+        *(u32*)this_ = (u32)vtable;
+        field_0x28 = *(void**)((u8*)this_ + 0x28);
+        fn_80235380(field_0x28, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv_80229B78(void* this_, s32 flag) {
+    if (this_) {
+        void* vtable = (void*)lbl_8033EFF4;
+        void* field_0x348;
+        *(u32*)this_ = (u32)vtable;
+        field_0x348 = *(void**)((u8*)this_ + 0x348);
+        fn_801E4A2C(field_0x348, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* clear__Q211J2DBloSaver19CTextureNameConnectFv(void* this_, s32 flag) {
+    if (this_) {
+        fn_802C6CF8(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
