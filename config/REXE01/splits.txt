@@ -17,6 +17,9 @@ game/game_menu_init.c:
 	.text       start:0x800049C0 end:0x800053CC
 	.ctors      start:0x802ED064 end:0x802ED068
 
+MSL/misc_io.c:
+	.text       start:0x80025248 end:0x80025258
+
 runtime/__mem.c:
 	.init       start:0x80004000 end:0x80004134
 	.text       start:0x8002F238 end:0x8002F254
