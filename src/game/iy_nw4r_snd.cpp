@@ -2386,6 +2386,58 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80228FFC(
     return this_;
 }
 
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802292D8(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229330(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_802223C4(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229388(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_802223C4(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802295AC(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
 extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv(void* this_, s32 flag) {
     if (this_) {
         void* vtable = (void*)lbl_8033EB14;
@@ -2438,3 +2490,146 @@ extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv_80222C8C(void* this_, s32 
 
     return this_;
 }
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8022A0CC(
+    void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229054(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802290B0(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8022910C(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229168(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802291C4(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229220(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8022927C(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802293E0(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8022943C(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229498(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802294F4(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229550(void* this_, s32 flag) {
+    if (this_) {
+        fn_802223C4(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229D64(void* this_, s32 flag) {
+    if (this_) {
+        fn_8021915C(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
