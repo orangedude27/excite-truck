@@ -171,19 +171,6 @@ extern int   atof(const char*);
 extern int   stricmp(const char*, const char*);
 extern int   fwide(void*, int);
 
-/* memmove (Petari mem.c) */
-void* memmove(void* dst, const void* src, unsigned long n) {
-    const unsigned char* s = (const unsigned char*)src;
-    unsigned char* d = (unsigned char*)dst;
-    if (d < s) {
-        while (n--) *d++ = *s++;
-    } else {
-        d += n; s += n;
-        while (n--) *--d = *--s;
-    }
-    return dst;
-}
-
 /* atoi (Petari ansi_files.c / stdlib) */
 int atoi(const char* str) {
     int n = 0;
@@ -208,29 +195,6 @@ int stricmp(const char* s1, const char* s2) {
     }
     return (unsigned char)*s1 - (unsigned char)*s2;
 }
-
-/* __copy_longs_aligned (Petari mem_funcs.c) */
-void __copy_longs_aligned(void* dst, const void* src, unsigned long len) {
-    unsigned long* d = (unsigned long*)((unsigned long)dst & ~3);
-    const unsigned long* s = (const unsigned long*)((unsigned long)src & ~3);
-    unsigned long n = (len + 3) >> 2;
-    while (n--) *d++ = *s++;
-}
-void __copy_longs_rev_aligned(void* dst, const void* src, unsigned long len) {
-    unsigned long* d = (unsigned long*)((unsigned long)dst + len);
-    const unsigned long* s = (const unsigned long*)((unsigned long)src + len);
-    unsigned long n = (len + 3) >> 2;
-    while (n--) *--d = *--s;
-}
-void __copy_longs_unaligned(void* dst, const void* src, unsigned long len) {
-    memcpy(dst, src, len);
-}
-void __copy_longs_rev_unaligned(void* dst, const void* src, unsigned long len) {
-    const unsigned char* s = (const unsigned char*)src + len;
-    unsigned char* d = (unsigned char*)dst + len;
-    while (len--) *--d = *--s;
-}
-
 
 /* The remaining ~15 functions (__ull2dec, __str2dec, __num2dec,
  * __num2dec_internal, __equals_dec, __less_dec, __flush_buffer, fclose,

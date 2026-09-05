@@ -1,4 +1,36 @@
 #include <MSL/internal/mem.h>
+#include "mem_funcs.h"
+
+void* memmove(void* dst, const void* src, size_t n) {
+    const char* csrc;
+    char* cdst;
+    int reverse = (unsigned int)src < (unsigned int)dst;
+
+    if (n >= 32) {
+        if (((unsigned int)dst ^ (unsigned int)src) & 3) {
+            if (!reverse)
+                __copy_longs_unaligned(dst, src, n);
+            else
+                __copy_longs_rev_unaligned(dst, src, n);
+        } else {
+            if (!reverse)
+                __copy_longs_aligned(dst, src, n);
+            else
+                __copy_longs_rev_aligned(dst, src, n);
+        }
+        return dst;
+    }
+
+    if (!reverse) {
+        for (csrc = (const char*)src - 1, cdst = (char*)dst - 1, n++; --n;)
+            *++cdst = *++csrc;
+    } else {
+        for (csrc = (const char*)src + n, cdst = (char*)dst + n, n++; --n;)
+            *--cdst = *--csrc;
+    }
+
+    return dst;
+}
 
 /* Review-source carve for auto_03_80024DD8_text. */
 void* memchr(const void* source, int value, size_t length) {
