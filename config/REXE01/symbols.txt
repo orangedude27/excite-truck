@@ -28966,3 +28966,4 @@ lbl_80565238 = .sbss2:0x80565238; // type:object size:0x2 data:2byte
 lbl_8056523A = .sbss2:0x8056523A; // type:object size:0x2 data:2byte
 lbl_8056523C = .sbss2:0x8056523C; // type:object size:0x2 data:2byte
 lbl_8056523E = .sbss2:0x8056523E; // type:object size:0x2 data:2byte
+calc_dpd2pos_scale = .text:0x80045510; // scope:global
