@@ -1,9 +1,4 @@
 #include "src/review_kpad.h"
-extern KPADInsideStatus inside_kpads[];
-extern void KPADiSamplingCallback(s32, u32);
-extern s32 fn_800624A4(s32, s32, void*);
-extern void WPADiSamplingCallback(void);
-
 void KPADiSamplingCallback(s32 chan, u32 type) {
     KPADInsideStatus* kp;
     s32 format;

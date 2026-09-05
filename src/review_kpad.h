@@ -161,6 +161,10 @@ typedef struct {
     /* 0x3FC */ BOOL unk_0x3fc;
 } KPADInsideStatus;
 
+extern KPADInsideStatus inside_kpads[];
+extern s32 fn_800624A4(s32, s32, void*);
+extern void WPADiSamplingCallback(void);
+
 void KPADInit();
 
 void KPADSetFSStickClamp(s8 min, s8 max);

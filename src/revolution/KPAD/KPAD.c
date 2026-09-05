@@ -1,8 +1,6 @@
 #include <revolution/KPAD/__KPAD.h>
 
-/* REXE01's local sqrt thunk is fn_8002F234. */
-extern f64 fn_8002F234(f64);
-
+/* REXE01's local sqrt thunk is declared by the private KPAD header. */
 /* REXE01's symbol table names this private helper KPADSetSensorHeight. */
 void KPADSetSensorHeight(KPADInsideStatus* kp) {
     f32 sx;

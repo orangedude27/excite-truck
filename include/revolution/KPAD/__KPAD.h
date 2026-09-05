@@ -24,5 +24,11 @@ typedef struct KPADInsideStatus {
     u8 private_state[0x338]; /* 0x0C8..0x3FF */
 } KPADInsideStatus;
 
+extern KPADInsideStatus inside_kpads[];
+extern Vec2 lbl_8055D988;
+extern f32 lbl_8055D990;
+extern u16 lbl_80558EB0;
+extern f64 fn_8002F234(f64);
+
 
 #endif
