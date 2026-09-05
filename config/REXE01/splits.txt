@@ -17,6 +17,9 @@ game/game_menu_init.c:
 	.text       start:0x800049C0 end:0x800053CC
 	.ctors      start:0x802ED064 end:0x802ED068
 
+game/game_ax_promote.c:
+	.text       start:0x8000D82C end:0x8000D838
+
 MSL/misc_io.c:
 	.text       start:0x80025248 end:0x80025258
 

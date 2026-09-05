@@ -542,6 +542,7 @@ config.libs = [
         "progress_category": "sdk",
         "objects": [
             Object(NonMatching, "game/game_menu_init.c"),
+            Object(Matching, "game/game_ax_promote.c"),
         ],
     },
 ]
