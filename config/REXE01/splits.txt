@@ -150,6 +150,9 @@ revolution/OS/OSError.c:
 	.bss        start:0x8037D8B0 end:0x8037D8F4
 	.sdata      start:0x80558F38 end:0x80558F40
 
+revolution/OS/OSBootDol.c:
+	.text       start:0x8004EBA4 end:0x8004ED84
+
 revolution/OS/OSInterrupt.c:
 	.text       start:0x80050ED8 end:0x80050F48
 

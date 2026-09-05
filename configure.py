@@ -435,6 +435,7 @@ config.libs = [
             Object(NonMatching, "revolution/OS/OSCache.c"),
             Object(NonMatching, "revolution/OS/OSContext.c"),
             Object(NonMatching, "revolution/OS/OSError.c"),
+            Object(NonMatching, "revolution/OS/OSBootDol.c"),
             Object(Matching, "revolution/OS/OSExec.c"),
             Object(Matching, "revolution/OS/OSExecBoot.c"),
             Object(Matching, "revolution/OS/OSSemaphore.c"),
