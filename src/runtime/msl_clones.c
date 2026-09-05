@@ -140,6 +140,98 @@ void __stdio_atexit(void) {
     __stdio_exit = (void (*)(void))0x8002274C;  /* points to __close_all */
 }
 
+/* ---------- Forward-declared MSL C library clones (game region) ---------- */
+/* These are wrapper stubs. The full implementations live in Petari's
+ * src/MSL_C/{alloc.c, mem.c, string.c, ansi_fp.c, ansi_files.c, ...}.
+ * Authoring them byte-exact is deferred (per-fn MWCC flag tuning needed). */
+
+extern void* memset(void*, int, unsigned long);
+extern int   memcmp(const void*, const void*, unsigned long);
+extern char* strchr(const char*, int);
+extern char* strrchr(const char*, int);
+extern char* strstr(const char*, const char*);
+extern char* strncpy(char*, const char*, unsigned long);
+extern int   strncmp(const char*, const char*, unsigned long);
+extern int   printf(const char*, ...);
+extern int   sprintf(char*, const char*, ...);
+extern int   snprintf(char*, unsigned long, const char*, ...);
+extern int   vsprintf(char*, const char*, ...);
+extern int   vsnprintf(char*, unsigned long, const char*, ...);
+extern int   sscanf(const char*, const char*, ...);
+extern long  ftell(void*);
+extern int   fseek(void*, long, int);
+extern int   fclose(void*);
+extern int   fflush(void*);
+extern double ceil(double);
+extern double cos(double);
+extern double floor(double);
+extern double sin(double);
+extern double ldexp(double, int);
+extern int   atof(const char*);
+extern int   stricmp(const char*, const char*);
+extern int   fwide(void*, int);
+
+/* memmove (Petari mem.c) */
+void* memmove(void* dst, const void* src, unsigned long n) {
+    const unsigned char* s = (const unsigned char*)src;
+    unsigned char* d = (unsigned char*)dst;
+    if (d < s) {
+        while (n--) *d++ = *s++;
+    } else {
+        d += n; s += n;
+        while (n--) *--d = *--s;
+    }
+    return dst;
+}
+
+/* atoi (Petari ansi_files.c / stdlib) */
+int atoi(const char* str) {
+    int n = 0;
+    int neg = 0;
+    while (*str == ' ') str++;
+    if (*str == '-') { neg = 1; str++; }
+    else if (*str == '+') str++;
+    while (*str >= '0' && *str <= '9') {
+        n = n * 10 + (*str - '0');
+        str++;
+    }
+    return neg ? -n : n;
+}
+
+/* stricmp (Petari string.c) */
+int stricmp(const char* s1, const char* s2) {
+    while (*s1 && *s2) {
+        char a = *s1++; char b = *s2++;
+        if (a >= 'A' && a <= 'Z') a += 32;
+        if (b >= 'A' && b <= 'Z') b += 32;
+        if (a != b) return (unsigned char)a - (unsigned char)b;
+    }
+    return (unsigned char)*s1 - (unsigned char)*s2;
+}
+
+/* __copy_longs_aligned (Petari mem_funcs.c) */
+void __copy_longs_aligned(void* dst, const void* src, unsigned long len) {
+    unsigned long* d = (unsigned long*)((unsigned long)dst & ~3);
+    const unsigned long* s = (const unsigned long*)((unsigned long)src & ~3);
+    unsigned long n = (len + 3) >> 2;
+    while (n--) *d++ = *s++;
+}
+void __copy_longs_rev_aligned(void* dst, const void* src, unsigned long len) {
+    unsigned long* d = (unsigned long*)((unsigned long)dst + len);
+    const unsigned long* s = (const unsigned long*)((unsigned long)src + len);
+    unsigned long n = (len + 3) >> 2;
+    while (n--) *--d = *--s;
+}
+void __copy_longs_unaligned(void* dst, const void* src, unsigned long len) {
+    memcpy(dst, src, len);
+}
+void __copy_longs_rev_unaligned(void* dst, const void* src, unsigned long len) {
+    const unsigned char* s = (const unsigned char*)src + len;
+    unsigned char* d = (unsigned char*)dst + len;
+    while (len--) *--d = *--s;
+}
+
+
 /* The remaining ~15 functions (__ull2dec, __str2dec, __num2dec,
  * __num2dec_internal, __equals_dec, __less_dec, __flush_buffer, fclose,
  * fflush, _ftell, _fseek, deallocate_from_fixed_pools, wcstombs, memmove,
