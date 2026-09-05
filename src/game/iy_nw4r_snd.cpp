@@ -2760,10 +2760,12 @@ extern "C" void* __dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void* this_, s32 fl
     return this_;
 }
 
-extern "C" void* __dt__Q210JASDrumSet5TPercFv(void* this_, s32 flag) {
+/* __dt__Q36PSGame10SoundTable11CategoryMgrFv (auto_03_80198F14_text):
+ * Two consecutive beq (compiler artifact for "complete object" vs
+ * "deleting object" destructor ABI); 22/23 instr (extra redundant beq). */
+extern "C" void* __dt__Q36PSGame10SoundTable11CategoryMgrFv(void* this_, s32 flag) {
     if (this_) {
-        fn_802CAC54(*(void**)this_, 0);
-        fn_802CAC54(*(void**)((u8*)this_ + 4), 0);
+        *(u32*)this_ = 0;
 
         if (flag > 0) {
             fn_80128668(this_);
@@ -2775,7 +2777,20 @@ extern "C" void* __dt__Q210JASDrumSet5TPercFv(void* this_, s32 flag) {
 
 extern "C" void* __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(void* this_, s32 flag) {
     if (this_) {
-        fn_80128670(this_, 0);
+        fn_80128670(*(void**)this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q210JASDrumSet5TPercFv(void* this_, s32 flag) {
+    if (this_) {
+        fn_802CAC54(*(void**)this_, 0);
+        fn_802CAC54(*(void**)((u8*)this_ + 4), 0);
 
         if (flag > 0) {
             fn_80128668(this_);
