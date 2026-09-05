@@ -12,16 +12,16 @@ void KPADSetSensorHeight(KPADInsideStatus* kp) {
     sy = 0.75f;
     kp->dpd2pos_scale = (f32)fn_8002F234((f64)(sx * sx + sy * sy));
 
-    if (kp->center_org_x < 0.0f) {
-        sx += kp->center_org_x;
+    if (kp->center_org.x < 0.0f) {
+        sx += kp->center_org.x;
     } else {
-        sx -= kp->center_org_x;
+        sx -= kp->center_org.x;
     }
 
-    if (kp->center_org_y < 0.0f) {
-        sy += kp->center_org_y;
+    if (kp->center_org.y < 0.0f) {
+        sy += kp->center_org.y;
     } else {
-        sy -= kp->center_org_y;
+        sy -= kp->center_org.y;
     }
 
     if (sx < sy) {
