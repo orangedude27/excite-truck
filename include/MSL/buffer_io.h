@@ -1,7 +1,7 @@
 #ifndef _MSL_COMMON_BUFFER_IO_H
 #define _MSL_COMMON_BUFFER_IO_H
 
-#include <cstdio>
+#include <ansi_files.h>
 
 enum { __align_buffer, __dont_align_buffer };
 
