@@ -1569,6 +1569,7 @@ __GXSetMatrixIndex = .text:0x80044BA8; // type:function size:0x88
 GXSetGPMetric = .text:0x80044C30; // type:function size:0x82C
 GXClearGPMetric = .text:0x8004545C; // type:function size:0x10
 KPADSetBtnRepeat = .text:0x8004546C; // type:function size:0xA4
+GXReadGPMetric = .text:0x8004546C; // type:label scope:global
 KPADSetSensorHeight = .text:0x80045510; // type:function size:0xC4
 reset_kpad = .text:0x800455D4; // type:function size:0x274
 calc_button_repeat = .text:0x80045848; // type:function size:0x1B0
