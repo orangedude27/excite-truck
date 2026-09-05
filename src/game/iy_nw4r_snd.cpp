@@ -2736,7 +2736,21 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* this_, s32 flag) {
 
 extern "C" void* __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(void* this_, s32 flag) {
     if (this_) {
-        fn_801E323C(this_, 0);
+        void* field_0 = *(void**)this_;
+        if (field_0) fn_801E323C(field_0, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void* this_, s32 flag) {
+    if (this_) {
+        void* field_8 = *(void**)((u8*)this_ + 8);
+        if (field_8) fn_80235380(field_8, 0);
 
         if (flag > 0) {
             fn_80128668(this_);
