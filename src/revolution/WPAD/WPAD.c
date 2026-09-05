@@ -1,3 +1,13 @@
+/*
+ * WPAD source-coverage TU.
+ *
+ * Much of the public WPAD SDK shape is represented here, but this file also
+ * contains REXE01-only anonymous helper coverage. Several helper functions are
+ * intentionally FUZZY because the remaining gaps are MWCC struct-copy/inlining
+ * shape rather than unknown behavior. Do not use this file as a promotion target
+ * without first checking the auto-unit ownership notes in PROJECT_STATUS.md.
+ */
+
 #include <revolution/version.h>
 
 #include <revolution/BTE.h>

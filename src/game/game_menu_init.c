@@ -1,3 +1,13 @@
+/*
+ * Bootstrap/menu initialization cluster.
+ *
+ * This is intentionally source-coverage-first code. The functions are bounded
+ * and reviewed, but most names are still placeholder `fn_XXXXXXXX` aliases and
+ * several differences are FUZZY source-shape/scheduling issues. Treat this TU as
+ * a NonMatching review/promote-later cluster unless a dedicated promotion pass
+ * proves section ownership and preserves the final DOL hash.
+ */
+
 #include <revolution/OS.h>
 
 extern void fn_802E2CFC(void* out);

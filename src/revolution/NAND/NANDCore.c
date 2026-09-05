@@ -1,3 +1,12 @@
+/*
+ * NANDCore recovered source.
+ *
+ * Function semantics are largely reconstructed, but full promotion is deferred:
+ * remaining issues are pooled data/source-shape and linker placement rather than
+ * missing behavior. Keep changes source-focused unless a dedicated promotion pass
+ * maps all data providers and checks the final DOL hash.
+ */
+
 #include <revolution/ESP.h>
 #include <revolution/NAND.h>
 #include <revolution/OS.h>
