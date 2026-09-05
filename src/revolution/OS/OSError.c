@@ -2,7 +2,7 @@
 #include <revolution/DSP.h>
 #include <revolution/OS.h>
 
-#include <stdio.h>
+extern int vprintf(const char*, va_list);
 
 OSErrorHandler __OSErrorTable[OS_ERR_MAX];
 u32 __OSFpscrEnableBits = FPSCR_VE | FPSCR_OE | FPSCR_UE | FPSCR_ZE | FPSCR_XE;
