@@ -2660,7 +2660,8 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229D64(v
 
 extern "C" void* __dt__12PhysicsWorldFv_801E7730(void* this_, s32 flag) {
     if (this_) {
-        fn_80128670(this_, 0);
+        fn_80128670(*(void**)((u8*)this_ + 0xc), 0);
+        fn_80128670(*(void**)this_, 0);
 
         if (flag > 0) {
             fn_80128668(this_);
@@ -2970,6 +2971,23 @@ extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* this_, s32 flag) {
     if (this_) {
         fn_802CAC54(*(void**)((u8*)this_ + 0x1e4), 0);
         fn_802CAC54(*(void**)((u8*)this_ + 0x1e8), 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* __dt__12PhysicsWorldFv_801E7730@801E7730 (auto_03_801E76A8_text)   */
+/* sub on field_0xc and field_0, then free if flag>0.               */
+
+extern "C" void* __dt__12PhysicsWorldFv_80289C20(void* this_, s32 flag) {
+    if (this_) {
+        fn_8028E398(*(void**)((u8*)this_ + 0x4), 0);
+        fn_8028E398(*(void**)this_, 0);
 
         if (flag > 0) {
             fn_80128668(this_);
