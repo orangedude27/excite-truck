@@ -124,15 +124,6 @@ void free(void* ptr) {
     my_pool_free(lbl_8035BB58, ptr);
 }
 
-/* ---------- __close_all (game-region clone) ---------- */
-extern void (*lbl_8055D6A0)(void);  /* __stdio_exit function pointer */
-
-void __close_all(void) {
-    if (lbl_8055D6A0 != NULL) {
-        lbl_8055D6A0();
-    }
-}
-
 /* ---------- __stdio_atexit (game-region clone — see MSL/misc_io.c) ---------- */
 extern void (*__stdio_exit)(void);
 
