@@ -108,6 +108,9 @@ revolution/EXI/EXICommon.c:
 revolution/KPAD/KPAD.c:
 	.text       start:0x80045510 end:0x800455D4
 
+revolution/KPAD/KPADReset.c:
+	.text       start:0x800455D4 end:0x80045848
+
 revolution/MTX/mtxvec.c:
 	.text       start:0x80049EF8 end:0x80049F74
 

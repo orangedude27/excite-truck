@@ -379,6 +379,7 @@ config.libs = [
             Object(Matching, "revolution/NdevExi2AD/DebuggerDriver.c"),
             Object(Matching, "revolution/NdevExi2AD/exi2.c"),
             Object(NonMatching, "revolution/KPAD/KPAD.c"),
+            Object(NonMatching, "revolution/KPAD/KPADReset.c"),
             Object(Matching, "revolution/PAD/Pad.c"),
             # WPAD.c is reviewable but WPADSetSamplingCallback_800603D0 is fuzzy
             # (extensionCB offset + DEBUGPrint reloc mismatch); keep reference object linked.
