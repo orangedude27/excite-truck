@@ -10,7 +10,7 @@
  * src/game/game_ax_stubs.c (review-only, unconfigured); this file is the
  * small configured subset promoted into the link.
  *
- * Strict-MATCH at promotion time. See AGENTS.md.
+ * Strict-MATCH at promotion time.
  */
 #include <types.h>
 
