@@ -777,8 +777,15 @@ int vsscanf(const char *s, const char *format, va_list arg) {
 }
 
 int sscanf(const char *s, const char *pFormat, ...) {
-    int ret;
+    __InStrCtrl isc;
     va_list args;
+
+    isc.NextChar = (char*)s;
+    if ((s == 0) || (*isc.NextChar == '\0')) {
+        return -1;
+    }
+
+    isc.NullCharDetected = 0;
     va_start(args, pFormat);
-    return vsscanf(s, pFormat, args);
+    return __sformatter(&__StringRead, (void*)&isc, pFormat, args, 0);
 }
