@@ -1866,6 +1866,7 @@ extern "C" void fn_8021915C(void* this_, u32 a);
 extern "C" void fn_802223C4(void* this_, u32 a);
 extern "C" void fn_80128670(void* this_, u32 a);
 extern "C" void fn_802CAC54(void* this_, u32 a);
+extern "C" void fn_80128658(void* this_, u32 a);
 extern "C" void fn_802C4C80(void* this_, u32 a);
 extern "C" void fn_8022A8E4(void* this_);
 extern "C" void fn_802328D4(void* this_, u32 a);
@@ -2747,7 +2748,8 @@ extern "C" void* __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(void* this_, s32 fl
 
 extern "C" void* __dt__Q210JASDrumSet5TPercFv(void* this_, s32 flag) {
     if (this_) {
-        fn_802CAC54(this_, 0);
+        fn_802CAC54(*(void**)this_, 0);
+        fn_802CAC54(*(void**)((u8*)this_ + 4), 0);
 
         if (flag > 0) {
             fn_80128668(this_);
@@ -2896,6 +2898,49 @@ extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv_80229B78(void* this_, s32 
 extern "C" void* clear__Q211J2DBloSaver19CTextureNameConnectFv(void* this_, s32 flag) {
     if (this_) {
         fn_802C6CF8(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+/* ------------------------------------------------------------------ */
+/* JASDrumSet::TPerc dtor clones (auto_03_8013CB10_text, etc.)         */
+/* No vtable write; just calls fn_802CAC54 on this->field_0, this->field_4, */
+/* then fn_80128668 (free) if flag > 0.                                */
+extern "C" void* __dt__Q210JASDrumSet5TPercFv_802534B0(void* this_, s32 flag) {
+    if (this_) {
+        fn_80128658(*(void**)((u8*)this_ + 0x20), 0);
+        fn_80128658(*(void**)((u8*)this_ + 0x24), 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q210JASDrumSet5TPercFv_802894F4(void* this_, s32 flag) {
+    if (this_) {
+        fn_8028E398(*(void**)((u8*)this_ + 0xa4), 0);
+        fn_8028E398(*(void**)((u8*)this_ + 0xa0), 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+
+    return this_;
+}
+
+extern "C" void* __dt__Q210JASDrumSet5TPercFv_8029AE88(void* this_, s32 flag) {
+    if (this_) {
+        fn_802CAC54(*(void**)((u8*)this_ + 0x1e4), 0);
+        fn_802CAC54(*(void**)((u8*)this_ + 0x1e8), 0);
 
         if (flag > 0) {
             fn_80128668(this_);
