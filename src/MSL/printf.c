@@ -1,10 +1,14 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 
-/* Review-source carve for the REXE01 MSL printf auto-unit
- * (__FileWrite@80027238, __StringWrite@80027290, vprintf@800272FC,
- * vsprintf@800273F8).  The full FILE layout is not modeled in this
- * project yet; these two writer callbacks are self-contained. */
+/*
+ * Review-source carve for the REXE01 MSL printf auto-unit.
+ *
+ * TP and Petari contain the complete MSL formatter implementation. REXE01's
+ * sprintf wrapper uses the same __StringWrite control object, but its local
+ * __pformatter has the older four-argument ABI.
+ */
 
 extern size_t __fwrite(const void* buffer, size_t size, size_t count,
                        FILE* file);
@@ -31,4 +35,31 @@ void* __StringWrite(void* pCtrl, const char* pBuffer, size_t char_num) {
     ctrl->CharsWritten += chars;
 
     return (void*)1;
+}
+
+typedef void* (*PrintfWriteProc)(void*, const char*, size_t);
+
+extern int __pformatter(PrintfWriteProc, void*, const char*, va_list);
+
+int sprintf(char* s, const char* format, ...) {
+    va_list args;
+    __OutStrCtrl osc;
+    int end;
+
+    va_start(args, format);
+    osc.CharStr = s;
+    osc.MaxCharCount = (size_t)-1;
+    osc.CharsWritten = 0;
+    end = __pformatter(__StringWrite, &osc, format, args);
+    va_end(args);
+
+    if (s) {
+        if (end < (int)(size_t)-1) {
+            s[end] = '\0';
+        } else {
+            s[-2] = '\0';
+        }
+    }
+
+    return end;
 }
