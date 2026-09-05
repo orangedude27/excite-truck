@@ -105,6 +105,9 @@ revolution/EXI/EXIUart.c:
 revolution/EXI/EXICommon.c:
 	.text       start:0x8003DA10 end:0x8003DB9C
 
+revolution/KPAD/KPAD.c:
+	.text       start:0x80045510 end:0x800455D4
+
 revolution/MTX/mtxvec.c:
 	.text       start:0x80049EF8 end:0x80049F74
 
