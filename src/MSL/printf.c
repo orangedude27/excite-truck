@@ -63,3 +63,66 @@ int sprintf(char* s, const char* format, ...) {
 
     return end;
 }
+
+int vsnprintf(char* s, size_t n, const char* format, va_list args) {
+    __OutStrCtrl osc;
+    int end;
+
+    osc.CharStr = s;
+    osc.MaxCharCount = n;
+    osc.CharsWritten = 0;
+    end = __pformatter(__StringWrite, &osc, format, args);
+
+    if (s) {
+        if (end < n) {
+            s[end] = '\0';
+        } else if (n != 0) {
+            s[n - 1] = '\0';
+        }
+    }
+
+    return end;
+}
+
+int vsprintf(char* s, const char* format, va_list args) {
+    __OutStrCtrl osc;
+    int end;
+
+    osc.CharStr = s;
+    osc.MaxCharCount = (size_t)-1;
+    osc.CharsWritten = 0;
+    end = __pformatter(__StringWrite, &osc, format, args);
+
+    if (s) {
+        if (end < (int)(size_t)-1) {
+            s[end] = '\0';
+        } else {
+            s[-2] = '\0';
+        }
+    }
+
+    return end;
+}
+
+int snprintf(char* s, size_t n, const char* format, ...) {
+    va_list args;
+    __OutStrCtrl osc;
+    int end;
+
+    va_start(args, format);
+    osc.CharStr = s;
+    osc.MaxCharCount = n;
+    osc.CharsWritten = 0;
+    end = __pformatter(__StringWrite, &osc, format, args);
+    va_end(args);
+
+    if (s) {
+        if (end < n) {
+            s[end] = '\0';
+        } else if (n != 0) {
+            s[n - 1] = '\0';
+        }
+    }
+
+    return end;
+}
