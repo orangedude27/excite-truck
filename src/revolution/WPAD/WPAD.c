@@ -2010,7 +2010,7 @@ static BOOL IsBusyStream(s32 chan) {
 }
 
 BOOL WPADCanSendStreamData(s32 chan) {
-    WPADCB* p = _wpdcb[chan];
+    WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled;
     BOOL handshake;
     s32 status;
