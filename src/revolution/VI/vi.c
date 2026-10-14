@@ -792,6 +792,11 @@ void VISetNextFrameBuffer(void *fb)
     OSRestoreInterrupts(enabled);
 }
 
+VITVFormat fn_8005AB88(void) {
+    extern VITVFormat lbl_8055DB94;
+    return lbl_8055DB94;
+}
+
 void VISetNextRightFrameBuffer(void *fb)
 {
     BOOL enabled;
