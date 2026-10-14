@@ -2702,15 +2702,15 @@ static u8 __GetSpeakerVolume(void) {
     return __ClampSpeakerVolume(volume);
 }
 
-u16 _WPADGetStackBufferStatus(s32 chan) {
-    WPADCB* p = _wpdcb[chan];
+DECOMP_INLINE u16 _WPADGetStackBufferStatus(s32 chan) {
+    WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled;
     s32 status;
     s8 handle;
 
     enabled = OSDisableInterrupts();
-    status = p->status;
-    handle = p->devHandle;
+    status = *(s32*)((u8*)p + 0x7FC);
+    handle = *(s8*)((u8*)p + 0x803);
     OSRestoreInterrupts(enabled);
 
     if (status == WPAD_ERR_NO_CONTROLLER) {
