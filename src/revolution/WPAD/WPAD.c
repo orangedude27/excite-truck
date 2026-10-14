@@ -1392,7 +1392,7 @@ u32 WPADGetDataFormat(s32 chan) {
 }
 
 s32 WPADSetDataFormat(s32 chan, u32 format) {
-    WPADCB* p = _wpdcb[chan];
+    WPADCB* p = lbl_8038F4F0[chan];
     s32 status;
     BOOL enabled;
     BOOL handshake;
@@ -1400,9 +1400,9 @@ s32 WPADSetDataFormat(s32 chan, u32 format) {
 
     enabled = OSDisableInterrupts();
 
-    handshake = p->handshakeFinished;
-    status = p->status;
-    currFormat = p->dataFormat;
+    handshake = *(BOOL*)((u8*)p + 0x81C);
+    status = *(s32*)((u8*)p + 0x7FC);
+    currFormat = *(u32*)((u8*)p + 0x7F8);
 
     OSRestoreInterrupts(enabled);
 
@@ -1420,7 +1420,7 @@ s32 WPADSetDataFormat(s32 chan, u32 format) {
             status = WPAD_ERR_COMMUNICATION_ERROR;
         } else {
             enabled = OSDisableInterrupts();
-            p->dataFormat = format;
+            *(u32*)((u8*)p + 0x7F8) = format;
             OSRestoreInterrupts(enabled);
 
             status = WPAD_ERR_OK;
@@ -2997,6 +2997,24 @@ void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 	memset(pQueue->buffer, 0, pQueue->capacity * sizeof(WPADCommand));
 
 	OSRestoreInterrupts(enabled);
+}
+
+void fn_80064A80(s32 chan, s32 param_2) {
+	WPADCB* cb = lbl_8038F4F0[chan];
+	if (param_2 != 0) {
+		WPADiClearQueue_80063BD4(&cb->extCmdQueue);
+		if (param_2 == -1) {
+			((u8*)cb)[0x801] = 0xfd;
+		} else {
+			s32 val = *(s32*)((u8*)cb + 0x780);
+			s32 t = -val | val;
+			s32 sign = t >> 31;
+			((u8*)cb)[0x801] = (sign & 0x7C00000) >> 24;
+		}
+		if (*(void**)((u8*)cb + 0x7e0) != NULL) {
+			((void (*)(s32))((u8*)cb + 0x7e0))(chan);
+		}
+	}
 }
 
 // fn_80064B1C: WPAD data processing
