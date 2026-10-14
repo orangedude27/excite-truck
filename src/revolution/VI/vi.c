@@ -1024,3 +1024,16 @@ void fn_8005CB70(void)
 {
 	__VISetGammaImm((u8*)&lbl_80311B50 + lbl_8055DBE8 * 0x22);
 }
+
+void fn_8005CC68(void)
+{
+    extern u32 lbl_8055DBF0;
+    u8 data[2];
+
+    lbl_8055DBF0 = 3;
+    data[0] = 1;
+    data[1] = 3;
+    __VISendI2CData(0xE0, data, 2);
+    WaitMicroTime(2);
+}
+
