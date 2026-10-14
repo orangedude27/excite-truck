@@ -1505,8 +1505,8 @@ void WPADControlMotor(s32 chan, u32 command) {
         return;
     }
 
-    if (!_rumble && (command != WPAD_MOTOR_STOP ||
-                    *(BOOL*)((u8*)p + 0x814) != TRUE)) {
+    if (!lbl_8055DC14 && (command != WPAD_MOTOR_STOP ||
+                         *(BOOL*)((u8*)p + 0x814) != TRUE)) {
         OSRestoreInterrupts(enabled);
         return;
     }
@@ -3022,7 +3022,7 @@ void fn_80064A80(s32 chan, s32 param_2) {
 			s32 val = *(s32*)((u8*)cb + 0x780);
 			s32 t = -val | val;
 			s32 sign = t >> 31;
-			((u8*)cb)[0x801] = (sign & 0x7C00000) >> 24;
+			((u8*)cb)[0x801] = ((u32)sign >> 24) & 0x3F;
 		}
 		if (*(s32*)((u8*)cb + 0x7e0) != 0) {
 			((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
