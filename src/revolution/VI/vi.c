@@ -268,6 +268,27 @@ static VITiming *getTiming(VITVMode mode)
 }
 #pragma dont_inline reset
 
+s32 fn_80058A00(s32 arg0, s32 arg1)
+{
+    if (arg0 == 0) {
+        switch (arg1) {
+        case 1:
+        case 2:
+        case 3:
+            fn_8005CC68();
+            return 1;
+        case 0:
+        case 4:
+        case 5:
+        case 6:
+            return 1;
+        }
+    } else {
+        return 1;
+    }
+    return arg0;
+}
+
 VIRetraceCallback fn_800591AC(VIRetraceCallback cb)
 {
     extern VIRetraceCallback lbl_8055DBAC;
@@ -1055,6 +1076,7 @@ void __VISetTrapFilter(void)
     WaitMicroTime(2);
 }
 
+#pragma dont_inline on
 void fn_8005CC68(void)
 {
     extern u32 lbl_8055DBF0;
