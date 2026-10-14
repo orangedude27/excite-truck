@@ -970,5 +970,5 @@ void __VIGetAdjustingValues(s16 *x, s16 *y)
     OSRestoreInterrupts(enabled);
 }
 extern s32 lbl_8055DBE8;
-extern u8 lbl_80311B50[];
+extern u8 lbl_80311B50;
 void __VISetGammaImm(u8*);
