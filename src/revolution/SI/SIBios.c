@@ -9,6 +9,9 @@ extern u32 lbl_8055DB14;
 extern int __cntlzw(unsigned int);
 BOOL SIGetResponse(s32 chan, void* data);
 void fn_8005649C(s32 chan, u32 status);
+u32 SIGetTypeAsync(s32 chan, SICallback callback);
+u32 SIEnablePolling(u32 chan);
+void fn_80057F2C(s32 chan, u32 command);
 
 typedef enum {
     SI_ERROR_NOREP = (1 << 3),
