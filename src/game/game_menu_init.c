@@ -386,7 +386,7 @@ void fn_80004CB4(void) {
 }
 
 #pragma push
-#pragma optimize_for_size on
+#pragma optimization_level 3
 void fn_80004E20(void) {
     fn_80265D48();
     fn_80129BD4();
