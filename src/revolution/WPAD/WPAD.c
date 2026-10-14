@@ -2849,8 +2849,9 @@ void fn_80060CC0(void) { /* stub */ }
 
 // fn_80062054: get data format
 u32 fn_80062054(s32 chan) {
+#pragma unused(chan)
     BOOL enabled = OSDisableInterrupts();
-    u32 val = (*(u32*)((u8*)_wpdcb[chan] + 0x8B8));
+    u32 val = lbl_8055DC12;
     OSRestoreInterrupts(enabled);
     return val;
 }
