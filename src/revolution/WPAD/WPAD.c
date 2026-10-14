@@ -1316,13 +1316,13 @@ WPADSamplingCallback WPADSetSamplingCallback(s32 chan,
     BOOL enabled;
     WPADSamplingCallback pOldCallback;
 
-    DEBUGPrint("WPADSetSamplingCallback()\n");
+    DBPrintf_80068D68(lbl_803122A0);
 
     enabled = OSDisableInterrupts();
-    p = _wpdcb[chan];
+    p = lbl_8038F4F0[chan];
 
-    pOldCallback = p->samplingCB;
-    p->samplingCB = pCallback;
+    pOldCallback = *(WPADSamplingCallback*)((u8*)p + 0x7E4);
+    *(WPADSamplingCallback*)((u8*)p + 0x7E4) = pCallback;
 
     OSRestoreInterrupts(enabled);
     return pOldCallback;
