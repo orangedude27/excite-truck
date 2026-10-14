@@ -22,6 +22,7 @@ extern u8 lbl_80558FC8;
 extern u8 lbl_80558FC9;
 extern u8 lbl_80558FCA;
 extern u8 lbl_80558FD0;
+extern u8 lbl_8055DBE4;
 
 typedef struct {
     u8 equ;
