@@ -492,6 +492,8 @@ int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
     return result;
 }
 
+#pragma pop
+
 #pragma push
 #pragma use_lmw_stmw off
 int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
