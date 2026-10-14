@@ -161,46 +161,41 @@ struct GameVirtualObject {
     GameVirtualTable* vtable;
 };
 
+#pragma push
+#pragma scheduling off
 void fn_800049C0(void) {
-    const u32* rodata_base = (const u32*)0x802ED680;
-    u32 local[16];
+    struct NameTable { const char* names[10]; };
+    struct {
+        u32 date[6];
+        struct NameTable table;
+    } local;
     u16* dp;
     u16 year_val, month_val, day_val, hour_val;
     int lang_result;
-    const char** table;
+    u32 year_seconds, month_seconds, day_seconds;
+    u32 first, second;
 
-    local[6] = rodata_base[0];
-    local[7] = rodata_base[1];
-    local[8] = rodata_base[2];
-    local[9] = rodata_base[3];
-    local[10] = rodata_base[4];
-    local[11] = rodata_base[5];
-    local[12] = rodata_base[6];
-    local[13] = rodata_base[7];
-    local[14] = rodata_base[8];
-    local[15] = rodata_base[9];
-
-    fn_802E2CFC(local);
-
-    dp = (u16*)&local[1];
-    year_val  = dp[0];
+    local.table = *(const struct NameTable*)lbl_802ED680;
+    fn_802E2CFC(&local);
+    dp = (u16*)&local.date[1];
+    year_val = dp[0];
     month_val = dp[1];
-    day_val   = dp[2];
-    hour_val  = dp[3];
-
-    fn_80129C80(6,
-        ((u32)hour_val << 8) & ((u32)day_val ^ ((u32)month_val * 3600)),
-        ((u32)day_val << 8) & (((u32)hour_val * 60) ^ ((u32)year_val * 43200)));
-
+    day_val = dp[2];
+    hour_val = dp[3];
+    year_seconds = year_val * 43200;
+    month_seconds = month_val * 3600;
+    day_seconds = day_val * 60;
+    first = hour_val ^ month_seconds;
+    second = day_seconds ^ year_seconds;
+    first = (day_val << 8) & first;
+    second = (hour_val << 8) & second;
+    fn_80129C80(6, first, second);
     lang_result = fn_80129D18(6, 10);
-
-    fn_80278A1C((const char*)0x802FAF24);
-
-    if (lang_result != 0) {
-        table = (const char**)&local[6];
-        fn_80278A1C(table[lang_result]);
+    if (fn_80278A1C(lbl_802FAF24) != 0) {
+        fn_80278A1C(local.table.names[lang_result]);
     }
 }
+#pragma pop
 
 void fn_80004AB8(u32 val) DECOMP_DONT_INLINE {
     if (val == lbl_8055890C) {
