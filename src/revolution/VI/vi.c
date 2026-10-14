@@ -994,6 +994,17 @@ void fn_8005BAEC(u8 value)
     WaitMicroTime(2);
 }
 
+void __VISetCGMS(void)
+{
+    u8 data[3];
+
+    data[0] = 5;
+    data[1] = ((lbl_80558FC1 & 0xF) << 2) | (lbl_80558FC0 & 3);
+    data[2] = lbl_80558FC2;
+    __VISendI2CData(0xE0, data, 3);
+    WaitMicroTime(2);
+}
+
 void __VISetAdjustingValues(s16 x, s16 y)
 {
     BOOL enabled;
