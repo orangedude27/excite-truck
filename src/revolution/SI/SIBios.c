@@ -35,7 +35,7 @@ typedef void (*SIContextCallback)(s32 chan, u32 status, OSContext* context);
 const char* __SIVersion =
     "<< RVL_SDK - SI \trelease build: Nov 30 2006 03:31:44 (0x4199_60831) >>";
 
-static SIMain Si = {SI_CHAN_NONE};
+static SIMain Si_80311630 = {SI_CHAN_NONE};
 static u32 Type[SI_MAX_CHAN] = {SI_ERROR_NOREP, SI_ERROR_NOREP, SI_ERROR_NOREP,
                                 SI_ERROR_NOREP};
 
@@ -102,7 +102,7 @@ static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
                          u32 inSize, SICallback callback);
 
 static BOOL SIIsChanBusy(s32 chan) {
-    return Packet[chan].chan != SI_CHAN_NONE || Si.chan == chan;
+    return Packet[chan].chan != SI_CHAN_NONE || Si_80311630.chan == chan;
 }
 
 typedef void (*SISamplingCallback)(void);
@@ -126,7 +126,7 @@ void SamplingHandler(s16 intr, OSContext* ctx) {
 }
 
 BOOL fn_80057460(void) {
-    return Si.chan != SI_CHAN_NONE;
+    return Si_80311630.chan != SI_CHAN_NONE;
 }
 
 static u32 SIGetStatus(s32 chan) {
@@ -176,17 +176,17 @@ static u32 CompleteTransfer(void) {
     sr = SI_HW_REGS[SI_SISR];
     SIClearTCInterrupt();
 
-    if (Si.chan != SI_CHAN_NONE) {
-        XferTime[Si.chan] = __OSGetSystemTime();
+    if (Si_80311630.chan != SI_CHAN_NONE) {
+        XferTime[Si_80311630.chan] = __OSGetSystemTime();
 
-        dst = (u8*)Si.inAddr;
+        dst = (u8*)Si_80311630.inAddr;
 
-        size = Si.inSize / sizeof(u32);
+        size = Si_80311630.inSize / sizeof(u32);
         for (i = 0; i < size; dst += sizeof(u32), i++) {
             *(u32*)dst = SI_HW_REGS[SI_RAM_BASE + i];
         }
 
-        size = Si.inSize % sizeof(u32);
+        size = Si_80311630.inSize % sizeof(u32);
         if (size > 0) {
             imm = SI_HW_REGS[SI_RAM_BASE + i];
 
@@ -197,22 +197,22 @@ static u32 CompleteTransfer(void) {
 
         if (SI_HW_REGS[SI_SICOMSCR] & SI_SICOMCSR_COMERR) {
             // Flags relative to channel ID
-            sr >>= ((SI_MAX_CHAN - 1) - Si.chan) * 8;
+            sr >>= ((SI_MAX_CHAN - 1) - Si_80311630.chan) * 8;
             sr &= (SI_UNRUN | SI_OVRUN | SI_COLL | SI_NOREP);
 
-            if ((sr & SI_NOREP) && (Type[Si.chan] & SI_ERROR_BUSY) == 0) {
-                Type[Si.chan] = SI_ERROR_NOREP;
+            if ((sr & SI_NOREP) && (Type[Si_80311630.chan] & SI_ERROR_BUSY) == 0) {
+                Type[Si_80311630.chan] = SI_ERROR_NOREP;
             }
 
             if (sr == 0) {
                 sr = SI_COLL;
             }
         } else {
-            TypeTime[Si.chan] = __OSGetSystemTime();
+            TypeTime[Si_80311630.chan] = __OSGetSystemTime();
             sr = 0;
         }
 
-        Si.chan = SI_CHAN_NONE;
+        Si_80311630.chan = SI_CHAN_NONE;
     }
 
     return sr;
@@ -245,12 +245,12 @@ static void SIInterruptHandler(s16 intr, OSContext* ctx) {
 
     if ((comcsr & (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) ==
         (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) {
-        s32 chan = Si.chan;
+        s32 chan = Si_80311630.chan;
         u32 status = CompleteTransfer();
-        SICallback callback = Si.callback;
+        SICallback callback = Si_80311630.callback;
         u32 sr;
 
-        Si.callback = NULL;
+        Si_80311630.callback = NULL;
         SITransferNext(chan);
 
         if (callback != NULL) {
@@ -271,7 +271,7 @@ static void SIInterruptHandler(s16 intr, OSContext* ctx) {
     if ((comcsr & (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) ==
         (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) {
         u32 vcount = VIGetCurrentLine() + 1;
-        u32 x = (Si.poll & SI_SIPOLL_X) >> 16;
+        u32 x = (Si_80311630.poll & SI_SIPOLL_X) >> 16;
         s32 chan;
 
         for (chan = 0; chan < SI_MAX_CHAN; chan++) {
@@ -281,7 +281,7 @@ static void SIInterruptHandler(s16 intr, OSContext* ctx) {
         }
 
         for (chan = 0; chan < SI_MAX_CHAN; chan++) {
-            if (!(Si.poll & (0x80 >> chan))) {
+            if (!(Si_80311630.poll & (0x80 >> chan))) {
                 continue;
             }
             if (InputBufferVcount[chan] == 0 ||
@@ -314,7 +314,7 @@ void SIInit(void) {
     Packet[SI_CHAN_0].chan = Packet[SI_CHAN_1].chan = Packet[SI_CHAN_2].chan =
         Packet[SI_CHAN_3].chan = SI_CHAN_NONE;
 
-    Si.poll = 0;
+    Si_80311630.poll = 0;
     SISetSamplingRate(0);
 
     while (SI_HW_REGS[SI_SICOMSCR] & SI_SICOMCSR_TSTART) {
@@ -362,7 +362,7 @@ static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
 
     enabled = OSDisableInterrupts();
 
-    if (Si.chan != SI_CHAN_NONE) {
+    if (Si_80311630.chan != SI_CHAN_NONE) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
@@ -372,10 +372,10 @@ static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
           (chan * 8);
     SI_HW_REGS[SI_SISR] = sr;
 
-    Si.chan = chan;
-    Si.callback = callback;
-    Si.inSize = inSize;
-    Si.inAddr = inAddr;
+    Si_80311630.chan = chan;
+    Si_80311630.callback = callback;
+    Si_80311630.inSize = inSize;
+    Si_80311630.inAddr = inAddr;
 
     alignSize = (outSize + 3) / 4;
     for (i = 0; i < alignSize; i++) {
@@ -411,10 +411,10 @@ u32 SISetXY(u32 lines, u32 times) {
 
     enabled = OSDisableInterrupts();
 
-    Si.poll &= ~(SI_SIPOLL_X | SI_SIPOLL_Y);
-    Si.poll |= poll;
+    Si_80311630.poll &= ~(SI_SIPOLL_X | SI_SIPOLL_Y);
+    Si_80311630.poll |= poll;
 
-    poll = Si.poll;
+    poll = Si_80311630.poll;
     SI_HW_REGS[SI_SIPOLL] = poll;
 
     OSRestoreInterrupts(enabled);
@@ -446,7 +446,7 @@ BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
     packet = &Packet[chan];
     enabled = OSDisableInterrupts();
 
-    if (packet->chan != SI_CHAN_NONE || Si.chan == packet->chan) {
+    if (packet->chan != SI_CHAN_NONE || Si_80311630.chan == packet->chan) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
@@ -549,7 +549,7 @@ u32 SIGetType(s32 chan) {
     type = Type[chan];
     diff = __OSGetSystemTime() - TypeTime[chan];
 
-    if (Si.poll & (0x80 >> chan)) {
+    if (Si_80311630.poll & (0x80 >> chan)) {
         if (type != SI_ERROR_NOREP) {
             TypeTime[chan] = __OSGetSystemTime();
             OSRestoreInterrupts(enabled);
@@ -576,14 +576,14 @@ u32 SIEnablePolling(u32 chan) {
     BOOL enabled;
 
     if (chan == 0) {
-        return Si.poll;
+        return Si_80311630.poll;
     }
     enabled = OSDisableInterrupts();
-    Si.poll = (Si.poll & 0x0F000000) | (chan & 0xF0FFFFFF);
+    Si_80311630.poll = (Si_80311630.poll & 0x0F000000) | (chan & 0xF0FFFFFF);
     *(volatile u32*)0xCD006438 = 0x80000000;
-    *(volatile u32*)0xCD006430 = Si.poll;
+    *(volatile u32*)0xCD006430 = Si_80311630.poll;
     OSRestoreInterrupts(enabled);
-    return Si.poll;
+    return Si_80311630.poll;
 }
 
 /* ---------------------------------------------------------------------
