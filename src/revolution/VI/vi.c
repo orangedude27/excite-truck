@@ -823,6 +823,11 @@ void VISetBlack(BOOL black)
     OSRestoreInterrupts(enabled);
 }
 
+VITVFormat fn_8005AC08(void) {
+    extern VITVFormat lbl_8055DBD0;
+    return lbl_8055DBD0;
+}
+
 void VISet3D(BOOL threeD)
 {
     BOOL enabled;
