@@ -961,16 +961,27 @@ static u32 getCurrentFieldEvenOdd(void)
 
 u32 VIGetNextField(void)
 {
-    s32 nextField;
+    extern SomeVIStruct lbl_8038F398;
+    u32 vcount;
+    u32 hcount;
+    u32 vcount0;
+    VITiming *tm;
+    u32 halfLine;
+    u32 nextField;
     BOOL enabled;
-#if !DEBUG
-    u8 unused[4];
-#endif
 
     enabled = OSDisableInterrupts();
-    nextField = getCurrentFieldEvenOdd() ^ 1;
+    vcount = __VIRegs[22] & 0x7FF;
+    do {
+        vcount0 = vcount;
+        hcount = __VIRegs[23] & 0x7FF;
+        vcount = __VIRegs[22] & 0x7FF;
+    } while (vcount0 != vcount);
+    tm = lbl_8055DBA0;
+    halfLine = ((vcount - 1) * 2) + ((hcount - 1) / tm->hlw);
+    nextField = halfLine < tm->nhlines;
     OSRestoreInterrupts(enabled);
-    return nextField ^ (HorVer.AdjustedDispPosY & 1);
+    return (nextField ^ 1) ^ (lbl_8038F398.AdjustedDispPosY & 1);
 }
 
 u32 VIGetCurrentLine(void)
