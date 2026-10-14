@@ -1,6 +1,8 @@
 #include <revolution/OS.h>
 #include <internal/printf.h>
 
+extern char lbl_80558F48[4];
+
 extern void fn_800523F0(u32* saveStart, u32* saveEnd);
 extern void fn_8004E538(s32 doloffset, u32 restartCode, void* regionStart,
                         void* regionEnd, BOOL argsUseDefault, s32 argc,
