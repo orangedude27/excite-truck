@@ -23,7 +23,7 @@ extern u8 lbl_80558FC9;
 extern u8 lbl_80558FCA;
 extern u8 lbl_80558FD0;
 extern u32 lbl_8055DBF0;
-extern u8 lbl_8055DBE4;
+extern u32 lbl_8055DBE4;
 
 typedef struct {
     u8 equ;
@@ -1120,6 +1120,20 @@ void __VISetTrapFilter(void)
         data[1] = 0;
     } else {
         data[1] = 1;
+    }
+    __VISendI2CData(0xE0, data, 2);
+    WaitMicroTime(2);
+}
+
+void __VISetRGBOverDrive(void)
+{
+    u8 data[2];
+
+    data[0] = 10;
+    if (lbl_8055DBF0 == 3) {
+        data[1] = (lbl_8055DBE4 * 2) | 1;
+    } else {
+        data[1] = 0;
     }
     __VISendI2CData(0xE0, data, 2);
     WaitMicroTime(2);
