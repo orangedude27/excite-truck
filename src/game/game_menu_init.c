@@ -385,8 +385,6 @@ void fn_80004CB4(void) {
     fn_8000D878();
 }
 
-#pragma push
-#pragma optimization_level 3
 void fn_80004E20(void) {
     fn_80265D48();
     fn_80129BD4();
@@ -407,8 +405,6 @@ void fn_80004E20(void) {
     fn_80129BF8();
     fn_80265D4C();
 }
-
-#pragma pop
 
 void fn_80004EC0(const char* source) {
     int remaining;
