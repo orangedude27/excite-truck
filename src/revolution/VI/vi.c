@@ -920,13 +920,13 @@ static u32 getCurrentHalfLine(void)
     u32 vcount;
     VITiming *tm;
 
-    tm = HorVer.timing;
     vcount = __VIRegs[22] & 0x7FF;
     do {
         vcount0 = vcount;
         hcount = __VIRegs[23] & 0x7FF;
         vcount = __VIRegs[22] & 0x7FF;
     } while (vcount0 != vcount);
+    tm = lbl_8055DBA0;
     return ((vcount - 1) * 2) + ((hcount - 1) / tm->hlw);
 }
 
