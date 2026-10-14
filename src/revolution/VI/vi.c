@@ -263,6 +263,19 @@ static VITiming *getTiming(VITVMode mode)
 }
 #pragma dont_inline reset
 
+VIRetraceCallback fn_800591AC(VIRetraceCallback cb)
+{
+    extern VIRetraceCallback lbl_8055DBAC;
+    BOOL enabled;
+    VIRetraceCallback oldcb;
+
+    oldcb = lbl_8055DBAC;
+    enabled = OSDisableInterrupts();
+    lbl_8055DBAC = cb;
+    OSRestoreInterrupts(enabled);
+    return oldcb;
+}
+
 void __VIInit(VITVMode mode)
 {
     VITiming *tm;
