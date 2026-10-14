@@ -10,10 +10,8 @@ extern int __cntlzw(unsigned int);
 BOOL SIGetResponse(s32 chan, void* data);
 void fn_8005649C(s32 chan, u32 status);
 u32 SIGetTypeAsync(s32 chan, SICallback callback);
-#pragma dont_inline on
 u32 SIEnablePolling(u32 chan);
 void fn_80057F2C(s32 chan, u32 command);
-#pragma dont_inline reset
 
 typedef enum {
     SI_ERROR_NOREP = (1 << 3),
@@ -713,8 +711,6 @@ void UpdateOrigin(s32 chan) {
 }
 
 void fn_80056308(s32 chan, u32 status) {
-#pragma push
-#pragma inline_depth(0)
     u32 data[2];
     s32 enabledChan;
 
@@ -732,7 +728,6 @@ void fn_80056308(s32 chan, u32 status) {
         memset(&Origin[lbl_80558F74], 0, sizeof(PADStatus));
         SIGetTypeAsync(lbl_80558F74, fn_8005649C);
     }
-#pragma pop
 }
 
 void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
