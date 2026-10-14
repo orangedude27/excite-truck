@@ -161,7 +161,7 @@ struct GameVirtualObject {
     GameVirtualTable* vtable;
 };
 
-void fn_800049C0(void) {
+void fn_800049C0(void) DECOMP_DONT_INLINE {
     struct NameTable { const char* names[10]; };
     struct {
         u32 date[6];
