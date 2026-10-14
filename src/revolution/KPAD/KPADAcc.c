@@ -8,7 +8,6 @@ extern u16 lbl_80560BFC, lbl_80560BFE, lbl_80560C00;
 extern f32 lbl_80560C04, lbl_80560C08, lbl_80560BE4, lbl_80560BF0;
 extern f32 lbl_80558EEC, lbl_80558EF0;
 extern f32 lbl_80558EA4, lbl_80558EAC, lbl_8055D994;
-extern f32 lbl_80560BD8;
 extern u16 lbl_80558EB0;
 
 static void calc_acc_horizon(KPADInsideStatus* kp, f32* acc, f32 acc2) {
