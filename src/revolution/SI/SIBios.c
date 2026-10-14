@@ -687,6 +687,7 @@ u32 SIEnablePolling(u32 chan) {
     return poll;
 }
 #pragma dont_inline reset
+#pragma dont_inline on
 u32 SIDisablePolling(u32 chan) {
     BOOL enabled;
     u32 poll;
@@ -701,6 +702,7 @@ u32 SIDisablePolling(u32 chan) {
     OSRestoreInterrupts(enabled);
     return poll;
 }
+#pragma dont_inline reset
 
 /* ---------------------------------------------------------------------
  * PAD helpers (REXE01 0x80056164..0x80056D5C region)
@@ -795,6 +797,35 @@ void fn_800563C8(s32 chan, u32 status) {
         memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
         SIGetTypeAsync(lbl_80558F74, fn_8005649C);
     }
+}
+
+BOOL fn_800567BC(u32 mask) {
+    #pragma inline_depth(0)
+    BOOL enabled;
+    u32 disable;
+
+    enabled = OSDisableInterrupts();
+    mask |= lbl_8055DB00;
+    mask &= ~(lbl_8055DB08 | lbl_8055DB04);
+    lbl_8055DB00 = 0;
+    lbl_8055DB10 |= mask;
+    disable = lbl_8055DB10 & lbl_8055DB14;
+    lbl_8055DB14 &= ~mask;
+    lbl_8055DAFC &= ~mask;
+    if (lbl_80558F80 == 4) {
+        lbl_8055DB0C |= mask;
+    }
+    SIDisablePolling(disable);
+    if (lbl_80558F74 == 32) {
+        lbl_80558F74 = __cntlzw(lbl_8055DB10);
+        if (lbl_80558F74 != 32) {
+            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
+            memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
+            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+        }
+    }
+    OSRestoreInterrupts(enabled);
+    return TRUE;
 }
 
 void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
