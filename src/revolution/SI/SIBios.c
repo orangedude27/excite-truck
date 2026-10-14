@@ -743,6 +743,26 @@ void fn_80056308(s32 chan, u32 status) {
     }
 }
 
+void fn_800563C8(s32 chan, u32 status) {
+    u32 data[2];
+    s32 enabledChan;
+
+    if ((status & 0xF) == 0) {
+        enabledChan = lbl_80558F74;
+        lbl_8055DB14 |= PAD_CHAN0_BIT >> enabledChan;
+        SIGetResponse(enabledChan, data);
+        fn_80057F2C(enabledChan, lbl_80558F7C | 0x00400000);
+        SIEnablePolling(lbl_8055DB14);
+        lbl_8055DB08 |= PAD_CHAN0_BIT >> lbl_80558F74;
+    }
+    lbl_80558F74 = __cntlzw(lbl_8055DB10);
+    if (lbl_80558F74 != 32) {
+        lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
+        memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
+        SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+    }
+}
+
 void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     (void)chan;
 
