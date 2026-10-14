@@ -85,7 +85,21 @@ static DECOMP_INLINE void WPADiDisconnect(s32 chan, BOOL sleep);
 static void __SendData(s32 chan, WPADCommand command);
 
 BOOL __CanPushCmdQueue(const WPADCommandQueue* pQueue, s8 num);
-s8 __GetCmdNumber(const WPADCommandQueue* pQueue);
+DECOMP_INLINE s8 __GetCmdNumber(const WPADCommandQueue* pQueue) {
+    BOOL enabled;
+    s8 remain;
+
+    enabled = OSDisableInterrupts();
+
+    remain = pQueue->back - pQueue->front;
+    if (remain < 0) {
+        remain += pQueue->capacity;
+    }
+
+    OSRestoreInterrupts(enabled);
+
+    return remain;
+}
 
 static void __SetScreenSaverFlag(BOOL disable);
 static u8 __GetDpdSensitivity(void);
@@ -94,8 +108,40 @@ static u32 __GetMotorMode(void);
 static u8 __ClampSpeakerVolume(u8 volume);
 static u8 __GetSpeakerVolume(void);
 
-u16 _WPADGetStackBufferStatus(s32 chan);
-u16 _WPADGetModuleBufferStatus(s32 chan);
+DECOMP_INLINE u16 _WPADGetStackBufferStatus(s32 chan) {
+    WPADCB* p = lbl_8038F4F0[chan];
+    BOOL enabled;
+    s32 status;
+    s8 handle;
+
+    enabled = OSDisableInterrupts();
+    status = *(s32*)((u8*)p + 0x7FC);
+    handle = *(s8*)((u8*)p + 0x803);
+    OSRestoreInterrupts(enabled);
+
+    if (status == WPAD_ERR_NO_CONTROLLER) {
+        return 0;
+    }
+
+    return _WUDGetQueuedSize(handle);
+}
+DECOMP_INLINE u16 _WPADGetModuleBufferStatus(s32 chan) {
+    WPADCB* p = lbl_8038F4F0[chan];
+    BOOL enabled;
+    s32 status;
+    s8 handle;
+
+    enabled = OSDisableInterrupts();
+    status = *(s32*)((u8*)p + 0x7FC);
+    handle = *(s8*)((u8*)p + 0x803);
+    OSRestoreInterrupts(enabled);
+
+    if (status == WPAD_ERR_NO_CONTROLLER) {
+        return 0;
+    }
+
+    return _WUDGetNotAckedSize(handle);
+}
 
 static void* noAlloc(u32 size) {
 #pragma unused(size)
@@ -1985,46 +2031,11 @@ static BOOL IsBusyStream(s32 chan) {
 
     enabled = OSDisableInterrupts();
     radioQuality = ((u8*)p)[0x80C];
-    devType = ((u8*)p)[0x801];
+    devType = p->UNK_0x801;
     bufferStatus = WUDGetBufferStatus();
-    {
-        BOOL enabled = OSDisableInterrupts();
-        queueSize = p->stdCmdQueue.back - p->stdCmdQueue.front;
-        if (queueSize < 0) {
-            queueSize += p->stdCmdQueue.capacity;
-        }
-        OSRestoreInterrupts(enabled);
-    }
-    {
-        WPADCB* p = lbl_8038F4F0[chan];
-        BOOL enabled;
-        s32 status;
-        s8 handle;
-        enabled = OSDisableInterrupts();
-        status = *(s32*)((u8*)p + 0x7FC);
-        handle = *(s8*)((u8*)p + 0x803);
-        OSRestoreInterrupts(enabled);
-        if (status == WPAD_ERR_NO_CONTROLLER) {
-            bteBufferStatus = 0;
-        } else {
-            bteBufferStatus = _WUDGetQueuedSize(handle);
-        }
-    }
-    {
-        WPADCB* p = lbl_8038F4F0[chan];
-        BOOL enabled;
-        s32 status;
-        s8 handle;
-        enabled = OSDisableInterrupts();
-        status = *(s32*)((u8*)p + 0x7FC);
-        handle = *(s8*)((u8*)p + 0x803);
-        OSRestoreInterrupts(enabled);
-        if (status == WPAD_ERR_NO_CONTROLLER) {
-            btmBufferStatus = 0;
-        } else {
-            btmBufferStatus = _WUDGetNotAckedSize(handle);
-        }
-    }
+    queueSize = __GetCmdNumber(&p->stdCmdQueue);
+    bteBufferStatus = _WPADGetStackBufferStatus(chan);
+    btmBufferStatus = _WPADGetModuleBufferStatus(chan);
     audioFrames = ((u8*)p)[0x80E];
     linkNumber = _WUDGetLinkNumber();
     OSRestoreInterrupts(enabled);
@@ -2572,21 +2583,7 @@ BOOL __CanPushCmdQueue(const WPADCommandQueue* pQueue, s8 num) {
     }
 }
 
-DECOMP_INLINE s8 __GetCmdNumber(const WPADCommandQueue* pQueue) {
-    BOOL enabled;
-    s8 remain;
 
-    enabled = OSDisableInterrupts();
-
-    remain = pQueue->back - pQueue->front;
-    if (remain < 0) {
-        remain += pQueue->capacity;
-    }
-
-    OSRestoreInterrupts(enabled);
-
-    return remain;
-}
 
 #pragma section ".text"
 // WPADiClearQueue is defined in the GX auto-block
@@ -2702,41 +2699,9 @@ static u8 __GetSpeakerVolume(void) {
     return __ClampSpeakerVolume(volume);
 }
 
-DECOMP_INLINE u16 _WPADGetStackBufferStatus(s32 chan) {
-    WPADCB* p = lbl_8038F4F0[chan];
-    BOOL enabled;
-    s32 status;
-    s8 handle;
 
-    enabled = OSDisableInterrupts();
-    status = *(s32*)((u8*)p + 0x7FC);
-    handle = *(s8*)((u8*)p + 0x803);
-    OSRestoreInterrupts(enabled);
 
-    if (status == WPAD_ERR_NO_CONTROLLER) {
-        return 0;
-    }
 
-    return _WUDGetQueuedSize(handle);
-}
-
-DECOMP_INLINE u16 _WPADGetModuleBufferStatus(s32 chan) {
-    WPADCB* p = lbl_8038F4F0[chan];
-    BOOL enabled;
-    s32 status;
-    s8 handle;
-
-    enabled = OSDisableInterrupts();
-    status = *(s32*)((u8*)p + 0x7FC);
-    handle = *(s8*)((u8*)p + 0x803);
-    OSRestoreInterrupts(enabled);
-
-    if (status == WPAD_ERR_NO_CONTROLLER) {
-        return 0;
-    }
-
-    return _WUDGetNotAckedSize(handle);
-}
 
 void WPADRecalibrate(s32 chan) {
     WPADCB* p = _wpdcb[chan];
