@@ -2785,9 +2785,16 @@ void fn_8005EB44(void) {
 // fn_8005ED8C: WPAD reset
 void fn_8005ED8C(void) {
     if (lbl_8055DC05 == 0) {
+        void* ptr;
+        s32 i;
+
         lbl_8055DC05 = 1;
         WUDSetVisibility(0, 0);
-        memset(lbl_80393058 + 0x2bd, 0, 0x46 * 4);
+        
+        for (i = 10, ptr = lbl_80393058 + 0x2bd; i < 14; i++, ptr = (void*)((u8*)ptr + 0x46)) {
+            memset(ptr, 0, 0x46);
+        }
+        
         OSCancelAlarm(&lbl_8038F4C0);
         fn_8006ADC4(NULL);
         fn_8006A81C();
