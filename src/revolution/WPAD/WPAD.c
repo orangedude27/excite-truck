@@ -2833,10 +2833,29 @@ u8 fn_8005EE80(s32 chan) {
 extern u8 lbl_8055DC11;
 
 // fn_8006022C: disconnect controller and clear saved device information
-void fn_8006022C(s32 chan, void* callback) {
-    BOOL enabled = OSDisableInterrupts();
-    _wpdcb[chan]->cmdBlkCB = callback;
+void fn_8006022C(s32 chan)
+{
+    s32 status;
+    WPADCB* p;
+    BOOL enabled;
+
+    memset(lbl_80393058 + (chan + 10) * 0x46 + 1, 0, 0x46);
+    lbl_8055DC11 = TRUE;
+    p = lbl_8038F4F0[chan];
+    enabled = OSDisableInterrupts();
+    status = *(s32*)((u8*)p + 0x7FC);
     OSRestoreInterrupts(enabled);
+    if (status == WPAD_ERR_NO_CONTROLLER) {
+        return;
+    }
+    enabled = OSDisableInterrupts();
+    if (((u8*)p)[0x8C6]) {
+        OSRestoreInterrupts(enabled);
+        return;
+    }
+    ((u8*)p)[0x8C6] = TRUE;
+    OSRestoreInterrupts(enabled);
+    BTA_HhClose(((u8*)p)[0x803]);
 }
 
 // fn_800604E8: set data format
