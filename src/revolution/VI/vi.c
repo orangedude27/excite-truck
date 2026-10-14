@@ -7,6 +7,9 @@
 
 #define __VIRegs VI_HW_REGS
 
+extern s32 lbl_8055DBE8;
+extern u8 lbl_80311B50[0x140];
+
 typedef struct {
     u8 equ;
     u16 acv;
