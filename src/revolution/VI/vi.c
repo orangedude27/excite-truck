@@ -339,55 +339,58 @@ VIRetraceCallback AIRegisterDMACallback_800591F0(VIRetraceCallback cb)
 
 u32 fn_80059234(u32 index)
 {
-	if (index == 0x0) {
+	switch (index) {
+	case 0x0:
 		return (u32)lbl_80311738;
-	}
-	if (index == 0x1) {
+	case 0x1:
 		return (u32)lbl_80311738 + 0x26;
-	}
-	if (index == 0x2) {
+	case 0x2:
 		return (u32)lbl_80311738 + 0x4c;
-	}
-	if (index == 0x3) {
+	case 0x3:
 		return (u32)lbl_80311738 + 0x72;
-	}
-	if (index == 0x4) {
+	case 0x4:
 		return (u32)lbl_80311738;
-	}
-	if (index == 0x5) {
+	case 0x5:
 		return (u32)lbl_80311738 + 0x26;
-	}
-	if (index == 0x6) {
+	case 0x6:
 		return (u32)lbl_80311738 + 0x98;
-	}
-	if (index == 0x7) {
+	case 0x7:
 		return (u32)lbl_80311738 + 0xbe;
-	}
-	if (index == 0x8) {
+	case 0x8:
 		return (u32)lbl_80311738 + 0xe4;
-	}
-	if (index == 0x9) {
+	case 0x9:
 		return (u32)lbl_80311738 + 0x10a;
-	}
-	if (index == 0xa) {
+	case 0xa:
 		return (u32)lbl_80311738 + 0x4c;
-	}
-	if (index == 0xb) {
+	case 0xb:
 		return (u32)lbl_80311738 + 0x72;
-	}
-	if (index == 0xc) {
+	case 0xc:
 		return (u32)lbl_80311738 + 0x130;
-	}
-	if (index == 0xd) {
+	case 0xd:
 		return (u32)lbl_80311738 + 0x156;
-	}
-	if (index == 0xe) {
+	case 0xe:
 		return lbl_8055DB84;
-	}
-	if (index == 0xf) {
+	case 0xf:
 		return 0;
+	case 0x10:
+	case 0x11:
+	case 0x12:
+	case 0x13:
+	case 0x14:
+	case 0x15:
+	case 0x16:
+	case 0x17:
+	case 0x18:
+	case 0x19:
+	case 0x1a:
+	case 0x1b:
+	case 0x1c:
+	case 0x1d:
+	case 0x1e:
+		return (u32)lbl_80311738;
+	default:
+		return (u32)lbl_80311738;
 	}
-	return (u32)lbl_80311738;
 }
 
 void __VIInit(VITVMode mode)
