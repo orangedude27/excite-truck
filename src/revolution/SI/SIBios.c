@@ -125,6 +125,10 @@ void SamplingHandler(s16 intr, OSContext* ctx) {
     }
 }
 
+BOOL fn_80057460(void) {
+    return Si.chan != SI_CHAN_NONE;
+}
+
 static u32 SIGetStatus(s32 chan) {
     BOOL enabled;
     u32 status;
