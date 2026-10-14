@@ -112,6 +112,7 @@ extern void fn_8000D94C(void);
 extern void fn_80012478(void);
 extern void fn_800124DC(void*, int, int, f32);
 extern char lbl_802FAEA0[];
+DECL_SECTION(".sdata") extern u32 lbl_8055D430;
 DECL_SECTION(".sdata") extern int lbl_80558900;
 DECL_SECTION(".sdata2") extern const f32 lbl_80560100;
 extern void fn_800125C4(void);
@@ -252,7 +253,7 @@ void fn_80004B5C(void) {
     fn_80245118();
     fn_802E712C();
     fn_80012478();
-    ((void (*)(void*, int, int, f32))fn_800124DC)(data + 0x128, 1, 1, lbl_80560100);
+    fn_800124DC(data + 0x128, 1, 1, lbl_80560100);
     fn_80127464();
     fn_8012E81C(data + 0x9c);
     fn_80232230();
