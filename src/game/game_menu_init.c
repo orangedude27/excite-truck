@@ -439,6 +439,8 @@ void fn_80005364(void) {
     lbl_8055D32C = 0x7F000000;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 int fn_80005044(int* eventIndex, int* subIndex, const char* name) {
     int result = 0;
     int i;
