@@ -24,6 +24,7 @@ extern u8 lbl_80558FCA;
 extern u8 lbl_80558FD0;
 extern u32 lbl_8055DBF0;
 extern u32 lbl_8055DBE4;
+extern u32* jumptable_80311940[];
 
 typedef struct {
     u8 equ;
