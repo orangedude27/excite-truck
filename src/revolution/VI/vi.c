@@ -915,9 +915,9 @@ s32 VIGetRetraceCount(void)
 
 static u32 getCurrentHalfLine(void)
 {
+    u32 vcount;
     u32 hcount;
     u32 vcount0;
-    u32 vcount;
     VITiming *tm;
 
     vcount = __VIRegs[22] & 0x7FF;
@@ -975,7 +975,7 @@ u32 VIGetCurrentLine(void)
     VITiming *tm;
     BOOL enabled;
 
-    tm = HorVer.timing;
+    tm = lbl_8055DBA0;
     enabled = OSDisableInterrupts();
     halfLine = getCurrentHalfLine();
     OSRestoreInterrupts(enabled);
