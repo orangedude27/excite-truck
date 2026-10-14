@@ -2961,6 +2961,16 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
     return WPADiPushCommand(pQueue, command);
 }
 
+void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
+	s32 enabled = OSDisableInterrupts();
+
+	pQueue->front = 0;
+	pQueue->back = 0;
+	memset(pQueue->buffer, 0, pQueue->capacity * sizeof(WPADCommand));
+
+	OSRestoreInterrupts(enabled);
+}
+
 // fn_80064B1C: WPAD data processing
 void fn_80064B1C(s32 chan, void* data) { /* stub */ }
 
