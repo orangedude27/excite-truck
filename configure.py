@@ -380,6 +380,9 @@ config.libs = [
             Object(Matching, "revolution/NdevExi2AD/exi2.c"),
             Object(NonMatching, "revolution/KPAD/KPAD.c"),
             Object(NonMatching, "revolution/KPAD/KPADReset.c"),
+            Object(NonMatching, "revolution/KPAD/KPADSampling.c"),
+            Object(NonMatching, "revolution/KPAD/KPADAcc.c"),
+            Object(Matching, "revolution/KPAD/KPADAccData.c"),
             Object(Matching, "revolution/PAD/Pad.c"),
             # WPAD.c is reviewable but WPADSetSamplingCallback_800603D0 is fuzzy
             # (extensionCB offset + DEBUGPrint reloc mismatch); keep reference object linked.
@@ -434,8 +437,8 @@ config.libs = [
             Object(Matching, "revolution/OS/OSArena.c"),
             Object(Matching, "revolution/OS/OSAudioSystem.c"),
             Object(NonMatching, "revolution/OS/OSCache.c"),
-            Object(NonMatching, "revolution/OS/OSContext.c"),
-            Object(NonMatching, "revolution/OS/OSError.c"),
+            Object(Matching, "revolution/OS/OSContext.c"),
+            Object(Matching, "revolution/OS/OSError.c"),
             Object(NonMatching, "revolution/OS/OSBootDol.c"),
             Object(Matching, "revolution/OS/OSExec.c"),
             Object(Matching, "revolution/OS/OSExecBoot.c"),
