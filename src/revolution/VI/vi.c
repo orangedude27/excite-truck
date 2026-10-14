@@ -1088,4 +1088,5 @@ void fn_8005CC68(void)
     __VISendI2CData(0xE0, data, 2);
     WaitMicroTime(2);
 }
+#pragma dont_inline reset
 
