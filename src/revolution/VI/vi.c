@@ -970,8 +970,10 @@ void __VIGetAdjustingValues(s16 *x, s16 *y)
     enabled = OSDisableInterrupts();
     *x = displayOffsetH;
     *y = displayOffsetV;
-    OSRestoreInterrupts(enabled);
+    	OSRestoreInterrupts(enabled);
 }
-extern s32 lbl_8055DBE8;
-extern u8 lbl_80311B50[0x140];
-void __VISetGammaImm(u8*);
+
+void fn_8005CB70(void)
+{
+	__VISetGammaImm((u8*)&lbl_80311B50 + lbl_8055DBE8 * 0x22);
+}
