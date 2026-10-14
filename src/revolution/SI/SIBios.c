@@ -598,6 +598,21 @@ u32 SIEnablePolling(u32 chan) {
     return Si_80311630.poll;
 }
 
+u32 SIDisablePolling(u32 chan) {
+    BOOL enabled;
+    u32 poll;
+
+    if (chan == 0) {
+        return Si_80311630.poll;
+    }
+    enabled = OSDisableInterrupts();
+    poll = Si_80311630.poll & ~((chan >> 24) & 0xF0);
+    SI_HW_REGS[SI_SIPOLL] = poll;
+    Si_80311630.poll = poll;
+    OSRestoreInterrupts(enabled);
+    return poll;
+}
+
 /* ---------------------------------------------------------------------
  * PAD helpers (REXE01 0x80056164..0x80056D5C region)
  * ------------------------------------------------------------------- */
