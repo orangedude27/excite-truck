@@ -702,6 +702,37 @@ u32 SIDisablePolling(u32 chan) {
     OSRestoreInterrupts(enabled);
     return poll;
 }
+
+BOOL SIGetResponse(s32 chan, void* data) {
+    BOOL enabled;
+    BOOL valid;
+    u32 status;
+
+    enabled = OSDisableInterrupts();
+    {
+        BOOL statusEnabled = OSDisableInterrupts();
+        status = SI_HW_REGS[SI_SISR];
+        status >>= (((SI_MAX_CHAN - 1) - chan) * 8);
+        if (status & SI_ERROR_NOREP && !(Type[chan] & SI_ERROR_BUSY)) {
+            Type[chan] = SI_ERROR_NOREP;
+        }
+        OSRestoreInterrupts(statusEnabled);
+    }
+    if (status & SI_RDST) {
+        InputBuffer[chan][0] = SI_HW_REGS[chan * 3 + 1];
+        InputBuffer[chan][1] = SI_HW_REGS[chan * 3 + 2];
+        InputBufferValid[chan] = TRUE;
+    }
+    valid = InputBufferValid[chan];
+    InputBufferValid[chan] = FALSE;
+    if (valid) {
+        ((u32*)data)[0] = InputBuffer[chan][0];
+        ((u32*)data)[1] = InputBuffer[chan][1];
+    }
+    OSRestoreInterrupts(enabled);
+    return valid;
+}
+
 #pragma dont_inline reset
 
 /* ---------------------------------------------------------------------
