@@ -24,7 +24,7 @@ extern void fn_800199B8(void);
 extern int  fn_80028F94(char*, const char*, int);
 extern void fn_80265D48(void);
 extern void fn_80129BD4(void);
-extern int fn_802E30C8(const char*, ...);
+extern void fn_802E30C8(const char*, ...);
 extern const char lbl_802FAFE0[];
 extern int  fn_80019B6C(void);
 extern int  fn_80019B48(void);
