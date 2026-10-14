@@ -8,8 +8,8 @@
 #define __VIRegs VI_HW_REGS
 
 extern s32 lbl_8055DBE8;
-extern u32 lbl_8055DB60;
-extern u32 lbl_8055DB70;
+extern volatile u32 lbl_8055DB60;
+extern volatile u32 lbl_8055DB70;
 extern u32 lbl_8055DB98;
 extern u32 lbl_8055DBC8;
 extern u32 lbl_8055DBCC;
@@ -850,13 +850,17 @@ void VIFlush(void)
     s32 regIndex;
 
     enabled = OSDisableInterrupts();
+    lbl_8055DB70 |= lbl_8055DB60;
+    lbl_8055DB60 = 0;
     shdwChanged |= changed;
     while (changed != 0) {
         regIndex = cntlzd(changed);
         shdwRegs[regIndex] = regs[regIndex];
         changed &= ~((u64)1 << (63 - regIndex));
     }
-    flushFlag = 1;
+    lbl_8055DBCC = 1;
+    lbl_8055DBC8 = 1;
+    lbl_8055DB98 = HorVer.bufAddr;
     OSRestoreInterrupts(enabled);
 }
 
