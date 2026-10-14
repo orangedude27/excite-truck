@@ -211,7 +211,7 @@ void fn_80004ACC(void) {
     }
 }
 
-void fn_80004B14(void) {
+void fn_80004B14(void) DECOMP_DONT_INLINE {
     u32* p;
     for (p = lbl_802FAFA0; *p != 0; p++) {
         fn_80004AB8(*p);
