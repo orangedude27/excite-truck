@@ -11,7 +11,7 @@
 #include <revolution/NAND.h>
 #include <revolution/OS.h>
 
-#include <stdio.h>
+#include <internal/printf.h>
 #include <string.h>
 #include <wchar.h>
 
