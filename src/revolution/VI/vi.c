@@ -1050,6 +1050,17 @@ void __VISetCGMS(void)
     WaitMicroTime(2);
 }
 
+void __VISetWSS(void)
+{
+    u8 data[3];
+
+    data[0] = 8;
+    data[1] = ((lbl_80558FC4 & 0xF) << 4) | (lbl_80558FC3 & 0xF);
+    data[2] = ((lbl_80558FC6 & 7) << 3) | (lbl_80558FC5 & 7);
+    __VISendI2CData(0xE0, data, 3);
+    WaitMicroTime(2);
+}
+
 void __VISetAdjustingValues(s16 x, s16 y)
 {
     BOOL enabled;
