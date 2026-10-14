@@ -23,6 +23,7 @@ extern void DBPrintf_80068D68(const char* pFmt, ...);
 extern const char lbl_803122A0[];
 extern const char lbl_803122BC[];
 extern WPADCB* lbl_8038F4F0[WPAD_MAX_CONTROLLERS];
+BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 
 // debug_msg.c is NonMatching, provide stub here
 void DEBUGPrint(const char* pFmt, ...) {
