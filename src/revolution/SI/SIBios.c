@@ -1,6 +1,14 @@
 #include <revolution/OS.h>
 #include <revolution/SI.h>
 #include <revolution/VI.h>
+#include <string.h>
+
+extern s32 lbl_80558F74;
+extern u32 lbl_8055DB10;
+extern u32 lbl_8055DB14;
+extern int __cntlzw(unsigned int);
+BOOL SIGetResponse(s32 chan, void* data);
+void fn_8005649C(s32 chan, u32 status);
 
 typedef enum {
     SI_ERROR_NOREP = (1 << 3),
