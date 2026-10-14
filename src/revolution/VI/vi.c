@@ -132,6 +132,8 @@ static u32 FBSet;
 
 static u32 getCurrentFieldEvenOdd(void);
 void fn_8005CC68(void);
+void __VISendI2CData(u8, u8*, u8);
+void WaitMicroTime(u8);
 
 static u32 getEncoderType(void)
 {
@@ -1129,10 +1131,11 @@ void __VISetRGBOverDrive(void)
 {
     u8 data[2];
 
-    data[0] = 10;
-    if (lbl_8055DBF0 == 3) {
+    if ((s32)lbl_8055DBF0 == 3) {
+        data[0] = 10;
         data[1] = (lbl_8055DBE4 * 2) | 1;
     } else {
+        data[0] = 10;
         data[1] = 0;
     }
     __VISendI2CData(0xE0, data, 2);
