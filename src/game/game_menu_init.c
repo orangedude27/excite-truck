@@ -9,6 +9,7 @@
  */
 
 #include <revolution/OS.h>
+#include <extras.h>
 
 extern void fn_802E2CFC(void* out);
 extern void fn_80129C80(int, u32, u32);
