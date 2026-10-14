@@ -120,6 +120,7 @@ static SomeVIStruct HorVer;
 static u32 FBSet;
 
 static u32 getCurrentFieldEvenOdd(void);
+void fn_8005CC68(void);
 
 static u32 getEncoderType(void)
 {
