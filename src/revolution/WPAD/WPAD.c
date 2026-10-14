@@ -2996,6 +2996,24 @@ void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 	OSRestoreInterrupts(enabled);
 }
 
+s32 WPADiHIDParser(u8 port, u8* p_rpt) {
+#pragma dont_inline on
+    BOOL enabled;
+    s32 result = 0;
+
+    if (p_rpt[0] >= 0x20 && p_rpt[0] <= 0x3F) {
+        enabled = OSDisableInterrupts();
+        lbl_80312338[p_rpt[0] - 0x20](port, p_rpt);
+        OSRestoreInterrupts(enabled);
+        WPADiExcludeButton(port);
+        fn_80060AFC(port);
+    } else {
+        result = -1;
+    }
+
+    return result;
+}
+
 void fn_80064A80(s32 chan, s32 param_2) {
 	WPADCB* cb = lbl_8038F4F0[chan];
 	if (param_2 != 0) {
