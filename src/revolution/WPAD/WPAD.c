@@ -3030,6 +3030,36 @@ void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 	OSRestoreInterrupts(enabled);
 }
 
+void fn_80064740(s32 chan, s32 param_2) {
+    WPADCB* cb = lbl_8038F4F0[chan];
+    u8* data = (u8*)cb->samplingBufSize;
+    if (param_2 == 0) {
+        WPADiDecode(chan, data, 2, 0xfe);
+        cb->UNK_0x802 = data[0];
+        switch (data[1]) {
+        case 0:
+            cb->UNK_0x801 = 1;
+            break;
+        case 1:
+            cb->UNK_0x801 = 2;
+            break;
+        default:
+            cb->UNK_0x801 = 0xfb;
+            break;
+        }
+        if (cb->UNK_0x801 == 2) {
+            if (cb->UNK_0x802 < 1 || cb->UNK_0x802 > 3) {
+                cb->UNK_0x801 = 0xfc;
+            }
+        }
+        DBPrintf_80068D68(lbl_80312648, cb->UNK_0x801);
+        DBPrintf_80068D68(lbl_80312654, cb->UNK_0x802);
+    } else {
+        cb->UNK_0x801 = 0xfc;
+        cb->UNK_0x802 = 0;
+    }
+}
+
 s32 WPADiHIDParser(u8 port, u8* p_rpt) {
 #pragma dont_inline on
     BOOL enabled;
