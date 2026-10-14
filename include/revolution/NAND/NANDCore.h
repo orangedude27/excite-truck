@@ -28,8 +28,7 @@ s32 NANDPrivateGetTypeAsync(const char* path, u8* type,
                             NANDAsyncCallback callback,
                             NANDCommandBlock* block);
 const char* nandGetHomeDir(void);
-void NANDInitBanner(NANDBanner* banner, u32 flags, const wchar_t* title,
-                    const wchar_t* subtitle);
+void NANDInitBanner();
 
 #ifdef __cplusplus
 }
