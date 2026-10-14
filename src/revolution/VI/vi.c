@@ -132,8 +132,8 @@ static u32 FBSet;
 
 static u32 getCurrentFieldEvenOdd(void);
 void fn_8005CC68(void);
-void __VISendI2CData(u8, u8*, u8);
-void WaitMicroTime(u8);
+void __VISendI2CData(s32, u8*, s32);
+void WaitMicroTime(s32);
 
 static u32 getEncoderType(void)
 {
