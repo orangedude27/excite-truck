@@ -119,6 +119,12 @@ extern OSShutdownFunctionInfo lbl_803115D8;
 extern void (*lbl_80558F84)(s32 chan, PADStatus* status, u32 data[2]);
 void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]);
 
+static u16 PADMakeWirelessID(void) {
+    s64 time = OSGetTime();
+    return ((time & 0xFFFF) + ((time >> 16) & 0xFFFF) +
+            ((time >> 32) & 0xFFFF) + ((time >> 48) & 0xFFFF)) & 0x3FFF;
+}
+
 static PADStatus lbl_8038F080[PAD_MAX_CONTROLLER];
 static u32 lbl_80558F7C = 0x00000300;
 static u32 XPatchBits =
@@ -893,6 +899,47 @@ BOOL fn_800568C4(u32 mask) {
     }
     OSRestoreInterrupts(enabled);
     return TRUE;
+}
+
+BOOL fn_800569D0(void) {
+    u32 id;
+    if (lbl_8055DB18) {
+        return TRUE;
+    }
+    OSRegisterVersion(lbl_80558F70);
+    if (__PADSpec != 0) {
+        u32 spec = __PADSpec;
+        __PADSpec = 0;
+        switch (spec) {
+        case 0:
+            lbl_80558F84 = SPEC0_MakeStatus;
+            break;
+        case 1:
+            lbl_80558F84 = SPEC1_MakeStatus;
+            break;
+        case 2:
+        case 3:
+        case 4:
+        case 5:
+            lbl_80558F84 = fn_80056D5C;
+            break;
+        }
+        lbl_80558F80 = spec;
+    }
+    lbl_8055DB18 = TRUE;
+    if (lbl_8055DB2C) {
+        s64 time = OSGetTime();
+        *(u16*)0x800030E0 = ((0xFFFF & time) + (0xFFFF & (time >> 16)) + (0xFFFF & (time >> 32)) + (0xFFFF & (time >> 48))) & 0x3FFF;
+        lbl_8055DB0C = 0xF0000000;
+    }
+    id = (*(u16*)0x800030E0 & 0x3FFF) << 8;
+    lbl_8038F0C0[0] = id | 0x4D000000;
+    lbl_8038F0C0[1] = id | 0x4D400000;
+    lbl_8038F0C0[2] = id | 0x4D800000;
+    lbl_8038F0C0[3] = id | 0x4DC00000;
+    SIRefreshSamplingRate();
+    OSRegisterShutdownFunction(&lbl_803115D8);
+    return fn_800567BC(0xF0000000);
 }
 
 void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
