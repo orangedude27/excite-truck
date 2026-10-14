@@ -1973,38 +1973,64 @@ void WPADSetSpeakerVolume(u8 volume) {
 
 static BOOL IsBusyStream(s32 chan) {
     BOOL enabled;
-    WPADCB* p = _wpdcb[chan];
+    WPADCB* p = lbl_8038F4F0[chan];
     u8 radioQuality;
     u32 devType;
-
     u8 bufferStatus;
     u16 bteBufferStatus;
     u16 btmBufferStatus;
-
     u8 audioFrames;
     s8 queueSize;
     u8 linkNumber;
 
     enabled = OSDisableInterrupts();
-
-    radioQuality = p->radioQuality;
-    devType = p->devType;
+    radioQuality = ((u8*)p)[0x80C];
+    devType = ((u8*)p)[0x801];
     bufferStatus = WUDGetBufferStatus();
-
-    queueSize = __GetCmdNumber(&p->stdCmdQueue);
-
-    bteBufferStatus = _WPADGetStackBufferStatus(chan);
-    btmBufferStatus = _WPADGetModuleBufferStatus(chan);
-    audioFrames = p->audioFrames;
-
+    {
+        BOOL enabled = OSDisableInterrupts();
+        queueSize = p->stdCmdQueue.back - p->stdCmdQueue.front;
+        if (queueSize < 0) {
+            queueSize += p->stdCmdQueue.capacity;
+        }
+        OSRestoreInterrupts(enabled);
+    }
+    {
+        WPADCB* p = lbl_8038F4F0[chan];
+        BOOL enabled;
+        s32 status;
+        s8 handle;
+        enabled = OSDisableInterrupts();
+        status = *(s32*)((u8*)p + 0x7FC);
+        handle = *(s8*)((u8*)p + 0x803);
+        OSRestoreInterrupts(enabled);
+        if (status == WPAD_ERR_NO_CONTROLLER) {
+            bteBufferStatus = 0;
+        } else {
+            bteBufferStatus = _WUDGetQueuedSize(handle);
+        }
+    }
+    {
+        WPADCB* p = lbl_8038F4F0[chan];
+        BOOL enabled;
+        s32 status;
+        s8 handle;
+        enabled = OSDisableInterrupts();
+        status = *(s32*)((u8*)p + 0x7FC);
+        handle = *(s8*)((u8*)p + 0x803);
+        OSRestoreInterrupts(enabled);
+        if (status == WPAD_ERR_NO_CONTROLLER) {
+            btmBufferStatus = 0;
+        } else {
+            btmBufferStatus = _WUDGetNotAckedSize(handle);
+        }
+    }
+    audioFrames = ((u8*)p)[0x80E];
     linkNumber = _WUDGetLinkNumber();
-
     OSRestoreInterrupts(enabled);
-
     if (radioQuality != WPAD_RADIO_QUALITY_GOOD || btmBufferStatus > 3 ||
         bufferStatus == 10 || bufferStatus >= linkNumber * 2 + 2 ||
         devType == WPAD_DEV_UNKNOWN || queueSize >= 21 || audioFrames >= 1) {
-
         return TRUE;
     } else {
         return FALSE;
@@ -2546,7 +2572,7 @@ BOOL __CanPushCmdQueue(const WPADCommandQueue* pQueue, s8 num) {
     }
 }
 
-s8 __GetCmdNumber(const WPADCommandQueue* pQueue) {
+DECOMP_INLINE s8 __GetCmdNumber(const WPADCommandQueue* pQueue) {
     BOOL enabled;
     s8 remain;
 
