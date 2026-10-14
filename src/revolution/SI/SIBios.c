@@ -819,7 +819,7 @@ BOOL fn_800572DC(BOOL final) {
     }
     if (!final) {
         ready = FALSE;
-        if ((lbl_8055DB10 == 0 && lbl_80558F74 == 32) && !fn_80057460()) {
+        if (PADSync() && !fn_80057460()) {
             ready = TRUE;
         }
         if (!lbl_8055DAF0 && ready) {
