@@ -621,6 +621,7 @@ u32 SIGetType(s32 chan) {
     return type;
 }
 
+#pragma dont_inline on
 u32 SIEnablePolling(u32 chan) {
     BOOL enabled;
     u32 poll;
@@ -641,6 +642,7 @@ u32 SIEnablePolling(u32 chan) {
     OSRestoreInterrupts(enabled);
     return poll;
 }
+#pragma dont_inline reset
 
 #pragma dont_inline reset
 u32 SIDisablePolling(u32 chan) {
