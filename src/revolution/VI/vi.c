@@ -9,6 +9,9 @@
 
 extern s32 lbl_8055DBE8;
 extern u8 lbl_80311B50[0x140];
+extern u8 lbl_80558FC0;
+extern u8 lbl_80558FC1;
+extern u8 lbl_80558FC2;
 
 typedef struct {
     u8 equ;
