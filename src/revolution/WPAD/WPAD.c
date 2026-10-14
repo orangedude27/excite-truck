@@ -1717,10 +1717,10 @@ void WPADSetAutoSamplingBuf(s32 chan, void* pBuffer, u32 len) {
 }
 
 void WPADiExcludeButton(s32 chan) {
-    WPADCB* p = _wpdcb[chan];
+    WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
 
-    u8 rxBufIndex = p->rxBufIndex != 0 ? 0 : 1;
+    u8 rxBufIndex = *(u8*)((u8*)p + 0x806) != 0 ? 0 : 1;
     void* pRxBuffer = p->rxBufs[rxBufIndex];
 
     WPADStatus* pStatus;
@@ -1730,31 +1730,27 @@ void WPADiExcludeButton(s32 chan) {
 
     if ((pStatus->button & (WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT)) ==
         (WPAD_BUTTON_LEFT | WPAD_BUTTON_RIGHT)) {
-
         pStatus->button &= ~WPAD_BUTTON_RIGHT;
     }
 
     if ((pStatus->button & (WPAD_BUTTON_UP | WPAD_BUTTON_DOWN)) ==
         (WPAD_BUTTON_UP | WPAD_BUTTON_DOWN)) {
-
         pStatus->button &= ~WPAD_BUTTON_DOWN;
     }
 
-    if (p->dataFormat == WPAD_FMT_CLASSIC_BTN ||
-        p->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC ||
-        p->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
+    if (*(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CLASSIC_BTN ||
+        *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CLASSIC_BTN_ACC ||
+        *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
         pStatusCL = (WPADCLStatus*)pRxBuffer;
 
         if ((pStatusCL->clButton &
              (WPAD_BUTTON_CL_LEFT | WPAD_BUTTON_CL_RIGHT)) ==
             (WPAD_BUTTON_CL_LEFT | WPAD_BUTTON_CL_RIGHT)) {
-
             pStatusCL->clButton &= ~WPAD_BUTTON_CL_RIGHT;
         }
 
         if ((pStatusCL->clButton & (WPAD_BUTTON_CL_UP | WPAD_BUTTON_CL_DOWN)) ==
             (WPAD_BUTTON_CL_UP | WPAD_BUTTON_CL_DOWN)) {
-
             pStatusCL->clButton &= ~WPAD_BUTTON_CL_DOWN;
         }
     }
@@ -3019,12 +3015,12 @@ void fn_80064A80(s32 chan, s32 param_2) {
 	if (param_2 != 0) {
 		WPADiClearQueue_80063BD4(&cb->extCmdQueue);
 		if (param_2 == -1) {
-			((u8*)cb)[0x801] = 0xfd;
+			cb->devMode = 0xfd;
 		} else {
 			s32 val = *(s32*)((u8*)cb + 0x780);
 			s32 t = -val | val;
 			s32 sign = t >> 31;
-			((u8*)cb)[0x801] = (sign & 0x7C00000) >> 24;
+			cb->devMode = (sign & 0x7C00000) >> 24;
 		}
 		if (*(s32*)((u8*)cb + 0x7e0) != 0) {
 			((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
