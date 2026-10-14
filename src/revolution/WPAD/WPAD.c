@@ -1495,28 +1495,29 @@ _end:
 }
 
 void WPADControlMotor(s32 chan, u32 command) {
-    WPADCB* p = _wpdcb[chan];
+    WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
-    s32 status = p->status;
+    s32 status = *(s32*)((u8*)p + 0x7FC);
 
     if (status == WPAD_ERR_NO_CONTROLLER) {
         OSRestoreInterrupts(enabled);
         return;
     }
 
-    if (!_rumble && (command != WPAD_MOTOR_STOP || p->motorRunning != TRUE)) {
+    if (!_rumble && (command != WPAD_MOTOR_STOP ||
+                    *(BOOL*)((u8*)p + 0x814) != TRUE)) {
         OSRestoreInterrupts(enabled);
         return;
     }
 
-    if (command == WPAD_MOTOR_STOP && p->motorRunning == FALSE ||
-        command == WPAD_MOTOR_RUMBLE && p->motorRunning == TRUE) {
+    if (command == WPAD_MOTOR_STOP && *(BOOL*)((u8*)p + 0x814) == FALSE ||
+        command == WPAD_MOTOR_RUMBLE && *(BOOL*)((u8*)p + 0x814) == TRUE) {
         OSRestoreInterrupts(enabled);
         return;
     }
 
-    p->motorRunning = command == WPAD_MOTOR_STOP ? FALSE : TRUE;
-    p->motorBusy = TRUE;
+    *(BOOL*)((u8*)p + 0x814) = command == WPAD_MOTOR_STOP ? FALSE : TRUE;
+    *(u32*)((u8*)p + 0x810) = TRUE;
 
     OSRestoreInterrupts(enabled);
 }
@@ -3015,12 +3016,12 @@ void fn_80064A80(s32 chan, s32 param_2) {
 	if (param_2 != 0) {
 		WPADiClearQueue_80063BD4(&cb->extCmdQueue);
 		if (param_2 == -1) {
-			cb->devMode = 0xfd;
+			((u8*)cb)[0x801] = 0xfd;
 		} else {
 			s32 val = *(s32*)((u8*)cb + 0x780);
 			s32 t = -val | val;
 			s32 sign = t >> 31;
-			cb->devMode = (sign & 0x7C00000) >> 24;
+			((u8*)cb)[0x801] = (sign & 0x7C00000) >> 24;
 		}
 		if (*(s32*)((u8*)cb + 0x7e0) != 0) {
 			((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
