@@ -386,17 +386,12 @@ void fn_80004CB4(void) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling off
 void fn_80004E20(void) {
-    const char* message;
-    void (*callback)(void);
-
     fn_80265D48();
     fn_80129BD4();
     fn_80004B5C();
-    callback = fn_80004E20;
-    message = lbl_802FAFE0;
-    fn_802E30C8(message, callback);
+    fn_802E30C8(lbl_802FAFE0, fn_80004E20);
     if (fn_80019B6C() != 0) {
         fn_801E78A0();
     } else if (fn_80019B48() != 0) {
