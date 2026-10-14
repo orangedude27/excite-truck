@@ -2836,7 +2836,7 @@ void* fn_80060784(void) {
 // fn_800609E0: get data format (clamped)
 u32 fn_800609E0(s32 chan) {
     BOOL enabled = OSDisableInterrupts();
-    u32 val = (*(u32*)((u8*)_wpdcb[chan] + 0x8B8));
+    u32 val = *(u32*)((u8*)lbl_8038F4F0[chan] + 0x7F0);
     OSRestoreInterrupts(enabled);
     return (val == (u32)-1) ? 0 : val;
 }
