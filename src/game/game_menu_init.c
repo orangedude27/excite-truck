@@ -219,7 +219,7 @@ void fn_80004B14(void) {
     }
 }
 
-void fn_800052F8(void) {
+void fn_800052F8(void) DECOMP_DONT_INLINE {
     fn_80005158(lbl_802FB0A8);
 }
 
