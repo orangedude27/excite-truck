@@ -2985,3 +2985,8 @@ u16 _WUDGetNotAckedSize(s8 handle) {
 }
 u8 _WUDGetLinkNumber(void) { return 0; }
 u32 __a1_22_ack(void) { return 0; }
+
+void fn_8005E8C0(u32 r3, u32 r4)
+{
+	OSSwitchFiberEx(r3, r4, 0, 0, fn_8005E298, (u8*)&lbl_8038F500 + 0x1000);
+}
