@@ -827,6 +827,34 @@ BOOL fn_800567BC(u32 mask) {
     return TRUE;
 }
 
+BOOL fn_800568C4(u32 mask) {
+    BOOL enabled;
+    u32 disable;
+
+    enabled = OSDisableInterrupts();
+    mask |= lbl_8055DB00;
+    lbl_8055DB00 = 0;
+    mask &= ~(lbl_8055DB08 | lbl_8055DB04);
+    lbl_8055DB10 |= mask;
+    disable = lbl_8055DB10 & lbl_8055DB14;
+    lbl_8055DB14 &= ~mask;
+    lbl_8055DAFC &= ~mask;
+    if ((OS_PAD_FLAGS & 0x40) == 0) {
+        lbl_8055DB0C |= mask;
+    }
+    SIDisablePolling(disable);
+    if (lbl_80558F74 == 32) {
+        lbl_80558F74 = __cntlzw(lbl_8055DB10);
+        if (lbl_80558F74 != 32) {
+            lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
+            memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
+            SIGetTypeAsync(lbl_80558F74, fn_8005649C);
+        }
+    }
+    OSRestoreInterrupts(enabled);
+    return TRUE;
+}
+
 void SPEC0_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     (void)chan;
 
