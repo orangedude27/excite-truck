@@ -978,10 +978,27 @@ u32 VIGetCurrentLine(void)
 
 VITVFormat VIGetTvFormat(void)
 {
-    u32 format = *(u32 *)OSPhysicalToCached(0xCC);
+    BOOL enabled;
+    u32 format;
 
-    ASSERTMSGLINE(0x80D, format == 0 || format == 1 || format == 2,
-        "VIGetTvFormat(): Wrong format is stored in lo mem. Maybe lo mem is trashed");
+    enabled = OSDisableInterrupts();
+    format = CurrTvMode_8055DB9C;
+    switch (format) {
+    case 0:
+    case 3:
+    case 6:
+    case 7:
+        format = 0;
+        break;
+    case 1:
+    case 4:
+        format = 1;
+        break;
+    case 2:
+    case 5:
+        break;
+    }
+    OSRestoreInterrupts(enabled);
     return format;
 }
 
