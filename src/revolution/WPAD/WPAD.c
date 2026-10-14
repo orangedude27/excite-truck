@@ -2828,6 +2828,7 @@ u8 fn_8005EE80(s32 chan) {
 }
 
 extern u8 lbl_8055DC11;
+extern u8 lbl_8055DC08[WPAD_MAX_CONTROLLERS];
 
 // fn_8006022C: disconnect controller and clear saved device information
 void fn_8006022C(s32 chan)
@@ -3024,9 +3025,9 @@ void fn_80064A80(s32 chan, s32 param_2) {
 			s32 val = *(s32*)((u8*)cb + 0x780);
 			s32 t = -val | val;
 			s32 sign = t >> 31;
-			s32 result;
-			result = sign & 0x7c00000;
-			((u8*)cb)[0x801] = result >> 24;
+			u32 u = (u32)sign;
+			u32 mask = (u >> 24) & 0x3f;
+			((u8*)cb)[0x801] = mask;
 		}
 		if (*(s32*)((u8*)cb + 0x7e0) != 0) {
 			((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
