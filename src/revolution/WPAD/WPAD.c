@@ -2776,11 +2776,14 @@ void fn_8005ED8C(void) {
 }
 
 // fn_8005EE20: WPAD query
-BOOL fn_8005EE20(void) {
-    BOOL enabled = OSDisableInterrupts();
-    BOOL result = (lbl_8055DC05 != 0);
-    OSRestoreInterrupts(enabled);
-    return result;
+void fn_8005EE20(void) {
+    if (lbl_8055DC05 == 0) {
+        lbl_8055DC05 = 1;
+        fn_80073EA4();
+        OSCancelAlarm(&lbl_8038F4C0);
+        fn_8006ADC4(0);
+        fn_8006A81C();
+    }
 }
 
 // fn_8005EE6C: tail call to WUDStartFastSyncSimple
