@@ -314,6 +314,30 @@ static void SIInterruptHandler(s16 intr, OSContext* ctx) {
     }
 }
 
+BOOL SIEnablePollingInterrupt(BOOL enable) {
+    BOOL enabled;
+    BOOL old;
+    u32* vcount;
+    u32 csr;
+
+    enabled = OSDisableInterrupts();
+    csr = SI_HW_REGS[SI_SICOMSCR];
+    old = (csr >> 27) & 1;
+    if (enable) {
+        vcount = InputBufferVcount;
+        *vcount++ = 0;
+        *vcount++ = 0;
+        *vcount++ = 0;
+        *vcount = 0;
+        csr |= SI_SICOMCSR_RDSTINTMSK;
+    } else {
+        csr &= ~SI_SICOMCSR_RDSTINTMSK;
+    }
+    SI_HW_REGS[SI_SICOMSCR] = csr & ~(SI_SICOMCSR_TCINT | SI_SICOMCSR_TSTART);
+    OSRestoreInterrupts(enabled);
+    return old;
+}
+
 void SIInit(void) {
     static BOOL Initialized = FALSE;
 
