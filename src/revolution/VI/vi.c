@@ -1045,6 +1045,31 @@ s32 fn_8005B01C(void) {
     return 1;
 }
 
+void __VISetYUVSEL(u8 value)
+{
+    u8 data[2];
+
+    switch ((s32)OS_TV_FORMAT) {
+    case 1:
+    case 5:
+        lbl_8055DBF0 = 2;
+        break;
+    case 2:
+        lbl_8055DBF0 = 1;
+        break;
+    case 0:
+        lbl_8055DBF0 = 0;
+        break;
+    default:
+        lbl_8055DBF0 = 0;
+        break;
+    }
+    data[0] = 1;
+    data[1] = (value << 5) | lbl_8055DBF0;
+    __VISendI2CData(0xE0, data, 2);
+    WaitMicroTime(2);
+}
+
 void fn_8005BAEC(u8 value)
 {
     u8 data[2];
