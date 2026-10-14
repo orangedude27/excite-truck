@@ -1679,7 +1679,7 @@ void WPADSetAutoSamplingBuf(s32 chan, void* pBuffer, u32 len) {
     s32 fmtSize;
     int i;
 
-    DEBUGPrint("WPADSetAutoSamplingBuf()\n");
+    DBPrintf_80068D68(lbl_803122D8);
 
     enabled = OSDisableInterrupts();
     p = lbl_8038F4F0[chan];
