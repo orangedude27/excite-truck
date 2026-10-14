@@ -6,6 +6,9 @@
 extern s32 lbl_80558F74;
 extern u32 lbl_8055DB10;
 extern u32 lbl_8055DB14;
+extern BOOL lbl_8055DAF0;
+extern BOOL lbl_8055DAF4;
+BOOL fn_800568C4(u32 mask);
 extern int __cntlzw(unsigned int);
 BOOL SIGetResponse(s32 chan, void* data);
 void fn_8005649C(s32 chan, u32 status);
