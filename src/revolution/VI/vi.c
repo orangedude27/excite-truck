@@ -30,6 +30,15 @@ extern u8 lbl_80558FD0;
 extern u32 lbl_8055DBF0;
 extern u32 lbl_8055DBE4;
 extern u32* jumptable_80311940[];
+static u32* jumptable_80311940[] = {
+	(u32*)0, (u32*)0, (u32*)0, (u32*)0, (u32*)0,
+	(u32*)0, (u32*)0, (u32*)0, (u32*)0, (u32*)0,
+	(u32*)0, (u32*)0, (u32*)0, (u32*)0, (u32*)0,
+	(u32*)0, (u32*)0, (u32*)0, (u32*)0, (u32*)0,
+	(u32*)0, (u32*)0, (u32*)0, (u32*)0, (u32*)0,
+	(u32*)0, (u32*)0, (u32*)0, (u32*)0, (u32*)0,
+	(u32*)0,
+};
 extern u8 lbl_80311738[];
 extern u32 lbl_8055DB84;
 
@@ -339,10 +348,55 @@ VIRetraceCallback AIRegisterDMACallback_800591F0(VIRetraceCallback cb)
 
 u32 fn_80059234(u32 index)
 {
-    u32 val;
-
-    val = ((u32 (*)(void))jumptable_80311940[index])();
-    return val;
+	if (index == 0x0) {
+		return (u32)lbl_80311738;
+	}
+	if (index == 0x1) {
+		return (u32)lbl_80311738 + 0x26;
+	}
+	if (index == 0x2) {
+		return (u32)lbl_80311738 + 0x4c;
+	}
+	if (index == 0x3) {
+		return (u32)lbl_80311738 + 0x72;
+	}
+	if (index == 0x4) {
+		return (u32)lbl_80311738;
+	}
+	if (index == 0x5) {
+		return (u32)lbl_80311738 + 0x26;
+	}
+	if (index == 0x6) {
+		return (u32)lbl_80311738 + 0x98;
+	}
+	if (index == 0x7) {
+		return (u32)lbl_80311738 + 0xbe;
+	}
+	if (index == 0x8) {
+		return (u32)lbl_80311738 + 0xe4;
+	}
+	if (index == 0x9) {
+		return (u32)lbl_80311738 + 0x10a;
+	}
+	if (index == 0xa) {
+		return (u32)lbl_80311738 + 0x4c;
+	}
+	if (index == 0xb) {
+		return (u32)lbl_80311738 + 0x72;
+	}
+	if (index == 0xc) {
+		return (u32)lbl_80311738 + 0x130;
+	}
+	if (index == 0xd) {
+		return (u32)lbl_80311738 + 0x156;
+	}
+	if (index == 0xe) {
+		return lbl_8055DB84;
+	}
+	if (index == 0xf) {
+		return 0;
+	}
+	return (u32)lbl_80311738;
 }
 
 void __VIInit(VITVMode mode)
