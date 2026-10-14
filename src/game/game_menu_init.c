@@ -161,14 +161,16 @@ struct GameVirtualObject {
     GameVirtualTable* vtable;
 };
 
+#pragma push
+#pragma opt_lifetimes off
 void fn_800049C0(void) {
     struct NameTable { const char* names[10]; };
     struct {
         u32 date[6];
         struct NameTable table;
     } local;
-    u16* dp;
-    u16 year_val, month_val, day_val, hour_val;
+    volatile u16* dp;
+    u32 year_val, day_val, month_val, hour_val;
     int lang_result;
     u32 year_seconds, month_seconds, day_seconds;
     u32 first, second;
@@ -177,10 +179,10 @@ void fn_800049C0(void) {
     fn_802E2CFC(&local);
     dp = (u16*)&local.date[1];
     year_val = dp[0];
-    month_val = dp[1];
     day_val = dp[2];
-    hour_val = dp[3];
+    month_val = dp[1];
     year_seconds = year_val * 43200;
+    hour_val = dp[3];
     month_seconds = month_val * 3600;
     day_seconds = day_val * 60;
     first = hour_val ^ month_seconds;
@@ -193,6 +195,7 @@ void fn_800049C0(void) {
         fn_80278A1C(local.table.names[lang_result]);
     }
 }
+#pragma pop
 
 void fn_80004AB8(u32 val) DECOMP_DONT_INLINE {
     if (val == lbl_8055890C) {
