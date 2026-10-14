@@ -1767,6 +1767,43 @@ void WPADiExcludeButton(s32 chan) {
     OSRestoreInterrupts(enabled);
 }
 
+void fn_80060AFC(s32 chan) {
+    WPADCB* p = lbl_8038F4F0[chan];
+    BOOL enabled = OSDisableInterrupts();
+    u8 rxBufIndex = *(u8*)((u8*)p + 0x806) != 0 ? 0 : 1;
+    WPADStatus* pStatus = (WPADStatus*)p->rxBufs[rxBufIndex];
+
+    if (*(void**)((u8*)p + 0x7EC) != NULL) {
+        if (++*(u32*)((u8*)p + 0x7F0) >= *(u32*)((u8*)p + 0x7F4)) {
+            *(u32*)((u8*)p + 0x7F0) = 0;
+        }
+        if (*(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CORE_BTN ||
+            *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CORE_BTN_ACC ||
+            *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CORE_BTN_ACC_DPD) {
+            memcpy(&(*(WPADStatus**)((u8*)p + 0x7EC))[*(u32*)((u8*)p + 0x7F0)],
+                   pStatus, sizeof(WPADStatus));
+        } else if (*(u32*)((u8*)p + 0x7F8) == WPAD_FMT_FS_BTN ||
+                   *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_FS_BTN_ACC ||
+                   *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_FS_BTN_ACC_DPD) {
+            WPADFSStatus* pDst = &(*(WPADFSStatus**)((u8*)p + 0x7EC))[*(u32*)((u8*)p + 0x7F0)];
+            memcpy(pDst, pStatus, !pDst->err ? sizeof(WPADFSStatus) : sizeof(WPADStatus));
+        } else if (*(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CLASSIC_BTN ||
+                   *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CLASSIC_BTN_ACC ||
+                   *(u32*)((u8*)p + 0x7F8) == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
+            WPADCLStatus* pDst = &(*(WPADCLStatus**)((u8*)p + 0x7EC))[*(u32*)((u8*)p + 0x7F0)];
+            memcpy(pDst, pStatus, !pDst->err ? sizeof(WPADCLStatus) : sizeof(WPADStatus));
+        } else {
+            WPADStatusEx* pDst = &(*(WPADStatusEx**)((u8*)p + 0x7EC))[*(u32*)((u8*)p + 0x7F0)];
+            memcpy(pDst, pStatus, !pDst->err ? sizeof(WPADStatusEx) : sizeof(WPADStatus));
+        }
+    }
+    if (*(WPADSamplingCallback*)((u8*)p + 0x7E8) != NULL) {
+        (*(WPADSamplingCallback*)((u8*)p + 0x7E8))(chan);
+    }
+    ++*(u16*)((u8*)p + 0x8C4);
+    OSRestoreInterrupts(enabled);
+}
+
 void WPADiCopyOut(s32 chan) {
     WPADCB* p = _wpdcb[chan];
     BOOL enabled = OSDisableInterrupts();
@@ -1973,9 +2010,9 @@ void WPADSetSpeakerVolume(u8 volume) {
 
 static BOOL IsBusyStream(s32 chan) {
     BOOL enabled;
+    WPADCB* p = lbl_8038F4F0[chan];
     u8 radioQuality;
     u32 devType;
-    WPADCB* p = lbl_8038F4F0[chan];
     u8 bufferStatus;
     u16 bteBufferStatus;
     u16 btmBufferStatus;
@@ -2787,19 +2824,54 @@ u8 fn_80062458(void) {
 }
 
 // fn_8005D0DC: WUD initialization helper
-void fn_8005D0DC(s32 chan, s32 mode) {
+s32 fn_8005D0DC(s32 chan, s32 mode) {
     s32 result = fn_8006A940();
-    if (chan != 0) return;
-    if (result < 2 || result > 3) return;
-    if (mode == 1 || (mode >= 4 && mode < 7)) return;
-    if (lbl_8055DC05 == 0) {
-        lbl_8055DC05 = 1;
-        WUDSetVisibility(0, 0);
-        memset(lbl_80393058 + 0x2bd, 0, 0x46 * 4);
-        OSCancelAlarm(&lbl_8038F4C0);
-        fn_8006ADC4(NULL);
-        fn_8006A81C();
+    s32 var_r30 = 0;
+    
+    if (chan != 0) {
+        return 0;
     }
+    
+    if (result < 2 || result > 3) {
+        return 0;
+    }
+    
+    if (mode == 1) {
+        return 0;
+    }
+    
+    if (mode > 1) {
+        if (mode >= 4 && mode < 7) {
+            if (lbl_8055DC05 == 0) {
+                lbl_8055DC05 = 1;
+                WUDSetVisibility(0, 0);
+                memset(lbl_80393058 + 0x2bd, 0, 0x46 * 4);
+            }
+            goto skip_init;
+        }
+    }
+    
+    if (mode == 0) {
+        if (lbl_8055DC05 == 0) {
+            lbl_8055DC05 = 1;
+            fn_80073EA4();
+        }
+    }
+
+skip_init:
+    OSCancelAlarm(&lbl_8038F4C0);
+    fn_8006ADC4(NULL);
+    fn_8006A81C();
+    
+    if (mode >= 4 && mode < 7) {
+        return 0;
+    }
+    
+    if (result == 0) {
+        return 1;
+    }
+    
+    return 0;
 }
 
 // fn_8005EB44: WPAD initialization
