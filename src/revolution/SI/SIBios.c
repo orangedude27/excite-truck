@@ -70,6 +70,12 @@ static u32 InputBuffer[SI_MAX_CHAN][2];
 static OSInterruptHandler RDSTHandler[SI_MAX_CHAN];
 static u32 InputBufferVcount[SI_MAX_CHAN];
 extern OSAlarm Alarm[SI_MAX_CHAN];
+extern struct {
+    SIPacket packet[SI_MAX_CHAN];
+    s64 xferTime[SI_MAX_CHAN];
+    s64 typeTime[SI_MAX_CHAN];
+    OSAlarm alarm[SI_MAX_CHAN];
+} Packet_8038F100;
 extern u32 __PADFixBits;
 
 /* ---------------------------------------------------------------------
