@@ -642,6 +642,7 @@ u32 SIEnablePolling(u32 chan) {
     return poll;
 }
 
+#pragma dont_inline reset
 u32 SIDisablePolling(u32 chan) {
     BOOL enabled;
     u32 poll;
