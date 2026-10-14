@@ -1681,26 +1681,26 @@ void WPADSetAutoSamplingBuf(s32 chan, void* pBuffer, u32 len) {
     DEBUGPrint("WPADSetAutoSamplingBuf()\n");
 
     enabled = OSDisableInterrupts();
-    p = _wpdcb[chan];
+    p = lbl_8038F4F0[chan];
 
-    defaultErr = p->status == WPAD_ERR_NO_CONTROLLER ? WPAD_ERR_NO_CONTROLLER
+    defaultErr = (*(s32*)((u8*)p + 0x7FC)) == WPAD_ERR_NO_CONTROLLER ? WPAD_ERR_NO_CONTROLLER
                                                      : WPAD_ERR_INVALID;
 
-    if (p->dataFormat == WPAD_FMT_CORE_BTN ||
-        p->dataFormat == WPAD_FMT_CORE_BTN_ACC ||
-        p->dataFormat == WPAD_FMT_CORE_BTN_ACC_DPD) {
+    if ((*(u32*)((u8*)p + 0x7F8)) == WPAD_FMT_CORE_BTN ||
+        (*(u32*)((u8*)p + 0x7F8)) == WPAD_FMT_CORE_BTN_ACC ||
+        (*(u32*)((u8*)p + 0x7F8)) == WPAD_FMT_CORE_BTN_ACC_DPD) {
 
         fmtSize = sizeof(WPADStatus);
 
-    } else if (p->dataFormat == WPAD_FMT_FS_BTN ||
-               p->dataFormat == WPAD_FMT_FS_BTN_ACC ||
-               p->dataFormat == WPAD_FMT_FS_BTN_ACC_DPD) {
+    } else if ((*(u32*)((u8*)p + 0x7F8)) == WPAD_FMT_FS_BTN ||
+               (*(u32*)((u8*)p + 0x7F8)) == WPAD_FMT_FS_BTN_ACC ||
+               (*(u32*)((u8*)p + 0x7F8)) == WPAD_FMT_FS_BTN_ACC_DPD) {
 
         fmtSize = sizeof(WPADFSStatus);
 
-    } else if (p->dataFormat == WPAD_FMT_CLASSIC_BTN ||
-               p->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC ||
-               p->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
+    } else if ((*(u32*)((u8*)p + 0x7F8)) == WPAD_FMT_CLASSIC_BTN ||
+               (*(u32*)((u8*)p + 0x7F8)) == WPAD_FMT_CLASSIC_BTN_ACC ||
+               (*(u32*)((u8*)p + 0x7F8)) == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
 
         fmtSize = sizeof(WPADCLStatus);
 
@@ -1715,11 +1715,11 @@ void WPADSetAutoSamplingBuf(s32 chan, void* pBuffer, u32 len) {
             ((WPADStatus*)((u8*)pBuffer + i * fmtSize))->err = defaultErr;
         }
 
-        p->samplingBufIndex = -1;
-        p->samplingBufSize = len;
+        (*(u32*)((u8*)p + 0x7F0)) = -1;
+        (*(u32*)((u8*)p + 0x7F4)) = len;
     }
 
-    p->samplingBuf = pBuffer;
+    (*(WPADStatus**)((u8*)p + 0x7EC)) = pBuffer;
 
     OSRestoreInterrupts(enabled);
 }
