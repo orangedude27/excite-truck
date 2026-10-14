@@ -8,6 +8,11 @@
 #define __VIRegs VI_HW_REGS
 
 extern s32 lbl_8055DBE8;
+extern u32 lbl_8055DB60;
+extern u32 lbl_8055DB70;
+extern u32 lbl_8055DB98;
+extern u32 lbl_8055DBC8;
+extern u32 lbl_8055DBCC;
 extern u32 CurrTvMode_8055DB9C;
 extern u8 lbl_80311B50[0x140];
 extern u8 lbl_80558FC0;
@@ -327,6 +332,14 @@ VIRetraceCallback AIRegisterDMACallback_800591F0(VIRetraceCallback cb)
     lbl_8055DBA8 = cb;
     OSRestoreInterrupts(enabled);
     return oldcb;
+}
+
+u32 fn_80059234(u32 index)
+{
+    u32 val;
+
+    val = ((u32 (*)(void))jumptable_80311940[index])();
+    return val;
 }
 
 void __VIInit(VITVMode mode)
