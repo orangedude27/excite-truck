@@ -463,6 +463,8 @@ int fn_80005044(int* eventIndex, int* subIndex, const char* name) {
 
 #pragma pop
 
+#pragma push
+#pragma use_lmw_stmw off
 int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
     int result = 0;
     int i;
