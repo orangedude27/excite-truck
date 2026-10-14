@@ -24,6 +24,8 @@ extern const char lbl_803122A0[];
 extern const char lbl_803122BC[];
 extern WPADCB* lbl_8038F4F0[WPAD_MAX_CONTROLLERS];
 extern void* lbl_8055DC14;
+extern u8 lbl_8055DC08[WPAD_MAX_CONTROLLERS];
+extern u8 lbl_8055DC11;
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
@@ -3024,10 +3026,8 @@ void fn_80064A80(s32 chan, s32 param_2) {
 		} else {
 			s32 val = *(s32*)((u8*)cb + 0x780);
 			s32 t = -val | val;
-			s32 sign = t >> 31;
-			u32 u = (u32)sign;
-			u32 mask = (u >> 24) & 0x3f;
-			((u8*)cb)[0x801] = mask;
+			volatile s32 sign = t >> 31;
+			((u8*)cb)[0x801] = ((u32)sign & 0x7c00000) >> 24;
 		}
 		if (*(s32*)((u8*)cb + 0x7e0) != 0) {
 			((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
