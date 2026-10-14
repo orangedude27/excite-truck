@@ -7,6 +7,10 @@
 
 #define __VIRegs VI_HW_REGS
 
+#pragma dont_inline on
+void WaitMicroTime(s32 time);
+#pragma dont_inline reset
+
 extern s32 lbl_8055DBE8;
 extern u32 CurrTvMode_8055DB9C;
 extern u8 lbl_80311B50[0x140];
