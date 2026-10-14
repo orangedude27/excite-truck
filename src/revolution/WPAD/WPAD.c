@@ -2794,8 +2794,9 @@ void fn_8005EE74(void) { WUDSetSyncSimpleCallback(NULL); }
 
 // fn_8005EE80: get extFormat
 u8 fn_8005EE80(s32 chan) {
+    WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
-    u8 val = _wpdcb[chan]->devHandle;
+    u8 val = p->devHandle;
     OSRestoreInterrupts(enabled);
     return val;
 }
