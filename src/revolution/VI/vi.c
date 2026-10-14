@@ -17,6 +17,10 @@ extern u8 lbl_80558FC3;
 extern u8 lbl_80558FC4;
 extern u8 lbl_80558FC5;
 extern u8 lbl_80558FC6;
+extern u8 lbl_80558FC7;
+extern u8 lbl_80558FC8;
+extern u8 lbl_80558FC9;
+extern u8 lbl_80558FCA;
 extern u8 lbl_80558FD0;
 
 typedef struct {
