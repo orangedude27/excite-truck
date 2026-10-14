@@ -231,24 +231,24 @@ extern int fn_80028F94(char*, const char*, int);
 
 int fn_80004D64(char* args) {
     char* p;
-    int result;
 
-    if (args == NULL) {
-        return 1;
-    }
-
-    fn_800199B8();
-    for (p = args; *p != '\0'; p++) {
-        result = *p;
-        if (result == '-' || result == ' ' || result == '/') {
-            if (fn_80028F94(p + 1, lbl_802FAFD4, 9) == 0) {
-                *(u8*)0x8055F63C = 1;
-            } else {
-                fn_80028F94(p + 1, (char*)0x8055D9D0, 4);
+    if (args != NULL) {
+        fn_800199B8();
+        for (p = args; *p != '\0'; p++) {
+            switch (*p) {
+            case '-':
+            case '/':
+                if (strncmp(p + 1, lbl_802FAFD4, 9) == 0) {
+                    lbl_8055F63C = 1;
+                } else {
+                    strncmp(p + 1, lbl_80558910, 4);
+                }
+                break;
+            case ' ':
+                break;
             }
         }
     }
-
     return 1;
 }
 
