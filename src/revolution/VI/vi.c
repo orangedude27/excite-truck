@@ -932,6 +932,17 @@ VITVFormat VIGetTvFormat(void)
     return format;
 }
 
+u32 fn_8005AD9C(void)
+{
+    BOOL enabled;
+    u32 status;
+
+    enabled = OSDisableInterrupts();
+    status = __VIRegs[VI_VISEL] & 3;
+    OSRestoreInterrupts(enabled);
+    return status & VI_VISEL_COMPONENT;
+}
+
 s32 fn_8005B00C(void) {
     extern s32 lbl_8055DBBC;
     lbl_8055DBBC = 0;
