@@ -2016,12 +2016,11 @@ BOOL WPADCanSendStreamData(s32 chan) {
     s32 status;
 
     enabled = OSDisableInterrupts();
-    status = p->status;
-    handshake = p->handshakeFinished;
+    status = *(s32*)((u8*)p + 0x7FC);
+    handshake = *(BOOL*)((u8*)p + 0x81C);
     OSRestoreInterrupts(enabled);
 
     if (status == WPAD_ERR_NO_CONTROLLER || !handshake || IsBusyStream(chan)) {
-
         return FALSE;
     } else {
         return TRUE;
