@@ -2977,6 +2977,7 @@ void fn_800684CC(void) { /* stub */ }
 
 // WUD function stubs
 u8 WUDGetBufferStatus(void) { return 0; }
+void fn_8005E298(void);
 u16 _WUDGetNotAckedSize(s8 handle) {
 #pragma unused(handle)
     return 0;
