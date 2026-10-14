@@ -490,7 +490,7 @@ int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
 
     for (i = 0; i < fn_80012818(); i++) {
         u8* event = fn_80012820(i);
-        if (fn_8002B130((const char*)(event + 0x28), name) == 0) {
+        if (stricmp((const char*)(event + 0x28), name) == 0) {
             *eventIndex = i;
             *subIndex = 0;
             result = 1;
