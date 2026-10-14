@@ -1,6 +1,6 @@
 #include <revolution/FS.h>
 #include <revolution/NAND.h>
-#include <stdio.h>
+#include <internal/printf.h>
 #include <string.h>
 
 void nandSplitPerm(u8 perm, u32* ownerPerm, u32* groupPerm,
