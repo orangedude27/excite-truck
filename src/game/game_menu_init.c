@@ -114,6 +114,10 @@ extern void fn_800124DC(void*, int, int, f32);
 extern char lbl_802FAEA0[];
 DECL_SECTION(".sdata") extern u32 lbl_8055D430;
 
+static inline void MenuLog(const char* format, const char* name) {
+    fn_802E30C8(format, (void (*)(void))name);
+}
+
 static inline void SaveMenuFlag(int* saved) {
     *saved = lbl_8055D430 & 1;
     lbl_8055D430 |= 1;
@@ -317,8 +321,8 @@ int fn_80005158(const char* name) {
     fn_8023D7CC();
     fn_8023D70C();
 
-    found = 0;
     SaveMenuFlag(&saved);
+    found = 0;
     count = fn_80012818();
     first = lbl_8034EC58[0];
     if (first == '$' || first == '@') {
