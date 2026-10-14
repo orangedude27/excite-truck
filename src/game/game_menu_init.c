@@ -24,7 +24,7 @@ extern void fn_800199B8(void);
 extern int  fn_80028F94(char*, const char*, int);
 extern void fn_80265D48(void);
 extern void fn_80129BD4(void);
-extern void fn_802E30C8(const char*, ...);
+extern int fn_802E30C8(const char*, ...);
 extern const char lbl_802FAFE0[];
 extern int  fn_80019B6C(void);
 extern int  fn_80019B48(void);
@@ -391,7 +391,7 @@ void fn_80004E20(void) {
     fn_80265D48();
     fn_80129BD4();
     fn_80004B5C();
-    fn_802E30C8(lbl_802FAFE0, fn_80004E20);
+    fn_802E30C8(lbl_802FAFE0, (void*)fn_80004E20);
     if (fn_80019B6C() != 0) {
         fn_801E78A0();
     } else if (fn_80019B48() != 0) {
