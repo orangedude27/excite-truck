@@ -161,8 +161,6 @@ struct GameVirtualObject {
     GameVirtualTable* vtable;
 };
 
-#pragma push
-#pragma scheduling off
 void fn_800049C0(void) {
     struct NameTable { const char* names[10]; };
     struct {
@@ -195,7 +193,6 @@ void fn_800049C0(void) {
         fn_80278A1C(local.table.names[lang_result]);
     }
 }
-#pragma pop
 
 void fn_80004AB8(u32 val) DECOMP_DONT_INLINE {
     if (val == lbl_8055890C) {
