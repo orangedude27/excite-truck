@@ -2719,6 +2719,7 @@ extern void* lbl_8055DC14;
 extern u8 lbl_80393058[0x468];
 extern OSAlarm lbl_8038F4C0;
 extern u8 lbl_8055DC19;
+extern u8 lbl_8055DC12;
 
 // fn_8005EE78: tail call wrapper
 void fn_8005EE78(void) { fn_8006A7D0(); }
