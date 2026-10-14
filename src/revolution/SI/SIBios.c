@@ -110,6 +110,15 @@ typedef struct PADStatus {
     u8 unk;     // at 0xB
 } PADStatus;
 
+extern BOOL lbl_8055DB18;
+extern const char* lbl_80558F70;
+extern u32 __PADSpec;
+extern BOOL lbl_8055DB2C;
+extern u32 lbl_8038F0C0[PAD_MAX_CONTROLLER];
+extern OSShutdownFunctionInfo lbl_803115D8;
+extern void (*lbl_80558F84)(s32 chan, PADStatus* status, u32 data[2]);
+void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]);
+
 static PADStatus lbl_8038F080[PAD_MAX_CONTROLLER];
 static u32 lbl_80558F7C = 0x00000300;
 static u32 XPatchBits =
