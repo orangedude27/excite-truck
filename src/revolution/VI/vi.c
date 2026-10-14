@@ -1132,12 +1132,14 @@ void __VISetRGBOverDrive(void)
     if ((s32)lbl_8055DBF0 == 3) {
         data[0] = 10;
         data[1] = (lbl_8055DBE4 * 2) | 1;
+        __VISendI2CData(0xE0, data, 2);
+        WaitMicroTime(2);
     } else {
         data[0] = 10;
         data[1] = 0;
+        __VISendI2CData(0xE0, data, 2);
+        WaitMicroTime(2);
     }
-    __VISendI2CData(0xE0, data, 2);
-    WaitMicroTime(2);
 }
 
 #pragma dont_inline on
