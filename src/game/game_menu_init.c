@@ -114,6 +114,11 @@ extern void fn_800124DC(void*, int, int, f32);
 extern char lbl_802FAEA0[];
 DECL_SECTION(".sdata") extern u32 lbl_8055D430;
 
+static inline void SaveMenuFlag(int* saved) {
+    *saved = lbl_8055D430 & 1;
+    lbl_8055D430 |= 1;
+}
+
 static inline void RestoreMenuFlag(int* saved) {
     if (saved) {
         lbl_8055D430 = (lbl_8055D430 & ~1) | *saved;
@@ -341,9 +346,7 @@ int fn_80005158(const char* name) {
     } else {
         fn_802E30C8(data + 0x1f0, name);
     }
-    if (&saved) {
-        lbl_8055D430 = (lbl_8055D430 & ~1) | saved;
-    }
+    RestoreMenuFlag(&saved);
     return 0;
 }
 
