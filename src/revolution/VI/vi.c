@@ -935,6 +935,12 @@ s32 fn_8005B00C(void) {
     return 1;
 }
 
+s32 fn_8005B01C(void) {
+    extern s32 lbl_8055DBB8;
+    lbl_8055DBB8 = 0;
+    return 1;
+}
+
 void __VISetAdjustingValues(s16 x, s16 y)
 {
     BOOL enabled;
