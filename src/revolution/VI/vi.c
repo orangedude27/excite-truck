@@ -91,6 +91,7 @@ typedef struct {
     u32 rtfbb;
     u32 rbfbb;
     VITiming *timing;
+    u8 unk_0x58[0x28];
 } SomeVIStruct;
 
 static volatile u32 retraceCount;
