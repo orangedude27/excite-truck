@@ -2830,7 +2830,9 @@ u8 fn_8005EE80(s32 chan) {
     return val;
 }
 
-// fn_8006022C: set callback
+extern u8 lbl_8055DC11;
+
+// fn_8006022C: disconnect controller and clear saved device information
 void fn_8006022C(s32 chan, void* callback) {
     BOOL enabled = OSDisableInterrupts();
     _wpdcb[chan]->cmdBlkCB = callback;
