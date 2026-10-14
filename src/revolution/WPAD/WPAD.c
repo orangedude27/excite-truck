@@ -2710,9 +2710,6 @@ extern void fn_8006AC4C(void);
 extern void fn_8006ADC4(void*);
 extern void fn_8006A81C(void);
 
-extern void DBPrintf_80068D68(const char* pFmt, ...);
-extern const char lbl_803122BC[];
-
 // WPADCB pointer table
 extern WPADCB* lbl_8038F4F0[WPAD_MAX_CONTROLLERS];
 extern WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
