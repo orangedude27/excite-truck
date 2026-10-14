@@ -125,6 +125,18 @@ void SamplingHandler(s16 intr, OSContext* ctx) {
     }
 }
 
+BOOL __PADDisableRecalibration(BOOL disable) {
+    BOOL enabled = OSDisableInterrupts();
+    BOOL old = (OS_PAD_FLAGS & 0x40) ? TRUE : FALSE;
+
+    OS_PAD_FLAGS &= ~0x40;
+    if (disable) {
+        OS_PAD_FLAGS |= 0x40;
+    }
+    OSRestoreInterrupts(enabled);
+    return old;
+}
+
 BOOL fn_80057460(void) {
     return Si_80311630.chan != SI_CHAN_NONE;
 }
