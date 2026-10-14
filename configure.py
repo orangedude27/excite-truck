@@ -380,7 +380,7 @@ config.libs = [
             Object(Matching, "revolution/NdevExi2AD/exi2.c"),
             Object(NonMatching, "revolution/KPAD/KPAD.c"),
             Object(NonMatching, "revolution/KPAD/KPADReset.c"),
-            Object(NonMatching, "revolution/KPAD/KPADSampling.c"),
+            Object(Matching, "revolution/KPAD/KPADSampling.c"),
             Object(NonMatching, "revolution/KPAD/KPADAcc.c"),
             Object(Matching, "revolution/KPAD/KPADAccData.c"),
             Object(Matching, "revolution/PAD/Pad.c"),
