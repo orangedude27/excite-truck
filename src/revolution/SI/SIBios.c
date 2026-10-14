@@ -335,6 +335,7 @@ static void SIInterruptHandler(s16 intr, OSContext* ctx) {
     }
 }
 
+#pragma dont_inline on
 BOOL SIEnablePollingInterrupt(BOOL enable) {
     BOOL enabled;
     BOOL old;
@@ -357,6 +358,32 @@ BOOL SIEnablePollingInterrupt(BOOL enable) {
     SI_HW_REGS[SI_SICOMSCR] = csr & ~(SI_SICOMCSR_TCINT | SI_SICOMCSR_TSTART);
     OSRestoreInterrupts(enabled);
     return old;
+}
+#pragma dont_inline off
+
+BOOL SIUnregisterPollingHandler(OSInterruptHandler handler) {
+    BOOL enabled;
+    s32 i;
+    s32 j;
+
+    enabled = OSDisableInterrupts();
+    for (i = 0; i < SI_MAX_CHAN; i++) {
+        if (RDSTHandler[i] == handler) {
+            RDSTHandler[i] = NULL;
+            for (j = 0; j < SI_MAX_CHAN; j++) {
+                if (RDSTHandler[j] != NULL) {
+                    break;
+                }
+            }
+            if (j == SI_MAX_CHAN) {
+                SIEnablePollingInterrupt(FALSE);
+            }
+            OSRestoreInterrupts(enabled);
+            return TRUE;
+        }
+    }
+    OSRestoreInterrupts(enabled);
+    return FALSE;
 }
 
 void SIInit(void) {
