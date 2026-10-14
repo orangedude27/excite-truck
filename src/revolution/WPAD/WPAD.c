@@ -2840,8 +2840,9 @@ u32 fn_800609E0(s32 chan) {
 
 // fn_80060C7C: get connected flag
 u32 fn_80060C7C(s32 chan) {
+    WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
-    u32 val = (*(u32*)((u8*)_wpdcb[chan] + 0x77C));
+    u32 val = *(u32*)((u8*)p + 0x77C);
     OSRestoreInterrupts(enabled);
     return val;
 }
