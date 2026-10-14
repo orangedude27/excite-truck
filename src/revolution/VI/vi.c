@@ -842,9 +842,6 @@ void VISetNextFrameBuffer(void *fb)
 {
     BOOL enabled;
 
-    ASSERTMSGLINEV(0x6F7, ((u32)fb & 0x1F) == 0,
-        "VISetNextFrameBuffer(): Frame buffer address(0x%08x) is not 32byte aligned\n",
-        fb);
     enabled = OSDisableInterrupts();
     HorVer.bufAddr = (u32)fb;
     FBSet = 1;
