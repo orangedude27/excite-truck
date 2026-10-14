@@ -151,8 +151,14 @@ BOOL __PADDisableRecalibration(BOOL disable) {
     return old;
 }
 
+#pragma dont_inline on
 BOOL fn_80057460(void) {
     return Si_80311630.chan != SI_CHAN_NONE;
+}
+#pragma dont_inline off
+
+static BOOL PADSync(void) {
+    return lbl_8055DB10 == 0 && lbl_80558F74 == 32;
 }
 
 static u32 SIGetStatus(s32 chan) {
@@ -802,6 +808,28 @@ void SPEC1_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     status->stickY -= 128;
     status->substickX -= 128;
     status->substickY -= 128;
+}
+
+BOOL fn_800572DC(BOOL final) {
+    BOOL ready;
+
+    if (lbl_8055DAF4) {
+        lbl_8055DAF4 = FALSE;
+        SIUnregisterPollingHandler(SamplingHandler);
+    }
+    if (!final) {
+        ready = FALSE;
+        if ((lbl_8055DB10 == 0 && lbl_80558F74 == 32) && !fn_80057460()) {
+            ready = TRUE;
+        }
+        if (!lbl_8055DAF0 && ready) {
+            lbl_8055DAF0 = fn_800568C4(0xF0000000);
+            return FALSE;
+        }
+        return ready;
+    }
+    lbl_8055DAF0 = FALSE;
+    return TRUE;
 }
 
 u32 SIGetTypeAsync(s32 chan, SICallback callback) {
