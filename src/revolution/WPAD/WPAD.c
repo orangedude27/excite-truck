@@ -2710,7 +2710,8 @@ extern void fn_8006AC4C(void);
 extern void fn_8006ADC4(void*);
 extern void fn_8006A81C(void);
 
-// WPADCB pointer table (from lbl_8038F4F0)
+// WPADCB pointer table
+extern WPADCB* lbl_8038F4F0[WPAD_MAX_CONTROLLERS];
 extern WPADCB* _wpdcb[WPAD_MAX_CONTROLLERS];
 
 // Global flags
