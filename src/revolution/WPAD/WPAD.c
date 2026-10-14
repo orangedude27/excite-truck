@@ -2857,9 +2857,9 @@ u32 fn_80062054(s32 chan) {
 }
 
 // fn_80062088: set data format
-void fn_80062088(s32 chan, s32 format) {
+void fn_80062088(s32 val) {
     BOOL enabled = OSDisableInterrupts();
-    (*(u32*)((u8*)_wpdcb[chan] + 0x8B8)) = format;
+    lbl_8055DC12 = val;
     OSRestoreInterrupts(enabled);
 }
 
