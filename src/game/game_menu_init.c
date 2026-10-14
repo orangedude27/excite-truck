@@ -110,7 +110,7 @@ extern void fn_8000D878(void);
 extern void fn_8000D8C8(void);
 extern void fn_8000D94C(void);
 extern void fn_80012478(void);
-extern void fn_800124DC();
+extern void fn_800124DC(void*, int, int, f32);
 extern char lbl_802FAEA0[];
 DECL_SECTION(".sdata") extern int lbl_80558900;
 DECL_SECTION(".sdata2") extern const f32 lbl_80560100;
@@ -238,11 +238,12 @@ int fn_80004D64(char* args) {
 }
 
 void fn_80004B5C(void) {
+    char* data = lbl_802FAEA0;
     fn_802E2C20();
     fn_80004ACC();
-    fn_8012E81C((void*)0x802FAF30);
+    fn_8012E81C(data + 0x90);
     fn_80133024();
-    fn_802C2AA8(*(int*)0x80558900);
+    fn_802C2AA8(lbl_80558900);
     fn_80127464();
     fn_80127464();
     fn_802062E8();
@@ -251,9 +252,9 @@ void fn_80004B5C(void) {
     fn_80245118();
     fn_802E712C();
     fn_80012478();
-    fn_800124DC(*(int*)0x80560100, 1, 1);
+    ((void (*)(void*, int, int, f32))fn_800124DC)(data + 0x128, 1, 1, lbl_80560100);
     fn_80127464();
-    fn_8012E81C((void*)0x802FAF3C);
+    fn_8012E81C(data + 0x9c);
     fn_80232230();
     fn_80137B20();
     fn_80016354();
