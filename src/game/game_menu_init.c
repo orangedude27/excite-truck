@@ -27,6 +27,8 @@ extern void fn_80265D48(void);
 extern void fn_80129BD4(void);
 extern void fn_802E30C8(const char*, ...);
 extern const char lbl_802FAFE0[];
+extern const char lbl_802FAF24[];
+extern const u32 lbl_802ED680[10];
 extern int  fn_80019B6C(void);
 extern int  fn_80019B48(void);
 extern int  fn_80019B54(void);
@@ -468,17 +470,14 @@ int fn_80005044(int* eventIndex, int* subIndex, const char* name) {
 int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
     int result = 0;
     int i;
-
     for (i = 0; i < fn_80012818(); i++) {
         u8* event = fn_80012820(i);
         int j;
-
         for (j = 0; j < *(int*)(event + 0x70); j++) {
             u8* entry = fn_80012870(i, j);
             GameVirtualObject* object = *(GameVirtualObject**)(entry + 0x20);
             const char* entryName = object->vtable->getName(object, lbl_80558918, lbl_80558920);
-
-            if (fn_8002B130(entryName, name) == 0) {
+            if (stricmp(entryName, name) == 0) {
                 *eventIndex = i;
                 *subIndex = j;
                 result = 1;
