@@ -1128,7 +1128,6 @@ void __VISetTrapFilter(void)
 #pragma dont_inline on
 void fn_8005CC68(void)
 {
-    extern u32 lbl_8055DBF0;
     u8 data[2];
 
     lbl_8055DBF0 = 3;
