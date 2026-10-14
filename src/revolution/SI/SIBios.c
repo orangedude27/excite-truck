@@ -6,6 +6,7 @@
 extern s32 lbl_80558F74;
 extern u32 lbl_8055DB10;
 extern u32 lbl_8055DB14;
+extern u32 lbl_8055DB08;
 extern BOOL lbl_8055DAF0;
 extern BOOL lbl_8055DAF4;
 BOOL fn_800568C4(u32 mask);
