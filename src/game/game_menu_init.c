@@ -218,7 +218,7 @@ void fn_80004B14(void) {
 }
 
 void fn_800052F8(void) {
-    fn_80005158((const char*)0x802FB0A8);
+    fn_80005158(lbl_802FB0A8);
 }
 
 extern void fn_800199B8(void);
