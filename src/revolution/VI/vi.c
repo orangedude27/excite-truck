@@ -1062,6 +1062,19 @@ void __VISetWSS(void)
     WaitMicroTime(2);
 }
 
+void __VISetClosedCaption(void)
+{
+    u8 data[5];
+
+    data[0] = 0x7A;
+    data[1] = lbl_80558FC7 & 0x7F;
+    data[2] = lbl_80558FC8 & 0x7F;
+    data[3] = lbl_80558FC9 & 0x7F;
+    data[4] = lbl_80558FCA & 0x7F;
+    __VISendI2CData(0xE0, data, 5);
+    WaitMicroTime(2);
+}
+
 void __VISetAdjustingValues(s16 x, s16 y)
 {
     BOOL enabled;
