@@ -60,9 +60,11 @@ static SIMain Si_80311630 = {SI_CHAN_NONE};
 static u32 Type[SI_MAX_CHAN] = {SI_ERROR_NOREP, SI_ERROR_NOREP, SI_ERROR_NOREP,
                                 SI_ERROR_NOREP};
 
+#define Packet Packet_8038F100
 static SIPacket Packet[SI_MAX_CHAN];
 static s64 XferTime[SI_MAX_CHAN];
 static s64 TypeTime[SI_MAX_CHAN];
+static OSAlarm Alarm[SI_MAX_CHAN];
 static SICallback TypeCallback[SI_MAX_TYPE][SI_MAX_CHAN];
 static BOOL InputBufferValid[SI_MAX_CHAN];
 static u32 InputBuffer[SI_MAX_CHAN][2];
