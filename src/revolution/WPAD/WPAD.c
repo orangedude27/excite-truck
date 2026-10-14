@@ -1327,6 +1327,21 @@ WPADSamplingCallback WPADSetSamplingCallback(s32 chan,
     return pOldCallback;
 }
 
+WPADSamplingCallback WPADSetSamplingCallback_800603D0(s32 chan,
+                                                     WPADSamplingCallback pCallback) {
+    WPADCB* p;
+    BOOL enabled;
+    WPADSamplingCallback pOldCallback;
+
+    DBPrintf_80068D68(lbl_803122BC);
+    enabled = OSDisableInterrupts();
+    p = lbl_8038F4F0[chan];
+    pOldCallback = *(WPADSamplingCallback*)((u8*)p + 0x7E0);
+    *(WPADSamplingCallback*)((u8*)p + 0x7E0) = pCallback;
+    OSRestoreInterrupts(enabled);
+    return pOldCallback;
+}
+
 WPADConnectCallback WPADSetConnectCallback(s32 chan,
                                            WPADConnectCallback pCallback) {
 
