@@ -276,6 +276,19 @@ VIRetraceCallback fn_800591AC(VIRetraceCallback cb)
     return oldcb;
 }
 
+VIRetraceCallback AIRegisterDMACallback_800591F0(VIRetraceCallback cb)
+{
+    extern VIRetraceCallback lbl_8055DBA8;
+    BOOL enabled;
+    VIRetraceCallback oldcb;
+
+    oldcb = lbl_8055DBA8;
+    enabled = OSDisableInterrupts();
+    lbl_8055DBA8 = cb;
+    OSRestoreInterrupts(enabled);
+    return oldcb;
+}
+
 void __VIInit(VITVMode mode)
 {
     VITiming *tm;
