@@ -17,7 +17,7 @@ void __OSBootDol(u32 doloffset, u32 restartCode, const char** argv) {
     void* saveEnd;
 
     fn_800523F0((u32*)&saveStart, (u32*)&saveEnd);
-    sprintf(doloffInString, "%d", doloffset);
+    sprintf(doloffInString, lbl_80558F48, doloffset);
     argvlen = 0;
 
     if (argv != 0) {
