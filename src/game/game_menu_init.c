@@ -405,7 +405,18 @@ void fn_80004E20(void) {
 }
 
 void fn_80004EC0(const char* source) {
-    CopyMenuName(lbl_8034EC58, source, 0x20);
+    int remaining;
+    char* destination;
+
+    destination = lbl_8034EC58;
+    remaining = 0x20;
+
+    while ((*destination++ = *source++) != '\0') {
+        if (--remaining <= 0) {
+            destination[-1] = '\0';
+            return;
+        }
+    }
 }
 
 u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback) {
@@ -417,9 +428,9 @@ u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback) {
 
 void fn_80005364(void) {
     fn_8000D838(&lbl_8055D320);
-    lbl_802FAFA0[1] = lbl_8055890C;
-    lbl_8055D328 = 0xFFFF0000;
-    lbl_8034EC40[1] = 0x7B;
+    ((volatile u32*)lbl_802FAFA0)[1] = lbl_8055890C;
+    *(volatile u32*)&lbl_8055D328 = 0xFFFF0000;
+    ((volatile u32*)lbl_8034EC40)[1] = 0x7B;
     lbl_8034EC40[0] = 0;
     lbl_8034EC40[2] = 0;
     lbl_8034EC40[3] = 0;
@@ -470,6 +481,8 @@ int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
     return result;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
     int result = 0;
     int i;
