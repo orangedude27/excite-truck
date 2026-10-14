@@ -99,8 +99,8 @@ typedef struct PADStatus {
     u8 unk;     // at 0xB
 } PADStatus;
 
-static PADStatus Origin[PAD_MAX_CONTROLLER];
-static u32 AnalogMode = 0x00000300;
+static PADStatus lbl_8038F080[PAD_MAX_CONTROLLER];
+static u32 lbl_80558F7C = 0x00000300;
 static u32 XPatchBits =
     PAD_CHAN0_BIT | PAD_CHAN1_BIT | PAD_CHAN2_BIT | PAD_CHAN3_BIT;
 
@@ -643,8 +643,6 @@ u32 SIEnablePolling(u32 chan) {
     return poll;
 }
 #pragma dont_inline reset
-
-#pragma dont_inline reset
 u32 SIDisablePolling(u32 chan) {
     BOOL enabled;
     u32 poll;
@@ -668,8 +666,8 @@ void UpdateOrigin(s32 chan) {
     PADStatus* origin;
     u32 chanBit = PAD_CHAN0_BIT >> chan;
 
-    origin = &Origin[chan];
-    switch (AnalogMode & 0x00000700u) {
+    origin = &lbl_8038F080[chan];
+    switch (lbl_80558F7C & 0x00000700u) {
     case 0x00000000:
     case 0x00000500:
     case 0x00000600:
@@ -724,13 +722,13 @@ void fn_80056308(s32 chan, u32 status) {
         enabledChan = lbl_80558F74;
         lbl_8055DB14 |= PAD_CHAN0_BIT >> enabledChan;
         SIGetResponse(enabledChan, data);
-        fn_80057F2C(enabledChan, AnalogMode | 0x00400000);
+        fn_80057F2C(enabledChan, lbl_80558F7C | 0x00400000);
         SIEnablePolling(lbl_8055DB14);
     }
     lbl_80558F74 = __cntlzw(lbl_8055DB10);
     if (lbl_80558F74 != 32) {
         lbl_8055DB10 &= ~(PAD_CHAN0_BIT >> lbl_80558F74);
-        memset(&Origin[lbl_80558F74], 0, sizeof(PADStatus));
+        memset(&lbl_8038F080[lbl_80558F74], 0, sizeof(PADStatus));
         SIGetTypeAsync(lbl_80558F74, fn_8005649C);
     }
 }
