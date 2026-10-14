@@ -543,8 +543,8 @@ static void AlarmHandler(OSAlarm* alarm, OSContext* ctx) {
 
 BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
                 SICallback callback, s64 wait) {
-    SIPacket* packet;
     BOOL enabled;
+    SIPacket* packet;
     s64 start;
     s64 fire;
 
@@ -557,7 +557,11 @@ BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
     }
 
     start = __OSGetSystemTime();
-    fire = wait == 0 ? start : wait + XferTime[chan];
+    if (wait == 0) {
+        fire = start;
+    } else {
+        fire = wait + XferTime[chan];
+    }
 
     if (start < fire) {
         OSSetAlarm(&Alarm[chan], fire - start, AlarmHandler);
