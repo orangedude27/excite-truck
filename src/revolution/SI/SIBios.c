@@ -800,7 +800,6 @@ void fn_800563C8(s32 chan, u32 status) {
 }
 
 BOOL fn_800567BC(u32 mask) {
-    #pragma inline_depth(0)
     BOOL enabled;
     u32 disable;
 
