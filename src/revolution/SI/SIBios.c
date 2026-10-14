@@ -445,9 +445,11 @@ static BOOL __SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr,
     return TRUE;
 }
 
+#pragma dont_inline on
 void fn_80057F2C(s32 param_0, u32 param_1) {
     SI_HW_REGS[param_0 * 3] = param_1;
 }
+#pragma dont_inline reset
 
 u32 SISetXY(u32 lines, u32 times) {
     BOOL enabled;
