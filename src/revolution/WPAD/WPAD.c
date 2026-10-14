@@ -22,6 +22,7 @@
 extern void DBPrintf_80068D68(const char* pFmt, ...);
 extern const char lbl_803122A0[];
 extern const char lbl_803122BC[];
+extern const char lbl_803122D8[];
 extern const char lbl_80312648[];
 extern const char lbl_80312654[];
 extern WPADCB* lbl_8038F4F0[WPAD_MAX_CONTROLLERS];
