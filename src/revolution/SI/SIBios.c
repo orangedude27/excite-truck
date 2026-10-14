@@ -61,7 +61,7 @@ static u32 Type[SI_MAX_CHAN] = {SI_ERROR_NOREP, SI_ERROR_NOREP, SI_ERROR_NOREP,
                                 SI_ERROR_NOREP};
 
 #define Packet Packet_8038F100
-static SIPacket Packet[SI_MAX_CHAN];
+static SIPacket Packet[SI_MAX_CHAN] = {0};
 static s64 XferTime[SI_MAX_CHAN];
 static s64 TypeTime[SI_MAX_CHAN];
 static OSAlarm Alarm[SI_MAX_CHAN];
@@ -546,6 +546,7 @@ BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
     SIPacket* packet;
     BOOL enabled;
     s64 start;
+    s64 fire;
 
     packet = &Packet[chan];
     enabled = OSDisableInterrupts();
@@ -556,10 +557,10 @@ BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
     }
 
     start = __OSGetSystemTime();
-    wait = wait == 0 ? start : wait + XferTime[chan];
+    fire = wait == 0 ? start : wait + XferTime[chan];
 
-    if (start < wait) {
-        OSSetAlarm(&Alarm[chan], wait - start, AlarmHandler);
+    if (start < fire) {
+        OSSetAlarm(&Alarm[chan], fire - start, AlarmHandler);
     } else if (__SITransfer(chan, outAddr, outSize, inAddr, inSize, callback)) {
         OSRestoreInterrupts(enabled);
         return TRUE;
@@ -571,7 +572,7 @@ BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
     packet->inAddr = inAddr;
     packet->inSize = inSize;
     packet->callback = callback;
-    packet->fire = wait;
+    packet->fire = fire;
 
     OSRestoreInterrupts(enabled);
     return TRUE;
