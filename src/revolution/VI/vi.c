@@ -387,9 +387,9 @@ u32 fn_80059234(u32 index)
 	case 0x1c:
 	case 0x1d:
 	case 0x1e:
+	default:
 		return (u32)lbl_80311738;
 	}
-	return (u32)lbl_80311738;
 }
 
 void __VIInit(VITVMode mode)
