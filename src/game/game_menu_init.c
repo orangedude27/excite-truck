@@ -404,28 +404,8 @@ void fn_80004E20(void) {
     fn_80265D4C();
 }
 
-static void CopyMenuName(char* destination, const char* source, int remaining) {
-    while ((*destination++ = *source++) != '\0') {
-        if (--remaining <= 0) {
-            destination[-1] = '\0';
-            return;
-        }
-    }
-}
-
 void fn_80004EC0(const char* source) {
-    int remaining;
-    char* destination;
-    const char* cursor = source;
-
-    destination = lbl_8034EC58;
-    remaining = 0x20;
-    while ((*destination++ = *cursor++) != '\0') {
-        if (--remaining <= 0) {
-            *--destination = '\0';
-            return;
-        }
-    }
+    CopyMenuName(lbl_8034EC58, source, 0x20);
 }
 
 u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback) {
