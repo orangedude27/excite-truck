@@ -60,6 +60,7 @@ static s64 TypeTime[SI_MAX_CHAN];
 static SICallback TypeCallback[SI_MAX_TYPE][SI_MAX_CHAN];
 static BOOL InputBufferValid[SI_MAX_CHAN];
 static u32 InputBuffer[SI_MAX_CHAN][2];
+#define RDSTHandler lbl_8038F2C0
 static OSInterruptHandler RDSTHandler[SI_MAX_CHAN];
 static u32 InputBufferVcount[SI_MAX_CHAN];
 extern OSAlarm Alarm[SI_MAX_CHAN];
