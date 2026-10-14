@@ -447,7 +447,7 @@ int fn_80005044(int* eventIndex, int* subIndex, const char* name) {
 
     for (i = 0; i < fn_80012818(); i++) {
         u8* event = fn_80012820(i);
-        if (fn_8002B130(name, (const char*)(event + 8)) == 0) {
+        if (stricmp(name, (const char*)(event + 8)) == 0) {
             *eventIndex = i;
             *subIndex = 0;
             result = 1;
