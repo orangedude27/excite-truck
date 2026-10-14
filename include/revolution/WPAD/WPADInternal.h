@@ -173,7 +173,15 @@ typedef struct WPADCB {
     WPADCommandQueue stdCmdQueue;      // at 0x160
     WPADCommand stdCmdQueueList[24];   // at 0x16C
     WPADCommandQueue extCmdQueue;      // at 0x5EC
-    WPADCommand extCmdQueueList[12];   // at 0x5F8
+    union {
+        WPADCommand extCmdQueueList[12]; // at 0x5F8
+        struct {
+            u8 UNK_0x5F8[0x209];
+            u8 UNK_0x801;
+            u8 UNK_0x802;
+            u8 UNK_0x803[0x35];
+        };
+    };
     WPADInfo wpInfo;                   // at 0x838
     WPADInfo* wpInfoOut;               // at 0x850
     WPADDevConfig devConfig;           // at 0x854
