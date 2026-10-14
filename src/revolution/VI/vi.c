@@ -955,6 +955,16 @@ s32 fn_8005B01C(void) {
     return 1;
 }
 
+void fn_8005BAEC(u8 value)
+{
+    u8 data[2];
+
+    data[0] = 0x6E;
+    data[1] = value;
+    __VISendI2CData(0xE0, data, 2);
+    WaitMicroTime(2);
+}
+
 void __VISetAdjustingValues(s16 x, s16 y)
 {
     BOOL enabled;
