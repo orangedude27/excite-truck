@@ -126,6 +126,7 @@ extern u32 lbl_8055890C;
 extern u32 lbl_802FAFA0[];
 extern char lbl_8034EC58[];
 extern const char* lbl_802FAFD4;
+extern const char lbl_802FB0A8[];
 extern const char lbl_802FB0B8[];
 extern u32 lbl_8034EC40[];
 extern u32 lbl_8055D320;
