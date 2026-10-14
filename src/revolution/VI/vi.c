@@ -1040,6 +1040,20 @@ void fn_8005CB70(void)
 	__VISetGammaImm((u8*)&lbl_80311B50 + lbl_8055DBE8 * 0x22);
 }
 
+void __VISetTrapFilter(void)
+{
+    u8 data[2];
+
+    data[0] = 3;
+    if (lbl_80558FD0 == 1) {
+        data[1] = 0;
+    } else {
+        data[1] = 1;
+    }
+    __VISendI2CData(0xE0, data, 2);
+    WaitMicroTime(2);
+}
+
 void fn_8005CC68(void)
 {
     extern u32 lbl_8055DBF0;
