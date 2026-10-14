@@ -51,6 +51,8 @@ typedef struct {
     u16 hbsCCIR656;
 } VITiming;
 
+extern VITiming* lbl_8055DBA0;
+
 typedef struct {
     u16 DispPosX;
     u16 DispPosY;
