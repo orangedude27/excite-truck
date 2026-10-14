@@ -499,6 +499,8 @@ int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
     return result;
 }
 
+#pragma pop
+
 void fn_80005304(void) DECOMP_DONT_INLINE {
     char name[64];
     int index = 0;
