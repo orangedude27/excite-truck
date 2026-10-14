@@ -70,12 +70,7 @@ static u32 InputBuffer[SI_MAX_CHAN][2];
 static OSInterruptHandler RDSTHandler[SI_MAX_CHAN];
 static u32 InputBufferVcount[SI_MAX_CHAN];
 extern OSAlarm Alarm[SI_MAX_CHAN];
-extern struct {
-    SIPacket packet[SI_MAX_CHAN];
-    s64 xferTime[SI_MAX_CHAN];
-    s64 typeTime[SI_MAX_CHAN];
-    OSAlarm alarm[SI_MAX_CHAN];
-} Packet_8038F100;
+
 extern u32 __PADFixBits;
 
 /* ---------------------------------------------------------------------
@@ -549,21 +544,20 @@ BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
     SIPacket* packet;
     BOOL enabled;
     s64 start;
-    s64 fire;
 
     packet = &Packet[chan];
     enabled = OSDisableInterrupts();
 
-    if (packet->chan != SI_CHAN_NONE || Si_80311630.chan == packet->chan) {
+    if (packet->chan != SI_CHAN_NONE || Si_80311630.chan == chan) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
 
     start = __OSGetSystemTime();
-    fire = wait == 0 ? start : wait + XferTime[chan];
+    wait = wait == 0 ? start : wait + XferTime[chan];
 
-    if (start < fire) {
-        OSSetAlarm(&Alarm[chan], fire - start, AlarmHandler);
+    if (start < wait) {
+        OSSetAlarm(&Alarm[chan], wait - start, AlarmHandler);
     } else if (__SITransfer(chan, outAddr, outSize, inAddr, inSize, callback)) {
         OSRestoreInterrupts(enabled);
         return TRUE;
@@ -575,7 +569,7 @@ BOOL SITransfer(s32 chan, void* outAddr, u32 outSize, void* inAddr, u32 inSize,
     packet->inAddr = inAddr;
     packet->inSize = inSize;
     packet->callback = callback;
-    packet->fire = fire;
+    packet->fire = wait;
 
     OSRestoreInterrupts(enabled);
     return TRUE;
