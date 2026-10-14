@@ -610,16 +610,23 @@ u32 SIGetType(s32 chan) {
 
 u32 SIEnablePolling(u32 chan) {
     BOOL enabled;
+    u32 poll;
+    u32 mask;
 
     if (chan == 0) {
         return Si_80311630.poll;
     }
     enabled = OSDisableInterrupts();
-    Si_80311630.poll = (Si_80311630.poll & 0x0F000000) | (chan & 0xF0FFFFFF);
-    *(volatile u32*)0xCD006438 = 0x80000000;
-    *(volatile u32*)0xCD006430 = Si_80311630.poll;
+    chan >>= 24;
+    mask = (chan >> 4) & 0xF;
+    chan &= mask | 0x03FFFFF0;
+    Si_80311630.poll &= ~mask;
+    Si_80311630.poll |= chan;
+    poll = Si_80311630.poll;
+    SI_HW_REGS[SI_SISR] = SI_SISR_WR;
+    SI_HW_REGS[SI_SIPOLL] = poll;
     OSRestoreInterrupts(enabled);
-    return Si_80311630.poll;
+    return poll;
 }
 
 u32 SIDisablePolling(u32 chan) {
