@@ -413,6 +413,8 @@ void fn_80004E20(void) {
     fn_80265D4C();
 }
 
+#pragma pop
+
 void fn_80004EC0(const char* source) {
     int remaining;
     char* destination;
