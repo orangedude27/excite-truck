@@ -1215,22 +1215,24 @@ static s32 WPADiGetStatus(s32 chan) {
 }
 
 void WPADGetAccGravityUnit(s32 chan, u32 type, WPADAccGravityUnit* pAcc) {
-    WPADCB* p = _wpdcb[chan];
+    WPADCB* p = lbl_8038F4F0[chan];
     BOOL enabled = OSDisableInterrupts();
 
     if (pAcc != NULL) {
         switch (type) {
         case WPAD_ACC_GRAVITY_UNIT_CORE: {
-            pAcc->x = p->devConfig.accX1g - p->devConfig.accX0g;
-            pAcc->y = p->devConfig.accY1g - p->devConfig.accY0g;
-            pAcc->z = p->devConfig.accZ1g - p->devConfig.accZ0g;
+            WPADDevConfig* config = (WPADDevConfig*)((u8*)p + 0x794);
+            pAcc->x = config->accX1g - config->accX0g;
+            pAcc->y = config->accY1g - config->accY0g;
+            pAcc->z = config->accZ1g - config->accZ0g;
             break;
         }
 
         case WPAD_ACC_GRAVITY_UNIT_FS: {
-            pAcc->x = p->extConfig.fs.accX1g - p->extConfig.fs.accX0g;
-            pAcc->y = p->extConfig.fs.accY1g - p->extConfig.fs.accY0g;
-            pAcc->z = p->extConfig.fs.accZ1g - p->extConfig.fs.accZ0g;
+            WPADExtConfig* config = (WPADExtConfig*)((u8*)p + 0x7C2);
+            pAcc->x = config->fs.accX1g - config->fs.accX0g;
+            pAcc->y = config->fs.accY1g - config->fs.accY0g;
+            pAcc->z = config->fs.accZ1g - config->fs.accZ0g;
             break;
         }
         }
@@ -3022,7 +3024,9 @@ void fn_80064A80(s32 chan, s32 param_2) {
 			s32 val = *(s32*)((u8*)cb + 0x780);
 			s32 t = -val | val;
 			s32 sign = t >> 31;
-			((u8*)cb)[0x801] = ((u32)sign >> 24) & 0x3F;
+			s32 result;
+			result = sign & 0x7c00000;
+			((u8*)cb)[0x801] = result >> 24;
 		}
 		if (*(s32*)((u8*)cb + 0x7e0) != 0) {
 			((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
