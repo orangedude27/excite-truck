@@ -2829,8 +2829,37 @@ u8 fn_8005EE80(s32 chan) {
     return val;
 }
 
-extern u8 lbl_8055DC11;
-extern u8 lbl_8055DC08[WPAD_MAX_CONTROLLERS];
+s32 fn_8005FBCC(u8 devHandle) {
+    BD_ADDR_PTR pAddr;
+    int i;
+
+    pAddr = _WUDGetDevAddr(devHandle);
+
+    for (i = 0; i < WPAD_MAX_CONTROLLERS; i++) {
+        if (memcmp(lbl_80393058 + i * 0x46 + 0x2BD, pAddr, 6) != 0) {
+            continue;
+        }
+        if (lbl_8055DC08[i]) {
+            continue;
+        }
+        lbl_8055DC08[i] = TRUE;
+        return i;
+    }
+
+    for (i = 0; i < WPAD_MAX_CONTROLLERS; i++) {
+        if (lbl_8055DC08[i]) {
+            continue;
+        }
+        lbl_8055DC08[i] = TRUE;
+        memcpy(lbl_80393058 + (i + 10) * 0x46 + 1, pAddr, 6);
+        lbl_8055DC11 = TRUE;
+        return i;
+    }
+
+    return WPAD_CHAN_INVALID;
+}
+
+
 
 // fn_8006022C: disconnect controller and clear saved device information
 void fn_8006022C(s32 chan)
@@ -3026,8 +3055,8 @@ void fn_80064A80(s32 chan, s32 param_2) {
 		} else {
 			s32 val = *(s32*)((u8*)cb + 0x780);
 			s32 t = -val | val;
-			volatile s32 sign = t >> 31;
-			((u8*)cb)[0x801] = ((u32)sign & 0x7c00000) >> 24;
+			s32 sign = t >> 31;
+			((u8*)cb)[0x801] = (sign >> 24) & 0x3f;
 		}
 		if (*(s32*)((u8*)cb + 0x7e0) != 0) {
 			((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
