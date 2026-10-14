@@ -929,6 +929,12 @@ VITVFormat VIGetTvFormat(void)
     return format;
 }
 
+s32 fn_8005B00C(void) {
+    extern s32 lbl_8055DBBC;
+    lbl_8055DBBC = 0;
+    return 1;
+}
+
 void __VISetAdjustingValues(s16 x, s16 y)
 {
     BOOL enabled;
