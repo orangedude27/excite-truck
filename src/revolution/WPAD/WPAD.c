@@ -1400,36 +1400,30 @@ s32 WPADSetDataFormat(s32 chan, u32 format) {
     u32 currFormat;
 
     enabled = OSDisableInterrupts();
-
     handshake = *(BOOL*)((u8*)p + 0x81C);
     status = *(s32*)((u8*)p + 0x7FC);
     currFormat = *(u32*)((u8*)p + 0x7F8);
-
     OSRestoreInterrupts(enabled);
 
     if (status == WPAD_ERR_NO_CONTROLLER) {
         goto _end;
     }
-
     if (!handshake) {
         status = WPAD_ERR_COMMUNICATION_ERROR;
         goto _end;
     }
-
     if (currFormat != format) {
-        if (!WPADiSendSetReportType(&p->stdCmdQueue, format, NULL)) {
+        if (!fn_80063564(&p->stdCmdQueue, format, NULL)) {
             status = WPAD_ERR_COMMUNICATION_ERROR;
         } else {
             enabled = OSDisableInterrupts();
             *(u32*)((u8*)p + 0x7F8) = format;
             OSRestoreInterrupts(enabled);
-
             status = WPAD_ERR_OK;
         }
     } else {
         status = WPAD_ERR_OK;
     }
-
 _end:
     return status;
 }
@@ -3012,8 +3006,8 @@ void fn_80064A80(s32 chan, s32 param_2) {
 			s32 sign = t >> 31;
 			((u8*)cb)[0x801] = (sign & 0x7C00000) >> 24;
 		}
-		if (*(void**)((u8*)cb + 0x7e0) != NULL) {
-			((void (*)(s32))((u8*)cb + 0x7e0))(chan);
+		if (*(s32*)((u8*)cb + 0x7e0) != 0) {
+			((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
 		}
 	}
 }
