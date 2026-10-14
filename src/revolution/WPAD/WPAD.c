@@ -23,6 +23,7 @@ extern void DBPrintf_80068D68(const char* pFmt, ...);
 extern const char lbl_803122A0[];
 extern const char lbl_803122BC[];
 extern WPADCB* lbl_8038F4F0[WPAD_MAX_CONTROLLERS];
+extern void* lbl_8055DC14;
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
