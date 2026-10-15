@@ -110,14 +110,14 @@ void ptim_timer_update(tPTIM_CB *p_cb) {
 void bta_sys_disable(void) {
     void **pp_module;
     void *p_module;
-    UINT8 (*p_disable)(void);
+    void (*p_disable)(void);
     s32 i;
 
     pp_module = (void **)&lbl_803C0AD8;
     for (i = 0; i < 0x1A; i++) {
         p_module = *pp_module;
         if (p_module != NULL) {
-            p_disable = (UINT8 (*)(void))((u8 *)p_module + 4);
+            p_disable = (void (*)(void))((u8 *)p_module + 4);
             if (p_disable != NULL) {
                 p_disable();
             }
