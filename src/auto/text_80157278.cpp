@@ -15,3 +15,6 @@ void fn_8015CD0C(void) {
 extern "C" void fn_8015CDD8(void) {
 }
 
+extern "C" void fn_8015E0FC(void) {
+}
+
