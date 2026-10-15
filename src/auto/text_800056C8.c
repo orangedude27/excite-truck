@@ -28,3 +28,6 @@ void fn_800060B4(void) {
     return;
 }
 
+void fn_800060DC(void) {
+}
+
