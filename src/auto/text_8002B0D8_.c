@@ -29,3 +29,7 @@ void fn_8002EFBC(void) {
     __ieee754_pow();
 }
 
+void fn_8002F230(void) {
+
+}
+
