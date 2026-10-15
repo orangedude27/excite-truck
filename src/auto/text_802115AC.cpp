@@ -25,6 +25,13 @@ extern "C" s32 fn_80215194(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_802151D4(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_802152C8(void) {
 }
 
