@@ -13,3 +13,7 @@ void fn_801C94BC(void) {
     fn_80238B44();
 }
 
+void fn_801C9830(void) {
+    return;
+}
+
