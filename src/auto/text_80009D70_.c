@@ -102,17 +102,17 @@ void fn_8000A868(void) {
 }
 
 void fn_8000AA38(void) {
-    s32 var_r3 = lbl_8055D3B0;
-    fn_80129324(var_r3);
+    char* base = (char*)&lbl_8034F4C8;
+    fn_80129324(lbl_8055D3B0);
     lbl_8055D3B0 = 0;
     fn_80206518();
     fn_8020CA38();
     lbl_8055D3B8 = 0;
     lbl_8055D3B4 = 0;
     lbl_8055D3B5 = 0;
-    ((u8*)&lbl_8034F4C8)[0x18] = 0;
-    ((u8*)&lbl_8034F4C8)[0x98] = 0;
-    ((u8*)&lbl_8034F4C8)[0x58] = 0;
+    base[0x18] = 0;
+    base[0x98] = 0;
+    base[0x58] = 0;
 }
 
 void fn_8000AA9C(void* arg0) {
