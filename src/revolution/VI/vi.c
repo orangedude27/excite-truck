@@ -1421,6 +1421,13 @@ s32 fn_8005B01C(void) {
     return 1;
 }
 
+void WaitMicroTime(s32 time) DECOMP_DONT_INLINE
+{
+    OSTime start = __OSGetSystemTime();
+    while (OS_TICKS_TO_USEC(__OSGetSystemTime() - start) < time) {
+    }
+}
+
 u32 sendSlaveAddr(u32 addr)
 {
     u32 gpio_out;
