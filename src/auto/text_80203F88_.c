@@ -9,6 +9,10 @@ void fn_80203FF8(void) {
 
 }
 
+void fn_80204000(void) {
+
+}
+
 void fn_80203FFC(void) {
 
 }
