@@ -225,11 +225,11 @@ void *fn_80019054(s32 arg0) {
     if (arg0 < 0) {
         goto done;
     }
-    tbl = (void **)&lbl_80357E0C;
-    if (arg0 >= ((s32 *)*tbl)[1]) {
+    tbl = (void **)0x80357E0C;
+    if (arg0 >= ((s32 *)tbl)[1]) {
         goto done;
     }
-    result = (void *)((u8 **)tbl[0] + arg0 * 0x14);
+    result = (void *)((u8 *)tbl[0] + arg0 * 0x14);
     return result;
 done:
     result = 0;
