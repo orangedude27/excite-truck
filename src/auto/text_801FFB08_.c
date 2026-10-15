@@ -4,3 +4,7 @@
 void fn_801FFB6C(void) {
 
 }
+
+void fn_801FFB70(void) {
+
+}
