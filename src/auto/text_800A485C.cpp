@@ -197,7 +197,14 @@ extern "C" void fn_800A4D4C(void *arg0, void *arg1) {
     }
 }
 
-void fn_800A4D74(void *arg0, s32 arg1) {
+extern "C" s32 fn_800A4D74(void *arg0, u32 arg1) {
+    if (arg1 == 1) {
+        return ((s32 *)arg0)[0];
+    }
+    if (arg1 == 2) {
+        return ((s32 *)arg0)[1];
+    }
+    return ((s32 *)arg0)[2];
 }
 
 void fn_800A4E80(void *arg0, void *arg1, s32 arg2) {
