@@ -9,3 +9,7 @@ void fn_8002EFA8(void) {
     __ieee754_acos();
 }
 
+void fn_8002EFAC(void) {
+    __ieee754_asin();
+}
+
