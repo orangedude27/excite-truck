@@ -53,3 +53,7 @@ extern "C" void fn_800CF968(void) {
 
 }
 
+extern "C" void fn_800CF96C(void) {
+
+}
+
