@@ -5,3 +5,8 @@ extern void fn_8000A7A8(void);
 void fn_8000AADC(void) {
     fn_8000A7A8();
 }
+
+void fn_8000AAE0(void) {
+    fn_8000A808();
+}
+
