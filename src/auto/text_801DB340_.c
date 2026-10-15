@@ -9,3 +9,7 @@ void fn_801DCD24(void) {
     fn_80128668();
 }
 
+void fn_801DCDA0(void) {
+
+}
+
