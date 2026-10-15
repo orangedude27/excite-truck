@@ -8,6 +8,10 @@ extern "C" void fn_8019F3D0(void);
 extern "C" void fn_801A49E8(void*);
 extern "C" void fn_801796EC(s32, s32*, s32);
 
+extern void* fn_801A44D4;
+extern void* lbl_8055A508;
+extern void* lbl_8055A510;
+
 void fn_8019F1A4(void) __attribute__((noreturn));
 
 extern "C" s32 fn_80128668(void);
