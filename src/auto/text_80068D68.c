@@ -9,3 +9,7 @@ void fn_8006EAD0(void) {
 
 }
 
+void fn_8006EAD4(void) {
+
+}
+
