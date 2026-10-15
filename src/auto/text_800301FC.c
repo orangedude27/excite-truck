@@ -7,6 +7,10 @@ void fn_80031C68(void) {
 
 }
 
+void fn_80031C8C(unsigned short arg0) {
+    lbl_8055D734 = arg0;
+}
+
 void fn_80032000(void) {
 
 }
