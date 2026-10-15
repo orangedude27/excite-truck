@@ -36,14 +36,17 @@ void fn_800C3D9C(void) {
 }
 
 extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
-    if (this_ptr != 0) {
-        void* list_ptr = (u8*)this_ptr + 0x24;
+    void* r30 = this_ptr;
+    s32 r31 = arg1;
+    
+    if (r30 != 0) {
+        void* list_ptr = (u8*)r30 + 0x24;
         if (list_ptr != 0) {
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv(list_ptr, 0);
         }
-        fn_800DCE10(this_ptr, 0);
+        fn_800DCE10(r30, 0);
     }
-    if (arg1 > 0) {
+    if (r31 > 0) {
         fn_80128668();
     }
 }
