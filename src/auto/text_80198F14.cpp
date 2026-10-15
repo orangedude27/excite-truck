@@ -108,6 +108,11 @@ void fn_801A4868(void* arg0, u8 arg1) {
     }
 }
 
+void fn_801A48C8(void* arg0) {
+    void* ptr = *(void**)((u8*)arg0 + 0x48);
+    ((void(*)(void*, void*, void**))(*(void***)((u8*)ptr + 0x18)))(ptr, &lbl_8055A508, &lbl_8055A510);
+}
+
 extern "C" s32 fn_801A4F00(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -173,6 +178,7 @@ extern "C" s32 fn_801A5134(s32 arg0, s32 arg1) {
 
 extern "C" void fn_801A4868(void);
 
+extern "C" void fn_801A4868(void);
 extern "C" void fn_801A4868(void*, u8);
 
 extern "C" void fn_801A518C(void) {
