@@ -5,7 +5,7 @@ extern "C" void fn_801F92A8(void) {
 
 }
 
-void fn_801FC66C(void) {
+extern "C" void fn_801FC66C(void) {
 
 }
 
