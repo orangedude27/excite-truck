@@ -45,3 +45,7 @@ void fn_801F4B14(void) {
 
 }
 
+void fn_801F4CA0(void) {
+
+}
+
