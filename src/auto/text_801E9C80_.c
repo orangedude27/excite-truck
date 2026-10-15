@@ -31,3 +31,7 @@ void fn_801EA1DC(void) {
     fn_801DCF00();
 }
 
+void fn_801EA1F0(void) {
+    fn_801DD808();
+}
+
