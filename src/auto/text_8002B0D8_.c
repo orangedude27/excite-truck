@@ -33,3 +33,7 @@ void fn_8002F230(void) {
 
 }
 
+void fn_8002F234(void) {
+    __ieee754_sqrt();
+}
+
