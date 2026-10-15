@@ -8,6 +8,11 @@
 
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80316570[];
+extern u8 lbl_803C0AD8[];
+extern void *lbl_8055DC80;
+extern void *lbl_80559038;
+extern void fn_8006E6E4(void *);
+extern void fn_80071450(void *);
 extern void fn_80070954(u32 code, void *msg, u16 param);
 extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
 extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
