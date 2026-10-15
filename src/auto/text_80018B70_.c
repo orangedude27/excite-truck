@@ -2,6 +2,10 @@
 
 s32 fn_80019430(void);
 s32 fn_80019438(void);
+void *fn_80019054(s32);
+s32 fn_80019088(void);
+s32 fn_80019098(s32);
+s32 fn_80019144(s32);
 s32 fn_8027DE68(s32);
 void fn_80131234(void *);
 void fn_80018B74(void);
@@ -84,28 +88,18 @@ s32 fn_80019534(void) {
     s32 ret;
     void **obj;
     void **vtable;
-    void *ptr_802FD3A0 = (void *)0x802FD3A0;
-    void *ptr_802FD3B4 = (void *)0x802FD3B4;
 
     obj = (void **)lbl_8055D58C;
-    if (obj == 0) {
-        return 0;
+    if (obj != 0) {
+        vtable = (void **)obj[0];
+        ret = ((s32 (*)(void *))vtable[4])((void *)0x802FD3A0);
+        if (ret != 0) {
+            obj = (void **)lbl_8055D58C;
+            vtable = (void **)obj[0];
+            ret = ((s32 (*)(void *))vtable[2])((void *)0x802FD3A0);
+            ret = ((s32 (*)(void *, s32))vtable[6])((void *)0x802FD3B4, 0);
+        }
     }
-
-    vtable = (void **)obj[0];
-    ret = ((s32 (*)(void *))vtable[4])(ptr_802FD3A0);
-    if (ret == 0) {
-        return 0;
-    }
-
-    obj = (void **)lbl_8055D58C;
-    vtable = (void **)obj[0];
-    ret = ((s32 (*)(void *))vtable[2])(ptr_802FD3A0);
-
-    obj = (void **)lbl_8055D58C;
-    vtable = (void **)obj[0];
-    ret = ((s32 (*)(void *, s32))vtable[6])(ptr_802FD3B4, 0);
-
     return ret;
 }
 
