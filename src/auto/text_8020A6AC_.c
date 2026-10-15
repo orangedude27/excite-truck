@@ -17,3 +17,7 @@ void fn_8020BCB0(void) {
 
 }
 
+void fn_8020BCB4(void) {
+
+}
+
