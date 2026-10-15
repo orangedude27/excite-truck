@@ -35,7 +35,7 @@ void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
 
-void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
+extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
     if (this_ptr != 0) {
         void* list_ptr = (u8*)this_ptr + 0x24;
         if (list_ptr != 0) {
