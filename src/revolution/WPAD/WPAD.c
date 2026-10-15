@@ -3578,6 +3578,3 @@ void fn_8005E8C0(u32 r3, u32 r4)
 }
 extern WPADCB* getGameInfo(s32 param_1, s32 param_2, s32 param_3);
 #include <types.h>
-// Function to be decompiled
-extern void _savegpr_26(void);
-extern void _restgpr_26(s32);
