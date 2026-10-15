@@ -89,6 +89,10 @@ extern "C" void fn_80215500(void) {
 
 }
 
+extern "C" s32 fn_8021581C(void *arg0) {
+    return ((s32 *)arg0)[0xC / 4];
+}
+
 extern "C" void fn_80215824(void) {
 
 }
