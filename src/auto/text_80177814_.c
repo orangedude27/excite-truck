@@ -4,3 +4,8 @@
 void fn_80178C88(void) {
 
 }
+
+void fn_80178C8C(void) {
+
+}
+
