@@ -3,3 +3,4 @@
 
 void fn_8017677C(void) {
 }
+void fn_80177138(void);
