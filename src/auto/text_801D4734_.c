@@ -47,3 +47,7 @@ void fn_801D8620(void) {
 
 }
 
+void fn_801D8938(void) {
+
+}
+
