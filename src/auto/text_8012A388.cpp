@@ -15,3 +15,7 @@ extern "C" void fn_8012B328(void) {
 
 }
 
+extern "C" void fn_8012BF24(void) {
+    fn_8012E498();
+}
+
