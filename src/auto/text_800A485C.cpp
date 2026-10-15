@@ -35,8 +35,28 @@ void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
 
-void fn_800C775C(OSAlarm* alarm, u32 tag) {
-    alarm->tag = tag;
+void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
+    if (this_ptr != 0) {
+        void* list_ptr = (u8*)this_ptr + 0x24;
+        if (list_ptr != 0) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(list_ptr, 0);
+        }
+        fn_800DCE10(this_ptr, 0);
+    }
+    if (arg1 > 0) {
+        fn_80128668();
+    }
+}
+
+extern "C" s32 fn_800C771C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
+void fn_800C775C(void *arg0, s32 arg1) {
+    (*(u32 *)((u8 *)arg0 + 4)) = arg1;
 }
 
 extern "C" void fn_800CF280(void) {
