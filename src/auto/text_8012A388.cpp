@@ -9,3 +9,7 @@ extern "C" void fn_8012B324(void) {
 
 }
 
+extern "C" void fn_8012B328(void) {
+
+}
+
