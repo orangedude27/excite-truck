@@ -100,14 +100,14 @@ void fn_8000D070(void) {
 void fn_8000D100(void) {
     if (lbl_8055D41C != NULL) {
         f32 val = fn_80209028();
-        f32 stored = *(f32*)((u8*)lbl_8055D41C + 8);
-        if (val != stored) {
+        f32 *ptr = (f32*)((u8*)lbl_8055D41C + 8);
+        if (val != *ptr) {
             *(u8*)((u8*)lbl_8055D41C + 0x4D) = 1;
-            *(f32*)((u8*)lbl_8055D41C + 8) = val;
+            *ptr = val;
         }
-        *(u8*)((u8*)lbl_8055D41C + 0x49) = 1;
-        *(u8*)((u8*)lbl_8055D41C + 0x4B) = 0;
-        *(u8*)((u8*)lbl_8055D41C + 0x4A) = 0;
+        ((u8*)lbl_8055D41C)[0x49] = 1;
+        ((u8*)lbl_8055D41C)[0x4B] = 0;
+        ((u8*)lbl_8055D41C)[0x4A] = 0;
     }
     fn_80209190_s32_f32(lbl_8055D410, lbl_80560218);
     fn_80206454();
