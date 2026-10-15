@@ -4,3 +4,9 @@
 void fn_80009C80(void) {
     fn_80009534();
 }
+
+extern char lbl_8055D36D;
+char fn_80009C84(void) {
+    return lbl_8055D36D;
+}
+
