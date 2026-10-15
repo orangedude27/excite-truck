@@ -9,3 +9,7 @@ void fn_802103B8(void) {
     fn_8020F5C8();
 }
 
+void fn_80210510(void) {
+    fn_802EC1C0();
+}
+
