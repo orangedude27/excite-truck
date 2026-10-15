@@ -8,3 +8,8 @@ void fn_8014ACCC(void) {
 void fn_8014ACD0(void) {
 
 }
+
+void fn_8014ACD4(void) {
+
+}
+
