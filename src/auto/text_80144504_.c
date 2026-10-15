@@ -3,3 +3,7 @@
 
 void fn_80144DC8(void) {
 }
+
+void fn_80144DD4(void) {
+}
+
