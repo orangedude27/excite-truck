@@ -11,7 +11,3 @@ void fn_800A5954(void) {
     fn_800A6048();
 }
 
-void fn_800A5990(void) {
-    fn_800A61D0();
-}
-
