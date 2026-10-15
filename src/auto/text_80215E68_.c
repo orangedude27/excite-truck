@@ -1,3 +1,5 @@
+extern void fn_8021889C(void);
+
 #include <types.h>
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
