@@ -48,7 +48,7 @@ void fn_8000A644(void* arg0, void* arg1) {
     fn_80009DC8();
 }
 
-void fn_8000A688(void (*arg0)(void*), s32 arg1) {
+void fn_8000A688(void (*arg0)(void*), s32 arg1) DECOMP_DONT_INLINE {
     u8 sp8[0x20];
     fn_801345D8(sp8, 0x20, &lbl_80558A14, arg1);
     arg0(sp8);
@@ -120,6 +120,6 @@ void fn_8000AA9C(void* arg0) {
     if (c == 0) {
         return;
     }
-    fn_8000A688(fn_8012DDA8, (s32)arg0);
+    fn_8000A688((void (*)(void*))fn_8012DDA8, (s32)arg0);
 }
 
