@@ -45,6 +45,10 @@ void fn_8007148C(s32 arg0) {
     fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
 }
 
+void fn_8007146C(s32 arg0, s32 arg1, s32 arg2) {
+    ptim_start_timer((tPTIM_CB *)((u8 *)&lbl_803C0AD8 + 0x68), (TIMER_LIST_ENT *)arg0, arg1, arg2);
+}
+
 void fn_80072C38(void) {
     BTM_CancelRemoteDeviceName();
 }
