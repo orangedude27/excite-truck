@@ -3,3 +3,7 @@
 #pragma opt_tail_call on
 extern char lbl_8055E070[4];
 extern int fn_8000D838(void*);
+
+void fn_80134204(void) {
+    fn_8000D838(lbl_8055E070);
+}
