@@ -61,10 +61,13 @@ void fn_801ADB3C(void *arg0) {
 }
 
 void fn_801AE158(void *arg0) {
-    f32 val = lbl_80562520;
-    *(f32 *)((u8 *)arg0 + 0x1C) = val;
-    *(f32 *)((u8 *)arg0 + 0x20) = val;
-    *(f32 *)((u8 *)arg0 + 0x24) = val;
+    struct { f32 field1; f32 field2; f32 field3; } locals;
+    locals.field1 = lbl_80562520;
+    locals.field2 = lbl_80562520;
+    locals.field3 = lbl_80562520;
+    *(f32 *)((u8 *)arg0 + 0x1C) = locals.field1;
+    *(f32 *)((u8 *)arg0 + 0x20) = locals.field2;
+    *(f32 *)((u8 *)arg0 + 0x24) = locals.field3;
 }
 
 void fn_801AE4C4(void) {
