@@ -38,7 +38,7 @@ void fn_80005740(s32 arg0) {
     void *temp;
     s32 val_2c;
     
-    base = (u32 *)&lbl_8034EE84;
+    base = (u32 *)lbl_8034EE84;
     base[0x1C / 4] = arg0;
     base[0x24 / 4] = (u32)fn_801E866C();
     temp = fn_801EA9A0();
