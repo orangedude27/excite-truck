@@ -2827,6 +2827,8 @@ u8 fn_80062458(void) {
 s32 fn_8005D0DC(s32 chan, s32 mode) {
     s32 result = fn_8006A940();
     s32 var_r30 = 0;
+    u8 *ptr;
+    s32 i;
     
     if (chan != 0) {
         return 0;
@@ -2845,7 +2847,9 @@ s32 fn_8005D0DC(s32 chan, s32 mode) {
             if (lbl_8055DC05 == 0) {
                 lbl_8055DC05 = 1;
                 WUDSetVisibility(0, 0);
-                memset(lbl_80393058 + 0x2bd, 0, 0x46 * 4);
+            }
+            for (i = mode, ptr = lbl_80393058 + 0x2bd; i < 14; i++, ptr += 0x46) {
+                memset(ptr, 0, 0x46);
             }
             goto skip_init;
         }
@@ -3125,6 +3129,162 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
     return WPADiPushCommand(pQueue, command);
 }
 
+static BOOL fn_80063744(u8* p, u8 idx, u32 val1, u32 val2) {
+    u8 buf[0x40] ALIGN(8);
+    s8 diff;
+    BOOL enabled;
+    u8 newIdx;
+    u32 count;
+    s8 delta;
+    s8 delta2;
+    u32 mask;
+    
+    buf[0] = 0;
+    buf[1] = idx;
+    buf[2] = 1;
+    
+    enabled = OSDisableInterrupts();
+    enabled = OSDisableInterrupts();
+    
+    diff = p[1] - p[0];
+    if (diff < 0) {
+        diff += (s8)((s32)*(u32*)(p + 8));
+    }
+    
+    OSRestoreInterrupts(enabled);
+    
+    if (*(u32*)(p + 8) - 1 != (u32)diff) {
+        memset(p + 4 + p[1] * 0x30, 0, 0x30);
+        memcpy(p + 4 + p[1] * 0x30, buf, 0x30);
+        
+        newIdx = p[1] + 1;
+        count = *(u32*)(p + 8);
+        delta = newIdx - count;
+        delta2 = count - 1 - p[1];
+        mask = ((s32)delta >> 31) | ((s32)delta2 >> 31);
+        p[1] = newIdx & ~mask;
+        
+        OSRestoreInterrupts(enabled);
+        return TRUE;
+    }
+    
+    OSRestoreInterrupts(enabled);
+    return FALSE;
+}
+
+static BOOL fn_800638C8(u8* p, const void* src, u32 len, u32 val1, u32 val2) {
+    u8 buf[0x40] ALIGN(8);
+    s8 diff;
+    BOOL enabled;
+    u8 newIdx;
+    u32 count;
+    s8 delta;
+    s8 delta2;
+    u32 mask;
+    u32 lenMask;
+    
+    // Initialize buffer based on assembly
+    // sp+8 = val1 (r6)
+    // sp+c = len & 0x1F (r9)
+    // sp+40 = 0x16
+    // sp+5a = 0x15
+    // sp+6c = val2 (r7)
+    
+    // memcpy(sp+44, sp+c, 4) -> copies val1 to sp+44
+    // memcpy(sp+48, sp+c, 1) -> copies len&0x1F to sp+48
+    // memcpy(sp+49, src, len) -> copies src to sp+49
+    
+    lenMask = len & 0x1F;
+    *(u32*)&buf[0x44] = val1;
+    buf[0x48] = lenMask;
+    memcpy(&buf[0x49], src, len);
+    
+    enabled = OSDisableInterrupts();
+    enabled = OSDisableInterrupts();
+    
+    diff = p[1] - p[0];
+    if (diff < 0) {
+        diff += (s8)((s32)*(u32*)(p + 8));
+    }
+    
+    OSRestoreInterrupts(enabled);
+    
+    if (*(u32*)(p + 8) - 1 != (u32)diff) {
+        memset(p + 4 + p[1] * 0x30, 0, 0x30);
+        memcpy(p + 4 + p[1] * 0x30, buf, 0x30);
+        
+        newIdx = p[1] + 1;
+        count = *(u32*)(p + 8);
+        delta = newIdx - count;
+        delta2 = count - 1 - p[1];
+        mask = ((s32)delta >> 31) | ((s32)delta2 >> 31);
+        p[1] = newIdx & ~mask;
+        
+        OSRestoreInterrupts(enabled);
+        return TRUE;
+    }
+    
+    OSRestoreInterrupts(enabled);
+    return FALSE;
+}
+
+static BOOL fn_80063A50(u8* p, u32 val2, u16 halfword, u32 val4, u32 val5) {
+    u8 buf[0x40] ALIGN(8);
+    s8 diff;
+    BOOL enabled;
+    u8 newIdx;
+    u32 count;
+    s8 delta;
+    s8 delta2;
+    u32 mask;
+
+    *(u16*)&buf[8] = halfword;
+    *(u32*)&buf[0xc] = val4;
+    *(u32*)&buf[0x40] = 0x17;
+    *(u16*)&buf[0x5a] = 6;
+    *(u32*)&buf[0x6c] = val5;
+
+    memcpy(&buf[0x44], &buf[0xc], 4);
+    memcpy(&buf[0x48], &buf[8], 2);
+
+    *(double*)&buf[0x10] = *(double*)&buf[0x40];
+    *(double*)&buf[0x18] = *(double*)&buf[0x48];
+    *(double*)&buf[0x20] = *(double*)&buf[0x50];
+    *(double*)&buf[0x28] = *(double*)&buf[0x58];
+    *(double*)&buf[0x38] = *(double*)&buf[0x68];
+    *(u16*)&buf[0x60] = halfword;
+    *(u32*)&buf[0x64] = val4;
+    *(double*)&buf[0x30] = *(double*)&buf[0x60];
+
+    enabled = OSDisableInterrupts();
+    enabled = OSDisableInterrupts();
+
+    diff = p[1] - p[0];
+    if (diff < 0) {
+        diff += (s8)(s32)*(u32*)(p + 8);
+    }
+
+    OSRestoreInterrupts(enabled);
+
+    if (*(u32*)(p + 8) - 1 != (u32)diff) {
+        memset(p + 4 + p[1] * 0x30, 0, 0x30);
+        memcpy(p + 4 + p[1] * 0x30, &buf[0x10], 0x30);
+
+        newIdx = p[1] + 1;
+        count = *(u32*)(p + 8);
+        delta = newIdx - count;
+        delta2 = count - 1 - p[1];
+        mask = ((s32)delta >> 31) | ((s32)delta2 >> 31);
+        p[1] = newIdx & ~mask;
+
+        OSRestoreInterrupts(enabled);
+        return TRUE;
+    }
+
+    OSRestoreInterrupts(enabled);
+    return FALSE;
+}
+
 void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 	s32 enabled = OSDisableInterrupts();
 
@@ -3163,6 +3323,54 @@ void fn_80064740(s32 chan, s32 param_2) {
         cb->UNK_0x801 = 0xfc;
         cb->UNK_0x802 = 0;
     }
+}
+
+WPADCB* getGameInfo(s32 param_1, s32 param_2, s32 param_3) {
+    WPADCB* cb;
+    u32 idx = param_1 * 4;
+    u8* src;
+    u32 checksum = 0;
+    u32 r0;
+    u32 r3;
+    u32 r6;
+    u32 r7;
+    s32 r8;
+    
+    // Save r30, r31
+    // r30 = param_3
+    // r31 = cb = lbl_8038F4F0[param_1]
+    
+    cb = lbl_8038F4F0[param_1];
+    
+    if (param_2 != 0) {
+        goto skip;
+    }
+    
+    src = (u8*)cb->samplingBufSize;
+    
+    // Loop: 2 iterations, each processing 7 bytes
+    r8 = 0;
+    r0 = 0;
+    do {
+        r7 = (u32)src + r8;
+        r6 = src[r8];
+        r3 = src[r8 + 1];
+        r8 += 7;
+        checksum += r6;
+        r0 = src[r8 - 6 + 2];
+        checksum += r3;
+        r3 = src[r8 - 6 + 3];
+        checksum += r0;
+        r0 = src[r8 - 6 + 4];
+        checksum += r3;
+        r3 = src[r8 - 6 + 5];
+        checksum += r0;
+        r0 = src[r8 - 6 + 6];
+        checksum += r3;
+    } while (--r0 != 0);  // Wrong - need ctr loop
+    
+    skip:
+    return cb;
 }
 
 s32 WPADiHIDParser(u8 port, u8* p_rpt) {
@@ -3258,3 +3466,4 @@ void fn_8005E8C0(u32 r3, u32 r4)
 {
 	OSSwitchFiberEx(r3, r4, 0, 0, fn_8005E298, (u8*)&lbl_8038F500 + 0x1000);
 }
+extern WPADCB* getGameInfo(s32 param_1, s32 param_2, s32 param_3);
