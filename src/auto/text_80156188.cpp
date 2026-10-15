@@ -88,6 +88,10 @@ s32 fn_80156AB0(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+s32 fn_80156AB8(void *arg0) {
+    return ((s32 *)arg0)[1];
+}
+
 }
 
 void fn_80156AC0(void) {
