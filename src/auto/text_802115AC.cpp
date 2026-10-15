@@ -124,7 +124,7 @@ extern "C" void fn_80215CD0(void) {
 
 }
 
-void fn_80215CD4(void) {
+extern "C" void fn_80215CD4(void) {
 
 }
 
