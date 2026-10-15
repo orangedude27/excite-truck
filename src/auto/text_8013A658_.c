@@ -9,3 +9,6 @@ extern void *lbl_8055E150;
 void fn_8013A658(void) {
     fn_8000D838(&lbl_8055E150);
 }
+
+#pragma section ".ctors$00"
+DECL_SECTION(".ctors$00") funcptr_t D_802ED1A0 = fn_8013A658;
