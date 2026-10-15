@@ -116,7 +116,8 @@ void fn_8000AA38(void) {
 }
 
 void fn_8000AA9C(void* arg0) {
-    if (((u8*)arg0)[0] == 0) {
+    s8 c = ((u8*)arg0)[0];
+    if (c == 0) {
         return;
     }
     fn_8000A688(fn_8012DDA8, (s32)arg0);
