@@ -183,3 +183,15 @@ extern "C" u32* fn_800C7C68(void) {
     return &lbl_8055DDF8;
 }
 
+void fn_800A4D44(void *arg0) {
+}
+
+void fn_800A4D4C(void *arg0, void *arg1) {
+}
+
+void fn_800A4D74(void *arg0, s32 arg1) {
+}
+
+void fn_800A4E80(void *arg0, void *arg1, s32 arg2) {
+}
+
