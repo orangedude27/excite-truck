@@ -21,6 +21,10 @@ void fn_801291C0(void) {
 
 }
 
+void fn_801291C4(void) {
+
+}
+
 void fn_80129214(void) {
 
 }
