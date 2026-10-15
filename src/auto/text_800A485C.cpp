@@ -71,3 +71,44 @@ extern "C" void fn_800D1558(void) {
 
 }
 
+void fn_800C7764(void *arg0, s8 arg1) {
+    ((u8 *)arg0)[0x24] = (u8)arg1;
+}
+
+void fn_800C776C(void *arg0, s32 arg1) {
+    ((u32 *)arg0)[0x24 / 4] = (u32)arg1;
+}
+
+void fn_800C790C(void *arg0) {
+    u16 **ptr = *(u16 ***)((u8 *)arg0 + 4);
+    u16 *var_r7 = ptr;
+    s32 var_r9 = 0;
+    s32 var_r10 = 0;
+    s32 var_r11 = 0;
+    s32 var_r8 = 0;
+    
+    while (*var_r7 != 0) {
+        if (*var_r7 == 0x22) {
+            *var_r7 = 0;
+            if (var_r11 == 0) {
+                s32 temp_r4 = var_r10 * 0x18;
+                var_r10++;
+                var_r11 = 1;
+                ((u32 *)((u8 *)arg0 + temp_r4 + var_r8))[0xB0 / 4] = (u32)(ptr + (var_r9 + 1) * 2);
+                if (var_r10 == 7) {
+                    var_r10 = 0;
+                    var_r8 += 4;
+                }
+            } else {
+                var_r11 = 0;
+            }
+        }
+        var_r7 += 2;
+        var_r9++;
+    }
+}
+
+extern "C" void fn_800C7C68(void) {
+    r3 = lbl_8055DDF8;
+}
+
