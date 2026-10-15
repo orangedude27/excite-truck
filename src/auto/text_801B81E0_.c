@@ -13,6 +13,11 @@ void fn_801B84BC(void) {
 
 }
 
+extern char lbl_8055E748;
+char fn_801B8514(void) {
+    return lbl_8055E748;
+}
+
 void fn_801B8AD4(void) {
 
 }
