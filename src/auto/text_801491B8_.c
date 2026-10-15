@@ -73,3 +73,7 @@ void fn_801556FC(void) {
 
 }
 
+void fn_80155AEC(void) {
+
+}
+
