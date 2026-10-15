@@ -21,3 +21,7 @@ void fn_802093F4(void) {
 
 }
 
+void fn_802093F8(void) {
+
+}
+
