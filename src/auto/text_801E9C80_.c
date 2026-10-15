@@ -5,6 +5,8 @@
 
 f32 fn_801E9DDC(void);
 
+void fn_801DCEF4(void);
+
 void fn_801E9C80(void) {
 
 }
@@ -19,5 +21,9 @@ void fn_801E9DD4(void) {
 
 void fn_801E9DD8(void) {
 
+}
+
+void fn_801EA1D8(void) {
+    fn_801DCEF4();
 }
 
