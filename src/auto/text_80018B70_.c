@@ -196,3 +196,24 @@ void fn_80018F7C(void) {
     lbl_8055D58C = 0;
 }
 
+void *fn_80019054(s32 arg0) {
+    s32 count;
+    void *base;
+    if (arg0 < 0) {
+        return (void *)0;
+    }
+    base = lbl_80357E0C;
+    count = ((s32 *)base)[1];
+    if (arg0 >= count) {
+        return (void *)0;
+    }
+    return (void *)((u8 *)((s32 *)base)[0] + arg0 * 0x14);
+}
+
+void fn_80018F40(void) {
+    lbl_8055D58C = fn_80131808(&lbl_802FD2DC);
+    fn_80018BA4();
+    fn_80018CCC();
+    lbl_8055D588 = 0;
+}
+
