@@ -42,3 +42,6 @@ void fn_800070D4(void) {
     return;
 }
 
+void fn_800070D8(void) {
+}
+
