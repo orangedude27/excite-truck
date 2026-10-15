@@ -197,17 +197,19 @@ void fn_80018F7C(void) {
 }
 
 void *fn_80019054(s32 arg0) {
-    s32 count;
     void *base;
+    s32 count;
     if (arg0 < 0) {
-        return (void *)0;
+        goto ret_zero;
     }
     base = lbl_80357E0C;
     count = ((s32 *)base)[1];
     if (arg0 >= count) {
-        return (void *)0;
+        goto ret_zero;
     }
     return (void *)((u8 *)((s32 *)base)[0] + arg0 * 0x14);
+ret_zero:
+    return (void *)0;
 }
 
 void fn_80018F40(void) {
