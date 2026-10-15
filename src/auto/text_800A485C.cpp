@@ -33,7 +33,7 @@ extern "C" void fn_800CF280(void) {
 
 }
 
-void fn_800CF288(void) {
-
+s32 fn_800CF288(void) {
+    return 0;
 }
 
