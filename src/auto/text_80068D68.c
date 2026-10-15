@@ -57,3 +57,7 @@ void fn_800932D8(void) {
 
 }
 
+void fn_8009BFBC(void) {
+    AXFXReverbHiExpCallback();
+}
+
