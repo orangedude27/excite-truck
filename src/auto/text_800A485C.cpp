@@ -111,6 +111,10 @@ extern "C" s32 fn_800D014C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_800D0AB4(void *arg0) {
+    return ((s32 *)arg0)[0xC / 4];
+}
+
 extern "C" void fn_800D0BA0(void) {
 
 }
@@ -207,6 +211,16 @@ extern "C" s32 fn_800A4D74(void *arg0, u32 arg1) {
     return ((s32 *)arg0)[2];
 }
 
-void fn_800A4E80(void *arg0, void *arg1, s32 arg2) {
+extern "C" s32 fn_800A4E80(void *arg0, void *arg1, u32 arg2) {
+    ((s32 *)arg0)[0] = (s32)arg1;
+    
+    if (arg2 == 1) {
+        ((s32 *)arg0)[1] = (s32)arg1 + fn_800A4A8C((s32)arg1);
+    } else if (arg2 == 2) {
+        ((s32 *)arg0)[1] = (s32)arg1 + fn_800A4B54((s32)arg1) * 2;
+        ((u32 *)arg0)[0xC / 4] = arg2;
+    }
+    
+    return 0;
 }
 
