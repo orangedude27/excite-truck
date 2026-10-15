@@ -77,3 +77,15 @@ void fn_8000A7A8(void) {
     fn_801DCDA0();
 }
 
+void fn_8000A808(void) {
+    char* lbl_8034F4C8_ptr = (char*)&lbl_8034F4C8;
+    fn_801DCDA4();
+    fn_8012E498(lbl_8034F4C8_ptr + 0x18);
+    if (lbl_8055D3B4 != 0) {
+        fn_8012E498(lbl_8034F4C8_ptr + 0x58);
+    }
+    if (lbl_8055D3B5 != 0) {
+        fn_8012E498(lbl_8034F4C8_ptr + 0x98);
+    }
+}
+
