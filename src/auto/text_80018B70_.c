@@ -14,7 +14,7 @@ s32 fn_802E317C(void *, void *);
 void fn_80018BA4(void);
 void fn_80018CCC(void);
 void *fn_80131808(void *);
-extern const char lbl_80558C50[];
+extern const char lbl_80558C50[] __attribute__((section(".sdata2")));
 extern const char lbl_802FD2F4[];
 extern const char lbl_802FD308[];
 void fn_80018B74(void);
@@ -214,8 +214,8 @@ void *fn_80019054(s32 arg0) {
 }
 
 void fn_80018F40(void) {
-    void *addr = lbl_802FD2DC;
-    lbl_8055D58C = fn_80131808(&addr);
+    void *arg = &lbl_802FD2DC;
+    lbl_8055D58C = fn_80131808(arg);
     fn_80018BA4();
     fn_80018CCC();
     lbl_8055D588 = 0;
