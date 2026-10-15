@@ -3,3 +3,7 @@
 
 extern char lbl_8055E090[4];
 extern void fn_8000D838(void *);
+
+void fn_80134714(void) {
+    fn_8000D838(lbl_8055E090);
+}
