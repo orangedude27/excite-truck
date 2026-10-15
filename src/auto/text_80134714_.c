@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include "macros.h"
+#include "types.h"
 
 extern char lbl_8055E090[4];
 extern void fn_8000D838(void *);
@@ -12,4 +13,4 @@ void fn_80134714(void) {
 
 #pragma section ".ctors$00"
 DECL_SECTION(".ctors$00")
-static void (*__ctors_80134714)(void) = fn_80134714;
+static funcptr_t __ctors_80134714 = fn_80134714;
