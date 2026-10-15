@@ -10,6 +10,14 @@ extern "C" void fn_801796EC(s32, s32*, s32);
 
 void fn_8019F1A4(void) __attribute__((noreturn));
 
+extern "C" s32 fn_80128668(void);
+extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern "C" void fn_8019F3D0(void) {
 
 }
