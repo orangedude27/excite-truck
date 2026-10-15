@@ -4,7 +4,7 @@ extern char lbl_8055DF88;
 extern u8 lbl_8055DF80;
 extern s32 *lbl_8055DF84;
 extern s32 lbl_8055DF98;
-extern s32 lbl_8041E140[];
+extern char lbl_8041E140[];
 extern char lbl_8032A000[];
 extern char lbl_8032A068[];
 extern char lbl_8032A074[];
