@@ -17,3 +17,7 @@ void fn_801C9830(void) {
     return;
 }
 
+void fn_801C98F0(void) {
+    fn_801C9444();
+}
+
