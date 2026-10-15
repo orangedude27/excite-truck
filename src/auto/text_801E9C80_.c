@@ -3,12 +3,12 @@
 
 #include <types.h>
 
-f32 fn_801E9DDC(f32, f32);
+f32 fn_801E9DDC(void);
 
 void fn_801E9C80(void) {
 
 }
 
-void fn_801E9DD0(void) {
-    fn_801E9DDC(0.0f, 0.0f);
+f32 fn_801E9DD0(void) {
+    return fn_801E9DDC();
 }
