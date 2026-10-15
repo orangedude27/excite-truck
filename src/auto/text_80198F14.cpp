@@ -3,7 +3,7 @@
 
 void fn_8019F1A4(void);
 
-void fn_8019F3D0(void) {
+extern "C" void fn_8019F3D0(void) {
 
 }
 
