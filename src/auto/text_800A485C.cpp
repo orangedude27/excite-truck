@@ -127,6 +127,13 @@ extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern u32 lbl_8055DDE0;
 extern "C" u32* fn_800D58B0(void) {
     return &lbl_8055DDE0;
