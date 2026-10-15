@@ -9,6 +9,11 @@ void fn_801282E8(void) {
 
 }
 
+extern char lbl_8055DF88;
+void fn_80128684(void) {
+    lbl_8055DF88 = 0;
+}
+
 void fn_80128710(void) {
 
 }
