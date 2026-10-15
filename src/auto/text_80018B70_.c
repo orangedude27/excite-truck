@@ -40,6 +40,7 @@ extern void *lbl_802FD404;
 extern void *lbl_802FD3CC;
 extern void *lbl_802FD3A0;
 extern void *lbl_802FD3B4;
+extern const char *lbl_80558C54;
 void fn_80019708(void) {
     lbl_8055D588 = 0;
 }
