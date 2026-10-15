@@ -1,3 +1,5 @@
+#include <types.h>
+
 extern char lbl_8055DF88;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -43,5 +45,21 @@ void fn_80129214(void) {
 void fn_80129218(void) {
 
 }
-#include <types.h>
-extern char lbl_8055DF88;
+
+void fn_80128584(s32);
+
+void fn_80128658(void) {
+    fn_80128584(1);
+}
+
+void fn_80128660(void) {
+    fn_80128584(2);
+}
+
+void fn_80128668(void) {
+    fn_80128584(3);
+}
+
+void fn_80128670(void) {
+    fn_80128584(0);
+}
