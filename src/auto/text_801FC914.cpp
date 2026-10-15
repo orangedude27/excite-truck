@@ -4,3 +4,12 @@
 extern "C" void fn_801FEFBC(void) {
 
 }
+
+void fn_801FEFC0(void) {
+
+}
+
+extern "C" void fn_801FEFC4(void) {
+
+}
+
