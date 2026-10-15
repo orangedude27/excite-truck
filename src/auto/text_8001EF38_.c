@@ -17,3 +17,7 @@ void fn_8001EFA4(void) {
     fn_8001FA20();
 }
 
+void fn_8001EFA8(void) {
+    fn_8001FA8C();
+}
+
