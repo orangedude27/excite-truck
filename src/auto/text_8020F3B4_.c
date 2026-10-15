@@ -4,3 +4,8 @@
 void fn_8020F6F8(void) {
     fn_802EC0FC();
 }
+
+void fn_802103B8(void) {
+    fn_8020F5C8();
+}
+
