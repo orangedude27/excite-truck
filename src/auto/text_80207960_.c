@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80208408(void);
+extern void fn_80208858(void);
 
 void fn_80207960(void) {
 	return;
