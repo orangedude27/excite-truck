@@ -14,3 +14,7 @@ void fn_801B3284(void) {
 
 }
 
+void fn_801B3298(void) {
+
+}
+
