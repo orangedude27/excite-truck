@@ -744,6 +744,52 @@ void fn_80059AD8(SomeVIStruct* vi, u32* top, u32* bottom, u32* rtop, u32* rbotto
     }
 }
 
+void fn_80059D90(u32 y, s32 height, u16 mode, s16 x, s16 top, s16 bottom, s16 left, s16 right, s32 nonInter)
+{
+    extern u16 lbl_8038F418[];
+    extern volatile u64 lbl_8055DB68;
+    register s32 a __asm("r11");
+    register s32 b __asm("r30");
+    register s32 span __asm("r31");
+    u32 start, end, upper, lower;
+    u32 div;
+    s32 sy = y;
+    if ((lbl_8038F418[0x6c / 2] & 1) == 0) { a = 2; b = 1; }
+    else { a = 1; b = 2; }
+    if ((((sy & 1) ^ (sy >> 31)) - (sy >> 31)) != 0) {
+        span = b * (a * x - height - sy);
+        start = (u16)(left + span);
+        end = (u16)(right + b * sy);
+        upper = (u16)(top + b * sy);
+        lower = (u16)(bottom + span);
+    } else {
+        span = b * (a * x - height - sy);
+        start = (u16)(right + span);
+        end = (u16)(left + b * sy);
+        upper = (u16)(bottom + b * sy);
+        lower = (u16)(top + span);
+    }
+    div = height / a;
+    if (nonInter) {
+        start = (u16)(start + 2);
+        lower = (u16)(lower + 2);
+        span = ((div & 0xffff) << 1) - 2;
+        upper = (u16)(upper + span);
+        end = (u16)(end + span);
+        div = 0;
+    }
+    lbl_8038F418[0] = mode | ((div & 0xffff) << 4);
+    lbl_8055DB68 |= 0x8000000000000000ULL;
+    lbl_8055DB68 |= 0x0000010000000000ULL;
+    lbl_8055DB68 |= 0x0000020000000000ULL;
+    lbl_8055DB68 |= 0x0000004000000000ULL;
+    lbl_8055DB68 |= 0x0000008000000000ULL;
+    lbl_8038F418[7] = lower;
+    lbl_8038F418[6] = start;
+    lbl_8038F418[9] = upper;
+    lbl_8038F418[8] = end;
+}
+
 static void setInterruptRegs(VITiming *tm)
 {
 #if DEBUG
@@ -1375,6 +1421,142 @@ s32 fn_8005B01C(void) {
     return 1;
 }
 
+u32 sendSlaveAddr(u32 addr)
+{
+    u32 gpio_out;
+    OSTime time1, time2;
+    s32 elapsed;
+    s32 i;
+    
+    // Initial SDA setup based on lbl_80558FB8
+    if (lbl_80558FB8 == 0) {
+        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+        gpio_out &= ~0x8000;
+        gpio_out |= 0x8000;
+        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+    } else {
+        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+        gpio_out &= ~0x8000;
+        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+    }
+    
+    // Wait for setup
+    time1 = __OSGetSystemTime();
+    time2 = __OSGetSystemTime();
+    elapsed = __div2i(time1, time2);
+    if (elapsed > 1) {
+        goto timeout;
+    }
+    
+    // Clear SCL
+    gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+    gpio_out &= ~0x4000;
+    IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+    
+    // Send 8 bits
+    for (i = 0; i < 8; i++) {
+        // Set SDA based on lbl_80558FB8
+        if (lbl_80558FB8 == 0) {
+            gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+            gpio_out &= ~0x8000;
+            IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+        } else {
+            gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+            gpio_out &= ~0x8000;
+            gpio_out |= 0x8000;
+            IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+        }
+        
+        // Wait
+        time1 = __OSGetSystemTime();
+        time2 = __OSGetSystemTime();
+        elapsed = __div2i(time1, time2);
+        if (elapsed > 1) {
+            goto timeout;
+        }
+        
+        // Clock high
+        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+        gpio_out |= 0x4000;
+        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+        
+        // Wait
+        time1 = __OSGetSystemTime();
+        time2 = __OSGetSystemTime();
+        elapsed = __div2i(time1, time2);
+        if (elapsed > 1) {
+            goto timeout;
+        }
+        
+        // Clock low
+        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+        gpio_out &= ~0x4000;
+        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+        
+        // Wait
+        time1 = __OSGetSystemTime();
+        time2 = __OSGetSystemTime();
+        elapsed = __div2i(time1, time2);
+        if (elapsed > 1) {
+            goto timeout;
+        }
+        
+        addr <<= 1;
+    }
+    
+    // Set direction
+    gpio_out = IPC_HW_REGS[IPC_GPIO1BDIR];
+    gpio_out &= ~0x80000;
+    gpio_out |= 0x40000;
+    IPC_HW_REGS[IPC_GPIO1BDIR] = gpio_out;
+    
+    // Wait
+    time1 = __OSGetSystemTime();
+    time2 = __OSGetSystemTime();
+    elapsed = __div2i(time1, time2);
+    if (elapsed > 1) {
+        goto timeout;
+    }
+    
+    // Clock high
+    gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+    gpio_out |= 0x4000;
+    IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+    
+    // Wait
+    time1 = __OSGetSystemTime();
+    time2 = __OSGetSystemTime();
+    elapsed = __div2i(time1, time2);
+    if (elapsed > 1) {
+        goto timeout;
+    }
+    
+    // Check ACK
+    if (lbl_80558FB8 == 1) {
+        gpio_out = IPC_HW_REGS[IPC_GPIO1BIN];
+        if ((gpio_out & 0x8000) == 0) {
+            return 0;
+        }
+    }
+    
+    return 1;
+    
+timeout:
+    if (lbl_80558FB8 == 0) {
+        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+        gpio_out &= ~0x8000;
+        gpio_out |= 0x8000;
+        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+    } else {
+        gpio_out = IPC_HW_REGS[IPC_GPIO1BOUT];
+        gpio_out &= ~0x8000;
+        IPC_HW_REGS[IPC_GPIO1BOUT] = gpio_out;
+    }
+    IPC_HW_REGS[IPC_GPIO1BDIR] = (IPC_HW_REGS[IPC_GPIO1BDIR] & ~0x80000) | 0xC0000;
+    IPC_HW_REGS[IPC_GPIO1BOUT] = IPC_HW_REGS[IPC_GPIO1BOUT] & ~0x40000;
+    return 1;
+}
+
 void __VISetYUVSEL(u8 value)
 {
     u8 data[2];
@@ -1450,17 +1632,17 @@ void __VISetGammaImm(u8* dataIn)
     u8 data[0x22];
 
     data[0] = 0x10;
-    data[1] = *(u16*)(dataIn + 0) >> 8;
+    data[1] = ((u32)*(u16*)(dataIn + 0)) >> 8;
     data[2] = *(u16*)(dataIn + 0);
-    data[3] = *(u16*)(dataIn + 2) >> 8;
+    data[3] = ((u32)*(u16*)(dataIn + 2)) >> 8;
     data[4] = *(u16*)(dataIn + 2);
-    data[5] = *(u16*)(dataIn + 4) >> 8;
+    data[5] = ((u32)*(u16*)(dataIn + 4)) >> 8;
     data[6] = *(u16*)(dataIn + 4);
-    data[7] = *(u16*)(dataIn + 6) >> 8;
+    data[7] = ((u32)*(u16*)(dataIn + 6)) >> 8;
     data[8] = *(u16*)(dataIn + 6);
-    data[9] = *(u16*)(dataIn + 8) >> 8;
+    data[9] = ((u32)*(u16*)(dataIn + 8)) >> 8;
     data[10] = *(u16*)(dataIn + 8);
-    data[11] = *(u16*)(dataIn + 0xA) >> 8;
+    data[11] = ((u32)*(u16*)(dataIn + 0xA)) >> 8;
     data[12] = *(u16*)(dataIn + 0xA);
     data[13] = dataIn[0xC];
     data[14] = dataIn[0xD];
@@ -1469,20 +1651,20 @@ void __VISetGammaImm(u8* dataIn)
     data[17] = dataIn[0x10];
     data[18] = dataIn[0x11];
     data[19] = dataIn[0x12];
-    data[20] = *(u16*)(dataIn + 0x14) >> 8;
+    data[20] = ((u32)*(u16*)(dataIn + 0x14)) >> 8;
     data[21] = *(u16*)(dataIn + 0x14) & 0xC0;
-    data[22] = *(u16*)(dataIn + 0x16) >> 8;
+    data[22] = ((u32)*(u16*)(dataIn + 0x16)) >> 8;
     data[23] = *(u16*)(dataIn + 0x16) & 0xC0;
-    data[24] = *(u16*)(dataIn + 0x18) >> 8;
+    data[24] = ((u32)*(u16*)(dataIn + 0x18)) >> 8;
     data[25] = *(u16*)(dataIn + 0x18) & 0xC0;
-    data[26] = *(u16*)(dataIn + 0x1A) >> 8;
+    data[26] = ((u32)*(u16*)(dataIn + 0x1A)) >> 8;
     data[27] = *(u16*)(dataIn + 0x1A) & 0xC0;
-    data[28] = *(u16*)(dataIn + 0x1C) >> 8;
+    data[28] = ((u32)*(u16*)(dataIn + 0x1C)) >> 8;
     data[29] = *(u16*)(dataIn + 0x1C) & 0xC0;
-    data[30] = *(u16*)(dataIn + 0x1E) >> 8;
+    data[30] = ((u32)*(u16*)(dataIn + 0x1E)) >> 8;
     data[31] = *(u16*)(dataIn + 0x1E) & 0xC0;
-    data[32] = *(u16*)(dataIn + 0x20) >> 8;
-    data[33] = *(u16*)(dataIn + 0x20) & 0xE0;
+    data[32] = ((u32)*(u16*)(dataIn + 0x20)) >> 8;
+    data[33] = *(u16*)(dataIn + 0x20) & 0xC0;
     __VISendI2CData(0xE0, data, 0x22);
     WaitMicroTime(2);
 }
