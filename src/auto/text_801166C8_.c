@@ -15,6 +15,35 @@ s32 fn_80116A38(void) {
     return 1;
 }
 
+BOOL ARCChangeDir(ARCHandle* handle, const char* path) {
+    s32 entrynum = ARCConvertPathToEntrynum(handle, path);
+    
+    if (entrynum < 0 || !(handle->entryNum + entrynum * 0xC & 0xFF000000)) {
+        return FALSE;
+    }
+    
+    handle->currDir = entrynum;
+    return TRUE;
+}
+
+BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
+    s32 entrynum = ARCConvertPathToEntrynum(handle, path);
+    
+    if (entrynum < 0 || !(handle->entryNum + entrynum * 0xC & 0xFF000000)) {
+        return FALSE;
+    }
+    
+    dir->handle = handle;
+    dir->entryNum = entrynum;
+    dir->location = entrynum + 1;
+    dir->next = *(u32*)((u8*)handle->FSTStart + entrynum * 0xC + 8);
+    return TRUE;
+}
+
+u32 fn_80116BCC(void) {
+    return 1;
+}
+
 void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
 }
