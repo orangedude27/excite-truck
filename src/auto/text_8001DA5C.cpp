@@ -9,6 +9,7 @@ extern f32 lbl_80560470;
 extern f32 lbl_80560474;
 
 extern s32 fn_80128668(void);
+extern void **lbl_80358680;
 extern s32 lbl_8055E3C4;
 extern f32 lbl_80560460;
 extern f32 lbl_80560464;
