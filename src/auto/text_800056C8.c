@@ -49,6 +49,10 @@ s32 fn_80006244(void) {
     return 0;
 }
 
+s32 fn_8000624C(void) {
+    return 0;
+}
+
 void fn_800062E4(void) {
     return;
 }
