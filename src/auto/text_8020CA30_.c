@@ -4,3 +4,8 @@
 void fn_8020CA30(void) {
 
 }
+
+void fn_8020CA34(void) {
+
+}
+
