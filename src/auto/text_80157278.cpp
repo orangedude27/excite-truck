@@ -12,3 +12,6 @@ void fn_8015CD0C(void) {
 
 }
 
+extern "C" void fn_8015CDD8(void) {
+}
+
