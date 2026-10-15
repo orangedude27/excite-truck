@@ -38,3 +38,7 @@ void fn_800062E4(void) {
 void fn_80006E50(void) {
 }
 
+void fn_800070D4(void) {
+    return;
+}
+
