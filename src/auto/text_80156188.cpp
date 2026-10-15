@@ -33,30 +33,31 @@ extern f32 fn_80129DC4(s32, s32, s32, f32, f32);
 extern f32 lbl_8055E3C8;
 
 void fn_80156960(void *arg0) {
-    s32 r29 = 0;
-    s32 r28 = ((s32 *)arg0)[2];
-    s32 r5 = ((s32 *)arg0)[1];
-    f32 f1 = ((f32 *)arg0)[0xDC / 4];
-    f32 f2 = ((f32 *)arg0)[0xE0 / 4];
-    void *r30 = arg0;
+    s32 count = 0;
+    void *out = arg0;
+    void *in = arg0;
     f32 f31 = lbl_8055E3C8;
+    s32 r4 = ((s32 *)arg0)[2];
+    s32 r5 = ((s32 *)arg0)[1];
     
     do {
-        s32 r0 = r29 / r28;
-        r0 = r0 * r28;
-        r0 = r29 - r0;
-        r0 = r0 * 8;
-        s32 *r31_ptr = (s32 *)*(s32 *)(r5 + r0);
-        s32 temp_r31 = r31_ptr[0];
+        f32 f1 = ((f32 *)arg0)[0xDC / 4];
+        f32 f2 = ((f32 *)arg0)[0xE0 / 4];
+        s32 idx = count / r4;
+        idx = idx * r4;
+        idx = count - idx;
+        idx = idx * 8;
+        s32 *tbl = (s32 *)*((s32 **)in)[0];
+        s32 val = tbl[idx / 4];
         
-        f32 result = fn_80129DC4(4, r28, r5, f1, f2);
+        f32 result = fn_80129DC4(4, r4, r5, f1, f2);
         result = f31 + result;
         
-        ((f32 *)r30)[0xE4 / 4] = result;
-        ((s32 *)r30)[0xE8 / 4] = temp_r31;
-        r30 = (void *)((u8 *)r30 + 8);
-        r29++;
-    } while (r29 < 8);
+        ((f32 *)out)[0xE4 / 4] = result;
+        ((s32 *)out)[0xE8 / 4] = val;
+        out = (void *)((u8 *)out + 8);
+        count++;
+    } while (count < 8);
 }
 
 void fn_801569FC(void) {
