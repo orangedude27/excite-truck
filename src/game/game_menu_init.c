@@ -154,6 +154,10 @@ DECL_SECTION(".sdata") extern const char lbl_80558910[];
 extern u8 lbl_8055F63C;
 extern const char lbl_802FB0A8[];
 extern const char lbl_802FB0B8[];
+
+static inline void FormatMenuName(char* name, int index) {
+    sprintf(name, lbl_802FB0B8, index);
+}
 extern u32 lbl_8034EC40[];
 extern u32 lbl_8055D320;
 extern u32 lbl_8055D328;
@@ -410,12 +414,8 @@ void fn_80004E20(void) {
 }
 
 void fn_80004EC0(const char* source) {
-    int remaining;
-    char* destination;
-
-    destination = lbl_8034EC58;
-    remaining = 0x20;
-
+    int remaining = 0x20;
+    char* destination = lbl_8034EC58;
     while ((*destination++ = *source++) != '\0') {
         if (--remaining <= 0) {
             destination[-1] = '\0';
@@ -513,13 +513,7 @@ int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
 
 void fn_80005304(void) DECOMP_DONT_INLINE {
     char name[64];
-    int index = 0;
-
-    while (TRUE) {
-        sprintf(name, lbl_802FB0B8, index);
-        if (fn_80005158(name) == 0) {
-            break;
-        }
-        index++;
+    int index;
+    for (index = 0; (sprintf(name, lbl_802FB0B8, index), fn_80005158(name)) != 0; index++) {
     }
 }
