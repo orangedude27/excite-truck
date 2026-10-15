@@ -101,10 +101,10 @@ void fn_8000D070(void) {
 void fn_8000D100(void) {
     if (lbl_8055D41C != NULL) {
         f32 val = fn_80209028();
-        f32 *ptr = (f32*)((u8*)lbl_8055D41C + 8);
-        if (*(u32*)&val != *(u32*)ptr) {
+        f32 stored = *(f32*)((u8*)lbl_8055D41C + 8);
+        if (val != stored) {
             *(u8*)((u8*)lbl_8055D41C + 0x4D) = 1;
-            *ptr = val;
+            *(f32*)((u8*)lbl_8055D41C + 8) = val;
         }
         *(u8*)((u8*)lbl_8055D41C + 0x49) = 1;
         *(u8*)((u8*)lbl_8055D41C + 0x4B) = 0;
