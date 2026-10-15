@@ -29,6 +29,10 @@ void fn_8001BBB8(void) {
     fn_8001CF8C();
 }
 
+s32 fn_8001BD28(void *arg0) {
+    return ((s32 *)arg0)[1];
+}
+
 void fn_8001C0E8(void) {
     fn_8001BC28();
 }
