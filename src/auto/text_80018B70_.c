@@ -9,3 +9,7 @@ void fn_80018E3C(void) {
     fn_80018B74();
 }
 
+void fn_80018E40(void) {
+    fn_80018B70();
+}
+
