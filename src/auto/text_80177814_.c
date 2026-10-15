@@ -17,3 +17,7 @@ void fn_801791A4(void) {
 
 }
 
+void fn_801792F4(void) {
+    fn_801E21B4();
+}
+
