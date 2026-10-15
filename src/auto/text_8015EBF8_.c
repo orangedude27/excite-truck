@@ -7,3 +7,6 @@ void fn_8015F554(void) {
 void fn_8015F79C(void) {
 }
 
+void fn_80160278(void) {
+}
+
