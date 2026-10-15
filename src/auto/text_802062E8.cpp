@@ -17,3 +17,7 @@ extern "C" void fn_80206B0C(void) {
 	return;
 }
 
+extern "C" void fn_80206B10(void) {
+	return;
+}
+
