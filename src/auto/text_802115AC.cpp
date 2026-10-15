@@ -88,3 +88,7 @@ extern "C" void fn_80215CA8(void) {
 	fn_80221E7C();
 }
 
+extern "C" void fn_80215CAC(void) {
+
+}
+
