@@ -26,20 +26,42 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
+#pragma opt_tail_call on
 void fn_801A4768(s32* arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
         *arg0 = val + arg1;
     }
 }
-
+#pragma opt_tail_call on
 void fn_801A47C8(void* arg0) {
-    s32 count = 0;
-    s32* ptr = *(s32**)((u8*)arg0 + 4);
-    s32 limit = *(s32*)((u8*)arg0);
+    s32 limit = *(s32*)arg0;
+    s32** ptrs = *(s32***)((u8*)arg0 + 4);
     for (s32 i = 0; i < limit; i++) {
-        ((u8*)ptr)[0x40] = 1;
-        ptr++;
+        ((u8*)ptrs[i])[0x40] = 1;
+    }
+}
+
+#pragma opt_tail_call on
+void fn_801A47FC(void* arg0) {
+    if (arg0) {
+        s32 limit = *(s32*)arg0;
+        s32** ptrs = *(s32***)((u8*)arg0 + 4);
+        for (s32 i = 0; i < limit; i++) {
+            fn_801A49E8((void*)ptrs[i]);
+        }
+    }
+}
+
+#pragma opt_tail_call on
+void fn_801A4868(void* arg0, u8 arg1) {
+    if (*(u8*)((u8*)arg0 + 0x40) != arg1) {
+        s32 local38;
+        u8 localC;
+        local38 = *(s32*)((u8*)arg0 + 0x38);
+        localC = arg1;
+        fn_801796EC(12, &local38, 8);
+        *(u8*)((u8*)arg0 + 0x40) = arg1;
     }
 }
 
