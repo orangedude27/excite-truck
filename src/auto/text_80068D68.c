@@ -61,6 +61,71 @@ void fn_8007DEF4(void *arg0) {
     GKI_freebuf(arg0);
 }
 
+void fn_80071508(u8 arg0) {
+    lbl_8055DC80 = arg0;
+}
+
+void fn_80071510(void *arg0, s32 arg1, u8 arg2) {
+    fn_8006E6E4(arg0);
+    ((u8 *)arg0)[0x10] = arg2;
+    ((s32 *)arg0)[3] = arg1;
+}
+
+void ptim_timer_update(tPTIM_CB *p_cb) {
+    TIMER_LIST_ENT *p_entry;
+    TIMER_CBACK *p_cback;
+    void *p_buf;
+    UINT16 event;
+
+    GKI_update_timer_list(&p_cb->timer_queue, p_cb->timer_id);
+
+    p_entry = p_cb->timer_queue.p_first;
+    while (p_entry != NULL) {
+        if (p_entry->ticks <= 0) {
+            GKI_remove_from_timer_list(&p_cb->timer_queue, p_entry);
+            p_cback = p_entry->p_cback;
+            if (p_cback != NULL) {
+                p_cback(p_entry);
+            } else {
+                event = p_entry->event;
+                if (event != 0) {
+                    p_buf = GKI_getbuf(8);
+                    if (p_buf != NULL) {
+                        ((UINT16 *)p_buf)[0] = event;
+                        fn_80071450(p_buf);
+                    }
+                }
+            }
+            p_entry = p_cb->timer_queue.p_first;
+        } else {
+            p_entry = p_entry->p_next;
+        }
+    }
+
+    if (p_cb->timer_queue.p_first == NULL) {
+        GKI_stop_timer(p_cb->timer_id);
+    }
+}
+
+void bta_sys_disable(void) {
+    void **pp_module;
+    void *p_module;
+    UINT8 (*p_disable)(void);
+    s32 i;
+
+    pp_module = (void **)&lbl_803C0AD8;
+    for (i = 0; i < 0x1A; i++) {
+        p_module = *pp_module;
+        if (p_module != NULL) {
+            p_disable = (UINT8 (*)(void))((u8 *)p_module + 4);
+            if (p_disable != NULL) {
+                p_disable();
+            }
+        }
+        pp_module++;
+    }
+}
+
 tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) {
     u16 *var_r28 = (u16 *)p_parms;
     u16 *var_r30 = (u16 *)&lbl_80316570;
