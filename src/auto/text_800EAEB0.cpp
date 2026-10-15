@@ -31,7 +31,7 @@ extern u8 lbl_8055DE30;
 
 extern s32 fn_80128668(void);
 
-void fn_800EAEB0(void) {
+extern "C" void fn_800EAEB0(void) {
     fn_8002F634(&lbl_8040EC90, &__dt__Q46nw4hbm3snd6detail7ChannelFv, 0xE8, 0x41);
 }
 
