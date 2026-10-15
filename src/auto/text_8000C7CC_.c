@@ -21,3 +21,12 @@ void fn_80128668(void*);
 void fn_8000CCB8(void);
 void fn_80209110(s32);
 
+s32 fn_8000CFA8(s32 arg0, s32 arg1) {
+    if (arg0 != 0) {
+        fn_802066C8((void*)arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668((void*)arg0);
+        }
+    }
+    return arg0;
+}
