@@ -18,3 +18,7 @@ void fn_8000ACAC(void) {
 void fn_8000AD20(void) {
 }
 
+void fn_8000BD98(void) {
+    return;
+}
+
