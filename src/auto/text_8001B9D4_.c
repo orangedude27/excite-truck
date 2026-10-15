@@ -43,3 +43,7 @@ void fn_8001C4DC(void) {
     fn_8001C4D8();
 }
 
+void fn_8001D7A4(void) {
+
+}
+
