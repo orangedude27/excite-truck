@@ -7,7 +7,7 @@
 int fn_800A6048();
 s32 fn_800A61D0(void *);
 s32 fn_800B75C4(void);
-void fn_800C4BD0(void);
+void fn_800C4BD0(void) __attribute__((noreturn));
 
 void fn_800A5954(void) {
     fn_800A6048();
