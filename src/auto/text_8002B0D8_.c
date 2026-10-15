@@ -25,3 +25,7 @@ void fn_8002EFB8(void) {
     __ieee754_log();
 }
 
+void fn_8002EFBC(void) {
+    __ieee754_pow();
+}
+
