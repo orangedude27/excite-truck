@@ -79,3 +79,11 @@ void fn_8001DEA8(void) {
 void fn_8001DF04(void) {
 
 }
+
+extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
