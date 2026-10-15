@@ -61,13 +61,15 @@ s32 fn_8000CFA8(s32 arg0, s32 arg1) {
 }
 
 void fn_8000CE60(void) {
-    lbl_8055D404 = 0;
-    lbl_8055D405 = 0;
-    lbl_8055D407 = 0;
+    void *r31 = (void*)((u8*)&lbl_802FC058 + 0x140);
+    u8 zero = 0;
+    lbl_8055D404 = zero;
+    lbl_8055D405 = zero;
+    lbl_8055D407 = zero;
     lbl_8055D400 = 0;
     lbl_8055D408 = 0;
     lbl_8055D40C = 0;
-    lbl_8055D410 = fn_802090D4((void*)((u8*)&lbl_802FC058 + 0x140));
+    lbl_8055D410 = fn_802090D4(r31);
     fn_80209190(lbl_80560218);
     lbl_8055D414 = (void**)fn_80145E70((void*)((u8*)&lbl_802FC058 + 0x14C));
     lbl_8055D418 = (void**)fn_80207848((void*)((u8*)&lbl_802FC058 + 0x158), 0);
@@ -77,10 +79,11 @@ void fn_8000CE60(void) {
 
 void fn_8000D070(void) {
     if (lbl_8055D418 != NULL) {
-        f32 temp = fn_80209028();
-        if (temp != *(f32*)((u8*)lbl_8055D418 + 8)) {
+        f32 val = fn_80209028();
+        f32 *ptr = (f32*)((u8*)lbl_8055D418 + 8);
+        if (*(u32*)&val != *(u32*)ptr) {
             *(u8*)((u8*)lbl_8055D418 + 0x4D) = 1;
-            *(f32*)((u8*)lbl_8055D418 + 8) = temp;
+            *ptr = val;
         }
         *(u8*)((u8*)lbl_8055D418 + 0x49) = 1;
         *(u8*)((u8*)lbl_8055D418 + 0x4B) = 0;
@@ -97,10 +100,11 @@ void fn_8000D070(void) {
 
 void fn_8000D100(void) {
     if (lbl_8055D41C != NULL) {
-        f32 temp = fn_80209028();
-        if (temp != *(f32*)((u8*)lbl_8055D41C + 8)) {
+        f32 val = fn_80209028();
+        f32 *ptr = (f32*)((u8*)lbl_8055D41C + 8);
+        if (*(u32*)&val != *(u32*)ptr) {
             *(u8*)((u8*)lbl_8055D41C + 0x4D) = 1;
-            *(f32*)((u8*)lbl_8055D41C + 8) = temp;
+            *ptr = val;
         }
         *(u8*)((u8*)lbl_8055D41C + 0x49) = 1;
         *(u8*)((u8*)lbl_8055D41C + 0x4B) = 0;
@@ -117,15 +121,18 @@ void fn_8000D100(void) {
 }
 
 s32 fn_8000CCB8(void) {
-    s32 i;
-    for (i = 0; ; i++) {
+    s32 i = 0;
+    s32 limit;
+    while (1) {
         if (fn_800075A0(i) != 0) {
             __AXGetStackHead_80137CFC(i);
             if (fn_802E8504() == 0) {
                 return i;
             }
         }
-        if (i >= fn_80137C74()) {
+        i++;
+        limit = fn_80137C74();
+        if (i >= limit) {
             break;
         }
     }
