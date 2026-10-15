@@ -17,6 +17,10 @@ extern "C" void fn_801FF118(void) {
 
 }
 
+extern "C" void fn_801FF168(void) {
+
+}
+
 extern "C" void fn_801FEFC4(void) {
 
 }
