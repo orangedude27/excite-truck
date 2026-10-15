@@ -30,7 +30,7 @@ extern s32 fn_80207848(void*, s32);
 extern f32 lbl_80560218;
 
 // Externs for fn_8000D070, fn_8000D100
-extern s32 fn_80209028(void);
+extern f32 fn_80209028(void);
 extern s32 fn_80265D64(void);
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_80206444(void);
