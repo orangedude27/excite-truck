@@ -7,3 +7,7 @@ extern "C" void fn_801460F4(void) {
 extern "C" void fn_80146200(void) {
 
 }
+
+extern "C" void fn_8014630C(void) {
+}
+
