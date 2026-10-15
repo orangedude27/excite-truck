@@ -24,3 +24,7 @@ void fn_80019708(void) {
     lbl_8055D588 = 0;
 }
 
+char fn_80019714(void) {
+    return lbl_8055D588;
+}
+
