@@ -30,6 +30,6 @@ void fn_800C3D9C(void) {
 }
 
 void fn_800CF280(void) {
-
+    return;
 }
 
