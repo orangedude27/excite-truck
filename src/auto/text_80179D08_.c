@@ -17,3 +17,7 @@ void fn_8017A800(void) {
 
 }
 
+void fn_8017B090(void) {
+
+}
+
