@@ -182,19 +182,27 @@ struct GameVirtualObject {
 
 void fn_800049C0(void) DECOMP_DONT_INLINE {
     struct NameTable { const char* names[10]; };
-    struct {
-        u32 date[6];
-        struct NameTable table;
-    } local;
-    u16* dp;
+    struct { u32 date[6]; struct NameTable table; } local;
     int lang_result;
+    u32 a, b, c, d, e, f, g, h;
 
     local.table = *(const struct NameTable*)lbl_802ED680;
     fn_802E2CFC(&local);
-    dp = (u16*)&local.date[1];
+
+    a = *(u16*)((u8*)&local.date[1]);
+    b = *(u16*)((u8*)&local.date[2]);
+    c = *(u16*)((u8*)&local.date[1] + 2);
+    d = *(u16*)((u8*)&local.date[2] + 2);
+
+    e = a * 43200;
+    f = c * 3600;
+    g = b * 60;
+    h = d << 8;
+
     fn_80129C80(6,
-        (dp[3] ^ (dp[1] * 3600)) & (dp[2] << 8),
-        ((dp[2] * 60) ^ (dp[0] * 43200)) & (dp[3] << 8));
+        h & (d ^ f),
+        (d << 8) & (g ^ e));
+
     lang_result = fn_80129D18(6, 10);
     if (fn_80278A1C(lbl_802FAF24) != 0) {
         fn_80278A1C(local.table.names[lang_result]);
@@ -254,10 +262,10 @@ int fn_80004D64(char* args) {
 }
 
 void fn_80004B5C(void) {
-    char* data = lbl_802FAEA0;
+    void* data = lbl_802FAEA0;
     fn_802E2C20();
     fn_80004ACC();
-    fn_8012E81C(data + 0x90);
+    fn_8012E81C((char*)data + 0x90);
     fn_80133024();
     fn_802C2AA8(lbl_80558900);
     fn_80127464();
@@ -268,9 +276,9 @@ void fn_80004B5C(void) {
     fn_80245118();
     fn_802E712C();
     fn_80012478();
-    fn_800124DC(data + 0x128, 1, 1, lbl_80560100);
+    fn_800124DC((char*)data + 0x128, 1, 1, lbl_80560100);
     fn_80127464();
-    fn_8012E81C(data + 0x9c);
+    fn_8012E81C((char*)data + 0x9c);
     fn_80232230();
     fn_80137B20();
     fn_80016354();
@@ -325,29 +333,29 @@ int fn_80005158(const char* name) {
     found = 0;
     count = fn_80012818();
     first = lbl_8034EC58[0];
-    if (first == '$' || first == '@') {
+    if (first == '$') {
         result = fn_80004F00(&count, &found, lbl_8034EC58 + 1);
         if (!result) {
-            fn_802E30C8(data + 0x150, (void (*)(void))(lbl_8034EC58 + 1));
+            fn_802E30C8(data + 0x150, 0, lbl_8034EC58 + 1);
         }
-    } else if (first != '\0') {
+    } else if (first == '@') {
         result = fn_80005044(&count, &found, lbl_8034EC58);
         if (!result) {
-            fn_802E30C8(data + 0x180, (void (*)(void))(lbl_8034EC58));
+            fn_802E30C8(data + 0x180, 0, lbl_8034EC58);
         }
     } else {
         result = fn_800050D0(&count, &found, name);
         if (!result) {
-            fn_802E30C8(data + 0x1b0, (void (*)(void))(name));
+            fn_802E30C8(data + 0x1b0, 0, name);
         }
     }
     if (result) {
         fn_8020A600();
         fn_8023BFBC(count, found);
     } else if (lbl_8034EC58[0] != '\0') {
-        fn_802E30C8(data + 0x1dc, (void (*)(void))(lbl_8034EC58));
+        fn_802E30C8(data + 0x1dc, 0, lbl_8034EC58);
     } else {
-        fn_802E30C8(data + 0x1f0, (void (*)(void))(name));
+        fn_802E30C8(data + 0x1f0, 0, name);
     }
     RestoreMenuFlag(&saved);
     return 0;
@@ -411,32 +419,44 @@ void fn_80004E20(void) {
 
 void fn_80004EC0(const char* source) {
     int remaining = 0x20;
-    char* destination = lbl_8034EC58;
+    volatile char* destination = lbl_8034EC58;
+
     while ((*destination++ = *source++) != '\0') {
-        if (--remaining <= 0) {
-            destination[-1] = '\0';
-            return;
+        if (--remaining > 0) {
+            continue;
         }
+        destination[-1] = '\0';
+        return;
     }
 }
 
 u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback) {
-    if (object->vtable->isReady(object)) {
-        return object->vtable->getValue(object, argument);
+    int (*isReady)();
+    u32 (*getValue)();
+    isReady = (int (*)())object->vtable->isReady;
+    if (isReady(object)) {
+        getValue = (u32 (*)())object->vtable->getValue;
+        return getValue(object, argument);
     }
     return fallback;
 }
 
 void fn_80005364(void) {
+    u32 var1, var2, var3, var4, var5;
     fn_8000D838(&lbl_8055D320);
-    ((volatile u32*)lbl_802FAFA0)[1] = lbl_8055890C;
-    *(volatile u32*)&lbl_8055D328 = 0xFFFF0000;
-    ((volatile u32*)lbl_8034EC40)[1] = 0x7B;
-    lbl_8034EC40[0] = 0;
-    lbl_8034EC40[2] = 0;
-    lbl_8034EC40[3] = 0;
-    lbl_8034EC40[4] = 0;
-    lbl_8055D32C = 0x7F000000;
+    var1 = lbl_8055890C;
+    var2 = 0xFFFF0000;
+    var3 = 0;
+    var4 = 0x7B;
+    var5 = 0x7F000000;
+    lbl_802FAFA0[1] = var1;
+    *(u32*)lbl_8055D328 = var2;
+    lbl_8034EC40[0] = var3;
+    lbl_8034EC40[1] = var4;
+    lbl_8034EC40[2] = var3;
+    lbl_8034EC40[3] = var3;
+    lbl_8034EC40[4] = var3;
+    lbl_8055D32C = var5;
 }
 
 #pragma push
@@ -470,7 +490,9 @@ int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
         for (j = 0; j < *(int*)(event + 0x70); j++) {
             u8* entry = fn_80012870(i, j);
             GameVirtualObject* object = *(GameVirtualObject**)(entry + 0x20);
-            const char* entryName = object->vtable->getName(object, lbl_80558918, lbl_80558920);
+            const GameVirtualTable* table = object->vtable;
+            const char* (*getName)(GameVirtualObject*, const char*, u32*) = table->getName;
+            const char* entryName = getName(object, lbl_80558918, lbl_80558920);
             if (stricmp(entryName, name) == 0) {
                 *eventIndex = i;
                 *subIndex = j;
@@ -510,10 +532,10 @@ int fn_800050D0(int* eventIndex, int* subIndex, const char* name) {
 void fn_80005304(void) DECOMP_DONT_INLINE {
     char name[64];
     int index = 0;
-    while (TRUE) {
+    while (1) {
         sprintf(name, lbl_802FB0B8, index);
         if (fn_80005158(name) == 0) {
-            break;
+            return;
         }
         index++;
     }
