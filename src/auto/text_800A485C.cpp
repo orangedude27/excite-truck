@@ -7,6 +7,7 @@
 int fn_800A6048();
 s32 fn_800A61D0(void *);
 void fn_800B75C4(void);
+void fn_800C4BD0(void);
 
 void fn_800A5954(void) {
     fn_800A6048();
@@ -18,5 +19,9 @@ void fn_800A5990(void) {
 
 void fn_800B78EC(void) {
 
+}
+
+__attribute__((optimize("no-optimize"))) void fn_800B7C60(void) {
+    fn_800B75C4();
 }
 
