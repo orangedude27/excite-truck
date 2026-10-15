@@ -4,6 +4,7 @@
 extern void fn_801FC8D8(void);
 extern void fn_801EBBB4(void);
 extern void fn_801EBD70(void);
+extern void fn_801EBDCC(void);
 
 void fn_801FC8D8(void) {
     fn_801EBBB4();
