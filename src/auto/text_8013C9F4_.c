@@ -4,3 +4,7 @@
 void fn_8013CA3C(void) {
 
 }
+
+void fn_8013CAA0(void) {
+
+}
