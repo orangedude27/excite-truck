@@ -8,3 +8,6 @@ void fn_8000ACA4(void) {
     return;
 }
 
+void fn_8000ACA8(void) {
+}
+
