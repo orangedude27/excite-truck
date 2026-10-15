@@ -15,6 +15,7 @@ extern u32 lbl_8055DBC8;
 extern u32 lbl_8055DBCC;
 extern u32 CurrTvMode_8055DB9C;
 extern u8 lbl_80311B50[0x140];
+extern u8 lbl_80558FB8;
 extern u8 lbl_80558FC0;
 extern u8 lbl_80558FC1;
 extern u8 lbl_80558FC2;
@@ -386,43 +387,30 @@ void __VIInit(VITVMode mode)
 {
     VITiming *tm;
     u32 nonInter;
-    u32 tv;
+    s32 tv;
     volatile u32 a;
-    u16 hct;
-    u16 vct;
-    u32 encoderType;
 
-    encoderType = getEncoderType();
-    if (encoderType == 0) {
-        __VIInitPhilips();
-    }
-    nonInter = mode & 2;
+    nonInter = mode & 3;
     tv = (u32)mode >> 2;
-    *(u32 *)OSPhysicalToCached(0xCC) = tv;
-    if (encoderType == 0) {
-        tv = 3;
-    }
+    *(u32 *)0x800000CC = tv;
     tm = getTiming(mode);
     __VIRegs[1] = 2;
-
-    // why?
     for (a = 0; a < 1000; a++) {
     }
-
     __VIRegs[1] = 0;
-    __VIRegs[3] = (u32)tm->hlw;
+    __VIRegs[3] = tm->hlw;
     __VIRegs[2] = tm->hce | (tm->hcs << 8);
     __VIRegs[5] = tm->hsy | ((tm->hbe640 & 0x1FF) << 7);
     __VIRegs[4] = (tm->hbe640 >> 9) | ((tm->hbs640 & 0xFFFF) << 1);
-    if (encoderType == 0) {
+    if (lbl_8055DBA4 == 0) {
         __VIRegs[0x39] = tm->hbeCCIR656 | 0x8000;
-        __VIRegs[0x3A] = (u32)tm->hbsCCIR656;
+        __VIRegs[0x3A] = tm->hbsCCIR656;
     }
-    __VIRegs[0] = (u32)tm->equ;
-    __VIRegs[7] = (u32)(tm->prbOdd + (tm->acv * 2) - 2);
-    __VIRegs[6] = (u32)(tm->psbOdd + 2);
-    __VIRegs[9] = (u32)(tm->prbEven + (tm->acv * 2) - 2);
-    __VIRegs[8] = (u32)(tm->psbEven + 2);
+    __VIRegs[0] = tm->equ;
+    __VIRegs[7] = tm->prbOdd + tm->acv * 2 - 2;
+    __VIRegs[6] = tm->psbOdd + 2;
+    __VIRegs[9] = tm->prbEven + tm->acv * 2 - 2;
+    __VIRegs[8] = tm->psbEven + 2;
     __VIRegs[11] = tm->bs1 | (tm->be1 << 5);
     __VIRegs[10] = tm->bs3 | (tm->be3 << 5);
     __VIRegs[13] = tm->bs2 | (tm->be2 << 5);
@@ -430,17 +418,21 @@ void __VIInit(VITVMode mode)
     __VIRegs[36] = 0x2828;
     __VIRegs[27] = 1;
     __VIRegs[26] = 0x1001;
-    hct = tm->hlw + 1;
-    vct = (tm->nhlines / 2) + 1;
-    __VIRegs[25] = (u16)(u32)hct;
-    __VIRegs[24] = vct | 0x1000;
-    if (mode != VI_TVMODE_NTSC_PROG) {
-        __VIRegs[1] = (nonInter << 2) | 1 | (tv << 8);
+    __VIRegs[25] = tm->hlw + 1;
+    __VIRegs[24] = (tm->nhlines / 2) + 1 | 0x1000;
+    if (tv >= 4) {
+        tv = 0;
+    } else if (tv >= 1) {
+        __VIRegs[1] = (tv << 8) | (nonInter << 2) | 1;
         __VIRegs[54] = 0;
-        return;
+    } else {
+        __VIRegs[1] = (tv << 8) | (nonInter << 2) | 1;
+        __VIRegs[54] = 0;
     }
-    __VIRegs[1] = (tv << 8) | 5;
-    __VIRegs[54] = 1;
+    if (tv == 0) {
+        __VIRegs[1] = (tv << 8) | 5;
+        __VIRegs[54] = 1;
+    }
 }
 
 #ifndef MAX
@@ -561,6 +553,49 @@ void VIWaitForRetrace(void)
         OSSleepThread(&retraceQueue);
     } while (count == retraceCount);
     OSRestoreInterrupts(enabled);
+}
+
+void fn_80059AD8(SomeVIStruct* vi, u32* top, u32* bottom, u32* rtop, u32* rbottom) {
+    u32 stride = vi->wordPerLine * 32;
+    u32 start = stride * vi->FBSizeY + vi->bufAddr + ((vi->PanPosY & 0x7FF0) * 2);
+    u32 end = start;
+
+    *top = start;
+    if (vi->nonInter != 0) {
+        end += stride;
+    }
+    *bottom = end;
+    if (vi->FBMode & 1) {
+        u32 temp = *top;
+        *top = end;
+        *bottom = temp;
+    }
+    *top &= 0x3FFFFFFF;
+    *bottom &= 0x3FFFFFFF;
+
+    if (vi->threeD) {
+        start = stride * vi->FBSizeY + vi->rbufAddr + ((vi->PanPosY & 0x7FF0) * 2);
+        end = start;
+        *rtop = start;
+        if (vi->nonInter != 0) {
+            end += stride;
+        }
+        *rbottom = end;
+        if (vi->FBMode & 1) {
+            u32 temp = *rtop;
+            *rtop = end;
+            *rbottom = temp;
+        }
+        *rtop &= 0x3FFFFFFF;
+        *rbottom &= 0x3FFFFFFF;
+    }
+
+    if (*top >= 0x1000000 || *bottom >= 0x1000000 || *rtop >= 0x1000000 || *rbottom >= 0x1000000) {
+        *top >>= 5;
+        *bottom >>= 5;
+        *rtop >>= 5;
+        *rbottom >>= 5;
+    }
 }
 
 static void setInterruptRegs(VITiming *tm)
@@ -854,32 +889,27 @@ void VIConfigurePan(u16 xOrg, u16 yOrg, u16 width, u16 height)
 {
     BOOL enabled;
     VITiming *tm;
-
 #if DEBUG
-    ASSERTMSGLINEV(0x69C, (xOrg & 1) == 0,
-        "VIConfigurePan(): Odd number(%d) is specified to xOrg\n",
-        xOrg);
+    ASSERTMSGLINEV(0x69C, (xOrg & 1) == 0, "VIConfigurePan(): Odd number(%d) is specified to xOrg\n", xOrg);
     if (HorVer.FBMode == VI_XFBMODE_DF) {
-        ASSERTMSGLINEV(0x6A1, (height & 1) == 0,
-            "VIConfigurePan(): Odd number(%d) is specified to height when DF XFB mode\n",
-            height);
+        ASSERTMSGLINEV(0x6A1, (height & 1) == 0, "VIConfigurePan(): Odd number(%d) is specified to height when DF XFB mode\n", height);
     }
 #endif
     enabled = OSDisableInterrupts();
-    HorVer.PanPosX   = xOrg;
-    HorVer.PanPosY   = yOrg;
-    HorVer.PanSizeX  = width;
-    HorVer.PanSizeY  = height;
-    HorVer.DispSizeY = (HorVer.nonInter == 2) ? HorVer.PanSizeY
-                     : (HorVer.FBMode == VI_XFBMODE_SF) ? (u16)(HorVer.PanSizeY * 2)
-                     : HorVer.PanSizeY;
+    HorVer.PanPosX = xOrg;
+    HorVer.PanPosY = yOrg;
+    HorVer.PanSizeX = width;
+    HorVer.PanSizeY = height;
+    if (HorVer.FBMode != 2 && HorVer.FBMode != 3 && HorVer.nonInter == 0) {
+        HorVer.DispSizeY = HorVer.PanSizeY * 2;
+    } else {
+        HorVer.DispSizeY = HorVer.PanSizeY;
+    }
     tm = HorVer.timing;
     AdjustPosition(tm->acv);
     setScalingRegs(HorVer.PanSizeX, HorVer.DispSizeX, HorVer.threeD);
     setPicConfig(HorVer.FBSizeX, HorVer.FBMode, HorVer.PanPosX, HorVer.PanSizeX, &HorVer.wordPerLine, &HorVer.std, &HorVer.wpl, &HorVer.xof);
-    if (FBSet != 0) {
-        setFbbRegs(&HorVer, &HorVer.tfbb, &HorVer.bfbb, &HorVer.rtfbb, &HorVer.rbfbb);
-    }
+    if (FBSet != 0) setFbbRegs(&HorVer, &HorVer.tfbb, &HorVer.bfbb, &HorVer.rtfbb, &HorVer.rbfbb);
     setVerticalRegs(HorVer.AdjustedDispPosY, HorVer.DispSizeY, tm->equ, tm->acv, tm->prbOdd, tm->prbEven, tm->psbOdd, tm->psbEven, HorVer.black);
     OSRestoreInterrupts(enabled);
 }
@@ -1089,6 +1119,102 @@ u32 fn_8005AD9C(void)
     status = __VIRegs[VI_VISEL] & 3;
     OSRestoreInterrupts(enabled);
     return status & VI_VISEL_COMPONENT;
+}
+
+void __VIDisplayPositionToXY(u16 param_1, u16 param_2, s16 *param_3, u16 *param_4)
+{
+    extern SomeVIStruct lbl_8038F398;
+    VITiming *timing = lbl_8055DBA0;
+    u32 tv = lbl_8038F398.tv;
+    u32 nhlines = timing->nhlines;
+    u32 index = ((u32)(param_1 - 1)) / timing->hlw + ((u32)(param_2 - 1)) * 2;
+
+    if (tv == 0) {
+        if (index < nhlines) {
+            u8 equ = timing->equ;
+            u16 prbOdd = timing->prbOdd;
+            u16 psbOdd = timing->psbOdd;
+            u32 maxOdd = prbOdd + (u32)equ * 3;
+            if (index >= maxOdd) {
+                param_3[0] = -1;
+            } else if (index < nhlines - psbOdd) {
+                param_3[0] = -1;
+            } else {
+                u32 tmp = index;
+                tmp = tmp - (u32)equ * 3;
+                tmp = tmp - prbOdd;
+                param_3[0] = (s16)(tmp >> 1);
+            }
+        } else {
+            u8 equ = timing->equ;
+            u16 prbEven = timing->prbEven;
+            u16 psbEven = timing->psbEven;
+            u32 diff = nhlines - index;
+            u32 maxEven = prbEven + (u32)equ * 3;
+            if (diff < maxEven) {
+                param_3[0] = -1;
+            } else if (diff < nhlines - psbEven) {
+                param_3[0] = -1;
+            } else {
+                u32 tmp = diff;
+                tmp = tmp - (u32)equ * 3;
+                tmp = tmp - prbEven;
+                param_3[0] = (s16)((tmp >> 1) + 1);
+            }
+        }
+    } else if (tv == 1) {
+        u8 equ = timing->equ;
+        u16 prbOdd = timing->prbOdd;
+        u16 psbOdd = timing->psbOdd;
+        u32 diff = nhlines - index;
+        u32 maxOdd = prbOdd + (u32)equ * 3;
+        if (diff >= maxOdd) {
+            param_3[0] = -1;
+        } else if (diff < nhlines - psbOdd) {
+            param_3[0] = -1;
+        } else {
+            u32 tmp = diff;
+            tmp = tmp - (u32)equ * 3;
+            tmp = tmp - prbOdd;
+            param_3[0] = (s16)(tmp >> 1);
+        }
+    } else if (tv == 2) {
+        if (index >= nhlines) {
+            u8 equ = timing->equ;
+            u16 prbEven = timing->prbEven;
+            u16 psbEven = timing->psbEven;
+            u32 diff = index - nhlines;
+            u32 maxEven = prbEven + (u32)equ * 3;
+            if (diff < maxEven) {
+                param_3[0] = -1;
+            } else if (diff < nhlines - psbEven) {
+                param_3[0] = -1;
+            } else {
+                u32 tmp = diff;
+                tmp = tmp - (u32)equ * 3;
+                tmp = tmp - prbEven;
+                param_3[0] = (s16)(tmp >> 1);
+            }
+        } else {
+            u8 equ = timing->equ;
+            u16 prbOdd = timing->prbOdd;
+            u16 psbOdd = timing->psbOdd;
+            u32 maxOdd = prbOdd + (u32)equ * 3;
+            if (index >= maxOdd) {
+                param_3[0] = -1;
+            } else if (index < nhlines - psbOdd) {
+                param_3[0] = -1;
+            } else {
+                u32 tmp = index;
+                tmp = tmp - (u32)equ * 3;
+                tmp = tmp - prbOdd;
+                param_3[0] = (s16)(tmp >> 1);
+            }
+        }
+    } else {
+        param_3[0] = 0;
+    }
+    param_4[0] = param_1 - 1;
 }
 
 s32 fn_8005B00C(void) {
