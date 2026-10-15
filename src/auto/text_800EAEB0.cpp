@@ -31,6 +31,10 @@ extern u8 lbl_8055DE30;
 
 extern s32 fn_80128668(void);
 
+void fn_800EAEB0(void) {
+    fn_8002F634(&lbl_8040EC90, &__dt__Q46nw4hbm3snd6detail7ChannelFv, 0xE8, 0x41);
+}
+
 void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void* this_) {
     u32 level;
     void* ptr;
@@ -53,7 +57,9 @@ void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void* this_) {
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54(
     void* this_, s32 flag) {
     if (this_) {
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (this_ != NULL) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        }
 
         if (flag > 0) {
             fn_80128668(this_);
@@ -93,9 +99,6 @@ s32 fn_800ED0BC(s32 arg0) {
     s32 t = -(s32)val;
     return ((t | (s32)val) >> 31);
 }
-#pragma push
-#pragma small_data off
-#pragma pop
 s32 fn_800ED0D0(s32 arg0) {
     return ((u8 *)arg0)[0x15] != 0;
 }
