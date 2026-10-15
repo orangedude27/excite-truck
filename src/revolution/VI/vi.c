@@ -4,6 +4,7 @@
 #include <revolution/VI.h>
 #include <revolution/VI/vi.h>
 #include <revolution/VI/vihardware.h>
+#include <revolution/IPC/ipcHardware.h>
 
 #define __VIRegs VI_HW_REGS
 
@@ -434,6 +435,150 @@ void __VIInit(VITVMode mode)
         __VIRegs[1] = (tv << 8) | 5;
         __VIRegs[54] = 1;
     }
+}
+
+void fn_8005954C(void)
+{
+    extern BOOL lbl_8055DB38;
+    extern const char* lbl_80558F98;
+    extern u16 lbl_803118DC[];
+    extern VITVFormat lbl_8055DBD0;
+    extern volatile u64 lbl_8055DB68;
+    extern volatile u64 lbl_8055DB78;
+    extern s16 lbl_8055DB5C, lbl_8055DB5E;
+    extern SomeVIStruct lbl_8038F398;
+    extern u16 lbl_8038F418[];
+    extern OSThreadQueue lbl_8055DBB0;
+    extern VIRetraceCallback lbl_8055DBAC, lbl_8055DBA8;
+    extern OSShutdownFunctionInfo lbl_80311910;
+    extern u32 lbl_8055DB48, lbl_8055DB4C, lbl_8055DB50, lbl_8055DB54, lbl_8055DB44;
+    extern volatile u32 lbl_8055DBC4, lbl_8055DBC0;
+    extern void fn_80058A60(s16, OSContext*);
+    u16 dspCfg;
+    u32 value;
+    u32 tv;
+    VITiming* tm;
+    BOOL enabled;
+    u32 bootTv;
+    s32 coeff, frac;
+    BOOL screenSaver;
+    u16 acv;
+
+    if (lbl_8055DB38) return;
+    OSRegisterVersion(lbl_80558F98);
+    lbl_8055DB38 = TRUE;
+    if (!(__VIRegs[1] & 1)) __VIInit(VI_TVMODE_NTSC_INT);
+    lbl_8055DBD0 = 0;
+    lbl_8055DB68 = 0;
+    lbl_8055DB78 = 0;
+    lbl_8055DB60 = 0;
+    lbl_8055DB70 = 0;
+    lbl_8055DBCC = 0;
+    lbl_8055DBC8 = 0;
+    __VIRegs[39] = lbl_803118DC[0] | ((lbl_803118DC[1] & 0x3F) << 10);
+    __VIRegs[38] = (lbl_803118DC[1] >> 6) | (lbl_803118DC[2] << 4);
+    __VIRegs[41] = lbl_803118DC[3] | ((lbl_803118DC[4] & 0x3F) << 10);
+    __VIRegs[40] = (lbl_803118DC[4] >> 6) | (lbl_803118DC[5] << 4);
+    __VIRegs[43] = lbl_803118DC[6] | ((lbl_803118DC[7] & 0x3F) << 10);
+    __VIRegs[42] = (lbl_803118DC[7] >> 6) | (lbl_803118DC[8] << 4);
+    __VIRegs[45] = lbl_803118DC[9] | (lbl_803118DC[10] << 8);
+    __VIRegs[44] = lbl_803118DC[11] | (lbl_803118DC[12] << 8);
+    __VIRegs[47] = lbl_803118DC[13] | (lbl_803118DC[14] << 8);
+    __VIRegs[46] = lbl_803118DC[15] | (lbl_803118DC[16] << 8);
+    __VIRegs[49] = lbl_803118DC[17] | (lbl_803118DC[18] << 8);
+    __VIRegs[48] = lbl_803118DC[19] | (lbl_803118DC[20] << 8);
+    __VIRegs[51] = lbl_803118DC[21] | (lbl_803118DC[22] << 8);
+    __VIRegs[50] = lbl_803118DC[23] | (lbl_803118DC[24] << 8);
+    __VIRegs[56] = 0x280;
+    lbl_8055DB5C = SCGetDisplayOffsetH();
+    lbl_8055DB5E = 0;
+    bootTv = *(u32*)0x800000CC;
+    dspCfg = __VIRegs[1];
+    enabled = OSDisableInterrupts();
+    if (((u32)__VIRegs[54] & 1) == 1) value = 2;
+    else value = !!((__VIRegs[1] >> 2) & 1);
+    OSRestoreInterrupts(enabled);
+    lbl_8038F398.nonInter = value;
+    lbl_8038F398.tv = (dspCfg >> 8) & 3;
+    if (bootTv == 5 || (bootTv == 1 && lbl_8038F398.tv == 0)) lbl_8038F398.tv = 5;
+    tv = lbl_8038F398.tv == 3 ? 0 : lbl_8038F398.tv;
+    tm = (VITiming*)fn_80059234((tv << 2) + lbl_8038F398.nonInter);
+    lbl_8038F398.timing = tm;
+    lbl_8055DBA0 = tm;
+    lbl_8038F418[1] = dspCfg;
+    CurrTvMode_8055DB9C = lbl_8038F398.tv;
+    lbl_8038F398.DispSizeX = 640;
+    lbl_8038F398.DispSizeY = tm->acv * 2;
+    lbl_8038F398.DispPosX = (720 - lbl_8038F398.DispSizeX) / 2;
+    lbl_8038F398.DispPosY = 0;
+    acv = tm->acv;
+    lbl_8038F398.AdjustedDispPosX = (s16)lbl_8038F398.DispPosX + lbl_8055DB5C > 720 - lbl_8038F398.DispSizeX
+        ? 720 - lbl_8038F398.DispSizeX : (s16)lbl_8038F398.DispPosX + lbl_8055DB5C < 0
+        ? 0 : (s16)lbl_8038F398.DispPosX + lbl_8055DB5C;
+    coeff = lbl_8038F398.FBMode == VI_XFBMODE_SF ? 2 : 1;
+    frac = lbl_8038F398.DispPosY & 1;
+    lbl_8038F398.AdjustedDispPosY = MAX((s16)lbl_8038F398.DispPosY + lbl_8055DB5E, frac);
+    lbl_8038F398.AdjustedDispSizeY = lbl_8038F398.DispSizeY
+        + MIN((s16)lbl_8038F398.DispPosY + lbl_8055DB5E - frac, 0)
+        - MAX((s16)lbl_8038F398.DispPosY + (s16)lbl_8038F398.DispSizeY + lbl_8055DB5E - (((s16)acv * 2) - frac), 0);
+    lbl_8038F398.AdjustedPanPosY = lbl_8038F398.PanPosY
+        - MIN((s16)lbl_8038F398.DispPosY + lbl_8055DB5E - frac, 0) / coeff;
+    lbl_8038F398.AdjustedPanSizeY = lbl_8038F398.PanSizeY
+        + MIN((s16)lbl_8038F398.DispPosY + lbl_8055DB5E - frac, 0) / coeff
+        - MAX((s16)lbl_8038F398.DispPosY + (s16)lbl_8038F398.DispSizeY + lbl_8055DB5E - (((s16)acv * 2) - frac), 0) / coeff;
+    lbl_8038F398.FBSizeX = 640;
+    lbl_8038F398.FBSizeY = tm->acv * 2;
+    lbl_8038F398.PanPosX = 0;
+    lbl_8038F398.PanPosY = 0;
+    lbl_8038F398.PanSizeX = 640;
+    lbl_8038F398.PanSizeY = tm->acv * 2;
+    lbl_8038F398.FBMode = 0;
+    lbl_8038F398.wordPerLine = 40;
+    lbl_8038F398.std = 40;
+    lbl_8038F398.wpl = 40;
+    lbl_8038F398.xof = 0;
+    lbl_8038F398.black = 1;
+    lbl_8038F398.threeD = 0;
+    OSInitThreadQueue(&lbl_8055DBB0);
+    value = __VIRegs[24];
+    __VIRegs[24] = value & ~0x8000;
+    value = __VIRegs[26];
+    __VIRegs[26] = value & ~0x8000;
+    lbl_8055DBAC = NULL;
+    lbl_8055DBA8 = NULL;
+    __OSSetInterruptHandler(0x18, fn_80058A60);
+    __OSUnmaskInterrupts(0x80);
+    OSRegisterShutdownFunction(&lbl_80311910);
+    enabled = OSDisableInterrupts();
+    tv = CurrTvMode_8055DB9C;
+    switch (tv) {
+    case 0: case 3: case 6: case 7:
+        tv = 0;
+        break;
+    case 1: case 4:
+        tv = 1;
+        break;
+    case 2: case 5:
+        break;
+    }
+    OSRestoreInterrupts(enabled);
+    if (tv == 1) {
+        lbl_8055DB48 = 15000;
+        lbl_8055DB4C = 90000;
+    } else {
+        lbl_8055DB48 = 18000;
+        lbl_8055DB4C = 108000;
+    }
+    lbl_8055DB50 = 0;
+    lbl_8055DB54 = 0;
+    lbl_8055DB44 = 1;
+    screenSaver = TRUE;
+    (void)lbl_8055DBC4;
+    if (SCGetScreenSaverMode() == 0) screenSaver = FALSE;
+    lbl_8055DBC4 = screenSaver;
+    (void)lbl_8055DBC0;
+    lbl_8055DBC0 = 0;
+    __VISetRevolutionModeSimple();
 }
 
 #ifndef MAX
