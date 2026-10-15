@@ -14,3 +14,10 @@ extern "C" void fn_8014630C(void) {
 extern "C" void fn_80148218(void) {
 }
 
+void fn_80148224(void) {
+
+}
+
+extern "C" void fn_80148228(void) {
+}
+
