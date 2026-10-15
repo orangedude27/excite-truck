@@ -85,3 +85,7 @@ void fn_80156100(void) {
 
 }
 
+void fn_80156108(void) {
+
+}
+
