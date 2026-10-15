@@ -15,6 +15,11 @@ extern void fn_801DCDA4(void);
 extern u8 lbl_8055D3B4;
 extern u8 lbl_8055D3B5;
 extern char lbl_8034F4C8[];
+extern void fn_8012E81C(void*);
+extern void fn_80129324(s32);
+extern void fn_80206518(void);
+extern u32 lbl_8055D3B0;
+extern u32 lbl_8055D3B8;
 
 void* fn_80009D70(void* arg0, s32 arg1) {
     void* var_r31;
@@ -32,11 +37,9 @@ lbl_80009DB4:
 }
 
 void fn_8000A644(void* arg0, void* arg1) {
-    s32* var_r7 = (s32*)((u8*)arg0 + 0x20);
-    s32* var_r6 = var_r7;
     s32 count = 0;
-    s32 temp = ((s32*)arg1)[0x24 / 4];
-    ((s32*)arg0)[0x3E0 / 4] = temp;
+    s32* var_r6 = (s32*)((u8*)arg0 + 0x20);
+    ((s32*)arg0)[0x3E0 / 4] = ((s32*)arg1)[0x24 / 4];
     while (count < ((s32*)arg0)[0x3C0 / 4]) {
         var_r6[0x68 / 4] = ((s32*)arg1)[4 / 4];
         var_r6[0x6C / 4] = ((s32*)arg1)[0x28 / 4];
