@@ -33,6 +33,7 @@ extern u8 lbl_80392900[];
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
+void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed);
 
 // debug_msg.c is NonMatching, provide stub here
 void DEBUGPrint(const char* pFmt, ...) {
@@ -3861,6 +3862,8 @@ void fn_8005E8E0(s32 chan)
     WPADCB* pCB = lbl_8038F4F0[chan];
     u8* p = (u8*)pCB;
     s32 enabled;
+    u32 i = (u32)chan * 0x14;
+    u8 value = 0xFD;
 
     *(u8*)(p + 0x806) = 0;
     *(u32*)(p + 0x790) = 0;
@@ -3873,7 +3876,7 @@ void fn_8005E8E0(s32 chan)
     *(u32*)(p + 0x7F4) = 0;
     *(u32*)(p + 0x7F8) = 0;
     *(u32*)(p + 0x7FC) = -1;
-    p[0x801] = 0xFD;
+    p[0x801] = value;
     p[0x802] = 0;
     p[0x851] = 0;
     *(u16*)(p + 0x852) = 0;
@@ -3931,6 +3934,11 @@ void fn_8005E8E0(s32 chan)
     p[0x5ED] = 0;
     memset(*(void**)(p + 0x5F0), 0, *(u32*)(p + 0x5F4) * 0x30);
     OSRestoreInterrupts(enabled);
+    *(u32*)(lbl_80392900 + i) = 0;
+    *(u32*)(lbl_80392900 + i + 4) = 0;
+    *(u16*)(lbl_80392900 + i + 8) = 0;
+    *(u32*)(lbl_80392900 + i + 12) = 0;
+    *(u32*)(lbl_80392900 + i + 16) = 0;
 }
 
 extern WPADCB* getGameInfo(s32 param_1, s32 param_2, s32 param_3);
