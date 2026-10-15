@@ -53,6 +53,10 @@ extern "C" u32 fn_800D89E4(u32 arg0, u32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_800D89F4(s32 arg0, s32 arg1) {
+    return arg0 + arg1;
+}
+
 extern "C" void fn_800DB83C(void) {
 
 }
