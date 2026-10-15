@@ -81,3 +81,7 @@ void fn_801560F4(void) {
 
 }
 
+void fn_80156100(void) {
+
+}
+
