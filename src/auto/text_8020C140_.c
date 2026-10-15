@@ -17,3 +17,7 @@ void fn_8020C918(void) {
 
 }
 
+void fn_8020C91C(void) {
+
+}
+
