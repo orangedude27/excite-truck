@@ -21,3 +21,7 @@ void fn_8002EFB4(void) {
     __ieee754_fmod();
 }
 
+void fn_8002EFB8(void) {
+    __ieee754_log();
+}
+
