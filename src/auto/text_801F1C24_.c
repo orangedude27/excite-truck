@@ -4,3 +4,8 @@
 void fn_801F3E60(void) {
 
 }
+
+void fn_801F3E64(void) {
+
+}
+
