@@ -22,6 +22,10 @@ extern "C" s32 fn_8019A780(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
 }
 
+extern "C" s32 fn_8019BD4C(void *arg0) {
+    return ((s32 *)arg0)[0xC / 4];
+}
+
 extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -138,8 +142,7 @@ void fn_801A4868(void* arg0, u8 arg1) {
 
 void fn_801A48C8(void* arg0) {
     void* ptr = *(void**)((u8*)arg0 + 0x48);
-    void* vtable = *(void**)((u8*)ptr + 0x18);
-    ((void(*)(void*, void*, void**))vtable)(ptr, &lbl_8055A508, &lbl_8055A510);
+    ((void(*)(void*, void*, void**))(*(void***)((u8*)ptr + 0x18)))(ptr, &lbl_8055A508, &lbl_8055A510);
 }
 
 extern "C" s32 fn_801A4F00(s32 arg0, s32 arg1) {
