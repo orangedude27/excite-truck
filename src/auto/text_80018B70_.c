@@ -28,8 +28,6 @@ void fn_80018B70(void) {
     fn_8027DEAC();
 }
 
-#pragma small_data off
-
 void fn_80018E3C(void) {
     fn_80018B74();
 }
