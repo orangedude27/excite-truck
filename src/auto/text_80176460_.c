@@ -20,4 +20,8 @@ void fn_80176F24(void) {
     fn_80176EC0();
 }
 
+void fn_801777CC(void) {
+    fn_801776C4();
+}
+
 void fn_80177138(void);
