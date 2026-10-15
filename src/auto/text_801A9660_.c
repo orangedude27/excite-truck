@@ -11,3 +11,7 @@ void fn_801ABFF4(void) {
 void fn_801AD5EC(void) {
     fn_801AC508();
 }
+
+void fn_801AD5F0(void) {
+    fn_801ACF94();
+}
