@@ -8,7 +8,7 @@ void fn_80158F34(void) {
 extern "C" void fn_80159724(void) {
 }
 
-void fn_8015CD0C(void) {
+extern "C" void fn_8015CD0C(void) {
 
 }
 
