@@ -19,6 +19,10 @@ void fn_8013A1F4(void) {
 
 }
 
+s32 fn_8013A1F8(void) {
+    return 0;
+}
+
 void fn_8013A200(void) {
 
 }
