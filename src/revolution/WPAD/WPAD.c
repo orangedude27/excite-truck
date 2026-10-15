@@ -3325,51 +3325,35 @@ void fn_80064740(s32 chan, s32 param_2) {
     }
 }
 
-WPADCB* getGameInfo(s32 param_1, s32 param_2, s32 param_3) {
-    WPADCB* cb;
-    u32 idx = param_1 * 4;
-    u8* src;
-    u32 checksum = 0;
-    u32 r0;
-    u32 r3;
-    u32 r6;
-    u32 r7;
-    s32 r8;
+WPADCB* getGameInfo(s32 chan, s32 param_2, s32 param_3) {
+    WPADCB* cb = lbl_8038F4F0[chan];
     
-    // Save r30, r31
-    // r30 = param_3
-    // r31 = cb = lbl_8038F4F0[param_1]
-    
-    cb = lbl_8038F4F0[param_1];
-    
-    if (param_2 != 0) {
-        goto skip;
+    if (param_2 == 0 && cb->samplingBufSize != NULL) {
+        u8* src = (u8*)cb->samplingBufSize;
+        u8 checksum = 0;
+        s32 i;
+        
+        for (i = 0; i < 2; i++) {
+            s32 j;
+            for (j = 0; j < 7; j++) {
+                checksum += src[i * 0x15 + j];
+            }
+        }
+        
+        // After loop, process bytes at offsets 14-20
+        for (i = 0; i < 7; i++) {
+            checksum += src[14 + i];
+        }
+        
+        // Compare with stored checksum
+        if (src[0x2F] == (checksum + 0x55)) {
+            memcpy(&cb->gameInfo, src, 0x38);
+            ((s32*)&cb->gameInfo)[2] = 0; // store 0 at offset 0x38
+        } else {
+            ((s32*)&cb->gameInfo)[2] = -4;
+        }
     }
     
-    src = (u8*)cb->samplingBufSize;
-    
-    // Loop: 2 iterations, each processing 7 bytes
-    r8 = 0;
-    r0 = 0;
-    do {
-        r7 = (u32)src + r8;
-        r6 = src[r8];
-        r3 = src[r8 + 1];
-        r8 += 7;
-        checksum += r6;
-        r0 = src[r8 - 6 + 2];
-        checksum += r3;
-        r3 = src[r8 - 6 + 3];
-        checksum += r0;
-        r0 = src[r8 - 6 + 4];
-        checksum += r3;
-        r3 = src[r8 - 6 + 5];
-        checksum += r0;
-        r0 = src[r8 - 6 + 6];
-        checksum += r3;
-    } while (--r0 != 0);  // Wrong - need ctr loop
-    
-    skip:
     return cb;
 }
 
@@ -3467,3 +3451,4 @@ void fn_8005E8C0(u32 r3, u32 r4)
 	OSSwitchFiberEx(r3, r4, 0, 0, fn_8005E298, (u8*)&lbl_8038F500 + 0x1000);
 }
 extern WPADCB* getGameInfo(s32 param_1, s32 param_2, s32 param_3);
+#include <types.h>
