@@ -199,6 +199,7 @@ void fn_80018F7C(void) {
 void *fn_80019054(s32 arg0) {
     void *base;
     s32 count;
+    void *result;
     if (arg0 < 0) {
         goto ret_zero;
     }
@@ -207,7 +208,8 @@ void *fn_80019054(s32 arg0) {
     if (arg0 >= count) {
         goto ret_zero;
     }
-    return (void *)((u8 *)((s32 *)base)[0] + arg0 * 0x14);
+    result = (void *)((u8 *)((s32 *)base)[0] + arg0 * 0x14);
+    return result;
 ret_zero:
     return (void *)0;
 }
