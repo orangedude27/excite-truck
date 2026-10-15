@@ -35,4 +35,4 @@ void fn_800196FC(void) {
 void fn_800196F0(void) {
     fn_80131234(&lbl_802FD404);
 }
-
+#include <types.h>
