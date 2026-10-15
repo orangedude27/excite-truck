@@ -13,3 +13,7 @@ void fn_8002EFAC(void) {
     __ieee754_asin();
 }
 
+void fn_8002EFB0(void) {
+    __ieee754_atan2();
+}
+
