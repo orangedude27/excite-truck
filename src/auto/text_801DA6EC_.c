@@ -4,3 +4,8 @@
 void fn_801DAEF4(void) {
 
 }
+
+void fn_801DAEF8(void) {
+
+}
+
