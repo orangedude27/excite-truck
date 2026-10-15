@@ -32,11 +32,21 @@ void fn_80005B6C(void) {
 void fn_80005B70(void) {
 }
 
+void fn_80005FE0(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+}
+
 void fn_800060B4(void) {
     return;
 }
 
 void fn_800060DC(void) {
+}
+
+s32 fn_80006244(void) {
+    return 0;
 }
 
 void fn_800062E4(void) {
