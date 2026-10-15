@@ -8,6 +8,7 @@ extern char lbl_8041E140[];
 extern char lbl_8032A000[];
 extern char lbl_8032A068[];
 extern char lbl_8032A074[];
+extern char lbl_8041E160[];
 extern s32 lbl_8055DF8C;
 extern s32 lbl_8055DF90;
 extern s32 lbl_8055DF94;
@@ -24,10 +25,8 @@ void fn_80128714(void *, s32, s32);
 
 s32 fn_801281F4(s32 arg0, s32 arg1) {
     s32 r3 = arg0 + arg1;
-    s32 r0 = arg1;
-    r0--;
     r3--;
-    return r3 & ~r0;
+    return r3 & ~(arg1 - 1);
 }
 
 void fn_80128208(void) {
