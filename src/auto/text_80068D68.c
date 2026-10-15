@@ -41,6 +41,10 @@ void fn_8006EC20(void) {
     fn_80068E08();
 }
 
+void fn_8007148C(s32 arg0) {
+    fn_800716B0((void **)&lbl_803C0AD8 + 0x68, arg0, &lbl_803C0AD8);
+}
+
 void fn_80072C38(void) {
     BTM_CancelRemoteDeviceName();
 }
@@ -76,15 +80,18 @@ void ptim_timer_update(tPTIM_CB *p_cb) {
     TIMER_CBACK *p_cback;
     void *p_buf;
 
-    GKI_update_timer_list(&p_cb->timer_queue, p_cb->timer_id);
+    GKI_update_timer_list(&p_cb->timer_queue, p_cb->period);
 
-    p_entry = p_cb->timer_queue.p_first;
-    if (p_entry == NULL) {
-        GKI_stop_timer(p_cb->timer_id);
-        return;
-    }
-
+    // Fallthrough to loop body
     while (1) {
+        p_entry = p_cb->timer_queue.p_first;
+        if (p_entry == NULL) {
+            GKI_stop_timer(p_cb->timer_id);
+            return;
+        }
+        
+        GKI_remove_from_timer_list(&p_cb->timer_queue, p_entry);
+        
         p_cback = p_entry->p_cback;
         if (p_cback != NULL) {
             p_cback(p_entry);
@@ -92,20 +99,20 @@ void ptim_timer_update(tPTIM_CB *p_cb) {
             if (p_entry->event != 0) {
                 p_buf = GKI_getbuf(8);
                 if (p_buf != NULL) {
-                    p_buf = (void *)((u16)p_buf | p_entry->event);
+                    ((UINT16 *)p_buf)[0] = p_entry->event;
                     fn_80071450(p_buf);
                 }
             }
         }
-
+        
         p_entry = p_cb->timer_queue.p_first;
         if (p_entry == NULL) {
             GKI_stop_timer(p_cb->timer_id);
-            break;
+            return;
         }
-
-        if (p_entry->ticks > 0 && p_entry != NULL) {
-            break;
+        if (p_entry->ticks > 0) {
+            GKI_stop_timer(p_cb->timer_id);
+            return;
         }
     }
 }
