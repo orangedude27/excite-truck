@@ -10,6 +10,7 @@ s32 fn_8027DE68(s32);
 void fn_80131234(void *);
 void fn_80018B74(void);
 void fn_8027DEAC(void);
+s32 stricmp(const char *, const char *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
