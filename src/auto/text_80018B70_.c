@@ -146,16 +146,22 @@ s32 fn_80019438(void) {
 }
 
 s32 fn_800194CC(void) {
-    s32 result;
+    s32 r31;
 
     if (((u8*)&lbl_8055D588)[0] != 0) {
-        result = 1;
+        r31 = 1;
     } else {
-        result = 0;
-        if (fn_80019430() != 0 || fn_800194C8() != 0 || fn_80019604() != 0) {
-            result = 1;
+        r31 = 0;
+        if (fn_80019430() != 0) {
+            r31 = 1;
+        } else if (fn_800194C8() != 0) {
+            r31 = 1;
+        } else if (fn_80019604() == 0) {
+            r31 = 0;
+        } else {
+            r31 = 1;
         }
     }
-    return result;
+    return r31;
 }
 
