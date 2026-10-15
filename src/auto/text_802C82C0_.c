@@ -11,3 +11,8 @@ char fn_802C9A60(void) {
     return lbl_8055FC8D;
 }
 
+extern char lbl_8055FC8E;
+char fn_802C9A68(void) {
+    return lbl_8055FC8E;
+}
+
