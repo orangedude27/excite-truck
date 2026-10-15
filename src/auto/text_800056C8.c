@@ -9,3 +9,7 @@ void fn_80005B58(void) {
     return;
 }
 
+void fn_80005B64(void) {
+    return;
+}
+
