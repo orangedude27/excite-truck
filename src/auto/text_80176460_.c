@@ -7,4 +7,4 @@ void fn_80176610(void) {
 
 void fn_8017677C(void) {
 }
-void fn_80177138(void);
+
