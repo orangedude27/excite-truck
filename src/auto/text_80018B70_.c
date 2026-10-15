@@ -19,6 +19,7 @@ extern const char lbl_802FD2F4[];
 extern const char lbl_802FD308[];
 void fn_80018B74(void);
 void fn_8027DEAC(void);
+void fn_8001EF60(s32);
 s32 stricmp(const char *, const char *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -220,16 +221,18 @@ void fn_80018F7C(void) {
 
 void *fn_80019054(s32 arg0) {
     void *result;
-    void **tbl;
+    void *base;
+    s32 count;
     
     if (arg0 < 0) {
         goto done;
     }
-    tbl = &lbl_80357E0C;
-    if (arg0 >= ((s32 *)*tbl)[1]) {
+    base = (void *)0x80357E0C;
+    count = ((s32 *)base)[1];
+    if (arg0 >= count) {
         goto done;
     }
-    result = (void *)((u8 *)*tbl + arg0 * 0x14);
+    result = (void *)((u8 *)((s32 *)base)[0] + arg0 * 0x14);
     return result;
 done:
     result = 0;
@@ -237,8 +240,8 @@ done:
 }
 
 void fn_80018F40(void) {
-    void **arg = &lbl_802FD2DC;
-    lbl_8055D58C = fn_80131808(*arg);
+    void *arg = (void *)0x802FD2DC;
+    lbl_8055D58C = fn_80131808(arg);
     fn_80018BA4();
     fn_80018CCC();
     lbl_8055D588 = 0;
