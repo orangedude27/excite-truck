@@ -66,3 +66,8 @@ void fn_802168EC(void) {
     fn_80218C98();
 }
 
+extern char lbl_8055EF99;
+void fn_80216CA8(void) {
+    lbl_8055EF99 = 1;
+}
+
