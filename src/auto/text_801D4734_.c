@@ -71,3 +71,7 @@ void fn_801D8C18(void) {
 
 }
 
+void fn_801D8C94(void) {
+
+}
+
