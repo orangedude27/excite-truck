@@ -61,3 +61,7 @@ void fn_801556F0(void) {
 
 }
 
+void fn_801556F4(void) {
+
+}
+
