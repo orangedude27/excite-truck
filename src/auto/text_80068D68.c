@@ -25,3 +25,7 @@ void fn_8006EC20(void) {
     fn_80068E08();
 }
 
+void fn_80073A1C(void) {
+
+}
+
