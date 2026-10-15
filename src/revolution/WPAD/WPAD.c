@@ -2540,7 +2540,7 @@ BOOL WPADiSendWriteData(WPADCommandQueue* pQueue, const void* pSrc, u16 len,
     return success;
 }
 
-inline BOOL WPADiSendReadData(WPADCommandQueue* pQueue, void* pDst, u16 len, u32 addr,
+BOOL WPADiSendReadData(WPADCommandQueue* pQueue, void* pDst, u16 len, u32 addr,
                        WPADCallback pCallback) {
     BOOL success;
     WPADCommand command;
@@ -3174,6 +3174,9 @@ s32 fn_8005FBCC(u8 devHandle) {
 
 void fn_8005FCCC(u8 devHandle, u8 open) {
 #pragma dont_inline off
+#pragma inline_depth(8)
+#pragma inline_max_size(1000)
+#pragma inline_max_total_size(10000)
     extern void fn_8005E8E0(s32 chan);
     extern const char lbl_803120E0[];
     extern s8 lbl_80390500[];
