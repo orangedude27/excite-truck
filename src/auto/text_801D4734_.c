@@ -39,3 +39,7 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+void fn_801D77E8(void) {
+
+}
+
