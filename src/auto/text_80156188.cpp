@@ -5,6 +5,10 @@
 
 extern void fn_8015474C(void);
 extern s32 fn_80128668(void);
+extern void fn_80128668(void*);
+extern void fn_80138AD8(void* this_, u32 a);
+extern u8 lbl_8032E46C[];
+extern void **lbl_8055E27C;
 
 extern "C" {
 void fn_80156188(s32 arg0) {
