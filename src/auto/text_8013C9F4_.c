@@ -13,3 +13,7 @@ void fn_8013CAA4(void) {
 
 }
 
+void fn_8013CAA8(void) {
+
+}
+
