@@ -9,3 +9,7 @@ void fn_8017A004(void) {
 
 }
 
+void fn_8017A57C(void) {
+
+}
+
