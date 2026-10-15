@@ -31,7 +31,7 @@ s32 fn_80019430(void) {
     return 0;
 }
 
-void fn_800194C8(void) {
+s32 fn_800194C8(void) {
     fn_80019438();
 }
 
