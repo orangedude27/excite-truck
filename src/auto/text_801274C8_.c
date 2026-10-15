@@ -4,3 +4,4 @@
 void fn_80127958(void) {
 
 }
+extern void fn_802E2C20(void);
