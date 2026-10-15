@@ -17,3 +17,10 @@ void fn_800194C8(void) {
     fn_80019438();
 }
 
+extern char lbl_8055D588;
+extern void *lbl_802FD404;
+void fn_80131234(void *);
+void fn_80019708(void) {
+    lbl_8055D588 = 0;
+}
+
