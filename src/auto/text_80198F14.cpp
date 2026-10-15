@@ -4,7 +4,7 @@
 extern "C" void fn_8019EBC0(void);
 extern "C" void fn_8019F3D0(void);
 
-void fn_8019F1A4(void);
+void fn_8019F1A4(void) __attribute__((noreturn));
 
 extern "C" void fn_8019F3D0(void) {
 
