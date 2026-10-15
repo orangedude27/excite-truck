@@ -79,14 +79,14 @@ void fn_8000CE60(void) {
 void fn_8000D070(void) {
     if (lbl_8055D418 != NULL) {
         f32 val = fn_80209028();
-        f32 stored = *(f32*)((u8*)lbl_8055D418 + 8);
-        if (val != stored) {
+        f32 *ptr = (f32*)((u8*)lbl_8055D418 + 8);
+        if (val != *ptr) {
             *(u8*)((u8*)lbl_8055D418 + 0x4D) = 1;
-            *(f32*)((u8*)lbl_8055D418 + 8) = val;
+            *ptr = val;
         }
-        *(u8*)((u8*)lbl_8055D418 + 0x49) = 1;
-        *(u8*)((u8*)lbl_8055D418 + 0x4B) = 0;
-        *(u8*)((u8*)lbl_8055D418 + 0x4A) = 0;
+        ((u8*)lbl_8055D418)[0x49] = 1;
+        ((u8*)lbl_8055D418)[0x4B] = 0;
+        ((u8*)lbl_8055D418)[0x4A] = 0;
     }
     if (fn_80265D64() == 0) {
         __AXDSPInitCallback_801769E0();
