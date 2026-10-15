@@ -25,3 +25,7 @@ void fn_8018BF5C(void) {
 
 }
 
+void fn_8018BF60(void) {
+
+}
+
