@@ -36,6 +36,8 @@ void fn_8001C4D4(void) {
 }
 
 void fn_8001C4D8(void) {
+    fn_8001C4D4();
+    __builtin_unreachable();
 }
 
 void fn_8001C4DC(void) {
