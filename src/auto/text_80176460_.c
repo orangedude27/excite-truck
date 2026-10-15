@@ -25,6 +25,11 @@ void fn_80176BA8(void) {
 
 }
 
+extern char lbl_8055E3D4;
+void fn_80176DD4(void) {
+    lbl_8055E3D4 = 1;
+}
+
 void fn_80176F24(void) {
     fn_80176EC0();
 }
