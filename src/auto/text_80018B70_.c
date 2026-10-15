@@ -174,17 +174,16 @@ s32 fn_800194CC(void) {
 }
 
 s32 fn_80018FB4(s32 arg0) {
-    s32 idx = 0;
-    s32 off = 0;
-    s32 *tbl = (s32 *)lbl_80357E0C;
-    s32 count = tbl[1];
+    void *base = lbl_80357E0C;
+    const char *target = lbl_802FD2F4;
+    s32 count = ((s32 *)base)[1];
+    s32 idx;
     
-    while (idx < count) {
-        if (stricmp((char *)(tbl[0] + off), lbl_802FD2F4) == 0) {
-            return tbl[idx * 0x14 + 2];
+    for (idx = 0; idx < count; idx++) {
+        char **entry = (char **)((u8 *)((void **)base)[0] + idx * 0x14);
+        if (stricmp(entry[0], target) == 0) {
+            return ((s32 *)entry)[2];
         }
-        off += 0x14;
-        idx++;
     }
     
     fn_802E317C((void *)lbl_802FD308, (void *)lbl_802FD2F4);
