@@ -26,6 +26,14 @@ extern "C" void fn_8012CC20(void) {
     fn_8012CC24();
 }
 
+extern "C" s32 fn_80128668(void);
+extern "C" s32 fn_8012DCC0(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2);
 
 extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
