@@ -45,6 +45,10 @@ void fn_800070D4(void) {
 void fn_800070D8(void) {
 }
 
+void fn_80007498(void) {
+    fn_80011A50();
+}
+
 void fn_80007BE8(void) {
     return;
 }
