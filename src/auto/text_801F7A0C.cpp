@@ -9,3 +9,7 @@ void fn_801FC66C(void) {
 
 }
 
+extern "C" void fn_801FC670(void) {
+
+}
+
