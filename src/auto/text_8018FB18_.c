@@ -13,3 +13,7 @@ void fn_80191060(void) {
     fn_801B6664();
 }
 
+void fn_80192BE4(void) {
+
+}
+
