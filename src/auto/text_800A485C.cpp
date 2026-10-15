@@ -21,7 +21,11 @@ void fn_800B78EC(void) {
 
 }
 
-__attribute__((optimize("no-optimize"))) void fn_800B7C60(void) {
+void fn_800B7C60(void) {
     fn_800B75C4();
+}
+
+__attribute__((optimize("no-optimize"))) void fn_800C3D9C(void) {
+    fn_800C4BD0();
 }
 
