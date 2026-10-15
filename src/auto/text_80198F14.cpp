@@ -6,6 +6,7 @@
 extern "C" void fn_8019EBC0(void);
 extern "C" void fn_8019F3D0(void);
 extern "C" void fn_801A49E8(void*);
+extern "C" void fn_801A49FC(s32);
 extern "C" void fn_801796EC(s32, s32*, s32);
 extern "C" s32 fn_8012C4E4(void*, void*, s32);
 
