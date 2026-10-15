@@ -58,7 +58,7 @@ extern void *lbl_802FD3B4;
 extern void *lbl_802FD2DC;
 extern const char lbl_80558C54[];
 extern void *lbl_803580A4;
-extern void *lbl_80357E0C;
+extern void *lbl_80357E0C[2];
 void fn_80019708(void) {
     lbl_8055D588 = 0;
 }
@@ -198,14 +198,14 @@ void fn_80018F7C(void) {
 }
 
 void *fn_80019054(s32 arg0) {
-    void **base = (void **)lbl_80357E0C;
-    if (arg0 < 0) {
-        return (void *)0;
+    void *result = (void *)0;
+    if (arg0 >= 0) {
+        void **info = (void **)0x80357E0C;
+        if (arg0 < (s32)info[1]) {
+            result = (void *)((u8 *)info[0] + arg0 * 0x14);
+        }
     }
-    if (arg0 >= (s32)base[1]) {
-        return (void *)0;
-    }
-    return (void *)((u8 *)base[0] + arg0 * 0x14);
+    return result;
 }
 
 void fn_80018F40(void) {
