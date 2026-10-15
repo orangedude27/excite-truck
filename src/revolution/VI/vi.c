@@ -339,57 +339,42 @@ VIRetraceCallback AIRegisterDMACallback_800591F0(VIRetraceCallback cb)
 
 u32 fn_80059234(u32 index)
 {
-	switch (index) {
-	case 0x0:
-		return (u32)lbl_80311738;
-	case 0x1:
-		return (u32)lbl_80311738 + 0x26;
-	case 0x2:
-		return (u32)lbl_80311738 + 0x4c;
-	case 0x3:
-		return (u32)lbl_80311738 + 0x72;
-	case 0x4:
-		return (u32)lbl_80311738;
-	case 0x5:
-		return (u32)lbl_80311738 + 0x26;
-	case 0x6:
-		return (u32)lbl_80311738 + 0x98;
-	case 0x7:
-		return (u32)lbl_80311738 + 0xbe;
-	case 0x8:
-		return (u32)lbl_80311738 + 0xe4;
-	case 0x9:
-		return (u32)lbl_80311738 + 0x10a;
-	case 0xa:
-		return (u32)lbl_80311738 + 0x4c;
-	case 0xb:
-		return (u32)lbl_80311738 + 0x72;
-	case 0xc:
-		return (u32)lbl_80311738 + 0x130;
-	case 0xd:
-		return (u32)lbl_80311738 + 0x156;
-	case 0xe:
-		return lbl_8055DB84;
-	case 0xf:
-		return 0;
-	case 0x10:
-	case 0x11:
-	case 0x12:
-	case 0x13:
-	case 0x14:
-	case 0x15:
-	case 0x16:
-	case 0x17:
-	case 0x18:
-	case 0x19:
-	case 0x1a:
-	case 0x1b:
-	case 0x1c:
-	case 0x1d:
-	case 0x1e:
-	default:
-		return (u32)lbl_80311738;
-	}
+    switch (index) {
+    case 0x0:
+        return (u32)lbl_80311738;
+    case 0x1:
+        return (u32)lbl_80311738 + 0x26;
+    case 0x2:
+        return (u32)lbl_80311738 + 0x4c;
+    case 0x3:
+        return (u32)lbl_80311738 + 0x72;
+    case 0x4:
+        return (u32)lbl_80311738;
+    case 0x5:
+        return (u32)lbl_80311738 + 0x26;
+    case 0x6:
+        return (u32)lbl_80311738 + 0x98;
+    case 0x7:
+        return (u32)lbl_80311738 + 0xbe;
+    case 0x8:
+        return (u32)lbl_80311738 + 0xe4;
+    case 0x9:
+        return (u32)lbl_80311738 + 0x10a;
+    case 0xa:
+        return (u32)lbl_80311738 + 0x4c;
+    case 0xb:
+        return (u32)lbl_80311738 + 0x72;
+    case 0xc:
+        return (u32)lbl_80311738 + 0x130;
+    case 0xd:
+        return (u32)lbl_80311738 + 0x156;
+    case 0xe:
+        return lbl_8055DB84;
+    case 0xf:
+        return 0;
+    default:
+        return 0;
+    }
 }
 
 void __VIInit(VITVMode mode)
@@ -1260,4 +1245,4 @@ void fn_8005CC68(void)
     WaitMicroTime(2);
 }
 #pragma dont_inline reset
-
+typedef unsigned short undefined2;
