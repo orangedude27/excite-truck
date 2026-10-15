@@ -1,5 +1,13 @@
+#include <types.h>
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+
+extern void fn_80128668(void);
+extern s32 fn_80005564(void);
+extern void *fn_801B83A0(void);
+extern void *lbl_8055D350;
+extern f32 lbl_8056011C;
 
 void fn_80005B54(void) {
     return;
