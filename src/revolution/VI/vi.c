@@ -32,6 +32,7 @@ extern u32 lbl_8055DBE4;
 extern u32* jumptable_80311940[];
 extern u8 lbl_80311738[];
 extern u32 lbl_8055DB84;
+extern u32 lbl_8055DBA4;
 
 typedef struct {
     u8 bytes[2];
@@ -1175,15 +1176,20 @@ void __VISetClosedCaption(void)
 void __VISetGammaImm(u8* dataIn)
 {
     u8 data[0x22];
-    u16 tmp;
 
     data[0] = 0x10;
-    tmp = *(u16*)(dataIn); data[1] = tmp >> 8; data[2] = tmp;
-    tmp = *(u16*)(dataIn + 2); data[3] = tmp >> 8; data[4] = tmp;
-    tmp = *(u16*)(dataIn + 4); data[5] = tmp >> 8; data[6] = tmp;
-    tmp = *(u16*)(dataIn + 6); data[7] = tmp >> 8; data[8] = tmp;
-    tmp = *(u16*)(dataIn + 8); data[9] = tmp >> 8; data[10] = tmp;
-    tmp = *(u16*)(dataIn + 10); data[11] = tmp >> 8; data[12] = tmp;
+    data[1] = *(u16*)(dataIn + 0) >> 8;
+    data[2] = *(u16*)(dataIn + 0);
+    data[3] = *(u16*)(dataIn + 2) >> 8;
+    data[4] = *(u16*)(dataIn + 2);
+    data[5] = *(u16*)(dataIn + 4) >> 8;
+    data[6] = *(u16*)(dataIn + 4);
+    data[7] = *(u16*)(dataIn + 6) >> 8;
+    data[8] = *(u16*)(dataIn + 6);
+    data[9] = *(u16*)(dataIn + 8) >> 8;
+    data[10] = *(u16*)(dataIn + 8);
+    data[11] = *(u16*)(dataIn + 0xA) >> 8;
+    data[12] = *(u16*)(dataIn + 0xA);
     data[13] = dataIn[0xC];
     data[14] = dataIn[0xD];
     data[15] = dataIn[0xE];
@@ -1191,13 +1197,20 @@ void __VISetGammaImm(u8* dataIn)
     data[17] = dataIn[0x10];
     data[18] = dataIn[0x11];
     data[19] = dataIn[0x12];
-    tmp = *(u16*)(dataIn + 0x14); data[20] = tmp >> 8; data[21] = tmp & 0xC0;
-    tmp = *(u16*)(dataIn + 0x16); data[22] = tmp >> 8; data[23] = tmp & 0xC0;
-    tmp = *(u16*)(dataIn + 0x18); data[24] = tmp >> 8; data[25] = tmp & 0xC0;
-    tmp = *(u16*)(dataIn + 0x1A); data[26] = tmp >> 8; data[27] = tmp & 0xC0;
-    tmp = *(u16*)(dataIn + 0x1C); data[28] = tmp >> 8; data[29] = tmp & 0xC0;
-    tmp = *(u16*)(dataIn + 0x1E); data[30] = tmp >> 8; data[31] = tmp & 0xC0;
-    tmp = *(u16*)(dataIn + 0x20); data[32] = tmp >> 8; data[33] = tmp & 0xE0;
+    data[20] = *(u16*)(dataIn + 0x14) >> 8;
+    data[21] = *(u16*)(dataIn + 0x14) & 0xC0;
+    data[22] = *(u16*)(dataIn + 0x16) >> 8;
+    data[23] = *(u16*)(dataIn + 0x16) & 0xC0;
+    data[24] = *(u16*)(dataIn + 0x18) >> 8;
+    data[25] = *(u16*)(dataIn + 0x18) & 0xC0;
+    data[26] = *(u16*)(dataIn + 0x1A) >> 8;
+    data[27] = *(u16*)(dataIn + 0x1A) & 0xC0;
+    data[28] = *(u16*)(dataIn + 0x1C) >> 8;
+    data[29] = *(u16*)(dataIn + 0x1C) & 0xC0;
+    data[30] = *(u16*)(dataIn + 0x1E) >> 8;
+    data[31] = *(u16*)(dataIn + 0x1E) & 0xC0;
+    data[32] = *(u16*)(dataIn + 0x20) >> 8;
+    data[33] = *(u16*)(dataIn + 0x20) & 0xE0;
     __VISendI2CData(0xE0, data, 0x22);
     WaitMicroTime(2);
 }
