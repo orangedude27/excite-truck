@@ -57,3 +57,11 @@ extern "C" void fn_800CF96C(void) {
 
 }
 
+void fn_800D0BA0(void) {
+
+}
+
+extern "C" void fn_800D1200(void) {
+
+}
+
