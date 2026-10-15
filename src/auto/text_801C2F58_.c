@@ -4,3 +4,8 @@
 void fn_801C6CB0(void) {
     return;
 }
+
+void fn_801C94B8(void) {
+    fn_80238A74();
+}
+
