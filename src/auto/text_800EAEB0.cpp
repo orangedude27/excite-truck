@@ -112,7 +112,7 @@ extern "C" f32 fn_800ED06C(void *arg0) {
     return ((f32 *)arg0)[0x2C / 4];
 }
 
-f32 fn_800ED074(void *arg0) {
+extern "C" f32 fn_800ED074(void *arg0) {
     return ((f32 *)arg0)[0x24 / 4];
 }
 
