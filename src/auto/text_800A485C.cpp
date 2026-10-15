@@ -35,6 +35,10 @@ void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
 
+void fn_800C775C(OSAlarm* alarm, u32 tag) {
+    alarm->tag = tag;
+}
+
 extern "C" void fn_800CF280(void) {
 
 }
@@ -73,6 +77,11 @@ extern "C" void fn_800D1200(void) {
 
 extern "C" void fn_800D1558(void) {
 
+}
+
+extern u32 lbl_8055DDE0;
+extern "C" u32* fn_800D58B0(void) {
+    return &lbl_8055DDE0;
 }
 
 void fn_800C7764(void *arg0, s8 arg1) {
