@@ -3,6 +3,7 @@
 
 #include <types.h>
 
+extern "C" void fn_80221E7C(void);
 extern "C" void fn_80215270(void);
 
 extern "C" void fn_8021165C(void) {
