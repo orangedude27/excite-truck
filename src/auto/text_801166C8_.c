@@ -45,42 +45,19 @@ BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
 BOOL ARCReadDir(ARCDir* dir, ARCDirEntry* entry) {
     ARCHandle* handle = dir->handle;
     u32 location = dir->location;
-    u32 entryNum = dir->entryNum;
-    u32 next = dir->next;
-    u32 entryAddr;
-    u32 entryData;
-    u8 highByte;
-    s8 signedByte;
-    u32 nameOffset;
-    char* name;
+    u32 entryAddr = (u32)handle->FSTStart + location * 0xC;
+    u32 entryData = *(u32*)entryAddr;
+    u8 highByte = entryData >> 24;
     
-    while (1) {
-        if (location >= entryNum || next <= location) {
-            return FALSE;
-        }
-        
-        entry->handle = handle;
-        entry->entryNum = location;
-        
-        entryAddr = (u32)handle->FSTStart + location * 0xC;
-        entryData = *(u32*)entryAddr;
-        
-        highByte = entryData >> 24;
-        signedByte = (s8)highByte;
-        entry->isDir = (signedByte < 0);
-        
-        nameOffset = entryData >> 8;
-        name = handle->FSTStringStart + nameOffset;
-        
-        if (!(name[0] == '.' && name[1] == '\0')) {
-            dir->location = location + 1;
-            return TRUE;
-        }
-        
-        location++;
-        entryNum = dir->entryNum;
-        next = dir->next;
+    if (location >= dir->entryNum || dir->next <= location) {
+        return FALSE;
     }
+    
+    entry->handle = handle;
+    entry->entryNum = location;
+    entry->isDir = (s8)highByte < 0;
+    
+    return TRUE;
 }
 
 u32 fn_80116BCC(void) {
@@ -134,9 +111,33 @@ void fn_80116CC4(s32* arg0, s16 arg1, u32 arg2) {
     }
 }
 
-void fn_80116D30(void) {
-    // This is a complex time conversion function
-    // Need to check what OSGetTime returns and the globals
+extern s64 OSGetTime(void);
+extern s32 lbl_8055DEC0;
+extern u32 lbl_8055DEC4;
+s32 fn_80116D30(void) {
+    s64 time = OSGetTime();
+    u32 time_high;
+    s32 time_low;
+    s32 saved_low;
+    u32 saved_high;
+    s64 delta;
+    
+    time_high = (u32)(time >> 32);
+    time_low = (s32)time;
+    
+    saved_low = lbl_8055DEC0;
+    saved_high = lbl_8055DEC4;
+    
+    if (saved_low == 0 && saved_high == 0) {
+        lbl_8055DEC4 = time_high;
+        lbl_8055DEC0 = time_low;
+        saved_high = time_high;
+        saved_low = time_low;
+    }
+    
+    delta = time - ((s32)saved_high << 32 | saved_low);
+    
+    return (s32)(delta * 70811LL / 2317483787LL);
 }
 
 extern void* fn_8011FF24(void);
@@ -156,6 +157,11 @@ void fn_80119214(void) {
 
 void fn_8011BC48(void) {
     fn_80120084();
+}
+
+extern char lbl_8055DF08;
+char fn_8012742C(void) {
+    return lbl_8055DF08;
 }
 
 void fn_80127464(void) {
