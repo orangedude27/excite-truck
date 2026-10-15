@@ -19,3 +19,7 @@ extern "C" void fn_80215414(void) {
 
 }
 
+extern "C" void fn_80215418(void) {
+
+}
+
