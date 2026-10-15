@@ -43,4 +43,5 @@ void fn_80129214(void) {
 void fn_80129218(void) {
 
 }
-
+#include <types.h>
+extern char lbl_8055DF88;
