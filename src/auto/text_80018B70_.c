@@ -118,9 +118,9 @@ s32 fn_80019098(s32 arg0) {
     count = ((s32 *)tbl)[1];
 
     while (idx < count) {
-        char **strs = (char **)tbl[0];
-        if (stricmp(strs[off / 4], (const char *)arg0) == 0) {
-            return ((s32 *)strs[off / 4])[2];
+        char **strs = (char **)((u8 *)tbl[0] + off);
+        if (stricmp(strs[0], (const char *)arg0) == 0) {
+            return ((s32 *)strs[0])[2];
         }
         off += 0x10;
         idx++;
