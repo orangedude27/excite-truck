@@ -164,6 +164,10 @@ char fn_8012742C(void) {
     return lbl_8055DF08;
 }
 
+void fn_80127434(void) {
+    lbl_8055DF08 = 0;
+}
+
 void fn_80127464(void) {
     fn_80127440();
 }
