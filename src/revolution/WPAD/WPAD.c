@@ -29,6 +29,7 @@ extern WPADCB* lbl_8038F4F0[WPAD_MAX_CONTROLLERS];
 extern void* lbl_8055DC14;
 extern u8 lbl_8055DC08[WPAD_MAX_CONTROLLERS];
 extern u8 lbl_8055DC11;
+extern u8 lbl_80392900[];
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
@@ -3026,6 +3027,48 @@ u8 fn_8005EE80(s32 chan) {
     return val;
 }
 
+void fn_8005EEC4(s32 chan, s32 result) {
+    WPADCB* p = lbl_8038F4F0[chan];
+    u8* raw = (u8*)p;
+    BOOL enabled;
+    s32 index;
+    s32 capacity;
+    s32 next;
+    u8 command[0x30];
+    if (result == -1) return;
+    if (result == 0) {
+        *(u32*)(raw + 0x81C) = 1;
+        if (*(void (**)(void))(raw + 0x7E4) != NULL) (*(void (**)(void))(raw + 0x7E4))();
+        return;
+    }
+    memset(command, 0, sizeof(command));
+    *(u16*)command = (*(u32*)(raw + 0x820) != 0) ? 0x14 : 0x2A;
+    *(u32*)(command + 4) = (*(u32*)(raw + 0x820) != 0) ? 0x176C : 0;
+    *(u32*)(command + 8) = 0x17;
+    *(u16*)(command + 0x22) = 6;
+    *(void (**)(void))(command + 0x2C) = (void (*)())fn_8005EEC4;
+    *(void**)(command + 0x24) = raw + 0x874;
+    enabled = OSDisableInterrupts();
+    OSDisableInterrupts();
+    index = (s8)(*(u8*)(raw + 0x161) - *(u8*)(raw + 0x160));
+    if (index < 0) index = (s8)(index + *(s32*)(raw + 0x168));
+    OSRestoreInterrupts(enabled);
+    capacity = *(s32*)(raw + 0x168);
+    if ((u32)(capacity - 1) == (u32)index) {
+        OSRestoreInterrupts(enabled);
+        return;
+    }
+    next = (s8)*(u8*)(raw + 0x161);
+    memset((void*)(*(u8**)(raw + 0x164) + next * 0x30), 0, 0x30);
+    memcpy((void*)(*(u8**)(raw + 0x164) + next * 0x30), command, 0x30);
+    next = (s8)*(u8*)(raw + 0x161);
+    capacity = *(s32*)(raw + 0x168) - 1;
+    next = next + 1;
+    if (next > capacity) next = 0;
+    *(u8*)(raw + 0x161) = next;
+    OSRestoreInterrupts(enabled);
+}
+
 void fn_8005F248(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
     register s32 enabled asm("r30");
@@ -3215,11 +3258,57 @@ void fn_80062088(s32 val) {
 }
 
 // fn_80062278: check controller
-BOOL fn_80062278(s32 chan) {
-    BOOL enabled = OSDisableInterrupts();
-    BOOL result = (_wpdcb[chan] != NULL);
+s32 fn_80062278(s32 chan, void* pData, u16 len) {
+    WPADCB* p = lbl_8038F4F0[chan];
+    BOOL enabled;
+    BOOL handshake;
+    s32 status;
+    WPADCommand command;
+    s8 diff;
+    s32 index;
+
+    enabled = OSDisableInterrupts();
+    status = p->status;
+    handshake = p->handshakeFinished;
     OSRestoreInterrupts(enabled);
-    return result;
+
+    if (status == WPAD_ERR_NO_CONTROLLER) {
+        return WPAD_ERR_NO_CONTROLLER;
+    }
+    if (!handshake) {
+        return WPAD_ERR_COMMUNICATION_ERROR;
+    }
+    if (IsBusyStream(chan)) {
+        return WPAD_ERR_COMMUNICATION_ERROR;
+    }
+
+    command.reportID = RPTID_SEND_SPEAKER_DATA;
+    command.dataLength = sizeof(command.dataBuf);
+    command.dataBuf[0] = len << 3;
+    command.cmdCB = NULL;
+    memcpy(&command.dataBuf[1], pData, len);
+
+    enabled = OSDisableInterrupts();
+    diff = p->stdCmdQueue.front - p->stdCmdQueue.back;
+    if (diff < 0) {
+        diff += p->stdCmdQueue.capacity;
+    }
+    OSRestoreInterrupts(enabled);
+
+    if (p->stdCmdQueue.capacity - 1 == diff) {
+        return WPAD_ERR_COMMUNICATION_ERROR;
+    }
+
+    index = p->stdCmdQueue.back;
+    memset(&p->stdCmdQueue.buffer[index], 0, sizeof(WPADCommand));
+    memcpy(&p->stdCmdQueue.buffer[index], &command, sizeof(WPADCommand));
+    p->stdCmdQueue.back = p->stdCmdQueue.back == p->stdCmdQueue.capacity - 1 ? 0 : p->stdCmdQueue.back + 1;
+    OSRestoreInterrupts(enabled);
+
+    enabled = OSDisableInterrupts();
+    p->audioFrames++;
+    OSRestoreInterrupts(enabled);
+    return WPAD_ERR_OK;
 }
 
 // fn_80062460: get controller status
@@ -3245,46 +3334,43 @@ void fn_800624A4(void) { /* stub */ }
 // register choices for the queue advance.
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
     WPADCommand command;
+    BOOL enabled;
+    s8 remain;
+    s8 front;
+    u32 capacity;
 
     command.reportID = RPTID_SET_DATA_REPORT_MODE;
     command.dataLength = RPT12_SIZE;
     command.dataBuf[RPT12_CONT_REPORT] = 4;
     command.cmdCB = pCallback;
-
     switch (format) {
-    case WPAD_FMT_CORE_BTN:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN;
-        break;
-    case WPAD_FMT_CORE_BTN_ACC:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC;
-        break;
-    case WPAD_FMT_CORE_BTN_ACC_DPD:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD12;
-        break;
-    case WPAD_FMT_FS_BTN:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_EXT8;
-        break;
-    case WPAD_FMT_FS_BTN_ACC:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_EXT16;
-        break;
-    case WPAD_FMT_FS_BTN_ACC_DPD:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD10_EXT9;
-        break;
-    case WPAD_FMT_CLASSIC_BTN:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_EXT8;
-        break;
-    case WPAD_FMT_CLASSIC_BTN_ACC:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_EXT16;
-        break;
-    case WPAD_FMT_CLASSIC_BTN_ACC_DPD:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD10_EXT9;
-        break;
-    case WPAD_FMT_BTN_ACC_DPD_EXTENDED:
-        command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD18_1;
-        break;
+    case WPAD_FMT_CORE_BTN: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN; break;
+    case WPAD_FMT_CORE_BTN_ACC: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC; break;
+    case WPAD_FMT_CORE_BTN_ACC_DPD: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD12; break;
+    case WPAD_FMT_FS_BTN: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_EXT8; break;
+    case WPAD_FMT_FS_BTN_ACC: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_EXT16; break;
+    case WPAD_FMT_FS_BTN_ACC_DPD: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD10_EXT9; break;
+    case WPAD_FMT_CLASSIC_BTN: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_EXT8; break;
+    case WPAD_FMT_CLASSIC_BTN_ACC: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_EXT16; break;
+    case WPAD_FMT_CLASSIC_BTN_ACC_DPD: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD10_EXT9; break;
+    case WPAD_FMT_BTN_ACC_DPD_EXTENDED: command.dataBuf[RPT12_DATA_REPORT_MODE] = RPTID_DATA_BTN_ACC_DPD18_1; break;
     }
-
-    return WPADiPushCommand(pQueue, command);
+    enabled = OSDisableInterrupts();
+    OSDisableInterrupts();
+    remain = pQueue->front - pQueue->back;
+    if (remain < 0) remain += pQueue->capacity;
+    OSRestoreInterrupts(enabled);
+    if (pQueue->capacity - 1 == remain) {
+        OSRestoreInterrupts(enabled);
+        return FALSE;
+    }
+    memset(&pQueue->buffer[pQueue->back], 0, sizeof(WPADCommand));
+    memcpy(&pQueue->buffer[pQueue->back], &command, sizeof(WPADCommand));
+    front = pQueue->back;
+    capacity = pQueue->capacity;
+    pQueue->back = front == capacity - 1 ? 0 : front + 1;
+    OSRestoreInterrupts(enabled);
+    return TRUE;
 }
 
 static BOOL fn_80063744(u8* p, u8 idx, u32 val1, u32 val2) {
@@ -3561,58 +3647,129 @@ void fn_80064F64(s32 chan, void* data) { /* stub */ }
 void fn_80065524(s32 chan, WPADStatusEx* pStatus)
 {
     WPADCB* pCB;
-    u8* pBuf;
-    u8 devMode;
-    s32 i;
-    BOOL enabled;
-    u16 buttons;
-    s32 status;
-    
+    volatile u8* pBuf;
+    u32 enabled;
+    u32 i;
+
     enabled = OSDisableInterrupts();
-    pCB = lbl_8038F4F0[chan];
-    devMode = pCB->devMode;
-    
-    // Clear the buffer
-    pBuf = (u8*)pCB + devMode * 0x60 + 0xA0;
-    for (i = 0; i < 8; i++) {
-        pBuf[0] = 0;
-        pBuf[1] = 0;
-        pBuf[2] = 0;
-        pBuf[3] = 0;
-        pBuf[4] = 0;
-        pBuf[5] = 0;
-        pBuf[6] = 0;
-        pBuf[7] = 0;
-        pBuf += 8;
+    pCB = lbl_8038F4F0[(u8)chan];
+    pBuf = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
+    for (i = 0; i < 2; i++) {
+        pBuf[0] = 0; pBuf[1] = 0; pBuf[2] = 0; pBuf[3] = 0;
+        pBuf[4] = 0; pBuf[5] = 0; pBuf[6] = 0; pBuf[7] = 0;
+        pBuf[8] = 0; pBuf[9] = 0; pBuf[10] = 0; pBuf[11] = 0;
+        pBuf[12] = 0; pBuf[13] = 0; pBuf[14] = 0; pBuf[15] = 0;
+        pBuf[16] = 0; pBuf[17] = 0; pBuf[18] = 0; pBuf[19] = 0;
+        pBuf[20] = 0; pBuf[21] = 0; pBuf[22] = 0; pBuf[23] = 0;
+        pBuf[24] = 0; pBuf[25] = 0; pBuf[26] = 0; pBuf[27] = 0;
+        pBuf[28] = 0; pBuf[29] = 0; pBuf[30] = 0; pBuf[31] = 0;
+        pBuf[32] = 0; pBuf[33] = 0; pBuf[34] = 0; pBuf[35] = 0;
+        pBuf[36] = 0; pBuf[37] = 0; pBuf[38] = 0; pBuf[39] = 0;
+        pBuf[40] = 0; pBuf[41] = 0; pBuf[42] = 0; pBuf[43] = 0;
+        pBuf[44] = 0; pBuf[45] = 0; pBuf[46] = 0; pBuf[47] = 0;
+        pBuf += 48;
     }
-    
-    // Set button values from pInfo
-    buttons = (pStatus->button >> 8) & 0xFF;
-    buttons |= pStatus->button & 0xFF;
-    buttons &= 0x9F1F;
-    *(u16*)pBuf = buttons;
-    
-    // Get status
-    status = *(s32*)((u8*)pCB + 0x7F8);
-    if (status != 0) {
-        pBuf[0x29] = *(u8*)((u8*)pCB + 0x7FC);
-    } else {
-        status = *(s32*)((u8*)pCB + 0x7FC);
-        if (status != 0) {
-            pBuf[0x29] = WPAD_ERR_INVALID;
+    *(u16*)pBuf = 0;
+    *(u16*)pBuf = ((pStatus->button & 0xFF) << 8) | ((pStatus->button >> 8) & 0xFF);
+    *(u16*)pBuf &= 0x9F1F;
+
+    if (*(s32*)((u8*)pCB + 0x7F8) == 0) {
+        if (*(s32*)((u8*)pCB + 0x7FC) != 0) {
+            pBuf[0x29] = *(u8*)((u8*)pCB + 0x7FC);
         } else {
-            pBuf[0x29] = *(u8*)((u8*)pCB + 0x801);
-            pBuf[0x28] = pStatus->button;
-            pStatus->button = pStatus->button & 0xFFFFFF00 | (pStatus->button >> 1 & 0xFF);
-            pBuf[0x806] = 0;  // This doesn't make sense, let me reconsider
+            pBuf[0x29] = -4;
+            pBuf[0x28] = *(u8*)((u8*)pCB + 0x801);
+            *(u32*)((u8*)pCB + 0x788) = (pStatus->dev >> 1) & 1;
+            *(u8*)((u8*)pCB + 0x806) = __cntlzw(*(u8*)((u8*)pCB + 0x806)) >> 24;
         }
     }
-    
     OSRestoreInterrupts(enabled);
 }
 
 // fn_800656E8: WPAD data processing
-void fn_800656E8(s32 chan) { /* stub */ }
+void fn_800656E8(s32 chan, WPADStatusEx* pStatus)
+{
+    WPADCB* pCB;
+    volatile u8* pBuf;
+    u32 i;
+    u32 offset;
+    u8* p = (u8*)pStatus;
+
+    pCB = lbl_8038F4F0[(u8)chan];
+    pBuf = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
+    offset = 0;
+    for (i = 0; i < 2; i++) {
+        pBuf[offset] = 0;
+        pBuf[offset + 1] = 0;
+        pBuf[offset + 2] = 0;
+        pBuf[offset + 3] = 0;
+        pBuf[offset + 4] = 0;
+        pBuf[offset + 5] = 0;
+        pBuf[offset + 6] = 0;
+        pBuf[offset + 7] = 0;
+        offset += 8;
+        pBuf[offset] = 0;
+        pBuf[offset + 1] = 0;
+        pBuf[offset + 2] = 0;
+        pBuf[offset + 3] = 0;
+        pBuf[offset + 4] = 0;
+        pBuf[offset + 5] = 0;
+        pBuf[offset + 6] = 0;
+        pBuf[offset + 7] = 0;
+        offset += 8;
+        pBuf[offset] = 0;
+        pBuf[offset + 1] = 0;
+        pBuf[offset + 2] = 0;
+        pBuf[offset + 3] = 0;
+        pBuf[offset + 4] = 0;
+        pBuf[offset + 5] = 0;
+        pBuf[offset + 6] = 0;
+        pBuf[offset + 7] = 0;
+        offset += 8;
+        pBuf[offset] = 0;
+        pBuf[offset + 1] = 0;
+        pBuf[offset + 2] = 0;
+        pBuf[offset + 3] = 0;
+        pBuf[offset + 4] = 0;
+        pBuf[offset + 5] = 0;
+        pBuf[offset + 6] = 0;
+        pBuf[offset + 7] = 0;
+        offset += 8;
+        pBuf[offset] = 0;
+        pBuf[offset + 1] = 0;
+        pBuf[offset + 2] = 0;
+        pBuf[offset + 3] = 0;
+        pBuf[offset + 4] = 0;
+        pBuf[offset + 5] = 0;
+        pBuf[offset + 6] = 0;
+        pBuf[offset + 7] = 0;
+        offset += 8;
+        pBuf[offset] = 0;
+        pBuf[offset + 1] = 0;
+        pBuf[offset + 2] = 0;
+        pBuf[offset + 3] = 0;
+        pBuf[offset + 4] = 0;
+        pBuf[offset + 5] = 0;
+        pBuf[offset + 6] = 0;
+        pBuf[offset + 7] = 0;
+        offset += 8;
+    }
+    *(u16*)pBuf = ((u16)p[2] << 8) | p[1];
+    *(u16*)pBuf &= 0x9F1F;
+    if (*(s32*)((u8*)pCB + 0x7F8) > 1) {
+        if (*(s32*)((u8*)pCB + 0x7FC) == 0) *(u8*)(pBuf + 0x29) = -4;
+    } else {
+        *(u8*)(pBuf + 0x29) = *(u8*)((u8*)pCB + 0x7FC);
+    }
+    *(u8*)(pBuf + 0x28) = *(u8*)((u8*)pCB + 0x801);
+    *(u32*)((u8*)pCB + 0x788) = p[1] & 1;
+    *(s16*)(pBuf + 2) = (s16)((((u16)p[3] << 2) & 0xFFFC) | ((p[1] >> 6) & 3)) - *(s16*)((u8*)pCB + 0x7B4);
+    *(s16*)(pBuf + 4) = (s16)((((u16)p[4] << 2) & 0xFFFC) | ((p[2] >> 6) & 3)) - *(s16*)((u8*)pCB + 0x7B6);
+    *(s16*)(pBuf + 6) = (s16)((((u16)p[5] << 2) & 0xFFFC) | ((p[2] >> 5) & 3)) - *(s16*)((u8*)pCB + 0x7B8);
+    OSDisableInterrupts();
+    *(u8*)((u8*)pCB + 0x806) = __cntlzw(*(u8*)((u8*)pCB + 0x806)) >> 24;
+    OSRestoreInterrupts(0);
+}
 
 // fn_80065934: WPAD data processing
 void fn_80065934(void) { /* stub */ }
@@ -3653,11 +3810,128 @@ u16 _WUDGetNotAckedSize(s8 handle) {
     return 0;
 }
 u8 _WUDGetLinkNumber(void) { return 0; }
-u32 __a1_22_ack(void) { return 0; }
+void __a1_22_ack(u8 chan, u8* pReport)
+{
+    WPADCB* pCB;
+    volatile u8* pBuf;
+    u32 offset;
+    u8 type;
+    u8 ext;
+    BOOL intr;
+
+    intr = OSDisableInterrupts();
+    DBPrintf_80068D68((const char*)lbl_80312338 + 0x3E0);
+    pCB = lbl_8038F4F0[(u8)chan];
+    pBuf = (volatile u8*)pCB + *(u8*)((u8*)pCB + 0x806) * 0x60 + 0xA0;
+    for (offset = 0; offset < 96; offset += 8) {
+        pBuf[offset] = 0;
+        pBuf[offset + 1] = 0; pBuf[offset + 2] = 0; pBuf[offset + 3] = 0;
+        pBuf[offset + 4] = 0; pBuf[offset + 5] = 0; pBuf[offset + 6] = 0; pBuf[offset + 7] = 0;
+    }
+    *(u16*)(pBuf + 0x60) = ((u16)pReport[1] << 8 | pReport[2]) & 0x9F1F;
+    type = pReport[3];
+    ext = pReport[4];
+    DBPrintf_80068D68((const char*)lbl_80312338 + 0x3F0, type, ext);
+    pBuf[0x89] = -2;
+    pBuf[0x88] = *((u8*)pCB + 0x801);
+    if (ext) {
+        DBPrintf_80068D68((const char*)lbl_80312338 + 0x41C, type, ext);
+        if (*((u8*)pCB + 0x8C7) == type) {
+            WPADCallback callback = *(WPADCallback*)((u8*)pCB + 0x7DC);
+            if (callback) {
+                callback(chan, -2);
+                *(u32*)((u8*)pCB + 0x7DC) = 0;
+                *(u32*)((u8*)pCB + 0x7FC) = 0;
+            }
+        } else {
+            DBPrintf_80068D68((const char*)lbl_80312338 + 0x44C);
+        }
+    }
+    *((u8*)pCB + 0x806) = __cntlzw(*((u8*)pCB + 0x806)) >> 24;
+    OSRestoreInterrupts(intr);
+}
 
 void fn_8005E8C0(u32 r3, u32 r4)
 {
 	OSSwitchFiberEx(r3, r4, 0, 0, fn_8005E298, (u8*)&lbl_8038F500 + 0x1000);
 }
+
+void fn_8005E8E0(s32 chan)
+{
+    WPADCB* pCB = lbl_8038F4F0[chan];
+    u8* p = (u8*)pCB;
+    s32 enabled;
+
+    *(u8*)(p + 0x806) = 0;
+    *(u32*)(p + 0x790) = 0;
+    *(u32*)(p + 0x814) = 0;
+    *(u32*)(p + 0x7DC) = 0;
+    *(u32*)(p + 0x7E0) = 0;
+    *(u32*)(p + 0x7E8) = 0;
+    *(u32*)(p + 0x7EC) = 0;
+    *(u32*)(p + 0x7F0) = 0;
+    *(u32*)(p + 0x7F4) = 0;
+    *(u32*)(p + 0x7F8) = 0;
+    *(u32*)(p + 0x7FC) = -1;
+    p[0x801] = 0xFD;
+    p[0x802] = 0;
+    p[0x851] = 0;
+    *(u16*)(p + 0x852) = 0;
+    p[0x800] = 0;
+    *(u16*)(p + 0x804) = 12;
+    *(u16*)(p + 0x838) = 0;
+    *(u16*)(p + 0x83A) = 0;
+    *(u16*)(p + 0x83C) = 0;
+    *(u16*)(p + 0x83E) = 0;
+    *(u16*)(p + 0x840) = 0;
+    *(u16*)(p + 0x842) = 0;
+    *(u64*)(p + 0x830) = __OSGetSystemTime();
+    *(u64*)(p + 0x848) = __OSGetSystemTime();
+    p[0x850] = 0;
+    p[0x807] = 0;
+    *(u32*)(p + 0x808) = 0;
+    *(u32*)(p + 0x8B4) = 0;
+    *(u32*)(p + 0x8B8) = 0;
+    *(u16*)(p + 0x8C0) = 0;
+    *(u32*)(p + 0x8BC) = 0;
+    p[0x803] = 0xFF;
+    *(u32*)(p + 0x818) = 0;
+    *(u32*)(p + 0x81C) = 0;
+    *(u32*)(p + 0x820) = 0;
+    p[0x80C] = 1;
+    p[0x80D] = 0;
+    p[0x80E] = 0;
+    p[0x8C2] = 0;
+    p[0x8C3] = 0;
+    *(u16*)(p + 0x8C4) = 0;
+    p[0x8C6] = 1;
+    memset(p + 0x778, 0, 0x18);
+    memset(p + 0x874, 0, 0x40);
+    memset(p + 0xA0, 0, 0xC0);
+    memset(p + 0x40, 0, 0x60);
+    memset(p + 0x794, 0, 0x2E);
+    memset(p + 0x7C2, 0, 0x1A);
+    memset(p + 0x854, 0, 0x10);
+    memset(p + 0x864, 0, 8);
+    memset(p + 0x86C, 0, 8);
+    memset(p, 0, 0x38);
+    *(u32*)(p + 0x38) = -1;
+    *(u32*)(p + 0x3C) = -1;
+    *(void**)(p + 0x164) = p + 0x16C;
+    *(u32*)(p + 0x168) = 0x18;
+    *(void**)(p + 0x5F0) = p + 0x5F8;
+    *(u32*)(p + 0x5F4) = 8;
+    enabled = OSDisableInterrupts();
+    p[0x160] = 0;
+    p[0x161] = 0;
+    memset(*(void**)(p + 0x164), 0, *(u32*)(p + 0x168) * 0x30);
+    OSRestoreInterrupts(enabled);
+    enabled = OSDisableInterrupts();
+    p[0x5EC] = 0;
+    p[0x5ED] = 0;
+    memset(*(void**)(p + 0x5F0), 0, *(u32*)(p + 0x5F4) * 0x30);
+    OSRestoreInterrupts(enabled);
+}
+
 extern WPADCB* getGameInfo(s32 param_1, s32 param_2, s32 param_3);
 #include <types.h>
