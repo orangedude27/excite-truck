@@ -41,3 +41,7 @@ extern "C" void fn_800CF28C(void) {
 
 }
 
+extern "C" void fn_800CF290(void) {
+
+}
+
