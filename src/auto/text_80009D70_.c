@@ -30,8 +30,8 @@ void* fn_80009D70(void* arg0, s32 arg1) {
     ((s32*)var_r31)[1] = 0;
     ((s32*)var_r31)[2] = 0;
     if (arg1 <= 0) goto lbl_80009DB4;
-    ((void*)var_r31);
-    fn_80128668(var_r31);
+    arg0 = var_r31;
+    fn_80128668(arg0);
 lbl_80009DB4:
     return var_r31;
 }
@@ -89,6 +89,17 @@ void fn_8000A808(void) {
     }
     if (lbl_8055D3B5 != 0) {
         fn_8012E498(lbl_8034F4C8_ptr + 0x98);
+    }
+}
+
+void fn_8000A868(void) {
+    char* lbl_8034F4C8_ptr = (char*)&lbl_8034F4C8;
+    fn_8012E81C(lbl_8034F4C8_ptr + 0x18);
+    if (lbl_8055D3B4 != 0) {
+        fn_8012E81C(lbl_8034F4C8_ptr + 0x58);
+    }
+    if (lbl_8055D3B5 != 0) {
+        fn_8012E81C(lbl_8034F4C8_ptr + 0x98);
     }
 }
 
