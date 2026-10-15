@@ -45,3 +45,7 @@ void fn_80154748(void) {
 
 }
 
+void fn_8015474C(void) {
+
+}
+
