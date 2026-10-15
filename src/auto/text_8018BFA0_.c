@@ -4,3 +4,8 @@
 void fn_8018C50C(void) {
 
 }
+
+void fn_8018C510(void) {
+
+}
+
