@@ -8,7 +8,8 @@ extern s32 fn_80128668(void);
 
 extern "C" {
 void fn_80156188(s32 arg0) {
-    arg0 -= 4;
+    volatile s32 temp = arg0 - 4;
+    (void)temp;
     fn_8015474C();
 }
 
