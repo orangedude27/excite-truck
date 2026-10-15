@@ -15,3 +15,7 @@ void fn_802152C8(void) {
 void fn_802153A0(void) {
 }
 
+extern "C" void fn_80215414(void) {
+
+}
+
