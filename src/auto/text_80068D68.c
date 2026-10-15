@@ -67,8 +67,8 @@ void fn_80071508(u8 arg0) {
 
 void fn_80071510(void *arg0, s32 arg1, u8 arg2) {
     fn_8006E6E4(arg0);
-    ((u8 *)arg0)[0x10] = arg2;
     ((s32 *)arg0)[3] = arg1;
+    ((u8 *)arg0)[0x10] = arg2;
 }
 
 void ptim_timer_update(tPTIM_CB *p_cb) {
