@@ -211,15 +211,15 @@ extern "C" s32 fn_800A4D74(void *arg0, u32 arg1) {
     return ((s32 *)arg0)[2];
 }
 
-extern "C" s32 fn_800A4E80(void *arg0, void *arg1, u32 arg2) {
-    ((s32 *)arg0)[0] = (s32)arg1;
-    
+extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
     if (arg2 == 1) {
-        ((s32 *)arg0)[1] = (s32)arg1 + fn_800A4A8C((s32)arg1);
+        *(s32 *)((u8 *)arg0 + 0) = arg1;
+        *(s32 *)((u8 *)arg0 + 4) = (s32)(arg1 + fn_800A4A8C(arg1));
     } else if (arg2 == 2) {
-        ((s32 *)arg0)[1] = (s32)arg1 + fn_800A4B54((s32)arg1) * 2;
-        ((u32 *)arg0)[0xC / 4] = arg2;
+        *(s32 *)((u8 *)arg0 + 0) = arg1;
+        *(s32 *)((u8 *)arg0 + 4) = (s32)(arg1 + (fn_800A4B54(arg1) * 2));
     }
+    *(u32 *)((u8 *)arg0 + 0xC) = arg2;
     
     return 0;
 }
