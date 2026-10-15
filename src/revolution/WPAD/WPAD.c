@@ -22,6 +22,8 @@
 extern void DBPrintf_80068D68(const char* pFmt, ...);
 extern volatile u16 lbl_80560CC8, lbl_80560CCA, lbl_80560CCC, lbl_80560CCE;
 extern volatile u16 lbl_80560CD0, lbl_80560CD2, lbl_80560CD4, lbl_80560CD6;
+extern u8 lbl_803928E8[];
+extern const u8 lbl_803123B8[];
 extern const char lbl_803122A0[];
 extern const char lbl_803122BC[];
 extern const char lbl_803122D8[];
@@ -3665,19 +3667,20 @@ void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 
 void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
 {
-    const char* messages = (const char*)lbl_80312338;
-    u8* p = (u8*)lbl_8038F4F0[chan];
-    u16 valueCC8 = lbl_80560CC8;
-    u16 valueCCA = lbl_80560CCA;
-    u16 valueCCC = lbl_80560CCC;
-    u16 valueCCE = lbl_80560CCE;
-    u16 valueCD0 = lbl_80560CD0;
-    u16 valueCD2 = lbl_80560CD2;
-    u16 valueCD4 = lbl_80560CD4;
-    u16 valueCD6 = lbl_80560CD6;
-    u8* config = *(u8**)(p + 0x8B4);
-    u32 attempt;
-    s32 offset, i;
+    register const char* messages asm("r30") = (const char*)lbl_80312338;
+    register u8* p asm("r27") = (u8*)lbl_8038F4F0[chan];
+    register u16 valueCC8 asm("r7") = lbl_80560CC8;
+    register u16 valueCCA asm("r22") = lbl_80560CCA;
+    register u16 valueCCC asm("r23") = lbl_80560CCC;
+    register u16 valueCCE asm("r31") = lbl_80560CCE;
+    register u16 valueCD0 asm("r0") = lbl_80560CD0;
+    register u16 valueCD2 asm("r29") = lbl_80560CD2;
+    register u16 valueCD4 asm("r28") = lbl_80560CD4;
+    register u16 valueCD6 asm("r12") = lbl_80560CD6;
+    register u8* config asm("r26") = *(u8**)(p + 0x8B4);
+    register u32 attempt asm("r28");
+    register s32 offset asm("r29");
+    s32 i;
     u32 sum;
     u8* src;
 
