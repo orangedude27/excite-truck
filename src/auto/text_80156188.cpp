@@ -35,23 +35,23 @@ extern f32 fn_80129DC4(s32, s32, s32, f32, f32);
 extern f32 lbl_8055E3C8;
 
 void fn_80156960(void *arg0) {
-    void *r30 = arg0;
-    s32 *r5 = (s32 *)((u8 *)arg0 + 4);
-    s32 r4 = ((s32 *)arg0)[2];
+    void *inp = arg0;
     s32 count = 0;
+    void *out = arg0;
     f32 f31 = lbl_8055E3C8;
     
     do {
-        f32 f1 = ((f32 *)arg0)[0xDC / 4];
-        f32 f2 = ((f32 *)arg0)[0xE0 / 4];
-        s32 offset = count % r4;
-        offset *= 8;
-        s32 val = *(s32 *)(*(s32 **)((u8 *)arg0 + 4) + offset);
-        f32 result = fn_80129DC4(4, r4, (s32)*(s32 *)((u8 *)arg0 + 4), f1, f2);
+        s32 divisor = ((s32 *)inp)[2];
+        void *data_ptr = (void *)((s32 *)inp)[1];
+        s32 idx = count - ((count / divisor) * divisor);
+        s32 val = *(s32 *)((u8 *)data_ptr + (idx * 8));
+        f32 f1 = ((f32 *)inp)[0xDC / 4];
+        f32 f2 = ((f32 *)inp)[0xE0 / 4];
+        f32 result = fn_80129DC4(4, divisor, (s32)(long)data_ptr, f1, f2);
         result = f31 + result;
-        ((f32 *)r30)[0xE4 / 4] = result;
-        *(s32 *)((u8 *)r30 + 0xE8) = val;
-        r30 = (void *)((u8 *)r30 + 8);
+        ((f32 *)out)[0xE4 / 4] = result;
+        *(s32 *)((u8 *)out + 0xE8) = val;
+        out = (u8 *)out + 8;
         count++;
     } while (count < 8);
 }
@@ -96,18 +96,6 @@ s32 fn_80156AB8(void *arg0) {
 
 void fn_80156AC0(void) {
 
-}
-
-extern u8 lbl_8032E448[];
-void* __dt__Q28PSSystem7SeqHeapFv_80156AC4(void* this_, s32 flag) {
-    if (this_) {
-        *(u32*)this_ = (u32)lbl_8032E448;
-        fn_80138AD8((u8*)this_ + 4, (u32)lbl_8032E448);
-        if (flag > 0) {
-            fn_80128668(this_);
-        }
-    }
-    return this_;
 }
 
 void fn_80156B48(void) {
