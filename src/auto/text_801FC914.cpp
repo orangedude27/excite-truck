@@ -9,6 +9,10 @@ extern "C" void fn_801FEFC0(void) {
 
 }
 
+extern "C" void fn_801FF114(void) {
+
+}
+
 extern "C" void fn_801FEFC4(void) {
 
 }
