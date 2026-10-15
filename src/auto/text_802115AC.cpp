@@ -128,6 +128,10 @@ void fn_80215CD4(void) {
 
 }
 
+extern "C" void fn_80215CD8(void) {
+
+}
+
 extern "C" void fn_80215CC4(void) {
 
 }
