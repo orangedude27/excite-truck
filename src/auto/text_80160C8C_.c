@@ -23,3 +23,7 @@ void fn_80164D58(void) {
 
 }
 
+void fn_80164D60(void) {
+
+}
+
