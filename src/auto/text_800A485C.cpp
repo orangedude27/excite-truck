@@ -112,7 +112,7 @@ void fn_800C790C(void *arg0) {
     }
 }
 
-extern "C" void fn_800C7C68(void) {
-    r3 = lbl_8055DDF8;
+extern "C" u32* fn_800C7C68(void) {
+    return &lbl_8055DDF8;
 }
 
