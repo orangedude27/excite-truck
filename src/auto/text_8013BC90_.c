@@ -4,3 +4,8 @@
 void fn_8013BF3C(void) {
     fn_8013BD30();
 }
+
+void fn_8013BFE4(void) {
+
+}
+
