@@ -41,8 +41,8 @@ void fn_8007BC88(void) {
 
 }
 
-void fn_8007DEF4(void) {
-    GKI_freebuf(0);
+void fn_8007DEF4(void *arg0) {
+    GKI_freebuf(arg0);
 }
 
 void fn_80089E3C(void) {
