@@ -58,6 +58,10 @@ void fn_80156960(void *arg0) {
     } while (r29 < 8);
 }
 
+s32 fn_80156A40(void) {
+    return (s32)lbl_8055E27C;
+}
+
 extern void fn_80128668(void*);
 extern void **lbl_8055E27C;
 extern u8 lbl_8032E46C[];
