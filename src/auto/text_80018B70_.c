@@ -28,3 +28,11 @@ char fn_80019714(void) {
     return lbl_8055D588;
 }
 
+void fn_800196FC(void) {
+    lbl_8055D588 = 1;
+}
+
+void fn_800196F0(void) {
+    fn_80131234(&lbl_802FD404);
+}
+
