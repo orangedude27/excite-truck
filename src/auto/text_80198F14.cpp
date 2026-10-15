@@ -9,6 +9,7 @@ extern "C" void fn_801A49E8(void*);
 extern "C" void fn_801A49FC(s32);
 extern "C" void fn_801796EC(s32, s32*, s32);
 extern "C" s32 fn_8012C4E4(void*, void*, s32);
+extern "C" s32 fn_801CFF18(s32, s32);
 
 extern "C" void fn_801A44D4(void*);
 extern void* lbl_8055A508;
@@ -66,9 +67,30 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
+extern "C" void fn_801A44D4(void* arg0) {
+    s32* r29;
+    s32 r30;
+    s32 r31;
+    r29 = (s32*)arg0;
+    r30 = 0;
+    r31 = 0;
+    goto check;
+loop:
+    {
+        s32* arr = (s32*)r29[1];
+        fn_801A49FC(*(s32*)((u8*)arr + r30));
+        r30 += 4;
+        r31++;
+    }
+check:
+    {
+        s32 limit = r29[0];
+        if (r31 < limit) goto loop;
+    }
+}
+
 extern "C" void fn_801A4538(void* arg0) {
-    s32 (*fn)(void*, void*, s32) = fn_8012C4E4;
-    fn(arg0, (void*)&fn_801A44D4, 0);
+    fn_8012C4E4(arg0, (void*)&fn_801A44D4, 0);
 }
 
 #pragma opt_tail_call on
@@ -112,7 +134,8 @@ void fn_801A4868(void* arg0, u8 arg1) {
 
 void fn_801A48C8(void* arg0) {
     void* ptr = *(void**)((u8*)arg0 + 0x48);
-    ((void(*)(void*, void*, void**))(*(void***)((u8*)ptr + 0x18)))(ptr, &lbl_8055A508, &lbl_8055A510);
+    void* vtable = *(void**)((u8*)ptr + 0x18);
+    ((void(*)(void*, void*, void**))vtable)(ptr, &lbl_8055A508, &lbl_8055A510);
 }
 
 extern "C" s32 fn_801A4F00(s32 arg0, s32 arg1) {
