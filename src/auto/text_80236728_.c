@@ -5,3 +5,9 @@ extern char lbl_8055F0C4;
 void fn_80236774(void) {
     lbl_8055F0C4 = 0;
 }
+
+extern char lbl_8055F0C5;
+void fn_802368E0(void) {
+    lbl_8055F0C5 = 1;
+}
+
