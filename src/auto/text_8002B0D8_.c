@@ -4,3 +4,8 @@
 void fn_8002B1D8(void) {
     fn_800248A4();
 }
+
+void fn_8002EFA8(void) {
+    __ieee754_acos();
+}
+
