@@ -77,3 +77,7 @@ void fn_80155AEC(void) {
 
 }
 
+void fn_801560F4(void) {
+
+}
+
