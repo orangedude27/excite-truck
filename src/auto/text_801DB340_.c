@@ -13,3 +13,7 @@ void fn_801DCDA0(void) {
 
 }
 
+void fn_801DCE0C(void) {
+    fn_801DCD28();
+}
+
