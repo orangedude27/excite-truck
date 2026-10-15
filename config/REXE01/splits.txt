@@ -13,15 +13,494 @@ Sections:
 	.sdata2     type:rodata align:8
 	.sbss2      type:bss align:16
 
+revolution/KPAD/KPADAccData.c:
+	.sdata2     start:0x80560C10 end:0x80560C18
+
 game/game_menu_init.c:
 	.text       start:0x800049C0 end:0x800053CC
 	.ctors      start:0x802ED064 end:0x802ED068
 
+auto/text_800053CC_.c:
+	.text       start:0x800053CC end:0x80005694
+
+game/game_state_check.c:
+	.text       start:0x80005694 end:0x800056C8
+
+auto/text_800056C8.c:
+	.text       start:0x800056C8 end:0x80007D54
+
+auto/text_80007D54_.c:
+	.text       start:0x80007D54 end:0x80007D94
+	.ctors      start:0x802ED068 end:0x802ED06C
+
+auto/text_80007D94_.c:
+	.text       start:0x80007D94 end:0x8000829C
+
+auto/text_8000829C_.c:
+	.text       start:0x8000829C end:0x80008390
+	.ctors      start:0x802ED06C end:0x802ED070
+
+auto/text_80008390_.c:
+	.text       start:0x80008390 end:0x80009CEC
+
+auto/text_80009CEC_.c:
+	.text       start:0x80009CEC end:0x80009D70
+	.ctors      start:0x802ED070 end:0x802ED074
+
+auto/text_80009D70_.c:
+	.text       start:0x80009D70 end:0x8000AC40
+
+auto/text_8000AC40_.c:
+	.text       start:0x8000AC40 end:0x8000AC98
+	.ctors      start:0x802ED074 end:0x802ED078
+
+auto/text_8000AC98_.c:
+	.text       start:0x8000AC98 end:0x8000C774
+
+auto/text_8000C774_.c:
+	.text       start:0x8000C774 end:0x8000C7CC
+	.ctors      start:0x802ED078 end:0x802ED07C
+
+auto/text_8000C7CC_.c:
+	.text       start:0x8000C7CC end:0x8000D780
+
+auto/text_8000D780_.c:
+	.text       start:0x8000D780 end:0x8000D7D8
+	.ctors      start:0x802ED07C end:0x802ED080
+
+auto/text_8000D7D8_.c:
+	.text       start:0x8000D7D8 end:0x8000D7E8
+
+auto/text_8000D7E8_.c:
+	.text       start:0x8000D7E8 end:0x8000D7F0
+	.ctors      start:0x802ED080 end:0x802ED084
+
+auto/text_8000D7F0_.c:
+	.text       start:0x8000D7F0 end:0x8000D800
+
+auto/text_8000D800_.c:
+	.text       start:0x8000D800 end:0x8000D82C
+	.ctors      start:0x802ED084 end:0x802ED088
+
 game/game_ax_promote.c:
 	.text       start:0x8000D82C end:0x8000D838
 
+auto/text_8000D838.c:
+	.text       start:0x8000D838 end:0x8000D87C
+
+auto/text_8000D87C_.c:
+	.text       start:0x8000D87C end:0x8000D884
+	.ctors      start:0x802ED088 end:0x802ED08C
+
+auto/text_8000D884_.c:
+	.text       start:0x8000D884 end:0x8000DFA0
+
+auto/text_8000DFA0_.c:
+	.text       start:0x8000DFA0 end:0x8000DFA8
+	.ctors      start:0x802ED08C end:0x802ED090
+
+auto/text_8000DFA8_.c:
+	.text       start:0x8000DFA8 end:0x80012314
+
+auto/text_80012314_.c:
+	.text       start:0x80012314 end:0x80012384
+	.ctors      start:0x802ED090 end:0x802ED094
+
+auto/text_80012384_.c:
+	.text       start:0x80012384 end:0x80012688
+
+auto/text_80012688_.c:
+	.text       start:0x80012688 end:0x800126B4
+	.ctors      start:0x802ED094 end:0x802ED098
+
+auto/text_800126B4_.c:
+	.text       start:0x800126B4 end:0x800126C4
+
+auto/text_800126C4_.c:
+	.text       start:0x800126C4 end:0x800126CC
+	.ctors      start:0x802ED098 end:0x802ED09C
+
+auto/text_800126CC_.c:
+	.text       start:0x800126CC end:0x80013B88
+
+auto/text_80013B88_.c:
+	.text       start:0x80013B88 end:0x80013BD0
+	.ctors      start:0x802ED09C end:0x802ED0A0
+
+auto/text_80013BD0_.c:
+	.text       start:0x80013BD0 end:0x8001629C
+
+auto/text_8001629C_.c:
+	.text       start:0x8001629C end:0x80016354
+	.ctors      start:0x802ED0A0 end:0x802ED0A4
+
+auto/text_80016354_.c:
+	.text       start:0x80016354 end:0x80017864
+
+auto/text_80017864_.c:
+	.text       start:0x80017864 end:0x8001786C
+	.ctors      start:0x802ED0A4 end:0x802ED0A8
+
+auto/text_8001786C_.c:
+	.text       start:0x8001786C end:0x80018804
+
+auto/text_80018804_.c:
+	.text       start:0x80018804 end:0x8001880C
+	.ctors      start:0x802ED0A8 end:0x802ED0AC
+
+auto/text_8001880C_.c:
+	.text       start:0x8001880C end:0x80018B68
+
+auto/text_80018B68_.c:
+	.text       start:0x80018B68 end:0x80018B70
+	.ctors      start:0x802ED0AC end:0x802ED0B0
+
+auto/text_80018B70_.c:
+	.text       start:0x80018B70 end:0x8001971C
+
+auto/text_8001971C_.c:
+	.text       start:0x8001971C end:0x800197B0
+	.ctors      start:0x802ED0B0 end:0x802ED0B4
+
+auto/text_800197B0_.c:
+	.text       start:0x800197B0 end:0x80019890
+
+auto/text_80019890_.c:
+	.text       start:0x80019890 end:0x80019898
+	.ctors      start:0x802ED0B4 end:0x802ED0B8
+
+auto/text_80019898_.c:
+	.text       start:0x80019898 end:0x80019BB4
+
+auto/text_80019BB4_.c:
+	.text       start:0x80019BB4 end:0x80019BBC
+	.ctors      start:0x802ED0B8 end:0x802ED0BC
+
+auto/text_80019BBC_.c:
+	.text       start:0x80019BBC end:0x8001B92C
+
+auto/text_8001B92C_.c:
+	.text       start:0x8001B92C end:0x8001B9D4
+	.ctors      start:0x802ED0BC end:0x802ED0C0
+
+auto/text_8001B9D4_.c:
+	.text       start:0x8001B9D4 end:0x8001D7A8
+
+auto/text_8001D7A8_.c:
+	.text       start:0x8001D7A8 end:0x8001D7D8
+	.ctors      start:0x802ED0C0 end:0x802ED0C4
+
+auto/text_8001D7D8_.c:
+	.text       start:0x8001D7D8 end:0x8001DA54
+
+auto/text_8001DA54_.c:
+	.text       start:0x8001DA54 end:0x8001DA5C
+	.ctors      start:0x802ED0C4 end:0x802ED0C8
+
+auto/text_8001DA5C.cpp:
+	.text       start:0x8001DA5C end:0x8001EEE8
+
+auto/text_8001EEE8_.c:
+	.text       start:0x8001EEE8 end:0x8001EF38
+	.ctors      start:0x802ED0C8 end:0x802ED0CC
+
+auto/text_8001EF38_.c:
+	.text       start:0x8001EF38 end:0x8001FD74
+
+auto/text_8001FD74_.c:
+	.text       start:0x8001FD74 end:0x8001FD7C
+	.ctors      start:0x802ED0CC end:0x802ED0D0
+
+auto/text_8001FD7C_.c:
+	.text       start:0x8001FD7C end:0x800218FC
+
+auto/text_800218FC_.c:
+	.text       start:0x800218FC end:0x80021948
+	.ctors      start:0x802ED0D0 end:0x802ED0D4
+
+auto/text_80021948_.c:
+	.text       start:0x80021948 end:0x80021B50
+
+auto/text_80021B50_.c:
+	extab       start:0x80004520 end:0x80004528
+	extabindex  start:0x80004700 end:0x8000470C
+	.text       start:0x80021B50 end:0x80021CA0
+
+auto/text_80021CA0_.c:
+	.text       start:0x80021CA0 end:0x80021D48
+
+auto/text_80021D48_.c:
+	extab       start:0x80004528 end:0x80004530
+	extabindex  start:0x8000470C end:0x80004718
+	.text       start:0x80021D48 end:0x80021F88
+
+auto/text_80021F88_.c:
+	extab       start:0x80004530 end:0x80004538
+	extabindex  start:0x80004718 end:0x80004724
+	.text       start:0x80021F88 end:0x80022064
+
+auto/text_80022064_.c:
+	.text       start:0x80022064 end:0x80022188
+
+auto/text_80022188_.c:
+	extab       start:0x80004538 end:0x80004540
+	extabindex  start:0x80004724 end:0x80004730
+	.text       start:0x80022188 end:0x80022390
+
+auto/text_80022390_.c:
+	extab       start:0x80004540 end:0x80004548
+	extabindex  start:0x80004730 end:0x8000473C
+	.text       start:0x80022390 end:0x8002257C
+
+auto/text_8002257C_.c:
+	extab       start:0x80004548 end:0x80004550
+	extabindex  start:0x8000473C end:0x80004748
+	.text       start:0x8002257C end:0x8002261C
+
+auto/text_8002261C_.c:
+	extab       start:0x80004550 end:0x80004558
+	extabindex  start:0x80004748 end:0x80004754
+	.text       start:0x8002261C end:0x8002274C
+
+auto/text_8002274C_.c:
+	extab       start:0x80004558 end:0x80004560
+	extabindex  start:0x80004754 end:0x80004760
+	.text       start:0x8002274C end:0x800227F0
+
+auto/text_800227F0_.c:
+	extab       start:0x80004560 end:0x80004568
+	extabindex  start:0x80004760 end:0x8000476C
+	.text       start:0x800227F0 end:0x8002285C
+
+auto/text_8002285C_.c:
+	extab       start:0x80004568 end:0x80004570
+	extabindex  start:0x8000476C end:0x80004778
+	.text       start:0x8002285C end:0x80022938
+
+auto/text_80022938_.c:
+	extab       start:0x80004570 end:0x80004578
+	extabindex  start:0x80004778 end:0x80004784
+	.text       start:0x80022938 end:0x80022BC0
+
+auto/text_80022BC0_.c:
+	.text       start:0x80022BC0 end:0x80022CAC
+
+auto/text_80022CAC_.c:
+	extab       start:0x80004578 end:0x80004580
+	extabindex  start:0x80004784 end:0x80004790
+	.text       start:0x80022CAC end:0x80023018
+
+auto/text_80023018_.c:
+	.text       start:0x80023018 end:0x800231FC
+
+auto/text_800231FC_.c:
+	extab       start:0x80004580 end:0x80004588
+	extabindex  start:0x80004790 end:0x8000479C
+	.text       start:0x800231FC end:0x80023718
+
+auto/text_80023718_.c:
+	extab       start:0x80004588 end:0x80004590
+	extabindex  start:0x8000479C end:0x800047A8
+	.text       start:0x80023718 end:0x8002387C
+
+auto/text_8002387C_.c:
+	extab       start:0x80004590 end:0x80004598
+	extabindex  start:0x800047A8 end:0x800047B4
+	.text       start:0x8002387C end:0x80023A1C
+
+auto/text_80023A1C_.c:
+	extab       start:0x80004598 end:0x800045A0
+	extabindex  start:0x800047B4 end:0x800047C0
+	.text       start:0x80023A1C end:0x800241CC
+
+auto/text_800241CC_.c:
+	.text       start:0x800241CC end:0x800241DC
+
+auto/text_800241DC_.c:
+	extab       start:0x800045A0 end:0x800045A8
+	extabindex  start:0x800047C0 end:0x800047CC
+	.text       start:0x800241DC end:0x800242CC
+
+auto/text_800242CC_.c:
+	.text       start:0x800242CC end:0x800242F4
+
+auto/text_800242F4_.c:
+	extab       start:0x800045A8 end:0x800045B0
+	extabindex  start:0x800047CC end:0x800047D8
+	.text       start:0x800242F4 end:0x800243AC
+
+auto/text_800243AC_.c:
+	extab       start:0x800045B0 end:0x800045B8
+	extabindex  start:0x800047D8 end:0x800047E4
+	.text       start:0x800243AC end:0x800246B4
+
+auto/text_800246B4_.c:
+	extab       start:0x800045B8 end:0x800045C0
+	extabindex  start:0x800047E4 end:0x800047F0
+	.text       start:0x800246B4 end:0x80024770
+
+auto/text_80024770_.c:
+	extab       start:0x800045C0 end:0x800045C8
+	extabindex  start:0x800047F0 end:0x800047FC
+	.text       start:0x80024770 end:0x800248A4
+
+auto/text_800248A4_.c:
+	.text       start:0x800248A4 end:0x80024A10
+
+auto/text_80024A10_.c:
+	extab       start:0x800045C8 end:0x800045D0
+	extabindex  start:0x800047FC end:0x80004808
+	.text       start:0x80024A10 end:0x80024BD4
+
+auto/text_80024BD4_.c:
+	.text       start:0x80024BD4 end:0x80024C54
+
+auto/text_80024C54_.c:
+	extab       start:0x800045D0 end:0x800045D8
+	extabindex  start:0x80004808 end:0x80004814
+	.text       start:0x80024C54 end:0x80024D0C
+
+auto/text_80024D0C_.c:
+	extab       start:0x800045D8 end:0x800045E0
+	extabindex  start:0x80004814 end:0x80004820
+	.text       start:0x80024D0C end:0x80024DD8
+
+auto/text_80024DD8_.c:
+	.text       start:0x80024DD8 end:0x8002514C
+
+auto/text_8002514C_.c:
+	extab       start:0x800045E0 end:0x800045E8
+	extabindex  start:0x80004820 end:0x8000482C
+	.text       start:0x8002514C end:0x800251B0
+
+auto/text_800251B0_.c:
+	extab       start:0x800045E8 end:0x800045F0
+	extabindex  start:0x8000482C end:0x80004838
+	.text       start:0x800251B0 end:0x800251C8
+
+auto/text_800251C8_.c:
+	extab       start:0x800045F0 end:0x800045F8
+	extabindex  start:0x80004838 end:0x80004844
+	.text       start:0x800251C8 end:0x80025248
+
 MSL/misc_io.c:
 	.text       start:0x80025248 end:0x80025258
+
+auto/text_800260E4_.c:
+	.text       start:0x800260E4 end:0x8002620C
+
+auto/text_80027238_.c:
+	extab       start:0x80004620 end:0x80004628
+	extabindex  start:0x80004880 end:0x8000488C
+	.text       start:0x80027238 end:0x80027290
+
+auto/text_80027290_.c:
+	extab       start:0x80004628 end:0x80004630
+	extabindex  start:0x8000488C end:0x80004898
+	.text       start:0x80027290 end:0x800272FC
+
+auto/text_800272FC_.c:
+	extab       start:0x80004630 end:0x80004638
+	extabindex  start:0x80004898 end:0x800048A4
+	.text       start:0x800272FC end:0x80027374
+
+auto/text_80027374_.c:
+	extab       start:0x80004638 end:0x80004640
+	extabindex  start:0x800048A4 end:0x800048B0
+	.text       start:0x80027374 end:0x800273F8
+
+auto/text_800273F8_.c:
+	extab       start:0x80004640 end:0x80004648
+	extabindex  start:0x800048B0 end:0x800048BC
+	.text       start:0x800273F8 end:0x80027478
+
+auto/text_80027478_.c:
+	extab       start:0x80004648 end:0x80004650
+	extabindex  start:0x800048BC end:0x800048C8
+	.text       start:0x80027478 end:0x80027550
+
+auto/text_80027550_.c:
+	extab       start:0x80004650 end:0x80004658
+	extabindex  start:0x800048C8 end:0x800048D4
+	.text       start:0x80027550 end:0x80027620
+
+auto/text_80027620_.c:
+	extab       start:0x80004658 end:0x80004660
+	extabindex  start:0x800048D4 end:0x800048E0
+	.text       start:0x80027620 end:0x80027790
+
+auto/text_80027790_.c:
+	extab       start:0x80004660 end:0x80004668
+	extabindex  start:0x800048E0 end:0x800048EC
+	.text       start:0x80027790 end:0x80027E44
+
+auto/text_80027E44_.c:
+	extab       start:0x80004668 end:0x80004670
+	extabindex  start:0x800048EC end:0x800048F8
+	.text       start:0x80027E44 end:0x80028BA4
+
+auto/text_80028BA4_.c:
+	.text       start:0x80028BA4 end:0x80028C34
+
+auto/text_80028C34_.c:
+	extab       start:0x80004670 end:0x80004678
+	extabindex  start:0x800048F8 end:0x80004904
+	.text       start:0x80028C34 end:0x80028CFC
+
+auto/text_80028CFC_.c:
+	.text       start:0x80028CFC end:0x800290B8
+
+auto/text_800290B8_.c:
+	extab       start:0x80004678 end:0x80004680
+	extabindex  start:0x80004904 end:0x80004910
+	.text       start:0x800290B8 end:0x8002A4AC
+
+auto/text_8002A4AC_.c:
+	extab       start:0x80004680 end:0x80004688
+	extabindex  start:0x80004910 end:0x8000491C
+	.text       start:0x8002A4AC end:0x8002A530
+
+auto/text_8002A530_.c:
+	extab       start:0x80004688 end:0x80004690
+	extabindex  start:0x8000491C end:0x80004928
+	.text       start:0x8002A530 end:0x8002A960
+
+auto/text_8002A960_.c:
+	extab       start:0x80004690 end:0x80004698
+	extabindex  start:0x80004928 end:0x80004934
+	.text       start:0x8002A960 end:0x8002AE24
+
+auto/text_8002AE24_.c:
+	extab       start:0x80004698 end:0x800046A0
+	extabindex  start:0x80004934 end:0x80004940
+	.text       start:0x8002AE24 end:0x8002AEE8
+
+auto/text_8002AEE8_.c:
+	.text       start:0x8002AEE8 end:0x8002AF88
+
+auto/text_8002AF88_.c:
+	extab       start:0x800046A0 end:0x800046A8
+	extabindex  start:0x80004940 end:0x8000494C
+	.text       start:0x8002AF88 end:0x8002B058
+
+auto/text_8002B058_.c:
+	.text       start:0x8002B058 end:0x8002B060
+
+auto/text_8002B060_.c:
+	extab       start:0x800046A8 end:0x800046B0
+	extabindex  start:0x8000494C end:0x80004958
+	.text       start:0x8002B060 end:0x8002B0A0
+
+auto/text_8002B0A0_.c:
+	.text       start:0x8002B0A0 end:0x8002B0B0
+
+auto/text_8002B0B0_.c:
+	extab       start:0x800046B0 end:0x800046B8
+	extabindex  start:0x80004958 end:0x80004964
+	.text       start:0x8002B0B0 end:0x8002B0D8
+
+auto/text_8002B0D8_.c:
+	.text       start:0x8002B0D8 end:0x8002F238
 
 runtime/__mem.c:
 	.init       start:0x80004000 end:0x80004134
@@ -64,13 +543,22 @@ revolution/AI/ai.c:
 	.text       start:0x80030150 end:0x800301FC
 	.sbss       start:0x8055D6A8 end:0x8055D6AC
 
+auto/text_800301FC.c:
+	.text       start:0x800301FC end:0x800324D0
+
 revolution/AX/AXSPB.c:
 	.text       start:0x800324D0 end:0x800328E8
 	.bss        start:0x80363BE0 end:0x80363C60
 	.sbss       start:0x8055D790 end:0x8055D7E0
 
+auto/text_800328E8.c:
+	.text       start:0x800328E8 end:0x800334C8
+
 revolution/AX/AXVPB.c:
 	.text       start:0x800334C8 end:0x80033538
+
+auto/text_80033538.c:
+	.text       start:0x80033538 end:0x80033EF4
 
 revolution/BASE/PPCArch.c:
 	.text       start:0x80033EF4 end:0x80034064
@@ -84,9 +572,15 @@ revolution/DB/db.c:
 revolution/DSP/dsp.c:
 	.text       start:0x8003414C end:0x80034194
 
+auto/text_80034194.c:
+	.text       start:0x80034194 end:0x80039CE4
+
 revolution/DVD/dvdqueue.c:
 	.text       start:0x80039CE4 end:0x80039F3C
 	.bss        start:0x8037B610 end:0x8037B630
+
+auto/text_80039F3C.c:
+	.text       start:0x80039F3C end:0x8003BE48
 
 revolution/EXI/EXIBios.c:
 	.text       start:0x8003BE48 end:0x8003D6DC
@@ -105,11 +599,29 @@ revolution/EXI/EXIUart.c:
 revolution/EXI/EXICommon.c:
 	.text       start:0x8003DA10 end:0x8003DB9C
 
+auto/text_8003DB9C.c:
+	.text       start:0x8003DB9C end:0x80045510
+
 revolution/KPAD/KPAD.c:
 	.text       start:0x80045510 end:0x800455D4
 
 revolution/KPAD/KPADReset.c:
 	.text       start:0x800455D4 end:0x80045848
+
+auto/text_80045848.c:
+	.text       start:0x80045848 end:0x80045B6C
+
+revolution/KPAD/KPADAcc.c:
+	.text       start:0x80045B6C end:0x800466B4
+
+auto/text_800466B4.c:
+	.text       start:0x800466B4 end:0x80048210
+
+revolution/KPAD/KPADSampling.c:
+	.text       start:0x80048210 end:0x80048370
+
+auto/text_80048370.c:
+	.text       start:0x80048370 end:0x80049EF8
 
 revolution/MTX/mtxvec.c:
 	.text       start:0x80049EF8 end:0x80049F74
@@ -123,6 +635,9 @@ revolution/MTX/vec.c:
 
 revolution/MTX/quat.c:
 	.text       start:0x8004A204 end:0x8004A258
+
+auto/text_8004A258.c:
+	.text       start:0x8004A258 end:0x8004B554
 
 revolution/OS/OSAlarm.c:
 	.text       start:0x8004B554 end:0x8004BD38
@@ -156,8 +671,14 @@ revolution/OS/OSError.c:
 	.bss        start:0x8037D8B0 end:0x8037D8F4
 	.sdata      start:0x80558F38 end:0x80558F40
 
+auto/text_8004DC08.c:
+	.text       start:0x8004DC08 end:0x8004EBA4
+
 revolution/OS/OSBootDol.c:
 	.text       start:0x8004EBA4 end:0x8004ED84
+
+auto/text_8004ED84.c:
+	.text       start:0x8004ED84 end:0x80050ED8
 
 revolution/OS/OSInterrupt.c:
 	.text       start:0x80050ED8 end:0x80050F48
@@ -261,6 +782,9 @@ revolution/VI/vi.c:
 revolution/WPAD/WPAD.c:
 	.text       start:0x8005D0DC end:0x80068D68
 
+auto/text_80068D68.c:
+	.text       start:0x80068D68 end:0x8009D274
+
 revolution/IPC/ipcMain.c:
 	.text       start:0x8009D274 end:0x8009D2F8
 	.sbss       start:0x8055DCA8 end:0x8055DCC0
@@ -309,3 +833,2401 @@ revolution/SC/scapi_prdinfo.c:
 	.text       start:0x800A466C end:0x800A485C
 	.data       start:0x8031B120 end:0x8031B168
 	.sdata      start:0x805591E8 end:0x805591F0
+
+auto/text_800A485C.cpp:
+	.text       start:0x800A485C end:0x800D58B8
+
+auto/text_800D58B8_.c:
+	.text       start:0x800D58B8 end:0x800D58C4
+	.ctors      start:0x802ED0D4 end:0x802ED0D8
+
+auto/text_800D58C4.cpp:
+	.text       start:0x800D58C4 end:0x800DC6E4
+
+auto/text_800DC6E4_.c:
+	.text       start:0x800DC6E4 end:0x800DC6F0
+	.ctors      start:0x802ED0D8 end:0x802ED0DC
+
+auto/text_800DC6F0.cpp:
+	.text       start:0x800DC6F0 end:0x800DCE04
+
+auto/text_800DCE04_.c:
+	.text       start:0x800DCE04 end:0x800DCE10
+	.ctors      start:0x802ED0DC end:0x802ED0E0
+
+auto/text_800DCE10.cpp:
+	.text       start:0x800DCE10 end:0x800DFC5C
+
+auto/text_800DFC5C_.c:
+	.text       start:0x800DFC5C end:0x800DFC68
+	.ctors      start:0x802ED0E0 end:0x802ED0E4
+
+auto/text_800DFC68.cpp:
+	.text       start:0x800DFC68 end:0x800E2520
+
+auto/text_800E2520_.c:
+	.text       start:0x800E2520 end:0x800E252C
+	.ctors      start:0x802ED0E4 end:0x802ED0E8
+
+auto/text_800E252C.cpp:
+	.text       start:0x800E252C end:0x800E9C2C
+
+auto/text_800E9C2C_.c:
+	.text       start:0x800E9C2C end:0x800E9C38
+	.ctors      start:0x802ED0E8 end:0x802ED0EC
+
+auto/text_800E9C38.cpp:
+	.text       start:0x800E9C38 end:0x800EAE58
+
+auto/text_800EAE58_.c:
+	.text       start:0x800EAE58 end:0x800EAEB0
+	.ctors      start:0x802ED0EC end:0x802ED0F0
+
+auto/text_800EAEB0.cpp:
+	.text       start:0x800EAEB0 end:0x800F0754
+
+auto/text_800F0754_.c:
+	.text       start:0x800F0754 end:0x800F078C
+	.ctors      start:0x802ED0F0 end:0x802ED0F4
+
+auto/text_800F078C.cpp:
+	.text       start:0x800F078C end:0x800F0E58
+
+auto/text_800F0E58_.c:
+	.text       start:0x800F0E58 end:0x800F0E64
+	.ctors      start:0x802ED0F4 end:0x802ED0F8
+
+auto/text_800F0E64.cpp:
+	.text       start:0x800F0E64 end:0x800FD990
+
+auto/text_800FD990_.c:
+	.text       start:0x800FD990 end:0x800FD9C8
+	.ctors      start:0x802ED0F8 end:0x802ED0FC
+
+auto/text_800FD9C8.cpp:
+	.text       start:0x800FD9C8 end:0x800FDE1C
+
+auto/text_800FDE1C_.c:
+	.text       start:0x800FDE1C end:0x800FDE28
+	.ctors      start:0x802ED0FC end:0x802ED100
+
+auto/text_800FDE28.cpp:
+	.text       start:0x800FDE28 end:0x800FF980
+
+auto/text_800FF980_.c:
+	.text       start:0x800FF980 end:0x800FF9B8
+	.ctors      start:0x802ED100 end:0x802ED104
+
+auto/text_800FF9B8.cpp:
+	.text       start:0x800FF9B8 end:0x800FFE88
+
+auto/text_800FFE88_.c:
+	.text       start:0x800FFE88 end:0x800FFE94
+	.ctors      start:0x802ED104 end:0x802ED108
+
+auto/text_800FFE94.cpp:
+	.text       start:0x800FFE94 end:0x8010143C
+
+auto/text_8010143C_.c:
+	.text       start:0x8010143C end:0x80101474
+	.ctors      start:0x802ED108 end:0x802ED10C
+
+auto/text_80101474.cpp:
+	.text       start:0x80101474 end:0x80107180
+
+auto/text_80107180_.c:
+	.text       start:0x80107180 end:0x8010718C
+	.ctors      start:0x802ED10C end:0x802ED110
+
+auto/text_8010718C.cpp:
+	.text       start:0x8010718C end:0x801072C4
+
+auto/text_801072C4_.c:
+	.text       start:0x801072C4 end:0x801072D0
+	.ctors      start:0x802ED110 end:0x802ED114
+
+auto/text_801072D0.cpp:
+	.text       start:0x801072D0 end:0x801076C4
+
+auto/text_801076C4_.c:
+	.text       start:0x801076C4 end:0x801076D0
+	.ctors      start:0x802ED114 end:0x802ED118
+
+auto/text_801076D0.cpp:
+	.text       start:0x801076D0 end:0x80116644
+
+auto/text_80116644_.c:
+	.text       start:0x80116644 end:0x801166C8
+	.ctors      start:0x802ED118 end:0x802ED11C
+
+auto/text_801166C8_.c:
+	.text       start:0x801166C8 end:0x801274C0
+
+auto/text_801274C0_.c:
+	.text       start:0x801274C0 end:0x801274C8
+	.ctors      start:0x802ED11C end:0x802ED120
+
+auto/text_801274C8_.c:
+	.text       start:0x801274C8 end:0x801279E0
+
+auto/text_801279E0_.c:
+	.text       start:0x801279E0 end:0x80127A24
+	.ctors      start:0x802ED120 end:0x802ED124
+
+auto/text_80127A24_.c:
+	.text       start:0x80127A24 end:0x80127B54
+
+auto/text_80127B54_.c:
+	.text       start:0x80127B54 end:0x80127B5C
+	.ctors      start:0x802ED124 end:0x802ED128
+
+auto/text_80127B5C_.c:
+	.text       start:0x80127B5C end:0x80127FC8
+
+auto/text_80127FC8_.c:
+	.text       start:0x80127FC8 end:0x801281A0
+	.ctors      start:0x802ED128 end:0x802ED12C
+
+auto/text_801281A0_.c:
+	.text       start:0x801281A0 end:0x80129290
+
+auto/text_80129290_.c:
+	.text       start:0x80129290 end:0x801292CC
+	.ctors      start:0x802ED12C end:0x802ED130
+
+auto/text_801292CC_.c:
+	.text       start:0x801292CC end:0x8012939C
+
+auto/text_8012939C_.c:
+	.text       start:0x8012939C end:0x801293A4
+	.ctors      start:0x802ED130 end:0x802ED134
+
+auto/text_801293A4_.c:
+	.text       start:0x801293A4 end:0x801293AC
+
+auto/text_801293AC_.c:
+	.text       start:0x801293AC end:0x801293B4
+	.ctors      start:0x802ED134 end:0x802ED138
+
+auto/text_801293B4_.c:
+	.text       start:0x801293B4 end:0x801293F8
+
+auto/text_801293F8_.c:
+	.text       start:0x801293F8 end:0x80129400
+	.ctors      start:0x802ED138 end:0x802ED13C
+
+auto/text_80129400_.c:
+	.text       start:0x80129400 end:0x80129BCC
+
+auto/text_80129BCC_.c:
+	.text       start:0x80129BCC end:0x80129BD4
+	.ctors      start:0x802ED13C end:0x802ED140
+
+auto/text_80129BD4_.c:
+	.text       start:0x80129BD4 end:0x80129C1C
+
+auto/text_80129C1C_.c:
+	.text       start:0x80129C1C end:0x80129C24
+	.ctors      start:0x802ED140 end:0x802ED144
+
+auto/text_80129C24_.c:
+	.text       start:0x80129C24 end:0x8012A134
+
+auto/text_8012A134_.c:
+	.text       start:0x8012A134 end:0x8012A13C
+	.ctors      start:0x802ED144 end:0x802ED148
+
+auto/text_8012A13C_.c:
+	.text       start:0x8012A13C end:0x8012A380
+
+auto/text_8012A380_.c:
+	.text       start:0x8012A380 end:0x8012A388
+	.ctors      start:0x802ED148 end:0x802ED14C
+
+auto/text_8012A388.cpp:
+	.text       start:0x8012A388 end:0x8012F148
+
+auto/text_8012F148_.c:
+	.text       start:0x8012F148 end:0x8012F150
+	.ctors      start:0x802ED14C end:0x802ED150
+
+auto/text_8012F150_.c:
+	.text       start:0x8012F150 end:0x8012F314
+
+auto/text_8012F314_.c:
+	.text       start:0x8012F314 end:0x8012F31C
+	.ctors      start:0x802ED150 end:0x802ED154
+
+auto/text_8012F31C_.c:
+	.text       start:0x8012F31C end:0x8012F574
+
+auto/text_8012F574_.c:
+	.text       start:0x8012F574 end:0x8012F57C
+	.ctors      start:0x802ED154 end:0x802ED158
+
+auto/text_8012F57C_.c:
+	.text       start:0x8012F57C end:0x8012F7D8
+
+auto/text_8012F7D8_.c:
+	.text       start:0x8012F7D8 end:0x8012F7E0
+	.ctors      start:0x802ED158 end:0x802ED15C
+
+auto/text_8012F7E0_.c:
+	.text       start:0x8012F7E0 end:0x8012FAB0
+
+auto/text_8012FAB0_.c:
+	.text       start:0x8012FAB0 end:0x8012FAB8
+	.ctors      start:0x802ED15C end:0x802ED160
+
+auto/text_8012FAB8_.c:
+	.text       start:0x8012FAB8 end:0x80131444
+
+auto/text_80131444_.c:
+	.text       start:0x80131444 end:0x80131588
+	.ctors      start:0x802ED160 end:0x802ED164
+
+auto/text_80131588_.c:
+	.text       start:0x80131588 end:0x80132E74
+
+auto/text_80132E74_.c:
+	.text       start:0x80132E74 end:0x80132E7C
+	.ctors      start:0x802ED164 end:0x802ED168
+
+auto/text_80132E7C_.c:
+	.text       start:0x80132E7C end:0x80133008
+
+auto/text_80133008_.c:
+	.text       start:0x80133008 end:0x80133010
+	.ctors      start:0x802ED168 end:0x802ED16C
+
+auto/text_80133010_.c:
+	.text       start:0x80133010 end:0x80134204
+
+auto/text_80134204_.c:
+	.text       start:0x80134204 end:0x8013420C
+	.ctors      start:0x802ED16C end:0x802ED170
+
+auto/text_8013420C_.c:
+	.text       start:0x8013420C end:0x801345D0
+
+auto/text_801345D0_.c:
+	.text       start:0x801345D0 end:0x801345D8
+	.ctors      start:0x802ED170 end:0x802ED174
+
+auto/text_801345D8_.c:
+	.text       start:0x801345D8 end:0x80134714
+
+auto/text_80134714_.c:
+	.text       start:0x80134714 end:0x8013471C
+	.ctors      start:0x802ED174 end:0x802ED178
+
+auto/text_8013471C_.c:
+	.text       start:0x8013471C end:0x80135270
+
+auto/text_80135270_.c:
+	.text       start:0x80135270 end:0x80135278
+	.ctors      start:0x802ED178 end:0x802ED17C
+
+auto/text_80135278_.c:
+	.text       start:0x80135278 end:0x801368C4
+
+auto/text_801368C4_.c:
+	.text       start:0x801368C4 end:0x801368F8
+	.ctors      start:0x802ED17C end:0x802ED180
+
+auto/text_801368F8_.c:
+	.text       start:0x801368F8 end:0x8013790C
+
+auto/text_8013790C_.c:
+	.text       start:0x8013790C end:0x80137950
+	.ctors      start:0x802ED180 end:0x802ED184
+
+auto/text_80137950_.c:
+	.text       start:0x80137950 end:0x80137D50
+
+auto/text_80137D50_.c:
+	.text       start:0x80137D50 end:0x80137D58
+	.ctors      start:0x802ED184 end:0x802ED188
+
+auto/text_80137D58_.c:
+	.text       start:0x80137D58 end:0x80138BB0
+
+auto/text_80138BB0_.c:
+	.text       start:0x80138BB0 end:0x80138BE4
+	.ctors      start:0x802ED188 end:0x802ED18C
+
+auto/text_80138BE4_.c:
+	.text       start:0x80138BE4 end:0x8013903C
+
+auto/text_8013903C_.c:
+	.text       start:0x8013903C end:0x80139044
+	.ctors      start:0x802ED18C end:0x802ED190
+
+auto/text_80139044_.c:
+	.text       start:0x80139044 end:0x80139080
+
+auto/text_80139080_.c:
+	.text       start:0x80139080 end:0x801390B0
+	.ctors      start:0x802ED190 end:0x802ED194
+
+auto/text_801390B0_.c:
+	.text       start:0x801390B0 end:0x801398B0
+
+auto/text_801398B0_.c:
+	.text       start:0x801398B0 end:0x8013990C
+	.ctors      start:0x802ED194 end:0x802ED198
+
+auto/text_8013990C_.c:
+	.text       start:0x8013990C end:0x8013A1E0
+
+auto/text_8013A1E0_.c:
+	.text       start:0x8013A1E0 end:0x8013A1E8
+	.ctors      start:0x802ED198 end:0x802ED19C
+
+auto/text_8013A1E8_.c:
+	.text       start:0x8013A1E8 end:0x8013A20C
+
+auto/text_8013A20C_.c:
+	.text       start:0x8013A20C end:0x8013A264
+	.ctors      start:0x802ED19C end:0x802ED1A0
+
+auto/text_8013A264_.c:
+	.text       start:0x8013A264 end:0x8013A658
+
+auto/text_8013A658_.c:
+	.text       start:0x8013A658 end:0x8013A660
+	.ctors      start:0x802ED1A0 end:0x802ED1A4
+
+auto/text_8013A660_.c:
+	.text       start:0x8013A660 end:0x8013B7AC
+
+auto/text_8013B7AC_.c:
+	.text       start:0x8013B7AC end:0x8013B7B4
+	.ctors      start:0x802ED1A4 end:0x802ED1A8
+
+auto/text_8013B7B4_.c:
+	.text       start:0x8013B7B4 end:0x8013BC88
+
+auto/text_8013BC88_.c:
+	.text       start:0x8013BC88 end:0x8013BC90
+	.ctors      start:0x802ED1A8 end:0x802ED1AC
+
+auto/text_8013BC90_.c:
+	.text       start:0x8013BC90 end:0x8013C714
+
+auto/text_8013C714_.c:
+	.text       start:0x8013C714 end:0x8013C748
+	.ctors      start:0x802ED1AC end:0x802ED1B0
+
+auto/text_8013C748_.c:
+	.text       start:0x8013C748 end:0x8013C9EC
+
+auto/text_8013C9EC_.c:
+	.text       start:0x8013C9EC end:0x8013C9F4
+	.ctors      start:0x802ED1B0 end:0x802ED1B4
+
+auto/text_8013C9F4_.c:
+	.text       start:0x8013C9F4 end:0x8013CAB4
+
+auto/text_8013CAB4_.c:
+	.text       start:0x8013CAB4 end:0x8013CB10
+	.ctors      start:0x802ED1B4 end:0x802ED1B8
+
+auto/text_8013CB10.cpp:
+	.text       start:0x8013CB10 end:0x8014449C
+
+auto/text_8014449C_.c:
+	.text       start:0x8014449C end:0x80144504
+	.ctors      start:0x802ED1B8 end:0x802ED1BC
+
+auto/text_80144504_.c:
+	.text       start:0x80144504 end:0x80144DE0
+
+auto/text_80144DE0_.c:
+	.text       start:0x80144DE0 end:0x80144E38
+	.ctors      start:0x802ED1BC end:0x802ED1C0
+
+auto/text_80144E38_.c:
+	.text       start:0x80144E38 end:0x80144F38
+
+auto/text_80144F38_.c:
+	.text       start:0x80144F38 end:0x80144F40
+	.ctors      start:0x802ED1C0 end:0x802ED1C4
+
+auto/text_80144F40.cpp:
+	.text       start:0x80144F40 end:0x801490E0
+
+auto/text_801490E0_.c:
+	.text       start:0x801490E0 end:0x801491B8
+	.ctors      start:0x802ED1C4 end:0x802ED1C8
+
+auto/text_801491B8_.c:
+	.text       start:0x801491B8 end:0x80156128
+
+auto/text_80156128_.c:
+	.text       start:0x80156128 end:0x80156188
+	.ctors      start:0x802ED1C8 end:0x802ED1CC
+
+auto/text_80156188.cpp:
+	.text       start:0x80156188 end:0x8015724C
+
+auto/text_8015724C_.c:
+	.text       start:0x8015724C end:0x80157278
+	.ctors      start:0x802ED1CC end:0x802ED1D0
+
+auto/text_80157278.cpp:
+	.text       start:0x80157278 end:0x8015EB98
+
+auto/text_8015EB98_.c:
+	.text       start:0x8015EB98 end:0x8015EBF8
+	.ctors      start:0x802ED1D0 end:0x802ED1D4
+
+auto/text_8015EBF8_.c:
+	.text       start:0x8015EBF8 end:0x801606BC
+
+auto/text_801606BC_.c:
+	.text       start:0x801606BC end:0x8016071C
+	.ctors      start:0x802ED1D4 end:0x802ED1D8
+
+auto/text_8016071C_.c:
+	.text       start:0x8016071C end:0x80160AE8
+
+auto/text_80160AE8_.c:
+	.text       start:0x80160AE8 end:0x80160B14
+	.ctors      start:0x802ED1D8 end:0x802ED1DC
+
+auto/text_80160B14_.c:
+	.text       start:0x80160B14 end:0x80160C2C
+
+auto/text_80160C2C_.c:
+	.text       start:0x80160C2C end:0x80160C8C
+	.ctors      start:0x802ED1DC end:0x802ED1E0
+
+auto/text_80160C8C_.c:
+	.text       start:0x80160C8C end:0x80165910
+
+auto/text_80165910_.c:
+	.text       start:0x80165910 end:0x80165970
+	.ctors      start:0x802ED1E0 end:0x802ED1E4
+
+auto/text_80165970_.c:
+	.text       start:0x80165970 end:0x80167784
+
+auto/text_80167784_.c:
+	.text       start:0x80167784 end:0x801677DC
+	.ctors      start:0x802ED1E4 end:0x802ED1E8
+
+auto/text_801677DC_.c:
+	.text       start:0x801677DC end:0x80167848
+
+auto/text_80167848_.c:
+	.text       start:0x80167848 end:0x80167874
+	.ctors      start:0x802ED1E8 end:0x802ED1EC
+
+auto/text_80167874_.c:
+	.text       start:0x80167874 end:0x8016A040
+
+auto/text_8016A040_.c:
+	.text       start:0x8016A040 end:0x8016A0AC
+	.ctors      start:0x802ED1EC end:0x802ED1F0
+
+auto/text_8016A0AC_.c:
+	.text       start:0x8016A0AC end:0x8016B6DC
+
+auto/text_8016B6DC_.c:
+	.text       start:0x8016B6DC end:0x8016B79C
+	.ctors      start:0x802ED1F0 end:0x802ED1F4
+
+auto/text_8016B79C_.c:
+	.text       start:0x8016B79C end:0x80171648
+
+auto/text_80171648_.c:
+	.text       start:0x80171648 end:0x80171698
+	.ctors      start:0x802ED1F4 end:0x802ED1F8
+
+auto/text_80171698_.c:
+	.text       start:0x80171698 end:0x80171CE4
+
+auto/text_80171CE4_.c:
+	.text       start:0x80171CE4 end:0x80171D10
+	.ctors      start:0x802ED1F8 end:0x802ED1FC
+
+auto/text_80171D10_.c:
+	.text       start:0x80171D10 end:0x80176404
+
+auto/text_80176404_.c:
+	.text       start:0x80176404 end:0x80176460
+	.ctors      start:0x802ED1FC end:0x802ED200
+
+auto/text_80176460_.c:
+	.text       start:0x80176460 end:0x801777D4
+
+auto/text_801777D4_.c:
+	.text       start:0x801777D4 end:0x80177814
+	.ctors      start:0x802ED200 end:0x802ED204
+
+auto/text_80177814_.c:
+	.text       start:0x80177814 end:0x80179CBC
+
+auto/text_80179CBC_.c:
+	.text       start:0x80179CBC end:0x80179D08
+	.ctors      start:0x802ED204 end:0x802ED208
+
+auto/text_80179D08_.c:
+	.text       start:0x80179D08 end:0x8017B0A8
+
+auto/text_8017B0A8_.c:
+	.text       start:0x8017B0A8 end:0x8017B0B0
+	.ctors      start:0x802ED208 end:0x802ED20C
+
+auto/text_8017B0B0_.c:
+	.text       start:0x8017B0B0 end:0x8017D370
+
+auto/text_8017D370_.c:
+	.text       start:0x8017D370 end:0x8017D378
+	.ctors      start:0x802ED20C end:0x802ED210
+
+auto/text_8017D378_.c:
+	.text       start:0x8017D378 end:0x8017EB0C
+
+auto/text_8017EB0C_.c:
+	.text       start:0x8017EB0C end:0x8017EB68
+	.ctors      start:0x802ED210 end:0x802ED214
+
+auto/text_8017EB68_.c:
+	.text       start:0x8017EB68 end:0x80181854
+
+auto/text_80181854_.c:
+	.text       start:0x80181854 end:0x8018185C
+	.ctors      start:0x802ED214 end:0x802ED218
+
+auto/text_8018185C_.c:
+	.text       start:0x8018185C end:0x8018BF6C
+
+auto/text_8018BF6C_.c:
+	.text       start:0x8018BF6C end:0x8018BFA0
+	.ctors      start:0x802ED218 end:0x802ED21C
+
+auto/text_8018BFA0_.c:
+	.text       start:0x8018BFA0 end:0x8018FACC
+
+auto/text_8018FACC_.c:
+	.text       start:0x8018FACC end:0x8018FB18
+	.ctors      start:0x802ED21C end:0x802ED220
+
+auto/text_8018FB18_.c:
+	.text       start:0x8018FB18 end:0x8019306C
+
+auto/text_8019306C_.c:
+	.text       start:0x8019306C end:0x8019309C
+	.ctors      start:0x802ED220 end:0x802ED224
+
+auto/text_8019309C_.c:
+	.text       start:0x8019309C end:0x80198EAC
+
+auto/text_80198EAC_.c:
+	.text       start:0x80198EAC end:0x80198F14
+	.ctors      start:0x802ED224 end:0x802ED228
+
+auto/text_80198F14.cpp:
+	.text       start:0x80198F14 end:0x801A51DC
+
+auto/text_801A51DC_.c:
+	.text       start:0x801A51DC end:0x801A520C
+	.ctors      start:0x802ED228 end:0x802ED22C
+
+auto/text_801A520C_.c:
+	.text       start:0x801A520C end:0x801A6344
+
+auto/text_801A6344_.c:
+	.text       start:0x801A6344 end:0x801A6370
+	.ctors      start:0x802ED22C end:0x802ED230
+
+auto/text_801A6370_.c:
+	.text       start:0x801A6370 end:0x801A75AC
+
+auto/text_801A75AC_.c:
+	.text       start:0x801A75AC end:0x801A75B4
+	.ctors      start:0x802ED230 end:0x802ED234
+
+auto/text_801A75B4_.c:
+	.text       start:0x801A75B4 end:0x801A937C
+
+auto/text_801A937C_.c:
+	.text       start:0x801A937C end:0x801A9660
+	.ctors      start:0x802ED234 end:0x802ED238
+
+auto/text_801A9660_.c:
+	.text       start:0x801A9660 end:0x801ADAC8
+
+auto/text_801ADAC8_.c:
+	.text       start:0x801ADAC8 end:0x801ADAF4
+	.ctors      start:0x802ED238 end:0x802ED23C
+
+auto/text_801ADAF4_.c:
+	.text       start:0x801ADAF4 end:0x801AE570
+
+auto/text_801AE570_.c:
+	.text       start:0x801AE570 end:0x801AE59C
+	.ctors      start:0x802ED23C end:0x802ED240
+
+auto/text_801AE59C_.c:
+	.text       start:0x801AE59C end:0x801AE5B0
+
+auto/text_801AE5B0_.c:
+	.text       start:0x801AE5B0 end:0x801AE600
+	.ctors      start:0x802ED240 end:0x802ED244
+
+auto/text_801AE600_.c:
+	.text       start:0x801AE600 end:0x801AFAC0
+
+auto/text_801AFAC0_.c:
+	.text       start:0x801AFAC0 end:0x801AFAC8
+	.ctors      start:0x802ED244 end:0x802ED248
+
+auto/text_801AFAC8_.c:
+	.text       start:0x801AFAC8 end:0x801AFC20
+
+auto/text_801AFC20_.c:
+	.text       start:0x801AFC20 end:0x801AFC28
+	.ctors      start:0x802ED248 end:0x802ED24C
+
+auto/text_801AFC28_.c:
+	.text       start:0x801AFC28 end:0x801B06C0
+
+auto/text_801B06C0_.c:
+	.text       start:0x801B06C0 end:0x801B06C8
+	.ctors      start:0x802ED24C end:0x802ED250
+
+auto/text_801B06C8_.c:
+	.text       start:0x801B06C8 end:0x801B06D0
+
+auto/text_801B06D0_.c:
+	.text       start:0x801B06D0 end:0x801B06D8
+	.ctors      start:0x802ED250 end:0x802ED254
+
+auto/text_801B06D8_.c:
+	.text       start:0x801B06D8 end:0x801B329C
+
+auto/text_801B329C_.c:
+	.text       start:0x801B329C end:0x801B32C8
+	.ctors      start:0x802ED254 end:0x802ED258
+
+auto/text_801B32C8_.c:
+	.text       start:0x801B32C8 end:0x801B45D8
+
+auto/text_801B45D8_.c:
+	.text       start:0x801B45D8 end:0x801B45E0
+	.ctors      start:0x802ED258 end:0x802ED25C
+
+auto/text_801B45E0_.c:
+	.text       start:0x801B45E0 end:0x801B53DC
+
+auto/text_801B53DC_.c:
+	.text       start:0x801B53DC end:0x801B53E4
+	.ctors      start:0x802ED25C end:0x802ED260
+
+auto/text_801B53E4_.c:
+	.text       start:0x801B53E4 end:0x801B5F38
+
+auto/text_801B5F38_.c:
+	.text       start:0x801B5F38 end:0x801B5F40
+	.ctors      start:0x802ED260 end:0x802ED264
+
+auto/text_801B5F40_.c:
+	.text       start:0x801B5F40 end:0x801B6484
+
+auto/text_801B6484_.c:
+	.text       start:0x801B6484 end:0x801B64B4
+	.ctors      start:0x802ED264 end:0x802ED268
+
+auto/text_801B64B4_.c:
+	.text       start:0x801B64B4 end:0x801B6620
+
+auto/text_801B6620_.c:
+	.text       start:0x801B6620 end:0x801B664C
+	.ctors      start:0x802ED268 end:0x802ED26C
+
+auto/text_801B664C_.c:
+	.text       start:0x801B664C end:0x801B6670
+
+auto/text_801B6670_.c:
+	.text       start:0x801B6670 end:0x801B7688
+	.ctors      start:0x802ED26C end:0x802ED270
+
+auto/text_801B7688_.c:
+	.text       start:0x801B7688 end:0x801B81D8
+
+auto/text_801B81D8_.c:
+	.text       start:0x801B81D8 end:0x801B81E0
+	.ctors      start:0x802ED270 end:0x802ED274
+
+auto/text_801B81E0_.c:
+	.text       start:0x801B81E0 end:0x801B8B58
+
+auto/text_801B8B58_.c:
+	.text       start:0x801B8B58 end:0x801B8B84
+	.ctors      start:0x802ED274 end:0x802ED278
+
+auto/text_801B8B84_.c:
+	.text       start:0x801B8B84 end:0x801B8CB8
+
+auto/text_801B8CB8_.c:
+	.text       start:0x801B8CB8 end:0x801B8CC0
+	.ctors      start:0x802ED278 end:0x802ED27C
+
+auto/text_801B8CC0_.c:
+	.text       start:0x801B8CC0 end:0x801BA05C
+
+auto/text_801BA05C_.c:
+	.text       start:0x801BA05C end:0x801BA088
+	.ctors      start:0x802ED27C end:0x802ED280
+
+auto/text_801BA088_.c:
+	.text       start:0x801BA088 end:0x801BD620
+
+auto/text_801BD620_.c:
+	.text       start:0x801BD620 end:0x801BD628
+	.ctors      start:0x802ED280 end:0x802ED284
+
+auto/text_801BD628_.c:
+	.text       start:0x801BD628 end:0x801BF1C4
+
+auto/text_801BF1C4_.c:
+	.text       start:0x801BF1C4 end:0x801BF210
+	.ctors      start:0x802ED284 end:0x802ED288
+
+auto/text_801BF210_.c:
+	.text       start:0x801BF210 end:0x801C1070
+
+auto/text_801C1070_.c:
+	.text       start:0x801C1070 end:0x801C109C
+	.ctors      start:0x802ED288 end:0x802ED28C
+
+auto/text_801C109C.cpp:
+	.text       start:0x801C109C end:0x801C2F2C
+
+auto/text_801C2F2C_.c:
+	.text       start:0x801C2F2C end:0x801C2F58
+	.ctors      start:0x802ED28C end:0x802ED290
+
+auto/text_801C2F58_.c:
+	.text       start:0x801C2F58 end:0x801CB2A4
+
+auto/text_801CB2A4_.c:
+	.text       start:0x801CB2A4 end:0x801CB2D8
+	.ctors      start:0x802ED290 end:0x802ED294
+
+auto/text_801CB2D8_.c:
+	.text       start:0x801CB2D8 end:0x801CEC78
+
+auto/text_801CEC78_.c:
+	.text       start:0x801CEC78 end:0x801CEC80
+	.ctors      start:0x802ED294 end:0x802ED298
+
+auto/text_801CEC80_.c:
+	.text       start:0x801CEC80 end:0x801CEFA4
+
+auto/text_801CEFA4_.c:
+	.text       start:0x801CEFA4 end:0x801CEFAC
+	.ctors      start:0x802ED298 end:0x802ED29C
+
+auto/text_801CEFAC_.c:
+	.text       start:0x801CEFAC end:0x801CF078
+
+auto/text_801CF078_.c:
+	.text       start:0x801CF078 end:0x801CF080
+	.ctors      start:0x802ED29C end:0x802ED2A0
+
+auto/text_801CF080_.c:
+	.text       start:0x801CF080 end:0x801D0284
+
+auto/text_801D0284_.c:
+	.text       start:0x801D0284 end:0x801D02B0
+	.ctors      start:0x802ED2A0 end:0x802ED2A4
+
+auto/text_801D02B0_.c:
+	.text       start:0x801D02B0 end:0x801D0588
+
+auto/text_801D0588_.c:
+	.text       start:0x801D0588 end:0x801D0590
+	.ctors      start:0x802ED2A4 end:0x802ED2A8
+
+auto/text_801D0590_.c:
+	.text       start:0x801D0590 end:0x801D0AA0
+
+auto/text_801D0AA0_.c:
+	.text       start:0x801D0AA0 end:0x801D0B34
+	.ctors      start:0x802ED2A8 end:0x802ED2AC
+
+auto/text_801D0B34_.c:
+	.text       start:0x801D0B34 end:0x801D0CE8
+
+auto/text_801D0CE8_.c:
+	.text       start:0x801D0CE8 end:0x801D0CF0
+	.ctors      start:0x802ED2AC end:0x802ED2B0
+
+auto/text_801D0CF0_.c:
+	.text       start:0x801D0CF0 end:0x801D0F9C
+
+auto/text_801D0F9C_.c:
+	.text       start:0x801D0F9C end:0x801D0FA4
+	.ctors      start:0x802ED2B0 end:0x802ED2B4
+
+auto/text_801D0FA4_.c:
+	.text       start:0x801D0FA4 end:0x801D117C
+
+auto/text_801D117C_.c:
+	.text       start:0x801D117C end:0x801D1184
+	.ctors      start:0x802ED2B4 end:0x802ED2B8
+
+auto/text_801D1184_.c:
+	.text       start:0x801D1184 end:0x801D14E4
+
+auto/text_801D14E4_.c:
+	.text       start:0x801D14E4 end:0x801D14EC
+	.ctors      start:0x802ED2B8 end:0x802ED2BC
+
+auto/text_801D14EC_.c:
+	.text       start:0x801D14EC end:0x801D1C60
+
+auto/text_801D1C60_.c:
+	.text       start:0x801D1C60 end:0x801D1C68
+	.ctors      start:0x802ED2BC end:0x802ED2C0
+
+auto/text_801D1C68_.c:
+	.text       start:0x801D1C68 end:0x801D21B8
+
+auto/text_801D21B8_.c:
+	.text       start:0x801D21B8 end:0x801D21C0
+	.ctors      start:0x802ED2C0 end:0x802ED2C4
+
+auto/text_801D21C0_.c:
+	.text       start:0x801D21C0 end:0x801D3264
+
+auto/text_801D3264_.c:
+	.text       start:0x801D3264 end:0x801D32C8
+	.ctors      start:0x802ED2C4 end:0x802ED2C8
+
+auto/text_801D32C8_.c:
+	.text       start:0x801D32C8 end:0x801D472C
+
+auto/text_801D472C_.c:
+	.text       start:0x801D472C end:0x801D4734
+	.ctors      start:0x802ED2C8 end:0x802ED2CC
+
+auto/text_801D4734_.c:
+	.text       start:0x801D4734 end:0x801D8FF8
+
+auto/text_801D8FF8_.c:
+	.text       start:0x801D8FF8 end:0x801D9090
+	.ctors      start:0x802ED2CC end:0x802ED2D0
+
+auto/text_801D9090_.c:
+	.text       start:0x801D9090 end:0x801D9CBC
+
+auto/text_801D9CBC_.c:
+	.text       start:0x801D9CBC end:0x801D9CC4
+	.ctors      start:0x802ED2D0 end:0x802ED2D4
+
+auto/text_801D9CC4_.c:
+	.text       start:0x801D9CC4 end:0x801DA6E4
+
+auto/text_801DA6E4_.c:
+	.text       start:0x801DA6E4 end:0x801DA6EC
+	.ctors      start:0x802ED2D4 end:0x802ED2D8
+
+auto/text_801DA6EC_.c:
+	.text       start:0x801DA6EC end:0x801DB338
+
+auto/text_801DB338_.c:
+	.text       start:0x801DB338 end:0x801DB340
+	.ctors      start:0x802ED2D8 end:0x802ED2DC
+
+auto/text_801DB340_.c:
+	.text       start:0x801DB340 end:0x801DDE70
+
+auto/text_801DDE70_.c:
+	.text       start:0x801DDE70 end:0x801DDE78
+	.ctors      start:0x802ED2DC end:0x802ED2E0
+
+auto/text_801DDE78_.c:
+	.text       start:0x801DDE78 end:0x801DE798
+
+auto/text_801DE798_.c:
+	.text       start:0x801DE798 end:0x801DE7E8
+	.ctors      start:0x802ED2E0 end:0x802ED2E4
+
+auto/text_801DE7E8_.c:
+	.text       start:0x801DE7E8 end:0x801DF3BC
+
+auto/text_801DF3BC_.c:
+	.text       start:0x801DF3BC end:0x801DF678
+	.ctors      start:0x802ED2E4 end:0x802ED2E8
+
+auto/text_801DF678_.c:
+	.text       start:0x801DF678 end:0x801E06E4
+
+auto/text_801E06E4_.c:
+	.text       start:0x801E06E4 end:0x801E0710
+	.ctors      start:0x802ED2E8 end:0x802ED2EC
+
+auto/text_801E0710_.c:
+	.text       start:0x801E0710 end:0x801E186C
+
+auto/text_801E186C_.c:
+	.text       start:0x801E186C end:0x801E1874
+	.ctors      start:0x802ED2EC end:0x802ED2F0
+
+auto/text_801E1874_.c:
+	.text       start:0x801E1874 end:0x801E1F84
+
+auto/text_801E1F84_.c:
+	.text       start:0x801E1F84 end:0x801E1F8C
+	.ctors      start:0x802ED2F0 end:0x802ED2F4
+
+auto/text_801E1F8C_.c:
+	.text       start:0x801E1F8C end:0x801E2BEC
+
+auto/text_801E2BEC_.c:
+	.text       start:0x801E2BEC end:0x801E2C1C
+	.ctors      start:0x802ED2F4 end:0x802ED2F8
+
+auto/text_801E2C1C_.c:
+	.text       start:0x801E2C1C end:0x801E3638
+
+auto/text_801E3638_.c:
+	.text       start:0x801E3638 end:0x801E3640
+	.ctors      start:0x802ED2F8 end:0x802ED2FC
+
+auto/text_801E3640_.c:
+	.text       start:0x801E3640 end:0x801E45A0
+
+auto/text_801E45A0_.c:
+	.text       start:0x801E45A0 end:0x801E45CC
+	.ctors      start:0x802ED2FC end:0x802ED300
+
+auto/text_801E45CC_.c:
+	.text       start:0x801E45CC end:0x801E49E0
+
+auto/text_801E49E0_.c:
+	.text       start:0x801E49E0 end:0x801E4A2C
+	.ctors      start:0x802ED300 end:0x802ED304
+
+auto/text_801E4A2C_.c:
+	.text       start:0x801E4A2C end:0x801E4E3C
+
+auto/text_801E4E3C_.c:
+	.text       start:0x801E4E3C end:0x801E4E44
+	.ctors      start:0x802ED304 end:0x802ED308
+
+auto/text_801E4E44_.c:
+	.text       start:0x801E4E44 end:0x801E5924
+
+auto/text_801E5924_.c:
+	.text       start:0x801E5924 end:0x801E592C
+	.ctors      start:0x802ED308 end:0x802ED30C
+
+auto/text_801E592C_.c:
+	.text       start:0x801E592C end:0x801E68CC
+
+auto/text_801E68CC_.c:
+	.text       start:0x801E68CC end:0x801E68D4
+	.ctors      start:0x802ED30C end:0x802ED310
+
+auto/text_801E68D4_.c:
+	.text       start:0x801E68D4 end:0x801E76A0
+
+auto/text_801E76A0_.c:
+	.text       start:0x801E76A0 end:0x801E76A8
+	.ctors      start:0x802ED310 end:0x802ED314
+
+auto/text_801E76A8_.c:
+	.text       start:0x801E76A8 end:0x801E7898
+
+auto/text_801E7898_.c:
+	.text       start:0x801E7898 end:0x801E78A0
+	.ctors      start:0x802ED314 end:0x802ED318
+
+auto/text_801E78A0_.c:
+	.text       start:0x801E78A0 end:0x801E78A4
+
+auto/text_801E78A4_.c:
+	.text       start:0x801E78A4 end:0x801E78D8
+	.ctors      start:0x802ED318 end:0x802ED31C
+
+auto/text_801E78D8_.c:
+	.text       start:0x801E78D8 end:0x801E9C18
+
+auto/text_801E9C18_.c:
+	.text       start:0x801E9C18 end:0x801E9C80
+	.ctors      start:0x802ED31C end:0x802ED320
+
+auto/text_801E9C80_.c:
+	.text       start:0x801E9C80 end:0x801EA1F4
+
+auto/text_801EA1F4_.c:
+	.text       start:0x801EA1F4 end:0x801EA1FC
+	.ctors      start:0x802ED320 end:0x802ED324
+
+auto/text_801EA1FC_.c:
+	.text       start:0x801EA1FC end:0x801EA4AC
+
+auto/text_801EA4AC_.c:
+	.text       start:0x801EA4AC end:0x801EA4B4
+	.ctors      start:0x802ED324 end:0x802ED328
+
+auto/text_801EA4B4_.c:
+	.text       start:0x801EA4B4 end:0x801EA4BC
+
+auto/text_801EA4BC_.c:
+	.text       start:0x801EA4BC end:0x801EA4C4
+	.ctors      start:0x802ED328 end:0x802ED32C
+
+auto/text_801EA4C4_.c:
+	.text       start:0x801EA4C4 end:0x801EAB24
+
+auto/text_801EAB24_.c:
+	.text       start:0x801EAB24 end:0x801EAB2C
+	.ctors      start:0x802ED32C end:0x802ED330
+
+auto/text_801EAB2C_.c:
+	.text       start:0x801EAB2C end:0x801EAFCC
+
+auto/text_801EAFCC_.c:
+	.text       start:0x801EAFCC end:0x801EAFD4
+	.ctors      start:0x802ED330 end:0x802ED334
+
+auto/text_801EAFD4_.c:
+	.text       start:0x801EAFD4 end:0x801EC1A0
+
+auto/text_801EC1A0_.c:
+	.text       start:0x801EC1A0 end:0x801EC1D4
+	.ctors      start:0x802ED334 end:0x802ED338
+
+auto/text_801EC1D4_.c:
+	.text       start:0x801EC1D4 end:0x801EEF7C
+
+auto/text_801EEF7C_.c:
+	.text       start:0x801EEF7C end:0x801EEFC8
+	.ctors      start:0x802ED338 end:0x802ED33C
+
+auto/text_801EEFC8_.c:
+	.text       start:0x801EEFC8 end:0x801EF188
+
+auto/text_801EF188_.c:
+	.text       start:0x801EF188 end:0x801EF190
+	.ctors      start:0x802ED33C end:0x802ED340
+
+auto/text_801EF190_.c:
+	.text       start:0x801EF190 end:0x801EFF44
+
+auto/text_801EFF44_.c:
+	.text       start:0x801EFF44 end:0x801EFF4C
+	.ctors      start:0x802ED340 end:0x802ED344
+
+auto/text_801EFF4C_.c:
+	.text       start:0x801EFF4C end:0x801F1BF8
+
+auto/text_801F1BF8_.c:
+	.text       start:0x801F1BF8 end:0x801F1C24
+	.ctors      start:0x802ED344 end:0x802ED348
+
+auto/text_801F1C24_.c:
+	.text       start:0x801F1C24 end:0x801F4CA4
+
+auto/text_801F4CA4_.c:
+	.text       start:0x801F4CA4 end:0x801F4CD8
+	.ctors      start:0x802ED348 end:0x802ED34C
+
+auto/text_801F4CD8_.c:
+	.text       start:0x801F4CD8 end:0x801F7A04
+
+auto/text_801F7A04_.c:
+	.text       start:0x801F7A04 end:0x801F7A0C
+	.ctors      start:0x802ED34C end:0x802ED350
+
+auto/text_801F7A0C.cpp:
+	.text       start:0x801F7A0C end:0x801FC85C
+
+auto/text_801FC85C_.c:
+	.text       start:0x801FC85C end:0x801FC8A8
+	.ctors      start:0x802ED350 end:0x802ED354
+
+auto/text_801FC8A8_.c:
+	.text       start:0x801FC8A8 end:0x801FC90C
+
+auto/text_801FC90C_.c:
+	.text       start:0x801FC90C end:0x801FC914
+	.ctors      start:0x802ED354 end:0x802ED358
+
+auto/text_801FC914.cpp:
+	.text       start:0x801FC914 end:0x801FFADC
+
+auto/text_801FFADC_.c:
+	.text       start:0x801FFADC end:0x801FFB08
+	.ctors      start:0x802ED358 end:0x802ED35C
+
+auto/text_801FFB08_.c:
+	.text       start:0x801FFB08 end:0x802021DC
+
+auto/text_802021DC_.c:
+	.text       start:0x802021DC end:0x80202218
+	.ctors      start:0x802ED35C end:0x802ED360
+
+auto/text_80202218_.c:
+	.text       start:0x80202218 end:0x80202B8C
+
+auto/text_80202B8C_.c:
+	.text       start:0x80202B8C end:0x80202BE4
+	.ctors      start:0x802ED360 end:0x802ED364
+
+auto/text_80202BE4_.c:
+	.text       start:0x80202BE4 end:0x80203F10
+
+auto/text_80203F10_.c:
+	.text       start:0x80203F10 end:0x80203F88
+	.ctors      start:0x802ED364 end:0x802ED368
+
+auto/text_80203F88_.c:
+	.text       start:0x80203F88 end:0x802042FC
+
+auto/text_802042FC_.c:
+	.text       start:0x802042FC end:0x80204330
+	.ctors      start:0x802ED368 end:0x802ED36C
+
+auto/text_80204330_.c:
+	.text       start:0x80204330 end:0x80204A54
+
+auto/text_80204A54_.c:
+	.text       start:0x80204A54 end:0x80204AA4
+	.ctors      start:0x802ED36C end:0x802ED370
+
+auto/text_80204AA4_.c:
+	.text       start:0x80204AA4 end:0x802057A0
+
+auto/text_802057A0_.c:
+	.text       start:0x802057A0 end:0x802057A8
+	.ctors      start:0x802ED370 end:0x802ED374
+
+auto/text_802057A8_.c:
+	.text       start:0x802057A8 end:0x802062BC
+
+auto/text_802062BC_.c:
+	.text       start:0x802062BC end:0x802062E8
+	.ctors      start:0x802ED374 end:0x802ED378
+
+auto/text_802062E8.cpp:
+	.text       start:0x802062E8 end:0x80207958
+
+auto/text_80207958_.c:
+	.text       start:0x80207958 end:0x80207960
+	.ctors      start:0x802ED378 end:0x802ED37C
+
+auto/text_80207960_.c:
+	.text       start:0x80207960 end:0x80208A10
+
+auto/text_80208A10_.c:
+	.text       start:0x80208A10 end:0x80208A18
+	.ctors      start:0x802ED37C end:0x802ED380
+
+auto/text_80208A18_.c:
+	.text       start:0x80208A18 end:0x80209410
+
+auto/text_80209410_.c:
+	.text       start:0x80209410 end:0x80209448
+	.ctors      start:0x802ED380 end:0x802ED384
+
+auto/text_80209448_.c:
+	.text       start:0x80209448 end:0x80209D04
+
+auto/text_80209D04_.c:
+	.text       start:0x80209D04 end:0x80209D4C
+	.ctors      start:0x802ED384 end:0x802ED388
+
+auto/text_80209D4C_.c:
+	.text       start:0x80209D4C end:0x80209FF4
+
+auto/text_80209FF4_.c:
+	.text       start:0x80209FF4 end:0x80209FFC
+	.ctors      start:0x802ED388 end:0x802ED38C
+
+auto/text_80209FFC_.c:
+	.text       start:0x80209FFC end:0x8020A6A4
+
+auto/text_8020A6A4_.c:
+	.text       start:0x8020A6A4 end:0x8020A6AC
+	.ctors      start:0x802ED38C end:0x802ED390
+
+auto/text_8020A6AC_.c:
+	.text       start:0x8020A6AC end:0x8020BCB8
+
+auto/text_8020BCB8_.c:
+	.text       start:0x8020BCB8 end:0x8020BCE4
+	.ctors      start:0x802ED390 end:0x802ED394
+
+auto/text_8020BCE4_.c:
+	.text       start:0x8020BCE4 end:0x8020C114
+
+auto/text_8020C114_.c:
+	.text       start:0x8020C114 end:0x8020C140
+	.ctors      start:0x802ED394 end:0x802ED398
+
+auto/text_8020C140_.c:
+	.text       start:0x8020C140 end:0x8020CA28
+
+auto/text_8020CA28_.c:
+	.text       start:0x8020CA28 end:0x8020CA30
+	.ctors      start:0x802ED398 end:0x802ED39C
+
+auto/text_8020CA30_.c:
+	.text       start:0x8020CA30 end:0x8020CF60
+
+auto/text_8020CF60_.c:
+	.text       start:0x8020CF60 end:0x8020CF68
+	.ctors      start:0x802ED39C end:0x802ED3A0
+
+auto/text_8020CF68_.c:
+	.text       start:0x8020CF68 end:0x8020DE24
+
+auto/text_8020DE24_.c:
+	.text       start:0x8020DE24 end:0x8020DE74
+	.ctors      start:0x802ED3A0 end:0x802ED3A4
+
+auto/text_8020DE74_.c:
+	.text       start:0x8020DE74 end:0x8020F3AC
+
+auto/text_8020F3AC_.c:
+	.text       start:0x8020F3AC end:0x8020F3B4
+	.ctors      start:0x802ED3A4 end:0x802ED3A8
+
+auto/text_8020F3B4_.c:
+	.text       start:0x8020F3B4 end:0x802114F4
+
+auto/text_802114F4_.c:
+	.text       start:0x802114F4 end:0x802115AC
+	.ctors      start:0x802ED3A8 end:0x802ED3AC
+
+auto/text_802115AC.cpp:
+	.text       start:0x802115AC end:0x80215CF4
+
+auto/text_80215CF4_.c:
+	.text       start:0x80215CF4 end:0x80215E68
+	.ctors      start:0x802ED3AC end:0x802ED3B0
+
+auto/text_80215E68_.c:
+	.text       start:0x80215E68 end:0x80216CBC
+
+auto/text_80216CBC_.c:
+	.text       start:0x80216CBC end:0x80216D14
+	.ctors      start:0x802ED3B0 end:0x802ED3B4
+
+auto/text_80216D14_.c:
+	.text       start:0x80216D14 end:0x80218E48
+
+auto/text_80218E48_.c:
+	.text       start:0x80218E48 end:0x80218E98
+	.ctors      start:0x802ED3B4 end:0x802ED3B8
+
+auto/text_80218E98.cpp:
+	.text       start:0x80218E98 end:0x8022A594
+
+auto/text_8022A594_.c:
+	.text       start:0x8022A594 end:0x8022A5E4
+	.ctors      start:0x802ED3B8 end:0x802ED3BC
+
+auto/text_8022A5E4_.c:
+	.text       start:0x8022A5E4 end:0x8022D088
+
+auto/text_8022D088_.c:
+	.text       start:0x8022D088 end:0x8022D0D8
+	.ctors      start:0x802ED3BC end:0x802ED3C0
+
+auto/text_8022D0D8_.c:
+	.text       start:0x8022D0D8 end:0x8022D1E0
+
+auto/text_8022D1E0_.c:
+	.text       start:0x8022D1E0 end:0x8022D228
+	.ctors      start:0x802ED3C0 end:0x802ED3C4
+
+auto/text_8022D228_.c:
+	.text       start:0x8022D228 end:0x8022E0A4
+
+auto/text_8022E0A4_.c:
+	.text       start:0x8022E0A4 end:0x8022E0EC
+	.ctors      start:0x802ED3C4 end:0x802ED3C8
+
+auto/text_8022E0EC_.c:
+	.text       start:0x8022E0EC end:0x8022E998
+
+auto/text_8022E998_.c:
+	.text       start:0x8022E998 end:0x8022E9E0
+	.ctors      start:0x802ED3C8 end:0x802ED3CC
+
+auto/text_8022E9E0_.c:
+	.text       start:0x8022E9E0 end:0x8022F21C
+
+auto/text_8022F21C_.c:
+	.text       start:0x8022F21C end:0x8022F248
+	.ctors      start:0x802ED3CC end:0x802ED3D0
+
+auto/text_8022F248_.c:
+	.text       start:0x8022F248 end:0x80230040
+
+auto/text_80230040_.c:
+	.text       start:0x80230040 end:0x80230090
+	.ctors      start:0x802ED3D0 end:0x802ED3D4
+
+auto/text_80230090_.c:
+	.text       start:0x80230090 end:0x802314B4
+
+auto/text_802314B4_.c:
+	.text       start:0x802314B4 end:0x80231504
+	.ctors      start:0x802ED3D4 end:0x802ED3D8
+
+auto/text_80231504_.c:
+	.text       start:0x80231504 end:0x80234BD0
+
+auto/text_80234BD0_.c:
+	.text       start:0x80234BD0 end:0x80234C94
+	.ctors      start:0x802ED3D8 end:0x802ED3DC
+
+auto/text_80234C94_.c:
+	.text       start:0x80234C94 end:0x80236524
+
+auto/text_80236524_.c:
+	.text       start:0x80236524 end:0x80236550
+	.ctors      start:0x802ED3DC end:0x802ED3E0
+
+auto/text_80236550_.c:
+	.text       start:0x80236550 end:0x802366D8
+
+auto/text_802366D8_.c:
+	.text       start:0x802366D8 end:0x80236728
+	.ctors      start:0x802ED3E0 end:0x802ED3E4
+
+auto/text_80236728_.c:
+	.text       start:0x80236728 end:0x80238714
+
+auto/text_80238714_.c:
+	.text       start:0x80238714 end:0x8023875C
+	.ctors      start:0x802ED3E4 end:0x802ED3E8
+
+auto/text_8023875C_.c:
+	.text       start:0x8023875C end:0x80238BC8
+
+auto/text_80238BC8_.c:
+	.text       start:0x80238BC8 end:0x80238BF4
+	.ctors      start:0x802ED3E8 end:0x802ED3EC
+
+auto/text_80238BF4_.c:
+	.text       start:0x80238BF4 end:0x8023990C
+
+auto/text_8023990C_.c:
+	.text       start:0x8023990C end:0x8023995C
+	.ctors      start:0x802ED3EC end:0x802ED3F0
+
+auto/text_8023995C_.c:
+	.text       start:0x8023995C end:0x802399AC
+	.ctors      start:0x802ED3F0 end:0x802ED3F4
+
+auto/text_802399AC_.c:
+	.text       start:0x802399AC end:0x8023B590
+
+auto/text_8023B590_.c:
+	.text       start:0x8023B590 end:0x8023B5E0
+	.ctors      start:0x802ED3F4 end:0x802ED3F8
+
+auto/text_8023B5E0_.c:
+	.text       start:0x8023B5E0 end:0x8023B5E4
+
+auto/text_8023B5E4_.c:
+	.text       start:0x8023B5E4 end:0x8023B5EC
+	.ctors      start:0x802ED3F8 end:0x802ED3FC
+
+auto/text_8023B5EC_.c:
+	.text       start:0x8023B5EC end:0x8023B714
+
+auto/text_8023B714_.c:
+	.text       start:0x8023B714 end:0x8023B764
+	.ctors      start:0x802ED3FC end:0x802ED400
+
+auto/text_8023B764_.c:
+	.text       start:0x8023B764 end:0x8023C26C
+
+auto/text_8023C26C_.c:
+	.text       start:0x8023C26C end:0x8023C2B4
+	.ctors      start:0x802ED400 end:0x802ED404
+
+auto/text_8023C2B4_.c:
+	.text       start:0x8023C2B4 end:0x8023C9C8
+
+auto/text_8023C9C8_.c:
+	.text       start:0x8023C9C8 end:0x8023CA18
+	.ctors      start:0x802ED404 end:0x802ED408
+
+auto/text_8023CA18_.c:
+	.text       start:0x8023CA18 end:0x8023D470
+
+auto/text_8023D470_.c:
+	.text       start:0x8023D470 end:0x8023D4B8
+	.ctors      start:0x802ED408 end:0x802ED40C
+
+auto/text_8023D4B8_.c:
+	.text       start:0x8023D4B8 end:0x8023E558
+
+auto/text_8023E558_.c:
+	.text       start:0x8023E558 end:0x8023E5A8
+	.ctors      start:0x802ED40C end:0x802ED410
+
+auto/text_8023E5A8_.c:
+	.text       start:0x8023E5A8 end:0x8023FA00
+
+auto/text_8023FA00_.c:
+	.text       start:0x8023FA00 end:0x8023FA50
+	.ctors      start:0x802ED410 end:0x802ED414
+
+auto/text_8023FA50_.c:
+	.text       start:0x8023FA50 end:0x8023FDC8
+
+auto/text_8023FDC8_.c:
+	.text       start:0x8023FDC8 end:0x8023FE20
+	.ctors      start:0x802ED414 end:0x802ED418
+
+auto/text_8023FE20_.c:
+	.text       start:0x8023FE20 end:0x80243410
+
+auto/text_80243410_.c:
+	.text       start:0x80243410 end:0x80243460
+	.ctors      start:0x802ED418 end:0x802ED41C
+
+auto/text_80243460_.c:
+	.text       start:0x80243460 end:0x802445A4
+
+auto/text_802445A4_.c:
+	.text       start:0x802445A4 end:0x802445FC
+	.ctors      start:0x802ED41C end:0x802ED420
+
+auto/text_802445FC_.c:
+	.text       start:0x802445FC end:0x8024492C
+
+auto/text_8024492C_.c:
+	.text       start:0x8024492C end:0x8024497C
+	.ctors      start:0x802ED420 end:0x802ED424
+
+auto/text_8024497C_.c:
+	.text       start:0x8024497C end:0x80245030
+
+auto/text_80245030_.c:
+	.text       start:0x80245030 end:0x80245080
+	.ctors      start:0x802ED424 end:0x802ED428
+
+auto/text_80245080_.c:
+	.text       start:0x80245080 end:0x8024512C
+
+auto/text_8024512C_.c:
+	.text       start:0x8024512C end:0x802451DC
+	.ctors      start:0x802ED428 end:0x802ED42C
+
+auto/text_802451DC_.c:
+	.text       start:0x802451DC end:0x802468F0
+
+auto/text_802468F0_.c:
+	.text       start:0x802468F0 end:0x80246938
+	.ctors      start:0x802ED42C end:0x802ED430
+
+auto/text_80246938_.c:
+	.text       start:0x80246938 end:0x80249468
+
+auto/text_80249468_.c:
+	.text       start:0x80249468 end:0x802494F8
+	.ctors      start:0x802ED430 end:0x802ED434
+
+auto/text_802494F8_.c:
+	.text       start:0x802494F8 end:0x8024BD8C
+
+auto/text_8024BD8C_.c:
+	.text       start:0x8024BD8C end:0x8024BDDC
+	.ctors      start:0x802ED434 end:0x802ED438
+
+auto/text_8024BDDC_.c:
+	.text       start:0x8024BDDC end:0x8024C068
+
+auto/text_8024C068_.c:
+	.text       start:0x8024C068 end:0x8024C070
+	.ctors      start:0x802ED438 end:0x802ED43C
+
+auto/text_8024C070_.c:
+	.text       start:0x8024C070 end:0x8024C320
+
+auto/text_8024C320_.c:
+	.text       start:0x8024C320 end:0x8024C370
+	.ctors      start:0x802ED43C end:0x802ED440
+
+auto/text_8024C370_.c:
+	.text       start:0x8024C370 end:0x8024DA88
+
+auto/text_8024DA88_.c:
+	.text       start:0x8024DA88 end:0x8024DAD8
+	.ctors      start:0x802ED440 end:0x802ED444
+
+auto/text_8024DAD8_.c:
+	.text       start:0x8024DAD8 end:0x802524D0
+
+auto/text_802524D0_.c:
+	.text       start:0x802524D0 end:0x802526E0
+	.ctors      start:0x802ED444 end:0x802ED448
+
+auto/text_802526E0_.c:
+	.text       start:0x802526E0 end:0x80253210
+
+auto/text_80253210_.c:
+	.text       start:0x80253210 end:0x80253254
+	.ctors      start:0x802ED448 end:0x802ED44C
+
+auto/text_80253254_.c:
+	.text       start:0x80253254 end:0x80257214
+
+auto/text_80257214_.c:
+	.text       start:0x80257214 end:0x80257284
+	.ctors      start:0x802ED44C end:0x802ED450
+
+auto/text_80257284_.c:
+	.text       start:0x80257284 end:0x80257BC0
+
+auto/text_80257BC0_.c:
+	.text       start:0x80257BC0 end:0x80257C10
+	.ctors      start:0x802ED450 end:0x802ED454
+
+auto/text_80257C10_.c:
+	.text       start:0x80257C10 end:0x80257F70
+
+auto/text_80257F70_.c:
+	.text       start:0x80257F70 end:0x80257FB8
+	.ctors      start:0x802ED454 end:0x802ED458
+
+auto/text_80257FB8_.c:
+	.text       start:0x80257FB8 end:0x802582FC
+
+auto/text_802582FC_.c:
+	.text       start:0x802582FC end:0x80258354
+	.ctors      start:0x802ED458 end:0x802ED45C
+
+auto/text_80258354_.c:
+	.text       start:0x80258354 end:0x802590F8
+
+auto/text_802590F8_.c:
+	.text       start:0x802590F8 end:0x80259148
+	.ctors      start:0x802ED45C end:0x802ED460
+
+auto/text_80259148_.c:
+	.text       start:0x80259148 end:0x8025BFD0
+
+auto/text_8025BFD0_.c:
+	.text       start:0x8025BFD0 end:0x8025C028
+	.ctors      start:0x802ED460 end:0x802ED464
+
+auto/text_8025C028_.c:
+	.text       start:0x8025C028 end:0x8025CE28
+
+auto/text_8025CE28_.c:
+	.text       start:0x8025CE28 end:0x8025CE78
+	.ctors      start:0x802ED464 end:0x802ED468
+
+auto/text_8025CE78_.c:
+	.text       start:0x8025CE78 end:0x8025DFE4
+
+auto/text_8025DFE4_.c:
+	.text       start:0x8025DFE4 end:0x8025E034
+	.ctors      start:0x802ED468 end:0x802ED46C
+
+auto/text_8025E034_.c:
+	.text       start:0x8025E034 end:0x8025FE3C
+
+auto/text_8025FE3C_.c:
+	.text       start:0x8025FE3C end:0x8025FE8C
+	.ctors      start:0x802ED46C end:0x802ED470
+
+auto/text_8025FE8C_.c:
+	.text       start:0x8025FE8C end:0x80262EF8
+
+auto/text_80262EF8_.c:
+	.text       start:0x80262EF8 end:0x80262F8C
+	.ctors      start:0x802ED470 end:0x802ED474
+
+auto/text_80262F8C_.c:
+	.text       start:0x80262F8C end:0x80263EE0
+
+auto/text_80263EE0_.c:
+	.text       start:0x80263EE0 end:0x80263F30
+	.ctors      start:0x802ED474 end:0x802ED478
+
+auto/text_80263F30_.c:
+	.text       start:0x80263F30 end:0x80265C5C
+
+auto/text_80265C5C_.c:
+	.text       start:0x80265C5C end:0x80265CE0
+	.ctors      start:0x802ED478 end:0x802ED47C
+
+auto/text_80265CE0_.c:
+	.text       start:0x80265CE0 end:0x80265DA0
+
+auto/text_80265DA0_.c:
+	.text       start:0x80265DA0 end:0x80265DCC
+	.ctors      start:0x802ED47C end:0x802ED480
+
+auto/text_80265DCC_.c:
+	.text       start:0x80265DCC end:0x80265DD0
+
+auto/text_80265DD0_.c:
+	.text       start:0x80265DD0 end:0x80265DD8
+	.ctors      start:0x802ED480 end:0x802ED484
+
+auto/text_80265DD8_.c:
+	.text       start:0x80265DD8 end:0x8026A584
+
+auto/text_8026A584_.c:
+	.text       start:0x8026A584 end:0x8026A600
+	.ctors      start:0x802ED484 end:0x802ED488
+
+auto/text_8026A600_.c:
+	.text       start:0x8026A600 end:0x8026B0D4
+
+auto/text_8026B0D4_.c:
+	.text       start:0x8026B0D4 end:0x8026B118
+	.ctors      start:0x802ED488 end:0x802ED48C
+
+auto/text_8026B118_.c:
+	.text       start:0x8026B118 end:0x8026B7C8
+
+auto/text_8026B7C8_.c:
+	.text       start:0x8026B7C8 end:0x8026B840
+	.ctors      start:0x802ED48C end:0x802ED490
+
+auto/text_8026B840_.c:
+	.text       start:0x8026B840 end:0x8026E224
+
+auto/text_8026E224_.c:
+	.text       start:0x8026E224 end:0x8026E22C
+	.ctors      start:0x802ED490 end:0x802ED494
+
+auto/text_8026E22C_.c:
+	.text       start:0x8026E22C end:0x8026E868
+
+auto/text_8026E868_.c:
+	.text       start:0x8026E868 end:0x8026E870
+	.ctors      start:0x802ED494 end:0x802ED498
+
+auto/text_8026E870_.c:
+	.text       start:0x8026E870 end:0x80270A84
+
+auto/text_80270A84_.c:
+	.text       start:0x80270A84 end:0x80270AE8
+	.ctors      start:0x802ED498 end:0x802ED49C
+
+auto/text_80270AE8_.c:
+	.text       start:0x80270AE8 end:0x802739B8
+
+auto/text_802739B8_.c:
+	.text       start:0x802739B8 end:0x80273A88
+	.ctors      start:0x802ED49C end:0x802ED4A0
+
+auto/text_80273A88_.c:
+	.text       start:0x80273A88 end:0x80276060
+
+auto/text_80276060_.c:
+	.text       start:0x80276060 end:0x80276068
+	.ctors      start:0x802ED4A0 end:0x802ED4A4
+
+auto/text_80276068_.c:
+	.text       start:0x80276068 end:0x80278168
+
+auto/text_80278168_.c:
+	.text       start:0x80278168 end:0x8027820C
+	.ctors      start:0x802ED4A4 end:0x802ED4A8
+
+auto/text_8027820C_.c:
+	.text       start:0x8027820C end:0x802789A0
+
+auto/text_802789A0_.c:
+	.text       start:0x802789A0 end:0x802789A8
+	.ctors      start:0x802ED4A8 end:0x802ED4AC
+
+auto/text_802789A8_.c:
+	.text       start:0x802789A8 end:0x802789B4
+
+auto/text_802789B4_.c:
+	.text       start:0x802789B4 end:0x80278A1C
+	.ctors      start:0x802ED4AC end:0x802ED4B0
+
+auto/text_80278A1C_.c:
+	.text       start:0x80278A1C end:0x80279368
+
+auto/text_80279368_.c:
+	.text       start:0x80279368 end:0x80279370
+	.ctors      start:0x802ED4B0 end:0x802ED4B4
+
+auto/text_80279370_.c:
+	.text       start:0x80279370 end:0x8027945C
+
+auto/text_8027945C_.c:
+	.text       start:0x8027945C end:0x80279464
+	.ctors      start:0x802ED4B4 end:0x802ED4B8
+
+auto/text_80279464_.c:
+	.text       start:0x80279464 end:0x80279534
+
+auto/text_80279534_.c:
+	.text       start:0x80279534 end:0x8027953C
+	.ctors      start:0x802ED4B8 end:0x802ED4BC
+
+auto/text_8027953C_.c:
+	.text       start:0x8027953C end:0x802795E0
+
+auto/text_802795E0_.c:
+	.text       start:0x802795E0 end:0x802795E8
+	.ctors      start:0x802ED4BC end:0x802ED4C0
+
+auto/text_802795E8_.c:
+	.text       start:0x802795E8 end:0x80279CDC
+
+auto/text_80279CDC_.c:
+	.text       start:0x80279CDC end:0x80279CE4
+	.ctors      start:0x802ED4C0 end:0x802ED4C4
+
+auto/text_80279CE4_.c:
+	.text       start:0x80279CE4 end:0x8027AA00
+
+auto/text_8027AA00_.c:
+	.text       start:0x8027AA00 end:0x8027AA08
+	.ctors      start:0x802ED4C4 end:0x802ED4C8
+
+auto/text_8027AA08_.c:
+	.text       start:0x8027AA08 end:0x8027AB54
+
+auto/text_8027AB54_.c:
+	.text       start:0x8027AB54 end:0x8027ABF8
+	.ctors      start:0x802ED4C8 end:0x802ED4CC
+
+auto/text_8027ABF8_.c:
+	.text       start:0x8027ABF8 end:0x8027AD04
+
+auto/text_8027AD04_.c:
+	.text       start:0x8027AD04 end:0x8027AD4C
+	.ctors      start:0x802ED4CC end:0x802ED4D0
+
+auto/text_8027AD4C_.c:
+	.text       start:0x8027AD4C end:0x8027D204
+
+auto/text_8027D204_.c:
+	.text       start:0x8027D204 end:0x8027D264
+	.ctors      start:0x802ED4D0 end:0x802ED4D4
+
+auto/text_8027D264_.c:
+	.text       start:0x8027D264 end:0x8027E8B8
+
+auto/text_8027E8B8_.c:
+	.text       start:0x8027E8B8 end:0x8027E908
+	.ctors      start:0x802ED4D4 end:0x802ED4D8
+
+auto/text_8027E908_.c:
+	.text       start:0x8027E908 end:0x802874C8
+
+auto/text_802874C8_.c:
+	.text       start:0x802874C8 end:0x802875B8
+	.ctors      start:0x802ED4D8 end:0x802ED4DC
+
+auto/text_802875B8_.c:
+	.text       start:0x802875B8 end:0x80288894
+
+auto/text_80288894_.c:
+	.text       start:0x80288894 end:0x802888D8
+	.ctors      start:0x802ED4DC end:0x802ED4E0
+
+auto/text_802888D8_.c:
+	.text       start:0x802888D8 end:0x8028A614
+
+auto/text_8028A614_.c:
+	.text       start:0x8028A614 end:0x8028A664
+	.ctors      start:0x802ED4E0 end:0x802ED4E4
+
+auto/text_8028A664_.c:
+	.text       start:0x8028A664 end:0x8028CED0
+
+auto/text_8028CED0_.c:
+	.text       start:0x8028CED0 end:0x8028CED8
+	.ctors      start:0x802ED4E4 end:0x802ED4E8
+
+auto/text_8028CED8_.c:
+	.text       start:0x8028CED8 end:0x8028DF24
+
+auto/text_8028DF24_.c:
+	.text       start:0x8028DF24 end:0x8028DF58
+	.ctors      start:0x802ED4E8 end:0x802ED4EC
+
+auto/text_8028DF58_.c:
+	.text       start:0x8028DF58 end:0x80291728
+
+auto/text_80291728_.c:
+	.text       start:0x80291728 end:0x80291784
+	.ctors      start:0x802ED4EC end:0x802ED4F0
+
+auto/text_80291784_.c:
+	.text       start:0x80291784 end:0x802924BC
+
+auto/text_802924BC_.c:
+	.text       start:0x802924BC end:0x802924E8
+	.ctors      start:0x802ED4F0 end:0x802ED4F4
+
+auto/text_802924E8_.c:
+	.text       start:0x802924E8 end:0x80294918
+
+auto/text_80294918_.c:
+	.text       start:0x80294918 end:0x8029496C
+	.ctors      start:0x802ED4F4 end:0x802ED4F8
+
+auto/text_8029496C_.c:
+	.text       start:0x8029496C end:0x80296014
+
+auto/text_80296014_.c:
+	.text       start:0x80296014 end:0x80296058
+	.ctors      start:0x802ED4F8 end:0x802ED4FC
+
+auto/text_80296058_.c:
+	.text       start:0x80296058 end:0x80296074
+
+auto/text_80296074_.c:
+	.text       start:0x80296074 end:0x802960A0
+	.ctors      start:0x802ED4FC end:0x802ED500
+
+auto/text_802960A0_.c:
+	.text       start:0x802960A0 end:0x802971A8
+
+auto/text_802971A8_.c:
+	.text       start:0x802971A8 end:0x802971B0
+	.ctors      start:0x802ED500 end:0x802ED504
+
+auto/text_802971B0_.c:
+	.text       start:0x802971B0 end:0x802978B0
+
+auto/text_802978B0_.c:
+	.text       start:0x802978B0 end:0x802978B8
+	.ctors      start:0x802ED504 end:0x802ED508
+
+auto/text_802978B8_.c:
+	.text       start:0x802978B8 end:0x80297D30
+
+auto/text_80297D30_.c:
+	.text       start:0x80297D30 end:0x80297D5C
+	.ctors      start:0x802ED508 end:0x802ED50C
+
+auto/text_80297D5C.cpp:
+	.text       start:0x80297D5C end:0x8029C1BC
+
+auto/text_8029C1BC_.c:
+	.text       start:0x8029C1BC end:0x8029C1C4
+	.ctors      start:0x802ED50C end:0x802ED510
+
+auto/text_8029C1C4_.c:
+	.text       start:0x8029C1C4 end:0x8029EF68
+
+auto/text_8029EF68_.c:
+	.text       start:0x8029EF68 end:0x8029EF70
+	.ctors      start:0x802ED510 end:0x802ED514
+
+auto/text_8029EF70_.c:
+	.text       start:0x8029EF70 end:0x8029F010
+
+auto/text_8029F010_.c:
+	.text       start:0x8029F010 end:0x8029F03C
+	.ctors      start:0x802ED514 end:0x802ED518
+
+auto/text_8029F03C_.c:
+	.text       start:0x8029F03C end:0x802A086C
+
+auto/text_802A086C_.c:
+	.text       start:0x802A086C end:0x802A08E8
+	.ctors      start:0x802ED518 end:0x802ED51C
+
+auto/text_802A08E8_.c:
+	.text       start:0x802A08E8 end:0x802A0D34
+
+auto/text_802A0D34_.c:
+	.text       start:0x802A0D34 end:0x802A0D60
+	.ctors      start:0x802ED51C end:0x802ED520
+
+auto/text_802A0D60_.c:
+	.text       start:0x802A0D60 end:0x802A1588
+
+auto/text_802A1588_.c:
+	.text       start:0x802A1588 end:0x802A1590
+	.ctors      start:0x802ED520 end:0x802ED524
+
+auto/text_802A1590.cpp:
+	.text       start:0x802A1590 end:0x802A4A48
+
+auto/text_802A4A48_.c:
+	.text       start:0x802A4A48 end:0x802A4A50
+	.ctors      start:0x802ED524 end:0x802ED528
+
+auto/text_802A4A50_.c:
+	.text       start:0x802A4A50 end:0x802A7B74
+
+auto/text_802A7B74_.c:
+	.text       start:0x802A7B74 end:0x802A7BD8
+	.ctors      start:0x802ED528 end:0x802ED52C
+
+auto/text_802A7BD8_.c:
+	.text       start:0x802A7BD8 end:0x802A7BE0
+
+auto/text_802A7BE0_.c:
+	.text       start:0x802A7BE0 end:0x802A7BE8
+	.ctors      start:0x802ED52C end:0x802ED530
+
+auto/text_802A7BE8_.c:
+	.text       start:0x802A7BE8 end:0x802A81A0
+
+auto/text_802A81A0_.c:
+	.text       start:0x802A81A0 end:0x802A81EC
+	.ctors      start:0x802ED530 end:0x802ED534
+
+auto/text_802A81EC_.c:
+	.text       start:0x802A81EC end:0x802A8F34
+
+auto/text_802A8F34_.c:
+	.text       start:0x802A8F34 end:0x802A8F94
+	.ctors      start:0x802ED534 end:0x802ED538
+
+auto/text_802A8F94_.c:
+	.text       start:0x802A8F94 end:0x802A95B4
+
+auto/text_802A95B4_.c:
+	.text       start:0x802A95B4 end:0x802A9680
+	.ctors      start:0x802ED538 end:0x802ED53C
+
+auto/text_802A9680_.c:
+	.text       start:0x802A9680 end:0x802A9F28
+
+auto/text_802A9F28_.c:
+	.text       start:0x802A9F28 end:0x802A9F30
+	.ctors      start:0x802ED53C end:0x802ED540
+
+auto/text_802A9F30_.c:
+	.text       start:0x802A9F30 end:0x802AC0BC
+
+auto/text_802AC0BC_.c:
+	.text       start:0x802AC0BC end:0x802AC0E8
+	.ctors      start:0x802ED540 end:0x802ED544
+
+auto/text_802AC0E8_.c:
+	.text       start:0x802AC0E8 end:0x802AE2B4
+
+auto/text_802AE2B4_.c:
+	.text       start:0x802AE2B4 end:0x802AE2E0
+	.ctors      start:0x802ED544 end:0x802ED548
+
+auto/text_802AE2E0_.c:
+	.text       start:0x802AE2E0 end:0x802AE530
+
+auto/text_802AE530_.c:
+	.text       start:0x802AE530 end:0x802AE588
+	.ctors      start:0x802ED548 end:0x802ED54C
+
+auto/text_802AE588_.c:
+	.text       start:0x802AE588 end:0x802B05F4
+
+auto/text_802B05F4_.c:
+	.text       start:0x802B05F4 end:0x802B0628
+	.ctors      start:0x802ED54C end:0x802ED550
+
+auto/text_802B0628_.c:
+	.text       start:0x802B0628 end:0x802B1C88
+
+auto/text_802B1C88_.c:
+	.text       start:0x802B1C88 end:0x802B1CE0
+	.ctors      start:0x802ED550 end:0x802ED554
+
+auto/text_802B1CE0_.c:
+	.text       start:0x802B1CE0 end:0x802B3F14
+
+auto/text_802B3F14_.c:
+	.text       start:0x802B3F14 end:0x802B3F6C
+	.ctors      start:0x802ED554 end:0x802ED558
+
+auto/text_802B3F6C_.c:
+	.text       start:0x802B3F6C end:0x802B4FA8
+
+auto/text_802B4FA8_.c:
+	.text       start:0x802B4FA8 end:0x802B4FB0
+	.ctors      start:0x802ED558 end:0x802ED55C
+
+auto/text_802B4FB0_.c:
+	.text       start:0x802B4FB0 end:0x802B5394
+
+auto/text_802B5394_.c:
+	.text       start:0x802B5394 end:0x802B539C
+	.ctors      start:0x802ED55C end:0x802ED560
+
+auto/text_802B539C_.c:
+	.text       start:0x802B539C end:0x802B59D4
+
+auto/text_802B59D4_.c:
+	.text       start:0x802B59D4 end:0x802B5A68
+	.ctors      start:0x802ED560 end:0x802ED564
+
+auto/text_802B5A68_.c:
+	.text       start:0x802B5A68 end:0x802B8CA4
+
+auto/text_802B8CA4_.c:
+	.text       start:0x802B8CA4 end:0x802B8DA0
+	.ctors      start:0x802ED564 end:0x802ED568
+
+auto/text_802B8DA0_.c:
+	.text       start:0x802B8DA0 end:0x802BB734
+
+auto/text_802BB734_.c:
+	.text       start:0x802BB734 end:0x802BB7CC
+	.ctors      start:0x802ED568 end:0x802ED56C
+
+auto/text_802BB7CC_.c:
+	.text       start:0x802BB7CC end:0x802BC320
+
+auto/text_802BC320_.c:
+	.text       start:0x802BC320 end:0x802BC328
+	.ctors      start:0x802ED56C end:0x802ED570
+
+auto/text_802BC328_.c:
+	.text       start:0x802BC328 end:0x802BC32C
+
+auto/text_802BC32C_.c:
+	.text       start:0x802BC32C end:0x802BC334
+	.ctors      start:0x802ED570 end:0x802ED574
+
+auto/text_802BC334_.c:
+	.text       start:0x802BC334 end:0x802BE2B4
+
+auto/text_802BE2B4_.c:
+	.text       start:0x802BE2B4 end:0x802BE30C
+	.ctors      start:0x802ED574 end:0x802ED578
+
+auto/text_802BE30C_.c:
+	.text       start:0x802BE30C end:0x802BECDC
+
+auto/text_802BECDC_.c:
+	.text       start:0x802BECDC end:0x802BECE4
+	.ctors      start:0x802ED578 end:0x802ED57C
+
+auto/text_802BECE4_.c:
+	.text       start:0x802BECE4 end:0x802C0D44
+
+auto/text_802C0D44_.c:
+	.text       start:0x802C0D44 end:0x802C0D70
+	.ctors      start:0x802ED57C end:0x802ED580
+
+auto/text_802C0D70_.c:
+	.text       start:0x802C0D70 end:0x802C10E0
+
+auto/text_802C10E0_.c:
+	.text       start:0x802C10E0 end:0x802C110C
+	.ctors      start:0x802ED580 end:0x802ED584
+
+auto/text_802C110C_.c:
+	.text       start:0x802C110C end:0x802C1BB4
+
+auto/text_802C1BB4_.c:
+	.text       start:0x802C1BB4 end:0x802C1C28
+	.ctors      start:0x802ED584 end:0x802ED588
+
+auto/text_802C1C28_.c:
+	.text       start:0x802C1C28 end:0x802C2290
+
+auto/text_802C2290_.c:
+	.text       start:0x802C2290 end:0x802C2298
+	.ctors      start:0x802ED588 end:0x802ED58C
+
+auto/text_802C2298_.c:
+	.text       start:0x802C2298 end:0x802C2640
+
+auto/text_802C2640_.c:
+	.text       start:0x802C2640 end:0x802C2698
+	.ctors      start:0x802ED58C end:0x802ED590
+
+auto/text_802C2698_.c:
+	.text       start:0x802C2698 end:0x802C28D8
+
+auto/text_802C28D8_.c:
+	.text       start:0x802C28D8 end:0x802C2914
+	.ctors      start:0x802ED590 end:0x802ED594
+
+auto/text_802C2914_.c:
+	.text       start:0x802C2914 end:0x802C2A40
+
+auto/text_802C2A40_.c:
+	.text       start:0x802C2A40 end:0x802C2A48
+	.ctors      start:0x802ED594 end:0x802ED598
+
+auto/text_802C2A48_.c:
+	.text       start:0x802C2A48 end:0x802C2C70
+
+auto/text_802C2C70_.c:
+	.text       start:0x802C2C70 end:0x802C2CAC
+	.ctors      start:0x802ED598 end:0x802ED59C
+
+auto/text_802C2CAC_.c:
+	.text       start:0x802C2CAC end:0x802C5028
+
+auto/text_802C5028_.c:
+	.text       start:0x802C5028 end:0x802C5130
+	.ctors      start:0x802ED59C end:0x802ED5A0
+
+auto/text_802C5130_.c:
+	.text       start:0x802C5130 end:0x802C5364
+
+auto/text_802C5364_.c:
+	.text       start:0x802C5364 end:0x802C5390
+	.ctors      start:0x802ED5A0 end:0x802ED5A4
+
+auto/text_802C5390_.c:
+	.text       start:0x802C5390 end:0x802C8238
+
+auto/text_802C8238_.c:
+	.text       start:0x802C8238 end:0x802C82C0
+	.ctors      start:0x802ED5A4 end:0x802ED5A8
+
+auto/text_802C82C0_.c:
+	.text       start:0x802C82C0 end:0x802CA0A4
+
+auto/text_802CA0A4_.c:
+	.text       start:0x802CA0A4 end:0x802CA0E4
+	.ctors      start:0x802ED5A8 end:0x802ED5AC
+
+auto/text_802CA0E4_.c:
+	.text       start:0x802CA0E4 end:0x802CCB84
+
+auto/text_802CCB84_.c:
+	.text       start:0x802CCB84 end:0x802CCBC0
+	.ctors      start:0x802ED5AC end:0x802ED5B0
+
+auto/text_802CCBC0_.c:
+	.text       start:0x802CCBC0 end:0x802CE308
+
+auto/text_802CE308_.c:
+	.text       start:0x802CE308 end:0x802CE344
+	.ctors      start:0x802ED5B0 end:0x802ED5B4
+
+auto/text_802CE344_.c:
+	.text       start:0x802CE344 end:0x802CE39C
+
+auto/text_802CE39C_.c:
+	.text       start:0x802CE39C end:0x802CE3A4
+	.ctors      start:0x802ED5B4 end:0x802ED5B8
+
+auto/text_802CE3A4_.c:
+	.text       start:0x802CE3A4 end:0x802CE858
+
+auto/text_802CE858_.c:
+	.text       start:0x802CE858 end:0x802CE860
+	.ctors      start:0x802ED5B8 end:0x802ED5BC
+
+auto/text_802CE860_.c:
+	.text       start:0x802CE860 end:0x802CE9F4
+
+auto/text_802CE9F4_.c:
+	.text       start:0x802CE9F4 end:0x802CE9FC
+	.ctors      start:0x802ED5BC end:0x802ED5C0
+
+auto/text_802CE9FC_.c:
+	.text       start:0x802CE9FC end:0x802D3ED4
+
+auto/text_802D3ED4_.c:
+	.text       start:0x802D3ED4 end:0x802D3F30
+	.ctors      start:0x802ED5C0 end:0x802ED5C4
+
+auto/text_802D3F30_.c:
+	.text       start:0x802D3F30 end:0x802D755C
+
+auto/text_802D755C_.c:
+	.text       start:0x802D755C end:0x802D7564
+	.ctors      start:0x802ED5C4 end:0x802ED5C8
+
+auto/text_802D7564_.c:
+	.text       start:0x802D7564 end:0x802D98BC
+
+auto/text_802D98BC_.c:
+	.text       start:0x802D98BC end:0x802D98F8
+	.ctors      start:0x802ED5C8 end:0x802ED5CC
+
+auto/text_802D98F8_.c:
+	.text       start:0x802D98F8 end:0x802D9C54
+
+auto/text_802D9C54_.c:
+	.text       start:0x802D9C54 end:0x802D9C5C
+	.ctors      start:0x802ED5CC end:0x802ED5D0
+
+auto/text_802D9C5C_.c:
+	.text       start:0x802D9C5C end:0x802DAC70
+
+auto/text_802DAC70_.c:
+	.text       start:0x802DAC70 end:0x802DACD4
+	.ctors      start:0x802ED5D0 end:0x802ED5D4
+
+auto/text_802DACD4_.c:
+	.text       start:0x802DACD4 end:0x802DB264
+
+auto/text_802DB264_.c:
+	.text       start:0x802DB264 end:0x802DB2A0
+	.ctors      start:0x802ED5D4 end:0x802ED5D8
+
+auto/text_802DB2A0_.c:
+	.text       start:0x802DB2A0 end:0x802DB2CC
+
+auto/text_802DB2CC_.c:
+	.text       start:0x802DB2CC end:0x802DB2D4
+	.ctors      start:0x802ED5D8 end:0x802ED5DC
+
+auto/text_802DB2D4_.c:
+	.text       start:0x802DB2D4 end:0x802DD430
+
+auto/text_802DD430_.c:
+	.text       start:0x802DD430 end:0x802DD4A0
+	.ctors      start:0x802ED5DC end:0x802ED5E0
+
+auto/text_802DD4A0_.c:
+	.text       start:0x802DD4A0 end:0x802DEA90
+
+auto/text_802DEA90_.c:
+	.text       start:0x802DEA90 end:0x802DEAC4
+	.ctors      start:0x802ED5E0 end:0x802ED5E4
+
+auto/text_802DEAC4_.c:
+	.text       start:0x802DEAC4 end:0x802E1720
+
+auto/text_802E1720_.c:
+	.text       start:0x802E1720 end:0x802E1728
+	.ctors      start:0x802ED5E4 end:0x802ED5E8
+
+auto/text_802E1728_.c:
+	.text       start:0x802E1728 end:0x802E3020
+
+auto/text_802E3020_.c:
+	.text       start:0x802E3020 end:0x802E3028
+	.ctors      start:0x802ED5E8 end:0x802ED5EC
+
+auto/text_802E3028_.c:
+	.text       start:0x802E3028 end:0x802E3214
+
+auto/text_802E3214_.c:
+	.text       start:0x802E3214 end:0x802E321C
+	.ctors      start:0x802ED5EC end:0x802ED5F0
+
+auto/text_802E321C_.c:
+	.text       start:0x802E321C end:0x802E3DF0
+
+auto/text_802E3DF0_.c:
+	.text       start:0x802E3DF0 end:0x802E3DF8
+	.ctors      start:0x802ED5F0 end:0x802ED5F4
+
+auto/text_802E3DF8_.c:
+	.text       start:0x802E3DF8 end:0x802E3EA8
+
+auto/text_802E3EA8_.c:
+	.text       start:0x802E3EA8 end:0x802E3EB0
+	.ctors      start:0x802ED5F4 end:0x802ED5F8
+
+auto/text_802E3EB0_.c:
+	.text       start:0x802E3EB0 end:0x802E46A4
+
+auto/text_802E46A4_.c:
+	.text       start:0x802E46A4 end:0x802E46AC
+	.ctors      start:0x802ED5F8 end:0x802ED5FC
+
+auto/text_802E46AC_.c:
+	.text       start:0x802E46AC end:0x802E4C0C
+
+auto/text_802E4C0C_.c:
+	.text       start:0x802E4C0C end:0x802E4C14
+	.ctors      start:0x802ED5FC end:0x802ED600
+
+auto/text_802E4C14_.c:
+	.text       start:0x802E4C14 end:0x802E4D7C
+
+auto/text_802E4D7C_.c:
+	.text       start:0x802E4D7C end:0x802E4D84
+	.ctors      start:0x802ED600 end:0x802ED604
+
+auto/text_802E4D84_.c:
+	.text       start:0x802E4D84 end:0x802E6B48
+
+auto/text_802E6B48_.c:
+	.text       start:0x802E6B48 end:0x802E6B50
+	.ctors      start:0x802ED604 end:0x802ED608
+
+auto/text_802E6B50_.c:
+	.text       start:0x802E6B50 end:0x802E72B0
+
+auto/text_802E72B0_.c:
+	.text       start:0x802E72B0 end:0x802E72B8
+	.ctors      start:0x802ED608 end:0x802ED60C
+
+auto/text_802E72B8_.c:
+	.text       start:0x802E72B8 end:0x802E7570
+
+auto/text_802E7570_.c:
+	.text       start:0x802E7570 end:0x802E7578
+	.ctors      start:0x802ED60C end:0x802ED610
+
+auto/text_802E7578_.c:
+	.text       start:0x802E7578 end:0x802E7768
+
+auto/text_802E7768_.c:
+	.text       start:0x802E7768 end:0x802E7770
+	.ctors      start:0x802ED610 end:0x802ED614
+
+auto/text_802E7770_.c:
+	.text       start:0x802E7770 end:0x802E77B0
+
+auto/text_802E77B0_.c:
+	.text       start:0x802E77B0 end:0x802E77B8
+	.ctors      start:0x802ED614 end:0x802ED618
+
+auto/text_802E77B8_.c:
+	.text       start:0x802E77B8 end:0x802E86CC
+
+auto/text_802E86CC_.c:
+	.text       start:0x802E86CC end:0x802E86D4
+	.ctors      start:0x802ED618 end:0x802ED61C
+
+auto/text_802E86D4_.c:
+	.text       start:0x802E86D4 end:0x802E988C
+
+auto/text_802E988C_.c:
+	.text       start:0x802E988C end:0x802E98C8
+	.ctors      start:0x802ED61C end:0x802ED620
+
+auto/text_802E98C8_.c:
+	.text       start:0x802E98C8 end:0x802E9A34
+
+auto/text_802E9A34_.c:
+	.text       start:0x802E9A34 end:0x802E9A3C
+	.ctors      start:0x802ED620 end:0x802ED624
+
+auto/text_802E9A3C_.c:
+	.text       start:0x802E9A3C end:0x802EC464
+
+auto/text_802EC464_.c:
+	.text       start:0x802EC464 end:0x802EC4BC
+	.ctors      start:0x802ED624 end:0x802ED628
+
+auto/text_802EC4BC_.c:
+	.text       start:0x802EC4BC end:0x802ECCDC
+
+auto/text_802ECCDC_.c:
+	.text       start:0x802ECCDC end:0x802ECCE4
+	.ctors      start:0x802ED628 end:0x802ED62C
+
+auto/text_802ECCE4_.c:
+	.text       start:0x802ECCE4 end:0x802ED048
+
+auto/text_802ED048_.c:
+	.text       start:0x802ED048 end:0x802ED050
+	.ctors      start:0x802ED62C end:0x802ED630
