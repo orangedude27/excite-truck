@@ -9,6 +9,10 @@ void fn_8017A004(void) {
 
 }
 
+void fn_8017A578(void *arg0) {
+    fn_8017A580(arg0);
+}
+
 void fn_8017A57C(void) {
 
 }
