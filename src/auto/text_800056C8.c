@@ -9,6 +9,12 @@ extern void *fn_801B83A0(void);
 extern void *lbl_8055D350;
 extern f32 lbl_8056011C;
 
+extern s32 lbl_8034EEB8[0x100];
+void fn_800056C8(s32 arg0, s32 arg1) {
+    s32 *p = &lbl_8034EEB8[arg0];
+    p[4] = arg1;
+}
+
 void fn_80005B54(void) {
     return;
 }
@@ -69,23 +75,24 @@ s32 fn_8000624C(void) {
 }
 
 void fn_80006254(s32 arg0, s32 arg1) {
-    f32 var_f2;
-    s32 var_r0;
-    s32 idx;
+    f32 f2;
+    s32 r0;
+    s32 r12;
 
-    var_r0 = 0;
-    idx = ((s32 *)lbl_8055D350)[0x1C];
-    var_f2 = ((f32 *)((s32 *)arg0 + idx * 4))[1];
-    if (var_f2 >= lbl_8056011C) {
-        f32 diff = ((f32 *)lbl_8055D350)[0x10 / 4] - var_f2;
-        if (diff > lbl_8056011C) {
-            var_r0 = 1;
+    r0 = 0;
+    r12 = ((s32 *)lbl_8055D350)[7];
+    f2 = ((f32 *)((s8 *)arg0 + r12 * 4))[1];
+    if (f2 >= lbl_8056011C) {
+        f32 f0 = ((f32 *)lbl_8055D350)[4] - f2;
+        if (f0 > lbl_8056011C) {
+            r0 = 1;
         }
     }
-    if (var_r0 && fn_80005564()) {
-        void *ptr = fn_801B83A0();
-        void (*fn)(s32) = (void (*)(s32))((void **)ptr)[0x60 / 4];
-        fn(arg1);
+    if (r0 && fn_80005564()) {
+        void *obj = fn_801B83A0();
+        r12 = ((s32 *)obj)[0];
+        r12 = ((s32 *)r12)[0x60 / 4];
+        ((void (*)(s32))r12)(arg1);
     }
 }
 
