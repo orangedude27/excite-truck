@@ -5,6 +5,10 @@
 
 extern u32 lbl_8055DDF8;
 extern u32 lbl_8055DDE0;
+void fn_800D58B8(void);
+
+#pragma section ".ctors$00"
+DECL_SECTION(".ctors$00") funcptr_t D_802ED0D4 = fn_800D58B8;
 
 void fn_800D58B8(void) {
     lbl_8055DDE0 = (u32)&lbl_8055DDF8;
