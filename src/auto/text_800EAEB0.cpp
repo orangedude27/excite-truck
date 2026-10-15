@@ -38,20 +38,26 @@ extern "C" void fn_800EAEB0(void) {
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void* this_) {
     u32 level;
     void* ptr;
+    u8 init;
 
     level = OSDisableInterrupts();
-    if (lbl_8055DE30 == 0) {
-        *(s32*)&lbl_8041279C[0] = 0;
-        ptr = &lbl_8041279C[4];
-        *(s32*)&lbl_8041279C[4] = 0;
-        *(s32*)&lbl_8041279C[8] = 0;
-        *(void**)&lbl_8041279C[4] = ptr;
-        *(void**)&lbl_8041279C[8] = ptr;
-        __register_global_object(&lbl_8041279C, (void*)&__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54, &lbl_80412790);
-        lbl_8055DE30 = 1;
+    init = lbl_8055DE30;
+    if (init) {
+        OSRestoreInterrupts(level);
+        return this_;
     }
+    
+    ptr = &lbl_8041279C[4];
+    *(s32*)&lbl_8041279C[0] = 0;
+    *(s32*)&lbl_8041279C[4] = 0;
+    *(s32*)&lbl_8041279C[8] = 0;
+    *(void**)&lbl_8041279C[4] = ptr;
+    *(void**)&lbl_8041279C[8] = ptr;
+    __register_global_object(&lbl_8041279C, (void*)&__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54, &lbl_80412790);
+    lbl_8055DE30 = 1;
+    
     OSRestoreInterrupts(level);
-    return this_;
+    return &lbl_8041279C;
 }
 
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54(
@@ -96,6 +102,22 @@ extern "C" s32 fn_800ECE68(s32 arg0, s32 arg1) {
 
 void fn_800ED058(void) {
     return;
+}
+
+extern "C" f32 fn_800ED064(void *arg0) {
+    return ((f32 *)arg0)[0x30 / 4];
+}
+
+f32 fn_800ED06C(void *arg0) {
+    return ((f32 *)arg0)[0x2C / 4];
+}
+
+f32 fn_800ED074(void *arg0) {
+    return ((f32 *)arg0)[0x24 / 4];
+}
+
+f32 fn_800ED07C(void *arg0) {
+    return ((f32 *)arg0)[0x20 / 4];
 }
 
 #pragma push
