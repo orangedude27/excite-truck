@@ -121,13 +121,8 @@ void fn_8000D100(void) {
 
 s32 fn_8000CCB8(void) {
     s32 i = 0;
-    s32 limit;
-    limit = fn_80137C74();
-    if (i < limit) {
-        goto loop_body;
-    }
-    return -1;
-loop_body:
+    goto compare;
+body:
     if (fn_800075A0(i) != 0) {
         __AXGetStackHead_80137CFC(i);
         if (fn_802E8504() == 0) {
@@ -135,9 +130,9 @@ loop_body:
         }
     }
     i++;
-    limit = fn_80137C74();
-    if (i < limit) {
-        goto loop_body;
+compare:
+    if (i < fn_80137C74()) {
+        goto body;
     }
     return -1;
 }
