@@ -34,6 +34,10 @@ extern u8 lbl_80311738[];
 extern u32 lbl_8055DB84;
 
 typedef struct {
+    u8 bytes[2];
+} __attribute__((packed)) u16_bytes;
+
+typedef struct {
     u8 equ;
     u16 acv;
     u16 prbOdd;
@@ -1165,6 +1169,36 @@ void __VISetClosedCaption(void)
     data[3] = lbl_80558FC9 & 0x7F;
     data[4] = lbl_80558FCA & 0x7F;
     __VISendI2CData(0xE0, data, 5);
+    WaitMicroTime(2);
+}
+
+void __VISetGammaImm(u8* dataIn)
+{
+    u8 data[0x22];
+    u16 tmp;
+
+    data[0] = 0x10;
+    tmp = *(u16*)(dataIn); data[1] = tmp >> 8; data[2] = tmp;
+    tmp = *(u16*)(dataIn + 2); data[3] = tmp >> 8; data[4] = tmp;
+    tmp = *(u16*)(dataIn + 4); data[5] = tmp >> 8; data[6] = tmp;
+    tmp = *(u16*)(dataIn + 6); data[7] = tmp >> 8; data[8] = tmp;
+    tmp = *(u16*)(dataIn + 8); data[9] = tmp >> 8; data[10] = tmp;
+    tmp = *(u16*)(dataIn + 10); data[11] = tmp >> 8; data[12] = tmp;
+    data[13] = dataIn[0xC];
+    data[14] = dataIn[0xD];
+    data[15] = dataIn[0xE];
+    data[16] = dataIn[0xF];
+    data[17] = dataIn[0x10];
+    data[18] = dataIn[0x11];
+    data[19] = dataIn[0x12];
+    tmp = *(u16*)(dataIn + 0x14); data[20] = tmp >> 8; data[21] = tmp & 0xC0;
+    tmp = *(u16*)(dataIn + 0x16); data[22] = tmp >> 8; data[23] = tmp & 0xC0;
+    tmp = *(u16*)(dataIn + 0x18); data[24] = tmp >> 8; data[25] = tmp & 0xC0;
+    tmp = *(u16*)(dataIn + 0x1A); data[26] = tmp >> 8; data[27] = tmp & 0xC0;
+    tmp = *(u16*)(dataIn + 0x1C); data[28] = tmp >> 8; data[29] = tmp & 0xC0;
+    tmp = *(u16*)(dataIn + 0x1E); data[30] = tmp >> 8; data[31] = tmp & 0xC0;
+    tmp = *(u16*)(dataIn + 0x20); data[32] = tmp >> 8; data[33] = tmp & 0xE0;
+    __VISendI2CData(0xE0, data, 0x22);
     WaitMicroTime(2);
 }
 
