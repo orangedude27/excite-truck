@@ -219,38 +219,39 @@ static s32 WPADiSendData(s32 chan, WPADCommand command) {
 
 static void WPADiRadioSensitivity(s32 chan) {
     WPADCB* p = _wpdcb[chan];
-    u32 two = 2; // some define?
+    u8* q = (u8*)p;
+    u32 two = 2;
     u16 a;
 
-    a = p->radioSensitivity * 9;
-    a += (u16)(p->copyOutCount * 100 / two);
+    a = *(u8*)(q + 0x8c3) * 9;
+    a += (u16)(*(u16*)(q + 0x8c4) * 100 / two);
     a /= 10;
     a = MIN(100, a);
 
-    p->radioSensitivity = a;
-    p->copyOutCount = 0;
+    *(u8*)(q + 0x8c3) = a;
+    *(u16*)(q + 0x8c4) = 0;
 
-    if (p->radioQuality != WPAD_RADIO_QUALITY_GOOD) {
+    if (*(u8*)(q + 0x80c) != WPAD_RADIO_QUALITY_GOOD) {
         if (a > 85) {
-            p->radioQuality = WPAD_RADIO_QUALITY_GOOD;
-            p->radioQualityOkMs = 0;
+            *(u8*)(q + 0x80c) = WPAD_RADIO_QUALITY_GOOD;
+            *(u8*)(q + 0x80d) = 0;
         } else if (a > 80) {
-            p->radioQualityOkMs++;
+            (*(u8*)(q + 0x80d))++;
 
-            if (p->radioQualityOkMs >= 20) {
-                p->radioQuality = WPAD_RADIO_QUALITY_GOOD;
-                p->radioQualityOkMs = 0;
+            if (*(u8*)(q + 0x80d) >= 20) {
+                *(u8*)(q + 0x80c) = WPAD_RADIO_QUALITY_GOOD;
+                *(u8*)(q + 0x80d) = 0;
             }
         }
     } else if (a < 75) {
-        p->radioQuality = WPAD_RADIO_QUALITY_BAD;
-        p->radioQualityOkMs = 0;
+        *(u8*)(q + 0x80c) = WPAD_RADIO_QUALITY_BAD;
+        *(u8*)(q + 0x80d) = 0;
     } else if (a < 80) {
-        p->radioQualityOkMs++;
+        (*(u8*)(q + 0x80d))++;
 
-        if (p->radioQualityOkMs >= 1) {
-            p->radioQuality = WPAD_RADIO_QUALITY_BAD;
-            p->radioQualityOkMs = 0;
+        if (*(u8*)(q + 0x80d) >= 1) {
+            *(u8*)(q + 0x80c) = WPAD_RADIO_QUALITY_BAD;
+            *(u8*)(q + 0x80d) = 0;
         }
     }
 }
@@ -3853,21 +3854,22 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
 }
 
 void fn_80064A80(s32 chan, s32 param_2) {
-	WPADCB* cb = lbl_8038F4F0[chan];
-	if (param_2 != 0) {
-		WPADiClearQueue_80063BD4(&cb->extCmdQueue);
-		if (param_2 == -1) {
-			((u8*)cb)[0x801] = 0xfd;
-		} else {
-			s32 val = *(s32*)((u8*)cb + 0x780);
-			s32 t = -val | val;
-			s32 sign = t >> 31;
-			((u8*)cb)[0x801] = (sign >> 24) & 0x3f;
-		}
-		if (*(s32*)((u8*)cb + 0x7e0) != 0) {
-			((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
-		}
-	}
+    WPADCB* cb = lbl_8038F4F0[chan];
+    if (param_2 != 0) {
+        u8 value;
+        WPADiClearQueue_80063BD4(&cb->extCmdQueue);
+        if (param_2 == -1) {
+            value = 0xfd;
+        } else {
+            s32 val = *(s32*)((u8*)cb + 0x780);
+            s32 sign = (-val | val) >> 31;
+            value = (u8)sign & 0xfc;
+        }
+        ((u8*)cb)[0x801] = value;
+        if (*(s32*)((u8*)cb + 0x7e0) != 0) {
+            ((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
+        }
+    }
 }
 
 // fn_80064B1C: WPAD data processing
