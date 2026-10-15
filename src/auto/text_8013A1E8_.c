@@ -4,3 +4,8 @@
 void fn_8013A1E8(void) {
 
 }
+
+void fn_8013A1EC(void) {
+
+}
+
