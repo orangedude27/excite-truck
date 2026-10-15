@@ -4,3 +4,8 @@
 void fn_80018B70(void) {
     fn_8027DEAC();
 }
+
+void fn_80018E3C(void) {
+    fn_80018B74();
+}
+
