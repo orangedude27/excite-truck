@@ -12,3 +12,7 @@ void fn_8001BA70(void) {
     fn_8001C73C();
 }
 
+void fn_8001BA74(void) {
+    fn_8001C960();
+}
+
