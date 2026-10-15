@@ -25,3 +25,7 @@ void fn_801B8AEC(void) {
 
 }
 
+void fn_801B8AF0(void) {
+
+}
+
