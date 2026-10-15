@@ -4,3 +4,8 @@
 void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
 }
+
+void fn_8011BC48(void) {
+    fn_80120084();
+}
+
