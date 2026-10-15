@@ -29,3 +29,7 @@ void fn_80073A1C(void) {
 
 }
 
+void fn_8007AD38(void) {
+
+}
+
