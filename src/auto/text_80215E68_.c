@@ -13,6 +13,13 @@ s32 fn_80215E68(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_80215EC4(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_8021676C(void) {
 
 }
