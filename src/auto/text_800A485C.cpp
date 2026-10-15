@@ -85,7 +85,7 @@ void fn_800C776C(void *arg0, s32 arg1) {
 
 void fn_800C790C(void *arg0) {
     u16 **ptr = *(u16 ***)((u8 *)arg0 + 4);
-    u16 *var_r7 = ptr;
+    u16 *var_r7 = *ptr;
     s32 var_r9 = 0;
     s32 var_r10 = 0;
     s32 var_r11 = 0;
