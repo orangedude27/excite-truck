@@ -8,4 +8,4 @@ void fn_80137D50(void) {
     fn_8000D838(lbl_8055E0D8);
 }
 
-void (*__init_fn_80137D50)(void) __attribute__((section(".ctors"))) = fn_80137D50;
+void *const D_802ED184 __attribute__((section(".ctors"))) = (void *)fn_80137D50;
