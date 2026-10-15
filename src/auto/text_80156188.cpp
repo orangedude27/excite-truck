@@ -8,6 +8,8 @@ extern s32 fn_80128668(void);
 extern void fn_80128668(void*);
 extern void fn_80138AD8(void* this_, u32 a);
 extern u8 lbl_8032E46C[];
+extern u8 lbl_8032E448[];
+
 extern void **lbl_8055E27C;
 
 extern "C" {
@@ -86,6 +88,18 @@ void* __dt__Q28PSSystem7SeqHeapFv_80156A4C(void* this_, s32 flag) {
 
 void fn_80156AC0(void) {
 
+}
+
+extern u8 lbl_8032E448[];
+void* __dt__Q28PSSystem7SeqHeapFv_80156AC4(void* this_, s32 flag) {
+    if (this_) {
+        *(u32*)this_ = (u32)lbl_8032E448;
+        fn_80138AD8((u8*)this_ + 4, (u32)lbl_8032E448);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
 }
 
 void fn_80156B48(void) {
