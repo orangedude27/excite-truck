@@ -9,7 +9,7 @@ extern "C" void fn_801A49E8(void*);
 extern "C" void fn_801796EC(s32, s32*, s32);
 extern "C" s32 fn_8012C4E4(void*, void*, s32);
 
-extern "C" void fn_801A44D4(void);
+extern "C" void fn_801A44D4(void*);
 extern void* lbl_8055A508;
 extern void* lbl_8055A510;
 
@@ -66,8 +66,8 @@ extern "C" void fn_801A2EC8(void) {
 }
 
 extern "C" void fn_801A4538(void* arg0) {
-    void* addr = &fn_801A44D4;
-    fn_8012C4E4(arg0, addr, 0);
+    s32 (*fn)(void*, void*, s32) = fn_8012C4E4;
+    fn(arg0, (void*)&fn_801A44D4, 0);
 }
 
 #pragma opt_tail_call on
