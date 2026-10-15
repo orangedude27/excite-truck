@@ -3,3 +3,8 @@
 
 void fn_8001A1F0(void) {
 }
+
+void fn_8001B7B8(void) {
+    fn_802D3050();
+}
+
