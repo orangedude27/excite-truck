@@ -35,7 +35,7 @@ extern "C" void fn_800EAEB0(void) {
     fn_8002F634(&lbl_8040EC90, &__dt__Q46nw4hbm3snd6detail7ChannelFv, 0xE8, 0x41);
 }
 
-void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void* this_) {
+extern "C" void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void* this_) {
     u32 level;
     void* ptr;
 
@@ -85,6 +85,13 @@ extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackMa
         this_, &node, pCallback);
 
     OSRestoreInterrupts(level);
+}
+
+extern "C" s32 fn_800ECE68(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
 }
 
 void fn_800ED058(void) {
