@@ -1,6 +1,19 @@
 #include <types.h>
 
 extern char lbl_8055DF88;
+extern u8 lbl_8055DF80;
+extern s32 *lbl_8055DF84;
+extern s32 lbl_8055DF98;
+extern s32 lbl_8041E140[];
+extern char lbl_8032A000[];
+extern char lbl_8032A068[];
+extern char lbl_8032A074[];
+extern char lbl_8055DF8C;
+
+s32 fn_801281F4(s32, s32);
+void fn_802E30C8(void *, void *, void *);
+s32 fn_802E317C(void *, void *);
+void fn_8012834C(void *, void *, s32);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
