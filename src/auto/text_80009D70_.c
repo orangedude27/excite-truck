@@ -120,7 +120,7 @@ void fn_8000AA9C(void* arg0) {
     if (c == 0) {
         return;
     }
-    fn_8000A688((void (*)(void*))fn_8012DDA8, (s32)arg0);
+    fn_8000A688(fn_8012DDA8, (s32)arg0);
 }
 
 void fn_8000AABC(void* arg0) {
