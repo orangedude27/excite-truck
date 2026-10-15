@@ -37,3 +37,7 @@ s32 fn_800CF288(void) {
     return 0;
 }
 
+extern "C" void fn_800CF28C(void) {
+
+}
+
