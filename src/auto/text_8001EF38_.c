@@ -25,3 +25,7 @@ void fn_8001EFAC(void) {
     fn_8001F3AC();
 }
 
+void fn_8001EFB0(void) {
+    fn_8001F908();
+}
+
