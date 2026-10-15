@@ -21,3 +21,7 @@ void fn_801F4280(void) {
 
 }
 
+void fn_801F4330(void) {
+
+}
+
