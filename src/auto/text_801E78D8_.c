@@ -4,3 +4,8 @@
 void fn_801E7DEC(void) {
     fn_801E7C28();
 }
+
+void fn_801E8144(void) {
+
+}
+
