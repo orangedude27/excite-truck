@@ -17,3 +17,7 @@ void fn_801EB968(void) {
 
 }
 
+void fn_801EBD14(void) {
+
+}
+
