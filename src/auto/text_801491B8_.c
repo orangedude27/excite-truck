@@ -69,3 +69,7 @@ void fn_801556F8(void) {
 
 }
 
+void fn_801556FC(void) {
+
+}
+
