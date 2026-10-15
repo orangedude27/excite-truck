@@ -17,4 +17,8 @@ void fn_802168D8(void) {
     fn_80218A34();
 }
 
+void fn_802168DC(void) {
+    fn_80218ADC();
+}
+
 void fn_8021889C(void);
