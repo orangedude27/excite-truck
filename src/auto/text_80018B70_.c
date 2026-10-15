@@ -246,4 +246,6 @@ void fn_80018F40(void) {
     fn_80018CCC();
     lbl_8055D588 = 0;
 }
-
+void fn_80018B74(void) {
+    fn_8001EF60(0);
+}
