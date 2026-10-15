@@ -28,6 +28,8 @@ void fn_80018B70(void) {
     fn_8027DEAC();
 }
 
+#pragma small_data off
+
 void fn_80018E3C(void) {
     fn_80018B74();
 }
@@ -198,11 +200,16 @@ void fn_80018F7C(void) {
 }
 
 void *fn_80019054(s32 arg0) {
-    void *result = (void *)0;
-    if (arg0 >= 0) {
-        void **info = (void **)0x80357E0C;
-        if (arg0 < (s32)info[1]) {
-            result = (void *)((u8 *)info[0] + arg0 * 0x14);
+    void *base;
+    void *result;
+    if (arg0 < 0) {
+        result = 0;
+    } else {
+        base = lbl_80357E0C;
+        if (arg0 < ((s32 *)base)[1]) {
+            result = (void *)((u8 *)((s32 *)base)[0] + arg0 * 0x14);
+        } else {
+            result = 0;
         }
     }
     return result;
