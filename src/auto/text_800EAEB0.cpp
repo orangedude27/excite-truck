@@ -17,6 +17,7 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char* file, int line,
                                               const char* fmt, ...);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
     void*, void*, void*);
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void*, void*);
 
 #pragma push
 #pragma small_data off
@@ -77,18 +78,22 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54(
 extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
     void* this_, void* pCallback) {
     u32 level;
+    void* pThis;
+    void* pCb;
     void* node;
 
+    pThis = this_;
+    pCb = pCallback;
+    node = (void*)((u8*)this_ + 4);
     level = OSDisableInterrupts();
 
-    if (pCallback == NULL) {
+    if (pCb == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B74, 0x233,
                                      (const char*)lbl_80322B50);
     }
 
-    node = (void*)((u8*)this_ + 4);
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
-        this_, &node, pCallback);
+        pThis, &node, pCb);
 
     OSRestoreInterrupts(level);
 }
