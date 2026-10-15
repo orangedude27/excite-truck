@@ -6,3 +6,8 @@ void fn_801B435C(void*);
 void fn_801B3B24(void) {
 
 }
+
+void fn_801B3DBC(void* arg0) {
+    fn_801B435C(arg0);
+}
+
