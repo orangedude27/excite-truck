@@ -53,6 +53,22 @@ void fn_80156960(void *arg0) {
         r29++;
     } while (r29 < 8);
 }
+
+extern void fn_80128668(void*);
+extern void **lbl_8055E27C;
+extern u8 lbl_8032E46C[];
+extern void fn_80138AD8(void* this_, u32 a);
+void* __dt__Q28PSSystem7SeqHeapFv_80156A4C(void* this_, s32 flag) {
+    if (this_) {
+        *(u32*)this_ = (u32)lbl_8032E46C;
+        fn_80138AD8((u8*)this_ + 4, (u32)lbl_8032E46C);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
 }
 
 void fn_80156AC0(void) {
