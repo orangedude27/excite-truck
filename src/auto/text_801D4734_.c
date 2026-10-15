@@ -29,3 +29,6 @@ void fn_801D4904(void) {
     fn_801D5A24();
 }
 
+void fn_801D4F9C(void) {
+}
+
