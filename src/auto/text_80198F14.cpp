@@ -67,6 +67,10 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
+extern "C" void fn_801A44C4(void* arg0) {
+    fn_801CFF18(*(s32*)((u8*)arg0 + 0x24), *(s32*)((u8*)arg0 + 0xC));
+}
+
 extern "C" void fn_801A44D4(void* arg0) {
     s32* r29;
     s32 r30;
@@ -90,7 +94,7 @@ check:
 }
 
 extern "C" void fn_801A4538(void* arg0) {
-    fn_8012C4E4(arg0, (void*)&fn_801A44D4, 0);
+    fn_8012C4E4(arg0, &fn_801A44D4, 0);
 }
 
 #pragma opt_tail_call on
