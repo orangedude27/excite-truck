@@ -48,3 +48,8 @@ void fn_8000F440(void) {
     lbl_8055D4CC = fn_8023512C();
 }
 
+extern s32 lbl_8055D4D4;
+void fn_8000F498(void) {
+    lbl_8055D4D4 = fn_8023512C();
+}
+
