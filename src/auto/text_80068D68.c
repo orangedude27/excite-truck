@@ -16,6 +16,8 @@ extern void fn_80071450(void *);
 extern void fn_80070954(u32 code, void *msg, u16 param);
 extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
 extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
+extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
+extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
 
 void fn_8006EACC(void) {
 
@@ -39,6 +41,67 @@ void fn_8006EBF0(void) {
 
 void fn_8006EC20(void) {
     fn_80068E08();
+}
+
+void bta_sys_disable(void) {
+    void **pp_module;
+    void *p_module;
+    UINT8 (*p_disable)(void);
+    s32 i;
+
+    pp_module = (void **)&lbl_803C0AD8;
+    for (i = 0; i < 0x1A; i++) {
+        p_module = *pp_module;
+        if (p_module != NULL) {
+            p_disable = (UINT8 (*)(void))((u8 *)p_module + 4);
+            if (p_disable != NULL) {
+                p_disable();
+            }
+        }
+        pp_module++;
+    }
+}
+
+void fn_80071510(void *arg0, s32 arg1, u8 arg2) {
+    fn_8006E6E4(arg0);
+    ((u8 *)arg0)[0x10] = arg2;
+    ((s32 *)arg0)[3] = arg1;
+}
+
+void ptim_timer_update(tPTIM_CB *p_cb) {
+    TIMER_LIST_ENT *p_entry;
+    TIMER_CBACK *p_cback;
+    void *p_buf;
+    UINT16 event;
+
+    GKI_update_timer_list(&p_cb->timer_queue, p_cb->timer_id);
+
+    p_entry = p_cb->timer_queue.p_first;
+    while (p_entry != NULL) {
+        if (p_entry->ticks <= 0) {
+            GKI_remove_from_timer_list(&p_cb->timer_queue, p_entry);
+            p_cback = p_entry->p_cback;
+            if (p_cback != NULL) {
+                p_cback(p_entry);
+            } else {
+                event = p_entry->event;
+                if (event != 0) {
+                    p_buf = GKI_getbuf(8);
+                    if (p_buf != NULL) {
+                        ((UINT16 *)p_buf)[0] = event;
+                        fn_80071450(p_buf);
+                    }
+                }
+            }
+            p_entry = p_cb->timer_queue.p_first;
+        } else {
+            p_entry = p_entry->p_next;
+        }
+    }
+
+    if (p_cb->timer_queue.p_first == NULL) {
+        GKI_stop_timer(p_cb->timer_id);
+    }
 }
 
 void fn_80072C38(void) {
