@@ -13,6 +13,10 @@ void fn_801AFAB4(void) {
 
 }
 
+void fn_801AFAB8(void) {
+
+}
+
 void fn_801AFAB0(void) {
 
 }
