@@ -132,6 +132,10 @@ extern "C" void fn_80215CD8(void) {
 
 }
 
+extern "C" void fn_80215CDC(void) {
+
+}
+
 extern "C" void fn_80215CC4(void) {
 
 }
