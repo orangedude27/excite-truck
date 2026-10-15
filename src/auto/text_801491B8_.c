@@ -17,3 +17,7 @@ void fn_8014DE4C(void) {
 
 }
 
+void fn_8014E704(void) {
+
+}
+
