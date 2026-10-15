@@ -49,3 +49,7 @@ void fn_80089E3C(void) {
 
 }
 
+void fn_800911DC(void) {
+
+}
+
