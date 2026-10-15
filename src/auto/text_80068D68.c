@@ -25,6 +25,10 @@ void fn_8006EC20(void) {
     fn_80068E08();
 }
 
+void fn_80072C38(void) {
+    BTM_CancelRemoteDeviceName();
+}
+
 void fn_80073A1C(void) {
 
 }
@@ -35,5 +39,9 @@ void fn_8007AD38(void) {
 
 void fn_8007BC88(void) {
 
+}
+
+void fn_8007DEF4(void) {
+    GKI_freebuf(0);
 }
 
