@@ -5,6 +5,14 @@ extern void fn_8021889C(void);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern s32 fn_80128668(void);
+s32 fn_80215E68(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_8021676C(void) {
 
 }
