@@ -42,7 +42,7 @@ void fn_8006EC20(void) {
 }
 
 void fn_8007148C(s32 arg0) {
-    fn_800716B0((void **)&lbl_803C0AD8 + 0x68, arg0, &lbl_803C0AD8);
+    fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
 }
 
 void fn_80072C38(void) {
@@ -81,14 +81,10 @@ void ptim_timer_update(tPTIM_CB *p_cb) {
     void *p_buf;
     UINT16 event;
 
-    GKI_update_timer_list(&p_cb->timer_queue, p_cb->period);
+    GKI_update_timer_list(&p_cb->timer_queue, p_cb->timer_id);
 
-    while (1) {
-        p_entry = p_cb->timer_queue.p_first;
-        if (p_entry == NULL) {
-            goto stop_timer;
-        }
-        
+    p_entry = p_cb->timer_queue.p_first;
+    while (p_entry != NULL) {
         if (p_entry->ticks <= 0) {
             GKI_remove_from_timer_list(&p_cb->timer_queue, p_entry);
             p_cback = p_entry->p_cback;
@@ -104,15 +100,13 @@ void ptim_timer_update(tPTIM_CB *p_cb) {
                     }
                 }
             }
-            continue;
+            p_entry = p_cb->timer_queue.p_first;
+        } else {
+            p_entry = p_entry->p_next;
         }
-        
-        p_entry = p_cb->timer_queue.p_first;
-        if (p_entry != NULL) {
-            break;
-        }
-        
-stop_timer:
+    }
+
+    if (p_cb->timer_queue.p_first == NULL) {
         GKI_stop_timer(p_cb->timer_id);
     }
 }
