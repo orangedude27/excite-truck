@@ -164,6 +164,8 @@ extern "C" s32 fn_801A5134(s32 arg0, s32 arg1) {
 
 extern "C" void fn_801A4868(void);
 
+extern "C" void fn_801A4868(void*, u8);
+
 extern "C" void fn_801A518C(void) {
     fn_801A4868();
 }
