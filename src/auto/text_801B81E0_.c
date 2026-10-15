@@ -33,3 +33,7 @@ void fn_801B8AF4(void) {
 
 }
 
+void fn_801B8AF8(void) {
+
+}
+
