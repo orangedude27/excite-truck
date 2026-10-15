@@ -51,3 +51,7 @@ void fn_801D8938(void) {
 
 }
 
+void fn_801D8B50(void) {
+
+}
+
