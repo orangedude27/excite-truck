@@ -7,6 +7,7 @@
 
 #define __VIRegs VI_HW_REGS
 
+extern u32 OS_BUS_CLOCK_SPEED;
 extern s32 lbl_8055DBE8;
 extern volatile u32 lbl_8055DB60;
 extern volatile u32 lbl_8055DB70;
