@@ -108,3 +108,54 @@ s32 fn_80019534(void) {
     return ret;
 }
 
+s32 fn_80019098(s32 arg0) {
+    s32 idx = 0;
+    s32 off = 0;
+    s32 count;
+    void **tbl;
+
+    tbl = (void **)lbl_803580A4;
+    count = ((s32 *)tbl)[1];
+
+    while (idx < count) {
+        char **strs = (char **)tbl[0];
+        if (stricmp(strs[off / 4], (const char *)arg0) == 0) {
+            return ((s32 *)strs[off / 4])[2];
+        }
+        off += 0x10;
+        idx++;
+    }
+
+    return 0;
+}
+
+s32 fn_80019438(void) {
+    s32 i = 0;
+
+    while (i < fn_80019088()) {
+        void *entry = fn_80019054(i);
+        if (stricmp(*(char **)entry, lbl_80558C54) == 0) {
+            s32 val = ((s32 *)entry)[1];
+            if (fn_80019098(val) != 0 && fn_80019144(val) == 0) {
+                return 0;
+            }
+        }
+        i++;
+    }
+    return 1;
+}
+
+s32 fn_800194CC(void) {
+    s32 result;
+
+    if (lbl_8055D588 != 0) {
+        result = 1;
+    } else {
+        result = 0;
+        if (fn_80019430() != 0 || fn_800194C8() != 0 || fn_80019604() != 0) {
+            result = 1;
+        }
+    }
+    return result;
+}
+
