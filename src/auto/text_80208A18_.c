@@ -4,3 +4,8 @@
 void fn_80209278(void) {
 
 }
+
+void fn_8020927C(void) {
+
+}
+
