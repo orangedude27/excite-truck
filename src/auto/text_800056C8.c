@@ -24,3 +24,7 @@ void fn_80005B6C(void) {
 void fn_80005B70(void) {
 }
 
+void fn_800060B4(void) {
+    return;
+}
+
