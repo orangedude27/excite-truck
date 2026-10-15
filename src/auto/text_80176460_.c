@@ -11,4 +11,4 @@ void fn_8017677C(void) {
 void fn_80176A6C(void) {
     fn_801771A8();
 }
-
+void fn_80177138(void);
