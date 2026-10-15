@@ -66,12 +66,13 @@ void fn_8000AB44(void) {
 }
 
 void fn_8000A7A8(void) {
+    char* base = (char*)&lbl_8034F4C8;
     if (lbl_8055D3B4 != 0) {
-        fn_8012DDA8((u8*)&lbl_8034F4C8 + 0x58);
+        fn_8012DDA8(base + 0x58);
     }
-    fn_8012DDA8((u8*)&lbl_8034F4C8 + 0x18);
+    fn_8012DDA8(base + 0x18);
     if (lbl_8055D3B5 != 0) {
-        fn_8012DDA8((u8*)&lbl_8034F4C8 + 0x98);
+        fn_8012DDA8(base + 0x98);
     }
     fn_801DCDA0();
 }
