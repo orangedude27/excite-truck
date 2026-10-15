@@ -25,3 +25,7 @@ void fn_8013A204(void) {
 
 }
 
+void fn_8013A208(void) {
+
+}
+
