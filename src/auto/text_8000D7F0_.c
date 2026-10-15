@@ -8,3 +8,7 @@ void fn_8000D7F0(void) {
 void fn_8000D7F4(void) {
 }
 
+void fn_8000D7F8(void) {
+    return;
+}
+
