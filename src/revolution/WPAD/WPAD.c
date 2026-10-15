@@ -2880,12 +2880,23 @@ skip_init:
 
 s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
 {
+    WPADCB** table = lbl_8038F4F0;
     WPADCB* pCB;
+    s32 offset;
     s32 status;
     s8 devHandle;
     BOOL enabled;
+    s32 chanSave;
+    WPADGameInfo* pInfoSave;
+    s32 result;
+    s64 currentTime;
+    s32 elapsed;
+    s32 status2;
     
-    pCB = lbl_8038F4F0[chan];
+    offset = chan * 4;
+    pCB = table[chan];
+    chanSave = chan;
+    pInfoSave = pInfo;
     
     enabled = OSDisableInterrupts();
     status = ((s32*)pCB)[0x7FC / 4];
@@ -2898,45 +2909,35 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
         
         if (devHandle == 0) {
             u32 locals[12];
-            ((u32*)locals)[0] = ((u32*)pInfo)[0];
-            ((u32*)locals)[1] = ((u32*)pInfo)[1];
-            ((u32*)locals)[2] = ((u32*)pInfo)[2];
-            ((u32*)locals)[3] = ((u32*)pInfo)[3];
-            ((u32*)locals)[4] = ((u32*)pInfo)[4];
-            ((u32*)locals)[5] = ((u32*)pInfo)[5];
-            ((u32*)locals)[6] = ((u32*)pInfo)[6];
-            ((u32*)locals)[7] = ((u32*)pInfo)[7];
-            ((u32*)locals)[8] = ((u32*)pInfo)[8];
-            ((u32*)locals)[9] = ((u32*)pInfo)[9];
-            ((u32*)locals)[10] = ((u32*)pInfo)[10];
-            ((u32*)locals)[11] = ((u32*)pInfo)[11];
-            fn_80063324(chan, locals);
+            s32 i;
+            for (i = 0; i < 12; i++) {
+                ((u32*)locals)[i] = ((u32*)pInfoSave)[i];
+            }
+            fn_80063324(chanSave, locals);
             return 0;
-        } else {
-            return -2;
         }
-    } else if (status == -2) {
-        // Timeout handling
-        s64 currentTime = __OSGetSystemTime();
-        s64 updateTime = pCB->lastControllerDataUpdate;
-        s32 elapsed;
-        
-        elapsed = __div2i((s32)(currentTime >> 2), (s32)(updateTime >> 2), 
-                         (s32)currentTime, (s32)updateTime);
+        return -2;
+    }
+    
+    if (status == -2) {
+        currentTime = __OSGetSystemTime();
+        elapsed = __div2i((s32)(currentTime >> 2), (s32)(pCB->lastControllerDataUpdate >> 2),
+                         (s32)currentTime, (s32)pCB->lastControllerDataUpdate);
         
         if (elapsed > 1 && lbl_8055DC11 != 0) {
             if (pCB->wpInfoOut == NULL) {
-                s64 currentTime2 = __OSGetSystemTime();
-                pCB->lastControllerDataUpdate = currentTime2;
+                currentTime = __OSGetSystemTime();
+                pCB->lastControllerDataUpdate = currentTime;
                 pCB->samplingBufIndex = elapsed;
                 
                 enabled = OSDisableInterrupts();
-                status = ((s32*)pCB)[0x7FC / 4];
+                status2 = ((s32*)pCB)[0x7FC / 4];
                 OSRestoreInterrupts(enabled);
                 
-                if (status != -1) {
+                if (status2 == -1) {
                     enabled = OSDisableInterrupts();
-                    if (pCB->rxBufIndex == 0) {
+                    devHandle = pCB->rxBufIndex;
+                    if (devHandle == 0) {
                         pCB->rxBufIndex = 1;
                         OSRestoreInterrupts(enabled);
                         BTA_HhClose(pCB->devHandle);
@@ -2951,7 +2952,9 @@ s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
             }
         }
         return -2;
-    } else if (status == -3) {
+    }
+    
+    if (status == -3) {
         enabled = OSDisableInterrupts();
         ((s32*)pCB)[0x7FC / 4] = 0;
         OSRestoreInterrupts(enabled);
@@ -3032,11 +3035,38 @@ void fn_8005F248(s32 chan, s32 param_2) {
     u32 capacity;
     s32 diff;
     u8 buf[0x60];
-    f64 d0, d1, d2, d3, d4, d5;
+    f64 d4, d3, d2, d1, d0, d5;
     
     if (param_2 != -3) {
         return;
     }
+    
+    *(u32*)(buf + 0x0C) = 0x62;
+    *(u16*)(buf + 0x08) = 0x38;
+    *(u32*)(buf + 0x10) = 0x17;
+    *(u16*)(buf + 0x2A) = 0x6;
+    *(void**)(buf + 0x3C) = fn_8005F248;
+    
+    memcpy(buf + 0x14, buf + 0x0C, 4);
+    memcpy(buf + 0x18, buf + 0x08, 2);
+    
+    *(u16*)(buf + 0x30) = *(u16*)(buf + 0x08);
+    *(u32*)(buf + 0x34) = *(u32*)(buf + 0x0C);
+    *(u32*)(buf + 0x2C) = (u32)(p + 0x874);
+    
+    d4 = *(f64*)(buf + 0x10);
+    d3 = *(f64*)(buf + 0x18);
+    d2 = *(f64*)(buf + 0x20);
+    d1 = *(f64*)(buf + 0x28);
+    d5 = *(f64*)(buf + 0x38);
+    d0 = *(f64*)(buf + 0x30);
+    
+    *(f64*)(buf + 0x00) = d4;
+    *(f64*)(buf + 0x08) = d3;
+    *(f64*)(buf + 0x10) = d2;
+    *(f64*)(buf + 0x18) = d1;
+    *(f64*)(buf + 0x20) = d0;
+    *(f64*)(buf + 0x28) = d5;
     
     enabled = OSDisableInterrupts();
     OSDisableInterrupts();
@@ -3062,6 +3092,8 @@ void fn_8005F248(s32 chan, s32 param_2) {
     
     memset(p->stdCmdQueue.buffer + front * 0x30, 0, 0x30);
     memcpy(p->stdCmdQueue.buffer + front * 0x30, buf, 0x30);
+    
+    ((u8*)p)[0x161] = (u8)((u8)((s32)(capacity - 1 - status) >> 31) & ((u8)((s32)(status - capacity + 1 - 1) >> 31) ^ 0xFF));
     
     OSRestoreInterrupts(enabled);
 }
@@ -3526,7 +3558,58 @@ void fn_80064B1C(s32 chan, void* data) { /* stub */ }
 void fn_80064F64(s32 chan, void* data) { /* stub */ }
 
 // fn_80065524: WPAD data processing
-void fn_80065524(void) { /* stub */ }
+void fn_80065524(s32 chan, WPADStatusEx* pStatus)
+{
+    WPADCB* pCB;
+    u8* pBuf;
+    u8 devMode;
+    s32 i;
+    BOOL enabled;
+    u16 buttons;
+    s32 status;
+    
+    enabled = OSDisableInterrupts();
+    pCB = lbl_8038F4F0[chan];
+    devMode = pCB->devMode;
+    
+    // Clear the buffer
+    pBuf = (u8*)pCB + devMode * 0x60 + 0xA0;
+    for (i = 0; i < 8; i++) {
+        pBuf[0] = 0;
+        pBuf[1] = 0;
+        pBuf[2] = 0;
+        pBuf[3] = 0;
+        pBuf[4] = 0;
+        pBuf[5] = 0;
+        pBuf[6] = 0;
+        pBuf[7] = 0;
+        pBuf += 8;
+    }
+    
+    // Set button values from pInfo
+    buttons = (pStatus->button >> 8) & 0xFF;
+    buttons |= pStatus->button & 0xFF;
+    buttons &= 0x9F1F;
+    *(u16*)pBuf = buttons;
+    
+    // Get status
+    status = *(s32*)((u8*)pCB + 0x7F8);
+    if (status != 0) {
+        pBuf[0x29] = *(u8*)((u8*)pCB + 0x7FC);
+    } else {
+        status = *(s32*)((u8*)pCB + 0x7FC);
+        if (status != 0) {
+            pBuf[0x29] = WPAD_ERR_INVALID;
+        } else {
+            pBuf[0x29] = *(u8*)((u8*)pCB + 0x801);
+            pBuf[0x28] = pStatus->button;
+            pStatus->button = pStatus->button & 0xFFFFFF00 | (pStatus->button >> 1 & 0xFF);
+            pBuf[0x806] = 0;  // This doesn't make sense, let me reconsider
+        }
+    }
+    
+    OSRestoreInterrupts(enabled);
+}
 
 // fn_800656E8: WPAD data processing
 void fn_800656E8(s32 chan) { /* stub */ }
