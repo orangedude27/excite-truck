@@ -17,3 +17,7 @@ void fn_8002EFB0(void) {
     __ieee754_atan2();
 }
 
+void fn_8002EFB4(void) {
+    __ieee754_fmod();
+}
+
