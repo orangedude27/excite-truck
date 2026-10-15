@@ -3,7 +3,7 @@
 
 extern "C" void fn_800E6A44(void);
 
-void fn_800E5A8C(void) {
+extern "C" void fn_800E5A8C(void) {
     fn_800E6A44();
 }
 
