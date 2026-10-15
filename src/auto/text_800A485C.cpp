@@ -55,7 +55,7 @@ extern "C" s32 fn_800C771C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_800C775C(void *arg0, s32 arg1) {
+extern "C" void fn_800C775C(void *arg0, s32 arg1) {
     (*(u32 *)((u8 *)arg0 + 4)) = arg1;
 }
 
