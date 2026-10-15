@@ -17,3 +17,7 @@ void fn_8017D330(void) {
 
 }
 
+void fn_8017D358(void) {
+
+}
+
