@@ -110,6 +110,10 @@ void fn_800060B4(void) {
 void fn_800060DC(void) {
 }
 
+s32 ARCClose(void) {
+    return 0;
+}
+
 s32 fn_80006244(void) {
     return 0;
 }
