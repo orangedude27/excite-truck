@@ -189,7 +189,12 @@ extern "C" s32 fn_800A4D44(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
 
-void fn_800A4D4C(void *arg0, void *arg1) {
+extern "C" void fn_800A4D4C(void *arg0, void *arg1) {
+    if (((u32 *)arg0)[0xC / 4] == 1 || (s32)arg1 == 0) {
+        ((s32 *)arg0)[8 / 4] = ((s32 *)arg0)[0];
+    } else {
+        ((s32 *)arg0)[8 / 4] = (s32)arg1;
+    }
 }
 
 void fn_800A4D74(void *arg0, s32 arg1) {
