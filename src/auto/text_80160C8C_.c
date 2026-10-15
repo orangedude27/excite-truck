@@ -30,3 +30,7 @@ void fn_80164D60(void) {
 
 }
 
+void fn_80165248(void) {
+
+}
+
