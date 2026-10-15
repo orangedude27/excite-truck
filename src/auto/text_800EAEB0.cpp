@@ -98,6 +98,26 @@ extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackMa
     OSRestoreInterrupts(level);
 }
 
+extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
+    void* this_, void* pCallback) {
+    u32 level;
+    void* pThis;
+    void* pCb;
+
+    pThis = this_;
+    pCb = pCallback;
+    level = OSDisableInterrupts();
+
+    if (pCb == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B74, 0x233,
+                                     (const char*)lbl_80322B50);
+    }
+
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(pThis, pCb);
+
+    OSRestoreInterrupts(level);
+}
+
 extern "C" s32 fn_800ECE68(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
