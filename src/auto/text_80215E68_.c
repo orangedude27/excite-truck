@@ -23,4 +23,8 @@ void fn_802168DC(void) {
     fn_80218ADC();
 }
 
+void fn_802168E0(void) {
+    fn_80218B88();
+}
+
 void fn_8021889C(void*, s32, f32);
