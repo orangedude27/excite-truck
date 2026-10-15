@@ -9,3 +9,7 @@ void fn_801EA38C(void) {
     fn_801EBC2C();
 }
 
+void fn_801EA390(void) {
+    fn_801EBC70();
+}
+
