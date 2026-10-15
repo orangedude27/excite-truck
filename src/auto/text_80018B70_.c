@@ -22,6 +22,10 @@ void fn_80018E40(void) {
     fn_80018B70();
 }
 
+s32 fn_80019430(void) {
+    return 0;
+}
+
 void fn_800194C8(void) {
     fn_80019438();
 }
@@ -45,22 +49,25 @@ void fn_800196FC(void) {
 }
 
 void fn_800196F0(void) {
-    fn_80131234((void *)0x802FD404);
+    void *ptr = (void *)0x802FD404;
+    fn_80131234(ptr);
 }
 
 s32 fn_80019604(void) {
     s32 var_r31;
+    s32 result;
+    s8 tmp;
 
-    if (lbl_8055D588 != 0) {
-        var_r31 = 1;
-    } else {
+    tmp = lbl_8055D588;
+    if (tmp == 0) {
         var_r31 = 0;
-        if (fn_80019430() != 0) {
-            fn_8027DE68(2);
-            if (fn_80019430() != 0) {
-                var_r31 = 1;
-            }
+        fn_80019430();
+        result = fn_8027DE68(2);
+        if (result != 0) {
+            var_r31 = 1;
         }
+    } else {
+        var_r31 = 1;
     }
     return var_r31;
 }
@@ -74,23 +81,29 @@ void fn_800195C0(void) {
 }
 
 s32 fn_80019534(void) {
-    void **var_r3;
-    void *var_r31;
     s32 ret;
+    void **obj;
+    void **method;
 
-    var_r3 = (void **)&lbl_8055D58C;
-    if (var_r3[0] != NULL) {
-        var_r31 = (void *)0x802FD3A0;
-        ret = ((s32 (*)(void *))((u32 *)var_r3[0])[4])((void *)0x802FD3A0);
-        if (ret != 0) {
-            var_r31 = (void *)0x802FD3A0;
-            ret = ((s32 (*)(void *))((u32 *)var_r3[0])[2])((void *)0x802FD3A0);
-            if (ret != 0) {
-                ret = ((s32 (*)(void *, s32))((u32 *)var_r3[0])[6])((void *)0x802FD3B4, 0);
-                return ret;
-            }
-        }
+    obj = (void **)lbl_8055D58C;
+    if (obj == 0) {
+        return 0;
     }
-    return 0;
+
+    method = (void **)obj[0];
+    ret = ((s32 (*)(void *))method[4])((void *)lbl_802FD3A0);
+    if (ret == 0) {
+        return 0;
+    }
+
+    obj = (void **)lbl_8055D58C;
+    method = (void **)obj[0];
+    ret = ((s32 (*)(void *))method[2])((void *)lbl_802FD3A0);
+
+    obj = (void **)lbl_8055D58C;
+    method = (void **)obj[0];
+    ret = ((s32 (*)(void *, s32))method[6])((void *)lbl_802FD3B4, 0);
+
+    return ret;
 }
 
