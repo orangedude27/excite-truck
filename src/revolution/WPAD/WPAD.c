@@ -2540,7 +2540,7 @@ BOOL WPADiSendWriteData(WPADCommandQueue* pQueue, const void* pSrc, u16 len,
     return success;
 }
 
-BOOL WPADiSendReadData(WPADCommandQueue* pQueue, void* pDst, u16 len, u32 addr,
+inline BOOL WPADiSendReadData(WPADCommandQueue* pQueue, void* pDst, u16 len, u32 addr,
                        WPADCallback pCallback) {
     BOOL success;
     WPADCommand command;
@@ -3172,7 +3172,68 @@ s32 fn_8005FBCC(u8 devHandle) {
     return WPAD_CHAN_INVALID;
 }
 
+void fn_8005FCCC(u8 devHandle, u8 open) {
+#pragma dont_inline off
+    extern void fn_8005E8E0(s32 chan);
+    extern const char lbl_803120E0[];
+    extern s8 lbl_80390500[];
+    extern void fn_8005F3E8(s32, s32);
+    extern s32 fn_8005B00C(void);
+    s32 chan;
+    WPADCB* p;
+    WPADCommand command;
+    BOOL remain;
 
+    if (open) {
+        DBPrintf_80068D68(lbl_803120E0 + 0xCC);
+        chan = fn_8005FBCC(devHandle);
+        p = lbl_8038F4F0[chan];
+        lbl_80390500[devHandle] = chan;
+        fn_8005E8E0(chan);
+        ((u8*)p)[0x803] = devHandle;
+        ((u8*)p)[0x801] = 0;
+        *(u32*)((u8*)p + 0x7F8) = 0;
+        *(u32*)((u8*)p + 0x818) = TRUE;
+        *(s32*)((u8*)p + 0x7FC) = 0;
+        ((u8*)p)[0x8C3] = 100;
+        ((u8*)p)[0x8C6] = FALSE;
+        WPADiSendReadData(&p->stdCmdQueue, (u8*)p + 0x874, 1, 0x1770, fn_8005F3E8);
+        fn_8005B00C();
+    } else {
+        DBPrintf_80068D68(lbl_803120E0 + 0xE4);
+        chan = lbl_80390500[devHandle];
+        lbl_80390500[devHandle] = -1;
+        if (chan != -1) {
+            p = lbl_8038F4F0[chan];
+            *(s32*)((u8*)p + 0x7FC) = -1;
+            if (*(WPADCallback*)((u8*)p + 0x7DC) != NULL) {
+                (*(WPADCallback*)((u8*)p + 0x7DC))(chan, -1);
+            } else if (*(WPADCallback*)(lbl_80392900 + chan * 0x14 + 0x10) != NULL) {
+                (*(WPADCallback*)(lbl_80392900 + chan * 0x14 + 0x10))(chan, -1);
+            }
+            do {
+                remain = WPADiGetCommand(&p->stdCmdQueue, &command);
+                if (remain) {
+                    if (command.cmdCB != NULL) {
+                        command.cmdCB(chan, -1);
+                    }
+                    WPADiPopCommand(&p->stdCmdQueue);
+                }
+            } while (remain);
+            DBPrintf_80068D68(lbl_803120E0 + 0x100);
+            if (*(void**)((u8*)p + 0x7EC) != NULL) {
+                WPADSetAutoSamplingBuf(chan, *(void**)((u8*)p + 0x7EC), *(u32*)((u8*)p + 0x7F4));
+            }
+            fn_8005E8E0(chan);
+            lbl_8055DC08[chan] = FALSE;
+            if (*(WPADCallback*)((u8*)p + 0x7E4) != NULL) {
+                (*(WPADCallback*)((u8*)p + 0x7E4))(chan, -1);
+            }
+        } else {
+            DBPrintf_80068D68(lbl_803120E0 + 0x118);
+        }
+    }
+}
 
 // fn_8006022C: disconnect controller and clear saved device information
 void fn_8006022C(s32 chan)
@@ -3639,7 +3700,67 @@ void fn_80064A80(s32 chan, s32 param_2) {
 }
 
 // fn_80064B1C: WPAD data processing
-void fn_80064B1C(s32 chan, void* data) { /* stub */ }
+void fn_80064B1C(s32 chan, void* data) {
+    WPADCB* cb;
+    u8* p;
+    u8* buf;
+    s32 enabled;
+    s32 old;
+    s32 i;
+    s32 v;
+
+    DBPrintf_80068D68((const char*)lbl_80312338 + 0x328);
+    enabled = OSDisableInterrupts();
+    cb = lbl_8038F4F0[(u8)chan];
+    old = *(s32*)((u8*)cb + 0x81C);
+    if (old == 0) {
+        OSRestoreInterrupts(enabled);
+        return;
+    }
+    p = (u8*)cb;
+    buf = p + 0xA0 + p[0x806] * 0x60;
+    for (i = 0; i < 2; i++) {
+        s32 j;
+        for (j = 0; j < 48; j++) buf[i * 48 + j] = 0;
+    }
+    buf[0] = 0;
+    buf[1] = ((u8*)data)[1];
+    *(u16*)buf = (((u8*)data)[1] << 8) | ((u8*)data)[2];
+    *(u16*)buf &= 0x9f1f;
+    *(s32*)(p + 0x788) = ((u8*)data)[1] >> 7;
+    *(s32*)(p + 0x778) = (((u8*)data)[3] >> 3) & 1;
+    *(s32*)(p + 0x77C) = (((u8*)data)[3] >> 2) & 1;
+    *(s32*)(p + 0x780) = (((u8*)data)[3] >> 1) & 1;
+    *(s32*)(p + 0x784) = ((u8*)data)[3] & 1;
+    p[0x78D] = ((u8*)data)[3] >> 4;
+    p[0x78E] = 0;
+    p[0x78F] = ((u8*)data)[5] & 0xf0;
+    v = ((u8*)data)[6];
+    if (v >= 0x55) p[0x78C] = 4;
+    else if (v >= 0x44) p[0x78C] = 3;
+    else if (v >= 0x33) p[0x78C] = 2;
+    else if (v >= 3) p[0x78C] = 1;
+    else p[0x78C] = 0;
+    if (*(s32*)(p + 0x780) != 0) {
+        if (old == 0) DBPrintf_80068D68((const char*)lbl_80312338 + 0x33c);
+    } else {
+        p[0x801] = 0;
+        p[0x802] = 0;
+    }
+    if (*(s32*)(p + 0x790) != 0) {
+        memcpy(p + 0x778, p + 0x790, 0x18);
+        *(s32*)(p + 0x790) = 0;
+    }
+    if (*(void**)(p + 0x7dc) && p[0x800]) {
+        ((WPADCallback)*(void**)(p + 0x7dc))(chan, 0);
+        *(s32*)(p + 0x7dc) = 0;
+    }
+    buf[0x29] = 0xfe;
+    buf[0x28] = p[0x801];
+    p[0x800] = 0;
+    p[0x806] = __cntlzw(p[0x806]) >> 24;
+    OSRestoreInterrupts(enabled);
+}
 
 // fn_80064F64: WPAD data processing
 void fn_80064F64(s32 chan, void* data) { /* stub */ }
@@ -3801,6 +3922,19 @@ void fn_80067ECC(s32 chan, void* data) { /* stub */ }
 
 // fn_800684CC: WPAD data processing
 void fn_800684CC(void) { /* stub */ }
+
+void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed) {
+    WPADCB* cb = lbl_8038F4F0[chan];
+    u32 i;
+    u8* base = (u8*)cb;
+
+    for (i = 0; i < (u32)len; i++) {
+        u32 index = (seed + i) & 7;
+        u8 key = base[0x86C + index];
+        u8 value = base[0x864 + index];
+        data[i] = value + (data[i] ^ key);
+    }
+}
 
 // WUD function stubs
 u8 WUDGetBufferStatus(void) { return 0; }
