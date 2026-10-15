@@ -29,7 +29,11 @@ void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
 
-void fn_800CF280(void) {
-    return;
+extern "C" void fn_800CF280(void) {
+
+}
+
+void fn_800CF288(void) {
+
 }
 
