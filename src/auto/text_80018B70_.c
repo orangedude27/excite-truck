@@ -148,7 +148,7 @@ s32 fn_80019438(void) {
 s32 fn_800194CC(void) {
     s32 result;
 
-    if (lbl_8055D588 != 0) {
+    if (((u8*)&lbl_8055D588)[0] != 0) {
         result = 1;
     } else {
         result = 0;
