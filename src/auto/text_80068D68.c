@@ -4,3 +4,8 @@
 void fn_8006EACC(void) {
 
 }
+
+void fn_8006EAD0(void) {
+
+}
+
