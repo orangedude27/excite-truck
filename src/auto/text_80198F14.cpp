@@ -65,6 +65,10 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
+void fn_801A4538(void* arg0) {
+    fn_8012C4E4(arg0, &fn_801A44D4, 0);
+}
+
 #pragma opt_tail_call on
 void fn_801A4768(s32* arg0, s32 arg1) {
     s32 val = *arg0;
