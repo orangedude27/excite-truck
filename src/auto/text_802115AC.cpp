@@ -79,3 +79,7 @@ extern "C" void fn_80215CA0(void) {
 
 }
 
+extern "C" void fn_80215CA4(void) {
+
+}
+
