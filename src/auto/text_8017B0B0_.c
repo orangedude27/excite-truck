@@ -25,3 +25,7 @@ void fn_8017D358(void) {
 
 }
 
+void fn_8017D36C(void) {
+
+}
+
