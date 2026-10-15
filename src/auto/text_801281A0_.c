@@ -22,6 +22,13 @@ void fn_80128684(void) {
     lbl_8055DF88 = 0;
 }
 
+s32 fn_80128690(void) {
+    u8 val = lbl_8055DF88;
+    s32 result;
+    result = __cntlzw(val);
+    return result >> 5;
+}
+
 void fn_80128710(void) {
 
 }
@@ -46,20 +53,20 @@ void fn_80129218(void) {
 
 }
 
-void fn_80128584(s32);
+void fn_80128584(s32, s32);
 
 void fn_80128658(void) {
-    fn_80128584(1);
+    fn_80128584(0, 1);
 }
 
 void fn_80128660(void) {
-    fn_80128584(2);
+    fn_80128584(0, 2);
 }
 
 void fn_80128668(void) {
-    fn_80128584(3);
+    fn_80128584(0, 3);
 }
 
 void fn_80128670(void) {
-    fn_80128584(0);
+    fn_80128584(0, 0);
 }
