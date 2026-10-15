@@ -132,6 +132,13 @@ s32 fn_80007664(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_800076A4(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_80007BE8(void) {
     return;
 }
