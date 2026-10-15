@@ -31,7 +31,7 @@ void fn_800194C8(void) {
 }
 
 extern char lbl_8055D588;
-extern char lbl_8055D58C;
+extern void *lbl_8055D58C;
 extern void *lbl_802FD404;
 extern void *lbl_802FD3CC;
 extern void *lbl_802FD3A0;
@@ -83,26 +83,28 @@ void fn_800195C0(void) {
 s32 fn_80019534(void) {
     s32 ret;
     void **obj;
-    void **method;
+    void **vtable;
+    void *ptr_802FD3A0 = (void *)0x802FD3A0;
+    void *ptr_802FD3B4 = (void *)0x802FD3B4;
 
     obj = (void **)lbl_8055D58C;
     if (obj == 0) {
         return 0;
     }
 
-    method = (void **)obj[0];
-    ret = ((s32 (*)(void *))method[4])((void *)lbl_802FD3A0);
+    vtable = (void **)obj[0];
+    ret = ((s32 (*)(void *))vtable[4])(ptr_802FD3A0);
     if (ret == 0) {
         return 0;
     }
 
     obj = (void **)lbl_8055D58C;
-    method = (void **)obj[0];
-    ret = ((s32 (*)(void *))method[2])((void *)lbl_802FD3A0);
+    vtable = (void **)obj[0];
+    ret = ((s32 (*)(void *))vtable[2])(ptr_802FD3A0);
 
     obj = (void **)lbl_8055D58C;
-    method = (void **)obj[0];
-    ret = ((s32 (*)(void *, s32))method[6])((void *)lbl_802FD3B4, 0);
+    vtable = (void **)obj[0];
+    ret = ((s32 (*)(void *, s32))vtable[6])(ptr_802FD3B4, 0);
 
     return ret;
 }
