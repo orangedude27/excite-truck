@@ -13,3 +13,7 @@ void fn_8001EFA0(void) {
     fn_8001F9A4();
 }
 
+void fn_8001EFA4(void) {
+    fn_8001FA20();
+}
+
