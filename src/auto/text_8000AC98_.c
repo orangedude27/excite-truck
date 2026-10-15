@@ -11,3 +11,7 @@ void fn_8000ACA4(void) {
 void fn_8000ACA8(void) {
 }
 
+void fn_8000ACAC(void) {
+    return;
+}
+
