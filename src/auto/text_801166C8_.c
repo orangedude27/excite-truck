@@ -3,6 +3,10 @@
 #include <types.h>
 #include <revolution/ARC/arc.h>
 
+s32 fn_80116A30(void *arg0) {
+    return *(s32*)((u8*)arg0 + 8);
+}
+
 void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
 }
