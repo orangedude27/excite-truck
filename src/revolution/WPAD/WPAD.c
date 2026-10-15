@@ -2878,6 +2878,89 @@ skip_init:
     return 0;
 }
 
+s32 fn_8005D234(s32 chan, WPADGameInfo* pInfo)
+{
+    WPADCB* pCB;
+    s32 status;
+    s8 devHandle;
+    BOOL enabled;
+    
+    pCB = lbl_8038F4F0[chan];
+    
+    enabled = OSDisableInterrupts();
+    status = ((s32*)pCB)[0x7FC / 4];
+    OSRestoreInterrupts(enabled);
+    
+    if (status == 0) {
+        enabled = OSDisableInterrupts();
+        devHandle = ((s8*)pCB)[0x800];
+        OSRestoreInterrupts(enabled);
+        
+        if (devHandle == 0) {
+            u32 locals[12];
+            ((u32*)locals)[0] = ((u32*)pInfo)[0];
+            ((u32*)locals)[1] = ((u32*)pInfo)[1];
+            ((u32*)locals)[2] = ((u32*)pInfo)[2];
+            ((u32*)locals)[3] = ((u32*)pInfo)[3];
+            ((u32*)locals)[4] = ((u32*)pInfo)[4];
+            ((u32*)locals)[5] = ((u32*)pInfo)[5];
+            ((u32*)locals)[6] = ((u32*)pInfo)[6];
+            ((u32*)locals)[7] = ((u32*)pInfo)[7];
+            ((u32*)locals)[8] = ((u32*)pInfo)[8];
+            ((u32*)locals)[9] = ((u32*)pInfo)[9];
+            ((u32*)locals)[10] = ((u32*)pInfo)[10];
+            ((u32*)locals)[11] = ((u32*)pInfo)[11];
+            fn_80063324(chan, locals);
+            return 0;
+        } else {
+            return -2;
+        }
+    } else if (status == -2) {
+        // Timeout handling
+        s64 currentTime = __OSGetSystemTime();
+        s64 updateTime = pCB->lastControllerDataUpdate;
+        s32 elapsed;
+        
+        elapsed = __div2i((s32)(currentTime >> 2), (s32)(updateTime >> 2), 
+                         (s32)currentTime, (s32)updateTime);
+        
+        if (elapsed > 1 && lbl_8055DC11 != 0) {
+            if (pCB->wpInfoOut == NULL) {
+                s64 currentTime2 = __OSGetSystemTime();
+                pCB->lastControllerDataUpdate = currentTime2;
+                pCB->samplingBufIndex = elapsed;
+                
+                enabled = OSDisableInterrupts();
+                status = ((s32*)pCB)[0x7FC / 4];
+                OSRestoreInterrupts(enabled);
+                
+                if (status != -1) {
+                    enabled = OSDisableInterrupts();
+                    if (pCB->rxBufIndex == 0) {
+                        pCB->rxBufIndex = 1;
+                        OSRestoreInterrupts(enabled);
+                        BTA_HhClose(pCB->devHandle);
+                    } else {
+                        OSRestoreInterrupts(enabled);
+                    }
+                }
+            } else {
+                enabled = OSDisableInterrupts();
+                ((s32*)pCB)[0x7FC / 4] = -3;
+                OSRestoreInterrupts(enabled);
+            }
+        }
+        return -2;
+    } else if (status == -3) {
+        enabled = OSDisableInterrupts();
+        ((s32*)pCB)[0x7FC / 4] = 0;
+        OSRestoreInterrupts(enabled);
+        return -3;
+    }
+    
+    return status;
+}
+
 // fn_8005EB44: WPAD initialization
 void fn_8005EB44(void) {
     BOOL enabled = OSDisableInterrupts();
@@ -2938,6 +3021,49 @@ u8 fn_8005EE80(s32 chan) {
     u8 val = p->devHandle;
     OSRestoreInterrupts(enabled);
     return val;
+}
+
+void fn_8005F248(s32 chan, s32 param_2) {
+    WPADCB* cb = lbl_8038F4F0[chan];
+    register s32 enabled asm("r30");
+    register s32 status asm("r29");
+    register WPADCB* p asm("r31") = cb;
+    s8 front, back;
+    u32 capacity;
+    s32 diff;
+    u8 buf[0x60];
+    f64 d0, d1, d2, d3, d4, d5;
+    
+    if (param_2 != -3) {
+        return;
+    }
+    
+    enabled = OSDisableInterrupts();
+    OSDisableInterrupts();
+    
+    back = p->stdCmdQueue.back;
+    front = p->stdCmdQueue.front;
+    diff = front - back;
+    
+    if (diff >= 0) {
+        OSRestoreInterrupts(enabled);
+        return;
+    }
+    
+    capacity = p->stdCmdQueue.capacity;
+    diff = capacity + diff;
+    status = diff;
+    OSRestoreInterrupts(enabled);
+    
+    if (capacity - 1 != status) {
+        OSRestoreInterrupts(enabled);
+        return;
+    }
+    
+    memset(p->stdCmdQueue.buffer + front * 0x30, 0, 0x30);
+    memcpy(p->stdCmdQueue.buffer + front * 0x30, buf, 0x30);
+    
+    OSRestoreInterrupts(enabled);
 }
 
 s32 fn_8005FBCC(u8 devHandle) {
@@ -3452,3 +3578,6 @@ void fn_8005E8C0(u32 r3, u32 r4)
 }
 extern WPADCB* getGameInfo(s32 param_1, s32 param_2, s32 param_3);
 #include <types.h>
+// Function to be decompiled
+extern void _savegpr_26(void);
+extern void _restgpr_26(s32);
