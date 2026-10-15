@@ -120,7 +120,7 @@ void bta_sys_disable(void) {
     for (i = 0; i < 0x1A; i++) {
         p_module = *pp_module;
         if (p_module != NULL) {
-            p_fn = (void *)((u8 *)p_module + 4);
+            p_fn = *(void **)((u8 *)p_module + 4);
             if (p_fn != NULL) {
                 ((void (*)(void))p_fn)();
             }
