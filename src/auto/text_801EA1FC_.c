@@ -17,3 +17,8 @@ void fn_801EA400(void) {
     fn_801EBCAC();
 }
 
+extern char lbl_8055EB58;
+char fn_801EA470(void) {
+    return lbl_8055EB58;
+}
+
