@@ -20,8 +20,8 @@
 #include <string.h>
 
 extern void DBPrintf_80068D68(const char* pFmt, ...);
-extern u16 lbl_80560CC8, lbl_80560CCA, lbl_80560CCC, lbl_80560CCE;
-extern u16 lbl_80560CD0, lbl_80560CD2, lbl_80560CD4, lbl_80560CD6;
+extern volatile u16 lbl_80560CC8, lbl_80560CCA, lbl_80560CCC, lbl_80560CCE;
+extern volatile u16 lbl_80560CD0, lbl_80560CD2, lbl_80560CD4, lbl_80560CD6;
 extern const char lbl_803122A0[];
 extern const char lbl_803122BC[];
 extern const char lbl_803122D8[];
@@ -3661,6 +3661,112 @@ void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 	memset(pQueue->buffer, 0, pQueue->capacity * sizeof(WPADCommand));
 
 	OSRestoreInterrupts(enabled);
+}
+
+void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
+{
+    const char* messages = (const char*)lbl_80312338;
+    u8* p = (u8*)lbl_8038F4F0[chan];
+    u16 valueCC8 = lbl_80560CC8;
+    u16 valueCCA = lbl_80560CCA;
+    u16 valueCCC = lbl_80560CCC;
+    u16 valueCCE = lbl_80560CCE;
+    u16 valueCD0 = lbl_80560CD0;
+    u16 valueCD2 = lbl_80560CD2;
+    u16 valueCD4 = lbl_80560CD4;
+    u16 valueCD6 = lbl_80560CD6;
+    u8* config = *(u8**)(p + 0x8B4);
+    u32 attempt;
+    s32 offset, i;
+    u32 sum;
+    u8* src;
+
+    *(u16*)&status->obj[0].x = valueCC8;
+    *(u16*)&status->obj[0].y = valueCD0;
+    status->obj[0].size = *(u16*)(p + 0x804);
+    status->obj[0].traceId = 0;
+    *(u16*)&status->obj[1].x = valueCCA;
+    *(u16*)&status->obj[1].y = valueCD2;
+    status->obj[1].size = *(u16*)(p + 0x804);
+    status->obj[1].traceId = 1;
+    *(u16*)&status->obj[2].x = valueCCC;
+    *(u16*)&status->obj[2].y = valueCD4;
+    status->obj[2].size = *(u16*)(p + 0x804);
+    status->obj[2].traceId = 2;
+    *(u16*)&status->obj[3].x = valueCCE;
+    *(u16*)&status->obj[3].y = valueCD6;
+    status->obj[3].size = *(u16*)(p + 0x804);
+    status->obj[3].traceId = 3;
+    *(s16*)(p + 0x7b4) = 0x212;
+    *(s16*)(p + 0x7b6) = 0x212;
+    *(s16*)(p + 0x7b8) = 0x212;
+    *(s16*)(p + 0x7ba) = 0x27C;
+    *(s16*)(p + 0x7bc) = 0x27C;
+    *(s16*)(p + 0x7be) = 0x27C;
+    p[0x7C1] = 0;
+    p[0x7C0] = 0;
+    if (result == 0) {
+        if (*(s32*)(p + 0x820) == 0) {
+            for (attempt = 0; attempt < 2; attempt++) {
+                offset = (u8)attempt * 11;
+                sum = 0;
+                for (i = offset; i < offset + 10; i++) {
+                    sum += config[i];
+                }
+                if ((u8)(sum + 0x55) == config[offset + 10]) {
+                    DBPrintf_80068D68(messages + 0x98);
+                    src = data + offset;
+                    status->obj[0].x = (s16)src[0] | ((src[2] & 48) << 4);
+                    status->obj[0].y = 0x2FF - (s16)((s16)src[1] | ((src[2] & 192) << 2));
+                    status->obj[0].size = *(u16*)(p + 0x804);
+                    status->obj[0].traceId = 0;
+                    status->obj[1].x = (s16)src[3] | ((src[2] & 3) << 8);
+                    status->obj[1].y = 0x2FF - (s16)((s16)src[4] | ((src[2] & 12) << 6));
+                    status->obj[1].size = *(u16*)(p + 0x804);
+                    status->obj[1].traceId = 1;
+                    status->obj[2].x = (s16)src[5] | ((src[7] & 48) << 4);
+                    status->obj[2].y = 0x2FF - (s16)((s16)src[6] | ((src[7] & 192) << 2));
+                    status->obj[2].size = *(u16*)(p + 0x804);
+                    status->obj[2].traceId = 2;
+                    status->obj[3].x = (s16)src[8] | ((src[7] & 12) << 8);
+                    status->obj[3].y = 0x2FF - (s16)((s16)src[9] | ((src[7] & 12) << 6));
+                    status->obj[3].size = *(u16*)(p + 0x804);
+                    status->obj[3].traceId = 3;
+                    break;
+                }
+                DBPrintf_80068D68(messages + 0xB0);
+            }
+        } else {
+            DBPrintf_80068D68(messages + 0xC8);
+        }
+        for (attempt = 0; attempt < 2; attempt++) {
+            offset = (u8)attempt * 10;
+            sum = 0;
+            if (*(s32*)(p + 0x820) == 0) {
+                offset += 22;
+            }
+            for (i = offset; i < offset + 9; i++) {
+                sum += config[i];
+            }
+            src = config + offset;
+            if ((u8)(sum + 0x55) == src[9]) {
+                DBPrintf_80068D68(messages + 0x10C);
+                *(s16*)(p + 0x7b4) = (src[0] << 2) | ((src[3] >> 4) & 3);
+                *(s16*)(p + 0x7b6) = (src[1] << 2) | ((src[3] >> 2) & 3);
+                *(s16*)(p + 0x7b8) = (src[2] << 2) | ((src[3] >> 0) & 3);
+                *(s16*)(p + 0x7ba) = (src[4] << 2) | ((src[7] >> 4) & 3);
+                *(s16*)(p + 0x7bc) = (src[5] << 2) | ((src[7] >> 2) & 3);
+                *(s16*)(p + 0x7be) = (src[6] << 2) | ((src[7] >> 0) & 3);
+                p[0x7C1] = src[8] & 0x7F;
+                p[0x7C0] = src[8] & 0x80;
+                break;
+            }
+            DBPrintf_80068D68(messages + 0x118);
+        }
+        DBPrintf_80068D68(messages + 0x128, *(s16*)(p + 0x7B4), *(s16*)(p + 0x7B6), *(s16*)(p + 0x7B8));
+        DBPrintf_80068D68(messages + 0x150, *(s16*)(p + 0x7BA), *(s16*)(p + 0x7BC), *(s16*)(p + 0x7BE));
+        DBPrintf_80068D68(messages + 0x178, p[0x7C1], p[0x7C0]);
+    }
 }
 
 void fn_80064740(s32 chan, s32 param_2) {
