@@ -13,3 +13,7 @@ void fn_80005B64(void) {
     return;
 }
 
+void fn_80005B68(void) {
+
+}
+
