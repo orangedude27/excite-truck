@@ -9,3 +9,7 @@ void fn_8020B340(void) {
     fn_802E5824();
 }
 
+void fn_8020B344(void) {
+    fn_802E5828();
+}
+
