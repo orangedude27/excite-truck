@@ -3021,7 +3021,7 @@ void fn_8005EE6C(void) { WUDStartFastSyncSimple(); }
 void fn_8005EE70(void) { fn_8006AC4C(); }
 
 // fn_8005EE74: tail call to WUDSetSyncSimpleCallback
-void fn_8005EE74(void) { WUDSetSyncSimpleCallback(NULL); }
+void fn_8005EE74(WUDSyncDeviceCallback pCallback) { WUDSetSyncSimpleCallback(pCallback); }
 
 // fn_8005EE80: get extFormat
 u8 fn_8005EE80(s32 chan) {
@@ -4065,7 +4065,165 @@ void fn_800656E8(s32 chan, WPADStatusEx* pStatus)
 }
 
 // fn_80065934: WPAD data processing
-void fn_80065934(void) { /* stub */ }
+void fn_80065934(s32 chan, u8* data)
+{
+    u8* cb;
+    volatile s8* buf;
+    WPADFSStatus* fs;
+    WPADCLStatus* cl;
+    s32 enabled;
+    u32 i, offset;
+    u32 format;
+    s16 x, y, v;
+    s32 bits;
+
+    enabled = OSDisableInterrupts();
+    cb = (u8*)lbl_8038F4F0[(u8)chan];
+    buf = (volatile s8*)(cb + cb[0x806] * 0x60 + 0xA0);
+    for (offset = 0; offset < 96; offset++) {
+        buf[offset] = 0;
+    }
+    *(u16*)buf = ((u16)data[2] << 8 | data[1]) & 0x9F1F;
+    format = *(u32*)(cb + 0x7F8);
+    if (format == 0 || format == 3 || format == 6) {
+        buf[0x29] = *(s32*)(cb + 0x7FC);
+    } else if (*(s32*)(cb + 0x7FC) == 0) {
+        buf[0x29] = -4;
+    }
+    buf[0x28] = cb[0x801];
+    *(u32*)(cb + 0x788) = (data[1] >> 7) & 1;
+    memcpy(lbl_803928E8, data + 3, 8);
+    WPADiDecode(chan, data + 3, 8, 0);
+    if (*(s32*)(cb + 0x780) != 0) {
+        if (cb[0x801] == 1) {
+            fs = (WPADFSStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
+            fs->fsStickX = data[3];
+            fs->fsStickY = data[4];
+            v = data[5] << 2;
+            v &= ~3;
+            bits = data[8];
+            bits >>= 2;
+            v |= bits & 3;
+            fs->fsAccX = v - *(s16*)(cb + 0x7ce);
+            v = data[6] << 2;
+            v &= ~3;
+            bits = data[8];
+            bits >>= 4;
+            v |= bits & 3;
+            fs->fsAccY = v - *(s16*)(cb + 0x7d0);
+            v = data[7] << 2;
+            v &= ~3;
+            v |= data[8] >> 6;
+            fs->fsAccZ = v - *(s16*)(cb + 0x7d2);
+            fs->button |= ((~data[8]) & 3) << 13;
+            if (cb[0x851] == 0) {
+                cb[0x851] = 1;
+                *(s16*)(cb + 0x7C2) = fs->fsStickX;
+                *(s16*)(cb + 0x7C8) = fs->fsStickY;
+            }
+            x = (u8)fs->fsStickX - (u8)*(s16*)(cb + 0x7C2);
+            y = (u8)fs->fsStickY - (u8)*(s16*)(cb + 0x7C8);
+            if (x < -128) fs->fsStickX = -128;
+            else if (x > 127) fs->fsStickX = 127;
+            else fs->fsStickX = x;
+            if (y < -128) fs->fsStickY = -128;
+            else if (y > 127) fs->fsStickY = 127;
+            else fs->fsStickY = y;
+        } else if (cb[0x801] == 2) {
+            switch (cb[0x802]) {
+            case 1:
+                cl = (WPADCLStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
+                cl->clLStickX = (data[3] & 63) << 4;
+                cl->clLStickY = (data[4] & 63) << 4;
+                v = (data[5] >> 7) | ((data[4] >> 5) & 6) | ((data[3] >> 3) & 24);
+                v <<= 5;
+                cl->clRStickX = v - 512;
+                v = (data[5] & 31) << 5;
+                cl->clRStickY = v - 512;
+                cl->clTriggerL = (((data[5] >> 2) & 24) | (data[6] >> 5)) << 3;
+                cl->clTriggerR = (data[6] & 31) << 3;
+                cl->clButton = ((data[7] << 8) | data[8]) ^ 0xFFFF;
+                break;
+            case 2:
+                cl = (WPADCLStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
+                v = data[3] << 2;
+                v &= ~3;
+                v |= (data[7] >> 0) & 3;
+                cl->clLStickX = v - 512;
+                v = data[4] << 2;
+                v &= ~3;
+                v |= (data[7] >> 2) & 3;
+                cl->clRStickX = v - 512;
+                v = data[5] << 2;
+                v &= ~3;
+                v |= (data[7] >> 4) & 3;
+                cl->clLStickY = v - 512;
+                v = data[6] << 2;
+                v &= ~3;
+                v |= data[7] >> 6;
+                cl->clRStickY = v - 512;
+                cl->clTriggerL = data[8];
+                cl->clTriggerR = data[9];
+                cl->clButton = ((data[10] << 8) | data[11]) ^ 0xFFFF;
+                break;
+            case 3:
+                cl = (WPADCLStatus*)(cb + cb[0x806] * 0x60 + 0xA0);
+                v = (s16)data[3];
+                v <<= 2;
+                cl->clLStickX = v - 512;
+                v = (s16)data[4];
+                v <<= 2;
+                cl->clRStickX = v - 512;
+                v = (s16)data[5];
+                v <<= 2;
+                cl->clLStickY = v - 512;
+                v = (s16)data[6];
+                v <<= 2;
+                cl->clRStickY = v - 512;
+                cl->clTriggerL = data[7];
+                cl->clTriggerR = data[8];
+                cl->clButton = ((data[9] << 8) | data[10]) ^ 0xFFFF;
+                break;
+            }
+            if (cb[0x851] == 0) {
+                cb[0x851] = 1;
+                *(s16*)(cb + 0x7C2) = cl->clLStickX;
+                *(s16*)(cb + 0x7C8) = cl->clLStickY;
+                *(s16*)(cb + 0x7CE) = cl->clRStickX;
+                *(s16*)(cb + 0x7D4) = cl->clRStickY;
+                cb[0x7DA] = cl->clTriggerL;
+                cb[0x7DB] = cl->clTriggerR;
+            }
+            x = cl->clLStickX - *(s16*)(cb + 0x7c2);
+            y = cl->clLStickY - *(s16*)(cb + 0x7c8);
+            if (x < -1024) cl->clLStickX = -1024;
+            else if (x > 1023) cl->clLStickX = 1023;
+            else cl->clLStickX = x;
+            if (y < -1024) cl->clLStickY = -1024;
+            else if (y > 1023) cl->clLStickY = 1023;
+            else cl->clLStickY = y;
+            x = cl->clRStickX - *(s16*)(cb + 0x7ce);
+            y = cl->clRStickY - *(s16*)(cb + 0x7d4);
+            if (x < -1024) cl->clRStickX = -1024;
+            else if (x > 1023) cl->clRStickX = 1023;
+            else cl->clRStickX = x;
+            if (y < -1024) cl->clRStickY = -1024;
+            else if (y > 1023) cl->clRStickY = 1023;
+            else cl->clRStickY = y;
+            x = cl->clTriggerL - cb[0x7DA];
+            y = cl->clTriggerR - cb[0x7DB];
+            if (x < 0) cl->clTriggerL = 0;
+            else cl->clTriggerL = x;
+            if (y < 0) cl->clTriggerR = 0;
+            else cl->clTriggerR = y;
+        }
+        if (memcmp(lbl_803928E8, lbl_803123B8, 7) == 0 && (s8)buf[0x29] == 0) {
+            buf[0x29] = -7;
+        }
+    }
+    cb[0x806] = __cntlzw(cb[0x806]) >> 24;
+    OSRestoreInterrupts(enabled);
+}
 
 // fn_800660E8: WPAD data processing
 void fn_800660E8(s32 chan, void* data) { /* stub */ }
