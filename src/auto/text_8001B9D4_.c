@@ -26,7 +26,15 @@ void fn_8001BBB8(void) {
     fn_8001CF8C();
 }
 
+void fn_8001C0E8(void) {
+    fn_8001BC28();
+}
+
 void fn_8001C4D4(void) {
 
+}
+
+void fn_8001C4D8(void) {
+    fn_8001C4D4();
 }
 
