@@ -7,6 +7,10 @@ s32 fn_80116A30(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
 }
 
+s32 fn_80116A38(void) {
+    return 1;
+}
+
 void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
 }
