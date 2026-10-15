@@ -13,3 +13,7 @@ void fn_80207C4C(void) {
 	return;
 }
 
+void fn_80207C7C(void) {
+	return;
+}
+
