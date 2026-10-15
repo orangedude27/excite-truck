@@ -205,6 +205,10 @@ extern "C" f32 fn_801A5100(void *arg0) {
     return ((f32 *)arg0)[0x24 / 4];
 }
 
+extern "C" f32 fn_801A5114(void *arg0) {
+    return ((f32 *)arg0)[0x30 / 4];
+}
+
 extern "C" f32 fn_801A511C(void *arg0) {
     return ((f32 *)arg0)[0x24 / 4];
 }
