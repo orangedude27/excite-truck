@@ -65,7 +65,7 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
-void fn_801A4538(void* arg0) {
+extern "C" void fn_801A4538(void* arg0) {
     fn_8012C4E4(arg0, (void*)&fn_801A44D4, 0);
 }
 
