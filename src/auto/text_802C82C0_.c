@@ -5,3 +5,9 @@ extern char lbl_8055FC8C;
 char fn_802C9A58(void) {
     return lbl_8055FC8C;
 }
+
+extern char lbl_8055FC8D;
+char fn_802C9A60(void) {
+    return lbl_8055FC8D;
+}
+
