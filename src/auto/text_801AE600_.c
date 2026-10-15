@@ -4,3 +4,7 @@
 void fn_801AED54(void) {
 
 }
+
+void fn_801AED58(void) {
+
+}
