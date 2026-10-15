@@ -35,6 +35,7 @@ void fn_800194C8(void) {
 }
 
 extern char lbl_8055D588;
+extern s32 lbl_8055DDF8;
 extern void *lbl_8055D58C;
 extern void *lbl_802FD404;
 extern void *lbl_802FD3CC;
