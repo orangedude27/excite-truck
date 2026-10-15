@@ -10,6 +10,7 @@ void fn_8021676C(void) {
 }
 
 void fn_802168CC(void) {
+    fn_8021889C();
 }
 
 void fn_802168D0(void) {
