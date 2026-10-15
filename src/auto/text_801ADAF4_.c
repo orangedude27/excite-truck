@@ -45,6 +45,11 @@ void fn_801ADB24(void *arg0) {
     fn_801ADA8C((void **)((u8 *)arg0 - 0x23C));
 }
 
+extern void fn_801ADA94(void **);
+void fn_801ADB2C(void *arg0) {
+    fn_801ADA94((void **)((u8 *)arg0 - 0x23C));
+}
+
 void fn_801AE158(void *arg0) {
     f32 val = lbl_80562520;
     *(f32 *)((u8 *)arg0 + 0x1C) = val;
