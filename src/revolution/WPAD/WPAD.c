@@ -218,7 +218,7 @@ static s32 WPADiSendData(s32 chan, WPADCommand command) {
 }
 
 static void WPADiRadioSensitivity(s32 chan) {
-    WPADCB* p = _wpdcb[chan];
+    WPADCB* p = lbl_8038F4F0[chan];
     u8* q = (u8*)p;
     u32 two = 2;
     u16 a;
