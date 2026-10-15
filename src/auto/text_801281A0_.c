@@ -8,15 +8,27 @@ extern char lbl_8041E140[];
 extern char lbl_8032A000[];
 extern char lbl_8032A068[];
 extern char lbl_8032A074[];
-extern char lbl_8055DF8C;
+extern s32 lbl_8055DF8C;
+extern s32 lbl_8055DF90;
+extern s32 lbl_8055DF94;
 
 s32 fn_801281F4(s32, s32);
 void fn_802E30C8(void *, void *, void *);
 s32 fn_802E317C(void *, void *);
 void fn_8012834C(void *, void *, s32);
+void fn_802E3DF8(s32, void *, void *);
+void fn_80128714(void *, s32, s32);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+
+s32 fn_801281F4(s32 arg0, s32 arg1) {
+    s32 r3 = arg0 + arg1;
+    s32 r0 = arg1;
+    r0--;
+    r3--;
+    return r3 & ~r0;
+}
 
 void fn_80128208(void) {
 
@@ -24,6 +36,24 @@ void fn_80128208(void) {
 
 void fn_801282E8(void) {
 
+}
+
+s32 fn_80128520(s32 arg0) {
+    volatile s32 r4 = arg0;
+    void *var_r3;
+
+    if (lbl_8055DF80 != 0) {
+        var_r3 = lbl_8055DF84;
+        if (var_r3 != NULL) {
+            fn_802E317C(var_r3, NULL);
+        } else {
+            fn_8012834C(&lbl_8032A068, NULL, 3);
+        }
+    } else {
+        fn_802E317C(&lbl_8032A074, NULL);
+    }
+    (void)r4;
+    return lbl_8055DF98;
 }
 
 void fn_80128678(void) {
