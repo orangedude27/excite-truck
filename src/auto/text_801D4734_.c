@@ -9,3 +9,7 @@ void fn_801D4888(void) {
     fn_801D5860();
 }
 
+void fn_801D48F4(void) {
+    fn_801D58DC();
+}
+
