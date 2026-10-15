@@ -8,7 +8,7 @@ void fn_8013E338(void) {
 }
 
 void fn_8013F09C(void) {
-    fn_80140A6C();
+    ((void(*)())fn_80140A6C)();
 }
 
 void fn_8013F434(void) {
@@ -23,5 +23,8 @@ void fn_8013D288(void);
 
 void fn_80143214(void) {
     fn_8013D288();
+}
+
+void fn_801442FC(void) {
 }
 
