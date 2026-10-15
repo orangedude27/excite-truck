@@ -21,3 +21,7 @@ void fn_801EBD14(void) {
 
 }
 
+void fn_801EC19C(void) {
+
+}
+
