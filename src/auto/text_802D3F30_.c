@@ -7,3 +7,9 @@ extern u8 lbl_8055FDE4;
 void fn_802D754C(u8 arg0) {
     lbl_8055FDE4 = arg0;
 }
+
+extern u8 lbl_8055FDFC;
+void fn_802D7554(u8 arg0) {
+    lbl_8055FDFC = arg0;
+}
+
