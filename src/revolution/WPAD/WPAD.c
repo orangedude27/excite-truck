@@ -33,6 +33,7 @@ extern WPADCB* lbl_8038F4F0[WPAD_MAX_CONTROLLERS];
 extern void* lbl_8055DC14;
 extern u8 lbl_8055DC08[WPAD_MAX_CONTROLLERS];
 extern u8 lbl_8055DC11;
+extern u8 lbl_8055DC1A;
 extern u8 lbl_80392900[];
 BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback);
 extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
@@ -3075,6 +3076,79 @@ void fn_8005EEC4(s32 chan, s32 result) {
     OSRestoreInterrupts(enabled);
 }
 
+void fn_8005F0A8(s32 chan, s32 param_2) {
+    WPADCB* p = lbl_8038F4F0[chan];
+    register s32 enabled asm("r30");
+    register s32 index asm("r29");
+    register WPADCB* cb asm("r31") = p;
+    s8 front, back;
+    u32 capacity;
+    s32 diff;
+    u8 buf[0x60];
+    f64 d4, d3, d2, d1, d0, d5;
+
+    if (param_2 != -3) {
+        return;
+    }
+
+    *(u32*)(buf + 0x0C) = 0x2A;
+    *(u16*)(buf + 0x08) = 0x38;
+    *(u32*)(buf + 0x10) = 0x17;
+    *(u16*)(buf + 0x2A) = 0x6;
+    *(void**)(buf + 0x3C) = fn_8005F0A8;
+
+    memcpy(buf + 0x14, buf + 0x0C, 4);
+    memcpy(buf + 0x18, buf + 0x08, 2);
+
+    *(u16*)(buf + 0x30) = *(u16*)(buf + 0x08);
+    *(u32*)(buf + 0x34) = *(u32*)(buf + 0x0C);
+    *(u32*)(buf + 0x2C) = (u32)((u8*)cb + 0x874);
+
+    d4 = *(f64*)(buf + 0x10);
+    d3 = *(f64*)(buf + 0x18);
+    d2 = *(f64*)(buf + 0x20);
+    d1 = *(f64*)(buf + 0x28);
+    d5 = *(f64*)(buf + 0x38);
+    d0 = *(f64*)(buf + 0x30);
+
+    *(f64*)(buf + 0x00) = d4;
+    *(f64*)(buf + 0x08) = d3;
+    *(f64*)(buf + 0x10) = d2;
+    *(f64*)(buf + 0x18) = d1;
+    *(f64*)(buf + 0x20) = d0;
+    *(f64*)(buf + 0x28) = d5;
+
+    enabled = OSDisableInterrupts();
+    OSDisableInterrupts();
+    back = cb->stdCmdQueue.back;
+    front = cb->stdCmdQueue.front;
+    diff = front - back;
+
+    if (diff >= 0) {
+        OSRestoreInterrupts(enabled);
+        return;
+    }
+
+    capacity = cb->stdCmdQueue.capacity;
+    index = diff + capacity;
+    OSRestoreInterrupts(enabled);
+
+    if (capacity - 1 == (u32)index) {
+        OSRestoreInterrupts(enabled);
+        return;
+    }
+
+    memset(cb->stdCmdQueue.buffer + (s8)front * 0x30, 0, 0x30);
+    memcpy(cb->stdCmdQueue.buffer + (s8)front * 0x30, buf, 0x30);
+
+    diff = (s8)cb->stdCmdQueue.front;
+    capacity--;
+    diff++;
+    if (diff > capacity) diff = 0;
+    cb->stdCmdQueue.front = diff;
+    OSRestoreInterrupts(enabled);
+}
+
 void fn_8005F248(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
     register s32 enabled asm("r30");
@@ -3500,132 +3574,109 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
     return TRUE;
 }
 
-static BOOL fn_80063744(u8* p, u8 idx, u32 val1, u32 val2) {
-    u8 buf[0x40] ALIGN(8);
-    s8 diff;
+static BOOL fn_80063744(WPADCB* p, u8 idx, u32 val1, u32 val2)
+{
+    u8 data[0x30] ALIGN(8);
     BOOL enabled;
-    u8 newIdx;
+    s8 diff;
+    u8* base;
     u32 count;
-    s8 delta;
-    s8 delta2;
-    u32 mask;
-    
-    buf[0] = 0;
-    buf[1] = idx;
-    buf[2] = 1;
-    
+    u8 next;
+
+    data[4] = val1 >> 24;
+    data[5] = val1 >> 16;
+    data[6] = val1 >> 8;
+    data[7] = val1;
+    data[8] = 1;
+    data[9] = idx;
+    data[0x10] = 0x16;
+    data[0x1a] = 0x15;
+    data[0x1b] = 0;
+    data[0x2c] = val2 >> 24;
+    data[0x2d] = val2 >> 16;
+    data[0x2e] = val2 >> 8;
+    data[0x2f] = val2;
+
     enabled = OSDisableInterrupts();
     enabled = OSDisableInterrupts();
-    
-    diff = p[1] - p[0];
+    diff = (s8)(p->wmReadDataPtr[1] - p->wmReadDataPtr[0]);
     if (diff < 0) {
-        diff += (s8)((s32)*(u32*)(p + 8));
+        diff += (s8)p->wmReadLength;
     }
-    
     OSRestoreInterrupts(enabled);
-    
-    if (*(u32*)(p + 8) - 1 != (u32)diff) {
-        memset(p + 4 + p[1] * 0x30, 0, 0x30);
-        memcpy(p + 4 + p[1] * 0x30, buf, 0x30);
-        
-        newIdx = p[1] + 1;
-        count = *(u32*)(p + 8);
-        delta = newIdx - count;
-        delta2 = count - 1 - p[1];
-        mask = ((s32)delta >> 31) | ((s32)delta2 >> 31);
-        p[1] = newIdx & ~mask;
-        
+
+    if ((u32)(p->wmReadLength - 1) == (u32)diff) {
         OSRestoreInterrupts(enabled);
-        return TRUE;
+        return FALSE;
     }
-    
+    base = (u8*)p->wmReadDataPtr + (s8)p->wmReadDataPtr[1] * 0x30;
+    memset(base, 0, 0x30);
+    memcpy(base, data, 0x30);
+    next = p->wmReadDataPtr[1] + 1;
+    count = p->wmReadLength;
+    p->wmReadDataPtr[1] = (u8)(next & ~((s32)(next - count) >> 31 | (s32)(count - 1 - p->wmReadDataPtr[1]) >> 31));
     OSRestoreInterrupts(enabled);
-    return FALSE;
+    return TRUE;
 }
 
 static BOOL fn_800638C8(u8* p, const void* src, u32 len, u32 val1, u32 val2) {
-    u8 buf[0x40] ALIGN(8);
-    s8 diff;
+    u8 temp[0x30] ALIGN(8);
+    u8* bytes = temp;
+    s32 diff;
     BOOL enabled;
-    u8 newIdx;
-    u32 count;
-    s8 delta;
-    s8 delta2;
-    u32 mask;
-    u32 lenMask;
-    
-    // Initialize buffer based on assembly
-    // sp+8 = val1 (r6)
-    // sp+c = len & 0x1F (r9)
-    // sp+40 = 0x16
-    // sp+5a = 0x15
-    // sp+6c = val2 (r7)
-    
-    // memcpy(sp+44, sp+c, 4) -> copies val1 to sp+44
-    // memcpy(sp+48, sp+c, 1) -> copies len&0x1F to sp+48
-    // memcpy(sp+49, src, len) -> copies src to sp+49
-    
-    lenMask = len & 0x1F;
-    *(u32*)&buf[0x44] = val1;
-    buf[0x48] = lenMask;
-    memcpy(&buf[0x49], src, len);
-    
+    s32 index;
+
+    *(u32*)(bytes + 0x00) = 0x16;
+    *(u16*)(bytes + 0x1A) = 0x15;
+    *(u32*)(bytes + 0x2C) = val2;
+    memcpy(bytes + 4, &val1, 4);
+    bytes[8] = len & 0x1F;
+    memcpy(bytes + 9, src, len);
     enabled = OSDisableInterrupts();
     enabled = OSDisableInterrupts();
-    
-    diff = p[1] - p[0];
-    if (diff < 0) {
-        diff += (s8)((s32)*(u32*)(p + 8));
-    }
-    
+    diff = (s8)(p[1] - p[0]);
+    if (diff < 0) diff += *(u32*)(p + 8);
     OSRestoreInterrupts(enabled);
-    
-    if (*(u32*)(p + 8) - 1 != (u32)diff) {
-        memset(p + 4 + p[1] * 0x30, 0, 0x30);
-        memcpy(p + 4 + p[1] * 0x30, buf, 0x30);
-        
-        newIdx = p[1] + 1;
-        count = *(u32*)(p + 8);
-        delta = newIdx - count;
-        delta2 = count - 1 - p[1];
-        mask = ((s32)delta >> 31) | ((s32)delta2 >> 31);
-        p[1] = newIdx & ~mask;
-        
+    if (*(u32*)(p + 8) - 1 == diff) {
         OSRestoreInterrupts(enabled);
-        return TRUE;
+        return FALSE;
     }
-    
+    index = (s8)p[1];
+    memset((u8*)(*(u32*)(p + 4) + index * 0x30), 0, 0x30);
+    memcpy((u8*)(*(u32*)(p + 4) + index * 0x30), temp, 0x30);
+    index = p[1] + 1;
+    if (index >= *(u32*)(p + 8)) index = 0;
+    p[1] = index;
     OSRestoreInterrupts(enabled);
-    return FALSE;
+    return TRUE;
 }
 
-static BOOL fn_80063A50(u8* p, u32 val2, u16 halfword, u32 val4, u32 val5) {
-    u8 buf[0x40] ALIGN(8);
-    s8 diff;
+static BOOL fn_80063A50(u8* p, u32 value, u16 halfword, u32 word, u32 last)
+{
+    u8 stack[0x70] ALIGN(8);
     BOOL enabled;
-    u8 newIdx;
+    s8 diff;
     u32 count;
-    s8 delta;
-    s8 delta2;
-    u32 mask;
+    s8 next;
 
-    *(u16*)&buf[8] = halfword;
-    *(u32*)&buf[0xc] = val4;
-    *(u32*)&buf[0x40] = 0x17;
-    *(u16*)&buf[0x5a] = 6;
-    *(u32*)&buf[0x6c] = val5;
+    *(u16*)&stack[0] = halfword;
+    *(u32*)&stack[4] = word;
+    *(u32*)&stack[0x38] = 0x17;
+    *(u16*)&stack[0x52] = 6;
+    *(u32*)&stack[0x64] = last;
 
-    memcpy(&buf[0x44], &buf[0xc], 4);
-    memcpy(&buf[0x48], &buf[8], 2);
+    memcpy(&stack[0x3c], &stack[4], 4);
+    memcpy(&stack[0x40], &stack[0], 2);
+    *(u32*)&stack[0x54] = value;
+    *(u16*)&stack[0x58] = halfword;
+    *(u32*)&stack[0x5c] = word;
 
-    *(double*)&buf[0x10] = *(double*)&buf[0x40];
-    *(double*)&buf[0x18] = *(double*)&buf[0x48];
-    *(double*)&buf[0x20] = *(double*)&buf[0x50];
-    *(double*)&buf[0x28] = *(double*)&buf[0x58];
-    *(double*)&buf[0x38] = *(double*)&buf[0x68];
-    *(u16*)&buf[0x60] = halfword;
-    *(u32*)&buf[0x64] = val4;
-    *(double*)&buf[0x30] = *(double*)&buf[0x60];
+    *(double*)&stack[8] = *(double*)&stack[0x38];
+    *(double*)&stack[0x10] = *(double*)&stack[0x40];
+    *(double*)&stack[0x18] = *(double*)&stack[0x48];
+    *(double*)&stack[0x20] = *(double*)&stack[0x50];
+    *(double*)&stack[0x28] = *(double*)&stack[0x58];
+    *(double*)&stack[0x30] = *(double*)&stack[0x60];
 
     enabled = OSDisableInterrupts();
     enabled = OSDisableInterrupts();
@@ -3638,15 +3689,13 @@ static BOOL fn_80063A50(u8* p, u32 val2, u16 halfword, u32 val4, u32 val5) {
     OSRestoreInterrupts(enabled);
 
     if (*(u32*)(p + 8) - 1 != (u32)diff) {
-        memset(p + 4 + p[1] * 0x30, 0, 0x30);
-        memcpy(p + 4 + p[1] * 0x30, &buf[0x10], 0x30);
+        memset(*(u8**)(p + 4) + (s8)p[1] * 0x30, 0, 0x30);
+        memcpy(*(u8**)(p + 4) + (s8)p[1] * 0x30, &stack[8], 0x30);
 
-        newIdx = p[1] + 1;
+        next = p[1] + 1;
         count = *(u32*)(p + 8);
-        delta = newIdx - count;
-        delta2 = count - 1 - p[1];
-        mask = ((s32)delta >> 31) | ((s32)delta2 >> 31);
-        p[1] = newIdx & ~mask;
+        p[1] = next & ~(((s32)(next - count) >> 31) |
+                        ((s32)(count - 1 - p[1]) >> 31));
 
         OSRestoreInterrupts(enabled);
         return TRUE;
@@ -3805,33 +3854,29 @@ void fn_80064740(s32 chan, s32 param_2) {
 
 WPADCB* getGameInfo(s32 chan, s32 param_2, s32 param_3) {
     WPADCB* cb = lbl_8038F4F0[chan];
-    
-    if (param_2 == 0 && cb->samplingBufSize != NULL) {
-        u8* src = (u8*)cb->samplingBufSize;
-        u8 checksum = 0;
-        s32 i;
-        
-        for (i = 0; i < 2; i++) {
-            s32 j;
-            for (j = 0; j < 7; j++) {
-                checksum += src[i * 0x15 + j];
-            }
+    u8* src = (u8*)cb->samplingBufSize;
+    u32 sum = 0;
+    u32 i;
+    u8* p;
+    u8* dst;
+
+    if (param_2 == 0) {
+        sum += src[0]; sum += src[1]; sum += src[2]; sum += src[3];
+        sum += src[4]; sum += src[5]; sum += src[6];
+        for (i = 0, p = src + 7; i < 2; ++i, p += 7) {
+            sum += p[0]; sum += p[1]; sum += p[2]; sum += p[3];
+            sum += p[4]; sum += p[5]; sum += p[6];
         }
-        
-        // After loop, process bytes at offsets 14-20
-        for (i = 0; i < 7; i++) {
-            checksum += src[14 + i];
-        }
-        
-        // Compare with stored checksum
-        if (src[0x2F] == (checksum + 0x55)) {
-            memcpy(&cb->gameInfo, src, 0x38);
-            ((s32*)&cb->gameInfo)[2] = 0; // store 0 at offset 0x38
+        sum += p[0]; sum += p[1]; sum += p[2]; sum += p[3]; sum += p[4];
+        if (src[0x2F] == (u8)(sum + 0x55)) {
+            memcpy(cb, src, 0x38);
+            dst = (u8*)cb + (u8)param_3 * 4 + 0x38;
+            *(s32*)dst = 0;
         } else {
-            ((s32*)&cb->gameInfo)[2] = -4;
+            dst = (u8*)cb + (u8)param_3 * 4 + 0x38;
+            *(s32*)dst = -4;
         }
     }
-    
     return cb;
 }
 
