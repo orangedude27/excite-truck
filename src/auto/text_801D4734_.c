@@ -36,3 +36,6 @@ void fn_801D4908(void) {
 void fn_801D4F9C(void) {
 }
 
+void fn_801D5010(void) {
+}
+
