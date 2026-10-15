@@ -85,26 +85,36 @@ void fn_800ED058(void) {
     return;
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
 s32 fn_800ED0BC(s32 arg0) {
-    return ((u8 *)arg0)[0x16] != 0;
+    u8 val = ((u8 *)arg0)[0x16];
+    s32 t = -(s32)val;
+    return ((t | (s32)val) >> 31);
 }
-
+#pragma push
+#pragma small_data off
+#pragma pop
 s32 fn_800ED0D0(s32 arg0) {
     return ((u8 *)arg0)[0x15] != 0;
 }
-
+#pragma push
+#pragma small_data off
+#pragma pop
 void fn_800ED0E4(s32 arg0) {
     arg0 -= 8;
     fn_800ED058();
 }
-
+#pragma push
+#pragma small_data off
+#pragma pop
 s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
     return arg0;
 }
-
 void fn_800F0750(void) {
     return;
 }
