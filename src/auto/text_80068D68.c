@@ -5,6 +5,12 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/stack/include/hcimsgs.h"
 
+extern u8 lbl_803C0F78[];
+extern u8 lbl_80316570[];
+extern void fn_80070954(u32 code, void *msg, u16 param);
+extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
+extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
+
 void fn_8006EACC(void) {
 
 }
