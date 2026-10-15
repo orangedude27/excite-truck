@@ -6,10 +6,11 @@
 int fn_800A6048();
 void fn_800A61D0(void);
 
-int fn_800A5954(void) {
-    return fn_800A6048();
+void fn_800A5954(void) {
+    fn_800A6048();
 }
 
+void fn_800A5990(void) __attribute__((naked));
 void fn_800A5990(void) {
     fn_800A61D0();
 }
