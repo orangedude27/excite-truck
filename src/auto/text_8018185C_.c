@@ -5,6 +5,10 @@ void fn_801836DC(void) {
 
 }
 
+void fn_80186DE4(void) {
+    fn_8018A8A8();
+}
+
 void fn_8018A088(void) {
 
 }
