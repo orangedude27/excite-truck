@@ -5,3 +5,8 @@ extern char lbl_8055EA20;
 void fn_801E1D20(void) {
     lbl_8055EA20 = 0;
 }
+
+void fn_801E1D2C(void) {
+    lbl_8055EA20 = 0;
+}
+
