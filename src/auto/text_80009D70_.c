@@ -12,6 +12,7 @@ extern void fn_8012DDA8(void*);
 extern void fn_801DCDA0(void);
 extern u8 lbl_8055D3B4;
 extern u8 lbl_8055D3B5;
+extern char lbl_8034F4C8[];
 
 void fn_80009D70(void* arg0, s32 arg1) {
     if (arg0 != NULL) {
