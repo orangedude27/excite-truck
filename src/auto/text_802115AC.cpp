@@ -10,6 +10,14 @@ extern "C" void fn_8021165C(void) {
     fn_80215270();
 }
 
+extern "C" s32 fn_80128668(void);
+extern "C" s32 fn_802121D4(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_802152C8(void) {
 }
 
