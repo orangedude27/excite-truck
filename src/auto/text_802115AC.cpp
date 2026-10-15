@@ -104,3 +104,7 @@ extern "C" void fn_80215CB8(void) {
 
 }
 
+extern "C" void fn_80215CBC(void) {
+
+}
+
