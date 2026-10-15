@@ -45,3 +45,7 @@ void fn_8001EFC0(void) {
     fn_8001FAC8();
 }
 
+void fn_8001EFC4(void) {
+    fn_8001FBE4();
+}
+
