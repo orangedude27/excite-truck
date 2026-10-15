@@ -59,15 +59,12 @@ void fn_80156960(void *arg0) {
 }
 
 void fn_801569FC(void) {
-    void **table;
-    void (*fn)(s32);
     void *ptr = lbl_8055E27C;
-    if (ptr != NULL) {
-        table = *(void***)ptr;
-        fn = (void (*)(s32))*(void**)((u8*)table + 0x28);
+    if (ptr != 0) {
+        void (*fn)(s32) = (void (*)(s32))*(void**)((u8*)*(void***)ptr + 0x28);
         fn(1);
     }
-    lbl_8055E27C = NULL;
+    lbl_8055E27C = 0;
 }
 
 s32 fn_80156A40(void) {
