@@ -63,3 +63,7 @@ void fn_801D8B58(void) {
 
 }
 
+void fn_801D8B5C(void) {
+
+}
+
