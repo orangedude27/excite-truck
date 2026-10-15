@@ -53,3 +53,7 @@ void fn_800911DC(void) {
 
 }
 
+void fn_800932D8(void) {
+
+}
+
