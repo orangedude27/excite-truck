@@ -4,3 +4,8 @@
 void fn_80179EE4(void) {
 
 }
+
+void fn_8017A004(void) {
+
+}
+
