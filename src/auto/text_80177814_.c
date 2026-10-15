@@ -26,3 +26,8 @@ char fn_801796B4(void) {
     return lbl_8055E45D;
 }
 
+extern char lbl_8055E45F;
+char fn_801796C4(void) {
+    return lbl_8055E45F;
+}
+
