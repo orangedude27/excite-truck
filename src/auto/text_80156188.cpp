@@ -58,6 +58,16 @@ void fn_80156960(void *arg0) {
     } while (r29 < 8);
 }
 
+void fn_801569FC(void) {
+    void *ptr = lbl_8055E27C;
+    if (ptr != NULL) {
+        void **table = *(void***)ptr;
+        void (*fn)(s32) = (void (*)(s32))table[0x28 / 4];
+        fn(1);
+    }
+    lbl_8055E27C = NULL;
+}
+
 s32 fn_80156A40(void) {
     return (s32)lbl_8055E27C;
 }
