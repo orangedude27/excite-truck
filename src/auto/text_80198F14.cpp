@@ -13,3 +13,8 @@ extern "C" void fn_8019F3D0(void) {
 void fn_8019F560(void) {
     fn_8019F1A4();
 }
+
+extern "C" void fn_8019FF88(void) {
+    fn_8019EBC0();
+}
+
