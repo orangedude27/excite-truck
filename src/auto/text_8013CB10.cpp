@@ -19,3 +19,9 @@ void fn_80141454(void) {
 
 }
 
+void fn_8013D288(void);
+
+void fn_80143214(void) {
+    fn_8013D288();
+}
+
