@@ -3,6 +3,7 @@
 
 
 
+extern void fn_8001C4D4(void);
 void fn_8001BA68(void) {
 }
 
@@ -35,7 +36,6 @@ void fn_8001C4D4(void) {
 }
 
 void fn_8001C4D8(void) {
-    fn_8001C4D4();
 }
 
 void fn_8001C4DC(void) {
