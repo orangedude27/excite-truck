@@ -22,6 +22,10 @@ extern "C" s32 fn_800D89AC(s32 arg0, s32 arg1) {
     return arg0 + arg1;
 }
 
+extern "C" s32 fn_800D89B4(s32 arg0, s32 arg1) {
+    return arg0 + arg1;
+}
+
 extern "C" u32 fn_800D89E4(u32 arg0, u32 arg1) {
     if (arg0 > arg1) {
         return arg1;
