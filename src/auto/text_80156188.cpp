@@ -62,7 +62,7 @@ void fn_801569FC(void) {
     void *ptr = lbl_8055E27C;
     if (ptr != NULL) {
         void **table = *(void***)ptr;
-        void (*fn)(s32) = (void (*)(s32))table[0x28 / 4];
+        void (*fn)(s32) = (void (*)(s32))*(void**)((u8*)table + 0x28);
         fn(1);
     }
     lbl_8055E27C = NULL;
