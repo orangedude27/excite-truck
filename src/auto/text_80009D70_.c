@@ -123,3 +123,11 @@ void fn_8000AA9C(void* arg0) {
     fn_8000A688((void (*)(void*))fn_8012DDA8, (s32)arg0);
 }
 
+void fn_8000AABC(void* arg0) {
+    s8 c = ((u8*)arg0)[0];
+    if (c == 0) {
+        return;
+    }
+    fn_8000A688((void (*)(void*))fn_8012E498, (s32)arg0);
+}
+
