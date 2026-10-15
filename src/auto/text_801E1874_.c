@@ -10,3 +10,8 @@ void fn_801E1D2C(void) {
     lbl_8055EA20 = 0;
 }
 
+extern char lbl_8055EA21;
+void fn_801E1F78(void) {
+    lbl_8055EA21 = 1;
+}
+
