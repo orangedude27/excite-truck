@@ -58,7 +58,7 @@ extern void *lbl_802FD3B4;
 extern void *lbl_802FD2DC;
 extern const char lbl_80558C54[];
 extern void *lbl_803580A4;
-extern void *lbl_80357E0C;
+extern void *lbl_80357E0C[1];
 void fn_80019708(void) {
     lbl_8055D588 = 0;
 }
@@ -174,16 +174,17 @@ s32 fn_800194CC(void) {
 }
 
 s32 fn_80018FB4(s32 arg0) {
-    void *base = lbl_80357E0C;
+    void **base = (void **)lbl_80357E0C;
     const char *target = lbl_802FD2F4;
     s32 count = ((s32 *)base)[1];
-    s32 idx;
+    s32 idx = 0;
     
-    for (idx = 0; idx < count; idx++) {
+    while (idx < count) {
         char **entry = (char **)((u8 *)((void **)base)[0] + idx * 0x14);
         if (stricmp(entry[0], target) == 0) {
             return ((s32 *)entry)[2];
         }
+        idx++;
     }
     
     fn_802E317C((void *)lbl_802FD308, (void *)lbl_802FD2F4);
@@ -197,25 +198,19 @@ void fn_80018F7C(void) {
 }
 
 void *fn_80019054(s32 arg0) {
-    void *base;
-    s32 count;
-    void *result;
+    void **ptr = (void **)&lbl_80357E0C;
     if (arg0 < 0) {
-        goto ret_zero;
+        return (void *)0;
     }
-    base = lbl_80357E0C;
-    count = ((s32 *)base)[1];
-    if (arg0 >= count) {
-        goto ret_zero;
+    if (arg0 >= (s32)ptr[1]) {
+        return (void *)0;
     }
-    result = (void *)((u8 *)((s32 *)base)[0] + arg0 * 0x14);
-    return result;
-ret_zero:
-    return (void *)0;
+    return (void *)((u8 *)ptr[0] + arg0 * 0x14);
 }
 
 void fn_80018F40(void) {
-    lbl_8055D58C = fn_80131808(&lbl_802FD2DC);
+    void *addr = lbl_802FD2DC;
+    lbl_8055D58C = fn_80131808(&addr);
     fn_80018BA4();
     fn_80018CCC();
     lbl_8055D588 = 0;
