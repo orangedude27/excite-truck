@@ -34,21 +34,22 @@ extern f32 lbl_8055E3C8;
 
 void fn_80156960(void *arg0) {
     s32 r29 = 0;
-    void *r30 = arg0;
-    f32 f31 = lbl_8055E3C8;
-    s32 r4 = ((s32 *)arg0)[2];
+    s32 r28 = ((s32 *)arg0)[2];
     s32 r5 = ((s32 *)arg0)[1];
     f32 f1 = ((f32 *)arg0)[0xDC / 4];
     f32 f2 = ((f32 *)arg0)[0xE0 / 4];
+    void *r30 = arg0;
+    f32 f31 = lbl_8055E3C8;
     
     do {
-        s32 temp_r0 = r29 / r4;
-        temp_r0 = temp_r0 * r4;
-        temp_r0 = r29 - temp_r0;
-        temp_r0 = temp_r0 * 8;
-        s32 temp_r31 = ((s32 *)*(s32 *)(r5 + temp_r0))[0];
+        s32 r0 = r29 / r28;
+        r0 = r0 * r28;
+        r0 = r29 - r0;
+        r0 = r0 * 8;
+        s32 *r31_ptr = (s32 *)*(s32 *)(r5 + r0);
+        s32 temp_r31 = r31_ptr[0];
         
-        f32 result = fn_80129DC4(4, r4, r5, f1, f2);
+        f32 result = fn_80129DC4(4, r28, r5, f1, f2);
         result = f31 + result;
         
         ((f32 *)r30)[0xE4 / 4] = result;
