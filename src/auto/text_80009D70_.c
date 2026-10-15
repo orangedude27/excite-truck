@@ -11,3 +11,7 @@ void fn_8000AAE0(void) {
     fn_8000A808();
 }
 
+void fn_8000AB44(void) {
+    fn_8000A6D8();
+}
+
