@@ -12,3 +12,8 @@ void fn_801E9C80(void) {
 f32 fn_801E9DD0(void) {
     return fn_801E9DDC();
 }
+
+void fn_801E9DD4(void) {
+
+}
+
