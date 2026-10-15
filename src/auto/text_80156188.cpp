@@ -34,26 +34,24 @@ extern f32 lbl_8055E3C8;
 
 void fn_80156960(void *arg0) {
     s32 count = 0;
-    void *out = arg0;
     s32 r4 = ((s32 *)arg0)[2];
-    s32 *r5 = ((s32 **)arg0)[1];
+    s32 r5 = ((s32 *)arg0)[1];
+    void *r30 = arg0;
+    f32 f31 = lbl_8055E3C8;
     f32 f1 = ((f32 *)arg0)[0xDC / 4];
     f32 f2 = ((f32 *)arg0)[0xE0 / 4];
     
     do {
         s32 r0 = count / r4;
-        r0 = r0 * r4;
+        r0 *= r4;
         r0 = count - r0;
-        r0 = r0 * 8;
+        r0 *= 8;
         s32 val = *((s32 **)(r5))[0];
-        s32 idx = ((s32 *)*((s32 **)r5 + 0))[0];
-        
-        f32 result = fn_80129DC4(4, r4, (s32)r5, f1, f2);
-        result = ((f32 *)arg0)[0xDC / 4] + result;
-        
-        ((f32 *)out)[0xE4 / 4] = result;
-        ((s32 *)out)[0xE8 / 4] = 0;
-        out = (void *)((u8 *)out + 8);
+        f32 result = fn_80129DC4(4, r4, r5, f1, f2);
+        result = f31 + result;
+        ((f32 *)r30)[0xE4 / 4] = result;
+        ((s32 *)r30)[0xE8 / 4] = val;
+        r30 = (void *)((u8 *)r30 + 8);
         count++;
     } while (count < 8);
 }
