@@ -9,3 +9,7 @@ void fn_8018A088(void) {
 
 }
 
+void fn_8018A2BC(void) {
+
+}
+
