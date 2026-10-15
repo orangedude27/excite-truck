@@ -27,3 +27,7 @@ extern "C" void fn_80206BF4(void) {
 	return;
 }
 
+extern "C" void fn_8020769C(void) {
+	fn_802073A4();
+}
+
