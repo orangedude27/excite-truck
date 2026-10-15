@@ -10,6 +10,7 @@ void fn_8000D800(void);
 #pragma section ".ctors$00"
 DECL_SECTION(".ctors$00") funcptr_t D_802ED084 = fn_8000D800;
 
+#pragma section ".ctors$00"
 void fn_8000D800(void)
 {
     fn_8000D838(&lbl_8055D438);
