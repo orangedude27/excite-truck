@@ -6,3 +6,8 @@ extern void fn_801EBD70(void);
 void fn_801FC8D8(void) {
     fn_801EBBB4();
 }
+
+void fn_801FC904(void) {
+    fn_801EBD70();
+}
+
