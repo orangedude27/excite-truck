@@ -136,6 +136,10 @@ extern "C" void fn_80215CDC(void) {
 
 }
 
+extern "C" void fn_80215CE0(void) {
+
+}
+
 extern "C" void fn_80215CC4(void) {
 
 }
