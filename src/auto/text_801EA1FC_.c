@@ -13,3 +13,7 @@ void fn_801EA390(void) {
     fn_801EBC70();
 }
 
+void fn_801EA400(void) {
+    fn_801EBCAC();
+}
+
