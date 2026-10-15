@@ -1,4 +1,5 @@
 #include <types.h>
+#include <revolution/OS/OSAlarm.h>
 #pragma opt_tail_call on
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
