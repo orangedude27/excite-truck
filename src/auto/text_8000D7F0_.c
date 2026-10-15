@@ -4,3 +4,7 @@
 void fn_8000D7F0(void) {
     return;
 }
+
+void fn_8000D7F4(void) {
+}
+
