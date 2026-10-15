@@ -5,6 +5,7 @@
 
 /* Forward declarations for DisposeCallbackManager cluster */
 extern "C" void fn_8002F634(void* a, void* b, s32 c, s32 d);
+extern "C" void* __dt__Q46nw4hbm3snd6detail7ChannelFv(void*, s32);
 extern "C" u32 OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(u32 level);
 extern "C" void __register_global_object(void* p, void* dtor, void* allocator);
@@ -29,6 +30,56 @@ extern u8 lbl_80322B50[];
 extern u8 lbl_8055DE30;
 
 extern s32 fn_80128668(void);
+
+void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void* this_) {
+    u32 level;
+    void* ptr;
+
+    level = OSDisableInterrupts();
+    if (lbl_8055DE30 == 0) {
+        *(s32*)&lbl_8041279C[0] = 0;
+        ptr = &lbl_8041279C[4];
+        *(s32*)&lbl_8041279C[4] = 0;
+        *(s32*)&lbl_8041279C[8] = 0;
+        *(void**)&lbl_8041279C[4] = ptr;
+        *(void**)&lbl_8041279C[8] = ptr;
+        __register_global_object(&lbl_8041279C, (void*)&__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54, &lbl_80412790);
+        lbl_8055DE30 = 1;
+    }
+    OSRestoreInterrupts(level);
+    return this_;
+}
+
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54(
+    void* this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
+extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
+    void* this_, void* pCallback) {
+    u32 level;
+    void* node;
+
+    level = OSDisableInterrupts();
+
+    if (pCallback == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B74, 0x233,
+                                     (const char*)lbl_80322B50);
+    }
+
+    node = (void*)((u8*)this_ + 4);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
+        this_, &node, pCallback);
+
+    OSRestoreInterrupts(level);
+}
 
 void fn_800ED058(void) {
     return;
