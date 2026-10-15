@@ -13,3 +13,7 @@ void fn_8014ACD4(void) {
 
 }
 
+void fn_8014DE4C(void) {
+
+}
+
