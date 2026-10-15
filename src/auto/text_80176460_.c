@@ -28,4 +28,4 @@ void fn_801777D0(void) {
     fn_80177720();
 }
 
-void fn_80177138(void);
+
