@@ -33,3 +33,7 @@ void fn_80135258(void) {
 
 }
 
+void fn_8013525C(void) {
+
+}
+
