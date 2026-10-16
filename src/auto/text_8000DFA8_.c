@@ -140,3 +140,7 @@ f32 fn_80011DC0(s32 arg0) {
     return lbl_80350F28[arg0][0];
 }
 
+f32 fn_80011DD4(s32 arg0) {
+    return lbl_80350F28[arg0][1];
+}
+
