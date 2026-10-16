@@ -9,6 +9,8 @@ extern s32 lbl_8055E3C4;
 extern f32 lbl_8055E3C8;
 extern u8 lbl_804422F0[];
 extern f32 lbl_80562B04;
+extern f32 lbl_80562AE0;
+extern f32 lbl_80562AEC;
 extern char lbl_80338C40[];
 extern char lbl_803387A8[];
 
