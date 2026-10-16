@@ -80,6 +80,13 @@ void fn_8017EC30(void) {
     lbl_8055E4BA = 0;
 }
 
+int fn_8017ECC0(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern int fn_80128668(void);
 extern int fn_801A8EE4(void *);
 int fn_8017FEE4(void *arg0) {
