@@ -125,7 +125,7 @@ extern "C" s32 fn_800ECE68(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void fn_800ED058(void) {
+extern "C" void fn_800ED058() {
     return;
 }
 
