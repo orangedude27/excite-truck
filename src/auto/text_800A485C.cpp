@@ -155,7 +155,7 @@ extern "C" s32 fn_800A71E0(void *arg0) {
 extern "C" s32 VFiPFCACHE_DoReadPage(void *, s32, s32, s32, s32);
 extern "C" s32 VFiPFCACHE_DoReadNumSector(void *, s32, u32, s32, s32);
 extern "C" s32 fn_800A8EE0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 temp_r3 = VFiPFCACHE_DoReadPage((u8 *)arg0 + 0x1634, arg1, arg1, arg2, arg3);
+    s32 temp_r3 = VFiPFCACHE_DoReadPage(arg0, (s32)((u8 *)arg0 + 0x1634), arg1, arg2, arg3);
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
