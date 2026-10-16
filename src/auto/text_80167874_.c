@@ -41,3 +41,33 @@ s32 fn_80167E58(s32 arg0, s32 arg1) {
 void fn_80167EE0(s32 *arg0) {
     *arg0 = 0;
 }
+
+extern s32 fn_8002B1D8(s32, s32 *, s32);
+extern char lbl_803301B8[];
+extern s32 lbl_8055E354;
+void fn_801688B4(s32 arg0) {
+    s32 i = 0;
+    s32 j = 0;
+    while (i < *(s32 *)(&lbl_8055E354 + 0x1D4D0)) {
+        s32 *p = *(s32 **)(&lbl_8055E354 + 0x1D4CC) + j;
+        if (arg0 == *p) {
+            *(char *)(p + 4) = 1;
+        }
+        j += 0x20;
+        i += 1;
+    }
+}
+
+void fn_801688FC(s32 arg0) {
+    s32 i = 0;
+    s32 j = 0;
+    while (i < *(s32 *)(&lbl_8055E354 + 0x1D4D0)) {
+        s32 *p = *(s32 **)(&lbl_8055E354 + 0x1D4CC) + j;
+        if (arg0 == *p) {
+            *(char *)(p + 4) = 0;
+        }
+        j += 0x20;
+        i += 1;
+    }
+}
+
