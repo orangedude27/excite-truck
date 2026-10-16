@@ -6,6 +6,11 @@ extern void *lbl_80438818[];
 void __AXDSPInitCallback_801D0CF0(void) {
     lbl_8055E8E8 = 0;
 }
+
+void fn_801D0DFC(void) {
+    lbl_8055E8E8--;
+}
+
 typedef struct CallbackVTable {
     void *unk[3];
     void (*callback12)(void *);
