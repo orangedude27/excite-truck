@@ -56,6 +56,26 @@ void fn_80177A18(void) {
     } while (var_r31 < 4);
 }
 
+void fn_80177A54(void) {
+    if (lbl_8055E3C0 == 2 && fn_801CF064() != 0 && fn_8018FD38() != 0) {
+        lbl_8055E3C0 = 0;
+    }
+    switch (lbl_8055E3C0) {
+    case 1:
+        if (lbl_8055E3BD == 0) {
+            fn_80177A18();
+        }
+        lbl_8055E3BD = 1;
+        break;
+    case 2:
+        lbl_8055E3BD = 0;
+        break;
+    default:
+        break;
+    }
+    lbl_8055E3C0 = 0;
+}
+
 long fn_801781B8(void) { return 0; }
 
 long fn_801781C0(unsigned int arg0) {
@@ -126,9 +146,11 @@ void* fn_80178CA4(void) {
     return lbl_8055E444;
 }
 
+#pragma dont_inline on
 void fn_80178DD0(void) {
     fn_80177990();
 }
+#pragma dont_inline off
 
 void fn_801791A4(void) {
 
