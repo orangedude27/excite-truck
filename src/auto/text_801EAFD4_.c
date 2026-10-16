@@ -103,6 +103,32 @@ s32 fn_801EB96C(s32 *out, s32 callback) {
     return *ptr;
 }
 
+void fn_801EB9A4(s32 *arg0) {
+    s32 temp_r0 = *arg0;
+    if (temp_r0 && temp_r0) {
+        s32 (*fn)(void *, s32) = (s32 (*)(void *, s32))(*((s32 **)temp_r0))[2];
+        fn((void *)temp_r0, 1);
+    }
+    *arg0 = 0;
+}
+
+extern s32 lbl_8055AFB8;
+extern s32 lbl_8055AFBC;
+extern s32 *lbl_8055EBA0;
+extern s32 fn_8012C4D8(s32);
+extern void fn_802AE9D0(void);
+extern void fn_802AEA44(void);
+extern void fn_802C6CF8(s32);
+extern void fn_802CCE24(s32);
+void fn_801EBC2C(void) {
+    if (lbl_8055EBA0 != 0) {
+        fn_802CCE24(((s32 *)lbl_8055EBA0)[1]);
+        fn_802CCE24(((s32 *)lbl_8055EBA0)[2]);
+        return;
+    }
+    fn_802AEA44();
+}
+
 void fn_801EBD14(void) {
 
 }
