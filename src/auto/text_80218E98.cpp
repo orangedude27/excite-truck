@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" void fn_802223C4(void *arg0, s32 arg1);
+
 
 class TruckIface {
 public:
@@ -268,6 +270,14 @@ extern "C" void fn_80219870(void *arg0, s32 arg1, s32 arg2, char *arg3, s32 arg4
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80219900(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_8021915C(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802199D0(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_802223C4(arg0, 0);
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
