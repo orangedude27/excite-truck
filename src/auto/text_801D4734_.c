@@ -21,6 +21,7 @@ typedef struct {
     s32 state;
 } UnkStruct_801D6618;
 extern char lbl_80338F50[];
+extern char lbl_80338CB0[];
 extern char lbl_80338C78[];
 extern char lbl_80338D20[];
 extern f32 lbl_80442310[];
@@ -758,14 +759,34 @@ void fn_801D7E3C(void *arg0) {
 
 void fn_801D7E54(void *arg0) {
     s32 temp;
+    f32 f;
     if (*(s32 *)((u8 *)arg0 + 0x28) != 0) {
         if (*(s32 *)((u8 *)arg0 + 0x10) == 0) {
             temp = *(s32 *)((u8 *)arg0 + 4);
-            if (temp != 0) fn_801D9AB8(temp);
+            f = *(f32 *)((u8 *)arg0 + 0x14);
+            if (temp != 0) fn_801D9AB8(temp, f);
             else fn_80178DBC(*(s32 *)((u8 *)arg0 + 8));
         }
         *(s32 *)((u8 *)arg0 + 0x28) = 1;
     }
+}
+
+extern char lbl_80338CB0[];
+void *fn_801D7EC0(void *arg0, s32 arg1) {
+    void **vtable;
+    void *child;
+    if (arg0 != 0) {
+        child = *(void **)((u8 *)arg0 + 0x2C);
+        *(void **)arg0 = lbl_80338CB0;
+        *(s32 *)((u8 *)arg0 + 0x40) = 0;
+        if (child != 0 && child != 0) {
+            vtable = *(void ***)child;
+            ((void (*)(void *, s32))vtable[2])(child, 1);
+        }
+        if (*(s32 *)((u8 *)arg0 + 0x3C) != 0) fn_80128658(0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
 }
 
 s32 fn_801D7F5C(s32 arg0, s32 arg1) {
