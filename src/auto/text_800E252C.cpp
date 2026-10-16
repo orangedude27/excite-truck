@@ -79,6 +79,7 @@ public:
 class BasicSound;
 class SoundPlayer;
 typedef unsigned char u8;
+typedef unsigned short u16;
 extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
 extern "C" void *fn_80128668(void *);
 extern "C" void *__register_global_object(void *, void *, void *);
@@ -118,12 +119,13 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *arg0, 
 }
 
 extern "C" void *Instance__15EmissionManagerFv(void) {
+    int *manager = &lbl_80407F6C;
     if ((signed char)lbl_8055DE18 == 0) {
-        fn_800E279C(&lbl_80407F6C);
-        __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
+        fn_800E279C(manager);
+        __register_global_object(manager, (void *)fn_800E2D74, &lbl_80407F60);
         lbl_8055DE18 = 1;
     }
-    return &lbl_80407F6C;
+    return manager;
 }
 
 extern "C" void *fn_800E2D74(void *arg0, int arg1) {
@@ -169,6 +171,12 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
 }
 
 extern "C" int fn_800E394C(int *arg0) { return *arg0; }
+
+extern "C" void fn_800E402C(void *arg0) {
+    OSDisableInterrupts();
+    *(u8 *)((char *)arg0 + 0x6C31) = 0;
+    OSRestoreInterrupts(0);
+}
 
 extern "C" void fn_800E5A8C(void) {
     fn_800E6A44();
