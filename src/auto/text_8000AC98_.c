@@ -17,6 +17,12 @@ void fn_8000ACAC(void) {
     return;
 }
 
+void fn_8000ACB0(void) {
+    if (fn_802044E8() == 0) {
+        fn_80007238();
+    }
+}
+
 int fn_802044E8(void);
 int fn_80007238();
 int fn_80204870(void);
