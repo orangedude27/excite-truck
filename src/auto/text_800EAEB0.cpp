@@ -274,9 +274,10 @@ s32 fn_800ED0F4(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_800EF9B8(void* arg0, f32 arg1) {
-    OSDisableInterrupts();
+    u32 level;
+    level = OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x40) = arg1;
-    OSRestoreInterrupts(0);
+    OSRestoreInterrupts(level);
 }
 
 extern "C" f32 fn_800EF9F8(void* arg0) {
