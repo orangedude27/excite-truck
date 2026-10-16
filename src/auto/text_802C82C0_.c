@@ -1,4 +1,8 @@
 extern int lbl_8055FC70;
+extern float lbl_8055FC38;
+extern float lbl_8055FC3C;
+extern float lbl_8055FC40;
+extern float lbl_804C144C[3];
 
 extern int lbl_8055FC70;
 
