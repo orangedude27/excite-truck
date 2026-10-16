@@ -450,6 +450,23 @@ void fn_8006F18C(u8 arg0, u8 arg1, u16 arg2) {
     *(u16 *)&cb->pad[0x12] = arg2;
 }
 
+BOOL hcisu_h2_open(tHCI_CFG *p_cfg) {
+    tUUSB uusb;
+    BOOL result = TRUE;
+
+    uusb.at_0x0B = 0;
+    uusb.at_0x04 = p_cfg->at_0x00;
+    uusb.at_0x06 = p_cfg->at_0x02;
+    uusb.at_0x08 = hcisu_h2_cb.at_0x1F;
+
+    hcisu_h2_cb.at_0x1E = 2;
+
+    UUSB_Register(&uusb);
+    UUSB_Open(&uusb, fn_8006EC24);
+
+    return result;
+}
+
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
  * BUFFER_Q acl_q @0x2C, BUFFER_Q sco_q @0x3C. */
 typedef struct uusb_cb_t {
