@@ -37,6 +37,10 @@ void fn_80204020(void) {
 
 }
 
+int fn_80204024(void) {
+    return 0;
+}
+
 void fn_80204034(void) {
 
 }
