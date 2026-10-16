@@ -958,9 +958,30 @@ extern "C" void fn_802208EC(void *arg0) {
     }
 }
 
+extern "C" void fn_80220A50(void *arg0, s32 arg1) {
+    *(u8 *)((u8 *)arg0 + 0x258) = 1;
+    s32 field4 = *(s32 *)((u8 *)arg0 + 4);
+    s32 field250 = *(s32 *)((u8 *)arg0 + 0x250);
+    s32 (*fn)(void) = ((s32 (**)(void))(*(void **)arg0))[0x78 / 4];
+    s32 r = field250 + ((s32)(((s32)(arg1 - field4 - 5) * (s32)(*(s32 *)((u8 *)arg0 + 0x254) - field250)) / (fn() - 0xA)));
+    if (r < field250)
+        r = field250;
+    s32 top = *(s32 *)((u8 *)arg0 + 0x254) - 1;
+    if (r >= top)
+        r = top;
+    *(s32 *)*(void **)((u8 *)arg0 + 0x244) = r;
+}
+
 extern "C" void fn_80220AFC(void *arg0) {
-    ((void (*)(void))((void **)arg0)[0x4C / 4])();
-    *(u8 *)arg0 = 0;
+    ((void (**)(void))(*(void **)*(void **)arg0))[19]();
+    *(u8 *)((u8 *)arg0 + 0x258) = 0;
+}
+
+extern "C" void fn_80220B3C(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x258) != 0) {
+        void *vt = *(void **)arg0;
+        ((void (*)(void))((void **)vt)[0xF])();
+    }
 }
 
 extern "C" void fn_80221E7C(void *arg0) {
@@ -1068,6 +1089,10 @@ extern "C" void* __dt__14CollisionSpaceFv_80222998(void* arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" s32 fn_80222BD4(void *arg0) {
+    return fn_802C51AC(*(s32*)((u8*)arg0 + 4));
 }
 
 extern "C" u32 fn_80223AAC(void) { return 1; }
