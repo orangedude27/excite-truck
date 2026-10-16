@@ -163,6 +163,26 @@ int fn_801F15A8(void **arg0, int arg1) {
     return count - 1;
 }
 
+extern int lbl_80488798[64];
+extern int lbl_8033A51C;
+extern int lbl_8033A544;
+void fn_802E317C(const char *, ...);
+int fn_801F196C(int, int);
+#pragma push
+#pragma small_data off
+#pragma pop
+int fn_801F196C();
+int fn_801F1848(void) {
+    return lbl_80488798[fn_801F196C()];
+}
+void fn_801F1878(void *arg0) {
+    int index = fn_801F196C(*(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
+    if (lbl_80488798[index] != 0) {
+        fn_802E317C((const char *)&lbl_8033A544, *(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
+    }
+    lbl_80488798[index] = (int)arg0;
+}
+
 short fn_801EAC3C(void);
 int fn_801F1494(int, void *, short);
 int fn_801EAB2C(void);
