@@ -54,3 +54,10 @@ s32 fn_801318E0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_80131B10(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
