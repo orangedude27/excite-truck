@@ -1,4 +1,5 @@
 #include <types.h>
+#include <stdarg.h>
 
 extern "C" f32 lbl_805615D0;
 extern "C" s32 fn_801450A0(u32, u32, f32);
@@ -445,6 +446,27 @@ extern "C" f32 fn_80147204(void *arg0, const char *arg1) {
 extern "C" void fn_801476C4(void *arg0) {
     if (arg0 != 0)
         fn_80145B94(arg0, *(u32 *)((u8 *)arg0 + 0x1c));
+}
+
+extern "C" void fn_8014784C(void *arg0, s32 arg1, s32 arg2) {
+    s32 temp_r31;
+    s32 temp_r3;
+    temp_r31 = ((s32 (**)(void *))(*(void ***)arg0))[5](arg0);
+    temp_r3 = ((s32 (**)(void *, s32))(*(void ***)arg0))[6](arg0, arg1);
+    if (temp_r31 != 0 && temp_r3 != 0)
+        fn_80145CF4((void *)temp_r31, (void *)temp_r3, arg2);
+}
+
+extern "C" void fn_801478E0(void *arg0, s32 arg1, s32 arg2) {
+    if (((s32 (**)(void *))(*(void ***)arg0))[5](arg0) != 0 && arg1 != 0)
+        fn_80145CF4((void *)arg1, (void *)0, arg2);
+}
+
+extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 temp_r3;
+    temp_r3 = ((s32 (**)(void *, s32))(*(void ***)arg0))[6](arg0, arg2);
+    if (arg1 != 0 && temp_r3 != 0)
+        fn_80145CF4((void *)arg1, (void *)temp_r3, arg3);
 }
 
 extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
