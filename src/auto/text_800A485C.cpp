@@ -155,6 +155,19 @@ extern void fn_800D24D4(void*, s32);
 extern void* lbl_8055DDBC;
 extern "C" void fn_800D2098(void*);
 
+struct PanicStruct {
+    const char *msg;
+    const char *file;
+    s32 line;
+    s32 r7;
+    s32 r8;
+    s32 r9;
+    s32 r10;
+    s32 field_68;
+    void *field_6C;
+    void *field_70;
+};
+
 extern "C" s32 fn_800D2E14(void) {
     s32 _r3 = 0;
     if (lbl_8055DDC8 != 0) {
