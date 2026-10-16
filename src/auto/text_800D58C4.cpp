@@ -22,19 +22,19 @@ extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(
 extern "C" void fn_800D6EEC(void* arg0) {
     extern float lbl_80560E80;
     extern char lbl_8031F868[];
-    u32 zero = 0;
-    u8* p = (u8*)arg0;
-    *(u32*)(p + 8) = zero;
-    *(u32*)(p + 0xC) = zero;
-    *(void**)p = lbl_8031F868;
-    *(u32*)(p + 4) = zero;
-    *(void**)(p + 8) = p + 8;
-    *(void**)(p + 0xC) = p + 8;
-    *(u32*)(p + 0x10) = zero;
-    *(u32*)(p + 0x14) = zero;
-    *(f32*)(p + 0x18) = lbl_80560E80;
-    *(f32*)(p + 0x1C) = lbl_80560E80;
-    *(u8*)(p + 0x20) = 0;
+    volatile u8* p = (volatile u8*)arg0;
+    f32 f = lbl_80560E80;
+    *(volatile u32*)(p + 8) = 0;
+    *(volatile u32*)(p + 0xC) = 0;
+    *(void* volatile*)p = lbl_8031F868;
+    *(volatile u32*)(p + 4) = 0;
+    *(void* volatile*)(p + 8) = (void*)(p + 8);
+    *(void* volatile*)(p + 0xC) = (void*)(p + 8);
+    *(volatile u32*)(p + 0x10) = 0;
+    *(volatile u32*)(p + 0x14) = 0;
+    *(volatile f32*)(p + 0x18) = f;
+    *(volatile f32*)(p + 0x1C) = f;
+    *(volatile u8*)(p + 0x20) = 0;
 }
 
 extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
@@ -230,6 +230,13 @@ extern "C" s32 fn_800D9364(void *arg0) {
     u32 x = *p;
     s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
     return ((x >> 0x12) & 0x3C) + ((x >> 0x17) & 0x1E0) + y + (((x >> 0x18) & 0xF) * 0x14);
+}
+
+extern "C" s32 fn_80128668();
+extern "C" void fn_800D4F98(void*);
+extern "C" s32 fn_800DB398(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
 }
 
 extern "C" void fn_800DB830(s32 *arg0) {
