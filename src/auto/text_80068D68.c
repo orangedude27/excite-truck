@@ -292,9 +292,11 @@ UINT8 GKI_send_event(UINT8 task_id, UINT16 event) {
         return GKI_FAILURE;
     }
 
-    fn_8006EBAC();
+    gki_cb.os.int_state[gki_cb.os.int_index] = OSDisableInterrupts();
+    gki_cb.os.int_index++;
     gki_cb.com.OSWaitEvt[task_id] |= event;
-    fn_8006EB88();
+    gki_cb.os.int_index--;
+    OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
 
     return GKI_SUCCESS;
 }
