@@ -151,6 +151,50 @@ extern "C" void fn_80146730(void *arg0) {
     }
 }
 
+extern "C" void *lbl_8032D214;
+extern "C" void fn_8002F6AC(s32, void *);
+extern "C" void __dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void);
+extern "C" s32 fn_80147070(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668((void *)arg0);
+    }
+    return arg0;
+}
+
+extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
+    u32 tmp;
+    fn_80147DC0(&tmp, arg0, arg1);
+    fn_801476D8(&tmp, fn_80147C50(arg2, arg3, arg5), arg4);
+}
+
+extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
+    s32 a = fn_801450A0(arg0 & 0xFF, arg1 & 0xFF, arg2);
+    s32 b = fn_801450A0((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
+    s32 c = fn_801450A0((arg0 >> 16) & 0xFF, (arg1 >> 16) & 0xFF, arg2);
+    s32 d = fn_801450A0(arg0 >> 24, arg1 >> 24, arg2);
+    return (a & 0xFF) | ((b & 0xFF) << 8) | ((c & 0xFF) << 16) | ((d & 0xFF) << 24);
+}
+
+extern "C" void fn_80147EE0(void *arg0, f32 scale) {
+    f32 x = *(f32 *)((u8 *)arg0 + 0x10);
+    f32 decay = lbl_805615D0;
+    f32 y = *(f32 *)((u8 *)arg0 + 0x14);
+    f32 dx = x * scale;
+    f32 gx = x * decay;
+    f32 xpos = *(f32 *)((u8 *)arg0 + 4);
+    f32 dy = y * scale;
+    f32 gy = y * decay;
+    f32 ypos = *(f32 *)((u8 *)arg0 + 8);
+    *(f32 *)((u8 *)arg0 + 0x14) = dy;
+    xpos = xpos + gx;
+    scale = dx * decay;
+    *(f32 *)((u8 *)arg0 + 0x10) = dx;
+    ypos = ypos + gy;
+    decay = dy * decay;
+    *(f32 *)((u8 *)arg0 + 4) = xpos - scale;
+    *(f32 *)((u8 *)arg0 + 8) = ypos - decay;
+}
+
 extern "C" void *lbl_8032D1D8;
 extern "C" f32 fn_801451DC(s32);
 extern "C" f32 fn_801452B4(f32);
