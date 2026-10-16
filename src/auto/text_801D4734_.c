@@ -651,6 +651,10 @@ void *fn_801D8504(void) {
     return lbl_80339038;
 }
 
+s32 fn_801D8510(void *arg0) {
+    return ((s32 *)arg0)[1];
+}
+
 void fn_801D85D8(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
