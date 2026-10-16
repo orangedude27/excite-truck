@@ -16,8 +16,8 @@ typedef struct {
 extern Unk8034EF38 lbl_8034EF38;
 extern Unk802FB70C lbl_802FB70C[];
 extern const char lbl_802FB77C[];
-extern const char lbl_80558998[];
-extern const char lbl_805589A0[];
+extern const char lbl_80558998[1];
+extern const char lbl_805589A0[1];
 void fn_80007DA0(void);
 void fn_80279464(void);
 void fn_80012778(void);
@@ -35,3 +35,24 @@ void fn_80007F40(void) {
     fn_80279464();
     fn_80012778();
 }
+
+const char* fn_80007F90(u32 arg0) {
+    Unk802FB70C* p;
+    for (p = lbl_802FB70C; p->unk_0x0 != 0; p++) {
+        if (p->unk_0x0 == arg0)
+            return p->unk_0x4;
+    }
+    fn_802E317C(lbl_802FB77C, arg0);
+    return lbl_80558998;
+}
+
+const char* fn_80007FF0(u32 arg0) {
+    Unk802FB70C* p;
+    for (p = lbl_802FB70C; p->unk_0x0 != 0; p++) {
+        if (p->unk_0x0 == arg0)
+            return p->unk_0x8;
+    }
+    fn_802E317C(lbl_802FB77C, arg0);
+    return lbl_805589A0;
+}
+
