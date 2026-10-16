@@ -19,6 +19,15 @@ extern char lbl_8055D1D8[];
 extern char lbl_8034D39C[];
 extern char lbl_8034D3C0[];
 extern unsigned char lbl_804FC800[];
+extern unsigned char lbl_804FC558[];
+extern int lbl_8055FF78;
+extern int lbl_8055FFA0;
+extern int *lbl_8055FF9C;
+extern int fn_802E5AE8(void);
+extern void fn_8012BEF0(unsigned char *);
+extern void fn_8012C41C(void (*)(void), int, unsigned char *);
+extern void fn_802E589C(void);
+extern int fn_802E582C(void);
 void fn_802E5248(int arg0, int arg1) {
     if (arg1 == 0) fn_80060CC0(arg0, 4, (void (*)())fn_802E51D0);
 }
