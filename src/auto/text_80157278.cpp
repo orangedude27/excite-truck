@@ -406,36 +406,40 @@ extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 extern "C" void fn_80158558(s32 arg0) {
-    s32* state = (s32*)&lbl_8042FD34;
-    s32 index = state[1];
+    s32* state = lbl_8042FD34;
     s32* items = (s32*)state[0];
+    s32 index = state[1];
     state[1] = index + 1;
     items[index] = arg0;
 }
 
 extern "C" void fn_8015857C(u32 arg0) {
-    s32* state = (s32*)&lbl_8042FD34;
-    u32* entries = (u32*)state[0];
     s32 index = 0;
-    s32 count = state[1];
-    if (count <= 0) index = -1;
-    else {
-        for (; count != 0; count--) {
-            if (*entries == arg0) break;
+    s32 count = lbl_8042FD34[1];
+    u32 *entries = (u32 *)lbl_8042FD34[0];
+    if (count <= 0) {
+        index = -1;
+    } else {
+        do {
+            if (*entries == arg0)
+                break;
             entries++;
             index++;
-        }
-        if (count == 0) index = -1;
+        } while (--count != 0);
+        if (count == 0)
+            index = -1;
     }
-    if (index == -1) return;
-    count = state[1];
-    if (index < 0 || index >= count) return;
+    if (index == -1)
+        return;
+    count = lbl_8042FD34[1];
+    if (index < 0 || index >= count)
+        return;
     count--;
     if (index != count) {
-        u32* list = (u32*)state[0];
-        list[index] = list[count];
+        entries = (u32 *)lbl_8042FD34[0];
+        entries[index] = entries[count];
     }
-    state[1] = count;
+    lbl_8042FD34[1] = count;
 }
 
 extern "C" s32 fn_80158618(const char* arg0) {
@@ -545,6 +549,27 @@ extern "C" void fn_80158824(Unk801577F0* arg0) {
     *(f32*)((u8*)arg0 + 0x258) = zero;
     *(f32*)((u8*)arg0 + 0x264) = zero;
     arg0->v31();
+}
+
+extern "C" f32 fn_801589A8(Unk801577F0* self, s32 index) {
+    f32 value;
+    if (index < self->v19(index)) {
+        value = *(f32*)(self->mData + index * 0x38 + 0x10);
+    } else {
+        value = lbl_80561754;
+    }
+    if (*((u32*)__AXFXGetLfoSinTable_801769CC() + 1) & 0x200000) {
+        if (self->m268 != 0) {
+            if (self->m264 != 0) {
+                value *= lbl_80561758;
+            } else {
+                value *= lbl_80561750;
+            }
+        } else {
+            value = lbl_80561754;
+        }
+    }
+    return value;
 }
 
 extern "C" s32 fn_80158A5C(void *arg0, s32 *arg1) { return *(s32 *)((u8 *)arg1 + 0x2620) == 0; }
@@ -771,6 +796,28 @@ extern "C" void fn_8015A7D8(void* arg0, void* arg1) {
 
 extern "C" s32 fn_8015A814(void) {
     return 9;
+}
+
+void fn_8015A81C(Unk801577F0 *self) {
+    s32 i;
+    s32 offset = 0;
+    for (i = 0; i < self->mCount; i++) {
+        u8 *entry = self->mData + offset;
+        *(s32 *)(entry + 0) = 0;
+        *(s32 *)(entry + 4) = 0;
+        *(s32 *)(entry + 8) = 0;
+        *(f32 *)(entry + 0xc) = lbl_8056175C;
+        offset += 0x38;
+    }
+    self->m264 = 0;
+    self->m260 = 0;
+    self->m254 = lbl_8056175C;
+    self->m25c = 0.0f;
+    self->v33();
+}
+
+extern "C" s32 fn_8015ADA4(void) {
+    return 10;
 }
 
 extern "C" void* fn_8015ADAC(void* arg0, s32 arg1) {
