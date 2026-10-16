@@ -100,6 +100,7 @@ void fn_801D2A24(void *obj_) {
     fn_801D26C8(&entry[12], obj->vt->fn5C(obj, lbl_8055AC20));
     lbl_8055E930 += 1;
 }
+#pragma dont_inline off
 
 void fn_801D2AD4(void) {
     UnkObj *list = (UnkObj *)fn_80131810();
