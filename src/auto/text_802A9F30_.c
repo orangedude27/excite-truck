@@ -14,6 +14,28 @@ void fn_8028E398(int);
 void fn_80128668(void *);
 extern void *lbl_8055F924;
 void fn_8028E080(void);
+void fn_802AB6D0(void) {}
+
+void fn_802AB6D4(void) {
+    extern int fn_80287B14(void);
+    extern int fn_80287B24(int);
+    extern int fn_802C86DC(void);
+    extern void fn_802AAD5C(int, int, int);
+    extern void fn_802AAF00(int, int, int);
+    extern void fn_802AAF04(int, int, int);
+    extern int lbl_8055F928;
+    int count = fn_80287B14();
+    int obj = fn_802C86DC();
+    int i;
+    for (i = 0; i < count; i++) {
+        int item = fn_80287B24(i);
+        int data = lbl_8055F928 + i * 0x108;
+        fn_802AAD5C(obj, data, item);
+        fn_802AAF00(obj, data, item);
+        fn_802AAF04(obj, data, item);
+    }
+}
+
 void fn_802AB9E0(void) { fn_8028E070(); }
 
 void fn_802AB9E4(void) { fn_8028E080(); }
