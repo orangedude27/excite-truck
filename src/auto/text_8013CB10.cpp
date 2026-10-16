@@ -45,6 +45,8 @@ public:
     virtual s32 vC(s32); // 0xC
 };
 
+extern "C" s32 fn_8013D1F0(s32);
+
 extern "C" void fn_8013E338(void) {
 
 }
@@ -277,4 +279,12 @@ extern "C" s32 fn_8014440C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
 }
+
+extern "C" s32 fn_8013D1F0(s32);
+extern "C" s32 fn_8014445C(s32 arg0) {
+    s32 v = fn_8013D1F0(arg0) ^ 0xA;
+    return (v >> 1) - (v & 0xA) >> 0x1F;
+}
+
+extern "C" s32 fn_80144494(s32 arg0) { return arg0; }
 
