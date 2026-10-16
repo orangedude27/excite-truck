@@ -54,7 +54,7 @@ void fn_800E80B4(void) {
 
 }
 
-void fn_800E9B20(void *arg0, float arg1) {
+extern "C" void fn_800E9B20(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x94) = arg1;
 }
 
