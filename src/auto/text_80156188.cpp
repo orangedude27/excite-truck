@@ -12,6 +12,12 @@ extern u8 lbl_8032E448[];
 
 extern void **lbl_8055E27C;
 
+extern "C" {
+void fn_80157184(void*);
+void fn_801571AC(void*);
+void fn_80157198(void*);
+}
+
 namespace ebi {
 namespace title {
 class TBlackPlane {
@@ -151,5 +157,27 @@ void fn_80156B4C(void) {
 
 void fn_80156B50(void) {
     return;
+}
+
+void fn_80157184(void* arg0) {
+    void* o = *(void**)((u8*)arg0 + 4);
+    ((void(*)(void*))(*(void***)o)[3])(o);
+}
+
+void fn_80157198(void* arg0) {
+    void* o = *(void**)((u8*)arg0 + 8);
+    ((void(*)(void*))(*(void***)o)[4])(o);
+}
+
+void fn_801571AC(void* arg0) {
+    void* o = *(void**)((u8*)arg0 + 4);
+    ((void(*)(void*))(*(void***)o)[4])(o);
+}
+
+void ebi::title::TBlackPlane::updateAfterCamera() {
+    void* a = *(void**)((u8*)this + 8);
+    ((void(*)(void*))(*(void***)a)[5])(a);
+    void* b = *(void**)((u8*)this + 4);
+    ((void(*)(void*))(*(void***)b)[5])(b);
 }
 
