@@ -6,6 +6,17 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 int fn_8012C33C(void);
+extern double cos(double);
+extern double sin(double);
+extern void *fn_801284F8(int, void *);
+extern void fn_8012850C(int, void *);
+extern void *fn_8002F37C(void *, int, int, int);
+extern int fn_802BAE30;
+extern int lbl_8034A9F4;
+extern void *lbl_8055FA7C;
+extern int lbl_804BFFF4;
+extern int lbl_8055FA6C, lbl_8055FA70;
+extern void *lbl_8055FA74;
 int fn_802CAC28(int, int);
 int fn_802B8E50(int arg0) {
     int valid = 0;
