@@ -225,6 +225,62 @@ void fn_8011BC48(void) {
     fn_80120084();
 }
 
+u32 fn_8011C06C(void *arg0) {
+    s32 oldInterrupts;
+    s32 value;
+    if (arg0 != NULL) {
+        oldInterrupts = OSDisableInterrupts();
+        if (*(s32 *)arg0 == 1)
+            *(s32 *)arg0 = 2;
+        value = *(s32 *)((char *)arg0 + 4);
+        *(s32 *)((char *)arg0 + 4) = value + 1;
+        OSRestoreInterrupts(oldInterrupts);
+        value = *(s32 *)arg0;
+        return (u32)((1 - value) | (value - 1)) >> 31;
+    }
+    return 1;
+}
+
+u32 fn_8011C1E0(s32 arg0, void *arg1) {
+    s32 temp_r4;
+    s32 temp_r4_2;
+    if (arg0 != 0 && arg1 != 0 &&
+        *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
+        *(s32 *)((u8 *)arg1 + 0x14) != 0) {
+        OSDisableInterrupts();
+        if (*(s32 *)((u8 *)arg1 + 0xC) == 1)
+            *(s32 *)((u8 *)arg1 + 0xC) = 2;
+        temp_r4 = *(s32 *)((u8 *)arg1 + 0x10);
+        *(s32 *)((u8 *)arg1 + 0x10) = temp_r4 + 1;
+        OSRestoreInterrupts(temp_r4);
+        temp_r4_2 = *(s32 *)((u8 *)arg1 + 0xC);
+        return (u32)((1 - temp_r4_2) | (temp_r4_2 - 1)) >> 31;
+    }
+    return 1;
+}
+
+void fn_8011C274(s32 arg0, void *arg1) {
+    if (arg0 != 0 && arg1 != 0 &&
+        *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
+        *(s32 *)((u8 *)arg1 + 0x14) != 0) {
+        do {
+            OSYieldThread();
+        } while (fn_8011C1E0(arg0, arg1) == 0);
+    }
+}
+
+void fn_8011C2EC(s32 arg0, void *arg1) {
+    if (arg0 != 0 && arg1 != 0 &&
+        *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
+        *(s32 *)((u8 *)arg1 + 0x14) != 0) {
+        OSDisableInterrupts();
+        *(s32 *)((u8 *)arg1 + 0x10) = *(s32 *)((u8 *)arg1 + 0x10) - 1;
+        if (*(s32 *)((u8 *)arg1 + 0x10) == 0)
+            *(s32 *)((u8 *)arg1 + 0xC) = 1;
+        OSRestoreInterrupts();
+    }
+}
+
 void fn_8011C364(s32 arg0) {
     if (arg0 != 0) {
         fn_8011C0E0();
