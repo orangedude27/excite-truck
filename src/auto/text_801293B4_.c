@@ -10,3 +10,7 @@ void fn_801293C8(void* hi) {
     lbl_8055DFC0 = hi;
 }
 
+void __AXDSPInitCallback_801293D0(void) {
+    lbl_8055DFC0 = 0;
+}
+
