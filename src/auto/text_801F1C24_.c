@@ -11,6 +11,15 @@ void fn_801F371C(int arg0) {
     fn_8029231C(arg0 + 4);
 }
 
+extern int *fn_801F1CE8(int);
+extern int fn_80128668(void);
+extern int *fn_801E1F44(void);
+extern int fn_802C9950(int);
+void fn_801F3764(void *arg0, int arg1) {
+    *(int *)((char *)arg0 + 8) = *fn_801F1CE8(arg1);
+    *(char *)((char *)arg0 + 4) = 1;
+}
+
 void fn_801F3E60(void) {
 
 }
