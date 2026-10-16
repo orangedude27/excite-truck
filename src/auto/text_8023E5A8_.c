@@ -12,3 +12,25 @@ extern s32 fn_802E2C20(void);
 void *fn_8023E5A8(void) {
     return lbl_80341CC8;
 }
+
+void fn_8023EC94(void) {
+    s32 i;
+    u8 *p;
+
+    p = &lbl_8055F1AC;
+    i = 0;
+    do {
+        if (*p != 0) {
+            fn_80214AF0(i + 1);
+        } else {
+            fn_80214A9C(i + 1);
+        }
+        i++;
+        p++;
+    } while (i < 3);
+}
+
+s32 fn_8023ECF8(void) {
+    return lbl_8055F1C8 < fn_802E2C20();
+}
+
