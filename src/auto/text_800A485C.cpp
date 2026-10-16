@@ -32,7 +32,7 @@ public:
 }
 extern "C" const char *lbl_8031D990[];
 extern "C" const char *lbl_8031E218[];
-extern "C" const char *lbl_8031E770;
+extern "C" const char lbl_8031E770[];
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -424,6 +424,16 @@ extern "C" s32 fn_800CF2B0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) {
+    *(s32 *)((u8 *)arg0 + 0x18) = arg1;
+    *(f32 *)((u8 *)arg0 + 4) = arg2;
+    *(f32 *)((u8 *)arg0 + 8) = arg3;
+    *(f32 *)((u8 *)arg0 + 0x10) = arg4;
+    *(s32 *)((u8 *)arg0 + 0x14) = 0;
+    *(u8 *)((u8 *)arg0 + 0x1C) = 0;
+    *(f32 *)((u8 *)arg0 + 0xC) = arg1 == 1 ? arg2 : arg3;
+}
+
 extern "C" u32 fn_800CF91C(void) { return 1; }
 
 extern "C" void fn_800CF930(void) {
@@ -756,6 +766,25 @@ extern "C" void fn_800D15B4(void*);
 extern "C" void fn_800CA148(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
     fn_800D15B4(OSGetAlarmUserData(alarm));
+}
+
+s32 homebutton::HomeButton::getPaneNo(const char *name) {
+    s32 count = *(s32 *)((u8 *)this + 8);
+    s32 result = -1;
+    s32 i;
+    for (i = 0; i < count; i++) {
+        if (strcmp(name, lbl_8031D990[i]) == 0) {
+            result = i;
+            break;
+        }
+    }
+    for (i = 0; i < 10; i++) {
+        if (strcmp(name, lbl_8031E218[i]) == 0) {
+            result = i + count;
+            break;
+        }
+    }
+    return result;
 }
 
 extern "C" s32 fn_800CEDE0(void *arg0) {
