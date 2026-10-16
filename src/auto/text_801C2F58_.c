@@ -44,59 +44,19 @@ extern double fn_8002F234(float);
 extern void fn_8012F57C(float *, float *, float *, float);
 extern f32 lbl_8056296C, lbl_80562970, lbl_80562974;
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
-    float qa[4], qb[4], q[4];
-    float x, y, z, w, s;
-    int i, j, k;
-    x = a[0] + a[4] + a[8];
-    if (x > lbl_80562970) {
-        s = (float)fn_8002F234(lbl_8056296C + x);
-        s = lbl_80562974 / s;
-        qa[0] = lbl_80562974 * (lbl_80562974 / s);
-        qa[1] = s * (a[5] - a[7]);
-        qa[2] = s * (a[6] - a[2]);
-        qa[3] = s * (a[1] - a[3]);
-    } else {
-        i = 0;
-        if (a[4] > a[0]) i = 1;
-        if (a[8] > a[i * 3 + i]) i = 2;
-        j = (i + 1) % 3;
-        k = (j + 1) % 3;
-        s = (float)fn_8002F234(lbl_8056296C + a[i * 3 + i] - (a[j * 3 + k] + a[k * 3 + j]));
-        s = lbl_80562974 / s;
-        qa[i] = lbl_80562974 * (lbl_80562974 / s);
-        qa[3] = s * (a[j * 3 + k] - a[k * 3 + j]);
-        qa[j] = s * (a[i * 3 + j] + a[j * 3 + i]);
-        qa[k] = s * (a[i * 3 + k] + a[k * 3 + i]);
-    }
-    x = b[0] + b[4] + b[8];
-    if (x > lbl_80562970) {
-        s = (float)fn_8002F234(lbl_8056296C + x);
-        s = lbl_80562974 / s;
-        qb[0] = lbl_80562974 * (lbl_80562974 / s);
-        qb[1] = s * (b[5] - b[7]);
-        qb[2] = s * (b[6] - b[2]);
-        qb[3] = s * (b[1] - b[3]);
-    } else {
-        i = 0;
-        if (b[4] > b[0]) i = 1;
-        if (b[8] > b[i * 3 + i]) i = 2;
-        j = (i + 1) % 3;
-        k = (j + 1) % 3;
-        s = (float)fn_8002F234(lbl_8056296C + b[i * 3 + i] - (b[j * 3 + k] + b[k * 3 + j]));
-        s = lbl_80562974 / s;
-        qb[i] = lbl_80562974 * (lbl_80562974 / s);
-        qb[3] = s * (b[j * 3 + k] - b[k * 3 + j]);
-        qb[j] = s * (b[i * 3 + j] + b[j * 3 + i]);
-        qb[k] = s * (b[i * 3 + k] + b[k * 3 + i]);
-    }
-    fn_8012F57C(q, qa, qb, weight);
+    float qa[4], qb[4], q[4], trace, root, half=lbl_80562974, w, x, y, z;
+    int i,j,k;
+    trace=a[0]+a[4]+a[8];
+    if(trace>lbl_80562970){ root=fn_8002F234(lbl_8056296C+trace); qa[0]=half*root; root=half/root; qa[1]=root*(a[5]-a[7]); qa[2]=root*(a[6]-a[2]); qa[3]=root*(a[1]-a[3]); }
+    else { i=0; if(a[4]>a[0])i=1; if(a[8]>a[i*3+i])i=2; j=(i+1)%3; k=(j+1)%3; root=fn_8002F234(lbl_8056296C+a[i*3+i]-(a[j*3+k]+a[k*3+j])); qa[i]=half*root; root=half/root; qa[3]=root*(a[j*3+k]-a[k*3+j]); qa[j]=root*(a[i*3+j]+a[j*3+i]); qa[k]=root*(a[i*3+k]+a[k*3+i]); }
+    trace=b[0]+b[4]+b[8];
+    if(trace>lbl_80562970){ root=fn_8002F234(lbl_8056296C+trace); qb[0]=half*root; root=half/root; qb[1]=root*(b[5]-b[7]); qb[2]=root*(b[6]-b[2]); qb[3]=root*(b[1]-b[3]); }
+    else { i=0; if(b[4]>b[0])i=1; if(b[8]>b[i*3+i])i=2; j=(i+1)%3; k=(j+1)%3; root=fn_8002F234(lbl_8056296C+b[i*3+i]-(b[j*3+k]+b[k*3+j])); qb[i]=half*root; root=half/root; qb[3]=root*(b[j*3+k]-b[k*3+j]); qb[j]=root*(b[i*3+j]+b[j*3+i]); qb[k]=root*(b[i*3+k]+b[k*3+i]); }
+    fn_8012F57C(q,qa,qb,weight);
     w=q[0]; x=q[1]; y=q[2]; z=q[3];
-    out[12] = a[12] + weight*(b[12]-a[12]);
-    out[13] = a[13] + weight*(b[13]-a[13]);
-    out[14] = a[14] + weight*(b[14]-a[14]);
+    out[9]=a[9]+weight*(b[9]-a[9]); out[10]=a[10]+weight*(b[10]-a[10]); out[11]=a[11]+weight*(b[11]-a[11]);
     out[0]=1-2*(y*y+z*z); out[4]=1-2*(x*x+z*z); out[8]=1-2*(x*x+y*y);
-    out[7]=2*(y*z-w*x); out[2]=2*(y*z+w*x);
-    out[1]=2*(x*y-w*z); out[3]=2*(x*y+w*z);
+    out[7]=2*(y*z-w*x); out[2]=2*(y*z+w*x); out[1]=2*(x*y-w*z); out[3]=2*(x*y+w*z);
     out[6]=2*(x*z-w*y); out[5]=2*(x*z+w*y);
 }
 
@@ -234,6 +194,25 @@ void fn_801C7388(void) {
     lbl_8055E839 = 0;
 }
 
+void fn_801C7394(void) {
+    s32 temp_r3;
+
+    if (lbl_8055E7F0 > 0) {
+        fn_801C3C14(lbl_8055E828);
+        temp_r3 = lbl_8055E7F0 - 1;
+        if (lbl_8055E828 > temp_r3) {
+            lbl_8055E828 = temp_r3;
+        }
+    }
+}
+
+void fn_801C7524(void) {
+    s32 index;
+    fn_801C957C(1);
+    index = lbl_8055E828 * 0x30C;
+    sprintf(lbl_804380F0, lbl_8055AA54, *(f32 *)(lbl_8055E7F8 + index));
+}
+
 extern u8 lbl_8055E83E;
 extern char lbl_8055E841;
 extern s32 lbl_8055E844;
@@ -258,8 +237,8 @@ extern s32 lbl_8055E828;
 extern char lbl_8055AA54[];
 extern s32 fn_801C34CC(f32, f32);
 void fn_801C7770(void) {
-    u32 value = __cntlzw(lbl_8055E83E);
-    lbl_8055E83E = value >> 5;
+    u8 value = lbl_8055E83E;
+    lbl_8055E83E = value == 0;
 }
 
 void fn_801C77C0(void) {
@@ -393,6 +372,17 @@ extern s32 lbl_8055E854;
 extern void fn_801C78D8(void);
 void fn_801C80BC(void) {
     lbl_8055E854 = 0;
+    fn_801C78D8();
+}
+
+void fn_801C80C8(void) {
+    lbl_8055E868 = fn_801C6CB0;
+    lbl_8055E83A = 1;
+    lbl_8055E854 = 2;
+}
+
+void fn_801C8190(void) {
+    lbl_8055E854 = 1;
     fn_801C78D8();
 }
 
