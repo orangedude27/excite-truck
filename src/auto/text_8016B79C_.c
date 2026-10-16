@@ -443,6 +443,11 @@ s32 fn_80170E78(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x1ec); }
 
 f32 fn_80170E80(f32 *arg0) { return *arg0; }
 
+extern s32 fn_8017960C(s32);
+s32 fn_80170E88(void *arg0) {
+    return fn_8017960C(*(s32 *)((u8 *)arg0 + 4));
+}
+
 u8 fn_80170E90(void *arg0) { return *(u8 *)((u8 *)arg0 + 8); }
 
 extern char lbl_803306D0[];
