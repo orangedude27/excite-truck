@@ -15,3 +15,6 @@ void fn_80128668(void *);
 extern void *lbl_8055F924;
 void fn_8028E080(void);
 void fn_802AB9E4(void) { fn_8028E080(); }
+
+void fn_802ABE50(void) { fn_8028E240(0); }
+
