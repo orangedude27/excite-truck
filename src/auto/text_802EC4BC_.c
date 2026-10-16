@@ -16,7 +16,7 @@ void fn_802CFDE0(void);
 void fn_802CFF10(void);
 void fn_80127464(void);
 void fn_802ECBF8(void) {
-    if (lbl_805600E8 == 0) {
+    if ((u8)lbl_805600E8 == 0) {
         lbl_805600EA = 1;
     }
 }
