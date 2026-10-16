@@ -32,7 +32,12 @@ extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
 extern void fn_801345D8(void*, ...);
-extern void fn_8000B3DC(s32);
+  extern void fn_8000B3DC(s32);
+  extern unsigned char lbl_8055D648;
+  extern void fn_80230AD8(void*);
+  extern void fn_80230B38(void*);
+  extern void fn_80230B5C(void*);
+  extern void fn_800209A0(int, float);
 void fn_8001FD7C(void);
 struct cfg_t {
     char f0[0xc];
@@ -239,6 +244,11 @@ int fn_800216D0(void) {
 
 unsigned char fn_800216F4(void) {
     return lbl_8055D644;
+}
+
+int fn_800216FC(void) {
+    if (lbl_8055D644 != 0) return fn_80020184();
+    return 0;
 }
 
 void fn_800218F4(void) {
