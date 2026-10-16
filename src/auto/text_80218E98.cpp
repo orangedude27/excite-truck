@@ -408,7 +408,10 @@ extern "C" void *lbl_8033F20C;
 extern "C" void fn_8021B224(void *arg0) {
     s32 temp_r0;
     s32 temp_r4;
+    s32 temp_r0_2;
+    s32 temp_r4_2;
     void *temp_r5;
+    void *temp_r5_2;
     if (*(s32 *)((u8 *)arg0 + 0x254) == 1) {
         temp_r5 = *(void **)((u8 *)arg0 + 0x258);
         temp_r4 = *(s32 *)((u8 *)temp_r5 + 8) + 1;
@@ -419,14 +422,14 @@ extern "C" void fn_8021B224(void *arg0) {
         if (*(s32 *)((u8 *)temp_r5 + 8) < 0)
             *(s32 *)((u8 *)temp_r5 + 8) = 0;
     } else {
-        temp_r5 = *(void **)((u8 *)arg0 + 0x258);
-        temp_r4 = *(s32 *)((u8 *)temp_r5 + 8) - 1;
-        *(s32 *)((u8 *)temp_r5 + 8) = temp_r4;
-        temp_r0 = *(s32 *)temp_r5 - *(s32 *)((u8 *)temp_r5 + 4);
-        if (temp_r4 > temp_r0)
-            *(s32 *)((u8 *)temp_r5 + 8) = temp_r0;
-        if (*(s32 *)((u8 *)temp_r5 + 8) < 0)
-            *(s32 *)((u8 *)temp_r5 + 8) = 0;
+        temp_r5_2 = *(void **)((u8 *)arg0 + 0x258);
+        temp_r4_2 = *(s32 *)((u8 *)temp_r5_2 + 8) - 1;
+        *(s32 *)((u8 *)temp_r5_2 + 8) = temp_r4_2;
+        temp_r0_2 = *(s32 *)temp_r5_2 - *(s32 *)((u8 *)temp_r5_2 + 4);
+        if (temp_r4_2 > temp_r0_2)
+            *(s32 *)((u8 *)temp_r5_2 + 8) = temp_r0_2;
+        if (*(s32 *)((u8 *)temp_r5_2 + 8) < 0)
+            *(s32 *)((u8 *)temp_r5_2 + 8) = 0;
     }
 }
 
