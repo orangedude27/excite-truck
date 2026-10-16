@@ -81,6 +81,10 @@ extern "C" void fn_800C657C(void) {
     MEMDestroyExpHeap((MEMiHeapHead*)lbl_80559708->heap);
 }
 
+extern "C" void fn_800C65C4(void) {
+    fn_800C7998(lbl_8055DD98);
+}
+
 extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
     void* r30 = this_ptr;
     s32 r31 = arg1;
