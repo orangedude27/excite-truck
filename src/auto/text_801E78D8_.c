@@ -39,6 +39,10 @@ long fn_801E7DF0(long arg0) {
     return lbl_80487CF0[arg0];
 }
 
+void fn_801E7E04(long arg0, long arg1) {
+    lbl_80487CF0[arg0] = arg1;
+}
+
 long fn_801E7E2C(void) {
     return -1;
 }
