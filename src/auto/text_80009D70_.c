@@ -24,9 +24,11 @@ extern u8 lbl_802FBC7C[];
 extern void fn_8000A8C4(void);
 extern void fn_8020C920(void*);
 extern void fn_802103B8(void*);
-void fn_8000AA38(void* arg0);
-void fn_8000AA9C(void* arg0);
-void fn_8000AABC(void* arg0);
+void fn_8000AADC(void* arg0) DECOMP_DONT_INLINE;
+void fn_8000AAE0(void* arg0) DECOMP_DONT_INLINE;
+void fn_8000AA38(void* arg0) DECOMP_DONT_INLINE;
+void fn_8000AA9C(void* arg0) DECOMP_DONT_INLINE;
+void fn_8000AABC(void* arg0) DECOMP_DONT_INLINE;
 void fn_8000AAE4(void* arg0);
 void fn_8000AB48(void* arg0, s32 arg1);
 void fn_8000ABE0(void* arg0);
@@ -75,8 +77,42 @@ void fn_8000AAE0(void* arg0) {
     fn_8000A808();
 }
 
+void fn_8000AAE4(void* arg0) {
+    s32 i = 0;
+    char* p = (char*)arg0 + 0x64;
+    while (i < ((s32*)arg0)[0x3E0 / 4]) {
+        fn_8000AABC(p);
+        p += 0x78;
+        i++;
+    }
+}
+
 void fn_8000AB44(void) {
     fn_8000A6D8();
+}
+
+void fn_8000AB48(void* arg0, s32 arg1) {
+    s32 i = 0;
+    char* p;
+    fn_8000A8C4();
+    fn_8000AADC(arg0);
+    fn_8000A644(arg0, (void*)arg1);
+    p = (char*)arg0 + 0x64;
+    while (i < ((s32*)arg0)[0x3E0 / 4]) {
+        fn_8000AA9C(p);
+        p += 0x78;
+        i++;
+    }
+    fn_8012DDA8(&lbl_802FBC7C);
+    fn_8020C920(arg0);
+    fn_802103B8(arg0);
+}
+
+void fn_8000ABE0(void* arg0) {
+    fn_8012E498(&lbl_802FBC7C);
+    fn_8000AAE4(arg0);
+    fn_8000AAE0(arg0);
+    fn_8000AA38(arg0);
 }
 
 extern u8 lbl_8034F520[];
