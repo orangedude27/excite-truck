@@ -559,6 +559,8 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
     (*(void (**)(void *, void *))(*(void ***)arg0 + 20))(arg0, q);
 }
 
+extern "C" s32 fn_800D0814(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x24); }
+
 extern "C" s32 fn_800D0AA8(void *arg0) { return (*(u8 *)((u8 *)arg0 + 0xCF)) & 1; }
 
 extern "C" s32 fn_800D0AB4(void *arg0) {
