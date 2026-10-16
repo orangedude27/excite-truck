@@ -136,6 +136,16 @@ void fn_800F27D4(void *arg0, s32 arg1) {
     ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(r3, (void*)r4, arg1);
 }
 
+extern "C" void fn_800F2D28(void *arg0) {
+    *(s32*)((u8*)arg0 + 0x28) = 0;
+    *(s32*)((u8*)arg0 + 0x2C) = 0;
+    *(s32*)((u8*)arg0 + 0x30) = 0;
+    *(s32*)((u8*)arg0 + 0x34) = 0;
+    *(s32*)((u8*)arg0 + 0x38) = 0;
+    *(s32*)((u8*)arg0 + 0x3C) = 0;
+    *(s32*)((u8*)arg0 + 0x40) = 0;
+}
+
 extern "C" s32 fn_800F420C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
