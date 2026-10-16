@@ -273,14 +273,14 @@ typedef struct uusb_cb_t {
     u8 pad4[0x24];
     u8 at_0x28;
     u8 state;            /* 0x29 */
-    u8 pad2A[2];
+    u8 pad2A[0xA];
     BUFFER_Q acl_q;      /* 0x2C */
     u8 pad34[8];
     BUFFER_Q sco_q;      /* 0x3C */
-    u8 pad44[2];
 } uusb_cb_t;
 
 extern uusb_cb_t lbl_803BD1E0;
+extern OSAlarm lbl_803C0A20;
 extern void uusb_CloseDeviceCB(void);
 extern u8 lbl_8055DC51;
 extern s32 IUSB_CloseDeviceAsync(s32 fd, void (*callback)(void), void *arg);
