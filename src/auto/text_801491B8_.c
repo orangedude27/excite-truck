@@ -99,17 +99,21 @@ void fn_801494B4(void *arg0, f32 *arg1, f32 *arg2) {
 int fn_801494E0(void) { return 0xFF0000FF; }
 
 void fn_801494EC(float *arg1, float *arg2) {
-    float temp_f1 = arg2[0];
-    float temp_f3 = arg2[1];
-    arg1[1] += temp_f1;
-    arg1[4] -= temp_f1;
-    arg1[2] += temp_f3;
-    arg1[5] -= temp_f3;
+    float temp_f1 = arg1[0];
+    float temp_f3 = arg1[1];
+    arg2[1] += temp_f1;
+    arg2[4] -= temp_f1;
+    arg2[2] += temp_f3;
+    arg2[5] -= temp_f3;
 }
 
 extern unsigned long lbl_80559E94;
 extern unsigned long lbl_80559E9C;
 unsigned long *fn_80149528(void) { return &lbl_80559E9C; }
+
+int fn_80149530(void) {
+    return 0xFFC0D9D9;
+}
 
 void fn_8014ACCC(void) {
 
