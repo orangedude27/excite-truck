@@ -22,6 +22,10 @@ void fn_802064C8(void) {
     return;
 }
 
+extern int lbl_8055ED80;
+extern "C" int fn_80207C50(int,int,int);
+extern "C" void fn_8020655C(int a, int b) { fn_80207C50(lbl_8055ED80,a,b); }
+
 extern "C" void fn_80206B08(void) {
 	return;
 }
