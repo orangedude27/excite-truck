@@ -7,6 +7,8 @@ extern unsigned char lbl_8055E46C;
 extern long fn_801284F8(long, void *);
 extern long fn_801A6484(void);
 extern unsigned char lbl_8055A304;
+long fn_801781B8(void) { return 0; }
+
 void fn_80178224(void) {
     if (fn_801284F8(0x2780, &lbl_8055A304) != 0)
         fn_801A6484();
