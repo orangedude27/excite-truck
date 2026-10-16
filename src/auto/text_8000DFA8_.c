@@ -45,7 +45,8 @@ struct UnkF22C {
 };
 extern UnkF22C *lbl_8055D4B4;
 extern UnkF22C *lbl_8055D4B8;
-extern void fn_802328D4(void);
+  extern void fn_802328D4();
+  extern char lbl_802FC414[];
 extern s32 fn_80232578(s32);
 extern s32 lbl_80351738[0x54];
 extern s32 lbl_8055D494;
