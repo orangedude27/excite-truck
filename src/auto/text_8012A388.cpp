@@ -222,6 +222,11 @@ extern "C" void *fn_8012C58C(void *arg0) {
     return var_r5;
 }
 
+extern "C" s32 stricmp(const char *, const char *);
+extern "C" s32 fn_8012B85C(s32, s32, s32, s32, s32, s32);
+extern "C" void fn_80127464(void);
+extern "C" const char lbl_8032AB78[];
+extern "C" u8 lbl_8055DFF9;
 extern "C" s32 lbl_8055E00C;
 extern "C" void **lbl_8055E010;
 extern "C" void fn_8012CA40(void *arg0) {
