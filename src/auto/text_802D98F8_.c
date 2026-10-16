@@ -6,6 +6,11 @@ void AIRegisterDMACallback_800591F0(s32);
 void fn_802D992C(void);
 void fn_802D98F8(void);
 extern s32 lbl_8055FE3C;
+void fn_802D9C18(void) {
+    AIRegisterDMACallback_800591F0((s32)fn_802D992C);
+    OSSetPowerCallback((OSStateCallback)fn_802D98F8);
+}
+
 void fn_802D9C4C(void) {
     AIRegisterDMACallback_800591F0(0);
 }
