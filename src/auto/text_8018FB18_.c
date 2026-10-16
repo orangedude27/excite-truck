@@ -209,18 +209,20 @@ void fn_80192F74(void *arg0) {
 }
 
 void fn_80192F80(void *arg0) {
-    double temp_f31;
+    float value;
     int result;
     *(int *)__AXGetStudio_80178C90() = 0;
     result = fn_801B2F54(*(int *)((char *)arg0 + 0x3C));
     *(int *)((char *)__AXGetStudio_80178C90() + 4) = result;
-    temp_f31 = *(float *)((char *)*(void **)((char *)arg0 + 0x34) + 0x25CC);
-    *(float *)((char *)__AXGetStudio_80178C90() + 8) = temp_f31;
-    temp_f31 = fn_8018AE3C(*(void **)((char *)arg0 + 0x34));
-    *(float *)((char *)__AXGetStudio_80178C90() + 0xC) = temp_f31;
-    temp_f31 = fn_8018AE4C(*(void **)((char *)arg0 + 0x34));
-    *(float *)((char *)__AXGetStudio_80178C90() + 0x10) = temp_f31;
+    value = *(float *)((char *)*(void **)((char *)arg0 + 0x34) + 0x25CC);
+    *(float *)((char *)__AXGetStudio_80178C90() + 8) = value;
+    value = fn_8018AE3C(*(void **)((char *)arg0 + 0x34));
+    *(float *)((char *)__AXGetStudio_80178C90() + 0xC) = value;
+    value = fn_8018AE4C(*(void **)((char *)arg0 + 0x34));
+    *(float *)((char *)__AXGetStudio_80178C90() + 0x10) = value;
 }
+
+int fn_80193010(void) { return 0x20; }
 
 void fn_80193058(void) {
 }
