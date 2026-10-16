@@ -53,6 +53,44 @@ public:
     s32 m268;
 };
 
+class Unk8015A368C {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual f32 v18(s32);
+    virtual void v19();
+    virtual void v20();
+    virtual s32 v21();
+    virtual void v22();
+    virtual void v23();
+    virtual void v24();
+    virtual void v25();
+    virtual void v26();
+    virtual void v27();
+    virtual void v28();
+    virtual s32 GetType();
+    virtual void v30();
+    virtual void v31();
+    virtual void v32();
+    virtual void v33(f32*);
+};
+
 extern "C" s32 fn_80128668(void*);
 extern "C" void fn_801CB750(s32);
 extern "C" void fn_80131234(void*);
@@ -256,9 +294,8 @@ extern "C" void fn_8015A318(void* arg0) {
 
 extern "C" f32 fn_8015A368(void* arg0) {
     f32 sp8;
-    ((Unk801577F0*)arg0)->v22();
-    s32 v22ret = ((Unk801577F0*)arg0)->v19(0);
-    sp8 = *(f32*)((u8*)arg0 + 0x25C) * (f32)v22ret;
+    ((Unk801577F0*)arg0)->v21();
+    sp8 = *(f32*)((u8*)arg0 + 0x25C) * ((Unk801577F0*)arg0)->v18(0);
     ((Unk801577F0*)arg0)->v35(&sp8);
     ((Unk801577F0*)arg0)->v33();
     *(s32*)((u8*)arg0 + 0x264) = 0;
