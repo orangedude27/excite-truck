@@ -220,6 +220,20 @@ void fn_802C7758(void) {
     fn_802D0610(0);
 }
 
+void fn_802C7760(void *arg0, f32 *arg1, f32 *arg2, f32 *arg3, f32 *arg4, f32 *arg5, f32 *arg6) {
+    void *temp_r3 = fn_802C5390();
+    *arg1 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x2C);
+    *arg2 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x30);
+    *arg3 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x34);
+    *arg4 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x38);
+    *arg5 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x3C);
+    *arg6 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x40);
+}
+
+void fn_802C77F0(f32 *arg1) {
+    fn_802C7760(arg1, arg1 + 1, arg1 + 2, arg1 + 3, arg1 + 4, arg1 + 5, 0);
+}
+
 void fn_802C7A10(void* alarm) {
     fn_8012C58C(fn_802C53A8(alarm));
 }
