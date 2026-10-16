@@ -4,11 +4,11 @@
 #include <types.h>
 
 extern void __register_global_object(void* p, void* dtor, void* allocator);
+extern void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80101474(void*, s32);
 #pragma push
 #pragma small_data off
-extern unsigned char __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80101474;
-extern unsigned char lbl_8041D4B8;
-extern unsigned char lbl_8041D4C4;
+extern u8 lbl_8041D4B8[];
+extern u8 lbl_8041D4C4[];
 #pragma pop
 void fn_8010143C(void) {
     void* ptr = (char*)&lbl_8041D4C4 + 4;
