@@ -8,6 +8,7 @@
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/bta/include/ptim.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
+#include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 extern void AXFXReverbHiExpShutdown(void*);
 extern s32 AXFXReverbHiExpInit(void*);
@@ -294,14 +295,12 @@ void fn_80070758(void) {
 }
 
 void fn_8007079C(u16 *arg0, u16 arg1) {
-    hcisu_if *h2_if = lbl_8055DC68;
-
     *arg0 = arg1;
 
-    if (h2_if != NULL) {
-        h2_if->close(NULL);
+    if (lbl_8055DC68 != NULL) {
+        lbl_8055DC68->close(lbl_8055DC6C);
     } else {
-        GKI_freebuf(NULL);
+        GKI_freebuf(lbl_8055DC6C);
     }
 }
 
@@ -319,10 +318,8 @@ void bte_hcisu_task(void) {
 
 extern u32 fn_8009B0E0(void);
 void fn_80070820(void) {
-    hcisu_if *h2_if = lbl_8055DC68;
-
-    if (h2_if != NULL && h2_if->close != NULL) {
-        h2_if->close(NULL);
+    if (lbl_8055DC68 != NULL && lbl_8055DC68->close != NULL) {
+        lbl_8055DC68->close(lbl_8055DC6C);
     }
 }
 
@@ -391,6 +388,13 @@ void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 pa
 
 void fn_800709E4(void) {
     OSSwitchFiber(btu_task_msg_handler, (u8 *)&lbl_803BFA20 + 0x1000);
+}
+
+void fn_80070AF0(s32 arg0) {
+    lbl_8055DC74 = arg0;
+    OSCancelAlarm(&lbl_803C0A20);
+    fn_80070820();
+    GKI_shutdown();
 }
 
 void fn_8007148C(s32 arg0) {
