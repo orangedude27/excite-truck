@@ -36,3 +36,19 @@ void fn_802B1FC0(void *arg0) {
     ((int *)arg0)[2] = 0;
     ((int *)arg0)[1] = 0;
 }
+
+void fn_80128670(void *);
+void fn_802B218C(void *);
+void fn_8002F6AC(int, void (*)(void));
+void fn_802B1F68(void);
+void fn_80128668(void *);
+#pragma opt_common_subs off
+void fn_802B218C(void *arg0) {
+    void *buf = *(void **)arg0;
+    if (buf != 0) {
+        if (buf != 0) {
+            fn_80128670((char *)buf - 0x10);
+        }
+        *(void **)arg0 = 0;
+    }
+}
