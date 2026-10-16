@@ -3,6 +3,17 @@
 
 #include <types.h>
 
+extern "C" void fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, f32);
+extern "C" s32 fn_8012850C(void *, const char *);
+extern "C" void *memcpy(void *, const void *, unsigned long);
+extern "C" char *strcpy(char *, const char *);
+extern "C" void fn_80219568(void *, s32, s32, s32, s32, s32, s32, s32);
+extern "C" void fn_80219718(void *);
+extern "C" void fn_80219440(void *, s32, void *, s32);
+extern f32 lbl_805634A4;
+extern char lbl_8033D878[];
+extern char lbl_8033F768[];
+
 extern "C" void fn_80219044(void);
 
 extern f32 lbl_805634A0;
@@ -11,7 +22,10 @@ extern f32 lbl_805634B0;
 extern f32 lbl_805634B4;
 
 extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
-    s32 x = arg1 + ((s32 (*)(void *))(*(void ***)arg0)[30])(arg0);
+    void *obj = arg0;
+    void **vt = *(void ***)obj;
+    s32 size = ((s32 (*)(void *))vt[30])(obj);
+    s32 x = arg1 + size;
     s32 end = arg2 + (*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
     *(s32 *)((u8 *)arg0 + 4) = arg1;
     *(s32 *)((u8 *)arg0 + 0xC) = x;
