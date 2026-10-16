@@ -3,6 +3,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern "C" void fn_80140A6C(void);
+extern "C" s32 fn_801B8514(void);
 extern "C" u8 *fn_8017960C(s32);
 extern "C" u32 fn_8013D148(u8 *, f32);
 extern "C" void *fn_802C6C34(s32);
