@@ -145,6 +145,15 @@ extern "C" void fn_800FEC1C(s32 *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_80128668(void *);
+
+extern "C" void fn_800FDE60(void);
+extern "C" void fn_800FE1D0(void);
+
+#pragma push
+#pragma small_data off
+extern u8 lbl_8041B138[];
+#pragma pop
+extern u8 lbl_8055DE80;
 extern "C" s32 fn_800FF940(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         ((s32 (*)(void))fn_80128668)();
