@@ -230,6 +230,10 @@ void fn_801CCBA4(void) {
     *((s8 *)lbl_8055E884 + 0x10) = 1;
 }
 
+void fn_801CCBB4(void) {
+    *((signed char *)lbl_8055E884 + 0x10) = 0;
+}
+
 void fn_801CE670(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
     Struct_801CE670 local;
     local.field4 = arg1;
