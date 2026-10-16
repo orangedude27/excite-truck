@@ -120,6 +120,8 @@ extern void fn_80288868(void *);
 extern void fn_8028E1A4(void);
 void fn_80287974(void) { fn_8028E1A4(); }
 
+void fn_80287978(void) { fn_8028E1D0(); }
+
 void fn_80287AF0(void* alarm) {
     fn_8028A9F4(fn_80292864(alarm));
 }
