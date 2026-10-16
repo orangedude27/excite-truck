@@ -145,17 +145,20 @@ void fn_801A2674(void* arg0, s32 arg1, s32 arg2, f32 arg3) {
 
 extern f32 lbl_805622E0;
 void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
-    f32 scale = lbl_805622E0;
-    f32 value = *(f32*)((u8*)arg0 + 0x24);
-    void* vec = *(void**)((u8*)arg0 + 0xC);
-    f32 neg = scale * -value;
-    f32 pos = scale * value;
-    arg1[0] = *(f32*)((u8*)vec + 0x24) + neg;
-    arg1[1] = *(f32*)((u8*)vec + 0x28) + neg;
-    arg1[2] = *(f32*)((u8*)vec + 0x2C) + neg;
-    arg2[0] = *(f32*)((u8*)vec + 0x24) + pos;
-    arg2[1] = *(f32*)((u8*)vec + 0x28) + pos;
-    arg2[2] = *(f32*)((u8*)vec + 0x2C) + pos;
+    f32 sp10, spC, sp8;
+    f32 temp_f0 = *(f32*)((u8*)arg0 + 0x24);
+    void* temp_r3 = *(void**)((u8*)arg0 + 0xC);
+    f32 temp_f1 = lbl_805622E0 * temp_f0;
+    sp8 = lbl_805622E0;
+    f32 temp_f2 = lbl_805622E0 * -temp_f0;
+    spC = lbl_805622E0;
+    sp10 = lbl_805622E0;
+    arg1[0] = *(f32*)((u8*)temp_r3 + 0x24) + temp_f2;
+    arg1[1] = *(f32*)((u8*)temp_r3 + 0x28) + temp_f2;
+    arg1[2] = *(f32*)((u8*)temp_r3 + 0x2C) + temp_f2;
+    arg2[0] = *(f32*)((u8*)temp_r3 + 0x24) + temp_f1;
+    arg2[1] = *(f32*)((u8*)temp_r3 + 0x28) + temp_f1;
+    arg2[2] = *(f32*)((u8*)temp_r3 + 0x2C) + temp_f1;
 }
 
 extern "C" void* fn_801A2C9C(void* arg0) {
@@ -204,7 +207,7 @@ extern "C" void fn_801A3174(void *arg0) {
 
 extern s32 lbl_80333778;
 extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *arg5, f32 farg0, f32 farg1) {
-    s32 i = 0;
+    s32 i;
     u8 *dst = (u8*)arg0;
     u8 *src = (u8*)arg2;
     *(s32*)(dst + 0xC) = arg1;
@@ -215,17 +218,16 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
     *(f32*)(dst + 0x14) = farg1;
     *(s32*)(dst + 0x20) = 100;
     *(s32*)(dst + 0x1C) = 0;
-    *(s32*)dst = (s32)&lbl_80333778;
+    *(void**)dst = &lbl_80333778;
     *(s32*)(dst + 0xDC) = 0;
     *(s32*)(dst + 0xBC) = arg3;
-    while (i < arg3) {
+    for (i = 0; i < arg3; i++) {
         *(s32*)(dst + 0x3C) = *(s32*)src;
         *(s32*)(dst + 0x40) = *(s32*)(src + 4);
         *(s32*)(dst + 0x44) = *(s32*)(src + 8);
         *(f32*)(dst + 0x48) = *(f32*)(src + 0xC);
         src += 0x10;
         dst += 0x10;
-        i++;
     }
     *(f32*)((u8*)arg0 + 0x24) = ((f32*)arg4)[0];
     *(f32*)((u8*)arg0 + 0x28) = ((f32*)arg4)[1];
@@ -260,10 +262,12 @@ void* fn_801A3F5C(void* arg0, s32 arg1, s32 arg2) {
 }
 
 void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
+    if (arg0) {
         *(void**)arg0 = &lbl_80333728;
-        fn_801CFF14();
-        if (arg1 > 0) fn_80128668();
+        ((void (*)(s32))fn_801CFF14)(*(s32*)((u8*)arg0 + 0x24));
+        if (arg1 > 0) {
+            ((void (*)(void*))fn_80128668)(arg0);
+        }
     }
     return arg0;
 }
@@ -369,9 +373,10 @@ void fn_801A49E8(void* arg0) {
 }
 
 extern "C" void fn_801D06C4(void);
-void fn_801A49FC(void* arg0) {
-    if (*(s32*)((u8*)arg0 + 0x48) != 0) fn_801D06C4();
-}
+extern "C" void fn_8019BD54(void*, void*, s32, s32);
+extern "C" void fn_8019D06C(void*, void*, s32, s32);
+extern "C" void fn_8019EA7C(void*, void*);
+void fn_801A49FC(void* arg0) { if (*(s32*)((u8*)arg0 + 0x48) != 0) fn_801D06C4(); }
 
 void fn_801A4E54(void) {
     if (lbl_8055E5A0 != 0) {
