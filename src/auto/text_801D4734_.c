@@ -177,7 +177,7 @@ s32 fn_801D5014(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma scheduling reset
 s32 fn_801D50A0(void) { return 0; }
 
-  extern void fn_801D5328();
+  void fn_801D5328(s32, s32);
   void fn_801D50B0(s32 arg0) {
     fn_801D5328(arg0, 0);
 }
