@@ -57,6 +57,19 @@ int fn_8022DA34(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_8022DB50(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    *(int *)arg0 = arg1;
+    *(int *)((char *)arg0 + 4) = arg2;
+    *(int *)((char *)arg0 + 0x10) = arg3;
+    *(int *)((char *)arg0 + 8) = arg3;
+    while (*(int *)((char *)arg0 + 8) < 5) {
+        *(int *)((char *)arg0 + 8) += *(int *)((char *)arg0 + 0x10);
+    }
+    *(int *)((char *)arg0 + 0x14) = arg4;
+    *(int *)((char *)arg0 + 0xC) = 0;
+    *(char *)((char *)arg0 + 0x18) = 0;
+}
+
 int fn_8022DB94(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
