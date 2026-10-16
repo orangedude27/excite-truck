@@ -19,6 +19,14 @@ void *fn_8022DCC4(void *arg0, char **arg1, int arg2, int arg3) {
     return arg0;
 }
 
+void *fn_8022DD38(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(int *)((char *)arg0 + 0x40) = 0;
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
+}
+
 int fn_8022DD80(void *arg0) { return *(int *)((char *)arg0 + 0x40); }
 
 int fn_8022DD88(void *arg0) { return *(int *)((char *)arg0 + 0x44); }
