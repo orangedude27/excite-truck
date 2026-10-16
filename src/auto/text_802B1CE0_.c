@@ -115,7 +115,8 @@ void fn_802B2504(int *dst, int count) {
 }
 
 void fn_802B2D94(int *arg0) {
-    int i = 0;
+    int i;
+    i = 0;
     lbl_8055F9B4 = 0;
     lbl_8055F9B0 = 0;
     do {
@@ -138,12 +139,46 @@ int *fn_802B320C(int *, int);
 extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
 int fn_802B3340(int);
-void fn_802B32E0(int *arg0) {
-    int *ptr = arg0;
-    int i = 0;
+void fn_802B32E0(int **arg0) {
+    int i;
+    i = 0;
     do {
-        fn_802B3340(*fn_802B320C(ptr, i));
+        fn_802B3340(*fn_802B320C(*arg0, i));
         i++;
-    } while (i < fn_802B2E00(ptr));
+    } while (i < fn_802B2E00(arg0));
 }
+typedef struct {
+    void *m0;
+    void *m4;
+    void *m8;
+    void *mC;
+    void *m10;
+    void *m14;
+    void *m18;
+    void *m1C;
+    void *m20;
+    void *m24;
+    void *m28;
+    void *m2C;
+    void *m30;
+    void *m34;
+    void *m38;
+    void *m3C;
+    void *m40;
+    void *m44;
+    void *m48;
+    void *m4C;
+    void *m50;
+    void *m54;
+    void (*m58)(void);
+    void (*m5C)(void);
+} Unk802B2C44;
 
+typedef struct {
+    void *m0;
+    int m4;
+} Unk802B2C98;
+extern Unk802B2C98 lbl_804BE1FC;
+
+extern int lbl_8055F9B8;
+extern void *lbl_8055F9BC;
