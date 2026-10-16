@@ -17,6 +17,10 @@ void fn_80204008(void) {
 
 }
 
+int fn_8020400C(void) {
+    return 0;
+}
+
 void fn_80204014(void) {
 
 }
