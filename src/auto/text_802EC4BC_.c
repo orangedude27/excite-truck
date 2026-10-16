@@ -59,3 +59,5 @@ void fn_802ECC74(void) {
     lbl_805600ED = 0;
 }
 
+#pragma dont_inline off
+
