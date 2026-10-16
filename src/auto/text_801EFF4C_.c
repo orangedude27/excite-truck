@@ -171,4 +171,11 @@ void fn_801F1AB0(void *arg0) {
         fn_801F1394(value, (int)((char *)arg0 + 4));
     }
 }
+
+void fn_801F1AD0(void *arg0) {
+    if (*(int *)((char *)arg0 + 0x80) != 0) {
+        fn_801F1494(*(int *)((char *)arg0 + 0x80), (char *)arg0 + 4, fn_801EAC3C());
+    }
+}
+
 #pragma dont_inline off
