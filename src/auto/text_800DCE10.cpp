@@ -49,30 +49,30 @@ extern "C" void fn_800DCE68(void *arg0, const void *arg1) {
     *(u32 *)arg0 = result;
 }
 
-void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *src, u32 index);
-void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *src, u32 index);
-void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color);
-void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color);
+extern "C" void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 index);
+extern "C" void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u32 index);
+extern "C" void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color);
+extern "C" void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color);
 
-void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *src, u32 index) {
+extern "C" void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 index) {
     if (index >= 4) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1d3, lbl_80320688);
     }
-    GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(out, src, index >> 1);
+    GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(this_ptr, arg1, index >> 1);
 }
 
-void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *src, u32 index) {
+extern "C" void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u32 index) {
     if (index >= 2) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320B8C, 0x5f, lbl_80320B5C);
     }
     const u8 *base = (const u8 *)src + (index * 4);
-    out[0] = base[0xD8];
-    out[1] = base[0xD9];
-    out[2] = base[0xDA];
-    out[3] = base[0xDB];
+    ((u8 *)this_ptr)[0] = base[0xD8];
+    ((u8 *)this_ptr)[1] = base[0xD9];
+    ((u8 *)this_ptr)[2] = base[0xDA];
+    ((u8 *)this_ptr)[3] = base[0xDB];
 }
 
-void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
+extern "C" void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
     if (index >= 4) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1de, lbl_80320688);
     }
@@ -85,7 +85,7 @@ void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32
     SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(this_ptr, index >> 1, colorBytes);
 }
 
-void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
+extern "C" void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
     if (index >= 2) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320BC8, 0x60, lbl_80320B98);
     }
