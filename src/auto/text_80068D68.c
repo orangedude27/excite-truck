@@ -44,8 +44,8 @@ extern int vsprintf(char *s, const char *format, va_list arg);
 extern int sprintf(char *s, const char *format, ...);
 extern void OSReport(const char *msg, ...);
 
-
-
+extern const char lbl_80313BB0[];
+extern const char lbl_80313BCC[];
 typedef struct hcisu_if {
     void (*init)(u32, u32, u32);
     void (*open)(void *);
