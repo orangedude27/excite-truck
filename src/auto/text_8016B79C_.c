@@ -23,6 +23,8 @@ void *fn_8016C29C(void *arg0, int arg1) {
     return arg0;
 }
 
+int fn_8016C760(void *arg0) { return ((int *)arg0)[1]; }
+
 void fn_8016CEFC(void *arg0) {
     ((s32 *)arg0)[1] = 0;
 }
