@@ -67,6 +67,25 @@ extern "C" void fn_80146638(void *arg0) {
     }
 }
 
+extern "C" void fn_801466B4(void *arg0) {
+    void *p = *(void **)arg0;
+    if (p != NULL) {
+        if (p != NULL) {
+            s32 x = ((s32 *)p)[3];
+            if (x != 0) {
+                fn_80128670(x - 0x10);
+            }
+            if (p != NULL) {
+                ((s32 *)p)[0] = 0;
+                ((s32 *)p)[1] = 0;
+                ((s32 *)p)[2] = 0;
+            }
+            fn_80128668(p);
+        }
+        *(void **)arg0 = NULL;
+    }
+}
+
 extern "C" void fn_80148218(void) {
 }
 
