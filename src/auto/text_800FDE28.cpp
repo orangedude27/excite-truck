@@ -68,6 +68,18 @@ extern "C" void fn_800FDE28(void *arg0) {
     }
 }
 
+extern "C" void *__dt__Q46nw4hbm3snd6detail11TaskManagerFv(void *this_, s32 flag) {
+    if (this_) {
+        fn_8002F634((u8 *)this_ + 0x20,
+                    (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0,
+                    0xC, 3);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0(
     void *this_, s32 flag) {
     if (this_) {
