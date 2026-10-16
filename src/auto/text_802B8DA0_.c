@@ -37,6 +37,9 @@ int fn_802B9920(int arg0) {
     return (short)lbl_802FAB60[idx];
 }
 
+void fn_802B9960(void) {
+}
+
 extern double ceil(double);
 float fn_802B9A80(float arg0) {
     return ceil(arg0);
