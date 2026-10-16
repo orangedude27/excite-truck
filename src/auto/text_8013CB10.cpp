@@ -82,6 +82,11 @@ extern "C" void *fn_80141EB0(s32 *arg0) {
     return result;
 }
 
+extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
+    void *obj = fn_802C6C34(*(s32 *)(arg1 + 0x59C));
+    *(f32 *)((u8 *)arg0 + 0x128) = *(f32 *)((u8 *)obj + 0x30) - *(f32 *)((u8 *)obj + 0x2C);
+}
+
 extern "C" u8 *fn_8017960C(s32);
 extern "C" u32 fn_8013D148(u8 *, f32);
 extern "C" void *fn_802C6C34(s32);
@@ -95,8 +100,7 @@ extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
     u32 result = fn_8013D148(item, *(f32 *)(obj + 0x48));
     s32 value = *(s32 *)item;
     u8 *end = *(u8 **)(data + value + 4) + value * 0x24;
-    if (result != (u32)(end - 0x24))
-        end = (u8 *)result + 0x24;
+    if (result != (u32)(end - 0x24)) end = (u8 *)result + 0x24;
     return end;
 }
 
