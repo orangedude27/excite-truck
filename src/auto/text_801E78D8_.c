@@ -5,6 +5,11 @@ void fn_801E7DEC(void) {
     fn_801E7C28();
 }
 
+extern void *lbl_8055EB04;
+void* fn_801E7E34(void) {
+    return lbl_8055EB04;
+}
+
 void fn_801E8144(void) {
 
 }
