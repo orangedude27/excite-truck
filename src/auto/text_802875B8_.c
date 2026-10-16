@@ -57,6 +57,69 @@ void fn_802877D0(void) {
     fn_802AE394();
 }
 
+extern s32 fn_801E7DF0(s32);
+extern void fn_8028777C(void);
+extern void fn_80288218(s32);
+extern void fn_802880F4(void);
+extern void fn_802A81F0(void);
+extern void fn_802888D8(void);
+extern void fn_802A1590(void);
+extern void fn_8028A664(void);
+extern void fn_8028CED8(void);
+extern void fn_80294970(void);
+extern void fn_80297ED8(void);
+extern void fn_8029C1C4(void);
+extern void fn_8029EF70(void);
+extern void fn_802924F4(void);
+extern void fn_802A09B0(void);
+extern void fn_802A1290(void);
+extern void fn_802A4ADC(void);
+extern void fn_80292114(void);
+extern void fn_802A7BE8(void);
+extern void fn_8029F03C(void);
+extern void fn_802AB21C(void);
+extern void fn_8028DFB0(void);
+extern void fn_80288868(void *);
+extern signed char lbl_8055F6BC;
+extern void fn_802AB504(void);
+extern void fn_8029F0D0(void);
+extern void fn_802A7C24(void);
+extern void fn_802921F4(void);
+extern void fn_802A4B90(void);
+extern void fn_802A14F8(void);
+extern void fn_802A0AFC(void);
+extern void fn_80292618(void);
+extern void fn_8029EFBC(void);
+extern void fn_8029C22C(void);
+extern void fn_80296064(void);
+extern void fn_80297FA4(void);
+extern void fn_80294C68(void);
+extern void fn_8028CF18(void);
+extern void fn_8028A784(void);
+extern void fn_802A1660(void);
+extern void fn_80288988(void);
+extern void fn_802A85C8(void);
+extern void fn_802881D4(void);
+extern void fn_802882A0(void);
+extern void fn_802A86A4(void);
+extern void fn_8028E138(void);
+extern void fn_802980A0(void);
+extern void fn_8028A89C(void);
+extern void fn_8028CF50(void);
+extern void fn_8029222C(void);
+extern void fn_80294CC0(void);
+extern void fn_80296060(void);
+extern void fn_8029F124(void);
+extern void fn_80292628(void);
+extern void fn_802A172C(void);
+extern void fn_802A4C20(void);
+extern void fn_802A7C64(void);
+extern void fn_802AB5B8(void);
+extern void fn_802A9574(void);
+extern void fn_80288868(void *);
+extern void fn_8028E1A4(void);
+void fn_80287974(void) { fn_8028E1A4(); }
+
 void fn_80287AF0(void* alarm) {
     fn_8028A9F4(fn_80292864(alarm));
 }
