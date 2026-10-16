@@ -149,19 +149,21 @@ void fn_802B11BC(void *arg0) {
     ((char *)arg0)[1] = found;
 }
 
-int fn_802B127C(void *arg0, void *arg1) {
+int fn_802B127C(void *arg0, Vec3_802B *src) {
     int *self = (int *)arg0;
-    int i;
     if (self == 0) {
         return 0;
     }
     if (self[0x31c / 4] + 1 <= self[0x320 / 4]) {
-        int *base = (int *)self[0x318 / 4];
-        i = self[0x31c / 4];
+        int i = self[0x31c / 4];
+        float z = src->z;
+        float y = src->y;
+        float x = src->x;
+        float *dst = (float *)((char *)self[0x318 / 4] + i * 0xc);
         self[0x31c / 4] = i + 1;
-        ((float *)base)[i * 3] = ((float *)arg1)[0];
-        ((float *)base)[i * 3 + 1] = ((float *)arg1)[1];
-        ((float *)base)[i * 3 + 2] = ((float *)arg1)[2];
+        dst[0] = x;
+        dst[1] = y;
+        dst[2] = z;
     }
     return (unsigned short)(self[0x31c / 4] - 1);
 }
@@ -170,8 +172,11 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
     int *self = (int *)arg0;
     int *obj;
     int sp8;
-    int flag = 0;
-    if (self == 0) return;
+    int flag;
+    if (self == 0) {
+        return;
+    }
+    flag = 0;
     sp8 = ((int *)arg2)[0];
     obj = *(int **)((char *)self[0xa38 / 4]);
     obj[1] = obj[1] - (0x18 - *(unsigned short *)((char *)arg2 + 4));
@@ -182,13 +187,14 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
         }
     }
     if (flag != 0) {
-        int *dst;
-        int i;
-        i = self[0x328 / 4];
-        dst = (int *)((char *)self[0x324 / 4] + i * 8);
-        self[0x328 / 4] = i + 1;
-        ((float *)dst)[1] = lbl_80564BD0 - farg0;
-        dst[0] = sp8;
+        if (self[0x328 / 4] + 1 <= self[0x32c / 4]) {
+            int i = self[0x328 / 4];
+            float f = lbl_80564BD0 - farg0;
+            int *dst = (int *)((char *)self[0x324 / 4] + i * 8);
+            self[0x328 / 4] = i + 1;
+            ((float *)dst)[1] = f;
+            dst[0] = sp8;
+        }
     }
     fn_802BAFF8(arg1, &sp8);
 }
@@ -196,6 +202,8 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
 int fn_802B1AF0(void *arg0) {
     return ((int *)arg0)[1];
 }
+
+int fn_802B1B08(void *arg0) { return ((int *)arg0)[1]; }
 
 int fn_802B1C14(void *arg0) {
     return ((int *)arg0)[4];
