@@ -156,6 +156,8 @@ extern "C" u32 fn_800ECFC0(void) { return 1; }
 
 extern "C" u32 fn_800ECFC8(void) { return 1; }
 
+extern "C" u32 fn_800ECFD0(void) { return 1; }
+
 extern "C" u32* fn_800ECFD8(void) {
     return &lbl_8055DEA0;
 }
