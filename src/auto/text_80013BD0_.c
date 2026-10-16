@@ -116,4 +116,10 @@ extern u8 lbl_802FCE88[];
 void *__AXFXGetLfoSinTable(void) {
     return lbl_802FCE88;
 }
-
+extern f32 fn_8002EFB4(void *, f32, f64);
+extern void fn_80011E04(s32);
+extern void fn_80010FDC(void *, s32);
+extern f64 lbl_80560400;
+extern f32 lbl_805603BC;
+extern u8 lbl_8055E520;
+extern u8 lbl_802FCE04[], lbl_802FCE88[];
