@@ -149,3 +149,7 @@ extern int fn_80128668(void *);
 extern int lbl_80344DE0[];
 extern void *lbl_8055F394;
 extern int lbl_80345158;
+extern float lbl_80563AE4;
+extern float lbl_8055F3A4;
+extern signed char lbl_8055F3A0;
+extern int fn_80236914(void);
