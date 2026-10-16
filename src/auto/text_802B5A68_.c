@@ -131,7 +131,7 @@ extern s32 lbl_8055CE78;
 extern s32 lbl_8055CE80;
 extern s32 lbl_8034A808;
 extern s32 lbl_8034A814;
-s16 fn_802B6E30(void);
+s32 fn_802B6E30(void);
 s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
     return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * fn_802B6E30()));
 }
