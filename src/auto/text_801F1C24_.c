@@ -133,6 +133,11 @@ int fn_801F2394(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801F23D4(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
     unsigned int d, c, b, a;
     float f, e;
