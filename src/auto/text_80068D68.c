@@ -243,6 +243,8 @@ void gki_timers_init(void) {
     *(u32 *)(base - 0x7724) = 0;
 }
 
+
+
 void fn_8006EACC(void) {
 
 }
@@ -259,6 +261,18 @@ void fn_8006EAD8(void) {
 
 }
 
+UINT8 GKI_send_event(UINT8 task_id, UINT16 event) {
+    if (task_id >= GKI_MAX_TASKS) {
+        return GKI_FAILURE;
+    }
+
+    GKI_disable();
+    gki_cb.com.OSWaitEvt[task_id] |= event;
+    GKI_enable();
+
+    return GKI_SUCCESS;
+}
+
 u8 fn_8006EB80(void) {
     return 2;
 }
@@ -267,6 +281,10 @@ u8 fn_8006EB80(void) {
 void fn_8006EB88(void) {
     gki_cb.os.int_index--;
     OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
+}
+
+void fn_8006EBAC(void) {
+    GKI_disable();
 }
 
 void fn_8006EBF0(void) {
@@ -284,6 +302,12 @@ s32 fn_8006EBF4(void) {
 
 void fn_8006EC20(void) {
     fn_80068E08();
+}
+
+void fn_8006EC24(s32 arg0, s32 arg1) {
+    if (arg0 == 4) {
+        fn_80070B24(arg1);
+    }
 }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
