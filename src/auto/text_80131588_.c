@@ -129,6 +129,9 @@ s32 fn_801321BC(void* arg0) {
     void** vtable = *(void***)(*(void**)arg0);
     return ((s32(*)(int(*)(const char*)))vtable[5])(atoi);
 }
+
+s32 fn_80132C48(void) { return 0; }
+
 extern void fn_802E317C(const char*, ...);
 extern const char lbl_8032B73C[];
 typedef struct { void** vtable; } Unk80132BD0;
