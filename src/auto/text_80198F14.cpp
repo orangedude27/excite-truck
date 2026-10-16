@@ -169,7 +169,7 @@ extern "C" void fn_8019FF88(void) {
     fn_8019EBC0();
 }
 
-void fn_8019FF8C(void* arg0) {
+extern "C" void fn_8019FF8C(void* arg0) {
     fn_8019F03C();
     *(f32*)((u8*)arg0 + 0x28) = *(f32*)((u8*)arg0 + 0x54);
     *(f32*)((u8*)arg0 + 0x2C) = *(f32*)((u8*)arg0 + 0x58);
@@ -177,7 +177,7 @@ void fn_8019FF8C(void* arg0) {
     *(u8*)((u8*)arg0 + 0x78) = 0;
 }
 
-void fn_8019FFD8(void* arg0, s32 arg1, s32 arg2) {
+extern "C" void fn_8019FFD8(void* arg0, s32 arg1, s32 arg2) {
     *(s32*)((u8*)arg0 + 0xC) = arg1;
     *(s32*)((u8*)arg0 + 4) = arg2;
     *(s32*)((u8*)arg0 + 8) = 0;
@@ -226,7 +226,7 @@ extern "C" void fn_801A0160(void* arg0) {
     }
 }
 
-void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
+extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     f32 temp_f8 = *(f32*)((u8*)arg0 + 0x178);
     void* temp_r3 = *(void**)((u8*)arg0 + 0xC);
     f32 temp_f7 = *(f32*)((u8*)temp_r3 + 0x24);
