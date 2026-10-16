@@ -55,7 +55,31 @@ extern "C" s32 fn_8012DCC0(s32 arg0, s32 arg1) {
 
 extern "C" void fn_80127E28(void *);
 extern "C" u8 lbl_8032ACB0[];
-extern "C" void **lbl_8055E014;
+namespace nw4r { namespace ef {
+class Effect {
+public:
+    virtual ~Effect();
+};
+} }
+extern "C" nw4r::ef::Effect *lbl_8055E014;
+
+struct Unk8012DFCCNode {
+    void *unk_0x0;
+    Unk8012DFCCNode *next;
+};
+struct Unk8012DFCCList {
+    Unk8012DFCCNode *head;
+    Unk8012DFCCNode **tail;
+};
+
+static inline void CopyName8012DFE8(char *dst, const char *src, int count) {
+    while ((*dst++ = *src++) != 0) {
+        if (--count <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+    }
+}
 extern "C" s32 fn_8012CAA0(s32);
 extern "C" void fn_8012DD00(void) {
     if (lbl_8055E014) {
@@ -76,15 +100,19 @@ extern "C" void *__dt__Q34nw4r2ef6EffectFv(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_8012DFCC(void *arg0, void *arg1) {
+    void **next = (void **)((u8 *)arg1 + 4);
     **(void ***)((u8 *)arg0 + 4) = arg1;
-    *(void ***)((u8 *)arg0 + 4) = (void **)((u8 *)arg1 + 4);
-    *(s32 *)((u8 *)arg1 + 4) = 0;
+    *(void ***)((u8 *)arg0 + 4) = next;
+    *next = 0;
 }
 
 extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
-    char *dst = (char *)arg0 + 0xc;
-    int count = 0x40;
-    while ((*dst++ = *arg1++) != 0) {
+    const char *src = arg1;
+    int count;
+    char *dst;
+    dst = (char *)arg0 + 0xc;
+    count = 0x40;
+    while ((*dst++ = *src++) != 0) {
         if (--count <= 0) {
             dst[-1] = 0;
             break;
