@@ -138,15 +138,47 @@ void TRKAppendBuffer_ui32(void) {
 }
 
 void TRKReadBuffer(void *arg0) {
-    void **head = (void **)lbl_8035BEA0;
-    *(void **)arg0 = *head;
-    *head = arg0;
+    u32 old = lbl_8035BEA0[0];
+    *(u32 *)arg0 = old;
+    lbl_8035BEA0[0] = (u32)arg0;
     *(u32 *)((u8 *)arg0 + 0xC) = 0;
 }
 
 void TRKAppendBuffer(void *arg0) {
     *(u32 *)((u8 *)arg0 + 8) = lbl_8055D6E8;
     lbl_8055D6E8 = (u32)arg0;
+}
+
+void TRKReleaseBuffer(void *arg0) {
+    s32 index = *(s32 *)((u8 *)arg0 + 0xC) * 4;
+    u32 *head = (u32 *)lbl_8035BEA0;
+    u32 *tail = lbl_8035BF20;
+    u32 first = head[index];
+    u32 last = tail[index];
+
+    if (first == last) {
+        tail[index] = 0;
+        head[index] = 0;
+        return;
+    }
+    if ((u32)arg0 == first) {
+        void *next = *(void **)arg0;
+        head[index] = (u32)next;
+        *(u32 *)((u8 *)next + 4) = 0;
+        return;
+    }
+    if ((u32)arg0 == last) {
+        void *prev = *(void **)((u8 *)arg0 + 4);
+        tail[index] = (u32)prev;
+        *(u32 *)prev = 0;
+        return;
+    }
+    {
+        void *prev = *(void **)((u8 *)arg0 + 4);
+        void *next = *(void **)arg0;
+        *(void **)prev = next;
+        *(void **)((u8 *)next + 4) = prev;
+    }
 }
 
 void usr_puts_serial(void) {
