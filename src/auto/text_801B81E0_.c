@@ -154,3 +154,5 @@ int fn_801B8B08(void) {
 
 int fn_801B8B38(void) { return 1; }
 
+int fn_801B8B40(void) { return 1; }
+
