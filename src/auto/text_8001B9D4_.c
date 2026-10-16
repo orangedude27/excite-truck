@@ -7,6 +7,10 @@ typedef struct Unk8001BBBC {
 } Unk8001BBBC;
 
 extern s8 lbl_8055D5C8;
+extern void *lbl_80358658[];
+extern s32 lbl_802ED7B8[];
+extern const char lbl_802FD85C[];
+extern s32 fn_802E317C(const char *);
 extern void fn_8001C9C4(void);
 extern void fn_8001CAF8(void);
 extern s32 fn_8001D25C(s32);
@@ -56,6 +60,12 @@ s32 fn_8001BA90(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         return fn_8001CDB8(arg0, arg1, temp, arg3, arg4);
     }
     return arg4;
+}
+
+void fn_8001BB58(s32 arg0, s32 arg1, volatile s32 arg2, volatile s32 arg3) {
+    s32 a = arg2;
+    s32 b = arg3;
+    fn_8001CE74(arg0, fn_8001D25C(arg1), a, b);
 }
 #pragma scheduling reset
 void fn_8001BBB4(void) {
@@ -112,11 +122,23 @@ s32 fn_8001BD6C(void *arg0, void *arg1) {
     return result >> 31;
 }
 
+void fn_8001BE70(void *arg0) {
+    s32 index = *(s32 *)((u8 *)arg0 + 0xC);
+    s32 base = *(s32 *)((u8 *)arg0 + 0x18);
+    *(s32 *)((u8 *)arg0 + 0x1C) = *(s32 *)(base + index * 0xC + 8);
+    *(u8 *)((u8 *)arg0 + 0x20) = 0;
+}
+
 void *fn_8001BE94(void *dest, int val, size_t count) {
     fn_8001BC38(dest, val, count);
     return dest;
 }
 
+s32 fn_8001BC18(s32 arg0);
+#pragma dont_inline reset
+f32 fn_8001BEC4(s32 arg0) {
+    return *(f32 *)fn_8001BC18(arg0);
+}
 void fn_8001BF0C(f32 arg0) {
     f32 temp = arg0;
     fn_8001BC28(*(s32 *)&temp);
@@ -154,6 +176,24 @@ void fn_8001C4D8(void) {
 
 void fn_8001C4DC(void) {
     fn_8001C4D8();
+}
+
+extern void *lbl_80358658[];
+extern s32 lbl_802ED7B8[];
+extern const char lbl_802FD85C[];
+extern s32 fn_802E317C(const char *);
+s32 *fn_8001C4E0(s32 arg0) {
+    s32 *entry = lbl_802ED7B8;
+    for (;;) {
+        if (*entry == 0) {
+            fn_802E317C(lbl_802FD85C);
+            return 0;
+        }
+        if (*entry == arg0) {
+            return entry;
+        }
+        entry += 3;
+    }
 }
 
 void fn_8001D7A4(void) {
