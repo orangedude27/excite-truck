@@ -10,3 +10,16 @@ extern void fn_802CAC54(void);
 extern s32 lbl_8034AFF8;
 extern s32 lbl_8055FB6C;
 extern s32 lbl_8055FB70;
+
+void *fn_802C2698(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(s32 *)arg0 = 0;
+            *((s32 *)arg0 + 1) = 0;
+            *((s32 *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
