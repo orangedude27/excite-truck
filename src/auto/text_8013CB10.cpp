@@ -31,6 +31,10 @@ extern "C" f32 fn_80141C9C(f32 arg0) {
     return floor(arg0);
 }
 
+extern "C" s32 fn_80141E90(f32 *arg0, f32 arg1) {
+    return arg1 - *arg0 >= lbl_805614AC;
+}
+
 extern "C" void fn_8013D288(void);
 
 extern "C" void fn_80143214(void) {
