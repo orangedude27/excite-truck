@@ -3,6 +3,11 @@
 
 extern char lbl_8055FFB5;
 extern void *lbl_8055FF8C;
+extern float lbl_804FC680[];
+void fn_802E6248(int arg0, float arg1) {
+    lbl_804FC680[arg0] = arg1;
+}
+
 void fn_802E625C(void* hi) {
     lbl_8055FF8C = hi;
 }
