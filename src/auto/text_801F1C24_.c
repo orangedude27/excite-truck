@@ -243,6 +243,16 @@ void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *arg0, int arg1) {
     }
     return arg0;
 }
+
+void fn_801F34C4(void *arg0, int arg1) {
+    extern int *fn_801F1CE8(int);
+    int *p = fn_801F1CE8(arg1);
+    *(int *)((char *)arg0 + 0x10) = p[0];
+    *(float *)((char *)arg0 + 4) = ((float *)p)[1];
+    *(float *)((char *)arg0 + 8) = ((float *)p)[2];
+    *(float *)((char *)arg0 + 0xC) = ((float *)p)[3];
+}
+
 #pragma pop
 void fn_801F371C(int arg0) {
     fn_8029231C(arg0 + 4);
@@ -456,6 +466,12 @@ void fn_801F4374(void) {
 
 void fn_801F447C(void) {
 
+}
+
+void fn_801F4480(void *a) {
+ void *p=a; do {int v=*(int *)((char *)p+4);
+ if(fn_801F1CF0((char *)p+0x2C))fn_802C7040(v);
+ p=*(void **)((char *)p+12);}while(p!=0);
 }
 
 void fn_801F4550(void) {
