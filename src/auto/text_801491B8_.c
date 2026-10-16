@@ -148,24 +148,23 @@ s32 fn_80154618(void *arg0) {
     s32 i = 0;
     while (i < fn_801B2F24()) {
         if ((*(s32 *)((u8 *)*it + 0x1F0) == 0x50) &&
-            ((*(s32 (**)(void *, s32))(*(u32 *)arg0 + 0x20))(arg0, i) != 0)) {
+            (((VTable80154618 *)(*(s32 **)arg0))->fn(arg0, i) != 0)) {
             found = 1;
         }
         it++;
         i++;
     }
-    if (found == 0) {
-        if (fn_801B8514() != 0) {
-            return 1;
-        }
+    if (found == 0 && fn_801B8514() != 0) {
+        return 1;
     }
     return 0;
 }
 
 void fn_801546D4(s32 arg0) {
-    if (fn_80161C94() != 0) {
-    } else {
-        fn_801B8A84(arg0);
+    switch (fn_80161C94()) {
+        case 0:
+            fn_801B8A84(arg0);
+            break;
     }
 }
 
