@@ -135,7 +135,7 @@ void fn_802BA560(void *arg0) {
     *(int *)((char *)arg0 + 4) = 0;
     *(int *)((char *)arg0 + 0) = 0;
     *(int *)((char *)arg0 + 8) = 3;
-    *(char *)((char *)arg0 + 0xC) = 1;
+    *(volatile unsigned char *)((char *)arg0 + 0xC) = 1;
 }
 
 void fn_802BAA50(void *arg0) {
@@ -143,6 +143,15 @@ void fn_802BAA50(void *arg0) {
     float b = *((float *)arg0 + 1);
     *(float *)arg0 = b;
     *((float *)arg0 + 1) = -a;
+}
+
+int fn_80128668(void *);
+int fn_80128670(int);
+double cos(double);
+double sin(double);
+extern float lbl_80564CF0;
+float fn_802BAD90(float farg0) {
+    return lbl_80564CF0 * farg0;
 }
 
 typedef signed char s8;
