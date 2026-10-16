@@ -9,11 +9,20 @@ void fn_80191084();
 void fn_801B6650();
 int fn_80191100(void *);
 extern int lbl_8055E3C4;
+extern int lbl_8055E524;
+extern unsigned char lbl_8055E521;
 extern void *__AXGetStudio_80178C90(void);
 extern int fn_801B2F54(int);
 extern float fn_8018AE3C(void *);
 extern float fn_8018AE4C(void *);
 void fn_802793B0();
+extern int lbl_8055E524;
+int fn_8018FD38(void) {
+    int result = 0;
+    if (lbl_8055E3C4 + 1 < lbl_8055E524 && fn_801B89E0() == 0) result = 1;
+    return result;
+}
+
 int fn_8018FF84(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
