@@ -89,6 +89,10 @@ s32 fn_8013521C(void *arg0) {
     return ((s32)(-(s32)temp_r3 | temp_r3) >> 0x1F) & 0x100;
 }
 
+s32 fn_80135234(void) {
+    return 0;
+}
+
 void fn_80135254(void) {
 
 }
