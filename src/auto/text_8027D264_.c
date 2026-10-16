@@ -51,6 +51,10 @@ unsigned char fn_8027D92C(void *arg0) { return ((unsigned char *)arg0)[0x1F1]; }
 
 unsigned char fn_8027D934(void *arg0) { return ((unsigned char *)arg0)[0x1F2]; }
 
+unsigned char fn_8027D93C(void *arg0) {
+    return ((unsigned char *)arg0)[0x1F3];
+}
+
 int fn_8027D944(int arg0) {
     return arg0 + 0x18C;
 }
