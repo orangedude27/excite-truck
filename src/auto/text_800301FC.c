@@ -76,6 +76,20 @@ void __AXDSPInitCallback_80031F90(void) {
     lbl_8055D770 = 1;
 }
 
+void fn_80031F9C(void) {
+    if (lbl_8055D780 == 2U) {
+        lbl_8055D780 = 0;
+        CircleBufferInitialize((u32)(OSGetTime() - lbl_8055D778) >> 2);
+    } else {
+        lbl_8055D780 = 1;
+    }
+}
+
+void __AXDSPDoneCallback(void) {
+    lbl_8055D76C = 1;
+    OSWakeupThread(&lbl_8055D760);
+}
+
 void fn_80032000(void) {
 
 }
