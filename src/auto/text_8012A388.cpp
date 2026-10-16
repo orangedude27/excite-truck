@@ -78,6 +78,8 @@ extern "C" void fn_8012B328(void) {
 
 }
 
+extern "C" u32 fn_8012BB18(void) { return 1; }
+
 extern "C" void fn_8012DDA8(s32);
 extern "C" void fn_8012E81C(s32);
 extern "C" void fn_8012BEF0(s32 arg0) {
@@ -90,6 +92,51 @@ extern "C" void fn_8012BF24(void *arg0) {
     fn_8012E498(arg0);
 }
 
+#pragma use_lmw_stmw off
+extern "C" s32 fn_8012C370(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    s32 result;
+    s32 i = 0;
+
+    do {
+        lbl_8055DFF9 = 0;
+        result = fn_8012B85C(arg0, arg1, arg2, arg3, arg4, arg5);
+        if (lbl_8055DFF9 != 0 && result == 0) {
+            fn_802E30C8(lbl_8032AB78, arg0);
+            fn_80127464();
+            i++;
+        }
+    } while (i < 10);
+    return result;
+}
+#pragma use_lmw_stmw off
+extern "C" void fn_8012C41C(s32 (*arg0)(void *, void *, void *, s32), s32 arg1, const char *arg2) {
+    s32 off;
+    void *node;
+    s32 i;
+    void *arg2b;
+    s32 arg1b;
+
+    for (node = lbl_8055E000; node != NULL;
+         node = *(void **)((u8 *)node + 0xA8)) {
+        if (arg2 == 0 || stricmp((const char *)node, arg2) == 0) {
+            arg2b = node;
+            arg1b = arg1;
+            i = 0;
+            off = 0;
+            while (i < *(s32 *)((u8 *)node + 0x88)) {
+                u8 *entry = *(u8 **)((u8 *)node + 0x60) + off;
+                if (*(u32 *)(entry + 0x34) & 8) {
+                    if (arg0(entry, *(void **)(entry + 0x20), arg2b, arg1b) == 0) {
+                        return;
+                    }
+                }
+                off += 0x44;
+                i++;
+            }
+        }
+    }
+}
+#pragma use_lmw_stmw reset
 extern "C" void fn_8012C4D8(void *arg0) {
     fn_8012BC50(arg0, 0, 0);
 }
@@ -201,14 +248,17 @@ extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
     return fn_8012BC50(arg0, arg1, arg2);
 }
 
+#pragma scheduling off
 extern "C" void fn_8012C4E8(void) {
     void *node;
+    s32 p;
 
     fn_8012DD00();
     fn_8012A67C();
-    if (lbl_8055DFFC != 0) {
+    p = lbl_8055DFFC;
+    if (p != 0) {
         fn_8012BF24((void *)lbl_8032AEA8);
-        fn_80128668((void *)lbl_8055DFFC);
+        fn_80128668((void *)p);
     }
     node = lbl_8055E000;
     lbl_8055DFFC = 0;
@@ -219,7 +269,7 @@ extern "C" void fn_8012C4E8(void) {
     }
     fn_802E317C(lbl_8032ABC8);
 }
-
+#pragma scheduling reset
 extern "C" void *fn_8012C58C(void *arg0) {
     void *var_r5 = (void *)&lbl_8032ABEC;
 
