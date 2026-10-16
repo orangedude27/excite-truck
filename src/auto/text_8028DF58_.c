@@ -22,6 +22,19 @@ void fn_8028DFB0(void) {
     lbl_8055F744 = 0;
 }
 
+extern unsigned char lbl_8055F73D;
+extern float lbl_80564420;
+extern int lbl_8055F748;
+void fn_8028DF58(void);
+void fn_8028ED74(void *);
+void fn_8028EE1C(void *);
+void fn_8028F8C4(int);
+float fn_801E7E18(void);
+void fn_8028DFFC(void) {
+    fn_8028DF58();
+    lbl_8055F73D = 1;
+}
+
 void fn_8028E070(float farg0) {
     lbl_8055F738 = farg0;
     lbl_8055F73C = 1;
