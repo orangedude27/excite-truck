@@ -34,7 +34,7 @@ extern char lbl_803140D0[];
 extern char lbl_803140E8[];
 extern char lbl_803BF240[2000];
 extern char lbl_803BFA20[0x5000];
-extern const char lbl_80559040[]; /* "%s\n" */
+extern char lbl_80559040[4]; /* "%s\n" */
 extern u8 lbl_8055DC70;
 extern void btu_task_msg_handler(void);
 extern int vsprintf(char *s, const char *format, va_list arg);
@@ -53,6 +53,18 @@ s32 _WUDGetDevAddr(u32 arg0) {
     OSDisableInterrupts();
     if (arg0 < 0x10) {
         r31 = lbl_80393628[arg0];
+    } else {
+        r31 = 0;
+    }
+    OSRestoreInterrupts(0);
+    return r31;
+}
+
+s16 _WUDGetQueuedSize(s8 arg0) {
+    u16 r31;
+    OSDisableInterrupts();
+    if ((arg0 >= 0) && (arg0 < 0x10)) {
+        r31 = lbl_80394680[arg0];
     } else {
         r31 = 0;
     }
