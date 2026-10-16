@@ -8,7 +8,7 @@ extern f32 lbl_8055E3C8;
 extern f32 lbl_80560470;
 extern f32 lbl_80560474;
 
-extern s32 fn_80128668(void);
+extern "C" s32 fn_80128668(void);
 extern void* lbl_80358680[];
 
 class CollisionEntry {
