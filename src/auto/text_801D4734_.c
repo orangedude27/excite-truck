@@ -60,6 +60,21 @@ void fn_801D6600(void *arg0) {
     }
 }
 
+void fn_801D6618(void *arg0) {
+    *(char **)((u8 *)arg0 + 0) = lbl_80338C40;
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+}
+
+void *fn_801D6630(void *arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        *(s32 *)((u8 *)arg0 + 4) = 0;
+        if (arg1 > 0) {
+            fn_80128668();
+        }
+    }
+    return arg0;
+}
+
 s32 fn_801D76CC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
