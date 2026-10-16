@@ -112,6 +112,10 @@ void fn_802B2504(int *dst, int count) {
     }
 }
 
+int fn_802B2E00(void *arg0) {
+    return ((int *)arg0)[1];
+}
+
 int fn_802B2E00(void *);
 int fn_802B2E08(int);
 int *fn_802B320C(int *, int);
