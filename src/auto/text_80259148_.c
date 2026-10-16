@@ -8,6 +8,10 @@ extern int fn_802C6CF8(int);
 extern int fn_802CAC54(int);
 extern int fn_80128668(void *);
 extern int lbl_80345158;
+extern float lbl_80563AE0;
+extern float lbl_80563B14;
+extern double fn_8002F234(double);
+extern float PSVECDotProduct();
 void fn_80259148(void) {
     int *base = lbl_80344DE0;
     void *obj = fn_80258354();
