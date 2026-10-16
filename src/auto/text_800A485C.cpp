@@ -116,6 +116,29 @@ void fn_800B7C60(void) {
     fn_800B75C4();
 }
 
+extern "C" s32 fn_800B7C64(void) {
+    s32 result = ((s32 (*)(void))fn_800B75EC)();
+    return (-result | result) >> 31;
+}
+
+extern "C" s32 fn_800B7DB0(s32 arg0, Unk800B7E18Callback arg1, Unk800B7E18Callback arg2) {
+    s32 result;
+    switch (arg0) {
+    case 0:
+        lbl_80405D00[0] = arg1;
+        lbl_80405D00[1] = arg2;
+        result = fn_800BA3F4(fn_800B7E18, fn_800B7E38);
+        break;
+    default:
+        return -2;
+    }
+    return -(result != 0);
+}
+
+extern "C" void fn_800B7E18(u8 arg0) {
+    if (lbl_80405D00[0]) lbl_80405D00[0](arg0);
+}
+
 extern "C" s32 fn_800BA404(void) {
     u8 value;
     if (*(u32*)lbl_80407300 & 1) {
