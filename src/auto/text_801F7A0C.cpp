@@ -61,7 +61,7 @@ extern "C" {
 extern u8 lbl_8033B1EC[];
 extern u8 lbl_8033B210[];
 extern u8 lbl_8055B2DC[];
-extern u8 lbl_8055B36C[];
+extern s32 lbl_8055B36C;
 extern u8 lbl_8055B37C[];
 extern u8 lbl_8055B374[];
 extern void *lbl_8055EC38;
@@ -103,14 +103,17 @@ extern "C" void fn_801F92A8(void) {
 }
 
 extern "C" void *fn_801F92AC(F92Obj *obj) {
+    f32 a = lbl_80562FF0;
+    f32 b = lbl_80563000;
+
     obj->w108 = lbl_8033B468;
     obj->w78 = 0;
-    obj->f7c = lbl_80562FF0;
-    obj->f80 = lbl_80562FF0;
+    obj->f7c = a;
+    obj->f80 = a;
     obj->w104 = 0;
     obj->f24 = 0;
     obj->f20 = 0;
-    obj->f28 = lbl_80563000;
+    obj->f28 = b;
     obj->b60 = 1;
     memset(obj, 0x61, 0x20);
     memset((char *)obj + 0x61, 0x61, 0x10);
@@ -119,9 +122,10 @@ extern "C" void *fn_801F92AC(F92Obj *obj) {
 }
 
 extern "C" void *fn_801F93FC(void *node) {
-    node = fn_801F8188(node, 0, 1);
-    fn_801F9440(&lbl_8055EC38, node);
-    return node;
+    void *n = fn_801F8188(node, 0, 1);
+
+    fn_801F9440(&lbl_8055EC38, n);
+    return n;
 }
 
 extern "C" void *fn_801F9440(F9Node *list, F9Node *node) {
@@ -161,15 +165,41 @@ extern "C" void *fn_801F96C8(void *node) {
     return list;
 }
 
+extern "C" void fn_801F9928(void *list, s32 arg) {
+    s32 i = 0;
+    void *cur = (*(FListVT **)list)->get(list, 0);
+
+    while (1) {
+        void *next;
+        FNodeVT *vt;
+
+        if (cur == NULL) {
+            next = (*(FListVT **)list)->get(list, i);
+            cur = next;
+        }
+        if (cur == NULL) {
+            break;
+        }
+        vt = *(FNodeVT **)cur;
+        vt->name(cur);
+        if (stricmp((const char *)lbl_8055B36C, (const char *)lbl_8055B36C) == 0) {
+            fn_801F981C(cur, arg);
+        }
+        i++;
+        cur = (*(FListVT **)list)->get(list, i);
+        if (cur == NULL) {
+            break;
+        }
+    }
+}
+
 extern "C" void fn_801F99CC(F92Obj *obj) {
-    F92Obj *cur = *(F92Obj **)((char *)&obj->w108 + 0x24 - 0x108);
+    F92Obj *cur = *(F92Obj **)((char *)obj + 0x24);
     F92Obj *next;
 
     while (cur != NULL) {
-        next = *(F92Obj **)((char *)&cur->w108 + 0x24 - 0x108);
-        if (cur != NULL) {
-            (*(void (**)(F92Obj *, s32))((char *)&cur->w108 + 0x100 - 0x108))(cur, 1);
-        }
+        next = *(F92Obj **)((char *)cur + 0x24);
+        (*(F92VT **)((char *)cur + 0x108))->fn8(cur, 1);
         cur = next;
     }
 }
