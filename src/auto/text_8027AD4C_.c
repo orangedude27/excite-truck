@@ -195,6 +195,15 @@ long *fn_8027C26C(void *arg0, const char *arg1) {
     return *(long **)((char *)arg0 + 0xAF0C) + index * 0xC;
 }
 
+void fn_8027C610(void) {
+    long value = lbl_8055F658 - 1;
+    lbl_8055F658 = value;
+    if (value == 0) {
+        fn_8027C4B4(lbl_8055F654, 1);
+        lbl_8055F654 = 0;
+    }
+}
+
 long fn_8027C8B0(void) { return 1; }
 
 long fn_8027CB20(void) { return 1; }
