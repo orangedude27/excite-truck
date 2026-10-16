@@ -7,3 +7,9 @@ extern s32 fn_80128668(void *);
 extern s32 fn_8002F6AC(s32, void *);
 extern s32 fn_80297654;
 extern void *lbl_803493C0;
+
+s32 fn_8029788C(void *arg0) {
+    s32 val = *(s32 *)((u8 *)arg0 + 4);
+    s32 neg = -val;
+    return (neg | val) >> 31 & 1;
+}
