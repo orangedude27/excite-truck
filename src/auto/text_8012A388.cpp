@@ -83,9 +83,7 @@ static inline void CopyName8012DFE8(char *dst, const char *src, int count) {
 extern "C" s32 fn_8012CAA0(s32);
 extern "C" void fn_8012DD00(void) {
     if (lbl_8055E014) {
-        if (lbl_8055E014) {
-            ((void (*)(void *, int))(*(void ***)lbl_8055E014)[2])(lbl_8055E014, 1);
-        }
+        delete lbl_8055E014;
         lbl_8055E014 = 0;
     }
 }
