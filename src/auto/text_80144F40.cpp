@@ -131,6 +131,13 @@ extern "C" void fn_80146730(void *arg0) {
     }
 }
 
+extern "C" void fn_8014819C(void *arg0, f32 farg0, f32 farg1) {
+    *(f32 *)arg0 = lbl_8055E200;
+    *(f32 *)((u8 *)arg0 + 4) = lbl_8055E204;
+    lbl_8055E200 += farg0;
+    lbl_8055E204 += farg1;
+}
+
 extern "C" void *fn_80148294(const char *, void *);
 extern "C" f32 lbl_8055E200;
 extern "C" f32 lbl_8055E204;
@@ -166,9 +173,21 @@ extern "C" s32 fn_80148248(void) {
 }
 
 extern "C" void fn_80148250(void *arg0) {
-    void *obj = *(void **)((u8 *)arg0 + 4);
-    void *vtable = *(void **)obj;
-    ((void (*)(void))(*(void **)((u8 *)vtable + 0x28)))();
+    struct VTable {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+    };
+    VTable *obj = *(VTable **)((u8 *)arg0 + 4);
+    obj->f10();
 }
 
 extern "C" u32 lbl_80559E68;
