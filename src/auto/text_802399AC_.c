@@ -109,15 +109,26 @@ void fn_8023B368(void) {}
 s32 fn_8023B36C(void) { return 0; }
 
 void fn_8023B374(void *arg0) {
-    s32 temp = fn_80210570();
-    void *obj = *(void **)((char *)arg0 + 0x1C);
-    if (temp == 2) {
-        (*(s32 (**)(void *, s32))(*(char **)(obj) + 0x30))(obj, 3);
+    s32 mode = fn_80210570();
+    void *obj;
+    void **vtable;
+    s32 (*call)(void *, s32);
+    obj = *(void **)((char *)arg0 + 0x1C);
+    if (mode == 2) {
+        vtable = *(void ***)((char *)obj + 0xC);
+        call = (s32 (*)(void *, s32))((char *)vtable + 0x30);
+        call(obj, 3);
     } else {
-        (*(s32 (**)(void *, s32))(*(char **)(obj) + 0x30))(obj, 2);
+        vtable = *(void ***)((char *)obj + 0xC);
+        call = (s32 (*)(void *, s32))((char *)vtable + 0x30);
+        call(obj, 2);
     }
-    (*(s32 (**)(void *, s32))(*(char **)obj + 0x34))(obj, temp);
+    vtable = *(void ***)((char *)obj + 0xC);
+    call = (s32 (*)(void *, s32))((char *)vtable + 0x34);
+    call(obj, mode);
 }
 
 void fn_8023B400(void) {}
+
+s32 fn_8023B404(void) { return 0; }
 
