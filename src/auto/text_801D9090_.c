@@ -24,3 +24,5 @@ void fn_801D9100(s32 arg0) {
 
 void fn_801D9108(int arg0) { fn_801D8938(arg0 - 4); }
 
+void fn_801D9110(int arg0) { fn_801D893C(arg0 - 4); }
+
