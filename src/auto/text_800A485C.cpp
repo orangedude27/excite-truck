@@ -338,17 +338,13 @@ extern "C" void fn_800D2480(void) {
 
 #pragma opt_tail_call on
 #pragma opt_tail_call on
-#pragma opt_tail_call on
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
-    f64 f0, f1, f2, f3, f4, f5, f6, f7;
+    f64 f0 __attribute__((reg_struct_return));
+    s32 r31_save = 0;
     void *r30 = 0;
-    void *r31 = 0;
     
-    f0 = 0; f1 = 0; f2 = 0; f3 = 0;
-    f4 = 0; f5 = 0; f6 = 0; f7 = 0;
-    
+    r31_save = 0x3000000;
     r30 = (void *)0x3000000;
-    r31 = (void *)&file;
     
     fn_800D2098(&r30);
 }
