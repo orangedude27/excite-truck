@@ -421,6 +421,14 @@ extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_80221E7C(void *arg0) {
     void *temp = *(void **)((u8 *)arg0 + 0x14);
     if (temp != 0 && *(u8 *)((u8 *)temp + 0x1A) != 0)
