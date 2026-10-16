@@ -61,15 +61,15 @@ extern void fn_8028ED74(void *);
 extern void fn_8028EE1C(void *);
 extern void fn_8028F8C4(int);
 void fn_8028E138(void) {
-    int *ptr = &lbl_804B34B0;
+    int *base = &lbl_804B34B0;
+    int *ptr = base;
     int count = 0;
     lbl_8055F738 = lbl_80564420;
-    while (1) {
+    do {
         fn_8028F8C4(*ptr);
         ptr++;
         count++;
-        if (count >= *(int *)((char *)&lbl_804B34B0 + 0x100)) break;
-    }
+    } while (count < *(int *)((char *)base + 0x100));
 }
 
 void fn_8028E1A4(void) {
@@ -229,13 +229,3 @@ extern void fn_8028F5A4(void);
 extern void fn_8028F2EC(void);
 extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
-extern void fn_802C9A4C(float);
-extern void fn_802C8BD0(int);
-extern void fn_802C8D74(void);
-extern int fn_8028FA1C(int);
-extern int fn_801284F8(int, void *);
-extern int fn_8028F7AC(int, int);
-extern void fn_8028F5A0(int, int);
-extern int fn_8028F858(int, int);
-extern int lbl_804B35B4;
-extern int lbl_8055C8E0;
