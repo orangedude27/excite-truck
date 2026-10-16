@@ -5,3 +5,9 @@ extern void *lbl_8055F7B0;
 void fn_80297990(void* hi) {
     lbl_8055F7B0 = hi;
 }
+
+extern void *lbl_8055F7A4;
+void fn_80297998(void) {
+    lbl_8055F7A4 = 0;
+}
+
