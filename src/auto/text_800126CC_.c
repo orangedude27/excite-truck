@@ -28,7 +28,7 @@ extern void fn_80131818(void *);
 extern char lbl_8035183C[];
 extern char lbl_8055D500;
 extern int lbl_8055D514;
-extern int lbl_803518C0[];
+extern char lbl_803518C0[];
 extern int lbl_803551E0[];
 void *fn_80012870(int arg0, int arg1) {
     int *p = &lbl_80352AD0[0];
