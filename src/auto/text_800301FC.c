@@ -1,4 +1,18 @@
 #include "types.h"
+extern u32 lbl_8055D6E8;
+extern u32 lbl_80558DD8;
+extern u32 lbl_8035BF20[];
+extern void TRKReleaseBuffer(void *);
+extern void TRKAppendBuffer1_ui64(void);
+extern void TRKAppendBuffer_ui32(void);
+extern void OSRegisterVersion(s32);
+extern void fn_80033404(void);
+extern void fn_80032778(void);
+extern void usr_puts_serial(void);
+extern void fn_800331A0(void);
+extern void __AXSPBInit(void);
+extern void TRKGetInput(void);
+extern void fn_800320E8(s32);
 extern void *lbl_8055D740;
 extern u8 lbl_8035E820[];
 extern u16 lbl_8055D730;
