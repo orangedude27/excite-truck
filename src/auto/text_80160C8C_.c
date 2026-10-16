@@ -82,6 +82,8 @@ int fn_80162260(void) {
     return 0;
 }
 
+s32 fn_80162734(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) != 0; }
+
 extern int lbl_8032F698;
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
