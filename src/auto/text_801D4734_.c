@@ -21,7 +21,7 @@ typedef struct {
     s32 state;
 } UnkStruct_801D6618;
 extern char lbl_80338F50[];
-extern void *lbl_80338C78;
+extern char lbl_80338C78[];
 void fn_80128658(s32);
 
 void fn_801D47F4(void) {
@@ -169,6 +169,23 @@ void fn_801D5730(void) {
         }
         if (p != 0) ((void (**)(void *, s32))*(void **)p)[2](p, 1);
     }
+}
+
+void *fn_801D62A8(void *arg0, s32 arg1) {
+    s32 temp_r5;
+
+    if (arg0 != NULL) {
+        temp_r5 = *(s32 *)((u8 *)arg0 + 0x14);
+        *(void **)((u8 *)arg0 + 0) = lbl_80338C78;
+        *(s32 *)((u8 *)arg0 + 4) = 0;
+        if (temp_r5 != 0) {
+            fn_80128658(temp_r5);
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 void *__AXFXGetLfoSinTable_801D64F4(void) {
@@ -401,7 +418,7 @@ void fn_801D71A8(void *arg0) {
     }
     *(void **)((u8 *)arg0 + 0x38) = NULL;
 }
-
+#pragma scheduling reset
 extern u8 lbl_803388D4[];
 void *fn_801D7200(void) {
     return lbl_803388D4;
