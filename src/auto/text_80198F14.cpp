@@ -5,6 +5,9 @@
 #pragma opt_tail_call on
 extern f32 lbl_805622DC;
 extern f32 lbl_805622E0;
+extern f32 lbl_805622D0;
+extern char lbl_803339B8;
+extern void fn_8019F03C();
 extern "C" f64 fn_8002F234(f32);
 
 extern "C" void fn_8019EBC0(void);
@@ -147,7 +150,7 @@ extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
 
 extern "C" void fn_801A014C(void* arg0) {
     void* item = *(void**)((u8*)arg0 + 0x17C);
-    ((void (*)(void*))((void**) *(void**)item)[3])(item);
+    ((void (*)(void))((void**) *(void**)item)[3])();
 }
 
 extern s32 lbl_8055E3C4;
@@ -165,6 +168,28 @@ extern "C" void fn_801A0160(void* arg0) {
         if (i < *(s32*)((u8*)arg0 + 0x174))
             goto loop;
     }
+}
+
+void fn_801A01E0(void* arg0, f32* arg1, f32* arg2) {
+    f32 temp_f8 = *(f32*)((u8*)arg0 + 0x178);
+    void* temp_r3 = *(void**)((u8*)arg0 + 0xC);
+    f32 temp_f7 = *(f32*)((u8*)temp_r3 + 0x24);
+    f32 temp_f2 = temp_f8 * lbl_805622DC;
+    f32 temp_f6 = *(f32*)((u8*)temp_r3 + 0x28);
+    f32 temp_f0 = temp_f8 * lbl_805622E0;
+    f32 temp_f5 = *(f32*)((u8*)temp_r3 + 0x2C);
+    f32 sp8 = temp_f8;
+    arg1[0] = temp_f7 + temp_f2;
+    arg1[1] = temp_f6 + temp_f2;
+    arg1[2] = temp_f5 + temp_f2;
+    f32 spC = temp_f8;
+    f32 sp10 = temp_f8;
+    f32 sp14 = temp_f7;
+    f32 sp18 = temp_f6;
+    f32 sp1C = temp_f5;
+    arg2[0] = temp_f7 + temp_f0;
+    arg2[1] = temp_f6 + temp_f0;
+    arg2[2] = temp_f5 + temp_f0;
 }
 
 void fn_801A0444(void* arg0, void* arg1) {
