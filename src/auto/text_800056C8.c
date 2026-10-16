@@ -301,3 +301,7 @@ s32 fn_80007D2C(void *arg0, void *arg1, s32 arg2, void *arg3) {
     return 0;
 }
 
+void *fn_80007D48(void) {
+    return lbl_802FB5D8;
+}
+
