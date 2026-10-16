@@ -15,33 +15,33 @@ void fn_8015EC50(unsigned short *arg0, void *arg1) {
 int fn_8015ECC0(void *arg0) {
     int result = 0;
     int test = 0;
-    if (((int *)arg0)[8] < 1000 && ((unsigned int *)arg0)[6] == 0x54554245) {
-        test = 1;
-    }
-    if (test && (float)fabs(((float *)((void **)arg0)[3])[7]) > lbl_805617D0) {
-        result = 1;
-    }
+    if (((int *)arg0)[8] < 1000 && ((unsigned int *)arg0)[6] == 0x54554245) test = 1;
+    if (test && (float)fabs(((float *)((void **)arg0)[3])[7]) > lbl_805617D0) result = 1;
     return result;
 }
 
+#pragma push
+#pragma auto_inline off
 int fn_8015ED18(void **arg0) {
     return stricmp((*(char *(**)(void *))((char *)*arg0 + 8))(arg0), lbl_8055A070) == 0;
 }
-
 int fn_8015ED90(void **arg0) {
     int count = 0;
     int i;
     void **child;
     if (arg0 != 0) {
-        for (i = 0; (child = (*(void **(**)(void *, int))((char *)*arg0 + 0x60))(arg0, i)) != 0; i++) {
-            if (fn_8015ED18(child)) {
-                count++;
-            }
+        for (i = 0; (child = (*(void **(**)())((char *)*arg0 + 0x60))(arg0, i)) != 0; i++) {
+            if (fn_8015ED18(child)) count++;
         }
     }
     return count;
 }
 
+int fn_8015F3EC(unsigned short *arg0, unsigned short *arg1) {
+    return *arg0 - *arg1;
+}
+
+#pragma pop
 void fn_8015F554(void) {
 }
 
