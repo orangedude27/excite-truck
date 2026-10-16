@@ -104,6 +104,17 @@ void fn_802D306C(unsigned char arg0) {
     GXSetDstAlpha(1, arg0);
 }
 
+void fn_802D307C(void) {
+    int mtx[6];
+    mtx[0] = lbl_802FACB0[0];
+    mtx[1] = lbl_802FACB0[1];
+    mtx[2] = lbl_802FACB0[2];
+    mtx[3] = lbl_802FACB0[3];
+    mtx[4] = lbl_802FACB0[4];
+    mtx[5] = lbl_802FACB0[5];
+    GXSetIndTexMtx(1, mtx, 1);
+}
+
 extern void *lbl_8055FD5C;
 void fn_802D30DC(void* hi) {
     lbl_8055FD5C = hi;
@@ -130,11 +141,11 @@ void* fn_802D3104(void) {
     return &p->m;
 }
 
-void *fn_802D312C(void) {
+void* fn_802D312C(void) {
     return fn_802D3104();
 }
 
-void *fn_802D3130(void) {
+void* fn_802D3130(void) {
     return fn_802D3104();
 }
 
