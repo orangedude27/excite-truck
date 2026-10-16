@@ -138,6 +138,13 @@ s32 fn_80132C50(void* arg0, s32 arg1) {
     return 0;
 }
 
+s32 fn_80132E34(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern void fn_802E317C(const char*, ...);
 extern char lbl_8032B73C;
 typedef struct { void** vtable; } Unk80132BD0;
