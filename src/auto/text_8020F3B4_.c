@@ -102,6 +102,9 @@ extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
 extern signed char lbl_8055EEF5;
 extern signed char lbl_8055EEF6;
+// Code of main that had no source file yet: decomp.wtf gave it this one.
+ // split_file divides it into the game's real files (file_status shows its range).
+
 extern struct Unk_804900AC {
     long *m_entries;
     long m_count;
