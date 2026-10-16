@@ -190,6 +190,15 @@ void fn_8029E49C(int unused, void *arg1, int arg2) {
     }
 }
 
+void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_802CAC54(*(int *)((char *)arg0 + 0x40));
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern void fn_8029EC64(void *, int);
 extern float lbl_805646A8;
 void fn_8029EA34(void *arg0, void **arg1) {
