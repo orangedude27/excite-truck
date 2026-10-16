@@ -119,6 +119,8 @@ extern int OSDisableInterrupts(void);
 extern void OSRestoreInterrupts(void);
 extern void OSClearContext(void *);
 extern void OSSetCurrentContext(void *);
+extern unsigned int lbl_8055D968;
+extern unsigned char lbl_8055D970;
 
 typedef struct { char pad[0x2CC]; } OSContextTmp;
 
