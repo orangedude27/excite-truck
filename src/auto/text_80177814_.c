@@ -163,12 +163,43 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
     return arg0;
 }
 
+extern s32 lbl_8055E3C4;
+extern u64 fn_802E2C9C(void);
+extern s64 __div2i(s64, s64);
+extern u8 lbl_804305C0[];
+s64 fn_80178BBC(s32 *arg0) {
+    s64 r31;
+    s32 r4;
+    s32 r5;
+    s32 r6;
+
+    r5 = arg0[0];
+    r4 = lbl_8055E3C4 - r5;
+    r6 = arg0[3];
+    r5 = arg0[2];
+    r31 = (s64)r5 + (s64)r6 + (s64)r4 * 0x412b;
+    return fn_802E2C9C() - r31;
+}
+
+s32 fn_80178C1C(s32 *arg0) {
+    s64 r3;
+    s64 r4;
+
+    r3 = fn_80178BBC(arg0);
+    r4 = __div2i(r3, 0x412b);
+    return (s32)r4;
+}
+
 void fn_80178C88(void) {
 
 }
 
 void fn_80178C8C(void) {
 
+}
+
+void *__AXGetStudio_80178C90(void) {
+    return lbl_804305C0;
 }
 
 extern void *lbl_8055E414;
