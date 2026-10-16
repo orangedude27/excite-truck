@@ -120,7 +120,7 @@ void fn_8000A868(void) {
     }
 }
 
-void fn_8000AA38(void) {
+void fn_8000AA38(void* arg0) {
     char* base = (char*)&lbl_8034F4C8;
     fn_80129324(lbl_8055D3B0);
     lbl_8055D3B0 = 0;
