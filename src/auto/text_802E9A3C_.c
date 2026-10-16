@@ -25,6 +25,19 @@ void fn_802EC12C(void) {
 void fn_802EC1D8(void) {
     lbl_805600C8 = 1;
 }
+
+long fn_802EC348(void *arg0, long arg1) {
+    if (arg1 < 0 || arg1 >= ((long *)arg0)[3]) {
+        return 0;
+    }
+    ((long *)arg0)[2] = arg1;
+    return 1;
+}
+
+long fn_802EC370(void *arg0) {
+    return ((long *)arg0)[3];
+}
+
 typedef signed long s32;
 extern void *memcpy(void *, const void *, unsigned long);
 extern char lbl_80560060;
