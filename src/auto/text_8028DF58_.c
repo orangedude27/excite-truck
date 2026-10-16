@@ -65,11 +65,10 @@ void fn_8028E138(void) {
     int *ptr = base;
     int count = 0;
     lbl_8055F738 = lbl_80564420;
-    do {
-        fn_8028F8C4(*ptr);
-        ptr++;
+    while (count < *(int *)((char *)base + 0x100)) {
+        fn_8028F8C4(*ptr++);
         count++;
-    } while (count < *(int *)((char *)base + 0x100));
+    }
 }
 
 void fn_8028E1A4(void) {
@@ -77,7 +76,7 @@ void fn_8028E1A4(void) {
     lbl_8055F73C = 1;
 }
 
-extern void fn_802C9A4C(float);
+extern float fn_802C9A4C(float);
 extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
 extern int fn_8028FA1C(int);
