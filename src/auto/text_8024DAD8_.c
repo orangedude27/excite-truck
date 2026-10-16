@@ -29,3 +29,5 @@ s32 fn_8024EBE4(s32 arg0) {
 
 s32 fn_80252468(void *arg0) { return *(s32 *)((char *)arg0 + 8); }
 
+s32 fn_80252470(void *arg0, s32 arg1) { return *(s32 *)((char *)arg0 + 4) + arg1 * 0x48; }
+
