@@ -973,6 +973,10 @@ static void USB_ERR(const char *fmt, ...) {
     }
 }
 
+u32 fn_8009B0E0(void) {
+    return 0;
+}
+
 #pragma use_lmw_stmw off
 s32 IUSB_WriteCtrlMsgAsync(s32 a,s32 b,s32 c,s32 d,s32 e,u32 length,void* data,void* callback,void* context) {
     DCFlushRange(data,length);
