@@ -1,6 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+void fn_8001EF38(void* alarm) {
+    fn_8001EFF0(fn_8001F528(alarm));
+}
+
 void fn_8001EF5C(void) {
     fn_8001F7E4();
 }
