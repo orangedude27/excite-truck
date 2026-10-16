@@ -3,6 +3,13 @@
 
 extern void fn_80272354(void);
 extern void fn_8002F634(void *, void *, int, int);
+extern void fn_80015B20(void *, void *, void *);
+extern void fn_801BFD34(void *, void *, void *);
+extern float PSVECMag(float *);
+extern double sin(double);
+extern double cos(double);
+extern float lbl_80564024, lbl_80564020, lbl_80563FAC, lbl_80563FB0;
+extern float lbl_802FA788[];
 extern char lbl_80347364[];
 extern char lbl_8049A2C8[];
 extern char lbl_8049F9D8[];
@@ -45,8 +52,9 @@ void fn_80273B4C(void *arg0) {
     extern float lbl_80563FB0;
     extern float lbl_80563FB4;
     void *temp_r4 = *(void **)((char *)arg0 + 0x140);
-    float sp10, spC, sp8;
-    char sp14[0x14];
+    char out[0x14];
+    volatile char pad[0x10];
+    float vec[3];
     float var_f1;
     void *temp_r3;
     if (temp_r4 != 0) {
@@ -55,12 +63,12 @@ void fn_80273B4C(void *arg0) {
         } else {
             var_f1 = lbl_80563FAC;
         }
-        sp8 = lbl_80563FB0;
-        sp10 = lbl_80563FB0;
-        spC = lbl_80563FB0 * lbl_80563FB4 * var_f1;
-        fn_80015A20(sp14, &sp8, var_f1, lbl_80563FB0);
+        vec[0] = lbl_80563FB0;
+        vec[1] = (lbl_80563FB0 * lbl_80563FB4) * var_f1;
+        vec[2] = lbl_80563FB0;
+        fn_80015A20(out, vec, var_f1, lbl_80563FB0);
         temp_r3 = (char *)arg0 + 0x58;
-        fn_80015B20(temp_r3, sp14, temp_r3);
+        fn_80015B20(temp_r3, out, temp_r3);
     }
 }
 
