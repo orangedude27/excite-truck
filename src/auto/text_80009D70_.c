@@ -22,16 +22,18 @@ extern u32 lbl_8055D3B0;
 extern u32 lbl_8055D3B8;
 
 void* fn_80009D70(void* arg0, s32 arg1) {
-    void* var_r31 = arg0;
-    if (var_r31 == NULL) goto lbl_80009DB4;
-    if (var_r31 == NULL) goto lbl_80009DB4;
-    *(s32*)var_r31 = 0;
-    ((s32*)var_r31)[1] = 0;
-    ((s32*)var_r31)[2] = 0;
+    void* tmp;
+    if (arg0 == NULL) goto lbl_80009DB4;
+    if (arg0 == NULL) goto lbl_80009DB4;
+    *(s32*)arg0 = 0;
+    ((s32*)arg0)[1] = 0;
+    ((s32*)arg0)[2] = 0;
     if (arg1 <= 0) goto lbl_80009DB4;
-    fn_80128668(var_r31);
+    tmp = arg0;
+    fn_80128668(tmp);
+    tmp = arg0;
 lbl_80009DB4:
-    return var_r31;
+    return arg0;
 }
 
 void fn_8000A644(void* arg0, void* arg1) {
@@ -64,6 +66,11 @@ void fn_8000AAE0(void) {
 
 void fn_8000AB44(void) {
     fn_8000A6D8();
+}
+
+extern u8 lbl_8034F520[];
+void *__AXGetStudio_8000AC2C(void) {
+    return lbl_8034F520;
 }
 
 void fn_8000A7A8(void) {
