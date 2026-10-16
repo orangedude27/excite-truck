@@ -4,6 +4,7 @@
 #include <revolution/MTX/vec.h>
 #pragma opt_tail_call on
 extern f32 lbl_805622DC;
+extern f32 lbl_805622E0;
 extern "C" f64 fn_8002F234(f32);
 
 extern "C" void fn_8019EBC0(void);
@@ -142,6 +143,28 @@ extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void fn_801A014C(void* arg0) {
+    void* item = *(void**)((u8*)arg0 + 0x17C);
+    ((void (*)(void*))((void**) *(void**)item)[3])(item);
+}
+
+extern s32 lbl_8055E3C4;
+extern "C" void fn_801A0160(void* arg0) {
+    s32 value = lbl_8055E3C4;
+    if (value != *(s32*)((u8*)arg0 + 0x180)) {
+        *(s32*)((u8*)arg0 + 0x180) = value;
+        void** entries = (void**)arg0;
+        s32 i = 0;
+    loop:
+        void* item = *(void**)((u8*)entries + 0x24);
+        ((void (*)(void*))((void**) *(void**)item)[3])(item);
+        entries++;
+        i++;
+        if (i < *(s32*)((u8*)arg0 + 0x174))
+            goto loop;
+    }
 }
 
 void fn_801A0444(void* arg0, void* arg1) {
