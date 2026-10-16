@@ -69,7 +69,7 @@ s32 _WUDGetDevAddr(u32 arg0) {
 }
 
 s16 _WUDGetQueuedSize(s8 arg0) {
-    u16 r31;
+    s16 r31;
     OSDisableInterrupts();
     if ((arg0 >= 0) && (arg0 < 0x10)) {
         r31 = lbl_80394680[arg0];
@@ -251,9 +251,14 @@ void bte_hcisu_task(void) {
     }
 }
 
+extern u32 fn_8009B0E0(void);
+extern u8 lbl_803BD1E0;
+extern u8 lbl_8055DC51;
 void fn_80070820(void) {
-    if (lbl_8055DC68 != NULL && lbl_8055DC68->open != NULL) {
-        lbl_8055DC68->open(lbl_8055DC6C);
+    hcisu_if *p_if = lbl_8055DC68;
+
+    if (p_if != NULL && p_if->open != NULL) {
+        p_if->open(lbl_8055DC6C);
     }
 }
 
@@ -285,6 +290,12 @@ void fn_8007093C(u32 code, void *msg) {
 }
 
 void fn_80070954(u32 code, void *msg, u16 param) {
+    if (lbl_8055DC70 == 0) {
+        LogMsg(code, msg);
+    }
+}
+
+void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2) {
     if (lbl_8055DC70 == 0) {
         LogMsg(code, msg);
     }
@@ -585,7 +596,7 @@ void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
 u16 fn_8006D8D0(u32 arg0) {
     s32 diff = (s32)arg0 - 8;
     if (diff >= 0) {
-        u8 val = *(u8 *)((u8 *)arg0 - 4);
+        u8 val = *(u8 *)((u8 *)diff + 4);
         if (val < 9) {
             return *(u16 *)((u8 *)&lbl_803946C0 + 0x289E8 + (val << 4));
         }
