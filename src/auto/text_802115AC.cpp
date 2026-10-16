@@ -147,6 +147,13 @@ extern "C" s32 fn_802121D4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 (*lbl_8055EF0C)(s32 *);
+extern "C" s32 fn_80212214(s32 arg0) {
+    s32 value;
+    memcpy(&value, &arg0, 4);
+    return value;
+}
+
 extern "C" float fn_80212248(s32 arg0) {
     float value;
     memcpy(&value, &arg0, 4);
@@ -619,6 +626,29 @@ extern "C" void fn_802159E8(void *arg0) {
 extern "C" void fn_802159FC(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
     obj->vf12();
+}
+
+extern "C" void fn_80215A10(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x18) = 1;
+    void *obj = *(void **)((u8 *)arg0 + 0x244);
+    void **vt = *(void ***)obj;
+    ((void (*)(void *))*(void **)((u8 *)vt + 0x44))(obj);
+}
+
+extern "C" void fn_80215A2C(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x18) = 0;
+    void *obj = *(void **)((u8 *)arg0 + 0x244);
+    void **vt = *(void ***)obj;
+    ((void (*)(void *))*(void **)((u8 *)vt + 0x48))(obj);
+}
+
+extern "C" void fn_80215A48(void *arg0) {
+    u8 value = *((u8 *)arg0 + 0x1A);
+    *((u8 *)arg0 + 0x19) = 1;
+    if (value != 0) *((u8 *)arg0 + 0x234) = 1;
+    void *obj = *(void **)((u8 *)arg0 + 0x244);
+    void **vt = *(void ***)obj;
+    ((void (*)(void *))*(void **)((u8 *)vt + 0x4C))(obj);
 }
 
 extern "C" void fn_80215B08(void *arg0) {
