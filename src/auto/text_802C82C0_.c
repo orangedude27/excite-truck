@@ -1,4 +1,12 @@
 extern unsigned int lbl_804C1410[];
+extern unsigned int lbl_804C13E0[];
+extern char lbl_8055FC35;
+extern float lbl_80564EF8, lbl_80564F00;
+extern void fn_802C7758(int);
+extern void fn_802C89E8(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
+extern void fn_802C8638(unsigned int *);
+extern void PSVECNormalize(void *, void *);
+extern void PSVECCrossProduct(void *, void *, void *);
 
 extern char lbl_8055FC94;
 extern char lbl_8055D030[];
@@ -30,6 +38,30 @@ extern char lbl_8055FC8C;
 extern void *lbl_8055FC90;
 void* fn_802C83C4(void) {
     return lbl_8055FC90;
+}
+
+extern void fn_802C7758(int);
+extern unsigned int lbl_804C13E0[];
+extern char lbl_8055FC35;
+extern void fn_802C89E8(unsigned int *, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int, unsigned int);
+extern void fn_802C8638(unsigned int *);
+extern float lbl_80564EF8, lbl_80564F00;
+extern void PSVECNormalize(void *, void *);
+extern void PSVECCrossProduct(void *, void *, void *);
+void fn_802C8588(void *arg0, float *arg1, float *arg2) {
+    float x = arg1[0], y = arg1[1], z = arg1[2];
+    float sp[3];
+    ((float *)arg0)[9] = x;
+    ((float *)arg0)[10] = y;
+    ((float *)arg0)[11] = z;
+    ((float *)arg0)[6] = arg2[0] - x;
+    ((float *)arg0)[7] = arg2[1] - y;
+    ((float *)arg0)[8] = arg2[2] - z;
+    sp[0] = lbl_80564F00; sp[1] = lbl_80564EF8; sp[2] = lbl_80564F00;
+    PSVECNormalize((char *)arg0 + 0x18, (char *)arg0 + 0x18);
+    PSVECCrossProduct(sp, (char *)arg0 + 0x18, arg0);
+    PSVECNormalize(arg0, arg0);
+    PSVECCrossProduct((char *)arg0 + 0x18, arg0, (char *)arg0 + 0xC);
 }
 
 void *fn_802C86DC(void) {
