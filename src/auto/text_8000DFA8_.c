@@ -17,7 +17,6 @@ extern f32 lbl_8056025C;
 extern f32 lbl_80560260;
 extern f32 lbl_805602C4;
 extern f32 lbl_805602C0;
-extern s32 fn_801E85A4(void);
 extern f32 fn_80011E54(void);
 extern f32 fn_80011E90(void);
 extern f32 fn_80011E1C(s32);
