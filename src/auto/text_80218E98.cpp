@@ -447,10 +447,28 @@ extern "C" s32 fn_802298A4(s32 arg0) {
 
 extern "C" u32 fn_80229ADC(void) { return 1; }
 
+extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
+    fn_80219264(arg0, arg1, arg2);
+    *(s32 *)((u8 *)arg0 + 0x248) += arg1;
+    *(s32 *)((u8 *)arg0 + 0x24C) += arg2;
+}
+
 extern "C" s32 fn_80229B68(void) { return 0; }
 
 extern "C" s32 fn_80229B70(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x254);
+}
+
+extern "C" char lbl_8033EFF4[];
+extern "C" s32 fn_801E4A2C(s32, const char *);
+extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80229B78(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_8033EFF4;
+        fn_801E4A2C(*(s32 *)((u8 *)arg0 + 0x348), lbl_8033EFF4);
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
 }
 
 extern "C" s32 fn_80229C9C(s32 arg0) {
