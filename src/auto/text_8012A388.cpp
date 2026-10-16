@@ -43,6 +43,10 @@ extern "C" s32 fn_8012E674(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
 }
 
+extern "C" s32 fn_8012EE78(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x28);
+}
+
 extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2);
 
 extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
