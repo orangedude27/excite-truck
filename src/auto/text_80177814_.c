@@ -323,6 +323,19 @@ void DBPrintf_80179758(const char *fmt, ...) {
 void DBPrintf_801797A8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
+
+extern int lbl_804305A0[];
+extern int lbl_8055E450;
+void fn_801797F8(int arg0, int arg1, unsigned short arg2) {
+    int *p = &lbl_804305A0[arg0 * 2];
+    p[0] = (arg1 << 16) | arg2;
+    p[1] += 1;
+}
+
+int fn_80179CB0(void) {
+    return lbl_8055E450 + 0x2EE8;
+}
+
 extern unsigned char lbl_8055E46C;
 extern unsigned char lbl_8055A304;
 extern long fn_801284F8(long, void *);
