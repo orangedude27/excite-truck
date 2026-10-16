@@ -127,6 +127,16 @@ s32 fn_802B6E00(s32 arg0, s32 arg1) {
     return var_r0;
 }
 
+s32 fn_802B6E30(void) {
+    switch (lbl_8055FA38) {
+    case 2: return 2;
+    case 3: return 4;
+    case 5: return 1;
+    default:
+    case 4: return 0;
+    }
+}
+
 extern s32 lbl_8055CE78;
 extern s32 lbl_8055CE80;
 extern s32 lbl_8034A808;
