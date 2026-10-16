@@ -271,6 +271,8 @@ void *fn_802D39A4(float value) {
 
 void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
 
+void fn_802D3BB0(void) {}
+
 extern unsigned long lbl_8055D0B8;
 extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
