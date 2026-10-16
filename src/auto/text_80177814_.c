@@ -23,25 +23,29 @@ extern int lbl_8055E438;
 extern int lbl_8055E468;
 int fn_802E2C20(void);
 extern int lbl_8055E464;
-void fn_80177814(long *arg0) {
-    *arg0 = fn_802E2C20() % 30000;
-    arg0[1] = fn_802E2C20() % 30000;
+void fn_80177814(int *arg0) {
+    int t;
+    t = fn_802E2C20();
+    *arg0 = t % 30000;
+    t = fn_802E2C20();
+    arg0[1] = t % 30000;
 }
 
 void fn_801778C0(void) {
     void **var_r31 = &lbl_804340C0[0];
     void **var_r28;
     int var_r30 = 0;
-    int var_r29 = 0;
+    int var_r29;
 
     lbl_8055E468 = 0;
-    for (; var_r29 < lbl_8055E438; var_r29++, var_r30 += 4) {
-        var_r28 = lbl_8055E434[var_r30];
+    for (var_r29 = 0; var_r29 < lbl_8055E438; var_r29++) {
+        var_r28 = *(void **)(lbl_8055E434 + var_r30);
         if (((int (*)(void **))(*(void ***)*var_r28 + 0x44))(var_r28) != 0 &&
             ((int (*)(void **))(*(void ***)*var_r28 + 0x40))(var_r28) != 0) {
             var_r31[lbl_8055E468] = var_r28;
             lbl_8055E468 += 1;
         }
+        var_r30 += 4;
     }
 }
 
@@ -72,6 +76,7 @@ void fn_80177990(void) {
     }
 }
 
+#pragma dont_inline on
 void fn_80177A18(void) {
     int var_r31;
 
@@ -81,6 +86,7 @@ void fn_80177A18(void) {
         var_r31 += 1;
     } while (var_r31 < 4);
 }
+#pragma dont_inline off
 
 void fn_80177A54(void) {
     if (lbl_8055E3C0 == 2 && fn_801CF064() != 0 && fn_8018FD38() != 0) {
@@ -101,7 +107,7 @@ void fn_80177A54(void) {
     }
     lbl_8055E3C0 = 0;
 }
-
+#pragma dont_inline off
 long fn_801781B8(void) { return 0; }
 
 long fn_801781C0(unsigned int arg0) {
