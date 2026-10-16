@@ -25,3 +25,9 @@ void fn_8001D868(int *values) {
     values[4] = -1;
 }
 
+int fn_8001D884(int arg0) {
+    extern void fn_8001D8B4();
+    fn_8001D8B4(arg0);
+    return arg0;
+}
+
