@@ -56,6 +56,19 @@ int fn_802B1DE8(void **arg0) {
 void fn_802B1F64(void) {
 }
 
+void *fn_802B1F68(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(int *)arg0 = 0;
+            *((int *)arg0 + 1) = 0;
+            *((int *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_802B1FC0(void *arg0) {
     ((int *)arg0)[0] = 0;
     ((int *)arg0)[2] = 0;
