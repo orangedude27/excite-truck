@@ -55,7 +55,7 @@ void fn_801EB820(void) {
 
 }
 
-void fn_801EB824(void) {
+void fn_801EB824(s32 arg0) {
     s32 sp8;
     sp8=(s32)&lbl_8033A048;
     fn_801EB000(&sp8);
