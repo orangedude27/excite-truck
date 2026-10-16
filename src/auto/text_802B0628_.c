@@ -97,9 +97,7 @@ int stricmp(const char *, const char *);
 extern float lbl_80564BD0;
 void fn_802BAFF8(int, void *);
 typedef struct { float x, y, z; } Vec3_802B;
-void fn_802B110C(void (*fn)(void *, void *), void *arg) {
-    fn(arg, arg);
-}
+void fn_802B110C(void (*fn)(void *), void *arg) { fn(arg); }
 
 void fn_802B111C(void *arg0) {
     ((int *)arg0)[1] = (int)((char *)arg0 + 0x10);
@@ -227,6 +225,27 @@ int fn_802B1B50(int *arg0, int arg1) {
     return *arg0 + (arg1 << 7);
 }
 
+extern void fn_802CAC54(int);
+extern float lbl_80564BF8;
+extern int fn_802DA704(int, void *, int);
+extern void fn_802DAA18(void);
+void fn_802B1B60(void *arg0) {
+    float sp8[3];
+    int count = 0;
+    int offset = 0;
+    void *list = *(void **)((char *)arg0 + 0xC);
+    while (count < *(int *)((char *)list + 8)) {
+        char *entry = *(char **)((char *)list + 4) + offset;
+        sp8[count * 3] = *(float *)(entry + 4);
+        sp8[count * 3 + 1] = *(float *)(entry + 8);
+        sp8[count * 3 + 2] = lbl_80564BF8;
+        offset += 0x10;
+        count++;
+    }
+    fn_802DA704(1, sp8, 2);
+    fn_802DAA18();
+}
+
 int fn_802B1BE4(void *arg0) {
     return ((int *)arg0)[1];
 }
@@ -253,4 +272,15 @@ void *fn_802B1C1C(void *arg0, int arg1) {
     }
     return &lbl_8034A270;
 }
+
+int fn_802B1C50(void *arg0, int arg1, int arg2) {
+    if (arg1 >= 0 && arg1 < *(int *)((char *)arg0 + 0x10)) {
+        int index = arg1 << 7;
+        int subindex = arg2 << 2;
+        int *base = (int *)*(int *)((char *)arg0 + 0xC);
+        return *(int *)((char *)base + index + subindex + 0x74);
+    }
+    return 0;
+}
+
 extern int lbl_8034A270;
