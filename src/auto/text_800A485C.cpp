@@ -22,6 +22,18 @@ extern "C" const char lbl_8031E9C0[];
 extern u32 lbl_8055DDF8;
 extern "C" void fn_800D1C48(void);
 
+#include <revolution/MEM/mem_allocator.h>
+#include <revolution/MEM/mem_expHeap.h>
+
+extern "C" MEMAllocator lbl_804075E0;
+extern "C" MEMAllocator* lbl_80559708;
+extern "C" void* lbl_8055DD98;
+extern "C" void* lbl_8055DDF0;
+extern "C" void* fn_800C6914(void*);
+extern "C" void fn_800C6A1C(void*, s32);
+extern "C" void fn_800C6CE8(void*);
+extern "C" void fn_800C7998(void*);
+
 void fn_800A5954(void) {
     fn_800A6048();
 }
