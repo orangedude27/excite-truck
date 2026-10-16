@@ -4,9 +4,22 @@
 typedef long s32;
 typedef unsigned long u32;
 extern void** fn_801284F8(s32, void*);
-extern char lbl_8032C4F0[];
-extern char lbl_8032C500[];
+extern void *lbl_8032C4F0;
+extern void *lbl_8032C500;
 extern long fn_80128668(void);
+
+void fn_8013C9F4(long arg0) {
+    void *temp;
+    void **temp_r3;
+
+    if (arg0 == 0) {
+        temp = lbl_8032C4F0;
+        temp_r3 = fn_801284F8(4, temp);
+        if (temp_r3 != (void**)0) {
+            *temp_r3 = lbl_8032C500;
+        }
+    }
+}
 
 void fn_8013CA3C(void) {
 
