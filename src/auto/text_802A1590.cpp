@@ -64,9 +64,21 @@ extern "C" void fn_802A1DC0(void) {
     }
 }
 
+extern "C" void* fn_802A1DF4(void* arg0, void* arg1) {
+    s32 value;
+    *(void**)arg0 = &lbl_80349B78;
+    value = (*(s32 (**)(void*, void*))((char*)*(void**)arg1 + 0x14))(arg1, (void*)lbl_8055CBB0);
+    fn_802A2AE8(arg0, value);
+    fn_802A2BF4(arg0, value);
+    fn_802A2D04(arg0, value);
+    fn_802A2E08(arg0, value);
+    return arg0;
+}
+
 extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void**)arg0 = &lbl_80349B78;
+        void* vtable = &lbl_80349B78;
+        *(void**)arg0 = vtable;
         fn_802A44B8(*(void**)((char*)arg0 + 0x10), 1);
         fn_8028E398(*(void**)((char*)arg0 + 0xC));
         fn_8028E398(*(void**)((char*)arg0 + 8));
@@ -230,4 +242,4 @@ extern "C" u32 fn_802A4A30(void) { return 4; }
 extern "C" u32 fn_802A4A38(void) { return 5; }
 
 extern "C" u32 fn_802A4A40(void) { return 6; }
-
+#define M2C_FIELD(expr, T, off) (*(T)((char *)(expr) + (off)))
