@@ -4,7 +4,7 @@
 
 extern float fabsf(float);
 extern void *lbl_8055D350;
-extern f32 lbl_80560368, lbl_805603B4, lbl_80560360, lbl_805603A0, lbl_805603A8, lbl_805603AC;
+extern f32 lbl_80560368, lbl_805603B4, lbl_80560360, lbl_8056039C, lbl_805603A0, lbl_805603A4, lbl_805603A8, lbl_805603AC, lbl_80562068;
 extern u8 lbl_802FCD44[], lbl_802FCD78[], lbl_80558BA0[];
 extern void fn_80013EDC(void *, s32, void *, void *, f32, f32, f32);
 extern void fn_801476C4(void);
