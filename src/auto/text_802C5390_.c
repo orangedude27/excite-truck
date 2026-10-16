@@ -230,8 +230,12 @@ void fn_802C7760(void *arg0, f32 *arg1, f32 *arg2, f32 *arg3, f32 *arg4, f32 *ar
     *arg6 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x40);
 }
 
-void fn_802C77F0(f32 *arg1) {
-    fn_802C7760(arg1, arg1 + 1, arg1 + 2, arg1 + 3, arg1 + 4, arg1 + 5, 0);
+void fn_802C77F0(void *arg0, f32 *arg1) {
+    fn_802C7760(arg0, arg1, arg1 + 1, arg1 + 2, arg1 + 3, arg1 + 4, arg1 + 5);
+}
+
+float fn_802C7808(void) {
+    return *(float *)((char *)(*(void **)((char *)fn_802C5390() + 4)) + 0x1C);
 }
 
 void fn_802C7A10(void* alarm) {
