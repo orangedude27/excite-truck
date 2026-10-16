@@ -214,9 +214,9 @@ void fn_802BA004(void) {
 }
 
 void fn_802BA560(void *arg0) {
-    *(int *)((char *)arg0 + 4) = 0;
-    *(int *)((char *)arg0 + 0) = 0;
-    *(int *)((char *)arg0 + 8) = 3;
+    *(volatile int *)((char *)arg0 + 4) = 0;
+    *(volatile int *)((char *)arg0 + 0) = 0;
+    *(volatile int *)((char *)arg0 + 8) = 3;
     *(volatile unsigned char *)((char *)arg0 + 0xC) = 1;
 }
 
