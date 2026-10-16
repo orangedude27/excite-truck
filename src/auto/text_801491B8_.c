@@ -15,6 +15,10 @@ void fn_8014ACD4(void) {
 
 }
 
+void fn_8014AED0(void *arg0, f32 farg0) {
+    ((f32 *)arg0)[0x41] = farg0;
+}
+
 f32 fn_8014AED8(void *arg0) {
     return ((f32 *)arg0)[0x41];
 }
