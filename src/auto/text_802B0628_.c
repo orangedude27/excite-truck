@@ -211,6 +211,10 @@ int fn_802B1B10(int *arg0) { return *arg0; }
 
 int fn_802B1B18(int *arg0) { return *arg0 == 0; }
 
+int fn_802B1B28(int *arg0, int arg1) {
+    return *arg0 + (arg1 * 0xC);
+}
+
 int fn_802B1B38(void *arg0) {
     return ((int *)arg0)[1];
 }
