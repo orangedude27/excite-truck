@@ -84,10 +84,25 @@ void fn_802D2614(void) {
     fn_802D0EEC();
 }
 
+void fn_802D2640(void) {
+    int i;
+    GXSetNumIndStages(0);
+    i = 0;
+    do {
+        GXSetTevDirect(i);
+        i++;
+    } while (i < 4);
+}
+
 void fn_802D2AC4(void) {
     GXSetNumChans(1);
     GXSetChanCtrl(1, 0, 0, 0, 0, 0, 2);
     fn_802DFAF4();
+}
+
+extern char lbl_804C97D0;
+void* fn_802D2D04(void) {
+    return &lbl_804C97D0 + 0xC;
 }
 
 extern void *lbl_8055FD64;
