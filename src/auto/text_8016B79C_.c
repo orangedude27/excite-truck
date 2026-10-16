@@ -220,6 +220,32 @@ u8 fn_8016E320(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x9c);
 }
 
+extern char lbl_80330BC8[];
+extern char lbl_80330BD8[];
+extern void *fn_80145E70(const char *);
+extern s32 fn_801284F8(s32, const char *);
+extern void *fn_802ADDD8(s32);
+extern void fn_8016EA9C(void *);
+extern void fn_8016E984(void *);
+extern s32 fn_80179650(void);
+void fn_8016E880(void *arg0, void *arg1) {
+    s32 count = *(s32 *)((u8 *)arg0 + 8);
+    s32 i;
+    void **items = *(void ***)((u8 *)arg0 + 4);
+    *(s32 *)arg1 = count;
+    *(s32 *)((u8 *)arg1 + 4) = fn_80179650();
+    *((u8 *)arg1 + 0xD) = 1;
+    *((u8 *)arg1 + 0xE) = 0;
+    for (i = 0; i < count; i++) {
+        u8 *entry = (u8 *)arg1 + i * 0x14;
+        *(s32 *)(entry + 0x10) = i;
+        *(u8 *)(entry + 0x20) = 0;
+        *(s32 *)(entry + 0x18) = **(s32 **)items[i];
+        *(s32 *)(entry + 0x14) = 1;
+        *((u8 *)arg1 + 0xC) = 1;
+    }
+}
+
 void fn_8016FD9C(f32 *arg0, void *arg1) {
     char sp8[0x20];
     f32 value = *arg0;
@@ -232,25 +258,23 @@ void fn_8016FD9C(f32 *arg0, void *arg1) {
 }
 
 void fn_8016FE1C(void *arg0) {
-    ((void (**)(void *))(*(void ***)arg0))[19](arg0);
+    ((void (**)(void *))(*(void **)arg0))[19](arg0);
 }
 
 void fn_8016FF98(void *arg0) {
     s32 found = 0;
     s32 count = *(s32 *)((u8 *)arg0 + 8);
+    s32 i = 0;
     void **items = *(void ***)((u8 *)arg0 + 4);
-    s32 i;
     if (count > 0) {
-        for (i = 0; i < count; i++) {
+        for (; i < count; i++) {
             if (*((u8 *)items[i] + 8) != 0) {
                 found = 1;
                 break;
             }
         }
     }
-    if (!found) {
-        fn_8016A438();
-    }
+    if (!found) fn_8016A438();
 }
 
 extern char lbl_80330B7C[];
@@ -297,8 +321,23 @@ s32 fn_80170F1C(void *arg0) {
     return result;
 }
 
+s32 fn_80170F7C(void *arg0) {
+    if (((s32 (**)(void))(*(void **)arg0))[9]() != 0) {
+        return *(s32 *)((u8 *)arg0 + 0xAC) == 2;
+    }
+    return 0;
+}
+
 u32 fn_80170FD4(void) { return 1; }
 
 void fn_80171208(void *arg0, s32 arg1) {
     fn_801B0C78((void *)arg1);
 }
+extern char lbl_80330BC8[];
+extern char lbl_80330BD8[];
+extern void *fn_80145E70(const char *);
+extern s32 fn_801284F8(s32, const char *);
+extern void *fn_802ADDD8(s32);
+extern void fn_8016EA9C(void *);
+extern void fn_8016E984(void *);
+extern s32 fn_80179650(void);
