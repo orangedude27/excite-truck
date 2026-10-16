@@ -12,6 +12,16 @@ extern u8 lbl_8032E448[];
 
 extern void **lbl_8055E27C;
 
+namespace ebi {
+namespace title {
+class TBlackPlane {
+public:
+    TBlackPlane() {}
+    void updateAfterCamera();
+};
+} // namespace title
+} // namespace ebi
+
 extern "C" {
 void fn_80156188(s32 arg0) {
     fn_8015474C();
