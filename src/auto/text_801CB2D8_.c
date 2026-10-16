@@ -12,6 +12,8 @@ extern int fn_8001C0E8(int, int);
 extern int fn_80128668(void *);
 extern int lbl_80338024;
 extern int lbl_80338038;
+extern int fn_8001BF34(f32);
+extern void fn_8001BF0C(f32, f32);
 extern int fn_80161C38(void);
 extern int fn_801EA994(void);
 extern void fn_801CCBA4(void);
@@ -99,11 +101,12 @@ done:
 }
 
 void fn_801CB648(int arg0, int arg1, f32 farg0) {
-    if (fn_80019BA8() == 0) {
-        if (fn_80161C38() == 0) {
-            fn_801CD7BC(arg0, arg1, farg0);
-        }
+    if (fn_80019BA8() != 0) goto done;
+    if (fn_80161C38() == 0) {
+        fn_801CD7BC(arg0, arg1, farg0);
     }
+done:
+    return;
 }
 
 void fn_801CB6B4(void) {
@@ -176,15 +179,21 @@ void fn_801CC768(void *arg0, float arg1) {
 }
 
 void **fn_801CC784(void *arg0) {
-    int index = *(int *)((char *)arg0 + 4);
     void **base = *(void ***)arg0;
+    int index = *(int *)((char *)arg0 + 4);
     *(int *)((char *)arg0 + 4) = index + 1;
-    return base + index;
+    return (void **)((char *)base + (index << 2));
 }
 
 void fn_801CC8EC(void *arg0) {
     *(void **)((char *)arg0 + 4) = arg0;
     *(int *)arg0 = 0;
+}
+
+void fn_801CC8FC(void *arg0) {
+    *(int *)arg0 = (int)((char *)arg0 + 12);
+    *(int *)((char *)arg0 + 8) = 7;
+    *(int *)((char *)arg0 + 4) = 0;
 }
 
 void fn_801CE698(void) {
