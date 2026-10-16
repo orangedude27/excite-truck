@@ -31,6 +31,13 @@ public:
     virtual u8 *v10(); // 0x10
 };
 
+class TObj18 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5();
+    virtual u8 *v18();
+};
+
 class TObjC {
 public:
     virtual void d0();
