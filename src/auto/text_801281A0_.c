@@ -55,6 +55,10 @@ void fn_801282E8(void) {
 
 }
 
+void fn_8012850C(void *arg0, void *arg1) {
+    fn_8012834C(arg1, arg0, 0);
+}
+
 s32 fn_80128520(s32 arg0) {
     volatile s32 r4 = arg0;
     void *var_r3;
