@@ -23,6 +23,11 @@ extern int fn_801CE874(int);
 extern void fn_801CCDAC(int, int, int);
 extern void fn_801CD4CC(int, int);
 extern signed char lbl_8055E880;
+typedef struct {
+    s32 field0;
+    s32 field4;
+    s32 field8;
+} Struct_801CE670;
 extern void fn_801CB3F8(void);
 extern void fn_801CC470(void);
 extern void fn_801CC918(void);
@@ -203,9 +208,9 @@ void fn_801CE670(void *arg0, s32 arg1, s32 arg2) {
     spC = arg1;
     sp8 = 5;
     sp10 = arg2;
-    *(s32 *)((char *)arg0 + 0) = 5;
-    *(s32 *)((char *)arg0 + 4) = arg1;
-    *(s32 *)((char *)arg0 + 8) = arg2;
+    *(s32 *)((char *)arg0 + 0) = sp8;
+    *(s32 *)((char *)arg0 + 4) = spC;
+    *(s32 *)((char *)arg0 + 8) = sp10;
 }
 
 void fn_801CE698(void) {
@@ -227,9 +232,9 @@ void fn_801CE6A4(void *arg0, s32 arg1, s32 arg2) {
     spC = arg1;
     sp8 = 1;
     sp10 = arg2;
-    *(s32 *)((char *)arg0 + 0) = 1;
-    *(s32 *)((char *)arg0 + 4) = arg1;
-    *(s32 *)((char *)arg0 + 8) = arg2;
+    *(s32 *)((char *)arg0 + 0) = sp8;
+    *(s32 *)((char *)arg0 + 4) = spC;
+    *(s32 *)((char *)arg0 + 8) = sp10;
 }
 
 void fn_801CE6CC(void) {
