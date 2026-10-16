@@ -42,11 +42,6 @@ struct F92Node {
     F92Node *f24;  // 0x24
 };
 
-struct F92VT {
-    u8 pad[8];
-    void (*fn8)(void *, s32); // 0x8
-};
-
 extern "C" {
 extern u8 lbl_8033B1EC[];
 extern u8 lbl_8033B210[];
@@ -103,15 +98,15 @@ extern "C" void *fn_801F92AC(F92Obj *obj) {
     obj->f20 = 0;
     obj->f28 = lbl_80563000;
     obj->b60 = 1;
-    memset((char *)&obj->b60 + 1, 0x20, 0);
-    memset((char *)&obj->b60 + 1, 0x61, 0x10);
+    memset(obj, 0x61, 0x20);
+    memset((char *)obj + 0x61, 0x61, 0x10);
     obj->w74 = -1;
     return obj;
 }
 
 extern "C" void *fn_801F93FC(void *node) {
     node = fn_801F8188(node, 0, 1);
-    fn_801F9440((F92Node *)&lbl_8055EC38, (F92Node *)node);
+    fn_801F9440(&lbl_8055EC38, node);
     return node;
 }
 
