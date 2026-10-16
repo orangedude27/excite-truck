@@ -412,7 +412,10 @@ extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 extern "C" void fn_80158558(s32 arg0) {
     s32* state = lbl_8042FD34;
-    ((s32*)state[0])[state[1]++] = arg0;
+    s32* items = (s32*)state[0];
+    s32* slot = items + state[1];
+    state[1] += 1;
+    *slot = arg0;
 }
 
 extern "C" void fn_8015857C(u32 arg0) {
@@ -753,6 +756,7 @@ extern "C" void fn_8015A318(Unk8015A368C* arg0) {
     }
 }
 
+#pragma dont_inline on
 extern "C" f32 fn_8015A368(void* arg0) {
     f32 sp8;
     Unk8015A368C* obj = (Unk8015A368C*)arg0;
@@ -765,6 +769,7 @@ extern "C" f32 fn_8015A368(void* arg0) {
     *(f32*)((u8*)arg0 + 0x25C) = f;
     return sp8;
 }
+#pragma dont_inline off
 
 extern "C" s32 fn_8015A404(void* arg0) {
     return *(s32*)((u8*)arg0 + 0x2620);
@@ -967,6 +972,30 @@ extern "C" void fn_8015C564(void* arg0, void* arg1, s32 arg2, f32 arg3) {
                 *(s32*)((u8*)arg0 + 0x274) = (s32)offset;
             }
         }
+    }
+}
+
+extern "C" void fn_8015C5D0(Unk801577F0* arg0) {
+    if (arg0->m268 > 0)
+        fn_8015A368(arg0);
+}
+
+extern "C" void fn_8015C5E4(void* arg0) {
+    f32 value = *(f32*)((u8*)arg0 + 0x278);
+    f32 offset;
+    if (value < lbl_80561754) {
+        offset = value - lbl_80561760;
+    } else {
+        offset = lbl_80561760 + value;
+    }
+    *(s32*)((u8*)arg0 + 0x26c) = (s32)offset;
+    ((Unk801577F0*)arg0)->v13();
+    if (*(s32*)((u8*)arg0 + 0x26c) > 0) {
+        if (*(s32*)((u8*)arg0 + 0x26c) > 0) {
+            fn_801CB6E4((void*)0x4F8203, *(s32*)((u8*)arg0 + 4));
+        }
+        *(s32*)((u8*)arg0 + 0x26c) = 0;
+        *(f32*)((u8*)arg0 + 0x278) = lbl_80561754;
     }
 }
 
