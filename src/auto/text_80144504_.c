@@ -70,6 +70,14 @@ void fn_80144C54(void *arg0) {
     ((u8 *)arg0)[0x4C] = 0;
 }
 
+unsigned int fn_80144C68(unsigned int arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3) {
+    return ((arg2 & 0xFF) << 8) | ((arg1 & 0xFF) << 16) | ((arg0 >> 24) & 0xFF) | (arg3 & 0xFF);
+}
+
+float fn_80144C80(float farg0, float farg1, float farg2) {
+    return farg0 + (farg2 * (farg1 - farg0));
+}
+
 void fn_80144D80(f32 *arg0, f32 farg0, f32 farg1, f32 farg2) {
     f32 z = lbl_805615BC;
     arg0[0] = farg0;
