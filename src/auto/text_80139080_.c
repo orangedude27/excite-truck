@@ -11,5 +11,4 @@ void fn_80139080(void) {
     lbl_8055E110 = 0xFFFF0000;
     lbl_8055E114 = 0xFFFF0000;
 }
-#pragma section ".ctors$00"
-DECL_SECTION(".ctors$00") funcptr_t D_802ED190 = fn_80139080;
+DECL_SECTION(".ctors") funcptr_t D_802ED190 = fn_80139080;
