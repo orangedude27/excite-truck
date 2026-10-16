@@ -14,6 +14,10 @@ void fn_80144504(void **arg0) {
     *arg0 = (void *)&lbl_80336890;
 }
 
+float fn_80144514(float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
+    return (farg4 * farg5) + ((farg0 * farg1) + (farg2 * farg3));
+}
+
 void GXInitLightAttnA_80144B44(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
     ((f32 *)arg0)[0] = farg0;
     ((f32 *)arg0)[1] = farg1;
