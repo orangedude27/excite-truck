@@ -52,11 +52,10 @@ extern "C" s32 fn_800F26FC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-s32 fn_800F273C(void *arg0) {
-    s32 val = *(s32*)((u8*)arg0 + 4);
+extern "C" s32 fn_800F273C(void *arg0) {
+    s32 val = *(s32 *)((u8 *)arg0 + 4);
     s32 neg = -val;
-    s32 combined = neg | val;
-    return (combined >> 31) & 1;
+    return (neg | val) >> 31 & 1;
 }
 
 void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(void *arg0, s32 flag) {
@@ -249,9 +248,9 @@ extern "C" void fn_800F8520(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
-extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *arg0, f32 farg0) {
-    if (farg0 < lbl_805610BC) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
-    *(f32 *)((u8 *)arg0 + 0x28) = farg0;
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *this_, f32 farg0) {
+    if (!(farg0 >= lbl_805610BC)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
+    *(f32 *)&((u8 *)this_)[0x28] = farg0;
 }
 
 extern "C" s32 fn_800F87E8(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x30); }
