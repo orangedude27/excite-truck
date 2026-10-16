@@ -1,6 +1,25 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+int fn_80172E24(int arg0, int arg1) {
+    extern int fn_80128668(void);
+    if (arg0 != 0 && arg1 > 0)
+        fn_80128668();
+    return arg0;
+}
+
+int fn_80173A84(void *arg0) {
+    int count = *(int *)((char *)arg0 + 0x170);
+    int result = 0;
+    int i;
+    for (i = 0; i < count; i++) {
+        char *p = (char *)arg0 + i * 0x1C;
+        if (*(unsigned char *)(p + 0x91) == 0 && *(unsigned char *)(p + 0x90) != 0)
+            result++;
+    }
+    return result != 0;
+}
+
 int fn_80174298(void *arg0, int arg1) {
     extern float lbl_80558DC4[];
     extern float lbl_8055E3C8;
@@ -45,6 +64,12 @@ void fn_80174794(void *arg0) {
     }
 }
 
+void fn_80175228(void *arg0) {
+    register void *vtable = *(void **)arg0;
+    register void *slot = *(void **)((char *)vtable + 0x4C);
+    ((void (*)(void))slot)();
+}
+
 int fn_801757B0(void) { return 1; }
 
 int fn_801758B8(void *arg0) { return *(int *)((char *)arg0 + 0x1AC) == 2; }
@@ -71,6 +96,7 @@ int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2,
     arg0[1] = y;
     *arg3 = 0x21F;
     *arg1 = lbl_80561AF4;
+    *(volatile float *)((char *)&z) = z;
     return 1;
 }
 
