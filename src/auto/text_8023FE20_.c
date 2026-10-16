@@ -3,42 +3,43 @@
 
 typedef signed int s32;
 typedef unsigned char u8;
+s32 fn_802407B0(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_80241228(void) {
 }
 
 void fn_80241DE8(void *arg0) {
     s32 i;
     void *entry;
-    s32 value;
-    void *out;
 
-    value = **(s32 **)((char *)arg0 + 0x34);
     for (i = 0, entry = arg0; i < *(s32 *)((char *)arg0 + 0x2C); i++, entry = (char *)entry + 4) {
-        out = *(void **)((char *)entry + 0x18);
-        *(u8 *)out = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
-        *(s32 *)((char *)out + 4) = value;
+        *(u8 *)*(void **)((char *)entry + 0x18) = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
+        *(s32 *)((char *)*(void **)((char *)arg0 + 0x18) + 4) = *(s32 *)((char *)arg0 + 0x34);
     }
 }
 
 s32 fn_80241E40(void *arg0) {
     s32 i;
+    s32 result;
     void *entry;
     s32 value;
-    void *out;
 
-    if (**(s32 **)((char *)arg0 + 0x34) != fn_802E4A10()) {
+    value = fn_802E4A10();
+    if (*(s32 *)((char *)arg0 + 0x34) != value) {
         return 0;
     }
     if (*(u8 *)((char *)arg0 + 0x38) == 0) {
         return 0;
     }
+    result = 1;
     for (i = 0, entry = arg0; i < *(s32 *)((char *)arg0 + 0x2C); i++, entry = (char *)entry + 4) {
-        value = **(s32 **)((char *)arg0 + 0x34);
-        out = *(void **)((char *)entry + 0x18);
-        *(u8 *)out = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
-        *(s32 *)((char *)out + 4) = value;
+        *(u8 *)*(void **)((char *)entry + 0x18) = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
+        *(s32 *)((char *)*(void **)((char *)arg0 + 0x18) + 4) = *(s32 *)((char *)arg0 + 0x34);
     }
-    return 1;
+    return result;
 }
 
 s32 fn_80241EE8(s32 arg0) {
@@ -48,17 +49,15 @@ s32 fn_80241EE8(s32 arg0) {
 s32 fn_802426C0(void *arg0) {
     s32 index = *(s32 *)((char *)arg0 + 0x28);
     void *object;
-    void **vtable;
     s32 count;
+    struct Vtable { char pad[0x14]; s32 (*get_count)(void *); char pad2[4]; s32 (*get_item)(void *, s32); };
 
     if (index >= 0) {
         object = *(void **)((char *)arg0 + 0x24);
-        vtable = *(void ***)object;
-        count = ((s32 (*)(void *))vtable[5])(object);
+        count = ((struct Vtable *)*(void **)object)->get_count(object);
         if (index < count) {
             object = *(void **)((char *)arg0 + 0x24);
-            vtable = *(void ***)object;
-            return ((s32 (*)(void *, s32))vtable[7])(object, index);
+            return ((struct Vtable *)*(void **)object)->get_item(object, index);
         }
     }
     return 0;
