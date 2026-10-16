@@ -36,6 +36,11 @@ void fn_80246DE8(void) {
     fn_80246CB8(lbl_803432EC);
 }
 
+extern unsigned char lbl_803432FC[];
+void fn_80246DF4(void) {
+    fn_80246CB8(lbl_803432FC);
+}
+
 Obj_802470D4 *fn_802470D4(Obj_802470D4 *arg0, s32 arg1) {
     s32 *p;
     if (arg0 != 0) {
