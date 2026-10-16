@@ -450,6 +450,11 @@ extern "C" s32 fn_8021C318(void *arg0) {
     return *p == *(s32 *)((u8 *)arg0 + 0x2AC);
 }
 
+extern "C" void fn_8021C6D0(void);
+extern "C" void *lbl_8033F180;
+extern "C" void fn_8022EE98(s32);
+extern "C" void fn_8021C6CC(void) { fn_8021C6D0(); }
+
 extern "C" s32 fn_8021C974(void) { return 0; }
 
 extern "C" void *fn_8021C97C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
