@@ -17,7 +17,7 @@ extern void fn_802D9230(void);
 extern void fn_80203B20(void);
 extern void fn_802D050C_var(void);
 #define fn_802D050C(...) fn_802D050C_var()
-extern s32 fn_80202BE4(void);
+extern u32 fn_80202BE4(void);
 typedef struct { s32 w0; s32 w1; } lbl_8048897C_entry;
 struct lbl_8048897C_t { lbl_8048897C_entry* ptr; s32 count; s32 unk_08; s32 unk_0C; };
 extern struct lbl_8048897C_t lbl_8048897C;
@@ -45,15 +45,23 @@ typedef struct { u8 pad[0x24]; f32 x; f32 y; f32 z; } unk_80203A88_dest;
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1);
 
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
-    s32 var_r26;
-    struct lbl_80488B88_t* var_r27;
+    s32 temp_r5;
+    s32 temp_r6;
+    s32 temp_r7;
+    s32 temp_r8;
+    s32 temp_r9;
+    s32 temp_r10;
 
     lbl_8055ED1C = -1;
     fn_802C8BD0(-1);
-    var_r26 = arg0;
-    var_r27 = arg1;
-    lbl_80488B88 = *var_r27;
-    fn_802BE07C(var_r26 + 0x24, (s32)fn_802036E4, var_r27->w[10], var_r27->w[9], var_r27->w[8], var_r27->w[7], var_r27->w[6], var_r27->w[5]);
+    temp_r10 = arg1->w[5];
+    temp_r9 = arg1->w[6];
+    temp_r8 = arg1->w[7];
+    temp_r7 = arg1->w[8];
+    temp_r6 = arg1->w[9];
+    temp_r5 = arg1->w[10];
+    lbl_80488B88 = *arg1;
+    fn_802BE07C(arg0 + 0x24, (s32)fn_802036E4, temp_r5, temp_r6, temp_r7, temp_r8, temp_r9, temp_r10);
     fn_802C8D74();
 }
 
@@ -104,15 +112,16 @@ void fn_80203DC8(void) {
     fn_80203D84(&lbl_8055ED0C);
     ((void(*)(void*))fn_802D050C)(0);
     fn_802D30DC(0);
-    var_r30 = &lbl_8048897C;
+    var_r30 = (struct lbl_8048897C_t*)((s32)&lbl_8048897C - 0x8000);
+    var_r31 = (struct lbl_8048897C_t*)((s32)var_r30 + 0x8000);
     var_r28 = 0;
     var_r29 = 0;
-    while (var_r28 < var_r30->count) {
+    while (var_r28 < var_r31->count) {
         fn_80203D84((s32*)((u8*)lbl_8048897C.ptr + var_r29));
         var_r29 += 8;
         var_r28 += 1;
     }
-    var_r30->count = 0;
+    var_r31->count = 0;
 }
 
 extern void fn_802D050C(void*);
