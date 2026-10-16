@@ -459,6 +459,15 @@ extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) 
     }
 }
 
+extern "C" void fn_800CF3EC(void *arg0) {
+    f32 val;
+    if (*(s32 *)((u8 *)arg0 + 0x18) == 1)
+        val = *(f32 *)((u8 *)arg0 + 4);
+    else
+        val = *(f32 *)((u8 *)arg0 + 8);
+    *(f32 *)((u8 *)arg0 + 0xC) = val;
+}
+
 extern "C" u32 fn_800CF91C(void) { return 1; }
 
 extern "C" u8 fn_800CF924(s32 arg0, s32 arg1) {
