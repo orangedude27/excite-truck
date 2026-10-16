@@ -10,6 +10,30 @@ void fn_80264098(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 4) = arg1;
 }
 
+#pragma dont_inline on
+#pragma dont_inline off
+void fn_802640A0(void *arg0) {
+    *(int *)((char *)arg0 + 8) = 0;
+    *(void **)arg0 = lbl_8055C458;
+    *(int *)((char *)arg0 + 4) = 0x7b;
+    *(int *)((char *)arg0 + 0xc) = 0;
+    *(int *)((char *)arg0 + 0x10) = 0;
+}
+#pragma dont_inline on
+#pragma dont_inline off
+void fn_802643B8(void *arg0) {
+    *(void **)arg0 = lbl_8055C458;
+    fn_80264098(arg0, 8);
+    *(void (**)(void))((char *)arg0 + 8) = fn_80236914;
+    *(int *)((char *)arg0 + 0xc) = 2;
+}
+#pragma dont_inline on
+#pragma dont_inline off
+void fn_80264404(void *arg0) {
+    *(int *)arg0 = 0;
+    fn_80264098(arg0, 5);
+    *(void **)((char *)arg0 + 8) = fn_80264A54();
+}
 void* fn_80264580(void) {
     return lbl_8055F444;
 }
@@ -26,5 +50,48 @@ extern char lbl_8055C4A8[4];
 extern void fn_80236954(void *queue);
 void fn_802658FC(void) {
     fn_80236954(lbl_8055C4A8);
+}
+
+extern void fn_80236954(void *);
+extern int fn_8023695C(void *);
+extern void fn_80216CA8(void);
+extern void fn_802168BC(int);
+extern char lbl_803464EC[4];
+extern void *lbl_8055F44C;
+extern unsigned char lbl_8055F450;
+int fn_80128668(void);
+#pragma push
+#pragma small_data off
+void fn_80265A28(void) {
+    fn_80236954(lbl_803464EC);
+}
+void fn_80265A34(void) {
+    fn_80236914();
+    if (fn_8023695C(lbl_803464EC) == 2) {
+        fn_80216CA8();
+        fn_802168BC(0);
+    }
+}
+
+int fn_80265B5C(void) {
+    register void *p = lbl_8055F44C;
+    register int result = 1;
+    register int found = 0;
+
+    if (p != 0 && *((unsigned char *)p + 0x20) != 0) {
+        found = 1;
+    }
+    if (found != 0) {
+        return result;
+    }
+    if (lbl_8055F450 != 0) {
+        return result;
+    }
+    return 0;
+}
+
+int fn_80265B9C(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
 }
 
