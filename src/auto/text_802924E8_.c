@@ -66,6 +66,12 @@ extern int fn_802C9994(int);
 extern int fn_802C744C(void*, void*);
 extern int fn_80128668(void*);
 extern void fn_80293530(void*);
+extern int fn_80293374(void*, void*);
+extern void* fn_802935A0(void*);
+extern float lbl_805644D4;
+extern char lbl_8055C988[];
+extern char lbl_80349224[];
+extern int fn_802C6CF8(int);
 extern u8 lbl_80349294[];
 void* __dt__Q34nw4r2ef6EffectFv_802930BC(void* arg0, int arg1) {
     if (arg0) {
