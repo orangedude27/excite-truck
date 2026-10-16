@@ -163,6 +163,28 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
     return arg0;
 }
 
+int fn_80178604(void *arg0) {
+    int result = 0;
+    unsigned int magic = *(unsigned int *)arg0;
+    if (magic == 0x43415220 || magic == 0x50434152 ||
+        magic == 0x41434152 || magic == 0x4e434152) {
+        result = 1;
+    }
+    if (result != 0) return 0;
+    if (magic == 0x4f425354 && *(int *)((char *)arg0 + 0x50) == 0x14) return 2;
+    return 1;
+}
+
+long fn_8017873C(long *arg0, long arg1, long arg2, long arg3, long arg4) {
+    long offset = *arg0;
+    if ((unsigned long)(arg3 + offset + 1) < 0x1000) {
+        *(unsigned char *)((char *)arg0 + offset + 4) = arg1;
+        memcpy((char *)arg0 + offset + 5, (void *)arg2, arg3);
+        *arg0 = offset + arg3 + 1;
+    }
+    return 0;
+}
+
 extern void DBPrintf_80179758(const char *fmt, ...);
 extern s32 lbl_8055E3C4;
 extern u64 fn_802E2C9C(void);
