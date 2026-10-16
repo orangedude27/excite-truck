@@ -70,7 +70,7 @@ void fn_80278894(char arg0) {
 }
 extern int lbl_8055F5B4;
 extern char lbl_8055F5B8;
-extern int fn_802E30C8(const char *, int);
+extern int fn_802E30C8(const char *, ...);
 extern const char lbl_80347590[];
 extern const char lbl_803475B4[];
 extern const char lbl_80347660[];
