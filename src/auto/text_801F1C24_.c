@@ -7,10 +7,18 @@ extern void PSVECNormalize(void *, void *);
 void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
     unsigned int a, b, c, d;
     float e, f;
-    a = arg1[0]; b = arg1[1]; c = arg1[2]; d = arg1[3];
-    e = ((float *)arg1)[4]; f = ((float *)arg1)[5];
-    arg0[0] = a; arg0[1] = b; arg0[2] = c; arg0[3] = d;
-    ((float *)arg0)[4] = e; ((float *)arg0)[5] = f;
+    a = arg1[0];
+    b = arg1[1];
+    c = arg1[2];
+    d = arg1[3];
+    e = ((float *)arg1)[4];
+    f = ((float *)arg1)[5];
+    arg0[0] = a;
+    arg0[1] = b;
+    arg0[2] = c;
+    arg0[3] = d;
+    ((float *)arg0)[4] = e;
+    ((float *)arg0)[5] = f;
 }
 
 void fn_801F3158(float *arg0, float *arg1) {
@@ -37,6 +45,27 @@ void *fn_801F31A0(void *arg0, int arg1) {
         if (arg1 > 0) fn_80128668();
     }
     return arg0;
+}
+
+void fn_801F31E8(unsigned char *arg0) {
+    unsigned char *p = arg0 + 0x2C;
+    int i;
+    for (i = 0; i < 0x20; i++) {
+        unsigned char t;
+        t = p[0]; p[0] = p[3]; p[3] = t;
+        t = p[1]; p[1] = p[2]; p[2] = t;
+        t = p[4]; p[4] = p[7]; p[7] = t;
+        t = p[5]; p[5] = p[6]; p[6] = t;
+        t = p[8]; p[8] = p[11]; p[11] = t;
+        t = p[9]; p[9] = p[10]; p[10] = t;
+        t = p[12]; p[12] = p[15]; p[15] = t;
+        t = p[13]; p[13] = p[14]; p[14] = t;
+        p += 0x10;
+    }
+}
+
+void fn_801F3280(void *arg0, int arg1) {
+    *(int *)((char *)arg0 + 0x3C) = arg1;
 }
 
 void fn_801F371C(int arg0) {
