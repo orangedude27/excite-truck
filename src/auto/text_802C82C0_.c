@@ -16,7 +16,7 @@ void fn_802C86E8(void* hi) {
 
 extern void fn_802C8C04(int);
 extern void fn_802C8D74(void);
-extern void fn_802CB29C(void);
+extern int fn_802CB29C(void);
 extern char lbl_8055FC74;
 extern char lbl_8055FC75;
 extern int lbl_8055CFF0;
