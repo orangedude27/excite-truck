@@ -57,3 +57,7 @@ s32 fn_80243BD8(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_80243C18(void) {
+    fn_80221E7C();
+}
+
