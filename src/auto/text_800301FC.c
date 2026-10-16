@@ -277,3 +277,8 @@ s32 AXRmtGetSamplesLeft(void) {
     return result;
 }
 
+extern u8 lbl_80363BE0[];
+void *__AXGetStudio_800324C4(void) {
+    return lbl_80363BE0;
+}
+
