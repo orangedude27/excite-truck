@@ -110,6 +110,18 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *arg0, 
     return arg0;
 }
 
+extern "C" void *fn_800E2D74(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8002F634((char *)arg0 + 0x6ccc, (void *)__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8, 0xc, 3);
+        fn_8002F634((char *)arg0 + 0x2c, (void *)__dt__Q46nw4hbm3snd6detail7AxVoiceFv, 0x1b0, 0x40);
+        if ((char *)arg0 + 0x20 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)arg0 + 0x20, 0);
+        if ((char *)arg0 + 0x14 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)arg0 + 0x14, 0);
+        if ((char *)arg0 + 8 != 0) __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)arg0 + 8, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void *GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(void *self) {
     if (*(void **)((char *)self + 4) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x172, lbl_80321FAC);
