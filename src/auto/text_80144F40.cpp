@@ -157,6 +157,10 @@ extern "C" s32 DVDGetCurrentDiskID(void) {
     return 0x40000000;
 }
 
+extern "C" s32 fn_80148274(void) {
+    return 0xC0C0C0C0;
+}
+
 extern "C" void fn_80148280(void) {
 
 }
