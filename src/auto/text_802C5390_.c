@@ -185,6 +185,23 @@ void fn_802C7040(int arg0) {
 
 void fn_802C744C(int arg0, void *arg1) { fn_802C70AC(arg0, arg1, -1, -1); }
 
+void fn_802C7458(int arg0, int arg1) {
+    float spC;
+    unsigned char sp8;
+    int temp_r31;
+    void *temp;
+
+    if (arg0 != -1) {
+        temp_r31 = lbl_8055D008;
+        lbl_8055D008 = arg1;
+        temp = *(void **)((char *)fn_802C5390() + 4);
+        if (fn_802C94A0((char *)temp + 0x20, &sp8, &spC, *(float *)((char *)temp + 0x1C))) {
+            fn_802C57B4(arg0, 0, -1, sp8, spC);
+        }
+        lbl_8055D008 = temp_r31;
+    }
+}
+
 void fn_802C7734(void* alarm) {
     fn_802D0610(fn_802D0514(alarm));
 }
