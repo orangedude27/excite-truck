@@ -21,6 +21,8 @@ typedef struct {
     s32 state;
 } UnkStruct_801D6618;
 extern char lbl_80338F50[];
+extern void *lbl_80338C78;
+void fn_80128658(s32);
 
 void fn_801D47F4(void) {
     fn_801D57F0();
@@ -666,9 +668,10 @@ void fn_801D832C(void *arg0) {
 
 void fn_801D8344(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 0x40) != 0) {
-        void **obj = *(void ***)((u8 *)arg0 + 0x2C);
-        if (obj != NULL) {
-            ((void (*)(void *))(*(void **)((u8 *)*obj + 0x1C)))(obj);
+        void ***p = *(void ****)((u8 *)arg0 + 0x2C);
+        if (p != NULL) {
+            void (**vtable)(void *) = *(void (***)(void *))p;
+            vtable[7](p);
         }
         *(s32 *)((u8 *)arg0 + 0x40) = 1;
     }
