@@ -39,7 +39,7 @@ void fn_80176858(void) {
 }
 
 int fn_80176F9C(void);
-int fn_801770C8();
+void fn_801770C8(void);
 void fn_8017691C(void) {
     if (fn_80176F9C() == 0) {
         fn_801770C8();
@@ -144,7 +144,7 @@ extern char fn_80177608;
 extern char fn_80177618;
 extern char fn_80177628;
 extern char fn_80177638;
-void fn_80177790(void) { fn_80177658(&fn_80177608); }
+void fn_80177790(void) { fn_80177658((void (*)(void))fn_80177608); }
 
 void fn_8017779C(void) { fn_80177658(&fn_80177618); }
 
