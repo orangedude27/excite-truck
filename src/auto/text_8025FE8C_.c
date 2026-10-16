@@ -67,6 +67,9 @@ void fn_80262168(void *arg0) {
     fn_80214A9C(0x1E);
 }
 
+void fn_80262578(void) {
+}
+
 s32 fn_8026257C(void) {
     return 0;
 }
