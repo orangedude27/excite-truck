@@ -12,6 +12,13 @@ void fn_802C4C80(void* arg0) {
     fn_8012C4D8();
 }
 
+s32 fn_802C4EE4(s32* arg0) {
+    if (arg0 != NULL) {
+        return *arg0;
+    }
+    return 0;
+}
+
 int fn_802C501C(void) {
     return 8;
 }
