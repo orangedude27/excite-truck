@@ -9,6 +9,8 @@ extern float lbl_80434908[];
 extern float lbl_80434950[];
 extern float lbl_804348E8[];
 extern unsigned char lbl_8055E4F4;
+float fn_80181A94(void) { if (lbl_8055E4F4) return lbl_80434950[14]; return lbl_80434908[2]; }
+
 float fn_80181AC0(void) { if (lbl_8055E4F4) return lbl_80434950[15]; return lbl_80434908[3]; }
 
 float fn_80181AEC(void) { return lbl_80434930[3]; }
