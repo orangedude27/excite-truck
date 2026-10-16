@@ -203,6 +203,8 @@ void fn_801537C8(void) {
 
 u32 fn_80153AC8(void) { return 1; }
 
+u32 fn_80153CF8(void) { return 1; }
+
 void fn_80154580(s32 arg0, void *arg1) {
     s32 *p;
     s32 i;
