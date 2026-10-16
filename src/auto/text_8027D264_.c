@@ -38,7 +38,7 @@ extern unsigned char lbl_8055F66C;
 extern void fn_8027B834(void);
 extern void fn_8027B94C(void);
 void fn_8027D264(void) {
-    fn_8002F634(&lbl_804A4380, fn_8027D280, 0x3B10, 4);
+    fn_8002F634((char *)&lbl_804A4380, fn_8027D280, 0x3B10, 4);
 }
 
 void *fn_8027D304(void *arg0, int arg1) {
@@ -281,3 +281,7 @@ void fn_8027DEAC(void* alarm) {
 void* fn_8027DED0(void) {
     return lbl_8055C790;
 }
+
+void fn_8027DED8(void) {
+}
+
