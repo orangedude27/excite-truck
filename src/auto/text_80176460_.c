@@ -33,6 +33,11 @@ void* fn_801769C4(void) {
     return lbl_8055E3E8;
 }
 
+extern u8 lbl_804303E0[];
+void *__AXFXGetLfoSinTable_801769CC(void) {
+    return lbl_804303E0;
+}
+
 void __AXDSPInitCallback_801769E0(void) {
     lbl_8055E3C0 = 1;
 }
