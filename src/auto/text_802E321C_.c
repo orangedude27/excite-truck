@@ -9,3 +9,10 @@ s32 fn_802E98C8(void);
 void fn_802E3DCC(void) {
     lbl_8055FF24 = (void*)fn_802E98C8();
 }
+extern void fn_802E317C(const char *, s32, s32, s32);
+extern char lbl_8034CF40[];
+extern char lbl_8034CF60[];
+extern char lbl_804DB810[];
+extern s32 fn_802E32C4(void);
+extern s32 lbl_8055FF18;
+extern void *fn_802E333C(void);
