@@ -273,8 +273,24 @@ s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_800EF9B8(void* arg0, f32 arg1) {
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x40) = arg1;
+    OSRestoreInterrupts(0);
+}
+
 extern "C" f32 fn_800EF9F8(void* arg0) {
     return *(f32*)((u8*)arg0 + 0x40);
+}
+
+extern "C" void fn_800EFA00(void* arg0, f32 arg1) {
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x44) = arg1;
+    OSRestoreInterrupts(0);
+}
+
+extern "C" f32 fn_800EFA40(void* arg0) {
+    return *(f32*)((u8*)arg0 + 0x44);
 }
 
 #pragma push
