@@ -23,6 +23,7 @@ extern int fn_801CE874(int);
 extern void fn_801CCDAC(int, int, int);
 extern void fn_801CD4CC(int, int);
 extern signed char lbl_8055E880;
+extern void fn_801CEA28(void *);
 typedef struct {
     s32 field0;
     s32 field4;
