@@ -3,6 +3,7 @@
 #include <types.h>
 #include <revolution/MTX/vec.h>
 #pragma opt_tail_call on
+extern f32 lbl_805622DC;
 extern "C" f64 fn_8002F234(f32);
 
 extern "C" void fn_8019EBC0(void);
@@ -141,6 +142,13 @@ extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+void fn_801A0444(void* arg0, void* arg1) {
+    *(void**)((u8*)arg0 + 0x17C) = arg1;
+    *(f32*)((u8*)arg0 + 0x164) = *(f32*)((u8*)arg1 + 0x24);
+    *(f32*)((u8*)arg0 + 0x168) = *(f32*)((u8*)arg1 + 0x28);
+    *(f32*)((u8*)arg0 + 0x16C) = *(f32*)((u8*)arg1 + 0x2C);
 }
 
 extern "C" void fn_801A1250(void* arg0) {
