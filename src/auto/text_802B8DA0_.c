@@ -14,6 +14,10 @@ int fn_802B8E50(int arg0) {
     return -2;
 }
 
+int fn_802B9100(void) {
+    return 0;
+}
+
 void fn_802B98D0(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
