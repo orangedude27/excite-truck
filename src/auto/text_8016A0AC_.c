@@ -19,6 +19,19 @@ void fn_8016A0B0(void* alarm) {
     fn_8016AC90(fn_8016A8F8(alarm));
 }
 
+extern void fn_8002F6AC(void*, void *(*)(void*, s32));
+extern void* fn_8016B550(void*, s32);
+extern s32 lbl_80430318;
+extern s32 lbl_804302F0;
+extern f32 lbl_80561958;
+extern f32 lbl_8056195C;
+void fn_8016A0D4(void) {
+ s32 i=0, off=0; u8* ptr;
+ while(i < *(s32*)((u8*)&lbl_80430340+4)) { ptr=(u8*)(*(u32*)&lbl_80430340)+off; ptr[0x28]=0; off+=0x2c; i++; }
+ i=0; off=0;
+ while(i < *(s32*)((u8*)&lbl_80430318+4)) { ptr=(u8*)(*(u32*)&lbl_80430318)+off; ptr[0x3c]=0; off+=0x48; ptr[0x3d]=0; *(f32*)(ptr+0x40)=lbl_80561958; *(f32*)(ptr+0x44)=lbl_8056195C; i++; }
+}
+
 void fn_8016A68C(void* arg0) {
     fn_8016B634(fn_8016B598(arg0));
 }
@@ -55,6 +68,8 @@ void* fn_8016AC24(void* arg0, s32 arg1) {
 }
 
 void fn_8016B4F0(u8* arg0) { *arg0 = 0; }
+
+u8* fn_8016B4FC(u8* arg0, s32 arg1) { if(arg0) { *arg0=0; if(arg1>0) fn_80128668(arg0); } return arg0; }
 
 void fn_8016B544(u8* arg0) { *arg0 = 0; }
 
