@@ -24,3 +24,37 @@ s32 fn_80278A1C(void) {
 void fn_80278A24(void) {
 }
 
+void fn_80278A28(void* arg0) {
+    f32 v0 = lbl_805640C0;
+    f32 v1 = lbl_805640C4;
+    f32 v2 = -v0;
+    f32 v3 = lbl_805640C8;
+
+    *(f32*)((u8*)arg0 + 0x10) = v0;
+    *(f32*)((u8*)arg0 + 0x04) = v2;
+    *(f32*)((u8*)arg0 + 0x08) = v2;
+    *(f32*)((u8*)arg0 + 0x0C) = v2;
+    *(f32*)((u8*)arg0 + 0x14) = v0;
+    *(f32*)((u8*)arg0 + 0x18) = v0;
+    *(f32*)((u8*)arg0 + 0x1C) = v1;
+    *(f32*)((u8*)arg0 + 0x20) = v1;
+    *(f32*)((u8*)arg0 + 0x24) = v1;
+    *(f32*)((u8*)arg0 + 0x2C) = v3;
+}
+
+void* fn_80279254(s32 arg0, s32 arg1) {
+    Node_80279254* var_r31 = lbl_8055F5F0;
+
+    while (var_r31 != NULL) {
+        if (stricmp(var_r31->name, (char*)arg0) == 0) {
+            var_r31->count = var_r31->count + 1;
+            break;
+        }
+        var_r31 = var_r31->next;
+    }
+    if (var_r31 == NULL) {
+        var_r31 = fn_80279004(arg0, arg1);
+    }
+    return var_r31;
+}
+
