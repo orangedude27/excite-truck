@@ -199,6 +199,10 @@ unsigned char fn_80192F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
 }
 
+void fn_80192F74(void *arg0) {
+    *(int *)((char *)arg0 + 0xC) = lbl_8055E3C4;
+}
+
 void fn_80193058(void) {
 }
 
