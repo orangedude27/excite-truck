@@ -5,6 +5,16 @@ void fn_801308F4(void) {
     fn_8013072C();
 }
 
+void fn_80130978(void) {
+    fn_80130980(0, 0, 0, 0, 3);
+}
+
+extern void fn_801345D8(void *, ...);
+extern char lbl_80559AA0[];
+void fn_80130FCC(void *arg0, int arg1, int arg2, int arg3, void *arg4) {
+    fn_801345D8(arg0, arg1, lbl_80559AA0, 1, arg4);
+}
+
 void fn_80131264(void) {
     fn_801302E0();
 }
@@ -40,12 +50,23 @@ char *fn_8013126C(char *arg0, const char *arg1) {
     int count;
     char *dst;
     const char *src;
-    dst = arg0;
     src = arg1;
     fn_802E317C(lbl_8032B328);
+    dst = arg0;
     count = 0x12c;
     do {
-        *dst++ = *src++;
-    } while (*src != 0 && --count > 0);
+        count--;
+    } while (count > 0);
+    count = 0x12c;
+    for (;;) {
+        int c = *src++;
+        if ((signed char)c == 0)
+            break;
+        *dst++ = c;
+    }
+    *dst = 0;
     return arg0;
 }
+extern char lbl_80559AF8[];
+extern char lbl_80559B00[];
+extern char lbl_8032B224[];
