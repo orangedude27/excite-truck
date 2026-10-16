@@ -38,6 +38,16 @@ extern "C" float fn_80100FA0(void* arg0) {
     return *(float*)((char*)arg0 + 0x48);
 }
 
+extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(void* arg0, int arg1) {
+    int valid = arg1 >= 0 && arg1 <= 0x7F;
+    if (!valid) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x18A, "channel priority %d out of range [%d, %d]", arg1, 0, 0x7F);
+    }
+    int level = OSDisableInterrupts();
+    *((char*)arg0 + 0x90) = arg1;
+    OSRestoreInterrupts(level);
+}
+
 void fn_801013B0(void) {
     return;
 }
