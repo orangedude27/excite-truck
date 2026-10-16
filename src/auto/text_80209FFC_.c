@@ -9,3 +9,9 @@ void fn_8020A634(void) {
 char fn_8020A640(void) {
     return lbl_8055EDDC;
 }
+
+extern void *lbl_8055EDE0;
+void* fn_8020A69C(void) {
+    return lbl_8055EDE0;
+}
+
