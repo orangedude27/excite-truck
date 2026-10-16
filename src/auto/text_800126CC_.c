@@ -21,7 +21,7 @@ void* fn_80012854(void) {
 }
 
 extern void *fn_8001285C(void);
-extern void *fn_80012820(int);
+extern char *fn_80012820(int);
 extern const char *fn_80007FF0(int);
 extern int fn_80012938(float);
 extern float lbl_80560358;
