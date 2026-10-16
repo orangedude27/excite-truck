@@ -8,6 +8,12 @@ typedef signed long s32;
 int fn_8027AA48(void); /* extern */
 void fn_80214A9C(s32); /* extern */
 
+void fn_8023C2B4(void) {
+    if (fn_8027AA48() == 0) {
+        fn_80214A9C(0x1F);
+    }
+}
+
 s32 fn_8023C2E4(void* arg0) {
     fn_80236900(arg0);
     return 1;
