@@ -15,6 +15,10 @@ void fn_8014ACD4(void) {
 
 }
 
+u8 fn_8014AEE0(void *arg0) {
+    return ((u8 *)arg0)[5];
+}
+
 void fn_8014DE4C(void) {
 
 }
