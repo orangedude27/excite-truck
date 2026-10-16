@@ -178,6 +178,12 @@ s32 fn_80178C1C(s32 *arg0) {
     s64 r3 = fn_80178BBC(arg0);
     return (s32)__div2i(r3, 0x412b);
 }
+
+s32 fn_80178C4C(void *arg0) {
+    DBPrintf_80179758((char *)arg0 + 4);
+    return *(u16 *)arg0 + 4;
+}
+
 #pragma dont_inline off
 void fn_80178C88(void) {
 
@@ -199,6 +205,11 @@ void* fn_80178C9C(void) {
 extern void *lbl_8055E444;
 void* fn_80178CA4(void) {
     return lbl_8055E444;
+}
+
+void fn_80178DBC(int arg0, float arg1) {
+    lbl_804305D4[arg0] = arg1;
+    fn_801DCEC8(arg0, arg1);
 }
 
 #pragma dont_inline on
