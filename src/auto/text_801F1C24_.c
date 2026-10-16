@@ -62,6 +62,20 @@ void fn_801F1F84(void) {
         *(char *)((char *)p + 4) = 0;
     }
 }
+
+#pragma push
+#pragma small_data off
+void fn_801F2108(void) {
+    extern int lbl_8055B130;
+    extern int lbl_8033A7A0;
+    void *p = fn_801284F8(0xC, &lbl_8055B130);
+    if (p != 0) {
+        *(void **)p = &lbl_8033A7A0;
+        *(int *)((char *)p + 4) = 0;
+        *(int *)((char *)p + 8) = 0;
+    }
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -90,6 +104,13 @@ int fn_801F2314(int arg0, int arg1) {
 #pragma push
 #pragma small_data off
 int fn_801F2354(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
+#pragma push
+#pragma small_data off
+int fn_801F2394(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
 }
