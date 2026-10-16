@@ -46,6 +46,9 @@ s32 fn_8028BA44(void *arg0) {
     return 0x14;
 }
 
+void fn_8028BC18(void) {
+}
+
 void fn_8028C8BC(void) {}
 
 extern void fn_802CAC54(s32);
