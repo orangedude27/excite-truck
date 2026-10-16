@@ -9,6 +9,11 @@ extern f32 lbl_805615C4;
 extern f32 lbl_805615C8;
 extern f32 lbl_805615CC;
 
+extern void lbl_80336890(void);
+void fn_80144504(void **arg0) {
+    *arg0 = (void *)&lbl_80336890;
+}
+
 void GXInitLightAttnA_80144B44(void *arg0, f32 farg0, f32 farg1, f32 farg2) {
     ((f32 *)arg0)[0] = farg0;
     ((f32 *)arg0)[1] = farg1;
