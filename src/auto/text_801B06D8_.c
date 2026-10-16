@@ -16,6 +16,18 @@ extern char lbl_80335BD8[];
 extern void fn_801B196C(s32, s32);
 extern void fn_801B18B8(s32, s32);
 
+u32 fn_801B08E8(u32 arg0, u32 arg1, s32 arg2) {
+    u32 var_r4;
+    var_r4 = arg1;
+    if (var_r4 < arg0) var_r4 += arg2;
+    return var_r4 - arg0;
+}
+
+void fn_801B0B8C(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x2C) = 0;
+    *(f32 *)((u8 *)arg0 + 0x30) = lbl_805625F0;
+}
+
 s32 fn_801B0BA0(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x5C);
 }
