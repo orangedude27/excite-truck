@@ -4,6 +4,7 @@
 #include <types.h>
 
 extern f32 lbl_80350EC4[];
+extern f32 lbl_80350ED8[];
 
 extern s32 lbl_8055D490;
 extern s32 lbl_80558A90;
@@ -493,6 +494,14 @@ f32 fn_80011E90(void) {
     f32 value;
     value = lbl_80350EC4[0] + lbl_80350EC4[3];
     return value * lbl_8056025C;
+}
+
+f32 fn_80011EB0(s32 arg0) {
+    return *((f32 *)&lbl_80350EC4[5] + arg0 * 5 + 2);
+}
+
+f32 fn_80011EC8(s32 arg0) {
+    return *((f32 *)&lbl_80350EC4[5] + arg0 * 5);
 }
 
 void fn_8000F158(void) {
