@@ -246,9 +246,6 @@ extern "C" f32 fn_8015A368(void* arg0) {
     f32 sp8;
     ((Unk801577F0*)arg0)->v22();
     s32 v22ret = ((Unk801577F0*)arg0)->v19(0);
-    sp8 = *(f32*)((u8*)arg0 + 0x25C) * (f32)v22ret;
-    ((Unk801577F0*)arg0)->v34(&sp8);
-    ((Unk801577F0*)arg0)->v33();
     *(s32*)((u8*)arg0 + 0x264) = 0;
     *(f32*)((u8*)arg0 + 0x25C) = lbl_80561750;
     return sp8;
