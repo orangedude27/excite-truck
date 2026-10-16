@@ -6,7 +6,10 @@
 int fn_8012850C(int, int);
 extern f32 lbl_805619A0;
 extern char lbl_80330AEC[];
+extern char lbl_803306D0[];
+extern void fn_801345D8(void *, s32, void *, s32);
 extern void fn_802E317C(const char *, ...);
+extern void fn_8016A15C(char *);
 void *fn_80128668(void *);
 void fn_802C6CF8(int);
 int fn_8016C25C(int arg0, int arg1) {
@@ -73,6 +76,21 @@ void fn_8016CD28(void *arg0) {
 
 void fn_8016CEFC(void *arg0) {
     ((s32 *)arg0)[1] = 0;
+}
+
+s32 fn_8016DD98(void *arg0) {
+    s32 value = *(s32 *)((u8 *)arg0 + 0x44);
+    switch (value) {
+        case 0:
+            return 5;
+        case 1:
+            return 0xA;
+        case 2:
+            return 0xF;
+        default:
+            fn_802E317C((const char *)lbl_80330AEC);
+            return 0;
+    }
 }
 
 s32 fn_8016DE08(void *arg0) {
