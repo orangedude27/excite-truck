@@ -17,11 +17,20 @@ extern "C" void fn_8002F634(void* arg0, void* arg1, s32 arg2, s32 arg3);
 extern "C" void fn_80128668(void* arg0);
 extern "C" void fn_800FB374(void);
 extern "C" void* __dt__Q46nw4hbm3snd6detail9StrmSoundFv(void* arg0, s32 arg1) {
+    void* temp_r3;
+    void* temp_r3_2;
+
     if (arg0 != NULL) {
         if ((u8*)arg0 + 0xD8 != NULL) {
             fn_8002F634((u8*)arg0 + 0x184, &fn_800FB374, 0x1C, 0x20);
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8*)arg0 + 0x178, 0);
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8*)arg0 + 0x16C, 0);
+            temp_r3 = (u8*)arg0 + 0x178;
+            if (temp_r3 != NULL) {
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv(temp_r3, 0);
+            }
+            temp_r3_2 = (u8*)arg0 + 0x16C;
+            if (temp_r3_2 != NULL) {
+                __dt__Q46nw4hbm2ut6detail12LinkListImplFv(temp_r3_2, 0);
+            }
         }
         if (arg1 > 0) {
             fn_80128668(arg0);
