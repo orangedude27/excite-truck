@@ -418,7 +418,7 @@ void fn_801D7240(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) == 2) {
         f2 = *(f32 *)((u8 *)arg0 + 0x30);
         if (f2 < lbl_80562ADC) {
-            fn_801D6FB8((u8 *)arg0 + 8);
+            fn_801D6FB8(arg0);
             *(s32 *)((u8 *)arg0 + 4) = 3;
         } else {
             f1 = *(f32 *)((u8 *)arg0 + 0x2C);
@@ -427,7 +427,7 @@ void fn_801D7240(void *arg0) {
                 fn_8016A240((u8 *)arg0 + 8);
                 *(s32 *)((u8 *)arg0 + 4) = 3;
             } else if (f1 < lbl_8055E3C8) {
-                fn_801D6FB8((u8 *)arg0 + 8);
+                fn_801D6FB8(arg0);
             }
         }
     }
