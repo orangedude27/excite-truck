@@ -58,15 +58,25 @@ public:
 
 extern "C" s32 fn_8013D1F0(s32);
 
-extern "C" s32 fn_8013D18C(s32 arg0) {
-    s32 values[6];
-    values[0] = lbl_802F9398[0];
-    values[1] = lbl_802F9398[1];
-    values[2] = lbl_802F9398[2];
-    values[3] = lbl_802F9398[3];
-    values[4] = lbl_802F9398[4];
-    values[5] = lbl_802F9398[5];
-    return values[arg0 % 6];
+extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
+    s32 count = *(s32 *)arg0;
+    s32 i = 0;
+    u8 *items = *(u8 **)(arg0 + 4);
+    u8 *result = items + count * 0x24 - 0x24;
+    while (count > 0) {
+        u8 *item = items + i;
+        if (*(f32 *)(item + 0x18) > arg1) return (u32)result;
+        result = item;
+        i += 0x24;
+        count--;
+    }
+    return (u32)result;
+}
+
+extern "C" u32 fn_8013D18C(u32 arg0) {
+    S6_8013D18C values;
+    values = *(S6_8013D18C *)&lbl_802F9398;
+    return values.v[arg0 % 6];
 }
 
 extern "C" s32 fn_8013D1F0(s32 arg0) {
@@ -83,6 +93,12 @@ extern "C" void fn_8013E338(void) {
 
 }
 
+void fn_8013EB0C(void *arg0, s32 arg1) {
+    u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
+    if (entry[0x118] != 0)
+        *(s32 *)entry = 1;
+}
+
 extern "C" f32 lbl_80561510;
 extern "C" f32 lbl_80561514;
 extern "C" void fn_802AE220(int);
@@ -94,22 +110,27 @@ extern f32 lbl_80561510;
 extern f32 lbl_80558DC4;
 extern void fn_802AE220(int);
 extern int fn_8001DFCC(void);
-f32 fn_8013EFBC(f32 arg0) { return lbl_80561514 - arg0; }
+extern f32 lbl_805614A4;
+extern f32 lbl_805614AC;
+extern f32 lbl_80561530;
+extern f32 lbl_80561538;
+extern f32 lbl_8056153C;
+extern f32 lbl_80561540;
+extern f32 lbl_80561498;
+extern f32 lbl_805614FC;
+extern f32 lbl_80561500;
+extern "C" void fn_8001DAE0(void *, f32);
+extern "C" f32 fn_8013EFBC(f32 arg0) { return lbl_80561514 - arg0; }
 
 unsigned int fn_8013EFC8(void *arg0) {
-    unsigned int result;
-    if (__fabsf(*(f32 *)((u8 *)arg0 + 0x250)) <= lbl_80558DC4) {
-        if (*((u8 *)arg0 + 0x13c))
-            ((TObj4C *)arg0)->v4C();
-        if (*(int *)((u8 *)arg0 + 0x140))
-            fn_802AE220(*(int *)((u8 *)arg0 + 0x140));
-    } else {
-        ((TObj4C *)arg0)->v4C();
-    }
-    if (((TObjC *)arg0)->vC(0))
-        fn_8001DFCC();
-    result = *(int *)((u8 *)arg0 + 0x134);
-    return result == 4;
+ unsigned int result;
+ if (__fabsf(*(f32 *)((u8 *)arg0 + 0x250)) <= lbl_80558DC4) {
+  if (*((u8 *)arg0 + 0x13c)) ((TObj4C *)arg0)->v4C();
+  if (*(int *)((u8 *)arg0 + 0x140)) fn_802AE220(0);
+ } else ((TObj4C *)arg0)->v4C();
+ if (((int (*)(void *))(*(void ***)arg0)[0x68 / 4])(arg0)) fn_8001DFCC();
+ result = *(int *)((u8 *)arg0 + 0x134);
+ return result == 4;
 }
 
 int fn_8013F088(void *arg0) { return (*(s32 *)((u8 *)arg0 + 0x134) - 2) == 0; }
@@ -120,6 +141,16 @@ extern "C" void fn_8013F09C(void) {
 
 extern "C" void fn_8013F434(void) {
 
+}
+
+s32 fn_8013F438(f32 arg0) {
+    f32 temp = (arg0 - lbl_80561530) / lbl_80561538;
+    f32 value = lbl_805614AC;
+    if (value < temp)
+        value = temp;
+    if (value > lbl_805614A4)
+        value = lbl_805614A4;
+    return (s32)(lbl_8056153C + value * lbl_80561540);
 }
 
 extern "C" void fn_80141454(void) {
