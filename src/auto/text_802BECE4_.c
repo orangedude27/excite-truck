@@ -60,7 +60,7 @@ extern const char lbl_8034AD90[];
 extern void* lbl_804C07F0[];
 extern float lbl_80564DA8, lbl_80564DB0, lbl_8055FAE0;
 int fn_802BF740(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668((void*)0);
+    if (arg0 != 0 && arg1 > 0) fn_80128668((void *)arg0);
     return arg0;
 }
 
