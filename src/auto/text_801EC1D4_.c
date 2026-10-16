@@ -93,6 +93,10 @@ void fn_801EDD68(void *arg0) {
                 *(long *)((char *)arg0 + 0x3C), (char *)arg0 + 0x4D4);
 }
 
+long fn_801EE0C8(void *arg0) {
+    return *(long *)((char *)arg0 + 0x48);
+}
+
 void fn_801EE0D0(long arg0, long arg1) {
     fn_801F159C(*(long *)(arg0 + arg1 * 4 + 0x4D4));
 }
