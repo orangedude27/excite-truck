@@ -202,6 +202,10 @@ void fn_8006EC20(void) {
     fn_80068E08();
 }
 
+void fn_80070844(void *p_msg) {
+    GKI_send_msg(0, 0, p_msg);
+}
+
 void fn_80070854(void) {
     RFCOMM_Init();
     GAP_Init();
@@ -215,8 +219,14 @@ void LogMsg(UINT32 trace_set_mask, const char *fmt_str, ...) {
     vsprintf(lbl_803BF240, fmt_str, list);
     va_end(list);
 
-    sprintf(lbl_803BF240, "%s\n", lbl_803BF240);
+    sprintf(lbl_803BF240, lbl_80559040, lbl_803BF240);
     OSReport(lbl_803BF240);
+}
+
+void fn_8007093C(u32 code, void *msg) {
+    if (lbl_8055DC70 == 0) {
+        LogMsg(code, msg);
+    }
 }
 
 void fn_800709E4(void) {
