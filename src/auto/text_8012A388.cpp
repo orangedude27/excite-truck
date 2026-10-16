@@ -1,4 +1,5 @@
 #include <types.h>
+class Unk8012A570 { public: virtual ~Unk8012A570(); };
 
 extern "C" s32 lbl_8055E004;
 extern "C" void **lbl_8055E008;
@@ -18,6 +19,35 @@ extern void fn_8012CC24(void);
 
 extern "C" void fn_8012A46C(void) {
 
+}
+
+extern "C" void *fn_8012A570(u32, void *) {
+    if (lbl_8055E004 == 0) {
+        void *p = fn_801284F8(0x20, lbl_8032A6F8);
+        if (p) p = fn_8012A13C(p, lbl_8032A6F8, 0x20, 0x18);
+        lbl_8055E008 = (void **)p;
+    }
+    void *p = fn_8012A2D8(lbl_8055E008);
+    if (p) ++lbl_8055E004;
+    return p;
+}
+
+extern "C" void fn_8012A5E8(void *arg0) {
+    fn_8012A364(lbl_8055E008, arg0);
+    if (--lbl_8055E004 == 0) {
+        delete lbl_8055E008;
+        lbl_8055E008 = 0;
+    }
+}
+
+extern "C" void fn_8012A648(void) {
+    fn_8012A364(lbl_8055E008, fn_8012A570(0x18, &lbl_805599A0));
+}
+
+extern "C" void fn_8012A67C(void) {
+    lbl_8055E004 = 0;
+    delete lbl_8055E008;
+    lbl_8055E008 = 0;
 }
 
 extern "C" void fn_8012AC28(s32, s32);
