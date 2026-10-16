@@ -7,6 +7,11 @@ void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
 
+extern void *lbl_8055D018;
+void fn_802C86E8(void* hi) {
+    lbl_8055D018 = hi;
+}
+
 char fn_802C9A58(void) {
     return lbl_8055FC8C;
 }
