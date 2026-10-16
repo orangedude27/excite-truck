@@ -66,6 +66,8 @@ void fn_801013B0(void) {
     return;
 }
 
+extern "C" float fn_801013C4(void* arg0) { return *(float*)((char*)arg0 + 0x34); }
+
 extern "C" float fn_801013CC(void* arg0) {
     return *(float*)((char*)arg0 + 0x2C);
 }
