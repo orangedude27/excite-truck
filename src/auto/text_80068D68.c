@@ -470,7 +470,9 @@ BOOL hcisu_h2_open(tHCI_CFG *p_cfg) {
 }
 
 void fn_8006F220(void) {
-    GKI_shutdown();
+    hcisu_h2_cb.at_0x1E = 0;
+    UUSB_Close(&hcisu_h2_cb);
+    fn_80070758();
 }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
