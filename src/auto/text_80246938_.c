@@ -30,10 +30,28 @@ void fn_80128668(void *);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055F260;
+void fn_80247174(void) {
+    s32 i = 0;
+    do {
+        fn_80246CAC(lbl_80563898 - ((float)i / lbl_805638A8));
+        fn_80127464();
+        fn_802E2D74(0x10);
+        i++;
+    } while (i < 0x32);
+    fn_8020A634();
+    fn_80246CAC(lbl_80563898);
+}
+
 s32 fn_8024739C(void) { return 0; }
 
 char fn_80247624(void) {
     return lbl_8055F260;
+}
+
+s32 fn_8024762C(void) {
+    if (fn_802E2C20() % 1500 > 500) fn_80214AF0(1);
+    else fn_80214A9C(1);
+    return 0;
 }
 
 extern void* lbl_8055BEAC;
