@@ -1190,4 +1190,4 @@ void fn_8006BAA4(u32 arg0) {
     }
     DBPrintf_8006CFA8(lbl_80313794);
 }
-
+extern u32 lbl_8055DCA4;
