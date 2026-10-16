@@ -39,7 +39,7 @@ extern unsigned long OSDisableInterrupts(void);
 extern void OSRestoreInterrupts(unsigned long);
 void fn_80033408(void *arg0, int arg1) {
     unsigned char *p = (unsigned char *)arg0;
-    OSDisableInterrupts();
+    unsigned long state = OSDisableInterrupts();
     switch (arg1) {
     case 0: *(short *)(p + 0x140) = 2; break;
     case 1: *(short *)(p + 0x140) = 1; break;
@@ -48,6 +48,6 @@ void fn_80033408(void *arg0, int arg1) {
     case 4: *(short *)(p + 0x140) = 0; *(short *)(p + 0x142) = 2; break;
     }
     *(unsigned int *)(p + 0x1C) |= 1;
-    OSRestoreInterrupts(0);
+    OSRestoreInterrupts(state);
 }
 
