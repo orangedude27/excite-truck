@@ -20,6 +20,34 @@ void fn_802D657C(s32 *arg0, s32 arg1) {
     }
 }
 
+void fn_802D6594(void *arg0) {
+    u8 *bytes = (u8 *)arg0;
+    u8 *cursor = bytes + 0x38;
+    u8 temp0 = bytes[0x34];
+    u8 temp1 = bytes[0x37];
+    s32 i = 0;
+
+    bytes[0x34] = temp1;
+    bytes[0x37] = temp0;
+    temp0 = bytes[0x35];
+    temp1 = bytes[0x36];
+    bytes[0x35] = temp1;
+    bytes[0x36] = temp0;
+
+    do {
+        temp0 = cursor[0];
+        cursor[0] = cursor[3];
+        cursor[3] = temp0;
+        temp0 = cursor[1];
+        cursor[1] = cursor[2];
+        cursor[2] = temp0;
+        cursor += 4;
+        i++;
+    } while (i < *(s32 *)(bytes + 0x34));
+}
+
+#pragma push
+#pragma small_data off
 void fn_802D6810(void) {
     void *buffer;
 
@@ -32,6 +60,24 @@ void fn_802D6810(void) {
     fn_802D6C68();
 }
 
+extern void fn_802D0E48(s32);
+extern void fn_802D5FE4(void *);
+extern void GXCallDisplayList(void *, u32);
+extern u32 lbl_8055FDE8;
+extern u8 lbl_8055FDEC;
+extern s32 lbl_8055FE00;
+extern const char lbl_8034C3F4[];
+extern const char lbl_8034C428[];
+extern void fn_802E30C8(const char *, ...);
+extern void fn_80128670(s32);
+void fn_802D6860(void) {
+    fn_802E30C8(lbl_8034C3F4, lbl_8055FDF8 - lbl_8055FDF4, lbl_8055FDF0);
+    fn_80128670(lbl_8055FDF4);
+    lbl_8055FDF4 = 0;
+    fn_802E30C8(lbl_8034C428, lbl_8055FE00);
+}
+
+#pragma pop
 void fn_802D6B54(void* alarm) {
     fn_802D5F88(fn_802D62E4(alarm));
 }
@@ -53,4 +99,13 @@ extern u8 lbl_8055FDFC;
 void fn_802D7554(u8 arg0) {
     lbl_8055FDFC = arg0;
 }
-
+extern s32 lbl_8055FE00;
+extern const char lbl_8034C3F4[];
+extern const char lbl_8034C428[];
+extern u32 lbl_8055FDE8;
+extern u8 lbl_8055FDEC;
+extern void fn_802D0E48(s32);
+extern void fn_802D5FE4(void *);
+extern void GXCallDisplayList(void *, u32);
+extern void fn_802E30C8(const char *, ...);
+extern void fn_80128670(s32);
