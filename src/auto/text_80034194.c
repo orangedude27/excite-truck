@@ -38,6 +38,19 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+s32 DVDClose(void) {
+    DVDCancel(0);
+    return 1;
+}
+
+void cbForReadAsync(void *arg0, void *arg1) {
+    void (*callback)(void);
+    callback = *(void (**)(void))((u8 *)arg1 + 0x38);
+    if (callback != 0) {
+        callback();
+    }
+}
+
 void cbForCancelSync(void) {
     OSWakeupThread(__DVDThreadQueue);
 }
