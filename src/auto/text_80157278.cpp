@@ -288,8 +288,10 @@ extern "C" u8 fn_80159F24(void* arg0) {
 }
 
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
-    if (arg0->m260 > 0) {
-        if (arg0->m258 != 0) {
+    s32 r5 = arg0->m260;
+    if (r5 > 0) {
+        s32 r3 = arg0->m258;
+        if (r3 != 0) {
             fn_801CB6E4(*(void**)&arg0->m4);
         }
         arg0->m260 = 0;
@@ -307,6 +309,10 @@ extern "C" f32 fn_8015A368(void* arg0) {
     *(s32*)((u8*)arg0 + 0x264) = 0;
     *(f32*)((u8*)arg0 + 0x25C) = f;
     return sp8;
+}
+
+extern "C" s32 fn_8015A404(void* arg0) {
+    return *(s32*)((u8*)arg0 + 0x2620);
 }
 
 extern "C" s32 fn_8015C684(void) {
