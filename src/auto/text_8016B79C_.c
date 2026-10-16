@@ -173,6 +173,10 @@ void fn_8016E314(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0) = *(f32 *)((u8 *)arg0 + 4);
 }
 
+u8 fn_8016E320(void *arg0) {
+    return *(u8 *)((u8 *)arg0 + 0x9c);
+}
+
 s32 fn_80170E78(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x1ec); }
 
 f32 fn_80170E80(f32 *arg0) { return *arg0; }
