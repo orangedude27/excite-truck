@@ -61,7 +61,8 @@ void fn_80031C8C(unsigned short arg0) {
 extern s32 lbl_8055D770;
 extern s32 lbl_8055D76C;
 extern s32 lbl_8055D760;
-extern u64 lbl_8055D778;
+extern volatile u32 lbl_8055D778;
+extern volatile u32 lbl_8055D77C;
 extern volatile u32 lbl_8055D784;
 extern u32 lbl_8055D780;
 extern u32 lbl_8055D75C;
