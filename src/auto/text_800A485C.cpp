@@ -61,6 +61,12 @@ extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC(fn_800B224C(alarm));
 }
 
+extern "C" void* fn_800B1FF4(void*);
+extern "C" void fn_800B75EC(OSAlarm *alarm, OSContext *ctx) {
+#pragma unused(ctx)
+    fn_800B73BC(fn_800B1FF4(alarm));
+}
+
 void fn_800B78EC(void) {
 
 }
