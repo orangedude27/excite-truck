@@ -94,8 +94,10 @@ void fn_802B0904(void);
 void fn_802BAFA0(void);
 int fn_802CFFA0(void);
 int stricmp(const char *, const char *);
-void fn_802B110C(void (*fn)(void *), void *arg) {
-    fn(arg);
+extern float lbl_80564BD0;
+void fn_802BAFF8(int, void *);
+void *fn_802B110C(void *(*fn)(void *), void *arg) {
+    return fn(arg);
 }
 
 void fn_802B111C(void *arg0) {
@@ -118,6 +120,77 @@ void *fn_802B1138(const char *name) {
         count += 1;
     }
     return result;
+}
+
+void fn_802B11BC(void *arg0) {
+    int i;
+    char found = 0;
+    lbl_8055F99C = 0;
+    lbl_8055F998 = 0;
+    ((int *)arg0)[0x318 / 4] = fn_802CFFA0();
+    ((int *)arg0)[0x320 / 4] = 0x3000;
+    ((int *)arg0)[0x31c / 4] = 0;
+    fn_802BAFA0();
+    fn_802B0904();
+    for (i = 0; i < 0xd; i++) {
+        int *p = (int *)((char *)arg0 + 0x934 + i * 0x14);
+        p[0] = 0;
+        p[1] = 0;
+        p[2] = 0;
+        p[3] = 0;
+        p[4] = 0;
+    }
+    ((int *)arg0)[0xa38 / 4] = 0;
+    ((int *)arg0)[0x328 / 4] = 0;
+    if (((int *)arg0)[1] == -2 || fn_802B05E4() != 0 || fn_802B05EC() != 0) {
+        found = 1;
+    }
+    ((char *)arg0)[1] = found;
+}
+
+int fn_802B127C(void *arg0, void *arg1) {
+    int *self = (int *)arg0;
+    int i;
+    if (self == 0) return 0;
+    if (self[0x31c / 4] + 1 <= self[0x320 / 4]) {
+        float *dst;
+        i = self[0x31c / 4];
+        self[0x31c / 4] = i + 1;
+        dst = (float *)((char *)self[0x318 / 4] + i * 0xc);
+        dst[0] = ((float *)arg1)[0];
+        dst[1] = ((float *)arg1)[1];
+        dst[2] = ((float *)arg1)[2];
+    }
+    return (unsigned short)(self[0x31c / 4] - 1);
+}
+
+void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
+    int *self = (int *)arg0;
+    int *obj;
+    int sp8;
+    unsigned short h;
+    int flag = 0;
+    if (self == 0) return;
+    sp8 = ((int *)arg2)[0];
+    h = *(unsigned short *)((char *)arg2 + 4);
+    obj = *(int **)((char *)self[0xa38 / 4]);
+    obj[1] = obj[1] - (0x18 - h);
+    self[0xa38 / 4] = 0;
+    if (arg3 == 4 && farg0 < lbl_80564BD0) {
+        if (self[0x328 / 4] + 1 <= self[0x32c / 4]) {
+            int *dst;
+            int idx = self[0x328 / 4];
+            self[0x328 / 4] = idx + 1;
+            dst = (int *)((char *)self[0x324 / 4] + idx * 8);
+            ((float *)dst)[1] = lbl_80564BD0 - farg0;
+            dst[0] = sp8;
+        }
+    }
+    fn_802BAFF8(arg1, &sp8);
+}
+
+int fn_802B1AF0(void *arg0) {
+    return ((int *)arg0)[1];
 }
 
 int fn_802B1C14(void *arg0) {
