@@ -30,10 +30,45 @@ void fn_802643B8(void *arg0) {
 #pragma dont_inline on
 #pragma dont_inline off
 void fn_80264404(void *arg0) {
-    *(int *)arg0 = 0;
+    *(void **)arg0 = 0;
     fn_80264098(arg0, 5);
     *(void **)((char *)arg0 + 8) = fn_80264A54();
 }
+
+void fn_80264484(void *arg0) {
+    extern void *fn_801284F8(unsigned int, void *);
+    extern char lbl_803464A8[];
+    extern char lbl_803464F8[];
+    extern struct {
+        void **items;
+        int count;
+    } lbl_80498F78;
+    void *result = fn_801284F8(0x18, lbl_803464A8);
+    if (result != 0) {
+        *(int *)((char *)result + 0x14) = 0;
+        *(void **)result = lbl_803464F8;
+    }
+    lbl_80498F78.items[lbl_80498F78.count++] = result;
+    *(int *)arg0 = 0;
+    fn_80264098(arg0, 5);
+    *(void **)((char *)arg0 + 8) = result;
+}
+
+void fn_8026451C(void *arg0) {
+    extern char lbl_803466D8[];
+    *(void **)arg0 = lbl_803466D8;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    lbl_8055F444 = arg0;
+}
+
+int fn_80264538(int arg0, int arg1) {
+    if (arg0 != 0) {
+        lbl_8055F444 = 0;
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
+}
+
 void* fn_80264580(void) {
     return lbl_8055F444;
 }
