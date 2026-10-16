@@ -176,6 +176,15 @@ extern "C" s32 fn_800B7C08(void) {
     return (-result | result) >> 31;
 }
 
+extern "C" s32 VFipf2_fopen(void);
+extern "C" s32 fn_800B7C34(void) {
+    s32 r = VFipf2_fopen();
+    if (r == 0) {
+        r = 0;
+    }
+    return r;
+}
+
 void fn_800B7C60(void) {
     fn_800B75C4();
 }
