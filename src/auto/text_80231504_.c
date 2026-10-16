@@ -94,6 +94,17 @@ u8 fn_80232B78(void *arg0) {
     return ((u8 *)arg0)[5];
 }
 
+extern s32 lbl_8055F06C;
+extern s32 lbl_8055F058;
+extern void fn_802328D4(s32);
+extern char lbl_80340614[];
+extern u32 strlen(const char *);
+s32 fn_802344B0(void) {
+    s32 val = lbl_8055F06C;
+    u32 tmp = (u32)(-val) | (u32)val;
+    return (s32)(tmp >> 31);
+}
+
 void fn_802344C4(u8 arg0) {
     lbl_8055F064 = arg0;
 }
