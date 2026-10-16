@@ -27,11 +27,13 @@ void fn_802D92B0(void) {
 }
 
 void fn_802D92B8(void *arg0) {
+    char *obj;
     lbl_8055FE20 = arg0;
     if (((unsigned char *)arg0)[0xCC]) fn_802E317C(lbl_8034C620, arg0);
     if (*(unsigned int *)((char *)arg0 + 0x70)) fn_802E317C(lbl_8034C650, arg0);
-    GXInitTexObjWrapMode((char *)arg0 + 0x24, 0, 0);
-    GXLoadTexObj((char *)arg0 + 0x24, 3);
+    obj = (char *)arg0;
+    GXInitTexObjWrapMode(obj + 0x24, 0, 0);
+    GXLoadTexObj(obj + 0x24, 3);
 }
 
 void fn_802D9340(void *arg0) {
