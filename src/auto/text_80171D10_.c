@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+void fn_80171D10(int arg0) { fn_80171930(arg0 - 4); }
+
 void fn_80171D18(int arg0) { fn_80171934(arg0 - 4); }
 
 int fn_80171D38(int arg0) {
