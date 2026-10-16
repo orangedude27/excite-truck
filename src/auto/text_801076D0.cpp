@@ -48,9 +48,11 @@ extern "C" void* fn_80111B64(void* arg0) {
     extern void __ct__Q36nw4hbm2ut10CharWriterFv(void*);
     extern f32 lbl_80561178;
     extern s32 lbl_8055DEB8;
+    f32 value;
     __ct__Q36nw4hbm2ut10CharWriterFv(arg0);
-    *(f32*)((char*)arg0 + 0x4C) = lbl_80561178;
-    *(f32*)((char*)arg0 + 0x50) = lbl_80561178;
+    value = lbl_80561178;
+    *(f32*)((char*)arg0 + 0x4C) = value;
+    *(f32*)((char*)arg0 + 0x50) = value;
     *(s32*)((char*)arg0 + 0x54) = 4;
     *(s32*)((char*)arg0 + 0x58) = 0;
     *(s32*)((char*)arg0 + 0x5C) = (s32)&lbl_8055DEB8;
