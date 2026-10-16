@@ -64,8 +64,13 @@ extern "C" void fn_800FDFF8(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
+extern "C" s32 fn_800FE0DC(void *arg0) {
+    void *p = *(void **)((u8 *)arg0 + 0x18);
+    return *(s32 *)((u8 *)p + 0x40);
+}
+
 extern "C" void *fn_800FE648(void) {
-    if (lbl_8055DE80) {
+    if (lbl_8055DE80 == 0) {
         lbl_8041B138[0x2360] = 0;
         lbl_8055DE80 = 1;
     }
@@ -184,7 +189,7 @@ extern "C" void fn_800FEC1C(s32 *arg0, s32 arg1) {
     *arg0 = arg1;
 }
 
-extern "C" void __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, u32 arg1, u32 arg2) {
+extern "C" void __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, u32 arg1) {
     if (this_ != NULL) {
         *(void **)this_ = lbl_80327334;
         u32 level = OSDisableInterrupts();
@@ -195,10 +200,8 @@ extern "C" void __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, u32 arg1, u32 arg
         *(void **)((u8 *)this_ + 0x18) = NULL;
         *(void **)((u8 *)this_ + 0x10) = NULL;
         OSRestoreInterrupts(level);
-        if ((s32)((u8 *)this_ + 4) != 0) {
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)((u8 *)this_ + 4), 0);
-        }
-        if (arg1 >= 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)((u8 *)this_ + 4), 0);
+        if (arg1 > 0) {
             fn_80128668(this_);
         }
     }
