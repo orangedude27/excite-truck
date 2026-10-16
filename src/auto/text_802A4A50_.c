@@ -14,7 +14,7 @@ s32 fn_802C2B78(f32, f32, f32);
 f32 fn_802A4A50(void);
 s32 fn_802A6A7C(void);
 s32 fn_802A5CA4(void);
-s32 fn_802A5A38(void);
+void fn_802A5A38(void);
 extern s32 lbl_8055F888;
 extern s32 lbl_8055F88C;
 extern f32 lbl_8055F8A0;
