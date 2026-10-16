@@ -17,6 +17,14 @@ extern void fn_80071450(void *);
 extern void fn_80070954(u32 code, void *msg, u16 param);
 extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
 extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
+extern u8 lbl_803C4828;
+extern void rfc_send_fcon(void *, s32, void *);
+extern void rfc_send_fcon_80093FDC(void *, s32);
+extern void PORT_FlowInd(void *, s32, s32);
+extern void PORT_LineStatusInd(void *, u8, u8);
+extern void *port_find_mcb_dlci_port(void *, u8);
+extern void rfc_port_timer_stop(void *);
+extern void rfc_send_rls(void *, u8, s32, u8);
 
 s32 fn_8006DF60(s32 *arg0) {
     return *arg0;
@@ -27,17 +35,16 @@ extern void fn_8006EB88(void);
 extern u8 fn_8006EB80(void);
 extern u32 lbl_803946C0[];
 s32 fn_8006DF68(s32 *arg0) {
-    s32 val = arg0[-2];
-    if (val != 0) {
-        return val + 8;
+    if (arg0[-2] != 0) {
+        return arg0[-2] + 8;
     }
     return 0;
 }
 
 u8 fn_8006DF84(void *arg0) {
     u16 val = *(u16 *)((u8 *)arg0 + 8);
-    u32 clz = __builtin_clz(val);
-    return (u8)(clz >> 19);
+    u32 tmp = __cntlzw(val);
+    return tmp >> 19;
 }
 
 void fn_8006EACC(void) {
