@@ -36,6 +36,12 @@ struct F92Obj {
     void *w108; // 0x108
 };
 
+struct F92Node {
+    u8 pad0[0x20];
+    F92Node *next; // 0x20
+    F92Node *f24;  // 0x24
+};
+
 extern "C" {
 extern u8 lbl_8033B1EC[];
 extern u8 lbl_8033B210[];
@@ -82,19 +88,29 @@ extern "C" void fn_801F92A8(void) {
 
 }
 
-extern "C" void fn_801F92AC(F92Obj *obj) {
+extern "C" void *fn_801F92AC(F92Obj *obj) {
+    f32 zero = lbl_80562FF0;
+    f32 neg = lbl_80563000;
+
     obj->w108 = lbl_8033B468;
     obj->w78 = 0;
-    obj->f7c = lbl_80562FF0;
-    obj->f80 = lbl_80562FF0;
+    obj->f7c = zero;
+    obj->f80 = zero;
     obj->w104 = 0;
     obj->f24 = 0;
     obj->f20 = 0;
-    obj->f28 = lbl_80563000;
+    obj->f28 = neg;
     obj->b60 = 1;
-    memset(&obj->b60 + 1, 0x20, 0);
+    memset((char *)&obj->b60 + 1, 0x20, 0);
     memset((char *)&obj->b60 + 1, 0x61, 0x10);
     obj->w74 = -1;
+    return obj;
+}
+
+extern "C" void *fn_801F93FC(void *node) {
+    node = fn_801F8188(node, 0, 1);
+    fn_801F9440((F9Node *)&lbl_8055EC38, node);
+    return node;
 }
 
 extern "C" void fn_801F9440(F9Node *list, F9Node *node) {
@@ -135,14 +151,13 @@ extern "C" void *fn_801F96C8(void *node) {
 }
 
 extern "C" void fn_801F99CC(F92Obj *obj) {
-    F9Node *cur = *(F9Node **)((char *)&obj->w108 + 0x24 - 0x108);
-    F9Node *next;
+    F92Obj *cur = *(F92Obj **)((char *)&obj->w108 + 0x24 - 0x108);
+    F92Obj *next;
 
     while (cur != NULL) {
-        next = *(F9Node **)((char *)cur + 0x24);
+        next = *(F92Obj **)((char *)&cur->w108 + 0x24 - 0x108);
         if (cur != NULL) {
-            struct F92NodeVT { void *v0; void *vtbl8; };
-            (*(void (**)(void *, s32))((char *)(*(struct F92NodeVT **)cur)->vtbl8 + 0x100))(cur, 1);
+            (*(void (**)(F92Obj *, s32))((char *)&cur->w108 + 0x100 - 0x108))(cur, 1);
         }
         cur = next;
     }
