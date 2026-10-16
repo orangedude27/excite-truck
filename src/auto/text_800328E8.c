@@ -7,6 +7,8 @@ void* fn_800328E8(void) {
     return lbl_8055D7E0;
 }
 
+void *__AXFXGetLfoSinTable_8003313C(void) { return lbl_80363C60; }
+
 void fn_80033148(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
     *(short *)(p + 0x148) = 0;
