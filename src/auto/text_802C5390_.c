@@ -200,4 +200,4 @@ void fn_802C7A44(void) {
 }
 extern int lbl_8055D008;
 extern void fn_8012C4E4(void *, int);
-extern void fn_802C70AC(int, int);
+extern void fn_802C70AC(int, void *, int, int);
