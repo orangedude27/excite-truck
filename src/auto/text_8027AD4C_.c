@@ -5,26 +5,20 @@ void fn_8027B8C0(void* alarm) {
     fn_8027BA24(fn_8027B834(alarm));
 }
 
-long fn_8027BAB8(void **arg0) {
-    long var_r31;
+void fn_8027B9EC(void *arg0) {
+    fn_8027B984(arg0, fn_8000DA10());
+}
 
-    var_r31 = 0;
-    do {
-        void *item;
-        long result;
-        long count;
-
-        item = ((void *(*)(void *, long))(*(void ***)*arg0)[4])(*arg0, var_r31);
-        result = ((long (*)(void *))(*(void ***)item)[10])(item);
-        if (result == 0) {
+long fn_8027BAB8(void *arg0) {
+    long i = 0;
+    while (1) {
+        void *item = ((void *(*)(void *, long))(*(void ***)arg0)[4])(arg0, i);
+        if (((long (*)(void *))(*(void ***)item)[10])(item) == 0)
             return 0;
-        }
-        var_r31++;
-        count = ((long (*)(void *))(*(void ***)*arg0)[3])(*arg0);
-        if (var_r31 >= count) {
+        i++;
+        if (i >= ((long (*)(void *))(*(void ***)arg0)[3])(arg0))
             return 1;
-        }
-    } while (1);
+    }
 }
 
 long fn_8027BB4C(long, long, long, long);
