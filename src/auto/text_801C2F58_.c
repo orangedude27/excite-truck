@@ -147,6 +147,14 @@ void fn_801C77C0(void) {
     fn_801C957C(0);
 }
 
+#pragma auto_inline off
+void fn_801C78D8(void) {
+    lbl_8055E83C = 1;
+    fn_801C957C(1);
+    lbl_8055E83A = 1;
+    lbl_8055E868 = fn_801C6CBC;
+}
+
 extern s32 lbl_8055E850;
 extern void fn_801C78D8(void);
 void fn_801C7EF4(void) {
