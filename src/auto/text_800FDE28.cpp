@@ -36,6 +36,8 @@ extern double lbl_80561108; // 1.0
 extern f32 lbl_802F6124[]; // pan table
 #pragma pop
 
+extern "C" void fn_8002F634(void*, void*, s32, s32);
+extern "C" s32 ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(void*);
 extern "C" u32 OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(u32 level);
 extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *);
