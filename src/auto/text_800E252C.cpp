@@ -47,6 +47,33 @@ public:
     virtual void vf22();   // vtable 0x78
     virtual void vf23();   // vtable 0x7C
 };
+// fn_800E9B28 variant: vf23 returns VfObj* (vtable 0x5C), vf12 takes a float (0x40).
+class VfObjF {
+public:
+    virtual ~VfObjF();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6();
+    virtual void vf7();
+    virtual void vf8();
+    virtual void vf9();
+    virtual void vf10();
+    virtual void vf11();
+    virtual void vf12(float);   // vtable 0x40
+    virtual void vf13();
+    virtual void vf14();
+    virtual void vf15();
+    virtual void vf16();
+    virtual void vf17();
+    virtual void vf18();
+    virtual void vf19();
+    virtual void vf20();
+    virtual void vf21();
+    virtual void vf22();
+    virtual VfObjF *vf23();   // vtable 0x5C
+};
 // Minimal shapes matching the target's use of BasicSound/SoundPlayer (0x10 player
 // field, byte field at 0x74, and Remove/Insert calls taking the raw pointers).
 class BasicSound;
@@ -109,13 +136,13 @@ extern "C" int fn_800E90AC(void *arg0) {
 }
 
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this_, int priority) {
-    int valid = priority >= 0 && priority <= 0x7F;
-    if (!valid) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x202, lbl_803227EC, priority, 0, 0x7F);
+    int priority_ = priority;
+    BasicSound *sound = (BasicSound *)this_;
+    if (!(priority_ >= 0 && priority_ <= 0x7F)) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x202, lbl_803227EC, priority_, 0, 0x7F);
     }
-
-    *(char *)((char *)this_ + 0x74) = priority;
-    void *player = *(void **)((char *)this_ + 0x10);
+    *(u8 *)((char *)this_ + 0x74) = priority_;
+    SoundPlayer *player = (SoundPlayer *)*(void **)((char *)this_ + 0x10);
     if (player != 0) {
         detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
         detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
@@ -126,16 +153,14 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_
     if (!(vol >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
     }
-
-    *(float *)((char *)this_ + 0x8C) = vol;
+    *(f32 *)&((u8 *)this_)[0x8C] = vol;
 }
 
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
     if (!(vol >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x234, lbl_80322858);
     }
-
-    *(float *)((char *)this_ + 0x98) = vol;
+    *(f32 *)&((u8 *)this_)[0x98] = vol;
 }
 
 #pragma push
