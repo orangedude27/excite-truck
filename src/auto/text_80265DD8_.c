@@ -20,7 +20,22 @@ void fn_8026A51C(void) {
     fn_802693F4();
 }
 
+float fn_8026A520(int arg0) {
+    if (arg0 >= 0 && arg0 < 8) {
+        return lbl_80499980[arg0];
+    }
+    return lbl_80563C20;
+}
+
 void fn_8026A54C(float arg0) {
     lbl_8055F484 = arg0;
+}
+
+int fn_8026A554(int *arg0) {
+    int index = *arg0;
+    if (index >= 0 && (unsigned int)index < 8U) {
+        lbl_80499980[index] = lbl_80563C6C;
+    }
+    return 4;
 }
 
