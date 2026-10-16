@@ -116,3 +116,7 @@ int fn_80181774(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x5D);
 }
 
+int fn_8018177C(void *arg0) {
+    return *(unsigned char *)((char *)arg0 + 0x68);
+}
+
