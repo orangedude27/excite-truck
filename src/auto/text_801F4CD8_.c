@@ -47,6 +47,55 @@ void fn_801F596C(void) {
 
 }
 
+void *fn_801F6D20(void *arg0) {
+    int size = 0x2A0;
+    memset(arg0, 0, size);
+    *(int *)((char *)arg0 + 0x2A0) = 0;
+    return arg0;
+}
+
+void *fn_801F7090(void *arg0) {
+    memset(arg0,0,0x120);
+    *(int *)((char *)arg0+0x120)=0;
+    return arg0;
+}
+
+extern void fn_801F639C(void *);
+extern void fn_801F6880(void *);
+void fn_801F70D0(void *arg0, int arg1) {
+    int i;
+    void *entry;
+    if (arg0 != 0) {
+        entry = arg0;
+        i = 0;
+        do {
+            fn_801F639C(entry);
+            entry = (char *)entry + 0x48;
+            i++;
+        } while (i < *(int *)((char *)arg0 + 0x120));
+        *(int *)((char *)arg0 + 0x120) = 0;
+        if (arg1 > 0) fn_80128668();
+    }
+}
+
+void fn_801F7160(void *arg0) {
+    float sp[6], scale, offset;
+    int i;
+    void *entry;
+    i=0; entry=arg0;
+    while(i < *(int *)((char *)arg0+0x120)) {
+        scale=*(float *)((char *)entry+0x40);
+        offset=*(float *)((char *)entry+0x3C);
+        fn_801E8C84(&sp[0]);
+        sp[3]=sp[0]*scale;
+        sp[5]=sp[2]*scale;
+        sp[4]=sp[1]*scale-offset;
+        fn_801F63F0(entry,&sp[3],*(float *)((char *)entry+0x44));
+        fn_801F65D0(entry); fn_801F6728(entry);
+        entry=(char *)entry+0x48; i++;
+    }
+}
+
 void fn_801F7220(void *arg0) {
     void *entry;
     int i;
@@ -68,6 +117,18 @@ void fn_801F73F8(void) { fn_801F6EC0(lbl_8055EC14); }
 
 void fn_801F78D8(void) {
 
+}
+
+extern void fn_801F75A4(void *, void *, void *);
+void fn_801F78DC(void *arg0, void *arg1) {
+    fn_801F75A4(arg1, (char *)arg1 + 0x2C, arg0);
+}
+
+int fn_801F7930(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
 }
 
 int fn_801F7970(int arg0, int arg1) {
