@@ -153,7 +153,7 @@ extern "C" void fn_80146730(void *arg0) {
 
 extern "C" void *lbl_8032D214;
 extern "C" void fn_8002F6AC(s32, void *);
-extern "C" void __dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void);
+extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *, s32);
 extern "C" s32 fn_80147070(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668((void *)arg0);
