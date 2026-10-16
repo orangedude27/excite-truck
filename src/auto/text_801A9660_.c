@@ -20,5 +20,9 @@ unsigned char fn_801AD860(void *arg0) {
     return ((unsigned char *)arg0)[0x220];
 }
 
+long fn_801AD868(void) {
+    return 0;
+}
+
 long fn_801ADA8C(long arg0) { return arg0 + 0x118; }
 
