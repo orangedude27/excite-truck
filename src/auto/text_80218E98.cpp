@@ -3,6 +3,20 @@
 
 #include <types.h>
 
+extern "C" void fn_8023976C(s32);
+extern "C" void fn_80218F80(void);
+extern "C" void fn_8023986C(s32);
+extern "C" void fn_8023967C(s32, s32);
+extern "C" void fn_8021915C(void *, u32);
+extern "C" s32 fn_80128668(void *);
+extern "C" s32 fn_801284F8(s32, const char *);
+extern "C" s32 fn_8023964C(void);
+extern "C" void fn_80239784(s32, void *);
+extern char lbl_8033DDA4[];
+extern char lbl_8033DE28[];
+extern char lbl_8033DCDC[];
+
+
 extern "C" void fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, f32);
 extern "C" s32 fn_8012850C(void *, const char *);
 extern "C" void *memcpy(void *, const void *, unsigned long);
@@ -208,6 +222,13 @@ extern "C" void fn_80221E7C(void *arg0) {
 
 extern "C" void fn_80221EA0(void *arg0) {
     fn_80219440(*(void **)((u8 *)arg0 + 0x14), 0, 0, 0);
+}
+
+extern "C" void fn_80222120(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x248) = 1;
+    ((void (**)(void *))(*(void ***)arg0))[19](arg0);
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+        *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
 extern "C" void fn_802328D4(void*);
