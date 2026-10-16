@@ -247,3 +247,7 @@ s32 fn_80007C58(void) {
     return fn_8000C630(0xb, -1);
 }
 
+u8 fn_80007C64(void *arg0) {
+    return ((u8 *)arg0)[4];
+}
+
