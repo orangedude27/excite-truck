@@ -11,6 +11,9 @@ void* fn_80264A54(void) {
     return lbl_8055F448;
 }
 
+typedef float f32;
+void fn_80265610(void *arg0, f32 farg0) { *(f32 *)((char *)arg0 + 0x1C) = farg0; }
+
 extern char lbl_8055C4A8[4];
 extern void fn_80236954(void *queue);
 void fn_802658FC(void) {
