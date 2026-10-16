@@ -221,6 +221,8 @@ void fn_8014AE1C(void *arg0, void *arg1) {
 
 s32 fn_8014AEB8(void *arg0) { return ((s32 *)arg0)[1]; }
 
+s32 fn_8014AEC0(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x10C); }
+
 void fn_8014AED0(void *arg0, f32 farg0) {
     ((f32 *)arg0)[0x41] = farg0;
 }
