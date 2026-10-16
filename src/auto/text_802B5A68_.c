@@ -76,7 +76,7 @@ extern s32 fn_802E2C20(void);
 #pragma small_data on
 #pragma small_data off
 void fn_802B5E24(s32 arg0) {
-    lbl_8055FA28 = fn_802B5D2C((const char *)lbl_8055CE48, arg0);
+    lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
     lbl_8055FA08 = lbl_80564C5C;
 }
 u32 fn_802B5E8C(s32 arg0) {
@@ -279,9 +279,24 @@ s32 fn_802B8310(s32 arg0) {
     return changed;
 }
 
+#pragma dont_inline on
 void fn_802B84E4(void *arg0) {
     *(s32 *)((u8 *)arg0 + 4) = (*(s32 *)((u8 *)arg0 + 4) * 0x280) / lbl_8055CFF0;
     *(s32 *)((u8 *)arg0 + 8) = (*(s32 *)((u8 *)arg0 + 8) * 0x1E0) / lbl_8055CFF4;
+}
+
+void fn_802B8624(void *arg0) {
+    lbl_804BFF80 = 8;
+    if (arg0 != 0) {
+        *(s32 *)&lbl_804BFF80 = *(s32 *)arg0;
+        *(s32 *)((u8 *)&lbl_804BFF80 + 4) = *(s32 *)((u8 *)arg0 + 4);
+        *(s32 *)((u8 *)&lbl_804BFF80 + 8) = *(s32 *)((u8 *)arg0 + 8);
+        *(s32 *)((u8 *)&lbl_804BFF80 + 12) = *(s32 *)((u8 *)arg0 + 12);
+        *(s32 *)((u8 *)&lbl_804BFF80 + 16) = *(s32 *)((u8 *)arg0 + 16);
+        fn_802B84E4(&lbl_804BFF80);
+        fn_802B83CC();
+        fn_802B8510(lbl_804BFF80);
+    }
 }
 
 extern s32 lbl_804BFF80;
@@ -290,10 +305,10 @@ extern void fn_802B84E4(void *);
 extern s32 fn_802B8510(s32);
 extern s32 fn_80127A50(void *);
 void fn_802B869C(void) {
-    s32 sp8;
+    s32 sp8[6];
     if (((s32 (**)(void))(*lbl_8055FA48))[9]() == 0) {
-        if (fn_80127A50(&sp8) != 0) {
-            fn_802B8624(&sp8);
+        if (fn_80127A50(sp8) != 0) {
+            fn_802B8624(sp8);
         } else {
             fn_802B8624(0);
         }
@@ -301,14 +316,15 @@ void fn_802B869C(void) {
 }
 
 void fn_802B86F8(void) {
-    u8 *base = (u8 *)&lbl_804BFF80;
-    u8 value = base[0x14];
-    base[0x34] = 0;
+    #pragma small_data off
+    s32 *p = &lbl_804BFF80;
+    s8 value = *((s8 *)p + 0x14);
+    *((s8 *)p + 0x34) = 0;
     if (value == 0)
         return;
-    if (*(s32 *)(base + 0xC) & 1)
+    if (*(s32 *)((u8 *)p + 0xC) & 1)
         return;
-    base[0x14] = 0;
+    *((s8 *)p + 0x14) = 0;
 }
 
 void fn_802B8C98(void) {
