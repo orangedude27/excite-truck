@@ -181,7 +181,7 @@ extern "C" void __VprintfThunk(void*);
 extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void*, void*, const char*, void*);
 extern "C" s32 fn_80116A30(void*);
 extern "C" s32 fn_80116A38(void);
-extern "C" void fn_80060CC0(void*, u32, u32);
+extern "C" u32 fn_80060CC0(void*, u32, u32);
 extern "C" void fn_800D1B1C(void);
 
 struct PanicStruct {
