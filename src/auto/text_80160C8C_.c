@@ -18,6 +18,10 @@ void fn_80162214(void) {
     }
 }
 
+int fn_80162248(void) {
+    return 0;
+}
+
 void fn_80162258(void) {
 
 }
