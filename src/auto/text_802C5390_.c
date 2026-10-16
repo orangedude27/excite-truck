@@ -209,6 +209,8 @@ void fn_802C7458(int arg0, int arg1) {
     }
 }
 
+void fn_802C7730(void) { fn_802DABA4(); }
+
 void fn_802C7734(void* alarm) {
     fn_802D0610(fn_802D0514(alarm));
 }
