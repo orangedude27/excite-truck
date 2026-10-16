@@ -18,6 +18,10 @@ void fn_802607C4(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
 }
 
+void fn_802607D0(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x1E) = 1;
+}
+
 void fn_80261A18(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 4) = 8;
