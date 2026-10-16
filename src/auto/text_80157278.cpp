@@ -571,11 +571,11 @@ extern "C" void fn_8015CD0C(void) {
 extern "C" void fn_8015CDD8(void) {
 }
 
-extern "C" void fn_8015D318(Unk801577F0* arg0, s32 arg1, f32 arg2) {
-    if (arg1 == 5) {
+extern "C" void fn_8015D318(Unk801577F0* arg0, f32 arg1, s32 arg2) {
+    if (arg2 == 5) {
         f32 value;
-        if (arg2 < lbl_80561754) value = arg2 - lbl_80561760;
-        else value = lbl_80561760 + arg2;
+        if (arg1 < lbl_80561754) value = arg1 - lbl_80561760;
+        else value = lbl_80561760 + arg1;
         arg0->m268 += (s32)value;
     }
 }
@@ -593,14 +593,11 @@ extern "C" s32 fn_8015D374(void* arg0) {
 extern "C" u32 fn_8015D37C(void) { return 1; }
 
 extern "C" void fn_8015D384(Unk801577F0* arg0) {
-    s32 count;
-    s32 state;
-    count = arg0->m260;
+    register s32 count = arg0->m260;
     arg0->m264 = 0;
     if (count > 0) {
-        state = arg0->m258;
-        if (state != 0) {
-            fn_801CB6E4(arg0, *(s32*)((u8*)arg0 + 4));
+        if (arg0->m258 != 0) {
+            fn_801CB6E4((void*)arg0->m258, arg0->m4);
         }
         arg0->m260 = 0;
         arg0->m254 = lbl_80561754;
@@ -610,13 +607,26 @@ extern "C" void fn_8015D384(Unk801577F0* arg0) {
 }
 
 extern "C" void fn_8015D400(Unk801577F0* arg0) {
+    class LocalVtable {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+        virtual void v32(); virtual void v33(f32*);
+    };
     f32 value;
     s32 result = arg0->v21();
     value = arg0->m25c * arg0->v18(result);
-    arg0->v35(&value);
-    arg0->v30();
+    ((LocalVtable*)arg0)->v33(&value);
+    ((LocalVtable*)arg0)->v31();
+    f32 zero = lbl_80561750;
     arg0->m264 = 0;
-    arg0->m25c = lbl_80561750;
+    arg0->m25c = zero;
 }
 
 extern "C" u32 fn_8015D498(void) { return 1; }
