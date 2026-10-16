@@ -15,6 +15,31 @@ extern int fn_801B47BC();
 extern unsigned int fn_801B4BDC(void);
 extern int fn_801B4B9C(int);
 extern int fn_801B47AC(int);
+void fn_801B45E0(void *arg0) {
+    *(int *)((char *)arg0 + 0x00) = 0;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    *(int *)((char *)arg0 + 0x10) = 0;
+    *(int *)((char *)arg0 + 0x0C) = 0;
+    *(int *)((char *)arg0 + 0x08) = 0;
+    *(int *)((char *)arg0 + 0x04) = 0;
+    *(int *)((char *)arg0 + 0x18) = 0;
+    *(int *)((char *)arg0 + 0x24) = 0;
+    *(int *)((char *)arg0 + 0x20) = 0;
+    *(int *)((char *)arg0 + 0x1C) = 0;
+}
+
+void *fn_801B4610(void *arg0, int arg1) {
+    void *obj;
+    if (arg0 != 0) {
+        obj = *(void **)arg0;
+        if (obj != 0) ((void (*)(void *, int))(*(void ***)obj)[1])(obj, 1);
+        fn_801B45E0(arg0);
+        fn_80128670(*(int *)((char *)arg0 + 0x18));
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_801B4720(int arg0) {
     unsigned int i;
     int offset;
