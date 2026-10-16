@@ -119,6 +119,12 @@ extern int OSDisableInterrupts(void);
 extern void OSRestoreInterrupts(void);
 extern void OSClearContext(void *);
 extern void OSSetCurrentContext(void *);
+
+typedef void (*GXPEIntrHandler)(short, void *);
+extern GXPEIntrHandler __OSSetInterruptHandler(int type, GXPEIntrHandler handler);
+extern unsigned int __OSUnmaskInterrupts(unsigned int userMask);
+extern void OSWakeupThread(void *);
+extern void OSInitThreadQueue(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
 void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     extern unsigned int lbl_8055D978;
