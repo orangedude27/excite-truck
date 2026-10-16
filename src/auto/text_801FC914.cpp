@@ -201,9 +201,9 @@ void* fn_801FE9A8(void* arg0, int arg1) {
     return arg0;
 }
 
-int fn_801FE9E8(int arg0, int arg1) {
+void* fn_801FE9E8(void* arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0)
-        ((void (*)(void))fn_80128668)();
+        fn_80128668(arg0);
     return arg0;
 }
 
