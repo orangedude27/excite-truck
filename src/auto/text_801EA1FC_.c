@@ -30,8 +30,25 @@ void fn_801EA390(void) {
     fn_801EBC70();
 }
 
+void fn_801EA3B8(void) {
+    fn_802C990C(0xC9C9EB);
+    fn_802C86E8(0xFF000000);
+    fn_802C2B78(lbl_80562E58, lbl_80562E5C, lbl_80562E58);
+    lbl_8055EB59 = 0;
+}
+
 void fn_801EA400(void) {
     fn_801EBCAC();
+}
+
+void fn_801EA404(s32 arg1) {
+    f32 temp_f31 = fn_801E8738(-1);
+    fn_801EA210(-1);
+    fn_801FC904();
+    fn_801EA28C(-1, temp_f31);
+    fn_801EBF00();
+    fn_801EA210(-1);
+    fn_801FC908(arg1);
 }
 
 extern char lbl_8055EB58;
