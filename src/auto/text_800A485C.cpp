@@ -1,4 +1,8 @@
 #include <types.h>
+extern "C" s32 lbl_8055DD30;
+extern "C" s32 fn_800B8004(s32);
+extern "C" s32 fn_800B8048(s32);
+extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
 extern "C" s32 lbl_803D2140[];
 extern "C" u32 fn_80060CC0(void*, u32, u32);
 extern "C" void *lbl_80407780[];
