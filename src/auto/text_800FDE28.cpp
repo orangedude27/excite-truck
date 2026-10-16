@@ -5,7 +5,7 @@
 
 extern u32 lbl_80559900;
 
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
 extern double __ieee754_pow(double, double);
 extern "C" double fn_8002EFBC(double, double);
 
@@ -51,6 +51,35 @@ extern "C" void fn_800FDFF8(void *arg0) {
     *(s32 *)arg0 = 0;
     *(s32 *)((u8 *)arg0 + 4) = (s32)p;
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
+}
+
+extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
+    f32 v;
+
+    if (value > lbl_805610D4) {
+        v = lbl_805610D4;
+    } else if (value < lbl_805610D8) {
+        v = lbl_805610D8;
+    } else {
+        v = value;
+    }
+
+    return lbl_802F5210[(s32)(lbl_805610DC * v) + 0x388];
+}
+
+extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
+    f32 v;
+
+    if (pan > lbl_805610C8) {
+        v = lbl_805610C8;
+    } else if (pan < lbl_805610E0) {
+        v = lbl_805610E0;
+    } else {
+        v = pan;
+    }
+
+    return lbl_802F6124[(s32)(lbl_805610D0 +
+                              lbl_805610E4 * (v * lbl_805610D0))];
 }
 
 extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
