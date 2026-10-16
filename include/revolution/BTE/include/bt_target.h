@@ -131,6 +131,22 @@
 #define SDP_RAW_PDU_INCLUDED  TRUE
 #endif
 
+#ifndef SDP_SERVER_ENABLED
+#define SDP_SERVER_ENABLED          FALSE
+#endif
+
+#ifndef SDP_FOR_JV_INCLUDED
+#define SDP_FOR_JV_INCLUDED         FALSE
+#endif
+
+#ifndef SDP_DYNAMIC_MEMORY
+#define SDP_DYNAMIC_MEMORY          FALSE
+#endif
+
+#ifndef SDP_BROWSE_PLUS
+#define SDP_BROWSE_PLUS             FALSE
+#endif
+
 #ifndef GATTS_APPU_USE_GATT_TRACE
 #define GATTS_APPU_USE_GATT_TRACE FALSE
 #endif
