@@ -20,10 +20,13 @@ void fn_80243470(void* arg0) {
     fn_802408B0((u8*)arg0 - 0x10);
 }
 
+#pragma dont_inline on
 s32 fn_80243478(s32 arg0) {
-    s32 (*entry)[3] = lbl_803428B0[arg0];
-    s32 count = 0;
+    s32 count;
     s32 i;
+    s32 (*entry)[3];
+    entry = lbl_803428B0[arg0];
+    count = 0;
     for (i = 0; i < 16; i++) {
         if ((*entry)[0] == 0) break;
         count++;
@@ -31,7 +34,6 @@ s32 fn_80243478(s32 arg0) {
     }
     return count;
 }
-
 s32 fn_80243710(s32 arg0, s32 arg1) {
     s32 result = 0;
     if (arg0 >= 0 && arg0 <= fn_80243478(arg1)) result = 1;
