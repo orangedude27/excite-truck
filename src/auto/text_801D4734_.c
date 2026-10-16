@@ -54,6 +54,15 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+s32 fn_801D6508(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 4) == 1) {
+        *(s32 *)((u8 *)arg0 + 0x1C) = lbl_8055E3C4;
+        *(s32 *)((u8 *)arg0 + 4) = 2;
+        return 1;
+    }
+    return 0;
+}
+
 void fn_801D6600(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
