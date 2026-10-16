@@ -144,6 +144,10 @@ void fn_801F1474(int *arg0, void *arg1) {
     fn_802C7AE0(*(int *)(base + 0xEC), arg1, -1);
 }
 
+float fn_801F159C(void **arg0) {
+    return *(float *)((char *)*arg0 + 0x18);
+}
+
 short fn_801EAC3C(void);
 int fn_801F1494(int, void *, short);
 int fn_801EAB2C(void);
