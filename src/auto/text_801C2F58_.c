@@ -155,6 +155,11 @@ void fn_801C78D8(void) {
     lbl_8055E868 = fn_801C6CBC;
 }
 
+void fn_801C791C(void) {
+    fn_801C78D8();
+    lbl_8055E848 = 2;
+}
+
 extern s32 lbl_8055E850;
 extern void fn_801C78D8(void);
 void fn_801C7EF4(void) {
