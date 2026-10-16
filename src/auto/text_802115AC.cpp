@@ -147,7 +147,7 @@ extern "C" s32 fn_802121D4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" s32 (*lbl_8055EF0C)(s32 *);
+extern s32 (*lbl_8055EF0C)(s32 *);
 extern "C" s32 fn_80212214(s32 arg0) {
     s32 value;
     memcpy(&value, &arg0, 4);
