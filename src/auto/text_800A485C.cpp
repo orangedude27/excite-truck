@@ -27,6 +27,11 @@ extern "C" void fn_800A68DC(s32);
 extern "C" s32 lbl_80559248;
 extern "C" u32 lbl_8055DD68;
 extern "C" u8 lbl_80407300[];
+extern "C" s32 lbl_8055DD2C;
+extern "C" s32 NANDInit(void);
+extern "C" s32 NANDGetCurrentDir(char *);
+extern "C" s32 lbl_80405D18;
+extern "C" s32 fn_800BA49C(s32, s32, s32, s32);
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSTime.h>
 #include <revolution/ARC/arc.h>
@@ -295,6 +300,13 @@ extern "C" s32 fn_800BA160(s32 arg0) {
     }
     value = *(s32 *)(lbl_80407300 + 0x10);
     return 6 & ~(((-value | value) >> 31));
+}
+
+extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    if (arg0 == 0 || arg1 == 0 || arg4 != 0) {
+        return 1;
+    }
+    return fn_800BA49C(arg3, arg1, arg2, *(s32 *)(lbl_80407300 + 4));
 }
 
 extern "C" u8 lbl_802F3218[];
