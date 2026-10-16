@@ -284,10 +284,12 @@ void fn_80070758(void) {
 }
 
 void fn_8007079C(u16 *arg0, u16 arg1) {
+    hcisu_if *h2_if = lbl_8055DC68;
+
     *arg0 = arg1;
 
-    if (lbl_8055DC68 != NULL) {
-        lbl_8055DC68->close(lbl_8055DC6C);
+    if (h2_if != NULL) {
+        h2_if->close(NULL);
     } else {
         GKI_freebuf(NULL);
     }
@@ -307,8 +309,10 @@ void bte_hcisu_task(void) {
 
 extern u32 fn_8009B0E0(void);
 void fn_80070820(void) {
-    if (lbl_8055DC68 != NULL && lbl_8055DC68->close != NULL) {
-        lbl_8055DC68->close(lbl_8055DC6C);
+    hcisu_if *h2_if = lbl_8055DC68;
+
+    if (h2_if != NULL && h2_if->close != NULL) {
+        h2_if->close(NULL);
     }
 }
 
@@ -646,6 +650,11 @@ void fn_800934D8(void *arg0, s16 arg1) {
 
     sp8 = arg1;
     fn_800916F4(arg0, 7, &sp8);
+}
+
+s32 fn_8009BF98(void* arg0) {
+    AXFXReverbHiExpShutdown(arg0);
+    return 1;
 }
 
 void fn_8009BFBC(void) {
