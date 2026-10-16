@@ -4,6 +4,8 @@
 extern "C" int OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(int);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...) __attribute__((noreturn));
+extern "C" float fn_80100A88(void* arg0) { return *(float*)((char*)arg0 + 0x4C); }
+
 extern "C" void fn_80100BAC(void* arg0, int arg1) {
     int level = OSDisableInterrupts();
     *(int*)((char*)arg0 + 0x44) = arg1;
