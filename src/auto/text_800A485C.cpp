@@ -1,4 +1,7 @@
 #include <types.h>
+extern "C" f32 lbl_80560E40;
+extern "C" f32 lbl_80560E3C;
+extern "C" s32 fn_80060C7C(void*);
 class D0BA4Dispatch { public: virtual ~D0BA4Dispatch(); virtual void vf1(); virtual void vf2(); virtual void vf3(D0BA4Dispatch *); };
 typedef void (*Unk800B7E18Callback)(u8);
 extern "C" Unk800B7E18Callback lbl_80405D00[];
