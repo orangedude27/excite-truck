@@ -8,6 +8,24 @@ void fn_802D9154(void) {
     fn_802D7600(lbl_8055D118);
 }
 
+extern void *lbl_8055FE1C;
+extern void *lbl_8055FE20;
+extern char lbl_8034C5F0[];
+extern char lbl_8034C620[];
+extern char lbl_8034C650[];
+extern unsigned char lbl_804C5700[12];
+extern void fn_802D9230(void *);
+extern void fn_802E317C(const char *, void *);
+extern void GXInitTexObjWrapMode(void *, int, int);
+extern void GXLoadTexObj(void *, int);
+extern void DCFlushRange(void *, unsigned int);
+extern unsigned int GXGetTexObjTlut(void *);
+extern void fn_802D78D4(void *, void *, unsigned int, unsigned int);
+extern void GXInvalidateTexAll(void);
+void fn_802D92B0(void) {
+    fn_802D9230(lbl_8055FE1C);
+}
+
 void* fn_802D94DC(void) {
     return lbl_8055FE18;
 }
