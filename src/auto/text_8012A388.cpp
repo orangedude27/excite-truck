@@ -145,6 +145,8 @@ extern "C" void fn_8012CC20(void) {
     fn_8012CC24();
 }
 
+extern "C" u32 fn_8012D3D0(void) { return 1; }
+
 extern "C" void fn_8012D40C(s32);
 extern "C" void fn_8012D1A8(s32);
 extern "C" void fn_8012D3D8(s32 arg0) {
