@@ -629,6 +629,12 @@ extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
+extern "C" void fn_800D11CC(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+    *(s32 *)((u8 *)arg0 + 0x14) = 0;
+    *(s32 *)((u8 *)arg0 + 0x18) = 0;
+}
+
 extern "C" void fn_800D11E0(void* arg0) {
     f32 value = lbl_80560E3C;
     *(f32*)((u8*)arg0 + 8) = value;
