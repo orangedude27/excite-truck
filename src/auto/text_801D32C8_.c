@@ -17,4 +17,7 @@ void __AXDSPInitCallback_801D32D0(void) {
 void fn_801D32DC(void) {
 
 }
-
+extern int fn_80128668(void *);
+extern int fn_80179EE8(int);
+extern char lbl_80338400;
+extern float lbl_80562AB8;
