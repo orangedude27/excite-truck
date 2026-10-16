@@ -79,6 +79,18 @@ void fn_8015F558(void) {
 void fn_8015F79C(void) {
 }
 
+extern f32 lbl_805617D4;
+void fn_80160230(void *arg0, void *arg1) {
+    *(f32 *)((u8 *)arg0 + 0) = *(f32 *)((u8 *)arg1 + 0);
+    *(f32 *)((u8 *)arg0 + 4) = lbl_805617D4;
+    *(f32 *)((u8 *)arg0 + 8) = *(f32 *)((u8 *)arg1 + 4);
+}
+
+void fn_8016025C(void *arg0, f32 farg0, f32 farg1) {
+    *(f32 *)((u8 *)arg0 + 0) = farg0;
+    *(f32 *)((u8 *)arg0 + 4) = farg1;
+}
+
 int fn_80160268(int arg0) {
     int temp_r4;
     temp_r4 = arg0 >> 31;
@@ -86,6 +98,11 @@ int fn_80160268(int arg0) {
 }
 
 void fn_80160278(void) {
+}
+
+void fn_80160288(void *arg0, void *arg1) {
+    *(u32 *)((u8 *)arg0 + 0) = *(u32 *)((u8 *)arg1 + 0);
+    *(u32 *)((u8 *)arg0 + 4) = *(u32 *)((u8 *)arg1 + 4);
 }
 
 void fn_8016029C(f32 *arg0, f32 *arg1) {
