@@ -142,6 +142,16 @@ void fn_800D1C18(void) {
     fn_80060CC0(r3, 4, (u32)&fn_800D1C48);
 }
 
+extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *this_ptr, long arg1) {
+    if (((u8 *)this_ptr)[0x1EC] != 0) {
+        fn_80060CC0((void *)arg1, 1, (u32)&fn_800D1B1C);
+        void *ptr = (u8 *)this_ptr + (arg1 * 0x68) + 0x30;
+        memset(ptr, 0, 0x20);
+        ((u8 *)this_ptr)[(arg1 * 0x68) + 0x5C] = 1;
+        ((u8 *)this_ptr)[(arg1 * 0x68) + 0x62] = 0;
+    }
+}
+
 extern "C" s32 fn_800D1E5C(void *arg0, s32 arg1) {
     s32 *ptr = (s32 *)((u8 *)arg0 + arg1 * 0x68);
     s32 val = ptr[0x50 / 4];
