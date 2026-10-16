@@ -151,7 +151,7 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802294F4(
 
 extern "C" void fn_8022984C(void *arg0) {
     u8 *p = *(u8 **)((u8 *)arg0 + 0x254);
-    *p = (u8)(*p == 0);
+    *p = (u8)((s8)(*p == 0));
 }
 
 extern "C" void fn_80229864(void *arg0) {
