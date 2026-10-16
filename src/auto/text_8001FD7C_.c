@@ -108,7 +108,6 @@ extern int fn_802CAC28(void*, int);
 extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
-extern void fn_801345D8(void*, int, void*, int);
 void fn_8001FF34(int arg0) {
     struct lbl_8035BAE4_t* tmp;
     if ((char)lbl_8055D670 == 0) {
@@ -125,16 +124,16 @@ void fn_8001FF34(int arg0) {
 void fn_8001FFD0(int arg0, int arg1, void* arg2, int arg3) {
     switch (arg1) {
         case 0x180201:
-            fn_801345D8(arg2, arg3, &lbl_802FE138[0xac], arg0 + 1);
+            fn_801345D8va((char*)&lbl_802FE138[0xac], arg2, arg3, arg0 + 1);
             return;
         case 0x180303:
-            fn_801345D8(arg2, arg3, &lbl_802FE138[0x98], arg0 + 1);
+            fn_801345D8va((char*)&lbl_802FE138[0x98], arg2, arg3, arg0 + 1);
             return;
         case 0x180304:
-            fn_801345D8(arg2, arg3, &lbl_802FE138[0xc0], arg0 + 1);
+            fn_801345D8va((char*)&lbl_802FE138[0xc0], arg2, arg3, arg0 + 1);
             return;
     }
-    fn_801345D8(arg2, arg3, &lbl_802FE138[0xd4], arg0 + 1);
+    fn_801345D8va((char*)&lbl_802FE138[0xd4], arg2, arg3, arg0 + 1);
 }
 
 void fn_80020430(void) {
