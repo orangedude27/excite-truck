@@ -171,6 +171,13 @@ void fn_80176734(void);
 int fn_801312EC(void*, void*);
 void fn_80131318(void);
 int fn_80232BA4(int, int, int, int, float, float, float, float, float);
+int fn_801E8838(void);
+void fn_80020434(void*, float*);
+void fn_8026A2CC(void*, int, float);
+void fn_8000C630(int, int);
+void fn_8001FD7C(void);
+int fn_80020184(void);
+void fn_800207B0(void);
 char fn_800216F4(void) {
     return lbl_8055D644;
 }
