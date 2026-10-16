@@ -158,8 +158,13 @@ extern "C" s32 fn_801F80FC(const char *arg) {
     return stricmp(arg, lbl_8033B00C) == 0;
 }
 
-extern "C" s32 fn_801F815C(void) {
-    return stricmp(lbl_8055B2C4, "") == 0;
+extern "C" const char lbl_8033B018[];
+extern "C" s32 fn_801F812C(const char *arg) {
+    return stricmp(arg, lbl_8033B018) == 0;
+}
+
+extern "C" s32 fn_801F815C(const char *arg) {
+    return stricmp(arg, lbl_8055B2C4) == 0;
 }
 
 extern "C" s32 fn_801F85DC(s32 arg0, s32 arg1) {
