@@ -34,6 +34,10 @@ s32 fn_801351AC(void) {
     return 0;
 }
 
+void fn_801351C4(void *arg0, s32 arg1) {
+    ((s32 *)arg0)[2] = arg1;
+}
+
 void fn_80135218(void) {
 
 }
