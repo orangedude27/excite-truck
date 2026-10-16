@@ -246,6 +246,10 @@ void fn_80158F34(void) {
 
 }
 
+extern "C" s32 fn_80158F60(Unk8015A368C* arg0) {
+    return arg0->v21() > 0;
+}
+
 extern "C" void fn_801590A8(void* arg0) {
     void* vtable = *(void**)arg0;
     ((void (*)())((u8**)vtable)[0x21])();
@@ -287,7 +291,7 @@ extern "C" void fn_80159BB4(Unk801577F0* arg0) {
     arg0->m260 = 0;
     arg0->m254 = a;
     arg0->m25c = b;
-    arg0->v32();
+    arg0->v33();
 }
 
 extern "C" void fn_80159E2C(Unk8015A368C* arg0) {
@@ -405,7 +409,7 @@ extern "C" void* fn_80159340(void* arg0, s32 arg1) {
 }
 
 extern "C" void fn_801593F0(Unk801577F0* arg0) {
-    arg0->v32();
+    arg0->v33();
     f32 f1 = *(f32*)((u8*)arg0 + 0x260);
     f32 f0 = *(f32*)((u8*)arg0 + 0x24c);
     f32 f2 = lbl_80561754;
@@ -419,12 +423,12 @@ extern "C" void fn_801593F0(Unk801577F0* arg0) {
     }
     f32 a = lbl_80561754;
     f32 b = lbl_8056177C;
+    void* r3 = *(void**)((u8*)arg0 + 0x278);
     *(f32*)((u8*)arg0 + 0x264) = a;
     *(f32*)((u8*)arg0 + 0x258) = b;
-    void* p = *(void**)((u8*)arg0 + 0x278);
-    if (p != 0) {
-        *(u8*)((u8*)p + 0x4A) = 1;
-        *(u8*)((u8*)p + 0x4C) = 0;
+    if (r3 != 0) {
+        *(u8*)((u8*)r3 + 0x4A) = 1;
+        *(u8*)((u8*)r3 + 0x4C) = 0;
     }
 }
 
