@@ -1,6 +1,14 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+void fn_8029C22C(void) {
+    fn_8029CD14();
+    fn_8029CB3C();
+    fn_8029C934();
+    fn_8029C650();
+    fn_8029C3EC();
+}
+
 int fn_8029EF1C(void) {
     return 0;
 }
