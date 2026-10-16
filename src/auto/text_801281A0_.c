@@ -159,14 +159,14 @@ void fn_801286A0(void *arg0, s32 arg1) {
     
     r7 = arg1 & ~0x3F;
     arg0_s32 = (s32*)arg0;
-    r6 = arg0_s32[0x74];
-    r0 = arg0_s32[0x75];
-    arg0_s32[0x74] = r6 - r7;
-    arg0_s32[0x75] = r0 - r7;
+    r6 = arg0_s32[-6];  // -0x18 / 4 = -6
+    r0 = arg0_s32[-5];  // -0x14 / 4 = -5
+    arg0_s32[-6] = r6 - r7;
+    arg0_s32[-5] = r0 - r7;
     lbl_s32 = (s32*)lbl_8041E140;
     temp = lbl_s32[1] - r7;
     lbl_s32[1] = temp;
-    result = fn_801281F4(arg0_s32[0x75], r6 - r7);
+    result = fn_801281F4(arg0_s32[-5], r6 - r7);
     arg0_s32[r0] = result;
 }
 
