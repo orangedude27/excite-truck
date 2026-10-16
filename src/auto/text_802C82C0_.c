@@ -110,7 +110,7 @@ void fn_802C8B98(unsigned int arg0, unsigned int arg1) {
 
 void fn_802C8BD0(int arg0) {
     fn_802C7758(arg0);
-    fn_802C8B70();
+    ((void (*)(int))fn_802C8B70)(arg0);
 }
 
 void fn_802C8C04(int arg0) {
