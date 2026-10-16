@@ -8,6 +8,20 @@ void fn_80236074(void*, unsigned int);
 void fn_80128668(void*);
 extern void* lbl_8055BF34;
 s32 fn_80214D04(void);
+s32 fn_802494F8(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668((void *)0);
+    }
+    return arg0;
+}
+
+s32 fn_80249538(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668((void *)arg0);
+    }
+    return arg0;
+}
+
 void fn_80249578(void *arg0) {
     fn_8023E52C(*(s32 *)*(void **)((char *)arg0 + 0x10));
 }
