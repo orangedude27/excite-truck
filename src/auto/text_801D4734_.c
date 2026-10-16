@@ -61,8 +61,47 @@ s32 fn_801D4CB8(s32 arg0, s32 arg1) {
 void fn_801D4F9C(void) {
 }
 
+void fn_801D4FA0(void *arg0) {
+    s32 i;
+    s32 offset;
+    void *obj;
+    void (**vtable)(void *);
+
+    i = 0;
+    offset = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 0x34)) {
+        obj = *(void **)(*(u8 **)((u8 *)arg0 + 0x30) + offset);
+        vtable = *(void (***)(void *))obj;
+        vtable[10](obj);
+        offset += 4;
+        i += 1;
+    }
+}
+
 void fn_801D5010(void) {
 }
+
+s32 fn_801D5014(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 i;
+    s32 offset;
+    void *obj;
+    s32 (**vtable)(void *, s32, s32);
+
+    i = 0;
+    offset = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 0x34)) {
+        obj = *(void **)(*(u8 **)((u8 *)arg0 + 0x30) + offset);
+        vtable = *(s32 (***)(void *, s32, s32))obj;
+        if (vtable[8](obj, arg1, arg2) != 0) {
+            return 1;
+        }
+        offset += 4;
+        i += 1;
+    }
+    return 0;
+}
+
+s32 fn_801D50A0(void) { return 0; }
 
 void fn_801D5328(s32, s32);
 void fn_801D50B0(s32 arg0) {
