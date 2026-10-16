@@ -4,6 +4,7 @@ extern char lbl_8055F5B9;
 extern char lbl_8055F5C8;
 extern int lbl_8055E3C4;
 extern int lbl_8055F5B4;
+extern int lbl_8055F5BC;
 extern char lbl_8055F5B8;
 extern int fn_802E30C8(const char *, ...);
 extern const char lbl_80347590[];
@@ -15,8 +16,28 @@ extern char lbl_804A15D0[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055F5B8;
+void fn_80278318(void) {
+    fn_802E30C8(lbl_803475B4, lbl_8055E3C4);
+    lbl_8055F5B8 = 0; lbl_8055F5BA = 0; lbl_8055F5B9 = 0;
+}
+
 char fn_80278358(void) {
     return lbl_8055F5B8;
+}
+
+void fn_80278778(char *arg0) {
+    int i;
+    char *dst;
+    if (lbl_8055F5B8 != 0) { fn_802E30C8(lbl_80347660); return; }
+    dst = lbl_804A15D0;
+    for (i = 0; i < 0x100; i++) {
+        char c = *arg0++;
+        *dst++ = c;
+        if (c == 0) { lbl_8055F5B9 = 1; lbl_8055F5BA = 0; return; }
+    }
+    dst[-1] = 0;
+    lbl_8055F5B9 = 1;
+    lbl_8055F5BA = 0;
 }
 
 extern char lbl_8055F5B9;
