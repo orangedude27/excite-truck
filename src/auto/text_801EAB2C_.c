@@ -3,6 +3,10 @@
 
 #include <types.h>
 
+s16 fn_801EAC3C(void* arg0) {
+    return *(s16*)((u8*)arg0 + 0x38);
+}
+
 s32 fn_801EACB8(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
