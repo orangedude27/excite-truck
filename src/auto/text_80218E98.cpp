@@ -186,6 +186,7 @@ extern "C" void fn_80219508(void* arg0) {
 }
 
 extern "C" void fn_80219510(void* arg0, s32 arg1, s32 arg2) {
+    arg1 = -arg1;
     *(s32*)((u8*)arg0 + 0x244) = -arg1;
     *(u8*)((u8*)arg0 + 0x24C) = 1;
     *(s32*)((u8*)arg0 + 0x248) = -arg2;
@@ -195,18 +196,27 @@ extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     void* p = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
         *(s32*)((u8*)p + 0x454) += *(s32*)((u8*)arg0 + 0x244) + arg1;
-        *(s32*)((u8*)p + 0x458) += *(s32*)((u8*)arg0 + 0x248) + arg2;
+        s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
+        *(s32*)((u8*)p + 0x458) += dy;
     }
 }
 
 extern "C" void *fn_80219568(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     fn_80218F34(arg0, arg1, arg2, arg1 + arg5, arg2 + arg6, arg3);
-    *(s32 *)((u8 *)arg0 + 0x24C) = arg3;
+    *(s32 *)&((u8 *)arg0)[0x24C] = arg3;
     *(s32 *)((u8 *)arg0 + 0x244) = 0;
     *(void **)arg0 = lbl_8033FA28;
     *(s32 *)((u8 *)arg0 + 0x248) = 0;
     *(s32 *)((u8 *)arg0 + 0x250) = arg4;
     return arg0;
+}
+
+extern "C" void fn_802195DC(void *arg0, s32 arg1) {
+    fn_802C3034(arg1);
+    VfObj *obj = (VfObj *)arg0;
+    s32 a = obj->vf33();
+    s32 b = obj->vf34();
+    fn_8022B91C(*(s32 *)((u8 *)arg0 + 0x250), *(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 0x248), b, a);
 }
 
 extern "C" s32 fn_80219658(void) { return 0; }
