@@ -126,9 +126,37 @@ void fn_801FE708(void *arg0, void *arg1) {
     ++*(int *)((char *)arg0 + 0x94);
 }
 
+void fn_801FE77C(void* arg0) {
+    char* item = (char*)arg0 + 4;
+    int i = 0;
+    while (i < *(int*)((char*)arg0 + 0x94)) {
+        if (*(unsigned short*)(item + 0x14) == 0)
+            fn_801FEDA4(item);
+        item += 0x24;
+        ++i;
+    }
+}
+
+void fn_801FE7E8(void* arg0) {
+    char* item = (char*)arg0 + 4;
+    int i = 0;
+    while (i < *(int*)((char*)arg0 + 0x94)) {
+        if (*(unsigned short*)(item + 0x14) == 1) {
+            float time = *(float*)(item + 0x20) - fn_801E7E24();
+            *(float*)(item + 0x20) = time;
+            if (time < lbl_80563034) {
+                fn_801FEDA4(item);
+                *(float*)(item + 0x20) = fn_80129DC4(0, item, *(float*)(item + 0x18), *(float*)(item + 0x1C));
+            }
+        }
+        item += 0x24;
+        ++i;
+    }
+}
+
 int fn_801FE9A8(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0)
-        fn_80128668((void*)arg0);
+        ((void (*)(void))fn_80128668)();
     return arg0;
 }
 
@@ -260,6 +288,12 @@ extern "C" void fn_801FF58C(void* unused, char* dst, const char* src) {
     dst[0xF] = 0;
     *(int*)(dst + 0x50) = 0;
     *(int*)(dst + 0x54) = 0;
+}
+
+extern "C" void* lbl_8055EC94;
+void fn_801FF6A4(void* arg0) {
+    lbl_8055EC94 = arg0;
+    *(int*)((char*)arg0 + 0x4C0) = 0;
 }
 
 extern "C" void fn_801FEFC4(void) {
