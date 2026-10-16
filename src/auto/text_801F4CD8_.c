@@ -60,4 +60,7 @@ void fn_801F78D8(void) {
 void fn_801F7A00(void) {
 
 }
-
+extern void fn_801F6A98(void *);
+extern void fn_801F6B98(void *);
+extern void fn_801F6DF0(void *);
+extern void fn_801F6EC0(void *);
