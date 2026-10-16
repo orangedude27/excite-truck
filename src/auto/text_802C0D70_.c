@@ -56,3 +56,11 @@ void fn_802C10C8(void) {
     fn_802C1020();
 }
 
+void fn_802C10CC(int param) {
+    if (param == -1) {
+        fn_802C0E68(*(s32 *)lbl_8055FB18);
+    } else {
+        fn_802C0E68(param);
+    }
+}
+
