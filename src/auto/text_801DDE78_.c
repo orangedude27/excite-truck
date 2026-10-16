@@ -113,7 +113,8 @@ void fn_801DE150(void) {
 
 }
 
-void fn_801DE788(s32 arg1, s32 arg2, s32 arg3) {
-    (*(void(*)(s32, f32*, s32))fn_801DDED0)(arg1, (f32*)arg2, arg3);
+typedef void (*ThunkFn)(s32, s32, s32);
+void fn_801DE788(s32 arg_unused, s32 arg_a, s32 arg_b, s32 arg_c) {
+    (*(void(*)(s32, f32*, s32))fn_801DDED0)(arg_a, (f32*)arg_b, arg_c);
 }
 
