@@ -33,6 +33,7 @@ extern void fn_802328D4(int);
 extern void fn_80235380(int);
 extern void fn_801345D8(void*, int, void*, int);
 void fn_801345D8va(char* fmt, ...);
+void fn_8001FD7C(void);
 struct lbl_8035BAE4_t {
     int unk_0;
     int unk_4;
