@@ -464,6 +464,10 @@ f32 fn_80011E04(s32 arg0) {
     return lbl_80350F28[arg0][4];
 }
 
+f32 fn_80011E44(void) {
+    return lbl_80350EC4[2];
+}
+
 f32 fn_80011E54(void) {
     return lbl_80350EC4[0];
 }
@@ -474,7 +478,7 @@ f32 fn_80011E60(void) {
 }
 
 f32 fn_80011E70(void) {
-    return (lbl_80350EC4[1] + lbl_80350EC4[2]) * lbl_8056025C;
+    return lbl_8056025C * (lbl_80350EC4[1] + lbl_80350EC4[2]);
 }
 
 void fn_8000F158(void) {
