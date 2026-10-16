@@ -119,6 +119,11 @@ extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(vo
 extern "C" char lbl_80327C58[];
 extern "C" char lbl_80327C7C[];
 extern "C" char lbl_80327AC4[];
+extern "C" char lbl_80327CAC[];
+extern "C" char lbl_80327C88[];
+extern "C" void* Instance__15EmissionManagerFv(void);
+extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
+extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void*, unsigned char);
 extern "C" char lbl_8041D4C4[];
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) {
     char* end = lbl_8041D4C4 + 4;
