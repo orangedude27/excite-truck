@@ -7,6 +7,9 @@ extern void fn_802D68C4(int, int, int, int);
 extern void fn_80128670(void *);
 extern void fn_80128668(void *);
 extern int lbl_80339B90;
+#pragma small_data off
+void fn_801E7828();
+void fn_801E7790();
 void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_80128670(*(void **)((char *)arg0 + 0xC));
