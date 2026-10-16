@@ -16,6 +16,13 @@ extern s32 lbl_8055A0E0;
 extern s32 lbl_8055A0E8;
 extern u8 lbl_8055E2DD;
 
+extern s32 lbl_8055E300;
+s32 fn_80161C38(void) {
+    s32 val = lbl_8055E300;
+    u32 tmp = (u32)(-val) | (u32)val;
+    return (s32)(tmp >> 31);
+}
+
 void fn_8016212C(void) {
     fn_801613E0();
 }
@@ -114,7 +121,7 @@ s32 fn_801645D8(void *arg0, s32 arg1) {
             }
             return 1;
         }
-        if (arg1 == 0x1B) {
+        if ((u32)arg1 == 0x1B) {
             lbl_8055E2DD = 1;
             return 1;
         }
@@ -163,6 +170,10 @@ void fn_80164870(void *arg0, s32 arg1) {
 s32 fn_80164894(s32 arg0, void *arg1, s32 arg2) {
     *(float *)arg1 = *(float *)(0x14 + arg0 + (arg2 << 2));
     return 1;
+}
+
+void fn_80164CDC(void *arg0) {
+    ((void (*)(void *, s32, s32))(*(void **)((char *)*(void **)((char *)arg0 + 4) + 0x18)))(*(void **)((char *)arg0 + 4), lbl_8055A0E0, lbl_8055A0E8);
 }
 
 extern int fn_80128668(void);
