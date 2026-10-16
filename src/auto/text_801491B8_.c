@@ -311,6 +311,8 @@ void fn_80155AEC(void) {
 
 }
 
+u32 fn_80155C88(void) { return 1; }
+
 void fn_80155E58(void *arg0) {
     ((u8 *)arg0)[4] = 0;
 }
