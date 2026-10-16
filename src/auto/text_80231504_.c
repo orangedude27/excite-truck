@@ -4,6 +4,14 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern u8 lbl_8055F064;
+extern u8 lbl_8055F068[0x16C];
+extern s32 stricmp(const char *, const char *);
+extern void *fn_8012850C(s32, const char *, s32, s32, void *);
+extern char *strcpy(char *, const char *);
+extern char lbl_80340440[];
+extern void fn_802CAC54(void *);
+extern void fn_8012C4D8(void *);
+extern void fn_80128670(void *);
 extern void *lbl_8055F060;
 void fn_80232928(void* hi) {
     lbl_8055F060 = hi;
