@@ -194,8 +194,8 @@ extern "C" s32 fn_80143218(s32 arg0, u8 *arg1) {
 
 extern "C" u32 fn_80143C4C(void) { return 1; }
 
-extern "C" void fn_801442DC(void *arg0) {
-    ((void (*)())*(void **)((void **)arg0)[5])();
+extern "C" void fn_801442DC(s32 *arg0) {
+    ((void (*)())((s32 **)*arg0)[8])();
 }
 
 extern "C" s32 fn_801442EC(void) { return 0; }
@@ -245,10 +245,17 @@ extern "C" s32 fn_80144344(void) { return 0; }
 extern "C" void fn_8014434C(void) {
 }
 
+int fn_80144350(void) { return 0; }
+
 extern "C" void fn_80144358(void) {
 }
 
 extern "C" u32 fn_8014435C(void) { return 1; }
+
+int fn_80144364(void) { return 0; }
+
+extern "C" s32 fn_801B8514(void);
+extern "C" s32 fn_801443E0(void) { return 0; }
 
 extern "C" u32 fn_801443E8(void) { return 1; }
 
