@@ -74,17 +74,19 @@ int fn_8025A4CC(int arg0, int arg1) {
 }
 
 void fn_8025A83C(void *arg0) {
-    float *p = (float *)((char *)arg0 + 0x84);
-    p[0] = lbl_80563AE0;
-    p[1] = lbl_80563AE4;
-    p[2] = lbl_80563AE0;
-    p[3] = lbl_80563AE0;
-    p[4] = lbl_80563AE4;
-    p[5] = lbl_80563AE0;
-    p[6] = lbl_80563AE0;
-    p[7] = lbl_80563AE0;
-    p[8] = lbl_80563AE4;
-    ((void (*)(void *))(*(void ***)arg0)[3])((char *)arg0 + 4);
+    float a = lbl_80563AE4;
+    float b;
+    *(float *)((char *)arg0 + 0x88) = a;
+    b = lbl_80563AE0;
+    *(float *)((char *)arg0 + 0x84) = b;
+    *(float *)((char *)arg0 + 0x8c) = a;
+    *(float *)((char *)arg0 + 0x90) = a;
+    *(float *)((char *)arg0 + 0x94) = b;
+    *(float *)((char *)arg0 + 0x98) = a;
+    *(float *)((char *)arg0 + 0x9c) = a;
+    *(float *)((char *)arg0 + 0xa0) = a;
+    *(float *)((char *)arg0 + 0xa4) = b;
+    ((void (*)(void *, void *))(*(void ***)arg0)[3])(arg0, (char *)arg0 + 4);
 }
 
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
@@ -166,6 +168,9 @@ void fn_8025B22C(void *arg0) {
             fn_80214A9C(i);
         }
     }
+}
+
+void fn_8025B784(void) {
 }
 
 extern void *fn_80258354(void);
