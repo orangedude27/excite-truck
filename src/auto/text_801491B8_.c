@@ -63,6 +63,13 @@ s32 fn_8014931C(void *arg0) {
     return sp8.v[((s32 *)arg0)[1]];
 }
 
+extern s32 lbl_802F93F0[];
+s32 fn_80149380(void *arg0) {
+    S4_80149234 sp8;
+    sp8 = *(S4_80149234 *)lbl_802F93F0;
+    return sp8.v[((s32 *)arg0)[1]];
+}
+
 void fn_8014ACCC(void) {
 
 }
