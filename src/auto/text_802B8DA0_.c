@@ -61,7 +61,7 @@ void fn_802B9B40(void *arg0) {
 }
 
 int fn_802B9B50(int **arg0, int **arg1) {
-    return (*arg1)[2] - (*arg0)[2];
+    return (*arg0)[2] - (*arg1)[2];
 }
 
 void fn_802B9CF4(void *arg0) {
