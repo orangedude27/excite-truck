@@ -231,23 +231,29 @@ void fn_80010E94(f32 x, f32 y, f32 a, f32 b, s32 c, s32 d) {
     }
 }
 void fn_80010EF0(void) {
-    *(u8 *)((s8 *)&lbl_80350F88 + 4) = 0;
-    *(s32 *)((s8 *)&lbl_80350F88 + 0x288) = 0;
+    Unk80350F88 *p = (Unk80350F88 *)&lbl_80350F88;
+
+    p->unk_0x288 = 0;
+    p->unk_0x04 = 0;
 }
 
-void fn_80010F38(char *name, s32 a1, s32 a2, s32 a3, f32 f) {
-    s8 *entry;
+extern void fn_80011280(s32, s32);
+extern void fn_8000E3B4(s32);
+extern void fn_8000E874(s32);
+extern void fn_8000EF74(s32);
+void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f) {
     s32 idx;
+    s8 *entry;
 
     idx = *(s32 *)((s8 *)&lbl_80350F88 + 0x288);
     *(s32 *)((s8 *)&lbl_80350F88 + 0x288) = idx + 1;
     entry = (s8 *)&lbl_80350F88 + idx * 0x40 + 8;
     strncpy((char *)entry, name, 0x28);
     *(entry + 0x28) = 0;
-    *(s32 *)(entry + 0x2c) = a1;
-    *(s32 *)(entry + 0x30) = a2;
+    *(s32 *)(entry + 0x2c) = a2;
+    *(s32 *)(entry + 0x30) = a3;
     *(s32 *)(entry + 0x34) = 0;
-    *(s32 *)(entry + 0x38) = a3;
+    *(s32 *)(entry + 0x38) = a4;
     *(f32 *)(entry + 0x3c) = f;
 }
 
@@ -265,6 +271,12 @@ void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
     *(s32 *)(entry + 0x34) = a3;
     *(s32 *)(entry + 0x38) = a4;
     *(f32 *)(entry + 0x3c) = f;
+}
+
+void fn_8001123C(s32 arg0) {
+    fn_8000E3B4(arg0);
+    fn_8000E874(arg0);
+    fn_8000EF74(arg0);
 }
 
 void fn_80011A2C(void *arg0) {
