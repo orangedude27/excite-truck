@@ -39,6 +39,13 @@ void fn_8001FEE8(void) {
     lbl_8055D645 = 0;
 }
 
+#pragma dont_inline on
+void fn_8001FF24(void) {
+    lbl_8055D644 = 0;
+    lbl_8055D645 = 0;
+}
+#pragma dont_inline off
+
 void fn_8001FF34(int arg0) {
     if ((char)lbl_8055D670 == 0) {
         fn_801312EC(&lbl_8035BAE4, &lbl_802FE1C0);
