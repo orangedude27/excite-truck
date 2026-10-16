@@ -95,10 +95,11 @@ void fn_802C9638(int arg0, int arg1) {
     fn_802C94A0(arg0, arg1, 0);
 }
 
+#pragma dont_inline on
 void fn_802C9640(int arg0) {
     fn_802C9638(arg0, 0);
 }
-
+#pragma dont_inline off
 extern void fn_802C9638(int, int);
 extern void fn_802C974C();
 extern float lbl_8055FC38;
@@ -222,6 +223,10 @@ char fn_802C9A60(void) {
 extern char lbl_8055FC8E;
 char fn_802C9A68(void) {
     return lbl_8055FC8E;
+}
+
+int fn_802C9C24(void *arg0) {
+    return *(int *)**(void ***)((char *)arg0 + 8) + 4;
 }
 
 extern void *lbl_8055FC68;
