@@ -325,3 +325,11 @@ void fn_802490AC(void *arg0) {
     }
 }
 
+void fn_80249104(void *arg0) {
+    unsigned char *p = (unsigned char *)arg0;
+
+    if (*(p + 0x1C) == 0 && fn_802E2C20() - *(s32 *)((char *)arg0 + 0x18) >= 0x3A98) {
+        fn_802168BC(-2);
+    }
+}
+
