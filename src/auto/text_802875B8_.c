@@ -12,6 +12,11 @@ extern s32 lbl_804B31E0[];
 extern s32 lbl_8055F6C0;
 extern f32 fn_8023659C(void);
 extern s32 fn_80214AF0(s32);
+s32 fn_80287668(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_802876A8(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x18) = fn_8023659C();
     *((u8 *)arg0 + 0x1C) = 0;
