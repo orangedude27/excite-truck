@@ -36,6 +36,11 @@ void fn_80207960(void) {
 	return;
 }
 
+void fn_80207980(void* arg0) {
+    *(signed long*)arg0 = 0;
+    *((signed long*)arg0 + 1) = 0;
+}
+
 void fn_80207C48(void) {
 	return;
 }
