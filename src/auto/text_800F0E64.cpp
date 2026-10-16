@@ -32,6 +32,10 @@ extern "C" s32 fn_800E9B88(void *);
 extern "C" s32 fn_800E9B9C(void *);
 extern "C" const char lbl_80325C00[];
 extern "C" const char lbl_80325C18[];
+extern "C" const char lbl_80325C64[];
+extern "C" const char lbl_80325C8C[];
+extern "C" f32 lbl_805610BC;
+extern "C" void* lbl_80325C50;
 extern "C" s32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(s32);
 
 M2C_UNK GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
@@ -201,15 +205,17 @@ extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6de
 }
 
 extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        *(void**)arg0 = &lbl_80325C40;
-        Destroy__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)arg0 + 0x1C);
-        __dt__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)arg0 + 0x1C, -1);
-        if (arg1 > 0) {
-            ((void (*)(void*))fn_80128668)(arg0);
+    void* this_ = arg0;
+    int flag = arg1;
+    if (this_ != 0) {
+        *(void**)this_ = (void*)lbl_80325C40;
+        Destroy__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)this_ + 0x1C);
+        __dt__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)this_ + 0x1C, -1);
+        if (flag > 0) {
+            ((void (*)(void*))fn_80128668)(this_);
         }
     }
-    return arg0;
+    return this_;
 }
 
 extern "C" void fn_800F83C8(void* arg0) {
