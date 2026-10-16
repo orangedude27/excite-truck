@@ -7,6 +7,7 @@ extern s32 fn_80128668(void *);
 extern s32 fn_8002F6AC(s32, void *);
 extern s32 fn_80297654;
 extern void *lbl_803493C0;
+extern float lbl_80564578;
 
 void fn_802976D0(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
