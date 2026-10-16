@@ -2,7 +2,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 void *fn_801E87A8(void);
+#pragma push
+#pragma small_data off
 extern int lbl_8049F9D8;
+#pragma pop
 extern int lbl_8055F554;
 extern float lbl_80563E78;
 void fn_80270AE8(void *arg0) {
