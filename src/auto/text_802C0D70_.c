@@ -46,7 +46,7 @@ void fn_802C1020(void) {
 }
 
 void fn_802C10B8(void) {
-    *(int *)lbl_8055FB14 = -1;
+    *(s32 *)lbl_8055FB14 = -1;
     fn_802C0F4C();
 }
 
