@@ -12,6 +12,12 @@ void fn_802C86E8(void* hi) {
     lbl_8055D018 = hi;
 }
 
+extern float lbl_80564EF8;
+extern void fn_802D007C(float);
+void fn_802C9904(void) {
+    fn_802D007C(lbl_80564EF8);
+}
+
 char fn_802C9A58(void) {
     return lbl_8055FC8C;
 }
