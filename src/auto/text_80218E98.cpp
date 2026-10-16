@@ -15,6 +15,45 @@ public:
     virtual void vf7();
 };
 
+class VfObj {
+public:
+    virtual void vf0();
+    virtual void vf1();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6();
+    virtual void vf7();
+    virtual void vf8();
+    virtual void vf9();
+    virtual void vf10();
+    virtual void vf11();
+    virtual void vf12();
+    virtual void vf13();
+    virtual void vf14();
+    virtual void vf15();
+    virtual void vf16();
+    virtual void vf17();
+    virtual void vf18();
+    virtual void vf19();
+    virtual void vf20();
+    virtual void vf21();
+    virtual void vf22();
+    virtual void vf23();
+    virtual void vf24();
+    virtual void vf25();
+    virtual void vf26();
+    virtual void vf27();
+    virtual void vf28();
+    virtual void vf29();
+    virtual void vf30();
+    virtual void vf31();
+    virtual void vf32();
+    virtual s32 vf33();    // vtable 0x84
+    virtual s32 vf34();    // vtable 0x88
+};
+
 extern "C" void fn_8023976C(s32);
 extern "C" void fn_80218F80(void);
 extern "C" void fn_8023986C(s32);
@@ -186,6 +225,17 @@ extern "C" void fn_80219870(void *arg0, s32 arg1, s32 arg2, char *arg3, s32 arg4
     fn_80219718(arg0);
 }
 
+extern "C" s32 fn_8021A9A4(void *arg0) {
+    s32 r4 = 0;
+    s32 r5 = 0;
+    if (*fn_80216708() != 0)
+        r4 = 2;
+    s32 *p = *(s32 **)((u8 *)arg0 + 0x254);
+    if (p != 0 && *p == *(s32 *)((u8 *)arg0 + 0x258))
+        r5 = 1;
+    return (r5 != 0) | r4;
+}
+
 extern "C" s32 fn_8021AB88(void) { return 0; }
 
 extern "C" s32 fn_8021AB90(void *arg0, s32 arg1) {
@@ -200,6 +250,7 @@ extern "C" s32 fn_8021AB90(void *arg0, s32 arg1) {
             fn_802179A0(*(s32 *)((u8 *)arg0 + 0x2C));
             return 1;
         }
+        return 0;
     }
     return fn_802192A4(arg0, arg1);
 }
