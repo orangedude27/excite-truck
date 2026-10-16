@@ -160,3 +160,16 @@ void fn_800322E4(void) {
     OSRestoreInterrupts(enabled);
 }
 
+s32 AXRmtGetSamplesLeft(void) {
+    s32 result;
+    s32 samples = lbl_8055D754 - 0x24;
+    if (samples < 0) {
+        samples += lbl_8055D758;
+    }
+    result = samples - lbl_8055D750;
+    if (result < 0) {
+        return result + lbl_8055D758;
+    }
+    return result;
+}
+
