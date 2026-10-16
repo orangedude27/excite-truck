@@ -39,6 +39,10 @@ extern "C" s32 fn_8012DCC0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_8012E490(s32 *arg0) {
+    return *arg0;
+}
+
 extern "C" s32 fn_8012E674(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
 }
