@@ -40,6 +40,19 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+s32 fn_801D77B8(s32 arg0) {
+    return ((s32 *)arg0)[2];
+}
+
+s32 fn_801D77C0(s32 arg0) {
+    s32 *ptr = (s32 *)arg0;
+    if (ptr[2] == 0) {
+        return 0;
+    }
+    ptr[2] = 1;
+    return 1;
+}
+
 s32 fn_801D77B8(s32 arg0);
 s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
