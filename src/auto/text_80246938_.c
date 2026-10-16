@@ -10,7 +10,7 @@ void fn_8020A634(void);
 s32 fn_802E2C20(void);
 void fn_80214AF0(s32);
 void fn_80214A9C(s32);
-extern char lbl_80343600;
+extern char lbl_80343600[16];
 typedef struct Obj_802470D4 {
     void *vtable;
     char pad[0x14];
@@ -30,6 +30,24 @@ void fn_80128668(void *);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055F260;
+Obj_802470D4 *fn_802470D4(Obj_802470D4 *arg0, s32 arg1) {
+    s32 *p;
+    if (arg0 != 0) {
+        arg0->vtable = &lbl_80343600;
+        fn_80235380(arg0->field18);
+        fn_80235380(arg0->field1C);
+        fn_802C519C(arg0->field20);
+        p = arg0->field30;
+        if (p != 0) {
+            fn_802328D4(*p);
+            *p = 0;
+            fn_80128668(p);
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_80247174(void) {
     s32 i = 0;
     do {
