@@ -54,7 +54,7 @@ extern const char lbl_80313BCC[];
 typedef struct hcisu_if {
     void (*init)(u32, u32, u32);
     void (*open)(void *);
-    void (*close)(void *);
+    void (*close)(s32, void *);
 } hcisu_if;
 
 extern hcisu_if *lbl_8055DC68;
