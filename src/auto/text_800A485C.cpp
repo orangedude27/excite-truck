@@ -180,6 +180,33 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
 extern "C" s32 fn_800A4BF4(s32, u16*, s16*);
 extern "C" s32 fn_800B72E4(void) { return 0; }
 
+extern "C" s32 fn_800B73E4(s32 arg0) {
+    if (arg0 == 0) return 0;
+    if (arg0 == 1) return 1;
+    return -1;
+}
+
+extern "C" void fn_800B7408(s32* arg0, void* arg1) {
+    extern s32 fn_800B6628(void*, s32);
+    extern s32 fn_800B73BC(s32);
+    extern s32 lbl_803D2140[];
+    s32* p = arg0;
+    s32 result = 0;
+    if (arg0 == 0 || *arg0 == 0) {
+        result = 10;
+        *(s32*)((u8*)lbl_803D2140 + 0x40) = 10;
+        fn_800B73BC(result);
+        return;
+    }
+    while (*p != 0) {
+        if (arg1 != 0) result = fn_800B6628(arg1, *(s32*)((u8*)arg1 + 0x50));
+        else result = fn_800B6628(0, 0);
+        if (result != 0) { fn_800B73BC(result); return; }
+        ++p;
+    }
+    fn_800B73BC(result);
+}
+
 extern "C" void* fn_800B1BDC(void*);
 extern "C" void fn_800B73BC(void*);
 extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
@@ -281,6 +308,42 @@ extern "C" void fn_800B7E18(u32 arg0) {
     if (lbl_80405D00[0]) lbl_80405D00[0]((u8)arg0);
 }
 
+#pragma push
+#pragma small_data off
+extern "C" s32 NANDGetType(char *);
+extern "C" s32 NANDOpen(void *, void *, s32);
+extern "C" s32 fn_800B814C(void *);
+extern "C" s32 fn_800B808C(s32 arg0, void *arg1, s32 arg2) {
+    s32 result;
+    result = NANDGetType((char *)&lbl_80405D18);
+    if (result != 0) return result;
+    if (*(s32 *)((u8 *)arg1 + 0xE4) & 4) result = 0;
+    else result = NANDOpen((u8 *)arg1 + 4, (u8 *)arg1 + 0x58, 3);
+    if (arg2 != 0) result = -0xC;
+    if (result == 0) {
+        *(s32 *)arg1 = arg0;
+        return 0;
+    }
+    if (result < 0 && result == -0xC) {
+        result = fn_800B814C(arg1);
+        if (result == 0) *(s32 *)arg1 = arg0;
+    }
+    return result;
+}
+
+#pragma push
+#pragma small_data off
+#pragma pop
+extern "C" s32 fn_800B8BE8(s32 arg0) {
+    if (arg0 == 0) return -0x14;
+    if (lbl_8055DD2C == 0) {
+        if (NANDInit() != 0) return -0x15;
+        if (NANDGetCurrentDir((char *)&lbl_80405D18) != 0) return -0x15;
+        lbl_8055DD2C = lbl_8055DD2C + 1;
+    }
+    fn_800A68DC(arg0);
+    return 0;
+}
 extern "C" u8 lbl_802F31F8[];
 extern "C" s32 lbl_8055DD2C;
 extern "C" s32 NANDInit(void);
@@ -293,22 +356,24 @@ extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
     return 0;
 }
 
+#pragma push
+#pragma small_data off
 extern "C" s32 fn_800BA160(s32 arg0) {
     s32 value;
-    if (arg0 == 0) {
-        return 1;
-    }
-    value = *(s32 *)(lbl_80407300 + 0x10);
-    return 6 & ~(((-value | value) >> 31));
+    s32 mask;
+    if (arg0 == 0) return 1;
+    value = *(volatile s32 *)(lbl_80407300 + 0x10);
+    mask = (-value | value) >> 31;
+    return 6 & ~mask;
 }
-
+#pragma push
+#pragma small_data off
 extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     if (arg0 == 0 || arg1 == 0 || arg4 != 0) {
         return 1;
     }
     return fn_800BA49C(arg3, arg1, arg2, *(s32 *)(lbl_80407300 + 4));
 }
-
 extern "C" u8 lbl_802F3218[];
 extern "C" s32 fn_800BA3DC(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 4) = arg1;
