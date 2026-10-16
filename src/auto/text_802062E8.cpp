@@ -8,6 +8,12 @@ extern "C" void fn_80206464(void* hi) {
     lbl_8055ED88 = hi;
 }
 
+extern "C" void fn_8020646C(long, long);
+extern long lbl_804891E8[];
+extern "C" void fn_8020646C(long arg0, long arg1) {
+    lbl_804891E8[arg0] = arg1;
+}
+
 void fn_80206480(void) {
     return;
 }
