@@ -22,6 +22,11 @@ char fn_801769F8(void) {
     return lbl_8055E3BD;
 }
 
+extern void *lbl_8055A2F0;
+void* fn_80176A1C(void) {
+    return lbl_8055A2F0;
+}
+
 void fn_80176A6C(void) {
     fn_801771A8();
 }
