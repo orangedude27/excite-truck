@@ -10,6 +10,10 @@ extern "C" void fn_801A49FC(s32);
 extern "C" void fn_801796EC(s32, s32*, s32);
 extern "C" s32 fn_8012C4E4(void*, void*, s32);
 extern "C" s32 fn_801CFF18(s32, s32);
+extern "C" void fn_801D0650(void);
+extern "C" void fn_801CFF14(void);
+extern "C" s32 fn_801CF828(s32, s32, s32, s32, s32);
+extern s32 lbl_8055E5A0;
 
 class VTab19 {
 public:
@@ -207,6 +211,18 @@ void fn_801A4868(void* arg0, u8 arg1) {
 void fn_801A48C8(void* arg0) {
     void* ptr = *(void**)((u8*)arg0 + 0x48);
     ((void(*)(void*, void*, void**))(*(void***)((u8*)ptr + 0x18)))(ptr, &lbl_8055A508, &lbl_8055A510);
+}
+
+extern "C" void fn_801D0650(void);
+extern s32 lbl_8055E5A0;
+extern void fn_801CFF14(void);
+extern s32 fn_801CF828(s32, s32, s32, s32, s32);
+s32 fn_801A4E88(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4) {
+    if (lbl_8055E5A0 != 0 && fn_801CF828(lbl_8055E5A0, arg0, arg1, arg2, arg3) != 0) {
+        *arg4 = 0x6E;
+        return 1;
+    }
+    return 0;
 }
 
 extern "C" s32 fn_801A4F00(s32 arg0, s32 arg1) {
