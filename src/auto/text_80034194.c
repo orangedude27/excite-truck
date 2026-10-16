@@ -26,6 +26,10 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+void cbForCancelSync(void) {
+    OSWakeupThread(__DVDThreadQueue);
+}
+
 void fn_800357A8(void) {
 
 }
