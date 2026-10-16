@@ -101,6 +101,25 @@ void fn_802B9DD0(void* arg0) {
     }
 }
 
+void fn_802B9E4C(void *arg0) {
+    void *p = *(void **)arg0;
+    if (p != 0) {
+        if (p != 0) {
+            int x = ((int *)p)[3];
+            if (x != 0) {
+                fn_80128670(x - 0x10);
+            }
+            if (p != 0) {
+                ((int *)p)[0] = 0;
+                ((int *)p)[1] = 0;
+                ((int *)p)[2] = 0;
+            }
+            fn_80128668(p);
+        }
+        *(void **)arg0 = 0;
+    }
+}
+
 void fn_802B9EC8(void *arg0) {
     void *p = *(void **)arg0;
     if (p != 0) {
