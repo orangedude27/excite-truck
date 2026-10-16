@@ -19,7 +19,7 @@ extern void fn_802D050C_var(void);
 #define fn_802D050C(...) fn_802D050C_var()
 extern s32 fn_80202BE4(void);
 typedef struct { s32 w0; s32 w1; } lbl_8048897C_entry;
-struct lbl_8048897C_t { lbl_8048897C_entry* ptr; s32 count; };
+struct lbl_8048897C_t { lbl_8048897C_entry* ptr; s32 count; s32 unk_08; s32 unk_0C; };
 extern struct lbl_8048897C_t lbl_8048897C;
 extern s32 lbl_8055ECFC;
 extern s32 lbl_8055ED00;
