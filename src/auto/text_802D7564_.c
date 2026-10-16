@@ -26,6 +26,40 @@ void fn_802D92B0(void) {
     fn_802D9230(lbl_8055FE1C);
 }
 
+void fn_802D92B8(void *arg0) {
+    lbl_8055FE20 = arg0;
+    if (((unsigned char *)arg0)[0xCC] != 0) {
+        fn_802E317C(lbl_8034C620, arg0);
+    }
+    if (*(unsigned int *)((char *)arg0 + 0x70) != 0) {
+        fn_802E317C(lbl_8034C650, arg0);
+    }
+    GXInitTexObjWrapMode((char *)arg0 + 0x24, 0, 0);
+    GXLoadTexObj((char *)arg0 + 0x24, 3);
+}
+
+void fn_802D9340(void *arg0) {
+    unsigned int value;
+    value = *(unsigned int *)((char *)arg0 + 0xD0);
+    if (value != 0 && *(unsigned int *)((char *)arg0 + 0xD4) != 0) {
+        DCFlushRange((void *)value, *(unsigned int *)((char *)arg0 + 0xD4));
+    }
+    if (*(unsigned int *)((char *)arg0 + 0x70) != 0 &&
+        *(unsigned int *)((char *)arg0 + 0x74) != 0) {
+        fn_802D78D4(*(void **)((char *)arg0 + 0x70),
+                    *(void **)((char *)arg0 + 0xC4),
+                    *(unsigned int *)((char *)arg0 + 0xD8),
+                    GXGetTexObjTlut((char *)arg0 + 0x64) & 0xFFFF);
+        DCFlushRange(*(void **)((char *)arg0 + 0x70),
+                     *(unsigned int *)((char *)arg0 + 0x74));
+    }
+    if (*(void **)((char *)arg0 + 0xC4) != 0) {
+        DCFlushRange(*(void **)((char *)arg0 + 0xC4),
+                     *(unsigned int *)((char *)arg0 + 0xC8));
+    }
+    GXInvalidateTexAll();
+}
+
 void* fn_802D94DC(void) {
     return lbl_8055FE18;
 }
