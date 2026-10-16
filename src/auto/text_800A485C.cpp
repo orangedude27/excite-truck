@@ -1,5 +1,6 @@
 #include <types.h>
 #include <revolution/OS/OSAlarm.h>
+#include <revolution/ARC/arc.h>
 #pragma opt_tail_call on
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -357,6 +358,7 @@ extern "C" void fn_800D2480(void) {
 
 #pragma opt_tail_call on
 #pragma opt_tail_call on
+extern "C" void fn_800D1C48(void);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
     u32 sp_8[2];
     u32 sp_C;
