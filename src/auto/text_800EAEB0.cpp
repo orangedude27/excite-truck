@@ -201,6 +201,12 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800ECB38(void *arg0, 
     return arg0;
 }
 
+extern "C" void fn_800F27AC(void *);
+extern "C" void fn_800ECC58(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0x108) = 0;
+    ((void (*)(void))fn_800F27AC)();
+}
+
 extern u8 lbl_803231D8[];
 extern "C" s32 fn_800F283C(void *, u32, s32, s32 *);
 extern "C" s32 fn_800F2824(void *, s32, void *);
