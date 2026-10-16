@@ -3,6 +3,8 @@ extern "C" f32 lbl_80558DC4;
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614BC;
+extern "C" s32 fn_80128670(s32);
+extern "C" f32 fn_8001DAE8(void *);
 extern "C" s32 lbl_802F9398[6];
 struct S6_8013D18C { s32 v[6]; };
 extern "C" void **fn_801284F8(s32, void *);
@@ -66,16 +68,16 @@ extern "C" s32 fn_8013CB10(void) {
     return fn_80176A1C() == 2;
 }
 
+extern "C" s32 fn_8013CB44(const char *arg0, TObj10 *arg1) {
+    return strcmp((const char *)arg1->v10(), arg0) == 0;
+}
+
 extern "C" void fn_8013CB90(void *arg0) {
     f32 x = *(f32 *)((u8 *)arg0 + 0x10);
     f32 scale = lbl_80561498;
     f32 y = *(f32 *)((u8 *)arg0 + 0x14);
-    f32 dx = x * scale;
-    f32 oldx = *(f32 *)((u8 *)arg0 + 4);
-    f32 dy = y * scale;
-    f32 oldy = *(f32 *)((u8 *)arg0 + 8);
-    *(f32 *)((u8 *)arg0 + 4) = oldx - dx;
-    *(f32 *)((u8 *)arg0 + 8) = oldy - dy;
+    *(f32 *)((u8 *)arg0 + 4) = *(f32 *)((u8 *)arg0 + 4) - x * scale;
+    *(f32 *)((u8 *)arg0 + 8) = *(f32 *)((u8 *)arg0 + 8) - y * scale;
 }
 
 extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
@@ -107,6 +109,25 @@ extern "C" s32 fn_8013D1F0(s32 arg0) {
 
 extern "C" void fn_8013D27C(void *a, void *b) {
     fn_8013D224(*(f32 *)((u8 *)a + 0x18), *(f32 *)((u8 *)b + 0x18));
+}
+
+extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
+    s32 count = 0;
+    s32 i = 0;
+    void *item;
+    while ((item = (void *)arg0->vC(i)) != 0) {
+        if (fn_8013CB44(arg1, (TObj10 *)item))
+            count++;
+        i++;
+    }
+    return count;
+}
+
+extern "C" f64 fn_8002F234(f32);
+extern "C" f32 fn_8013E300(void *arg0) {
+    f32 y = *(f32 *)((u8 *)arg0 + 4);
+    f32 x = *(f32 *)arg0;
+    return (f32)fn_8002F234(x * x + y * y);
 }
 
 extern "C" void fn_8013E338(void) {
