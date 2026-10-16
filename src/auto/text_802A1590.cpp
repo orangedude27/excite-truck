@@ -54,6 +54,13 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_802A1DC0(void) {
+    if (lbl_8055F870 != 0) {
+        fn_8028E398((void *)lbl_8055F870);
+        lbl_8055F870 = 0;
+    }
+}
+
 extern "C" f32 lbl_80558DC4;
 extern "C" f32 lbl_80564730;
 extern "C" f32 lbl_80564750;
