@@ -57,3 +57,10 @@ s32 fn_802630C0(void) {
     return 0;
 }
 
+s32 fn_80263658(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
