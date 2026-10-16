@@ -243,6 +243,26 @@ void gki_timers_init(void) {
     *(u32 *)(base - 0x7724) = 0;
 }
 
+void GKI_stop_timer(UINT8 tnum) {
+    UINT8 task_id = GKI_get_taskid();
+
+    switch (tnum) {
+#if (GKI_NUM_TIMERS > 0)
+        case TIMER_0:
+            gki_cb.com.OSTaskTmr0R[task_id] = 0;
+            gki_cb.com.OSTaskTmr0[task_id] = 0;
+            break;
+#endif
+
+#if (GKI_NUM_TIMERS > 1)
+        case TIMER_1:
+            gki_cb.com.OSTaskTmr1R[task_id] = 0;
+            gki_cb.com.OSTaskTmr1[task_id] = 0;
+            break;
+#endif
+    }
+}
+
 void fn_8006E6E4(void *arg0) {
     ((s32 *)arg0)[0] = 0;
     ((s32 *)arg0)[1] = 0;
