@@ -1,9 +1,11 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma dont_inline on
 int fn_802B2E00(void *);
-int fn_802B2E08(int);
 int *fn_802B320C(int *, int);
+#pragma dont_inline reset
+int fn_802B2E08(int);
 int fn_802B3340(int);
 extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
@@ -137,10 +139,11 @@ extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
 int fn_802B3340(int);
 void fn_802B32E0(int *arg0) {
+    int *ptr = arg0;
     int i = 0;
     do {
-        fn_802B3340(*fn_802B320C(arg0, i));
+        fn_802B3340(*fn_802B320C(ptr, i));
         i++;
-    } while (i < fn_802B2E00(arg0));
+    } while (i < fn_802B2E00(ptr));
 }
 
