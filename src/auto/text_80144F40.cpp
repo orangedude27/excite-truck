@@ -44,7 +44,123 @@ void fn_802E3AD0(s32, const char *, ...);
 }
 
 extern "C" f32 lbl_805615F0;
+extern "C" f32 fn_801452C8(f32 arg0) {
+    extern f32 lbl_805615E0;
+    return lbl_805615E0 + arg0;
+}
+
 extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
+
+extern "C" f32 fn_801452E0(void *arg0, const char *arg1) {
+    extern char *strchr(const char *, int);
+    extern double atof(const char *);
+    const char *text = ((const char *(*)(void *, const char *))(*(void ***)arg0)[5])(arg0, arg1);
+    const char *slash = strchr(text, '/');
+    if (slash != 0) {
+        f64 denominator = atof(slash + 1);
+        return (f32)(atof(text) / denominator);
+    }
+    return (f32)atof(text);
+}
+
+extern "C" f32 lbl_805615E0;
+extern "C" void fn_80145438(void *arg0, void *arg1) {
+    struct VTable { void *f0[9]; f32 (*f24)(void *, const char *); };
+    extern char lbl_80559DE0[];
+    extern char lbl_80559DE4[];
+    extern char lbl_80559DE8[];
+    extern char lbl_80559DEC[];
+    extern char lbl_80559DF0[];
+    extern char lbl_80559DF4[];
+    extern s32 fn_80145368(void);
+    extern f32 fn_801452E0(void *, const char *);
+    fn_80145368();
+    VTable *v = *(VTable **)arg1;
+    *(f32 *)((u8 *)arg0 + 0x10) = v->f24(arg1, lbl_80559DE0);
+    *(f32 *)((u8 *)arg0 + 0x14) = v->f24(arg1, lbl_80559DE4);
+    *(f32 *)((u8 *)arg0 + 0x18) = fn_801452E0(arg1, lbl_80559DE8);
+    *(f32 *)((u8 *)arg0 + 0x20) = fn_801452E0(arg1, lbl_80559DEC);
+    *(f32 *)((u8 *)arg0 + 0x1C) = fn_801452E0(arg1, lbl_80559DF0);
+    *(f32 *)((u8 *)arg0 + 0x24) = fn_801452E0(arg1, lbl_80559DF4);
+}
+
+extern "C" s32 fn_801454E8(void *arg0, const char *arg1) {
+    struct VTable { void *f0[5]; s32 (*f14)(void *); };
+    extern char lbl_80559DF8[];
+    extern int sscanf(const char *, const char *, ...);
+    s32 result;
+    (*(VTable **)arg0)->f14(arg0);
+    if (sscanf(arg1, lbl_80559DF8, &result) != 1)
+        result = -1;
+    return result;
+}
+
+extern "C" void fn_80145538(void *arg0, void *arg1) {
+    struct VTable { void *f0[9]; f32 (*f24)(void *, const char *); };
+    extern char lbl_80559DE0[];
+    extern char lbl_80559DE4[];
+    extern char lbl_80559DFC[];
+    extern s32 fn_80145368(void);
+    extern s32 fn_801454E8(void *, const char *);
+    fn_80145368();
+    VTable *v = *(VTable **)arg1;
+    *(f32 *)((u8 *)arg0 + 0x10) = v->f24(arg1, lbl_80559DE0);
+    *(f32 *)((u8 *)arg0 + 0x14) = v->f24(arg1, lbl_80559DE4);
+    *(s32 *)((u8 *)arg0 + 0x18) = fn_801454E8(arg1, lbl_80559DFC);
+}
+
+extern "C" s32 fn_801455B8(void *arg0, void *arg1) {
+    struct VTable { void *f0[5]; void (*f14)(void *, const char *); void *f18; void *f1c; f32 (*f24)(void *, const char *); };
+    extern char lbl_8032CEC8[];
+    extern char lbl_80559E04[];
+    extern char lbl_80559E0C[];
+    extern char lbl_80559DFC[];
+    extern s32 fn_80145368(void);
+    extern s32 fn_80144F40(const char *);
+    extern s32 fn_801454E8(void *, const char *);
+    fn_80145368();
+    VTable *v = *(VTable **)arg1;
+    v->f14(arg1, lbl_80559E04);
+    *(s32 *)((u8 *)arg0 + 0x14) = fn_80144F40(lbl_8032CEC8 + 0x10);
+    *(f32 *)((u8 *)arg0 + 0x10) = v->f24(arg1, lbl_80559E0C);
+    *(s32 *)((u8 *)arg0 + 0x18) = fn_801454E8(arg1, lbl_80559DFC);
+    *(s32 *)((u8 *)arg0 + 0x1C) = ((s32 (*)(void *, const char *, const char *))v->f18)(arg1, lbl_8032CEC8 + 0x5C, lbl_8032CEC8 + 0x70);
+    return 0;
+}
+
+extern "C" s32 fn_80145670(void *arg0, void *arg1) {
+    struct VTable {
+        s32 (*unused0)(void);
+        s32 (*unused1)(void);
+        s32 (*unused2)(void);
+        s32 (*unused3)(void);
+        s32 (*unused4)(void);
+        s32 (*get)(void *, const char *);
+    };
+    VTable *vtable = *(VTable **)arg1;
+    *(s32 *)arg0 = vtable->get(arg1, lbl_80559DD0);
+    *(s32 *)((u8 *)arg0 + 4) = vtable->get(arg1, lbl_8032CF48);
+    *(s32 *)((u8 *)arg0 + 8) = fn_8023512C();
+    return 0;
+}
+
+extern "C" void fn_8014589C(void *arg0, s32 arg1, s32 arg2) {
+    char *base = lbl_8032CEC8;
+    fn_802E3AD0(arg1, base + 0x170);
+    fn_802E3AD0(arg1, base + 0x180);
+    s32 i = 0;
+    s32 offset = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 4)) {
+        u8 *entry = *(u8 **)arg0 + offset;
+        fn_802E3AD0(arg1, base + 0x1A8,
+            *(f32 *)(entry + 4), *(f32 *)(entry + 8),
+            *(f32 *)(entry + 0x10), *(f32 *)(entry + 0x14),
+            *(s32 *)(entry + 0x18), *(s32 *)(entry + 0xC), *(s32 *)entry);
+        offset += 0x1C;
+        i++;
+    }
+    fn_802E3AD0(arg1, lbl_80559E14);
+}
 
 extern "C" void fn_8014595C(void *arg0, const char *arg1) {
     char *base = lbl_8032CEC8;
