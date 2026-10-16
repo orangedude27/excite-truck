@@ -55,6 +55,8 @@ void fn_80137C80(void) {
     fn_80016A44();
 }
 
+int __AXGetStackHead_80137CFC(int index) { return lbl_8042F798[index]; }
+
 void fn_80137D10(void) {
     int i = 0;
     do {
