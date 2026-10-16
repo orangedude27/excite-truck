@@ -31,6 +31,10 @@ void fn_802607EC(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 0;
 }
 
+void fn_80260814(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x1D) = 0;
+}
+
 void fn_80260848(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
 }
