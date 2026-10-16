@@ -552,6 +552,13 @@ extern "C" void fn_80228554(void *p){fn_802396BC(*(s32*)((u8*)p+0x244));}
 
 extern "C" void *fn_8022855C(void *p,s32 unused,s32 a,s32 b){fn_80218F80();*(s32*)((u8*)p+0x244)=a;*(void**)p=lbl_8033DDA4;*(s32*)((u8*)p+0x248)=b;return p;}
 
+extern "C" void *memset(void *, int, unsigned long);
+extern "C" void *lbl_8033DD20[];
+extern "C" s32 fn_8022882C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668((void *)arg0);
+    return arg0;
+}
+
 extern "C" void fn_80214D48(void);
 extern "C" void fn_80228AEC(s32);
 extern "C" void fn_802C86F0(void *, s32, s32, s32, s32);
@@ -570,7 +577,7 @@ extern "C" void fn_80228A6C(void *arg0) {
 extern "C" void fn_80228A80(void) {
 }
 
-void fn_80228A84(void *arg0) {
+extern "C" void fn_80228A84(void *arg0) {
     s32 work[2];
     fn_802C86F0(work, *(s32 *)((u8 *)arg0 + 0x270),
         *(s32 *)((u8 *)arg0 + 0x274), *(s32 *)((u8 *)arg0 + 0x278),
