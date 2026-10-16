@@ -263,6 +263,10 @@ void fn_8027DDCC(int arg0) {
     }
 }
 
+void fn_8027DE68(void) {
+    fn_8027B94C();
+}
+
 void fn_8027DE6C(void) {
     fn_8027B77C();
     fn_8027BF38();
