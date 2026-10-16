@@ -228,6 +228,16 @@ s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     }
     return arg0;
 }
+
+#pragma push
+#pragma small_data off
+extern u8 lbl_80323B28[];
+extern u8 lbl_80323C74[];
+#pragma pop
+extern "C" s32 fn_800EFBAC(void* arg0) {
+    return *(s32*)&((u8*)arg0)[0x3C];
+}
+
 void fn_800F0750(void) {
     return;
 }
