@@ -75,9 +75,9 @@ extern "C" void* fn_80157928(void* arg0, s32 arg1) {
 extern "C" void* fn_80157990(void* arg0, s32 arg1) {
  if (arg0 != 0) {
  
- if ((char*)arg0 + 8 != 0) {
- if ((char*)arg0 + 8 != 0) {
- if ((char*)arg0 + 8 != 0) {
+ if ((u32)arg0 + 8 != 0) {
+ if ((u32)arg0 + 8 != 0) {
+ if ((u32)arg0 + 8 != 0) {
  *(u32*)((char*)arg0 + 8) = 0;
  *(u32*)((char*)arg0 + 0xC) = 0;
  *(u32*)((char*)arg0 + 0x10) = 0;
