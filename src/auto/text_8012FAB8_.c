@@ -26,4 +26,6 @@ void fn_80131318(int *arg0) {
     }
     arg0[2] = lbl_8055E044;
 }
-
+extern int lbl_8055E044;
+extern char lbl_8032B328[];
+int fn_802E317C(const char *, ...);
