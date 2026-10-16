@@ -125,13 +125,13 @@ extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
 void fn_8001FF34(int arg0) {
-    unsigned int var;
+    struct lbl_8035BAE4_t* p;
     if ((char)lbl_8055D670 == 0) {
         fn_801312EC(&lbl_8035BAE4, &lbl_802FE1C0);
         lbl_8055D670 = 1;
     }
-    var = lbl_8035BAE4.unk_8;
-    if (var != lbl_8055E044) {
+    p = &lbl_8035BAE4;
+    if (p->unk_8 != lbl_8055E044) {
         fn_80131318();
     }
     fn_80232BA4(lbl_8035BAE4.unk_4, lbl_8055D64C, arg0, 0x12, lbl_805604A8, lbl_805604AC, lbl_805604B0, lbl_805604B4, lbl_805604B8);
@@ -161,8 +161,8 @@ int fn_80020184(void) {
     s32 var_r0;
     u32 temp_r3_2;
 
-    temp_r3_2 = (((u32) ((fn_802E2C20() - lbl_8055D63C) - 0x12C) * 0x10624DD3u) >> 6) - (u32) 0x1000000;
-    temp_r3 = temp_r3_2;
+    temp_r3_2 = (((u32) ((fn_802E2C20() - lbl_8055D63C) - 0x12C) * 0x10624DD3u) >> 6) - 0x1000000u;
+    temp_r3 = (s32) temp_r3_2;
     var_r0 = 0xFF;
     if (temp_r3 < 0xFF) {
         var_r0 = temp_r3;
@@ -220,19 +220,6 @@ int fn_801E8838(void);
 void fn_8001FD7C(void);
 int fn_80020184(void);
 void fn_800207B0(void);
-void fn_80020434(void*, void*);
-void fn_8026A2CC(void*, int, float);
-void fn_8000C630(int, int);
-struct cfg_t {
-    char f0[0xc];
-    char f1[0xc];
-    char f2[0x10];
-    char f3[0x10];
-    char f4[0x10];
-    char f5[0x10];
-    char f6[0x10];
-    char f7[0x10];
-};
 char fn_800216F4(void) {
     return lbl_8055D644;
 }
