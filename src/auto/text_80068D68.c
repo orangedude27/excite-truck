@@ -135,6 +135,27 @@ void fn_8006A1BC(u32 r3, u32 r4)
     OSSwitchFiberEx(r3, r4, 0, 0, fn_80069FE8, (u8*)&lbl_80393680 + 0x1000);
 }
 
+void fn_8006A300(void)
+{
+    u8 state;
+    state = lbl_80392960[0x10];
+    if (state == 1) {
+        lbl_80392960[0x10] = (SCCheckStatus() == 0) ? 2 : 1;
+    } else if (state == 2) {
+        lbl_80392960[0x10] = fn_8006A1DC();
+    } else if (state == 3) {
+        OSCancelAlarm((OSAlarm *)(lbl_80392960 + 0x690));
+        lbl_80392960[0x688] = 1;
+        BTA_EnableBluetooth(fn_8006BAD8);
+        lbl_80392960[0x10] = 4;
+    }
+}
+
+void fn_8006A39C(u32 r3, u32 r4)
+{
+    OSSwitchFiberEx(r3, r4, 0, 0, fn_8006A300, (u8*)&lbl_80393680 + 0x1000);
+}
+
 void fn_8006A3BC(void);
 void fn_8006A440(u32 r3, u32 r4)
 {
