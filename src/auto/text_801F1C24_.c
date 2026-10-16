@@ -38,6 +38,11 @@ int fn_801F37FC(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_801F383C(void *arg0, int arg1) {
+    *(int *)((char *)arg0 + 8) = *fn_801F1CE8(arg1);
+    *(char *)((char *)arg0 + 4) = 1;
+}
+
 void fn_801F3E60(void) {
 
 }
