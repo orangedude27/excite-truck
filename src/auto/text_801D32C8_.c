@@ -24,7 +24,4 @@ void fn_801D4714(void *a, void *b, void *c, int *arg3, int *arg4) { *arg4 = 0; *
 
 int fn_801D4724(void) { return 0; }
 
-extern int fn_80128668(void *);
-extern int fn_80179EE8(int);
-extern char lbl_80338400;
-extern float lbl_80562AB8;
+
