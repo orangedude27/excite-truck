@@ -7,6 +7,11 @@ extern char lbl_803388F0[];
 extern char lbl_8033890C[];
 extern s32 lbl_8055E3C4;
 extern char lbl_80338C40[];
+
+typedef struct {
+    char *name;
+    s32 state;
+} UnkStruct_801D6618;
 extern char lbl_80338F50[];
 
 void fn_801D47F4(void) {
@@ -70,8 +75,8 @@ void fn_801D6600(void *arg0) {
 }
 
 void fn_801D6618(void *arg0) {
-    *(char **)((u8 *)arg0 + 0) = lbl_80338C40;
     *(s32 *)((u8 *)arg0 + 4) = 0;
+    *(char **)arg0 = lbl_80338C40;
 }
 
 void *fn_801D6630(void *arg0, s32 arg1) {
