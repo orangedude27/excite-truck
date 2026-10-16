@@ -43,6 +43,17 @@ void fn_80208998(void) {
 	fn_80208858();
 }
 
+void fn_8020899C(void* arg0, Vt_80207960** self) {
+    (*self)->f2(self);
+}
+
+signed long fn_802089D0(signed long arg0, signed long arg1) {
+    if ((arg0 != 0) && (arg1 > 0)) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_802085EC(void) {
 	fn_80208408();
 }
