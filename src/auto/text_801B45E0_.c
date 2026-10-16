@@ -12,6 +12,10 @@ extern int fn_801B47BC();
 extern unsigned int fn_801B4BDC(void);
 extern int fn_801B4B9C(int);
 extern int fn_801B47AC(int);
+void fn_801B47B4(void *arg0) {
+    fn_801B47D4(arg0, *(int *)((char *)arg0 + 0x24));
+}
+
 int fn_801B4B9C(int arg0) {
     return *fn_801B479C(arg0 + 4, fn_801B47AC(arg0 + 4));
 }
@@ -74,5 +78,20 @@ void fn_801B535C(void) {
 
 void fn_801B5360(void) {
 
+}
+
+void fn_801B5364(int arg0, int arg1) {
+    *(int *)((char *)&lbl_80435C70 + 0x208 + arg0 * 4) = arg1;
+}
+
+void fn_801B537C(int arg0) {
+    int i;
+    for (i = 0; i < 16; i++) {
+        if (*(int *)((char *)&lbl_80435C70 + 0x208 + i * 4) == arg0) {
+            *(int *)((char *)&lbl_80435C70 + 0x208 + i * 4) = 0;
+            return;
+        }
+    }
+    fn_802E317C(&lbl_80335E48, arg0);
 }
 
