@@ -6,7 +6,7 @@ extern "C" s32 lbl_80405C98[];
 extern "C" s32 fn_800B74B8(s8);
 extern "C" s32 fn_800A5990(s32);
 extern "C" s32 fn_800A59CC(s32);
-extern "C" void fn_800B7E18(u8);
+extern "C" void fn_800B7E18(u32);
 extern "C" void fn_800B7E38(u8);
 extern "C" s32 fn_800BA3F4(Unk800B7E18Callback, Unk800B7E18Callback);
 extern "C" s32 fn_800BBB58(s32, void**);
@@ -152,7 +152,7 @@ extern "C" s32 fn_800B7DB0(s32 arg0, Unk800B7E18Callback arg1, Unk800B7E18Callba
     return -((u32)(-result | result) >> 31);
 }
 
-extern "C" void fn_800B7E18(u8 arg0) {
+extern "C" void fn_800B7E18(u32 arg0) {
     if (lbl_80405D00[0]) lbl_80405D00[0](arg0);
 }
 
