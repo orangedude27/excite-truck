@@ -9,6 +9,7 @@ extern f32 lbl_805622D0;
 extern void fn_8019AC44(f32*, f32*, f32);
 extern char lbl_803339B8;
 extern void fn_8019F03C();
+extern void fn_8019DDFC(s32, s32, s32, s32, void*, void*, f32);
 extern "C" f64 fn_8002F234(f32);
 
 extern "C" void fn_8019EBC0(void);
