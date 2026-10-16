@@ -2,6 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <revolution/MEM.h>
 
+MEMiHeapHead* MEMDestroyFrmHeap(MEMiHeapHead* heap) {
+    MEMiFinalizeHeap(heap);
+    return heap;
+}
+
 static void* AllocatorAllocForExpHeap_(MEMAllocator* allocator, u32 size) {
     return MEMAllocFromExpHeapEx(allocator->heap, size, allocator->heapParam1);
 }
@@ -47,20 +52,21 @@ void MEMInitList(MEMList* list, u16 offset) {
 }
 
 void MEMAppendListObject(MEMList* list, void* object) {
-    MEMLink* link = (MEMLink*)((u8*)object + list->offset);
     if (list->head == 0) {
-        link->prev = 0;
+        MEMLink* link = (MEMLink*)((u8*)object + list->offset);
         link->next = 0;
+        link->prev = 0;
         list->head = object;
         list->tail = object;
+        list->length++;
     } else {
-        MEMLink* tailLink = (MEMLink*)((u8*)list->tail + list->offset);
-        link->prev = list->tail;
-        link->next = 0;
-        tailLink->next = object;
+        u16 offset = list->offset;
+        *(void**)((u8*)object + offset) = list->tail;
+        *(void**)((u8*)object + offset + 4) = 0;
+        *(void**)((u8*)list->tail + offset + 4) = object;
         list->tail = object;
+        list->length++;
     }
-    list->length++;
 }
 
 void MEMRemoveListObject(MEMList* list, void* object) {
