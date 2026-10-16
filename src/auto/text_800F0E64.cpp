@@ -54,7 +54,7 @@ extern "C" const char lbl_803245B8[];
 extern "C" void fn_800F2004(void *arg0, f32 farg0) {
     OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x68) = farg0;
-    OSRestoreInterrupts((u32)arg0);
+    ((void (*)(void))OSRestoreInterrupts)();
 }
 
 extern "C" void fn_800F2044(void *arg0, f32 farg0) {
