@@ -1,6 +1,18 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+int fn_80171D38(int arg0) {
+    unsigned char sp[0x68];
+    int index;
+    int result = 0;
+    if (fn_801298E8(sp, arg0) != 0) {
+        index = *(int *)(__AXFXGetLfoSinTable_801297F4() + 0x30);
+        if (*(sp + 0x20 + index) != 0)
+            result = 1;
+    }
+    return result;
+}
+
 int fn_80171DE4(void *arg0) {
     extern int fn_80139EC4(int, float, float);
     extern int lbl_8055E3A4;
@@ -14,12 +26,12 @@ int fn_80171E3C(void *arg0) {
     extern int fn_80139EC4(int, float, float);
     extern int lbl_8055E3A4;
     extern float lbl_80561A38;
-    float a, b, c;
-    a = *(float *)((char *)arg0 + 4);
-    b = *(float *)arg0;
-    c = lbl_80561A38;
-    if (fn_802B04D4((float *)((char *)&a - 4), b, a) != 0) return 0;
-    if (lbl_8055E3A4 != 0 && fn_80139EC4(lbl_8055E3A4, *(float *)arg0, *(float *)((char *)arg0 + 4)) != 0) return 0;
+    float sp8, spC, sp10;
+    sp10 = *(float *)((char *)arg0 + 4);
+    sp8 = *(float *)arg0;
+    spC = lbl_80561A38;
+    if (fn_802B04D4(&sp8, sp8, sp10)) return 0;
+    if (lbl_8055E3A4 && fn_80139EC4(lbl_8055E3A4, *(float *)arg0, *(float *)((char *)arg0 + 4))) return 0;
     return 1;
 }
 
@@ -28,11 +40,8 @@ int fn_80171EC0(void) {
     return *(int *)((char *)fn_8017960C(0) + 0x10) == 0x50434152;
 }
 
-int fn_801720E0(unsigned int arg0) {
-    unsigned int shifted = arg0 >> 1;
-    unsigned int mask = 0x7F7F7F;
-    unsigned int result = shifted & mask;
-    return result | (arg0 & 0xFF000000);
+unsigned int fn_801720E0(unsigned int arg0) {
+    return ((arg0 >> 1) & 0x7F7F7F) | (arg0 & 0xFF000000);
 }
 
 float fn_801725C8(float arg0) {
