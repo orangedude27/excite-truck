@@ -54,8 +54,29 @@ void fn_800E80B4(void) {
 
 }
 
+#pragma push
+#pragma small_data off
+extern float lbl_80560FB0;
+#pragma pop
+extern "C" void fn_800E9B18(void *arg0, float farg0) {
+    *(float *)((char *)arg0 + 0x90) = farg0;
+}
+
 extern "C" void fn_800E9B20(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x94) = arg1;
+}
+
+extern "C" void fn_800E9B28(void **arg0, float arg1) {
+    void **vtable = (void **)*arg0;
+    void *(*get)(void);
+    void *result;
+    void **resultVtable;
+    void (*set)(float);
+    get = (void *(*)(void))vtable[23];
+    result = get();
+    resultVtable = (void **)*(void **)result;
+    set = (void (*)(float))resultVtable[16];
+    set(arg1);
 }
 
 extern "C" void fn_800E9B74(void *arg0, int arg1, int arg2, int arg3, int arg4) {
@@ -75,9 +96,14 @@ extern "C" void fn_800E9B9C(void *arg0) {
 }
 
 extern "C" void fn_800E9BA4(void *arg0, int arg1) {
-    *(int *)((char *)arg0 + 0x78) = arg1;
-    void *result = (*(void *(**)(void *))((char *)*(void **)arg0 + 0x5C))(*(void **)arg0);
-    *(int *)((char *)result + 4) = arg1;
+    int var_r31;
+    void *vtable;
+
+    var_r31 = arg1;
+    *(int *)((char *)arg0 + 0x78) = var_r31;
+    vtable = *(void **)arg0;
+    (*(void *(**)(void *))((char *)vtable + 0x5C))(vtable);
+    *(int *)((char *)arg0 + 0x4) = var_r31;
 }
 
 extern int lbl_8055DE20;
