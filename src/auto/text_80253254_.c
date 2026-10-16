@@ -39,6 +39,9 @@ void fn_80255920(void *arg0, s8 arg1) {
 void fn_80255A7C(void) {
 }
 
+void fn_80255A80(void) {
+}
+
 s32 fn_802571F0(void) { return 0; }
 
 void fn_802571F8(void *arg0) { *(u8 *)((u8 *)arg0 + 0x18) = 1; }
