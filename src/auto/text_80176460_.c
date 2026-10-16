@@ -171,6 +171,17 @@ void fn_801770C8(void) {
     fn_801769EC();
 }
 
+void fn_80177138(void) {
+    *(void **)(lbl_80430558 + 0x10) = fn_80176E4C;
+    *(s32 *)(lbl_80430558 + 0xC) = 2;
+    *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176E4C);
+    *(s32 *)lbl_80430558 = lbl_8055E3C4;
+    *(s32 *)(lbl_80430558 + 8) = 7;
+    *(u8 *)(lbl_80430558 + 0x14) = 0;
+    __AXDSPInitCallback_801769E0();
+    fn_801769EC();
+}
+
 void __AXDSPInitCallback_801769E0(void) {
     lbl_8055E3C0 = 1;
 }
