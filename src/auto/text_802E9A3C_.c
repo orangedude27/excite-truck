@@ -25,3 +25,6 @@ void fn_802EC12C(void) {
 void fn_802EC1D8(void) {
     lbl_805600C8 = 1;
 }
+typedef int s32;
+extern void *memcpy(void *, const void *, unsigned long);
+extern char lbl_80560060;
