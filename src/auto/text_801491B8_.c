@@ -22,6 +22,9 @@ extern s32 lbl_802F93D0[];
 extern f32 lbl_805615D4;
 extern f64 lbl_805615D8;
 extern f32 lbl_80561628;
+extern f32 lbl_8056162C;
+extern f32 lbl_80561630;
+extern f32 lbl_80561634;
 
 void fn_80149210(void *arg0) {
     u32 x = ((u32 *)arg0)[1] + 1;
@@ -96,12 +99,12 @@ void fn_801494B4(void *arg0, f32 *arg1, f32 *arg2) {
 int fn_801494E0(void) { return 0xFF0000FF; }
 
 void fn_801494EC(float *arg1, float *arg2) {
-    float temp_f1 = arg1[0];
-    float temp_f3 = arg1[1];
-    arg2[1] += temp_f1;
-    arg2[4] -= temp_f1;
-    arg2[2] += temp_f3;
-    arg2[5] -= temp_f3;
+    float temp_f1 = arg2[0];
+    float temp_f3 = arg2[1];
+    arg1[1] += temp_f1;
+    arg1[4] -= temp_f1;
+    arg1[2] += temp_f3;
+    arg1[5] -= temp_f3;
 }
 
 extern unsigned long lbl_80559E94;
