@@ -46,6 +46,10 @@ void fn_801C0124(float *arg0, float *arg1, float arg2) {
     arg0[2] = z;
 }
 
+int fn_801C0440(void *arg0) {
+    return *(int *)((char *)arg0 + 0x1EC) != 0;
+}
+
 extern void PSVECDotProduct(void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern float lbl_805628B8;
