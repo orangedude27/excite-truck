@@ -54,6 +54,10 @@ void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
 
+extern "C" void* fn_800C64DC(u32 size) {
+    return MEMAllocFromAllocator(lbl_80559708, size);
+}
+
 extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
     void* r30 = this_ptr;
     s32 r31 = arg1;
