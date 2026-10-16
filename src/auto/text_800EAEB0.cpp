@@ -427,6 +427,19 @@ extern "C" s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma small_data off
+extern f32 lbl_80561018;
+extern f32 lbl_8056101C;
+extern f32 lbl_80561020;
+extern f64 lbl_80561028;
+#pragma pop
+extern "C" void fn_800F2330(s32, s32, s32, s32, s32);
+#pragma push
+#pragma small_data off
+extern "C" void fn_800EE060(void* this_, s32 a, s32 b, s32 c, s32 d, s32 e) {
+    fn_800F2330(a, b, c, d, e);
+}
 extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *arg0) {
     extern u8 lbl_80323258[];
     extern u8 lbl_80323760[];
