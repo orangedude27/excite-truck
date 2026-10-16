@@ -231,6 +231,9 @@ int fn_802B1BE4(void *arg0) {
     return ((int *)arg0)[1];
 }
 
+void fn_802B1BEC(void) {
+}
+
 int fn_802B1C14(void *arg0) {
     return ((int *)arg0)[4];
 }
