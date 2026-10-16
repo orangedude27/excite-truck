@@ -4,8 +4,8 @@
 #include <types.h>
 
 extern void *lbl_80320548;
-extern void *lbl_80320570;
-extern void *lbl_80320688;
+extern const char lbl_80320570[];
+extern const char lbl_80320688[];
 extern const char lbl_80320B5C[];
 extern const char lbl_80320B8C[];
 extern const char lbl_80320BC8[];
