@@ -4,6 +4,13 @@
 void fn_8018C510(void);
 void __AXDSPInitCallback_801AFC38(void);
 void fn_801BD790(void);
+extern float lbl_80434930[];
+extern float lbl_80434908[];
+extern float lbl_80434950[];
+extern float lbl_804348E8[];
+extern unsigned char lbl_8055E4F4;
+float fn_80181AEC(void) { return lbl_80434930[3]; }
+
 void fn_80181FC4(void) {
     fn_8018C510();
     __AXDSPInitCallback_801AFC38();
@@ -61,6 +68,16 @@ void fn_8018ADC4(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25E8) = farg0;
 
 void fn_8018AF00(void) {
 
+}
+
+void fn_8018BDEC(void *arg0) {
+    f32 sp[12];
+    int value;
+    sp[0]=lbl_80561CD0; sp[1]=lbl_80561CAC; sp[2]=lbl_80561CAC; sp[3]=lbl_80561CAC;
+    sp[4]=lbl_80561CD0; sp[5]=lbl_80561CAC; sp[6]=lbl_80561CAC; sp[7]=lbl_80561CAC;
+    sp[8]=lbl_80561CD0; sp[9]=lbl_80561CAC; sp[10]=lbl_80561CAC; sp[11]=lbl_80561CAC;
+    value=*(int *)((u8 *)arg0+0x26C4);
+    if(value) fn_801C2BF8(value,sp);
 }
 
 void fn_8018BF44(int *arg0) { *arg0 = 0x0FF807FF; }
