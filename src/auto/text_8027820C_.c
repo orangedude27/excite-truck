@@ -19,3 +19,12 @@ char fn_802787F4(void) {
     return lbl_8055F5BA;
 }
 
+extern char lbl_8055F5BB;
+extern char lbl_8055F5C8;
+extern int lbl_8055F5C0;
+extern int lbl_8055E3C4;
+extern float lbl_805640A8;
+extern float lbl_805640B8;
+extern float lbl_805640BC;
+void *fn_802678E4(int);
+
