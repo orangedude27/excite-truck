@@ -66,6 +66,10 @@ int fn_8020B2D4(int arg0, int arg1) {
     return arg0;
 }
 
+void *fn_8020B314(void) {
+    return lbl_8033C520;
+}
+
 void fn_8020B340(void) {
     fn_802E5824();
 }
