@@ -9,8 +9,8 @@ extern s32 lbl_8055D4C4;
 extern s32 lbl_8055D4C8;
 extern s32 fn_8023512C();
 extern void fn_80235380();
-extern s32 lbl_80350F88;
-extern s32 lbl_80351214;
+__declspec(section ".data") extern s32 lbl_80350F88;
+__declspec(section ".data") extern s32 lbl_80351214;
 extern s32 lbl_8055D4BC;
 typedef struct UnkF22C UnkF22C;
 typedef struct UnkF22CVtable {
@@ -26,19 +26,13 @@ extern UnkF22C *lbl_8055D4B8;
 extern void fn_802328D4(void);
 extern s32 fn_80232578(s32);
 void fn_8000F22C(void) {
-    if (lbl_8055D4BC != 0) {
-        fn_80235380(lbl_8055D4BC);
-    }
+    if (lbl_8055D4BC != 0) fn_80235380(lbl_8055D4BC);
     lbl_8055D4BC = 0;
     if (lbl_8055D4B4 != 0) {
-        if (lbl_8055D4B4 != 0) {
-            lbl_8055D4B4->vtable->unk_0x8(lbl_8055D4B4, 1);
-        }
+        if (lbl_8055D4B4 != 0) lbl_8055D4B4->vtable->unk_0x8(lbl_8055D4B4, 1);
     }
     if (lbl_8055D4B8 != 0) {
-        if (lbl_8055D4B8 != 0) {
-            lbl_8055D4B8->vtable->unk_0x8(lbl_8055D4B8, 1);
-        }
+        if (lbl_8055D4B8 != 0) lbl_8055D4B8->vtable->unk_0x8(lbl_8055D4B8, 1);
     }
 }
 
