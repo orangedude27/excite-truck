@@ -212,6 +212,24 @@ extern "C" void fn_800EC848(void** head, void* node) {
     OSRestoreInterrupts(level);
 }
 
+extern "C" void fn_800EC8B4(void* arg0) {
+    *(s32*)((u8*)arg0 + 0x10) = 0;
+    *(f32*)((u8*)arg0 + 0x14) = lbl_80561018;
+}
+
+extern "C" void Update__Q44nw4r3snd6detail3LfoFi(void* arg0, s32 arg1) {
+    f32 temp_f1; s32 var_r4; u32 temp_r0; u32 temp_r5; u32 temp_r6;
+    var_r4 = arg1; temp_r6 = *(u32*)((u8*)arg0 + 8); temp_r5 = *(u32*)((u8*)arg0 + 0x10);
+    if (temp_r5 < temp_r6) {
+        temp_r0 = temp_r5 + var_r4;
+        if (temp_r0 <= temp_r6) { *(u32*)((u8*)arg0 + 0x10) = temp_r0; return; }
+        *(u32*)((u8*)arg0 + 0x10) = temp_r6; var_r4 -= temp_r6 - temp_r5;
+    }
+    temp_f1 = *(f32*)((u8*)arg0 + 0x14) + ((*(f32*)((u8*)arg0 + 4) * (f32)var_r4) / lbl_80561020);
+    *(f32*)((u8*)arg0 + 0x14) = temp_f1;
+    *(f32*)((u8*)arg0 + 0x14) = (f32)(temp_f1 - (f32)(s32)temp_f1);
+}
+
 extern "C" void *fn_800ECAEC(void *arg0) {
     extern void fn_800F26D8(void *);
     extern void fn_800F2D28(void *, void *);
