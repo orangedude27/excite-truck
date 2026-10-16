@@ -93,9 +93,9 @@ extern "C" void fn_8013E338(void) {
 
 }
 
-void fn_8013EB0C(void *arg0, s32 arg1) {
+extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
     u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
-    if (entry[0x118] != 0)
+    if (*(u8 *)(entry + 0x118))
         *(s32 *)entry = 1;
 }
 
@@ -143,13 +143,15 @@ extern "C" void fn_8013F434(void) {
 
 }
 
-s32 fn_8013F438(f32 arg0) {
+extern "C" f32 lbl_80561530;
+extern "C" f32 lbl_80561538;
+extern "C" f32 lbl_8056153C;
+extern "C" f32 lbl_80561540;
+extern "C" s32 fn_8013F438(f32 arg0) {
     f32 temp = (arg0 - lbl_80561530) / lbl_80561538;
     f32 value = lbl_805614AC;
-    if (value < temp)
-        value = temp;
-    if (value > lbl_805614A4)
-        value = lbl_805614A4;
+    if (value < temp) value = temp;
+    if (value > lbl_805614A4) value = lbl_805614A4;
     return (s32)(lbl_8056153C + value * lbl_80561540);
 }
 
