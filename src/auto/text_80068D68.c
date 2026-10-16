@@ -66,6 +66,35 @@ void *GKI_read_mbox(UINT8 mbox) {
     return p_buf;
 }
 
+void *GKI_dequeue(BUFFER_Q *p_q) {
+    BUFFER_HDR_T *p_hdr;
+
+    GKI_disable();
+
+    if (!p_q || !p_q->count) {
+        GKI_enable();
+        return NULL;
+    }
+
+    p_hdr = (BUFFER_HDR_T *)((UINT8 *)p_q->p_first - BUFFER_HDR_SIZE);
+
+    if (p_hdr->p_next) {
+        p_q->p_first = (void *)((UINT8 *)p_hdr->p_next + BUFFER_HDR_SIZE);
+    } else {
+        p_q->p_first = NULL;
+        p_q->p_last = NULL;
+    }
+
+    p_q->count--;
+
+    p_hdr->p_next = NULL;
+    p_hdr->status = BUF_STATUS_UNLINKED;
+
+    GKI_enable();
+
+    return (void *)((UINT8 *)p_hdr + BUFFER_HDR_SIZE);
+}
+
 s32 fn_8006DF60(s32 *arg0) {
     return *arg0;
 }
