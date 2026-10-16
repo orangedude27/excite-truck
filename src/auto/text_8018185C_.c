@@ -65,6 +65,11 @@ void fn_801836DC(void) {
 
 }
 
+int fn_801837DC(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 int fn_80186DDC(void) { return 0; }
 
 void fn_80186DE4(void) {
