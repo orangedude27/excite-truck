@@ -95,9 +95,9 @@ void fn_801D2A24(void *obj_) {
     UnkObj *obj = (UnkObj *)obj_;
     s32 *entry = (s32 *)(lbl_80438958 + lbl_8055E930 * 0x4C4);
 
-    entry[0] = obj->vt->fn1C(obj, lbl_8055ABE0);
-    fn_801D25BC(&entry[1], obj->vt->fn5C(obj, lbl_8055AC18));
-    fn_801D26C8(&entry[12], obj->vt->fn5C(obj, lbl_8055AC20));
+    entry[0] = obj->vt->fn1C(obj, (u32)&lbl_8055ABE0);
+    fn_801D25BC(&entry[1], obj->vt->fn5C(obj, (u32)&lbl_8055AC18));
+    fn_801D26C8(&entry[12], obj->vt->fn5C(obj, (u32)&lbl_8055AC20));
     lbl_8055E930 += 1;
 }
 #pragma dont_inline off
