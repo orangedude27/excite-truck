@@ -35,8 +35,16 @@ void fn_802E3F38(void *arg0) {
     fn_802E317C(&lbl_8034D054);
 }
 
+int fn_802E4030(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_802E3EB8();
+    return arg0;
+}
+
 extern unsigned int lbl_8055D1B0;
 extern unsigned int lbl_8034D074;
+extern unsigned int lbl_8034D098;
+extern void DVDInit(void);
+extern void OSReport(const char *);
 extern unsigned int lbl_8034D098;
 extern void DVDInit(void);
 extern void OSReport(const char *);
@@ -46,13 +54,15 @@ extern void fn_802E3F38(void *);
 extern unsigned int lbl_8034D0E4;
 extern unsigned int lbl_8034D130;
 void *fn_802E41C4(void *arg0, int arg1) {
+    void (*release)(void *);
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8034D130;
         if (*((unsigned char *)arg0 + 0x80) != 0 && DVDClose((char *)arg0 + 4) == 0) {
             fn_802E30C8((const char *)&lbl_8034D0E4, (char *)arg0 + 0x40);
         }
         if (arg1 > 0) {
-            fn_802E3F38(arg0);
+            release = fn_802E3F38;
+            release(arg0);
         }
     }
     return arg0;
