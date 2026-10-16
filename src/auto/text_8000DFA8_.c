@@ -3,6 +3,12 @@
 
 #include <types.h>
 
+extern s32 lbl_8055D4A8;
+extern f32 lbl_80350F28[][6];
+extern void fn_80234AEC(void);
+extern void *fn_80010BEC(void *);
+extern void fn_802346C8(void *);
+
 extern s32 lbl_8055D4D0;
 extern s32 lbl_8055D4C0;
 extern s32 lbl_8055D4C4;
@@ -26,13 +32,23 @@ extern UnkF22C *lbl_8055D4B8;
 extern void fn_802328D4(void);
 extern s32 fn_80232578(s32);
 void fn_8000F22C(void) {
+    UnkF22C *obj;
+    void (*destroy)(UnkF22C *, s32);
     if (lbl_8055D4BC != 0) fn_80235380(lbl_8055D4BC);
     lbl_8055D4BC = 0;
-    if (lbl_8055D4B4 != 0) {
-        if (lbl_8055D4B4 != 0) lbl_8055D4B4->vtable->unk_0x8(lbl_8055D4B4, 1);
+    obj = lbl_8055D4B4;
+    if (obj != 0) {
+        if (obj != 0) {
+            destroy = obj->vtable->unk_0x8;
+            destroy(obj, 1);
+        }
     }
-    if (lbl_8055D4B8 != 0) {
-        if (lbl_8055D4B8 != 0) lbl_8055D4B8->vtable->unk_0x8(lbl_8055D4B8, 1);
+    obj = lbl_8055D4B8;
+    if (obj != 0) {
+        if (obj != 0) {
+            destroy = obj->vtable->unk_0x8;
+            destroy(obj, 1);
+        }
     }
 }
 
