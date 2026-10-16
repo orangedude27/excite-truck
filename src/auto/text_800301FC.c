@@ -60,6 +60,16 @@ void TRKConstructEvent(void) {
     lbl_8055D6A8 = 0;
 }
 
+void TRKMessageSend(void) {
+    OSRegisterVersion(lbl_80558DD8);
+    TRKAppendBuffer_ui32();
+    fn_800331A0();
+    __AXSPBInit();
+    TRKGetInput();
+    CircleBufferWriteBytes();
+    fn_800320E8(0);
+}
+
 void TRKReadBuffer_ui32(void) {
     TRKAppendBuffer1_ui64();
     fn_80033404();
