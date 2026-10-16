@@ -4,6 +4,8 @@
 void fn_8000AC98(void) {
 }
 
+int fn_8000AC9C(void) { return 0; }
+
 void fn_8000ACA4(void) {
     return;
 }
