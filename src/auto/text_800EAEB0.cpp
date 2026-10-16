@@ -77,14 +77,14 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54(
 
 extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(
     void* this_, void* pCallback) {
-    u32 level;
+    void* node;
     void* pThis;
     void* pCb;
-    void* node;
+    u32 level;
 
     pThis = this_;
     pCb = pCallback;
-    node = (void*)((u8*)this_ + 4);
+    node = (void*)((u8*)pThis + 4);
     level = OSDisableInterrupts();
 
     if (pCb == NULL) {
@@ -145,6 +145,22 @@ extern "C" f32 fn_800ED07C(void *arg0) {
     return ((f32 *)arg0)[0x20 / 4];
 }
 
+extern "C" f32 fn_800ED08C(void *arg0) {
+    return ((f32 *)arg0)[0x1C / 4];
+}
+
+extern "C" s32 fn_800ED094(s32 arg0) {
+    u8 val = ((u8 *)arg0)[0x18];
+    s32 t = -(s32)val;
+    return ((t | (s32)val) >> 31);
+}
+
+extern "C" s32 fn_800ED0A8(s32 arg0) {
+    u8 val = ((u8 *)arg0)[0x17];
+    s32 t = -(s32)val;
+    return ((t | (s32)val) >> 31);
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -159,13 +175,10 @@ s32 fn_800ED0D0(s32 arg0) {
 #pragma push
 #pragma small_data off
 #pragma pop
-void fn_800ED0E4(s32 arg0) {
+extern "C" void fn_800ED0E4(s32 arg0) {
     arg0 -= 8;
     fn_800ED058();
 }
-#pragma push
-#pragma small_data off
-#pragma pop
 s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
