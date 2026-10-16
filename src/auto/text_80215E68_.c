@@ -62,6 +62,11 @@ void fn_802168E0(void) {
     fn_80218B88();
 }
 
+extern void *lbl_8055EF88;
+void* fn_802168E4(void) {
+    return lbl_8055EF88;
+}
+
 void fn_802168EC(void) {
     fn_80218C98();
 }
