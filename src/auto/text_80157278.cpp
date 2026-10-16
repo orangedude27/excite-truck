@@ -348,6 +348,10 @@ extern "C" void fn_80158E74(void* arg0) {
     *(s32*)((u8*)arg0 + 8) = 0;
 }
 
+extern "C" f32 fn_80158E80(void* arg0) {
+    return *(f32*)((u8*)arg0 + 0x25D4);
+}
+
 extern "C" void fn_80158F34(void**);
 extern "C" void fn_80158D60(void*, void*);
 extern "C" void fn_80158E88(void* arg0, void* arg1) {
