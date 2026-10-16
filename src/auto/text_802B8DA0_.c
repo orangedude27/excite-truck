@@ -70,6 +70,22 @@ void fn_802B9CF4(void *arg0) {
     ((int *)arg0)[1] = 0;
 }
 
+void fn_802B9EC8(void *arg0) {
+    void *p = *(void **)arg0;
+    if (p != 0) {
+        if (p != 0) {
+            fn_80128670(((s32 *)p)[3]);
+            if (p != 0) {
+                ((s32 *)p)[0] = 0;
+                ((s32 *)p)[1] = 0;
+                ((s32 *)p)[2] = 0;
+            }
+            fn_80128668(p);
+        }
+        *(void **)arg0 = 0;
+    }
+}
+
 void fn_802B9FC0(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
