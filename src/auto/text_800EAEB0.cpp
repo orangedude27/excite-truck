@@ -175,6 +175,8 @@ extern "C" s32 fn_800ECFF0(void) {
     return 0;
 }
 
+extern "C" u32 fn_800ECFF8(void) { return 1; }
+
 extern "C" void fn_800ED058() {
     return;
 }
