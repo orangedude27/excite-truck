@@ -42,6 +42,30 @@ void fn_8006D4C4(void *arg) {
     ((u16 *)arg)[4] = 0;
 }
 
+void *GKI_read_mbox(UINT8 mbox) {
+    UINT8 task_id = GKI_get_taskid();
+    void *p_buf = NULL;
+    BUFFER_HDR_T *p_hdr;
+
+    if (task_id >= GKI_MAX_TASKS || mbox >= NUM_TASK_MBOX) {
+        return NULL;
+    }
+
+    GKI_disable();
+
+    if (gki_cb.com.OSTaskQFirst[task_id][mbox]) {
+        p_hdr = gki_cb.com.OSTaskQFirst[task_id][mbox];
+        gki_cb.com.OSTaskQFirst[task_id][mbox] = p_hdr->p_next;
+        p_hdr->p_next = NULL;
+        p_hdr->status = BUF_STATUS_UNLINKED;
+        p_buf = (UINT8 *)p_hdr + BUFFER_HDR_SIZE;
+    }
+
+    GKI_enable();
+
+    return p_buf;
+}
+
 s32 fn_8006DF60(s32 *arg0) {
     return *arg0;
 }
