@@ -11,6 +11,8 @@ int fn_802B539C(int arg0) {
     return -2;
 }
 
+void fn_802B5404(int *arg0) { int temp = *arg0; if (temp != -2) { fn_802CAC54(temp); *arg0 = -2; } }
+
 void* fn_802B59CC(void) {
     return lbl_8055F9E8;
 }
