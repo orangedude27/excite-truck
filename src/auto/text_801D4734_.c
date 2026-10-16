@@ -173,15 +173,40 @@ void fn_801D5730(void) {
     }
 }
 
-void fn_801D6080(void *arg0) {
+u8 fn_801D5A68(void *arg0) {
+    void **entries = lbl_804423A4[0];
+    s32 count = *(s32 *)((u8 *)lbl_804423A4 + 4);
     s32 i;
+    for (i = 0; i < count; i++) {
+        if (entries[i] == arg0) {
+            return *((u8 *)arg0 + 0x22);
+        }
+    }
+    return 0;
+}
+
+void fn_801D5AA8(void *arg0) {
+    *(void **)((u8 *)arg0 + 0) = lbl_80338D20;
+    *(void **)((u8 *)arg0 + 4) = lbl_80338D20 + 0x38;
+    *(s32 *)((u8 *)arg0 + 8) = 0;
+    *(void **)((u8 *)arg0 + 0x10) = (u8 *)arg0 + 0x1C;
+    *(s32 *)((u8 *)arg0 + 0x18) = 4;
+    *(s32 *)((u8 *)arg0 + 0x14) = 0;
+    *(void **)((u8 *)arg0 + 0x70) = (u8 *)arg0 + 0x7C;
+    *(s32 *)((u8 *)arg0 + 0x78) = 0x40;
+    *(s32 *)((u8 *)arg0 + 0x74) = 0;
+}
+
+#pragma scheduling on
+void fn_801D6080(void *arg0) {
     s32 offset;
+    s32 i;
     void *obj;
 
     if (*(s32 *)((u8 *)arg0 + 8) == 2 &&
         lbl_8055E3C4 - *(s32 *)((u8 *)arg0 + 0x6C) >= *(s32 *)((u8 *)arg0 + 0x68)) {
-        i = 0;
         offset = 0;
+        i = 0;
         while (i < *(s32 *)((u8 *)arg0 + 0x74)) {
             obj = *(void **)(*(u8 **)((u8 *)arg0 + 0x70) + offset);
             ((void (**)(void *))*(void **)obj)[11](obj);
@@ -191,7 +216,7 @@ void fn_801D6080(void *arg0) {
         *(s32 *)((u8 *)arg0 + 8) = 3;
     }
 }
-
+#pragma scheduling reset
 void fn_801D628C(void *arg0) {
     *(s32 *)((u8 *)arg0 + 4) = 0;
     *(void **)((u8 *)arg0 + 0) = lbl_80338C78;
@@ -201,10 +226,12 @@ void fn_801D628C(void *arg0) {
 #pragma scheduling on
 void *fn_801D62A8(void *arg0, s32 arg1) {
     s32 temp_r5;
+    void *vtable;
 
     if (arg0 != NULL) {
         temp_r5 = *(s32 *)((u8 *)arg0 + 0x14);
-        *(void **)((u8 *)arg0 + 0) = lbl_80338C78;
+        vtable = lbl_80338C78;
+        *(void **)((u8 *)arg0 + 0) = vtable;
         if (temp_r5 != 0) {
             fn_80128658(temp_r5);
         }
@@ -724,6 +751,28 @@ s32 fn_801D7C80(void *arg0, s32 arg1) {
     }
     return result;
 }
+
+void fn_801D7E3C(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 0x28) != 0) *(s32 *)((u8 *)arg0 + 0x28) = 1;
+}
+
+void fn_801D7E54(void *arg0) {
+    s32 temp;
+    if (*(s32 *)((u8 *)arg0 + 0x28) != 0) {
+        if (*(s32 *)((u8 *)arg0 + 0x10) == 0) {
+            temp = *(s32 *)((u8 *)arg0 + 4);
+            if (temp != 0) fn_801D9AB8(temp);
+            else fn_80178DBC(*(s32 *)((u8 *)arg0 + 8));
+        }
+        *(s32 *)((u8 *)arg0 + 0x28) = 1;
+    }
+}
+
+s32 fn_801D7F5C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 #pragma scheduling reset
 
 extern u8 lbl_80338928[];
