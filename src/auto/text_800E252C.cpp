@@ -18,6 +18,8 @@ extern const char lbl_80322790[];
 extern const char lbl_80322830[];
 extern const char lbl_80322858[];
 extern const char lbl_803227EC[];
+extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 #pragma push
 #pragma small_data off
 extern float lbl_80560FB0;
@@ -64,6 +66,22 @@ void fn_800E80B4(void) {
 
 extern "C" int fn_800E90AC(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x67) != 0;
+}
+
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_, float vol) {
+    if (vol > lbl_80560FB0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
+    }
+
+    *(float *)((char *)this_ + 0x8C) = vol;
+}
+
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
+    if (vol > lbl_80560FB0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x234, lbl_80322858);
+    }
+
+    *(float *)((char *)this_ + 0x98) = vol;
 }
 
 #pragma push
