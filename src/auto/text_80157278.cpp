@@ -863,19 +863,39 @@ extern "C" void fn_8015B228(void* arg0, s32 arg1, s32 arg2) {
     if (arg2 == 6) *(u8*)((char*)arg0 + 0x26C) = 1;
 }
 
-extern "C" void fn_8015B23C(void* arg0) {
-    f32 sp8;
-    if (*(s32*)((char*)arg0 + 0x264) > 0) {
-        void** vtable = *(void***)arg0;
-        s32 result = ((s32 (*)(void*))((char*)*vtable + 0x5C))(arg0);
-        f32 mult = ((f32 (*)(void*, s32))((char*)*vtable + 0x50))(arg0, result);
-        sp8 = *(f32*)((char*)arg0 + 0x25C) * mult;
-        ((void (*)(void*, f32*))((char*)*vtable + 0x8C))(arg0, &sp8);
-        ((void (*)(void*))((char*)*vtable + 0x84))(arg0);
-        *(s32*)((char*)arg0 + 0x264) = 0;
-        *(f32*)((char*)arg0 + 0x25C) = lbl_80561750;
+extern "C" void fn_8015B23C(Unk801577F0* arg0) {
+    class LocalVt {
+    public:
+        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
+        virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
+        virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
+        virtual void a12(); virtual void a13(); virtual void a14(); virtual void a15();
+        virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19();
+        virtual f32 a20(s32); virtual void a21(); virtual void a22(); virtual s32 a23();
+        virtual void a24(); virtual void a25(); virtual void a26(); virtual void a27();
+        virtual void a28(); virtual void a29(); virtual void a30(); virtual void a31();
+        virtual void a32(); virtual void a33(); virtual void a34(); virtual void a35(f32*);
+    };
+    f32 value;
+    if (arg0->m264 > 0) {
+        s32 result = ((LocalVt*)arg0)->a23();
+        value = arg0->m25c * ((LocalVt*)arg0)->a20(result);
+        ((LocalVt*)arg0)->a35(&value);
+        ((LocalVt*)arg0)->a33();
+        f32 zero = lbl_80561750;
+        arg0->m264 = 0;
+        arg0->m25c = zero;
     }
 }
+
+extern "C" s32 fn_8015B2E0(void* arg0) {
+    if (*(u8*)((char*)arg0 + 0x294)) return 0x7fffffff;
+    f32 value = *(f32*)((char*)arg0 + 0x290);
+    if (value > lbl_80558DC4[0]) return (s32)value;
+    return (s32)*(f32*)((char*)arg0 + 0x28c);
+}
+
+extern "C" s32 fn_8015B338(void) { return 0xC; }
 
 extern "C" s32 fn_8015BCEC(void) { return 7; }
 
