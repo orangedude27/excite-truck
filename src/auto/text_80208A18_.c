@@ -27,6 +27,10 @@ int fn_802091D4(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_80209214(void) {
+    return 0;
+}
+
 void fn_80209278(void) {
 
 }
