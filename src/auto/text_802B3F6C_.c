@@ -24,6 +24,10 @@ void *fn_802B3F6C(void *arg0, int arg1) {
     return arg0;
 }
 
+void fn_802B4004(void) {
+    lbl_8055F9CC += 1;
+}
+
 int fn_802B40B0(int arg0, int arg1) {
     int p;
     if (arg0 < 0 || (unsigned int)arg0 >= 0x80)
