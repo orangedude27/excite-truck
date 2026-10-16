@@ -23,14 +23,14 @@ void fn_8020A5F8(f32 arg0) {
 }
 
 s32 fn_802E2C20(void);
-s32 fn_802E30C8(void*, s32);
-extern void* lbl_8033C318;
+extern void fn_802E30C8(const char*, ...);
+extern const char lbl_8033C318[];
 extern s32 lbl_8055EDE4;
 extern s32 lbl_8055EDE8;
 
 void fn_8020A648(s32 arg0) {
     if (arg0 != lbl_8055EDE4) {
-        fn_802E30C8(&lbl_8033C318, arg0);
+        fn_802E30C8(lbl_8033C318, arg0);
         lbl_8055EDE4 = arg0;
         lbl_8055EDE8 = fn_802E2C20();
     }
