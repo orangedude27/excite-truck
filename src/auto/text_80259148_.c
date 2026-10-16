@@ -8,10 +8,25 @@ extern int fn_802C6CF8(int);
 extern int fn_802CAC54(int);
 extern int fn_80128668(void *);
 extern int lbl_80345158;
+void fn_80259148(void) {
+    int *base = lbl_80344DE0;
+    void *obj = fn_80258354();
+    void **vtable;
+    lbl_8055F394 = obj;
+    vtable = *(void ***)obj;
+    ((void (*)(void *, void *, void *, int))vtable[5])(obj, base, (char *)base + 0x10, 0);
+    obj = lbl_8055F394;
+    vtable = *(void ***)obj;
+    ((void (*)(void *, void *, void *, int))vtable[5])(obj, (char *)base + 0x20, (char *)base + 0x30, 0);
+    obj = lbl_8055F394;
+    vtable = *(void ***)obj;
+    ((void (*)(void *, void *, void *, int))vtable[5])(obj, (char *)base + 0x40, (char *)base + 0x50, 1);
+}
+
 int fn_8025921C(void) { return 0; }
 
 void *fn_80259680(void *arg0, int arg1) {
-    int value;
+    volatile int value;
     if (arg0 != 0) {
         value = *(int *)((char *)arg0 + 0x50);
         *(int **)arg0 = &lbl_80345158;
