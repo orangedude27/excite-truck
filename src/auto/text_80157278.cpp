@@ -50,14 +50,14 @@ public:
     s32 m4;
     u8* mData;
     s32 mCount;
-    u8 pad_10[0x244];
+    u8 m54;
+    u8 pad_55[0x240];
     f32 m254;
     s32 m258;
     f32 m25c;
     s32 m260;
     s32 m264;
     s32 m268;
-    u8 m54;
 };
 
 class Unk8015A368C {
