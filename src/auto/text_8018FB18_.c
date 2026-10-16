@@ -195,6 +195,31 @@ void fn_80192BE4(void) {
 
 }
 
+float fn_80192E3C(void *arg0) {
+    unsigned char x = *((unsigned char *)*(void **)((char *)arg0 + 8) + 6);
+    unsigned char y = (x & 0xF) | ((x << 4) & 0xF0);
+    float z = (float)y;
+    z = (z - lbl_8056208C) / lbl_805620AC;
+    if (z < lbl_80562090) z = lbl_80562090;
+    if (z > lbl_8056208C) z = lbl_8056208C;
+    return lbl_8056208C + z * lbl_80562090;
+}
+
+extern float lbl_80562084;
+extern float lbl_8056208C;
+extern float lbl_80562090;
+extern float lbl_805620A4;
+extern float lbl_805620AC;
+extern float lbl_805620B0;
+extern float lbl_805620B8;
+float fn_80192ED0(void *arg0) {
+    float x = (float)*(unsigned short *)*(void **)((char *)arg0 + 8);
+    float y = (x - lbl_8056208C) / lbl_805620B8;
+    if (y < lbl_80562090) y = lbl_80562090;
+    if (y > lbl_8056208C) y = lbl_8056208C;
+    return lbl_80562084 + y * lbl_805620A4;
+}
+
 int fn_80192F58(void *arg0) {
     register void **vtable = *(void ***)*(void **)((char *)arg0 + 4);
     return ((int (*)(void))vtable[2])();
@@ -225,9 +250,10 @@ void fn_80192F80(void *arg0) {
 int fn_80193010(void) { return 0x20; }
 
 void fn_80193018(void *arg0, void *arg1) {
-    *(float *)((char *)arg0 + 0x10) += *(float *)((char *)arg1 + 0);
-    *(float *)((char *)arg0 + 0x14) += *(float *)((char *)arg1 + 4);
-    *(float *)((char *)arg0 + 0x18) += *(float *)((char *)arg1 + 8);
+float x=*(float*)((char*)arg0+0x10)+*(float*)arg1;
+float y=*(float*)((char*)arg0+0x14)+*(float*)((char*)arg1+4);
+float z=*(float*)((char*)arg0+0x18)+*(float*)((char*)arg1+8);
+*(float*)((char*)arg0+0x10)=x; *(float*)((char*)arg0+0x14)=y; *(float*)((char*)arg0+0x18)=z;
 }
 
 void fn_8019304C(void *arg0) {
@@ -240,4 +266,6 @@ void fn_80193058(void) {
 unsigned char fn_8019305C(void *arg0) {
     return *((unsigned char *)arg0 + 0x11);
 }
+
+unsigned char fn_80193064(void *arg0) { return *((unsigned char*)arg0+0x13); }
 
