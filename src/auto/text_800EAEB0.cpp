@@ -134,6 +134,10 @@ extern "C" s32 fn_800ECFE8(void *arg0) {
     return ((s32 *)arg0)[0x1C / 4];
 }
 
+extern "C" s32 fn_800ECFF0(void) {
+    return 0;
+}
+
 extern "C" void fn_800ED058() {
     return;
 }
