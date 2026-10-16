@@ -192,6 +192,11 @@ void fn_80125CA0(void *arg0, void *arg1, void *arg2, s32 arg3) {
     fn_80125664(arg0, arg1, arg2, (u8 *)&lbl_802F6A40 + (arg3 << 8));
 }
 
+extern void fn_80125960(void *p0, void *p1, void *p2, void *p3);
+void fn_80125CB4(void *arg0, void *arg1, void *arg2, s32 arg3) {
+    fn_80125960(arg0, arg1, arg2, (u8 *)&lbl_802F6A40 + (arg3 << 8));
+}
+
 extern char lbl_8055DF08;
 char fn_8012742C(void) {
     return lbl_8055DF08;
