@@ -17,22 +17,22 @@ extern void fn_801D2A24(void *);
 extern s32 strncmp(char *, char *, s32);
 extern char lbl_8055AC28[];
 extern u8 lbl_80338300[];
-extern u8 lbl_8055ABE0[];
-extern u8 lbl_8055AC18[];
-extern u8 lbl_8055AC20[];
+extern u32 lbl_8055ABE0;
+extern u32 lbl_8055AC18;
+extern u32 lbl_8055AC20;
 extern f32 lbl_80562A90;
 
 typedef struct UnkObj UnkObj;
 typedef struct {
     char pad0[8];
-    void *(*fn8)(void *);
+    char *(*fn8)(void *);
     void *(*child)(void *, s32);
     char pad2[0x0C];
-    s32 (*fn1C)(void *, void *);
+    s32 (*fn1C)(void *, u32);
     char pad3[8];
     f32 (*fn28)(void *, void *, f32);
-    char pad4[0x2C];
-    void *(*fn5C)(void *, void *);
+    char pad4[0x30];
+    void *(*fn5C)(void *, u32);
 } Vt801D;
 struct UnkObj { const Vt801D *vt; };
 
