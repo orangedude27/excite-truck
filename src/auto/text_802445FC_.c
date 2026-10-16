@@ -6,6 +6,22 @@ int fn_802446F8(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_80244738(void) {
+    int sp8;
+    __AXDSPInitCallback_800216B8();
+    fn_80230B5C(&sp8);
+    fn_80230AD8(&sp8);
+    fn_802C942C(0xFF000000);
+    fn_800216C8();
+    fn_80230B38();
+    fn_800216C4();
+}
+
+extern int lbl_80342E28;
+extern float lbl_805637F0;
+extern float lbl_805637F4;
+extern double lbl_805637F8;
+
 void fn_802447C4(void *arg0) {
     fn_8002167C();
     fn_8020A634();
