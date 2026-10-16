@@ -3,6 +3,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void fn_801B2EC0(void);
+extern s32 fn_80128668(void);
+extern void *lbl_80335BFC;
+extern f32 lbl_805625BC;
+extern void *memset(void *, int, unsigned long);
 extern void *lbl_8055E678;
 extern u8 lbl_8055E6A0;
 extern f32 lbl_8055E6A4;
@@ -90,6 +94,27 @@ s32 fn_801B1130(s32 arg0) {
 }
 
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
+
+extern void fn_801B2118(void);
+void fn_801B228C(void) {
+    fn_8002F6AC(lbl_8055E684, fn_801B2118);
+    lbl_8055E684 = 0;
+    lbl_8055E678 = 0;
+    if (lbl_8055E68C != 0) {
+        if (lbl_8055E68C != 0) {
+            ((void (*)(void *, s32))(*(void ***)lbl_8055E68C)[2])(lbl_8055E68C, 1);
+        }
+        lbl_8055E68C = 0;
+    }
+    if (lbl_8055E66C != 0) {
+        fn_80139E18();
+        lbl_8055E66C = 0;
+    }
+    if (lbl_8055E670 != 0) {
+        fn_80139E18();
+        lbl_8055E670 = 0;
+    }
+}
 
 void fn_801B2320(void) {
     lbl_8055E688 = *(s32 *)((u8 *)*(void **)((u8 *)fn_80178C9C() + 0x2C) + 0x18);
