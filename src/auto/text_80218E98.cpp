@@ -6,6 +6,7 @@ extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
 extern "C" void *lbl_8033F0FC;
 extern "C" void fn_802223C4(void *arg0, s32 arg1);
+extern f32 lbl_805634C4;
 extern "C" void *lbl_8033EC2C;
 extern "C" f32 fn_8023659C(void);
 extern "C" s32 fn_80228F40(s32, s32);
@@ -403,6 +404,32 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, 
     return arg0;
 }
 
+extern "C" void *lbl_8033F20C;
+extern "C" void fn_8021B224(void *arg0) {
+    s32 temp_r0;
+    s32 temp_r4;
+    void *temp_r5;
+    if (*(s32 *)((u8 *)arg0 + 0x254) == 1) {
+        temp_r5 = *(void **)((u8 *)arg0 + 0x258);
+        temp_r4 = *(s32 *)((u8 *)temp_r5 + 8) + 1;
+        *(s32 *)((u8 *)temp_r5 + 8) = temp_r4;
+        temp_r0 = *(s32 *)temp_r5 - *(s32 *)((u8 *)temp_r5 + 4);
+        if (temp_r4 > temp_r0)
+            *(s32 *)((u8 *)temp_r5 + 8) = temp_r0;
+        if (*(s32 *)((u8 *)temp_r5 + 8) < 0)
+            *(s32 *)((u8 *)temp_r5 + 8) = 0;
+    } else {
+        temp_r5 = *(void **)((u8 *)arg0 + 0x258);
+        temp_r4 = *(s32 *)((u8 *)temp_r5 + 8) - 1;
+        *(s32 *)((u8 *)temp_r5 + 8) = temp_r4;
+        temp_r0 = *(s32 *)temp_r5 - *(s32 *)((u8 *)temp_r5 + 4);
+        if (temp_r4 > temp_r0)
+            *(s32 *)((u8 *)temp_r5 + 8) = temp_r0;
+        if (*(s32 *)((u8 *)temp_r5 + 8) < 0)
+            *(s32 *)((u8 *)temp_r5 + 8) = 0;
+    }
+}
+
 extern "C" s32 fn_8021B3A0(void *arg0) {
     s32 *p = *(s32 **)((u8 *)arg0 + 0x264);
     if (p != 0) return *p;
@@ -521,6 +548,16 @@ extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
             fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" void fn_8021CE8C(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x244) != 0)
+        (*(void (**)(void *))(*(void ***)arg0 + 15))(arg0);
+}
+
+extern "C" void fn_8021CEAC(void *arg0) {
+    (*(void (**)(void *))(*(void ***)arg0 + 19))(arg0);
+    *(u8 *)((u8 *)arg0 + 0x244) = 0;
 }
 
 extern "C" void *fn_8021D7C8(void *arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 arg5,s32 arg6,s32 arg7) {
