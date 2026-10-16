@@ -122,6 +122,8 @@ extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_801A1358(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x1C) = arg1; }
+
 extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
