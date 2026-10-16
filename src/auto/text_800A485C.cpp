@@ -481,6 +481,15 @@ extern "C" void fn_800CFBB8(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x28) 
 
 extern "C" u8 fn_800CFDB4(void *arg0) { return *((u8 *)((u8 *)arg0 + 0x24)); }
 
+extern "C" void fn_800CFDBC(void *arg0, s32 arg1, void *arg2) {
+    if (arg1 & *(s32 *)((u8 *)arg0 + 0x1C)) {
+        *(f32 *)((u8 *)arg0 + 0xC) = *(f32 *)arg2;
+        *(f32 *)((u8 *)arg0 + 0x10) = *(f32 *)((u8 *)arg2 + 4);
+        *(f32 *)((u8 *)arg0 + 0x14) = *(f32 *)((u8 *)arg2 + 8);
+        *((u8 *)arg0 + 0x18) = 1;
+    }
+}
+
 extern "C" s32 fn_800D010C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
