@@ -4,6 +4,12 @@
 extern "C" int OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(int);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...) __attribute__((noreturn));
+extern "C" void fn_80100988(void* arg0, float arg1) {
+    int level = OSDisableInterrupts();
+    *(float*)((char*)arg0 + 0x34) = arg1;
+    OSRestoreInterrupts(level);
+}
+
 extern "C" void fn_80100A08(void* arg0, float arg1) {
     int level = OSDisableInterrupts();
     *(float*)((char*)arg0 + 0x40) = arg1;
