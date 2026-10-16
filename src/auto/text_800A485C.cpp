@@ -340,13 +340,30 @@ extern "C" void fn_800D2480(void) {
 #pragma opt_tail_call on
 #pragma opt_tail_call on
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
-    u32 *sp = (u32 *)&file;
-    s32 *stack_ptr = (s32 *)&sp[0x1A];
+    // Stack layout:
+    // r1+0x8: msg (const char*)
+    // r1+0xC: line (s32)
+    // r1+0x10: r5 saved
+    // r1+0x14: r6 saved
+    // r1+0x18: r7 saved
+    // r1+0x1C: r8 saved
+    // r1+0x20: r9 saved
+    // r1+0x24: r10 saved
+    // r1+0x68: field_68 = 0x3000000
+    // r1+0x6C: field_6C = &f64_args
+    // r1+0x70: field_70 = &int_args
     
-    ((PanicStruct *)stack_ptr)->field_68 = 0x3000000;
-    ((PanicStruct *)stack_ptr)->field_6C = &sp[0x22];
-    ((PanicStruct *)stack_ptr)->field_70 = &sp[2];
+    void *sp_68;
+    void *sp_6C;
+    void *sp_70;
     
-    fn_800D2098(&((PanicStruct *)stack_ptr)->field_68);
+    ((const char **)0)[0x8/4] = msg;
+    ((s32 *)0)[0xC/4] = line;
+    
+    sp_68 = (void *)0x3000000;
+    sp_6C = (void *)&msg;
+    sp_70 = (void *)&file;
+    
+    fn_800D2098(&sp_68);
 }
 extern s32 lbl_8055DDD4;
