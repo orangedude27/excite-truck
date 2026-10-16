@@ -10,6 +10,14 @@ extern f32 lbl_80563BC8;
 extern s32 fn_80230E90(s32);
 extern f32 fn_8023659C(void);
 extern s32 fn_80214AF0(s32);
+extern s32 fn_80128668(void);
+s32 fn_80262F8C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_8026300C(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
@@ -39,11 +47,11 @@ s32 fn_80263080(void) {
 }
 
 s32 fn_802630C0(void) {
-    s32 temp_r0;
-    temp_r0 = lbl_8055F434 + 1;
-    lbl_8055F434 = temp_r0;
-    if (temp_r0 > lbl_8055C440) {
+    s32 next = lbl_8055F434 + 1;
+    if (next > lbl_8055C440) {
         lbl_8055F434 = lbl_8055C440;
+    } else {
+        lbl_8055F434 = next;
     }
     fn_80230E90(0);
     return 0;
