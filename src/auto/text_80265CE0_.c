@@ -15,3 +15,5 @@ int fn_80265D6C(void) { return 0; }
 
 void fn_80265D74(void) {}
 
+void fn_80265D78(void) {}
+
