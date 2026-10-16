@@ -270,16 +270,14 @@ typedef struct uusb_cb_t {
     u8 pad44[2];
 } uusb_cb_t;
 
-extern uusb_cb_t uusb_cb;
+extern uusb_cb_t lbl_803BD1E0;
 extern void uusb_CloseDeviceCB(void);
-extern u32 fn_8009B0E0(void);
-extern u8 lbl_803BD1E0;
 extern u8 lbl_8055DC51;
 void fn_80070758(void) {
     fn_8009B0E0();
     fn_8006EBAC();
-    ((u8 *)&lbl_803BD1E0)[0x29] = 5;
-    ((u8 *)&lbl_803BD1E0)[0x28] = 0;
+    lbl_803BD1E0.state = 5;
+    lbl_803BD1E0.at_0x28 = 0;
     lbl_8055DC51 = 0;
     fn_8006EB88();
 }
@@ -287,7 +285,7 @@ void fn_80070758(void) {
 void fn_8007079C(u16 *arg0, u16 arg1) {
     *arg0 = arg1;
 
-    if (lbl_8055DC68 != NULL && lbl_8055DC68->close != NULL) {
+    if (lbl_8055DC68 != NULL) {
         lbl_8055DC68->close(lbl_8055DC6C);
     } else {
         GKI_freebuf(NULL);
