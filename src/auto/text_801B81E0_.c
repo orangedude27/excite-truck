@@ -88,14 +88,24 @@ void fn_801B898C(void) {
 }
 
 void fn_801B89B4(void) {
-    (*(void (***)(void*))lbl_8055E744)[30](lbl_8055E744);
+    register void* obj = lbl_8055E744;
+    register void (**vtable)(void*) = *(void (***)(void*))obj;
+    vtable[30](obj);
 }
 
 void fn_801B89C8(void* arg0) {
-    (*(void (***)(void*, void*))lbl_8055E744)[31](lbl_8055E744, arg0);
+    register void* obj = lbl_8055E744;
+    register void (**vtable)(void*, void*) = *(void (***)(void*, void*))obj;
+    vtable[31](obj, arg0);
 }
 
 int fn_801B89E0(void) {
+    extern float lbl_8055E750;
+    extern float lbl_8056274C;
+    return lbl_8055E750 > lbl_8056274C;
+}
+
+int fn_801B89F8(void) {
     extern float lbl_8055E750;
     extern float lbl_8056274C;
     return lbl_8055E750 > lbl_8056274C;
