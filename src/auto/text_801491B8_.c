@@ -416,8 +416,13 @@ void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
 }
 
 void fn_8014C6F0(void *arg0, void *arg1) {
-    Copy8014C6F0 v = *(Copy8014C6F0 *)arg1;
-    *(Copy8014C6F0 *)arg0 = v;
+    volatile Copy8014C6F0 *src = (volatile Copy8014C6F0 *)arg1;
+    volatile Copy8014C6F0 *dst = (volatile Copy8014C6F0 *)arg0;
+    s32 a=src->a, b=src->b, c=src->c, d=src->d;
+    f32 e=src->e, f=src->f;
+    s32 g=src->g;
+    dst->a=a; dst->b=b; dst->c=c; dst->d=d;
+    dst->e=e; dst->f=f; dst->g=g;
 }
 
 void fn_8014C72C(void **arg0) {
@@ -929,16 +934,18 @@ void fn_80155C90(char *arg0, ...) {
 }
 
 void fn_80155D20(void *arg0, const char *fmt, ...) {
+    char *dest = (char *)arg0 + 0x64;
     va_list ap;
     va_start(ap, fmt);
-    vsprintf((char *)arg0 + 0x64, fmt, ap);
+    vsprintf(dest, fmt, ap);
     va_end(ap);
 }
 
 void fn_80155DB0(void *arg0, const char *fmt, ...) {
+    char *dest = (char *)arg0 + 0xB4;
     va_list ap;
     va_start(ap, fmt);
-    vsprintf((char *)arg0 + 0xB4, fmt, ap);
+    vsprintf(dest, fmt, ap);
     va_end(ap);
 }
 
@@ -946,6 +953,8 @@ void fn_80155E40(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 0x108) = arg1;
     *(s32 *)((u8 *)arg0 + 0x114) = 1;
 }
+
+void fn_80155E50(void *arg0, int arg1) { *(int *)((char *)arg0 + 0x10C) = arg1; }
 
 void fn_80155E58(void *arg0) {
     ((u8 *)arg0)[4] = 0;
