@@ -109,34 +109,6 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(vo
 #pragma small_data off
 extern float lbl_80560FB0;
 #pragma pop
-// Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
-class VfObj {
-public:
-    virtual ~VfObj();
-    virtual void vf2();
-    virtual void vf3();
-    virtual void vf4();
-    virtual void vf5();
-    virtual void vf6();
-    virtual void vf7();
-    virtual void vf8();
-    virtual void vf9();
-    virtual void vf10();
-    virtual void vf11();
-    virtual void vf12();
-    virtual void vf13();
-    virtual void vf14();
-    virtual void vf15();
-    virtual void vf16();   // vtable 0x60 = 10th named method (0x18 + 9*4)
-    virtual void vf17();   // vtable 0x64
-    virtual void vf18();   // vtable 0x68
-    virtual void vf19();   // vtable 0x6C
-    virtual void vf20();   // vtable 0x70
-    virtual void vf21();   // vtable 0x74
-    virtual void vf22();   // vtable 0x78
-    virtual void vf23();   // vtable 0x7C
-};
-
 extern "C" void fn_800E9B18(void *arg0, float farg0) {
     *(float *)((char *)arg0 + 0x90) = farg0;
 }
