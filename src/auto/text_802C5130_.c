@@ -28,3 +28,8 @@ void fn_802C519C(void* arg0) {
     fn_80235380();
 }
 
+int fn_802C51AC(void* arg0) {
+    if (arg0 != 0) return fn_80235FD8();
+    return 1;
+}
+
