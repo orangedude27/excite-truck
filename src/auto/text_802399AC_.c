@@ -140,6 +140,9 @@ void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8023ACCC(void) {
+}
+
 s32 fn_8023AD44(void *arg0) {
     return *(s32 *)*(s32 **)((char *)arg0 + 0x20) < (*(s32 *)((char *)arg0 + 0x1C) - 1);
 }
