@@ -167,6 +167,7 @@ extern "C" s32 fn_8012EE78(void *arg0) {
 
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" void fn_802E317C(const char *, ...);
+extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2);
 extern "C" void fn_8012BF24(void *);
 extern "C" s32 fn_80128668(void *);
 extern "C" const char lbl_8032AEA8[];
