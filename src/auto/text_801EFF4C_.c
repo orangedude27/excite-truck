@@ -4,3 +4,8 @@
 void fn_801EFF4C(void* alarm) {
     fn_801F17C8(fn_801F0AA0(alarm));
 }
+
+void fn_801EFF70(void* alarm) {
+    fn_801F0CC4(fn_801F17DC(alarm));
+}
+
