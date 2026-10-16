@@ -82,6 +82,10 @@ extern "C" void fn_8012BF24(void *arg0) {
     fn_8012E498(arg0);
 }
 
+extern "C" void fn_8012C4D8(void *arg0) {
+    fn_8012BC50(arg0, 0, 0);
+}
+
 extern "C" void fn_8012CC20(void) {
     fn_8012CC24();
 }
