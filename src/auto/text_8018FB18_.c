@@ -4,6 +4,7 @@
 extern void *lbl_804349A0[];
 extern int lbl_8055E518;
 extern float lbl_80562080, lbl_8056208C, lbl_80562090, lbl_805620AC;
+extern double lbl_805620B0;
 int fn_801B665C();
 void fn_80191084();
 void fn_801B6650();
