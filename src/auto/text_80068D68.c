@@ -270,7 +270,8 @@ void gki_timers_init(void) {
 }
 
 s32 fn_8006E4F8(void) {
-    return gki_cb.com.OSNumOrigTicks;
+    u8 *base = (u8 *)&lbl_803946C0 + 0x30000;
+    return *(s32 *)(base - 0x77D8);
 }
 
 void GKI_stop_timer(UINT8 tnum) {
