@@ -10,6 +10,19 @@ int fn_802BC334(int arg0) {
     return -2;
 }
 
+void *fn_801284F8(int, int);
+void fn_802BD414(int arg0, int *arg1) {
+    int *result = (int *)fn_801284F8(0xC, arg0);
+    if (result != 0) {
+        result[0] = arg1[1];
+        result[2] = arg1[0];
+        result[1] = 0;
+        result[1] = result[1] + arg1[0];
+    }
+}
+
+int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
+
 void fn_802BDC3C(void* alarm) {
     fn_802C1550(fn_802BD210(alarm));
 }
