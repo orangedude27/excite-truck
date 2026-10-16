@@ -12,15 +12,15 @@ typedef struct {
 extern void fn_8000D838(void *);
 extern UnkStruct_80430378 lbl_80430378;
 extern u32 lbl_8055E390;
-extern s32 lbl_8055E398;
-extern s32 lbl_8055E39C;
-extern s32 lbl_8055E3A0;
+extern volatile s32 lbl_8055E398;
+extern volatile s32 lbl_8055E39C;
+extern volatile s32 lbl_8055E3A0;
 
 void fn_80176404(void) {
     fn_8000D838(&lbl_8055E390);
     lbl_80430378.unk0 = 0;
-    lbl_80430378.unk4 = 0x7B;
     lbl_80430378.unk8 = 0;
+    lbl_80430378.unk4 = 0x7B;
     lbl_80430378.unkC = 0;
     lbl_80430378.unk10 = 0;
     lbl_8055E398 = 0xFFFF0000;
