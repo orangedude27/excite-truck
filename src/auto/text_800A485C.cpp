@@ -1491,41 +1491,41 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
 
 extern "C" s32 fn_800A5788(void *arg0, s32 arg1) {
     s32 result = fn_800A7568(*(void **)((u8 *)arg0 + 0x1FBC), (arg1 == 1));
-    if (result == 0)
-        return 0;
-    if (result == 21) {
+    if (result != 0) {
+        if (result != 21)
+            return -1;
         s32 value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
         *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
         *(s32 *)((u8 *)arg0 + 0x1F84) = value;
         return 0x1000;
     }
-    return -1;
+    return 0;
 }
 
 extern "C" s32 fn_800A5800(void *arg0) {
     s32 result = fn_800A7338(*(void **)((u8 *)arg0 + 0x1FBC));
-    if (result == 0)
-        return 0;
-    if (result == 21) {
+    if (result != 0) {
+        if (result != 21)
+            return -1;
         s32 value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
         *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
         *(s32 *)((u8 *)arg0 + 0x1F84) = value;
         return 0x1000;
     }
-    return -1;
+    return 0;
 }
 
-extern "C" s32 fn_800A586C(void *arg0, s32 arg1) {
-    s32 result = fn_800A73A0(*(void **)((u8 *)arg0 + 0x1FBC), *(u16 *)arg0, arg1);
-    if (result == 0)
-        return 0;
-    if (result == 21) {
+extern "C" s32 fn_800A586C(void *arg0, s32 p1, s32 p2, s32 p3, s32 p4) {
+    s32 result = fn_800A73A0(*(void **)((u8 *)arg0 + 0x1FBC), *(u16 *)arg0, p4);
+    if (result != 0) {
+        if (result != 21)
+            return -1;
         s32 value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
         *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
         *(s32 *)((u8 *)arg0 + 0x1F84) = value;
         return 0x1000;
     }
-    return -1;
+    return 0;
 }
 
 #pragma opt_tail_call on
@@ -1618,3 +1618,7 @@ extern s32 lbl_8055DDD4;
 extern "C" f32 lbl_80560E40;
 extern "C" f32 lbl_80560E3C;
 extern "C" s32 fn_80060C7C(void*);
+extern "C" s32 lbl_8055DD30;
+extern "C" s32 fn_800B8004(s32);
+extern "C" s32 fn_800B8048(s32);
+extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
