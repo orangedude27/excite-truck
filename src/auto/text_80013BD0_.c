@@ -7,6 +7,13 @@ extern void *lbl_8055D350;
 extern f32 lbl_80560368, lbl_805603B4, lbl_80560360, lbl_805603A0, lbl_805603A8, lbl_805603AC;
 extern u8 lbl_802FCD44[], lbl_802FCD78[], lbl_80558BA0[];
 extern void fn_80013EDC(void *, s32, void *, void *, f32, f32, f32);
+extern void fn_801476C4(void);
+extern u8 lbl_80558BBC[], lbl_802FCDB4[];
+extern void fn_80015EB0(f32);
+extern void fn_80015E30(void *, f32);
+extern void fn_80015B20(void *, void *, void *);
+extern f64 cos(void);
+extern f64 sin(f32);
 void fn_8001480C(void *arg0) {
  *(f32 *)((u8 *)arg0+0x10)=*(f32 *)((u8 *)*(void **)((u8 *)lbl_8055D350+0x2C)+0x4C);
 }
@@ -40,5 +47,22 @@ s32 fn_80014AE4(void) {
  if (b!=0) return 1;
  if (*(s32 *)((u8 *)q+0x10)>*(s32 *)((u8 *)*(void **)((u8 *)p+0xC)+8)) return 1;
  return 0;
+}
+
+extern void fn_801476C4(void);
+extern u8 lbl_80558BBC[];
+extern u8 lbl_802FCDB4[];
+extern void fn_80015EB0(f32);
+extern void fn_80015E30(void *, f32);
+extern void fn_80015B20(void *, void *, void *);
+extern f64 cos(void);
+extern f64 sin(f32);
+void fn_80015AA0(void *arg0, f32 angle) {
+    f32 c = (f32)cos();
+    f32 s = (f32)sin(angle);
+    f32 *m = (f32 *)arg0;
+    m[0]=c; m[1]=s; m[2]=lbl_80560360; m[3]=-s;
+    m[4]=c; m[5]=lbl_80560360; m[6]=lbl_80560360; m[7]=lbl_80560360;
+    m[8]=lbl_80560368;
 }
 
