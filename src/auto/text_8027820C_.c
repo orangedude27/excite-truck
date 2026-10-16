@@ -20,6 +20,9 @@ char fn_802787F4(void) {
 }
 
 extern char lbl_8055F5BB;
+extern char lbl_8055F5B9;
+extern char lbl_8055F5C8;
+extern int lbl_8055E3C4;
 extern char lbl_8055F5C8;
 extern int lbl_8055F5C0;
 extern int lbl_8055E3C4;
@@ -28,10 +31,27 @@ extern float lbl_805640B8;
 extern float lbl_805640BC;
 void *fn_802678E4(int);
 
+extern int lbl_8055F5BC;
+extern float lbl_805640B0;
 void fn_8027889C(float arg0) {
-    float t = arg0 / lbl_805640B8;
+    float t;
+    float result;
+    t = arg0 / lbl_805640B8;
+    if (t < lbl_805640A8) {
+        result = t - lbl_805640BC;
+    } else {
+        result = lbl_805640BC + t;
+    }
+    lbl_8055F5C0 = (int)result;
+}
 
-    lbl_8055F5C0 = (int)(t < lbl_805640A8 ? t - lbl_805640BC : t + lbl_805640BC);
+int fn_80278924(float *arg0, float *arg1) {
+    int result = 0;
+    float scale = lbl_805640B8;
+    *arg0 = scale * (float)lbl_8055F5C0;
+    *arg1 = scale * (float)lbl_8055F5BC;
+    if (lbl_8055F5C0 >= 0 && lbl_8055F5BC >= lbl_8055F5C0) result = 1;
+    return result;
 }
 
 void fn_8027888C(char arg0) {
