@@ -13,6 +13,8 @@ void fn_800C4BD0(void) __attribute__((noreturn));
 extern "C" void fn_80128668(void);
 void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 void fn_800DCE10(void*, s32);
+extern "C" u32 fn_80060CC0(void*, u32, u32);
+extern "C" void fn_800D1B1C(void);
 
 extern u32 lbl_8055DDF8;
 extern "C" void fn_800D1C48(void);
