@@ -16,6 +16,11 @@ void fn_801ED694(long arg0) {
     fn_801ECCE0(arg0, 0);
 }
 
+void fn_801EDD68(void *arg0) {
+    fn_801EFC90(*(long *)((char *)arg0 + 0x3F0),
+                *(long *)((char *)arg0 + 0x3C), (char *)arg0 + 0x4D4);
+}
+
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801EEEEC(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_801EC9CC((void*)arg0, 0);
