@@ -88,5 +88,8 @@ void fn_80203FFC(void) {
 void fn_80203FEC(void) {
 
 }
+
+float fn_80203FF0(void) { return lbl_80563144; }
+
 extern float lbl_80563140;
 extern float lbl_80563144;
