@@ -3,8 +3,21 @@
 
 extern void *lbl_8055C790;
 extern void fn_8001D9B4(void *);
+int fn_8027D858(void *arg0) {
+    if (*((unsigned char *)arg0 + 0x38) != 0) {
+        void **vtable = *(void ***)arg0;
+        return ((int (*)(void *, int))((char *)*vtable + 0x30))(arg0, *(int *)((char *)arg0 + 0x34));
+    }
+    return -1;
+}
+
 void fn_8027D880(void *arg0) {
     fn_8001D9B4((char *)arg0 + 0x14);
+}
+
+extern void fn_8001DA48(void *);
+void fn_8027D888(void *arg0) {
+    fn_8001DA48((char *)arg0 + 0x14);
 }
 
 int fn_8027D890(void *arg0) {
