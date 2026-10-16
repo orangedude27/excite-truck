@@ -39,3 +39,8 @@ char fn_801EA470(void) {
     return lbl_8055EB58;
 }
 
+void fn_801EA478(s32 arg0) {
+    fn_801E8738(arg0);
+    fn_801EA210(arg0);
+}
+
