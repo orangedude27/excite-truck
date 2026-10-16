@@ -9,6 +9,11 @@ void fn_801D32CC(void) {
 
 }
 
+extern void *lbl_8055E940;
+void __AXDSPInitCallback_801D32D0(void) {
+    lbl_8055E940 = 0;
+}
+
 void fn_801D32DC(void) {
 
 }
