@@ -53,6 +53,16 @@ void fn_802DC078(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     }
 }
 
+extern void GXClearVtxDesc(void);
+extern void GXSetVtxDesc(int, int);
+extern void GXSetVtxAttrFmt(int, int, int, int, int);
+extern void GXSetArray(int, void *, int);
+extern void DCFlushRange(void *, int);
+extern void GXSetBlendMode(int, int, int, int);
+void fn_802DC130(void) {
+    fn_802DBD88();
+}
+
 void fn_802DC278(void) { fn_802DBD88(); }
 
 void fn_802DC27C(void) { fn_802DBDD8(); }
