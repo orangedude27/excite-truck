@@ -20,6 +20,8 @@ extern char lbl_80340308[];
 extern void fn_802E317C(char *);
 extern void fn_802E30C8(char *);
 extern void fn_8022ED50(s32);
+extern f32 lbl_805635E0;
+extern f32 lbl_805635E4;
 extern void fn_80128668(void *);
 extern void *fn_8022EC7C(void);
 
@@ -142,5 +144,25 @@ s32 fn_8022EDC4(void) {
     s32 *p = (s32 *)((s32 *)lbl_8055F004)[1];
     if (p) return *p;
     return 0;
+}
+
+extern f32 lbl_805635E0;
+extern f32 lbl_805635E4;
+extern void fn_8022EDE4(f32 *);
+void fn_8022EE9C(void) {
+    f32 a[12];
+    a[0] = lbl_805635E0;
+    a[1] = lbl_805635E4;
+    a[2] = lbl_805635E4;
+    a[3] = lbl_805635E4;
+    a[4] = lbl_805635E0;
+    a[5] = lbl_805635E4;
+    a[6] = lbl_805635E4;
+    a[7] = lbl_805635E4;
+    a[8] = lbl_805635E0;
+    a[9] = lbl_805635E4;
+    a[10] = lbl_805635E4;
+    a[11] = lbl_805635E4;
+    fn_8022EDE4(a);
 }
 
