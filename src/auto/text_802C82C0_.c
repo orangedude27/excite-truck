@@ -150,6 +150,13 @@ void fn_802C9904(void) {
     fn_802D007C(lbl_80564EF8);
 }
 
+int fn_802C990C(int arg0) {
+    int previous = lbl_8055FC78;
+    lbl_8055FC78 = arg0;
+    fn_802CFFAC((arg0 >> 16) & 0xFF, (arg0 >> 8) & 0xFF, arg0 & 0xFF);
+    return previous;
+}
+
 extern char lbl_804C1440[];
 extern float lbl_8055D01C;
 void fn_802C99D8(void) {
