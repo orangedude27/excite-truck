@@ -706,11 +706,28 @@ void fn_800716F0(void *arg0) {
     }
 }
 
+void bta_dm_disable_timer_cback(void) {
+ u8 i;
+ if (lbl_8055DC80 >= 4) fn_8007093C(0x503, lbl_80315048);
+ if (BTM_GetNumAclLinks() && lbl_803C0C14[0x101] == 0) {
+  for (i=0; i<lbl_803C0C14[0x4D]; i++) btm_remove_acl((u8 *)lbl_803C0C14+i*0xB);
+ } else {
+  lbl_803C0C14[0x72]=0;
+  ((void (**)(int,int,void *))(lbl_803C0C14+0x50))[0](1,0,lbl_803C0C14);
+ }
+}
+
 void fn_800719B0(void *arg0) { BTM_SetLocalDeviceName((char *)arg0 + 8); }
 
 void fn_800719B8(void *arg0) {
     BTM_SetDiscoverability(((u8 *)arg0)[8], 0, 0);
     BTM_SetConnectability(((u8 *)arg0)[9], 0, 0);
+}
+
+void bta_dm_bond(void *arg0) {
+ u32 sp8[2]; s32 ptr = fn_8008128C((u8 *)arg0 + 8);
+ if (ptr) memcpy(sp8, (void *)ptr, 8); else memset(sp8, 0, 8);
+ BTM_SecBond((u8 *)arg0 + 8, ((u8 *)arg0)[0xE], (u8 *)arg0 + 0xF, sp8);
 }
 
 void bta_sys_disable(void) {
