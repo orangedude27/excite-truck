@@ -10,7 +10,7 @@ extern char lbl_8033ACE8[32];
 extern void fn_801F7160(void *);
 extern void fn_801F7220(void *);
 extern void *fn_802AE414(void);
-extern void fn_802E317C(void *, void *);
+extern void fn_802E317C(const char *, ...);
 extern void fn_801F7280(void *, void *, void *);
 extern void fn_801F70D0(void *, int);
 extern void fn_801F6D60(void *, int);
