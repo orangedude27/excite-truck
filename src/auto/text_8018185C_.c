@@ -24,6 +24,8 @@ void fn_80186DE4(void) {
     fn_8018A8A8();
 }
 
+int fn_80188E24(void) { return 0; }
+
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef float f32;
