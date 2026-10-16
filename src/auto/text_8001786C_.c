@@ -13,6 +13,8 @@ extern s32 fn_8001786C(s32);
 extern char lbl_8055D564;
 extern void* lbl_8055D560;
 s32 atoi(void);
+int fn_800178F0(void) { return 0; }
+
 void fn_80018794(void) {
     lbl_8055D560 = (void*)atoi();
 }
