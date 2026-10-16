@@ -44,4 +44,12 @@ extern void *lbl_8055E9A8;
 void fn_801DCF00(void) {
     lbl_8055E9A8 = 0;
 }
-
+extern float lbl_80562B70;
+extern float lbl_80562BB8;
+extern int fn_801DC258(float *, int *, short *, float, float);
+extern int fn_80128670(void);
+extern int fn_801D049C(void);
+extern int lbl_80446F08[];
+extern int lbl_8055E990;
+extern void (*lbl_8055E994)(int);
+extern char lbl_8055E9A4;
