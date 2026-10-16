@@ -49,6 +49,8 @@ extern "C" void fn_80154D30(s32);
 extern "C" void fn_80155368(s32);
 void fn_80156190(s32 arg0) { fn_80154750(arg0 - 4); }
 
+void fn_80156198(s32 arg0) { fn_80154754(arg0 - 4); }
+
 extern "C" s32 fn_801556FC(s32);
 extern "C" void fn_801561C8(s32 arg0) {
     fn_801556FC(arg0 - 0xC);
