@@ -44,6 +44,8 @@ void fn_801AED68(void) {
     fn_801B878C();
 }
 
+void fn_801AFA5C(int arg0) { fn_801AFA70(arg0, 1); }
+
 extern int fn_801284F8(int, const char *);
 extern void fn_801AFA64(int *);
 extern const char lbl_803359A0[];
