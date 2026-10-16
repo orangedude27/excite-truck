@@ -40,6 +40,7 @@ void fn_80176CC8(void);
 void fn_802E317C(const char *);
 s32 fn_8017ED00(f32);
 void fn_80177138(void);
+extern void fn_80176E4C(void);
 extern s32 fn_8012F450(s32);
 extern s32 fn_8012F384(s32);
 extern s32 fn_8012F418(s32);
