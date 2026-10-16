@@ -67,3 +67,5 @@ extern void fn_802354A0(void*, void*, int);
 extern void fn_80235758(void*, float, float, float, float, float, float, int);
 void fn_802C5310(void* arg0) { if (arg0 != 0) fn_802353F4(); }
 
+void fn_802C5320(void* arg0, void* arg1) { if (arg0 != 0) fn_802354A0(arg0, arg1, -1); }
+
