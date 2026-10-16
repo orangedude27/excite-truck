@@ -45,6 +45,47 @@ void fn_802E3AD0(s32, const char *, ...);
 
 extern "C" f32 lbl_805615F0;
 extern "C" f32 lbl_8055D020;
+extern "C" s32 fn_80144F40(const char *arg0, void *arg1) {
+    extern char *strstr(const char *, const char *);
+    struct Entry { const char *text; s32 flags; };
+    Entry *entry = (Entry *)arg1;
+    s32 result = 0;
+    while (entry->text != 0) {
+        if (strstr(arg0, entry->text) != 0)
+            result |= entry->flags;
+        entry++;
+    }
+    return result;
+}
+
+extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
+    f32 value = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
+    s32 integer;
+    s32 clamped;
+    if (value < lbl_805615D4)
+        value -= lbl_805615D0;
+    else
+        value += lbl_805615D0;
+    integer = (s32)value;
+    clamped = integer & ((-integer & ~integer) >> 31);
+    if (clamped >= 0xFF)
+        return 0xFF;
+    return clamped;
+}
+
+extern "C" s32 fn_80145140(void *arg0, const char *arg1) {
+    s32 count = 0;
+    s32 index = 0;
+    void *item;
+    while ((item = ((void *(*)(void *, s32))(*(void ***)((u8 *)arg0))[3])(arg0, index)) != 0) {
+        const char *name = ((const char *(*)(void *))(*(void ***)item)[2])(item);
+        if (stricmp(name, arg1) == 0)
+            count++;
+        index++;
+    }
+    return count;
+}
+
 extern "C" f32 fn_801452A0(s32 arg0, f32 arg1) {
     if (arg0 & 0x20)
         arg1 /= lbl_8055D020;
