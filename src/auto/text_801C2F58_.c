@@ -16,6 +16,15 @@ extern f32 lbl_8055E834;
 extern f32 lbl_8055F47C;
 extern s32 lbl_80499050[12];
 extern s32 lbl_804381F0[12];
+extern s32 lbl_80438220[12];
+extern f32 lbl_8056296C;
+extern f32 lbl_8055E3C8;
+extern f32 lbl_80562970;
+extern f32 lbl_80562978;
+extern f32 lbl_80562994;
+extern f32 lbl_80562974;
+extern f32 lbl_805629C8;
+extern s32 lbl_80437E24[3];
 char fn_801C5B60(void) {
     return lbl_8055E7E2;
 }
@@ -47,12 +56,22 @@ void fn_801C6CBC(void) {
 }
 
 void fn_801C6D00(void) {
-    s32* src = lbl_80499050;
-    s32* dst = lbl_804381F0;
-    s32 i;
-    for (i = 0; i < 12; i++) {
-        dst[i] = src[i];
-    }
+    s32 *src = lbl_80499050;
+    s32 *dst = lbl_804381F0;
+    s32 temp;
+    
+    temp = *src++;
+    *dst++ = temp;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
+    *dst++ = *src++;
     lbl_8055E834 = lbl_8055F47C;
 }
 
