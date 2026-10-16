@@ -143,6 +143,10 @@ f32 fn_8001090C(f32 farg0) {
     return lbl_805602C8 * (farg0 * (f32)fn_80232B70(lbl_8055D490));
 }
 
+s32 fn_80010964(s32 arg0) {
+    return (s32)(arg0 * fn_80232B70(lbl_8055D490)) / (s32)lbl_80558A90;
+}
+
 extern s32 fn_80232B70(s32);
 extern s32 lbl_8055D490;
 extern s32 lbl_80558A90;
