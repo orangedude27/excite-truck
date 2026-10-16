@@ -9,3 +9,16 @@ int fn_802BC334(int arg0) {
     if (valid != 0) return fn_802CAC28(arg0, 0);
     return -2;
 }
+
+void fn_802C2930(void*, unsigned int);
+void fn_80128668(void*);
+long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
+    if (arg0 != 0) {
+        fn_802C2930((void*)arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668((void*)arg0);
+        }
+    }
+    return arg0;
+}
+
