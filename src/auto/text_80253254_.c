@@ -4,6 +4,10 @@
 typedef signed char s8;
 typedef unsigned char u8;
 typedef signed int s32;
+u8 fn_8025590C(void *arg0) {
+    return **(u8 **)((u8 *)arg0 + 8);
+}
+
 void fn_80255918(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 0xC) = arg1;
 }
