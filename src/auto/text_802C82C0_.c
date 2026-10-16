@@ -75,6 +75,23 @@ void fn_802C8DB8(void) {
     fn_802D68C4();
 }
 
+int fn_802C8DBC(void) {
+    if (fn_801E4F20() != 0) {
+        lbl_8055FC8F = 1;
+        lbl_8055FC70 = 6;
+        return 1;
+    }
+    return 0;
+}
+
+void fn_802C8E00(void) {
+    unsigned char result = 0;
+    if (lbl_8055FC8F != 0 && fn_801E4F3C() == 0) {
+        result = 1;
+    }
+    lbl_8055FC8F = result;
+}
+
 extern void fn_801E4FF4(void);
 void fn_802C8E48(void) {
     fn_801E4FF4();
