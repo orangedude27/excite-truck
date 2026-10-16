@@ -84,6 +84,7 @@ void fn_80203D84(s32* arg0) {
         *arg0 = -2;
     }
 }
+#pragma dont_inline off
 
 void fn_80203DC8(void) {
     s32 var_r28;
