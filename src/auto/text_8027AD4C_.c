@@ -2,6 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_804A4380[];
+void fn_8027AF94(void *);
+void fn_8027B288(void *);
+long fn_80131818(long);
 
 extern char lbl_80347B78[];
 extern char lbl_80347C14[];
@@ -28,6 +31,36 @@ void fn_8027AF94(void *arg0) {
 
 unsigned char fn_8027B280(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
+}
+
+void fn_8027B288(void *arg0) {
+    long i = 0;
+    long offset = 0;
+    do {
+        fn_8027AF94((char *)*(void **)((char *)arg0 + 0x18) + offset);
+        offset += 0x3C;
+        i++;
+    } while (i < *(long *)((char *)arg0 + 0x1C));
+    *(long *)((char *)arg0 + 0x1C) = 0;
+    *(long *)((char *)arg0 + 0x10) = 0;
+}
+
+void fn_8027B60C(void *arg0) {
+    long i;
+    long offset;
+    if (*(long *)((char *)arg0 + 4) != 0) {
+        i = 0;
+        offset = 0;
+        do {
+            fn_8027B288((char *)*(void **)((char *)arg0 + 8) + offset);
+            offset += 0x1F4;
+            i++;
+        } while (i < *(long *)((char *)arg0 + 0xC));
+        offset = 0;
+        fn_80131818(*(long *)((char *)arg0 + 4));
+        *(long *)((char *)arg0 + 0xC) = 0;
+        *(long *)((char *)arg0 + 4) = 0;
+    }
 }
 
 void *fn_8027B878(long arg0) {
