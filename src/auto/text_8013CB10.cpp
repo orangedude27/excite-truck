@@ -100,6 +100,8 @@ extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
     return end;
 }
 
+extern "C" s32 fn_80142D34(void) { return 0; }
+
 extern "C" u8 *fn_801B2EC0(s32);
 
 extern "C" void fn_80143128(u8 *arg0) {
