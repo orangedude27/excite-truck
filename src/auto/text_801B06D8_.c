@@ -97,6 +97,33 @@ s32 fn_801B1130(s32 arg0) {
 
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
 
+void fn_801B157C(void *arg0,s32 arg1) {
+    *(u8*)((u8*)arg0+0x2C)=1;*(f32*)((u8*)arg0+0x30)=lbl_8055E3C8;
+    if(lbl_8055E690)fn_801CB6B4(*(s32*)((u8*)arg0+0x60),arg1,2);
+}
+
+void fn_801B18B8(s32 arg1, s32 arg2) {
+    f32 p0[4]; f32 p1[2];
+    void *obj = lbl_8055E684;
+    f32 scale=*(f32*)((u8*)obj+0x5BC);
+    f32 x=*(f32*)((u8*)obj+0x94)+*(f32*)((u8*)obj+0x54)*scale;
+    f32 y=*(f32*)((u8*)obj+0x9C)+*(f32*)((u8*)obj+0x5C)*scale;
+    f32 z=*(f32*)((u8*)obj+0x98)+*(f32*)((u8*)obj+0x58)*scale;
+    p0[0]=x;p0[1]=y;p0[2]=x;p0[3]=z;p1[0]=*(f32*)((u8*)obj+0x54);p1[1]=*(f32*)((u8*)obj+0x5C);
+    fn_80135F64(*(s32*)((u8*)obj+0x58),p0,p1,arg1,arg2,obj,y,z,*(f32*)((u8*)obj+0x58),x,scale);
+    fn_801353C8(*(s32*)((u8*)obj+0x3C),p0,p1,0);
+}
+
+void fn_801B1FB4(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
+    void **vtable;
+    *arg3 = 0;
+    if (lbl_8055E68C == 0) return;
+    vtable = *(void ***)lbl_8055E68C;
+    ((void (*)(void *, f32, f32, s32, void *))vtable[3])(
+        lbl_8055E68C, 0.0f, 0.0f,
+        *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C);
+}
+
 void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
     void **vtable;
     *arg3 = 0;
@@ -165,6 +192,26 @@ void fn_801B234C(f32 farg0) {
 
 void fn_801B235C(void) {
     fn_801E89F4(3);
+}
+
+s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
+    f32 var_f31;
+    f32 var_f1;
+    s32 index0 = *arg0;
+    s32 index1 = *arg1;
+    void *base = lbl_8055E684;
+    void *obj0 = (u8 *)base + (index0 << 7);
+    void *obj1 = (u8 *)base + (index1 << 7);
+    void **vtable0 = *(void ***)obj0;
+    void *result0 = ((void *(*)(void *, s32, void *))vtable0[4])(obj0, index1, base);
+    void **vtable1 = *(void ***)obj1;
+    ((void (*)(void *))vtable1[4])(obj1);
+    var_f31 = *(f32 *)((u8 *)result0 + 0x20);
+    var_f1 = *(f32 *)((u8 *)obj1 + 0x20);
+    if (var_f31 < lbl_80562604) var_f31 = lbl_80562610;
+    if (var_f1 < lbl_80562604) var_f1 = lbl_80562610;
+    if (var_f31 < var_f1) return -1;
+    return var_f31 > var_f1;
 }
 
 void fn_801B2C6C(void) {
