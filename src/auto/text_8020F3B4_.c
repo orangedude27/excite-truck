@@ -6,6 +6,8 @@ extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
 extern signed char lbl_8055EEF5;
 extern signed char lbl_8055EEF6;
+long fn_8020F3B4(void) { return -1; }
+
 void fn_8020F5DC(void) {
     lbl_8055EEF6 = 0;
     lbl_8055EEF5 = 0;
