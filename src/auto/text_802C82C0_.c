@@ -468,6 +468,10 @@ void fn_802CA008(void *arg0) {
     }
 }
 
+void fn_802CA09C(void) {
+    fn_802C9E94();
+}
+
 extern char lbl_8055FC94;
 extern char lbl_8055D030[];
 extern char lbl_8034B4E0[];
