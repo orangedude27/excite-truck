@@ -35,8 +35,14 @@ void fn_8028CF50(void) {
 }
 
 void fn_8028CF64(void) {
-    if (lbl_8055F714 != 0 && __fabsf(fn_801E7E24()) > lbl_80558DC4) {
-        fn_8028D728();
+    if (lbl_8055F714 != 0) {
+        float value = __fabsf(fn_801E7E24());
+        if (value >= lbl_80558DC4) {
+            fn_8028D728();
+        }
     }
+}
+
+void fn_8028D49C(void) {
 }
 
