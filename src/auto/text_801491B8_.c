@@ -881,6 +881,11 @@ s32 fn_80155288(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_801552D8(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_8056171C;
 void fn_80155318(void *arg0) {
