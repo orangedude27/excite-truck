@@ -11,6 +11,8 @@ void fn_801FF484(void*, void*);
 float fn_801E7E24(void);
 extern float lbl_80558DC4;
 void fn_801FF6FC(void*);
+void fn_801FF3AC(void*, float);
+float fabs(float);
 }
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
