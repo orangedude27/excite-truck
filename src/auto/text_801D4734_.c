@@ -771,6 +771,15 @@ s32 fn_801D8EFC(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+s32 fn_801D8F04(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 4) == 1) {
+        *(s32 *)((u8 *)arg0 + 4) = 2;
+        *(f32 *)((u8 *)arg0 + 0x20) = lbl_8055E3C8;
+        return 1;
+    }
+    return 0;
+}
+
 void fn_801D8FE0(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
