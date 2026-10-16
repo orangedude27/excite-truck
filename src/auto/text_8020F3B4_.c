@@ -6,6 +6,13 @@ extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
 extern signed char lbl_8055EEF5;
 extern signed char lbl_8055EEF6;
+extern char lbl_80489CA0;
+extern long fn_8020F608(long, long);
+extern struct Unk_804902C4 {
+    long *m_entries;
+    long m_count;
+} lbl_804902C4;
+extern long lbl_8055EEC4;
 long fn_8020F3B4(void) { return -1; }
 
 long fn_8020F3BC(long arg0, long arg1, long arg2) {
