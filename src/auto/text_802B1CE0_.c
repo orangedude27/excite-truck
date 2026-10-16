@@ -199,3 +199,25 @@ extern Unk802B2C98 lbl_804BE1FC;
 
 extern int lbl_8055F9B8;
 extern void *lbl_8055F9BC;
+
+int fn_802B2C44(void *arg0) {
+    Unk802B2C44 *obj = *(Unk802B2C44 **)arg0;
+    return obj->m5C() != 0;
+}
+
+void fn_802B2D24(void *arg0) {
+    void **items = (void **)arg0;
+    void *cur;
+    void *entry;
+    int i, j;
+    for (i = 0; i < ((int *)arg0)[1]; i++) {
+        cur = items[i];
+        lbl_8055F9BC = 0;
+        for (j = 0; j < ((int *)cur)[0x103]; j++) {
+            entry = ((void **)cur)[0x102 + j];
+            ((int *)entry)[3] = 0;
+            ((int *)entry)[2] = 0;
+        }
+    }
+    lbl_8055F9B8 = 0;
+}
