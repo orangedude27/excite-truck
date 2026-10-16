@@ -201,15 +201,17 @@ void *fn_80248140(void *arg0, int arg1) {
 
 void fn_80248398(void) {
     lbl_8055F278_struct *s;
-    s32 a;
+    s32 c;
     s32 b;
+    s32 a;
 
-    if (lbl_8055F278 != 0) {
-        s = (lbl_8055F278_struct *)lbl_8055F278;
+    s = (lbl_8055F278_struct *)lbl_8055F278;
+    if (s != 0) {
         a = s->unk04;
         b = s->unk08;
+        c = lbl_8055BEF0 + a;
         s->unk50 = 1;
-        s->unk48 = lbl_8055BEF0 + a;
+        s->unk48 = c;
         s->unk4C = b;
         s = (lbl_8055F278_struct *)lbl_8055F278;
         s->unk5C = 1;
@@ -265,20 +267,22 @@ void fn_80248A68(void *arg0) {
 }
 
 void fn_80248A74(void *arg0) {
+    float *fp;
     s32 var_r31;
     union {
         double d;
         unsigned int u[2];
     } t;
 
-    if (*(float *)((char *)arg0 + 0x1C) > lbl_805638C8) {
+    fp = (float *)((char *)arg0 + 0x1C);
+    if (*fp > lbl_805638C8) {
         var_r31 = 0xC8;
     } else {
         var_r31 = 0x32;
     }
     t.u[1] = (unsigned int)var_r31 ^ 0x80000000;
     t.u[0] = 0x43300000;
-    *(float *)((char *)arg0 + 0x1C) += (t.d - lbl_805638A0) * fn_80214D48();
+    *fp += (t.d - lbl_805638A0) * fn_80214D48();
 }
 
 void fn_80248BD0(void *arg0) {
@@ -331,5 +335,14 @@ void fn_80249104(void *arg0) {
     if (*(p + 0x1C) == 0 && fn_802E2C20() - *(s32 *)((char *)arg0 + 0x18) >= 0x3A98) {
         fn_802168BC(-2);
     }
+}
+
+s32 fn_80249154(void *arg0) {
+    unsigned char *p = (unsigned char *)arg0;
+
+    if (*(p + 0x1C) == 0 && fn_802E2C20() - *(s32 *)((char *)arg0 + 0x18) >= 0x5DC) {
+        fn_802168BC(-2);
+    }
+    return 1;
 }
 
