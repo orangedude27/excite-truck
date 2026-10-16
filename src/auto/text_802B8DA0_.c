@@ -98,6 +98,19 @@ void fn_802B9AC8(void) {
 
 s32 fn_802B9ACC(void *arg0) { return ((s32 *)arg0)[2]; }
 
+void* fn_802B9AD4(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(s32 *)arg0 = 0;
+            *((s32 *)arg0 + 1) = 0;
+            *((s32 *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_802B9B2C(void *arg0) {
     ((int *)arg0)[0] = 0;
     ((int *)arg0)[2] = 0;
