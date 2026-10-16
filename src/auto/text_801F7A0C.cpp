@@ -72,6 +72,10 @@ extern "C" void fn_801F96A8(void *node) {
     fn_801F95C4((void *)fn_801F9450, node);
 }
 
+extern "C" void fn_801F96B8(void *node) {
+    fn_801F95C4((void *)fn_801F948C, node);
+}
+
 extern "C" void *fn_801F96C8(void *node) {
     void *list = lbl_8055EC38;
     for (;;) {
