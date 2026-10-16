@@ -659,6 +659,11 @@ s32 isPlayingSoundId__Q210homebutton10ControllerCFi(void *arg0, s32 arg1) {
     return fn_800D1E78(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0, arg1);
 }
 
+extern "C" void fn_800D1300(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x42) = 0;
+    *(u8 *)((u8 *)arg0 + 0x43) = 0;
+}
+
 extern "C" void fn_800D1558(void) {
 
 }
