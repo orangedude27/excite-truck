@@ -43,6 +43,12 @@ void TRKConstructEvent(void) {
     lbl_8055D6A8 = 0;
 }
 
+void __AXGetAuxAOutput(void **arg0) {
+    extern u8 lbl_8035BFA0[];
+    extern s32 lbl_8055D6F4;
+    *arg0 = lbl_8035BFA0 + lbl_8055D6F4 * 0x480;
+}
+
 extern u8 lbl_8035DAA0[];
 extern u8 lbl_8035BFA0[];
 extern s32 lbl_8055D6F8;
