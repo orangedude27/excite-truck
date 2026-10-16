@@ -21,6 +21,19 @@ void *fn_800197B0(void *arg0, s32 arg1) {
     return local;
 }
 
+void* fn_8001980C(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(s32 *)arg0 = 0;
+            *((s32 *)arg0 + 1) = 0;
+            *((s32 *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_80019864(void) {
     fn_802E6BD8(0x52657030, 0, (void*)lbl_803582B0, 0xC, 0);
 }
