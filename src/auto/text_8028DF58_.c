@@ -164,6 +164,10 @@ void fn_80291714(void *arg0) {
     *((unsigned char *)arg0 + 0x11C) = 0;
 }
 
+unsigned char fn_80291720(void *arg0) {
+    return *((unsigned char *)arg0 + 0x11C);
+}
+
 #pragma dont_inline reset
 extern float lbl_8055F738;
 extern unsigned char lbl_8055F73C;
