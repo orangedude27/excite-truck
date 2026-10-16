@@ -80,7 +80,7 @@ void fn_8015F79C(void) {
 }
 
 
-void fn_80128670(s32);
+
 extern f32 lbl_805617D4, lbl_805617E4, lbl_805617E8, lbl_805617EC, lbl_805617F0;
 f32 PSVECDotProduct(void *, void *);
 s32 fn_8015F7A0(u32 arg0, void *arg1, void *arg2) {
