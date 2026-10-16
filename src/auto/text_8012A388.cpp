@@ -97,11 +97,10 @@ extern "C" void *__dt__Q34nw4r2ef6EffectFv(void *arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void fn_8012DFCC(void *arg0, void *arg1) {
-    void **next = (void **)((u8 *)arg1 + 4);
-    **(void ***)((u8 *)arg0 + 4) = arg1;
-    *(void ***)((u8 *)arg0 + 4) = next;
-    *next = 0;
+extern "C" void fn_8012DFCC(Unk8012DFCCList *arg0, Unk8012DFCCNode *arg1) {
+    *arg0->tail = arg1;
+    arg0->tail = &arg1->next;
+    arg1->next = 0;
 }
 
 extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
