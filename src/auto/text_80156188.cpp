@@ -183,3 +183,7 @@ void ebi::title::TBlackPlane::updateAfterCamera() {
     m_a->v3();
 }
 
+extern "C" void fn_80157210(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v4();
+}
+
