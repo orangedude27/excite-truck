@@ -124,6 +124,14 @@ s32 fn_801B2F54(s32 arg0) {
     return *(s32 *)(obj + 4);
 }
 
+s32 fn_801B3050(s32 arg0) {
+    return *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x6C);
+}
+
+extern f32 lbl_8055E3C8;
+extern f32 lbl_8055E6AC;
+f32 fn_801B306C(void) { return lbl_8055E6AC - lbl_8055E3C8; }
+
 void* fn_801B307C(void) {
     return lbl_8055E694;
 }
