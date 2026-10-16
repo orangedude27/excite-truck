@@ -55,6 +55,10 @@ void fn_801282E8(void) {
 
 }
 
+void fn_801284F8(void *arg0, void *arg1) {
+    fn_8012834C(arg1, arg0, 3);
+}
+
 void fn_8012850C(void *arg0, void *arg1) {
     fn_8012834C(arg1, arg0, 0);
 }
