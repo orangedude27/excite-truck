@@ -144,6 +144,8 @@ struct F9List {
     void *next2;  // 0x20
 };
 
+extern "C" u32 fn_801F7A0C(void) { return 1; }
+
 extern "C" void fn_801F92A8(void) {
 
 }
