@@ -15,6 +15,11 @@ void fn_802CFF5C(void* hi) {
     lbl_8055FD1C = hi;
 }
 
+extern void *lbl_8055FD54;
+void fn_802D050C(void* hi) {
+    lbl_8055FD54 = hi;
+}
+
 void fn_802D2614(void) {
     fn_802D14D8();
     fn_802D1678();
