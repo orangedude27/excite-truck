@@ -30,6 +30,14 @@ void fn_80128714(void *, s32, s32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+s32 *fn_801281A0(s32 arg0) {
+    s32 vals[4];
+    s32 *p = (s32 *)&lbl_802F8E40;
+    vals[0] = p[0]; vals[1] = p[1]; vals[2] = p[2]; vals[3] = p[3];
+    if (arg0 >= 0 && arg0 < 4) return &vals[arg0];
+    return (s32 *)&lbl_80559968;
+}
+
 s32 fn_801281F4(s32 arg0, s32 arg1) {
     s32 r0 = arg1 - 1;
     s32 r3 = arg0 + arg1;
@@ -47,16 +55,18 @@ extern u32 lbl_80559968;
 extern char lbl_8032A430[];
 void fn_8012820C(void) {
     s32 sp14, sp10, spC, sp8;
+    s32 zero, one;
     ((void (*)(char *))fn_80128208)(lbl_8032A01C);
-    lbl_8055DF8C = 0;
-    lbl_8055DF90 = 1;
-    sp10 = 0;
-    sp8 = 0;
+    zero = 0; one = 1;
+    lbl_8055DF8C = zero;
+    sp10 = zero; sp8 = zero;
+    lbl_8055DF90 = one;
     fn_802E3DF8(0, &sp14, &spC);
     fn_802E3DF8(1, &sp10, &sp8);
     fn_80128714(&lbl_8041E140, sp14, spC);
     fn_80128714(&lbl_8041E160, sp10, sp8);
     lbl_8055DF94 = sp14;
+    (void)one;
 }
 
 void fn_801282E8(void) {
@@ -243,10 +253,24 @@ s32 fn_801288A4(void) {
 
 void fn_80128DCC(void *arg0) {
     s32 offset = 0;
-    do {
-        u8 *entry = (u8 *)(*(u32 *)((u8 *)arg0 + 0xC) + offset);
-        if (*(u32 *)entry != 0x53544B41) fn_802E317C(lbl_8032A430, entry);
+    s32 limit = *(s32 *)((u8 *)arg0 + 4);
+    u8 *base = *(u8 **)((u8 *)arg0 + 0xC);
+    while (offset < limit) {
+        u8 *entry = base + offset;
+        if (*(u32 *)entry != 0x53544B41)
+            fn_802E317C(lbl_8032A430, entry);
         offset += *(s32 *)(entry + 0x28) + 0x40;
-    } while (offset < *(s32 *)((u8 *)arg0 + 4));
+    }
+}
+
+s32 fn_80128E58(void *arg0, s32 arg1) {
+    s32 aligned = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x40);
+    s32 end = *(s32 *)((u8 *)arg0 + 8);
+    s32 result;
+    if (*(s32 *)((u8 *)arg0 + 4) < end - aligned)
+        result = *(s32 *)((u8 *)arg0 + 0xC) + end - aligned;
+    else
+        result = 0;
+    return result;
 }
 
