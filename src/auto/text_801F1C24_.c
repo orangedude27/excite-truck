@@ -176,6 +176,17 @@ void fn_801F2514(void *arg0, void *arg1) {
     }
 }
 
+void fn_801F2D84(void *arg1) {
+    int stack[12];
+    void *p = arg1;
+    fn_801F1C24(&stack[0]);
+    fn_802C7730(&stack[0]);
+    do {
+        fn_802C7040(*(int *)((char *)p + 4));
+        p = *(void **)((char *)p + 0xC);
+    } while (p != 0);
+}
+
 void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
     unsigned int d, c, b, a;
     float f, e;
@@ -232,9 +243,21 @@ void fn_801F3280(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x3C) = arg1;
 }
 
+void fn_801F33BC(void *unused, int arg1) {
+    extern int *fn_801F1CE8(int);
+    unsigned char *p = (unsigned char *)fn_801F1CE8(arg1);
+    unsigned char t;
+    t = p[0]; p[0] = p[3]; p[3] = t;
+    t = p[1]; p[1] = p[2]; p[2] = t;
+    t = p[4]; p[4] = p[7]; p[7] = t;
+    t = p[5]; p[5] = p[6]; p[6] = t;
+    t = p[8]; p[8] = p[11]; p[11] = t;
+    t = p[9]; p[9] = p[10]; p[10] = t;
+    t = p[12]; p[12] = p[15]; p[15] = t;
+    t = p[13]; p[13] = p[14]; p[14] = t;
+}
+
 void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *arg0, int arg1) {
-    extern int lbl_8033A8F8;
-    extern void fn_802C9994(int, void *);
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033A8F8;
         fn_802C9994(-1, &lbl_8033A8F8);
@@ -449,6 +472,22 @@ void fn_801F4280(void) {
 
 }
 
+void fn_801F4284(void *arg1) {
+    extern unsigned char lbl_8033AAB8[];
+    unsigned char *p=(unsigned char *)arg1+0x2C;
+    int i;
+    fn_802E317C(lbl_8033AAB8);
+    for(i=0;i<3;i++,p+=12) {
+        unsigned char t;
+        t=p[0];p[0]=p[3];p[3]=t;
+        t=p[1];p[1]=p[2];p[2]=t;
+        t=p[4];p[4]=p[7];p[7]=t;
+        t=p[5];p[5]=p[6];p[6]=t;
+        t=p[8];p[8]=p[11];p[11]=t;
+        t=p[9];p[9]=p[10];p[10]=t;
+    }
+}
+
 void fn_801F4330(void) {
 
 }
@@ -469,10 +508,13 @@ void fn_801F447C(void) {
 
 }
 
-void fn_801F4480(void *a) {
- void *p=a; do {int v=*(int *)((char *)p+4);
- if(fn_801F1CF0((char *)p+0x2C))fn_802C7040(v);
- p=*(void **)((char *)p+12);}while(p!=0);
+void fn_801F4480(int unused, void *arg1) {
+    void *p=arg1;
+    do {
+        int v=*(int *)((char *)p+4);
+        if(fn_801F1CF0((char *)p+0x2C)) fn_802C7040(v);
+        p=*(void **)((char *)p+12);
+    } while(p!=0);
 }
 
 void fn_801F44DC(int a,int b,void *c,int d) {
