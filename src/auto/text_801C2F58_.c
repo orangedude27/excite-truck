@@ -43,6 +43,18 @@ s32 fn_801C34CC(f32 arg0, f32 arg1) {
     return (f32)abs <= lbl_80558DC4[0];
 }
 
+s32 *__AXFXGetLfoSinTable_801769CC(void);
+void *fn_8001285C(s32);
+extern f32 lbl_80562990;
+extern f32 lbl_8055E7E4;
+f32 fn_801C3B6C(void) {
+    return lbl_8055E7E4 + lbl_8055E3C8;
+}
+
+s32 fn_801C3D5C(void) {
+    return *(s32 *)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
+}
+
 char fn_801C5B60(void) {
     return lbl_8055E7E2;
 }
