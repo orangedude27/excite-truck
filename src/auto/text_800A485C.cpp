@@ -516,6 +516,12 @@ void fn_800D0BA4(void *arg0, D0BA4Dispatch *arg1) {
 
 s32 fn_800D0BD0(void) { return 0; }
 
+extern "C" void fn_800D11E0(void* arg0) {
+    f32 value = lbl_80560E3C;
+    *(f32*)((u8*)arg0 + 8) = value;
+    *(f32*)((u8*)arg0 + 0xC) = value;
+}
+
 extern "C" void fn_800D1200(void) {
 
 }
