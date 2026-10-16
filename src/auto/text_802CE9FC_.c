@@ -63,3 +63,8 @@ void* fn_802D3104(void) {
     return (char*)lbl_8055FD5C + 0x24;
 }
 
+extern void *lbl_8055FD58;
+void* fn_802D3138(void) {
+    return (char*)lbl_8055FD58 + 0x24;
+}
+
