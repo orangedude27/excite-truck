@@ -664,6 +664,20 @@ void fn_801D832C(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 0x40) != 0) *(s32 *)((u8 *)arg0 + 0x40) = 1;
 }
 
+void fn_801D8344(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 0x40) != 0) {
+        void **obj = *(void ***)((u8 *)arg0 + 0x2C);
+        if (obj != NULL) {
+            ((void (*)(void *))(*(void **)((u8 *)*obj + 0x1C)))(obj);
+        }
+        *(s32 *)((u8 *)arg0 + 0x40) = 1;
+    }
+}
+
+s32 fn_801D839C(void *arg0) {
+    return *(u8 *)((u8 *)arg0 + 0x18) == 0;
+}
+
 s32 fn_801D83BC(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x30) == 0;
 }
