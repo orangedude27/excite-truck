@@ -75,3 +75,12 @@ s32 fn_80263658(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern s32 fn_80133460(s32, const u8 *, u8, s32);
+extern s32 fn_801333E8(s32, const u8 *, u8 *, u8 *);
+extern const u8 lbl_803462B8[];
+extern const u8 lbl_803462A8[];
+void fn_80263980(void *arg0) {
+    s32 value = *(s32 *)((u8 *)arg0 + 0x24);
+    fn_80133460(value + 8, lbl_803462B8, *((u8 *)arg0 + 0x28), value);
+}
+
