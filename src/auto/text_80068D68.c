@@ -62,13 +62,13 @@ extern u16 lbl_80394680[];
 extern u32 lbl_80393628[];
 s32 _WUDGetDevAddr(u32 arg0) {
     s32 r31;
-    OSDisableInterrupts();
+    s32 saved = OSDisableInterrupts();
     if (arg0 < 0x10) {
         r31 = ((u32 *)&lbl_80393628)[(u8)arg0];
     } else {
         r31 = 0;
     }
-    OSRestoreInterrupts(0);
+    OSRestoreInterrupts(saved);
     return r31;
 }
 
