@@ -24,6 +24,12 @@ void fn_80012778(void);
 void fn_80131818(void*);
 void fn_802E317C(const char*, ...);
 
+void fn_80007F04(void) {
+    Unk8034EF38* p = &lbl_8034EF38;
+    fn_80131818(p->unk_0x1E4);
+    p->unk_0x1E4 = 0;
+}
+
 void fn_80007F40(void) {
     fn_80007DA0();
     fn_80279464();
