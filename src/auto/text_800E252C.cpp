@@ -64,12 +64,33 @@ void fn_800E80B4(void) {
 
 }
 
+typedef void (*vfn0_t)(void*);
+extern "C" void fn_800E9070(void *arg0) {
+    void **vtable = *(void ***)arg0;
+    ((void (*)(void *))vtable[6])(arg0);
+    ((void (*)(void *))vtable[7])(arg0);
+}
+
 extern "C" int fn_800E90AC(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x67) != 0;
 }
 
+extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this_, int priority) {
+    int valid = priority >= 0 && priority <= 0x7F;
+    if (!valid) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x202, lbl_803227EC, priority, 0, 0x7F);
+    }
+
+    *(char *)((char *)this_ + 0x74) = priority;
+    void *player = *(void **)((char *)this_ + 0x10);
+    if (player != 0) {
+        detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
+        detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
+    }
+}
+
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_, float vol) {
-    if (vol > lbl_80560FB0) {
+    if (!(vol >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
     }
 
@@ -77,7 +98,7 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_
 }
 
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
-    if (vol > lbl_80560FB0) {
+    if (!(vol >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x234, lbl_80322858);
     }
 
@@ -88,6 +109,34 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(vo
 #pragma small_data off
 extern float lbl_80560FB0;
 #pragma pop
+// Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
+class VfObj {
+public:
+    virtual ~VfObj();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6();
+    virtual void vf7();
+    virtual void vf8();
+    virtual void vf9();
+    virtual void vf10();
+    virtual void vf11();
+    virtual void vf12();
+    virtual void vf13();
+    virtual void vf14();
+    virtual void vf15();
+    virtual void vf16();   // vtable 0x60 = 10th named method (0x18 + 9*4)
+    virtual void vf17();   // vtable 0x64
+    virtual void vf18();   // vtable 0x68
+    virtual void vf19();   // vtable 0x6C
+    virtual void vf20();   // vtable 0x70
+    virtual void vf21();   // vtable 0x74
+    virtual void vf22();   // vtable 0x78
+    virtual void vf23();   // vtable 0x7C
+};
+
 extern "C" void fn_800E9B18(void *arg0, float farg0) {
     *(float *)((char *)arg0 + 0x90) = farg0;
 }
@@ -96,17 +145,11 @@ extern "C" void fn_800E9B20(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x94) = arg1;
 }
 
-extern "C" void fn_800E9B28(void **arg0, float arg1) {
-    void **vtable = (void **)*arg0;
-    void *(*get)(void);
-    void *result;
-    void **resultVtable;
-    void (*set)(float);
-    get = (void *(*)(void))vtable[23];
-    result = get();
-    resultVtable = (void **)*(void **)result;
-    set = (void (*)(float))resultVtable[16];
-    set(arg1);
+extern "C" void fn_800E9B28(void *arg0, float arg1) {
+    float f = arg1;
+    void *obj = arg0;
+    void *result = ((void *(*)(void *))(*(void ***)obj)[0x5c / 4])(obj);
+    ((void (*)(void *, float))(*(void ***)result)[0x40 / 4])(result, f);
 }
 
 extern "C" void fn_800E9B74(void *arg0, int arg1, int arg2, int arg3, int arg4) {
