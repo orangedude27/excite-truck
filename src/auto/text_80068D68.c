@@ -58,6 +58,10 @@ typedef struct hcisu_if {
 
 extern hcisu_if *lbl_8055DC68;
 extern void *lbl_8055DC6C;
+extern s32 lbl_8055DC74;
+extern void GKI_freebuf(void *);
+extern void GKI_shutdown(void);
+extern void OSCancelAlarm(OSAlarm *alarm);
 
 void DBPrintf_80068D68(const char *fmt, ...) {
 #pragma unused(fmt)
