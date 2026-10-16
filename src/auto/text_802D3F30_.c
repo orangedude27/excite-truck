@@ -74,6 +74,7 @@ void fn_802D6860(void) {
     fn_802E30C8(lbl_8034C3F4, lbl_8055FDF8 - lbl_8055FDF4, lbl_8055FDF0);
     fn_80128670(lbl_8055FDF4);
     lbl_8055FDF4 = 0;
+    lbl_8055FDF8 = 0;
     fn_802E30C8(lbl_8034C428, lbl_8055FE00);
 }
 
@@ -104,7 +105,11 @@ extern const char lbl_8034C3F4[];
 extern const char lbl_8034C428[];
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
-extern void fn_802D0E48(s32);
+extern u32 lbl_8055FDE8;
+extern u8 lbl_8055FDEC;
+extern s32 lbl_8055FE00;
+extern const char lbl_8034C3F4[];
+extern const char lbl_8034C428[];
 extern void fn_802D5FE4(void *);
 extern void GXCallDisplayList(void *, u32);
 extern void fn_802E30C8(const char *, ...);
