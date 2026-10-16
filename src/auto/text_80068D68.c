@@ -228,6 +228,10 @@ void fn_800932D8(void) {
 
 }
 
+void fn_800932DC(void *arg0, s32 arg1) {
+    GKI_freebuf((void *)arg1);
+}
+
 void rfc_process_fcon(void *arg0, s32 arg1) {
     if (arg1 != 0) {
         *(u8 *)((u8 *)&lbl_803C4828 + 0x64) = 0;
