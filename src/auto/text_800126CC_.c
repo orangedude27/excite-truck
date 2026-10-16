@@ -20,3 +20,12 @@ void* fn_80012854(void) {
     return lbl_8055D508;
 }
 
+extern void *fn_8001285C(void);
+extern void *fn_80012820(int);
+extern const char *fn_80007FF0(int);
+extern int fn_80012938(float);
+extern float lbl_80560358;
+void fn_80012910(void) {
+    fn_80007FF0(*(int *)((char *)fn_8001285C() + 8));
+}
+
