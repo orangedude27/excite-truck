@@ -87,7 +87,7 @@ void *GXInitVtxDescList(void) {
 
 void GXInitLightDistAttn(unsigned int arg0, unsigned int arg1) {
     extern unsigned short *__peReg;
-    __peReg[1] = (__peReg[1] & ~0x4) | ((arg0 & 1) << 2) | ((arg1 & 0x3f) << 3);
+    __peReg[1] = (__peReg[1] & ~0x4) | ((arg0 & 1) << 2);
 }
 
 void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
@@ -120,6 +120,13 @@ extern void OSRestoreInterrupts(void);
 extern void OSClearContext(void *);
 extern void OSSetCurrentContext(void *);
 
+typedef struct { char pad[0x2CC]; } OSContextTmp;
+
+#define SET_REG_FIELD(line, reg, size, shift, val) \
+    ((reg) = ((unsigned int)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((unsigned int)(val) << (shift)))
+
+typedef void (*GXPEIntrHandler)(short, void *);
+
 typedef void (*GXPEIntrHandler)(short, void *);
 extern GXPEIntrHandler __OSSetInterruptHandler(int type, GXPEIntrHandler handler);
 extern unsigned int __OSUnmaskInterrupts(unsigned int userMask);
@@ -141,6 +148,28 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
         OSSetCurrentContext(ctx);
     }
     __peReg[5] |= 4;
+}
+
+void GXSetChanAmbColor(void *ctx) {
+    extern unsigned short *__peReg;
+    extern unsigned int lbl_8055D974;
+    extern unsigned int lbl_8055D968;
+    extern unsigned char lbl_8055D970;
+    extern void OSClearContext(void *);
+    extern void OSSetCurrentContext(void *);
+    extern void OSWakeupThread(void *);
+    char local[0x2D0];
+
+    __peReg[5] |= 8;
+    lbl_8055D970 = 1;
+    if (lbl_8055D974 != 0) {
+        OSClearContext(local + 8);
+        OSSetCurrentContext(local + 8);
+        ((void (*)(void))lbl_8055D974)();
+        OSClearContext(local + 8);
+        OSSetCurrentContext(ctx);
+    }
+    OSWakeupThread(&lbl_8055D968);
 }
 
 void GXInitTexObjTlut(void* arg0, int arg1) {
