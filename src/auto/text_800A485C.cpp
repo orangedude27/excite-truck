@@ -138,7 +138,7 @@ extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
 extern s32 lbl_8055DDD4;
 extern void* lbl_8055DDD4_ptr;
 extern "C" s32 fn_800D3F94(void*, s32, s32, s32);
-extern u32 lbl_80407BD8[2];
+extern u32 lbl_80407BD8;
 extern s32 lbl_8055DDC8;
 #pragma opt_tail_call on
 void DCStoreRange(const void *, u32);
@@ -155,15 +155,16 @@ extern "C" s32 fn_800D2E14(void) {
     if (lbl_8055DDC8 == 0) {
         return 0;
     }
-    if (lbl_80407BD8[0] == 0) {
+    u32 *p = (u32 *)0x80407BD8;
+    if (*p == 0) {
         return 0;
     }
     return 1;
 }
 
 extern "C" void fn_800D2FC8(void) {
-    u32* base = (u32*)&lbl_80407BD8;
-    DCStoreRange((void*)base[0], base[1]);
+    u32 *p = (u32 *)0x80407BD8;
+    DCStoreRange((void *)p[0], p[1]);
 }
 
 extern "C" s32 fn_800D3824(void) {
@@ -175,25 +176,18 @@ extern "C" u8 fn_800D3838(u8 *arg0) {
     return *arg0;
 }
 
-s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2) {
-    void *var_r31 = (void *)lbl_8055DDD4;
-    s32 var_r28 = arg0;
-    s32 var_r29 = arg1;
-    s32 var_r30 = arg2;
-    s32 var_r31_local;
-
-loop_start:
-    var_r31_local = (s32)var_r31;
-    if (var_r31_local == 0) {
-        goto return_zero;
+extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
+    void *r31 = lbl_8055DDD4_ptr;
+    s32 r28 = (s32)arg0;
+    s32 r29 = (s32)arg1;
+    s32 r30 = (s32)arg2;
+    
+    while (r31 != NULL) {
+        if (fn_800D3F94(r31, r28, r29, r30) != 0) {
+            return 1;
+        }
+        r31 = *(void **)((u8 *)r31 + 0xC);
     }
-    if (fn_800D3F94(var_r31, var_r28, var_r29, var_r30) != 0) {
-        return 1;
-    }
-    var_r31 = *(void **)((u8 *)var_r31 + 0xC);
-    goto loop_start;
-
-return_zero:
     return 0;
 }
 
