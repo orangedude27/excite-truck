@@ -28,6 +28,19 @@ extern void fn_80131818(void *);
 extern char lbl_8035183C[];
 extern char lbl_8055D500;
 extern int lbl_8055D514;
+void fn_80012794(void) {
+    char *p = &lbl_8035183C[0];
+    int i = 0;
+    lbl_80558AD8 = 0x134;
+    while (i < *(int *)((char *)lbl_8035183C + 0x80)) {
+        fn_80131818(p);
+        p += 4;
+        i++;
+    }
+    *(int *)((char *)lbl_8035183C + 0x80) = 0;
+    lbl_8055D500 = 0;
+    lbl_8055D514 = 0;
+}
 extern char lbl_803518C0[];
 extern char lbl_803551E0[];
 void *fn_80012870(int arg0, int arg1) {
