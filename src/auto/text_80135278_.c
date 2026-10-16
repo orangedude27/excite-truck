@@ -25,7 +25,7 @@ typedef struct {
 } Unk_80135278;
 
 void fn_80135390(Unk_80135278 *);
-void fn_801355C0();
+void fn_801355C0(void *, s32, s32, void *, s32);
 void fn_801357A4();
 
 float fn_80135278(float *a, float *b, float *c) {
@@ -76,14 +76,15 @@ void fn_80135390(Unk_80135278 *arg0) {
     fn_80135354(arg0);
     arg0->unk_30 = 0;
 }
-
+#pragma dont_inline off
 void fn_801353C4(void) {
     fn_801357A4();
 }
 
 void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    float f = lbl_80561320;
     arg0->unk_4 = arg3;
-    arg0->unk_8 = lbl_80561320;
+    arg0->unk_8 = f;
     fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
     fn_801357A4(arg0, arg1);
 }
