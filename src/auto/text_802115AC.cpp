@@ -88,6 +88,10 @@ extern "C" void fn_80215474(void) {
 
 }
 
+extern "C" void fn_80215478(void* arg0) {
+    *(u8*)((char*)arg0 + 0x18) = 1;
+}
+
 extern "C" void fn_80215484(void* arg0) {
     *(u8*)((char*)arg0 + 0x18) = 0;
 }
