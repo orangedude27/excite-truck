@@ -66,3 +66,8 @@ s32 fn_801E5370(s32 arg0, s32 arg1, f32 arg2) {
     return 1;
 }
 
+void fn_801E58FC(void) {
+    fn_801E4E44();
+    lbl_8055EAB0 = 0;
+}
+
