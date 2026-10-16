@@ -53,6 +53,7 @@ void fn_80176858(void) {
 
 int fn_80176F9C(void);
 void fn_801770C8(void);
+void fn_80177048(void);
 void fn_8017691C(void) {
     if (fn_80176F9C() == 0) {
         fn_801770C8();
