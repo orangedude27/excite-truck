@@ -33,7 +33,7 @@ void fn_802A8978(void) {
     i = 0;
     offset = 0;
     while (i < base[1]) {
-        entry = *(u8**)((u32)base + offset);
+        entry = *(u8**)((u32)lbl_804BD6C4[0] + offset);
         fn_802A8A4C((s32)entry, (s32)(entry + 0x60));
         j = 0;
         while (j < fn_802A8A34((void*)(entry + 0x6c))) {
