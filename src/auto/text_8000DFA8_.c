@@ -136,3 +136,7 @@ void fn_80011A50(void) {
     fn_80234AEC();
 }
 
+f32 fn_80011DC0(s32 arg0) {
+    return lbl_80350F28[arg0][0];
+}
+
