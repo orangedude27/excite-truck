@@ -47,6 +47,16 @@ int fn_80289BE8(int arg0) {
     return arg0;
 }
 
+void *__dt__12PhysicsWorldFv_80289C20(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8028E398(*(int *)((char *)arg0 + 4));
+        fn_8028E398(*(int *)arg0);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 int fn_80289EA0(int arg0) {
     fn_8028A084();
     fn_8028A1A4(arg0);
