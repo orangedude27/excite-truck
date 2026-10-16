@@ -37,6 +37,7 @@ DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 extern float lbl_80564F40;
 extern float lbl_80564F44;
 extern float lbl_8055FCC4;
+extern unsigned short lbl_8055FCA8;
 void fn_802CC550(int, float, float);
 int fn_802CB274(int arg0) {
     int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
