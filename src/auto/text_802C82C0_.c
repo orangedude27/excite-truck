@@ -44,6 +44,12 @@ void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
 
+void fn_802C855C(void) {
+    fn_802CFDE0();
+    fn_802CC770();
+    lbl_8055FC70 = 0;
+}
+
 extern void fn_802C7758(int);
 extern unsigned int lbl_804C13E0[];
 extern char lbl_8055FC35;
