@@ -29,6 +29,16 @@ extern void *lbl_804C07F0[];
 extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
+void fn_802BED90(float *arg0) {
+    float mag = PSVECMag(arg0);
+    float scale;
+    if (lbl_80564D7C > mag) mag = lbl_80564D7C;
+    scale = lbl_80564D80 / mag;
+    arg0[0] *= scale;
+    arg0[1] *= scale;
+    arg0[2] *= scale;
+}
+
 float fn_802BEFB4(void) {
     float value;
     float limit;
@@ -99,6 +109,8 @@ void fn_802BF508(void) {
     }
     fn_802BF160();
 }
+
+float fn_802BF590(void) { return lbl_8055FAF4; }
 
 extern void *fn_801284F8(int, const char*);
 extern void* fn_802BF780(void);
