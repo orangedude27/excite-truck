@@ -25,7 +25,7 @@ void *fn_802C2698(void *arg0, s32 arg1) {
 }
 
 void fn_802C26F0(void) {
-    char *ptr = (char *)&lbl_8034AFF8;
+    char *ptr = lbl_8034AFF8;
     s32 result;
     s32 result2;
 
