@@ -91,6 +91,8 @@ void fn_8003998C(void* hi) {
     lbl_8055D88C = hi;
 }
 
+u32 fn_80039CD8(void) { return 1; }
+
 void fn_80039CE0(void) {
 
 }
