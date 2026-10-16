@@ -183,6 +183,10 @@ void fn_8014AD74(void *arg0) {
     *(f32 *)((u8 *)arg0 + 8) += lbl_80561650 * step;
 }
 
+s32 fn_8014ADD0(void *arg0) {
+    return ((s32 *)arg0)[1];
+}
+
 void fn_8014AED0(void *arg0, f32 farg0) {
     ((f32 *)arg0)[0x41] = farg0;
 }
