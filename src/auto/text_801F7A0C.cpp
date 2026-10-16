@@ -60,6 +60,8 @@ extern "C" void fn_801F92A8(void) {
 
 }
 
+
+
 extern "C" void fn_801F9440(F9Node *list, F9Node *node) {
     node->next = list->next;
     list->next = node;
@@ -95,6 +97,19 @@ extern "C" void *fn_801F96C8(void *node) {
         list = fn_801F93FC();
     }
     return list;
+}
+
+extern "C" void fn_801F99CC(F9Node *node) {
+    F9Node *cur = (F9Node *)((char *)node + 0x24);
+    F9Node *next;
+
+    while (cur != NULL) {
+        next = *(F9Node **)((char *)cur + 0x24);
+        if (cur != NULL) {
+            ((void (*)(void *, s32))0)(cur, 1);
+        }
+        cur = next;
+    }
 }
 
 extern "C" void fn_801FC66C(void) {
