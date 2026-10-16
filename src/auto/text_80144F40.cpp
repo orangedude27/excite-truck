@@ -148,6 +148,11 @@ extern "C" s32 fn_80148248(void) {
     return 0;
 }
 
+extern "C" u32 lbl_80559E68;
+extern "C" u32 *fn_80148264(void) {
+    return &lbl_80559E68;
+}
+
 extern "C" void fn_80148280(void) {
 
 }
