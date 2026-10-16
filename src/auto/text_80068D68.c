@@ -990,6 +990,11 @@ void bta_dm_pin_reply(void *arg0) {
  }
 }
 
+void fn_800725B4(void *arg0) {
+    *(void **)(lbl_803C0B98 + 0x74) = GKI_getbuf(0x1C);
+    memcpy(*(void **)(lbl_803C0B98 + 0x74), arg0, 0x1C);
+}
+
 void fn_800725FC(void *arg0) {
     *(void **)(lbl_803C0B98 + 0x74) = GKI_getbuf(0x18);
     memcpy(*(void **)(lbl_803C0B98 + 0x74), arg0, 0x18);
