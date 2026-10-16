@@ -41,3 +41,10 @@ void fn_802CE2C0(int *arg0, int arg1) {
     }
 }
 
+void fn_802CE2D8(int *arg0, int arg1) {
+    int val = *arg0;
+    if (val != 0) {
+        *arg0 = val + arg1;
+    }
+}
+
