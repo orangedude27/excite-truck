@@ -15,6 +15,7 @@ void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 void fn_800DCE10(void*, s32);
 
 extern u32 lbl_8055DDF8;
+extern "C" void fn_800D1C48(void);
 
 void fn_800A5954(void) {
     fn_800A6048();
