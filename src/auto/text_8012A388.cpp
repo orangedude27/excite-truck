@@ -42,9 +42,11 @@ extern "C" void fn_8012A5E8(void *arg0) {
 }
 
 extern "C" void fn_8012A648(void) {
-    fn_8012A364(lbl_8055E008, fn_8012A570(0x18, &lbl_805599A0));
+    void *p = fn_8012A570(0x18, &lbl_805599A0);
+    fn_8012A364(lbl_8055E008, p);
 }
-
+#pragma dont_inline reset
+#pragma scheduling reset
 extern "C" void fn_8012A67C(void) {
     lbl_8055E004 = 0;
     delete (Unk8012A570 *)lbl_8055E008;
@@ -71,8 +73,9 @@ extern "C" void fn_8012BEF0(s32 arg0) {
     fn_8012E81C(arg0);
 }
 
-extern "C" void fn_8012BF24(void) {
-    fn_8012E498();
+extern "C" void fn_8012E498(void *);
+extern "C" void fn_8012BF24(void *arg0) {
+    fn_8012E498(arg0);
 }
 
 extern "C" void fn_8012CC20(void) {
