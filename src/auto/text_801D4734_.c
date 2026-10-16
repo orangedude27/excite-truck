@@ -75,34 +75,34 @@ void fn_801D77E8(void) {
 void fn_801D77EC(void *arg0, s32 arg1) {
     s32 *ptr = (s32 *)arg0;
     s32 count = ptr[0x1D];
-    s32 *array = (s32 *)ptr[0x1C];
-    s32 r6 = 0;
-    s32 r7 = 0;
+    s32 idx = 0;
+    s32 offset = 0;
     
-    if (count <= 0) {
-        goto post_loop;
-    }
-    
-    for (; r7 < count * 4; r7 += 4, r6++) {
-        if (array[r7 / 4] == arg1) {
-            goto post_loop;
+    if (count > 0) {
+        s32 *array = (s32 *)ptr[0x1C];
+        
+        for (; offset < count * 4; offset += 4, idx++) {
+            if (array[offset / 4] == arg1) {
+                goto post_loop;
+            }
         }
+        
+        idx = -1;
     }
-    
-    r6 = -1;
     
 post_loop:
-    if (r6 == -1) {
+    if (idx == -1) {
         return;
     }
-    if (r6 <= 0) {
+    if (idx < 0) {
         return;
     }
-    if (r6 >= count) {
+    if (idx >= count) {
         return;
     }
-    if (r6 == count - 1) {
-        array[r6] = array[count - 1];
+    if (idx == count - 1) {
+        ptr[0x1C] = (s32)((s32 *)ptr[0x1C]);
+        ((s32 *)ptr[0x1C])[idx] = ((s32 *)ptr[0x1C])[count - 1];
         ptr[0x1D] = count - 1;
     }
 }
