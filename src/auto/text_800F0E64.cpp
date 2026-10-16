@@ -73,7 +73,7 @@ extern s32 fn_800E9B9C(void *);
 extern void *lbl_80325C00;
 extern void *lbl_80325C18;
 extern s32 fn_80128668(void);
-s32 fn_800F81EC(s32 arg0, s32 arg1) {
+extern "C" s32 fn_800F81EC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
