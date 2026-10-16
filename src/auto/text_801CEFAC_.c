@@ -17,3 +17,7 @@ int fn_801CF050(void) {
     return *(unsigned char *)&lbl_8055AB50 != 0;
 }
 
+int fn_801CF064(void) {
+    return *(unsigned char *)&lbl_8055E8A0 != 0;
+}
+
