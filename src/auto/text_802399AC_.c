@@ -154,9 +154,8 @@ void *fn_8023A83C(void *arg0, s32 arg1) {
 }
 
 s32 fn_8023A8B0(void) {
-    if (lbl_8055F110 != 0 && *((unsigned char *)&lbl_8055F110 + 0x18) != 0) {
-        return 1;
-    }
+    register s32 *obj = (s32 *)lbl_8055F110;
+    if (obj != 0 && *((unsigned char *)obj + 0x18) != 0) return 1;
     return 0;
 }
 
