@@ -6,3 +6,8 @@ extern void fn_8024BBF4(void*);
 void fn_8024BDDC(void* arg0) {
     fn_8024BB98((char*)arg0 - 0x34);
 }
+
+void fn_8024BDEC(void* arg0) {
+    fn_8024BBF4((char*)arg0 - 0x18);
+}
+
