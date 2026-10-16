@@ -2,12 +2,7 @@
 
 extern f32 lbl_8055E3C8;
 
-typedef struct {
-    s32* array;
-    s32 count;
-} unk_804BD6C4_t;
-
-extern unk_804BD6C4_t lbl_804BD6C4;
+extern s32 lbl_804BD6C4[];
 extern f32 lbl_8055F8D4;
 extern f32 lbl_8055F8D8;
 extern f32 lbl_80564954;
