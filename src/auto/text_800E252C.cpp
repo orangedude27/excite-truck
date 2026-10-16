@@ -101,6 +101,25 @@ extern float lbl_80560F04;
 #pragma small_data off
 extern float lbl_80320E38[];
 #pragma pop
+extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32 angle) {
+    f32 index = __fabsf(angle);
+    while (index >= lbl_80560F00) index -= lbl_80560F00;
+    u16 quantized = ((u16 *)&index)[0];
+    f32 *entry = (f32 *)((char *)lbl_80320E38 + ((quantized * 0x10) & 0xFF0));
+    f32 value = entry[0] + index * entry[2];
+    if (angle < lbl_80560F04) value = -value;
+    return value;
+}
+
+extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
+    f32 index = __fabsf(angle);
+    while (index >= lbl_80560F00) index -= lbl_80560F00;
+    u16 quantized = ((u16 *)&index)[0];
+    f32 *entry = (f32 *)((char *)lbl_80320E38 + ((quantized * 0x10) & 0xFF0));
+    f32 fraction = index;
+    return entry[1] + fraction * entry[3];
+}
+
 extern "C" void fn_800E2C98(void *arg0) {
     int *p = (int *)((char *)arg0 + 4);
     *(int *)((char *)arg0 + 4) = 0;
@@ -119,13 +138,12 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *arg0, 
 }
 
 extern "C" void *Instance__15EmissionManagerFv(void) {
-    int *manager = &lbl_80407F6C;
     if ((signed char)lbl_8055DE18 == 0) {
-        fn_800E279C(manager);
-        __register_global_object(manager, (void *)fn_800E2D74, &lbl_80407F60);
+        fn_800E279C(&lbl_80407F6C);
+        __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
         lbl_8055DE18 = 1;
     }
-    return manager;
+    return &lbl_80407F6C;
 }
 
 extern "C" void *fn_800E2D74(void *arg0, int arg1) {
@@ -175,7 +193,7 @@ extern "C" int fn_800E394C(int *arg0) { return *arg0; }
 extern "C" void fn_800E402C(void *arg0) {
     OSDisableInterrupts();
     *(u8 *)((char *)arg0 + 0x6C31) = 0;
-    OSRestoreInterrupts(0);
+    ((void (*)(void))OSRestoreInterrupts)();
 }
 
 extern "C" void fn_800E5A8C(void) {
