@@ -48,8 +48,8 @@ extern f32 lbl_80561754;
 extern f32 lbl_8056177C;
 
 extern "C" s32 lbl_8032E540[];
-extern "C" s32 fn_801577F0(void* arg0) {
- return lbl_8032E540[(*(s32 (**)())((char*)*(void**)arg0 + 0x7C))()];
+extern "C" s32 fn_801577F0(Unk801577F0* arg0) {
+ return lbl_8032E540[arg0->GetType()];
 }
 
 extern "C" s32 fn_8015782C(s32* arg0, s32 arg1) {
@@ -59,9 +59,9 @@ extern "C" s32 fn_8015782C(s32* arg0, s32 arg1) {
 extern "C" void* fn_80157928(void* arg0, s32 arg1) {
  if (arg0 != 0) {
  if (arg0 != 0) {
- if ((char*)arg0 + 8 != 0) {
- if ((char*)arg0 + 8 != 0) {
- if ((char*)arg0 + 8 != 0) {
+ if ((u32)arg0 + 8 != 0) {
+ if ((u32)arg0 + 8 != 0) {
+ if ((u32)arg0 + 8 != 0) {
  *(u32*)((char*)arg0 + 8) = 0;
  *(u32*)((char*)arg0 + 0xC) = 0;
  *(u32*)((char*)arg0 + 0x10) = 0;
