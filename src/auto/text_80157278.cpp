@@ -344,6 +344,10 @@ extern "C" void fn_80158D0C(void* arg0) {
     }
 }
 
+extern "C" void fn_80158E74(void* arg0) {
+    *(s32*)((u8*)arg0 + 8) = 0;
+}
+
 extern "C" void fn_80158F34(void**);
 extern "C" void fn_80158D60(void*, void*);
 extern "C" void fn_80158E88(void* arg0, void* arg1) {
