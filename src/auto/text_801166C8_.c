@@ -168,6 +168,8 @@ void fn_80119214(void) {
 
 s32 fn_80119994(void) { return 0; }
 
+s32 fn_8011999C(void) { return 0; }
+
 extern f64 lbl_80561198;
 extern f64 lbl_805611A8;
 extern f32 lbl_805611A0;
