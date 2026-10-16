@@ -19,6 +19,10 @@ void* fn_800167F4(void) {
     return lbl_8055D554;
 }
 
+void fn_800167FC(void *arg0) {
+    lbl_8055D554 = arg0;
+}
+
 extern unsigned char lbl_803577F0[];
 extern unsigned char lbl_80357960[];
 extern void *fn_80016474(void);
