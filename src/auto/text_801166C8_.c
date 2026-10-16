@@ -177,9 +177,9 @@ void fn_80127464(void) {
     fn_80127440();
 }
 
-extern void* fn_802ECC74(void);
-extern void fn_80127F70(void);
-extern void fn_80127F94(void);
+extern void* fn_802ECC74(void*);
+extern void fn_80127F70(void*);
+extern void fn_80127F94(void*);
 extern void fn_80127398(s32);
 extern void fn_802E300C(s32);
 extern void* lbl_8041D728[];
