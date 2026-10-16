@@ -258,7 +258,7 @@ void fn_8016FD9C(f32 *arg0, void *arg1) {
 }
 
 void fn_8016FE1C(void *arg0) {
-    ((void (**)(void *))(*(void **)arg0))[19](arg0);
+    ((void (*)(void *))(*(void ***)arg0)[19])(arg0);
 }
 
 void fn_8016FF98(void *arg0) {
@@ -329,6 +329,10 @@ s32 fn_80170F7C(void *arg0) {
 }
 
 u32 fn_80170FD4(void) { return 1; }
+
+s32 fn_801711F8(void *arg0) {
+    return *((u8 *)arg0 + 0x79) == 0;
+}
 
 void fn_80171208(void *arg0, s32 arg1) {
     fn_801B0C78((void *)arg1);
