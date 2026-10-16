@@ -18,6 +18,10 @@ unsigned char fn_8027AF84(void *arg0) {
     return *((unsigned char *)arg0 + 0x11);
 }
 
+unsigned char fn_8027AF8C(void *arg0) {
+    return *((unsigned char *)arg0 + 0x10);
+}
+
 unsigned char fn_8027B280(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
 }
