@@ -16,6 +16,11 @@ extern u8 lbl_8055BAC0;
 extern u8 lbl_8055BAB8;
 extern s32 lbl_802FA6A8[];
 extern u8 lbl_8055B860;
+#pragma push
+#pragma small_data off
+extern u8 lbl_80345EA0;
+extern u8 lbl_80345E28;
+#pragma pop
 void fn_802607C4(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
 }
