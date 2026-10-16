@@ -24,6 +24,7 @@ extern u8 lbl_802FBC7C[];
 extern void fn_8000A8C4(void);
 extern void fn_8020C920(void*);
 extern void fn_802103B8(void*);
+void fn_8000A644(void* arg0, void* arg1) DECOMP_DONT_INLINE;
 void fn_8000AADC(void* arg0) DECOMP_DONT_INLINE;
 void fn_8000AAE0(void* arg0) DECOMP_DONT_INLINE;
 void fn_8000AA38(void* arg0) DECOMP_DONT_INLINE;
