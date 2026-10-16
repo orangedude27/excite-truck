@@ -225,6 +225,29 @@ void fn_8014AE54(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x10) = lbl_8055E3C8;
 }
 
+void fn_8014AE60(void *arg0) {
+    void *head;
+    void *next;
+    void *prev;
+
+    prev = ((void **)arg0)[1];
+    head = ((void **)arg0)[0];
+    next = *(void **)((u8 *)prev + 0x120);
+    if (next != 0) {
+        *(void **)((u8 *)next + 0x11C) = *(void **)((u8 *)prev + 0x11C);
+    } else {
+        *(void **)head = *(void **)((u8 *)prev + 0x11C);
+    }
+    next = *(void **)((u8 *)prev + 0x11C);
+    if (next != 0) {
+        *(void **)((u8 *)next + 0x120) = *(void **)((u8 *)prev + 0x120);
+    } else {
+        *(void **)((u8 *)head + 4) = *(void **)((u8 *)prev + 0x120);
+    }
+    *(void **)((u8 *)prev + 0x120) = 0;
+    *(void **)((u8 *)prev + 0x11C) = 0;
+}
+
 s32 fn_8014AEB8(void *arg0) { return ((s32 *)arg0)[1]; }
 
 s32 fn_8014AEC0(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x10C); }
@@ -263,6 +286,33 @@ void fn_8014AEF0(void *arg0) {
 
 s32 fn_8014AF58(void *arg0) {
     return ((s32 *)arg0)[1];
+}
+
+void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
+    void *next;
+
+    ((void **)arg0)[0] = arg1;
+    if (arg2 == 0) {
+        next = ((void **)arg1)[0];
+        ((void **)arg0)[1] = next;
+        if (next != 0) {
+            *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)next + 0x11C);
+            *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)next + 0x120);
+            return;
+        }
+        *(s32 *)((u8 *)arg0 + 0xC) = 0;
+        *(s32 *)((u8 *)arg0 + 8) = 0;
+        return;
+    }
+    next = ((void **)arg1)[1];
+    ((void **)arg0)[1] = next;
+    if (next != 0) {
+        *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)next + 0x11C);
+        *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)next + 0x120);
+        return;
+    }
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    *(s32 *)((u8 *)arg0 + 8) = 0;
 }
 
 s32 fn_8014C830(s32 arg0) { return arg0 + 0x14; }
