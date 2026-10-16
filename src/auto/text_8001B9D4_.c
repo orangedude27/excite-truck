@@ -248,6 +248,52 @@ s32 *fn_8001C4E0(s32 arg0) {
     return 0;
 }
 
+#pragma scheduling off
+s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
+    void *ptr = (void *)fn_8001285C(arg1);
+    s32 count = *(s32 *)((u8 *)arg0 + 0x6C);
+    s32 result = 0;
+    if (count > 0 && *(s32 *)((u8 *)arg0 + 8) != 0 &&
+        *(s32 *)((u8 *)arg0 + 0xC) >= arg2) {
+        do {
+            if (*(s32 *)((u8 *)arg0 + 0xC) == arg2) {
+                if (*(u32 *)((u8 *)ptr + 8) == 0x18000302) {
+                    if (*(f32 *)((u8 *)arg0 + 0x14) <= arg3)
+                        break;
+                } else if (*(f32 *)((u8 *)arg0 + 0x14) < arg3) {
+                    break;
+                }
+            }
+            arg0 = (u8 *)arg0 + 0x14;
+            result++;
+        } while (--count != 0);
+    }
+    return result;
+}
+#pragma scheduling reset
+u32 fn_8001D220(u32 arg0, u32 arg1, u32 arg2) {
+    register u32 value = arg0;
+    value |= arg2 << 16;
+    value |= arg1 << 8;
+    return value;
+}
+
+void fn_8001D234(s32 arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
+    u32 value = arg0;
+    u32 byte = (value >> 16) & 0xFF;
+    *arg1 = value & 0xFF;
+    *arg2 = (value >> 8) & 0xFF;
+    *(s8 *)arg3 = (byte != 0);
+}
+
+void fn_8001D298(s32 arg0) {
+    s32 temp_r31;
+    temp_r31 = fn_8000DA10();
+    fn_8000D984(arg0);
+    fn_8000DB18();
+    fn_8000D984(temp_r31);
+}
+
 extern unsigned char fn_8001D464[];
 extern void fn_8001D528(void *);
 void fn_8001D5D8(void) {
