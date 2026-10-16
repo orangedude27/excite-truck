@@ -47,8 +47,7 @@ void fn_8022EA58(void *arg0) {
     if (--lbl_8055EFF4 == 0) {
         p = lbl_8055EFF8;
         if (p) {
-            VFunc fn = ((VFunc *)*p)[2];
-            fn(1);
+            ((VFunc *)*p)[2](1);
         }
         lbl_8055EFF8 = 0;
     }
@@ -70,11 +69,78 @@ void fn_8022EB30(void *arg0) {
     fn_8012A364(lbl_8055F000, arg0);
     if (--lbl_8055EFFC == 0) {
         if (lbl_8055F000) {
-            void **v = lbl_8055F000;
-            VFunc fn = ((VFunc *)*v)[2];
-            fn(1);
+            ((VFunc *)*lbl_8055F000)[2](1);
         }
         lbl_8055F000 = 0;
     }
+}
+
+void fn_8022EB90(void) {
+    s32 *p;
+    if (lbl_8055F004) fn_802E317C(lbl_803402A0);
+    p = (s32 *)fn_801284F8(8, lbl_803402F4);
+    lbl_8055F004 = (s32)p;
+    *p = 0;
+    p[1] = p[0];
+}
+
+void fn_8022EBF0(void) {
+    s32 *p = (s32 *)lbl_8055F004;
+    if (p[1]) {
+        fn_802E30C8(lbl_80340308);
+        while (fn_8022EC7C()) fn_802ED50(p[1]);
+        fn_8022EA58((void *)p[1]);
+        p[1] = 0;
+        p[0] = 0;
+    }
+    fn_80128668(p);
+    lbl_8055F004 = 0;
+}
+
+void *fn_8022EC7C(void) {
+    u32 *p = (u32 *)lbl_8055F004;
+    u32 *node = (u32 *)p[0];
+    u32 tail = p[1];
+    if (!node) return 0;
+    if ((u32)node == tail) return 0;
+    while (node[1] != tail) node = (u32 *)node[1];
+    return node;
+}
+
+void fn_8022ED00(void) {
+    s32 *p;
+    s32 *tail;
+    p = (s32 *)fn_8022ECC0();
+    tail = (s32 *)lbl_8055F004;
+    if (tail[1] == 0) {
+        tail[0] = (s32)p;
+        tail[1] = tail[0];
+    } else {
+        ((s32 *)tail[1])[1] = (s32)p;
+        tail[1] = (s32)p;
+    }
+}
+
+void fn_8022ED50(s32 arg0) {
+    void *node;
+    node = fn_8022EC7C();
+    if (node == 0) {
+        ((s32 *)lbl_8055F004)[1] = 0;
+        ((s32 *)lbl_8055F004)[0] = ((s32 *)lbl_8055F004)[1];
+    } else {
+        ((s32 *)node)[1] = 0;
+        ((s32 *)lbl_8055F004)[1] = (s32)node;
+    }
+    fn_8022EA58((void *)arg0);
+}
+
+void fn_8022EDB8(void) {
+    fn_8022ED50(((s32 *)lbl_8055F004)[1]);
+}
+
+s32 fn_8022EDC4(void) {
+    s32 *p = (s32 *)((s32 *)lbl_8055F004)[1];
+    if (p) return *p;
+    return 0;
 }
 
