@@ -1,3 +1,4 @@
+#include "types.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -55,6 +56,24 @@ void fn_80031C6C(void* hi) {
 
 void fn_80031C8C(unsigned short arg0) {
     lbl_8055D734 = arg0;
+}
+
+extern s32 lbl_8055D770;
+extern s32 lbl_8055D76C;
+extern s32 lbl_8055D760;
+extern u64 lbl_8055D778;
+extern volatile u32 lbl_8055D784;
+extern u32 lbl_8055D780;
+extern u32 lbl_8055D75C;
+extern u8 lbl_8035F700[];
+extern u8 lbl_8035FB80[];
+extern u64 OSGetTime(void);
+extern void CircleBufferInitialize(u32);
+extern void OSWakeupThread(void *);
+extern void DSPAssertTask(void *);
+extern void AIInitDMA(void *, u32);
+void __AXDSPInitCallback_80031F90(void) {
+    lbl_8055D770 = 1;
 }
 
 void fn_80032000(void) {
