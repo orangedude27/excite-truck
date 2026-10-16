@@ -107,7 +107,8 @@ s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
 void fn_801D77D8(void *arg0) {
-    ((void (*)(void *))(*((void ***)arg0))[0xD])(arg0);
+    void (*func)(void *) = *(void (**)(void *))(*(u32 *)arg0 + 0xD);
+    func(arg0);
 }
 
 void fn_801D77E8(void) {
@@ -188,9 +189,9 @@ s32 fn_801D796C(void *arg0, s32 *arg1, s32 arg2) {
     s32 idx;
 
     entry = arg1;
-    for (idx = 0; idx < arg2; idx++, entry++) {
+    for (idx = 0; idx < arg2; entry++, idx++) {
         if (((s32 *)arg0)[1] != 0) {
-            if (fn_801D9B28(*entry) != 0) {
+            if (fn_801D9B28(((s32 *)arg0)[1], *entry) != 0) {
                 return 1;
             }
         } else if (((s32 *)arg0)[2] == *entry) {
@@ -202,6 +203,10 @@ s32 fn_801D796C(void *arg0, s32 *arg1, s32 arg2) {
 
 char *fn_801D7C6C(void) {
     return lbl_8033890C;
+}
+
+s32 fn_801D7C78(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x28);
 }
 
 void fn_801D8620(void) {
