@@ -47,6 +47,13 @@ extern "C" void fn_802E317C(const char*, ...);
 extern "C" const char lbl_8033B618[];
 extern "C" float fn_802C99E8(float);
 extern "C" void fn_802C744C(void*, void*);
+void* fn_801FCA14(void* arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_801FCAC0(void* arg0) {
     if (*(int*)((char*)arg0 + 4) != 0)
         fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
