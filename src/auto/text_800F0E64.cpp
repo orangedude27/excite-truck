@@ -16,6 +16,17 @@ typedef s32 M2C_UNK32;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
 extern "C" s32 fn_80128668(void);
+typedef void (*DisposeCallback)(void*, unsigned long, void*);
+extern "C" void* Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl(void*);
+extern "C" void* Alloc__Q46nw4hbm3snd6detail9FrameHeapFUlPFPvUlPv_vPv(void*, unsigned long, DisposeCallback, void*);
+extern "C" void OSLockMutex(void*);
+extern "C" void OSUnlockMutex(void*);
+extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void*, unsigned long, void*);
+extern "C" void Destroy__Q46nw4hbm3snd6detail9FrameHeapFv(void*);
+extern "C" void* __dt__Q46nw4hbm3snd6detail9FrameHeapFv(void*, int);
+extern "C" void* lbl_80325C40;
+extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(void*, unsigned long, void*);
+extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(void*, unsigned long, void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" s32 fn_800E9B88(void *);
 extern "C" s32 fn_800E9B9C(void *);
