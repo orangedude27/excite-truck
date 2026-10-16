@@ -15,7 +15,6 @@ void fn_801D2B94(void) {
     u8 *var_r31;
     s32 var_r30;
     s32 temp;
-
     var_r31 = lbl_80438958;
     var_r30 = 0;
     while (var_r30 < lbl_8055E930) {
@@ -40,7 +39,6 @@ void fn_801D2C04(void) {
 
 s32 fn_801D2C20(s32 arg0) {
     s32 sp8;
-
     sp8 = arg0;
     if (arg0 <= 0) {
         return 0;
