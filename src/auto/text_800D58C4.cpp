@@ -35,6 +35,10 @@ extern "C" void fn_800D86F0(void *arg0, void *arg1) {
     ((s16 *)arg0)[3] = v3;
 }
 
+extern "C" void GXInitLightColor_800D8714(u32 *arg0, u32 *arg1) {
+    *arg0 = *arg1;
+}
+
 extern "C" s32 fn_800D8780(u32 *arg0) {
     return (*arg0 >> 13U) & 3;
 }
@@ -142,18 +146,18 @@ extern "C" s32 fn_800D9330(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x58) + ((*(u32 *)((u8 *)arg0 + 0x4C) >> 0x17) & 0x1E0);
 }
 
-int fn_800D9344(void *arg0) {
-    unsigned int temp_r4;
-
-    temp_r4 = *(unsigned int *)((char *)arg0 + 0x4C);
-    return ((temp_r4 >> 0x17) & 0x1E0) + (*(int *)((char *)arg0 + 0x58) + (((temp_r4 >> 0x18) & 0xF) * 0x14));
+extern "C" s32 fn_800D9344(void *arg0) {
+    volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
+    u32 x = *p;
+    s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
+    return (((x >> 0x17) & 0x1E0) + y) + (((x >> 0x18) & 0xF) * 0x14);
 }
 
-int fn_800D9364(void *arg0) {
-    unsigned int temp_r5;
-
-    temp_r5 = *(unsigned int *)((char *)arg0 + 0x4C);
-    return ((temp_r5 >> 0x12) & 0x3C) + ((temp_r5 >> 0x17) & 0x1E0) + (*(int *)((char *)arg0 + 0x58) + (((temp_r5 >> 0x18) & 0xF) * 0x14));
+extern "C" s32 fn_800D9364(void *arg0) {
+    volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
+    u32 x = *p;
+    s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
+    return ((x >> 0x12) & 0x3C) + ((x >> 0x17) & 0x1E0) + y + (((x >> 0x18) & 0xF) * 0x14);
 }
 
 extern "C" void fn_800DB830(s32 *arg0) {
