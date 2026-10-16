@@ -39,6 +39,10 @@ int fn_8013C9A4(void) {
     return *(int *)((char *)fn_8013C770() + 4);
 }
 
+int fn_8013C9C8(void) {
+    return *(int *)((int *(*)())fn_8013C800)();
+}
+
 void *fn_8013C770(void);
 extern int lbl_8055E188;
 void fn_80131818(int);
