@@ -14,6 +14,10 @@ long fn_8027C8B0(void);
 long fn_802E317C(char *, ...);
 
 extern char lbl_804A4380[];
+unsigned char fn_8027AF84(void *arg0) {
+    return *((unsigned char *)arg0 + 0x11);
+}
+
 unsigned char fn_8027B280(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
 }
