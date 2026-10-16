@@ -7,6 +7,7 @@ extern char lbl_803388F0[];
 extern char lbl_8033890C[];
 extern s32 lbl_8055E3C4;
 extern char lbl_80338C40[];
+extern char lbl_803387A8[];
 
 typedef struct {
     char *name;
