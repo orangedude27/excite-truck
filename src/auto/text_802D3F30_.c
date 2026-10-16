@@ -5,6 +5,10 @@
 
 extern u8 lbl_8055FDE4;
 extern f32 lbl_8055FDE0;
+void fn_802D6B54(void* alarm) {
+    fn_802D5F88(fn_802D62E4(alarm));
+}
+
 void fn_802D6C4C(f32 arg0) {
     lbl_8055FDE0 = arg0;
 }
