@@ -11,6 +11,16 @@ extern void *lbl_8055E694;
 
 s32 fn_801B0DE8(s32 arg0) { return arg0 + 4; }
 
+s32 fn_801B0DF0(s32 arg0) {
+    void *obj = (u8 *)lbl_8055E684 + (arg0 << 7);
+    void *result = ((void *(*)(void *))(*(void ***)obj)[8])(obj);
+    return *(u32 *)((u8 *)result + 0x10) == 0x50434152;
+}
+
+s32 fn_801B0F18(void) {
+    return *(s32 *)((u8 *)lbl_8055E684 + (fn_80179630() << 7) + 0x4C);
+}
+
 void fn_801B2C6C(void) {
 
 }
