@@ -32,6 +32,9 @@ void fn_80261AA0(void) {
 
 void fn_80261AE8(s32 *arg0, s32 arg1) { *arg0 = arg1; }
 
+void fn_8026215C(void) {
+}
+
 s32 fn_80262160(void) {
     return 0;
 }
