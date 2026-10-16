@@ -60,6 +60,15 @@ void TRKConstructEvent(void) {
     lbl_8055D6A8 = 0;
 }
 
+void TRKReadBuffer_ui32(void) {
+    TRKAppendBuffer1_ui64();
+    fn_80033404();
+    fn_80032778();
+    usr_puts_serial();
+    fn_80031C68();
+    fn_800322E4();
+}
+
 extern int lbl_8035BEA0[4];
 int TRKReadBuffer_ui8(int index) { return lbl_8035BEA0[index]; }
 
