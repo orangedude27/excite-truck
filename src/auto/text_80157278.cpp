@@ -295,29 +295,23 @@ extern "C" void* fn_80158218(void* arg0, s32 arg1) {
 }
 
 extern "C" void fn_801584A8(void* arg0) {
-    u32 address = (u32)arg0 + 0xC;
-    *(u32*)arg0 = address;
+    *(u32*)((u8*)arg0) = (u32)((u8*)arg0 + 0xC);
     *(u32*)((u8*)arg0 + 8) = 0x10;
     *(u32*)((u8*)arg0 + 4) = 0;
 }
 
 extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32* state = (s32*)&lbl_8042FD34;
+    s32 i;
     Unk801584D4** entries = (Unk801584D4**)state[0];
-    s32 offset = 0;
-    s32 i = 0;
-    do {
-        entries = (Unk801584D4**)state[0];
-        entries[offset / 4]->call(arg0, arg1, arg2);
-        offset += 4;
-        i++;
-    } while (i < state[1]);
+    for (i = 0; i < state[1]; i++)
+        entries[i]->call(arg0, arg1, arg2);
 }
 
 extern "C" void fn_80158558(s32 arg0) {
     s32* state = (s32*)&lbl_8042FD34;
-    s32* items = (s32*)state[0];
     s32 index = state[1];
+    s32* items = (s32*)state[0];
     state[1] = index + 1;
     items[index] = arg0;
 }
@@ -325,24 +319,26 @@ extern "C" void fn_80158558(s32 arg0) {
 extern "C" void fn_8015857C(u32 arg0) {
     s32* state = (s32*)&lbl_8042FD34;
     u32* entries = (u32*)state[0];
-    s32 count = state[1];
     s32 index = 0;
-    if (count > 0) {
-        do {
+    s32 count = state[1];
+    if (count <= 0) index = -1;
+    else {
+        for (; count != 0; count--) {
             if (*entries == arg0) break;
             entries++;
             index++;
-        } while (--count != 0);
+        }
         if (count == 0) index = -1;
-    } else {
-        index = -1;
     }
-    if (index != -1 && index >= 0 && index < state[1]) {
-        s32 last = state[1] - 1;
-        if (index != last)
-            ((u32*)state[0])[index] = ((u32*)state[0])[last];
-        state[1] = state[1] - 1;
+    if (index == -1) return;
+    count = state[1];
+    if (index < 0 || index >= count) return;
+    count--;
+    if (index != count) {
+        u32* list = (u32*)state[0];
+        list[index] = list[count];
     }
+    state[1] = count;
 }
 
 extern "C" void* fn_8015868C(void* arg0, s32 arg1) {
@@ -725,6 +721,10 @@ extern "C" s32 fn_8015E100(void) {
 
 extern "C" s32 fn_8015E108(void) {
     return 0;
+}
+
+extern "C" void fn_8015E4C4(Unk801577F0* arg0, s8 arg1) {
+    arg0->m54 = arg1;
 }
 
 extern "C" s32 fn_80159338(void) {
