@@ -6,6 +6,8 @@ typedef s32 (*UnkFunc)(s32);
 
 extern void* lbl_8055FF24;
 s32 fn_802E98C8(void);
+s32 fn_802E33D0(void) { return 0; }
+
 void fn_802E3DCC(void) {
     lbl_8055FF24 = (void*)fn_802E98C8();
 }
