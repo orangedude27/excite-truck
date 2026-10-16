@@ -9,6 +9,18 @@ extern float lbl_80434908[];
 extern float lbl_80434950[];
 extern float lbl_804348E8[];
 extern unsigned char lbl_8055E4F4;
+float fn_80181A48(void *arg0) {
+ volatile float *p = lbl_804348E8;
+ if (*((unsigned char *)arg0 + 0x259D)) {
+   p += 18;
+ } else if (lbl_8055E4F4) {
+   p += 26;
+ } else {
+   p += 8;
+ }
+ return *((float *)((unsigned char *)arg0 + 0x2D0)) + p[7];
+}
+
 float fn_80181A94(void) { if (lbl_8055E4F4) return lbl_80434950[14]; return lbl_80434908[2]; }
 
 float fn_80181AC0(void) { if (lbl_8055E4F4) return lbl_80434950[15]; return lbl_80434908[3]; }
@@ -69,6 +81,11 @@ void fn_8018ADB4(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25E0) = farg0;
 void fn_8018ADBC(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25E4) = farg0; }
 
 void fn_8018ADC4(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25E8) = farg0; }
+
+extern int lbl_8055E918;
+void fn_8018ADEC(void *arg0) {
+    *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 8) = -10;
+}
 
 void fn_8018AF00(void) {
 
