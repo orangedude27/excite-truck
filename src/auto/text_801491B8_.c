@@ -1,4 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+
+#include <types.h>
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_8014ACCC(void) {
