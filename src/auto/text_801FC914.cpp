@@ -369,6 +369,13 @@ void fn_801FF6FC(void* arg0, float farg0) {
     } while (i < *(int*)((char*)arg0 + 0x4C0));
 }
 
+void fn_801FF8DC(void *arg0, char *dest, const char *src) {
+    strncpy(dest, src, 0x10);
+    dest[0xF] = 0;
+    *(int *)(dest + 0x90) = 0;
+    *(int *)(dest + 0x94) = 0;
+}
+
 extern "C" void fn_801FEFC4(void) {
 
 }
