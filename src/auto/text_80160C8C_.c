@@ -3,6 +3,9 @@
 
 #include <types.h>
 
+extern int lbl_8032F698;
+extern void *lbl_8055E2E0;
+extern int fn_801476C4(void);
 extern float lbl_8056185C;
 extern float lbl_8055E3C8;
 extern float lbl_80561868;
@@ -17,10 +20,30 @@ extern s32 lbl_8055A0E8;
 extern u8 lbl_8055E2DD;
 
 extern s32 lbl_8055E300;
+void fn_80161C18(void) {
+    if (lbl_8055E300 != 0) {
+        (*(void (**)(void))(*(char **)lbl_8055E300 + 0x58))();
+    }
+}
+
 s32 fn_80161C38(void) {
     s32 val = lbl_8055E300;
     u32 tmp = (u32)(-val) | (u32)val;
     return (s32)(tmp >> 31);
+}
+
+s32 fn_80161C4C(void) {
+    if (lbl_8055E300 != 0) {
+        return (*(s32 (**)(void))(*(char **)lbl_8055E300 + 0x50))();
+    }
+    return 1;
+}
+
+s32 fn_80161C70(void) {
+    if (lbl_8055E300 != 0) {
+        return (*(s32 (**)(void))(*(char **)lbl_8055E300 + 0x54))();
+    }
+    return 1;
 }
 
 void fn_8016212C(void) {
@@ -57,6 +80,17 @@ void fn_8016225C(void) {
 
 int fn_80162260(void) {
     return 0;
+}
+
+extern int lbl_8032F698;
+extern void *lbl_8055E2E0;
+extern int fn_801476C4(void);
+s32 fn_801628E8(void *arg0) {
+    if (*(f32 *)((u8 *)arg0 + 0x8C) > lbl_8056185C) {
+        ((void (*)(int *))(*(void ***)lbl_8055E2E0)[0xC / 4])(&lbl_8032F698);
+        fn_801476C4();
+    }
+    return 1;
 }
 
 unsigned char fn_80163F6C(void *arg0) {
