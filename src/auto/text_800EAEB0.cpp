@@ -271,6 +271,9 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
         OSRestoreInterrupts(level);
     }
 }
+#pragma push
+#pragma small_data off
+#pragma pop
 extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800EFC50(
     void* this_, s32 auxBus) {
     s32 bus = auxBus;
@@ -285,9 +288,8 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
                                      (const char*)lbl_80323C74, bus, 0, 4);
     }
 
-    return *(f32*)&((u8*)this_)[0x54 + bus * 4];
+    return ((f32*)((u8*)this_ + 0x54))[bus];
 }
-
 void fn_800F0750(void) {
     return;
 }
