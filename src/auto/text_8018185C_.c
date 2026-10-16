@@ -75,3 +75,5 @@ void fn_8018BF60(void) {
 
 }
 
+int fn_8018BF64(void) { return 0x44; }
+
