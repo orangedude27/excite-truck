@@ -5,6 +5,46 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int fn_80019BA8(void);
+extern int fn_80161C38(void);
+extern int fn_801EA994(void);
+extern void fn_801CCBA4(void);
+extern void fn_801CCAEC(int);
+extern void fn_801CCCAC(void);
+extern int fn_801CE874(int);
+extern void fn_801CCDAC(int, int, int);
+extern void fn_801CD4CC(int, int);
+extern signed char lbl_8055E880;
+void fn_801CB3F8(void) {
+    int count;
+    int i;
+    if (fn_80019BA8() != 0) return;
+    if (fn_80161C38() != 0) return;
+    count = fn_801EA994();
+    for (i = 0; i < count; i++) fn_801CCAEC(i);
+}
+
+void fn_801CB464(void) {
+    if (fn_80019BA8() || fn_80161C38()) return;
+    fn_801CCBA4();
+}
+
+void fn_801CB518(void) {
+    if (fn_80019BA8() != 0) return;
+    if (fn_80161C38() != 0) return;
+    lbl_8055E880 = 0;
+    fn_801CCCAC();
+}
+
+void fn_801CB55C(int arg0, int arg1) {
+    if (fn_80019BA8() != 0) return;
+    if (fn_80161C38() != 0) return;
+    if (fn_801CE874(arg0) != 0) {
+        fn_801CCDAC(0x22205, arg0, arg1);
+        fn_801CD4CC(arg0, arg1);
+    }
+}
+
 void fn_801CB8FC(void) {
     fn_801CE8CC();
 }
