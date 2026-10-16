@@ -163,3 +163,8 @@ void fn_8022DE1C(void *arg0) {
     *temp_r4 = var_f4;
 }
 
+int fn_8022E064(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
