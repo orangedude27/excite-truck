@@ -508,11 +508,10 @@ void fn_80070758(void) {
 extern void fn_80070820(void);
 void fn_8007079C(u16 *arg0, u16 arg1) {
     *arg0 = arg1;
-
     if (lbl_8055DC68 != NULL) {
-        ((void (*)(s32, void *))lbl_8055DC68->close)(0, lbl_8055DC6C);
+        ((void (*)(void *))(*(u32 *)((u8 *)lbl_8055DC68 + 0xC)))(arg0);
     } else {
-        GKI_freebuf(lbl_8055DC6C);
+        GKI_freebuf(arg0);
     }
 }
 
@@ -530,10 +529,8 @@ void bte_hcisu_task(void) {
 
 extern u32 fn_8009B0E0(void);
 void fn_80070820(void) {
-    if (lbl_8055DC68 != NULL) {
-        if (lbl_8055DC68->close != NULL) {
-            ((void (*)(s32, void *))lbl_8055DC68->close)(0, lbl_8055DC6C);
-        }
+    if (lbl_8055DC68 != NULL && lbl_8055DC68->close != NULL) {
+        lbl_8055DC68->close(0, lbl_8055DC6C);
     }
 }
 
