@@ -62,14 +62,15 @@ void fn_80144C54(void *arg0) {
 }
 
 void fn_80144D80(f32 *arg0, f32 farg0, f32 farg1, f32 farg2) {
+    f32 z = lbl_805615BC;
     arg0[0] = farg0;
-    arg0[1] = lbl_805615BC;
-    arg0[2] = lbl_805615BC;
-    arg0[3] = lbl_805615BC;
+    arg0[1] = z;
+    arg0[2] = z;
+    arg0[3] = z;
     arg0[4] = farg1;
-    arg0[5] = lbl_805615BC;
-    arg0[6] = lbl_805615BC;
-    arg0[7] = lbl_805615BC;
+    arg0[5] = z;
+    arg0[6] = z;
+    arg0[7] = z;
     arg0[8] = farg2;
 }
 
