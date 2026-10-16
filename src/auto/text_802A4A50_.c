@@ -25,6 +25,8 @@ extern s32 lbl_8055F894, lbl_8055F898, lbl_8055F89C;
 extern u8 lbl_80349BF0[], lbl_8055CBC8;
 s32 fn_802C6CF8(void);
 s32 fn_802CAC54(s32);
+extern s32 fn_80128670(s32);
+extern s32 fn_80128668(void *);
 s32 fn_802A597C(void);
 s32 fn_8028E398(void);
 s32 fn_802A5B8C(s32);
