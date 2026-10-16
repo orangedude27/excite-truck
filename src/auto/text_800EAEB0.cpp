@@ -580,6 +580,17 @@ extern "C" void* fn_800EE4F0(void* arg0) {
     return arg0;
 }
 
+extern "C" void fn_800EE568(void* arg0) {
+    u8* p = (u8*)arg0;
+    p[2] = 0; p[3] = 0;
+    OSCancelAlarm(p + 0x38);
+    p[7] = 0;
+    OSCancelAlarm(p + 0x68);
+    p[8] = 0; p[2] = 0; p[3] = 1;
+    memset(p + 9, 0, 0x20);
+    p[6] = 0; p[7] = 0; p[8] = 0; p[5] = 0;
+}
+
 extern "C" void fn_800EEB64(u8 *arg0) {
     if (arg0[0] != 0) {
         OSCancelAlarm(arg0 + 8);
