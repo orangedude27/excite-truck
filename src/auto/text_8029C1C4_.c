@@ -260,10 +260,11 @@ void fn_8029EF40(void) {
     fn_8029EF28();
 }
 
+#pragma dont_inline on
 void fn_8029EF44(void) {
     fn_8029EF2C();
 }
-
+#pragma dont_inline off
 void fn_8029EF48(void *arg0) {
     *((unsigned char *)arg0 + 0x68) = 1;
 }
