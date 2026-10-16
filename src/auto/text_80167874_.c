@@ -82,8 +82,15 @@ void fn_801688FC(s32 arg0) {
 }
 
 s32 fn_80168944(s32 arg0) {
-    s32 len = strlen(lbl_803301B8);
+    s32 len = strlen((char *)lbl_803301B8);
     s32 r = fn_8002B1D8(arg0, (s32 *)lbl_803301B8, len);
-    return (u32)__cntlzw((u32)r) >> 5;
+    return (u32)__cntlzw(r) >> 5;
+}
+
+extern char lbl_8055A1B8;
+s32 fn_80169D64(s32 arg0) {
+    s32 len = strlen((char *)lbl_8055A1B8);
+    s32 r = fn_8002B1D8(arg0, (s32 *)lbl_8055A1B8, len);
+    return (u32)__cntlzw(r) >> 5;
 }
 
