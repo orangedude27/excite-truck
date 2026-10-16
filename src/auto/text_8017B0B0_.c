@@ -9,6 +9,12 @@ extern void fn_8012850C(void*, void*);
 extern int fn_8002F37C(void*, int, int, int);
 extern char lbl_80331CB8[16];
 extern void fn_8017D330(void);
+extern void fn_80179E00(void*);
+extern void fn_8017B198(void*);
+extern void fn_80179D94(void);
+extern void fn_8017B2D0(void*, float, float, float, float);
+extern void fn_80179D08(void);
+extern char lbl_80331CC4[];
 
 void fn_8017C7BC(void) {
 
