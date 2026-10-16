@@ -23,6 +23,9 @@ void fn_802CB3F4(void) {
     fn_802D8FB4();
 }
 
+void fn_802CB3F8(void) {
+}
+
 extern char lbl_8055FCBC[];
 extern char lbl_8055FCB0[];
 extern float lbl_80564F40;
