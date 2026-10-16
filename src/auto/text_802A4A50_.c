@@ -133,6 +133,18 @@ void fn_802A52FC(f32 arg0) {
     lbl_8055F888 = result;
 }
 
+void fn_802A59E0(void) {
+    s32 *ptr = lbl_804BCFA8;
+    s32 i = 0;
+    goto check;
+loop:
+    fn_802A7680(*ptr);
+    ptr++;
+    i++;
+check:
+    if (i < lbl_8055F890) goto loop;
+}
+
 extern s32 lbl_804BCFA8[];
 extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
