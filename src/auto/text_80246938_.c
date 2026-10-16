@@ -69,7 +69,7 @@ int fn_80246AA8(int arg0, int arg1) {
 }
 
 int fn_80246DA8(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668(0);
+    if (arg0 != 0 && arg1 > 0) fn_80128668((void *)arg0);
     return arg0;
 }
 
