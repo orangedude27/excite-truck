@@ -59,4 +59,12 @@ void fn_801BF198(void *arg0, void *arg1) {
 void fn_801BF1B4(void) {
 
 }
-
+extern float lbl_80562838;
+extern float lbl_8056283C;
+extern float lbl_805628A4;
+extern int fn_801E9E78(int, void *, void *);
+extern int lbl_8055E794;
+extern int lbl_8055E798;
+extern int lbl_8055E79C;
+extern int lbl_8055E7A4;
+extern int lbl_8055E78C;
