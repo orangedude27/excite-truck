@@ -107,6 +107,8 @@ void fn_801B8A84(void) {
     fn_8013C9F4(0);
 }
 
+int fn_801B8ACC(void) { return 1; }
+
 void fn_801B8AD4(void) {
 
 }
@@ -133,5 +135,14 @@ void fn_801B8AF8(void) {
 
 void fn_801B8AFC(void) {
 
+}
+
+extern int fn_800167F4(void);
+int fn_801B8B08(void) {
+    int result = 0x564B;
+    if (fn_800167F4() > 1) {
+        result = 0x160B;
+    }
+    return result;
 }
 
