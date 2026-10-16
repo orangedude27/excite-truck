@@ -101,11 +101,12 @@ void fn_801B3448(void) {
     fn_801B5364(0xF, fn_801B3398);
 }
 
+#pragma scheduling off
 void fn_801B34A4(void) {
     fn_801B3DBC((void*)lbl_8055E6C0);
     memset(lbl_80435C50, 0, 0x20);
 }
-
+#pragma scheduling reset
 void fn_801B3B24(void) {
 
 }
