@@ -518,7 +518,29 @@ extern "C" s32 fn_8015A814(void) {
     return 9;
 }
 
+extern "C" s32 fn_8015BCEC(void) { return 7; }
+
 extern "C" s32 fn_8015C074(void) { return 0; }
+
+extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
+    arg0->m264 = 0;
+    if (arg0->m260 > 0) {
+        if (arg0->m258 != 0) {
+            fn_801CB6E4((void*)arg0, *(s32*)((u8*)arg0 + 4));
+        }
+        arg0->m260 = 0;
+        arg0->m254 = lbl_80561754;
+        arg0->m25c = lbl_80561750;
+        arg0->v33();
+    }
+    if (*(s32*)((u8*)arg0 + 0x26c) > 0) {
+        fn_801CB6E4((void*)0x48203, *(s32*)((u8*)arg0 + 4));
+        *(s32*)((u8*)arg0 + 0x26c) = 0;
+    }
+    *(s32*)((u8*)arg0 + 0x274) = 0;
+    *(f32*)((u8*)arg0 + 0x278) = lbl_80561754;
+    *(f32*)((u8*)arg0 + 0x27c) = lbl_80561754;
+}
 
 extern "C" s32 fn_8015C684(void) {
     return 4;
