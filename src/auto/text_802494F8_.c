@@ -8,6 +8,10 @@ void fn_80236074(void*, unsigned int);
 void fn_80128668(void*);
 extern void* lbl_8055BF34;
 s32 fn_80214D04(void);
+void fn_80249578(void *arg0) {
+    fn_8023E52C(*(s32 *)*(void **)((char *)arg0 + 0x10));
+}
+
 void fn_80249584(void) {}
 
 void fn_80249588(void) {}
