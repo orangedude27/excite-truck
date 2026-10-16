@@ -47,6 +47,25 @@ void fn_802CAC54(void);
 void fn_802C6C20(void);
 int fn_80129D90(int, int, int);
 
+void fn_802B2104(void **arg0) {
+    void *ptr = *arg0;
+    if (ptr != 0) {
+        if (ptr != 0) {
+            fn_802B218C(ptr);
+            if ((char *)ptr + 4 != 0) {
+                fn_8002F6AC(((int *)ptr)[4], fn_802B1F68);
+                if ((char *)ptr + 4 != 0) {
+                    ((int *)ptr)[1] = 0;
+                    ((int *)ptr)[2] = 0;
+                    ((int *)ptr)[3] = 0;
+                }
+            }
+            fn_80128668(ptr);
+        }
+        *arg0 = 0;
+    }
+}
+
 #pragma opt_common_subs off
 void fn_802B218C(void *arg0) {
     void *buf = *(void **)arg0;
