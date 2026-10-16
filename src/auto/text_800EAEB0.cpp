@@ -143,8 +143,9 @@ extern "C" void fn_800EB3AC(void* arg0) {
 }
 
 extern "C" void fn_800EB41C(void* arg0) {
+    f32 value = lbl_80560FEC;
     *(s32*)arg0 = 0;
-    *(f32*)((u8*)arg0 + 4) = lbl_80560FEC;
+    *(f32*)((u8*)arg0 + 4) = value;
 }
 
 extern "C" f32 fn_800EB430(void* arg0) {
@@ -379,6 +380,19 @@ extern "C" s32 fn_800EE2F4(s32 arg0, s32 arg1) {
         fn_80128668_noarg();
     }
     return arg0;
+}
+
+extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *);
+extern "C" void *AllocTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm3snd6detail9SeqPlayer(void *arg0, void *arg1) {
+    extern void *AllocImpl__Q44nw4r3snd6detail8PoolImplFv(void *);
+    void *track = AllocImpl__Q44nw4r3snd6detail8PoolImplFv((u8 *)arg0 + 8);
+    if (track == 0) return 0;
+    track = __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(track);
+    if (track != 0) {
+        *(void **)((u8 *)track + 0xB4) = arg1;
+        *(void **)((u8 *)track + 0xBC) = *(void **)((u8 *)arg0 + 4);
+    }
+    return track;
 }
 
 extern "C" void DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(void*);
