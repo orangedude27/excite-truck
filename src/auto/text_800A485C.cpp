@@ -297,13 +297,13 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x26D, lbl_8031EA90);
     }
     if ((fn_800D2E14() != 0) && (((u8 *)arg0)[0x22] != 0)) {
-        OSLockMutex(lbl_804077C0);
+        OSLockMutex(&lbl_804077C0);
         fn_800D2E3C(*(s16 *)((u8 *)arg0 + 0x1C) - 6, *(s16 *)((u8 *)arg0 + 0x1E) - 3,
                     (s32)(*(u16 *)((u8 *)arg0 + 4)) * 6 + 12,
                     (s32)(*(u16 *)((u8 *)arg0 + 0x20)) * 0xA + 4);
         fn_800D24D4(arg0, 0);
         fn_800D2FC8();
-        OSUnlockMutex(lbl_804077C0);
+        OSUnlockMutex(&lbl_804077C0);
     }
 }
 
