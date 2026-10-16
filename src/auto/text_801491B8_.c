@@ -24,9 +24,10 @@ extern f64 lbl_805615D8;
 extern f32 lbl_80561628;
 
 void fn_80149210(void *arg0) {
-    s32 x = ((s32 *)arg0)[1] + 1;
-    u32 b = (u32)x >> 31;
-    u32 t = (u32)(x << 30) - b;
+    u32 x = ((u32 *)arg0)[1] + 1;
+    u32 t = x << 30;
+    u32 b = x >> 31;
+    t = t - b;
     ((u32 *)arg0)[1] = ((t << 2) | (t >> 30)) + b;
 }
 
@@ -80,6 +81,10 @@ s32 fn_80149468(void *arg0) {
     S4_80149234 sp8;
     sp8 = *(S4_80149234 *)lbl_802F9400;
     return sp8.v[((s32 *)arg0)[1]];
+}
+
+s32 fn_801494A8(void) {
+    return 0xFF00FF00;
 }
 
 void fn_8014ACCC(void) {
