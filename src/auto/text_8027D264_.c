@@ -14,6 +14,35 @@ extern void fn_80008188(int);
 extern void fn_8000DBC8(void *);
 extern void fn_8027D96C(void);
 extern void fn_8027D9A4(int, int);
+extern int fn_80128668(void);
+extern int fn_8002F53C(void*, void*, void*, int, int);
+extern void __dt__Q34nw4r2ef6EffectFv_8027D434(void*);
+extern void fn_8027D674(void);
+extern void fn_8027D39C(void);
+extern char lbl_80347CA8[];
+extern char lbl_80347CC0[];
+int fn_8027D578(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
+void fn_8027D6FC(void *arg0) {
+    void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
+    void *obj = *(void **)((char *)res + 0x20);
+    if ((*(int (**)(void *, int))(*(void ***)obj + 3))(obj, (int)&lbl_8055C77C) != 0) {
+        obj = *(void **)((char *)res + 0x20);
+        fn_80008188((*(int (**)(void *, int))(*(void ***)obj + 5))(obj, (int)&lbl_8055C774));
+    } else {
+        fn_80008188(fn_80012820(*(int *)((char *)res + 4)) + 8);
+    }
+}
+
+void fn_8027D77C(void *arg0) {
+    void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
+    void *obj = *(void **)((char *)res + 0x20);
+    (*(void (**)(void *, int))(*(void ***)obj + 5))(obj, (int)&lbl_8055C784);
+}
+
 void fn_8027D7B8(void *arg0) {
     int id = *(int *)((char *)arg0 + 0xC);
     void *res = fn_8001285C(id);
