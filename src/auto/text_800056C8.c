@@ -270,6 +270,10 @@ s32 fn_80007CA8(void *arg0, void *arg1, s32 arg2, void *arg3) {
     return 0;
 }
 
+void fn_80007CD0(void *arg0) {
+    ((u8 *)arg0)[4] = 0;
+}
+
 u8 fn_80007CDC(void *arg0) {
     return ((u8 *)arg0)[4];
 }
