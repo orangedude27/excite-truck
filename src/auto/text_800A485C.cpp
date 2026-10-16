@@ -144,12 +144,12 @@ extern "C" s32 fn_800B7DB0(s32 arg0, Unk800B7E18Callback arg1, Unk800B7E18Callba
     case 0:
         lbl_80405D00[0] = arg1;
         lbl_80405D00[1] = arg2;
-        result = fn_800BA3F4(fn_800B7E18, fn_800B7E38);
+        result = fn_800BA3F4((Unk800B7E18Callback)fn_800B7E18, fn_800B7E38);
         break;
     default:
         return -2;
     }
-    return -(result != 0);
+    return -((u32)(-result | result) >> 31);
 }
 
 extern "C" void fn_800B7E18(u8 arg0) {
