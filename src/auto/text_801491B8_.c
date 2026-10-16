@@ -580,6 +580,8 @@ void fn_801537C8(void) {
 
 }
 
+s32 fn_80153A30(void) { return 0; }
+
 u32 fn_80153AC8(void) { return 1; }
 
 u32 fn_80153CF8(void) { return 1; }
