@@ -461,6 +461,13 @@ extern "C" void fn_800EEE8C(void *arg0) {
     *(s32 *)(p + 0x104) = 0;
 }
 
+extern "C" s32 fn_800EEEC4(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668_noarg();
+    }
+    return arg0;
+}
+
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* arg0, f32 farg0) {
     extern f32 lbl_8056106C;
     extern u8 lbl_80323B28[];
