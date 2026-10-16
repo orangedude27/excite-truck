@@ -21,8 +21,6 @@ public:
     virtual void vf5();
     virtual void vf6();
     virtual void vf7();
-    virtual void vf8();
-    virtual void vf9();
     virtual u32 Read(void* buf, u32 size);   // vtable 0x28
     virtual void vfB();
     virtual u32 Seek(s32 off, u32 origin);   // vtable 0x30
