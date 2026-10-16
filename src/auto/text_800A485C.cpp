@@ -90,6 +90,42 @@ void fn_800B7C60(void) {
     fn_800B75C4();
 }
 
+extern "C" s32 fn_800BA404(void) {
+    u8 value;
+    if (*(u32*)lbl_80407300 & 1) {
+        if (*(s8*)(lbl_80407300 + 0x14) == 0 &&
+            fn_800BA974(*(s32*)(lbl_80407300 + 0xC), &value, 1) == 1) {
+            lbl_80407300[0x14] = value;
+        }
+        if (*(s32*)(lbl_80407300 + 0x10) != 0) {
+            fn_800A68DC(*(s32*)(lbl_80407300 + 0xC));
+            return 1;
+        }
+        return 0;
+    }
+    return 0;
+}
+
+extern "C" s32 fn_800BB3F4(s32 arg0) {
+    u8 buffer[0x28];
+    void* context = buffer;
+    u32 flags;
+    s32 result = -0x33;
+    if (lbl_80559248 >= 0 && fn_800BBB58(arg0, &context) == 0) {
+        if (fn_800BAD9C(context, &flags) == 0) {
+            if (flags & 0x10000) result = 0;
+            else {
+                result = fn_800BB2C4(context);
+                if (lbl_8055DD68 == 0x10000) result = 0;
+            }
+        }
+        *(s32*)((u8*)context + 0x24) = 0;
+        IOS_Close(*(s32*)context);
+        *(s32*)context = -1;
+    }
+    return result;
+}
+
 extern "C" s32 fn_800BB4E0(s32,s32,s32,s32,s32,s32);
 extern "C" s32 fn_800BBB58(s32, void**);
 extern "C" s32 fn_800BAD9C(void*, u32*);
