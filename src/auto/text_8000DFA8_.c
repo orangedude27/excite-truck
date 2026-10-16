@@ -105,6 +105,13 @@ void fn_8000F498(void) {
     lbl_8055D4D4 = fn_8023512C();
 }
 
+void fn_8000F4BC(void) {
+    if (lbl_8055D4D4 != 0) {
+        fn_80235380(lbl_8055D4D4);
+        lbl_8055D4D4 = 0;
+    }
+}
+
 void fn_80010EF0(void);
 void fn_80010F08(void);
 void fn_80010F20(void);
