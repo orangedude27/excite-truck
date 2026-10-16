@@ -40,3 +40,8 @@ void fn_801DCEF4(void) {
     lbl_8055E9A8 = 0;
 }
 
+extern void *lbl_8055E9A8;
+void fn_801DCF00(void) {
+    lbl_8055E9A8 = 0;
+}
+
