@@ -29,6 +29,8 @@ extern s32 fn_801284F8(s32, void*);
 extern s32 fn_801B5364(s32, void*);
 extern void fn_801B3398(void);
 void* fn_801B3B70(void*);
+extern void* memset(void*, s32, u32);
+extern u8 lbl_80435C50[0x20];
 
 void fn_801B435C(void*);
 
