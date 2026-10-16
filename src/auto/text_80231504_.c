@@ -147,4 +147,10 @@ s32 fn_80234654(void) {
     }
     return var_r29;
 }
-
+extern s32 fn_802315FC(s32);
+extern void fn_802E30C8(const char *);
+extern void fn_802E317C(const char *);
+extern void *fn_801284F8(s32, const char *);
+extern char lbl_8034044C[];
+extern char lbl_80340488[];
+extern char lbl_803404C0[];
