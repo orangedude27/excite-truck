@@ -7,6 +7,8 @@ typedef struct Unk8001BBBC {
 } Unk8001BBBC;
 
 extern s8 lbl_8055D5C8;
+extern s32 lbl_803583C8;
+extern void fn_8002F634(void *, void *, s32, s32);
 extern void *lbl_80358658[];
 extern s32 lbl_802ED7B8[];
 extern const char lbl_802FD85C[];
@@ -67,8 +69,10 @@ s32 fn_8001BA90(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return arg4;
 }
 
-void fn_8001BB0C(s32 arg0, s32 arg1, s32 arg2) {
-    fn_8001CE34(arg0, fn_8001D25C(arg1), arg2);
+void fn_8001BB0C(s32 arg0, s32 arg1, volatile s32 arg2, volatile s32 arg3) {
+    s32 saved2 = arg2;
+    s32 saved3 = arg3;
+    fn_8001CE34(arg0, fn_8001D25C(arg1), saved2, saved3);
 }
 
 void fn_8001BB58(s32 arg0, s32 arg1, volatile s32 arg2, volatile s32 arg3) {
