@@ -277,12 +277,13 @@ int fn_80191108(void *arg0, int arg1) {
 }
 
 s32 fn_80191240(void *arg0, s32 arg1) {
-    void *obj;
-    s32 temp;
-    obj = *(void **)((char *)arg0 + 0xC);
-    temp = arg1 + ((s32 (**)(void))(*(void ***)obj))[8]();
-    obj = *(void **)((char *)arg0 + 8);
-    return temp + ((s32 (**)(s32))(*(void ***)obj))[8](temp) - arg1;
+    s32 temp_r31;
+    void **temp_r3;
+    void **temp_r3_2;
+    temp_r3_2 = *(void ***)((char *)arg0 + 0xC);
+    temp_r31 = arg1 + ((s32 (**)(void **))(*temp_r3_2))[8](temp_r3_2);
+    temp_r3 = *(void ***)((char *)arg0 + 8);
+    return (temp_r31 + ((s32 (**)(void **, s32))(*temp_r3))[8](temp_r3, temp_r31)) - arg1;
 }
 
 extern int lbl_8055A480;
@@ -293,7 +294,8 @@ extern int fn_80128668(void);
 void fn_801914F8(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 4);
     void (**vtable)(void) = *(void (***)(void))obj;
-    vtable[10]();
+    void (*method)(void) = vtable[10];
+    method();
 }
 
 void fn_8019150C(void *arg0, int arg1) {
@@ -378,6 +380,12 @@ s32 fn_80191A98(void *arg0) {
 
 void fn_80192BE4(void) {
 
+}
+
+void fn_80192BE8(void *arg0) {
+    void *obj = *(void **)((char *)arg0 + 4);
+    void (**vtable)(void) = *(void (***)(void))obj;
+    vtable[19]();
 }
 
 float fn_80192E3C(void *arg0) {
