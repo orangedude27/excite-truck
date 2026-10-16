@@ -1,6 +1,18 @@
 #include "types.h"
+
+extern int lbl_804C1338[];
+extern unsigned char lbl_804C1348[];
+char *fn_802CAE34(char *);
+int stricmp(const char *, const char *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+
+int fn_802C544C(void **a, void **b) {
+    short x = *(short *)((char *)*b + 6);
+    short y = *(short *)((char *)*a + 6);
+    if (y != x) return y - x;
+    return stricmp(fn_802CAE34(*(char **)*a), fn_802CAE34(*(char **)*b));
+}
 
 unsigned char fn_802C54CC(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
 
