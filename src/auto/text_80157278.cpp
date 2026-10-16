@@ -331,6 +331,10 @@ extern "C" void fn_80158A84(Unk801577F0 *arg0) {
     arg0->v31();
 }
 
+extern "C" s32 fn_80158D04(void* arg0) {
+    return *(s32*)((u8*)arg0 + 0xC);
+}
+
 extern "C" void fn_80158D0C(void* arg0) {
     if (*(f32*)((char*)arg0 + 0x260) > *(f32*)((char*)arg0 + 0x24c)) {
         if (*(s32*)((char*)arg0 + 0x268) != 0) {
