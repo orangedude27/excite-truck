@@ -15,3 +15,7 @@ void* MEMAllocFromAllocator(MEMAllocator* allocator, u32 size) {
     return allocator->funcs->allocFunc(allocator, size);
 }
 
+void MEMFreeToAllocator(MEMAllocator* allocator, void* block) {
+    allocator->funcs->freeFunc(allocator, block);
+}
+
