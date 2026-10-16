@@ -20,6 +20,10 @@ s32 fn_801DDE78(void);
 void fn_801DDED0(s32, f32*, s32, f32, f32, f32);
 s32 fn_802E2C20(void);
 typedef s32 (*UnkFunc2)(void*, s32);
+s32 fn_801DDEAC(void) {
+    return fn_801DDE78() + 0x32C;
+}
+
 void fn_801DDED0(s32 arg0, f32* arg1, s32 arg2, f32 farg0, f32 farg1, f32 farg2) {
     s32 idx;
     u32* entry;
