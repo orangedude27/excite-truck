@@ -86,8 +86,37 @@ void fn_8029311C(void* arg0) {
     *(s32*)((u8*)arg0 + 0x2fac) = 0;
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
 void fn_80293128(void* arg0) {
     float value = fn_801E7E24(arg0);
-    if (__fabsf(value) > lbl_80558DC4) fn_802936C4(arg0);
+    float magnitude = (float)__fabsf(value);
+    if (magnitude > lbl_80558DC4) fn_802936C4(arg0);
+}
+
+#pragma push
+#pragma small_data off
+void fn_80293530(void* arg0) {
+    s32 i;
+    s32 count = *(s32*)((u8*)arg0 + 0x28);
+    for (i = 0; i < count; i++) {
+        s32* slot = (s32*)((u8*)arg0 + i * 4 + 8);
+        fn_802C6CF8(*slot);
+        *slot = -1;
+    }
+}
+
+extern unsigned char lbl_80349278[];
+extern float lbl_8056450C;
+extern void fn_80293CD0(void*, int, int, int);
+extern void fn_80293EB0(void*);
+void* __dt__Q34nw4r2ef6EffectFv_80293A88(void* arg0, int arg1) {
+    if (arg0) {
+        *(void**)arg0 = lbl_80349278;
+        fn_80293EB0(arg0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
 }
 
