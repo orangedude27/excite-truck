@@ -6,6 +6,10 @@ char __GXIsGPFifoReady(void) {
     return lbl_8055D949;
 }
 
+int GXGetFifoBase(int *arg0) {
+    return *arg0;
+}
+
 unsigned char GXGetFifoWrap(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
 
 extern void *lbl_8055D94C;
