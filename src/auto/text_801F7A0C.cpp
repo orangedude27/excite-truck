@@ -234,13 +234,23 @@ extern "C" void fn_801F9928(void *list, s32 arg) {
 }
 
 extern "C" void fn_801F99CC(F92Obj *obj) {
-    F92Obj *cur = *(F92Obj **)((char *)obj + 0x24);
+    F92Obj *cur = *(F92Obj **)((char *)&obj->w108 + 0x24 - 0x108);
     F92Obj *next;
 
     while (cur != NULL) {
-        next = *(F92Obj **)((char *)cur + 0x24);
-        (*(F92VT **)((char *)cur + 0x108))->fn8(cur, 1);
+        next = *(F92Obj **)((char *)&cur->w108 + 0x24 - 0x108);
+        if (cur != NULL) {
+            (*(void (**)(F92Obj *, s32))((char *)&cur->w108 + 0x100 - 0x108))(cur, 1);
+        }
         cur = next;
+    }
+}
+
+extern "C" int fn_8020402C(void);
+extern "C" int fn_801F9B28();
+extern "C" void fn_801FA298(void) {
+    if (fn_8020402C() == 0) {
+        fn_801F9B28();
     }
 }
 
