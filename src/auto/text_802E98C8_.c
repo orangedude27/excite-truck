@@ -9,6 +9,9 @@ s32 fn_802E98C8(void) {
     return 0;
 }
 
+void fn_802E99A8(void) {
+}
+
 void* fn_802E9A0C(void) {
     return lbl_80560044;
 }
