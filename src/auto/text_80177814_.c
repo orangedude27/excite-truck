@@ -1,3 +1,5 @@
+#include <types.h>
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern unsigned char lbl_8055E45E;
@@ -183,6 +185,27 @@ void* fn_80178CA4(void) {
 void fn_80178DD0(void) {
     fn_80177990();
 }
+
+extern void fn_801B2C6C(void);
+extern void fn_801B5354(void);
+extern int fn_802E4C18(int);
+extern int fn_801787B4(void *);
+extern void fn_80177F40(void);
+void fn_80179140(void) {
+    int var_r31;
+    int var_r30;
+    void **var_r28;
+
+    var_r31 = 0;
+    var_r30 = 0;
+    do {
+        var_r28 = *(void ***)(lbl_8055E434 + var_r31);
+        ((void (*)(void **))(*(void ***)*var_r28 + 0x14))(var_r28);
+        var_r31 += 4;
+        var_r30 += 1;
+    } while (var_r30 < lbl_8055E438);
+}
+
 #pragma dont_inline off
 
 void fn_801791A4(void) {
