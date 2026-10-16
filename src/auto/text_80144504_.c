@@ -61,6 +61,28 @@ void fn_80144C54(void *arg0) {
     ((u8 *)arg0)[0x4C] = 0;
 }
 
+void fn_80144D80(f32 *arg0, f32 farg0, f32 farg1, f32 farg2) {
+    arg0[0] = farg0;
+    arg0[1] = lbl_805615BC;
+    arg0[2] = lbl_805615BC;
+    arg0[3] = lbl_805615BC;
+    arg0[4] = farg1;
+    arg0[5] = lbl_805615BC;
+    arg0[6] = lbl_805615BC;
+    arg0[7] = lbl_805615BC;
+    arg0[8] = farg2;
+}
+
+void fn_80144DAC(f32 *arg0, f32 *arg1) {
+    f32 c, b, a;
+    a = arg1[0];
+    b = arg1[1];
+    c = arg1[2];
+    arg0[0] = a;
+    arg0[1] = b;
+    arg0[2] = c;
+}
+
 void fn_80144DC8(void) {
 }
 
