@@ -57,6 +57,32 @@ typedef struct hcisu_if {
     void (*close)(s32, void *);
 } hcisu_if;
 
+typedef struct tUUSB {
+    u8 pad0[4];
+    u16 at_0x04; // at 0x4
+    u16 at_0x06; // at 0x6
+    u16 at_0x08; // at 0x8
+    u8 padA;     // at 0xA
+    u8 at_0x0B;  // at 0xB
+    u8 padC[2];
+} tUUSB;
+
+typedef struct hcisu_h2_cb_t {
+    u8 pad[0x1E];
+    u8 at_0x1E; // at 0x1E
+    u8 at_0x1F; // at 0x1F
+} hcisu_h2_cb_t;
+
+typedef struct tHCI_CFG {
+    u16 at_0x00; // at 0x0
+    u16 at_0x02; // at 0x2
+} tHCI_CFG;
+
+extern hcisu_h2_cb_t hcisu_h2_cb;
+extern void UUSB_Register(tUUSB *uusb);
+extern void UUSB_Open(tUUSB *uusb, void *cback);
+extern void UUSB_Close(void *uusb);
+
 extern hcisu_if *lbl_8055DC68;
 extern void *lbl_8055DC6C;
 extern s32 lbl_8055DC74;
@@ -241,6 +267,10 @@ void gki_timers_init(void) {
     *(u32 *)(base - 0x7764) = 0;
     *(u32 *)(base - 0x7744) = 0;
     *(u32 *)(base - 0x7724) = 0;
+}
+
+s32 fn_8006E4F8(void) {
+    return gki_cb.com.OSNumOrigTicks;
 }
 
 void GKI_stop_timer(UINT8 tnum) {
