@@ -96,3 +96,7 @@ void fn_8023AED4(void *arg0, s32 arg1) {
     *(s32 *)(*(char **)((char *)arg0 + 0x1C)) = arg1;
 }
 
+s32 fn_8023AEE0(void *arg0) {
+    return *(s32 *)(*(char **)((char *)arg0 + 0x1C));
+}
+
