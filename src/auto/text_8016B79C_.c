@@ -77,6 +77,8 @@ s32 fn_8016DE10(s32 *arg0, s32 arg1) {
     return *arg0 + (arg1 * 0x10);
 }
 
+f32 fn_80170E80(f32 *arg0) { return *arg0; }
+
 u8 fn_80170E90(void *arg0) { return *(u8 *)((u8 *)arg0 + 8); }
 
 u32 fn_80170FD4(void) { return 1; }
