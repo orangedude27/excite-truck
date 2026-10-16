@@ -15,8 +15,61 @@ typedef s16 M2C_UNK16;
 typedef s32 M2C_UNK32;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
+extern s32 fn_80128668(void);
+extern void Panic__Q26nw4hbm2dbFPCciPCce(void *, s32, void *);
+extern s32 fn_800E9B88(void *);
+extern s32 fn_800E9B9C(void *);
+extern void *lbl_80325C00;
+extern void *lbl_80325C18;
+extern s32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(s32);
+
 M2C_UNK GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
 
-void fn_800F27C4(void *arg0) {
-    GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(M2C_FIELD(arg0, s32 *, 4));
+extern s32 GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
+extern s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(void *, void *, s32);
+extern void Panic__Q26nw4hbm2dbFPCciPCce(void *, s32, void *);
+extern void *lbl_803247E0;
+extern void *lbl_803247F8;
+s32 fn_800F273C(void *arg0) {
+    s32 val = *(s32*)((u8*)arg0 + 4);
+    s32 neg = -val;
+    s32 combined = neg | val;
+    return (combined >> 31) & 1;
 }
+
+void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi_800F2750(void *arg0, s32 flag) {
+    if (flag == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803247E0, 0x46, lbl_803247F8);
+    }
+    *(s32 *)((u8 *)arg0 + 4) = flag;
+}
+
+void fn_800F27AC(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+    *(u8 *)((u8 *)arg0 + 8) = 0x2F;
+    *(u8 *)((u8 *)arg0 + 9) = 0;
+}
+
+void fn_800F27C4(void *arg0) {
+    GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)arg0 + 4));
+}
+
+void fn_800F27D4(void *arg0, s32 arg1) {
+    void *r3 = *(void**)((u8*)arg0 + 4);
+    s32 r4 = *(s32*)((u8*)r3 + 0x34);
+    ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(r3, (void*)r4, arg1);
+}
+
+extern s32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(s32);
+extern s32 fn_800E9B88(void *);
+extern s32 fn_800E9B9C(void *);
+extern void *lbl_80325C00;
+extern void *lbl_80325C18;
+extern s32 fn_80128668(void);
+s32 fn_800F81EC(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
