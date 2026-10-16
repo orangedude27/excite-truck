@@ -51,6 +51,8 @@ public:
 // field, byte field at 0x74, and Remove/Insert calls taking the raw pointers).
 class BasicSound;
 class SoundPlayer;
+typedef unsigned char u8;
+typedef float f32;
 #pragma push
 #pragma small_data off
 extern float lbl_80560FB0;
@@ -97,9 +99,9 @@ void fn_800E80B4(void) {
 
 typedef void (*vfn0_t)(void*);
 extern "C" void fn_800E9070(void *arg0) {
-    void **vtable = *(void ***)arg0;
-    ((void (*)(void *))vtable[6])(arg0);
-    ((void (*)(void *))vtable[7])(arg0);
+    VfObj *obj = (VfObj *)arg0;
+    obj->vf16();
+    obj->vf17();
 }
 
 extern "C" int fn_800E90AC(void *arg0) {
