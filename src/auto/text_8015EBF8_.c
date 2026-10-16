@@ -10,6 +10,19 @@ void fn_8015F5F4(int *arg0);
 extern float lbl_805617D0;
 int stricmp(const char *, const char *);
 void fn_80136594(int *, void *, void *);
+void* fn_8015EBF8(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(s32 *)arg0 = 0;
+            *((s32 *)arg0 + 1) = 0;
+            *((s32 *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_8015EC50(unsigned short *arg0, void *arg1) {
     int value;
     fn_80136594(&value, arg1, (char *)arg0 + 4);
@@ -27,9 +40,9 @@ int fn_8015ECC0(void *arg0) {
 #pragma push
 #pragma auto_inline off
 int fn_8015ED18(void **arg0) {
-    void *vtbl = *arg0;
-    char *(*fn)(void *) = (char *(*)(void *)) *(void **)((char *)vtbl + 8);
-    return stricmp(fn(arg0), lbl_8055A070) == 0;
+    void **vtable = (void **)*arg0;
+    char *(*method)(void *) = (char *(*)(void *))vtable[2];
+    return stricmp(method(arg0), lbl_8055A070) == 0;
 }
 int fn_8015ED90(void **arg0) {
     int count = 0;
