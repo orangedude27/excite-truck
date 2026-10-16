@@ -21,6 +21,8 @@ void fn_802CFF5C(void* hi) {
 }
 
 extern void *lbl_8055FD54;
+extern void fn_802D30F0(void);
+extern void fn_802D307C(void);
 void fn_802D050C(void* hi) {
     lbl_8055FD54 = hi;
 }
@@ -40,5 +42,12 @@ void* fn_802D2D14(void) {
 extern void *lbl_8055FD5C;
 void fn_802D30DC(void* hi) {
     lbl_8055FD5C = hi;
+}
+
+extern void fn_802D30F0(void);
+extern void fn_802D307C(void);
+void* fn_802D3104(void) {
+    fn_802D307C();
+    return (char*)lbl_8055FD5C + 0x24;
 }
 
