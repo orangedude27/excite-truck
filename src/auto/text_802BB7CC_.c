@@ -9,3 +9,7 @@ int fn_802BB87C(int arg0) {
     if (valid != 0) return fn_802CAC28(arg0, 0);
     return -2;
 }
+
+extern int lbl_804C0098[4];
+int __AXGetStackHead_802BC30C(int index) { return lbl_804C0098[index]; }
+
