@@ -25,6 +25,32 @@ int fn_80205964(void) {
     }
     return 0;
 }
+
+void fn_802061F8(void) {
+    lbl_8055ED6C = fn_802CAC28(lbl_8033BC40, 0);
+}
+
+void fn_80206228(void) {
+    if (lbl_8055ED6C != -2) {
+        fn_802CAC54();
+        lbl_8055ED6C = -2;
+    }
+}
+
+void fn_8020625C(void) {
+    unsigned char old;
+    if (fn_801E85A4() > 1) {
+        old = fn_802C2C00(0);
+        fn_80205D5C();
+        if (fn_80205964() != 0) {
+            fn_80205850();
+            fn_80205FCC();
+        }
+        fn_802059C0();
+        fn_802C2C00(old);
+    }
+}
+
 extern int lbl_8055ED6C;
 extern void fn_802CAC54(void);
 extern int fn_802CAC28(const char *, int);
