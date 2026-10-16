@@ -119,6 +119,14 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
     OSRestoreInterrupts(level);
 }
 
+extern u8 lbl_803230E8[];
+extern u8 lbl_8032318C[];
+extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char* file, int line, const char* fmt, ...);
+extern "C" s32 fn_800ECE24(void) {
+    Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803230E8, 0xBD, (const char*)lbl_8032318C);
+    return 0;
+}
+
 extern "C" s32 fn_800ECE68(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
