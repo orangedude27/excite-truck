@@ -51,20 +51,21 @@ int fn_802CB288(int arg0) {
 }
 
 char fn_802CAFC8(int arg0) {
-    if (arg0 == -1)
-        return 5;
-    return *(char *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 8);
+    int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
+    return *(char *)(p[0x2C / 4] + 8);
 }
 
 char fn_802CAFF0(int arg0) {
-    if (arg0 == -1)
-        return 0x32;
-    return *(char *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 9);
+    int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
+    return *(char *)(p[0x2C / 4] + 9);
 }
 
 unsigned short fn_802CB3FC(int arg0) {
-    unsigned short *p = *(unsigned short **)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C);
-    return (p[1] <= p[0]) ? p[0] : p[1];
+    int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
+    unsigned short *q = (unsigned short *)p[0x2C / 4];
+    if ((int)q[1] > (int)q[0])
+        return q[1];
+    return q[0];
 }
 void fn_802CC73C(char arg0) {
     lbl_8055D07D = arg0;
