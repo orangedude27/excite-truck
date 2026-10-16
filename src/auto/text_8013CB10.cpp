@@ -361,6 +361,11 @@ extern "C" s32 fn_80143218(s32 arg0, u8 *arg1) {
     return 1;
 }
 
+extern f32 lbl_805615B0;
+extern "C" f32 fn_80143C44(void) {
+    return lbl_805615B0;
+}
+
 extern "C" u32 fn_80143C4C(void) { return 1; }
 
 extern "C" void fn_801442DC(void *arg0) {
