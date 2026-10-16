@@ -9,6 +9,10 @@ void fn_801EFF70(void* alarm) {
     fn_801F0CC4(fn_801F17DC(alarm));
 }
 
+void fn_801EFFF8(int arg0) {
+    fn_801F0F18(arg0, 1);
+}
+
 int fn_801F0F18(int, int);
 int fn_801F0E88(int, int);
 int fn_801284F8(int, void *);
