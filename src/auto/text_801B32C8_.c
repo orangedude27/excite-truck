@@ -67,17 +67,16 @@ typedef struct Unk801B3398 {
 
 s32 fn_801B32C8(void* arg0, s32 arg1) {
     s32 vals[2];
-    s32 idx;
+    s32 idx = -1;
     s32 result = 0;
 
-    vals[0] = *(s32*)((char*)arg0 + 0x20);
-    vals[1] = arg1;
-    idx = -1;
-    if (vals[0] == 0x6D) {
+    if (*(s32*)((char*)arg0 + 0x20) == 0x6D) {
         idx = 0;
-    } else if (vals[1] == 0x6D) {
+    } else if (arg1 == 0x6D) {
         idx = 1;
     }
+    vals[0] = *(s32*)((char*)arg0 + 0x20);
+    vals[1] = arg1;
     if (idx != -1) {
         switch (vals[!idx]) {
         case 0x6E:
@@ -111,26 +110,26 @@ int fn_801B3390(void) {
     return 0x14;
 }
 
-#pragma use_lmw_stmw off
 s32 fn_801B3398(void* arg0) {
     Unk801B3398 local;
     s32* src = (s32*)arg0;
-    s32 t13, t12, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    s32 t0, t1, t2, t3, t4, t5, t6, t7;
+    s32 t8, t9, t10, t11, t12, t13;
 
-    t13 = src[13];
-    t12 = src[12];
-    t11 = src[11];
-    t10 = src[10];
-    t9 = src[9];
-    t8 = src[8];
-    t7 = src[7];
-    t6 = src[6];
-    t5 = src[5];
-    t4 = src[4];
-    t3 = src[3];
-    t2 = src[2];
-    t1 = src[1];
     t0 = src[0];
+    t1 = src[1];
+    t2 = src[2];
+    t3 = src[3];
+    t4 = src[4];
+    t5 = src[5];
+    t6 = src[6];
+    t7 = src[7];
+    t8 = src[8];
+    t9 = src[9];
+    t10 = src[10];
+    t11 = src[11];
+    t12 = src[12];
+    t13 = src[13];
     local.unk_0x00 = t0;
     local.unk_0x04 = t1;
     local.unk_0x08 = t2;
@@ -148,7 +147,7 @@ s32 fn_801B3398(void* arg0) {
     fn_801796CC(1, &local, 0x38);
     return 0x38;
 }
-#pragma use_lmw_stmw on
+#pragma use_lmw_stmw reset
 void fn_801B3448(void) {
     void* p = (void*)fn_801284F8(0x5C0, &lbl_80335D3C);
     if (p == NULL) {
@@ -279,13 +278,13 @@ s32 fn_801B3FD0(void) {
     return 0;
 }
 
+#pragma scheduling off
 void fn_801B42D0(void* arg0) {
     u8* p = (u8*)arg0 + 0x2FC;
     void* val = *(void**)lbl_802F9630;
-    f64 init;
+    f32 init = lbl_80562650;
     s32 i;
 
-    init = lbl_80562650;
     for (i = 0; i < 0x10; i++, p += 0x2C) {
         *(s32*)(p + 0x1C) = fn_802077A4(val, 5, p + 0x10, p + 4);
         *(s32*)(p + 0x20) = 0;
@@ -294,4 +293,4 @@ void fn_801B42D0(void* arg0) {
     }
     *(s32*)((u8*)arg0 + 0x5BC) = 0;
 }
-
+#pragma scheduling reset
