@@ -231,11 +231,45 @@ s32 fn_800ED0F4(s32 arg0, s32 arg1) {
 
 #pragma push
 #pragma small_data off
+#pragma pop
+extern "C" void fn_800EFB6C(void* this_, s32 arg1) {
+    u32 level = OSDisableInterrupts();
+    *(s32*)&((u8*)this_)[0x3C] = arg1;
+    OSRestoreInterrupts(level);
+}
+
+#pragma push
+#pragma small_data off
 extern u8 lbl_80323B28[];
 extern u8 lbl_80323C74[];
 #pragma pop
 extern "C" s32 fn_800EFBAC(void* arg0) {
     return *(s32*)&((u8*)arg0)[0x3C];
+}
+
+#pragma push
+#pragma small_data off
+#pragma pop
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800EFBB4(
+    void* this_, s32 auxBus, f32 send) {
+    s32 bus = auxBus;
+    f32 value = send;
+    BOOL valid = 0;
+
+    if (bus >= 0 && bus < 4) {
+        valid = 1;
+    }
+
+    if (valid == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x1C6,
+                                     (const char*)lbl_80323C74, bus, 0, 4);
+    }
+
+    {
+        u32 level = OSDisableInterrupts();
+        *(f32*)&((u8*)this_)[0x54 + bus * 4] = value;
+        OSRestoreInterrupts(level);
+    }
 }
 
 void fn_800F0750(void) {
