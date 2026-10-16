@@ -59,6 +59,10 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+s32 fn_801D6500(void *arg0) {
+    return ((s32 *)arg0)[1];
+}
+
 s32 fn_801D6508(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) == 1) {
         *(s32 *)((u8 *)arg0 + 0x1C) = lbl_8055E3C4;
@@ -74,9 +78,13 @@ void fn_801D6600(void *arg0) {
     }
 }
 
+extern char lbl_803387A8[];
+extern char lbl_803387C8[];
 void fn_801D6618(void *arg0) {
-    *(s32 *)((u8 *)arg0 + 4) = 0;
-    *(char **)arg0 = lbl_80338C40;
+    char *n = lbl_80338C40;
+    s32 s = 0;
+    *(char **)arg0 = n;
+    *(s32 *)((u8 *)arg0 + 4) = s;
 }
 
 void *fn_801D6630(void *arg0, s32 arg1) {
