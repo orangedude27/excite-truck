@@ -17,3 +17,5 @@ long fn_8017EAF4(long arg0) { return arg0 + 0x6C; }
 
 long fn_8017EAFC(long arg0) { return arg0 + 0x118; }
 
+long fn_8017EB04(long arg0) { return arg0 + 0x70; }
+
