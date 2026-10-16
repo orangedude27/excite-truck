@@ -7,7 +7,34 @@ extern void fn_8020646C(long, long);
 extern void fn_801E7984(void);
 extern char lbl_8055EB11;
 extern long lbl_80487CF0[];
+void fn_801E78D8(long arg0) {
+    long count;
+    long i;
+    long j;
+    unsigned char *base;
+    unsigned char *entry;
+
+    count = fn_800167F4();
+    fn_80206464();
+    for (i = 0; i < count; i++) {
+        fn_8020646C(i, -1);
+    }
+    base = (unsigned char *)arg0 + 0x20;
+    entry = base;
+    for (j = 0; j < *(long *)(base + 0x3C0); j++) {
+        if (*(long *)entry == 0x50) {
+            fn_8020646C(*(entry + 0x70) & 3, j);
+        }
+        entry += 0x78;
+    }
+}
+
 void fn_801E797C(void) { fn_80206464(0); }
+
+void fn_801E7C1C(void) {
+    lbl_8055EB11 = 0;
+    fn_801E7984();
+}
 
 void fn_801E7DEC(void) {
     fn_801E7C28();
