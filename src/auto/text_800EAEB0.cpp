@@ -480,9 +480,30 @@ extern "C" void fn_800EEE8C(void *arg0) {
 
 extern "C" s32 fn_800EEEC4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
-        fn_80128668_noarg();
+        fn_80128668((void *)arg0);
     }
     return arg0;
+}
+
+extern u8 lbl_80323B28[], lbl_80323C14[], lbl_80323BEC[];
+extern u8 lbl_80324054[], lbl_80324030[];
+#pragma push
+#pragma small_data off
+extern u8 lbl_80412A6C[];
+#pragma pop
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+extern "C" void OSRestoreInterrupts(u32);
+extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void*, bool);
+extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void*, void*);
+extern "C" void* Instance__15EmissionManagerFv(void);
+extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(void* self, bool pause) {
+    u32 level = OSDisableInterrupts();
+    *(u8*)((u8*)self + 0x18) = pause;
+    for (int i = 0; i < 16; i++) {
+        void* track = *(void**)((u8*)self + 0x9c + i * 4);
+        if (track) PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(track, pause);
+    }
+    OSRestoreInterrupts(level);
 }
 
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* arg0, f32 farg0) {
