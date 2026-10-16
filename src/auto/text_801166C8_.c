@@ -5,9 +5,9 @@
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSContext.h>
 
-extern void* fn_802ECC74();
+extern void* fn_802ECC74(void*);
 extern void fn_80127F70(void*);
-extern void fn_80127F94();
+extern void fn_80127F94(void*);
 void fn_80127440(void);
 extern void fn_80127398(s32);
 extern void fn_802E300C(s32);
