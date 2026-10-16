@@ -1,3 +1,10 @@
+extern char lbl_8055FC94;
+extern char lbl_8055D030[];
+extern char lbl_8034B4E0[];
+extern void fn_802E30C8(const char *, ...);
+extern float lbl_8055FC44;
+extern float lbl_8055FC48;
+
 extern int lbl_8055FC70;
 extern float lbl_8055FC38;
 extern float lbl_8055FC3C;
