@@ -9,6 +9,8 @@ void fn_80171D20(int arg0) { fn_80171A4C(arg0 - 4); }
 
 void fn_80171D28(int arg0) { fn_80171A80(arg0 - 4); }
 
+void fn_80171D30(int arg0) { fn_80171CE0(arg0 - 4); }
+
 int fn_80171D38(int arg0) {
     unsigned char sp[0x68];
     int index;
