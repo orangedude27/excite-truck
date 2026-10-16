@@ -13,6 +13,15 @@ extern "C" void fn_80146200(void) {
 extern "C" void fn_8014630C(void) {
 }
 
+extern "C" void fn_80128668(void *);
+extern "C" void fn_80146584(void *arg0) {
+    void *buf = *(void **)arg0;
+    if (buf != NULL) {
+        fn_80128668(buf);
+        *(void **)arg0 = NULL;
+    }
+}
+
 extern "C" void fn_80148218(void) {
 }
 
