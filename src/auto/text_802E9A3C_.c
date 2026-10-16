@@ -12,6 +12,10 @@ void* fn_802EC124(void) {
     return lbl_80560078;
 }
 
+void fn_802EC12C(void) {
+    lbl_80560078 = (void*)-1;
+}
+
 void fn_802EC1D8(void) {
     lbl_805600C8 = 1;
 }
