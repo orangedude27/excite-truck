@@ -32,6 +32,10 @@ void DBPrintf_80068D68(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+s32 fn_8006CFA0(void) {
+    return 0;
+}
+
 void DBPrintf_8006CFA8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
