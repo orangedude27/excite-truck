@@ -87,6 +87,10 @@ void fn_8018ADCC(void *arg0, float arg1) {
     *(float *)((unsigned char *)arg0 + 0x25EC) = arg1;
 }
 
+void fn_8018ADD4(void *arg0, int arg1) {
+    *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 8) = arg1;
+}
+
 extern int lbl_8055E918;
 void fn_8018ADEC(void *arg0) {
     *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 8) = -10;
