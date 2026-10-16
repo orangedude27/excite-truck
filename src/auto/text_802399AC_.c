@@ -160,6 +160,42 @@ s32 fn_8023A8B0(void) {
     return 0;
 }
 
+extern s32 lbl_803410D8;
+extern s32 lbl_803412A4;
+extern void *fn_8012850C(s32, s32 *);
+#pragma push
+#pragma small_data off
+#pragma pop
+void *fn_8023AA2C(void *arg0, s32 arg1, ...) {
+    va_list ap;
+    s32 *values;
+    s32 offset = 0;
+    s32 value;
+
+    *(unsigned char *)arg0 = 0;
+    *(s32 *)((char *)arg0 + 4) = -1;
+    *(unsigned char *)((char *)arg0 + 8) = 0;
+    *(s32 *)((char *)arg0 + 0xC) = (s32)&lbl_803410D8;
+    *(s32 *)((char *)arg0 + 0x14) = 0;
+    va_start(ap, arg1);
+    do {
+        (*(s32 *)((char *)arg0 + 0x14))++;
+        value = va_arg(ap, s32);
+    } while (value != 0);
+    va_end(ap);
+    *(s32 **)((char *)arg0 + 0x10) = (s32 *)fn_8012850C(*(s32 *)((char *)arg0 + 0x14) * 4, &lbl_803412A4);
+
+    va_start(ap, arg1);
+    values = *(s32 **)((char *)arg0 + 0x10);
+    do {
+        value = va_arg(ap, s32);
+        *(s32 *)((char *)values + offset) = value;
+        offset += 4;
+    } while (value != 0);
+    va_end(ap);
+    *(s32 *)((char *)arg0 + 0x18) = arg1;
+    return arg0;
+}
 void fn_8023ACCC(void) {}
 
 void fn_8023ACD0(void *arg0) {
@@ -173,6 +209,10 @@ void fn_8023AD00(void *arg0) {
     s32 *index = *(s32 **)((char *)arg0 + 0x20);
     *(unsigned char *)((char *)arg0 + 0x28) = 1;
     *index = (*index + 1) % *(s32 *)((char *)arg0 + 0x1C);
+}
+
+s32 fn_8023AD2C(void *arg0) {
+    return *(s32 *)*(s32 **)((char *)arg0 + 0x20) > 0;
 }
 
 s32 fn_8023AD44(void *arg0) {
