@@ -1,5 +1,11 @@
 #include <types.h>
 
+extern s8 lbl_8055D5C8;
+extern void fn_8001C9C4(void);
+extern void fn_8001CAF8(void);
+extern s32 fn_8001D25C(s32);
+extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -29,8 +35,33 @@ void fn_8001BBB8(void) {
     fn_8001CF8C();
 }
 
+s32 fn_8001BCF0(void *arg0) {
+    s32 var_r5 = 0;
+    
+    s32 ptr = ((s32 *)arg0)[6] + ((s32 *)arg0)[3] * 0xC;
+    
+    if (*((u8 **)ptr + 0x10) != 0)
+        goto done;
+    
+    if (((u8 *)arg0)[0x20] == 0)
+        goto done;
+    
+    var_r5 = 1;
+done:
+    return var_r5;
+}
+
 s32 fn_8001BD28(void *arg0) {
     return ((s32 *)arg0)[1];
+}
+
+s32 fn_8001BD6C(void *arg0, void *arg1) {
+    s32 r3 = ((s32 *)arg0)[6];
+    s32 r4 = ((s32 *)arg0)[3];
+    s32 r5 = ((s32 *)arg1)[6];
+    s32 r6 = ((s32 *)arg1)[3];
+    s32 result = fn_8001D2E4(r3, r4, r5, r6);
+    return result >> 31;
 }
 
 void fn_8001C0E8(void) {
