@@ -98,7 +98,8 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) 
         char* current = node;
         node = *(char**)node;
         if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327C7C, 0x23D, lbl_80327C58);
-        (*(void (**)(void*))(*(void**)(*(char**)(current - 0x14) + 0x10)))(current - 0x14);
+        void** vtable = *(void***)((char*)current - 0x14);
+        (*(void (**)(void*))(vtable[4]))((char*)current - 0x14);
     }
     if (*(int*)lbl_8041D4C4 != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x24D, lbl_80327AC4);
 }
