@@ -43,6 +43,12 @@ void fn_80012794(void) {
 }
 extern char lbl_803518C0[];
 extern char lbl_803551E0[];
+char *fn_80012820(int arg0) {
+    if (arg0 >= 0) {
+        return &lbl_803518C0[arg0 * 0x84];
+    }
+    return &lbl_803551E0[(-1 - arg0) * 0x88];
+}
 void *fn_80012870(int arg0, int arg1) {
     char *p = &lbl_80352AD0[0];
     int i = 0;
