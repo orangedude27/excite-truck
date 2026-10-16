@@ -49,6 +49,13 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+s32 fn_801D76CC(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void *fn_801D774C(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         s32 val = ((s32)arg0 + 0x24);
