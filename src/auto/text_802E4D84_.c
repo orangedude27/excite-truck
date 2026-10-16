@@ -19,9 +19,33 @@ extern char lbl_8055D1D8[];
 extern char lbl_8034D39C[];
 extern char lbl_8034D3C0[];
 extern unsigned char lbl_804FC800[];
+void fn_802E5248(int arg0, int arg1) {
+    if (arg1 == 0) fn_80060CC0(arg0, 4, (void (*)())fn_802E51D0);
+}
+
+void fn_802E5264(int arg0, int arg1) {
+    fn_802E30C8(lbl_8034D39C, arg0,
+                 arg1 < 0 ? lbl_8034D3C0 : lbl_8055D1D8);
+    lbl_804FC800[arg0 * 0x2C] = 0;
+    if (arg1 >= 0) fn_80060CC0(arg0, 1, (void (*)())fn_802E5248);
+}
+
 int fn_802E540C(int arg0) {
     if (arg0 == 1) TRKReadBuffer_ui32();
     return 0;
+}
+
+extern unsigned char lbl_804FC558[];
+extern int lbl_8055FF78;
+extern int lbl_8055FFA0;
+extern int *lbl_8055FF9C;
+extern int fn_802E5AE8(void);
+extern void fn_8012BEF0(unsigned char *);
+extern void fn_8012C41C(void (*)(void), int, unsigned char *);
+extern int fn_802E582C(void);
+int fn_802E58A0(void *arg0, int arg1) {
+    if (arg1 == 0x53465830) return fn_802E582C();
+    return 1;
 }
 
 void fn_802E6240(void* arg0, int arg1) {
