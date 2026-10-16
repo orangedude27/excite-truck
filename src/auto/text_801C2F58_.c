@@ -20,7 +20,6 @@ char fn_801C5B60(void) {
     return lbl_8055E7E2;
 }
 
-#pragma inline_recursion off
 s32 fn_801C6C28(Vec* arg0) {
     s32 result = -1;
     s32 i;
@@ -34,7 +33,6 @@ s32 fn_801C6C28(Vec* arg0) {
     
     return result;
 }
-#pragma inline_recursion on
 
 void fn_801C6CB0(void) {
     return;
