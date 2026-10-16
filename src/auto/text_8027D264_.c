@@ -14,6 +14,10 @@ int fn_8027D914(void *arg0, int arg1) {
     return ((int *)arg0)[6] + arg1 * 0x3C;
 }
 
+unsigned char fn_8027D924(void *arg0) {
+    return ((unsigned char *)arg0)[0x1F0];
+}
+
 void fn_8027DE6C(void) {
     fn_8027B77C();
     fn_8027BF38();
