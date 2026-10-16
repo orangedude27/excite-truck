@@ -30,6 +30,15 @@ extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
 
 
 extern void fn_8001C4D4(void);
+void fn_8001B9D4(void *arg0) {
+    ((s32 *)arg0)[0] = -2;
+    ((s32 *)arg0)[1] = -2;
+    ((s32 *)arg0)[2] = -2;
+    ((s32 *)arg0)[3] = -2;
+    ((s32 *)arg0)[5] = -2;
+    ((s32 *)arg0)[6] = -2;
+}
+
 void fn_8001B9F4(void) {
     fn_8002F634(&lbl_803583C8, fn_8001BA10, 0x14, 0x10);
 }
@@ -350,11 +359,11 @@ loop_inner_528:
         var_r27 += 1;
         goto loop_inner_528;
     }
-    fn_8001D484(var_r28 + 0x6E04, 0xF0, callback, 0);
+    ((void (*)(void *, s32, s32 (*)(s32)))fn_8001D484)(var_r28 + 0x6E04, 0xF0, callback);
     var_r29 += 1;
     var_r31 += 0xDAC4;
     if (var_r29 < 4) goto loop_outer_528;
-    fn_8001D484(lbl_8055D5CC + 0x36B10, 0xF0, callback, 0);
+    ((void (*)(void *, s32, s32 (*)(s32)))fn_8001D484)(lbl_8055D5CC + 0x36B10, 0xF0, callback);
 }
 
 extern s32 fn_8001D464(s32);
