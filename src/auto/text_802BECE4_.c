@@ -17,6 +17,7 @@ extern float lbl_80564D90, lbl_80564D94;
 extern void fn_802CAC54(int);
 extern char lbl_8034AE20[];
 typedef unsigned int u32;
+extern int sscanf(const char *, const char *, ...);
 extern float lbl_8055FAF4;
 extern float lbl_80564D7C;
 extern float lbl_80564D80;
