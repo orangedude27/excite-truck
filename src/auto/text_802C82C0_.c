@@ -78,17 +78,19 @@ extern float lbl_8055FC3C;
 extern float lbl_8055FC40;
 extern float lbl_804C144C[];
 void fn_802C9648(float arg0) {
-    float f0 = lbl_8055FC38 * arg0;
-    float f2 = lbl_8055FC3C * arg0;
-    lbl_804C144C[0] = lbl_8055FC38;
-    lbl_804C144C[1] = lbl_8055FC3C;
+    float f3 = lbl_8055FC38;
+    float f4 = lbl_8055FC3C;
+    float f0 = f3 * arg0;
+    float f2 = f4 * arg0;
+    lbl_804C144C[0] = f3;
+    lbl_804C144C[1] = f4;
     lbl_8055FC38 = f0;
     lbl_8055FC3C = f2;
-    fn_802C974C(lbl_804C144C, lbl_804C144C, f0, f2, lbl_804C144C[2], lbl_8055FC3C);
+    fn_802C974C(lbl_804C144C, f0, f2, lbl_804C144C[2], f4);
 }
 
 void fn_802C967C(void) {
-    fn_802C974C(lbl_804C144C, lbl_804C144C, lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
+    fn_802C974C(lbl_804C144C, lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
 }
 
 void *fn_802C9694(void *arg0) {
