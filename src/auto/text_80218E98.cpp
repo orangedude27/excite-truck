@@ -168,6 +168,10 @@ extern "C" void fn_80229884(void *arg0) {
     (*(u8 *)((u8 *)arg0 + 0x18)) = 0;
 }
 
+extern "C" s32 fn_802298A4(s32 arg0) {
+    return arg0 + 0x258;
+}
+
 extern "C" s32 fn_80229C9C(s32 arg0) {
     return arg0 + 0x264;
 }
