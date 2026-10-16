@@ -122,6 +122,10 @@ s32 fn_801645D8(void *arg0, s32 arg1) {
     return 0;
 }
 
+s32 fn_80164634(void *arg0) {
+    return *(float *)((char *)arg0 + 0x98) > *(float *)((char *)arg0 + 0x84);
+}
+
 void fn_801647DC(void *arg0) {
     s32 var_r31;
     s32 var_r30;
@@ -246,7 +250,7 @@ int fn_80165848(int arg5, int arg6, int arg7, int arg8) {
 int fn_80165894(s32 a0, s32 a1, float *arg2, s32 arg3) {
     if (lbl_804348E8[arg3] != 0) {
         *arg2 = lbl_80561848;
-        ((void (*)(int *, float *, s32))((int **)(lbl_8042FDEC + (lbl_8055E304 << 2)))[0][0x38 / 4])((int *)(lbl_8042FDEC + (lbl_8055E304 << 2)), arg2, arg3);
+        ((void (*)(int *, float *, s32))(*(int **)(lbl_8042FDEC + (lbl_8055E304 << 2)))[0x38 / 4])((int *)(lbl_8042FDEC + (lbl_8055E304 << 2)), arg2, arg3);
     }
     return 0;
 }
