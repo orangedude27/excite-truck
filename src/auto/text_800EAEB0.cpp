@@ -120,6 +120,23 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
     OSRestoreInterrupts(level);
 }
 
+extern u8 lbl_803231D8[];
+extern "C" s32 fn_800F283C(void *, u32, s32, s32 *);
+extern "C" s32 fn_800F2824(void *, s32, void *);
+extern "C" s32 fn_800F282C(void *, s32, s32, void *);
+extern "C" s32 detail_GetWaveDataFileAddress__Q36nw4hbm3snd18MemorySoundArchiveCFUl_800ECD14(void *this_, u32 id) {
+    s32 sp8, spC, sp10, sp1C, sp28, sp2C, sp38;
+    if (!fn_800F283C(this_, id, 0, &sp8))
+        return 0;
+    if (!fn_800F2824(this_, sp8, &sp28))
+        return 0;
+    if (!fn_800F282C(this_, sp8, spC, &sp10))
+        return 0;
+    if (sp2C != 0)
+        return 0;
+    return *(u32 *)((u8 *)this_ + 0x108) + sp38 + sp1C;
+}
+
 extern u8 lbl_803230E8[];
 extern u8 lbl_8032318C[];
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char* file, int line, const char* fmt, ...);
@@ -399,4 +416,7 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
 void fn_800F0750(void) {
     return;
 }
-
+extern u8 lbl_803231D8[];
+extern "C" s32 fn_800F283C(void *, u32, s32, s32 *);
+extern "C" s32 fn_800F2824(void *, s32, void *);
+extern "C" s32 fn_800F282C(void *, s32, s32, void *);
