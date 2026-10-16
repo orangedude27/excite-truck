@@ -81,7 +81,7 @@ void fn_80135218(void) {
 
 }
 
-extern s32 fn_802E317C();
+
 s32 fn_8013521C(void *arg0) {
     u8 temp_r3;
 
