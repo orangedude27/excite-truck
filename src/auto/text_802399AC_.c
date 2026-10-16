@@ -135,9 +135,7 @@ void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(s32 **)((char *)arg0 + 0xC) = &lbl_8034109C;
         fn_80128670(*(s32 *)((char *)arg0 + 0x10));
-        if (arg1 > 0) {
-            fn_80128668(arg0);
-        }
+        if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
