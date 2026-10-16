@@ -15,6 +15,11 @@ void fn_802D68C4(s32, s32, s32, s32);
 void fn_802CFDE0(void);
 void fn_802CFF10(void);
 void fn_80127464(void);
+extern s32 fn_802E9A0C(void);
+s32 fn_802EC4BC(void) {
+    return fn_802E9A0C() == 1;
+}
+
 void fn_802ECBF8(void) {
     if ((u8)lbl_805600E8 == 0) {
         lbl_805600EA = 1;
