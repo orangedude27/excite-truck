@@ -33,3 +33,7 @@ void fn_8013CAA8(void) {
 
 }
 
+long fn_8013CAAC(void) {
+    return 0;
+}
+
