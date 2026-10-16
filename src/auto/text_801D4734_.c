@@ -76,15 +76,16 @@ void fn_801D77EC(void *arg0, s32 arg1) {
     s32 *ptr = (s32 *)arg0;
     s32 count = ptr[0x1D];
     s32 idx = 0;
-    s32 offset = 0;
+    s32 byte_offset = 0;
     
     if (count > 0) {
         s32 *array = (s32 *)ptr[0x1C];
         
-        for (; offset < count * 4; offset += 4, idx++) {
-            if (array[offset / 4] == arg1) {
+        for (; idx < count; idx++) {
+            if (array[byte_offset / 4] == arg1) {
                 goto post_loop;
             }
+            byte_offset += 4;
         }
         
         idx = -1;
