@@ -1,4 +1,19 @@
 #include "types.h"
+extern u8 lbl_8035E820[];
+extern u16 lbl_8055D730;
+extern u16 lbl_8055D732;
+extern s32 lbl_8055D738;
+extern void *lbl_8055D744;
+extern s32 lbl_8055D748;
+extern s32 lbl_8055D750;
+extern s32 lbl_8055D754;
+extern s32 lbl_8055D758;
+extern s32 lbl_8055D774;
+extern s32 OSDisableInterrupts(void);
+extern void OSRestoreInterrupts(s32);
+extern void OSSleepThread(void *);
+extern void AIStopDMA(void);
+extern void __DSPHandler(void *);
 extern volatile u32 lbl_8055D778;
 extern volatile u32 lbl_8055D77C;
 extern volatile u32 lbl_8055D784;
