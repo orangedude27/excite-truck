@@ -222,11 +222,13 @@ extern "C" void fn_802149FC(s32 arg0) {
     fn_8021481C(sp8);
 }
 
+extern "C" void fn_802192AC(void);
+extern "C" void fn_80219354(void);
 extern "C" void fn_80214A9C(s32 arg0) {
     if (fn_802168E4() != 0) {
-        fn_802168CC(arg0, lbl_80563434);
+        ((s32 (*)(float, s32))fn_802168CC)(lbl_80563434, arg0);
     } else {
-        fn_802E317C(lbl_8033D2A0);
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D2A0);
     }
 }
 
@@ -576,6 +578,20 @@ extern "C" void fn_802158DC(void *arg0) {
 extern "C" void fn_802158F0(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
     obj->vf20();
+}
+
+extern "C" void fn_80215904(void *arg0) {
+    fn_802192AC();
+    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf5();
+}
+
+extern "C" void fn_80215944(void *arg0) {
+    fn_80219354();
+    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf8();
+}
+
+extern "C" void fn_80215984(void *arg0) {
+    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf12();
 }
 
 extern "C" void fn_80215B08(void *arg0) {
