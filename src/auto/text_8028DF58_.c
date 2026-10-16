@@ -12,9 +12,8 @@ void fn_8028ED74(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
 void fn_8028ED80(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
 
 void fn_8028ED8C(void *arg0, int arg1) {
-    int index = *(int *)((char *)arg0 + 0x100);
-    ((int *)arg0)[index] = arg1;
-    *(int *)((char *)arg0 + 0x100) = index + 1;
+    *(int *)((char *)arg0 + (*(int *)((char *)arg0 + 0x100) << 2)) = arg1;
+    *(int *)((char *)arg0 + 0x100) = *(int *)((char *)arg0 + 0x100) + 1;
 }
 
 extern int fn_802E317C(const char *);
