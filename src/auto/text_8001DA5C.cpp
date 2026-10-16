@@ -58,6 +58,8 @@ f32 fn_8001DA5C(s32 arg0) {
     return lbl_80560464 + lbl_80560464 * var_f1;
 }
 
+extern "C" void fn_8001DAD8(void) { extern int fn_8001DA5C(int); fn_8001DA5C(0x40); }
+
 f32 fn_8001DAE8(void) {
     return lbl_8055E3C8;
 }
@@ -85,6 +87,16 @@ void fn_8001DEA8(void) {
 
 void fn_8001DF04(void) {
 
+}
+
+extern "C" void fn_8001DF08(s32 arg0, s32 arg1) {
+    s32 a = arg0, b = arg1;
+    ((CollisionEntry*)lbl_80358680[0])->apply(a, b);
+    ((CollisionEntry*)lbl_80358680[2])->apply(a, b);
+}
+
+extern "C" void fn_8001DF84(s32 arg0) {
+    ((CollisionEntry*)lbl_80358680[1])->apply(arg0, 0);
 }
 
 extern "C" void fn_8001DFA8(s32 arg0) {
