@@ -34,6 +34,15 @@ extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus
     return *(float*)((char*)arg0 + (arg1 * 4) + 0x5C);
 }
 
+extern "C" char lbl_80327994[];
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_80100D18(void* arg0, int arg1, float arg2) {
+    int valid = arg1 >= 0 && arg1 < 4;
+    if (!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x164, lbl_803279CC, arg1, 0, 4);
+    int level = OSDisableInterrupts();
+    *(float*)((char*)arg0 + arg1 * 4 + 0x6C) = arg2;
+    OSRestoreInterrupts(level);
+}
+
 extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_80100DB4(void* arg0, int arg1) {
     int valid = arg1 >= 0 && arg1 < 4;
     if (!valid) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x16B, lbl_803279CC, arg1, 0, 4);
@@ -74,6 +83,22 @@ extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(vo
     int level = OSDisableInterrupts();
     *((char*)arg0 + 0x90) = arg1;
     OSRestoreInterrupts(level);
+}
+
+extern "C" char lbl_80327C58[];
+extern "C" char lbl_80327C7C[];
+extern "C" char lbl_80327AC4[];
+extern "C" char lbl_8041D4C4[];
+extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) {
+    char* end = lbl_8041D4C4 + 4;
+    char* node = *(char**)(lbl_8041D4C4 + 4);
+    while (node != end) {
+        char* current = node;
+        node = *(char**)node;
+        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327C7C, 0x23D, lbl_80327C58);
+        (*(void (**)(void*))(*(void**)(*(char**)(current - 0x14) + 0x10)))(current - 0x14);
+    }
+    if (*(int*)lbl_8041D4C4 != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x24D, lbl_80327AC4);
 }
 
 void fn_801013B0(void) {
