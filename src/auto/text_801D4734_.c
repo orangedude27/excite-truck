@@ -92,8 +92,9 @@ void fn_801D48FC(void) {
     fn_801D5A14();
 }
 
-void fn_801D4900(void) {
-    fn_801D5A1C();
+void fn_801D5A1C(s32 arg0);
+void fn_801D4900(s32 arg0) {
+    fn_801D5A1C(arg0);
 }
 
 void fn_801D4904(void) {
@@ -333,7 +334,8 @@ extern char lbl_803387A8[];
 extern char lbl_803387C8[];
 #pragma scheduling on
 void fn_801D6618(UnkStruct_801D6618 *arg0) {
-    ((volatile UnkStruct_801D6618 *)arg0)->name = lbl_80338C40;
+    char *name = lbl_80338C40;
+    ((volatile UnkStruct_801D6618 *)arg0)->name = name;
     ((volatile UnkStruct_801D6618 *)arg0)->state = 0;
 }
 #pragma scheduling reset
