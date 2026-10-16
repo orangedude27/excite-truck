@@ -396,6 +396,11 @@ s32 fn_801D7C80(void *arg0, s32 arg1) {
     return result;
 }
 
+extern u8 lbl_80338928[];
+void *fn_801D8148(void) {
+    return lbl_80338928;
+}
+
 void fn_801D85D8(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
