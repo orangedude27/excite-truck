@@ -179,6 +179,11 @@ extern void* lbl_8055DDBC;
 extern "C" void fn_800D2098(void*);
 extern "C" void __VprintfThunk(void*);
 extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void*, void*, const char*, void*);
+extern "C" void* ARCGetStartAddrInMem(void*);
+extern "C" s32 fn_80116A30(void*);
+extern "C" s32 fn_80116A38(void);
+extern "C" void fn_80060CC0(void*, u32, u32);
+extern "C" void fn_800D1B1C(void);
 
 struct PanicStruct {
     const char *msg;
@@ -220,10 +225,10 @@ extern "C" u8 fn_800D3838(u8 *arg0) {
 #pragma opt_tail_call on
 #pragma opt_tail_call on
 extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
-    void *r31 = *(void **)((u8 *)lbl_8055DDD4_ptr + 0xC);
-    s32 r28 = arg0;
-    s32 r29 = arg1;
-    s32 r30 = arg2;
+    void *r31 = lbl_8055DDD4_ptr;
+    s32 r28 = (s32)arg0;
+    s32 r29 = (s32)arg1;
+    s32 r30 = (s32)arg2;
     
     while (r31 != NULL) {
         if (fn_800D3F94(r31, r28, r29, r30) != 0) {
@@ -366,7 +371,7 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
     u32 sp_6C;
     u32 sp_70;
     u32 sp_88[16];
-    
+
     sp_8[0] = (u32)msg;
     sp_8[1] = (u32)file;
     sp_C = (u32)line;
@@ -379,7 +384,7 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
     sp_68 = 0x3000000;
     sp_6C = (u32)&sp_88[0];
     sp_70 = (u32)&sp_8[0];
-    
+
     fn_800D2098(&sp_68);
 }
 extern s32 lbl_8055DDD4;
