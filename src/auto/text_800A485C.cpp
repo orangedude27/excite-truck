@@ -927,6 +927,10 @@ extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" u16 fn_800D441C(void *arg0) {
+    return *(u16 *)(*(u8 **)((u8 *)arg0 + 0xC) + 8);
+}
+
 extern u32 lbl_8055DDE0;
 extern "C" u32* fn_800D58B0(void) {
     return &lbl_8055DDE0;
