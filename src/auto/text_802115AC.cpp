@@ -594,6 +594,10 @@ extern "C" void fn_80215984(void *arg0) {
     ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf10();
 }
 
+extern "C" void fn_80215998(void *arg0) {
+    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf11();
+}
+
 extern "C" void fn_80215B08(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
     obj->vf21();
