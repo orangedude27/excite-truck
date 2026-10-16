@@ -84,6 +84,12 @@ void fn_802D2614(void) {
     fn_802D0EEC();
 }
 
+void fn_802D2AC4(void) {
+    GXSetNumChans(1);
+    GXSetChanCtrl(1, 0, 0, 0, 0, 0, 2);
+    fn_802DFAF4();
+}
+
 extern void *lbl_8055FD64;
 void* fn_802D2D14(void) {
     return lbl_8055FD64;
@@ -112,7 +118,7 @@ void fn_802D307C(void) {
     mtx[3] = lbl_802FACB0[3];
     mtx[4] = lbl_802FACB0[4];
     mtx[5] = lbl_802FACB0[5];
-    GXSetIndTexMtx(1, mtx, 1);
+    GXSetIndTexMtx(1, mtx, 1, lbl_802FACB0[4], lbl_802FACB0[3], lbl_802FACB0[2], lbl_802FACB0[1], lbl_802FACB0[0]);
 }
 
 extern void *lbl_8055FD5C;
@@ -147,6 +153,10 @@ void* fn_802D312C(void) {
 
 void* fn_802D3130(void) {
     return fn_802D3104();
+}
+
+void fn_802D3134(void) {
+    fn_802D3104();
 }
 
 extern void *lbl_8055FD58;
