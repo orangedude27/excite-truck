@@ -663,6 +663,32 @@ s32 IUSB_WriteCtrlMsgAsync(s32 a,s32 b,s32 c,s32 d,s32 e,u32 length,void* data,v
     return __CtrlMsgInt(a,b,c,d,e,length,data,callback,context,1);
 }
 
+s32 AXFXReverbHiInit(void* arg0) {
+    f32 a = *(f32*)((u8*)arg0 + 0x158);
+    f32 b = *(f32*)((u8*)arg0 + 0x150);
+    f32 c = *(f32*)((u8*)arg0 + 0x148);
+    f32 d = *(f32*)((u8*)arg0 + 0x154);
+    f32 e = *(f32*)((u8*)arg0 + 0x15C);
+    f32 f = lbl_80560D50;
+    f32 g = lbl_80560D54;
+    f32 h = *(f32*)((u8*)arg0 + 0x14C);
+    *(s32*)((u8*)arg0 + 0x110) = 5;
+    *(f32*)((u8*)arg0 + 0x114) = a;
+    *(f32*)((u8*)arg0 + 0x118) = a;
+    *(s32*)((u8*)arg0 + 0x11C) = 0;
+    *(f32*)((u8*)arg0 + 0x120) = b;
+    *(f32*)((u8*)arg0 + 0x124) = c;
+    *(f32*)((u8*)arg0 + 0x128) = d;
+    *(f32*)((u8*)arg0 + 0x12C) = e;
+    *(f32*)((u8*)arg0 + 0x130) = f;
+    *(f32*)((u8*)arg0 + 0x134) = g;
+    *(s32*)((u8*)arg0 + 0x138) = 0;
+    *(s32*)((u8*)arg0 + 0x13C) = 0;
+    *(f32*)((u8*)arg0 + 0x140) = h;
+    *(f32*)((u8*)arg0 + 0x144) = f;
+    return AXFXReverbHiExpInit(arg0);
+}
+
 s32 fn_8009BF98(void* arg0) {
     AXFXReverbHiExpShutdown(arg0);
     return 1;
@@ -670,6 +696,13 @@ s32 fn_8009BF98(void* arg0) {
 
 void fn_8009BFBC(void) {
     AXFXReverbHiExpCallback();
+}
+
+void AXFXReverbHiExpShutdown(void* arg0) {
+    s32 enabled = OSDisableInterrupts();
+    *(u32*)((u8*)arg0 + 0x10C) |= 1;
+    __FreeDelayLine(arg0);
+    OSRestoreInterrupts(enabled);
 }
 
 extern void *lbl_805590B0;
