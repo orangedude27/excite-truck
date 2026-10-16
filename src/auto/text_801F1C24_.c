@@ -344,6 +344,20 @@ int fn_801F394C(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_801F398C(void *unused, int arg1) {
+    extern int *fn_801F1CE8(int);
+    unsigned char *p = (unsigned char *)fn_801F1CE8(arg1);
+    unsigned char t;
+    t = p[0]; p[0] = p[3]; p[3] = t;
+    t = p[1]; p[1] = p[2]; p[2] = t;
+    t = p[4]; p[4] = p[7]; p[7] = t;
+    t = p[5]; p[5] = p[6]; p[6] = t;
+    t = p[8]; p[8] = p[11]; p[11] = t;
+    t = p[9]; p[9] = p[10]; p[10] = t;
+    t = p[12]; p[12] = p[15]; p[15] = t;
+    t = p[13]; p[13] = p[14]; p[14] = t;
+}
+
 void fn_801F3A30(void *arg0, int arg1) {
     extern int *fn_801F1CE8(int);
     extern float lbl_80562F90;
