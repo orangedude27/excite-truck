@@ -389,6 +389,16 @@ extern "C" void fn_800C65C4(void) {
     fn_800C7998(lbl_8055DD98);
 }
 
+extern "C" void fn_800C81F0(void*, s32);
+extern "C" void fn_800CEBE0(void*, s32);
+extern "C" s32 fn_800C65CC(s32 arg0) {
+    fn_800C81F0(lbl_8055DD98, arg0);
+    if (*(s32*)((u8*)lbl_8055DD98 + 0x10) != 0x12) {
+        return -1;
+    }
+    return *(s32*)((u8*)lbl_8055DD98 + 0xAC);
+}
+
 extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
     void* r30 = this_ptr;
     s32 r31 = arg1;
