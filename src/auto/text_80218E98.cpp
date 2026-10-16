@@ -3,10 +3,28 @@
 
 #include <types.h>
 
+extern "C" void fn_80219044(void);
+
 extern f32 lbl_805634A0;
 extern f32 lbl_805634A4;
 extern f32 lbl_805634B0;
 extern f32 lbl_805634B4;
+
+extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
+    s32 x = arg1 + ((s32 (*)(void *))(*(void ***)arg0)[30])(arg0);
+    s32 end = arg2 + (*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
+    *(s32 *)((u8 *)arg0 + 4) = arg1;
+    *(s32 *)((u8 *)arg0 + 0xC) = x;
+    *(s32 *)((u8 *)arg0 + 8) = arg2;
+    *(s32 *)((u8 *)arg0 + 0x10) = end;
+}
+
+extern "C" void fn_80219264(void *arg0, s32 arg1, s32 arg2) {
+    void **vtable = *(void ***)arg0;
+    ((void (*)(void *, s32, s32))vtable[7])(arg0,
+        *(s32 *)((u8 *)arg0 + 4) + arg1,
+        *(s32 *)((u8 *)arg0 + 8) + arg2);
+}
 
 extern "C" void fn_80219284(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)arg0 + 4) + arg1;
