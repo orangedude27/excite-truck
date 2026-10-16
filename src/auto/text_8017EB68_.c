@@ -98,3 +98,7 @@ int fn_801815CC(void *arg0) {
     return *(int *)((char *)arg0 + 0x50);
 }
 
+void fn_801815D4(void *arg0, int arg1) {
+    *(int *)((char *)arg0 + 0x50) = arg1;
+}
+
