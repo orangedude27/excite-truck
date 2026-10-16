@@ -27,22 +27,20 @@ extern float lbl_80564E38;
 extern float lbl_80564E48;
 void fn_802C1020(void) {
     float sp[12];
-
-    if (*(s32 *)&lbl_8055FB14 != -1) {
-        sp[0] = lbl_80564E38;
-        sp[1] = lbl_80564E48;
-        sp[2] = lbl_80564E38;
-        sp[3] = lbl_80564E38;
-        sp[4] = lbl_80564E48;
-        sp[5] = lbl_80564E38;
-        sp[6] = lbl_80564E38;
-        sp[7] = lbl_80564E38;
+    float *sp_ptr = sp;
+    float *obj;
+    if (*(int *)lbl_8055FB14 != -1) {
+        sp[1] = lbl_80564E38; sp[0] = lbl_80564E48;
+        sp[2] = lbl_80564E38; sp[3] = lbl_80564E38;
+        sp[4] = lbl_80564E48; sp[5] = lbl_80564E38;
+        sp[6] = lbl_80564E38; sp[7] = lbl_80564E38;
         sp[8] = lbl_80564E48;
-        fn_802C86DC(lbl_80564E48);
-        fn_802C744C(*(s32 *)&lbl_8055FB14, sp);
+        obj = fn_802C86DC(lbl_80564E48);
+        sp[9] = obj[9]; sp[10] = obj[10]; sp[11] = obj[11];
+        fn_802C744C(*(int *)lbl_8055FB14, sp_ptr);
     }
     fn_802A4E08();
-    fn_8029231C(lbl_804C0800);
+    fn_8029231C((void *)((char *)lbl_804C0800));
 }
 
 void fn_802C10B8(void) {
@@ -51,6 +49,10 @@ void fn_802C10B8(void) {
 }
 
 void fn_802C10C4(void) {
-    *(s32 *)&lbl_8055FB18 = -1;
+    fn_802C1018();
+}
+
+void fn_802C10C8(void) {
+    fn_802C1020();
 }
 
