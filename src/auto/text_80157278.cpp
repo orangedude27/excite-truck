@@ -108,7 +108,7 @@ public:
     virtual void call(s32, s32, s32);
 };
 
-extern "C" s32 lbl_8042FD34;
+extern "C" s32 lbl_8042FD34[];
 
 class UnkVt33 {
 public:
@@ -291,6 +291,46 @@ extern "C" void* fn_80158218(void* arg0, s32 arg1) {
  if (arg1 > 0) fn_80128668(arg0);
  }
  return arg0;
+}
+
+extern "C" void fn_801584A8(void* arg0) {
+    *(u32*)((u8*)arg0 + 0) = (u32)arg0 + 0xC;
+    *(u32*)((u8*)arg0 + 8) = 0x10;
+    *(u32*)((u8*)arg0 + 4) = 0;
+}
+
+extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 i;
+    s32 count = *(s32*)((u8*)&lbl_8042FD34 + 4);
+    Unk801584D4** entries = (Unk801584D4**)lbl_8042FD34;
+    for (i = 0; i < count; i++)
+        entries[i]->call(arg0, arg1, arg2);
+}
+
+extern "C" void fn_80158558(s32 arg0) {
+    s32 index = *(s32*)((u8*)&lbl_8042FD34 + 4);
+    *(s32*)((u8*)&lbl_8042FD34 + 4) = index + 1;
+    ((s32*)lbl_8042FD34)[index] = arg0;
+}
+
+extern "C" void fn_8015857C(u32 arg0) {
+    u32* entries = (u32*)lbl_8042FD34;
+    s32 count = *(s32*)((u8*)&lbl_8042FD34 + 4);
+    s32 index = 0;
+    s32 i;
+    for (i = 0; i < count; i++) {
+        if (entries[i] == arg0)
+            break;
+        index++;
+    }
+    if (i == count)
+        index = -1;
+    if (index != -1 && index >= 0 && index < *(s32*)((u8*)&lbl_8042FD34 + 4)) {
+        s32 last = *(s32*)((u8*)&lbl_8042FD34 + 4) - 1;
+        if (index != last)
+            entries[index] = entries[last];
+        *(s32*)((u8*)&lbl_8042FD34 + 4) -= 1;
+    }
 }
 
 extern "C" void* fn_8015868C(void* arg0, s32 arg1) {
