@@ -5,9 +5,9 @@
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSContext.h>
 
-extern void* fn_802ECC74(void*);
+extern void* fn_802ECC74();
 extern void fn_80127F70(void*);
-extern void fn_80127F94(void*);
+extern void fn_80127F94();
 void fn_80127440(void);
 extern void fn_80127398(s32);
 extern void fn_802E300C(s32);
@@ -244,35 +244,44 @@ void fn_80124F90(void *arg0) {
 }
 
 void fn_80125014(void *arg0) {
-    f32 a, b, c, d, e, f, g, h;
-    f32 f6, f8, f7, f9, f10, f11, f12;
-    
-    a = *(f32 *)((u8 *)arg0 + 0);
-    b = *(f32 *)((u8 *)arg0 + 0x10);
-    c = *(f32 *)((u8 *)arg0 + 4);
-    d = *(f32 *)((u8 *)arg0 + 0x14);
-    e = *(f32 *)((u8 *)arg0 + 8);
-    f = *(f32 *)((u8 *)arg0 + 0x18);
-    g = *(f32 *)((u8 *)arg0 + 0xc);
-    h = *(f32 *)((u8 *)arg0 + 0x1c);
-    
-    f6 = a + b;
-    f8 = a - b;
-    f7 = c + d;
-    f9 = c - d;
-    f10 = e + f;
-    f11 = e - f;
-    f12 = g - h;
-    d = g + h;
-    
-    *(f32 *)((u8 *)arg0 + 0) = f6 + f10;
-    *(f32 *)((u8 *)arg0 + 4) = f7 + d;
-    *(f32 *)((u8 *)arg0 + 0x10) = f6 - f10;
-    *(f32 *)((u8 *)arg0 + 0x14) = f7 - d;
-    *(f32 *)((u8 *)arg0 + 8) = f8 + f12;
-    *(f32 *)((u8 *)arg0 + 0xc) = f9 - f11;
-    *(f32 *)((u8 *)arg0 + 0x18) = f8 - f12;
-    *(f32 *)((u8 *)arg0 + 0x1c) = f9 + f11;
+    f32 temp_f0;
+    f32 temp_f1;
+    f32 temp_f2;
+    f32 temp_f3;
+    f32 temp_f4;
+    f32 temp_f5;
+    f32 temp_f6;
+    f32 temp_f7;
+    f32 temp_f8;
+    f32 temp_f9;
+    f32 temp_f10;
+    f32 temp_f11;
+    f32 temp_f12;
+
+    temp_f1 = *(f32 *)((u8 *)arg0 + 0);
+    temp_f0 = *(f32 *)((u8 *)arg0 + 0x10);
+    temp_f5 = *(f32 *)((u8 *)arg0 + 4);
+    temp_f4 = *(f32 *)((u8 *)arg0 + 0x14);
+    temp_f6 = temp_f1 + temp_f0;
+    temp_f8 = temp_f1 - temp_f0;
+    temp_f3 = *(f32 *)((u8 *)arg0 + 8);
+    temp_f2 = *(f32 *)((u8 *)arg0 + 0x18);
+    temp_f7 = temp_f5 + temp_f4;
+    temp_f1 = *(f32 *)((u8 *)arg0 + 0xC);
+    temp_f0 = *(f32 *)((u8 *)arg0 + 0x1C);
+    temp_f9 = temp_f5 - temp_f4;
+    temp_f10 = temp_f3 + temp_f2;
+    temp_f11 = temp_f3 - temp_f2;
+    temp_f12 = temp_f1 - temp_f0;
+    temp_f4 = temp_f1 + temp_f0;
+    *(f32 *)((u8 *)arg0 + 0) = temp_f6 + temp_f10;
+    *(f32 *)((u8 *)arg0 + 4) = temp_f7 + temp_f4;
+    *(f32 *)((u8 *)arg0 + 0x10) = temp_f6 - temp_f10;
+    *(f32 *)((u8 *)arg0 + 0x14) = temp_f7 - temp_f4;
+    *(f32 *)((u8 *)arg0 + 8) = temp_f8 + temp_f12;
+    *(f32 *)((u8 *)arg0 + 0xC) = temp_f9 - temp_f11;
+    *(f32 *)((u8 *)arg0 + 0x18) = temp_f8 - temp_f12;
+    *(f32 *)((u8 *)arg0 + 0x1C) = temp_f9 + temp_f11;
 }
 
 void fn_80125098(void *arg0) {
