@@ -10,6 +10,14 @@ void fn_802E7578(void) {
     lbl_8055FFF0 = (void*)fn_802E769C();
 }
 
+void fn_802E75E4(s32 arg0) {
+    ((void (*)(void*, s32))(*(void***)lbl_8055FFF0)[3])(lbl_8055FFF0, arg0);
+}
+
+void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
+    ((void (*)(void*, s32, s32, s32))(*(void***)lbl_8055FFF0)[5])(lbl_8055FFF0, arg0, arg1, arg2);
+}
+
 extern s32 fn_80128668(void);
 extern s32 OSGetConsoleType(void);
 extern s32 fn_802E30C8(void*);
@@ -56,5 +64,8 @@ s32 fn_802E7754(void) {
 }
 
 void fn_802E775C(void) {
+}
+
+void fn_802E7760(void) {
 }
 
