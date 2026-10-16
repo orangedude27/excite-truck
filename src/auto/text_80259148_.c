@@ -67,6 +67,12 @@ int fn_8025A1C4(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_8025A4CC(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0)
+        fn_80128668((void *)arg0);
+    return arg0;
+}
+
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
     float z = a[2];
     float y = a[1];
