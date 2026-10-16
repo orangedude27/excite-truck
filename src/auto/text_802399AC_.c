@@ -1,5 +1,15 @@
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
+extern s32 fn_80209030(float);
+extern s32 fn_802090BC(s32);
+extern s32 fn_8020A5F8(float);
+extern s32 fn_802C82C4(s32);
+extern s32 fn_802E30C8(s32, s32);
+extern s32 fn_80128668();
+extern s32 fn_80239E5C(void *, s32);
+extern s32 lbl_8055BB00;
+extern s32 lbl_8055F110;
+extern void *lbl_8055F10C;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
