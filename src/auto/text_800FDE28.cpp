@@ -5,7 +5,7 @@
 
 extern u32 lbl_80559900;
 
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *) __attribute__((noreturn));
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *);
 extern double __ieee754_pow(double, double);
 extern "C" double fn_8002EFBC(double, double);
 
@@ -51,9 +51,8 @@ extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
                               lbl_805610E4 * (v * lbl_805610D0))];
 }
 
-extern "C" f32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
+extern "C" s32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
     f32 v;
-    double x;
 
     if (value > lbl_805610C8) {
         v = lbl_805610C8;
@@ -63,9 +62,7 @@ extern "C" f32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
         v = value;
     }
 
-    x = lbl_80561100 * ((double)v - lbl_80561108);
-
-    return (f32)(lbl_805610F0 * __ieee754_pow(x, lbl_805610F8));
+    return (s32)(lbl_805610F0 * fn_8002EFBC(lbl_80561100 * ((double)v - lbl_80561108), lbl_805610F8));
 }
 
 u32 fn_800FEB9C(void) {
@@ -79,6 +76,9 @@ u32 fn_800FEB9C(void) {
 
 extern "C" void *GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
     s32 type, u32 arg, void *pBase) {
+    s32 dummy;
+    (void)dummy;
+
     if (type == 1) {
         return (void *)(arg + (u32)pBase);
     }
