@@ -68,6 +68,19 @@ void fn_80249744(void) {
     fn_80214CB4(lbl_8055BF34);
 }
 
+void fn_8022D7C4(void *, unsigned int);
+void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110(void *this_, s32 flag) {
+    if (this_) {
+        if (this_ != 0) {
+            fn_8022D7C4(this_, 0);
+        }
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_80236074((void*)arg0, 0);
