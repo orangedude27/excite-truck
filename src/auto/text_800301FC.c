@@ -10,6 +10,11 @@ extern void *lbl_8055D720;
 extern void *lbl_8055D714;
 
 extern void *lbl_8055D73C;
+void AXRegisterAuxACallback(void *arg0, void *arg1) {
+    lbl_8055D728 = arg0;
+    lbl_8055D71C = arg1;
+}
+
 void* fn_80031248(void) {
     return lbl_8055D73C;
 }
