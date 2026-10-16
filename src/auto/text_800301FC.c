@@ -22,6 +22,11 @@ extern void *lbl_8055D720;
 extern void *lbl_8055D714;
 
 extern void *lbl_8055D73C;
+extern void *lbl_8055D6A8;
+void TRKConstructEvent(void) {
+    lbl_8055D6A8 = 0;
+}
+
 void AXRegisterAuxACallback(void *arg0, void *arg1) {
     lbl_8055D728 = arg0;
     lbl_8055D71C = arg1;
