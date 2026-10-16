@@ -29,6 +29,10 @@ void fn_8020C918(s32);
 extern unsigned short lbl_802FA48C[6];
 extern float lbl_805638B0;
 s32 fn_80221EA8(void);
+extern s32 lbl_8055BEF0;
+extern void *lbl_8055F278;
+extern float lbl_805638C8;
+float fn_80214D48(void);
 
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -109,17 +113,32 @@ void fn_80247AAC(void) {
     lbl_8055BEB4 = (void*)fn_80214D04();
 }
 
-void fn_8024859C(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        *(unsigned char*)((char*)arg0 + 0x18) = 0;
-        *(unsigned char*)((char*)arg0 + 0x50) = 0;
-        *(unsigned char*)((char*)arg0 + 0x5C) = 0;
-        *(s32*)((char*)arg0 + 0x24) = 1;
-        *(s32*)((char*)arg0 + 0x20) = 0;
-        *(unsigned char*)((char*)arg0 + 0x44) = 0;
+void* fn_8024859C(void *arg0, s32 arg1) {
+    void* ptr = arg0;
+    if (ptr != 0) {
+        *(unsigned char*)((char*)ptr + 0x18) = 0;
+        *(unsigned char*)((char*)ptr + 0x50) = 0;
+        *(unsigned char*)((char*)ptr + 0x5C) = 0;
+        *(s32*)((char*)ptr + 0x24) = 1;
+        *(s32*)((char*)ptr + 0x20) = 0;
+        *(unsigned char*)((char*)ptr + 0x44) = 0;
         if (arg1 > 0) {
-            fn_80128668(arg0);
+            fn_80128668(ptr);
         }
+    }
+    return ptr;
+}
+
+void fn_802485FC(void) {
+    unsigned short a[5];
+    a[0] = lbl_802FA48C[0];
+    a[1] = lbl_802FA48C[1];
+    a[2] = lbl_802FA48C[2];
+    a[3] = lbl_802FA48C[3];
+    a[4] = 0;
+    if (fn_802E499C(a, a[3], a[2], a[1], a[0]) != 0) {
+        fn_80246CAC(lbl_805638B0);
+        fn_8020C918(1);
     }
 }
 
