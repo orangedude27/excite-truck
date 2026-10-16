@@ -201,10 +201,21 @@ void fn_80010EC8(void) {
     fn_80010F20();
 }
 
+typedef struct Unk80350F88Entry {
+    char name[0x28];
+    u8 unk_0x28;
+    s32 unk_0x2C;
+    s32 unk_0x30;
+    s32 unk_0x34;
+    s32 unk_0x38;
+    f32 unk_0x3C;
+} Unk80350F88Entry;
+
 typedef struct Unk80350F88 {
+    s32 unk_0x00;
+    u8 unk_0x04;
+    Unk80350F88Entry entries[10];
     s32 unk_0x288;
-    s32 pad;
-    s32 unk_0x04;
 } Unk80350F88;
 extern char *strncpy(char *, const char *, unsigned long);
 extern f32 lbl_80560264;
@@ -220,10 +231,8 @@ void fn_80010E94(f32 x, f32 y, f32 a, f32 b, s32 c, s32 d) {
     }
 }
 void fn_80010EF0(void) {
-    Unk80350F88 *p = (Unk80350F88 *)&lbl_80350F88;
-
-    p->unk_0x288 = 0;
-    p->unk_0x04 = 0;
+    *(u8 *)((s8 *)&lbl_80350F88 + 4) = 0;
+    *(s32 *)((s8 *)&lbl_80350F88 + 0x288) = 0;
 }
 
 void fn_80010F38(char *name, s32 a1, s32 a2, s32 a3, f32 f) {
