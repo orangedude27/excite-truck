@@ -86,6 +86,19 @@ u16 _WUDGetQueuedSize(s8 arg0) {
     return r31;
 }
 
+extern u16 lbl_803946A0[];
+u16 _WUDGetQueuedSize_8006CA10(s8 arg0) {
+    u16 r31;
+    s32 saved = OSDisableInterrupts();
+    if (arg0 >= 0 && arg0 < 0x10) {
+        r31 = lbl_803946A0[arg0];
+    } else {
+        r31 = 0;
+    }
+    OSRestoreInterrupts(saved);
+    return r31;
+}
+
 s32 fn_8006CFA0(void) {
     return 0;
 }
@@ -633,7 +646,7 @@ u8 fn_8006CA6C(void) {
     return val;
 }
 
-void fn_8006CF44(u32 arg8) {
+void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 arg8) {
     void (*func)(void);
     u32 *ptr;
     if (arg8 == 3) {
