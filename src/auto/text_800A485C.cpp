@@ -154,6 +154,8 @@ extern void fn_800D2E3C(s32, s32, s32, s32);
 extern void fn_800D24D4(void*, s32);
 extern void* lbl_8055DDBC;
 extern "C" void fn_800D2098(void*);
+extern "C" void __VprintfThunk(void*);
+extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void*, void*, const char*, void*);
 
 struct PanicStruct {
     const char *msg;
@@ -330,8 +332,8 @@ extern "C" void fn_800D2480(void) {
 #pragma opt_tail_call on
 #pragma opt_tail_call on
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
-    s32 *sp = (s32 *)&file;
-    PanicStruct *stack_ptr = (PanicStruct *)(sp + 0x1A);
+    u32 *sp = (u32 *)&file;
+    PanicStruct *stack_ptr = (PanicStruct *)&sp[0x1A];
     
     stack_ptr->msg = msg;
     stack_ptr->file = file;
@@ -342,7 +344,7 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
     stack_ptr->r10 = 0;
     stack_ptr->field_68 = 0x03000000;
     stack_ptr->field_6C = stack_ptr;
-    stack_ptr->field_70 = (void *)(sp + 2);
+    stack_ptr->field_70 = (void *)&sp[2];
     
     fn_800D2098(&stack_ptr->field_68);
 }
