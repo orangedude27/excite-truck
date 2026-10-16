@@ -53,6 +53,12 @@ void fn_801CB55C(int arg0, int arg1) {
     }
 }
 
+extern void fn_801CDDCC(void);
+void fn_801CB808(void) {
+    if (fn_80019BA8() || fn_80161C38()) return;
+    fn_801CDDCC();
+}
+
 void fn_801CB8FC(void) {
     fn_801CE8CC();
 }
