@@ -226,6 +226,11 @@ void fn_801795B0(void) {
     fn_801AED68();
 }
 
+int fn_8017960C(int arg0) {
+    if (arg0 < 8) return lbl_80430830[arg0];
+    return 0;
+}
+
 int fn_80179630(int arg0) {
     if (arg0 < 0) arg0 = 0;
     return lbl_80430590[arg0];
