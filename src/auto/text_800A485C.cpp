@@ -150,6 +150,8 @@ extern "C" const char lbl_8031EA90[];
 extern void* lbl_804077C0;
 extern void fn_800D2E3C(s32, s32, s32, s32);
 extern void fn_800D24D4(void*, s32);
+extern void* lbl_8055DDBC;
+extern "C" void fn_800D2098(void*);
 
 extern "C" s32 fn_800D2E14(void) {
     s32 _r3 = 0;
@@ -174,14 +176,10 @@ extern "C" u8 fn_800D3838(u8 *arg0) {
     return *arg0;
 }
 
-extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
-    void *r31 = lbl_8055DDD4_ptr;
-    s32 r28 = (s32)arg0;
-    s32 r29 = (s32)arg1;
-    s32 r30 = (s32)arg2;
-    
+s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2) {
+    void *r31 = (void *)lbl_8055DDD4;
     while (r31 != NULL) {
-        if (fn_800D3F94(r31, r28, r29, r30) != 0) {
+        if (fn_800D3F94(r31, arg0, arg1, arg2) != 0) {
             return 1;
         }
         r31 = *(void **)((u8 *)r31 + 0xC);
