@@ -164,3 +164,11 @@ int fn_801F1A70(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma dont_inline on
+void fn_801F1AB0(void *arg0) {
+    int *value = *(int **)((char *)arg0 + 0x80);
+    if (value != 0) {
+        fn_801F1394(value, (int)((char *)arg0 + 4));
+    }
+}
+#pragma dont_inline off
