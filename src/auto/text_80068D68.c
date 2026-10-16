@@ -45,6 +45,21 @@ void DBPrintf_80068D68(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+extern void *lbl_80319994;
+extern u16 lbl_80394680[];
+extern u32 lbl_80393628[];
+s32 _WUDGetDevAddr(u32 arg0) {
+    s32 r31;
+    OSDisableInterrupts();
+    if (arg0 < 0x10) {
+        r31 = lbl_80393628[arg0];
+    } else {
+        r31 = 0;
+    }
+    OSRestoreInterrupts(0);
+    return r31;
+}
+
 s32 fn_8006CFA0(void) {
     return 0;
 }
@@ -121,6 +136,8 @@ extern void fn_8006EB88(void);
 extern u8 fn_8006EB80(void);
 extern u32 lbl_803946C0[];
 extern u8 lbl_80392960[0x1000];
+extern u16 lbl_80394680[];
+extern u32 lbl_80393628[];
 s32 fn_8006DF68(s32 *arg0) {
     s32 val = arg0[-2];
     return val ? val + 8 : 0;
