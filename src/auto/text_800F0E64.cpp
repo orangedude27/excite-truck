@@ -126,8 +126,8 @@ void fn_800F27AC(void *arg0) {
     *(u8 *)((u8 *)arg0 + 9) = 0;
 }
 
-void fn_800F27C4(void *arg0) {
-    GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)arg0 + 4));
+extern "C" s32 fn_800F27C4(void *arg0) {
+    return GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)arg0 + 4));
 }
 
 void fn_800F27D4(void *arg0, s32 arg1) {
@@ -475,6 +475,23 @@ extern "C" f32 fn_800FC5F8(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x45C); }
 extern "C" void fn_800FC600(void *arg0, f32 value) { u32 token = OSDisableInterrupts(); *(f32 *)((u8 *)arg0 + 0x460) = value; OSRestoreInterrupts(token); }
 
 extern "C" f32 fn_800FC640(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x460); }
+
+extern "C" const char lbl_803268AC[];
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC648(void *self, s32 bus, f32 value) {
+    if (bus < 0 || bus >= 3) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x309, lbl_803268AC, bus, 0, 3);
+    }
+    u32 token = OSDisableInterrupts();
+    *(f32 *)((u8 *)self + 0x464 + bus * 4) = value;
+    OSRestoreInterrupts(token);
+}
+
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC6E4(void *self, s32 bus) {
+    if (bus < 0 || bus >= 3) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x310, lbl_803268AC, bus, 0, 3);
+    }
+    return *(f32 *)((u8 *)self + 0x464 + bus * 4);
+}
 
 extern "C" void fn_800FC76C(void *self, s32 value) {
     u32 token = OSDisableInterrupts();
