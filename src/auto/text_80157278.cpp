@@ -949,20 +949,22 @@ extern "C" s32 fn_8015E108(void) {
 
 extern "C" void fn_8015E238(Unk801577F0V* arg0) {
     f32 zero = lbl_80561750;
+    s32 i = 0;
+    s32 off = 0;
     arg0->m54 = 1;
     *(f32*)((u8*)arg0->mData + arg0->m50 * 4) = zero;
     UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
     s32 count = arg0->mCount;
-    for (s32 i = 0; i < count; i++) {
-        entries[i]->v13();
+    for (s32 j = 0; j < count; j++) {
+        entries[j]->v13();
     }
 }
 
 extern "C" void fn_8015E2C8(Unk801577F0V* arg0) {
     UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
     s32 count = arg0->mCount;
-    for (s32 i = 0; i < count; i++) {
-        entries[i]->v15();
+    for (s32 j = 0; j < count; j++) {
+        entries[j]->v15();
     }
 }
 
