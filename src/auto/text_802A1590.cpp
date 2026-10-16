@@ -47,6 +47,27 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" f32 lbl_80558DC4;
+extern "C" f32 lbl_80564730;
+extern "C" f32 lbl_80564750;
+extern "C" f32 lbl_80564744;
+extern "C" int lbl_80349AB0[];
+extern "C" void fn_8028E584(void*, void*);
+extern "C" s32 fn_80287B14(void*);
+extern "C" void fn_802A2A38(void* arg0, void* arg1) {
+    s32 index = *(s32*)((char*)arg1 + 0x28);
+    f32* value = (f32*)((char*)arg0 + (index << 4) + 0x20);
+    if (*value > lbl_80564730 - lbl_80558DC4) {
+        fn_8028E584(*(void**)((char*)arg0 + 0xC), (char*)arg1 + 0xC);
+    }
+    index = *(s32*)((char*)arg1 + 0x28);
+    value = (f32*)((char*)arg0 + (index << 4) + 0x20);
+    if (*value > lbl_80564730 - lbl_80558DC4) {
+        *value -= lbl_80564730;
+    }
+    *value += lbl_80564750;
+}
+
 extern "C" void* fn_802A2EEC(void* arg0, void* arg1) {
     *(void**)arg0 = lbl_80349B50;
     s32 result = (*(s32 (**)(void*, void*))(*(void**)((char*)arg1 + 0x14)))(arg1, &lbl_8055CBB0);
@@ -109,6 +130,17 @@ extern "C" void* __dt__14CollisionSpaceFv_802A392C(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void**)arg0 = lbl_80349AD8;
         fn_8028E398(((void**)arg0)[1]);
+        if (arg1 > 0) {
+            ((s32 (*)(void*))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+
+extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void**)arg0 = &lbl_80349AB0;
+        fn_8028E398(*(void**)((char*)arg0 + 4));
         if (arg1 > 0) {
             ((s32 (*)(void*))fn_80128668)(arg0);
         }
