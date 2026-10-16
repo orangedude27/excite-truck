@@ -11,6 +11,7 @@ extern f32 lbl_80561B1C;
 extern s32 lbl_8055E3C0;
 void fn_8013A208(void);
 extern s32 lbl_8055E3CC;
+extern u32 lbl_8055E3F8;
 extern s32 lbl_8055E3E0;
 extern s32 lbl_8055E3F4;
 extern u8 lbl_8055E3EC;
@@ -43,6 +44,13 @@ void fn_8017691C(void) {
     if (fn_80176F9C() == 0) {
         fn_801770C8();
     }
+}
+
+void fn_80176948(void *arg0, s32 *arg1) {
+    *arg1 = lbl_8055E3CC;
+    fn_8012F458(lbl_8055E3E0, lbl_8055E3CC);
+    fn_8012F4AC(lbl_8055E3E0, arg0, *(s32 *)((char *)arg0 + 4));
+    lbl_8055E3CC += fn_80179658(*(s32 *)arg0);
 }
 
 s32 fn_801769A8(void);
@@ -105,6 +113,18 @@ void fn_80176A6C(void) {
 
 void fn_80176BA8(void) {
 
+}
+
+void fn_80176BAC(void) {
+    f32 now = lbl_8055E3C8;
+    f32 delta = now - lbl_8055E3FC;
+    f32 value = delta;
+    if (value > lbl_80561B38)
+        value = lbl_80561B38;
+    if (value < lbl_80561B3C)
+        value = lbl_80561B3C;
+    fn_8017ED00(value);
+    lbl_8055E3FC = now;
 }
 
 extern char lbl_8055E3D4;
