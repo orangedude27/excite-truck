@@ -121,6 +121,16 @@ void *fn_802C9694(void *arg0) {
     return arg0;
 }
 
+void *fn_802C96DC(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_802C974C(((float *)arg0)[0], ((float *)arg0)[1], ((float *)arg0)[2]);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 void fn_802C98DC(float *arg0, float *arg1, float *arg2, float *arg3) {
     *arg0 = lbl_8055FC44;
     *arg1 = lbl_8055FC38;
