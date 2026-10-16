@@ -143,8 +143,8 @@ extern u32 lbl_80407BD8[2];
 void DCStoreRange(const void *, u32);
 
 extern "C" void fn_800D2FC8(void) {
-    u32 *ptr = (u32 *)&lbl_80407BD8;
-    DCStoreRange((void *)ptr[0], ptr[1]);
+    u32 *base = (u32 *)(u32)&lbl_80407BD8;
+    DCStoreRange((void *)base[0], base[1]);
 }
 
 extern "C" s32 fn_800D3824(void) {
