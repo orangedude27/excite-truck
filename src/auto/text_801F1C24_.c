@@ -25,6 +25,14 @@ void fn_801F3764(void *arg0, int arg1) {
     *(char *)((char *)arg0 + 4) = 1;
 }
 
+void fn_801F37A4(void) {
+    if (*fn_801E1F44() == 1) {
+        fn_802C9950(0xFF646464);
+        return;
+    }
+    fn_802C9950(0xFF909090);
+}
+
 void fn_801F3E60(void) {
 
 }
