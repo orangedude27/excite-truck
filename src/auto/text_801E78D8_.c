@@ -89,12 +89,40 @@ void* fn_801E85B4(void) {
     return lbl_8055AF0C;
 }
 
+extern long fn_8026A298(long);
+extern long fn_801E866C(long);
+extern unsigned char *fn_801EA9A0(long);
+extern long fn_8026A248(long, long);
+extern long fn_8026A2C8(void);
+extern unsigned long lbl_80487CE0[];
+void fn_801E85BC(long arg0) {
+    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
+    fn_8026A298(arg0);
+}
+
 void *fn_801E879C(void) {
     return lbl_80487DE0;
 }
 
 void *fn_801E87A8(void) {
     return lbl_80487DE0 + 0x3E4;
+}
+
+#pragma dont_inline on
+void fn_801E87B8(long arg0) {
+    lbl_8055EB3C[lbl_8055EB34] = arg0;
+    lbl_8055EB34 += 1;
+}
+void fn_801E87D4(long arg0) {
+    long value;
+    long index;
+    long *base;
+    value = arg0;
+    fn_801E87B8(value);
+    index = lbl_8055EB38;
+    base = lbl_8055EB40;
+    base[index] = value;
+    lbl_8055EB38 = index + 1;
 }
 
 extern void *lbl_8055EB24;
