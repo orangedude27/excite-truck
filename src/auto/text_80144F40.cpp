@@ -148,6 +148,10 @@ extern "C" s32 fn_80148248(void) {
     return 0;
 }
 
+extern "C" void fn_80148250(void *arg0) {
+    (*(void (**)(void))(*(u8 **)(*(u32 *)((u8 *)arg0 + 4)) + 0x28))();
+}
+
 extern "C" u32 lbl_80559E68;
 extern "C" u32 *fn_80148264(void) {
     return &lbl_80559E68;
@@ -164,6 +168,22 @@ extern "C" s32 fn_80148274(void) {
 extern "C" void fn_80148280(void) {
 
 }
+
+extern "C" int stricmp(const char *, const char *);
+extern "C" void *fn_801484A4(const char *arg0, void *arg1) {
+    s32 i = 0;
+    s32 offset = 0;
+    while (i < *(s32 *)((u8 *)arg1 + 4)) {
+        if (stricmp(*(const char **)(*(u32 *)arg1 + offset), arg0) == 0) {
+            return (void *)(*(u32 *)arg1 + i * 0xC);
+        }
+        offset += 0xC;
+        i++;
+    }
+    return NULL;
+}
+
+extern "C" u8 fn_80148624(void *arg0) { return ((u8 *)arg0)[4]; }
 
 extern "C" void fn_80148DFC(void *);
 extern "C" void fn_80148DFC(void *arg0) {
