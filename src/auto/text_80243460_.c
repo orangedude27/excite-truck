@@ -26,9 +26,8 @@ s32 fn_80243478(s32 arg0) {
     s32 (*entry)[3] = lbl_803428B0[arg0];
     s32 i;
     for (i = 0; i < 16; i++) {
-        if ((*entry)[0] == 0) return count;
+        if (entry[i][0] == 0) return count;
         count++;
-        entry++;
     }
     return count;
 }
@@ -44,5 +43,17 @@ void fn_802438EC(char* arg0) {
         u8* end = (u8*)((u32)len + (u32)arg0);
         if ((s32)end[-1] == '_') end[-1] = 0;
     }
+}
+
+extern s32 fn_80128668(void);
+extern void fn_80221E7C(void);
+extern s32 fn_802328D4(char*);
+extern s32 fn_802C519C(char*);
+extern char lbl_80342CEC[];
+s32 fn_80243BD8(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
 }
 
