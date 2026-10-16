@@ -3,6 +3,10 @@
 
 void fn_801B435C(void*);
 
+int fn_801B3390(void) {
+    return 0x14;
+}
+
 void fn_801B3B24(void) {
 
 }
