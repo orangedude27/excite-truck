@@ -14,6 +14,9 @@ extern const char lbl_80322094[];
 extern const char lbl_80322070[];
 extern const char lbl_80321F80[];
 extern const char lbl_80321FAC[];
+extern const char lbl_80322790[];
+extern const char lbl_80322830[];
+extern const char lbl_80322858[];
 extern "C" void *GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(void *self) {
     if (*(void **)((char *)self + 4) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x172, lbl_80321FAC);
@@ -95,17 +98,17 @@ extern "C" void fn_800E9B9C(void *arg0) {
     DetachSound__Q34nw4r3snd11SoundHandleFv(*(void **)((char *)arg0 + 8));
 }
 
-extern "C" void fn_800E9BA4(void *arg0, int arg1) {
-    int var_r31;
-    void *vtable;
+#pragma push
+#pragma small_data off
+#pragma pop
+extern "C" void fn_800E9BA4(void *this_, int vol) {
+    int v = vol;
 
-    var_r31 = arg1;
-    *(int *)((char *)arg0 + 0x78) = var_r31;
-    vtable = *(void **)arg0;
-    (*(void *(**)(void *))((char *)vtable + 0x5C))(vtable);
-    *(int *)((char *)arg0 + 0x4) = var_r31;
+    *(int *)((char *)this_ + 0x78) = v;
+    void *vtable = *(void **)this_;
+    (*(void (**)(void *))((char *)vtable + 0x5C))(vtable);
+    *(int *)((char *)this_ + 0x4) = v;
 }
-
 extern int lbl_8055DE20;
 extern void fn_80128668(void);
 extern "C" int fn_800E9BE4(int arg0, int arg1) {
