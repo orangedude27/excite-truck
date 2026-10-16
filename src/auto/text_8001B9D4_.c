@@ -301,29 +301,55 @@ void fn_8001D484(void *arg0, s32 arg1, s32 (*arg2)(s32), s32 arg3) {
     s32 var_r29;
     void *var_r30;
     void *var_r31;
+
     var_r31 = arg0;
     var_r29 = 0;
-loop_6:
-    if (var_r29 < arg1) {
-        if (*((u8 *)var_r31 + 0x70) != 0) {
-            *(s32 *)var_r31 = arg2(*(s32 *)var_r31);
-            var_r30 = var_r31;
-            var_r28 = 0;
-loop_4:
-            if (var_r28 < *(s32 *)((u8 *)var_r31 + 0x6C)) {
-                *(s32 *)((u8 *)var_r30 + 8) = arg2(*(s32 *)((u8 *)var_r30 + 8));
-                var_r30 = (u8 *)var_r30 + 0x14;
-                var_r28 += 1;
-                goto loop_4;
-            }
-        }
-        var_r31 = (u8 *)var_r31 + 0x74;
-        var_r29 += 1;
-        goto loop_6;
+loop_outer:
+    if (*((u8 *)var_r31 + 0x70) != 0) {
+        *(s32 *)var_r31 = arg2(*(s32 *)var_r31);
+        var_r30 = var_r31;
+        var_r28 = 0;
+loop_inner:
+        *(s32 *)((u8 *)var_r30 + 8) = arg2(*(s32 *)((u8 *)var_r30 + 8));
+        var_r30 = (u8 *)var_r30 + 0x14;
+        var_r28 += 1;
+        if (var_r28 < *(s32 *)((u8 *)var_r31 + 0x6C)) goto loop_inner;
     }
+    var_r31 = (u8 *)var_r31 + 0x74;
+    var_r29 += 1;
+    if (var_r29 < arg1) goto loop_outer;
 }
 
-extern unsigned char fn_8001D464[];
+void fn_8001D528(void *arg0) {
+    s32 var_r27;
+    s32 var_r29;
+    s32 var_r31;
+    u8 *var_r28;
+    u8 *var_r30;
+    s32 (*callback)(s32);
+
+    callback = (s32 (*)(s32))arg0;
+    var_r29 = 0;
+    var_r31 = 0;
+loop_outer_528:
+    var_r27 = 0;
+    var_r28 = lbl_8055D5CC + var_r31;
+    var_r30 = var_r28;
+loop_inner_528:
+    if (var_r27 < *(s32 *)(var_r28 + 0x6E00)) {
+        *(s32 *)(var_r30 + 4) = callback(*(s32 *)(var_r30 + 4));
+        var_r30 += 0x2C;
+        var_r27 += 1;
+        goto loop_inner_528;
+    }
+    fn_8001D484(var_r28 + 0x6E04, 0xF0, callback, 0);
+    var_r29 += 1;
+    var_r31 += 0xDAC4;
+    if (var_r29 < 4) goto loop_outer_528;
+    fn_8001D484(lbl_8055D5CC + 0x36B10, 0xF0, callback, 0);
+}
+
+extern s32 fn_8001D464(s32);
 extern void fn_8001D528(void *);
 void fn_8001D5D8(void) {
     fn_8001D528(fn_8001D464);
