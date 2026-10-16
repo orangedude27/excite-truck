@@ -51,6 +51,18 @@ extern "C" const char lbl_80324390[];
 extern "C" const char lbl_803244FC[];
 extern "C" const char lbl_80324534[];
 extern "C" const char lbl_803245B8[];
+extern "C" void fn_800F2004(void *arg0, f32 farg0) {
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x68) = farg0;
+    OSRestoreInterrupts((u32)arg0);
+}
+
+extern "C" void fn_800F2044(void *arg0, f32 farg0) {
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x6C) = farg0;
+    OSRestoreInterrupts((u32)arg0);
+}
+
 extern "C" void fn_800F2084(void* arg0, f32 farg0) {
     u32 level = OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x20) = farg0;
@@ -128,6 +140,11 @@ void fn_800F27AC(void *arg0) {
 
 extern "C" s32 fn_800F27C4(void *arg0) {
     return GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)arg0 + 4));
+}
+
+M2C_UNK GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
+extern "C" s32 fn_800F27CC(void *arg0) {
+    return GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)arg0 + 4));
 }
 
 void fn_800F27D4(void *arg0, s32 arg1) {
