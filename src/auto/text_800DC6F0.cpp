@@ -47,8 +47,8 @@ extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7PictureCFUl(void* this_,
 
     u32 hi = idx & ~3;
     u32 lo = idx & 3;
-    u32 base = (u32)this_ + hi;
-    return ((u8*)base)[lo + 0xD4];
+    u8* p = (u8*)((u32)this_ + hi);
+    return p[lo + 0xD4];
 }
 
 extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(void* this_,
