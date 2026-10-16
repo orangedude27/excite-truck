@@ -13,6 +13,8 @@ extern char lbl_8041E160[];
 extern s32 lbl_8055DF8C;
 extern s32 lbl_8055DF90;
 extern s32 lbl_8055DF94;
+extern char lbl_8055DF81;
+void fn_801287D0(void *);
 
 s32 fn_801281F4(s32, s32);
 void fn_802E30C8(void *, void *, void *);
