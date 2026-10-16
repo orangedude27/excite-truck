@@ -38,8 +38,9 @@ public:
 } // namespace ebi
 
 extern "C" {
+extern "C" void fn_8015474C(s32);
 void fn_80156188(s32 arg0) {
-    fn_8015474C();
+    fn_8015474C(arg0 - 4);
 }
 
 extern "C" s32 fn_801556FC(s32);
