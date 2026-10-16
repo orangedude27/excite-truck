@@ -144,10 +144,10 @@ extern const char lbl_8033B654[];
 extern int lbl_8033B760;
 void fn_801FE510(void *arg0, void *arg1) {
     void *p = arg1;
-    do {
+    while (p != 0) {
         fn_802C7040(*(int *)((char *)p + 4));
         p = *(void **)((char *)p + 0xC);
-    } while (p != 0);
+    }
 }
 
 void fn_801FE550(void *arg0) {
@@ -197,7 +197,7 @@ void fn_801FE7E8(void* arg0) {
 
 int fn_801FE9A8(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0)
-        ((void (*)(void))fn_80128668)();
+        fn_80128668((void *)arg0);
     return arg0;
 }
 
