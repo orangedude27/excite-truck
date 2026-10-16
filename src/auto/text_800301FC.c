@@ -43,6 +43,9 @@ void TRKConstructEvent(void) {
     lbl_8055D6A8 = 0;
 }
 
+extern int lbl_8035BEA0[4];
+int TRKReadBuffer_ui8(int index) { return lbl_8035BEA0[index]; }
+
 void TRKDispatchMessage(void **arg0) {
     extern u8 lbl_8035BFA0[];
     extern s32 lbl_8055D6F8;
