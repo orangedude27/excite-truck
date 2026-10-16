@@ -60,6 +60,11 @@ s32 fn_8000CFA8(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8000D048(void) {
+    fn_8000D000();
+    lbl_8055D407 = 1;
+}
+
 void fn_8000CE60(void) {
     lbl_8055D404 = 0;
     lbl_8055D405 = 0;
