@@ -78,6 +78,11 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
     return arg0;
 }
 
+s32 fn_8024974C(s32, s32, s32, s32);
+void fn_8024A4C4(s32 arg0, s32 arg1, s32 arg2) {
+    fn_8024974C(arg0, arg1, arg2, 0);
+}
+
 s32 fn_8024B8CC(s32 arg0) {
     return arg0 + 0x4C;
 }
