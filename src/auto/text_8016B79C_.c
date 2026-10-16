@@ -30,15 +30,15 @@ void *fn_8016C29C(void *arg0, int arg1) {
 }
 
 void fn_8016C55C(void *arg0, void *arg1) {
-    int index = ((int *)arg0)[1];
-    void *base = *(void **)arg0;
-    unsigned char byte = *(unsigned char *)arg1;
-    void *dst = (void *)((char *)base + (index << 4));
+    int index;
+    void *dst;
+    index = ((int *)arg0)[1];
     ((int *)arg0)[1] = index + 1;
-    *(unsigned char *)dst = byte;
-    *((int *)dst + 1) = *((int *)arg1 + 1);
-    *((float *)dst + 2) = *((float *)arg1 + 2);
-    *((float *)dst + 3) = *((float *)arg1 + 3);
+    dst = (void *)((char *)*((void **)arg0) + index * 16);
+    *(unsigned char *)dst = *(unsigned char *)arg1;
+    *(int *)((char *)dst + 4) = *(int *)((char *)arg1 + 4);
+    *(float *)((char *)dst + 8) = *(float *)((char *)arg1 + 8);
+    *(float *)((char *)dst + 12) = *(float *)((char *)arg1 + 12);
 }
 
 void *fn_8016C598(void *arg0, int arg1, int arg2) {
@@ -54,17 +54,19 @@ int fn_8016C760(void *arg0) { return ((int *)arg0)[1]; }
 
 extern f32 lbl_805619A0;
 void fn_8016CD10(void *arg0) {
+    *((f32 *)((u8 *)arg0 + 0x34)) = lbl_805619A0;
     *((u8 *)arg0 + 0x30) = 0;
     *((u8 *)arg0 + 0x31) = 0;
-    *((f32 *)((u8 *)arg0 + 0x34)) = lbl_805619A0;
 }
 
 void fn_8016CD28(void *arg0) {
-    ((s32 *)arg0)[0] = -1;
-    ((s32 *)arg0)[1] = 0;
-    ((s32 *)arg0)[2] = 0;
-    *((u8 *)arg0 + 0x10) = 0;
-    ((s32 *)arg0)[3] = 3;
+    int zero = 0;
+    int minusOne = -1;
+    *((u8 *)arg0 + 0x10) = zero;
+    ((int *)arg0)[0] = minusOne;
+    ((int *)arg0)[1] = zero;
+    ((int *)arg0)[2] = zero;
+    ((int *)arg0)[3] = 3;
 }
 
 void fn_8016CEFC(void *arg0) {
@@ -74,6 +76,8 @@ void fn_8016CEFC(void *arg0) {
 s32 fn_8016DE10(s32 *arg0, s32 arg1) {
     return *arg0 + (arg1 * 0x10);
 }
+
+u8 fn_80170E90(void *arg0) { return *(u8 *)((u8 *)arg0 + 8); }
 
 u32 fn_80170FD4(void) { return 1; }
 
