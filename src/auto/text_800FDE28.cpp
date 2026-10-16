@@ -57,6 +57,16 @@ extern f32 lbl_805610E0; // 0.0
 
 extern "C" u32 fn_800FEB9C(void);
 
+extern "C" void fn_800FDE28(void *arg0) {
+    void *p = *(void **)arg0;
+    if (p && *(void **)((u8 *)p + 0x5F4) == arg0) {
+        *(void **)((u8 *)p + 0x5F4) = NULL;
+    }
+    if (*(void **)arg0) {
+        *(void **)arg0 = NULL;
+    }
+}
+
 extern "C" void fn_800FDFF8(void *arg0) {
     s32 *p = (s32 *)((u8 *)arg0 + 4);
     *(s32 *)((u8 *)arg0 + 4) = 0;
