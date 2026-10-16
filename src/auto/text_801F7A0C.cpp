@@ -43,7 +43,7 @@ extern "C" void fn_801F92A8(void) {
 
 }
 
-extern "C" void fn_801F9440(F9Node *list, F9Node *node) {
+extern "C" void fn_801F9440(F9List *list, F9List *node) {
     node->next2 = list->next2;
     list->next2 = node;
 }
@@ -54,20 +54,20 @@ extern "C" s32 fn_801F948C(F9Node *node) {
 }
 
 extern "C" void *fn_801F96C8(F9Node *node) {
-    F9Node *list = (F9Node *)lbl_8055EC38;
+    F9List *list = (F9List *)lbl_8055EC38;
     for (;;) {
         if (list == NULL) {
             break;
         }
         if (stricmp((char *)list->vtable, (char *)lbl_8033B1EC) != 0) {
-            list = (F9Node *)list->next2;
+            list = (F9List *)list->next2;
             continue;
         }
         if (list != NULL) {
             break;
         }
         fn_801F96A8(node);
-        list = (F9Node *)fn_801F93FC();
+        list = (F9List *)fn_801F93FC();
     }
     return list;
 }
