@@ -134,6 +134,28 @@ extern "C" s32 fn_800D8A04(s32 arg0, s32 arg1) {
     return arg0 + arg1;
 }
 
+extern "C" s32 fn_800D9328(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x58);
+}
+
+int fn_800D9330(void *arg0) {
+    return *(int *)((char *)arg0 + 0x58) + (((unsigned int)*(int *)((char *)arg0 + 0x4C) >> 0x17) & 0x1E0);
+}
+
+int fn_800D9344(void *arg0) {
+    unsigned int temp_r4;
+
+    temp_r4 = *(unsigned int *)((char *)arg0 + 0x4C);
+    return ((temp_r4 >> 0x17) & 0x1E0) + (*(int *)((char *)arg0 + 0x58) + (((temp_r4 >> 0x18) & 0xF) * 0x14));
+}
+
+int fn_800D9364(void *arg0) {
+    unsigned int temp_r5;
+
+    temp_r5 = *(unsigned int *)((char *)arg0 + 0x4C);
+    return ((temp_r5 >> 0x12) & 0x3C) + ((temp_r5 >> 0x17) & 0x1E0) + (*(int *)((char *)arg0 + 0x58) + (((temp_r5 >> 0x18) & 0xF) * 0x14));
+}
+
 extern "C" void fn_800DB830(s32 *arg0) {
     *arg0 = -1;
 }
