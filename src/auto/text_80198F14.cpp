@@ -1,7 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+#include <revolution/MTX/vec.h>
 #pragma opt_tail_call on
+extern "C" f64 fn_8002F234(f32);
 
 extern "C" void fn_8019EBC0(void);
 extern "C" void fn_8019F3D0(void);
@@ -137,6 +139,15 @@ extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
 
 extern "C" void fn_801A2EC8(void) {
 
+}
+
+void fn_801A442C(void *arg0, f32 *arg1, f32 *arg2) {
+    arg1[0] = *(f32 *)((u8 *)arg0 + 0x28);
+    arg1[1] = *(f32 *)((u8 *)arg0 + 0x2C);
+    arg1[2] = *(f32 *)((u8 *)arg0 + 0x30);
+    arg2[0] = *(f32 *)((u8 *)arg0 + 0x34);
+    arg2[1] = *(f32 *)((u8 *)arg0 + 0x38);
+    arg2[2] = *(f32 *)((u8 *)arg0 + 0x3C);
 }
 
 extern "C" void fn_801A44C4(void* arg0) {
