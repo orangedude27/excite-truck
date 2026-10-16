@@ -4,7 +4,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern u8 lbl_8055F064;
-extern u8 lbl_8055F068[0x16C];
+extern u8 *lbl_8055F068;
 extern s32 stricmp(const char *, const char *);
 extern void *fn_8012850C(s32, const char *, ...);
 extern char *strcpy(char *, const char *);
@@ -100,9 +100,12 @@ u8 fn_80232B78(void *arg0) {
 }
 
 void fn_8023441C(const char *arg0) {
-    lbl_8055F06C = (s32)fn_8012850C(0x2100, lbl_80340614, 0, 0, 0);
-    lbl_8055F058 = fn_80232578(arg0);
+    s32 value;
+    value = (s32)fn_8012850C(0x2100, lbl_80340614);
+    lbl_8055F06C = value;
+    value = fn_80232578(arg0);
     *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
+    lbl_8055F058 = value;
 }
 
 void fn_80234470(void) {
@@ -128,20 +131,20 @@ void fn_802344C4(u8 arg0) {
 }
 
 s32 fn_80234654(void) {
-    s32 count;
-    s32 i;
-    s32 total;
-    char *str;
+    s32 temp_r30;
+    s32 var_r28;
+    s32 var_r29;
+    char *var_r31;
 
-    total = 0;
-    i = 0;
-    str = (char *)lbl_8055F06C;
-    count = *(s32 *)((u8 *)&lbl_8055F058 + 4);
-    while (i < count) {
-        total += strlen(str);
-        str += 0x58;
-        i++;
+    var_r29 = 0;
+    var_r28 = 0;
+    var_r31 = (char *)lbl_8055F06C;
+    temp_r30 = *(s32 *)((u8 *)&lbl_8055F058 + 4);
+    while (var_r28 < temp_r30) {
+        var_r29 += strlen(var_r31);
+        var_r31 += 0x58;
+        var_r28++;
     }
-    return total;
+    return var_r29;
 }
 
