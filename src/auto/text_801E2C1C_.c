@@ -21,3 +21,8 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801E2FAC(long arg0, long arg1) {
     }
     return arg0;
 }
+
+s32 fn_801E3534(s32 *arg0) {
+    return *arg0;
+}
+
