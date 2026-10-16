@@ -9,6 +9,10 @@ void fn_80296064(void) {
 
 }
 
+int fn_80296068(void) {
+    return 0;
+}
+
 void fn_80296070(void) {
 
 }
