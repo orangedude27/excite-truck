@@ -7,7 +7,7 @@ void fn_802192A0(void) {
 
 }
 
-s32 fn_80229C9C(s32 arg0) {
+extern "C" s32 fn_80229C9C(s32 arg0) {
     return arg0 + 0x264;
 }
 
