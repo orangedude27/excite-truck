@@ -348,6 +348,9 @@ s32 fn_8023B138(void *arg0) {
     }
 }
 
+void fn_8023B21C(void) {
+}
+
 void fn_8023B220(void *arg0) {
     if (fn_802399AC() != 0) {
         return;
