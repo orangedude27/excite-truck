@@ -189,6 +189,15 @@ extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6de
     *(void **)((u8 *)*arg0 + 8) = arg0;
 }
 
+extern "C" void fn_800F8520(void *arg0) {
+    s32 *p = (s32 *)((u8 *)arg0 + 4);
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+    *(s32 *)((u8 *)arg0 + 8) = 0;
+    *(s32 *)arg0 = 0;
+    *(s32 *)((u8 *)arg0 + 4) = (s32)p;
+    *(s32 *)((u8 *)arg0 + 8) = (s32)p;
+}
+
 extern "C" s32 fn_800FB374(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
