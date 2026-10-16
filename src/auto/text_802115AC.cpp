@@ -58,10 +58,14 @@ public:
     virtual void vf17();
     virtual void vf18();
     virtual void vf19();
-    virtual void vf20();
-    virtual void vf21();
-    virtual void vf22();
-    virtual void vf23();    // vtable 0x5C
+      virtual void vf20();    // vtable 0x50
+  virtual void vf21();
+  virtual void vf22();
+  virtual void vf23();
+  virtual void vf24();
+  virtual void vf25();
+  virtual void vf26();
+  virtual void vf27();    // vtable 0x5C
 };
 
 extern "C" void fn_8021915C(void *, unsigned int);
@@ -503,7 +507,7 @@ void *fn_80215738(void *arg0, int arg1) {
         temp_r0 = *(int *)((char *)arg0 + 4);
         *(void **)arg0 = (void *)&lbl_8033D504;
         if (temp_r0 != 0) fn_802C2FC4(temp_r0);
-        if (arg1 > 0) fn_80128668();
+        if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
@@ -553,8 +557,18 @@ extern "C" s32 fn_8021583C(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_802158C8(void *arg0) {
-    void (*fn)(void) = *(void (**)(void))(*(char **)((char *)arg0 + 0x244) + 0xC);
-    fn();
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf18();
+}
+
+extern "C" void fn_802158DC(void *arg0) {
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf19();
+}
+
+extern "C" void fn_802158F0(void *arg0) {
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf20();
 }
 
 extern "C" void fn_80215B08(void *arg0) {
