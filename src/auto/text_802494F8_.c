@@ -91,6 +91,23 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
     return arg0;
 }
 
+void *fn_8024A204(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if ((unsigned int)arg0 + 0x10 != 0) {
+            if ((unsigned int)arg0 + 0x10 != 0) {
+                *(s32 *)((char *)arg0 + 0x10) = 0;
+                *(s32 *)((char *)arg0 + 0x14) = 0;
+                *(s32 *)((char *)arg0 + 0x18) = 0;
+            }
+        }
+        *(s32 *)((char *)arg0 + 0x11C) = 0;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 void *fn_8024A268(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(s32 *)((char *)arg0 + 0x10) = 0;
@@ -147,6 +164,23 @@ void *fn_8024AC54(void *arg0, int arg1) {
             }
         }
         if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+void *fn_8024AFF8(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        fn_80236074((char *)arg0 + 0x4C, -1);
+        if ((unsigned int)arg0 + 0x18 != 0) {
+            if ((unsigned int)arg0 + 0x18 != 0) {
+                *(s32 *)((char *)arg0 + 0x18) = 0;
+                *(s32 *)((char *)arg0 + 0x1C) = 0;
+                *(s32 *)((char *)arg0 + 0x20) = 0;
+            }
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
