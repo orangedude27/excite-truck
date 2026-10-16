@@ -574,11 +574,8 @@ extern "C" void fn_8015CDD8(void) {
 extern "C" void fn_8015D318(Unk801577F0* arg0, s32 arg1, f32 arg2) {
     if (arg1 == 5) {
         f32 value;
-        if (arg2 < lbl_80561754) {
-            value = arg2 - lbl_80561760;
-        } else {
-            value = arg2 + lbl_80561760;
-        }
+        if (arg2 < lbl_80561754) value = arg2 - lbl_80561760;
+        else value = lbl_80561760 + arg2;
         arg0->m268 += (s32)value;
     }
 }
@@ -596,10 +593,13 @@ extern "C" s32 fn_8015D374(void* arg0) {
 extern "C" u32 fn_8015D37C(void) { return 1; }
 
 extern "C" void fn_8015D384(Unk801577F0* arg0) {
-    s32 count = arg0->m260;
+    s32 count;
+    s32 state;
+    count = arg0->m260;
     arg0->m264 = 0;
     if (count > 0) {
-        if (arg0->m258 != 0) {
+        state = arg0->m258;
+        if (state != 0) {
             fn_801CB6E4(arg0, *(s32*)((u8*)arg0 + 4));
         }
         arg0->m260 = 0;
@@ -614,7 +614,7 @@ extern "C" void fn_8015D400(Unk801577F0* arg0) {
     s32 result = arg0->v21();
     value = arg0->m25c * arg0->v18(result);
     arg0->v35(&value);
-    arg0->v31();
+    arg0->v30();
     arg0->m264 = 0;
     arg0->m25c = lbl_80561750;
 }
@@ -636,6 +636,10 @@ extern "C" void fn_8015D73C(Unk8015A368C* arg0) {
 }
 
 extern "C" void fn_8015E0FC(void) {
+}
+
+extern "C" s32 fn_8015E100(void) {
+    return 0;
 }
 
 extern "C" s32 fn_80159338(void) {
