@@ -46,6 +46,25 @@ void fn_802D08C4(unsigned char arg0) {
     lbl_8055FD78 = arg0;
 }
 
+void fn_802D08CC(int arg0) {
+    int mode;
+    switch (arg0) {
+    case 1:
+        mode = 1;
+        break;
+    case 2:
+        mode = 2;
+        break;
+    case 0:
+        mode = 0;
+        break;
+    default:
+        mode = 0;
+        break;
+    }
+    GXSetCullMode(mode);
+}
+
 void fn_802D0910(void) {
 }
 
