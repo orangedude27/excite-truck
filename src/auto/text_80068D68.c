@@ -191,6 +191,13 @@ void fn_8006EC20(void) {
     fn_80068E08();
 }
 
+void fn_80070854(void) {
+    RFCOMM_Init();
+    GAP_Init();
+    HID_DevInit();
+    fn_800869CC();
+}
+
 void fn_8007148C(s32 arg0) {
     fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
 }
