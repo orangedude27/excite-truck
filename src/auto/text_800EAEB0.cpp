@@ -287,6 +287,16 @@ extern "C" void fn_800EE434(void* arg0) {
     DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl((u8*)arg0 + 8);
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
+extern "C" s32 fn_800EE43C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668_noarg();
+    }
+    return arg0;
+}
+
 extern "C" void fn_800EF9B8(void* arg0, f32 arg1) {
     u32 level;
     level = OSDisableInterrupts();
