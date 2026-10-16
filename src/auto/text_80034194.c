@@ -80,6 +80,12 @@ void fn_80039838(void) {
     OSWakeupThread(__DVDThreadQueue);
 }
 
+extern s32 lbl_8055D864;
+void cbForCancel(void) {
+    lbl_8055D864 = 1;
+    OSWakeupThread(&__DVDThreadQueue);
+}
+
 extern void *lbl_8055D88C;
 void fn_8003998C(void* hi) {
     lbl_8055D88C = hi;
