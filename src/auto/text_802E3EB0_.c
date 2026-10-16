@@ -9,6 +9,8 @@ extern unsigned int lbl_8055FF40;
 extern void fn_802E317C(void *);
 unsigned int *fn_802E3EB0(void) { return &lbl_8055FF38; }
 
+void fn_802E3EB8(void) {}
+
 void *fn_802E3EBC(void) {
     int i;
     unsigned char *p = lbl_804FBAA0;
