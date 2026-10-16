@@ -12,6 +12,12 @@ extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
 
 
 extern void fn_8001C4D4(void);
+void fn_8001BA50(void *arg0) {
+    ((s8 *)arg0)[0x10] = 0;
+    ((s32 *)arg0)[0] = 0;
+    ((s32 *)arg0)[1] = -1;
+}
+
 void fn_8001BA68(void) {
 }
 
@@ -35,6 +41,15 @@ void fn_8001BA78(void) {
 void fn_8001BA84(void) {
     lbl_8055D5C8 = 0;
     fn_8001CAF8();
+}
+
+s32 fn_8001BA90(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 temp = fn_8001D25C(arg2);
+    if (temp != 0) {
+        return fn_8001CDB8(arg0, arg1, temp, arg3, arg4);
+    } else {
+        return arg4;
+    }
 }
 
 void fn_8001BBB4(void) {
