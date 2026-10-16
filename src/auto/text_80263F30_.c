@@ -100,3 +100,8 @@ int fn_80265BDC(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_80265C1C(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
