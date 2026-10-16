@@ -158,6 +158,15 @@ void *fn_801D6900(void *arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_801D6C3C(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 4) == 1) {
+        *(s32 *)((u8 *)arg0 + 0x10) = lbl_8055E3C4;
+        *(s32 *)((u8 *)arg0 + 4) = 2;
+        return 1;
+    }
+    return 0;
+}
+
 void *fn_801D6D80(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         *(s32 *)((u8 *)arg0 + 4) = 0;
