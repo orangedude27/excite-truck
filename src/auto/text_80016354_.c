@@ -8,7 +8,7 @@ extern unsigned char *lbl_8055D544;
 extern int stricmp(const char *, const char *);
 extern int fn_80016510(int);
 extern void *lbl_8055D548;
-extern int fn_80016BC8(void *, int);
+extern void *fn_80016BC8(void *, int);
 
 extern void *lbl_8055D54C;
 void* fn_80016508(void) {
@@ -141,17 +141,22 @@ void fn_80016A44(void) {
 }
 
 void fn_80017708(void *arg0, int arg1, void *arg2) {
-    int value;
-    int limit = *(int *)((char *)arg0 + 0x94);
+    int temp_r0;
+    int temp_r0_2;
+    int temp_r4;
+    int temp_r4_2;
     memset(arg2, 0, 0xC);
-    *(char *)((char *)arg2 + 8) = 0;
-    if (limit >= 0) {
-        value = (limit + arg1) % *(int *)((char *)arg0 + 0x98);
-    } else {
-        limit = *(int *)((char *)arg0 + 0x98);
-        value = (*(int *)((char *)arg0 + 4) + (arg1 * limit) / 4) % limit;
+    temp_r4 = *(int *)((char *)arg0 + 0x94);
+    *(signed char *)((char *)arg2 + 8) = 0;
+    if (temp_r4 >= 0) {
+        temp_r0 = (temp_r4 + arg1) % *(int *)((char *)arg0 + 0x98);
+        *(int *)arg2 = temp_r0;
+        *(int *)((char *)arg2 + 4) = temp_r0;
+        return;
     }
-    *(int *)arg2 = value;
-    *(int *)((char *)arg2 + 4) = value;
+    temp_r4_2 = *(int *)((char *)arg0 + 0x98);
+    temp_r0_2 = (*(int *)((char *)arg0 + 4) + ((arg1 * temp_r4_2) / 4)) % temp_r4_2;
+    *(int *)arg2 = temp_r0_2;
+    *(int *)((char *)arg2 + 4) = temp_r0_2;
 }
 
