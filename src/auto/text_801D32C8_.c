@@ -20,6 +20,8 @@ void fn_801D32DC(void) {
 
 int fn_801D470C(void) { return 0; }
 
+void fn_801D4714(void *a, void *b, void *c, int *arg3, int *arg4) { *arg4 = 0; *arg3 = 0; }
+
 extern int fn_80128668(void *);
 extern int fn_80179EE8(int);
 extern char lbl_80338400;
