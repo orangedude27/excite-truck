@@ -7,6 +7,9 @@ unsigned char* fn_801317F0(void* arg0) {
     return p;
 }
 
+extern int fn_80131588(int, int);
+void fn_80131808(int arg0) { fn_80131588(arg0, 0); }
+
 void fn_80131818(void) {
     fn_8012C4D8();
 }
