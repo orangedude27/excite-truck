@@ -44,8 +44,66 @@ void fn_801F4DD4(void *arg0, void *arg1) {
     fn_801F7280(lbl_8055EC18, temp_r3, arg1);
 }
 
+extern void *fn_801284F8(int, void *);
+extern char lbl_8033AC68[];
+extern char *lbl_8033AC9C[5];
+extern char lbl_8033AD08[];
+extern int stricmp(const char *, const char *);
+extern void fn_8012F9E8(void *, void *, void *);
+extern void fn_80128670(int);
+int fn_801F4E44(const char *arg0) {
+    int i;
+    i = 0;
+    while (i < 5) {
+        if (stricmp(arg0, lbl_8033AC9C[i]) == 0) {
+            return i + 1;
+        }
+        i++;
+    }
+    fn_802E317C(lbl_8033AD08, arg0);
+    return 0;
+}
+
 void fn_801F596C(void) {
 
+}
+
+void fn_801F6358(void *arg0) {
+    int temp;
+    fn_80128670(*(int *)((char *)arg0 + 0xC));
+    temp = *(int *)arg0;
+    if (temp != 0) {
+        fn_80128670(temp - 0x10);
+    }
+}
+
+void fn_801F6728(void *arg0) {
+    int i;
+    int offset;
+    unsigned short index;
+    char *records;
+    char *record;
+    char *output;
+    i = 0;
+    offset = 0;
+    records = *(char **)((char *)arg0 + 0x1C);
+    while (i < *(int *)((char *)arg0 + 0x20)) {
+        record = records + offset;
+        output = *(char **)((char *)arg0 + 4);
+        index = *(unsigned short *)(records + offset);
+        *(float *)(output + index * 0xC) = *(float *)(record + 4);
+        *(float *)(output + index * 0xC + 4) = *(float *)(record + 8);
+        *(float *)(output + index * 0xC + 8) = *(float *)(record + 0xC);
+        offset += 0x10;
+        i++;
+    }
+}
+
+void fn_801F69C8(void *arg0) {
+    int size;
+    size = 0x900;
+    memset(arg0, 0, size);
+    *(int *)((char *)arg0 + 0x900) = 0;
 }
 
 void *fn_801F6D20(void *arg0) {
