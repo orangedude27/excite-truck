@@ -84,6 +84,20 @@ void fn_802BA004(void) {
     lbl_8055FA84 = 0;
 }
 
+void fn_802BA560(void *arg0) {
+    *(int *)((char *)arg0 + 4) = 0;
+    *(int *)((char *)arg0 + 0) = 0;
+    *(int *)((char *)arg0 + 8) = 3;
+    *(char *)((char *)arg0 + 0xC) = 1;
+}
+
+void fn_802BAA50(void *arg0) {
+    float a = *(float *)arg0;
+    float b = *((float *)arg0 + 1);
+    *(float *)arg0 = b;
+    *((float *)arg0 + 1) = -a;
+}
+
 typedef signed char s8;
 void fn_802BAF98(void* arg0, s8 arg1) {
     ((s8*)arg0)[0xC] = arg1;
