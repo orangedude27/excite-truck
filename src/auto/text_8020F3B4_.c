@@ -110,7 +110,7 @@ extern struct Unk_804900AC {
     long m_count;
     long m_capacity;
 } lbl_804900AC;
-extern long fn_802EC104(long);
+    extern long fn_802EC104(long);
 extern void fn_8020F730(void);
 extern long fn_8020F9F4(void);
 extern int stricmp(const char *, const char *);
