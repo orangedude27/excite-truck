@@ -369,6 +369,10 @@ extern "C" void fn_80221EA0(void *arg0) {
     fn_80219440(*(void **)((u8 *)arg0 + 0x14), 0, 0, 0);
 }
 
+extern "C" void fn_80221F94(void *arg0, s32 arg1) {
+    fn_802168BC((void *)arg1);
+}
+
 extern "C" void fn_80222120(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x248) = 1;
     ((void (**)(void *))(*(void ***)arg0))[19](arg0);
