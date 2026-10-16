@@ -646,7 +646,7 @@ void fn_8014E7D8(void) {
 
 }
 
-  extern void fn_80128668(void);
+      extern void fn_80128668();
 extern void fn_8016783C(void *arg0);
 extern void fn_801688FC(s32 arg0);
 extern void fn_80168020(void);
