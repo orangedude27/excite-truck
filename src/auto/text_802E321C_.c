@@ -10,6 +10,7 @@ extern s32 fn_802E321C(const char *);
 extern s32 fn_802E3270(s32);
 extern s32 fn_802E32C4();
 extern s32 lbl_8055FF18;
+extern s32 lbl_8055FF1C;
 extern s32 fn_802E333C(void);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
