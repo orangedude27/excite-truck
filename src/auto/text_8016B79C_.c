@@ -74,6 +74,13 @@ void fn_8016CD28(void *arg0) {
     ((int *)arg0)[3] = 3;
 }
 
+void fn_8016CDE0(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 8) = 0;
+    *(s32 *)((u8 *)arg0) = 0;
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+}
+
 void fn_8016CE94(void *arg0, f32 arg1) {
     *(f32 *)((u8 *)arg0 + 4) = arg1;
 }
