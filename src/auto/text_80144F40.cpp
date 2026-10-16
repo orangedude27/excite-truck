@@ -166,7 +166,9 @@ extern "C" s32 fn_80148248(void) {
 }
 
 extern "C" void fn_80148250(void *arg0) {
-    (*(void (**)(void))(*(u8 **)(*(u32 *)((u8 *)arg0 + 4)) + 0x28))();
+    void *obj = *(void **)((u8 *)arg0 + 4);
+    void *vtable = *(void **)obj;
+    ((void (*)(void))(*(void **)((u8 *)vtable + 0x28)))();
 }
 
 extern "C" u32 lbl_80559E68;
@@ -184,6 +186,10 @@ extern "C" s32 fn_80148274(void) {
 
 extern "C" void fn_80148280(void) {
 
+}
+
+extern "C" void fn_80148284(void *arg0, s32 arg1) {
+    fn_80148294((const char *)arg1, (void *)((u8 *)arg0 + 0x30));
 }
 
 extern "C" void *fn_801484A4(const char *, void *);
