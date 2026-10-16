@@ -91,22 +91,19 @@ extern void fn_801CC918(void);
 extern void fn_801CC470(void);
 extern void fn_801CD5B4(int, int, int);
 void fn_801CB5DC(int arg0, int arg1, int arg2) {
-    if (fn_80019BA8() != 0) {
-        return;
-    }
-    if (fn_80161C38() == 0) {
-        fn_801CD5B4(arg0, arg1, arg2);
-        return;
-    }
+    if (fn_80019BA8() != 0) return;
+    if (fn_80161C38() != 0) goto done;
+    fn_801CD5B4(arg0, arg1, arg2);
+done:
     return;
 }
 
 void fn_801CB648(int arg0, int arg1, f32 farg0) {
-    if (fn_80019BA8() != 0) return;
-    if (fn_80161C38() != 0) goto done;
-    fn_801CD7BC(arg0, arg1, farg0);
-done:
-    return;
+    if (fn_80019BA8() == 0) {
+        if (fn_80161C38() == 0) {
+            fn_801CD7BC(arg0, arg1, farg0);
+        }
+    }
 }
 
 void fn_801CB6B4(void) {
@@ -153,6 +150,16 @@ int fn_801CB900(int *arg0, int arg1) {
     return result;
 }
 
+void *__dt__Q34nw4r2ef6EffectFv_801CBCA4(void *arg0, int arg1) {
+    extern void fn_801CBCA0(void);
+    if (arg0) {
+        *(void **)arg0 = (void *)lbl_80338038;
+        fn_801CBCA0();
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_801CBD04(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
@@ -166,6 +173,18 @@ void fn_801CC768(void *arg0, float arg1) {
         *(float *)((char *)arg0 + 8) = arg1;
         *((char *)arg0 + 0x4D) = 1;
     }
+}
+
+void **fn_801CC784(void *arg0) {
+    int index = *(int *)((char *)arg0 + 4);
+    void **base = *(void ***)arg0;
+    *(int *)((char *)arg0 + 4) = index + 1;
+    return base + index;
+}
+
+void fn_801CC8EC(void *arg0) {
+    *(void **)((char *)arg0 + 4) = arg0;
+    *(int *)arg0 = 0;
 }
 
 void fn_801CE698(void) {
