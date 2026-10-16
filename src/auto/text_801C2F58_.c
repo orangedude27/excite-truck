@@ -150,11 +150,13 @@ void fn_801C6AD0(s32 *arg0) {
         if (temp_f1 < lbl_8056296C) {
             f32 diff = lbl_805629C8 * (lbl_8056296C - temp_f1);
             s32 result;
+            f32 f0;
             if (diff < lbl_80562970) {
-                result = (s32)(diff - lbl_80562974);
+                f0 = diff - lbl_80562974;
             } else {
-                result = (s32)(lbl_80562974 + diff);
+                f0 = lbl_80562974 + diff;
             }
+            result = (s32)f0;
             if (result > *arg0) {
                 *arg0 = result;
             }
