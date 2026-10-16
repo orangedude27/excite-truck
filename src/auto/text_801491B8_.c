@@ -355,6 +355,8 @@ s32 fn_8014C830(s32 arg0) { return arg0 + 0x14; }
 
 f32 fn_8014C838(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x10); }
 
+s32 fn_8014C840(void *arg0) { return ((s32 *)arg0)[1]; }
+
 s32 fn_8014C848(void *arg0) {
     void *next = ((void **)arg0)[2];
     ((void **)arg0)[1] = next;
