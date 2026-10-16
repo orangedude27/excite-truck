@@ -25,6 +25,10 @@ void fn_8027DE6C(void) {
     fn_8027DA08();
 }
 
+void fn_8027DEAC(void* alarm) {
+    fn_8027DE98(fn_8000DA10(alarm));
+}
+
 void* fn_8027DED0(void) {
     return lbl_8055C790;
 }
