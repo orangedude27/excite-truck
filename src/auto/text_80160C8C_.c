@@ -10,7 +10,7 @@ extern int fn_80161BB8(void);
 extern unsigned char lbl_8032FCB0[];
 extern int lbl_804348E8[];
 extern float lbl_80561848;
-extern int lbl_8042FDEC[4];
+extern unsigned char lbl_8042FDEC[8];
 extern int lbl_8055E304;
 
 void fn_8016212C(void) {
@@ -220,7 +220,7 @@ int fn_80165848(int arg5, int arg6, int arg7, int arg8) {
     return 0;
 }
 
-int fn_80165894(s32 a0, float *arg2, s32 arg3) {
+int fn_80165894(s32 a0, s32 a1, float *arg2, s32 arg3) {
     if (lbl_804348E8[arg3] != 0) {
         *arg2 = lbl_80561848;
         ((void (*)(int *, float *, s32))(*(int **)(lbl_8042FDEC + (lbl_8055E304 << 2)))[0x38 / 4])((int *)(lbl_8042FDEC + (lbl_8055E304 << 2)), arg2, arg3);
