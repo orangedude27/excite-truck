@@ -142,7 +142,7 @@ void* __dt__Q34nw4r2ef6EffectFv_80293A88(void* arg0, int arg1) {
 void fn_80293AE8(void* arg0) { *(int*)((u8*)arg0 + 0x4c2c) = 0; }
 
 extern int fn_8012C33C(void *);
-extern void fn_801345D8(void *, int, const char *, int, int);
+extern void fn_801345D8(void *, ...);
 extern void fn_80292CD8(void *, int, u8 *);
 extern int fn_802C6FC0(void *, int, int);
 extern char lbl_80349250[];
