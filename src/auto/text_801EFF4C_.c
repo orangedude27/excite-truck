@@ -58,6 +58,14 @@ int fn_801F09FC(const char *arg0) {
     }
 }
 
+int fn_801F0F18(int arg0, int arg1) {
+    if (arg0 != 0) {
+        if (*(unsigned char *)(arg0 + 0x14) == 0) fn_801F18F0();
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_801F131C(void *arg0, int arg1) {
     if (*(unsigned int *)((char *)arg0 + 4) != 3) {
         int value;
