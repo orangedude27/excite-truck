@@ -47,6 +47,38 @@ extern "C" void fn_802E317C(const char*, ...);
 extern "C" const char lbl_8033B618[];
 extern "C" float fn_802C99E8(float);
 extern "C" void fn_802C744C(void*, void*);
+void fn_801FCAC0(void* arg0) {
+    if (*(int*)((char*)arg0 + 4) != 0)
+        fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
+}
+
+void fn_801FCAE0(void* arg0, void* arg1) {
+    *(void**)((char*)arg0 + 4) = arg1;
+    *(int*)((char*)arg0 + 0x3C) = 0;
+    *(float*)((char*)arg0 + 0xC) = lbl_80563030;
+    *(float*)((char*)arg0 + 0x10) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x14) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x18) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x1C) = lbl_80563030;
+    *(float*)((char*)arg0 + 0x20) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x24) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x28) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x2C) = lbl_80563030;
+    *(float*)((char*)arg0 + 0x30) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x34) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x38) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x30) = *(float*)((char*)arg1 + 0x10);
+    *(float*)((char*)arg0 + 0x34) = *(float*)((char*)arg1 + 0x14);
+    *(float*)((char*)arg0 + 0x38) = *(float*)((char*)arg1 + 0x18);
+}
+
+extern "C" void* fn_801FCED8(void* arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_801FCF18(void* arg0, void* arg1, int arg2) {
     *(int*)((char*)arg0 + 0) = arg2;
     *(int*)((char*)arg0 + 4) = 0;
