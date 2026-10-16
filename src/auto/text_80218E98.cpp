@@ -228,7 +228,6 @@ extern "C" void fn_8021C9D8(void *arg0) {
         ((void (**)(void *))(*(void ***)((u8 *)arg0 + 0x254)))[6](*(void **)((u8 *)arg0 + 0x254));
 }
 
-extern "C" void fn_8021AC24(void);
 extern "C" void fn_802C519C(void *);
 extern "C" void fn_8021915C(void *, u32);
 extern "C" s32 fn_80128668(void *);
