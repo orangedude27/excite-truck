@@ -120,6 +120,7 @@ struct Unk8012DFCCList {
 
 
 extern "C" s32 fn_8012CAA0(s32);
+#pragma dont_inline on
 extern "C" void fn_8012DD00(void) {
     if (lbl_8055E014) {
         delete lbl_8055E014;
