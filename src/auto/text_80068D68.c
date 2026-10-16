@@ -307,8 +307,6 @@ void bte_hcisu_task(void) {
 }
 
 extern u32 fn_8009B0E0(void);
-extern u8 lbl_803BD1E0;
-extern u8 lbl_8055DC51;
 void fn_80070820(void) {
     if (lbl_8055DC68 != NULL && lbl_8055DC68->close != NULL) {
         lbl_8055DC68->close(lbl_8055DC6C);
