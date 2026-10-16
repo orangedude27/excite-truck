@@ -177,8 +177,8 @@ extern "C" void fn_800E9B20(void *arg0, float arg1) {
 
 extern "C" void fn_800E9B28(void *arg0, float arg1) {
     VfObjF *obj = (VfObjF *)arg0;
-    VfObjF *result = obj->vf23();
-    result->vf12(arg1);
+    obj->vf23();
+    obj->vf15(arg1);
 }
 
 extern "C" void fn_800E9B74(void *arg0, int arg1, int arg2, int arg3, int arg4) {
