@@ -26,6 +26,10 @@ void fn_8028EE1C(void *arg0) {
     *(int *)((char *)arg0 + 0x600) = 0;
 }
 
+void fn_8028EE28(void *arg0) {
+    *(int *)((char *)arg0 + 0x600) = 0;
+}
+
 int fn_802916DC(void) { return 0; }
 
 void fn_802916E4(void) {}
