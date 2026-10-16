@@ -6,8 +6,10 @@ extern unsigned char lbl_8055D948;
 extern unsigned int *__GXData;
 extern unsigned short *__cpReg;
 extern unsigned int lbl_8037C0E4;
+extern unsigned int lbl_8055D974;
 extern void GXGetVtxDesc(void);
 extern void __GXSaveFifo(void);
+extern void GXLoadLightObjIndx(void);
 
 extern char lbl_8055D949;
 char __GXIsGPFifoReady(void) {
