@@ -72,3 +72,8 @@ extern "C" void fn_800DB83C(void) {
 extern "C" void fn_800DB960(void) {
 
 }
+
+extern "C" s32 fn_800DC6DC(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x28);
+}
+
