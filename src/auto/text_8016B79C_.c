@@ -3,6 +3,26 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+int fn_8012850C(int, int);
+void *fn_80128668(void *);
+void fn_802C6CF8(int);
+void *fn_8016C29C(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        if (*((unsigned char *)arg0 + 16) != 0) {
+            int temp = *(int *)arg0;
+            *((unsigned char *)arg0 + 16) = 0;
+            if (temp != -1) {
+                fn_802C6CF8(temp);
+                *(int *)arg0 = -1;
+            }
+            ((int *)arg0)[1] = 0;
+            ((int *)arg0)[2] = 0;
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_8016CEFC(void *arg0) {
     ((s32 *)arg0)[1] = 0;
 }
