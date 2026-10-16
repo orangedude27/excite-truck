@@ -63,6 +63,8 @@ void fn_8018AF00(void) {
 
 }
 
+void fn_8018BF44(int *arg0) { *arg0 = 0x0FF807FF; }
+
 int fn_8018BF54(void) { return 0; }
 
 void fn_8018BF5C(void) {
