@@ -31,7 +31,6 @@ extern s32 fn_801B3398(void*);
 void* fn_801B3B70(void*);
 extern void* memset(void*, s32, u32);
 extern u8 lbl_80435C50[0x20];
-extern s32 fn_801796CC(s32, void*, s32);
 
 void fn_801B435C(void*);
 void fn_801B3DBC(void*);
@@ -67,14 +66,21 @@ typedef struct Unk801B3398 {
 } Unk801B3398;
 
 void* fn_801B3338(void* arg0) {
+    s32 found;
     s32* obj = *(s32**)((char*)arg0 + 4);
 
-    if (obj != NULL) {
-        u32 tag = (u32)obj[4];
-        if (tag == 0x43415220U || tag == 0x50434152U || tag == 0x41434152U
-            || tag == 0x4E434152U) {
-            return obj;
-        }
+    if (obj == NULL) {
+        return NULL;
+    }
+    found = 0;
+    if ((u32)(obj[4] - 0x43410000) == 0x5220
+        || (u32)(obj[4] - 0x50430000) == 0x4152
+        || (u32)(obj[4] - 0x41430000) == 0x4152
+        || (u32)(obj[4] - 0x4E430000) == 0x4152) {
+        found = 1;
+    }
+    if (found != 0) {
+        return obj;
     }
     return NULL;
 }
@@ -85,8 +91,22 @@ int fn_801B3390(void) {
 
 s32 fn_801B3398(void* arg0) {
     Unk801B3398 local;
+    Unk801B3398* src = (Unk801B3398*)arg0;
 
-    local = *(Unk801B3398*)arg0;
+    local.unk_0x00 = src->unk_0x00;
+    local.unk_0x04 = src->unk_0x04;
+    local.unk_0x08 = src->unk_0x08;
+    local.unk_0x0C = src->unk_0x0C;
+    local.unk_0x10 = src->unk_0x10;
+    local.unk_0x14 = src->unk_0x14;
+    local.unk_0x18 = src->unk_0x18;
+    local.unk_0x1C = src->unk_0x1C;
+    local.unk_0x20 = src->unk_0x20;
+    local.unk_0x24 = src->unk_0x24;
+    local.unk_0x28 = src->unk_0x28;
+    local.unk_0x2C = src->unk_0x2C;
+    local.unk_0x30 = src->unk_0x30;
+    local.unk_0x34 = src->unk_0x34;
     return fn_801796CC(1, &local, 0x38);
 }
 
