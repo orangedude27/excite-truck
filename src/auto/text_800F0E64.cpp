@@ -163,6 +163,11 @@ extern "C" s32 fn_800F27EC(void *arg0) {
     return ReadSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive9SoundInfo(*(s32*)((u8*)arg0 + 4));
 }
 
+M2C_UNK ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(s32);
+extern "C" s32 fn_800F27F4(void *arg0) {
+    return ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(*(s32*)((u8*)arg0 + 4));
+}
+
 extern "C" void fn_800F2D28(void *arg0) {
     *(s32*)((u8*)arg0 + 0x28) = 0;
     *(s32*)((u8*)arg0 + 0x2C) = 0;
