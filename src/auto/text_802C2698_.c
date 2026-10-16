@@ -7,7 +7,7 @@ extern s32 fn_802CAC28(void *, s32);
 extern s32 fn_802CB128(s32, s32, s32, s32);
 extern void fn_802CB228(void);
 extern void fn_802CAC54(void);
-extern s32 lbl_8034AFF8;
+extern char lbl_8034AFF8[16];
 extern s32 lbl_8055FB6C;
 extern s32 lbl_8055FB70;
 
@@ -25,11 +25,12 @@ void *fn_802C2698(void *arg0, s32 arg1) {
 }
 
 void fn_802C26F0(void) {
+    char *ptr = (char *)&lbl_8034AFF8;
     s32 result;
     s32 result2;
 
-    if (fn_8012C33C(&lbl_8034AFF8) != 0)
-        result = fn_802CAC28(&lbl_8034AFF8, 0);
+    if (fn_8012C33C(ptr) != 0)
+        result = fn_802CAC28(ptr, 0);
     else
         result = -2;
     lbl_8055FB70 = result;
