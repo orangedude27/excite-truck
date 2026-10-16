@@ -6,7 +6,7 @@ extern void fn_801B2EC0(void);
 extern void *lbl_8055E678;
 extern void *lbl_8055E680;
 extern void *lbl_8055E684;
-extern void *lbl_80435C30;
+extern s32 lbl_80435C30[];
 extern void *lbl_8055E694;
 
 void fn_801B2C6C(void) {
@@ -37,7 +37,8 @@ u8 fn_801B2F2C(s32 arg0) {
 }
 
 s32 fn_801B2F40(s32 arg0) {
-    return ((s32 *)lbl_80435C30)[arg0];
+    s32 *ptr = (s32 *)lbl_80435C30;
+    return ptr[arg0];
 }
 
 s32 fn_801B2F54(s32 arg0) {
