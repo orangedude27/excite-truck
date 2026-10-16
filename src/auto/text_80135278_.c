@@ -30,9 +30,11 @@ void fn_801357A4();
 
 float fn_80135278(float *a, float *b, float *c) {
     volatile float d[2];
-    d[0] = b[0] - c[0];
-    d[1] = b[1] - c[1];
-    return a[0] * (b[0] - c[0]) + a[1] * (b[1] - c[1]);
+    float dx = b[0] - c[0];
+    float dy = b[1] - c[1];
+    d[0] = dx;
+    d[1] = dy;
+    return a[0] * dx + a[1] * dy;
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
@@ -70,8 +72,24 @@ void fn_80135354(Unk_80135278 *arg0) {
     arg0->unk_2c = 0;
 }
 
+void fn_80135390(Unk_80135278 *arg0) {
+    fn_80135354(arg0);
+    arg0->unk_30 = 0;
+}
+
 void fn_801353C4(void) {
     fn_801357A4();
+}
+
+void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    arg0->unk_4 = arg3;
+    arg0->unk_8 = lbl_80561320;
+    fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
+    fn_801357A4(arg0, arg1);
+}
+
+s32 fn_801355B8(void *arg0, void *arg1) {
+    return 0;
 }
 
 void fn_80136764(void) {
