@@ -37,8 +37,7 @@ u8 fn_801B2F2C(s32 arg0) {
 }
 
 s32 fn_801B2F40(s32 arg0) {
-    s32 *ptr = (s32 *)lbl_80435C30;
-    return ptr[arg0];
+    return lbl_80435C30[arg0];
 }
 
 s32 fn_801B2F54(s32 arg0) {
