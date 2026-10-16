@@ -18,6 +18,11 @@ extern int fn_801B47BC();
 extern unsigned int fn_801B4BDC(void);
 extern int fn_801B4B9C(int);
 extern int fn_801B47AC(int);
+extern int fn_802E30C8(int *);
+extern int fn_801284F8(int, int);
+extern int fn_801B4904(void);
+extern int lbl_80335E10;
+extern int lbl_80335E28;
 void fn_801B45E0(void *arg0) {
     *(int *)((char *)arg0 + 0x00) = 0;
     *(int *)((char *)arg0 + 0x14) = 0;
@@ -33,11 +38,24 @@ void fn_801B45E0(void *arg0) {
 
 void *fn_801B4610(void *arg0, int arg1) {
     void *obj;
+    int zero;
     if (arg0 != 0) {
         obj = *(void **)arg0;
-        if (obj != 0) ((void (*)(void *, int))(*(void ***)obj)[1])(obj, 1);
-        fn_801B45E0(arg0);
+        if (obj != 0) {
+            ((void (**)(void *, int))*(void **)obj)[2](obj, 1);
+        }
+        zero = 0;
+        *(int *)((char *)arg0 + 0x00) = zero;
+        *(int *)((char *)arg0 + 0x14) = zero;
+        *(int *)((char *)arg0 + 0x10) = zero;
+        *(int *)((char *)arg0 + 0x0C) = zero;
+        *(int *)((char *)arg0 + 0x08) = zero;
+        *(int *)((char *)arg0 + 0x04) = zero;
         fn_80128670(*(int *)((char *)arg0 + 0x18));
+        *(int *)((char *)arg0 + 0x18) = zero;
+        *(int *)((char *)arg0 + 0x24) = zero;
+        *(int *)((char *)arg0 + 0x20) = zero;
+        *(int *)((char *)arg0 + 0x1C) = zero;
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
