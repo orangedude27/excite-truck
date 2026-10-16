@@ -24,6 +24,9 @@ void fn_802DD738(int arg0, float farg0) {
     *(float *)((char *)lbl_804DB6A0 + (arg0 * 0x24) + 0x20) = farg0;
 }
 
+void fn_802DD750(void) {
+}
+
 void fn_802DEA6C(void* alarm) {
     fn_802D3360(fn_802DEF70(alarm));
 }
