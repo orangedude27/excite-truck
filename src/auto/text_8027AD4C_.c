@@ -21,8 +21,8 @@ unsigned char fn_8027AF84(void *arg0) {
     return *((unsigned char *)arg0 + 0x11);
 }
 
+#pragma dont_inline on
 unsigned char fn_8027AF8C(void *arg0) { return *((unsigned char *)arg0 + 0x10); }
-
 void fn_8027AF94(void *arg0) { ((unsigned char *)arg0)[4] = 0; }
 
 unsigned char fn_8027B280(void *arg0) {
@@ -42,19 +42,16 @@ void fn_8027B288(void *arg0) {
 }
 
 void fn_8027B60C(void *arg0) {
-    long i;
-    long offset;
+    long i, offset;
     if (*(long *)((char *)arg0 + 4) != 0) {
-        i = 0;
-        offset = 0;
+        i = 0; offset = 0;
         do {
             fn_8027B288((char *)*(void **)((char *)arg0 + 8) + offset);
-            offset += 0x1F4;
-            i++;
+            offset += 0x1F4; i++;
         } while (i < *(long *)((char *)arg0 + 0xC));
         offset = 0;
-        fn_80131818(*(long *)((char *)arg0 + 4));
         *(long *)((char *)arg0 + 0xC) = 0;
+        fn_80131818(*(long *)((char *)arg0 + 4));
         *(long *)((char *)arg0 + 4) = 0;
     }
 }
