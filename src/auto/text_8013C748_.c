@@ -34,6 +34,11 @@ int fn_8013C8E8(const char *arg0) {
     }
     return 6;
 }
+
+int fn_8013C9A4(void) {
+    return *(int *)((char *)fn_8013C770() + 4);
+}
+
 void *fn_8013C770(void);
 extern int lbl_8055E188;
 void fn_80131818(int);
