@@ -119,9 +119,10 @@ extern "C" s32 fn_800BB3F4(s32 arg0) {
                 if (lbl_8055DD68 == 0x10000) result = 0;
             }
         }
-        *(s32*)((u8*)context + 0x24) = 0;
-        IOS_Close(*(s32*)context);
-        *(s32*)context = -1;
+        void* closeContext = context;
+        *(s32*)((u8*)closeContext + 0x24) = 0;
+        IOS_Close(*(s32*)closeContext);
+        *(s32*)closeContext = -1;
     }
     return result;
 }
