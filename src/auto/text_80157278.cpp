@@ -57,6 +57,7 @@ public:
     s32 m260;
     s32 m264;
     s32 m268;
+    u8 m54;
 };
 
 class Unk8015A368C {
@@ -294,42 +295,53 @@ extern "C" void* fn_80158218(void* arg0, s32 arg1) {
 }
 
 extern "C" void fn_801584A8(void* arg0) {
-    *(u32*)((u8*)arg0 + 0) = (u32)arg0 + 0xC;
+    u32 address = (u32)arg0 + 0xC;
+    *(u32*)arg0 = address;
     *(u32*)((u8*)arg0 + 8) = 0x10;
     *(u32*)((u8*)arg0 + 4) = 0;
 }
 
 extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 i;
-    s32 count = *(s32*)((u8*)&lbl_8042FD34 + 4);
-    Unk801584D4** entries = (Unk801584D4**)lbl_8042FD34;
-    for (i = 0; i < count; i++)
-        entries[i]->call(arg0, arg1, arg2);
+    s32* state = (s32*)&lbl_8042FD34;
+    Unk801584D4** entries = (Unk801584D4**)state[0];
+    s32 offset = 0;
+    s32 i = 0;
+    do {
+        entries = (Unk801584D4**)state[0];
+        entries[offset / 4]->call(arg0, arg1, arg2);
+        offset += 4;
+        i++;
+    } while (i < state[1]);
 }
 
 extern "C" void fn_80158558(s32 arg0) {
-    s32 index = *(s32*)((u8*)&lbl_8042FD34 + 4);
-    *(s32*)((u8*)&lbl_8042FD34 + 4) = index + 1;
-    ((s32*)lbl_8042FD34)[index] = arg0;
+    s32* state = (s32*)&lbl_8042FD34;
+    s32* items = (s32*)state[0];
+    s32 index = state[1];
+    state[1] = index + 1;
+    items[index] = arg0;
 }
 
 extern "C" void fn_8015857C(u32 arg0) {
-    u32* entries = (u32*)lbl_8042FD34;
-    s32 count = *(s32*)((u8*)&lbl_8042FD34 + 4);
+    s32* state = (s32*)&lbl_8042FD34;
+    u32* entries = (u32*)state[0];
+    s32 count = state[1];
     s32 index = 0;
-    s32 i;
-    for (i = 0; i < count; i++) {
-        if (entries[i] == arg0)
-            break;
-        index++;
-    }
-    if (i == count)
+    if (count > 0) {
+        do {
+            if (*entries == arg0) break;
+            entries++;
+            index++;
+        } while (--count != 0);
+        if (count == 0) index = -1;
+    } else {
         index = -1;
-    if (index != -1 && index >= 0 && index < *(s32*)((u8*)&lbl_8042FD34 + 4)) {
-        s32 last = *(s32*)((u8*)&lbl_8042FD34 + 4) - 1;
+    }
+    if (index != -1 && index >= 0 && index < state[1]) {
+        s32 last = state[1] - 1;
         if (index != last)
-            entries[index] = entries[last];
-        *(s32*)((u8*)&lbl_8042FD34 + 4) -= 1;
+            ((u32*)state[0])[index] = ((u32*)state[0])[last];
+        state[1] = state[1] - 1;
     }
 }
 
