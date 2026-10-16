@@ -69,6 +69,10 @@ void fn_802D93E8(int arg0) {
     lbl_8055FE24 = arg0;
 }
 
+extern void *lbl_8055FE28;
+extern void *lbl_8034C5B8;
+extern void *lbl_8034C4B0;
+extern void fn_8012850C(void *, void *);
 void* fn_802D94DC(void) {
     return lbl_8055FE18;
 }
