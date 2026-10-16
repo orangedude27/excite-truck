@@ -134,9 +134,9 @@ extern "C" s32 fn_800A73A0(void *, u16, s32);
 extern "C" s32 fn_800A7338(void *);
 extern "C" s32 fn_800A7568(void *, s32);
 extern "C" s32 fn_800A607C(void);
-extern "C" s32 fn_800A5958(s32 *arg0) {
+extern "C" s32 fn_800A5958(void *arg0, s32 *arg1) {
     s32 result;
-    *arg0 = 0;
+    *arg1 = 0;
     result = fn_800A607C();
     return result & ((-result | result) >> 31);
 }
@@ -1487,6 +1487,45 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
         *(u32 *)((u8 *)arg0 + 0xC) = arg2;
       
       return 0;
+}
+
+extern "C" s32 fn_800A5788(void *arg0, s32 arg1) {
+    s32 result = fn_800A7568(*(void **)((u8 *)arg0 + 0x1FBC), (arg1 == 1));
+    if (result == 0)
+        return 0;
+    if (result == 21) {
+        s32 value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
+        *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
+        *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+        return 0x1000;
+    }
+    return -1;
+}
+
+extern "C" s32 fn_800A5800(void *arg0) {
+    s32 result = fn_800A7338(*(void **)((u8 *)arg0 + 0x1FBC));
+    if (result == 0)
+        return 0;
+    if (result == 21) {
+        s32 value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
+        *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
+        *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+        return 0x1000;
+    }
+    return -1;
+}
+
+extern "C" s32 fn_800A586C(void *arg0, s32 arg1) {
+    s32 result = fn_800A73A0(*(void **)((u8 *)arg0 + 0x1FBC), *(u16 *)arg0, arg1);
+    if (result == 0)
+        return 0;
+    if (result == 21) {
+        s32 value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
+        *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
+        *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+        return 0x1000;
+    }
+    return -1;
 }
 
 #pragma opt_tail_call on
