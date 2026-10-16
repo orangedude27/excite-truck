@@ -54,6 +54,10 @@ extern "C" void fn_800FDFF8(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
+extern "C" void fn_800FE804(void *arg0) {
+    OSSendMessage((OSMessageQueue *)((u8 *)arg0 + 0x2320), (OSMessage)0x1, 0);
+}
+
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
     f32 v;
     s32 idx;
