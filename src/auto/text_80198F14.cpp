@@ -137,6 +137,34 @@ extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern void fn_8019ECC4();
+extern char lbl_803337C8;
+extern void fn_801E3FC8(s32, s32, s32, f32);
+extern s32 lbl_8055E598;
+void* fn_801A2CC0(void* arg0, s32 arg1, s32 arg2) {
+    u8 temp_r6;
+    u8 temp_r7;
+    u8 temp_r8;
+    u8 temp_r9;
+    fn_8019ECC4();
+    *(void**)arg0 = &lbl_803337C8;
+    if (arg2 != 0) {
+        temp_r6 = *(u8*)((u8*)arg0 + 0x24);
+        temp_r8 = *(u8*)((u8*)arg0 + 0x25);
+        temp_r7 = *(u8*)((u8*)arg0 + 0x28);
+        temp_r9 = *(u8*)((u8*)arg0 + 0x29);
+        *(u8*)((u8*)arg0 + 0x24) = *(u8*)((u8*)arg0 + 0x27);
+        *(u8*)((u8*)arg0 + 0x27) = temp_r6;
+        *(u8*)((u8*)arg0 + 0x25) = *(u8*)((u8*)arg0 + 0x26);
+        *(u8*)((u8*)arg0 + 0x26) = temp_r8;
+        *(u8*)((u8*)arg0 + 0x28) = *(u8*)((u8*)arg0 + 0x2B);
+        *(u8*)((u8*)arg0 + 0x2B) = temp_r7;
+        *(u8*)((u8*)arg0 + 0x29) = *(u8*)((u8*)arg0 + 0x2A);
+        *(u8*)((u8*)arg0 + 0x2A) = temp_r9;
+    }
+    return arg0;
+}
+
 extern "C" void fn_801A2EC8(void) {
 
 }
@@ -175,10 +203,27 @@ void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *a
 }
 
 f32 fn_801A3880(void* arg0) {
-    f32 first = PSVECDotProduct((Vec*)((u8*)arg0 + 0x30), (Vec*)((u8*)arg0 + 0x30));
-    f32 second = PSVECDotProduct((Vec*)((u8*)arg0 + 0x24), (Vec*)((u8*)arg0 + 0x24));
-    if (second <= first) second = first;
-    return (f32)fn_8002F234(second);
+    f32 first;
+    f32 second;
+    first = PSVECDotProduct((const Vec *)((u8 *)arg0 + 0x30), (const Vec *)((u8 *)arg0 + 0x30));
+    second = PSVECDotProduct((const Vec *)((u8 *)arg0 + 0x24), (const Vec *)((u8 *)arg0 + 0x24));
+    if (second > first) {
+        first = second;
+    }
+    return (f32)fn_8002F234(first);
+}
+
+extern "C" void fn_8019ECC4(void);
+extern "C" void fn_801CFA48(void*);
+extern s32 lbl_80333728;
+void* fn_801A3F5C(void* arg0, s32 arg1, s32 arg2) {
+    fn_8019ECC4();
+    *(s32*)arg0 = (s32)&lbl_80333728;
+    if (arg2 != 0) {
+        *(void**)((u8*)arg0 + 0x24) = (u8*)arg0 + 0x40;
+        fn_801CFA48((u8*)arg0 + 0x40);
+    }
+    return arg0;
 }
 
 void fn_801A442C(void *arg0, void *arg1, void *arg2) {
