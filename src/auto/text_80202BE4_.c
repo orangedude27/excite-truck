@@ -27,6 +27,7 @@ extern s32 lbl_8055ED04;
 extern s32 lbl_8055ED0C;
 extern u8 lbl_8055ED10;
 extern s32 lbl_8055ED14;
+#pragma use_lmw_stmw off
 #pragma dont_inline on
 extern s8 lbl_8055ED18;
 extern s32 lbl_8055ED1C;
@@ -49,22 +50,47 @@ u32 fn_80202BE4(void) {
 }
 
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
+    struct lbl_80488B88_t* var_r28;
+    s32 temp_r0;
     s32 temp_r5;
     s32 temp_r6;
     s32 temp_r7;
     s32 temp_r8;
     s32 temp_r9;
     s32 temp_r10;
+    s32 temp_r11;
+    s32 temp_r12;
+    s32 temp_r29;
+    s32 temp_r30;
+    s32 temp_r31;
 
     lbl_8055ED1C = -1;
     fn_802C8BD0(-1);
+    temp_r29 = arg1->w[0];
+    temp_r30 = arg1->w[1];
+    temp_r31 = arg1->w[2];
+    temp_r12 = arg1->w[3];
+    temp_r11 = arg1->w[4];
     temp_r10 = arg1->w[5];
     temp_r9 = arg1->w[6];
     temp_r8 = arg1->w[7];
     temp_r7 = arg1->w[8];
     temp_r6 = arg1->w[9];
     temp_r5 = arg1->w[10];
-    lbl_80488B88 = *arg1;
+    temp_r0 = arg1->w[11];
+    var_r28 = &lbl_80488B88;
+    var_r28->w[0] = temp_r29;
+    var_r28->w[1] = temp_r30;
+    var_r28->w[2] = temp_r31;
+    var_r28->w[3] = temp_r12;
+    var_r28->w[4] = temp_r11;
+    var_r28->w[5] = temp_r10;
+    var_r28->w[6] = temp_r9;
+    var_r28->w[7] = temp_r8;
+    var_r28->w[8] = temp_r7;
+    var_r28->w[9] = temp_r6;
+    var_r28->w[10] = temp_r5;
+    var_r28->w[11] = temp_r0;
     fn_802BE07C(arg0 + 0x24, (s32)fn_802036E4, temp_r5, temp_r6, temp_r7, temp_r8, temp_r9, temp_r10);
     fn_802C8D74();
 }
@@ -118,12 +144,12 @@ void fn_80203DC8(void) {
     fn_802D30DC(0);
     var_r30 = (struct lbl_8048897C_t*)((s32)&lbl_8048897C - 0x8000);
     var_r31 = (struct lbl_8048897C_t*)((s32)var_r30 + 0x8000);
-    var_r28 = 0;
     var_r29 = 0;
-    while (var_r28 < var_r31->count) {
-        fn_80203D84((s32*)((u8*)lbl_8048897C.ptr + var_r29));
-        var_r29 += 8;
-        var_r28 += 1;
+    var_r28 = 0;
+    while (var_r29 < var_r31->count) {
+        fn_80203D84((s32*)((u8*)lbl_8048897C.ptr + var_r28));
+        var_r28 += 8;
+        var_r29 += 1;
     }
     var_r31->count = 0;
 }
