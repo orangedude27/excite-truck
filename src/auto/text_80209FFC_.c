@@ -48,21 +48,21 @@ extern u8 fn_8020A100[];
 extern s8 lbl_8055EDD0;
 extern s8 lbl_8055EDD4;
 extern s32 lbl_804892C0[];
-extern s32 lbl_8055B560[];
+extern s32 lbl_8055B560;
 extern char lbl_8055B568[];
 
 void fn_8020A550(void) {
     char buf[64];
     s32* var_r30;
     s32* var_r29;
-    s32 var_r27;
     s8* var_r28;
+    s32 var_r27;
 
     fn_80127D58(fn_8020A100);
     lbl_8055EDD0 = 0;
     var_r30 = lbl_804892C0;
     var_r27 = 0;
-    var_r29 = lbl_8055B560;
+    var_r29 = &lbl_8055B560;
     var_r28 = &lbl_8055EDD4;
     do {
         if (*var_r30 != 0) {
