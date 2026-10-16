@@ -25,7 +25,9 @@ extern f32 lbl_80561628;
 
 void fn_80149210(void *arg0) {
     s32 x = ((s32 *)arg0)[1] + 1;
-    ((s32 *)arg0)[1] = ((s32)(x + 2) / 4) - (1 - (x >> 31)) - 1;
+    u32 b = (u32)x >> 31;
+    u32 t = (u32)(x << 30) - b;
+    ((u32 *)arg0)[1] = ((t << 2) | (t >> 30)) + b;
 }
 
 s32 fn_80149234(void *arg0) {
@@ -41,19 +43,12 @@ s32 fn_80149274(void **arg0) {
 
 void fn_801492AC(void *arg0, f32 *arg1, s32 arg2) {
     u8 *obj = (u8 *)(arg2 + ((s32 *)arg0)[1]);
-    f32 f = (f32)(u32)obj[0x18];
-    f = *arg1 + f;
-    if (lbl_80561628 < f) {
-        /* empty */
-    } else {
-        f = lbl_80561628;
-    }
-    if (f > lbl_805615D4) {
-        /* empty */
-    } else {
-        f = lbl_805615D4;
-    }
-    obj[0x18] = (u8)(s32)f;
+    f32 f2 = lbl_80561628;
+    f32 b = *arg1;
+    f32 v = b + (f32)obj[0x18];
+    f2 = (f2 < v) ? f2 : v;
+    f2 = (f2 > lbl_805615D4) ? f2 : lbl_805615D4;
+    obj[0x18] = (u8)(s32)f2;
 }
 
 extern s32 lbl_802F93E0[];
