@@ -53,6 +53,13 @@ extern float lbl_805638B0;
 extern float lbl_805638C8;
 #pragma pop
 float fn_80214D48(void);
+unsigned char fn_802E8690(s32);
+void fn_80221F94(void *, s32);
+#pragma push
+#pragma small_data off
+extern float lbl_805638CC;
+#pragma pop
+extern float lbl_80558DC4[];
 
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
