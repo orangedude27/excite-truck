@@ -1,6 +1,6 @@
 #include <types.h>
 typedef void (*Unk800B7E18Callback)(u8);
-extern "C" Unk800B7E18Callback lbl_80405D00[2];
+extern "C" Unk800B7E18Callback lbl_80405D00[];
 extern "C" s32 lbl_80405C30[];
 extern "C" s32 lbl_80405C98[];
 extern "C" s32 fn_800B74B8(s8);
