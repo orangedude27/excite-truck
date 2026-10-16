@@ -3,6 +3,15 @@
 
 void fn_80179EE8(void*, unsigned int);
 void fn_80128668(void*);
+extern unsigned char lbl_8055E46C;
+extern long fn_801284F8(long, void *);
+extern long fn_801A6484(void);
+extern unsigned char lbl_8055A304;
+void fn_80178224(void) {
+    if (fn_801284F8(0x2780, &lbl_8055A304) != 0)
+        fn_801A6484();
+}
+
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_80179EE8((void*)arg0, 0);
@@ -98,4 +107,7 @@ void DBPrintf_80179758(const char *fmt, ...) {
 void DBPrintf_801797A8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
-
+extern unsigned char lbl_8055E46C;
+extern unsigned char lbl_8055A304;
+extern long fn_801284F8(long, void *);
+extern long fn_801A6484(void);
