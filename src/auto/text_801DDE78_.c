@@ -14,7 +14,28 @@ extern void* lbl_8055E9CC;
 extern u32 lbl_80339478[];
 extern u32 lbl_80486F30[];
 s32 fn_80145E70(void*);
+extern u32 lbl_804348E8[];
+s32 fn_80179630(s32);
+s32 fn_801DDE78(void);
+void fn_801DDED0(s32, f32*, s32, f32, f32, f32);
 s32 fn_802E2C20(void);
+typedef s32 (*UnkFunc2)(void*, s32);
+void fn_801DDED0(s32 arg0, f32* arg1, s32 arg2, f32 farg0, f32 farg1, f32 farg2) {
+    s32 idx;
+    u32* entry;
+
+    idx = lbl_8055E9C4;
+    entry = &lbl_80486F30[idx * 7];
+    entry[0] = (u32)arg0;
+    lbl_8055E9C4 = idx + 1;
+    entry[1] = (u32)arg2;
+    entry[2] = (u32)arg1;
+    *(f32*)&entry[3] = *arg1;
+    *(f32*)&entry[4] = farg0;
+    *(f32*)&entry[5] = farg1;
+    *(f32*)&entry[6] = farg2;
+}
+
 void fn_801DDFE8(void* arg0) {
     f32 temp_e8, temp_e4, temp_e0, temp_dc;
     f32 temp_d8, temp_d4, temp_d0, temp_cc, temp_c8;
@@ -70,7 +91,7 @@ void fn_801DE0A4(void) {
 
 void fn_801DE0E8(void) {
     if (lbl_8055E9C0 != 0) {
-        (*(UnkFunc*)(*(u32*)((u32*)lbl_8055E9C0 + 2) + 8))(1);
+        (*(UnkFunc*)(*(u32*)((u8*)*(u32*)((u8*)lbl_8055E9C0 + 0) + 8)))(1);
     }
     lbl_8055E9C0 = 0;
 }
