@@ -21,7 +21,7 @@ extern "C" void fn_800D16C4(OSAlarm *, void *);
 
 extern u32 lbl_8055DDB0;
 extern "C" const char lbl_8031E9C0[];
-extern u8 lbl_8055DDA8[];
+DECL_SECTION(".sdata") extern u8 lbl_8055DDA8[];
 extern u32 lbl_8055DDF8;
 extern "C" void fn_800D1C48(void);
 
@@ -181,6 +181,19 @@ extern "C" void fn_800D1200(void) {
 
 extern "C" void fn_800D1558(void) {
 
+}
+
+extern "C" u8 fn_800D1688(s32 *arg0) {
+    if (*arg0 >= 4) {
+        return 0;
+    }
+    return lbl_8055DDA8[*arg0];
+}
+
+extern "C" void fn_800D16A8(s32 *arg0) {
+    if (*arg0 < 4) {
+        lbl_8055DDA8[*arg0] = 0;
+    }
 }
 
 extern "C" void *fn_800D19F8(void *arg0, s32 arg1) {
@@ -491,29 +504,10 @@ extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *arg0, long arg1, int a
 #pragma opt_tail_call on
 extern "C" void fn_800D1C48(void);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
-    // Check cr1 for early exit - bne cr1, 0x2d9e8
-    // This is a compiler-generated check that we can't directly express in C
-    // The function saves f1-f8 and sets up a PanicStruct
-    
     #pragma unused(file)
     #pragma unused(line)
     #pragma unused(msg)
-    
-    u32 sp_8[2];
-    u32 sp_C;
-    u32 sp_10;
-    u32 sp_14;
-    u32 sp_18;
-    u32 sp_1C;
-    u32 sp_20;
-    u32 sp_24;
-    u32 sp_68;
-    u32 sp_6C;
-    u32 sp_70;
-    u8 sp_88[16];
-    
-    // The assembly stores: r3=msg, r4=line, r5=file into stack slots
-    // then calls fn_800D2098 with &sp_68
-    fn_800D2098(&sp_68);
+
+    fn_800D2098(NULL);
 }
 extern s32 lbl_8055DDD4;
