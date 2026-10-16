@@ -6,14 +6,51 @@ extern int lbl_8049F9D8;
 extern int lbl_8055F554;
 extern float lbl_80563E78;
 void fn_80270AE8(void *arg0) {
-    ((float *)arg0)[0] = lbl_80563E78;
-    ((float *)arg0)[1] = lbl_80563E78;
-    ((float *)arg0)[3] = lbl_80563E78;
-    ((float *)arg0)[2] = lbl_80563E78;
+    float value = lbl_80563E78;
+    ((float *)arg0)[0] = value;
+    ((float *)arg0)[1] = value;
+    ((float *)arg0)[3] = value;
+    ((float *)arg0)[2] = value;
 }
 
 void DBPrintf_80270B00(const char *fmt, ...) {
 #pragma unused(fmt)
+}
+
+void fn_80270B74(void) {
+    *(int *)((char *)&lbl_8049F9D8 + 0x00) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x1C) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x38) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x54) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x70) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x8C) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0xA8) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0xC4) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0xE0) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0xFC) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x118) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x134) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x150) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x16C) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x188) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x1A4) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x1C0) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x1DC) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x1F8) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x214) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x230) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x24C) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x268) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x284) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x2A0) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x2BC) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x2D8) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x2F4) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x310) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x32C) = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x348) = 0;
+    lbl_8055F554 = 0;
+    *(int *)((char *)&lbl_8049F9D8 + 0x364) = 0;
 }
 
 int fn_80270D1C(int arg0) {
