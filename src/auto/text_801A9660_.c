@@ -15,3 +15,6 @@ void fn_801AD5EC(void) {
 void fn_801AD5F0(void) {
     fn_801ACF94();
 }
+
+long fn_801ADA8C(long arg0) { return arg0 + 0x118; }
+
