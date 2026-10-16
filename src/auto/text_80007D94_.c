@@ -24,6 +24,15 @@ void fn_80012778(void);
 void fn_80131818(void*);
 void fn_802E317C(const char*, ...);
 
+int stricmp(const char*, const char*);
+void fn_80012794(void);
+void fn_80279488(void);
+void fn_802E30C8(const char*, ...);
+extern const char lbl_802FB7A4[];
+void fn_80007D94(const char** arg0, const char** arg1) {
+    stricmp(*arg0, *arg1);
+}
+
 void fn_80007F04(void) {
     Unk8034EF38* p = &lbl_8034EF38;
     fn_80131818(p->unk_0x1E4);
@@ -36,23 +45,23 @@ void fn_80007F40(void) {
     fn_80012778();
 }
 
+#pragma scheduling on
 const char* fn_80007F90(u32 arg0) {
     Unk802FB70C* p;
-    for (p = lbl_802FB70C; p->unk_0x0 != 0; p++) {
-        if (p->unk_0x0 == arg0)
-            return p->unk_0x4;
+    u32 key;
+    for (p = lbl_802FB70C; (key = p->unk_0x0) != 0; ++p) {
+        if (key == arg0) return p->unk_0x4;
     }
     fn_802E317C(lbl_802FB77C, arg0);
     return lbl_80558998;
 }
-
 const char* fn_80007FF0(u32 arg0) {
     Unk802FB70C* p;
-    for (p = lbl_802FB70C; p->unk_0x0 != 0; p++) {
-        if (p->unk_0x0 == arg0)
-            return p->unk_0x8;
+    u32 key;
+    for (p = lbl_802FB70C; (key = p->unk_0x0) != 0; ++p) {
+        if (key == arg0) return p->unk_0x8;
     }
     fn_802E317C(lbl_802FB77C, arg0);
     return lbl_805589A0;
 }
-
+#pragma scheduling reset
