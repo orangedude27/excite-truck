@@ -1,8 +1,14 @@
+#include "revolution/SC/scapi.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8056004C;
 extern void *lbl_80560044;
+extern f32 lbl_80560050;
+s32 fn_802E98C8(void) {
+    return 0;
+}
+
 void* fn_802E9A0C(void) {
     return lbl_80560044;
 }
