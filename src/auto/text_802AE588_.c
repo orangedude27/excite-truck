@@ -18,13 +18,13 @@ void fn_802AE5E0(int arg0) {
     int *ptr = &lbl_804BDFF0[1];
     int total = 0;
     int i = 2;
-    do {
-        *ptr = total;
-        total += (i + 1) * 4;
-        i *= 2;
-        ptr++;
-    } while (i <= arg0);
-    lbl_8055F984[0] = fn_8012850C(total * 2, &lbl_8055CD7C);
+loop:
+    *ptr = total;
+    total += (i + 1) * 4;
+    i *= 2;
+    ptr++;
+    if (i <= arg0) goto loop;
+    *(int *)lbl_8055F984 = fn_8012850C(total * 2, &lbl_8055CD7C);
 }
 
 void fn_802AE64C(void *arg0) {
@@ -50,10 +50,19 @@ void fn_802AE690(void *arg0) {
 }
 
 float fn_802AE6E0(void *arg0, void *arg1) {
-    float temp_f3 = *(float *)((char *)arg0 + 8);
-    float temp_f2 = temp_f3 - *(float *)((char *)arg1 + 8);
-    float temp_f0 = *(float *)arg0 - *(float *)arg1;
-    return (float)fn_8002F234(temp_f0 * temp_f0 + temp_f2 * temp_f2, temp_f2, temp_f3);
+    float y0 = *(float *)((char *)arg0 + 8);
+    float y1 = *(float *)((char *)arg1 + 8);
+    float x0 = *(float *)arg0;
+    float x1 = *(float *)arg1;
+    float dy = y0 - y1;
+    float dx = x0 - x1;
+    float dy2 = dy * dy;
+    float dx2 = dx * dx;
+    return (float)fn_8002F234(dx2 + dy2, dy, y0);
+}
+
+int fn_802AFF54(void *arg0) {
+    return ((int *)arg0)[1];
 }
 
 void* fn_802B05DC(void) {
