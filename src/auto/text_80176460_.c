@@ -71,6 +71,8 @@ void *__AXFXGetLfoSinTable_801769CC(void) {
     return lbl_804303E0;
 }
 
+u32 *fn_801769D8(void) { return &lbl_8055E3F8; }
+
 void __AXDSPInitCallback_801769E0(void) {
     lbl_8055E3C0 = 1;
 }
