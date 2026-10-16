@@ -23,6 +23,19 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
     return this_;
 }
 
+extern "C" void fn_802328D4(void*);
+extern "C" int lbl_8033F9E0[];
+extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void**)arg0 = &lbl_8033F9E0;
+        fn_802328D4(((void**)arg0)[1]);
+        if (arg1 > 0) {
+            ((s32 (*)(void*))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229054(
     void* this_, s32 flag) {
     if (this_) {
