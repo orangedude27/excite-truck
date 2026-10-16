@@ -40,7 +40,6 @@ s32 fn_801B2F40(s32 arg0) {
     return ((s32 *)lbl_80435C30)[arg0];
 }
 
-extern void *lbl_8055E694;
 void* fn_801B307C(void) {
     return lbl_8055E694;
 }
