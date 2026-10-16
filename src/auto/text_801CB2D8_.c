@@ -221,16 +221,12 @@ void fn_801CE6A0(void) {
 
 }
 
-void fn_801CE6A4(void *arg0, s32 arg1, s32 arg2) {
-    s32 sp10;
-    s32 spC;
-    s32 sp8;
-    spC = arg1;
-    sp8 = 1;
-    sp10 = arg2;
-    *(s32 *)((char *)arg0 + 0) = sp8;
-    *(s32 *)((char *)arg0 + 4) = spC;
-    *(s32 *)((char *)arg0 + 8) = sp10;
+void fn_801CE6A4(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
+    Struct_801CE670 local;
+    local.field4 = arg1;
+    local.field0 = 1;
+    local.field8 = arg2;
+    *arg0 = local;
 }
 
 void fn_801CE6CC(void) {
