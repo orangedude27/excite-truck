@@ -88,6 +88,12 @@ void fn_801B4720(int arg0) {
     (*(void (**)(void))(*(int *)*(int *)arg0 + 0x18))();
 }
 
+#pragma dont_inline on
+int fn_801B47AC(int arg0) {
+    return *(int *)(arg0 + 0x20);
+}
+#pragma dont_inline off
+
 void fn_801B47B4(void *arg0) {
     fn_801B47D4(arg0, *(int *)((char *)arg0 + 0x24));
 }
