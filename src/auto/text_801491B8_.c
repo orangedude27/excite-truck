@@ -128,6 +128,10 @@ void fn_80155AEC(void) {
 
 }
 
+void fn_80155E58(void *arg0) {
+    ((u8 *)arg0)[4] = 0;
+}
+
 void fn_801560F4(void) {
 
 }
