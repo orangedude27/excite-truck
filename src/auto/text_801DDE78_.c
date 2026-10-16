@@ -21,6 +21,10 @@ void fn_801DDED0(s32, f32*, s32, f32, f32, f32);
 s32 fn_802E2C20(void);
 typedef s32 (*UnkFunc2)(void*, s32);
 #pragma dont_inline on
+s32 fn_801DDE78(void) {
+    return lbl_804348E8[fn_80179630(0)];
+}
+
 s32 fn_801DDEAC(void) {
     return fn_801DDE78() + 0x32C;
 }
