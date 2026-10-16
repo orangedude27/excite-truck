@@ -29,6 +29,8 @@ int fn_80188E24(void) { return 0; }
 typedef unsigned char u8;
 typedef unsigned int u32;
 typedef float f32;
+extern f32 lbl_80561CD0;
+int fn_801C2BF8(int, f32 *);
 void **fn_801B83A0(void);
 int fn_801BF1B8(int, int);
 extern f32 lbl_80561CAC;
