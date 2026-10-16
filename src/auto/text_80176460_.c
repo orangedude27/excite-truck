@@ -37,6 +37,10 @@ void* fn_80176A1C(void) {
     return lbl_8055A2F0;
 }
 
+void fn_80176A24(f32 arg0) {
+    lbl_8055A2F4 = arg0;
+}
+
 void fn_80176A6C(void) {
     fn_801771A8();
 }
