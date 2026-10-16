@@ -16,6 +16,14 @@ extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void* this_, u32 a);
 extern "C" void fn_8002F634(void* arg0, void* arg1, s32 arg2, s32 arg3);
 extern "C" void fn_80128668(void* arg0);
 extern "C" void fn_800FB374(void);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FD9C8(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void* __dt__Q46nw4hbm3snd6detail9StrmSoundFv(void* arg0, s32 arg1) {
     void* temp_r3;
     void* temp_r3_2;
