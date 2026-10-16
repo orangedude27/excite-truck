@@ -97,29 +97,27 @@ void *fn_8023E078(void *arg0, int arg1) {
 }
 
 void fn_8023E0DC(void *arg0, int arg1, int arg2) {
-    int i;
-    int count;
-
+    int var_r31;
     if (arg1 < 0 || arg1 >= *(int *)((char *)arg0 + 8)) {
         return;
     }
-    count = *(int *)((char *)arg0 + 4);
-    for (i = count; i > 0; i--) {
-        fn_8022D894(arg0, arg1, i - 1, fn_8022D850(arg0, arg1, i - 1, 0), 1);
-    }
+    var_r31 = *(int *)((char *)arg0 + 4);
+    do {
+        fn_8022D894(arg0, arg1, var_r31, fn_8022D850(arg0, arg1, var_r31, 0), 1);
+        var_r31--;
+    } while (var_r31 > 0);
 }
 
 void fn_8023E16C(void *arg0, int arg1) {
-    int i;
-    int count;
-
+    int var_r31;
     if (arg1 < 0 || arg1 >= *(int *)((char *)arg0 + 8)) {
         return;
     }
-    count = *(int *)((char *)arg0 + 4);
-    for (i = count; i > 0; i--) {
-        fn_8022D894(arg0, arg1, i - 1, fn_8022D850(arg0, arg1, i - 1, 0), 0);
-    }
+    var_r31 = *(int *)((char *)arg0 + 4);
+    do {
+        fn_8022D894(arg0, arg1, var_r31, fn_8022D850(arg0, arg1, var_r31, 0), 0);
+        var_r31--;
+    } while (var_r31 > 0);
 }
 
 extern int lbl_80341C40[];
@@ -137,6 +135,10 @@ extern void fn_801A9050(void *, s32);
 extern void fn_8023E33C(void *, s32, s32);
 s32 fn_8023E540(s32 arg0) {
     return arg0 + 0x14;
+}
+
+void fn_8023E548(s32 arg0) {
+    fn_8023E3D8(arg0, 1);
 }
 
 int fn_8023E3D8(int, int);
