@@ -159,6 +159,11 @@ void fn_8011BC48(void) {
     fn_80120084();
 }
 
+extern void *lbl_8055DEF0;
+void* fn_8011FF24(void) {
+    return lbl_8055DEF0;
+}
+
 extern char lbl_8055DF08;
 char fn_8012742C(void) {
     return lbl_8055DF08;
