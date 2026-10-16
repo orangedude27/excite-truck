@@ -4,3 +4,7 @@
 extern void fn_80128668(void*);
 void fn_802A0940(void) {
 }
+
+void fn_802A0AF8(void) {
+}
+
