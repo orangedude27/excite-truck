@@ -18,6 +18,13 @@ void* fn_80135108(void) {
     return lbl_8055E0B0;
 }
 
+s32 fn_80135110(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 s32 fn_80135150(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
