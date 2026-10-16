@@ -47,6 +47,14 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void* fn_802A2EEC(void* arg0, void* arg1) {
+    *(void**)arg0 = lbl_80349B50;
+    s32 result = (*(s32 (**)(void*, void*))(*(void**)((char*)arg1 + 0x14)))(arg1, &lbl_8055CBB0);
+    fn_802A30BC(arg0, result);
+    fn_802A31DC(arg0, result);
+    return arg0;
+}
+
 extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void**)arg0 = lbl_80349B50;
@@ -61,7 +69,7 @@ extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
 
 extern "C" void* fn_802A3314(void* arg0, void* arg1) {
     *(void**)arg0 = lbl_80349B28;
-    s32 result = (*(s32 (**)(void*, void*))(*(void**)((char*)arg1 + 0x14)))(arg1, lbl_8055CBB0);
+    s32 result = (*(s32 (**)(void*, void*))(*(void**)((char*)arg1 + 0x14)))(arg1, &lbl_8055CBB0);
     fn_802A3500(arg0, result);
     return arg0;
 }
@@ -125,6 +133,10 @@ extern "C" void fn_802A49A0(void* arg0) {
 
 extern "C" void fn_802A49C8(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v4();
+}
+
+extern "C" void fn_802A49DC(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v5();
 }
 
 extern "C" u32 fn_802A4A18(void) { return 1; }
