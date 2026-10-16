@@ -77,6 +77,8 @@ void fn_8001BBBC(void *arg0, s32 arg1) {
 
 s32 fn_8001BC18(s32 arg0) { return arg0 + 0x14; }
 
+s32 fn_8001BC20(s32 arg0) { return arg0 + 0x1C; }
+
 s32 fn_8001BCF0(void *arg0) {
     s32 var_r5 = 0;
     
