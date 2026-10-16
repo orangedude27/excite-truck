@@ -50,12 +50,12 @@ int fn_801C0440(void *arg0) {
     return *(int *)((char *)arg0 + 0x1EC) != 0;
 }
 
-extern void PSVECDotProduct(void *);
+extern void PSVECDotProduct(void *, void *);
 extern void PSVECCrossProduct(void *, void *, void *);
 extern float lbl_805628B8;
 extern float lbl_805628BC;
 void fn_801C0E44(void *arg0) {
-    PSVECDotProduct(arg0);
+    PSVECDotProduct(arg0, arg0);
 }
 
 void fn_801C0E4C(void *arg0, void *arg1, void *arg2) {
