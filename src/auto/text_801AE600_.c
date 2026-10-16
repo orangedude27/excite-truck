@@ -10,6 +10,12 @@ int fn_801AE610(void) {
     return 0;
 }
 
+#pragma dont_inline on
+int fn_801AE618(int arg0) {
+    return arg0 & 1;
+}
+#pragma dont_inline reset
+
 void fn_801AE620(void *arg0) {
     fn_801AE618(*(unsigned short *)((char *)arg0 + 0xE));
 }
