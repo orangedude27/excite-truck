@@ -9,7 +9,10 @@ extern void *memset(void *, int, unsigned int);
 void *fn_801E87A8(void);
 extern int fn_802726AC(void);
 void fn_8027156C();
+#pragma push
+#pragma small_data off
 extern int lbl_8049A258;
+#pragma pop
 #pragma push
 #pragma small_data off
 extern int lbl_8049F9D8;
@@ -180,23 +183,27 @@ int fn_802726EC(float farg0, float farg1, float farg2) {
 }
 
 int fn_80272C24(float farg0, float farg1, float farg2, float farg3) {
-    if (farg1 == farg2) {
-        return 1;
-    }
+    if (farg1 == farg2) return 1;
     if (farg1 > farg2) {
-        if (farg1 > farg0) {
-            farg1 -= farg3;
-        } else {
-            farg2 += farg3;
-        }
+        if (farg1 > farg0) farg1 -= farg3;
+        else farg2 += farg3;
     }
-    if (farg0 >= farg1) {
-        return 0;
-    }
-    if (farg0 <= farg2) {
-        return 0;
-    }
+    if (!(farg0 < farg1)) return 0;
+    if (!(farg0 > farg2)) return 0;
     return 1;
+}
+
+void fn_80273354(void) {
+    memset(&lbl_8049A258, 0, 0x64);
+    *(int *)((char *)&lbl_8049A258 + 0x1C) = 1;
+    *(int *)((char *)&lbl_8049A258 + 0x18) = 0;
+    *(int *)((char *)&lbl_8049A258 + 0x2C) = 1;
+    *(int *)((char *)&lbl_8049A258 + 0x30) = 1;
+    *(int *)((char *)&lbl_8049A258 + 0x40) = 2;
+    *(int *)((char *)&lbl_8049A258 + 0x44) = 3;
+    *(int *)((char *)&lbl_8049A258 + 0x54) = 5;
+    *(int *)((char *)&lbl_8049A258 + 0x58) = 3;
+    ((void (*)(int, int, int, void *))fn_8027156C)(3, 2, 1, &lbl_8049A258);
 }
 
 void fn_802733F0(void) {
