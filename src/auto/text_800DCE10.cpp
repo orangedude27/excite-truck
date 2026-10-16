@@ -167,3 +167,8 @@ extern "C" s32 fn_800DF1C8(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" unsigned int* fn_800DFC54(void) {
+    extern unsigned int lbl_8055DE08;
+    return &lbl_8055DE08;
+}
+
