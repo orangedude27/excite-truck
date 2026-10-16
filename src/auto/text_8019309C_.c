@@ -4,6 +4,7 @@
 typedef unsigned char u8;
 extern void *lbl_804349C0[];
 extern void *lbl_804349E0[];
+extern int lbl_80333390;
 void fn_801964D0(void);
 void fn_80128668(void *);
 void fn_80193138(int);
