@@ -1,12 +1,41 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern float lbl_8055B4D4;
+extern char lbl_80489258[];
+
 extern float lbl_80563230;
 extern float lbl_80563234;
 extern void fn_80208A50(float *);
 
 extern void *lbl_8055EDA8;
 extern int lbl_80489238[4];
+extern char lbl_8033BEF8[];
+extern char lbl_8033BF08[];
+extern void fn_801331C4(int, void *, float *);
+extern void fn_8013323C(int, void *, float);
+extern void fn_80209030(float);
+void fn_80208AC8(int arg0, int arg1) {
+    volatile float initial = lbl_80563230;
+    float value = initial;
+    switch (arg1) {
+    case 3:
+        fn_801331C4(arg0 + 12, lbl_8033BF08, &value);
+        fn_8013323C(4, lbl_8033BEF8, value);
+        fn_80209030(value);
+        break;
+    case 1:
+    case 2:
+        fn_801331C4(4, lbl_8033BEF8, &value);
+        fn_8013323C(arg0 + 12, lbl_8033BF08, value);
+        break;
+    case 0:
+        fn_8013323C(4, lbl_8033BEF8, value);
+        fn_80209030(value);
+        break;
+    }
+}
+
 int fn_80208CFC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
