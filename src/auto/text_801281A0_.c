@@ -253,14 +253,11 @@ s32 fn_801288A4(void) {
 
 void fn_80128DCC(void *arg0) {
     s32 offset = 0;
-    s32 limit = *(s32 *)((u8 *)arg0 + 4);
-    u8 *base = *(u8 **)((u8 *)arg0 + 0xC);
-    while (offset < limit) {
-        u8 *entry = base + offset;
-        if (*(u32 *)entry != 0x53544B41)
-            fn_802E317C(lbl_8032A430, entry);
+    do {
+        u8 *entry = (u8 *)(*(u32 *)((u8 *)arg0 + 0xC) + offset);
+        if (*(u32 *)entry != 0x53544B41) fn_802E317C(lbl_8032A430, entry);
         offset += *(s32 *)(entry + 0x28) + 0x40;
-    }
+    } while (offset < *(s32 *)((u8 *)arg0 + 4));
 }
 
 s32 fn_80128E58(void *arg0, s32 arg1) {
@@ -272,5 +269,20 @@ s32 fn_80128E58(void *arg0, s32 arg1) {
     else
         result = 0;
     return result;
+}
+
+void *fn_80128EB4(void *arg1) {
+    if ((u32)*(s32 *)((u8 *)arg1 - 0x40) != 0x53544B41U) {
+        return &lbl_8032A068;
+    }
+    return (u8 *)arg1 - 0x3C;
+}
+
+void fn_80128ED8(void *arg0, s32 arg1, s32 arg2) {
+    s32 *p = (s32 *)arg0;
+    p[1] = arg1;
+    p[2] = 0;
+    p[3] = arg2;
+    p[4] = 0;
 }
 
