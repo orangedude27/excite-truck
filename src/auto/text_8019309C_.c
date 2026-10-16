@@ -40,5 +40,8 @@ extern int lbl_80333390;
 void fn_801964D0(void);
 void fn_80128668(void *);
 void fn_80193138(int);
+void fn_801964D0(void);
+void fn_80128668(void *);
+void fn_80193138(int);
 int fn_80198EA4(void) { return 0; }
 
