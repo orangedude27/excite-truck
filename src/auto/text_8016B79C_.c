@@ -8,9 +8,7 @@ extern f32 lbl_805619A0;
 void *fn_80128668(void *);
 void fn_802C6CF8(int);
 int fn_8016C25C(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668((void *)arg0);
-    }
+    if (arg0 != 0 && arg1 > 0) { fn_80128668((void *)arg0); }
     return arg0;
 }
 
@@ -32,25 +30,15 @@ void *fn_8016C29C(void *arg0, int arg1) {
 }
 
 void fn_8016C55C(void *arg0, void *arg1) {
-    int index;
-    void *base;
-    void *dst;
-    unsigned char byte;
-    int word;
-    float x;
-    float y;
-    index = ((int *)arg0)[1];
-    base = *((void **)arg0);
+    int index = ((int *)arg0)[1];
+    void *base = *(void **)arg0;
+    unsigned char byte = *(unsigned char *)arg1;
+    void *dst = (void *)((char *)base + (index << 4));
     ((int *)arg0)[1] = index + 1;
-    dst = (void *)((char *)base + index * 16);
-    byte = *(unsigned char *)arg1;
-    word = *((int *)arg1 + 1);
-    x = *((float *)arg1 + 2);
-    y = *((float *)arg1 + 3);
     *(unsigned char *)dst = byte;
-    *((int *)dst + 1) = word;
-    *((float *)dst + 2) = x;
-    *((float *)dst + 3) = y;
+    *((int *)dst + 1) = *((int *)arg1 + 1);
+    *((float *)dst + 2) = *((float *)arg1 + 2);
+    *((float *)dst + 3) = *((float *)arg1 + 3);
 }
 
 void *fn_8016C598(void *arg0, int arg1, int arg2) {
@@ -72,10 +60,10 @@ void fn_8016CD10(void *arg0) {
 }
 
 void fn_8016CD28(void *arg0) {
-    *((u8 *)arg0 + 0x10) = 0;
     ((s32 *)arg0)[0] = -1;
     ((s32 *)arg0)[1] = 0;
     ((s32 *)arg0)[2] = 0;
+    *((u8 *)arg0 + 0x10) = 0;
     ((s32 *)arg0)[3] = 3;
 }
 
