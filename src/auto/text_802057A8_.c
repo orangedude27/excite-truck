@@ -31,7 +31,7 @@ void fn_802061F8(void) {
 
 void fn_80206228(void) {
     if (lbl_8055ED6C != -2) {
-        fn_802CAC54();
+        ((void (*)(int))fn_802CAC54)(lbl_8055ED6C);
         lbl_8055ED6C = -2;
     }
 }
