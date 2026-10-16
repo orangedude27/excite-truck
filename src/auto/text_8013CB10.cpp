@@ -49,7 +49,11 @@ extern "C" void *fn_80141EB0(s32 *arg0) {
     return result;
 }
 
-extern "C" void fn_801B2EC0(s32);
+extern "C" void fn_80143128(u8 *arg0) {
+    ((void (*)())(*(u8 **)arg0)[0x4C / 4])();
+}
+
+extern "C" u8 *fn_801B2EC0(s32);
 extern "C" void fn_801431F4(u8 *arg0) {
     *(u8 *)(arg0 + 0x26C) = 1;
 }
