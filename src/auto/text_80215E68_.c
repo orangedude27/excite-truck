@@ -25,7 +25,10 @@ extern s32 fn_802161CC(s32);
 extern s32 fn_80218370(void);
 extern s32 fn_802E97B4(void);
 extern void fn_802166B8(void);
+#pragma small_data off
 extern char lbl_8033D690;
+#pragma small_data on
+extern s32 fn_80215EC4(s32, s32);
 extern void *lbl_80490710;
 extern void fn_8002F634(void *, void *, s32, s32);
 extern f32 lbl_8055EF94;
@@ -52,6 +55,11 @@ s32 fn_80215EC4(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+void fn_80215F04(void *arg0) {
+    *(char **)arg0 = &lbl_8033D690;
+    *(s32 *)((u8 *)arg0 + 0x14) = 0;
 }
 
 s32 fn_80215F1C(s32 arg0, s32 arg1) {
@@ -110,6 +118,15 @@ void fn_8021605C(void *arg0, s32 arg1) {
     temp_r4 = *(s32 *)((u8 *)arg0 + 8);
     temp_r3 = *(s32 *)((u8 *)arg0 + 4);
     fn_802C3424(temp_r3, temp_r4, temp_r3 + *(s32 *)((u8 *)arg0 + 0xC), temp_r4 + *(s32 *)((u8 *)arg0 + 0x10), lbl_8055FBDC);
+}
+
+void fn_80216194(void) {
+    s32 i;
+    i = 1;
+    do {
+        fn_802166B8();
+        i++;
+    } while (i < 3);
 }
 
 void fn_8021662C(void) {
