@@ -24,3 +24,7 @@ struct Color {
     u8 b2;
     u8 b3;
 };
+
+extern "C" u32* fn_800DCDFC(void) {
+    return &lbl_8055DE00;
+}
