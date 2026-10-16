@@ -202,6 +202,7 @@ unsigned char fn_80291720(void *arg0) {
 }
 
 #pragma dont_inline reset
+extern int lbl_8055F748;
 extern float lbl_8055F738;
 extern unsigned char lbl_8055F73C;
 extern int lbl_804B34B0;
