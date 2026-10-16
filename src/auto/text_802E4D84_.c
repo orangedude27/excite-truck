@@ -36,6 +36,14 @@ int fn_802E6AD0(int arg0) {
     return 0;
 }
 
+void fn_802E6B04(void) {
+    fn_802E7770();
+    fn_802E2E0C(fn_802E6AD0, &lbl_8055D1F0);
+}
+
+void fn_802E6B34(void) {
+}
+
 void fn_802E6B38(void* arg0, signed char* arg1) {
     *arg1 = 0;
 }
