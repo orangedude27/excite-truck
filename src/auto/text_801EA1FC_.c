@@ -30,6 +30,13 @@ void fn_801EA390(void) {
     fn_801EBC70();
 }
 
+void fn_801EA394(void) {
+    if (lbl_8055EB60[4] != 0)
+        fn_802C86E8(0xFF000000);
+    else
+        fn_802C86E8(0xFFC9C9EA);
+}
+
 void fn_801EA3B8(void) {
     fn_802C990C(0xC9C9EB);
     fn_802C86E8(0xFF000000);
