@@ -622,10 +622,14 @@ s32 fn_801DA8C8(void *, void *);
 extern f32 lbl_80562AE0;
 extern f32 lbl_80562AEC;
 void fn_801D82A0(void *arg0) {
+    s32 state, a, b, delta;
     f32 f;
     void **p;
-    if (*(s32 *)((u8 *)arg0 + 0x40) == 2 &&
-        lbl_8055E3C4 - (*(s32 *)((u8 *)arg0 + 0x34) + *(s32 *)((u8 *)arg0 + 0x30)) >= 0) {
+    state = *(s32 *)((u8 *)arg0 + 0x40);
+    a = *(s32 *)((u8 *)arg0 + 0x34);
+    b = *(s32 *)((u8 *)arg0 + 0x30);
+    delta = lbl_8055E3C4 - (a + b);
+    if (state == 2 && delta >= 0) {
         p = *(void ***)((u8 *)arg0 + 0x2C);
         if (p != 0) {
             if (*(s32 *)((u8 *)arg0 + 0x38) == 0) f = lbl_80562AE0;
@@ -656,6 +660,8 @@ void fn_801D8600(void *arg0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
     }
 }
+
+s32 fn_801D8618(void) { return 0; }
 
 #pragma pop
 void fn_801D8620(void) {
