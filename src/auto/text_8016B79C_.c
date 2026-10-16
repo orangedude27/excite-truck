@@ -101,6 +101,33 @@ s32 fn_8016DE10(s32 *arg0, s32 arg1) {
     return *arg0 + (arg1 * 0x10);
 }
 
+extern f32 lbl_8055E3C8;
+extern f32 lbl_80561998;
+extern void fn_8001B450(s32);
+extern void fn_802BAF98(void *, s8);
+void fn_8016DFB8(void *arg0) {
+    char sp8;
+    s32 value = *(s32 *)((u8 *)arg0 + 0x44);
+    if (value == 1) {
+        fn_801345D8(&sp8, 0x1e, lbl_803306D0 + 0x264, *(s32 *)((u8 *)arg0 + 0x2c));
+    } else if (value >= 0 && value < 1) {
+        fn_801345D8(&sp8, 0x1e, lbl_803306D0 + 0x270, *(s32 *)((u8 *)arg0 + 0x2c));
+    } else if (value >= 0 && value < 3) {
+        fn_801345D8(&sp8, 0x1e, lbl_803306D0 + 0x27c, *(s32 *)((u8 *)arg0 + 0x2c));
+    } else {
+        fn_802E317C(lbl_803306D0 + 0x288);
+    }
+    fn_8016A15C(&sp8);
+}
+
+void fn_8016E118(void *arg0) {
+    s32 value = *(s32 *)((u8 *)arg0 + 0x24);
+    if (value != -1) {
+        fn_8001B450(value);
+        *(s32 *)((u8 *)arg0 + 0x24) = -1;
+    }
+}
+
 s32 fn_80170E78(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x1ec); }
 
 f32 fn_80170E80(f32 *arg0) { return *arg0; }
