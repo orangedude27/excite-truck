@@ -136,6 +136,13 @@ void fn_801C7EF4(void) {
     fn_801C78D8();
 }
 
+extern s32 lbl_8055E854;
+extern void fn_801C78D8(void);
+void fn_801C80BC(void) {
+    lbl_8055E854 = 0;
+    fn_801C78D8();
+}
+
 void fn_801C94B8(void) {
     fn_80238A74();
 }
