@@ -127,6 +127,14 @@ extern "C" void fn_800D1558(void) {
 
 }
 
+extern "C" s32 fn_800D1E78(void *arg0, s32 arg1, s32 arg2) {
+    void *ptr = (u8 *)arg0 + arg1 * 0x68;
+    if (((s32 *)ptr)[0x50 / 4] != 0 && arg2 == ((s32 *)ptr)[0x58 / 4]) {
+        return 1;
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1) {
     u8 val = ((u8 *)((u8 *)arg0 + arg1 * 0x68))[0x62];
     s32 result = (s32)val;
@@ -210,11 +218,13 @@ s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
     s32 r29 = (s32)arg1;
     s32 r30 = (s32)arg2;
     
-    while (r31 != NULL) {
-        if (fn_800D3F94(r31, r28, r29, r30) != 0) {
+    fn_800D3F94(r31, r28, r29, r30);
+    
+    if (r31 != 0) {
+        r31 = *(void **)((u8 *)r31 + 0xC);
+        if (r31 != 0) {
             return 1;
         }
-        r31 = *(void **)((u8 *)r31 + 0xC);
     }
     return 0;
 }
@@ -339,13 +349,32 @@ extern "C" void fn_800D2480(void) {
 #pragma opt_tail_call on
 #pragma opt_tail_call on
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
-    f64 f0 __attribute__((reg_struct_return));
-    s32 r31_save = 0;
-    void *r30 = 0;
+    u32 sp_8[16];
+    u32 sp_C;
+    u32 sp_10;
+    u32 sp_14;
+    u32 sp_18;
+    u32 sp_1C;
+    u32 sp_20;
+    u32 sp_24;
+    u32 sp_68;
+    u32 sp_6C;
+    u32 sp_70;
+    u32 sp_88[16];
     
-    r31_save = 0x3000000;
-    r30 = (void *)0x3000000;
+    sp_8[0] = (u32)msg;
+    sp_8[1] = (u32)file;
+    sp_C = (u32)line;
+    sp_10 = 0;
+    sp_14 = 0;
+    sp_18 = 0;
+    sp_1C = 0;
+    sp_20 = 0;
+    sp_24 = 0;
+    sp_68 = 0x3000000;
+    sp_6C = (u32)&sp_88[0];
+    sp_70 = (u32)&sp_8[0];
     
-    fn_800D2098(&r30);
+    fn_800D2098(&sp_68);
 }
 extern s32 lbl_8055DDD4;
