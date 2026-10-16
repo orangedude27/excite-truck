@@ -509,6 +509,21 @@ extern "C" void *AllocTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4h
     return track;
 }
 
+extern "C" void OSCreateAlarm(void*);
+extern "C" void OSSetAlarmUserData(void*, void*);
+extern "C" void* memset(void*, int, u32);
+extern u8 lbl_80323770[];
+extern u8 lbl_80323790[];
+extern "C" void FreeTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm3snd6detail8SeqTrack(void* arg0, void* arg1) {
+    if (arg1 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323770, 0x3B, (const char*)lbl_80323790);
+    *(u32*)((u8*)arg1 + 0xB4) = 0;
+    if (arg1 != 0) {
+        (*(void (**)(void*, s32))(*(u32*)arg1 + 8))(arg1, -1);
+        fn_800EC848((void**)((u8*)arg0 + 8), arg1);
+    }
+}
+
 extern "C" void DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(void*);
 extern void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, u32);
 extern "C" s32 NANDClose(void*);
@@ -547,6 +562,22 @@ extern "C" void fn_800EE47C(void* arg0) {
         ((u8*)arg0)[0x1D8] = 0;
     }
     fn_800F27AC(arg0);
+}
+
+extern "C" void OSCreateAlarm(void*);
+extern "C" void OSSetAlarmUserData(void*, void*);
+extern "C" void* memset(void*, int, u32);
+extern u8 lbl_80323770[];
+extern u8 lbl_80323790[];
+extern "C" void* fn_800EE4F0(void* arg0) {
+    u8* p = (u8*)arg0;
+    p[0] = 0; p[1] = 0; p[2] = 0; p[3] = 0; p[4] = 0; p[5] = 0; p[6] = 0;
+    *(u32*)(p + 0x30) = 0;
+    OSCreateAlarm(p + 0x38);
+    OSSetAlarmUserData(p + 0x38, arg0);
+    OSCreateAlarm(p + 0x68);
+    OSSetAlarmUserData(p + 0x68, arg0);
+    return arg0;
 }
 
 extern "C" void fn_800EEB64(u8 *arg0) {
