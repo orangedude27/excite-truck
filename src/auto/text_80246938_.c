@@ -109,6 +109,11 @@ void fn_80247AAC(void) {
     lbl_8055BEB4 = (void*)fn_80214D04();
 }
 
+void fn_80248770(void *arg0) {
+    *(unsigned char*)((char*)arg0 + 0x18) = 1;
+    *(s32*)((char*)arg0 + 0x1C) = fn_80221EA8();
+}
+
 void fn_802487A8(void *arg0) {
     *(unsigned char*)((char*)arg0 + 0x18) = 0;
 }
