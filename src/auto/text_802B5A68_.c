@@ -36,6 +36,19 @@ void* fn_802B5A68(void* arg0, s32 arg1) {
     return arg0;
 }
 
+void* fn_802B5AC0(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(s32 *)arg0 = 0;
+            *((s32 *)arg0 + 1) = 0;
+            *((s32 *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_802B5B6C(void) {
     fn_802B59A4(lbl_8055FA3C);
 }
