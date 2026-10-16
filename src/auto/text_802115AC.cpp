@@ -32,6 +32,11 @@ extern "C" s32 fn_802151D4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern void *lbl_8055EF38;
+extern "C" void* fn_8021525C(void) {
+    return lbl_8055EF38;
+}
+
 void fn_802152C8(void) {
 }
 
