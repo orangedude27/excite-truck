@@ -510,6 +510,7 @@ typedef enum {
     USB_IOCTLV_BLKMSG,
     USB_IOCTLV_INTRMSG
 } USBIoctl;
+#pragma use_lmw_stmw off
 extern void DCInvalidateRange(const void* buf, u32 len);
 extern s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void* buffer, s32 ioctl, void (*callback)(void), void* callbackArg, s32 async);
 void fn_80070758(void) {
