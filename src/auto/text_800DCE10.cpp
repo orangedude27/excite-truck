@@ -124,3 +124,35 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7TextBoxFUlUc(void *this_ptr, u
     base[part2 + 0xD8] = color;
 }
 
+extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 len) {
+    if (len != 0) {
+        u16 bytes = (len + 1) * 2;
+        u16 current = *(u16 *)((u8 *)this_ptr + 0xF8);
+        if (bytes > current) {
+            void **vtable = *(void***)this_ptr;
+            void (*fn)(void*) = (void (*)(void*))vtable[0x68 / 4];
+            fn(this_ptr);
+            void *result = MEMAllocFromAllocator(lbl_8055DDF0, bytes);
+            *(void **)((u8 *)this_ptr + 0xD4) = result;
+            if (result != NULL) {
+                *(u16 *)((u8 *)this_ptr + 0xF8) = bytes;
+            }
+        }
+    }
+}
+
+extern "C" void fn_800DEFD8(void *this_ptr) {
+    void *buffer = *(void **)((u8 *)this_ptr + 0xD4);
+    if (buffer != NULL) {
+        MEMFreeToAllocator(lbl_8055DDF0, buffer);
+        *(void **)((u8 *)this_ptr + 0xD4) = NULL;
+        *(u16 *)((u8 *)this_ptr + 0xF8) = 0;
+    }
+}
+
+extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const u16 *str, u16 len) {
+    u16 str_len = fn_8002AEE8(str);
+    void **vtable = *(void***)this_ptr;
+    void (*fn)(void*, const u16*, u16, u16) = (void (*)(void*, const u16*, u16, u16))vtable[0x70 / 4];
+    fn(this_ptr, str, len, str_len);
+}
