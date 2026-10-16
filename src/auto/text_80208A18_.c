@@ -6,6 +6,9 @@ extern float lbl_80563234;
 extern void fn_80208A50(float *);
 
 extern void *lbl_8055EDA8;
+extern int lbl_80489238[4];
+int fn_80208D4C(int index) { return lbl_80489238[index]; }
+
 void* fn_802090B4(void) {
     return lbl_8055EDA8;
 }
