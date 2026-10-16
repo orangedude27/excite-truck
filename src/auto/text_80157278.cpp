@@ -307,7 +307,7 @@ s32 fn_80158A5C(void *arg0, s32 *arg1) {
 
 extern "C" s32 fn_80158A6C(void) { return 0; }
 
-void fn_80158A74(void *arg0, f32 farg0) {
+extern "C" void fn_80158A74(void *arg0, f32 farg0) {
     *(f32 *)((u8 *)arg0 + 0x274) = farg0;
     *((u8 *)arg0 + 0x272) = 1;
 }
