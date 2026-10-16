@@ -129,7 +129,8 @@ extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 
         u16 bytes = (len + 1) * 2;
         u16 current = *(u16 *)((u8 *)this_ptr + 0xF8);
         if (bytes > current) {
-            void (*fn)(void*) = *(void (**)(void*))(*(u32*)this_ptr + 0x68);
+            void *vtbl = *(void **)this_ptr;
+            void (*fn)(void*) = (void (*)(void*))*(void **)((u8 *)vtbl + 0x68);
             fn(this_ptr);
             void *result = MEMAllocFromAllocator(lbl_8055DDF0, bytes);
             *(void **)((u8 *)this_ptr + 0xD4) = result;
@@ -149,12 +150,20 @@ extern "C" void fn_800DEFD8(void *this_ptr) {
     }
 }
 
-extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_, const u16 *str, u16 len) {
-    void *local1 = this_;
-    const u16 *local2 = str;
-    u16 local3 = len;
-    u32 wlen = fn_8002AEE8(local2);
-    void (*fn)(void*, const u16*, u32) =
-        *(void (**)(void*, const u16*, u32))(*(u32*)local1 + 0x70);
-    fn(local1, local2, (u32)(u16)wlen);
+extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const u16 *str, u16 len) {
+    const u16 *str_local = str;
+    u16 len_local = len;
+    void *this_local = this_ptr;
+    u32 wlen = fn_8002AEE8(str_local);
+    void **vtable = *(void ***)this_local;
+    void (*fn)(void*, const u16*, u32) = (void (*)(void*, const u16*, u32))vtable[0x70 / 4];
+    fn(this_local, str_local, (u32)(u16)wlen);
 }
+
+extern "C" s32 fn_800DF1C8(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
