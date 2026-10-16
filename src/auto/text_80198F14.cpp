@@ -23,6 +23,8 @@ extern "C" void fn_801D0650(void);
 extern "C" void fn_801CFF14(void);
 extern "C" s32 fn_801CF828(s32, s32, s32, s32, s32);
 extern s32 lbl_8055E5A0;
+extern "C" s32 fn_801CFEAC(void*);
+extern s32 lbl_803336EC;
 
 class VTab19 {
 public:
