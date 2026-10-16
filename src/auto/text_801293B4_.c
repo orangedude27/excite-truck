@@ -4,3 +4,9 @@
 void fn_801293C4(void) {
 
 }
+
+extern void *lbl_8055DFC0;
+void fn_801293C8(void* hi) {
+    lbl_8055DFC0 = hi;
+}
+
