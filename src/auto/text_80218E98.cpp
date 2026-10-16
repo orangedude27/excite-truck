@@ -131,6 +131,58 @@ extern f32 lbl_805634A4;
 extern f32 lbl_805634B0;
 extern f32 lbl_805634B4;
 
+extern "C" void fn_80218EE0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 temp_r0;
+    s32 temp_r0_2;
+    s32 temp_r0_3;
+    s32 temp_r0_4;
+    s32 var_r4 = arg1;
+    s32 var_r5 = arg2;
+    s32 var_r6 = arg3;
+    s32 var_r7 = arg4;
+
+    temp_r0 = *(s32 *)((u8 *)arg0 + 0x14);
+    if (temp_r0 > var_r4)
+        var_r4 = temp_r0;
+    temp_r0_2 = *(s32 *)((u8 *)arg0 + 0x18);
+    *(s32 *)((u8 *)arg0 + 0x14) = var_r4;
+    if (temp_r0_2 > var_r5)
+        var_r5 = temp_r0_2;
+    temp_r0_3 = *(s32 *)((u8 *)arg0 + 0x1C);
+    *(s32 *)((u8 *)arg0 + 0x18) = var_r5;
+    if (temp_r0_3 < var_r6)
+        var_r6 = temp_r0_3;
+    temp_r0_4 = *(s32 *)((u8 *)arg0 + 0x20);
+    *(s32 *)((u8 *)arg0 + 0x1C) = var_r6;
+    if (temp_r0_4 < var_r7)
+        var_r7 = temp_r0_4;
+    *(s32 *)((u8 *)arg0 + 0x20) = var_r7;
+}
+
+extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    f32 b = lbl_805634A4;
+    s32 zero = 0;
+    s32 one = 1;
+    f32 a = lbl_805634A0;
+    *(u8 *)((u8 *)arg0 + 0x1A) = one;
+    *(u8 *)((u8 *)arg0 + 0x1B) = one;
+    *(f32 *)((u8 *)arg0 + 0x1C) = a;
+    *(f32 *)((u8 *)arg0 + 0x20) = a;
+    *(f32 *)((u8 *)arg0 + 0x24) = b;
+    *(f32 *)((u8 *)arg0 + 0x28) = b;
+    *(u8 *)((u8 *)arg0 + 0x234) = one;
+    *(s32 *)((u8 *)arg0 + 0x238) = zero;
+    *(u8 *)((u8 *)arg0 + 0x18) = zero;
+    *(s32 *)((u8 *)arg0 + 0x230) = zero;
+    *(s32 *)((u8 *)arg0 + 4) = arg1;
+    *(s32 *)((u8 *)arg0 + 0xC) = arg3;
+    *(s32 *)((u8 *)arg0 + 8) = arg2;
+    *(s32 *)((u8 *)arg0 + 0x10) = arg4;
+    *(s32 *)((u8 *)arg0 + 0x14) = arg5;
+    *(u8 *)((u8 *)arg0 + 0x19) = zero;
+    *(s32 *)((u8 *)arg0 + 0x2C) = zero;
+}
+
 extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
     void *obj = arg0;
     void **vt = *(void ***)obj;
@@ -320,6 +372,16 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802199D0(void *arg0, 
         fn_802223C4(arg0, 0);
         if (arg1 > 0) fn_80128668(arg0);
     }
+    return arg0;
+}
+
+extern "C" void *fn_80219A28(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+    fn_80218F80();
+    *(void **)arg0 = lbl_8033F434;
+    fn_80219AB4(arg0, *(s32 *)((u8 *)arg1 + 4), arg2,
+        *(s32 *)((u8 *)arg1 + 0x9C), arg3,
+        *(s32 *)((u8 *)arg1 + 0xA0),
+        *(s32 *)((u8 *)arg1 + 0xA4) == 0 ? 0 : 1);
     return arg0;
 }
 
@@ -781,22 +843,19 @@ extern "C" s32 fn_8021D8D4(void *arg0) {
 }
 
 extern "C" void fn_8021E7D4(void *arg0) {
-    register s32 *obj;
-    register s32 *index;
-    register s32 pos;
+    s32 *obj;
+    s32 *index;
+    s32 pos;
     s32 limit;
     obj = *(s32 **)((u8 *)arg0 + 0x248);
-    if (obj == 0)
-        return;
+    if (!obj) return;
     index = *(s32 **)((u8 *)arg0 + 0x25C);
     pos = *index;
     if (pos > obj[1] + obj[2] - 1) {
         obj[2] = pos - obj[1] + 1;
         limit = obj[0] - obj[1];
-        if (obj[2] > limit)
-            obj[2] = limit;
-        if (obj[2] < 0)
-            obj[2] = 0;
+        if (obj[2] > limit) obj[2] = limit;
+        if (obj[2] < 0) obj[2] = 0;
     }
     obj = *(s32 **)((u8 *)arg0 + 0x248);
     index = *(s32 **)((u8 *)arg0 + 0x25C);
@@ -804,10 +863,8 @@ extern "C" void fn_8021E7D4(void *arg0) {
     if (pos < obj[2]) {
         obj[2] = pos;
         limit = obj[0] - obj[1];
-        if (pos > limit)
-            obj[2] = limit;
-        if (obj[2] < 0)
-            obj[2] = 0;
+        if (pos > limit) obj[2] = limit;
+        if (obj[2] < 0) obj[2] = 0;
     }
 }
 
@@ -817,6 +874,27 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *arg0, 
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" void fn_8022B2D4(void *, s32, s32, s32, s32, s32, s32);
+extern "C" void *lbl_8033E988;
+extern "C" void fn_8021EB9C(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = &lbl_8033E988;
+        fn_802C519C(*(void **)((u8 *)arg0 + 0xA5C));
+        if (*(void **)((u8 *)arg0 + 0xA60) != 0)
+            fn_802C519C(*(void **)((u8 *)arg0 + 0xA60));
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+}
+
+extern "C" void fn_8021F044(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    void **vt = *(void ***)arg0;
+    ((void (*)(void *, s32))vt[25])(arg0, 0);
 }
 
 extern "C" void fn_8022071C(void *arg0) {
