@@ -62,7 +62,11 @@ s32 fn_802315FC(s32 arg0) {
     return 0;
 }
 
-void fn_80231714(void) {
+void fn_80231714(void) {}
+
+s32 fn_80231718(s32 arg0) {
+    u32 value = (u32)lbl_8055F060;
+    return (arg0 & 0xFF000000) | (value & 0x00FF0000) | (value & 0x0000FFFF);
 }
 
 extern s32 sprintf(char *, const char *, ...);
