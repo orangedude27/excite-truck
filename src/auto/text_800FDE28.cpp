@@ -25,6 +25,23 @@ extern double lbl_80561108; // 1.0
 extern f32 lbl_802F6124[]; // pan table
 #pragma pop
 
+extern "C" u32 OSDisableInterrupts(void);
+extern "C" void OSRestoreInterrupts(u32 level);
+extern "C" void Stop__Q36nw4hbm3snd10WavePlayerFv(void *);
+extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
+extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, u32);
+
+#pragma push
+#pragma small_data off
+extern u8 lbl_80327334[];
+extern u8 lbl_802F5210[];
+#pragma pop
+
+extern f32 lbl_805610D4; // 1.0
+extern f32 lbl_805610D8; // 0.0
+extern f32 lbl_805610DC; // 128.0
+extern f32 lbl_805610E0; // 0.0
+
 extern "C" u32 fn_800FEB9C(void);
 
 extern "C" void fn_800FDFF8(void *arg0) {
@@ -76,9 +93,6 @@ u32 fn_800FEB9C(void) {
 
 extern "C" void *GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(
     s32 type, u32 arg, void *pBase) {
-    s32 dummy;
-    (void)dummy;
-
     if (type == 1) {
         return (void *)(arg + (u32)pBase);
     }
