@@ -4,3 +4,10 @@
 void fn_80279464(void* alarm) {
     fn_80279CE4(fn_80279370(alarm));
 }
+
+extern void* fn_80279D3C(void*);
+extern void fn_802793AC(void*);
+void fn_80279488(void* alarm) {
+    fn_802793AC(fn_80279D3C(alarm));
+}
+
