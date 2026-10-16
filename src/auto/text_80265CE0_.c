@@ -4,6 +4,8 @@
 extern void fn_80128668(void*);
 void fn_80265D38(void) {}
 
+void fn_80265D3C(void) {}
+
 void fn_80265D4C(void) {}
 
 void fn_80265D50(void) {}
