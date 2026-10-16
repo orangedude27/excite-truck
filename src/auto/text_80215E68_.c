@@ -63,6 +63,15 @@ u8 fn_80215FF4(u8 *arg0) { return *arg0; }
 
 u32 fn_80216054(void) { return 1; }
 
+void fn_8021605C(void *arg0, s32 arg1) {
+    s32 temp_r4;
+    s32 temp_r3;
+    fn_802C3034(arg1);
+    temp_r4 = *(s32 *)((u8 *)arg0 + 8);
+    temp_r3 = *(s32 *)((u8 *)arg0 + 4);
+    fn_802C3424(temp_r3, temp_r4, temp_r3 + *(s32 *)((u8 *)arg0 + 0xC), temp_r4 + *(s32 *)((u8 *)arg0 + 0x10), lbl_8055FBDC);
+}
+
 void fn_8021676C(void) {
 
 }
