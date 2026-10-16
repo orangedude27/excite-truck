@@ -9,3 +9,11 @@ void fn_802889F0(void) {
     fn_80289554(lbl_8055F6DC);
     fn_80289F54(lbl_8055F6E4);
 }
+
+int fn_802894B4(int arg0) {
+    fn_802896E4();
+    fn_802897E0(arg0);
+    fn_80289554(arg0);
+    return arg0;
+}
+
