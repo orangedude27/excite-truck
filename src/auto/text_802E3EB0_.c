@@ -36,7 +36,11 @@ void fn_802E3F38(void *arg0) {
 }
 
 int fn_802E4030(int arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_802E3EB8();
+    void (*reset)(void);
+    if (arg0 != 0 && arg1 > 0) {
+        reset = fn_802E3EB8;
+        reset();
+    }
     return arg0;
 }
 
