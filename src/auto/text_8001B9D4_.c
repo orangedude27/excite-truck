@@ -99,6 +99,10 @@ s32 fn_8001BD28(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+u8 fn_8001BD30(void *arg0) {
+    return *(u8 *)((u8 *)arg0 + 0x10);
+}
+
 s32 fn_8001BD6C(void *arg0, void *arg1) {
     s32 r3 = ((s32 *)arg0)[6];
     s32 r4 = ((s32 *)arg0)[3];
@@ -114,7 +118,8 @@ void *fn_8001BE94(void *dest, int val, size_t count) {
 }
 
 void fn_8001BF0C(f32 arg0) {
-    fn_8001BC28((s32)arg0);
+    f32 temp = arg0;
+    fn_8001BC28(*(s32 *)&temp);
 }
 
 void *fn_8001C070(void *dest, int val, size_t count) {
@@ -122,10 +127,11 @@ void *fn_8001C070(void *dest, int val, size_t count) {
     return dest;
 }
 
+#pragma dont_inline on
 s32 fn_8001C0A0(void) {
     return *(s32 *)fn_8001BC18(0);
 }
-
+#pragma dont_inline reset
 void fn_8001C0E8(void) {
     fn_8001BC28();
 }
