@@ -31,6 +31,7 @@ extern void fn_801B3398(void);
 void* fn_801B3B70(void*);
 extern void* memset(void*, s32, u32);
 extern u8 lbl_80435C50[0x20];
+extern s32 fn_801796CC(s32, void*, s32, s32, s32, s32, s32, s32);
 
 void fn_801B435C(void*);
 
