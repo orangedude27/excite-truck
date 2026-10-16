@@ -30,3 +30,45 @@ int fn_801F0010(int arg0, int arg1) {
     return value;
 }
 
+extern float lbl_80562F10;
+extern float lbl_80562F14;
+extern float lbl_80562F18;
+extern int lbl_8033A400;
+extern int lbl_8033A410;
+extern int lbl_8055B0C0;
+extern int lbl_8055EBEC;
+extern int lbl_8055EBF0;
+int stricmp(const char *, const char *);
+void fn_801F08AC(int, const char *);
+int fn_801F09FC(const char *arg0) {
+    int offset = 0;
+    int count = 0;
+    while (count < lbl_8055EBF0) {
+        if (stricmp((const char *)(lbl_8055EBEC + offset), arg0) == 0) {
+            return lbl_8055EBEC + count * 0x138;
+        }
+        offset += 0x138;
+        count++;
+    }
+    {
+        int result = lbl_8055EBEC + lbl_8055EBF0 * 0x138;
+        lbl_8055EBF0++;
+        fn_801F08AC(result, arg0);
+        return result;
+    }
+}
+
+void fn_801F131C(void *arg0, int arg1) {
+    if (*(unsigned int *)((char *)arg0 + 4) != 3) {
+        int value;
+        if (arg1 != 0) value = 0;
+        else value = fn_801F15A8((char *)arg0 + 0x3C);
+        fn_801F163C(arg0, value, *(float *)((char *)arg0 + 0x48));
+    }
+}
+
+void fn_801F1378(void *arg0) {
+    if (*(unsigned int *)((char *)arg0 + 4) != 3)
+        fn_801F163C(arg0, 0, *(float *)((char *)arg0 + 0x48));
+}
+
