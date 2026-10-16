@@ -31,6 +31,12 @@ void* fn_8026E20C(void) {
     return lbl_8055F4E4;
 }
 
+void* fn_8026E214(void* value) {
+    void* old = lbl_8055F4E8;
+    lbl_8055F4E8 = value;
+    return old;
+}
+
 extern void *lbl_8055F4E8;
 extern f32 lbl_80563D78;
 extern f32 lbl_80563D7C;
