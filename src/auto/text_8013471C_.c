@@ -93,6 +93,11 @@ s32 fn_80135234(void) {
     return 0;
 }
 
+void fn_8013523C(void *arg0, void *arg1, void *arg2, s32 *arg3, s32 *arg4) {
+    *arg4 = 0;
+    *arg3 = 0;
+}
+
 void fn_80135254(void) {
 
 }
