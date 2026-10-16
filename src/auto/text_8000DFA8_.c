@@ -138,6 +138,11 @@ void fn_8000F4BC(void) {
     }
 }
 
+extern s32 lbl_80558A90;
+f32 fn_8001090C(f32 farg0) {
+    return lbl_805602C8 * (farg0 * (f32)fn_80232B70(lbl_8055D490));
+}
+
 extern s32 fn_80232B70(s32);
 extern s32 lbl_8055D490;
 extern s32 lbl_80558A90;
