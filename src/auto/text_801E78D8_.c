@@ -72,6 +72,8 @@ void fn_801E8144(void) {
 
 }
 
+void fn_801E83D4(void) { extern int fn_801B89F8(void); extern void *lbl_8055AF0C; extern void fn_801EBD18(void *); if (fn_801B89F8() == 0 || lbl_8055AF0C == 0) fn_801EBD18(lbl_8055AF0C); }
+
 void fn_801E85A0(void) {
 
 }
