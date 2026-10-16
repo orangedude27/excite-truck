@@ -1,6 +1,23 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <types.h>
+
+typedef struct SrcCoef {
+    s32 unk0;
+    s32 unk4;
+    s32 unk8;
+    void* unkC;
+} SrcCoef;
+
+extern SrcCoef lbl_802FDF30[8];
+extern s32 lbl_8055D610;
+extern s32 fn_8000DA10(void);
+void fn_80128668(void*);
+void fn_80128670(s32);
+void fn_80131818(s32);
+s32 fn_8001F89C();
+
 void fn_8001EF38(void* alarm) {
     fn_8001EFF0(fn_8001F528(alarm));
 }
