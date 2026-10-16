@@ -238,9 +238,27 @@ float fn_802C7808(void) {
     return *(float *)((char *)(*(void **)((char *)fn_802C5390() + 4)) + 0x1C);
 }
 
+s32 fn_802C7830(char *arg0) {
+    s32 value = 0;
+    signed char c = *arg0;
+    while (c != 0) {
+        value <<= 4;
+        if ((c >= '0') && (c <= '9')) {
+            value |= c - '0';
+        } else {
+            value |= c - '7';
+        }
+        arg0++;
+        c = *arg0;
+    }
+    return value;
+}
+
 void fn_802C7A10(void* alarm) {
     fn_8012C58C(fn_802C53A8(alarm));
 }
+
+void fn_802C7A34(void) { fn_802DA704(); }
 
 extern s8 lbl_8055FC20;
 extern void fn_802C543C(void);
