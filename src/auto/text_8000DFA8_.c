@@ -462,10 +462,31 @@ f32 fn_80011E04(s32 arg0) {
     return lbl_80350F28[arg0][4];
 }
 
+extern f32 lbl_80350EC4[];
+f32 fn_80011E60(void) {
+    return lbl_80350EC4[3];
+}
+
 void fn_8000F158(void) {
     fn_802328D4(lbl_8055D498);
     fn_80234470();
     lbl_8055D490 = 0;
+}
+
+s32 fn_8000EE54(s32 arg0) {
+    switch (arg0) {
+    case 13:
+        return -1;
+    default:
+        fn_802E317C(&lbl_802FC3DC);
+        break;
+    case 11:
+        return -1;
+    case 14:
+        return -0x5400;
+    case 12:
+        return -0x5400;
+    }
 }
 
 f32 fn_8000EEC8(s32 arg0, f32 arg1) {
