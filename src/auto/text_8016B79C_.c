@@ -23,6 +23,27 @@ extern void fn_802E317C(const char *, ...);
 extern void fn_8016A15C(char *);
 void *fn_80128668(void *);
 void fn_802C6CF8(int);
+extern s32 fn_8002F6AC(void *);
+extern void *fn_80128668(void *);
+extern s32 fn_8002F37C(void *, void *, s32, s32);
+extern void fn_8016B4FC(void *);
+extern void fn_8016CDE0(void *);
+extern void fn_8016C168(void);
+void *fn_8016B79C(void *arg0, s32 arg1) {
+ s32 flag; void (*cb)(void *);
+ if (arg0 != 0) {
+  flag=*(s32 *)((u8 *)arg0+0x10);
+  if (flag != 0) {
+   cb=fn_8016B4FC; fn_8002F6AC(cb);
+   *(s32 *)((u8 *)arg0+0x10)=0; *(s32 *)((u8 *)arg0+0x14)=0;
+   *(s32 *)arg0=0; *((s32 *)arg0+1)=0; *((s32 *)arg0+2)=0;
+  }
+  if (arg0 != 0) { *(s32 *)arg0=0; *((s32 *)arg0+1)=0; *((s32 *)arg0+2)=0; }
+  if (arg1>0) fn_80128668(arg0);
+ }
+ return arg0;
+}
+
 int fn_8016C25C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) { fn_80128668((void *)arg0); }
     return arg0;
@@ -85,6 +106,14 @@ void fn_8016CD28(void *arg0) {
     ((int *)arg0)[3] = 3;
 }
 
+s32 fn_8016CD4C(void *arg0) { s32 *base=*(s32 **)arg0; s32 index=((s32 *)arg0)[1]; ((s32 *)arg0)[1]=index+1; return (s32)base+index*0x14; }
+
+void *fn_8016CD68(void *arg0,s32 arg1,s32 arg2) {
+ s32 temp; s32 size=arg1*0x14; fn_8012850C(size+0x10,arg2);
+ temp=fn_8002F37C(fn_8016CDE0,fn_8016C168,0x14,arg1);
+ ((s32 *)arg0)[0]=temp; ((s32 *)arg0)[3]=temp; ((s32 *)arg0)[2]=arg1; ((s32 *)arg0)[1]=0; return arg0;
+}
+
 void fn_8016CDE0(void *arg0) {
     *(u8 *)((u8 *)arg0 + 8) = 0;
     *(s32 *)((u8 *)arg0) = 0;
@@ -120,6 +149,8 @@ void *fn_8016CEC0(void *arg0, s32 arg1) {
 void fn_8016CEFC(void *arg0) {
     ((s32 *)arg0)[1] = 0;
 }
+
+void fn_8016D278(void *arg0) { *(void **)arg0=(u8 *)arg0+0xC; ((s32 *)arg0)[2]=8; ((s32 *)arg0)[1]=0; }
 
 s32 fn_8016DD98(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
@@ -230,20 +261,33 @@ extern void fn_8016E984(void *);
 extern s32 fn_80179650(void);
 void fn_8016E880(void *arg0, void *arg1) {
     s32 count = *(s32 *)((u8 *)arg0 + 8);
-    s32 i;
-    void **items = *(void ***)((u8 *)arg0 + 4);
+    s32 index = 0;
+    s32 offset = 0;
+    void *items = *(void **)((u8 *)arg0 + 4);
+    void *entry = arg1;
     *(s32 *)arg1 = count;
     *(s32 *)((u8 *)arg1 + 4) = fn_80179650();
     *((u8 *)arg1 + 0xD) = 1;
     *((u8 *)arg1 + 0xE) = 0;
-    for (i = 0; i < count; i++) {
-        u8 *entry = (u8 *)arg1 + i * 0x14;
-        *(s32 *)(entry + 0x10) = i;
-        *(u8 *)(entry + 0x20) = 0;
-        *(s32 *)(entry + 0x18) = **(s32 **)items[i];
-        *(s32 *)(entry + 0x14) = 1;
+    do {
+        *(s32 *)((u8 *)entry + 0x10) = index;
+        index += 1;
+        *((u8 *)entry + 0x20) = 0;
+        *(s32 *)((u8 *)entry + 0x18) =
+            **(s32 **)((u8 *)items + offset);
+        offset += 4;
+        *(s32 *)((u8 *)entry + 0x14) = 1;
         *((u8 *)arg1 + 0xC) = 1;
-    }
+        entry = (u8 *)entry + 0x14;
+    } while (index < count);
+}
+
+void fn_8016E918(void *arg0) {
+    *(void **)((u8 *)arg0 + 0x98) = fn_80145E70(lbl_80330BC8);
+    if (fn_801284F8(8, lbl_80330BD8) != 0)
+        *(void **)((u8 *)arg0 + 0xB8) = fn_802ADDD8(1);
+    fn_8016EA9C((u8 *)arg0 + 0xAC);
+    fn_8016E984((u8 *)arg0 + 0xAC);
 }
 
 void fn_8016FD9C(f32 *arg0, void *arg1) {
