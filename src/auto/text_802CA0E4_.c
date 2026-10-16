@@ -15,8 +15,8 @@ void fn_802D8FB4(void);
 extern int lbl_8055D058;
 extern int lbl_8055D078;
 void fn_802CB38C(int arg0, int arg1, int arg2) {
-    fn_802CA57C(lbl_8055D078, 0, arg2);
-    fn_802CA4E0(arg0, lbl_8055D058, 0, arg1, arg2);
+    fn_802CA57C(lbl_8055D078, 0, arg0);
+    fn_802CA4E0(arg2, lbl_8055D058, 0, arg1, arg0);
 }
 
 void fn_802CB3F4(void) {
@@ -32,6 +32,9 @@ extern float lbl_80564F40;
 extern float lbl_80564F44;
 extern float lbl_8055FCC4;
 void fn_802CC550(int, float, float);
+int fn_802CB274(int arg0) {
+    return fn_802DB2C0(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x28));
+}
 void fn_802CC73C(char arg0) {
     lbl_8055D07D = arg0;
 }
