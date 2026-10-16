@@ -64,6 +64,59 @@ s32 fn_801613A0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_801615B4(s32 arg0) {
+    s32 total = 0;
+    s32 i = 0;
+    do {
+        fn_80161E40(i);
+        total += fn_8016208C();
+        i++;
+    } while (i < arg0);
+    return total;
+}
+
+extern s32 lbl_8055A0B0;
+extern s32 lbl_8055A0B8;
+void fn_801619A8(void) {
+    s32 index = lbl_8055E304;
+    if (index >= 0 && index < *(s32 *)(lbl_8042FDEC + 4))
+        lbl_8055E300 = *(s32 *)(*(char **)lbl_8042FDEC + index * 4);
+    if (lbl_8055E300 != 0)
+        ((void (*)(void *))(*(void ***)lbl_8055E300)[8])((void *)lbl_8055E300);
+    lbl_8055E2DD = 0;
+}
+
+void fn_80161A18(void) {
+    void **vtable;
+    if (lbl_8055E300 != 0) {
+        vtable = *(void ***)lbl_8055E300;
+        ((void (*)(void))vtable[0x1C / 4])();
+    }
+}
+
+void fn_80161A38(s32 arg0, s32 arg1, s32 arg2) {
+    register s32 a0 = arg0;
+    register s32 a1 = arg1;
+    register s32 a2 = arg2;
+    if (lbl_8055E300 != 0) {
+        ((void (*)(void *, s32, s32, s32))(*(void ***)lbl_8055E300)[0x40 / 4])((void *)lbl_8055E300, a0, a1, a2);
+    }
+}
+
+s32 fn_80161A70(void) {
+    void **vtable;
+    if (lbl_8055E300 != 0) {
+        vtable = *(void ***)lbl_8055E300;
+        if (((s32 (*)(void))vtable[0x24 / 4])() != 0) {
+            vtable = *(void ***)lbl_8055E300;
+            return ((s32 (*)(void *, s32))vtable[0x48 / 4])((void *)lbl_8055E300, 0);
+        }
+        vtable = *(void ***)lbl_8055E300;
+        return ((s32 (*)(void *, s32))vtable[0x44 / 4])((void *)lbl_8055E300, 0);
+    }
+    return 0;
+}
+
 s32 fn_80161BDC(s32 a, s32 b, s32 c) {
     register s32 arg0 = a;
     register s32 arg1 = b;
@@ -106,6 +159,33 @@ s32 fn_80161C70(void) {
     return 1;
 }
 
+int fn_80161ECC(void) {
+    int i = 0;
+    do {
+        i++;
+    } while (fn_80161E40(i) >= 0);
+    return i;
+}
+
+int fn_8016208C(void) {
+    extern void *fn_8001285C(void);
+    extern int stricmp(const char *, const char *);
+    extern char lbl_8032F5DC[];
+    int count = 0, i = 0;
+    void *mgr = fn_8001285C(), *iter;
+    do {
+        void *obj = *(void **)((char *)mgr + 0x20);
+        void **vt = *(void ***)obj;
+        iter = ((void *(*)(void *, int))vt[0x60 / 4])(obj, i++);
+        if (iter != 0) {
+            void **ivt = *(void ***)iter;
+            const char *name = ((const char *(*)(void *))ivt[2])(iter);
+            if (stricmp(name, lbl_8032F5DC) == 0) count++;
+        }
+    } while (iter != 0);
+    return count;
+}
+
 void fn_8016212C(void) {
     fn_801613E0();
 }
@@ -120,6 +200,27 @@ void fn_80162170(void) {
 }
 
 void fn_80162174(void) {
+}
+
+void fn_801F62178_dummy(void);
+void fn_80162178(void *arg0, int arg1) {
+    extern float lbl_8056184C;
+    extern int fn_80161438;
+    extern void fn_801DF380(int, int *, int);
+    int count;
+    int offset;
+    *(int *)((char *)arg0 + 8) = 0;
+    *(unsigned char *)((char *)arg0 + 0x10) = 0;
+    *(float *)((char *)arg0 + 0xC) = lbl_8056184C;
+    for (count = 0, offset = 0; count < *(int *)((char *)arg0 + 0x38); count++, offset += 8) {
+        void *obj = *(void **)((char *)arg0 + 4);
+        void **vt = *(void ***)obj;
+        ((void (*)(void *, long *, long *))vt[3])(obj, &lbl_8055A0E0, &lbl_8055A0E8);
+        {
+            int *entry = (int *)(*(char **)((char *)arg0 + 0x34) + offset);
+            fn_801DF380(entry[0], &fn_80161438, entry[1]);
+        }
+    }
 }
 
 void fn_80162214(void) {
@@ -383,4 +484,5 @@ int fn_80165894(s32 a0, s32 a1, float *arg2, s32 arg3) {
 int fn_80165900(void) { return 1; }
 
 int fn_80165908(void) { return 0; }
-
+typedef struct VtblA18 { void *pad[7]; void (*f)(void); } VtblA18;
+typedef struct ObjA18 { VtblA18 *vtable; } ObjA18;
