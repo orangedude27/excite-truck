@@ -3,6 +3,14 @@
 
 #include <types.h>
 
+extern "C" {
+extern s32 lbl_8055B1C8;
+s32 fn_80204014(s32, s32, s32, void *);
+void *fn_802C86DC(void);
+void fn_802C70AC(s32, void *, s32, s32);
+f32 PSVECDotProduct(const f32 *, const f32 *);
+}
+
 struct FIterVT {
     void *vtable; // 0x0
     void *vtbl;   // 0x8
@@ -163,10 +171,11 @@ extern "C" s32 fn_801F812C(const char *arg) {
     return stricmp(arg, lbl_8033B018) == 0;
 }
 
-extern "C" s32 fn_801F815C(const char *arg) {
-    return stricmp(arg, lbl_8055B2C4) == 0;
-}
-
+#pragma push
+#pragma small_data on
+#pragma pop
+extern "C" const f32 lbl_80562FF0;
+extern "C" s32 fn_801F815C(const char *arg) { return stricmp(arg, lbl_8055B2C4) == 0; }
 extern "C" s32 fn_801F85DC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
