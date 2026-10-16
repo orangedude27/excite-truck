@@ -472,6 +472,8 @@ void fn_802CA09C(void) {
     fn_802C9E94();
 }
 
+void fn_802CA0A0(void *arg0) { fn_802CA008(arg0); }
+
 extern char lbl_8055FC94;
 extern char lbl_8055D030[];
 extern char lbl_8034B4E0[];
