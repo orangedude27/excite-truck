@@ -2,6 +2,8 @@ extern void fn_8021889C(void);
 
 #include <types.h>
 
+extern void *lbl_8055EF88;
+extern s32 lbl_8055EF78;
 extern u32 lbl_8055EF7C;
 extern u32 lbl_8055EF8C;
 extern void (*lbl_8055EF90)(void);
