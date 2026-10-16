@@ -13,3 +13,13 @@ void fn_80216D34(void) {
 void fn_80217478(void) {
 
 }
+
+void fn_802180B0(void) { fn_80217EC0(0, 1, 0); }
+
+void fn_802180BC(void) { fn_80217EC0(0, 1, 1); }
+
+extern int fn_80217EC0(void *, int, int);
+void fn_802180C8(void *arg0) { fn_80217EC0(arg0, 0, 0); }
+
+void fn_802180D4(void) { fn_80217EC0(0, 0, 1); }
+
