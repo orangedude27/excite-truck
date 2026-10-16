@@ -43,6 +43,9 @@ void fn_8002F6AC(int, void (*)(void));
 void fn_802B1F68(void);
 void fn_80128668(void *);
 void fn_802B2104(void **arg0);
+void fn_802CAC54(void);
+void fn_802C6C20(void);
+int fn_80129D90(int, int, int);
 
 #pragma opt_common_subs off
 void fn_802B218C(void *arg0) {
@@ -54,3 +57,15 @@ void fn_802B218C(void *arg0) {
         *(void **)arg0 = 0;
     }
 }
+
+int fn_80129D90(int, int, int);
+void fn_802B2504(int *dst, int count) {
+    int i;
+    for (i = 0; i < count - 1; i++) {
+        int idx = fn_80129D90(0, i + 1, count) * 4;
+        int tmp = dst[i / 4];
+        dst[i / 4] = dst[idx / 4];
+        dst[idx / 4] = tmp;
+    }
+}
+
