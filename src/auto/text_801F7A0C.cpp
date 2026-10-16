@@ -86,6 +86,52 @@ struct F9Node {
     void *next2;
 };
 
+class FNode2 {
+public:
+    virtual void v4();
+    virtual const char *name();
+};
+
+class FList2 {
+public:
+    virtual void *s4();
+    virtual void *s8();
+    virtual void *sC();
+    virtual void *s10();
+    virtual void *s14();
+    virtual void *s18();
+    virtual void *s1C();
+    virtual void *s20();
+    virtual void *s24();
+    virtual void *s28();
+    virtual void *s2C();
+    virtual void *s30();
+    virtual void *s34();
+    virtual void *s38();
+    virtual void *s3C();
+    virtual void *s40();
+    virtual void *s44();
+    virtual void *s48();
+    virtual void *s4C();
+    virtual void *s50();
+    virtual void *s54();
+    virtual void *s58();
+    virtual void *s5C();
+    virtual void *get(s32 idx);
+};
+
+struct F92Tbl {
+    u8 pad[8];
+    void (*fn8)(void *, s32); // 0x8
+};
+
+struct F92Elem {
+    u8 pad0[0x24];
+    F92Elem *next;          // 0x24
+    u8 pad1[0x108 - 0x28];
+    F92Tbl *tbl;            // 0x108
+};
+
 struct F9NodeFn {
     void *vtable; // 0x0
     void (*fn)(void *); // 0x8
@@ -124,7 +170,7 @@ extern "C" void *fn_801F92AC(F92Obj *obj) {
 extern "C" void *fn_801F93FC(void *node) {
     void *n = fn_801F8188(node, 0, 1);
 
-    fn_801F9440(&lbl_8055EC38, n);
+    fn_801F9440((struct F9Node *)&lbl_8055EC38, (struct F9Node *)n);
     return n;
 }
 
@@ -169,27 +215,21 @@ extern "C" void fn_801F9928(void *list, s32 arg) {
     s32 i = 0;
     void *cur = (*(FListVT **)list)->get(list, 0);
 
-    while (1) {
+    for (;;) {
         void *next;
         FNodeVT *vt;
 
         if (cur == NULL) {
-            next = (*(FListVT **)list)->get(list, i);
-            cur = next;
-        }
-        if (cur == NULL) {
             break;
         }
         vt = *(FNodeVT **)cur;
+        next = (*(FListVT **)list)->get(list, i);
         vt->name(cur);
-        if (stricmp((const char *)lbl_8055B36C, (const char *)lbl_8055B36C) == 0) {
+        if (stricmp((char *)(&lbl_8055B36C), (char *)(&lbl_8055B36C)) == 0) {
             fn_801F981C(cur, arg);
         }
         i++;
-        cur = (*(FListVT **)list)->get(list, i);
-        if (cur == NULL) {
-            break;
-        }
+        cur = next;
     }
 }
 
