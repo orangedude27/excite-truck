@@ -77,6 +77,8 @@ int fn_802092C8(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_80209308(void) { return 1; }
+
 extern int fn_802E2C20(void);
 void fn_80209310(void *arg0) {
     *(int *)((char *)arg0 + 4) = fn_802E2C20();
