@@ -87,6 +87,11 @@ s32 fn_80231730(s32 arg0) {
     return 0;
 }
 
+void fn_80232024(u8 **arg0) {
+    u8 *p = *arg0;
+    if (*p == 1) *arg0 = p + 1;
+}
+
 void fn_80232928(void* hi) {
     lbl_8055F060 = hi;
 }
