@@ -15,7 +15,7 @@ extern void fn_801D25BC(void *, void *);
 extern void fn_801D26C8(void *, void *);
 extern void fn_801D2A24(void *);
 extern s32 strncmp(char *, char *, s32);
-extern char lbl_8055AC28[];
+extern s32 lbl_8055AC28;
 extern u8 lbl_80338300[];
 extern u32 lbl_8055ABE0;
 extern u32 lbl_8055AC18;
@@ -112,8 +112,7 @@ void fn_801D2AD4(void) {
     i = 0;
     while (list->vt->child(list, i) != NULL) {
         UnkObj *obj = (UnkObj *)list->vt->child(list, i);
-        obj->vt->fn8(obj);
-        if (strncmp(obj->vt->fn8(obj), lbl_8055AC28, 7) == 0) {
+        if (strncmp(obj->vt->fn8(obj), (char *)&lbl_8055AC28, 7) == 0) {
             fn_801D2A24(obj);
         }
         i++;
