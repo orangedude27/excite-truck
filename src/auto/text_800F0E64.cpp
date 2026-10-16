@@ -200,6 +200,18 @@ extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6de
     *(void **)((u8 *)*arg0 + 8) = arg0;
 }
 
+extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        *(void**)arg0 = &lbl_80325C40;
+        Destroy__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)arg0 + 0x1C);
+        __dt__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)arg0 + 0x1C, -1);
+        if (arg1 > 0) {
+            ((void (*)(void*))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" void fn_800F83C8(void* arg0) {
     Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl((u8*)arg0 + 0x1C);
 }
@@ -211,6 +223,11 @@ extern "C" void* fn_800F83D8(void* arg0, unsigned long arg1) {
         (u8*)arg0 + 0x1C, arg1, DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv, 0);
     OSUnlockMutex(mutex);
     return result;
+}
+
+extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void* arg0, unsigned long arg1, void* arg2) {
+    Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(arg0, arg1, arg2);
+    DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(arg0, arg1, arg2);
 }
 
 extern "C" void fn_800F8520(void *arg0) {
