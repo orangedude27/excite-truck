@@ -27,3 +27,31 @@ extern s32 lbl_80340C24;
 extern s32 lbl_8049870C[];
 void fn_80239AB8(void) { fn_80214CB4(lbl_8055BAC8); }
 
+s32 fn_80239DE4(void) {
+    s32 *p = (s32 *)lbl_8049870C;
+    if (p[6] != p[7] && fn_802104D0()) {
+        s32 temp = fn_80131234(&lbl_80340C44);
+        s32 arg = fn_80131234(&lbl_80340C24);
+        return fn_8021521C(arg, temp, 0);
+    }
+    return 1;
+}
+
+extern s32 fn_80209030(float);
+extern s32 fn_802090BC(s32);
+extern s32 fn_8020A5F8(float);
+extern s32 fn_802C82C4(s32);
+extern s32 fn_802E30C8(s32, s32);
+extern s32 lbl_8055BB00;
+extern s32 fn_80239E5C(void *, s32);
+extern void *lbl_8055F10C;
+extern s32 fn_80128668();
+extern s32 lbl_8055F110;
+s32 fn_8023A5AC(s32 arg0, s32 arg1) {
+    if (arg0 != 0) {
+        lbl_8055F110 = 0;
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
+}
+
