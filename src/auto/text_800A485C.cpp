@@ -133,6 +133,11 @@ extern "C" s32 fn_800B7C90(void) {
     return (-result | result) >> 31;
 }
 
+extern "C" s32 fn_800B7CBC(void) {
+    s32 result = ((s32 (*)(void))fn_800B7684)();
+    return (-result | result) >> 31;
+}
+
 extern "C" s32 fn_800B7DB0(s32 arg0, Unk800B7E18Callback arg1, Unk800B7E18Callback arg2) {
     s32 result;
     switch (arg0) {
