@@ -274,9 +274,9 @@ typedef struct uusb_cb_t {
     u8 pad4[0x24];
     u8 at_0x28;
     u8 state;            /* 0x29 */
-    u8 pad2A[0xA];
+    u8 pad2A[2];
     BUFFER_Q acl_q;      /* 0x2C */
-    u8 pad34[8];
+    u8 pad38[4];
     BUFFER_Q sco_q;      /* 0x3C */
 } uusb_cb_t;
 
