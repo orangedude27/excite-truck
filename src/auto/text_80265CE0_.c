@@ -4,3 +4,6 @@
 void fn_80265D50(void) {}
 
 void fn_80265D54(void) {}
+
+void fn_80265D60(void) {}
+
