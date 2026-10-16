@@ -11,8 +11,8 @@ int fn_80191100(void *);
 extern int lbl_8055E3C4;
 extern void *__AXGetStudio_80178C90(void);
 extern int fn_801B2F54(int);
-extern float fn_8018AE3C(void *);
-extern float fn_8018AE4C(void *);
+extern double fn_8018AE3C(void *);
+extern double fn_8018AE4C(void *);
 void fn_802793B0();
 void fn_801902A0(void *arg0) {
     ((void (**)(void))(*(void **)*(void **)((char *)arg0 + 4)))[30]();
@@ -195,12 +195,31 @@ void fn_80192BE4(void) {
 
 }
 
+int fn_80192F58(void *arg0) {
+    register void **vtable = *(void ***)*(void **)((char *)arg0 + 4);
+    return ((int (*)(void))vtable[2])();
+}
+
 unsigned char fn_80192F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
 }
 
 void fn_80192F74(void *arg0) {
     *(int *)((char *)arg0 + 0xC) = lbl_8055E3C4;
+}
+
+void fn_80192F80(void *arg0) {
+    float temp_f31;
+    int result;
+    *(int *)__AXGetStudio_80178C90() = 0;
+    result = fn_801B2F54(*(int *)((char *)arg0 + 0x3C));
+    *(int *)((char *)__AXGetStudio_80178C90() + 4) = result;
+    temp_f31 = *(float *)((char *)*(void **)((char *)arg0 + 0x34) + 0x25CC);
+    *(float *)((char *)__AXGetStudio_80178C90() + 8) = temp_f31;
+    temp_f31 = fn_8018AE3C(*(void **)((char *)arg0 + 0x34));
+    *(float *)((char *)__AXGetStudio_80178C90() + 0xC) = temp_f31;
+    temp_f31 = fn_8018AE4C(*(void **)((char *)arg0 + 0x34));
+    *(float *)((char *)__AXGetStudio_80178C90() + 0x10) = temp_f31;
 }
 
 void fn_80193058(void) {
