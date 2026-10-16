@@ -137,8 +137,8 @@ extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-s32 fn_801A2C9C(s32 arg0) {
-    return arg0 + 0x44;
+extern "C" void* fn_801A2C9C(void* arg0) {
+    return (u8*)arg0 + 0x44;
 }
 
 extern "C" f32 fn_801A2CA4(void* arg0) {
