@@ -18,12 +18,38 @@ extern f32 lbl_80562624;
 
 void fn_801B435C(void*);
 
+typedef void (*Dtor1Arg)(void*, s32);
+
+static void callPrevDtor(void* p) {
+    Dtor1Arg fn = ((Dtor1Arg*)*(void***)p)[2];
+    fn(p, 1);
+}
+
 int fn_801B3390(void) {
     return 0x14;
 }
 
 void fn_801B3B24(void) {
 
+}
+
+void* fn_801B3BD4(void* arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        if (arg0 != NULL) {
+            void* prev = *(void**)((u8*)arg0 + 0x1C);
+            *(void**)arg0 = (void*)&lbl_80335DAC;
+            if (prev != NULL) {
+                if (prev != NULL) {
+                    (*(void (**)(void*, s32))(*(void***)prev + 2))(prev, 1);
+                }
+                *(void**)((u8*)arg0 + 0x1C) = NULL;
+            }
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 void fn_801B3C64(void* arg0) {
