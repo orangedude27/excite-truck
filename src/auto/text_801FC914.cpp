@@ -202,9 +202,10 @@ extern "C" void* fn_801FE9A8(void* arg0, int arg1) {
     return arg0;
 }
 
-void* fn_801FE9E8(void* arg0, int arg1) {
-    if (arg0 != 0 && arg1 > 0)
+extern "C" void* fn_801FE9E8(void* arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
         fn_80128668(arg0);
+    }
     return arg0;
 }
 
