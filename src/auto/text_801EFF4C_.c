@@ -108,30 +108,59 @@ void fn_801F1378(void *arg0) {
 }
 
 int fn_801F1394(int *arg0, int arg1) {
-    int result = fn_801F1978(0);
-    fn_802C70AC(*(int *)(*(int *)arg0 + *(int *)(arg0 + 4) * 4 + 0x28), arg1, 0, result);
+    int frame = fn_801F1978(0);
+    fn_802C70AC(*(*(int **)arg0 + *(int *)(arg0 + 4)) + 0x28, arg1, 0, frame);
 }
 
-void fn_801F13F4(int *arg0) {
-    int base = *arg0 + 0xEC;
+void fn_801F13F4(int *arg0, float arg1, float arg2) {
+    int *object = arg0;
+    int *base = (int *)*arg0;
     int count;
-    int index;
-    float value;
-    if (*(float *)(base + 0x48) < (float)__builtin_fabsf(0.0f)) return;
-    if (arg0[1] == 3) return;
-    count = *(int *)(base + 0x40) - 1;
-    index = count;
-    while (index >= 0 && *(float *)(base + index * 8 + 4) > 0.0f) {
-        index--;
+    int *entry;
+    base = (int *)((char *)base + 0xEC);
+    if (arg1 > *(float *)((char *)base + 0x48)) return;
+    if (*(unsigned int *)(arg0 + 1) == 3) return;
+    count = *(int *)((char *)base + 0x40) - 1;
+    entry = (int *)((char *)base + count * 8);
+    if (count < 0) return;
+    while (arg1 < *(float *)((char *)entry + 4)) {
+        entry = (int *)((char *)entry - 8);
+        count--;
+        if (count < 0) return;
     }
-    if (index < 0) return;
-    value = *(float *)(base + 0x44);
-    fn_802C7AE0(*(int *)(base + index * 8), arg0 + 6, -1);
+    {
+        float value = *(float *)((char *)base + 0x44);
+        fn_802C7AE0(*((int *)((char *)base) + count * 2), (char *)object + 0x18, -1);
+    }
 }
 
 void fn_801F1474(int *arg0, void *arg1) {
     int base = *arg0;
     if (*(int *)(base + 0x12C) <= 0) return;
     fn_802C7AE0(*(int *)(base + 0xEC), arg1, -1);
+}
+
+short fn_801EAC3C(void);
+int fn_801F1494(int, void *, short);
+int fn_801EAB2C(void);
+int fn_801EAB80(void *, int);
+int fn_80297988(void *);
+int memset(void *, int, unsigned int);
+extern int lbl_8033A5E8;
+void *fn_801F19FC(void *arg0, int arg1) {
+    fn_801EAB2C();
+    *(int **)arg0 = &lbl_8033A5E8;
+    fn_801EAB80(arg0, arg1);
+    memset((char *)arg0 + 0x3C, 0, 0x44);
+    *(int *)((char *)arg0 + 0x80) = 0;
+    fn_80297988(arg0);
+    return arg0;
+}
+
+int fn_801F1A70(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668(arg0);
+    }
+    return arg0;
 }
 
