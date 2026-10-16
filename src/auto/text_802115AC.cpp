@@ -423,6 +423,10 @@ extern "C" s32 fn_80215CE4(void) {
     return 0;
 }
 
+extern "C" s32 fn_80215CEC(void) {
+    return 0;
+}
+
 extern "C" void fn_80215CC4(void) {
 
 }
