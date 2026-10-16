@@ -90,7 +90,7 @@ public:
     virtual void v32();
     virtual void v33(f32*);
     s32 m4;
-    u8 pad_4[0x254];
+    u8 pad_4[0x250];
     s32 m258;
     u8 pad_25c[4];
     s32 m260;
@@ -287,14 +287,12 @@ extern "C" u8 fn_80159F24(void* arg0) {
     return ((u8*)arg0)[0x2D1];
 }
 
-extern "C" void fn_8015A318(void* arg0) {
-    s32 count = *(s32*)((u8*)arg0 + 0x260);
-    if (count > 0) {
-        s32 r3 = *(s32*)((u8*)arg0 + 0x258);
-        if (r3 != 0) {
-            fn_801CB6E4(*(void**)((u8*)arg0 + 4));
+extern "C" void fn_8015A318(Unk8015A368C* arg0) {
+    if (arg0->m260 > 0) {
+        if (arg0->m258 != 0) {
+            fn_801CB6E4(*(void**)&arg0->m4);
         }
-        *(s32*)((u8*)arg0 + 0x260) = 0;
+        arg0->m260 = 0;
     }
 }
 
