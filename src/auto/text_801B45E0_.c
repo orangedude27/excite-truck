@@ -5,7 +5,10 @@ extern char lbl_8055E6D0;
 extern int memset(void *, int, unsigned int);
 extern int lbl_8055E6D4;
 extern void fn_80128670(int);
+#pragma push
+#pragma small_data off
 extern char lbl_80435C70;
+#pragma pop
 extern char lbl_80335E48;
 extern void fn_802E317C(const char *, int);
 extern int __dt__15shdStateMachineFv_801B496C(int);
