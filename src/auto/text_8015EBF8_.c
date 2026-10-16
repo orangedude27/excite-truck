@@ -1,5 +1,46 @@
+#include "math.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+
+extern char lbl_8055A070[4];
+extern float lbl_805617D0;
+int stricmp(const char *, const char *);
+void fn_80136594(int *, void *, void *);
+void fn_8015EC50(unsigned short *arg0, void *arg1) {
+    int value;
+    fn_80136594(&value, arg1, (char *)arg0 + 4);
+    *arg0 = (value - ((int *)((void **)arg1)[11])[7]) / 60;
+}
+
+int fn_8015ECC0(void *arg0) {
+    int result = 0;
+    int test = 0;
+    if (((int *)arg0)[8] < 1000 && ((unsigned int *)arg0)[6] == 0x54554245) {
+        test = 1;
+    }
+    if (test && (float)fabs(((float *)((void **)arg0)[3])[7]) > lbl_805617D0) {
+        result = 1;
+    }
+    return result;
+}
+
+int fn_8015ED18(void **arg0) {
+    return stricmp((*(char *(**)(void *))((char *)*arg0 + 8))(arg0), lbl_8055A070) == 0;
+}
+
+int fn_8015ED90(void **arg0) {
+    int count = 0;
+    int i;
+    void **child;
+    if (arg0 != 0) {
+        for (i = 0; (child = (*(void **(**)(void *, int))((char *)*arg0 + 0x60))(arg0, i)) != 0; i++) {
+            if (fn_8015ED18(child)) {
+                count++;
+            }
+        }
+    }
+    return count;
+}
 
 void fn_8015F554(void) {
 }
