@@ -196,6 +196,35 @@ extern "C" void fn_800D16A8(s32 *arg0) {
     }
 }
 
+extern "C" void *fn_800D1948(void *arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        *(u32 *)((u8 *)arg0 + 0x1F0) = (u32)&lbl_8031E9C0;
+        lbl_8055DDB0 = (u32)arg0;
+        if (arg1 != 0) {
+            BOOL result = ARCInitHandle((void *)arg1, (ARCHandle *)((u8 *)arg0 + 0x1D0));
+            s32 neg = -result;
+            s32 or_result = neg | result;
+            s32 shr = or_result >> 31;
+            ((u8 *)arg0)[0x1EC] = (u8)shr;
+        } else {
+            ((u8 *)arg0)[0x1EC] = 0;
+        }
+    }
+
+    void *base = arg0;
+    s32 i = 0;
+    do {
+        OSCreateAlarm((OSAlarm *)((u8 *)base + 0x68 * (i + 1) - 0x68));
+        *(u32 *)((u8 *)base + 0x68 * (i + 1) - 0x68 + 0x50) = 0;
+        i++;
+        *(u32 *)((u8 *)base + 0x68 * (i + 1) - 0x68 + 0x58) = -1;
+        ((u8 *)((u8 *)base + 0x68 * (i + 1) - 0x68))[0x5C] = 1;
+        ((u8 *)((u8 *)base + 0x68 * (i + 1) - 0x68))[0x62] = 1;
+    } while (i < 4);
+
+    return arg0;
+}
+
 extern "C" void *fn_800D19F8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(u32 *)((u8 *)arg0 + 0x1F0) = (u32)&lbl_8031E9C0;
