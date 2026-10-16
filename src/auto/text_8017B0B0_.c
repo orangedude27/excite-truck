@@ -16,6 +16,22 @@ extern void fn_8017B2D0(void*, float, float, float, float);
 extern void fn_80179D08(void);
 extern char lbl_80331CC4[];
 
+void *fn_8017B0B0(void *arg0) {
+    fn_80179D08();
+    *(int *)((char *)arg0 + 0x184) = 0;
+    *(char **)arg0 = lbl_80331CC4;
+    *((char *)arg0 + 0x1E8) = 0;
+    return arg0;
+}
+
+void fn_8017B0F8(void *arg0, float *arg1) {
+    fn_80179D94();
+    *(int *)((char *)arg0 + 0xD0) = 0;
+    fn_8017B2D0(arg0, arg1[2], arg1[3], arg1[4], arg1[5]);
+    *(int *)((char *)arg0 + 0x184) = 0;
+    fn_8017B198(arg0);
+}
+
 void fn_8017B164(void *arg0) {
     fn_80179E00(arg0);
     fn_8017B198(arg0);
