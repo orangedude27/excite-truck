@@ -2,6 +2,11 @@ extern unsigned short lbl_8055FD86;
 extern unsigned char lbl_8055FD60;
 extern int lbl_802FACB0[6];
 extern void *lbl_8055FE1C;
+extern unsigned char lbl_804C9984[];
+extern char lbl_8034C1C4[];
+extern void fn_802D2ED8(int, int);
+extern int fn_802E317C(const char *);
+extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
