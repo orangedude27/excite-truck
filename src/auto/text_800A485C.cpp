@@ -24,6 +24,7 @@ extern "C" const char lbl_8031E9C0[];
 DECL_SECTION(".sdata") extern u8 lbl_8055DDA8[];
 extern "C" s32 fn_800D1E5C(void *arg0, s32 arg1);
 extern "C" void fn_800D1668(s32 arg0, s32 arg1);
+extern "C" s32 fn_800604E8(s32, s32, void *);
 extern u32 lbl_8055DDF8;
 extern "C" void fn_800D1C48(void);
 
