@@ -94,6 +94,11 @@ extern "C" void fn_800B7684(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC(fn_800A9B0C(alarm));
 }
 
+extern void *lbl_8055DD10;
+extern "C" void __AXDSPInitCallback_800B7860(void) {
+    lbl_8055DD10 = 0;
+}
+
 void fn_800B78EC(void) {
 
 }
