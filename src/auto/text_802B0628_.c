@@ -13,6 +13,10 @@ void fn_802B0860(void *arg0) {
     ((int *)arg0)[1] = 0;
 }
 
+void fn_802B0874(void) {
+    fn_802B087C(&lbl_8055F9A0);
+}
+
 int fn_802B1C14(void *arg0) {
     return ((int *)arg0)[4];
 }
