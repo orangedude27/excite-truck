@@ -168,7 +168,12 @@ struct PanicStruct {
     void *field_70;
 };
 
-extern "C" s32 fn_800D2E14(void) {
+// fn_800D2E14 is defined in a way that prevents inlining by placing it in a separate compilation unit context
+// Forward declaration for external linkage
+extern "C" s32 fn_800D2E14(void);
+
+// Actual definition - the compiler should not inline this because it's declared extern first
+s32 fn_800D2E14_impl(void) {
     s32 _r3 = 0;
     if (lbl_8055DDC8 != 0) {
         if (lbl_80407BD8[0] != 0) {
@@ -176,6 +181,10 @@ extern "C" s32 fn_800D2E14(void) {
         }
     }
     return _r3;
+}
+
+extern "C" s32 fn_800D2E14(void) {
+    return fn_800D2E14_impl();
 }
 
 extern "C" void fn_800D2FC8(void) {
@@ -191,17 +200,23 @@ extern "C" u8 fn_800D3838(u8 *arg0) {
     return *arg0;
 }
 
-s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2) {
-    void *r31 = (void *)lbl_8055DDD4;
+#pragma opt_tail_call on
+#pragma opt_tail_call on
+#pragma opt_tail_call on
+s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
+    void *r31 = lbl_8055DDD4_ptr;
+    s32 r28 = (s32)arg0;
+    s32 r29 = (s32)arg1;
+    s32 r30 = (s32)arg2;
+    
     while (r31 != NULL) {
-        if (fn_800D3F94(r31, arg0, arg1, arg2) != 0) {
+        if (fn_800D3F94(r31, r28, r29, r30) != 0) {
             return 1;
         }
         r31 = *(void **)((u8 *)r31 + 0xC);
     }
     return 0;
 }
-
 extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -292,6 +307,9 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
       return 0;
 }
 
+#pragma opt_tail_call on
+#pragma opt_tail_call on
+#pragma opt_tail_call on
 extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(void *arg0) {
     if (arg0 == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x26D, lbl_8031EA90);
@@ -310,7 +328,6 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
         }
     }
 }
-
 extern "C" void fn_800D2480(void) {
     if (lbl_8055DDBC == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA40, 0x1F1, lbl_8031EA4C);
@@ -318,6 +335,9 @@ extern "C" void fn_800D2480(void) {
     ((u8 *)lbl_8055DDBC)[0x22] = 0;
 }
 
+#pragma opt_tail_call on
+#pragma opt_tail_call on
+#pragma opt_tail_call on
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
     s32 *sp = (s32 *)&file;
     PanicStruct *stack_ptr = (PanicStruct *)(sp + 0x1A);
@@ -335,5 +355,4 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
     
     fn_800D2098(&stack_ptr->field_68);
 }
-
 extern s32 lbl_8055DDD4;
