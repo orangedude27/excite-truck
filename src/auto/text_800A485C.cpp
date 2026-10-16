@@ -332,6 +332,7 @@ extern "C" s32 fn_800B3754(s32, s32, s32);
 extern "C" s32 fn_800AF574(void *);
 extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
 extern "C" s32 fn_800B317C(s32 arg0, s32 arg1) {
+    extern s32 fn_800B3754(s32, s32, s32);
     return fn_800B3754(arg0, arg1, 1) == 0;
 }
 
