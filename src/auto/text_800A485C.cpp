@@ -85,6 +85,11 @@ void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
 
+extern void *lbl_8055DD94;
+extern "C" void fn_800C4BD0(void* hi) {
+    lbl_8055DD94 = hi;
+}
+
 extern "C" void* fn_800C64DC(u32 size) {
     return MEMAllocFromAllocator(lbl_80559708, size);
 }
