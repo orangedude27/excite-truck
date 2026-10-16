@@ -53,6 +53,10 @@ void fn_80204038(void) {
 
 }
 
+int fn_8020403C(void) {
+    return 1;
+}
+
 void fn_80204044(void) {
 
 }
