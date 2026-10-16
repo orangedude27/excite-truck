@@ -52,3 +52,11 @@ void fn_80137C80(void) {
     fn_80016A44();
 }
 
+void fn_80137D10(void) {
+    int i = 0;
+    do {
+        fn_80137C84(i, i);
+        i++;
+    } while (i < 4);
+}
+
