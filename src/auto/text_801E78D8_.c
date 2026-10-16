@@ -100,6 +100,12 @@ void fn_801E85BC(long arg0) {
     fn_8026A298(arg0);
 }
 
+extern long fn_8026A2B0(long);
+void fn_801E85CC(long arg0) {
+    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
+    fn_8026A2B0(arg0);
+}
+
 long fn_801E85DC(long arg0) {
     long temp_r30;
     long var_r29;
@@ -118,6 +124,18 @@ loop:
 long fn_801E866C(long arg0) {
     if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
     return *(long *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x64);
+}
+
+long fn_801E868C(long arg0, unsigned long *arg1, unsigned long *arg2) {
+    char *entry = (char *)lbl_8055EB04 + arg0 * 0xE0;
+    unsigned long id = *(unsigned long *)(entry + 0x70);
+    if (id != lbl_80487CE0[arg0]) {
+        lbl_80487CE0[arg0] = id;
+        *arg1 = *(unsigned long *)(entry + 0x74) >> 16;
+        if (arg2 != 0) *arg2 = *(unsigned long *)(entry + 0x74) & 0xFFFF;
+        return 1;
+    }
+    return 0;
 }
 
 void *fn_801E879C(void) {
