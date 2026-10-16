@@ -11,6 +11,9 @@ void fn_8029EF24(void) {
 void fn_8029EF28(void) {
 }
 
+void fn_8029EF2C(void) {
+}
+
 int fn_8029EF30(void *arg0) {
     return ((int *)arg0)[4];
 }
