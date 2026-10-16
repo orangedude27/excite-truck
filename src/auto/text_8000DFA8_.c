@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern f32 lbl_80350EC4[];
+
 extern s32 lbl_8055D490;
 extern s32 lbl_80558A90;
 extern f32 lbl_805602C8;
@@ -465,6 +467,10 @@ f32 fn_80011E04(s32 arg0) {
 extern f32 lbl_80350EC4[];
 f32 fn_80011E60(void) {
     return lbl_80350EC4[3];
+}
+
+f32 fn_80011E70(void) {
+    return (lbl_80350EC4[1] + lbl_80350EC4[2]) * lbl_8056025C;
 }
 
 void fn_8000F158(void) {
