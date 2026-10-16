@@ -68,6 +68,7 @@ extern "C" int lbl_8033FA28[];
 extern "C" void fn_8021915C(void *, u32);
 extern "C" s32 fn_80128668(void *);
 extern "C" void fn_80219440(void *, s32, void *, s32);
+extern "C" void fn_80128670(s32);
 extern "C" int lbl_8033F4B8[];
 extern "C" int lbl_8033FB38[];
 extern "C" void fn_80222340(void *, s32, s32, s32, s32, s32, s32);
