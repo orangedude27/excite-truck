@@ -110,6 +110,14 @@ void DBPrintf_80068D68(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+void DeleteFlushCallback(s32 arg0) {
+    extern void DBPrintf_8006CFA8(const char *, ...);
+    extern u8 lbl_803131E8[];
+    extern u8 lbl_80392960[];
+    DBPrintf_8006CFA8((const char *)lbl_803131E8, arg0, lbl_80392960[0xD]);
+    if (lbl_80392960[0xD] != 0) lbl_80392960[0xD] = 8;
+}
+
 void fn_80068F80(void) {
     lbl_80392960[0xC] = 1;
 }
@@ -125,12 +133,8 @@ s32 WUDiTerminateDevice(void) {
     s32 i;
     u8 *entry;
     u8 *base = lbl_80392960;
-    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) {
-        if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
-    }
-    for (i = 0, entry = base + 0x424; i < 6; i++, entry += 0x60) {
-        if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
-    }
+    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    for (i = 0, entry = base + 0x424; i < 6; i++, entry += 0x60) if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
     return 3;
 }
 
@@ -195,7 +199,7 @@ void fn_8006A7D0(s32 arg0, s32 arg1) {
 s8 fn_8006A940(void)
 {
     u32 enabled;
-    s8 value;
+    volatile s8 value;
     enabled = OSDisableInterrupts();
     value = (s8)lbl_80392960[0x688];
     OSRestoreInterrupts(enabled);
@@ -211,6 +215,21 @@ u8 fn_8006A97C(void)
     value = (u8)(*(u16 *)(lbl_80392960 + 0x6C6) - *(u16 *)(lbl_80392960 + 0x6C4));
     OSRestoreInterrupts(enabled);
     return value;
+}
+
+void WUDSetSniffMode(BD_ADDR addr, s32 interval)
+{
+    tBTM_PM_PWR_MD block;
+    if (interval > 0) {
+        block.mode = BTM_PM_MD_SNIFF;
+    } else {
+        block.mode = BTM_PM_MD_ACTIVE;
+    }
+    block.max = interval;
+    block.min = interval;
+    block.attempt = 1;
+    block.timeout = 0;
+    BTM_SetPowerMode(lbl_80392960[0x68A], addr, &block);
 }
 
 extern void *lbl_80319994;
