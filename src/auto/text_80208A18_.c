@@ -6,6 +6,11 @@ void* fn_802090B4(void) {
     return lbl_8055EDA8;
 }
 
+extern void *lbl_8055B4D8;
+void* fn_802090CC(void) {
+    return lbl_8055B4D8;
+}
+
 void fn_80209278(void) {
 
 }
