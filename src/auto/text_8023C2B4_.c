@@ -5,6 +5,9 @@
 
 typedef signed long s32;
 
+int fn_8027AA48(void); /* extern */
+void fn_80214A9C(s32); /* extern */
+
 s32 fn_8023C2E4(void* arg0) {
     fn_80236900(arg0);
     return 1;
