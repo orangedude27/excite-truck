@@ -3,6 +3,14 @@
 
 #include <types.h>
 
+extern "C" s32 fn_80218C14(s32, s32);
+extern "C" s32 fn_802E317C(const char *);
+extern "C" s32 fn_80214934(const void *, s32, void *, s32);
+extern "C" s32 fn_8021481C(void *);
+extern "C" char lbl_8033D388[];
+extern "C" char lbl_8033D268[];
+extern "C" char lbl_8055B810[];
+
 extern "C" s32 fn_802168E4(void);
 extern "C" s32 fn_802168DC(s32);
 extern "C" s32 fn_802168D4(s32);
@@ -168,6 +176,18 @@ extern "C" void fn_80212340(void *arg0) {
         }
         p[3] = 0;
     }
+}
+
+extern "C" s32 fn_80218C14(s32, s32);
+extern "C" s32 fn_80214934(const void*, s32, void*, s32);
+extern "C" s32 fn_8021481C(void*);
+extern "C" char lbl_8033D388[];
+extern "C" char lbl_8033D268[];
+extern "C" char lbl_8055B810[];
+extern "C" void fn_802149FC(s32 arg0) {
+    char sp8[0x64];
+    fn_80214934(lbl_8033D268, arg0, sp8, 0x64);
+    fn_8021481C(sp8);
 }
 
 extern "C" s32 lbl_80490528[];
