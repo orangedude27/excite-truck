@@ -23,6 +23,11 @@ char fn_801B8514(void) {
     return lbl_8055E748;
 }
 
+extern float lbl_80436D08[];
+void fn_801B8964(int arg0, float arg1) {
+    lbl_80436D08[arg0] = arg1;
+}
+
 void fn_801B8AD4(void) {
 
 }
