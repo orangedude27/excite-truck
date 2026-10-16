@@ -66,6 +66,10 @@ s32 fn_8020BC60(void) { return 0; }
 
 void fn_8020BC68(void *arg0, f32 farg0) { *(f32 *)((char *)arg0 + 0x20) = farg0; }
 
+void fn_8020BC88(void *arg0, float arg1) {
+    *(float *)((char *)arg0 + 0x34) = arg1;
+}
+
 void fn_8020BC90(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x38) = arg1;
 }
