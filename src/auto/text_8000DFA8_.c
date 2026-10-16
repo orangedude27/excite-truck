@@ -279,6 +279,10 @@ void fn_8001123C(s32 arg0) {
     fn_8000EF74(arg0);
 }
 
+void fn_80011278(s32 arg0) {
+    fn_80011280(arg0, lbl_8055D4D4);
+}
+
 void fn_80011A2C(void *arg0) {
     fn_802346C8(fn_80010BEC(arg0));
 }
