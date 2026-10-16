@@ -14,7 +14,7 @@ void fn_801FF6FC(void*);
 void fn_801FF3AC(void*, float);
     float fabs(float);
     void fn_801FF770(void*);
-    void fn_801FCED8(void*);
+          void* fn_801FCED8(void*, int);
     void* fn_801284F8(int, const char*);
     void fn_8002F53C(void*, void*, void*, int, int);
     void fn_801FF1C4(void*, int, int);
@@ -30,6 +30,35 @@ void fn_801FF3AC(void*, float);
     }
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" float lbl_80563030;
+extern "C" float lbl_80563034;
+extern "C" void fn_801FD3F0(void);
+extern "C" void fn_801FD5E8(void);
+extern "C" void fn_801FDF18(void);
+extern "C" void fn_802E317C(const char*, ...);
+extern "C" const char lbl_8033B618[];
+extern "C" float fn_802C99E8(float);
+extern "C" void fn_802C744C(void*, void*);
+extern "C" void fn_801FCFC8(void* arg0) {
+    if (*(int*)((char*)arg0 + 4) != 0) {
+        float value = fn_802C99E8(*(float*)((char*)arg0 + 0x6C));
+        fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
+        fn_802C99E8(value);
+    }
+}
+
+int fn_801FE9A8(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0)
+        fn_80128668((void*)arg0);
+    return arg0;
+}
+
+int fn_801FE9E8(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0)
+        fn_80128668((void*)arg0);
+    return arg0;
+}
 
 extern "C" void fn_801FEEC0(void* arg0, int arg1, int arg2, int arg3) {
     void* obj = *(void**)((char*)arg0 + 4);
@@ -52,9 +81,13 @@ extern "C" void fn_801FEF80(void* arg0) {
     *((int*)arg0 + 1) = 0;
 }
 
+extern "C" char* strncpy(char*, const char*, unsigned long);
 extern "C" void fn_801FEF90(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    if (obj != 0) (*(void (**)(void*, int))(*(void***)obj + 5))(obj, 0);
+    if (obj != 0) {
+        register void** vtable = *(void***)obj;
+        ((void (*)(void*, int))vtable[5])(obj, 0);
+    }
 }
 
 extern "C" void fn_801FEFB4(void* arg0) {
@@ -144,8 +177,31 @@ extern "C" void fn_801FF420(void* arg0) {
     }
 }
 
+extern "C" void fn_801FF58C(void* unused, char* dst, const char* src) {
+    strncpy(dst, src, 0x10);
+    dst[0xF] = 0;
+    *(int*)(dst + 0x50) = 0;
+    *(int*)(dst + 0x54) = 0;
+}
+
 extern "C" void fn_801FEFC4(void) {
 
+}
+
+extern "C" void fn_801FF014(void* arg0, int arg1, int arg2, int arg3) {
+    void* obj = *(void**)((char*)arg0 + 4);
+    if (obj == 0) {
+        obj = fn_801284F8(0x10CC, lbl_8033B86C);
+        if (obj != 0) {
+            *(void**)obj = (void*)lbl_8033B898;
+            fn_8002F53C((char*)obj + 4, (void*)fn_801FF0D4, (void*)fn_801FCED8, 0x70, 0x20);
+            *(int*)((char*)obj + 0xE04) = 0;
+            fn_801FF354((char*)obj + 0xE08);
+        }
+        *(void**)((char*)arg0 + 4) = obj;
+        fn_802CD320(arg1, obj);
+    }
+    fn_801FF1C4(*(void**)((char*)arg0 + 4), arg2, arg2 + 0x2C);
 }
 
 extern "C" void fn_801FF0D4(void* arg0) {
