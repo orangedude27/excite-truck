@@ -107,6 +107,8 @@ int fn_801C0168(void *arg0) { return *(int *)((char *)arg0 + 0x5A4); }
 
 int fn_801C0170(void *arg0) { return *(int *)((char *)arg0 + 0x59C); }
 
+float fn_801C0178(void) { extern float lbl_8055E3C8; return lbl_8055E3C8; }
+
 extern void fn_801C1C7C(void *, int);
 extern void fn_80179EE8(void *, int);
 extern void fn_80128668(void *);
