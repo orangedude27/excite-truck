@@ -192,6 +192,7 @@ int fn_80273978(int arg0, int arg1) {
 }
 
 extern int lbl_8049F9D8;
+extern int lbl_8049A258;
 extern int lbl_8055F554;
 extern f32 lbl_80563E78;
 extern int stricmp(const char *, const char *);
