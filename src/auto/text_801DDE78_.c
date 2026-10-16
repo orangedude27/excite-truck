@@ -20,6 +20,7 @@ s32 fn_801DDE78(void);
 void fn_801DDED0(s32, f32*, s32, f32, f32, f32);
 s32 fn_802E2C20(void);
 typedef s32 (*UnkFunc2)(void*, s32);
+typedef struct UnkObj { UnkFunc2 *vtable; } UnkObj;
 #pragma dont_inline on
 s32 fn_801DDE78(void) {
     return lbl_804348E8[fn_80179630(0)];
