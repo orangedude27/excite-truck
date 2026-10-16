@@ -9,6 +9,29 @@ extern int fn_801C109C(int, int, int, int);
 extern int fn_80128668(int);
 extern int lbl_8055A950;
 extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int);
+extern int fn_80128670(int);
+int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_80128670(*arg0);
+        if (arg1 > 0) fn_80128668((int)arg0);
+    }
+    return (int)arg0;
+}
+
+void fn_801C1320(void* arg0) {
+    int i = 0;
+    int offset = 0;
+    while (i < *(int*)((char*)arg0 + 0x14)) {
+        float* dst = *(float**)((char*)arg0 + 0x2C);
+        float* out = (float*)((char*)dst + offset);
+        out[0] = *(float*)((char*)arg0 + 0x3C);
+        out[1] = *(float*)((char*)arg0 + 0x40);
+        out[2] = *(float*)((char*)arg0 + 0x44);
+        ++i;
+        offset += 12;
+    }
+}
+
 void fn_801C1B60(int arg0) {
     fn_801C1218(arg0);
     fn_801C1364(arg0);
@@ -25,9 +48,7 @@ void fn_801C1BA0(void) {
 
 int fn_801C1BA4(int arg0, int arg1, int arg2) {
     int result = fn_801284F8(0x70, &lbl_8055A950);
-    if (result != 0) {
-        fn_801C109C(arg0, arg1, arg2, 0);
-    }
+    if (result != 0) fn_801C109C(arg0, arg1, arg2, 0);
     return result;
 }
 
@@ -47,5 +68,17 @@ void fn_801C1C7C(void *arg0) {
         __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(0);
         fn_80128668((int)arg0);
     }
+}
+
+void fn_801C2B9C(float* out, float* a, float* b, float scale) {
+    out[1] = a[1] + b[1] * scale;
+    out[0] = a[0] + b[0] * scale;
+    out[2] = a[2] + b[2] * scale;
+}
+
+void fn_801C2BDC(void *arg0, int *arg1, int *arg2, int *arg3) {
+    *arg1 = *(int *)((char *)arg0 + 0x14);
+    *arg2 = *(int *)((char *)arg0 + 0x24);
+    *arg3 = *(int *)((char *)arg0 + 0x28);
 }
 
