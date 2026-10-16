@@ -3,6 +3,14 @@
 #include <types.h>
 #include <revolution/ARC/arc.h>
 
+extern void* fn_802ECC74(void*);
+extern void fn_80127F70(void*);
+extern void fn_80127F94(void*);
+extern void fn_80127398(s32);
+extern void fn_802E300C(s32);
+extern void* lbl_8041D728[];
+extern u8 lbl_802F6A40[];
+
 void* ARCGetStartAddrInMem(ARCFileInfo* info) {
     return (void*)((s32)info->handle->archiveStartAddr + info->startOffset);
 }
