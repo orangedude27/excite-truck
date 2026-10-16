@@ -51,6 +51,14 @@ int fn_80259700(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_8025AD88(void) { PSVECDotProduct(); }
+
+void fn_8025AD8C(float *out, float *a, float *b, float t) {
+ float scale=lbl_80563B14*t; float max=lbl_80563AE0;
+ if(max < scale) {} else {max=scale;}
+ out[0]=a[0]+max*(b[0]-a[0]); out[1]=a[1]+max*(b[1]-a[1]); out[2]=a[2]+max*(b[2]-a[2]);
+}
+
 float fn_8025ADF4(float arg0) { return (float)fn_8002F234(arg0); }
 
 extern double sin(double);
