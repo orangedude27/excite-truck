@@ -72,8 +72,3 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801EEEEC(long arg0, long arg1) {
     }
     return arg0;
 }
-extern long lbl_80488648[];
-void fn_801EDD7C(void *, long);
-long fn_80179CB0(void);
-void fn_801EECAC(long, long);
-void fn_802C6CF8(long);
