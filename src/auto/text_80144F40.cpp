@@ -212,9 +212,26 @@ extern "C" void fn_80148284(void *arg0, s32 arg1) {
     fn_80148294((const char *)arg1, *(void **)((u8 *)arg0 + 0x30));
 }
 
+extern "C" void *fn_80148294(const char *arg0, void *arg1) {
+    s32 offset = 0;
+    s32 i = 0;
+    while (i < *(s32 *)((u8 *)arg1 + 4)) {
+        if (stricmp(*(const char **)(*(u32 *)arg1 + offset), arg0) == 0) {
+            return (void *)(*(u32 *)arg1 + i * 0x20);
+        }
+        offset += 0x20;
+        i++;
+    }
+    return NULL;
+}
+
 extern "C" void fn_80148334(s32, s32, void *);
 extern "C" void fn_80148324(void *arg0, s32 arg1) {
     fn_80148334(arg1, *(s32 *)((u8 *)arg0 + 0x2C), arg0);
+}
+
+extern "C" void fn_801483C4(void *arg0, s32 arg1) {
+    fn_801483D4(arg1, *(s32 *)((u8 *)arg0 + 0x34), arg0);
 }
 
 extern "C" void *fn_801484A4(const char *, void *);
