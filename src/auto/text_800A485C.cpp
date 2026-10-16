@@ -387,26 +387,24 @@ extern "C" void fn_800D2480(void) {
 }
 
 extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *this_ptr, long arg1, int arg2, signed char arg3) {
-    if (((u8 *)this_ptr)[0x1EC] == 0) {
-        return;
+    if (((u8 *)this_ptr)[0x1EC] != 0) {
+        ARCHandle handle;
+        ARCFileInfo info;
+        void *start_addr;
+        s32 val1, val2;
+        
+        ARCFastOpen((ARCHandle *)((u8 *)this_ptr + 0x1D0), (s32)arg1, &info);
+        start_addr = ARCGetStartAddrInMem(&info);
+        val1 = fn_80116A30(&info);
+        fn_80116A38(&info);
+        
+        u8 *entry = (u8 *)this_ptr + ((s32)arg1 * 0x68);
+        entry[0x5E] = 0;
+        *(s32 *)(entry + 0x58) = arg2;
+        *(s32 *)(entry + 0x54) = val1;
+        entry[0x5D] = arg3;
+        *(s32 *)(entry + 0x50) = (s32)start_addr;
     }
-    
-    ARCHandle handle;
-    ARCFileInfo info;
-    void *start_addr;
-    s32 val1, val2;
-    
-    ARCFastOpen((ARCHandle *)((u8 *)this_ptr + 0x1D0), (s32)arg1, &info);
-    start_addr = ARCGetStartAddrInMem(&info);
-    val1 = fn_80116A30(&info);
-    val2 = fn_80116A38(&info);
-    
-    u8 *entry = (u8 *)this_ptr + ((s32)arg1 * 0x68);
-    entry[0x5E] = 0;
-    *(s32 *)(entry + 0x58) = arg2;
-    *(s32 *)(entry + 0x54) = val1;
-    entry[0x5D] = arg3;
-    *(s32 *)(entry + 0x50) = (s32)start_addr;
 }
 
 #pragma opt_tail_call on
