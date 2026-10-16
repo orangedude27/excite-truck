@@ -43,3 +43,5 @@ void* fn_8016AC24(void* arg0, s32 arg1) {
 
 void fn_8016B4F0(u8* arg0) { *arg0 = 0; }
 
+void fn_8016B544(u8* arg0) { *arg0 = 0; }
+
