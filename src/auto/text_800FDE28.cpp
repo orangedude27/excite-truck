@@ -64,8 +64,34 @@ extern "C" void fn_800FDFF8(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
+extern "C" void *fn_800FE648(void) {
+    if (lbl_8055DE80) {
+        lbl_8041B138[0x2360] = 0;
+        lbl_8055DE80 = 1;
+    }
+    return lbl_8041B138;
+}
+
 extern "C" void fn_800FE804(void *arg0) {
     OSSendMessage((OSMessageQueue *)((u8 *)arg0 + 0x2320), (OSMessage)0x1, 0);
+}
+
+extern "C" s32 fn_800FE814(s32 arg0) {
+    u32 msg;
+
+    OSInitMessageQueue((OSMessageQueue *)(arg0 + 0x2320), (OSMessage *)(arg0 + 0x2340), 8);
+    for (;;) {
+        OSReceiveMessage((OSMessageQueue *)(arg0 + 0x2320), (OSMessage *)&msg, 1);
+        if (msg == 1) {
+            fn_800FDE60();
+            fn_800FE1D0();
+            continue;
+        }
+        if (msg != 2) {
+            continue;
+        }
+        return 0;
+    }
 }
 
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
@@ -156,6 +182,26 @@ extern "C" void *GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6
 
 extern "C" void fn_800FEC1C(s32 *arg0, s32 arg1) {
     *arg0 = arg1;
+}
+
+extern "C" void __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, u32 arg1, u32 arg2) {
+    if (this_ != NULL) {
+        *(void **)this_ = lbl_80327334;
+        u32 level = OSDisableInterrupts();
+        Stop__Q36nw4hbm3snd10WavePlayerFv(this_);
+        if (*(void **)((u8 *)this_ + 0x18) != NULL) {
+            Free__Q46nw4hbm3snd6detail7AxVoiceFv(*(void **)((u8 *)this_ + 0x18));
+        }
+        *(void **)((u8 *)this_ + 0x18) = NULL;
+        *(void **)((u8 *)this_ + 0x10) = NULL;
+        OSRestoreInterrupts(level);
+        if ((s32)((u8 *)this_ + 4) != 0) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)((u8 *)this_ + 4), 0);
+        }
+        if (arg1 >= 0) {
+            fn_80128668(this_);
+        }
+    }
 }
 
 extern "C" s32 fn_80128668(void *);
