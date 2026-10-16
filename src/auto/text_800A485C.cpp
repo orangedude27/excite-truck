@@ -142,7 +142,7 @@ extern u32 lbl_80407BD8[];
 extern s32 lbl_8055DDC8;
 #pragma opt_tail_call on
 void DCStoreRange(const void *, u32);
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *) __attribute__((noreturn));
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" void OSLockMutex(void*);
 extern "C" void OSUnlockMutex(void*);
 extern "C" const char lbl_8031EA80[];
