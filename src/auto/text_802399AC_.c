@@ -109,6 +109,10 @@ s32 fn_8023A6F4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_8023AE74(void *arg0) {
+    return *(s32 *)*(s32 **)((char *)arg0 + 0x1C) > 0;
+}
+
 s32 fn_8023AE8C(void *arg0) {
     return *(s32 *)*(s32 **)((char *)arg0 + 0x1C) < (*(s32 *)((char *)arg0 + 0x14) - 1);
 }
