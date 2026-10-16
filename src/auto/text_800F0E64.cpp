@@ -125,6 +125,15 @@ extern "C" void fn_800F4F04(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
+extern "C" void fn_800F4F7C(void *arg0) {
+    s32 *p = (s32 *)((u8 *)arg0 + 4);
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+    *(s32 *)((u8 *)arg0 + 8) = 0;
+    *(s32 *)arg0 = 0;
+    *(s32 *)((u8 *)arg0 + 4) = (s32)p;
+    *(s32 *)((u8 *)arg0 + 8) = (s32)p;
+}
+
 extern "C" s32 fn_800F76C0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
