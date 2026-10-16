@@ -131,7 +131,7 @@ public:
     virtual void v15();
     virtual void v16(s32, s32, s32);
     virtual void v17();
-    virtual void v18();
+    virtual void v18(s32);
     virtual void v19();
     virtual void v20(s32, f32);
 };
@@ -978,6 +978,16 @@ extern "C" void fn_8015E4CC(Unk801577F0V* arg0, s32 arg1, f32 arg2) {
         s32 count = arg0->mCount;
         for (s32 j = 0; j < count; j++) {
             entries[j]->v20(arg1, arg2);
+        }
+    }
+}
+
+extern "C" void fn_8015E568(Unk801577F0V* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    if (arg0->m54 != 0) {
+        UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
+        s32 count = arg0->mCount;
+        for (s32 j = 0; j < count; j++) {
+            entries[j]->v16(arg1, arg2, arg3);
         }
     }
 }
