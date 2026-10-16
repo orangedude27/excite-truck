@@ -9,6 +9,8 @@ extern void *lbl_8055E684;
 extern s32 lbl_80435C30[];
 extern void *lbl_8055E694;
 
+s32 fn_801B0DE8(s32 arg0) { return arg0 + 4; }
+
 void fn_801B2C6C(void) {
 
 }
@@ -21,11 +23,12 @@ void* fn_801B2ED4(void) {
     return lbl_8055E680;
 }
 
-void fn_801B2EDC(s32 arg0, s32 arg1) {
-    void *temp_r31;
+s32 fn_801B2EDC(s32 arg0, s32 arg1) {
+    void *var_r31;
     
-    temp_r31 = (void *)((u8 *)lbl_8055E684 + (arg0 << 7));
-    fn_801B179C(temp_r31, arg0, arg1);
+    var_r31 = (void *)((u8 *)lbl_8055E684 + (arg0 << 7));
+    fn_801B179C(var_r31, arg0, arg1);
+    return (s32)var_r31;
 }
 
 void* fn_801B2F24(void) {
@@ -40,14 +43,12 @@ s32 fn_801B2F40(s32 arg0) {
     return lbl_80435C30[arg0];
 }
 
+typedef void (*VFnPtr)(void *);
 s32 fn_801B2F54(s32 arg0) {
-    s32 temp_r3;
-    s32 *temp_r12;
-    
-    temp_r3 = (s32)lbl_8055E684 + (arg0 << 7);
-    temp_r12 = (s32 *)((s32)lbl_8055E684 + (arg0 << 7));
-    ((s32 (*)(void *))*(s32 *)(*(s32 **)temp_r12 + 0x10))((void *)temp_r3);
-    return *(s32 *)(temp_r3 + 0x10);
+    void **obj = (void **)((u8 *)lbl_8055E684 + (arg0 << 7));
+    void **vtable = *(void ***)obj;
+    ((void (*)(void *))vtable[4])(obj);
+    return *(s32 *)(obj + 4);
 }
 
 void* fn_801B307C(void) {
