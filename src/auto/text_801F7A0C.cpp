@@ -28,11 +28,13 @@ void *fn_801F8188(s32 a, s32 b);
   void fn_802E317C(const char *, ...);
   s32 fn_801F9450(void *node);
       void *fn_801F95C4(void *fn, void *node);
-    void fn_801F96A8(void *node);
-    void *fn_801F93FC(void);
-    void *fn_801F981C(void *node, s32 arg);
-    void fn_801F99CC(void *node);
-    }
+          void fn_801F96A8(void *node);
+      void *fn_801F93FC(void);
+      }
+extern void *fn_801F981C(void *node, s32 arg);
+extern void fn_801F99CC(void *node);
+extern void fn_801F9928(void *list, s32 arg);
+extern void *fn_801F9440(void *list, void *node);
 
 struct F9Node {
     void *vtable; // 0x0
