@@ -14,6 +14,13 @@ s32 fn_802E98C8(void) {
 void fn_802E99A8(void) {
 }
 
+void fn_802E99AC(void) {
+    f32 vol;
+    lbl_8056004D = (SCGetWpadMotorMode() == 1);
+    vol = (f32)(u32)SCGetWpadSpeakerVolume();
+    lbl_80560050 = vol / 127.0f;
+}
+
 void* fn_802E9A0C(void) {
     return lbl_80560044;
 }
@@ -30,4 +37,6 @@ char fn_802E9A1C(void) {
 char fn_802E9A24(void) {
     return lbl_8056004D;
 }
+
+f32 fn_802E9A2C(void) { return lbl_80560050; }
 
