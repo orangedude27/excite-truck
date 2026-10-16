@@ -17,3 +17,6 @@ s32 fn_802E7730(void) {
 void fn_802E7738(void) {
 }
 
+void fn_802E773C(void) {
+}
+
