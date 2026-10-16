@@ -27,6 +27,12 @@ void fn_801CB464(void) {
     fn_801CCBA4();
 }
 
+extern void fn_801CCBB4(void);
+void fn_801CB4A0(void) {
+    if (fn_80019BA8() || fn_80161C38()) return;
+    fn_801CCBB4();
+}
+
 void fn_801CB518(void) {
     if (fn_80019BA8() || fn_80161C38()) return;
     lbl_8055E880 = 0;
