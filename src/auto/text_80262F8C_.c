@@ -13,3 +13,15 @@ extern s32 fn_80214AF0(s32);
 s32 fn_80263070(void *arg0) {
     return *((u8 *)arg0 + 0x1C) == 0;
 }
+
+s32 fn_80263080(void) {
+    s32 temp_r0;
+    temp_r0 = lbl_8055F434 - 1;
+    lbl_8055F434 = temp_r0;
+    if (temp_r0 < 0) {
+        lbl_8055F434 = 0;
+    }
+    fn_80230E90(0);
+    return 0;
+}
+
