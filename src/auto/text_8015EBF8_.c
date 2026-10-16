@@ -41,12 +41,35 @@ int fn_8015ED90(void **arg0) {
     return count;
 }
 
+int fn_8015F148(void **arg0, int arg1) {
+    int count = 0;
+    int i;
+    int j;
+    void **child;
+    for (i = 0; i < arg1; i++) {
+        child = *(void ***)arg0;
+        if (child != 0) {
+            for (j = 0; j < ((int *)child)[0]; j++) {
+                void *item = *(void **)((char *)child[1] + j * 4);
+                if (fn_8015ECC0((char *)item + 0x3C)) count++;
+            }
+        }
+        arg0++;
+    }
+    return count;
+}
+
 int fn_8015F3EC(unsigned short *arg0, unsigned short *arg1) {
     return *arg0 - *arg1;
 }
 
 #pragma pop
 void fn_8015F554(void) {
+}
+
+void fn_8015F558(void) {
+    fn_8015F584(&lbl_8055E2A0);
+    fn_8015F5F4(&lbl_8055E29C);
 }
 
 void fn_8015F79C(void) {
