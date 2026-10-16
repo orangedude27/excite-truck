@@ -137,17 +137,21 @@ void fn_8006A1BC(u32 r3, u32 r4)
 
 void fn_8006A300(void)
 {
-    u8 state;
-    state = lbl_80392960[0x10];
-    if (state == 1) {
+    u8 state = lbl_80392960[0x10];
+
+    switch (state) {
+    case 1:
         lbl_80392960[0x10] = (SCCheckStatus() == 0) ? 2 : 1;
-    } else if (state == 2) {
+        break;
+    case 2:
         lbl_80392960[0x10] = fn_8006A1DC();
-    } else if (state == 3) {
+        break;
+    case 3:
         OSCancelAlarm((OSAlarm *)(lbl_80392960 + 0x690));
         lbl_80392960[0x688] = 1;
         BTA_EnableBluetooth(fn_8006BAD8);
         lbl_80392960[0x10] = 4;
+        break;
     }
 }
 
