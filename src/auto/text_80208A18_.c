@@ -52,6 +52,17 @@ void fn_8020927C(void) {
 
 }
 
+extern void *fn_801284F8(int, void *);
+extern char lbl_8033C1C0[];
+extern char lbl_8033C0E8[];
+void fn_80209280(void) {
+    char *ptr = (char *)fn_801284F8(12, lbl_8033C1C0);
+    if (ptr != 0) {
+        *(char **)ptr = lbl_8033C0E8;
+        *(int *)(ptr + 8) = 3;
+    }
+}
+
 void fn_802093EC(void) {
 
 }
@@ -79,4 +90,6 @@ void fn_80209408(void) {
 void fn_8020940C(void) {
 
 }
-
+extern void *fn_801284F8(int, void *);
+extern char lbl_8033C1C0[];
+extern char lbl_8033C0E8[];
