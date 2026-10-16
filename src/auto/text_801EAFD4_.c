@@ -19,6 +19,11 @@ s32 fn_801EB110(void *arg0) {
     return lbl_804885E8[((u32 *)arg0)[4]];
 }
 
+void fn_801EB128(void) {
+    lbl_8055EB98[0] = lbl_80562E68;
+    lbl_8055EB98[1] = lbl_80562E68;
+}
+
 void fn_801EB6A4(void) {
 
 }
