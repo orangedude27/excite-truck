@@ -24,5 +24,10 @@ long fn_801AD868(void) {
     return 0;
 }
 
+void fn_801AD870(void *arg0, void *arg1, void *arg2, long *arg3, long *arg4) {
+    *arg4 = 0;
+    *arg3 = 0;
+}
+
 long fn_801ADA8C(long arg0) { return arg0 + 0x118; }
 
