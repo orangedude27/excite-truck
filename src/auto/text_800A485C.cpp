@@ -327,6 +327,22 @@ extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
+extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *arg0) {
+    extern s32 fn_800AF574(void *);
+    u16 i;
+    for (i = 0; i < 5; i++) {
+        u8 *file = arg0 + i * 0x29C;
+        *(s32 *)(file + 0x40) = 0;
+        fn_800AF574(file + 0x44);
+    }
+    *(u32 *)(arg0 + 0xD4C) &= ~1U;
+    *(u32 *)(arg0 + 0xD7C) &= ~1U;
+    *(u32 *)(arg0 + 0xDAC) &= ~1U;
+    *(u32 *)(arg0 + 0xDDC) &= ~1U;
+    *(u32 *)(arg0 + 0xE0C) &= ~1U;
+    *(s32 *)(arg0 + 0x161C) = 0;
+}
+
 extern "C" s32 fn_800B6928(s8);
 extern "C" s32 fn_800B3754(s32, s32, s32);
 extern "C" s32 fn_800AF574(void *);
