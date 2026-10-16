@@ -348,7 +348,11 @@ extern "C" void fn_800D2480(void) {
 
 #pragma opt_tail_call on
 #pragma opt_tail_call on
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) __attribute__((noreturn)) {
+    f64 f1 __attribute__((reg_struct_return));
+    s32 r31_save __attribute__((unused));
+    void *r30 __attribute__((unused));
+    
     u32 sp_8[16];
     u32 sp_C;
     u32 sp_10;
