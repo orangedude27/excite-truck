@@ -38,6 +38,8 @@ u32 fn_80215FDC(void) { return 1; }
 
 u32 fn_80215FE4(void) { return 1; }
 
+u8 fn_80215FF4(u8 *arg0) { return *arg0; }
+
 void fn_8021676C(void) {
 
 }
