@@ -152,10 +152,42 @@ extern "C" s32 fn_800A71E0(void *arg0) {
     return temp_r3 & ((s32) (-temp_r3 | temp_r3) >> 0x1F);
 }
 
+extern "C" void VFiPFCACHE_FreeFATPage(void *arg0, void *arg1) {
+    u8 *page = (u8 *)arg1;
+    void *head = *(void **)((u8 *)arg0 + 0x1630);
+    if (head == 0)
+        return;
+    *(u32 *)(page + 0xC) = 0;
+    *(u16 *)page &= 0xFFFC;
+    *(u32 *)(page + 0x10) = 0;
+    *(u32 *)(page + 0x18) = -1;
+    *(u32 *)(page + 0x1C) = 0;
+    head = *(void **)((u8 *)arg0 + 0x1630);
+    if (arg1 == head) {
+        *(void **)((u8 *)arg0 + 0x1630) = *(void **)(page + 0x20);
+        return;
+    }
+    if (arg1 == *(void **)((u8 *)head + 0x24))
+        return;
+    *(void **)(*(u8 **)(page + 0x24) + 0x20) = *(void **)(page + 0x20);
+    *(void **)(*(u8 **)(page + 0x20) + 0x24) = *(void **)(page + 0x24);
+    head = *(void **)((u8 *)arg0 + 0x1630);
+    *(void **)(page + 0x20) = head;
+    *(void **)(page + 0x24) = *(void **)((u8 *)head + 0x24);
+    *(void **)((u8 *)head + 0x24) = arg1;
+    *(void **)(*(u8 **)(page + 0x24) + 0x20) = arg1;
+}
+
 extern "C" s32 VFiPFCACHE_DoReadPage(void *, s32, s32, s32, s32);
 extern "C" s32 VFiPFCACHE_DoReadNumSector(void *, s32, u32, s32, s32);
 extern "C" s32 fn_800A8EE0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 temp_r3 = VFiPFCACHE_DoReadPage(arg0, (s32)((u8 *)arg0 + 0x1634), arg1, arg2, arg3);
+    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+}
+
+extern "C" s32 fn_800A8050(void *, s32, s32, s32, s32);
+extern "C" s32 fn_800A8F28(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 temp_r3 = fn_800A8050(arg0, (s32)((u8 *)arg0 + 0x1634), arg1, arg2, arg3);
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
