@@ -74,7 +74,7 @@ s32 _WUDGetDevAddr(u32 arg0) {
     return r31;
 }
 
-s16 _WUDGetQueuedSize(s8 arg0) {
+u16 _WUDGetQueuedSize(s8 arg0) {
     u16 r31;
     s32 saved = OSDisableInterrupts();
     if (arg0 >= 0 && arg0 < 0x10) {
@@ -83,7 +83,7 @@ s16 _WUDGetQueuedSize(s8 arg0) {
         r31 = 0;
     }
     OSRestoreInterrupts(saved);
-    return (s16)r31;
+    return r31;
 }
 
 s32 fn_8006CFA0(void) {
