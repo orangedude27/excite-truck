@@ -143,9 +143,11 @@ void fn_801B8AFC(void) {
 
 extern int fn_800167F4(void);
 int fn_801B8B08(void) {
-    int result = 0x564B;
+    int result;
     if (fn_800167F4() > 1) {
         result = 0x160B;
+    } else {
+        result = 0x564B;
     }
     return result;
 }
