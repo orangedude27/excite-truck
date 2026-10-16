@@ -48,6 +48,16 @@ void fn_8020B2D0(void) {
 
 }
 
+extern unsigned char lbl_8033C520[];
+extern unsigned char lbl_80489BD0[];
+extern int fn_80128668(void);
+int fn_8020B2D4(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_8020B340(void) {
     fn_802E5824();
 }
