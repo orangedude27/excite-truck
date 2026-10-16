@@ -29,4 +29,10 @@ int fn_80259700(int arg0, int arg1) {
         fn_80128668((void *)arg0);
     return arg0;
 }
-
+extern void *fn_80258354(void);
+extern int fn_802C6CF8(int);
+extern int fn_802CAC54(int);
+extern int fn_80128668(void *);
+extern int lbl_80344DE0[];
+extern void *lbl_8055F394;
+extern int lbl_80345158;
