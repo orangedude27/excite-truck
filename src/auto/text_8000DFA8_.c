@@ -134,6 +134,15 @@ void fn_8000F4BC(void) {
     }
 }
 
+extern s32 fn_80232B70(s32);
+extern s32 lbl_8055D490;
+extern s32 lbl_80558A90;
+extern f32 lbl_805602C8;
+extern f64 lbl_80560268;
+f32 fn_800109A0(s32 arg0) {
+    return (f32)arg0 / (f32)lbl_80558A90;
+}
+
 void fn_800109E4(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
     f32 sp8;
     f32 spC;
@@ -241,20 +250,21 @@ extern void fn_80011280(s32, s32);
 extern void fn_8000E3B4(s32);
 extern void fn_8000E874(s32);
 extern void fn_8000EF74(s32);
-void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f) {
-    s32 idx;
-    s8 *entry;
+void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
+    Unk80350F88 *base = (Unk80350F88 *)&lbl_80350F88;
+    Unk80350F88Entry *entry = &base->entries[base->unk_0x288++];
+    char *n = name;
+    s32 v2 = a2;
+    s32 v3 = a3;
+    s32 v4 = a4;
 
-    idx = *(s32 *)((s8 *)&lbl_80350F88 + 0x288);
-    *(s32 *)((s8 *)&lbl_80350F88 + 0x288) = idx + 1;
-    entry = (s8 *)&lbl_80350F88 + idx * 0x40 + 8;
-    strncpy((char *)entry, name, 0x28);
-    *(entry + 0x28) = 0;
-    *(s32 *)(entry + 0x2c) = a2;
-    *(s32 *)(entry + 0x30) = a3;
-    *(s32 *)(entry + 0x34) = 0;
-    *(s32 *)(entry + 0x38) = a4;
-    *(f32 *)(entry + 0x3c) = f;
+    strncpy(entry->name, n, 0x28);
+    entry->unk_0x28 = 0;
+    entry->unk_0x2C = v2;
+    entry->unk_0x30 = v3;
+    entry->unk_0x34 = 0;
+    entry->unk_0x38 = v4;
+    entry->unk_0x3C = f1;
 }
 
 void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
