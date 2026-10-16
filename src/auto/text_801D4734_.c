@@ -60,6 +60,10 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+void *__AXFXGetLfoSinTable_801D64F4(void) {
+    return lbl_803387A8;
+}
+
 s32 fn_801D6500(void *arg0) {
     return ((s32 *)arg0)[1];
 }
