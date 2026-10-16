@@ -90,13 +90,13 @@ void fn_8001DF04(void) {
 }
 
 extern "C" void fn_8001DF08(s32 arg0, s32 arg1) {
-    s32 a = arg0, b = arg1;
-    ((CollisionEntry*)lbl_80358680[0])->apply(a, b);
-    ((CollisionEntry*)lbl_80358680[2])->apply(a, b);
+    ((CollisionEntry*)lbl_80358680[0])->apply(arg0, arg1);
+    ((CollisionEntry*)lbl_80358680[2])->apply(arg0, arg1);
 }
 
 extern "C" void fn_8001DF84(s32 arg0) {
-    ((CollisionEntry*)lbl_80358680[1])->apply(arg0, 0);
+    void* p = lbl_80358680[1];
+    ((CollisionEntry*)p)->apply(arg0, 0);
 }
 
 extern "C" void fn_8001DFA8(s32 arg0) {
@@ -135,8 +135,8 @@ extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
 extern "C" f32 fn_8001DA5C(s32);
 extern f32 lbl_80560490;
 extern "C" void fn_8001E544(void* arg0) {
-    f32 a = lbl_80560490;
     f32 b = lbl_80560474;
+    f32 a = lbl_80560490;
     ((f32*)arg0)[1] = a;
     ((f32*)arg0)[2] = b;
     ((f32*)arg0)[3] = b;
@@ -163,11 +163,53 @@ extern "C" void fn_8001E544(void* arg0) {
     ((f32*)arg0)[24] = b;
 }
 
+extern s32 lbl_802FDC70;
+extern "C" void* fn_8001E5B0(void* arg0, s32 arg1) {
+    void* entry;
+    if (arg0 != 0) {
+        entry = *(void**)((u8*)arg0 + 0x24);
+        *(void**)arg0 = &lbl_802FDC70;
+        if (entry != 0) {
+            ((void (**)(void*, s32))(*(void***)entry))[1](entry, 1);
+        }
+        if (arg1 > 0) {
+            ((s32 (*)(void*))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+
+extern "C" void fn_8001E964(void* arg0) {
+    f32 value = lbl_80560490;
+    *(f32*)((u8*)arg0 + 0x34) = value;
+    *(f32*)((u8*)arg0 + 0x2C) = value;
+}
+
 extern "C" s32 fn_8001E974(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
     return arg0;
+}
+
+void fn_8001ED2C(void* arg0) {
+    f32 value = lbl_80560490;
+    *(s32*)((u8*)arg0 + 0x04) = 0;
+    *(f32*)((u8*)arg0 + 0x08) = value;
+    *(s32*)((u8*)arg0 + 0x0C) = 0;
+    *(f32*)((u8*)arg0 + 0x10) = value;
+    *(s32*)((u8*)arg0 + 0x14) = 0;
+    *(f32*)((u8*)arg0 + 0x18) = value;
+    *(s32*)((u8*)arg0 + 0x1C) = 0;
+    *(f32*)((u8*)arg0 + 0x20) = value;
+    *(s32*)((u8*)arg0 + 0x24) = 0;
+    *(f32*)((u8*)arg0 + 0x28) = value;
+    *(s32*)((u8*)arg0 + 0x2C) = 0;
+    *(f32*)((u8*)arg0 + 0x30) = value;
+    *(s32*)((u8*)arg0 + 0x34) = 0;
+    *(f32*)((u8*)arg0 + 0x38) = value;
+    *(s32*)((u8*)arg0 + 0x3C) = 0;
+    *(f32*)((u8*)arg0 + 0x40) = value;
 }
 
 extern "C" s32 fn_8001ED78(s32 arg0, s32 arg1) {
