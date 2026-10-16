@@ -1,4 +1,9 @@
 #include <types.h>
+extern "C" u32 fn_80060CC0(void*, u32, u32);
+extern "C" void *lbl_80407780[];
+extern "C" f32 lbl_80560E38;
+extern "C" u8 lbl_80407600[];
+extern "C" u8 lbl_8055DDA8[];
 extern "C" f32 lbl_80560E40;
 extern "C" f32 lbl_80560E3C;
 extern "C" s32 fn_80060C7C(void*);
