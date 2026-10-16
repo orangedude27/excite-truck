@@ -85,6 +85,9 @@ extern "C" int lbl_8055EF5C;
 extern "C" unsigned char lbl_80490558[];
 extern "C" char *lbl_8055B6B0;
 
+extern "C" s32 fn_80128668(void);
+extern "C" s32 (*lbl_8055EF0C)(s32 *);
+extern "C" s32 fn_802168BC(s32);
 extern "C" void fn_8021165C(void) {
     fn_80215270();
 }
