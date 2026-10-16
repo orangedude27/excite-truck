@@ -487,6 +487,39 @@ extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_8021D864(void *arg0) {
+    void *obj = *(void **)((u8 *)arg0 + 0x254);
+    void **vtable = *(void ***)((u8 *)obj + 0xC);
+    ((void (*)(void))vtable[7])();
+}
+
+extern "C" void fn_8021D878(void *arg0) {
+    void *result;
+    if (fn_80129BC4() != 0) {
+        result=fn_80217BD8(*(s32 *)((u8 *)arg0+0x2C),*(s32 *)((u8 *)arg0+0x25C),arg0);
+        *(void **)((u8 *)arg0+0x258)=result;
+        ((void (*)(void *,s32,void *,s32))fn_80219440)(arg0,1,result,4);
+    }
+}
+
+extern "C" s32 fn_8021D8D4(void *arg0) {
+    void *obj;
+    void **vtable;
+    if (*(s32 **)((u8 *)arg0 + 0x258) == 0)
+        return 0;
+    if (*(u8 *)((u8 *)arg0 + 0x1B) != 0) {
+        obj = *(void **)((u8 *)arg0 + 0x254);
+        vtable = *(void ***)((u8 *)obj + 0xC);
+        if (((s32 (*)(void *))vtable[2])(obj) != 0) {
+            obj = *(void **)((u8 *)arg0 + 0x254);
+            vtable = *(void ***)((u8 *)obj + 0xC);
+            return ((s32 (*)(void *))vtable[3])(obj);
+        }
+        return **(s32 **)((u8 *)arg0 + 0x258) == *(s32 *)((u8 *)arg0 + 0x25C);
+    }
+    return 4;
+}
+
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_8021915C(arg0, 0);
