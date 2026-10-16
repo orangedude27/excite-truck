@@ -8,6 +8,10 @@ extern s32 lbl_80331C70;
 extern f32 lbl_80561B78;
 extern f32 lbl_80561B7C;
 
+void fn_80179D8C(void *arg0, s32 arg1) {
+    ((s32 *)arg0)[2] = arg1;
+}
+
 void fn_80179D94(void *arg0, void *arg1) {
     f32 a = lbl_80561B7C;
     f32 b = lbl_80561B78;
