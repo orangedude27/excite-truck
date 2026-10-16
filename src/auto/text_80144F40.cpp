@@ -7,6 +7,14 @@ extern "C" f32 lbl_8055E204;
 extern "C" int stricmp(const char *, const char *);
 extern "C" void fn_80148334(s32, s32, void *);
 extern "C" void fn_801483D4(s32, s32, void *);
+extern "C" void *lbl_8032D1D8;
+extern "C" f32 fn_801451DC(s32);
+extern "C" f32 fn_801452B4(f32);
+extern "C" f32 lbl_805615D4;
+extern "C" void fn_801470B0(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void fn_80148DFC(void *);
+extern "C" void fn_80148E6C(void *);
+extern "C" void fn_80148EDC(void *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -134,6 +142,19 @@ extern "C" void fn_80146730(void *arg0) {
     }
 }
 
+extern "C" void *lbl_8032D1D8;
+extern "C" f32 fn_801451DC(s32);
+extern "C" f32 fn_801452B4(f32);
+extern "C" f32 lbl_805615D4;
+extern "C" void fn_801470B0(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void fn_80148100(void *arg0) {
+    fn_801470B0(*(s32 *)((u8 *)arg0 + 0x18), -1,
+        *(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4),
+        *(f32 *)((u8 *)arg0 + 8), *(f32 *)((u8 *)arg0 + 0x10),
+        *(f32 *)((u8 *)arg0 + 0x14), lbl_805615D4, lbl_805615D4,
+        lbl_805615D4, lbl_805615D4);
+}
+
 extern "C" void fn_8014819C(void *arg0, f32 farg0, f32 farg1) {
     *(f32 *)arg0 = lbl_8055E200;
     *(f32 *)((u8 *)arg0 + 4) = lbl_8055E204;
@@ -230,8 +251,32 @@ extern "C" void fn_80148324(void *arg0, s32 arg1) {
     fn_80148334(arg1, *(s32 *)((u8 *)arg0 + 0x2C), arg0);
 }
 
+extern "C" void fn_80148334(s32 arg0, s32 arg1, void *arg2) {
+    s32 offset = 0;
+    s32 i = 0;
+    while (i < *(s32 *)((u8 *)arg1 + 4)) {
+        if (stricmp(*(const char **)(*(u32 *)arg1 + offset), (const char *)arg0) == 0) {
+            return;
+        }
+        offset += 0x28;
+        i++;
+    }
+}
+
 extern "C" void fn_801483C4(void *arg0, s32 arg1) {
     fn_801483D4(arg1, *(s32 *)((u8 *)arg0 + 0x34), arg0);
+}
+
+extern "C" void fn_801483D4(s32 arg0, s32 arg1, void *arg2) {
+    s32 offset = 0;
+    s32 i = 0;
+    while (i < *(s32 *)((u8 *)arg1 + 4)) {
+        if (stricmp(*(const char **)(*(u32 *)arg1 + offset), (const char *)arg0) == 0) {
+            return;
+        }
+        offset += 0x1C;
+        i++;
+    }
 }
 
 extern "C" void *fn_801484A4(const char *, void *);
