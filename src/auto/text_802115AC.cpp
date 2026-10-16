@@ -345,6 +345,10 @@ extern "C" s32 fn_80215C08(void *arg0) {
     return *(s32 *)((char *)arg0 + 0xC) - *(s32 *)((char *)arg0 + 4);
 }
 
+extern "C" void fn_80215C18(void *arg0) {
+    fn_80214CB4(*(u8 *)((char *)arg0 + 0x18) == 0);
+}
+
 extern "C" void fn_80215CA0(void) {
 
 }
