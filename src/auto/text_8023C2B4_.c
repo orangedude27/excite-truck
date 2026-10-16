@@ -37,6 +37,12 @@ void fn_8023C958(void) {
     fn_8023C55C(lbl_8034143C);
 }
 
+void fn_8023C964(void *arg0) {
+    s32 count = *(s32 *)((char *)arg0 + 0x14);
+    s32 *index = *(s32 **)((char *)arg0 + 0x18);
+    *index = (count + *index - 1) % count;
+}
+
 void fn_8023C98C(void *arg0) {
     s32 *index = *(s32 **)((char *)arg0 + 0x18);
     s32 count = *(s32 *)((char *)arg0 + 0x14);
