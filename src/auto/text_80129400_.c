@@ -30,6 +30,9 @@ extern void *lbl_8055DFD4;
 void* fn_80129AF4(void) {
     return lbl_8055DFD4;
 }
+void fn_80129AEC(void *arg0) {
+    lbl_8055DFD4 = arg0;
+}
 
 void fn_80129AFC(void) {
     u8 *p = (u8 *)&lbl_80422180;
