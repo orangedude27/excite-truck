@@ -145,6 +145,20 @@ check:
     if (i < lbl_8055F890) goto loop;
 }
 
+void fn_802A5A90(void);
+s32 fn_802A79CC(s32);
+void fn_802A5A90(void) {
+    s32 *ptr = lbl_804BCFA8;
+    s32 i = 0;
+    goto check;
+loop:
+    fn_802A79CC(*ptr);
+    ptr++;
+    i++;
+check:
+    if (i < lbl_8055F890) goto loop;
+}
+
 extern s32 lbl_804BCFA8[];
 extern s32 lbl_8055F890;
 s32 fn_802A7680(s32);
