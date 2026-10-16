@@ -24,6 +24,10 @@ void fn_802C92D0(void) {
     fn_802C8C04(-1);
 }
 
+void fn_802C92D8(void) {
+    fn_802C8D74();
+}
+
 extern float lbl_80564EF8;
 extern void fn_802D007C(float);
 void fn_802C9904(void) {
