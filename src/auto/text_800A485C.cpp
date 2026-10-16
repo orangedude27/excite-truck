@@ -218,15 +218,20 @@ s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
     s32 r29 = (s32)arg1;
     s32 r30 = (s32)arg2;
     
-    fn_800D3F94(r31, r28, r29, r30);
+    r31 = *(void **)((u8 *)r31 + 0xC);
+    if (r31 == 0) {
+        return 0;
+    }
     
-    if (r31 != 0) {
-        r31 = *(void **)((u8 *)r31 + 0xC);
-        if (r31 != 0) {
+    do {
+        if (fn_800D3F94(r31, r28, r29, r30) != 0) {
             return 1;
         }
-    }
-    return 0;
+        r31 = *(void **)((u8 *)r31 + 0xC);
+        if (r31 == 0) {
+            return 0;
+        }
+    } while (1);
 }
 extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
