@@ -63,6 +63,11 @@ s32 fn_802630C0(void) {
     return 0;
 }
 
+extern int fn_80263104(void);
+int fn_80263104(void) {
+    return lbl_8055F434 == lbl_8055C440;
+}
+
 s32 fn_80263658(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
