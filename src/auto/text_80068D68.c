@@ -332,6 +332,13 @@ void rfc_set_port_state(void *arg0, void *arg1) {
     }
 }
 
+void fn_800934D8(void *arg0, s16 arg1) {
+    s16 sp8;
+
+    sp8 = arg1;
+    fn_800916F4(arg0, 7, &sp8);
+}
+
 void fn_8009BFBC(void) {
     AXFXReverbHiExpCallback();
 }
