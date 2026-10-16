@@ -336,3 +336,10 @@ void fn_8009BFBC(void) {
     AXFXReverbHiExpCallback();
 }
 
+extern void *lbl_805590B0;
+extern void *lbl_805590B4;
+void AXFXSetHooks_8009CDB0(void *arg0, void *arg1) {
+    lbl_805590B0 = arg0;
+    lbl_805590B4 = arg1;
+}
+
