@@ -22,6 +22,11 @@ int fn_802B0628(int arg0) {
     return -2;
 }
 
+void fn_802B06D4(void) {
+    void **obj = fn_802B59CC();
+    ((void (*)(void *, void *, int))((void **)*obj)[12])(obj, lbl_8034A078, 0);
+}
+
 void fn_802B0860(void *arg0) {
     ((int *)arg0)[0] = 0;
     ((int *)arg0)[2] = 0;
@@ -55,6 +60,27 @@ void fn_802B087C(void **arg0) {
 #pragma pop
 void fn_802B0904(void) {
     ((int *)lbl_8055F9A0)[2] = 0;
+}
+
+void fn_802B0914(void) {
+    fn_802B8AE0(lbl_8034A0B4, &lbl_8055F998);
+    fn_802B8AE0(lbl_8034A0C4, &lbl_8055F99C);
+    fn_802B0710();
+}
+
+#pragma opt_common_subs off
+void *fn_802B0AC0(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        if ((char *)arg0 + 4 != 0) {
+            if ((char *)arg0 + 4 != 0) {
+                ((int *)arg0)[1] = 0;
+                ((int *)arg0)[2] = 0;
+                ((int *)arg0)[3] = 0;
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
 }
 
 int fn_802B1C14(void *arg0) {
