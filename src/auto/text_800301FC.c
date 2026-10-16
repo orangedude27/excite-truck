@@ -89,6 +89,10 @@ u16 fn_80031C74(void) {
     return lbl_8055D734;
 }
 
+u16 fn_80031C7C(void) {
+    return lbl_8055D732;
+}
+
 void fn_80031C8C(unsigned short arg0) {
     lbl_8055D734 = arg0;
 }
