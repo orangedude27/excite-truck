@@ -251,3 +251,9 @@ u8 fn_80007C64(void *arg0) {
     return ((u8 *)arg0)[4];
 }
 
+void fn_80007C6C(void *arg0) {
+    if (fn_801B8848() == 0) {
+        ((u8 *)arg0)[5] = 1;
+    }
+}
+
