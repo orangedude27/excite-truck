@@ -116,8 +116,8 @@ extern "C" void *fn_801F93FC(void *node) {
 }
 
 extern "C" void *fn_801F9440(F9Node *list, F9Node *node) {
-    node->next = list->next;
-    list->next = node;
+    ((F92Node *)node)->next = ((F92Node *)list)->next;
+    ((F92Node *)list)->next = (F92Node *)node;
 }
 
 extern "C" s32 fn_801F948C(F9Node *node) {
