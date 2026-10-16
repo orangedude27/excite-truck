@@ -1,6 +1,7 @@
 #include <types.h>
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/ARC/arc.h>
+#include <string.h>
 #pragma opt_tail_call on
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -129,6 +130,16 @@ extern "C" void fn_800D1200(void) {
 
 extern "C" void fn_800D1558(void) {
 
+}
+
+void fn_800D1AEC(void) {
+    void *r3 = OSGetAlarmUserData(NULL);
+    fn_80060CC0(r3, 1, (u32)&fn_800D1B1C);
+}
+
+void fn_800D1C18(void) {
+    void* r3 = OSGetAlarmUserData(NULL);
+    fn_80060CC0(r3, 4, (u32)&fn_800D1C48);
 }
 
 extern "C" s32 fn_800D1E5C(void *arg0, s32 arg1) {
