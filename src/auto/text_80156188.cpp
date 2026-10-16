@@ -179,7 +179,7 @@ extern "C" void fn_801571AC(void* arg0) {
 }
 
 void ebi::title::TBlackPlane::updateAfterCamera() {
-    m_b->update();
-    m_a->update();
+    m_b->v3();
+    m_a->v3();
 }
 
