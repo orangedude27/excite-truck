@@ -48,6 +48,11 @@ void fn_80031C68(void) {
 
 }
 
+extern void *lbl_8055D740;
+void fn_80031C6C(void* hi) {
+    lbl_8055D740 = hi;
+}
+
 void fn_80031C8C(unsigned short arg0) {
     lbl_8055D734 = arg0;
 }
