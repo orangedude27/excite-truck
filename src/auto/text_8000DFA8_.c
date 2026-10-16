@@ -497,7 +497,7 @@ f32 fn_80011E90(void) {
 }
 
 f32 fn_80011EB0(s32 arg0) {
-    return *((f32 *)&lbl_80350EC4[5] + arg0 * 5 + 2);
+    return lbl_80350ED8[arg0 * 5 + 2];
 }
 
 f32 fn_80011EC8(s32 arg0) {
