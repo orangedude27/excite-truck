@@ -814,6 +814,18 @@ extern "C" void fn_80229790(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x18) = 0;
 }
 
+extern "C" void fn_802297D0(void *arg0) {
+    s32 (*callback)(s32);
+    if (*(u8 *)((u8 *)arg0 + 0x257) != 0 &&
+        *(u8 *)((u8 *)arg0 + 0x254) != 0 &&
+        *(u8 *)((u8 *)arg0 + 0x18) != 0) {
+        callback = *(s32 (**)(s32))((u8 *)arg0 + 0x258);
+        if (callback != 0 && callback(*(s32 *)((u8 *)arg0 + 0x25C)) != 0)
+            fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+    }
+    fn_802192AC(arg0);
+}
+
 extern "C" void fn_8022984C(void *arg0) {
     u8 *p = *(u8 **)((u8 *)arg0 + 0x254);
     *p = (u8)((s8)(*p == 0));
@@ -853,6 +865,11 @@ extern "C" void fn_802298FC(void) {
 
 void fn_80229900(void *arg0) {
     ((void (*)(void *, int, int))(*(void ***)arg0)[0x74 / 4])(arg0, 0, 0);
+}
+
+extern "C" void fn_80229918(void *arg0) {
+    ((VfObj *)arg0)->vf31();
+    *(u8 *)((u8 *)arg0 + 0x18) = 1;
 }
 
 extern "C" void fn_80229998(void *arg0) {
