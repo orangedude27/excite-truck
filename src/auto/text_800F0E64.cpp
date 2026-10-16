@@ -143,6 +143,21 @@ extern "C" s32 fn_800F420C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *arg0) {
+ void **obj;
+ obj=*(void ***)((u8*)arg0+0x21c);
+ if(obj && ((s32(*)(void*))((void**)*(void**)obj)[0x54/4])(obj)) {
+ obj=*(void***)((u8*)arg0+0x21c);
+ if(((s32(*)(void*))((void**)*(void**)obj)[0x28/4])(obj)) {
+ obj=*(void***)((u8*)arg0+0x21c);
+ ((s32(*)(void*,s32,s32))((void**)*(void**)obj)[0x4c/4])(obj,0,0);
+ } else {
+ obj=*(void***)((u8*)arg0+0x21c);
+ ((s32(*)(void*))((void**)*(void**)obj)[0x48/4])(obj);
+ }
+ }
+}
+
 extern "C" s32 fn_800F4CC4(s32 arg0, s32 arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
 
 extern "C" s32 fn_800F4D04(s32 arg0, s32 arg1) {
@@ -218,35 +233,48 @@ extern "C" void fn_800F4FF4(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
-void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, unsigned int start, unsigned int end) {
-    unsigned int* entries = *(unsigned int**)((char*)self + 0x14);
-    unsigned int i = 0, offset = 0;
-    if (entries == 0) return;
+void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, unsigned long start, unsigned long end) {
+    unsigned long* entries = *(unsigned long**)((char*)self + 0x14);
+    unsigned long i = 0, offset = 0;
+    if (!entries) return;
     do {
-        unsigned int* entry = (unsigned int*)((char*)entries + offset);
-        unsigned int value = entry[1];
+        unsigned long* entry = (unsigned long*)((char*)entries + offset);
+        unsigned long value = entry[1];
         if (value >= start && value <= end) entry[1] = 0;
-        offset += 8; i++;
+        offset += 8; ++i;
     } while (i < entries[0]);
 }
 
-void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self, unsigned int start, unsigned int end) {
-    unsigned int* entries = *(unsigned int**)((char*)self + 0x14);
-    unsigned int i = 0, offset = 0;
-    if (entries == 0) return;
+void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self, unsigned long start, unsigned long end) {
+    unsigned long* entries = *(unsigned long**)((char*)self + 0x14);
+    unsigned long i = 0, offset = 0;
+    if (!entries) return;
     do {
-        unsigned int* entry = (unsigned int*)((char*)entries + offset);
-        unsigned int value = entry[2];
+        unsigned long* entry = (unsigned long*)((char*)entries + offset);
+        unsigned long value = entry[2];
         if (value >= start && value <= end) entry[2] = 0;
-        offset += 8; i++;
+        offset += 8; ++i;
     } while (i < entries[0]);
 }
+
+extern "C" void fn_800FDE60(void);
+extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(unsigned long);
+extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void);
+void fn_800F7110(unsigned long arg1) { fn_800FDE60(); CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(arg1); }
 
 extern "C" s32 fn_800F76C0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
     return arg0;
+}
+
+void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* self) {
+    void* mutex = *(void**)((char*)self + 0x2c);
+    OSLockMutex(mutex);
+    if (*(void**)((char*)self + 0x10) != 0)
+        Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv();
+    OSUnlockMutex(mutex);
 }
 
 extern "C" s32 fn_800F81AC(s32 arg0, s32 arg1) {
