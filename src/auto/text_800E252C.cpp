@@ -65,7 +65,7 @@ extern "C" void fn_800E9B9C(void *arg0) {
 
 extern int lbl_8055DE20;
 extern void fn_80128668(void);
-int fn_800E9BE4(int arg0, int arg1) {
+extern "C" int fn_800E9BE4(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
