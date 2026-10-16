@@ -6,6 +6,10 @@ extern "C" f32 lbl_805614BC;
 extern "C" s32 lbl_802F9398[6];
 struct S6_8013D18C { s32 v[6]; };
 extern "C" void **fn_801284F8(s32, void *);
+extern "C" void fn_8013D288(void) __attribute__((noreturn));
+extern "C" f32 lbl_80561498;
+extern "C" s32 fn_80176A1C(void);
+extern "C" int strcmp(const char *, const char *);
 extern "C" u8 lbl_80559D18;
 extern "C" u8 lbl_8032CAC0;
 extern "C" s32 fn_8013D224(f32, f32);
@@ -147,12 +151,13 @@ extern "C" f32 lbl_80561530;
 extern "C" f32 lbl_80561538;
 extern "C" f32 lbl_8056153C;
 extern "C" f32 lbl_80561540;
-extern "C" s32 fn_8013F438(f32 arg0) {
-    f32 temp = (arg0 - lbl_80561530) / lbl_80561538;
-    f32 value = lbl_805614AC;
-    if (value < temp) value = temp;
-    if (value > lbl_805614A4) value = lbl_805614A4;
-    return (s32)(lbl_8056153C + value * lbl_80561540);
+extern "C" f32 lbl_805614A4, lbl_805614AC, lbl_80561530, lbl_80561538, lbl_8056153C, lbl_80561540;
+extern "C" s32 fn_8013F438(f32 x) {
+    f32 t = (x - lbl_80561530) / lbl_80561538;
+    f32 v = (lbl_805614AC < t) ? lbl_805614AC : t;
+    if (v > lbl_805614A4)
+        v = lbl_805614A4;
+    return (s32)(lbl_8056153C + v * lbl_80561540);
 }
 
 extern "C" void fn_80141454(void) {
