@@ -64,6 +64,10 @@ void fn_801B531C(void) {
     }
 }
 
+void fn_801B5354(void) {
+    fn_801B49C8(lbl_8055E6D8);
+}
+
 void fn_801B535C(void) {
 
 }
