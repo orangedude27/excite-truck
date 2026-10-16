@@ -200,7 +200,8 @@ void fn_8006A39C(u32 r3, u32 r4)
 
 void fn_8006A3BC(void)
 {
-    u8 state = lbl_80392960[0x11];
+    volatile u8 *base = lbl_80392960;
+    u8 state = base[0x11];
     switch (state) {
     case 1:
         if (SCCheckStatus() == 0) {
@@ -210,7 +211,8 @@ void fn_8006A3BC(void)
             } else {
                 state = 1;
             }
-            lbl_80392960[0x11] = state;
+            base[0x11] = state;
+            break;
         }
         break;
     case 2:
@@ -266,6 +268,34 @@ void WUDSetSniffMode(BD_ADDR addr, s32 interval)
     block.attempt = 1;
     block.timeout = 0;
     BTM_SetPowerMode(lbl_80392960[0x68A], addr, &block);
+}
+
+s32 fn_8006ADC4(s32 arg0)
+{
+    extern void DBPrintf_8006CFA8(const char *, ...);
+    extern const char lbl_80313584[];
+    s32 prev;
+    s32 enabled;
+    DBPrintf_8006CFA8(lbl_80313584, arg0);
+    enabled = OSDisableInterrupts();
+    prev = *(s32 *)(lbl_80392960 + 0x66C);
+    *(s32 *)(lbl_80392960 + 0x66C) = arg0;
+    OSRestoreInterrupts(enabled);
+    return prev;
+}
+
+s32 fn_8006AE20(s32 arg0)
+{
+    extern void DBPrintf_8006CFA8(const char *, ...);
+    extern const char lbl_803135A0[];
+    s32 prev;
+    s32 enabled;
+    DBPrintf_8006CFA8(lbl_803135A0, arg0);
+    enabled = OSDisableInterrupts();
+    prev = *(s32 *)(lbl_80392960 + 0x670);
+    *(s32 *)(lbl_80392960 + 0x670) = arg0;
+    OSRestoreInterrupts(enabled);
+    return prev;
 }
 
 void WUDSetVisibility(u8 arg0, u8 arg1)
