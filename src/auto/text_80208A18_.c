@@ -18,6 +18,8 @@ int fn_80208D3C(void) { return lbl_80489238[6]; }
 
 int fn_80208D4C(int index) { return lbl_80489238[index]; }
 
+void fn_80208D60(int arg0) { lbl_80489238[7] = arg0; }
+
 void* fn_802090B4(void) {
     return lbl_8055EDA8;
 }
