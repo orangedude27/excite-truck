@@ -1,4 +1,5 @@
 #include "types.h"
+extern "C" f32 lbl_80558DC4;
 extern "C" void **fn_801284F8(s32, void *);
 extern "C" u8 lbl_80559D18;
 extern "C" u8 lbl_8032CAC0;
@@ -51,6 +52,12 @@ public:
 };
 
 extern "C" s32 fn_8013D1F0(s32);
+
+extern "C" s32 fn_8013D1F0(s32 arg0) {
+    u8 *obj = ((u8 *(*)(void))fn_801B2EC0)();
+    ((void (*)(void))(*(void ***)obj)[4])();
+    return *(s32 *)(obj + 0x10);
+}
 
 extern "C" void fn_8013D27C(void *a, void *b) {
     fn_8013D224(*(f32 *)((u8 *)a + 0x18), *(f32 *)((u8 *)b + 0x18));
