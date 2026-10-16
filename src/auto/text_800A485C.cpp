@@ -494,13 +494,30 @@ extern "C" s32 fn_800D0AB4(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
 
+s32 fn_800D0B90(void) { return 0; }
+
+void fn_800D0B98(void *arg0, s32 arg1) {
+    *(s32 *)((char *)arg0 + 0x1C) = arg1;
+}
+
 extern "C" void fn_800D0BA0(void) {
 
 }
 
+void fn_800D0BA4(void *arg0, D0BA4Dispatch *arg1) {
+    *(D0BA4Dispatch **)((char *)arg0 + 4) = arg1;
+    if (arg1 != 0) {
+        arg1->vf3((D0BA4Dispatch *)arg0);
+    }
+}
+
+s32 fn_800D0BD0(void) { return 0; }
+
 extern "C" void fn_800D1200(void) {
 
 }
+
+extern "C" void fn_800D1204(void* arg0, f32 arg1) { *(f32*)((u8*)arg0 + 4) = arg1; }
 
 extern "C" void fn_800D1558(void) {
 
