@@ -78,6 +78,25 @@ void fn_8017EC30(void) {
     lbl_8055E4BA = 0;
 }
 
+extern int fn_80128668(void);
+extern int fn_801A8EE4(void *);
+int fn_8017FEE4(void *arg0) {
+    int result = 0;
+    if (*(unsigned char *)((char *)arg0 + 0x340) == 0 &&
+        fn_801A8EE4((char *)arg0 + 0x6C) == 0 &&
+        fn_801A8EE4((char *)arg0 + 0x7C) != 0) {
+        result = 1;
+    }
+    return result;
+}
+
+int fn_801813D8(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_80181438(void) {
 
 }
