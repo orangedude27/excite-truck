@@ -49,6 +49,8 @@ s32 fn_80014AE4(void) {
  return 0;
 }
 
+s32 fn_800151D4(void) { return 1; }
+
 extern void fn_801476C4(void);
 extern u8 lbl_80558BBC[];
 extern u8 lbl_802FCDB4[];
