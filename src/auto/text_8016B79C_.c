@@ -5,6 +5,8 @@
 
 int fn_8012850C(int, int);
 extern f32 lbl_805619A0;
+extern char lbl_80330AEC[];
+extern void fn_802E317C(const char *, ...);
 void *fn_80128668(void *);
 void fn_802C6CF8(int);
 int fn_8016C25C(int arg0, int arg1) {
