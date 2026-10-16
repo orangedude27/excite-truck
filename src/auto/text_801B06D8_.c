@@ -4,7 +4,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 extern void fn_801B2EC0(void);
 extern s32 fn_80128668(void);
-extern void *lbl_80335BFC;
+extern char lbl_80335BFC[];
 extern f32 lbl_805625BC;
 extern void *memset(void *, int, unsigned long);
 extern void *lbl_8055E678;
@@ -94,6 +94,33 @@ s32 fn_801B1130(s32 arg0) {
 }
 
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
+
+void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
+    void **vtable;
+    *arg3 = 0;
+    if (lbl_8055E68C == 0) return;
+    vtable = *(void ***)lbl_8055E68C;
+    ((void (*)(void *, s32, void *))vtable[4])(lbl_8055E68C,
+        *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C);
+}
+
+void *fn_801B21B8(void *arg0) {
+    *(void **)arg0 = lbl_80335BFC;
+    *(s32 *)((u8 *)arg0 + 0x40) = 0;
+    *(s32 *)((u8 *)arg0 + 0x48) = 0x2710;
+    *(f32 *)((u8 *)arg0 + 0x44) = lbl_805625BC;
+    *(s32 *)((u8 *)arg0 + 0x4C) = 0;
+    *(s32 *)((u8 *)arg0 + 0x54) = 0x2710;
+    *(f32 *)((u8 *)arg0 + 0x50) = lbl_805625BC;
+    memset((u8 *)arg0 + 4, 0, 0x38);
+    *(s32 *)((u8 *)arg0 + 0x5C) = 0;
+    *(f32 *)((u8 *)arg0 + 0x70) = lbl_805625BC;
+    *(s32 *)((u8 *)arg0 + 0x60) = -1;
+    *(s32 *)((u8 *)arg0 + 0x6C) = -1;
+    *(s32 *)((u8 *)arg0 + 0x58) = 0;
+    *(s32 *)((u8 *)arg0 + 0x3C) = 0;
+    return arg0;
+}
 
 s32 fn_801B224C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
