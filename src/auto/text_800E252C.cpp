@@ -93,6 +93,14 @@ extern int lbl_80407F60;
 extern "C" void *fn_8002F634(void *, void *, int, int);
 extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *, int);
 extern "C" void *fn_800E2D74(void *, int);
+extern "C" void TRKGetFreeBuffer(void *);
+extern "C" void fn_800E4764(void *);
+#pragma push
+#pragma small_data off
+extern u8 lbl_80322498[];
+extern const char lbl_803220C4[];
+extern const char lbl_803220A0[];
+#pragma pop
 typedef float f32;
 #pragma push
 #pragma small_data off
@@ -119,10 +127,8 @@ extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
     while (index >= lbl_80560F00) index -= lbl_80560F00;
     u16 quantized = ((u16 *)&index)[0];
     f32 *entry = (f32 *)((char *)lbl_80320E38 + ((quantized * 0x10) & 0xFF0));
-    f32 base = entry[1];
-    f32 slope = entry[3];
-    f32 fraction = index - index;
-    return base + fraction * slope;
+    f32 fraction = index;
+    return entry[1] + fraction * entry[3];
 }
 
 extern "C" void fn_800E2C98(void *arg0) {
@@ -208,6 +214,49 @@ extern "C" void fn_800E5A8C(void) {
 
 void fn_800E80B4(void) {
 
+}
+
+extern "C" void fn_80128668(void); int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+
+extern void __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *);
+extern void *lbl_80322880;
+void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
+    *(int *)((char *)arg0 + 4) = 0;
+    *(void **)arg0 = &lbl_80322880;
+    *(int *)((char *)arg0 + 8) = 0;
+    *(int *)((char *)arg0 + 0xC) = 0;
+    *(int *)((char *)arg0 + 0x10) = 0;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    *(int *)((char *)arg0 + 0x18) = 0;
+    *(int *)((char *)arg0 + 0x1C) = 0;
+    *(int *)((char *)arg0 + 0x20) = 0;
+    *(int *)((char *)arg0 + 0x24) = 0;
+    *(float *)((char *)arg0 + 0x44) = lbl_80560FB0;
+    *(float *)((char *)arg0 + 0x48) = lbl_80560FB0;
+    *(int *)((char *)arg0 + 0x4C) = 0;
+    *(int *)((char *)arg0 + 0x50) = 0;
+    *(float *)((char *)arg0 + 0x54) = lbl_80560FB0;
+    *(float *)((char *)arg0 + 0x58) = lbl_80560FB0;
+    *(int *)((char *)arg0 + 0x5C) = 0;
+    *(int *)((char *)arg0 + 0x60) = 0;
+    *(int *)((char *)arg0 + 0x78) = -1;
+    *(float *)((char *)arg0 + 0x7C) = lbl_80560FB0;
+    *(float *)((char *)arg0 + 0x80) = lbl_80560FB0;
+    *(int *)((char *)arg0 + 0x84) = 0;
+    *(int *)((char *)arg0 + 0x88) = 0;
+    *(int *)((char *)arg0 + 0xB8) = 0;
+    *(int *)((char *)arg0 + 0xBC) = 0;
+    *(int *)((char *)arg0 + 0xC0) = 0;
+    *(int *)((char *)arg0 + 0xC4) = 0;
+    *(int *)((char *)arg0 + 0xC8) = 0;
+    *(int *)((char *)arg0 + 0xCC) = 0;
+    *(int *)((char *)arg0 + 0xD0) = 0;
+    *(int *)((char *)arg0 + 0xD4) = 0;
+}
+
+void fn_800E8ADC(void *arg0) {
+    if (*(unsigned char *)((char *)arg0 + 0x65) == 0)
+        *(unsigned char *)((char *)arg0 + 0x64) = 1;
 }
 
 typedef void (*vfn0_t)(void*);
