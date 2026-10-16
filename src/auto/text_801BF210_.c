@@ -46,6 +46,30 @@ void fn_801C0124(float *arg0, float *arg1, float arg2) {
     arg0[2] = z;
 }
 
+int fn_801C0170(void *arg0) { return *(int *)((char *)arg0 + 0x59C); }
+
+extern void fn_801C1C7C(void *, int);
+extern void fn_80179EE8(void *, int);
+extern void fn_80128668(void *);
+extern int lbl_8055E7BC;
+extern void *lbl_80336A90;
+void *fn_801C0180(void *arg0, int arg1) {
+    int temp_r4;
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_80336A90;
+        temp_r4 = lbl_8055E7BC;
+        lbl_8055E7BC = temp_r4 - 1;
+        fn_801C1C7C(*(void **)((char *)arg0 + 0x214), temp_r4);
+        if (arg0 != 0) {
+            fn_80179EE8(arg0, 0);
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 int fn_801C0440(void *arg0) {
     return *(int *)((char *)arg0 + 0x1EC) != 0;
 }
