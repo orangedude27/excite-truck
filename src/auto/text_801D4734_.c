@@ -64,6 +64,11 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+void fn_801D5328(s32, s32);
+void fn_801D50B0(s32 arg0) {
+    fn_801D5328(arg0, 0);
+}
+
 void *__AXFXGetLfoSinTable_801D64F4(void) {
     return lbl_803387A8;
 }
