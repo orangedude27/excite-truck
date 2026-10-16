@@ -27,6 +27,46 @@ public:
     virtual u32 Seek(s32 off, u32 origin);   // vtable 0x30
 };
 class FileStream : public IOStream {};
+class IOStreamAsync {
+public:
+    virtual void vf0();
+    virtual void vf1();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6();
+    virtual void vf7();
+    virtual void vf8();
+    virtual u32 Read(void* buf, u32 size);  // vtable 0x2C
+};
+class FileStream2 {
+public:
+    virtual void vf0();
+    virtual void vf1();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6();
+    virtual void vf7();
+    virtual u32 Cancel();  // vtable 0x28
+    virtual u32 Wait();   // vtable 0x2C
+};
+class FileStream3 {
+public:
+    virtual void vf0();
+    virtual void vf1();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6();
+    virtual void vf7();
+    virtual u32 Cancel();  // vtable 0x28
+    virtual void vfA();    // vtable 0x2C
+    virtual u32 Wait();    // vtable 0x30
+};
 } // namespace ut
 } // namespace nw4hbm
 
