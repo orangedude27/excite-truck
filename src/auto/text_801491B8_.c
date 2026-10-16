@@ -128,8 +128,8 @@ s32 fn_80154714(void) {
 
 extern void fn_801B0F70(s32, s32);
 extern void fn_80168104(void);
-void fn_8015471C(s32 arg0, s32 arg1) {
-    fn_801B0F70(arg0, arg1);
+void fn_8015471C(s32 arg0, s32 arg1, s32 arg2) {
+    fn_801B0F70(arg1, arg2);
 }
 
 void fn_80154728(void *arg0) {
