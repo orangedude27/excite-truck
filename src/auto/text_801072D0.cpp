@@ -70,6 +70,26 @@ public:
 } // namespace ut
 } // namespace nw4hbm
 
+extern "C" u32 Read__Q36nw4hbm2ut8IOStreamFPvUl(nw4hbm::ut::IOStreamAsync* this_,
+                                                  void* buf,
+                                                  u32 size) {
+    if (this_->Read(buf, size) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803285B8, 0x29, lbl_803285C8);
+    }
+    return 0;
+}
+
+extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801074E8(nw4hbm::ut::FileStream2* this_) {
+    s32 file = (s32)lbl_803285B8;
+    if (this_->Wait() == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x3E, (const char*)(file + 0x10));
+    }
+    if (this_->Cancel() == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x3F, (const char*)(file + 0x34));
+    }
+    return 0;
+}
+
 extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_80107580(nw4hbm::ut::FileStream* this_,
                                                           s32 off,
                                                           u32 origin) {
@@ -80,12 +100,12 @@ extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_80107580(nw4hbm::ut::FileStre
 
 typedef s32 (*VFun1)(void*);
 typedef u32 (*ReadFn)(void*, void*, u32);
-extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801075D0(void* this_) {
+extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801075D0(nw4hbm::ut::FileStream3* this_) {
     s32 file = (s32)lbl_803285B8;
-    if (((VFun1*)(*(void***)this_))[0x30 / 4](this_) == 0) {
+    if (this_->Wait() == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x66, (const char*)(file + 0x5C));
     }
-    if (((VFun1*)(*(void***)this_))[0x28 / 4](this_) == 0) {
+    if (this_->Cancel() == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x67, (const char*)(file + 0x34));
     }
     return 0;
