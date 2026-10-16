@@ -152,7 +152,7 @@ extern "C" f32 fn_800ED08C(void *arg0) {
 extern "C" s32 fn_800ED094(s32 arg0) {
     u8 val = ((u8 *)arg0)[0x18];
     s32 t = -(s32)val;
-    return ((t | (s32)val) >> 31);
+    return (s32)((u32)(t | (s32)val) >> 31);
 }
 
 #pragma push
