@@ -1,4 +1,14 @@
 #include <types.h>
+typedef void (*Unk800B7E18Callback)(u8);
+extern "C" Unk800B7E18Callback lbl_80405D00[2];
+extern "C" s32 lbl_80405C30[];
+extern "C" s32 lbl_80405C98[];
+extern "C" s32 fn_800B74B8(s8);
+extern "C" s32 fn_800A5990(s32);
+extern "C" s32 fn_800A59CC(s32);
+extern "C" void fn_800B7E18(u8);
+extern "C" void fn_800B7E38(u8);
+extern "C" s32 fn_800BA3F4(Unk800B7E18Callback, Unk800B7E18Callback);
 extern "C" s32 fn_800BBB58(s32, void**);
 extern "C" s32 fn_800BAD9C(void*, u32*);
 extern "C" s32 fn_800BB2C4(void*);
