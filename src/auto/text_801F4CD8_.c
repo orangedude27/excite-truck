@@ -7,6 +7,12 @@ extern void *lbl_8055EC10;
 extern void *lbl_8055EC1C;
 extern void *lbl_8055EC20;
 extern char lbl_8033ACE8[32];
+extern void *fn_801284F8(int, void *);
+extern char lbl_8033AC68[];
+extern char *lbl_8033AC9C[5];
+extern char lbl_8033AD08[];
+extern int stricmp(const char *, const char *);
+extern void fn_8012F9E8(void *, void *, void *);
 extern void fn_801F7160(void *);
 extern void fn_801F7220(void *);
 extern void *fn_802AE414(void);
@@ -53,12 +59,15 @@ extern void fn_8012F9E8(void *, void *, void *);
 extern void fn_80128670(int);
 int fn_801F4E44(const char *arg0) {
     int i;
+    char **list;
     i = 0;
+    list = lbl_8033AC9C;
     while (i < 5) {
-        if (stricmp(arg0, lbl_8033AC9C[i]) == 0) {
+        if (stricmp(arg0, *list) == 0) {
             return i + 1;
         }
         i++;
+        list++;
     }
     fn_802E317C(lbl_8033AD08, arg0);
     return 0;
