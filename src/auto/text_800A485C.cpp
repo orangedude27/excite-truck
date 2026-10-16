@@ -459,8 +459,8 @@ extern "C" s32 fn_800BA3DC(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_800BA3F4(Unk800B7E18Callback arg0, Unk800B7E18Callback arg1) {
-    lbl_80405D00[0] = arg0;
-    lbl_80405D00[1] = arg1;
+    lbl_8055DD40 = arg0;
+    lbl_8055DD44 = arg1;
     return 0;
 }
 
