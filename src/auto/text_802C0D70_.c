@@ -5,9 +5,12 @@ typedef signed long s32;
 
 extern char lbl_8055FB18[4];
 extern void fn_802C0FD4(int *queue);
+#pragma push
+#pragma inline off
 void fn_802C1018(void) {
     fn_802C0FD4((int *)&lbl_8055FB18);
 }
+#pragma pop
 
 extern void fn_802C6CF8(int);
 extern float *fn_802C86DC(float);
@@ -48,10 +51,10 @@ void fn_802C10B8(void) {
     fn_802C0F4C();
 }
 
+#pragma inline off(fn_802C1018)
 void fn_802C10C4(void) {
     fn_802C1018();
 }
-
 void fn_802C10C8(void) {
     fn_802C1020();
 }
