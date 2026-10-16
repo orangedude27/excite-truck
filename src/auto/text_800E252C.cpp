@@ -20,6 +20,37 @@ extern const char lbl_80322858[];
 extern const char lbl_803227EC[];
 extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+// Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
+class VfObj {
+public:
+    virtual ~VfObj();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6();
+    virtual void vf7();
+    virtual void vf8();
+    virtual void vf9();
+    virtual void vf10();
+    virtual void vf11();
+    virtual void vf12();
+    virtual void vf13();
+    virtual void vf14();
+    virtual void vf15();
+    virtual void vf16();   // vtable 0x60 = 10th named method (0x18 + 9*4)
+    virtual void vf17();   // vtable 0x64
+    virtual void vf18();   // vtable 0x68
+    virtual void vf19();   // vtable 0x6C
+    virtual void vf20();   // vtable 0x70
+    virtual void vf21();   // vtable 0x74
+    virtual void vf22();   // vtable 0x78
+    virtual void vf23();   // vtable 0x7C
+};
+// Minimal shapes matching the target's use of BasicSound/SoundPlayer (0x10 player
+// field, byte field at 0x74, and Remove/Insert calls taking the raw pointers).
+class BasicSound;
+class SoundPlayer;
 #pragma push
 #pragma small_data off
 extern float lbl_80560FB0;
