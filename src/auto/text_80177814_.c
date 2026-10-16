@@ -174,14 +174,10 @@ s64 fn_80178BBC(s32 *arg0) {
     return fn_802E2C9C() - r31;
 }
 s32 fn_80178C1C(s32 *arg0) {
-    s64 r3;
-    s64 r4;
-
-    r3 = fn_80178BBC(arg0);
-    r4 = __div2i(r3, 0x412b);
-    return (s32)r4;
+    s64 r3 = fn_80178BBC(arg0);
+    return (s32)__div2i(r3, 0x412b);
 }
-
+#pragma dont_inline off
 void fn_80178C88(void) {
 
 }
