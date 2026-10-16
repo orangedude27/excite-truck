@@ -264,6 +264,14 @@ void fn_800322E4(void) {
     OSRestoreInterrupts(enabled);
 }
 
+u32 AIRegisterDMACallback(u32 value) {
+    u32 old = lbl_8055D774;
+    BOOL enabled = OSDisableInterrupts();
+    lbl_8055D774 = value;
+    OSRestoreInterrupts(enabled);
+    return old;
+}
+
 s32 AXRmtGetSamplesLeft(void) {
     s32 result;
     s32 samples = lbl_8055D754 - 0x24;
