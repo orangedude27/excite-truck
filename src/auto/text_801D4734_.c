@@ -97,6 +97,10 @@ void *fn_801D6630(void *arg0, s32 arg1) {
     return arg0;
 }
 
+void *fn_801D67D4(void) {
+    return lbl_803387C8;
+}
+
 void fn_801D68D0(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
