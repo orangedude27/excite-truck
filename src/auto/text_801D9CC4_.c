@@ -8,10 +8,12 @@ void fn_801D9F24(void) {
 }
 
 void fn_801D9F28(void *arg0) {
-    *(float *)((char *)arg0 + 0xC) = lbl_80562B38;
-    *(int *)((char *)arg0) = 0;
-    *(int *)((char *)arg0 + 4) = 0;
-    *(int *)((char *)arg0 + 8) = 0;
+    volatile int *p = (volatile int *)arg0;
+    float value = lbl_80562B38;
+    p[0] = 0;
+    p[1] = 0;
+    p[2] = 0;
+    *(volatile float *)((char *)arg0 + 0xC) = value;
 }
 
 extern int fn_80128668(void);
@@ -25,24 +27,22 @@ int fn_801D9F44(int arg0, int arg1) {
 }
 
 void fn_801D9F84(void *arg0, int *arg1) {
-    *(float *)((char *)arg0 + 0xC) = lbl_80562B38;
-    *(int *)((char *)arg0 + 8) = 0;
     *(int **)((char *)arg0) = arg1;
-    if (arg1 != 0 && *arg1 > 0) {
+    *(int *)((char *)arg0 + 8) = 0;
+    *(float *)((char *)arg0 + 0xC) = lbl_80562B38;
+    if (arg1 != 0 && *arg1 > 0)
         *(int *)((char *)arg0 + 4) = (int)(arg1 + 1);
-    } else {
+    else
         *(int *)((char *)arg0 + 4) = 0;
-    }
 }
 
-int fn_801D9FC4(char **arg0, const char *arg1) {
-    char *base = *arg0;
-    int count = *(int *)base;
+int fn_801D9FC4(char ***arg0, const char *arg1) {
+    char **base = *arg0;
+    int count = *(int *)*base;
     int i;
     for (i = 0; i < count; i++) {
-        if (strcmp(base + i * 0x18 + 4, arg1) == 0) {
+        if (strcmp((char *)base + i * 0x18 + 4, arg1) == 0)
             return 1;
-        }
     }
     return 0;
 }
