@@ -169,6 +169,10 @@ s32 fn_8016E1A4(s32 *arg0, s32 arg1) {
     return *arg0 + (arg1 * 0x14);
 }
 
+void fn_8016E314(void *arg0) {
+    *(f32 *)((u8 *)arg0 + 0) = *(f32 *)((u8 *)arg0 + 4);
+}
+
 s32 fn_80170E78(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x1ec); }
 
 f32 fn_80170E80(f32 *arg0) { return *arg0; }
