@@ -1,3 +1,12 @@
+extern "C" {
+extern void* lbl_8055EC98;
+extern const char lbl_8033B8C8[];
+void fn_80128668(void*);
+void fn_801FF5D4(void*, void*, float);
+void fn_801FCA54(void*, int, int);
+void fn_801FF7D4(void*, void*);
+void fn_802E317C(const char*, ...);
+}
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
