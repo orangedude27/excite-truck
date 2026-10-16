@@ -181,6 +181,16 @@ extern "C" void *fn_80215264(void) {
 void fn_802152C8(void) {
 }
 
+extern "C" s32 __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80215348(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) {
+            ((s32 (*)(void *))fn_80128668)(arg0);
+        }
+    }
+    return (s32)arg0;
+}
+
 void fn_802153A0(void) {
 }
 
