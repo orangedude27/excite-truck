@@ -20,6 +20,13 @@ void fn_802091CC(void) {
     fn_80208A18(lbl_80563230);
 }
 
+int fn_802091D4(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_80209278(void) {
 
 }
