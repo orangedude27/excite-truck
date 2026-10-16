@@ -7,7 +7,10 @@ typedef struct Unk8001BBBC {
 } Unk8001BBBC;
 
 extern s8 lbl_8055D5C8;
+#pragma push
+#pragma small_data off
 extern s32 lbl_803583C8;
+#pragma pop
 extern void fn_8002F634(void *, void *, s32, s32);
 extern s32 fn_8001BA10(s32, s32);
 extern void *lbl_80358658[];
@@ -25,6 +28,10 @@ extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
 
 
 extern void fn_8001C4D4(void);
+void fn_8001B9F4(void) {
+    fn_8002F634(&lbl_803583C8, fn_8001BA10, 0x14, 0x10);
+}
+
 s32 fn_8001BA10(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
