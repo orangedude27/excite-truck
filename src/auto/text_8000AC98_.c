@@ -39,6 +39,11 @@ void fn_8000AD20(void) {
 
 int fn_8000AD24(void) { return 0; }
 
+int fn_800070DC(void);
+void fn_8000AEC4(void) {
+    fn_800070DC();
+}
+
 void fn_8000B288(void* alarm) {
     fn_801DF110(fn_8000B210(alarm));
 }
