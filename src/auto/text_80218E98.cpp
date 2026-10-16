@@ -281,6 +281,8 @@ extern "C" void fn_80228DAC(void *arg0) {
     obj->vf7();
 }
 
+extern "C" void fn_80228DC0(void) { }
+
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229054(
     void* this_, s32 flag) {
     if (this_) {
