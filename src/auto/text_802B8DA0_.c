@@ -22,6 +22,11 @@ void fn_802B98D0(void *arg0) {
     }
 }
 
+extern int lbl_802FAB60[];
+int fn_802B9920(int arg0) {
+    return lbl_802FAB60[(arg0 + 0x200) / 2];
+}
+
 s32 fn_802B9ACC(void *arg0) { return ((s32 *)arg0)[2]; }
 
 void fn_802B9B2C(void *arg0) {
@@ -44,6 +49,7 @@ void fn_802B9FC0(void *arg0) {
     }
 }
 
+extern int lbl_802FAB60[];
 extern void *lbl_8055FA84;
 void fn_802BA004(void) {
     lbl_8055FA84 = 0;
