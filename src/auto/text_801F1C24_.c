@@ -48,6 +48,8 @@ void fn_801F49F4(void) {
 
 int fn_801F4B04(void) { return 4; }
 
+int fn_801F4B0C(void) { return 3; }
+
 void fn_801F4B14(void) {
 
 }
