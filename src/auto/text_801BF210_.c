@@ -58,7 +58,7 @@ extern char lbl_80336A90[];
 void *fn_801C0180(void *arg0, int arg1) {
     int temp_r4;
     if (arg0 != 0) {
-        *(void **)arg0 = &lbl_80336A90;
+        *(void **)arg0 = lbl_80336A90;
         temp_r4 = lbl_8055E7BC;
         lbl_8055E7BC = temp_r4 - 1;
         fn_801C1C7C(*(void **)((char *)arg0 + 0x214), temp_r4);
