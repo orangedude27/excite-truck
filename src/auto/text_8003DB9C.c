@@ -9,7 +9,6 @@ extern unsigned int lbl_8037C0E4;
 extern unsigned int lbl_8055D974;
 extern void GXGetVtxDesc(void);
 extern void __GXSaveFifo(void);
-extern void GXLoadLightObjIndx(void);
 
 extern char lbl_8055D949;
 char __GXIsGPFifoReady(void) {
@@ -84,6 +83,11 @@ void *GXInitVtxDescList(void) {
     void *temp = lbl_8055D94C;
     lbl_8055D94C = 0;
     return temp;
+}
+
+void GXInitLightDistAttn(unsigned int arg0, unsigned int arg1) {
+    extern unsigned short *__peReg;
+    __peReg[1] = (__peReg[1] & ~0x4) | ((arg0 & 1) << 2) | ((arg1 & 0x3f) << 3);
 }
 
 void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
