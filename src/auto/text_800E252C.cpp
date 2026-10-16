@@ -58,9 +58,19 @@ extern "C" void fn_800E9B20(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x94) = arg1;
 }
 
+extern "C" int fn_800E9B88(void *arg0) {
+    return *(int *)((char *)arg0 + 8) != 0;
+}
+
 extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void *);
 extern "C" void fn_800E9B9C(void *arg0) {
     DetachSound__Q34nw4r3snd11SoundHandleFv(*(void **)((char *)arg0 + 8));
+}
+
+extern "C" void fn_800E9BA4(void *arg0, int arg1) {
+    *(int *)((char *)arg0 + 0x78) = arg1;
+    void *result = (*(void *(**)(void *))((char *)*(void **)arg0 + 0x5C))(*(void **)arg0);
+    *(int *)((char *)result + 4) = arg1;
 }
 
 extern int lbl_8055DE20;
