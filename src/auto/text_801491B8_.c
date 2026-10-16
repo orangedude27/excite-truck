@@ -176,6 +176,23 @@ void fn_80149588(s32 arg0) {
     }
 }
 
+void fn_80149650(void) { fn_801495D4(0x40); }
+
+void fn_80149CEC(void *arg0, void *arg1) {
+    typedef struct { void *pad[4]; void (*fn)(void *); } Vt80149CEC;
+    void *r5;
+    void *r3;
+    s32 val;
+    r5 = *(void **)((u8 *)arg1 + 0x68);
+    *(f32 *)((u8 *)arg0 + 0x28) = *(f32 *)((u8 *)r5 + 0x8D4);
+    r3 = *(void **)((u8 *)fn_8017960C(*(s32 *)arg1) + 0x270);
+    (*(Vt80149CEC **)r3)->fn(r3);
+    val = *(s32 *)((u8 *)r3 + 4);
+    *(s32 *)((u8 *)arg0 + 4) = val;
+    *(s32 *)((u8 *)arg0 + 0x10) = val - 1;
+    fn_80149D64(arg0, arg1, val);
+}
+
 f32 fn_80149F00(void *arg0, void *arg1) {
     f32 f0;
     f32 f2;
@@ -381,20 +398,22 @@ void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
 }
 
 void fn_8014C6F0(void *arg0, void *arg1) {
-    s32 a = *(s32 *)((u8 *)arg1 + 0);
-    s32 b = *(s32 *)((u8 *)arg1 + 4);
-    s32 c = *(s32 *)((u8 *)arg1 + 8);
-    s32 d = *(s32 *)((u8 *)arg1 + 0xC);
-    f32 e = *(f32 *)((u8 *)arg1 + 0x10);
-    f32 f = *(f32 *)((u8 *)arg1 + 0x14);
-    s32 g = *(s32 *)((u8 *)arg1 + 0x18);
-    *(s32 *)((u8 *)arg0 + 0) = a;
-    *(s32 *)((u8 *)arg0 + 4) = b;
-    *(s32 *)((u8 *)arg0 + 8) = c;
-    *(s32 *)((u8 *)arg0 + 0xC) = d;
-    *(f32 *)((u8 *)arg0 + 0x10) = e;
-    *(f32 *)((u8 *)arg0 + 0x14) = f;
-    *(s32 *)((u8 *)arg0 + 0x18) = g;
+    s32 a, b, c, d, g;
+    f32 e, f;
+    a = ((s32 *)arg1)[0];
+    b = ((s32 *)arg1)[1];
+    c = ((s32 *)arg1)[2];
+    d = ((s32 *)arg1)[3];
+    e = ((f32 *)arg1)[4];
+    f = ((f32 *)arg1)[5];
+    g = ((s32 *)arg1)[6];
+    ((s32 *)arg0)[0] = a;
+    ((s32 *)arg0)[1] = b;
+    ((s32 *)arg0)[2] = c;
+    ((s32 *)arg0)[3] = d;
+    ((f32 *)arg0)[4] = e;
+    ((f32 *)arg0)[5] = f;
+    ((s32 *)arg0)[6] = g;
 }
 
 unsigned int fn_8014C808(unsigned int arg0) { return arg0 >> 24; }
