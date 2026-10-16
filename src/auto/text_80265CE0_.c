@@ -25,5 +25,7 @@ void fn_80265D88(void) {}
 
 void fn_80265D8C(void) {}
 
+void fn_80265D94(void) {}
+
 int fn_80265D98(void) { return 0; }
 
