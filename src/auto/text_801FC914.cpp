@@ -17,6 +17,11 @@ float fabs(float);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern "C" void fn_801FEF80(void* arg0) {
+    *(int*)arg0 = 0;
+    *((int*)arg0 + 1) = 0;
+}
+
 extern "C" void fn_801FEFBC(void) {
 
 }
