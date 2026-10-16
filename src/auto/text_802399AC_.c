@@ -131,6 +131,8 @@ s32 fn_8023A734(s32 arg0, s32 arg1) {
 
 extern s32 fn_80128670(s32);
 extern s32 lbl_8034109C;
+extern s32 lbl_80341108;
+extern s32 fn_802328D4(s32);
 void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(s32 **)((char *)arg0 + 0xC) = &lbl_8034109C;
@@ -140,8 +142,25 @@ void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_8023ACCC(void) {
+void *fn_8023A83C(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(s32 **)arg0 = &lbl_80341108;
+        fn_80128670(*(s32 *)((char *)arg0 + 0x18));
+        fn_802328D4(*(s32 *)((char *)arg0 + 0x24));
+        *(s32 *)((char *)arg0 + 0x24) = 0;
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
 }
+
+s32 fn_8023A8B0(void) {
+    if (lbl_8055F110 != 0 && *((unsigned char *)&lbl_8055F110 + 0x18) != 0) {
+        return 1;
+    }
+    return 0;
+}
+
+void fn_8023ACCC(void) {}
 
 s32 fn_8023AD44(void *arg0) {
     return *(s32 *)*(s32 **)((char *)arg0 + 0x20) < (*(s32 *)((char *)arg0 + 0x1C) - 1);
