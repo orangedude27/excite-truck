@@ -26,6 +26,12 @@ extern void *port_find_mcb_dlci_port(void *, u8);
 extern void rfc_port_timer_stop(void *);
 extern void rfc_send_rls(void *, u8, s32, u8);
 
+void fn_8006D4C4(void *arg) {
+    ((s32 *)arg)[1] = 0;
+    ((s32 *)arg)[0] = 0;
+    ((u16 *)arg)[4] = 0;
+}
+
 s32 fn_8006DF60(s32 *arg0) {
     return *arg0;
 }
@@ -222,6 +228,27 @@ void fn_80089E3C(void) {
 
 void fn_800911DC(void) {
 
+}
+
+void rfc_process_rls(void *arg0, s32 arg1, void *arg2) {
+    void *mcb;
+    u8 flags;
+
+    if (arg1 != 0) {
+        PORT_LineStatusInd(arg0, *(u8 *)arg2, *(u8 *)((u8 *)arg2 + 9));
+        rfc_send_rls(arg0, *(u8 *)arg2, 0, *(u8 *)((u8 *)arg2 + 9));
+        return;
+    }
+    mcb = port_find_mcb_dlci_port(arg0, *(u8 *)arg2);
+    if (mcb == NULL) {
+        return;
+    }
+    flags = *(u8 *)((u8 *)mcb + 0x69);
+    if (!(flags & 0x10)) {
+        return;
+    }
+    *(u8 *)((u8 *)mcb + 0x69) = flags & 0xFFFFFFEF;
+    rfc_port_timer_stop(mcb);
 }
 
 void fn_800932D8(void) {
