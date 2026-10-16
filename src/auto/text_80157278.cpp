@@ -251,6 +251,8 @@ extern "C" void fn_80158D0C(void* arg0) {
 void fn_80158F34(void** arg0) {
 
 }
+void fn_80158F34b(void* arg0, void* arg1) {
+}
 #pragma dont_inline off
 
 extern "C" s32 fn_80158F60(Unk8015A368C* arg0) {
@@ -369,7 +371,7 @@ extern "C" void fn_8015A538(void* arg0, void* arg1) {
     void* sp8 = arg1;
     fn_80158F34(&sp8);
     if (*(s32*)((char*)arg0 + 0x264) > 0) {
-        fn_8015A368(arg0);
+        fn_80158F34((void**)(char*)arg0);
     }
     void* r4 = *(void**)((char*)arg0 + 8);
     void* r3 = (void*)(*(s32*)r4 + (*(s32*)((char*)arg0 + 0xC) - 1) * 0x38);
