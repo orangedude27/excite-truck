@@ -183,6 +183,12 @@ extern "C" void fn_800D1558(void) {
 
 }
 
+extern "C" void fn_800D1668(s32 arg0, s32 arg1) {
+    if (arg1 == 0 && arg0 < 4) {
+        lbl_8055DDA8[arg0] = 1;
+    }
+}
+
 extern "C" u8 fn_800D1688(s32 *arg0) {
     if (*arg0 >= 4) {
         return 0;
@@ -197,32 +203,37 @@ extern "C" void fn_800D16A8(s32 *arg0) {
 }
 
 extern "C" void *fn_800D1948(void *arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        *(u32 *)((u8 *)arg0 + 0x1F0) = (u32)&lbl_8031E9C0;
-        lbl_8055DDB0 = (u32)arg0;
-        if (arg1 != 0) {
-            BOOL result = ARCInitHandle((void *)arg1, (ARCHandle *)((u8 *)arg0 + 0x1D0));
-            s32 neg = -result;
-            s32 or_result = neg | result;
-            s32 shr = or_result >> 31;
-            ((u8 *)arg0)[0x1EC] = (u8)shr;
-        } else {
-            ((u8 *)arg0)[0x1EC] = 0;
-        }
+    void *r26 = arg0;
+    
+    *(u32 *)((u8 *)arg0 + 0x1F0) = (u32)&lbl_8031E9C0;
+    lbl_8055DDB0 = (u32)arg0;
+    
+    if (arg1 != 0) {
+        BOOL result = ARCInitHandle((void *)arg1, (ARCHandle *)((u8 *)arg0 + 0x1D0));
+        s32 neg = -result;
+        u32 or_result = (u32)(neg | result);
+        ((u8 *)arg0)[0x1EC] = (u8)(or_result >> 31);
+    } else {
+        ((u8 *)arg0)[0x1EC] = 0;
     }
 
-    void *base = arg0;
-    s32 i = 0;
+    void *r28 = r26;
+    s32 r27 = 0;
+    s32 r29 = 0;
+    s32 r30 = -1;
+    u8 r31 = 1;
+    
     do {
-        OSCreateAlarm((OSAlarm *)((u8 *)base + 0x68 * (i + 1) - 0x68));
-        *(u32 *)((u8 *)base + 0x68 * (i + 1) - 0x68 + 0x50) = 0;
-        i++;
-        *(u32 *)((u8 *)base + 0x68 * (i + 1) - 0x68 + 0x58) = -1;
-        ((u8 *)((u8 *)base + 0x68 * (i + 1) - 0x68))[0x5C] = 1;
-        ((u8 *)((u8 *)base + 0x68 * (i + 1) - 0x68))[0x62] = 1;
-    } while (i < 4);
+        OSCreateAlarm((OSAlarm *)r28);
+        *(u32 *)((u8 *)r28 + 0x50) = r29;
+        r27++;
+        *(u32 *)((u8 *)r28 + 0x58) = r30;
+        ((u8 *)r28)[0x5C] = r31;
+        ((u8 *)r28)[0x62] = r31;
+        r28 = (u8 *)r28 + 0x68;
+    } while (r27 < 4);
 
-    return arg0;
+    return r26;
 }
 
 extern "C" void *fn_800D19F8(void *arg0, s32 arg1) {
@@ -533,10 +544,20 @@ extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *arg0, long arg1, int a
 #pragma opt_tail_call on
 extern "C" void fn_800D1C48(void);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
-    #pragma unused(file)
-    #pragma unused(line)
-    #pragma unused(msg)
-
-    fn_800D2098(NULL);
+    u32 sp_68;
+    u32 sp_6C;
+    u32 sp_70;
+    u32 sp_88[16];
+    u32 sp_C[4];
+    
+    sp_C[0] = (u32)msg;
+    sp_C[1] = (u32)file;
+    sp_C[2] = (u32)line;
+    sp_C[3] = 0;
+    sp_68 = 0x300;
+    sp_6C = (u32)&sp_88[0];
+    sp_70 = (u32)&sp_C[0];
+    
+    fn_800D2098(&sp_68);
 }
 extern s32 lbl_8055DDD4;
