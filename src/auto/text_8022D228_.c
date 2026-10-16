@@ -4,6 +4,15 @@ extern float lbl_805635D4;
 extern double lbl_805635C8;
 
 extern char *strcpy(char *, const char *);
+extern int lbl_803401A0;
+extern float lbl_805635C0;
+extern float lbl_805635C4;
+void fn_80128668(void);
+int fn_8022DA34(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void *fn_8022DCC4(void *arg0, char **arg1, int arg2, int arg3) {
     char **var_r31 = arg1;
     char *var_r30 = (char *)arg0;
@@ -56,5 +65,29 @@ temp_f0=temp_f3*temp_f0;
 var_f4=*(float *)((char *)arg0+0x10);
 if(var_f4>=temp_f0) var_f4=temp_f0;
 *temp_r4=var_f4;
+}
+
+void fn_8022DE1C(void *arg0) {
+    float *temp_r4;
+    float temp_f0;
+    float temp_f1;
+    float temp_f2;
+    float temp_f3;
+    float var_f4;
+    temp_f0 = lbl_805635D4;
+    temp_r4 = *(float **)((char *)arg0 + 0x18);
+    temp_f3 = *(float *)((char *)arg0 + 0x14);
+    temp_f1 = *temp_r4;
+    temp_f2 = temp_f1 - temp_f3;
+    temp_f2 = temp_f2 / temp_f3;
+    temp_f0 = temp_f0 + temp_f2;
+    temp_f0 = (float)(int)temp_f0;
+    var_f4 = *(float *)((char *)arg0 + 0x0C);
+    temp_f0 = temp_f3 * temp_f0;
+    if (var_f4 > temp_f0) {
+    } else {
+        var_f4 = temp_f0;
+    }
+    *temp_r4 = var_f4;
 }
 
