@@ -151,3 +151,12 @@ void fn_80032000(void) {
 
 }
 
+void fn_800322E4(void) {
+    s32 enabled = OSDisableInterrupts();
+    lbl_8055D774 = 0;
+    __DSPHandler(lbl_8035FB80);
+    OSSleepThread(&lbl_8055D760);
+    AIStopDMA();
+    OSRestoreInterrupts(enabled);
+}
+
