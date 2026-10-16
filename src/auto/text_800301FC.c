@@ -63,6 +63,11 @@ void __AXGetAuxAOutputDpl2Rs(void **arg0) {
     *arg0 = lbl_8035DAA0 + lbl_8055D6F4 * 0x480 + 0x180;
 }
 
+extern u8 lbl_8035CD20[];
+void __AXGetAuxBOutputDpl2R(void **arg0) {
+    *arg0 = lbl_8035CD20 + lbl_8055D6F4 * 0x480 + 0x180;
+}
+
 void AXRegisterAuxACallback(void *arg0, void *arg1) {
     lbl_8055D728 = arg0;
     lbl_8055D71C = arg1;
