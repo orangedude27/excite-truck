@@ -118,6 +118,13 @@ void fn_802C6B14(s32 *arg0, s32 arg1) {
     }
 }
 
+void fn_802C6B2C(s32 *arg0, s32 arg1) {
+    s32 val = *arg0;
+    if (val != 0) {
+        *arg0 = val + arg1;
+    }
+}
+
 extern int fn_802D6C48;
 void fn_802C5DF0(int*);
 int fn_802C90E0(void);
