@@ -42,3 +42,7 @@ s32 fn_802978A0(void *arg0) {
     return fn_80296D2C(*(s32 *)((u8 *)arg0 + 4));
 }
 
+s32 fn_802978A8(void *arg0) {
+    return fn_802970C8(*(s32 *)((u8 *)arg0 + 4));
+}
+
