@@ -30,6 +30,14 @@ extern void rfc_check_send_cmd(void *, void *);
 extern void fn_800916F4(void *, s32, s16 *);
 extern char lbl_803140D0[];
 extern char lbl_803140E8[];
+extern char lbl_803BF240[2000];
+extern char lbl_803BFA20[0x5000];
+extern const char lbl_80559040[]; /* "%s\n" */
+extern u8 lbl_8055DC70;
+extern void btu_task_msg_handler(void);
+extern int vsprintf(char *s, const char *format, va_list arg);
+extern int sprintf(char *s, const char *format, ...);
+extern void OSReport(const char *msg, ...);
 
 void DBPrintf_80068D68(const char *fmt, ...) {
 #pragma unused(fmt)
