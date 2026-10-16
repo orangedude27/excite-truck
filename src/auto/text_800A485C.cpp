@@ -127,6 +127,13 @@ extern "C" void fn_800D1558(void) {
 
 }
 
+extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1) {
+    u8 val = ((u8 *)((u8 *)arg0 + arg1 * 0x68))[0x62];
+    s32 result = (s32)val;
+    s32 neg = -result;
+    return (s32)((u32)(neg | result) >> 31);
+}
+
 extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -333,19 +340,22 @@ extern "C" void fn_800D2480(void) {
 #pragma opt_tail_call on
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
     u32 *sp = (u32 *)&file;
-    PanicStruct *stack_ptr = (PanicStruct *)&sp[0x1A];
+    s32 r31 = (s32)&sp[0x1A];
+    s32 r11 = (s32)&sp[0x22];
+    s32 r0 = (s32)&sp[2];
+    s32 r12 = 0x3000000;
     
-    stack_ptr->msg = msg;
-    stack_ptr->file = file;
-    stack_ptr->line = line;
-    stack_ptr->r7 = 0;
-    stack_ptr->r8 = 0;
-    stack_ptr->r9 = 0;
-    stack_ptr->r10 = 0;
-    stack_ptr->field_68 = 0x03000000;
-    stack_ptr->field_6C = stack_ptr;
-    stack_ptr->field_70 = (void *)&sp[2];
+    ((PanicStruct *)r31)->msg = msg;
+    ((PanicStruct *)r31)->file = file;
+    ((PanicStruct *)r31)->line = line;
+    ((PanicStruct *)r31)->r7 = 0;
+    ((PanicStruct *)r31)->r8 = 0;
+    ((PanicStruct *)r31)->r9 = 0;
+    ((PanicStruct *)r31)->r10 = 0;
+    ((PanicStruct *)r31)->field_68 = r12;
+    ((PanicStruct *)r31)->field_6C = (void *)r11;
+    ((PanicStruct *)r31)->field_70 = (void *)r0;
     
-    fn_800D2098(&stack_ptr->field_68);
+    fn_800D2098(&((PanicStruct *)r31)->field_68);
 }
 extern s32 lbl_8055DDD4;
