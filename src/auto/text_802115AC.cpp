@@ -62,6 +62,12 @@ extern "C" s32 fn_802121D4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" float fn_80212248(s32 arg0) {
+    float value;
+    memcpy(&value, &arg0, 4);
+    return value;
+}
+
 extern "C" void fn_8022E4BC(s32);
 extern "C" void fn_8022E960(s32);
 extern "C" s32 fn_80211678(void);
@@ -78,20 +84,30 @@ extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
     }
     for (;;) {
         s32 id = *(s32 *)((char *)entry + 4);
-        if (id == 0x7B) {
-            return 0;
-        }
-        if (id == arg2 && *(char **)entry != 0) {
-            if (stricmp(*(char **)entry, name) == 0 ||
-                stricmp(*(char **)entry, buf) == 0) {
-                return entry;
-            }
-        }
+        if (id == 0x7B) return 0;
+        if (id == arg2 && *(char **)entry != 0 &&
+            (stricmp(*(char **)entry, name) == 0 ||
+             stricmp(*(char **)entry, buf) == 0)) return entry;
         entry = (char *)entry + 0x14;
     }
 }
 
 extern "C" s32 fn_80212338(void) { return 0; }
+
+extern "C" void fn_80212340(void *arg0) {
+    volatile s32 *p = (volatile s32 *)arg0;
+    s32 temp = p[4];
+    if (temp != 0) {
+        fn_8022E4BC(temp);
+        p[4] = 0;
+    }
+    temp = p[0];
+    if (temp != 0) {
+        if (fn_80211678() == 0) fn_8022E4BC(p[3]);
+        else fn_8022E960(p[3]);
+        p[3] = 0;
+    }
+}
 
 extern "C" s32 fn_80215194(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
