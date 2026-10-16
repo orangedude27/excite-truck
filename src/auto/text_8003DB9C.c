@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+typedef signed long s32;
 extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
@@ -84,6 +85,12 @@ void *GXInitVtxDescList(void) {
     void *temp = lbl_8055D94C;
     lbl_8055D94C = 0;
     return temp;
+}
+
+void GXInitLightSpot(int arg0, unsigned int arg1) {
+    unsigned int reg = arg1;
+
+    __peReg[2] = (reg & 0xFF) | ((arg0 << 8) & 0x100);
 }
 
 void GXInitLightDistAttn(unsigned int arg0) {
