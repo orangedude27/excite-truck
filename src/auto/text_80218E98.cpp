@@ -48,9 +48,8 @@ public:
     virtual void vf28();
     virtual void vf29();
     virtual void vf30();
-    virtual void vf31();
-    virtual s32 vf32();    // vtable 0x84
-    virtual s32 vf33();    // vtable 0x88
+    virtual s32 vf31();    // vtable 0x84
+    virtual s32 vf32();    // vtable 0x88
 };
 
 extern "C" void fn_8023976C(s32);
