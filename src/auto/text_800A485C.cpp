@@ -384,6 +384,17 @@ extern "C" s32 fn_800B8004(s32 arg0) {
     return 0;
 }
 
+extern "C" s32 OSSignalSemaphore(void);
+extern "C" const char lbl_8031B27C[];
+extern "C" s32 fn_800B8048(s32 arg0) {
+    if (arg0 == 0) {
+        OSReport(lbl_8031B27C);
+        return -2;
+    }
+    OSSignalSemaphore();
+    return 0;
+}
+
 #pragma push
 #pragma small_data off
 extern "C" s32 NANDGetType(char *);
