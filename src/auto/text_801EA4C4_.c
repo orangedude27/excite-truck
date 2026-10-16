@@ -6,7 +6,7 @@ typedef unsigned char u8;
 typedef float f32;
 extern s32 lbl_8055EB78;
 s32 fn_801EA994(void) {
-    return *(s32 *)((u8 *)&lbl_8055EB78 + 0x5E4);
+    return *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4);
 }
 
 s32 fn_801EA9A0(s32 arg0) {
