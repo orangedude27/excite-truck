@@ -50,6 +50,16 @@ void fn_801F4B14(void) {
 
 }
 
+extern int fn_801F1CF0(int);
+extern int fn_802CDAFC(int, int);
+extern int fn_802CDB20(int, int);
+void fn_801F4C34(void *arg0, int arg1) {
+    int *p = (int *)arg0;
+    if (fn_802CDB20(arg1, p[2]) != 0 && fn_801F1CF0(p[1]) == 0) {
+        fn_802CDAFC(arg1, p[2]);
+    }
+}
+
 void fn_801F4CA0(void) {
 
 }
