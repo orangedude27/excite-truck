@@ -36,7 +36,7 @@ extern "C" void fn_80211F44(void) { fn_80211690(1); }
 
 extern "C" void fn_80211F4C(void) { fn_80211D24(1); }
 
-int fn_80211F54(void) { return lbl_8055EF40 == 0; }
+extern "C" int fn_80211F54(void) { return lbl_8055EF40 == 0; }
 
 void fn_80211F64(void) {
     float temp_f0;
