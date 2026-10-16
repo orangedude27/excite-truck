@@ -1,6 +1,15 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern "C" int OSDisableInterrupts(void);
+extern "C" void OSRestoreInterrupts(int);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...) __attribute__((noreturn));
+extern "C" void fn_80100BAC(void* arg0, int arg1) {
+    int level = OSDisableInterrupts();
+    *(int*)((char*)arg0 + 0x44) = arg1;
+    OSRestoreInterrupts(level);
+}
+
 extern "C" int fn_80100BEC(void* arg0) {
     return *(int*)((char*)arg0 + 0x44);
 }
