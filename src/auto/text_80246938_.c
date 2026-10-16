@@ -31,7 +31,11 @@ extern float lbl_805638B0;
 s32 fn_80221EA8(void);
 extern s32 lbl_8055BEF0;
 extern void *lbl_8055F278;
+extern float lbl_805638B0;
+#pragma push
+#pragma small_data off
 extern float lbl_805638C8;
+#pragma pop
 float fn_80214D48(void);
 
 
@@ -153,5 +157,15 @@ void fn_802487A8(void *arg0) {
 
 void fn_80248A68(void *arg0) {
     *(float*)((char*)arg0 + 0x1C) = lbl_805638B0;
+}
+
+void fn_80248A74(void *arg0) {
+    s32 amt;
+    if (*(float*)((char*)arg0 + 0x1C) > lbl_805638C8) {
+        amt = 0xC8;
+    } else {
+        amt = 0x32;
+    }
+    *(float*)((char*)arg0 + 0x1C) += (float)amt * fn_80214D48();
 }
 
