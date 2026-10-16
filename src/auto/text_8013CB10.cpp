@@ -1,5 +1,8 @@
 #include "types.h"
 extern "C" f32 lbl_80558DC4;
+extern "C" f32 lbl_805614A4;
+extern "C" f32 lbl_805614AC;
+extern "C" f32 lbl_805614BC;
 extern "C" void **fn_801284F8(s32, void *);
 extern "C" u8 lbl_80559D18;
 extern "C" u8 lbl_8032CAC0;
