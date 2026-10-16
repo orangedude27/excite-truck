@@ -4,6 +4,27 @@
 extern void fn_80208408(void);
 extern void fn_80208858(void);
 extern signed long fn_80128668(void);
+extern void* fn_802090B4(void);
+extern signed long fn_802E317C(const char*, ...);
+extern signed long fn_8026A344(signed long);
+extern signed long fn_80206570(signed long);
+extern int __cntlzw(unsigned int);
+
+typedef struct SoundMgrObj {
+    char pad0[0x10];
+    signed long field_10;
+    char pad14[0x34];
+    signed long field_44;
+    char pad48[0x20];
+    float field_68;
+} SoundMgrObj;
+
+typedef struct SoundMgr {
+    char pad0[0xc];
+    void** list;
+    char pad10[0x4];
+    signed long count;
+} SoundMgr;
 
 typedef struct Vt_80207960 {
     void (*f0)(void);
@@ -47,15 +68,19 @@ void fn_8020899C(void* arg0, void* arg1) {
     typedef struct {
         char pad[0xc];
         void (*f)(void*);
-    } Vt_8020899C;
-    ((Vt_8020899C*)*(void**)arg1)->f(arg1);
+    } Vt;
+    ((Vt*)*(void**)arg1)->f(arg1);
 }
 
 void fn_802089B0(void* self) {
+    typedef struct {
+        char pad[0x8];
+        void (*f)(void*, signed long);
+    } Vt;
     if (self == 0) {
         return;
     }
-    ((Vt_80207960*)*(void**)self)->f1(self, 1);
+    (*(void(**)(void*, signed long))(*(Vt**)self + 1))(self, 1);
 }
 
 signed long fn_802089D0(signed long arg0, signed long arg1) {
