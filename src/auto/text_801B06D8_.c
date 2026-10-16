@@ -9,6 +9,10 @@ extern void *lbl_8055E684;
 extern s32 lbl_80435C30[];
 extern void *lbl_8055E694;
 
+s32 fn_801B0BA0(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x5C);
+}
+
 s32 fn_801B0DE0(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x3C);
 }
@@ -29,7 +33,7 @@ s32 fn_801B0F18(void) {
 u32 fn_801B0F48(u32 arg0, u32 arg1) {
     u32 diff = arg1 - arg0;
     if (arg0 > arg1) diff = arg0 - arg1;
-    return diff < 0x20000;
+    return (0x20000U << __cntlzw(diff ^ 0x20000)) >> 31;
 }
 
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
