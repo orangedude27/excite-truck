@@ -377,6 +377,13 @@ void* fn_802C9C50(void) {
     return lbl_8055FC5C;
 }
 
+int fn_802C9C58(int arg0) {
+    int old = lbl_8055FC30;
+    lbl_8055FC30 = arg0;
+    fn_802D08CC();
+    return old;
+}
+
 extern int lbl_8055FC98;
 extern void *lbl_8055FC9C;
 extern int lbl_8055FC84;
