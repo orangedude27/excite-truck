@@ -22,6 +22,20 @@ extern s32 lbl_8055FA40;
 extern s32 fn_802B59A4(s32);
 extern s32 fn_802B321C(s32, void **, s32, s32);
 extern s32 fn_802B3F0C(s32);
+extern void fn_80128668(void*);
+void* fn_802B5A68(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(s32 *)arg0 = 0;
+            *((s32 *)arg0 + 1) = 0;
+            *((s32 *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_802B5B6C(void) {
     fn_802B59A4(lbl_8055FA3C);
 }
@@ -285,20 +299,23 @@ void fn_802B84E4(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (*(s32 *)((u8 *)arg0 + 8) * 0x1E0) / lbl_8055CFF4;
 }
 
+#pragma dont_inline on
 void fn_802B8624(void *arg0) {
-    lbl_804BFF80 = 8;
+    #pragma small_data off
+    s32 *p = &lbl_804BFF80;
+    *p = 8;
     if (arg0 != 0) {
-        *(s32 *)&lbl_804BFF80 = *(s32 *)arg0;
-        *(s32 *)((u8 *)&lbl_804BFF80 + 4) = *(s32 *)((u8 *)arg0 + 4);
-        *(s32 *)((u8 *)&lbl_804BFF80 + 8) = *(s32 *)((u8 *)arg0 + 8);
-        *(s32 *)((u8 *)&lbl_804BFF80 + 12) = *(s32 *)((u8 *)arg0 + 12);
-        *(s32 *)((u8 *)&lbl_804BFF80 + 16) = *(s32 *)((u8 *)arg0 + 16);
-        fn_802B84E4(&lbl_804BFF80);
+        *p = *(s32 *)arg0;
+        p[1] = ((s32 *)arg0)[1];
+        p[2] = ((s32 *)arg0)[2];
+        p[3] = ((s32 *)arg0)[3];
+        p[4] = ((s32 *)arg0)[4];
+        fn_802B84E4(p);
         fn_802B83CC();
-        fn_802B8510(lbl_804BFF80);
+        fn_802B8510(*p);
     }
 }
-
+#pragma dont_inline reset
 extern s32 lbl_804BFF80;
 extern void fn_802B83CC(void);
 extern void fn_802B84E4(void *);
@@ -306,7 +323,9 @@ extern s32 fn_802B8510(s32);
 extern s32 fn_80127A50(void *);
 void fn_802B869C(void) {
     s32 sp8[6];
-    if (((s32 (**)(void))(*lbl_8055FA48))[9]() == 0) {
+    void **obj = lbl_8055FA48;
+    s32 (**vtable)(void) = (s32 (**)(void))*obj;
+    if (vtable[9]() == 0) {
         if (fn_80127A50(sp8) != 0) {
             fn_802B8624(sp8);
         } else {
@@ -316,15 +335,14 @@ void fn_802B869C(void) {
 }
 
 void fn_802B86F8(void) {
-    #pragma small_data off
-    s32 *p = &lbl_804BFF80;
-    s8 value = *((s8 *)p + 0x14);
-    *((s8 *)p + 0x34) = 0;
+    u8 *base = (u8 *)&lbl_804BFF80;
+    u8 value = base[0x14];
+    base[0x34] = 0;
     if (value == 0)
         return;
-    if (*(s32 *)((u8 *)p + 0xC) & 1)
+    if (*(s32 *)(base + 0xC) & 1)
         return;
-    *((s8 *)p + 0x14) = 0;
+    base[0x14] = 0;
 }
 
 void fn_802B8C98(void) {
