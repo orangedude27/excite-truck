@@ -112,8 +112,22 @@ void fn_802B2504(int *dst, int count) {
     }
 }
 
+void fn_802B2D94(int *arg0) {
+    int i = 0;
+    lbl_8055F9B4 = 0;
+    lbl_8055F9B0 = 0;
+    do {
+        fn_802B2E08(*fn_802B320C(arg0, i));
+        i++;
+    } while (i < fn_802B2E00(arg0));
+}
+
 int fn_802B2E00(void *arg0) {
     return ((int *)arg0)[1];
+}
+
+int *fn_802B320C(int *arg0, int arg1) {
+    return (int *)((char *)*arg0 + arg1 * 4);
 }
 
 int fn_802B2E00(void *);
