@@ -225,6 +225,33 @@ void fn_8011BC48(void) {
     fn_80120084();
 }
 
+extern void fn_8011C4A0(s32, s32, s32, s32);
+void fn_8011CD90(s32 arg0, s32 arg1, s32 arg2) {
+    s32 a = arg2;
+    s32 b = arg2 + 0x100;
+    s32 c = arg2 + 0x140;
+    s32 i;
+    for (i = 0; i < 0x10; i++) {
+        fn_8011C4A0(arg1, c, b, a);
+        i++;
+        b += 4;
+        c += 4;
+        a += 0x10;
+        i--;
+    }
+    fn_8011C4A0(arg1, arg0 + 0x24, arg0 + 0x20, arg0 + 0x10);
+    *(s32 *)(arg2 + 0x180) = 0;
+}
+
+s32 fn_8011DF68(s32 arg0, u32 arg1, u32 arg2, u32 arg3) {
+    u32 var_r5 = arg2;
+    u32 temp;
+    if (var_r5 <= 8U) var_r5 = 8;
+    else if (var_r5 < 0x10U) var_r5 = 0x10;
+    temp = var_r5 * arg3;
+    return (((u32)(arg0 * var_r5) >> 3) + ((temp * (arg1 >> 3)) >> 3) + 3) & 0xFFFFFFFC;
+}
+
 extern void *lbl_8055DEF0;
 void* fn_8011FF24(void) {
     return lbl_8055DEF0;
@@ -277,6 +304,15 @@ void fn_80120084(void *arg0) {
     base = ptr - ptr[-1];
     if (ptr[-2] == 3) ((void (*)(void *))*(void **)(ptr - 8))(base);
     else free(base);
+}
+
+void fn_80121BB0(void *arg0) {
+    float *p = (float *)arg0;
+    float a, b, c, d, e, f, g, h;
+    a = p[2]; b = p[8]; c = p[3]; d = p[9];
+    e = p[6]; f = p[12]; g = p[7]; h = p[13];
+    p[2] = b; p[3] = d; p[6] = f; p[7] = h;
+    p[8] = a; p[9] = c; p[12] = e; p[13] = g;
 }
 
 void fn_80121BF4(void *arg0) {
