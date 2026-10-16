@@ -106,7 +106,7 @@ void fn_80135EF0(void *arg0) {
 
 void fn_80135F4C(void *arg0) {
     int x = *(int *)(*(char **)((char *)arg0 + 0x2C) + 0x1C);
-    fn_80135F64(x, x + 8, 1, 0);
+    fn_80135F64((int)arg0, x, x + 8, 1, 0);
 }
 
 void fn_8013605C(void *arg0) {
