@@ -164,23 +164,16 @@ unsigned int GXLoadLightObjIndx(unsigned int value) {
     return old;
 }
 
-void GXSetChanAmbColor(void *ctx) {
-    extern unsigned short *__peReg;
-    extern unsigned int lbl_8055D974;
-    extern unsigned int lbl_8055D968;
-    extern unsigned char lbl_8055D970;
-    extern void OSClearContext(void *);
-    extern void OSSetCurrentContext(void *);
-    extern void OSWakeupThread(void *);
+void GXSetChanAmbColor(short intr, void *ctx) {
     char local[0x2D0];
 
     __peReg[5] |= 8;
     lbl_8055D970 = 1;
     if (lbl_8055D974 != 0) {
-        OSClearContext(local + 8);
-        OSSetCurrentContext(local + 8);
+        OSClearContext(local);
+        OSSetCurrentContext(local);
         ((void (*)(void))lbl_8055D974)();
-        OSClearContext(local + 8);
+        OSClearContext(local);
         OSSetCurrentContext(ctx);
     }
     OSWakeupThread(&lbl_8055D968);
