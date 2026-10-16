@@ -386,10 +386,8 @@ void fn_80010E94(f32 x, f32 y, f32 a, f32 b, s32 c, s32 d) {
     }
 }
 void fn_80010EF0(void) {
-    s32 *p = (s32 *)&lbl_80350F88;
-    s32 v = 0;
-    p[0xA2] = v;
-    *(s8 *)(p + 1) = (s8)v;
+    *(s32 *)((s8 *)&lbl_80350F88 + 0x288) = 0;
+    *(s8 *)((s8 *)&lbl_80350F88 + 4) = 0;
 }
 
 extern void fn_80011280(s32, s32);
@@ -462,6 +460,10 @@ f32 fn_80011DEC(s32 arg0) {
 
 f32 fn_80011E04(s32 arg0) {
     return lbl_80350F28[arg0][4];
+}
+
+f32 fn_80011E1C(s32 arg0) {
+    return lbl_80350F28[arg0][5];
 }
 
 f32 fn_80011E44(void) {
