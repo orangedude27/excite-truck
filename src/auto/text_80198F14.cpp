@@ -141,13 +141,24 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
-void fn_801A442C(void *arg0, f32 *arg1, f32 *arg2) {
-    arg1[0] = *(f32 *)((u8 *)arg0 + 0x28);
-    arg1[1] = *(f32 *)((u8 *)arg0 + 0x2C);
-    arg1[2] = *(f32 *)((u8 *)arg0 + 0x30);
-    arg2[0] = *(f32 *)((u8 *)arg0 + 0x34);
-    arg2[1] = *(f32 *)((u8 *)arg0 + 0x38);
-    arg2[2] = *(f32 *)((u8 *)arg0 + 0x3C);
+void fn_801A442C(void *arg0, void *arg1, void *arg2) {
+    *(f32 *)((u8 *)arg1 + 0) = *(f32 *)((u8 *)arg0 + 0x28);
+    *(f32 *)((u8 *)arg1 + 4) = *(f32 *)((u8 *)arg0 + 0x2C);
+    *(f32 *)((u8 *)arg1 + 8) = *(f32 *)((u8 *)arg0 + 0x30);
+    *(f32 *)((u8 *)arg2 + 0) = *(f32 *)((u8 *)arg0 + 0x34);
+    *(f32 *)((u8 *)arg2 + 4) = *(f32 *)((u8 *)arg0 + 0x38);
+    *(f32 *)((u8 *)arg2 + 8) = *(f32 *)((u8 *)arg0 + 0x3C);
+}
+
+f32 fn_801A4460(void *arg0) {
+    f32 first;
+    f32 second;
+    first = PSVECDotProduct((const Vec *)((u8 *)arg0 + 0x34), (const Vec *)((u8 *)arg0 + 0x34));
+    second = PSVECDotProduct((const Vec *)((u8 *)arg0 + 0x28), (const Vec *)((u8 *)arg0 + 0x28));
+    if (second > first) {
+        first = second;
+    }
+    return (f32)fn_8002F234(first);
 }
 
 extern "C" void fn_801A44C4(void* arg0) {
@@ -232,9 +243,7 @@ void fn_801A49E8(void* arg0) {
 
 extern "C" void fn_801D06C4(void);
 void fn_801A49FC(void* arg0) {
-    if (*(s32*)((u8*)arg0 + 0x48) != 0) {
-        fn_801D06C4();
-    }
+    if (*(s32*)((u8*)arg0 + 0x48) != 0) fn_801D06C4();
 }
 
 void fn_801A4E54(void) {
