@@ -133,13 +133,13 @@ void fn_80247AAC(void) {
     lbl_8055BEB4 = (void*)fn_80214D04();
 }
 
-void* fn_80248140(void* arg0, s32 arg1) {
+void *fn_80248140(void *arg0, int arg1) {
     if (arg0 != 0) {
-        if ((char*)arg0 + 0x18 != 0) {
-            if ((char*)arg0 + 0x18 != 0) {
-                *(s32*)((char*)arg0 + 0x18) = 0;
-                *(s32*)((char*)arg0 + 0x1C) = 0;
-                *(s32*)((char*)arg0 + 0x20) = 0;
+        if ((char *)arg0 + 0x18 != 0) {
+            if ((char *)arg0 + 0x18 != 0) {
+                ((int *)arg0)[6] = 0;
+                ((int *)arg0)[7] = 0;
+                ((int *)arg0)[8] = 0;
             }
         }
         if (arg1 > 0) fn_80128668(arg0);
@@ -148,16 +148,22 @@ void* fn_80248140(void* arg0, s32 arg1) {
 }
 
 void fn_80248398(void) {
+    lbl_8055F278_struct *s;
+    s32 a;
+    s32 b;
+
     if (lbl_8055F278 != 0) {
-        s32 off = *(s32*)((char*)lbl_8055F278 + 4);
-        s32 vol = *(s32*)((char*)lbl_8055F278 + 8);
-        *(unsigned char*)((char*)lbl_8055F278 + 0x50) = 1;
-        *(s32*)((char*)lbl_8055F278 + 0x48) = lbl_8055BEF0 + off;
-        *(s32*)((char*)lbl_8055F278 + 0x4C) = vol;
-        *(unsigned char*)((char*)lbl_8055F278 + 0x5C) = 1;
-        *(s32*)((char*)lbl_8055F278 + 0x54) = off;
-        *(s32*)((char*)lbl_8055F278 + 0x58) = vol;
-        *(unsigned char*)((char*)lbl_8055F278 + 0x44) = 0;
+        s = (lbl_8055F278_struct *)lbl_8055F278;
+        a = s->unk04;
+        b = s->unk08;
+        s->unk50 = 1;
+        s->unk48 = lbl_8055BEF0 + a;
+        s->unk4C = b;
+        s = (lbl_8055F278_struct *)lbl_8055F278;
+        s->unk5C = 1;
+        s->unk54 = a;
+        s->unk58 = b;
+        s->unk44 = 0;
     }
 }
 
@@ -177,19 +183,20 @@ void* fn_8024859C(void *arg0, s32 arg1) {
     return ptr;
 }
 
-void fn_802485FC(void) {
+s32 fn_802485FC(void) {
     unsigned short args[5];
-    s32 i;
+    unsigned short *p = lbl_802FA48C;
 
-    for (i = 0; i < 4; i++) {
-        args[i] = lbl_802FA48C[i];
-    }
-    args[4] = 0;
-
-    if (fn_802E499C(args, args[1], args[2], args[3], args[4]) != 0) {
+    args[0] = *p++;
+    args[1] = *p++;
+    args[2] = *p++;
+    args[3] = *p++;
+    args[4] = *p++;
+    if (fn_802E499C(args, args[3], args[2], args[1], args[0]) != 0) {
         fn_80246CAC(lbl_805638B0);
         fn_8020C918(1);
     }
+    return 0;
 }
 
 void fn_80248770(void *arg0) {
