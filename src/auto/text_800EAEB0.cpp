@@ -1,5 +1,7 @@
 #include <types.h>
 
+extern "C" void OSCancelAlarm(void *);
+
 namespace nw4hbm { namespace snd { namespace detail {
 class SeqFileReader {
 public:
@@ -464,7 +466,7 @@ extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* arg0,
     extern u8 lbl_80323B28[];
     extern u8 lbl_80323C14[];
     u32 level;
-    if (!(farg0 <= lbl_8056106C)) {
+    if (farg0 > lbl_8056106C) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x164, (const char*)lbl_80323C14);
     }
     level = OSDisableInterrupts();
@@ -488,6 +490,18 @@ extern "C" void fn_800EF8F8(void* arg0, f32 farg0) {
     u32 level = OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x2C) = farg0;
     OSRestoreInterrupts(level);
+}
+
+extern "C" void fn_800EF938(void* arg0, f32 arg1) {
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x30) = arg1;
+    OSRestoreInterrupts(0);
+}
+
+extern "C" void fn_800EF978(void* arg0, f32 arg1) {
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x38) = arg1;
+    OSRestoreInterrupts(0);
 }
 
 extern "C" void fn_800EF9B8(void* arg0, f32 arg1) {
