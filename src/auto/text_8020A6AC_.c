@@ -10,25 +10,7 @@ extern void fn_802E59BC(void *);
 extern void fn_802E5950(int, int);
 extern void fn_802E6138(void);
 extern void fn_802E61D8(void *);
-void fn_8020AA0C(void *arg0) {
-    int value = *(int *)((char *)arg0 + 8);
-    if (value != 0) {
-        fn_802E61D8((void *)value);
-        if (*(int *)((char *)arg0 + 0xC) != 0) {
-            fn_802E61D8(*(void **)((char *)arg0 + 0xC));
-        }
-        if (*(int *)((char *)arg0 + 0xC) != 0) {
-            fn_802E6138();
-            *(int *)((char *)arg0 + 0xC) = 0;
-        }
-        if (*(int *)((char *)arg0 + 8) != 0) {
-            fn_802E6138();
-            *(int *)((char *)arg0 + 8) = 0;
-        }
-    }
-    *(int *)((char *)arg0 + 4) = 3;
-    *((unsigned char *)arg0 + 0x3E) = 0;
-}
+extern void fn_802E6138(void); extern void fn_802E61D8(void *); void fn_8020AA0C(void *arg0) { int value = *(int *)((char *)arg0 + 8); int next; if (value != 0) { fn_802E61D8((void *)value); next = *(int *)((char *)arg0 + 0xC); if (next != 0) fn_802E61D8((void *)next); next = *(int *)((char *)arg0 + 0xC); if (next != 0) { fn_802E6138(); *(int *)((char *)arg0 + 0xC) = 0; } next = *(int *)((char *)arg0 + 8); if (next != 0) { fn_802E6138(); *(int *)((char *)arg0 + 8) = 0; } } *(int *)((char *)arg0 + 4) = 3; *((unsigned char *)arg0 + 0x3E) = 0; }
 
 int fn_8020AA98(void *arg0) { volatile int *p = (volatile int *)((char *)arg0 + 4); if (*p == 1 && *((unsigned char *)arg0 + 0x3E) != 0) return 2; return *p; }
 
@@ -61,4 +43,16 @@ void fn_8020BCB0(void) {
 void fn_8020BCB4(void) {
 
 }
+
+extern void fn_802E6264(void);
+extern void fn_802E6B34(void);
+extern void fn_802E317C(const char *, ...);
+extern int fn_80128670(void *);
+extern int fn_80019B60(void);
+extern void *fn_8012850C(unsigned int, void *);
+extern void *memset(void *, int, unsigned int);
+extern char lbl_8033C388[];
+extern char lbl_8033C37C[];
+extern float lbl_805632B0, lbl_805632B4, lbl_8055B598;
+extern void *lbl_8055EE04;
 
