@@ -33,6 +33,12 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
+extern "C" void fn_801A4A10(s32, s32, s32);
+extern "C" void fn_8019ECBC(void* arg0, s32 arg1) {
+    *(s32*)((u8*)arg0 + 0xC) = arg1;
+}
+
 extern "C" void fn_8019F3D0(void) {
 
 }
