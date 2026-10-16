@@ -95,6 +95,8 @@ int fn_8027D954(void *arg0, int arg1) {
     return ((int *)arg0)[2] + arg1 * 0x1F4;
 }
 
+unsigned char fn_8027D964(void *arg0) { return ((unsigned char *)arg0)[0xBCC]; }
+
 extern void *lbl_804B2FD8;
 extern int memset(void *, int, unsigned int);
 extern char lbl_80347DF8[];
