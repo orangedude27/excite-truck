@@ -28,6 +28,11 @@ void* fn_801E85AC(void) {
     return lbl_8055EB30;
 }
 
+extern void *lbl_8055AF0C;
+void* fn_801E85B4(void) {
+    return lbl_8055AF0C;
+}
+
 extern char lbl_8055EB08;
 void fn_801E882C(void) {
     lbl_8055EB08 = 1;
