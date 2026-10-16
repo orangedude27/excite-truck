@@ -2,6 +2,27 @@ extern void fn_8021889C(void);
 
 #include <types.h>
 
+extern u32 lbl_8055EF7C;
+extern u32 lbl_8055EF8C;
+extern void (*lbl_8055EF90)(void);
+extern u8 lbl_8055EF70;
+extern u8 lbl_8055F024;
+extern u32 lbl_804908C8[16];
+extern s32 fn_802C8530(void);
+extern s32 fn_80216244(void);
+extern s32 fn_802160AC(void);
+extern s32 fn_80211F54(void);
+extern s32 fn_80019BA8(void);
+extern s32 fn_80230DA0(void);
+extern s32 fn_802C855C(void);
+extern s32 fn_802C2B48(void);
+extern s32 fn_80211F64(void);
+extern s32 fn_802164D8(void);
+extern s32 fn_80129AFC(void);
+extern s32 fn_802161CC(s32);
+extern s32 fn_80218370(void);
+extern s32 fn_802E97B4(void);
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -41,10 +62,8 @@ extern s32 fn_802E4A10(void);
 extern char lbl_8033D768;
 extern char lbl_8033D774;
 char *fn_80215F9C(void *arg0) {
-    if (*(s32 *)((u8 *)arg0 + 0x10) != 0) {
-        return &lbl_8033D774;
-    }
-    return &lbl_8033D768;
+    if (*(s32 *)((u8 *)arg0 + 0x10) != 0) return (char *)&lbl_8033D774;
+    return (char *)&lbl_8033D768;
 }
 
 void fn_80215FBC(void *arg0) {
@@ -60,6 +79,12 @@ u32 fn_80215FDC(void) { return 1; }
 u32 fn_80215FE4(void) { return 1; }
 
 u8 fn_80215FF4(u8 *arg0) { return *arg0; }
+
+s32 fn_80215FFC(void *arg0) {
+    s32 result = 0;
+    if (*(u8 *)arg0 != 0 && *(s32 *)((u8 *)arg0 + 4) == fn_802E4A10()) result = 1;
+    return result;
+}
 
 u32 fn_80216054(void) { return 1; }
 
