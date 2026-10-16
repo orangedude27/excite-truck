@@ -790,7 +790,9 @@ void *fn_801D7EC0(void *arg0, s32 arg1) {
 }
 
 s32 fn_801D7F5C(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    if (arg0 != 0) {
+        if (arg1 > 0) fn_80128668();
+    }
     return arg0;
 }
 
@@ -930,6 +932,13 @@ s32 fn_801D872C(void *arg0) {
 }
 
 s32 fn_801D8734(void) { return 0; }
+
+s32 fn_801D873C(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0x18) = 2;
+    *(s32 *)((u8 *)arg0 + 0x20) = 0;
+    *(f32 *)((u8 *)arg0 + 0x10) = lbl_8055E3C8;
+    return 0;
+}
 
 void fn_801D8938(void) {
 
