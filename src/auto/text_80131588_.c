@@ -43,7 +43,7 @@ void* fn_8013184C(void) {
         ((void* volatile*)lbl_8042F53C)[4] = 0;
         ((void* volatile*)lbl_8042F53C)[5] = 0;
         ((void* volatile*)lbl_8042F53C)[6] = 0;
-        __register_global_object(lbl_8042F53C, (void (*)(void*))fn_80131920, lbl_8042F530);
+        __register_global_object(lbl_8042F53C, (void (*)(void*))((s32(*)(s32,s32))fn_80131920), lbl_8042F530);
         lbl_8055E060 = 1;
     }
     return lbl_8042F53C;
