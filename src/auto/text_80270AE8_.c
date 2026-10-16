@@ -1,6 +1,11 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int stricmp(const char *, const char *);
+extern char *lbl_80346B54[];
+extern float lbl_80563F48;
+extern float lbl_80563F88;
+extern void *memset(void *, int, unsigned int);
 void *fn_801E87A8(void);
 #pragma push
 #pragma small_data off
@@ -64,6 +69,22 @@ int fn_80270D1C(int arg0) {
     }
 }
 
+int fn_80270D4C(void *arg0, void *arg1) {
+    float *right;
+    float *left;
+    if (*((unsigned char *)arg1 + 4) != 0) {
+        right = (float *)(*(char **)arg1 + 0xC);
+    } else {
+        right = (float *)(*(char **)arg1 + 4);
+    }
+    if (*((unsigned char *)arg0 + 4) != 0) {
+        left = (float *)(*(char **)arg0 + 0xC);
+    } else {
+        left = (float *)(*(char **)arg0 + 4);
+    }
+    return (int)(*left - *right);
+}
+
 extern char lbl_80346E90[];
 void fn_802712F8(void *);
 void fn_8027156C(void) {
@@ -119,10 +140,11 @@ extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
 void fn_80272354(void *arg0) {
     float value = lbl_80563F48;
+    float other = lbl_80563F88;
     *(float *)((char *)arg0 + 0x0) = value;
     *(float *)((char *)arg0 + 0x4) = value;
     *(float *)((char *)arg0 + 0x8) = value;
-    *(float *)((char *)arg0 + 0xC) = lbl_80563F88;
+    *(float *)((char *)arg0 + 0xC) = other;
     memset((char *)arg0 + 0x10, 0, 8);
     *(int *)((char *)arg0 + 0x58) = 0;
     *(int *)((char *)arg0 + 0x5C) = 2;
