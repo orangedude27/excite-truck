@@ -26,6 +26,8 @@ extern u32 lbl_8055E3F8;
 extern s32 lbl_8055E3E0;
 extern s32 lbl_8055E3F4;
 extern u8 lbl_8055E3EC;
+extern char lbl_80331604[];
+extern void fn_802E30C8(const char *, ...);
 extern char lbl_803316EC[];
 extern char lbl_8033170C[];
 extern f32 lbl_8055E3FC;
@@ -189,6 +191,26 @@ void fn_80176BAC(void) {
         value = lbl_80561B3C;
     fn_8017ED00(value);
     lbl_8055E3FC = now;
+}
+
+s32 *fn_80176C0C(s32 *arg0, s32 *arg1) {
+    s32 length = *arg1;
+    *arg0 = length;
+    memcpy((u8 *)arg0 + 4, (u8 *)arg1 + 4, length);
+    return arg0;
+}
+
+void fn_80176C4C(void) {
+    if (*(s32 *)lbl_804303D4 != 4) {
+        ((s32 *)lbl_804303C8)[0] = *(s32 *)lbl_804303D4;
+        ((s32 *)lbl_804303C8)[1] = ((s32 *)lbl_804303D4)[1];
+        lbl_804303C8[8] = lbl_804303D4[2];
+        *(s32 *)lbl_804303D4 = 4;
+        ((s32 *)lbl_804303D4)[1] = 0;
+        memset(lbl_804303D4 + 2, 0, 4);
+    }
+    fn_80179320();
+    lbl_8055E3F4 = 3;
 }
 
 extern char lbl_8055E3D4;
