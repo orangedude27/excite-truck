@@ -23,6 +23,10 @@ void fn_801F3158(float *arg0, float *arg1) {
     arg0[2] = c;
 }
 
+float fn_801F3174(void) {
+    return fn_8002EFB0();
+}
+
 void fn_801F3198(void *arg0) {
     PSVECNormalize(arg0, arg0);
 }
