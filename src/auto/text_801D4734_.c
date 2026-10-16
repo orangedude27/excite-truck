@@ -22,6 +22,7 @@ typedef struct {
 } UnkStruct_801D6618;
 extern char lbl_80338F50[];
 extern char lbl_80338C78[];
+extern f32 lbl_80442310[];
 void fn_80128658(s32);
 
 void fn_801D47F4(void) {
