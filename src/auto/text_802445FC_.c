@@ -7,10 +7,10 @@ int fn_802446F8(int arg0, int arg1) {
 }
 
 void fn_80244738(void) {
-    int sp8;
+    char scratch[56];
     __AXDSPInitCallback_800216B8();
-    fn_80230B5C(&sp8);
-    fn_80230AD8(&sp8);
+    fn_80230B5C(scratch);
+    fn_80230AD8(scratch);
     fn_802C942C(0xFF000000);
     fn_800216C8();
     fn_80230B38();
