@@ -263,6 +263,12 @@ u8 fn_8006EB80(void) {
     return 2;
 }
 
+#pragma dont_inline on
+void fn_8006EB88(void) {
+    gki_cb.os.int_index--;
+    OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
+}
+
 void fn_8006EBF0(void) {
 
 }
