@@ -559,6 +559,10 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
     (*(void (**)(void *, void *))(*(void ***)arg0 + 20))(arg0, q);
 }
 
+extern "C" void fn_800D0560(void *arg0, s32 arg1) {
+    *(s32 *)((u8 *)arg0 + 0x2C) = arg1;
+}
+
 extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(void *arg0, void *arg1) {
     u16 i = 0;
     void *item;
