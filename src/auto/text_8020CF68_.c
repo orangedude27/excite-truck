@@ -5,6 +5,13 @@ void fn_8020CF68(void) {
     fn_802104D0();
 }
 
+extern void *lbl_8055EE7C;
+extern void *lbl_8055EE80;
+void AXFXSetHooks_8020DE10(void *arg0, void *arg1) {
+    lbl_8055EE7C = arg0;
+    lbl_8055EE80 = arg1;
+}
+
 extern char lbl_8055EE94;
 char fn_8020DE1C(void) {
     return lbl_8055EE94;
