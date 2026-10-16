@@ -41,6 +41,14 @@ extern int vsprintf(char *s, const char *format, va_list arg);
 extern int sprintf(char *s, const char *format, ...);
 extern void OSReport(const char *msg, ...);
 
+typedef struct hcisu_if {
+    void (*init)(u32, u32, u32);
+    void (*open)(void *);
+} hcisu_if;
+
+extern hcisu_if *lbl_8055DC68;
+extern void *lbl_8055DC6C;
+
 void DBPrintf_80068D68(const char *fmt, ...) {
 #pragma unused(fmt)
 }
