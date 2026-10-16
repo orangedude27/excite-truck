@@ -70,12 +70,47 @@ void fn_801EB854(void) {
     }
 }
 
+void fn_801EB8BC(void) {
+    s32 *p = lbl_804885E8;
+    u32 i = 0;
+    do {
+        fn_801EB9A4(p);
+        i++;
+        if (i < 0x18) p++;
+    } while (i < 0x18);
+}
+
+void fn_801EB90C(void) {
+    void **p = (void **)lbl_804885E8;
+    u32 i = 0;
+    do {
+        void *obj = *p;
+        void **vtable = *(void ***)obj;
+        ((void (*)(void))vtable[6])();
+        i++;
+        if (i < 0x18) p++;
+    } while (i < 0x18);
+}
+
 void fn_801EB968(void) {
 
 }
 
+s32 fn_801EB96C(s32 *out, s32 callback) {
+    register s32 (*fn)(void) = (s32 (*)(void))callback;
+    register s32 *ptr = out;
+    *ptr = fn();
+    return *ptr;
+}
+
 void fn_801EBD14(void) {
 
+}
+
+extern f32 lbl_8055EBA4;
+extern f32 fn_801EC114(void);
+f32 fn_801EC114(void) {
+    return lbl_8055EBA4;
 }
 
 void fn_801EC19C(void) {
