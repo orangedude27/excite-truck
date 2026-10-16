@@ -72,12 +72,17 @@ void fn_801D14BC(void*);
 extern void fn_8012850C();
 extern void *fn_8002F37C();
 void fn_801D13A0(void) {
- int offset=0; int i=0;
- while(i<lbl_8055E8F8) { fn_801D1250((float*)(lbl_8055E908+offset),i); offset+=0x34; i++; }
+    int offset = 0;
+    int i = 0;
+    while (i < lbl_8055E8F8) {
+        fn_801D1250((float *)(lbl_8055E908 + offset), i);
+        offset += 0x34;
+        i++;
+    }
 }
 
-void fn_801D1458(int arg1) {
- ((void (*)(int))fn_801D11D4)(lbl_8055E908+arg1*0x34);
+void fn_801D1458(void *arg0, int arg1) {
+    ((void (*)(int))fn_801D11D4)(lbl_8055E908 + arg1 * 0x34);
 }
 
 void fn_801D1468(void) {
