@@ -37,6 +37,27 @@ s32 fn_802A5878(void);
 s32 fn_802CAC28(void *, s32);
 void *fn_802AE414(void *);
 s32 fn_802C6FC0(void *, s32, s32);
+s32 fn_800216F4(void);
+f32 fn_801E7E24(void);
+s32 fn_802E2C20(void);
+extern s32 lbl_8055F8A4;
+extern f32 lbl_80564840, lbl_80564844;
+f32 fn_802A4A50(void) {
+    f32 value;
+    s32 now;
+    s32 delta;
+    if (fn_800216F4() != 0) {
+        now = fn_802E2C20();
+        delta = now - lbl_8055F8A4;
+        value = lbl_80564844;
+        lbl_8055F8A4 = now;
+        if ((f32)delta / lbl_80564840 < value)
+            return (f32)delta / lbl_80564840;
+        return value;
+    }
+    return fn_801E7E24();
+}
+
 void fn_802A4ADC(void) {
     s32 temp = (s32)fn_801E1F44();
     void *var_r30;
