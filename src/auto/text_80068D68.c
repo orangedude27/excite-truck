@@ -273,7 +273,10 @@ void fn_8006EB88(void) {
     OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
 }
 
-
+void fn_8006EBAC(void) {
+    gki_cb.os.int_state[gki_cb.os.int_index] = OSDisableInterrupts();
+    gki_cb.os.int_index++;
+}
 
 void fn_8006EBF0(void) {
 
@@ -295,6 +298,10 @@ void fn_8006EC20(void) {
 void fn_8006EC24(s32 arg0, s32 arg1) {
     if (arg0 == 4) {
         fn_80070B24(arg1);
+    } else if (arg0 < 4) {
+        if (arg0 != 0) {
+            fn_80070B24(arg1);
+        }
     }
 }
 
