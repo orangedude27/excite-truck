@@ -133,6 +133,10 @@ void fn_80232928(void* hi) {
     lbl_8055F060 = hi;
 }
 
+void fn_80232930(void) {
+    lbl_8055F060 = (void *)lbl_8055F04C;
+}
+
 u8 fn_80232B70(void *arg0) {
     return ((u8 *)arg0)[4];
 }
