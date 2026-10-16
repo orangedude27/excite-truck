@@ -4,6 +4,12 @@
 typedef unsigned int u32;
 extern "C" u32 lbl_8055DE88;
 extern "C" void fn_800FFE94(int);
+extern "C" int fn_800FFA6C(int arg0, int arg1) {
+    extern void fn_80128668(void);
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 extern "C" int fn_800FFC5C(int arg0, int arg1) {
     extern void fn_80128668(void);
     if (arg0 != 0 && arg1 > 0) fn_80128668();
