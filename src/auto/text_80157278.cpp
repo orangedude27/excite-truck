@@ -26,7 +26,7 @@ public:
     virtual f32 v19(s32);
     virtual void v20();
     virtual void v21();
-    virtual s32 v22();
+    virtual void v22();
     virtual void v23();
     virtual void v24();
     virtual void v25();
@@ -34,11 +34,23 @@ public:
     virtual void v27();
     virtual void v28();
     virtual s32 GetType();
-    virtual s32 v30();
-    virtual void v31();
-    virtual s32 v32();
+    virtual void v30();
+    virtual s32 v31();
+    virtual void v32();
     virtual void v33();
-    virtual void v34(f32*);
+    virtual void v34();
+    virtual void v35(f32*);
+    s32 m4;
+    u8 pad_8[4];
+    u8* mData;
+    s32 mCount;
+    u8 pad_10[0x244];
+    f32 m254;
+    s32 m258;
+    f32 m25c;
+    s32 m260;
+    s32 m264;
+    s32 m268;
 };
 
 extern "C" s32 fn_80128668(void*);
