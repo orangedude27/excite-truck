@@ -13,6 +13,13 @@ extern "C" int lbl_8055CBB0[];
 extern "C" void fn_802A3500(void*, s32);
 extern "C" void fn_802A30BC(void*, s32);
 extern "C" void fn_802A31DC(void*, s32);
+extern "C" void fn_802A2AE8(void*, s32);
+extern "C" void fn_802A2BF4(void*, s32);
+extern "C" void fn_802A2D04(void*, s32);
+extern "C" void fn_802A2E08(void*, s32);
+extern "C" void fn_802A44B8(void*, s32);
+extern "C" int lbl_80349B78[];
+extern "C" int lbl_8055F870;
 
 namespace ebi {
 namespace title {
@@ -90,7 +97,8 @@ extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
 
 extern "C" void* fn_802A3314(void* arg0, void* arg1) {
     *(void**)arg0 = lbl_80349B28;
-    s32 result = (*(s32 (**)(void*, void*))(*(void**)((char*)arg1 + 0x14)))(arg1, &lbl_8055CBB0);
+    void* vtable = *(void**)arg1;
+    s32 result = (*(s32 (**)(void*, void*))( (char*)vtable + 0x14))(arg1, (void*)lbl_8055CBB0);
     fn_802A3500(arg0, result);
     return arg0;
 }
@@ -146,6 +154,16 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" void fn_802A3DFC(void* arg0) {
+    f32* cursor = (f32*)((char*)arg0 + 8);
+    s32 i = 0;
+    do {
+        *cursor = lbl_80564744;
+        cursor++;
+        i++;
+    } while (i < fn_80287B14(arg0));
 }
 
 extern "C" s32 fn_802A4958(s32 arg0, s32 arg1) {
