@@ -476,6 +476,8 @@ void fn_8006F220(void) {
     fn_80070758();
 }
 
+s32 fn_8007011C(void) { return 0; }
+
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
  * BUFFER_Q acl_q @0x2C, BUFFER_Q sco_q @0x3C. */
 typedef struct uusb_cb_t {
