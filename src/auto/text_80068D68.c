@@ -667,6 +667,10 @@ void bta_dm_link_quality_cback(unsigned char *arg) {
     }
 }
 
+void fn_80073A00(void) {
+    ((void (**)(int, int)) (lbl_803C0C14 + 0x50))[0](1, 0);
+}
+
 void fn_80073A1C(void) {
 
 }
