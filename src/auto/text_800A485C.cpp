@@ -1,4 +1,5 @@
 #include <types.h>
+class D0BA4Dispatch { public: virtual ~D0BA4Dispatch(); virtual void vf1(); virtual void vf2(); virtual void vf3(D0BA4Dispatch *); };
 typedef void (*Unk800B7E18Callback)(u8);
 extern "C" Unk800B7E18Callback lbl_80405D00[];
 extern "C" s32 lbl_80405C30[];
@@ -468,6 +469,12 @@ extern "C" void fn_800CF968(void) {
 extern "C" void fn_800CF96C(void) {
 
 }
+
+void fn_800CFAC8(void *arg0) {
+ u8 *p=(u8*)arg0; p[0x18]=0; p[4]=0; p[5]=0; p[6]=0; p[7]=0; p[8]=0; p[9]=0; p[0xA]=0; p[0xB]=0;
+}
+
+void fn_800CFBB8(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x28) = arg1; }
 
 extern "C" s32 fn_800D010C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
