@@ -19,9 +19,13 @@ extern void *lbl_8055EE08;
 extern unsigned char lbl_8033C520[];
 extern unsigned char lbl_80489BD0[];
 extern int fn_80128668(void);
+void fn_8020A72C(void) { if (fn_801284F8(0xC, lbl_8033C35C) != 0) fn_8020A860(); fn_80208E90(0); }
+
 void* fn_8020A76C(void) {
     return lbl_8055EE08;
 }
+
+void *fn_8020A774(int arg0) { return lbl_804892D0 + arg0 * 0x24; }
 
 extern void fn_802E59BC(void *);
 extern void fn_802E5950(int, int);
