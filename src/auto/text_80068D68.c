@@ -52,8 +52,14 @@ extern int vsprintf(char *s, const char *format, va_list arg);
 extern int sprintf(char *s, const char *format, ...);
 extern void OSReport(const char *msg, ...);
 
+extern void OSReport(const char *msg, ...);
+
 extern const char lbl_80313BB0[];
 extern const char lbl_80313BCC[];
+extern const char lbl_805590A4[];
+extern char lbl_8031A620[];
+extern u8 lbl_8055DC90;
+#include "revolution/BTE/stack/include/sdp_api.h"
 typedef struct hcisu_if {
     void (*init)(u32, u32, u32);
     void (*open)(void *);
@@ -725,9 +731,21 @@ void fn_800719B8(void *arg0) {
 }
 
 void bta_dm_bond(void *arg0) {
- u32 sp8[2]; s32 ptr = fn_8008128C((u8 *)arg0 + 8);
+ u32 sp8[2];
+ s32 ptr = fn_8008128C((u8 *)arg0 + 8);
  if (ptr) memcpy(sp8, (void *)ptr, 8); else memset(sp8, 0, 8);
  BTM_SecBond((u8 *)arg0 + 8, ((u8 *)arg0)[0xE], (u8 *)arg0 + 0xF, sp8);
+}
+
+void bta_dm_pin_reply(void *arg0) {
+ u32 sp8[2];
+ s32 ptr = fn_8008128C((u8 *)arg0 + 8);
+ if (ptr) memcpy(sp8, (void *)ptr, 8); else memset(sp8, 0, 8);
+ if (((u8 *)arg0)[0xE]) {
+  BTM_PINCodeReply((u8 *)arg0 + 8, 0, ((u8 *)arg0)[0xF], (u8 *)arg0 + 0x10, sp8);
+ } else {
+  BTM_PINCodeReply((u8 *)arg0 + 8, 0xB, 0, 0, sp8);
+ }
 }
 
 void bta_sys_disable(void) {
