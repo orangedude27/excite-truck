@@ -10,6 +10,21 @@ extern f32 lbl_8055E460;
 extern f32 lbl_80561B1C;
 extern s32 lbl_8055E3C0;
 void fn_8013A208(void);
+extern s32 lbl_8055E3CC;
+extern s32 lbl_8055E3E0;
+extern s32 lbl_8055E3F4;
+extern u8 lbl_8055E3EC;
+extern char lbl_803316EC[];
+extern char lbl_8033170C[];
+extern f32 lbl_8055E3FC;
+extern f32 lbl_80561B38;
+extern f32 lbl_80561B3C;
+s32 fn_8012F458(s32, s32);
+s32 fn_8012F4AC(s32, void *, s32);
+s32 fn_80179658(s32);
+void fn_80176CC8(void);
+void fn_802E317C(const char *);
+s32 fn_8017ED00(f32);
 
 void fn_80176610(void) {
     fn_80176CC8();
