@@ -31,6 +31,22 @@ int fn_80289554(int arg0) {
     return fn_8028967C(arg0);
 }
 
+int fn_8028967C(int arg0) {
+    int i;
+    int *p = (int *)arg0;
+    memset(p, 0, 0xA0);
+    for (i = 0; i < fn_80287B14(); i++) {
+        p[2] = *(int *)((char *)fn_80288208(i) + 0x24);
+        p += 5;
+    }
+}
+
+int fn_80289BE8(int arg0) {
+    fn_80289C80();
+    fn_80289D94(arg0);
+    return arg0;
+}
+
 int fn_80289EA0(int arg0) {
     fn_8028A084();
     fn_8028A1A4(arg0);
