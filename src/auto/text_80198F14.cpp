@@ -17,7 +17,7 @@ public:
     virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
     virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
     virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-    virtual void v16(); virtual void v17();
+    virtual void v16();
     virtual void slot0x4C();
 };
 
@@ -51,6 +51,19 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void fn_8019EBE0(void* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
+                            s32 arg5, s32 arg6) {
+    s32 obj = *(s32*)((u8*)arg0 + 4);
+    if (obj != 0) {
+        fn_8017B5D4(obj, (s32)arg0, arg1, arg2, arg3, arg4, arg5);
+        return;
+    }
+    obj = *(s32*)((u8*)arg0 + 8);
+    if (obj != 0) {
+        fn_801A4A10(obj, arg3, arg6);
+    }
 }
 
 extern "C" void fn_8019EC84(void* this_) {
