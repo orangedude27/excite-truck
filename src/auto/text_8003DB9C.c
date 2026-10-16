@@ -123,7 +123,7 @@ extern void OSSetCurrentContext(void *);
 extern unsigned int lbl_8055D968;
 extern unsigned char lbl_8055D970;
 
-typedef struct { char pad[0x2CC]; } OSContextTmp;
+typedef struct { char pad[0x2C8]; } OSContext;
 
 #define SET_REG_FIELD(line, reg, size, shift, val) \
     ((reg) = ((unsigned int)(reg) & ~(((1 << (size)) - 1) << (shift))) | ((unsigned int)(val) << (shift)))
