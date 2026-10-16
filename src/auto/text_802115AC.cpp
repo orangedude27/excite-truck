@@ -5,6 +5,13 @@
 
 extern "C" void fn_80221E7C(void);
 extern "C" void fn_80215270(void);
+extern "C" void fn_8022E4BC(s32);
+extern "C" void fn_8022E960(s32);
+extern "C" s32 fn_80211678(void);
+extern "C" char lbl_8055B750[];
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" int stricmp(const char *, const char *);
+extern "C" void *memcpy(void *, const void *, unsigned long);
 
 extern "C" void fn_8021165C(void) {
     fn_80215270();
@@ -53,6 +60,35 @@ extern "C" s32 fn_802121D4(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void fn_8022E4BC(s32);
+extern "C" void fn_8022E960(s32);
+extern "C" s32 fn_80211678(void);
+extern "C" char lbl_8055B750[];
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" int stricmp(const char *, const char *);
+extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
+    char buf[0x100];
+    char *name = arg1;
+    void *entry = arg0;
+    if (*arg1 == '#') {
+        name = arg1 + 1;
+        sprintf(buf, lbl_8055B750, name);
+    }
+    for (;;) {
+        s32 id = *(s32 *)((char *)entry + 4);
+        if (id == 0x7B) {
+            return 0;
+        }
+        if (id == arg2 && *(char **)entry != 0) {
+            if (stricmp(*(char **)entry, name) == 0 ||
+                stricmp(*(char **)entry, buf) == 0) {
+                return entry;
+            }
+        }
+        entry = (char *)entry + 0x14;
+    }
 }
 
 extern "C" s32 fn_80215194(s32 arg0, s32 arg1) {
