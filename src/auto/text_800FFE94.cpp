@@ -9,3 +9,7 @@ extern "C" float fn_801013D4(void* arg0) {
     return *(float*)((char*)arg0 + 0x28);
 }
 
+extern "C" float fn_801013DC(void* arg0) {
+    return *(float*)((char*)arg0 + 0x3C);
+}
+
