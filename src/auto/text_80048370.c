@@ -2,9 +2,21 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <revolution/MEM.h>
 
+MEMiHeapHead* MEMDestroyExpHeap(MEMiHeapHead* heap) {
+    MEMiFinalizeHeap(heap);
+    return heap;
+}
+
 MEMiHeapHead* MEMDestroyFrmHeap(MEMiHeapHead* heap) {
     MEMiFinalizeHeap(heap);
     return heap;
+}
+
+void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags) {
+}
+
+BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) {
+    return FALSE;
 }
 
 static void* AllocatorAllocForExpHeap_(MEMAllocator* allocator, u32 size) {
