@@ -109,6 +109,12 @@ s32 fn_8023A6F4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8023ADAC(void *arg0) {
+    s32 *index = *(s32 **)((char *)arg0 + 0x18);
+    s32 count = *(s32 *)((char *)arg0 + 0x14);
+    *index = (*index + 1) % count;
+}
+
 s32 fn_8023ADD0(void *arg0) {
     return *(s32 *)*(s32 **)((char *)arg0 + 0x18) > 0;
 }
