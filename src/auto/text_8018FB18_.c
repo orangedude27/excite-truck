@@ -12,6 +12,11 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
+typedef signed char schar;
+typedef unsigned char uchar;
+typedef signed short sshort;
+typedef unsigned short ushort;
+typedef unsigned int uint;
 
 extern void *lbl_804349A0[];
 extern int lbl_8055E518;
@@ -106,6 +111,48 @@ int fn_80190368(int arg0) {
     return result;
 }
 
+BOOL fn_80190B60(void *arg0) {
+    return (BOOL)(((*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 4) & 1) * -1);
+}
+
+f32 fn_80190B7C(void *arg0) {
+    f32 var_f4;
+    double d;
+    double d2;
+
+    d = (double)*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 2);
+    var_f4 = lbl_80562090;
+    if (var_f4 < (f32)((d - lbl_805620B0) / lbl_805620AC)) {
+        d2 = d - lbl_805620B0;
+        var_f4 = (f32)(d2 / lbl_805620AC);
+    }
+    if (var_f4 > lbl_8056208C) {
+
+    } else {
+        var_f4 = lbl_8056208C;
+    }
+    return lbl_8056208C + (var_f4 * lbl_80562090);
+}
+
+f32 fn_80190C04(void *arg0) {
+    f32 var_f4;
+    u8 temp_r3;
+
+    temp_r3 = *(u8 *)((char *)*(void **)((char *)arg0 + 8) + 3);
+    var_f4 = lbl_80562090;
+    if (var_f4 < (((f32) temp_r3 - lbl_8056208C) / lbl_805620AC)) {
+
+    } else {
+        var_f4 = ((f32) temp_r3 - lbl_8056208C) / lbl_805620AC;
+    }
+    if (var_f4 > lbl_8056208C) {
+
+    } else {
+        var_f4 = lbl_8056208C;
+    }
+    return lbl_8056208C + (var_f4 * lbl_80562090);
+}
+
 int fn_80190C8C(void *arg0) {
     return (int)(*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) & 8);
 }
@@ -178,6 +225,11 @@ void fn_80190E70(void *arg0) {
 
 void fn_80190F90(void) {
     fn_80191758();
+}
+
+void fn_80190F94(void *arg0) {
+    void *obj = *(void **)((char *)arg0 + 0x10);
+    ((void (**)(void))(*(void ***)obj))[14]();
 }
 
 void fn_80191060(void) {
