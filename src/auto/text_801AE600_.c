@@ -44,6 +44,9 @@ void fn_801AE874(unsigned short *arg0, int arg1) {
 extern float lbl_80562560;
 extern float lbl_8055E630;
 extern float lbl_80562558;
+extern int lbl_8055E62C;
+extern double lbl_80562568;
+extern float lbl_8056255C;
 extern void fn_801AE874(unsigned short *, int);
 extern void fn_801AE894(void *);
 extern int fn_801EA994(void);
