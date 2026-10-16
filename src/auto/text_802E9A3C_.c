@@ -70,6 +70,8 @@ long fn_802EC370(void *arg0) {
     return ((long *)arg0)[3];
 }
 
+long fn_802EC45C(void *arg0) { return ((long *)arg0)[2]; }
+
 typedef signed long s32;
 extern long fn_800B7C64(long, long);
 extern long fn_800B7C60(long, long, long, long);
