@@ -1,6 +1,74 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+int fn_80171DE4(void *arg0) {
+    extern int fn_80139EC4(int, float, float);
+    extern int lbl_8055E3A4;
+    int result = 0;
+    if (lbl_8055E3A4 != 0 && fn_80139EC4(lbl_8055E3A4, *(float *)arg0, *(float *)((char *)arg0 + 4)) != 0) result = 1;
+    return result;
+}
+
+int fn_80171E3C(void *arg0) {
+    extern int fn_802B04D4(float *, float, float);
+    extern int fn_80139EC4(int, float, float);
+    extern int lbl_8055E3A4;
+    extern float lbl_80561A38;
+    float a, b, c;
+    a = *(float *)((char *)arg0 + 4);
+    b = *(float *)arg0;
+    c = lbl_80561A38;
+    if (fn_802B04D4((float *)((char *)&a - 4), b, a) != 0) return 0;
+    if (lbl_8055E3A4 != 0 && fn_80139EC4(lbl_8055E3A4, *(float *)arg0, *(float *)((char *)arg0 + 4)) != 0) return 0;
+    return 1;
+}
+
+int fn_80171EC0(void) {
+    extern void *fn_8017960C(int);
+    return *(int *)((char *)fn_8017960C(0) + 0x10) == 0x50434152;
+}
+
+int fn_801720E0(unsigned int arg0) {
+    unsigned int shifted = arg0 >> 1;
+    unsigned int mask = 0x7F7F7F;
+    unsigned int result = shifted & mask;
+    return result | (arg0 & 0xFF000000);
+}
+
+float fn_801725C8(float arg0) {
+    extern float lbl_8043038C[];
+    extern float lbl_80561A40;
+    extern float lbl_80561A44;
+    float f0 = lbl_8043038C[2];
+    float f2 = lbl_8043038C[3];
+    float f3 = lbl_8043038C[0];
+    float f4 = lbl_8043038C[1];
+    float value = (arg0 - f0) / (f2 - f0);
+    float t = lbl_80561A40;
+    if (t < value)
+        t = value;
+    if (t > lbl_80561A44)
+        t = lbl_80561A44;
+    return f3 + t * (f4 - f3);
+}
+
+int fn_80172624(void *arg0, int arg1) {
+    extern void *fn_8017960C(int);
+    extern float PSQUATMultiply(void *, void *);
+    extern float lbl_8043038C[];
+    void *a = fn_8017960C((int)arg0);
+    void *b = fn_8017960C(arg1);
+    float dot = PSQUATMultiply((char *)a + 0x118, (char *)b + 0x118);
+    float threshold = *(float *)((char *)a + 0x25D4);
+    float value = lbl_8043038C[9] * dot + lbl_8043038C[10] * threshold;
+    int result = 0;
+    if (value >= lbl_8043038C[8])
+        return 2;
+    if (value >= lbl_8043038C[7])
+        result = 1;
+    return result;
+}
+
 void *fn_801726C4(void *arg0) {
     extern void *fn_801284F8(unsigned int, void *);
     extern char lbl_80330F48[];
@@ -25,10 +93,13 @@ int fn_80173A84(void *arg0) {
     int count = *(int *)((char *)arg0 + 0x170);
     int result = 0;
     int i;
-    for (i = 0; i < count; i++) {
-        char *p = (char *)arg0 + i * 0x1C;
-        if (*(unsigned char *)(p + 0x91) == 0 && *(unsigned char *)(p + 0x90) != 0)
-            result++;
+    if (count > 0) {
+        for (i = 0; i < count; i++) {
+            if (*(unsigned char *)((char *)arg0 + 0x91) == 0 &&
+                *(unsigned char *)((char *)arg0 + 0x90) != 0)
+                result++;
+            arg0 = (char *)arg0 + 0x1C;
+        }
     }
     return result != 0;
 }
