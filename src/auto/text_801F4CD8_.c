@@ -36,7 +36,6 @@ void fn_801F4DCC(void) {
 
 void fn_801F4DD4(void *arg0, void *arg1) {
     void *temp_r3;
-
     temp_r3 = fn_802AE414();
     if (temp_r3 == 0) {
         fn_802E317C(lbl_8033ACE8, arg0);
@@ -47,6 +46,12 @@ void fn_801F4DD4(void *arg0, void *arg1) {
 void fn_801F596C(void) {
 
 }
+
+extern void fn_801F6A98(void *);
+extern void fn_801F6B98(void *);
+extern void fn_801F6DF0(void *);
+extern void fn_801F6EC0(void *);
+void fn_801F73F8(void) { fn_801F6EC0(lbl_8055EC14); }
 
 void fn_801F78D8(void) {
 
