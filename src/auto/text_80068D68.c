@@ -647,6 +647,16 @@ void fn_80073464(void) {
     ((void (**)(int, int)) (lbl_803C0C14 + 0x50))[0](1, 0);
 }
 
+void bta_dm_rssi_cback(unsigned char *arg) {
+    unsigned char sp[8];
+    if (arg[0] == 0) {
+        fn_80070FA4(sp, arg + 3);
+        sp[6] = 1;
+        sp[7] = arg[2];
+        ((void (**)(int, void *)) (lbl_803C0C14 + 0x50))[0](7, sp);
+    }
+}
+
 void fn_80073A1C(void) {
 
 }
