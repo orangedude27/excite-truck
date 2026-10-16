@@ -10,7 +10,7 @@ extern s32 lbl_802F9A08[];
 extern s32 lbl_804885E8[];
 extern f32 lbl_80562E68;
 extern f32 lbl_8055EB98[2];
-extern s32 fn_801EB9A4(s32 *);
+extern void fn_801EB9A4(s32 *);
 s32 fn_801EB0E8(void) { return 0; }
 
 s32 fn_801EB0F0(s32 arg0) {
@@ -29,11 +29,11 @@ void fn_801EB128(void) {
 }
 
 void fn_801EB634(void *arg0, s32 arg1) {
-    u8 d=((u8 *)arg0)[2];
-    u8 c=((u8 *)arg0)[1];
-    u8 b=((u8 *)arg0)[3];
     u8 a=((u8 *)arg0)[0];
-    ((u8 *)arg0)[0]=b; ((u8 *)arg0)[3]=a; ((u8 *)arg0)[1]=d; ((u8 *)arg0)[2]=c;
+    u8 b=((u8 *)arg0)[1];
+    u8 c=((u8 *)arg0)[2];
+    u8 d=((u8 *)arg0)[3];
+    ((u8 *)arg0)[1]=c; ((u8 *)arg0)[2]=b; ((u8 *)arg0)[3]=a; ((u8 *)arg0)[0]=d;
     if (*(s32 *)arg0) *(s32 *)arg0 += arg1;
 }
 
