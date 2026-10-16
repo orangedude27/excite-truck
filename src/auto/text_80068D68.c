@@ -631,7 +631,10 @@ void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
 
 u16 fn_8006D8D0(u32 arg0) {
     s32 diff = (s32)arg0 - 8;
-    if (diff & 1) {
+    if (diff < 0) {
+        return 0;
+    }
+    {
         u8 val = *(u8 *)((u8 *)diff + 4);
         if (val < 9) {
             return *(u16 *)((u8 *)&lbl_803946C0 + 0x289E8 + (val << 4));
@@ -648,10 +651,8 @@ u8 fn_8006CA6C(void) {
 
 void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 arg8) {
     void (*func)(void);
-    u32 *ptr;
     if (arg8 == 3) {
-        ptr = (u32 *)&lbl_80392960;
-        func = (void (*)(void))ptr[0x66C / 4];
+        func = (void (*)(void))((u32 *)&lbl_80392960)[0x66C / 4];
         if (func) {
             func();
         }
