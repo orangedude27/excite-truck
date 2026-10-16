@@ -2,6 +2,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 int fn_801AE618(int arg0);
+int fn_801AE610(void) {
+    return 0;
+}
+
 void fn_801AE620(void *arg0) {
     fn_801AE618(*(unsigned short *)((char *)arg0 + 0xE));
 }
