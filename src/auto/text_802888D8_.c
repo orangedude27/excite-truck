@@ -17,3 +17,13 @@ int fn_802894B4(int arg0) {
     return arg0;
 }
 
+void *__dt__Q210JASDrumSet5TPercFv_802894F4(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8028E398(*(int *)((char *)arg0 + 0xA4));
+        fn_8028E398(*(int *)((char *)arg0 + 0xA0));
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
