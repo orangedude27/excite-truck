@@ -809,6 +809,11 @@ extern "C" void fn_80229750(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x18) = 1;
 }
 
+extern "C" void fn_80229790(void *arg0) {
+    ((VfObj *)arg0)->vf31();
+    *(u8 *)((u8 *)arg0 + 0x18) = 0;
+}
+
 extern "C" void fn_8022984C(void *arg0) {
     u8 *p = *(u8 **)((u8 *)arg0 + 0x254);
     *p = (u8)((s8)(*p == 0));
