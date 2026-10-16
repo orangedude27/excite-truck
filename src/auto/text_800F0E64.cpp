@@ -277,6 +277,12 @@ void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* self) {
     OSUnlockMutex(mutex);
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd9SoundHeapFv(void*, int);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8114(void *arg0, int arg1) {
+ if(arg0) { __dt__Q36nw4hbm3snd9SoundHeapFv(arg0,0); if(arg1>0) ((void(*)(void*))fn_80128668)(arg0); }
+ return arg0;
+}
+
 extern "C" s32 fn_800F816C(s32 arg0, s32 arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
 
 extern "C" s32 fn_800F81AC(s32 arg0, s32 arg1) {
@@ -316,6 +322,16 @@ extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6de
         fn_800E9B9C(*arg0);
     }
     *(void **)((u8 *)*arg0 + 8) = arg0;
+}
+
+void DetachSound__Q34nw4r3snd11SoundHandleFv(void **arg0) {
+ void *p=*arg0;
+ if(p) {
+  if(*(void**)((u8*)p+8)==arg0) *(void**)((u8*)p+8)=0;
+  p=*arg0;
+  if(*(void**)((u8*)p+0xc)==arg0) *(void**)((u8*)p+0xc)=0;
+ }
+ if(*arg0) *arg0=0;
 }
 
 extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* arg0, int arg1) {
