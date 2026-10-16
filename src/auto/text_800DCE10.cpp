@@ -6,6 +6,7 @@
 extern void *lbl_80320548;
 extern const char lbl_80320570[];
 extern const char lbl_80320688[];
+extern const char lbl_803206B8[];
 extern const char lbl_80320B5C[];
 extern const char lbl_80320B8C[];
 extern const char lbl_80320BC8[];
@@ -54,14 +55,15 @@ extern "C" void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const vo
 extern "C" void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color);
 extern "C" void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color);
 
-extern "C" void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 index) {
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *) __attribute__((noreturn));
+void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 index) {
     if (index >= 4) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1d3, lbl_80320688);
     }
     GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(this_ptr, arg1, index >> 1);
 }
 
-extern "C" void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u32 index) {
+void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u32 index) {
     if (index >= 2) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320B8C, 0x5f, lbl_80320B5C);
     }
@@ -72,7 +74,7 @@ extern "C" void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const vo
     ((u8 *)this_ptr)[3] = base[0xDB];
 }
 
-extern "C" void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
+void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
     if (index >= 4) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1de, lbl_80320688);
     }
@@ -85,7 +87,7 @@ extern "C" void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *th
     SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(this_ptr, index >> 1, colorBytes);
 }
 
-extern "C" void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
+void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
     if (index >= 2) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320BC8, 0x60, lbl_80320B98);
     }
