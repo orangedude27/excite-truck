@@ -8,3 +8,5 @@ unsigned int DVDLowUnmaskStatusInterrupts(void) { return 1; }
 
 unsigned int DVDLowMaskCoverInterrupt(void) { return 1; }
 
+int fn_8003BE40(void) { return 0; }
+
