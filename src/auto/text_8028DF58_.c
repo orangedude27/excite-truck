@@ -104,6 +104,8 @@ void fn_8028E584(void) {
 
 void fn_8028E58C(void) { fn_8028FAE4(); }
 
+void fn_8028E590(void) { fn_8028FC40(); }
+
 void fn_8028ED74(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
 
 void fn_8028ED80(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
