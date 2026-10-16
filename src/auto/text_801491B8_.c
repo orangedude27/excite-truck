@@ -2,6 +2,10 @@
 
 #include <types.h>
 
+extern s32 lbl_8032E1A0[];
+extern f32 lbl_80561648;
+extern f32 lbl_8056171C;
+
 extern s32 lbl_8055E238;
 extern s32 lbl_8055E23C;
 extern s32 fn_80179650(void);
@@ -51,11 +55,16 @@ extern f32 lbl_8055E3C8;
 typedef struct { void *pad[14]; s32 (*fn7)(void); } VTableE708;
 typedef struct { VTableE708 *vtable; } ObjE708;
 
+extern s32 fn_800167F4(void);
+extern void fn_801E7E18(void);
+extern void fn_802AE220(void *);
+extern void fn_8002F634(void *, void *, s32, s32);
+extern f32 lbl_80561648, lbl_80561688, lbl_805616C0, lbl_805616C4;
+extern void *lbl_8032E190;
+extern s32 fn_8014EFC0(s32, s32);
 void fn_80149210(void *arg0) {
-    u32 x = ((u32 *)arg0)[1] + 1;
-    u32 t = x << 30;
-    u32 b = x >> 31;
-    ((u32 *)arg0)[1] = (((t - b) << 2) | ((t - b) >> 30)) + b;
+ u32 x=((u32*)arg0)[1]+1; u32 b=x>>31; u32 t=x<<30;
+ ((u32*)arg0)[1]=(((t-b)<<2)|((t-b)>>30))+b;
 }
 
 s32 fn_80149234(void *arg0) {
@@ -588,13 +597,13 @@ void fn_8014D700(void *arg0, s32 arg1) {
     void *temp_r5;
     void *temp_r5_2;
     void **temp_r3;
-    s32 (*fn)(void **, void *, void *);
+    void (*fn)(void *, void *, void *);
 
     temp_r5 = *(void **)((u8 *)arg0 + 0xC);
     *(s32 *)((u8 *)temp_r5 + 8) = 0;
     temp_r3 = *(void ***)((u8 *)arg0 + 0x10);
-    fn = (s32 (*)(void **, void *, void *))*(void **)((u8 *)temp_r3 + 0x48);
-    fn(temp_r3, *(void **)((u8 *)arg0 + 0xC), temp_r5);
+    fn = (void (*)(void *, void *, void *))*(void **)((u8 *)*temp_r3 + 0x48);
+    fn(*temp_r3, *(void **)((u8 *)arg0 + 0xC), temp_r5);
     temp_r5_2 = *(void **)((u8 *)arg0 + 0x68);
     if (*(u8 *)((u8 *)temp_r5_2 + 0x8F4) != 0) {
         var_r6 = *(s32 *)((u8 *)temp_r5_2 + 0x8F4 + *(s32 *)arg0 * 0x1C + 8);
@@ -690,10 +699,13 @@ void fn_80150B60(void *arg0) {
         fn_80168020();
     }
     fn_8016A0D4();
-    if (((void **)arg0)[0x113] != 0) {
-        ((u8 *)arg0)[0x450] = 0;
-        ((u8 *)(((void **)arg0)[0x113]))[0x4A] = 1;
-        ((u8 *)(((void **)arg0)[0x113]))[0x4C] = 0;
+    {
+        u8 *p = *(u8 **)((u8 *)arg0 + 0x44C);
+        if (p != 0) {
+            p[0x4A] = 1;
+            p[0x4C] = 0;
+            ((u8 *)arg0)[0x450] = 0;
+        }
     }
 }
 
@@ -864,6 +876,24 @@ void fn_80154750(void) {
 
 }
 
+extern s32 lbl_8032E1A0[];
+extern f32 lbl_8056171C;
+void fn_80155318(void *arg0) {
+    *(s32 **)arg0 = lbl_8032E1A0;
+    *(s32 *)((u8 *)arg0 + 0x120) = 0;
+    *(s32 *)((u8 *)arg0 + 0x11C) = 0;
+    *((u8 *)arg0 + 4) = 0;
+    *(f32 *)((u8 *)arg0 + 8) = lbl_8056171C;
+    *(f32 *)((u8 *)arg0 + 0xC) = lbl_80561648;
+    *(f32 *)((u8 *)arg0 + 0x10) = lbl_80561648;
+    *(s32 *)((u8 *)arg0 + 0x118) = 0;
+    *(s32 *)((u8 *)arg0 + 0x10C) = -1;
+    *((u8 *)arg0 + 5) = 0;
+    *((u8 *)arg0 + 0x14) = 0;
+    *((u8 *)arg0 + 0x64) = 0;
+    *((u8 *)arg0 + 0xB4) = 0;
+}
+
 void fn_80155368(void) {
 
 }
@@ -919,15 +949,15 @@ s32 fn_8014F0C8(s32 arg0, s32 arg1) {
 
 void fn_8014F108(void *arg0) {
     void *ptr = arg0;
-    s32 i;
+    u32 i;
     for (i = 0; i < 2; i++) {
         s32 result = fn_801284F8(8, &lbl_8032DB34);
         if (result == 0) {
             result = fn_802ADDD8(2);
         }
         ((s32 *)ptr)[0x117] = result;
-        fn_8014F194((void *)((u8 *)ptr + 0x454));
-        ptr = (void *)((u8 *)ptr + 0x240);
+        fn_8014F194((u8 *)ptr + 0x454);
+        ptr = (u8 *)ptr + 0x240;
     }
     ((s32 *)arg0)[0x276] = fn_80145E70(&lbl_8032DB40);
 }
