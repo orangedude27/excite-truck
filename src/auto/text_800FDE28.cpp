@@ -4,6 +4,16 @@
 #include <types.h>
 #include <revolution/OS/OSMessage.h>
 
+/* forward decls for helpers defined further down in this file */
+extern "C" s32 fn_80128668(void *);
+extern "C" void fn_800FDE60(void);
+extern "C" void fn_800FE1D0(void);
+extern u8 lbl_8055DE80;
+#pragma push
+#pragma small_data off
+extern u8 lbl_8041B138[];
+#pragma pop
+
 extern u32 lbl_80559900;
 
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
