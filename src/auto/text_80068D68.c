@@ -343,3 +343,8 @@ void AXFXSetHooks_8009CDB0(void *arg0, void *arg1) {
     lbl_805590B4 = arg1;
 }
 
+void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
+    *arg0 = lbl_805590B0;
+    *arg1 = lbl_805590B4;
+}
+
