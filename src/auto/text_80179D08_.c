@@ -45,7 +45,7 @@ int fn_8017B094(void) {
 void fn_8017B09C(void* arg0, signed char* arg1) {
     *arg1 = 0;
 }
-extern int lbl_80331C28;
+extern int lbl_80331C28[64];
 
 void** fn_8017ACCC(void** arg0) {
     fn_80179D08();
