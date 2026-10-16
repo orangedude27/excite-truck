@@ -109,8 +109,18 @@ s32 fn_8023A6F4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_8023ADE8(void *arg0) {
+    return *(s32 *)*(s32 **)((char *)arg0 + 0x18) < (*(s32 *)((char *)arg0 + 0x14) - 1);
+}
+
 s32 fn_8023AE10(void *arg0) {
     return ((s32 *)*(char **)((char *)arg0 + 0x10))[*(s32 *)(*(char **)((char *)arg0 + 0x18))];
+}
+
+void fn_8023AE28(void *arg0) {
+    s32 *index = *(s32 **)((char *)arg0 + 0x1C);
+    s32 count = *(s32 *)((char *)arg0 + 0x14);
+    *index = (count + *index - 1) % count;
 }
 
 s32 fn_8023AE74(void *arg0) {
