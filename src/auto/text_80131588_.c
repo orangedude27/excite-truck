@@ -82,12 +82,12 @@ s32 fn_80131B50(void* arg0) {
             char* c;
             do {
                 c = s++;
-                h = h + (s8)*c + 0xBAF;
+                h = h * 33 + (s8)*c;
             } while (*c);
             s = *(char**)((char*)arg0 + 0x10 + i + 4);
             do {
                 c = s++;
-                h = h + (s8)*c + 0xBAF;
+                h = h * 33 + (s8)*c;
             } while (*c);
             i += 8;
         } while (--count);
@@ -96,15 +96,17 @@ s32 fn_80131B50(void* arg0) {
 }
 
 s32 fn_80131BD0(void* arg0, const char* name) {
-    s32 count = *(s32*)((char*)arg0 + 0xC);
-    s32 i = 0;
+    s32 index = 0;
     char* found = NULL;
-    while (i < count) {
-        if (stricmp(name, *(char**)((char*)arg0 + 0x10 + i * 8)) == 0) {
-            found = *(char**)((char*)arg0 + 0x10 + i * 8);
+    s32 offset = 0;
+    while (index < *(s32*)((char*)arg0 + 0xC)) {
+        char* t = *(char**)((char*)arg0 + 0x10);
+        if (stricmp(name, t + offset) == 0) {
+            found = *(char**)((char*)arg0 + 0x10) + index * 8;
             break;
         }
-        i++;
+        offset += 8;
+        index++;
     }
     if (found == NULL && *(void**)((char*)arg0 + 0x14) != NULL) {
         found = (char*)fn_80131C88((s32)name);
@@ -113,13 +115,20 @@ s32 fn_80131BD0(void* arg0, const char* name) {
 }
 
 s32 fn_80132098(void* arg0, s32 index, void* dst1, void* dst2) {
-    s32 count = *(s32*)((char*)arg0 + 0xC);
-    if (index >= 0 && index < count) {
-        char* e = *(char**)((char*)arg0 + 0x10 + index * 8);
-        *(s32*)dst1 = *(s32*)e;
-        *(s32*)dst2 = *(s32*)(e + 4);
+    if (index >= 0 && index < *(s32*)((char*)arg0 + 0xC)) {
+        char* base = *(char**)((char*)arg0 + 0x10);
+        *(void**)dst1 = *(void**)(base + index * 8);
+        *(void**)dst2 = *(void**)(base + index * 8 + 4);
         return 1;
     }
     return 0;
 }
 
+extern int atoi(const char*);
+s32 fn_801321BC(void* arg0) {
+    void** vtable = *(void***)(*(void**)arg0);
+    return ((s32(*)(int(*)(const char*)))vtable[5])(atoi);
+}
+extern void fn_802E317C(const char*, ...);
+extern const char lbl_8032B73C[];
+typedef struct { void** vtable; } Unk80132BD0;
