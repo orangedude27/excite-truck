@@ -44,8 +44,7 @@ extern int vsprintf(char *s, const char *format, va_list arg);
 extern int sprintf(char *s, const char *format, ...);
 extern void OSReport(const char *msg, ...);
 
-extern const char lbl_80313BB0[];
-extern const char lbl_80313BCC[];
+
 
 typedef struct hcisu_if {
     void (*init)(u32, u32, u32);
@@ -76,7 +75,7 @@ s32 _WUDGetDevAddr(u32 arg0) {
 }
 
 s16 _WUDGetQueuedSize(s8 arg0) {
-    s16 r31;
+    u16 r31;
     s32 saved = OSDisableInterrupts();
     if (arg0 >= 0 && arg0 < 0x10) {
         r31 = lbl_80394680[arg0];
@@ -84,7 +83,7 @@ s16 _WUDGetQueuedSize(s8 arg0) {
         r31 = 0;
     }
     OSRestoreInterrupts(saved);
-    return r31;
+    return (s16)r31;
 }
 
 s32 fn_8006CFA0(void) {
@@ -634,18 +633,18 @@ u8 fn_8006CA6C(void) {
     return val;
 }
 
-void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 arg8) {
-    u32 *ptr;
+void fn_8006CF44(u32 arg8) {
     void (*func)(void);
-    if (arg8 != 3) {
-        DBPrintf_8006CFA8(lbl_803140D0, arg8);
+    u32 *ptr;
+    if (arg8 == 3) {
+        ptr = (u32 *)&lbl_80392960;
+        func = (void (*)(void))ptr[0x66C / 4];
+        if (func) {
+            func();
+        }
         return;
     }
-    ptr = (u32 *)&lbl_80392960;
-    func = (void (*)(void))ptr[0x66C / 4];
-    if (func != NULL) {
-        func();
-    }
+    DBPrintf_8006CFA8(lbl_803140D0, arg8);
 }
 
 void fn_8006CF80(void) {
