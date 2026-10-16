@@ -682,6 +682,26 @@ extern "C" s32 fn_8015BCEC(void) { return 7; }
 
 extern "C" s32 fn_8015C074(void) { return 0; }
 
+extern "C" void* fn_8015C07C(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            if (arg0 != 0) {
+                if ((u32)arg0 + 8 != 0) {
+                    if ((u32)arg0 + 8 != 0) {
+                        if ((u32)arg0 + 8 != 0) {
+                            *(u32*)((u8*)arg0 + 8) = 0;
+                            *(u32*)((u8*)arg0 + 0xC) = 0;
+                            *(u32*)((u8*)arg0 + 0x10) = 0;
+                        }
+                    }
+                }
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
     arg0->m264 = 0;
     if (arg0->m260 > 0) {
