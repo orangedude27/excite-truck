@@ -21,3 +21,7 @@ void __AXDSPInitCallback_801293D0(void) {
     lbl_8055DFC0 = 0;
 }
 
+void fn_801293DC(void *arg0) {
+    memcpy(arg0, lbl_8055DFC4, 0x4000);
+}
+
