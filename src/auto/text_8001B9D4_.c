@@ -153,6 +153,11 @@ void *fn_8001C070(void *dest, int val, size_t count) {
 s32 fn_8001C0A0(void) {
     return *(s32 *)((s32 (*)(void))fn_8001BC18)();
 }
+
+s32 fn_8001C0C4(void) {
+    return *(s32 *)((s32 (*)(void))fn_8001BC20)();
+}
+
 #pragma dont_inline reset
 void fn_8001C0E8(void) {
     fn_8001BC28();
@@ -163,6 +168,33 @@ s32 fn_8001C200(const char *arg0, const char *arg1) {
         return 1;
     }
     return 0;
+}
+
+s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
+    s32 result = 0;
+    if (*(u32 *)arg0 == arg1 && fn_8001C200(*(const char **)((u8 *)arg0 + 4), arg2) != 0) {
+        result = 1;
+    }
+    return result;
+}
+
+s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
+    s32 i = 0;
+    s32 offset = 0;
+    void *entry;
+    void *record;
+    for (;;) {
+        entry = lbl_80358658[arg0];
+        if (i >= *(s32 *)((u8 *)entry + 4)) {
+            return 0;
+        }
+        record = (void *)(*(s32 *)entry + offset);
+        if (fn_8001C27C(record, arg1, arg2) != 0) {
+            return (s32)record;
+        }
+        offset += 0x2C;
+        i++;
+    }
 }
 
 void fn_8001C4D4(void) {
@@ -185,14 +217,14 @@ extern s32 fn_802E317C(const char *);
 s32 *fn_8001C4E0(s32 arg0) {
     s32 *entry = lbl_802ED7B8;
     for (;;) {
-        if (*entry == 0) {
-            fn_802E317C(lbl_802FD85C);
-            return 0;
-        }
         if (*entry == arg0) {
             return entry;
         }
         entry += 3;
+        if (*entry == 0) {
+            fn_802E317C(lbl_802FD85C);
+            return 0;
+        }
     }
 }
 
