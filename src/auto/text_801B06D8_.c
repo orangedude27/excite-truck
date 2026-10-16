@@ -95,6 +95,8 @@ void fn_801B30C0(s32 arg0) {
     fn_801B18B8((s32)((u8 *)lbl_8055E684 + (arg0 << 7)), (s32)lbl_8055E684);
 }
 
+s32 fn_801B327C(void) { return 0; }
+
 void fn_801B3284(void) {
 
 }
