@@ -148,7 +148,7 @@ void fn_80287A34(void) {
 }
 
 void fn_80287A6C(s32 arg0) {
-    if (arg0 == 1 && lbl_8055F6BC == 0) return;
+    if (arg0 == 1 && (u8)lbl_8055F6BC == 0) return;
     fn_80294CC8(arg0); fn_801B8834(); fn_802A1584(); fn_8029C2D4();
     fn_8028A9BC(arg0); fn_8028E240(arg0); fn_80288A1C(arg0); fn_802A17FC(arg0);
     fn_80298124(arg0); fn_8029F300(); fn_802A7C68(); fn_802AB6D4();
