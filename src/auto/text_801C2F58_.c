@@ -22,6 +22,7 @@ extern void qsort(void *base, size_t count, size_t size, int (*compare)(const vo
 extern s32 fn_801C3B7C(const void *, const void *);
 extern char lbl_80437FC0[304];
 extern char lbl_80336EC8[];
+extern char lbl_80336EE8[];
 extern s32 lbl_8055E7F0;
 extern s32 lbl_8055E7F8;
 extern s32 lbl_80499050[12];
