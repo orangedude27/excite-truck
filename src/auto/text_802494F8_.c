@@ -103,6 +103,11 @@ void fn_8024A2BC(void *arg0, s32 arg1, s32 arg2) {
     }
 }
 
+int stricmp(const char*, const char*);
+void fn_8024A4B8(const char** arg0, const char** arg1) {
+    stricmp(*arg0, *arg1);
+}
+
 s32 fn_8024974C(s32, s32, s32, s32);
 void fn_8024A4C4(s32 arg0, s32 arg1, s32 arg2) {
     fn_8024974C(arg0, arg1, arg2, 0);
