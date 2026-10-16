@@ -24,11 +24,35 @@ void fn_801EFC90(long, long, void *);
 extern float lbl_80488668[3];
 extern unsigned int lbl_8055EBC8;
 long fn_801ECB60(void);
+void *fn_801EC1F8(void) {
+    return lbl_80488668;
+}
+
 long fn_801ECC8C(unsigned int arg0) {
     long result = 0;
     if (fn_801ECB60() == 0 && arg0 == lbl_8055EBC8)
         result = 1;
     return result;
+}
+
+void fn_801ECF58(void *arg0) {
+    long flag;
+    long entry;
+    long owner;
+
+    if (*(long *)((char *)arg0 + 0x184) != 0) {
+        flag = 0;
+        entry = *(long *)((char *)arg0 + 0x170) +
+                *(long *)((char *)arg0 + 0x3F8) * 8;
+        if (*(unsigned char *)(entry + 5) != 0) {
+            owner = *(long *)((char *)arg0 + 0x3C);
+            if ((*(long *)(owner + 0x2C0) & 0x100) == 0)
+                flag = 1;
+        }
+        fn_801ECC70();
+        fn_80201018(*(long *)((char *)arg0 + 0x184),
+                    *(void **)((char *)arg0 + 0x3C), flag);
+    }
 }
 
 void fn_801ED2D0(void *arg0) {
