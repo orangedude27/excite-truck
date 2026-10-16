@@ -120,6 +120,10 @@ s32 fn_802B6270(void) {
     return lbl_8055FA40 == 7;
 }
 
+void fn_802B6284(void) {
+    lbl_8055FA40 = ((s32) ~((lbl_8055FA40 - 7) | (7 - lbl_8055FA40)) >> 31) + 7;
+}
+
 s32 fn_802B6E00(s32 arg0, s32 arg1) {
     s32 var_r0 = 0;
     if ((arg0 < -0x200) || (arg0 > 0x200) || (arg1 < -0x200) || (arg1 > 0x200))
