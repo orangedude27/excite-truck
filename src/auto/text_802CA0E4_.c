@@ -31,7 +31,7 @@ void fn_802CB3F8(void) {
 extern char lbl_8055FCBC[];
 #pragma push
 #pragma small_data on
-DECL_SECTION(".sdata") extern char lbl_8055FCB0[];
+DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 #pragma small_data off
 #pragma pop
 extern float lbl_80564F40;
