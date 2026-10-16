@@ -2,6 +2,19 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80128668(void*);
+void* fn_80265CE0(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(int *)arg0 = 0;
+            *((int *)arg0 + 1) = 0;
+            *((int *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_80265D38(void) {}
 
 void fn_80265D3C(void) {}
