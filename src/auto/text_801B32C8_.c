@@ -25,6 +25,12 @@ static void callPrevDtor(void* p) {
     fn(p, 1);
 }
 
+typedef struct Unk801B3BD4 {
+    Dtor1Arg unk_0x0[3];
+    s32 unk_0xC[4];
+    void* unk_0x1C;
+} Unk801B3BD4;
+
 int fn_801B3390(void) {
     return 0x14;
 }
@@ -36,11 +42,11 @@ void fn_801B3B24(void) {
 void* fn_801B3BD4(void* arg0, s32 arg1) {
     if (arg0 != NULL) {
         if (arg0 != NULL) {
-            void* prev = *(void**)((u8*)arg0 + 0x1C);
-            *(void**)arg0 = (void*)&lbl_80335DAC;
-            if (prev != NULL) {
-                if (prev != NULL) {
-                    (*(void (**)(void*, s32))(*(void***)prev + 2))(prev, 1);
+            if (*(void**)((u8*)arg0 + 0x1C) != NULL) {
+                *(void**)arg0 = (void*)&lbl_80335DAC;
+                if (*(void**)((u8*)arg0 + 0x1C) != NULL) {
+                    ((void (*)(void*, s32))(*(void***)*(void**)((u8*)arg0 + 0x1C))[2])(
+                        *(void**)((u8*)arg0 + 0x1C), 1);
                 }
                 *(void**)((u8*)arg0 + 0x1C) = NULL;
             }
