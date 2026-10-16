@@ -12,6 +12,20 @@ extern int lbl_8055F9B0;
 
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
+extern void fn_80128668(void *);
+void *fn_802B1CE0(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(int *)arg0 = 0;
+            *((int *)arg0 + 1) = 0;
+            *((int *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 int fn_802B1D38(int arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
@@ -34,7 +48,9 @@ int fn_802B1DA0(void *arg0) {
 extern int lbl_8055CDB8;
 int stricmp(const char *, const char *);
 int fn_802B1DE8(void **arg0) {
-    return stricmp((char *)&lbl_8055CDB8, ((char *(**)(void *))(*(char ***)arg0))[2](arg0)) == 0;
+    void **vtable = (void **)*arg0;
+    char *(*method)(void *) = (char *(*)(void *))vtable[2];
+    return stricmp((char *)&lbl_8055CDB8, method(arg0)) == 0;
 }
 
 void fn_802B1F64(void) {
