@@ -167,6 +167,8 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
     return this_;
 }
 
+extern "C" s32 fn_8021C974(void) { return 0; }
+
 extern "C" void fn_8021AC24(void);
 extern "C" void fn_802C519C(void *);
 extern "C" void fn_8021915C(void *, u32);
