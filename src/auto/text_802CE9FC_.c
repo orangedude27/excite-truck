@@ -115,6 +115,10 @@ void* fn_802D2D14(void) {
     return lbl_8055FD64;
 }
 
+void fn_802D2F70(int arg0) {
+    fn_802D2ED8(arg0, 0);
+}
+
 void fn_802D3050(int arg0) {
     unsigned long value;
 
