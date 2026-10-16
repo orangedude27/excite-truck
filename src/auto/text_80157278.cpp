@@ -975,8 +975,8 @@ extern "C" void fn_8015C564(void* arg0, void* arg1, s32 arg2, f32 arg3) {
     }
 }
 
-extern "C" void fn_8015C5D0(Unk801577F0* arg0) {
-    if (arg0->m268 > 0)
+extern "C" void fn_8015C5D0(void* arg0) {
+    if (*(s32*)((u8*)arg0 + 0x26c) > 0)
         fn_8015A368(arg0);
 }
 
