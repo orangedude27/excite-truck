@@ -91,6 +91,10 @@ void fn_8018ADEC(void *arg0) {
     *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 8) = -10;
 }
 
+void fn_8018AE24(void *arg0, signed char arg1) {
+    *((signed char *)arg0 + 0x260D) = arg1;
+}
+
 void fn_8018AF00(void) {
 
 }
