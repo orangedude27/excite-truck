@@ -505,6 +505,11 @@ extern OSAlarm lbl_803C0A20;
 extern void uusb_CloseDeviceCB(void);
 extern u8 lbl_8055DC51;
 extern s32 IUSB_CloseDeviceAsync(s32 fd, void (*callback)(void), void *arg);
+typedef enum {
+    USB_IOCTLV_CTRLMSG,
+    USB_IOCTLV_BLKMSG,
+    USB_IOCTLV_INTRMSG
+} USBIoctl;
 extern s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void* buffer, s32 ioctl, void (*callback)(void), void* callbackArg, s32 async);
 void fn_80070758(void) {
     fn_8009B0E0();
