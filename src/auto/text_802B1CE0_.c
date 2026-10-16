@@ -139,14 +139,18 @@ int *fn_802B320C(int *, int);
 extern int lbl_8055F9B4;
 extern int lbl_8055F9B0;
 int fn_802B3340(int);
-void fn_802B32E0(int **arg0) {
-    int i;
-    i = 0;
+void fn_802B32E0(int *arg0) {
+    int i = 0;
     do {
-        fn_802B3340(*fn_802B320C(*arg0, i));
+        fn_802B3340(*fn_802B320C(arg0, i));
         i++;
     } while (i < fn_802B2E00(arg0));
 }
+
+int fn_802B3F0C(void *arg0) {
+    return ((int *)arg0)[1];
+}
+
 typedef struct {
     void *m0;
     void *m4;
