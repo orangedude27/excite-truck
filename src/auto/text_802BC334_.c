@@ -23,6 +23,8 @@ void fn_802BD414(int arg0, int *arg1) {
 
 int fn_802BD5A8(int arg0, int arg1) { return arg0 + arg1; }
 
+int fn_802BD694(int arg0, int arg1) { return arg0 + arg1; }
+
 int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
 
 void fn_802BDC3C(void* alarm) {
