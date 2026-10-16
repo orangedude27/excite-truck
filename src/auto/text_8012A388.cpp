@@ -23,6 +23,13 @@ extern "C" void fn_8012B328(void) {
 
 }
 
+extern "C" void fn_8012DDA8(s32);
+extern "C" void fn_8012E81C(s32);
+extern "C" void fn_8012BEF0(s32 arg0) {
+    fn_8012DDA8(arg0);
+    fn_8012E81C(arg0);
+}
+
 extern "C" void fn_8012BF24(void) {
     fn_8012E498();
 }
