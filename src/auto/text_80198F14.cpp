@@ -143,15 +143,69 @@ extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_801A1250(void* arg0) {
+    VTab1250** entries = (VTab1250**)arg0;
+    s32 i = 0;
+    while (i < *(s32*)((u8*)arg0 + 0x174)) {
+        entries[9]->v10();
+        entries++;
+        i++;
+    }
+    *(s32*)((u8*)arg0 + 0x180) = -1;
+}
+
+void fn_801A12C4(void* arg0, s32 arg1) {
+    *(s32*)((u8*)arg0 + 0x1C) = arg1;
+    VTab12C4* first = *(VTab12C4**)((u8*)arg0 + 0x17C);
+    first->v17();
+    VTab12C4** entries = (VTab12C4**)arg0;
+    s32 i = 0;
+    while (i < *(s32*)((u8*)arg0 + 0x174)) {
+        ((void (*)(VTab12C4*, s32))(*(void***)entries[9])[17])(entries[9], arg1);
+        entries++; i++;
+    }
+}
+
 extern "C" void fn_801A1358(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x1C) = arg1; }
 
-void fn_801A1474(void* arg0, f32 scale) {
+extern "C" void fn_801A1360(void* arg0, s32 arg1) {
+    *(s32*)((u8*)arg0 + 0x20) = arg1;
+    void* p = *(void**)((u8*)arg0 + 0x17C);
+    void** vt = *(void***)p;
+    ((void (*)(void*, s32))vt[16])(p, arg1);
+    void** entries = (void**)arg0;
+    s32 i = 0;
+    do {
+        void* item = *(void**)((u8*)entries + 0x24);
+        void** ivt = *(void***)item;
+        ((void (*)(void*, s32))ivt[16])(item, arg1);
+        entries++;
+        i++;
+    } while (i < *(s32*)((u8*)arg0 + 0x174));
+}
+
+extern "C" void fn_801A13F4(void* arg0) {
+    void* p = *(void**)((u8*)arg0 + 0x17C);
+    void** vt = *(void***)p;
+    ((void (*)(void*))vt[19])(p);
+    void** entries = (void**)arg0;
+    s32 i = 0;
+    do {
+        void* item = *(void**)((u8*)entries + 0x24);
+        void** ivt = *(void***)item;
+        ((void (*)(void*))ivt[19])(item);
+        entries++;
+        i++;
+    } while (i < *(s32*)((u8*)arg0 + 0x174));
+}
+
+extern "C" void fn_801A1474(void* arg0, f32 scale) {
     u8* p = (u8*)arg0;
     f32* src = (f32*)(p + 0x64);
+    void* obj = *(void**)(p + 0x24);
     s32 i = 0;
     *(f32*)(p + 0x178) = *(f32*)(p + 0x170) * scale;
-    while (i < *(s32*)(p + 0x174)) {
-        void* obj = *(void**)(p + 0x24 + i * 4);
+    do {
         f32 x = src[0] * scale;
         f32 y = src[1] * scale;
         f32 z = src[2] * scale;
@@ -160,9 +214,10 @@ void fn_801A1474(void* arg0, f32 scale) {
         *(f32*)((u8*)obj + 0x30) = z;
         *(f32*)((u8*)obj + 0x24) = src[3] * scale;
         src += 4;
+        obj = *(void**)(p + 0x28 + i * 4);
         i++;
-    }
-    void* obj = *(void**)(p + 0x17c);
+    } while (i < *(s32*)(p + 0x174));
+    obj = *(void**)(p + 0x17c);
     *(f32*)((u8*)obj + 0x24) = *(f32*)(p + 0x164) * scale;
     *(f32*)((u8*)obj + 0x28) = *(f32*)(p + 0x168) * scale;
     *(f32*)((u8*)obj + 0x2c) = *(f32*)(p + 0x16c) * scale;
@@ -171,7 +226,7 @@ void fn_801A1474(void* arg0, f32 scale) {
 extern void fn_8019ECC4(void);
 extern void* lbl_80333968;
 extern f32 lbl_80562370;
-void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
+extern "C" void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
     fn_8019ECC4();
     *(void**)arg0 = &lbl_80333968;
     if (arg2 != 0) {
@@ -603,3 +658,4 @@ extern void* lbl_80333968;
 extern f32 lbl_80562370;
 typedef void (*VFunc)(void*);
 typedef void (*VFuncArg)(void*, s32);
+extern f32 lbl_805622DC;
