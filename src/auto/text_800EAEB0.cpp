@@ -22,7 +22,17 @@ extern u8 lbl_80412A6C[];
 extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void*, bool);
 extern "C" void* Instance__15EmissionManagerFv(void);
 
+#pragma push
+#pragma small_data off
+extern u8 lbl_80323840[];
+extern u8 lbl_803238C0[];
+#pragma pop
 extern "C" void OSCancelAlarm(void *);
+extern "C" void* OSGetAlarmUserData(void*);
+extern "C" void* fn_800EE4F0(void*);
+extern u8 lbl_804127A8[];
+extern u8 lbl_8055DE40;
+extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" void* OSGetAlarmUserData(void*);
 extern "C" void* fn_800EE4F0(void*);
 extern u8 lbl_804127A8[];
@@ -594,6 +604,19 @@ extern "C" void fn_800EE568(void* arg0) {
     p[8] = 0; p[2] = 0; p[3] = 1;
     memset(p + 9, 0, 0x20);
     p[6] = 0; p[7] = 0; p[8] = 0; p[5] = 0;
+}
+
+extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(
+    void* alarm, void* context) {
+    u32 level = OSDisableInterrupts();
+    u8* data = (u8*)OSGetAlarmUserData(alarm);
+    if (data[8] != 0) {
+        OSCancelAlarm(data + 0x38);
+        data[6] = 0;
+        data[7] = 0;
+    }
+    data[8] = 0;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" void* OSGetAlarmUserData(void*);
