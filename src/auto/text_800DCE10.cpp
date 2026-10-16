@@ -58,6 +58,7 @@ extern "C" void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg
     if (index >= 4) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1d3, lbl_80320688);
     }
+    *(volatile u32 *)&index;
     GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(this_ptr, arg1, index >> 1);
 }
 
