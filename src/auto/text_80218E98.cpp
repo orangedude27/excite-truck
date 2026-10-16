@@ -562,12 +562,12 @@ extern "C" void fn_80228A38(s32 arg0) {
     fn_80228AEC(arg0);
 }
 
-void fn_80228A6C(void *arg0) {
+extern "C" void fn_80228A6C(void *arg0) {
     void *obj = *(void **)((u8 *)arg0 + 0x268);
     ((VfObj *)obj)->vf6();
 }
 
-void fn_80228A80(void) {
+extern "C" void fn_80228A80(void) {
 }
 
 void fn_80228A84(void *arg0) {
