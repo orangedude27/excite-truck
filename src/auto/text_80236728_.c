@@ -41,6 +41,8 @@ void fn_80236918(void* alarm) {
 
 float fn_80238084(void *arg0) { return *(float *)((char *)arg0 + 0xC); }
 
+float fn_802383F4(void) { return lbl_805636E0; }
+
 extern void fn_80237AA0(void);
 extern void fn_80236960(void);
 extern float lbl_805636E0;
