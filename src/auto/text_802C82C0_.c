@@ -226,7 +226,9 @@ char fn_802C9A68(void) {
 }
 
 int fn_802C9C24(void *arg0) {
-    return *(int *)**(void ***)((char *)arg0 + 8) + 4;
+    void *p = *(void **)((char *)arg0 + 8);
+    void *q = *(void **)((char *)p + 4);
+    return *(int *)q + 4;
 }
 
 extern void *lbl_8055FC68;
