@@ -72,3 +72,7 @@ int fn_800E9BE4(int arg0, int arg1) {
     return arg0;
 }
 
+extern "C" int *fn_800E9C24(void) {
+    return &lbl_8055DE20;
+}
+
