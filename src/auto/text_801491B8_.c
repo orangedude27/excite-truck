@@ -38,6 +38,8 @@ extern f32 lbl_8056162C;
 extern f32 lbl_80561630;
 extern f32 lbl_80561634;
 extern f32 lbl_8055E3C8;
+typedef struct { void *pad[14]; s32 (*fn7)(void); } VTableE708;
+typedef struct { VTableE708 *vtable; } ObjE708;
 
 void fn_80149210(void *arg0) {
     u32 x = ((u32 *)arg0)[1] + 1;
@@ -158,7 +160,9 @@ void fn_80149588(s32 arg0) {
     s32 sp2C;
     fn_80130980(&sp8, 0x20, 3);
     if (1) {
-        fn_801474EC(arg0, &lbl_80559EC4, &sp8);
+        if (1) {
+            fn_801474EC(arg0, &lbl_80559EC4, &sp8);
+        }
     }
 }
 
