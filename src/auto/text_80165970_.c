@@ -22,6 +22,11 @@ extern double lbl_80561890;
 extern unsigned char lbl_8042FE38;
 extern unsigned char lbl_8042FEB0;
 extern float lbl_8055E320;
+void fn_80166098(void) {
+    fn_80179630(-1);
+    fn_801B2EC0();
+}
+
 int fn_8016616C(void) {
     return lbl_8055E320 > *(float *)((char *)&lbl_8042FE38 + 0x48);
 }
