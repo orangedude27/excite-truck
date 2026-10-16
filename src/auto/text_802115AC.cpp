@@ -148,6 +148,19 @@ extern "C" void fn_80212340(void *arg0) {
     }
 }
 
+extern "C" s32 lbl_80490528[];
+extern "C" s32 fn_802168E4(void);
+extern "C" s32 fn_80218120(void);
+extern "C" s32 fn_802E317C(const char *);
+extern "C" char lbl_8033D3D4[];
+extern "C" s32 fn_80214D04(void) {
+    if (fn_802168E4() != 0) {
+        return fn_80218120();
+    }
+    fn_802E317C(lbl_8033D3D4);
+    return 0;
+}
+
 extern "C" void fn_80214D50(s32 arg0) {
     s32 index;
     s32 offset;
@@ -171,7 +184,9 @@ extern "C" void fn_80214D50(s32 arg0) {
     }
 }
 
-extern "C" void fn_80214FD8(void) { fn_80214E10(0); }
+extern "C" void fn_80214FD8(s32 arg0, s32 arg1) {
+    ((s32 (*)(s32, s32, s32))fn_80214E10)(arg0, arg1, 0);
+}
 
 extern "C" s32 fn_80215194(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
