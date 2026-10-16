@@ -68,6 +68,10 @@ extern "C" s32 fn_801F948C(F9Node *node) {
     return stricmp((char *)node->name, (char *)lbl_8033B1EC) == 0;
 }
 
+extern "C" void fn_801F96A8(void *node) {
+    fn_801F95C4((void *)fn_801F9450, node);
+}
+
 extern "C" void *fn_801F96C8(void *node) {
     void *list = lbl_8055EC38;
     for (;;) {
