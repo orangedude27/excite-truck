@@ -90,7 +90,7 @@ void fn_802192A0(void) {
 
 }
 
-extern "C" s32 fn_802192A4(void) { return 0; }
+extern "C" s32 fn_802192A4(void *, s32) { return 0; }
 
 extern "C" void fn_80219354(void) { fn_80219044(); }
 
