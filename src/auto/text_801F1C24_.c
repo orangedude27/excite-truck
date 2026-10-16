@@ -183,10 +183,14 @@ void fn_801F2D84(void *unused, void *arg1) {
     void *p = arg1;
     fn_801F1C24(&stack[0]);
     fn_802C7730(&stack[0]);
-    do {
-        fn_802C7040(*(int *)((char *)p + 4));
-        p = *(void **)((char *)p + 0xC);
-    } while (p != 0);
+    goto check;
+body:
+    fn_802C7040(*(int *)((char *)p + 4));
+    p = *(void **)((char *)p + 0xC);
+check:
+    if (p != 0) {
+        goto body;
+    }
 }
 
 void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
