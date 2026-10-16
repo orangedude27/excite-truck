@@ -45,7 +45,7 @@ void fn_802B087C(void **arg0) {
         if (ptr != 0) {
             fn_802AE64C(ptr);
             if ((char *)ptr + 4 != 0) {
-                fn_8002F6AC(((int *)ptr)[4], fn_802B0808);
+                fn_8002F6AC(((int *)ptr)[4], (void (*)(void))fn_802B0808);
                 if ((char *)ptr + 4 != 0) {
                     ((int *)ptr)[1] = 0;
                     ((int *)ptr)[2] = 0;
