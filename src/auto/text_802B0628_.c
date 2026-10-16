@@ -203,6 +203,8 @@ int fn_802B1AF0(void *arg0) {
     return ((int *)arg0)[1];
 }
 
+int fn_802B1AF8(int *arg0, int arg1) { return *arg0 + arg1 * 2; }
+
 int fn_802B1B08(void *arg0) { return ((int *)arg0)[1]; }
 
 int fn_802B1B10(int *arg0) { return *arg0; }
