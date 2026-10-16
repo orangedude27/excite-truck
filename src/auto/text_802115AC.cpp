@@ -329,6 +329,18 @@ extern "C" void fn_80215BBC(void) {
 
 }
 
+extern "C" s32 fn_80214CB4(s32);
+extern "C" s32 fn_80215BC8(void *arg0, s32 arg1, s32 arg2) {
+    s32 var_r6;
+
+    var_r6 = 0;
+    if (arg1 >= *(s32 *)((char *)arg0 + 4) && arg1 < *(s32 *)((char *)arg0 + 0xC) &&
+        arg2 >= *(s32 *)((char *)arg0 + 8) && arg2 < *(s32 *)((char *)arg0 + 0x10)) {
+        var_r6 = 1;
+    }
+    return var_r6;
+}
+
 extern "C" void fn_80215CA0(void) {
 
 }
