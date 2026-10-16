@@ -93,6 +93,8 @@ void fn_801494B4(void *arg0, f32 *arg1, f32 *arg2) {
     arg2[2] = z;
 }
 
+int fn_801494E0(void) { return 0xFF0000FF; }
+
 extern unsigned long lbl_80559E94;
 extern unsigned long lbl_80559E9C;
 unsigned long *fn_80149528(void) { return &lbl_80559E9C; }
