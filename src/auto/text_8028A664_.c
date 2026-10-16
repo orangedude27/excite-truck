@@ -17,6 +17,15 @@ s32 fn_8028A85C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern s32 lbl_8055F704;
+extern void fn_8028E398();
+void fn_8028B4CC(void) {
+    if (lbl_8055F704 != 0) {
+        fn_8028E398(lbl_8055F704);
+        lbl_8055F704 = 0;
+    }
+}
+
 s32 fn_8028BA44(void *arg0) {
     struct {
         f32 sp8;
