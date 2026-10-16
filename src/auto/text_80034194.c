@@ -64,6 +64,14 @@ void fn_80035C78(void) {
     lbl_8055D85C = 0;
 }
 
+void fn_8003801C(void) {
+    if (lbl_8055D880 != 0) {
+        return;
+    }
+    lbl_8055D880 = 1;
+    fn_8003BB58(fn_80037E94);
+}
+
 s32 DVDGetDriveStatus(void) {
     s32 enabled;
     s32 state;
@@ -123,6 +131,13 @@ void fn_8003998C(void* hi) {
 
 void cbForPrepareReset(void) {
     lbl_8055D890 = 1;
+}
+
+s32 __DVDTestAlarm(void *alarm) {
+    if (alarm == &lbl_8037B580) {
+        return 1;
+    }
+    return fn_8003BE40();
 }
 
 u32 fn_80039CD8(void) { return 1; }
