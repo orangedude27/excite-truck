@@ -6,9 +6,10 @@ void fn_802E0BE0(void) {
     fn_80128668();
 }
 
-typedef unsigned char u8;
-typedef signed int s32;
-typedef unsigned int u32;
+#include <types.h>
+#include <revolution/GX/GXTev.h>
+#include <revolution/GX/GXBump.h>
+extern void fn_802D3144(void);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80119214(void *, void *);
 extern void fn_80116E54(void *, void *);
