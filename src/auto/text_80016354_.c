@@ -7,6 +7,8 @@ extern void *fn_80016474(void);
 extern unsigned char *lbl_8055D544;
 extern int stricmp(const char *, const char *);
 extern int fn_80016510(int);
+extern void *lbl_8055D548;
+extern int fn_80016BC8(void *, int);
 
 extern void *lbl_8055D54C;
 void* fn_80016508(void) {
@@ -137,3 +139,19 @@ void fn_800169F8(const char *src, int index) {
 void fn_80016A44(void) {
     fn_8001766C();
 }
+
+void fn_80017708(void *arg0, int arg1, void *arg2) {
+    int value;
+    int limit = *(int *)((char *)arg0 + 0x94);
+    memset(arg2, 0, 0xC);
+    *(char *)((char *)arg2 + 8) = 0;
+    if (limit >= 0) {
+        value = (limit + arg1) % *(int *)((char *)arg0 + 0x98);
+    } else {
+        limit = *(int *)((char *)arg0 + 0x98);
+        value = (*(int *)((char *)arg0 + 4) + (arg1 * limit) / 4) % limit;
+    }
+    *(int *)arg2 = value;
+    *(int *)((char *)arg2 + 4) = value;
+}
+
