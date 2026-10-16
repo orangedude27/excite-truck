@@ -23,6 +23,11 @@ extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void*, bool);
 extern "C" void* Instance__15EmissionManagerFv(void);
 
 extern "C" void OSCancelAlarm(void *);
+extern "C" void* OSGetAlarmUserData(void*);
+extern "C" void* fn_800EE4F0(void*);
+extern u8 lbl_804127A8[];
+extern u8 lbl_8055DE40;
+extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 
 namespace nw4hbm { namespace snd {
 class MemorySoundArchive {
@@ -589,6 +594,33 @@ extern "C" void fn_800EE568(void* arg0) {
     p[8] = 0; p[2] = 0; p[3] = 1;
     memset(p + 9, 0, 0x20);
     p[6] = 0; p[7] = 0; p[8] = 0; p[5] = 0;
+}
+
+extern "C" void* OSGetAlarmUserData(void*);
+extern "C" void OSCancelAlarm(void*);
+extern "C" void* fn_800EE4F0(void*);
+#pragma push
+#pragma small_data off
+extern u8 lbl_804127A8[];
+#pragma pop
+extern u8 lbl_8055DE40;
+extern "C" void* GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void) {
+    u8* base = lbl_804127A8;
+    if ((s8)lbl_8055DE40 == 0) {
+        base[0] = 0;
+        u8* p = base + 0x38;
+        u8* end = base + 0x2B8;
+        do {
+            fn_800EE4F0(p);
+            p += 0xA0;
+        } while (p < end);
+        *(s32*)(base + 0x64) = 0;
+        *(s32*)(base + 0x104) = 1;
+        *(s32*)(base + 0x1A4) = 2;
+        *(s32*)(base + 0x244) = 3;
+        lbl_8055DE40 = 1;
+    }
+    return base;
 }
 
 extern "C" void fn_800EEB64(u8 *arg0) {
