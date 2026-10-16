@@ -23,6 +23,12 @@ extern "C" void fn_80100988(void* arg0, float arg1) {
     OSRestoreInterrupts(level);
 }
 
+extern "C" void fn_801009C8(void* arg0, float arg1) {
+    OSDisableInterrupts();
+    *(float*)((char*)arg0 + 0x38) = arg1;
+    ((void (*)(void))OSRestoreInterrupts)();
+}
+
 extern "C" void fn_80100A08(void* arg0, float arg1) {
     int level = OSDisableInterrupts();
     *(float*)((char*)arg0 + 0x40) = arg1;
