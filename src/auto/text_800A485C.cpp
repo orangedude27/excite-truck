@@ -1,4 +1,5 @@
 #include <types.h>
+extern "C" s32 lbl_803D2140[];
 extern "C" u32 fn_80060CC0(void*, u32, u32);
 extern "C" void *lbl_80407780[];
 extern "C" f32 lbl_80560E38;
@@ -128,6 +129,18 @@ void fn_800A5954(void) {
     fn_800A6048();
 }
 
+extern "C" s32 fn_800A71D8(void *);
+extern "C" s32 fn_800A73A0(void *, u16, s32);
+extern "C" s32 fn_800A7338(void *);
+extern "C" s32 fn_800A7568(void *, s32);
+extern "C" s32 fn_800A607C(void);
+extern "C" s32 fn_800A5958(s32 *arg0) {
+    s32 result;
+    *arg0 = 0;
+    result = fn_800A607C();
+    return result & ((-result | result) >> 31);
+}
+
 void fn_800A5990(void) {
     fn_800A61D0(0);
 }
@@ -221,6 +234,15 @@ extern "C" s32 VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(void *arg0, s32 arg1, u3
     if (arg2 >= *(u32 *)((u8 *)arg0 + 8))
         return 0x10;
     temp_r3 = fn_800A861C(arg0, (u8 *)arg0 + 0x1630, arg1, arg2);
+    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+}
+
+extern "C" void fn_800A90F8(void *arg0, s32 arg1) {
+    VFiPFCACHE_SearchForPage(*(s32 *)((u8 *)arg0 + 0x1634), arg1);
+}
+
+extern "C" s32 fn_800A9104(void *arg0) {
+    s32 temp_r3 = fn_800A8AD4(*(s32 *)((u8 *)arg0 + 0x1630));
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
