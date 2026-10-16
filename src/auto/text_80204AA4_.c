@@ -4,3 +4,9 @@
 void fn_80204BB4(void) {
     fn_80204B2C();
 }
+
+extern int *lbl_8055ED5C;
+int fn_80204CF0(void) {
+    return *lbl_8055ED5C;
+}
+
