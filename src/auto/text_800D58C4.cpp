@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+#include "revolution/GX/GXTypes.h"
 
 extern "C" void fn_800D7F58(void *arg0, void *arg1) {
     f32 v1 = ((f32 *)arg1)[1];
@@ -46,15 +47,8 @@ extern "C" s32 fn_800D8798(u32 *arg0) {
     return (*arg0 >> 18U) & 0x1F;
 }
 
-extern "C" void fn_800D87A4(u8 *arg0, const u8 *arg1) {
-    u8 v0 = arg1[0];
-    u8 v1 = arg1[1];
-    u8 v2 = arg1[2];
-    u8 v3 = arg1[3];
-    arg0[0] = v0;
-    arg0[1] = v1;
-    arg0[2] = v2;
-    arg0[3] = v3;
+extern "C" void fn_800D87A4(GXColor *arg0, const GXColor *arg1) {
+    *arg0 = *arg1;
 }
 
 extern "C" s32 fn_800D893C(void *arg0) {
