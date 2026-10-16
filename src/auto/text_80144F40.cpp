@@ -151,6 +151,22 @@ extern "C" void fn_80146730(void *arg0) {
     }
 }
 
+extern "C" void fn_800108C8(const char *, f32);
+extern "C" void fn_80235380();
+extern "C" void fn_80145B94(void *, u32);
+extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
+    s32 count = arg2;
+    if (count > 0) {
+        do {
+            count--;
+        } while (count > 0);
+        *arg0 = 0;
+    }
+    while ((s8)*arg1 != 0) {
+        *arg0++ = (u8)*arg1++;
+    }
+}
+
 extern "C" void *lbl_8032D214;
 extern "C" void fn_8002F6AC(s32, void *);
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *, s32);
@@ -159,6 +175,21 @@ extern "C" s32 fn_80147070(s32 arg0, s32 arg1) {
         fn_80128668((void *)arg0);
     }
     return arg0;
+}
+
+extern "C" void fn_80147204(void *arg0, const char *arg1) {
+    if (arg0 != 0) {
+        if ((u8)*arg1 == 1)
+            arg1++;
+        fn_800108C8(arg1, *(f32 *)((u8 *)arg0 + 0x10));
+    } else {
+        fn_800108C8(arg1, lbl_805615D4);
+    }
+}
+
+extern "C" void fn_801476C4(void *arg0) {
+    if (arg0 != 0)
+        fn_80145B94(arg0, *(u32 *)((u8 *)arg0 + 0x1c));
 }
 
 extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
