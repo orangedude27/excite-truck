@@ -369,11 +369,34 @@ void fn_801FF6FC(void* arg0, float farg0) {
     } while (i < *(int*)((char*)arg0 + 0x4C0));
 }
 
+void fn_801FF994(void*, void*);
+void fn_801FCAAC(void*, float);
+void fn_801FCAC0(void*);
+void fn_801FF770(void* arg0) {
+    int i = 0;
+    char* p = (char*)arg0;
+    do {
+        fn_801FF994(arg0, p);
+        p += 0x98;
+        i++;
+    } while (i < *(int*)((char*)arg0 + 0x4C0));
+}
+
 void fn_801FF8DC(void *arg0, char *dest, const char *src) {
     strncpy(dest, src, 0x10);
     dest[0xF] = 0;
     *(int *)(dest + 0x90) = 0;
     *(int *)(dest + 0x94) = 0;
+}
+
+void fn_801FF924(void* arg0, void* arg1, float farg0) {
+    int i = 0;
+    char* p = (char*)arg1;
+    do {
+        fn_801FCAAC(*(void**)(p + 0x50), farg0);
+        p += 4;
+        i++;
+    } while (i < *(int*)((char*)arg1 + 0x94));
 }
 
 void fn_801FF994(void* arg0, void* arg1) {
