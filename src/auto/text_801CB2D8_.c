@@ -168,7 +168,9 @@ void fn_801CE6CC(void) {
 unsigned int fn_801CE898(void) {
     int value = fn_800167F4();
     int temp = value ^ 1;
-    return ((temp >> 1) - (temp & value)) >> 31;
+    int half = temp >> 1;
+    temp &= value;
+    return (unsigned int)(half - temp) >> 31;
 }
 
 void fn_801CEA28(void *arg0) {
@@ -191,9 +193,9 @@ int fn_801CEA6C(void *arg0, int arg1) {
     if (fn_8001C0EC(value) == 0) goto done;
     fn_8001C0E8(value, arg1);
     value = *(int *)((char *)arg0 + 8);
-    if (value != 0 && fn_8001C0EC(value) == 0) goto done;
+    if (value != 0 && fn_8001C0EC(arg1) == 0) goto done;
     value = *(int *)((char *)arg0 + 0xC);
-    if (value != 0 && fn_8001C0EC(value) == 0) goto done;
+    if (value != 0 && fn_8001C0EC(arg1) == 0) goto done;
     return 1;
 done:
     return 0;
