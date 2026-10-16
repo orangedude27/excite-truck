@@ -249,6 +249,44 @@ void fn_8006E6E4(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
+UINT16 GKI_update_timer_list(TIMER_LIST_Q *p_timer_listq, INT32 num_units_since_last_update) {
+    TIMER_LIST_ENT *p_tle;
+    UINT16 num_time_out = 0;
+    INT32 rem_ticks;
+    INT32 temp_ticks;
+
+    p_tle = p_timer_listq->p_first;
+
+    while (p_tle && p_tle->ticks <= 0) {
+        num_time_out++;
+        p_tle = p_tle->p_next;
+    }
+
+    rem_ticks = num_units_since_last_update;
+
+    while (p_tle != NULL && rem_ticks > 0) {
+        temp_ticks = p_tle->ticks;
+        p_tle->ticks -= rem_ticks;
+
+        if (p_tle->ticks <= 0) {
+            p_tle->ticks = 0;
+            num_time_out++;
+        }
+
+        rem_ticks -= temp_ticks;
+        p_tle = p_tle->p_next;
+    }
+
+    if (p_timer_listq->last_ticks > 0) {
+        p_timer_listq->last_ticks -= num_units_since_last_update;
+
+        if (p_timer_listq->last_ticks < 0)
+            p_timer_listq->last_ticks = 0;
+    }
+
+    return num_time_out;
+}
+
 void GKI_init(void) {
     memset(&gki_cb, 0, sizeof(gki_cb));
 
