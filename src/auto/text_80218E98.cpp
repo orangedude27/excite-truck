@@ -881,9 +881,8 @@ extern "C" void fn_80229CF8(void *arg0) {
 }
 
 extern "C" void fn_80229D1C(void *arg0) {
-    u8 value = *(u8 *)((u8 *)arg0 + 0x1A);
     *(u8 *)((u8 *)arg0 + 0x18) = 0;
-    if (value != 0) {
+    if ((s32)*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
     }
 }
@@ -915,6 +914,13 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229D64(
 
 extern "C" s32 fn_80229DC0(s32 arg0) {
     return arg0 + 0x268;
+}
+
+extern s32 fn_8021E1C8(void *, s32, s32);
+extern "C" void fn_80229E1C(void *arg0, s32 arg1) {
+    s32 start = *(s32 *)((u8 *)arg0 + 8);
+    s32 end = *(s32 *)((u8 *)arg0 + 0x10);
+    fn_8021E1C8(arg0, 0, arg1 - (end - start) - 3);
 }
 
 extern "C" u32 fn_80229EC4(void) { return 1; }
