@@ -3,3 +3,6 @@
 
 extern unsigned char lbl_8037B8A0[32];
 void *fn_8003BCC0(void) { return lbl_8037B8A0; }
+
+unsigned int DVDLowUnmaskStatusInterrupts(void) { return 1; }
+
