@@ -234,9 +234,9 @@ void fn_8014AE54(void *arg0) {
 
 void fn_8014AE60(void *arg0) {
     struct Node8014AE60 {
-        struct Node8014AE60 *next;
+        u8 pad[0x11C];
         struct Node8014AE60 *prev;
-        u8 pad[0x114];
+        struct Node8014AE60 *next;
     };
     struct Head8014AE60 {
         struct Node8014AE60 *first;
@@ -244,17 +244,17 @@ void fn_8014AE60(void *arg0) {
     };
     struct Head8014AE60 *head = (struct Head8014AE60 *)*(void **)arg0;
     struct Node8014AE60 *obj = (struct Node8014AE60 *)*((void **)arg0 + 1);
-    struct Node8014AE60 *next;
+    struct Node8014AE60 *node;
 
-    next = obj->next;
-    if (next != 0) {
-        next->prev = obj->prev;
+    node = obj->next;
+    if (node != 0) {
+        node->prev = obj->prev;
     } else {
         head->first = obj->prev;
     }
-    next = obj->prev;
-    if (next != 0) {
-        next->next = obj->next;
+    node = obj->prev;
+    if (node != 0) {
+        node->next = obj->next;
     } else {
         head->last = obj->next;
     }
@@ -328,6 +328,8 @@ void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0xC) = 0;
     *(s32 *)((u8 *)arg0 + 8) = 0;
 }
+
+unsigned char fn_8014C818(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
 
 s32 fn_8014C830(s32 arg0) { return arg0 + 0x14; }
 
