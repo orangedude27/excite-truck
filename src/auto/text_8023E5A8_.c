@@ -8,3 +8,7 @@ extern s32 lbl_8055F1C8;
 extern s32 fn_80214A9C(s32);
 extern s32 fn_80214AF0(s32);
 extern s32 fn_802E2C20(void);
+
+void *fn_8023E5A8(void) {
+    return lbl_80341CC8;
+}
