@@ -167,18 +167,15 @@ void fn_80156B50(void) {
 }
 
 extern "C" void fn_80157184(void* arg0) {
-    void* o = *(void**)((u8*)arg0 + 4);
-    ((void(*)(void*))(*(void***)o)[3])(o);
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v3();
 }
 
 extern "C" void fn_80157198(void* arg0) {
-    void* o = *(void**)((u8*)arg0 + 8);
-    ((void(*)(void*))(*(void***)o)[4])(o);
+    ((ebi::title::TBlackPlane*)arg0)->m_b->update();
 }
 
 extern "C" void fn_801571AC(void* arg0) {
-    void* o = *(void**)((u8*)arg0 + 4);
-    ((void(*)(void*))(*(void***)o)[4])(o);
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v2();
 }
 
 void ebi::title::TBlackPlane::updateAfterCamera() {
