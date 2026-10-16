@@ -23,6 +23,9 @@ void fn_802E773C(void) {
 void fn_802E7740(void) {
 }
 
+void fn_802E7748(void) {
+}
+
 s32 fn_802E774C(void) {
     return 0;
 }
