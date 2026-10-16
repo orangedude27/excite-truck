@@ -83,6 +83,8 @@ void fn_8017DA8C(void *arg0) {
     *((char *)arg0 + 0x1FE) = 0;
 }
 
+float fn_8017E380(void) { extern float lbl_80561C2C; return lbl_80561C2C; }
+
 void fn_8017E388(void *arg0) {
     extern float lbl_80561BE0;
     extern float lbl_80561BF4;
