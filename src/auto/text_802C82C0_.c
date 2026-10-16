@@ -371,6 +371,8 @@ void fn_802C9A4C(void) {
     fn_802D93E0();
 }
 
+float fn_802C9A50(void) { return lbl_8055D020; }
+
 #pragma dont_inline off
 char fn_802C9A58(void) {
     return lbl_8055FC8C;
