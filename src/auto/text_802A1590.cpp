@@ -54,11 +54,28 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_802A1CC0(void) {
+}
+
 extern "C" void fn_802A1DC0(void) {
     if (lbl_8055F870 != 0) {
         fn_8028E398((void *)lbl_8055F870);
         lbl_8055F870 = 0;
     }
+}
+
+extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void**)arg0 = &lbl_80349B78;
+        fn_802A44B8(*(void**)((char*)arg0 + 0x10), 1);
+        fn_8028E398(*(void**)((char*)arg0 + 0xC));
+        fn_8028E398(*(void**)((char*)arg0 + 8));
+        fn_8028E398(*(void**)((char*)arg0 + 4));
+        if (arg1 > 0) {
+            ((s32 (*)(void*))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
 }
 
 extern "C" f32 lbl_80558DC4;
