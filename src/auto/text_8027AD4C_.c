@@ -23,9 +23,7 @@ unsigned char fn_8027AF84(void *arg0) {
 
 unsigned char fn_8027AF8C(void *arg0) { return *((unsigned char *)arg0 + 0x10); }
 
-void fn_8027AF94(void *arg0) {
-    ((unsigned char *)arg0)[4] = 0;
-}
+void fn_8027AF94(void *arg0) { ((unsigned char *)arg0)[4] = 0; }
 
 unsigned char fn_8027B280(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
