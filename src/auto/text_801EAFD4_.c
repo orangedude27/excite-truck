@@ -10,6 +10,7 @@ extern s32 lbl_802F9A08[];
 extern s32 lbl_804885E8[];
 extern f32 lbl_80562E68;
 extern f32 lbl_8055EB98[2];
+extern s32 fn_801EB9A4(s32 *);
 s32 fn_801EB0E8(void) { return 0; }
 
 s32 fn_801EB0F0(s32 arg0) {
@@ -27,14 +28,23 @@ void fn_801EB128(void) {
     lbl_8055EB98[1] = lbl_80562E68;
 }
 
+void fn_801EB634(void *arg0, s32 arg1) {
+    u8 d=((u8 *)arg0)[2];
+    u8 c=((u8 *)arg0)[1];
+    u8 b=((u8 *)arg0)[3];
+    u8 a=((u8 *)arg0)[0];
+    ((u8 *)arg0)[0]=b; ((u8 *)arg0)[3]=a; ((u8 *)arg0)[1]=d; ((u8 *)arg0)[2]=c;
+    if (*(s32 *)arg0) *(s32 *)arg0 += arg1;
+}
+
 void fn_801EB6A4(void) {
 
 }
 
 void fn_801EB800(void *object, s32 arg1, s32 arg2) {
-    struct V { void **vtable; };
-    struct V *v=(struct V *)object;
-    ((void (*)(void *, s32, s32))v->vtable[10])(object,arg2,arg1);
+    register void **vt;
+    vt=*(void ***)object;
+    ((void (*)(void *, s32, s32))vt[10])(object,arg2,arg1);
 }
 
 void fn_801EB81C(void) {
@@ -46,18 +56,18 @@ void fn_801EB820(void) {
 }
 
 void fn_801EB824(void) {
-    s32 sp8=lbl_8033A048;
+    s32 sp8;
+    sp8=(s32)&lbl_8033A048;
     fn_801EB000(&sp8);
 }
 
 void fn_801EB854(void) {
-    s32 *a=lbl_802F9A08;
-    s32 *b=lbl_804885E8;
-    u32 i=0;
-    do {
-        fn_801EB96C(b,*((s32 *)a+1));
-        i++; a+=2; b++;
-    } while(i<0x18);
+    s32 *var_r31=lbl_802F9A08;
+    s32 *var_r30=lbl_804885E8;
+    u32 var_r29=0;
+    for(;var_r29<0x18;var_r29++,var_r31+=2,var_r30++) {
+        fn_801EB96C(var_r30,var_r31[1]);
+    }
 }
 
 void fn_801EB968(void) {
