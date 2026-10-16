@@ -11,7 +11,6 @@ void fn_80131818(void) {
     fn_8012C4D8();
 }
 
-extern void fn_80131588(int, int);
 extern void fn_802E30C8(const char*, ...);
 extern const char lbl_8032B510[];
 extern char lbl_8032B64C[], lbl_8032B574[], lbl_8042F530[];
@@ -23,5 +22,22 @@ extern void __register_global_object(void*, void (*)(void*), void*);
 int fn_8013181C(void) {
     fn_802E30C8(lbl_8032B510);
     return 0;
+}
+
+void* fn_8013184C(void) {
+    if (lbl_8055E060 == 0) {
+        ((void* volatile*)lbl_8042F53C)[0] = lbl_8032B64C;
+        ((void* volatile*)lbl_8042F53C)[0] = lbl_8032B574;
+        ((void* volatile*)lbl_8042F53C)[5] = 0;
+        lbl_8042F53C[1] = &lbl_80559B0C;
+        lbl_8042F53C[2] = &lbl_80559B08;
+        lbl_8042F53C[3] = 0;
+        lbl_8042F53C[4] = 0;
+        lbl_8042F53C[5] = 0;
+        lbl_8042F53C[6] = 0;
+        __register_global_object(lbl_8042F53C, fn_80131920, lbl_8042F530);
+        lbl_8055E060 = 1;
+    }
+    return lbl_8042F53C;
 }
 
