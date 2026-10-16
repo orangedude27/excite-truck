@@ -9,4 +9,30 @@ extern void fn_80236914(void);
 extern u8 lbl_8055F3E9;
 extern u8 lbl_8055F420[];
 extern u8 lbl_8055BAC0[];
+void fn_80261A40(s32 arg0) {
+    fn_80236914();
+    lbl_8055F3E9 = (arg0 - 2) == 0;
+}
+
+void fn_80261A7C(void *arg0, s32 arg1) {
+    *(s32 *)((u8 *)arg0 + 8) = arg1;
+    *(s32 *)((u8 *)arg0 + 4) = 8;
+    *(void **)((u8 *)arg0) = (void *)lbl_8055BAC0;
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+}
+
+void fn_80261AA0(void) {
+    s32 i = 0;
+    do {
+        fn_80214A9C(i + 10);
+        i++;
+    } while (i < *(s32 *)(lbl_8055F420 + 0xC));
+}
+
 void fn_80261AE8(s32 *arg0, s32 arg1) { *arg0 = arg1; }
+
+s32 fn_80262160(void) {
+    return 0;
+}
+
