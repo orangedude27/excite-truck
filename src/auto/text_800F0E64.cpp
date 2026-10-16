@@ -143,6 +143,8 @@ extern "C" s32 fn_800F420C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_800F4CC4(s32 arg0, s32 arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+
 extern "C" s32 fn_800F4D04(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -210,6 +212,30 @@ extern "C" void fn_800F4FF4(void *arg0) {
     *(s32 *)arg0 = 0;
     *(s32 *)((u8 *)arg0 + 4) = (s32)p;
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
+}
+
+void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, unsigned int start, unsigned int end) {
+    unsigned int* entries = *(unsigned int**)((char*)self + 0x14);
+    unsigned int i = 0, offset = 0;
+    if (entries == 0) return;
+    do {
+        unsigned int* entry = (unsigned int*)((char*)entries + offset);
+        unsigned int value = entry[1];
+        if (value >= start && value <= end) entry[1] = 0;
+        offset += 8; i++;
+    } while (i < entries[0]);
+}
+
+void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self, unsigned int start, unsigned int end) {
+    unsigned int* entries = *(unsigned int**)((char*)self + 0x14);
+    unsigned int i = 0, offset = 0;
+    if (entries == 0) return;
+    do {
+        unsigned int* entry = (unsigned int*)((char*)entries + offset);
+        unsigned int value = entry[2];
+        if (value >= start && value <= end) entry[2] = 0;
+        offset += 8; i++;
+    } while (i < entries[0]);
 }
 
 extern "C" s32 fn_800F76C0(s32 arg0, s32 arg1) {
