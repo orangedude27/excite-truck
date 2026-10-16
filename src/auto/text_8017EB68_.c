@@ -35,8 +35,11 @@ void fn_8017EB78(void *arg0) {
 }
 
 float fn_8017EB80(float arg0, float arg1, float arg2) {
+    float magnitude = (float)__fabs(arg0);
     float value = lbl_80561C48;
-    float temp = ((value + arg1 + arg2) * (float)__fabs(arg0)) - arg1;
+    float temp = value + arg1;
+    magnitude = (temp + arg2) * magnitude;
+    temp = magnitude - arg1;
     value = value < temp ? value : temp;
     value = value > lbl_80561C4C ? value : lbl_80561C4C;
     if (arg0 >= lbl_80561C4C) return value;
@@ -44,15 +47,17 @@ float fn_8017EB80(float arg0, float arg1, float arg2) {
 }
 
 int fn_8017EBE0(void) {
-    lbl_8055E4B8 = 0;
-    lbl_8055E4BA = 1;
-    lbl_8055E4B9 = 0;
+    int zero = 0;
+    int one = 1;
+    lbl_8055E4B8 = zero;
+    lbl_8055E4BA = one;
+    lbl_8055E4B9 = zero;
     lbl_804348D8[0] = 0;
     lbl_804348D8[1] = 0;
     lbl_804348D8[2] = 0;
     lbl_804348D8[3] = 0;
     fn_801808DC();
-    return 1;
+    return one;
 }
 
 void fn_8017EC30(void) {
@@ -64,13 +69,12 @@ void fn_8017EC30(void) {
         obj = *ptr;
         if (obj != 0) {
             if (obj != 0) {
-                register Unk8017VTable *vtable = obj->vtable;
-                vtable->unk_0x80(obj, 1);
+                obj->vtable->unk_0x80(obj, 1);
             }
             *ptr = 0;
         }
-        ptr++;
-    } while (++i < 4);
+        i++;
+    } while (i < 4 && (++ptr, 1));
     lbl_8055E4BA = 0;
 }
 
@@ -84,5 +88,9 @@ void fn_8018143C(void) {
 
 void fn_80181440(void) {
 
+}
+
+float fn_801815C4(void *arg0) {
+    return *(float *)((char *)arg0 + 0x28);
 }
 
