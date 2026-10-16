@@ -29,6 +29,7 @@ extern u8 lbl_80322B50[];
 #pragma pop
 
 extern u8 lbl_8055DE30;
+extern u32 lbl_8055DEA0;
 
 extern s32 fn_80128668(void);
 
