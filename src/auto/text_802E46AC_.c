@@ -7,3 +7,12 @@ extern void *lbl_8055D1C0;
 void fn_802E46E4(void) {
     lbl_8055D1C0 = (void*)-1;
 }
+
+void* memset(void*, int, unsigned long);
+extern u16 lbl_8055FF50;
+void fn_802E4A2C(void); /* extern */
+s32 fn_802E47B8(void) {
+    fn_802E4A2C();
+    return lbl_8055FF50 != 0;
+}
+
