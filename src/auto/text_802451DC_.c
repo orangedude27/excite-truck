@@ -12,3 +12,8 @@ extern void *lbl_8055F244;
 void fn_80246498(void *arg0) {
     fn_80214CB4(*(unsigned char *)((char *)arg0 + 0x18) == 0);
 }
+
+void fn_802464A8(void *arg0) {
+    *((signed char *)arg0 + 0x19) = 0;
+}
+
