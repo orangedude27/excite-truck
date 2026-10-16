@@ -99,6 +99,13 @@ u8 fn_80232B78(void *arg0) {
     return ((u8 *)arg0)[5];
 }
 
+void fn_80234470(void) {
+    fn_802328D4(lbl_8055F058);
+    lbl_8055F058 = 0;
+    fn_80128670((void *)lbl_8055F06C);
+    lbl_8055F06C = 0;
+}
+
 extern s32 lbl_8055F06C;
 extern s32 lbl_8055F058;
 extern void fn_802328D4(s32);
