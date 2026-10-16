@@ -16,6 +16,9 @@ typedef s32 M2C_UNK32;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
 extern "C" s32 fn_80128668(void);
+extern "C" void fn_800EBB88(void*);
+extern "C" f32 lbl_805610B8;
+extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, u32);
 typedef void (*DisposeCallback)(void*, unsigned long, void*);
 extern "C" void* Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl(void*);
 extern "C" void* Alloc__Q46nw4hbm3snd6detail9FrameHeapFUlPFPvUlPv_vPv(void*, unsigned long, DisposeCallback, void*);
