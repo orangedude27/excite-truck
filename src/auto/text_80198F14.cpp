@@ -727,6 +727,13 @@ extern "C" void fn_801A4798(s32* arg0, s32 arg1) {
     }
 }
 
+extern "C" void fn_801A47B0(s32* arg0, s32 arg1) {
+    s32 val = *arg0;
+    if (val != 0) {
+        *arg0 = val + arg1;
+    }
+}
+
 #pragma opt_tail_call on
 void fn_801A47C8(void* arg0) {
     s32 limit = *(s32*)arg0;
