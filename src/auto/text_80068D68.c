@@ -273,9 +273,7 @@ void fn_8006EB88(void) {
     OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
 }
 
-void fn_8006EBAC(void) {
-    GKI_disable();
-}
+
 
 void fn_8006EBF0(void) {
 
