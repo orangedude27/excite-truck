@@ -665,6 +665,8 @@ void fn_8006CF80(void) {
 }
 
 extern char lbl_803140FC[];
+extern char lbl_80313794[];
+extern u32 lbl_8055DC30;
 void fn_8006CF90(void) {
     DBPrintf_8006CFA8(lbl_803140FC);
 }
