@@ -31,3 +31,7 @@ void fn_801B6664(void) {
 
 }
 
+s32 fn_801B6668(void) {
+    return 0;
+}
+
