@@ -64,7 +64,8 @@ s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
 void fn_801D77D8(void *arg0) {
-    ((void (*)(void *))((void ***)arg0)[0xE])(arg0);
+    void **vtable = *(void ***)arg0;
+    ((void (*)(void *))vtable[0xD])(arg0);
 }
 
 void fn_801D77E8(void) {
