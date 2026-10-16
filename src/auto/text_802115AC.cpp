@@ -102,6 +102,10 @@ extern "C" void fn_80215824(void) {
 
 }
 
+extern "C" s32 fn_80215BAC(void) {
+    return -1;
+}
+
 extern "C" void fn_80215BB4(void) {
 
 }
