@@ -31,7 +31,7 @@ extern s32 fn_801B3398(void*);
 void* fn_801B3B70(void*);
 extern void* memset(void*, s32, u32);
 extern u8 lbl_80435C50[0x20];
-extern s32 fn_801796CC(s32, void*, s32, s32, s32, s32, s32, s32);
+extern s32 fn_801796CC(s32, void*, s32);
 
 void fn_801B435C(void*);
 
@@ -51,6 +51,19 @@ typedef struct Unk801B3BD4 {
 typedef struct Unk801B3398 {
     s32 unk_0x00[14];
 } Unk801B3398;
+
+void* fn_801B3338(void* arg0) {
+    s32* obj = *(s32**)((char*)arg0 + 4);
+
+    if (obj != NULL) {
+        u32 tag = (u32)obj[4];
+        if (tag == 0x43415220U || tag == 0x50434152U || tag == 0x41434152U
+            || tag == 0x4E434152U) {
+            return obj;
+        }
+    }
+    return NULL;
+}
 
 int fn_801B3390(void) {
     return 0x14;
@@ -182,14 +195,14 @@ s32 fn_801B3FD0(void) {
 void fn_801B42D0(void* arg0) {
     u8* p = (u8*)arg0 + 0x2FC;
     void* val = *(void**)lbl_802F9630;
+    f32 init = lbl_80562650;
     s32 i;
 
-    for (i = 0; i < 0x10; i++) {
+    for (i = 0; i < 0x10; i++, p += 0x2C) {
+        *(s32*)(p + 0x1C) = fn_802077A4(val, 5, p + 0x10, p + 4);
         *(s32*)(p + 0x20) = 0;
         *(s32*)(p + 0x24) = 0;
-        *(f32*)(p + 0x28) = lbl_80562650;
-        *(s32*)(p + 0x1C) = fn_802077A4(val, 5, p + 0x10, p + 4);
-        p += 0x2C;
+        *(f32*)(p + 0x28) = init;
     }
     *(s32*)((u8*)arg0 + 0x5BC) = 0;
 }
