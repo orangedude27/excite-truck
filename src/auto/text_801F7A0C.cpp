@@ -22,7 +22,9 @@ void *fn_801F8188(s32 a, s32 b);
 struct F9Node {
     void *vtable; // 0x0
     char *name;   // 0x4
-    void *next;   // 0x20
+    void *next;   // 0x8
+    // 0x20
+    void *next2;
 };
 
 extern "C" void fn_801F92A8(void) {
