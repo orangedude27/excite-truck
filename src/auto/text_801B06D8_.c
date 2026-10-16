@@ -89,6 +89,11 @@ s32 fn_801B1130(s32 arg0) {
 
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
 
+void fn_801B234C(f32 farg0) {
+    lbl_8055E6A4 = farg0;
+    lbl_8055E6A0 = 1;
+}
+
 void fn_801B235C(void) {
     fn_801E89F4(3);
 }
