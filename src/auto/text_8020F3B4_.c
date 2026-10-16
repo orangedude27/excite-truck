@@ -20,6 +20,14 @@ long fn_8020F3BC(long arg0, long arg1, long arg2) {
     return arg1;
 }
 
+#pragma dont_inline on
+void fn_8020F5C8(void) {
+    lbl_8055EEF6 = 1;
+    lbl_8055EEF5 = 1;
+    lbl_8055EEF4 = 1;
+}
+#pragma dont_inline reset
+
 void fn_8020F5DC(void) {
     lbl_8055EEF6 = 0;
     lbl_8055EEF5 = 0;
