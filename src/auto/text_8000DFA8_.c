@@ -22,6 +22,7 @@ extern void fn_802C8BD0(s32);
 extern void fn_802C8D74(void);
 extern void fn_80234AEC(void);
 extern void *fn_80010BEC(void *);
+
 extern void fn_802346C8(void *);
 
 extern s32 lbl_8055D4D0;
@@ -156,30 +157,17 @@ void fn_80010B74(void) {
     fn_802C8BD0(-1);
 }
 
-void fn_80010B80(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
-    Unk0x18 *entry;
-    f32 sp8;
-    f32 spC;
-    f32 sp10;
-    f32 sp14;
-    s32 sp18;
-    s32 sp1C;
+void fn_80010B80(s32 arg0, f64 arg1, f64 arg2, f64 arg3, f64 arg4) {
+    Unk0x18 entry;
 
-    sp8 = arg1;
-    spC = arg2;
-    sp10 = arg3;
-    sp14 = arg4;
-    sp18 = arg0;
-    sp1C = arg0;
+    entry.unk_0x00 = (f32)arg1;
+    entry.unk_0x04 = (f32)arg2;
+    entry.unk_0x08 = (f32)arg3;
+    entry.unk_0x0C = (f32)arg4;
+    entry.unk_0x10 = arg0;
+    entry.unk_0x14 = arg0;
     if (lbl_8055D4A8 < 0x100) {
-        entry = &lbl_8034F6B0[lbl_8055D4A8];
-        entry->unk_0x00 = (f32)arg1;
-        entry->unk_0x04 = (f32)arg2;
-        entry->unk_0x08 = (f32)arg3;
-        entry->unk_0x0C = (f32)arg4;
-        entry->unk_0x10 = arg0;
-        entry->unk_0x14 = arg0;
-        lbl_8055D4A8++;
+        lbl_8034F6B0[lbl_8055D4A8++] = entry;
     }
 }
 
