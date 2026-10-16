@@ -204,6 +204,15 @@ extern "C" void fn_800F83C8(void* arg0) {
     Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl((u8*)arg0 + 0x1C);
 }
 
+extern "C" void* fn_800F83D8(void* arg0, unsigned long arg1) {
+    void* mutex = (u8*)arg0 + 4;
+    OSLockMutex(mutex);
+    void* result = Alloc__Q46nw4hbm3snd6detail9FrameHeapFUlPFPvUlPv_vPv(
+        (u8*)arg0 + 0x1C, arg1, DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv, 0);
+    OSUnlockMutex(mutex);
+    return result;
+}
+
 extern "C" void fn_800F8520(void *arg0) {
     s32 *p = (s32 *)((u8 *)arg0 + 4);
     *(s32 *)((u8 *)arg0 + 4) = 0;
