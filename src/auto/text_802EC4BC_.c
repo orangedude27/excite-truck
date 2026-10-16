@@ -23,3 +23,13 @@ void fn_802ECC18(u8 arg0) {
     lbl_805600E9 = arg0;
 }
 
+void fn_802ECC20(void) {
+    if (fn_8002173C() == 0) {
+        fn_802CFCA0();
+        fn_802D02F8(0xFF000000, 1);
+        fn_802D68C4(0, 0, 0, 0);
+        fn_802CFDE0();
+        fn_802CFF10();
+    }
+}
+
