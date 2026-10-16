@@ -11,3 +11,7 @@ void* GXGetCurrentGXThread(void) {
     return lbl_8055D94C;
 }
 
+int GXGetTexObjHeight(void *arg0) {
+    return ((int *)arg0)[4];
+}
+
