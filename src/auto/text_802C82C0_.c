@@ -44,6 +44,12 @@ void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
 
+void fn_802C8530(void) {
+    lbl_8055FC70 = 1;
+    fn_802CC60C();
+    fn_802CFCA0();
+}
+
 void fn_802C855C(void) {
     fn_802CFDE0();
     fn_802CC770();
