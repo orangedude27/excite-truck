@@ -131,6 +131,11 @@ int fn_802D3EBC(void) {
     return (lbl_8055D0B8 >> 0x1FU) ^ 1;
 }
 
+extern unsigned short lbl_8055FD86;
+void fn_802D3ECC(unsigned short arg0) {
+    lbl_8055FD86 = arg0;
+}
+
 extern unsigned long lbl_8055FD94;
 extern unsigned char lbl_8055FDA0[];
 extern unsigned char lbl_804C97B0[];
