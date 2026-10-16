@@ -556,6 +556,8 @@ void fn_80150B60(void *arg0) {
     }
 }
 
+s32 fn_80151604(void) { return 0; }
+
 void fn_80151688(void) {
 
 }
