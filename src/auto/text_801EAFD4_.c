@@ -80,6 +80,7 @@ void fn_801EB8BC(void) {
         if (i < 0x18) p++;
     } while (i < 0x18);
 }
+#pragma dont_inline off
 
 void fn_801EB90C(void) {
     void **p = (void **)lbl_804885E8;
