@@ -122,6 +122,13 @@ void fn_801494EC(void *arg0, float *arg1, float *arg2) {
 
 extern unsigned long lbl_80559E94;
 extern unsigned long lbl_80559E9C;
+extern s32 lbl_80559EA4;
+extern void fn_80130980(void *arg0, s32 arg1, s32 arg2);
+extern void fn_801474EC(s32 arg0, s32 *arg1, void *arg2);
+extern s32 lbl_80559EC4;
+extern void *fn_8017960C(s32 arg0);
+extern void fn_80149D64(void *arg0, void *arg1, s32 arg2);
+extern f32 lbl_80561648;
 unsigned long *fn_80149528(void) { return &lbl_80559E9C; }
 
 int fn_80149530(void) {
@@ -226,24 +233,33 @@ void fn_8014AE54(void *arg0) {
 }
 
 void fn_8014AE60(void *arg0) {
-    void *next;
-    void *obj = ((void **)arg0)[1];
-    void *head = ((void **)arg0)[0];
+    struct Node8014AE60 {
+        struct Node8014AE60 *next;
+        struct Node8014AE60 *prev;
+        u8 pad[0x114];
+    };
+    struct Head8014AE60 {
+        struct Node8014AE60 *first;
+        struct Node8014AE60 *last;
+    };
+    struct Head8014AE60 *head = (struct Head8014AE60 *)*(void **)arg0;
+    struct Node8014AE60 *obj = (struct Node8014AE60 *)*((void **)arg0 + 1);
+    struct Node8014AE60 *next;
 
-    next = *(void **)((u8 *)obj + 0x120);
+    next = obj->next;
     if (next != 0) {
-        *(void **)((u8 *)next + 0x11C) = *(void **)((u8 *)obj + 0x11C);
+        next->prev = obj->prev;
     } else {
-        *(void **)head = *(void **)((u8 *)obj + 0x11C);
+        head->first = obj->prev;
     }
-    next = *(void **)((u8 *)obj + 0x11C);
+    next = obj->prev;
     if (next != 0) {
-        *(void **)((u8 *)next + 0x120) = *(void **)((u8 *)obj + 0x120);
+        next->next = obj->next;
     } else {
-        *(void **)((u8 *)head + 4) = *(void **)((u8 *)obj + 0x120);
+        head->last = obj->next;
     }
-    *(void **)((u8 *)obj + 0x120) = 0;
-    *(void **)((u8 *)obj + 0x11C) = 0;
+    obj->next = 0;
+    obj->prev = 0;
 }
 
 s32 fn_8014AEB8(void *arg0) { return ((s32 *)arg0)[1]; }
