@@ -133,3 +133,5 @@ void fn_80165820(void) {
 
 int fn_80165824(void) { return 0; }
 
+int fn_8016582C(void) { return 0; }
+
