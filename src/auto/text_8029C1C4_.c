@@ -13,6 +13,11 @@ extern void fn_802C6CF8(void);
 extern void fn_802CAC54(int);
 extern void fn_80128670(int);
 extern void fn_80128668(void *);
+extern unsigned char lbl_80349780[];
+extern float lbl_80564648;
+extern float fn_801E88F0(int);
+extern float fn_802C88E8(void *);
+extern int fn_802C9640(void *);
 
 void fn_8029C22C(void) {
     fn_8029CD14();
