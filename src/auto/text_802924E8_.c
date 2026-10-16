@@ -30,6 +30,11 @@ void fn_80292628(void) {
     }
 }
 
+extern int fn_802928D4(int, int, int, int, int, int);
+void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
+    fn_802928D4(0, arg0, arg1, arg2, arg3, arg1);
+}
+
 typedef unsigned char u8;
 typedef signed char s8;
 extern int fn_8002B1D8(const char *, const char *, int);
@@ -149,19 +154,20 @@ extern char lbl_80349250[];
 extern void *memset(void *, int, unsigned int);
 void fn_80293CD0(void *arg0, int arg1, int arg2, int arg3) {
     char name[0x20];
+    int i;
     *(s32 *)((u8 *)arg0 + 0x28) = 0;
-    while (*(s32 *)((u8 *)arg0 + 0x28) < 8) {
-        int count = *(s32 *)((u8 *)arg0 + 0x28);
-        fn_801345D8(name, 0x20, lbl_80349250, arg1, count + 1);
-        if (fn_8012C33C(name) == 0) break;
-        if (arg3 != 0 && *(s8 *)arg3 != 0) fn_80292CD8(name, arg2, (u8 *)arg3);
-        *(int *)((u8 *)arg0 + 8 + count * 4) = fn_802C6FC0(name, arg2, 0);
-        *(s32 *)((u8 *)arg0 + 0x28) = count + 1;
+    for (i = 0; i < 8; i++) {
+        fn_801345D8(name, 0x20, lbl_80349250, arg1, i + 1);
+        if (fn_8012C33C(name) != 0) {
+            if (arg3 != 0 && *(s8 *)arg3 != 0) fn_80292CD8(name, arg2, (u8 *)arg3);
+            i = *(s32 *)((u8 *)arg0 + 0x28);
+            *(s32 *)((u8 *)arg0 + i * 4 + 8) = fn_802C6FC0(name, arg2, 0);
+            i = *(s32 *)((u8 *)arg0 + 0x28);
+            i++;
+            *(s32 *)((u8 *)arg0 + 0x28) = i;
+        }
     }
-    {
-        int count = *(s32 *)((u8 *)arg0 + 0x28);
-        if (count < 8)
-            memset((u8 *)arg0 + 8 + count * 4, 0xFF, (8 - count) * 4);
-    }
+    i = *(s32 *)((u8 *)arg0 + 0x28);
+    for (; i < 8; i++) *(s32 *)((u8 *)arg0 + i * 4 + 8) = -1;
 }
 
