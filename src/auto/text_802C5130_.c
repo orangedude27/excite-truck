@@ -14,15 +14,15 @@ extern char lbl_8034B178[];
 extern unsigned char lbl_8055FC14;
 int fn_802C5130(char* arg0) {
     char* fmt;
-    int result;
+    char* text;
     if (strlen(arg0) > 15) {
         if (lbl_8055FC14 == 0) {
             fmt = lbl_8034B178;
-            fn_802E30C8(fmt, arg0);
+            text = arg0;
+            fn_802E30C8(fmt, text);
         }
-        result = 0;
         lbl_8055FC14 = 1;
-        return result;
+        return 0;
     }
     return fn_8023512C(arg0);
 }
@@ -61,4 +61,9 @@ int fn_802C5220(void* arg0) {
     }
     return 1;
 }
+
+extern void fn_802353F4(void);
+extern void fn_802354A0(void*, void*, int);
+extern void fn_80235758(void*, float, float, float, float, float, float, int);
+void fn_802C5310(void* arg0) { if (arg0 != 0) fn_802353F4(); }
 
