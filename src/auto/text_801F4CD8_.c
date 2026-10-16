@@ -19,6 +19,10 @@ void fn_801F4DC4(void) {
     fn_801F7160(lbl_8055EC18);
 }
 
+void fn_801F4DCC(void) {
+    fn_801F7220(lbl_8055EC18);
+}
+
 void fn_801F596C(void) {
 
 }
