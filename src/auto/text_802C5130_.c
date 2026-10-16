@@ -13,12 +13,16 @@ extern unsigned int strlen(const char*);
 extern char lbl_8034B178[];
 extern unsigned char lbl_8055FC14;
 int fn_802C5130(char* arg0) {
+    char* fmt;
+    int result;
     if (strlen(arg0) > 15) {
         if (lbl_8055FC14 == 0) {
-            fn_802E30C8(lbl_8034B178, arg0);
+            fmt = lbl_8034B178;
+            fn_802E30C8(fmt, arg0);
         }
+        result = 0;
         lbl_8055FC14 = 1;
-        return 0;
+        return result;
     }
     return fn_8023512C(arg0);
 }
@@ -30,6 +34,18 @@ void fn_802C519C(void* arg0) {
 
 int fn_802C51AC(void* arg0) {
     if (arg0 != 0) return fn_80235FD8();
+    return 1;
+}
+
+int fn_802C51C0(void* arg0) {
+    f32 value;
+    f32 result;
+    if (arg0 != 0) {
+        value = ((f32 (*)(void*, int))fn_80235EF0)(arg0, 0);
+        if (value < lbl_80564EEC) result = value - lbl_80564EE8;
+        else result = lbl_80564EE8 + value;
+        return (int)result;
+    }
     return 1;
 }
 
