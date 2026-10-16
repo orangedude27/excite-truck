@@ -137,8 +137,19 @@ extern char lbl_8055E83C;
 extern void (*lbl_8055E868)(void);
 extern s32 lbl_8055E848;
 extern int atoi(const char *);
+extern char lbl_8055E83B;
+extern Vec lbl_80438250;
+typedef struct {
+    char pad_0[0x4D4];
+    Vec f_4D4;
+    Vec f_4E0;
+    char pad_1[0x6F8 - 0x4EC];
+    Vec f_6F8;
+} Unk_80437D88;
+extern Unk_80437D88 lbl_80437D88;
+extern void fn_801C7964(void);
 void fn_801C7770(void) {
-    lbl_8055E83E = !lbl_8055E83E;
+    lbl_8055E83E = (u32)__cntlzw(lbl_8055E83E) / 32;
 }
 
 void fn_801C77C0(void) {
@@ -158,6 +169,37 @@ void fn_801C78D8(void) {
 void fn_801C791C(void) {
     fn_801C78D8();
     lbl_8055E848 = 2;
+}
+
+void (*fn_801C7944(void))(void) {
+    lbl_8055E868 = fn_801C6CB0;
+    lbl_8055E83A = 1;
+    lbl_8055E848 = 0;
+    return fn_801C6CB0;
+}
+
+void fn_801C7964(void) {
+    Vec* src = &lbl_80438268;
+    Vec* dst = &lbl_80438250;
+    dst->x = src->x;
+    dst->y = src->y;
+    dst->z = src->z;
+}
+
+void (*fn_801C7990(void))(void) {
+    Vec* src = &lbl_80437D88.f_4E0;
+    Vec* dst1 = &lbl_80437D88.f_6F8;
+    Vec* dst2 = &lbl_80437D88.f_4D4;
+
+    dst1->x = src->x;
+    dst1->y = src->y;
+    dst1->z = src->z;
+    lbl_8055E83B = 1;
+    dst2->x = src->x;
+    dst2->y = src->y;
+    dst2->z = src->z;
+    lbl_8055E868 = fn_801C7964;
+    return fn_801C7964;
 }
 
 extern s32 lbl_8055E850;
