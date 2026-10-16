@@ -30,7 +30,7 @@ extern unsigned short lbl_802FA48C[6];
 extern float lbl_805638B0;
 s32 fn_80221EA8(void);
 extern s32 lbl_8055BEF0;
-extern void *volatile lbl_8055F278;
+extern void *lbl_8055F278;
 
 typedef struct lbl_8055F278_struct {
     char pad00[0x04];
