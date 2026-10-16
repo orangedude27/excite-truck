@@ -133,6 +133,10 @@ s32 fn_8023AEE0(void *arg0) {
     return *(s32 *)(*(char **)((char *)arg0 + 0x1C));
 }
 
+void fn_8023AEEC(void *arg0) {
+    *(s32 *)((char *)arg0 + 0x18) = -1;
+}
+
 s32 fn_80230E90(s32);
 void fn_8023AEF8(void *arg0) {
     unsigned char temp_r31;
