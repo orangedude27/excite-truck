@@ -3,6 +3,7 @@
 
 #include <types.h>
 extern "C" void fn_8021D61C(void *);
+extern "C" u8 lbl_8033EB14[];
 extern "C" char lbl_8055B87C[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
@@ -325,6 +326,18 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021A650(void *arg0, 
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" void fn_8021D044(s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" s32 fn_8022A86C(void *);
+extern "C" void fn_8021818C(s32);
+extern "C" void fn_80218198(s32, void *);
+extern "C" void fn_8021A8A8(void *arg0) {
+    void **vt = *(void ***)arg0;
+    ((void (*)(void *,s32,s32))vt[29])(arg0, 2, 0);
+    fn_8021818C(*(s32 *)((u8 *)arg0 + 0x2C));
+    if (*(s32 *)*(s32 **)((u8 *)arg0 + 0x254) == *(s32 *)((u8 *)arg0 + 0x258))
+        fn_80218198(*(s32 *)((u8 *)arg0 + 0x2C), arg0);
 }
 
 extern "C" void fn_8021A910(void *arg0, s32 arg1) {
@@ -672,6 +685,19 @@ extern "C" void fn_8021D614(void) {
 
 extern "C" void fn_8021D618(void) {
     ((void (*)(void))fn_8021D61C)();
+}
+
+extern "C" void fn_8021D61C(void *arg0) {
+    s32 index = *(s32 *)*(s32 **)((u8 *)arg0 + 0x254);
+    if (index >= 0 && index < *(s32 *)((u8 *)arg0 + 0x258)) {
+        strcpy((char *)arg0 + 0x268,
+               *(char **)(*(s32 *)((u8 *)arg0 + 0x2B8) + index * 4));
+    } else {
+        strcpy((char *)arg0 + 0x268, lbl_8055B87C);
+    }
+    fn_80219718(arg0);
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+        *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
 extern "C" void *fn_8021D7C8(void *arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 arg5,s32 arg6,s32 arg7) {
