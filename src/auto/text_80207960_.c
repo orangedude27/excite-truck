@@ -48,6 +48,37 @@ void fn_80207C7C(void) {
 	return;
 }
 
+extern signed long fn_802E2C20(void);
+extern void fn_80207C80(void*);
+extern void* lbl_802F9DC8[];
+extern char lbl_8033BE20[];
+void fn_80207DE0(void* arg0) {
+    void* var_r28;
+    void* var_r30;
+    signed long var_r29;
+    signed long var_r31;
+    void* temp_vt;
+    signed long temp_arg;
+
+    var_r31 = 0;
+    var_r29 = 0;
+    var_r28 = arg0;
+    var_r30 = var_r28;
+    temp_vt = 0;
+    temp_arg = 1;
+    while (var_r29 < *(signed long*)(((signed char*)var_r28) + 0x114)) {
+        void** temp_r3 = (void**)((signed char*)var_r30 + 0x94);
+        if (*temp_r3 != 0) {
+            temp_vt = *temp_r3;
+            (*(void(**)(signed long))((void**)temp_vt)[2])(temp_arg);
+        }
+        *temp_r3 = (void*)var_r31;
+        var_r30 = (void*)(((signed char*)var_r30) + 4);
+        var_r29 += 1;
+    }
+    *(signed long*)(((signed char*)var_r28) + 0x114) = 0;
+}
+
 void fn_80208404(void) {
 
 }
