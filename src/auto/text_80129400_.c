@@ -19,3 +19,7 @@ void* fn_80129AF4(void) {
     return lbl_8055DFD4;
 }
 
+s32 fn_80129BC4(void) {
+    return 1;
+}
+
