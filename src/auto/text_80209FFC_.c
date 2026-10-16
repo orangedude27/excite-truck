@@ -102,6 +102,16 @@ s32 fn_8013323C(s32, void*, f32);
 s32 fn_8013365C(void*, void*);
 s32 fn_8000DBC8(void*);
 extern u8 fn_8020A03C[];
+extern void fn_801331C4(int, void *, f32 *);
+#pragma dont_inline on
+void fn_80209FFC(void) {
+    f32 value;
+
+    value = fn_8020A5F0();
+    fn_801331C4(4, (void *)lbl_8033C278, &value);
+    fn_8020A5F8(value);
+}
+#pragma dont_inline off
 void fn_8020A368(void) {
     s32* var_r31;
     s32 var_r30;
