@@ -613,6 +613,11 @@ extern "C" void fn_801D06C4(void);
 extern "C" void fn_8019BD54(void*, void*, s32, s32);
 extern "C" void fn_8019D06C(void*, void*, s32, s32);
 extern "C" void fn_8019EA7C(void*, void*);
+extern f32 lbl_8056237C;
+extern f32 lbl_80562300;
+extern void fn_8019EECC(void*, void*);
+extern void fn_8019EF00(void*);
+extern void fn_801E3FC8(void*, s32, f32);
 void fn_801A49FC(void* arg0) {
     if (*(s32*)((u8*)arg0 + 0x48) != 0) {
         fn_801D06C4();
