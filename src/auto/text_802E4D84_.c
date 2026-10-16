@@ -35,6 +35,10 @@ int fn_802E540C(int arg0) {
     return 0;
 }
 
+void fn_802E589C(void) {
+    fn_802E582C();
+}
+
 extern unsigned char lbl_804FC558[];
 extern int lbl_8055FF78;
 extern int lbl_8055FFA0;
