@@ -209,6 +209,20 @@ void fn_80070854(void) {
     fn_800869CC();
 }
 
+void LogMsg(UINT32 trace_set_mask, const char *fmt_str, ...) {
+    va_list list;
+    va_start(list, fmt_str);
+    vsprintf(lbl_803BF240, fmt_str, list);
+    va_end(list);
+
+    sprintf(lbl_803BF240, "%s\n", lbl_803BF240);
+    OSReport(lbl_803BF240);
+}
+
+void fn_800709E4(void) {
+    OSSwitchFiber(btu_task_msg_handler, (u8 *)&lbl_803BFA20 + 0x1000);
+}
+
 void fn_8007148C(s32 arg0) {
     fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
 }
