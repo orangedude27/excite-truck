@@ -8,7 +8,7 @@ extern void *MEMAllocFromAllocator(void *, u32);
 extern void MEMFreeToAllocator(void *, void *);
 extern "C" u16 fn_8002AEE8(const u16 *);
 
-extern char lbl_80320548;
+extern void lbl_80320548(void);
 extern const char lbl_80320570[];
 extern const char lbl_80320688[];
 extern const char lbl_803206B8[];
@@ -27,8 +27,7 @@ extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_800DCE50(void **arg0) {
-    volatile void *addr = (void *)0x80320548;
-    *arg0 = (void *)addr;
+    *arg0 = (void *)&lbl_80320548;
 }
 
 extern "C" s32 fn_800DCE60(void) {
