@@ -87,6 +87,13 @@ void fn_80246E00(void) {
     fn_80246CB8(lbl_8034330C);
 }
 
+int fn_80246E0C(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668((void *)arg0);
+    }
+    return arg0;
+}
+
 Obj_802470D4 *fn_802470D4(Obj_802470D4 *arg0, s32 arg1) {
     s32 *p;
     if (arg0 != 0) {
@@ -265,5 +272,14 @@ void fn_80248A74(void *arg0) {
     t.u[1] = (unsigned int)var_r31 ^ 0x80000000;
     t.u[0] = 0x43300000;
     *(float *)((char *)arg0 + 0x1C) += (float)((t.d - lbl_805638A0) * fn_80214D48());
+}
+
+int fn_80248C94(void *arg0, int arg1) {
+    if (*(unsigned char *)((char *)arg0 + 0x1C) == 0 && arg1 == 13) {
+        fn_80221F94(0);
+        return 1;
+    } else {
+        return 0;
+    }
 }
 
