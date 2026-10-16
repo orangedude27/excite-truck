@@ -6,6 +6,10 @@ static void* AllocatorAllocForExpHeap_(MEMAllocator* allocator, u32 size) {
     return MEMAllocFromExpHeapEx(allocator->heap, size, allocator->heapParam1);
 }
 
+static void* AllocatorAllocForFrmHeap_(MEMAllocator* allocator, u32 size) {
+    return MEMAllocFromFrmHeapEx(allocator->heap, size, allocator->heapParam1);
+}
+
 static void AllocatorFreeForFrmHeap_(MEMAllocator* allocator, void* block) {
 #pragma unused(allocator)
 #pragma unused(block)
