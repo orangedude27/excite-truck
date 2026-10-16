@@ -132,6 +132,8 @@ void fn_802192A0(void) {
 }
 
 extern "C" s32 fn_802192A4(void *, s32) { return 0; }
+extern "C" void fn_8021889C(s32, s32, f32);
+extern "C" void fn_80218968(s32, s32, f32);
 
 extern "C" void fn_80219354(void) { fn_80219044(); }
 
@@ -187,7 +189,7 @@ extern "C" void fn_80219508(void* arg0) {
 
 extern "C" void fn_80219510(void* arg0, s32 arg1, s32 arg2) {
     arg1 = -arg1;
-    *(s32*)((u8*)arg0 + 0x244) = -arg1;
+    *(s32*)((u8*)arg0 + 0x244) = arg1;
     *(u8*)((u8*)arg0 + 0x24C) = 1;
     *(s32*)((u8*)arg0 + 0x248) = -arg2;
 }
