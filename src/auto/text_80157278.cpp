@@ -518,6 +518,8 @@ extern "C" s32 fn_8015A814(void) {
     return 9;
 }
 
+extern "C" s32 fn_8015C074(void) { return 0; }
+
 extern "C" s32 fn_8015C684(void) {
     return 4;
 }
