@@ -29,6 +29,13 @@ void fn_802E6AC4(void) {
     lbl_8055FFB5 = 1;
 }
 
+int fn_802E6AD0(int arg0) {
+    if (arg0 == 1) {
+        fn_802E7774(fn_802E6AC4);
+    }
+    return 0;
+}
+
 void fn_802E6B38(void* arg0, signed char* arg1) {
     *arg1 = 0;
 }
