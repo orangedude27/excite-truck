@@ -8,7 +8,7 @@ typedef float f32;
 typedef s32 (*UnkFunc)(s32);
 extern void* lbl_8055E9C0;
 extern void* lbl_8055E9BC;
-extern void* lbl_8055E9C4;
+extern s32 lbl_8055E9C4;
 extern void* lbl_8055E9C8;
 extern void* lbl_8055E9CC;
 extern u32 lbl_80339478[];
@@ -70,7 +70,7 @@ void fn_801DE0A4(void) {
 
 void fn_801DE0E8(void) {
     if (lbl_8055E9C0 != 0) {
-        (*(UnkFunc*)(*(u32*)((u32*)lbl_8055E9C0 + 8) + 8))(1);
+        (*(UnkFunc*)(*(u32*)((u32*)lbl_8055E9C0 + 2) + 8))(1);
     }
     lbl_8055E9C0 = 0;
 }
