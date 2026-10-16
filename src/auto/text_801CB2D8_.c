@@ -10,8 +10,11 @@ extern int fn_800167F4(void);
 extern int fn_8001C0EC(int);
 extern int fn_8001C0E8(int, int);
 extern int fn_80128668(void *);
+#pragma push
+#pragma small_data off
 extern int lbl_80338024;
 extern int lbl_80338038;
+#pragma pop
 extern int fn_8001BF34(f32);
 extern void fn_8001BF0C(f32, f32);
 extern int fn_80161C38(void);
@@ -257,6 +260,22 @@ unsigned int fn_801CE898(void) {
     int half = temp >> 1;
     temp &= value;
     return (unsigned int)(half - temp) >> 31;
+}
+
+void *fn_801CE9A0(void *arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        *(void **)((char *)arg0 + 4) = (void *)lbl_80338024;
+        fn_801CEA28((char *)arg0 + 8);
+        fn_801CEA28((char *)arg0 + 0xC);
+        if (arg0 != NULL) {
+            *(void **)((char *)arg0 + 4) = (void *)lbl_80338038;
+            fn_801CBD04(arg0);
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 void fn_801CEA28(void *arg0) {
