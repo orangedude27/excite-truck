@@ -122,8 +122,8 @@ s32 fn_8023AE10(void *arg0) {
 }
 
 void fn_8023AE28(void *arg0) {
-    s32 *index = *(s32 **)((char *)arg0 + 0x1C);
     s32 count = *(s32 *)((char *)arg0 + 0x14);
+    s32 *index = *(s32 **)((char *)arg0 + 0x1C);
     *index = (count + *index - 1) % count;
 }
 
