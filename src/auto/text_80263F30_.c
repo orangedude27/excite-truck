@@ -87,6 +87,16 @@ void* fn_80264A54(void) {
     return lbl_8055F448;
 }
 
+void fn_80265558(void *arg0) {
+    extern char lbl_803465B8[];
+    extern float lbl_80563BF0;
+    float value = lbl_80563BF0;
+    *(void **)arg0 = lbl_803465B8;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    *(float *)((char *)arg0 + 0x18) = value;
+    *(float *)((char *)arg0 + 0x1C) = value;
+}
+
 void fn_8026557C(void *arg0, float farg0) {
     *(float *)((char *)arg0 + 0x18) = farg0;
 }
