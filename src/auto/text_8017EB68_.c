@@ -102,3 +102,9 @@ void fn_801815D4(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x50) = arg1;
 }
 
+void fn_801815DC(void *arg0, float arg1) {
+    float value = lbl_80561C48 < arg1 ? lbl_80561C48 : arg1;
+    value = value > lbl_80561C4C ? value : lbl_80561C4C;
+    *(float *)((char *)arg0 + 0x20) = value;
+}
+
