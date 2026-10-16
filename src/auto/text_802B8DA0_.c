@@ -244,6 +244,13 @@ float fn_802BAD90(float farg0) {
     return lbl_80564CF0 * farg0;
 }
 
+void fn_802BAE30(void *arg0) {
+    *(volatile int *)((char *)arg0 + 4) = 0;
+    *(volatile int *)((char *)arg0 + 0) = 0;
+    *(volatile int *)((char *)arg0 + 8) = 3;
+    *(volatile unsigned char *)((char *)arg0 + 0xC) = 1;
+}
+
 typedef signed char s8;
 void fn_802BAF98(void* arg0, s8 arg1) {
     ((s8*)arg0)[0xC] = arg1;
