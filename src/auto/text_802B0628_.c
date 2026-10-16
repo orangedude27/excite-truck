@@ -5,7 +5,7 @@ extern void *lbl_8055F9A0;
 void fn_802B087C(void **arg0);
 void fn_802AE64C(void *);
 void fn_8002F6AC(int, void (*)(void));
-void fn_802B0808(void);
+void *fn_802B0808(void *, int);
 void fn_80128668(void *);
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
