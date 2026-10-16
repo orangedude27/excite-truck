@@ -11,6 +11,15 @@ void* fn_802090CC(void) {
     return lbl_8055B4D8;
 }
 
+extern float lbl_80563230;
+extern float lbl_80563234;
+extern void fn_80208A18(float);
+extern void fn_80208A50(float *);
+extern int fn_80128668(void);
+void fn_802091CC(void) {
+    fn_80208A18(lbl_80563230);
+}
+
 void fn_80209278(void) {
 
 }
