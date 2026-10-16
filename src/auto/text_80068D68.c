@@ -939,6 +939,11 @@ void fn_800934D8(void *arg0, s16 arg1) {
     fn_800916F4(arg0, 7, &sp8);
 }
 
+void fn_80099F58(void *arg0) {
+    fn_80070F90((u8 *)arg0 + 8);
+    *(u8 *)arg0 = 0;
+}
+
 BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) {
     UINT16 attr_len = SDP_DISC_ATTR_LEN(p_attr->attr_len_type);
 
