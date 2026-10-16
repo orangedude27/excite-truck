@@ -7,7 +7,7 @@ extern u8 lbl_80438958[];
 extern s32 lbl_8055E930;
 extern s32 fn_801D2BF4(s32 *, s32 *);
 extern void fn_802C6CF8(s32);
-extern s32 fn_800241DC(s32 *, void *, s32, s32, void *);
+extern s32 fn_800241DC(s32 *, u8 *, s32, s32, s32 (*)(s32 *, s32 *));
 extern void qsort(void *, s32, s32, void *);
 extern void *fn_80131810(void);
 extern void fn_80131818(void *);
@@ -79,8 +79,6 @@ void fn_801D2210(void) {
 }
 
 u8 fn_801D2550(void *arg0, UnkObj *arg1) {
-    UnkObj *obj = arg1;
-
     if (arg1 != NULL) {
         *(u8 *)arg0 = 1;
         *(f32 *)((u8 *)arg0 + 4) = arg1->vt->fn28(arg1, lbl_80338300, lbl_80562A90);
@@ -104,18 +102,16 @@ void fn_801D2A24(void *obj_) {
 
 void fn_801D2AD4(void) {
     UnkObj *list = (UnkObj *)fn_80131810();
+    UnkObj *obj;
     s32 i;
 
     if (list == NULL) {
         return;
     }
-    i = 0;
-    while (list->vt->child(list, i) != NULL) {
-        UnkObj *obj = (UnkObj *)list->vt->child(list, i);
+    for (i = 0; (obj = (UnkObj *)list->vt->child(list, i)) != NULL; i++) {
         if (strncmp(obj->vt->fn8(obj), (char *)&lbl_8055AC28, 7) == 0) {
             fn_801D2A24(obj);
         }
-        i++;
     }
     fn_80131818(list);
 }
