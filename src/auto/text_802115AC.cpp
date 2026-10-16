@@ -126,20 +126,19 @@ extern "C" void fn_80214D50(s32 arg0) {
     if (fn_80206430() == 0) return;
     index = lbl_8055EF5C + 1;
     lbl_8055EF5C = index;
-    if (index >= 4) {
-        index = 0;
-        lbl_8055EF5C = 0;
-    }
+    if (index >= 4) { index = 0; lbl_8055EF5C = 0; }
     offset = arg0 * 0x18;
     obj = *(void **)(lbl_80490558 + offset + index * 4 + 8);
-    if (obj == 0) return;
-    value = *(float *)(lbl_80490558 + offset + 4) * fn_80209028();
-    if (value == *(float *)((char *)obj + 8)) return;
-    *((u8 *)obj + 0x4D) = 1;
-    *(float *)((char *)obj + 8) = value;
-    *((u8 *)obj + 0x49) = 1;
-    *((u8 *)obj + 0x4B) = 0;
-    *((u8 *)obj + 0x4A) = 0;
+    if (obj != 0) {
+        value = *(float *)(lbl_80490558 + offset + 4) * fn_80209028();
+        if (value != *(float *)((char *)obj + 8)) {
+            *((u8 *)obj + 0x4D) = 1;
+            *(float *)((char *)obj + 8) = value;
+            *((u8 *)obj + 0x49) = 1;
+            *((u8 *)obj + 0x4B) = 0;
+            *((u8 *)obj + 0x4A) = 0;
+        }
+    }
 }
 
 extern "C" void fn_80214FD8(void) { fn_80214E10(0); }
@@ -165,6 +164,8 @@ extern "C" void fn_80215214(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 extern "C" void fn_8021521C(s32 arg0, s32 arg1, s32 arg2) { fn_80214FE0(arg0, arg1, 0, arg2); }
 
+extern "C" void fn_80215228(void) { stricmp((const char *)lbl_8033CAE8, lbl_8055B6B0); }
+
 extern void *lbl_8055EF38;
 extern "C" void* fn_8021525C(void) {
     return lbl_8055EF38;
@@ -179,6 +180,12 @@ void fn_802152C8(void) {
 }
 
 void fn_802153A0(void) {
+}
+
+extern "C" s32 fn_802168BC(s32);
+extern "C" void fn_8021915C(void *, unsigned int);
+extern "C" s32 fn_802153A4(void) {
+    return 0;
 }
 
 extern "C" void fn_80215414(void) {
