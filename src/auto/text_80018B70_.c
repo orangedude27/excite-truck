@@ -240,7 +240,7 @@ done:
 }
 
 s32 fn_80019088(void) {
-    return ((s32*)&lbl_80357E0C)[1];
+    return ((s32*)lbl_80357E0C)[1];
 }
 
 void fn_80018F40(void) {
