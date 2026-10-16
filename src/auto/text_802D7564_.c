@@ -28,12 +28,8 @@ void fn_802D92B0(void) {
 
 void fn_802D92B8(void *arg0) {
     lbl_8055FE20 = arg0;
-    if (((unsigned char *)arg0)[0xCC] != 0) {
-        fn_802E317C(lbl_8034C620, arg0);
-    }
-    if (*(unsigned int *)((char *)arg0 + 0x70) != 0) {
-        fn_802E317C(lbl_8034C650, arg0);
-    }
+    if (((unsigned char *)arg0)[0xCC]) fn_802E317C(lbl_8034C620, arg0);
+    if (*(unsigned int *)((char *)arg0 + 0x70)) fn_802E317C(lbl_8034C650, arg0);
     GXInitTexObjWrapMode((char *)arg0 + 0x24, 0, 0);
     GXLoadTexObj((char *)arg0 + 0x24, 3);
 }
@@ -58,6 +54,14 @@ void fn_802D9340(void *arg0) {
                      *(unsigned int *)((char *)arg0 + 0xC8));
     }
     GXInvalidateTexAll();
+}
+
+extern void fn_802D768C(void);
+extern void fn_802D2614(void);
+extern int lbl_8055FE24;
+void fn_802D93E8(int arg0) {
+    fn_802D2614();
+    lbl_8055FE24 = arg0;
 }
 
 void* fn_802D94DC(void) {
