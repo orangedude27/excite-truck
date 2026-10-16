@@ -28,6 +28,14 @@ void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
 }
 
+extern void lbl_8034A898(void);
+void fn_802B7884(void *);
+void fn_802B7918(void);
+void fn_802B7CF0(void) {
+    fn_802B7884(lbl_8034A898);
+    fn_802B7918();
+}
+
 void fn_802B8C98(void) {
     lbl_8055FA31 = 0;
 }
