@@ -26,3 +26,5 @@ void fn_801D9108(int arg0) { fn_801D8938(arg0 - 4); }
 
 void fn_801D9110(int arg0) { fn_801D893C(arg0 - 4); }
 
+void fn_801D9118(int arg0) { fn_801D89C0(arg0 - 4); }
+
