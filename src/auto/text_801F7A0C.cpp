@@ -3,6 +3,17 @@
 
 #include <types.h>
 
+struct FIterVT {
+    void *vtable; // 0x0
+    void *vtbl;   // 0x8
+};
+
+struct FIter60 {
+    void *vtable; // 0x0
+    void *unused[23];
+    void *vtbl; // 0x60
+};
+
 extern "C" {
 extern u8 lbl_8033B1EC[];
 extern u8 lbl_8033B210[];
