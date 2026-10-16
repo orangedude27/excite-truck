@@ -6,7 +6,7 @@ typedef unsigned char u8;
 
 extern float lbl_80561320;
 extern float lbl_80561324;
-extern s32 lbl_8032BE80;
+extern s32 lbl_8032BE80[];
 
 typedef struct {
     s32 unk_0;
@@ -22,6 +22,35 @@ typedef struct {
     u8 unk_28;
     s32 unk_2c;
 } Unk_80135278;
+
+float fn_80135278(float *a, float *b, float *c) {
+    float dx = b[0] - c[0];
+    float dy = b[1] - c[1];
+    return a[0] * dx + a[1] * dy;
+}
+
+void *fn_801352B8(Unk_80135278 *arg0) {
+    arg0->unk_0 = (s32)&lbl_8032BE80;
+    arg0->unk_4 = 0;
+    arg0->unk_c = 0x2710;
+    arg0->unk_8 = lbl_80561320;
+    fn_80135390(arg0, 0, &lbl_8032BE80);
+    return arg0;
+}
+
+void fn_80135354(Unk_80135278 *arg0) {
+    arg0->unk_8 = lbl_80561320;
+    arg0->unk_4 = 0;
+    arg0->unk_c = 0;
+    arg0->unk_20 = lbl_80561320;
+    arg0->unk_24 = lbl_80561320;
+    arg0->unk_10 = lbl_80561324;
+    arg0->unk_14 = lbl_80561320;
+    arg0->unk_18 = lbl_80561320;
+    arg0->unk_1c = lbl_80561320;
+    arg0->unk_28 = 0;
+    arg0->unk_2c = 0;
+}
 
 void fn_801353C4(void) {
     fn_801357A4();
