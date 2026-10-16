@@ -19,6 +19,7 @@ void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
     }
     return arg0;
 }
+#pragma dont_inline off
 
 void fn_801E7840(void *arg0) {
     void *obj;
