@@ -19,10 +19,8 @@ int fn_80205964(void) {
     int i = 0;
     while (i < fn_801E85A4()) {
         fn_801E866C(i);
-        if (fn_801B8570() != 0) {
-            return 1;
-        }
-        i++;
+        if (fn_801B8570() != 0) return 1;
+        ++i;
     }
     return 0;
 }
