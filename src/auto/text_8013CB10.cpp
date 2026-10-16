@@ -3,6 +3,7 @@ extern "C" f32 lbl_80558DC4;
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614BC;
+extern "C" s32 lbl_802F9398[6];
 extern "C" void **fn_801284F8(s32, void *);
 extern "C" u8 lbl_80559D18;
 extern "C" u8 lbl_8032CAC0;
@@ -79,21 +80,23 @@ f32 fn_8013EFBC(f32 arg0) { return lbl_80561514 - arg0; }
 
 unsigned int fn_8013EFC8(void *arg0) {
     unsigned int result;
-    if (__fabsf(*(f32 *)((char *)arg0 + 0x250)) <= lbl_80558DC4) {
-        if (*((unsigned char *)arg0 + 0x13c))
-            ((void (*)(void *))(*(void ***)arg0)[0x4c / 4])(arg0);
-        if (*(int *)((char *)arg0 + 0x140))
-            fn_802AE220(0);
+    if (__fabsf(*(f32 *)((u8 *)arg0 + 0x250)) <= lbl_80558DC4) {
+        if (*((u8 *)arg0 + 0x13c))
+            ((TObj4C *)arg0)->v4C();
+        if (*(int *)((u8 *)arg0 + 0x140))
+            fn_802AE220(*(int *)((u8 *)arg0 + 0x140));
     } else {
-        ((void (*)(void *))(*(void ***)arg0)[0x4c / 4])(arg0);
+        ((TObj4C *)arg0)->v4C();
     }
-    if (((int (*)(void *))(*(void ***)arg0)[0x68 / 4])(arg0))
+    if (((TObjC *)arg0)->vC(0))
         fn_8001DFCC();
-    result = *(int *)((char *)arg0 + 0x134);
+    result = *(int *)((u8 *)arg0 + 0x134);
     return result == 4;
 }
 
-int fn_8013F088(void *arg0) { return *(int *)((char *)arg0 + 0x134) == 2; }
+int fn_8013F088(void *arg0) {
+    return (*(s32 *)((u8 *)arg0 + 0x134) - 2) == 0;
+}
 
 extern "C" void fn_8013F09C(void) {
     ((void(*)())fn_80140A6C)();
