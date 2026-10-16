@@ -66,6 +66,10 @@ int fn_80283A50(void) {
     return 0;
 }
 
+void fn_802840F4(void) {
+    fn_8027E908();
+}
+
 void fn_802840F8(void) {
     fn_8027ED2C();
 }
