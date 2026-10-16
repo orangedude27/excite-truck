@@ -14,10 +14,12 @@ int stricmp(const char *, const char *);
 void *fn_801F8188(s32 a, s32 b);
   void fn_802E317C(const char *, ...);
   s32 fn_801F9450(void *node);
-  void *fn_801F95C4(void *node, s32 index, s32 arg);
-  void fn_801F96A8(void *node);
-  void *fn_801F93FC(void);
-  }
+      void *fn_801F95C4(void *fn, void *node);
+    void fn_801F96A8(void *node);
+    void *fn_801F93FC(void);
+    void *fn_801F981C(void *node, s32 arg);
+    void fn_801F99CC(void *node);
+    }
 
 struct F9Node {
     void *vtable; // 0x0
@@ -44,30 +46,30 @@ extern "C" void fn_801F92A8(void) {
 }
 
 extern "C" void fn_801F9440(F9Node *list, F9Node *node) {
-    node->next2 = list->next2;
-    list->next2 = node;
+    node->next = list->next;
+    list->next = node;
 }
 
 extern "C" s32 fn_801F948C(F9Node *node) {
     ((F9NodeFn *)node)->fn(node);
-    return stricmp((char *)node->vtable, (char *)lbl_8033B1EC) == 0;
+    return stricmp((char *)node->name, (char *)lbl_8033B1EC) == 0;
 }
 
-extern "C" void *fn_801F96C8(F9Node *node) {
-    F9Node *list = (F9Node *)lbl_8055EC38;
+extern "C" void *fn_801F96C8(void *node) {
+    void *list = lbl_8055EC38;
     for (;;) {
         if (list == NULL) {
             break;
         }
-        if (stricmp((char *)list->vtable, (char *)lbl_8033B1EC) != 0) {
-            list = (F9Node *)list->next2;
+        if (stricmp((char *)node, (char *)list) != 0) {
+            list = *(void **)((char *)list + 0x20);
             continue;
         }
         if (list != NULL) {
             break;
         }
         fn_801F96A8(node);
-        list = (F9Node *)fn_801F93FC();
+        list = fn_801F93FC();
     }
     return list;
 }
