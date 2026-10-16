@@ -3,6 +3,13 @@
 
 extern char lbl_8055AB50;
 extern char lbl_8055E8A0;
+extern char lbl_8055E8A1;
+void fn_801CEFAC(void) {
+    lbl_8055AB50 = 1;
+    lbl_8055E8A0 = 0;
+    lbl_8055E8A1 = 1;
+}
+
 void fn_801CEFC4(void) {
     lbl_8055AB50 = 0;
     lbl_8055E8A0 = 0;
