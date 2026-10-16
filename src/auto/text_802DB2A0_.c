@@ -6,3 +6,7 @@ void fn_802DB2A0(void) {
 
 void fn_802DB2A4(void) {
 }
+
+void fn_802DB2B0(void) {
+}
+
