@@ -147,4 +147,10 @@ extern void *lbl_8055FC5C;
 void* fn_802C9C50(void) {
     return lbl_8055FC5C;
 }
-
+extern char lbl_8055FC94;
+extern char lbl_8055D030[];
+extern char lbl_8034B4E0[];
+extern void fn_80128668(void *);
+extern void fn_802E30C8(const char *, ...);
+extern float lbl_8055FC44;
+extern float lbl_8055FC48;
