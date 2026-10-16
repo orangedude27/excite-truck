@@ -62,11 +62,18 @@ extern void *fn_801284F8(int, void *);
 extern char lbl_8033C1C0[];
 extern char lbl_8033C0E8[];
 void fn_80209280(void) {
-    char *ptr = (char *)fn_801284F8(12, lbl_8033C1C0);
-    if (ptr != 0) {
-        *(char **)ptr = lbl_8033C0E8;
-        *(int *)(ptr + 8) = 3;
+    struct Obj { void *vtable; int pad; int value; };
+    struct Obj *obj = (struct Obj *)fn_801284F8(12, lbl_8033C1C0);
+    if (obj) {
+        obj->vtable = lbl_8033C0E8;
+        obj->value = 3;
     }
+}
+
+extern int fn_802E2C20(void);
+void fn_80209310(void *arg0) {
+    *(int *)((char *)arg0 + 4) = fn_802E2C20();
+    *(int *)((char *)arg0 + 8) = 1;
 }
 
 void fn_802093EC(void) {
