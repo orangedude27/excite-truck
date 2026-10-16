@@ -46,6 +46,9 @@ extern char lbl_8055FC74;
 extern char lbl_8055FC75;
 extern char lbl_8055FC8C;
 extern void *lbl_8055FC90;
+void fn_802C82C0(void) {
+}
+
 void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
@@ -132,13 +135,20 @@ void fn_802C8BD0(int arg0) {
 }
 
 void fn_802C8C04(int arg0) {
-    unsigned int *src = lbl_804C1410;
-    unsigned int *dst = lbl_804C13E0;
+    unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
     unsigned int sp8[3];
-    int i;
-    for (i = 0; i < 12; i++) dst[i] = src[i];
-    lbl_8055FC35 = 1;
-    fn_802C89E8(sp8, src[11], src[10], src[9], src[8], src[7], src[6], src[5]);
+    v0=lbl_804C1410[0];
+    lbl_804C13E0[0]=v0;
+    v1=lbl_804C1410[1]; v2=lbl_804C1410[2]; v3=lbl_804C1410[3];
+    v4=lbl_804C1410[4]; v5=lbl_804C1410[5]; v6=lbl_804C1410[6];
+    v7=lbl_804C1410[7]; v8=lbl_804C1410[8]; v9=lbl_804C1410[9];
+    v10=lbl_804C1410[10]; v11=lbl_804C1410[11];
+    lbl_804C13E0[1]=v1; lbl_804C13E0[2]=v2; lbl_804C13E0[3]=v3;
+    lbl_804C13E0[4]=v4; lbl_804C13E0[5]=v5; lbl_804C13E0[6]=v6;
+    lbl_804C13E0[7]=v7; lbl_804C13E0[8]=v8; lbl_804C13E0[9]=v9;
+    lbl_804C13E0[10]=v10; lbl_804C13E0[11]=v11;
+    lbl_8055FC35=1;
+    fn_802C89E8(sp8, v11, v10, v9, v8, v7, v6, v5);
     fn_802C8638(sp8);
     fn_802C8BD0(arg0);
 }
