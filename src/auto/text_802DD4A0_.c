@@ -20,6 +20,16 @@ void *fn_802DD4A0(void *arg0, int arg1) {
     return local;
 }
 
+void fn_802DD5F4(void) {
+    void *temp_r31 = lbl_8055FED8;
+
+    if (temp_r31 != 0) {
+        fn_80128670(*(int*)((char*)temp_r31 + 0x40));
+        fn_80128668(temp_r31);
+    }
+    lbl_8055FED8 = 0;
+}
+
 void fn_802DD738(int arg0, float farg0) {
     *(float *)((char *)lbl_804DB6A0 + (arg0 * 0x24) + 0x20) = farg0;
 }
