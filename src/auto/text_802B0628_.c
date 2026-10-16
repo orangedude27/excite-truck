@@ -7,6 +7,21 @@ void fn_802AE64C(void *);
 void fn_8002F6AC(int, void (*)(void));
 void fn_802B0808(void);
 void fn_80128668(void *);
+int fn_8012C33C(void);
+int fn_802CAC28(int, int);
+void **fn_802B59CC(void);
+extern char lbl_8034A078[];
+extern char lbl_8034A0B4[], lbl_8034A0C4[];
+extern int lbl_8055F998, lbl_8055F99C;
+void fn_802B8AE0(void *, void *);
+void fn_802B0710(void);
+int fn_802B0628(int arg0) {
+    int valid = 0;
+    if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
+    if (valid != 0) return fn_802CAC28(arg0, 0);
+    return -2;
+}
+
 void fn_802B0860(void *arg0) {
     ((int *)arg0)[0] = 0;
     ((int *)arg0)[2] = 0;
