@@ -86,9 +86,11 @@ void *GXInitVtxDescList(void) {
     return temp;
 }
 
-void GXInitLightDistAttn(unsigned int arg0, unsigned int arg1) {
-    extern unsigned short *__peReg;
-    __peReg[1] = (__peReg[1] & ~0x4) | ((arg0 & 1) << 2);
+void GXInitLightDistAttn(unsigned int arg0) {
+    unsigned short reg = __peReg[1];
+
+    reg = (reg & ~0x4) | ((arg0 << 2) & 0x4);
+    __peReg[1] = reg;
 }
 
 void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
@@ -151,6 +153,15 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
         OSSetCurrentContext(ctx);
     }
     __peReg[5] |= 4;
+}
+
+unsigned int GXLoadLightObjIndx(unsigned int value) {
+    unsigned int old = lbl_8055D974;
+
+    OSDisableInterrupts();
+    lbl_8055D974 = value;
+    OSRestoreInterrupts();
+    return old;
 }
 
 void GXSetChanAmbColor(void *ctx) {
