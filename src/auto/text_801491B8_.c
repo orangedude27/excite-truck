@@ -378,6 +378,10 @@ s32 fn_8014C88C(f32 arg0, f32 arg1) {
     return (f32)abs <= lbl_80558DC4[0];
 }
 
+int fn_8014C964(int *arg0, int arg1) {
+    return *arg0 == arg1;
+}
+
 int fn_8014C9CC(void *arg0) {
     return ((int *)arg0)[1];
 }
