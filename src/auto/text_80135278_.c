@@ -29,10 +29,12 @@ void fn_801355C0(void *, s32, s32, void *, s32);
 void fn_801357A4();
 
 float fn_80135278(float *a, float *b, float *c) {
-    float d[2];
-    d[0] = b[0] - c[0];
-    d[1] = b[1] - c[1];
-    return a[0] * d[0] + a[1] * d[1];
+    float dx = b[0] - c[0];
+    float dy = b[1] - c[1];
+    volatile float d[2];
+    d[0] = dx;
+    d[1] = dy;
+    return a[0] * dx + a[1] * dy;
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
@@ -79,8 +81,8 @@ void fn_80135390(Unk_80135278 *arg0) {
 
 void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     float f = lbl_80561320;
-    arg0->unk_4 = arg3;
     arg0->unk_8 = f;
+    arg0->unk_4 = arg3;
     fn_801355C0(arg0, arg1, arg2, &arg0->unk_4, 0);
     fn_801357A4(arg0, arg1);
 }
@@ -91,6 +93,24 @@ void fn_801353C4(void) {
 
 s32 fn_801355B8(void *arg0, void *arg1) {
     return 0;
+}
+
+void fn_80135EF0(void *arg0) {
+    if (fn_80135D60() == 1) {
+        *(int *)((char *)arg0 + 0x34) = 0;
+        *(int *)((char *)arg0 + 0x5C) = 0;
+        if (*(int *)((char *)arg0 + 0x50) != 0)
+            *(int *)((char *)arg0 + 0x54) = *(int *)(*(char **)((char *)arg0 + 0x2C) + 0x18) >> 16;
+    }
+}
+
+void fn_80135F4C(void *arg0) {
+    int x = *(int *)(*(char **)((char *)arg0 + 0x2C) + 0x1C);
+    fn_80135F64(x, x + 8, 1, 0);
+}
+
+void fn_8013605C(void *arg0) {
+    *(signed char *)((char *)arg0 + 0x64) = 0;
 }
 
 void fn_80136764(void) {
