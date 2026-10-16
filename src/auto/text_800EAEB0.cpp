@@ -373,10 +373,8 @@ extern "C" void fn_800ED0E4(s32 arg0) {
     arg0 -= 8;
     fn_800ED058();
 }
-s32 fn_800ED0F4(s32 arg0, s32 arg1) {
-    if (arg0 != 0 && arg1 > 0) {
-        fn_80128668_noarg();
-    }
+extern "C" s32 fn_800ED0F4(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668_noarg();
     return arg0;
 }
 
@@ -499,6 +497,17 @@ extern "C" s32 fn_800EEEC4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_800EF500(void* self) {
+    void* iterator;
+    if (*(u8*)((u8*)self + 0x16) == 0) return 0;
+    iterator = lbl_80412A6C + 4;
+    if (self == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(lbl_80412A6C, &iterator, (u8*)self + 0x100);
+    *(u8*)((u8*)self + 0x14) = *((u8*)Instance__15EmissionManagerFv() + 0x6c32);
+    *(u8*)((u8*)self + 0x17) = 1;
+    return 1;
+}
+
 extern u8 lbl_80323B28[], lbl_80323C14[], lbl_80323BEC[];
 extern u8 lbl_80324054[], lbl_80324030[];
 #pragma push
@@ -510,13 +519,23 @@ extern "C" void OSRestoreInterrupts(u32);
 extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void*, bool);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void*, void*);
 extern "C" void* Instance__15EmissionManagerFv(void);
-extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(void* self, bool pause) {
-    u32 level = OSDisableInterrupts();
+extern "C" void Pause__Q46nw4hbm3snd6detail9SeqPlayerFb(bool pause, void* self) {
+    u32 level;
+    void* track;
+    int i;
+    level = OSDisableInterrupts();
     *(u8*)((u8*)self + 0x18) = pause;
-    for (int i = 0; i < 16; i++) {
-        void* track = *(void**)((u8*)self + 0x9c + i * 4);
+    for (i = 0; i < 16; i++) {
+        track = *(void**)((u8*)self + 0x9c + i * 4);
         if (track) PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(track, pause);
     }
+    OSRestoreInterrupts(level);
+}
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf(void* self, f32 volume) {
+    if (!(volume <= lbl_8056106C)) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x15d, (const char*)lbl_80323BEC);
+    u32 level = OSDisableInterrupts();
+    *(f32*)((u8*)self + 0x1c) = volume;
     OSRestoreInterrupts(level);
 }
 
@@ -524,13 +543,12 @@ extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* arg0,
     extern f32 lbl_8056106C;
     extern u8 lbl_80323B28[];
     extern u8 lbl_80323C14[];
-    u32 level;
-    if (farg0 > lbl_8056106C) {
+    if (farg0 != lbl_8056106C) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x164, (const char*)lbl_80323C14);
     }
-    level = OSDisableInterrupts();
+    OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x34) = farg0;
-    OSRestoreInterrupts(level);
+    OSRestoreInterrupts(0);
 }
 
 extern "C" void fn_800EF878(void* arg0, f32 farg0) {
