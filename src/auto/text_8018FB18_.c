@@ -67,6 +67,8 @@ int fn_80190D38(float a, float b, float c) {
     return (int)(lbl_80562080 + (lbl_8056208C + (lbl_80562090 * lbl_805620AC)));
 }
 
+int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
+
 void fn_80190E6C(void) {
     fn_80190E08();
 }
