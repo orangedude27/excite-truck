@@ -45,13 +45,14 @@ void fn_80007F40(void) {
     fn_80012778();
 }
 
+#pragma dont_inline fn_80007F04
+void fn_80007F04(void);
+#pragma dont_inline fn_80007F04
 void fn_80007F68(void) {
     fn_80012794();
     fn_80279488();
     fn_80007F04();
 }
-
-#pragma scheduling on
 const char* fn_80007F90(u32 arg0) {
     Unk802FB70C* p;
     u32 key;
@@ -71,6 +72,7 @@ const char* fn_80007FF0(u32 arg0) {
     return lbl_805589A0;
 }
 
+#pragma dont_inline fn_80007F04
 u32 fn_80008050(const char* arg0) {
     Unk802FB70C* p;
     u32 key;
@@ -80,9 +82,14 @@ u32 fn_80008050(const char* arg0) {
     fn_802E30C8(lbl_802FB7A4, arg0);
     return 0;
 }
-
 u32 fn_800080D8(void) {
     return *(u32*)((u8*)&lbl_8034EF38 + 0x1E0);
+}
+
+s32 fn_80008158(s32);
+extern const char lbl_805589A8[];
+const char* fn_80008188(void) {
+    return *(const char**)((u8*)&lbl_8034EF38 + fn_800080E8() * 0xC + 4);
 }
 
 #pragma scheduling reset
