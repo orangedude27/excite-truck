@@ -224,8 +224,27 @@ void fn_80020860(int arg0) {
                  (f32) lbl_8055CFF4);
 }
 
+int fn_800213DC(int arg0) {
+    if (lbl_8055D644 != 0) {
+        if (lbl_8055D645 == 0 && fn_801E8838() == 0 && fn_802E4A10() == 0) {
+            switch (arg0) {
+            case 0x58: fn_8001FEB8(); break;
+            case 0x1B: fn_8002017C(); break;
+            }
+        }
+        return 1;
+    }
+    return 0;
+}
+
 void fn_8002167C(void) {
     fn_8001FF24();
+}
+
+void fn_80021680(void) {
+    fn_80020860(0xFF);
+    fn_800209A0(0xFF, lbl_805604B4);
+    fn_8001FF34(-1);
 }
 
 void __AXDSPInitCallback_800216B8(void) { lbl_8055D62C = 2; }
@@ -234,14 +253,24 @@ void fn_800216C4(void) {
 
 }
 
-void fn_800216C8(void) { fn_8001FF34(-1); }
-
-int fn_800216D0(void) {
-    if (lbl_8055D644 == 0) return 0;
-    if (lbl_8055D645 != 0) return 0;
-    return 1;
+#pragma push
+#pragma inline_depth 0
+void fn_800216C8(void) {
+    fn_8001FF34(-1);
 }
-
+extern int lbl_8055D668, lbl_8055D66C;
+extern char *lbl_80558D8C;
+extern void fn_8000DA10(void);
+extern int fn_8001BA90(int, int, int, int);
+extern void fn_8001BA70(int, int, unsigned char *, int);
+#pragma dont_inline on
+int fn_800216D0(void) {
+    int result = 0;
+    if (lbl_8055D644) {
+        if (!lbl_8055D645) result = 1;
+    }
+    return result;
+}
 unsigned char fn_800216F4(void) {
     return lbl_8055D644;
 }
@@ -249,6 +278,38 @@ unsigned char fn_800216F4(void) {
 int fn_800216FC(void) {
     if (lbl_8055D644 != 0) return fn_80020184();
     return 0;
+}
+
+int fn_8002173C(void) {
+    int sp8;
+    if (lbl_8055D62C != 0) {
+        fn_80230B5C(&sp8);
+        fn_80230AD8(&sp8);
+        switch (lbl_8055D62C) {
+            case 2:
+                fn_800216C8();
+                break;
+            case 1:
+                fn_80021680();
+                break;
+        }
+        fn_80230B38(NULL);
+        return 1;
+    }
+    return 0;
+}
+
+int fn_800217AC(void) {
+    if (lbl_8055D648 != 0) {
+        return 0;
+    }
+    if (lbl_8055D644 != 0) {
+        if (lbl_8055D645 == 0) {
+            return 1;
+        }
+        return 0;
+    }
+    return 1;
 }
 
 void fn_800218F4(void) {
