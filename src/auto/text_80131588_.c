@@ -2,6 +2,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "types.h"
 
+extern char lbl_80559B10[], lbl_80559B18[], lbl_80559B1C[];
+extern char lbl_8032B7BC[];
+extern int sscanf(const char*, ...);
+
 extern s32 fn_80128668(void);
 extern int stricmp(const char*, const char*);
 extern s32 fn_80131C88(s32);
