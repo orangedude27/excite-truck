@@ -139,5 +139,5 @@ s32 fn_80132C50(void* arg0, s32 arg1) {
 }
 
 extern void fn_802E317C(const char*, ...);
-extern const char lbl_8032B73C[];
+extern char lbl_8032B73C;
 typedef struct { void** vtable; } Unk80132BD0;
