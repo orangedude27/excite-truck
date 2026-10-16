@@ -298,8 +298,9 @@ extern "C" f32 fn_8015A368(void* arg0) {
     sp8 = *(f32*)((u8*)arg0 + 0x25C) * obj->v18(v21ret);
     obj->v33(&sp8);
     obj->v31();
+    f32 f = lbl_80561750;
     *(s32*)((u8*)arg0 + 0x264) = 0;
-    *(f32*)((u8*)arg0 + 0x25C) = lbl_80561750;
+    *(f32*)((u8*)arg0 + 0x25C) = f;
     return sp8;
 }
 
