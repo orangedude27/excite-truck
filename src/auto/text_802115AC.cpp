@@ -89,6 +89,19 @@ extern "C" void fn_8021165C(void) {
     fn_80215270();
 }
 
+extern s32 lbl_8055EF1C;
+extern s32 lbl_8055EF20;
+s32 fn_80211660(s32 arg0) {
+    if (arg0 == 0) {
+        return lbl_8055EF1C;
+    }
+    return lbl_8055EF20;
+}
+
+s32 fn_80211678(u8 *arg0) {
+    return ((s8) *arg0 - 0x24) == 0;
+}
+
 extern "C" int fn_80211690(int);
 extern "C" int fn_80211D24(int);
 extern "C" int fn_802E2C20(void);
@@ -551,18 +564,18 @@ extern "C" s32 fn_8021583C(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_802158C8(void *arg0) {
-    void (*fn)(void) = *(void (**)(void))(*(char **)arg0 + 0x244);
-    fn();
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf18();
 }
 
 extern "C" void fn_802158DC(void *arg0) {
-    void (*fn)(void) = *(void (**)(void))(*(char **)arg0 + 0x244);
-    fn();
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf19();
 }
 
 extern "C" void fn_802158F0(void *arg0) {
-    void (*fn)(void) = *(void (**)(void))(*(char **)arg0 + 0x244);
-    fn();
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf20();
 }
 
 extern "C" void fn_80215B08(void *arg0) {
