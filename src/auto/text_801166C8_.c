@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 #include <revolution/ARC/arc.h>
+#include <revolution/OS/OSAlarm.h>
+#include <revolution/OS/OSContext.h>
 
 extern void* fn_802ECC74(void*);
 extern void fn_80127F70(void*);
@@ -170,6 +172,23 @@ void fn_8011BC48(void) {
 extern void *lbl_8055DEF0;
 void* fn_8011FF24(void) {
     return lbl_8055DEF0;
+}
+
+void fn_80125098(void *arg0) {
+    f32 f0, f1, f2, f3;
+    f3 = *(f32 *)((u8 *)arg0 + 0);
+    f1 = *(f32 *)((u8 *)arg0 + 8);
+    f2 = *(f32 *)((u8 *)arg0 + 4);
+    f0 = *(f32 *)((u8 *)arg0 + 12);
+    *(f32 *)((u8 *)arg0 + 8) = f3 - f1;
+    *(f32 *)((u8 *)arg0 + 0) = f3 + f1;
+    *(f32 *)((u8 *)arg0 + 4) = f2 - f0;
+    *(f32 *)((u8 *)arg0 + 12) = f2 + f0;
+}
+
+extern void fn_80125664(u8 *, s32);
+void fn_80125CA0(s32 arg3) {
+    fn_80125664((u8 *)&lbl_802F6A40 + (arg3 << 8), arg3);
 }
 
 extern char lbl_8055DF08;
