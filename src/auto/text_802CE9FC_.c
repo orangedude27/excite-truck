@@ -31,6 +31,17 @@ void fn_802D050C(void* hi) {
     lbl_8055FD54 = hi;
 }
 
+extern unsigned char lbl_8055FD78;
+extern int GXSetCullMode(int);
+extern int lbl_8055D0BC;
+extern int lbl_8055D0C0;
+extern unsigned char lbl_8055FD18;
+void fn_802D08B4(int arg0, int arg1, unsigned char arg2) {
+    lbl_8055FD18 = arg2;
+    lbl_8055D0BC = arg0;
+    lbl_8055D0C0 = arg1;
+}
+
 void fn_802D2614(void) {
     fn_802D14D8();
     fn_802D1678();
