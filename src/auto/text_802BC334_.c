@@ -23,36 +23,38 @@ int fn_802BD0C8(void *arg0) {
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
 void fn_802BD0F4(void *arg0) {
-    int i = 0;
-    int offset = 0;
+    int i;
+    int offset;
     int count;
+    char *entries;
     char *entry;
-    void *ptr;
-    float a, b;
-    if (*(int *)((char *)arg0 + 4) == 0)
-        return;
-    ptr = *(void **)((char *)arg0 + 0x58);
-    if (ptr == 0)
-        return;
-    entry = *(char **)ptr;
-    count = *(int *)(entry + 4);
-    while (i < count) {
-        ptr = *(void **)((char *)arg0 + 0x58);
-        entry = *(char **)ptr + offset;
-        a = *(float *)(entry + 0x30);
-        b = *(float *)(entry + 0x38);
-        *(int *)(entry + 4) = fn_802BA580(*(int *)((char *)arg0 + 4), &a, *(float *)(entry + 0x1c));
-        offset += 0x44;
-        i++;
+    void *array;
+    float x, y;
+    if (*(int *)((char *)arg0 + 4) != 0 &&
+        (array = *(void **)((char *)arg0 + 0x58)) != 0) {
+        entries = *(char **)array;
+        count = *(int *)(entries + 4);
+        i = 0;
+        offset = 0;
+        while (i < count) {
+            array = *(void **)((char *)arg0 + 0x58);
+            entry = *(char **)((char *)array) + offset;
+            x = *(float *)(entry + 0x30);
+            y = *(float *)(entry + 0x38);
+            *(int *)(entry + 4) = fn_802BA580(*(int *)((char *)arg0 + 4), &x, *(float *)(entry + 0x1c));
+            offset += 0x44;
+            i++;
+        }
     }
 }
 
 void *fn_802BD194(void *arg0, const char *arg1) {
     unsigned int count = *(unsigned int *)arg0;
-    char *base = *(char **)((char *)arg0 + 4);
     unsigned int i = 0;
     unsigned int offset = 0;
+    char *base;
     while (i < count) {
+        base = *(char **)((char *)arg0 + 4);
         if (strcmp(base + offset, arg1) == 0)
             return base + i * 0x38;
         offset += 0x38;
