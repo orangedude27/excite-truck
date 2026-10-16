@@ -71,3 +71,7 @@ s32 fn_80144DCC(void) {
 void fn_80144DD4(void) {
 }
 
+s32 fn_80144DD8(void) {
+    return 0;
+}
+
