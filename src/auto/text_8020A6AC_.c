@@ -6,6 +6,32 @@ void* fn_8020A76C(void) {
     return lbl_8055EE08;
 }
 
+extern void fn_802E59BC(void *);
+extern void fn_802E5950(int, int);
+extern void fn_802E6138(void);
+extern void fn_802E61D8(void *);
+void fn_8020AA0C(void *arg0) {
+    int value = *(int *)((char *)arg0 + 8);
+    if (value != 0) {
+        fn_802E61D8((void *)value);
+        if (*(int *)((char *)arg0 + 0xC) != 0) {
+            fn_802E61D8(*(void **)((char *)arg0 + 0xC));
+        }
+        if (*(int *)((char *)arg0 + 0xC) != 0) {
+            fn_802E6138();
+            *(int *)((char *)arg0 + 0xC) = 0;
+        }
+        if (*(int *)((char *)arg0 + 8) != 0) {
+            fn_802E6138();
+            *(int *)((char *)arg0 + 8) = 0;
+        }
+    }
+    *(int *)((char *)arg0 + 4) = 3;
+    *((unsigned char *)arg0 + 0x3E) = 0;
+}
+
+extern void fn_802E59BC(void *); void fn_8020AC18(void *arg0, int arg1) { fn_802E59BC((void *)arg1); }
+
 extern void fn_802E5A54(void);
 void fn_8020AC20(void) {
     lbl_8055EE08 = 0;
