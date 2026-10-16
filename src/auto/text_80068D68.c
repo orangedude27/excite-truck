@@ -10,6 +10,9 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern void fn_80070F90(void *ptr);
+extern u8 lbl_803C4C40[];
+#include "revolution/BTE/stack/sdp/sdpint.h"
 extern void AXFXReverbHiExpShutdown(void*);
 extern s32 AXFXReverbHiExpInit(void*);
 extern void __FreeDelayLine(void*);
