@@ -39,6 +39,19 @@ void fn_80266070(void* arg0, void* arg1, void* arg2, void* arg3) {
     out[2] = base[2] + z;
 }
 
+extern float lbl_8055C4C0;
+extern float lbl_80563C2C;
+extern float lbl_8055C4C4;
+extern int lbl_8055CFF0;
+extern int lbl_8055CFF4;
+void fn_80266150(void *arg0);
+int fn_80178CA4(void);
+float PSQUATMultiply(float *arg0, int arg1);
+void *fn_80266120(void *arg0) {
+    fn_80266150(arg0);
+    return arg0;
+}
+
 char fn_8026A38C(void) {
     return lbl_8055F488;
 }
