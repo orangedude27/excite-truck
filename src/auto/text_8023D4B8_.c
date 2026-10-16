@@ -77,6 +77,43 @@ void fn_8023DB68(void) {
     }
 }
 
+char *fn_8023DC38(char *arg0) {
+    char **var_r31;
+    s32 var_r30;
+
+    var_r31 = (char **)&lbl_802FA0A8;
+    var_r30 = 0;
+loop_1:
+    if (stricmp(*(char **)(var_r31 + 1), arg0) == 0) {
+        return (char *)&lbl_802FA0A8 + (var_r30 * 8);
+    }
+    var_r30 += 1;
+    var_r31 += 1;
+    if (var_r30 >= 0x1D) {
+        fn_802E317C(lbl_80341B9C, arg0);
+        return 0;
+    }
+    goto loop_1;
+}
+
+char *fn_8023DCCC(char *arg0) {
+    char **var_r31;
+    s32 var_r30;
+
+    var_r31 = (char **)&lbl_802FA190;
+    var_r30 = 0;
+loop_1:
+    if (stricmp(*var_r31, arg0) == 0) {
+        return (char *)var_r31;
+    }
+    var_r30 += 1;
+    var_r31 += 1;
+    if (var_r30 >= 0x11) {
+        return 0;
+    }
+    goto loop_1;
+}
+
 int fn_8023DF70(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
