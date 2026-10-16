@@ -1,5 +1,16 @@
 #include <types.h>
 
+namespace nw4hbm { namespace snd { namespace detail {
+class SeqFileReader {
+public:
+    void *GetBaseAddress() const;
+};
+}}}
+
+extern u8 lbl_80323E98[];
+extern u8 lbl_803239C0[];
+extern u8 lbl_80323AF8[];
+
 extern u8 lbl_803231D8[];
 extern "C" s32 fn_800F283C(void *, u32, s32, s32 *);
 extern "C" s32 fn_800F2824(void *, s32, void *);
@@ -433,6 +444,36 @@ extern "C" void fn_800EE47C(void* arg0) {
         ((u8*)arg0)[0x1D8] = 0;
     }
     fn_800F27AC(arg0);
+}
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* arg0, f32 farg0) {
+    extern f32 lbl_8056106C;
+    extern u8 lbl_80323B28[];
+    extern u8 lbl_80323C14[];
+    if (farg0 != lbl_8056106C) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x164, (const char*)lbl_80323C14);
+    }
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x34) = farg0;
+    OSRestoreInterrupts(0);
+}
+
+extern "C" void fn_800EF878(void* arg0, f32 farg0) {
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x20) = farg0;
+    OSRestoreInterrupts(0);
+}
+
+extern "C" void fn_800EF8B8(void* arg0, f32 farg0) {
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x24) = farg0;
+    OSRestoreInterrupts(0);
+}
+
+extern "C" void fn_800EF8F8(void* arg0, f32 farg0) {
+    OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x2C) = farg0;
+    OSRestoreInterrupts(0);
 }
 
 extern "C" void fn_800EF9B8(void* arg0, f32 arg1) {
