@@ -10,6 +10,17 @@ void fn_80160B14(void) {
 	fn_80128658();
 }
 
+void fn_80160B18(float *arg0) {
+    float temp_f0;
+    float temp_f1;
+    float temp_f2;
+    temp_f0 = arg0[1];
+    temp_f1 = arg0[0];
+    temp_f2 = lbl_80561830 / (float) fn_8002F234((temp_f1 * temp_f1) + (temp_f0 * temp_f0));
+    arg0[0] = arg0[0] * temp_f2;
+    arg0[1] = arg0[1] * temp_f2;
+}
+
 void fn_80160B7C(float *arg0, float *arg1, float *arg2) {
     float x = arg1[0] - arg2[0];
     float y = arg1[1] - arg2[1];
