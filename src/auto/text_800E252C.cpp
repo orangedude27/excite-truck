@@ -94,6 +94,12 @@ typedef float f32;
 #pragma small_data off
 extern float lbl_80560FB0;
 #pragma pop
+extern float lbl_80560F00;
+extern float lbl_80560F04;
+#pragma push
+#pragma small_data off
+extern float lbl_80320E38[];
+#pragma pop
 extern "C" void fn_800E2C98(void *arg0) {
     int *p = (int *)((char *)arg0 + 4);
     *(int *)((char *)arg0 + 4) = 0;
@@ -109,6 +115,15 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *arg0, 
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" void *Instance__15EmissionManagerFv(void) {
+    if ((signed char)lbl_8055DE18 == 0) {
+        fn_800E279C(&lbl_80407F6C);
+        __register_global_object(&lbl_80407F6C, (void *)fn_800E2D74, &lbl_80407F60);
+        lbl_8055DE18 = 1;
+    }
+    return &lbl_80407F6C;
 }
 
 extern "C" void *fn_800E2D74(void *arg0, int arg1) {
