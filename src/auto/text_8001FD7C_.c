@@ -137,6 +137,10 @@ void fn_8001FFD0(int arg0, int arg1, void* arg2, int arg3) {
     fn_801345D8(arg2, arg3, &lbl_802FE138[0xd4], arg0 + 1);
 }
 
+void fn_8002017C(void) {
+    fn_8000B3DC(0);
+}
+
 void fn_80020430(void) {
     fn_8001FF24();
 }
