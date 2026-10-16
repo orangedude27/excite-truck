@@ -21,6 +21,10 @@ void fn_802E625C(void* hi) {
     lbl_8055FF8C = hi;
 }
 
+int* fn_802E6ABC(void) {
+    return &lbl_8055D1EC;
+}
+
 void fn_802E6AC4(void) {
     lbl_8055FFB5 = 1;
 }
