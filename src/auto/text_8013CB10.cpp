@@ -3,6 +3,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern "C" void fn_80140A6C(void);
+extern "C" u8 *fn_8017960C(s32);
+extern "C" u32 fn_8013D148(u8 *, f32);
+extern "C" void *fn_802C6C34(s32);
 
 // user virtuals start at vtable offset 0x8 (two destructor slots first)
 class TObj4C {
@@ -77,6 +80,24 @@ extern "C" void *fn_80141EB0(s32 *arg0) {
         arg0[3] = (((volatile s32 *)arg0)[3] + 1) % ((volatile s32 *)arg0)[1];
     }
     return result;
+}
+
+extern "C" u8 *fn_8017960C(s32);
+extern "C" u32 fn_8013D148(u8 *, f32);
+extern "C" void *fn_802C6C34(s32);
+extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
+    u8 *data = *(u8 **)(arg0 + 0x64) + 4;
+    s32 index = *(s32 *)(arg0 + 0x68);
+    u8 *item = data + index * 0x14;
+    u8 *manager = fn_8017960C(arg1);
+    u8 *obj = *(u8 **)(manager + 0x270);
+    obj = *(u8 **)(*(u8 **)obj + 0x18);
+    u32 result = fn_8013D148(item, *(f32 *)(obj + 0x48));
+    s32 value = *(s32 *)item;
+    u8 *end = *(u8 **)(data + value + 4) + value * 0x24;
+    if (result != (u32)(end - 0x24))
+        end = (u8 *)result + 0x24;
+    return end;
 }
 
 extern "C" u8 *fn_801B2EC0(s32);
