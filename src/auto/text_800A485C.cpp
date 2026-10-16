@@ -22,6 +22,7 @@ extern "C" void fn_800D16C4(OSAlarm *, void *);
 extern u32 lbl_8055DDB0;
 extern "C" const char lbl_8031E9C0[];
 DECL_SECTION(".sdata") extern u8 lbl_8055DDA8[];
+extern "C" s32 fn_800D1E5C(void *arg0, s32 arg1);
 extern u32 lbl_8055DDF8;
 extern "C" void fn_800D1C48(void);
 
@@ -204,17 +205,17 @@ extern "C" void fn_800D16A8(s32 *arg0) {
 
 extern "C" void *fn_800D1948(void *arg0, s32 arg1) {
     void *r26 = arg0;
-    
-    *(u32 *)((u8 *)arg0 + 0x1F0) = (u32)&lbl_8031E9C0;
-    lbl_8055DDB0 = (u32)arg0;
-    
-    if (arg1 != 0) {
-        BOOL result = ARCInitHandle((void *)arg1, (ARCHandle *)((u8 *)arg0 + 0x1D0));
-        s32 neg = -result;
-        u32 or_result = (u32)(neg | result);
-        ((u8 *)arg0)[0x1EC] = (u8)(or_result >> 31);
-    } else {
-        ((u8 *)arg0)[0x1EC] = 0;
+    if (r26 != NULL) {
+        *(u32 *)((u8 *)r26 + 0x1F0) = (u32)&lbl_8031E9C0;
+        lbl_8055DDB0 = (u32)r26;
+        if (arg1 != 0) {
+            BOOL result = ARCInitHandle((void *)arg1, (ARCHandle *)((u8 *)r26 + 0x1D0));
+            s32 neg = -result;
+            s32 or_result = neg | result;
+            ((u8 *)r26)[0x1EC] = (u8)(or_result >> 31);
+        } else {
+            ((u8 *)r26)[0x1EC] = 0;
+        }
     }
 
     void *r28 = r26;
@@ -544,19 +545,31 @@ extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *arg0, long arg1, int a
 #pragma opt_tail_call on
 extern "C" void fn_800D1C48(void);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
+    u32 sp_8[2];
+    u32 sp_C;
+    u32 sp_10;
+    u32 sp_14;
+    u32 sp_18;
+    u32 sp_1C;
+    u32 sp_20;
+    u32 sp_24;
     u32 sp_68;
     u32 sp_6C;
     u32 sp_70;
     u32 sp_88[16];
-    u32 sp_C[4];
     
-    sp_C[0] = (u32)msg;
-    sp_C[1] = (u32)file;
-    sp_C[2] = (u32)line;
-    sp_C[3] = 0;
-    sp_68 = 0x300;
+    sp_8[0] = (u32)msg;
+    sp_8[1] = (u32)file;
+    sp_C = (u32)line;
+    sp_10 = 0;
+    sp_14 = 0;
+    sp_18 = 0;
+    sp_1C = 0;
+    sp_20 = 0;
+    sp_24 = 0;
+    sp_68 = 0x3000000;
     sp_6C = (u32)&sp_88[0];
-    sp_70 = (u32)&sp_C[0];
+    sp_70 = (u32)&sp_8[0];
     
     fn_800D2098(&sp_68);
 }
