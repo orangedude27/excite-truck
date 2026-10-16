@@ -32,11 +32,11 @@ void fn_80129790(void) {
 void *__AXFXGetLfoSinTable_801297F4(void) { return lbl_804223C0; }
 
 u8 fn_80129800(void *arg0, int arg1) {
-    u8 buffer[0x80];
+    u8 buffer[0x70];
     s32 offset;
-    if (fn_801298E8(buffer, 0) != 0) {
+    if (fn_801298E8(buffer, (int)arg0) != 0) {
         offset = ((s32 *)lbl_804223C0)[arg1];
-        if (offset >= 0) return buffer[offset + 0x28];
+        if (offset >= 0) return buffer[offset + 0x20];
     }
     return 0;
 }
