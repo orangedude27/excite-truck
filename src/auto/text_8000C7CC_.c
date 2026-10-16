@@ -119,6 +119,17 @@ void fn_8000D100(void) {
 }
 
 extern s32 fn_80019BA8(void);
+s32 fn_8000C7CC(void) {
+    return fn_80019BA8() == 0;
+}
+
+u32 fn_8000C7F4(s32 arg0) {
+    if (fn_8000C7CC() != 0) {
+        return 1;
+    }
+    return (u32)((arg0 - 2) | (arg0 - 2)) >> 31;
+}
+
 s32 fn_8000C840(void) {
     return 1;
 }
