@@ -8,3 +8,4 @@ void fn_802A0940(void) {
 void fn_802A0AF8(void) {
 }
 #include <types.h>
+extern u8 lbl_8055F834[];
