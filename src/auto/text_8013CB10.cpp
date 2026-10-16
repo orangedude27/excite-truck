@@ -4,6 +4,7 @@ extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614BC;
 extern "C" s32 lbl_802F9398[6];
+struct S6_8013D18C { s32 v[6]; };
 extern "C" void **fn_801284F8(s32, void *);
 extern "C" u8 lbl_80559D18;
 extern "C" u8 lbl_8032CAC0;
@@ -57,6 +58,17 @@ public:
 
 extern "C" s32 fn_8013D1F0(s32);
 
+extern "C" s32 fn_8013D18C(s32 arg0) {
+    s32 values[6];
+    values[0] = lbl_802F9398[0];
+    values[1] = lbl_802F9398[1];
+    values[2] = lbl_802F9398[2];
+    values[3] = lbl_802F9398[3];
+    values[4] = lbl_802F9398[4];
+    values[5] = lbl_802F9398[5];
+    return values[arg0 % 6];
+}
+
 extern "C" s32 fn_8013D1F0(s32 arg0) {
     u8 *obj = ((u8 *(*)(void))fn_801B2EC0)();
     ((void (*)(void))(*(void ***)obj)[4])();
@@ -70,6 +82,12 @@ extern "C" void fn_8013D27C(void *a, void *b) {
 extern "C" void fn_8013E338(void) {
 
 }
+
+extern "C" f32 lbl_80561510;
+extern "C" f32 lbl_80561514;
+extern "C" void fn_802AE220(int);
+extern "C" int fn_8001DFCC(void);
+f32 fn_8013EFB0(f32 arg0) { return arg0 - lbl_80561510; }
 
 extern f32 lbl_80561514;
 extern f32 lbl_80561510;
@@ -94,9 +112,7 @@ unsigned int fn_8013EFC8(void *arg0) {
     return result == 4;
 }
 
-int fn_8013F088(void *arg0) {
-    return (*(s32 *)((u8 *)arg0 + 0x134) - 2) == 0;
-}
+int fn_8013F088(void *arg0) { return (*(s32 *)((u8 *)arg0 + 0x134) - 2) == 0; }
 
 extern "C" void fn_8013F09C(void) {
     ((void(*)())fn_80140A6C)();
