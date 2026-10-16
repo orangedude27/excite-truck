@@ -17,6 +17,10 @@ typedef struct {
     s32 (*fn)(void *, s32);
 } VTable80154618;
 extern void fn_802E30C8();
+extern s32 lbl_802F93D0[];
+extern f32 lbl_805615D4;
+extern f64 lbl_805615D8;
+extern f32 lbl_80561628;
 
 void fn_8014ACCC(void) {
 
@@ -147,17 +151,21 @@ s32 fn_80154618(void *arg0) {
     s32 found = 0;
     s32 i = 0;
     while (i < fn_801B2F24()) {
-        if ((*(s32 *)((u8 *)*it + 0x1F0) == 0x50) &&
-            (((VTable80154618 *)(*(s32 **)arg0))->fn(arg0, i) != 0)) {
-            found = 1;
+        if (*(s32 *)((u8 *)*it + 0x1F0) == 0x50) {
+            if (((VTable80154618 *)(*(s32 **)arg0))->fn(arg0, i) != 0) {
+                found = 1;
+            }
         }
         it++;
         i++;
     }
-    if (found == 0 && fn_801B8514() != 0) {
-        return 1;
+    it = (s32 **)0;
+    if (found == 0) {
+        if (fn_801B8514() != 0) {
+            it = (s32 **)1;
+        }
     }
-    return 0;
+    return (s32)it;
 }
 
 void fn_801546D4(s32 arg0) {
