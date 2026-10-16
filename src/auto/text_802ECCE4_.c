@@ -15,3 +15,11 @@ extern s32 fn_802ECD68(void *, void *, s32);
 void fn_802ECFEC(void *arg0) {
     fn_802E12DC(((void **)arg0)[16]);
 }
+
+void fn_802ECFF4(void *arg0) {
+    if (lbl_805600F8 == 0) {
+        fn_802E1290(((void **)arg0)[16]);
+        fn_80128668(arg0);
+    }
+}
+
