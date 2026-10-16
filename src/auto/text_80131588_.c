@@ -35,7 +35,15 @@ extern signed char lbl_8055E060;
 extern void* lbl_8042F53C[];
 extern s32 fn_80131920(s32, s32);
 extern void __register_global_object(void*, void (*)(void*), void*);
-s32 fn_8013181C(void) { fn_802E30C8(lbl_8032B510); return 0; }
+extern void fn_802E317C(const char*, ...);
+extern s32 fn_8012F9E8(void*, s32, const char*);
+extern char lbl_80559B24[]; /* "%f, %f" */
+extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
+extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
+s32 fn_8013181C(void) {
+    fn_802E30C8(lbl_8032B510, lbl_8032B510);
+    return 0;
+}
 
 void* fn_8013184C(void) {
     if (lbl_8055E060 == 0) {
@@ -144,6 +152,31 @@ s32 fn_80132220(void* arg0) {
     if (stricmp(value, lbl_80559B18) != 0 && stricmp(value, lbl_80559B10) == 0)
         result = 1;
     return result;
+}
+
+s32 fn_8013284C(void* arg0, s32 arg1) {
+    s32 count = *(s32*)((char*)arg0 + 0xC);
+    if (count > 0) {
+        void** arr = *(void***)((char*)arg0 + 0x10);
+        u32 i = 0;
+        do {
+            char* name = (char*)arr[i];
+            if (*name == '@') {
+                if (arg1-- == 0) {
+                    void* obj = *(void**)((char*)arg0 + 0x18);
+                    return ((s32 (*)(void*, void*))(*(void**)((char*)*(void**)obj + 0x60)))(obj, *(void**)((char*)arr + i * 8 + 4));
+                }
+            }
+            i++;
+        } while (i < (u32)count);
+    }
+    {
+        void* obj = *(void**)((char*)arg0 + 0x14);
+        if (obj != NULL) {
+            return ((s32 (*)(void*))(*(void**)((char*)*(void**)obj + 0x60)))(obj);
+        }
+    }
+    return 0;
 }
 
 u64 fn_80132A48(void *arg0, s32 arg1, void *arg2) {
