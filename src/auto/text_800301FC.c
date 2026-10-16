@@ -106,20 +106,47 @@ void TRKReadBuffer1_ui64(void) {
 }
 
 void TRKAppendBuffer_ui32(void) {
-    u32 *a = lbl_8035BF20;
-    u32 *b = (u32 *)lbl_8035BEA0;
-    s32 count = 2;
+    u32 *a;
+    u32 *b;
+    s32 i;
+
     lbl_8055D6E8 = 0;
+    a = lbl_8035BF20;
+    b = (u32 *)lbl_8035BEA0;
+    i = 2;
     do {
-        a[0]=0; b[0]=0; a[1]=0; b[1]=0;
-        a[2]=0; b[2]=0; a[3]=0; b[3]=0;
-        a[4]=0; b[4]=0; a[5]=0; b[5]=0;
-        a[6]=0; b[6]=0; a[7]=0; b[7]=0;
-        a[8]=0; b[8]=0; a[9]=0; b[9]=0;
-        a[10]=0; b[10]=0; a[11]=0; b[11]=0;
-        a[12]=0; b[12]=0; a[13]=0; b[13]=0;
-        a[14]=0; b[14]=0; a[15]=0; a += 16; b[15]=0; b += 16;
-    } while (--count);
+        a[0] = 0; b[0] = 0;
+        a[1] = 0; b[1] = 0;
+        a[2] = 0; b[2] = 0;
+        a[3] = 0; b[3] = 0;
+        a[4] = 0; b[4] = 0;
+        a[5] = 0; b[5] = 0;
+        a[6] = 0; b[6] = 0;
+        a[7] = 0; b[7] = 0;
+        a[8] = 0; b[8] = 0;
+        a[9] = 0; b[9] = 0;
+        a[10] = 0; b[10] = 0;
+        a[11] = 0; b[11] = 0;
+        a[12] = 0; b[12] = 0;
+        a[13] = 0; b[13] = 0;
+        a[14] = 0; b[14] = 0;
+        a[15] = 0;
+        a += 16;
+        b[15] = 0;
+        b += 16;
+    } while (--i != 0);
+}
+
+void TRKReadBuffer(void *arg0) {
+    void **head = (void **)lbl_8035BEA0;
+    *(void **)arg0 = *head;
+    *head = arg0;
+    *(u32 *)((u8 *)arg0 + 0xC) = 0;
+}
+
+void TRKAppendBuffer(void *arg0) {
+    *(u32 *)((u8 *)arg0 + 8) = lbl_8055D6E8;
+    lbl_8055D6E8 = (u32)arg0;
 }
 
 void usr_puts_serial(void) {
