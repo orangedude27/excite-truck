@@ -8,6 +8,11 @@ int fn_801B665C();
 void fn_80191084();
 void fn_801B6650();
 int fn_80191100(void *);
+extern int lbl_8055E3C4;
+extern void *__AXGetStudio_80178C90(void);
+extern int fn_801B2F54(int);
+extern float fn_8018AE3C(void *);
+extern float fn_8018AE4C(void *);
 void fn_802793B0();
 void fn_801902A0(void *arg0) {
     ((void (**)(void))(*(void **)*(void **)((char *)arg0 + 4)))[30]();
@@ -157,8 +162,33 @@ int fn_80191108(void *arg0, int arg1) {
     return result + ((int (**)(void *, int))(*(void ***)*(void **)((char *)base + 8)))[6](*(void **)((char *)base + 8), amount + result);
 }
 
+void fn_8019150C(void *arg0, int arg1) {
+    void *obj = *(void **)((char *)arg0 + 4);
+    void **vtable = *(void ***)obj;
+    int next = arg1 + 1;
+    ((void (*)(void))vtable[9])();
+    *(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) =
+        (unsigned char)((*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) & 0x1f) | (next << 5));
+}
+
+void fn_80191568(void *arg0) {
+    register void *obj = *(void **)((char *)arg0 + 4);
+    register void **vtable = *(void ***)obj;
+    ((void (*)(void))vtable[27])();
+}
+
 unsigned char fn_8019157C(void *arg0) {
     return *((unsigned char *)arg0 + 0x14);
+}
+
+void fn_80191584(void *arg0) {
+    void *obj = *(void **)((char *)arg0 + 0x34);
+    *(unsigned char *)((char *)obj + 0x2680) = 0;
+    fn_8018AE24(*(void **)((char *)arg0 + 0x34), 0);
+    *(unsigned char *)((char *)*(void **)((char *)arg0 + 0x34) + 0x260e) = 0;
+    ((void (**)(void *, int))(*(void **)*(void **)((char *)arg0 + 0x38)))[30](*(void **)((char *)arg0 + 0x38), 0);
+    *(unsigned char *)((char *)*(void **)((char *)arg0 + 0x34) + 0x260c) = 0;
+    *(int *)((char *)arg0 + 8) = -1;
 }
 
 void fn_80192BE4(void) {
