@@ -112,6 +112,11 @@ extern "C" s32 fn_800B7BDC(void) {
     return (-result | result) >> 31;
 }
 
+extern "C" s32 fn_800B7C08(void) {
+    s32 result = ((s32 (*)(void))fn_800B7504)();
+    return (-result | result) >> 31;
+}
+
 void fn_800B7C60(void) {
     fn_800B75C4();
 }
