@@ -7,6 +7,25 @@ void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
 }
 
+extern int fn_802E317C(const char *);
+extern char lbl_80348F4C[];
+int fn_8028EDA8(unsigned int *arg0, unsigned int arg1) {
+    int count = *(int *)((char *)arg0 + 0x100);
+    int i;
+    for (i = 0; i < count; i++) {
+        if (arg0[i] == arg1) {
+            arg0[i] = 0;
+            return 1;
+        }
+    }
+    fn_802E317C(lbl_80348F4C);
+    return 0;
+}
+
+void fn_8028EE1C(void *arg0) {
+    *(int *)((char *)arg0 + 0x600) = 0;
+}
+
 int fn_802916DC(void) { return 0; }
 
 void fn_802916E4(void) {}
