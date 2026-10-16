@@ -249,6 +249,8 @@ extern s32 fn_80176A1C(void);
 extern f32 fn_80176A2C(void);
 extern f32 lbl_8056164C;
 extern f32 lbl_80561650;
+extern void fn_8001DFF0(void);
+extern void fn_80149658(s32, void *, void *, s32);
 void fn_8014AD74(void *arg0) {
     f32 step;
     s32 state = fn_80176A1C() - 2;
@@ -414,6 +416,43 @@ void fn_8014C6F0(void *arg0, void *arg1) {
     ((f32 *)arg0)[4] = e;
     ((f32 *)arg0)[5] = f;
     ((s32 *)arg0)[6] = g;
+}
+
+void fn_8014C72C(void **arg0) {
+    register void *obj = *arg0;
+    register void **vtable = *(void ***)obj;
+    ((void (*)(void))vtable[3])();
+    fn_801476C4();
+}
+
+s64 fn_8014C770(f32 *arg0, f32 *arg1, f32 t) {
+    union { struct { f32 x, y; } f; s64 bits; } out;
+    out.f.y = arg0[1] + t * (arg1[1] - arg0[1]);
+    out.f.x = arg0[0] + t * (arg1[0] - arg0[0]);
+    return out.bits;
+}
+
+void fn_8014C7B4(void *arg0, void *arg1) {
+    s32 a = *(s32 *)((u8 *)arg1);
+    s32 b = *(s32 *)((u8 *)arg1 + 4);
+    s32 c = *(s32 *)((u8 *)arg1 + 8);
+    s32 d = *(s32 *)((u8 *)arg1 + 0xc);
+    f32 e = *(f32 *)((u8 *)arg1 + 0x10);
+    f32 f = *(f32 *)((u8 *)arg1 + 0x14);
+    f32 g = *(f32 *)((u8 *)arg1 + 0x18);
+    f32 h = *(f32 *)((u8 *)arg1 + 0x1c);
+    f32 i = *(f32 *)((u8 *)arg1 + 0x20);
+    f32 j = *(f32 *)((u8 *)arg1 + 0x24);
+    *(s32 *)((u8 *)arg0) = a;
+    *(s32 *)((u8 *)arg0 + 4) = b;
+    *(s32 *)((u8 *)arg0 + 8) = c;
+    *(s32 *)((u8 *)arg0 + 0xc) = d;
+    *(f32 *)((u8 *)arg0 + 0x10) = e;
+    *(f32 *)((u8 *)arg0 + 0x14) = f;
+    *(f32 *)((u8 *)arg0 + 0x18) = g;
+    *(f32 *)((u8 *)arg0 + 0x1c) = h;
+    *(f32 *)((u8 *)arg0 + 0x20) = i;
+    *(f32 *)((u8 *)arg0 + 0x24) = j;
 }
 
 unsigned int fn_8014C808(unsigned int arg0) { return arg0 >> 24; }
