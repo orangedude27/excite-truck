@@ -3,6 +3,13 @@
 
 extern void fn_80208408(void);
 extern void fn_80208858(void);
+extern signed long fn_80128668(void);
+
+typedef struct Vt_80207960 {
+    void (*f0)(void);
+    void (*f1)(void*, signed long);
+    void (*f2)(void*);
+} Vt_80207960;
 
 void fn_80207960(void) {
 	return;
