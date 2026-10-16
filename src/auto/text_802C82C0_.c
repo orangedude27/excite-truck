@@ -1,3 +1,7 @@
+extern float lbl_8055FC6C;
+extern float lbl_8055FC4C;
+extern float lbl_8055FC40;
+extern float lbl_8055D020;
 extern int lbl_8055FC30;
 extern int lbl_8055FC84;
 extern void fn_802D08CC(void);
