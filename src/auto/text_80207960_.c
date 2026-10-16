@@ -48,7 +48,6 @@ void fn_80207C7C(void) {
 	return;
 }
 
-extern signed long fn_802E2C20(void);
 extern void fn_80207C80(void*);
 extern void* lbl_802F9DC8[];
 extern char lbl_8033BE20[];
