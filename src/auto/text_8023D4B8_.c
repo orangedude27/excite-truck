@@ -182,7 +182,7 @@ int fn_8023E52C(int arg0) {
   extern s32 lbl_80341C40[];
   extern s32 fn_801A902C(void);
   extern void fn_801A9050(void *, s32);
-  extern void fn_8023E33C(void *, s32, s32);
+      extern void fn_8023E33C(void *);
 s32 fn_8023E540(s32 arg0) {
     return arg0 + 0x14;
 }
