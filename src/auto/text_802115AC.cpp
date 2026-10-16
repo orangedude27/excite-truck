@@ -358,7 +358,7 @@ extern "C" void fn_80215B30(void *arg0) {
 
 extern "C" void fn_80215B44(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf11();
+    obj->vf9();
 }
 
 extern "C" void fn_802191F0(void);
