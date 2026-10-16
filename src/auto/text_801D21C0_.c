@@ -79,21 +79,20 @@ void fn_801D2210(void) {
 }
 
 u8 fn_801D2550(void *arg0, UnkObj *arg1) {
-    u8 *self = (u8 *)arg0;
+    UnkObj *obj = arg1;
 
     if (arg1 != NULL) {
-        self[0] = 1;
-        *(f32 *)(self + 4) = arg1->vt->fn28(arg1, lbl_80338300, lbl_80562A90);
+        *(u8 *)arg0 = 1;
+        *(f32 *)((u8 *)arg0 + 4) = arg1->vt->fn28(arg1, lbl_80338300, lbl_80562A90);
     } else {
-        self[0] = 0;
+        *(u8 *)arg0 = 0;
     }
-    return self[0];
+    return *(u8 *)arg0;
 }
 
-#pragma dont_inline on
 void fn_801D2A24(void *obj_) {
-    UnkObj *obj = (UnkObj *)obj_;
     s32 *entry = (s32 *)(lbl_80438958 + lbl_8055E930 * 0x4C4);
+    UnkObj *obj = (UnkObj *)obj_;
 
     entry[0] = obj->vt->fn1C(obj, (u32)&lbl_8055ABE0);
     fn_801D25BC(&entry[1], obj->vt->fn5C(obj, (u32)&lbl_8055AC18));
