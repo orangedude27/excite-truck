@@ -36,7 +36,8 @@ void fn_8020F5DC(void) {
 }
 
 void *fn_8020F5F0(long arg0) {
-    return (void *)((char *)&lbl_80489CA0 + ((arg0 << 6) * 100));
+    long offset = (arg0 << 6) * 100;
+    return (void *)((char *)&lbl_80489CA0 + offset);
 }
 
 void fn_8020F6E0(long arg0, long arg1) {
@@ -51,8 +52,11 @@ void fn_8020F6F8(void) {
 }
 
 long fn_8020F6FC(void) {
-    long value = lbl_804902C4.m_entries[lbl_8055EEC4];
-    lbl_8055EEC4 = (lbl_8055EEC4 + 1) % lbl_804902C4.m_count;
+    long index = lbl_8055EEC4;
+    long *entries = lbl_804902C4.m_entries;
+    long count = lbl_804902C4.m_count;
+    long value = entries[index];
+    lbl_8055EEC4 = (index + 1) % count;
     return value;
 }
 
