@@ -1,5 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+#include "types.h"
+
+extern s32 fn_80128668(void);
 
 unsigned char* fn_801317F0(void* arg0) {
     unsigned char* p = *(unsigned char**)((char*)arg0 + 4);
@@ -23,8 +26,7 @@ extern void* lbl_8042F53C[];
 extern void fn_80131920(void*);
 extern void __register_global_object(void*, void (*)(void*), void*);
 int fn_8013181C(void) {
-    fn_802E30C8(lbl_8032B510);
-    return 0;
+    return fn_802E30C8(lbl_8032B510), 0;
 }
 
 void* fn_8013184C(void) {
@@ -32,12 +34,12 @@ void* fn_8013184C(void) {
         ((void* volatile*)lbl_8042F53C)[0] = lbl_8032B64C;
         ((void* volatile*)lbl_8042F53C)[0] = lbl_8032B574;
         ((void* volatile*)lbl_8042F53C)[5] = 0;
-        lbl_8042F53C[1] = &lbl_80559B0C;
-        lbl_8042F53C[2] = &lbl_80559B08;
-        lbl_8042F53C[3] = 0;
-        lbl_8042F53C[4] = 0;
-        lbl_8042F53C[5] = 0;
-        lbl_8042F53C[6] = 0;
+        ((void* volatile*)lbl_8042F53C)[1] = &lbl_80559B0C;
+        ((void* volatile*)lbl_8042F53C)[2] = &lbl_80559B08;
+        ((void* volatile*)lbl_8042F53C)[3] = 0;
+        ((void* volatile*)lbl_8042F53C)[4] = 0;
+        ((void* volatile*)lbl_8042F53C)[5] = 0;
+        ((void* volatile*)lbl_8042F53C)[6] = 0;
         __register_global_object(lbl_8042F53C, fn_80131920, lbl_8042F530);
         lbl_8055E060 = 1;
     }
