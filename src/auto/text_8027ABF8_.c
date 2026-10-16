@@ -21,3 +21,10 @@ int fn_8027AC50(void *arg0) {
     return *(int *)((char *)arg0 + 0xF0) != 0;
 }
 
+int fn_8027AC64(void *arg0) {
+    if (*(int *)((char *)arg0 + 0xF0) == 0) {
+        return -1;
+    }
+    return *(int *)((char *)arg0 + 0xF8);
+}
+
