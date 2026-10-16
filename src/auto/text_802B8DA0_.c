@@ -26,6 +26,10 @@ void fn_802B98D0(void *arg0) {
     }
 }
 
+int fn_802B9914(void *arg0) {
+    return (short)((int *)arg0)[6];
+}
+
 extern int lbl_802FAB60[];
 int fn_802B9920(int arg0) {
     return lbl_802FAB60[(arg0 + 0x200) / 2];
