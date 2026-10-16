@@ -17,6 +17,8 @@ void fn_800DCE10(void*, s32);
 extern "C" u32 fn_80060CC0(void*, u32, u32);
 extern "C" void fn_800D1B1C(void);
 
+extern u32 lbl_8055DDB0;
+extern "C" const char lbl_8031E9C0[];
 extern u32 lbl_8055DDF8;
 extern "C" void fn_800D1C48(void);
 
@@ -386,6 +388,7 @@ extern "C" void fn_800D2480(void) {
     ((u8 *)lbl_8055DDBC)[0x22] = 0;
 }
 
+extern "C" void fn_800D16C4(OSAlarm*, void*);
 extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *this_ptr, long arg1, int arg2, signed char arg3) {
     if (((u8 *)this_ptr)[0x1EC] != 0) {
         ARCHandle handle;
