@@ -32,3 +32,8 @@ void* fn_802D2D14(void) {
     return lbl_8055FD64;
 }
 
+extern void *lbl_8055FD5C;
+void fn_802D30DC(void* hi) {
+    lbl_8055FD5C = hi;
+}
+
