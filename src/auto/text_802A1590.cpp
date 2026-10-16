@@ -10,3 +10,6 @@ extern "C" u32 fn_802A4A18(void) { return 1; }
 extern "C" u8 fn_802A4A20(void) {
     return 2;
 }
+
+extern "C" u32 fn_802A4A28(void) { return 3; }
+
