@@ -215,8 +215,9 @@ extern "C" void *fn_80219568(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 extern "C" void fn_802195DC(void *arg0, s32 arg1) {
     fn_802C3034(arg1);
     VfObj *obj = (VfObj *)arg0;
-    s32 a = obj->vf32();
-    s32 b = obj->vf33();
+    void **vt = *(void ***)obj;
+    s32 a = ((s32 (*)(void *))vt[33])(obj);
+    s32 b = ((s32 (*)(void *))vt[34])(obj);
     fn_8022B91C(*(s32 *)((u8 *)arg0 + 0x250), *(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 0x248), b, a);
 }
 
