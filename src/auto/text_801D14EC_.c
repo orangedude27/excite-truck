@@ -39,11 +39,12 @@ void fn_801D153C(void);
 int fn_8012850C(int, int *);
 int fn_8002F37C(int, int, int, int);
 void fn_801D1B48(void) {
-    int i;
     int offset = 0;
-    for (i = 0; i < lbl_8055E8F8; i++) {
+    int i = 0;
+    while (i < lbl_8055E8F8) {
         fn_801D183C(lbl_8055E918 + offset, i);
         offset += 0x9c;
+        i++;
     }
 }
 
