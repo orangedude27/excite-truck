@@ -15,6 +15,10 @@ void fn_801B4C58(int arg0) {
     fn_801B479C(arg0 + 4);
 }
 
+void fn_801B4C60(int arg0) {
+    fn_801B479C(arg0 + 4, fn_801B47BC(arg0 + 4));
+}
+
 char fn_801B526C(void) {
     return lbl_8055E6D0;
 }
