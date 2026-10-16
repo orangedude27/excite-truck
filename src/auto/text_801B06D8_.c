@@ -24,6 +24,10 @@ void* fn_801B2F24(void) {
     return lbl_8055E678;
 }
 
+u8 fn_801B2F2C(s32 arg0) {
+    return ((u8 *)lbl_8055E684)[(arg0 << 7) + 0x79];
+}
+
 extern void *lbl_8055E694;
 void* fn_801B307C(void) {
     return lbl_8055E694;
