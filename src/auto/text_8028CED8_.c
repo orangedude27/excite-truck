@@ -12,8 +12,23 @@ extern int fn_8028D17C(void);
 extern void fn_8028D2B4(void);
 extern void fn_8028DDF0(void);
 extern void fn_80287B38(void *);
+void fn_8028CF18(void) {
+    if (lbl_8055F714 != 0) {
+        fn_8028D4A0();
+        fn_8028D25C();
+        lbl_8055F714 = 0;
+    }
+}
+
 void fn_8028CF50(void) {
     if (lbl_8055F714 != 0) {
         fn_8028D4FC();
     }
 }
+
+void fn_8028CF64(void) {
+    if (lbl_8055F714 != 0 && __fabsf(fn_801E7E24()) > lbl_80558DC4) {
+        fn_8028D728();
+    }
+}
+
