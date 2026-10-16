@@ -437,7 +437,11 @@ extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) 
     *(f32 *)((u8 *)arg0 + 0x10) = arg4;
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
     *(u8 *)((u8 *)arg0 + 0x1C) = 0;
-    *(f32 *)((u8 *)arg0 + 0xC) = arg1 == 1 ? arg2 : arg3;
+    if (arg1 == 1) {
+        *(f32 *)((u8 *)arg0 + 0xC) = arg2;
+    } else {
+        *(f32 *)((u8 *)arg0 + 0xC) = arg3;
+    }
 }
 
 extern "C" u32 fn_800CF91C(void) { return 1; }
@@ -445,6 +449,8 @@ extern "C" u32 fn_800CF91C(void) { return 1; }
 extern "C" void fn_800CF930(void) {
 
 }
+
+extern "C" s32 fn_800CF954(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x20); }
 
 extern "C" void fn_800CF968(void) {
 
@@ -775,9 +781,9 @@ extern "C" void fn_800CA148(OSAlarm *alarm, OSContext *ctx) {
 }
 
 s32 homebutton::HomeButton::getPaneNo(const char *name) {
-    s32 count = *(s32 *)((u8 *)this + 8);
-    s32 result = -1;
-    s32 i;
+    register s32 count = *(s32 *)((u8 *)this + 8);
+    register s32 result = -1;
+    register s32 i;
     for (i = 0; i < count; i++) {
         if (strcmp(name, lbl_8031D990[i]) == 0) {
             result = i;
