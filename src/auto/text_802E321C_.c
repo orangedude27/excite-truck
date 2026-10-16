@@ -4,6 +4,10 @@ extern void fn_802E317C(const char *, s32, s32, s32);
 extern char lbl_8034CF40[];
 extern char lbl_8034CF60[];
 extern char lbl_804DB810[];
+extern char lbl_8055D1A0[];
+extern s32 lbl_8055FF20;
+extern s32 fn_802E321C(void);
+extern s32 fn_802E3270(s32);
 extern s32 fn_802E32C4();
 extern s32 lbl_8055FF18;
 extern s32 fn_802E333C(void);
@@ -15,8 +19,8 @@ extern void* lbl_8055FF24;
 s32 fn_802E98C8(void);
 s32 fn_802E333C(void) {
     s32 value = fn_802E32C4();
-    if (value != 0) return value;
-    return lbl_8055FF18;
+    if (value == 0) return lbl_8055FF18;
+    return value;
 }
 
 void fn_802E339C(void) {
@@ -27,10 +31,9 @@ void fn_802E339C(void) {
 s32 fn_802E33D0(void) { return 0; }
 
 void fn_802E3498(void) {
-    memset(lbl_804DB810, 0, 0x280);
-    if (lbl_8055FF18 == 0) {
-        lbl_8055FF18 = fn_802E3F94();
-    }
+    char *buffer = lbl_804DB810;
+    memset(buffer, 0, 0x280);
+    if (lbl_8055FF18 == 0) lbl_8055FF18 = fn_802E3F94();
 }
 
 void fn_802E3DCC(void) {
