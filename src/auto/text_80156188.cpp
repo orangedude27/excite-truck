@@ -62,6 +62,12 @@ extern "C" void fn_801561E0(s32 arg0) {
     fn_80155AF0(arg0 - 0xC);
 }
 
+extern "C" s32* fn_801E87A8();
+extern "C" void* fn_8001285C(s32);
+s32 fn_8015621C(void) {
+    return *(s32*)((char*)fn_8001285C(*fn_801E87A8()) + 0x20);
+}
+
 s32 fn_801568E0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
