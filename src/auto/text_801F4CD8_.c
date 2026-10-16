@@ -87,6 +87,8 @@ int fn_801F79B0(int arg0, int arg1) {
 
 int fn_801F79F0(void) { return 3; }
 
+int fn_801F79F8(void) { return 3; }
+
 void fn_801F7A00(void) {
 
 }
