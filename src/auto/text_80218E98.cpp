@@ -6,6 +6,9 @@ extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
 extern "C" void *lbl_8033F0FC;
 extern "C" void fn_802223C4(void *arg0, s32 arg1);
+extern "C" void *lbl_8033EC2C;
+extern "C" f32 fn_8023659C(void);
+extern "C" s32 fn_80228F40(s32, s32);
 
 
 class TruckIface {
