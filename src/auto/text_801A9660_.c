@@ -50,3 +50,7 @@ void fn_801ADA9C(void *arg0) {
     fn(*(void **)((char *)arg0 + 0x240), (void *)0, (void *)0);
 }
 
+void fn_801ADAC0(void *arg0, long arg1) {
+    fn_801AC240((void *)arg1);
+}
+
