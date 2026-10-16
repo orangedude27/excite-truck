@@ -39,6 +39,15 @@ extern "C" void fn_80219440(void *, s32, void *, s32);
 extern f32 lbl_805634A4;
 extern char lbl_8033D878[];
 extern char lbl_8033F768[];
+extern "C" u32 *fn_80216708(void);
+extern "C" s32 fn_80218F34(void *, s32, s32, s32, s32, s32);
+extern "C" s32 fn_802C51AC(s32);
+extern "C" s32 fn_802C51C0(s32);
+extern "C" s32 fn_802C5220(s32);
+extern "C" s32 fn_802C3034(s32);
+extern f32 lbl_805634A8;
+extern f32 lbl_805634E8;
+extern int lbl_8033F6E0[];
 
 extern "C" void fn_80219044(void);
 extern "C" void fn_8021AC24(void);
