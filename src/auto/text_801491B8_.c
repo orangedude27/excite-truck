@@ -962,8 +962,33 @@ void fn_80155E58(void *arg0) {
 
 void fn_80155E64(void *arg0, signed char arg1) { *((signed char *)arg0 + 5) = arg1; }
 
+void fn_80155F44(char *dst, const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(dst + 4, fmt, args);
+    va_end(args);
+}
+
+void fn_80155FD4(void *arg0, const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    vsprintf((char *)arg0 + 0x54, fmt, args);
+    va_end(args);
+}
+
+void fn_80156064(void *arg0, const char *fmt, ...) {
+    va_list args;
+    va_start(args, fmt);
+    vsprintf((char *)arg0 + 0xA4, fmt, args);
+    va_end(args);
+}
+
 void fn_801560F4(void) {
 
+}
+
+void fn_801560F8(void *arg0, s32 arg1) {
+    *(s32 *)((u8 *)arg0 + 0xF4) = arg1;
 }
 
 void fn_80156100(void) {
