@@ -34,6 +34,10 @@ extern "C" void fn_800D86F0(void *arg0, void *arg1) {
     ((s16 *)arg0)[3] = v3;
 }
 
+extern "C" s32 fn_800D878C(u32 *arg0) {
+    return (*arg0 >> 15U) & 7;
+}
+
 extern "C" s32 fn_800D8798(u32 *arg0) {
     return (*arg0 >> 18U) & 0x1F;
 }
