@@ -17,6 +17,17 @@ void fn_8016A68C(void* arg0) {
     fn_8016B634(fn_8016B598(arg0));
 }
 
+s32 fn_8016A878(const char* arg0) {
+    s32 count = 0;
+    s32 i = 0;
+    s32 offset = 0;
+    for (; i < lbl_80430340.unk_0x4; i++) {
+        if (stricmp(lbl_80430340.unk_0x0 + offset + 1, arg0) == 0) count++;
+        offset += 0x2C;
+    }
+    return count;
+}
+
 void fn_8016AC18(u8* arg0) { *arg0 = 0; }
 
 void* fn_8016AC24(void* arg0, s32 arg1) {
@@ -29,4 +40,6 @@ void* fn_8016AC24(void* arg0, s32 arg1) {
     }
     return arg0;
 }
+
+void fn_8016B4F0(u8* arg0) { *arg0 = 0; }
 
