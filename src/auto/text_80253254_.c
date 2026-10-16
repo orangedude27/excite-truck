@@ -19,6 +19,12 @@ void *fn_802556BC(void *arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_80255718(s32 arg0, s32 arg1) {
+    extern s32 fn_80128668(void);
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_80255904(void *arg0) {
     extern void fn_80253824(void *);
     fn_80253824(*(void **)((u8 *)arg0 + 8));
