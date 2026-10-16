@@ -1,6 +1,16 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 
 #include <types.h>
+
+extern s32 lbl_8055E238;
+extern s32 lbl_8055E23C;
+extern s32 fn_80179650(void);
+extern s32 fn_801E85A4(void);
+extern s32 fn_801E86F8(s32);
+extern s32 fn_801E866C(s32);
+extern s32 fn_8014CA48(s32, s32, s32);
+extern s32 fn_8014AFD4(void *, void *, s32);
+extern s32 fn_801CB7BC(s32);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void *fn_801B2ED0(s32);
@@ -595,11 +605,11 @@ s32 fn_80153A38(void *arg0) {
     s32 i;
     void *p;
     fn_80179650();
+    i = 0;
     p = arg0;
-    for (i = 0; i < fn_801E85A4(); i++) {
+    for (; i < fn_801E85A4(); i++) {
         if (*(u8 *)((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) == 0 &&
-            *(s32 *)((u8 *)p + 0x454) != 2)
-            return 0;
+            *(s32 *)((u8 *)p + 0x454) != 2) return 0;
         p = (u8 *)p + 0x240;
     }
     return 1;
