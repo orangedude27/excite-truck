@@ -49,11 +49,13 @@ extern "C" void fn_8012A648(void) {
 }
 #pragma dont_inline reset
 #pragma scheduling reset
+#pragma dont_inline on
 extern "C" void fn_8012A67C(void) {
     lbl_8055E004 = 0;
     delete (Unk8012A570 *)lbl_8055E008;
     lbl_8055E008 = 0;
 }
+#pragma dont_inline reset
 
 extern "C" void fn_8012AC28(s32, s32);
 extern "C" void fn_8012AC98(s32 arg0) {
