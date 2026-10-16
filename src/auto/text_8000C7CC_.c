@@ -118,6 +118,15 @@ void fn_8000D100(void) {
     fn_801769EC();
 }
 
+void fn_8000D19C(void) {
+    if (lbl_8055D407 != 0) {
+        lbl_8055D420 = fn_8000CCB8();
+        if (lbl_8055D420 == -1) {
+            lbl_8055D407 = 0;
+        }
+    }
+}
+
 extern s32 fn_80019BA8(void);
 s32 fn_8000C7CC(void) {
     return fn_80019BA8() == 0;
