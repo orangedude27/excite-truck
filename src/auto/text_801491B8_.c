@@ -370,10 +370,10 @@ s32 fn_8014C848(void *arg0) {
     return ((void **)arg0)[1] != 0;
 }
 
-extern f32 lbl_80558DC4;
+extern f32 lbl_80558DC4[];
 s32 fn_8014C88C(f32 arg0, f32 arg1) {
     f32 diff = arg0 - arg1;
-    return __fabs(diff) <= lbl_80558DC4;
+    return __fabs(diff) <= lbl_80558DC4[0];
 }
 
 void fn_8014C9D4(void *arg0, void *arg1, s32 arg2) {
