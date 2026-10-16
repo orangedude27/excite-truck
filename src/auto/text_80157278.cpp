@@ -97,7 +97,7 @@ extern "C" s32 fn_80128668(void*);
 extern "C" void fn_801CB750(s32);
 extern "C" void fn_80131234(void*);
 extern "C" void fn_801CB6E4(void*);
-extern void* lbl_8032E668;
+extern void* lbl_8032E668[];
 extern void* lbl_8032EFA8;
 extern void* lbl_8032F0E8;
 extern f32 lbl_80561750;
