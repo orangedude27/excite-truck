@@ -47,6 +47,7 @@ extern UnkF22C *lbl_8055D4B4;
 extern UnkF22C *lbl_8055D4B8;
 extern void fn_802328D4(void);
 extern s32 fn_80232578(s32);
+extern s32 lbl_80351738[0x54];
 extern void fn_802C6CF8(s32);
 extern s32 lbl_80558A94;
 extern s32 fn_80207848(void *, s32);
@@ -58,9 +59,11 @@ void fn_8000F1B4(void) {
 }
 
 void fn_8000F1E0(void) {
+    s32 flag;
+    flag = 1;
     lbl_8055D4BC = fn_8023512C();
-    lbl_8055D4B4 = (UnkF22C *)fn_80207848(lbl_802FC420, 1);
-    lbl_8055D4B8 = (UnkF22C *)fn_80207848(lbl_802FC42C, 1);
+    lbl_8055D4B4 = (UnkF22C *)fn_80207848(lbl_802FC420, flag);
+    lbl_8055D4B8 = (UnkF22C *)fn_80207848(lbl_802FC42C, flag);
 }
 
 void fn_8000F22C(void) {
