@@ -95,6 +95,11 @@ int fn_802AE7AC(void) {
     return (int)(tmp >> 31);
 }
 
+void fn_802AE7C0(void) {
+    fn_802C9950(0x555766);
+    fn_802C9994(0xFFF5D9);
+}
+
 int fn_802AFF54(void *arg0) {
     return ((int *)arg0)[1];
 }
