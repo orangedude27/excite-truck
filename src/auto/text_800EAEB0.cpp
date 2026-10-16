@@ -127,6 +127,10 @@ extern "C" s32 fn_800ECE24(void) {
     return 0;
 }
 
+extern "C" s32 fn_800ECE60(void) {
+    return 0x20;
+}
+
 extern "C" s32 fn_800ECE68(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
