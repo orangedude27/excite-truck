@@ -126,8 +126,8 @@ void fn_800E80B4(void) {
 
 typedef void (*vfn0_t)(void*);
 extern "C" void fn_800E9070(VfObj *this_) {
-    this_->vf15();
-    this_->vf16();
+    VfObj *first = this_->vf23();
+    first->vf6();
 }
 
 extern "C" int fn_800E90AC(void *arg0) {
