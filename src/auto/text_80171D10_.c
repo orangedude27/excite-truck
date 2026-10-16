@@ -163,6 +163,9 @@ void fn_80175228(void *arg0) {
     ((void (*)(void))slot)();
 }
 
+extern float lbl_80561AEC;
+float fn_801757A8(void) { return lbl_80561AEC; }
+
 int fn_801757B0(void) { return 1; }
 
 int fn_801758B8(void *arg0) { return *(int *)((char *)arg0 + 0x1AC) == 2; }
