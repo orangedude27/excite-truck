@@ -35,11 +35,59 @@ void fn_80134A88(void) {
 
 }
 
+s32 fn_80134F40(void) {
+    return 0;
+}
+
+void *fn_80134F48(void) {
+    void *p = __AXFXGetLfoSinTable_801769CC();
+    s32 flag = 0;
+    void *result;
+    u32 bits;
+    if (*((u8*)fn_801792F8() + 0xD8) & 4) {
+        flag = 1;
+    }
+    if (flag) {
+        p = fn_801350C0();
+    } else {
+        bits = *((u32*)p + 1);
+        if (bits & 0x100) {
+            p = fn_80134E90();
+        } else if (bits & 0x200) {
+            p = fn_80134EC8();
+        } else {
+            p = fn_80134FF8();
+        }
+    }
+    result = fn_801284F8(0x2844, lbl_8032BC84);
+    if (result != 0) {
+        result = fn_801A520C(result, p);
+    }
+    return result;
+}
+
+void *fn_80134FF8(void) {
+    void **p = fn_801284F8(4, lbl_8032BC94);
+    if (p != 0) {
+        *p = (void*)lbl_8032BD08;
+    }
+    return p;
+}
+
 s32 fn_80135038(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
     return arg0;
+}
+
+void *fn_80135078(void) {
+    void *p = fn_801284F8(12, lbl_8032BCA0);
+    if (p != 0) {
+        *(const void**)p = lbl_8032BCC0;
+        *((u8*)p + 4) = 0;
+    }
+    return p;
 }
 
 extern void *lbl_8055E0B0;
