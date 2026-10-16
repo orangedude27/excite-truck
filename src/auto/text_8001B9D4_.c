@@ -355,7 +355,7 @@ void fn_8001D5D8(void) {
     fn_8001D528(fn_8001D464);
 }
 
-extern unsigned char fn_8001D474[];
+extern s32 fn_8001D474(s32);
 void fn_8001D5E4(void) {
     fn_8001D528(fn_8001D474);
 }
