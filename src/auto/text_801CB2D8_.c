@@ -210,6 +210,23 @@ void fn_801CC8FC(void *arg0) {
     *(int *)((char *)arg0 + 4) = 0;
 }
 
+void fn_801CCAEC(int arg0) {
+    int index;
+    unsigned char *manager;
+    char *base;
+    (void)arg0;
+    base = (char *)lbl_8055E884;
+    manager = fn_801EA9A0();
+    if (*manager != 0) {
+        index = manager[0xB4] & 3;
+    } else {
+        index = -1;
+    }
+    if (index >= 0) {
+        *(signed char *)(base + index + 0x11) = 1;
+    }
+}
+
 void fn_801CCB48(void) {
     int index;
     unsigned char *manager;
