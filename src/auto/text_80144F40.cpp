@@ -125,6 +125,23 @@ extern "C" void fn_80148E6C(void *arg0) {
     }
 }
 
+extern "C" void fn_80148EDC(void *);
+extern "C" void fn_80148EDC(void *arg0) {
+    void *p = *(void **)arg0;
+    if (p != NULL) {
+        if (p != NULL) {
+            fn_80128670(((s32 *)p)[3]);
+            if (p != NULL) {
+                ((s32 *)p)[0] = 0;
+                ((s32 *)p)[1] = 0;
+                ((s32 *)p)[2] = 0;
+            }
+            fn_80128668(p);
+        }
+        *(void **)arg0 = NULL;
+    }
+}
+
 extern "C" void fn_8014822C(void) {
 
 }
