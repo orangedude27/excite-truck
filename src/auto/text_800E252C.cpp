@@ -304,7 +304,7 @@ void fn_800E80B4(void) {
 
 }
 
-int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
 
 extern void __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *);
 extern void *lbl_80322880;
