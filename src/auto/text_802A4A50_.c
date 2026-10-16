@@ -30,5 +30,14 @@ void fn_802A4C20(void) {
     fn_802A59E0();
 }
 
+void fn_802A4CA8(void) {
+    u8 *p = (u8 *)fn_801E1F44();
+    if (p[0x18] != 0) {
+        fn_802C2C00(1);
+        fn_802C990C(*(s32 *)(p + 8));
+        fn_802C2B78(*(f32 *)(p + 0xC), *(f32 *)(p + 0x10), *(f32 *)(p + 0x14));
+    }
+}
+
 void fn_802A4D00(void) { fn_802C2C00(0); }
 
