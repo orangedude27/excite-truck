@@ -3,6 +3,18 @@
 
 #include <types.h>
 
+extern s32 lbl_8055D890;
+extern s32 lbl_8055D880;
+extern s32 lbl_8055D8AC;
+extern s32 lbl_8055D85C;
+extern u8 lbl_8037B580;
+extern s32 fn_8003BE40(void);
+extern void fn_80037E94(void);
+extern void fn_8003BB58(void (*callback)(void));
+extern void fn_8003B380(s32);
+extern void fn_8003B38C(void *);
+extern void fn_80035B88(void);
+
 extern s32 lbl_80558E04;
 extern s32 lbl_8055D84C;
 extern volatile s32 PausingFlag_8055D850;
