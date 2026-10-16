@@ -85,8 +85,11 @@ extern "C" void *fn_80128668(void *);
 extern "C" void *__register_global_object(void *, void *, void *);
 extern "C" void *fn_800E279C(void *);
 extern "C" unsigned char lbl_8055DE18;
+#pragma push
+#pragma small_data off
 extern int lbl_80407F6C;
 extern int lbl_80407F60;
+#pragma pop
 extern "C" void *fn_8002F634(void *, void *, int, int);
 extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *, int);
 extern "C" void *fn_800E2D74(void *, int);
