@@ -1,5 +1,30 @@
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
+extern float lbl_80563898;
+extern float lbl_805638A8;
+extern double lbl_805638A0;
+void fn_80246CAC(float);
+void fn_80127464(void);
+void fn_802E2D74(s32);
+void fn_8020A634(void);
+s32 fn_802E2C20(void);
+void fn_80214AF0(s32);
+void fn_80214A9C(s32);
+extern char lbl_80343600;
+typedef struct Obj_802470D4 {
+    void *vtable;
+    char pad[0x14];
+    s32 field18;
+    s32 field1C;
+    s32 field20;
+    char pad24[0xC];
+    s32 *field30;
+} Obj_802470D4;
+void fn_80235380(s32);
+void fn_802C519C(s32);
+void fn_802328D4(s32);
+void fn_80128668(void *);
+
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
