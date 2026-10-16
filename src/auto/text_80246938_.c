@@ -267,22 +267,16 @@ void fn_80248A68(void *arg0) {
 }
 
 void fn_80248A74(void *arg0) {
-    float *fp;
     s32 var_r31;
-    union {
-        double d;
-        unsigned int u[2];
-    } t;
+    float val;
 
-    fp = (float *)((char *)arg0 + 0x1C);
-    if (*fp > lbl_805638C8) {
+    if (*(float *)((char *)arg0 + 0x1C) > lbl_805638C8) {
         var_r31 = 0xC8;
     } else {
         var_r31 = 0x32;
     }
-    t.u[1] = (unsigned int)var_r31 ^ 0x80000000;
-    t.u[0] = 0x43300000;
-    *fp += (t.d - lbl_805638A0) * fn_80214D48();
+    val = fn_80214D48();
+    *(float *)((char *)arg0 + 0x1C) += (float)var_r31 * val;
 }
 
 void fn_80248BD0(void *arg0) {
@@ -370,5 +364,26 @@ s32 fn_80249334(void *arg0, s32 arg1) {
         break;
     }
     return 0;
+}
+
+void fn_802493E8(void *arg0) {
+    s32 var_r31;
+    s32 var_r30;
+    s32 *temp_r3;
+    s32 var_r29 = 0;
+
+    var_r29 = (s32)arg0;
+    var_r31 = 0;
+    var_r30 = 0;
+    while (var_r30 < *(s32 *)((char *)var_r29 + 0x1C)) {
+        temp_r3 = (s32 *)(var_r31 + *(s32 *)((char *)var_r29 + 0x18));
+        if (*(unsigned char *)((char *)temp_r3 + 4) != 0) {
+            fn_80214AF0(*temp_r3);
+        } else {
+            fn_80214A9C(*temp_r3);
+        }
+        var_r31 += 8;
+        var_r30 += 1;
+    }
 }
 
