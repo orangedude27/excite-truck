@@ -140,18 +140,6 @@ extern int fn_802CAC28(void*, int);
 extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
-void fn_8001FF34(int arg0) {
-    unsigned int temp;
-    if ((char)lbl_8055D670 == 0) {
-        fn_801312EC(&lbl_8035BAE4, &lbl_802FE1C0);
-        lbl_8055D670 = 1;
-    }
-    temp = ((struct lbl_8035BAE4_t*) &lbl_8035BAE4)->unk_8;
-    if (temp != lbl_8055E044) {
-        fn_80131318();
-    }
-    fn_80232BA4(lbl_8035BAE4.unk_4, lbl_8055D64C, arg0, 0x12, lbl_805604A8, lbl_805604AC, lbl_805604B0, lbl_805604B4, lbl_805604B8);
-}
 
 void fn_8001FFD0(int arg0, int arg1, void* arg2, int arg3) {
     switch (arg1) {
