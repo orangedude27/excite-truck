@@ -34,6 +34,10 @@ extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus
     return *(float*)((char*)arg0 + (arg1 * 4) + 0x5C);
 }
 
+extern "C" float fn_80100FA0(void* arg0) {
+    return *(float*)((char*)arg0 + 0x48);
+}
+
 void fn_801013B0(void) {
     return;
 }
