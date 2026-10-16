@@ -104,7 +104,7 @@ char *fn_8023DCCC(char *arg0) {
     var_r30 = 0;
 loop_1:
     if (stricmp(*var_r31, arg0) == 0) {
-        return (char *)var_r31;
+        return (char *)&lbl_802FA190 + (var_r30 * 8);
     }
     var_r30 += 1;
     var_r31 += 1;
