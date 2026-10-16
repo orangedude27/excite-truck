@@ -16,6 +16,11 @@ extern void fn_8017B2D0(void*, float, float, float, float);
 extern void fn_80179D08(void);
 extern char lbl_80331CC4[];
 
+void fn_8017B164(void *arg0) {
+    fn_80179E00(arg0);
+    fn_8017B198(arg0);
+}
+
 void fn_8017C7BC(void) {
 
 }
