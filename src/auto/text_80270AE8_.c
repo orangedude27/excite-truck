@@ -7,6 +7,9 @@ extern float lbl_80563F48;
 extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
 void *fn_801E87A8(void);
+extern int fn_802726AC(void);
+void fn_8027156C();
+extern int lbl_8049A258;
 #pragma push
 #pragma small_data off
 extern int lbl_8049F9D8;
@@ -174,6 +177,26 @@ int fn_802726EC(float farg0, float farg1, float farg2) {
         result = 1;
     }
     return result;
+}
+
+int fn_80272C24(float farg0, float farg1, float farg2, float farg3) {
+    if (farg1 == farg2) {
+        return 1;
+    }
+    if (farg1 > farg2) {
+        if (farg1 > farg0) {
+            farg1 -= farg3;
+        } else {
+            farg2 += farg3;
+        }
+    }
+    if (farg0 >= farg1) {
+        return 0;
+    }
+    if (farg0 <= farg2) {
+        return 0;
+    }
+    return 1;
 }
 
 void fn_802733F0(void) {
