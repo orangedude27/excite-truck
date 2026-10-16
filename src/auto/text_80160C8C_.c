@@ -41,6 +41,10 @@ int fn_80162260(void) {
     return 0;
 }
 
+unsigned char fn_80163F6C(void *arg0) {
+    return *((unsigned char *)arg0 + 0x56D);
+}
+
 void fn_80164D58(void) {
 
 }
