@@ -177,14 +177,13 @@ extern "C" s32 fn_80147070(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void fn_80147204(void *arg0, const char *arg1) {
+extern "C" f32 fn_80147204(void *arg0, const char *arg1) {
     if (arg0 != 0) {
         if ((u8)*arg1 == 1)
             arg1++;
-        fn_800108C8(arg1, *(f32 *)((u8 *)arg0 + 0x10));
-        return;
+        return fn_800108C8(arg1, *(f32 *)((u8 *)arg0 + 0x10));
     }
-    return;
+    return lbl_805615D4;
 }
 
 extern "C" void fn_801476C4(void *arg0) {
