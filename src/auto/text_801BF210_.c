@@ -8,6 +8,12 @@ void fn_801BF210(void) {
 
 }
 
+void fn_801BFE7C(float *arg0, float *arg1, float *arg2) {
+    arg0[0] = arg1[0] + arg2[0];
+    arg0[1] = arg1[1] + arg2[1];
+    arg0[2] = arg1[2] + arg2[2];
+}
+
 void fn_801BFEB0(void) {
 
 }
@@ -18,6 +24,28 @@ void GXInitLightAttnA_801BFEBC(void *arg0, float farg0, float farg1, float farg2
     ((float *)arg0)[0] = farg0;
     ((float *)arg0)[1] = farg1;
     ((float *)arg0)[2] = farg2;
+}
+
+void fn_801BFECC(void *arg0, void *arg1) {
+    int temp_r10 = *(int *)((char *)arg1 + 0x14);
+    int temp_r9 = *(int *)((char *)arg1 + 0x18);
+    int temp_r8 = *(int *)((char *)arg1 + 0x1C);
+    int temp_r7 = *(int *)((char *)arg1 + 0x20);
+    int temp_r6 = *(int *)((char *)arg1 + 0x24);
+    int temp_r5 = *(int *)((char *)arg1 + 0x28);
+    *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x00);
+    *(int *)((char *)arg0 + 0x40) = *(int *)((char *)arg1 + 0x04);
+    *(int *)((char *)arg0 + 0x44) = *(int *)((char *)arg1 + 0x08);
+    *(int *)((char *)arg0 + 0x48) = *(int *)((char *)arg1 + 0x0C);
+    *(int *)((char *)arg0 + 0x4C) = *(int *)((char *)arg1 + 0x10);
+    *(int *)((char *)arg0 + 0x50) = temp_r10;
+    *(int *)((char *)arg0 + 0x54) = temp_r9;
+    *(int *)((char *)arg0 + 0x58) = temp_r8;
+    *(int *)((char *)arg0 + 0x5C) = temp_r7;
+    *(int *)((char *)arg0 + 0x60) = temp_r6;
+    *(int *)((char *)arg0 + 0x64) = temp_r5;
+    *(int *)((char *)arg0 + 0x68) = *(int *)((char *)arg1 + 0x2C);
+    fn_8017A580(temp_r5, temp_r6, temp_r7, temp_r8, temp_r9, temp_r10);
 }
 
 extern void fn_8019EECC(void *, void *);
@@ -59,9 +87,10 @@ extern void fn_8017A57C(float, float);
 void fn_801C014C(void *arg0, float *arg1) {
     float temp_f2 = arg1[0];
     float temp_f1 = arg1[1];
+    float temp_f0 = arg1[2];
     *(float *)((char *)arg0 + 0x30) = temp_f2;
     *(float *)((char *)arg0 + 0x34) = temp_f1;
-    *(float *)((char *)arg0 + 0x38) = arg1[2];
+    *(float *)((char *)arg0 + 0x38) = temp_f0;
     fn_8017A57C(temp_f1, temp_f2);
 }
 
