@@ -85,6 +85,45 @@ void *__AXFXGetLfoSinTable_801769CC(void) {
 
 u32 *fn_801769D8(void) { return &lbl_8055E3F8; }
 
+extern void __AXDSPInitCallback_801769E0(void);
+extern void fn_801769EC(void);
+
+int fn_80176F9C(void) {
+    s32 v = *(s32 *)(lbl_80430558 + 0xC);
+    if (v == 0 || v == 3)
+        return 0;
+    return 1;
+}
+
+void fn_80176FC4(void) {
+    if (*(s32 *)(lbl_80430558 + 0xC) == 3) {
+        fn_80176F28();
+    } else {
+        *(void **)(lbl_80430558 + 0x10) = (void *)fn_80176F28;
+        *(s32 *)(lbl_80430558 + 0xC) = 2;
+        *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176F28);
+        *(s32 *)lbl_80430558 = lbl_8055E3C4;
+        *(s32 *)(lbl_80430558 + 8) = 7;
+        *(u8 *)(lbl_80430558 + 0x14) = 0;
+        __AXDSPInitCallback_801769E0();
+    }
+    fn_801769EC();
+}
+
+void fn_80177048(void) {
+    if (*(s32 *)(lbl_80430558 + 0xC) == 3) {
+        fn_80176F28();
+        return;
+    }
+    *(void **)(lbl_80430558 + 0x10) = (void *)fn_80176F28;
+    *(s32 *)(lbl_80430558 + 0xC) = 2;
+    *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176F28);
+    *(s32 *)lbl_80430558 = lbl_8055E3C4;
+    *(s32 *)(lbl_80430558 + 8) = 7;
+    *(u8 *)(lbl_80430558 + 0x14) = 0;
+    __AXDSPInitCallback_801769E0();
+}
+
 void __AXDSPInitCallback_801769E0(void) {
     lbl_8055E3C0 = 1;
 }
