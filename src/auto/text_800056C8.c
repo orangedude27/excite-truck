@@ -242,6 +242,8 @@ s32 fn_80007990(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+u32 fn_800079D0(void) { return 1; }
+
 extern u8 lbl_802FB688[];
 void *fn_800079D8(void) {
     return lbl_802FB688;
