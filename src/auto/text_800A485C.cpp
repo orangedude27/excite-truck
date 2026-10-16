@@ -155,15 +155,14 @@ extern "C" s32 fn_800D2E14(void) {
     if (lbl_8055DDC8 == 0) {
         return 0;
     }
-    if (*((u32 *)&lbl_80407BD8) == 0) {
+    if (lbl_80407BD8[0] == 0) {
         return 0;
     }
     return 1;
 }
 
 extern "C" void fn_800D2FC8(void) {
-    u32 *base = (u32 *)&lbl_80407BD8;
-    DCStoreRange((void *)base[0], base[1]);
+    DCStoreRange((void *)lbl_80407BD8[0], lbl_80407BD8[1]);
 }
 
 extern "C" s32 fn_800D3824(void) {
