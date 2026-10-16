@@ -68,20 +68,20 @@ void fn_802792E4(s32 arg0) {
 }
 #pragma dont_inline off
 void fn_802792EC(void* arg0) {
-    Node_80279254* node = arg0;
+    Node_80279254* node3 = arg0;
     s32 temp_r0;
 
-    temp_r0 = node->count - 1;
-    node->count = temp_r0;
+    temp_r0 = node3->count - 1;
+    node3->count = temp_r0;
     if (temp_r0 == 0) {
-        Node_80279254** var_r5 = (Node_80279254**)&lbl_8055F5F0;
-        Node_80279254* temp_r4;
-        while ((temp_r4 = *var_r5) != NULL) {
-            if (temp_r4 == node) {
-                *var_r5 = temp_r4->next;
+        Node_80279254* temp_r5;
+        Node_80279254** var_r4 = (Node_80279254**)&lbl_8055F5F0;
+        while ((temp_r5 = *var_r4) != NULL) {
+            if (temp_r5 == node3) {
+                *var_r4 = temp_r5->next;
                 break;
             }
-            var_r5 = &temp_r4->next;
+            var_r4 = &temp_r5->next;
         }
         fn_80131818(*(void**)((u8*)arg0 + 0x2438));
         fn_80128670(*(s32*)((u8*)arg0 + 0x20EC));
