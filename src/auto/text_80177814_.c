@@ -13,6 +13,10 @@ extern float lbl_804305D4[];
 extern float lbl_80430700[];
 extern float lbl_80561B48;
 void fn_802E8518(void);
+long fn_80177980(void) {
+    return 0;
+}
+
 void fn_80177A18(void) {
     long var_r31;
 
