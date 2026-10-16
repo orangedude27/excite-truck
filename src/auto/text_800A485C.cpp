@@ -148,6 +148,8 @@ extern "C" void OSUnlockMutex(void*);
 extern const char lbl_8031EA80[];
 extern const char lbl_8031EA90[];
 extern void* lbl_804077C0;
+extern void fn_800D2E3C(s32, s32, s32, s32);
+extern void fn_800D24D4(void*, s32);
 
 extern "C" s32 fn_800D2E14(void) {
     if (lbl_8055DDC8 == 0) {
