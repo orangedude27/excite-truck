@@ -54,10 +54,7 @@ extern "C" void fn_801FEF80(void* arg0) {
 
 extern "C" void fn_801FEF90(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    if (obj != 0) {
-        void** vtable = *(void***)obj;
-        ((void (*)(void*, int))vtable[5])(obj, 0);
-    }
+    if (obj != 0) (*(void (**)(void*, int))(*(void***)obj + 5))(obj, 0);
 }
 
 extern "C" void fn_801FEFB4(void* arg0) {
