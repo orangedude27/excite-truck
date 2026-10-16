@@ -71,6 +71,9 @@ void fn_802C0054(void *dst, const void *src) {
     *(struct Copy *)dst = *(const struct Copy *)src;
 }
 
+void fn_802C00A0(void) {
+}
+
 int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
 
 float fn_802C0CA0(void *arg0) { return *(float *)((char *)arg0 + 0x14); }
