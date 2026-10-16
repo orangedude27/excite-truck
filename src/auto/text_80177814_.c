@@ -163,6 +163,7 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
     return arg0;
 }
 
+extern void DBPrintf_80179758(const char *fmt, ...);
 extern s32 lbl_8055E3C4;
 extern u64 fn_802E2C9C(void);
 extern s64 __div2i(s64, s64);
