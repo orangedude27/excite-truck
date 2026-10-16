@@ -64,7 +64,7 @@ public:
     virtual void vf12(float);   // vtable 0x40
     virtual void vf13();
     virtual void vf14();
-    virtual void vf15();
+    virtual void vf15(float);   // vtable 0x40
     virtual void vf16();
     virtual void vf17();
     virtual void vf18();
@@ -139,8 +139,8 @@ extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(BasicSound
     if (!(priority_ >= 0 && priority_ <= 0x7F)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x202, lbl_803227EC, priority_, 0, 0x7F);
     }
-    *(u8 *)&((u8 *)this_)[0x74] = priority_;
     SoundPlayer *player = *(SoundPlayer **)&((u8 *)this_)[0x10];
+    *(u8 *)&((u8 *)this_)[0x74] = priority_;
     if (player != 0) {
         detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
         detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
@@ -152,7 +152,7 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_
     if (!(vol >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x216, lbl_80322830);
     }
-    *(f32 *)&((u8 *)this_)[0x8C] = vol;
+    *(f32*)&((u8*)sound)[0x8C] = vol;
 }
 
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
@@ -160,7 +160,7 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(vo
     if (!(vol >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x234, lbl_80322858);
     }
-    *(f32 *)&((u8 *)this_)[0x98] = vol;
+    *(f32*)&((u8*)sound)[0x98] = vol;
 }
 
 #pragma push
