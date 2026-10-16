@@ -29,6 +29,11 @@ void fn_8017EB70(void *arg0) {
     fn_8017E96C((char *)arg0 - 0x1EC);
 }
 
+extern void fn_8017E9FC(void *);
+void fn_8017EB78(void *arg0) {
+    fn_8017E9FC((char *)arg0 - 0x1EC);
+}
+
 float fn_8017EB80(float arg0, float arg1, float arg2) {
     float value = lbl_80561C48;
     float temp = ((value + arg1 + arg2) * (float)fabs(arg0)) - arg1;
