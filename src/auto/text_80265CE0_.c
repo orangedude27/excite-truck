@@ -9,3 +9,5 @@ int fn_80265D58(void) { return 0; }
 
 void fn_80265D60(void) {}
 
+int fn_80265D64(void) { return 0; }
+
