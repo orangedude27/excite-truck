@@ -50,7 +50,7 @@ void fn_801F1EA8(void) {
 #pragma small_data off
 extern int fn_802CAC28(void *, int);
 extern void *fn_802C86DC(void);
-extern void PSVECDotProduct(float *, float *);
+extern float PSVECDotProduct(float *, float *);
 extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A808, lbl_8033A660, lbl_8033A958, lbl_8033AC58;
 extern int lbl_8055B128;
 extern float lbl_80562F40;
