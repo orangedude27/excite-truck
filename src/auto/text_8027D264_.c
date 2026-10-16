@@ -10,6 +10,10 @@ int fn_8027D8FC(void *arg0) {
     return ((int *)arg0)[4];
 }
 
+int fn_8027D914(void *arg0, int arg1) {
+    return ((int *)arg0)[6] + arg1 * 0x3C;
+}
+
 void fn_8027DE6C(void) {
     fn_8027B77C();
     fn_8027BF38();
