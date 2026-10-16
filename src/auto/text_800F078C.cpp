@@ -13,3 +13,8 @@ extern "C" void fn_800F0E38(void* arg0) {
 extern "C" s32 fn_800F0E40(s32 arg0) {
     return arg0 + 0xD8;
 }
+
+extern "C" u32* fn_800F0E50(void) {
+    return &lbl_8055DE48;
+}
+
