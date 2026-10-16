@@ -18,3 +18,7 @@ s32 fn_802E47B8(void) {
     return lbl_8055FF50 != 0;
 }
 
+s32 fn_802E47F8(void) {
+    return 0;
+}
+
