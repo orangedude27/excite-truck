@@ -151,3 +151,7 @@ void fn_802487A8(void *arg0) {
     *(unsigned char*)((char*)arg0 + 0x18) = 0;
 }
 
+void fn_80248A68(void *arg0) {
+    *(float*)((char*)arg0 + 0x1C) = lbl_805638B0;
+}
+
