@@ -129,7 +129,7 @@ void fn_80191060(void) {
 void fn_80191064(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 0x10);
     if (obj != 0) {
-        ((void (**)(void *))(*(void ***)obj))[17](obj);
+        ((void (**)(void *))*(void **)obj)[17](obj);
     }
 }
 
@@ -137,11 +137,11 @@ void fn_80191084(void *arg0, void *arg1) {
     void *old = *(void **)((char *)arg0 + 0x10);
     if (arg1 != old) {
         if (old != 0) {
-            ((void (**)(void *))(*(void ***)old))[10](old);
+            ((void (**)(void *))*(void **)old)[10](old);
         }
         *(void **)((char *)arg0 + 0x10) = arg1;
         if (arg1 != 0) {
-            ((void (**)(void *))(*(void ***)arg1))[9](arg1);
+            ((void (**)(void *))*(void **)arg1)[9](arg1);
         }
     }
 }
@@ -151,10 +151,14 @@ int fn_80191100(void *arg0) {
 }
 
 int fn_80191108(void *arg0, int arg1) {
-    void *obj0 = *(void **)((char *)arg0 + 0xC);
-    int result = ((int (**)(void *))(*(void ***)obj0))[6](obj0);
-    void *obj1 = *(void **)((char *)arg0 + 8);
-    return result + ((int (**)(void *, int))(*(void ***)obj1))[6](obj1, arg1 + result);
+    void *base = arg0;
+    int amount = arg1;
+    int result = ((int (**)(void *))(*(void ***)((char *)base + 0xC)))[6](*(void **)((char *)base + 0xC));
+    return result + ((int (**)(void *, int))(*(void ***)*(void **)((char *)base + 8)))[6](*(void **)((char *)base + 8), amount + result);
+}
+
+unsigned char fn_8019157C(void *arg0) {
+    return *((unsigned char *)arg0 + 0x14);
 }
 
 void fn_80192BE4(void) {
