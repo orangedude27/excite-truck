@@ -107,7 +107,7 @@ s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
 void fn_801D77D8(void *arg0) {
-    ((void (*)(void *))(*((void ***)arg0))[13])(arg0);
+    ((void (*)(void *))(*((void ***)arg0))[0xD])(arg0);
 }
 
 void fn_801D77E8(void) {
@@ -171,6 +171,16 @@ void fn_801D7874(void *arg0, void *arg1) {
     count = ((s32 *)arg0)[0x1D];
     ((s32 *)arg0)[0x1D] = count + 1;
     ((s32 *)((s32 *)arg0)[0x1C])[count] = (s32)arg1;
+}
+
+void *fn_801D7924(void *arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        *(s32 *)((u8 *)arg0 + 0x28) = 0;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 void fn_801D8620(void) {
