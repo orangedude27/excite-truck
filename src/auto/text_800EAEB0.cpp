@@ -273,6 +273,20 @@ s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(void*);
+extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, u32);
+extern "C" s32 NANDClose(void*);
+extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+extern "C" void fn_800F27AC(void*);
+#pragma push
+#pragma small_data off
+extern u8 lbl_803237D0[];
+extern u8 lbl_803237EC[];
+#pragma pop
+extern "C" void fn_800EE434(void* arg0) {
+    DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl((u8*)arg0 + 8);
+}
+
 extern "C" void fn_800EF9B8(void* arg0, f32 arg1) {
     u32 level;
     level = OSDisableInterrupts();
