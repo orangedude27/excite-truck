@@ -52,3 +52,7 @@ void* fn_801E89EC(void) {
     return lbl_8055AF08;
 }
 
+void fn_801E89F4(void *arg0) {
+    lbl_8055AF08 = arg0;
+}
+
