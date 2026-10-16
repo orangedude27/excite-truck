@@ -397,6 +397,11 @@ extern "C" void fn_801584A8(void* arg0) {
     *(u32*)((u8*)arg0 + 4) = 0;
 }
 
+extern void lbl_8032F350(void);
+extern "C" void fn_801584C4(void **arg0) {
+    *arg0 = (void *)&lbl_8032F350;
+}
+
 extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32* state = (s32*)&lbl_8042FD34;
     s32 i;
@@ -864,28 +869,19 @@ extern "C" void fn_8015B228(void* arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_8015B23C(Unk801577F0* arg0) {
-    class LocalVt {
-    public:
-        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
-        virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
-        virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
-        virtual void a12(); virtual void a13(); virtual void a14(); virtual void a15();
-        virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19();
-        virtual f32 a20(s32); virtual void a21(); virtual void a22(); virtual s32 a23();
-        virtual void a24(); virtual void a25(); virtual void a26(); virtual void a27();
-        virtual void a28(); virtual void a29(); virtual void a30(); virtual void a31();
-        virtual void a32(); virtual void a33(); virtual void a34(); virtual void a35(f32*);
-    };
-    f32 value;
-    if (arg0->m264 > 0) {
-        s32 result = ((LocalVt*)arg0)->a23();
-        value = arg0->m25c * ((LocalVt*)arg0)->a20(result);
-        ((LocalVt*)arg0)->a35(&value);
-        ((LocalVt*)arg0)->a33();
-        f32 zero = lbl_80561750;
-        arg0->m264 = 0;
-        arg0->m25c = zero;
-    }
+ class LocalVt { public:
+ virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11(); virtual void a12(); virtual void a13(); virtual void a14(); virtual void a15(); virtual void a16();
+ virtual f32 a19(s32); virtual void a20(); virtual void a21(); virtual s32 a22();
+ virtual void a23(); virtual void a24(); virtual void a25(); virtual void a26(); virtual void a27(); virtual void a28(); virtual s32 a29(); virtual void a30(); virtual void a31(); virtual void a32(); virtual void a33(); virtual void a34(f32*);
+ };
+ f32 value;
+ if (arg0->m264 > 0) {
+  s32 result=((LocalVt*)arg0)->a22();
+  value=arg0->m25c*((LocalVt*)arg0)->a19(result);
+  ((LocalVt*)arg0)->a34(&value);
+  ((LocalVt*)arg0)->a32();
+  f32 zero=lbl_80561750; arg0->m264=0; arg0->m25c=zero;
+ }
 }
 
 extern "C" s32 fn_8015B2E0(void* arg0) {
