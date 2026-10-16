@@ -15,6 +15,11 @@ void AXRegisterAuxACallback(void *arg0, void *arg1) {
     lbl_8055D71C = arg1;
 }
 
+void AXRegisterAuxCCallback(void *arg0, void *arg1) {
+    lbl_8055D720 = arg0;
+    lbl_8055D714 = arg1;
+}
+
 void AXGetAuxACallback(void **arg0, void **arg1) {
     *arg0 = lbl_8055D728;
     *arg1 = lbl_8055D71C;
