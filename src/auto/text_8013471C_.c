@@ -10,6 +10,11 @@ extern void *fn_80134EC8(void);
 extern void *fn_80134FF8(void);
 extern void *fn_801350C0(void);
 extern void *fn_801A520C(void *, void *);
+extern void *fn_801B83A0(void);
+extern void fn_801938F4(void);
+extern void fn_802E30C8(const char *, void *);
+extern const char lbl_8032BC50[];
+extern const char lbl_8032BC5C[];
 
 extern s32 fn_80128668(void);
 extern f32 lbl_805612F4;
