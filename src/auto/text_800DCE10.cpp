@@ -53,17 +53,9 @@ extern "C" void fn_800DCE68(void *arg0, const void *arg1) {
     *(u32 *)arg0 = *(u32 *)buf;
 }
 
-void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *out, const void *this_ptr, u32 index);
+void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *this_ptr, u32 index);
 
-u8 GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *this_ptr, u32 index);
-void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *this_ptr, u32 index) {
-    if (index >= 4) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80320570, 0x1d3, (const char *)&lbl_80320688);
-    }
-    GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(out, this_ptr, index >> 1);
-}
-
-u8 GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *this_ptr, u32 index) {
+void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *this_ptr, u32 index) {
     if (index >= 2) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80320B8C, 0x5f, (const char *)&lbl_80320B5C);
     }
