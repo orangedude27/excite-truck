@@ -24,6 +24,8 @@ void fn_80235380(s32);
 void fn_802C519C(s32);
 void fn_802328D4(s32);
 void fn_80128668(void *);
+s32 fn_802E499C(unsigned short *, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short);
+void fn_8020C918(s32);
 
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
