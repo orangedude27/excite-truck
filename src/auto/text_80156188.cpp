@@ -20,9 +20,22 @@ void fn_80157198(void*);
 
 namespace ebi {
 namespace title {
+class TPlaneSub {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void update(); // 0x14
+};
+
 class TBlackPlane {
 public:
     TBlackPlane() {}
+    void* m_pad; // 0x0
+    TPlaneSub* m_a; // 0x4
+    TPlaneSub* m_b; // 0x8
     void updateAfterCamera();
 };
 } // namespace title
@@ -159,17 +172,17 @@ void fn_80156B50(void) {
     return;
 }
 
-void fn_80157184(void* arg0) {
+extern "C" void fn_80157184(void* arg0) {
     void* o = *(void**)((u8*)arg0 + 4);
     ((void(*)(void*))(*(void***)o)[3])(o);
 }
 
-void fn_80157198(void* arg0) {
+extern "C" void fn_80157198(void* arg0) {
     void* o = *(void**)((u8*)arg0 + 8);
     ((void(*)(void*))(*(void***)o)[4])(o);
 }
 
-void fn_801571AC(void* arg0) {
+extern "C" void fn_801571AC(void* arg0) {
     void* o = *(void**)((u8*)arg0 + 4);
     ((void(*)(void*))(*(void***)o)[4])(o);
 }
