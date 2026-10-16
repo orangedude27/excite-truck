@@ -8,6 +8,16 @@ char fn_802CA7DC(const char *arg0) { return (signed char)*arg0 == 0x2A; }
 
 int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
 
+extern char lbl_8055FCBC[];
+extern char lbl_8055FCB0[];
+extern float lbl_80564F40;
+extern float lbl_80564F44;
+extern float lbl_8055FCC4;
+void fn_802CC550(int, float, float);
+void fn_802CC73C(char arg0) {
+    lbl_8055D07D = arg0;
+}
+
 char fn_802CC744(void) {
     return lbl_8055D07D;
 }
