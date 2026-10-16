@@ -158,3 +158,5 @@ int fn_8016582C(void) { return 0; }
 
 int fn_80165900(void) { return 1; }
 
+int fn_80165908(void) { return 0; }
+
