@@ -18,3 +18,6 @@ void __AXPushCallbackStack(void *arg0) {
 void fn_801B608C(s32 *arg0) {
     *arg0 = 0;
 }
+
+void NWC24Data_Init_801B6098(s32 *arg0) { arg0[0] = 0; arg0[1] = 0; }
+
