@@ -282,6 +282,11 @@ s32 fn_801B3050(s32 arg0) {
     return *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x6C);
 }
 
+extern f32 fn_801B3064(void);
+f32 fn_801B3064(void) {
+    return lbl_8055E6A4;
+}
+
 extern f32 lbl_8055E3C8;
 extern f32 lbl_8055E6AC;
 f32 fn_801B306C(void) {
