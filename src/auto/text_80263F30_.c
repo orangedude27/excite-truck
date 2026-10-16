@@ -119,10 +119,12 @@ void fn_802655A4(void *arg0) {
     extern void *lbl_8055F44C;
     extern char lbl_80346558[];
     extern float lbl_80563BF0;
-    *(void **)arg0 = lbl_80346558;
+    void *ptr = lbl_80346558;
+    float value = lbl_80563BF0;
+    *(void **)arg0 = ptr;
     *(int *)((char *)arg0 + 0x14) = 0;
     lbl_8055F44C = arg0;
-    *(float *)((char *)arg0 + 0x1C) = *(volatile float *)&lbl_80563BF0;
+    *(float *)((char *)arg0 + 0x1C) = value;
 }
 
 int fn_802655C8(int arg0, int arg1) {
