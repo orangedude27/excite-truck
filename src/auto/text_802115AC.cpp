@@ -591,7 +591,7 @@ extern "C" void fn_80215944(void *arg0) {
 }
 
 extern "C" void fn_80215984(void *arg0) {
-    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf12();
+    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf10();
 }
 
 extern "C" void fn_80215B08(void *arg0) {
