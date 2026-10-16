@@ -771,12 +771,7 @@ void fn_801A49FC(void* arg0) {
 }
 
 extern "C" void fn_801A4E28(void) {
-    s32* p;
-#pragma push
-#pragma small_data off
-    p = &lbl_803336EC;
-#pragma pop
-    lbl_8055E5A0 = fn_801CFEAC(p);
+    lbl_8055E5A0 = fn_801CFEAC(&lbl_803336EC);
 }
 
 extern "C" void fn_801A4E54(void) {
