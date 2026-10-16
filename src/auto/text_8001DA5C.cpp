@@ -14,8 +14,6 @@ extern void* lbl_80358680[];
 class CollisionEntry {
 public:
     virtual void unk0();
-    virtual void unk4();
-    virtual void unk8();
     virtual void apply(s32, s32);
 };
 extern s32 lbl_8055E3C4;
@@ -89,18 +87,15 @@ void fn_8001DF04(void) {
 }
 
 extern "C" void fn_8001DFA8(s32 arg0) {
-    void* obj = ((void**)&lbl_80358680)[3];
-    ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, arg0, 0);
+    ((CollisionEntry*)lbl_80358680[3])->apply(arg0, 0);
 }
 
 extern "C" void fn_8001DFCC(void) {
-    void* obj = ((void**)&lbl_80358680)[4];
-    ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, 9, 17);
+    ((CollisionEntry*)lbl_80358680[4])->apply(9, 17);
 }
 
 extern "C" void fn_8001DFF0(void) {
-    void* obj = ((void**)&lbl_80358680)[5];
-    ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, 0, 0);
+    ((CollisionEntry*)lbl_80358680[5])->apply(0, 0);
 }
 
 extern "C" void fn_802CAC54(void*);
