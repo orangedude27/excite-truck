@@ -424,6 +424,11 @@ extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
     }
 }
 
+extern void lbl_8032D260(void);
+extern "C" void fn_80146C1C(void **arg0) {
+    *arg0 = (void *)&lbl_8032D260;
+}
+
 extern "C" void *lbl_8032D214;
 extern "C" void fn_8002F6AC(s32, void *);
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *, s32);
@@ -441,6 +446,44 @@ extern "C" f32 fn_80147204(void *arg0, const char *arg1) {
         return fn_800108C8(arg1, *(f32 *)((u8 *)arg0 + 0x10));
     }
     return lbl_805615D4;
+}
+
+extern "C" int vsprintf(char *, const char *, va_list);
+extern "C" unsigned int strlen(const char *);
+extern "C" void fn_802E317C(const char *, ...);
+extern "C" char lbl_8032D1A4[];
+extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
+    char buffer[0x200];
+    if (arg0 != 0) {
+        va_list args;
+        va_start(args, arg1);
+        vsprintf(buffer, arg1, args);
+        if (strlen(buffer) >= 0x200) {
+            s32 length = strlen(buffer);
+            fn_802E317C(lbl_8032D1A4, length, arg1);
+        }
+        fn_80145B94(arg0, (u32)buffer);
+    }
+}
+
+extern int vsprintf(char *, const char *, va_list);
+extern unsigned int strlen(const char *);
+extern char lbl_8032D1A4[];
+void fn_802E317C(const char *, unsigned int, const char *, ...);
+void fn_80145B94(void *, const char *);
+extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
+    struct VTable { void *unused[3]; void *(*get)(void *); };
+    char buffer[0x200];
+    va_list args;
+    void *result = ((VTable *)*(void ***)arg0)->get(arg0);
+    if (result != 0) {
+        va_start(args, format);
+        vsprintf(buffer, format, args);
+        va_end(args);
+        if (strlen(buffer) >= 0x200)
+            fn_802E317C(lbl_8032D1A4, strlen(buffer), format);
+        fn_80145B94(result, buffer);
+    }
 }
 
 extern "C" void fn_801476C4(void *arg0) {
@@ -469,20 +512,38 @@ extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         fn_80145CF4((void *)arg1, (void *)temp_r3, arg3);
 }
 
+extern "C" void fn_80147CEC(void *, s32, s32, f64);
+extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 value, ...) {
+    char text[0x200];
+    char buffer[0x20];
+    va_list args;
+    va_start(args, value);
+    vsprintf(text, format, args);
+    if (strlen(text) >= 0x200)
+        fn_802E317C(lbl_8032D1A4, strlen(text), format);
+    fn_80147CEC(buffer, (s32)arg0, (s32)arg1, value);
+    fn_80147230(buffer, (const char *)&lbl_80559E1C, text);
+}
+
 extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
     u32 tmp;
     fn_80147DC0(&tmp, arg0, arg1);
     fn_801476D8(&tmp, fn_80147C50(arg2, arg3, arg5), arg4);
 }
 
+#pragma dont_inline on
 extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
     s32 a = fn_801450A0(arg0 & 0xFF, arg1 & 0xFF, arg2);
     s32 b = fn_801450A0((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
     s32 c = fn_801450A0((arg0 >> 16) & 0xFF, (arg1 >> 16) & 0xFF, arg2);
     s32 d = fn_801450A0(arg0 >> 24, arg1 >> 24, arg2);
-    return (a & 0xFF) | ((b & 0xFF) << 8) | ((c & 0xFF) << 16) | ((d & 0xFF) << 24);
+    u32 result = (b & 0xFF) << 8;
+    result |= a & 0xFF;
+    u32 high = (c & 0xFF) << 16;
+    high |= (d & 0xFF) << 24;
+    return result | high;
 }
-
+#pragma dont_inline off
 extern "C" void fn_80147EE0(void *arg0, f32 scale) {
     f32 x = *(f32 *)((u8 *)arg0 + 0x10);
     f32 decay = lbl_805615D0;
