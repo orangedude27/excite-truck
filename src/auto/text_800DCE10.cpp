@@ -49,28 +49,51 @@ extern "C" void fn_800DCE68(void *arg0, const void *arg1) {
     *(u32 *)arg0 = result;
 }
 
-void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *this_ptr, u32 index);
-void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *this_ptr, u32 index);
+void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *src, u32 index);
+void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *src, u32 index);
+void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color);
+void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color);
 
-void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *this_ptr, u32 index) {
-    if (index >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80320B8C, 0x5f, (const char *)&lbl_80320B5C);
+void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *src, u32 index) {
+    if (index >= 4) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1d3, lbl_80320688);
     }
-    const u8 *src = (const u8 *)this_ptr + (index * 4) + 0xD8;
-    out[0] = src[0];
-    out[1] = src[1];
-    out[2] = src[2];
-    out[3] = src[3];
+    GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(out, src, index >> 1);
 }
 
-extern "C" void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *arg0, const void *arg1, u32 index) {
+void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *src, u32 index) {
     if (index >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80320B8C, 0x5f, (const char *)&lbl_80320B5C);
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320B8C, 0x5f, lbl_80320B5C);
     }
-    const u8 *src = (const u8 *)arg1 + (index * 4) + 0xD8;
-    ((u8 *)arg0)[0] = src[0];
-    ((u8 *)arg0)[1] = src[1];
-    ((u8 *)arg0)[2] = src[2];
-    ((u8 *)arg0)[3] = src[3];
+    const u8 *base = (const u8 *)src + (index * 4);
+    out[0] = base[0xD8];
+    out[1] = base[0xD9];
+    out[2] = base[0xDA];
+    out[3] = base[0xDB];
+}
+
+void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
+    if (index >= 4) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1de, lbl_80320688);
+    }
+    u8 colorBytes[4];
+    const u8 *c = (const u8 *)color;
+    colorBytes[0] = c[0];
+    colorBytes[1] = c[1];
+    colorBytes[2] = c[2];
+    colorBytes[3] = c[3];
+    SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(this_ptr, index >> 1, colorBytes);
+}
+
+void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
+    if (index >= 2) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320BC8, 0x60, lbl_80320B98);
+    }
+    const u8 *c = (const u8 *)color;
+    u8 *base = (u8 *)this_ptr + (index * 4);
+    base[0xD8] = c[0];
+    base[0xD9] = c[1];
+    base[0xDA] = c[2];
+    base[0xDB] = c[3];
 }
 
