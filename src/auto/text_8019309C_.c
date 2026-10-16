@@ -17,24 +17,26 @@ void fn_8019416C(void) {
 
 }
 
-void fn_80194AF4(float *out, float *a, float *b, float t) {
+void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
     float x, y;
-    x = a[0] + t * (b[0] - a[0]);
-    y = a[1] + t * (b[1] - a[1]);
-    out[0] = x;
-    out[1] = y;
+    double pair;
+    x = a[1] + t * (b[1] - a[1]);
+    y = a[0] + t * (b[0] - a[0]);
+    pair = (double)y;
+    out[0] = (float)pair;
+    out[1] = x;
     out[2] = a[2] + t * (b[2] - a[2]);
 }
 
 extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
 extern void fn_80194FD0(void);
-void fn_80194F70(void *arg0, float *arg1, float *arg2) {
-    float diff[3];
-    diff[0] = arg1[0] - arg2[0];
-    diff[1] = arg1[1] - arg2[1];
-    diff[2] = arg1[2] - arg2[2];
-    PSVECDotProduct(arg0, diff);
+void fn_80194F70(void *arg0, float *a, float *b) {
+    float x, y, z;
+    x = a[0] - b[0];
+    y = a[1] - b[1];
+    z = a[2] - b[2];
+    PSVECDotProduct(arg0, &x);
 }
 
 void fn_80194FC4(void) {
@@ -51,6 +53,21 @@ void fn_801955F0(void *arg0, float *arg1) {
     scale = *(float *)((unsigned char *)arg0 + 0x2B8);
     arg1[0] += *(float *)((unsigned char *)arg0 + 0x58) * scale;
     arg1[1] += *(float *)((unsigned char *)arg0 + 0x5C) * scale;
+}
+
+extern void fn_801958D8(void);
+extern void fn_80195F6C(void *, void *);
+extern void fn_80194624(void *);
+extern float lbl_8055E3C8;
+extern float lbl_80562144;
+extern void fn_80195654(void *);
+extern void fn_801933FC(void *, void *);
+extern double fn_8002F234(float);
+extern float lbl_80562140;
+extern float lbl_80562148;
+extern float lbl_80562204;
+void fn_801958C4(void *arg0) {
+    *(float *)((unsigned char *)arg0 + 0x248) *= lbl_80562204;
 }
 
 void fn_801961F8(void) {
