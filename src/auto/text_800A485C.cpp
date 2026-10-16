@@ -144,6 +144,7 @@ extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
 #pragma opt_tail_call on
 extern s32 lbl_8055DDD4;
 extern void* lbl_8055DDD4_ptr;
+extern void* lbl_8055DDBC;
 extern "C" s32 fn_800D3F94(void*, s32, s32, s32);
 extern u32 lbl_80407BD8[];
 extern s32 lbl_8055DDC8;
@@ -340,22 +341,12 @@ extern "C" void fn_800D2480(void) {
 #pragma opt_tail_call on
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
     u32 *sp = (u32 *)&file;
-    s32 r31 = (s32)&sp[0x1A];
-    s32 r11 = (s32)&sp[0x22];
-    s32 r0 = (s32)&sp[2];
-    s32 r12 = 0x3000000;
+    s32 *stack_ptr = (s32 *)&sp[0x1A];
     
-    ((PanicStruct *)r31)->msg = msg;
-    ((PanicStruct *)r31)->file = file;
-    ((PanicStruct *)r31)->line = line;
-    ((PanicStruct *)r31)->r7 = 0;
-    ((PanicStruct *)r31)->r8 = 0;
-    ((PanicStruct *)r31)->r9 = 0;
-    ((PanicStruct *)r31)->r10 = 0;
-    ((PanicStruct *)r31)->field_68 = r12;
-    ((PanicStruct *)r31)->field_6C = (void *)r11;
-    ((PanicStruct *)r31)->field_70 = (void *)r0;
+    ((PanicStruct *)stack_ptr)->field_68 = 0x3000000;
+    ((PanicStruct *)stack_ptr)->field_6C = &sp[0x22];
+    ((PanicStruct *)stack_ptr)->field_70 = &sp[2];
     
-    fn_800D2098(&((PanicStruct *)r31)->field_68);
+    fn_800D2098(&((PanicStruct *)stack_ptr)->field_68);
 }
 extern s32 lbl_8055DDD4;
