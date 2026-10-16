@@ -198,6 +198,8 @@ void fn_802C8E48(void) {
     lbl_8055FC70 = 2;
 }
 
+float fn_802C8FEC(void) { return lbl_8055FC6C; }
+
 int fn_802C90E0(void) {
     return lbl_8055FC70 == 0;
 }
