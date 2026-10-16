@@ -268,6 +268,10 @@ void fn_8029EF48(void *arg0) {
     *((unsigned char *)arg0 + 0x68) = 1;
 }
 
+void fn_8029EF54(void *arg0) {
+    *((unsigned char *)arg0 + 0x68) = 0;
+}
+
 int fn_8029EF60(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x68);
 }
