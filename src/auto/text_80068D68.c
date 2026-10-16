@@ -1108,6 +1108,10 @@ void* __AXFXAllocFunction(u32 size) {
     return OSAllocFromHeap(__OSCurrHeap, size);
 }
 
+void __AXFXFreeFunction(void* ptr) {
+    OSFreeToHeap(__OSCurrHeap, ptr);
+}
+
 extern void *lbl_805590B0;
 extern void *lbl_805590B4;
 void AXFXSetHooks_8009CDB0(void *arg0, void *arg1) {
