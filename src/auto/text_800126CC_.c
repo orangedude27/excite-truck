@@ -4,3 +4,9 @@
 void fn_80012790(void) {
     fn_80012984();
 }
+
+extern void *lbl_80558AD8;
+void* fn_80012810(void) {
+    return lbl_80558AD8;
+}
+
