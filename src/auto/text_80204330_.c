@@ -7,6 +7,12 @@ int fn_80204354(void);
 extern float lbl_80563168, lbl_8056316C, lbl_80563170, lbl_80563174, lbl_80563178, lbl_8056317C;
 extern double lbl_80563180;
 extern char lbl_80488BD0[];
+#pragma dont_inline on
+void fn_80204330(void) {
+    lbl_8055ED48 = (void*)fn_802E2C20();
+}
+#pragma dont_inline off
+
 int fn_80204354(void) { return fn_802E2C20() - (int)lbl_8055ED48; }
 
 int fn_802E2C20(void);
@@ -42,6 +48,35 @@ void fn_8020449C(void) {
     obj = (int)lbl_8055ED44;
     if (obj != 0) (*(void (**)(void *, int))(*(int *)obj + 8))((void *)obj, 1);
     lbl_8055ED44 = 0;
+}
+
+void fn_802049DC(int a, int b, float c, float d, float e) {
+    int i;
+    char *entry;
+    i = lbl_8055ED3C;
+    if (i < 0x40) {
+      entry = lbl_80488BD0 + i * 0x18;
+      *(int *)(entry + 0) = a;
+      *(int *)(entry + 4) = 1;
+      *(int *)(entry + 8) = b;
+      *(float *)(entry + 0xC) = c;
+      *(float *)(entry + 0x10) = d;
+      lbl_8055ED3C = i + 1;
+      *(float *)(entry + 0x14) = e;
+    }
+}
+
+void fn_80204A1C(int a, int b) {
+    int i;
+    char *entry;
+    i = lbl_8055ED3C;
+    if (i < 0x40) {
+      entry = lbl_80488BD0 + i * 0x18;
+      *(int *)(entry + 0) = a;
+      *(int *)(entry + 4) = 0;
+      lbl_8055ED3C = i + 1;
+      *(int *)(entry + 8) = b;
+    }
 }
 
 void fn_80204A50(void) {
