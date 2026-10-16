@@ -18,6 +18,10 @@ void fn_8000ACAC(void) {
 void fn_8000AD20(void) {
 }
 
+void fn_8000B288(void* alarm) {
+    fn_801DF110(fn_8000B210(alarm));
+}
+
 void fn_8000BD98(void) {
     return;
 }
