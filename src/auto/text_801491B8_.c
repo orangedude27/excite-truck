@@ -261,6 +261,10 @@ void fn_8014AEF0(void *arg0) {
     }
 }
 
+s32 fn_8014AF58(void *arg0) {
+    return ((s32 *)arg0)[1];
+}
+
 s32 fn_8014C830(s32 arg0) { return arg0 + 0x14; }
 
 s32 fn_8014C848(void *arg0) {
