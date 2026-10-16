@@ -3,6 +3,11 @@
 
 extern unsigned short lbl_8055D734;
 
+extern void *lbl_8055D73C;
+void* fn_80031248(void) {
+    return lbl_8055D73C;
+}
+
 void fn_80031C68(void) {
 
 }
