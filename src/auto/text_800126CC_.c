@@ -30,7 +30,7 @@ void fn_80012910(void) {
     fn_80007FF0(*(int *)((char *)fn_8001285C() + 8));
 }
 
-int fn_80012938(float f) {
+int fn_80012938(float f) DECOMP_DONT_INLINE {
     if (f > lbl_80560358) {
         return 2;
     }
