@@ -37,7 +37,12 @@ DECL_SECTION(".sdata") extern int lbl_8055FCB0;
 extern float lbl_80564F40;
 extern float lbl_80564F44;
 extern float lbl_8055FCC4;
-extern unsigned short lbl_8055FCA8;
+  extern unsigned short lbl_8055FCA8;
+  int fn_802CAF8C(int arg0) {
+      if (arg0 == -1)
+          return 0;
+      return *(unsigned short *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 0xC) != lbl_8055FCA8;
+  }
 void fn_802CC550(int, float, float);
 int fn_802CB274(int arg0) {
     int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
@@ -51,13 +56,15 @@ int fn_802CB288(int arg0) {
 }
 
 char fn_802CAFC8(int arg0) {
-    int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
-    return *(char *)(p[0x2C / 4] + 8);
+    if (arg0 == -1)
+        return 5;
+    return *(char *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 8);
 }
 
 char fn_802CAFF0(int arg0) {
-    int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
-    return *(char *)(p[0x2C / 4] + 9);
+    if (arg0 == -1)
+        return 0x32;
+    return *(char *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 9);
 }
 
 unsigned short fn_802CB3FC(int arg0) {
