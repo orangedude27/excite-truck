@@ -346,3 +346,29 @@ s32 fn_80249154(void *arg0) {
     return 1;
 }
 
+s32 fn_80249334(void *arg0, s32 arg1) {
+    s32 *val = (s32 *)((char *)arg0 + 0x28);
+
+    switch (arg1) {
+    case 0x126:
+        break;
+    case 0x125:
+        if (*val > 0) {
+            fn_80214D50(0);
+            *val = *val - 1;
+        } else {
+            fn_80214D50(1);
+        }
+        break;
+    case 0x127:
+        if (*val + 1 < *(s32 *)((char *)arg0 + 0x24)) {
+            fn_80214D50(0);
+            *val = *val + 1;
+        } else {
+            fn_80214D50(1);
+        }
+        break;
+    }
+    return 0;
+}
+
