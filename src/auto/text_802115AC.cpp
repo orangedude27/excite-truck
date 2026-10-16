@@ -37,6 +37,11 @@ extern "C" void* fn_8021525C(void) {
     return lbl_8055EF38;
 }
 
+extern u8 lbl_8033CAE8[];
+extern "C" void *fn_80215264(void) {
+    return lbl_8033CAE8;
+}
+
 void fn_802152C8(void) {
 }
 
