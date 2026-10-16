@@ -81,6 +81,13 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110(void *this_,
     return this_;
 }
 
+s32 fn_8024A16C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668((void *)arg0);
+    }
+    return arg0;
+}
+
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_80236074((void*)arg0, 0);
