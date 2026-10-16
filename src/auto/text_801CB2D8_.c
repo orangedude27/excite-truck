@@ -288,8 +288,6 @@ void fn_801CEA28(void *arg0) {
 
 extern int fn_80128668(void *);
 extern void fn_801CBD04(void *);
-extern int lbl_80338024;
-extern int lbl_80338038;
 extern int fn_8001C0EC(int);
 extern int fn_8001C0E8(int, int);
 int fn_801CEA6C(void *arg0, int arg1) {
