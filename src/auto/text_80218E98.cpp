@@ -3,6 +3,11 @@
 
 #include <types.h>
 
+extern f32 lbl_805634A0;
+extern f32 lbl_805634A4;
+extern f32 lbl_805634B0;
+extern f32 lbl_805634B4;
+
 extern "C" void fn_80219284(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)arg0 + 4) + arg1;
     *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)((u8 *)arg0 + 8) + arg2;
@@ -13,6 +18,29 @@ void fn_802192A0(void) {
 }
 
 extern "C" s32 fn_802192A4(void) { return 0; }
+
+extern "C" void fn_80219044();
+extern f32 lbl_805634A0;
+extern f32 lbl_805634A4;
+extern f32 lbl_805634B0;
+extern f32 lbl_805634B4;
+extern "C" void fn_80219358(void *arg0, f32 value) {
+    if (value >= lbl_805634B0) {
+        if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+            return;
+        *(u8 *)((u8 *)arg0 + 0x1A) = 1;
+        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+        return;
+    }
+    if (*(u8 *)((u8 *)arg0 + 0x1A) == 0) {
+        if (*(f32 *)((u8 *)arg0 + 0x20) < lbl_805634B4) {
+            *(f32 *)((u8 *)arg0 + 0x20) = lbl_805634A4;
+            if (value > lbl_805634B0)
+                *(f32 *)((u8 *)arg0 + 0x28) = lbl_805634A4 / value;
+        }
+    }
+    *(f32 *)((u8 *)arg0 + 0x1C) = lbl_805634A0;
+}
 
 extern void fn_802179A0(s32);
 extern void fn_80218198(s32, s32);
@@ -30,16 +58,19 @@ extern "C" void fn_80219508(void* arg0) {
 }
 
 extern "C" void fn_80219510(void* arg0, s32 arg1, s32 arg2) {
-    *(s32*)((u8*)arg0 + 0x244) = -arg1;
-    *(s32*)((u8*)arg0 + 0x248) = -arg2;
+    s32 v244 = -arg1;
+    *(s32*)((u8*)arg0 + 0x244) = v244;
     *(u8*)((u8*)arg0 + 0x24C) = 1;
+    *(s32*)((u8*)arg0 + 0x248) = -arg2;
 }
 
 extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
+    void* r7 = *(void**)((u8*)arg0 + 0x2C);
     if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
-        void* r7 = *(void**)((u8*)arg0 + 0x2C);
-        *(s32*)((u8*)r7 + 0x454) += *(s32*)((u8*)arg0 + 0x244) + arg1;
-        *(s32*)((u8*)r7 + 0x458) += *(s32*)((u8*)arg0 + 0x248) + arg2;
+        s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
+        *(s32*)((u8*)r7 + 0x454) += dx;
+        s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
+        *(s32*)((u8*)r7 + 0x458) += dy;
     }
 }
 
