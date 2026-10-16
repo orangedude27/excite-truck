@@ -163,6 +163,21 @@ void fn_8022DE1C(void *arg0) {
     *temp_r4 = var_f4;
 }
 
+int fn_8022DF9C(void *arg0) {
+    int *ptr = *(int **)((char *)arg0 + 4);
+    return *(int *)((char *)arg0 + 8) != *ptr;
+}
+
+float fn_8022DFBC(void *arg0) {
+    int temp_r6;
+    int temp_r5;
+    int temp_r0;
+    temp_r6 = *(int *)((char *)arg0 + 8);
+    temp_r5 = **(int **)((char *)arg0 + 4);
+    temp_r0 = *(int *)((char *)arg0 + 0xC);
+    return (float)(temp_r5 - temp_r6) / (float)(temp_r0 - temp_r6);
+}
+
 void fn_8022E014(void *arg0, float arg1) {
     int temp = *(int *)((char *)arg0 + 8);
     *(int *)*(int **)((char *)arg0 + 4) = temp + (int)(arg1 * (float)(*(int *)((char *)arg0 + 0xC) - temp));
