@@ -655,10 +655,35 @@ s32 fn_801D8510(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+s32 fn_801D8518(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 4) == 1) {
+        *(s32 *)((u8 *)arg0 + 0x10) = lbl_8055E3C4;
+        *(s32 *)((u8 *)arg0 + 4) = 2;
+        return 1;
+    }
+    return 0;
+}
+
+void fn_801D8544(void *arg0) {
+    s32 sp8;
+    s32 temp_r31 = lbl_8055E3C4 - (*(s32 *)((u8 *)arg0 + 0x10) + *(s32 *)((u8 *)arg0 + 0xC));
+    if (*(s32 *)((u8 *)arg0 + 4) == 2 && temp_r31 > 0) {
+        sp8 = *(s32 *)((u8 *)arg0 + 0x14);
+        fn_801796CC(0xB, &sp8, 4);
+        if (temp_r31 >= *(s32 *)((u8 *)arg0 + 8)) {
+            *(s32 *)((u8 *)arg0 + 4) = 3;
+        }
+    }
+}
+
 void fn_801D85D8(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
     }
+}
+
+s32 fn_801D85F0(void *arg0) {
+    return *(u8 *)((u8 *)arg0 + 0x14) == 0;
 }
 
 void fn_801D8600(void *arg0) {
