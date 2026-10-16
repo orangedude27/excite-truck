@@ -40,6 +40,26 @@ extern "C" void fn_802E317C(const char*, ...);
 extern "C" const char lbl_8033B618[];
 extern "C" float fn_802C99E8(float);
 extern "C" void fn_802C744C(void*, void*);
+void fn_801FCF18(void* arg0, void* arg1, int arg2) {
+    *(int*)((char*)arg0 + 0) = arg2;
+    *(int*)((char*)arg0 + 4) = 0;
+    *(int*)((char*)arg0 + 8) = *(int*)((char*)arg1 + 4);
+    *(float*)((char*)arg0 + 0xC) = lbl_80563030;
+    *(float*)((char*)arg0 + 0x10) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x14) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x18) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x1C) = lbl_80563030;
+    *(float*)((char*)arg0 + 0x20) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x24) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x28) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x2C) = lbl_80563030;
+    *(float*)((char*)arg0 + 0x30) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x34) = lbl_80563034;
+    *(float*)((char*)arg0 + 0x38) = lbl_80563034;
+    *(int*)((char*)arg0 + 0x3C) = -1;
+    *(float*)((char*)arg0 + 0x40) = lbl_80563034;
+}
+
 extern "C" void fn_801FCFC8(void* arg0) {
     if (*(int*)((char*)arg0 + 4) != 0) {
         float value = fn_802C99E8(*(float*)((char*)arg0 + 0x6C));
