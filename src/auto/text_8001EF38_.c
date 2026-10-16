@@ -19,6 +19,7 @@ void fn_80131818(s32);
 s32 fn_8001F89C();
 s32 fn_8001F2C8();
 s32 fn_8001F388();
+s32 fn_8001F3AC();
 s32 stricmp(const char*, const char*);
 extern void* memset(void*, int, unsigned long);
 extern char lbl_80358698[0x2080];
