@@ -6,6 +6,10 @@ void* DSPReset(void) {
     return lbl_8055D808;
 }
 
+void DBPrintf_800343C8(const char *fmt, ...) {
+#pragma unused(fmt)
+}
+
 void fn_800357A8(void) {
 
 }
