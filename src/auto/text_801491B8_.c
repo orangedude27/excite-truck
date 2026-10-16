@@ -136,6 +136,8 @@ void fn_8014953C(void *arg0, float *arg1, float *arg2) {
 
 s32 fn_8014ACBC(void) { return 0; }
 
+s32 fn_8014ACC4(void) { return 0; }
+
 void fn_8014ACCC(void) {
 
 }
