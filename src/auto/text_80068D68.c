@@ -1131,6 +1131,15 @@ void* TPLGet(void* tpl, u32 index) {
     return entries + (index % count) * 8;
 }
 
+s32 fn_8009D000(void) {
+    if (!(OSGetConsoleType() & 0x10000000)) {
+        lbl_8055DCA4 = 0;
+        return 2;
+    }
+    lbl_8055DCA4 = 0xA5FF005A;
+    return 0;
+}
+
 u16 fn_8006D8D0(u32 arg0) {
     s32 diff = (s32)arg0 - 8;
     if (diff < 0) {
