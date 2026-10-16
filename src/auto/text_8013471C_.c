@@ -9,6 +9,11 @@ void fn_80134A88(void) {
 
 }
 
+extern void *lbl_8055E0B0;
+void* fn_80135108(void) {
+    return lbl_8055E0B0;
+}
+
 void fn_80135190(void) {
 
 }
