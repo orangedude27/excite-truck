@@ -24,10 +24,10 @@ public:
     virtual void v17();
     virtual void v18();
     virtual f32 v19(s32);
-    virtual void v20();
+    virtual f32 v20(s32);
     virtual void v21();
-    virtual void v22();
-    virtual void v23();
+    virtual s32 v22();
+    virtual s32 v23();
     virtual void v24();
     virtual void v25();
     virtual void v26();
