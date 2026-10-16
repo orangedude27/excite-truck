@@ -5,7 +5,7 @@
 
 extern s32 lbl_80558E04;
 extern s32 lbl_8055D84C;
-extern s32 PausingFlag_8055D850;
+extern volatile s32 PausingFlag_8055D850;
 extern s32 FatalErrorFlag_8055D854;
 extern s32 executing_8055D8C8;
 extern char __DVDThreadQueue[4];
