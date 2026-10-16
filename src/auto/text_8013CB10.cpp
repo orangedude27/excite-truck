@@ -68,6 +68,11 @@ extern "C" s32 fn_8013CB10(void) {
     return fn_80176A1C() == 2;
 }
 
+extern f32 lbl_8055E3C8;
+extern "C" f32 fn_8013CB3C(void) {
+    return lbl_8055E3C8;
+}
+
 extern "C" s32 fn_8013CB44(const char *arg0, TObj10 *arg1) {
     return strcmp((const char *)arg1->v10(), arg0) == 0;
 }
@@ -194,6 +199,30 @@ extern "C" s32 fn_8013F438(f32 x) {
     f32 v = (lbl_805614AC < t) ? lbl_805614AC : t;
     v = (v > lbl_805614A4) ? lbl_805614A4 : v;
     return (s32)(lbl_8056153C + v * lbl_80561540);
+}
+
+extern "C" int fn_8013FC6C(void* arg0) {
+    int a = 0, b = 0, c = 0;
+    while (c < *(int*)((char*)arg0 + 0xBC)) {
+        if (*(unsigned char*)(*(char**)((char*)arg0 + 0xB8) + a + 0x118)) {
+            if (((int (*)(void*, int))(*(void***)arg0)[8])(arg0, c) == 0) {
+                b++;
+                if (b >= *(int*)((char*)arg0 + 0x130)) return 1;
+            }
+        }
+        a += 0x12C;
+        c++;
+    }
+    return 0;
+}
+
+extern "C" int fn_8013FD20(void* arg0, int arg1) {
+    int result = 1;
+    if (*(int*)(*(char**)((char*)arg0 + 0xB8) + arg1 * 0x12C + 0x11C) != 0) {
+        float f = fn_8001DAE8((char*)arg0 + 0x74) - *(float*)((char*)arg0 + 0x78);
+        if (!(f <= lbl_805614A4) && f < *(float*)((char*)arg0 + 0x74)) result = 0;
+    }
+    return result;
 }
 
 extern "C" void fn_80141454(void) {
