@@ -3,7 +3,7 @@
 
 #include <types.h>
 
-extern void *lbl_80320548;
+extern u32 lbl_80320548;
 extern "C" s32 fn_80128668(void);
 
 extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
@@ -14,7 +14,7 @@ extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_800DCE50(void **arg0) {
-    arg0[0] = &lbl_80320548;
+    arg0[0] = (void *)&lbl_80320548;
 }
 
 extern "C" s32 fn_800DCE60(void) {
@@ -22,19 +22,48 @@ extern "C" s32 fn_800DCE60(void) {
 }
 
 extern "C" void fn_800DCE68(void *arg0, void *arg1) {
-    s16 v0 = ((s16 *)arg1)[0];
-    s16 v1 = ((s16 *)arg1)[1];
-    s16 v2 = ((s16 *)arg1)[2];
-    s16 v3 = ((s16 *)arg1)[3];
+    s16 r5 = ((s16 *)arg1)[0];
+    s16 r6 = ((s16 *)arg1)[1];
+    s16 r7 = ((s16 *)arg1)[2];
+    s16 r4 = ((s16 *)arg1)[3];
     
-    u8 b0 = (v0 < 0) ? 0 : (v0 > 0xFF) ? 0xFF : (u8)v0;
-    u8 b1 = (v1 < 0) ? 0 : (v1 > 0xFF) ? 0xFF : (u8)v1;
-    u8 b2 = (v2 < 0) ? 0 : (v2 > 0xFF) ? 0xFF : (u8)v2;
-    u8 b3 = (v3 < 0) ? 0 : (v3 > 0xFF) ? 0xFF : (u8)v3;
+    u8 r0, r0_2, r0_3, r0_4;
     
-    ((u8 *)arg0)[0] = b0;
-    ((u8 *)arg0)[1] = b1;
-    ((u8 *)arg0)[2] = b2;
-    ((u8 *)arg0)[3] = b3;
+    if (r5 < 0) {
+        r0 = 0;
+    } else if (r5 > 0xFF) {
+        r0 = 0xFF;
+    } else {
+        r0 = (u8)r5;
+    }
+    
+    if (r6 < 0) {
+        r0_2 = 0;
+    } else if (r6 > 0xFF) {
+        r0_2 = 0xFF;
+    } else {
+        r0_2 = (u8)r6;
+    }
+    
+    if (r7 < 0) {
+        r0_3 = 0;
+    } else if (r7 > 0xFF) {
+        r0_3 = 0xFF;
+    } else {
+        r0_3 = (u8)r7;
+    }
+    
+    if (r4 < 0) {
+        r0_4 = 0;
+    } else if (r4 > 0xFF) {
+        r0_4 = 0xFF;
+    } else {
+        r0_4 = (u8)r4;
+    }
+    
+    ((u8 *)arg0)[0] = r0;
+    ((u8 *)arg0)[1] = r0_2;
+    ((u8 *)arg0)[2] = r0_3;
+    ((u8 *)arg0)[3] = r0_4;
 }
 
