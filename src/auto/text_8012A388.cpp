@@ -21,9 +21,10 @@ extern "C" void fn_8012A46C(void) {
 
 }
 
+#pragma dont_inline on
 extern "C" void *fn_8012A570(u32, void *) {
     if (lbl_8055E004 == 0) {
-        void *p = fn_801284F8(0x20, lbl_8032A6F8);
+        void *p = fn_801284F8(0x20, (void *)&lbl_8032A6F8);
         if (p) p = fn_8012A13C(p, lbl_8032A6F8, 0x20, 0x18);
         lbl_8055E008 = (void **)p;
     }
@@ -31,7 +32,7 @@ extern "C" void *fn_8012A570(u32, void *) {
     if (p) ++lbl_8055E004;
     return p;
 }
-
+#pragma dont_inline reset
 extern "C" void fn_8012A5E8(void *arg0) {
     fn_8012A364(lbl_8055E008, arg0);
     if (--lbl_8055E004 == 0) {
@@ -165,5 +166,15 @@ extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2);
 
 extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
     return fn_8012BC50(arg0, arg1, arg2);
+}
+
+extern "C" s32 lbl_8055E00C;
+extern "C" void **lbl_8055E010;
+extern "C" void fn_8012CA40(void *arg0) {
+    fn_8012A364(lbl_8055E010, arg0);
+    if (--lbl_8055E00C == 0) {
+        delete (Unk8012A570 *)lbl_8055E010;
+        lbl_8055E010 = 0;
+    }
 }
 
