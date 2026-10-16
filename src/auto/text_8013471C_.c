@@ -83,6 +83,10 @@ float fn_80134B58(float arg0) {
     return arg0;
 }
 
+f32 fn_80134C1C(void) {
+    return lbl_8055E0A8;
+}
+
 s32 fn_80134C24(s32 arg0) {
     extern void *fn_8017960C(void);
     if (arg0 >= 0 && arg0 < 8)
