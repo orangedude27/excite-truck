@@ -133,6 +133,10 @@ void fn_8000F4BC(void) {
     }
 }
 
+void fn_80010B74(void) {
+    fn_802C8BD0(-1);
+}
+
 void fn_80010EF0(void);
 void fn_80010F08(void);
 void fn_80010F20(void);
