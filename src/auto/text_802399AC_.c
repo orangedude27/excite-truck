@@ -132,3 +132,11 @@ void fn_8023B400(void) {}
 
 s32 fn_8023B404(void) { return 0; }
 
+void fn_8023B574(void *arg0) {
+    if (*(unsigned char *)((char *)arg0 + 0x18) != 0) {
+        fn_80214AF0(0x1D);
+    } else {
+        fn_80214A9C(0x1D);
+    }
+}
+
