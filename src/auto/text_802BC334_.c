@@ -10,6 +10,10 @@ int fn_802BC334(int arg0) {
     return -2;
 }
 
+void fn_802BDC3C(void* alarm) {
+    fn_802C1550(fn_802BD210(alarm));
+}
+
 void fn_802C2930(void*, unsigned int);
 void fn_80128668(void*);
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
