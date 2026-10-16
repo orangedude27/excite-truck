@@ -3,6 +3,15 @@
 
 extern void fn_8029231C();
 extern void PSVECNormalize(void *, void *);
+void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
+    unsigned int a, b, c, d;
+    float e, f;
+    a = arg1[0]; b = arg1[1]; c = arg1[2]; d = arg1[3];
+    e = ((float *)arg1)[4]; f = ((float *)arg1)[5];
+    arg0[0] = a; arg0[1] = b; arg0[2] = c; arg0[3] = d;
+    ((float *)arg0)[4] = e; ((float *)arg0)[5] = f;
+}
+
 void fn_801F3158(float *arg0, float *arg1) {
     float c, b, a;
     a = arg1[0];
@@ -15,6 +24,14 @@ void fn_801F3158(float *arg0, float *arg1) {
 
 void fn_801F3198(void *arg0) {
     PSVECNormalize(arg0, arg0);
+}
+
+void *fn_801F31A0(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(int *)((char *)arg0 + 0x3C) = 0;
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
 }
 
 void fn_801F371C(int arg0) {
