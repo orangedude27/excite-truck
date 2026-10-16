@@ -68,20 +68,25 @@ void fn_801351C4(void *arg0, s32 arg1) {
     ((s32 *)arg0)[2] = arg1;
 }
 
+extern void fn_8018ADBC(void *, f32);
+extern void fn_8018ADB4(void *, f32);
+extern void fn_8018ADA4(void *, f32);
 void fn_801351CC(void *arg0) {
-    extern void fn_8018ADBC(void *, f32);
-    extern void fn_8018ADB4(void *, f32);
-    extern void fn_8018ADA4(void *, f32);
-    extern f32 lbl_805612F4;
-    extern f32 lbl_80561318;
-    void *field = *(void **)((u8 *)arg0 + 8);
-    fn_8018ADBC(field, lbl_80561318);
-    fn_8018ADB4(field, lbl_805612F4);
-    fn_8018ADA4(field, lbl_805612F4);
+    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), lbl_80561318);
+    fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
+    fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
 }
 
 void fn_80135218(void) {
 
+}
+
+extern s32 fn_802E317C();
+s32 fn_8013521C(void *arg0) {
+    u8 temp_r3;
+
+    temp_r3 = *(u8 *)((u8 *)arg0 + 4);
+    return ((s32)(-(s32)temp_r3 | temp_r3) >> 0x1F) & 0x100;
 }
 
 void fn_80135254(void) {
