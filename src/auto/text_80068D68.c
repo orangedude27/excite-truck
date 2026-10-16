@@ -82,6 +82,7 @@ extern hcisu_h2_cb_t hcisu_h2_cb;
 extern void UUSB_Register(tUUSB *uusb);
 extern void UUSB_Open(tUUSB *uusb, void *cback);
 extern void UUSB_Close(void *uusb);
+void fn_80070758(void);
 
 extern hcisu_if *lbl_8055DC68;
 extern void *lbl_8055DC6C;
@@ -466,6 +467,10 @@ BOOL hcisu_h2_open(tHCI_CFG *p_cfg) {
     UUSB_Open(&uusb, fn_8006EC24);
 
     return result;
+}
+
+void fn_8006F220(void) {
+    GKI_shutdown();
 }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
