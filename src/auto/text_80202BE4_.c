@@ -59,6 +59,7 @@ void fn_80203DC8(void) {
     lbl_8048897C.count = 0;
 }
 
+extern void fn_802D050C(void*);
 void fn_80203E88(void) {
     fn_80203B20();
     fn_802CA294(lbl_8055ECFC);
