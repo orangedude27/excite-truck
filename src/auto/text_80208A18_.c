@@ -94,6 +94,10 @@ void fn_80209380(void *arg0) {
     *(int *)((char *)arg0 + 8) = 3;
 }
 
+void fn_80209398(void *arg0) {
+    *(int *)((char *)arg0 + 8) = 1;
+}
+
 int fn_802093A4(void *arg0) {
     if (*(int *)((char *)arg0 + 4) + 0x7D0 < fn_802E2C20()) {
         *(int *)((char *)arg0 + 8) = 3;
