@@ -56,12 +56,11 @@ void fn_80134B50(void) {
 }
 
 float fn_80134B58(float arg0) {
-    extern int fn_80134B9C(void *, void *);
+    extern s32 fn_80134B9C(float, s32);
     extern double atof(void);
-    float value = arg0;
-    if (fn_80134B9C(0, 0) != 0)
-        value = (float)atof();
-    return value;
+    if (fn_80134B9C(arg0, 0) != 0)
+        arg0 = (float)atof();
+    return arg0;
 }
 
 s32 fn_80134C24(s32 arg0) {
@@ -69,6 +68,15 @@ s32 fn_80134C24(s32 arg0) {
     if (arg0 >= 0 && arg0 < 8)
         return *(s32 *)((char *)fn_8017960C() + 0x258);
     return -1;
+}
+
+f32 fn_80134D20(void) {
+    extern f32 lbl_8055E0A0;
+    extern f32 lbl_8055E0A4;
+    if (fn_801769A8() & 0x800) {
+        return lbl_8055E0A4;
+    }
+    return lbl_8055E0A0;
 }
 
 f32 fn_80134E00(void) {
