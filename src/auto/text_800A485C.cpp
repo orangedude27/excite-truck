@@ -495,6 +495,12 @@ extern "C" u32* fn_800C7C68(void) {
     return &lbl_8055DDF8;
 }
 
+extern "C" void fn_800D15B4(void*);
+extern "C" void fn_800CA148(OSAlarm *alarm, OSContext *ctx) {
+#pragma unused(ctx)
+    fn_800D15B4(OSGetAlarmUserData(alarm));
+}
+
 extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800A4B54(s32);
 extern "C" s32 fn_800A4D44(void *arg0) {
