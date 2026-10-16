@@ -152,6 +152,13 @@ void fn_800A5990(void) {
     fn_800A61D0(0);
 }
 
+extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
+    s32 result;
+    *arg2 = 0;
+    result = fn_800A7090();
+    return result & ((-result | result) >> 31);
+}
+
 extern "C" s32 fn_800A71C4(u32 *arg0) {
     return ((u32) *arg0 >> 2U) & 1;
 }
@@ -1518,6 +1525,27 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
       return 0;
 }
 
+extern "C" s32 fn_800A54AC(void *arg0) {
+    s32 result;
+    s32 value;
+    if (fn_800A76A0(*(void **)((u8 *)arg0 + 0x1FBC)) != 0)
+        return -1;
+    result = fn_800A7610(*(void **)((u8 *)arg0 + 0x1FBC));
+    if (result == 0)
+        goto done;
+    if (result != 21)
+        goto fail;
+    value = ((s32 (* volatile)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
+    *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
+    *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+    result = 0x1000;
+    goto done;
+fail:
+    result = -1;
+done:
+    return result;
+}
+
 extern "C" s32 fn_800A5788(void *arg0, s32 arg1) {
     s32 result = fn_800A7568(*(void **)((u8 *)arg0 + 0x1FBC), (arg1 == 1));
     if (result != 0) {
@@ -1553,13 +1581,18 @@ extern "C" s32 fn_800A586C(void *arg0, s32 p1, s32 p2, s32 p3, s32 p4) {
     s32 value;
     result = fn_800A73A0(*(void **)((u8 *)arg0 + 0x1FBC), *(u16 *)arg0, p4);
     if (result == 0)
-        return 0;
+        goto done;
     if (result != 21)
-        return -1;
+        goto fail;
     value = ((s32 (* volatile)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
-    lbl_803D2140[0x44 / 4] = value;
+    *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
     *(s32 *)((u8 *)arg0 + 0x1F84) = value;
-    return 0x1000;
+    result = 0x1000;
+    goto done;
+fail:
+    result = -1;
+done:
+    return result;
 }
 
 #pragma opt_tail_call on
