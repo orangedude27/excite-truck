@@ -349,6 +349,32 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     return arg0;
 }
 
+extern "C" f32 lbl_80561750;
+extern "C" f32 lbl_80561758;
+extern "C" void* __AXFXGetLfoSinTable_801769CC(void);
+extern "C" f32 lbl_80561764;
+extern "C" void* lbl_8032EC98;
+extern "C" void fn_80157F98(Unk801577F0* self, s32 arg1, s32 arg2) {
+    u8* p = (u8*)self + 0x14;
+    self->mData = p;
+    *(void**)self = &lbl_8032F2BC;
+    self->mCount = 10;
+    self->m54 = 0;
+    for (; p < (u8*)self + 0x244; p += 0x38) {
+        memset(p, 0, 4);
+    }
+    self->m54 = 0;
+    *(s32*)((u8*)self + 4) = arg2;
+    *(s32*)((u8*)self + 0x244) = arg1;
+    self->m258 = 0;
+    self->m254 = lbl_80561764;
+    self->m268 = 0;
+    self->m260 = 0;
+    *(void**)self = &lbl_8032EC98;
+    *(s32*)((u8*)self + 0x270) = arg2;
+    *(f32*)((u8*)self + 0x27c) = lbl_80561754;
+}
+
 extern "C" void* fn_80158218(void* arg0, s32 arg1) {
  if (arg0 != 0) {
  if (arg0 != 0) {
@@ -593,6 +619,15 @@ extern "C" void fn_80158E88(void* arg0, void* arg1) {
 void fn_80158F34(void** arg0) {
 
 }
+
+extern "C" void fn_80158F38(void* self, s32 unused, s32 arg2) {
+    if (arg2 == 1) {
+        *((u8*)self + 0x270) = 1;
+    } else if (arg2 == 0) {
+        *((u8*)self + 0x271) = 1;
+    }
+}
+
 void fn_80158F34b(void* arg0, void* arg1) {
 }
 #pragma dont_inline off
@@ -989,6 +1024,14 @@ extern "C" void fn_8015E568(Unk801577F0V* arg0, s32 arg1, s32 arg2, s32 arg3) {
         for (s32 j = 0; j < count; j++) {
             entries[j]->v16(arg1, arg2, arg3);
         }
+    }
+}
+
+extern "C" void fn_8015E5F4(Unk801577F0V* arg0, s32 arg1) {
+    UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
+    s32 count = arg0->mCount;
+    for (s32 j = 0; j < count; j++) {
+        entries[j]->v18(arg1);
     }
 }
 
