@@ -365,6 +365,8 @@ extern "C" s32 fn_801A517C(s32 arg0) {
     return arg0 + 0x28;
 }
 
+u8 fn_801A5184(void* arg0) { return *(u8*)((u8*)arg0 + 0x40); }
+
 extern "C" void fn_801A4868(void);
 
 extern "C" void fn_801A4868(void);
