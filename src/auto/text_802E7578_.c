@@ -9,3 +9,8 @@ s32 fn_802E769C(void);
 void fn_802E7578(void) {
     lbl_8055FFF0 = (void*)fn_802E769C();
 }
+
+s32 fn_802E7730(void) {
+    return 1;
+}
+
