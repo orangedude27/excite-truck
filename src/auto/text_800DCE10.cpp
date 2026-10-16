@@ -149,9 +149,9 @@ extern "C" void fn_800DEFD8(void *this_ptr) {
     }
 }
 
-extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const u16 *str, u16 len) {
+extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_, const u16 *str, u16 len) {
     u32 wlen = fn_8002AEE8(str);
     void (*fn)(void*, const u16*, u32) =
-        *(void (**)(void*, const u16*, u32))(*(u32*)this_ptr + 0x70);
-    fn(this_ptr, str, (u32)(u16)wlen);
+        *(void (**)(void*, const u16*, u32))(*(u32*)this_ + 0x70);
+    fn(this_, str, (u32)(u16)wlen);
 }
