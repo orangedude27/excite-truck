@@ -59,6 +59,19 @@ extern char lbl_803315A0[];
 extern char lbl_803315C8[];
 extern u8 lbl_8055E3BC;
 
+void fn_801765B8(void) {
+    fn_801777C0();
+    lbl_8055E3F4 = 0;
+    fn_801D0BF4();
+    fn_801B6614();
+    fn_801AE5AC();
+    fn_8017EC30();
+    fn_8012F418(lbl_8055E3E0);
+    fn_8012F384(lbl_8055E3DC);
+    fn_801E1D2C();
+    lbl_8055E3BC = 0;
+}
+
 void fn_80176610(void) {
     fn_80176CC8();
 }
