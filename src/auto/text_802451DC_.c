@@ -68,13 +68,12 @@ extern char lbl_8034308C[];
 void fn_80245CC8(void *arg0) {
     unsigned char result;
     void **obj;
-
     *(unsigned char *)((char *)arg0 + 0x1C) = 1;
     result = fn_8012C33C(lbl_8034308C, lbl_8034308C);
     *(unsigned char *)((char *)arg0 + 0x1D) = result;
     if (result == 0) {
-        obj = *(void ***)((char *)arg0 + 4);
-        ((void (*)(void *))(*(void **)((char *)*obj + 8)))( (char *)arg0 + 4 );
+        obj = (void **)arg0 + 1;
+        ((void (*)(void *))(*(void **)((char *)*obj + 8)))((char *)arg0 + 4);
     }
     *(unsigned char *)((char *)arg0 + 0x1E) = 1;
 }
@@ -85,8 +84,8 @@ void fn_80245D2C(void *arg0) {
     result = *(unsigned char *)((char *)arg0 + 0x1D);
     *(unsigned char *)((char *)arg0 + 0x1C) = 0;
     if (result == 0) {
-        obj = *(void ***)((char *)arg0 + 4);
-        ((void (*)(void *))(*(void **)((char *)*obj + 0xC)))( (char *)arg0 + 4 );
+        obj = (void **)arg0 + 1;
+        ((void (*)(void *))(*(void **)((char *)*obj + 0xC)))((char *)arg0 + 4);
     }
     fn_80214D50(4);
 }
@@ -147,22 +146,22 @@ extern int fn_80214FD8(const char *, const char *);
 extern char lbl_80343210[];
 extern char lbl_80343224[];
 void fn_8024683C(void) {
-    unsigned char data[0xC0];
+    unsigned char data[0xD0];
+    int found;
     int i;
     int result;
-    int found;
 
     result = fn_80129AF4();
     found = 0;
     if (result == -1) {
         i = 0;
         do {
-            if (fn_801298E8(data + 0x6C, i) != 0 && (*(unsigned int *)(data + 0xBC) & 1) != 0) {
+            if (fn_801298E8(data + 0x64, i) != 0 && (*(unsigned int *)(data + 0xB4) & 1) != 0) {
                 found = 1;
             }
             i++;
         } while (i < 4);
-    } else if (fn_801298E8(data + 8, result) != 0 && (*(unsigned int *)(data + 0x58) & 1) != 0) {
+    } else if (fn_801298E8(data, result) != 0 && (*(unsigned int *)(data + 0x50) & 1) != 0) {
         found = 1;
     }
     if (found != 0) {
