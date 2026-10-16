@@ -6,6 +6,15 @@ extern int Pause__Q46nw4hbm3snd6detail7AxVoiceFb(int, unsigned char);
 extern int ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(int);
 extern int fn_800EAD00(void *);
 typedef int s32;
+extern int fn_801013B0(int);
+extern int InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(int);
+extern int fn_800FFA6C(int);
+extern int fn_800EC890(void *, int, int, int);
+extern float lbl_80561128;
+extern "C" void fn_801014CC(s32 arg0) {
+    fn_801013B0(arg0 - 8);
+}
+
 void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
     *(int *)arg0 = arg1;
     *((int *)arg0 + 1) = arg2;
