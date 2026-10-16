@@ -5,6 +5,8 @@
 extern char lbl_803385D0[];
 extern char lbl_803388F0[];
 extern char lbl_8033890C[];
+extern s32 lbl_8055E3C4;
+extern char lbl_80338F50[];
 
 void fn_801D47F4(void) {
     fn_801D57F0();
