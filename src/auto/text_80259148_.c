@@ -46,6 +46,24 @@ int fn_80259700(int arg0, int arg1) {
         fn_80128668((void *)arg0);
     return arg0;
 }
+
+extern double sin(double);
+typedef unsigned int u32;
+typedef float f32;
+extern f32 lbl_80563B1C;
+f32 fn_8025B0A8(void *arg0) {
+    f32 a = *(f32 *)((char *)arg0 + 0);
+    f32 b = *(f32 *)((char *)arg0 + 4);
+    return a + ((b - a) * lbl_80563B1C);
+}
+
+void fn_8025B0E8(void *dst, const void *src) {
+    struct Copy {
+        u32 words[9];
+    };
+    *(struct Copy *)dst = *(const struct Copy *)src;
+}
+
 extern void *fn_80258354(void);
 extern int fn_802C6CF8(int);
 extern int fn_802CAC54(int);
