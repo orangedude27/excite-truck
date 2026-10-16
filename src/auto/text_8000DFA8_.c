@@ -91,7 +91,7 @@ extern s32 fn_802C6FC0(s32, s32);
   extern f32 lbl_805602C0;
 extern s32 fn_80207848(void *, s32);
 extern char lbl_802FC3DC[];
-extern s32 fn_802E317C(const char *);
+extern s32 fn_802E317C(void *);
 extern char lbl_802FC420[];
 extern char lbl_802FC42C[];
 void fn_8000F188(void) {
