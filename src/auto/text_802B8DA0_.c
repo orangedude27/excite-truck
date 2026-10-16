@@ -22,6 +22,8 @@ void fn_802B98D0(void *arg0) {
     }
 }
 
+s32 fn_802B9ACC(void *arg0) { return ((s32 *)arg0)[2]; }
+
 void fn_802B9B2C(void *arg0) {
     ((int *)arg0)[0] = 0;
     ((int *)arg0)[2] = 0;
