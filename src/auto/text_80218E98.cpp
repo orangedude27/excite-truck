@@ -872,6 +872,11 @@ extern "C" void fn_80229918(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x18) = 1;
 }
 
+extern "C" void fn_80229958(void *arg0) {
+    ((VfObj *)arg0)->vf31();
+    *(u8 *)((u8 *)arg0 + 0x18) = 0;
+}
+
 extern "C" void fn_80229998(void *arg0) {
     int *p = *(int **)((char *)arg0 + 0x254);
     if (p != 0) {
