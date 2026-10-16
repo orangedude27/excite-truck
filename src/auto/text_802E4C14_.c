@@ -6,3 +6,8 @@ void fn_802E4D6C(void) {
 
 void fn_802E4D70(void) {
 }
+
+int fn_802E4D74(void) {
+    return 1;
+}
+
