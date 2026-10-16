@@ -1,5 +1,8 @@
 #include "types.h"
+#pragma push
+#pragma small_data off
 extern int fn_802D6C48;
+#pragma pop
 void fn_802C5DF0(int*);
 extern int lbl_8055D008;
 void* fn_802C5390(void);
@@ -161,6 +164,8 @@ void fn_802C6B2C(s32 *arg0, s32 arg1) {
 void fn_802C6C30(void) {}
 
 void fn_802C6C34(void) { fn_802C53A8(); }
+
+void fn_802C6FA8(void) { fn_802C5DF0(&fn_802D6C48); }
 
 extern int fn_802D6C48;
 void fn_802C5DF0(int*);
