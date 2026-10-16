@@ -14,6 +14,8 @@ int fn_80208CFC(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_80208D3C(void) { return lbl_80489238[6]; }
+
 int fn_80208D4C(int index) { return lbl_80489238[index]; }
 
 void* fn_802090B4(void) {
