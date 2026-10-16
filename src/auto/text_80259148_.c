@@ -64,6 +64,9 @@ void fn_8025B0E8(void *dst, const void *src) {
     *(struct Copy *)dst = *(const struct Copy *)src;
 }
 
+void fn_8025B134(void) {
+}
+
 extern void *fn_80258354(void);
 extern int fn_802C6CF8(int);
 extern int fn_802CAC54(int);
