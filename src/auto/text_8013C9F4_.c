@@ -13,6 +13,10 @@ long fn_8013CA88(void) {
     return 1;
 }
 
+long fn_8013CA90(void) {
+    return 0;
+}
+
 void fn_8013CAA0(void) {
 
 }
