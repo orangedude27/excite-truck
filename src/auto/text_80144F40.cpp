@@ -4,6 +4,9 @@ extern "C" void *lbl_8032D1E8;
 extern "C" void *fn_80148294(const char *, void *);
 extern "C" f32 lbl_8055E200;
 extern "C" f32 lbl_8055E204;
+extern "C" int stricmp(const char *, const char *);
+extern "C" void fn_80148334(s32, s32, void *);
+extern "C" void fn_801483D4(s32, s32, void *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
