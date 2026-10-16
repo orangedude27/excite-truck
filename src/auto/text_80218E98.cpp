@@ -269,6 +269,11 @@ extern "C" void fn_80228554(void *p){fn_802396BC(*(s32*)((u8*)p+0x244));}
 
 extern "C" void *fn_8022855C(void *p,s32 unused,s32 a,s32 b){fn_80218F80();*(s32*)((u8*)p+0x244)=a;*(void**)p=lbl_8033DDA4;*(s32*)((u8*)p+0x248)=b;return p;}
 
+extern "C" void fn_80228D90(void *arg0) {
+    TruckIface *obj = *(TruckIface **)((u8 *)arg0 + 0x268);
+    obj->vf6();
+}
+
 extern "C" s32 fn_80228DA4(void) { return 0; }
 
 extern "C" void fn_80228DAC(void *arg0) {
