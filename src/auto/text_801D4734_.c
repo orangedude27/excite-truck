@@ -85,11 +85,12 @@ void fn_801D6600(void *arg0) {
 
 extern char lbl_803387A8[];
 extern char lbl_803387C8[];
+#pragma scheduling on
 void fn_801D6618(UnkStruct_801D6618 *arg0) {
-    arg0->name = lbl_80338C40;
-    arg0->state = 0;
+    ((volatile UnkStruct_801D6618 *)arg0)->name = lbl_80338C40;
+    ((volatile UnkStruct_801D6618 *)arg0)->state = 0;
 }
-
+#pragma scheduling reset
 void *fn_801D6630(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         *(s32 *)((u8 *)arg0 + 4) = 0;
@@ -123,7 +124,7 @@ void fn_801D6814(void *arg0) {
     struct {
         f32 values[6];
         s32 unk18;
-        s32 unk1C;
+        volatile s32 unk1C;
     } data;
     s32 elapsed = lbl_8055E3C4 - (*(s32 *)((u8 *)arg0 + 0x10) + *(s32 *)((u8 *)arg0 + 0xC));
     if (*(s32 *)((u8 *)arg0 + 4) == 2 && elapsed > 0) {
@@ -135,7 +136,7 @@ void fn_801D6814(void *arg0) {
         data.values[5] = *(f32 *)((u8 *)arg0 + 0x28);
         fn_801E9DC4(&data.unk18);
         data.unk1C = *(s32 *)((u8 *)arg0 + 0x2C);
-        fn_801796CC(10, &data, 0x20);
+        fn_801796CC(10, data.values, sizeof(data));
         if (elapsed >= *(s32 *)((u8 *)arg0 + 8)) {
             *(s32 *)((u8 *)arg0 + 4) = 3;
         }
@@ -156,6 +157,11 @@ void *fn_801D6900(void *arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+extern u8 lbl_80338868[];
+void *fn_801D6C28(void) {
+    return lbl_80338868;
 }
 
 s32 fn_801D6C3C(void *arg0) {
