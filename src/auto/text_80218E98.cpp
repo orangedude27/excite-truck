@@ -23,7 +23,7 @@ extern "C" void fn_80229CB4(void *arg0) {
     }
 }
 
-void fn_80229CD8(void *arg0) {
+extern "C" void fn_80229CD8(void *arg0) {
     (*(u8 *)((u8 *)arg0 + 0x244)) = 0;
     if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
         (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
