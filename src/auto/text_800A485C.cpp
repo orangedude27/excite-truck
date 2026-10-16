@@ -168,12 +168,7 @@ struct PanicStruct {
     void *field_70;
 };
 
-// fn_800D2E14 is defined in a way that prevents inlining by placing it in a separate compilation unit context
-// Forward declaration for external linkage
-extern "C" s32 fn_800D2E14(void);
-
-// Actual definition - the compiler should not inline this because it's declared extern first
-s32 fn_800D2E14_impl(void) {
+extern "C" s32 fn_800D2E14(void) {
     s32 _r3 = 0;
     if (lbl_8055DDC8 != 0) {
         if (lbl_80407BD8[0] != 0) {
@@ -181,10 +176,6 @@ s32 fn_800D2E14_impl(void) {
         }
     }
     return _r3;
-}
-
-extern "C" s32 fn_800D2E14(void) {
-    return fn_800D2E14_impl();
 }
 
 extern "C" void fn_800D2FC8(void) {
