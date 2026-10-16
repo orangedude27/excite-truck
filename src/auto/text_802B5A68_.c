@@ -52,11 +52,13 @@ s32 fn_802B5DD0(s32 arg0) {
     return result;
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
 void fn_802B5E24(s32 arg0) {
     lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
     lbl_8055FA08 = lbl_80564C5C;
 }
-
 u32 fn_802B5E8C(s32 arg0) {
     s32 result = fn_802B5D2C(lbl_8055CE50, arg0);
     return (u32)((-1 - result) | (result + 1)) >> 31;
@@ -66,6 +68,15 @@ extern void* lbl_8055FA44;
 s32 fn_802B5D94(void);
 void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
+}
+
+#pragma push
+#pragma small_data off
+#pragma pop
+void fn_802B618C(void) {
+    fn_802B59A4(lbl_8055FA3C);
+    fn_80128684();
+    fn_80128678();
 }
 
 extern void lbl_8034A898(void);
