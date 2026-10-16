@@ -45,6 +45,34 @@ unsigned char fn_80163F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x56D);
 }
 
+int fn_801643C8(void *arg0) {
+    int var_r30;
+    int var_r31;
+    void **temp_r3;
+
+    var_r31 = 0;
+    var_r30 = 0;
+loop_4:
+    if (var_r30 < *((int *)((char *)arg0 + 0xE4))) {
+        if (*((int *)(*((char **)((char *)arg0 + 0xE0)) + var_r31 + 0x34)) != 0) {
+            fn_80128658();
+        }
+        var_r31 += 0x48;
+        var_r30 += 1;
+        goto loop_4;
+    }
+    temp_r3 = *((void ***)((char *)arg0 + 0xDC));
+    if (temp_r3 != 0) {
+        ((void (*)(void *, int))(*(void ***)temp_r3)[1])(temp_r3, 1);
+    }
+    fn_802CAC54(*((int *)((char *)arg0 + 0xD0)));
+    fn_802C6CF8(*((int *)((char *)arg0 + 0xA0)));
+}
+
+int fn_80164468(void *arg0) {
+    return *((float *)((char *)arg0 + 0x8C)) < lbl_8056185C;
+}
+
 void fn_80164D58(void) {
 
 }
