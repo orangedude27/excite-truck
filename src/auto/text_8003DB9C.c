@@ -14,6 +14,16 @@ char __GXIsGPFifoReady(void) {
     return lbl_8055D949;
 }
 
+void GXGetGPStatus(char *a, char *b, char *c, char *d, char *e) {
+    unsigned int value = *__cpReg;
+    __GXData[3] = value;
+    *a = value & 1;
+    *b = (__GXData[3] >> 1) & 1;
+    *c = (__GXData[3] >> 2) & 1;
+    *d = (__GXData[3] >> 3) & 1;
+    *e = (__GXData[3] >> 4) & 1;
+}
+
 extern unsigned int lbl_8055D954;
 extern unsigned int *__GXData;
 extern unsigned short *__cpReg;
@@ -66,6 +76,12 @@ unsigned char GXGetFifoWrap(void *arg0) { return *(unsigned char *)((char *)arg0
 extern void *lbl_8055D94C;
 void* GXGetCurrentGXThread(void) {
     return lbl_8055D94C;
+}
+
+void *GXInitVtxDescList(void) {
+    void *temp = lbl_8055D94C;
+    lbl_8055D94C = 0;
+    return temp;
 }
 
 void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
