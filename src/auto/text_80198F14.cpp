@@ -143,6 +143,21 @@ void fn_801A2674(void* arg0, s32 arg1, s32 arg2, f32 arg3) {
     *(s32*)((u8*)arg0 + 0x2C) = arg2;
 }
 
+extern f32 lbl_805622E0;
+void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
+    f32 scale = lbl_805622E0;
+    f32 value = *(f32*)((u8*)arg0 + 0x24);
+    void* vec = *(void**)((u8*)arg0 + 0xC);
+    f32 neg = scale * -value;
+    f32 pos = scale * value;
+    arg1[0] = *(f32*)((u8*)vec + 0x24) + neg;
+    arg1[1] = *(f32*)((u8*)vec + 0x28) + neg;
+    arg1[2] = *(f32*)((u8*)vec + 0x2C) + neg;
+    arg2[0] = *(f32*)((u8*)vec + 0x24) + pos;
+    arg2[1] = *(f32*)((u8*)vec + 0x28) + pos;
+    arg2[2] = *(f32*)((u8*)vec + 0x2C) + pos;
+}
+
 extern "C" void* fn_801A2C9C(void* arg0) {
     return (u8*)arg0 + 0x44;
 }
@@ -184,7 +199,7 @@ extern "C" void fn_801A2EC8(void) {
 }
 
 extern "C" void fn_801A3174(void *arg0) {
-    fn_801E3FC8(*(s32*)((u8*)arg0 + 0xC) + 0x24, lbl_8055E598, 0, *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28));
+    ((void (*)(s32, s32, f32))fn_801E3FC8)(*(s32*)((u8*)arg0 + 0xC) + 0x24, lbl_8055E598, *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28));
 }
 
 extern s32 lbl_80333778;
