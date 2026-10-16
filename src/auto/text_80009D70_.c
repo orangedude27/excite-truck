@@ -86,7 +86,7 @@ void fn_8000AAE4(void* arg0) {
         p += 0x78;
     }
 }
-#pragma scheduling on
+
 void fn_8000AB44(void) {
     fn_8000A6D8();
 }
