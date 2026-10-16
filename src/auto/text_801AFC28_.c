@@ -6,7 +6,7 @@
 
 extern void *lbl_8055E650;
 extern void *lbl_8055E654;
-extern void *lbl_80335A00;
+extern u8 lbl_80335A00[];
 extern void fn_8017B0B0(void);
 extern void fn_8017A57C(void *);
 extern void fn_80179EE8(void *, u32);
