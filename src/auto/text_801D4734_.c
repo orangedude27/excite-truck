@@ -668,6 +668,13 @@ void fn_801D8620(void) {
 
 }
 
+void fn_801D8710(s32 arg0) {
+    if (arg0 != 0) {
+        arg0 += 4;
+    }
+    fn_801D05B4(arg0);
+}
+
 extern u8 lbl_8033905C[];
 void *fn_801D8720(void) {
     return lbl_8033905C;
