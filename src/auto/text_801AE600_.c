@@ -63,4 +63,7 @@ void fn_801AFAB8(void) {
 void fn_801AFAB0(void) {
 
 }
-
+extern int fn_801284F8(int, const char *);
+extern void fn_801AFA64(int *);
+extern const char lbl_803359A0[];
+extern float lbl_80435740[];
