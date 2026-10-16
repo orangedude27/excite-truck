@@ -11,7 +11,11 @@ extern int lbl_8033A710;
 #pragma push
 #pragma small_data off
 #pragma pop
-extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A8F8;
+extern int lbl_8033A628, lbl_8033A8C8;
+#pragma push
+#pragma small_data off
+extern int lbl_8033A8F8;
+#pragma pop
 extern int lbl_8033A644, lbl_8033A868, lbl_8033A928;
 extern int lbl_8055B124, lbl_8055B120;
 extern float lbl_80562F40, lbl_80562F44;
@@ -229,10 +233,7 @@ void fn_801F3280(void *arg0, int arg1) {
 }
 
 void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *arg0, int arg1) {
-    #pragma push
-    #pragma small_data off
     extern int lbl_8033A8F8;
-    #pragma pop
     extern void fn_802C9994(int, void *);
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033A8F8;
@@ -472,6 +473,12 @@ void fn_801F4480(void *a) {
  void *p=a; do {int v=*(int *)((char *)p+4);
  if(fn_801F1CF0((char *)p+0x2C))fn_802C7040(v);
  p=*(void **)((char *)p+12);}while(p!=0);
+}
+
+void fn_801F44DC(int a,int b,void *c,int d) {
+ void *p=fn_801284F8(12,lbl_8055B140);
+ if(p){*(void **)p=lbl_8033AA48;*(void **)((char *)p+4)=(char *)c+0x2C;*(int *)((char *)p+8)=d;}
+ fn_802CD320(b,p);
 }
 
 void fn_801F4550(void) {
