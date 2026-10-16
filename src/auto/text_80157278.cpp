@@ -49,6 +49,10 @@ extern "C" s32 fn_80159E6C(void) {
     return 4;
 }
 
+extern "C" u8 fn_80159F24(void* arg0) {
+    return ((u8*)arg0)[0x2D1];
+}
+
 extern "C" void fn_8015CD0C(void) {
 
 }
