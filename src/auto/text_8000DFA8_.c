@@ -59,7 +59,7 @@ extern s32 fn_802C6FC0(s32, s32);
   extern s32 lbl_8055D49C;
   extern s32 fn_8023441C(void);
   extern f32 fn_80011EDC(void);
-  extern void *fn_801E85A4(void);
+      extern s32 fn_801E85A4(void);
   extern f32 fn_80011E54(void);
   extern f32 fn_80011E90(void);
   extern f32 fn_80011E1C(s32);
