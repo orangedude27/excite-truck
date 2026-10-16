@@ -4,8 +4,9 @@
 #include "revolution/GX/GXTypes.h"
 
 extern "C" void fn_800D7F58(void *arg0, void *arg1) {
-    f32 v1 = ((f32 *)arg1)[1];
-    f32 v0 = ((f32 *)arg1)[0];
+    volatile f32 *src = (volatile f32 *)arg1;
+    f32 v1 = src[1];
+    f32 v0 = src[0];
     ((f32 *)arg0)[0] = v0;
     ((f32 *)arg0)[1] = v1;
 }
@@ -45,6 +46,10 @@ extern "C" s32 fn_800D8720(s32 *arg0) {
 
 extern "C" s32 fn_800D872C(u32 *arg0) {
     return (*arg0 >> 4) & 0xF;
+}
+
+extern "C" s32 fn_800D8738(u32 *arg0) {
+    return (*arg0 >> 8) & 0xF;
 }
 
 extern "C" s32 fn_800D8780(u32 *arg0) {
