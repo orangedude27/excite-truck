@@ -65,6 +65,11 @@ extern "C" void fn_802168BC(void *);
 extern "C" void *fn_8022D97C(s32);
 extern "C" void *lbl_8033F90C[];
 extern "C" int lbl_8033FA28[];
+extern "C" void fn_8021915C(void *, u32);
+extern "C" s32 fn_80128668(void *);
+extern "C" void fn_80219440(void *, s32, void *, s32);
+extern "C" int lbl_8033F4B8[];
+extern "C" void fn_80222340(void *, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_80218F80(void);
 extern "C" void fn_8023986C(s32);
 extern "C" void fn_8023967C(s32, s32);
@@ -227,16 +232,20 @@ extern "C" void fn_80219510(void *arg0, s32 arg1, s32 arg2) {
 
 extern "C" void fn_8021952C(void *arg0, s32 arg1, s32 arg2) {
     void *ptr = *(void **)((u8 *)arg0 + 0x2C);
+    s32 a;
+    s32 b;
     if (*(u8 *)((u8 *)arg0 + 0x24C) != 0) {
-        *(s32 *)((u8 *)ptr + 0x454) += *(s32 *)((u8 *)arg0 + 0x244) + arg1;
-        *(s32 *)((u8 *)ptr + 0x458) += *(s32 *)((u8 *)arg0 + 0x248) + arg2;
+        a = *(s32 *)((u8 *)arg0 + 0x244);
+        b = *(s32 *)((u8 *)arg0 + 0x248);
+        *(s32 *)((u8 *)ptr + 0x454) += a + arg1;
+        *(s32 *)((u8 *)ptr + 0x458) += b + arg2;
     }
 }
 
 extern "C" void *fn_80219568(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     fn_80218F34(arg0, arg1, arg2, arg1 + arg5, arg2 + arg6, arg3);
-    *(void **)arg0 = lbl_8033FA28;
     *(s32 *)((u8 *)arg0 + 0x24C) = arg3;
+    *(void **)arg0 = lbl_8033FA28;
     *(s32 *)((u8 *)arg0 + 0x248) = 0;
     *(s32 *)((u8 *)arg0 + 0x244) = 0;
     *(s32 *)((u8 *)arg0 + 0x250) = arg4;
@@ -487,6 +496,20 @@ extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
         if (arg1 > 0)
             fn_80128668(arg0);
     }
+    return arg0;
+}
+
+extern "C" void *fn_8021D7C8(void *arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 arg5,s32 arg6,s32 arg7) {
+    f32 value;
+    fn_80219568(arg0,arg1,arg2,0,arg5,arg3,arg4,arg7);
+    *(void**)arg0=&lbl_8033EC2C;
+    value=fn_8023659C()-lbl_805634E8;
+    *(s32*)((u8*)arg0+0x254)=arg6;
+    *(s32*)((u8*)arg0+0x268)=arg5;
+    *(f32*)((u8*)arg0+0x264)=value;
+    *(f32*)((u8*)arg0+0x260)=value;
+    *(s32*)((u8*)arg0+0x258)=0;
+    *(s32*)((u8*)arg0+0x25C)=fn_80228F40(arg1,arg2);
     return arg0;
 }
 
