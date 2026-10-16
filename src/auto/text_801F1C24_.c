@@ -264,6 +264,11 @@ void fn_801F383C(void *arg0, int arg1) {
     *(char *)((char *)arg0 + 4) = 1;
 }
 
+int fn_801F394C(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_801F3B00(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 8) = *fn_801F1CE8(arg1);
     *(char *)((char *)arg0 + 4) = 1;
