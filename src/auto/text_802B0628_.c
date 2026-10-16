@@ -227,6 +227,10 @@ int fn_802B1B50(int *arg0, int arg1) {
     return *arg0 + (arg1 << 7);
 }
 
+int fn_802B1BE4(void *arg0) {
+    return ((int *)arg0)[1];
+}
+
 int fn_802B1C14(void *arg0) {
     return ((int *)arg0)[4];
 }
