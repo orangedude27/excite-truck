@@ -7,6 +7,8 @@ void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
 }
 
+void fn_8028ED74(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
+
 extern int fn_802E317C(const char *);
 extern char lbl_80348F4C[];
 int fn_8028EDA8(unsigned int *arg0, unsigned int arg1) {
