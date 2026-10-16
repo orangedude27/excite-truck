@@ -125,6 +125,9 @@ void fn_801D52A4(void *arg0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
     }
 }
+
+s32 fn_801D544C(void) { return 0; }
+
 #pragma scheduling reset
 
 extern u8 lbl_804422F0[];
