@@ -29,6 +29,13 @@ void* fn_80137C4C(void) {
     return lbl_80559C00;
 }
 
+void* fn_80137C54(int index) {
+    if (index == -1) {
+        index = (int)lbl_80559C00;
+    }
+    return lbl_8042F788[index];
+}
+
 void fn_80137C74(void) {
     fn_800167F4();
 }
