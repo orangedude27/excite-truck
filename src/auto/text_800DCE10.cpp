@@ -3,7 +3,7 @@
 
 #include <types.h>
 
-extern s32 lbl_80320548;
+extern s32 lbl_80320548[1];
 extern void *lbl_80320570;
 extern void *lbl_80320688;
 extern void *lbl_80320B5C;
