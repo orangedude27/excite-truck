@@ -267,6 +267,10 @@ extern "C" f32 fn_801A5100(void *arg0) {
     return ((f32 *)arg0)[0x24 / 4];
 }
 
+extern "C" void fn_801A5108(void* arg0) {
+    *(s32*)((u8*)arg0 + 0x180) = -1;
+}
+
 extern "C" f32 fn_801A5114(void *arg0) {
     return ((f32 *)arg0)[0x30 / 4];
 }
