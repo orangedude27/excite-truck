@@ -18,6 +18,7 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D1AB4(long arg0, long arg1) {
 }
 
 extern int lbl_8055E918;
+extern float lbl_80562A58;
 extern int fn_80128670(int);
 void fn_801D1B0C(void) {
     if (lbl_8055E918 != 0) {
@@ -28,5 +29,27 @@ void fn_801D1B0C(void) {
 
 void fn_801D1B44(void) {
 
+}
+
+extern int lbl_8055E8F8;
+extern int lbl_8055ABD8;
+extern float lbl_80562A58;
+void fn_801D183C(int, int);
+void fn_801D153C(void);
+int fn_8012850C(int, int *);
+int fn_8002F37C(int, int, int, int);
+void fn_801D1B48(void) {
+    int i;
+    int offset = 0;
+    for (i = 0; i < lbl_8055E8F8; i++) {
+        fn_801D183C(lbl_8055E918 + offset, i);
+        offset += 0x9c;
+    }
+}
+
+void fn_801D1C10(void) {
+    int count = lbl_8055E8F8;
+    fn_8012850C(count * 0x9c + 0x10, &lbl_8055ABD8);
+    lbl_8055E918 = fn_8002F37C(0, 0, 0x9c, count);
 }
 
