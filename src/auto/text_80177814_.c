@@ -46,6 +46,15 @@ void* fn_80179318(void) {
     return lbl_8055E448;
 }
 
+void fn_801CEFE8(void);
+void fn_801AED5C(void);
+void fn_801CB464(void);
+void fn_80179588(void) {
+    fn_801CEFE8();
+    fn_801AED5C();
+    fn_801CB464();
+}
+
 extern void *lbl_8055E430;
 void* fn_80179650(void) {
     return lbl_8055E430;
