@@ -73,6 +73,20 @@ int fn_8025A4CC(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_8025A83C(void *arg0) {
+    float *p = (float *)((char *)arg0 + 0x84);
+    p[0] = lbl_80563AE0;
+    p[1] = lbl_80563AE4;
+    p[2] = lbl_80563AE0;
+    p[3] = lbl_80563AE0;
+    p[4] = lbl_80563AE4;
+    p[5] = lbl_80563AE0;
+    p[6] = lbl_80563AE0;
+    p[7] = lbl_80563AE0;
+    p[8] = lbl_80563AE4;
+    ((void (*)(void *))(*(void ***)arg0)[3])((char *)arg0 + 4);
+}
+
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
     float z = a[2];
     float y = a[1];
