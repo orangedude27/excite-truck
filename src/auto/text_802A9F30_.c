@@ -36,6 +36,12 @@ void fn_802AB6D4(void) {
     }
 }
 
+void fn_802AB994(void) {
+    fn_802C990C(lbl_804BD7B0[0]);
+    ((void (*)(void *, float, float, float))fn_802C2B78)((void *)lbl_804BD7B0, *(float *)&lbl_804BD7B0[1], *(float *)&lbl_804BD7B0[2], *(float *)&lbl_804BD7B0[3]);
+    fn_802C2C00(lbl_8055F92D);
+}
+
 void fn_802AB9E0(void) { fn_8028E070(); }
 
 void fn_802AB9E4(void) { fn_8028E080(); }
