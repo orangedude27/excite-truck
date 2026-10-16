@@ -55,8 +55,14 @@ void fn_80135198(void) {
 
 }
 
+#pragma scheduling off
+s32 fn_8013519C(void) {
+    fn_802E317C(lbl_8032BD98);
+    return 0;
+}
+#pragma scheduling on
 extern const char lbl_8032BD98[];
-extern s32 fn_802E317C(const char *, ...);
+extern s32 fn_802E317C(const char *, ...) __attribute__((noreturn));
 s32 fn_801351AC(void) {
     return 0;
 }
