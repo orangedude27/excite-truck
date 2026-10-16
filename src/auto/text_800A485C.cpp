@@ -24,6 +24,16 @@ extern "C" u8 lbl_80407300[];
 #include <string.h>
 #pragma opt_tail_call on
 
+namespace homebutton {
+class HomeButton {
+public:
+    s32 getPaneNo(const char *name);
+};
+}
+extern "C" const char *lbl_8031D990[];
+extern "C" const char *lbl_8031E218[];
+extern "C" const char *lbl_8031E770;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -126,6 +136,24 @@ extern "C" void fn_800B36D4(s32 arg0) {
         return;
     }
     fn_800B63FC();
+}
+
+extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8 arg0, s32 arg1) {
+    if (arg1 == 2) {
+        if (arg0 < 0x40) return 0;
+        if (arg0 <= 0x7e) return 1;
+        if (arg0 < 0x80) return 0;
+        if (arg0 <= 0xfc) return 1;
+        return 0;
+    }
+    if (arg1 >= 2) return 0;
+    if (arg1 == 1) {
+        if (arg0 < 0x81) return 0;
+        if (arg0 <= 0x9f) return 1;
+        if (arg0 < 0xe0) return 0;
+        if (arg0 <= 0xfc) return 1;
+    }
+    return 0;
 }
 
 extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
