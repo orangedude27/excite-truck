@@ -30,7 +30,7 @@ void fn_8000AAE0(void* arg0) DECOMP_DONT_INLINE;
 void fn_8000AA38(void* arg0) DECOMP_DONT_INLINE;
 void fn_8000AA9C(void* arg0) DECOMP_DONT_INLINE;
 void fn_8000AABC(void* arg0) DECOMP_DONT_INLINE;
-void fn_8000AAE4(void* arg0);
+void fn_8000AAE4(void* arg0) DECOMP_DONT_INLINE;
 void fn_8000AB48(void* arg0, s32 arg1);
 void fn_8000ABE0(void* arg0);
 u32 fn_8000AC38(void);
