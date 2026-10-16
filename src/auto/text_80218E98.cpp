@@ -7,6 +7,22 @@ void fn_802192A0(void) {
 
 }
 
+extern "C" void fn_8021915C(void*, u32);
+extern "C" s32 fn_80128668(void*);
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
+    void* this_, s32 flag) {
+    if (this_) {
+        if (this_ != NULL) {
+            fn_8021915C(this_, 0);
+        }
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
 extern "C" s32 fn_80229C9C(s32 arg0) {
     return arg0 + 0x264;
 }
