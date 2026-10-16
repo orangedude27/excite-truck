@@ -20,23 +20,21 @@ char fn_801C5B60(void) {
     return lbl_8055E7E2;
 }
 
+#pragma inline_recursion off
 s32 fn_801C6C28(Vec* arg0) {
-    f32 var_f31 = lbl_805629CC;
-    s32 var_r31 = -1;
-    s32 var_r30 = 0;
-    Vec* var_r29 = arg0;
+    s32 result = -1;
+    s32 i;
     
-loop_top:
-    if (PSVECSquareDistance((Vec*)(fn_8017960C(var_r30) + 0x60), var_r29) >= var_f31) {
-        var_r30++;
-        if (var_r30 < lbl_8055E804) {
-            goto loop_top;
+    for (i = 0; i < lbl_8055E804; i++) {
+        if (PSVECSquareDistance((Vec*)(fn_8017960C(i) + 0x60), arg0) < lbl_805629CC) {
+            result = i;
+            break;
         }
-    } else {
-        var_r31 = var_r30;
     }
-    return var_r31;
+    
+    return result;
 }
+#pragma inline_recursion on
 
 void fn_801C6CB0(void) {
     return;
