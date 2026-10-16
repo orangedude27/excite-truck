@@ -409,6 +409,8 @@ extern "C" void fn_8015CD0C(void) {
 extern "C" void fn_8015CDD8(void) {
 }
 
+extern "C" u32 fn_8015D364(void) { return 1; }
+
 extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E668[arg0->GetType()]);
 }
