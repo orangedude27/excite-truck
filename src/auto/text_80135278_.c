@@ -25,8 +25,8 @@ typedef struct {
 
 float fn_80135278(float *a, float *b, float *c) {
     float dx = b[0] - c[0];
-    float dy = b[1] - c[1];
-    return a[0] * dx + a[1] * dy;
+    float dy;
+    return (dx * (a[0] - c[0])) * 0.0f;
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
@@ -35,6 +35,16 @@ void *fn_801352B8(Unk_80135278 *arg0) {
     arg0->unk_c = 0x2710;
     arg0->unk_8 = lbl_80561320;
     fn_80135390(arg0, 0, &lbl_8032BE80);
+    return arg0;
+}
+
+void *fn_8013530C(void *arg0, s32 arg1) {
+    if (arg0 != (void*)0) {
+        *(s32 *)((u8 *)arg0 + 0x2C) = 0;
+        if (arg1 > 0) {
+            fn_80128668();
+        }
+    }
     return arg0;
 }
 
