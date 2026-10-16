@@ -64,6 +64,23 @@ extern "C" void* __dt__14CollisionSpaceFv_802A366C(void* arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" int lbl_80349B50[];
+extern "C" int lbl_80349AD8[];
+extern "C" int lbl_8055CBB0[];
+extern "C" void fn_802A3500(void*, s32);
+extern "C" void fn_802A30BC(void*, s32);
+extern "C" void fn_802A31DC(void*, s32);
+extern "C" void* __dt__14CollisionSpaceFv_802A392C(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void**)arg0 = lbl_80349AD8;
+        fn_8028E398(((void**)arg0)[1]);
+        if (arg1 > 0) {
+            ((s32 (*)(void*))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" s32 fn_802A4958(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
