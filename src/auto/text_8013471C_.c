@@ -46,8 +46,8 @@ void fn_8013471C(void *arg0, s32 arg1) {
 void fn_8013472C(void) {
     void *obj = fn_8001285C(*fn_801E87A8());
     void *sub = *(void **)((u8 *)obj + 0x20);
-    s32 (*call)(void *, u32 *) = *(s32 (**)(void *, u32 *))((u8 *)*(void **)sub + 0x5c);
-    lbl_8055E0AC = (void *)call(sub, &lbl_80559BD8);
+    u32 entry = *(u32 *)((u8 *)*(void **)sub + 0x5c);
+    lbl_8055E0AC = (void *)((s32 (*)(void *, u32 *))entry)(sub, &lbl_80559BD8);
 }
 
 void __AXDSPInitCallback_80134770(void) {
@@ -135,6 +135,12 @@ f32 fn_80134D54(void) {
     fn_801769A8();
     return 0.0f;
 }
+
+#pragma dont_inline on
+f32 fn_80134DF8(void) {
+    return lbl_80561304;
+}
+#pragma dont_inline reset
 
 f32 fn_80134E00(void) {
     if ((fn_801769A8() >> 8) & 1) {
@@ -282,8 +288,9 @@ s32 fn_801351AC(void) {
 }
 
 void fn_801351B4(void *param) {
-    void **vtable = *(void ***)param;
-    ((void (*)(void))vtable[4])();
+    register void **vtable = *(void ***)param;
+    register void (*fn)(void) = *(void (**)(void))((u8 *)vtable + 0x10);
+    fn();
 }
 
 void fn_801351C4(void *arg0, s32 arg1) {
