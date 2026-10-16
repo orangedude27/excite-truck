@@ -13,3 +13,10 @@ void fn_80210510(void) {
     fn_802EC1C0();
 }
 
+extern void *lbl_8055EED8;
+extern void *lbl_8055EEDC;
+void AXFXSetHooks_80210950(void *arg0, void *arg1) {
+    lbl_8055EED8 = arg0;
+    lbl_8055EEDC = arg1;
+}
+
