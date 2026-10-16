@@ -21,6 +21,13 @@ void fn_802E7684(void* arg0) {
     ((UnkFunc)(*(void**)lbl_8055FFF0))( (s32)arg0 );
 }
 
+s32 fn_802E76F0(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 s32 fn_802E7730(void) {
     return 1;
 }
