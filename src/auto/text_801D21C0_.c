@@ -90,6 +90,7 @@ u8 fn_801D2550(void *arg0, UnkObj *arg1) {
     return self[0];
 }
 
+#pragma dont_inline on
 void fn_801D2A24(void *obj_) {
     UnkObj *obj = (UnkObj *)obj_;
     s32 *entry = (s32 *)(lbl_80438958 + lbl_8055E930 * 0x4C4);
@@ -111,7 +112,7 @@ void fn_801D2AD4(void) {
     while (list->vt->child(list, i) != NULL) {
         UnkObj *obj = (UnkObj *)list->vt->child(list, i);
         obj->vt->fn8(obj);
-        if (strncmp(obj->vt->fn28(obj, lbl_80338300, lbl_80562A90) ? "" : (char *)lbl_8055ABE0, lbl_8055AC28, 7) == 0) {
+        if (strncmp(obj->vt->fn8(obj), lbl_8055AC28, 7) == 0) {
             fn_801D2A24(obj);
         }
         i++;
