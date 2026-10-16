@@ -67,6 +67,10 @@ void fn_802C8B98(unsigned int arg0, unsigned int arg1) {
     fn_802C8B70();
 }
 
+void fn_802C8DB8(void) {
+    fn_802D68C4();
+}
+
 extern void fn_801E4FF4(void);
 void fn_802C8E48(void) {
     fn_801E4FF4();
