@@ -245,6 +245,13 @@ extern "C" void fn_8022A014(void *arg0) {
     (*(u8 *)((u8 *)arg0 + 0x18)) = 1;
 }
 
+extern "C" void fn_8022A034(void *arg0) {
+    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
+    }
+    (*(u8 *)((u8 *)arg0 + 0x18)) = 0;
+}
+
 extern "C" s32 fn_80229CA4(s32);
 extern "C" s32 fn_80229C9C(s32);
 extern "C" void fn_80229CB4(void *);
