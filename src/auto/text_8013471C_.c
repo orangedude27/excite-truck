@@ -48,19 +48,19 @@ void fn_80134A88(void) {
 extern s32 fn_801769A8(void);
 extern void fn_80134D78(void);
 extern void fn_80134DF8(void);
-extern f32 fn_80134C1C(f32);
-extern f32 fn_80134D20(f32);
-extern f32 fn_80134E00(f32);
+extern f32 fn_80134C1C(void);
+extern f32 fn_80134D20(void);
+extern f32 fn_80134E00(void);
 f32 fn_80134E34(f32 arg0) {
     f32 f30;
     f32 f31;
     if (arg0 < lbl_805612F4) {
-        f30 = fn_80134E00(arg0);
+        f30 = fn_80134E00();
     } else {
         f30 = arg0;
     }
-    f31 = fn_80134C1C(arg0);
-    return arg0 - f30 * fn_80134D20(arg0);
+    f31 = fn_80134C1C();
+    return arg0 - f30 * fn_80134D20();
 }
 
 void *fn_80134E90(void) {
@@ -181,8 +181,9 @@ s32 fn_801351AC(void) {
 }
 
 void fn_801351B4(void *param) {
-    u32 r12 = *(u32 *)param;
-    ((void (*)(void))(*(u32 *)(r12 + 0x10)))();
+    u32 r12;
+    r12 = *(u32 *)param;
+    ((void (*)(void))(u32)(*(u32 *)(r12 + 0x10)))();
 }
 
 void fn_801351C4(void *arg0, s32 arg1) {
