@@ -178,6 +178,11 @@ extern "C" s32 fn_800F2814(void *arg0) {
     return ReadSoundArchivePlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPQ46nw4hbm3snd12SoundArchive22SoundArchivePlayerInfo(*(s32*)((u8*)arg0 + 4));
 }
 
+M2C_UNK ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(s32);
+extern "C" s32 fn_800F281C(void *arg0) {
+    return ReadBankInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8BankInfo(*(s32*)((u8*)arg0 + 4));
+}
+
 extern "C" void fn_800F2D28(void *arg0) {
     *(s32*)((u8*)arg0 + 0x28) = 0;
     *(s32*)((u8*)arg0 + 0x2C) = 0;
