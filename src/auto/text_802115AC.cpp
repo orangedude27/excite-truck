@@ -12,6 +12,13 @@ extern "C" char lbl_8055B750[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int stricmp(const char *, const char *);
 extern "C" void *memcpy(void *, const void *, unsigned long);
+extern "C" s32 fn_80214E10(s32);
+extern "C" s32 fn_80214FE0(s32, s32, s32, s32);
+extern "C" s32 fn_80206430(void);
+extern "C" float fn_80209028(void);
+extern "C" int lbl_8055EF5C;
+extern "C" unsigned char lbl_80490558[];
+extern "C" char *lbl_8055B6B0;
 
 extern "C" void fn_8021165C(void) {
     fn_80215270();
@@ -95,16 +102,17 @@ extern "C" void *fn_8021227C(void *arg0, char *arg1, s32 arg2) {
 extern "C" s32 fn_80212338(void) { return 0; }
 
 extern "C" void fn_80212340(void *arg0) {
-    volatile s32 *p = (volatile s32 *)arg0;
-    s32 temp = p[4];
-    if (temp != 0) {
-        fn_8022E4BC(temp);
+    s32 *p = (s32 *)arg0;
+    if (p[4] != 0) {
+        fn_8022E4BC(p[4]);
         p[4] = 0;
     }
-    temp = p[0];
-    if (temp != 0) {
-        if (fn_80211678() == 0) fn_8022E4BC(p[3]);
-        else fn_8022E960(p[3]);
+    if (p[0] != 0) {
+        if (fn_80211678() == 0) {
+            fn_8022E4BC(p[3]);
+        } else {
+            fn_8022E960(p[3]);
+        }
         p[3] = 0;
     }
 }
