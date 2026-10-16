@@ -279,6 +279,11 @@ void *fn_80007BF8(void) {
     return lbl_802FB6D0;
 }
 
+extern u8 lbl_802FB604[];
+void *fn_80007C04(void) {
+    return lbl_802FB604;
+}
+
 extern s32 fn_8000C630(s32, s32);
 extern s32 fn_801B8848(void);
 extern s32 fn_801B87A0(s32, s32);
