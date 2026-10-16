@@ -10,6 +10,10 @@ extern int fn_8029FDF0(int *, int *);
 extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
 
 extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
+int fn_8029FDF0(int *arg0, int *arg1) {
+    return *arg0 - *arg1;
+}
+
 int fn_8029FE6C(const char *arg0) {
     int i;
     unsigned char *entry = lbl_804B6E70;
