@@ -964,3 +964,6 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
     fn_800D2098(&sp_68);
 }
 extern s32 lbl_8055DDD4;
+extern "C" f32 lbl_80560E40;
+extern "C" f32 lbl_80560E3C;
+extern "C" s32 fn_80060C7C(void*);
