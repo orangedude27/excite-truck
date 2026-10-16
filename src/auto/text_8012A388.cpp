@@ -183,6 +183,16 @@ extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
     return fn_8012BC50(arg0, arg1, arg2);
 }
 
+extern "C" void *fn_8012C58C(void *arg0) {
+    void *var_r5 = (void *)&lbl_8032ABEC;
+
+    if (arg0 != NULL &&
+        (u32)(*(u32 *)((u8 *)arg0 - 4) - 0x4D470000) == 0x4921U) {
+        var_r5 = *(void **)((u8 *)arg0 - 8);
+    }
+    return var_r5;
+}
+
 extern "C" s32 lbl_8055E00C;
 extern "C" void **lbl_8055E010;
 extern "C" void fn_8012CA40(void *arg0) {
