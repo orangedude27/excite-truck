@@ -10,12 +10,12 @@ extern int fn_80128668(int);
 extern int lbl_8055A950;
 extern "C" int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int);
 extern int fn_80128670(int);
-int __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int *arg0, int arg1) {
+int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int *arg0, int arg1) {
     if (arg0 != 0) {
         fn_80128670(*arg0);
         if (arg1 > 0) fn_80128668((int)arg0);
     }
-    return (int)arg0;
+    return arg0;
 }
 
 void fn_801C1320(void* arg0) {
