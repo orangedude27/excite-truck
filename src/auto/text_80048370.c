@@ -31,3 +31,10 @@ void MEMInitAllocatorForExpHeap(MEMAllocator* allocator, MEMiHeapHead* heap, s32
     allocator->heapParam2 = 0;
 }
 
+void MEMInitList(MEMList* list, u16 offset) {
+    list->offset = offset;
+    list->head = 0;
+    list->tail = 0;
+    list->length = 0;
+}
+
