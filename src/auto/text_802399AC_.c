@@ -134,6 +134,7 @@ extern s32 fn_80128670(s32);
 extern s32 lbl_8034109C;
 extern s32 lbl_80341108;
 extern s32 fn_802328D4(s32);
+#pragma small_data off
 void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(s32 **)((char *)arg0 + 0xC) = &lbl_8034109C;
@@ -142,7 +143,6 @@ void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-
 void *fn_8023A83C(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(s32 **)arg0 = &lbl_80341108;
@@ -328,7 +328,10 @@ void fn_8023B054(void *arg0) {
     }
 }
 
+#pragma push
+#pragma small_data off
 extern s32 lbl_80341268;
+#pragma pop
 extern float lbl_80563730;
 extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, float);
 void fn_8023B0BC(void *arg0) {
