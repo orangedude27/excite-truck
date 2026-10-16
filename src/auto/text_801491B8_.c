@@ -127,6 +127,10 @@ void fn_80154728(void *arg0) {
     }
 }
 
+s32 fn_8015473C(void) {
+    return 0;
+}
+
 void fn_80154744(void) {
 
 }
