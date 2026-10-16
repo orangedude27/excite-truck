@@ -23,6 +23,14 @@ s32 fn_802ECEEC(void) {
     return (s32)(tmp >> 31);
 }
 
+void fn_802ECF00(void) {
+    fn_802ECE48(0);
+}
+
+void fn_802ECF04(void) {
+    fn_802ECDF4();
+}
+
 void *fn_802ECF08(void *arg0, s32 arg1) {
     void *result;
     const char *name;
