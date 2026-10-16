@@ -14,6 +14,10 @@ extern u8 lbl_8055F3EB;
 extern u8 lbl_8055F420[];
 extern u8 lbl_8055BAC0;
 extern u8 lbl_8055BAB8;
+void fn_802607C4(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x1D) = 1;
+}
+
 void fn_80261A18(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 4) = 8;
