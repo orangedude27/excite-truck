@@ -45,7 +45,10 @@ extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7PictureCFUl(void* this_,
                                      (const char*)lbl_803204BC);
     }
 
-    return ((u8*)this_)[0xD4 + (idx & ~3) + (idx & 3)];
+    u32 hi = idx & ~3;
+    u32 lo = idx & 3;
+    u32 base = (u32)this_ + hi;
+    return ((u8*)base)[lo + 0xD4];
 }
 
 extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(void* this_,
@@ -56,7 +59,10 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc(void* this_,
                                      (const char*)lbl_80320474);
     }
 
-    ((u8*)this_)[0xD4 + (idx & ~3) + (idx & 3)] = color;
+    u32 hi = idx & ~3;
+    u32 lo = idx & 3;
+    u8* p = (u8*)((u32)this_ + hi);
+    p[lo + 0xD4] = color;
 }
 
 extern "C" u32* fn_800DCDFC(void) {
