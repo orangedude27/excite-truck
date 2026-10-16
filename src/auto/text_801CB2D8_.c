@@ -16,10 +16,8 @@ extern void fn_801CCDAC(int, int, int);
 extern void fn_801CD4CC(int, int);
 extern signed char lbl_8055E880;
 void fn_801CB3F8(void) {
-    int count;
-    int i;
-    if (fn_80019BA8() != 0) return;
-    if (fn_80161C38() != 0) return;
+    int count, i;
+    if (fn_80019BA8() || fn_80161C38()) return;
     count = fn_801EA994();
     for (i = 0; i < count; i++) fn_801CCAEC(i);
 }
