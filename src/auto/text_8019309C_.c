@@ -32,11 +32,11 @@ extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
 extern void fn_80194FD0(void);
 void fn_80194F70(void *arg0, float *a, float *b) {
-    float x, y, z;
-    x = a[0] - b[0];
-    y = a[1] - b[1];
-    z = a[2] - b[2];
-    PSVECDotProduct(arg0, &x);
+    float diff[4];
+    diff[0] = a[0] - b[0];
+    diff[1] = a[1] - b[1];
+    diff[2] = a[2] - b[2];
+    PSVECDotProduct(arg0, diff);
 }
 
 void fn_80194FC4(void) {
