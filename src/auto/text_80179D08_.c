@@ -9,8 +9,8 @@ extern f32 lbl_80561B78;
 extern f32 lbl_80561B7C;
 
 void fn_80179D94(void *arg0, void *arg1) {
-    register f32 a asm("f1") = lbl_80561B7C;
-    register f32 b asm("f0") = lbl_80561B78;
+    f32 a = lbl_80561B7C;
+    f32 b = lbl_80561B78;
     *(s32 *)((u8 *)arg0 + 0xC) = (s32)arg1;
     *(f32 *)((u8 *)arg0 + 0x30) = a;
     *(f32 *)((u8 *)arg0 + 0x34) = a;
