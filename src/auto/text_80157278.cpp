@@ -371,10 +371,10 @@ extern "C" void fn_8015A538(void* arg0, void* arg1) {
     void* sp8 = arg1;
     fn_80158F34(&sp8);
     if (*(s32*)((char*)arg0 + 0x264) > 0) {
-        fn_80158F34((void**)(char*)arg0);
+        fn_80158F34b((void*)arg0, *(void**)((char*)&sp8));
     }
     void* r4 = *(void**)((char*)arg0 + 8);
-    void* r3 = (void*)(*(s32*)r4 + (*(s32*)((char*)arg0 + 0xC) - 1) * 0x38);
+    void* r3 = (void*)((s32)r4 + (*(s32*)((char*)arg0 + 0xC) - 1) * 0x38);
     s32 r31 = *(s32*)((char*)r3 + 4);
     if (r31 > 0 && fn_80179650() == 1 && *(s32*)((char*)arg1 + 0x1F0) == 0x50 && fn_801CF064() == 0) {
         fn_8001EF5C(4, r31);
