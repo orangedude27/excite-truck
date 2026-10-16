@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_8021D61C(void *);
 extern "C" u8 lbl_8033EB14[];
 extern "C" char lbl_8055B87C[];
@@ -780,26 +781,26 @@ extern "C" s32 fn_8021D8D4(void *arg0) {
 }
 
 extern "C" void fn_8021E7D4(void *arg0) {
-    s32 *obj;
-    s32 value;
+    register s32 *obj;
+    register s32 *index;
+    register s32 pos;
     s32 limit;
-    s32 pos;
     obj = *(s32 **)((u8 *)arg0 + 0x248);
     if (obj == 0)
         return;
-    value = *(s32 *)((u8 *)arg0 + 0x25C);
-    pos = value;
+    index = *(s32 **)((u8 *)arg0 + 0x25C);
+    pos = *index;
     if (pos > obj[1] + obj[2] - 1) {
-        value = pos - obj[1] + 1;
-        obj[2] = value;
+        obj[2] = pos - obj[1] + 1;
         limit = obj[0] - obj[1];
-        if (value > limit)
+        if (obj[2] > limit)
             obj[2] = limit;
         if (obj[2] < 0)
             obj[2] = 0;
     }
     obj = *(s32 **)((u8 *)arg0 + 0x248);
-    pos = *(s32 *)((u8 *)arg0 + 0x25C);
+    index = *(s32 **)((u8 *)arg0 + 0x25C);
+    pos = *index;
     if (pos < obj[2]) {
         obj[2] = pos;
         limit = obj[0] - obj[1];
