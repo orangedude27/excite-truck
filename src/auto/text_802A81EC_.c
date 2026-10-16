@@ -9,3 +9,7 @@ extern f32 lbl_80564954;
 s32 fn_802A8A34(void* ptr);
 void fn_802A8978(void);
 void fn_802A81EC(void);
+
+s32 fn_802A8A34(void* ptr) {
+    return ((s32*)ptr)[1];
+}
