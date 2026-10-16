@@ -21,3 +21,8 @@ char fn_802C9A68(void) {
     return lbl_8055FC8E;
 }
 
+extern void *lbl_8055FC68;
+void* fn_802C9C38(void) {
+    return lbl_8055FC68;
+}
+
