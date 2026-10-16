@@ -50,7 +50,20 @@ typedef struct Unk801B3BD4 {
 } Unk801B3BD4;
 
 typedef struct Unk801B3398 {
-    s32 unk_0x00[14];
+    s32 unk_0x00;
+    s32 unk_0x04;
+    s32 unk_0x08;
+    s32 unk_0x0C;
+    s32 unk_0x10;
+    s32 unk_0x14;
+    s32 unk_0x18;
+    s32 unk_0x1C;
+    s32 unk_0x20;
+    s32 unk_0x24;
+    s32 unk_0x28;
+    s32 unk_0x2C;
+    s32 unk_0x30;
+    s32 unk_0x34;
 } Unk801B3398;
 
 void* fn_801B3338(void* arg0) {
@@ -72,13 +85,8 @@ int fn_801B3390(void) {
 
 s32 fn_801B3398(void* arg0) {
     Unk801B3398 local;
-    Unk801B3398* src = (Unk801B3398*)arg0;
-    s32 i;
-    s32* lp = (s32*)&local;
 
-    for (i = 0; i < 14; i++) {
-        lp[i] = ((s32*)src)[i];
-    }
+    local = *(Unk801B3398*)arg0;
     return fn_801796CC(1, &local, 0x38);
 }
 
@@ -92,6 +100,12 @@ void fn_801B3448(void) {
     fn_801B5364(1, fn_801B3390);
     fn_801B5364(0xF, fn_801B3398);
 }
+
+void fn_801B34A4(void) {
+    fn_801B3DBC((void*)lbl_8055E6C0);
+    memset(lbl_80435C50, 0, 0x20);
+}
+
 void fn_801B3B24(void) {
 
 }
