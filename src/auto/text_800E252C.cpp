@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern "C" void fn_800E6A44(void);
+extern int lbl_8055DE20;
+extern void fn_80128668(void);
 
 extern "C" unsigned int OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(unsigned int);
@@ -20,13 +22,16 @@ extern "C" void *GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(void *se
 }
 
 extern "C" void RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNodePFv_v(void *self, void *node, void (*callback)(void)) {
+    void *pThis = self;
+    void *pNode = node;
+    void (*pCallback)(void) = callback;
     unsigned int level = OSDisableInterrupts();
-    *(void (**)(void))((char *)node + 8) = callback;
-    if (node == 0) {
+    if (pNode == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322094, 0x233, lbl_80322070);
     }
-    void *iterator = (char *)self + 12;
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self + 8, &iterator, node);
+    *(void (**)(void))((char *)pNode + 8) = pCallback;
+    void *iterator = (char *)pThis + 12;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)pThis + 8, &iterator, pNode);
     OSRestoreInterrupts(level);
 }
 
@@ -48,3 +53,17 @@ extern "C" void fn_800E5A8C(void) {
 void fn_800E80B4(void) {
 
 }
+
+void fn_800E9B20(void *arg0, float arg1) {
+    *(float *)((char *)arg0 + 0x94) = arg1;
+}
+
+extern int lbl_8055DE20;
+extern void fn_80128668(void);
+int fn_800E9BE4(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
