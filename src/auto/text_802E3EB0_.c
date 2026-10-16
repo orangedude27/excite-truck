@@ -60,7 +60,8 @@ extern unsigned int lbl_8034D130;
 void *fn_802E41C4(void *arg0, int arg1) {
     void (*release)(void *);
     if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8034D130;
+        if (*((unsigned char *)arg0 + 0x80) != 0) *(void **)arg0 = &lbl_8034D130;
+        else *(void **)arg0 = &lbl_8034D130;
         if (*((unsigned char *)arg0 + 0x80) != 0 && DVDClose((char *)arg0 + 4) == 0) {
             fn_802E30C8((const char *)&lbl_8034D0E4, (char *)arg0 + 0x40);
         }
@@ -78,6 +79,10 @@ int fn_802E43D8(void *arg0, int arg1) {
         return 1;
     }
     return 0;
+}
+
+int fn_802E4400(void *arg0) {
+    return *(int *)((char *)arg0 + 0x84);
 }
 
 extern unsigned int lbl_8055FF38;
