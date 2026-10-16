@@ -302,7 +302,7 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
 extern "C" s32 fn_8021C974(void) { return 0; }
 
 extern "C" void *fn_8021C97C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
-    fn_8021AC24();
+    ((void (*)(void *, s32, s32, s32, s32))fn_8021AC24)(arg0, arg1, arg2, arg3, arg5);
     *(s32 *)((u8 *)arg0 + 0x258) = arg4;
     *(u32 *)arg0 = (u32)lbl_8033EDC8;
     *(s32 *)((u8 *)arg0 + 0x254) = arg5;
