@@ -7,6 +7,8 @@ extern int lbl_8034AFC8;
 extern int lbl_8055FB54;
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
+void fn_802C2054(int arg0) { fn_802C1F80(arg0 - 4); }
+
 int fn_802C2074(int arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
@@ -24,6 +26,14 @@ void fn_802C20DC(int *arg0) {
 
 short fn_802C2120(int arg0) {
     return (short)(((arg0 << 8) / 1024) + 0x80);
+}
+
+void fn_802C217C(void) {
+    fn_802C20DC((int *)&lbl_8055FB50);
+    if (lbl_8055FB54 != 0) {
+        fn_802B52B4();
+        lbl_8055FB54 = 0;
+    }
 }
 
 void* fn_802C21B8(void) {
