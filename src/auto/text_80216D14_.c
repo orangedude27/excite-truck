@@ -14,6 +14,10 @@ void fn_80217478(void) {
 
 }
 
+int fn_80217BC8(int *arg0, int *arg1) {
+    return *arg0 - *arg1;
+}
+
 void fn_802180B0(void *arg0) { fn_80217EC0(arg0, 1, 0); }
 
 void fn_802180BC(void *arg0) { fn_80217EC0(arg0, 1, 1); }
