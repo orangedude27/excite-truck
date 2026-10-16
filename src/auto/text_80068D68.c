@@ -261,17 +261,7 @@ void fn_8006EAD8(void) {
 
 }
 
-UINT8 GKI_send_event(UINT8 task_id, UINT16 event) {
-    if (task_id >= GKI_MAX_TASKS) {
-        return GKI_FAILURE;
-    }
 
-    GKI_disable();
-    gki_cb.com.OSWaitEvt[task_id] |= event;
-    GKI_enable();
-
-    return GKI_SUCCESS;
-}
 
 u8 fn_8006EB80(void) {
     return 2;
