@@ -17,6 +17,10 @@ extern void fn_80070954(u32 code, void *msg, u16 param);
 extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
 extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
 
+s32 fn_8006DF60(s32 *arg0) {
+    return *arg0;
+}
+
 void fn_8006EACC(void) {
 
 }
