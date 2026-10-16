@@ -1,5 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern unsigned char lbl_8055E45E;
+extern int lbl_80430590[];
+extern int lbl_80430830[];
 
 void fn_80179EE8(void*, unsigned int);
 void fn_80128668(void*);
@@ -24,28 +27,26 @@ extern int lbl_8055E468;
 int fn_802E2C20(void);
 extern int lbl_8055E464;
 void fn_80177814(int *arg0) {
-    int t;
-    t = fn_802E2C20();
-    *arg0 = t % 30000;
-    t = fn_802E2C20();
-    arg0[1] = t % 30000;
+    *arg0 = (fn_802E2C20() + lbl_8055E464) % 30000;
+    lbl_8055E464 += 0x9947;
+    arg0[1] = (fn_802E2C20() + lbl_8055E464) % 30000;
+    lbl_8055E464 += 0x2F1CD;
 }
 
 void fn_801778C0(void) {
     void **var_r31 = &lbl_804340C0[0];
     void **var_r28;
     int var_r30 = 0;
-    int var_r29;
+    int var_r29 = 0;
 
     lbl_8055E468 = 0;
-    for (var_r29 = 0; var_r29 < lbl_8055E438; var_r29++) {
+    for (; var_r29 < lbl_8055E438; var_r29++, var_r30 += 4) {
         var_r28 = *(void **)(lbl_8055E434 + var_r30);
         if (((int (*)(void **))(*(void ***)*var_r28 + 0x44))(var_r28) != 0 &&
             ((int (*)(void **))(*(void ***)*var_r28 + 0x40))(var_r28) != 0) {
             var_r31[lbl_8055E468] = var_r28;
             lbl_8055E468 += 1;
         }
-        var_r30 += 4;
     }
 }
 
@@ -58,7 +59,7 @@ long fn_80177988(void) {
 }
 
 void fn_80177990(void) {
-    float temp_f31;
+    double temp_f31;
     float *var_r31;
     float *var_r30;
     int var_r29;
@@ -67,9 +68,9 @@ void fn_80177990(void) {
     var_r31 = &lbl_80430700[0];
     var_r30 = &lbl_804305D4[0];
     for (var_r29 = 0; var_r29 < 0x4b; var_r29++) {
-        *var_r31 = temp_f31;
-        *var_r30 = temp_f31;
-        fn_801DCEC8(var_r29, temp_f31);
+        *var_r31 = (float)temp_f31;
+        *var_r30 = (float)temp_f31;
+        fn_801DCEC8(var_r29, (float)temp_f31);
         fn_801DCEDC(var_r29, lbl_80561B48);
         var_r31++;
         var_r30++;
