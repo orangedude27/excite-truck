@@ -46,6 +46,8 @@ void fn_801C0124(float *arg0, float *arg1, float arg2) {
     arg0[2] = z;
 }
 
+int fn_801C0168(void *arg0) { return *(int *)((char *)arg0 + 0x5A4); }
+
 int fn_801C0170(void *arg0) { return *(int *)((char *)arg0 + 0x59C); }
 
 extern void fn_801C1C7C(void *, int);
