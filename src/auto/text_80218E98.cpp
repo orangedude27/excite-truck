@@ -409,6 +409,12 @@ extern "C" s32 fn_8021B3A0(void *arg0) {
     return 0;
 }
 
+extern "C" s32 fn_802C3424(s32, s32, s32, s32, s32);
+extern "C" void fn_8021B3BC(void *arg0, s32 arg1) {
+    fn_802C3034(arg1);
+    fn_802C3424(*(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 0x248), *(s32 *)((u8 *)arg0 + 0x24C), *(s32 *)((u8 *)arg0 + 0x250), *(s32 *)((u8 *)arg0 + 0x254));
+}
+
 extern "C" void fn_8021915C(void*, u32);
 extern "C" s32 fn_80128668(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
