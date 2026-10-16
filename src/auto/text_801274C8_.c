@@ -27,9 +27,8 @@ void fn_80127964(void) {
 
 void fn_80127968(void) {
     u64 now = fn_802E2C9C();
-    u64 old = lbl_8055DF20;
+    lbl_8055DF18 += now - lbl_8055DF20;
     lbl_8055DF20 = now;
-    lbl_8055DF18 += now - old;
 }
 
 void fn_801279B8(void) {
