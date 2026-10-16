@@ -62,7 +62,7 @@ void fn_801282EC(s32 arg0) { lbl_8055DF8C = arg0; }
 
 void fn_801282F4(void) {
     s32 value = ((s32 *)lbl_8041E160)[2];
-    lbl_8055DF81 = (value >> 31) & (value != 0);
+    lbl_8055DF81 = (u32)((-value) & ~value) >> 31;
 }
 
 s32 fn_80128314(s32 arg0) {
