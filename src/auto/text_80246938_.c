@@ -130,9 +130,9 @@ void fn_80247880(void) {
     lbl_8055BEB0 = (void*)fn_80214D04();
 }
 
-extern void* lbl_8055BEB4;
+extern s32 lbl_8055BEB4;
 void fn_80247AAC(void) {
-    lbl_8055BEB4 = (void*)fn_80214D04();
+    lbl_8055BEB4 = (s32) (void*)fn_80214D04();
 }
 
 void *fn_80248140(void *arg0, int arg1) {
