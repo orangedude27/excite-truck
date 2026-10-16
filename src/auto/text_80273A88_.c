@@ -29,3 +29,35 @@ void fn_80273AEC(void) {
 void fn_80273B48(void) {
 }
 
+void fn_80273B4C(void *arg0) {
+    extern void fn_80015A20(void *, float *, float);
+    extern void fn_80015B20(void *, void *, void *);
+    extern float lbl_80563FA8;
+    extern float lbl_80563FAC;
+    extern float lbl_80563FB0;
+    extern float lbl_80563FB4;
+    void *temp_r4 = *(void **)((char *)arg0 + 0x140);
+    float sp10, spC, sp8;
+    int sp14;
+    float var_f1;
+    void *temp_r3;
+    if (temp_r4 != 0) {
+        if (*(unsigned char *)((char *)temp_r4 + 0x260C) != 0) {
+            var_f1 = lbl_80563FA8;
+        } else {
+            var_f1 = lbl_80563FAC;
+        }
+        sp8 = lbl_80563FB0;
+        sp10 = lbl_80563FB0;
+        spC = lbl_80563FB0 * lbl_80563FB4 * var_f1;
+        fn_80015A20(&sp14, &sp8, var_f1);
+        temp_r3 = (char *)arg0 + 0x58;
+        fn_80015B20(temp_r3, &sp14, temp_r3);
+    }
+}
+
+void fn_8027445C(void) {
+    extern void fn_80274268(void);
+    fn_80274268();
+}
+
