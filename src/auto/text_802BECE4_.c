@@ -33,3 +33,7 @@ int fn_802C0D24(void *arg0) {
     return *(int *)((char *)arg0 + 4);
 }
 
+unsigned int fn_802C0D34(void) {
+    return 1;
+}
+
