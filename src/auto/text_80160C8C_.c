@@ -114,6 +114,10 @@ unsigned char fn_80165050(void *arg0) {
     return *((unsigned char *)arg0 + 5);
 }
 
+int fn_80165240(void) {
+    return 0;
+}
+
 void fn_80165248(void) {
 
 }
