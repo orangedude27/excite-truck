@@ -260,7 +260,10 @@ void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self,
 extern "C" void fn_800FDE60(void);
 extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(unsigned long);
 extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void);
-void fn_800F7110(unsigned long arg1) { fn_800FDE60(); CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(arg1); }
+void fn_800F7110(void* self, unsigned long taskId) {
+    fn_800FDE60();
+    CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(taskId);
+}
 
 extern "C" s32 fn_800F76C0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
@@ -274,6 +277,36 @@ void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* self) {
     OSLockMutex(mutex);
     if (*(void**)((char*)self + 0x10) != 0)
         Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv();
+    OSUnlockMutex(mutex);
+}
+
+void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
+    void* mutex = *(void**)((u8*)self + 0x24);
+    void* sound = *(void**)((u8*)self + 0x10);
+    OSLockMutex(mutex);
+    *(u32*)((u8*)self + 0x1c) = 0;
+    if (sound != 0 && ((s32 (*)(void*))(*(u32*)(*(u32*)sound + 0x54)))(sound) != 0) {
+        if (((s32 (*)(void*))(*(u32*)(*(u32*)sound + 0x28)))(sound) != 0) {
+            ((void (*)(void*, s32, s32))(*(u32*)(*(u32*)sound + 0x4c)))(sound, 0, 0);
+        } else {
+            ((void (*)(void*))(*(u32*)(*(u32*)sound + 0x48)))(sound);
+        }
+    }
+    OSUnlockMutex(mutex);
+}
+
+void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_800F7FEC(void* self) {
+    void* mutex = *(void**)((u8*)self + 0x3c);
+    void* sound = *(void**)((u8*)self + 0x14);
+    OSLockMutex(mutex);
+    *(u32*)((u8*)self + 0x10) = 0;
+    if (sound != 0 && ((s32 (*)(void*))(*(u32*)(*(u32*)sound + 0x54)))(sound) != 0) {
+        if (((s32 (*)(void*))(*(u32*)(*(u32*)sound + 0x28)))(sound) != 0) {
+            ((void (*)(void*, s32, s32))(*(u32*)(*(u32*)sound + 0x4c)))(sound, 0, 0);
+        } else {
+            ((void (*)(void*))(*(u32*)(*(u32*)sound + 0x48)))(sound);
+        }
+    }
     OSUnlockMutex(mutex);
 }
 
@@ -327,11 +360,12 @@ extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6de
 void DetachSound__Q34nw4r3snd11SoundHandleFv(void **arg0) {
  void *p=*arg0;
  if(p) {
-  if(*(void**)((u8*)p+8)==arg0) *(void**)((u8*)p+8)=0;
+  if(*(u32*)((u8*)p+8)==(u32)arg0) *(u32*)((u8*)p+8)=0;
   p=*arg0;
-  if(*(void**)((u8*)p+0xc)==arg0) *(void**)((u8*)p+0xc)=0;
+  if(*(u32*)((u8*)p+0xc)==(u32)arg0) *(u32*)((u8*)p+0xc)=0;
  }
- if(*arg0) *arg0=0;
+ if(*arg0==0) return;
+ *arg0=0;
 }
 
 extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* arg0, int arg1) {
@@ -406,4 +440,29 @@ extern "C" s32 fn_800FB374(s32 arg0, s32 arg1) {
     }
     return arg0;
 }
+
+extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
+extern "C" const char lbl_80326B68[];
+extern "C" const char lbl_80326B8C[];
+extern "C" const char lbl_80326768[];
+extern "C" const char lbl_8032687C[];
+extern "C" s32 lbl_8041506C;
+extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
+    void *node = *(void **)((u8 *)&lbl_8041506C + 4);
+    void *end = (u8 *)&lbl_8041506C + 4;
+    while (node != end) {
+        void *player = node;
+        node = *(void **)node;
+        if (player == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326B8C, 0x23D, lbl_80326B68);
+        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)player - 8);
+    }
+}
+
+extern "C" void fn_800FC5B8(void *arg0, f32 value) {
+    OSDisableInterrupts();
+    *(f32 *)((u8 *)arg0 + 0x45C) = value;
+    OSRestoreInterrupts(0);
+}
+
+extern "C" f32 fn_800FC5F8(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x45C); }
 
