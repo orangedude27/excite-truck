@@ -1,18 +1,33 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <types.h>
+#include <revolution/GX/GXTypes.h>
+#include <revolution/GX/GXTev.h>
+extern void fn_802D3144(void);
+extern void GXSetNumIndStages(u8);
+extern void GXSetTevDirect(GXTevStageID);
+
 void fn_802DF2F0(void) {
     GXSetTevSwapMode(0, 0, 0);
+}
+
+void fn_802DF46C(void) {
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevSwapMode(1, 0, 0);
+}
+
+void fn_802DF684(void) {
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevSwapMode(1, 0, 0);
+    GXSetNumIndStages(0);
+    GXSetTevDirect(1);
 }
 
 void fn_802E0BE0(void) {
     fn_802E0BA4();
     fn_80128668();
 }
-
-#include <types.h>
-#include <revolution/GX/GXTypes.h>
-extern void fn_802D3144(void);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80119214(void *, void *);
 extern void fn_80116E54(void *, void *);
