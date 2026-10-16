@@ -58,7 +58,7 @@ public:
   virtual void vf17();
   virtual void vf18();
   virtual void vf19();
-  virtual void vf20();    // vtable 0x50
+  virtual void vf20();
   virtual void vf21();    // vtable 0x5C
 };
 
@@ -551,18 +551,18 @@ extern "C" s32 fn_8021583C(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_802158C8(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf18();
+    void (*fn)(void) = *(void (**)(void))(*(char **)arg0 + 0x244);
+    fn();
 }
 
 extern "C" void fn_802158DC(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf19();
+    void (*fn)(void) = *(void (**)(void))(*(char **)arg0 + 0x244);
+    fn();
 }
 
 extern "C" void fn_802158F0(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf20();
+    void (*fn)(void) = *(void (**)(void))(*(char **)arg0 + 0x244);
+    fn();
 }
 
 extern "C" void fn_80215B08(void *arg0) {
