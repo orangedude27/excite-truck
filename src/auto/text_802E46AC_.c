@@ -18,6 +18,10 @@ s32 fn_802E47B8(void) {
     return lbl_8055FF50 != 0;
 }
 
+void fn_802E47E8(void) {
+    memset(&lbl_8055FF50, 0, 8);
+}
+
 s32 fn_802E47F8(void) {
     return 0;
 }
