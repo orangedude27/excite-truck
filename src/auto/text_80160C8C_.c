@@ -203,7 +203,19 @@ int fn_80165824(void) { return 0; }
 
 int fn_8016582C(void) { return 0; }
 
+void *__AXGetStudio_80165834(void) {
+    return lbl_8032FCB0;
+}
+
 int fn_80165840(void) {
+    return 0;
+}
+
+int fn_80165848(int *arg5) {
+    if (fn_80161BB8() != 0) {
+        *arg5 |= 0x1150;
+        return 1;
+    }
     return 0;
 }
 
