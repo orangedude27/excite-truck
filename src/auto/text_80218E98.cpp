@@ -763,7 +763,7 @@ int fn_802298DC(void *arg0) {
     return 0;
 }
 
-void fn_802298F8(void) {
+extern "C" void fn_802298F8(void) {
 }
 
 extern "C" void fn_802298FC(void) {
