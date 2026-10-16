@@ -11,6 +11,25 @@ extern "C" void fn_801796EC(s32, s32*, s32);
 extern "C" s32 fn_8012C4E4(void*, void*, s32);
 extern "C" s32 fn_801CFF18(s32, s32);
 
+class VTab19 {
+public:
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
+    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17(); virtual void v18();
+    virtual void slot0x4C();
+};
+
+class VTab13 {
+public:
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
+    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
+    virtual void v12();
+    virtual void slot0x34(s32);
+};
+
 extern "C" void fn_801A44D4(void*);
 extern void* lbl_8055A508;
 extern void* lbl_8055A510;
@@ -31,6 +50,19 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void fn_8019EC84(void* this_) {
+    void* p = *(void**)((u8*)this_ + 4);
+    if (p == NULL) {
+        return;
+    }
+    ((void(*)(void*))(*(void***)p)[0x13])(p);
+}
+
+extern "C" void fn_8019ECA4(void* this_, s32 arg1) {
+    *(s32*)((u8*)this_ + 8) = arg1;
+    ((void(*)(void*, s32))(*(void***)this_)[0xD])(this_, arg1 + 4);
 }
 
 extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
