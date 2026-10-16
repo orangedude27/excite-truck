@@ -293,10 +293,11 @@ extern "C" void fn_8015A318(void* arg0) {
 
 extern "C" f32 fn_8015A368(void* arg0) {
     f32 sp8;
-    ((Unk8015A368C*)arg0)->v21();
-    sp8 = *(f32*)((u8*)arg0 + 0x25C) * ((Unk8015A368C*)arg0)->v18(0);
-    ((Unk8015A368C*)arg0)->v33(&sp8);
-    ((Unk8015A368C*)arg0)->v31();
+    Unk8015A368C* obj = (Unk8015A368C*)arg0;
+    s32 v21ret = obj->v21();
+    sp8 = *(f32*)((u8*)arg0 + 0x25C) * obj->v18(v21ret);
+    obj->v33(&sp8);
+    obj->v31();
     *(s32*)((u8*)arg0 + 0x264) = 0;
     *(f32*)((u8*)arg0 + 0x25C) = lbl_80561750;
     return sp8;
@@ -311,6 +312,11 @@ extern "C" void fn_8015CD0C(void) {
 }
 
 extern "C" void fn_8015CDD8(void) {
+}
+
+extern void* lbl_8032E7F8[];
+extern "C" void fn_8015D6FC(Unk8015A368C* arg0) {
+    fn_80131234(lbl_8032E7F8[arg0->GetType()]);
 }
 
 extern "C" void fn_8015E0FC(void) {
