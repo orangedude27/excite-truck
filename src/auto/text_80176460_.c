@@ -37,6 +37,14 @@ char fn_801769F8(void) {
     return lbl_8055E3BD;
 }
 
+extern void* lbl_8055A2F0;
+void fn_80176A00(s32 arg0) {
+    *(volatile s32*)&lbl_8055A2F0 = arg0;
+    if (*(volatile s32*)&lbl_8055A2F0 == 1) {
+        lbl_8055E460 = lbl_80561B1C;
+    }
+}
+
 extern void *lbl_8055A2F0;
 void* fn_80176A1C(void) {
     return lbl_8055A2F0;
