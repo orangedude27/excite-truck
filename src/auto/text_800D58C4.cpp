@@ -57,6 +57,14 @@ extern "C" void fn_800D6EEC(void* arg0) {
     *(volatile u8*)(p + 0x20) = 0;
 }
 
+extern "C" void fn_800D7758(void *arg0) {
+    void **p = *(void ***)((char *)arg0 + 0x10);
+    if (p != 0) {
+        void (**vtable)(void) = *(void (***)(void))p;
+        vtable[7]();
+    }
+}
+
 extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
     u8* p = (u8*)self;
     extern f32 lbl_80560E84;
@@ -132,6 +140,10 @@ extern "C" s32 fn_800D8744(u32 *arg0) {
 
 extern "C" u32 fn_800D8750(u32 *arg0) {
     return (*arg0 >> 27) & 1;
+}
+
+extern "C" u32 fn_800D875C(u32 *arg0) {
+    return (*arg0 >> 12) & 1;
 }
 
 extern "C" s32 fn_800D8780(u32 *arg0) {
