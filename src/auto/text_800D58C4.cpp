@@ -3,6 +3,26 @@
 #include <types.h>
 #include "revolution/GX/GXTypes.h"
 
+void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void *arg0, void *arg1) {
+    f32 *dst = (f32 *)arg0;
+    u8 *src = (u8 *)arg1;
+    if (src[0x20] == 1) {
+        f32 height = *(f32 *)(src + 0x1C);
+        f32 width = *(f32 *)(src + 0x18);
+        f32 scale = 0.5f;
+        dst[2] = width * scale;
+        dst[1] = height * scale;
+        dst[0] = -width * scale;
+        dst[3] = -height * scale;
+    } else {
+        f32 zero = 0.0f;
+        dst[0] = zero;
+        dst[1] = zero;
+        dst[2] = *(f32 *)(src + 0x18);
+        dst[3] = *(f32 *)(src + 0x1C);
+    }
+}
+
 extern "C" void fn_800D7F58(void *arg0, void *arg1) {
     volatile f32 *src = (volatile f32 *)arg1;
     f32 v1 = src[1];
@@ -50,6 +70,10 @@ extern "C" s32 fn_800D872C(u32 *arg0) {
 
 extern "C" s32 fn_800D8738(u32 *arg0) {
     return (*arg0 >> 8) & 0xF;
+}
+
+extern "C" s32 fn_800D8744(u32 *arg0) {
+    return (*arg0 >> 25) & 1;
 }
 
 extern "C" s32 fn_800D8780(u32 *arg0) {
