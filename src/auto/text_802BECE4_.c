@@ -19,7 +19,9 @@ void fn_802BF40C(void) {
     for (i = 0; i < lbl_8055FADC; i++) {
         obj = (void **)lbl_804C07F0[i];
         if (obj != 0) {
-            ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+            if (obj != 0) {
+                ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+            }
             lbl_804C07F0[i] = 0;
         }
     }
@@ -42,13 +44,11 @@ int fn_802BF4F0(void) {
 }
 
 void fn_802BF508(void) {
-    int index;
+    int index = fn_801E85B4();
     int saved;
-
-    index = fn_801E85B4();
     if (lbl_804C07F0[index] != 0 && lbl_8055CF70 != 0) {
         saved = fn_802C2C00(0);
-        ((void (*)(void *))(*(void ***)lbl_804C07F0[index])[2])(lbl_804C07F0[index]);
+        ((void (*)(void *, int))(*(void ***)lbl_804C07F0[index])[4])(lbl_804C07F0[index], 0);
         fn_802C2C00(saved);
     }
     fn_802BF160();
@@ -107,4 +107,15 @@ unsigned int fn_802C0D34(void) {
 unsigned char fn_802C0D3C(void *arg0) {
     return *((unsigned char *)arg0 + 0x2C5C);
 }
-
+extern void fn_802BEDFC(void);
+extern int fn_801E85AC(void);
+extern int fn_802C00A4(void);
+extern int fn_8012C33C(int);
+extern int fn_802C6FC0(int, int, int);
+extern void fn_802E30C8(const char *, ...);
+extern char lbl_8034AD78[];
+extern int lbl_8055CF68;
+extern void fn_801E866C(int);
+extern void *fn_801EA9A0(void);
+extern float lbl_80564D80, lbl_80564D84, lbl_80564D88, lbl_80564D8C;
+extern float lbl_80564D90, lbl_80564D94;
