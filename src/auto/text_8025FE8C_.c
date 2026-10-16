@@ -77,3 +77,10 @@ s32 fn_8026257C(void) {
     return 0;
 }
 
+void fn_80262584(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x1F) && lbl_8055F3E9) {
+        fn_80230E90(0);
+        *(u8 *)((u8 *)arg0 + 0x1F) = 0;
+    }
+}
+
