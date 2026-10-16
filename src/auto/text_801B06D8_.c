@@ -97,6 +97,28 @@ s32 fn_801B1130(s32 arg0) {
 
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
 
+void fn_801B14BC(s32 *arg0,s32 arg1,s32 arg2) {
+    if(arg2){*arg0 |= arg1;return;}
+    *arg0 &= ~arg1;
+}
+
+extern f32 lbl_805625F8;
+extern double lbl_805625E8;
+extern f32 lbl_805625FC;
+extern s32 fn_801366C0(s32,s32,f32);
+extern void fn_801B14BC(s32*,s32,s32);
+extern s32 fn_8026A27C(s32);
+extern s32 fn_801B1390(s32);
+void fn_801B14E4(void *arg0) {
+    s32 value;
+    if (fn_801366C0(*(s32*)((u8*)arg0+0x58),*(s32*)((u8*)arg0+0x5C)+0x118,lbl_805625F8))
+        *(s32*)((u8*)arg0+0x64) += 1;
+    else
+        *(s32*)((u8*)arg0+0x64) = 0;
+    value=*(s32*)((u8*)arg0+0x64);
+    fn_801B14BC((s32*)((u8*)arg0+4),4,(f32)value >= lbl_805625FC);
+}
+
 void fn_801B157C(void *arg0,s32 arg1) {
     *(u8*)((u8*)arg0+0x2C)=1;*(f32*)((u8*)arg0+0x30)=lbl_8055E3C8;
     if(lbl_8055E690)fn_801CB6B4(*(s32*)((u8*)arg0+0x60),arg1,2);
@@ -132,6 +154,8 @@ void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
     ((void (*)(void *, s32, void *))vtable[4])(lbl_8055E68C,
         *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C);
 }
+
+void fn_801B2118(void) {}
 
 void *fn_801B21B8(void *arg0) {
     register f32 value = lbl_805625BC;
