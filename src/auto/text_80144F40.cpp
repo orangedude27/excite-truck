@@ -183,11 +183,9 @@ extern "C" void fn_80148250(void *arg0) {
         virtual void f6();
         virtual void f7();
         virtual void f8();
-        virtual void f9();
-        virtual void f10();
     };
     VTable *obj = *(VTable **)((u8 *)arg0 + 4);
-    obj->f10();
+    obj->f8();
 }
 
 extern "C" u32 lbl_80559E68;
