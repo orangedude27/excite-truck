@@ -15,6 +15,14 @@ extern long lbl_8055F654;
 long *fn_8027C120(long, long);
 long fn_8027C8B0(void);
 long fn_802E317C(char *, ...);
+extern unsigned char lbl_8055F650;
+long fn_80019B3C(void);
+extern char lbl_80347A5C[];
+extern char lbl_8055C758[];
+extern char lbl_8055C770[];
+long fn_80012854(void);
+void *fn_8001285C(long);
+int stricmp(const char *, const char *);
 
 extern char lbl_804A4380[];
 unsigned char fn_8027AF84(void *arg0) {
@@ -30,26 +38,29 @@ unsigned char fn_8027B280(void *arg0) {
 }
 
 void fn_8027B288(void *arg0) {
-    long i = 0;
     long offset = 0;
-    do {
-        fn_8027AF94((char *)*(void **)((char *)arg0 + 0x18) + offset);
-        offset += 0x3C;
-        i++;
-    } while (i < *(long *)((char *)arg0 + 0x1C));
+    long i = 0;
+loop:
+    fn_8027AF94((char *)*(void **)((char *)arg0 + 0x18) + offset);
+    offset += 0x3C;
+    i++;
+    if (i < *(long *)((char *)arg0 + 0x1C))
+        goto loop;
     *(long *)((char *)arg0 + 0x1C) = 0;
     *(long *)((char *)arg0 + 0x10) = 0;
 }
 
 void fn_8027B60C(void *arg0) {
-    long i, offset;
+    long offset, i;
     if (*(long *)((char *)arg0 + 4) != 0) {
-        i = 0; offset = 0;
-        do {
-            fn_8027B288((char *)*(void **)((char *)arg0 + 8) + offset);
-            offset += 0x1F4; i++;
-        } while (i < *(long *)((char *)arg0 + 0xC));
         offset = 0;
+        i = 0;
+loop2:
+        fn_8027B288((char *)*(void **)((char *)arg0 + 8) + offset);
+        offset += 0x1F4;
+        i++;
+        if (i < *(long *)((char *)arg0 + 0xC))
+            goto loop2;
         *(long *)((char *)arg0 + 0xC) = 0;
         fn_80131818(*(long *)((char *)arg0 + 4));
         *(long *)((char *)arg0 + 4) = 0;
