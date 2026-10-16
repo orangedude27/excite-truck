@@ -497,13 +497,37 @@ extern "C" void fn_800CFDBC(void *arg0, s32 arg1, void *arg2) {
 
 extern "C" void calc__Q310homebutton3gui7ManagerFv_800CFDEC(void *arg0) {
     u16 i = 0;
+    void *list = (u8 *)arg0 + 8;
     do {
-        void *obj = *(void **)((u8 *)List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 8, i) + 4);
-        void **vtable = *(void ***)obj;
-        ((void (*)(void *))(*(u32 *)((u8 *)vtable + 0x10)))(obj);
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, i);
+        void *obj = *(void **)((u8 *)entry + 4);
+        ((void (*)(void *))(*(u32 *)(*(u32 *)obj + 0x10)))(obj);
         i++;
-        if ((u8 *)arg0 + 8 == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    } while (i < *(u16 *)((u8 *)arg0 + 0x10));
+}
+
+extern "C" void draw__Q310homebutton3gui7ManagerFv_800CFE88(void *arg0) {
+    u16 i = 0;
+    void *list = (u8 *)arg0 + 8;
+    do {
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, i);
+        void *obj = *(void **)((u8 *)entry + 4);
+        ((void (*)(void *))(*(u32 *)(*(u32 *)obj + 0x18)))(obj);
+        i++;
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+    } while (i < *(u16 *)((u8 *)arg0 + 0x10));
+}
+
+void setAllComponentTriggerTarget__Q310homebutton3gui7ManagerFb(void *arg0, bool arg1) {
+    u16 i = 0;
+    void *list = (u8 *)arg0 + 8;
+    do {
+        void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(list, i);
+        void *obj = *(void **)((u8 *)entry + 4);
+        ((void (*)(void *, bool))(*(u32 *)(*(u32 *)obj + 0x50)))(obj, arg1);
+        i++;
+        if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
     } while (i < *(u16 *)((u8 *)arg0 + 0x10));
 }
 
@@ -524,17 +548,17 @@ extern "C" s32 fn_800D014C(s32 arg0, s32 arg1) {
 extern "C" u32 lbl_8055DDA0;
 extern "C" void fn_800D018C(void *arg0, void *arg1) {
     lbl_8055DDA0 = 0;
-    void *p = *(void **)((u8 *)arg1 + 0x10);
-    void (*method)(void *, void *);
-    method = (void (*)(void *, void *))(*(u32 *)(*(u32 *)arg0 + 0x50));
-    method(arg0, (u8 *)p + 0x10);
+    void *p = (u8 *)arg1 + 0x10;
+    void *q = *(void **)p;
+    q = (u8 *)q + 0x10;
+    (*(void (**)(void *, void *))(*(void ***)arg0 + 20))(arg0, q);
 }
 
 extern "C" s32 fn_800D0AB4(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
 
-s32 fn_800D0B90(void) { return 0; }
+extern "C" s32 fn_800D0B90(void) { return 0; }
 
 void fn_800D0B98(void *arg0, s32 arg1) {
     *(s32 *)((char *)arg0 + 0x1C) = arg1;
