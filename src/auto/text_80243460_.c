@@ -15,6 +15,11 @@ void fn_80243468(void* arg0) {
     fn_80241820((u8*)arg0 - 0x10);
 }
 
+extern void fn_802408B0(void*);
+void fn_80243470(void* arg0) {
+    fn_802408B0((u8*)arg0 - 0x10);
+}
+
 s32 fn_80243478(s32 arg0) {
     s32 (*entry)[3] = lbl_803428B0[arg0];
     s32 count = 0;
