@@ -23,6 +23,15 @@ void *fn_8016C29C(void *arg0, int arg1) {
     return arg0;
 }
 
+void *fn_8016C598(void *arg0, int arg1, int arg2) {
+    int temp = fn_8012850C(arg1 * 16, arg2);
+    ((int *)arg0)[0] = temp;
+    ((int *)arg0)[3] = temp;
+    ((int *)arg0)[2] = arg1;
+    ((int *)arg0)[1] = 0;
+    return arg0;
+}
+
 int fn_8016C760(void *arg0) { return ((int *)arg0)[1]; }
 
 void fn_8016CEFC(void *arg0) {
