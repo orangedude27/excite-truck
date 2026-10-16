@@ -6,6 +6,12 @@
 extern float lbl_8056185C;
 extern float lbl_8055E3C8;
 extern float lbl_80561868;
+extern int fn_80161BB8(void);
+extern unsigned char lbl_8032FCB0[];
+extern int lbl_804348E8[];
+extern float lbl_80561848;
+extern int lbl_8042FDEC;
+extern int lbl_8055E304;
 
 void fn_8016212C(void) {
     fn_801613E0();
@@ -94,21 +100,23 @@ void fn_80164480(void *arg0) {
 }
 
 void fn_801647DC(void *arg0) {
-    int i;
-    int offset;
-    void *entry;
+    s32 var_r31;
+    s32 var_r30;
+    void *temp_r3;
 
-    offset = 0;
-    for (i = 0; i < *(int *)((char *)arg0 + 0x38); i++) {
-        entry = *(void **)(*(int *)((char *)arg0 + 0x34) + offset + 4);
-        if (entry != 0) {
-            if (entry != 0) {
-                ((void (**)(void *, int))(*(void **)entry))[2](entry, 1);
+    var_r31 = 0;
+    var_r30 = 0;
+    while (var_r30 < *(s32 *)((char *)arg0 + 0x38)) {
+        temp_r3 = *(void **)(*(s32 *)((char *)arg0 + 0x34) + var_r31 + 4);
+        if (temp_r3 != 0) {
+            if (temp_r3 != 0) {
+                ((void (**)(void *, s32))(*(void **)temp_r3))[2](temp_r3, 1);
             }
         }
-        offset += 8;
+        var_r31 += 8;
+        var_r30 += 1;
     }
-    *(int *)((char *)arg0 + 0x38) = 0;
+    *(s32 *)((char *)arg0 + 0x38) = 0;
 }
 
 int fn_80164868(void) {
@@ -123,8 +131,9 @@ void fn_80164870(void *arg0, s32 arg1) {
     }
 }
 
-int fn_80164894(void *arg0, void *arg1, int arg2) {
-    *(float *)arg1 = ((float *)arg0)[arg2 + 5];
+s32 fn_80164894(void *arg0, void *arg1, s32 arg2) {
+    arg0 = (char *)arg0 + (arg2 << 2);
+    *(float *)arg1 = *(float *)((char *)arg0 + 0x14);
     return 1;
 }
 
