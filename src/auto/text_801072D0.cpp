@@ -70,13 +70,12 @@ public:
 } // namespace ut
 } // namespace nw4hbm
 
-extern "C" u32 Seek__Q36nw4hbm2ut10FileStreamFlUl_80107580(nw4hbm::ut::FileStream* this_,
-                                                            s32 off,
-                                                            u32 origin) {
+extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_80107580(nw4hbm::ut::FileStream* this_,
+                                                          s32 off,
+                                                          u32 origin) {
     if (this_->Seek(off, origin) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_803285B8, 0x52, lbl_80328614);
     }
-    return 0;
 }
 
 typedef s32 (*VFun1)(void*);
