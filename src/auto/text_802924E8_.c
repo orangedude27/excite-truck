@@ -120,3 +120,5 @@ void* __dt__Q34nw4r2ef6EffectFv_80293A88(void* arg0, int arg1) {
     return arg0;
 }
 
+void fn_80293AE8(void* arg0) { *(int*)((u8*)arg0 + 0x4c2c) = 0; }
+
