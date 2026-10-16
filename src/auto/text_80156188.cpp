@@ -167,7 +167,7 @@ void fn_80156B50(void) {
 }
 
 extern "C" void fn_80157184(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v3();
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v1();
 }
 
 extern "C" void fn_80157198(void* arg0) {
