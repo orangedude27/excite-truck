@@ -139,25 +139,27 @@ void fn_801C6B70(void) {
     s32 *str0;
     f32 *ptr;
     
-    ptr = (f32 *)&lbl_80437E24[0];
+    ptr = (f32 *)&lbl_80437E24;
     val = ptr[2];
     
-    if (val < lbl_80562970) {
+    if (val >= lbl_80562970) {
         if (lbl_8055E3C8 >= val) {
             diff = lbl_8055E3C8 - val;
             if (diff <= lbl_80562978) {
-                ptr[2] = lbl_80562994;
-                ptr[0] = 0.0f;
-                ptr[1] = 0.0f;
+                f32 *ptr2;
+                ptr2 = (f32 *)&lbl_80437E24;
+                ptr2[2] = lbl_80562994;
+                ptr2[0] = 0.0f;
+                ptr2[1] = 0.0f;
             }
         }
     }
     
-    str1 = (s32 *)&lbl_80437E24[1];
+    str1 = (s32 *)lbl_80437E24[1];
     if (strlen((const char *)str1) != 0) {
         fn_8000FC8C((const char *)str1);
     }
-    str0 = (s32 *)&lbl_80437E24[0];
+    str0 = (s32 *)lbl_80437E24[0];
     if (strlen((const char *)str0) != 0) {
         fn_8000FDF0((const char *)str0);
     }
@@ -187,36 +189,42 @@ void fn_801C6AD0(s32 *arg0) {
 void fn_801C6D94(void) {
     s32 *src = lbl_80499050;
     s32 *dst = lbl_80438220;
+    s32 r30, r31, r12, r11, r10, r9, r8, r7, r6, r5, r4, r0;
     
-    dst[0] = src[0];
-    dst[1] = src[1];
-    dst[2] = src[2];
-    dst[3] = src[3];
-    dst[4] = src[4];
-    dst[5] = src[5];
-    dst[6] = src[6];
-    dst[7] = src[7];
-    dst[8] = src[8];
-    dst[9] = src[9];
-    dst[10] = src[10];
-    dst[11] = src[11];
+    r30 = *src++;
+    *dst++ = r30;
+    r31 = *src++;
+    *dst++ = r31;
+    r12 = *src++;
+    *dst++ = r12;
+    r11 = *src++;
+    *dst++ = r11;
+    r10 = *src++;
+    *dst++ = r10;
+    r9 = *src++;
+    *dst++ = r9;
+    r8 = *src++;
+    *dst++ = r8;
+    r7 = *src++;
+    *dst++ = r7;
+    r6 = *src++;
+    *dst++ = r6;
+    r5 = *src++;
+    *dst++ = r5;
+    r4 = *src++;
+    *dst++ = r4;
+    r0 = *src++;
+    *dst++ = r0;
     
-    fn_801C957C(1, src[10], src[9], src[8], src[7], src[6], src[5], src[4]);
+    fn_801C957C(1, r4, r5, r6, r7, r8, r9, r10);
 }
 
 void fn_801C7254(void *arg0) {
-    f32 *ptr = (f32 *)arg0;
-    f32 t0 = ptr[1];
-    f32 t1 = ptr[3];
-    f32 t2 = ptr[2];
-    f32 t3 = ptr[6];
-    f32 t4 = ptr[5];
-    f32 t5 = ptr[7];
-    ptr[1] = t1;
-    ptr[3] = t0;
-    ptr[2] = t3;
-    ptr[6] = t2;
-    ptr[5] = t5;
-    ptr[7] = t4;
+    f32 *p = (f32 *)arg0;
+    f32 t;
+    
+    t = p[1]; p[1] = p[3]; p[3] = t;
+    t = p[2]; p[2] = p[6]; p[6] = t;
+    t = p[5]; p[5] = p[7]; p[7] = t;
 }
 
