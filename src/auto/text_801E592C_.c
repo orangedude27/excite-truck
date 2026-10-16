@@ -8,3 +8,8 @@ extern void *fn_802C6C34(void);
 void fn_801E598C(void) {
 
 }
+
+s32 fn_801E5990(void *arg0) {
+    return ((s32 *)arg0)[2];
+}
+
