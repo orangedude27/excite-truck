@@ -248,9 +248,8 @@ extern "C" void fn_80159BB4(void* arg0) {
     (*(void (**)(void*))(*(u8**)*(void**)arg0 + 0x84))(arg0);
 }
 
-extern "C" void fn_80159E2C(Unk801577F0* arg0) {
-    arg0->v31();
-    fn_80131234(*(void**)((u8*)lbl_8032E668 + arg0->GetType() * 4));
+extern "C" void fn_80159E2C(Unk8015A368C* arg0) {
+    fn_80131234(lbl_8032E668[arg0->GetType()]);
 }
 
 extern "C" s32 fn_80159E6C(void) {
@@ -294,10 +293,10 @@ extern "C" void fn_8015A318(void* arg0) {
 
 extern "C" f32 fn_8015A368(void* arg0) {
     f32 sp8;
-    ((Unk801577F0*)arg0)->v21();
-    sp8 = *(f32*)((u8*)arg0 + 0x25C) * ((Unk801577F0*)arg0)->v18(0);
-    ((Unk801577F0*)arg0)->v35(&sp8);
-    ((Unk801577F0*)arg0)->v33();
+    ((Unk8015A368C*)arg0)->v21();
+    sp8 = *(f32*)((u8*)arg0 + 0x25C) * ((Unk8015A368C*)arg0)->v18(0);
+    ((Unk8015A368C*)arg0)->v33(&sp8);
+    ((Unk8015A368C*)arg0)->v31();
     *(s32*)((u8*)arg0 + 0x264) = 0;
     *(f32*)((u8*)arg0 + 0x25C) = lbl_80561750;
     return sp8;
