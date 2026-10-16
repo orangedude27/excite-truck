@@ -5,6 +5,7 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/bta/include/ptim.h"
+#include "revolution/BTE/gki/platform/gki_int.h"
 
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80316570[];
@@ -19,6 +20,24 @@ extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3,
 
 s32 fn_8006DF60(s32 *arg0) {
     return *arg0;
+}
+
+extern void fn_8006EBAC(void);
+extern void fn_8006EB88(void);
+extern u8 fn_8006EB80(void);
+extern u32 lbl_803946C0[];
+s32 fn_8006DF68(s32 *arg0) {
+    s32 val = arg0[-2];
+    if (val != 0) {
+        return val + 8;
+    }
+    return 0;
+}
+
+u8 fn_8006DF84(void *arg0) {
+    u16 val = *(u16 *)((u8 *)arg0 + 8);
+    u32 clz = __builtin_clz(val);
+    return (u8)(clz >> 19);
 }
 
 void fn_8006EACC(void) {
