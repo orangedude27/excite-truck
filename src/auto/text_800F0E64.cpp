@@ -448,9 +448,14 @@ extern "C" const char lbl_80326768[];
 extern "C" const char lbl_8032687C[];
 extern "C" s32 lbl_8041506C;
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
-    void *node = *(void **)((u8 *)&lbl_8041506C + 4);
-    void *end = (u8 *)&lbl_8041506C + 4;
-    while (node != end) { void *player = node; node = *(void **)node; if (!player) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326B8C, 0x23D, lbl_80326B68); UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)player - 8); }
+    void **end = (void **)((u8 *)&lbl_8041506C + 4);
+    void *node = *end;
+    while (node != end) {
+        void *player = node;
+        node = *(void **)node;
+        if (player == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326B8C, 0x23D, lbl_80326B68);
+        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)player - 8);
+    }
 }
 
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
@@ -470,4 +475,10 @@ extern "C" f32 fn_800FC5F8(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x45C); }
 extern "C" void fn_800FC600(void *arg0, f32 value) { u32 token = OSDisableInterrupts(); *(f32 *)((u8 *)arg0 + 0x460) = value; OSRestoreInterrupts(token); }
 
 extern "C" f32 fn_800FC640(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x460); }
+
+extern "C" void fn_800FC76C(void *self, s32 value) {
+    u32 token = OSDisableInterrupts();
+    *(s32 *)((u8 *)self + 0x458) = value;
+    OSRestoreInterrupts(token);
+}
 
