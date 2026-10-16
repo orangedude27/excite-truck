@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void *fn_802C86DC(void);
 extern double fn_8002EFB0();
 extern void fn_8029231C();
 extern void PSVECNormalize(void *, void *);
@@ -46,13 +47,17 @@ void fn_801F1EA8(void) {
  void *p=fn_801284F8(0x14,&lbl_8055B124);
  if(p){*(void**)p=&lbl_8033A8F8;*(int*)((char*)p+0x10)=0;}
 }
-void fn_801F1EEC(void) {
- void *p=fn_801284F8(0xC,&lbl_8033A628);
- if(p){*(void**)p=&lbl_8033A8C8;*(int*)((char*)p+8)=0;*(char*)((char*)p+4)=0;}
-}
-#pragma push
 #pragma small_data off
-#pragma pop
+extern int fn_802CAC28(void *, int);
+extern void *fn_802C86DC(void);
+extern void PSVECDotProduct(float *, float *);
+extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A808, lbl_8033A660, lbl_8033A958, lbl_8033AC58;
+extern int lbl_8055B128;
+extern float lbl_80562F40;
+void fn_801F1EEC(void) {
+    void *p = fn_801284F8(12, &lbl_8033A628);
+    if (p) { *(void **)p = &lbl_8033A8C8; *(int *)((char *)p + 8) = 0; *(char *)((char *)p + 4) = 0; }
+}
 void fn_801F1F84(void) {
     void *p = fn_801284F8(0xC, &lbl_8033A644);
     if (p != 0) {
@@ -61,6 +66,19 @@ void fn_801F1F84(void) {
         *(float *)((char *)p + 8) = f;
         *(char *)((char *)p + 4) = 0;
     }
+}
+
+#pragma small_data off
+void fn_801F2020(void) {
+    void *p = fn_801284F8(8, &lbl_8055B128);
+    if (p) { *(void **)p = &lbl_8033A808; *(int *)((char *)p + 4) = 0; }
+}
+
+#pragma small_data off
+void *fn_801F2064(void) {
+    void *p = fn_801284F8(8, &lbl_8033A660);
+    if (p) { *(void **)p = &lbl_8033A958; *(int *)((char *)p + 4) = fn_802CAC28(&lbl_8033AC58, 0); }
+    return p;
 }
 
 #pragma push
@@ -212,6 +230,40 @@ void fn_801F3B00(void *arg0, int arg1) {
     *(char *)((char *)arg0 + 4) = 1;
 }
 
+void fn_801F3C14(int unused, unsigned char *arg0) {
+    unsigned char *p = arg0 + 0x18;
+    int i;
+    for (i=0; i<3; i++, p+=0xC) {
+        unsigned char t;
+        t=p[0]; p[0]=p[3]; p[3]=t;
+        t=p[1]; p[1]=p[2]; p[2]=t;
+        t=p[4]; p[4]=p[7]; p[7]=t;
+        t=p[5]; p[5]=p[6]; p[6]=t;
+        t=p[8]; p[8]=p[0xB]; p[0xB]=t;
+        t=p[9]; p[9]=p[0xA]; p[0xA]=t;
+    }
+    {
+        unsigned char t=arg0[0x14];
+        arg0[0x14]=arg0[0x17]; arg0[0x17]=t;
+        t=arg0[0x15]; arg0[0x15]=arg0[0x16]; arg0[0x16]=t;
+    }
+}
+
+void fn_801F3CAC(void *arg0, void *arg1) {
+    void *node = arg1;
+    while (node != 0) {
+        float value = *(float *)((char *)node + 0x30) * fn_801E7E18();
+        char sp8[0x24];
+        char sp2c[4];
+        fn_80144DC8(sp8);
+        fn_80015EB0(sp8, value);
+        fn_80015B20(sp8, sp8, (char *)node + 0x34);
+        fn_80144DAC(sp2c, (char *)node + 0x20);
+        fn_802C744C(*(int *)((char *)node + 4), sp8);
+        node = *(void **)((char *)node + 0xC);
+    }
+}
+
 void fn_801F3E60(void) {
 
 }
@@ -249,7 +301,7 @@ extern int fn_802CD33C(int, int, int);
 #pragma small_data off
 void *fn_801F3EF8(void *arg0, int arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8033A7A0;
+        *(void **)arg0 = (void *)&lbl_8033A7A0;
         if (arg1 > 0) fn_80128668();
     }
     return arg0;
@@ -264,6 +316,20 @@ void fn_801F3F44(int arg0, volatile unsigned char *arg1) {
 }
 void fn_801F3F88(void) {
 
+}
+
+void fn_801F41CC(int unused, unsigned char *arg0) {
+    unsigned char t;
+    t=arg0[0x2c]; arg0[0x2c]=arg0[0x2f]; arg0[0x2f]=t;
+    t=arg0[0x2d]; arg0[0x2d]=arg0[0x2e]; arg0[0x2e]=t;
+    t=arg0[0x30]; arg0[0x30]=arg0[0x33]; arg0[0x33]=t;
+    t=arg0[0x31]; arg0[0x31]=arg0[0x32]; arg0[0x32]=t;
+    t=arg0[0x34]; arg0[0x34]=arg0[0x37]; arg0[0x37]=t;
+    t=arg0[0x35]; arg0[0x35]=arg0[0x36]; arg0[0x36]=t;
+    t=arg0[0x38]; arg0[0x38]=arg0[0x3b]; arg0[0x3b]=t;
+    t=arg0[0x39]; arg0[0x39]=arg0[0x3a]; arg0[0x3a]=t;
+    t=arg0[0x3c]; arg0[0x3c]=arg0[0x3f]; arg0[0x3f]=t;
+    t=arg0[0x3d]; arg0[0x3d]=arg0[0x3e]; arg0[0x3e]=t;
 }
 
 void fn_801F4280(void) {
