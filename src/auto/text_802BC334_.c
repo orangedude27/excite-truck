@@ -47,6 +47,20 @@ void fn_802BD0F4(void *arg0) {
     }
 }
 
+void *fn_802BD194(void *arg0, const char *arg1) {
+    unsigned int count = *(unsigned int *)arg0;
+    char *base = *(char **)((char *)arg0 + 4);
+    unsigned int i = 0;
+    unsigned int offset = 0;
+    while (i < count) {
+        if (strcmp(base + offset, arg1) == 0)
+            return base + i * 0x38;
+        offset += 0x38;
+        i++;
+    }
+    return 0;
+}
+
 void *fn_801284F8(int, int);
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
@@ -54,9 +68,10 @@ void fn_802BD414(int arg0, volatile int *arg1) {
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
         int first = arg1[0];
-        result[1] = 0;
-        result[0] = arg1[1];
+        int second = arg1[1];
+        result[0] = second;
         result[2] = first;
+        result[1] = 0;
         result[1] = result[1] + arg1[0];
     }
 }
