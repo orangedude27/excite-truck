@@ -188,6 +188,13 @@ extern "C" void fn_80219870(void *arg0, s32 arg1, s32 arg2, char *arg3, s32 arg4
 
 extern "C" s32 fn_8021AB88(void) { return 0; }
 
+extern "C" void fn_8021ACC0(void *arg0, s32 arg1) {
+    fn_802C3034(arg1);
+    fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
+    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250)) > 0)
+        fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
+}
+
 extern "C" void fn_8021915C(void*, u32);
 extern "C" s32 fn_80128668(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
