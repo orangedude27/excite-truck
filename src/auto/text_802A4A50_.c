@@ -28,7 +28,7 @@ s32 fn_802CAC54(s32);
 s32 fn_802A597C(void);
 s32 fn_8028E398(void);
 s32 fn_802A5B8C(s32);
-s32 fn_802A69D8(void *, s32);
+void *fn_802A69D8(void *, s32);
 s32 fn_800167F4(void);
 s32 fn_802A5384(s32);
 s32 fn_802A53B0(void);
