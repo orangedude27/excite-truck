@@ -31,3 +31,8 @@ void* fn_802C9C40(void) {
     return lbl_8055FC60;
 }
 
+extern void *lbl_8055FC64;
+void* fn_802C9C48(void) {
+    return lbl_8055FC64;
+}
+
