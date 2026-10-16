@@ -233,10 +233,9 @@ extern "C" void fn_80215424(void) {
 }
 
 extern "C" void fn_80215428(void *arg0) {
-    u8 flag = *((u8 *)arg0 + 0x1A);
-    *((u8 *)arg0 + 0x19) = 1;
-    if (flag != 0) {
-        *((u8 *)arg0 + 0x234) = 1;
+    *(u8 *)((char *)arg0 + 0x19) = 1;
+    if (*(u8 *)((char *)arg0 + 0x1A) != 0) {
+        *(u8 *)((char *)arg0 + 0x234) = 1;
     }
 }
 
