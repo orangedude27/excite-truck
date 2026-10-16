@@ -34,6 +34,19 @@ s32 fn_80215F5C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern s32 fn_802C3034(s32);
+extern s32 fn_802C3424(s32, s32, s32, s32, s32);
+extern s32 lbl_8055FBDC;
+extern s32 fn_802E4A10(void);
+extern char lbl_8033D768;
+extern char lbl_8033D774;
+char *fn_80215F9C(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 0x10) != 0) {
+        return &lbl_8033D774;
+    }
+    return &lbl_8033D768;
+}
+
 void fn_80215FBC(void *arg0) {
     *(u32 *)((u8 *)arg0 + 0x10) ^= 1;
 }
@@ -47,6 +60,8 @@ u32 fn_80215FDC(void) { return 1; }
 u32 fn_80215FE4(void) { return 1; }
 
 u8 fn_80215FF4(u8 *arg0) { return *arg0; }
+
+u32 fn_80216054(void) { return 1; }
 
 void fn_8021676C(void) {
 
