@@ -19,4 +19,5 @@ extern char *lbl_8055F0C0;
 void fn_80236900(void) {
     lbl_8055F0C0[0x21] = 0;
 }
-
+extern void fn_80237AA0(void);
+extern void fn_80236960(void);
