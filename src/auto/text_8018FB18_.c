@@ -162,6 +162,11 @@ int fn_80191108(void *arg0, int arg1) {
     return result + ((int (**)(void *, int))(*(void ***)*(void **)((char *)base + 8)))[6](*(void **)((char *)base + 8), amount + result);
 }
 
+extern int lbl_8055A480;
+extern void *memset(void *, int, unsigned int);
+extern int fn_801331C4(void *, void *);
+extern char lbl_80332FC4;
+extern int fn_80128668(void);
 void fn_801914F8(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 4);
     ((void (**)(void))(*(void ***)obj))[10]();
@@ -196,14 +201,39 @@ void fn_80191584(void *arg0) {
     *(int *)((char *)arg0 + 8) = -1;
 }
 
+void fn_801915FC(void *arg0, void *arg1) {
+    void *obj;
+    *(void **)((char *)arg0 + 0x34) = arg1;
+    *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x1EC);
+    ((void (**)(void *))*(void **)arg0)[9](arg0);
+    *(float *)((char *)arg0 + 0x10) = lbl_8056208C;
+    *(float *)((char *)arg0 + 0x14) = lbl_8056208C;
+    *(float *)((char *)arg0 + 0x18) = lbl_8056208C;
+    memset((char *)arg0 + 0x20, 0, 0x10);
+    *(float *)((char *)arg0 + 0x1C) = lbl_80562090;
+    obj = *(void **)((char *)arg0 + 0x38);
+    ((void (**)(void *))*(void **)obj)[28](obj);
+    fn_801331C4(&lbl_8055A480, (char *)arg0 + 0x1C);
+}
+
 void fn_80191688(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    ((void (**)(void))(*(void ***)obj))[28]();
+    register void **vtable;
+    register void *obj = *(void **)((char *)arg0 + 4);
+    vtable = *(void ***)obj;
+    ((void (*)(void))vtable[28])();
 }
 
 void fn_8019169C(void *arg0, void *arg1) {
     *(void **)((char *)arg0 + 0x34) = arg1;
     *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x1EC);
+}
+
+void *fn_801916AC(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(int*)((char*)arg0 + 0x38) = 0;
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
 }
 
 void fn_80192BE4(void) {
