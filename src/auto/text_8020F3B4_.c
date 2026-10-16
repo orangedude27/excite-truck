@@ -17,8 +17,9 @@ extern long lbl_8055EEC4;
 long fn_8020F3B4(void) { return -1; }
 
 long fn_8020F3BC(long arg0, long arg1, long arg2) {
-    fn_801345D8(arg1, arg2, &lbl_8055B664, arg0);
-    return arg1;
+    register long result = arg1;
+    fn_801345D8(result, arg2, &lbl_8055B664, arg0);
+    return result;
 }
 
 #pragma dont_inline on
@@ -68,6 +69,28 @@ void fn_80210510(void) {
     fn_802EC1C0();
 }
 
+extern long fn_80145E70(void *);
+extern long fn_802090D4(void *);
+extern long fn_80209110(void *);
+extern long fn_8000DA10(void);
+extern long lbl_8033C9BC;
+extern long lbl_8033C9C8;
+extern long lbl_8055EED4;
+extern long lbl_8055EEF0;
+extern long lbl_8055B658;
+void fn_802108C8(void) {
+    lbl_8055EED4 = fn_80145E70(&lbl_8033C9BC);
+    lbl_8055EEF0 = fn_802090D4(&lbl_8033C9C8);
+}
+
+void fn_80210904(void) {
+    fn_80209110(&lbl_8055EEF0);
+    if (lbl_8055EED4 != 0) {
+        (*(void (**)(long, long))(*(long *)lbl_8055EED4 + 8))(lbl_8055EED4, 1);
+    }
+    lbl_8055EED4 = 0;
+}
+
 extern void *lbl_8055EED8;
 extern void *lbl_8055EEDC;
 void AXFXSetHooks_80210950(void *arg0, void *arg1) {
@@ -79,4 +102,13 @@ extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
 extern signed char lbl_8055EEF5;
 extern signed char lbl_8055EEF6;
-
+extern struct Unk_804900AC {
+    long *m_entries;
+    long m_count;
+    long m_capacity;
+} lbl_804900AC;
+extern long fn_802EC104(long);
+extern void fn_8020F730(void);
+extern long fn_8020F9F4(void);
+extern int stricmp(const char *, const char *);
+extern int fn_8002B1D8(const char *, const char *, int);
