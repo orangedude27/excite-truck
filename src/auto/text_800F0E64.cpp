@@ -80,7 +80,7 @@ extern "C" s32 fn_800F81EC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_800F822C(s32 arg0) {
+extern "C" void fn_800F822C(s32 arg0) {
     detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(arg0 - 0xC);
 }
 
