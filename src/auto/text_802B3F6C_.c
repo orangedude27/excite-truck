@@ -11,6 +11,19 @@ extern unsigned short lbl_8055F9CC;
 extern int fn_802B3FC4(void *);
 extern int lbl_8055CE00;
 extern int lbl_804BE248[128];
+void *fn_802B3F6C(void *arg0, int arg1) {
+    if (arg0 != NULL) {
+        if (arg0 != NULL) {
+            *(int *)arg0 = 0;
+            *((int *)arg0 + 1) = 0;
+            *((int *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 int fn_802B40B0(int arg0, int arg1) {
     int p;
     if (arg0 < 0 || (unsigned int)arg0 >= 0x80)
