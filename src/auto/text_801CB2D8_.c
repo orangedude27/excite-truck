@@ -59,6 +59,12 @@ void fn_801CB808(void) {
     fn_801CDDCC();
 }
 
+extern void fn_801CE6F8(void);
+void fn_801CB844(void) {
+    if (fn_80019BA8() || fn_80161C38()) return;
+    fn_801CE6F8();
+}
+
 void fn_801CB8FC(void) {
     fn_801CE8CC();
 }
