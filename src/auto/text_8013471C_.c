@@ -49,6 +49,12 @@ void fn_80134A88(void) {
 
 }
 
+void fn_80134B50(void) {
+    extern void *lbl_8055E0D4;
+    extern void fn_80136F08(void *);
+    fn_80136F08(lbl_8055E0D4);
+}
+
 f32 fn_80134E00(void) {
     if ((fn_801769A8() >> 8) & 1) {
         return fn_80134D78();
@@ -74,7 +80,8 @@ f32 fn_80134E34(f32 arg0) {
         f30 = arg0;
     }
     f31 = fn_80134C1C();
-    return arg0 - f30 * f31 * fn_80134D20();
+    fn_80134D20();
+    return arg0 - f30 * f31;
 }
 
 void *fn_80134E90(void) {
