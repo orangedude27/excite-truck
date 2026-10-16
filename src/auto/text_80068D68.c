@@ -17,7 +17,7 @@ extern void fn_80071450(void *);
 extern void fn_80070954(u32 code, void *msg, u16 param);
 extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
 extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
-extern u8 lbl_803C4828;
+extern u8 lbl_803C4828[];
 extern void rfc_send_fcon(void *, s32, void *);
 extern void rfc_send_fcon_80093FDC(void *, s32);
 extern void PORT_FlowInd(void *, s32, s32);
@@ -35,10 +35,8 @@ extern void fn_8006EB88(void);
 extern u8 fn_8006EB80(void);
 extern u32 lbl_803946C0[];
 s32 fn_8006DF68(s32 *arg0) {
-    if (arg0[-2] != 0) {
-        return arg0[-2] + 8;
-    }
-    return 0;
+    s32 val = arg0[-2];
+    return val ? val + 8 : 0;
 }
 
 u8 fn_8006DF84(void *arg0) {
@@ -228,6 +226,26 @@ void fn_800911DC(void) {
 
 void fn_800932D8(void) {
 
+}
+
+void rfc_process_fcon(void *arg0, s32 arg1) {
+    if (arg1 != 0) {
+        *(u8 *)((u8 *)&lbl_803C4828 + 0x64) = 0;
+        rfc_send_fcon(0, 0, &lbl_803C4828);
+        if (*(u8 *)((u8 *)arg0 + 0x73) == 0) {
+            PORT_FlowInd(arg0, 0, 1);
+        }
+    }
+}
+
+void rfc_process_fcoff(void *arg0, s32 arg1) {
+    if (arg1 != 0) {
+        *(u8 *)((u8 *)&lbl_803C4828 + 0x64) = 1;
+        if (*(u8 *)((u8 *)arg0 + 0x73) == 0) {
+            PORT_FlowInd(arg0, 0, 0);
+        }
+        rfc_send_fcon_80093FDC(arg0, 0);
+    }
 }
 
 void fn_8009BFBC(void) {
