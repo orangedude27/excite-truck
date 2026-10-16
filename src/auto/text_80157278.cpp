@@ -47,7 +47,7 @@ extern f32 lbl_8056177C;
 
 extern "C" s32 lbl_8032E540[];
 extern "C" s32 fn_801577F0(Unk801577F0* arg0) {
- return lbl_8032E540[arg0->GetType()];
+    return lbl_8032E540[arg0->GetType()];
 }
 
 extern "C" s32 fn_8015782C(s32* arg0, s32 arg1) {
