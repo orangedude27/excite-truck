@@ -29,6 +29,12 @@ extern s32 fn_802B5D2C(const char *, s32);
 extern const char lbl_8055CE38[];
 extern const char lbl_8055CE40[];
 extern const char lbl_8055CE48[];
+extern const char lbl_8055CE50[];
+extern s32 lbl_8055FA28;
+extern float lbl_8055FA08;
+extern float lbl_80564C5C;
+extern s32 fn_802B32E0(s32);
+extern s32 fn_802B4E44(s32);
 extern s32 sscanf(const char *, const char *, ...);
 s32 fn_802B5DD0(s32 arg0) {
     s32 temp_r31;
