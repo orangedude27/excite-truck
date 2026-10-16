@@ -124,6 +124,20 @@ s32 fn_8024A6A4(s32 *arg0) {
     return result;
 }
 
+void *fn_8024AC54(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        if ((unsigned int)arg0 + 0x18 != 0) {
+            if ((unsigned int)arg0 + 0x18 != 0) {
+                *(int *)((char *)arg0 + 0x18) = 0;
+                *(int *)((char *)arg0 + 0x1C) = 0;
+                *(int *)((char *)arg0 + 0x20) = 0;
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 s32 fn_8024B874(s32 arg0) { return arg0 + 0x64; }
 
 s32 fn_8024B8CC(s32 arg0) {
