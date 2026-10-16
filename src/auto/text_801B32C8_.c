@@ -55,7 +55,7 @@ void fn_801B3B28(void) {
     lbl_8055E6C0 = 0;
 }
 
-#pragma scheduling on
+#pragma scheduling off
 void* fn_801B3B70(void* arg0) {
     fn_8002F53C((u8*)arg0 + 0x2FC, &fn_801B3C64, &fn_801B3BD4, 0x2C, 0x10);
     fn_801B3FD8(arg0);
