@@ -20,15 +20,22 @@ int fn_8018FD38(void);
 extern void *lbl_804340C0[];
 extern void **lbl_8055E434[];
 extern int lbl_8055E438;
-extern int lbl_8055E468;
+extern unsigned char lbl_8055E468;
+long fn_802E2C20(void);
+extern long lbl_8055E464;
+void fn_80177814(long *arg0) {
+    *arg0 = fn_802E2C20() % 30000;
+    arg0[1] = fn_802E2C20() % 30000;
+}
+
 void fn_801778C0(void) {
     void **var_r31 = &lbl_804340C0[0];
     void **var_r28;
-    int var_r30;
-    int var_r29;
+    int var_r30 = 0;
+    int var_r29 = 0;
 
     lbl_8055E468 = 0;
-    for (var_r29 = 0, var_r30 = 0; var_r29 < lbl_8055E438; var_r29++, var_r30 += 4) {
+    for (; var_r29 < lbl_8055E438; var_r29++, var_r30 += 4) {
         var_r28 = lbl_8055E434[var_r30];
         if (((int (*)(void **))(*(void ***)*var_r28 + 0x44))(var_r28) != 0 &&
             ((int (*)(void **))(*(void ***)*var_r28 + 0x40))(var_r28) != 0) {
@@ -44,6 +51,25 @@ long fn_80177980(void) {
 
 long fn_80177988(void) {
     return 1;
+}
+
+void fn_80177990(void) {
+    float temp_f31;
+    float *var_r31;
+    float *var_r30;
+    int var_r29;
+
+    temp_f31 = lbl_80561B48;
+    var_r31 = &lbl_80430700[0];
+    var_r30 = &lbl_804305D4[0];
+    for (var_r29 = 0; var_r29 < 0x4b; var_r29++) {
+        *var_r31 = temp_f31;
+        *var_r30 = temp_f31;
+        fn_801DCEC8(var_r29, temp_f31);
+        fn_801DCEDC(var_r29, lbl_80561B48);
+        var_r31++;
+        var_r30++;
+    }
 }
 
 void fn_80177A18(void) {
@@ -62,7 +88,7 @@ void fn_80177A54(void) {
     }
     switch (lbl_8055E3C0) {
     case 1:
-        if (lbl_8055E3BD == 0) {
+        if ((int)lbl_8055E3BD == 0) {
             fn_80177A18();
         }
         lbl_8055E3BD = 1;
