@@ -13,6 +13,13 @@ void fn_80134994(void) {
 
 }
 
+void fn_80134998(void) {
+    fn_8013BC34();
+    fn_80166898();
+    fn_80137904();
+    fn_8013A1F0();
+}
+
 void fn_80134A88(void) {
 
 }
@@ -53,6 +60,10 @@ void fn_80135194(void) {
 
 void fn_80135198(void) {
 
+}
+
+s32 fn_8013519C(s32 arg0) {
+    return fn_802E317C(lbl_8032BD98, arg0);
 }
 
 extern const char lbl_8032BD98[];
