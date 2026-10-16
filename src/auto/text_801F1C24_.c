@@ -39,32 +39,23 @@ void fn_801F1E24(void) {
         *(int *)((char *)p + 8) = 1;
     }
 }
+#pragma push
+#pragma small_data off
+#pragma pop
 void fn_801F1EA8(void) {
-    void *p = fn_801284F8(0x14, &lbl_8055B124);
-    if (p != 0) {
-        *(void **)p = &lbl_8033A8F8;
-        *(int *)((char *)p + 0x10) = 0;
-    }
+ void *p=fn_801284F8(0x14,&lbl_8055B124);
+ if(p){*(void**)p=&lbl_8033A8F8;*(int*)((char*)p+0x10)=0;}
 }
 void fn_801F1EEC(void) {
-    void *p = fn_801284F8(0xC, &lbl_8033A628);
-    if (p != 0) {
-        *(void **)p = &lbl_8033A8C8;
-        *(int *)((char *)p + 8) = 0;
-        *(char *)((char *)p + 4) = 0;
-    }
+ void *p=fn_801284F8(0xC,&lbl_8033A628);
+ if(p){*(void**)p=&lbl_8033A8C8;*(int*)((char*)p+8)=0;*(char*)((char*)p+4)=0;}
 }
 #pragma push
 #pragma small_data off
 #pragma pop
 void fn_801F1F84(void) {
-    void *p = fn_801284F8(0xC, &lbl_8033A644);
-    if (p != 0) {
-        float f = lbl_80562F40;
-        *(void **)p = &lbl_8033A868;
-        *(float *)((char *)p + 8) = f;
-        *(char *)((char *)p + 4) = 0;
-    }
+ void *p=fn_801284F8(0xC,&lbl_8033A644);
+ if(p){*(void**)p=&lbl_8033A868;*(float*)((char*)p+8)=lbl_80562F40;*(char*)((char*)p+4)=0;}
 }
 void fn_801F224C(void) {
     void *p = fn_801284F8(8, &lbl_8033A6A0);
@@ -220,7 +211,6 @@ extern int lbl_8033A7A0;
 extern int fn_802CD33C(int, int, int);
 #pragma push
 #pragma small_data off
-#pragma pop
 void *fn_801F3EF8(void *arg0, int arg1) {
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033A7A0;
@@ -228,15 +218,13 @@ void *fn_801F3EF8(void *arg0, int arg1) {
     }
     return arg0;
 }
-#pragma push
-#pragma small_data off
 #pragma pop
-void fn_801F3F44(int arg0, unsigned char *arg1) {
-    unsigned char t0, t1, t2, t3;
-    t0=arg1[0x2C]; arg1[0x2C]=arg1[0x2F]; arg1[0x2F]=t0;
-    t1=arg1[0x2D]; arg1[0x2D]=arg1[0x2E]; arg1[0x2E]=t1;
-    t2=arg1[0x30]; arg1[0x30]=arg1[0x33]; arg1[0x33]=t2;
-    t3=arg1[0x31]; arg1[0x31]=arg1[0x32]; arg1[0x32]=t3;
+void fn_801F3F44(int arg0, volatile unsigned char *arg1) {
+    unsigned char t;
+    t=arg1[0x2C]; arg1[0x2C]=arg1[0x2F]; arg1[0x2F]=t;
+    t=arg1[0x2D]; arg1[0x2D]=arg1[0x2E]; arg1[0x2E]=t;
+    t=arg1[0x30]; arg1[0x30]=arg1[0x33]; arg1[0x33]=t;
+    t=arg1[0x31]; arg1[0x31]=arg1[0x32]; arg1[0x32]=t;
 }
 void fn_801F3F88(void) {
 
