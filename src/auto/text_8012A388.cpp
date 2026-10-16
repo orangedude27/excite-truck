@@ -10,6 +10,11 @@ extern "C" void fn_8012A46C(void) {
 
 }
 
+extern "C" void fn_8012AC28(s32, s32);
+extern "C" void fn_8012AC98(s32 arg0) {
+    fn_8012AC28(arg0, 0);
+}
+
 extern "C" void fn_8012B324(void) {
 
 }
