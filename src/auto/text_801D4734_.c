@@ -125,7 +125,7 @@ void fn_801D52A4(void *arg0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
     }
 }
-
+#pragma scheduling reset
 s32 fn_801D544C(void) { return 0; }
 
 #pragma scheduling reset
@@ -133,10 +133,35 @@ s32 fn_801D544C(void) { return 0; }
 extern u8 lbl_804422F0[];
 extern f32 lbl_80562B04;
 void fn_801D5454(void *arg0) {
-    *(f32 *)(lbl_804422F0 + 0x14) = *(f32 *)arg0;
-    *(f32 *)(lbl_804422F0 + 0x18) = *(f32 *)((u8 *)arg0 + 4);
-    *(f32 *)(lbl_804422F0 + 0x1C) = *(f32 *)((u8 *)arg0 + 8);
-    *(f32 *)(lbl_804422F0 + 4) = *(f32 *)(lbl_804422F0 + 4) + lbl_80562B04;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 old;
+
+    x = *(f32 *)arg0;
+    old = *(f32 *)(lbl_804422F0 + 4);
+    y = *(f32 *)((u8 *)arg0 + 4);
+    *(f32 *)(lbl_804422F0 + 4) = old + lbl_80562B04;
+    z = *(f32 *)((u8 *)arg0 + 8);
+    *(f32 *)(lbl_804422F0 + 0x14) = x;
+    *(f32 *)(lbl_804422F0 + 0x18) = y;
+    *(f32 *)(lbl_804422F0 + 0x1C) = z;
+}
+
+extern void *lbl_804423A4[];
+extern f32 lbl_80562ADC, lbl_80562AE0, lbl_80562B08;
+void fn_801D5730(void) {
+    s32 count, index, i; void *p;
+    count = *(s32 *)((u8 *)lbl_804423A4 + 4); index = count * 4; i = count;
+    while (i > 0) {
+        i--; index -= 4; p = *(void **)((u8 *)lbl_804423A4[0] + index); fn_801D4F2C(p);
+        if (i >= 0 && i < *(s32 *)((u8 *)lbl_804423A4 + 4)) {
+            count = *(s32 *)((u8 *)lbl_804423A4 + 4);
+            if (i != count - 1) *(void **)((u8 *)lbl_804423A4[0] + index) = *(void **)((u8 *)lbl_804423A4[0] + count * 4 - 4);
+            *(s32 *)((u8 *)lbl_804423A4 + 4) = count - 1;
+        }
+        if (p != 0) ((void (**)(void *, s32))*(void **)p)[2](p, 1);
+    }
 }
 
 void *__AXFXGetLfoSinTable_801D64F4(void) {
@@ -241,6 +266,10 @@ void *fn_801D6900(void *arg0, s32 arg1) {
 extern u8 lbl_80338868[];
 void *fn_801D6C28(void) {
     return lbl_80338868;
+}
+
+s32 fn_801D6C34(void *arg0) {
+    return ((s32 *)arg0)[1];
 }
 
 s32 fn_801D6C3C(void *arg0) {
