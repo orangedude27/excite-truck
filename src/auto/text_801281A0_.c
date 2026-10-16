@@ -131,6 +131,8 @@ const char* __AXGetStudio_80129164(void) {
 
 s32 fn_8012919C(void *arg0) { return ((s32 *)arg0)[2]; }
 
+s32 fn_801291A4(void *arg0) { return ((s32 *)arg0)[3] - ((s32 *)arg0)[2]; }
+
 s32 fn_801291B4(void *arg0) { return ((s32 *)arg0)[3]; }
 
 void fn_801291BC(void) {
