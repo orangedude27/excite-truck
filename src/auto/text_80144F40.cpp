@@ -15,6 +15,27 @@ extern "C" void fn_80146200(void) {
 extern "C" void fn_8014630C(void) {
 }
 
+extern "C" void fn_8014647C(void *);
+extern "C" void fn_8014647C(void *arg0) {
+    ((s32 *)arg0)[0] = 0;
+    ((s32 *)arg0)[1] = 0;
+    ((s32 *)arg0)[2] = 0;
+}
+
+extern "C" void *fn_80146490(void *arg0) {
+    void *p = arg0;
+    if (p != NULL) {
+        if (((s32 *)p)[0x28 / 4] == 0) {
+            if (p != NULL) {
+                void *fn = *(void **)p;
+                ((void * (*)(void *, s32))((void **)fn)[2])(p, 1);
+            }
+            return NULL;
+        }
+    }
+    return p;
+}
+
 extern "C" void fn_80128668(void *);
 extern "C" void fn_80146584(void *arg0) {
     void *buf = *(void **)arg0;
