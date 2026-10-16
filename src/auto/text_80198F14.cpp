@@ -53,17 +53,27 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void fn_8019EBE0(void* arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
-                            s32 arg5, s32 arg6) {
-    s32 obj = *(s32*)((u8*)arg0 + 4);
+extern "C" void fn_8019EBE0(void* self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
+    s32 v1 = (s32)self;
+    s32 v2 = a;
+    s32 v3 = b;
+    s32 v4 = c;
+    s32 v5 = d;
+    s32 v6 = e;
+    s32 v7 = f;
+    s32 obj = *(s32*)((u8*)self + 4);
+
     if (obj != 0) {
-        fn_8017B5D4(obj, (s32)arg0, arg1, arg2, arg3, arg4, arg5);
+        fn_8017B5D4(obj, v1, v2, v3, v4, v5, v6);
         return;
     }
-    obj = *(s32*)((u8*)arg0 + 8);
+
+    obj = *(s32*)((u8*)self + 8);
     if (obj != 0) {
-        fn_801A4A10(obj, arg3, arg6);
+        fn_801A4A10(obj, v4, v7);
     }
+
+    return (void)v1, (void)v2, (void)v3, (void)v5, (void)v6;
 }
 
 extern "C" void fn_8019EC84(void* this_) {
@@ -267,6 +277,10 @@ extern "C" f32 fn_801A511C(void *arg0) {
 
 extern "C" float fn_801A5124(void* arg0) {
     return *(float*)((char*)arg0 + 0x28);
+}
+
+extern "C" s32 fn_801A512C(void) {
+    return 0;
 }
 
 extern "C" s32 fn_801A5134(s32 arg0, s32 arg1) {
