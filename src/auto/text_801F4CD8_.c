@@ -59,15 +59,12 @@ extern void fn_8012F9E8(void *, void *, void *);
 extern void fn_80128670(int);
 int fn_801F4E44(const char *arg0) {
     int i;
-    char **list;
     i = 0;
-    list = lbl_8033AC9C;
     while (i < 5) {
-        if (stricmp(arg0, *list) == 0) {
+        if (stricmp(arg0, lbl_8033AC9C[i]) == 0) {
             return i + 1;
         }
         i++;
-        list++;
     }
     fn_802E317C(lbl_8033AD08, arg0);
     return 0;
@@ -86,6 +83,17 @@ void fn_801F6358(void *arg0) {
     }
 }
 
+#pragma dont_inline on
+void fn_801F639C(void *arg0) {
+    int temp_r4 = *(int*)((char*)arg0 + 0x1C);
+    if (temp_r4 != 0) {
+        fn_80128670(temp_r4 - 0x10);
+    }
+    fn_80128670(*(int*)((char*)arg0 + 0x14));
+    fn_801F6358(arg0);
+    fn_802CAC54(*(int*)((char*)arg0 + 0x24));
+}
+#pragma dont_inline off
 void fn_801F6728(void *arg0) {
     int i;
     int offset;
