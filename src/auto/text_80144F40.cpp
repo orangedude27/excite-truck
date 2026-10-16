@@ -44,6 +44,8 @@ void fn_802E3AD0(s32, const char *, ...);
 }
 
 extern "C" f32 lbl_805615F0;
+extern "C" f32 fn_801452B4(f32 arg0) { f32 result = lbl_805615F0 - arg0; result = result + lbl_8055E204; return result; }
+
 extern "C" f32 fn_801452C8(f32 arg0) {
     extern f32 lbl_805615E0;
     return lbl_805615E0 + arg0;
@@ -54,11 +56,12 @@ extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
 extern "C" f32 fn_801452E0(void *arg0, const char *arg1) {
     extern char *strchr(const char *, int);
     extern double atof(const char *);
+    f64 temp_f31;
     const char *text = ((const char *(*)(void *, const char *))(*(void ***)arg0)[5])(arg0, arg1);
     const char *slash = strchr(text, '/');
     if (slash != 0) {
-        f64 denominator = atof(slash + 1);
-        return (f32)(atof(text) / denominator);
+        temp_f31 = atof(strchr(text, '/') + 1);
+        return (f32)(atof(text) / temp_f31);
     }
     return (f32)atof(text);
 }
