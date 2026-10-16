@@ -43,7 +43,7 @@ extern "C" void fn_801F92A8(void) {
 
 }
 
-extern "C" void fn_801F9440(F9List *list, F9List *node) {
+extern "C" void fn_801F9440(F9Node *list, F9Node *node) {
     node->next2 = list->next2;
     list->next2 = node;
 }
