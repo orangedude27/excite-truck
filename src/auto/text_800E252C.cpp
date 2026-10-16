@@ -277,10 +277,10 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
 
 extern "C" void fn_800E519C(void *arg0) {
     unsigned int level = OSDisableInterrupts();
-    u8 flags = *(u8 *)((char *)arg0 + 0x123);
-    *(u8 *)((char *)arg0 + 0x11D) = 1;
-    *(u8 *)((char *)arg0 + 0x11F) = 0;
-    *(u8 *)((char *)arg0 + 0x123) = flags | 1;
+    u8 *p = (u8 *)arg0;
+    p[0x11D] = 1;
+    p[0x11F] = 0;
+    p[0x123] |= 1;
     OSRestoreInterrupts(level);
 }
 
