@@ -200,6 +200,10 @@ extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6de
     *(void **)((u8 *)*arg0 + 8) = arg0;
 }
 
+extern "C" void fn_800F83C8(void* arg0) {
+    Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl((u8*)arg0 + 0x1C);
+}
+
 extern "C" void fn_800F8520(void *arg0) {
     s32 *p = (s32 *)((u8 *)arg0 + 4);
     *(s32 *)((u8 *)arg0 + 4) = 0;
