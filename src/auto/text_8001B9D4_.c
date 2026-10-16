@@ -27,6 +27,11 @@ void fn_8001BA74(void) {
     fn_8001C960();
 }
 
+void fn_8001BA78(void) {
+    lbl_8055D5C8 = 1;
+    fn_8001C9C4();
+}
+
 void fn_8001BBB4(void) {
     fn_8001D020();
 }
