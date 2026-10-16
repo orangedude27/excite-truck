@@ -88,6 +88,10 @@ void fn_802C5720(int arg0) {
 
 void fn_802C57B0(void) { }
 
+u16 fn_802C5A50(int arg0, int arg1) {
+    return (u16)((arg0 << 8) | arg1);
+}
+
 void fn_802C6074(s32 *arg0) {
     *arg0 = 0;
 }
