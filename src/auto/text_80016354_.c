@@ -4,6 +4,9 @@
 extern unsigned char lbl_803577F0[];
 extern unsigned char lbl_80357960[];
 extern void *fn_80016474(void);
+extern unsigned char *lbl_8055D544;
+extern int stricmp(const char *, const char *);
+extern int fn_80016510(int);
 
 extern void *lbl_8055D54C;
 void* fn_80016508(void) {
@@ -46,6 +49,33 @@ void fn_8001683C(void *arg0, int arg1) {
     *(int *)(lbl_803577F0 + arg1 * 0x5C + 0x4C) = *(int *)((char *)temp + 0x4C);
     *(int *)(lbl_803577F0 + arg1 * 0x5C + 0x50) = *(int *)((char *)temp + 0x50);
     *(int *)(lbl_80357960 + arg1 * 0xA8 + 4) = -1000;
+}
+
+extern unsigned char *lbl_8055D540;
+extern unsigned char *lbl_8055D544;
+void fn_800168B0(int arg0, int arg1) {
+    int i;
+    unsigned char *p;
+    for (i = 0, p = lbl_803577F0; i < (int)lbl_8055D554; i++, p += 0x5C) {
+        if (arg0 == *(int *)(p + 4)) *(int *)(p + 0x50) = arg1;
+    }
+    for (i = 0, p = lbl_8055D540; i < (int)lbl_8055D54C; i++, p += 0x5C) {
+        if (arg0 == *(int *)(p + 4)) {
+            *(int *)(lbl_8055D540 + i * 0x5C + 0x50) = arg1;
+            return;
+        }
+    }
+}
+
+void fn_80016928(int arg0, int arg1) {
+    int i;
+    unsigned char *p;
+    for (i = 0, p = lbl_8055D540; i < (int)lbl_8055D54C; i++, p += 0x5C) {
+        if (arg0 == *(int *)(p + 4)) {
+            *(int *)(lbl_8055D540 + i * 0x5C + 0x50) = arg1;
+            return;
+        }
+    }
 }
 
 void fn_80016A44(void) {
