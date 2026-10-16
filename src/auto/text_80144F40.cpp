@@ -44,6 +44,13 @@ void fn_802E3AD0(s32, const char *, ...);
 }
 
 extern "C" f32 lbl_805615F0;
+extern "C" f32 lbl_8055D020;
+extern "C" f32 fn_801452A0(s32 arg0, f32 arg1) {
+    if (arg0 & 0x20)
+        arg1 /= lbl_8055D020;
+    return arg1;
+}
+
 extern "C" f32 fn_801452B4(f32 arg0) { f32 result = lbl_805615F0 - arg0; result = result + lbl_8055E204; return result; }
 
 extern "C" f32 fn_801452C8(f32 arg0) {
