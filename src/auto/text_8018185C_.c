@@ -18,8 +18,24 @@ void fn_801836DC(void) {
 
 }
 
+int fn_80186DDC(void) { return 0; }
+
 void fn_80186DE4(void) {
     fn_8018A8A8();
+}
+
+typedef unsigned char u8;
+typedef unsigned int u32;
+typedef float f32;
+void **fn_801B83A0(void);
+int fn_801BF1B8(int, int);
+extern f32 lbl_80561CAC;
+void fn_80189C64(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x26AC) != 0) {
+        *(u8 *)((u8 *)arg0 + 0x26AC) = 0;
+        fn_801BF1B8(*(int *)((u8 *)arg0 + 0x1EC), 0);
+    }
+    *(f32 *)((u8 *)arg0 + 0x26A8) = lbl_80561CAC;
 }
 
 void fn_8018A088(void) {
