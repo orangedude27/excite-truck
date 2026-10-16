@@ -650,9 +650,10 @@ u8 fn_8006CA6C(void) {
 }
 
 void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 arg8) {
+    u32 *ptr = (u32 *)&lbl_80392960;
     void (*func)(void);
     if (arg8 == 3) {
-        func = (void (*)(void))((u32 *)&lbl_80392960)[0x66C / 4];
+        func = (void (*)(void))ptr[0x66C / 4];
         if (func) {
             func();
         }
@@ -670,5 +671,21 @@ extern char lbl_80313794[];
 extern u32 lbl_8055DC30;
 void fn_8006CF90(void) {
     DBPrintf_8006CFA8(lbl_803140FC);
+}
+
+void WUDDeviceStatusCallback(u32 arg0) {
+    DBPrintf_8006CFA8(lbl_80313BB0);
+    if (arg0 == 2) {
+        OSReport(lbl_80313BCC);
+    }
+}
+
+void fn_8006BAA4(u32 arg0) {
+    if (arg0 == 0) {
+        lbl_8055DC30 = 0;
+        *(u8 *)((u8 *)&lbl_80392960 + 0x688) = 0;
+        return;
+    }
+    DBPrintf_8006CFA8(lbl_80313794);
 }
 
