@@ -6,8 +6,8 @@ extern void fn_801E76A8(void *, void *);
 extern void fn_802D68C4(int, int, int, int);
 extern void fn_80128670(void *);
 extern void fn_80128668(void *);
-extern int lbl_80339B90;
 #pragma small_data off
+extern int lbl_80339B90;
 void fn_801E7828();
 void fn_801E7790();
 #pragma dont_inline on
