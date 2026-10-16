@@ -457,12 +457,12 @@ extern "C" void fn_800EEB64(u8 *arg0) {
 
 void *nw4hbm::snd::detail::SeqFileReader::GetBaseAddress() const {
     const u8 *self = (const u8 *)this;
-    void *file = *(void **)(self + 4);
     if (*(u32 *)self == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803239C0, 0x5E,
                                      (const char *)lbl_80323AF8);
     }
-    return (u8 *)file + *(u32 *)((u8 *)file + 8);
+    u8 *file = *(u8 **)(self + 4);
+    return file + *(u32 *)(file + 8);
 }
 
 extern "C" void OSCancelAlarm(void *);
@@ -564,6 +564,7 @@ extern "C" void fn_800EFB6C(void* this_, s32 arg1) {
 extern u8 lbl_80323B28[];
 extern u8 lbl_80323C74[];
 extern u8 lbl_80323C3C[];
+extern u8 lbl_80323B28[];
 #pragma pop
 extern "C" s32 fn_800EFBAC(void* arg0) {
     return *(s32*)&((u8*)arg0)[0x3C];
