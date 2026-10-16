@@ -35,3 +35,17 @@ void fn_80131318(int *arg0) {
 extern int lbl_8055E044;
 extern char lbl_8032B328[];
 int fn_802E317C(const char *, ...);
+
+char *fn_8013126C(char *arg0, const char *arg1) {
+    int count;
+    char *dst;
+    const char *src;
+    dst = arg0;
+    src = arg1;
+    fn_802E317C(lbl_8032B328);
+    count = 0x12c;
+    do {
+        *dst++ = *src++;
+    } while (*src != 0 && --count > 0);
+    return arg0;
+}
