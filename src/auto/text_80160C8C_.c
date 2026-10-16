@@ -115,6 +115,14 @@ int fn_80164868(void) {
     return 1;
 }
 
+void fn_80164870(void *arg0, s32 arg1) {
+    if (*(u8 *)((char *)arg0 + 0x10) == 0) {
+        *(s32 *)((char *)arg0 + 8) = arg1;
+        *(u8 *)((char *)arg0 + 0x10) = 1;
+        *(float *)((char *)arg0 + 0xC) = lbl_8055E3C8;
+    }
+}
+
 int fn_80164894(void *arg0, void *arg1, int arg2) {
     *(float *)arg1 = ((float *)arg0)[arg2 + 5];
     return 1;
