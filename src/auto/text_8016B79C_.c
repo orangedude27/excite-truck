@@ -88,6 +88,7 @@ f32 fn_80170E80(f32 *arg0) { return *arg0; }
 u8 fn_80170E90(void *arg0) { return *(u8 *)((u8 *)arg0 + 8); }
 
 extern char lbl_803306D0[];
+extern char lbl_80330AEC[];
 extern void fn_801345D8(void *, s32, void *, s32);
 extern void fn_802E317C(const char *, ...);
 void fn_80170E98(void *arg0, void *arg1, s32 arg2) {
