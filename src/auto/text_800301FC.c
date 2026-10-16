@@ -102,6 +102,16 @@ void __AXGetAuxBOutputDpl2Rs(void **arg0) {
     *arg0 = lbl_8035DAA0 + lbl_8055D6F4 * 0x480 + 0x300;
 }
 
+void __AXGetAuxBInput(void **arg0) {
+    extern u8 lbl_8035DAA0[];
+    extern s32 lbl_8055D6F8;
+    if (lbl_8055D720 != 0) {
+        *arg0 = lbl_8035DAA0 + lbl_8055D6F8 * 0x480;
+        return;
+    }
+    *arg0 = 0;
+}
+
 void __AXGetAuxCOutput(void **arg0) {
     extern u8 lbl_8035DAA0[];
     extern s32 lbl_8055D6F4;
