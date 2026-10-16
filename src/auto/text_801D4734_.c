@@ -6,6 +6,7 @@ extern char lbl_803385D0[];
 extern char lbl_803388F0[];
 extern char lbl_8033890C[];
 extern s32 lbl_8055E3C4;
+extern f32 lbl_8055E3C8;
 extern u8 lbl_804422F0[];
 extern f32 lbl_80562B04;
 extern char lbl_80338C40[];
@@ -382,7 +383,6 @@ void fn_8016A240(void *);
 void fn_801D7240(void *arg0) {
     f32 f2;
     f32 f1;
-
     if (*(s32 *)((u8 *)arg0 + 4) == 2) {
         f2 = *(f32 *)((u8 *)arg0 + 0x30);
         if (f2 < lbl_80562ADC) {
@@ -402,7 +402,6 @@ void fn_801D7240(void *arg0) {
 
 void fn_801D72D0(void *arg0) {
     void *p;
-
     fn_8016A240((u8 *)arg0 + 8);
     p = *(void **)((u8 *)arg0 + 0x38);
     *(s32 *)((u8 *)arg0 + 4) = 1;
