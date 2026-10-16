@@ -44,6 +44,11 @@ void fn_8020AC20(void) {
     fn_802E5A54();
 }
 
+void fn_8020B2BC(void *arg0, int arg1, int arg2) {
+    int *ptr = *(int **)((unsigned char *)arg0 + 4);
+    ptr[arg2] = 0;
+}
+
 void fn_8020B2D0(void) {
 
 }
