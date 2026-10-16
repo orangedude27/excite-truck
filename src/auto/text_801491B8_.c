@@ -960,6 +960,8 @@ void fn_80155E58(void *arg0) {
     ((u8 *)arg0)[4] = 0;
 }
 
+void fn_80155E64(void *arg0, signed char arg1) { *((signed char *)arg0 + 5) = arg1; }
+
 void fn_801560F4(void) {
 
 }
