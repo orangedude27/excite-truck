@@ -15,7 +15,10 @@ extern void fn_802D050C(s32);
 extern void fn_802D30DC(s32);
 extern void fn_802D9230(void);
 extern void fn_80203B20(void);
+extern void fn_802D050C_var(void);
+#define fn_802D050C(...) fn_802D050C_var()
 extern s32 fn_80202BE4(void);
+extern struct lbl_8048897C_t { s32 ptr; s32 count; } lbl_8048897C;
 extern s32 lbl_8055ECFC;
 extern s32 lbl_8055ED00;
 extern s32 lbl_8055ED04;
