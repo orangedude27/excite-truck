@@ -18,6 +18,13 @@ void* fn_80135108(void) {
     return lbl_8055E0B0;
 }
 
+s32 fn_80135150(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_80135190(void) {
 
 }
@@ -37,13 +44,24 @@ s32 fn_801351AC(void) {
 }
 
 void fn_801351B4(void *param) {
-    u32 vtable = *(u32 *)param;
-    u32 fn_ptr = *(u32 *)(vtable + 0x10);
-    ((void (*)(void))(fn_ptr))();
+    void *vtable = *(void **)param;
+    void (*fn)(void) = *(void **)((u8 *)vtable + 0x10);
+    fn();
 }
 
 void fn_801351C4(void *arg0, s32 arg1) {
     ((s32 *)arg0)[2] = arg1;
+}
+
+void fn_801351CC(void *arg0) {
+    extern void fn_8018ADBC(void *, f32);
+    extern void fn_8018ADB4(void *, f32);
+    extern void fn_8018ADA4(void *, f32);
+    extern f32 lbl_805612F4;
+    extern f32 lbl_80561318;
+    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), lbl_80561318);
+    fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
+    fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
 }
 
 void fn_80135218(void) {
