@@ -81,6 +81,22 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8019EB14(u8 *arg0, s32 arg1) {
+    u32 offset = arg1 * 8;
+    u8 *p = arg0 + offset;
+    u8 t;
+    t = p[0]; p[0] = p[1]; p[1] = t;
+    t = p[2]; p[2] = p[3]; p[3] = t;
+    t = p[4]; p[4] = p[5]; p[5] = t;
+    t = p[6]; p[6] = p[7]; p[7] = t;
+    if (*(u16 *)(p + 4) != 0) {
+        s32 i;
+        for (i = 0; i < 4; i++) {
+            fn_8019EB14(arg0, *(u16 *)(p + 4) + i);
+        }
+    }
+}
+
 void fn_8019EBC0(void* arg0) {
     void* obj = *(void**)((u8*)arg0 + 4);
     if (obj != 0) {
@@ -131,10 +147,10 @@ extern "C" void fn_8019ECBC(void* arg0, s32 arg1) {
     *(s32*)((u8*)arg0 + 0xC) = arg1;
 }
 
-void fn_8019EECC(void* arg0, void* arg1) {
-    *(f32*)((u8*)arg1 + 0x0) += *(f32*)((u8*)arg0 + 0x30);
-    *(f32*)((u8*)arg1 + 0x4) += *(f32*)((u8*)arg0 + 0x34);
-    *(f32*)((u8*)arg1 + 0x8) += *(f32*)((u8*)arg0 + 0x38);
+void fn_8019EECC(void* arg0, Vec* arg1) {
+    arg1->x += *(f32*)((u8*)arg0 + 0x30);
+    arg1->y += *(f32*)((u8*)arg0 + 0x34);
+    arg1->z += *(f32*)((u8*)arg0 + 0x38);
 }
 
 void fn_8019F03C(void* arg0) {
