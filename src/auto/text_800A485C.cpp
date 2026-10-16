@@ -49,6 +49,8 @@ extern "C" void fn_800D1C48(void);
 
 #include <revolution/MEM/mem_allocator.h>
 #include <revolution/MEM/mem_expHeap.h>
+extern "C" void fn_800B7610(OSAlarm *alarm, OSContext *ctx);
+
 
 extern "C" MEMAllocator lbl_804075E0;
 extern "C" MEMAllocator* lbl_80559708;
@@ -123,6 +125,11 @@ void fn_800B7C60(void) {
 
 extern "C" s32 fn_800B7C64(void) {
     s32 result = ((s32 (*)(void))fn_800B75EC)();
+    return (-result | result) >> 31;
+}
+
+extern "C" s32 fn_800B7C90(void) {
+    s32 result = ((s32 (*)(void))fn_800B7610)();
     return (-result | result) >> 31;
 }
 
