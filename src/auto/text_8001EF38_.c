@@ -61,3 +61,7 @@ void fn_8001EFC8(void) {
     fn_8001F578();
 }
 
+void fn_8001EFCC(void* alarm) {
+    fn_8001F578(fn_8001F2C8(alarm));
+}
+
