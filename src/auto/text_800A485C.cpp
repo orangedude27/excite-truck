@@ -584,6 +584,36 @@ void fn_800D0BA4(void *arg0, D0BA4Dispatch *arg1) {
 
 s32 fn_800D0BD0(void) { return 0; }
 
+extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext(OSAlarm *alarm, OSContext *) {
+    void *entry;
+    void *sound;
+    entry = lbl_80407780[(s32)OSGetAlarmUserData(alarm)];
+    sound = *(void **)entry;
+    if (fn_80060C7C(sound) != 0) fn_80060CC0(sound, 3, 0);
+    *((u8 *)entry + 0x41) = 0;
+}
+
+extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
+    s32 temp_r30;
+    *(s32 *)((u8 *)arg0 + 0x20) = 0;
+    *(s32 *)arg0 = arg1;
+    *((u8 *)arg0 + 0x1C) = 0;
+    *(f32 *)((u8 *)arg0 + 4) = lbl_80560E38;
+    *(s32 *)((u8 *)arg0 + 0x24) = arg2;
+    *(s32 *)((u8 *)arg0 + 0x28) = 0;
+    *(s32 *)((u8 *)arg0 + 0x2C) = 0;
+    *((u8 *)arg0 + 0x40) = 0;
+    *((u8 *)arg0 + 0x41) = 0;
+    if (arg1 < 4) {
+        temp_r30 = arg1 * 0x30;
+        lbl_8055DDA8[arg1] = 0;
+        OSCreateAlarm((OSAlarm *)(lbl_80407600 + temp_r30));
+        OSCreateAlarm((OSAlarm *)(lbl_80407600 + 0xC0 + temp_r30));
+        *(void **)(lbl_80407600 + 0x180 + arg1 * 4) = arg0;
+    }
+    return arg0;
+}
+
 extern "C" void fn_800D11E0(void* arg0) {
     f32 value = lbl_80560E3C;
     *(f32*)((u8*)arg0 + 8) = value;
