@@ -11,7 +11,7 @@ s32 fn_80229C9C(s32 arg0) {
     return arg0 + 0x264;
 }
 
-s32 fn_80229CA4(s32 arg0) {
+extern "C" s32 fn_80229CA4(s32 arg0) {
     return arg0 + 0x254;
 }
 
