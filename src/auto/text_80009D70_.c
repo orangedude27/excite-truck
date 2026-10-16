@@ -26,7 +26,7 @@ extern void fn_8020C920(void*);
 extern void fn_802103B8(void*);
 void fn_8000AAE4(void* arg0);
 void fn_8000AB48(void* arg0, s32 arg1);
-void fn_8000ABE0(s32 arg0);
+void fn_8000ABE0(void* arg0);
 u32 fn_8000AC38(void);
 
 void* fn_80009D70(void* arg0, s32 arg1) {
