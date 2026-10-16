@@ -8,6 +8,7 @@
 extern "C" s32 fn_80128668(void *);
 extern "C" void fn_800FDE60(void);
 extern "C" void fn_800FE1D0(void);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0(void *, s32);
 extern u8 lbl_8055DE80;
 #pragma push
 #pragma small_data off
