@@ -248,6 +248,10 @@ extern "C" s32 fn_80214D04(void) {
     return 0;
 }
 
+extern "C" f32 fn_80214D48(void) {
+    return lbl_8055EF10;
+}
+
 extern "C" void fn_80214D50(s32 arg0) {
     s32 index;
     s32 offset;
@@ -478,9 +482,43 @@ extern "C" char lbl_8055B808[];
 extern "C" s32 fn_802C4F14(s32);
 extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
 extern "C" void fn_80215618(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 size = *(s32 *)((char *)arg0 + 4);
-    s32 rem = arg3 % fn_802C4F14(size);
-    fn_802C4C90(size, arg1, arg2, rem, 0);
+    s32 rem = arg3 % fn_802C4F14(*(s32 *)((char *)arg0 + 4));
+    fn_802C4C90(*(s32 *)((char *)arg0 + 4), arg1, arg2, rem, 0);
+}
+
+void fn_802C2FC4(int);
+void fn_80128668(void *);
+void fn_802C40E8(int, int, int);
+void fn_802C4F2C(int, int *, int *);
+int fn_802C4EE4(int);
+int fn_802C4EFC(int);
+extern int lbl_8033D504;
+void *fn_80215738(void *arg0, int arg1) {
+    int temp_r0;
+    if (arg0 != 0) {
+        temp_r0 = *(int *)((char *)arg0 + 4);
+        *(void **)arg0 = &lbl_8033D504;
+        if (temp_r0 != 0) fn_802C2FC4(temp_r0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+void fn_802157A8(int arg0, int arg1, int arg2, unsigned int arg3) {
+    unsigned int r7 = *(unsigned int *)(arg0 + 0xC);
+    int r8 = *(int *)(arg0 + 4);
+    unsigned int rem = arg3 - (arg3 / r7) * r7;
+    if (r8 != 0) fn_802C40E8(r8, arg1, arg2 - *(int *)(arg0 + 8) * rem);
+}
+
+void fn_802157DC(void *arg0, int arg1, int arg2, int *arg3, int *arg4, int *arg5, int *arg6) {
+    int var_r0;
+    int *temp = *(int **)((char *)arg0 + 4);
+    *arg3 = arg1;
+    *arg4 = arg2;
+    var_r0 = temp != 0 ? temp[2] : 0;
+    *arg5 = *arg3 + var_r0;
+    *arg6 = *arg4 + *(int *)((char *)arg0 + 8);
 }
 
 extern "C" s32 fn_8021581C(void *arg0) {
