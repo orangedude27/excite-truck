@@ -172,6 +172,10 @@ extern "C" float fn_80206CD0(void* arg0, float arg1) {
     return arg1 / y;
 }
 
+extern "C" f32 fn_802072DC(void) {
+    return lbl_805631FC;
+}
+
 extern "C" void fn_8020769C(void) {
 	fn_802073A4();
 }
