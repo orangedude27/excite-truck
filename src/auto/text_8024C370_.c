@@ -14,3 +14,9 @@ extern void fn_802E7128(void);
 void fn_8024CF48(void *arg0) {
     fn_8024CC54(arg0, 0, 0);
 }
+
+void fn_8024CF54(void) {
+    lbl_8055F2C8 = 1;
+    fn_8024C768();
+}
+
