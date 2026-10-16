@@ -31,6 +31,8 @@ u8 fn_8014AEE8(void *arg0) {
     return ((u8 *)arg0)[4];
 }
 
+s32 fn_8014C830(s32 arg0) { return arg0 + 0x14; }
+
 void fn_8014DE4C(void) {
 
 }
@@ -45,12 +47,15 @@ void fn_8014E7D8(void) {
 
 extern s32 fn_80128668(void);
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 index = ((s32 *)arg0)[1];
     s32 value = *arg1;
+    s32 index = ((s32 *)arg0)[1];
+    s32 next = index + 1;
     s32 *data = *(s32 **)arg0;
-    ((s32 *)arg0)[1] = index + 1;
-    data[index] = value;
-    return &data[index];
+    s32 offset;
+    ((s32 *)arg0)[1] = next;
+    offset = index * 4;
+    *(s32 *)((char *)data + offset) = value;
+    return (s32 *)((char *)data + offset);
 }
 
 s32 fn_80150AD8(s32 arg0, s32 arg1) {
