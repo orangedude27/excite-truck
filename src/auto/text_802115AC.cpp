@@ -10,17 +10,6 @@ extern "C" void fn_8021165C(void) {
     fn_80215270();
 }
 
-extern int fn_80211690(int);
-extern int fn_80211D24(int);
-extern int fn_802E2C20(void);
-extern int fn_802ECC10(void);
-extern int lbl_8055EF14;
-extern float lbl_8055EF10;
-extern int lbl_8055EF40;
-extern float lbl_80563434;
-extern float lbl_80563440;
-extern float lbl_80563444;
-extern double lbl_80563448;
 extern "C" int fn_80211690(int);
 extern "C" int fn_80211D24(int);
 extern "C" int fn_802E2C20(void);
@@ -38,7 +27,7 @@ extern "C" void fn_80211F4C(void) { fn_80211D24(1); }
 
 extern "C" int fn_80211F54(void) { return lbl_8055EF40 == 0; }
 
-void fn_80211F64(void) {
+extern "C" void fn_80211F64(void) {
     float temp_f0;
     float var_f3;
     int temp_r31;
