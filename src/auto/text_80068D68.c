@@ -379,6 +379,12 @@ void fn_800709B4(u32 code, void *msg) {
     }
 }
 
+void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6) {
+    if (lbl_8055DC70 == 0) {
+        LogMsg(code, msg);
+    }
+}
+
 void fn_800709E4(void) {
     OSSwitchFiber(btu_task_msg_handler, (u8 *)&lbl_803BFA20 + 0x1000);
 }
