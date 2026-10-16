@@ -251,6 +251,12 @@ void bte_hcisu_task(void) {
     }
 }
 
+void fn_80070820(void) {
+    if (lbl_8055DC68 != NULL && lbl_8055DC68->open != NULL) {
+        lbl_8055DC68->open(lbl_8055DC6C);
+    }
+}
+
 void fn_80070844(void *p_msg) {
     GKI_send_msg(2, 0, p_msg);
 }
@@ -273,6 +279,12 @@ void LogMsg(UINT32 trace_set_mask, const char *fmt_str, ...) {
 }
 
 void fn_8007093C(u32 code, void *msg) {
+    if (lbl_8055DC70 == 0) {
+        LogMsg(code, msg);
+    }
+}
+
+void fn_80070954(u32 code, void *msg, u16 param) {
     if (lbl_8055DC70 == 0) {
         LogMsg(code, msg);
     }
