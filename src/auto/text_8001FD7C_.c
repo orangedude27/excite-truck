@@ -1,3 +1,4 @@
+#include <types.h>
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -58,10 +59,10 @@ void fn_8001FF34(int arg0) {
         fn_801312EC(&lbl_8035BAE4, &lbl_802FE1C0);
         lbl_8055D670 = 1;
     }
-    if (*(unsigned int*)((char*)&lbl_8035BAE4 + 8) != lbl_8055E044) {
+    if (((unsigned int*)&lbl_8035BAE4)[2] != lbl_8055E044) {
         fn_80131318();
     }
-    fn_80232BA4(*(int*)((char*)&lbl_8035BAE4 + 4), lbl_8055D64C, arg0, 0x12, lbl_805604A8, lbl_805604AC, lbl_805604B0, lbl_805604B4, lbl_805604B8);
+    fn_80232BA4(((int*)&lbl_8035BAE4)[1], lbl_8055D64C, arg0, 0x12, lbl_805604A8, lbl_805604AC, lbl_805604B0, lbl_805604B4, lbl_805604B8);
 }
 
 void fn_80020430(void) {
