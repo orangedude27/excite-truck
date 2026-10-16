@@ -365,6 +365,14 @@ extern "C" void fn_8021ACC0(void *arg0, s32 arg1) {
         fn_802C51AC(*(s32 *)((u8 *)arg0 + 0x250));
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_8021915C(void*, u32);
 extern "C" s32 fn_80128668(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
