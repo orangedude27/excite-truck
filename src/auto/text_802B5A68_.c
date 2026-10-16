@@ -217,6 +217,67 @@ f32 fn_802B822C(s32 arg0) {
     return lbl_80564C98 * (f32)arg0;
 }
 
+extern s32 fn_802B5B74(void *);
+extern f32 fn_802B822C(s32);
+extern float lbl_80564C9C;
+extern s32 lbl_8055CFF0;
+extern s32 lbl_8055CFF4;
+s32 fn_802B825C(s32 arg0) {
+    struct { s32 pad[2]; float *values; } result;
+    s32 changed = 0;
+    float *values;
+    float value;
+    if (fn_802B5B74(&result) != 0) {
+        values = result.values;
+        value = values[0] + fn_802B822C(arg0);
+        if (values[1] < value) {
+        } else {
+            value = values[1];
+        }
+        if (value > lbl_80564C98) {
+        } else {
+            value = lbl_80564C98;
+        }
+        if (value != values[0]) {
+            values[0] = value;
+            changed = 1;
+            *(u8 *)((u8 *)values + 8) = 1;
+        }
+    }
+    return changed;
+}
+
+s32 fn_802B8310(s32 arg0) {
+    struct { s32 pad[2]; float *values; } result;
+    s32 changed = 0;
+    float *values;
+    float value;
+    float bound = lbl_80564C9C;
+    if (fn_802B5B74(&result) != 0) {
+        values = result.values;
+        value = values[1] + fn_802B822C(arg0);
+        if (bound < value) {
+        } else {
+            bound = value;
+        }
+        if (bound > values[0]) {
+        } else {
+            bound = values[0];
+        }
+        if (bound != values[1]) {
+            values[1] = bound;
+            changed = 1;
+            *(u8 *)((u8 *)values + 8) = 1;
+        }
+    }
+    return changed;
+}
+
+void fn_802B84E4(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 4) = (*(s32 *)((u8 *)arg0 + 4) * 0x280) / lbl_8055CFF0;
+    *(s32 *)((u8 *)arg0 + 8) = (*(s32 *)((u8 *)arg0 + 8) * 0x1E0) / lbl_8055CFF4;
+}
+
 void fn_802B8C98(void) {
     lbl_8055FA31 = 0;
 }
