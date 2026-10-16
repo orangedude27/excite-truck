@@ -57,6 +57,13 @@ s32 fn_801D76CC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_801D770C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void *fn_801D774C(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         s32 val = ((s32)arg0 + 0x24);
@@ -141,6 +148,30 @@ post_loop:
         ((s32 *)ptr[0x1C])[idx] = ((s32 *)ptr[0x1C])[count - 1];
         ptr[0x1D] = count - 1;
     }
+}
+
+void fn_801D7874(void *arg0, void *arg1) {
+    s32 field_c;
+    s32 result;
+    s32 count;
+    s32 *array;
+    
+    ((void (*)(void *))((void ***)arg1)[2])(arg1);
+    field_c = ((s32 *)arg0)[3];
+    if (field_c < 0) {
+        return;
+    }
+    if (arg1 == NULL) {
+        return;
+    }
+    result = ((s32 (*)(void *, s32))((void ***)arg1)[10])(&lbl_803385D0, -1);
+    if (result != field_c) {
+        return;
+    }
+    count = ((s32 *)arg0)[0x1D];
+    array = (s32 *)((s32 *)arg0)[0x1C];
+    ((s32 *)arg0)[0x1D] = count + 1;
+    array[count] = (s32)arg1;
 }
 
 void fn_801D8620(void) {
