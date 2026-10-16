@@ -7,6 +7,8 @@ typedef struct Unk8001BBBC {
 } Unk8001BBBC;
 
 extern s8 lbl_8055D5C8;
+extern s32 *lbl_8055D5D0;
+extern u8 *lbl_8055D5CC;
 #pragma push
 #pragma small_data off
 extern s32 lbl_803583C8;
@@ -292,6 +294,33 @@ void fn_8001D298(s32 arg0) {
     fn_8000D984(arg0);
     fn_8000DB18();
     fn_8000D984(temp_r31);
+}
+
+void fn_8001D484(void *arg0, s32 arg1, s32 (*arg2)(s32), s32 arg3) {
+    s32 var_r28;
+    s32 var_r29;
+    void *var_r30;
+    void *var_r31;
+    var_r31 = arg0;
+    var_r29 = 0;
+loop_6:
+    if (var_r29 < arg1) {
+        if (*((u8 *)var_r31 + 0x70) != 0) {
+            *(s32 *)var_r31 = arg2(*(s32 *)var_r31);
+            var_r30 = var_r31;
+            var_r28 = 0;
+loop_4:
+            if (var_r28 < *(s32 *)((u8 *)var_r31 + 0x6C)) {
+                *(s32 *)((u8 *)var_r30 + 8) = arg2(*(s32 *)((u8 *)var_r30 + 8));
+                var_r30 = (u8 *)var_r30 + 0x14;
+                var_r28 += 1;
+                goto loop_4;
+            }
+        }
+        var_r31 = (u8 *)var_r31 + 0x74;
+        var_r29 += 1;
+        goto loop_6;
+    }
 }
 
 extern unsigned char fn_8001D464[];
