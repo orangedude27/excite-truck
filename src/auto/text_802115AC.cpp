@@ -184,6 +184,15 @@ extern "C" void fn_80212340(void *arg0) {
     }
 }
 
+extern "C" s32 fn_80214934(const void *arg0, s32 arg1, void *arg2, s32 arg3) {
+    s32 end = fn_80029004((const char *)arg1, 0x2e);
+    if (end == 0) {
+        end = (s32)((const char *)arg1 + strlen((const char *)arg1));
+    }
+    fn_801345D8(arg2, arg3, lbl_8055B808, (s32)arg0, end - arg1, (const char *)arg1);
+    return 0;
+}
+
 extern "C" void fn_802149C4(s32 arg0) {
     char sp8[0x64];
     fn_80214934(lbl_8055B810, arg0, sp8, 0x64);
@@ -200,6 +209,14 @@ extern "C" void fn_802149FC(s32 arg0) {
     char sp8[0x64];
     fn_80214934(lbl_8033D268, arg0, sp8, 0x64);
     fn_8021481C(sp8);
+}
+
+extern "C" void fn_80214A9C(s32 arg0) {
+    if (fn_802168E4() != 0) {
+        fn_802168CC(arg0, lbl_80563434);
+    } else {
+        fn_802E317C(lbl_8033D2A0);
+    }
 }
 
 extern "C" void fn_80214B44(s32 arg0) {
@@ -299,6 +316,14 @@ extern "C" void fn_80215298(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 arg4
 }
 
 void fn_802152C8(void) {
+}
+
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802152F0(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
 }
 
 extern "C" s32 __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80215348(void *arg0, s32 arg1) {
