@@ -24,7 +24,7 @@ int fn_802B0628(int arg0) {
 
 void fn_802B06D4(void) {
     void **obj = fn_802B59CC();
-    ((void (*)(void *, void *, int))((void **)*obj)[12])(obj, lbl_8034A078, 0);
+    (*(void (***)(void *, void *, int))obj)[12](obj, lbl_8034A078, 0);
 }
 
 void fn_802B0860(void *arg0) {
@@ -63,8 +63,11 @@ void fn_802B0904(void) {
 }
 
 void fn_802B0914(void) {
-    fn_802B8AE0(lbl_8034A0B4, &lbl_8055F998);
-    fn_802B8AE0(lbl_8034A0C4, &lbl_8055F99C);
+    register void *first = lbl_8034A0B4;
+    register void *second;
+    fn_802B8AE0(first, &lbl_8055F998);
+    second = lbl_8034A0C4;
+    fn_802B8AE0(second, &lbl_8055F99C);
     fn_802B0710();
 }
 
@@ -81,6 +84,40 @@ void *fn_802B0AC0(void *arg0, int arg1) {
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern void *lbl_804BE104;
+extern char lbl_8055F980;
+char fn_802B05E4(void);
+char fn_802B05EC(void);
+void fn_802B0904(void);
+void fn_802BAFA0(void);
+int fn_802CFFA0(void);
+int stricmp(const char *, const char *);
+void fn_802B110C(void (*fn)(void *), void *arg) {
+    fn(arg);
+}
+
+void fn_802B111C(void *arg0) {
+    ((int *)arg0)[1] = (int)((char *)arg0 + 0x10);
+    ((int *)arg0)[3] = 6;
+    ((int *)arg0)[2] = 0;
+}
+
+void *fn_802B1138(const char *name) {
+    void *result = 0;
+    int count = 0;
+    int offset = 0;
+    while (count < ((int *)lbl_804BE104)[1]) {
+        void *entry = ((void **)lbl_804BE104)[offset / 4];
+        if (stricmp(name, (const char *)entry + 0xa3c) == 0) {
+            result = entry;
+            break;
+        }
+        offset += 4;
+        count += 1;
+    }
+    return result;
 }
 
 int fn_802B1C14(void *arg0) {
