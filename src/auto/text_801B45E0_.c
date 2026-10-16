@@ -21,6 +21,15 @@ int fn_801B47D4(int arg0, int arg1) {
     return *(int *)(arg0 + 0x1C) - 1;
 }
 
+int fn_801B47F0(int arg0) {
+    unsigned int r4 = *(unsigned int *)(arg0 + 0x20);
+    unsigned int r5 = *(unsigned int *)(arg0 + 0x24);
+    if (r4 < r5) return r5 - r4;
+    return r5 + (*(int *)(arg0 + 0x1C) - r4);
+}
+
+int fn_801B4818(void) { return 0x100000; }
+
 int fn_801B4B9C(int arg0) {
     return *fn_801B479C(arg0 + 4, fn_801B47AC(arg0 + 4));
 }
