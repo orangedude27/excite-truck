@@ -213,7 +213,7 @@ void fn_800216C4(void) {
 
 }
 
-char fn_800216F4(void) {
+unsigned char fn_800216F4(void) {
     return lbl_8055D644;
 }
 
