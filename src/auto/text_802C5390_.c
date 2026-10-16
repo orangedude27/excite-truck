@@ -65,6 +65,29 @@ void fn_802C5690(void *arg0) {
     }
 }
 
+extern void fn_802C54D4(void);
+extern int lbl_804C1390[];
+void fn_802C5720(int arg0) {
+    int count;
+    void **items;
+    int i;
+    if (arg0 > 0) {
+        void *entry = fn_802C54B4(arg0);
+        items = *(void ***)entry;
+        count = *(int *)((char *)entry + 4);
+    } else {
+        count = lbl_804C1390[0];
+        items = *(void ***)(lbl_804C1390 + 2);
+    }
+    fn_802C54D4();
+    for (i = 0; i < count; i++) {
+        fn_802C5690(items[i]);
+    }
+    fn_802DB2BC(1);
+}
+
+void fn_802C57B0(void) { }
+
 void fn_802C6074(s32 *arg0) {
     *arg0 = 0;
 }
