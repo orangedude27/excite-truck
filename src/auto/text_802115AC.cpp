@@ -313,6 +313,13 @@ extern "C" void fn_80215824(void) {
 
 }
 
+extern "C" void fn_802191F0(void);
+extern "C" void fn_80215B58(void *arg0, s32 arg1, s32 arg2) {
+    fn_802191F0();
+    ((void **)*(void ***)((char *)arg0 + 0x244))[1] = (void *)arg1;
+    ((void **)*(void ***)((char *)arg0 + 0x244))[2] = (void *)arg2;
+}
+
 extern "C" s32 fn_80215BAC(void) {
     return -1;
 }
@@ -354,16 +361,18 @@ extern "C" void fn_80215C18(void *arg0) {
     fn_80214CB4(*(u8 *)((char *)arg0 + 0x18) == 0);
 }
 
-extern "C" s32 fn_80215C28(s32 arg0) {
-    switch (arg0) {
+extern "C" s32 fn_80215C28(s32 arg0, s32 arg1) {
+    switch (arg1) {
     case 0x125:
-    case 0x128:
         fn_80214CB4(0);
         fn_80230E90(0);
         return 1;
     case 0x127:
         fn_80214CB4(1);
         fn_80230E90(0);
+        return 1;
+    case 0x126:
+    case 0x128:
         return 1;
     default:
         return 0;
