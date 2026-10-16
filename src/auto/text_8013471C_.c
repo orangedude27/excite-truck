@@ -1,5 +1,7 @@
 #include <types.h>
 
+extern s32 fn_80128668(void);
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -35,8 +37,9 @@ s32 fn_801351AC(void) {
 }
 
 void fn_801351B4(void *param) {
-    void (*fn)(void) = *(void **)((u32)param + 0x10);
-    fn();
+    u32 vtable = *(u32 *)param;
+    u32 fn_ptr = *(u32 *)(vtable + 0x10);
+    ((void (*)(void))(fn_ptr))();
 }
 
 void fn_801351C4(void *arg0, s32 arg1) {
