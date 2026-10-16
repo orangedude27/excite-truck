@@ -36,6 +36,13 @@ void fn_801D4908(void) {
     fn_801D5A2C();
 }
 
+s32 fn_801D4CB8(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_801D4F9C(void) {
 }
 
