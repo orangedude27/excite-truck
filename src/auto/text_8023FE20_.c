@@ -30,6 +30,25 @@ void *fn_802408B0(void *arg0, s32 arg1) {
     return arg0;
 }
 
+extern char lbl_80342734[];
+extern s32 fn_802328D4(s32, s32);
+void *fn_80240928(void *arg0, s32 arg1) {
+    s32 zero = 0;
+    if (arg0 != 0) {
+        *(s32 *)((char *)arg0 + 0x24) = 0;
+        *(void **)arg0 = lbl_80342734;
+        *(s32 *)((char *)arg0 + 0x20) = 0;
+        fn_802328D4(*(s32 *)((char *)arg0 + 0x18), 0);
+        *(s32 *)((char *)arg0 + 0x18) = 0;
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+void fn_802409A4(void *arg0, signed char arg1) {
+    *(signed char *)((char *)arg0 + 0x2E8) = arg1;
+}
+
 void fn_80241228(void) {
 }
 
