@@ -8,3 +8,7 @@ extern void fn_80292EB4(void *);
 void fn_802924E8(void) {
     fn_80292EA8(lbl_804B4168);
 }
+
+void fn_80292618(void) {
+}
+
