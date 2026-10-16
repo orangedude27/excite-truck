@@ -60,6 +60,8 @@ void fn_801F4C34(void *arg0, int arg1) {
     }
 }
 
+int fn_801F4C98(void) { return -1; }
+
 void fn_801F4CA0(void) {
 
 }
