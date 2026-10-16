@@ -44,6 +44,8 @@ void fn_801AED68(void) {
     fn_801B878C();
 }
 
+void fn_801AFA64(int *arg0) { *arg0 = 0; }
+
 void fn_801AFAB4(void) {
 
 }
