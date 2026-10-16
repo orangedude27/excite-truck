@@ -6,7 +6,7 @@ extern char lbl_8034CF60[];
 extern char lbl_804DB810[];
 extern char lbl_8055D1A0[];
 extern s32 lbl_8055FF20;
-extern s32 fn_802E321C(void);
+extern s32 fn_802E321C(const char *);
 extern s32 fn_802E3270(s32);
 extern s32 fn_802E32C4();
 extern s32 lbl_8055FF18;
@@ -31,8 +31,7 @@ void fn_802E339C(void) {
 s32 fn_802E33D0(void) { return 0; }
 
 void fn_802E3498(void) {
-    char *buffer = lbl_804DB810;
-    memset(buffer, 0, 0x280);
+    memset(lbl_804DB810, 0, 0x280);
     if (lbl_8055FF18 == 0) lbl_8055FF18 = fn_802E3F94();
 }
 
