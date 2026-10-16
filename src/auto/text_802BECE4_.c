@@ -8,6 +8,8 @@ int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
 
 float fn_802C0CA0(void *arg0) { return *(float *)((char *)arg0 + 0x14); }
 
+int fn_802C0CA8(void) { return 1; }
+
 void *fn_802C0CB0(void *arg0, int arg1) {
     int temp_r0;
 
