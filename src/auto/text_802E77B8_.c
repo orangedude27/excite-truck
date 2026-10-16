@@ -64,6 +64,8 @@ void fn_802E7A14(int arg0) {
     lbl_8056000C++;
 }
 
+void fn_802E85A8(void) {}
+
 void fn_802E85AC(void) {}
 
 int fn_802E85B0(void) { return 3; }
