@@ -596,25 +596,26 @@ void *fn_801538E4(void *arg0) {
 
 void fn_80153900(void *arg0, s32 arg1) {
     void **v;
-    s32 p;
+    void *p;
     if (*(u8 *)((u8 *)arg0 + 0x9E0)) {
-        ((void (*)(void))(*(void ***)arg0)[0x22])();
+        void **table = *(void ***)arg0;
+        void (*callback)(void) = (void (*)(void))table[0x22];
+        callback();
     } else {
-        if (fn_801E85A4() == 2) {
+        s32 mode = fn_801E85A4();
+        if (mode == 2) {
             v = (void **)lbl_8055E23C;
         } else {
             v = (void **)lbl_8055E238;
         }
         ((void (*)(void))(*(void ***)*v)[7])();
     }
-    p = (s32)arg0 + fn_801E866C(arg1) * 0xC0 + 0x9E4;
+    p = (u8 *)arg0 + fn_801E866C(arg1) * 0xC0 + 0x9E4;
     if (p != 0) {
-        if (fn_801E85A4() == 2) {
-            v = (void **)lbl_8055E23C;
-        } else {
-            v = (void **)lbl_8055E238;
-        }
-        fn_8014AFD4((void *)p, v, arg1);
+        s32 mode = fn_801E85A4();
+        if (mode == 2) v = (void **)lbl_8055E23C;
+        else v = (void **)lbl_8055E238;
+        fn_8014AFD4(p, v, arg1);
         fn_801CB7BC(0);
     }
 }
@@ -641,16 +642,14 @@ extern s32 lbl_8055E23C;
 s32 fn_80153A30(void) { return 0; }
 
 s32 fn_80153A38(void *arg0) {
-    void *p;
     s32 i;
+    void *p;
     fn_80179650();
     p = arg0;
-    i = 0;
-    while (i < fn_801E85A4()) {
+    for (i = 0; i < fn_801E85A4(); i++) {
         if (*(u8 *)((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) == 0 &&
             *(s32 *)((u8 *)p + 0x454) != 2) return 0;
         p = (u8 *)p + 0x240;
-        i++;
     }
     return 1;
 }
