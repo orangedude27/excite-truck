@@ -463,8 +463,7 @@ s32 fn_800ED0D0(s32 arg0) {
 #pragma small_data off
 #pragma pop
 extern "C" void fn_800ED0E4(s32 arg0) {
-    arg0 -= 8;
-    fn_800ED058();
+    fn_800ED058(arg0 - 8);
 }
 extern "C" s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668_noarg();
