@@ -69,6 +69,10 @@ void fn_801EDD68(void *arg0) {
                 *(long *)((char *)arg0 + 0x3C), (char *)arg0 + 0x4D4);
 }
 
+void fn_801EE0D0(long arg0, long arg1) {
+    fn_801F159C(*(long *)(arg0 + arg1 * 4 + 0x4D4));
+}
+
 void fn_801EDD7C(void *, long);
 long fn_80179CB0(void);
 void fn_801EECAC(long, long);
