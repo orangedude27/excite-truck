@@ -16,7 +16,7 @@ typedef struct UnkF22C UnkF22C;
 typedef struct UnkF22CVtable {
     void *unk_0x0;
     void *unk_0x4;
-    void (*unk_0x8)(UnkF22C *, s32);
+    void (*unk_0x8)();
 } UnkF22CVtable;
 struct UnkF22C {
     UnkF22CVtable *vtable;
