@@ -288,6 +288,22 @@ extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
     return 0;
 }
 
+extern "C" s32 fn_800BA160(s32 arg0) {
+    s32 value;
+    if (arg0 == 0) {
+        return 1;
+    }
+    value = *(s32 *)(lbl_80407300 + 0x10);
+    return 6 & ~(((-value | value) >> 31));
+}
+
+extern "C" u8 lbl_802F3218[];
+extern "C" s32 fn_800BA3DC(void *arg0, s32 arg1) {
+    *(s32 *)((u8 *)arg0 + 4) = arg1;
+    *(u8 **)arg0 = lbl_802F3218;
+    return 0;
+}
+
 extern "C" s32 fn_800BA404(void) {
     u8 value;
     if (*(u32*)lbl_80407300 & 1) {
