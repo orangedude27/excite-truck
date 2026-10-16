@@ -10,21 +10,27 @@ extern char lbl_8034EC18[];
 extern void fn_802ECCE4(char *, void *, s32);
 extern s32 stricmp(const char *, const char *);
 extern s32 fn_802ECEEC(void);
+extern void fn_802ECE48(s32);
+extern void fn_802ECDF4(void);
+extern void fn_802ECEC0(void);
+extern s32 lbl_8055D300;
 extern void *fn_801284F8(s32, const char *);
 extern s32 fn_802ECD68(void *, void *, s32);
+#pragma scheduling reset
 void *fn_802ECF08(void *arg0, s32 arg1) {
     void *result;
+    const char *name;
     if (fn_802ECEEC() != 0) {
         return (void *)lbl_805600F8;
     }
-    result = fn_801284F8(0x44, lbl_8034EC18);
+    name = lbl_8034EC18;
+    result = fn_801284F8(0x44, name);
     if (fn_802ECD68(result, arg0, arg1) == 0) {
         fn_80128668(result);
         result = 0;
     }
     return result;
 }
-
 s32 fn_802ECF90(const char *arg0, void *arg1) {
     char buffer[64];
     if (lbl_805600F8 != 0) {
