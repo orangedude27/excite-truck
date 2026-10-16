@@ -61,6 +61,12 @@ void fn_80259740(int arg0, float farg0) {
     lbl_8055F3A0 = (arg0 - 2) == 0;
 }
 
+int fn_8025A1C4(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0)
+        fn_80128668((void *)arg0);
+    return arg0;
+}
+
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
     float z = a[2];
     float y = a[1];
