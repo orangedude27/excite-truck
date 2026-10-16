@@ -96,6 +96,17 @@ void fn_800B78EC(void) {
 
 }
 
+extern "C" s32 fn_800B7B34(s8 arg0) {
+    s32 a = lbl_80405C30[arg0 - 0x41];
+    s32 b = lbl_80405C98[arg0 - 0x41];
+    if (fn_800B74B8(arg0)) return -1;
+    if (a && b) {
+        if (fn_800A59CC(b)) return -1;
+        if (fn_800A5990(a)) return -1;
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800B7BDC(void) {
     s32 result = ((s32 (*)(void))fn_800B74E0)();
     return (-result | result) >> 31;
