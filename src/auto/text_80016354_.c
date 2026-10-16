@@ -22,7 +22,39 @@ void fn_800165DC(void) {
     fn_80016510(*(int *)((char *)fn_80016474() + 0x4C));
 }
 
+int fn_80016604(const char *arg0) {
+    int i, offset = 0, count = 0;
+    for (i = 0; i < (int)lbl_8055D550; i++) {
+        if (stricmp((const char *)(lbl_8055D544 + offset + 0x2C), arg0) == 0) count++;
+        offset += 0xA8;
+    }
+    return count;
+}
+
+void *fn_8001668C(const char *arg0, int arg1) {
+    int i, count = 0, offset = 0;
+    for (i = 0; i < (int)lbl_8055D550; i++, offset += 0xA8) {
+        if (stricmp((const char *)(lbl_8055D544 + offset + 0x2C), arg0) == 0) {
+            if (count == arg1) return lbl_8055D544 + i * 0xA8;
+            count++;
+        }
+    }
+    return lbl_8055D544;
+}
+
+void *fn_80016720(const char *arg0) {
+    void *result = fn_8001668C(arg0, 0);
+    if (*(int *)((char *)result + 0xA0) & 2) {
+        result = (void *)fn_80016544(*(int *)((char *)result + 8));
+    }
+    return (char *)result + 0x2C;
+}
+
 void *fn_800167B8(int arg0) { return lbl_803577F0 + arg0 * 0x5C; }
+
+void fn_800167CC(void) {
+    fn_80016510(*(int *)((char *)fn_80016474() + 0x4C));
+}
 
 extern void *lbl_8055D554;
 extern unsigned char lbl_803577F0[];
@@ -80,6 +112,26 @@ void fn_80016928(int arg0, int arg1) {
             return;
         }
     }
+}
+
+void fn_80016970(int arg0, int arg1, int arg2, int arg3) {
+    int offset = arg0 * 0x5C;
+    unsigned char *entry = lbl_803577F0 + offset;
+    *(int *)(entry + 4) = arg1;
+    *(int *)(entry + 0x4C) = *(int *)fn_80016544(arg2);
+    *(int *)(entry + 0x50) = arg3;
+    *(int *)(lbl_80357960 + arg0 * 0xA8 + 4) = -1000;
+}
+
+void fn_800169F8(const char *src, int index) {
+    char *dst = (char *)(lbl_803577F0 + index * 0x5C + 8);
+    int count = 0x40;
+    do {
+        *dst++ = *src++;
+        if (dst[-1] == 0) return;
+        count--;
+    } while (count > 0);
+    dst[-1] = 0;
 }
 
 void fn_80016A44(void) {
