@@ -1124,6 +1124,12 @@ void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
     *arg1 = lbl_805590B4;
 }
 
+void* TPLGet(void* tpl, u32 index) {
+    u32 count = *(u32*)((u8*)tpl + 4);
+    u8* entries = *(u8**)((u8*)tpl + 8);
+    return entries + (index % count) * 8;
+}
+
 u16 fn_8006D8D0(u32 arg0) {
     s32 diff = (s32)arg0 - 8;
     if (diff < 0) {
