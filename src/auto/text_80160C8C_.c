@@ -10,7 +10,7 @@ extern int fn_80161BB8(void);
 extern unsigned char lbl_8032FCB0[];
 extern int lbl_804348E8[];
 extern float lbl_80561848;
-extern unsigned char lbl_8042FDEC[8];
+extern unsigned char lbl_8042FDEC[0x10];
 extern int lbl_8055E304;
 
 void fn_8016212C(void) {
