@@ -41,3 +41,11 @@ void fn_801CEA28(void *arg0) {
     }
 }
 
+void fn_801CEB94(void *arg0) {
+    void *buf = *(void **)arg0;
+    if (buf != NULL) {
+        fn_80128668(buf);
+        *(void **)arg0 = NULL;
+    }
+}
+
