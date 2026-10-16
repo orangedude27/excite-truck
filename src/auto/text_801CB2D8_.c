@@ -34,9 +34,8 @@ void fn_801CB518(void) {
 }
 
 void fn_801CB55C(int arg0, int arg1) {
-    if (fn_80019BA8() != 0) return;
-    if (fn_80161C38() != 0) return;
-    if (fn_801CE874(arg0) != 0) {
+    if (fn_80019BA8() || fn_80161C38()) return;
+    if (fn_801CE874(arg0)) {
         fn_801CCDAC(0x22205, arg0, arg1);
         fn_801CD4CC(arg0, arg1);
     }
