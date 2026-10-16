@@ -17,6 +17,8 @@ extern void *fn_801EA9A0(void);
 extern s32 fn_801B84D8(s32, s32);
 extern s32 fn_801B8570(s32);
 extern s32 fn_80230DA0(void);
+extern void fn_80235380(s32);
+extern u8 lbl_802FB478[];
 extern u8 lbl_8034EE84[0x100];
 extern u8 lbl_8055F024;
 
