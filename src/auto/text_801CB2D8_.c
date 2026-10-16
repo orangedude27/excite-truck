@@ -18,6 +18,7 @@ extern int lbl_80338038;
 extern int fn_8001BF34(f32);
 extern void fn_8001BF0C(f32, f32);
 extern int fn_80161C38(void);
+extern s32 *lbl_8055E884;
 extern int fn_801EA994(void);
 extern void fn_801CCBA4(void);
 extern void fn_801CCAEC(int);
@@ -53,9 +54,12 @@ void fn_801CB320(void) {
 }
 
 void fn_801CB360(int arg0) {
-    if (fn_80019BA8() != 0) return;
-    if (fn_80161C38() != 0) goto done;
-    fn_801CCAEC(arg0);
+    if (fn_80019BA8() != 0) goto done;
+    if (fn_80161C38() == 0) {
+        fn_801CCAEC(arg0);
+    } else {
+        goto done;
+    }
 done:
     return;
 }
@@ -267,10 +271,8 @@ void *fn_801CE9A0(void *arg0, s32 arg1) {
         *(void **)((char *)arg0 + 4) = (void *)lbl_80338024;
         fn_801CEA28((char *)arg0 + 8);
         fn_801CEA28((char *)arg0 + 0xC);
-        if (arg0 != NULL) {
-            *(void **)((char *)arg0 + 4) = (void *)lbl_80338038;
-            fn_801CBD04(arg0);
-        }
+        *(void **)((char *)arg0 + 4) = (void *)lbl_80338038;
+        fn_801CBD04(arg0);
         if (arg1 > 0) {
             fn_80128668(arg0);
         }
@@ -312,8 +314,8 @@ void fn_801CEB94(void *arg0) {
 }
 
 s32 fn_801CEBD8(void *arg0, f32 farg0) {
-    f32 temp = *(f32 *)arg0;
-    if (fn_8001BF34(temp) != 0) {
+    s32 temp = *(s32 *)arg0;
+    if (fn_8001BF34(farg0) != 0) {
         fn_8001BF0C(temp, farg0);
         if (*(s32 *)((char *)arg0 + 8) != 0) {
             if (fn_8001BF34(farg0) != 0) {
