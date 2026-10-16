@@ -301,9 +301,7 @@ extern "C" void* fn_8015868C(void* arg0, s32 arg1) {
  return arg0;
 }
 
-s32 fn_80158A5C(void *arg0, s32 *arg1) {
-    return arg1[0x2620 / 4] == 0;
-}
+extern "C" s32 fn_80158A5C(void *arg0, s32 *arg1) { return *(s32 *)((u8 *)arg1 + 0x2620) == 0; }
 
 extern "C" s32 fn_80158A6C(void) { return 0; }
 
