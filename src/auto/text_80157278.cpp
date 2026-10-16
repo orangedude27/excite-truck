@@ -76,7 +76,7 @@ public:
     virtual void v20();
     virtual s32 v21();
     virtual void v22();
-    virtual void v23();
+    virtual s32 v23();
     virtual void v24();
     virtual void v25();
     virtual void v26();
@@ -325,8 +325,8 @@ extern "C" u8 fn_80159F24(void* arg0) {
 
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
     s32 r5 = arg0->m260;
-    s32 r3 = arg0->m258;
     if (r5 > 0) {
+        s32 r3 = arg0->m258;
         if (r3 != 0) {
             fn_801CB6E4((void*)r3, *(s32*)&arg0->m4);
         }
@@ -405,10 +405,10 @@ extern "C" void* fn_80159340(void* arg0, s32 arg1) {
 
 extern "C" void fn_801593F0(Unk801577F0* arg0) {
     arg0->v32();
-    f32 lit = lbl_80561754;
     f32 f1 = *(f32*)((u8*)arg0 + 0x260);
     f32 f0 = *(f32*)((u8*)arg0 + 0x24c);
-    arg0->m25c = lit;
+    f32 f2 = lbl_80561754;
+    arg0->m25c = f2;
     if (f1 > f0) {
         s32 r3 = *(s32*)((u8*)arg0 + 0x268);
         if (r3 != 0) {
