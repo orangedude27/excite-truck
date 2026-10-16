@@ -28,6 +28,12 @@ extern "C" void fn_8029871C(void*, void*, float);
 extern float lbl_80564590;
 extern float lbl_8056459C;
 extern float lbl_80558DC4;
+void fn_80298124(void) {
+    fn_80298BBC(lbl_8055F7C8);
+    fn_8029BA8C(lbl_8055F7D8);
+    if (lbl_8055F7C4 != 0) fn_80299628();
+}
+
 void fn_80298160(void) {
     float value = fn_801E7E24();
     if (__fabsf(value) != lbl_80558DC4) {
@@ -88,5 +94,66 @@ void fn_802982C0(void *arg0) {
         var_r30 += 1;
         var_r31 = (char *)var_r31 + 0x2c;
     } while (var_r30 < 4);
+}
+
+extern "C" void fn_8029BDB8(void *arg0) {
+    *(int *)((char *)arg0 + 0xA4) = 0;
+}
+
+extern "C" void fn_8029A890(void*, void*);
+extern "C" void fn_8029BA94(void*, void*);
+extern "C" void fn_8029BE54(void*, void*);
+void fn_8029BE54(void* arg0, void* arg1) {
+    int count = *(int*)((char*)arg0 + 0xA4);
+    void* scan = arg0;
+    int i = 0;
+    while (i < count) {
+        unsigned int key = *(unsigned int*)((char*)arg1 + 0xC);
+        if (key == *(unsigned int*)((char*)scan + 0x10)) {
+            char* dst = (char*)arg0 + i * 0x14;
+            int a = *(int*)arg1;
+            int b = *((int*)arg1 + 1);
+            int c = *((int*)arg1 + 2);
+            unsigned char d = *((unsigned char*)arg1 + 0x10);
+            *(int*)(dst + 4) = a;
+            *(int*)(dst + 8) = b;
+            *(int*)(dst + 0xC) = c;
+            *(unsigned int*)(dst + 0x10) = key;
+            *(unsigned char*)(dst + 0x14) = d;
+            return;
+        }
+        scan = (char*)scan + 0x14;
+        i++;
+    }
+    {
+        char* dst = (char*)arg0 + count * 0x14;
+        int a = *(int*)arg1;
+        int b = *((int*)arg1 + 1);
+        int c = *((int*)arg1 + 2);
+        int key = *((int*)arg1 + 3);
+        unsigned char d = *((unsigned char*)arg1 + 0x10);
+        *(int*)(dst + 4) = a;
+        *(int*)(dst + 8) = b;
+        *(int*)(dst + 0xC) = c;
+        *(int*)(dst + 0x10) = key;
+        *(unsigned char*)(dst + 0x14) = d;
+    }
+    *(int*)((char*)arg0 + 0xA4) = count + 1;
+}
+
+int fn_8029BFF8(void* arg0) {
+    fn_8029BA94(lbl_8055F7D8, arg0);
+    return 0x10;
+}
+
+extern void* lbl_8055F7D4;
+extern "C" int fn_8029C024(int *arg0) {
+    fn_8029A890(lbl_8055F7D4, (void *)*arg0);
+    return 4;
+}
+
+int fn_8029C190(void* arg0) {
+    fn_8029BE54(lbl_8055F7DC, arg0);
+    return 0x14;
 }
 
