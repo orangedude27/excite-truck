@@ -522,12 +522,18 @@ void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
 }
 
 u16 fn_8006D8D0(u32 arg0) {
-    if ((s32)(arg0 - 8) >= 0) {
+    s32 diff = (s32)arg0 - 8;
+    if (diff >= 0) {
         u8 val = *(u8 *)((u8 *)arg0 - 4);
         if (val < 9) {
-            return *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (val << 4));
+            return *(u16 *)((u8 *)&lbl_803946C0 + 0x289E8 + (val << 4));
         }
     }
     return 0;
 }
-
+u8 fn_8006CA6C(void) {
+    u32 saved = OSDisableInterrupts();
+    u8 val = lbl_80392960[0x665];
+    OSRestoreInterrupts(saved);
+    return val;
+}
