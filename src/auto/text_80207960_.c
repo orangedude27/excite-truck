@@ -48,6 +48,17 @@ void fn_80207C7C(void) {
 	return;
 }
 
+signed long fn_80207D40(void* arg0) {
+    signed long temp_r3;
+
+    temp_r3 = fn_802E2C20();
+    if ((signed long)(temp_r3 - *(signed long*)(((signed char*)arg0) + 8)) <= 0x10) {
+        return 0;
+    }
+    *(signed long*)(((signed char*)arg0) + 8) = temp_r3;
+    return 1;
+}
+
 extern void fn_80207C80(void*);
 extern void* lbl_802F9DC8[];
 extern char lbl_8033BE20[];
