@@ -67,6 +67,17 @@ extern "C" void fn_800FDE28(void *arg0) {
     }
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FDFA0(
+    void *this_, s32 flag) {
+    if (this_) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(this_, 0);
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+
 extern "C" void fn_800FDFF8(void *arg0) {
     s32 *p = (s32 *)((u8 *)arg0 + 4);
     *(s32 *)((u8 *)arg0 + 4) = 0;
