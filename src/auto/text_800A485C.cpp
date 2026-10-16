@@ -48,6 +48,13 @@ void fn_800A5990(void) {
     fn_800A61D0(0);
 }
 
+extern "C" void* fn_800B1BDC(void*);
+extern "C" void fn_800B73BC(void*);
+extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
+#pragma unused(ctx)
+    fn_800B73BC(fn_800B1BDC(alarm));
+}
+
 void fn_800B78EC(void) {
 
 }
@@ -184,6 +191,24 @@ extern "C" void fn_800D1200(void) {
 
 extern "C" void fn_800D1558(void) {
 
+}
+
+extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void *this_ptr, void *arg1) {
+    u32 val = (u32)*(s32 *)this_ptr;
+    
+    if ((s32)val >= 4) {
+        return -2;
+    }
+    
+    if (fn_800D1E5C((void *)((u8 *)this_ptr + 0x24), (s32)val) != 0) {
+        return -2;
+    }
+    
+    if (((u8 *)this_ptr)[0x1C] != 0) {
+        return -2;
+    }
+    
+    return fn_800604E8((s32)val, (s32)(u32)arg1, (void *)&fn_800D1668);
 }
 
 extern "C" void fn_800D1668(s32 arg0, s32 arg1) {
