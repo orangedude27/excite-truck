@@ -226,26 +226,24 @@ void fn_8014AE54(void *arg0) {
 }
 
 void fn_8014AE60(void *arg0) {
-    void *head;
     void *next;
-    void *prev;
+    void *obj = ((void **)arg0)[1];
+    void *head = ((void **)arg0)[0];
 
-    prev = ((void **)arg0)[1];
-    head = ((void **)arg0)[0];
-    next = *(void **)((u8 *)prev + 0x120);
+    next = *(void **)((u8 *)obj + 0x120);
     if (next != 0) {
-        *(void **)((u8 *)next + 0x11C) = *(void **)((u8 *)prev + 0x11C);
+        *(void **)((u8 *)next + 0x11C) = *(void **)((u8 *)obj + 0x11C);
     } else {
-        *(void **)head = *(void **)((u8 *)prev + 0x11C);
+        *(void **)head = *(void **)((u8 *)obj + 0x11C);
     }
-    next = *(void **)((u8 *)prev + 0x11C);
+    next = *(void **)((u8 *)obj + 0x11C);
     if (next != 0) {
-        *(void **)((u8 *)next + 0x120) = *(void **)((u8 *)prev + 0x120);
+        *(void **)((u8 *)next + 0x120) = *(void **)((u8 *)obj + 0x120);
     } else {
-        *(void **)((u8 *)head + 4) = *(void **)((u8 *)prev + 0x120);
+        *(void **)((u8 *)head + 4) = *(void **)((u8 *)obj + 0x120);
     }
-    *(void **)((u8 *)prev + 0x120) = 0;
-    *(void **)((u8 *)prev + 0x11C) = 0;
+    *(void **)((u8 *)obj + 0x120) = 0;
+    *(void **)((u8 *)obj + 0x11C) = 0;
 }
 
 s32 fn_8014AEB8(void *arg0) { return ((s32 *)arg0)[1]; }
@@ -328,6 +326,33 @@ s32 fn_8014C848(void *arg0) {
         ((void **)arg0)[2] = 0;
     }
     return ((void **)arg0)[1] != 0;
+}
+
+void fn_8014C9D4(void *arg0, void *arg1, s32 arg2) {
+    void *next;
+
+    ((void **)arg0)[0] = arg1;
+    if (arg2 == 0) {
+        next = ((void **)arg1)[0];
+        ((void **)arg0)[1] = next;
+        if (next != 0) {
+            *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)next + 0x11C);
+            *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)next + 0x120);
+            return;
+        }
+        *(s32 *)((u8 *)arg0 + 0xC) = 0;
+        *(s32 *)((u8 *)arg0 + 8) = 0;
+        return;
+    }
+    next = ((void **)arg1)[1];
+    ((void **)arg0)[1] = next;
+    if (next != 0) {
+        *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)next + 0x11C);
+        *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)next + 0x120);
+        return;
+    }
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    *(s32 *)((u8 *)arg0 + 8) = 0;
 }
 
 void fn_8014DE4C(void) {
