@@ -26,6 +26,7 @@ extern s32 lbl_8055ED00;
 extern s32 lbl_8055ED04;
 extern s32 lbl_8055ED0C;
 extern u8 lbl_8055ED10;
+extern s32 lbl_8055ED14;
 #pragma dont_inline on
 extern s8 lbl_8055ED18;
 extern s32 lbl_8055ED1C;
@@ -88,6 +89,7 @@ void fn_80203D84(s32* arg0) {
 #pragma dont_inline off
 
 void fn_80203DC8(void) {
+    struct lbl_8048897C_t* var_r30;
     struct lbl_8048897C_t* var_r31;
     s32 var_r28;
     s32 var_r29;
@@ -102,15 +104,15 @@ void fn_80203DC8(void) {
     fn_80203D84(&lbl_8055ED0C);
     ((void(*)(void*))fn_802D050C)(0);
     fn_802D30DC(0);
-    var_r31 = &lbl_8048897C;
+    var_r30 = &lbl_8048897C;
     var_r28 = 0;
     var_r29 = 0;
-    while (var_r28 < var_r31->count) {
+    while (var_r28 < var_r30->count) {
         fn_80203D84((s32*)((u8*)lbl_8048897C.ptr + var_r29));
         var_r29 += 8;
         var_r28 += 1;
     }
-    var_r31->count = 0;
+    var_r30->count = 0;
 }
 
 extern void fn_802D050C(void*);
