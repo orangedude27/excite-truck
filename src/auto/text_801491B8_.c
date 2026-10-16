@@ -329,6 +329,8 @@ void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 8) = 0;
 }
 
+unsigned int fn_8014C808(unsigned int arg0) { return arg0 >> 24; }
+
 unsigned char fn_8014C810(unsigned char arg0) { return arg0; }
 
 unsigned char fn_8014C818(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
