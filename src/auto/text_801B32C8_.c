@@ -11,7 +11,7 @@ extern s32 lbl_802F9630[39];
 extern void fn_80128670(s32);
 extern void fn_80128668(void*);
 extern void fn_8002F634(void*, void*, s32, s32);
-extern void fn_801B3BD4(void);
+extern void* fn_801B3BD4(void*, s32);
 extern s32 fn_802077A4();
 extern s32 lbl_80335DAC[3];
 extern f32 lbl_80562624;
@@ -38,12 +38,16 @@ void fn_801B3C64(void* arg0) {
     *(s32*)(p + 0x1C) = 0;
 }
 
+typedef void (*Vfn2)(void*, s32);
 void* fn_801B3C98(void* arg0, s32 arg1) {
     if (arg0 != NULL) {
         void* prev = *(void**)((u8*)arg0 + 0x1C);
         *(void**)arg0 = (void*)&lbl_80335DAC;
         if (prev != NULL) {
-            (*(void (**)(void*, s32))((u8*)*(void**)prev + 8))(prev, 1);
+            if (prev != NULL) {
+                Vfn2 fn = ((Vfn2*)*(void***)prev)[2];
+                fn(prev, 1);
+            }
             *(void**)((u8*)arg0 + 0x1C) = NULL;
         }
         if (arg1 > 0) {
@@ -53,14 +57,15 @@ void* fn_801B3C98(void* arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling off
 void* fn_801B3D24(void* arg0, s32 arg1) {
-    s32* p = (s32*)arg0;
-
-    if (p != NULL) {
+    if (arg0 != NULL) {
+        s32* p = (s32*)arg0;
         s32 i;
 
         for (i = 0; i < 6; i++) {
-            fn_80128670(p[i * 3]);
+            fn_80128670(*p);
+            p += 3;
         }
         fn_8002F634((u8*)arg0 + 0x2FC, (void*)fn_801B3BD4, 0x2C, 0x10);
         if (arg1 > 0) {
@@ -69,7 +74,7 @@ void* fn_801B3D24(void* arg0, s32 arg1) {
     }
     return arg0;
 }
-
+#pragma scheduling reset
 void fn_801B3DBC(void* arg0) {
     fn_801B435C(arg0);
 }
@@ -96,8 +101,8 @@ s32 fn_801B3FD0(void) {
 }
 
 void fn_801B42D0(void* arg0) {
-    void* val = *(void**)lbl_802F9630;
     u8* p = (u8*)arg0 + 0x2FC;
+    void* val = *(void**)lbl_802F9630;
     f64 init = lbl_80562650;
     s32 i;
 
