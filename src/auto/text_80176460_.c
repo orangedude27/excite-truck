@@ -146,8 +146,9 @@ extern void fn_80177628(int *);
 extern void fn_80177638(int *);
 void fn_80177790(void) { fn_80177658((void *)fn_80177608); }
 
-void fn_8017779C(void) { fn_80177658(&fn_80177618); }
-
+#pragma push
+#pragma small_data off
+void fn_8017779C(void) { fn_80177658((void *)fn_80177618); }
 void fn_801777A8(void) { fn_80177658(&fn_80177628); }
 
 void fn_801777B4(void) { fn_80177658(&fn_80177638); }
