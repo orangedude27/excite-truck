@@ -132,10 +132,20 @@ s32 fn_801B3050(s32 arg0) {
 
 extern f32 lbl_8055E3C8;
 extern f32 lbl_8055E6AC;
-f32 fn_801B306C(void) { return lbl_8055E6AC - lbl_8055E3C8; }
+f32 fn_801B306C(void) { return lbl_8055E3C8 - lbl_8055E6AC; }
 
 void* fn_801B307C(void) {
     return lbl_8055E694;
+}
+
+void fn_801B3084(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+    void *obj = lbl_8055E68C;
+    if (obj != NULL) {
+        void **vtable = *(void ***)obj;
+        ((void (*)(void *, s32, s32, s32, s32))vtable[6])(obj,
+            *(s32 *)((u8 *)arg0 + 0x1EC),
+            *(s32 *)((u8 *)arg1 + 0x1EC), arg2, arg3);
+    }
 }
 
 extern void fn_802E317C(const char *, s32, s32);
