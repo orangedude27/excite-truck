@@ -12,7 +12,7 @@ void *fn_801298E8(void *arg0, int arg1);
 extern u8 lbl_804223C0[];
 extern u8 lbl_8032A5B0[];
 extern u8 lbl_8055DFD0;
-extern void *fn_80129400;
+extern void fn_80129400(void);
 void fn_802E7C64(void);
 void fn_80127C90(void *, void *);
 void fn_80129458(void);
@@ -20,7 +20,31 @@ void fn_802E830C(void *);
 void fn_80127D58(void *);
 void fn_802E7D0C(void);
 
+void fn_80129790(void) {
+    fn_802E7C64();
+    fn_80127C90(fn_80129400, lbl_8032A5B0);
+    fn_80129458();
+    lbl_8055DFD0 = 1;
+    memset(lbl_804223C0, -1, 0x38);
+    fn_802E830C(lbl_804223C0);
+}
+
 void *__AXFXGetLfoSinTable_801297F4(void) { return lbl_804223C0; }
+
+u8 fn_80129800(void *arg0, int arg1) {
+    u8 buffer[0x80];
+    s32 offset;
+    if (fn_801298E8(buffer, 0) != 0) {
+        offset = ((s32 *)lbl_804223C0)[arg1];
+        if (offset >= 0) return buffer[offset + 0x28];
+    }
+    return 0;
+}
+
+void fn_80129864(void) {
+    fn_80127D58(fn_80129400);
+    fn_802E7D0C();
+}
 
 s32 fn_80129890(void) {
     s32 count = 0;
