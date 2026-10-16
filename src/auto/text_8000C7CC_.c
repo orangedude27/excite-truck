@@ -127,18 +127,25 @@ void fn_8000D19C(void) {
     }
 }
 
+u8 fn_8000D75C(void) {
+    return lbl_8055D404;
+}
+
 extern s32 fn_80019BA8(void);
 s32 fn_8000C7CC(void) {
     return fn_80019BA8() == 0;
 }
 
+#pragma dont_inline on
+#pragma scheduling off
 u32 fn_8000C7F4(s32 arg0) {
-    if (fn_8000C7CC() != 0) {
+    if (fn_8000C7CC() == 0) {
         return 1;
     }
-    return (u32)((arg0 - 2) | (arg0 - 2)) >> 31;
+    return (u32)((2 - arg0) | (arg0 - 2)) >> 31;
 }
-
+#pragma scheduling on
+#pragma dont_inline off
 s32 fn_8000C840(void) {
     return 1;
 }
