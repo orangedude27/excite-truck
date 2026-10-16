@@ -27,7 +27,11 @@ void fn_802CB3F8(void) {
 }
 
 extern char lbl_8055FCBC[];
+#pragma push
+#pragma small_data on
 extern char lbl_8055FCB0[];
+#pragma small_data off
+#pragma pop
 extern float lbl_80564F40;
 extern float lbl_80564F44;
 extern float lbl_8055FCC4;
