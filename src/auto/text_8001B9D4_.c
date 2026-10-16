@@ -151,7 +151,7 @@ void *fn_8001C070(void *dest, int val, size_t count) {
 
 #pragma dont_inline on
 s32 fn_8001C0A0(void) {
-    return *(s32 *)fn_8001BC18(0);
+    return *(s32 *)((s32 (*)(void))fn_8001BC18)();
 }
 #pragma dont_inline reset
 void fn_8001C0E8(void) {
