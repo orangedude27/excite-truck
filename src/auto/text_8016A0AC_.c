@@ -17,3 +17,5 @@ void fn_8016A68C(void* arg0) {
     fn_8016B634(fn_8016B598(arg0));
 }
 
+void fn_8016AC18(u8* arg0) { *arg0 = 0; }
+
