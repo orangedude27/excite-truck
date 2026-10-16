@@ -1,6 +1,8 @@
 #include <types.h>
 
 extern s32 fn_80128668(void);
+extern f32 lbl_805612F4;
+extern f32 lbl_80561318;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -58,9 +60,8 @@ s32 fn_801351AC(void) {
 }
 
 void fn_801351B4(void *param) {
-    void *vtable = *(void **)param;
-    void (*fn)(void) = *(void **)((u8 *)vtable + 0x10);
-    fn();
+    u32 r12 = *(u32 *)param;
+    ((void (*)(void))(*(u32 *)(r12 + 0x10)))();
 }
 
 void fn_801351C4(void *arg0, s32 arg1) {
@@ -73,9 +74,10 @@ void fn_801351CC(void *arg0) {
     extern void fn_8018ADA4(void *, f32);
     extern f32 lbl_805612F4;
     extern f32 lbl_80561318;
-    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), lbl_80561318);
-    fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
-    fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
+    void *field = *(void **)((u8 *)arg0 + 8);
+    fn_8018ADBC(field, lbl_80561318);
+    fn_8018ADB4(field, lbl_805612F4);
+    fn_8018ADA4(field, lbl_805612F4);
 }
 
 void fn_80135218(void) {
