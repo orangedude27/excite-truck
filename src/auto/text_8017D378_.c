@@ -15,3 +15,5 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017DA34(long arg0, long arg1) {
 
 long fn_8017EAF4(long arg0) { return arg0 + 0x6C; }
 
+long fn_8017EAFC(long arg0) { return arg0 + 0x118; }
+
