@@ -41,7 +41,7 @@ int GXGetTexObjHeight(void *arg0) {
 }
 
 unsigned short GXGetTexObjWrapT(void *arg0) {
-    return (unsigned short)(((*(unsigned int *)((char *)arg0 + 8)) >> 10) + 1);
+    return (unsigned short)(((*(unsigned int *)((char *)arg0 + 8)) >> 10) & 0x3ff) + 1;
 }
 
 int GXGetTexObjMipMap(void *arg0) {
