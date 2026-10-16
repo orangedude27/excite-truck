@@ -150,6 +150,12 @@ void fn_8001071C(void) {
     fn_80010FDC(0xD);
 }
 
+f32 fn_800108C8(f32 farg0, s32 arg0) {
+    f32 r = farg0 * fn_8023293C(lbl_8055D490, lbl_80560264);
+    f32 c = lbl_805602C8;
+    return c * r;
+}
+
 extern s32 lbl_80558A90;
 f32 fn_8001090C(f64 farg0) {
     return lbl_805602C8 * ((f32)farg0 * (f32)fn_80232B70(lbl_8055D490));
@@ -333,5 +339,9 @@ f32 fn_80011DC0(s32 arg0) {
 
 f32 fn_80011DD4(s32 arg0) {
     return lbl_80350F28[arg0][1];
+}
+
+f32 fn_80011DEC(s32 arg0) {
+    return lbl_80350F28[arg0][2];
 }
 
