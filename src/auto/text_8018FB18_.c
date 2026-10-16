@@ -38,6 +38,22 @@ void fn_80190184(void *arg0, void *arg1) {
     ((void (**)(void *))(*(void ***)obj))[4](arg1);
 }
 
+int fn_801901F0(void *arg0) {
+    int result;
+    void *obj;
+    if (fn_801B526C() != 0) return 0;
+    obj = *(void **)((char *)arg0 + 4);
+    if (obj != 0 && fn_801769F8() != 0) {
+        ((void (**)(int))(*(void ***)obj))[30](0);
+    }
+    obj = *(void **)((char *)arg0 + 0x10);
+    if (obj == 0) return 4;
+    result = ((int (**)(void))(*(void ***)obj))[5]();
+    if (*(unsigned char *)((char *)arg0 + 0x34) == 0) result |= 0x10;
+    if (lbl_8055E521 != 0) result |= 0x100;
+    return result;
+}
+
 void fn_801902A0(void *arg0) {
     ((void (**)(void))(*(void **)*(void **)((char *)arg0 + 4)))[30]();
 }
@@ -290,7 +306,6 @@ extern float lbl_8056208C;
 extern float lbl_80562090;
 extern float lbl_805620A4;
 extern float lbl_805620AC;
-extern float lbl_805620B0;
 extern float lbl_805620B8;
 float fn_80192ED0(void *arg0) {
     float x = (float)*(unsigned short *)*(void **)((char *)arg0 + 8);
