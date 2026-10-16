@@ -446,6 +446,19 @@ extern "C" void fn_800EE47C(void* arg0) {
     fn_800F27AC(arg0);
 }
 
+extern "C" void OSCancelAlarm(void *);
+extern "C" void fn_800EEE8C(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    *(s32 *)(p + 4) = -1;
+    *(s32 *)(p + 8) = 0;
+    *(s32 *)(p + 0xC) = 0;
+    *(u8 **)p = lbl_80323E98;
+    *(u8 **)(p + 0x10) = lbl_80323E98 + 0x98;
+    p[0x15] = 0;
+    *(s32 *)(p + 0x100) = 0;
+    *(s32 *)(p + 0x104) = 0;
+}
+
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800EF804(void* arg0, f32 farg0) {
     extern f32 lbl_8056106C;
     extern u8 lbl_80323B28[];
