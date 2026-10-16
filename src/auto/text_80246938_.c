@@ -135,11 +135,11 @@ void fn_80247AAC(void) {
 
 void *fn_80248140(void *arg0, int arg1) {
     if (arg0 != 0) {
-        if ((char *)arg0 + 0x18 != 0) {
-            if ((char *)arg0 + 0x18 != 0) {
-                ((int *)arg0)[6] = 0;
-                ((int *)arg0)[7] = 0;
-                ((int *)arg0)[8] = 0;
+        if ((unsigned int)arg0 + 0x18 != 0) {
+            if ((unsigned int)arg0 + 0x18 != 0) {
+                *(int *)((char *)arg0 + 0x18) = 0;
+                *(int *)((char *)arg0 + 0x1C) = 0;
+                *(int *)((char *)arg0 + 0x20) = 0;
             }
         }
         if (arg1 > 0) fn_80128668(arg0);
@@ -212,14 +212,20 @@ void fn_80248A68(void *arg0) {
     *(float*)((char*)arg0 + 0x1C) = lbl_805638B0;
 }
 
-void fn_80248A74(void* arg0) {
+void fn_80248A74(void *arg0) {
     s32 var_r31;
+    union {
+        double d;
+        unsigned int u[2];
+    } t;
 
-    if (*(float*)((char*)arg0 + 0x1C) > lbl_805638C8) {
+    if (lbl_805638C8 < *(float *)((char *)arg0 + 0x1C)) {
         var_r31 = 0xC8;
     } else {
         var_r31 = 0x32;
     }
-    *(float*)((char*)arg0 + 0x1C) += (float)var_r31 * fn_80214D48();
+    t.u[1] = (unsigned int)var_r31 ^ 0x80000000;
+    t.u[0] = 0x43300000;
+    *(float *)((char *)arg0 + 0x1C) += (float)((t.d - lbl_805638A0) * fn_80214D48());
 }
 
