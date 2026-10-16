@@ -116,24 +116,31 @@ extern void fn_8000FDF0(const char*);
 extern f32 fn_801C3B6C(void);
 
 void fn_801C6B70(void) {
-    f32 val = *(f32*)&lbl_80437E24[2];
+    f32 val;
+    f32 diff;
+    s32 *str1;
+    s32 *str0;
+    
+    val = *(f32*)&lbl_80437E24[2];
     
     if (val <= lbl_80562970) {
         if (lbl_8055E3C8 >= val) {
-            f32 diff = lbl_8055E3C8 - val;
+            diff = lbl_8055E3C8 - val;
             if (diff > lbl_80562978) {
                 *(f32*)&lbl_80437E24[2] = lbl_80562994;
-                lbl_80437E24[0] = 0;
-                lbl_80437E24[1] = 0;
+                *(s32*)&lbl_80437E24[0] = 0;
+                *(s32*)&lbl_80437E24[1] = 0;
             }
         }
     }
     
-    if (strlen((const char*)lbl_80437E24[1]) != 0) {
-        fn_8000FC8C((const char*)lbl_80437E24[1]);
+    str1 = (s32*)&lbl_80437E24[1];
+    if (strlen((const char*)str1) != 0) {
+        fn_8000FC8C((const char*)str1);
     }
-    if (strlen((const char*)lbl_80437E24[0]) != 0) {
-        fn_8000FDF0((const char*)lbl_80437E24[0]);
+    str0 = (s32*)&lbl_80437E24[0];
+    if (strlen((const char*)str0) != 0) {
+        fn_8000FDF0((const char*)str0);
     }
 }
 
