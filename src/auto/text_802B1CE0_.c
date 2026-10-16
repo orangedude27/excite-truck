@@ -1,6 +1,13 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+int fn_802B2E00(void *);
+int fn_802B2E08(int);
+int *fn_802B320C(int *, int);
+int fn_802B3340(int);
+extern int lbl_8055F9B4;
+extern int lbl_8055F9B0;
+
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
 int fn_802B1D38(int arg0) {
@@ -103,5 +110,19 @@ void fn_802B2504(int *dst, int count) {
         dst[i / 4] = dst[idx / 4];
         dst[idx / 4] = tmp;
     }
+}
+
+int fn_802B2E00(void *);
+int fn_802B2E08(int);
+int *fn_802B320C(int *, int);
+extern int lbl_8055F9B4;
+extern int lbl_8055F9B0;
+int fn_802B3340(int);
+void fn_802B32E0(int *arg0) {
+    int i = 0;
+    do {
+        fn_802B3340(*fn_802B320C(arg0, i));
+        i++;
+    } while (i < fn_802B2E00(arg0));
 }
 
