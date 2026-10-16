@@ -23,3 +23,11 @@ void MEMFreeToAllocator(MEMAllocator* allocator, void* block) {
     allocator->funcs->freeFunc(allocator, block);
 }
 
+void MEMInitAllocatorForExpHeap(MEMAllocator* allocator, MEMiHeapHead* heap, s32 align) {
+    extern const MEMAllocatorFuncs lbl_80560C38;
+    allocator->funcs = &lbl_80560C38;
+    allocator->heap = heap;
+    allocator->heapParam1 = align;
+    allocator->heapParam2 = 0;
+}
+
