@@ -342,19 +342,23 @@ extern "C" void fn_80215824(void) {
 }
 
 extern "C" void fn_80215B08(void *arg0) {
-    (*(void (***)(void))(*(void ***)((char *)arg0 + 0x244)))[23]();
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf21();
 }
 
 extern "C" void fn_80215B1C(void *arg0) {
-    (*(void (***)(void))(*(void ***)((char *)arg0 + 0x244)))[9]();
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf9();
 }
 
 extern "C" void fn_80215B30(void *arg0) {
-    (*(void (***)(void))(*(void ***)((char *)arg0 + 0x244)))[10]();
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf10();
 }
 
 extern "C" void fn_80215B44(void *arg0) {
-    (*(void (***)(void))(*(void ***)((char *)arg0 + 0x244)))[11]();
+    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
+    obj->vf11();
 }
 
 extern "C" void fn_802191F0(void);
