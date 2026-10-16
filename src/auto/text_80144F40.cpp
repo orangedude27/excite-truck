@@ -189,7 +189,7 @@ extern "C" void fn_80148280(void) {
 }
 
 extern "C" void fn_80148284(void *arg0, s32 arg1) {
-    fn_80148294((const char *)arg1, (void *)((u8 *)arg0 + 0x30));
+    fn_80148294((const char *)arg1, *(void **)((u8 *)arg0 + 0x30));
 }
 
 extern "C" void *fn_801484A4(const char *, void *);
