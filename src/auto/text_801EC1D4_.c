@@ -28,6 +28,18 @@ void *fn_801EC1F8(void) {
     return lbl_80488668;
 }
 
+void *fn_801EC204(void) {
+    return &lbl_80488668[1];
+}
+
+void *__dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        if (*(void **)arg0 != 0) fn_801E323C();
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_801EC714(void *arg0, float *arg1, float *arg2) {
     *arg1 = *(float *)((char *)arg0 + 8) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 4));
     *arg2 = *(float *)((char *)arg0 + 0x10) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 0xC));
