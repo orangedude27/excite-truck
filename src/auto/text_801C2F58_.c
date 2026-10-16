@@ -15,6 +15,10 @@ void fn_801C6CB0(void) {
     return;
 }
 
+void fn_801C6CB4(void) {
+    fn_801C957C(1);
+}
+
 void fn_801C7288(void);
 void fn_801C7288(void) {
     fn_801C957C(0);
