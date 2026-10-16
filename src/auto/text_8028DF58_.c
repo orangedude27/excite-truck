@@ -14,15 +14,17 @@ extern void fn_8028ED80(void *);
 extern void fn_8028F2EC(void);
 extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
+#pragma push
+#pragma small_data off
 void fn_8028DFB0(void) {
     int *base = &lbl_804B34B0;
-    if (*(int *)((char *)base + 0x100) > 0) {
+    if (base[0x40] > 0) {
         fn_8028F2EC();
         lbl_8055F740 = *base;
     }
     lbl_8055F744 = 0;
 }
-
+#pragma pop
 extern unsigned char lbl_8055F73D;
 extern float lbl_80564420;
 extern int lbl_8055F748;
@@ -99,6 +101,8 @@ void fn_8028E398(int arg0) {
 void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
 }
+
+void fn_8028E58C(void) { fn_8028FAE4(); }
 
 void fn_8028ED74(void *arg0) { *(int *)((char *)arg0 + 0x100) = 0; }
 
