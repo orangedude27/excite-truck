@@ -48,6 +48,8 @@ void fn_802BD0F4(void *arg0) {
 }
 
 void *fn_801284F8(int, int);
+int strcmp(const char *, const char *);
+int fn_802BA580(int, float *, float);
 void fn_802BD414(int arg0, volatile int *arg1) {
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
