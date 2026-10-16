@@ -19,3 +19,8 @@ extern u16 lbl_80487B18[];
 extern Unk801E4E44State lbl_80487C88;
 extern s32 lbl_8055EAA8, lbl_8055EAAC, lbl_8055EAB0;
 void fn_801E4E44(void);
+
+void fn_801E4FF4(void) {
+    fn_801E4E44();
+    lbl_8055EAB0 = 0;
+}
