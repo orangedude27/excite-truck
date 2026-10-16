@@ -207,6 +207,12 @@ void fn_802B7CF0(void) {
     fn_802B7918();
 }
 
+void fn_802B7D1C(void) {
+    fn_802B7884(lbl_8034A8B0);
+    fn_802B7918();
+    fn_802B7B08();
+}
+
 f32 fn_802B822C(s32 arg0) {
     return lbl_80564C98 * (f32)arg0;
 }
