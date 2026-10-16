@@ -3,6 +3,7 @@
 
 typedef signed char s8;
 typedef unsigned char u8;
+typedef unsigned long u32;
 typedef signed long s32;
 typedef float f32;
 void fn_802C2C00(s32);
