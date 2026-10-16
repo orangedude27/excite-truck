@@ -12,7 +12,32 @@ void fn_801DCEDC(int arg0, float arg1);
 extern float lbl_804305D4[];
 extern float lbl_80430700[];
 extern float lbl_80561B48;
-void fn_802E8518(void);
+void fn_802E8518(int arg0);
+extern int lbl_8055E3C0;
+extern char lbl_8055E3BD;
+int fn_801CF064(void);
+int fn_8018FD38(void);
+extern void *lbl_804340C0[];
+extern void **lbl_8055E434[];
+extern int lbl_8055E438;
+extern int lbl_8055E468;
+void fn_801778C0(void) {
+    void **var_r31 = &lbl_804340C0[0];
+    void **var_r28;
+    int var_r30;
+    int var_r29;
+
+    lbl_8055E468 = 0;
+    for (var_r29 = 0, var_r30 = 0; var_r29 < lbl_8055E438; var_r29++, var_r30 += 4) {
+        var_r28 = lbl_8055E434[var_r30];
+        if (((int (*)(void **))(*(void ***)*var_r28 + 0x44))(var_r28) != 0 &&
+            ((int (*)(void **))(*(void ***)*var_r28 + 0x40))(var_r28) != 0) {
+            var_r31[lbl_8055E468] = var_r28;
+            lbl_8055E468 += 1;
+        }
+    }
+}
+
 long fn_80177980(void) {
     return 0;
 }
@@ -22,11 +47,11 @@ long fn_80177988(void) {
 }
 
 void fn_80177A18(void) {
-    long var_r31;
+    int var_r31;
 
     var_r31 = 0;
     do {
-        fn_802E8518();
+        fn_802E8518(var_r31);
         var_r31 += 1;
     } while (var_r31 < 4);
 }
