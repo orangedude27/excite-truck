@@ -58,6 +58,10 @@ f32 fn_802A4A50(void) {
     return fn_801E7E24();
 }
 
+f32 fn_802A4AD4(void) {
+    return lbl_8055F8A0;
+}
+
 void fn_802A4ADC(void) {
     s32 temp = (s32)fn_801E1F44();
     void *var_r30;
