@@ -21,3 +21,8 @@ void fn_8024BDF4(void* arg0) {
     fn_8024BCC0((char*)arg0 - 0x18);
 }
 
+extern void __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(void*);
+void fn_8024BDFC(void* arg0) {
+    __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC((char*)arg0 - 0x18);
+}
+
