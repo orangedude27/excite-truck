@@ -141,7 +141,7 @@ extern "C" s32 fn_800ECE68(s32 arg0, s32 arg1) {
 
 extern "C" s32 fn_800ECEA8(void* arg0, s32 arg1) {
     if (arg0 != NULL && arg1 > 0) {
-        fn_80128668();
+        fn_80128668_noarg();
     }
     return (s32)arg0;
 }
