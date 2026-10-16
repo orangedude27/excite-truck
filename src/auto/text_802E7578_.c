@@ -23,6 +23,9 @@ void fn_802E773C(void) {
 void fn_802E7740(void) {
 }
 
+void fn_802E7744(void) {
+}
+
 void fn_802E7748(void) {
 }
 
