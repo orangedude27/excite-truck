@@ -34,6 +34,7 @@ extern u8 lbl_80435C50[0x20];
 extern s32 fn_801796CC(s32, void*, s32);
 
 void fn_801B435C(void*);
+void fn_801B3DBC(void*);
 
 typedef void (*Dtor1Arg)(void*, s32);
 
@@ -67,6 +68,18 @@ void* fn_801B3338(void* arg0) {
 
 int fn_801B3390(void) {
     return 0x14;
+}
+
+s32 fn_801B3398(void* arg0) {
+    Unk801B3398 local;
+    Unk801B3398* src = (Unk801B3398*)arg0;
+    s32 i;
+    s32* lp = (s32*)&local;
+
+    for (i = 0; i < 14; i++) {
+        lp[i] = ((s32*)src)[i];
+    }
+    return fn_801796CC(1, &local, 0x38);
 }
 
 void fn_801B3448(void) {
