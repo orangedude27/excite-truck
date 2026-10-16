@@ -27,10 +27,6 @@ char fn_802E9A1C(void) {
     return lbl_8056004C;
 }
 
-extern char lbl_8056004D;
-extern char lbl_8056004D;
-extern f32 lbl_80560050;
-
 char fn_802E9A24(void) {
     return lbl_8056004D;
 }
