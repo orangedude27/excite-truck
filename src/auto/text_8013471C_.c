@@ -55,6 +55,22 @@ void fn_80134B50(void) {
     fn_80136F08(lbl_8055E0D4);
 }
 
+float fn_80134B58(float arg0) {
+    extern int fn_80134B9C(void *, void *);
+    extern double atof(void);
+    float value = arg0;
+    if (fn_80134B9C(0, 0) != 0)
+        value = (float)atof();
+    return value;
+}
+
+s32 fn_80134C24(s32 arg0) {
+    extern void *fn_8017960C(void);
+    if (arg0 >= 0 && arg0 < 8)
+        return *(s32 *)((char *)fn_8017960C() + 0x258);
+    return -1;
+}
+
 f32 fn_80134E00(void) {
     if ((fn_801769A8() >> 8) & 1) {
         return fn_80134D78();
