@@ -23,3 +23,5 @@ void fn_80265D84(void) {}
 
 void fn_80265D88(void) {}
 
+void fn_80265D8C(void) {}
+
