@@ -67,11 +67,12 @@ typedef struct Unk801B3398 {
 
 void* fn_801B3338(void* arg0) {
     s32 found;
-    s32* obj = *(s32**)((char*)arg0 + 4);
+    s32* obj;
 
-    if (obj == NULL) {
+    if (*(s32**)((char*)arg0 + 4) == NULL) {
         return NULL;
     }
+    obj = *(s32**)((char*)arg0 + 4);
     found = 0;
     if ((u32)(obj[4] - 0x43410000) == 0x5220
         || (u32)(obj[4] - 0x50430000) == 0x4152
@@ -90,26 +91,8 @@ int fn_801B3390(void) {
 }
 
 s32 fn_801B3398(void* arg0) {
-    Unk801B3398 local;
-    Unk801B3398* src = (Unk801B3398*)arg0;
-
-    local.unk_0x00 = src->unk_0x00;
-    local.unk_0x04 = src->unk_0x04;
-    local.unk_0x08 = src->unk_0x08;
-    local.unk_0x0C = src->unk_0x0C;
-    local.unk_0x10 = src->unk_0x10;
-    local.unk_0x14 = src->unk_0x14;
-    local.unk_0x18 = src->unk_0x18;
-    local.unk_0x1C = src->unk_0x1C;
-    local.unk_0x20 = src->unk_0x20;
-    local.unk_0x24 = src->unk_0x24;
-    local.unk_0x28 = src->unk_0x28;
-    local.unk_0x2C = src->unk_0x2C;
-    local.unk_0x30 = src->unk_0x30;
-    local.unk_0x34 = src->unk_0x34;
-    return fn_801796CC(1, &local, 0x38);
+    return fn_801796CC(1, *(Unk801B3398*)arg0, 0x38);
 }
-
 void fn_801B3448(void) {
     void* p = (void*)fn_801284F8(0x5C0, &lbl_80335D3C);
     if (p == NULL) {
