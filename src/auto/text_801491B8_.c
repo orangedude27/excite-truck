@@ -150,6 +150,25 @@ void fn_8014ACD4(void) {
 
 }
 
+s32 fn_8014ACD8(void *arg0, s32 arg1) {
+    Obj8014ACD8 *obj;
+    s32 result;
+    obj = (Obj8014ACD8 *)fn_801B2ED0(arg1);
+    obj = (Obj8014ACD8 *)obj->vtable->fn();
+    result = 0;
+    if (obj->state != 3 && obj->flags == 0) {
+        result = 1;
+    }
+    if (result != 0 && *(f32 *)((u8 *)arg0 + 0x8D4) <= *(f32 *)((u8 *)arg0 + 0x8DC)) {
+        result = 1;
+    } else {
+        result = 0;
+    }
+    return result;
+}
+
+s32 fn_8014AD64(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x108); }
+
 void fn_8014AED0(void *arg0, f32 farg0) {
     ((f32 *)arg0)[0x41] = farg0;
 }
