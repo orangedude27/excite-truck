@@ -2,6 +2,7 @@
 
 extern void *fn_801284F8(u32, const void *);
 extern f32 lbl_8055E0A8;
+extern f32 lbl_80561304;
 extern void *fn_8001285C(s32);
 extern s32 *fn_801E87A8(void);
 extern u32 lbl_80559BD8;
