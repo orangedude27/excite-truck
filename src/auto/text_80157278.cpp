@@ -37,6 +37,7 @@ public:
     virtual void v30();
     virtual s32 v31();
     virtual void v32();
+    virtual void v33();
     virtual void v34();
     virtual void v35(f32*);
     s32 m4;
