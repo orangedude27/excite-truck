@@ -139,11 +139,12 @@ extern s32 lbl_8055DDD4;
 extern void* lbl_8055DDD4_ptr;
 extern "C" s32 fn_800D3F94(void*, s32, s32, s32);
 extern u32 lbl_80407BD8;
+extern s32 lbl_8055DDC8;
 #pragma opt_tail_call on
 void DCStoreRange(const void *, u32);
 
 extern "C" void fn_800D2FC8(void) {
-    u32 *base = (u32 *)(u32)&lbl_80407BD8;
+    u32 *base = (u32 *)0x80407BD8;
     DCStoreRange((void *)base[0], base[1]);
 }
 
