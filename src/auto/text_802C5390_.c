@@ -1,4 +1,6 @@
 #include "types.h"
+extern int fn_802D6C48;
+void fn_802C5DF0(int*);
 extern int lbl_8055D008;
 void* fn_802C5390(void);
 int fn_802C94A0(void*, unsigned char*, float*, float);
