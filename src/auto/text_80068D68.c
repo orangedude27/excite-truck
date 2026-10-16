@@ -928,6 +928,51 @@ void fn_800934D8(void *arg0, s16 arg1) {
     fn_800916F4(arg0, 7, &sp8);
 }
 
+void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
+    UINT16 i;
+    UINT16 x;
+
+    if (num_attr <= 1) {
+        return;
+    } else if (num_attr > SDP_MAX_ATTR_FILTERS) {
+        num_attr = SDP_MAX_ATTR_FILTERS;
+    }
+
+    num_attr--;
+    for (i = 0; i < num_attr;) {
+        if (p_db->attr_filters[i] > p_db->attr_filters[i + 1]) {
+            x = p_db->attr_filters[i];
+            p_db->attr_filters[i] = p_db->attr_filters[i + 1];
+            p_db->attr_filters[i + 1] = x;
+            i = 0;
+        } else {
+            i++;
+        }
+    }
+}
+
+static void USB_LOG(const char *fmt, ...) {
+    va_list list;
+
+    if (lbl_8055DC90) {
+        OSReport(lbl_805590A4);
+        va_start(list, fmt);
+        vprintf(fmt, list);
+        va_end(list);
+    }
+}
+
+static void USB_ERR(const char *fmt, ...) {
+    va_list list;
+
+    if (lbl_8055DC90) {
+        OSReport(lbl_8031A620);
+        va_start(list, fmt);
+        vprintf(fmt, list);
+        va_end(list);
+    }
+}
+
 #pragma use_lmw_stmw off
 s32 IUSB_WriteCtrlMsgAsync(s32 a,s32 b,s32 c,s32 d,s32 e,u32 length,void* data,void* callback,void* context) {
     DCFlushRange(data,length);
