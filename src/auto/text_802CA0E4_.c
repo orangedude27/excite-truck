@@ -43,6 +43,12 @@ int fn_802CB274(int arg0) {
     return fn_802DB2C0(p[0x28 / 4]);
 }
 
+int fn_802DB2C4(int);
+int fn_802CB288(int arg0) {
+    int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
+    return fn_802DB2C4(p[0x28 / 4]);
+}
+
 char fn_802CAFC8(int arg0) {
     if (arg0 == -1)
         return 5;
@@ -56,9 +62,7 @@ char fn_802CAFF0(int arg0) {
 }
 
 unsigned short fn_802CB3FC(int arg0) {
-    int a = arg0 * 0x4C;
-    int b = lbl_8055FCB0;
-    unsigned short *p = *(unsigned short **)(b + a + 0x2C);
+    unsigned short *p = *(unsigned short **)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C);
     return (p[1] <= p[0]) ? p[0] : p[1];
 }
 void fn_802CC73C(char arg0) {
