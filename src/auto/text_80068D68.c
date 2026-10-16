@@ -989,6 +989,15 @@ void bta_dm_pin_reply(void *arg0) {
  }
 }
 
+extern u8 lbl_803C0B98[];
+extern void *GKI_getbuf(u16);
+void fn_80072644(void) {
+    if (*(void **)(lbl_803C0B98 + 0x74) != 0) {
+        GKI_freebuf(*(void **)(lbl_803C0B98 + 0x74));
+        *(void **)(lbl_803C0B98 + 0x74) = 0;
+    }
+}
+
 void bta_sys_disable(void) {
     void **pp_module;
     void *p_module;
