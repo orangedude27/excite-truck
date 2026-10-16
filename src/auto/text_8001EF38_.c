@@ -91,13 +91,12 @@ void fn_8001EFCC(void* alarm) {
     fn_8001F578(fn_8001F2C8(alarm));
 }
 
-#pragma scheduling off
 s32 fn_8001F2C8(void* alarm) {
+    SrcCoef* p = lbl_802FDF30;
+    void* zero = NULL;
     if (lbl_8055D610 != 0) {
-        SrcCoef* p = lbl_802FDF30;
         u32 i = 0;
         void* c;
-        void* zero = NULL;
         do {
             c = p->unkC;
             if (c != NULL && c != NULL) {
@@ -115,6 +114,7 @@ s32 fn_8001F2C8(void* alarm) {
         fn_80131818(lbl_8055D610);
         lbl_8055D610 = 0;
     }
+    return 0;
 }
 #pragma scheduling reset
 f32* __AXFXGetSrcCoef(u32 i) {
@@ -125,4 +125,24 @@ f32* __AXFXGetSrcCoef(u32 i) {
 s32 fn_8001F388(s32 arg) {
     return ((s32*)__AXFXGetSrcCoef(arg))[2];
 }
+
+s32 fn_8001F41C(const char* arg) {
+    s32* p = (s32*)&lbl_802FDF30;
+    s32 idx = 0;
+    do {
+        if (stricmp((const char*)p[0], arg) == 0) {
+            return idx;
+        }
+        idx++;
+        p += 4;
+    } while (idx < 8);
+    return -1;
+}
+
+void fn_8001F490(s32 arg) {
+    if (arg == 0 || arg == 2) {
+        memset(&lbl_80358698, 0, 0x2080);
+    }
+}
+
 #pragma dont_inline off
