@@ -28,6 +28,11 @@ void *fn_801EC1F8(void) {
     return lbl_80488668;
 }
 
+void fn_801EC714(void *arg0, float *arg1, float *arg2) {
+    *arg1 = *(float *)((char *)arg0 + 8) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 4));
+    *arg2 = *(float *)((char *)arg0 + 0x10) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 0xC));
+}
+
 long fn_801ECC8C(unsigned int arg0) {
     long result = 0;
     if (fn_801ECB60() == 0 && arg0 == lbl_8055EBC8)
