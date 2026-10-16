@@ -559,6 +559,20 @@ extern "C" void fn_800D018C(void *arg0, void *arg1) {
     (*(void (**)(void *, void *))(*(void ***)arg0 + 20))(arg0, q);
 }
 
+extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hbm3lyt4Pane(void *arg0, void *arg1) {
+    u16 i = 0;
+    void *item;
+    while (i < *(u16 *)((u8 *)arg0 + 0x10)) {
+        if (*(void **)((u8 *)arg0 + 8) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597D0, 0xCF, lbl_8031E938);
+        }
+        item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)arg0 + 0x18, i);
+        if (*(void **)item == arg1) return *(s32 *)((u8 *)item + 4);
+        i++;
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800D0814(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x24); }
 
 extern "C" s32 fn_800D0AA8(void *arg0) { return (*(u8 *)((u8 *)arg0 + 0xCF)) & 1; }
@@ -582,7 +596,7 @@ void fn_800D0BA4(void *arg0, D0BA4Dispatch *arg1) {
     }
 }
 
-s32 fn_800D0BD0(void) { return 0; }
+extern "C" s32 fn_800D0BD0(void) { return 0; }
 
 extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext(OSAlarm *alarm, OSContext *) {
     void *entry;
@@ -626,6 +640,14 @@ extern "C" void fn_800D1200(void) {
 }
 
 extern "C" void fn_800D1204(void* arg0, f32 arg1) { *(f32*)((u8*)arg0 + 4) = arg1; }
+
+extern "C" s32 fn_800D1E78(void *, s32, s32);
+s32 isPlayingSoundId__Q210homebutton10ControllerCFi(void *arg0, s32 arg1) {
+    if (fn_800D1E5C(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0) == 0) {
+        return 0;
+    }
+    return fn_800D1E78(*(void **)((u8 *)arg0 + 0x24), *(s32 *)arg0, arg1);
+}
 
 extern "C" void fn_800D1558(void) {
 
