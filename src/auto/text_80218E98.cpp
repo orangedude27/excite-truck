@@ -246,6 +246,8 @@ extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
 
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
+extern "C" void fn_8022854C(void *p){fn_8023976C(*(s32*)((u8*)p+0x244));}
+
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229054(
     void* this_, s32 flag) {
     if (this_) {
