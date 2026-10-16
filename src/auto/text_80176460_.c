@@ -47,8 +47,9 @@ void fn_8017691C(void) {
 }
 
 void fn_80176948(void *arg0, s32 *arg1) {
-    *arg1 = lbl_8055E3CC;
-    fn_8012F458(lbl_8055E3E0, lbl_8055E3CC);
+    s32 value = lbl_8055E3CC;
+    *arg1 = value;
+    fn_8012F458(lbl_8055E3E0, value);
     fn_8012F4AC(lbl_8055E3E0, arg0, *(s32 *)((char *)arg0 + 4));
     lbl_8055E3CC += fn_80179658(*(s32 *)arg0);
 }
