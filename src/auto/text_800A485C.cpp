@@ -137,12 +137,12 @@ extern "C" void fn_800D1AE4(OSAlarm *arg0) {
 }
 
 extern void* OSGetAlarmUserData(void);
-void fn_800D1AEC(void) {
+extern "C" void fn_800D1AEC(void) {
     void *r3 = OSGetAlarmUserData();
     fn_80060CC0(r3, 1, (u32)&fn_800D1B1C);
 }
 
-void fn_800D1C18(void) {
+extern "C" void fn_800D1C18(void) {
     void* r3 = OSGetAlarmUserData(NULL);
     fn_80060CC0(r3, 4, (u32)&fn_800D1C48);
 }
@@ -423,7 +423,7 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
     u32 sp_6C;
     u32 sp_70;
     u32 sp_88[16];
-
+    
     sp_8[0] = (u32)msg;
     sp_8[1] = (u32)file;
     sp_C = (u32)line;
@@ -436,7 +436,7 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
     sp_68 = 0x3000000;
     sp_6C = (u32)&sp_88[0];
     sp_70 = (u32)&sp_8[0];
-
+    
     fn_800D2098(&sp_68);
 }
 extern s32 lbl_8055DDD4;
