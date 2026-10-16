@@ -18,3 +18,7 @@ void fn_801F0000(int arg0) {
     fn_801F0F18(arg0, -1);
 }
 
+int fn_801F0008(void) {
+    return 0x4C;
+}
+
