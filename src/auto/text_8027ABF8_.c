@@ -1,7 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma push
+#pragma small_data off
 extern int lbl_804A433C;
+#pragma pop
 extern void *fn_8027ACBC(void *, void *);
 #pragma push
 #pragma small_data off
@@ -25,5 +28,9 @@ int fn_8027AC64(void *arg0) {
         return -1;
     }
     return *(int *)((char *)arg0 + 0xF8);
+}
+
+int fn_8027AC80(void *arg0) {
+    return fn_8027ACBC(&lbl_804A433C, *(void **)((char *)arg0 + 0xE8)) != 0;
 }
 
