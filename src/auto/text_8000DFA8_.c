@@ -3,6 +3,29 @@
 
 #include <types.h>
 
+extern s32 lbl_8055D490;
+extern s32 lbl_80558A90;
+extern f32 lbl_805602C8;
+extern f64 lbl_80560268;
+extern s32 fn_8023441C(void);
+extern s32 fn_80232B70(s32);
+extern f32 fn_80011EDC(void);
+extern s32 fn_80232578(s32);
+extern char lbl_802FC414[];
+extern s32 lbl_8055D49C;
+extern f32 lbl_8056025C;
+extern f32 lbl_80560260;
+extern f32 lbl_805602C4;
+extern f32 lbl_805602C0;
+extern s32 fn_801E85A4(void);
+extern f32 fn_80011E54(void);
+extern f32 fn_80011E90(void);
+extern f32 fn_80011E1C(s32);
+extern f32 fn_80011DC0(s32);
+extern s32 lbl_8055D498;
+extern void fn_80234470(void);
+extern void fn_802328D4();
+
 extern s32 lbl_8055D4A8;
 extern f32 lbl_80350F28[][6];
 
@@ -196,7 +219,7 @@ void fn_8000FB44(void) {
 
     if (lbl_80351738[0x14] != 0) fn_80235380();
     lbl_80351738[0x14] = 0;
-    fn_802328D4();
+    fn_802328D4(lbl_8055D494);
     lbl_8055D494 = 0;
     obj = lbl_8055D4B0;
     if (obj != 0) {
@@ -214,7 +237,7 @@ void fn_8000FB44(void) {
     fn_8000F22C();
     fn_8000F4BC();
 }
-
+#pragma dont_inline off
 extern void fn_80010FDC(s32);
 extern f32 fn_8023293C(s32, f32);
 extern f32 fn_80235F64(s32, s32);
