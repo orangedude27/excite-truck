@@ -124,6 +124,11 @@ extern "C" s32 fn_8010CBAC(void *self, void *arg0, s32 arg1, void *arg2) {
  return 0;
 }
 
+extern "C" void lbl_80329508(void);
+extern "C" void fn_8010D0E0(void **arg0) {
+    *arg0 = (void *)&lbl_80329508;
+}
+
 extern "C" s32 fn_8010D0F0(s32 arg0, s32 arg1) {
     extern s32 fn_80128668(void);
     if (arg0 != 0 && arg1 > 0) fn_80128668();
