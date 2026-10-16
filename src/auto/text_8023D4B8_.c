@@ -142,7 +142,15 @@ void fn_8023E548(s32 arg0) {
 }
 
 int fn_8023E3D8(int, int);
-void fn_8023E550(int arg0) {
-    fn_8023E3D8(arg0, -1);
-}
+  void fn_8023E550(int arg0) {
+      fn_8023E3D8(arg0, -1);
+  }
+
+  extern s32 fn_8023DD4C(void);
+  extern char lbl_802FA190[];
+  extern s32 stricmp(const char *, const char *);
+  extern char lbl_802FA0A8[];
+  extern char lbl_80341B9C[];
+  extern s32 fn_802E317C(const char *, ...);
+  extern char lbl_8055BBA0[];
 
