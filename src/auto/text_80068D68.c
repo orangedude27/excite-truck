@@ -540,3 +540,9 @@ u8 fn_8006CA6C(void) {
 void fn_8006CF80(void) {
     DBPrintf_8006CFA8(lbl_803140E8);
 }
+
+extern char lbl_803140FC[];
+void fn_8006CF90(void) {
+    DBPrintf_8006CFA8(lbl_803140FC);
+}
+
