@@ -300,6 +300,13 @@ extern "C" s32 fn_801FB204(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_801FB244(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern "C" void fn_801FC66C(void) {
 
 }
