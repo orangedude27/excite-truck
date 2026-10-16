@@ -311,3 +311,7 @@ extern "C" void fn_801A518C(void) {
     fn_801A4868();
 }
 
+extern "C" s32 fn_801A51CC(void* arg0) {
+    return *(s32*)((u8*)arg0 + 0x34);
+}
+
