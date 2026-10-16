@@ -5,6 +5,14 @@
 
 extern u8 lbl_8055F064;
 extern u8 *lbl_8055F068;
+extern u8 lbl_8049846C[];
+extern s32 fn_802315FC(s32);
+extern void fn_802E30C8(const char *);
+extern void fn_802E317C(const char *);
+extern void *fn_801284F8(s32, const char *);
+extern char lbl_8034044C[];
+extern char lbl_80340488[];
+extern char lbl_803404C0[];
 extern s32 stricmp(const char *, const char *);
 extern void *fn_8012850C(s32, const char *, ...);
 extern char *strcpy(char *, const char *);
