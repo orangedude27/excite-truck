@@ -25,6 +25,8 @@ extern void PORT_LineStatusInd(void *, u8, u8);
 extern void *port_find_mcb_dlci_port(void *, u8);
 extern void rfc_port_timer_stop(void *);
 extern void rfc_send_rls(void *, u8, s32, u8);
+extern void rfc_check_send_cmd(void *, void *);
+extern void fn_800916F4(void *, s32, s16 *);
 
 void DBPrintf_80068D68(const char *fmt, ...) {
 #pragma unused(fmt)
