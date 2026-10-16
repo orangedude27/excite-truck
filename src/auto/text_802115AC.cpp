@@ -3,6 +3,34 @@
 
 #include <types.h>
 
+class VfObj {
+public:
+    virtual void vf0();
+    virtual void vf1();
+    virtual void vf2();
+    virtual void vf3();
+    virtual void vf4();
+    virtual void vf5();
+    virtual void vf6();
+    virtual void vf7();
+    virtual void vf8();
+    virtual void vf9();     // vtable 0x24
+    virtual void vf10();    // vtable 0x28
+    virtual void vf11();    // vtable 0x2C
+    virtual void vf12();
+    virtual void vf13();
+    virtual void vf14();
+    virtual void vf15();
+    virtual void vf16();
+    virtual void vf17();
+    virtual void vf18();
+    virtual void vf19();
+    virtual void vf20();
+    virtual void vf21();
+    virtual void vf22();
+    virtual void vf23();    // vtable 0x5C
+};
+
 extern "C" void fn_8021915C(void *, unsigned int);
 
 extern "C" void fn_80221E7C(void);
@@ -311,6 +339,22 @@ extern "C" s32 fn_8021581C(void *arg0) {
 
 extern "C" void fn_80215824(void) {
 
+}
+
+extern "C" void fn_80215B08(void *arg0) {
+    (*(void (***)(void))(*(void ***)((char *)arg0 + 0x244)))[23]();
+}
+
+extern "C" void fn_80215B1C(void *arg0) {
+    (*(void (***)(void))(*(void ***)((char *)arg0 + 0x244)))[9]();
+}
+
+extern "C" void fn_80215B30(void *arg0) {
+    (*(void (***)(void))(*(void ***)((char *)arg0 + 0x244)))[10]();
+}
+
+extern "C" void fn_80215B44(void *arg0) {
+    (*(void (***)(void))(*(void ***)((char *)arg0 + 0x244)))[11]();
 }
 
 extern "C" void fn_802191F0(void);
