@@ -9,6 +9,12 @@
 #include "revolution/BTE/bta/include/ptim.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include <revolution/OS.h>
+extern void AXFXReverbHiExpShutdown(void*);
+extern s32 AXFXReverbHiExpInit(void*);
+extern void __FreeDelayLine(void*);
+extern s32 __CtrlMsgInt(s32,s32,s32,s32,s32,u32,void*,void*,void*,s32);
+extern f32 lbl_80560D50;
+extern f32 lbl_80560D54;
 
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80316570[];
@@ -650,6 +656,11 @@ void fn_800934D8(void *arg0, s16 arg1) {
 
     sp8 = arg1;
     fn_800916F4(arg0, 7, &sp8);
+}
+
+s32 IUSB_WriteCtrlMsgAsync(s32 a,s32 b,s32 c,s32 d,s32 e,u32 length,void* data,void* callback,void* context) {
+    DCFlushRange(data,length);
+    return __CtrlMsgInt(a,b,c,d,e,length,data,callback,context,1);
 }
 
 s32 fn_8009BF98(void* arg0) {
