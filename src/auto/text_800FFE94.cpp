@@ -134,6 +134,10 @@ extern "C" float fn_801013B4(void* arg0) {
     return *(float*)((char*)arg0 + 0x40);
 }
 
+extern "C" float fn_801013BC(void* arg0) {
+    return *(float*)((char*)arg0 + 0x38);
+}
+
 extern "C" float fn_801013C4(void* arg0) { return *(float*)((char*)arg0 + 0x34); }
 
 extern "C" float fn_801013CC(void* arg0) {
