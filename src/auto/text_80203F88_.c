@@ -3,6 +3,8 @@
 extern float lbl_80563140;
 extern float lbl_80563144;
 
+float fn_80203FE0(void) { return lbl_80563140; }
+
 void fn_80203FE8(void) {
 
 }
