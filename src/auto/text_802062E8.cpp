@@ -1,9 +1,17 @@
+#include "types.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern "C" void fn_802073A4(void);
 
 extern void *lbl_8055ED88;
+extern "C" int fn_80206430(void) {
+    extern int lbl_8055ED80;
+    int val = lbl_8055ED80;
+    unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
+    return (int)(tmp >> 31);
+}
+
 extern "C" void fn_80206464(void* hi) {
     lbl_8055ED88 = hi;
 }
@@ -18,8 +26,30 @@ void fn_80206480(void) {
     return;
 }
 
+extern "C" void fn_80208D70(void);
+extern "C" void *fn_80208D4C(void);
+extern "C" int fn_80206430(void);
+extern "C" void fn_80206484(int arg0) {
+    extern void fn_80208D70(void);
+    extern void *fn_80208D4C(void);
+    fn_80208D70();
+    ((void (**)(int))*(void ***)fn_80208D4C())[11](arg0);
+}
+
 void fn_802064C8(void) {
     return;
+}
+
+extern "C" void fn_802064D0(int arg0) {
+    extern void fn_80208D70(void); extern void* fn_80208D4C(void);
+    fn_80208D70(); void** obj=(void**)fn_80208D4C();
+    ((void (*)(int))(*(void***)obj)[13])(arg0);
+}
+
+extern "C" void fn_80206518(void) {
+    extern void fn_80208D70(void); extern void* fn_80208D4C(void);
+    fn_80208D70(); void** obj=(void**)fn_80208D4C();
+    ((void (*)(void))(*(void***)obj)[14])();
 }
 
 extern "C" void fn_80206550(unsigned int size) {
