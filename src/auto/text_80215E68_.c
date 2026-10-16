@@ -121,12 +121,10 @@ void fn_8021605C(void *arg0, s32 arg1) {
 }
 
 void fn_80216194(void) {
-    s32 i;
-    i = 1;
+    s32 i = 1;
     do {
         fn_802166B8();
-        i++;
-    } while (i < 3);
+    } while (i++ < 3);
 }
 
 void fn_8021662C(void) {
