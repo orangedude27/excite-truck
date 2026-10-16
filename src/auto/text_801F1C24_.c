@@ -229,7 +229,10 @@ void fn_801F3280(void *arg0, int arg1) {
 }
 
 void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *arg0, int arg1) {
+    #pragma push
+    #pragma small_data off
     extern int lbl_8033A8F8;
+    #pragma pop
     extern void fn_802C9994(int, void *);
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033A8F8;
@@ -240,7 +243,7 @@ void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *arg0, int arg1) {
     }
     return arg0;
 }
-
+#pragma pop
 void fn_801F371C(int arg0) {
     fn_8029231C(arg0 + 4);
 }
@@ -439,6 +442,14 @@ void fn_801F4330(void) {
 
 }
 
+extern int fn_802E317C(void *);
+extern int fn_802C7040(int);
+extern int fn_802CD320(int, void *);
+extern unsigned char lbl_8033AAB8[];
+extern unsigned char lbl_8033AA48[];
+extern unsigned char lbl_8055B140[];
+int fn_801F4334(int a, int b) { if (a != 0 && b > 0) fn_80128668(); return a; }
+
 void fn_801F4374(void) {
 
 }
@@ -463,6 +474,19 @@ int fn_801F4594(int arg0, int arg1) {
 
 int fn_801F45D4(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
+void *fn_801F4614(void *arg0, int arg1) {
+    extern int fn_80128670(int);
+    extern int lbl_8033AA90;
+    int temp;
+    if (arg0 != 0) {
+        temp = *(int *)((char *)arg0 + 4);
+        *(int *)arg0 = (int)&lbl_8033AA90;
+        if (temp != 0) fn_80128670(temp - 0x10);
+        if (arg1 > 0) ((int (*)(void *))fn_80128668)(arg0);
+    }
     return arg0;
 }
 
