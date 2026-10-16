@@ -19,6 +19,9 @@ void fn_80131818(s32);
 s32 fn_8001F89C();
 s32 fn_8001F2C8();
 s32 fn_8001F388();
+s32 stricmp(const char*, const char*);
+extern void* memset(void*, int, unsigned long);
+extern char lbl_80358698[0x2080];
 
 void fn_8001EF38(void* alarm) {
     fn_8001EFF0(fn_8001F528(alarm));
@@ -88,32 +91,32 @@ void fn_8001EFCC(void* alarm) {
     fn_8001F578(fn_8001F2C8(alarm));
 }
 
+#pragma scheduling off
 s32 fn_8001F2C8(void* alarm) {
-    SrcCoef* p;
-    s32 i;
     if (lbl_8055D610 != 0) {
-        p = lbl_802FDF30;
-        i = 0;
+        SrcCoef* p = lbl_802FDF30;
+        u32 i = 0;
+        void* c;
+        void* zero = NULL;
         do {
-            void* c = p->unkC;
-            if (c != NULL) {
+            c = p->unkC;
+            if (c != NULL && c != NULL) {
                 if (*(s32*)c != 0) {
                     fn_80128670(*(s32*)c);
                 }
-                *(s32*)c = 0;
-                ((s32*)c)[1] = 0;
+                *(s32*)c = (s32)zero;
+                ((s32*)c)[1] = (s32)zero;
                 fn_80128668(c);
             }
-            p->unkC = NULL;
+            p->unkC = zero;
             i++;
             p++;
         } while (i < 8);
         fn_80131818(lbl_8055D610);
         lbl_8055D610 = 0;
     }
-    return 0;
 }
-
+#pragma scheduling reset
 f32* __AXFXGetSrcCoef(u32 i) {
     return (f32*)&lbl_802FDF30[i];
 }
