@@ -29,7 +29,7 @@ s32 fn_802ECEEC(void) {
 }
 
 void fn_802ECF00(void) {
-    fn_802ECE48(0);
+    fn_802ECE48();
 }
 
 void fn_802ECF04(void) {
