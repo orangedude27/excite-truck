@@ -33,6 +33,8 @@ void fn_8017D358(void) {
 
 }
 
+int fn_8017D35C(void) { return 0x20; }
+
 void fn_8017D36C(void) {
 
 }
