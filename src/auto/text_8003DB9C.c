@@ -32,6 +32,46 @@ void* GXGetCurrentGXThread(void) {
     return lbl_8055D94C;
 }
 
+void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
+    extern unsigned short *__peReg;
+    *__peReg = (unsigned short)((x & 1) | ((y & 7) << 1) | ((z & 1) << 4));
+}
+
+void GXInitLightDir(unsigned int x, unsigned int y, unsigned int *arg2) {
+    *arg2 = 0xC8000000 | ((x & 0x3FF) << 2) | ((y & 0x3FF) << 12) | 0x400000;
+}
+
+unsigned int GXGetLightDir(unsigned int value) {
+    extern unsigned int lbl_8055D978;
+    extern int OSDisableInterrupts(void);
+    extern void OSRestoreInterrupts(void);
+    unsigned int old = lbl_8055D978;
+    OSDisableInterrupts();
+    lbl_8055D978 = value;
+    OSRestoreInterrupts();
+    return old;
+}
+
+extern unsigned short *__peReg;
+extern unsigned int lbl_8055D978;
+extern int OSDisableInterrupts(void);
+extern void OSRestoreInterrupts(void);
+extern void OSClearContext(void *);
+extern void OSSetCurrentContext(void *);
+extern void (*lbl_8055D978_callback)(unsigned short);
+void GXInitSpecularDir(unsigned int arg0, void *ctx) {
+    unsigned char local[0x2E0];
+    unsigned short value = __peReg[7];
+    if (lbl_8055D978 != 0) {
+        OSClearContext(local + 8);
+        OSSetCurrentContext(local + 8);
+        ((void (*)(unsigned short))lbl_8055D978)(value);
+        OSClearContext(local + 8);
+        OSSetCurrentContext(ctx);
+    }
+    __peReg[5] |= 4;
+}
+
 void GXInitTexObjTlut(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
 }
