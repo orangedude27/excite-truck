@@ -76,5 +76,7 @@ int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2,
 
 int fn_80176030(void) { return 0; }
 
+int fn_80176038(void) { return 0; }
+
 void fn_80176400(void) {
 }
