@@ -134,6 +134,22 @@ extern "C" s32 fn_800D2DD4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma opt_tail_call on
+extern s32 lbl_8055DDD4;
+extern void* lbl_8055DDD4_ptr;
+extern "C" s32 fn_800D3F94(void*, s32, s32, s32);
+extern u32 lbl_80407BD8;
+#pragma opt_tail_call on
+s32 fn_800D3824(void) {
+    s32 val = lbl_8055DDD4;
+    s32 result = -val;
+    result |= val;
+    return (s32)result >> 31;
+}
+#pragma opt_tail_call on
+u8 fn_800D3838(u8 *arg0) {
+    return *arg0;
+}
 extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -223,4 +239,4 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
     
     return 0;
 }
-
+extern s32 lbl_8055DDD4;
