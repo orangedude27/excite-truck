@@ -225,19 +225,72 @@ void fn_8011BC48(void) {
     fn_80120084();
 }
 
+void fn_8011C364(s32 arg0) {
+    if (arg0 != 0) {
+        fn_8011C0E0();
+        OSCancelAlarm((OSAlarm *)(arg0 + 8));
+        fn_80120084(arg0);
+    }
+}
+
+void fn_8011C3A8(s32 arg0, void *arg1, s32 arg2, u32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    s32 zero = 0;
+    s32 end;
+    *(s32 *)((u8 *)arg1) = zero;
+    *(s32 *)((u8 *)arg1 + 4) = zero;
+    end = arg2 + ((arg3 >> 3) * arg5);
+    *(s32 *)((u8 *)arg1 + 8) = arg4;
+    *(s32 *)((u8 *)arg1 + 0x28) = 0x20 - __cntlzw((u16)(end - 1));
+    if (arg6 != 0)
+        *(s32 *)((u8 *)arg1 + 0xC) = 1 << (arg4 - 1);
+    else
+        *(s32 *)((u8 *)arg1 + 0xC) = zero;
+    *(s32 *)((u8 *)arg1 + 0x2C) = arg0;
+}
+
+s32 fn_8011C400(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, s32 arg4) {
+    s32 var_r7 = arg4;
+    s32 var_r8 = arg4;
+    s32 var_r9 = 0;
+    u8 *out = arg1;
+    u8 *left = arg2;
+    u8 *right = arg3;
+    u8 temp;
+    do {
+        var_r9++;
+        if (arg0 & 1) {
+            temp = *right;
+            var_r8--;
+            right++;
+        } else {
+            temp = *left;
+            var_r7--;
+            left++;
+        }
+        *out = temp;
+        out++;
+        arg0 >>= 1;
+        if (var_r7 == 0 || var_r8 == 0) break;
+    } while (1);
+    if (var_r7 != 0) {
+        do { temp = *left; var_r7--; left++; *out = temp; out++; } while (var_r7 != 0);
+    } else if (var_r8 != 0) {
+        do { temp = *right; var_r8--; right++; *out = temp; out++; } while (var_r8 != 0);
+    }
+    return var_r9;
+}
+
 extern void fn_8011C4A0(s32, s32, s32, s32);
 void fn_8011CD90(s32 arg0, s32 arg1, s32 arg2) {
     s32 a = arg2;
     s32 b = arg2 + 0x100;
     s32 c = arg2 + 0x140;
-    s32 i;
+    u32 i;
     for (i = 0; i < 0x10; i++) {
         fn_8011C4A0(arg1, c, b, a);
-        i++;
         b += 4;
-        c += 4;
         a += 0x10;
-        i--;
+        c += 4;
     }
     fn_8011C4A0(arg1, arg0 + 0x24, arg0 + 0x20, arg0 + 0x10);
     *(s32 *)(arg2 + 0x180) = 0;
@@ -306,11 +359,60 @@ void fn_80120084(void *arg0) {
     else free(base);
 }
 
+extern void fn_80121C68(void *);
+extern void fn_80122E08(s32, void *, s32, void *);
+extern void fn_80122ED8(s32, void *, s32, void *);
+extern void fn_80122FA4(s32, void *, s32, void *);
+extern void fn_80123CEC(s32, void *, s32, void *);
+extern void fn_80120F84(s32, s32, void *);
+extern void fn_80123E98(void *, void *);
+extern void fn_80121848(void *);
+extern void fn_80124AD8(void *, void *);
+extern void fn_80121BB0(void *);
+extern void fn_80124F90(void *);
+extern void fn_80125098(void *);
+void fn_80120CA4(s32 count, void *dst, s32 mode, s32 srcIndex, void *src) {
+    s32 n;
+    if (count > 0x20) {
+        n = count >> 2;
+        fn_80121C68((u8 *)src + (srcIndex - n) * 4);
+        if (count > 0x200) {
+            fn_80122E08(n, dst, srcIndex, src);
+            fn_80122ED8(n, (u8 *)dst + n * 4, srcIndex, src);
+            fn_80122E08(n, (u8 *)dst + n * 8, srcIndex, src);
+            fn_80122E08(n, (u8 *)dst + ((n * 4 - n) * 4), srcIndex, src);
+        } else if (n > 0x20) {
+            fn_80122FA4(count, dst, srcIndex, src);
+        } else {
+            fn_80123CEC(count, dst, srcIndex, src);
+        }
+        fn_80120F84(count, mode, dst);
+    } else if (count > 8) {
+        if (count == 8) {
+            fn_80123E98(dst, (u8 *)src + (srcIndex - 8) * 4);
+            fn_80121848(dst);
+        } else {
+            fn_80124AD8(dst, src);
+            fn_80121BB0(dst);
+        }
+    } else if (count != 8) {
+        if (count == 4)
+            fn_80125098(dst);
+        else
+            fn_80124F90(dst);
+    }
+}
+
 void fn_80121BB0(void *arg0) {
     float *p = (float *)arg0;
-    float a, b, c, d, e, f, g, h;
-    a = p[2]; b = p[8]; c = p[3]; d = p[9];
-    e = p[6]; f = p[12]; g = p[7]; h = p[13];
+    float a = p[2];
+    float b = p[8];
+    float c = p[3];
+    float d = p[9];
+    float e = p[6];
+    float f = p[12];
+    float g = p[7];
+    float h = p[13];
     p[2] = b; p[3] = d; p[6] = f; p[7] = h;
     p[8] = a; p[9] = c; p[12] = e; p[13] = g;
 }
