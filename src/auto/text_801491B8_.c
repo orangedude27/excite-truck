@@ -683,6 +683,13 @@ void fn_8014E7D8(void) {
 
 }
 
+s32 fn_8014F088(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668((void *)arg0);
+    }
+    return arg0;
+}
+
       extern void fn_80128668();
 extern void fn_8016783C(void *arg0);
 extern void fn_801688FC(s32 arg0);
