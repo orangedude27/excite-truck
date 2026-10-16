@@ -12,8 +12,11 @@ extern void *lbl_8055EC38;
 extern void *lbl_8055EC44;
 int stricmp(const char *, const char *);
 void *fn_801F8188(s32 a, s32 b);
-void fn_802E317C(const char *, ...);
-}
+  void fn_802E317C(const char *, ...);
+  s32 fn_801F9450(void *node);
+  void *fn_801F95C4(void *node, s32 index, s32 arg);
+  void fn_801F96A8(void *node);
+  }
 
 struct F9Node {
     void *vtable; // 0x0
