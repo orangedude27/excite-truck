@@ -92,6 +92,46 @@ extern "C" void* fn_80206570(int index) {
     return (void*)0x8033BD30;
 }
 
+extern "C" void fn_80206750(void *arg0, int arg1, int arg2) {
+    int count = (int)(long)lbl_8055ED88;
+    int found = -1;
+    int i = 0;
+    for (; i < count; i++) {
+        if (arg1 == lbl_804891E8[i]) {
+            found = i;
+            break;
+        }
+    }
+    if (found >= 0 && arg2) {
+        *(unsigned char *)((char *)arg0 + 0x4F) = 1;
+        *(int *)((char *)arg0 + 0x14) = 1 << found;
+    } else {
+        *(int *)((char *)arg0 + 0x14) = 0;
+        *(unsigned char *)((char *)arg0 + 0x4F) = 1;
+    }
+}
+
+extern "C" void fn_80206A5C(void* arg0) {
+    if (*(unsigned char*)((char*)arg0 + 0x34)) {
+        *(unsigned char*)((char*)arg0 + 0x34) = 0;
+        float value = *(float*)((char*)arg0 + 0x28);
+        void* obj = *(void**)((char*)arg0 + 0xC);
+        (*(void (**)(void*, float))(*(unsigned char**)obj + 0x44))(obj, value);
+    }
+    if (*(unsigned char*)((char*)arg0 + 0x35)) {
+        void* obj = *(void**)((char*)arg0 + 0xC);
+        *(unsigned char*)((char*)arg0 + 0x35) = 0;
+        float value = *(float*)((char*)arg0 + 0x2C);
+        (*(void (**)(void*, float))(*(unsigned char**)obj + 0x48))(obj, value);
+    }
+    if (*(unsigned char*)((char*)arg0 + 0x36)) {
+        void* obj = *(void**)((char*)arg0 + 0xC);
+        *(unsigned char*)((char*)arg0 + 0x36) = 0;
+        float value = *(float*)((char*)arg0 + 0x30);
+        (*(void (**)(void*, float))(*(unsigned char**)obj + 0x4C))(obj, value);
+    }
+}
+
 extern "C" void fn_80206B08(void) {
 	return;
 }
@@ -108,7 +148,46 @@ extern "C" void fn_80206BF4(void) {
 	return;
 }
 
+extern float lbl_80563200;
+extern char lbl_8033BDC0;
+extern "C" void fn_80208620(int, void *);
+extern "C" void fn_8020899C(int, int);
+extern "C" int fn_80128668(void *);
+extern "C" void fn_80206C70(void *arg0) {
+    extern void *lbl_8055ED90;
+    fn_8012A364(lbl_8055ED90, arg0);
+    if (--lbl_8055ED8C == 0) {
+        if (lbl_8055ED90 != 0)
+            ((void (*)(void *, int))(*(void ***)lbl_8055ED90)[1])(lbl_8055ED90, 1);
+        lbl_8055ED90 = 0;
+    }
+}
+
+extern "C" float fn_80206CD0(void* arg0, float arg1) {
+    float f = lbl_805631FC;
+    float x = lbl_80563204 * *(float*)((char*)arg0 + 8);
+    if (f <= x) f = x;
+    float y = PSVECMag(arg0) - f;
+    if (y <= arg1) y = arg1;
+    return arg1 / y;
+}
+
 extern "C" void fn_8020769C(void) {
 	fn_802073A4();
+}
+
+extern "C" void fn_802066C8(void*, u32);
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
+    void* this_, s32 flag) {
+    if (this_) {
+        if (this_ != NULL) {
+            fn_802066C8(this_, 0);
+        }
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
 }
 
