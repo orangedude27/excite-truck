@@ -232,25 +232,25 @@ extern "C" void fn_80219510(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0x248) = -arg2;
 }
 
-extern "C" void fn_8021952C(void *arg0, s32 arg1, s32 arg2) {
-    void *ptr = *(void **)((u8 *)arg0 + 0x2C);
-    s32 a;
-    s32 b;
-    if (*(u8 *)((u8 *)arg0 + 0x24C) != 0) {
-        a = *(s32 *)((u8 *)arg0 + 0x244);
-        b = *(s32 *)((u8 *)arg0 + 0x248);
-        *(s32 *)((u8 *)ptr + 0x454) += a + arg1;
-        *(s32 *)((u8 *)ptr + 0x458) += b + arg2;
+extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
+    void* p = *(void**)((u8*)arg0 + 0x2C);
+    if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
+        s32 dx = *(s32*)((u8*)arg0 + 0x244) + arg1;
+        s32 old1 = *(s32*)((u8*)p + 0x454);
+        s32 dy = *(s32*)((u8*)arg0 + 0x248) + arg2;
+        s32 old2 = *(s32*)((u8*)p + 0x458);
+        *(s32*)((u8*)p + 0x454) = old1 + dx;
+        *(s32*)((u8*)p + 0x458) = old2 + dy;
     }
 }
 
 extern "C" void *fn_80219568(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     fn_80218F34(arg0, arg1, arg2, arg1 + arg5, arg2 + arg6, arg3);
-    *(s32 *)((u8 *)arg0 + 0x24C) = arg3;
+    *(s32 *)((u8 *)arg0 + 0x244) = 0;
     *(void **)arg0 = lbl_8033FA28;
     *(s32 *)((u8 *)arg0 + 0x248) = 0;
-    *(s32 *)((u8 *)arg0 + 0x244) = 0;
     *(s32 *)((u8 *)arg0 + 0x250) = arg4;
+    *(s32 *)((u8 *)arg0 + 0x24C) = arg3;
     return arg0;
 }
 
@@ -401,6 +401,12 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, 
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" s32 fn_8021B3A0(void *arg0) {
+    s32 *p = *(s32 **)((u8 *)arg0 + 0x264);
+    if (p != 0) return *p;
+    return 0;
 }
 
 extern "C" void fn_8021915C(void*, u32);
