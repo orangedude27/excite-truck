@@ -27,6 +27,18 @@ void fn_802B06D4(void) {
     (*(void (***)(void *, void *, int))obj)[12](obj, lbl_8034A078, 0);
 }
 
+void *fn_802B0808(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            ((int *)arg0)[0] = 0;
+            ((int *)arg0)[1] = 0;
+            ((int *)arg0)[2] = 0;
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_802B0860(void *arg0) {
     ((int *)arg0)[0] = 0;
     ((int *)arg0)[2] = 0;
