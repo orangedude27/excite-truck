@@ -25,7 +25,7 @@ extern char lbl_8032B64C[], lbl_8032B574[], lbl_8042F530[];
 extern int lbl_80559B08, lbl_80559B0C;
 extern signed char lbl_8055E060;
 extern void* lbl_8042F53C[];
-extern void fn_80131920(void*);
+extern s32 fn_80131920(s32, s32);
 extern void __register_global_object(void*, void (*)(void*), void*);
 int fn_8013181C(void) {
     if (lbl_8032B510) {
@@ -58,12 +58,11 @@ s32 fn_801318E0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_80131920(void* this_) {
-    s32 a = (s32)this_;
-    if (a != 0 && a > 0) {
+s32 fn_80131920(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
-    this_ = (void*)a;
+    return arg0;
 }
 
 s32 fn_80131B10(s32 arg0, s32 arg1) {
@@ -71,5 +70,56 @@ s32 fn_80131B10(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+s32 fn_80131B50(void* arg0) {
+    s32 count = *(s32*)((char*)arg0 + 0xC);
+    s32 h = 0xBABBA;
+    s32 i = 0;
+    if (count > 0) {
+        do {
+            char* s = *(char**)((char*)arg0 + 0x10 + i);
+            char* c;
+            do {
+                c = s++;
+                h = h + (s8)*c + 0xBAF;
+            } while (*c);
+            s = *(char**)((char*)arg0 + 0x10 + i + 4);
+            do {
+                c = s++;
+                h = h + (s8)*c + 0xBAF;
+            } while (*c);
+            i += 8;
+        } while (--count);
+    }
+    return h;
+}
+
+s32 fn_80131BD0(void* arg0, const char* name) {
+    s32 count = *(s32*)((char*)arg0 + 0xC);
+    s32 i = 0;
+    char* found = NULL;
+    while (i < count) {
+        if (stricmp(name, *(char**)((char*)arg0 + 0x10 + i * 8)) == 0) {
+            found = *(char**)((char*)arg0 + 0x10 + i * 8);
+            break;
+        }
+        i++;
+    }
+    if (found == NULL && *(void**)((char*)arg0 + 0x14) != NULL) {
+        found = (char*)fn_80131C88((s32)name);
+    }
+    return found != NULL;
+}
+
+s32 fn_80132098(void* arg0, s32 index, void* dst1, void* dst2) {
+    s32 count = *(s32*)((char*)arg0 + 0xC);
+    if (index >= 0 && index < count) {
+        char* e = *(char**)((char*)arg0 + 0x10 + index * 8);
+        *(s32*)dst1 = *(s32*)e;
+        *(s32*)dst2 = *(s32*)(e + 4);
+        return 1;
+    }
+    return 0;
 }
 
