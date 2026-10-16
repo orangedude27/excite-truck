@@ -44,6 +44,7 @@ extern void OSReport(const char *msg, ...);
 typedef struct hcisu_if {
     void (*init)(u32, u32, u32);
     void (*open)(void *);
+    void (*close)(void *);
 } hcisu_if;
 
 extern hcisu_if *lbl_8055DC68;
