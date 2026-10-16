@@ -3,6 +3,18 @@
 #include <types.h>
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void *fn_801B2ED0(s32);
+typedef struct {
+    void *pad[4];
+    s32 (*fn)(void);
+} VTable8014ACD8;
+typedef struct {
+    VTable8014ACD8 *vtable;
+    u8 pad[0x20];
+    s32 state;
+    u8 flags;
+} Obj8014ACD8;
+
 extern s32 fn_80161C94(void);
 extern void fn_801B8A84(s32);
 extern s32 fn_801B2F24(void);
@@ -98,7 +110,7 @@ void fn_801494B4(void *arg0, f32 *arg1, f32 *arg2) {
 
 int fn_801494E0(void) { return 0xFF0000FF; }
 
-void fn_801494EC(float *arg1, float *arg2) {
+void fn_801494EC(void *arg0, float *arg1, float *arg2) {
     float temp_f1 = arg1[0];
     float temp_f3 = arg1[1];
     arg2[1] += temp_f1;
@@ -113,6 +125,13 @@ unsigned long *fn_80149528(void) { return &lbl_80559E9C; }
 
 int fn_80149530(void) {
     return 0xFFC0D9D9;
+}
+
+void fn_8014953C(void *arg0, float *arg1, float *arg2) {
+    float value = arg2[4] + lbl_8056162C * *arg1;
+    if (value < lbl_80561630) value = lbl_80561630;
+    if (value > lbl_80561634) value = lbl_80561634;
+    arg2[4] = value;
 }
 
 void fn_8014ACCC(void) {
