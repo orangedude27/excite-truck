@@ -39,7 +39,8 @@ extern float lbl_80564F44;
 extern float lbl_8055FCC4;
 void fn_802CC550(int, float, float);
 int fn_802CB274(int arg0) {
-    return fn_802DB2C0(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x28));
+    int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
+    return fn_802DB2C0(p[0x28 / 4]);
 }
 
 char fn_802CAFC8(int arg0) {
@@ -55,7 +56,9 @@ char fn_802CAFF0(int arg0) {
 }
 
 unsigned short fn_802CB3FC(int arg0) {
-    unsigned short *p = *(unsigned short **)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C);
+    int a = arg0 * 0x4C;
+    int b = lbl_8055FCB0;
+    unsigned short *p = *(unsigned short **)(b + a + 0x2C);
     return (p[1] <= p[0]) ? p[0] : p[1];
 }
 void fn_802CC73C(char arg0) {
