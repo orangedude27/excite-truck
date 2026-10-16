@@ -256,7 +256,7 @@ extern "C" void fn_801590A8(void* arg0) {
     if (f1 > f0) {
         s32 r3 = *(s32*)((char*)arg0 + 0x268);
         if (r3 != 0) {
-            fn_801CB750(*(s32*)((char*)arg0 + 4));
+            fn_801CB750(r3, *(s32*)((char*)arg0 + 4));
         }
         f2 = lbl_80561754;
         *(f32*)((char*)arg0 + 0x260) = f2;
