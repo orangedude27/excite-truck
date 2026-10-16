@@ -21,9 +21,36 @@ extern void GXSetNumChans(int);
 extern void GXSetChanCtrl(int, int, int, int, int, int, int);
 extern u8 lbl_8055FEBA;
 extern u8 lbl_8055FEB8;
+extern int lbl_8055FD30, lbl_8055FEA4;
+extern signed char lbl_8055FE9E;
+extern int lbl_8055FEA0;
+extern void *lbl_8055FEA8, *lbl_8055FEAC;
+extern void fn_802D94DC(int);
+extern void fn_802DBA1C(unsigned char);
+extern void fn_802DB9DC(int);
+extern void fn_802DBBE4(int,int);
+extern void fn_802DBF54(int,int);
+extern void GXSetAlphaCompare(int,int,int,int,int);
+extern void GXSetColorUpdate(int);
+extern void GXSetZMode(int,int,int);
+extern unsigned char lbl_8055FEBA;
+#pragma dont_inline on
 void fn_802DBF30(void) {
     fn_802DBDD8();
     fn_802DEE1C();
+}
+void fn_802DC078(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+    fn_802DBA1C(lbl_8055FEBA);
+    fn_802DB9DC(arg4);
+    fn_802DBBE4(arg0, arg1);
+    fn_802DBF54(arg2, arg3);
+    if (lbl_8055FEBA != 0) {
+        GXSetZMode(1, 3, 1);
+        GXSetAlphaCompare(7, 0, 1, 7, 0);
+        GXSetColorUpdate(0);
+        fn_802DBF54(arg2, arg3);
+        GXSetColorUpdate(1);
+    }
 }
 
 void fn_802DC278(void) { fn_802DBD88(); }
@@ -44,6 +71,15 @@ void fn_802DC440(void) { ((void (*)(void))fn_802DBDD8)(); fn_802DFCC0(); }
 
 void fn_802DC628(void) {}
 
+void fn_802DC62C(void) {
+    volatile unsigned char *p = (volatile unsigned char *)lbl_804DB468;
+    if (GXGetTexObjMipMap((void *)(p + 0x24)) != 6)
+        fn_802E317C(lbl_8034CB00);
+    if (GXGetTexObjWrapS((void *)(p + 0x24)) != 0x200)
+        fn_802E317C(lbl_8034CB24);
+    lbl_8055FEBC = GXGetTexObjFmt((void *)(p + 0x24)) + 0x80000000;
+}
+
 extern int GXGetTexObjMipMap(void *);
 extern unsigned short GXGetTexObjWrapS(void *);
 extern int GXGetTexObjFmt(void *);
@@ -58,6 +94,6 @@ int fn_802DC6AC(int a, unsigned int b) {
     int j = (int)b / 4;
     unsigned int *base = (unsigned int *)lbl_8055FEBC;
     unsigned short v = *(unsigned short *)((char *)base + ((i + (j << 7)) << 6));
-    return *(int *)((char *)base + ((i + (j << 7)) << 6) + 0x20) & 0xffff | (v << 16);
+    return (*(int *)((char *)base + ((i + (j << 7)) << 6) + 0x20) & 0xffff) | ((unsigned int)v << 16);
 }
 
