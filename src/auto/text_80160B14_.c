@@ -48,3 +48,5 @@ float fn_80160C20(void) {
 
 void fn_80160C28(void) {
 }
+extern float lbl_80561830;
+extern double fn_8002F234(float);
