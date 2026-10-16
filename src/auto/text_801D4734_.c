@@ -85,11 +85,9 @@ void fn_801D6600(void *arg0) {
 
 extern char lbl_803387A8[];
 extern char lbl_803387C8[];
-void fn_801D6618(void *arg0) {
-    char *n = lbl_80338C40;
-    s32 s = 0;
-    *(char **)arg0 = n;
-    *(s32 *)((u8 *)arg0 + 4) = s;
+void fn_801D6618(UnkStruct_801D6618 *arg0) {
+    arg0->name = lbl_80338C40;
+    arg0->state = 0;
 }
 
 void *fn_801D6630(void *arg0, s32 arg1) {
@@ -104,6 +102,35 @@ void *fn_801D6630(void *arg0, s32 arg1) {
 
 void *fn_801D67D4(void) {
     return lbl_803387C8;
+}
+
+s32 fn_801D67E0(void *arg0) {
+    return ((s32 *)arg0)[1];
+}
+
+void fn_801E9DC4(void *);
+void fn_801796CC(s32, void *, s32);
+void fn_801D6814(void *arg0) {
+    struct {
+        f32 values[6];
+        s32 unk18;
+        s32 unk1C;
+    } data;
+    s32 elapsed = lbl_8055E3C4 - (*(s32 *)((u8 *)arg0 + 0x10) + *(s32 *)((u8 *)arg0 + 0xC));
+    if (*(s32 *)((u8 *)arg0 + 4) == 2 && elapsed > 0) {
+        data.values[0] = *(f32 *)((u8 *)arg0 + 0x14);
+        data.values[1] = *(f32 *)((u8 *)arg0 + 0x18);
+        data.values[2] = *(f32 *)((u8 *)arg0 + 0x1C);
+        data.values[3] = *(f32 *)((u8 *)arg0 + 0x20);
+        data.values[4] = *(f32 *)((u8 *)arg0 + 0x24);
+        data.values[5] = *(f32 *)((u8 *)arg0 + 0x28);
+        fn_801E9DC4(&data.unk18);
+        data.unk1C = *(s32 *)((u8 *)arg0 + 0x2C);
+        fn_801796CC(10, &data, 0x20);
+        if (elapsed >= *(s32 *)((u8 *)arg0 + 8)) {
+            *(s32 *)((u8 *)arg0 + 4) = 3;
+        }
+    }
 }
 
 void fn_801D68D0(void *arg0) {
