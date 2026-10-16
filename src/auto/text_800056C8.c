@@ -164,6 +164,10 @@ void fn_80006378(s32 arg0, s32 arg1) {
     fn();
 }
 
+s32 fn_8000639C(void) {
+    return 0;
+}
+
 void fn_800063A4(void) {
     fn_801C6B70();
 }
