@@ -14,7 +14,26 @@ void fn_8028E398(int);
 void fn_80128668(void *);
 extern void *lbl_8055F924;
 void fn_8028E080(void);
+void fn_802AB9E0(void) { fn_8028E070(); }
+
 void fn_802AB9E4(void) { fn_8028E080(); }
 
+void fn_802ABC2C(void) {
+    int *p = (int *)lbl_8055F924;
+    if (p) {
+        fn_8028E398(p[0]);
+        fn_8028E398(p[1]);
+        fn_80128668(p);
+        lbl_8055F924 = 0;
+    }
+}
+
 void fn_802ABE50(void) { fn_8028E240(0); }
+
+void fn_802ABFF8(int arg0, float farg0) {
+    lbl_8055F92D = fn_802C2C00(1);
+    lbl_804BD7B0[0] = fn_802C990C(arg0);
+    fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
+    fn_802C2B78(farg0, lbl_80564AAC + farg0, lbl_805649FC);
+}
 
