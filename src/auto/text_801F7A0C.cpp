@@ -64,9 +64,8 @@ int stricmp(const char *, const char *);
           void fn_801F96A8(void *node);
               void *fn_801F93FC(void *node = 0);
         }
-extern void *fn_801F981C(void *node, s32 arg);
-extern void fn_801F99CC(void *node);
-extern void fn_801F9928(void *list, s32 arg);
+extern "C" void *fn_801F981C(void *node, s32 arg);
+extern "C" void fn_801F9928(void *list, s32 arg);
 extern void *fn_801F9440(void *list, void *node);
 
 struct F9Node {
