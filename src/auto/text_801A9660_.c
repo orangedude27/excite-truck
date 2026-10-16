@@ -39,3 +39,14 @@ unsigned char fn_801ADA7C(void *arg0) {
 
 long fn_801ADA8C(long arg0) { return arg0 + 0x118; }
 
+long fn_801ADA94(long arg0) {
+    return arg0 + 0x60;
+}
+
+extern void fn_801AC240(void *);
+typedef void (*Fn801ADA9C)(void *, void *, void *);
+void fn_801ADA9C(void *arg0) {
+    Fn801ADA9C fn = *(Fn801ADA9C *)(*(char **)((char *)arg0 + 0x240) + 0x18);
+    fn(*(void **)((char *)arg0 + 0x240), (void *)0, (void *)0);
+}
+
