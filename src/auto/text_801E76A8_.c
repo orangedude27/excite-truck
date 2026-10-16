@@ -23,7 +23,7 @@ void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
 
 void fn_801E7840(void *arg0) {
     void *obj;
-    obj = fn_801284F8(0x18, &lbl_80339B90);
+    obj = fn_801284F8(0x18, lbl_80339B90);
     if (obj != 0)
         fn_801E76A8(obj, arg0);
 }
