@@ -181,6 +181,35 @@ extern "C" void* __dt__14CollisionSpaceFv_802A392C(void* arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" float fn_80287BC8(float, float);
+extern "C" void fn_8028E590(int, float *, float *, float);
+extern "C" float lbl_80564730, lbl_80564740, lbl_80564744, lbl_80564758, lbl_8056475C, lbl_80564760, lbl_80564764, lbl_8056476C, lbl_8056477C, lbl_805647A4, lbl_8056481C, lbl_8056482C;
+extern "C" void fn_802A3990(void *arg0, void *arg1, int arg2) {
+    float sp1C, sp18, sp14, sp10, spC, sp8, temp_f1, temp_f1_2, temp_f3, temp_f4, temp_f5, temp_f6, temp_f7, temp_f8, var_f0, var_f31, var_f1;
+    unsigned char *obj = *(unsigned char **)arg1, *p = obj + arg2 * 0x3C;
+    if (*(float *)((char *)arg1 + 8) > lbl_8056476C) return;
+    temp_f1 = *(float *)(p + 0x94); if (temp_f1 * temp_f1 < lbl_80564758) return;
+    if (*(float *)(p + 0x70) > lbl_80564744) var_f31 = lbl_80564730; else var_f31 = lbl_8056475C;
+    if (*(float *)(p + 0x94) > lbl_80564744) var_f1 = lbl_80564730; else var_f1 = lbl_8056475C;
+    temp_f8 = *(float *)(p + 0x78) - lbl_80564760 * var_f1; temp_f6 = *(float *)(p + 0x70); temp_f7 = lbl_80564740 + *(float *)(p + 0x74);
+    sp14=temp_f6; sp18=temp_f7; sp1C=temp_f8;
+    if (&sp14 == &sp14) {
+        sp14=temp_f8 * *(float *)(obj+0x18)+(temp_f6 * *(float *)obj+temp_f7 * *(float *)(obj+0xC));
+        sp18=temp_f8 * *(float *)(obj+0x1C)+(temp_f6 * *(float *)(obj+4)+temp_f7 * *(float *)(obj+0x10));
+        sp1C=temp_f8 * *(float *)(obj+0x20)+(temp_f6 * *(float *)(obj+8)+temp_f7 * *(float *)(obj+0x14));
+    } else {
+        temp_f3=temp_f8 * *(float *)(obj+0x18)+(temp_f6 * *(float *)obj+temp_f7 * *(float *)(obj+0xC)); sp14=temp_f3;
+        temp_f4=temp_f8 * *(float *)(obj+0x1C)+(temp_f3 * *(float *)(obj+4)+temp_f7 * *(float *)(obj+0x10)); sp18=temp_f4;
+        sp1C=temp_f8 * *(float *)(obj+0x20)+(temp_f3 * *(float *)(obj+8)+temp_f4 * *(float *)(obj+0x14));
+    }
+    sp14+=*(float *)(obj+0x24); sp18+=*(float *)(obj+0x28); sp1C+=*(float *)(obj+0x2C);
+    var_f0=lbl_805647A4; temp_f5=lbl_80564764+lbl_8056481C*(var_f31* *(float *)(obj+0x50));
+    sp8=*(float *)(obj+0x34)+*(float *)obj*temp_f5; spC=*(float *)(obj+0x38)+*(float *)(obj+4)*temp_f5; sp10=*(float *)(obj+0x3C)+*(float *)(obj+8)*temp_f5;
+    temp_f1_2=lbl_80564764+lbl_8056482C* *(float *)(obj+0x50); if(var_f0<temp_f1_2){}else var_f0=temp_f1_2;
+    sp8+=*(float *)(obj+0xC)*var_f0; temp_f5=*(float *)(obj+0x10)*var_f0; spC+=temp_f5; temp_f4=*(float *)(obj+0x14); sp10+=temp_f4*var_f0;
+    fn_8028E590(*(int *)((char *)arg0+4),&sp14,&sp8,-var_f31*fn_80287BC8(lbl_80564744,lbl_8056477C));
+}
+
 extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void**)arg0 = &lbl_80349AB0;
@@ -200,6 +229,18 @@ extern "C" void fn_802A3DFC(void* arg0) {
         cursor++;
         i++;
     } while (i < fn_80287B14(arg0));
+}
+
+void fn_802A4118(void *arg0, void *arg1) {
+    f32 *p = (f32 *)((char *)arg0 + (*(s32 *)((char *)arg1 + 0x28) * 4));
+    f32 f = p[2];
+    if (f > (lbl_80564730 - lbl_80558DC4)) {
+        p[2] = f - lbl_80564730;
+    }
+    p[2] += lbl_80564750;
+}
+
+extern "C" void fn_802A44B4(void) {
 }
 
 extern "C" s32 fn_802A4958(s32 arg0, s32 arg1) {
