@@ -3,6 +3,11 @@
 
 extern "C" void fn_802073A4(void);
 
+extern void *lbl_8055ED88;
+extern "C" void fn_80206464(void* hi) {
+    lbl_8055ED88 = hi;
+}
+
 void fn_80206480(void) {
     return;
 }
