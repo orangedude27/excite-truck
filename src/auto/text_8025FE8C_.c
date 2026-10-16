@@ -39,6 +39,10 @@ void fn_80260848(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
 }
 
+s32 fn_802619D8(s32 *arg0, s32 arg1) {
+    return *arg0 + arg1 * 4;
+}
+
 void fn_80261A18(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 4) = 8;
