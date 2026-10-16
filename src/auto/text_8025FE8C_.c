@@ -42,8 +42,26 @@ void fn_80260814(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 0;
 }
 
+void fn_8026083C(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x1C) = 0;
+}
+
 void fn_80260848(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
+}
+
+void *fn_80260854(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(u8 **)arg0 = &lbl_80345E28;
+        fn_80235380(*(s32 *)((u8 *)arg0 + 0x24), (s32 *)&lbl_80345E28);
+        *(s32 *)((u8 *)arg0 + 0x24) = 0;
+        fn_802328D4(*(s32 *)((u8 *)arg0 + 0x28));
+        *(s32 *)((u8 *)arg0 + 0x28) = 0;
+        if (arg1 > 0) {
+            fn_80128668();
+        }
+    }
+    return arg0;
 }
 
 extern s32 fn_80128668(void);
@@ -176,10 +194,8 @@ void fn_80262120(void *arg0) {
 }
 
 void fn_8026213C(void *arg0) {
-    register u32 field = (u32)arg0 + 0xC;
-    register s32 code = 6;
-    *(s32 *)arg0 = field;
-    *(s32 *)((u8 *)arg0 + 8) = code;
+    *(s32 *)arg0 = (s32)((u8 *)arg0 + 0xC);
+    *(s32 *)((u8 *)arg0 + 8) = 6;
     *(s32 *)((u8 *)arg0 + 4) = 0;
 }
 
