@@ -43,6 +43,32 @@ void fn_8028CF64(void) {
     }
 }
 
+extern int lbl_804B3400;
+extern int lbl_8055F728;
+extern void fn_802CAC54(int);
+void fn_8028D25C(void) {
+    int *ptr = &lbl_804B3400;
+    int i = 0;
+    while (i < lbl_8055F728) {
+        fn_802CAC54(*ptr);
+        ptr = (int *)((char *)ptr + 0x1C);
+        i++;
+    }
+}
+
 void fn_8028D49C(void) {
+}
+
+extern int lbl_8055F718, lbl_8055F71C, lbl_8055F720;
+extern int fn_80128670(int);
+void fn_8028D4A0(void) {
+    fn_80128670(lbl_8055F720);
+    lbl_8055F720 = 0;
+    fn_80128670(lbl_8055F71C);
+    lbl_8055F71C = 0;
+    if (lbl_8055F718 != 0) {
+        fn_80128670(lbl_8055F718 - 0x10);
+    }
+    lbl_8055F718 = 0;
 }
 
