@@ -391,9 +391,9 @@ extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *this_ptr, long arg1, i
         ARCHandle handle;
         ARCFileInfo info;
         void *start_addr;
-        s32 val1, val2;
+        s32 val1;
         
-        ARCFastOpen((ARCHandle *)((u8 *)this_ptr + 0x1D0), (s32)arg1, &info);
+        ARCFastOpen((ARCHandle *)((u8 *)this_ptr + 0x1D0), arg2, &info);
         start_addr = ARCGetStartAddrInMem(&info);
         val1 = fn_80116A30(&info);
         fn_80116A38(&info);
