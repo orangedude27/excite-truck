@@ -15,6 +15,12 @@ extern void* fn_801B3BD4(void*, s32);
 extern s32 fn_802077A4();
 extern s32 lbl_80335DAC[3];
 extern f32 lbl_80562624;
+extern void fn_8002F53C(void*, void*, void*, s32, s32);
+extern void fn_801B3FD8(void*);
+extern void fn_801B4204(void*);
+extern void fn_801B537C(void*);
+extern void fn_801B3398(void);
+extern s32 lbl_8055E6C0;
 
 void fn_801B435C(void*);
 
@@ -42,11 +48,11 @@ void fn_801B3B24(void) {
 void* fn_801B3BD4(void* arg0, s32 arg1) {
     if (arg0 != NULL) {
         if (arg0 != NULL) {
-            if (*(void**)((u8*)arg0 + 0x1C) != NULL) {
-                *(void**)arg0 = (void*)&lbl_80335DAC;
-                if (*(void**)((u8*)arg0 + 0x1C) != NULL) {
-                    ((void (*)(void*, s32))(*(void***)*(void**)((u8*)arg0 + 0x1C))[2])(
-                        *(void**)((u8*)arg0 + 0x1C), 1);
+            void* prev = *(void**)((u8*)arg0 + 0x1C);
+            *(void**)arg0 = (void*)&lbl_80335DAC;
+            if (prev != NULL) {
+                if (prev != NULL) {
+                    (*(void (**)(void*, s32))(*(void***)prev + 2))(prev, 1);
                 }
                 *(void**)((u8*)arg0 + 0x1C) = NULL;
             }
@@ -135,14 +141,14 @@ s32 fn_801B3FD0(void) {
 void fn_801B42D0(void* arg0) {
     u8* p = (u8*)arg0 + 0x2FC;
     void* val = *(void**)lbl_802F9630;
-    f64 init = lbl_80562650;
     s32 i;
 
-    for (i = 0; i < 0x10; i++, p += 0x2C) {
-        *(s32*)(p + 0x1C) = fn_802077A4(val, 5, p + 0x10, p + 4);
+    for (i = 0; i < 0x10; i++) {
         *(s32*)(p + 0x20) = 0;
         *(s32*)(p + 0x24) = 0;
-        *(f32*)(p + 0x28) = init;
+        *(f32*)(p + 0x28) = lbl_80562650;
+        *(s32*)(p + 0x1C) = fn_802077A4(val, 5, p + 0x10, p + 4);
+        p += 0x2C;
     }
     *(s32*)((u8*)arg0 + 0x5BC) = 0;
 }
