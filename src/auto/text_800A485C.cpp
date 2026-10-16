@@ -1,4 +1,7 @@
 #include <types.h>
+extern "C" s32 fn_800A7090(void);
+extern "C" s32 fn_800A7610(void *);
+extern "C" s32 fn_800A76A0(void *);
 extern "C" s32 lbl_8055DD30;
 extern "C" s32 fn_800B8004(s32);
 extern "C" s32 fn_800B8048(s32);
@@ -548,6 +551,28 @@ extern "C" s32 fn_800B8BE8(s32 arg0) {
     fn_800A68DC(arg0);
     return 0;
 }
+
+extern "C" s32 fn_800B8F20(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+    s32 result;
+    fn_800B8004(lbl_8055DD30);
+    *arg4 = 0;
+    if (arg0 == 0) {
+        fn_800B8048(lbl_8055DD30);
+        return -0x14;
+    }
+    if (arg1 == 0) {
+        fn_800B8048(lbl_8055DD30);
+        return -0x14;
+    }
+    result = fn_800B960C(arg3, arg1, arg2, 0x200, arg4, arg0);
+    if (result != 0) {
+        fn_800B8048(lbl_8055DD30);
+        return result;
+    }
+    fn_800B8048(lbl_8055DD30);
+    return 0;
+}
+
 extern "C" u8 lbl_802F31F8[];
 extern "C" s32 lbl_8055DD2C;
 extern "C" s32 NANDInit(void);
@@ -1519,17 +1544,22 @@ extern "C" s32 fn_800A5800(void *arg0) {
     return 0;
 }
 
+extern "C" s32 fn_800A7090(void);
+extern "C" s32 fn_800A71A0(void);
+extern "C" s32 fn_800A7610(void *);
+extern "C" s32 fn_800A76A0(void *);
 extern "C" s32 fn_800A586C(void *arg0, s32 p1, s32 p2, s32 p3, s32 p4) {
-    s32 result = fn_800A73A0(*(void **)((u8 *)arg0 + 0x1FBC), *(u16 *)arg0, p4);
-    if (result != 0) {
-        if (result != 21)
-            return -1;
-        s32 value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
-        *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
-        *(s32 *)((u8 *)arg0 + 0x1F84) = value;
-        return 0x1000;
-    }
-    return 0;
+    s32 result;
+    s32 value;
+    result = fn_800A73A0(*(void **)((u8 *)arg0 + 0x1FBC), *(u16 *)arg0, p4);
+    if (result == 0)
+        return 0;
+    if (result != 21)
+        return -1;
+    value = ((s32 (* volatile)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
+    lbl_803D2140[0x44 / 4] = value;
+    *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+    return 0x1000;
 }
 
 #pragma opt_tail_call on
