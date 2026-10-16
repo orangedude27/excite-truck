@@ -15,6 +15,12 @@ extern char lbl_8033D878[];
 extern char lbl_8033F768[];
 
 extern "C" void fn_80219044(void);
+extern "C" void fn_8021AC24(void);
+extern "C" void fn_802C519C(void *);
+extern "C" void fn_8021915C(void *, u32);
+extern "C" s32 fn_80128668(void *);
+extern "C" void *lbl_8033EDC8[];
+extern "C" void *lbl_8033ED44[];
 
 extern f32 lbl_805634A0;
 extern f32 lbl_805634A4;
@@ -76,6 +82,18 @@ extern "C" void fn_80219358(void *arg0, f32 value) {
     *(f32 *)((u8 *)arg0 + 0x1C) = lbl_805634A0;
 }
 
+extern "C" void fn_80219440(void *arg0, s32 arg1, void *arg2, s32 arg3) {
+    s32 idx;
+    s32 value = fn_8012850C((void *)arg3, lbl_8033D878);
+    idx = *(s32 *)((u8 *)arg0 + 0x230);
+    *(s32 *)((u8 *)arg0 + idx * 16 + 0x34) = arg1;
+    *(s32 *)((u8 *)arg0 + idx * 16 + 0x30) = (s32)arg2;
+    *(s32 *)((u8 *)arg0 + idx * 16 + 0x38) = arg3;
+    *(s32 *)((u8 *)arg0 + idx * 16 + 0x3C) = value;
+    memcpy((void *)value, arg2, (unsigned long)arg3);
+    *(s32 *)((u8 *)arg0 + 0x230) = *(s32 *)((u8 *)arg0 + 0x230) + 1;
+}
+
 extern void fn_802179A0(s32);
 extern void fn_80218198(s32, s32);
 extern "C" void fn_802194F4(void* arg0) {
@@ -110,6 +128,29 @@ extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
 
 extern "C" s32 fn_80219658(void) { return 0; }
 
+extern "C" void fn_80219660(void *arg0, s32 unused) {
+    void **vt = *(void ***)arg0;
+    s32 a = *(s32 *)((u8 *)arg0 + 8);
+    s32 b = *(s32 *)((u8 *)arg0 + 4);
+    s32 c = *(s32 *)((u8 *)arg0 + 0x10) - a;
+    s32 x = ((s32 (*)(void *))vt[33])(arg0);
+    s32 y = ((s32 (*)(void *))vt[34])(arg0);
+    s32 z = ((s32 (*)(void *))vt[30])(arg0);
+    fn_8022BAD0(*(s32 *)((u8 *)arg0 + 0x250),
+                 *(s32 *)((u8 *)arg0 + 0x244) + b,
+                 *(s32 *)((u8 *)arg0 + 0x248) + a,
+                 *(s32 *)((u8 *)arg0 + 0x24C), z, c, y, x, lbl_805634A4);
+}
+
+extern "C" void fn_80219870(void *arg0, s32 arg1, s32 arg2, char *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    fn_80219568(arg0, arg1, arg2, 0, arg7, 0, 0, 0);
+    *(void **)arg0 = lbl_8033F768;
+    strcpy((char *)arg0 + 0x258, arg3);
+    *(s32 *)((u8 *)arg0 + 0x254) = arg4;
+    fn_80219440(arg0, 0, (void *)arg4, 1);
+    fn_80219718(arg0);
+}
+
 extern "C" void fn_8021915C(void*, u32);
 extern "C" s32 fn_80128668(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
@@ -124,6 +165,23 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
         }
     }
     return this_;
+}
+
+extern "C" void fn_8021AC24(void);
+extern "C" void fn_802C519C(void *);
+extern "C" void fn_8021915C(void *, u32);
+extern "C" s32 fn_80128668(void *);
+extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = (void *)0x8033ED44;
+        fn_802C519C(*(void **)((u8 *)arg0 + 0x24C));
+        fn_802C519C(*(void **)((u8 *)arg0 + 0x250));
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 extern "C" void fn_802328D4(void*);
