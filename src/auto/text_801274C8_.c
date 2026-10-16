@@ -20,3 +20,8 @@ void fn_80127958(void) {
 void fn_80127964(void) {
 
 }
+
+void fn_801279D0(void) {
+    lbl_8055DF30 += 1;
+}
+
