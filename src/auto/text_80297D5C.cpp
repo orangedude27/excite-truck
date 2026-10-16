@@ -20,6 +20,11 @@ extern void* lbl_8055F7DC;
 extern void* lbl_8055F7C4;
 extern void* lbl_8055F7C0;
 extern void* lbl_8055F7D0;
+extern void* lbl_8055F7D8;
+extern "C" void fn_80298BBC(void*);
+extern "C" void fn_8029BA8C(void*);
+extern "C" void fn_80299628(void);
+extern "C" void fn_8029871C(void*, void*, float);
 extern float lbl_80564590;
 extern float lbl_8056459C;
 extern float lbl_80558DC4;
@@ -37,7 +42,7 @@ void fn_80298160(void) {
 
 void *fn_80299A04(void *, unsigned int);
 extern void *lbl_8055F7CC;
-void *fn_802981EC(unsigned int size) {
+void* fn_802981EC(unsigned int size) {
     return fn_80299A04(lbl_8055F7CC, size);
 }
 
