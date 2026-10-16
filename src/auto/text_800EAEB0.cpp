@@ -940,7 +940,7 @@ extern "C" void* GetVariablePtr__Q46nw4hbm3snd6detail9SeqPlayerFi(void* this_, s
     }
     result = NULL;
     if (index < 0x20) {
-        result = (u8*)&lbl_80412A78[(index - 0x10) * 2];
+        result = &lbl_80412A78[index - 0x10];
     }
     return result;
 }
