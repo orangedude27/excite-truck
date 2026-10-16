@@ -4,6 +4,8 @@
 extern void fn_80128668(void *);
 extern void fn_802CAC54(int);
 extern char lbl_8034AE20[];
+int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
+
 void *fn_802C0CB0(void *arg0, int arg1) {
     int temp_r0;
 
