@@ -1,5 +1,7 @@
 #include <types.h>
 
+extern void fn_8001C714(void);
+
 typedef struct Unk8001BBBC {
     s32 unk_0x0;
     s32 unk_0x4;
