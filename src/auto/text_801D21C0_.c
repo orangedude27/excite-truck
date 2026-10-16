@@ -16,17 +16,16 @@ extern void fn_801D26C8(void *, void *);
 extern void fn_801D2A24(void *);
 extern s32 strncmp(char *, char *, s32);
 extern char lbl_8055AC28[];
-extern void *lbl_80338300;
-extern void *lbl_8055ABE0;
-extern void *lbl_8055AC18;
-extern void *lbl_8055AC20;
+extern u8 lbl_80338300[];
+extern u8 lbl_8055ABE0[];
+extern u8 lbl_8055AC18[];
+extern u8 lbl_8055AC20[];
 extern f32 lbl_80562A90;
 
 typedef struct UnkObj UnkObj;
 typedef struct {
     char pad0[8];
     void *(*fn8)(void *);
-    char pad1[4];
     void *(*child)(void *, s32);
     char pad2[0x0C];
     s32 (*fn1C)(void *, void *);
@@ -67,20 +66,57 @@ void fn_801D2C04(void) {
 }
 
 s32 fn_801D2C20(s32 arg0) {
-    s32 sp8;
-    s32 cmp;
-    s32 count;
-
-    sp8 = arg0;
+    s32 sp8 = arg0;
     if (arg0 <= 0) {
         return 0;
     }
-    cmp = (s32)fn_801D2BF4;
-    count = lbl_8055E930;
-    return fn_800241DC(&sp8, lbl_80438958, count, 0x4C4, (void *)cmp);
+    return fn_800241DC(&sp8, lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
 }
 #pragma dont_inline off
 
 void fn_801D2210(void) {
     fn_801D2B94();
 }
+
+u8 fn_801D2550(void *arg0, UnkObj *arg1) {
+    u8 *self = (u8 *)arg0;
+
+    if (arg1 != NULL) {
+        self[0] = 1;
+        *(f32 *)(self + 4) = arg1->vt->fn28(arg1, lbl_80338300, lbl_80562A90);
+    } else {
+        self[0] = 0;
+    }
+    return self[0];
+}
+
+void fn_801D2A24(void *obj_) {
+    UnkObj *obj = (UnkObj *)obj_;
+    s32 *entry = (s32 *)(lbl_80438958 + lbl_8055E930 * 0x4C4);
+
+    entry[0] = obj->vt->fn1C(obj, lbl_8055ABE0);
+    fn_801D25BC(&entry[1], obj->vt->fn5C(obj, lbl_8055AC18));
+    fn_801D26C8(&entry[12], obj->vt->fn5C(obj, lbl_8055AC20));
+    lbl_8055E930 += 1;
+}
+
+void fn_801D2AD4(void) {
+    UnkObj *list = (UnkObj *)fn_80131810();
+    s32 i;
+
+    if (list == NULL) {
+        return;
+    }
+    i = 0;
+    while (list->vt->child(list, i) != NULL) {
+        UnkObj *obj = (UnkObj *)list->vt->child(list, i);
+        obj->vt->fn8(obj);
+        if (strncmp(obj->vt->fn28(obj, lbl_80338300, lbl_80562A90) ? "" : (char *)lbl_8055ABE0, lbl_8055AC28, 7) == 0) {
+            fn_801D2A24(obj);
+        }
+        i++;
+    }
+    fn_80131818(list);
+}
+#pragma dont_inline off
+
