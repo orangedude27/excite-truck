@@ -405,9 +405,11 @@ extern "C" s32 fn_800ED018(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void fn_800ED058() {
+#pragma dont_inline on
+extern "C" void fn_800ED058(s32 arg0 = 0) {
     return;
 }
+#pragma dont_inline off
 
 extern "C" f32 fn_800ED05C(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x38); }
 
