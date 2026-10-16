@@ -30,4 +30,8 @@ void AXFXSetHooks_80210950(void *arg0, void *arg1) {
     lbl_8055EED8 = arg0;
     lbl_8055EEDC = arg1;
 }
-
+extern long fn_801345D8(long, long, long *, long);
+extern long lbl_8055B664;
+extern signed char lbl_8055EEF4;
+extern signed char lbl_8055EEF5;
+extern signed char lbl_8055EEF6;
