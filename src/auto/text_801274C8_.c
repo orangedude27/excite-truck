@@ -21,6 +21,13 @@ void fn_80127964(void) {
 
 }
 
+void fn_801279B8(void) {
+    if (++lbl_8055DF34 != 0) {
+        return;
+    }
+    fn_80127954();
+}
+
 void fn_801279D0(void) {
     lbl_8055DF30 += 1;
 }
