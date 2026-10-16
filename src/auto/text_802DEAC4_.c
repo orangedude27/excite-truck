@@ -7,9 +7,12 @@ void fn_802E0BE0(void) {
 }
 
 #include <types.h>
-#include <revolution/GX/GXTev.h>
-#include <revolution/GX/GXBump.h>
+#include <revolution/GX/GXTypes.h>
 extern void fn_802D3144(void);
+extern void GXSetTevSwapMode(GXTevStageID, GXTevSwapSel, GXTevSwapSel);
+extern void GXSetTevSwapModeTable(GXTevSwapSel, GXTevColorChan, GXTevColorChan, GXTevColorChan, GXTevColorChan);
+extern void GXSetNumIndStages(u8);
+extern void GXSetTevDirect(GXTevStageID);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80119214(void *, void *);
 extern void fn_80116E54(void *, void *);
