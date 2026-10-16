@@ -12,7 +12,7 @@ extern void fn_80128670(s32);
 extern void fn_80128668(void*);
 extern void fn_8002F634(void*, void*, s32, s32);
 extern void fn_801B3BD4(void);
-extern s32 fn_802077A4(s32, s32, void*, void*);
+extern s32 fn_802077A4();
 
 void fn_801B435C(void*);
 
@@ -25,12 +25,13 @@ void fn_801B3B24(void) {
 }
 
 void* fn_801B3D24(void* arg0, s32 arg1) {
-    s32* p = (s32*)arg0;
-    s32 i;
+    if (arg0 != NULL) {
+        s32* p = (s32*)arg0;
+        s32 i;
 
-    if (p != NULL) {
-        for (i = 0; i < 6; i++, p += 3) {
+        for (i = 0; i < 6; i++) {
             fn_80128670(*p);
+            p += 3;
         }
         fn_8002F634((u8*)arg0 + 0x2FC, (void*)fn_801B3BD4, 0x2C, 0x10);
         if (arg1 > 0) {
