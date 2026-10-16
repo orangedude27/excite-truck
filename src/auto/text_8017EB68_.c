@@ -94,3 +94,7 @@ float fn_801815C4(void *arg0) {
     return *(float *)((char *)arg0 + 0x28);
 }
 
+int fn_801815CC(void *arg0) {
+    return *(int *)((char *)arg0 + 0x50);
+}
+
