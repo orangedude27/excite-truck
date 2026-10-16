@@ -96,6 +96,31 @@ extern "C" s32 fn_800A71E0(void *arg0) {
     return temp_r3 & ((s32) (-temp_r3 | temp_r3) >> 0x1F);
 }
 
+extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
+    (*(s32 *)((u8 *)arg0 + 0)) = arg1;
+    (*(s32 *)((u8 *)arg0 + 4)) = arg1;
+    (*(s32 *)((u8 *)arg0 + 0xC)) = arg2;
+}
+
+extern "C" void fn_800B36C4(void) {
+    fn_800B23F8(0, 0, 0, 0);
+}
+
+extern "C" void fn_800B36CC(void) {
+    fn_800B23F8(0, 1, 0, 0);
+}
+
+extern "C" void fn_800B36D4(s32 arg0) {
+    u8 sp8;
+
+    if ((VFiPFSTR_StrNumChar(0, 1) < 2) || (VFiPFSTR_StrNCmp(arg0, &lbl_80559208, 1, 1, 1) != 0)) {
+        fn_800B63FC();
+        return;
+    }
+    VFiPFSTR_ToUpperNStr(arg0, 1, &sp8);
+    fn_800B65A0((s8)sp8);
+}
+
 extern "C" void* fn_800B1BDC(void*);
 extern "C" void fn_800B73BC(void*);
 extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
