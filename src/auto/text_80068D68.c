@@ -999,6 +999,13 @@ s32 IUSB_ReadBlkMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
                            callback, callbackArg, TRUE);
 }
 
+s32 IUSB_WriteBlkMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
+                         void (*callback)(void), void* callbackArg) {
+    DCFlushRange(buffer, length);
+    return __IntrBlkMsgInt(fd, endpoint, length, buffer, USB_IOCTLV_BLKMSG,
+                           callback, callbackArg, TRUE);
+}
+
 #pragma use_lmw_stmw off
 s32 IUSB_WriteCtrlMsgAsync(s32 a,s32 b,s32 c,s32 d,s32 e,u32 length,void* data,void* callback,void* context) {
     DCFlushRange(data,length);
