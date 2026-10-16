@@ -19,7 +19,8 @@ extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_800DCE50(void **arg0) {
-    *arg0 = (void *)(u32)&lbl_80320548;
+    void *addr = &lbl_80320548;
+    *arg0 = (void *)((u32)addr + 0);
 }
 
 extern "C" s32 fn_800DCE60(void) {
