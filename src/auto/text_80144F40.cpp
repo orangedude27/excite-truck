@@ -37,3 +37,7 @@ extern "C" void fn_8014822C(void) {
 
 }
 
+extern "C" s32 fn_80148230(void) {
+    return -1;
+}
+
