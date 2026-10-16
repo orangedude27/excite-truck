@@ -52,6 +52,34 @@ void *fn_80266120(void *arg0) {
     return arg0;
 }
 
+void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
+    float scale;
+
+    scale = lbl_80563C20 + arg0[3] * ((PSQUATMultiply(arg2, arg4) - lbl_8055C4C4) - lbl_80563C20);
+    arg1[0] = arg2[0] + arg3[0] * scale;
+    arg1[1] = arg2[1] + arg3[1] * scale;
+    arg1[2] = arg2[2] + arg3[2] * scale;
+}
+
+void fn_802670A0(int *arg0, int arg1) {
+    int count;
+    int div;
+    int scale;
+    int a;
+    int b;
+
+    count = fn_80178CA4();
+    scale = (count ^ 1);
+    scale = ((scale >> 1) - (scale & count) >> 31) + 1;
+    div = (count + scale - 1) / scale;
+    a = lbl_8055CFF0 / scale;
+    b = lbl_8055CFF4 / div;
+    arg0[0x40 / 4] = a;
+    arg0[0x44 / 4] = b;
+    arg0[0x38 / 4] = a * (arg1 / div);
+    arg0[0x3C / 4] = b * (arg1 % div);
+}
+
 char fn_8026A38C(void) {
     return lbl_8055F488;
 }
@@ -83,4 +111,4 @@ int fn_8026A554(int *arg0) {
     }
     return 4;
 }
-
+extern float lbl_80563C20;
