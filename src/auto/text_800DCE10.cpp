@@ -129,8 +129,7 @@ extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 
         u16 bytes = (len + 1) * 2;
         u16 current = *(u16 *)((u8 *)this_ptr + 0xF8);
         if (bytes > current) {
-            void **vtable = *(void***)this_ptr;
-            void (*fn)(void*) = (void (*)(void*))vtable[0x68 / 4];
+            void (*fn)(void*) = *(void (**)(void*))(*(u32*)this_ptr + 0x68);
             fn(this_ptr);
             void *result = MEMAllocFromAllocator(lbl_8055DDF0, bytes);
             *(void **)((u8 *)this_ptr + 0xD4) = result;
@@ -151,8 +150,8 @@ extern "C" void fn_800DEFD8(void *this_ptr) {
 }
 
 extern "C" void SetString__Q36nw4hbm3lyt7TextBoxFPCwUs(void *this_ptr, const u16 *str, u16 len) {
-    u16 str_len = fn_8002AEE8(str);
-    void **vtable = *(void***)this_ptr;
-    void (*fn)(void*, const u16*, u16, u16) = (void (*)(void*, const u16*, u16, u16))vtable[0x70 / 4];
-    fn(this_ptr, str, len, str_len);
+    u32 wlen = fn_8002AEE8(str);
+    void (*fn)(void*, const u16*, u32) =
+        *(void (**)(void*, const u16*, u32))(*(u32*)this_ptr + 0x70);
+    fn(this_ptr, str, (u32)(u16)wlen);
 }
