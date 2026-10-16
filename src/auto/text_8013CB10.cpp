@@ -92,6 +92,10 @@ extern "C" void fn_80143200(u8 *arg0) {
     *(u8 *)(arg0 + 0x26C) = 0;
 }
 
+extern "C" s32 fn_8014320C(void) {
+    return 0x1008;
+}
+
 extern "C" void fn_8013D288(void);
 
 extern "C" void fn_80143214(void) {
