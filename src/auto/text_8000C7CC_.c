@@ -131,6 +131,13 @@ u8 fn_8000D75C(void) {
     return lbl_8055D404;
 }
 
+s32 fn_8000D764(void) {
+    if (lbl_8055D404 != 0) {
+        return -1;
+    }
+    return fn_8000CCB8();
+}
+
 extern s32 fn_80019BA8(void);
 s32 fn_8000C7CC(void) {
     return fn_80019BA8() == 0;
