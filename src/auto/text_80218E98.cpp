@@ -24,6 +24,25 @@ extern "C" void fn_802194FC(void* arg0) {
     fn_80218198(*(s32*)((u8*)arg0 + 0x2C), 0);
 }
 
+extern void fn_80217AC0(s32);
+extern "C" void fn_80219508(void* arg0) {
+    fn_80217AC0(*(s32*)((u8*)arg0 + 0x2C));
+}
+
+extern "C" void fn_80219510(void* arg0, s32 arg1, s32 arg2) {
+    *(s32*)((u8*)arg0 + 0x244) = -arg1;
+    *(s32*)((u8*)arg0 + 0x248) = -arg2;
+    *(u8*)((u8*)arg0 + 0x24C) = 1;
+}
+
+extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
+    if (*(u8*)((u8*)arg0 + 0x24C) != 0) {
+        void* r7 = *(void**)((u8*)arg0 + 0x2C);
+        *(s32*)((u8*)r7 + 0x454) += *(s32*)((u8*)arg0 + 0x244) + arg1;
+        *(s32*)((u8*)r7 + 0x458) += *(s32*)((u8*)arg0 + 0x248) + arg2;
+    }
+}
+
 extern "C" void fn_8021915C(void*, u32);
 extern "C" s32 fn_80128668(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
