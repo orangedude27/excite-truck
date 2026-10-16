@@ -7,6 +7,11 @@ extern void fn_8020646C(long, long);
 extern void fn_801E7984(void);
 extern char lbl_8055EB11;
 extern long lbl_80487CF0[];
+extern unsigned char lbl_80487DE0[];
+extern long lbl_8055EB34;
+extern long *lbl_8055EB3C;
+extern long lbl_8055EB38;
+extern long *lbl_8055EB40;
 void fn_801E78D8(long arg0) {
     long count;
     long i;
