@@ -152,6 +152,8 @@ void fn_802C6B2C(s32 *arg0, s32 arg1) {
     }
 }
 
+void fn_802C6C34(void) { fn_802C53A8(); }
+
 extern int fn_802D6C48;
 void fn_802C5DF0(int*);
 int fn_802C90E0(void);
