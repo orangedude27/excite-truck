@@ -1,6 +1,27 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int fn_801284F8(int, void *);
+extern void fn_801E76A8(void *, void *);
+extern void fn_802D68C4(int, int, int, int);
+extern void fn_80128670(void *);
+extern void fn_80128668(void *);
+extern int lbl_80339B90;
+void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_80128670(*(void **)((char *)arg0 + 0xC));
+        fn_80128670(*(void **)((char *)arg0 + 0));
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+void fn_801E7840(void *arg0) {
+    if (fn_801284F8(0x18, &lbl_80339B90) != 0) {
+        fn_801E76A8((void *)arg0, arg0);
+    }
+}
+
 void fn_801E7890(void) {
     fn_801E7790();
 }
