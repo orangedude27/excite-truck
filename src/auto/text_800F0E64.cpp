@@ -45,6 +45,61 @@ extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileRea
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" const char lbl_803247E0[];
 extern "C" const char lbl_803247F8[];
+extern "C" u32 OSDisableInterrupts(void);
+extern "C" void OSRestoreInterrupts(u32);
+extern "C" const char lbl_80324390[];
+extern "C" const char lbl_803244FC[];
+extern "C" const char lbl_80324534[];
+extern "C" const char lbl_803245B8[];
+extern "C" void fn_800F2084(void* arg0, f32 farg0) {
+    u32 level = OSDisableInterrupts();
+    *(f32*)((u8*)arg0 + 0x20) = farg0;
+    OSRestoreInterrupts(level);
+}
+
+void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F20C4(void *self, s32 bus, f32 value) {
+    if (bus < 0 || bus >= 3) {
+        if (0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x295, lbl_803244FC, bus, 0, 3);
+    }
+    u32 token = OSDisableInterrupts();
+    *(f32 *)((u8 *)self + 0x24 + bus * 4) = value;
+    OSRestoreInterrupts(token);
+}
+
+void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F2160(void *self, s32 bus, f32 value) {
+    if (bus < 0 || bus >= 4) {
+        if (0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x2A3, lbl_80324534, bus, 0, 4);
+    }
+    u32 token = OSDisableInterrupts();
+    *(f32 *)((u8 *)self + 0x30 + bus * 4) = value;
+    OSRestoreInterrupts(token);
+}
+
+void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F21FC(void *self, s32 bus, f32 value) {
+    if (bus < 0 || bus >= 4) {
+        if (0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x2B0, lbl_80324534, bus, 0, 4);
+    }
+    u32 token = OSDisableInterrupts();
+    *(f32 *)((u8 *)self + 0x40 + bus * 4) = value;
+    OSRestoreInterrupts(token);
+}
+
+s32 GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void *self, s32 index) {
+    if (index < 0 || index > 0x10) {
+        if (0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x2EB, lbl_803245B8, index, 0, 0x10);
+    }
+    if (index < 0x10) return (s32)((u8 *)self + 0x94 + index * 2);
+    return 0;
+}
+
+extern "C" void fn_800F26D8(void *arg0) {
+    extern s32 lbl_80324848;
+    *(s32 *)arg0 = (s32)&lbl_80324848;
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+    *(u8 *)((u8 *)arg0 + 8) = 0x2F;
+    *(u8 *)((u8 *)arg0 + 9) = 0;
+}
+
 extern "C" s32 fn_800F26FC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
