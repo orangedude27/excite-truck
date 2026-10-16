@@ -243,7 +243,28 @@ void gki_timers_init(void) {
     *(u32 *)(base - 0x7724) = 0;
 }
 
+void GKI_init(void) {
+    memset(&gki_cb, 0, sizeof(gki_cb));
 
+    gki_buffer_init();
+    gki_timers_init();
+    gki_cb.com.OSRdyTbl[GKI_PPC_TASK] = TASK_READY;
+    gki_cb.com.OSTName[GKI_PPC_TASK] = NULL;
+    gki_cb.com.OSWaitTmr[GKI_PPC_TASK] = 0;
+    gki_cb.com.OSWaitEvt[GKI_PPC_TASK] = 0;
+
+    gki_cb.os.int_index = 0;
+    gki_cb.os.int_state[gki_cb.os.int_index] = OSEnableInterrupts();
+    gki_cb.os.int_index++;
+}
+
+void GKI_shutdown(void) {
+    gki_cb.com.OSRdyTbl[GKI_PPC_TASK] = TASK_DEAD;
+    while (gki_cb.os.int_index > 0) {
+        gki_cb.os.int_index--;
+        OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
+    }
+}
 
 void fn_8006EACC(void) {
 
