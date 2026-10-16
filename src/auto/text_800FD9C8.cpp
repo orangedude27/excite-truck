@@ -30,6 +30,10 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail9StrmSoundFv(void* arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_800FDDE8(void* arg0) {
+    return *(s32*)((u8*)arg0 + 0x5F4) != 0;
+}
+
 extern "C" void fn_800FDDFC(void* arg0) {
     fn_800FDE28(*(void**)((u8*)arg0 + 0x5F4));
 }
