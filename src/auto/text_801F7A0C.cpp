@@ -27,17 +27,41 @@ struct F9Node {
     void *next2;
 };
 
+struct F9NodeFn {
+    void *vtable; // 0x0
+    void (*fn)(void *); // 0x8
+};
+
 extern "C" void fn_801F92A8(void) {
 
 }
 
 extern "C" void fn_801F9440(F9Node *list, F9Node *node) {
-    node->next = list->next;
-    list->next = node;
+    node->next2 = list->next2;
+    list->next2 = node;
 }
 
 extern "C" s32 fn_801F948C(F9Node *node) {
     return stricmp((char *)node->vtable, (char *)lbl_8033B1EC) == 0;
+}
+
+extern "C" void *fn_801F96C8(F9Node *node) {
+    F9Node *list = (F9Node *)lbl_8055EC38;
+    for (;;) {
+        if (list == NULL) {
+            break;
+        }
+        if (stricmp((char *)list->vtable, (char *)lbl_8033B1EC) != 0) {
+            list = (F9Node *)list->next2;
+            continue;
+        }
+        if (list != NULL) {
+            break;
+        }
+        fn_801F96A8(node);
+        list = (F9Node *)fn_801F93FC();
+    }
+    return list;
 }
 
 extern "C" void fn_801FC66C(void) {
