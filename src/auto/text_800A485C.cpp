@@ -1114,6 +1114,12 @@ extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt8Material(
     }
 }
 
+extern "C" void* fn_800D57AC(void* arg0, const void* arg1) {
+    __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(arg0, arg1);
+    *(const char**)arg0 = lbl_8031F540;
+    return arg0;
+}
+
 extern u32 lbl_8055DDE0;
 extern "C" u32* fn_800D58B0(void) {
     return &lbl_8055DDE0;
