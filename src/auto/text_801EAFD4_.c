@@ -120,6 +120,22 @@ extern void fn_802AE9D0(void);
 extern void fn_802AEA44(void);
 extern void fn_802C6CF8(s32);
 extern void fn_802CCE24(s32);
+void fn_801EBBB4(void) {
+    fn_802C6CF8(lbl_8055AFBC);
+    lbl_8055AFBC = -1;
+    if (lbl_8055AFB8 != -1) {
+        fn_802C6CF8(lbl_8055AFB8);
+        lbl_8055AFB8 = -1;
+    }
+    if (lbl_8055EBA0 != 0) {
+        fn_801EB824(*lbl_8055EBA0);
+        fn_801EB8BC();
+        fn_8012C4D8((s32)lbl_8055EBA0);
+        lbl_8055EBA0 = 0;
+        return;
+    }
+    fn_802AE9D0();
+}
 void fn_801EBC2C(void) {
     if (lbl_8055EBA0 != 0) {
         fn_802CCE24(((s32 *)lbl_8055EBA0)[1]);
