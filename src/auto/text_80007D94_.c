@@ -23,3 +23,9 @@ void fn_80279464(void);
 void fn_80012778(void);
 void fn_80131818(void*);
 void fn_802E317C(const char*, ...);
+
+void fn_80007F40(void) {
+    fn_80007DA0();
+    fn_80279464();
+    fn_80012778();
+}
