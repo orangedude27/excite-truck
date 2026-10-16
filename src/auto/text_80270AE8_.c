@@ -71,4 +71,6 @@ f32 fn_802715F0(void *arg0) {
     }
     return lbl_8055F540;
 }
-
+extern int lbl_8049F9D8;
+extern int lbl_8055F554;
+extern f32 lbl_80563E78;
