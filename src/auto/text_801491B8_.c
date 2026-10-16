@@ -187,6 +187,19 @@ s32 fn_8014ADD0(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+s32 fn_8014ADD8(void *arg0) {
+    void *next = ((void **)arg0)[2];
+    ((void **)arg0)[1] = next;
+    if (next != 0) {
+        ((void **)arg0)[2] = *(void **)((u8 *)next + 0x11C);
+        ((s32 *)arg0)[3] = *(s32 *)((u8 *)next + 0x120);
+    } else {
+        ((s32 *)arg0)[3] = 0;
+        ((void **)arg0)[2] = 0;
+    }
+    return ((void **)arg0)[1] != 0;
+}
+
 void fn_8014AED0(void *arg0, f32 farg0) {
     ((f32 *)arg0)[0x41] = farg0;
 }
