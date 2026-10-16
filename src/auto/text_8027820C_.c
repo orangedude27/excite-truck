@@ -3,6 +3,13 @@ extern char lbl_8055F5BB;
 extern char lbl_8055F5B9;
 extern char lbl_8055F5C8;
 extern int lbl_8055E3C4;
+extern int lbl_8055F5B4;
+extern char lbl_8055F5B8;
+extern int fn_802E30C8(const char *, ...);
+extern const char lbl_80347590[];
+extern const char lbl_803475B4[];
+extern const char lbl_80347660[];
+extern char lbl_804A15D0[];
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -44,9 +51,8 @@ void *fn_802678E4(int);
 extern int lbl_8055F5BC;
 extern float lbl_805640B0;
 void fn_8027889C(float arg0) {
-    float t;
+    float t = arg0 / lbl_805640B8;
     float result;
-    t = arg0 / lbl_805640B8;
     if (t < lbl_805640A8) result = t - lbl_805640BC;
     else result = lbl_805640BC + t;
     lbl_8055F5C0 = (int)result;
