@@ -80,14 +80,13 @@ void fn_8000AAE0(void* arg0) {
 
 void fn_8000AAE4(void* arg0) {
     char* p = (char*)arg0 + 0x64;
-    s32 i = 0;
-    while (i < ((s32*)arg0)[0x3E0 / 4]) {
+    s32 i;
+    for (i = 0; i < ((s32*)arg0)[0x3E0 / 4]; i++) {
         fn_8000AABC(p);
         p += 0x78;
-        i++;
     }
 }
-
+#pragma scheduling on
 void fn_8000AB44(void) {
     fn_8000A6D8();
 }
