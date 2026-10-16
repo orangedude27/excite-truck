@@ -20,3 +20,7 @@ void fn_8026A51C(void) {
     fn_802693F4();
 }
 
+void fn_8026A54C(float arg0) {
+    lbl_8055F484 = arg0;
+}
+
