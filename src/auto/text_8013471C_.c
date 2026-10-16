@@ -55,6 +55,7 @@ f32 fn_80134E00(void) {
 extern f32 fn_80134C1C(void);
 extern f32 fn_80134D20(void);
 extern f32 fn_80134E00(void);
+extern void *lbl_8055E0B0;
 extern f32 lbl_80560108;
 extern f32 lbl_8056010C;
 extern f32 lbl_80561304;
