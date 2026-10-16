@@ -139,17 +139,28 @@ extern s32 lbl_8055DDD4;
 extern void* lbl_8055DDD4_ptr;
 extern "C" s32 fn_800D3F94(void*, s32, s32, s32);
 extern u32 lbl_80407BD8;
+extern void* lbl_80407BD8_ptr;
 #pragma opt_tail_call on
+void DCStoreRange(void *, s32);
 s32 fn_800D3824(void) {
-    s32 val = lbl_8055DDD4;
-    s32 result = -val;
-    result |= val;
-    return (s32)result >> 31;
+    return lbl_8055DDD4 != 0;
 }
-#pragma opt_tail_call on
 u8 fn_800D3838(u8 *arg0) {
     return *arg0;
 }
+
+s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2) {
+    void *var_r31 = (void *)lbl_8055DDD4;
+
+    while (var_r31 != 0) {
+        if (fn_800D3F94(var_r31, arg0, arg1, arg2) != 0) {
+            return 1;
+        }
+        var_r31 = *(void **)((u8 *)var_r31 + 0xC);
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
