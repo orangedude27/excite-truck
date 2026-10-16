@@ -147,6 +147,9 @@ void fn_801EBC2C(void) {
     fn_802AEA44();
 }
 
+typedef struct {
+    void **vt;
+} Obj;
 extern void fn_802CD254(s32);
 extern void fn_801E8718(s32);
 extern f32 fn_801E8738(s32);
@@ -163,13 +166,11 @@ void fn_801EBCAC(void) {
     if (lbl_8055EBA0 != 0) {
         s32 *p = lbl_804885E8;
         u32 i = 0;
-        do {
+        for (; i < 0x18; i++, p++) {
             void **obj = *(void ***)p;
             void **vt = *(void ***)*obj;
             ((void (*)(void))vt[7])();
-            i++;
-            if (i < 0x18) p++;
-        } while (i < 0x18);
+        }
     }
 }
 
