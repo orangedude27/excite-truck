@@ -37,6 +37,13 @@ void fn_8023B904(void *arg0, void *dest, s32 flag) {
     } else fn_8000C0E8();
 }
 
+s32 fn_8023B9AC(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_8023BB0C(void) {
     s32 sp10, sp8, spC;
     s32 temp_r29;
@@ -50,6 +57,13 @@ void fn_8023BB0C(void) {
         fn_80016A44(var_r30);
         fn_80016970(var_r30, temp_r29, sp10, sp8);
     }
+}
+
+int fn_8023BC24(int ignored, int arg1, int arg2) {
+    int *obj = (int *)fn_8027DB40(1);
+    int result = fn_8024DAE0(arg1, arg2, (int)obj, 0, 0, 0);
+    if (obj != 0) ((void (*)(int *, int))(*(int **)obj)[2])(obj, 1);
+    return result;
 }
 
 int fn_8023BCAC(int arg0, int arg1) {
@@ -71,10 +85,27 @@ extern void fn_80137C80(int);
 extern void fn_80137C78(int);
 void fn_8023BDEC(void) {
     int i = 0;
-    do {
-        fn_80137C80(i);
-        i++;
-    } while (i < fn_80137C74());
+loop:
+    fn_80137C80(i);
+    i++;
+    if (i < fn_80137C74()) goto loop;
     fn_80137C78(1);
+}
+
+void fn_8023BE38(int arg0, int flag) {
+    fn_80012794();
+    fn_80012790(0x130);
+    fn_802411C8();
+    if (flag != 0) {
+        fn_8023BBA8();
+    } else {
+        do {
+            fn_8023BB0C();
+            fn_8023B5E0();
+        } while (fn_8023FF1C(arg0) != 1);
+    }
+    fn_8023BDEC();
+    fn_80012794();
+    fn_80012778();
 }
 
