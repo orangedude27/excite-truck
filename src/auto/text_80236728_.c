@@ -20,6 +20,10 @@ void fn_80236900(void) {
     lbl_8055F0C0[0x21] = 0;
 }
 
+void fn_80236910(void) {
+    fn_80236960();
+}
+
 void fn_80236914(void) {
     fn_80237AA0();
 }
