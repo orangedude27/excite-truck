@@ -179,6 +179,17 @@ void fn_802A6790(void *arg0) {
     }
 }
 
+void *fn_802A69D8(void *arg0, s32 arg1) {
+    s32 temp;
+    if (arg0 != 0) {
+        fn_802CAC54(((s32 *)arg0)[3]);
+        temp = *(s32 *)arg0;
+        if (temp != 0) fn_80128670(temp - 0x10);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern float fn_80287BC8(float, float);
 extern void fn_802A70E4(void *, float *);
 extern s32 fn_802CAC54(s32);
