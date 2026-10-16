@@ -23,9 +23,24 @@ char fn_801B8514(void) {
     return lbl_8055E748;
 }
 
+float fn_801B8950(int arg0) {
+    extern float lbl_80436D08[];
+    return lbl_80436D08[arg0];
+}
+
 extern float lbl_80436D08[];
 void fn_801B8964(int arg0, float arg1) {
     lbl_80436D08[arg0] = arg1;
+}
+
+void fn_801B8978(void) {
+    void* obj = lbl_8055E744;
+    ((void (**)(void*))*(void**)obj)[27](obj);
+}
+
+void fn_801B898C(void) {
+    void* obj = lbl_8055E744;
+    ((void (**)(void*))*(void**)obj)[28](obj);
 }
 
 void fn_801B8AD4(void) {
