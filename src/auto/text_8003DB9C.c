@@ -5,6 +5,7 @@ extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
 extern unsigned int *__GXData;
 extern unsigned short *__cpReg;
+extern unsigned short *__peReg;
 extern unsigned int lbl_8037C0E4;
 extern unsigned int lbl_8055D974;
 extern void GXGetVtxDesc(void);
