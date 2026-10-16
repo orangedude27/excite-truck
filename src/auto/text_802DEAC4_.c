@@ -8,6 +8,19 @@ extern void fn_802D3144(void);
 extern void GXSetNumIndStages(u8);
 extern void GXSetTevDirect(GXTevStageID);
 
+void fn_802DEE1C(void) {
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevSwapMode(1, 0, 0);
+    GXSetTevSwapMode(2, 0, 0);
+    GXSetTevSwapMode(3, 0, 0);
+    GXSetTevSwapMode(4, 0, 0);
+}
+
+void fn_802DEF70(void) {
+    GXSetTevSwapMode(0, 0, 0);
+    fn_802D3144();
+}
+
 void fn_802DF2F0(void) {
     GXSetTevSwapMode(0, 0, 0);
 }
@@ -23,6 +36,25 @@ void fn_802DF684(void) {
     GXSetNumIndStages(0);
     GXSetTevDirect(1);
 }
+
+void fn_802DF938(void) {
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevSwapMode(1, 0, 0);
+    GXSetTevSwapMode(2, 0, 0);
+    GXSetNumIndStages(0);
+    GXSetTevDirect(1);
+}
+
+void fn_802DFCC0(void) {
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevSwapMode(1, 0, 0);
+    fn_802D3144();
+}
+
+#pragma dont_inline on
+void fn_802E0BA4(void) {
+}
+#pragma dont_inline reset
 
 void fn_802E0BE0(void) {
     fn_802E0BA4();
