@@ -20,10 +20,19 @@ extern s32 lbl_8055A0E8;
 extern u8 lbl_8055E2DD;
 
 extern s32 lbl_8055E300;
+s32 fn_801613A0(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 s32 fn_80161BDC(s32 a, s32 b, s32 c) {
-    void *obj = (void *)lbl_8055E300;
-    if (obj != 0) {
-        return ((s32 (*)(void *, s32, s32, s32))(*(void ***)obj)[0x3c / 4])(obj, a, b, c);
+    register s32 arg0 = a;
+    register s32 arg1 = b;
+    register s32 arg2 = c;
+    if (lbl_8055E300 != 0) {
+        return (*(s32 (**)(void *, s32, s32, s32))(*(char **)lbl_8055E300 + 0x3c))((void *)lbl_8055E300, arg0, arg1, arg2);
     }
     return 0;
 }
