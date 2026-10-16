@@ -38,7 +38,7 @@ s32 fn_802CAC28(void *, s32);
 void *fn_802AE414(void *);
 s32 fn_802C6FC0(void *, s32, s32);
 void fn_802A4C20(void) {
-    register s32 flag asm("r3");
+    s32 flag;
     flag = lbl_8055F88C;
     if (flag != 0) fn_802A6A44();
     flag = lbl_8055F888;
