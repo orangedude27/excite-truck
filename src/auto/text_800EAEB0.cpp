@@ -877,9 +877,11 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
     OSRestoreInterrupts(level);
 }
 
-extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800EFD74(const void* this_, s32 bus) {
-    if (bus < 0 || bus >= 4) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x1DA, (const char*)lbl_80323C74, bus, 0, 4);
-    return *(f32*)((const u8*)this_ + 0x64 + bus * 4);
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800EFD74(const void* self, s32 bus) {
+    s32 valid = 0;
+    if (bus >= 0 && bus < 4) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x1da, (const char*)lbl_80323C74, bus, 0, 4);
+    return *(f32*)((const u8*)self + 0x64 + bus * 4);
 }
 
 void fn_800F0750(void) {
