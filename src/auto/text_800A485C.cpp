@@ -54,6 +54,27 @@ extern "C" const char lbl_8031E938[];
 extern "C" const char lbl_805597D0[];
 extern "C" u32 lbl_8055DDA0;
 
+extern "C" void* __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void*, const void*);
+extern "C" void* __dt__Q36nw4hbm3lyt4PaneFv(void*, unsigned int);
+extern "C" const char lbl_8031F540[];
+extern "C" const char lbl_8031F510[];
+extern "C" const char lbl_8031F534[];
+extern "C" int strcmp(const char*, const char*);
+struct Vec2 { float x, y; };
+struct Size { float x, y; };
+struct DrawInfo { unsigned char pad[0x50]; unsigned char flag; };
+class BoundingPane { public:
+ virtual ~BoundingPane();
+ virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+ virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8();
+ virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12();
+ virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16();
+ virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20();
+ virtual void v21(); virtual void v22(); virtual void v23(); virtual void v24();
+};
+extern "C" Vec2 GetVtxPos__Q34nw4r3lyt4PaneCFv(BoundingPane*, unsigned int);
+extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(const Vec2*, const Size*, unsigned int);
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
