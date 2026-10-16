@@ -47,6 +47,19 @@ void fn_801F596C(void) {
 
 }
 
+void fn_801F7220(void *arg0) {
+    void *entry;
+    int i;
+
+    i = 0;
+    entry = arg0;
+    while (i < *(int *)((char *)arg0 + 0x120)) {
+        fn_801F6880(entry);
+        entry = (char *)entry + 0x48;
+        i++;
+    }
+}
+
 extern void fn_801F6A98(void *);
 extern void fn_801F6B98(void *);
 extern void fn_801F6DF0(void *);
@@ -55,6 +68,14 @@ void fn_801F73F8(void) { fn_801F6EC0(lbl_8055EC14); }
 
 void fn_801F78D8(void) {
 
+}
+
+extern int fn_80128668(void);
+int fn_801F79B0(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
 }
 
 void fn_801F7A00(void) {
