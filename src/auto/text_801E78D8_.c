@@ -43,6 +43,11 @@ void fn_801E7E04(long arg0, long arg1) {
     lbl_80487CF0[arg0] = arg1;
 }
 
+float fn_801E7E18(void) {
+    extern float *lbl_8055EB04;
+    return *lbl_8055EB04;
+}
+
 long fn_801E7E2C(void) {
     return -1;
 }
