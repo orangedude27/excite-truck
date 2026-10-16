@@ -44,6 +44,8 @@ int fn_80209214(void) {
     return 0;
 }
 
+int fn_80209260(int arg0) { return arg0 + 4; }
+
 void fn_80209278(void) {
 
 }
