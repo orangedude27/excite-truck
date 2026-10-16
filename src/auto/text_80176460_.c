@@ -139,6 +139,12 @@ void fn_80176F24(void) {
     fn_80176EC0();
 }
 
+void fn_801775EC(void) { *(u8 *)((u8 *)0x80430558 + 0x14)=0xFF; *(s32 *)((u8 *)0x80430558+0xC)=3; }
+
+void fn_80177618(int *arg0) { (**(void (***)())(*(int *)arg0 + 0xC))(); }
+
+void fn_80177638(int *arg0) { (**(void (***)())(*(int *)arg0 + 0x14))(); }
+
 extern void fn_80177658(void *);
 extern void fn_80177608(void);
 extern void fn_80177618(int *);
@@ -153,7 +159,7 @@ void fn_801777A8(void) { fn_80177658(&fn_80177628); }
 
 void fn_801777B4(void) { fn_80177658(&fn_80177638); }
 
-extern unsigned char fn_80177648[];
+extern void fn_80177648(int *);
 void fn_801777C0(void) {
     fn_80177658(fn_80177648);
 }
