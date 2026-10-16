@@ -46,7 +46,7 @@ extern "C" void fn_8012A648(void) {
 
 extern "C" void fn_8012A67C(void) {
     lbl_8055E004 = 0;
-    delete lbl_8055E008;
+    delete (Unk8012A570 *)lbl_8055E008;
     lbl_8055E008 = 0;
 }
 
