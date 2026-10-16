@@ -108,6 +108,15 @@ s32 fn_8001BD6C(void *arg0, void *arg1) {
     return result >> 31;
 }
 
+void *fn_8001C070(void *dest, int val, size_t count) {
+    fn_8001BC38(dest, val, count);
+    return dest;
+}
+
+s32 fn_8001C0A0(void) {
+    return *(s32 *)fn_8001BC18(0);
+}
+
 void fn_8001C0E8(void) {
     fn_8001BC28();
 }
