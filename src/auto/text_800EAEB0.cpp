@@ -525,7 +525,7 @@ extern "C" void fn_800EF938(void* arg0, f32 arg1) {
 extern "C" void fn_800EF978(void* arg0, f32 arg1) {
     OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x38) = arg1;
-    OSRestoreInterrupts(0);
+    ((void (*)(void))OSRestoreInterrupts)();
 }
 
 extern "C" void fn_800EF9B8(void* arg0, f32 arg1) {
