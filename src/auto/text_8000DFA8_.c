@@ -157,7 +157,7 @@ void fn_80010B74(void) {
     fn_802C8BD0(-1);
 }
 
-void fn_80010B80(s32 arg0, f64 arg1, f64 arg2, f64 arg3, f64 arg4) {
+void fn_80010B80(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
     Unk0x18 entry;
 
     entry.unk_0x00 = (f32)arg1;
@@ -171,6 +171,27 @@ void fn_80010B80(s32 arg0, f64 arg1, f64 arg2, f64 arg3, f64 arg4) {
     }
 }
 
+#pragma dont_inline on
+void *fn_80010BEC(void *arg0) {
+    Unk0x18 *entry;
+    s32 i;
+
+    if (lbl_8055D4A8 > 0) {
+        fn_80010B74();
+        entry = lbl_8034F6B0;
+        i = 0;
+        while (i < lbl_8055D4A8) {
+            fn_80010A50(entry->unk_0x00, entry->unk_0x04, entry->unk_0x08,
+                        entry->unk_0x0C, entry->unk_0x10, entry->unk_0x14);
+            entry++;
+            i++;
+        }
+        fn_80010B7C();
+        lbl_8055D4A8 = 0;
+    }
+}
+#pragma dont_inline off
+
 void fn_80010EF0(void);
 void fn_80010F08(void);
 void fn_80010F20(void);
@@ -178,6 +199,55 @@ void fn_80010EC8(void) {
     fn_80010EF0();
     fn_80010F08();
     fn_80010F20();
+}
+
+typedef struct Unk80350F88 {
+    s8 unk_0x04;
+    s32 unk_0x288;
+} Unk80350F88;
+extern char *strncpy(char *, const char *, unsigned long);
+extern f32 lbl_80560264;
+extern f32 lbl_80560280;
+extern void fn_802353F4(f32, f32, f32, f32, f32, f32);
+extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
+void fn_80010EF0(void) {
+    s32 *base = (s32 *)&lbl_80350F88;
+
+    *(s32 *)((s8 *)base + 0x288) = 0;
+    *(s32 *)base = *(s32 *)base & ~0xFF;
+    *(s32 *)base = *(s32 *)base | 0;
+}
+
+void fn_80010F38(char *name, s32 a1, s32 a2, s32 a3, f32 f) {
+    s8 *entry;
+    s32 idx;
+
+    idx = *(s32 *)((s8 *)&lbl_80350F88 + 0x288);
+    *(s32 *)((s8 *)&lbl_80350F88 + 0x288) = idx + 1;
+    entry = (s8 *)&lbl_80350F88 + idx * 0x40 + 8;
+    strncpy((char *)entry, name, 0x28);
+    *(entry + 0x28) = 0;
+    *(s32 *)(entry + 0x2c) = a1;
+    *(s32 *)(entry + 0x30) = a2;
+    *(s32 *)(entry + 0x34) = 0;
+    *(s32 *)(entry + 0x38) = a3;
+    *(f32 *)(entry + 0x3c) = f;
+}
+
+void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
+    s8 *entry;
+    s32 idx;
+
+    idx = *(s32 *)((s8 *)&lbl_80350F88 + 0x288);
+    *(s32 *)((s8 *)&lbl_80350F88 + 0x288) = idx + 1;
+    entry = (s8 *)&lbl_80350F88 + idx * 0x40 + 8;
+    strncpy((char *)entry, name, 0x28);
+    *(entry + 0x28) = 0;
+    *(s32 *)(entry + 0x2c) = a1;
+    *(s32 *)(entry + 0x30) = a2;
+    *(s32 *)(entry + 0x34) = a3;
+    *(s32 *)(entry + 0x38) = a4;
+    *(f32 *)(entry + 0x3c) = f;
 }
 
 void fn_80011A2C(void *arg0) {
