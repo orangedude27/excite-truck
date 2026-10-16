@@ -148,6 +148,14 @@ s32 *fn_80149580(void) {
 
 void fn_80149588(s32 arg0) {
     s32 sp8;
+    s32 sp10;
+    s32 sp14;
+    s32 sp18;
+    s32 sp1C;
+    s32 sp20;
+    s32 sp24;
+    s32 sp28;
+    s32 sp2C;
     fn_80130980(&sp8, 0x20, 3);
     if (1) {
         fn_801474EC(arg0, &lbl_80559EC4, &sp8);
@@ -378,6 +386,44 @@ s32 fn_8014C88C(f32 arg0, f32 arg1) {
     return (f32)abs <= lbl_80558DC4[0];
 }
 
+float fn_8014C8F8(float farg0, float farg1, float farg2) {
+    float value = farg2;
+    if (value < farg0) {
+        goto first;
+    }
+    goto second;
+first:
+    value = farg0;
+second:
+    if (value > farg1) {
+        goto third;
+    }
+    goto fourth;
+third:
+    value = farg1;
+fourth:
+    return value;
+}
+
+void fn_8014C920(void *arg0, void *arg1) {
+    int a = ((int *)arg1)[0];
+    int b = ((int *)arg1)[1];
+    int c = ((int *)arg1)[2];
+    int d = ((int *)arg1)[3];
+    float e = ((float *)arg1)[4];
+    int f = ((int *)arg1)[5];
+    int g = ((int *)arg1)[6];
+    int h = ((int *)arg1)[7];
+    ((int *)arg0)[0] = a;
+    ((int *)arg0)[1] = b;
+    ((int *)arg0)[2] = c;
+    ((int *)arg0)[3] = d;
+    ((float *)arg0)[4] = e;
+    ((int *)arg0)[5] = f;
+    ((int *)arg0)[6] = g;
+    ((int *)arg0)[7] = h;
+}
+
 int fn_8014C964(int *arg0, int arg1) {
     return *arg0 == arg1;
 }
@@ -420,6 +466,21 @@ void fn_8014DE4C(void) {
 void fn_8014E704(void) {
 
 }
+
+extern void fn_80128670(s32);
+extern void *lbl_8055E268;
+extern s32 lbl_80559F40;
+s32 fn_8014E708(s32 arg0) {
+    u8 *base=(u8 *)lbl_8055E268;
+    if(base!=0) {
+        void *obj=*(void **)(base+arg0*0xC0+0x9F4);
+        void **vt=*(void ***)obj;
+        return ((s32 (*)(void))(*(void **)((u8 *)vt+0x38)))();
+    }
+    return 0;
+}
+
+s32 fn_8014E738(void) { return 0; }
 
 void fn_8014E7D8(void) {
 
