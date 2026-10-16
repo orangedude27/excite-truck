@@ -14,8 +14,13 @@ extern float lbl_805604AC;
 extern float lbl_805604B0;
 extern float lbl_805604B4;
 extern float lbl_805604B8;
-extern char lbl_8035BAE4;
-extern char lbl_802FE1C0;
+struct lbl_8035BAE4_t {
+    int unk_0;
+    int unk_4;
+    unsigned int unk_8;
+};
+extern struct lbl_8035BAE4_t lbl_8035BAE4;
+extern char lbl_802FE1C0[0x100];
 int fn_802E2C20(void);
 void fn_80176734(void);
 int fn_801312EC(void*, void*);
@@ -30,13 +35,15 @@ void fn_8001FEB8(void) {
 
 void fn_8001FEE8(void) {
     int temp_r3;
+    int var_r4;
 
     temp_r3 = fn_802E2C20();
+    var_r4 = 0;
     lbl_8055D63C = temp_r3;
     lbl_8055D638 = temp_r3;
-    lbl_8055D640 = 0;
-    lbl_8055D644 = 1;
-    lbl_8055D645 = 0;
+    lbl_8055D640 = var_r4;
+    lbl_8055D644 = var_r4 + 1;
+    lbl_8055D645 = var_r4;
 }
 
 #pragma dont_inline on
