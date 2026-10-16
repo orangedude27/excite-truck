@@ -27,6 +27,19 @@ extern f32 lbl_8055EE50;
 extern f32 lbl_8055EE54;
 extern f32 lbl_805632F0;
 
+void fn_8020C54C(void) {
+    fn_80210444();
+    lbl_8055EE4C = lbl_805632F0;
+    lbl_8055EE50 = lbl_805632F0;
+    lbl_8055EE54 = lbl_805632F0;
+    lbl_8055EE48 = fn_8020A5F0();
+    lbl_8055EE40 = 0;
+    lbl_8055EE44 = 0;
+    lbl_8055EE3C = 0;
+    lbl_8055EE45 = 0;
+    lbl_8055EE46 = 0;
+}
+
 void fn_8020C8F4(void) {
 
 }
