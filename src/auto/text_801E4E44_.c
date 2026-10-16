@@ -49,3 +49,20 @@ void fn_801E4FF4(void) {
     fn_801E4E44();
     lbl_8055EAB0 = 0;
 }
+
+void fn_801E5348(void) {
+    fn_801E4E44();
+    lbl_8055EAB0 = 0;
+}
+
+s32 fn_801E5370(s32 arg0, s32 arg1, f32 arg2) {
+    lbl_80487C88.unk_0x2C = arg0;
+    lbl_8055EAA8 = 0;
+    lbl_8055EAAC = 0;
+    lbl_80487C88.unk_0x28 = 0;
+    lbl_80487C88.unk_0x30 = arg1 + 1;
+    lbl_80487C88.unk_0x34 = arg2;
+    lbl_8055EAB0 = 3;
+    return 1;
+}
+
