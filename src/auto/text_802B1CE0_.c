@@ -147,6 +147,19 @@ void fn_802B32E0(int *arg0) {
     } while (i < fn_802B2E00(arg0));
 }
 
+void *fn_802B3DA4(void *arg0, int arg1, int arg2) {
+    void *result = 0;
+    if (arg2 >= 0 && arg2 < ((int *)arg0)[1]) {
+        void *items = *(void **)arg0;
+        void *entry = (char *)((void **)items)[arg2] + ((arg1 & 0x7F) * 4);
+        void *obj = *(void **)((char *)entry + 0x208);
+        if (obj != 0 && *(int *)*(void **)((char *)obj + 0xC) != 0) {
+            result = (char *)obj + 0x10;
+        }
+    }
+    return result;
+}
+
 int fn_802B3F0C(void *arg0) {
     return ((int *)arg0)[1];
 }
@@ -175,7 +188,7 @@ typedef struct {
     void *m50;
     void *m54;
     void (*m58)(void);
-    void (*m5C)(void);
+    int (*m5C)(void);
 } Unk802B2C44;
 
 typedef struct {
