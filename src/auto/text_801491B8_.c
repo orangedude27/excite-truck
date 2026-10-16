@@ -12,7 +12,7 @@ extern void fn_801B8A7C(void);
 extern s32 lbl_8032E030[];
 extern s32 lbl_8032E048[];
 extern s32 lbl_8055E4D0;
-extern void fn_802E30C8(void *, ...);
+extern void fn_802E30C8();
 
 void fn_8014ACCC(void) {
 
