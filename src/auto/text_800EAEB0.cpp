@@ -448,6 +448,23 @@ extern "C" void fn_800EE47C(void* arg0) {
     fn_800F27AC(arg0);
 }
 
+extern "C" void fn_800EEB64(u8 *arg0) {
+    if (arg0[0] != 0) {
+        OSCancelAlarm(arg0 + 8);
+        arg0[0] = 0;
+    }
+}
+
+void *nw4hbm::snd::detail::SeqFileReader::GetBaseAddress() const {
+    const u8 *self = (const u8 *)this;
+    void *file = *(void **)(self + 4);
+    if (*(u32 *)self == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803239C0, 0x5E,
+                                     (const char *)lbl_80323AF8);
+    }
+    return (u8 *)file + *(u32 *)((u8 *)file + 8);
+}
+
 extern "C" void OSCancelAlarm(void *);
 extern "C" void fn_800EEE8C(void *arg0) {
     u8 *p = (u8 *)arg0;
