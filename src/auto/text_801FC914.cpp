@@ -373,9 +373,13 @@ void fn_801FF994(void*, void*);
 void fn_801FCAAC(void*, float);
 void fn_801FCAC0(void*);
 void fn_801FF770(void* arg0) {
-    int i = 0;
-    char* p = (char*)arg0;
+    char* p;
+    int i;
+    i = 0;
+    p = (char*)arg0;
+    goto body;
     do {
+body:
         fn_801FF994(arg0, p);
         p += 0x98;
         i++;
@@ -390,9 +394,13 @@ void fn_801FF8DC(void *arg0, char *dest, const char *src) {
 }
 
 void fn_801FF924(void* arg0, void* arg1, float farg0) {
-    int i = 0;
-    char* p = (char*)arg1;
+    char* p;
+    int i;
+    i = 0;
+    p = (char*)arg1;
+    goto body2;
     do {
+body2:
         fn_801FCAAC(*(void**)(p + 0x50), farg0);
         p += 4;
         i++;
