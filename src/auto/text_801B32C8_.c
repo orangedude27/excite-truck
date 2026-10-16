@@ -24,6 +24,10 @@ extern void fn_801B3C64(void*);
 extern void* fn_801B3D24(void*, s32);
 extern void fn_801B42D0(void*);
 extern s32 lbl_8055E6C0;
+extern u8 lbl_80335D3C[];
+extern s32 fn_801284F8(s32, void*);
+extern s32 fn_801B5364(s32, void*);
+extern void fn_801B3398(void);
 
 void fn_801B435C(void*);
 
@@ -57,7 +61,7 @@ void fn_801B3B28(void) {
 
 #pragma scheduling off
 void* fn_801B3B70(void* arg0) {
-    fn_8002F53C((u8*)arg0 + 0x2FC, &fn_801B3C64, &fn_801B3BD4, 0x2C, 0x10);
+    fn_8002F53C((u8*)arg0 + 0x2FC, fn_801B3C64, fn_801B3BD4, 0x2C, 0x10);
     fn_801B3FD8(arg0);
     fn_801B4204(arg0);
     fn_801B42D0(arg0);
