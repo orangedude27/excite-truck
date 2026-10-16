@@ -78,6 +78,14 @@ void fn_802C942C(int arg0) {
     fn_802C92D8();
 }
 
+void fn_802C9474(void) {
+    if (lbl_8055FC94 != 0) {
+        return;
+    }
+    lbl_8055FC94 = 1;
+    fn_802E30C8(lbl_8055D030, lbl_8034B4E0);
+}
+
 int fn_802C94A0();
 void fn_802C9638(int arg0, int arg1) {
     fn_802C94A0(arg0, arg1, 0);
@@ -111,6 +119,13 @@ void *fn_802C9694(void *arg0) {
     ((float *)arg0)[2] = lbl_8055FC40;
     fn_802C974C(arg0);
     return arg0;
+}
+
+void fn_802C98DC(float *arg0, float *arg1, float *arg2, float *arg3) {
+    *arg0 = lbl_8055FC44;
+    *arg1 = lbl_8055FC38;
+    *arg2 = lbl_8055FC3C;
+    *arg3 = lbl_8055FC48;
 }
 
 #pragma dont_inline off
