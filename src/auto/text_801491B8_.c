@@ -580,7 +580,30 @@ void fn_801537C8(void) {
 
 }
 
+extern s32 fn_80179650(void);
+extern s32 fn_801E85A4(void);
+extern s32 fn_801E86F8(s32);
+extern s32 fn_801E866C(s32);
+extern s32 fn_8014CA48(s32,s32,s32);
+extern s32 fn_8014AFD4(void *, void *, s32);
+extern s32 fn_801CB7BC(s32);
+extern s32 lbl_8055E238;
+extern s32 lbl_8055E23C;
 s32 fn_80153A30(void) { return 0; }
+
+s32 fn_80153A38(void *arg0) {
+    s32 i;
+    void *p;
+    fn_80179650();
+    p = arg0;
+    for (i = 0; i < fn_801E85A4(); i++) {
+        if (*(u8 *)((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) == 0 &&
+            *(s32 *)((u8 *)p + 0x454) != 2)
+            return 0;
+        p = (u8 *)p + 0x240;
+    }
+    return 1;
+}
 
 u32 fn_80153AC8(void) { return 1; }
 
