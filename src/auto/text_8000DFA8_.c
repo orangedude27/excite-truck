@@ -122,6 +122,10 @@ void fn_8000F464(void) {
     }
 }
 
+extern s32 fn_80232B70(s32);
+extern s32 lbl_8055D490;
+extern f32 lbl_805602C8;
+extern f64 lbl_80560268;
 extern s32 lbl_8055D4D4;
 void fn_8000F498(void) {
     lbl_8055D4D4 = fn_8023512C();
@@ -268,8 +272,8 @@ void fn_80010F38(char *name, s32 a2, s32 a3, s32 a4, f32 f1) {
 }
 
 void fn_800111A4(char *name, s32 a1, s32 a2, s32 a3, s32 a4, f32 f) {
-    s8 *entry;
     s32 idx;
+    s8 *entry;
 
     idx = *(s32 *)((s8 *)&lbl_80350F88 + 0x288);
     *(s32 *)((s8 *)&lbl_80350F88 + 0x288) = idx + 1;
