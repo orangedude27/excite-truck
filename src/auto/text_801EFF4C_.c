@@ -146,7 +146,10 @@ int fn_801EAB2C(void);
 int fn_801EAB80(void *, int);
 int fn_80297988(void *);
 int memset(void *, int, unsigned int);
+#pragma push
+#pragma small_data off
 extern int lbl_8033A5E8;
+#pragma pop
 void *fn_801F19FC(void *arg0, int arg1) {
     fn_801EAB2C();
     *(int **)arg0 = &lbl_8033A5E8;
