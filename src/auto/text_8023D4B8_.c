@@ -68,6 +68,13 @@ void fn_8023DB68(void) {
     }
 }
 
+int fn_8023DF70(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern int fn_80128668(void);
 extern void fn_8023DA64(void *, int, int);
 extern void *lbl_8055F19C;
