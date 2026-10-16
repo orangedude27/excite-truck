@@ -282,11 +282,8 @@ void fn_80248A74(void *arg0) {
 }
 
 void fn_80248BD0(void *arg0) {
-    float f = lbl_805638CC;
-    unsigned char *p = (unsigned char *)arg0;
-
-    *(float *)(p + 0x20) = f;
-    *(p + 0x1C) = fn_802E8690(*(s32 *)((char *)arg0 + 0x18));
+    *(float *)((char *)arg0 + 0x20) = lbl_805638CC;
+    *(unsigned char *)((char *)arg0 + 0x1C) = fn_802E8690(*(s32 *)((char *)arg0 + 0x18));
 }
 
 void fn_80248C0C(void *arg0) {
@@ -313,6 +310,18 @@ int fn_80248C94(void *arg0, int arg1) {
         return 1;
     } else {
         return 0;
+    }
+}
+
+void fn_802490AC(void *arg0) {
+    unsigned char *p = (unsigned char *)arg0;
+
+    *(p + 0x1C) = 0;
+    *(s32 *)((char *)arg0 + 0x18) = fn_802E2C20();
+    if (fn_802C9A58() != 0) {
+        fn_80214A9C(1);
+    } else {
+        fn_80214A9C(2);
     }
 }
 
