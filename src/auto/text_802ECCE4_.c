@@ -12,6 +12,15 @@ extern s32 stricmp(const char *, const char *);
 extern s32 fn_802ECEEC(void);
 extern void *fn_801284F8(s32, const char *);
 extern s32 fn_802ECD68(void *, void *, s32);
+s32 fn_802ECF90(const char *arg0, void *arg1) {
+    char buffer[64];
+    if (lbl_805600F8 != 0) {
+        return 1;
+    }
+    fn_802ECCE4(buffer, arg1, 64);
+    return stricmp(buffer, arg0) == 0;
+}
+
 void fn_802ECFEC(void *arg0) {
     fn_802E12DC(((void **)arg0)[16]);
 }
