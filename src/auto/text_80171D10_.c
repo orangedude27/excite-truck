@@ -47,6 +47,8 @@ void fn_80174794(void *arg0) {
 
 int fn_801757B0(void) { return 1; }
 
+int fn_801758B8(void *arg0) { return *(int *)((char *)arg0 + 0x1AC) == 2; }
+
 extern void *fn_8017960C(int);
 extern float lbl_80561AF0;
 extern float lbl_80561AF4;
