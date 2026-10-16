@@ -121,6 +121,12 @@ void fn_8015471C(s32 arg0, s32 arg1) {
     fn_801B0F70(arg0, arg1);
 }
 
+void fn_80154728(void *arg0) {
+    if (((u8 *)arg0)[0x8F4] != 0) {
+        fn_80168104();
+    }
+}
+
 void fn_80154744(void) {
 
 }
