@@ -187,7 +187,7 @@ void fn_80125098(void *arg0) {
 }
 
 extern void fn_80125664(u8 *, s32);
-void fn_80125CA0(s32 arg3) {
+void fn_80125CA0(void *arg0, void *arg1, void *arg2, s32 arg3) {
     fn_80125664((u8 *)&lbl_802F6A40 + (arg3 << 8), arg3);
 }
 
@@ -202,6 +202,11 @@ void fn_80127434(void) {
 
 void fn_80127464(void) {
     fn_80127440();
+}
+
+void fn_80127468(OSAlarm *alarm, OSContext *ctx) {
+#pragma unused(ctx)
+    fn_80127F70(fn_802ECC74(alarm));
 }
 
 void fn_8012748C(s32 arg0) {
