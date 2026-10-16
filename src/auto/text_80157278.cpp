@@ -157,6 +157,10 @@ extern f32 lbl_80558DC4[];
 extern f32 lbl_8055E3C8;
 
 extern "C" s32 lbl_8032E540[];
+extern "C" s32 fn_80157558(void* arg0) {
+    return *(s32*)((u8*)arg0 + 4);
+}
+
 extern "C" s32 fn_801577F0(Unk801577F0* arg0) {
     return lbl_8032E540[arg0->GetType()];
 }
