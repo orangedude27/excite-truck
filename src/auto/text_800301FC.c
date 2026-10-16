@@ -51,6 +51,10 @@ void __AXGetAuxAInputDpl2(void **arg0) {
     *arg0 = lbl_8035DAA0 + lbl_8055D6F8 * 0x480 + 0x180;
 }
 
+void __AXGetAuxAOutputDpl2R(void **arg0) {
+    *arg0 = lbl_8035BFA0 + lbl_8055D6F4 * 0x480 + 0x180;
+}
+
 void __AXGetAuxAOutputDpl2Ls(void **arg0) {
     *arg0 = lbl_8035BFA0 + lbl_8055D6F4 * 0x480 + 0x300;
 }
