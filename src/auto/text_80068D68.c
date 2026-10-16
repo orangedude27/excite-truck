@@ -321,7 +321,7 @@ extern u32 fn_8009B0E0(void);
 void fn_80070820(void) {
     if (lbl_8055DC68 != NULL) {
         if (lbl_8055DC68->close != NULL) {
-            lbl_8055DC68->close(NULL);
+            ((void (*)(s32, void *))lbl_8055DC68->close)(0, lbl_8055DC6C);
         }
     }
 }
