@@ -259,6 +259,10 @@ void fn_8006EAD8(void) {
 
 }
 
+u8 fn_8006EB80(void) {
+    return 2;
+}
+
 void fn_8006EBF0(void) {
 
 }
