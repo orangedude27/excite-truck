@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#include <revolution/OS/OSMessage.h>
 
 extern u32 lbl_80559900;
 
