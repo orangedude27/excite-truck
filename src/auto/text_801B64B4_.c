@@ -9,6 +9,4 @@ void fn_801B6604(void) {
 #pragma push
 #pragma small_data off
 #pragma pop
-void fn_801B6614(void) {
-    fn_801EF024(&fn_801B64B4);
-}
+void fn_801B6614(void) { fn_801EF024(fn_801B64B4); }
