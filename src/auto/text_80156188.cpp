@@ -1,4 +1,6 @@
 #include <types.h>
+extern "C" void fn_801556F4(s32 arg0 = 0);
+
 extern "C" void fn_8015536C(s32 arg0 = 0);
 
 
@@ -59,6 +61,10 @@ void fn_801561A8(s32 arg0) { fn_80155368(arg0 - 4); }
 
 extern "C" void fn_801561B0(s32 arg0) {
     fn_8015536C(arg0 - 8);
+}
+
+extern "C" void fn_801561B8(s32 arg0) {
+    fn_801556F4(arg0 - 8);
 }
 
 extern "C" s32 fn_801556FC(s32);
