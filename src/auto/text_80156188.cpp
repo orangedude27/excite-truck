@@ -175,6 +175,11 @@ void fn_80156B50(void) {
     return;
 }
 
+s32 fn_80156C60(void *arg0, s32 arg1) {
+    if (arg1 >= ((s32 *)arg0)[2]) return 0;
+    return ((s32 *)((s32 *)arg0)[1])[arg1 * 2];
+}
+
 extern s32 fn_80129D90(s32, s32, s32);
 void fn_80156DCC(void *arg0, s32 arg1) {
     s32 temp_r28 = arg1 * 8;
@@ -183,16 +188,16 @@ void fn_80156DCC(void *arg0, s32 arg1) {
     u32 temp_r30 = *(u32 *)((u8 *)temp_r31 + 0xE8);
     s32 temp_r3 = fn_80129D90(4, 0, ((s32 *)arg0)[2]);
     u32 *temp_r5 = (u32 *)((s32 *)arg0)[1];
-    u32 var_r29 = *(u32 *)((u8 *)temp_r5 + (temp_r3 * 8));
+    u32 var_r29 = *(u32 *)((u8 *)temp_r5 + temp_r3 * 8);
     if (var_r29 == temp_r30) {
         s32 count = ((s32 *)arg0)[2];
         s32 next = temp_r3 + 1;
         s32 index = next - ((next / count) * count);
-        var_r29 = *(u32 *)((u8 *)temp_r5 + (index * 8));
+        var_r29 = *(u32 *)((u8 *)temp_r5 + index * 8);
     }
-    *(f32 *)((u8 *)arg0 + temp_r28 + 0xE4) =
-        temp_f31 + fn_80129DC4(4, ((s32 *)arg0)[2], (s32)(long)temp_r5,
-                               *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
+    *(f32 *)((u8 *)arg0 + temp_r28 + 0xE4) = temp_f31 +
+      fn_80129DC4(4, ((s32 *)arg0)[2], (s32)(long)temp_r5,
+                  *(f32 *)((u8 *)arg0 + 0xDC), *(f32 *)((u8 *)arg0 + 0xE0));
     *(u32 *)((u8 *)temp_r31 + 0xE8) = var_r29;
 }
 
@@ -222,7 +227,7 @@ extern "C" void fn_80157210(void* arg0) {
 }
 
 extern "C" void fn_80157224(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v6();
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v5();
 }
 
 extern "C" void fn_80157238(void* arg0) {
