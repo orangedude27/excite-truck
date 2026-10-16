@@ -345,6 +345,13 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     return BTM_NO_RESOURCES;
 }
 
+void fn_8008251C(void) {
+    btm_init();
+    l2c_init();
+    sdp_init();
+    btm_discovery_db_init();
+}
+
 void fn_80089E3C(void) {
 
 }
