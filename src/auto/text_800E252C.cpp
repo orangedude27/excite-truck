@@ -39,6 +39,8 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
     OSRestoreInterrupts(level);
 }
 
+extern "C" int fn_800E394C(int *arg0) { return *arg0; }
+
 extern "C" void fn_800E5A8C(void) {
     fn_800E6A44();
 }
