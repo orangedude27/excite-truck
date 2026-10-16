@@ -15,6 +15,17 @@ void fn_8000ACAC(void) {
     return;
 }
 
+int fn_802044E8(void);
+void fn_80007238(void);
+int fn_80204870(void);
+int fn_800074EC(int);
+int fn_8000ACDC(int arg0) {
+    if (fn_80204870() != 0) {
+        return 1;
+    }
+    return fn_800074EC(arg0);
+}
+
 void fn_8000AD20(void) {
 }
 
