@@ -96,6 +96,46 @@ void fn_802982C0(void *arg0) {
     } while (var_r30 < 4);
 }
 
+extern "C" int fn_802CAC28(int, int);
+extern "C" int fn_80297D5C(void*, int);
+extern "C" int fn_80297D90(void*, int);
+extern "C" int fn_802E317C(const char*, ...);
+extern "C" int fn_801284F8(int, const char*);
+extern "C" int fn_8029ADCC(void);
+extern "C" int fn_8029BA0C(void*);
+extern "C" int fn_801EF024(void*);
+extern "C" void __dt__Q210JASDrumSet5TPercFv_8029AE88(void*, int);
+extern "C" int fn_8029BFF8(void*);
+extern int lbl_8055CA84;
+extern int lbl_8055CA88;
+extern const char lbl_8034951C[];
+extern const char lbl_80349550[];
+extern double lbl_805645F8;
+void fn_8029B1B8(void* arg0) {
+    char* p = (char*)arg0;
+    *(int*)(p + 0x1E4) = fn_802CAC28(lbl_8055CA84, 0);
+    *(int*)(p + 0x1E8) = fn_802CAC28(lbl_8055CA88, 0);
+    fn_80297D5C(p + 0x1EC, 0x10);
+    if (fn_80297D90(p + 0x1F0, *(int*)(p + 0x1EC)) == 0) {
+        fn_802E317C(lbl_8034951C);
+    }
+    *(int*)(p + 0x1F4) = 0x10 - (*(int*)(p + 0x1F0) << 1);
+    *(float*)(p + 0x1F8) = lbl_80564590 / (float)*(int*)(p + 0x1EC);
+}
+
+void* fn_8029B9A4(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_801EF024((void*)fn_8029BFF8);
+        __dt__Q210JASDrumSet5TPercFv_8029AE88(*(void**)arg0, 1);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
+extern "C" int fn_8029AF24(int); void fn_8029BA8C(int* arg0) { fn_8029AF24(*arg0); }
+
 extern "C" void fn_8029BEF8(void);
 extern "C" int fn_801EEFDC(void*, int);
 extern "C" int fn_8029C190(void*);
