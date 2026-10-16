@@ -124,10 +124,13 @@ void fn_80069C14(u32 r3, u32 r4) {
 s32 WUDiTerminateDevice(void) {
     s32 i;
     u8 *entry;
-    entry = lbl_80392960 + 0x64;
-    for (i = 0; i < 10; i++, entry += 0x60) if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
-    entry = lbl_80392960 + 0x424;
-    for (i = 0; i < 6; i++, entry += 0x60) if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    u8 *base = lbl_80392960;
+    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) {
+        if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    }
+    for (i = 0, entry = base + 0x424; i < 6; i++, entry += 0x60) {
+        if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    }
     return 3;
 }
 
@@ -191,19 +194,22 @@ void fn_8006A7D0(s32 arg0, s32 arg1) {
 
 s8 fn_8006A940(void)
 {
+    u32 enabled;
     s8 value;
-    OSDisableInterrupts();
+    enabled = OSDisableInterrupts();
     value = (s8)lbl_80392960[0x688];
-    OSRestoreInterrupts(0);
+    OSRestoreInterrupts(enabled);
     return value;
 }
 
+extern u8 lbl_80392960[];
 u8 fn_8006A97C(void)
 {
+    u32 enabled;
     u8 value;
-    OSDisableInterrupts();
+    enabled = OSDisableInterrupts();
     value = (u8)(*(u16 *)(lbl_80392960 + 0x6C6) - *(u16 *)(lbl_80392960 + 0x6C4));
-    OSRestoreInterrupts(0);
+    OSRestoreInterrupts(enabled);
     return value;
 }
 
