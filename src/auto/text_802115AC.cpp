@@ -3,6 +3,15 @@
 
 #include <types.h>
 
+extern "C" s32 fn_802168DC(s32);
+extern "C" s32 fn_802168D4(s32);
+extern "C" s32 fn_802168CC(s32, float);
+extern "C" s32 fn_802168E0(s32, s32, s32);
+extern "C" char lbl_8033D2E0[];
+extern "C" char lbl_8033D328[];
+extern "C" char lbl_8033D2A0[];
+extern "C" char lbl_8033D274[];
+
 class VfObj {
 public:
     virtual void vf0();
@@ -352,6 +361,14 @@ extern "C" s32 fn_802154C0(s32 arg0, s32 arg1) {
 
 extern "C" void fn_80215500(void) {
 
+}
+
+extern "C" void fn_80215504(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    fn_8022BAD0(*(s32 *)((char *)arg0 + 8), 0, *(s32 *)((char *)arg0 + 4), arg6, lbl_80563450);
+}
+
+extern "C" void fn_80215544(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    fn_8022AC1C(*(s32 *)((char *)arg0 + 8), *(s32 *)((char *)arg0 + 4), arg1, arg2, arg3, arg4, arg5, arg6);
 }
 
 extern "C" s32 fn_802155AC(void) {
