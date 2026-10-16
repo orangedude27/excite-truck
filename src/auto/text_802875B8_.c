@@ -39,6 +39,10 @@ void fn_80287AF0(void* alarm) {
     fn_8028A9F4(fn_80292864(alarm));
 }
 
+s32 fn_80287B14(void) {
+    return ((s32*)lbl_804B3150)[1];
+}
+
 extern u8 lbl_804B3150[12];
 extern s32 lbl_8055F6C0;
 extern s32 lbl_804B31E0[];
