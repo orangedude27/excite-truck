@@ -25,8 +25,48 @@ extern "C" void fn_80148EDC(void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern "C" {
+struct Queue80145D8C {
+    void **data;
+    s32 count;
+    s32 capacity;
+};
+extern Queue80145D8C lbl_8042FBC0;
+extern char lbl_8032CEC8[];
+extern char lbl_80559E14[];
+void fn_802E30C8(const char *);
+void fn_802E3AD0(s32, const char *, ...);
+}
+
 extern "C" f32 lbl_805615F0;
 extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
+
+extern "C" f32 lbl_80561608;
+extern "C" void fn_8001027C(s32, s32, void *, u32, f32, f32, f32);
+extern "C" f32 fn_801452A0(s32, f32);
+extern "C" void fn_802354A0(s32, s32, s32, f32, f32, f32, f32);
+extern "C" s32 lbl_80559E1C;
+extern "C" void fn_80145B50(void *arg0, s32 arg1) {
+    f32 value = (f32)arg1;
+    *(f32 *)((u8 *)arg0 + 4) = lbl_805615D4;
+    *(f32 *)((u8 *)arg0 + 0xC) = lbl_80561608;
+    *(f32 *)((u8 *)arg0 + 8) = lbl_80561608;
+    *(f32 *)arg0 = lbl_80561608 * value;
+}
+
+extern "C" void fn_80145C7C(void *arg0, u32 arg1) {
+    f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 temp_f2 = ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+    fn_8001027C(*(s32 *)((u8 *)arg0 + 0x18), *(s32 *)((u8 *)arg0 + 0x14), &lbl_80559E1C,
+        arg1, *(f32 *)((u8 *)arg0 + 0x10), temp_f2, temp_f31);
+}
+
+extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
+    f32 temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
+    f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+    fn_802354A0((s32)arg1, arg2, *(s32 *)((u8 *)arg0 + 0x18), temp_f31, lbl_805615D4, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
+}
 
 extern "C" void fn_801460F4(void) {
 }
@@ -36,6 +76,19 @@ extern "C" void fn_80146200(void) {
 }
 
 extern "C" void fn_8014630C(void) {
+}
+
+extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg1) {
+    extern void fn_80235380();
+    extern void fn_80128668(void *);
+    if (arg0 != 0) {
+        register void *p = *(void **)((u8 *)arg0 + 8);
+        if (p != 0)
+            fn_80235380();
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
 }
 
 extern "C" void fn_8014647C(void *);
@@ -156,12 +209,10 @@ extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
 extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
     s32 count = arg2;
-    if (count > 0) {
-        do {
-            count--;
-        } while (count > 0);
-        *arg0 = 0;
+    while (count > 0) {
+        count--;
     }
+    *arg0 = 0;
     while ((s8)*arg1 != 0) {
         *arg0++ = (u8)*arg1++;
     }
