@@ -48,6 +48,10 @@ void* fn_801E7E34(void) {
     return lbl_8055EB04;
 }
 
+long fn_801E7E3C(void) {
+    return (long)lbl_8055EB04 + 0x560;
+}
+
 void fn_801E8144(void) {
 
 }
