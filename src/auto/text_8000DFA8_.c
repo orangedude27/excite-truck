@@ -42,12 +42,8 @@ void fn_8000F2A8(s32 arg0, s32 arg1) {
 }
 
 void fn_8000F2EC(void) {
-    if (lbl_80350F88 != 0) {
-        fn_80235380(lbl_80350F88);
-    }
-    if (lbl_80351214 != 0) {
-        fn_80235380(lbl_80351214);
-    }
+    if (lbl_80350F88 != 0) fn_80235380(lbl_80350F88);
+    if (lbl_80351214 != 0) fn_80235380(lbl_80351214);
 }
 
 void fn_8000F330(void *arg0, void *arg1, s32 arg2) {
