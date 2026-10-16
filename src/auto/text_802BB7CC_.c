@@ -10,25 +10,52 @@ int fn_802BB87C(int arg0) {
     return -2;
 }
 
+void fn_802BB8E4(int* arg0) {
+    int temp_r0 = *arg0;
+    if (temp_r0 != -2) {
+        fn_802CAC54(temp_r0);
+        *arg0 = -2;
+    }
+}
+
+int fn_802BB928(int arg0) {
+    unsigned int temp_r3 = arg0 + 0x200;
+    return ((int)((temp_r3 >> 31) + temp_r3)) >> 1;
+}
+
+short fn_802BB93C(int arg0) {
+    unsigned int temp_r3 = arg0 + 0x200;
+    return (short)(0x1FF - (((int)((temp_r3 >> 31) + temp_r3)) >> 1));
+}
+
 extern int fn_802CAC54(int);
 extern int lbl_804C00B0[];
 extern int fn_802D9628(short, short, unsigned int);
-void fn_802BB958(short arg0, int arg1, unsigned char* arg2, unsigned char* arg3) {
-    short temp_r30 = fn_802BB928(arg0);
-    short temp_r29 = fn_802BB93C(arg1);
-    int* var_r31 = lbl_804C00B0;
-    int var_r28 = 0;
+void fn_802BB958(int arg0, int arg1, unsigned char* arg2, unsigned char* arg3, int arg4) {
+    short temp_r30;
+    short temp_r29;
+    int* var_r31;
+    int var_r28;
+    unsigned char* var_r26;
+    unsigned char* var_r27;
+    unsigned char temp_r4;
+    var_r26 = arg2;
+    var_r27 = arg3;
+    temp_r30 = fn_802BB928((short)arg0);
+    temp_r29 = fn_802BB93C(arg1);
+    var_r31 = lbl_804C00B0;
+    var_r28 = 0;
     do {
         if (*var_r31 != 0) {
-            unsigned char temp_r4 = *arg2;
-            if (temp_r4 != *arg3) {
+            temp_r4 = *var_r26;
+            if (temp_r4 != *var_r27) {
                 fn_802D9628(temp_r30, temp_r29, ((unsigned int)temp_r4 << 24) | ((unsigned int)temp_r4 << 16) | ((unsigned int)temp_r4 << 8) | temp_r4);
             }
         }
         var_r28 += 1;
         var_r31 += 1;
-        arg3++;
-        arg2++;
+        var_r27 += 1;
+        var_r26 += 1;
     } while (var_r28 < 6);
 }
 
