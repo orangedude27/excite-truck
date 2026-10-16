@@ -6,6 +6,12 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int fn_80019BA8(void);
+extern int fn_800167F4(void);
+extern int fn_8001C0EC(int);
+extern int fn_8001C0E8(int, int);
+extern int fn_80128668(void *);
+extern int lbl_80338024;
+extern int lbl_80338038;
 extern int fn_80161C38(void);
 extern int fn_801EA994(void);
 extern void fn_801CCBA4(void);
@@ -36,13 +42,11 @@ void fn_801CB320(void) {
 }
 
 void fn_801CB360(int arg0) {
-    if (fn_80019BA8() == 0) {
-        if (fn_80161C38() == 0) {
-            fn_801CCAEC(arg0);
-        } else {
-            return;
-        }
-    }
+    if (fn_80019BA8() != 0) return;
+    if (fn_80161C38() != 0) goto done;
+    fn_801CCAEC(arg0);
+done:
+    return;
 }
 
 void fn_801CB3F8(void) {
@@ -94,18 +98,17 @@ void fn_801CB5DC(int arg0, int arg1, int arg2) {
 }
 
 void fn_801CB648(int arg0, int arg1, f32 farg0) {
-    if (fn_80019BA8() == 0) {
-        if (fn_80161C38() == 0) {
-            fn_801CD7BC(arg0, arg1, farg0);
-        } else {
-            return;
-        }
-    }
+    if (fn_80019BA8() != 0) return;
+    if (fn_80161C38() != 0) goto done;
+    fn_801CD7BC(arg0, arg1, farg0);
+done:
+    return;
 }
 
 void fn_801CB6B4(void) {
     if (fn_80019BA8() == 0) {
-        fn_80161C38();
+        int result = fn_80161C38();
+        (void)result;
     }
 }
 
@@ -162,12 +165,38 @@ void fn_801CE6CC(void) {
 
 }
 
+unsigned int fn_801CE898(void) {
+    int value = fn_800167F4();
+    int temp = value ^ 1;
+    return ((temp >> 1) - (temp & value)) >> 31;
+}
+
 void fn_801CEA28(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
         fn_80128668(buf);
         *(void **)arg0 = NULL;
     }
+}
+
+extern int fn_80128668(void *);
+extern void fn_801CEA28(void *);
+extern void fn_801CBD04(void *);
+extern int lbl_80338024;
+extern int lbl_80338038;
+extern int fn_8001C0EC(int);
+extern int fn_8001C0E8(int, int);
+int fn_801CEA6C(void *arg0, int arg1) {
+    int value = *(int *)arg0;
+    if (fn_8001C0EC(value) == 0) goto done;
+    fn_8001C0E8(value, arg1);
+    value = *(int *)((char *)arg0 + 8);
+    if (value != 0 && fn_8001C0EC(value) == 0) goto done;
+    value = *(int *)((char *)arg0 + 0xC);
+    if (value != 0 && fn_8001C0EC(value) == 0) goto done;
+    return 1;
+done:
+    return 0;
 }
 
 void fn_801CEB94(void *arg0) {
