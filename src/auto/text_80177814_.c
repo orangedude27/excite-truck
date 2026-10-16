@@ -17,6 +17,10 @@ long fn_80177980(void) {
     return 0;
 }
 
+long fn_80177988(void) {
+    return 1;
+}
+
 void fn_80177A18(void) {
     long var_r31;
 
