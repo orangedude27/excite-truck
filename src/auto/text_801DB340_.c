@@ -26,6 +26,11 @@ void fn_801DCEC8(int arg0, float arg1) {
     lbl_804424B0[arg0] = arg1;
 }
 
+extern float lbl_804425DC[];
+void fn_801DCEDC(int arg0, float arg1) {
+    lbl_804425DC[arg0] = arg1;
+}
+
 void fn_801DCEF0(void) {
 
 }
