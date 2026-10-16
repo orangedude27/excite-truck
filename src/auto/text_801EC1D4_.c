@@ -24,6 +24,11 @@ void fn_801EFC90(long, long, void *);
 extern float lbl_80488668[3];
 extern unsigned int lbl_8055EBC8;
 long fn_801ECB60(void);
+void fn_801EC1D4(void) {
+    ((unsigned int *)lbl_80488668)[0] = 0x555766;
+    ((unsigned int *)lbl_80488668)[1] = 0xFFF5D9;
+}
+
 void *fn_801EC1F8(void) {
     return lbl_80488668;
 }
@@ -33,11 +38,14 @@ void *fn_801EC204(void) {
 }
 
 void *__dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        if (*(void **)arg0 != 0) fn_801E323C();
-        if (arg1 > 0) fn_80128668(arg0);
+    void *self;
+    self = arg0;
+    if (self != 0) {
+        arg0 = *(void **)self;
+        if (arg0 != 0) fn_801E323C();
+        if (arg1 > 0) fn_80128668(self);
     }
-    return arg0;
+    return self;
 }
 
 void fn_801EC714(void *arg0, float *arg1, float *arg2) {
@@ -88,6 +96,10 @@ void fn_801ED2D0(void *arg0) {
         i++;
         offset += 0x6C;
     } while (i < 4);
+}
+
+void fn_801ED68C(long arg0) {
+    fn_801ECCE0(arg0, 1);
 }
 
 void fn_801ED694(long arg0) {
