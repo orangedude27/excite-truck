@@ -292,20 +292,23 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
       return 0;
 }
 
-extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(void *this_ptr) {
-    if (this_ptr == NULL) {
+extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(void *arg0) {
+    void *r30 = arg0;
+    if (r30 == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x26D, lbl_8031EA90);
     }
-    if ((fn_800D2E14() != 0) && (((u8 *)this_ptr)[0x22] != 0)) {
-        OSLockMutex(lbl_804077C0);
-        s16 var_r3 = *(s16 *)((u8 *)this_ptr + 0x1C);
-        s16 var_r4 = *(s16 *)((u8 *)this_ptr + 0x1E);
-        u16 var_r5 = *(u16 *)((u8 *)this_ptr + 4);
-        u16 var_r0 = *(u16 *)((u8 *)this_ptr + 0x20);
-        fn_800D2E3C(var_r3 - 6, var_r4 - 3, (s32)(var_r5 * 6) + 12, (s32)(var_r0 * 0xA) + 4);
-        fn_800D24D4(this_ptr, 0);
+    if ((fn_800D2E14() != 0) && (((u8 *)r30)[0x22] != 0)) {
+        extern void* lbl_804077C0;
+        void *r31 = &lbl_804077C0;
+        OSLockMutex(r31);
+        s16 r3_val = *(s16 *)((u8 *)r30 + 0x1C);
+        s16 r4_val = *(s16 *)((u8 *)r30 + 0x1E);
+        u16 r5_val = *(u16 *)((u8 *)r30 + 4);
+        u16 r0_val = *(u16 *)((u8 *)r30 + 0x20);
+        fn_800D2E3C(r3_val - 6, r4_val - 3, (s32)(r5_val * 6) + 12, (s32)(r0_val * 0xA) + 4);
+        fn_800D24D4(r30, 0);
         fn_800D2FC8();
-        OSUnlockMutex(lbl_804077C0);
+        OSUnlockMutex(r31);
     }
 }
 
