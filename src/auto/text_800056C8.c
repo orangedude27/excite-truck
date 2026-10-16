@@ -269,3 +269,7 @@ u8 fn_80007CDC(void *arg0) {
     return ((u8 *)arg0)[4];
 }
 
+s32 fn_80007CE4(void) {
+    return fn_8000C630(0xb, -1);
+}
+
