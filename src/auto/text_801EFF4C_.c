@@ -66,12 +66,12 @@ int fn_801F0F18(int arg0, int arg1) {
     return arg0;
 }
 
-void fn_801F131C(void *arg0, int arg1) {
-    if (*(unsigned int *)((char *)arg0 + 4) != 3) {
+void fn_801F131C(int arg0, int arg1) {
+    if (*(unsigned int *)(arg0 + 4) != 3) {
         int value;
         if (arg1 != 0) value = 0;
-        else value = fn_801F15A8((char *)arg0 + 0x3C);
-        fn_801F163C(arg0, value, *(float *)((char *)arg0 + 0x48));
+        else value = fn_801F15A8(arg0, arg0 + 0x3C);
+        fn_801F163C(arg0, value, *(float *)(arg0 + 0x48));
     }
 }
 
