@@ -87,6 +87,13 @@ void fn_802AFF80(void *arg0, short arg1) {
     *(unsigned short *)((char *)arg0 + 4) = index + 1;
 }
 
+extern int fn_801E8718(int);
+extern int fn_802AEB3C();
+void fn_802B0144(void) {
+    fn_801E8718(-1);
+    fn_802AEB3C();
+}
+
 void* fn_802B05DC(void) {
     return lbl_8055CD78;
 }
