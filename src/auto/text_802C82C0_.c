@@ -125,8 +125,9 @@ extern void PSQUATMultiply(void *, unsigned int, void *);
 extern void fn_802C7734(unsigned int);
 extern void fn_802C8B70(void);
 void fn_802C88D4(unsigned int arg0) {
-    unsigned int *base = lbl_804C1410;
-    PSQUATMultiply((void *)(base + 9), arg0, base);
+    register unsigned int *base = lbl_804C1410;
+    register void *out = (void *)((char *)base + 0x24);
+    PSQUATMultiply(out, arg0, base);
 }
 
 void fn_802C8B08(unsigned int *arg0) {
@@ -481,6 +482,16 @@ void fn_802CA008(void *arg0) {
     if (((int (*)(int, float))fn_802C9640)((int)((char *)arg0 + 4), *(float *)((char *)arg0 + 0x10)) != 0) {
         fn_801E7894(*(int *)arg0);
     }
+}
+
+extern void *fn_802C9D10(int, void *);
+extern void *fn_802C9DE8(void *, int);
+extern char lbl_8034B52C[];
+void fn_802CA04C(int arg0) {
+    void *obj;
+    obj = fn_802C9D10(0x18, lbl_8034B52C);
+    if (obj != 0)
+        fn_802C9DE8(obj, arg0);
 }
 
 void fn_802CA094(int *arg0) {
