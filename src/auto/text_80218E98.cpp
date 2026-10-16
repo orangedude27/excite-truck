@@ -273,6 +273,14 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80219900(void *arg0, 
     return arg0;
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021A650(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_8021A910(void *arg0, s32 arg1) {
     u8 *base = (u8 *)arg0;
     s32 *p254 = *(s32 **)(base + 0x254);
