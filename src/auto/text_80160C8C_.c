@@ -33,6 +33,10 @@ void fn_80162258(void) {
 void fn_8016225C(void) {
 }
 
+int fn_80162260(void) {
+    return 0;
+}
+
 void fn_80164D58(void) {
 
 }
