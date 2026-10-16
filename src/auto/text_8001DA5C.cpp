@@ -9,7 +9,15 @@ extern f32 lbl_80560470;
 extern f32 lbl_80560474;
 
 extern s32 fn_80128668(void);
-extern void **lbl_80358680;
+extern void* lbl_80358680[];
+
+class CollisionEntry {
+public:
+    virtual void unk0();
+    virtual void unk4();
+    virtual void unk8();
+    virtual void apply(s32, s32);
+};
 extern s32 lbl_8055E3C4;
 extern f32 lbl_80560460;
 extern f32 lbl_80560464;
@@ -78,6 +86,34 @@ void fn_8001DEA8(void) {
 
 void fn_8001DF04(void) {
 
+}
+
+extern "C" void fn_8001DFA8(s32 arg0) {
+    void* obj = ((void**)&lbl_80358680)[3];
+    ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, arg0, 0);
+}
+
+extern "C" void fn_8001DFCC(void) {
+    void* obj = ((void**)&lbl_80358680)[4];
+    ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, 9, 17);
+}
+
+extern "C" void fn_8001DFF0(void) {
+    void* obj = ((void**)&lbl_80358680)[5];
+    ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, 0, 0);
+}
+
+extern "C" void fn_802CAC54(void*);
+extern "C" int lbl_802FDC98;
+extern "C" void* __dt__14CollisionSpaceFv(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void**)arg0 = &lbl_802FDC98;
+        fn_802CAC54(((void**)arg0)[1]);
+        if (arg1 > 0) {
+            ((s32 (*)(void*))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
 }
 
 extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
