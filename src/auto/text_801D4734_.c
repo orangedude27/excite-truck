@@ -22,6 +22,7 @@ typedef struct {
 } UnkStruct_801D6618;
 extern char lbl_80338F50[];
 extern char lbl_80338C78[];
+extern char lbl_80338D20[];
 extern f32 lbl_80442310[];
 void fn_80128658(s32);
 
@@ -169,6 +170,25 @@ void fn_801D5730(void) {
             *(s32 *)((u8 *)lbl_804423A4 + 4) = count - 1;
         }
         if (p != 0) ((void (**)(void *, s32))*(void **)p)[2](p, 1);
+    }
+}
+
+void fn_801D6080(void *arg0) {
+    s32 i;
+    s32 offset;
+    void *obj;
+
+    if (*(s32 *)((u8 *)arg0 + 8) == 2 &&
+        lbl_8055E3C4 - *(s32 *)((u8 *)arg0 + 0x6C) >= *(s32 *)((u8 *)arg0 + 0x68)) {
+        i = 0;
+        offset = 0;
+        while (i < *(s32 *)((u8 *)arg0 + 0x74)) {
+            obj = *(void **)(*(u8 **)((u8 *)arg0 + 0x70) + offset);
+            ((void (**)(void *))*(void **)obj)[11](obj);
+            offset += 4;
+            i += 1;
+        }
+        *(s32 *)((u8 *)arg0 + 8) = 3;
     }
 }
 
