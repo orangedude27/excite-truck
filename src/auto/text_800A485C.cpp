@@ -450,6 +450,12 @@ extern "C" void fn_800CF930(void) {
 
 }
 
+extern "C" void fn_800CF934(void *arg0) {
+    struct V { virtual void f(); };
+    void *obj = *(void **)((u8 *)arg0 + 4);
+    if (obj) ((V *)obj)->f();
+}
+
 extern "C" s32 fn_800CF954(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x20); }
 
 extern "C" void fn_800CF95C(s32 arg0, s32 arg1, s8 arg2) { *(s8 *)(arg0 + arg1 + 4) = arg2; }
