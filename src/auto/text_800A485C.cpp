@@ -21,6 +21,7 @@ extern "C" void fn_800D16C4(OSAlarm *, void *);
 
 extern u32 lbl_8055DDB0;
 extern "C" const char lbl_8031E9C0[];
+extern u8 lbl_8055DDA8[];
 extern u32 lbl_8055DDF8;
 extern "C" void fn_800D1C48(void);
 
