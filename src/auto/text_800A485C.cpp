@@ -359,6 +359,10 @@ extern "C" void* fn_800C64DC(u32 size) {
     return MEMAllocFromAllocator(lbl_80559708, size);
 }
 
+extern "C" void fn_800C64E8(u32 size) {
+    MEMFreeToAllocator(lbl_80559708, (void*)size);
+}
+
 extern "C" void fn_800C64F4(void* arg0) {
     void* block;
 
