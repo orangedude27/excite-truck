@@ -492,6 +492,13 @@ s32 fn_8014C88C(f32 arg0, f32 arg1) {
     return (f32)abs <= lbl_80558DC4[0];
 }
 
+f32 fn_8014C8B4(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
+    f32 t = (farg4 - farg0) / (farg1 - farg0);
+    t = (lbl_8056164C < t) ? lbl_8056164C : t;
+    t = (t > lbl_80561648) ? lbl_80561648 : t;
+    return farg2 + t * (farg3 - farg2);
+}
+
 float fn_8014C8F8(float farg0, float farg1, float farg2) {
     float value = farg2;
     if (value < farg0) {
@@ -563,6 +570,13 @@ void fn_8014C9D4(void *arg0, void *arg1, s32 arg2) {
     }
     *(s32 *)((u8 *)arg0 + 0xC) = 0;
     *(s32 *)((u8 *)arg0 + 8) = 0;
+}
+
+void fn_8014D6EC(void *arg0) {
+    if (((u8 *)arg0)[0xA0] == 0) {
+        return;
+    }
+    fn_8001DFF0();
 }
 
 void fn_8014DB94(void *arg0) {
