@@ -501,7 +501,11 @@ extern "C" void fn_801D06C4(void);
 extern "C" void fn_8019BD54(void*, void*, s32, s32);
 extern "C" void fn_8019D06C(void*, void*, s32, s32);
 extern "C" void fn_8019EA7C(void*, void*);
-void fn_801A49FC(void* arg0) { if (*(s32*)((u8*)arg0 + 0x48) != 0) fn_801D06C4(); }
+void fn_801A49FC(void* arg0) {
+    if (*(s32*)((u8*)arg0 + 0x48) != 0) {
+        fn_801D06C4();
+    }
+}
 
 void fn_801A4E54(void) {
     if (lbl_8055E5A0 != 0) {
