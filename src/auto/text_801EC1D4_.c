@@ -125,3 +125,5 @@ void fn_801EEF44(void *arg0, void *arg1) {
     fn_801EDD7C(arg0, (long)arg1);
 }
 
+unsigned int fn_801EEF74(void) { return 1; }
+
