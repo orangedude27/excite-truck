@@ -297,6 +297,8 @@ void *fn_802C96DC(void *arg0, int arg1) {
     return arg0;
 }
 
+float fn_802C973C(void) { return lbl_8055FC4C; }
+
 void fn_802C98DC(float *arg0, float *arg1, float *arg2, float *arg3) {
     *arg0 = lbl_8055FC44;
     *arg1 = lbl_8055FC38;
