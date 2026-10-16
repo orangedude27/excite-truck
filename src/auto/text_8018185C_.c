@@ -37,6 +37,30 @@ void fn_80181FEC(void* alarm) {
     fn_801D14EC(fn_801D1184(alarm));
 }
 
+extern int fn_80128668(void);
+extern void fn_8017A580(int, int, int, int, int, int, int);
+extern void fn_8017B164(void *);
+extern void fn_801838C8(void *);
+extern int fn_801769C4(void);
+extern void fn_80181EAC(int);
+extern void fn_8018F538(void *);
+extern void fn_80279B28(int, void *);
+extern void fn_80279C00(int, void *);
+extern void fn_8017B0B0(void);
+extern void fn_801BD808(void *);
+extern int lbl_803326F8;
+extern int lbl_8055E4D0;
+void *fn_80182010(void *arg0) {
+    unsigned char *p = (unsigned char *)arg0;
+    fn_8017B0B0();
+    *(int **)p = &lbl_803326F8;
+    *(short *)(p + 0x2B4) = -1;
+    fn_801BD808(&lbl_803326F8);
+    ((void **)lbl_804348E8)[lbl_8055E4D0] = arg0;
+    lbl_8055E4D0++;
+    return arg0;
+}
+
 void fn_801836DC(void) {
 
 }
@@ -131,4 +155,16 @@ void fn_8018BF60(void) {
 }
 
 int fn_8018BF64(void) { return 0x44; }
-
+extern int fn_80128668(void);
+extern void fn_8017A580(int, int, int, int, int, int, int);
+extern void fn_8017B164(void *);
+extern void fn_801838C8(void *);
+extern int fn_801769C4(void);
+extern void fn_80181EAC(int);
+extern void fn_8018F538(void *);
+extern void fn_80279B28(int, void *);
+extern void fn_80279C00(int, void *);
+extern void fn_8017B0B0(void);
+extern void fn_801BD808(void *);
+extern int lbl_803326F8;
+extern int lbl_8055E4D0;
