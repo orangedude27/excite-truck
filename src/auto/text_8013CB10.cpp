@@ -1,4 +1,9 @@
 #include "types.h"
+extern "C" void **fn_801284F8(s32, void *);
+extern "C" u8 lbl_80559D18;
+extern "C" u8 lbl_8032CAC0;
+extern "C" s32 fn_8013D224(f32, f32);
+extern "C" u8 *fn_801B2EC0(s32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -50,6 +55,31 @@ extern "C" s32 fn_8013D1F0(s32);
 extern "C" void fn_8013E338(void) {
 
 }
+
+extern f32 lbl_80561514;
+extern f32 lbl_80561510;
+extern f32 lbl_80558DC4;
+extern void fn_802AE220(int);
+extern int fn_8001DFCC(void);
+f32 fn_8013EFBC(f32 arg0) { return lbl_80561514 - arg0; }
+
+unsigned int fn_8013EFC8(void *arg0) {
+    unsigned int result;
+    if (__fabsf(*(f32 *)((char *)arg0 + 0x250)) <= lbl_80558DC4) {
+        if (*((unsigned char *)arg0 + 0x13c))
+            ((void (*)(void *))(*(void ***)arg0)[0x4c / 4])(arg0);
+        if (*(int *)((char *)arg0 + 0x140))
+            fn_802AE220(0);
+    } else {
+        ((void (*)(void *))(*(void ***)arg0)[0x4c / 4])(arg0);
+    }
+    if (((int (*)(void *))(*(void ***)arg0)[0x68 / 4])(arg0))
+        fn_8001DFCC();
+    result = *(int *)((char *)arg0 + 0x134);
+    return result == 4;
+}
+
+int fn_8013F088(void *arg0) { return *(int *)((char *)arg0 + 0x134) == 2; }
 
 extern "C" void fn_8013F09C(void) {
     ((void(*)())fn_80140A6C)();
@@ -285,9 +315,10 @@ extern "C" s32 fn_8014444C(void) { return 0; }
 extern "C" s32 fn_80144454(void) { return 0; }
 
 extern "C" s32 fn_8013D1F0(s32);
-extern "C" s32 fn_8014445C(s32 arg0) {
-    s32 v = fn_8013D1F0(arg0) ^ 0xA;
-    return (v >> 1) - (v & 0xA) >> 0x1F;
+extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
+    s32 v = fn_8013D1F0(arg1) ^ 0xA;
+    s32 a = v & 0xA;
+    return (v >> 1) - a >> 0x1F;
 }
 
 extern "C" s32 fn_80144494(s32 arg0, s32 arg1) { return arg1; }
