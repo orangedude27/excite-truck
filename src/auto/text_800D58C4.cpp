@@ -138,8 +138,8 @@ extern "C" s32 fn_800D9328(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x58);
 }
 
-int fn_800D9330(void *arg0) {
-    return *(int *)((char *)arg0 + 0x58) + (((unsigned int)*(int *)((char *)arg0 + 0x4C) >> 0x17) & 0x1E0);
+extern "C" s32 fn_800D9330(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x58) + ((*(u32 *)((u8 *)arg0 + 0x4C) >> 0x17) & 0x1E0);
 }
 
 int fn_800D9344(void *arg0) {
