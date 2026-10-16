@@ -15,3 +15,8 @@ void* fn_80012818(void) {
     return lbl_8055D504;
 }
 
+extern void *lbl_8055D508;
+void* fn_80012854(void) {
+    return lbl_8055D508;
+}
+
