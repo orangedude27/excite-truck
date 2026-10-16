@@ -66,6 +66,15 @@ extern "C" void fn_8012DD00(void) {
     }
 }
 
+extern "C" void *__dt__Q34nw4r2ef6EffectFv(void *arg0, s32 arg1) {
+    if (arg0) {
+        *(void **)arg0 = lbl_8032ACB0;
+        fn_80127E28(arg0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_8012DFCC(void *arg0, void *arg1) {
     **(void ***)((u8 *)arg0 + 4) = arg1;
     *(void ***)((u8 *)arg0 + 4) = (void **)((u8 *)arg1 + 4);
