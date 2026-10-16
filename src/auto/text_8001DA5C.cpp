@@ -107,7 +107,7 @@ extern "C" void fn_802CAC54(void*);
 extern "C" int lbl_802FDC98[];
 extern "C" void* __dt__14CollisionSpaceFv(void* arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void**)arg0 = &lbl_802FDC98;
+        *(void**)arg0 = lbl_802FDC98;
         fn_802CAC54(((void**)arg0)[1]);
         if (arg1 > 0) {
             ((s32 (*)(void*))fn_80128668)(arg0);
