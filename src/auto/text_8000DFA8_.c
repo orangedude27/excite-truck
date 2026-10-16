@@ -202,8 +202,9 @@ void fn_80010EC8(void) {
 }
 
 typedef struct Unk80350F88 {
-    s8 unk_0x04;
     s32 unk_0x288;
+    s32 pad;
+    s8 unk_0x04;
 } Unk80350F88;
 extern char *strncpy(char *, const char *, unsigned long);
 extern f32 lbl_80560264;
@@ -211,11 +212,10 @@ extern f32 lbl_80560280;
 extern void fn_802353F4(f32, f32, f32, f32, f32, f32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 void fn_80010EF0(void) {
-    s32 *base = (s32 *)&lbl_80350F88;
+    Unk80350F88 *p = (Unk80350F88 *)&lbl_80350F88;
 
-    *(s32 *)((s8 *)base + 0x288) = 0;
-    *(s32 *)base = *(s32 *)base & ~0xFF;
-    *(s32 *)base = *(s32 *)base | 0;
+    p->unk_0x288 = 0;
+    p->unk_0x04 = 0;
 }
 
 void fn_80010F38(char *name, s32 a1, s32 a2, s32 a3, f32 f) {
