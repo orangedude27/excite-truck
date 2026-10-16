@@ -29,12 +29,10 @@ void fn_801355C0(void *, s32, s32, void *, s32);
 void fn_801357A4();
 
 float fn_80135278(float *a, float *b, float *c) {
-    volatile float d[2];
-    float dx = b[0] - c[0];
-    float dy = b[1] - c[1];
-    d[0] = dx;
-    d[1] = dy;
-    return a[0] * dx + a[1] * dy;
+    float d[2];
+    d[0] = b[0] - c[0];
+    d[1] = b[1] - c[1];
+    return a[0] * d[0] + a[1] * d[1];
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
