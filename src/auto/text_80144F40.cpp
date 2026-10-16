@@ -128,6 +128,20 @@ extern "C" void fn_80146730(void *arg0) {
     }
 }
 
+extern "C" void *fn_80148294(const char *, void *);
+extern "C" f32 lbl_8055E200;
+extern "C" f32 lbl_8055E204;
+extern "C" void *fn_801481C8(void *arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        lbl_8055E200 = *(f32 *)arg0;
+        lbl_8055E204 = *(f32 *)((u8 *)arg0 + 4);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" void fn_80148218(void) {
 }
 
@@ -169,10 +183,17 @@ extern "C" void fn_80148280(void) {
 
 }
 
+extern "C" void *fn_801484A4(const char *, void *);
+extern "C" s32 fn_80148464(void *arg0, const char *arg1) {
+    void *entry = fn_801484A4(arg1, *(void **)((u8 *)arg0 + 0x3C));
+    if (entry != NULL) return *(s32 *)((u8 *)entry + 8);
+    return 0;
+}
+
 extern "C" int stricmp(const char *, const char *);
 extern "C" void *fn_801484A4(const char *arg0, void *arg1) {
-    s32 i = 0;
     s32 offset = 0;
+    s32 i = 0;
     while (i < *(s32 *)((u8 *)arg1 + 4)) {
         if (stricmp(*(const char **)(*(u32 *)arg1 + offset), arg0) == 0) {
             return (void *)(*(u32 *)arg1 + i * 0xC);
@@ -182,6 +203,8 @@ extern "C" void *fn_801484A4(const char *arg0, void *arg1) {
     }
     return NULL;
 }
+
+extern "C" void fn_80148610(void *arg0) { ((u8 *)arg0)[4] = (u8)(!((u8 *)arg0)[4]); }
 
 extern "C" u8 fn_80148624(void *arg0) { return ((u8 *)arg0)[4]; }
 
