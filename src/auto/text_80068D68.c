@@ -939,6 +939,23 @@ void fn_800934D8(void *arg0, s16 arg1) {
     fn_800916F4(arg0, 7, &sp8);
 }
 
+BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) {
+    UINT16 attr_len = SDP_DISC_ATTR_LEN(p_attr->attr_len_type);
+
+    /* Since both UUIDs are compressed, lengths must match  */
+    if (p_btuuid->len != attr_len) {
+        return (FALSE);
+    }
+
+    if (p_btuuid->len == 2) {
+        return (BOOLEAN)(p_btuuid->uu.uuid16 == p_attr->attr_value.v.u16);
+    } else if (p_btuuid->len == 4) {
+        return (BOOLEAN)(p_btuuid->uu.uuid32 == p_attr->attr_value.v.u32);
+    }
+
+    return (BOOLEAN)(memcmp(p_btuuid->uu.uuid128, p_attr->attr_value.v.array, MAX_UUID_SIZE) == 0);
+}
+
 void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
     UINT16 i;
     UINT16 x;
