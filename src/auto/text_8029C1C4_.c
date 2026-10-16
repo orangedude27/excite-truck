@@ -22,6 +22,21 @@ void fn_8029C22C(void) {
     fn_8029C3EC();
 }
 
+void fn_8029C650(void) { int value=lbl_8055CAA8; if(value != -1) fn_802C6CF8(); }
+
+void fn_8029C934(void) {
+ int i=0; int *p=&lbl_804B5010;
+ while(i<lbl_8055F7F0) { fn_8029D464((void *)*p,1); ++p; ++i; }
+ lbl_8055F7F0=0;
+}
+
+void fn_8029CD14(void) { int value=lbl_8055F7F8; if(value) { fn_8028E398(); lbl_8055F7F8=0; } }
+
+void *fn_8029D464(void *arg0,int arg1) {
+ if(arg0) { fn_802CAC54(*(int *)((unsigned char *)arg0+0x74)); fn_80128670(*(int *)((unsigned char *)arg0+0x70)); fn_80128670(*(int *)arg0); if(arg1>0) fn_80128668(arg0); }
+ return arg0;
+}
+
 int fn_8029EF1C(void) {
     return 0;
 }
