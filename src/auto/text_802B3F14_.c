@@ -4,6 +4,17 @@ typedef struct { void *vtable; int unk4; int unk8; } GlobalObject;
 extern void fn_8000D838(void *);
 extern void __register_global_object(void *, void *, void *);
 extern void fn_802B3F6C(void);
+#pragma push
+#pragma small_data off
 extern unsigned char lbl_804BE1F0;
+#pragma pop
 extern GlobalObject lbl_804BE1FC;
 extern unsigned char lbl_8055F9A8;
+
+void fn_802B3F14(void) {
+    fn_8000D838(&lbl_8055F9A8);
+    lbl_804BE1FC.vtable = (char *)&lbl_804BE1FC + 0xC;
+    lbl_804BE1FC.unk8 = 0x10;
+    lbl_804BE1FC.unk4 = 0;
+    __register_global_object(&lbl_804BE1FC, fn_802B3F6C, &lbl_804BE1F0);
+}
