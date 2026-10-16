@@ -42,4 +42,4 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
     }
     return arg0;
 }
-
+void *fn_801284F8(int, int);
