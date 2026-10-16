@@ -6,3 +6,6 @@ extern void fn_8028FB98(float);
 void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
 }
+
+int fn_802916DC(void) { return 0; }
+
