@@ -30,6 +30,13 @@ extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileRea
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(void *, s32, void *);
 extern "C" void *lbl_803247E0;
 extern "C" void *lbl_803247F8;
+extern "C" s32 fn_800F26FC(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 s32 fn_800F273C(void *arg0) {
     s32 val = *(s32*)((u8*)arg0 + 4);
     s32 neg = -val;
@@ -84,7 +91,7 @@ extern "C" void fn_800F822C(s32 arg0) {
     detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(arg0 - 0xC);
 }
 
-void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **arg0, void *arg1) {
+extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **arg0, void *arg1) {
     if (arg1 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325C00, 0x55, lbl_80325C18);
     }
