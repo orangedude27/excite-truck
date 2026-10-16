@@ -216,8 +216,9 @@ extern "C" void *fn_80219568(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
 extern "C" void fn_802195DC(void *arg0, s32 arg1) {
     fn_802C3034(arg1);
     VfObj *obj = (VfObj *)arg0;
-    s32 a = obj->vf33();
-    s32 b = obj->vf34();
+    void **vt = *(void ***)obj;
+    s32 a = ((s32 (*)(void *))vt[33])(obj);
+    s32 b = ((s32 (*)(void *))vt[34])(obj);
     fn_8022B91C(*(s32 *)((u8 *)arg0 + 0x250), *(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 0x248), b, a);
 }
 
@@ -247,12 +248,13 @@ extern "C" void fn_80219870(void *arg0, s32 arg1, s32 arg2, char *arg3, s32 arg4
 }
 
 extern "C" s32 fn_8021A9A4(void *arg0) {
+    u8 *base = (u8 *)arg0;
     s32 r4 = 0;
     s32 r5 = 0;
-    if (*fn_80216708() != 0)
+    if (*(u8 *)fn_80216708() != 0)
         r4 = 2;
-    s32 *p = *(s32 **)((u8 *)arg0 + 0x254);
-    if (p != 0 && *p == *(s32 *)((u8 *)arg0 + 0x258))
+    s32 *p = *(s32 **)(base + 0x254);
+    if (p != 0 && *p == *(s32 *)(base + 0x258))
         r5 = 1;
     return (r5 != 0) | r4;
 }
@@ -260,15 +262,16 @@ extern "C" s32 fn_8021A9A4(void *arg0) {
 extern "C" s32 fn_8021AB88(void) { return 0; }
 
 extern "C" s32 fn_8021AB90(void *arg0, s32 arg1) {
-    if (*fn_80216708() != 0 && arg1 != 0x127) {
+    u8 *base = (u8 *)arg0;
+    if (*(u8 *)fn_80216708() != 0 && arg1 != 0x127) {
         if (arg1 < 0x127) {
             if (arg1 < 0x126)
                 return fn_802192A4(arg0, arg1);
-            fn_80217AC0(*(s32 *)((u8 *)arg0 + 0x2C));
+            fn_80217AC0(*(s32 *)(base + 0x2C));
             return 1;
         }
         if (arg1 < 0x129) {
-            fn_802179A0(*(s32 *)((u8 *)arg0 + 0x2C));
+            fn_802179A0(*(s32 *)(base + 0x2C));
             return 1;
         }
         return 0;
