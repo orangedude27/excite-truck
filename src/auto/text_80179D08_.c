@@ -7,6 +7,28 @@ extern void fn_801E9DC4(void *);
 extern s32 lbl_80331C70;
 extern f32 lbl_80561B78;
 extern f32 lbl_80561B7C;
+extern void fn_8017A580(void *);
+
+void fn_80179D08(void *arg0) {
+    f32 a = lbl_80561B7C;
+    f32 b = lbl_80561B78;
+    *(s32 *)arg0 = (s32)&lbl_80331C70;
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    *(f32 *)((u8 *)arg0 + 0x3C) = b;
+    *(f32 *)((u8 *)arg0 + 0x40) = a;
+    *(f32 *)((u8 *)arg0 + 0x44) = a;
+    *(f32 *)((u8 *)arg0 + 0x48) = a;
+    *(f32 *)((u8 *)arg0 + 0x4C) = b;
+    *(f32 *)((u8 *)arg0 + 0x50) = a;
+    *(f32 *)((u8 *)arg0 + 0x54) = a;
+    *(f32 *)((u8 *)arg0 + 0x58) = a;
+    *(f32 *)((u8 *)arg0 + 0x5C) = b;
+    *(f32 *)((u8 *)arg0 + 0x60) = a;
+    *(f32 *)((u8 *)arg0 + 0x64) = a;
+    *(f32 *)((u8 *)arg0 + 0x68) = a;
+    fn_8017A580(arg0);
+    fn_801E9DC4((u8 *)arg0 + 0x6C);
+}
 
 void fn_80179D8C(void *arg0, s32 arg1) {
     ((s32 *)arg0)[2] = arg1;
