@@ -34,7 +34,7 @@ typedef struct {
     char pad4[0x30];
     void *(*fn5C)(void *, u32);
 } Vt801D;
-struct UnkObj { const Vt801D *vt; };
+struct UnkObj { Vt801D *vt; };
 
 #pragma dont_inline on
 void fn_801D2B94(void) {
@@ -66,7 +66,8 @@ void fn_801D2C04(void) {
 }
 
 s32 fn_801D2C20(s32 arg0) {
-    s32 sp8 = arg0;
+    s32 sp8;
+    sp8 = arg0;
     if (arg0 <= 0) {
         return 0;
     }
