@@ -104,7 +104,7 @@ public:
 
 class Unk801584D4 {
 public:
-    virtual ~Unk801584D4();
+    virtual void v0();
     virtual void call(s32, s32, s32);
 };
 
