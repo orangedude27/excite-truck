@@ -29,7 +29,9 @@ extern void fn_802166B8(void);
 extern char lbl_8033D690;
 #pragma small_data on
 extern s32 fn_80215EC4(s32, s32);
+#pragma small_data off
 extern void *lbl_80490710;
+#pragma small_data on
 extern void fn_8002F634(void *, void *, s32, s32);
 extern f32 lbl_8055EF94;
 extern s32 lbl_8055EF74;
@@ -48,6 +50,10 @@ s32 fn_80215E68(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+void fn_80215EA8(void) {
+    fn_8002F634(&lbl_80490710, fn_80215EC4, 0x18, 0x10);
 }
 
 s32 fn_80215EC4(s32 arg0, s32 arg1) {
