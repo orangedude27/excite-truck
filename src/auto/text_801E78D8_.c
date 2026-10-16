@@ -93,6 +93,10 @@ void *fn_801E879C(void) {
     return lbl_80487DE0;
 }
 
+void *fn_801E87A8(void) {
+    return lbl_80487DE0 + 0x3E4;
+}
+
 extern void *lbl_8055EB24;
 void fn_801E8818(void* hi) {
     lbl_8055EB24 = hi;
