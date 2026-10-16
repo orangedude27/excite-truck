@@ -690,7 +690,9 @@ extern void fn_8019EECC(void*, void*);
 extern void fn_8019EF00(void*);
 extern void fn_801E3FC8(void*, s32, f32);
 void fn_801A49FC(void* arg0) {
-    if (*(s32*)((u8*)arg0 + 0x48) != 0) fn_801D06C4();
+    if (*(s32*)((u8*)arg0 + 0x48) != 0) {
+        fn_801D06C4();
+    }
 }
 
 void fn_801A4E54(void) {
