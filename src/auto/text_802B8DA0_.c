@@ -18,6 +18,19 @@ extern int lbl_804BFFF4;
 extern int lbl_8055FA6C, lbl_8055FA70;
 extern void *lbl_8055FA74;
 int fn_802CAC28(int, int);
+void* fn_802B8DA0(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(s32 *)arg0 = 0;
+            *((s32 *)arg0 + 1) = 0;
+            *((s32 *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 int fn_802B8E50(int arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
@@ -175,6 +188,15 @@ void fn_802BAA50(void *arg0) {
     *((float *)arg0 + 1) = -a;
 }
 
+void fn_802BAD0C(void *arg0, float angle) {
+    float x = *(float *)((char *)arg0 + 0);
+    float c = (float)cos(angle);
+    float s = (float)sin(angle);
+    float y = *(float *)((char *)arg0 + 4);
+    *(float *)((char *)arg0 + 4) = x * s + y * c;
+    *(float *)((char *)arg0 + 0) = *(float *)((char *)arg0 + 0) * c - y * s;
+}
+
 int fn_80128668(void *);
 int fn_80128670(int);
 double cos(double);
@@ -187,5 +209,42 @@ float fn_802BAD90(float farg0) {
 typedef signed char s8;
 void fn_802BAF98(void* arg0, s8 arg1) {
     ((s8*)arg0)[0xC] = arg1;
+}
+
+void fn_802BAFA0(void) {
+    void **entries = *(void ***)&lbl_804BFFF4;
+    int count = *(int *)((char *)&lbl_804BFFF4 + 4);
+    lbl_8055FA6C = 0;
+    lbl_8055FA70 = 0;
+    while (count > 0) {
+        void *p = *(void **)((char *)*entries + 12);
+        while (p != 0)
+            p = *(void **)((char *)p + 16);
+        entries++;
+        count--;
+    }
+    *(int *)((char *)lbl_8055FA74 + 8) = 0;
+}
+
+extern int lbl_804C0088[];
+extern int lbl_8034AA50;
+extern int fn_802B110C(void *, char *);
+extern int fn_802CAC54(void);
+extern int fn_802E317C(const char *, ...);
+extern int stricmp(const char *, const char *);
+extern int fn_802B8E50(int);
+void fn_802BB674(char *arg0, int arg1) {
+    struct Entry { char *name; int state; };
+    struct Entry *entry = ((struct Entry **)lbl_804C0088)[arg1];
+    int result;
+    if (entry != 0 && stricmp(entry->name, arg0) != 0) {
+        if (entry->state != -2) fn_802CAC54();
+        result = -2;
+        entry->state = -2;
+        if ((signed char)*arg0 != 0) result = fn_802B110C(fn_802B8E50, arg0);
+        entry->state = result;
+        entry->name = arg0;
+        if (result == -2 && (signed char)*entry->name != 0) fn_802E317C((const char *)lbl_8034AA50);
+    }
 }
 
