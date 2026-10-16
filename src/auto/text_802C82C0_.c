@@ -166,6 +166,15 @@ int fn_802C9950(int arg0) {
     return previous;
 }
 
+extern int lbl_8055FC80;
+extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
+int fn_802C9994(int arg0) {
+    int previous = lbl_8055FC80;
+    lbl_8055FC80 = arg0;
+    fn_802D0188((arg0 >> 16) & 0xFF, (arg0 >> 8) & 0xFF, arg0 & 0xFF);
+    return previous;
+}
+
 extern char lbl_804C1440[];
 extern float lbl_8055D01C;
 void fn_802C99D8(void) {
