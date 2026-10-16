@@ -186,8 +186,8 @@ void fn_80129218(void) {
 
 void fn_80128584(s32, s32);
 
-void fn_80128658(void) {
-    fn_80128584(0, 1);
+void fn_80128658(s32 arg0) {
+    fn_80128584(arg0, 1);
 }
 
 void fn_80128660(s32 arg0) { fn_80128584(arg0, 2); }
@@ -305,10 +305,10 @@ void fn_801290CC(void *arg0, void *arg1) {
 }
 
 s32 fn_801290DC(void *arg0, s32 arg1) {
-    s32 aligned = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x40);
-    s32 end = *(s32 *)((u8 *)arg0 + 8);
-    if (*(s32 *)((u8 *)arg0 + 4) < end - aligned)
-        return *(s32 *)((u8 *)arg0 + 0xC) + end - aligned;
+    s32 aligned = fn_801281F4(arg1, 0x40);
+    s32 end = *(s32 *)((u8 *)arg0 + 0xC);
+    if (*(s32 *)((u8 *)arg0 + 8) < end - aligned)
+        return *(s32 *)((u8 *)arg0 + 4) + end - aligned;
     return 0;
 }
 
