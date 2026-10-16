@@ -49,8 +49,8 @@ extern const char lbl_8055B568[];
 
 void fn_8020A550(void) {
     char buf[64];
-    s32* var_r29;
     s32* var_r30;
+    s32* var_r29;
     s32 var_r27;
     s8* var_r28;
 
@@ -58,14 +58,14 @@ void fn_8020A550(void) {
     lbl_8055EDD0 = 0;
     var_r30 = lbl_804892C0;
     var_r27 = 0;
-    var_r29 = (s32*)&lbl_8055B560;
-    var_r28 = (s8*)&lbl_8055EDD4;
+    var_r29 = lbl_8055B560;
+    var_r28 = &lbl_8055EDD4;
     do {
         if (*var_r30 != 0) {
             fn_80207924();
             *var_r30 = 0;
         }
-        sprintf(buf, (char*)&lbl_8055B568, *var_r29);
+        sprintf(buf, (char*)lbl_8055B568, *var_r29);
         fn_8012E498(buf);
         var_r27 += 1;
         *var_r28 = 0;
@@ -81,28 +81,52 @@ void fn_8020A634(void);
 extern u8 fn_80209FFC[];
 extern s32 lbl_8055B550;
 
-extern const char lbl_8055B578[];
-extern const char lbl_8055B580[];
+extern char lbl_8055B578[];
+extern char lbl_8055B580[];
 extern const char lbl_8033C278[];
-extern const f32 lbl_80563290[];
+extern f32 lbl_80563290;
 s32 fn_8012850C(s32, void*);
-s32 fn_8013323C(s32, void*, ...);
+s32 fn_8013323C(s32, void*, f32);
 s32 fn_8013365C(void*, void*);
 s32 fn_8000DBC8(void*);
 extern u8 fn_8020A03C[];
+void fn_8020A368(void) {
+    s32* var_r31;
+    s32* var_r30;
+    s32 var_r29;
+
+    var_r31 = lbl_804892C0;
+    var_r30 = var_r31 + 8;
+    var_r29 = 0;
+    do {
+        *var_r30 = fn_8012850C(0x70, (void*)lbl_8055B578);
+        var_r29 += 1;
+        var_r31 = (s32*)((s32)var_r31 + 8);
+        var_r30 = (s32*)((s32)var_r30 + 8);
+    } while (var_r29 < 2);
+    lbl_8055EDDC = 0;
+    lbl_8055EDD8 = lbl_80563290;
+    fn_8013323C(4, (void*)lbl_8033C278, lbl_80563290);
+    lbl_8055B550 = fn_8013365C((void*)lbl_8055B580, (void*)fn_80209FFC);
+    fn_8000DBC8((void*)fn_8020A03C);
+}
+
 void fn_8020A400(void) {
+    s32* var_r31;
     s32* var_r30;
     s32 var_r29;
 
     fn_8020A634();
     fn_801336E0(lbl_8055B550, fn_80209FFC);
     lbl_8055B550 = -1;
-    var_r30 = lbl_804892C0;
+    var_r31 = lbl_804892C0;
+    var_r30 = var_r31 + 8;
     var_r29 = 0;
     do {
-        fn_80128670(var_r30[1]);
+        fn_80128670(*var_r30);
         var_r29 += 1;
-        var_r30[1] = 0;
+        *var_r30 = 0;
+        var_r31 = (s32*)((s32)var_r31 + 8);
         var_r30 = (s32*)((s32)var_r30 + 8);
     } while (var_r29 < 2);
 }
