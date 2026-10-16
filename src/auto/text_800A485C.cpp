@@ -17,6 +17,7 @@ void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 void fn_800DCE10(void*, s32);
 extern "C" u32 fn_80060CC0(void*, u32, u32);
 extern "C" void fn_800D1B1C(void);
+extern "C" void fn_800D16C4(OSAlarm *, void *);
 
 extern u32 lbl_8055DDB0;
 extern "C" const char lbl_8031E9C0[];
