@@ -10,6 +10,10 @@ void fn_80181FC4(void) {
     fn_801BD790();
 }
 
+void fn_80181FEC(void* alarm) {
+    fn_801D14EC(fn_801D1184(alarm));
+}
+
 void fn_801836DC(void) {
 
 }
