@@ -42,3 +42,8 @@ void fn_802B9FC0(void *arg0) {
     }
 }
 
+extern void *lbl_8055FA84;
+void fn_802BA004(void) {
+    lbl_8055FA84 = 0;
+}
+
