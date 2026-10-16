@@ -117,6 +117,16 @@ void fn_80069C14(u32 r3, u32 r4) {
     OSSwitchFiberEx(r3, r4, 0, 0, fn_80069408, (u8*)&lbl_80393680 + 0x1000);
 }
 
+s32 WUDiTerminateDevice(void) {
+    s32 i;
+    u8 *entry;
+    entry = lbl_80392960 + 0x64;
+    for (i = 0; i < 10; i++, entry += 0x60) if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    entry = lbl_80392960 + 0x424;
+    for (i = 0; i < 6; i++, entry += 0x60) if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    return 3;
+}
+
 void fn_80069EB4(u32 r3, u32 r4) {
     OSSwitchFiberEx(r3, r4, 0, 0, fn_80069D80, (u8*)&lbl_80393680 + 0x1000);
 }
@@ -169,10 +179,28 @@ void fn_8006A440(u32 r3, u32 r4)
 
 extern void fn_8006B598(void *);
 void fn_8006A7D0(s32 arg0, s32 arg1) {
-    OSDisableInterrupts();
+    s32 saved = OSDisableInterrupts();
     *(s32 *)(lbl_80392960 + 0x674) = arg0;
     *(s32 *)(lbl_80392960 + 0x678) = arg1;
+    OSRestoreInterrupts(saved);
+}
+
+s8 fn_8006A940(void)
+{
+    s8 value;
+    OSDisableInterrupts();
+    value = (s8)lbl_80392960[0x688];
     OSRestoreInterrupts(0);
+    return value;
+}
+
+u8 fn_8006A97C(void)
+{
+    u8 value;
+    OSDisableInterrupts();
+    value = (u8)(*(u16 *)(lbl_80392960 + 0x6C6) - *(u16 *)(lbl_80392960 + 0x6C4));
+    OSRestoreInterrupts(0);
+    return value;
 }
 
 extern void *lbl_80319994;
