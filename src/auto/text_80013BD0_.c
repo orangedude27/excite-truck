@@ -111,9 +111,27 @@ void fn_80015AA0(void *arg0, f32 angle) {
     m[8]=lbl_80560368;
 }
 
-s32 fn_80016288(void) {
+void fn_80015EB0(void *arg0, f32 angle) {
+    f32 c = (f32)cos();
+    f32 s = (f32)sin(angle);
+    f32 *m = (f32 *)arg0;
+    m[0] = c; m[1] = lbl_80560360; m[2] = -s;
+    m[3] = lbl_80560360; m[4] = lbl_80560368; m[5] = lbl_80560360;
+    m[6] = s; m[7] = lbl_80560360; m[8] = c;
+}
+
+s32 fn_80016214(void) {
+    if (fn_8002EFB4(lbl_8055D350,
+                    *(f32 *)((u8 *)lbl_8055D350 + 0x10),
+                    lbl_80560400) > lbl_805603BC && lbl_8055E520) {
+        fn_80011E04(0);
+        fn_80010FDC(lbl_802FCE04, 0xC);
+        return 1;
+    }
     return 0;
 }
+
+s32 fn_80016288(void) { return 0; }
 
 extern f32 fn_8002EFB4(void *, f32, f64);
 extern void fn_80011E04(s32);
