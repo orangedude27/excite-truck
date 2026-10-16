@@ -17,8 +17,11 @@ extern "C" void *fn_8012A570(u32, void *);
 extern "C" s32 stricmp(const char *, const char *);
 extern "C" s32 fn_8012B85C(s32, s32, s32, s32, s32, s32);
 extern "C" void fn_80127464(void);
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" void fn_802E317C(const char *, ...);
 extern "C" const char lbl_8032AB78[];
 extern "C" u8 lbl_8055DFF9;
+extern "C" void *lbl_8055E000;
 extern "C" s32 fn_8012BC50(void *, void *, s32);
 
 extern void fn_8012E498(void);
