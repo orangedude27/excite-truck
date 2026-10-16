@@ -38,6 +38,10 @@ extern "C" const char *lbl_8031D990[];
 extern "C" const char *lbl_8031E218[];
 extern "C" const char lbl_8031E770[];
 extern "C" const char lbl_8031E83C[];
+extern "C" void *List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs(void *, u16);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
+extern "C" const char lbl_8031E938[];
+extern "C" const char lbl_805597D0[];
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
