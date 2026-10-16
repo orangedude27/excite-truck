@@ -7,12 +7,33 @@ int stricmp(const char *, const char *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-int fn_802C544C(void **a, void **b) {
-    short x = *(short *)((char *)*b + 6);
-    short y = *(short *)((char *)*a + 6);
-    if (y != x) return y - x;
-    return stricmp(fn_802CAE34(*(char **)*a), fn_802CAE34(*(char **)*b));
+void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
+    int *count = lbl_804C1338;
+    unsigned char *entry = 0;
+    if (*count < count[1]) {
+        entry = (unsigned char *)(unsigned long)count[2] + *count * 20;
+        ++*count;
+    }
+    if (entry) {
+        *(int *)(entry + 0) = *(int *)((char *)a + 12);
+        *(signed char *)(entry + 4) = z;
+        *(int *)(entry + 8) = x;
+        *(int *)(entry + 12) = (*(unsigned int *)((char *)a + 4) & 1) ? y : -1;
+        *(void **)(entry + 16) = *(void **)((char *)b + 8);
+        *(void **)((char *)b + 8) = entry;
+    }
 }
+
+int fn_802C544C(void **a, void **b) {
+    void *right = *b;
+    void *left = *a;
+    short x = *(short *)((char *)right + 6);
+    short y = *(short *)((char *)left + 6);
+    if (y != x) return y - x;
+    return stricmp(fn_802CAE34(*(char **)left), fn_802CAE34(*(char **)right));
+}
+
+void *fn_802C54B4(int i) { return (void *)(lbl_804C1348 + (i - 1) * 8); }
 
 unsigned char fn_802C54CC(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
 
