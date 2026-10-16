@@ -10,4 +10,9 @@ extern void fn_80136AA8(void*);
 extern void fn_80136A18(s32, s32);
 extern s32 fn_801284F8(s32, s32*);
 extern s32 fn_801368F8(s32);
+void fn_801378D0(void) {
+ fn_80136A18(lbl_8055E0D4, 1);
+ lbl_8055E0D4 = 0; lbl_8055E0D0 = 0;
+}
+
 void fn_80137904(void) { fn_80136AA8((void*)lbl_8055E0D4); }
