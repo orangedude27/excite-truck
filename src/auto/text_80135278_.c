@@ -21,12 +21,18 @@ typedef struct {
     float unk_24;
     u8 unk_28;
     s32 unk_2c;
+    s32 unk_30;
 } Unk_80135278;
 
+void fn_80135390(Unk_80135278 *);
+void fn_801355C0();
+void fn_801357A4();
+
 float fn_80135278(float *a, float *b, float *c) {
-    float dx = b[0] - c[0];
-    float dy;
-    return (dx * (a[0] - c[0])) * 0.0f;
+    volatile float d[2];
+    d[0] = b[0] - c[0];
+    d[1] = b[1] - c[1];
+    return a[0] * (b[0] - c[0]) + a[1] * (b[1] - c[1]);
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
@@ -34,7 +40,7 @@ void *fn_801352B8(Unk_80135278 *arg0) {
     arg0->unk_4 = 0;
     arg0->unk_c = 0x2710;
     arg0->unk_8 = lbl_80561320;
-    fn_80135390(arg0, 0, &lbl_8032BE80);
+    fn_80135390(arg0);
     return arg0;
 }
 
@@ -49,15 +55,17 @@ void *fn_8013530C(void *arg0, s32 arg1) {
 }
 
 void fn_80135354(Unk_80135278 *arg0) {
-    arg0->unk_8 = lbl_80561320;
+    float g = lbl_80561324;
+    float f = lbl_80561320;
+    arg0->unk_8 = f;
     arg0->unk_4 = 0;
     arg0->unk_c = 0;
-    arg0->unk_20 = lbl_80561320;
-    arg0->unk_24 = lbl_80561320;
-    arg0->unk_10 = lbl_80561324;
-    arg0->unk_14 = lbl_80561320;
-    arg0->unk_18 = lbl_80561320;
-    arg0->unk_1c = lbl_80561320;
+    arg0->unk_20 = f;
+    arg0->unk_24 = f;
+    arg0->unk_10 = g;
+    arg0->unk_14 = f;
+    arg0->unk_18 = f;
+    arg0->unk_1c = f;
     arg0->unk_28 = 0;
     arg0->unk_2c = 0;
 }
