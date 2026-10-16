@@ -165,6 +165,18 @@ extern "C" s32 fn_8012EE78(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
 }
 
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" void fn_802E317C(const char *, ...);
+extern "C" void fn_8012BF24(void *);
+extern "C" s32 fn_80128668(void *);
+extern "C" const char lbl_8032AEA8[];
+extern "C" const char lbl_8032AB9C[];
+extern "C" const char lbl_8032ABC8[];
+extern "C" const char lbl_8032ABEC[];
+extern "C" s32 lbl_8055DFFC;
+extern "C" s8 lbl_8055DFF8;
+extern "C" void *lbl_8055E000;
+
 extern "C" s32 fn_8012BC50(void *arg0, void *arg1, s32 arg2);
 
 extern "C" s32 fn_8012C4E4(void *arg0, void *arg1, s32 arg2) {
