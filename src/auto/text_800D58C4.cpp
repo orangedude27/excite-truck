@@ -20,7 +20,7 @@ extern "C" void fn_800D7F78(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
-void fn_800D86F0(void *arg0, void *arg1) {
+extern "C" void fn_800D86F0(void *arg0, void *arg1) {
     ((s16 *)arg0)[0] = ((s16 *)arg1)[0];
     ((s16 *)arg0)[1] = ((s16 *)arg1)[1];
     ((s16 *)arg0)[2] = ((s16 *)arg1)[2];
@@ -88,6 +88,10 @@ extern "C" s32 fn_800D89FC(s32 arg0, s32 arg1) {
 
 extern "C" s32 fn_800D8A04(s32 arg0, s32 arg1) {
     return arg0 + arg1;
+}
+
+extern "C" void fn_800DB830(s32 *arg0) {
+    *arg0 = -1;
 }
 
 extern "C" void fn_800DB83C(void) {
