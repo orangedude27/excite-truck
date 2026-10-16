@@ -108,6 +108,8 @@ extern "C" void fn_8021952C(void* arg0, s32 arg1, s32 arg2) {
     }
 }
 
+extern "C" s32 fn_80219658(void) { return 0; }
+
 extern "C" void fn_8021915C(void*, u32);
 extern "C" s32 fn_80128668(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
