@@ -404,21 +404,26 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, 
     return arg0;
 }
 
-void fn_8021B134(void *arg0) {
-    int *p = *(int **)((char *)arg0 + 0x254);
-    *p += *(int *)((char *)arg0 + 0x260);
-    int flag = ((*(int *)((char *)arg0 + 0x25c) - *(int *)((char *)arg0 + 0x258)) - 2) == 0;
-    int end = *(int *)((char *)arg0 + 0x25c);
-    if (*p >= end) {
-        if (flag) *p = *(int *)((char *)arg0 + 0x258);
-        else *p = end - 1;
-    }
-    p = *(int **)((char *)arg0 + 0x254);
-    int start = *(int *)((char *)arg0 + 0x258);
-    if (*p < start) {
-        if (flag) *p = *(int *)((char *)arg0 + 0x25c) - 1;
-        else *p = start;
-    }
+extern "C" void *lbl_8033F5D0;
+extern "C" void *fn_8021B0CC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+    fn_8021AC24(arg0, arg1, arg2, arg7, arg4);
+    *(s32 *)((u8 *)arg0 + 0x254) = arg3;
+    *(void **)arg0 = lbl_8033F5D0;
+    *(s32 *)((u8 *)arg0 + 0x258) = arg4;
+    *(s32 *)((u8 *)arg0 + 0x25C) = arg5;
+    *(s32 *)((u8 *)arg0 + 0x260) = arg6;
+    return arg0;
+}
+
+extern "C" void fn_8021B134(void *arg0) {
+ s32 *p=*(s32 **)((u8 *)arg0+0x254);
+ *p += *(s32 *)((u8 *)arg0+0x260);
+ s32 flag=(*(s32 *)((u8 *)arg0+0x25c)-*(s32 *)((u8 *)arg0+0x258)-2)==0;
+ s32 end=*(s32 *)((u8 *)arg0+0x25c);
+ if (*p>=end) { if(flag) *p=*(s32 *)((u8 *)arg0+0x258); else *p=end-1; }
+ p=*(s32 **)((u8 *)arg0+0x254);
+ s32 start=*(s32 *)((u8 *)arg0+0x258);
+ if (*p<start) { if(flag) *p=*(s32 *)((u8 *)arg0+0x25c)-1; else *p=start; }
 }
 
 extern "C" void *lbl_8033F20C;
@@ -612,6 +617,15 @@ extern int lbl_8033F548;
 extern "C" void fn_8021CF9C(void);
 extern "C" int lbl_8033F548;
 extern "C" void fn_8021D040(void) { fn_8021CF9C(); }
+
+extern "C" s32 fn_8021D1B0(void *arg0) {
+    s32 *p = *(s32 **)((u8 *)arg0 + 0x2BC);
+    if (p == 0)
+        return 0;
+    if (*(u8 *)((u8 *)arg0 + 0x1B) != 0)
+        return *p == *(s32 *)((u8 *)arg0 + 0x2C0);
+    return 4;
+}
 
 extern "C" void *fn_8021D7C8(void *arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 arg5,s32 arg6,s32 arg7) {
     f32 value;
