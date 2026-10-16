@@ -19,6 +19,10 @@ unsigned char* fn_801317F0(void* arg0) {
 extern int fn_80131588(int, int);
 void fn_80131808(int arg0) { fn_80131588(arg0, 0); }
 
+void fn_80131810(s32 arg0) {
+    fn_80131588(arg0, 1);
+}
+
 void fn_80131818(void) {
     fn_8012C4D8();
 }
@@ -31,10 +35,7 @@ extern signed char lbl_8055E060;
 extern void* lbl_8042F53C[];
 extern s32 fn_80131920(s32, s32);
 extern void __register_global_object(void*, void (*)(void*), void*);
-s32 fn_8013181C(void) {
-    fn_802E30C8(lbl_8032B510);
-    return 0;
-}
+s32 fn_8013181C(void) { fn_802E30C8(lbl_8032B510); return 0; }
 
 void* fn_8013184C(void) {
     if (lbl_8055E060 == 0) {
@@ -130,6 +131,19 @@ extern int atoi(const char*);
 s32 fn_801321BC(void* arg0) {
     void** vtable = *(void***)(*(void**)arg0);
     return ((s32(*)(int(*)(const char*)))vtable[5])(atoi);
+}
+
+f32 fn_801321EC(void* arg0) {
+    char* value = ((char* (*)(void))(*(void**)((char*)*(void**)arg0 + 0x14)))();
+    return (f32)atof(value);
+}
+
+s32 fn_80132220(void* arg0) {
+    char* value = ((char* (*)(void*))(*(void**)((char*)*(void**)arg0 + 0x14)))(arg0);
+    s32 result = 0;
+    if (stricmp(value, lbl_80559B18) != 0 && stricmp(value, lbl_80559B10) == 0)
+        result = 1;
+    return result;
 }
 
 u64 fn_80132A48(void *arg0, s32 arg1, void *arg2) {
