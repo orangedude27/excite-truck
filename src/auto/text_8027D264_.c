@@ -26,6 +26,22 @@ int fn_8027D578(int arg0, int arg1) {
     return arg0;
 }
 
+void* fn_8027D5B8(void* arg0) {
+    int* temp_r6 = (int*)((char*)arg0 + 0x24);
+    *(void**)arg0 = lbl_80347CC0;
+    *(int**)((char*)arg0 + 0x18) = temp_r6;
+    *(int*)((char*)arg0 + 0x20) = 6;
+    *(int*)((char*)arg0 + 0x1C) = 0;
+    fn_8002F53C(temp_r6, fn_8027D674, __dt__Q34nw4r2ef6EffectFv_8027D434, 0x3C, 6);
+    *(char*)((char*)arg0 + 4) = 0;
+    return arg0;
+}
+
+int fn_8027D634(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_8027D6FC(void *arg0) {
     void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
     void *obj = *(void **)((char *)res + 0x20);
