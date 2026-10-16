@@ -196,6 +196,8 @@ extern "C" u32 fn_80143C4C(void) { return 1; }
 
 extern "C" s32 fn_801442EC(void) { return 0; }
 
+extern "C" s32 fn_801442F4(void) { return 0; }
+
 extern "C" void fn_801442FC(void) {
 }
 
