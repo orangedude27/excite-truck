@@ -399,6 +399,13 @@ extern "C" s32 fn_800C65CC(s32 arg0) {
     return *(s32*)((u8*)lbl_8055DD98 + 0xAC);
 }
 
+extern "C" s32 fn_800C673C(void) {
+    if (*(s32*)((u8*)lbl_8055DD98 + 0x10) != 0x12) {
+        return -1;
+    }
+    return *(s32*)((u8*)lbl_8055DD98 + 0xAC);
+}
+
 extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
     void* r30 = this_ptr;
     s32 r31 = arg1;
