@@ -258,6 +258,25 @@ void fn_8006EC20(void) {
     fn_80068E08();
 }
 
+/* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
+ * BUFFER_Q acl_q @0x2C, BUFFER_Q sco_q @0x3C. */
+typedef struct uusb_cb_t {
+    s32 fd;              /* 0x0 */
+    u8 pad4[0x24];
+    u8 at_0x28;
+    u8 state;            /* 0x29 */
+    u8 pad2A[2];
+    BUFFER_Q acl_q;      /* 0x2C */
+    u8 pad34[8];
+    BUFFER_Q sco_q;      /* 0x3C */
+    u8 pad44[2];
+} uusb_cb_t;
+
+extern uusb_cb_t uusb_cb;
+extern void uusb_CloseDeviceCB(void);
+extern u32 fn_8009B0E0(void);
+extern u8 lbl_803BD1E0;
+extern u8 lbl_8055DC51;
 void fn_80070758(void) {
     fn_8009B0E0();
     fn_8006EBAC();
