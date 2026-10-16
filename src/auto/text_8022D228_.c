@@ -2,6 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 extern float lbl_805635D4;
 extern double lbl_805635C8;
+extern int lbl_803401A0;
+extern float lbl_805635C0;
+extern float lbl_805635C4;
 
 extern char *strcpy(char *, const char *);
 extern int lbl_803401A0;
