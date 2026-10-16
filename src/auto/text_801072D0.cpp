@@ -6,6 +6,7 @@ typedef unsigned long u32;
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" void* lbl_8055DEA8;
 extern "C" char lbl_803285B8[];
+extern "C" char lbl_803285C8[];
 extern "C" char lbl_803285EC[];
 extern "C" char lbl_80328614[];
 
@@ -38,13 +39,15 @@ extern "C" u32 Seek__Q36nw4hbm2ut10FileStreamFlUl_80107580(nw4hbm::ut::FileStrea
     return 0;
 }
 
-extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801075D0(nw4hbm::ut::FileStream* this_) {
-    const char* file = lbl_803285B8;
-    if (this_->Seek(0, 0) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x66, &file[0x5C]);
+typedef s32 (*VFun1)(void*);
+typedef u32 (*ReadFn)(void*, void*, u32);
+extern "C" s32 CancelAsync__Q36nw4hbm2ut10FileStreamFPFlPQ36nw4hbm2ut8IOStreamPv_vPv_801075D0(void* this_) {
+    s32 file = (s32)lbl_803285B8;
+    if (((VFun1*)(*(void***)this_))[0x30 / 4](this_) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x66, (const char*)(file + 0x5C));
     }
-    if (this_->Read((void*)0, 0) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x67, &file[0x34]);
+    if (((VFun1*)(*(void***)this_))[0x28 / 4](this_) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x67, (const char*)(file + 0x34));
     }
     return 0;
 }
