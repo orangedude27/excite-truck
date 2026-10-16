@@ -74,6 +74,13 @@ extern "C" s32 fn_800F420C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_800F4D04(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern "C" s32 fn_800F81AC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
