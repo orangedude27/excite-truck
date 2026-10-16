@@ -110,6 +110,10 @@ void DBPrintf_80068D68(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+void fn_80068F80(void) {
+    lbl_80392960[0xC] = 1;
+}
+
 extern u8 lbl_80393680[];
 extern void fn_80069408(void);
 extern void fn_80069D80(void);
