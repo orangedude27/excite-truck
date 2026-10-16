@@ -226,6 +226,8 @@ extern "C" s32 fn_8014431C(void) { return 0; }
 
 extern "C" s32 fn_80144324(void) { return 0; }
 
+extern "C" s32 fn_8014432C(void) { return 0; }
+
 extern "C" void fn_80144334(void) {
 }
 
