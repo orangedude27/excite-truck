@@ -1,4 +1,15 @@
 #include "types.h"
+extern volatile u32 lbl_8055D778;
+extern volatile u32 lbl_8055D77C;
+extern volatile u32 lbl_8055D784;
+extern u32 lbl_8055D780;
+extern u32 lbl_8055D75C;
+extern u8 lbl_8035F700[];
+extern u8 lbl_8035FB80[];
+extern u64 OSGetTime(void);
+extern void CircleBufferInitialize(u32);
+extern void DSPAssertTask(void *);
+extern void AIInitDMA(void *, u32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
