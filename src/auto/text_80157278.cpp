@@ -326,8 +326,9 @@ extern "C" u8 fn_80159F24(void* arg0) {
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
     s32 r5 = arg0->m260;
     if (r5 > 0) {
-        if (arg0->m258 != 0) {
-            fn_801CB6E4(*(void**)&arg0->m4);
+        s32 r3 = arg0->m258;
+        if (r3 != 0) {
+            fn_801CB6E4((void*)r3, *(s32*)&arg0->m4);
         }
         arg0->m260 = 0;
     }
