@@ -97,6 +97,20 @@ void fn_8021605C(void *arg0, s32 arg1) {
     fn_802C3424(temp_r3, temp_r4, temp_r3 + *(s32 *)((u8 *)arg0 + 0xC), temp_r4 + *(s32 *)((u8 *)arg0 + 0x10), lbl_8055FBDC);
 }
 
+void fn_802166B8(void) {
+    fn_802C8530();
+    fn_80216244();
+    fn_802160AC();
+    if (fn_80211F54() == 0) {
+        fn_80019BA8();
+    }
+    if (lbl_8055F024 != 0) {
+        fn_80230DA0();
+    }
+    fn_802C855C();
+    fn_802C2B48();
+}
+
 extern u32 lbl_8055EF98;
 u32 *fn_80216708(void) {
     return &lbl_8055EF98;
