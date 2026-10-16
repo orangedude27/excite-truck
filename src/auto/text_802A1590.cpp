@@ -5,6 +5,14 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern "C" s32 fn_80128668(void);
+extern "C" void fn_8028E398(void*);
+extern "C" int lbl_80349B28[];
+extern "C" int lbl_80349B50[];
+extern "C" int lbl_80349AD8[];
+extern "C" int lbl_8055CBB0[];
+extern "C" void fn_802A3500(void*, s32);
+extern "C" void fn_802A30BC(void*, s32);
+extern "C" void fn_802A31DC(void*, s32);
 
 namespace ebi {
 namespace title {
