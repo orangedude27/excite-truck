@@ -10,3 +10,5 @@ void fn_802E8D7C(void* hi) {
     lbl_80560024 = hi;
 }
 
+int fn_802E91AC(int *arg0) { return *arg0 == 0; }
+
