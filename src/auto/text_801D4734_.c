@@ -90,6 +90,16 @@ void fn_801D68D0(void *arg0) {
     }
 }
 
+void *fn_801D6900(void *arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        *(s32 *)((u8 *)arg0 + 4) = 0;
+        if (arg1 > 0) {
+            fn_80128668();
+        }
+    }
+    return arg0;
+}
+
 void fn_801D6FA0(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
