@@ -24,7 +24,7 @@ extern u8 lbl_8055B374[];
 extern void *lbl_8055EC38;
 extern void *lbl_8055EC44;
 int stricmp(const char *, const char *);
-void *fn_801F8188(s32 a, s32 b);
+    void *fn_801F8188(void *a, s32 b, s32 c);
   void fn_802E317C(const char *, ...);
   s32 fn_801F9450(void *node);
       void *fn_801F95C4(void *fn, void *node);
