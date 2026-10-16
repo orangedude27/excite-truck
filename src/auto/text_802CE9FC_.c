@@ -73,4 +73,9 @@ extern void *lbl_8055FD58;
 void* fn_802D3138(void) {
     return (char*)lbl_8055FD58 + 0x24;
 }
-
+extern unsigned short lbl_8055FD86;
+extern unsigned long lbl_8055FD94;
+extern unsigned char lbl_8055FDA0[];
+extern unsigned char lbl_804C97B0[];
+extern unsigned long fn_802CE9FC(unsigned long);
+extern void fn_802CFF64(void);
