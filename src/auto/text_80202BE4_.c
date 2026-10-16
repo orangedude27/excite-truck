@@ -22,6 +22,16 @@ extern s32 lbl_8055ED04;
 extern s32 lbl_8055ED0C;
 extern s8 lbl_8055ED18;
 
+void fn_80203D84(s32* arg0) {
+    s32 temp_r0;
+
+    temp_r0 = *arg0;
+    if (temp_r0 != -2) {
+        fn_802CAC54(temp_r0);
+        *arg0 = -2;
+    }
+}
+
 void fn_80203EC0(void) {
 
 }
