@@ -14,6 +14,10 @@ long fn_8027C8B0(void);
 long fn_802E317C(char *, ...);
 
 extern char lbl_804A4380[];
+unsigned char fn_8027B280(void *arg0) {
+    return *((unsigned char *)arg0 + 0x12);
+}
+
 void *fn_8027B878(long arg0) {
     return lbl_804A4380 + fn_8000DA10() * 0x3B10 + arg0 * 0xBD0 + 0x2370;
 }
@@ -56,4 +60,63 @@ long fn_8027C8B0(void) { return 1; }
 long fn_8027CB20(void) { return 1; }
 
 long fn_8027CBF0(void) { return 1; }
+
+void fn_8027CBF8(long arg0, char *arg1, long arg2) {
+    long count;
+    char *src;
+    char c;
+
+    count = arg2;
+    if (fn_8027CB28()) {
+        src = fn_80131234(lbl_80347B78);
+        count--;
+        if (count > 0)
+            goto copy_a;
+        goto terminate_a;
+copy_a:
+        c = *src++;
+        *arg1++ = c;
+        if ((signed char)c == 0)
+            goto finish_a;
+        count--;
+        if (count > 0)
+            goto copy_a;
+terminate_a:
+        arg1[-1] = 0;
+finish_a:
+        ;
+    } else {
+        src = fn_80131234(lbl_80347C14);
+        count--;
+        if (count > 0)
+            goto copy_b;
+        goto terminate_b;
+copy_b:
+        c = *src++;
+        *arg1++ = c;
+        if ((signed char)c == 0)
+            goto finish_b;
+        count--;
+        if (count > 0)
+            goto copy_b;
+terminate_b:
+        arg1[-1] = 0;
+finish_b:
+        ;
+    }
+}
+
+long fn_8027CE4C(long arg0) {
+    long value;
+    value = *fn_8027C120(lbl_8055F654, arg0);
+    switch (value) {
+    case 0:
+        return fn_8027C8B0();
+    case 1:
+        return fn_8027CB20();
+    default:
+        fn_802E317C(lbl_80347C38, arg0);
+        return 1;
+    }
+}
 
