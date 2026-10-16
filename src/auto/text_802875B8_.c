@@ -86,4 +86,4 @@ void fn_80287B58(void) {
 void fn_80288868(void* hi) {
     lbl_8055F6C8 = hi;
 }
-extern u8 lbl_8055F6BC;
+
