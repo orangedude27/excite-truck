@@ -680,6 +680,10 @@ void *fn_801D8720(void) {
     return lbl_8033905C;
 }
 
+s32 fn_801D872C(void *arg0) {
+    return ((s32 *)arg0)[0x18 / 4];
+}
+
 void fn_801D8938(void) {
 
 }
