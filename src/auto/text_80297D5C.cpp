@@ -96,6 +96,17 @@ void fn_802982C0(void *arg0) {
     } while (var_r30 < 4);
 }
 
+void fn_8029B138(void *arg0, int arg1, float *arg2, float *arg3, float *arg4, float *arg5) {
+    float temp_f1;
+    float temp_f1_2;
+    temp_f1 = *(float *)((char *)arg0 + 0x1F8) * (float)(arg1 & (*(int *)((char *)arg0 + 0x1EC) - 1));
+    *arg2 = temp_f1;
+    *arg3 = temp_f1 + *(float *)((char *)arg0 + 0x1F8);
+    temp_f1_2 = *(float *)((char *)arg0 + 0x1F8) * (float)(arg1 >> *(int *)((char *)arg0 + 0x1F0));
+    *arg4 = temp_f1_2;
+    *arg5 = temp_f1_2 - *(float *)((char *)arg0 + 0x1F8);
+}
+
 extern "C" int fn_802CAC28(int, int);
 extern "C" int fn_80297D5C(void*, int);
 extern "C" int fn_80297D90(void*, int);
@@ -111,25 +122,23 @@ extern int lbl_8055CA88;
 extern const char lbl_8034951C[];
 extern const char lbl_80349550[];
 extern double lbl_805645F8;
+extern int lbl_8055CA84, lbl_8055CA88;
+extern const char lbl_8034951C[], lbl_80349550[];
 void fn_8029B1B8(void* arg0) {
-    char* p = (char*)arg0;
-    *(int*)(p + 0x1E4) = fn_802CAC28(lbl_8055CA84, 0);
-    *(int*)(p + 0x1E8) = fn_802CAC28(lbl_8055CA88, 0);
-    fn_80297D5C(p + 0x1EC, 0x10);
-    if (fn_80297D90(p + 0x1F0, *(int*)(p + 0x1EC)) == 0) {
+    char* p=(char*)arg0;
+    *(int*)(p+0x1E4)=fn_802CAC28(lbl_8055CA84,0);
+    *(int*)(p+0x1E8)=fn_802CAC28(lbl_8055CA88,0);
+    if (fn_80297D5C(p+0x1EC,0x10) == 0 || fn_80297D90(p+0x1F0,*(int*)(p+0x1EC)) == 0)
         fn_802E317C(lbl_8034951C);
-    }
-    *(int*)(p + 0x1F4) = 0x10 - (*(int*)(p + 0x1F0) << 1);
-    *(float*)(p + 0x1F8) = lbl_80564590 / (float)*(int*)(p + 0x1EC);
+    *(int*)(p+0x1F4)=0x10-(*(unsigned short*)(p+0x1F0)<<1);
+    *(float*)(p+0x1F8)=lbl_80564590 / (float)*(unsigned short*)(p+0x1EC);
 }
 
-void* fn_8029B9A4(void* arg0, int arg1) {
-    if (arg0 != 0) {
+void* fn_8029B9A4(void* arg0,int arg1) {
+    if (arg0) {
         fn_801EF024((void*)fn_8029BFF8);
-        __dt__Q210JASDrumSet5TPercFv_8029AE88(*(void**)arg0, 1);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
-        }
+        __dt__Q210JASDrumSet5TPercFv_8029AE88(*(void**)arg0,1);
+        if (arg1>0) fn_80128668(arg0);
     }
     return arg0;
 }
