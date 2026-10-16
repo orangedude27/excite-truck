@@ -208,6 +208,13 @@ extern "C" void fn_800E402C(void *arg0) {
     ((void (*)(void))OSRestoreInterrupts)();
 }
 
+extern "C" int fn_800E4520(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern "C" void fn_800E5A8C(void) {
     fn_800E6A44();
 }
