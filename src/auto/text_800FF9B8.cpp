@@ -11,3 +11,8 @@ extern "C" void fn_800FFE68(void *arg0) {
 extern "C" int fn_800FFE70(int arg0) {
     return arg0 + 0xD8;
 }
+
+extern "C" u32 *fn_800FFE80(void) {
+    return &lbl_8055DE88;
+}
+
