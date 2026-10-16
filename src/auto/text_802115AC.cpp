@@ -10,6 +10,53 @@ extern "C" void fn_8021165C(void) {
     fn_80215270();
 }
 
+extern int fn_80211690(int);
+extern int fn_80211D24(int);
+extern int fn_802E2C20(void);
+extern int fn_802ECC10(void);
+extern int lbl_8055EF14;
+extern float lbl_8055EF10;
+extern int lbl_8055EF40;
+extern float lbl_80563434;
+extern float lbl_80563440;
+extern float lbl_80563444;
+extern double lbl_80563448;
+extern "C" int fn_80211690(int);
+extern "C" int fn_80211D24(int);
+extern "C" int fn_802E2C20(void);
+extern "C" int fn_802ECC10(void);
+extern "C" int lbl_8055EF14;
+extern "C" float lbl_8055EF10;
+extern "C" int lbl_8055EF40;
+extern "C" float lbl_80563434;
+extern "C" float lbl_80563440;
+extern "C" float lbl_80563444;
+extern "C" double lbl_80563448;
+extern "C" void fn_80211F44(void) { fn_80211690(1); }
+
+void fn_80211F4C(void) { fn_80211D24(1); }
+
+int fn_80211F54(void) { return lbl_8055EF40 == 0; }
+
+void fn_80211F64(void) {
+    float temp_f0;
+    float var_f3;
+    int temp_r31;
+    temp_r31 = fn_802E2C20();
+    if (fn_802ECC10() == 0) {
+        var_f3 = lbl_80563444;
+        temp_f0 = lbl_80563440 * (float)(temp_r31 - lbl_8055EF14);
+        if (var_f3 < temp_f0) {
+        } else {
+            var_f3 = temp_f0;
+        }
+        lbl_8055EF10 = var_f3;
+    } else {
+        lbl_8055EF10 = lbl_80563434;
+    }
+    lbl_8055EF14 = temp_r31;
+}
+
 extern "C" s32 fn_80128668(void);
 extern "C" s32 fn_802121D4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
