@@ -53,3 +53,12 @@ void fn_8000F498(void) {
     lbl_8055D4D4 = fn_8023512C();
 }
 
+void fn_80010EF0(void);
+void fn_80010F08(void);
+void fn_80010F20(void);
+void fn_80010EC8(void) {
+    fn_80010EF0();
+    fn_80010F08();
+    fn_80010F20();
+}
+
