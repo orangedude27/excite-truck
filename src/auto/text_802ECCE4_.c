@@ -50,3 +50,8 @@ void fn_802ED038(void *arg0) {
     fn_802E13D8(((void **)arg0)[16]);
 }
 
+extern void fn_802E1718(void *);
+void fn_802ED040(void *arg0) {
+    fn_802E1718(((void **)arg0)[16]);
+}
+
