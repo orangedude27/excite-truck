@@ -1,6 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 
 #include <types.h>
+#include <stdarg.h>
+
+typedef struct { s32 a, b, c, d; f32 e, f; s32 g; } Copy8014C6F0;
 
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_80561648;
