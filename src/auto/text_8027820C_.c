@@ -23,6 +23,12 @@ char fn_802787F4(void) {
     return lbl_8055F5BA;
 }
 
+int fn_802787FC(void) {
+    if (lbl_8055F5BA != 0) return 0;
+    if (lbl_8055F5BB == 0) return 0;
+    return 1;
+}
+
 extern char lbl_8055F5BB;
 extern char lbl_8055F5B9;
 extern char lbl_8055F5C8;
@@ -49,8 +55,8 @@ void fn_8027889C(float arg0) {
 int fn_80278924(float *arg0, float *arg1) {
     int result = 0;
     float scale = lbl_805640B8;
-    *arg0 = (float)lbl_8055F5C0 * scale;
-    *arg1 = (float)lbl_8055F5BC * scale;
+    *arg0 = scale * (float)lbl_8055F5C0;
+    *arg1 = scale * (float)lbl_8055F5BC;
     if (lbl_8055F5C0 >= 0 && lbl_8055F5BC >= lbl_8055F5C0) result = 1;
     return result;
 }
@@ -62,4 +68,10 @@ void fn_8027888C(char arg0) {
 void fn_80278894(char arg0) {
     lbl_8055F5BB = arg0;
 }
-
+extern int lbl_8055F5B4;
+extern char lbl_8055F5B8;
+extern int fn_802E30C8(const char *, int);
+extern const char lbl_80347590[];
+extern const char lbl_803475B4[];
+extern const char lbl_80347660[];
+extern char lbl_804A15D0[];
