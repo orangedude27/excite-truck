@@ -175,7 +175,7 @@ extern f32 lbl_8056164C;
 extern f32 lbl_80561650;
 void fn_8014AD74(void *arg0) {
     f32 step;
-    if (fn_80176A1C() == 2) {
+    if ((fn_80176A1C() - 2) == 0) {
         step = fn_80176A2C();
     } else {
         step = lbl_8056164C;
@@ -200,6 +200,19 @@ s32 fn_8014ADD8(void *arg0) {
     return ((void **)arg0)[1] != 0;
 }
 
+void fn_8014AE1C(void *arg0, void *arg1) {
+    void *next = ((void **)arg0)[1];
+    *(void **)((u8 *)arg1 + 0x11C) = 0;
+    *(void **)((u8 *)arg1 + 0x120) = next;
+    if (next != 0) {
+        *(void **)((u8 *)next + 0x11C) = arg1;
+    }
+    ((void **)arg0)[1] = arg1;
+    if (((void **)arg0)[0] == 0) {
+        ((void **)arg0)[0] = arg1;
+    }
+}
+
 void fn_8014AED0(void *arg0, f32 farg0) {
     ((f32 *)arg0)[0x41] = farg0;
 }
@@ -217,6 +230,19 @@ u8 fn_8014AEE8(void *arg0) {
 }
 
 s32 fn_8014C830(s32 arg0) { return arg0 + 0x14; }
+
+s32 fn_8014C848(void *arg0) {
+    void *next = ((void **)arg0)[2];
+    ((void **)arg0)[1] = next;
+    if (next != 0) {
+        ((void **)arg0)[2] = *(void **)((u8 *)next + 0x11C);
+        ((s32 *)arg0)[3] = *(s32 *)((u8 *)next + 0x120);
+    } else {
+        ((s32 *)arg0)[3] = 0;
+        ((void **)arg0)[2] = 0;
+    }
+    return ((void **)arg0)[1] != 0;
+}
 
 void fn_8014DE4C(void) {
 
