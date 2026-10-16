@@ -96,6 +96,13 @@ extern "C" s32 fn_800A71E0(void *arg0) {
     return temp_r3 & ((s32) (-temp_r3 | temp_r3) >> 0x1F);
 }
 
+extern "C" void fn_800AF2B8(void *);
+extern "C" void fn_800AF2B8(void *arg0) {
+    ((s32 *)arg0)[0] = 0;
+    ((s32 *)arg0)[1] = 0;
+    ((s32 *)arg0)[2] = 0;
+}
+
 extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
     (*(s32 *)((u8 *)arg0 + 0)) = arg1;
     (*(s32 *)((u8 *)arg0 + 4)) = arg1;
