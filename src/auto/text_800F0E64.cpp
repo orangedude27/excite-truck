@@ -198,6 +198,11 @@ extern "C" s32 fn_800F2834(void *arg0) {
     return ReadFileInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive8FileInfo(*(s32*)((u8*)arg0 + 4));
 }
 
+M2C_UNK ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(s32);
+extern "C" s32 fn_800F283C(void *arg0) {
+    return ReadFilePos__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlUlPQ46nw4hbm3snd12SoundArchive7FilePos(*(s32*)((u8*)arg0 + 4));
+}
+
 extern "C" void fn_800F2D28(void *arg0) {
     *(s32*)((u8*)arg0 + 0x28) = 0;
     *(s32*)((u8*)arg0 + 0x2C) = 0;
