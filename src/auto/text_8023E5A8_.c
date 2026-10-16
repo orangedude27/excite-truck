@@ -34,3 +34,6 @@ s32 fn_8023ECF8(void) {
     return lbl_8055F1C8 < fn_802E2C20();
 }
 
+void fn_8023F870(void) {
+}
+
