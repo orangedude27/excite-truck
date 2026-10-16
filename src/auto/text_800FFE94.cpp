@@ -17,6 +17,7 @@ extern "C" int fn_80100BEC(void* arg0) {
 }
 
 extern "C" char lbl_80327930[];
+extern "C" char lbl_80327994[];
 extern "C" char lbl_803279CC[];
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_80100BF4(void* arg0, int arg1, float arg2) {
     int valid = arg1 >= 0 && arg1 < 4;
