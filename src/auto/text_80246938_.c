@@ -30,6 +30,12 @@ void fn_80128668(void *);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055F260;
+extern unsigned char lbl_803432EC[];
+extern void fn_80246CB8(void *);
+void fn_80246DE8(void) {
+    fn_80246CB8(lbl_803432EC);
+}
+
 Obj_802470D4 *fn_802470D4(Obj_802470D4 *arg0, s32 arg1) {
     s32 *p;
     if (arg0 != 0) {
