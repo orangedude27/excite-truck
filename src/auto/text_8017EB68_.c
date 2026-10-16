@@ -20,6 +20,10 @@ extern signed char lbl_8055E4BA;
 extern void fn_801808DC(void);
 extern void fn_802E8524(int, int);
 
+void fn_8017EB68(void *arg0) {
+    fn_8017E930((char *)arg0 - 0x1EC);
+}
+
 void fn_80181438(void) {
 
 }
