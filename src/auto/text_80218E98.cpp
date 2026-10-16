@@ -755,7 +755,7 @@ extern "C" s32 fn_802298A4(s32 arg0) {
     return arg0 + 0x258;
 }
 
-int fn_802298DC(void *arg0) {
+extern "C" int fn_802298DC(void *arg0) {
     int *p = *(int **)((char *)arg0 + 0x254);
     if (p != 0) {
         return *p;
