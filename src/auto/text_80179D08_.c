@@ -12,8 +12,8 @@ extern void fn_8017A580(void *);
 #pragma scheduling off
 static f32 fn_load(void) { return lbl_80561B78; }
 void* fn_80179D08(void *arg0) {
-    register f32 a = lbl_80561B7C;
-    register f32 b = fn_load();
+    f32 a = lbl_80561B7C;
+    f32 b = lbl_80561B78;
     *(s32 *)arg0 = (s32)&lbl_80331C70[0];
     *(s32 *)((u8 *)arg0 + 0xC) = 0;
     *(f32 *)((u8 *)arg0 + 0x3C) = b;
@@ -73,10 +73,11 @@ void fn_8017A004(void) {
 }
 
 void fn_8017A008(unsigned char *dst, unsigned char *src, int count) {
-    while (1) {
-        *dst++ = *src++;
-        if (--count < 0) break;
-    }
+    goto check;
+loop:
+    *dst++ = *src++;
+check:
+    if (--count >= 0) goto loop;
 }
 
 void fn_8017A578(void *arg0) {
