@@ -46,27 +46,13 @@ void fn_8014E7D8(void) {
 }
 
 extern s32 fn_80128668(void);
-extern void fn_8016783C(void *arg0);
-extern void fn_801688FC(s32 arg0);
-extern void fn_80168020(void);
-extern void fn_8016A0D4(void);
-extern void *memset(void *arg0, s32 arg1, s32 arg2);
-extern s32 fn_801284F8(s32 arg0, void *arg1);
-extern s32 fn_802ADDD8(s32 arg0);
-extern void fn_8014F194(void *arg0);
-extern s32 fn_80145E70(void *arg0);
-extern s32 lbl_8032DB34;
-extern s32 lbl_8032DB40;
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 value = *arg1;
     s32 index = ((s32 *)arg0)[1];
-    s32 next = index + 1;
+    s32 value = *arg1;
     s32 *data = *(s32 **)arg0;
-    s32 offset;
-    ((s32 *)arg0)[1] = next;
-    offset = index * 4;
-    *(s32 *)((char *)data + offset) = value;
-    return (s32 *)((char *)data + offset);
+    ((s32 *)arg0)[1] = index + 1;
+    data[index] = value;
+    return &data[index];
 }
 
 s32 fn_80150AD8(s32 arg0, s32 arg1) {
@@ -85,6 +71,21 @@ s32 fn_80150B18(s32 arg0, s32 arg1) {
 
 void fn_80150B58(void *arg0, s32 arg1) {
     ((s32 *)arg0)[8] = arg1;
+}
+
+void fn_80150B60(void *arg0) {
+    fn_8016783C(arg0);
+    if (((u8 *)arg0)[0x8F4] != 0) {
+        memset((char *)arg0 + 0x8F8, 0, 0xE0);
+        fn_801688FC(1);
+        fn_80168020();
+    }
+    fn_8016A0D4();
+    if (((void **)arg0)[0x113] != 0) {
+        ((u8 *)arg0)[0x450] = 0;
+        ((u8 *)(((void **)arg0)[0x113]))[0x4A] = 1;
+        ((u8 *)(((void **)arg0)[0x113]))[0x4C] = 0;
+    }
 }
 
 void fn_80151688(void) {
