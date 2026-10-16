@@ -449,6 +449,10 @@ extern "C" u32 fn_80229ADC(void) { return 1; }
 
 extern "C" s32 fn_80229B68(void) { return 0; }
 
+extern "C" s32 fn_80229B70(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x254);
+}
+
 extern "C" s32 fn_80229C9C(s32 arg0) {
     return arg0 + 0x264;
 }
