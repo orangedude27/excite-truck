@@ -55,6 +55,12 @@ s32 fn_80287B24(s32 arg0) {
     return ((s32*)lbl_804B3150)[0] + arg0 * 0x160;
 }
 
+void fn_80287B38(s32 arg0) {
+    s32 index = lbl_8055F6C0;
+    ((s32 *)lbl_804B31E0)[index] = arg0;
+    lbl_8055F6C0 = index + 1;
+}
+
 extern u8 lbl_804B3150[12];
 extern s32 lbl_8055F6C0;
 extern s32 lbl_804B31E0[];
