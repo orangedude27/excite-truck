@@ -339,9 +339,19 @@ extern "C" void fn_80215298(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 arg4
     *arg3 = arg5 + 4;
 }
 
+#pragma dont_inline on
 void fn_802152C8(void) {
 }
+#pragma dont_inline reset
 
+extern "C" s32 fn_802192A4(void *, s32);
+#pragma dont_inline on
+extern "C" void fn_802152C8(void);
+#pragma dont_inline reset
+extern "C" s32 fn_802152CC(void) {
+    fn_802152C8();
+    return 0;
+}
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802152F0(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_8021915C(arg0, 0);
@@ -649,6 +659,28 @@ extern "C" void fn_80215A48(void *arg0) {
     void *obj = *(void **)((u8 *)arg0 + 0x244);
     void **vt = *(void ***)obj;
     ((void (*)(void *))*(void **)((u8 *)vt + 0x4C))(obj);
+}
+
+#pragma dont_inline on
+#pragma dont_inline reset
+extern "C" void fn_80215A74(void *arg0) {
+    u8 *self = (u8 *)arg0;
+    u8 enabled = self[0x1A];
+    self[0x19] = 0;
+    if (enabled == 0) goto done;
+    self[0x234] = 1;
+    {
+        void *obj = *(void **)(self + 0x244);
+        ((void (*)(void *))(*(void ***)obj)[20])(obj);
+    }
+done:
+    return;
+}
+extern "C" s32 fn_80215AA4(void *arg0, s32 arg1) {
+    void *obj = *(void **)((u8 *)arg0 + 0x244);
+    s32 (**vtable)(void *) = *(s32 (***)(void *))obj;
+    if (vtable[22](obj) != 0) return 1;
+    return fn_802192A4(arg0, arg1);
 }
 
 extern "C" void fn_80215B08(void *arg0) {
