@@ -181,6 +181,7 @@ extern void (*lbl_8055E868)(void);
 extern s32 lbl_8055E848;
 extern int atoi(const char *);
 extern char lbl_8055E83B;
+extern char lbl_8055E83D;
 extern Vec lbl_80438250;
 typedef struct {
     char pad_0[0x4D4];
