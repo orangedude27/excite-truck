@@ -38,3 +38,7 @@ void fn_8017B090(void) {
 
 }
 
+int fn_8017B094(void) {
+    return 0x14;
+}
+
