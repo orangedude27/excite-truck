@@ -25,7 +25,7 @@ extern s32 lbl_8055ED00;
 extern s32 lbl_8055ED04;
 extern s32 lbl_8055ED0C;
 extern u8 lbl_8055ED10;
-#pragma no_inline fn_80203D84
+#pragma dont_inline on
 extern s8 lbl_8055ED18;
 extern s32 lbl_8055ED1C;
 extern f32 lbl_80563130;
@@ -43,36 +43,15 @@ typedef struct { u8 pad[0x24]; f32 x; f32 y; f32 z; } unk_80203A88_dest;
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1);
 
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
-    s32* temp_r26;
-    s32 temp_r10;
-    s32 temp_r9;
-    s32 temp_r8;
-    s32 temp_r7;
-    s32 temp_r6;
-    s32 temp_r5;
+    s32 var_r26;
+    struct lbl_80488B88_t* var_r27;
 
     lbl_8055ED1C = -1;
     fn_802C8BD0(-1);
-    temp_r26 = (s32*)arg1;
-    temp_r5 = temp_r26[10];
-    temp_r6 = temp_r26[9];
-    temp_r7 = temp_r26[8];
-    temp_r8 = temp_r26[7];
-    temp_r9 = temp_r26[6];
-    temp_r10 = temp_r26[5];
-    lbl_80488B88.w[0] = temp_r26[0];
-    lbl_80488B88.w[1] = temp_r26[1];
-    lbl_80488B88.w[2] = temp_r26[2];
-    lbl_80488B88.w[3] = temp_r26[3];
-    lbl_80488B88.w[4] = temp_r26[4];
-    lbl_80488B88.w[5] = temp_r26[5];
-    lbl_80488B88.w[6] = temp_r26[6];
-    lbl_80488B88.w[7] = temp_r26[7];
-    lbl_80488B88.w[8] = temp_r26[8];
-    lbl_80488B88.w[9] = temp_r26[9];
-    lbl_80488B88.w[10] = temp_r26[10];
-    lbl_80488B88.w[11] = temp_r26[11];
-    fn_802BE07C(arg0 + 0x24, (s32)fn_802036E4, temp_r5, temp_r6, temp_r7, temp_r8, temp_r9, temp_r10);
+    var_r26 = arg0;
+    var_r27 = arg1;
+    lbl_80488B88 = *var_r27;
+    fn_802BE07C(var_r26 + 0x24, (s32)fn_802036E4, var_r27->w[10], var_r27->w[9], var_r27->w[8], var_r27->w[7], var_r27->w[6], var_r27->w[5]);
     fn_802C8D74();
 }
 
@@ -84,8 +63,8 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
     if (fn_80202BE4() == 0) {
         fn_802D3050(1);
         fn_802D306C(0x5A);
-        temp_f2 = ((f32*)arg0)[1];
         temp_f3 = ((f32*)arg0)[0];
+        temp_f2 = ((f32*)arg0)[1];
         temp_f1 = ((f32*)arg0)[2];
         arg2->x = temp_f3;
         arg2->z = temp_f1;
