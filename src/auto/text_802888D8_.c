@@ -31,3 +31,10 @@ int fn_80289554(int arg0) {
     return fn_8028967C(arg0);
 }
 
+int fn_80289EA0(int arg0) {
+    fn_8028A084();
+    fn_8028A1A4(arg0);
+    fn_80289F54(arg0);
+    return arg0;
+}
+
