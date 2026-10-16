@@ -8,6 +8,36 @@ float fn_8017D378(void) {
     return lbl_8055E3C8;
 }
 
+void fn_8017D380(float *arg0, int arg1) {
+    extern void *fn_80178C9C(void);
+    extern float lbl_80561BE0;
+    extern float lbl_80561BE4;
+    extern double lbl_80561BE8;
+    void *root = fn_80178C9C();
+    void *sub = *(void **)((char *)root + 0x2C);
+    int index = arg1;
+    float *values;
+    arg0[1] = lbl_80561BE0;
+    arg0[1] = lbl_80561BE4 + (float)(index * 2);
+    values = *(float **)((char *)sub + 0x1C);
+    arg0[0] = values[0];
+    arg0[2] = values[1];
+}
+
+void *fn_8017D688(void) {
+    extern void *fn_801284F8(int, void *);
+    extern void fn_8017B0B0(void);
+    extern int lbl_8055A310;
+    extern char lbl_80331D18;
+    void *p = fn_801284F8(0x230, &lbl_8055A310);
+    if (p != 0) {
+        fn_8017B0B0();
+        *(void **)p = &lbl_80331D18;
+        *(void **)((char *)p + 0x1EC) = (char *)&lbl_80331D18 + 0x54;
+    }
+    return p;
+}
+
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017DA34(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_802066C8((void*)arg0, 0);
@@ -51,6 +81,29 @@ void fn_8017DA8C(void *arg0) {
     }
     *((char *)arg0 + 0x1FC) = 0;
     *((char *)arg0 + 0x1FE) = 0;
+}
+
+void fn_8017E388(void *arg0) {
+    extern float lbl_80561BE0;
+    extern float lbl_80561BF4;
+    float *p = (float *)arg0;
+    p[1] = lbl_80561BE0; p[0] = lbl_80561BF4;
+    p[2] = lbl_80561BE0; p[3] = lbl_80561BE0;
+    p[4] = lbl_80561BF4; p[5] = lbl_80561BE0;
+    p[6] = lbl_80561BE0; p[7] = lbl_80561BE0;
+    p[8] = lbl_80561BF4; p[9] = lbl_80561BE0;
+    p[10] = lbl_80561BE0; p[11] = lbl_80561BE0;
+}
+
+int fn_8017E930(void *arg0, void *arg1, void *arg2) {
+    if (*((unsigned char *)arg0 + 0x1FE) != 0) {
+        *((float *)arg1) = *((float *)((char *)arg0 + 0x60));
+        *((float *)arg1 + 1) = *((float *)((char *)arg0 + 0x68));
+        *((float *)arg2) = *((float *)((char *)arg0 + 0x118));
+        *((float *)arg2 + 1) = *((float *)((char *)arg0 + 0x120));
+        return 1;
+    }
+    return 0;
 }
 
 extern int lbl_80331DC0;
