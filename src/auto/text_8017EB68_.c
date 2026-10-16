@@ -24,6 +24,51 @@ void fn_8017EB68(void *arg0) {
     fn_8017E930((char *)arg0 - 0x1EC);
 }
 
+extern void fn_8017E96C(void *);
+void fn_8017EB70(void *arg0) {
+    fn_8017E96C((char *)arg0 - 0x1EC);
+}
+
+float fn_8017EB80(float arg0, float arg1, float arg2) {
+    float value = lbl_80561C48;
+    float temp = ((value + arg1 + arg2) * (float)fabs(arg0)) - arg1;
+    value = value < temp ? value : temp;
+    value = value > lbl_80561C4C ? value : lbl_80561C4C;
+    if (arg0 >= lbl_80561C4C) return value;
+    return -value;
+}
+
+int fn_8017EBE0(void) {
+    lbl_8055E4B8 = 0;
+    lbl_8055E4BA = 1;
+    lbl_8055E4B9 = 0;
+    lbl_804348D8[0] = 0;
+    lbl_804348D8[1] = 0;
+    lbl_804348D8[2] = 0;
+    lbl_804348D8[3] = 0;
+    fn_801808DC();
+    return 1;
+}
+
+void fn_8017EC30(void) {
+    Unk8017Object **ptr = lbl_804348D8;
+    int i = 0;
+    do {
+        Unk8017Object *obj;
+        fn_802E8524(0, i);
+        obj = *ptr;
+        if (obj != 0) {
+            if (obj != 0) {
+                obj->vtable->unk_0x80(obj, 1);
+            }
+            *ptr = 0;
+        }
+        i++;
+        ptr++;
+    } while (i < 4);
+    lbl_8055E4BA = 0;
+}
+
 void fn_80181438(void) {
 
 }
