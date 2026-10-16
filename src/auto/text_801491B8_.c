@@ -65,6 +65,16 @@ s32 fn_80149380(void *arg0) {
     return sp8.v[((s32 *)arg0)[1]];
 }
 
+void fn_801493F8(void *arg0, f32 *arg1, s32 arg2) {
+    u8 *obj = (u8 *)(arg2 + ((s32 *)arg0)[1]);
+    f32 f2 = lbl_80561628;
+    f32 b = *arg1;
+    f32 v = b + (f32)obj[0x18];
+    f2 = (f2 < v) ? f2 : v;
+    f2 = (f2 > lbl_805615D4) ? f2 : lbl_805615D4;
+    obj[0x18] = (u8)(s32)f2;
+}
+
 extern s32 lbl_802F9400[];
 s32 fn_80149468(void *arg0) {
     S4_80149234 sp8;
