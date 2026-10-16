@@ -86,3 +86,7 @@ void fn_8001EFCC(void* alarm) {
     fn_8001F578(fn_8001F2C8(alarm));
 }
 
+f32* __AXFXGetSrcCoef(u32 i) {
+    return (f32*)&lbl_802FDF30[i];
+}
+
