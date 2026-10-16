@@ -213,8 +213,9 @@ extern "C" void fn_800EC848(void** head, void* node) {
 }
 
 extern "C" void fn_800EC8B4(void* arg0) {
+    f32 value = lbl_80561018;
     *(s32*)((u8*)arg0 + 0x10) = 0;
-    *(f32*)((u8*)arg0 + 0x14) = lbl_80561018;
+    *(f32*)((u8*)arg0 + 0x14) = value;
 }
 
 extern "C" void Update__Q44nw4r3snd6detail3LfoFi(void* arg0, s32 arg1) {
