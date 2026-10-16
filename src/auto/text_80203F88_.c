@@ -3,6 +3,20 @@
 extern float lbl_80563140;
 extern float lbl_80563144;
 
+extern void fn_80128668(void*);
+void* fn_80203F88(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(int *)arg0 = 0;
+            *((int *)arg0 + 1) = 0;
+            *((int *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 float fn_80203FE0(void) { return lbl_80563140; }
 
 void fn_80203FE8(void) {
