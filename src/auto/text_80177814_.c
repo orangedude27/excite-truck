@@ -20,7 +20,7 @@ int fn_8018FD38(void);
 extern void *lbl_804340C0[];
 extern void **lbl_8055E434[];
 extern int lbl_8055E438;
-extern unsigned char lbl_8055E468;
+extern int lbl_8055E468;
 long fn_802E2C20(void);
 extern long lbl_8055E464;
 void fn_80177814(long *arg0) {
@@ -88,7 +88,7 @@ void fn_80177A54(void) {
     }
     switch (lbl_8055E3C0) {
     case 1:
-        if ((int)lbl_8055E3BD == 0) {
+        if (lbl_8055E3BD == 0) {
             fn_80177A18();
         }
         lbl_8055E3BD = 1;
