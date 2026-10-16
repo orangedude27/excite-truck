@@ -39,6 +39,7 @@ extern void fn_801345D8(void*, ...);
   extern void fn_80230B5C(void*);
   extern void fn_800209A0(int, float);
 void fn_8001FD7C(void);
+void fn_8001FF34(int);
 struct cfg_t {
     char f0[0xc];
     char f1[0xc];
@@ -225,16 +226,13 @@ void fn_80020860(int arg0) {
 }
 
 int fn_800213DC(int arg0) {
-    if (lbl_8055D644 != 0) {
-        if (lbl_8055D645 == 0 && fn_801E8838() == 0 && fn_802E4A10() == 0) {
-            switch (arg0) {
-            case 0x58: fn_8001FEB8(); break;
-            case 0x1B: fn_8002017C(); break;
-            }
-        }
-        return 1;
-    }
-    return 0;
+    if (!lbl_8055D644) return 0;
+    if (lbl_8055D645) return 1;
+    if (fn_801E8838()) return 1;
+    if (fn_802E4A10()) return 1;
+    if (arg0 == 0x58) fn_8001FEB8();
+    else if (arg0 == 0x1B) fn_8002017C();
+    return 1;
 }
 
 void fn_8002167C(void) {
