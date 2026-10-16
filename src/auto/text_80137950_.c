@@ -3,6 +3,9 @@
 
 extern void *lbl_80559C00;
 extern void *lbl_8042F788[4];
+extern int lbl_8042F798[4];
+extern int fn_800167F4(void);
+void fn_80137C84(int, int);
 extern unsigned char lbl_8055E0E0;
 extern void fn_80128668(void*);
 void fn_80137B0C(void* hi) {
