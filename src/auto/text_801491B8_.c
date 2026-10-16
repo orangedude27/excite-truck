@@ -27,8 +27,7 @@ void fn_80149210(void *arg0) {
     u32 x = ((u32 *)arg0)[1] + 1;
     u32 t = x << 30;
     u32 b = x >> 31;
-    t = t - b;
-    ((u32 *)arg0)[1] = ((t << 2) | (t >> 30)) + b;
+    ((u32 *)arg0)[1] = (((t - b) << 2) | ((t - b) >> 30)) + b;
 }
 
 s32 fn_80149234(void *arg0) {
@@ -201,6 +200,8 @@ void fn_80151914(void) {
 void fn_801537C8(void) {
 
 }
+
+u32 fn_80153AC8(void) { return 1; }
 
 void fn_80154580(s32 arg0, void *arg1) {
     s32 *p;
