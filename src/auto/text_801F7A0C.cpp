@@ -32,6 +32,13 @@ struct F9NodeFn {
     void (*fn)(void *); // 0x8
 };
 
+struct F9List {
+    void *vtable; // 0x0
+    char *name;   // 0x4
+    void *next;   // 0x8
+    void *next2;  // 0x20
+};
+
 extern "C" void fn_801F92A8(void) {
 
 }
@@ -42,6 +49,7 @@ extern "C" void fn_801F9440(F9Node *list, F9Node *node) {
 }
 
 extern "C" s32 fn_801F948C(F9Node *node) {
+    ((F9NodeFn *)node)->fn(node);
     return stricmp((char *)node->vtable, (char *)lbl_8033B1EC) == 0;
 }
 
