@@ -37,6 +37,10 @@ int fn_802B9920(int arg0) {
     return (short)lbl_802FAB60[idx];
 }
 
+short fn_802B9954(void* arg0) {
+    return (short)((int*)arg0)[5];
+}
+
 void fn_802B9960(void) {
 }
 
