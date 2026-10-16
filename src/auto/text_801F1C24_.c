@@ -456,6 +456,11 @@ int fn_801F4554(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801F4594(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_801F49F4(void) {
 
 }
