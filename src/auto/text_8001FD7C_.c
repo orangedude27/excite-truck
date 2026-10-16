@@ -125,7 +125,7 @@ extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
 void fn_8001FF34(int arg0) {
-    int var;
+    unsigned int var;
     if ((char)lbl_8055D670 == 0) {
         fn_801312EC(&lbl_8035BAE4, &lbl_802FE1C0);
         lbl_8055D670 = 1;
@@ -157,13 +157,16 @@ void fn_8002017C(void) {
 }
 
 int fn_80020184(void) {
-    s32 var;
-    s32 v;
+    int temp_r3;
+    unsigned int temp_r3_2;
 
-    var = (s32)((((fn_802E2C20() - lbl_8055D63C) - 0x12C) << 8) / 1000);
-    var = (((s32) (-(s32) var & ~(s32) var)) >> 0x1F) & var;
-    v = var >= 0xFF ? 0xFF : var;
-    return 0xFF - v;
+    temp_r3_2 = (unsigned int) ((fn_802E2C20() - lbl_8055D63C) - 0x12C) << 8;
+    temp_r3_2 = temp_r3_2 * 0x10624DD3 >> 0x20;
+    temp_r3 = (int) ((unsigned int) temp_r3_2 >> 0x1F) + temp_r3_2 >> 6;
+    if (temp_r3 < 0) {
+        temp_r3 = 0;
+    }
+    return 0xFF - (temp_r3 < 0xFF ? temp_r3 : 0xFF);
 }
 
 void fn_80020430(void) {
@@ -200,9 +203,6 @@ int fn_801E8838(void);
 void fn_8001FD7C(void);
 int fn_80020184(void);
 void fn_800207B0(void);
-extern void fn_80020434(void*, void*);
-extern void fn_8026A2CC(void*, int, float);
-extern void fn_8000C630(int, int);
 char fn_800216F4(void) {
     return lbl_8055D644;
 }
