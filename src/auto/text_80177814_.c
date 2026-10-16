@@ -18,7 +18,7 @@ extern char lbl_8055E3BD;
 int fn_801CF064(void);
 int fn_8018FD38(void);
 extern void *lbl_804340C0[];
-extern void **lbl_8055E434[];
+extern void **lbl_8055E434;
 extern int lbl_8055E438;
 extern int lbl_8055E468;
 int fn_802E2C20(void);
