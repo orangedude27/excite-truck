@@ -1,4 +1,5 @@
 extern int lbl_8055FC30;
+extern int lbl_8055FC84;
 extern void fn_802D08CC(void);
 extern void fn_802CAD68(void);
 extern int fn_802D31D8(int);
@@ -399,10 +400,8 @@ extern void fn_802D3304(void);
 void fn_802C9D88(int arg0) {
     fn_8012A364(lbl_8055FC9C, arg0);
     if (--lbl_8055FC98 == 0) {
-        if (lbl_8055FC9C != 0) {
-            void **vtable = *(void ***)lbl_8055FC9C;
-            ((void (*)(void *, int))vtable[2])(lbl_8055FC9C, 1);
-        }
+        if (lbl_8055FC9C != 0)
+            ((void (*)(void *, int))(*(void ***)lbl_8055FC9C)[2])(lbl_8055FC9C, 1);
         lbl_8055FC9C = 0;
     }
 }
