@@ -1,4 +1,13 @@
 #include <types.h>
+extern "C" s32 fn_800BBB58(s32, void**);
+extern "C" s32 fn_800BAD9C(void*, u32*);
+extern "C" s32 fn_800BB2C4(void*);
+extern "C" s32 IOS_Close(s32);
+extern "C" u8 fn_800BA974(s32,u8*,s32);
+extern "C" void fn_800A68DC(s32);
+extern "C" s32 lbl_80559248;
+extern "C" u32 lbl_8055DD68;
+extern "C" u8 lbl_80407300[];
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSTime.h>
 #include <revolution/ARC/arc.h>
