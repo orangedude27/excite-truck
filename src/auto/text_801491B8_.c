@@ -175,7 +175,8 @@ extern f32 lbl_8056164C;
 extern f32 lbl_80561650;
 void fn_8014AD74(void *arg0) {
     f32 step;
-    if ((fn_80176A1C() - 2) == 0) {
+    s32 state = fn_80176A1C() - 2;
+    if ((state | -state) == 0) {
         step = fn_80176A2C();
     } else {
         step = lbl_8056164C;
@@ -217,6 +218,8 @@ void fn_8014AE1C(void *arg0, void *arg1) {
         head[0] = (s32)arg1;
     }
 }
+
+s32 fn_8014AEB8(void *arg0) { return ((s32 *)arg0)[1]; }
 
 void fn_8014AED0(void *arg0, f32 farg0) {
     ((f32 *)arg0)[0x41] = farg0;
