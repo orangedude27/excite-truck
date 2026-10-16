@@ -12,8 +12,9 @@ extern void *lbl_8055E694;
 s32 fn_801B0DE8(s32 arg0) { return arg0 + 4; }
 
 s32 fn_801B0DF0(s32 arg0) {
-    void *obj = (u8 *)lbl_8055E684 + (arg0 << 7);
-    void *result = ((void *(*)(void *))(*(void ***)obj)[8])(obj);
+    void *base = lbl_8055E684;
+    void *obj = (u8 *)base + (arg0 << 7);
+    void *result = (*(void *(**)(void *, void *))((u8 *)*(void **)obj + 0x20))(obj, base);
     return *(u32 *)((u8 *)result + 0x10) == 0x50434152;
 }
 
@@ -24,7 +25,7 @@ s32 fn_801B0F18(void) {
 u32 fn_801B0F48(u32 arg0, u32 arg1) {
     u32 diff = arg1 - arg0;
     if (arg0 > arg1) diff = arg0 - arg1;
-    return (0x20000U << __cntlzw(diff ^ 0x20000)) >> 31;
+    return diff < 0x20000;
 }
 
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
@@ -76,6 +77,8 @@ void* fn_801B307C(void) {
 void fn_801B3284(void) {
 
 }
+
+u32 fn_801B3290(void) { return 1; }
 
 void fn_801B3298(void) {
 
