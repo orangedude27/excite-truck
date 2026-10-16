@@ -197,6 +197,10 @@ void fn_80031C8C(unsigned short arg0) {
     lbl_8055D734 = arg0;
 }
 
+void fn_80031C94(unsigned short arg0) {
+    lbl_8055D732 = arg0;
+}
+
 void fn_80031ED4(void) {
     u64 time;
     if ((s32)lbl_8055D780 == 0) {
