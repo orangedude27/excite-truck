@@ -939,6 +939,21 @@ void fn_800934D8(void *arg0, s16 arg1) {
     fn_800916F4(arg0, 7, &sp8);
 }
 
+tCONN_CB *sdpu_allocate_ccb(void) {
+    UINT16 xx;
+    tCONN_CB *p_ccb;
+
+    for (xx = 0, p_ccb = &sdp_cb.ccb[0]; xx < SDP_MAX_CONNECTIONS; xx++, p_ccb++) {
+        if (p_ccb->con_state == SDP_STATE_IDLE) {
+            memset(p_ccb, 0, sizeof(tCONN_CB));
+            p_ccb->timer_entry.param = (UINT32)p_ccb;
+            return (p_ccb);
+        }
+    }
+
+    return (NULL);
+}
+
 void fn_80099F58(void *arg0) {
     fn_80070F90((u8 *)arg0 + 8);
     *(u8 *)arg0 = 0;
@@ -1087,6 +1102,10 @@ void AXFXReverbHiExpShutdown(void* arg0) {
     *(u32*)((u8*)arg0 + 0x10C) |= 1;
     __FreeDelayLine(arg0);
     OSRestoreInterrupts(enabled);
+}
+
+void* __AXFXAllocFunction(u32 size) {
+    return OSAllocFromHeap(__OSCurrHeap, size);
 }
 
 extern void *lbl_805590B0;
