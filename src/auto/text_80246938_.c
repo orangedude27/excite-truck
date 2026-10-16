@@ -276,7 +276,7 @@ void fn_80248A74(void *arg0) {
 
 int fn_80248C94(void *arg0, int arg1) {
     if (*(unsigned char *)((char *)arg0 + 0x1C) == 0 && arg1 == 13) {
-        fn_80221F94(0);
+        fn_80221F94(arg0, 0);
         return 1;
     } else {
         return 0;
