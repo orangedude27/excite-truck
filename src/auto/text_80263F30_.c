@@ -5,3 +5,9 @@ extern void *lbl_8055F444;
 void* fn_80264580(void) {
     return lbl_8055F444;
 }
+
+extern void *lbl_8055F448;
+void* fn_80264A54(void) {
+    return lbl_8055F448;
+}
+
