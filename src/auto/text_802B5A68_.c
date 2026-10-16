@@ -11,7 +11,7 @@ extern s32 lbl_8055FA40;
 extern s32 fn_802B59A4(s32);
 extern s32 fn_802B321C(s32, void **, s32, s32);
 extern s32 fn_802B3F0C(s32);
-void fn_802B5B6C(void) {
+void *fn_802B5B6C(void) {
     fn_802B59A4(lbl_8055FA3C);
 }
 
