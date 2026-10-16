@@ -219,6 +219,20 @@ void fn_801A49E8(void* arg0) {
     }
 }
 
+extern "C" void fn_801D06C4(void);
+void fn_801A49FC(void* arg0) {
+    if (*(s32*)((u8*)arg0 + 0x48) != 0) {
+        fn_801D06C4();
+    }
+}
+
+void fn_801A4E54(void) {
+    if (lbl_8055E5A0 != 0) {
+        fn_801CFF14();
+        lbl_8055E5A0 = 0;
+    }
+}
+
 extern "C" void fn_801D0650(void);
 extern s32 lbl_8055E5A0;
 extern void fn_801CFF14(void);
