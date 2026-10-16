@@ -14,7 +14,7 @@ s32 fn_801EA9A0(s32 arg0) {
 }
 
 s32 fn_801EA9B0(s32 arg0) {
-    return lbl_8055EB78 + (*(s32 *)((u8 *)&lbl_8055EB78 + (arg0 << 2) + 0x5E8) * 0xBC);
+    return *(s32 *)&lbl_8055EB78 + (*(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + (arg0 << 2) + 0x5E8) * 0xBC);
 }
 
 s32 fn_801EA9CC(s32 arg0) {
