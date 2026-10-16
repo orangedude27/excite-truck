@@ -37,6 +37,9 @@ extern char lbl_80559E14[];
 void fn_802E30C8(const char *);
 extern char lbl_8032D0D0[];
 void fn_8000FF88(s32, s32, s32, f32, f32, f32);
+extern char lbl_8032CF48[];
+extern char lbl_80559DD0[];
+s32 fn_8023512C(void);
 void fn_802E3AD0(s32, const char *, ...);
 }
 
@@ -60,7 +63,10 @@ extern "C" void fn_8014595C(void *arg0, const char *arg1) {
 }
 
 extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    return farg2 + ((farg4 - farg0) / (farg1 - farg0)) * (farg3 - farg2);
+    f32 temp_f5 = farg4 - farg0;
+    f32 temp_f1 = farg1 - farg0;
+    f32 temp_f0 = farg3 - farg2;
+    return farg2 + (temp_f5 / temp_f1) * temp_f0;
 }
 
 extern "C" f32 lbl_80561608;
@@ -88,6 +94,16 @@ extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
     f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
     fn_802354A0((s32)arg1, arg2, *(s32 *)((u8 *)arg0 + 0x18), temp_f31, lbl_805615D4, temp_f30, *(f32 *)((u8 *)arg0 + 0x14));
+}
+
+extern "C" void fn_80145D8C(void *arg0) {
+    if (lbl_8042FBC0.count + 1 <= lbl_8042FBC0.capacity) {
+        s32 i = lbl_8042FBC0.count;
+        lbl_8042FBC0.count = i + 1;
+        lbl_8042FBC0.data[i] = arg0;
+        return;
+    }
+    fn_802E30C8(lbl_8032D0D0);
 }
 
 extern "C" void fn_801460F4(void) {
