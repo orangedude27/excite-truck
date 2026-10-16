@@ -161,6 +161,13 @@ void fn_801CBD04(void *arg0) {
     }
 }
 
+void fn_801CC768(void *arg0, float arg1) {
+    if (arg1 != *(float *)((char *)arg0 + 8)) {
+        *(float *)((char *)arg0 + 8) = arg1;
+        *((char *)arg0 + 0x4D) = 1;
+    }
+}
+
 void fn_801CE698(void) {
 
 }
