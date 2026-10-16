@@ -52,6 +52,8 @@ s32 fn_801E320C(void) {
     return fn_801E2DEC(0, 0, 0) != 0;
 }
 
+#pragma push
+#pragma small_data off
 void fn_801E33E4(void) {
     f32 sp[12];
     sp[0] = lbl_80562CE8;
@@ -66,9 +68,8 @@ void fn_801E33E4(void) {
     sp[9] = lbl_80562CEC;
     sp[10] = lbl_80562CEC;
     sp[11] = lbl_80562CEC;
-    fn_801E3284(0, sp, 0);
+    fn_801E3284(0, 0, (s32)sp);
 }
-
 void fn_801E3440(void* arg0) {
     f32 sp[12];
     fn_801E3284(sp, 0, 0);
@@ -137,4 +138,8 @@ void fn_801E35D4(void *arg0, void *arg1) {
     dst[9] = h;
     dst[10] = i;
 }
+
+#pragma push
+#pragma small_data off
+s32 fn_801E3630(s32 arg0) { return arg0 + 0x5C; }
 
