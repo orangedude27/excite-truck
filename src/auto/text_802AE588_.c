@@ -65,6 +65,10 @@ int fn_802AFF54(void *arg0) {
     return ((int *)arg0)[1];
 }
 
+int fn_802AFF5C(int *arg0, int arg1) {
+    return *arg0 + arg1 * 0x24;
+}
+
 void* fn_802B05DC(void) {
     return lbl_8055CD78;
 }
