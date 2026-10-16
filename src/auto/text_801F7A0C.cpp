@@ -7,6 +7,8 @@ extern "C" {
 extern u8 lbl_8033B1EC[];
 extern u8 lbl_8033B210[];
 extern u8 lbl_8055B2DC[];
+extern u8 lbl_8055B36C[];
+extern u8 lbl_8055B37C[];
 extern u8 lbl_8055B374[];
 extern void *lbl_8055EC38;
 extern void *lbl_8055EC44;
