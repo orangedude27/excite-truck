@@ -8,6 +8,7 @@ extern void fn_802C0FD4(int *queue);
 void fn_802C1018(void) {
     fn_802C0FD4((int *)&lbl_8055FB18);
 }
+int fn_802C1018_noinline_marker(void);
 
 extern void fn_802C6CF8(int);
 extern float *fn_802C86DC(float);
