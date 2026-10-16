@@ -23,3 +23,37 @@ void *fn_802C2698(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+
+void fn_802C26F0(void) {
+    s32 result;
+    s32 result2;
+
+    if (fn_8012C33C(&lbl_8034AFF8) != 0)
+        result = fn_802CAC28(&lbl_8034AFF8, 0);
+    else
+        result = -2;
+    lbl_8055FB70 = result;
+    if (result == -2)
+        result2 = fn_802CB128(0x200, 0x200, 0, 1);
+    else
+        result2 = -2;
+    lbl_8055FB6C = result2;
+}
+
+void fn_802C2874(void) {
+    if (lbl_8055FB6C != -2) {
+        fn_802CB228();
+        lbl_8055FB6C = -2;
+    }
+    if (lbl_8055FB70 != -2) {
+        fn_802CAC54();
+        lbl_8055FB70 = -2;
+    }
+}
+
+s32 fn_802C28C0(void) {
+    if (lbl_8055FB70 != -2)
+        return lbl_8055FB70;
+    return lbl_8055FB6C;
+}
+
