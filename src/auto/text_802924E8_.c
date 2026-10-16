@@ -49,3 +49,30 @@ int fn_80292EC0(void *arg0, const char *arg1, s32 *arg2, s32 arg3) {
     return 0;
 }
 
+void fn_80292F40(void *arg0, void *arg1, const char *arg2) {
+    s32 count = *(s32 *)((u8 *)arg0 + 0x180);
+    u8 *entry = (u8 *)arg0 + count * 0x18;
+    strncpy((char *)entry, arg2, 0x10);
+    *(void **)(entry + 0x10) = arg1;
+    *(s32 *)(entry + 0x14) = 1;
+    *(s32 *)((u8 *)arg0 + 0x180) = count + 1;
+}
+
+extern float fn_801E7E24(void*);
+extern void fn_802936C4(void*);
+extern float lbl_80558DC4;
+extern int fn_802C9950(int);
+extern int fn_802C9994(int);
+extern int fn_802C744C(void*, void*);
+extern int fn_80128668(void*);
+extern void fn_80293530(void*);
+extern u8 lbl_80349294[];
+void* __dt__Q34nw4r2ef6EffectFv_802930BC(void* arg0, int arg1) {
+    if (arg0) {
+        *(void**)arg0 = lbl_80349294;
+        fn_80293530(arg0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
