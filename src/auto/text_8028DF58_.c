@@ -15,3 +15,5 @@ void fn_802916E8(void) {}
 
 void fn_802916EC(void) {}
 
+int fn_802916F0(void *arg0) { return ((int *)arg0)[1]; }
+
