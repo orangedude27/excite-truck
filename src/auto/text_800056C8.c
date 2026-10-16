@@ -286,6 +286,12 @@ s32 fn_80007CE4(void) {
     return fn_8000C630(0xb, -1);
 }
 
+void fn_80007CF0(void *arg0) {
+    if (fn_801B880C() == 0) {
+        ((u8 *)arg0)[4] = 1;
+    }
+}
+
 s32 fn_80007D2C(void *arg0, void *arg1, s32 arg2, void *arg3) {
     if ((u32)arg2 == 0x3e8) {
         u32 val = (u32)arg3;
