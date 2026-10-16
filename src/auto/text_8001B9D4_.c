@@ -215,17 +215,22 @@ extern s32 lbl_802ED7B8[];
 extern const char lbl_802FD85C[];
 extern s32 fn_802E317C(const char *);
 s32 *fn_8001C4E0(s32 arg0) {
-    s32 *entry = lbl_802ED7B8;
-    for (;;) {
-        if (*entry == arg0) {
+    s32 compare = arg0;
+    register s32 *entry = lbl_802ED7B8;
+    do {
+        if (*entry == compare) {
             return entry;
         }
-        entry += 3;
-        if (*entry == 0) {
-            fn_802E317C(lbl_802FD85C);
-            return 0;
-        }
-    }
+        entry = (s32 *)((u8 *)entry + 0xC);
+    } while (*entry != 0);
+    fn_802E317C(lbl_802FD85C);
+    return 0;
+}
+
+extern unsigned char fn_8001D464[];
+extern void fn_8001D528(void *);
+void fn_8001D5D8(void) {
+    fn_8001D528(fn_8001D464);
 }
 
 void fn_8001D7A4(void) {
