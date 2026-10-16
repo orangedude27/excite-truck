@@ -49,6 +49,16 @@ int fn_801B3390(void) {
     return 0x14;
 }
 
+void fn_801B3448(void) {
+    void* p = (void*)fn_801284F8(0x5C0, &lbl_80335D3C);
+    if (p == NULL) {
+        return;
+    }
+    p = fn_801B3B70(p);
+    lbl_8055E6C0 = (s32)p;
+    fn_801B5364(1, fn_801B3390);
+    fn_801B5364(0xF, fn_801B3398);
+}
 void fn_801B3B24(void) {
 
 }
