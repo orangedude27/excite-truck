@@ -7,8 +7,22 @@ extern s32 lbl_8055D4D0;
 extern s32 lbl_8055D4C0;
 extern s32 lbl_8055D4C4;
 extern s32 lbl_8055D4C8;
-extern s32 fn_8023512C(void);
-extern void fn_80235380(void);
+extern s32 fn_8023512C();
+extern void fn_80235380();
+extern s32 lbl_80350F88;
+extern s32 lbl_80351214;
+extern s32 lbl_8055D4BC;
+typedef struct UnkF22C UnkF22C;
+typedef struct UnkF22CVtable {
+    void *unk_0x0;
+    void *unk_0x4;
+    void (*unk_0x8)(UnkF22C *, s32);
+} UnkF22CVtable;
+struct UnkF22C {
+    UnkF22CVtable *vtable;
+};
+extern UnkF22C *lbl_8055D4B4;
+extern UnkF22C *lbl_8055D4B8;
 extern void fn_802328D4(void);
 extern s32 fn_80232578(s32);
 void fn_8000F330(void *arg0, void *arg1, s32 arg2) {
