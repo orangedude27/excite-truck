@@ -3,3 +3,8 @@
 
 void fn_8016A0AC(void) {
 }
+
+void fn_8016A68C(void* arg0) {
+    fn_8016B634(fn_8016B598(arg0));
+}
+
