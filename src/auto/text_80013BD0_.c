@@ -105,6 +105,10 @@ void fn_80015AA0(void *arg0, f32 angle) {
     m[8]=lbl_80560368;
 }
 
+s32 fn_80016288(void) {
+    return 0;
+}
+
 extern f32 fn_8002EFB4(void *, f32, f64);
 extern void fn_80011E04(s32);
 extern void fn_80010FDC(void *, s32);
