@@ -12,9 +12,17 @@ s32 fn_80236914(void*); /* extern */
 void fn_8023C55C(void*); /* extern */
 char fn_8027AA48(void); /* extern */
 void fn_80214A9C(s32); /* extern */
-extern char lbl_80341430;
-extern char lbl_8034143C;
+extern char lbl_80341430[8];
+extern char lbl_8034143C[8];
 s32 fn_8023C3CC(void) {
     return 0;
+}
+
+void fn_8023C94C(void) {
+    fn_8023C55C(&lbl_80341430);
+}
+
+void fn_8023C958(void) {
+    fn_8023C55C(&lbl_8034143C);
 }
 
