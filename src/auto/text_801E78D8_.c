@@ -53,6 +53,8 @@ float fn_801E7E18(void) {
     return *lbl_8055EB04;
 }
 
+float fn_801E7E24(void) { extern float lbl_8055EB14; return lbl_8055EB14; }
+
 long fn_801E7E2C(void) {
     return -1;
 }
@@ -106,19 +108,21 @@ void fn_801E85CC(long arg0) {
     fn_8026A2B0(arg0);
 }
 
-long fn_801E85DC(long arg0) {
-    long temp_r30;
+void fn_801E85DC(long arg0) {
     long var_r29;
     long var_r31;
+    long temp_r30;
+    long count;
     var_r29 = arg0;
     if (arg0 < 0) var_r29 = (long)lbl_8055AF0C;
     var_r31 = fn_801E866C(var_r29);
     temp_r30 = var_r31;
 loop:
-    var_r31 = (var_r31 + 1) % fn_8026A2C8();
+    var_r31 = var_r31 + 1;
+    count = fn_8026A2C8();
+    var_r31 = var_r31 - (var_r31 / count) * count;
     if (*fn_801EA9A0(var_r31) == 0 && var_r31 != temp_r30) goto loop;
     fn_8026A248(var_r31, var_r29);
-    return 0;
 }
 
 long fn_801E866C(long arg0) {
