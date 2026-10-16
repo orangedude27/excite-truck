@@ -3,7 +3,7 @@
 
 extern void *lbl_8055FE18;
 extern char lbl_8055D118[4];
-extern void fn_802D7600(void *queue);
+extern void *fn_802D7600(void *queue);
 void fn_802D9154(void) {
     fn_802D7600(lbl_8055D118);
 }
