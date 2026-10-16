@@ -1,6 +1,10 @@
 #include <types.h>
 
 extern char lbl_8055DF88;
+extern u32 lbl_802F8E40;
+extern u32 lbl_80559968;
+extern char lbl_8032A430[];
+extern char lbl_8032A01C[];
 extern u8 lbl_8055DF80;
 extern s32 *lbl_8055DF84;
 extern s32 lbl_8055DF98;
@@ -37,15 +41,16 @@ void fn_80128208(void) {
 
 }
 
+extern char lbl_8032A01C[];
+extern u32 lbl_802F8E40;
+extern u32 lbl_80559968;
+extern char lbl_8032A430[];
 void fn_8012820C(void) {
-    s32 sp14;
-    s32 sp10;
-    s32 spC;
-    s32 sp8;
-    fn_80128208();
+    s32 sp14, sp10, spC, sp8;
+    ((void (*)(char *))fn_80128208)(lbl_8032A01C);
     lbl_8055DF8C = 0;
     lbl_8055DF90 = 1;
-    spC = 0;
+    sp10 = 0;
     sp8 = 0;
     fn_802E3DF8(0, &sp14, &spC);
     fn_802E3DF8(1, &sp10, &sp8);
@@ -236,5 +241,14 @@ skip:
 
 s32 fn_801288A4(void) {
     return 0;
+}
+
+void fn_80128DCC(void *arg0) {
+    s32 offset = 0;
+    do {
+        u8 *entry = (u8 *)(*(u32 *)((u8 *)arg0 + 0xC) + offset);
+        if (*(u32 *)entry != 0x53544B41) fn_802E317C(lbl_8032A430, entry);
+        offset += *(s32 *)(entry + 0x28) + 0x40;
+    } while (offset < *(s32 *)((u8 *)arg0 + 4));
 }
 
