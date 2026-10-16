@@ -30,12 +30,9 @@ void fn_80149210(void *arg0) {
 }
 
 s32 fn_80149234(void *arg0) {
-    s32 sp8[4];
-    *(s32 *)(sp8 + 0) = lbl_802F93D0[0];
-    *(s32 *)(sp8 + 1) = lbl_802F93D0[1];
-    *(s32 *)(sp8 + 2) = lbl_802F93D0[2];
-    *(s32 *)(sp8 + 3) = lbl_802F93D0[3];
-    return sp8[((s32 *)arg0)[1]];
+    S4_80149234 sp8;
+    sp8 = *(S4_80149234 *)lbl_802F93D0;
+    return sp8.v[((s32 *)arg0)[1]];
 }
 
 void fn_8014ACCC(void) {
