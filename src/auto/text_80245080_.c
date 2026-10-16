@@ -17,10 +17,26 @@ struct Unk_80245080 {
 };
 
 extern struct Unk_80245080* lbl_8055F244;
-extern s32 lbl_804988B0;
+extern s32 lbl_804988B0[];
 
 s32 fn_802E8D7C(s32);
 void fn_80236900(void);
+
+s32 fn_802450D4(void) {
+    s32 temp_r3;
+
+    fn_80236900();
+    temp_r3 = lbl_8055F244->unk_24;
+    if (temp_r3 > 7) {
+        return 1;
+    }
+    lbl_8055F244->unk_24 = temp_r3 + 1;
+    return 0;
+}
+
+void fn_80245118(void) {
+    fn_802E8D7C((s32)&lbl_804988B0);
+}
 
 void fn_80245124(void) {
     fn_802E8D7C(0);
