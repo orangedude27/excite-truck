@@ -110,3 +110,85 @@ void fn_801C98F0(void) {
     fn_801C9444();
 }
 
+extern s32 strlen(const char*);
+extern void fn_8000FC8C(const char*);
+extern void fn_8000FDF0(const char*);
+extern f32 fn_801C3B6C(void);
+
+void fn_801C6B70(void) {
+    f32 val = *(f32*)&lbl_80437E24[2];
+    
+    if (val > lbl_80562970) {
+        *(f32*)&lbl_80437E24[2] = lbl_80562994;
+        lbl_80437E24[0] = 0;
+        lbl_80437E24[1] = 0;
+    } else if (lbl_8055E3C8 < val) {
+        *(f32*)&lbl_80437E24[2] = lbl_80562994;
+        lbl_80437E24[0] = 0;
+        lbl_80437E24[1] = 0;
+    } else {
+        f32 diff = lbl_8055E3C8 - val;
+        if (diff <= lbl_80562978) {
+            *(f32*)&lbl_80437E24[2] = lbl_80562994;
+            lbl_80437E24[0] = 0;
+            lbl_80437E24[1] = 0;
+        }
+    }
+    
+    if (strlen((const char*)lbl_80437E24[1]) != 0) {
+        fn_8000FC8C((const char*)lbl_80437E24[1]);
+    }
+    if (strlen((const char*)lbl_80437E24[0]) != 0) {
+        fn_8000FDF0((const char*)lbl_80437E24[0]);
+    }
+}
+
+void fn_801C6AD0(s32 *arg0) {
+    if (lbl_8055E7E2 != 0) {
+        f32 temp_f1 = fn_801C3B6C();
+        if (temp_f1 < lbl_8056296C) {
+            f32 diff = lbl_805629C8 * (lbl_8056296C - temp_f1);
+            s32 result;
+            f32 fresult;
+            if (diff < lbl_80562970) {
+                fresult = lbl_80562974 - diff;
+            } else {
+                fresult = lbl_80562974 + diff;
+            }
+            result = (s32)fresult;
+            if (result > *arg0) {
+                *arg0 = result;
+            }
+            if (*arg0 > 0xFF) {
+                *arg0 = 0xFF;
+            }
+        }
+    }
+}
+
+void fn_801C6D94(void) {
+    s32 *src = lbl_80499050;
+    s32 *dst = lbl_80438220;
+    s32 i;
+    
+    for (i = 0; i < 12; i++) {
+        *dst++ = *src++;
+    }
+    fn_801C957C(1, lbl_80499050[11], lbl_80499050[10], lbl_80499050[9], lbl_80499050[8], lbl_80499050[7], lbl_80499050[6], lbl_80499050[5]);
+}
+
+void fn_801C7254(void *arg0) {
+    f32 t1, t2, t3;
+    f32 *ptr = (f32*)arg0;
+    
+    t1 = ptr[1];
+    t2 = ptr[2];
+    t3 = ptr[3];
+    ptr[1] = ptr[3];
+    ptr[3] = t1;
+    ptr[2] = ptr[6];
+    ptr[6] = t2;
+    ptr[3] = ptr[7];
+    ptr[7] = t3;
+}
+
