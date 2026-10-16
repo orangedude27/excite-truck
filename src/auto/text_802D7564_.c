@@ -14,6 +14,19 @@ extern unsigned short GXGetTexObjWrapT(void *);
 extern void *memset(void *, int, unsigned int);
 extern char lbl_8055D118[4];
 extern void *fn_802D7600(void *queue);
+void fn_802D7564(void) {
+    int i;
+    char *p = (char *)lbl_8055FE28;
+    fn_802E30C8(lbl_8034C460);
+    for (i = 0; i < 0x1C2; i++, p += 0xF4) {
+        if (p[0x20]) {
+            unsigned short t = GXGetTexObjWrapT(p + 0x24);
+            unsigned short s = GXGetTexObjWrapS(p + 0x24);
+            fn_802E30C8(lbl_8034C47C, i, p, s, t);
+        }
+    }
+}
+
 void fn_802D9154(void) {
     fn_802D7600(lbl_8055D118);
 }
@@ -69,6 +82,11 @@ void fn_802D9340(void *arg0) {
                      *(unsigned int *)((char *)arg0 + 0xC8));
     }
     GXInvalidateTexAll();
+}
+
+extern float lbl_80565018;
+float fn_802D93E0(void) {
+    return lbl_80565018;
 }
 
 extern void fn_802D768C(void);
