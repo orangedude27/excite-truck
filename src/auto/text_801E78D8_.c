@@ -33,6 +33,11 @@ void* fn_801E85B4(void) {
     return lbl_8055AF0C;
 }
 
+extern void *lbl_8055EB24;
+void fn_801E8818(void* hi) {
+    lbl_8055EB24 = hi;
+}
+
 extern char lbl_8055EB08;
 void fn_801E882C(void) {
     lbl_8055EB08 = 1;
