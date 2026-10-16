@@ -61,6 +61,12 @@ float fn_802AE6E0(void *arg0, void *arg1) {
     return (float)fn_8002F234(dx2 + dy2, dy, y0);
 }
 
+int fn_802AE7AC(void) {
+    int val = *(int *)lbl_8055F984;
+    unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
+    return (int)(tmp >> 31);
+}
+
 int fn_802AFF54(void *arg0) {
     return ((int *)arg0)[1];
 }
@@ -71,6 +77,14 @@ int fn_802AFF5C(int *arg0, int arg1) {
 
 void fn_802AFF6C(void *arg0) {
     *(unsigned short *)*(void **)arg0 = *(unsigned short *)((char *)arg0 + 4) - 1;
+}
+
+void fn_802AFF80(void *arg0, short arg1) {
+    unsigned short index = *(unsigned short *)((char *)arg0 + 4);
+    unsigned short limit = *(unsigned short *)((char *)arg0 + 6);
+    if (index >= limit) return;
+    *(short *)(*(short **)arg0 + index) = arg1;
+    *(unsigned short *)((char *)arg0 + 4) = index + 1;
 }
 
 void* fn_802B05DC(void) {
