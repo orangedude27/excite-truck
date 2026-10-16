@@ -26,6 +26,10 @@ extern void *port_find_mcb_dlci_port(void *, u8);
 extern void rfc_port_timer_stop(void *);
 extern void rfc_send_rls(void *, u8, s32, u8);
 
+void DBPrintf_8006CFA8(const char *fmt, ...) {
+#pragma unused(fmt)
+}
+
 void fn_8006D4C4(void *arg) {
     ((s32 *)arg)[1] = 0;
     ((s32 *)arg)[0] = 0;
@@ -240,13 +244,15 @@ void rfc_process_rls(void *arg0, s32 arg1, void *arg2) {
         return;
     }
     mcb = port_find_mcb_dlci_port(arg0, *(u8 *)arg2);
-    if (mcb == NULL) {
+    if (mcb != NULL) {
+        flags = *(u8 *)((u8 *)mcb + 0x69);
+        if (flags & 0x10) {
+            goto stop_timer;
+        }
         return;
     }
-    flags = *(u8 *)((u8 *)mcb + 0x69);
-    if (!(flags & 0x10)) {
-        return;
-    }
+    return;
+stop_timer:
     *(u8 *)((u8 *)mcb + 0x69) = flags & 0xFFFFFFEF;
     rfc_port_timer_stop(mcb);
 }
