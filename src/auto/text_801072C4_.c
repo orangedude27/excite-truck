@@ -5,6 +5,11 @@
 
 extern u32 lbl_8055DEA8;
 extern u32 lbl_8055DEA0;
+void fn_801072C4(void);
+
+#pragma section ".ctors$00"
+DECL_SECTION(".ctors$00") funcptr_t D_802ED110 = fn_801072C4;
+
 void fn_801072C4(void) {
     lbl_8055DEA0 = (u32)&lbl_8055DEA8;
 }
