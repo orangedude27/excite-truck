@@ -7,6 +7,15 @@ extern char lbl_8055E839;
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055E7E2;
+extern s32 lbl_8055E804;
+extern f32 lbl_805629CC;
+extern s32* fn_8017960C(s32);
+extern Vec lbl_80438268;
+extern char lbl_804380F0[256];
+extern f32 lbl_8055E834;
+extern f32 lbl_8055F47C;
+extern s32 lbl_80499050[12];
+extern s32 lbl_804381F0[12];
 char fn_801C5B60(void) {
     return lbl_8055E7E2;
 }
