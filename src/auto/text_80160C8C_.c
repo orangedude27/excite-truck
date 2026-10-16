@@ -127,3 +127,5 @@ void fn_801657DC(void) {
 void fn_80165820(void) {
 }
 
+int fn_80165824(void) { return 0; }
+
