@@ -113,12 +113,12 @@ extern "C" void fn_800B36CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern "C" void fn_800B36D4(s32 arg0) {
     u8 sp8;
 
-    if ((VFiPFSTR_StrNumChar(0, 1) < 2) || (VFiPFSTR_StrNCmp(arg0, &lbl_80559208, 1, 1, 1) != 0)) {
-        fn_800B63FC();
+    if ((VFiPFSTR_StrNumChar(arg0, 1) >= 2U) && (VFiPFSTR_StrNCmp(arg0, &lbl_80559208, 1, 1, 1) == 0)) {
+        VFiPFSTR_ToUpperNStr(arg0, 1, &sp8);
+        fn_800B65A0((s8)sp8);
         return;
     }
-    VFiPFSTR_ToUpperNStr(arg0, 1, &sp8);
-    fn_800B65A0((s8)sp8);
+    fn_800B63FC();
 }
 
 extern "C" void* fn_800B1BDC(void*);
