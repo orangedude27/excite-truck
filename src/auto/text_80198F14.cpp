@@ -141,6 +141,46 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
+extern s32 lbl_80333778;
+void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, void *arg5, f32 farg0, f32 farg1) {
+    s32 i = 0;
+    u8 *dst = (u8*)arg0;
+    u8 *src = (u8*)arg2;
+    *(s32*)(dst + 0xC) = arg1;
+    *(s32*)(dst + 4) = 0;
+    *(s32*)(dst + 0x18) = 0x504F4C59;
+    *(s32*)(dst + 8) = 0;
+    *(f32*)(dst + 0x10) = farg0;
+    *(f32*)(dst + 0x14) = farg1;
+    *(s32*)(dst + 0x20) = 100;
+    *(s32*)(dst + 0x1C) = 0;
+    *(s32*)dst = (s32)&lbl_80333778;
+    *(s32*)(dst + 0xDC) = 0;
+    *(s32*)(dst + 0xBC) = arg3;
+    while (i < arg3) {
+        *(s32*)(dst + 0x3C) = *(s32*)src;
+        *(s32*)(dst + 0x40) = *(s32*)(src + 4);
+        *(s32*)(dst + 0x44) = *(s32*)(src + 8);
+        *(f32*)(dst + 0x48) = *(f32*)(src + 0xC);
+        src += 0x10;
+        dst += 0x10;
+        i++;
+    }
+    *(f32*)((u8*)arg0 + 0x24) = ((f32*)arg4)[0];
+    *(f32*)((u8*)arg0 + 0x28) = ((f32*)arg4)[1];
+    *(f32*)((u8*)arg0 + 0x2C) = ((f32*)arg4)[2];
+    *(f32*)((u8*)arg0 + 0x30) = ((f32*)arg5)[0];
+    *(f32*)((u8*)arg0 + 0x34) = ((f32*)arg5)[1];
+    *(f32*)((u8*)arg0 + 0x38) = ((f32*)arg5)[2];
+}
+
+f32 fn_801A3880(void* arg0) {
+    f32 first = PSVECDotProduct((Vec*)((u8*)arg0 + 0x30), (Vec*)((u8*)arg0 + 0x30));
+    f32 second = PSVECDotProduct((Vec*)((u8*)arg0 + 0x24), (Vec*)((u8*)arg0 + 0x24));
+    if (second <= first) second = first;
+    return (f32)fn_8002F234(second);
+}
+
 void fn_801A442C(void *arg0, void *arg1, void *arg2) {
     *(f32 *)((u8 *)arg1 + 0) = *(f32 *)((u8 *)arg0 + 0x28);
     *(f32 *)((u8 *)arg1 + 4) = *(f32 *)((u8 *)arg0 + 0x2C);
