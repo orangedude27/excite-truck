@@ -191,6 +191,8 @@ void fn_8023AEF8(void *arg0) {
     }
 }
 
+void fn_8023B04C(void) {}
+
 void fn_8023B050(void) {}
 
 void fn_8023B054(void *arg0) {
