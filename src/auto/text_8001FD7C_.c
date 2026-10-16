@@ -47,6 +47,21 @@ int fn_801312EC(void*, void*);
 void fn_80131318(void);
 int fn_80232BA4(int, int, int, int, float, float, float, float, float);
 
+#pragma dont_inline on
+void fn_8001FD7C(void) {
+    char* p = lbl_802FE138;
+    fn_8012E81C(p);
+    lbl_8055D64C = fn_80232578(p + 0xc);
+    lbl_8055D650 = fn_80232578(p + 0x18);
+    lbl_8055D654 = fn_8023512C(p + 0x28);
+    lbl_8055D658 = fn_8023512C(p + 0x38);
+    lbl_80558D78 = fn_802CAC28(p + 0x48, 0);
+    lbl_80558D7C = fn_802CAC28(p + 0x58, 0);
+    lbl_80558D80 = fn_802CAC28(p + 0x68, 0);
+    lbl_80558D84 = fn_802CAC28(p + 0x78, 0);
+}
+#pragma dont_inline off
+
 void fn_8001FE20(void) {
     lbl_8055D62C = 0;
     fn_802CAC54(lbl_80558D84);
@@ -110,16 +125,16 @@ extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
 void fn_8001FF34(int arg0) {
-    struct lbl_8035BAE4_t* tmp;
+    int var;
     if ((char)lbl_8055D670 == 0) {
         fn_801312EC(&lbl_8035BAE4, &lbl_802FE1C0);
         lbl_8055D670 = 1;
     }
-    tmp = &lbl_8035BAE4;
-    if (tmp->unk_8 != lbl_8055E044) {
+    var = lbl_8035BAE4.unk_8;
+    if (var != lbl_8055E044) {
         fn_80131318();
     }
-    fn_80232BA4(tmp->unk_4, lbl_8055D64C, arg0, 0x12, lbl_805604A8, lbl_805604AC, lbl_805604B0, lbl_805604B4, lbl_805604B8);
+    fn_80232BA4(lbl_8035BAE4.unk_4, lbl_8055D64C, arg0, 0x12, lbl_805604A8, lbl_805604AC, lbl_805604B0, lbl_805604B4, lbl_805604B8);
 }
 
 void fn_8001FFD0(int arg0, int arg1, void* arg2, int arg3) {
@@ -139,6 +154,16 @@ void fn_8001FFD0(int arg0, int arg1, void* arg2, int arg3) {
 
 void fn_8002017C(void) {
     fn_8000B3DC(0);
+}
+
+int fn_80020184(void) {
+    s32 var;
+    s32 v;
+
+    var = (s32)((((fn_802E2C20() - lbl_8055D63C) - 0x12C) << 8) / 1000);
+    var = (((s32) (-(s32) var & ~(s32) var)) >> 0x1F) & var;
+    v = var >= 0xFF ? 0xFF : var;
+    return 0xFF - v;
 }
 
 void fn_80020430(void) {
@@ -172,12 +197,12 @@ int fn_801312EC(void*, void*);
 void fn_80131318(void);
 int fn_80232BA4(int, int, int, int, float, float, float, float, float);
 int fn_801E8838(void);
-void fn_80020434(void*, float*);
-void fn_8026A2CC(void*, int, float);
-void fn_8000C630(int, int);
 void fn_8001FD7C(void);
 int fn_80020184(void);
 void fn_800207B0(void);
+extern void fn_80020434(void*, void*);
+extern void fn_8026A2CC(void*, int, float);
+extern void fn_8000C630(int, int);
 char fn_800216F4(void) {
     return lbl_8055D644;
 }
