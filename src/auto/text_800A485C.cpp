@@ -287,8 +287,51 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
         *(s32 *)((u8 *)arg0 + 0) = arg1;
         *(s32 *)((u8 *)arg0 + 4) = (s32)(arg1 + (fn_800A4B54(arg1) * 2));
     }
-    *(u32 *)((u8 *)arg0 + 0xC) = arg2;
-    
-    return 0;
+        *(u32 *)((u8 *)arg0 + 0xC) = arg2;
+      
+      return 0;
 }
+
+extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHead(void *this_ptr) {
+    if (this_ptr == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x26D, lbl_8031EA90);
+    }
+    if ((fn_800D2E14() != 0) && (((u8 *)this_ptr)[0x22] != 0)) {
+        OSLockMutex(lbl_804077C0);
+        s16 var_r3 = *(s16 *)((u8 *)this_ptr + 0x1C);
+        s16 var_r4 = *(s16 *)((u8 *)this_ptr + 0x1E);
+        u16 var_r5 = *(u16 *)((u8 *)this_ptr + 4);
+        u16 var_r0 = *(u16 *)((u8 *)this_ptr + 0x20);
+        fn_800D2E3C(var_r3 - 6, var_r4 - 3, (s32)(var_r5 * 6) + 12, (s32)(var_r0 * 0xA) + 4);
+        fn_800D24D4(this_ptr, 0);
+        fn_800D2FC8();
+        OSUnlockMutex(lbl_804077C0);
+    }
+}
+
+extern "C" void fn_800D2480(void) {
+    if (lbl_8055DDBC == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA40, 0x1F1, lbl_8031EA4C);
+    }
+    ((u8 *)lbl_8055DDBC)[0x22] = 0;
+}
+
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
+    s32 *sp = (s32 *)&file;
+    PanicStruct *stack_ptr = (PanicStruct *)(sp + 0x1A);
+    
+    stack_ptr->msg = msg;
+    stack_ptr->file = file;
+    stack_ptr->line = line;
+    stack_ptr->r7 = 0;
+    stack_ptr->r8 = 0;
+    stack_ptr->r9 = 0;
+    stack_ptr->r10 = 0;
+    stack_ptr->field_68 = 0x03000000;
+    stack_ptr->field_6C = stack_ptr;
+    stack_ptr->field_70 = (void *)(sp + 2);
+    
+    fn_800D2098(&stack_ptr->field_68);
+}
+
 extern s32 lbl_8055DDD4;
