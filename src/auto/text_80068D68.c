@@ -120,6 +120,21 @@ void fn_80069EB4(u32 r3, u32 r4) {
     OSSwitchFiberEx(r3, r4, 0, 0, fn_80069D80, (u8*)&lbl_80393680 + 0x1000);
 }
 
+extern u8 lbl_80392960[];
+extern u8 lbl_80393058[];
+extern void fn_80069FE8(void);
+extern void fn_8006A300(void);
+extern u8 fn_8006A1DC(void);
+extern void fn_8006BAD8(void);
+extern s32 SCCheckStatus(void);
+extern void BTA_EnableBluetooth(void *);
+extern s32 SCSetBtDeviceInfoArray(void *);
+extern void SCFlushAsync(void *);
+void fn_8006A1BC(u32 r3, u32 r4)
+{
+    OSSwitchFiberEx(r3, r4, 0, 0, fn_80069FE8, (u8*)&lbl_80393680 + 0x1000);
+}
+
 void fn_8006A3BC(void);
 void fn_8006A440(u32 r3, u32 r4)
 {
