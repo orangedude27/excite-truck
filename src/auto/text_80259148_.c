@@ -51,12 +51,31 @@ int fn_80259700(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_8025AD3C(float *out,float *a,float *b,float t) {
+ float z0=b[2];
+ float z1=a[2];
+ float y0=b[1];
+ float y1=a[1];
+ float x0=b[0];
+ float x1=a[0];
+ float dz=z0-z1;
+ float dy=y0-y1;
+ float dx=x0-x1;
+ float rz,ry,rx;
+ rz=z1+t*dz; ry=y1+t*dy; rx=x1+t*dx;
+ out[2]=rz; out[1]=ry; out[0]=rx;
+}
+
 void fn_8025AD88(void) { PSVECDotProduct(); }
 
-void fn_8025AD8C(float *out, float *a, float *b, float t) {
- float scale=lbl_80563B14*t; float max=lbl_80563AE0;
- if(max < scale) {} else {max=scale;}
- out[0]=a[0]+max*(b[0]-a[0]); out[1]=a[1]+max*(b[1]-a[1]); out[2]=a[2]+max*(b[2]-a[2]);
+void fn_8025AD8C(void *unused, float *out, float *a, float *b, float t) {
+ float scale=lbl_80563B14*t;
+ float max=lbl_80563AE0;
+ float dx,dy,dz,x,y,z;
+ if (max < scale) max=scale;
+ dx=b[0]-a[0]; dy=b[1]-a[1]; dz=b[2]-a[2];
+ x=a[0]+max*dx; y=a[1]+max*dy; z=a[2]+max*dz;
+ out[0]=x; out[1]=y; out[2]=z;
 }
 
 float fn_8025ADF4(float arg0) { return (float)fn_8002F234(arg0); }
@@ -66,9 +85,11 @@ typedef unsigned int u32;
 typedef float f32;
 extern f32 lbl_80563B1C;
 f32 fn_8025B0A8(void *arg0) {
-    f32 a = *(f32 *)((char *)arg0);
-    f32 delta = *(f32 *)((char *)arg0 + 4) - a;
-    return a + delta * lbl_80563B1C;
+    f32 *p = (f32 *)arg0;
+    f32 out = p[0];
+    f32 d = p[1] - p[0];
+    out += d * lbl_80563B1C;
+    return out;
 }
 
 f32 fn_8025B0C4(f32 arg0) {
@@ -83,6 +104,25 @@ void fn_8025B0E8(void *dst, const void *src) {
 }
 
 void fn_8025B134(void) {
+}
+
+extern int fn_80214A9C(int);
+extern int fn_80214AF0(int);
+void fn_8025B22C(void *arg0) {
+    int i;
+    for (i = 1; i <= 5; i++) {
+        if (*(int *)((char *)arg0 + 0x74) == i)
+            fn_80214AF0(i + 5);
+        else
+            fn_80214A9C(i + 5);
+        if (i <= *(int *)((char *)arg0 + 0x1C)) {
+            fn_80214AF0(i);
+            fn_80214A9C(i + 10);
+        } else {
+            fn_80214AF0(i + 10);
+            fn_80214A9C(i);
+        }
+    }
 }
 
 extern void *fn_80258354(void);
