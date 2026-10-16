@@ -83,7 +83,6 @@ void GXInitLightDir(unsigned int x, unsigned int y, unsigned int *arg2) {
 
 unsigned int GXGetLightDir(unsigned int value) {
     extern unsigned int lbl_8055D978;
-    extern int OSDisableInterrupts(void);
     extern void OSRestoreInterrupts(void);
     unsigned int old = lbl_8055D978;
     OSDisableInterrupts();
