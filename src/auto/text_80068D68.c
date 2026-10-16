@@ -703,6 +703,11 @@ void fn_800716F0(void *arg0) {
     }
 }
 
+void fn_800719B8(void *arg0) {
+    BTM_SetDiscoverability(((u8 *)arg0)[8], 0, 0);
+    BTM_SetConnectability(((u8 *)arg0)[9], 0, 0);
+}
+
 void bta_sys_disable(void) {
     void **pp_module;
     void *p_module;
