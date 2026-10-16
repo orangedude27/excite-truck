@@ -207,3 +207,5 @@ void fn_80216CA8(void) {
     lbl_8055EF99 = 1;
 }
 
+f32 fn_80216CB4(void) { return lbl_8055EF94; }
+
