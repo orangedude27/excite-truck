@@ -9,9 +9,12 @@ void fn_801BF210(void) {
 }
 
 void fn_801BFE7C(float *arg0, float *arg1, float *arg2) {
-    arg0[0] = arg1[0] + arg2[0];
-    arg0[1] = arg1[1] + arg2[1];
-    arg0[2] = arg1[2] + arg2[2];
+    float x = arg1[0] + arg2[0];
+    float y = arg1[1] + arg2[1];
+    float z = arg1[2] + arg2[2];
+    arg0[0] = x;
+    arg0[1] = y;
+    arg0[2] = z;
 }
 
 void fn_801BFEB0(void) {
@@ -27,25 +30,31 @@ void GXInitLightAttnA_801BFEBC(void *arg0, float farg0, float farg1, float farg2
 }
 
 void fn_801BFECC(void *arg0, void *arg1) {
-    int temp_r10 = *(int *)((char *)arg1 + 0x14);
-    int temp_r9 = *(int *)((char *)arg1 + 0x18);
-    int temp_r8 = *(int *)((char *)arg1 + 0x1C);
-    int temp_r7 = *(int *)((char *)arg1 + 0x20);
-    int temp_r6 = *(int *)((char *)arg1 + 0x24);
-    int temp_r5 = *(int *)((char *)arg1 + 0x28);
-    *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x00);
-    *(int *)((char *)arg0 + 0x40) = *(int *)((char *)arg1 + 0x04);
-    *(int *)((char *)arg0 + 0x44) = *(int *)((char *)arg1 + 0x08);
-    *(int *)((char *)arg0 + 0x48) = *(int *)((char *)arg1 + 0x0C);
-    *(int *)((char *)arg0 + 0x4C) = *(int *)((char *)arg1 + 0x10);
-    *(int *)((char *)arg0 + 0x50) = temp_r10;
-    *(int *)((char *)arg0 + 0x54) = temp_r9;
-    *(int *)((char *)arg0 + 0x58) = temp_r8;
-    *(int *)((char *)arg0 + 0x5C) = temp_r7;
-    *(int *)((char *)arg0 + 0x60) = temp_r6;
-    *(int *)((char *)arg0 + 0x64) = temp_r5;
-    *(int *)((char *)arg0 + 0x68) = *(int *)((char *)arg1 + 0x2C);
-    fn_8017A580(temp_r5, temp_r6, temp_r7, temp_r8, temp_r9, temp_r10);
+    int a0 = *(int *)((char *)arg1 + 0x00);
+    int a1 = *(int *)((char *)arg1 + 0x04);
+    int a2 = *(int *)((char *)arg1 + 0x08);
+    int a3 = *(int *)((char *)arg1 + 0x0C);
+    int a4 = *(int *)((char *)arg1 + 0x10);
+    int a5 = *(int *)((char *)arg1 + 0x14);
+    int a6 = *(int *)((char *)arg1 + 0x18);
+    int a7 = *(int *)((char *)arg1 + 0x1C);
+    int a8 = *(int *)((char *)arg1 + 0x20);
+    int a9 = *(int *)((char *)arg1 + 0x24);
+    int a10 = *(int *)((char *)arg1 + 0x28);
+    int a11 = *(int *)((char *)arg1 + 0x2C);
+    *(int *)((char *)arg0 + 0x3C) = a0;
+    *(int *)((char *)arg0 + 0x40) = a1;
+    *(int *)((char *)arg0 + 0x44) = a2;
+    *(int *)((char *)arg0 + 0x48) = a3;
+    *(int *)((char *)arg0 + 0x4C) = a4;
+    *(int *)((char *)arg0 + 0x50) = a5;
+    *(int *)((char *)arg0 + 0x54) = a6;
+    *(int *)((char *)arg0 + 0x58) = a7;
+    *(int *)((char *)arg0 + 0x5C) = a8;
+    *(int *)((char *)arg0 + 0x60) = a9;
+    *(int *)((char *)arg0 + 0x64) = a10;
+    *(int *)((char *)arg0 + 0x68) = a11;
+    fn_8017A580(a5, a6, a7, a8, a9, a10);
 }
 
 extern void fn_8019EECC(void *, void *);
