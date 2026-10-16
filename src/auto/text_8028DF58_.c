@@ -57,6 +57,22 @@ void fn_8028E0F0(void) {
     fn_8028ED80(&lbl_804B34B0);
 }
 
+void fn_8028E138(void) {
+    int *ptr = &lbl_804B34B0;
+    int count = 0;
+    lbl_8055F738 = lbl_80564420;
+    do {
+        fn_8028F8C4(*ptr);
+        ptr++;
+        count++;
+    } while (count < *(int *)((char *)&lbl_804B34B0 + 0x100));
+}
+
+void fn_8028E1A4(void) {
+    lbl_8055F738 = fn_801E7E18();
+    lbl_8055F73C = 1;
+}
+
 void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
 }
