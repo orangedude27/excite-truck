@@ -7,6 +7,11 @@ void fn_8024BDDC(void* arg0) {
     fn_8024BB98((char*)arg0 - 0x34);
 }
 
+extern void __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110(void*);
+void fn_8024BDE4(void* arg0) {
+    __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8024A110((char*)arg0 - 0x34);
+}
+
 void fn_8024BDEC(void* arg0) {
     fn_8024BBF4((char*)arg0 - 0x18);
 }
