@@ -22,6 +22,14 @@ void fn_8017C7C4(void) {
 
 }
 
+void fn_8017D140(unsigned char *dst, unsigned char *src, int count) {
+    goto check;
+loop:
+    *dst++ = *src++;
+check:
+    if (--count >= 0) goto loop;
+}
+
 void fn_8017D2C8(void) {
     fn_8017B3A8();
 }
