@@ -87,6 +87,8 @@ int fn_8017ECC0(int arg0, int arg1) {
     return arg0;
 }
 
+float fn_8017F70C(float arg0) { double temp = __fabs(arg0); return temp; }
+
 extern int fn_80128668(void);
 extern int fn_801A8EE4(void *);
 int fn_8017FEE4(void *arg0) {
