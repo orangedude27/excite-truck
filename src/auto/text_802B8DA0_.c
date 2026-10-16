@@ -49,3 +49,8 @@ void fn_802BA004(void) {
     lbl_8055FA84 = 0;
 }
 
+typedef signed char s8;
+void fn_802BAF98(void* arg0, s8 arg1) {
+    ((s8*)arg0)[0xC] = arg1;
+}
+
