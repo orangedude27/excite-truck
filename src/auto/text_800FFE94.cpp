@@ -34,6 +34,14 @@ extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus
     return *(float*)((char*)arg0 + (arg1 * 4) + 0x5C);
 }
 
+extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_80100ED8(void* arg0, int arg1) {
+    int valid = arg1 >= 0 && arg1 < 4;
+    if (!valid) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x178, lbl_803279CC, arg1, 0, 4);
+    }
+    return *(float*)((char*)arg0 + (arg1 * 4) + 0x7C);
+}
+
 extern "C" void fn_80100F60(void* arg0, float arg1) {
     int level = OSDisableInterrupts();
     *(float*)((char*)arg0 + 0x48) = arg1;
