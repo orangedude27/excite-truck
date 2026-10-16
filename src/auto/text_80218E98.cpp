@@ -37,6 +37,8 @@ void fn_802192A0(void) {
 
 extern "C" s32 fn_802192A4(void) { return 0; }
 
+extern "C" void fn_80219354(void) { fn_80219044(); }
+
 extern "C" void fn_80219044();
 extern f32 lbl_805634A0;
 extern f32 lbl_805634A4;
