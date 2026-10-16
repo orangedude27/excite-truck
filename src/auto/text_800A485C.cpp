@@ -201,6 +201,12 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
 extern "C" s32 fn_800A4BF4(s32, u16*, s16*);
 extern "C" s32 fn_800B72E4(void) { return 0; }
 
+s32 fn_800B73CC(s32 arg0, s32 arg1) {
+    if (arg0 == 0)
+        return arg1;
+    return 0;
+}
+
 extern "C" s32 fn_800B73E4(s32 arg0) {
     if (arg0 == 0) return 0;
     if (arg0 == 1) return 1;
@@ -251,6 +257,23 @@ extern "C" void* fn_800A9B0C(void*);
 extern "C" void fn_800B7684(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
     fn_800B73BC(fn_800A9B0C(alarm));
+}
+
+extern "C" void fn_800B7710(void *arg0) {
+    extern s32 fn_800B7F28(s32 *);
+    s32 sp8;
+    s32 spC;
+    void *sp10;
+
+    if (*(s32 *)arg0 == 0) {
+        sp8 = 1;
+        spC = 1;
+        sp10 = (u8 *)arg0 + 0x10;
+        *(s32 *)((u8 *)arg0 + 8) = fn_800B7F28(&sp8);
+        *(s32 *)((u8 *)arg0 + 4) = 0;
+        *(s32 *)((u8 *)arg0 + 0xC) = 0;
+        *(s32 *)arg0 = 1;
+    }
 }
 
 extern void *lbl_8055DD10;
@@ -395,10 +418,46 @@ extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     }
     return fn_800BA49C(arg3, arg1, arg2, *(s32 *)(lbl_80407300 + 4));
 }
+
+extern "C" s32 fn_800BA204(s32 arg0) {
+    u32 flags;
+
+    if (arg0 == 0) {
+        return 1;
+    }
+    flags = *(volatile u32 *)lbl_80407300;
+    if (flags & 2) {
+        *(volatile s32 *)lbl_80407300 &= 0xFFFFFFFD;
+    }
+    return 0;
+}
+
+extern "C" s32 fn_800BA238(s32 arg0) {
+    u32 flags;
+
+    if (arg0 == 0) {
+        return 1;
+    }
+    if (*(u32 *)lbl_80407300 & 2) {
+        *(s32 *)lbl_80407300 &= 0xFFFFFFFD;
+    }
+    flags = *(u32 *)lbl_80407300;
+    *(s32 *)lbl_80407300 = (s32)(flags & ~1U);
+    *(s32 *)((u8 *)lbl_80407300 + 0xC) = 0;
+    *(u8 *)((u8 *)lbl_80407300 + 0x14) = 0;
+    return 0;
+}
+
 extern "C" u8 lbl_802F3218[];
 extern "C" s32 fn_800BA3DC(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 4) = arg1;
     *(u8 **)arg0 = lbl_802F3218;
+    return 0;
+}
+
+extern "C" s32 fn_800BA3F4(Unk800B7E18Callback arg0, Unk800B7E18Callback arg1) {
+    lbl_80405D00[0] = arg0;
+    lbl_80405D00[1] = arg1;
     return 0;
 }
 
@@ -1114,10 +1173,42 @@ extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt8Material(
     }
 }
 
+extern "C" int fn_800D56FC(void* arg0, const char* arg1, int) {
+    char* node = *(char**)((char*)arg0 + 0x14);
+    char* end = (char*)arg0 + 0x14;
+    for (;;) {
+        if (node == end) return 0;
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23D, lbl_8031F510);
+        if (strcmp(arg1, node + 8) == 0) {
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23D, lbl_8031F510);
+            return *(int*)(node + 0x88);
+        }
+        node = *(char**)node;
+    }
+}
+
 extern "C" void* fn_800D57AC(void* arg0, const void* arg1) {
     __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(arg0, arg1);
     *(const char**)arg0 = lbl_8031F540;
     return arg0;
+}
+
+extern "C" void* __dt__Q36nw4hbm3lyt8BoundingFv(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        __dt__Q36nw4hbm3lyt4PaneFv(arg0, 0);
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
+}
+
+extern "C" void DrawSelf__Q36nw4hbm3lyt8BoundingFRCQ36nw4hbm3lyt8DrawInfo(BoundingPane* self, const DrawInfo* info) {
+    Vec2 pos;
+    unsigned int color = 0x00FF00FF;
+    if ((info->flag >> 3) & 1) {
+        self->v24();
+        pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(self, 0xFFFF0000);
+        DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(&pos, (const Size*)((const char*)self + 0x4C), color);
+    }
 }
 
 extern u32 lbl_8055DDE0;
