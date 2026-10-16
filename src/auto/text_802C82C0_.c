@@ -118,7 +118,6 @@ void fn_802C86E8(void* hi) {
 
 extern unsigned int lbl_804C1410[];
 extern void PSQUATMultiply(void *, unsigned int, void *);
-extern void fn_802D02F8(unsigned int, unsigned int);
 extern void fn_802C7734(unsigned int);
 extern void fn_802C8B70(void);
 void fn_802C88D4(unsigned int arg0) {
