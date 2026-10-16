@@ -2,6 +2,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
+extern s32 lbl_8055E400;
+extern s32 lbl_80430570[];
+extern char lbl_8033189C[];
+extern char lbl_80331850[];
 extern f32 lbl_8055A2F4;
 extern s32 lbl_8055E3C4;
 extern f32 lbl_8055E3C8;
@@ -137,6 +141,30 @@ void fn_80176DD4(void) {
 
 void fn_80176F24(void) {
     fn_80176EC0();
+}
+
+extern void fn_80177658(void *);
+extern char fn_80177608;
+extern char fn_80177618;
+extern char fn_80177628;
+extern char fn_80177638;
+void fn_80177790(void) { fn_80177658(&fn_80177608); }
+
+void fn_8017779C(void) { fn_80177658(&fn_80177618); }
+
+void fn_801777A8(void) { fn_80177658(&fn_80177628); }
+
+void fn_801777B4(void) { fn_80177658(&fn_80177638); }
+
+extern s32 lbl_8055E400;
+extern s32 lbl_80430570[];
+extern char lbl_8033189C[];
+extern char lbl_80331850[];
+extern void fn_802E317C(const char *);
+extern void *memmove(void *, const void *, unsigned long);
+extern char fn_80177648;
+void fn_801777C0(void) {
+    fn_80177658(&fn_80177648);
 }
 
 void fn_801777CC(void) {
