@@ -108,6 +108,12 @@ void fn_802C9904(void) {
     fn_802D007C(lbl_80564EF8);
 }
 
+extern char lbl_804C1440[];
+extern float lbl_8055D01C;
+void fn_802C99D8(void) {
+    fn_802D01B0(lbl_804C1440, lbl_8055D01C);
+}
+
 char fn_802C9A58(void) {
     return lbl_8055FC8C;
 }
