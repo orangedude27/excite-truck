@@ -161,6 +161,16 @@ void fn_80261980(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(s32 *)((u8 *)arg0 + 0x10) = zero;
 }
 
+extern s32 lbl_802FA6B4[];
+s32 fn_802619A0(s32 *arg0) {
+    s32 *p = lbl_802FA6B4;
+    s32 values[3];
+    values[0] = *p++;
+    values[1] = *p++;
+    values[2] = *p;
+    return values[*arg0];
+}
+
 s32 fn_802619D8(s32 *arg0, s32 arg1) {
     return *arg0 + arg1 * 4;
 }
