@@ -146,6 +146,9 @@ extern f32 lbl_80560264;
 extern f32 lbl_80560290;
 extern f32 lbl_805602F8;
 extern f32 lbl_805602FC;
+extern s32 lbl_80558A90;
+extern s32 lbl_8055D494;
+extern UnkF22C *lbl_8055D4B0;
 void fn_8001071C(void) {
     fn_80010FDC(0xD);
 }
