@@ -149,7 +149,6 @@ void *fn_801350C0(void) {
     return p;
 }
 
-extern void *lbl_8055E0B0;
 void* fn_80135108(void) {
     return lbl_8055E0B0;
 }
