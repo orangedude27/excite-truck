@@ -44,6 +44,10 @@ u32 fn_800FEB9C(void) {
     return out >> 16;
 }
 
+extern "C" void fn_800FEC1C(s32 *arg0, s32 arg1) {
+    *arg0 = arg1;
+}
+
 extern "C" s32 fn_80128668(void);
 extern "C" s32 fn_800FF940(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
