@@ -4,6 +4,10 @@
 typedef unsigned int u32;
 extern "C" u32 lbl_8055DE88;
 extern "C" void fn_800FFE94(int);
+extern "C" void fn_800FFE68(void *arg0) {
+    fn_800FFE94(*(int *)((char *)arg0 + 0x1AC));
+}
+
 extern "C" int fn_800FFE70(int arg0) {
     return arg0 + 0xD8;
 }
