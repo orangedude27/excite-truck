@@ -88,6 +88,7 @@ extern int lbl_80407F6C;
 extern int lbl_80407F60;
 extern "C" void *fn_8002F634(void *, void *, int, int);
 extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *, int);
+extern "C" void *fn_800E2D74(void *, int);
 typedef float f32;
 #pragma push
 #pragma small_data off
