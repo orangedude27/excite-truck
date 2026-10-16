@@ -188,6 +188,18 @@ extern "C" s32 fn_802153A4(void) {
     return 0;
 }
 
+extern "C" s32 fn_802153AC(void *arg0, u32 arg1) {
+    s32 (*callback)(s32);
+    if (arg1 == *(u16 *)((char *)arg0 + 0x244)) {
+        callback = *(s32 (**)(s32))((char *)arg0 + 0x248);
+        if (callback == 0 || callback(*(s32 *)((char *)arg0 + 0x24C)) != 0) {
+            fn_802168BC(*(s32 *)((char *)arg0 + 0x24C));
+        }
+        return 1;
+    }
+    return 0;
+}
+
 extern "C" void fn_80215414(void) {
 
 }
