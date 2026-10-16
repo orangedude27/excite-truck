@@ -71,7 +71,10 @@ extern "C" void fn_800C64F4(void* arg0) {
     lbl_8055DDF0 = &lbl_804075E0;
     block = MEMAllocFromAllocator(&lbl_804075E0, 0x758);
     if (block != NULL) {
-        lbl_8055DD98 = fn_800C6914(arg0);
+        if (block != NULL) {
+            block = fn_800C6914(block, arg0);
+        }
+        lbl_8055DD98 = block;
     }
     fn_800C6CE8(lbl_8055DD98);
 }
@@ -458,22 +461,28 @@ extern "C" void fn_800D2480(void) {
 }
 
 extern "C" void fn_800D16C4(OSAlarm*, void*);
-extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *this_ptr, long arg1, int arg2, signed char arg3) {
-    if (((u8 *)this_ptr)[0x1EC] != 0) {
+extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *arg0, long arg1, int arg2, signed char arg3) {
+    void *r26 = arg0;
+    long r27 = arg1;
+    int r28 = arg2;
+    signed char r29 = arg3;
+    
+    if (((u8 *)r26)[0x1EC] != 0) {
         ARCFileInfo info;
-        ARCHandle handle;
+        void *r30;
+        s32 r31;
         
-        ARCFastOpen((ARCHandle *)((u8 *)this_ptr + 0x1D0), arg2, &info);
-        void *start_addr = ARCGetStartAddrInMem(&info);
-        s32 val1 = fn_80116A30(&info);
+        ARCFastOpen((ARCHandle *)((u8 *)r26 + 0x1D0), r28, &info);
+        r30 = ARCGetStartAddrInMem(&info);
+        r31 = fn_80116A30(&info);
         fn_80116A38(&info);
         
-        u8 *entry = (u8 *)this_ptr + ((s32)arg1 * 0x68);
+        u8 *entry = (u8 *)r26 + ((s32)r27 * 0x68);
         entry[0x5E] = 0;
-        *(s32 *)(entry + 0x58) = arg2;
-        *(s32 *)(entry + 0x54) = val1;
-        entry[0x5D] = arg3;
-        *(s32 *)(entry + 0x50) = (s32)start_addr;
+        *(s32 *)(entry + 0x58) = r28;
+        *(s32 *)(entry + 0x54) = r31;
+        entry[0x5D] = r29;
+        *(s32 *)(entry + 0x50) = (s32)r30;
     }
 }
 
