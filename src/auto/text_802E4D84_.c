@@ -44,6 +44,9 @@ int fn_802E540C(int arg0) {
     return 0;
 }
 
+void fn_802E5824(void) {
+}
+
 void fn_802E5828(void) {
 }
 
