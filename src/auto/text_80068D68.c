@@ -107,6 +107,7 @@ extern void fn_8006EBAC(void);
 extern void fn_8006EB88(void);
 extern u8 fn_8006EB80(void);
 extern u32 lbl_803946C0[];
+extern u8 lbl_80392960[];
 s32 fn_8006DF68(s32 *arg0) {
     s32 val = arg0[-2];
     return val ? val + 8 : 0;
@@ -116,6 +117,12 @@ u8 fn_8006DF84(void *arg0) {
     u16 val = *(u16 *)((u8 *)arg0 + 8);
     u32 tmp = __cntlzw(val);
     return tmp >> 19;
+}
+
+void gki_timers_init(void) {
+    u32 *base = (u32 *)&lbl_803946C0 + 0xC000;  // 0x30000 / 4
+    base[-0x1DFA] = 0;   // 0x28838 / 4 = 0xA27E, so 0xC000 - 0x1DF6 = ... hmm this is getting complex
+    // Let me use byte offsets instead
 }
 
 void fn_8006EACC(void) {
