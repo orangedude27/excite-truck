@@ -5,3 +5,11 @@ extern void *lbl_8055FCD8;
 void fn_802CDAA8(void) {
     lbl_8055FCD8 = 0;
 }
+
+void fn_802CE260(int *arg0, int arg1) {
+    int val = *arg0;
+    if (val != 0) {
+        *arg0 = val + arg1;
+    }
+}
+
