@@ -3,6 +3,16 @@
 
 extern char lbl_804A4380[];
 
+extern char lbl_80347B78[];
+extern char lbl_80347C14[];
+extern char lbl_80347C38[];
+extern char *fn_80131234(char *);
+long fn_8027CB28(void);
+extern long lbl_8055F654;
+long *fn_8027C120(long, long);
+long fn_8027C8B0(void);
+long fn_802E317C(char *, ...);
+
 extern char lbl_804A4380[];
 void *fn_8027B878(long arg0) {
     return lbl_804A4380 + fn_8000DA10() * 0x3B10 + arg0 * 0xBD0 + 0x2370;
