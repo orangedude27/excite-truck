@@ -56,8 +56,8 @@ void fn_802396BC(void *arg0) {
     }
 }
 
-void fn_8023976C(void *arg0) {
-    if (*(u32 **)((u8 *)arg0 + 0x14) != 0) {
-        fn_80238FCC(*(u32 *)((u8 *)arg0 + 8));
+void fn_8023976C(u32 arg0) {
+    if (*(u32 *)(arg0 + 0x14) != 0) {
+        ((void (*)(u32, u32))fn_80238FCC)(arg0, *(u32 *)(arg0 + 8));
     }
 }
