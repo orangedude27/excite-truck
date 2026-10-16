@@ -1,5 +1,16 @@
 #include <types.h>
 
+extern void *fn_801284F8(u32, const void *);
+extern const char lbl_8032BC84[], lbl_8032BC94[], lbl_8032BCA0[];
+extern const char lbl_8032BD08[], lbl_8032BCC0[];
+extern void *__AXFXGetLfoSinTable_801769CC(void);
+extern void *fn_801792F8(void);
+extern void *fn_80134E90(void);
+extern void *fn_80134EC8(void);
+extern void *fn_80134FF8(void);
+extern void *fn_801350C0(void);
+extern void *fn_801A520C(void *, void *);
+
 extern s32 fn_80128668(void);
 extern f32 lbl_805612F4;
 extern f32 lbl_80561318;
