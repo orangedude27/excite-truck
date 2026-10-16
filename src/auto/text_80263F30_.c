@@ -87,6 +87,12 @@ void* fn_80264A54(void) {
     return lbl_8055F448;
 }
 
+void fn_80265584(void *arg0) {
+    extern float lbl_8055C454;
+    *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
+    lbl_8055C454 = *(float *)((char *)arg0 + 0x18);
+}
+
 extern char lbl_80346558[];
 extern float lbl_80563BF0;
 extern float lbl_8055C454;
