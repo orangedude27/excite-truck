@@ -3,8 +3,8 @@
 
 #include <types.h>
 
-extern u8 lbl_80422180;
-extern u8 lbl_804223A0;
+extern u8 lbl_80422180[0x200];
+extern u8 lbl_804223A0[0x20];
 void fn_80129690(void *arg0, s32 arg1, void *arg2);
 s32 fn_802E8504(s32);
 
