@@ -176,20 +176,20 @@ void* fn_8011FF24(void) {
 }
 
 void fn_80125098(void *arg0) {
-    f32 r3, r1, r2, r0;
-    r3 = ((f32 *)arg0)[0];
-    r1 = ((f32 *)arg0)[2];
-    r2 = ((f32 *)arg0)[1];
-    r0 = ((f32 *)arg0)[3];
-    ((f32 *)arg0)[2] = r3 - r1;
-    ((f32 *)arg0)[0] = r3 + r1;
-    ((f32 *)arg0)[1] = r2 - r0;
-    ((f32 *)arg0)[3] = r2 + r0;
+    f32 f0, f1, f2, f3;
+    f3 = *(f32 *)((u8 *)arg0 + 0);
+    f1 = *(f32 *)((u8 *)arg0 + 8);
+    f2 = *(f32 *)((u8 *)arg0 + 4);
+    f0 = *(f32 *)((u8 *)arg0 + 12);
+    *(f32 *)((u8 *)arg0 + 8) = f3 - f1;
+    *(f32 *)((u8 *)arg0 + 0) = f3 + f1;
+    *(f32 *)((u8 *)arg0 + 4) = f2 - f0;
+    *(f32 *)((u8 *)arg0 + 12) = f2 + f0;
 }
 
-extern void fn_80125664(u8 *, s32);
+extern void fn_80125664(u8 *p0, void *p1, void *p2, void *p3);
 void fn_80125CA0(void *arg0, void *arg1, void *arg2, s32 arg3) {
-    fn_80125664((u8 *)&lbl_802F6A40 + (arg3 << 8), arg3);
+    fn_80125664((u8 *)&lbl_802F6A40 + (arg3 << 8), arg0, arg1, arg2);
 }
 
 extern char lbl_8055DF08;
