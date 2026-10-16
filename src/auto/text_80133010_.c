@@ -12,6 +12,8 @@ extern const char lbl_8032B8D0[];
 extern int fn_80128668(int);
 extern int fn_80133E10(void **, int, int);
 extern int fn_8013323C(int, int, float);
+int fn_80133010(void) { int val=lbl_8055E07C; unsigned int tmp=(unsigned int)(-val)|(unsigned int)val; return tmp>>31; }
+
 void fn_801331C4(int arg0, int arg1, float *arg2) {
     void *sp8;
     if (fn_80133E10(&sp8, arg0, arg1)) {
