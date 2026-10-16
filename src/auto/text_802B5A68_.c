@@ -1,3 +1,4 @@
+#include "types.h"
 typedef signed long s32;
 typedef unsigned long u32;
 typedef s32 (*UnkFunc)(s32);
@@ -104,12 +105,10 @@ void fn_802B618C(void) {
 }
 
 void fn_802B61B8(void) {
-    if (lbl_8055FA38 <= 3) {
-        if (lbl_8055FA38 < 3) {
-            if (lbl_8055FA38 >= 2) fn_802BBEE4();
-            return;
-        }
+    if (lbl_8055FA38 == 3) {
         fn_802C21C0();
+    } else if (lbl_8055FA38 == 2) {
+        fn_802BBEE4();
     }
 }
 
@@ -119,6 +118,22 @@ void fn_802B61E0(void) {
 
 s32 fn_802B6270(void) {
     return lbl_8055FA40 == 7;
+}
+
+s32 fn_802B6E00(s32 arg0, s32 arg1) {
+    s32 var_r0 = 0;
+    if ((arg0 < -0x200) || (arg0 > 0x200) || (arg1 < -0x200) || (arg1 > 0x200))
+        var_r0 = 1;
+    return var_r0;
+}
+
+extern s32 lbl_8055CE78;
+extern s32 lbl_8055CE80;
+extern s32 lbl_8034A808;
+extern s32 lbl_8034A814;
+s16 fn_802B6E30(void);
+s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
+    return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * fn_802B6E30()));
 }
 
 extern void lbl_8034A898(void);
