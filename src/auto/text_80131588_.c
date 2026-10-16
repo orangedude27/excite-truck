@@ -26,7 +26,9 @@ extern void* lbl_8042F53C[];
 extern void fn_80131920(void*);
 extern void __register_global_object(void*, void (*)(void*), void*);
 int fn_8013181C(void) {
-    fn_802E30C8(lbl_8032B510);
+    if (lbl_8032B510) {
+        fn_802E30C8(lbl_8032B510);
+    }
     return 0;
 }
 
@@ -41,7 +43,7 @@ void* fn_8013184C(void) {
         ((void* volatile*)lbl_8042F53C)[4] = 0;
         ((void* volatile*)lbl_8042F53C)[5] = 0;
         ((void* volatile*)lbl_8042F53C)[6] = 0;
-        __register_global_object(lbl_8042F53C, fn_80131920, lbl_8042F530);
+        __register_global_object(lbl_8042F53C, (void (*)(void*))fn_80131920, lbl_8042F530);
         lbl_8055E060 = 1;
     }
     return lbl_8042F53C;
@@ -52,6 +54,14 @@ s32 fn_801318E0(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+void fn_80131920(void* this_) {
+    s32 a = (s32)this_;
+    if (a != 0 && a > 0) {
+        fn_80128668();
+    }
+    this_ = (void*)a;
 }
 
 s32 fn_80131B10(s32 arg0, s32 arg1) {
