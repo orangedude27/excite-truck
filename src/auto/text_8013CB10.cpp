@@ -62,6 +62,22 @@ public:
 
 extern "C" s32 fn_8013D1F0(s32);
 
+extern "C" s32 fn_8013CB10(void) {
+    return fn_80176A1C() == 2;
+}
+
+extern "C" void fn_8013CB90(void *arg0) {
+    f32 x = *(f32 *)((u8 *)arg0 + 0x10);
+    f32 scale = lbl_80561498;
+    f32 y = *(f32 *)((u8 *)arg0 + 0x14);
+    f32 dx = x * scale;
+    f32 oldx = *(f32 *)((u8 *)arg0 + 4);
+    f32 dy = y * scale;
+    f32 oldy = *(f32 *)((u8 *)arg0 + 8);
+    *(f32 *)((u8 *)arg0 + 4) = oldx - dx;
+    *(f32 *)((u8 *)arg0 + 8) = oldy - dy;
+}
+
 extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
     s32 count = *(s32 *)arg0;
     s32 i = 0;
@@ -155,8 +171,7 @@ extern "C" f32 lbl_805614A4, lbl_805614AC, lbl_80561530, lbl_80561538, lbl_80561
 extern "C" s32 fn_8013F438(f32 x) {
     f32 t = (x - lbl_80561530) / lbl_80561538;
     f32 v = (lbl_805614AC < t) ? lbl_805614AC : t;
-    if (v > lbl_805614A4)
-        v = lbl_805614A4;
+    v = (v > lbl_805614A4) ? lbl_805614A4 : v;
     return (s32)(lbl_8056153C + v * lbl_80561540);
 }
 
