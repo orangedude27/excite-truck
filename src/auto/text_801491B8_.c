@@ -87,6 +87,13 @@ s32 fn_801494A8(void) {
     return 0xFF00FF00;
 }
 
+void fn_801494B4(void *arg0, f32 *arg1, f32 *arg2) {
+    f32 y = arg2[1] + arg1[0];
+    f32 z = arg2[2] + arg1[1];
+    arg2[1] = y;
+    arg2[2] = z;
+}
+
 void fn_8014ACCC(void) {
 
 }
