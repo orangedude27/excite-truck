@@ -2,6 +2,42 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
+class Unk801577F0 {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
+    virtual void v20();
+    virtual void v21();
+    virtual void v22();
+    virtual void v23();
+    virtual void v24();
+    virtual void v25();
+    virtual void v26();
+    virtual void v27();
+    virtual void v28();
+    virtual void v29();
+    virtual void v30();
+    virtual s32 GetType();
+};
+
 extern "C" s32 fn_80128668(void*);
 extern "C" void fn_801CB750(s32);
 extern "C" void fn_80131234(void*);
@@ -12,8 +48,44 @@ extern f32 lbl_80561754;
 extern f32 lbl_8056177C;
 
 extern "C" s32 lbl_8032E540[];
+extern "C" s32 fn_801577F0(void* arg0) {
+ return lbl_8032E540[(*(s32 (**)())((char*)*(void**)arg0 + 0x7C))()];
+}
+
 extern "C" s32 fn_8015782C(s32* arg0, s32 arg1) {
     return *arg0 + arg1 * 4;
+}
+
+extern "C" void* fn_80157928(void* arg0, s32 arg1) {
+ if (arg0 != 0) {
+ if (arg0 != 0) {
+ if ((char*)arg0 + 8 != 0) {
+ if ((char*)arg0 + 8 != 0) {
+ if ((char*)arg0 + 8 != 0) {
+ *(u32*)((char*)arg0 + 8) = 0;
+ *(u32*)((char*)arg0 + 0xC) = 0;
+ *(u32*)((char*)arg0 + 0x10) = 0;
+ }}}
+ }
+ if (arg1 > 0) fn_80128668(arg0);
+ }
+ return arg0;
+}
+
+extern "C" void* fn_80157990(void* arg0, s32 arg1) {
+ if (arg0 != 0) {
+ 
+ if ((char*)arg0 + 8 != 0) {
+ if ((char*)arg0 + 8 != 0) {
+ if ((char*)arg0 + 8 != 0) {
+ *(u32*)((char*)arg0 + 8) = 0;
+ *(u32*)((char*)arg0 + 0xC) = 0;
+ *(u32*)((char*)arg0 + 0x10) = 0;
+ }}}
+ 
+ if (arg1 > 0) fn_80128668(arg0);
+ }
+ return arg0;
 }
 
 extern "C" void fn_80158D0C(void* arg0) {
