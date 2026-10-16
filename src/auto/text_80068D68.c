@@ -998,6 +998,14 @@ void fn_80072644(void) {
     }
 }
 
+void bta_dm_search_cancel_transac_cmpl(void) {
+    if (*(void **)(lbl_803C0B98 + 0x14) != 0) {
+        GKI_freebuf(*(void **)(lbl_803C0B98 + 0x14));
+        *(void **)(lbl_803C0B98 + 0x14) = 0;
+    }
+    ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(4, 0);
+}
+
 void bta_sys_disable(void) {
     void **pp_module;
     void *p_module;
