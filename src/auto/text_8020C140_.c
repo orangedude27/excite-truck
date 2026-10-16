@@ -43,6 +43,11 @@ void fn_8020C900(s8 arg0) {
     lbl_8055EE40 = arg0;
 }
 
+void fn_8020C908(f32 arg0) {
+    lbl_8055EE48 = arg0;
+    fn_8020C140();
+}
+
 void fn_8020C918(void) {
 
 }
