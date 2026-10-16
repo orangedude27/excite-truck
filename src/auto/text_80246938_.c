@@ -131,7 +131,31 @@ void fn_80247880(void) {
     lbl_8055BEB0 = (void*)fn_80214D04();
 }
 
-extern s32 lbl_8055BEB4;
+void fn_80247A0C(void) {
+    s32 var_r31;
+
+    if (lbl_8055BEBC != lbl_8055BEA8) {
+        s32 a = lbl_8055BEA8;
+        if (a == 5) {
+            lbl_8055BEB4 = 1;
+        } else {
+            lbl_8055BEB4 = 0;
+        }
+        lbl_8055BEBC = a;
+    }
+    fn_80214CB4(lbl_8055BEB4);
+    if (lbl_8055BEBC == 4) {
+        fn_80214B44(2);
+    }
+    var_r31 = 0;
+    do {
+        if (fn_8027B9EC(var_r31) == 0) {
+            fn_80214A9C(var_r31 + 0xB);
+        }
+        var_r31 += 1;
+    } while (var_r31 < 2);
+}
+
 void fn_80247AAC(void) {
     lbl_8055BEB4 = (s32) (void*)fn_80214D04();
 }
