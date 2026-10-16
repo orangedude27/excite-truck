@@ -357,6 +357,58 @@ extern "C" void* fn_8015868C(void* arg0, s32 arg1) {
  return arg0;
 }
 
+extern "C" s32 stricmp(const char *, const char *);
+extern "C" void* fn_801586F4(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            if (arg0 != 0) {
+                if ((u32)arg0 + 8 != 0) {
+                    if ((u32)arg0 + 8 != 0) {
+                        if ((u32)arg0 + 8 != 0) {
+                            *(u32*)((u8*)arg0 + 8) = 0;
+                            *(u32*)((u8*)arg0 + 0xC) = 0;
+                            *(u32*)((u8*)arg0 + 0x10) = 0;
+                        }
+                    }
+                }
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+extern "C" void fn_801587CC(void* arg0) {
+    s32 i = 0;
+    s32 offset = 0;
+    for (; i < *(s32*)((u8*)arg0 + 0xC); ++i) {
+        u32* entry = (u32*)(*(u32*)((u8*)arg0 + 8) + offset);
+        entry[0] = 0;
+        entry[1] = 0;
+        entry[2] = 0;
+        *(f32*)((u8*)entry + 0xC) = lbl_80561754;
+        offset += 0x38;
+    }
+}
+
+extern "C" void fn_80158824(Unk801577F0* arg0) {
+    s32 i = 0;
+    s32 offset = 0;
+    for (; i < arg0->mCount; ++i) {
+        u32* entry = (u32*)((u8*)arg0->mData + offset);
+        entry[0] = 0;
+        entry[1] = 0;
+        entry[2] = 0;
+        *(f32*)((u8*)entry + 0xC) = lbl_80561754;
+        offset += 0x38;
+    }
+    arg0->m254 = lbl_80561754;
+    arg0->m25c = lbl_80561754;
+    *(f32*)((u8*)arg0 + 0x258) = lbl_80561754;
+    *(f32*)((u8*)arg0 + 0x264) = lbl_80561754;
+    arg0->v33();
+}
+
 extern "C" s32 fn_80158A5C(void *arg0, s32 *arg1) { return *(s32 *)((u8 *)arg1 + 0x2620) == 0; }
 
 extern "C" s32 fn_80158A6C(void) { return 0; }
