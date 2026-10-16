@@ -213,7 +213,7 @@ extern void fn_802353F4(f32, f32, f32, f32, f32, f32);
 extern void fn_802354A0(s32, s32, s32, f32, f32, f32, f32, f32);
 extern void fn_80010E94(f32, f32, f32, f32, s32, s32);
 void fn_80010E94(f32 x, f32 y, f32 a, f32 b, s32 c, s32 d) {
-    if (a == lbl_80560280 && b == lbl_80560280) {
+    if (lbl_80560280 == a && lbl_80560280 == b) {
         fn_802353F4(x, y, lbl_80560264, b, b, a);
     } else {
         fn_802354A0(c, d, -1, x, y, lbl_80560264, a, b);
