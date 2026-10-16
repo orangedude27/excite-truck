@@ -32,6 +32,7 @@ extern void fn_802CAC54(int);
 extern void fn_802328D4(int);
 extern void fn_80235380(int);
 extern void fn_801345D8(void*, int, void*, int);
+void fn_801345D8va(char* fmt, ...);
 struct lbl_8035BAE4_t {
     int unk_0;
     int unk_4;
@@ -122,19 +123,18 @@ void fn_8001FF34(int arg0) {
 }
 
 void fn_8001FFD0(int arg0, int arg1, void* arg2, int arg3) {
-    if (arg1 == 0x180303) {
-        fn_801345D8(arg2, arg3, &lbl_802FE138[0x98], arg0 + 1);
-    } else if (arg1 < 0x180303) {
-        if (arg1 == 0x180201) {
+    switch (arg1) {
+        case 0x180201:
             fn_801345D8(arg2, arg3, &lbl_802FE138[0xac], arg0 + 1);
-        } else {
-            fn_801345D8(arg2, arg3, &lbl_802FE138[0xd4], arg0 + 1);
-        }
-    } else if (arg1 < 0x180305) {
-        fn_801345D8(arg2, arg3, &lbl_802FE138[0xc0], arg0 + 1);
-    } else {
-        fn_801345D8(arg2, arg3, &lbl_802FE138[0xd4], arg0 + 1);
+            return;
+        case 0x180303:
+            fn_801345D8(arg2, arg3, &lbl_802FE138[0x98], arg0 + 1);
+            return;
+        case 0x180304:
+            fn_801345D8(arg2, arg3, &lbl_802FE138[0xc0], arg0 + 1);
+            return;
     }
+    fn_801345D8(arg2, arg3, &lbl_802FE138[0xd4], arg0 + 1);
 }
 
 void fn_80020430(void) {
