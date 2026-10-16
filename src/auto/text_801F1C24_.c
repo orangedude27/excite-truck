@@ -264,6 +264,15 @@ void fn_801F383C(void *arg0, int arg1) {
     *(char *)((char *)arg0 + 4) = 1;
 }
 
+void fn_801F3920(void *arg0) {
+    extern int fn_80297990(int);
+    if (*(unsigned char *)((char *)arg0 + 4) != 0) {
+        fn_80297990(*(int *)((char *)arg0 + 8));
+    } else {
+        fn_80297990(0x80000000);
+    }
+}
+
 int fn_801F394C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
