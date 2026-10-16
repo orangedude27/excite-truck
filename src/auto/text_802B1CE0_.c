@@ -42,6 +42,7 @@ void fn_802B218C(void *);
 void fn_8002F6AC(int, void (*)(void));
 void fn_802B1F68(void);
 void fn_80128668(void *);
+void fn_802B1F68(void);
 void fn_802B2104(void **arg0);
 void fn_802CAC54(void);
 void fn_802C6C20(void);
@@ -55,6 +56,23 @@ void fn_802B218C(void *arg0) {
             fn_80128670((char *)buf - 0x10);
         }
         *(void **)arg0 = 0;
+    }
+}
+
+void fn_802B21D4(void **arg0) {
+    void *ptr = *arg0;
+    if (ptr != 0) {
+        if (ptr != 0) {
+            if (((int *)ptr)[2] != -2) {
+                fn_802CAC54();
+                ((int *)ptr)[2] = -2;
+            }
+            if (((int *)ptr)[0] != 0) {
+                fn_802C6C20();
+            }
+            fn_80128668(ptr);
+        }
+        *arg0 = 0;
     }
 }
 
