@@ -22,9 +22,25 @@ void fn_802064C8(void) {
     return;
 }
 
+extern "C" void fn_80206550(unsigned int size) {
+    extern int lbl_8055ED80; extern void* fn_80207C74(int, unsigned int);
+    fn_80207C74(lbl_8055ED80, size);
+}
+
 extern int lbl_8055ED80;
 extern "C" int fn_80207C50(int,int,int);
 extern "C" void fn_8020655C(int a, int b) { fn_80207C50(lbl_8055ED80,a,b); }
+
+extern void* fn_80207C74(int, unsigned int);
+extern int lbl_802F9DA0;
+extern void* fn_80208D4C(void);
+extern void fn_80208D70(void);
+extern "C" void* fn_80206570(int index) {
+    int values[10]; int* p=(int*)&lbl_802F9DA0; int i;
+    for(i=0;i<10;i++) values[i]=p[i];
+    if(index<10) return (void*)values[index];
+    return (void*)0x8033BD30;
+}
 
 extern "C" void fn_80206B08(void) {
 	return;
