@@ -290,5 +290,5 @@ extern "C" s32 fn_8014445C(s32 arg0) {
     return (v >> 1) - (v & 0xA) >> 0x1F;
 }
 
-extern "C" s32 fn_80144494(s32 arg0) { return arg0; }
+extern "C" s32 fn_80144494(s32 arg0, s32 arg1) { return arg1; }
 
