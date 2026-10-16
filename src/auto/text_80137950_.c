@@ -13,6 +13,18 @@ void fn_80137B14(void) {
     lbl_80559C00 = (void*)-1;
 }
 
+void fn_80137BE4(void) {
+    void **p = lbl_8042F788;
+    int i = 0;
+    do {
+        fn_80128668(*p);
+        i++;
+        *p = 0;
+        p++;
+    } while (i < 4);
+    lbl_8055E0E0 = 0;
+}
+
 void* fn_80137C4C(void) {
     return lbl_80559C00;
 }
