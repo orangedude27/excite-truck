@@ -81,6 +81,20 @@ void fn_800B7C60(void) {
     fn_800B75C4();
 }
 
+extern "C" s32 fn_800BB4E0(s32,s32,s32,s32,s32,s32);
+extern "C" s32 fn_800BBB58(s32, void**);
+extern "C" s32 fn_800BAD9C(void*, u32*);
+extern "C" s32 fn_800BB2C4(void*);
+extern "C" s32 IOS_Close(s32);
+extern "C" u8 fn_800BA974(s32,u8*,s32);
+extern "C" void fn_800A68DC(s32);
+extern "C" s32 lbl_80559248;
+extern "C" u32 lbl_8055DD68;
+extern "C" u8 lbl_80407300[];
+extern "C" s32 fn_800BB4B0(s32 a,s32 b,s32 c,s32 d) {
+    return fn_800BB4E0(a,b,c,d,0,0);
+}
+
 void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
