@@ -62,24 +62,26 @@ extern float lbl_80562F1C;
 #pragma dont_inline on
 int fn_801F0E88(int arg0, int arg1) {
     int result = fn_801F09FC((const char *)arg1);
+    float zero = lbl_80562F1C;
+    float one = lbl_80562F18;
     *(int *)(arg0 + 0) = result;
     *(int *)(arg0 + 4) = 0;
     *(int *)(arg0 + 8) = -1;
     *(int *)(arg0 + 0xC) = -1;
     *(int *)(arg0 + 0x10) = 0;
     *(char *)(arg0 + 0x14) = 1;
-    *(float *)(arg0 + 0x18) = lbl_80562F18;
-    *(float *)(arg0 + 0x1C) = lbl_80562F1C;
-    *(float *)(arg0 + 0x20) = lbl_80562F1C;
-    *(float *)(arg0 + 0x24) = lbl_80562F1C;
-    *(float *)(arg0 + 0x28) = lbl_80562F18;
-    *(float *)(arg0 + 0x2C) = lbl_80562F1C;
-    *(float *)(arg0 + 0x30) = lbl_80562F1C;
-    *(float *)(arg0 + 0x34) = lbl_80562F1C;
-    *(float *)(arg0 + 0x38) = lbl_80562F18;
-    *(float *)(arg0 + 0x3C) = lbl_80562F1C;
-    *(float *)(arg0 + 0x40) = lbl_80562F1C;
-    *(float *)(arg0 + 0x44) = lbl_80562F1C;
+    *(float *)(arg0 + 0x18) = one;
+    *(float *)(arg0 + 0x1C) = zero;
+    *(float *)(arg0 + 0x20) = zero;
+    *(float *)(arg0 + 0x24) = zero;
+    *(float *)(arg0 + 0x28) = one;
+    *(float *)(arg0 + 0x2C) = zero;
+    *(float *)(arg0 + 0x30) = zero;
+    *(float *)(arg0 + 0x34) = zero;
+    *(float *)(arg0 + 0x38) = one;
+    *(float *)(arg0 + 0x3C) = zero;
+    *(float *)(arg0 + 0x40) = zero;
+    *(float *)(arg0 + 0x44) = zero;
     return arg0;
 }
 #pragma dont_inline off
