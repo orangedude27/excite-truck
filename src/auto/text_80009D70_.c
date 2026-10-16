@@ -79,8 +79,8 @@ void fn_8000AAE0(void* arg0) {
 }
 
 void fn_8000AAE4(void* arg0) {
-    s32 i = 0;
     char* p = (char*)arg0 + 0x64;
+    s32 i = 0;
     while (i < ((s32*)arg0)[0x3E0 / 4]) {
         fn_8000AABC(p);
         p += 0x78;
@@ -93,8 +93,8 @@ void fn_8000AB44(void) {
 }
 
 void fn_8000AB48(void* arg0, s32 arg1) {
-    s32 i = 0;
     char* p;
+    s32 i = 0;
     fn_8000A8C4();
     fn_8000AADC(arg0);
     fn_8000A644(arg0, (void*)arg1);
