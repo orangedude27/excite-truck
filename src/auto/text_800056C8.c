@@ -260,6 +260,11 @@ void *fn_80007BB0(void) {
     return lbl_802FB668;
 }
 
+extern u8 lbl_802FB630[];
+void *fn_80007BDC(void) {
+    return lbl_802FB630;
+}
+
 void fn_80007BE8(void) {
     return;
 }
