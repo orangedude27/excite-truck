@@ -3,11 +3,10 @@
 #include <types.h>
 
 extern "C" void fn_800D7F58(void *arg0, void *arg1) {
-    struct { f32 x, y; } v;
-    v.x = ((f32 *)arg1)[0];
-    v.y = ((f32 *)arg1)[1];
-    ((f32 *)arg0)[0] = v.x;
-    ((f32 *)arg0)[1] = v.y;
+    f32 a = ((f32 *)arg1)[0];
+    f32 b = ((f32 *)arg1)[1];
+    ((f32 *)arg0)[0] = a;
+    ((f32 *)arg0)[1] = b;
 }
 
 extern "C" void fn_800D7F6C(s32 *arg0) {
