@@ -24,6 +24,16 @@ struct F92VT {
     void (*fn8)(void *, s32); // 0x8
 };
 
+struct FListVT {
+    u8 pad[0x60];
+    void *(*get)(void *self, s32 idx); // 0x60
+};
+
+struct FNodeVT {
+    u8 pad[8];
+    char *(*name)(void *self); // 0x8
+};
+
 struct F92Obj {
     u8 pad0[0x20];
     void *f20;  // 0x20
