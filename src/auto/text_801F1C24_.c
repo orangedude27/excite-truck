@@ -11,6 +11,11 @@ void fn_801F371C(int arg0) {
     fn_8029231C(arg0 + 4);
 }
 
+int fn_801F3724(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 extern int *fn_801F1CE8(int);
 extern int fn_80128668(void);
 extern int *fn_801E1F44(void);
