@@ -12,8 +12,21 @@ float fn_801E7E24(void);
 extern float lbl_80558DC4;
 void fn_801FF6FC(void*);
 void fn_801FF3AC(void*, float);
-float fabs(float);
-}
+    float fabs(float);
+    void fn_801FF770(void*);
+    void* fn_801284F8(int, const char*);
+    void fn_8002F53C(void*, void*, void*, int, int);
+    void fn_801FF1C4(void*, int, int);
+    void fn_801FF6A4(void*);
+    void fn_802CD320(int, void*);
+    void fn_801FF2B8(void*, int, int);
+    void fn_801FF0D4(void*);
+    void fn_801FEF80(void*);
+    void fn_801FCA14(void*);
+    extern const char lbl_8033B86C[];
+    extern const char lbl_8033B898[];
+    extern const char lbl_8033B880[];
+    }
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
