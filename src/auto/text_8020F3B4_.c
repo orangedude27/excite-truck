@@ -6,7 +6,7 @@ extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
 extern signed char lbl_8055EEF5;
 extern signed char lbl_8055EEF6;
-extern char lbl_80489CA0;
+extern char lbl_80489CA0[16];
 extern long fn_8020F608(long, long);
 extern struct Unk_804902C4 {
     long *m_entries;
@@ -47,6 +47,12 @@ void fn_8020F6E0(long arg0, long arg1) {
 
 void fn_8020F6F8(void) {
     fn_802EC0FC();
+}
+
+long fn_8020F6FC(void) {
+    long value = lbl_804902C4.m_entries[lbl_8055EEC4];
+    lbl_8055EEC4 = (lbl_8055EEC4 + 1) % lbl_804902C4.m_count;
+    return value;
 }
 
 void fn_802103B8(void) {
