@@ -17,6 +17,8 @@ void fn_802B0874(void) {
     fn_802B087C(&lbl_8055F9A0);
 }
 
+#pragma push
+#pragma opt_common_subs off
 void fn_802B087C(void **arg0) {
     void *ptr = *arg0;
     if (ptr != 0) {
@@ -35,7 +37,7 @@ void fn_802B087C(void **arg0) {
         *arg0 = 0;
     }
 }
-
+#pragma pop
 void fn_802B0904(void) {
     ((int *)lbl_8055F9A0)[2] = 0;
 }
