@@ -36,6 +36,13 @@ extern f32 lbl_80562994;
 extern f32 lbl_80562974;
 extern f32 lbl_805629C8;
 extern s32 lbl_80437E24[3];
+extern f32 lbl_80558DC4[];
+s32 fn_801C34CC(f32 arg0, f32 arg1) {
+    f32 diff = arg0 - arg1;
+    f64 abs = __fabs((f64)diff);
+    return (f32)abs <= lbl_80558DC4[0];
+}
+
 char fn_801C5B60(void) {
     return lbl_8055E7E2;
 }
@@ -172,12 +179,13 @@ void fn_801C791C(void) {
 }
 
 void (*fn_801C7944(void))(void) {
-    lbl_8055E868 = fn_801C6CB0;
     lbl_8055E83A = 1;
     lbl_8055E848 = 0;
+    lbl_8055E868 = fn_801C6CB0;
     return fn_801C6CB0;
 }
 
+#pragma scheduling on
 void fn_801C7964(void) {
     Vec* src = &lbl_80438268;
     Vec* dst = &lbl_80438250;
@@ -185,19 +193,14 @@ void fn_801C7964(void) {
     dst->y = src->y;
     dst->z = src->z;
 }
-
 void (*fn_801C7990(void))(void) {
-    Vec* src = &lbl_80437D88.f_4E0;
-    Vec* dst1 = &lbl_80437D88.f_6F8;
-    Vec* dst2 = &lbl_80437D88.f_4D4;
-
-    dst1->x = src->x;
-    dst1->y = src->y;
-    dst1->z = src->z;
+    lbl_80437D88.f_6F8.x = lbl_80437D88.f_4E0.x;
+    lbl_80437D88.f_6F8.y = lbl_80437D88.f_4E0.y;
+    lbl_80437D88.f_6F8.z = lbl_80437D88.f_4E0.z;
     lbl_8055E83B = 1;
-    dst2->x = src->x;
-    dst2->y = src->y;
-    dst2->z = src->z;
+    lbl_80437D88.f_4D4.x = lbl_80437D88.f_4E0.x;
+    lbl_80437D88.f_4D4.y = lbl_80437D88.f_4E0.y;
+    lbl_80437D88.f_4D4.z = lbl_80437D88.f_4E0.z;
     lbl_8055E868 = fn_801C7964;
     return fn_801C7964;
 }
