@@ -50,11 +50,17 @@ extern s32 fn_80232578(s32);
 extern void fn_802C6CF8(s32);
 extern s32 lbl_80558A94;
 extern s32 fn_80207848(void *, s32);
-extern void *lbl_802FC420;
-extern void *lbl_802FC42C;
+extern char lbl_802FC420[];
+extern char lbl_802FC42C[];
 void fn_8000F1B4(void) {
     fn_802C6CF8(lbl_80558A94);
     lbl_80558A94 = -1;
+}
+
+void fn_8000F1E0(void) {
+    lbl_8055D4BC = fn_8023512C();
+    lbl_8055D4B4 = (UnkF22C *)fn_80207848(lbl_802FC420, 1);
+    lbl_8055D4B8 = (UnkF22C *)fn_80207848(lbl_802FC42C, 1);
 }
 
 void fn_8000F22C(void) {
