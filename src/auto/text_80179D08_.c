@@ -88,7 +88,6 @@ void fn_8017A800(void) {
 
 }
 
-void fn_80179D08(void*);
 void fn_80179EE8(void*, s32);
 void fn_80128668(void*);
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017B038(long arg0, long arg1) {
