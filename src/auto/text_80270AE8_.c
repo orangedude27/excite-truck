@@ -1,8 +1,27 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+void *fn_801E87A8(void);
+extern int lbl_8049F9D8;
+extern int lbl_8055F554;
+extern float lbl_80563E78;
+void fn_80270AE8(void *arg0) {
+    ((float *)arg0)[0] = lbl_80563E78;
+    ((float *)arg0)[1] = lbl_80563E78;
+    ((float *)arg0)[3] = lbl_80563E78;
+    ((float *)arg0)[2] = lbl_80563E78;
+}
+
 void DBPrintf_80270B00(const char *fmt, ...) {
 #pragma unused(fmt)
+}
+
+int fn_80270D1C(int arg0) {
+    switch (arg0) {
+    case 0: return 1;
+    case 1: return 2;
+    default: return 0;
+    }
 }
 
 extern char lbl_80346E90[];
