@@ -286,3 +286,36 @@ void fn_80128ED8(void *arg0, s32 arg1, s32 arg2) {
     p[4] = 0;
 }
 
+extern s32 lbl_8032A05C;
+void fn_80128EF0(void *arg0, s32 arg1) {
+    s32 temp_r30;
+    s32 temp_r31;
+    u32 var_r6;
+    temp_r30 = *(s32 *)((u8 *)arg0 + 8);
+    var_r6 = arg1 - (temp_r30 & (arg1 - 1));
+    if (var_r6 < 0x30U) var_r6 += arg1;
+    temp_r31 = *(s32 *)((u8 *)arg0 + 4);
+    ((void (*)(void *, s32, void *, s32))(*(void **)((u8 *)*(void **)arg0 + 0x10)))(arg0, var_r6 - 0x30, &lbl_8032A05C, 3);
+    *(u32 *)(temp_r31 + temp_r30) = 0x06630216;
+}
+
+void fn_801290CC(void *arg0, void *arg1) {
+    *(s32 *)((u8 *)arg1 - 0x10) = 0x06630216;
+    fn_80129088(arg0);
+}
+
+s32 fn_801290DC(void *arg0, s32 arg1) {
+    s32 aligned = ((s32 (*)(s32, s32))fn_801281F4)(arg1, 0x40);
+    s32 end = *(s32 *)((u8 *)arg0 + 8);
+    if (*(s32 *)((u8 *)arg0 + 4) < end - aligned)
+        return *(s32 *)((u8 *)arg0 + 0xC) + end - aligned;
+    return 0;
+}
+
+extern char lbl_8032A498[];
+void fn_80129138(void *arg0) {
+    fn_802E30C8(lbl_8032A498,
+        (void *)(*(s32 *)((u8 *)arg0 + 8) >> 10),
+        (void *)(*(s32 *)((u8 *)arg0 + 0xC) >> 10));
+}
+
