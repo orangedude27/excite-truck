@@ -409,7 +409,6 @@ extern void fn_802D362C(int);
 extern void fn_802D3304(void);
 #pragma dont_inline on
 void fn_802C9D88(int arg0) {
-#pragma dont_inline off
     fn_8012A364(lbl_8055FC9C, arg0);
     if (--lbl_8055FC98 == 0) {
         if (lbl_8055FC9C != 0)
