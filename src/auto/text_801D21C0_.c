@@ -9,6 +9,18 @@ extern s32 fn_801D2BF4(s32 *, s32 *);
 extern void fn_802C6CF8(s32);
 extern s32 fn_800241DC(s32 *, void *, s32, s32, void *);
 extern void qsort(void *, s32, s32, void *);
+extern void *fn_80131810(void);
+extern void fn_80131818(void *);
+extern void fn_801D25BC(void *, void *);
+extern void fn_801D26C8(void *, void *);
+extern void fn_801D2A24(void *);
+extern s32 strncmp(char *, char *, s32);
+extern char lbl_8055AC28[];
+extern void *lbl_80338300;
+extern void *lbl_8055ABE0;
+extern void *lbl_8055AC18;
+extern void *lbl_8055AC20;
+extern f32 lbl_80562A90;
 
 #pragma dont_inline on
 void fn_801D2B94(void) {
@@ -34,16 +46,23 @@ s32 fn_801D2BF4(s32 *arg0, s32 *arg1) {
 
 #pragma dont_inline on
 void fn_801D2C04(void) {
-    qsort(lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
+    s32 cmp = (s32)fn_801D2BF4;
+    s32 count = lbl_8055E930;
+    qsort(lbl_80438958, count, 0x4C4, (void *)cmp);
 }
 
 s32 fn_801D2C20(s32 arg0) {
     s32 sp8;
+    s32 cmp;
+    s32 count;
+
     sp8 = arg0;
     if (arg0 <= 0) {
         return 0;
     }
-    return fn_800241DC(&sp8, lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
+    cmp = (s32)fn_801D2BF4;
+    count = lbl_8055E930;
+    return fn_800241DC(&sp8, lbl_80438958, count, 0x4C4, (void *)cmp);
 }
 #pragma dont_inline off
 
