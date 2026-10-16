@@ -5,6 +5,21 @@
 
 extern s32 lbl_8055D4A8;
 extern f32 lbl_80350F28[][6];
+
+typedef struct Unk0x18 {
+    f32 unk_0x00;
+    f32 unk_0x04;
+    f32 unk_0x08;
+    f32 unk_0x0C;
+    s32 unk_0x10;
+    s32 unk_0x14;
+} Unk0x18;
+extern Unk0x18 lbl_8034F6B0[0x100];
+extern void fn_80010A50(f32, f32, f32, f32, s32, s32);
+extern void fn_80010B74(void);
+extern void fn_80010B7C(void);
+extern void fn_802C8BD0(s32);
+extern void fn_802C8D74(void);
 extern void fn_80234AEC(void);
 extern void *fn_80010BEC(void *);
 extern void fn_802346C8(void *);
