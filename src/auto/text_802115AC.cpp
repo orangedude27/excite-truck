@@ -289,6 +289,13 @@ extern "C" void fn_80215428(void *arg0) {
     }
 }
 
+extern "C" void fn_80215444(void *arg0) {
+    *(u8 *)((char *)arg0 + 0x19) = 0;
+    if (*(u8 *)((char *)arg0 + 0x1A) != 0) {
+        *(u8 *)((char *)arg0 + 0x234) = 1;
+    }
+}
+
 extern "C" void fn_80215464(void) {
 
 }
