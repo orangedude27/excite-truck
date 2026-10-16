@@ -35,6 +35,9 @@ s32 fn_8028774C(void *arg0) {
     return *((u8 *)arg0 + 0x1C) == 0;
 }
 
+void fn_8028777C(void) {
+}
+
 void fn_80287780(s32 arg0) {
     lbl_8055F6C0 = 0;
     fn_802AE374();
