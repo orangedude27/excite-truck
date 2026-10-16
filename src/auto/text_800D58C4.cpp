@@ -11,10 +11,12 @@ extern "C" void fn_800D7F6C(s32 *arg0) {
     *arg0 = -1;
 }
 
-void fn_800D7F78(void *arg0) {
+extern "C" void fn_800D7F78(void *arg0) {
     s32 *p = (s32 *)((u8 *)arg0 + 4);
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+    *(s32 *)((u8 *)arg0 + 8) = 0;
     *(s32 *)arg0 = 0;
-    *p = (s32)p;
+    *(s32 *)((u8 *)arg0 + 4) = (s32)p;
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
