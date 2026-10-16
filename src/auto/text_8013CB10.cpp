@@ -52,6 +52,10 @@ public:
 
 extern "C" s32 fn_8013D1F0(s32);
 
+extern "C" void fn_8013D27C(void *a, void *b) {
+    fn_8013D224(*(f32 *)((u8 *)a + 0x18), *(f32 *)((u8 *)b + 0x18));
+}
+
 extern "C" void fn_8013E338(void) {
 
 }
