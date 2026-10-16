@@ -6,3 +6,9 @@ void *fn_801298E8(void *arg0, int arg1);
 void *fn_80129AE8(void *arg0, int arg1) {
     return fn_801298E8(arg0, arg1);
 }
+
+extern void *lbl_8055DFD4;
+void* fn_80129AF4(void) {
+    return lbl_8055DFD4;
+}
+
