@@ -22,6 +22,16 @@ void* fn_80265DD8(void* arg0) {
     return arg0;
 }
 
+void fn_80265E08(void* arg0) {
+    float zero = lbl_80563C20;
+    *(int*)((char*)arg0 + 0) = 0;
+    *(float*)((char*)arg0 + 0x14) = zero;
+    *(float*)((char*)arg0 + 0x10) = zero;
+    *(float*)((char*)arg0 + 0xC) = zero;
+    *(int*)((char*)arg0 + 4) = 0;
+    *(int*)((char*)arg0 + 8) = 0;
+}
+
 void fn_80266070(void* arg0, void* arg1, void* arg2, void* arg3) {
     float scale = *(float*)((char*)arg0 + 0x10);
     float x = *(float*)((char*)arg3 + 0) * scale;
@@ -52,27 +62,40 @@ void *fn_80266120(void *arg0) {
     return arg0;
 }
 
-void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
-    float scale;
+void fn_80266150(void *arg0) {
+    *(int *)((char *)arg0 + 4) = 0;
+    *(int *)((char *)arg0 + 0) = 0;
+    *(float *)((char *)arg0 + 8) = lbl_8055C4C0;
+    *(float *)((char *)arg0 + 0xC) = lbl_80563C2C;
+}
 
-    scale = lbl_80563C20 + arg0[3] * ((PSQUATMultiply(arg2, arg4) - lbl_8055C4C4) - lbl_80563C20);
-    arg1[0] = arg2[0] + arg3[0] * scale;
-    arg1[1] = arg2[1] + arg3[1] * scale;
-    arg1[2] = arg2[2] + arg3[2] * scale;
+void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
+    float t;
+    float factor;
+    t = PSQUATMultiply(arg2, arg4) - lbl_8055C4C4;
+    t = t - lbl_80563C20;
+    factor = lbl_80563C20 + arg0[3] * t;
+    arg1[0] = arg2[0] + arg3[0] * factor;
+    arg1[1] = arg2[1] + arg3[1] * factor;
+    arg1[2] = arg2[2] + arg3[2] * factor;
 }
 
 void fn_802670A0(int *arg0, int arg1) {
     int count;
-    int div;
-    int scale;
+    int temp;
+    int half;
     int a;
     int b;
-
+    int div;
     count = fn_80178CA4();
-    scale = (count ^ 1);
-    scale = ((scale >> 1) - (scale & count) >> 31) + 1;
-    div = (count + scale - 1) / scale;
-    a = lbl_8055CFF0 / scale;
+    temp = count ^ 1;
+    half = temp >> 1;
+    a = temp & count;
+    temp = half - a;
+    temp = ((unsigned int)temp) >> 31;
+    temp += 1;
+    div = (count + temp - 1) / temp;
+    a = lbl_8055CFF0 / temp;
     b = lbl_8055CFF4 / div;
     arg0[0x40 / 4] = a;
     arg0[0x44 / 4] = b;
