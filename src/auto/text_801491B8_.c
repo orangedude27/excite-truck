@@ -12,6 +12,10 @@ extern void fn_801B8A7C(void);
 extern s32 lbl_8032E030[];
 extern s32 lbl_8032E048[];
 extern s32 lbl_8055E4D0;
+typedef struct {
+    s32 pad[8];
+    s32 (*fn)(void *, s32);
+} VTable80154618;
 extern void fn_802E30C8();
 
 void fn_8014ACCC(void) {
@@ -131,17 +135,16 @@ void fn_80154580(s32 arg0, void *arg1) {
     p = (s32 *)(arg0 + 0x9E4);
     for (i = 0; i < lbl_8055E4D0; i++) {
         s32 v = *(s32 *)((u8 *)p + 0x90);
-        q = (s32 *)((u8 *)q + 0x14);
         *(s32 *)((u8 *)q + 0x18) = v;
         fn_802E30C8(lbl_8032E048, i, v);
         p = (s32 *)((u8 *)p + 0xC0);
+        q = (s32 *)((u8 *)q + 0x14);
     }
 }
 
 s32 fn_80154618(void *arg0) {
     s32 **it = (s32 **)&lbl_804348E8;
     s32 found = 0;
-    s32 ret = 0;
     s32 i = 0;
     while (i < fn_801B2F24()) {
         if ((*(s32 *)((u8 *)*it + 0x1F0) == 0x50) &&
@@ -153,10 +156,10 @@ s32 fn_80154618(void *arg0) {
     }
     if (found == 0) {
         if (fn_801B8514() != 0) {
-            ret = 1;
+            return 1;
         }
     }
-    return ret;
+    return 0;
 }
 
 void fn_801546D4(s32 arg0) {
