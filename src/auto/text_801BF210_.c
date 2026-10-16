@@ -14,6 +14,12 @@ void fn_801BFEB0(void) {
 
 long fn_801BFEB4(long arg0) { return arg0 + 0x6C; }
 
+void GXInitLightAttnA_801BFEBC(void *arg0, float farg0, float farg1, float farg2) {
+    ((float *)arg0)[0] = farg0;
+    ((float *)arg0)[1] = farg1;
+    ((float *)arg0)[2] = farg2;
+}
+
 extern void fn_8019EECC(void *, void *);
 void fn_801C00B8(void *arg0, float *arg1) {
     void *callback = *(void **)((char *)arg0 + 4);
