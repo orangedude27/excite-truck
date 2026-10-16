@@ -107,6 +107,14 @@ s32 fn_80168944(s32 arg0, s32 arg1) {
     return (u32)__cntlzw(r) >> 5;
 }
 
+extern char lbl_80330364[];
+s32 fn_80169108(s32 arg0, s32 arg1) {
+    s32 addr = (s32)lbl_80330364;
+    s32 len = strlen((char *)addr);
+    s32 r = fn_8002B1D8(arg1, (s32 *)addr, len);
+    return (u32)__cntlzw(r) >> 5;
+}
+
 s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 a;
     s32 b;
