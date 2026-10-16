@@ -15,7 +15,7 @@ extern "C" s32 fn_80229CA4(s32 arg0) {
     return arg0 + 0x254;
 }
 
-void fn_80229CB4(void *arg0) {
+extern "C" void fn_80229CB4(void *arg0) {
     (*(u8 *)((u8 *)arg0 + 0x244)) = 1;
     (*(f32 *)((u8 *)arg0 + 0x248)) = 0.0f;
     if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
