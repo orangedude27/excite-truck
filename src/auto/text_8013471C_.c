@@ -45,8 +45,6 @@ void fn_80134A88(void) {
 
 }
 
-extern void fn_80134D78(void);
-extern void fn_80134DF8(void);
 extern f32 fn_80134C1C(void);
 extern f32 fn_80134D20(void);
 extern f32 fn_80134E00(void);
