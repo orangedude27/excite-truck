@@ -13,7 +13,7 @@ extern float lbl_80562C40;
 extern float lbl_80562C44;
 extern float lbl_80562C48;
 extern int lbl_8055E4D0;
-extern void PSVECMag(void*);
+extern float PSVECMag(void*);
 extern char lbl_8055AE2C;
 void* fn_801DF678(void* arg0, int arg1) {
     if (arg0 != 0) {
@@ -26,6 +26,18 @@ void* fn_801DF678(void* arg0, int arg1) {
             fn_80128668(arg0);
     }
     return arg0;
+}
+
+void fn_801DF6D0(void* arg0) {
+    int zero = 0;
+    void* ptr = &lbl_8055AE2C;
+    *(int*)((char*)arg0 + 0x18) = zero;
+    *(void**)((char*)arg0 + 4) = ptr;
+    *(void**)((char*)arg0 + 8) = ptr;
+    *(char*)arg0 = zero;
+    *(int*)((char*)arg0 + 0xC) = zero;
+    *(int*)((char*)arg0 + 0x10) = zero;
+    *(int*)((char*)arg0 + 0x14) = -1;
 }
 
 void fn_801DFE44(int a1, int a2) {
@@ -44,5 +56,23 @@ void fn_801E02A8(void) {
 
 void fn_801E02AC(void) {
 
+}
+
+void fn_801E02B0(void) {
+    volatile float a = lbl_80562C40;
+    volatile float b = lbl_80562C1C;
+    char* entry = (char*)lbl_8055EA04 + 4;
+    int i = 0;
+    do {
+        *(char*)(entry + 8) = 0;
+        i++;
+        *(float*)(entry + 4) = a;
+        *(float*)(entry + 0xC) = b;
+        *(float*)(entry + 0x10) = b;
+        *(char*)(entry + 0x14) = 0;
+        *(int*)(entry + 0x18) = -1;
+        *(float*)entry = b;
+        entry += 0x1C;
+    } while (i < lbl_8055E4D0);
 }
 
