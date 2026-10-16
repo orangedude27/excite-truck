@@ -153,6 +153,25 @@ int fn_801F2494(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_801F24D4(void *arg0, void *arg1) {
+    void *p = arg1;
+    while (p != 0) {
+        fn_802C7040(*(int *)((char *)p + 4));
+        p = *(void **)((char *)p + 0xC);
+    }
+}
+
+void fn_801F2514(void *arg1) {
+    int sp8;
+    fn_801F1C24(&sp8);
+    fn_802C7730(&sp8);
+    if (arg1 != 0) {
+        fn_801F2570(*(int *)((char *)arg1 + 4));
+        fn_802C7040(*(int *)((char *)*(void **)arg1 + 4));
+        fn_801F2570(*(int *)((char *)arg1 + 8));
+    }
+}
+
 void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
     unsigned int d, c, b, a;
     float f, e;
