@@ -259,7 +259,12 @@ void GKI_init(void) {
 }
 
 void GKI_shutdown(void) {
+    gki_cb.os.int_state[gki_cb.os.int_index] = OSDisableInterrupts();
+    gki_cb.os.int_index++;
     gki_cb.com.OSRdyTbl[GKI_PPC_TASK] = TASK_DEAD;
+    gki_cb.os.int_index--;
+    OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
+
     while (gki_cb.os.int_index > 0) {
         gki_cb.os.int_index--;
         OSRestoreInterrupts(gki_cb.os.int_state[gki_cb.os.int_index]);
@@ -282,7 +287,17 @@ void fn_8006EAD8(void) {
 
 }
 
+UINT8 GKI_send_event(UINT8 task_id, UINT16 event) {
+    if (task_id >= GKI_MAX_TASKS) {
+        return GKI_FAILURE;
+    }
 
+    fn_8006EBAC();
+    gki_cb.com.OSWaitEvt[task_id] |= event;
+    fn_8006EB88();
+
+    return GKI_SUCCESS;
+}
 
 u8 fn_8006EB80(void) {
     return 2;
