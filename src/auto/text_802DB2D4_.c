@@ -40,10 +40,7 @@ extern char lbl_8034CB24[];
 extern void *lbl_804DB468;
 extern unsigned int lbl_8055FEBC;
 
-void fn_802DC440(void) {
-    fn_802DBDD8();
-    fn_802DFCC0();
-}
+void fn_802DC440(void) { ((void (*)(void))fn_802DBDD8)(); fn_802DFCC0(); }
 
 extern int GXGetTexObjMipMap(void *);
 extern unsigned short GXGetTexObjWrapS(void *);
