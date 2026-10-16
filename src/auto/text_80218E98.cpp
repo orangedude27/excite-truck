@@ -560,34 +560,32 @@ extern "C" s32 fn_8022882C(s32 arg0, s32 arg1) {
 }
 
 extern "C" void *fn_8022886C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    fn_80218F80();
-    *(s32 *)((u8 *)arg0 + 0x244) = arg3;
-    *(void ***)arg0 = (void **)&lbl_8033DD20;
-    *(s32 *)((u8 *)arg0 + 0x268) = arg2;
-    *(u8 *)((u8 *)arg0 + 0x26C) = 0;
-    memset((u8 *)arg0 + 0x248, 0, 0x20);
-    return arg0;
+ fn_80218F80();
+ *(s32 *)((u8 *)arg0 + 0x244) = arg3;
+ *(s32 *)arg0 = (s32)lbl_8033DD20;
+ *(s32 *)((u8 *)arg0 + 0x268) = arg2;
+ *(u8 *)((u8 *)arg0 + 0x26C) = 0;
+ memset((u8 *)arg0 + 0x248, 0, 0x20);
+ return arg0;
 }
 
 void *__dt__10J2DTextBoxFv(void *arg0, s32 arg1) {
-    if (arg0 != 0) {
-        u8 flag = *(u8 *)((u8 *)arg0 + 0x26C);
-        *(void ***)arg0 = (void **)&lbl_8033DD20;
-        if (flag != 0) {
-            void *obj = *(void **)((u8 *)arg0 + 0x268);
-            if (obj != 0) { struct Slot { virtual void a(); virtual void b(); }; ((Slot *)obj)->b(); }
-            *(s32 *)((u8 *)arg0 + 0x268) = 0;
-        }
-        fn_8021915C(arg0, 0);
-        if (arg1 > 0) fn_80128668(arg0);
-    }
-    return arg0;
+ if (arg0) {
+  u8 flag = *(u8 *)((u8 *)arg0 + 0x26C);
+  *(void ***)arg0 = (void **)&lbl_8033DD20;
+  if (flag) {
+   void *obj = *(void **)((u8 *)arg0 + 0x268);
+   if (obj) ((VfObj *)obj)->vf2();
+   *(s32 *)((u8 *)arg0 + 0x268) = 0;
+  }
+  fn_8021915C(arg0, 0);
+  if (arg1 > 0) fn_80128668(arg0);
+ }
+ return arg0;
 }
 
 extern "C" void fn_8022897C(void *arg0) {
-    struct Slot { virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); };
-    void *obj = *(void **)((u8 *)arg0 + 0x268);
-    ((Slot *)obj)->e();
+ ((VfObj *)*(void **)((u8 *)arg0 + 0x268))->vf4();
 }
 
 extern "C" void fn_80214D48(void);
@@ -802,6 +800,43 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802295AC(void *arg0, 
 extern "C" u32 fn_80229614(void) { return 1; }
 
 extern "C" u32 fn_80229620(void) { return 1; }
+
+extern "C" void fn_80229628(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x254) = 1;
+    ((VfObj *)arg0)->vf31();
+}
+
+extern "C" void fn_80229640(void *arg0) {
+    s32 (*callback)();
+    ((VfObj *)arg0)->vf31();
+    *(u8 *)((u8 *)arg0 + 0x254) = 0;
+    if (*(u8 *)((u8 *)arg0 + 0x18) != 0 &&
+        (u32)(*(s32 *)((u8 *)arg0 + 0x25C) + 0x20000) != (u32)-0x46A &&
+        (callback = *(s32 (**)())((u8 *)arg0 + 0x258)) != 0 &&
+        callback() != 0)
+        fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+}
+
+extern "C" s32 fn_802296C0(void *arg0) {
+    class Obj7 {
+    public:
+        virtual s32 f0(); virtual s32 f1(); virtual s32 f2(); virtual s32 f3();
+        virtual s32 f4(); virtual s32 f5(); virtual s32 f6(); virtual s32 f7();
+    };
+    s32 result;
+    void *obj;
+    if ((u32)(*(s32 *)((u8 *)arg0 + 0x25C) + 0x20000) == (u32)-0x46A) {
+        result = 1;
+    } else if (*(u8 *)((u8 *)arg0 + 0x18) != 0) {
+        result = (*(u8 *)((u8 *)arg0 + 0x254) != 0) + 2;
+    } else {
+        result = 0;
+    }
+    obj = *(void **)((u8 *)arg0 + 0x244);
+    if (((Obj7 *)obj)->f7() == 3 && result == 3)
+        result = 1;
+    return result;
+}
 
 extern "C" void fn_802192AC(void *);
 extern "C" void fn_80229750(void *arg0) {
