@@ -19,6 +19,9 @@ extern "C" void fn_80148EDC(void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern "C" f32 lbl_805615F0;
+extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
+
 extern "C" void fn_801460F4(void) {
 }
 
@@ -153,6 +156,11 @@ extern "C" void fn_80148100(void *arg0) {
         *(f32 *)((u8 *)arg0 + 8), *(f32 *)((u8 *)arg0 + 0x10),
         *(f32 *)((u8 *)arg0 + 0x14), lbl_805615D4, lbl_805615D4,
         lbl_805615D4, lbl_805615D4);
+}
+
+extern "C" void fn_80148134(f32 *arg0, f32 *arg1, s32 arg2, f32 farg1) {
+    if (arg0 != NULL) *arg0 = fn_801451DC(arg2);
+    if (arg1 != NULL) *arg1 = fn_801452B4(farg1);
 }
 
 extern "C" void fn_8014819C(void *arg0, f32 farg0, f32 farg1) {
@@ -351,6 +359,14 @@ extern "C" void fn_80148EDC(void *arg0) {
             }
             fn_80128668(p);
         }
+        *(void **)arg0 = NULL;
+    }
+}
+
+extern "C" void deleteThreads__6SystemFv(void *arg0) {
+    void *p = *(void **)arg0;
+    if (p != NULL) {
+        ((void (*)(void *, s32))((void **)*(void **)p)[2])(p, 1);
         *(void **)arg0 = NULL;
     }
 }
