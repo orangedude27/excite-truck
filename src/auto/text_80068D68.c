@@ -10,6 +10,7 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern u8 lbl_80392960[];
 extern u32 lbl_8055DCA4;
 extern void fn_80070F90(void *ptr);
 extern u8 lbl_803C4C40[];
@@ -164,6 +165,14 @@ void fn_8006A3BC(void);
 void fn_8006A440(u32 r3, u32 r4)
 {
 	OSSwitchFiberEx(r3, r4, 0, 0, fn_8006A3BC, (u8*)&lbl_80393680 + 0x1000);
+}
+
+extern void fn_8006B598(void *);
+void fn_8006A7D0(s32 arg0, s32 arg1) {
+    OSDisableInterrupts();
+    *(s32 *)(lbl_80392960 + 0x674) = arg0;
+    *(s32 *)(lbl_80392960 + 0x678) = arg1;
+    OSRestoreInterrupts(0);
 }
 
 extern void *lbl_80319994;
