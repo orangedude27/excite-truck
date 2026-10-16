@@ -37,6 +37,13 @@ int fn_802B9920(int arg0) {
     return (short)lbl_802FAB60[idx];
 }
 
+void fn_802B9AA4(void *arg0, float *arg1, float *arg2) {
+    arg1[0] = *(float *)((char *)arg0 + 0x14);
+    arg1[1] = *(float *)((char *)arg0 + 0x18);
+    arg2[0] = *(float *)((char *)arg0 + 0x1C);
+    arg2[1] = *(float *)((char *)arg0 + 0x20);
+}
+
 void fn_802B9AC8(void) {
 }
 
