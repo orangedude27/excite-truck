@@ -14,3 +14,12 @@ int fn_802B539C(int arg0) {
 void* fn_802B59CC(void) {
     return lbl_8055F9E8;
 }
+extern void fn_802CAC54(int);
+extern int stricmp(const char *, const char *);
+extern const char lbl_8034A510[];
+extern int fn_8012E96C(const char *);
+extern int fn_802B5510(const char *);
+extern int fn_8013184C(void);
+extern const char lbl_8034A588[];
+struct TplLike { void *entries; unsigned int count; };
+extern struct TplLike lbl_804BE4AC;
