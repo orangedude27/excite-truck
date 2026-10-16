@@ -22,6 +22,32 @@ extern "C" void fn_80146584(void *arg0) {
     }
 }
 
+extern "C" void fn_80128670(s32);
+extern "C" void fn_80131818(void);
+extern "C" void fn_80145DD8(void *);
+extern "C" void fn_80146584(void *);
+extern "C" void fn_801465C8(void *);
+extern "C" void fn_80146638(void *);
+extern "C" void fn_801466B4(void *);
+extern "C" void fn_80146730(void *);
+extern "C" void fn_801467AC(void *);
+extern "C" void *lbl_8032D1E8;
+extern "C" void fn_801465C8(void *arg0) {
+    void *p = *(void **)arg0;
+    if (p != NULL) {
+        if (p != NULL) {
+            fn_80128670(((s32 *)p)[3]);
+            if (p != NULL) {
+                ((s32 *)p)[0] = 0;
+                ((s32 *)p)[1] = 0;
+                ((s32 *)p)[2] = 0;
+            }
+            fn_80128668(p);
+        }
+        *(void **)arg0 = NULL;
+    }
+}
+
 extern "C" void fn_80148218(void) {
 }
 
