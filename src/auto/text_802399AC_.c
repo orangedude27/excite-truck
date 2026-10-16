@@ -1,3 +1,4 @@
+#include <stdarg.h>
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
 extern s32 lbl_8049870C[];
