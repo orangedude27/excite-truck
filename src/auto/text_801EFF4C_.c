@@ -13,7 +13,7 @@ int fn_801F0F18(int, int);
 int fn_801F0E88(int, int);
 int fn_801284F8(int, void *);
 int fn_801F0DC0(int, int, int);
-extern unsigned char lbl_8055B0B8[];
+extern int lbl_8055B0B8;
 void fn_801F0000(int arg0) {
     fn_801F0F18(arg0, -1);
 }
