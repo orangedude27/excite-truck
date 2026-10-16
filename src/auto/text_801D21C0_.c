@@ -22,6 +22,21 @@ extern void *lbl_8055AC18;
 extern void *lbl_8055AC20;
 extern f32 lbl_80562A90;
 
+typedef struct UnkObj UnkObj;
+typedef struct {
+    char pad0[8];
+    void *(*fn8)(void *);
+    char pad1[4];
+    void *(*child)(void *, s32);
+    char pad2[0x0C];
+    s32 (*fn1C)(void *, void *);
+    char pad3[8];
+    f32 (*fn28)(void *, void *, f32);
+    char pad4[0x2C];
+    void *(*fn5C)(void *, void *);
+} Vt801D;
+struct UnkObj { const Vt801D *vt; };
+
 #pragma dont_inline on
 void fn_801D2B94(void) {
     u8 *var_r31;
