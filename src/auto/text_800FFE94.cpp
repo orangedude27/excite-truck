@@ -78,6 +78,10 @@ extern "C" float fn_801013DC(void* arg0) {
     return *(float*)((char*)arg0 + 0x3C);
 }
 
+extern "C" float fn_801013E4(void* arg0) {
+    return *(float*)((char*)arg0 + 0x24);
+}
+
 extern "C" int fn_801013EC(void* arg0) {
     return *((unsigned char*)arg0 + 0x20) != 0;
 }
