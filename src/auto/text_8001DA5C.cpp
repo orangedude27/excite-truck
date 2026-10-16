@@ -104,7 +104,7 @@ extern "C" void fn_8001DFF0(void) {
 }
 
 extern "C" void fn_802CAC54(void*);
-extern "C" int lbl_802FDC98;
+extern "C" int lbl_802FDC98[];
 extern "C" void* __dt__14CollisionSpaceFv(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void**)arg0 = &lbl_802FDC98;
