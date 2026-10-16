@@ -296,6 +296,14 @@ extern "C" void fn_800B7710(void *arg0) {
     }
 }
 
+extern "C" void fn_800B783C(void *arg0) {
+    extern s32 fn_800B8048(s32);
+    if (--*(s32 *)((u8 *)arg0 + 4) == 0) {
+        *(s32 *)((u8 *)arg0 + 0xc) = 0;
+        fn_800B8048(*(s32 *)((u8 *)arg0 + 8));
+    }
+}
+
 extern void *lbl_8055DD10;
 extern "C" void __AXDSPInitCallback_800B7860(void) {
     lbl_8055DD10 = 0;
@@ -303,6 +311,17 @@ extern "C" void __AXDSPInitCallback_800B7860(void) {
 
 void fn_800B78EC(void) {
 
+}
+
+extern "C" void fn_800B78F4(void *arg0, void *arg1) {
+    OSCalendarTime time;
+    OSTicksToCalendarTime(OSGetTime(), &time);
+    ((s32 *)arg0)[0] = time.mday;
+    ((s32 *)arg0)[1] = time.month + 1;
+    ((s32 *)arg0)[2] = time.min;
+    ((s32 *)arg1)[0] = time.hour;
+    ((s32 *)arg1)[1] = time.sec;
+    ((s32 *)arg1)[2] = time.sec;
 }
 
 extern "C" s32 fn_800B7B34(s8 arg0) {
@@ -370,6 +389,18 @@ extern "C" s32 fn_800B7DB0(s32 arg0, Unk800B7E18Callback arg1, Unk800B7E18Callba
 
 extern "C" void fn_800B7E18(u32 arg0) {
     if (lbl_80405D00[0]) lbl_80405D00[0]((u8)arg0);
+}
+
+extern "C" void fn_800B7E38(u8 arg0) {
+    if (lbl_80405D00[1] != 0)
+        lbl_80405D00[1](arg0);
+}
+
+extern "C" s32 fn_800B7E5C(s8 arg0) {
+ s32 temp_r3 = fn_800B76E8(arg0);
+ if (temp_r3 == -1) return -1;
+ if (temp_r3 == 1) return 1;
+ return (s32)(-temp_r3 | temp_r3) >> 31;
 }
 
 extern "C" s32 OSReport(const char *, ...);
