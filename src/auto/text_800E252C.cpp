@@ -318,7 +318,10 @@ extern "C" int GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hb
 extern "C" unsigned int GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(unsigned int arg0, int arg1) {
     int result = 0;
     switch (arg1) {
-    case 0: { int rem = arg0 & 7; result = (arg0 >> 3) * 14; if (rem != 0) result += (rem - 1) * 2; break; }
+    case 0:
+        result = (arg0 >> 3) * 14;
+        if ((arg0 & 7) != 0) result += (((int)(arg0 & 7) - 1) * 2);
+        break;
     case 25: result = arg0; break;
     case 10: result = arg0 >> 1; break;
     default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x5A4, lbl_80322438); break;
