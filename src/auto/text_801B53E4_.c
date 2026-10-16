@@ -44,3 +44,17 @@ void fn_801B5410(void *arg0, void *arg1, void *arg2) {
 s32 fn_801B54A8(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x3C);
 }
+
+void *fn_801B591C(void *arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        s32 temp = *(s32 *)((u8 *)arg0 + 8);
+        if (temp != 0) {
+            ((void (*)(void *, void *(*)(void *, s32)))fn_8002F6AC)((void *)temp, fn_801B591C);
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
