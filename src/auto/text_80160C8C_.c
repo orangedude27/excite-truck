@@ -102,6 +102,10 @@ void fn_80164D60(void) {
 
 }
 
+unsigned char fn_80165040(void *arg0) {
+    return *((unsigned char *)arg0 + 5);
+}
+
 void fn_80165248(void) {
 
 }
