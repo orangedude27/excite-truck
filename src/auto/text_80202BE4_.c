@@ -44,6 +44,10 @@ extern void fn_802D306C(s32);
 typedef struct { u8 pad[0x24]; f32 x; f32 y; f32 z; } unk_80203A88_dest;
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1);
 
+u32 fn_80202BE4(void) {
+    return (u32)((2 - lbl_8055ED14) | (lbl_8055ED14 - 2)) >> 0x1FU;
+}
+
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     s32 temp_r5;
     s32 temp_r6;
