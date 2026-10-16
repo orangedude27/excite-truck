@@ -190,17 +190,20 @@ void fn_801C6D94(void) {
 }
 
 void fn_801C7254(void *arg0) {
-    f32 t1, t2, t3;
+    f32 f5, f2, f4, f1, f3, f0;
     f32 *ptr = (f32*)arg0;
     
-    t1 = ptr[1];
-    t2 = ptr[3];
-    t3 = ptr[5];
-    ptr[1] = ptr[3];
-    ptr[3] = t1;
-    ptr[2] = ptr[6];
-    ptr[6] = t2;
-    ptr[5] = ptr[7];
-    ptr[7] = t3;
+    f5 = ptr[1];
+    f2 = ptr[3];
+    f4 = ptr[2];
+    f1 = ptr[6];
+    f3 = ptr[5];
+    f0 = ptr[7];
+    ptr[1] = f2;
+    ptr[3] = f5;
+    ptr[2] = f1;
+    ptr[6] = f4;
+    ptr[5] = f0;
+    ptr[7] = f3;
 }
 
