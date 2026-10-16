@@ -5,6 +5,7 @@ extern char lbl_804A4380[];
 void fn_8027AF94(void *);
 void fn_8027B288(void *);
 long fn_80131818(long);
+long fn_8027D1F4(void);
 long fn_8000DA10(void);
 void *fn_8001BB58(long, long, long);
 long fn_801284F8(long, char *);
@@ -193,6 +194,20 @@ long *fn_8027C26C(void *arg0, const char *arg1) {
     if (index < 0)
         return 0;
     return *(long **)((char *)arg0 + 0xAF0C) + index * 0xC;
+}
+
+void fn_8027C59C(long arg0) {
+    long value;
+
+    if (lbl_8055F654 == 0) {
+        value = fn_801284F8(0xB020, lbl_80347B68);
+        if (value != 0)
+            value = fn_8027C41C(arg0);
+        lbl_8055F654 = value;
+        lbl_8055F658 = 1;
+    } else {
+        lbl_8055F658++;
+    }
 }
 
 void fn_8027C610(void) {
