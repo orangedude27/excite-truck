@@ -3,6 +3,11 @@
 
 #include <types.h>
 
+extern void *lbl_8055DDF0;
+extern void *MEMAllocFromAllocator(void *, u32);
+extern void MEMFreeToAllocator(void *, void *);
+extern "C" u16 fn_8002AEE8(const u16 *);
+
 extern void *lbl_80320548;
 extern const char lbl_80320570[];
 extern const char lbl_80320688[];
@@ -97,5 +102,25 @@ void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u3
     base[0xD9] = c[1];
     base[0xDA] = c[2];
     base[0xDB] = c[3];
+}
+
+extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, u32 index) {
+    if (index >= 0x10) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1e6, lbl_803206B8);
+    }
+    u32 part1 = (index >> 1) & 0x7FFFFFFC;
+    u32 part2 = index & 3;
+    u8 *base = (u8 *)this_ptr + part1;
+    return base[part2 + 0xD8];
+}
+
+extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7TextBoxFUlUc(void *this_ptr, u32 index, u8 color) {
+    if (index >= 0x10) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1ee, lbl_803206B8);
+    }
+    u32 part1 = (index >> 1) & 0x7FFFFFFC;
+    u32 part2 = index & 3;
+    u8 *base = (u8 *)this_ptr + part1;
+    base[part2 + 0xD8] = color;
 }
 
