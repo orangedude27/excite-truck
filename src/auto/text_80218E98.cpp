@@ -55,6 +55,7 @@ public:
 };
 
 extern "C" void fn_8023976C(s32);
+extern "C" int lbl_8033FA28[];
 extern "C" void fn_80218F80(void);
 extern "C" void fn_8023986C(s32);
 extern "C" void fn_8023967C(s32, s32);
