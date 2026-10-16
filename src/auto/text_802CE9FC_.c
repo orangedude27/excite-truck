@@ -10,6 +10,13 @@ void fn_802CF104(void) {
     fn_802CF048(1);
 }
 
+void fn_802D2614(void) {
+    fn_802D14D8();
+    fn_802D1678();
+    fn_802D2218();
+    fn_802D0EEC();
+}
+
 extern void *lbl_8055FD64;
 void* fn_802D2D14(void) {
     return lbl_8055FD64;
