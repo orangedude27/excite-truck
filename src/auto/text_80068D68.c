@@ -439,6 +439,17 @@ void fn_8006EC24(s32 arg0, s32 arg1) {
     fn_80070B24((s8)arg1);
 }
 
+void fn_8006F18C(u8 arg0, u8 arg1, u16 arg2) {
+    hcisu_h2_cb_t *cb = &hcisu_h2_cb;
+    cb->pad[0x1E] = 0;
+    cb->pad[0x1A] = 0;
+    cb->pad[0x1B] = 0;
+    cb->pad[0x1C] = 0;
+    cb->at_0x1F = arg0;
+    cb->pad[0x20] = arg1;
+    *(u16 *)&cb->pad[0x12] = arg2;
+}
+
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
  * BUFFER_Q acl_q @0x2C, BUFFER_Q sco_q @0x3C. */
 typedef struct uusb_cb_t {
