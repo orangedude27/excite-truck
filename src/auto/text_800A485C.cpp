@@ -33,6 +33,7 @@ public:
 extern "C" const char *lbl_8031D990[];
 extern "C" const char *lbl_8031E218[];
 extern "C" const char lbl_8031E770[];
+extern "C" const char lbl_8031E83C[];
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
