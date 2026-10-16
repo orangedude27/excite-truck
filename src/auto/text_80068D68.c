@@ -505,6 +505,7 @@ extern OSAlarm lbl_803C0A20;
 extern void uusb_CloseDeviceCB(void);
 extern u8 lbl_8055DC51;
 extern s32 IUSB_CloseDeviceAsync(s32 fd, void (*callback)(void), void *arg);
+extern s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void* buffer, s32 ioctl, void (*callback)(void), void* callbackArg, s32 async);
 void fn_80070758(void) {
     fn_8009B0E0();
     fn_8006EBAC();
@@ -955,7 +956,7 @@ static void USB_LOG(const char *fmt, ...) {
     va_list list;
 
     if (lbl_8055DC90) {
-        OSReport(lbl_805590A4);
+        OSReport((char *)0x803C469C);
         va_start(list, fmt);
         vprintf(fmt, list);
         va_end(list);
