@@ -273,6 +273,7 @@ typedef struct uusb_cb_t {
 extern uusb_cb_t lbl_803BD1E0;
 extern void uusb_CloseDeviceCB(void);
 extern u8 lbl_8055DC51;
+extern s32 IUSB_CloseDeviceAsync(s32 fd, void (*callback)(void), void *arg);
 void fn_80070758(void) {
     fn_8009B0E0();
     fn_8006EBAC();
