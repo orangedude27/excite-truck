@@ -191,7 +191,6 @@ void* fn_802D3138(void) {
 void fn_802D37E4(void) {
     int i;
     unsigned char *p;
-
     p = lbl_804C9984;
     for (i = 0; i < 4; i++) {
         p[0xC] = 0; p[0xD] = 0;
@@ -216,37 +215,61 @@ void fn_802D37E4(void) {
 }
 
 void fn_802D3894(void) {
-    int i;
     unsigned char *p;
-
-    i = 0;
+    int i;
     p = lbl_804C9984;
+    i = 0;
     do {
-        if (p[0xC] == 0)
-            break;
-        fn_802E317C(lbl_8034C1C4);
+        if (p[0xC] == 0) break;
+        fn_802E317C((const char *)lbl_8034C1C4);
         i++;
+        if (i >= 0x40) break;
         p += 0x18;
-    } while (i < 0x40);
+    } while (1);
 }
 
 void fn_802D3900(void) {
-    int i;
+    unsigned char *slot;
     unsigned char *base;
+    int count;
     void *light;
     unsigned long result;
-
     base = lbl_804C9984;
-    i = 0;
-    while (i < *(int *)(base + 0x700)) {
-        light = *(void **)(base + 0x600 + i * 4);
-        GXInitLightDir(*(unsigned short *)light, *(unsigned short *)((char *)light + 4), &result);
+    slot = base;
+    count = 0;
+    do {
+        light = *(void **)(slot + 0x600);
+        GXInitLightDir(*(unsigned long *)light, *(unsigned long *)((char *)light + 4), &result);
         *(unsigned char *)((char *)light + 0xD) =
-            result != *(unsigned long *)((char *)light + 8);
-        i++;
-    }
+            ((result ^ *(unsigned long *)((char *)light + 8)) != 0);
+        slot += 4;
+        count++;
+    } while (count < *(int *)(base + 0x700));
     *(int *)(base + 0x700) = 0;
 }
+
+extern char lbl_8034C1E4[];
+extern float lbl_80564F88;
+void *fn_802D39A4(float value) {
+    unsigned char *p = lbl_804C9984;
+    int i;
+    unsigned char *found = 0;
+    for (i = 0; i < 0x40; i++) {
+        if (p[0xC] == 0) {
+            found = lbl_804C9984 + i * 0x18;
+            break;
+        }
+        p += 0x18;
+    }
+    if (found == 0) fn_802E317C(lbl_8034C1E4);
+    found[0xC] = 1;
+    found[0xD] = 0;
+    *(float *)(found + 0x10) = value;
+    *(float *)(found + 0x14) = lbl_80564F88;
+    return found;
+}
+
+void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
 
 extern unsigned long lbl_8055D0B8;
 extern unsigned char lbl_804C5710[4];
