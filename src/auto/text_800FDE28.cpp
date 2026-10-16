@@ -55,6 +55,7 @@ extern "C" void fn_800FDFF8(void *arg0) {
 
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
     f32 v;
+    s32 idx;
 
     if (value > lbl_805610D4) {
         v = lbl_805610D4;
@@ -64,11 +65,13 @@ extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
         v = value;
     }
 
-    return lbl_802F5210[(s32)(lbl_805610DC * v) + 0x388];
+    idx = (s32)(lbl_805610DC * v);
+    return lbl_802F5210[idx + 0x388];
 }
 
 extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     f32 v;
+    f32 t;
 
     if (pan > lbl_805610C8) {
         v = lbl_805610C8;
@@ -78,8 +81,9 @@ extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
         v = pan;
     }
 
+    t = lbl_805610C8 + v;
     return lbl_802F6124[(s32)(lbl_805610D0 +
-                              lbl_805610E4 * (v * lbl_805610D0))];
+                              lbl_805610E4 * (t * lbl_805610D0))];
 }
 
 extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
@@ -139,10 +143,10 @@ extern "C" void fn_800FEC1C(s32 *arg0, s32 arg1) {
     *arg0 = arg1;
 }
 
-extern "C" s32 fn_80128668(void);
+extern "C" s32 fn_80128668(void *);
 extern "C" s32 fn_800FF940(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
-        fn_80128668();
+        ((s32 (*)(void))fn_80128668)();
     }
     return arg0;
 }
