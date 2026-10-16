@@ -24,7 +24,7 @@ void fn_80235380(s32);
 void fn_802C519C(s32);
 void fn_802328D4(s32);
 void fn_80128668(void *);
-s32 fn_802E499C(unsigned short *, unsigned short, unsigned short, unsigned short, unsigned short, unsigned short);
+s32 fn_802E499C(unsigned short *, unsigned short, unsigned short, unsigned short, unsigned short);
 void fn_8020C918(s32);
 extern unsigned short lbl_802FA48C[6];
 extern float lbl_805638B0;
@@ -107,6 +107,20 @@ void fn_80247880(void) {
 extern void* lbl_8055BEB4;
 void fn_80247AAC(void) {
     lbl_8055BEB4 = (void*)fn_80214D04();
+}
+
+void fn_8024859C(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(unsigned char*)((char*)arg0 + 0x18) = 0;
+        *(unsigned char*)((char*)arg0 + 0x50) = 0;
+        *(unsigned char*)((char*)arg0 + 0x5C) = 0;
+        *(s32*)((char*)arg0 + 0x24) = 1;
+        *(s32*)((char*)arg0 + 0x20) = 0;
+        *(unsigned char*)((char*)arg0 + 0x44) = 0;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
 }
 
 void fn_80248770(void *arg0) {
