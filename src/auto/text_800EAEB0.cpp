@@ -297,6 +297,22 @@ extern "C" s32 fn_800EE43C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
+extern "C" void fn_800EE47C(void* arg0) {
+    s32 result;
+    if (((u8*)arg0)[0x1D8] != 0) {
+        result = NANDClose((u8*)arg0 + 0x14C);
+        if (result != 0) {
+            Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803237D0, 0x8D,
+                                          (const char*)lbl_803237EC, result);
+        }
+        ((u8*)arg0)[0x1D8] = 0;
+    }
+    fn_800F27AC(arg0);
+}
+
 extern "C" void fn_800EF9B8(void* arg0, f32 arg1) {
     u32 level;
     level = OSDisableInterrupts();
