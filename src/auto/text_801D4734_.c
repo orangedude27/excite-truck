@@ -42,6 +42,10 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+char *fn_801D77AC(void) {
+    return lbl_803388F0;
+}
+
 s32 fn_801D77B8(s32 arg0) {
     return ((s32 *)arg0)[2];
 }
@@ -60,15 +64,46 @@ s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
 void fn_801D77D8(void *arg0) {
-    fn_80116BCC(arg0);
+    ((void (*)(void *))((void ***)arg0)[0xE])(arg0);
 }
 
 void fn_801D77E8(void) {
 
 }
 
-void fn_801D77EC(void *arg0) {
-    fn_80127464(arg0);
+void fn_801D77EC(void *arg0, s32 arg1) {
+    s32 *ptr = (s32 *)arg0;
+    s32 count = ptr[0x1D];
+    s32 *array = (s32 *)ptr[0x1C];
+    s32 r6 = 0;
+    s32 r7 = 0;
+    
+    if (count <= 0) {
+        goto post_loop;
+    }
+    
+    for (; r7 < count * 4; r7 += 4, r6++) {
+        if (array[r7 / 4] == arg1) {
+            goto post_loop;
+        }
+    }
+    
+    r6 = -1;
+    
+post_loop:
+    if (r6 == -1) {
+        return;
+    }
+    if (r6 <= 0) {
+        return;
+    }
+    if (r6 >= count) {
+        return;
+    }
+    if (r6 == count - 1) {
+        array[r6] = array[count - 1];
+        ptr[0x1D] = count - 1;
+    }
 }
 
 void fn_801D8620(void) {
