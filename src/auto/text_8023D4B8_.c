@@ -84,6 +84,11 @@ int fn_8023DF70(int arg0, int arg1) {
     return arg0;
 }
 
+s32 fn_8023DFB0(void) {
+    fn_8023DD4C();
+    return 0;
+}
+
 extern int fn_80128668(void);
 extern void fn_8023DA64(void *, int, int);
 extern void *lbl_8055F19C;
