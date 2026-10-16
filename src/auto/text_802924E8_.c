@@ -12,3 +12,7 @@ void fn_802924E8(void) {
 void fn_80292618(void) {
 }
 
+void fn_8029261C(void) {
+    fn_80292EB4(lbl_804B4168);
+}
+
