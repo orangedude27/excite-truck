@@ -18,6 +18,9 @@ struct Unk_80245080 {
 
 extern struct Unk_80245080* lbl_8055F244;
 extern s32 lbl_804988B0[];
+#ifndef NULL
+#define NULL ((void*)0)
+#endif
 
 s32 fn_802E8D7C(s32);
 void fn_80236900(void);
