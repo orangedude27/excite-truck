@@ -139,6 +139,55 @@ void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
     } while (i < fn_80012854());
 }
 
+extern char lbl_80347B30[];
+void fn_8027C0D0(void *arg0, long arg1, void **arg2) {
+    *(long *)arg0 = arg1;
+    *(long *)((char *)arg0 + 8) = (long)arg2;
+    *(long *)((char *)arg0 + 4) =
+        (*(long (**)(void *, char **))(*(void ***)arg2)[5])(arg2, (char **)&lbl_80347B30);
+}
+
+long *fn_8027C120(long arg0, long arg1) {
+    long index = 0;
+    long offset = 0;
+    while (index < *(long *)(arg0 + 4)) {
+        if (stricmp((char *)arg1, *(char **)(*(long *)arg0 + offset + 0xC)) == 0)
+            break;
+        offset += 0x14;
+        index++;
+    }
+    if (index >= *(long *)(arg0 + 4))
+        index = -1;
+    if (index < 0)
+        return 0;
+    return (long *)(*(long *)arg0 + index * 0x14);
+}
+
+long fn_8027C1C8(void *arg0, const char *arg1) {
+    long index = 0;
+    long offset = 0;
+    while (index < *(long *)((char *)arg0 + 0xAF10)) {
+        if (stricmp(arg1, *(char **)((char *)arg0 + 0xAF0C + offset + 4)) == 0)
+            break;
+        offset += 0xC;
+        index++;
+    }
+    if (index >= *(long *)((char *)arg0 + 0xAF10))
+        index = -1;
+    return index;
+}
+
+void *fn_8027C258(void *arg0, long arg1) {
+    return (char *)*(void **)((char *)arg0 + 0xAF0C) + arg1 * 0xC;
+}
+
+long *fn_8027C26C(void *arg0, const char *arg1) {
+    long index = fn_8027C1C8(arg0, arg1);
+    if (index < 0)
+        return 0;
+    return *(long **)((char *)arg0 + 0xAF0C) + index * 0xC;
+}
+
 long fn_8027C8B0(void) { return 1; }
 
 long fn_8027CB20(void) { return 1; }
