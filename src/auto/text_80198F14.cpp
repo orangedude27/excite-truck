@@ -132,7 +132,6 @@ void fn_8019F03C(void* arg0) {
     *(f32*)((u8*)arg0 + 0x3C) = lbl_805622D0;
 }
 
-void fn_8019AC44(f32*, f32*, f32);
 void fn_8019F1A4(void* arg0) {
     fn_8019AC44((f32*)((u8*)arg0 + 0x34), (f32*)((u8*)arg0 + 0x40), *(f32*)((u8*)arg0 + 0x24));
 }
