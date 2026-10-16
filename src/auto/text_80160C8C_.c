@@ -45,6 +45,10 @@ unsigned char fn_80163F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x56D);
 }
 
+unsigned char fn_80163F74(void *arg0) {
+    return *((unsigned char *)arg0 + 0x56D);
+}
+
 int fn_801643C8(void *arg0) {
     int var_r30;
     int var_r31;
