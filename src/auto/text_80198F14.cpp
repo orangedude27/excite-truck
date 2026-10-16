@@ -767,6 +767,13 @@ void fn_801A49FC(void* arg0) {
     }
 }
 
+extern "C" void fn_801A4E28(void) {
+#pragma small_data off
+    extern s32 lbl_803336EC;
+    lbl_8055E5A0 = fn_801CFEAC(&lbl_803336EC);
+#pragma small_data on
+}
+
 extern "C" void fn_801A4E54(void) {
     if (lbl_8055E5A0 != 0) {
         ((void (*)(s32))fn_801CFF14)(lbl_8055E5A0);
