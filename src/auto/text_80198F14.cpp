@@ -630,10 +630,8 @@ void fn_801A47FC(void* arg0) {
 #pragma opt_tail_call on
 void fn_801A4868(void* arg0, u8 arg1) {
     if (*(u8*)((u8*)arg0 + 0x40) != arg1) {
-        s32 local38;
-        u8 localC;
-        local38 = *(s32*)((u8*)arg0 + 0x38);
-        localC = arg1;
+        s32 local38; u8 localC;
+        local38 = *(s32*)((u8*)arg0 + 0x38); localC = arg1;
         fn_801796EC(12, (s32*)&local38, 8);
         *(u8*)((u8*)arg0 + 0x40) = arg1;
     }
