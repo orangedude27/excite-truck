@@ -169,6 +169,20 @@ s32 fn_8014ACD8(void *arg0, s32 arg1) {
 
 s32 fn_8014AD64(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x108); }
 
+extern s32 fn_80176A1C(void);
+extern f32 fn_80176A2C(void);
+extern f32 lbl_8056164C;
+extern f32 lbl_80561650;
+void fn_8014AD74(void *arg0) {
+    f32 step;
+    if (fn_80176A1C() == 2) {
+        step = fn_80176A2C();
+    } else {
+        step = lbl_8056164C;
+    }
+    *(f32 *)((u8 *)arg0 + 8) += lbl_80561650 * step;
+}
+
 void fn_8014AED0(void *arg0, f32 farg0) {
     ((f32 *)arg0)[0x41] = farg0;
 }
@@ -420,3 +434,7 @@ void fn_8014F108(void *arg0) {
 }
 extern unsigned long lbl_80559E94;
 extern unsigned long lbl_80559E9C;
+extern s32 fn_80176A1C(void);
+extern f32 fn_80176A2C(void);
+extern f32 lbl_8056164C;
+extern f32 lbl_80561650;
