@@ -8,6 +8,10 @@
 extern void* fn_802ECC74(void*);
 void AXFXSetHooks_8011FFB8();
 void fn_80120084();
+extern void *lbl_8055DEF8;
+extern void *lbl_8055DEFC;
+extern void *lbl_80559948[];
+extern u32 lbl_8055994C[];
 extern void fn_80127F70(void*);
 extern void fn_80127F94(void*);
 void fn_80127440(void);
@@ -233,6 +237,7 @@ extern void *lbl_80559948[];
 extern u32 lbl_8055994C[];
 extern void *malloc(u32);
 extern void free(void *);
+extern void *fn_8011FFC4(s32);
 void *fn_8011FFC4(s32 arg0) {
     s32 base;
     u8 mode;
@@ -258,6 +263,15 @@ got_memory:
     *((u8 *)result - 2) = mode;
     if (mode == 3) *(void **)((u8 *)result - 8) = lbl_8055DEFC;
     return result;
+}
+
+void fn_80120084(void *arg0) {
+    u8 *ptr = arg0;
+    u8 *base;
+    if (ptr == 0) return;
+    base = ptr - ptr[-1];
+    if (ptr[-2] == 3) ((void (*)(void *))*(void **)(ptr - 8))(base);
+    else free(base);
 }
 
 void fn_80121BF4(void *arg0) {
