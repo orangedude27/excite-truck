@@ -798,22 +798,22 @@ extern "C" s32 fn_8015A814(void) {
     return 9;
 }
 
-void fn_8015A81C(Unk801577F0 *self) {
+extern "C" void fn_8015A81C(Unk801577F0 *arg0) {
     s32 i;
     s32 offset = 0;
-    for (i = 0; i < self->mCount; i++) {
-        u8 *entry = self->mData + offset;
+    for (i = 0; i < arg0->mCount; i++) {
+        u8 *entry = arg0->mData + offset;
         *(s32 *)(entry + 0) = 0;
         *(s32 *)(entry + 4) = 0;
         *(s32 *)(entry + 8) = 0;
-        *(f32 *)(entry + 0xc) = lbl_8056175C;
+        *(f32 *)(entry + 0xc) = lbl_80561754;
         offset += 0x38;
     }
-    self->m264 = 0;
-    self->m260 = 0;
-    self->m254 = lbl_8056175C;
-    self->m25c = 0.0f;
-    self->v33();
+    arg0->m264 = 0;
+    arg0->m260 = 0;
+    arg0->m254 = lbl_80561754;
+    arg0->m25c = lbl_80561750;
+    arg0->v31();
 }
 
 extern "C" s32 fn_8015ADA4(void) {
@@ -838,6 +838,43 @@ extern "C" void* fn_8015ADAC(void* arg0, s32 arg1) {
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
+    arg0->m264 = 0;
+    if (arg0->m260 > 0) {
+        if (arg0->m258 != 0)
+            fn_801CB6E4((void *)arg0, *(s32 *)((u8 *)arg0 + 4));
+        arg0->m260 = 0;
+        arg0->m254 = lbl_80561754;
+        arg0->m25c = lbl_80561750;
+        arg0->v31();
+    }
+    if (*(s32 *)((u8 *)arg0 + 0x278) > 0) {
+        fn_801CB6E4((void *)0x50204, *(s32 *)((u8 *)arg0 + 4));
+        *(s32 *)((u8 *)arg0 + 0x278) = 0;
+    }
+    *(s32 *)((u8 *)arg0 + 0x26c) = 0;
+    *(f32 *)((u8 *)arg0 + 0x270) = lbl_80561754;
+    *(s32 *)((u8 *)arg0 + 0x274) = 0;
+}
+
+extern "C" void fn_8015B228(void* arg0, s32 arg1, s32 arg2) {
+    if (arg2 == 6) *(u8*)((char*)arg0 + 0x26C) = 1;
+}
+
+extern "C" void fn_8015B23C(void* arg0) {
+    f32 sp8;
+    if (*(s32*)((char*)arg0 + 0x264) > 0) {
+        void** vtable = *(void***)arg0;
+        s32 result = ((s32 (*)(void*))((char*)*vtable + 0x5C))(arg0);
+        f32 mult = ((f32 (*)(void*, s32))((char*)*vtable + 0x50))(arg0, result);
+        sp8 = *(f32*)((char*)arg0 + 0x25C) * mult;
+        ((void (*)(void*, f32*))((char*)*vtable + 0x8C))(arg0, &sp8);
+        ((void (*)(void*))((char*)*vtable + 0x84))(arg0);
+        *(s32*)((char*)arg0 + 0x264) = 0;
+        *(f32*)((char*)arg0 + 0x25C) = lbl_80561750;
+    }
 }
 
 extern "C" s32 fn_8015BCEC(void) { return 7; }
