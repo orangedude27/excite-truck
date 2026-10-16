@@ -352,6 +352,23 @@ s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void * __ct__Q46nw4hbm3snd6detail11MmlSeqTrackFv(void *arg0) {
+    extern u8 lbl_80323258[];
+    extern u8 lbl_80323760[];
+    extern void fn_800EC890(void *);
+    extern void InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
+    *(u8 **)arg0 = lbl_80323258;
+    fn_800EC890((u8 *)arg0 + 0x68);
+    *(s32 *)((u8 *)arg0 + 0xB4) = 0;
+    InitParam__Q46nw4hbm3snd6detail8SeqTrackFv(arg0);
+    *((u8 *)arg0 + 0xC1) = 1;
+    *(u8 **)arg0 = lbl_80323760;
+    *((u8 *)arg0 + 0xC2) = 0;
+    *((u8 *)arg0 + 0xC0) = 1;
+    *((u8 *)arg0 + 0xC6) = 0;
+    return arg0;
+}
+
 extern "C" void fn_800EE2E0(void *arg0, s32 arg1) {
     extern s32 Parse__Q46nw4hbm3snd6detail9MmlParserCFPQ46nw4hbm3snd6detail11MmlSeqTrackb(void *, void *, s32);
     Parse__Q46nw4hbm3snd6detail9MmlParserCFPQ46nw4hbm3snd6detail11MmlSeqTrackb(*(void **)((u8 *)arg0 + 0xBC), arg0, arg1);
