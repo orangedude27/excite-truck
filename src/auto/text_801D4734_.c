@@ -6,6 +6,7 @@ extern char lbl_803385D0[];
 extern char lbl_803388F0[];
 extern char lbl_8033890C[];
 extern s32 lbl_8055E3C4;
+extern char lbl_80338C40[];
 extern char lbl_80338F50[];
 
 void fn_801D47F4(void) {
@@ -109,8 +110,8 @@ s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
 void fn_801D77D8(void *arg0) {
-    void (*func)(void *) = *(void (**)(void *))(*(u32 *)arg0 + 0xD);
-    func(arg0);
+    void **vtable = *(void ***)arg0;
+    ((void (*)(void *))vtable[0xD])(arg0);
 }
 
 void fn_801D77E8(void) {
@@ -186,6 +187,7 @@ void *fn_801D7924(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling on
 s32 fn_801D796C(void *arg0, s32 *arg1, s32 arg2) {
     s32 *entry;
     s32 idx;
@@ -202,7 +204,6 @@ s32 fn_801D796C(void *arg0, s32 *arg1, s32 arg2) {
     }
     return 0;
 }
-
 char *fn_801D7C6C(void) {
     return lbl_8033890C;
 }
@@ -211,6 +212,35 @@ s32 fn_801D7C78(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
 }
 
+extern s32 fn_802E317C(const char *, ...);
+#pragma push
+#pragma scheduling off
+s32 fn_801D7C80(void *arg0, s32 arg1) {
+    s32 *ptr = (s32 *)arg0;
+    f32 *fptr = (f32 *)arg0;
+    s32 result = 0;
+
+    if (ptr[0xA] == 1) {
+        ptr[7] = lbl_8055E3C4;
+        switch (arg1) {
+        case 0:
+            fptr[8] = fptr[5];
+            fptr[9] = fptr[6];
+            break;
+        case 1:
+            fptr[8] = fptr[6];
+            fptr[9] = fptr[5];
+            break;
+        default:
+            fn_802E317C(lbl_80338F50, arg1);
+            break;
+        }
+        ptr[0xA] = 2;
+        result = 1;
+    }
+    return result;
+}
+#pragma pop
 void fn_801D8620(void) {
 
 }
