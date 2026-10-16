@@ -22,4 +22,5 @@ extern int fn_80217EC0(void *, int, int);
 void fn_802180C8(void *arg0) { fn_80217EC0(arg0, 0, 0); }
 
 void fn_802180D4(void *arg0) { fn_80217EC0(arg0, 0, 1); }
-
+extern int qsort(void *, int, int, int (*)(const void *, const void *), void *);
+int fn_80217BC8(int *, int *);
