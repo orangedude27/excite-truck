@@ -6,6 +6,8 @@
 #include <revolution/OS/OSContext.h>
 
 extern void* fn_802ECC74(void*);
+void AXFXSetHooks_8011FFB8();
+void fn_80120084();
 extern void fn_80127F70(void*);
 extern void fn_80127F94(void*);
 void fn_80127440(void);
@@ -198,13 +200,15 @@ extern s32 fn_80119300(void *, s32, s32);
 extern s32 fn_8011943C(void *, s32);
 extern s32 fn_801199A4(void *, s32);
 s32 fn_80119C0C(void *arg0, s32 arg1) {
-    if (arg1 != 0 && *(s32 *)((u8 *)arg0 + 0x64) == 0) {
-        *(s32 *)((u8 *)arg0 + 0xb0) = 0;
-        *(s32 *)((u8 *)arg0 + 0x64) = 1;
-        *(s32 *)((u8 *)arg0 + 0xb8) = 0;
-        *(s32 *)((u8 *)arg0 + 0xbc) = *(s32 *)((u8 *)arg0 + 0xc0);
-    }
-    if (arg1 == 0 && *(s32 *)((u8 *)arg0 + 0x64) != 0) {
+    s32 state = *(s32 *)((u8 *)arg0 + 0x64);
+    if (arg1 != 0) {
+        if (state == 0) {
+            *(s32 *)((u8 *)arg0 + 0xb0) = 0;
+            *(s32 *)((u8 *)arg0 + 0x64) = 1;
+            *(s32 *)((u8 *)arg0 + 0xb8) = 0;
+            *(s32 *)((u8 *)arg0 + 0xbc) = *(s32 *)((u8 *)arg0 + 0xc0);
+        }
+    } else if (state != 0) {
         fn_8011943C((u8 *)arg0 + 0x7c, 0);
         fn_801199A4((u8 *)arg0 + 0x7c, 1);
         fn_80119300((u8 *)arg0 + 0x7c, 0, *(s32 *)((u8 *)arg0 + 0x94));
@@ -220,6 +224,40 @@ void fn_8011BC48(void) {
 extern void *lbl_8055DEF0;
 void* fn_8011FF24(void) {
     return lbl_8055DEF0;
+}
+
+extern void *lbl_8055DEF8;
+extern void *lbl_8055DEFC;
+extern u32 lbl_8055DEF4;
+extern void *lbl_80559948[];
+extern u32 lbl_8055994C[];
+extern void *malloc(u32);
+extern void free(void *);
+void *fn_8011FFC4(s32 arg0) {
+    s32 base;
+    u8 mode;
+    u8 offset;
+    void *result;
+    if (arg0 == 0 || (u32)(arg0 + 0x10000) == 0xFFFFFFFF) return 0;
+    if (lbl_8055DEF8 != 0) {
+        result = ((void *(*)(s32))lbl_8055DEF8)(arg0 + 0x40);
+        if (result != 0) {
+            if (result == (void *)-1) return 0;
+            mode = 3;
+            goto got_memory;
+        }
+    }
+    result = malloc(arg0 + 0x40);
+    if (result == 0) return 0;
+    mode = 0;
+got_memory:
+    base = (s32)result;
+    offset = 0x40 - (base & 0x1F);
+    result = (void *)(base + offset);
+    *((u8 *)result - 1) = offset;
+    *((u8 *)result - 2) = mode;
+    if (mode == 3) *(void **)((u8 *)result - 8) = lbl_8055DEFC;
+    return result;
 }
 
 void fn_80121BF4(void *arg0) {
