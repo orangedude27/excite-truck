@@ -9,3 +9,5 @@ void fn_801BFEB0(void) {
 
 }
 
+long fn_801BFEB4(long arg0) { return arg0 + 0x6C; }
+
