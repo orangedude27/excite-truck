@@ -58,6 +58,29 @@ extern "C" void* fn_800C64DC(u32 size) {
     return MEMAllocFromAllocator(lbl_80559708, size);
 }
 
+extern "C" void fn_800C64F4(void* arg0) {
+    void* block;
+
+    MEMInitAllocatorForExpHeap(&lbl_804075E0,
+                               MEMCreateExpHeapEx(*(void**)((u8*)arg0 + 0x10),
+                                                  *(u32*)((u8*)arg0 + 0x24), 0),
+                               0x20);
+    lbl_80559708 = &lbl_804075E0;
+    lbl_8055DDF0 = &lbl_804075E0;
+    block = MEMAllocFromAllocator(&lbl_804075E0, 0x758);
+    if (block != NULL) {
+        lbl_8055DD98 = fn_800C6914(arg0);
+    }
+    fn_800C6CE8(lbl_8055DD98);
+}
+
+extern "C" void fn_800C657C(void) {
+    fn_800C6A1C(lbl_8055DD98, -1);
+    MEMFreeToAllocator(lbl_80559708, lbl_8055DD98);
+    lbl_8055DD98 = NULL;
+    MEMDestroyExpHeap((MEMiHeapHead*)lbl_80559708->heap);
+}
+
 extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
     void* r30 = this_ptr;
     s32 r31 = arg1;
