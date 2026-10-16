@@ -282,6 +282,8 @@ extern "C" s32 fn_8014440C(s32 arg0, s32 arg1) {
 
 extern "C" s32 fn_8014444C(void) { return 0; }
 
+extern "C" s32 fn_80144454(void) { return 0; }
+
 extern "C" s32 fn_8013D1F0(s32);
 extern "C" s32 fn_8014445C(s32 arg0) {
     s32 v = fn_8013D1F0(arg0) ^ 0xA;
