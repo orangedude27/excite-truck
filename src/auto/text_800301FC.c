@@ -69,6 +69,27 @@ void fn_80031C8C(unsigned short arg0) {
     lbl_8055D734 = arg0;
 }
 
+void fn_80031ED4(void) {
+    u64 time;
+    if ((s32)lbl_8055D780 == 0) {
+        time = OSGetTime();
+        lbl_8055D77C = (u32)time;
+        lbl_8055D778 = (u32)(time >> 32);
+    }
+    if (lbl_8055D780 == 1U) {
+        lbl_8055D780 = 0;
+        CircleBufferInitialize(0);
+    } else {
+        lbl_8055D780 = 2;
+        DSPAssertTask(lbl_8035FB80);
+    }
+    if (lbl_8055D75C == 1U) {
+        AIInitDMA(lbl_8035F700 + lbl_8055D784 * 0x180, 0x180);
+        lbl_8055D784 += 1;
+        lbl_8055D784 %= 3;
+    }
+}
+
 extern s32 lbl_8055D770;
 extern s32 lbl_8055D76C;
 extern s32 lbl_8055D760;
