@@ -5,3 +5,8 @@ typedef signed long s32;
 void fn_8012F2E4(void) {
     fn_8012C4D8();
 }
+
+s32 fn_8012F2E8(s32 *arg0) {
+    return *arg0;
+}
+
