@@ -14,6 +14,7 @@ void fn_801FF6FC(void*);
 void fn_801FF3AC(void*, float);
     float fabs(float);
     void fn_801FF770(void*);
+    void fn_801FCED8(void*);
     void* fn_801284F8(int, const char*);
     void fn_8002F53C(void*, void*, void*, int, int);
     void fn_801FF1C4(void*, int, int);
@@ -29,6 +30,22 @@ void fn_801FF3AC(void*, float);
     }
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+
+extern "C" void fn_801FEEC0(void* arg0, int arg1, int arg2, int arg3) {
+    void* obj = *(void**)((char*)arg0 + 4);
+    if (obj == 0) {
+        obj = fn_801284F8(0x14CC, lbl_8033B86C);
+        if (obj != 0) {
+            *(void**)obj = (void*)lbl_8033B880;
+            fn_8002F53C((char*)obj + 4, (void*)fn_801FEF80, (void*)fn_801FCA14, 0x40, 0x40);
+            *(int*)((char*)obj + 0x1004) = 0;
+            fn_801FF6A4((char*)obj + 0x1008);
+        }
+        *(void**)((char*)arg0 + 4) = obj;
+        fn_802CD320(arg1, obj);
+    }
+    fn_801FF2B8(*(void**)((char*)arg0 + 4), arg2, arg2 + 0x2C);
+}
 
 extern "C" void fn_801FEF80(void* arg0) {
     *(int*)arg0 = 0;
