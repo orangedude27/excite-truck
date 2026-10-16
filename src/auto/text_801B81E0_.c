@@ -87,6 +87,20 @@ void fn_801B898C(void) {
     vtable[28](obj);
 }
 
+void fn_801B89B4(void) {
+    (*(void (***)(void*))lbl_8055E744)[30](lbl_8055E744);
+}
+
+void fn_801B89C8(void* arg0) {
+    (*(void (***)(void*, void*))lbl_8055E744)[31](lbl_8055E744, arg0);
+}
+
+int fn_801B89E0(void) {
+    extern float lbl_8055E750;
+    extern float lbl_8056274C;
+    return lbl_8055E750 > lbl_8056274C;
+}
+
 extern float lbl_8055E750;
 extern float lbl_8056274C;
 extern void fn_801CB6B4(int, int, int);
