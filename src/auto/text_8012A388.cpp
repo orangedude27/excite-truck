@@ -35,7 +35,7 @@ extern "C" void *fn_8012A570(u32, void *) {
 extern "C" void fn_8012A5E8(void *arg0) {
     fn_8012A364(lbl_8055E008, arg0);
     if (--lbl_8055E004 == 0) {
-        delete lbl_8055E008;
+        delete (Unk8012A570 *)lbl_8055E008;
         lbl_8055E008 = 0;
     }
 }
