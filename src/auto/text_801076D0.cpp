@@ -44,3 +44,26 @@ extern "C" s32 fn_8010D0F0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void* fn_80111B64(void* arg0) {
+    extern void __ct__Q36nw4hbm2ut10CharWriterFv(void*);
+    extern f32 lbl_80561178;
+    extern s32 lbl_8055DEB8;
+    __ct__Q36nw4hbm2ut10CharWriterFv(arg0);
+    *(f32*)((char*)arg0 + 0x4C) = lbl_80561178;
+    *(f32*)((char*)arg0 + 0x50) = lbl_80561178;
+    *(s32*)((char*)arg0 + 0x54) = 4;
+    *(s32*)((char*)arg0 + 0x58) = 0;
+    *(s32*)((char*)arg0 + 0x5C) = (s32)&lbl_8055DEB8;
+    return arg0;
+}
+
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* arg0, int arg1) {
+    extern void fn_801033F0(void*, unsigned int);
+    extern void fn_80128668(void*);
+    if (arg0 != 0) {
+        fn_801033F0(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
