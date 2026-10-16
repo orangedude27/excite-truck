@@ -100,6 +100,14 @@ int fn_80164894(void *arg0, void *arg1, int arg2) {
     return 1;
 }
 
+extern int fn_80128668(void);
+int fn_80164CF8(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_80164D58(void) {
 
 }
