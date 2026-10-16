@@ -228,6 +228,19 @@ void fn_801F3280(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x3C) = arg1;
 }
 
+void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *arg0, int arg1) {
+    extern int lbl_8033A8F8;
+    extern void fn_802C9994(int, void *);
+    if (arg0 != 0) {
+        *(void **)arg0 = &lbl_8033A8F8;
+        fn_802C9994(-1, &lbl_8033A8F8);
+        if (arg1 > 0) {
+            fn_80128668();
+        }
+    }
+    return arg0;
+}
+
 void fn_801F371C(int arg0) {
     fn_8029231C(arg0 + 4);
 }
@@ -436,6 +449,11 @@ void fn_801F447C(void) {
 
 void fn_801F4550(void) {
 
+}
+
+int fn_801F4554(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
 }
 
 void fn_801F49F4(void) {
