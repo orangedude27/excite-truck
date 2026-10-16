@@ -31,6 +31,14 @@ void MEMInitAllocatorForExpHeap(MEMAllocator* allocator, MEMiHeapHead* heap, s32
     allocator->heapParam2 = 0;
 }
 
+void MEMInitAllocatorForFrmHeap(MEMAllocator* allocator, MEMiHeapHead* heap, s32 align) {
+    extern const MEMAllocatorFuncs lbl_80560C40;
+    allocator->funcs = &lbl_80560C40;
+    allocator->heap = heap;
+    allocator->heapParam1 = align;
+    allocator->heapParam2 = 0;
+}
+
 void MEMInitList(MEMList* list, u16 offset) {
     list->offset = offset;
     list->head = 0;
