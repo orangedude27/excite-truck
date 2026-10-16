@@ -53,12 +53,16 @@ extern int fn_802C9640(void *);
 extern float lbl_80564648;
 extern unsigned char lbl_80349780[];
 int fn_8029D4CC(void *arg0) {
-    float temp_f1 = fn_801E88F0(-1);
-    float temp_f31 = temp_f1 * temp_f1;
-    int result = 0;
+    float scale = fn_801E88F0(-1);
+    float squaredScale = scale * scale;
+    float radius = fn_802C88E8((char *)arg0 + 0x54) * squaredScale;
     float temp_f0 = lbl_80564648 + *(float *)((char *)arg0 + 0x60);
-    if (fn_802C88E8((char *)arg0 + 0x54) * temp_f31 < temp_f0 * temp_f0 &&
-        fn_802C9640((char *)arg0 + 0x54) != 0) {
+    int result = 0;
+    temp_f0 = temp_f0 * temp_f0;
+    if (radius >= temp_f0) {
+        return 0;
+    }
+    if (fn_802C9640((char *)arg0 + 0x54) != 0) {
         result = 1;
     }
     return result;
@@ -69,6 +73,31 @@ void fn_8029D550(void *arg0, float *arg1, float *arg2) {
     arg1[1] = *(float *)((char *)arg0 + 0x58);
     arg1[2] = *(float *)((char *)arg0 + 0x5C);
     *arg2 = *(float *)((char *)arg0 + 0x60);
+}
+
+extern float fn_801E7E24(void);
+extern void fn_8029D574(int);
+extern float lbl_80558DC4;
+extern void fn_8029C570(void);
+extern void fn_8029C73C(void);
+extern void fn_8029C998(void);
+extern void fn_8029CBA0(void);
+extern void fn_8029C664(void);
+extern int fn_802BF4F0(void);
+extern int lbl_8055F7F4;
+extern int lbl_8055F7FC;
+extern void fn_80287B38(void *);
+extern void fn_8029C450(void);
+extern float lbl_8056469C;
+void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
+    int stride = *(int *)((char *)arg0 + 0xC);
+    short *data = *(short **)((char *)arg0 + 4);
+    int index = arg1 + arg2 * stride;
+    float val = lbl_8056469C * arg3 + data[index];
+    int out = (int)val;
+    if (out < -32768) out = -32768;
+    else if (out > 32767) out = 32767;
+    data[index] = out;
 }
 
 int fn_8029EF1C(void) {
@@ -91,4 +120,17 @@ int fn_8029EF30(void *arg0) {
 int fn_8029EF60(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x68);
 }
-
+extern float fn_801E7E24(void);
+extern void fn_8029D574(int);
+extern float lbl_80558DC4;
+extern void fn_8029C570(void);
+extern void fn_8029C73C(void);
+extern void fn_8029C998(void);
+extern void fn_8029CBA0(void);
+extern void fn_8029C664(void);
+extern int fn_802BF4F0(void);
+extern int lbl_8055F7F4;
+extern int lbl_8055F7FC;
+extern void fn_80287B38(void *);
+extern void fn_8029C450(void);
+extern float lbl_8056469C;
