@@ -42,6 +42,8 @@ extern unsigned int lbl_8055FEBC;
 
 void fn_802DC440(void) { ((void (*)(void))fn_802DBDD8)(); fn_802DFCC0(); }
 
+void fn_802DC628(void) {}
+
 extern int GXGetTexObjMipMap(void *);
 extern unsigned short GXGetTexObjWrapS(void *);
 extern int GXGetTexObjFmt(void *);
