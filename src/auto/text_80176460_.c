@@ -39,6 +39,25 @@ s32 fn_80179658(s32);
 void fn_80176CC8(void);
 void fn_802E317C(const char *);
 s32 fn_8017ED00(f32);
+void fn_80177138(void);
+extern s32 fn_8012F450(s32);
+extern s32 fn_8012F384(s32);
+extern s32 fn_8012F418(s32);
+extern void fn_801D0BF4(void);
+extern void fn_801B6614(void);
+extern void fn_801AE5AC(void);
+extern void fn_8017EC30(void);
+extern void fn_801E1D2C(void);
+extern void fn_801777C0(void);
+extern void fn_8017779C(void);
+extern void fn_80176DE0(void);
+extern s32 fn_802090D4(void *);
+extern s32 lbl_8055E3DC;
+extern s32 lbl_8055E3F0;
+extern s32 lbl_8055A2F8;
+extern char lbl_803315A0[];
+extern char lbl_803315C8[];
+extern u8 lbl_8055E3BC;
 
 void fn_80176610(void) {
     fn_80176CC8();
