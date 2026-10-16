@@ -314,6 +314,10 @@ extern "C" void fn_8015CD0C(void) {
 extern "C" void fn_8015CDD8(void) {
 }
 
+extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
+    fn_80131234(lbl_8032E668[arg0->GetType()]);
+}
+
 extern void* lbl_8032E7F8[];
 extern "C" void fn_8015D6FC(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E7F8[arg0->GetType()]);
