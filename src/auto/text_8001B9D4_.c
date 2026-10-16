@@ -296,6 +296,10 @@ void fn_8001D298(s32 arg0) {
     fn_8000D984(temp_r31);
 }
 
+s32 fn_8001D464(s32 arg0) {
+    return arg0 + *lbl_8055D5D0;
+}
+
 void fn_8001D484(void *arg0, s32 arg1, s32 (*arg2)(s32), s32 arg3) {
     s32 var_r28;
     s32 var_r29;
