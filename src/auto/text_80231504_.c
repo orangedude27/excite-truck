@@ -13,6 +13,11 @@ extern void fn_802CAC54(void *);
 extern void fn_8012C4D8(void *);
 extern void fn_80128670(void *);
 extern void *lbl_8055F060;
+extern s32 lbl_8055F058;
+extern s32 lbl_8055F06C;
+extern char lbl_80340614[];
+extern void fn_802328D4(s32);
+extern u32 strlen(const char *);
 s32 fn_80231504(void) {
     return 0;
 }
@@ -108,3 +113,15 @@ s32 fn_802344B0(void) {
 void fn_802344C4(u8 arg0) {
     lbl_8055F064 = arg0;
 }
+
+s32 fn_80234654(void) {
+    s32 count = *(s32 *)((u8 *)&lbl_8055F058 + 4);
+    s32 total = 0;
+    char *str = (char *)lbl_8055F06C;
+    while (count-- > 0) {
+        total += strlen(str);
+        str += 0x58;
+    }
+    return total;
+}
+
