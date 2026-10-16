@@ -99,7 +99,7 @@ void fn_80176FC4(void) {
     if (*(s32 *)(lbl_80430558 + 0xC) == 3) {
         fn_80176F28();
     } else {
-        *(void **)(lbl_80430558 + 0x10) = (void *)fn_80176F28;
+        *(volatile s32 *)(lbl_80430558 + 0x10) = (s32)fn_80176F28;
         *(s32 *)(lbl_80430558 + 0xC) = 2;
         *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176F28);
         *(s32 *)lbl_80430558 = lbl_8055E3C4;
@@ -115,13 +115,24 @@ void fn_80177048(void) {
         fn_80176F28();
         return;
     }
-    *(void **)(lbl_80430558 + 0x10) = (void *)fn_80176F28;
+    *(volatile s32 *)(lbl_80430558 + 0x10) = (s32)fn_80176F28;
     *(s32 *)(lbl_80430558 + 0xC) = 2;
     *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176F28);
     *(s32 *)lbl_80430558 = lbl_8055E3C4;
     *(s32 *)(lbl_80430558 + 8) = 7;
     *(u8 *)(lbl_80430558 + 0x14) = 0;
     __AXDSPInitCallback_801769E0();
+}
+
+void fn_801770C8(void) {
+    *(void **)(lbl_80430558 + 0x10) = fn_80176DD4;
+    *(s32 *)(lbl_80430558 + 0xC) = 2;
+    *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176DD4);
+    *(s32 *)lbl_80430558 = lbl_8055E3C4;
+    *(s32 *)(lbl_80430558 + 8) = 7;
+    *(u8 *)(lbl_80430558 + 0x14) = 0;
+    __AXDSPInitCallback_801769E0();
+    fn_801769EC();
 }
 
 void __AXDSPInitCallback_801769E0(void) {
