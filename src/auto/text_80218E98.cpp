@@ -149,6 +149,13 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802294F4(
     return this_;
 }
 
+extern "C" void fn_80229864(void *arg0) {
+    if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
+        (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
+    }
+    (*(u8 *)((u8 *)arg0 + 0x18)) = 1;
+}
+
 extern "C" s32 fn_80229C9C(s32 arg0) {
     return arg0 + 0x264;
 }
