@@ -3,6 +3,8 @@
 
 typedef signed long s32;
 
+extern void fn_802C6CF8(int);
+
 extern char lbl_8055FB18[4];
 extern void fn_802C0FD4(int *queue);
 #pragma push
