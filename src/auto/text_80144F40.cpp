@@ -35,11 +35,33 @@ extern Queue80145D8C lbl_8042FBC0;
 extern char lbl_8032CEC8[];
 extern char lbl_80559E14[];
 void fn_802E30C8(const char *);
+extern char lbl_8032D0D0[];
+void fn_8000FF88(s32, s32, s32, f32, f32, f32);
 void fn_802E3AD0(s32, const char *, ...);
 }
 
 extern "C" f32 lbl_805615F0;
 extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
+
+extern "C" void fn_8014595C(void *arg0, const char *arg1) {
+    char *base = lbl_8032CEC8;
+    fn_802E3AD0((s32)arg1, base + 0x1D0);
+    fn_802E3AD0((s32)arg1, base + 0x1E4);
+    s32 i = 0;
+    s32 offset = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 4)) {
+        void *entry = (void *)(*(u8 **)arg0 + offset);
+        fn_802E3AD0((s32)arg1, base + 0x1FC,
+            *(s32 *)((u8 *)entry + 4), *(s32 *)entry);
+        offset += 0xC;
+        i++;
+    }
+    fn_802E3AD0((s32)arg1, lbl_80559E14);
+}
+
+extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
+    return farg2 + ((farg4 - farg0) / (farg1 - farg0)) * (farg3 - farg2);
+}
 
 extern "C" f32 lbl_80561608;
 extern "C" void fn_8001027C(s32, s32, void *, u32, f32, f32, f32);
