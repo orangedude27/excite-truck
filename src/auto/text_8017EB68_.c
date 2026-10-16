@@ -108,3 +108,7 @@ void fn_801815DC(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x20) = value;
 }
 
+int fn_8018176C(void *arg0) {
+    return *(unsigned char *)((char *)arg0 + 0x58);
+}
+
