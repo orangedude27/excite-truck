@@ -53,10 +53,28 @@ extern UnkF22C *lbl_8055D4B0;
 extern void fn_802C6CF8(s32);
 extern s32 lbl_80558A94;
 extern s32 fn_802C6FC0(s32, s32);
-extern void fn_80234470(void);
+  extern void fn_80234470(void);
+  extern s32 lbl_8055D498;
+  extern s32 lbl_8055D49C;
+  extern s32 fn_8023441C(void);
+  extern f32 fn_80011EDC(void);
+  extern void *fn_801E85A4(void);
+  extern f32 fn_80011E54(void);
+  extern f32 fn_80011E90(void);
+  extern f32 fn_80011E1C(s32);
+  extern f32 fn_80011DC0(s32);
+  extern f32 lbl_80560260;
+  extern f32 lbl_805602C4;
+  extern f32 lbl_805602C0;
 extern s32 fn_80207848(void *, s32);
 extern char lbl_802FC420[];
 extern char lbl_802FC42C[];
+void fn_8000F188(void) {
+    register s32 a0 asm("r3") = 0;
+    register s32 a1 asm("r5") = 0;
+    lbl_80558A94 = fn_802C6FC0(a0, a1);
+}
+
 void fn_8000F1B4(void) {
     fn_802C6CF8(lbl_80558A94);
     lbl_80558A94 = -1;
