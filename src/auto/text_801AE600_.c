@@ -44,6 +44,11 @@ void fn_801AED68(void) {
     fn_801B878C();
 }
 
+extern int fn_801284F8(int, const char *);
+extern void fn_801AFA64(int *);
+extern const char lbl_803359A0[];
+extern float lbl_80435740[];
+
 void fn_801AFA64(int *arg0) { *arg0 = 0; }
 
 int fn_801AFA70(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
