@@ -203,7 +203,7 @@ void fn_8006EC20(void) {
 }
 
 void fn_80070844(void *p_msg) {
-    GKI_send_msg(0, 0, p_msg);
+    GKI_send_msg(2, 0, p_msg);
 }
 
 void fn_80070854(void) {
