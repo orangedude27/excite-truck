@@ -5,6 +5,8 @@ typedef s32 (*UnkFunc)(s32);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055F260;
+s32 fn_8024739C(void) { return 0; }
+
 char fn_80247624(void) {
     return lbl_8055F260;
 }
