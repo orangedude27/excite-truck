@@ -174,6 +174,11 @@ f32 fn_8018AE3C(void) {
     return lbl_80561CAC;
 }
 
+extern f32 fn_8018AE44(void);
+f32 fn_8018AE44(void) {
+    return lbl_80561CAC;
+}
+
 void fn_8018AF00(void) {
 
 }
