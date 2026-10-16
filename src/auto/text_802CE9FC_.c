@@ -1,3 +1,5 @@
+extern unsigned short lbl_8055FD86;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -22,6 +24,10 @@ void fn_802CFF50(void) {
 extern void *lbl_8055FD1C;
 void fn_802CFF5C(void* hi) {
     lbl_8055FD1C = hi;
+}
+
+void fn_802CFFA4(unsigned short arg0) {
+    lbl_8055FD86 = arg0;
 }
 
 extern void *lbl_8055FD54;
