@@ -23,10 +23,10 @@ public:
     virtual void v16();
     virtual void v17();
     virtual void v18();
-    virtual void v19();
+    virtual f32 v19(s32);
     virtual void v20();
     virtual void v21();
-    virtual void v22();
+    virtual s32 v22();
     virtual void v23();
     virtual void v24();
     virtual void v25();
@@ -34,6 +34,11 @@ public:
     virtual void v27();
     virtual void v28();
     virtual s32 GetType();
+    virtual s32 v30();
+    virtual void v31();
+    virtual s32 v32();
+    virtual void v33();
+    virtual void v34(f32*);
 };
 
 extern "C" s32 fn_80128668(void*);
