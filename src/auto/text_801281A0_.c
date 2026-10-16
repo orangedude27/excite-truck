@@ -58,6 +58,8 @@ void fn_801282E8(void) {
 
 }
 
+void fn_801282EC(s32 arg0) { lbl_8055DF8C = arg0; }
+
 s32 fn_801284E8(void) {
     fn_8012834C(NULL, NULL, 1);
 }
