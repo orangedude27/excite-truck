@@ -176,6 +176,7 @@ public:
     s32 m4;
     u8* mData;
     s32 mCount;
+    u8 pad_10[0x40];
     s32 m50;
     u8 m54;
 };
