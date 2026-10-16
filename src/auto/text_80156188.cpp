@@ -152,6 +152,11 @@ void* __dt__Q28PSSystem7SeqHeapFv_80156AC4(void* this_, s32 flag) {
 
 s32 fn_80156B28(void *arg0) { return ((s32 *)arg0)[1]; }
 
+s32 fn_80156B30(void *arg0, s32 arg1) {
+    if (arg1 == 0) return ((s32 *)arg0)[1];
+    return 0;
+}
+
 }
 
 void fn_80156AC0(void) {
