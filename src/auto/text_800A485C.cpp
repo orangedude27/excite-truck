@@ -437,6 +437,9 @@ extern "C" s32 NANDInit(void);
 extern "C" s32 NANDGetCurrentDir(char *);
 extern "C" s32 lbl_80405D18;
 extern "C" s32 fn_800BA49C(s32, s32, s32, s32);
+extern "C" const char lbl_8031B190[];
+extern "C" const char lbl_8031B1C0[];
+extern "C" s32 fn_800B76E8(s8);
 extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 4) = arg1;
     *(u8 **)arg0 = lbl_802F31F8;
