@@ -70,6 +70,13 @@ void fn_80209280(void) {
     }
 }
 
+int fn_802092C8(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern int fn_802E2C20(void);
 void fn_80209310(void *arg0) {
     *(int *)((char *)arg0 + 4) = fn_802E2C20();
