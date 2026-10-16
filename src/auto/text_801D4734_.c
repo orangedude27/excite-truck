@@ -629,6 +629,7 @@ s32 fn_801D7C80(void *arg0, s32 arg1) {
     }
     return result;
 }
+#pragma scheduling reset
 
 extern u8 lbl_80338928[];
 void *fn_801D8148(void) {
