@@ -10,6 +10,7 @@ extern int lbl_80339B90;
 #pragma small_data off
 void fn_801E7828();
 void fn_801E7790();
+#pragma dont_inline on
 void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_80128670(*(void **)((char *)arg0 + 0xC));
@@ -20,8 +21,14 @@ void *__dt__12PhysicsWorldFv_801E7730(void *arg0, int arg1) {
 }
 
 void fn_801E7840(void *arg0) {
-    if (fn_801284F8(0x18, &lbl_80339B90) != 0)
-        fn_801E76A8((void *)0, arg0);
+    void *obj;
+    obj = fn_801284F8(0x18, &lbl_80339B90);
+    if (obj != 0)
+        fn_801E76A8(obj, arg0);
+}
+
+void *fn_801E7888(void *arg0) {
+    return __dt__12PhysicsWorldFv_801E7730(arg0, 1);
 }
 
 void fn_801E7890(void) {
