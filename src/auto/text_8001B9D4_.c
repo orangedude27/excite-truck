@@ -1,5 +1,11 @@
 #include <types.h>
 
+typedef struct Unk8001BBBC {
+    s32 unk_0x0;
+    s32 unk_0x4;
+    s32 unk_0x8;
+} Unk8001BBBC;
+
 extern s8 lbl_8055D5C8;
 extern void fn_8001C9C4(void);
 extern void fn_8001CAF8(void);
@@ -43,21 +49,30 @@ void fn_8001BA84(void) {
     fn_8001CAF8();
 }
 
+#pragma scheduling off
 s32 fn_8001BA90(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 temp = fn_8001D25C(arg2);
     if (temp != 0) {
         return fn_8001CDB8(arg0, arg1, temp, arg3, arg4);
-    } else {
-        return arg4;
     }
+    return arg4;
 }
-
+#pragma scheduling reset
 void fn_8001BBB4(void) {
     fn_8001D020();
 }
 
 void fn_8001BBB8(void) {
     fn_8001CF8C();
+}
+
+extern void fn_8001D234(s32, s32 *, s32 *, s32 *);
+void fn_8001BBBC(void *arg0, s32 arg1) {
+    s32 values[3];
+    fn_8001D234(arg1, &values[0], &values[1], &values[2]);
+    ((s32 *)arg0)[0] = values[0];
+    ((s32 *)arg0)[1] = values[1];
+    ((s32 *)arg0)[2] = values[2];
 }
 
 s32 fn_8001BCF0(void *arg0) {
