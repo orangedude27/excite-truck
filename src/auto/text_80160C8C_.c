@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <types.h>
+
 extern float lbl_8056185C;
 extern float lbl_8055E3C8;
 extern float lbl_80561868;
@@ -91,12 +93,30 @@ void fn_80164480(void *arg0) {
     }
 }
 
+void fn_801647DC(void *arg0) {
+    int i;
+    int offset;
+    void *entry;
+
+    offset = 0;
+    for (i = 0; i < *(int *)((char *)arg0 + 0x38); i++) {
+        entry = *(void **)(*(int *)((char *)arg0 + 0x34) + offset + 4);
+        if (entry != 0) {
+            if (entry != 0) {
+                ((void (**)(void *, int))(*(void **)entry))[2](entry, 1);
+            }
+        }
+        offset += 8;
+    }
+    *(int *)((char *)arg0 + 0x38) = 0;
+}
+
 int fn_80164868(void) {
     return 1;
 }
 
 int fn_80164894(void *arg0, void *arg1, int arg2) {
-    *(float *)arg1 = *(float *)((char *)arg0 + (arg2 << 2) + 0x14);
+    *(float *)arg1 = ((float *)arg0)[arg2 + 5];
     return 1;
 }
 
@@ -106,6 +126,16 @@ int fn_80164CF8(int arg0, int arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+void fn_80164D38(void *arg0) {
+    int zero = 0;
+    int one = 1;
+    *((unsigned char *)arg0 + 4) = zero;
+    *((int *)arg0 + 2) = one;
+    *((unsigned char *)arg0 + 5) = zero;
+    *((unsigned char *)arg0 + 6) = zero;
+    *((unsigned char *)arg0 + 7) = zero;
 }
 
 void fn_80164D58(void) {
