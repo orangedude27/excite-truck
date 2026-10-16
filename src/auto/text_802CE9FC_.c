@@ -97,6 +97,11 @@ void fn_802D3050(int arg0) {
     lbl_8055FD1C = (void *)value;
 }
 
+void fn_802D306C(unsigned char arg0) {
+    lbl_8055FD60 = arg0;
+    GXSetDstAlpha(1, arg0);
+}
+
 extern void *lbl_8055FD5C;
 void fn_802D30DC(void* hi) {
     lbl_8055FD5C = hi;
