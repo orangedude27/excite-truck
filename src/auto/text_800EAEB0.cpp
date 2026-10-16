@@ -1,5 +1,19 @@
 #include <types.h>
 
+extern f32 lbl_8056106C;
+extern u8 lbl_80323B28[];
+extern u8 lbl_80323BEC[];
+extern u8 lbl_80323C14[];
+extern u8 lbl_80324054[];
+extern u8 lbl_80324030[];
+#pragma push
+#pragma small_data off
+extern u8 lbl_80412A6C[];
+#pragma pop
+
+extern "C" void PauseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFb(void*, bool);
+extern "C" void* Instance__15EmissionManagerFv(void);
+
 extern "C" void OSCancelAlarm(void *);
 
 namespace nw4hbm { namespace snd { namespace detail {
