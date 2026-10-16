@@ -175,6 +175,106 @@ void* fn_8011FF24(void) {
     return lbl_8055DEF0;
 }
 
+void fn_80121BF4(void *arg0) {
+    f32 temp_8, temp_C, temp_10, temp_14, temp_18, temp_1C;
+    f32 temp_20, temp_24, temp_28, temp_2C, temp_30, temp_34;
+    f32 temp_38, temp_3C;
+    
+    temp_8 = *(f32 *)((u8 *)arg0 + 8);
+    temp_C = *(f32 *)((u8 *)arg0 + 0xc);
+    temp_10 = *(f32 *)((u8 *)arg0 + 0x10);
+    temp_14 = *(f32 *)((u8 *)arg0 + 0x14);
+    temp_18 = *(f32 *)((u8 *)arg0 + 0x18);
+    temp_1C = *(f32 *)((u8 *)arg0 + 0x1c);
+    temp_20 = *(f32 *)((u8 *)arg0 + 0x20);
+    temp_24 = *(f32 *)((u8 *)arg0 + 0x24);
+    temp_28 = *(f32 *)((u8 *)arg0 + 0x28);
+    temp_2C = *(f32 *)((u8 *)arg0 + 0x2c);
+    temp_30 = *(f32 *)((u8 *)arg0 + 0x30);
+    temp_34 = *(f32 *)((u8 *)arg0 + 0x34);
+    temp_38 = *(f32 *)((u8 *)arg0 + 0x38);
+    temp_3C = *(f32 *)((u8 *)arg0 + 0x3c);
+    
+    *(f32 *)((u8 *)arg0 + 8) = temp_38;
+    *(f32 *)((u8 *)arg0 + 0xc) = temp_3C;
+    *(f32 *)((u8 *)arg0 + 0x10) = temp_18;
+    *(f32 *)((u8 *)arg0 + 0x14) = temp_1C;
+    *(f32 *)((u8 *)arg0 + 0x18) = temp_28;
+    *(f32 *)((u8 *)arg0 + 0x1c) = temp_2C;
+    *(f32 *)((u8 *)arg0 + 0x20) = temp_8;
+    *(f32 *)((u8 *)arg0 + 0x24) = temp_C;
+    *(f32 *)((u8 *)arg0 + 0x28) = temp_30;
+    *(f32 *)((u8 *)arg0 + 0x2c) = temp_34;
+    *(f32 *)((u8 *)arg0 + 0x30) = temp_10;
+    *(f32 *)((u8 *)arg0 + 0x34) = temp_14;
+    *(f32 *)((u8 *)arg0 + 0x38) = temp_20;
+    *(f32 *)((u8 *)arg0 + 0x3c) = temp_24;
+}
+
+void fn_80124F90(void *arg0) {
+    f32 a, b, c, d, e, f, g, h;
+    f32 f6, f8, f7, f9, f10, f11, f12;
+    
+    a = *(f32 *)((u8 *)arg0 + 0);
+    b = *(f32 *)((u8 *)arg0 + 0x10);
+    c = *(f32 *)((u8 *)arg0 + 4);
+    d = *(f32 *)((u8 *)arg0 + 0x14);
+    e = *(f32 *)((u8 *)arg0 + 8);
+    f = *(f32 *)((u8 *)arg0 + 0x18);
+    g = *(f32 *)((u8 *)arg0 + 0xc);
+    h = *(f32 *)((u8 *)arg0 + 0x1c);
+    
+    f6 = a + b;
+    f8 = a - b;
+    f7 = c + d;
+    f9 = c - d;
+    f10 = e + f;
+    f11 = e - f;
+    f12 = g - h;
+    d = g + h;
+    
+    *(f32 *)((u8 *)arg0 + 0) = f6 + f10;
+    *(f32 *)((u8 *)arg0 + 4) = f7 + d;
+    *(f32 *)((u8 *)arg0 + 0x10) = f6 - f10;
+    *(f32 *)((u8 *)arg0 + 0x14) = f7 - d;
+    *(f32 *)((u8 *)arg0 + 8) = f8 - f12;
+    *(f32 *)((u8 *)arg0 + 0xc) = f9 + f11;
+    *(f32 *)((u8 *)arg0 + 0x18) = f8 + f12;
+    *(f32 *)((u8 *)arg0 + 0x1c) = f9 - f11;
+}
+
+void fn_80125014(void *arg0) {
+    f32 a, b, c, d, e, f, g, h;
+    f32 f6, f8, f7, f9, f10, f11, f12;
+    
+    a = *(f32 *)((u8 *)arg0 + 0);
+    b = *(f32 *)((u8 *)arg0 + 0x10);
+    c = *(f32 *)((u8 *)arg0 + 4);
+    d = *(f32 *)((u8 *)arg0 + 0x14);
+    e = *(f32 *)((u8 *)arg0 + 8);
+    f = *(f32 *)((u8 *)arg0 + 0x18);
+    g = *(f32 *)((u8 *)arg0 + 0xc);
+    h = *(f32 *)((u8 *)arg0 + 0x1c);
+    
+    f6 = a + b;
+    f8 = a - b;
+    f7 = c + d;
+    f9 = c - d;
+    f10 = e + f;
+    f11 = e - f;
+    f12 = g - h;
+    d = g + h;
+    
+    *(f32 *)((u8 *)arg0 + 0) = f6 + f10;
+    *(f32 *)((u8 *)arg0 + 4) = f7 + d;
+    *(f32 *)((u8 *)arg0 + 0x10) = f6 - f10;
+    *(f32 *)((u8 *)arg0 + 0x14) = f7 - d;
+    *(f32 *)((u8 *)arg0 + 8) = f8 + f12;
+    *(f32 *)((u8 *)arg0 + 0xc) = f9 - f11;
+    *(f32 *)((u8 *)arg0 + 0x18) = f8 - f12;
+    *(f32 *)((u8 *)arg0 + 0x1c) = f9 + f11;
+}
+
 void fn_80125098(void *arg0) {
     f32 f0, f1, f2, f3;
     f3 = *(f32 *)((u8 *)arg0 + 0);
