@@ -480,6 +480,10 @@ void fn_802CA008(void *arg0) {
     }
 }
 
+void fn_802CA094(int *arg0) {
+    __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(arg0, 1);
+}
+
 void fn_802CA09C(void) {
     fn_802C9E94();
 }
