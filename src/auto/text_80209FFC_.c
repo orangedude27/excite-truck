@@ -85,8 +85,8 @@ void fn_8020A634(void);
 extern u8 fn_80209FFC[];
 extern s32 lbl_8055B550;
 
-extern char lbl_8055B578[];
-extern char lbl_8055B580[];
+extern char lbl_8055B578;
+extern char lbl_8055B580;
 extern const char lbl_8033C278[];
 extern f32 lbl_80563290;
 s32 fn_8012850C(s32, void*);
@@ -101,14 +101,14 @@ void fn_8020A368(void) {
     var_r31 = lbl_804892C0;
     var_r30 = 0;
     do {
-        var_r31[1] = fn_8012850C(0x70, (void*)lbl_8055B578);
+        var_r31[1] = fn_8012850C(0x70, (void*)&lbl_8055B578);
         var_r30 += 1;
         var_r31 = (s32*)((s32)var_r31 + 8);
     } while (var_r30 < 2);
     lbl_8055EDDC = 0;
     lbl_8055EDD8 = lbl_80563290;
     fn_8013323C(4, (void*)lbl_8033C278, lbl_80563290);
-    lbl_8055B550 = fn_8013365C((void*)lbl_8055B580, (void*)fn_80209FFC);
+    lbl_8055B550 = fn_8013365C((void*)&lbl_8055B580, (void*)fn_80209FFC);
     fn_8000DBC8((void*)fn_8020A03C);
 }
 
