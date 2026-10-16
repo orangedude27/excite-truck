@@ -226,6 +226,11 @@ void fn_801795B0(void) {
     fn_801AED68();
 }
 
+int fn_80179630(int arg0) {
+    if (arg0 < 0) arg0 = 0;
+    return lbl_80430590[arg0];
+}
+
 extern void *lbl_8055E430;
 void* fn_80179650(void) {
     return lbl_8055E430;
