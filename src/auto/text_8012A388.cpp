@@ -1,5 +1,15 @@
 #include <types.h>
 
+extern "C" s32 lbl_8055E004;
+extern "C" void **lbl_8055E008;
+extern "C" u32 lbl_805599A0;
+extern "C" u8 lbl_8032A6F8[];
+extern "C" void *fn_801284F8(u32, void *);
+extern "C" void **fn_8012A13C(void *, void *, u32, u32);
+extern "C" void *fn_8012A2D8(void **);
+extern "C" void fn_8012A364(void **, void *);
+extern "C" void *fn_8012A570(u32, void *);
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -96,15 +106,10 @@ extern "C" void fn_8012DFCC(Unk8012DFCCList *arg0, Unk8012DFCCNode *arg1) {
     arg1->next = 0;
 }
 
-extern "C" void fn_8012DFE8(void *arg0, const u8 *arg1, s32 arg2) {
-    s32 count;
-    const u8 *src;
-    u8 *dst;
-    u8 ch;
-    src = arg1;
-    dst = (u8 *)arg0 + 0xc;
-    count = 0x40;
-    while ((ch = *src++, *dst++ = ch, (s8)ch != 0)) {
+extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
+    char *dst = (char *)arg0 + 0xc;
+    int count = 0x40;
+    while ((*dst++ = *arg1++) != 0) {
         if (--count <= 0) {
             dst[-1] = 0;
             break;
