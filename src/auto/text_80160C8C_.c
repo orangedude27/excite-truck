@@ -91,6 +91,10 @@ void fn_80164480(void *arg0) {
     }
 }
 
+int fn_80164868(void) {
+    return 1;
+}
+
 void fn_80164D58(void) {
 
 }
