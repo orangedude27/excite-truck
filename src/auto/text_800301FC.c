@@ -1,4 +1,5 @@
 #include "types.h"
+extern void *lbl_8055D740;
 extern u8 lbl_8035E820[];
 extern u16 lbl_8055D730;
 extern u16 lbl_8055D732;
