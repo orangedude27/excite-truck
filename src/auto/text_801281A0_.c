@@ -149,48 +149,49 @@ void fn_80128670(s32 arg0) {
 }
 
 void fn_801286A0(void *arg0, s32 arg1) {
-    s32 r7;
-    s32 *arg0_s32;
-    s32 r6;
-    s32 r0;
-    s32 *lbl_s32;
-    s32 temp;
-    s32 result;
+    s32 r7 = arg1 & ~0x3F;
+    s32 r6 = ((s32 *)arg0)[-6];
+    s32 r0 = ((s32 *)arg0)[-5];
     
-    r7 = arg1 & ~0x3F;
-    arg0_s32 = (s32*)arg0;
-    r6 = arg0_s32[-6];  // -0x18 / 4 = -6
-    r0 = arg0_s32[-5];  // -0x14 / 4 = -5
-    arg0_s32[-6] = r6 - r7;
-    arg0_s32[-5] = r0 - r7;
-    lbl_s32 = (s32*)lbl_8041E140;
-    temp = lbl_s32[1] - r7;
-    lbl_s32[1] = temp;
-    result = fn_801281F4(arg0_s32[-5], r6 - r7);
-    arg0_s32[r0] = result;
+    ((s32 *)arg0)[-6] = r6 - r7;
+    ((s32 *)arg0)[-5] = r0 - r7;
+    
+    ((s32 *)lbl_8041E140)[1] = ((s32 *)lbl_8041E140)[1] - r7;
+    
+    fn_801281F4(((s32 *)arg0)[-5], r6 - r7);
+    
+    ((s32 *)arg0)[r0 - r7] = 0x53544B41;
 }
 
 void fn_80128714(void *arg0, s32 arg1, s32 arg2) {
-    s32 *ptr = (s32*)arg0;
+    s32 *ptr = (s32 *)arg0;
     
     ptr[2] = arg2;
     ptr[1] = 0;
     ptr[4] = 0;
     ptr[3] = arg1;
     
-    if (arg1 != 0) {
-        fn_802E30C8(&lbl_8032A000[0xE8], NULL, NULL);
-        fn_802E30C8(&lbl_8032A000[0x10C], &ptr[3], &ptr[3] + ptr[2]);
-        ptr[7] = 0;
-        ptr[6] = 0;
-        ptr[5] = 0x2000000;
-        return;
+    if (arg1 == 0) {
+        goto skip_init;
     }
     
+    fn_802E30C8(&lbl_8032A000[0xE8], NULL, NULL);
+    fn_802E30C8(&lbl_8032A000[0x10C], &ptr[3], &ptr[2] + ptr[3]);
+    ptr[7] = 0;
+    ptr[6] = 0;
+    ptr[5] = 0x200;
+    return;
+    
+skip_init:
     if (arg2 != 0) {
-        fn_802E317C(&lbl_8032A000[0x130], (void*)(arg2 >> 10));
-    } else {
-        ptr[7] = 0;
-        ptr[6] = 0;
+        s32 temp = arg2 >> 10;
+        fn_802E317C(&lbl_8032A000[0x130], (void *)(temp + (temp < 0 ? 1 : 0)));
     }
+    ptr[7] = 0;
+    ptr[6] = 0;
 }
+
+s32 fn_801288A4(void) {
+    return 0;
+}
+
