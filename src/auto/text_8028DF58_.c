@@ -43,16 +43,20 @@ void fn_8028E070(float farg0) {
     lbl_8055F73C = 1;
 }
 
+#pragma push
+#pragma small_data off
 void fn_8028E080(void) {
-    int *entries = &lbl_804B34B0;
+    int *base = &lbl_804B34B0;
+    int *entries = base;
     int i = 0;
     lbl_8055F73C = 0;
-    do {
-        fn_8028F8E0(entries[i], lbl_8055F738);
+    while (i < *(int *)((char *)base + 0x100)) {
+        fn_8028F8E0(*entries, lbl_8055F738);
+        entries++;
         i++;
-    } while (i < *(int *)((char *)&lbl_804B34B0 + 0x100));
+    }
 }
-
+#pragma pop
 void fn_8028E0F0(void) {
     fn_8028F5A4();
     fn_8028EE28((char *)&lbl_804B34B0 + 0x208);
@@ -91,13 +95,15 @@ extern void fn_8028F5A0(int, int);
 extern int lbl_8055C8E0;
 extern int lbl_804B35B4;
 extern int fn_8028F858(int, int);
+#pragma push
+#pragma small_data off
+#pragma pop
 void fn_8028E398(int arg0) {
     if (fn_8028EDA8((unsigned int *)&lbl_804B35B4, arg0) != 0) {
         fn_8028EDA8((unsigned int *)&lbl_804B34B0, arg0);
         fn_8028F858(arg0, 1);
     }
 }
-
 void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
 }
@@ -106,6 +112,14 @@ void fn_8028E58C(void) { fn_8028FAE4(); }
 
 void fn_8028E590(void) { fn_8028FC40(); }
 
+void *memset(void *, int, unsigned int);
+#pragma push
+#pragma small_data off
+int fn_8028E61C(void *arg0) {
+    void *p = arg0;
+    memset(p, 0, 0x8C);
+    return (int)p;
+}
 extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
 extern int stricmp(const char *, const char *);
@@ -195,6 +209,46 @@ int fn_8028EF44(void *arg0, unsigned int arg1) {
     }
     fn_802E317C(lbl_80348F4C);
     return 0;
+}
+
+#pragma push
+#pragma small_data off
+void fn_8028EFC4(int arg0, int *arg1) {
+    int i = 0;
+    int *p = arg1;
+    while (i < *(int *)((char *)arg1 + 0x100)) {
+        int item = *p;
+        int n = *(int *)((char *)item + 0x44);
+        fn_8028ED8C((char *)arg0 + (n - 1) * 0x104, item);
+        p++;
+        i++;
+    }
+}
+
+#pragma push
+#pragma small_data off
+int fn_8028F040(int *arg0, int *arg1, int arg2) {
+    int n = *(int *)((char *)arg0 + 0x100);
+    while (n > 0) {
+        int id = *(int *)((char *)*arg0 + 0xA4);
+        if (id != arg2) {
+            int count = *(int *)((char *)arg1 + 0x100);
+            int j = 0;
+            int *p = arg1;
+            while (j < count) {
+                int other = *(int *)((char *)*p + 0xA4);
+                p++;
+                j++;
+                if (id == other) return id;
+            }
+        }
+        arg0++;
+        n--;
+    }
+    return -2;
+}
+
+void fn_8028F5A4(void) {
 }
 
 extern int fn_80128668(void);
