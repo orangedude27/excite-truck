@@ -48,6 +48,11 @@ int fn_8027D634(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_8027D6BC(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_8027D6FC(void *arg0) {
     void *res = fn_8001285C(*(int *)((char *)arg0 + 0xC));
     void *obj = *(void **)((char *)res + 0x20);
