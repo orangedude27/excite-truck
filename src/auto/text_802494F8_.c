@@ -14,8 +14,40 @@ void fn_80249588(void) {}
 
 int fn_80249660(void) { return 1; }
 
+int fn_80249668(int *arg0) {
+    extern int lbl_802FA4C8[3];
+    extern unsigned char lbl_8055F290;
+    extern unsigned char lbl_8055F294[];
+    extern int fn_802411D4(void);
+    unsigned char *src;
+    unsigned char *dst;
+    int count;
+    int index;
+
+    index = fn_80214D04();
+    src = (unsigned char *)(&lbl_802FA4C8[2])[index];
+    dst = lbl_8055F294;
+    count = 0x100;
+    do {
+        unsigned char c = *src++;
+        *dst++ = c;
+        if ((signed char)c == 0) break;
+        count--;
+    } while (count > 0);
+    if (count == 0) dst[-1] = 0;
+    if (lbl_8055F290 && fn_802411D4() == 0) {
+        *arg0 = -1;
+        return 1;
+    }
+    return 0;
+}
+
 void fn_80249720(void) {
     lbl_8055BF34 = (void*)fn_80214D04();
+}
+
+void fn_80249744(void) {
+    fn_80214CB4(lbl_8055BF34);
 }
 
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
