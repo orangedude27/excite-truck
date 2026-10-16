@@ -461,6 +461,10 @@ extern "C" void fn_800CF3B4(void *arg0, s32 arg1, f32 arg2, f32 arg3, f32 arg4) 
 
 extern "C" u32 fn_800CF91C(void) { return 1; }
 
+extern "C" u8 fn_800CF924(s32 arg0, s32 arg1) {
+    return *(u8 *)((u8 *)(arg0 + arg1) + 4);
+}
+
 extern "C" void fn_800CF930(void) {
 
 }
@@ -666,6 +670,14 @@ extern "C" void fn_800D1300(void *arg0) {
 
 extern "C" void fn_800D1558(void) {
 
+}
+
+extern "C" s32 WPADControlMotor(s32, s32);
+extern "C" void fn_800D155C(void *arg0) {
+    if (*(s32 *)arg0 >= 4) return;
+    if (((s32 (*)(void *))fn_800D1E5C)(*(void **)((u8 *)arg0 + 0x24)) != 0) return;
+    *(u8 *)((u8 *)arg0 + 0x1C) = 1;
+    WPADControlMotor(*(s32 *)arg0, 1);
 }
 
 extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void *this_ptr, void *arg1) {
