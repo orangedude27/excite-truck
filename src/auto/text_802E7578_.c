@@ -33,3 +33,7 @@ s32 fn_802E774C(void) {
     return 0;
 }
 
+s32 fn_802E7754(void) {
+    return 0;
+}
+
