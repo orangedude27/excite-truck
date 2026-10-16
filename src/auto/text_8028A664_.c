@@ -45,3 +45,8 @@ s32 fn_8028BA44(void *arg0) {
     fn_8028AA6C(arg0, gval, val);
     return 0x14;
 }
+
+void fn_8028C92C(void *arg0) {
+    ((s32 *)arg0)[1] = 0;
+}
+
