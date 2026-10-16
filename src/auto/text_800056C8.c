@@ -258,8 +258,9 @@ void fn_80007C6C(void *arg0) {
 }
 
 s32 fn_80007CA8(void *arg0, void *arg1, s32 arg2, void *arg3) {
-    if (arg2 == 0x3e8) {
-        s32 high = ((s32)arg3) >> 16;
+    if ((u32)arg2 == 0x3e8) {
+        u32 val = (u32)arg3;
+        s32 high = val & 0xFFFF;
         return fn_801B87A0((s32)arg1, high);
     }
     return 0;
