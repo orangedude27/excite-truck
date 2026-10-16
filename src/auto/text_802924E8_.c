@@ -76,3 +76,12 @@ void* __dt__Q34nw4r2ef6EffectFv_802930BC(void* arg0, int arg1) {
     return arg0;
 }
 
+void fn_8029311C(void* arg0) {
+    *(s32*)((u8*)arg0 + 0x2fac) = 0;
+}
+
+void fn_80293128(void* arg0) {
+    float value = fn_801E7E24(arg0);
+    if (__fabsf(value) > lbl_80558DC4) fn_802936C4(arg0);
+}
+
