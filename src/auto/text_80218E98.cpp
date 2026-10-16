@@ -404,6 +404,23 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, 
     return arg0;
 }
 
+void fn_8021B134(void *arg0) {
+    int *p = *(int **)((char *)arg0 + 0x254);
+    *p += *(int *)((char *)arg0 + 0x260);
+    int flag = ((*(int *)((char *)arg0 + 0x25c) - *(int *)((char *)arg0 + 0x258)) - 2) == 0;
+    int end = *(int *)((char *)arg0 + 0x25c);
+    if (*p >= end) {
+        if (flag) *p = *(int *)((char *)arg0 + 0x258);
+        else *p = end - 1;
+    }
+    p = *(int **)((char *)arg0 + 0x254);
+    int start = *(int *)((char *)arg0 + 0x258);
+    if (*p < start) {
+        if (flag) *p = *(int *)((char *)arg0 + 0x25c) - 1;
+        else *p = start;
+    }
+}
+
 extern "C" void *lbl_8033F20C;
 extern "C" void fn_8021B224(void *arg0) {
     s32 temp_r0;
@@ -431,6 +448,15 @@ extern "C" void fn_8021B224(void *arg0) {
         if (*(s32 *)((u8 *)temp_r5_2 + 8) < 0)
             *(s32 *)((u8 *)temp_r5_2 + 8) = 0;
     }
+}
+
+extern "C" void fn_8021B2B0(void *arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, s32 arg6) {
+    fn_80219568(arg0, arg1, arg2, arg6, arg4, 0, 0, arg5);
+    *(s32 *)((u8 *)arg0 + 0x254) = (s32)arg3;
+    *(void **)arg0 = &lbl_8033F20C;
+    strcpy((char *)arg0 + 0x268, arg3);
+    *(s32 *)((u8 *)arg0 + 0x264) = arg5;
+    fn_80219718(arg0);
 }
 
 extern "C" s32 fn_8021B3A0(void *arg0) {
@@ -562,6 +588,30 @@ extern "C" void fn_8021CEAC(void *arg0) {
     (*(void (**)(void *))(*(void ***)arg0 + 19))(arg0);
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
 }
+
+extern "C" void fn_8021CF9C(void *arg0) {
+    f32 total;
+    f32 scaled;
+    f32 value;
+    s32 converted;
+    char *buffer = (char *)arg0 + 0x264;
+    value = (f32)*(s32 *)*(void **)((u8 *)arg0 + 0x25C);
+    scaled = value * *(f32 *)((u8 *)arg0 + 0x254);
+    total = *(f32 *)((u8 *)arg0 + 0x258) + scaled;
+    converted = (s32)(lbl_805634C4 + total);
+    sprintf(buffer, *(const char **)((u8 *)arg0 + 0x260), converted, total, scaled, value);
+    fn_80130568(buffer);
+    fn_80219718(arg0);
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+        *(u8 *)((u8 *)arg0 + 0x234) = 1;
+}
+
+void fn_8021CF9C(void);
+void fn_8021AC24(void *, int, int, int);
+extern int lbl_8033F548;
+extern "C" void fn_8021CF9C(void);
+extern "C" int lbl_8033F548;
+extern "C" void fn_8021D040(void) { fn_8021CF9C(); }
 
 extern "C" void *fn_8021D7C8(void *arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 arg5,s32 arg6,s32 arg7) {
     f32 value;
