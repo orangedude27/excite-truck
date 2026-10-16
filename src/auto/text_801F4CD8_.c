@@ -6,7 +6,7 @@ extern void *lbl_8055EC14;
 extern void *lbl_8055EC10;
 extern void *lbl_8055EC1C;
 extern void *lbl_8055EC20;
-extern void *lbl_8033ACE8;
+extern char lbl_8033ACE8[32];
 extern void fn_801F7160(void *);
 extern void fn_801F7220(void *);
 extern void *fn_802AE414(void);
