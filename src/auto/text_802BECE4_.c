@@ -122,7 +122,7 @@ unsigned int fn_802C0D34(void) {
 unsigned char fn_802C0D3C(void *arg0) {
     return *((unsigned char *)arg0 + 0x2C5C);
 }
-extern void fn_802BEDFC(void);
+
 extern int fn_801E85AC(void);
 extern int fn_802C00A4(void);
 extern int fn_8012C33C(int);
