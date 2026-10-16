@@ -27,18 +27,9 @@ f32 fn_8001DA5C(s32 arg0) {
     f64 fraction;
     s32 quotient = lbl_8055E3C4 / arg0;
     s32 remainder;
-    union {
-        f64 d;
-        u32 words[2];
-    } angle_bits;
-    union {
-        f64 d;
-        u32 words[2];
-    } fraction_bits;
-    union {
-        f64 d;
-        u32 words[2];
-    } integer_bits;
+    union { f64 d; u32 words[2]; } angle_bits;
+    union { f64 d; u32 words[2]; } fraction_bits;
+    union { f64 d; u32 words[2]; } integer_bits;
     integer_bits.words[0] = 0x43300000;
     integer_bits.words[1] = arg0 ^ 0x8000;
     angle = integer_bits.d - bias;
