@@ -239,6 +239,18 @@ void fn_8006EC20(void) {
     fn_80068E08();
 }
 
+void bte_hcisu_task(void) {
+    if (lbl_8055DC68 != NULL) {
+        if (lbl_8055DC68->init != NULL) {
+            lbl_8055DC68->init(2, 1, 0x800);
+        }
+
+        if (lbl_8055DC68->open != NULL) {
+            lbl_8055DC68->open(lbl_8055DC6C);
+        }
+    }
+}
+
 void fn_80070844(void *p_msg) {
     GKI_send_msg(2, 0, p_msg);
 }
