@@ -47,6 +47,8 @@ s32 fn_80239DE4(void) {
     return 1;
 }
 
+unsigned char fn_80239F6C(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
+
 extern s32 fn_80209030(float);
 extern s32 fn_802090BC(s32);
 extern s32 fn_8020A5F8(float);
