@@ -4,6 +4,8 @@
 
 extern void *lbl_8055EA10;
 
+s32 fn_801E137C(void *arg0) { return ((s32 *)arg0)[1]; }
+
 void fn_801E1684(void) {
 
 }
