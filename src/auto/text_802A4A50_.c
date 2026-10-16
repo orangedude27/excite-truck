@@ -20,14 +20,36 @@ extern f32 lbl_8055F8A0;
 s32 fn_802A6A44(void);
 s32 fn_802A5C1C(void);
 s32 fn_802A59E0(void);
+extern s32 lbl_8055F894, lbl_8055F898, lbl_8055F89C;
+extern u8 lbl_80349BF0[], lbl_8055CBC8;
+s32 fn_802C6CF8(void);
+s32 fn_802CAC54(s32);
+s32 fn_802A597C(void);
+s32 fn_8028E398(void);
+s32 fn_802A5B8C(s32);
+s32 fn_802A69D8(s32);
+s32 fn_800167F4(void);
+s32 fn_802A5384(s32);
+s32 fn_802A53B0(void);
+s32 fn_80287B38(void *);
+s32 fn_802A5878(void);
+s32 fn_802CAC28(void *, s32);
+void *fn_802AE414(void *);
+s32 fn_802C6FC0(void *, s32, s32);
 void fn_802A4C20(void) {
-    if (lbl_8055F88C != 0) {
-        fn_802A6A44();
-    }
-    if (lbl_8055F888 != 0) {
-        fn_802A5C1C();
-    }
+    register s32 flag asm("r3");
+    flag = lbl_8055F88C;
+    if (flag != 0) fn_802A6A44();
+    flag = lbl_8055F888;
+    if (flag != 0) fn_802A5C1C();
     fn_802A59E0();
+}
+
+void fn_802A4C60(void) {
+    lbl_8055F8A0 = fn_802A4A50();
+    if (lbl_8055F88C != 0) fn_802A6A7C();
+    if (lbl_8055F888 != 0) fn_802A5CA4();
+    fn_802A5A38();
 }
 
 void fn_802A4CA8(void) {
