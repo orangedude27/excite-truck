@@ -3,23 +3,58 @@
 #include <types.h>
 #include "revolution/GX/GXTypes.h"
 
-void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void *arg0, void *arg1) {
-    f32 *dst = (f32 *)arg0;
-    u8 *src = (u8 *)arg1;
-    if (src[0x20] == 1) {
-        f32 height = *(f32 *)(src + 0x1C);
-        f32 width = *(f32 *)(src + 0x18);
-        f32 scale = 0.5f;
-        dst[2] = width * scale;
-        dst[1] = height * scale;
-        dst[0] = -width * scale;
-        dst[3] = -height * scale;
+extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
+    extern s32 fn_80128668(void);
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
+extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(void* arg0, void* arg1) {
+    extern const char lbl_8031F658[];
+    extern const char lbl_8031F634[];
+    void* sp8 = (u8*)arg0 + 4;
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F658, 0x233, lbl_8031F634);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(arg0, &sp8, (u8*)arg1 + 4);
+}
+
+extern "C" void fn_800D6EEC(void* arg0) {
+    extern float lbl_80560E80;
+    extern char lbl_8031F868[];
+    u32 zero = 0;
+    u8* p = (u8*)arg0;
+    *(u32*)(p + 8) = zero;
+    *(u32*)(p + 0xC) = zero;
+    *(void**)p = lbl_8031F868;
+    *(u32*)(p + 4) = zero;
+    *(void**)(p + 8) = p + 8;
+    *(void**)(p + 0xC) = p + 8;
+    *(u32*)(p + 0x10) = zero;
+    *(u32*)(p + 0x14) = zero;
+    *(f32*)(p + 0x18) = lbl_80560E80;
+    *(f32*)(p + 0x1C) = lbl_80560E80;
+    *(u8*)(p + 0x20) = 0;
+}
+
+extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
+    u8* p = (u8*)self;
+    extern f32 lbl_80560E84;
+    extern f32 lbl_80560E80;
+    if (p[0x20] == 1) {
+        f32 w = *(f32*)&p[0x18];
+        f32 h = *(f32*)&p[0x1C];
+        f32 s = lbl_80560E84;
+        *(f32*)&((u8*)pOut)[8] = w * s;
+        *(f32*)&((u8*)pOut)[4] = h * s;
+        *(f32*)&((u8*)pOut)[0] = -w * s;
+        *(f32*)&((u8*)pOut)[0xC] = -h * s;
     } else {
-        f32 zero = 0.0f;
-        dst[0] = zero;
-        dst[1] = zero;
-        dst[2] = *(f32 *)(src + 0x18);
-        dst[3] = *(f32 *)(src + 0x1C);
+        f32 z = lbl_80560E80;
+        *(f32*)&((u8*)pOut)[0] = z;
+        *(f32*)&((u8*)pOut)[4] = z;
+        *(f32*)&((u8*)pOut)[8] = *(f32*)&p[0x18];
+        *(f32*)&((u8*)pOut)[0xC] = *(f32*)&p[0x1C];
     }
 }
 
