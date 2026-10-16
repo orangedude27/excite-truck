@@ -19,3 +19,5 @@ void fn_80255920(void *arg0, s8 arg1) {
 void fn_80255A7C(void) {
 }
 
+s32 fn_802571F0(void) { return 0; }
+
