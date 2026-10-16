@@ -52,6 +52,10 @@ void fn_802D30FC(void) {
     fn_802D30F0();
 }
 
+void fn_802D3100(void) {
+    fn_802D30F0();
+}
+
 extern void fn_802D30F0(void);
 extern void fn_802D307C(void);
 void* fn_802D3104(void) {
