@@ -6,6 +6,7 @@
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/bta/include/ptim.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
+#include <revolution/OS.h>
 
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80316570[];
