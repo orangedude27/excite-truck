@@ -81,6 +81,14 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8019EBC0(void* arg0) {
+    void* obj = *(void**)((u8*)arg0 + 4);
+    if (obj != 0) {
+        void** vtable = *(void***)obj;
+        ((void (*)(void*))(*(u32*)((u8*)vtable + 0x48)))(obj);
+    }
+}
+
 extern "C" void fn_8019EBE0(void* self, s32 a, s32 b, s32 c, s32 d, s32 e, s32 f) {
     s32 v1 = (s32)self;
     s32 v2 = a;
@@ -121,6 +129,12 @@ extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_801A4A10(s32, s32, s32);
 extern "C" void fn_8019ECBC(void* arg0, s32 arg1) {
     *(s32*)((u8*)arg0 + 0xC) = arg1;
+}
+
+void fn_8019EECC(void* arg0, void* arg1) {
+    *(f32*)((u8*)arg1 + 0x0) += *(f32*)((u8*)arg0 + 0x30);
+    *(f32*)((u8*)arg1 + 0x4) += *(f32*)((u8*)arg0 + 0x34);
+    *(f32*)((u8*)arg1 + 0x8) += *(f32*)((u8*)arg0 + 0x38);
 }
 
 void fn_8019F03C(void* arg0) {
