@@ -21,8 +21,8 @@ extern void *lbl_804340C0[];
 extern void **lbl_8055E434[];
 extern int lbl_8055E438;
 extern int lbl_8055E468;
-long fn_802E2C20(void);
-extern long lbl_8055E464;
+int fn_802E2C20(void);
+extern int lbl_8055E464;
 void fn_80177814(long *arg0) {
     *arg0 = fn_802E2C20() % 30000;
     arg0[1] = fn_802E2C20() % 30000;
