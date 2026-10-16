@@ -21,6 +21,11 @@ void fn_8028DFB0(void) {
     lbl_8055F744 = 0;
 }
 
+void fn_8028E070(float farg0) {
+    lbl_8055F738 = farg0;
+    lbl_8055F73C = 1;
+}
+
 void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
 }
@@ -59,6 +64,34 @@ void fn_8028EE1C(void *arg0) {
 
 void fn_8028EE28(void *arg0) {
     *(int *)((char *)arg0 + 0x600) = 0;
+}
+
+extern int fn_8002B1D8(int, void *, int);
+extern char *strncpy(char *, const char *, unsigned int);
+void fn_8028EEB4(void *arg0, int arg1, const char *arg2) {
+    char *p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
+    strncpy(p, arg2, 0x10);
+    p[0xF] = 0;
+    *(int *)(p + 0x10) = arg1;
+    *(int *)(p + 0x14) = 1;
+    (*(int *)((char *)arg0 + 0x600))++;
+}
+
+int fn_8028EF44(unsigned int *arg0, unsigned int arg1) {
+    unsigned int *p = (unsigned int *)((char *)arg0 + 0x10);
+    int i = 0;
+    int count = *(int *)((char *)arg0 + 0x600);
+    while (i < count) {
+        if (*p == arg1) {
+            int *q = (int *)((char *)arg0 + i * 0x18 + 0x14);
+            *q -= 1;
+            return *q == 0;
+        }
+        p = (unsigned int *)((char *)p + 0x18);
+        i++;
+    }
+    fn_802E317C(lbl_80348F4C);
+    return 0;
 }
 
 int fn_802916DC(void) { return 0; }
