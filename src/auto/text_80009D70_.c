@@ -64,11 +64,11 @@ void fn_8000A688(void (*arg0)(void*), s32 arg1) DECOMP_DONT_INLINE {
     arg0(sp8);
 }
 
-void fn_8000AADC(void) {
+void fn_8000AADC(void* arg0) {
     fn_8000A7A8();
 }
 
-void fn_8000AAE0(void) {
+void fn_8000AAE0(void* arg0) {
     fn_8000A808();
 }
 
