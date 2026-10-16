@@ -11,6 +11,7 @@ extern long fn_8020F608(long, long);
 extern struct Unk_804902C4 {
     long *m_entries;
     long m_count;
+    long m_pad;
 } lbl_804902C4;
 extern long lbl_8055EEC4;
 long fn_8020F3B4(void) { return -1; }
