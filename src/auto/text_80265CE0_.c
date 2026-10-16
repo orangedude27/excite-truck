@@ -5,5 +5,7 @@ void fn_80265D50(void) {}
 
 void fn_80265D54(void) {}
 
+int fn_80265D58(void) { return 0; }
+
 void fn_80265D60(void) {}
 
