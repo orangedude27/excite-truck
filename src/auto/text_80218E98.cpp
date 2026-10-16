@@ -20,6 +20,10 @@ extern "C" void fn_802194F4(void* arg0) {
     fn_802179A0(*(s32*)((u8*)arg0 + 0x2C));
 }
 
+extern "C" void fn_802194FC(void* arg0) {
+    fn_80218198(*(s32*)((u8*)arg0 + 0x2C), 0);
+}
+
 extern "C" void fn_8021915C(void*, u32);
 extern "C" s32 fn_80128668(void*);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
