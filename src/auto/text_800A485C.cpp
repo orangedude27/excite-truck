@@ -205,6 +205,11 @@ extern "C" s32 fn_800A8FD0(void *arg0, s32 arg1) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
+extern "C" s32 fn_800A900C(void *arg0, s32 arg1, s32 arg2) {
+    s32 temp_r3 = fn_800A8504(arg0, (u8 *)arg0 + 0x1634, arg1, arg2);
+    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+}
+
 extern "C" void fn_800AF2B8(void *);
 extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[0] = 0;
