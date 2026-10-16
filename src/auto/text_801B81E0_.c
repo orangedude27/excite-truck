@@ -152,3 +152,5 @@ int fn_801B8B08(void) {
     return result;
 }
 
+int fn_801B8B38(void) { return 1; }
+
