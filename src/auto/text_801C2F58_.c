@@ -237,8 +237,10 @@ extern s32 lbl_8055E828;
 extern char lbl_8055AA54[];
 extern s32 fn_801C34CC(f32, f32);
 void fn_801C7770(void) {
-    u8 value = lbl_8055E83E;
-    lbl_8055E83E = value == 0;
+    u32 value = lbl_8055E83E;
+    u32 count = (u32)__cntlzw(value);
+    u32 high = count >> 5;
+    lbl_8055E83E = (u8)high;
 }
 
 void fn_801C77C0(void) {
@@ -383,6 +385,20 @@ void fn_801C80C8(void) {
 
 void fn_801C8190(void) {
     lbl_8055E854 = 1;
+    fn_801C78D8();
+}
+
+extern f32 lbl_8055E85C;
+extern f32 lbl_8055E860;
+extern f32 lbl_8055A958;
+extern s32 lbl_8055E864;
+extern char lbl_804384A8[];
+extern char lbl_804385A8[];
+extern char lbl_80336FDC[];
+extern void fn_801C7BA0(void);
+void fn_801C819C(void) {
+    lbl_8055E85C = lbl_80438268.x;
+    lbl_8055E860 = lbl_80438268.z;
     fn_801C78D8();
 }
 
