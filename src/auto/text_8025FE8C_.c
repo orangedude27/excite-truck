@@ -14,6 +14,8 @@ extern u8 lbl_8055F3EB;
 extern u8 lbl_8055F420[];
 extern u8 lbl_8055BAC0;
 extern u8 lbl_8055BAB8;
+extern s32 lbl_802FA6A8[];
+extern u8 lbl_8055B860;
 void fn_802607C4(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
 }
@@ -39,16 +41,37 @@ void fn_80260848(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 1;
 }
 
+extern s32 lbl_802FA6A8[];
+extern u8 lbl_8055B860;
+void fn_80261688(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    *(s32 *)((u8 *)arg0 + 8) = arg3;
+    *(s32 *)((u8 *)arg0 + 4) = 6;
+    *(void **)arg0 = &lbl_8055B860;
+    *(s32 *)((u8 *)arg0 + 0xC) = arg2;
+    *(s32 *)((u8 *)arg0 + 0x10) = arg1;
+}
+
+void fn_80261980(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 zero = 0;
+    *(s32 *)((u8 *)arg0 + 0) = arg1;
+    *(s32 *)((u8 *)arg0 + 4) = 3;
+    *(s32 *)((u8 *)arg0 + 8) = arg2;
+    *(s32 *)((u8 *)arg0 + 0xC) = arg3;
+    *(s32 *)((u8 *)arg0 + 0x10) = zero;
+}
+
 s32 fn_802619D8(s32 *arg0, s32 arg1) {
     return *arg0 + arg1 * 4;
 }
 
 void fn_802619E8(void *arg0, s32 arg1, s32 arg2) {
+    s32 zero = 0;
     *(s32 *)((u8 *)arg0 + 0) = arg1;
-    *(s32 *)((u8 *)arg0 + 4) = 5;
+    arg1 = 5;
+    *(s32 *)((u8 *)arg0 + 4) = arg1;
     *(s32 *)((u8 *)arg0 + 8) = arg2;
-    *(s32 *)((u8 *)arg0 + 0xC) = 0;
-    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+    *(s32 *)((u8 *)arg0 + 0xC) = zero;
+    *(s32 *)((u8 *)arg0 + 0x10) = zero;
 }
 
 s32 fn_80261A08(s32 *arg0, s32 arg1) {
