@@ -171,7 +171,7 @@ extern "C" void fn_80157184(void* arg0) {
 }
 
 extern "C" void fn_80157198(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_b->update();
+    ((ebi::title::TBlackPlane*)arg0)->m_b->v2();
 }
 
 extern "C" void fn_801571AC(void* arg0) {
