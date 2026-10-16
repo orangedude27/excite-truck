@@ -18,6 +18,13 @@ s32 fn_8023964C(s32 arg0) {
     return arg0;
 }
 
+s32 fn_8023967C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_8023976C(void *arg0) {
     if (*(u32 **)((u8 *)arg0 + 0x14) != 0) {
         fn_80238FCC(*(u32 *)((u8 *)arg0 + 8));
