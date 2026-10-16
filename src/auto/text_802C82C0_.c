@@ -53,6 +53,20 @@ void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
 
+extern int fn_80133010(void);
+extern void fn_801336E0(int, void (*)(void));
+extern void fn_802C6080(void);
+extern int lbl_8055D028;
+extern int fn_802C9E94(void);
+extern int fn_801E7894(int);
+void fn_802C84EC(void) {
+    if (fn_80133010() != 0) {
+        fn_801336E0(lbl_8055D028, fn_802C82C0);
+        lbl_8055D028 = -1;
+    }
+    fn_802C6080();
+}
+
 void fn_802C8530(void) {
     lbl_8055FC70 = 1;
     fn_802CC60C();
