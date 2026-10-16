@@ -29,6 +29,10 @@ extern "C" void fn_80148228(void) {
 extern "C" void fn_80148244(void) {
 }
 
+extern "C" s32 fn_80148248(void) {
+    return 0;
+}
+
 extern "C" void fn_80148280(void) {
 
 }
