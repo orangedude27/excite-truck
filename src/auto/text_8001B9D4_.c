@@ -32,6 +32,11 @@ void fn_8001BA78(void) {
     fn_8001C9C4();
 }
 
+void fn_8001BA84(void) {
+    lbl_8055D5C8 = 0;
+    fn_8001CAF8();
+}
+
 void fn_8001BBB4(void) {
     fn_8001D020();
 }
