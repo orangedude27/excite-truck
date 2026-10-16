@@ -14,15 +14,17 @@ extern void **lbl_8055E27C;
 
 namespace ebi {
 namespace title {
-class TPlaneSub {
-public:
-    virtual void v0();
-    virtual void v1();
-    virtual void v2();
-    virtual void v3();
-    virtual void v4();
-    virtual void update(); // 0x14
-};
+  class TPlaneSub {
+  public:
+      virtual void v0();
+      virtual void v1();
+      virtual void v2();
+      virtual void v3();
+      virtual void v4();
+      virtual void v5();
+      virtual void v6();
+      virtual void update(); // 0x20
+  };
 
 class TBlackPlane {
 public:
@@ -166,6 +168,10 @@ void fn_80156B50(void) {
     return;
 }
 
+extern "C" void fn_80157170(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_b->v2();
+}
+
 extern "C" void fn_80157184(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v1();
 }
@@ -185,5 +191,13 @@ void ebi::title::TBlackPlane::updateAfterCamera() {
 
 extern "C" void fn_80157210(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v4();
+}
+
+extern "C" void fn_80157224(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_b->v3();
+}
+
+extern "C" void fn_80157238(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_b->v4();
 }
 
