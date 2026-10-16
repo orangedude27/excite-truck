@@ -14,6 +14,28 @@ struct FIter60 {
     void *vtbl; // 0x60
 };
 
+extern u8 lbl_8033B468[];
+extern f32 lbl_80562FF0;
+extern f32 lbl_80563000;
+extern "C" void *memset(void *, s32, u32);
+
+struct F92Obj {
+    u8 pad0[0x20];
+    void *f20;  // 0x20
+    void *f24;  // 0x24
+    f32 f28;    // 0x28
+    u8 pad2[0x60 - 0x2c];
+    s8 b60;     // 0x60
+    u8 pad3[0x74 - 0x61];
+    s32 w74;    // 0x74
+    s32 w78;    // 0x78
+    f32 f7c;    // 0x7c
+    f32 f80;    // 0x80
+    u8 pad4[0x104 - 0x84];
+    void *w104; // 0x104
+    void *w108; // 0x108
+};
+
 extern "C" {
 extern u8 lbl_8033B1EC[];
 extern u8 lbl_8033B210[];
