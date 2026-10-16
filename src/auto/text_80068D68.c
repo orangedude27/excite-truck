@@ -145,8 +145,12 @@ s32 WUDiTerminateDevice(void) {
     s32 i;
     u8 *entry;
     u8 *base = lbl_80392960;
-    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
-    for (i = 0, entry = base + 0x424; i < 6; i++, entry += 0x60) if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    for (i = 0, entry = base + 0x64; i < 10; i++, entry += 0x60) {
+        if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    }
+    for (i = 0, entry = base + 0x424; i < 6; i++, entry += 0x60) {
+        if (entry[0x59] > 1) btm_remove_acl(entry + 0x40);
+    }
     return 3;
 }
 
@@ -192,6 +196,26 @@ void fn_8006A300(void)
 void fn_8006A39C(u32 r3, u32 r4)
 {
     OSSwitchFiberEx(r3, r4, 0, 0, fn_8006A300, (u8*)&lbl_80393680 + 0x1000);
+}
+
+void fn_8006A3BC(void)
+{
+    u8 state = lbl_80392960[0x11];
+    switch (state) {
+    case 1:
+        if (SCCheckStatus() == 0) {
+            if (SCSetBtDeviceInfoArray(lbl_80393058) != 0) {
+                SCFlushAsync(fn_80068F28);
+                state = 2;
+            } else {
+                state = 1;
+            }
+            lbl_80392960[0x11] = state;
+        }
+        break;
+    case 2:
+        break;
+    }
 }
 
 void fn_8006A3BC(void);
@@ -242,6 +266,16 @@ void WUDSetSniffMode(BD_ADDR addr, s32 interval)
     block.attempt = 1;
     block.timeout = 0;
     BTM_SetPowerMode(lbl_80392960[0x68A], addr, &block);
+}
+
+void WUDSetVisibility(u8 arg0, u8 arg1)
+{
+    s32 enabled;
+    enabled = OSDisableInterrupts();
+    lbl_80392960[0x66B] = arg0;
+    lbl_80392960[0x66A] = arg1;
+    OSRestoreInterrupts(enabled);
+    BTA_DmSetVisibility(arg0, arg1);
 }
 
 extern void *lbl_80319994;
