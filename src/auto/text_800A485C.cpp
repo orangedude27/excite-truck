@@ -276,6 +276,18 @@ extern "C" void fn_800B7E18(u32 arg0) {
     if (lbl_80405D00[0]) lbl_80405D00[0]((u8)arg0);
 }
 
+extern "C" u8 lbl_802F31F8[];
+extern "C" s32 lbl_8055DD2C;
+extern "C" s32 NANDInit(void);
+extern "C" s32 NANDGetCurrentDir(char *);
+extern "C" s32 lbl_80405D18;
+extern "C" s32 fn_800BA49C(s32, s32, s32, s32);
+extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
+    *(s32 *)((u8 *)arg0 + 4) = arg1;
+    *(u8 **)arg0 = lbl_802F31F8;
+    return 0;
+}
+
 extern "C" s32 fn_800BA404(void) {
     u8 value;
     if (*(u32*)lbl_80407300 & 1) {
@@ -954,6 +966,38 @@ extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
 
 extern "C" u16 fn_800D441C(void *arg0) {
     return *(u16 *)(*(u8 **)((u8 *)arg0 + 0xC) + 8);
+}
+
+extern "C" s32 fn_800D58F0(void *);
+extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
+extern "C" void *lbl_8055DDF0;
+extern "C" f32 lbl_80560E60;
+extern "C" void *lbl_8031F168;
+extern "C" void fn_800D4428(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 4) = 0;
+    *(s32 *)((u8 *)arg0 + 8) = 0;
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    *(f32 *)((u8 *)arg0 + 0x10) = lbl_80560E60;
+    *(void **)arg0 = lbl_8031F168;
+    *(s32 *)((u8 *)arg0 + 0x14) = 0;
+    *(s32 *)((u8 *)arg0 + 0x18) = 0;
+    *(s16 *)((u8 *)arg0 + 0x1C) = 0;
+}
+
+extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt8Material(void *arg0, void *arg1) {
+    u16 i = 0;
+    u8 *entries = (u8 *)*(void **)((u8 *)arg0 + 0xC);
+    u8 *offsets = entries + *(s32 *)(entries + 0x10);
+    while (i < *(u16 *)(entries + 0xE)) {
+        u8 *entry = entries + *(s32 *)(offsets + i * 4);
+        if (entry[0x15] == 1 && fn_800D58F0((u8 *)arg1 + 4) != 0) {
+            u8 *link = (u8 *)*(void **)((u8 *)arg0 + 0x18) + i * 0x10;
+            *(void **)(link + 8) = arg0;
+            *(u16 *)(link + 0xC) = i;
+            AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(arg1, link);
+        }
+        i++;
+    }
 }
 
 extern u32 lbl_8055DDE0;
