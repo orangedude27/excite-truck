@@ -20,6 +20,8 @@ extern const char lbl_80322858[];
 extern const char lbl_803227EC[];
 extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+extern const char lbl_803221A8[];
+extern const char lbl_80322438[];
 // Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
 class VfObj {
 public:
@@ -347,7 +349,7 @@ void fn_800E8ADC(void *arg0) {
         *(unsigned char *)((char *)arg0 + 0x64) = 1;
 }
 
-void fn_800E8F54(void *arg0, int arg1) {
+extern "C" void fn_800E8F54(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x6C) = arg1;
     *(unsigned char *)((char *)arg0 + 0x66) = (unsigned char)((-arg1) & ~arg1) >> 31;
 }
