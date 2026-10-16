@@ -95,6 +95,11 @@ int fn_80164868(void) {
     return 1;
 }
 
+int fn_80164894(void *arg0, void *arg1, int arg2) {
+    *(float *)arg1 = *(float *)((char *)arg0 + (arg2 << 2) + 0x14);
+    return 1;
+}
+
 void fn_80164D58(void) {
 
 }
@@ -129,7 +134,7 @@ void fn_80165248(void) {
 int fn_801657D4(void) { return 1; }
 
 void fn_801657DC(void) {
-    int sp10[2];
+    int sp10[12];
     float sp8;
     fn_80020434(sp10, &sp8);
     fn_8026A2CC(sp10, 0, sp8);
