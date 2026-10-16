@@ -9,7 +9,7 @@ extern s32 PausingFlag_8055D850;
 extern s32 FatalErrorFlag_8055D854;
 extern s32 executing_8055D8C8;
 extern char __DVDThreadQueue[4];
-extern char DummyCommandBlock_80376AA0[4];
+extern char DummyCommandBlock_80376AA0[32];
 
 extern s32 OSDisableInterrupts(void);
 extern s32 OSRestoreInterrupts(s32);
