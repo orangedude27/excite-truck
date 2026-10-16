@@ -110,6 +110,10 @@ void fn_802093F8(void) {
 
 }
 
+int fn_802093FC(void) {
+    return 0;
+}
+
 void fn_80209404(void) {
 
 }
