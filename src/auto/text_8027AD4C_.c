@@ -5,6 +5,13 @@ extern char lbl_804A4380[];
 void fn_8027AF94(void *);
 void fn_8027B288(void *);
 long fn_80131818(long);
+long fn_8000DA10(void);
+void *fn_8001BB58(long, long, long);
+long fn_801284F8(long, char *);
+long fn_8027C41C(long);
+long fn_8027C4B4(long, long);
+extern long lbl_8055F658;
+extern char lbl_80347B68[];
 
 extern char lbl_80347B78[];
 extern char lbl_80347C14[];
