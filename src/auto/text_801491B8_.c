@@ -544,6 +544,25 @@ int fn_8014C964(int *arg0, int arg1) {
     return *arg0 == arg1;
 }
 
+void fn_8014C978(void *arg0, void *arg1) {
+    s32 d, c, b, a;
+    f32 j, i, h, g, f, e;
+    volatile s32 *src = (volatile s32 *)arg1;
+    volatile f32 *fsrc = (volatile f32 *)((u8 *)arg1 + 0x10);
+    a = src[0]; b = src[1]; c = src[2]; d = src[3];
+    e = fsrc[0]; f = fsrc[1]; g = fsrc[2]; h = fsrc[3]; i = fsrc[4]; j = fsrc[5];
+    *(s32 *)arg0 = a;
+    *((s32 *)arg0 + 1) = b;
+    *((s32 *)arg0 + 2) = c;
+    *((s32 *)arg0 + 3) = d;
+    *(f32 *)((u8 *)arg0 + 0x10) = e;
+    *(f32 *)((u8 *)arg0 + 0x14) = f;
+    *(f32 *)((u8 *)arg0 + 0x18) = g;
+    *(f32 *)((u8 *)arg0 + 0x1c) = h;
+    *(f32 *)((u8 *)arg0 + 0x20) = i;
+    *(f32 *)((u8 *)arg0 + 0x24) = j;
+}
+
 int fn_8014C9CC(void *arg0) {
     return ((int *)arg0)[1];
 }
