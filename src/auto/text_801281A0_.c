@@ -128,6 +128,8 @@ void fn_801291C4(void) {
 
 }
 
+s32 fn_8012920C(void *arg0) { return ((s32 *)arg0)[2]; }
+
 void fn_80129214(void) {
 
 }
