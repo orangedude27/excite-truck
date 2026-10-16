@@ -6,3 +6,8 @@
 void fn_8012F43C(void *arg0) {
     ((s32 *)arg0)[1] = 0;
 }
+
+void fn_8012F448(void *arg0, s32 arg1) {
+    ((s32 *)arg0)[1] = arg1;
+}
+
