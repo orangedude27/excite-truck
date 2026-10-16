@@ -12,7 +12,8 @@ extern u8 lbl_8055F3E9;
 extern u8 lbl_8055F3EA;
 extern u8 lbl_8055F3EB;
 extern u8 lbl_8055F420[];
-extern u8 lbl_8055BAC0[];
+extern u8 lbl_8055BAC0;
+extern u8 lbl_8055BAB8;
 void fn_80261A40(s32 arg0) {
     fn_80236914();
     lbl_8055F3E9 = (arg0 - 2) == 0;
