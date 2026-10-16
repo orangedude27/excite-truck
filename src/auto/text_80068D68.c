@@ -665,20 +665,38 @@ s32 IUSB_WriteCtrlMsgAsync(s32 a,s32 b,s32 c,s32 d,s32 e,u32 length,void* data,v
 }
 #pragma use_lmw_stmw reset
 s32 AXFXReverbHiInit(void* arg0) {
+    s32 zero;
+    f32 h;
+    f32 g;
+    f32 f;
+    f32 e;
+    f32 d;
+    f32 c;
+    f32 b;
+    f32 a;
+    zero = 0;
+    a = *(f32*)((u8*)arg0 + 0x158);
+    f = lbl_80560D50;
+    b = *(f32*)((u8*)arg0 + 0x150);
+    c = *(f32*)((u8*)arg0 + 0x148);
+    d = *(f32*)((u8*)arg0 + 0x154);
+    e = *(f32*)((u8*)arg0 + 0x15C);
+    g = lbl_80560D54;
+    h = *(f32*)((u8*)arg0 + 0x14C);
     *(s32*)((u8*)arg0 + 0x110) = 5;
-    *(f32*)((u8*)arg0 + 0x114) = *(f32*)((u8*)arg0 + 0x158);
-    *(f32*)((u8*)arg0 + 0x118) = *(f32*)((u8*)arg0 + 0x158);
-    *(s32*)((u8*)arg0 + 0x11C) = 0;
-    *(f32*)((u8*)arg0 + 0x120) = *(f32*)((u8*)arg0 + 0x150);
-    *(f32*)((u8*)arg0 + 0x124) = *(f32*)((u8*)arg0 + 0x148);
-    *(f32*)((u8*)arg0 + 0x128) = *(f32*)((u8*)arg0 + 0x154);
-    *(f32*)((u8*)arg0 + 0x12C) = *(f32*)((u8*)arg0 + 0x15C);
-    *(f32*)((u8*)arg0 + 0x130) = lbl_80560D50;
-    *(f32*)((u8*)arg0 + 0x134) = lbl_80560D54;
-    *(s32*)((u8*)arg0 + 0x138) = 0;
-    *(s32*)((u8*)arg0 + 0x13C) = 0;
-    *(f32*)((u8*)arg0 + 0x140) = *(f32*)((u8*)arg0 + 0x14C);
-    *(f32*)((u8*)arg0 + 0x144) = lbl_80560D50;
+    *(f32*)((u8*)arg0 + 0x114) = a;
+    *(f32*)((u8*)arg0 + 0x118) = a;
+    *(s32*)((u8*)arg0 + 0x11C) = zero;
+    *(f32*)((u8*)arg0 + 0x120) = b;
+    *(f32*)((u8*)arg0 + 0x124) = c;
+    *(f32*)((u8*)arg0 + 0x128) = d;
+    *(f32*)((u8*)arg0 + 0x12C) = e;
+    *(f32*)((u8*)arg0 + 0x130) = f;
+    *(f32*)((u8*)arg0 + 0x134) = g;
+    *(s32*)((u8*)arg0 + 0x138) = zero;
+    *(s32*)((u8*)arg0 + 0x13C) = zero;
+    *(f32*)((u8*)arg0 + 0x140) = h;
+    *(f32*)((u8*)arg0 + 0x144) = f;
     return AXFXReverbHiExpInit(arg0);
 }
 
