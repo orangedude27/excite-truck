@@ -26,50 +26,50 @@ extern "C" s32 fn_800DCE60(void) {
     return 0;
 }
 
-extern "C" void fn_800DCE68(void *arg0, void *arg1) {
-    s16 r5 = ((s16 *)arg1)[0];
-    s16 r6 = ((s16 *)arg1)[1];
-    s16 r7 = ((s16 *)arg1)[2];
-    s16 r4 = ((s16 *)arg1)[3];
+extern "C" void fn_800DCE68(void *arg0, const void *arg1) {
+    u8 buf[4];
+    s16 val;
     
-    u8 r0, r0_2, r0_3, r0_4;
-    
-    if (r5 < 0) {
-        r0 = 0;
-    } else if (r5 > 0xFF) {
-        r0 = 0xFF;
+    val = ((const s16 *)arg1)[0];
+    if (val < 0) {
+        buf[0] = 0;
+    } else if (val > 255) {
+        buf[0] = 255;
     } else {
-        r0 = (u8)r5;
+        buf[0] = (u8)val;
     }
     
-    if (r6 < 0) {
-        r0_2 = 0;
-    } else if (r6 > 0xFF) {
-        r0_2 = 0xFF;
+    val = ((const s16 *)arg1)[1];
+    if (val < 0) {
+        buf[1] = 0;
+    } else if (val > 255) {
+        buf[1] = 255;
     } else {
-        r0_2 = (u8)r6;
+        buf[1] = (u8)val;
     }
     
-    if (r7 < 0) {
-        r0_3 = 0;
-    } else if (r7 > 0xFF) {
-        r0_3 = 0xFF;
+    val = ((const s16 *)arg1)[2];
+    if (val < 0) {
+        buf[2] = 0;
+    } else if (val > 255) {
+        buf[2] = 255;
     } else {
-        r0_3 = (u8)r7;
+        buf[2] = (u8)val;
     }
     
-    if (r4 < 0) {
-        r0_4 = 0;
-    } else if (r4 > 0xFF) {
-        r0_4 = 0xFF;
+    val = ((const s16 *)arg1)[3];
+    if (val < 0) {
+        buf[3] = 0;
+    } else if (val > 255) {
+        buf[3] = 255;
     } else {
-        r0_4 = (u8)r4;
+        buf[3] = (u8)val;
     }
     
-    ((u8 *)arg0)[0] = r0;
-    ((u8 *)arg0)[1] = r0_2;
-    ((u8 *)arg0)[2] = r0_3;
-    ((u8 *)arg0)[3] = r0_4;
+    ((u8 *)arg0)[0] = buf[0];
+    ((u8 *)arg0)[1] = buf[1];
+    ((u8 *)arg0)[2] = buf[2];
+    ((u8 *)arg0)[3] = buf[3];
 }
 
 void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, u32 arg2) {
