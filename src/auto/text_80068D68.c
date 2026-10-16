@@ -305,6 +305,33 @@ void rfc_process_l2cap_congestion(void *arg0, s32 arg1) {
     }
 }
 
+void rfc_set_port_state(void *arg0, void *arg1) {
+    if (*(u16 *)((u8 *)arg1 + 0x12) & 1) {
+        *(u8 *)arg0 = *(u8 *)((u8 *)arg1 + 0xA);
+    }
+    if (*(u16 *)((u8 *)arg1 + 0x12) & 2) {
+        *(u8 *)((u8 *)arg0 + 1) = *(u8 *)((u8 *)arg1 + 0xB);
+    }
+    if (*(u16 *)((u8 *)arg1 + 0x12) & 4) {
+        *(u8 *)((u8 *)arg0 + 2) = *(u8 *)((u8 *)arg1 + 0xC);
+    }
+    if (*(u16 *)((u8 *)arg1 + 0x12) & 8) {
+        *(u8 *)((u8 *)arg0 + 3) = *(u8 *)((u8 *)arg1 + 0xD);
+    }
+    if (*(u16 *)((u8 *)arg1 + 0x12) & 0x10) {
+        *(u8 *)((u8 *)arg0 + 4) = *(u8 *)((u8 *)arg1 + 0xE);
+    }
+    if (*(u16 *)((u8 *)arg1 + 0x12) & 0x3F00) {
+        *(u8 *)((u8 *)arg0 + 5) = *(u8 *)((u8 *)arg1 + 0xF);
+    }
+    if (*(u16 *)((u8 *)arg1 + 0x12) & 0x20) {
+        *(u8 *)((u8 *)arg0 + 7) = *(u8 *)((u8 *)arg1 + 0x10);
+    }
+    if (*(u16 *)((u8 *)arg1 + 0x12) & 0x40) {
+        *(u8 *)((u8 *)arg0 + 8) = *(u8 *)((u8 *)arg1 + 0x11);
+    }
+}
+
 void fn_8009BFBC(void) {
     AXFXReverbHiExpCallback();
 }
