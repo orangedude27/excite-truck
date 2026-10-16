@@ -66,6 +66,46 @@ int fn_80283A50(void) {
     return 0;
 }
 
+void fn_802840F8(void) {
+    fn_8027ED2C();
+}
+
+void fn_80286724(void* arg0) {
+    void* obj = *(void**)((char*)arg0 + 0x1c);
+    volatile void** vtable = *(volatile void***)obj;
+    ((void (*)(void))vtable[3])();
+}
+
+void fn_80286738(void* arg0) {
+    void* obj = *(void**)((char*)arg0 + 0x1c);
+    volatile void** vtable = *(volatile void***)obj;
+    ((void (*)(void))vtable[4])();
+}
+
+void fn_8028674C(void* arg0) {
+    void* obj = *(void**)((char*)arg0 + 0x1c);
+    volatile void** vtable = *(volatile void***)obj;
+    ((void (*)(void))vtable[5])();
+}
+
+void fn_80286760(void* arg0) {
+    void* obj = *(void**)((char*)arg0 + 0x1c);
+    register void** vtable = *(void***)obj;
+    ((void (*)(void*))vtable[6])(obj);
+}
+
+void fn_80286774(void* arg0) {
+    void* obj = *(void**)((char*)arg0 + 0x1c);
+    register void** vtable = *(void***)obj;
+    ((void (*)(void*))vtable[7])(obj);
+}
+
+void fn_80286788(void* arg0) {
+    void* obj = *(void**)((char*)arg0 + 0x1c);
+    register void** vtable = *(void***)obj;
+    ((void (*)(void*))vtable[8])(obj);
+}
+
 void fn_8028679C(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 0x1c);
     (*(void (**)(void))(*(void ***)obj + 9))();
@@ -163,18 +203,20 @@ extern void* fn_8027ED70(void);
 extern int fn_80214A9C(int);
 void fn_802872DC(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    ((void (*)(void*))(*(void***)obj)[3])(obj);
+    register void** vtable = *(void***)obj;
+    ((void (*)(void*))vtable[3])(obj);
 }
 
-void fn_802872F0(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    register void **vtable = *(void ***)obj;
-    ((void (*)(void *))vtable[4])(obj);
+void fn_802872F0(void* arg0) {
+    void* obj = *(void**)((char*)arg0 + 4);
+    register void** vtable = *(void***)obj;
+    ((void (*)(void*))vtable[4])(obj);
 }
 
 void fn_80287304(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    ((void (*)(void*))(*(void***)obj)[5])(obj);
+    volatile void** vtable = *(volatile void***)obj;
+    ((void (*)(void))vtable[5])();
 }
 
 void fn_80287318(void* arg0) {
