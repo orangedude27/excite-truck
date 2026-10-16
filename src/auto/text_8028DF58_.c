@@ -57,15 +57,19 @@ void fn_8028E0F0(void) {
     fn_8028ED80(&lbl_804B34B0);
 }
 
+extern void fn_8028ED74(void *);
+extern void fn_8028EE1C(void *);
+extern void fn_8028F8C4(int);
 void fn_8028E138(void) {
     int *ptr = &lbl_804B34B0;
     int count = 0;
     lbl_8055F738 = lbl_80564420;
-    do {
+    while (1) {
         fn_8028F8C4(*ptr);
         ptr++;
         count++;
-    } while (count < *(int *)((char *)&lbl_804B34B0 + 0x100));
+        if (count >= *(int *)((char *)&lbl_804B34B0 + 0x100)) break;
+    }
 }
 
 void fn_8028E1A4(void) {
