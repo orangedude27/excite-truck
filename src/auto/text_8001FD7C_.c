@@ -45,6 +45,26 @@ int fn_801312EC(void*, void*);
 void fn_80131318(void);
 int fn_80232BA4(int, int, int, int, float, float, float, float, float);
 
+void fn_8001FE20(void) {
+    lbl_8055D62C = 0;
+    fn_802CAC54(lbl_80558D84);
+    lbl_80558D84 = -2;
+    fn_802CAC54(lbl_80558D80);
+    lbl_80558D80 = -2;
+    fn_802CAC54(lbl_80558D78);
+    lbl_80558D78 = -2;
+    fn_802CAC54(lbl_80558D7C);
+    lbl_80558D7C = -2;
+    fn_802328D4(lbl_8055D64C);
+    lbl_8055D64C = 0;
+    fn_802328D4(lbl_8055D650);
+    lbl_8055D650 = 0;
+    fn_80235380(lbl_8055D654);
+    lbl_8055D654 = 0;
+    fn_80235380(lbl_8055D658);
+    lbl_8055D658 = 0;
+}
+
 void fn_8001FEB8(void) {
     lbl_8055D645 = 1;
     lbl_8055D640 = fn_802E2C20();
