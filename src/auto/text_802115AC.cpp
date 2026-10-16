@@ -36,6 +36,7 @@ extern "C" void fn_80211F64(void) {
         var_f3 = lbl_80563444;
         temp_f0 = lbl_80563440 * (float)(temp_r31 - lbl_8055EF14);
         if (var_f3 < temp_f0) {
+            var_f3 = var_f3;
         } else {
             var_f3 = temp_f0;
         }
