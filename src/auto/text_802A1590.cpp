@@ -242,4 +242,3 @@ extern "C" u32 fn_802A4A30(void) { return 4; }
 extern "C" u32 fn_802A4A38(void) { return 5; }
 
 extern "C" u32 fn_802A4A40(void) { return 6; }
-#define M2C_FIELD(expr, T, off) (*(T)((char *)(expr) + (off)))
