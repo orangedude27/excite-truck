@@ -42,6 +42,10 @@ void fn_802D08B4(int arg0, int arg1, unsigned char arg2) {
     lbl_8055D0C0 = arg1;
 }
 
+void fn_802D08C4(unsigned char arg0) {
+    lbl_8055FD78 = arg0;
+}
+
 void fn_802D0910(void) {
 }
 
