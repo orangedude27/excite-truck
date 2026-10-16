@@ -95,11 +95,9 @@ extern "C" void fn_801FF3AC(void* arg0, float arg1) {
 extern "C" void fn_801FF644(void*, void*);
 void fn_801FF644(void*, void*);
 void fn_801FF420(void*);
-void fn_801FF420(void* arg0) {
-    int i;
-    char* entry;
-    i = 0;
-    entry = (char*)arg0;
+extern "C" void fn_801FF420(void* arg0) {
+    int i = 0;
+    char* entry = (char*)arg0;
     while (i < *(int*)((char*)arg0 + 0x2C0)) {
         fn_801FF644(arg0, entry);
         entry += 0x58;
@@ -116,7 +114,7 @@ extern "C" void fn_801FF0D4(void* arg0) {
     *((int*)arg0 + 1) = 0;
 }
 
-void fn_801FF108(void* arg0) {
+extern "C" void fn_801FF108(void* arg0) {
     fn_801FF420((char*)arg0 + 0xE08);
 }
 
