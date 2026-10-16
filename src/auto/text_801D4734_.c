@@ -4,6 +4,7 @@
 
 extern char lbl_803385D0[];
 extern char lbl_803388F0[];
+extern char lbl_8033890C[];
 
 void fn_801D47F4(void) {
     fn_801D57F0();
@@ -106,8 +107,7 @@ s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
 void fn_801D77D8(void *arg0) {
-    void **vtable = *(void ***)arg0;
-    ((void (*)(void *))vtable[13])(arg0);
+    ((void (*)(void *))(*((void ***)arg0))[13])(arg0);
 }
 
 void fn_801D77E8(void) {
@@ -151,27 +151,26 @@ post_loop:
 }
 
 void fn_801D7874(void *arg0, void *arg1) {
-    s32 field_c;
     s32 result;
     s32 count;
-    s32 *array;
     
     ((void (*)(void *))((void ***)arg1)[2])(arg1);
-    field_c = ((s32 *)arg0)[3];
-    if (field_c < 0) {
+    
+    if (((s32 *)arg0)[3] < 0) {
         return;
     }
-    if (arg1 == NULL) {
+    if (arg1 == 0) {
         return;
     }
-    result = ((s32 (*)(void *, s32))((void ***)arg1)[10])(&lbl_803385D0, -1);
-    if (result != field_c) {
+    
+    result = ((s32 (*)(void *, void *, s32))((void ***)arg1)[10])(arg1, &lbl_803385D0, -1);
+    if (result != ((s32 *)arg0)[3]) {
         return;
     }
+    
     count = ((s32 *)arg0)[0x1D];
-    array = (s32 *)((s32 *)arg0)[0x1C];
     ((s32 *)arg0)[0x1D] = count + 1;
-    array[count] = (s32)arg1;
+    ((s32 *)((s32 *)arg0)[0x1C])[count] = (s32)arg1;
 }
 
 void fn_801D8620(void) {
