@@ -34,6 +34,17 @@ void fn_8020F5DC(void) {
     lbl_8055EEF4 = 0;
 }
 
+void *fn_8020F5F0(long arg0) {
+    return (void *)((char *)&lbl_80489CA0 + ((arg0 << 6) * 100));
+}
+
+void fn_8020F6E0(long arg0, long arg1) {
+    if (arg1 != 0) {
+        return;
+    }
+    fn_8020F608(0, arg0);
+}
+
 void fn_8020F6F8(void) {
     fn_802EC0FC();
 }
