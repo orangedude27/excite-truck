@@ -149,6 +149,21 @@ extern "C" s32 fn_800A71E0(void *arg0) {
     return temp_r3 & ((s32) (-temp_r3 | temp_r3) >> 0x1F);
 }
 
+extern "C" s32 VFiPFCACHE_DoReadPage(void *, s32, s32, s32, s32);
+extern "C" s32 VFiPFCACHE_DoReadNumSector(void *, s32, u32, s32, s32);
+extern "C" s32 fn_800A8EE0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 temp_r3 = VFiPFCACHE_DoReadPage((u8 *)arg0 + 0x1634, arg1, arg1, arg2, arg3);
+    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+}
+
+extern "C" s32 VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(void *arg0, void *arg1, u32 arg2, s32 arg3, s32 arg4) {
+    s32 temp_r3;
+    if (arg2 >= *(u32 *)((u8 *)arg0 + 8))
+        return 0x10;
+    temp_r3 = VFiPFCACHE_DoReadNumSector((u8 *)arg0 + 0x1634, (s32)arg1, arg2, arg3, arg4);
+    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+}
+
 extern "C" void fn_800AF2B8(void *);
 extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[0] = 0;
@@ -354,6 +369,21 @@ extern "C" void fn_800B7E18(u32 arg0) {
     if (lbl_80405D00[0]) lbl_80405D00[0]((u8)arg0);
 }
 
+extern "C" s32 OSReport(const char *, ...);
+extern "C" s32 OSWaitSemaphore(void);
+extern "C" s32 fn_800B76E8(s8);
+extern "C" const char lbl_8031B190[];
+extern "C" const char lbl_8031B1C0[];
+extern "C" const char lbl_8031B24C[];
+extern "C" s32 fn_800B8004(s32 arg0) {
+    if (arg0 == 0) {
+        OSReport(lbl_8031B24C);
+        return -2;
+    }
+    OSWaitSemaphore();
+    return 0;
+}
+
 #pragma push
 #pragma small_data off
 extern "C" s32 NANDGetType(char *);
@@ -436,6 +466,7 @@ extern "C" s32 fn_800BA204(s32 arg0) {
 
 extern "C" s32 fn_800BA238(s32 arg0) {
     u32 flags;
+    u32 cleared;
 
     if (arg0 == 0) {
         return 1;
@@ -445,7 +476,8 @@ extern "C" s32 fn_800BA238(s32 arg0) {
         *(volatile s32 *)lbl_80407300 &= 0xFFFFFFFD;
     }
     flags = *(volatile u32 *)lbl_80407300;
-    *(volatile s32 *)lbl_80407300 = (s32)(flags & ~1U);
+    cleared = flags & ~1U;
+    *(volatile s32 *)lbl_80407300 = (s32)cleared;
     *(s32 *)((u8 *)lbl_80407300 + 0xC) = 0;
     *(u8 *)((u8 *)lbl_80407300 + 0x14) = 0;
     return 0;
