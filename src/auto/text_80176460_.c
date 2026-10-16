@@ -22,6 +22,14 @@ void fn_80176858(void) {
     fn_80177138();
 }
 
+int fn_80176F9C(void);
+int fn_801770C8();
+void fn_8017691C(void) {
+    if (fn_80176F9C() == 0) {
+        fn_801770C8();
+    }
+}
+
 s32 fn_801769A8(void);
 extern u8 lbl_804303C8[12];
 s32 fn_801769A8(void) {
