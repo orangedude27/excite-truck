@@ -120,6 +120,13 @@ void fn_802D3E88(void) {
     lbl_804C5700[0xD] = 0;
 }
 
+void fn_802D3E9C(unsigned char arg0) {
+    lbl_8055FD50 = arg0;
+    lbl_8055FD4C = 0;
+    lbl_804C5710[1] = 0;
+    lbl_804C5710[0] = 0;
+}
+
 int fn_802D3EBC(void) {
     return (lbl_8055D0B8 >> 0x1FU) ^ 1;
 }
@@ -151,6 +158,11 @@ extern int fn_80015B20(void *, void *, void *);
 extern int fn_802D0DD4(void *, void *);
 extern int GXLoadPosMtxImm(void *, int);
 extern void fn_802D2ED8(int, int);
+extern unsigned long lbl_8055D0B8;
+extern unsigned char lbl_804C5710[4];
+extern int lbl_8055FD4C;
+extern unsigned char lbl_8055FD50;
+extern unsigned char lbl_804C5700[12];
 extern unsigned long lbl_8055D0B8;
 extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
