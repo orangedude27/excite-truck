@@ -238,6 +238,11 @@ s32 fn_80007990(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern u8 lbl_802FB688[];
+void *fn_800079D8(void) {
+    return lbl_802FB688;
+}
+
 s32 fn_80007A84(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
