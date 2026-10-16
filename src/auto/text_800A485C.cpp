@@ -392,6 +392,8 @@ extern "C" s32 fn_800CF2B0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" u32 fn_800CF91C(void) { return 1; }
+
 extern "C" void fn_800CF930(void) {
 
 }
