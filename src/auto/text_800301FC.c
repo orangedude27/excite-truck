@@ -13,6 +13,9 @@ extern void fn_800331A0(void);
 extern void __AXSPBInit(void);
 extern void TRKGetInput(void);
 extern void fn_800320E8(s32);
+extern void fn_80031C68(void);
+extern void fn_800322E4(void);
+extern void CircleBufferWriteBytes(void);
 extern void *lbl_8055D740;
 extern u8 lbl_8035E820[];
 extern u16 lbl_8055D730;
@@ -59,6 +62,46 @@ void TRKConstructEvent(void) {
 
 extern int lbl_8035BEA0[4];
 int TRKReadBuffer_ui8(int index) { return lbl_8035BEA0[index]; }
+
+void TRKReadBuffer1_ui64(void) {
+    typedef struct TRKBuf {
+        struct TRKBuf *next;
+        u32 unk4;
+        struct TRKBuf *queue_next;
+        u32 active;
+        void (*callback)(struct TRKBuf *);
+    } TRKBuf;
+    TRKBuf *buf = (TRKBuf *)lbl_8055D6E8;
+    if (buf != 0) lbl_8055D6E8 = (u32)buf->queue_next;
+    while (buf != 0) {
+        if (buf->active != 0) {
+            if (buf->callback != 0) buf->callback(buf);
+            TRKReleaseBuffer(buf);
+            buf->next = (TRKBuf *)lbl_8035BEA0;
+            lbl_8035BEA0[0] = (s32)buf;
+            buf->active = 0;
+        }
+        buf = (TRKBuf *)lbl_8055D6E8;
+        if (buf != 0) lbl_8055D6E8 = (u32)buf->queue_next;
+    }
+}
+
+void TRKAppendBuffer_ui32(void) {
+    u32 *a = lbl_8035BF20;
+    u32 *b = (u32 *)lbl_8035BEA0;
+    s32 count = 2;
+    lbl_8055D6E8 = 0;
+    do {
+        a[0]=0; b[0]=0; a[1]=0; b[1]=0;
+        a[2]=0; b[2]=0; a[3]=0; b[3]=0;
+        a[4]=0; b[4]=0; a[5]=0; b[5]=0;
+        a[6]=0; b[6]=0; a[7]=0; b[7]=0;
+        a[8]=0; b[8]=0; a[9]=0; b[9]=0;
+        a[10]=0; b[10]=0; a[11]=0; b[11]=0;
+        a[12]=0; b[12]=0; a[13]=0; b[13]=0;
+        a[14]=0; b[14]=0; a[15]=0; a += 16; b[15]=0; b += 16;
+    } while (--count);
+}
 
 void usr_puts_serial(void) {
     lbl_8055D728 = 0;
