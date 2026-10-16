@@ -7,28 +7,23 @@ MEMiHeapHead* MEMCreateExpHeapEx(void *start, u32 size, u16 opt) {
     u32 base = ((u32)start + 3) & ~3;
     u32 diff;
     u32 block;
-    u32 blockEnd;
-    if (base <= end) {
-        diff = end - base;
-        if (diff >= 0x64U) {
-            MEMiInitHeapHead((MEMiHeapHead *)base, 0x45585048, (void *)(base + 0x50), (void *)end, opt);
-            *(u16 *)(base + 0x4C) = 0;
-            *(u16 *)(base + 0x4E) = 0;
-            block = *(u32 *)(base + 0x18);
-            blockEnd = *(u32 *)(base + 0x1C);
-            *(u16 *)(block + 2) = 0;
-            *(u16 *)block = 0x4652;
-            *(u32 *)(block + 4) = blockEnd - (block + 0x10);
-            *(u32 *)(block + 8) = 0;
-            *(u32 *)(block + 0xC) = 0;
-            *(u32 *)(base + 0x3C) = block;
-            *(u32 *)(base + 0x40) = block;
-            *(u32 *)(base + 0x44) = 0;
-            *(u32 *)(base + 0x48) = 0;
-            return (MEMiHeapHead *)base;
-        }
-    }
-    return 0;
+    if (base > end) return 0;
+    diff = end - base;
+    if (diff < 0x64U) return 0;
+    MEMiInitHeapHead((MEMiHeapHead *)base, 0x45585048, (void *)(base + 0x50), (void *)end, opt);
+    *(u16 *)(base + 0x4C) = 0;
+    *(u16 *)(base + 0x4E) = 0;
+    block = *(u32 *)(base + 0x18);
+    *(u16 *)block = 0x4652;
+    *(u16 *)(block + 2) = 0;
+    *(u32 *)(block + 4) = *(u32 *)(base + 0x1C) - (block + 0x10);
+    *(u32 *)(block + 8) = 0;
+    *(u32 *)(block + 0xC) = 0;
+    *(u32 *)(base + 0x3C) = block;
+    *(u32 *)(base + 0x40) = block;
+    *(u32 *)(base + 0x44) = 0;
+    *(u32 *)(base + 0x48) = 0;
+    return (MEMiHeapHead *)base;
 }
 
 MEMiHeapHead* MEMDestroyExpHeap(MEMiHeapHead* heap) {
@@ -40,17 +35,14 @@ MEMiHeapHead* MEMCreateFrmHeapEx(void *start, u32 size, u16 opt) {
     u32 end = ((u32)size + (u32)start) & ~3;
     u32 base = ((u32)start + 3) & ~3;
     u32 diff;
-    if (base <= end) {
-        diff = end - base;
-        if (diff >= 0x48U) {
-            MEMiInitHeapHead((MEMiHeapHead *)base, 0x46524D48, (void *)(base + 0x48), (void *)end, opt);
-            *(u32 *)(base + 0x3C) = *(u32 *)(base + 0x18);
-            *(u32 *)(base + 0x40) = *(u32 *)(base + 0x1C);
-            *(u32 *)(base + 0x44) = 0;
-            return (MEMiHeapHead *)base;
-        }
-    }
-    return 0;
+    if (base > end) return 0;
+    diff = end - base;
+    if (diff < 0x48U) return 0;
+    MEMiInitHeapHead((MEMiHeapHead *)base, 0x46524D48, (void *)(base + 0x48), (void *)end, opt);
+    *(u32 *)(base + 0x3C) = *(u32 *)(base + 0x18);
+    *(u32 *)(base + 0x40) = *(u32 *)(base + 0x1C);
+    *(u32 *)(base + 0x44) = 0;
+    return (MEMiHeapHead *)base;
 }
 
 MEMiHeapHead* MEMDestroyFrmHeap(MEMiHeapHead* heap) {
@@ -76,6 +68,22 @@ void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags) {
     UnlockHeap(heap);
 }
 
+u32 MEMGetAllocatableSizeForFrmHeapEx(MEMiHeapHead *heap, s32 align) {
+    u32 size = align < 0 ? -align : align;
+    u32 start;
+    u32 end;
+    u32 result;
+    BOOL enabled;
+    enabled = OSDisableInterrupts();
+    start = (u32)heap->start;
+    end = (u32)heap->end;
+    result = (size + start - 1) & ~(size - 1);
+    if (result > end) result = 0;
+    else result = end - result;
+    OSRestoreInterrupts(enabled);
+    return result;
+}
+
 BOOL MEMFreeByStateToFrmHeap(MEMiHeapHead* heap, u32 id) { return FALSE; }
 
 u32 MEMAdjustFrmHeap(MEMiHeapHead *heap) {
@@ -93,15 +101,14 @@ u32 MEMAdjustFrmHeap(MEMiHeapHead *heap) {
 }
 
 u32 MEMResizeForMBlockFrmHeap(MEMiHeapHead *heap, void *memBlock, u32 size) {
-    MEMiFrmHeapHead *frm = (MEMiFrmHeapHead *)(heap + 1);
-    MEMiFrmHeapState *state;
+    void *state;
     u32 count = 0;
     #pragma unused(memBlock)
     #pragma unused(size)
     LockHeap(heap);
-    state = frm->states;
+    state = *(void **)((u8 *)heap + 0x3C);
     while (state != 0) {
-        state = state->next;
+        state = *(void **)state;
         count++;
     }
     UnlockHeap(heap);
