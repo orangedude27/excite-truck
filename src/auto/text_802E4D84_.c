@@ -44,6 +44,9 @@ int fn_802E540C(int arg0) {
     return 0;
 }
 
+void fn_802E5828(void) {
+}
+
 void fn_802E589C(void) {
     fn_802E582C();
 }
@@ -70,13 +73,16 @@ void fn_802E58B8(unsigned char *arg0) {
     dst = lbl_804FC558 + (index << 5);
     src = arg0;
     count = 0x20;
-    do {
+    while (count > 0) {
+        count--;
+    }
+    if (count == 0) {
+        *dst = 0;
+    }
+    while ((*src) != 0) {
         unsigned char c = *src++;
         *dst++ = c;
-        if ((signed char)c == 0) break;
-        count--;
-    } while (count > 0);
-    if (count == 0) dst[-1] = 0;
+    }
     fn_8012BEF0(arg0);
     fn_8012C41C(fn_802E589C, 0, arg0);
 }
