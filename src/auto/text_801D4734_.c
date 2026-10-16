@@ -9,6 +9,8 @@ extern s32 lbl_8055E3C4;
 extern f32 lbl_8055E3C8;
 extern u8 lbl_804422F0[];
 extern f32 lbl_80562B04;
+extern f32 lbl_80562AE4;
+s32 fn_801E1F78(void);
 extern f32 lbl_80562AE0;
 extern f32 lbl_80562AEC;
 extern char lbl_80338C40[];
@@ -708,6 +710,22 @@ void fn_801D8B5C(void) {
 
 void fn_801D8C18(void) {
 
+}
+
+extern f32 lbl_80562AE4;
+s32 fn_801E1F78(void);
+void fn_801D8C1C(void *arg0, f32 arg1) {
+    f32 f1 = arg1 / *(f32 *)((u8 *)arg0 + 0x14);
+    s32 value;
+    if (f1 < lbl_80562ADC) {
+        value = (s32)(f1 - lbl_80562AE4);
+    } else {
+        value = (s32)(lbl_80562AE4 + f1);
+    }
+    if (value != *(s32 *)((u8 *)arg0 + 0x18)) {
+        fn_801E1F78();
+        *(s32 *)((u8 *)arg0 + 0x18) = value;
+    }
 }
 
 void fn_801D8C94(void) {
