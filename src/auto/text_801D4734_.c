@@ -703,8 +703,7 @@ s32 fn_801D8510(void *arg0) {
 
 s32 fn_801D8518(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) == 1) {
-        s32 value = lbl_8055E3C4;
-        *(s32 *)((u8 *)arg0 + 0x10) = value;
+        *(s32 *)((u8 *)arg0 + 0x10) = lbl_8055E3C4;
         *(s32 *)((u8 *)arg0 + 4) = 2;
         return 1;
     }
