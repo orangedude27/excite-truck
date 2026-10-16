@@ -498,11 +498,7 @@ extern "C" void fn_8021D864(void *arg0) {
 
 extern "C" void fn_8021D878(void *arg0) {
     void *result;
-    if (fn_80129BC4() != 0) {
-        result=fn_80217BD8(*(s32 *)((u8 *)arg0+0x2C),*(s32 *)((u8 *)arg0+0x25C),arg0);
-        *(void **)((u8 *)arg0+0x258)=result;
-        ((void (*)(void *,s32,void *,s32))fn_80219440)(arg0,1,result,4);
-    }
+    if(fn_80129BC4()!=0){ result=fn_80217BD8(*(s32*)((u8*)arg0+0x2C),*(s32*)((u8*)arg0+0x25C),arg0); *(void**)((u8*)arg0+0x258)=result; ((void(*)(void*,s32,void*,s32))fn_80219440)(arg0,1,result,4); }
 }
 
 extern "C" s32 fn_8021D8D4(void *arg0) {
