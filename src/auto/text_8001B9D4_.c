@@ -22,6 +22,11 @@ extern s32 fn_8001CDB8(s32, s32, s32, s32, s32);
 
 
 extern void fn_8001C4D4(void);
+s32 fn_8001BA10(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_8001BA50(void *arg0) {
     ((s8 *)arg0)[0x10] = 0;
     ((s32 *)arg0)[0] = 0;
@@ -60,6 +65,10 @@ s32 fn_8001BA90(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         return fn_8001CDB8(arg0, arg1, temp, arg3, arg4);
     }
     return arg4;
+}
+
+void fn_8001BB0C(s32 arg0, s32 arg1, s32 arg2) {
+    fn_8001CE34(arg0, fn_8001D25C(arg1), arg2);
 }
 
 void fn_8001BB58(s32 arg0, s32 arg1, volatile s32 arg2, volatile s32 arg3) {
