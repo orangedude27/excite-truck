@@ -110,6 +110,8 @@ extern u32 lbl_803946C0[];
 extern u8 lbl_80392960[];
 extern char lbl_803140D0[];
 extern char lbl_803140E8[];
+extern char lbl_803140D0[];
+extern char lbl_803140E8[];
 s32 fn_8006DF68(s32 *arg0) {
     s32 val = arg0[-2];
     return val ? val + 8 : 0;
