@@ -5,6 +5,19 @@ void fn_8013CA3C(void) {
 
 }
 
+typedef long s32;
+typedef unsigned long u32;
+extern void** fn_801284F8(s32, void*);
+extern char lbl_8032C4F0[];
+extern char lbl_8032C500[];
+extern long fn_80128668(void);
+long fn_8013CA40(long arg0, long arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 long fn_8013CA80(void) {
     return 0;
 }
