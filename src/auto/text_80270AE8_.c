@@ -167,6 +167,9 @@ void fn_80272354(void *arg0) {
     *(int *)((char *)arg0 + 0x5C) = 2;
 }
 
+void fn_802733F0(void) {
+}
+
 int fn_80273494(int arg0) {
     switch (arg0) {
     case 11: return 0;
