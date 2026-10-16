@@ -14,7 +14,7 @@ extern float lbl_80430700[];
 extern float lbl_80561B48;
 void fn_802E8518(int arg0);
 extern int lbl_8055E3C0;
-extern char lbl_8055E3BD;
+extern unsigned char lbl_8055E3BD;
 int fn_801CF064(void);
 int fn_8018FD38(void);
 extern void *lbl_804340C0[];
