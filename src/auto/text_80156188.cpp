@@ -17,6 +17,11 @@ void fn_80156188(s32 arg0) {
     fn_8015474C();
 }
 
+extern "C" s32 fn_801556FC(s32);
+extern "C" void fn_801561C8(s32 arg0) {
+    fn_801556FC(arg0 - 0xC);
+}
+
 s32 fn_801568E0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
