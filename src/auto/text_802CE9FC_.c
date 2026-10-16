@@ -120,6 +120,10 @@ void fn_802D3E88(void) {
     lbl_804C5700[0xD] = 0;
 }
 
+int fn_802D3EBC(void) {
+    return (lbl_8055D0B8 >> 0x1FU) ^ 1;
+}
+
 extern unsigned short lbl_8055FD86;
 extern unsigned long lbl_8055FD94;
 extern unsigned char lbl_8055FDA0[];
