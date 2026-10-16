@@ -55,7 +55,7 @@ void fn_8027B60C(void *arg0) {
         *(long *)((char *)arg0 + 4) = 0;
     }
 }
-
+#pragma dont_inline reset
 void *fn_8027B878(long arg0) {
     return lbl_804A4380 + fn_8000DA10() * 0x3B10 + arg0 * 0xBD0 + 0x2370;
 }
