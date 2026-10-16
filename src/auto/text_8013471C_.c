@@ -13,6 +13,13 @@ void fn_80134A88(void) {
 
 }
 
+s32 fn_80135038(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern void *lbl_8055E0B0;
 void* fn_80135108(void) {
     return lbl_8055E0B0;
