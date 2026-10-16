@@ -259,16 +259,16 @@ extern "C" int fn_800E4520(int arg0, int arg1) {
 extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
     if (this_ != 0) {
         *(void **)((char *)this_ + 8) = (void *)&lbl_80322498;
-        int **outer = (int **)this_;
+        int *base = (int *)this_;
         for (int i = 0; i < 2; i++) {
-            int *inner = outer[1];
+            int *p = base + 1;
             for (int j = 0; j < 4; j++) {
-                if (inner[0] != 0) {
-                    TRKGetFreeBuffer(&inner[0]);
+                if (*p != 0) {
+                    TRKGetFreeBuffer(p);
                 }
-                inner++;
+                p++;
             }
-            outer += 4;
+            base += 4;
         }
         if (arg1 > 0) {
             fn_80128668(this_);
@@ -300,6 +300,30 @@ extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *this_, u8 paused) {
 
 extern "C" void fn_800E5A8C(void) {
     fn_800E6A44();
+}
+
+extern "C" int GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *arg0, unsigned int arg1, int arg2) {
+    unsigned int address = (unsigned int)arg0;
+    int result = 0;
+    if (address != 0) address += 0x80000000;
+    switch (arg2) {
+    case 0: { unsigned int delta = arg1 - address * 2; result = ((delta & 15) + ((delta >> 4) * 14)) - 2; break; }
+    case 25: result = arg1 - address; break;
+    case 10: result = arg1 - (address >> 1); break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x583, lbl_80322438); break;
+    }
+    return result;
+}
+
+extern "C" unsigned int GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(unsigned int arg0, int arg1) {
+    int result = 0;
+    switch (arg1) {
+    case 0: { int rem = arg0 & 7; result = (arg0 >> 3) * 14; if (rem != 0) result += (rem - 1) * 2; break; }
+    case 25: result = arg0; break;
+    case 10: result = arg0 >> 1; break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x5A4, lbl_80322438); break;
+    }
+    return result;
 }
 
 void fn_800E80B4(void) {
@@ -351,7 +375,7 @@ void fn_800E8ADC(void *arg0) {
 
 extern "C" void fn_800E8F54(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x6C) = arg1;
-    *(unsigned char *)((char *)arg0 + 0x66) = (unsigned char)((-arg1) & ~arg1) >> 31;
+    *(unsigned char *)((char *)arg0 + 0x66) = (unsigned int)((-arg1) & ~arg1) >> 31;
 }
 
 typedef void (*vfn0_t)(void*);
