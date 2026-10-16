@@ -18,3 +18,7 @@ void fn_801D90F8(s32 arg0) {
     fn_801D77EC(arg0 - 4);
 }
 
+void fn_801D9100(s32 arg0) {
+    fn_801D7874(arg0 - 4);
+}
+
