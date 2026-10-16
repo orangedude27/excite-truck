@@ -13,6 +13,8 @@ void fn_802C205C(int arg0) { fn_802C1F84(arg0 - 4); }
 
 void fn_802C2064(int arg0) { fn_802C1F88(arg0 - 4); }
 
+void fn_802C206C(int arg0) { fn_802C1F8C(arg0 - 4); }
+
 int fn_802C2074(int arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
