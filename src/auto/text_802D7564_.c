@@ -26,6 +26,9 @@ void fn_802D92B0(void) {
     fn_802D9230(lbl_8055FE1C);
 }
 
+extern void fn_802CFEEC(void);
+extern void fn_80128670(void *);
+extern unsigned int lbl_8055FD2C;
 void fn_802D92B8(void *arg0) {
     char *obj;
     lbl_8055FE20 = arg0;
