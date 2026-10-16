@@ -97,6 +97,11 @@ void fn_801B8A70(void *arg0, int arg1, int arg2) {
     fn_801B0F70(arg1, arg2);
 }
 
+void fn_801B8A7C(void *arg0, int arg1) {
+    extern void fn_801B2C70(void *);
+    fn_801B2C70((void *)arg1);
+}
+
 void fn_801B8AD4(void) {
 
 }
