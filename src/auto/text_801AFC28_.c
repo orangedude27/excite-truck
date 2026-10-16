@@ -45,27 +45,26 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801AFD70(void *this_,
 }
 
 void fn_801B0174(void *this_) {
-    u8 var0;
-    f32 temp;
-    s32 var3;
+    f32 field_1ec = *(f32 *)((u8 *)this_ + 0x1EC);
+    f32 field_64;
+    u8 var0 = 0;
 
     fn_8017A57C(this_);
-    var0 = 0;
-    temp = *(f32 *)((u8 *)this_ + 0x1EC);
-    if ((lbl_8055E3C8 > temp) && (lbl_8056258C + temp > lbl_8055E3C8)) {
+    if ((lbl_8055E3C8 > field_1ec) && (lbl_8055E3C8 < lbl_8056258C + field_1ec)) {
         var0 = 1;
     }
     *(u8 *)((u8 *)this_ + 0x1F8) = var0;
-    if (*(f32 *)((u8 *)this_ + 0x64) <= lbl_80562590) {
+    field_64 = *(f32 *)((u8 *)this_ + 0x64);
+    if (field_64 == lbl_80562590) {
         *(u8 *)((u8 *)this_ + 0x1F8) = 0;
     }
-    var3 = 0;
     if (*(u8 *)((u8 *)this_ + 0x1F8) != 0) {
-        if (lbl_80562594 + *(f32 *)((u8 *)this_ + 0x1EC) <= lbl_8055E3C8) {
-            var3 = 1;
+        if (lbl_80562594 + *(f32 *)((u8 *)this_ + 0x1EC) >= lbl_8055E3C8) {
+            *(s32 *)((u8 *)this_ + 0x24) = *(s32 *)((u8 *)this_ + 0x28);
+            return;
         }
     }
-    *(s32 *)((u8 *)this_ + 0x24) = var3 ? *(s32 *)((u8 *)this_ + 0x28) : 0;
+    *(s32 *)((u8 *)this_ + 0x24) = 0;
 }
 void __AXDSPInitCallback_801AFC38(void) {
     lbl_8055E650 = 0;
