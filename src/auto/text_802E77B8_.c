@@ -73,10 +73,11 @@ int fn_802E85B0(void) { return 3; }
 extern int lbl_802FAE80[4];
 int fn_802E85B8(int arg0) {
     int values[4];
-    values[0] = lbl_802FAE80[0];
-    values[1] = lbl_802FAE80[1];
-    values[2] = lbl_802FAE80[2];
-    values[3] = lbl_802FAE80[3];
+    int *p = lbl_802FAE80;
+    values[0] = *p++;
+    values[1] = *p++;
+    values[2] = *p++;
+    values[3] = *p;
     return values[arg0];
 }
 extern int lbl_802FAE80[4];
