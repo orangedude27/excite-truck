@@ -20,3 +20,8 @@ void fn_80247880(void) {
     lbl_8055BEB0 = (void*)fn_80214D04();
 }
 
+extern void* lbl_8055BEB4;
+void fn_80247AAC(void) {
+    lbl_8055BEB4 = (void*)fn_80214D04();
+}
+
