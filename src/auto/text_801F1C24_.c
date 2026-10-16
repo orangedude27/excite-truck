@@ -3,6 +3,16 @@
 
 extern void fn_8029231C();
 extern void PSVECNormalize(void *, void *);
+void fn_801F3158(float *arg0, float *arg1) {
+    float c, b, a;
+    a = arg1[0];
+    b = arg1[1];
+    c = arg1[2];
+    arg0[0] = a;
+    arg0[1] = b;
+    arg0[2] = c;
+}
+
 void fn_801F3198(void *arg0) {
     PSVECNormalize(arg0, arg0);
 }
