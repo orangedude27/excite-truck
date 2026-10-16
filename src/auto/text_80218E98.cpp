@@ -246,7 +246,16 @@ extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
 
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
+extern "C" void *fn_80228418(void *p,void *q,s32 a){s32 r;fn_80218F80();*(s32*)((u8*)p+0x244)=0;*(void**)p=lbl_8033DE28;*(u8*)((u8*)p+0x248)=0;if(a){*(s32*)((u8*)p+0x244)=a;}else{r=fn_801284F8(0x18,lbl_8033DCDC);if(r)r=fn_8023964C();*(s32*)((u8*)p+0x244)=r;*(u8*)((u8*)p+0x248)=1;}fn_80239784(*(s32*)((u8*)p+0x244),(u8*)q+0x40);return p;}
+
+extern "C" void *fn_802284BC(void *p,s32 a){if(p){*(void**)p=lbl_8033DE28;fn_8023986C(*(s32*)((u8*)p+0x244));if(*(u8*)((u8*)p+0x248))fn_8023967C(*(s32*)((u8*)p+0x244),1);*(s32*)((u8*)p+0x244)=0;fn_8021915C(p,0);if(a>0)fn_80128668(p);}return p;}
+
 extern "C" void fn_8022854C(void *p){fn_8023976C(*(s32*)((u8*)p+0x244));}
+
+extern "C" void fn_802396BC(s32);
+extern "C" void fn_80228554(void *p){fn_802396BC(*(s32*)((u8*)p+0x244));}
+
+extern "C" void *fn_8022855C(void *p,s32 a,s32 b){fn_80218F80();*(s32*)((u8*)p+0x244)=a;*(void**)p=lbl_8033DDA4;*(s32*)((u8*)p+0x248)=b;return p;}
 
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229054(
     void* this_, s32 flag) {
