@@ -1,5 +1,13 @@
 #include <types.h>
 
+#pragma push
+#pragma small_data off
+extern f32 lbl_80561018;
+extern f32 lbl_8056101C;
+extern f32 lbl_80561020;
+extern f64 lbl_80561028;
+#pragma pop
+
 extern f32 lbl_8056106C;
 extern u8 lbl_80323B28[];
 extern u8 lbl_80323BEC[];
