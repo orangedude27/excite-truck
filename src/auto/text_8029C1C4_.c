@@ -4,7 +4,6 @@ extern void fn_8029CD14(void);
 extern void fn_8029C934(void);
 extern void fn_8029C650(void);
 extern void *fn_8029D464(void *, int);
-extern int fn_8029D464_helper_placeholder;
 
 void fn_8029C22C(void) {
     fn_8029CD14();
