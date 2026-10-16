@@ -11,6 +11,7 @@ extern s32 lbl_8055E804;
 extern f32 lbl_805629CC;
 extern u8* fn_8017960C(s32);
 extern Vec lbl_80438268;
+extern Vec lbl_8043848C;
 extern char lbl_804380F0[256];
 extern f32 lbl_8055E834;
 extern f32 lbl_8055F47C;
@@ -49,6 +50,29 @@ extern f32 lbl_80562990;
 extern f32 lbl_8055E7E4;
 f32 fn_801C3B6C(void) {
     return lbl_8055E7E4 + lbl_8055E3C8;
+}
+
+s32 fn_801C3B7C(const void *arg0, const void *arg1) {
+    f32 a = *(f32 *)arg0;
+    f32 b = *(f32 *)arg1;
+    if (b < lbl_80562990)
+        return -1;
+    if (a < lbl_80562990)
+        return 1;
+    if (fn_801C34CC(a, b))
+        return *(s32 *)((char *)arg0 + 4) - *(s32 *)((char *)arg1 + 4);
+    if (a < b)
+        return -1;
+    return 1;
+}
+
+void fn_801C3C14(s32 arg0) {
+    s32 offset = arg0 * 0x30C;
+    memset((void *)(lbl_8055E7F8 + offset), 0, 0x30C);
+    *(f32 *)(lbl_8055E7F8 + offset) = lbl_80562994;
+    qsort((void *)lbl_8055E7F8, lbl_8055E7F0, 0x30C,
+          (int (*)(const void *, const void *))fn_801C3B7C);
+    lbl_8055E7F0--;
 }
 
 s32 fn_801C3D5C(void) {
@@ -242,12 +266,15 @@ void fn_801C7A6C(void) {
     strcpy(lbl_804380F0, (char *)0x8055AA44);
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
+extern Vec lbl_8043848C;
 void fn_801C7AC4(void) {
     strcpy(lbl_80438280, lbl_804380F0);
     strcpy(lbl_804380F0, lbl_8055AA44);
     if (lbl_80438280[0] == 0) strcpy(lbl_80438280, lbl_8055A95C);
 }
-
 void fn_801C7B28(void) {
     strcpy(lbl_80438380, lbl_804380F0);
     strcpy(lbl_804380F0, lbl_8055AA44);
@@ -256,6 +283,19 @@ void fn_801C7B28(void) {
     lbl_8055E83A = 0;
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
+void fn_801C7BA0(void) {
+    lbl_8055E868 = fn_801C6CB0;
+    lbl_8055E83D = 0;
+    lbl_8055E83C = 0;
+    lbl_8055E83B = 0;
+    lbl_8055E83A = 0;
+    strcpy(lbl_80438280, lbl_8055AA44);
+    strcpy(lbl_80438380, lbl_8055AA44);
+    fn_801C957C(0);
+}
 extern s32 lbl_8055E850;
 extern void fn_801C78D8(void);
 void fn_801C7EF4(void) {
@@ -263,6 +303,17 @@ void fn_801C7EF4(void) {
     fn_801C78D8();
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
+void fn_801C7F64(void) {
+    strcpy(lbl_80438380, lbl_804380F0);
+    strcpy(lbl_804380F0, lbl_8055AA44);
+    if (lbl_80438380[0] == 0) strcpy(lbl_80438380, lbl_8055A95C);
+    fn_801C957C(0);
+    lbl_8055E868 = fn_801C6CB0;
+    lbl_8055E83A = 1;
+}
 extern s32 lbl_8055E854;
 extern void fn_801C78D8(void);
 void fn_801C80BC(void) {
