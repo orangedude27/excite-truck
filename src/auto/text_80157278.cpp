@@ -2,6 +2,13 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
+extern "C" s32 lbl_804348E8[];
+extern "C" void* lbl_8032F2BC;
+extern "C" void* lbl_8032EBF8;
+extern "C" void* lbl_8032EE68;
+extern "C" f32 lbl_8056175C;
+extern "C" void* memset(void*, s32, u32);
+
 class Unk801577F0 {
 public:
     virtual void v0();
@@ -190,6 +197,31 @@ extern "C" void* fn_80157990(void* arg0, s32 arg1) {
  return arg0;
 }
 
+extern "C" s32 lbl_804348E8[];
+extern "C" void* lbl_8032F2BC;
+extern "C" void* lbl_8032EBF8;
+extern "C" void* lbl_8032EE68;
+extern "C" f32 lbl_8056175C;
+extern "C" void* memset(void*, s32, u32);
+extern "C" void* fn_801579F4(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    u8* ptr = (u8*)arg0 + 0x14;
+    *(void**)((u8*)arg0 + 8) = ptr;
+    *(void**)arg0 = &lbl_8032F2BC;
+    *(s32*)((u8*)arg0 + 0x10) = 10;
+    *(s32*)((u8*)arg0 + 0xC) = 0;
+    do {
+        memset(ptr, 0, 4);
+        ptr += 0x38;
+    } while (ptr < (u8*)arg0 + 0x244);
+    *(s32*)((u8*)arg0 + 4) = arg2;
+    *(s32*)((u8*)arg0 + 0xC) = 0;
+    *(s32*)((u8*)arg0 + 0x244) = arg1;
+    *(s32*)((u8*)arg0 + 0x248) = 0;
+    *(s32*)((u8*)arg0 + 0x24C) = arg2;
+    *(void**)arg0 = &lbl_8032EBF8;
+    return arg0;
+}
+
 extern "C" void* fn_80157A98(void* arg0, s32 arg1) {
  if (arg0 != 0) {
  if (arg0 != 0) {
@@ -204,6 +236,27 @@ extern "C" void* fn_80157A98(void* arg0, s32 arg1) {
  if (arg1 > 0) fn_80128668(arg0);
  }
  return arg0;
+}
+
+extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    u8* ptr = (u8*)arg0 + 0x14;
+    *(void**)((u8*)arg0 + 8) = ptr;
+    *(void**)arg0 = &lbl_8032F2BC;
+    *(s32*)((u8*)arg0 + 0x10) = 10;
+    *(s32*)((u8*)arg0 + 0xC) = 0;
+    do {
+        memset(ptr, 0, 4);
+        ptr += 0x38;
+    } while (ptr < (u8*)arg0 + 0x244);
+    *(s32*)((u8*)arg0 + 4) = arg2;
+    *(s32*)((u8*)arg0 + 0xC) = 0;
+    *(s32*)((u8*)arg0 + 0x244) = arg1;
+    *(s32*)((u8*)arg0 + 0x258) = 0;
+    *(f32*)((u8*)arg0 + 0x250) = lbl_8056175C;
+    *(s32*)((u8*)arg0 + 0x268) = 0;
+    *(s32*)((u8*)arg0 + 0x248) = 0;
+    *(void**)arg0 = &lbl_8032EE68;
+    return arg0;
 }
 
 extern "C" void* fn_80158218(void* arg0, s32 arg1) {
