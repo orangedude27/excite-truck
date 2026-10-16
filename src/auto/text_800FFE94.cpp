@@ -94,3 +94,7 @@ extern "C" int fn_80101414(void* arg0) {
     return *((unsigned char*)arg0 + 0x1F) != 0;
 }
 
+extern "C" int fn_80101428(void* arg0) {
+    return *((unsigned char*)arg0 + 0x1D) != 0;
+}
+
