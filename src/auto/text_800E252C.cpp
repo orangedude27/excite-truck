@@ -79,6 +79,15 @@ public:
 class BasicSound;
 class SoundPlayer;
 typedef unsigned char u8;
+extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
+extern "C" void *fn_80128668(void *);
+extern "C" void *__register_global_object(void *, void *, void *);
+extern "C" void *fn_800E279C(void *);
+extern "C" unsigned char lbl_8055DE18;
+extern int lbl_80407F6C;
+extern int lbl_80407F60;
+extern "C" void *fn_8002F634(void *, void *, int, int);
+extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *, int);
 typedef float f32;
 #pragma push
 #pragma small_data off
@@ -134,13 +143,14 @@ extern "C" int fn_800E90AC(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x67) != 0;
 }
 
-extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(BasicSound *this_, int priority) {
-    int priority_ = priority;
-    if (!(priority_ >= 0 && priority_ <= 0x7F)) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x202, lbl_803227EC, priority_, 0, 0x7F);
+extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this_, int priority) {
+    int valid = priority >= 0 && priority <= 0x7F;
+    if (!valid) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x202, lbl_803227EC, priority, 0, 0x7F);
     }
-    SoundPlayer *player = *(SoundPlayer **)&((u8 *)this_)[0x10];
-    *(u8 *)&((u8 *)this_)[0x74] = priority_;
+
+    *(char *)((char *)this_ + 0x74) = priority;
+    void *player = *(void **)((char *)this_ + 0x10);
     if (player != 0) {
         detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
         detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
@@ -177,8 +187,8 @@ extern "C" void fn_800E9B20(void *arg0, float arg1) {
 
 extern "C" void fn_800E9B28(void *arg0, float arg1) {
     VfObjF *obj = (VfObjF *)arg0;
-    obj->vf23();
-    obj->vf15(arg1);
+    VfObjF *result = obj->vf23();
+    result->vf15(arg1);
 }
 
 extern "C" void fn_800E9B74(void *arg0, int arg1, int arg2, int arg3, int arg4) {
