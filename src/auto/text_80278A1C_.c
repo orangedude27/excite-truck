@@ -20,3 +20,7 @@ typedef struct Node_80279254 {
 s32 fn_80278A1C(void) {
     return 0;
 }
+
+void fn_80278A24(void) {
+}
+
