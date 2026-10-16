@@ -7,6 +7,10 @@ void* fn_8027ED70(void) {
 }
 
 extern int fn_80128668();
+extern char lbl_80348798[];
+extern unsigned int lbl_8055F688;
+struct Fn8027F834List { void **items; int count; };
+extern struct Fn8027F834List lbl_804B3048;
 extern int fn_80216D28();
 extern int fn_8025C204(int);
 extern unsigned char lbl_8055F684;
@@ -17,6 +21,49 @@ extern unsigned int lbl_804B30D8[];
 int fn_802837D4(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
+}
+
+void *fn_80283938(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_80348678;
+        *(void **)((char *)arg0 + 4) = lbl_80348678 + 0x50;
+        lbl_8055F69C = 0;
+        if (*(int *)((char *)arg0 + 0x20) != 0) fn_80128668();
+        if ((unsigned int)arg0 + 0x40 != 0) {
+            if ((unsigned int)arg0 + 0x40 != 0) {
+                *(int *)((char *)arg0 + 0x40) = 0;
+                *(int *)((char *)arg0 + 0x44) = 0;
+                *(int *)((char *)arg0 + 0x48) = 0;
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+int fn_802839D0(void) {
+    int temp;
+    void **p;
+    if (lbl_8055F684 != 0 && lbl_8055F698 != 0) {
+        p = *(void *** )((char *)lbl_8055F698 + 0x60);
+        temp = ((int (*)(void *))(*(void ***)*p + 0x24))(p);
+        p = *(void *** )((char *)lbl_8055F698 + 0x60);
+        ((int (*)(void *, void *))(*(void ***)*p + 0x20))(p, lbl_8055F698);
+        fn_8025C204(temp);
+    } else fn_80216D28();
+    return 0;
+}
+
+int fn_80283A50(void) {
+    int i = 0, count = (int)lbl_804B30D8[1];
+    unsigned int *p = (unsigned int *)lbl_804B30D8[0];
+    unsigned int value = (unsigned int)lbl_8055F698;
+    for (; count > 0; --count) {
+        if (*p == value) return 1;
+        p += 4; ++i;
+    }
+    fn_80216D28();
+    return 0;
 }
 
 void fn_8028679C(void *arg0) {
