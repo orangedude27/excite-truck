@@ -70,6 +70,13 @@ void *fn_8020B314(void) {
     return lbl_8033C520;
 }
 
+void fn_8020B320(void) {
+    volatile unsigned char *p = lbl_80489BD0;
+    p[0] = 0;
+    *(volatile int *)(p + 4) = 0;
+    *(volatile int *)(p + 8) = 0x20;
+}
+
 void fn_8020B340(void) {
     fn_802E5824();
 }
@@ -123,4 +130,14 @@ extern char lbl_8033C388[];
 extern char lbl_8033C37C[];
 extern float lbl_805632B0, lbl_805632B4, lbl_8055B598;
 extern void *lbl_8055EE04;
-
+extern int lbl_8055EE0C;
+extern void *lbl_8055EE10;
+extern int fn_8012A364(void *, void *);
+extern int fn_801284F8(int, void *);
+extern void *fn_8012A13C(void *, int, int);
+extern int fn_8012A2D8(void *);
+extern char lbl_8033C368[];
+extern char lbl_8033C35C[];
+extern char lbl_804892D0[];
+extern void fn_8020A860(void);
+extern int fn_80208E90(int);
