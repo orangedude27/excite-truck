@@ -376,6 +376,16 @@ void fn_801FF8DC(void *arg0, char *dest, const char *src) {
     *(int *)(dest + 0x94) = 0;
 }
 
+void fn_801FF994(void* arg0, void* arg1) {
+    int i = 0;
+    char* p = (char*)arg1;
+    do {
+        fn_801FCAC0(*(void**)(p + 0x50));
+        p += 4;
+        i++;
+    } while (i < *(int*)((char*)arg1 + 0x94));
+}
+
 extern "C" void fn_801FEFC4(void) {
 
 }
