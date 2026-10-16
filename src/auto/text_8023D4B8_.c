@@ -68,6 +68,53 @@ void fn_8023DB68(void) {
     }
 }
 
+extern int fn_80128668(void);
+extern void fn_8023DA64(void *, int, int);
+extern void *lbl_8055F19C;
+extern void *lbl_8055F190;
+extern int lbl_8055F194;
+extern void fn_8023E16C(void *, int);
+extern void fn_8023E0DC(void *, int, int);
+extern int lbl_80563748;
+extern int fn_8022D458(int, int, int *);
+extern int fn_80137C98(int);
+extern int fn_8018108C(void);
+extern void fn_8023E1FC(void *);
+void *fn_8023E078(void *arg0, int arg1) {
+    fn_8022D458(0x12, 2, &lbl_80563748);
+    *(int *)((char *)arg0 + 0x30) = arg1;
+    fn_80137C98(arg1);
+    *(int *)((char *)arg0 + 0x34) = fn_8018108C();
+    fn_8023E1FC(arg0);
+    return arg0;
+}
+
+void fn_8023E0DC(void *arg0, int arg1, int arg2) {
+    int i;
+    int count;
+
+    if (arg1 < 0 || arg1 >= *(int *)((char *)arg0 + 8)) {
+        return;
+    }
+    count = *(int *)((char *)arg0 + 4);
+    for (i = count; i > 0; i--) {
+        fn_8022D894(arg0, arg1, i - 1, fn_8022D850(arg0, arg1, i - 1, 0), 1);
+    }
+}
+
+void fn_8023E16C(void *arg0, int arg1) {
+    int i;
+    int count;
+
+    if (arg1 < 0 || arg1 >= *(int *)((char *)arg0 + 8)) {
+        return;
+    }
+    count = *(int *)((char *)arg0 + 4);
+    for (i = count; i > 0; i--) {
+        fn_8022D894(arg0, arg1, i - 1, fn_8022D850(arg0, arg1, i - 1, 0), 0);
+    }
+}
+
 extern int lbl_80341C40[];
 extern int fn_801A902C(void);
 extern void fn_801A9050(void *, int);
