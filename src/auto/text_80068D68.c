@@ -681,9 +681,10 @@ void WUDDeviceStatusCallback(u32 arg0) {
 }
 
 void fn_8006BAA4(u32 arg0) {
+    u32 *base = (u32 *)&lbl_80392960;
     if (arg0 == 0) {
         lbl_8055DC30 = 0;
-        *(u8 *)((u8 *)&lbl_80392960 + 0x688) = 0;
+        *(u8 *)((u8 *)base + 0x688) = 0;
         return;
     }
     DBPrintf_8006CFA8(lbl_80313794);
