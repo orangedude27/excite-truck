@@ -56,7 +56,10 @@ extern void fn_80236954(void *);
 extern int fn_8023695C(void *);
 extern void fn_80216CA8(void);
 extern void fn_802168BC(int);
+#pragma push
+#pragma small_data off
 extern char lbl_803464EC[4];
+#pragma pop
 extern void *lbl_8055F44C;
 extern unsigned char lbl_8055F450;
 int fn_80128668(void);
