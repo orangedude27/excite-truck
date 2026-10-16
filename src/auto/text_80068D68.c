@@ -412,3 +412,13 @@ void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
     *arg1 = lbl_805590B4;
 }
 
+u16 fn_8006D8D0(u32 arg0) {
+    if ((s32)(arg0 - 8) >= 0) {
+        u8 val = *(u8 *)((u8 *)arg0 - 4);
+        if (val < 9) {
+            return *(u16 *)((u8 *)lbl_803946C0 + 0x289E8 + (val << 4));
+        }
+    }
+    return 0;
+}
+
