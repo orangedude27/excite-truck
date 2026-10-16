@@ -613,7 +613,7 @@ extern "C" void fn_802159D4(void *arg0) {
 
 extern "C" void fn_802159E8(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf5();
+    obj->vf4();
 }
 
 extern "C" void fn_802159FC(void *arg0) {
