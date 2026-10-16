@@ -25,6 +25,11 @@ void AXGetAuxBCallback(void **arg0, void **arg1) {
     *arg1 = lbl_8055D718;
 }
 
+void AXGetAuxCCallback(void **arg0, void **arg1) {
+    *arg0 = lbl_8055D720;
+    *arg1 = lbl_8055D714;
+}
+
 void* fn_80031248(void) {
     return lbl_8055D73C;
 }
