@@ -21,8 +21,11 @@ extern int fn_801B47AC(int);
 extern int fn_802E30C8(int *);
 extern int fn_801284F8(int, int *);
 extern int fn_801B4904(void);
+#pragma push
+#pragma small_data off
 extern int lbl_80335E10;
 extern int lbl_80335E28;
+#pragma pop
 void fn_801B45E0(void *arg0) {
     *(int *)((char *)arg0 + 0x00) = 0;
     *(int *)((char *)arg0 + 0x14) = 0;
@@ -166,6 +169,16 @@ void fn_801B5274(void) {
     lbl_8055E6D8 = 0;
     lbl_8055E6D0 = 0;
     lbl_8055E6D4 = 3;
+}
+
+void fn_801B52CC(void) {
+    int result;
+    fn_802E30C8(&lbl_80335E10);
+    result = fn_801284F8(0x2C, &lbl_80335E28);
+    if (result != 0) {
+        result = fn_801B4904();
+    }
+    lbl_8055E6D8 = (void *)result;
 }
 
 void fn_801B5318(void) {
