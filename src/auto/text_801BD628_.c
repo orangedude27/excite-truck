@@ -34,6 +34,22 @@ void fn_801BEDA8(int *arg0, int *arg1, int *arg2, int *arg3, int *arg4) {
     *arg4 = lbl_8055E78C;
 }
 
+void fn_801BF0C4(void *arg0, void *arg1, int arg2) {
+    if (fn_801E9E78(arg2, arg0, arg1) == 0) {
+        ((float *)arg1)[0] = lbl_80562838;
+        ((float *)arg1)[1] = lbl_8056283C;
+        ((float *)arg1)[2] = lbl_80562838;
+        ((float *)arg0)[1] = lbl_805628A4;
+    }
+}
+
+void fn_801BF12C(float *arg0, float *arg1) {
+    arg0[0] = arg1[0];
+    arg0[1] = arg1[1];
+    arg0[2] = arg1[2];
+    arg0[3] = arg1[3];
+}
+
 void fn_801BF150(void *arg0, float farg0, float farg1, float farg2, float farg3) {
     ((float *)arg0)[0] = farg0;
     ((float *)arg0)[1] = farg1;
