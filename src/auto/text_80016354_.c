@@ -23,6 +23,14 @@ void fn_800167FC(void *arg0) {
     lbl_8055D554 = arg0;
 }
 
+int fn_80016804(int arg0, int arg1) {
+    if (arg1 < (int)lbl_8055D554 &&
+        arg0 == *(int *)(lbl_803577F0 + arg1 * 0x5C + 4)) {
+        return 1;
+    }
+    return 0;
+}
+
 extern unsigned char lbl_803577F0[];
 extern unsigned char lbl_80357960[];
 extern void *fn_80016474(void);
