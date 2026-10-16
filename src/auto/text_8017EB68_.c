@@ -120,3 +120,7 @@ int fn_8018177C(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x68);
 }
 
+int fn_80181784(void *arg0) {
+    return *(unsigned char *)((char *)arg0 + 0x5A);
+}
+
