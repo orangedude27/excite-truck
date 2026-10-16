@@ -376,6 +376,15 @@ s32 fn_801D720C(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+s32 fn_801D7214(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 4) == 1) {
+        *(s32 *)((u8 *)arg0 + 4) = 2;
+        *(f32 *)((u8 *)arg0 + 0x2C) = lbl_8055E3C8;
+        return 1;
+    }
+    return 0;
+}
+
 extern f32 lbl_8055E3C8;
 extern f32 lbl_80562ADC;
 void fn_801D6FB8(void);
