@@ -27,6 +27,10 @@ void fn_801AE620(void *arg0) {
     fn_801AE618(*(unsigned short *)((char *)arg0 + 0xE));
 }
 
+int fn_801AE790(void *arg0) {
+    return *((unsigned char *)arg0 + 0x70) & 3;
+}
+
 extern int lbl_8055E62C;
 extern float lbl_8056255C;
 extern double lbl_80562568;
