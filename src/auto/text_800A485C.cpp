@@ -177,6 +177,18 @@ extern "C" void fn_800D1558(void) {
 
 }
 
+extern "C" void *fn_800D19F8(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(u32 *)((u8 *)arg0 + 0x1F0) = (u32)&lbl_8031E9C0;
+        lbl_8055DDB0 = 0;
+        ((u8 *)arg0)[0x1EC] = 0;
+        if (arg1 > 0) {
+            fn_80128668();
+        }
+    }
+    return arg0;
+}
+
 extern "C" void fn_800D1AE4(OSAlarm *arg0) {
     OSCancelAlarm((OSAlarm *)((u8 *)arg0 + 0x1A0));
 }
