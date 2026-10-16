@@ -87,6 +87,10 @@ void* fn_80264A54(void) {
     return lbl_8055F448;
 }
 
+void fn_8026557C(void *arg0, float farg0) {
+    *(float *)((char *)arg0 + 0x18) = farg0;
+}
+
 void fn_80265584(void *arg0) {
     extern float lbl_8055C454;
     *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
@@ -108,7 +112,7 @@ void fn_802655A4(void *arg0) {
     *(void **)arg0 = lbl_80346558;
     *(int *)((char *)arg0 + 0x14) = 0;
     lbl_8055F44C = arg0;
-    *(float *)((char *)arg0 + 0x1C) = lbl_80563BF0;
+    *(float *)((char *)arg0 + 0x1C) = *(volatile float *)&lbl_80563BF0;
 }
 
 int fn_802655C8(int arg0, int arg1) {
