@@ -201,15 +201,20 @@ s32 fn_8014ADD8(void *arg0) {
 }
 
 void fn_8014AE1C(void *arg0, void *arg1) {
-    void *next = ((void **)arg0)[1];
-    *(void **)((u8 *)arg1 + 0x11C) = 0;
-    *(void **)((u8 *)arg1 + 0x120) = next;
+    volatile s32 *head = (volatile s32 *)arg0;
+    volatile s32 *node = (volatile s32 *)arg1;
+    void *next;
+    s32 first;
+    node[0x11C / 4] = 0;
+    node[0x120 / 4] = head[1];
+    next = (void *)head[1];
     if (next != 0) {
         *(void **)((u8 *)next + 0x11C) = arg1;
     }
-    ((void **)arg0)[1] = arg1;
-    if (((void **)arg0)[0] == 0) {
-        ((void **)arg0)[0] = arg1;
+    first = head[0];
+    head[1] = (s32)arg1;
+    if (first == 0) {
+        head[0] = (s32)arg1;
     }
 }
 
