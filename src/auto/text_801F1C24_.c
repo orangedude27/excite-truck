@@ -161,10 +161,10 @@ void fn_801F24D4(void *arg0, void *arg1) {
     }
 }
 
-void fn_801F2514(void *arg1) {
-    int sp8;
-    fn_801F1C24(&sp8);
-    fn_802C7730(&sp8);
+void fn_801F2514(void *arg0, void *arg1) {
+    int stack[12];
+    fn_801F1C24(&stack[0]);
+    fn_802C7730(&stack[0]);
     if (arg1 != 0) {
         fn_801F2570(*(int *)((char *)arg1 + 4));
         fn_802C7040(*(int *)((char *)*(void **)arg1 + 4));
