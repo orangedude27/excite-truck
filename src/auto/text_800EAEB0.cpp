@@ -12,7 +12,7 @@ extern "C" void __register_global_object(void* p, void* dtor, void* allocator);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54(
     void* this_, s32 flag);
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, u32);
-extern "C" void fn_80128668(void*);
+extern "C" s32 fn_80128668(void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char* file, int line,
                                               const char* fmt, ...);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
