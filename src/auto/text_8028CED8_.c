@@ -12,6 +12,14 @@ extern int fn_8028D17C(void);
 extern void fn_8028D2B4(void);
 extern void fn_8028DDF0(void);
 extern void fn_80287B38(void *);
+void fn_8028CED8(void) {
+    if (fn_8028D17C() != 0) {
+        fn_8028D2B4();
+        fn_80287B38(fn_8028DDF0);
+        lbl_8055F714 = 1;
+    }
+}
+
 void fn_8028CF18(void) {
     if (lbl_8055F714 != 0) {
         fn_8028D4A0();
