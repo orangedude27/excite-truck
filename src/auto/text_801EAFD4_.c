@@ -45,6 +45,21 @@ void fn_801EB820(void) {
 
 }
 
+void fn_801EB824(void) {
+    s32 sp8=lbl_8033A048;
+    fn_801EB000(&sp8);
+}
+
+void fn_801EB854(void) {
+    s32 *a=lbl_802F9A08;
+    s32 *b=lbl_804885E8;
+    u32 i=0;
+    do {
+        fn_801EB96C(b,*((s32 *)a+1));
+        i++; a+=2; b++;
+    } while(i<0x18);
+}
+
 void fn_801EB968(void) {
 
 }
@@ -59,4 +74,4 @@ void fn_801EC19C(void) {
 extern s32 lbl_802F9A08[];
 extern s32 fn_801EB000(s32 *);
 extern s32 fn_801EB96C(s32 *, s32);
-extern s32 fn_801EB634(void *, s32);
+extern void fn_801EB634(void *, s32);
