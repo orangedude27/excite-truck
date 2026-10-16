@@ -26,6 +26,13 @@ s32 fn_802C4EFC(s32* arg0) {
     return 0;
 }
 
+s32 fn_802C4F14(s32* arg0) {
+    if (arg0 != NULL) {
+        return arg0[4];
+    }
+    return 0;
+}
+
 int fn_802C501C(void) {
     return 8;
 }
