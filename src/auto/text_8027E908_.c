@@ -6,6 +6,8 @@ void* fn_8027ED70(void) {
     return lbl_8055F680;
 }
 
+int fn_80280898(void) { extern unsigned int lbl_8055F688; extern int fn_80216D28(void); if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
+
 extern int fn_80128668();
 extern char lbl_80348798[];
 extern unsigned int lbl_8055F688;
@@ -64,6 +66,25 @@ int fn_80283A50(void) {
     }
     fn_80216D28();
     return 0;
+}
+
+int fn_80283AC8(void) {
+ int i=0;
+ int count=(int)lbl_804B30D8[1];
+ unsigned int *p=(unsigned int*)lbl_804B30D8[0];
+ unsigned int value=(unsigned int)lbl_8055F698;
+ if (count > 0) {
+   do {
+     if (*p == value) goto found;
+     p++;
+     ++i;
+   } while (--count != 0);
+ }
+ i=-1;
+found:
+ if (i >= 0 && *(int *)((char *)lbl_804B30D8[0] + i * 16 + 0x60)) return 1;
+ fn_80216D28();
+ return 0;
 }
 
 void fn_802840F4(void) {
@@ -206,9 +227,8 @@ extern int lbl_80347FB4;
 extern void* fn_8027ED70(void);
 extern int fn_80214A9C(int);
 void fn_802872DC(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 4);
-    register void** vtable = *(void***)obj;
-    ((void (*)(void*))vtable[3])(obj);
+ void* obj = *(void**)((char*)arg0 + 4);
+ (*(void (**)(void*))(*(void ***)obj + 3))(obj);
 }
 
 void fn_802872F0(void* arg0) {
@@ -223,9 +243,17 @@ void fn_80287304(void* arg0) {
     ((void (*)(void))vtable[5])();
 }
 
+extern unsigned char lbl_8055F685;
+extern int lbl_80348078;
+extern unsigned char lbl_8055F684, lbl_8055F685;
+extern int lbl_80348270;
+extern void *fn_8027ED70(void);
+extern int fn_80216D28(void);
+extern int fn_802E30C8(const char *);
 void fn_80287318(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    (*(void (**)(void*))(*(void***)obj + 6))(obj);
+    register void** vp = *(void***)obj;
+    ((void (*)(void*))vp[6])(obj);
 }
 
 void* fn_8028732C(void* arg0, int arg1) {
