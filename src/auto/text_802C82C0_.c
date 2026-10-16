@@ -14,7 +14,7 @@ extern float lbl_8055FC38;
 extern float lbl_8055FC3C;
 extern float lbl_8055FC40;
 extern float lbl_804C144C[3];
-extern char lbl_8055FC8F;
+extern unsigned char lbl_8055FC8F;
 extern int fn_801E4F3C(void);
 extern int fn_801E4F20(void);
 extern void fn_802D68C4(void);
