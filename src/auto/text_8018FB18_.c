@@ -19,13 +19,23 @@ void fn_802793B0();
 extern int lbl_8055E524;
 int fn_8018FD38(void) {
     int result = 0;
-    if (lbl_8055E3C4 + 1 < lbl_8055E524 && fn_801B89E0() == 0) result = 1;
+    if (lbl_8055E3C4 + 1 >= lbl_8055E524 || fn_801B89E0() != 0) result = 1;
     return result;
 }
 
 int fn_8018FF84(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
+}
+
+void fn_80190184(void *arg0, void *arg1) {
+    void *obj;
+    *(void **)((char *)arg0 + 0x20) = arg1;
+    *(int *)((char *)arg0 + 0x1c) = *(int *)((char *)arg1 + 0x1ec);
+    obj = *(void **)((char *)arg0 + 8);
+    ((void (**)(void))(*(void ***)obj))[4]();
+    obj = *(void **)((char *)arg0 + 0xc);
+    ((void (**)(void *))(*(void ***)obj))[4](arg1);
 }
 
 void fn_801902A0(void *arg0) {
