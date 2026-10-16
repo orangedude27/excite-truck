@@ -139,6 +139,10 @@ extern "C" void fn_802A49DC(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v5();
 }
 
+extern "C" void fn_802A49F0(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v6();
+}
+
 extern "C" u32 fn_802A4A18(void) { return 1; }
 
 extern "C" u8 fn_802A4A20(void) {
