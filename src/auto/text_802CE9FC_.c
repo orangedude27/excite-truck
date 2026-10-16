@@ -86,6 +86,16 @@ void* fn_802D2D14(void) {
     return lbl_8055FD64;
 }
 
+void fn_802D3050(int arg0) {
+    unsigned long value;
+
+    value = (unsigned long)lbl_8055FD1C & 0xFFFFFFEF;
+    if (arg0 != 0) {
+        value = (unsigned long)lbl_8055FD1C | 0x10;
+    }
+    lbl_8055FD1C = (void *)value;
+}
+
 extern void *lbl_8055FD5C;
 void fn_802D30DC(void* hi) {
     lbl_8055FD5C = hi;
