@@ -6,6 +6,10 @@ extern void fn_8001D9B4(void *);
 extern void *fn_8001285C(int);
 extern int lbl_80347DE8;
 extern int fn_80007F90(int);
+int fn_8027D850(void *arg0) {
+    return *(int *)((char *)arg0 + 0x34);
+}
+
 int fn_8027D858(void *arg0) {
     if (*((unsigned char *)arg0 + 0x38) != 0) {
         return (*(int (**)(void *, int))(*(char **)arg0 + 0x30))(arg0, *(int *)((char *)arg0 + 0x34));
