@@ -684,6 +684,8 @@ s32 fn_801D872C(void *arg0) {
     return ((s32 *)arg0)[0x18 / 4];
 }
 
+s32 fn_801D8734(void) { return 0; }
+
 void fn_801D8938(void) {
 
 }
