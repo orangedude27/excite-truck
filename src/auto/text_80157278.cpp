@@ -292,13 +292,15 @@ extern "C" void fn_80159BB4(Unk801577F0* arg0) {
         *(s32*)(arg0->mData + r7) = r5;
         *(s32*)(arg0->mData + r7 + 4) = r5;
         *(s32*)(arg0->mData + r7 + 8) = r5;
-        *(f32*)(arg0->mData + r7 + 0xC) = f, r7 += 0x38;
+        *(f32*)(arg0->mData + r7 + 0xC) = f;
+        r7 += 0x38;
     }
+    f32 b = lbl_80561750;
     f32 a = lbl_80561754;
     arg0->m264 = 0;
     arg0->m260 = 0;
     arg0->m254 = a;
-    arg0->m25c = lbl_80561750;
+    arg0->m25c = b;
     arg0->v31();
 }
 
@@ -338,16 +340,13 @@ extern "C" u8 fn_80159F24(void* arg0) {
 
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
     s32 r5;
-    s32 r3;
-    r5 = arg0->m260;
-    if (r5 <= 0) {
-        return;
+    if ((r5 = arg0->m260) > 0) {
+        s32 r3 = arg0->m258;
+        if (r3 != 0) {
+            fn_801CB6E4((void*)r3, *(s32*)&arg0->m4);
+        }
+        arg0->m260 = 0;
     }
-    r3 = arg0->m258;
-    if (r3 != 0) {
-        fn_801CB6E4((void*)r3, *(s32*)&arg0->m4);
-    }
-    arg0->m260 = 0;
 }
 
 extern "C" f32 fn_8015A368(void* arg0) {
@@ -400,6 +399,8 @@ extern "C" s32 fn_8015A814(void) {
 extern "C" s32 fn_8015C684(void) {
     return 4;
 }
+
+extern "C" u32 fn_8015CC28(void) { return 1; }
 
 extern "C" void fn_8015CD0C(void) {
 
