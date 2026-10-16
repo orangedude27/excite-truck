@@ -243,6 +243,12 @@ void gki_timers_init(void) {
     *(u32 *)(base - 0x7724) = 0;
 }
 
+void fn_8006E6E4(void *arg0) {
+    ((s32 *)arg0)[0] = 0;
+    ((s32 *)arg0)[1] = 0;
+    ((s32 *)arg0)[2] = 0;
+}
+
 void GKI_init(void) {
     memset(&gki_cb, 0, sizeof(gki_cb));
 
@@ -334,13 +340,15 @@ void fn_8006EC20(void) {
 }
 
 void fn_8006EC24(s32 arg0, s32 arg1) {
-    if (arg0 == 4) {
-        fn_80070B24(arg1);
-    } else if (arg0 < 4) {
-        if (arg0 != 0) {
-            fn_80070B24(arg1);
+    if (arg0 != 4) {
+        if (arg0 >= 4) {
+            return;
+        }
+        if (arg0 == 0) {
+            return;
         }
     }
+    fn_80070B24((s8)arg1);
 }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
