@@ -12,6 +12,12 @@ void fn_80162170(void) {
 void fn_80162174(void) {
 }
 
+void fn_80162214(void) {
+    if (fn_801C5B60() == 0) {
+        fn_801DF074(8, 0);
+    }
+}
+
 void fn_80162258(void) {
 
 }
