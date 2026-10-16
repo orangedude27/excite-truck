@@ -35,6 +35,20 @@ extern "C" s32 fn_80141E90(f32 *arg0, f32 arg1) {
     return arg1 - *arg0 >= lbl_805614AC;
 }
 
+extern "C" void *fn_80141EB0(s32 *arg0) {
+    s32 count = arg0[1];
+    void *result;
+    if ((count + (arg0[2] - arg0[3])) % count <= 0) {
+        result = 0;
+    } else {
+        result = (void *)(arg0[0] + ((count + ((volatile s32 *)arg0)[3]) % count) * 12);
+    }
+    if (result != 0) {
+        arg0[3] = (((volatile s32 *)arg0)[3] + 1) % ((volatile s32 *)arg0)[1];
+    }
+    return result;
+}
+
 extern "C" void fn_8013D288(void);
 
 extern "C" void fn_80143214(void) {
