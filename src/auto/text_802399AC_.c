@@ -1,5 +1,6 @@
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
+extern s32 lbl_8049870C[];
 extern s32 fn_80209030(float);
 extern s32 fn_802090BC(s32);
 extern s32 fn_8020A5F8(float);
