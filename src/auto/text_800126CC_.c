@@ -21,6 +21,33 @@ void* fn_80012854(void) {
     return (void*)lbl_8055D508;
 }
 
+extern int lbl_80352AD0[];
+extern int lbl_802FC700;
+extern void fn_802E317C(int *, int, int);
+extern void fn_80131818(void *);
+extern char lbl_8035183C[];
+extern char lbl_8055D500;
+extern int lbl_8055D514;
+extern int lbl_803518C0[];
+extern int lbl_803551E0[];
+void *fn_80012870(int arg0, int arg1) {
+    int *p = &lbl_80352AD0[0];
+    int i = 0;
+    int j = 0;
+    int count = lbl_8055D508;
+    while (count > 0) {
+        if (p[1] == arg0 && p[0x24 / 4] != 0 && j == arg1) {
+            return &lbl_80352AD0[i * 0x28];
+        }
+        j++;
+        p += 0x28 / 4;
+        i++;
+        count--;
+    }
+    fn_802E317C(&lbl_802FC700, arg0, arg1);
+    return 0;
+}
+
 extern void *fn_8001285C(void);
 extern char *fn_80012820(int);
 extern const char *fn_80007FF0(int);
