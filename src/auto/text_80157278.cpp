@@ -642,6 +642,10 @@ extern "C" s32 fn_8015E100(void) {
     return 0;
 }
 
+extern "C" s32 fn_8015E108(void) {
+    return 0;
+}
+
 extern "C" s32 fn_80159338(void) {
     return 3;
 }
