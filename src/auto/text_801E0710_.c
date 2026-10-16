@@ -8,12 +8,16 @@ extern void NWC24Data_Init_801E1028(void *);
 extern void fn_801E07E8(void);
 extern void fn_8002F53C(void *, void *, void *, s32, s32);
 void fn_801E0F78(f32 *arg0, f32 *arg1, f32 *arg2, f32 arg3) {
-    arg0[0] = arg1[0] + arg2[0] * arg3;
-    arg0[1] = arg1[1] + arg2[1] * arg3;
+    f32 x = arg2[0];
+    f32 y = arg2[1];
+    f32 a = arg1[0];
+    f32 b = arg1[1];
+    arg0[0] = a + x * arg3;
+    arg0[1] = b + y * arg3;
 }
 
 f32 fn_801E0FA4(f32 *arg0, f32 *arg1) {
-    return arg0[1] * arg1[1] + arg0[0] * arg1[0];
+    return arg1[1] * arg0[1] + arg1[0] * arg0[0];
 }
 
 void *fn_801E0FC4(void *arg0) {
@@ -28,6 +32,11 @@ void *fn_801E0FC4(void *arg0) {
 void NWC24Data_Init_801E1028(void *arg0) {
     ((s32 *)arg0)[0] = 0;
     ((s32 *)arg0)[1] = 0;
+}
+
+extern void lbl_8032CE98(void);
+void fn_801E1038(void **arg0) {
+    *arg0 = (void *)&lbl_8032CE98;
 }
 
 void fn_801E1250(s32 arg0, s8 arg1) {
