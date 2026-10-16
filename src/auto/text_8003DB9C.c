@@ -6,6 +6,13 @@ char __GXIsGPFifoReady(void) {
     return lbl_8055D949;
 }
 
+void GXGetFifoPtrs(void *arg0, int *arg1, int *arg2) {
+    int value1 = ((int *)arg0)[0x14 / 4];
+    int value2 = ((int *)arg0)[0x18 / 4];
+    *arg1 = value1;
+    *arg2 = value2;
+}
+
 int GXGetFifoBase(int *arg0) {
     return *arg0;
 }
@@ -31,5 +38,9 @@ void GXInitTexObjTlut(void* arg0, int arg1) {
 
 int GXGetTexObjHeight(void *arg0) {
     return ((int *)arg0)[4];
+}
+
+int GXGetTexObjMipMap(void *arg0) {
+    return *(int *)((char *)arg0 + 0x14);
 }
 
