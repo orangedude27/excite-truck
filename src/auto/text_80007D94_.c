@@ -45,6 +45,12 @@ void fn_80007F40(void) {
     fn_80012778();
 }
 
+void fn_80007F68(void) {
+    fn_80012794();
+    fn_80279488();
+    fn_80007F04();
+}
+
 #pragma scheduling on
 const char* fn_80007F90(u32 arg0) {
     Unk802FB70C* p;
@@ -64,4 +70,19 @@ const char* fn_80007FF0(u32 arg0) {
     fn_802E317C(lbl_802FB77C, arg0);
     return lbl_805589A0;
 }
+
+u32 fn_80008050(const char* arg0) {
+    Unk802FB70C* p;
+    u32 key;
+    for (p = lbl_802FB70C; (key = p->unk_0x0) != 0; ++p) {
+        if (strcmp(p->unk_0x4, arg0) == 0) return key;
+    }
+    fn_802E30C8(lbl_802FB7A4, arg0);
+    return 0;
+}
+
+u32 fn_800080D8(void) {
+    return *(u32*)((u8*)&lbl_8034EF38 + 0x1E0);
+}
+
 #pragma scheduling reset
