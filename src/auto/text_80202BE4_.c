@@ -64,7 +64,7 @@ void fn_80203E88(void) {
     fn_802CA294(lbl_8055ECFC);
     fn_802D9230();
     fn_802CA294(lbl_8055ED04);
-    fn_802D050C();
+    fn_802D050C(0);
 }
 
 void fn_80203EC0(void) {
