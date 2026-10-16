@@ -25,6 +25,36 @@ extern void *lbl_804C07F0[];
 extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
+float fn_802BEFB4(void) {
+    float value;
+    float limit;
+    float result;
+    fn_801E866C(-1);
+    value = (*(float *)((char *)*(void **)((char *)fn_801EA9A0() + 8) + 0x64) - lbl_80564D88) / lbl_80564D8C;
+    limit = lbl_80564D80;
+    if (value < limit) limit = value;
+    if (limit > lbl_80564D90) limit = lbl_80564D90;
+    result = limit * lbl_80564D94;
+    return lbl_80564D84 + result;
+}
+
+void fn_802BF350(void) {
+    int i;
+    fn_802BEDFC();
+    lbl_8055FADC = fn_801E85AC();
+    for (i = 0; i < lbl_8055FADC; i++) {
+        lbl_804C07F0[i] = (void *)fn_802C00A4();
+        if (i == 0 && lbl_804C07F0[i] != 0) {
+            fn_802E30C8(lbl_8034AD78);
+        }
+    }
+    if (fn_8012C33C(lbl_8055CF68) != 0) {
+        lbl_8055CF6C = fn_802C6FC0(lbl_8055CF68, 0, 0);
+    } else {
+        lbl_8055CF6C = -1;
+    }
+}
+
 void fn_802BF40C(void) {
     int i;
     void **obj;
@@ -66,7 +96,7 @@ void fn_802BF508(void) {
     fn_802BF160();
 }
 
-extern void fn_801284F8(int, const char*);
+extern void *fn_801284F8(int, const char*);
 extern void* fn_802BF780(void);
 extern const char lbl_8034AD90[];
 extern void* lbl_804C07F0[];
