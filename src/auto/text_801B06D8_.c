@@ -95,6 +95,16 @@ void fn_801B30C0(s32 arg0) {
     fn_801B18B8((s32)((u8 *)lbl_8055E684 + (arg0 << 7)), (s32)lbl_8055E684);
 }
 
+void fn_801B30D0(s32 arg0) {
+    fn_801B196C((s32)((u8 *)lbl_8055E684 + (arg0 << 7)), (s32)lbl_8055E684);
+}
+
+void fn_801B3208(s32 arg0, s32 arg1, f32 farg0) {
+    fn_802E317C(lbl_80335BD8, arg0, arg1);
+    *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x6C) = arg1;
+    *(f32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x24) = farg0;
+}
+
 s32 fn_801B327C(void) { return 0; }
 
 void fn_801B3284(void) {
