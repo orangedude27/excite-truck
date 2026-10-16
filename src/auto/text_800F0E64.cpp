@@ -35,7 +35,7 @@ extern "C" const char lbl_80325C18[];
 extern "C" const char lbl_80325C64[];
 extern "C" const char lbl_80325C8C[];
 extern "C" f32 lbl_805610BC;
-extern "C" void* lbl_80325C50;
+extern "C" u8 lbl_80325C50[];
 extern "C" s32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(s32);
 
 M2C_UNK GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
@@ -249,7 +249,7 @@ extern "C" void fn_800F8520(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
-void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *arg0, f32 farg0) {
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *arg0, f32 farg0) {
     if (farg0 < lbl_805610BC) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
     *(f32 *)((u8 *)arg0 + 0x28) = farg0;
 }
@@ -258,7 +258,7 @@ extern "C" s32 fn_800F87E8(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x30); }
 
 extern "C" u8 fn_800F87F0(void *arg0) { return *(u8 *)((u8 *)arg0 + 0x2C); }
 
-f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800F87F8(s32 arg0, s32 arg1) {
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800F87F8(s32 arg0, s32 arg1) {
     s32 valid = 0;
     if (arg1 >= 0 && arg1 < 4) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x103, lbl_80325C8C, arg1, 0, 4);
