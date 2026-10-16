@@ -37,6 +37,8 @@ extern "C" void fn_801FF168(void) {
 
 }
 
+extern "C" int fn_801FF1BC(void) { return 3; }
+
 extern "C" void fn_801FF2B8(void* arg0, int arg1, int arg2) {
  char* p = (char*)arg0;
  if (*(int*)(p + 0x1004) >= 0x40) fn_802E317C(&lbl_8033B8C8[0]);
