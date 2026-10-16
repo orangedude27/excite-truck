@@ -24,13 +24,31 @@ void fn_80128714(void *, s32, s32);
 // split_file divides it into the game's real files (file_status shows its range).
 
 s32 fn_801281F4(s32 arg0, s32 arg1) {
+    s32 r0 = arg1 - 1;
     s32 r3 = arg0 + arg1;
     r3--;
-    return r3 & ~(arg1 - 1);
+    return r3 & ~r0;
 }
 
 void fn_80128208(void) {
 
+}
+
+void fn_8012820C(void) {
+    s32 sp14;
+    s32 sp10;
+    s32 spC;
+    s32 sp8;
+    fn_80128208();
+    lbl_8055DF8C = 0;
+    lbl_8055DF90 = 1;
+    spC = 0;
+    sp8 = 0;
+    fn_802E3DF8(0, &sp14, &spC);
+    fn_802E3DF8(1, &sp10, &sp8);
+    fn_80128714(&lbl_8041E140, sp14, spC);
+    fn_80128714(&lbl_8041E160, sp10, sp8);
+    lbl_8055DF94 = sp14;
 }
 
 void fn_801282E8(void) {
@@ -73,6 +91,10 @@ s32 fn_80128690(void) {
 
 void fn_80128710(void) {
 
+}
+
+const char* __AXGetStudio_80129164(void) {
+    return lbl_8032A068;
 }
 
 void fn_801291BC(void) {
