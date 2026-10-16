@@ -55,6 +55,13 @@ void fn_801B3B28(void) {
     lbl_8055E6C0 = 0;
 }
 
+void* fn_801B3B70(void* arg0) {
+    fn_8002F53C((u8*)arg0 + 0x2FC, &fn_801B3C64, &fn_801B3BD4, 0x2C, 0x10);
+    fn_801B3FD8(arg0);
+    fn_801B4204(arg0);
+    fn_801B42D0(arg0);
+    return arg0;
+}
 void* fn_801B3BD4(void* arg0, s32 arg1) {
     if (arg0 != NULL) {
         if (arg0 != NULL) {
