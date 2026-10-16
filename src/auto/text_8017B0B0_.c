@@ -29,6 +29,13 @@ void fn_8017D330(void) {
 
 }
 
+void fn_8017D334(void) {
+    int value = lbl_8055E490;
+    lbl_8055E488 = 0;
+    lbl_8055E48C = 0;
+    if (value != 0) fn_80128670((char*)value - 0x10);
+}
+
 void fn_8017D358(void) {
 
 }
