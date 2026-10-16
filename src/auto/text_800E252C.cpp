@@ -210,8 +210,8 @@ extern "C" void fn_800E402C(void *arg0) {
 
 extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     unsigned int level = OSDisableInterrupts();
-    void **iterator = *(void ***)((char *)this_ + 0x18);
     void *end = (char *)this_ + 0x18;
+    void **iterator = *(void ***)end;
     while (iterator != end) {
         void *node = *iterator;
         if (node == 0) {
@@ -304,7 +304,7 @@ void fn_800E80B4(void) {
 
 }
 
-extern "C" void fn_80128668(void); int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
 
 extern void __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *);
 extern void *lbl_80322880;
@@ -345,6 +345,11 @@ void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
 void fn_800E8ADC(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x65) == 0)
         *(unsigned char *)((char *)arg0 + 0x64) = 1;
+}
+
+void fn_800E8F54(void *arg0, int arg1) {
+    *(int *)((char *)arg0 + 0x6C) = arg1;
+    *(unsigned char *)((char *)arg0 + 0x66) = (unsigned char)((-arg1) & ~arg1) >> 31;
 }
 
 typedef void (*vfn0_t)(void*);
@@ -444,4 +449,5 @@ extern "C" int fn_800E9BE4(int arg0, int arg1) {
 extern "C" int *fn_800E9C24(void) {
     return &lbl_8055DE20;
 }
-
+extern const char lbl_803221A8[];
+extern const char lbl_80322438[];
