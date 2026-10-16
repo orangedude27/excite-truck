@@ -11,8 +11,6 @@ extern void *lbl_80320B8C;
 extern "C" s32 fn_80128668(void);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *);
 
-u8 GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(u8 *out, const void *this_ptr, u32 index);
-
 extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
