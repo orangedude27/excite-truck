@@ -9,9 +9,9 @@ void fn_801E6CC4(void) {
 }
 
 extern s32 fn_801E6924(void*);
-extern void fn_801E598C(void);
+extern void fn_801E598C(s32);
 extern void fn_802C6CF8(s32);
-extern void fn_80128668(s32, s32);
+extern void fn_80128668(s32);
 extern void fn_8012ED20(s32);
 extern s32 fn_8012EC90(s32);
 extern s8 lbl_8055EAC8[8];
@@ -46,9 +46,9 @@ void fn_801E6B98(void* arg0) {
     if (temp != 0) {
         fn_801E6924((void*)temp);
     }
-    fn_801E598C();
+    fn_801E598C(var_r31[1]);
     fn_802C6CF8(var_r31[0]);
-    fn_80128668((s32)arg0, 3);
+    fn_80128668((s32)arg0);
 }
 void fn_801E6CC8(void* arg0, s8 arg1) {
     ((s8*)arg0)[0xC] = arg1;
