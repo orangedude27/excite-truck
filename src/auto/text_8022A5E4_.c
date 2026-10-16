@@ -27,10 +27,10 @@ void fn_8022A858(int arg0) {
     fn_8022CAA8(lbl_80490968 + arg0 * 0x74);
 }
 
-int fn_8022A86C(void) {
+int fn_8022A86C(int arg0) {
     int i;
     for (i = 0; i < 0x100; i++) {
-        if (lbl_80490968[i * 0x74] == 0) {
+        if ((unsigned char)lbl_80490968[i * 0x74] == 0) {
             fn_8022A858(i);
             return i;
         }
@@ -41,5 +41,18 @@ int fn_8022A86C(void) {
 extern void *fn_8022CA2C(void);
 int fn_8022AA84(void) {
     return *(int *)((char *)fn_8022CA2C() + 0x38);
+}
+
+int fn_8022AB18(int unused, int arg1, int arg2) {
+    void *p = fn_8022CA2C();
+    if (arg1 == 0) {
+        if (arg2 == 2) return *(int *)((char *)p + 0x44);
+        return *(int *)((char *)p + 0x4c);
+    }
+    if (arg1 == 1) {
+        if (arg2 == 2) return *(int *)((char *)p + 0x48);
+        return *(int *)((char *)p + 0x50);
+    }
+    return 0;
 }
 
