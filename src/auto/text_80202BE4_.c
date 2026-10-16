@@ -18,12 +18,28 @@ extern void fn_80203B20(void);
 extern void fn_802D050C_var(void);
 #define fn_802D050C(...) fn_802D050C_var()
 extern s32 fn_80202BE4(void);
-extern struct lbl_8048897C_t { s32 ptr; s32 count; } lbl_8048897C;
+typedef struct { s32 w0; s32 w1; } lbl_8048897C_entry;
+extern struct lbl_8048897C_t { lbl_8048897C_entry* ptr; s32 count; } lbl_8048897C;
 extern s32 lbl_8055ECFC;
 extern s32 lbl_8055ED00;
 extern s32 lbl_8055ED04;
 extern s32 lbl_8055ED0C;
+extern s8 lbl_8055ED10;
 extern s8 lbl_8055ED18;
+extern s32 lbl_8055ED1C;
+extern f32 lbl_80563130;
+struct lbl_80488B88_t { s32 w[12]; };
+extern struct lbl_80488B88_t lbl_80488B88;
+extern void fn_80202BFC(s32);
+extern void fn_80203380(void*);
+extern void fn_802036E4(void);
+extern s32 fn_802BE07C(s32, s32, s32, s32, s32, s32, s32, s32);
+extern s32 fn_802C8BD0(s32);
+extern void fn_802C8D74(void);
+extern void fn_802D3050(s32);
+extern void fn_802D306C(s32);
+typedef struct { u8 pad[0x24]; f32 x; f32 y; f32 z; } unk_80203A88_dest;
+void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1);
 
 void fn_80203D84(s32* arg0) {
     s32 temp_r0;
