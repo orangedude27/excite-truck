@@ -98,17 +98,22 @@ extern "C" u8 *fn_8017960C(s32);
 extern "C" u32 fn_8013D148(u8 *, f32);
 extern "C" void *fn_802C6C34(s32);
 extern "C" u8 *fn_80142C9C(u8 *arg0, s32 arg1) {
-    u8 *data = *(u8 **)(arg0 + 0x64) + 4;
-    s32 index = *(s32 *)(arg0 + 0x68);
-    u8 *item = data + index * 0x14;
+    u8 *self = arg0;
     u8 *manager = fn_8017960C(arg1);
-    u8 *obj = *(u8 **)(manager + 0x270);
-    obj = *(u8 **)(*(u8 **)obj + 0x18);
-    u32 result = fn_8013D148(item, *(f32 *)(obj + 0x48));
-    s32 value = *(s32 *)item;
-    u8 *end = *(u8 **)(data + value + 4) + value * 0x24;
-    if (result != (u32)(end - 0x24)) end = (u8 *)result + 0x24;
-    return end;
+    u8 *base = *(u8 **)(manager + 0x270);
+    u8 *object = ((TObj18 *)base)->v18();
+    s32 index = *(s32 *)(self + 0x68);
+    f32 value = *(f32 *)(object + 0x48);
+    u8 *items = *(u8 **)(self + 0x64);
+    u8 *item = *(u8 **)(items + 4) + index * 0x14;
+    u32 result = fn_8013D148(item, value);
+    u8 *current = *(u8 **)(items + 4);
+    s32 offset = *(s32 *)(current + index * 0x14);
+    u8 *end = *(u8 **)(current + 4) + offset * 0x24;
+    if (result == (u32)(end - 0x24)) {
+        return end;
+    }
+    return (u8 *)result + 0x24;
 }
 
 extern "C" s32 fn_80142D34(void) { return 0; }
@@ -188,6 +193,8 @@ extern "C" s32 fn_80143218(s32 arg0, u8 *arg1) {
 }
 
 extern "C" u32 fn_80143C4C(void) { return 1; }
+
+extern "C" s32 fn_801442EC(void) { return 0; }
 
 extern "C" void fn_801442FC(void) {
 }
