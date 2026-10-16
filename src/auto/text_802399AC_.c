@@ -253,6 +253,12 @@ void fn_8023AE28(void *arg0) {
     *index = (count + *index - 1) % count;
 }
 
+void fn_8023AE50(void *arg0) {
+    s32 *index = *(s32 **)((char *)arg0 + 0x1C);
+    s32 count = *(s32 *)((char *)arg0 + 0x14);
+    *index = (*index + 1) % count;
+}
+
 s32 fn_8023AE74(void *arg0) {
     return *(s32 *)*(s32 **)((char *)arg0 + 0x1C) > 0;
 }
