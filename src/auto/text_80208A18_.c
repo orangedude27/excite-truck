@@ -85,6 +85,11 @@ void fn_80209310(void *arg0) {
     *(int *)((char *)arg0 + 8) = 1;
 }
 
+void fn_80209348(void *arg0) {
+    *(int *)((char *)arg0 + 4) = fn_802E2C20();
+    *(int *)((char *)arg0 + 8) = 1;
+}
+
 void fn_80209380(void *arg0) {
     *(int *)((char *)arg0 + 8) = 3;
 }
