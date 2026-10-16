@@ -126,6 +126,33 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
     OSRestoreInterrupts(level);
 }
 
+extern f32 lbl_80560FE8;
+extern f32 lbl_80560FEC;
+extern f32 lbl_80560FF0;
+extern f32 lbl_80560FF4;
+extern u8 lbl_802F4B90[];
+extern "C" void DVDClose(void*);
+extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32);
+extern "C" void fn_800EB3AC(void* arg0) {
+    *(s32*)arg0 = 0;
+    *(f32*)((u8*)arg0 + 4) = lbl_80560FEC;
+    *(f32*)((u8*)arg0 + 8) = lbl_80560FE8;
+    *(f32*)((u8*)arg0 + 0xC) = lbl_80560FE8;
+    *(f32*)((u8*)arg0 + 0x10) = *(f32*)(lbl_802F4B90 + 0x1FC);
+    *(u8*)((u8*)arg0 + 0x14) = 0x7F;
+}
+
+extern "C" void fn_800EB41C(void* arg0) {
+    *(s32*)arg0 = 0;
+    *(f32*)((u8*)arg0 + 4) = lbl_80560FEC;
+}
+
+extern "C" f32 fn_800EB430(void* arg0) {
+    if (*(s32*)arg0 == 0 && lbl_80560FF0 == *(f32*)((u8*)arg0 + 0x10))
+        return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(0.0f);
+    return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(*(f32*)((u8*)arg0 + 4) / lbl_80560FF4);
+}
+
 extern "C" void *fn_800F26FC(void *, unsigned int);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800ECB38(void *arg0, int arg1) {
     if (arg0 != 0) {
@@ -319,6 +346,13 @@ extern "C" void fn_800ED0E4(s32 arg0) {
     fn_800ED058();
 }
 s32 fn_800ED0F4(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668_noarg();
+    }
+    return arg0;
+}
+
+extern "C" s32 fn_800EE2F4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668_noarg();
     }
