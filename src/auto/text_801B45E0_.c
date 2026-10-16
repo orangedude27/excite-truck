@@ -16,6 +16,11 @@ void fn_801B47B4(void *arg0) {
     fn_801B47D4(arg0, *(int *)((char *)arg0 + 0x24));
 }
 
+int fn_801B47D4(int arg0, int arg1) {
+    if (arg1 != 0) return arg1 - 1;
+    return *(int *)(arg0 + 0x1C) - 1;
+}
+
 int fn_801B4B9C(int arg0) {
     return *fn_801B479C(arg0 + 4, fn_801B47AC(arg0 + 4));
 }
