@@ -5,3 +5,9 @@ extern char lbl_8055D949;
 char __GXIsGPFifoReady(void) {
     return lbl_8055D949;
 }
+
+extern void *lbl_8055D94C;
+void* GXGetCurrentGXThread(void) {
+    return lbl_8055D94C;
+}
+
