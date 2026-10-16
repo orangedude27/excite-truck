@@ -28,3 +28,7 @@ void fn_801B3DBC(void* arg0) {
     fn_801B435C(arg0);
 }
 
+s32 fn_801B3FD0(void) {
+    return 0;
+}
+
