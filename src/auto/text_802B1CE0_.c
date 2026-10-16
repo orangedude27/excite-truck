@@ -194,6 +194,14 @@ typedef struct {
 typedef struct {
     void *m0;
     int m4;
+    int m8;
+    int mC;
+    int m10;
+    int m14;
+    int m18;
+    int m1C;
+    int m20;
+    int m24;
 } Unk802B2C98;
 extern Unk802B2C98 lbl_804BE1FC;
 
@@ -201,20 +209,31 @@ extern int lbl_8055F9B8;
 extern void *lbl_8055F9BC;
 
 int fn_802B2C44(void *arg0) {
-    Unk802B2C44 *obj = *(Unk802B2C44 **)arg0;
-    return obj->m5C() != 0;
+    int **vt = (int **)arg0;
+    int (*fn)(void) = (int (*)(void))(*vt)[0x17];
+    return fn() != 0;
+}
+
+int fn_802B2C98(char *arg0) {
+    void **arr = (void **)lbl_804BE1FC.m0;
+    int i;
+    int result = 0;
+    for (i = 0; i < lbl_804BE1FC.m4; i++) {
+        if (stricmp(arg0, *(char **)((char *)arr[i] + 0x24)) == 0) {
+            result = (int)arr[i];
+            break;
+        }
+    }
+    return result;
 }
 
 void fn_802B2D24(void *arg0) {
-    void **items = (void **)arg0;
-    void *cur;
-    void *entry;
     int i, j;
     for (i = 0; i < ((int *)arg0)[1]; i++) {
-        cur = items[i];
+        void *cur = ((void **)arg0)[i];
         lbl_8055F9BC = 0;
         for (j = 0; j < ((int *)cur)[0x103]; j++) {
-            entry = ((void **)cur)[0x102 + j];
+            void *entry = ((void **)cur)[0x102 + j];
             ((int *)entry)[3] = 0;
             ((int *)entry)[2] = 0;
         }
