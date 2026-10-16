@@ -25,6 +25,9 @@ extern s32 fn_802161CC(s32);
 extern s32 fn_80218370(void);
 extern s32 fn_802E97B4(void);
 extern void fn_802166B8(void);
+extern char lbl_8033D690;
+extern void *lbl_80490710;
+extern void fn_8002F634(void *, void *, s32, s32);
 extern f32 lbl_8055EF94;
 extern s32 lbl_8055EF74;
 extern s32 fn_80217270(s32);
@@ -167,6 +170,18 @@ void fn_80216710(void) {
 
 void fn_8021676C(void) {
 
+}
+
+void fn_8021683C(u32 arg0) {
+    s32 i;
+    for (i = 0; i < 16; i++) {
+        if (lbl_804908C8[i] == arg0) {
+            fn_80217270(1);
+            lbl_804908C8[i] = 0;
+            return;
+        }
+    }
+    fn_802E317C(&lbl_8033D7EC);
 }
 
 void fn_802168BC(s32 arg0) {
