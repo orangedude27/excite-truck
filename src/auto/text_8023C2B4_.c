@@ -37,3 +37,7 @@ void fn_8023C958(void) {
     fn_8023C55C(lbl_8034143C);
 }
 
+s32 fn_8023C9B0(void *arg0) {
+    return ((s32 *)*(char **)((char *)arg0 + 0x10))[*(s32 *)(*(char **)((char *)arg0 + 0x18))];
+}
+
