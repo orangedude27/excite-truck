@@ -25,6 +25,13 @@ extern s32 fn_802161CC(s32);
 extern s32 fn_80218370(void);
 extern s32 fn_802E97B4(void);
 extern void fn_802166B8(void);
+extern f32 lbl_8055EF94;
+extern s32 lbl_8055EF74;
+extern s32 fn_80217270(s32);
+extern s32 fn_802E317C(const char *);
+extern char lbl_8033D7EC;
+extern s32 fn_80218464(void);
+
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
