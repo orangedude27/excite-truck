@@ -132,8 +132,13 @@ extern "C" void fn_800D1558(void) {
 
 }
 
+extern "C" void fn_800D1AE4(OSAlarm *arg0) {
+    OSCancelAlarm((OSAlarm *)((u8 *)arg0 + 0x1A0));
+}
+
+extern void* OSGetAlarmUserData(void);
 void fn_800D1AEC(void) {
-    void *r3 = OSGetAlarmUserData(NULL);
+    void *r3 = OSGetAlarmUserData();
     fn_80060CC0(r3, 1, (u32)&fn_800D1B1C);
 }
 
