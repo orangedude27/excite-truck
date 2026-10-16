@@ -6,6 +6,12 @@
 extern "C" s32 fn_80218C14(s32, s32);
 extern "C" s32 fn_802E317C(const char *);
 extern "C" s32 fn_80214934(const void *, s32, void *, s32);
+extern "C" s32 fn_80029004(const char *, s32);
+extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
+extern "C" unsigned long strlen(const char *);
+extern "C" char lbl_8055B808[];
+extern "C" s32 fn_802C4F14(s32);
+extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
 extern "C" s32 fn_8021481C(void *);
 extern "C" char lbl_8033D388[];
 extern "C" char lbl_8033D268[];
@@ -178,6 +184,12 @@ extern "C" void fn_80212340(void *arg0) {
     }
 }
 
+extern "C" void fn_802149C4(s32 arg0) {
+    char sp8[0x64];
+    fn_80214934(lbl_8055B810, arg0, sp8, 0x64);
+    fn_8021481C(sp8);
+}
+
 extern "C" s32 fn_80218C14(s32, s32);
 extern "C" s32 fn_80214934(const void*, s32, void*, s32);
 extern "C" s32 fn_8021481C(void*);
@@ -188,6 +200,22 @@ extern "C" void fn_802149FC(s32 arg0) {
     char sp8[0x64];
     fn_80214934(lbl_8033D268, arg0, sp8, 0x64);
     fn_8021481C(sp8);
+}
+
+extern "C" void fn_80214B44(s32 arg0) {
+    if (fn_802168E4() != 0) {
+        fn_802168DC(arg0);
+    } else {
+        fn_802E317C(lbl_8033D2E0);
+    }
+}
+
+extern "C" void fn_80214C54(s32 arg0, s32 arg1) {
+    if (fn_802168E4() != 0) {
+        fn_80218C14(arg0, arg1);
+    } else {
+        fn_802E317C(lbl_8033D388);
+    }
 }
 
 extern "C" s32 lbl_80490528[];
@@ -416,6 +444,18 @@ extern "C" void* __dt__14CollisionSpaceFv_802155B4(void* arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" s32 fn_80029004(const char *, s32);
+extern "C" s32 fn_801345D8(void *, s32, const char *, s32, s32, const char *);
+extern "C" unsigned long strlen(const char *);
+extern "C" char lbl_8055B808[];
+extern "C" s32 fn_802C4F14(s32);
+extern "C" s32 fn_802C4C90(s32, s32, s32, s32, s32);
+extern "C" void fn_80215618(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 size = *(s32 *)((char *)arg0 + 4);
+    s32 rem = arg3 % fn_802C4F14(size);
+    fn_802C4C90(size, arg1, arg2, rem, 0);
 }
 
 extern "C" s32 fn_8021581C(void *arg0) {
