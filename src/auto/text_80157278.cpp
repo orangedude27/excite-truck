@@ -111,6 +111,75 @@ public:
 
 extern "C" s32 lbl_8042FD34[];
 
+class UnkVt34 {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual s32 v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
+    virtual void v20(s32, f32);
+};
+
+class Unk801577F0V {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
+    virtual s32 v21();
+    virtual void v22();
+    virtual s32 v23();
+    virtual void v24();
+    virtual void v25();
+    virtual void v26();
+    virtual void v27();
+    virtual void v28();
+    virtual s32 GetType();
+    virtual void v30();
+    virtual void v31();
+    virtual void v32();
+    virtual void v33();
+    virtual void v34();
+    virtual void v35(f32*);
+    s32 m4;
+    u8* mData;
+    s32 mCount;
+    s32 m50;
+    u8 m54;
+};
+
 class UnkVt33 {
 public:
     virtual void v0();
@@ -342,6 +411,17 @@ extern "C" void fn_8015857C(u32 arg0) {
     state[1] = count;
 }
 
+extern "C" s32 fn_80158618(const char* arg0) {
+    const char** item = (const char**)lbl_8032E540;
+    s32 i = 0;
+    for (;;) {
+        if (stricmp(*item, arg0) == 0) return i;
+        ++i;
+        ++item;
+        if (i >= 0xF) return -1;
+    }
+}
+
 extern "C" void* fn_8015868C(void* arg0, s32 arg1) {
  if (arg0 != 0) {
  if (arg0 != 0) {
@@ -404,9 +484,8 @@ extern "C" void fn_801587CC(void* arg0) {
     s32 i = 0;
     s32 offset = 0;
     s32 value = 0;
-    do {
+    for (; i < *(s32*)((u8*)arg0 + 0xC); ++i) {
         u8* base = (u8*)*(u32*)((u8*)arg0 + 8);
-        ++i;
         *(s32*)(base + offset) = value;
         s32* p = (s32*)*(u32*)((u8*)arg0 + 8);
         *(s32*)((u8*)p + offset + 4) = value;
@@ -415,7 +494,7 @@ extern "C" void fn_801587CC(void* arg0) {
         p = (s32*)*(u32*)((u8*)arg0 + 8);
         *(f32*)((u8*)p + offset + 0xC) = zero;
         offset += 0x38;
-    } while (i < *(s32*)((u8*)arg0 + 0xC));
+    }
 }
 
 extern "C" void fn_80158824(Unk801577F0* arg0) {
@@ -423,9 +502,8 @@ extern "C" void fn_80158824(Unk801577F0* arg0) {
     s32 i = 0;
     s32 offset = 0;
     s32 value = 0;
-    do {
-        u8* base = (u8*)arg0->mData;
-        ++i;
+    for (; i < arg0->mCount; ++i) {
+        u8* base = arg0->mData;
         *(s32*)(base + offset) = value;
         s32* p = (s32*)arg0->mData;
         *(s32*)((u8*)p + offset + 4) = value;
@@ -434,12 +512,12 @@ extern "C" void fn_80158824(Unk801577F0* arg0) {
         p = (s32*)arg0->mData;
         *(f32*)((u8*)p + offset + 0xC) = zero;
         offset += 0x38;
-    } while (i < arg0->mCount);
+    }
     *(f32*)((u8*)arg0 + 0x25C) = zero;
     *(f32*)((u8*)arg0 + 0x260) = zero;
     *(f32*)((u8*)arg0 + 0x258) = zero;
     *(f32*)((u8*)arg0 + 0x264) = zero;
-    ((Unk801577F0*)arg0)->v33();
+    arg0->v31();
 }
 
 extern "C" s32 fn_80158A5C(void *arg0, s32 *arg1) { return *(s32 *)((u8 *)arg1 + 0x2620) == 0; }
