@@ -19,6 +19,10 @@ void fn_802C20DC(int *arg0) {
     }
 }
 
+short fn_802C2120(int arg0) {
+    return (short)(((arg0 << 8) / 1024) + 0x80);
+}
+
 void* fn_802C21B8(void) {
     return lbl_8055FB50;
 }
