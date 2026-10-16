@@ -33,6 +33,19 @@ extern void *lbl_804C07F0[];
 extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
+int fn_802BECE4(const char *arg0, int arg1) {
+    int a, b, c, d;
+    int result = arg1;
+    a = b = c = d = 0;
+    if (sscanf(lbl_8034ACC0, "%x %x %x %x", &a, &b, &c, &d) == 4) {
+        result = ((a & 0xff) << 24) | ((b & 0xff) << 16) |
+                 ((c & 0xff) << 8) | (d & 0xff);
+    } else {
+        sscanf(arg0, lbl_8055CF78, &result);
+    }
+    return result;
+}
+
 void fn_802BED90(float *arg0) {
     float mag = PSVECMag(arg0);
     float scale;
@@ -136,6 +149,57 @@ void fn_802C0054(void *dst, const void *src) {
 void fn_802C00A0(void) {
 }
 
+extern void *fn_801284F8(int, const char *);
+extern void *fn_802C0138(void);
+extern char lbl_8034ADC8[];
+int fn_802C00A4(void) {
+    void *obj;
+    int result;
+
+    obj = fn_801284F8(0x2c60, lbl_8034ADC8);
+    if (obj != 0) {
+        obj = fn_802C0138();
+    }
+    if (obj == 0) {
+        return (int)obj;
+    }
+    if (((int (*)(void *))(*(void ***)obj)[5])(obj) == 0) {
+        if (obj != 0) {
+            ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+        }
+        obj = 0;
+    }
+    result = (int)obj;
+    return result;
+}
+
+void *fn_802C0310(void *arg0, int arg1) {
+    int id;
+    void *obj;
+    if (arg0 != 0) {
+        id = *(int *)((char *)arg0 + 0x2c50);
+        *(char **)arg0 = (char *)0x8034ae08;
+        if (id != -2) fn_802CAC54(id);
+        id = *(int *)((char *)arg0 + 0x2c54);
+        if (id != -2) fn_802CAC54(id);
+        obj = *(void **)((char *)arg0 + 0x2c58);
+        if (obj != 0) ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+void fn_802C03B4(void *arg0) {
+    void *obj = *(void **)((char *)arg0 + 0x2c58);
+    if (obj == 0) return;
+    if (lbl_8055CF71 == 0) return;
+    ((void (*)(void))(*(void ***)obj)[3])();
+}
+
+int fn_802C03E0(u32 arg0) {
+    return ((arg0 & 0xFFFF) << 8) | ((arg0 >> 24) | ((arg0 & 0xFF0000) << 8));
+}
+
 int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
 
 float fn_802C0CA0(void *arg0) { return *(float *)((char *)arg0 + 0x14); }
@@ -163,6 +227,10 @@ void fn_802C0D20(void) {
 
 int fn_802C0D24(void *arg0) {
     return *(int *)((char *)arg0 + 4);
+}
+
+float fn_802C0D2C(void) {
+    return lbl_80564D80;
 }
 
 unsigned int fn_802C0D34(void) {
