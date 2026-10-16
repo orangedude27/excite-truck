@@ -27,6 +27,15 @@ void fn_801AE620(void *arg0) {
     fn_801AE618(*(unsigned short *)((char *)arg0 + 0xE));
 }
 
+extern int lbl_8055E62C;
+extern float lbl_8056255C;
+extern double lbl_80562568;
+void fn_801AE874(unsigned short *arg0, int arg1) {
+    unsigned short value = *arg0 | 1;
+    *arg0 = value;
+    if (arg1) *arg0 = value | 4;
+}
+
 #pragma small_data off
 extern float lbl_80562560;
 extern float lbl_8055E630;
