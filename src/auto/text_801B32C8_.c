@@ -20,6 +20,8 @@ extern void fn_801B3FD8(void*);
 extern void fn_801B4204(void*);
 extern void fn_801B537C(void*);
 extern void fn_801B3398(void);
+extern void fn_801B3C64(void*);
+extern void* fn_801B3D24(void*, s32);
 extern s32 lbl_8055E6C0;
 
 void fn_801B435C(void*);
