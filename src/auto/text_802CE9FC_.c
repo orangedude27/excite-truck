@@ -123,14 +123,16 @@ extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 extern unsigned char lbl_804C5700[12];
 void fn_802D3E88(void) {
-    lbl_804C5700[0xD] = 0;
+    unsigned char *p = &lbl_804C5700[0xD];
+    *p = 0;
 }
 
+extern int lbl_804C5710_int;
 void fn_802D3E9C(unsigned char arg0) {
     lbl_8055FD50 = arg0;
     lbl_8055FD4C = 0;
-    lbl_804C5710[1] = 0;
-    lbl_804C5710[0] = 0;
+    ((unsigned char *)&lbl_804C5710_int)[1] = 0;
+    ((unsigned char *)&lbl_804C5710_int)[0] = 0;
 }
 
 int fn_802D3EBC(void) {
@@ -173,6 +175,8 @@ extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
 extern unsigned char lbl_8055FD50;
 extern unsigned char lbl_804C5700[12];
+extern unsigned char lbl_8055FD60;
+extern int GXSetDstAlpha(int, int);
 extern unsigned long lbl_8055D0B8;
 extern unsigned char lbl_804C5710[4];
 extern int lbl_8055FD4C;
