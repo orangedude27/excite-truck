@@ -3,7 +3,7 @@
 
 #include <types.h>
 
-extern u32 lbl_80320548;
+extern void *lbl_80320548;
 extern "C" s32 fn_80128668(void);
 
 extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
