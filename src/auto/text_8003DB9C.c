@@ -10,6 +10,10 @@ int GXGetFifoBase(int *arg0) {
     return *arg0;
 }
 
+int GXGetFifoSize(void *arg0) {
+    return ((int *)arg0)[2];
+}
+
 unsigned char GXGetFifoWrap(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
 
 extern void *lbl_8055D94C;
