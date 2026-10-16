@@ -40,8 +40,24 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+s32 fn_801D77B8(s32 arg0);
+s32 fn_801D77C0(s32 arg0);
+void fn_80116BCC(void *);
+void fn_80127464(void *);
+void fn_80116BCC(void *);
+void fn_80127464(void *);
+s32 fn_80116A30(void *);
+s32 fn_8011BC48(s32);
+void fn_801D77D8(void *arg0) {
+    fn_80116BCC(arg0);
+}
+
 void fn_801D77E8(void) {
 
+}
+
+void fn_801D77EC(void *arg0) {
+    fn_80127464(arg0);
 }
 
 void fn_801D8620(void) {
