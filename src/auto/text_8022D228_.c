@@ -11,11 +11,53 @@ extern int lbl_803401A0;
 extern float lbl_805635C0;
 extern float lbl_805635C4;
 void fn_80128668(void);
+void fn_8022D924(void *arg0, int arg1) {
+    int count = *(int *)((char *)arg0 + 0x24);
+    int value = *(int *)((char *)arg0 + 0x2C);
+    int next = count + 1;
+    *(int *)((char *)arg0 + 0x10) = arg1;
+    if (value >= 0) {
+        *(int *)((char *)arg0 + 0x24) = next;
+        if (value != 0) {
+            *(int *)((char *)arg0 + 0x20) = value;
+            *(int *)((char *)arg0 + 0x24) = next + 1;
+            *(int *)((char *)arg0 + 0x2C) = arg1;
+            *(int *)((char *)arg0 + 0x20) = arg1 / *(int *)((char *)arg0 + 0x10);
+            *(int *)((char *)arg0 + 0x24) = next + 2;
+        }
+    } else {
+        *(int *)((char *)arg0 + 0x24) = next;
+    }
+}
+
 int fn_8022D97C(int *arg0, int arg1) {
     return *arg0 + arg1 * 0x28;
 }
 
+void fn_8022D98C(void *arg0, int arg1, float arg2, float arg3, float arg4, float arg5, float arg6) {
+    *(int *)((char *)arg0 + 0x18) = arg1;
+    *(int **)arg0 = &lbl_803401A0;
+    *(float *)((char *)arg0 + 4) = arg2;
+    *(float *)((char *)arg0 + 8) = arg3;
+    *(float *)((char *)arg0 + 0xC) = arg5;
+    *(float *)((char *)arg0 + 0x10) = arg6;
+    *(int *)((char *)arg0 + 0x1C) = 0;
+    do {
+        float f = arg4 * lbl_805635C0;
+        int n = *(int *)((char *)arg0 + 0x1C);
+        *(int *)((char *)arg0 + 0x1C) = n + 1;
+        if (f - (float)(int)f >= lbl_805635C4) break;
+        if (n + 1 >= 4) break;
+    } while (1);
+    *(float *)((char *)arg0 + 0x14) = arg4 / (arg3 - arg2);
+}
+
 int fn_8022DA34(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
+int fn_8022DB94(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
 }
