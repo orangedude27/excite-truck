@@ -3,6 +3,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055A070[4];
+extern int lbl_8055E29C;
+extern int lbl_8055E2A0;
+void fn_8015F584(int *arg0);
+void fn_8015F5F4(int *arg0);
 extern float lbl_805617D0;
 int stricmp(const char *, const char *);
 void fn_80136594(int *, void *, void *);
