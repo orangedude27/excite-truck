@@ -1,5 +1,7 @@
 extern "C" {
 extern void* lbl_8055EC98;
+extern void* lbl_8055EC94;
+extern const char lbl_8033B5D8[];
 extern const char lbl_8033B8C8[];
 void fn_80128668(void*);
 void fn_801FEDA4(void*);
@@ -162,7 +164,7 @@ int fn_801FE9A8(int arg0, int arg1) {
 
 int fn_801FE9E8(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0)
-        fn_80128668((void*)arg0);
+        ((void (*)(void))fn_80128668)();
     return arg0;
 }
 
@@ -288,6 +290,26 @@ extern "C" void fn_801FF58C(void* unused, char* dst, const char* src) {
     dst[0xF] = 0;
     *(int*)(dst + 0x50) = 0;
     *(int*)(dst + 0x54) = 0;
+}
+
+void fn_801FF5D4(void* arg0, void* arg1, float farg0) {
+    int var_r30 = 0;
+    int* var_r31 = (int*)arg1;
+    do {
+        ((void (*)(void*, float))fn_801FCF74)((void*)var_r31[0x30 / 4], farg0);
+        var_r31++;
+        var_r30++;
+    } while (var_r30 < *(int*)((char*)arg1 + 0x54));
+}
+
+void fn_801FF644(void* arg0, void* arg1) {
+    int var_r30 = 0;
+    int* var_r31 = (int*)arg1;
+    do {
+        fn_801FCFC8((void*)var_r31[0x30 / 4]);
+        var_r31++;
+        var_r30++;
+    } while (var_r30 < *(int*)((char*)arg1 + 0x54));
 }
 
 extern "C" void* lbl_8055EC94;
