@@ -9,6 +9,16 @@ void fn_80129690(void *arg0, s32 arg1, void *arg2);
 s32 fn_802E8504(s32);
 
 void *fn_801298E8(void *arg0, int arg1);
+extern u8 lbl_804223C0[];
+extern u8 lbl_8032A5B0[];
+extern u8 lbl_8055DFD0;
+extern void *fn_80129400;
+void fn_802E7C64(void);
+void fn_80127C90(void *, void *);
+void fn_80129458(void);
+void fn_802E830C(void *);
+void fn_80127D58(void *);
+void fn_802E7D0C(void);
 
 s32 fn_80129890(void) {
     s32 count = 0;
@@ -35,13 +45,12 @@ void fn_80129AEC(void *arg0) {
 }
 
 void fn_80129AFC(void) {
-    u8 *p = (u8 *)&lbl_80422180;
-    s32 i = 0;
-    do {
-        fn_80129690(p, i, (u8 *)&lbl_804223A0);
-        i++;
+    u8 *p = lbl_80422180;
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        fn_80129690(p, i, lbl_804223A0);
         p += 0x80;
-    } while (i < 4);
+    }
 }
 
 s32 fn_80129BC4(void) {
