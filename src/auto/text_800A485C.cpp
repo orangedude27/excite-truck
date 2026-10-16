@@ -567,9 +567,7 @@ extern "C" s32 fn_800D0AB4(void *arg0) {
 
 extern "C" s32 fn_800D0B90(void) { return 0; }
 
-void fn_800D0B98(void *arg0, s32 arg1) {
-    *(s32 *)((char *)arg0 + 0x1C) = arg1;
-}
+extern "C" void fn_800D0B98(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x1C) = arg1; }
 
 extern "C" void fn_800D0BA0(void) {
 
@@ -595,18 +593,19 @@ extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext
 
 extern "C" void *fn_800D0E68(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r30;
-    *(s32 *)((u8 *)arg0 + 0x20) = 0;
+    s32 zero = 0;
+    *(s32 *)((u8 *)arg0 + 0x20) = zero;
     *(s32 *)arg0 = arg1;
-    *((u8 *)arg0 + 0x1C) = 0;
+    *((u8 *)arg0 + 0x1C) = zero;
     *(f32 *)((u8 *)arg0 + 4) = lbl_80560E38;
     *(s32 *)((u8 *)arg0 + 0x24) = arg2;
-    *(s32 *)((u8 *)arg0 + 0x28) = 0;
-    *(s32 *)((u8 *)arg0 + 0x2C) = 0;
-    *((u8 *)arg0 + 0x40) = 0;
-    *((u8 *)arg0 + 0x41) = 0;
+    *(s32 *)((u8 *)arg0 + 0x28) = zero;
+    *(s32 *)((u8 *)arg0 + 0x2C) = zero;
+    *((u8 *)arg0 + 0x40) = zero;
+    *((u8 *)arg0 + 0x41) = zero;
     if (arg1 < 4) {
         temp_r30 = arg1 * 0x30;
-        lbl_8055DDA8[arg1] = 0;
+        lbl_8055DDA8[arg1] = zero;
         OSCreateAlarm((OSAlarm *)(lbl_80407600 + temp_r30));
         OSCreateAlarm((OSAlarm *)(lbl_80407600 + 0xC0 + temp_r30));
         *(void **)(lbl_80407600 + 0x180 + arg1 * 4) = arg0;
