@@ -251,6 +251,7 @@ extern f32 lbl_8056164C;
 extern f32 lbl_80561650;
 extern void fn_8001DFF0(void);
 extern void fn_80149658(s32, void *, void *, s32);
+extern unsigned long lbl_80559E94;
 void fn_8014AD74(void *arg0) {
     f32 step;
     s32 state = fn_80176A1C() - 2;
@@ -577,6 +578,27 @@ void fn_8014D6EC(void *arg0) {
         return;
     }
     fn_8001DFF0();
+}
+
+void fn_8014D700(void *arg0, s32 arg1) {
+    s32 var_r6;
+    void *temp_r5;
+    void *temp_r5_2;
+    void **temp_r3;
+    s32 (*fn)(void **, void *, void *);
+
+    temp_r5 = *(void **)((u8 *)arg0 + 0xC);
+    *(s32 *)((u8 *)temp_r5 + 8) = 0;
+    temp_r3 = *(void ***)((u8 *)arg0 + 0x10);
+    fn = (s32 (*)(void **, void *, void *))*(void **)((u8 *)temp_r3 + 0x48);
+    fn(temp_r3, *(void **)((u8 *)arg0 + 0xC), temp_r5);
+    temp_r5_2 = *(void **)((u8 *)arg0 + 0x68);
+    if (*(u8 *)((u8 *)temp_r5_2 + 0x8F4) != 0) {
+        var_r6 = *(s32 *)((u8 *)temp_r5_2 + 0x8F4 + *(s32 *)arg0 * 0x1C + 8);
+    } else {
+        var_r6 = 0;
+    }
+    fn_80149658(arg1, (void *)((u8 *)arg0 + 0x6C), *(void **)((u8 *)arg0 + 0xC), var_r6);
 }
 
 void fn_8014DB94(void *arg0) {
