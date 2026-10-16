@@ -161,6 +161,12 @@ s32 fn_8023A8B0(void) {
 
 void fn_8023ACCC(void) {}
 
+void fn_8023AD00(void *arg0) {
+    s32 *index = *(s32 **)((char *)arg0 + 0x20);
+    *(unsigned char *)((char *)arg0 + 0x28) = 1;
+    *index = (*index + 1) % *(s32 *)((char *)arg0 + 0x1C);
+}
+
 s32 fn_8023AD44(void *arg0) {
     return *(s32 *)*(s32 **)((char *)arg0 + 0x20) < (*(s32 *)((char *)arg0 + 0x1C) - 1);
 }
