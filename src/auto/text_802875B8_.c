@@ -134,6 +134,26 @@ void fn_8028797C(void) {
     fn_802AB628(); fn_802885F0(); fn_802887EC(); fn_802885C0();
 }
 
+void fn_802879E4(s32 arg0) {
+    if (arg0 == 1) {
+        if ((u8)lbl_8055F6BC != 0) fn_8028CFB0();
+    } else {
+        fn_8028CFB0(); fn_802A0B54(); fn_801B8820(); fn_80161AEC(); fn_802A8DE8(); fn_802AB6D0();
+    }
+}
+
+void fn_80287A34(void) {
+    fn_801E12A4(); fn_802A1548();
+    ((void (*)(void))(*(void **)((u8 *)fn_801B83A0() + 0x48)))();
+}
+
+void fn_80287A6C(s32 arg0) {
+    if (arg0 == 1 && lbl_8055F6BC == 0) return;
+    fn_80294CC8(arg0); fn_801B8834(); fn_802A1584(); fn_8029C2D4();
+    fn_8028A9BC(arg0); fn_8028E240(arg0); fn_80288A1C(arg0); fn_802A17FC(arg0);
+    fn_80298124(arg0); fn_8029F300(); fn_802A7C68(); fn_802AB6D4();
+}
+
 void fn_80287AF0(void* alarm) {
     fn_8028A9F4(fn_80292864(alarm));
 }
