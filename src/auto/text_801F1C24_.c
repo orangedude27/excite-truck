@@ -307,6 +307,15 @@ void fn_801F3B00(void *arg0, int arg1) {
     *(char *)((char *)arg0 + 4) = 1;
 }
 
+void fn_801F3BE4(void *arg0) {
+    extern void fn_802C990C(int);
+    if (*(unsigned char *)((char *)arg0 + 4) != 0) {
+        fn_802C990C(*(int *)((char *)arg0 + 8));
+    } else {
+        fn_802C990C(0x00C9C9EB);
+    }
+}
+
 void fn_801F3C14(int unused, unsigned char *arg0) {
     unsigned char *p = arg0 + 0x18;
     int i;
