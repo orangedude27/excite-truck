@@ -4,3 +4,8 @@
 int fn_8029EF30(void *arg0) {
     return ((int *)arg0)[4];
 }
+
+int fn_8029EF60(void *arg0) {
+    return *(unsigned char *)((char *)arg0 + 0x68);
+}
+
