@@ -8,6 +8,29 @@ void fn_802C6074(s32 *arg0) {
     *arg0 = 0;
 }
 
+extern int fn_802D6C48;
+void fn_802C5DF0(int*);
+int fn_802C90E0(void);
+int fn_802E30C8(const char*, int);
+int fn_802C6B44(int);
+void fn_802C6DC4(int, int, int, int);
+extern const char lbl_8034B3DC[];
+void fn_802C6C38(void);
+void* fn_802C5390(void);
+int fn_802C94A0(void*, unsigned char*, float*, float);
+void fn_802C57B4(int, int, int, unsigned char, float);
+void fn_802C7040(int arg0) {
+    float spC;
+    unsigned char sp8;
+    void* temp;
+    if (arg0 != -1) {
+        temp = *(void**)((char*)fn_802C5390() + 4);
+        if (fn_802C94A0((char*)temp + 0x20, &sp8, &spC, *(float*)((char*)temp + 0x1C))) {
+            fn_802C57B4(arg0, 0, -1, sp8, spC);
+        }
+    }
+}
+
 void fn_802C7734(void* alarm) {
     fn_802D0610(fn_802D0514(alarm));
 }
