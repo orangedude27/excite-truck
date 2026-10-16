@@ -49,10 +49,10 @@ s32 fn_801D77B8(s32 arg0) {
 s32 fn_801D77C0(s32 arg0) {
     s32 *ptr = (s32 *)arg0;
     if (ptr[2] == 0) {
-        return 0;
+        return arg0;
     }
     ptr[2] = 1;
-    return 1;
+    return arg0;
 }
 
 s32 fn_801D77B8(s32 arg0);
