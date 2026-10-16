@@ -5,6 +5,18 @@ extern void fn_80128668(void *);
 extern void fn_802CAC54(int);
 extern char lbl_8034AE20[];
 typedef unsigned int u32;
+extern int fn_801E85B4(void);
+extern void fn_802BF160(void);
+extern int fn_802C2C00(int);
+extern void fn_802C6CF8(void);
+extern void *lbl_804C07F0[];
+extern unsigned char lbl_8055CF70;
+extern int lbl_8055FADC;
+extern int lbl_8055CF6C;
+int fn_802BF4F0(void) {
+    return (int)(unsigned int)lbl_804C07F0 != 0;
+}
+
 void fn_802C0054(void *dst, const void *src) {
     struct Copy {
         u32 words[9];
