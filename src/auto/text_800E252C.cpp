@@ -57,6 +57,10 @@ void fn_800E80B4(void) {
 
 }
 
+extern "C" int fn_800E90AC(void *arg0) {
+    return *(unsigned char *)((char *)arg0 + 0x67) != 0;
+}
+
 #pragma push
 #pragma small_data off
 extern float lbl_80560FB0;
@@ -98,6 +102,9 @@ extern "C" void fn_800E9B9C(void *arg0) {
     DetachSound__Q34nw4r3snd11SoundHandleFv(*(void **)((char *)arg0 + 8));
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
 extern "C" void fn_800E9BA4(void *this_, int vol) {
     int v = vol;
 
