@@ -85,6 +85,10 @@ void fn_80031C6C(void* hi) {
     lbl_8055D740 = hi;
 }
 
+u16 fn_80031C74(void) {
+    return lbl_8055D734;
+}
+
 void fn_80031C8C(unsigned short arg0) {
     lbl_8055D734 = arg0;
 }
