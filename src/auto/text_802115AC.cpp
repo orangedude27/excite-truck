@@ -117,6 +117,8 @@ extern "C" void fn_80212340(void *arg0) {
     }
 }
 
+extern "C" void fn_80214FD8(void) { fn_80214E10(0); }
+
 extern "C" s32 fn_80215194(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -135,6 +137,8 @@ extern "C" s32 fn_80214FE0(s32, s32, s32, s32);
 extern "C" void fn_80215214(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_80214FE0(arg0, arg1, arg2, 1);
 }
+
+extern "C" void fn_8021521C(s32 arg0, s32 arg1, s32 arg2) { fn_80214FE0(arg0, arg1, 0, arg2); }
 
 extern void *lbl_8055EF38;
 extern "C" void* fn_8021525C(void) {
