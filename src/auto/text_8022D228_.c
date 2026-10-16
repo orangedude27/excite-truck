@@ -11,6 +11,10 @@ extern int lbl_803401A0;
 extern float lbl_805635C0;
 extern float lbl_805635C4;
 void fn_80128668(void);
+int fn_8022D97C(int *arg0, int arg1) {
+    return *arg0 + arg1 * 0x28;
+}
+
 int fn_8022DA34(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
