@@ -126,6 +126,10 @@ extern "C" s32 fn_800ECE68(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" u32* fn_800ECFD8(void) {
+    return &lbl_8055DEA0;
+}
+
 extern "C" s32 fn_800ECFE0(void *arg0) {
     return ((s32 *)arg0)[0x18 / 4];
 }
