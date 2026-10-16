@@ -22,6 +22,10 @@ int fn_80162248(void) {
     return 0;
 }
 
+int fn_80162250(void) {
+    return 0;
+}
+
 void fn_80162258(void) {
 
 }
