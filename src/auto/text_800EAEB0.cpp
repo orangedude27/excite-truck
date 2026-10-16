@@ -884,6 +884,15 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
     return *(f32*)((const u8*)self + 0x64 + bus * 4);
 }
 
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800EFDFC(void* self, s32 bus, f32 send) {
+    s32 valid = 0;
+    if (bus >= 0 && bus < 4) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x1e0, (const char*)lbl_80323C74, bus, 0, 4);
+    u32 level = OSDisableInterrupts();
+    *(f32*)((u8*)self + 0x74 + bus * 4) = send;
+    OSRestoreInterrupts(level);
+}
+
 void fn_800F0750(void) {
     return;
 }
