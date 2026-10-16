@@ -17,6 +17,8 @@ void fn_80128668(void*);
 void fn_80128670(s32);
 void fn_80131818(s32);
 s32 fn_8001F89C();
+s32 fn_8001F2C8();
+s32 fn_8001F388();
 
 void fn_8001EF38(void* alarm) {
     fn_8001EFF0(fn_8001F528(alarm));
