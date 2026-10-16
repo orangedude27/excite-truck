@@ -7,6 +7,13 @@ void fn_80160B14(void) {
 	fn_80128658();
 }
 
+void fn_80160B7C(float *arg0, float *arg1, float *arg2) {
+    float x = arg1[0] - arg2[0];
+    float y = arg1[1] - arg2[1];
+    arg0[0] = x;
+    arg0[1] = y;
+}
+
 void fn_80160BA0(float *arg0, float *arg1, float farg0) {
     arg0[0] = arg1[0] * farg0;
     arg0[1] = arg1[1] * farg0;
