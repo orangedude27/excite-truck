@@ -77,6 +77,24 @@ void fn_8028E1A4(void) {
     lbl_8055F73C = 1;
 }
 
+extern void fn_802C9A4C(float);
+extern void fn_802C8BD0(int);
+extern void fn_802C8D74(void);
+extern int fn_8028FA1C(int);
+extern int fn_801284F8(int, void *);
+extern int fn_8028F7AC(int, int);
+extern void fn_8028ED8C(void *, int);
+extern void fn_8028F5A0(int, int);
+extern int lbl_8055C8E0;
+extern int lbl_804B35B4;
+extern int fn_8028F858(int, int);
+void fn_8028E398(int arg0) {
+    if (fn_8028EDA8((unsigned int *)&lbl_804B35B4, arg0) != 0) {
+        fn_8028EDA8((unsigned int *)&lbl_804B34B0, arg0);
+        fn_8028F858(arg0, 1);
+    }
+}
+
 void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
 }
@@ -211,3 +229,13 @@ extern void fn_8028F5A4(void);
 extern void fn_8028F2EC(void);
 extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
+extern void fn_802C9A4C(float);
+extern void fn_802C8BD0(int);
+extern void fn_802C8D74(void);
+extern int fn_8028FA1C(int);
+extern int fn_801284F8(int, void *);
+extern int fn_8028F7AC(int, int);
+extern void fn_8028F5A0(int, int);
+extern int fn_8028F858(int, int);
+extern int lbl_804B35B4;
+extern int lbl_8055C8E0;
