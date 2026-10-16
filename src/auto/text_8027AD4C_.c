@@ -5,6 +5,10 @@ void fn_8027B8C0(void* alarm) {
     fn_8027BA24(fn_8027B834(alarm));
 }
 
+void fn_8027B94C(void *arg0) {
+    fn_8027B8E4(arg0, fn_8000DA10());
+}
+
 void fn_8027B9EC(void *arg0) {
     fn_8027B984(arg0, fn_8000DA10());
 }
