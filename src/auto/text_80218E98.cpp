@@ -108,6 +108,9 @@ extern "C" s32 fn_802C3034(s32);
 extern f32 lbl_805634A8;
 extern f32 lbl_805634E8;
 extern int lbl_8033F6E0[];
+extern "C" void *lbl_8033EBA0;
+extern "C" void *lbl_8033F658;
+extern "C" s32 lbl_8055FBC0;
 
 extern "C" void fn_80219044(void);
 extern "C" void fn_8021AC24(void *, s32, s32, s32, s32);
@@ -405,7 +408,7 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021AF9C(void *arg0, 
 }
 
 extern "C" void *lbl_8033F5D0;
-extern "C" void *fn_8021B0CC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
+extern "C" void *fn_8021B0CC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8) {
     fn_8021AC24(arg0, arg1, arg2, arg7, arg4);
     *(s32 *)((u8 *)arg0 + 0x254) = arg3;
     *(void **)arg0 = lbl_8033F5D0;
