@@ -179,15 +179,15 @@ extern s32 fn_80119300(void *, s32, s32);
 extern s32 fn_8011943C(void *, s32);
 extern s32 fn_801199A4(void *, s32);
 s32 fn_80119C0C(void *arg0, s32 arg1) {
+    s32 state = *(s32 *)((u8 *)arg0 + 0x64);
     if (arg1 != 0) {
-        if (*(s32 *)((u8 *)arg0 + 0x64) == 0) {
-            s32 value = *(s32 *)((u8 *)arg0 + 0xc0);
+        if (state == 0) {
             *(s32 *)((u8 *)arg0 + 0xb0) = 0;
             *(s32 *)((u8 *)arg0 + 0x64) = 1;
             *(s32 *)((u8 *)arg0 + 0xb8) = 0;
-            *(s32 *)((u8 *)arg0 + 0xbc) = value;
+            *(s32 *)((u8 *)arg0 + 0xbc) = *(s32 *)((u8 *)arg0 + 0xc0);
         }
-    } else if (*(s32 *)((u8 *)arg0 + 0x64) != 0) {
+    } else if (state != 0) {
         fn_8011943C((u8 *)arg0 + 0x7c, 0);
         fn_801199A4((u8 *)arg0 + 0x7c, 1);
         fn_80119300((u8 *)arg0 + 0x7c, 0, *(s32 *)((u8 *)arg0 + 0x94));
@@ -357,4 +357,11 @@ void fn_8012748C(s32 arg0) {
     fn_80127398(arg0);
     fn_802E300C(arg0);
 }
-
+extern f64 lbl_80561198;
+extern f64 lbl_805611A8;
+extern f32 lbl_805611A0;
+extern f64 fn_8002EFBC(f32, f64);
+extern void fn_80119288(void *, f32);
+extern s32 fn_80119300(void *, s32, s32);
+extern s32 fn_8011943C(void *, s32);
+extern s32 fn_801199A4(void *, s32);
