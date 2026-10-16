@@ -6,7 +6,7 @@
 extern u8 lbl_8055F064;
 extern u8 lbl_8055F068[0x16C];
 extern s32 stricmp(const char *, const char *);
-extern void *fn_8012850C(s32, const char *, s32, s32, void *);
+extern void *fn_8012850C(s32, const char *, ...);
 extern char *strcpy(char *, const char *);
 extern char lbl_80340440[];
 extern void fn_802CAC54(void *);
@@ -99,6 +99,12 @@ u8 fn_80232B78(void *arg0) {
     return ((u8 *)arg0)[5];
 }
 
+void fn_8023441C(const char *arg0) {
+    lbl_8055F06C = (s32)fn_8012850C(0x2100, lbl_80340614, 0, 0, 0);
+    lbl_8055F058 = fn_80232578(arg0);
+    *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
+}
+
 void fn_80234470(void) {
     fn_802328D4(lbl_8055F058);
     lbl_8055F058 = 0;
@@ -122,12 +128,19 @@ void fn_802344C4(u8 arg0) {
 }
 
 s32 fn_80234654(void) {
-    s32 count = *(s32 *)((u8 *)&lbl_8055F058 + 4);
-    s32 total = 0;
-    char *str = (char *)lbl_8055F06C;
-    while (count-- > 0) {
+    s32 count;
+    s32 i;
+    s32 total;
+    char *str;
+
+    total = 0;
+    i = 0;
+    str = (char *)lbl_8055F06C;
+    count = *(s32 *)((u8 *)&lbl_8055F058 + 4);
+    while (i < count) {
         total += strlen(str);
         str += 0x58;
+        i++;
     }
     return total;
 }
