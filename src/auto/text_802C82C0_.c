@@ -385,6 +385,16 @@ int fn_802C9C58(int arg0) {
     return old;
 }
 
+int fn_802C9C8C(int arg0) {
+    fn_802CAD68();
+    if (fn_802D31D8(1) != 0) {
+        lbl_8055FC84 = arg0;
+        lbl_8055FC70 = 4;
+        return 1;
+    }
+    return 0;
+}
+
 extern int lbl_8055FC98;
 extern void *lbl_8055FC9C;
 extern int lbl_8055FC84;
