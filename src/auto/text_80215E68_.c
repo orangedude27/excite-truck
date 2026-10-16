@@ -36,6 +36,8 @@ s32 fn_80215F5C(s32 arg0, s32 arg1) {
 
 u32 fn_80215FDC(void) { return 1; }
 
+u32 fn_80215FE4(void) { return 1; }
+
 void fn_8021676C(void) {
 
 }
