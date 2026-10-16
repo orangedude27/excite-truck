@@ -110,6 +110,11 @@ void fn_8016212C(void) {
     fn_801613E0();
 }
 
+int fn_80162130(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_80162170(void) {
 
 }
