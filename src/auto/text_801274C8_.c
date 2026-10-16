@@ -9,6 +9,10 @@ extern u64 lbl_8055DF18;
 extern u64 lbl_8055DF20;
 extern u64 fn_802E2C9C(void);
 
+void fn_80127930(void* alarm) {
+    fn_801274C8(fn_8012766C(alarm));
+}
+
 void fn_80127954(void) {
     fn_802E2C20();
 }
