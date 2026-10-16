@@ -291,6 +291,20 @@ void rfc_process_fcoff(void *arg0, s32 arg1) {
     }
 }
 
+void rfc_process_l2cap_congestion(void *arg0, s32 arg1) {
+    *(u8 *)((u8 *)arg0 + 0x73) = (u8)arg1;
+    if (arg1 == 0) {
+        rfc_check_send_cmd(arg0, NULL);
+    }
+    if (*(u8 *)(lbl_803C4828 + 0x64) == 0) {
+        if (arg1 == 0) {
+            PORT_FlowInd(arg0, 0, 1);
+        } else {
+            PORT_FlowInd(arg0, 0, 0);
+        }
+    }
+}
+
 void fn_8009BFBC(void) {
     AXFXReverbHiExpCallback();
 }
