@@ -559,6 +559,15 @@ extern "C" void fn_80228DAC(void *arg0) {
 
 extern "C" void fn_80228DC0(void) { }
 
+extern "C" void *fn_80223208(void *, unsigned int);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80228F4C(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_80223208(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229054(
     void* this_, s32 flag) {
     if (this_) {
