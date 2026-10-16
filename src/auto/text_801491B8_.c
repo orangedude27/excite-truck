@@ -440,20 +440,16 @@ s64 fn_8014C770(f32 *arg0, f32 *arg1, f32 t) {
 }
 
 void fn_8014C7B4(void *arg0, void *arg1) {
-    s32 a = *(s32 *)((u8 *)arg1);
-    s32 b = *(s32 *)((u8 *)arg1 + 4);
-    s32 c = *(s32 *)((u8 *)arg1 + 8);
-    s32 d = *(s32 *)((u8 *)arg1 + 0xc);
-    f32 e = *(f32 *)((u8 *)arg1 + 0x10);
-    f32 f = *(f32 *)((u8 *)arg1 + 0x14);
-    f32 g = *(f32 *)((u8 *)arg1 + 0x18);
-    f32 h = *(f32 *)((u8 *)arg1 + 0x1c);
-    f32 i = *(f32 *)((u8 *)arg1 + 0x20);
-    f32 j = *(f32 *)((u8 *)arg1 + 0x24);
-    *(s32 *)((u8 *)arg0) = a;
-    *(s32 *)((u8 *)arg0 + 4) = b;
-    *(s32 *)((u8 *)arg0 + 8) = c;
-    *(s32 *)((u8 *)arg0 + 0xc) = d;
+    s32 d, c, b, a;
+    f32 j, i, h, g, f, e;
+    volatile s32 *src = (volatile s32 *)arg1;
+    volatile f32 *fsrc = (volatile f32 *)((u8 *)arg1 + 0x10);
+    a = src[0]; b = src[1]; c = src[2]; d = src[3];
+    e = fsrc[0]; f = fsrc[1]; g = fsrc[2]; h = fsrc[3]; i = fsrc[4]; j = fsrc[5];
+    *(s32 *)arg0 = a;
+    *((s32 *)arg0 + 1) = b;
+    *((s32 *)arg0 + 2) = c;
+    *((s32 *)arg0 + 3) = d;
     *(f32 *)((u8 *)arg0 + 0x10) = e;
     *(f32 *)((u8 *)arg0 + 0x14) = f;
     *(f32 *)((u8 *)arg0 + 0x18) = g;
@@ -1001,6 +997,12 @@ void fn_80156104(void) {
 
 void fn_80156108(void) {
 
+}
+
+s32 fn_8015610C(void *arg0) {
+    s32 temp_r4 = *(s32 *)((u8 *)arg0 + 8);
+    *(s32 *)((u8 *)arg0 + 8) = temp_r4 + 1;
+    return *(s32 *)((u8 *)arg0 + 4) + temp_r4 * 0xF8;
 }
 
 s32 fn_8014F0C8(s32 arg0, s32 arg1) {
