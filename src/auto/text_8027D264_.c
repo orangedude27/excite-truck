@@ -7,6 +7,10 @@ void fn_8027D880(void *arg0) {
     fn_8001D9B4((char *)arg0 + 0x14);
 }
 
+int fn_8027D890(void *arg0) {
+    return ((int *)arg0)[3];
+}
+
 int fn_8027D8F4(void *arg0) {
     return ((int *)arg0)[3];
 }
