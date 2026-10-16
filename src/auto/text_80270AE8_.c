@@ -167,6 +167,17 @@ void fn_80272354(void *arg0) {
     *(int *)((char *)arg0 + 0x5C) = 2;
 }
 
+int fn_80273494(int arg0) {
+    switch (arg0) {
+    case 11: return 0;
+    case 12: return 1;
+    case 13: return 2;
+    case 14: return 3;
+    case 15: return 4;
+    default: return 6;
+    }
+}
+
 extern int fn_80128668(void);
 extern void fn_80271624(void);
 extern signed char lbl_8055F558;
