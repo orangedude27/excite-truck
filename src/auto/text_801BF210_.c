@@ -8,6 +8,8 @@ void fn_801BF210(void) {
 
 }
 
+int fn_801BF754(int arg0) { return arg0 + 0x124; }
+
 void fn_801BFE7C(float *arg0, float *arg1, float *arg2) {
     float x = arg1[0] + arg2[0];
     float y = arg1[1] + arg2[1];
