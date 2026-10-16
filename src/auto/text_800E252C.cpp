@@ -93,6 +93,15 @@ typedef float f32;
 #pragma small_data off
 extern float lbl_80560FB0;
 #pragma pop
+extern "C" void fn_800E2C98(void *arg0) {
+    int *p = (int *)((char *)arg0 + 4);
+    *(int *)((char *)arg0 + 4) = 0;
+    *(int *)((char *)arg0 + 8) = 0;
+    *(int *)arg0 = 0;
+    *(int *)((char *)arg0 + 4) = (int)p;
+    *(int *)((char *)arg0 + 8) = (int)p;
+}
+
 extern "C" void *GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(void *self) {
     if (*(void **)((char *)self + 4) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x172, lbl_80321FAC);
