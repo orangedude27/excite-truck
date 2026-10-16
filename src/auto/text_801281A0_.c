@@ -183,6 +183,10 @@ s32 fn_801291C8(void *arg0, u32 arg1) {
 
 s32 fn_801291F4(void *arg0) { return ((s32 *)arg0)[1]; }
 
+s32 fn_801291FC(void *arg0) {
+    return ((s32 *)arg0)[2] - ((s32 *)arg0)[1];
+}
+
 s32 fn_8012920C(void *arg0) { return ((s32 *)arg0)[2]; }
 
 void fn_80129214(void) {
