@@ -42,7 +42,6 @@ void fn_802B218C(void *);
 void fn_8002F6AC(int, void (*)(void));
 void fn_802B1F68(void);
 void fn_80128668(void *);
-void fn_802B2104(void **arg0);
 
 #pragma opt_common_subs off
 void fn_802B218C(void *arg0) {
