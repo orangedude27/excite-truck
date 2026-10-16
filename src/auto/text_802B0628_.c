@@ -96,8 +96,9 @@ int fn_802CFFA0(void);
 int stricmp(const char *, const char *);
 extern float lbl_80564BD0;
 void fn_802BAFF8(int, void *);
-void *fn_802B110C(void *(*fn)(void *), void *arg) {
-    return fn(arg);
+typedef struct { float x, y, z; } Vec3_802B;
+void fn_802B110C(void (*fn)(void *, void *), void *arg) {
+    fn(arg, arg);
 }
 
 void fn_802B111C(void *arg0) {
@@ -151,15 +152,16 @@ void fn_802B11BC(void *arg0) {
 int fn_802B127C(void *arg0, void *arg1) {
     int *self = (int *)arg0;
     int i;
-    if (self == 0) return 0;
+    if (self == 0) {
+        return 0;
+    }
     if (self[0x31c / 4] + 1 <= self[0x320 / 4]) {
-        float *dst;
+        int *base = (int *)self[0x318 / 4];
         i = self[0x31c / 4];
         self[0x31c / 4] = i + 1;
-        dst = (float *)((char *)self[0x318 / 4] + i * 0xc);
-        dst[0] = ((float *)arg1)[0];
-        dst[1] = ((float *)arg1)[1];
-        dst[2] = ((float *)arg1)[2];
+        ((float *)base)[i * 3] = ((float *)arg1)[0];
+        ((float *)base)[i * 3 + 1] = ((float *)arg1)[1];
+        ((float *)base)[i * 3 + 2] = ((float *)arg1)[2];
     }
     return (unsigned short)(self[0x31c / 4] - 1);
 }
@@ -168,23 +170,25 @@ void fn_802B13F8(void *arg0, int arg1, void *arg2, int arg3, float farg0) {
     int *self = (int *)arg0;
     int *obj;
     int sp8;
-    unsigned short h;
     int flag = 0;
     if (self == 0) return;
     sp8 = ((int *)arg2)[0];
-    h = *(unsigned short *)((char *)arg2 + 4);
     obj = *(int **)((char *)self[0xa38 / 4]);
-    obj[1] = obj[1] - (0x18 - h);
+    obj[1] = obj[1] - (0x18 - *(unsigned short *)((char *)arg2 + 4));
     self[0xa38 / 4] = 0;
-    if (arg3 == 4 && farg0 < lbl_80564BD0) {
-        if (self[0x328 / 4] + 1 <= self[0x32c / 4]) {
-            int *dst;
-            int idx = self[0x328 / 4];
-            self[0x328 / 4] = idx + 1;
-            dst = (int *)((char *)self[0x324 / 4] + idx * 8);
-            ((float *)dst)[1] = lbl_80564BD0 - farg0;
-            dst[0] = sp8;
+    if (arg3 == 4) {
+        if (farg0 < lbl_80564BD0) {
+            flag = 1;
         }
+    }
+    if (flag != 0) {
+        int *dst;
+        int i;
+        i = self[0x328 / 4];
+        dst = (int *)((char *)self[0x324 / 4] + i * 8);
+        self[0x328 / 4] = i + 1;
+        ((float *)dst)[1] = lbl_80564BD0 - farg0;
+        dst[0] = sp8;
     }
     fn_802BAFF8(arg1, &sp8);
 }
