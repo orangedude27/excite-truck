@@ -9,6 +9,7 @@ typedef struct Unk8001BBBC {
 extern s8 lbl_8055D5C8;
 extern s32 lbl_803583C8;
 extern void fn_8002F634(void *, void *, s32, s32);
+extern s32 fn_8001BA10(s32, s32);
 extern void *lbl_80358658[];
 extern s32 lbl_802ED7B8[];
 extern const char lbl_802FD85C[];
