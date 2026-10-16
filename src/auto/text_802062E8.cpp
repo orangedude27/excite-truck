@@ -3,6 +3,16 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern "C" void fn_802073A4(void);
+extern int lbl_8055ED8C;
+extern void *lbl_8055ED90;
+extern char lbl_8033BD3C;
+extern float lbl_805631FC;
+extern float lbl_80563204;
+extern "C" int fn_8012A364(void*, void*);
+extern "C" int fn_801284F8(int, void*);
+extern "C" void *fn_8012A13C(void*, int, int);
+extern "C" int fn_8012A2D8(void*);
+extern "C" float PSVECMag(void*);
 
 extern void *lbl_8055ED88;
 extern "C" int fn_80206430(void) {
@@ -10,6 +20,16 @@ extern "C" int fn_80206430(void) {
     int val = lbl_8055ED80;
     unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
     return (int)(tmp >> 31);
+}
+
+extern "C" void fn_80206444(void) {
+    extern int lbl_8055ED80;
+    *(unsigned char*)((unsigned char*)&lbl_8055ED80 + 5) = 1;
+}
+
+extern "C" void fn_80206454(void) {
+    extern int lbl_8055ED80;
+    *(unsigned char*)((unsigned char*)&lbl_8055ED80 + 5) = 0;
 }
 
 extern "C" void fn_80206464(void* hi) {
