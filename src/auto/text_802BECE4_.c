@@ -4,6 +4,14 @@
 extern void fn_80128668(void *);
 extern void fn_802CAC54(int);
 extern char lbl_8034AE20[];
+typedef unsigned int u32;
+void fn_802C0054(void *dst, const void *src) {
+    struct Copy {
+        u32 words[9];
+    };
+    *(struct Copy *)dst = *(const struct Copy *)src;
+}
+
 int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
 
 float fn_802C0CA0(void *arg0) { return *(float *)((char *)arg0 + 0x14); }
