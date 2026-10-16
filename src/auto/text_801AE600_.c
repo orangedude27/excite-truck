@@ -28,6 +28,17 @@ void fn_801AED58(void) {
 
 }
 
+extern signed char lbl_8055E634;
+extern void fn_801B8778(void);
+extern void fn_801B878C(void);
+extern float fn_801AF9EC(int, int);
+extern int fn_801AEA64(float, float);
+extern void *fn_801AF8D0(int);
+void fn_801AED5C(void) {
+    lbl_8055E634 = 1;
+    fn_801B8778();
+}
+
 void fn_801AFAB4(void) {
 
 }
