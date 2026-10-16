@@ -27,6 +27,12 @@ void fn_802EC1D8(void) {
     lbl_805600C8 = 1;
 }
 
+void fn_802EC32C(long arg0, long arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        lbl_80560060 = 0;
+    }
+}
+
 long fn_802EC348(void *arg0, long arg1) {
     if (arg1 < 0 || arg1 >= ((long *)arg0)[3]) {
         return 0;
