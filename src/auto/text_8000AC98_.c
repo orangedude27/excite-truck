@@ -18,7 +18,7 @@ void fn_8000ACAC(void) {
 }
 
 int fn_802044E8(void);
-void fn_80007238(void);
+int fn_80007238();
 int fn_80204870(void);
 int fn_800074EC(int);
 int fn_8000ACDC(int arg0) {
