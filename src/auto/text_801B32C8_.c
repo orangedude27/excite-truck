@@ -48,6 +48,10 @@ typedef struct Unk801B3BD4 {
     void* unk_0x1C;
 } Unk801B3BD4;
 
+typedef struct Unk801B3398 {
+    s32 unk_0x00[14];
+} Unk801B3398;
+
 int fn_801B3390(void) {
     return 0x14;
 }
