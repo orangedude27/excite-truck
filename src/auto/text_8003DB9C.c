@@ -174,6 +174,16 @@ void GXSetChanAmbColor(void *ctx) {
     OSWakeupThread(&lbl_8055D968);
 }
 
+void __GXPEInit(void) {
+    __OSSetInterruptHandler(0x12, (GXPEIntrHandler)GXInitSpecularDir);
+    __OSSetInterruptHandler(0x13, (GXPEIntrHandler)GXSetChanAmbColor);
+    OSInitThreadQueue(&lbl_8055D968);
+    __OSUnmaskInterrupts(0x2000);
+    __OSUnmaskInterrupts(0x1000);
+
+    __peReg[5] |= 0xF;
+}
+
 void GXInitTexObjTlut(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
 }
