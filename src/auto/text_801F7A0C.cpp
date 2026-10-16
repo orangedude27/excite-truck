@@ -146,6 +146,27 @@ struct F9List {
 
 extern "C" u32 fn_801F7A0C(void) { return 1; }
 
+extern "C" int stricmp(const char *, const char *);
+extern "C" const char lbl_8033B00C[];
+extern "C" const char lbl_8055B2C4[];
+extern "C" s32 fn_802C6B44(void *);
+extern "C" s32 fn_802C6C20(f32);
+extern "C" void fn_80128668(void);
+extern "C" s32 fn_801F80FC(void) {
+    return stricmp(lbl_8033B00C, "") == 0;
+}
+
+extern "C" s32 fn_801F815C(void) {
+    return stricmp(lbl_8055B2C4, "") == 0;
+}
+
+extern "C" s32 fn_801F85DC(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern "C" void fn_801F92A8(void) {
 
 }
