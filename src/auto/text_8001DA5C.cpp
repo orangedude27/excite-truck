@@ -22,40 +22,31 @@ extern f32 lbl_80560460;
 extern f32 lbl_80560464;
 extern f64 lbl_80560468;
 f32 fn_8001DA5C(s32 arg0) {
-    f64 var_f3 = lbl_80560468;
-    f64 var_f0;
-    f64 var_f2;
-    f32 var_f1;
-    u32 var_r0;
-    s32 var_r5;
-    
-    var_r0 = arg0 ^ 0x8000;
-    var_f1 = lbl_80560460;
-    var_r5 = lbl_8055E3C4 / arg0;
-    
-    // Load double from stack: 0x43300000 followed by var_r0 bytes
+    f64 bias = lbl_80560468;
+    f64 angle;
+    f64 fraction;
+    s32 quotient = lbl_8055E3C4 / arg0;
+    s32 remainder;
     union {
         f64 d;
-        u32 u[2];
-    } u0;
-    u0.u[0] = 0x43300000;
-    u0.u[1] = var_r0;
-    var_f0 = u0.d - var_f3;
-    
+        u32 words[2];
+    } angle_bits;
     union {
         f64 d;
-        u32 u[2];
-    } u2;
-    u2.u[0] = 0x43300000;
-    // For u2, the upper word comes from stack+0xC which hasn't been written yet
-    // This is tricky - need to figure out what value is there
-    
-    var_f2 = u2.d - var_f3;
-    
-    var_f1 = var_f1 * var_f2 / var_f0;
-    var_f1 = (f32)sin((f64)var_f1);
-    
-    return lbl_80560464 + lbl_80560464 * var_f1;
+        u32 words[2];
+    } fraction_bits;
+    union {
+        f64 d;
+        u32 words[2];
+    } integer_bits;
+    integer_bits.words[0] = 0x43300000;
+    integer_bits.words[1] = arg0 ^ 0x8000;
+    angle = integer_bits.d - bias;
+    remainder = lbl_8055E3C4 - quotient * arg0;
+    fraction_bits.words[0] = 0x43300000;
+    fraction_bits.words[1] = remainder ^ 0x8000;
+    fraction = fraction_bits.d - bias;
+    return lbl_80560464 + lbl_80560464 * (f32)sin((f64)(lbl_80560460 * fraction / angle));
 }
 
 extern "C" void fn_8001DAD8(void) { extern int fn_8001DA5C(int); fn_8001DA5C(0x40); }
@@ -219,10 +210,50 @@ extern "C" s32 fn_8001ED78(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_801E85A4(void);
+extern "C" void fn_801476C4(void);
+extern "C" void* lbl_802FDE38;
+extern "C" void* lbl_802FDE48;
+extern "C" void* lbl_802FDE54;
+extern "C" void** lbl_8055D5FC;
+extern "C" void** lbl_8055D600;
+extern "C" void fn_8001EDB8(void) {
+    void* object = &lbl_802FDE38;
+    void** selected;
+    if (fn_801E85A4() == 2) {
+        selected = lbl_8055D600;
+    } else {
+        selected = lbl_8055D5FC;
+    }
+    ((void (*)(void*, void*))(*(void***)*selected)[3])(*selected, object);
+    fn_801476C4();
+}
+
 extern "C" s32 fn_8001EE14(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void fn_8001EE54(void) {
+    void* object = &lbl_802FDE48;
+    void** selected;
+    if (fn_801E85A4() == 2) {
+        selected = lbl_8055D600;
+    } else {
+        selected = lbl_8055D5FC;
+    }
+    ((void (*)(void*, void*))(*(void***)*selected)[3])(*selected, object);
+    fn_801476C4();
+
+    object = &lbl_802FDE54;
+    if (fn_801E85A4() == 2) {
+        selected = lbl_8055D600;
+    } else {
+        selected = lbl_8055D5FC;
+    }
+    ((void (*)(void*, void*))(*(void***)*selected)[3])(*selected, object);
+    fn_801476C4();
 }
 
