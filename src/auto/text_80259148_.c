@@ -8,6 +8,8 @@ extern int fn_802C6CF8(int);
 extern int fn_802CAC54(int);
 extern int fn_80128668(void *);
 extern int lbl_80345158;
+int fn_8025921C(void) { return 0; }
+
 void *fn_80259680(void *arg0, int arg1) {
     int value;
     if (arg0 != 0) {
