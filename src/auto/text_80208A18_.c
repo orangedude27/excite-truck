@@ -55,6 +55,14 @@ float fn_80209028(void) {
     return lbl_8055B4D4;
 }
 
+void fn_80209090(int arg0) {
+    if (arg0 >= 0 && arg0 <= 2) {
+        lbl_8055EDA8 = (void *)arg0;
+        return;
+    }
+    lbl_8055EDA8 = 0;
+}
+
 void* fn_802090B4(void) {
     return lbl_8055EDA8;
 }
