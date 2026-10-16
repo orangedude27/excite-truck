@@ -146,6 +146,10 @@ void fn_80191084(void *arg0, void *arg1) {
     }
 }
 
+int fn_80191100(void *arg0) {
+    return ((int *)arg0)[3];
+}
+
 int fn_80191108(void *arg0, int arg1) {
     void *obj0 = *(void **)((char *)arg0 + 0xC);
     int result = ((int (**)(void *))(*(void ***)obj0))[6](obj0);
