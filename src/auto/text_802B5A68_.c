@@ -1,4 +1,7 @@
 #include "types.h"
+#pragma small_data on
+extern const char lbl_8055CE40[];
+#pragma small_data off
 typedef signed long s32;
 typedef unsigned long u32;
 typedef s32 (*UnkFunc)(s32);
@@ -124,6 +127,37 @@ void fn_802B6284(void) {
     lbl_8055FA40 = ((s32) ~((lbl_8055FA40 - 7) | (7 - lbl_8055FA40)) >> 31) + 7;
 }
 
+extern s32 lbl_8034A670;
+extern s32 lbl_8034A70C;
+extern int strcmp(const char *, const char *);
+void fn_802B62A4(const char **arg) {
+    s32 i = 0;
+    s32 *entry = &lbl_8034A670;
+    do {
+        if (entry[0] != 0 && strcmp((const char *)entry[0], *arg) == 0) break;
+        if (entry[1] != 0 && ((s32 (*)(const char *))entry[1])(*arg) != 0) {
+            ((void (*)(const char *, void *))entry[2])(*arg, (void *)entry);
+            return;
+        }
+        i++;
+        entry += 3;
+    } while (i < 4);
+}
+
+void fn_802B6358(const char **arg) {
+    s32 i = 0;
+    s32 *entry = &lbl_8034A70C;
+    do {
+        if (entry[0] != 0 && strcmp((const char *)entry[0], *arg) == 0) break;
+        if (entry[1] != 0 && ((s32 (*)(const char *))entry[1])(*arg) != 0) {
+            ((void (*)(const char *, void *))entry[2])(*arg, (void *)entry);
+            return;
+        }
+        i++;
+        entry += 3;
+    } while (i < 11);
+}
+
 s32 fn_802B6E00(s32 arg0, s32 arg1) {
     s32 var_r0 = 0;
     if ((arg0 < -0x200) || (arg0 > 0x200) || (arg1 < -0x200) || (arg1 > 0x200))
@@ -146,8 +180,16 @@ extern s32 lbl_8055CE80;
 extern s32 lbl_8034A808;
 extern s32 lbl_8034A814;
 s32 fn_802B6E30(void);
+#pragma dont_inline on
 s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
-    return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * fn_802B6E30()));
+    s32 scale = fn_802B6E30();
+    return (s16)(arg0 + (arg1 - (arg2 >> 1)) * (s16)scale);
+}
+#pragma dont_inline reset
+extern float lbl_80564C8C;
+extern s32 fn_802B7300(s16, s16, s32, float);
+void fn_802B7420(s16 arg0, s16 arg1) {
+    fn_802B7300(arg0, arg1, -1, lbl_80564C8C);
 }
 
 extern void lbl_8034A898(void);
