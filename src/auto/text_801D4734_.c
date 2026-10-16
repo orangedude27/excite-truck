@@ -289,6 +289,12 @@ void fn_801D85D8(void *arg0) {
     }
 }
 
+void fn_801D8600(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 4) != 0) {
+        *(s32 *)((u8 *)arg0 + 4) = 1;
+    }
+}
+
 #pragma pop
 void fn_801D8620(void) {
 
