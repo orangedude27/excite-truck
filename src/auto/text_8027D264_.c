@@ -11,6 +11,10 @@ int fn_8027D890(void *arg0) {
     return ((int *)arg0)[3];
 }
 
+int fn_8027D8A0(void *arg0) {
+    return *(int *)((char *)arg0 + 0x28);
+}
+
 int fn_8027D8F4(void *arg0) {
     return ((int *)arg0)[3];
 }
