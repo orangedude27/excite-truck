@@ -13,6 +13,12 @@ void fn_802B98D0(void *arg0) {
     }
 }
 
+void fn_802B9B2C(void *arg0) {
+    ((int *)arg0)[0] = 0;
+    ((int *)arg0)[2] = 0;
+    ((int *)arg0)[1] = 0;
+}
+
 void fn_802B9FC0(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
