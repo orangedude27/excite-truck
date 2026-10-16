@@ -934,10 +934,10 @@ extern "C" void fn_8022071C(void *arg0) {
     }
 }
 
-extern "C" void *lbl_8033E668;
+extern "C" void *lbl_8033E668[];
 extern "C" void *fn_80220874(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8033E668;
+        *(void **)arg0 = lbl_8033E668;
         fn_802C519C(*(void **)((u8 *)arg0 + 0x248));
         fn_802C519C(*(void **)((u8 *)arg0 + 0x24C));
         fn_8021915C(arg0, 0);
@@ -956,6 +956,11 @@ extern "C" void fn_802208EC(void *arg0) {
         *(void **)((u8 *)arg0 + 0x25C) = value;
         ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 1, value, 4);
     }
+}
+
+extern "C" void fn_80220AFC(void *arg0) {
+    ((void (*)(void))((void **)arg0)[0x4C / 4])();
+    *(u8 *)arg0 = 0;
 }
 
 extern "C" void fn_80221E7C(void *arg0) {
