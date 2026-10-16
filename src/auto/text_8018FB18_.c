@@ -276,6 +276,15 @@ int fn_80191108(void *arg0, int arg1) {
     return result + ((int (**)(void *, int))(*(void ***)*(void **)((char *)base + 8)))[6](*(void **)((char *)base + 8), amount + result);
 }
 
+s32 fn_80191240(void *arg0, s32 arg1) {
+    void *obj;
+    s32 temp;
+    obj = *(void **)((char *)arg0 + 0xC);
+    temp = arg1 + ((s32 (**)(void))(*(void ***)obj))[8]();
+    obj = *(void **)((char *)arg0 + 8);
+    return temp + ((s32 (**)(s32))(*(void ***)obj))[8](temp) - arg1;
+}
+
 extern int lbl_8055A480;
 extern void *memset(void *, int, unsigned int);
 extern int fn_801331C4(void *, void *);
@@ -283,7 +292,8 @@ extern char lbl_80332FC4;
 extern int fn_80128668(void);
 void fn_801914F8(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 4);
-    ((void (**)(void))(*(void ***)obj))[10]();
+    void (**vtable)(void) = *(void (***)(void))obj;
+    vtable[10]();
 }
 
 void fn_8019150C(void *arg0, int arg1) {
@@ -359,6 +369,11 @@ void fn_801916F4(void *arg0) {
         *(int*)((char*)arg0 + 0xC) = -1;
         *(float*)((char*)arg0 + 0x40) = lbl_8056208C;
     }
+}
+
+s32 fn_80191A98(void *arg0) {
+    s32 bit = (*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 1) & 1;
+    return (s32)((u32)(-bit | bit) >> 31);
 }
 
 void fn_80192BE4(void) {
