@@ -90,6 +90,7 @@ u8 fn_801D2550(void *arg0, UnkObj *arg1) {
     return *(u8 *)arg0;
 }
 
+#pragma dont_inline on
 void fn_801D2A24(void *obj_) {
     s32 *entry = (s32 *)(lbl_80438958 + lbl_8055E930 * 0x4C4);
     UnkObj *obj = (UnkObj *)obj_;
