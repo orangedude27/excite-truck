@@ -10,6 +10,10 @@ void fn_802CF104(void) {
     fn_802CF048(1);
 }
 
+void fn_802CFEEC(void* alarm) {
+    fn_802CFDE0(fn_802CFCA0(alarm));
+}
+
 extern void *lbl_8055FD20;
 void fn_802CFF50(void) {
     lbl_8055FD20 = (void*)-1;
@@ -59,8 +63,10 @@ void fn_802D3100(void) {
 extern void fn_802D30F0(void);
 extern void fn_802D307C(void);
 void* fn_802D3104(void) {
+    struct { char pad[0x24]; char m; } *p;
     fn_802D307C();
-    return (char*)lbl_8055FD5C + 0x24;
+    p = lbl_8055FD5C;
+    return &p->m;
 }
 
 extern void *lbl_8055FD58;
