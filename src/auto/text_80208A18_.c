@@ -7,6 +7,13 @@ extern void fn_80208A50(float *);
 
 extern void *lbl_8055EDA8;
 extern int lbl_80489238[4];
+int fn_80208CFC(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 int fn_80208D4C(int index) { return lbl_80489238[index]; }
 
 void* fn_802090B4(void) {
