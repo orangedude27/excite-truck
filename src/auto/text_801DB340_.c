@@ -23,12 +23,48 @@ void fn_801DCDA0(void) {
 
 }
 
+void fn_801DCDA4(void) {
+    if (lbl_80446F08[2] != 0) {
+        fn_80128670();
+        lbl_80446F08[2] = 0;
+    }
+    lbl_8055E994(lbl_8055E990);
+    lbl_8055E994 = 0;
+    lbl_8055E990 = 0;
+    lbl_8055E9A4 = 0;
+    fn_801D049C();
+}
+
 void fn_801DCE0C(void) {
     fn_801DCD28();
 }
 
 void fn_801DCE10(void) {
 
+}
+
+int fn_801DCE14(short *arg0, float *arg1, float *arg2, int *arg4) {
+    float spC;
+    int sp8;
+
+    if (arg0 != 0) {
+        *arg0 = 0;
+    }
+    sp8 = 0xFF;
+    if (fn_801DC258(&spC, &sp8, arg0, arg1[0], arg1[2]) != 0) {
+        if (arg4 != 0) {
+            *arg4 = sp8;
+        }
+        arg2[1] = spC;
+        arg2[0] = arg1[0];
+        arg2[2] = arg1[2];
+        return 1;
+    }
+    return 0;
+}
+
+float fn_801DCEC0(void) {
+    return lbl_80562B70;
 }
 
 extern float lbl_804424B0[];
