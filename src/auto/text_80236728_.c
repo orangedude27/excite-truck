@@ -41,6 +41,19 @@ void fn_80236918(void* alarm) {
 
 float fn_80238084(void *arg0) { return *(float *)((char *)arg0 + 0xC); }
 
+void *fn_80238370(void *arg0, int arg1) {
+    int value;
+    if (arg0 != 0) {
+        value = *(int *)((char *)arg0 + 4);
+        *(void **)arg0 = lbl_8034095C;
+        if (value != 0) fn_8002F6AC((void *)value, fn_80237968);
+        *(int *)((char *)arg0 + 4) = 0;
+        *(int *)((char *)arg0 + 8) = 0;
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 float fn_802383F4(void) { return lbl_805636E0; }
 
 extern void fn_80237AA0(void);
