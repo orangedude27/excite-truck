@@ -88,7 +88,38 @@ void fn_8001EFCC(void* alarm) {
     fn_8001F578(fn_8001F2C8(alarm));
 }
 
+s32 fn_8001F2C8(void* alarm) {
+    SrcCoef* p;
+    s32 i;
+    if (lbl_8055D610 != 0) {
+        p = lbl_802FDF30;
+        i = 0;
+        do {
+            void* c = p->unkC;
+            if (c != NULL) {
+                if (*(s32*)c != 0) {
+                    fn_80128670(*(s32*)c);
+                }
+                *(s32*)c = 0;
+                ((s32*)c)[1] = 0;
+                fn_80128668(c);
+            }
+            p->unkC = NULL;
+            i++;
+            p++;
+        } while (i < 8);
+        fn_80131818(lbl_8055D610);
+        lbl_8055D610 = 0;
+    }
+    return 0;
+}
+
 f32* __AXFXGetSrcCoef(u32 i) {
     return (f32*)&lbl_802FDF30[i];
 }
 
+#pragma dont_inline on
+s32 fn_8001F388(s32 arg) {
+    return ((s32*)__AXFXGetSrcCoef(arg))[2];
+}
+#pragma dont_inline off
