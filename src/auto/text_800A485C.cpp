@@ -658,6 +658,10 @@ extern "C" void fn_800CA148(OSAlarm *alarm, OSContext *ctx) {
 
 extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800A4B54(s32);
+extern "C" void NANDSetUserData(void* arg0, s32 arg1) {
+    *(s32*)((u8*)arg0 + 0xC) = arg1;
+}
+
 extern "C" s32 fn_800A4D44(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
