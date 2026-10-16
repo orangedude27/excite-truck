@@ -14,6 +14,17 @@ void fn_802C86E8(void* hi) {
     lbl_8055D018 = hi;
 }
 
+void fn_802C9294(int arg0, int arg1) {
+    if ((arg0 != -1) && (arg0 != -2)) {
+        lbl_8055FC75 = (arg1 - 1) == 0;
+        lbl_8055FC74 = 1;
+    } else {
+        lbl_8055FC74 = 0;
+        lbl_8055FC75 = 0;
+    }
+    fn_802CB29C();
+}
+
 extern void fn_802C8C04(int);
 extern void fn_802C8D74(void);
 extern int fn_802CB29C(void);
@@ -22,7 +33,9 @@ extern char lbl_8055FC75;
 extern int lbl_8055CFF0;
 extern int lbl_8055CFF4;
 extern void fn_802C92DC(int, int, int, int, int);
+#pragma dont_inline on
 void fn_802C92D0(void) {
+#pragma dont_inline off
     fn_802C8C04(-1);
 }
 
