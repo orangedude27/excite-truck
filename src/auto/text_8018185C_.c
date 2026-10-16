@@ -33,11 +33,10 @@ void **fn_801B83A0(void);
 int fn_801BF1B8(int, int);
 extern f32 lbl_80561CAC;
 void fn_80189C64(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x26AC) != 0) {
-        *(u8 *)((u8 *)arg0 + 0x26AC) = 0;
-        fn_801BF1B8(*(int *)((u8 *)arg0 + 0x1EC), 0);
+    if (*(unsigned char *)((char *)arg0 + 0x26AC) != 0) {
+        fn_801BF1B8(*(int *)((char *)arg0 + 0x1EC), (*(unsigned char *)((char *)arg0 + 0x26AC) = 0, 0));
     }
-    *(f32 *)((u8 *)arg0 + 0x26A8) = lbl_80561CAC;
+    *(float *)((char *)arg0 + 0x26A8) = lbl_80561CAC;
 }
 
 void fn_8018A088(void) {
@@ -47,6 +46,8 @@ void fn_8018A088(void) {
 void fn_8018A2BC(void) {
 
 }
+
+void fn_8018ADA4(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25DC) = farg0; }
 
 void fn_8018AF00(void) {
 
