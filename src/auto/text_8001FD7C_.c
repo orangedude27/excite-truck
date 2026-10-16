@@ -34,6 +34,16 @@ extern void fn_80235380(int);
 extern void fn_801345D8(void*, ...);
 extern void fn_8000B3DC(s32);
 void fn_8001FD7C(void);
+struct cfg_t {
+    char f0[0xc];
+    char f1[0xc];
+    char f2[0x10];
+    char f3[0x10];
+    char f4[0x10];
+    char f5[0x10];
+    char f6[0x10];
+    char f7[0x10];
+};
 struct lbl_8035BAE4_t {
     int unk_0;
     int unk_4;
