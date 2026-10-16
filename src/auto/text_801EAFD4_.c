@@ -141,8 +141,30 @@ void fn_801EBC70(void) {
     }
 }
 
+void fn_801EBCAC(void) {
+    if (lbl_8055EBA0 != 0) {
+        s32 *p = lbl_804885E8;
+        u32 i = 0;
+        do {
+            void **obj = *(void ***)p;
+            ((void (*)(void))(*(void ***)*obj)[7])();
+            i++;
+            if (i < 0x18) p++;
+        } while (i < 0x18);
+    }
+}
+
 void fn_801EBD14(void) {
 
+}
+
+void fn_801EBD18(s32 arg0) {
+    f32 temp;
+    if (fn_801E85A4() > 1) {
+        temp = fn_801E8738(arg0);
+        fn_801E8718(arg0);
+        fn_802BF598(temp);
+    }
 }
 
 extern f32 lbl_8055EBA4;
