@@ -61,3 +61,7 @@ char fn_801796C4(void) {
     return lbl_8055E45F;
 }
 
+void DBPrintf_80179758(const char *fmt, ...) {
+#pragma unused(fmt)
+}
+
