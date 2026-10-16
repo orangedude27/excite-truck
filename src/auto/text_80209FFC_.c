@@ -83,6 +83,10 @@ void fn_8020A550(void) {
     } while (var_r27 < 2);
 }
 
+f32 fn_8020A5F0(void) {
+    return lbl_8055EDD8;
+}
+
 s32 fn_80128670(s32);
 s32 fn_801336E0(s32, void*);
 void fn_8020A634(void);
