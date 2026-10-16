@@ -36,8 +36,6 @@ extern char lbl_803BF240[2000];
 extern char lbl_803BFA20[0x5000];
 extern char lbl_80559040[4]; /* "%s\n" */
 extern u8 lbl_8055DC70;
-extern u8 lbl_803BD1E0;
-extern u8 lbl_8055DC51;
 extern u32 fn_8009B0E0(void);
 extern void btu_task_msg_handler(void);
 extern int vsprintf(char *s, const char *format, va_list arg);
