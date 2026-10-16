@@ -46,6 +46,17 @@ void fn_8014E7D8(void) {
 }
 
 extern s32 fn_80128668(void);
+extern void fn_8016783C(void *arg0);
+extern void fn_801688FC(s32 arg0);
+extern void fn_80168020(void);
+extern void fn_8016A0D4(void);
+extern void *memset(void *arg0, s32 arg1, s32 arg2);
+extern s32 fn_801284F8(s32 arg0, void *arg1);
+extern s32 fn_802ADDD8(s32 arg0);
+extern void fn_8014F194(void *arg0);
+extern s32 fn_80145E70(void *arg0);
+extern s32 lbl_8032DB34;
+extern s32 lbl_8032DB40;
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
     s32 index = ((s32 *)arg0)[1];
     s32 value = *arg1;
