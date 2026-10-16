@@ -45,7 +45,7 @@ extern s8 lbl_8055EDD0;
 extern s8 lbl_8055EDD4;
 extern s32 lbl_804892C0[];
 extern s32 lbl_8055B560[];
-extern const char lbl_8055B568[];
+extern char lbl_8055B568[];
 
 void fn_8020A550(void) {
     char buf[64];
