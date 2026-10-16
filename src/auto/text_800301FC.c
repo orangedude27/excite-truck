@@ -79,6 +79,12 @@ void __AXGetAuxAOutputDpl2Rs(void **arg0) {
     *arg0 = lbl_8035DAA0 + lbl_8055D6F4 * 0x480 + 0x180;
 }
 
+void __AXGetAuxBOutput(void **arg0) {
+    extern u8 lbl_8035CD20[];
+    extern s32 lbl_8055D6F4;
+    *arg0 = lbl_8035CD20 + lbl_8055D6F4 * 0x480;
+}
+
 void __AXGetAuxBInputDpl2(void **arg0) {
     *arg0 = lbl_8035DAA0 + lbl_8055D6F8 * 0x480 + 0x300;
 }
