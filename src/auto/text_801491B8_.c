@@ -558,6 +558,16 @@ void fn_80150B60(void *arg0) {
 
 s32 fn_80151604(void) { return 0; }
 
+void fn_80151654(void *a0, void *a1, s32 a2, s32 a3, s32 a4) {
+    s32 index;
+    void *obj;
+    if (a4 != 0x3EB) return;
+    index = *(s32 *)((char *)a1 + 0x1EC);
+    obj = (char *)a0 + index * 0xC0 + 0x9E4;
+    if (obj == 0) return;
+    (*(void (**)(void))(*(void ***)((char *)obj + 0x10))[4])();
+}
+
 void fn_80151688(void) {
 
 }
@@ -729,6 +739,3 @@ extern s32 fn_80176A1C(void);
 extern f32 fn_80176A2C(void);
 extern f32 lbl_8056164C;
 extern f32 lbl_80561650;
-extern s32 fn_80161C38(void);
-extern s32 fn_80179650(void);
-extern void fn_8014DC08(void *);
