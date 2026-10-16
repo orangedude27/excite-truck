@@ -15,6 +15,15 @@ void* fn_802090CC(void) {
     return lbl_8055B4D8;
 }
 
+void fn_80209190(float *arg0, float arg1) {
+    if (arg0 != 0) {
+        float value = lbl_80563230 < arg1 ? lbl_80563230 : arg1;
+        value = value > lbl_80563234 ? value : lbl_80563234;
+        *arg0 = value;
+        fn_80208A50(arg0);
+    }
+}
+
 extern float lbl_80563230;
 extern float lbl_80563234;
 extern void fn_80208A18(float);
