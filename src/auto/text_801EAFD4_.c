@@ -147,7 +147,8 @@ void fn_801EBCAC(void) {
         u32 i = 0;
         do {
             void **obj = *(void ***)p;
-            ((void (*)(void))(*(void ***)*obj)[7])();
+            void **vt = *(void ***)*obj;
+            ((void (*)(void))vt[7])();
             i++;
             if (i < 0x18) p++;
         } while (i < 0x18);
