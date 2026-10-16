@@ -916,11 +916,27 @@ extern "C" s32 fn_80229DC0(s32 arg0) {
     return arg0 + 0x268;
 }
 
+extern "C" void fn_80229DC8(void *arg0) {
+    *(u32 *)((u8 *)arg0 + 0x260) = 0;
+    *(u8 *)((u8 *)arg0 + 0x268) = 1;
+    void **vtable = *(void ***)arg0;
+    ((void (*)(void *))vtable[19])(arg0);
+}
+
+extern "C" void fn_80229DE8(void *arg0, s32 unused, s32 arg2) {
+    *(u32 *)((u8 *)arg0 + 0x260) = 0;
+    s32 start = *(s32 *)((u8 *)arg0 + 8);
+    *(u8 *)((u8 *)arg0 + 0x268) = 1;
+    s32 end = *(s32 *)((u8 *)arg0 + 0x10);
+    void **vtable = *(void ***)arg0;
+    ((void (*)(void *, s32))vtable[19])(arg0, arg2 - (end - start) - 3);
+}
+
 extern s32 fn_8021E1C8(void *, s32, s32);
-extern "C" void fn_80229E1C(void *arg0, s32 arg1) {
+extern "C" void fn_80229E1C(void *arg0, s32 unused, s32 arg2) {
     s32 start = *(s32 *)((u8 *)arg0 + 8);
     s32 end = *(s32 *)((u8 *)arg0 + 0x10);
-    fn_8021E1C8(arg0, 0, arg1 - (end - start) - 3);
+    fn_8021E1C8(arg0, unused, arg2 - (end - start) - 3);
 }
 
 extern "C" u32 fn_80229EC4(void) { return 1; }
