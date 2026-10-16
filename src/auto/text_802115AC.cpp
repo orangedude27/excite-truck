@@ -54,18 +54,22 @@ public:
     virtual void vf13();
     virtual void vf14();
     virtual void vf15();
-    virtual void vf16();
-    virtual void vf17();
-    virtual void vf18();
-    virtual void vf19();
-      virtual void vf20();    // vtable 0x50
+      virtual void vf16();
+  virtual void vf17();
+  virtual void vf18();
+  virtual void vf19();
+  virtual void vf20();    // vtable 0x50
   virtual void vf21();
   virtual void vf22();
   virtual void vf23();
   virtual void vf24();
   virtual void vf25();
   virtual void vf26();
-  virtual void vf27();    // vtable 0x5C
+  virtual void vf27();
+  virtual void vf28();
+  virtual void vf29();
+  virtual void vf30();
+  virtual void vf31();    // vtable 0x5C
 };
 
 extern "C" void fn_8021915C(void *, unsigned int);
