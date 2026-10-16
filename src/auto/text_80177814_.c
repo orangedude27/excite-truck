@@ -3,6 +3,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern unsigned char lbl_8055E45E;
+extern long lbl_80430870;
 extern int lbl_80430590[];
 extern int lbl_80430830[];
 
@@ -161,6 +162,15 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
         }
     }
     return arg0;
+}
+
+void fn_801785A4(void **arg0) {
+    long index = lbl_8055E438;
+    lbl_8055E434[index] = arg0;
+    lbl_8055E438 = index + 1;
+    if (((int (*)(void *))(*(long *)*(void **)arg0 + 0x40))(*arg0) != 0) {
+        fn_801B5318(arg0);
+    }
 }
 
 int fn_80178604(void *arg0) {
