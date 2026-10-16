@@ -108,6 +108,8 @@ extern void fn_8006EB88(void);
 extern u8 fn_8006EB80(void);
 extern u32 lbl_803946C0[];
 extern u8 lbl_80392960[];
+extern char lbl_803140D0[];
+extern char lbl_803140E8[];
 s32 fn_8006DF68(s32 *arg0) {
     s32 val = arg0[-2];
     return val ? val + 8 : 0;
@@ -120,9 +122,49 @@ u8 fn_8006DF84(void *arg0) {
 }
 
 void gki_timers_init(void) {
-    u32 *base = (u32 *)&lbl_803946C0 + 0xC000;  // 0x30000 / 4
-    base[-0x1DFA] = 0;   // 0x28838 / 4 = 0xA27E, so 0xC000 - 0x1DF6 = ... hmm this is getting complex
-    // Let me use byte offsets instead
+    u32 *base = (u32 *)&lbl_803946C0;
+    base[0x28838] = 0;
+    base[0x2883C] = 0;
+    base[0x28840] = 0;
+    base[0x28860] = 0;
+    base[0x28880] = 0;
+    base[0x288A0] = 0;
+    base[0x288C0] = 0;
+    base[0x28844] = 0;
+    base[0x28864] = 0;
+    base[0x28884] = 0;
+    base[0x288A4] = 0;
+    base[0x288C4] = 0;
+    base[0x28848] = 0;
+    base[0x28868] = 0;
+    base[0x28888] = 0;
+    base[0x288A8] = 0;
+    base[0x288C8] = 0;
+    base[0x2884C] = 0;
+    base[0x2886C] = 0;
+    base[0x2888C] = 0;
+    base[0x288AC] = 0;
+    base[0x288CC] = 0;
+    base[0x28850] = 0;
+    base[0x28870] = 0;
+    base[0x28890] = 0;
+    base[0x288B0] = 0;
+    base[0x288D0] = 0;
+    base[0x28854] = 0;
+    base[0x28874] = 0;
+    base[0x28894] = 0;
+    base[0x288B4] = 0;
+    base[0x288D4] = 0;
+    base[0x28858] = 0;
+    base[0x28878] = 0;
+    base[0x28898] = 0;
+    base[0x288B8] = 0;
+    base[0x288D8] = 0;
+    base[0x2885C] = 0;
+    base[0x2887C] = 0;
+    base[0x2889C] = 0;
+    base[0x288BC] = 0;
+    base[0x288DC] = 0;
 }
 
 void fn_8006EACC(void) {
