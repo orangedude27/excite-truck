@@ -133,8 +133,54 @@ void fn_8000F4BC(void) {
     }
 }
 
+void fn_800109E4(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
+    f32 sp8;
+    f32 spC;
+    f32 sp10;
+    f32 sp14;
+    s32 sp18;
+    s32 sp1C;
+
+    sp8 = arg1;
+    spC = arg2;
+    sp10 = arg3;
+    sp14 = arg4;
+    sp18 = arg0;
+    sp1C = arg0;
+    fn_80010B74();
+    fn_80010A50(arg1, arg2, arg3, arg4, arg0, arg0);
+    fn_80010B7C();
+}
+
 void fn_80010B74(void) {
     fn_802C8BD0(-1);
+}
+
+void fn_80010B80(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
+    Unk0x18 *entry;
+    f32 sp8;
+    f32 spC;
+    f32 sp10;
+    f32 sp14;
+    s32 sp18;
+    s32 sp1C;
+
+    sp8 = arg1;
+    spC = arg2;
+    sp10 = arg3;
+    sp14 = arg4;
+    sp18 = arg0;
+    sp1C = arg0;
+    if (lbl_8055D4A8 < 0x100) {
+        entry = &lbl_8034F6B0[lbl_8055D4A8];
+        entry->unk_0x00 = (f32)arg1;
+        entry->unk_0x04 = (f32)arg2;
+        entry->unk_0x08 = (f32)arg3;
+        entry->unk_0x0C = (f32)arg4;
+        entry->unk_0x10 = arg0;
+        entry->unk_0x14 = arg0;
+        lbl_8055D4A8++;
+    }
 }
 
 void fn_80010EF0(void);
