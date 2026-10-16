@@ -167,20 +167,12 @@ extern s32 lbl_8055E3C4;
 extern u64 fn_802E2C9C(void);
 extern s64 __div2i(s64, s64);
 extern u8 lbl_804305C0[];
+#pragma dont_inline on
 s64 fn_80178BBC(s32 *arg0) {
-    s64 r31;
-    s32 r4;
-    s32 r5;
-    s32 r6;
-
-    r5 = arg0[0];
-    r4 = lbl_8055E3C4 - r5;
-    r6 = arg0[3];
-    r5 = arg0[2];
-    r31 = (s64)r5 + (s64)r6 + (s64)r4 * 0x412b;
+    s32 r4 = lbl_8055E3C4 - arg0[0];
+    s64 r31 = *(s64 *)&arg0[2] + (s64)r4 * 0x412b;
     return fn_802E2C9C() - r31;
 }
-
 s32 fn_80178C1C(s32 *arg0) {
     s64 r3;
     s64 r4;
