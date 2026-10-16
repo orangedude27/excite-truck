@@ -683,15 +683,13 @@ s32 fn_801D83BC(void *arg0) {
 }
 
 void *fn_801D83DC(void *arg0, s32 arg1) {
-    s32 result = 0;
-
     if (arg0 != NULL) {
         *(s32 *)((u8 *)arg0 + 4) = 0;
         if (arg1 > 0) {
             fn_80128668();
         }
     }
-    return (void *)result;
+    return arg0;
 }
 
 extern u8 lbl_80339038[];
