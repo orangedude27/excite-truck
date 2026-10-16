@@ -226,6 +226,13 @@ void fn_801795B0(void) {
     fn_801AED68();
 }
 
+void fn_801795D8(void *arg0, int arg1) {
+    ((void **)lbl_80430830)[arg1] = arg0;
+    if (*(int *)((char *)arg0 + 0x1F0) == 0x50) {
+        lbl_80430590[(*(unsigned char *)((char *)arg0 + 0x260) & 3)] = arg1;
+    }
+}
+
 int fn_8017960C(int arg0) {
     if (arg0 < 8) return lbl_80430830[arg0];
     return 0;
