@@ -104,5 +104,7 @@ s32 fn_8023AEE0(void *arg0) {
     return *(s32 *)(*(char **)((char *)arg0 + 0x1C));
 }
 
+void fn_8023B368(void) {}
+
 s32 fn_8023B36C(void) { return 0; }
 
