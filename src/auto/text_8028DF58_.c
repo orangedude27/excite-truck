@@ -155,6 +155,11 @@ int fn_802916F8(void *arg0) { return *(int *)((char *)arg0 + 0x118); }
 #pragma dont_inline on
 void fn_80291700(void) { fn_802916E8(); }
 void fn_80291704(void) { fn_802916EC(); }
+
+void fn_80291708(void *arg0) {
+    *((unsigned char *)arg0 + 0x11C) = 1;
+}
+
 #pragma dont_inline reset
 extern float lbl_8055F738;
 extern unsigned char lbl_8055F73C;
