@@ -23,6 +23,10 @@ u8 fn_8014AEE0(void *arg0) {
     return ((u8 *)arg0)[5];
 }
 
+u8 fn_8014AEE8(void *arg0) {
+    return ((u8 *)arg0)[4];
+}
+
 void fn_8014DE4C(void) {
 
 }
