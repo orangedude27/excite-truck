@@ -141,6 +141,34 @@ extern "C" void fn_8019FF88(void) {
     fn_8019EBC0();
 }
 
+void fn_8019FF8C(void* arg0) {
+    fn_8019F03C();
+    *(f32*)((u8*)arg0 + 0x28) = *(f32*)((u8*)arg0 + 0x54);
+    *(f32*)((u8*)arg0 + 0x2C) = *(f32*)((u8*)arg0 + 0x58);
+    *(f32*)((u8*)arg0 + 0x30) = *(f32*)((u8*)arg0 + 0x5C);
+    *(u8*)((u8*)arg0 + 0x78) = 0;
+}
+
+void fn_8019FFD8(void* arg0, s32 arg1, s32 arg2) {
+    *(s32*)((u8*)arg0 + 0xC) = arg1;
+    *(s32*)((u8*)arg0 + 4) = arg2;
+    *(s32*)((u8*)arg0 + 8) = 0;
+    *(s32*)((u8*)arg0 + 0x18) = 0x47525550;
+    *(f32*)((u8*)arg0 + 0x10) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x14) = lbl_805622D0;
+    *(s32*)((u8*)arg0 + 0x20) = 0x64;
+    *(s32*)((u8*)arg0 + 0x1C) = 0;
+    *(void**)((u8*)arg0) = &lbl_803339B8;
+    *(f32*)((u8*)arg0 + 0x170) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x178) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x16C) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x168) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x164) = lbl_805622D0;
+    *(s32*)((u8*)arg0 + 0x174) = 0;
+    *(s32*)((u8*)arg0 + 0x17C) = 0;
+    *(s32*)((u8*)arg0 + 0x180) = -1;
+}
+
 extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -170,7 +198,7 @@ extern "C" void fn_801A0160(void* arg0) {
     }
 }
 
-void fn_801A01E0(void* arg0, f32* arg1, f32* arg2) {
+void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     f32 temp_f8 = *(f32*)((u8*)arg0 + 0x178);
     void* temp_r3 = *(void**)((u8*)arg0 + 0xC);
     f32 temp_f7 = *(f32*)((u8*)temp_r3 + 0x24);
@@ -179,17 +207,17 @@ void fn_801A01E0(void* arg0, f32* arg1, f32* arg2) {
     f32 temp_f0 = temp_f8 * lbl_805622E0;
     f32 temp_f5 = *(f32*)((u8*)temp_r3 + 0x2C);
     f32 sp8 = temp_f8;
-    arg1[0] = temp_f7 + temp_f2;
-    arg1[1] = temp_f6 + temp_f2;
-    arg1[2] = temp_f5 + temp_f2;
+    *(f32*)arg1 = temp_f7 + temp_f2;
+    *(f32*)((u8*)arg1 + 4) = temp_f6 + temp_f2;
+    *(f32*)((u8*)arg1 + 8) = temp_f5 + temp_f2;
     f32 spC = temp_f8;
     f32 sp10 = temp_f8;
     f32 sp14 = temp_f7;
     f32 sp18 = temp_f6;
     f32 sp1C = temp_f5;
-    arg2[0] = temp_f7 + temp_f0;
-    arg2[1] = temp_f6 + temp_f0;
-    arg2[2] = temp_f5 + temp_f0;
+    *(f32*)arg2 = temp_f7 + temp_f0;
+    *(f32*)((u8*)arg2 + 4) = temp_f6 + temp_f0;
+    *(f32*)((u8*)arg2 + 8) = temp_f5 + temp_f0;
 }
 
 void fn_801A0444(void* arg0, void* arg1) {
