@@ -41,6 +41,11 @@ void* fn_80179300(void) {
     return lbl_8055E458;
 }
 
+extern void *lbl_8055E448;
+void* fn_80179318(void) {
+    return lbl_8055E448;
+}
+
 extern char lbl_8055E45D;
 char fn_801796B4(void) {
     return lbl_8055E45D;
