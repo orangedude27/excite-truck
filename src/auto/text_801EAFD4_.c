@@ -15,6 +15,10 @@ s32 fn_801EB0F0(s32 arg0) {
     return var_r0;
 }
 
+s32 fn_801EB110(void *arg0) {
+    return lbl_804885E8[((u32 *)arg0)[4]];
+}
+
 void fn_801EB6A4(void) {
 
 }
