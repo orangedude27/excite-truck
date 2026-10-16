@@ -25,7 +25,7 @@ int fn_80174314(void) {
     return 8;
 }
 
-void fn_80174794(void **arg0) {
+void fn_80174794(void *arg0) {
     extern float fn_801B306C(void);
     extern int fn_800216D0(void);
     extern int fn_801EA994(void);
@@ -38,11 +38,29 @@ void fn_80174794(void **arg0) {
         count = fn_801EA994();
         for (i = 0; i < count; i++) {
             if (i != fn_801E866C(-1) &&
-                (*(int (**)(void **, int))((char *)*arg0 + 0x20))(arg0, i) != 0) {
+                (*(int (***)(void *, int))arg0)[8](arg0, i)) {
                 fn_8017248C(i);
             }
         }
     }
+}
+
+int fn_801757B0(void) { return 1; }
+
+extern void *fn_8017960C(int);
+extern float lbl_80561AF0;
+extern float lbl_80561AF4;
+int fn_80175A68(float *arg0, float *arg1, int arg2, int *arg3) {
+    float *p = (float *)fn_8017960C(arg2);
+    float scale = lbl_80561AF0;
+    float x = p[0x54 / 4] * scale + p[0x60 / 4];
+    float y = p[0x5C / 4] * scale + p[0x68 / 4];
+    float z = p[0x58 / 4] * scale + p[0x64 / 4];
+    arg0[0] = x;
+    arg0[1] = y;
+    *arg3 = 0x21F;
+    *arg1 = lbl_80561AF4;
+    return 1;
 }
 
 void fn_80176400(void) {
