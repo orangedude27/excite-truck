@@ -96,8 +96,39 @@ void fn_802982C0(void *arg0) {
     } while (var_r30 < 4);
 }
 
+extern "C" void fn_8029BEF8(void);
+extern "C" int fn_801EEFDC(void*, int);
+extern "C" int fn_8029C190(void*);
+extern "C" void fn_80288208(int);
+extern "C" int fn_80287B14(void);
+extern "C" int fn_8029AEE8(void*);
+extern "C" int fn_8029AF24(int);
 extern "C" void fn_8029BDB8(void *arg0) {
     *(int *)((char *)arg0 + 0xA4) = 0;
+}
+
+extern "C" void fn_80288A58(void*, float*);
+extern "C" void fn_8029BEF8(void);
+extern "C" int fn_801EEFDC(void*, int);
+extern "C" int fn_8029C190(void*);
+extern "C" void fn_80288208(int);
+extern "C" int fn_80287B14(void);
+extern "C" int fn_8029AEE8(void*);
+extern "C" void fn_8029BDC4(void* arg0) {
+    float values[3];
+    int i = 0;
+    char* entry = (char*)arg0 + 4;
+    values[0] = lbl_8056459C;
+    values[1] = lbl_8056459C;
+    values[2] = lbl_8056459C;
+    do {
+        if (*(unsigned char*)(entry + 0x10)) {
+            fn_80288A58(entry, values);
+            fn_8028E584(*(void**)arg0, entry, values, 0.0f);
+        }
+        entry += 0x14;
+        i++;
+    } while (i < *(int*)((char*)arg0 + 0xA4));
 }
 
 extern "C" void fn_8029A890(void*, void*);
@@ -148,7 +179,8 @@ int fn_8029BFF8(void* arg0) {
 
 extern void* lbl_8055F7D4;
 extern "C" int fn_8029C024(int *arg0) {
-    fn_8029A890(lbl_8055F7D4, (void *)*arg0);
+    void *value = (void *)*arg0;
+    fn_8029A890(lbl_8055F7D4, value);
     return 4;
 }
 
