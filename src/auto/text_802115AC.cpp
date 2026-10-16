@@ -490,8 +490,8 @@ extern "C" s32 fn_80215730(void *arg0) {
     return fn_802C4F14(*(s32*)((u8*)arg0 + 4));
 }
 
-void fn_802C2FC4(int);
-void fn_80128668(void *);
+  void fn_802C2FC4(int);
+  s32 fn_80128668(void *);
 void fn_802C40E8(int, int, int);
 void fn_802C4F2C(int, int *, int *);
 int fn_802C4EE4(int);
