@@ -1179,3 +1179,6 @@ extern "C" s32 fn_80229C9C(s32);
 extern "C" void fn_80229CB4(void *);
 extern "C" void fn_80229CD8(void *);
 extern void fn_80219044(void *);
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
+extern "C" void *lbl_8033F0FC;
