@@ -39,20 +39,16 @@ void fn_80264484(void *arg0) {
     extern void *fn_801284F8(unsigned int, void *);
     extern char lbl_803464A8[];
     extern char lbl_803464F8[];
-    #pragma push
-    #pragma small_data off
     extern struct {
         void **items;
         int count;
     } lbl_80498F78;
-    #pragma pop
     void *result = fn_801284F8(0x18, lbl_803464A8);
     if (result != 0) {
         *(int *)((char *)result + 0x14) = 0;
         *(void **)result = lbl_803464F8;
     }
-    lbl_80498F78.items[lbl_80498F78.count] = result;
-    lbl_80498F78.count++;
+    lbl_80498F78.items[lbl_80498F78.count++] = result;
     *(int *)arg0 = 0;
     fn_80264098(arg0, 5);
     *(void **)((char *)arg0 + 8) = result;
@@ -89,6 +85,13 @@ float fn_80264588(void) {
 extern void *lbl_8055F448;
 void* fn_80264A54(void) {
     return lbl_8055F448;
+}
+
+extern char lbl_80346558[];
+extern float lbl_80563BF0;
+extern float lbl_8055C454;
+void fn_80265598(void *arg0) {
+    lbl_8055C454 = *(float *)((char *)arg0 + 0x1C);
 }
 
 typedef float f32;
