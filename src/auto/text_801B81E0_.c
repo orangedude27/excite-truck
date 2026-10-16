@@ -87,16 +87,19 @@ void fn_801B898C(void) {
     vtable[28](obj);
 }
 
+extern int fn_80128668(void);
+extern void* lbl_8055E744;
+void fn_801B89A0(void) {
+    (*(void (***)())lbl_8055E744)[29]();
+}
+
 void fn_801B89B4(void) {
-    register void* obj = lbl_8055E744;
-    register void (**vtable)(void*) = *(void (***)(void*))obj;
-    vtable[30](obj);
+    (*(void (***)(void))lbl_8055E744)[30]();
 }
 
 void fn_801B89C8(void* arg0) {
-    register void* obj = lbl_8055E744;
-    register void (**vtable)(void*, void*) = *(void (***)(void*, void*))obj;
-    vtable[31](obj, arg0);
+    register void (**vtable)(void*, void*) = *(void (***)(void*, void*))lbl_8055E744;
+    vtable[31](lbl_8055E744, arg0);
 }
 
 int fn_801B89E0(void) {
@@ -136,6 +139,13 @@ void fn_801B8A7C(void *arg0, int arg1) {
 void fn_801B8A84(void) {
     extern void fn_8013C9F4(int);
     fn_8013C9F4(0);
+}
+
+int fn_801B8A8C(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
 }
 
 int fn_801B8ACC(void) { return 1; }
