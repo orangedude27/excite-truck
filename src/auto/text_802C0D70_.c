@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef signed long s32;
+
 extern char lbl_8055FB18[4];
 extern void fn_802C0FD4(int *queue);
 void fn_802C1018(void) {
@@ -25,15 +27,19 @@ extern float lbl_80564E38;
 extern float lbl_80564E48;
 void fn_802C1020(void) {
     float sp[12];
-    float *obj;
-    int i;
 
-    if (*(int *)lbl_8055FB14 != -1) {
-        obj = fn_802C86DC(lbl_80564E48);
-        for (i = 0; i < 12; i++) {
-            sp[i] = obj[i];
-        }
-        fn_802C744C(*(int *)lbl_8055FB14, sp);
+    if (*(int *)&lbl_8055FB14 != -1) {
+        sp[0] = lbl_80564E38;
+        sp[1] = lbl_80564E48;
+        sp[2] = lbl_80564E38;
+        sp[3] = lbl_80564E38;
+        sp[4] = lbl_80564E48;
+        sp[5] = lbl_80564E38;
+        sp[6] = lbl_80564E38;
+        sp[7] = lbl_80564E38;
+        sp[8] = lbl_80564E48;
+        fn_802C86DC(lbl_80564E48);
+        fn_802C744C(*(int *)&lbl_8055FB14, sp);
     }
     fn_802A4E08();
     fn_8029231C(lbl_804C0800);
@@ -45,6 +51,6 @@ void fn_802C10B8(void) {
 }
 
 void fn_802C10C4(void) {
-    fn_802C1018();
+    *(int *)&lbl_8055FB18 = -1;
 }
 
