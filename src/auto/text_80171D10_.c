@@ -49,10 +49,19 @@ int fn_801757B0(void) { return 1; }
 
 int fn_801758B8(void *arg0) { return *(int *)((char *)arg0 + 0x1AC) == 2; }
 
+int fn_80175A38(void *arg0, float *arg1, float *arg2, int arg3, int arg4, int *arg5) {
+    char *p = (char *)arg0 + arg3 * 0x24;
+    *arg5 = 0x21F;
+    arg1[0] = *(float *)(p + 0x18);
+    arg1[1] = *(float *)(p + 0x1C);
+    *arg2 = *(float *)(p + 0x20);
+    return 1;
+}
+
 extern void *fn_8017960C(int);
 extern float lbl_80561AF0;
 extern float lbl_80561AF4;
-int fn_80175A68(float *arg0, float *arg1, int arg2, int *arg3) {
+int fn_80175A68(void *unused, float *arg0, float *arg1, int arg2, void *unused2, int *arg3) {
     float *p = (float *)fn_8017960C(arg2);
     float scale = lbl_80561AF0;
     float x = p[0x54 / 4] * scale + p[0x60 / 4];
@@ -64,6 +73,8 @@ int fn_80175A68(float *arg0, float *arg1, int arg2, int *arg3) {
     *arg1 = lbl_80561AF4;
     return 1;
 }
+
+int fn_80176030(void) { return 0; }
 
 void fn_80176400(void) {
 }
