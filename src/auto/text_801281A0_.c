@@ -144,6 +144,15 @@ const char* __AXGetStudio_80129164(void) {
     return lbl_8032A068;
 }
 
+s32 fn_80129170(void *arg0, u32 arg1) {
+    u32 end = ((u32 *)arg0)[1];
+    s32 result = 0;
+    if (arg1 >= end && arg1 < end + ((u32 *)arg0)[3]) {
+        result = 1;
+    }
+    return result;
+}
+
 s32 fn_8012919C(void *arg0) { return ((s32 *)arg0)[2]; }
 
 s32 fn_801291A4(void *arg0) { return ((s32 *)arg0)[3] - ((s32 *)arg0)[2]; }
