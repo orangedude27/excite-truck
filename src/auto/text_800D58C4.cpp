@@ -3,11 +3,10 @@
 #include <types.h>
 
 extern "C" void fn_800D7F58(void *arg0, void *arg1) {
-    f32 vals[2];
-    vals[0] = ((f32 *)arg1)[0];
-    vals[1] = ((f32 *)arg1)[1];
-    ((f32 *)arg0)[0] = vals[0];
-    ((f32 *)arg0)[1] = vals[1];
+    f32 v0 = ((f32 *)arg1)[0];
+    f32 v1 = ((f32 *)arg1)[1];
+    ((f32 *)arg0)[0] = v0;
+    ((f32 *)arg0)[1] = v1;
 }
 
 extern "C" void fn_800D7F6C(s32 *arg0) {
