@@ -2,6 +2,10 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 int fn_801AE618(int arg0);
+int fn_801AE600(int arg0) {
+    return arg0 == 0x50;
+}
+
 int fn_801AE610(void) {
     return 0;
 }
