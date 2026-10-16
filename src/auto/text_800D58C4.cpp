@@ -5,6 +5,26 @@
 
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
+    extern f32 lbl_80560E78;
+    extern f32 lbl_80560E7C;
+    extern void* lbl_8031F618;
+    extern void memset(void*, int, unsigned int);
+    extern void PSMTXIdentity(void*);
+    u8* p = (u8*)arg0;
+    *(void**)p = &lbl_8031F618;
+    *(f32*)(p + 0x34) = lbl_80560E78;
+    *(f32*)(p + 0x38) = lbl_80560E78;
+    *(f32*)(p + 0x3C) = lbl_80560E78;
+    *(f32*)(p + 0x40) = lbl_80560E78;
+    *(f32*)(p + 0x44) = lbl_80560E7C;
+    *(f32*)(p + 0x48) = lbl_80560E7C;
+    *(f32*)(p + 0x4C) = lbl_80560E7C;
+    memset(p + 0x50, 0, 1);
+    PSMTXIdentity(p + 4);
+    return arg0;
+}
+
 extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
     extern s32 fn_80128668(void);
     if (arg0 != 0 && arg1 > 0) fn_80128668();
@@ -59,9 +79,8 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D7F58(void *arg0, void *arg1) {
-    volatile f32 *src = (volatile f32 *)arg1;
-    f32 v1 = src[1];
-    f32 v0 = src[0];
+    f32 v1 = ((f32 *)arg1)[1];
+    f32 v0 = ((f32 *)arg1)[0];
     ((f32 *)arg0)[0] = v0;
     ((f32 *)arg0)[1] = v1;
 }
@@ -109,6 +128,10 @@ extern "C" s32 fn_800D8738(u32 *arg0) {
 
 extern "C" s32 fn_800D8744(u32 *arg0) {
     return (*arg0 >> 25) & 1;
+}
+
+extern "C" u32 fn_800D8750(u32 *arg0) {
+    return (*arg0 >> 27) & 1;
 }
 
 extern "C" s32 fn_800D8780(u32 *arg0) {
@@ -230,6 +253,24 @@ extern "C" s32 fn_800D9364(void *arg0) {
     u32 x = *p;
     s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
     return ((x >> 0x12) & 0x3C) + ((x >> 0x17) & 0x1E0) + y + (((x >> 0x18) & 0xF) * 0x14);
+}
+
+extern "C" void fn_800DB084(void* arg0) {
+    void* vtable = *(void**)arg0;
+    (*(void (**)(void*, int))((u8*)vtable + 0x14))(arg0, 0);
+}
+
+extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void* arg0, void* arg1) {
+    extern const char lbl_8031FF54[];
+    extern const char lbl_8031FF30[];
+    void* sp8 = (u8*)arg0 + 0x1C;
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8*)arg0 + 0x18, &sp8, arg1);
+}
+
+extern "C" void fn_800DB1E8(void* arg0, void* unused, s32 arg2) {
+    void* temp = (*(void* (**)(void*))(*(u32*)arg0 + 0x20))(arg0);
+    if (temp != 0) *(u8*)((u8*)temp + 0xE) = (u8)!arg2;
 }
 
 extern "C" s32 fn_80128668();
