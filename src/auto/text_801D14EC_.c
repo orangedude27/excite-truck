@@ -48,6 +48,17 @@ void fn_801D1B48(void) {
     }
 }
 
+void fn_801D1810(int, int);
+void fn_801D1BA4(void) {
+    int offset = 0;
+    int i = 0;
+    while (i < lbl_8055E8F8) {
+        fn_801D1810(lbl_8055E918 + offset, i);
+        offset += 0x9c;
+        i++;
+    }
+}
+
 void fn_801D1C10(void) {
     int count = lbl_8055E8F8;
     fn_8012850C(count * 0x9c + 0x10, &lbl_8055ABD8);
