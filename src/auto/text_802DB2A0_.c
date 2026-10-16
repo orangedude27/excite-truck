@@ -9,6 +9,10 @@ void fn_802DB2A0(void) {
 void fn_802DB2A4(void) {
 }
 
+s32 fn_802DB2A8(void) {
+    return 0;
+}
+
 void fn_802DB2B0(void) {
 }
 
