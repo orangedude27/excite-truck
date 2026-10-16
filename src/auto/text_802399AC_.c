@@ -124,6 +124,11 @@ s32 fn_8023A6F4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_8023A734(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 extern s32 fn_80128670(s32);
 extern s32 lbl_8034109C;
 void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
