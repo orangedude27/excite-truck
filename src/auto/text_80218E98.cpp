@@ -73,7 +73,7 @@ extern "C" void fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, f32);
 extern "C" s32 fn_8012850C(void *, const char *);
 extern "C" void *memcpy(void *, const void *, unsigned long);
 extern "C" char *strcpy(char *, const char *);
-extern "C" void fn_80219568(void *, s32, s32, s32, s32, s32, s32, s32);
+extern "C" void *fn_80219568(void *, s32, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_80219718(void *);
 extern "C" void fn_80219440(void *, s32, void *, s32);
 extern f32 lbl_805634A4;
