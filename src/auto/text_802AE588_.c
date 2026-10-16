@@ -27,6 +27,34 @@ loop:
     *(int *)lbl_8055F984 = fn_8012850C(total * 2, &lbl_8055CD7C);
 }
 
+extern void fn_802AE64C(void *);
+extern void fn_802C9950(int);
+extern void fn_802C9994(int);
+extern void fn_802C10C4(void);
+extern char fn_802B05E4(void);
+extern void fn_802BF40C(void);
+extern void fn_802C2410(void);
+extern void fn_802BDC60(void);
+extern void fn_802B9D08(void);
+extern void fn_802C2A34(void);
+extern void fn_802B5808(void);
+extern void fn_802C217C(void);
+extern void fn_802B1FD4(void);
+extern void fn_802C2874(void);
+extern void fn_802B0954(void);
+extern void fn_802B4BDC(void);
+extern void fn_802BBCC4(void);
+extern void fn_802BE840(void);
+extern void fn_802C10B8(void);
+extern int fn_802E2C20();
+extern void fn_802BEB70(void);
+extern int fn_802E30C8(char *, char *, ...);
+extern void fn_802AE774(void);
+extern int lbl_8055F970;
+extern char lbl_8034A048[];
+extern char lbl_8034A064[];
+void fn_802AE644(void) { fn_802AE64C(lbl_8055F984); }
+
 void fn_802AE64C(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
