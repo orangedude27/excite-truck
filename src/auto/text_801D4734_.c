@@ -108,6 +108,15 @@ s32 fn_801D67E0(void *arg0) {
     return ((s32 *)arg0)[1];
 }
 
+s32 fn_801D67E8(void *arg0) {
+    if (*(s32 *)((u8 *)arg0 + 4) == 1) {
+        *(s32 *)((u8 *)arg0 + 0x10) = lbl_8055E3C4;
+        *(s32 *)((u8 *)arg0 + 4) = 2;
+        return 1;
+    }
+    return 0;
+}
+
 void fn_801E9DC4(void *);
 void fn_801796CC(s32, void *, s32);
 void fn_801D6814(void *arg0) {
