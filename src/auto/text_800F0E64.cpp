@@ -458,10 +458,23 @@ extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void)
     }
 }
 
+extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
+    void *node = *(void **)((u8 *)&lbl_8041506C + 4);
+    void *end = (u8 *)&lbl_8041506C + 4;
+    while (node != end) {
+        void *player = node;
+        node = *(void **)node;
+        if (player == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326B8C, 0x23D, lbl_80326B68);
+        void **vtable = *(void ***)((u8 *)player - 8);
+        ((void (*)(void *))*(void **)((u8 *)vtable + 0x10))((u8 *)player - 8);
+    }
+    if (lbl_8041506C != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x2EE, lbl_8032687C);
+}
+
 extern "C" void fn_800FC5B8(void *arg0, f32 value) {
-    OSDisableInterrupts();
+    u32 token = OSDisableInterrupts();
     *(f32 *)((u8 *)arg0 + 0x45C) = value;
-    OSRestoreInterrupts(0);
+    OSRestoreInterrupts(token);
 }
 
 extern "C" f32 fn_800FC5F8(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x45C); }
