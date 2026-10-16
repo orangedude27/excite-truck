@@ -15,6 +15,10 @@ extern Unk8016A0AC lbl_80430340;
 void fn_8016A0AC(void) {
 }
 
+void fn_8016A0B0(void* alarm) {
+    fn_8016AC90(fn_8016A8F8(alarm));
+}
+
 void fn_8016A68C(void* arg0) {
     fn_8016B634(fn_8016B598(arg0));
 }
