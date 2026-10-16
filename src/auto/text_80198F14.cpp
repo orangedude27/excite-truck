@@ -586,3 +586,5 @@ extern "C" void fn_801A51D4(void* arg0, s32 arg1) {
 extern void fn_8019ECC4(void);
 extern void* lbl_80333968;
 extern f32 lbl_80562370;
+typedef void (*VFunc)(void*);
+typedef void (*VFuncArg)(void*, s32);
