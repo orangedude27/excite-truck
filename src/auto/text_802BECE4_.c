@@ -25,3 +25,8 @@ void *fn_802C0CB0(void *arg0, int arg1) {
     }
     return arg0;
 }
+
+int fn_802C0D24(void *arg0) {
+    return *(int *)((char *)arg0 + 4);
+}
+
