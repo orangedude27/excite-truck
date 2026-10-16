@@ -51,6 +51,10 @@ extern "C" void fn_800D87A4(GXColor *arg0, const GXColor *arg1) {
     *arg0 = *arg1;
 }
 
+extern "C" void fn_800D87D4(GXColor *arg0, const GXColor *arg1) {
+    *arg0 = *arg1;
+}
+
 extern "C" s32 fn_800D893C(void *arg0) {
     return ((u32)*(u32*)((u8*)arg0 + 0x4C) >> 6U) & 1;
 }
