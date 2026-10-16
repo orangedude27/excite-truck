@@ -42,6 +42,13 @@ void fn_80260814(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1D) = 0;
 }
 
+void fn_80260820(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x1C) == 0) {
+        *(u8 *)((u8 *)arg0 + 0x1E) = 1;
+        *(u8 *)((u8 *)arg0 + 0x1C) = 1;
+    }
+}
+
 void fn_8026083C(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x1C) = 0;
 }
@@ -117,12 +124,12 @@ void fn_80261688(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 s32 fn_80261948(s32 *arg0) {
     s32 *p = lbl_802FA6A8;
-    s32 b = *p++;
     s32 a = *p++;
+    s32 b = *p++;
     s32 c = *p;
     s32 values[3];
-    values[0] = b;
-    values[1] = a;
+    values[0] = a;
+    values[1] = b;
     values[2] = c;
     return values[*arg0];
 }
