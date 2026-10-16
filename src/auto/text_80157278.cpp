@@ -150,6 +150,7 @@ public:
 };
 
 extern "C" s32 fn_80128668(void*);
+extern "C" s32 stricmp(const char *, const char *);
 extern "C" void fn_801CB750(s32, s32);
 extern "C" s32 fn_80179650();
 extern "C" s32 fn_801CF064();
