@@ -13,6 +13,11 @@ void fn_801B2ED0(void) {
     fn_801B2EC0();
 }
 
+extern void *lbl_8055E680;
+void* fn_801B2ED4(void) {
+    return lbl_8055E680;
+}
+
 void* fn_801B2F24(void) {
     return lbl_8055E678;
 }
