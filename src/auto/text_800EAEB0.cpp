@@ -152,6 +152,25 @@ extern "C" void fn_800ECEE8(void* arg0) {
     *(s32*)((u8*)arg0 + 0x1C) = 0;
 }
 
+extern u8 lbl_803231C0[];
+extern "C" void fn_800ECF54(void *arg0, s32 arg1, s32 arg2) {
+    switch (arg2) {
+    case 0:
+        *(s32 *)((u8 *)arg0 + 0x1C) = arg1;
+        break;
+    case 1:
+        *(s32 *)((u8 *)arg0 + 0x1C) += arg1;
+        break;
+    case 2:
+        *(s32 *)((u8 *)arg0 + 0x1C) =
+            *(s32 *)((u8 *)arg0 + 0x18) - arg1;
+        break;
+    default:
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803230E8, 0xEC,
+                                     (const char *)lbl_803231C0);
+    }
+}
+
 extern "C" u32 fn_800ECFC0(void) { return 1; }
 
 extern "C" u32 fn_800ECFC8(void) { return 1; }
