@@ -20,6 +20,11 @@ extern "C" void fn_80141454(void) {
 
 }
 
+extern "C" void fn_80141C84(void *arg0, s32 arg1) {
+    u8 *p = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
+    *(s32 *)(p + 0x88) = *(s32 *)(p + 0x10C);
+}
+
 extern "C" double floor(double);
 extern "C" f32 lbl_805614AC;
 extern "C" f32 fn_80141C9C(f32 arg0) {
