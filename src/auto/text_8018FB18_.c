@@ -224,6 +224,16 @@ void fn_80192F80(void *arg0) {
 
 int fn_80193010(void) { return 0x20; }
 
+void fn_80193018(void *arg0, void *arg1) {
+    *(float *)((char *)arg0 + 0x10) += *(float *)((char *)arg1 + 0);
+    *(float *)((char *)arg0 + 0x14) += *(float *)((char *)arg1 + 4);
+    *(float *)((char *)arg0 + 0x18) += *(float *)((char *)arg1 + 8);
+}
+
+void fn_8019304C(void *arg0) {
+    *(float *)((char *)arg0 + 0x40) = lbl_8056208C;
+}
+
 void fn_80193058(void) {
 }
 
