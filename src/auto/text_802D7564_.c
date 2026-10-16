@@ -1,7 +1,17 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void *lbl_8055FE28;
 extern void *lbl_8055FE18;
+extern void fn_802D7564(void);
+extern void fn_802E30C8(const char *, ...);
+extern void fn_802E317C(const char *, ...);
+extern char lbl_8034C460[];
+extern char lbl_8034C47C[];
+extern char lbl_8034C494[];
+extern unsigned short GXGetTexObjWrapS(void *);
+extern unsigned short GXGetTexObjWrapT(void *);
+extern void *memset(void *, int, unsigned int);
 extern char lbl_8055D118[4];
 extern void *fn_802D7600(void *queue);
 void fn_802D9154(void) {
