@@ -54,9 +54,17 @@ void fn_801F1EEC(void) {
 #pragma small_data off
 #pragma pop
 void fn_801F1F84(void) {
- void *p=fn_801284F8(0xC,&lbl_8033A644);
- if(p){*(void**)p=&lbl_8033A868;*(float*)((char*)p+8)=lbl_80562F40;*(char*)((char*)p+4)=0;}
+    void *p = fn_801284F8(0xC, &lbl_8033A644);
+    if (p != 0) {
+        float f = lbl_80562F40;
+        *(void **)p = &lbl_8033A868;
+        *(float *)((char *)p + 8) = f;
+        *(char *)((char *)p + 4) = 0;
+    }
 }
+#pragma push
+#pragma small_data off
+#pragma pop
 void fn_801F224C(void) {
     void *p = fn_801284F8(8, &lbl_8033A6A0);
     if (p != 0) {
@@ -75,6 +83,13 @@ int fn_801F22D4(int arg0, int arg1) {
 }
 
 int fn_801F2314(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
+#pragma push
+#pragma small_data off
+int fn_801F2354(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
 }
