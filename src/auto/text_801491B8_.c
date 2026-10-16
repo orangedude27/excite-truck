@@ -333,6 +333,8 @@ unsigned char fn_8014C810(unsigned char arg0) { return arg0; }
 
 unsigned char fn_8014C818(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
 
+unsigned char fn_8014C820(unsigned int arg0) { return (unsigned char)(arg0 >> 16); }
+
 s32 fn_8014C830(s32 arg0) { return arg0 + 0x14; }
 
 s32 fn_8014C848(void *arg0) {
