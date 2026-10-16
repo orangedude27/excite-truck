@@ -6,6 +6,14 @@ extern void fn_8001D9B4(void *);
 extern void *fn_8001285C(int);
 extern int lbl_80347DE8;
 extern int fn_80007F90(int);
+extern int lbl_8055C784;
+extern int lbl_8055C77C;
+extern int lbl_8055C774;
+extern int fn_80012820(int);
+extern void fn_80008188(int);
+extern void fn_8000DBC8(void *);
+extern void fn_8027D96C(void);
+extern void fn_8027D9A4(int, int);
 void fn_8027D7B8(void *arg0) {
     int id = *(int *)((char *)arg0 + 0xC);
     void *res = fn_8001285C(id);
@@ -106,6 +114,20 @@ void fn_8027D9A4(int arg0, int arg1) {
         return;
     fn_802E30C8(lbl_80347DF8, arg0);
     memset((char *)&lbl_804B2FD8 + arg0 * 8, 0, 8);
+}
+
+extern int lbl_8055C784;
+extern int lbl_8055C77C;
+extern int lbl_8055C774;
+extern int fn_80012820(int);
+extern void fn_80008188(int);
+extern void fn_802E6BD8(int, int, void *, int, void *);
+extern void fn_8000DBC8(void *);
+extern void fn_8027D96C(void);
+extern void fn_8027D9A4(int, int);
+void fn_8027DAF4(void) {
+    fn_802E6BD8(0x50435252, 1, &lbl_804B2FD8, 0x20, fn_8027D96C);
+    fn_8000DBC8(fn_8027D9A4);
 }
 
 void fn_8027DE6C(void) {
