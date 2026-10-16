@@ -58,6 +58,13 @@ extern "C" void fn_800E9B20(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x94) = arg1;
 }
 
+extern "C" void fn_800E9B74(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    *(int *)((char *)arg0 + 0x18) = arg1;
+    *(int *)((char *)arg0 + 0x1C) = arg2;
+    *(int *)((char *)arg0 + 0x20) = arg3;
+    *(int *)((char *)arg0 + 0x24) = arg4;
+}
+
 extern "C" int fn_800E9B88(void *arg0) {
     return *(int *)((char *)arg0 + 8) != 0;
 }
