@@ -73,3 +73,5 @@ u8* fn_8016B4FC(u8* arg0, s32 arg1) { if(arg0) { *arg0=0; if(arg1>0) fn_80128668
 
 void fn_8016B544(u8* arg0) { *arg0 = 0; }
 
+void* fn_8016B550(void* arg0, s32 arg1) { if(arg0) { *(u8*)arg0=0; if(arg1>0) fn_80128668(arg0); } return arg0; }
+
