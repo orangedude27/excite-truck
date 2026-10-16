@@ -130,12 +130,48 @@ s32 fn_801321BC(void* arg0) {
     return ((s32(*)(int(*)(const char*)))vtable[5])(atoi);
 }
 
+u64 fn_80132A48(void *arg0, s32 arg1, void *arg2) {
+    u64 result;
+    if (((s32 (**)(void *))(*(void **)arg0))[3](arg0) != 0) {
+        result = ((u64 (**)(void *, s32))(*(void **)arg0))[15](arg0, arg1);
+    } else {
+        result = *(u64 *)arg2;
+    }
+    return result;
+}
+
 s32 fn_80132C48(void) { return 0; }
 
 s32 fn_80132C50(void* arg0, s32 arg1) {
     if (arg1 < *(s32*)((char*)arg0 + 8))
         return (s32)(*(char**)((char*)arg0 + 0xC) + arg1 * 0x1C);
     return 0;
+}
+
+s32 fn_80132D1C(void *arg0, char *arg1) {
+    s32 i = 0;
+    s32 offset = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 4)) {
+        char *s = *(char **)((u8 *)arg0 + 0xC) + offset;
+        if (stricmp(*(char **)(s + 4), arg1) == 0)
+            return 1;
+        offset += 0x1C;
+        i++;
+    }
+    return 0;
+}
+
+s32 fn_80132DA8(void *arg0) {
+    s32 offset = 0;
+    s32 i = 0;
+    s32 sum = 0xFEEDFACE;
+    while (i < *(s32 *)((u8 *)arg0 + 4)) {
+        char *item = (char *)*(void **)((u8 *)arg0 + 0xC) + offset;
+        sum += ((s32 (*)(void *))(*(void **)(item + 0x64)))(item) + 0x123B;
+        offset += 0x1C;
+        i++;
+    }
+    return sum;
 }
 
 s32 fn_80132E34(s32 arg0, s32 arg1) {
@@ -147,4 +183,8 @@ s32 fn_80132E34(s32 arg0, s32 arg1) {
 
 extern void fn_802E317C(const char*, ...);
 extern char lbl_8032B73C;
+extern char lbl_80559B10[], lbl_80559B18[], lbl_80559B1C[];
+extern char lbl_8032B7BC[];
+extern double atof();
+extern int sscanf(const char*, ...);
 typedef struct { void** vtable; } Unk80132BD0;
