@@ -146,11 +146,10 @@ void fn_800D2FC8(void) {
     DCStoreRange((void *)lbl_80407BD8[0], lbl_80407BD8[1]);
 }
 
-s32 fn_800D3824(void) {
+extern "C" s32 fn_800D3824(void) {
     s32 val = lbl_8055DDD4;
-    s32 tmp = -val;
-    tmp |= val;
-    return tmp >> 31;
+    u32 tmp = (u32)(-val) | (u32)val;
+    return (s32)(tmp >> 31);
 }
 extern "C" u8 fn_800D3838(u8 *arg0) {
     return *arg0;
