@@ -43,6 +43,23 @@ void fn_8014E7D8(void) {
 
 }
 
+extern s32 fn_80128668(void);
+s32 *fn_801500F8(void *arg0, s32 *arg1) {
+    s32 index = ((s32 *)arg0)[1];
+    s32 value = *arg1;
+    s32 *data = *(s32 **)arg0;
+    ((s32 *)arg0)[1] = index + 1;
+    data[index] = value;
+    return &data[index];
+}
+
+s32 fn_80150AD8(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_80151688(void) {
 
 }
