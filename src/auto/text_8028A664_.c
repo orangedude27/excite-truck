@@ -65,7 +65,7 @@ void *fn_8028C8C0(void *arg0, s32 arg1) {
         fn_802CAC54(((s32 *)arg0)[3]);
         temp = *(s32 *)arg0;
         if (temp != 0) fn_80128670(temp - 0x10);
-        if (arg1 > 0) fn_80128668();
+        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
