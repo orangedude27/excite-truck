@@ -208,11 +208,69 @@ extern "C" void fn_800E402C(void *arg0) {
     ((void (*)(void))OSRestoreInterrupts)();
 }
 
+extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
+    unsigned int level = OSDisableInterrupts();
+    void **iterator = *(void ***)((char *)this_ + 0x18);
+    while (iterator != (void **)((char *)this_ + 0x18)) {
+        if (*iterator == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+        }
+        fn_800E4764((char *)*iterator - 0x1A8);
+        iterator = *(void ***)*iterator;
+    }
+    OSRestoreInterrupts(level);
+}
+
+extern "C" void __ct__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_) {
+    ((unsigned long *)this_)[0x00 / 4] = 0;
+    ((unsigned long *)this_)[0x04 / 4] = 0;
+    ((unsigned long *)this_)[0x08 / 4] = (unsigned long)&lbl_80322498;
+    ((unsigned long *)this_)[0x10C / 4] = 0;
+    ((u8 *)this_)[0x11C] = 0;
+    ((u8 *)this_)[0x11D] = 0;
+    ((u8 *)this_)[0x11E] = 0;
+    ((u8 *)this_)[0x11F] = 0;
+    ((u8 *)this_)[0x121] = 0;
+    ((u8 *)this_)[0x122] = 0;
+    ((u8 *)this_)[0x123] = 0;
+    ((unsigned long *)this_)[0x1A8 / 4] = 0;
+    ((unsigned long *)this_)[0x1AC / 4] = 0;
+    ((unsigned long *)this_)[0x0C / 4] = 0;
+    ((unsigned long *)this_)[0x10 / 4] = 0;
+    ((unsigned long *)this_)[0x14 / 4] = 0;
+    ((unsigned long *)this_)[0x18 / 4] = 0;
+    ((unsigned long *)this_)[0x1C / 4] = 0;
+    ((unsigned long *)this_)[0x20 / 4] = 0;
+    ((unsigned long *)this_)[0x24 / 4] = 0;
+    ((unsigned long *)this_)[0x28 / 4] = 0;
+}
+
 extern "C" int fn_800E4520(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
+    if (this_ != 0) {
+        *(void **)((char *)this_ + 8) = (void *)&lbl_80322498;
+        int *outer = (int *)this_;
+        for (int i = 0; i < 2; i++) {
+            int *inner = (int *)(outer + 1);
+            for (int j = 0; j < 4; j++) {
+                if (*inner != 0) {
+                    TRKGetFreeBuffer(inner);
+                }
+                inner++;
+            }
+            outer += 4;
+        }
+        if (arg1 > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
 }
 
 extern "C" void fn_800E5A8C(void) {
