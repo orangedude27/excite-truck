@@ -17,6 +17,15 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D130C(long arg0, long arg1) {
     return arg0;
 }
 
+extern int lbl_8055E908;
+extern int fn_80128670(int);
+void fn_801D1364(void) {
+    if (lbl_8055E908 != 0) {
+        fn_80128670(lbl_8055E908 - 0x10);
+    }
+    lbl_8055E908 = 0;
+}
+
 void fn_801D139C(void) {
 
 }
