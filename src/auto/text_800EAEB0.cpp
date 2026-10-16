@@ -273,6 +273,10 @@ s32 fn_800ED0F4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" f32 fn_800EF9F8(void* arg0) {
+    return *(f32*)((u8*)arg0 + 0x40);
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
