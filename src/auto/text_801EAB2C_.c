@@ -41,6 +41,10 @@ void* __dt__Q28PSSystem7SeqHeapFv_801EACF8(void* this_, s32 flag) {
     return this_;
 }
 
+void fn_801EAD5C(void* arg0) {
+    fn_802C744C(*(s32*)((u8*)arg0 + 0x3C), (u8*)arg0 + 4);
+}
+
 s32 fn_801EAF20(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
