@@ -7,6 +7,8 @@ extern void *lbl_8055E678;
 extern u8 lbl_8055E6A0;
 extern f32 lbl_8055E6A4;
 extern s32 lbl_8055E688;
+extern s32 lbl_8055E66C;
+extern s32 lbl_8055E670;
 extern void *lbl_8055E680;
 extern void *lbl_8055E684;
 extern f32 lbl_8055E3C8;
