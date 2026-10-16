@@ -25,3 +25,7 @@ void fn_801293DC(void *arg0) {
     memcpy(arg0, lbl_8055DFC4, 0x4000);
 }
 
+void fn_801293E8(void *arg0) {
+    memcpy(lbl_8055DFC4, arg0, 0x4000);
+}
+
