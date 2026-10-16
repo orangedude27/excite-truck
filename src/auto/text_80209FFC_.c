@@ -49,17 +49,19 @@ extern s8 lbl_8055EDD0;
 extern s8 lbl_8055EDD4;
 extern s32 lbl_804892C0[];
 extern s32 lbl_8055B560;
-extern char lbl_8055B568[];
+extern char lbl_8055B568;
 
 void fn_8020A550(void) {
     char buf[64];
+    s32 var_r31;
     s32* var_r30;
     s32* var_r29;
     s8* var_r28;
     s32 var_r27;
 
     fn_80127D58(fn_8020A100);
-    lbl_8055EDD0 = 0;
+    var_r31 = 0;
+    lbl_8055EDD0 = var_r31;
     var_r30 = lbl_804892C0;
     var_r27 = 0;
     var_r29 = &lbl_8055B560;
@@ -67,12 +69,12 @@ void fn_8020A550(void) {
     do {
         if (*var_r30 != 0) {
             fn_80207924();
-            *var_r30 = 0;
+            *var_r30 = var_r31;
         }
-        sprintf(buf, lbl_8055B568, *var_r29);
+        sprintf(buf, (char*)&lbl_8055B568, *var_r29);
         fn_8012E498(buf);
         var_r27 += 1;
-        *var_r28 = 0;
+        *var_r28 = var_r31;
         var_r30 = (s32*)((s32)var_r30 + 8);
         var_r29 = (s32*)((s32)var_r29 + 4);
         var_r28 = (s8*)((s32)var_r28 + 1);
