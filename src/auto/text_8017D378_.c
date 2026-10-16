@@ -3,6 +3,11 @@
 
 void fn_802066C8(void*, unsigned int);
 void fn_80206C70(void*);
+float fn_8017D378(void) {
+    extern float lbl_8055E3C8;
+    return lbl_8055E3C8;
+}
+
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017DA34(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_802066C8((void*)arg0, 0);
@@ -11,6 +16,70 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017DA34(long arg0, long arg1) {
         }
     }
     return arg0;
+}
+
+extern float lbl_8055E3C8;
+extern void *fn_80178C9C(void);
+extern float lbl_80561BE0;
+extern float lbl_80561BE4;
+extern double lbl_80561BE8;
+extern void *fn_801284F8(int, void *);
+extern void fn_8017B0B0(void);
+extern int lbl_8055A310;
+extern char lbl_80331D18;
+extern void fn_8017B164(void);
+extern void fn_8017A580(void *);
+extern void fn_8017D380(float *, int);
+extern float fn_8017D378(void);
+extern int lbl_8055D430;
+extern float lbl_80561C0C;
+void fn_8017DA8C(void *arg0) {
+    float sp[3];
+    int flags;
+    fn_8017B164();
+    fn_8017D380(sp, *(int *)((char *)arg0 + 0x1F8));
+    *(float *)((char *)arg0 + 0x60) = sp[0];
+    *(float *)((char *)arg0 + 0x64) = sp[1];
+    *(float *)((char *)arg0 + 0x68) = sp[2];
+    fn_8017A580(arg0);
+    *((char *)arg0 + 0x1E9) = 0;
+    flags = 0;
+    if ((lbl_8055D430 & 1) && (lbl_8055D430 & 8)) flags = 1;
+    if (flags != 0) {
+        *(int *)((char *)arg0 + 0x1F0) = 0;
+        *(float *)((char *)arg0 + 0x1F4) = lbl_80561C0C + fn_8017D378();
+    }
+    *((char *)arg0 + 0x1FC) = 0;
+    *((char *)arg0 + 0x1FE) = 0;
+}
+
+extern int lbl_80331DC0;
+extern int lbl_8055A318;
+extern int lbl_8055A320;
+extern int lbl_8055A328;
+void fn_8017E96C(void *arg0, int **arg1, signed char *arg2) {
+    int state = *(int *)((char *)arg0 + 0x1F0);
+    if (state == 2) {
+        *arg1 = &lbl_8055A320;
+        *arg2 = 1;
+    } else if (state >= 2) {
+        if (state < 4) {
+            *arg1 = &lbl_80331DC0;
+            *arg2 = 0;
+        } else {
+            *arg1 = &lbl_8055A318;
+            *arg2 = 0;
+        }
+    } else if (state == 0) {
+        *arg1 = &lbl_8055A328;
+        *arg2 = 0;
+    } else if (state < 0) {
+        *arg1 = &lbl_8055A318;
+        *arg2 = 0;
+    } else {
+        *arg1 = 0;
+        *arg2 = 0;
+    }
 }
 
 long fn_8017EAF4(long arg0) { return arg0 + 0x6C; }
