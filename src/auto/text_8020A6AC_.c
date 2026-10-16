@@ -6,6 +6,12 @@ void* fn_8020A76C(void) {
     return lbl_8055EE08;
 }
 
+extern void fn_802E5A54(void);
+void fn_8020AC20(void) {
+    lbl_8055EE08 = 0;
+    fn_802E5A54();
+}
+
 void fn_8020B2D0(void) {
 
 }
