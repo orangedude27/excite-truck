@@ -64,7 +64,7 @@ s32 _WUDGetDevAddr(u32 arg0) {
     s32 r31;
     OSDisableInterrupts();
     if (arg0 < 0x10) {
-        r31 = lbl_80393628[arg0];
+        r31 = ((u32 *)&lbl_80393628)[(u8)arg0];
     } else {
         r31 = 0;
     }
@@ -75,7 +75,7 @@ s32 _WUDGetDevAddr(u32 arg0) {
 s16 _WUDGetQueuedSize(s8 arg0) {
     s16 r31;
     OSDisableInterrupts();
-    if ((arg0 >= 0) && (arg0 < 0x10)) {
+    if (arg0 >= 0 && arg0 < 0x10) {
         r31 = lbl_80394680[arg0];
     } else {
         r31 = 0;
@@ -243,6 +243,25 @@ void fn_8006EC20(void) {
     fn_80068E08();
 }
 
+void fn_80070758(void) {
+    fn_8009B0E0();
+    fn_8006EBAC();
+    ((u8 *)&lbl_803BD1E0)[0x29] = 5;
+    ((u8 *)&lbl_803BD1E0)[0x28] = 0;
+    lbl_8055DC51 = 0;
+    fn_8006EB88();
+}
+
+void fn_8007079C(u16 *arg0, u16 arg1) {
+    *arg0 = arg1;
+
+    if (lbl_8055DC68 != NULL && lbl_8055DC68->close != NULL) {
+        lbl_8055DC68->close(lbl_8055DC6C);
+    } else {
+        GKI_freebuf(NULL);
+    }
+}
+
 void bte_hcisu_task(void) {
     if (lbl_8055DC68 != NULL) {
         if (lbl_8055DC68->init != NULL) {
@@ -259,10 +278,8 @@ extern u32 fn_8009B0E0(void);
 extern u8 lbl_803BD1E0;
 extern u8 lbl_8055DC51;
 void fn_80070820(void) {
-    hcisu_if *p_if = lbl_8055DC68;
-
-    if (p_if != NULL && p_if->open != NULL) {
-        p_if->open(lbl_8055DC6C);
+    if (lbl_8055DC68 != NULL && lbl_8055DC68->close != NULL) {
+        lbl_8055DC68->close(lbl_8055DC6C);
     }
 }
 
@@ -599,7 +616,7 @@ void AXGetAuxACallback_8009CDBC(void **arg0, void **arg1) {
 
 u16 fn_8006D8D0(u32 arg0) {
     s32 diff = (s32)arg0 - 8;
-    if (diff >= 0) {
+    if (diff & 1) {
         u8 val = *(u8 *)((u8 *)diff + 4);
         if (val < 9) {
             return *(u16 *)((u8 *)&lbl_803946C0 + 0x289E8 + (val << 4));
