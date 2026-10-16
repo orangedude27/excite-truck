@@ -55,6 +55,23 @@ float fn_80209028(void) {
     return lbl_8055B4D4;
 }
 
+void fn_80209030(float arg0) {
+    float value = lbl_80563230;
+    if (value < arg0) {
+        value = value;
+    } else {
+        value = arg0;
+    }
+    if (value > lbl_80563234) {
+        value = value;
+    } else {
+        value = lbl_80563234;
+    }
+    lbl_8055B4D4 = value;
+    fn_8013323C(4, lbl_8033BEF8, value);
+    fn_80208A50(&value);
+}
+
 void fn_80209090(int arg0) {
     if (arg0 >= 0 && arg0 <= 2) {
         lbl_8055EDA8 = (void *)arg0;
@@ -72,6 +89,37 @@ void* fn_802090CC(void) {
     return lbl_8055B4D8;
 }
 
+void *fn_802090D4(int arg0) {
+    struct Entry { float value; int id; };
+    struct State { struct Entry entries[8]; int count; };
+    struct State *state = (struct State *)lbl_80489258;
+    int index = state->count;
+    void *result;
+    result = 0;
+    if ((unsigned int)index < 8U) {
+        state->count = index + 1;
+        result = (char *)state + index * 8;
+        *(int *)((char *)result + 4) = arg0;
+        *(float *)((char *)state + index * 8) = lbl_80563230;
+    }
+    return result;
+}
+
+void fn_80209110(void **arg0) {
+    void *entry = *arg0;
+    int i;
+    if (entry != 0) {
+        *(int *)((char *)entry + 4) = 0;
+        for (i = *(int *)(lbl_80489258 + 0x40); i > 0; i = *(int *)(lbl_80489258 + 0x40)) {
+            if (*(int *)(lbl_80489258 + i * 8 - 4) != 0)
+                break;
+            *(int *)(lbl_80489258 + 0x40) = i - 1;
+        }
+        fn_80208A50(0);
+        *arg0 = 0;
+    }
+}
+
 void fn_80209190(float *arg0, float arg1) {
     if (arg0 != 0) {
         float value = lbl_80563230 < arg1 ? lbl_80563230 : arg1;
@@ -83,7 +131,7 @@ void fn_80209190(float *arg0, float arg1) {
 
 extern float lbl_80563230;
 extern float lbl_80563234;
-extern void fn_80208A18(float);
+extern float fn_80208A18(float);
 extern void fn_80208A50(float *);
 extern int fn_80128668(void);
 void fn_802091CC(void) {
@@ -99,6 +147,21 @@ int fn_802091D4(int arg0, int arg1) {
 
 int fn_80209214(void) {
     return 0;
+}
+
+extern float lbl_8055B4D0;
+extern char lbl_8055B4E0[];
+extern void fn_801332D0(int, void *, void *);
+int fn_8020921C(void) {
+    struct Config { int value; unsigned int pad; unsigned int version; };
+    volatile struct Config *config = (volatile struct Config *)0x8048929C;
+    extern unsigned int lbl_8055E044;
+    extern void fn_80131318(void);
+    unsigned int version = config->version;
+    if (version != lbl_8055E044)
+        fn_80131318();
+    config = (volatile struct Config *)0x8048929C;
+    return config->value;
 }
 
 int fn_80209260(int arg0) { return arg0 + 4; }
