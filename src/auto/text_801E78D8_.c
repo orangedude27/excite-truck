@@ -18,6 +18,11 @@ void fn_801E85A0(void) {
 
 }
 
+extern void *lbl_8055EB2C;
+void* fn_801E85A4(void) {
+    return lbl_8055EB2C;
+}
+
 extern char lbl_8055EB08;
 void fn_801E882C(void) {
     lbl_8055EB08 = 1;
