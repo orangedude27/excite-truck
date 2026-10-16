@@ -56,6 +56,8 @@ void fn_8020B344(void) {
     fn_802E5828();
 }
 
+void fn_8020BC50(void *arg0, float farg0) { *(float *)((char *)arg0 + 0x24) = farg0; }
+
 typedef float f32;
 typedef signed int s32;
 void fn_8020BC58(void *arg0, f32 farg0) { *(f32 *)((char *)arg0 + 0x1C) = farg0; }
