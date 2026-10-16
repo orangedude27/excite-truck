@@ -106,8 +106,8 @@ extern "C" void fn_800B36C4(s32 arg0, s32 arg1, s32 arg2) {
     fn_800B23F8(arg0, arg1, arg2, 0);
 }
 
-extern "C" void fn_800B36CC(void) {
-    fn_800B23F8(0, 1, 0, 0);
+extern "C" void fn_800B36CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    fn_800B23F8(arg0, arg1, arg2, 1);
 }
 
 extern "C" void fn_800B36D4(s32 arg0) {
