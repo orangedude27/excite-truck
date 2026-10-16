@@ -23,3 +23,5 @@ void fn_801C00B8(void *arg0, float *arg1) {
     fn_8019EECC(callback, dst);
 }
 
+long fn_801C00F0(void *arg0) { return *(long *)((char *)arg0 + 0x18); }
+
