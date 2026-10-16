@@ -4,6 +4,22 @@
 extern double fn_8002EFB0();
 extern void fn_8029231C();
 extern void PSVECNormalize(void *, void *);
+extern void *fn_801284F8(int, void *);
+extern int lbl_8033A6A0;
+extern int lbl_8033A710;
+void fn_801F224C(void) {
+    void *p = fn_801284F8(8, &lbl_8033A6A0);
+    if (p != 0) {
+        *(void **)p = &lbl_8033A710;
+        *(int *)((char *)p + 4) = 0;
+    }
+}
+
+int fn_801F2294(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
     unsigned int a, b, c, d;
     float e, f;
@@ -47,10 +63,10 @@ void *fn_801F31A0(void *arg0, int arg1) {
     return arg0;
 }
 
-void fn_801F31E8(unsigned char *arg0) {
-    unsigned char *p = arg0 + 0x2C;
+void fn_801F31E8(int arg0, volatile unsigned char *arg1) {
+    volatile unsigned char *p = arg1 + 0x2C;
     int i;
-    for (i = 0; i < 0x20; i++) {
+    for (i = 0; i < 32; i++) {
         unsigned char t;
         t = p[0]; p[0] = p[3]; p[3] = t;
         t = p[1]; p[1] = p[2]; p[2] = t;
