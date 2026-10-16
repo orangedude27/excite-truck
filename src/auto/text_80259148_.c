@@ -52,9 +52,13 @@ typedef unsigned int u32;
 typedef float f32;
 extern f32 lbl_80563B1C;
 f32 fn_8025B0A8(void *arg0) {
-    f32 a = *(f32 *)((char *)arg0 + 0);
     f32 b = *(f32 *)((char *)arg0 + 4);
+    f32 a = *(f32 *)((char *)arg0 + 0);
     return a + ((b - a) * lbl_80563B1C);
+}
+
+f32 fn_8025B0C4(f32 arg0) {
+    return (f32)sin(arg0);
 }
 
 void fn_8025B0E8(void *dst, const void *src) {
