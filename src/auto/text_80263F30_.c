@@ -94,6 +94,15 @@ void fn_80265598(void *arg0) {
     lbl_8055C454 = *(float *)((char *)arg0 + 0x1C);
 }
 
+int fn_802655C8(int arg0, int arg1) {
+    extern void *lbl_8055F44C;
+    if (arg0 != 0) {
+        lbl_8055F44C = 0;
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
+}
+
 typedef float f32;
 void fn_80265610(void *arg0, f32 farg0) { *(f32 *)((char *)arg0 + 0x1C) = farg0; }
 
