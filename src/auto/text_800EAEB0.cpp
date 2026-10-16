@@ -181,6 +181,17 @@ extern "C" f32 fn_800EB430(void* arg0) {
     return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(*(f32*)((u8*)arg0 + 4) / lbl_80560FF4);
 }
 
+extern "C" void *fn_800ECAEC(void *arg0) {
+    extern void fn_800F26D8(void *);
+    extern void fn_800F2D28(void *, void *);
+    extern u8 lbl_80323238[];
+    fn_800F26D8(arg0);
+    *(s32 *)((u8 *)arg0 + 0x108) = 0;
+    *(u8 **)arg0 = lbl_80323238;
+    fn_800F2D28((u8 *)arg0 + 0x10C, lbl_80323238);
+    return arg0;
+}
+
 extern "C" void *fn_800F26FC(void *, unsigned int);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800ECB38(void *arg0, int arg1) {
     if (arg0 != 0) {
