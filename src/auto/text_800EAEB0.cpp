@@ -462,7 +462,7 @@ void *nw4hbm::snd::detail::SeqFileReader::GetBaseAddress() const {
                                      (const char *)lbl_80323AF8);
     }
     u8 *file = *(u8 **)(self + 4);
-    return file + *(u32 *)(file + 8);
+    return (void *)(*(u32 *)(file + 8) + (u32)file);
 }
 
 extern "C" void OSCancelAlarm(void *);
