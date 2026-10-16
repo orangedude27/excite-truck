@@ -706,7 +706,7 @@ extern "C" void fn_801A4538(void* arg0) {
 }
 
 #pragma opt_tail_call on
-void fn_801A4768(s32* arg0, s32 arg1) {
+extern "C" void fn_801A4768(s32* arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
         *arg0 = val + arg1;
