@@ -240,6 +240,8 @@ extern "C" void fn_8014433C(void) {
 extern "C" void fn_80144340(void) {
 }
 
+extern "C" s32 fn_80144344(void) { return 0; }
+
 extern "C" void fn_8014434C(void) {
 }
 
