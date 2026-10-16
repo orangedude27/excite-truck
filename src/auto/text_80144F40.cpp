@@ -151,7 +151,7 @@ extern "C" void fn_80146730(void *arg0) {
     }
 }
 
-extern "C" void fn_800108C8(const char *, f32);
+extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
 extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
@@ -182,9 +182,9 @@ extern "C" void fn_80147204(void *arg0, const char *arg1) {
         if ((u8)*arg1 == 1)
             arg1++;
         fn_800108C8(arg1, *(f32 *)((u8 *)arg0 + 0x10));
-    } else {
-        fn_800108C8(arg1, lbl_805615D4);
+        return;
     }
+    return;
 }
 
 extern "C" void fn_801476C4(void *arg0) {
