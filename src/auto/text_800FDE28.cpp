@@ -5,6 +5,25 @@
 
 extern u32 lbl_80559900;
 
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *) __attribute__((noreturn));
+extern double __ieee754_pow(double, double);
+
+#pragma push
+#pragma small_data off
+extern u8 lbl_80327010[];
+extern u8 lbl_80327020[];
+extern f32 lbl_805610C8; // 1.0
+extern f32 lbl_805610CC; // 2.0
+extern f32 lbl_805610D0; // 0.5
+extern f32 lbl_805610E4; // 256.0
+extern f32 lbl_805610E8; // 0.0
+extern double lbl_805610F0; // 32000.0
+extern double lbl_805610F8; // 2.0
+extern double lbl_80561100; // 10.0
+extern double lbl_80561108; // 1.0
+extern f32 lbl_802F6124[]; // pan table
+#pragma pop
+
 extern "C" u32 fn_800FEB9C(void);
 
 extern "C" void fn_800FDFF8(void *arg0) {
