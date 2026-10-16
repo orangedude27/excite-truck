@@ -95,6 +95,13 @@ s32 fn_801B1130(s32 arg0) {
 
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
 
+s32 fn_801B224C(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern void fn_801B2118(void);
 void fn_801B228C(void) {
     fn_8002F6AC(lbl_8055E684, fn_801B2118);
