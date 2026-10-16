@@ -33,6 +33,11 @@ void fn_801F37A4(void) {
     fn_802C9950(0xFF909090);
 }
 
+int fn_801F37FC(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_801F3E60(void) {
 
 }
