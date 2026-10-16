@@ -56,6 +56,8 @@ void fn_802CAC54(void);
 void fn_802C6C20(void);
 int fn_80129D90(int, int, int);
 
+#pragma push
+#pragma opt_common_subs off
 void fn_802B2104(void **arg0) {
     void *ptr = *arg0;
     if (ptr != 0) {
@@ -74,8 +76,7 @@ void fn_802B2104(void **arg0) {
         *arg0 = 0;
     }
 }
-
-#pragma opt_common_subs off
+#pragma pop
 void fn_802B218C(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != 0) {
@@ -106,11 +107,12 @@ void fn_802B21D4(void **arg0) {
 int fn_80129D90(int, int, int);
 void fn_802B2504(int *dst, int count) {
     int i;
-    for (i = 0; i < count - 1; i++) {
-        int idx = fn_80129D90(0, i + 1, count) * 4;
-        int tmp = dst[i / 4];
-        dst[i / 4] = dst[idx / 4];
-        dst[idx / 4] = tmp;
+    int limit = count - 1;
+    for (i = 0; i < limit; i++) {
+        int j = fn_80129D90(0, i + 1, count);
+        int tmp = *(int *)((char *)dst + i * 4);
+        *(int *)((char *)dst + i * 4) = *(int *)((char *)dst + j * 4);
+        *(int *)((char *)dst + j * 4) = tmp;
     }
 }
 
@@ -215,12 +217,11 @@ int fn_802B2C44(void *arg0) {
 }
 
 int fn_802B2C98(char *arg0) {
-    void **arr = (void **)lbl_804BE1FC.m0;
-    int i;
     int result = 0;
+    int i;
     for (i = 0; i < lbl_804BE1FC.m4; i++) {
-        if (stricmp(arg0, *(char **)((char *)arr[i] + 0x24)) == 0) {
-            result = (int)arr[i];
+        if (stricmp(arg0, *(char **)((char *)((void **)lbl_804BE1FC.m0)[i] + 0x24)) == 0) {
+            result = (int)((void **)lbl_804BE1FC.m0)[i];
             break;
         }
     }
@@ -231,11 +232,12 @@ void fn_802B2D24(void *arg0) {
     int i, j;
     for (i = 0; i < ((int *)arg0)[1]; i++) {
         void *cur = ((void **)arg0)[i];
-        lbl_8055F9BC = 0;
+        ((int *)lbl_8055F9BC)[2] = 0;
         for (j = 0; j < ((int *)cur)[0x103]; j++) {
-            void *entry = ((void **)cur)[0x102 + j];
-            ((int *)entry)[3] = 0;
-            ((int *)entry)[2] = 0;
+            void **arr = *(void ***)((char *)cur + 0x408);
+            void *entry = arr[j];
+            ((int *)entry)[5] = 0;
+            ((int *)entry)[4] = 0;
         }
     }
     lbl_8055F9B8 = 0;
