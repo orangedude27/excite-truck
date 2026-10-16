@@ -39,6 +39,11 @@ void fn_801AED5C(void) {
     fn_801B8778();
 }
 
+void fn_801AED68(void) {
+    lbl_8055E634 = 0;
+    fn_801B878C();
+}
+
 void fn_801AFAB4(void) {
 
 }
