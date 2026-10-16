@@ -370,6 +370,18 @@ void fn_801D6FA0(void *arg0) {
     }
 }
 
+void fn_801D6FB8(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x34) == 0) {
+        if (fn_8016A15C((u8 *)arg0 + 8) != 0) {
+            void *p = *(void **)((u8 *)arg0 + 0x38);
+            *(u8 *)((u8 *)p + 0x49) = 1;
+            *(u8 *)((u8 *)p + 0x4B) = 0;
+            *(u8 *)((u8 *)p + 0x4A) = 0;
+        }
+        *(u8 *)((u8 *)arg0 + 0x34) = 1;
+    }
+}
+
 void *fn_801D7034(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         *(s32 *)((u8 *)arg0 + 4) = 0;
