@@ -274,7 +274,7 @@ s32 fn_800ED0F4(s32 arg0, s32 arg1) {
 }
 
 extern "C" void DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(void*);
-extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, u32);
+extern void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, u32);
 extern "C" s32 NANDClose(void*);
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" void fn_800F27AC(void*);
