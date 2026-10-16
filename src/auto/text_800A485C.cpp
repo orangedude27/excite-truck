@@ -152,13 +152,13 @@ extern void fn_800D2E3C(s32, s32, s32, s32);
 extern void fn_800D24D4(void*, s32);
 
 extern "C" s32 fn_800D2E14(void) {
-    if (lbl_8055DDC8 == 0) {
-        return 0;
+    s32 _r3 = 0;
+    if (lbl_8055DDC8 != 0) {
+        if (lbl_80407BD8[0] != 0) {
+            _r3 = 1;
+        }
     }
-    if (lbl_80407BD8[0] == 0) {
-        return 0;
-    }
-    return 1;
+    return _r3;
 }
 
 extern "C" void fn_800D2FC8(void) {
