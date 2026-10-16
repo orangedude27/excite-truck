@@ -10,6 +10,10 @@ void fn_802C7734(void* alarm) {
     fn_802D0610(fn_802D0514(alarm));
 }
 
+void fn_802C7A10(void* alarm) {
+    fn_8012C58C(fn_802C53A8(alarm));
+}
+
 extern s8 lbl_8055FC20;
 extern void fn_802C543C(void);
 void fn_802C7A44(void) {
