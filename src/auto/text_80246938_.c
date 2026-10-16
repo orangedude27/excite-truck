@@ -61,6 +61,18 @@ float fn_80214D48(void);
 extern char lbl_8055F260;
 extern unsigned char lbl_803432EC[];
 extern void fn_80246CB8(void *);
+extern char lbl_80343780[];
+extern float lbl_8055F264;
+int fn_80246AA8(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668((void *)arg0);
+    return arg0;
+}
+
+int fn_80246DA8(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668(0);
+    return arg0;
+}
+
 void fn_80246DE8(void) {
     fn_80246CB8(lbl_803432EC);
 }
@@ -133,15 +145,14 @@ void fn_80247880(void) {
 
 void fn_80247A0C(void) {
     s32 var_r31;
+    s32 val;
+    int flag;
 
     if (lbl_8055BEBC != lbl_8055BEA8) {
-        s32 a = lbl_8055BEA8;
-        if (a == 5) {
-            lbl_8055BEB4 = 1;
-        } else {
-            lbl_8055BEB4 = 0;
-        }
-        lbl_8055BEBC = a;
+        val = lbl_8055BEA8;
+        flag = val == 5;
+        lbl_8055BEBC = val;
+        lbl_8055BEB4 = flag;
     }
     fn_80214CB4(lbl_8055BEB4);
     if (lbl_8055BEBC == 4) {
