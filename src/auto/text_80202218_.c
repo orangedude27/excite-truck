@@ -7,6 +7,8 @@ extern float lbl_805630A0;
 extern unsigned char lbl_80488964[];
 extern void fn_802C6CF8(int);
 
+void *fn_802023C8(void) { return lbl_80488964; }
+
 void fn_802025D4(void) {
 
 }
