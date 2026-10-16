@@ -6,6 +6,10 @@ void fn_802B5CAC(void) {
     fn_802B5C24(1);
 }
 
+void fn_802B5CC4(void) {
+    fn_802B5CB4(1);
+}
+
 void fn_802B8C98(void) {
     lbl_8055FA31 = 0;
 }
