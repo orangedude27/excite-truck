@@ -13,6 +13,10 @@ extern void fn_802CAC54(void *);
 extern void fn_8012C4D8(void *);
 extern void fn_80128670(void *);
 extern void *lbl_8055F060;
+s32 fn_80231504(void) {
+    return 0;
+}
+
 void fn_80232928(void* hi) {
     lbl_8055F060 = hi;
 }
