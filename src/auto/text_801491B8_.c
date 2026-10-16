@@ -37,6 +37,7 @@ extern f32 lbl_80561628;
 extern f32 lbl_8056162C;
 extern f32 lbl_80561630;
 extern f32 lbl_80561634;
+extern f32 lbl_8055E3C8;
 
 void fn_80149210(void *arg0) {
     u32 x = ((u32 *)arg0)[1] + 1;
