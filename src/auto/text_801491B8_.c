@@ -416,22 +416,8 @@ void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
 }
 
 void fn_8014C6F0(void *arg0, void *arg1) {
-    s32 a, b, c, d, g;
-    f32 e, f;
-    a = ((s32 *)arg1)[0];
-    b = ((s32 *)arg1)[1];
-    c = ((s32 *)arg1)[2];
-    d = ((s32 *)arg1)[3];
-    e = ((f32 *)arg1)[4];
-    f = ((f32 *)arg1)[5];
-    g = ((s32 *)arg1)[6];
-    ((s32 *)arg0)[0] = a;
-    ((s32 *)arg0)[1] = b;
-    ((s32 *)arg0)[2] = c;
-    ((s32 *)arg0)[3] = d;
-    ((f32 *)arg0)[4] = e;
-    ((f32 *)arg0)[5] = f;
-    ((s32 *)arg0)[6] = g;
+    Copy8014C6F0 v = *(Copy8014C6F0 *)arg1;
+    *(Copy8014C6F0 *)arg0 = v;
 }
 
 void fn_8014C72C(void **arg0) {
@@ -940,6 +926,25 @@ extern int vsprintf(char *, const char *, ...);
 void fn_80155C90(char *arg0, ...) {
     char buffer[0x200];
     vsprintf(arg0 + 0x14, buffer);
+}
+
+void fn_80155D20(void *arg0, const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    vsprintf((char *)arg0 + 0x64, fmt, ap);
+    va_end(ap);
+}
+
+void fn_80155DB0(void *arg0, const char *fmt, ...) {
+    va_list ap;
+    va_start(ap, fmt);
+    vsprintf((char *)arg0 + 0xB4, fmt, ap);
+    va_end(ap);
+}
+
+void fn_80155E40(void *arg0, s32 arg1) {
+    *(s32 *)((u8 *)arg0 + 0x108) = arg1;
+    *(s32 *)((u8 *)arg0 + 0x114) = 1;
 }
 
 void fn_80155E58(void *arg0) {
