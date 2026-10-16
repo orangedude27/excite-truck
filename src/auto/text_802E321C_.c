@@ -1,5 +1,7 @@
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
+typedef struct CallbackObject { void **vtable; } CallbackObject;
+typedef void (*CallbackMethod)(CallbackObject *, s32);
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034CF40[];
 extern char lbl_8034CF60[];
