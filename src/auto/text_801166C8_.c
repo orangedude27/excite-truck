@@ -189,7 +189,7 @@ void fn_80125098(void *arg0) {
 
 extern void fn_80125664(void *p0, void *p1, void *p2, void *p3);
 void fn_80125CA0(void *arg0, void *arg1, void *arg2, s32 arg3) {
-    fn_80125664((u8 *)&lbl_802F6A40 + (arg3 << 8), arg0, arg1, arg2);
+    fn_80125664(arg0, arg1, arg2, (u8 *)&lbl_802F6A40 + (arg3 << 8));
 }
 
 extern char lbl_8055DF08;
