@@ -51,8 +51,8 @@ int stricmp(const char *, const char *);
   s32 fn_801F9450(void *node);
       void *fn_801F95C4(void *fn, void *node);
           void fn_801F96A8(void *node);
-      void *fn_801F93FC(void);
-      }
+              void *fn_801F93FC(void *node = 0);
+        }
 extern void *fn_801F981C(void *node, s32 arg);
 extern void fn_801F99CC(void *node);
 extern void fn_801F9928(void *list, s32 arg);
@@ -82,7 +82,20 @@ extern "C" void fn_801F92A8(void) {
 
 }
 
-
+extern "C" void fn_801F92AC(F92Obj *obj) {
+    obj->w108 = lbl_8033B468;
+    obj->w78 = 0;
+    obj->f7c = lbl_80562FF0;
+    obj->f80 = lbl_80562FF0;
+    obj->w104 = 0;
+    obj->f24 = 0;
+    obj->f20 = 0;
+    obj->f28 = lbl_80563000;
+    obj->b60 = 1;
+    memset(&obj->b60 + 1, 0x20, 0);
+    memset((char *)&obj->b60 + 1, 0x61, 0x10);
+    obj->w74 = -1;
+}
 
 extern "C" void fn_801F9440(F9Node *list, F9Node *node) {
     node->next = list->next;
@@ -121,14 +134,15 @@ extern "C" void *fn_801F96C8(void *node) {
     return list;
 }
 
-extern "C" void fn_801F99CC(F9Node *node) {
-    F9Node *cur = (F9Node *)((char *)node + 0x24);
+extern "C" void fn_801F99CC(F92Obj *obj) {
+    F9Node *cur = *(F9Node **)((char *)&obj->w108 + 0x24 - 0x108);
     F9Node *next;
 
     while (cur != NULL) {
         next = *(F9Node **)((char *)cur + 0x24);
         if (cur != NULL) {
-            ((void (*)(void *, s32))0)(cur, 1);
+            struct F92NodeVT { void *v0; void *vtbl8; };
+            (*(void (**)(void *, s32))((char *)(*(struct F92NodeVT **)cur)->vtbl8 + 0x100))(cur, 1);
         }
         cur = next;
     }
