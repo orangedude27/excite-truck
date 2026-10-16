@@ -17,7 +17,9 @@ extern "C" s32 fn_800A5990(s32);
 extern "C" s32 fn_800A59CC(s32);
 extern "C" void fn_800B7E18(u32);
 extern "C" void fn_800B7E38(u8);
-extern "C" s32 fn_800BA3F4(Unk800B7E18Callback, Unk800B7E18Callback);
+  extern "C" Unk800B7E18Callback lbl_8055DD40;
+  extern "C" Unk800B7E18Callback lbl_8055DD44;
+  extern "C" s32 fn_800BA3F4(Unk800B7E18Callback, Unk800B7E18Callback);
 extern "C" s32 fn_800BBB58(s32, void**);
 extern "C" s32 fn_800BAD9C(void*, u32*);
 extern "C" s32 fn_800BB2C4(void*);
@@ -438,11 +440,12 @@ extern "C" s32 fn_800BA238(s32 arg0) {
     if (arg0 == 0) {
         return 1;
     }
-    if (*(u32 *)lbl_80407300 & 2) {
-        *(s32 *)lbl_80407300 &= 0xFFFFFFFD;
+    flags = *(volatile u32 *)lbl_80407300;
+    if (flags & 2) {
+        *(volatile s32 *)lbl_80407300 &= 0xFFFFFFFD;
     }
-    flags = *(u32 *)lbl_80407300;
-    *(s32 *)lbl_80407300 = (s32)(flags & ~1U);
+    flags = *(volatile u32 *)lbl_80407300;
+    *(volatile s32 *)lbl_80407300 = (s32)(flags & ~1U);
     *(s32 *)((u8 *)lbl_80407300 + 0xC) = 0;
     *(u8 *)((u8 *)lbl_80407300 + 0x14) = 0;
     return 0;
