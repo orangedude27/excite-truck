@@ -65,3 +65,9 @@ void fn_802ABFF8(int arg0, float farg0) {
     fn_802C2B78(farg0, lbl_80564AAC + farg0, lbl_805649FC);
 }
 
+void fn_802AC070(void) {
+    fn_802C990C(lbl_804BD7B0[0]);
+    ((void (*)(void *, float, float, float))fn_802C2B78)((void *)lbl_804BD7B0, *(float *)&lbl_804BD7B0[1], *(float *)&lbl_804BD7B0[2], *(float *)&lbl_804BD7B0[3]);
+    fn_802C2C00(lbl_8055F92D);
+}
+
