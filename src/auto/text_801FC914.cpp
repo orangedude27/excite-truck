@@ -30,7 +30,7 @@ void fn_801FF3AC(void*, float);
     void fn_801FF2B8(void*, int, int);
     void fn_801FF0D4(void*);
     void fn_801FEF80(void*);
-    void fn_801FCA14(void*);
+          void* fn_801FCA14(void*, int);
     extern const char lbl_8033B86C[];
     extern const char lbl_8033B898[];
     extern const char lbl_8033B880[];
