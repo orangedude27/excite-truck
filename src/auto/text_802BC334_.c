@@ -10,13 +10,51 @@ int fn_802BC334(int arg0) {
     return -2;
 }
 
+int fn_802BD0C8(void *arg0) {
+    int result = 0;
+    if (*(int *)((char *)arg0 + 4) != 0) {
+        void **ptr = *(void ***)((char *)arg0 + 0x58);
+        if (ptr != 0)
+            result = *(int *)((char *)*ptr + 4);
+    }
+    return result;
+}
+
+int strcmp(const char *, const char *);
+int fn_802BA580(int, float *, float);
+void fn_802BD0F4(void *arg0) {
+    int i = 0;
+    int offset = 0;
+    int count;
+    char *entry;
+    void *ptr;
+    float a, b;
+    if (*(int *)((char *)arg0 + 4) == 0)
+        return;
+    ptr = *(void **)((char *)arg0 + 0x58);
+    if (ptr == 0)
+        return;
+    entry = *(char **)ptr;
+    count = *(int *)(entry + 4);
+    while (i < count) {
+        ptr = *(void **)((char *)arg0 + 0x58);
+        entry = *(char **)ptr + offset;
+        a = *(float *)(entry + 0x30);
+        b = *(float *)(entry + 0x38);
+        *(int *)(entry + 4) = fn_802BA580(*(int *)((char *)arg0 + 4), &a, *(float *)(entry + 0x1c));
+        offset += 0x44;
+        i++;
+    }
+}
+
 void *fn_801284F8(int, int);
-void fn_802BD414(int arg0, int *arg1) {
-    int *result = (int *)fn_801284F8(0xC, arg0);
+void fn_802BD414(int arg0, volatile int *arg1) {
+    volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
-        result[0] = arg1[1];
-        result[2] = arg1[0];
+        int first = arg1[0];
         result[1] = 0;
+        result[0] = arg1[1];
+        result[2] = first;
         result[1] = result[1] + arg1[0];
     }
 }
