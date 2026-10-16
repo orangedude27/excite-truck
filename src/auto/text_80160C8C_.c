@@ -20,6 +20,19 @@ extern s32 lbl_8055A0E8;
 extern u8 lbl_8055E2DD;
 
 extern s32 lbl_8055E300;
+void* fn_80160C8C(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(s32 *)arg0 = 0;
+            *((s32 *)arg0 + 1) = 0;
+            *((s32 *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void *fn_801612BC(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         if ((u32)arg0 + 0xE0 != 0) {
@@ -322,16 +335,13 @@ s32 fn_80162800(void *arg0) {
     s32 value;
     register f32 limit = lbl_8055E3C8;
     void **vtable;
-    void **manager;
     vtable = *(void ***)arg0;
     if (limit > ((f32 (*)(void *))vtable[0x34 / 4])(arg0)) {
         vtable = *(void ***)arg0;
         if (((s32 (*)(void *))vtable[0x28 / 4])(arg0) == 0) {
-            manager = *(void ***)lbl_8055E2E0;
-            value = ((s32 (*)(void *, void *))manager[0x10 / 4])(lbl_8055E2E0, (void *)lbl_8032FA38);
+            value = ((s32 (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, (void *)lbl_8032FA38);
             fn_801476D8(value, -1, lbl_8055E2F8);
-            manager = *(void ***)lbl_8055E2E0;
-            ((void (*)(void *, void *))manager[0x0C / 4])(lbl_8055E2E0, (void *)lbl_8032FA44);
+            ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x0C / 4])(lbl_8055E2E0, (void *)lbl_8032FA44);
             fn_801476C4();
             fn_80130980(&sp8, 0x14, 3, *(f32 *)((char *)arg0 + 0x84) - *(f32 *)((char *)arg0 + 0x98));
             fn_801475D0(lbl_8055E2E0, lbl_8055A0EC, lbl_8055A0DC, &sp8);
