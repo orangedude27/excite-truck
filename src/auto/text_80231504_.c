@@ -1,8 +1,14 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
+#include "MSL/stdarg.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern s32 lbl_8055F04C;
+extern s32 lbl_8055F070;
+extern void *lbl_8055B9A8;
+extern void fn_80231AF0(void);
+extern void fn_80231D84(void);
 extern u8 lbl_8055F064;
 extern u8 *lbl_8055F068;
 extern u8 lbl_8049846C[];
@@ -75,6 +81,19 @@ s32 fn_802315FC(s32 arg0) {
     return 0;
 }
 
+s32 fn_802316A4(void *arg0) {
+    s32 i = 0;
+    u8 *entry = lbl_8055F068;
+    s32 count = *(s32 *)(lbl_8055F068 + 0x168);
+    while (i < count) {
+        if (*(void **)entry == arg0) return fn_802315FC(i);
+        entry += 0xC;
+        i++;
+    }
+    fn_802E30C8(lbl_8034044C);
+    return 0;
+}
+
 void fn_80231714(void) {}
 
 s32 fn_80231718(s32 arg0) {
@@ -95,9 +114,19 @@ s32 fn_80231730(s32 arg0) {
     return 0;
 }
 
+void fn_80231ADC(void) {
+    *(s32 *)((u8 *)lbl_8049846C + 4) = 0;
+}
+
 void fn_80232024(u8 **arg0) {
     u8 *p = *arg0;
     if (*p == 1) *arg0 = p + 1;
+}
+
+void fn_802321D8(void) {
+    if (lbl_8055F068 != 0) fn_802E317C(lbl_80340488);
+    lbl_8055F068 = fn_801284F8(0x16C, lbl_803404C0);
+    memset(lbl_8055F068, 0, 0x16C);
 }
 
 void fn_80232928(void* hi) {
@@ -110,6 +139,16 @@ u8 fn_80232B70(void *arg0) {
 
 u8 fn_80232B78(void *arg0) {
     return ((u8 *)arg0)[5];
+}
+
+extern int vsprintf(char *, const char *, va_list);
+extern void fn_80232BA4(char *, s32, s32, s32, f64, f64, f64, f64, f64);
+void fn_802337A0(f64 a, s32 b, f64 c, s32 d, f64 e, f64 f, s32 g, f64 h, const char *fmt, ...) {
+    char buffer[0x50];
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(buffer, fmt, args);
+    fn_80232BA4(buffer, b, d, g, a, c, f, e, h);
 }
 
 void fn_8023441C(const char *arg0) {
