@@ -478,7 +478,9 @@ f32 fn_80011E60(void) {
 }
 
 f32 fn_80011E70(void) {
-    return lbl_8056025C * (lbl_80350EC4[1] + lbl_80350EC4[2]);
+    f32 value;
+    value = lbl_80350EC4[1] + lbl_80350EC4[2];
+    return value * lbl_8056025C;
 }
 
 void fn_8000F158(void) {
