@@ -15,6 +15,15 @@ extern int fn_801CE874(int);
 extern void fn_801CCDAC(int, int, int);
 extern void fn_801CD4CC(int, int);
 extern signed char lbl_8055E880;
+extern void fn_801CB3F8(void);
+extern void fn_801CC470(void);
+extern void fn_801CC918(void);
+void fn_801CB360(int arg0) {
+    if (fn_80019BA8() == 0 && fn_80161C38() == 0) {
+        fn_801CCAEC(arg0);
+    }
+}
+
 void fn_801CB3F8(void) {
     int count, i;
     if (fn_80019BA8() || fn_80161C38()) return;
@@ -50,6 +59,15 @@ void fn_801CB55C(int arg0, int arg1) {
     if (fn_801CE874(arg0)) {
         fn_801CCDAC(0x22205, arg0, arg1);
         fn_801CD4CC(arg0, arg1);
+    }
+}
+
+extern void fn_801CC918(void);
+extern void fn_801CC470(void);
+extern void fn_801CD5B4(int, int, int);
+void fn_801CB5DC(int arg0, int arg1, int arg2) {
+    if (fn_80019BA8() == 0 && fn_80161C38() == 0) {
+        fn_801CD5B4(arg0, arg1, arg2);
     }
 }
 
