@@ -9,7 +9,6 @@ extern u8 lbl_802FCD44[], lbl_802FCD78[], lbl_80558BA0[];
 extern void fn_80013EDC(void *, s32, void *, void *, f32, f32, f32);
 extern void fn_801476C4(void);
 extern u8 lbl_80558BBC[], lbl_802FCDB4[];
-extern void fn_80015EB0(f32);
 extern void fn_80015E30(void *, f32);
 extern void fn_80015B20(void *, void *, void *);
 extern f64 cos(void);
