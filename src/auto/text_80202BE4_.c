@@ -19,7 +19,8 @@ extern void fn_802D050C_var(void);
 #define fn_802D050C(...) fn_802D050C_var()
 extern s32 fn_80202BE4(void);
 typedef struct { s32 w0; s32 w1; } lbl_8048897C_entry;
-extern struct lbl_8048897C_t { lbl_8048897C_entry* ptr; s32 count; } lbl_8048897C;
+struct lbl_8048897C_t { lbl_8048897C_entry* ptr; s32 count; };
+extern struct lbl_8048897C_t lbl_8048897C;
 extern s32 lbl_8055ECFC;
 extern s32 lbl_8055ED00;
 extern s32 lbl_8055ED04;
@@ -56,19 +57,19 @@ void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
 }
 
 void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
-    f32 temp_f1;
-    f32 temp_f2;
-    f32 temp_f3;
+    f32 var_f2;
+    f32 var_f3;
+    f32 var_f1;
 
     if (fn_80202BE4() == 0) {
         fn_802D3050(1);
         fn_802D306C(0x5A);
-        temp_f3 = ((f32*)arg0)[0];
-        temp_f2 = ((f32*)arg0)[1];
-        temp_f1 = ((f32*)arg0)[2];
-        arg2->x = temp_f3;
-        arg2->z = temp_f1;
-        arg2->y = temp_f2 + lbl_80563130;
+        var_f2 = ((f32*)arg0)[1];
+        var_f3 = ((f32*)arg0)[0];
+        var_f1 = ((f32*)arg0)[2];
+        arg2->x = var_f3;
+        arg2->z = var_f1;
+        arg2->y = var_f2 + lbl_80563130;
         fn_802039CC(arg1, (struct lbl_80488B88_t*)arg2);
         fn_80203380(arg2);
         fn_802D306C(0);
@@ -87,6 +88,7 @@ void fn_80203D84(s32* arg0) {
 #pragma dont_inline off
 
 void fn_80203DC8(void) {
+    struct lbl_8048897C_t* var_r31;
     s32 var_r28;
     s32 var_r29;
 
@@ -98,16 +100,17 @@ void fn_80203DC8(void) {
     fn_80203D84(&lbl_8055ED00);
     fn_80203D84(&lbl_8055ED04);
     fn_80203D84(&lbl_8055ED0C);
-    fn_802D050C(0);
+    ((void(*)(void*))fn_802D050C)(0);
     fn_802D30DC(0);
+    var_r31 = &lbl_8048897C;
     var_r28 = 0;
     var_r29 = 0;
-    while (var_r28 < lbl_8048897C.count) {
-        fn_80203D84(*(s32**)((u8*)lbl_8048897C.ptr + var_r29));
+    while (var_r28 < var_r31->count) {
+        fn_80203D84((s32*)((u8*)lbl_8048897C.ptr + var_r29));
         var_r29 += 8;
         var_r28 += 1;
     }
-    lbl_8048897C.count = 0;
+    var_r31->count = 0;
 }
 
 extern void fn_802D050C(void*);
