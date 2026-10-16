@@ -16,3 +16,7 @@ typedef struct Node_80279254 {
     s32 count;
     struct Node_80279254* next;
 } Node_80279254;
+
+s32 fn_80278A1C(void) {
+    return 0;
+}
