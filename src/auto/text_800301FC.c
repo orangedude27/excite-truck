@@ -77,6 +77,16 @@ void* fn_80031248(void) {
     return lbl_8055D73C;
 }
 
+void CircleBufferWriteBytes(void) {
+    lbl_8055D740 = 0;
+    lbl_8055D748 = 0;
+    lbl_8055D744 = lbl_8035E820;
+    lbl_8055D738 = 1;
+    lbl_8055D734 = 0x8000;
+    lbl_8055D732 = 0x8000;
+    lbl_8055D730 = 0x8000;
+}
+
 void fn_80031C68(void) {
 
 }
