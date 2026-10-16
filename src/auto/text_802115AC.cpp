@@ -96,6 +96,10 @@ extern "C" void fn_80215484(void* arg0) {
     *(u8*)((char*)arg0 + 0x18) = 0;
 }
 
+extern "C" s32 fn_80215490(void) {
+    return 0;
+}
+
 extern "C" s32 fn_802154C0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
