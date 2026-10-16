@@ -34,6 +34,24 @@ void fn_800357A8(void) {
 
 }
 
+extern s32 lbl_8055D890;
+extern u8 lbl_8037B580;
+extern s32 fn_8003BE40(void);
+extern s32 lbl_8055D880;
+extern void fn_80037E94(void);
+extern void fn_8003BB58(void (*callback)(void));
+extern void fn_8003B380(s32);
+extern void fn_8003B38C(void *);
+extern void fn_80035B88(void);
+extern s32 lbl_8055D8AC;
+extern s32 lbl_8055D85C;
+void fn_80035C78(void) {
+    fn_8003B380(0);
+    fn_8003B38C(fn_80035B88);
+    lbl_8055D8AC = 0;
+    lbl_8055D85C = 0;
+}
+
 s32 DVDGetDriveStatus(void) {
     s32 enabled;
     s32 state;
