@@ -22,3 +22,11 @@ int fn_801F0008(void) {
     return 0x4C;
 }
 
+int fn_801F0010(int arg0, int arg1) {
+    int value = arg1;
+    if (value != 0) {
+        value = fn_801F0E88(value, arg0);
+    }
+    return value;
+}
+
