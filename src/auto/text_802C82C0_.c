@@ -116,6 +116,10 @@ void fn_802C86E8(void* hi) {
     lbl_8055D018 = hi;
 }
 
+void fn_802C88CC(unsigned int arg0) {
+    fn_802D02F8(arg0, 1);
+}
+
 extern unsigned int lbl_804C1410[];
 extern void PSQUATMultiply(void *, unsigned int, void *);
 extern void fn_802C7734(unsigned int);
