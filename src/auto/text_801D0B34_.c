@@ -18,6 +18,19 @@ void *fn_801D0B34(void *arg0, int arg1) {
     return arg0;
 }
 
+void *fn_801D0B8C(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            ((int *)arg0)[0] = 0;
+            ((int *)arg0)[1] = 0;
+            ((int *)arg0)[2] = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_801D0BE4(void) {
     lbl_8055E8D8 = 0;
     lbl_8055E8DC = 0;
