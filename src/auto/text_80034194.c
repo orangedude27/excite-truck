@@ -38,8 +38,15 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+extern void DVDCancel(void);
+extern u32 MaxEntryNum_8055D838;
+extern u8 *FstStart_8055D840;
+extern u32 __DVDLayoutFormat;
+extern u32 lbl_8055D848;
+extern char __ErrorInfo[];
+extern s32 OSGetTick(void);
 s32 DVDClose(void) {
-    DVDCancel(0);
+    DVDCancel();
     return 1;
 }
 
