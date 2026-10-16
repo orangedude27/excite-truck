@@ -327,6 +327,14 @@ extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
+extern "C" s32 fn_800B6928(s8);
+extern "C" s32 fn_800B3754(s32, s32, s32);
+extern "C" s32 fn_800AF574(void *);
+extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
+extern "C" s32 fn_800B317C(s32 arg0, s32 arg1) {
+    return fn_800B3754(arg0, arg1, 1) == 0;
+}
+
 extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
     (*(s32 *)((u8 *)arg0 + 0)) = arg1;
     (*(s32 *)((u8 *)arg0 + 4)) = arg1;
