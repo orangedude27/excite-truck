@@ -28,15 +28,17 @@ extern float lbl_805640B8;
 extern float lbl_805640BC;
 void *fn_802678E4(int);
 
-void fn_8027889C(float farg0) {
-    float temp_f1 = farg0 / lbl_805640B8;
-    float var_f0;
+void fn_8027889C(float arg0) {
+    float t = arg0 / lbl_805640B8;
 
-    if (temp_f1 < lbl_805640A8) {
-        var_f0 = temp_f1 - lbl_805640BC;
-    } else {
-        var_f0 = lbl_805640BC + temp_f1;
-    }
-    lbl_8055F5C0 = (int)var_f0;
+    lbl_8055F5C0 = (int)(t < lbl_805640A8 ? t - lbl_805640BC : t + lbl_805640BC);
+}
+
+void fn_8027888C(char arg0) {
+    lbl_8055F5C8 = arg0;
+}
+
+void fn_80278894(char arg0) {
+    lbl_8055F5BB = arg0;
 }
 
