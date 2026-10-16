@@ -85,6 +85,10 @@ void fn_80160278(void) {
 void fn_801602B0(void) {
 }
 
+s32 fn_801602B4(s32 arg0) {
+    return arg0 + 0x3C;
+}
+
 s32 fn_801602BC(s32 *arg0, s32 arg1) {
     return *arg0 + (arg1 * 0x10);
 }
