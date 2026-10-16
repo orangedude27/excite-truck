@@ -70,6 +70,42 @@ int fn_801837DC(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_8018381C(void *arg0) {
+    volatile int *p = (volatile int *)arg0;
+    int a = p[0x274 / 4];
+    int b = p[0x278 / 4];
+    int c = p[0x27C / 4];
+    int d = p[0x280 / 4];
+    int e = p[0x284 / 4];
+    int f = p[0x288 / 4];
+    int g = p[0x28C / 4];
+    int h = p[0x290 / 4];
+    int i = p[0x294 / 4];
+    int j = p[0x298 / 4];
+    int k = p[0x29C / 4];
+    int l = p[0x2A0 / 4];
+    p[0x3C / 4] = a; p[0x40 / 4] = b; p[0x44 / 4] = c; p[0x48 / 4] = d;
+    p[0x4C / 4] = e; p[0x50 / 4] = f; p[0x54 / 4] = g; p[0x58 / 4] = h;
+    p[0x5C / 4] = i; p[0x60 / 4] = j; p[0x64 / 4] = k; p[0x68 / 4] = l;
+    fn_8017A580(k, j, i, h, g, f, e);
+    fn_8017B164(arg0);
+    fn_801838C8(arg0);
+}
+
+void fn_80183DF8(void *arg0) {
+    unsigned char *p = (unsigned char *)arg0;
+    int obj = *(int *)(p + 0x328);
+    if (obj != 0) {
+        fn_8018F538(p + 0x1E44);
+        fn_80279C00(obj, p + 0x1E44);
+        if (fn_801769C4() == 2 && *(unsigned int *)(p + 0x10) != 0x50434152 &&
+            (*(unsigned char *)(p + 0x260) & 4) == 0) {
+            fn_80181EAC(obj);
+            fn_80279B28(obj, p + 0x1E44);
+        }
+    }
+}
+
 int fn_80186DDC(void) { return 0; }
 
 void fn_80186DE4(void) {
@@ -131,6 +167,11 @@ void fn_8018AE08(void *arg0) {
 
 void fn_8018AE24(void *arg0, signed char arg1) {
     *((signed char *)arg0 + 0x260D) = arg1;
+}
+
+extern f32 fn_8018AE3C(void);
+f32 fn_8018AE3C(void) {
+    return lbl_80561CAC;
 }
 
 void fn_8018AF00(void) {
