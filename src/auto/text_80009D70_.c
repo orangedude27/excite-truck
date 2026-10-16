@@ -81,6 +81,10 @@ void *__AXGetStudio_8000AC2C(void) {
     return lbl_8034F520;
 }
 
+u32 fn_8000AC38(void) {
+    return lbl_8055D3B8;
+}
+
 void fn_8000A7A8(void) {
     char* base = (char*)&lbl_8034F4C8;
     if (lbl_8055D3B4 != 0) {
