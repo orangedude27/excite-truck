@@ -1,4 +1,5 @@
 typedef signed long s32;
+typedef unsigned long u32;
 typedef s32 (*UnkFunc)(s32);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -20,6 +21,27 @@ void fn_802B5CAC(void) {
 
 void fn_802B5CC4(void) {
     fn_802B5CB4(1);
+}
+
+extern s32 fn_801345D8(char *, s32, const char *, s32);
+extern s32 fn_802B05DC(void);
+extern s32 fn_802B5D2C(const char *, s32);
+extern const char lbl_8055CE38[];
+extern const char lbl_8055CE40[];
+extern const char lbl_8055CE48[];
+extern s32 sscanf(const char *, const char *, ...);
+s32 fn_802B5DD0(s32 arg0) {
+    s32 temp_r31;
+    s32 temp_r3;
+    s32 result;
+
+    temp_r31 = fn_802B5D2C(lbl_8055CE48, arg0);
+    temp_r3 = fn_802B05DC();
+    result = 0;
+    if ((temp_r31 != -1) && (temp_r31 != temp_r3)) {
+        result = 1;
+    }
+    return result;
 }
 
 extern void* lbl_8055FA44;
