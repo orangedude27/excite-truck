@@ -708,6 +708,10 @@ void fn_801D8B5C(void) {
 
 }
 
+void fn_801D8C0C(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0x18) = -1;
+}
+
 void fn_801D8C18(void) {
 
 }
