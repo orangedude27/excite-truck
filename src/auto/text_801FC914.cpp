@@ -2,6 +2,11 @@ extern "C" {
 extern void* lbl_8055EC98;
 extern const char lbl_8033B8C8[];
 void fn_80128668(void*);
+void fn_801FEDA4(void*);
+float fn_80129DC4(int, void*, float, float);
+extern float lbl_80563034;
+extern const char lbl_8033B790[];
+void* memset(void*, int, unsigned long);
 void fn_801FF5D4(void*, void*, float);
 void fn_801FCA54(void*, int, int);
 void fn_801FF7D4(void*, void*);
@@ -60,12 +65,65 @@ void fn_801FCF18(void* arg0, void* arg1, int arg2) {
     *(float*)((char*)arg0 + 0x40) = lbl_80563034;
 }
 
+void fn_801FCF74(void* arg0) {
+    int obj = *(int*)((char*)arg0 + 4);
+    if (!obj) return;
+    unsigned short type = *(unsigned short*)((char*)obj + 0x16);
+    if (type == 1) fn_801FD5E8();
+    else if (type == 0) fn_801FD3F0();
+    else if (type > 2) fn_802E317C((const char*)lbl_8033B618);
+    else fn_801FDF18();
+}
+
 extern "C" void fn_801FCFC8(void* arg0) {
     if (*(int*)((char*)arg0 + 4) != 0) {
         float value = fn_802C99E8(*(float*)((char*)arg0 + 0x6C));
         fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
         fn_802C99E8(value);
     }
+}
+
+extern "C" void fn_801FEDA4(void*);
+extern "C" float fn_80129DC4(int, void*, float, float);
+extern "C" float fn_801E7E24(void);
+extern "C" void* memset(void*, int, unsigned long);
+extern "C" const char lbl_8033B790[];
+void* fn_801FE188(void* arg0) {
+    *(const char**)arg0 = lbl_8033B790;
+    memset((char*)arg0 + 4, 0, 0x30);
+    *(int*)((char*)arg0 + 0x34) = 0;
+    return arg0;
+}
+
+int fn_802C7040(int);
+float fn_80129DC4(int, void *, float, float);
+int fn_801FE88C(void *, void *);
+extern const char lbl_8033B638[];
+extern const char lbl_8033B654[];
+extern int lbl_8033B760;
+void fn_801FE510(void *arg0, void *arg1) {
+    void *p = arg1;
+    while (p != 0) {
+        fn_802C7040(*(int *)((char *)p + 4));
+        p = *(void **)((char *)p + 0xC);
+    }
+}
+
+void fn_801FE550(void *arg0) {
+    *(int **)arg0 = &lbl_8033B760;
+    *(int *)((char *)arg0 + 0x94) = 0;
+}
+
+void fn_801FE708(void *arg0, void *arg1) {
+    char *p = (char *)arg1 + 0x2C;
+    int count = *(int *)((char *)arg0 + 0x94);
+    if (count >= 4)
+        fn_802E317C(lbl_8033B654);
+    count = *(int *)((char *)arg0 + 0x94);
+    char *slot = (char *)arg0 + count * 0x24;
+    *(char **)(slot + 4) = p;
+    fn_801FE88C(arg0, slot + 8);
+    ++*(int *)((char *)arg0 + 0x94);
 }
 
 int fn_801FE9A8(int arg0, int arg1) {
