@@ -423,6 +423,11 @@ void fn_801D8620(void) {
 
 }
 
+extern u8 lbl_8033905C[];
+void *fn_801D8720(void) {
+    return lbl_8033905C;
+}
+
 void fn_801D8938(void) {
 
 }
