@@ -7,5 +7,9 @@ void fn_80160B14(void) {
 	fn_80128658();
 }
 
+long fn_80160C18(void) {
+    return 0;
+}
+
 void fn_80160C28(void) {
 }
