@@ -74,6 +74,10 @@ extern "C" s32 fn_8019BD4C(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
 
+extern "C" f32 fn_8019DDEC(void *arg0) {
+    return *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28);
+}
+
 extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
