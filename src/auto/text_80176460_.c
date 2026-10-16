@@ -141,9 +141,9 @@ void fn_80176F24(void) {
 
 extern void fn_80177658(void *);
 extern void fn_80177608(void);
-extern void fn_80177618(void);
-extern void fn_80177628(void);
-extern void fn_80177638(void);
+extern void fn_80177618(int *);
+extern void fn_80177628(int *);
+extern void fn_80177638(int *);
 void fn_80177790(void) { fn_80177658((void *)fn_80177608); }
 
 void fn_8017779C(void) { fn_80177658(&fn_80177618); }
