@@ -5,6 +5,15 @@
 
 extern void fn_8012C4D8(void);
 
+extern s32 lbl_8055FC00;
+s32 fn_802C3034(s32 value) {
+    s32 old;
+
+    old = lbl_8055FC00;
+    lbl_8055FC00 = value;
+    return old;
+}
+
 void fn_802C4C80(void* arg0) {
     if (arg0 == NULL) {
         return;
