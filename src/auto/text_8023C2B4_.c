@@ -3,6 +3,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef signed long s32;
+
 s32 fn_8023C2E4(void* arg0) {
     fn_80236900(arg0);
     return 1;
@@ -19,10 +21,10 @@ s32 fn_8023C3CC(void) {
 }
 
 void fn_8023C94C(void) {
-    fn_8023C55C(&lbl_80341430);
+    fn_8023C55C(lbl_80341430);
 }
 
 void fn_8023C958(void) {
-    fn_8023C55C(&lbl_8034143C);
+    fn_8023C55C(lbl_8034143C);
 }
 
