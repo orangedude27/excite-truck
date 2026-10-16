@@ -128,6 +128,10 @@ extern "C" void fn_800B36D4(s32 arg0) {
     fn_800B63FC();
 }
 
+extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
+extern "C" s32 fn_800A4BF4(s32, u16*, s16*);
+extern "C" s32 fn_800B72E4(void) { return 0; }
+
 extern "C" void* fn_800B1BDC(void*);
 extern "C" void fn_800B73BC(void*);
 extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
