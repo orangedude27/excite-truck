@@ -7,6 +7,7 @@
 extern f32 lbl_8055E3C8;
 extern f32 lbl_80560470;
 extern f32 lbl_80560474;
+extern f32 lbl_80560490;
 
 extern "C" s32 fn_80128668(void);
 extern void* lbl_80358680[];
@@ -87,9 +88,10 @@ void fn_8001DF04(void) {
 }
 
 extern "C" void fn_8001DFA8(s32 arg0) {
-    ((CollisionEntry*)lbl_80358680[3])->apply(arg0, 0);
+    void* obj = ((void**)&lbl_80358680)[3];
+    ((void (**)(void*, s32, s32))*(void**)obj)[3](obj, arg0, 0);
 }
-
+#pragma scheduling reset
 extern "C" void fn_8001DFCC(void) {
     ((CollisionEntry*)lbl_80358680[4])->apply(9, 17);
 }
@@ -116,6 +118,37 @@ extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" f32 fn_8001DA5C(s32);
+extern f32 lbl_80560490;
+extern "C" void fn_8001E544(void* arg0) {
+    f32 a = lbl_80560490;
+    f32 b = lbl_80560474;
+    ((f32*)arg0)[1] = a;
+    ((f32*)arg0)[2] = b;
+    ((f32*)arg0)[3] = b;
+    ((f32*)arg0)[4] = a;
+    ((f32*)arg0)[5] = b;
+    ((f32*)arg0)[6] = b;
+    ((f32*)arg0)[7] = a;
+    ((f32*)arg0)[8] = b;
+    ((f32*)arg0)[9] = b;
+    ((f32*)arg0)[10] = a;
+    ((f32*)arg0)[11] = b;
+    ((f32*)arg0)[12] = b;
+    ((f32*)arg0)[13] = a;
+    ((f32*)arg0)[14] = b;
+    ((f32*)arg0)[15] = b;
+    ((f32*)arg0)[16] = a;
+    ((f32*)arg0)[17] = b;
+    ((f32*)arg0)[18] = b;
+    ((f32*)arg0)[19] = a;
+    ((f32*)arg0)[20] = b;
+    ((f32*)arg0)[21] = b;
+    ((f32*)arg0)[22] = a;
+    ((f32*)arg0)[23] = b;
+    ((f32*)arg0)[24] = b;
 }
 
 extern "C" s32 fn_8001E974(s32 arg0, s32 arg1) {
