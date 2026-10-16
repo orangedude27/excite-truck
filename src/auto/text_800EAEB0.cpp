@@ -16,7 +16,12 @@ extern "C" void* Instance__15EmissionManagerFv(void);
 
 extern "C" void OSCancelAlarm(void *);
 
-namespace nw4hbm { namespace snd { namespace detail {
+namespace nw4hbm { namespace snd {
+class MemorySoundArchive {
+public:
+    s32 detail_GetFileAddress(u32) const;
+};
+namespace detail {
 class SeqFileReader {
 public:
     void *GetBaseAddress() const;
