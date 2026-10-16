@@ -334,7 +334,6 @@ extern "C" s32 fn_80215BC0(void) {
 }
 
 extern "C" s32 fn_80214CB4(s32);
-extern "C" void fn_802191F0(void *, s32, s32);
 extern "C" void fn_80230E90(s32);
 extern "C" s32 fn_80215BC8(void *arg0, s32 arg1, s32 arg2) {
     s32 var_r6;
@@ -353,6 +352,22 @@ extern "C" s32 fn_80215C08(void *arg0) {
 
 extern "C" void fn_80215C18(void *arg0) {
     fn_80214CB4(*(u8 *)((char *)arg0 + 0x18) == 0);
+}
+
+extern "C" s32 fn_80215C28(s32 arg0) {
+    switch (arg0) {
+    case 0x125:
+    case 0x128:
+        fn_80214CB4(0);
+        fn_80230E90(0);
+        return 1;
+    case 0x127:
+        fn_80214CB4(1);
+        fn_80230E90(0);
+        return 1;
+    default:
+        return 0;
+    }
 }
 
 extern "C" void fn_80215CA0(void) {
