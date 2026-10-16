@@ -131,10 +131,10 @@ extern void *fn_801792F8(void);
       return lbl_8055E0A0;
   }
   
-  s32 fn_80134D54(void) {
-      fn_801769A8();
-      return 0;
-  }
+s32 fn_80134D54(void) {
+    fn_801769A8();
+    return 0;
+}
 
 #pragma dont_inline on
 f32 fn_80134DF8(void) {
