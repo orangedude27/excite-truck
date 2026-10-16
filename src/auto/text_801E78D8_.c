@@ -38,3 +38,8 @@ void fn_801E882C(void) {
     lbl_8055EB08 = 1;
 }
 
+extern void *lbl_8055AF08;
+void* fn_801E89EC(void) {
+    return lbl_8055AF08;
+}
+
