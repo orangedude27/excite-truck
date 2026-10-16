@@ -271,7 +271,7 @@ s32 fn_80128E58(void *arg0, s32 arg1) {
     return result;
 }
 
-void *fn_80128EB4(void *arg1) {
+void *fn_80128EB4(void *arg0, void *arg1) {
     if ((u32)*(s32 *)((u8 *)arg1 - 0x40) != 0x53544B41U) {
         return &lbl_8032A068;
     }
