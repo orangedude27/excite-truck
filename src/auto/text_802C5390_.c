@@ -2,6 +2,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+unsigned char fn_802C54CC(unsigned int arg0) { return (unsigned char)(arg0 >> 8); }
+
 void fn_802C6074(s32 *arg0) {
     *arg0 = 0;
 }
