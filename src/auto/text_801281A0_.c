@@ -149,9 +149,12 @@ void fn_801291C4(void) {
 
 s32 fn_801291C8(void *arg0, u32 arg1) {
     u32 end = ((u32 *)arg0)[3];
-    if (arg1 < end) return 0;
-    if (arg1 >= end + ((u32 *)arg0)[2]) return 0;
-    return 1;
+    s32 result = 0;
+    if (arg1 >= end) {
+        u32 limit = end + ((u32 *)arg0)[2];
+        if (arg1 < limit) result = 1;
+    }
+    return result;
 }
 
 s32 fn_801291F4(void *arg0) { return ((s32 *)arg0)[1]; }
