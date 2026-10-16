@@ -71,6 +71,11 @@ void fn_802C942C(int arg0) {
     fn_802C92D8();
 }
 
+int fn_802C94A0();
+void fn_802C9638(int arg0, int arg1) {
+    fn_802C94A0(arg0, arg1, 0);
+}
+
 extern void fn_802C9638(int, int);
 extern void fn_802C974C();
 extern float lbl_8055FC38;
