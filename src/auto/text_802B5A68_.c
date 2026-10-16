@@ -26,10 +26,12 @@ void fn_802B5CC4(void) {
 extern s32 fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_802B05DC(void);
 extern s32 fn_802B5D2C(const char *, s32);
+#pragma small_data on
 extern const char lbl_8055CE38[];
 extern const char lbl_8055CE40[];
 extern const char lbl_8055CE48[];
 extern const char lbl_8055CE50[];
+#pragma small_data off
 extern s32 lbl_8055FA28;
 extern float lbl_8055FA08;
 extern float lbl_80564C5C;
@@ -48,6 +50,16 @@ s32 fn_802B5DD0(s32 arg0) {
         result = 1;
     }
     return result;
+}
+
+void fn_802B5E24(s32 arg0) {
+    lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
+    lbl_8055FA08 = lbl_80564C5C;
+}
+
+u32 fn_802B5E8C(s32 arg0) {
+    s32 result = fn_802B5D2C(lbl_8055CE50, arg0);
+    return (u32)((-1 - result) | (result + 1)) >> 31;
 }
 
 extern void* lbl_8055FA44;
