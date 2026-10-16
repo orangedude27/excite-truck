@@ -62,6 +62,38 @@ void fn_801D1364(void) {
 void fn_801D139C(void) {
 
 }
+
+extern int lbl_8055E8F8;
+extern char lbl_8055ABD0;
+void fn_801D1250(float*, int);
+void fn_8012850C(int, void*);
+void* fn_8002F37C(void (*)(void*), int, int, int);
+void fn_801D14BC(void*);
+extern void fn_8012850C();
+extern void *fn_8002F37C();
+void fn_801D13A0(void) {
+ int offset=0; int i=0;
+ while(i<lbl_8055E8F8) { fn_801D1250((float*)(lbl_8055E908+offset),i); offset+=0x34; i++; }
+}
+
+void fn_801D1458(int arg1) {
+ ((void (*)(int))fn_801D11D4)(lbl_8055E908+arg1*0x34);
+}
+
+void fn_801D1468(void) {
+    int count = lbl_8055E8F8;
+    fn_8012850C(count * 0x34 + 0x10, &lbl_8055ABD0);
+    lbl_8055E908 = (int)fn_8002F37C(fn_801D14BC, 0, 0x34, count);
+}
+
+void fn_801D14BC(void* arg0) {
+ float value=lbl_80562A4C;
+ *(float*)((char*)arg0+0x18)=value; *(float*)((char*)arg0+0x14)=value;
+ *(float*)((char*)arg0+0x10)=value; *(float*)((char*)arg0+0xc)=value;
+ *(float*)((char*)arg0+8)=value; *(float*)((char*)arg0+4)=value;
+ *(float*)((char*)arg0+0x1c)=value; *(float*)((char*)arg0+0x20)=value;
+}
+
 extern void *lbl_804348E8[];
 extern float lbl_80562A48;
 extern float lbl_80562A4C;
