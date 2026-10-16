@@ -25,7 +25,10 @@ int fn_802B1DA0(void *arg0) {
 extern int lbl_8055CDB8;
 int stricmp(const char *, const char *);
 int fn_802B1DE8(void **arg0) {
-    return stricmp((char *)lbl_8055CDB8, (*(char *(**)(void *))(*(void ***)arg0 + 2))(arg0)) == 0;
+    return stricmp((char *)&lbl_8055CDB8, ((char *(**)(void *))(*(char ***)arg0))[2](arg0)) == 0;
+}
+
+void fn_802B1F64(void) {
 }
 
 void fn_802B1FC0(void *arg0) {
