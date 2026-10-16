@@ -7,6 +7,9 @@ typedef unsigned char u8;
 typedef unsigned char u8;
 typedef float f32;
 extern f32 lbl_80564248;
+extern u8 lbl_804B3150[12];
+extern s32 lbl_804B31E0[];
+extern s32 lbl_8055F6C0;
 extern f32 fn_8023659C(void);
 extern s32 fn_80214AF0(s32);
 void fn_802876A8(void *arg0) {
