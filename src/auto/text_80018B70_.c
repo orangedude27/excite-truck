@@ -69,7 +69,7 @@ extern void *lbl_802FD3B4;
 extern void *lbl_802FD2DC;
 extern const char lbl_80558C54[];
 extern void *lbl_803580A4;
-extern void *lbl_80357E0C;
+extern u8 lbl_80357E0C[12];
 void fn_80019708(void) {
     lbl_8055D588 = 0;
 }
@@ -237,6 +237,10 @@ void *fn_80019054(s32 arg0) {
 done:
     result = 0;
     return result;
+}
+
+s32 fn_80019088(void) {
+    return ((s32*)&lbl_80357E0C)[1];
 }
 
 void fn_80018F40(void) {
