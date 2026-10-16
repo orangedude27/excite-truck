@@ -219,6 +219,18 @@ void fn_8029EA34(void *arg0, void **arg1) {
     }
 }
 
+int fn_8029EAE8(void *arg0) {
+    float temp_f31;
+    int var_r31;
+    temp_f31 = lbl_805646A8;
+    var_r31 = 0;
+    if (fn_802C88E8((char *)arg0 + 0x30) < temp_f31 &&
+        ((int (*)(void *, float))fn_802C9640)((char *)arg0 + 0x30, *(float *)((char *)arg0 + 0x3C)) != 0) {
+        var_r31 = 1;
+    }
+    return var_r31;
+}
+
 int fn_8029EF1C(void) {
     return 0;
 }
@@ -234,6 +246,10 @@ void fn_8029EF2C(void) {
 
 int fn_8029EF30(void *arg0) {
     return ((int *)arg0)[4];
+}
+
+int fn_8029EF38(void *arg0) {
+    return *(int *)((char *)arg0 + 0x64);
 }
 
 int fn_8029EF60(void *arg0) {
