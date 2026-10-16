@@ -85,6 +85,16 @@ void fn_8016CE94(void *arg0, f32 arg1) {
     *(f32 *)((u8 *)arg0 + 4) = arg1;
 }
 
+extern f32 lbl_80561980;
+extern char lbl_8033072C[];
+extern char lbl_803308A0[];
+void *fn_8016CEC0(void *arg0, s32 arg1) {
+    *(s32 *)((u8 *)arg0 + 4) = arg1;
+    fn_8000DA10();
+    *(f32 *)((u8 *)arg0 + 0xC) = lbl_80561980;
+    return arg0;
+}
+
 void fn_8016CEFC(void *arg0) {
     ((s32 *)arg0)[1] = 0;
 }
