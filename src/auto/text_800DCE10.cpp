@@ -6,7 +6,7 @@
 extern void *lbl_80320548;
 extern "C" s32 fn_80128668(void);
 
-s32 fn_800DCE10(s32 arg0, s32 arg1) {
+extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
@@ -21,7 +21,7 @@ extern "C" s32 fn_800DCE60(void) {
     return 0;
 }
 
-void fn_800DCE68(void *arg0, void *arg1) {
+extern "C" void fn_800DCE68(void *arg0, void *arg1) {
     s16 v0 = ((s16 *)arg1)[0];
     s16 v1 = ((s16 *)arg1)[1];
     s16 v2 = ((s16 *)arg1)[2];
