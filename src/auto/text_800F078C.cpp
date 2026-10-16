@@ -2,9 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" void __dt__Q46nw4hbm3snd6detail9SeqPlayerFv(s32 arg0 = 0);
+
 
 extern "C" void fn_800F0E64(s32);
 extern "C" u32 lbl_8055DE48;
+
+extern "C" void fn_800F07E4(s32 arg0) {
+    __dt__Q46nw4hbm3snd6detail9SeqPlayerFv(arg0 - 8);
+}
 
 extern "C" s32 fn_800F0E24(void* arg0) {
     return *(s32*)((u8*)arg0 + 0x1E0) != 0;
