@@ -9,10 +9,12 @@ extern f32 lbl_80561B78;
 extern f32 lbl_80561B7C;
 extern void fn_8017A580(void *);
 
+#pragma scheduling off
+static f32 fn_load(void) { return lbl_80561B78; }
 void* fn_80179D08(void *arg0) {
-    f32 a = lbl_80561B7C;
-    f32 b = lbl_80561B78;
-    *(s32 *)arg0 = (s32)&lbl_80331C70;
+    register f32 a = lbl_80561B7C;
+    register f32 b = fn_load();
+    *(s32 *)arg0 = (s32)&lbl_80331C70[0];
     *(s32 *)((u8 *)arg0 + 0xC) = 0;
     *(f32 *)((u8 *)arg0 + 0x3C) = b;
     *(f32 *)((u8 *)arg0 + 0x40) = a;
@@ -30,7 +32,7 @@ void* fn_80179D08(void *arg0) {
     fn_801E9DC4((u8 *)arg0 + 0x6C);
     return arg0;
 }
-
+#pragma scheduling on
 void fn_80179D8C(void *arg0, s32 arg1) {
     ((s32 *)arg0)[2] = arg1;
 }
