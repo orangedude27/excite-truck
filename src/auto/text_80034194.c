@@ -30,6 +30,14 @@ void fn_800357A8(void) {
 
 }
 
+s32 fn_800393C4(s32 value) {
+    s32 old;
+
+    old = lbl_80558E04;
+    lbl_80558E04 = value;
+    return old;
+}
+
 extern void *lbl_8055D88C;
 void fn_8003998C(void* hi) {
     lbl_8055D88C = hi;
