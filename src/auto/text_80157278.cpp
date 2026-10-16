@@ -542,6 +542,22 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
     *(f32*)((u8*)arg0 + 0x27c) = lbl_80561754;
 }
 
+extern f32 lbl_80561760;
+extern "C" void fn_8015C564(void* arg0, void* arg1, s32 arg2, f32 arg3) {
+    if (*(s32*)((u8*)arg0 + 0x270) == *(s32*)((u8*)arg1 + 0x1ec)) {
+        if (arg2 == 7 || arg2 == 9) {
+            *(f32*)((u8*)arg0 + 0x278) = arg3;
+            if (arg2 == 7) {
+                volatile f32 value = arg3;
+                f32 offset;
+                if (value < lbl_80561754) offset = value - lbl_80561760;
+                else offset = lbl_80561760 + value;
+                *(s32*)((u8*)arg0 + 0x274) = (s32)offset;
+            }
+        }
+    }
+}
+
 extern "C" s32 fn_8015C684(void) {
     return 4;
 }
@@ -556,6 +572,10 @@ extern "C" void fn_8015CDD8(void) {
 }
 
 extern "C" u32 fn_8015D364(void) { return 1; }
+
+extern "C" s32 fn_8015D36C(void* arg0) {
+    return *(s32*)((u8*)arg0 + 0x264);
+}
 
 extern "C" u32 fn_8015D37C(void) { return 1; }
 
