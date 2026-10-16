@@ -27,6 +27,20 @@ void fn_801AE620(void *arg0) {
     fn_801AE618(*(unsigned short *)((char *)arg0 + 0xE));
 }
 
+#pragma small_data off
+extern float lbl_80562560;
+extern float lbl_8055E630;
+extern float lbl_80562558;
+extern void fn_801AE874(unsigned short *, int);
+extern void fn_801AE894(void *);
+extern int fn_801EA994(void);
+int fn_801AEA64(float arg0, float arg1) {
+    float diff = arg0 - arg1;
+    if (__fabsf(diff) <= lbl_80558DC4) return 0;
+    if (arg1 < arg0) return 1;
+    return -1;
+}
+#pragma small_data on
 void fn_801AED54(void) {
 
 }
@@ -49,6 +63,31 @@ void fn_801AED5C(void) {
 void fn_801AED68(void) {
     lbl_8055E634 = 0;
     fn_801B878C();
+}
+
+void fn_801AF92C(void *arg0) {
+    int count;
+    int i;
+    char *entry;
+    if (fn_801B8728() != 0 || fn_801B2C70(arg0) != 0) return;
+    count = lbl_80435780[0x3C0 / 4];
+    *(int *)arg0 = count;
+    *(int *)((char *)arg0 + 4) = 0;
+    *((signed char *)arg0 + 0xC) = 0;
+    *((signed char *)arg0 + 0xD) = 1;
+    entry = (char *)arg0 + 0x10;
+    for (i = 0; i < count; i++, entry += 0x14) {
+        void *item = fn_801AF8D0(i);
+        if (item != 0) {
+            *(int *)(entry + 4) = *(short *)((char *)item + 0xC);
+            *(int *)(entry + 8) = 0;
+            entry[0x10] = 0;
+        } else {
+            *(int *)(entry + 4) = -1;
+            *(int *)(entry + 8) = 0;
+            entry[0x10] = 0;
+        }
+    }
 }
 
 void fn_801AFA5C(int arg0) { fn_801AFA70(arg0, 1); }
