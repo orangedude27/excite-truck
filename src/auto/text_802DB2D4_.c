@@ -63,6 +63,10 @@ void fn_802DC130(void) {
     fn_802DBD88();
 }
 
+void fn_802DC134(void) {
+    fn_802DBDD8();
+}
+
 void fn_802DC278(void) { fn_802DBD88(); }
 
 void fn_802DC27C(void) { fn_802DBDD8(); }
