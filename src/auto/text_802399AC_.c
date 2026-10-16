@@ -92,3 +92,7 @@ void fn_8023AECC(void *arg0, s32 arg1) {
     (*(s32 *)((char *)arg0 + 0x14)) = arg1;
 }
 
+void fn_8023AED4(void *arg0, s32 arg1) {
+    *(s32 *)(*(char **)((char *)arg0 + 0x1C)) = arg1;
+}
+
