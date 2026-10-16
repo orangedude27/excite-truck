@@ -6,6 +6,11 @@ void* fn_80016508(void) {
     return lbl_8055D54C;
 }
 
+extern void *lbl_8055D550;
+void* fn_800165D4(void) {
+    return lbl_8055D550;
+}
+
 void fn_80016A44(void) {
     fn_8001766C();
 }
