@@ -16,6 +16,10 @@ void fn_8004DD88(void (*target)(void)) {
     target();
 }
 
+void __AXDSPInitCallback_8004DDC4(void) {
+    lbl_8055DA44 = 1;
+}
+
 void fn_8004DDF4(void* hi) {
     lbl_8055DA2C = hi;
 }
