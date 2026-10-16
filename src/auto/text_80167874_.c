@@ -49,8 +49,8 @@ extern s32 lbl_8055E354;
 void fn_801688B4(s32 arg0) {
     s32 i = 0;
     s32 j = 0;
-    while (i < *(s32 *)(&lbl_8055E354 + 0x1D4D0)) {
-        s32 *p = *(s32 **)(&lbl_8055E354 + 0x1D4CC) + j;
+    while (i < *(s32 *)((char *)&lbl_8055E354 + 0x1D4D0)) {
+        s32 *p = *(s32 **)((char *)&lbl_8055E354 + 0x1D4CC) + j;
         if (arg0 == *p) {
             *(char *)(p + 4) = 1;
         }
