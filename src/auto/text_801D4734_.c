@@ -411,13 +411,14 @@ s32 fn_801D7214(void *arg0) {
 extern f32 lbl_8055E3C8;
 extern f32 lbl_80562ADC;
 void fn_8016A240(void *);
+void fn_801D6FB8(void *);
 void fn_801D7240(void *arg0) {
     f32 f2;
     f32 f1;
     if (*(s32 *)((u8 *)arg0 + 4) == 2) {
         f2 = *(f32 *)((u8 *)arg0 + 0x30);
         if (f2 < lbl_80562ADC) {
-            fn_801D6FB8();
+            fn_801D6FB8((u8 *)arg0 + 8);
             *(s32 *)((u8 *)arg0 + 4) = 3;
         } else {
             f1 = *(f32 *)((u8 *)arg0 + 0x2C);
@@ -426,7 +427,7 @@ void fn_801D7240(void *arg0) {
                 fn_8016A240((u8 *)arg0 + 8);
                 *(s32 *)((u8 *)arg0 + 4) = 3;
             } else if (f1 < lbl_8055E3C8) {
-                fn_801D6FB8();
+                fn_801D6FB8((u8 *)arg0 + 8);
             }
         }
     }
