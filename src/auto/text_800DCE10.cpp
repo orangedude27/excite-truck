@@ -4,7 +4,12 @@
 #include <types.h>
 
 extern void *lbl_80320548;
+extern void *lbl_80320570;
+extern void *lbl_80320688;
+extern void *lbl_80320B5C;
+extern void *lbl_80320B8C;
 extern "C" s32 fn_80128668(void);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *);
 
 extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
