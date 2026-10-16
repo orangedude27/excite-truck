@@ -393,6 +393,11 @@ void fn_8016E984(void *arg0) {
     }
 }
 
+extern f32 fn_8016FD58(void);
+f32 fn_8016FD58(void) {
+    return lbl_8055E3C8;
+}
+
 void fn_8016FD9C(f32 *arg0, void *arg1) {
     char sp8[0x20];
     f32 value = *arg0;
