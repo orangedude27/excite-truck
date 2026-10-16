@@ -801,6 +801,13 @@ void fn_802299FC(void *arg0) {
         *(int *)((char *)arg0 + 0x250), y, diff, x);
 }
 
+extern "C" void fn_80229AC4(void *arg0) {
+    int *p = *(int **)((char *)arg0 + 0x254);
+    if (p != 0) {
+        *p = *(int *)((char *)arg0 + 0x258);
+    }
+}
+
 extern "C" u32 fn_80229ADC(void) { return 1; }
 
 extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
