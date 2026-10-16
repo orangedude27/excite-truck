@@ -26,6 +26,14 @@ void fn_80273AEC(void) {
     fn_8002F634(lbl_8049A2C8, fn_80273B08, 0x60, 0xC8);
 }
 
+int fn_80273B08(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        extern int fn_80128668(void);
+        fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_80273B48(void) {
 }
 
