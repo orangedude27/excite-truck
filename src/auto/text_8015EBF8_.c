@@ -78,6 +78,8 @@ void fn_8015F558(void) {
 
 void fn_8015F584(int *arg0) { void *p=*(void **)arg0; if(p) { if(p) { fn_80128670(((s32 *)p)[3]); if(p) { ((s32*)p)[0]=0; ((s32*)p)[1]=0; ((s32*)p)[2]=0; } fn_80128668(p); } *(void **)arg0=0; } }
 
+void fn_8015F5F4(int *arg0) { void *p=*(void **)arg0; if(p) { if(p) { s32 x=((s32*)p)[3]; if(x) fn_80128670(x-0x10); if(p) { ((s32*)p)[0]=0; ((s32*)p)[1]=0; ((s32*)p)[2]=0; } fn_80128668(p); } *(void **)arg0=0; } }
+
 void fn_8015F79C(void) {
 }
 
