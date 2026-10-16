@@ -13,6 +13,23 @@ s32 fn_802407F0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern char lbl_80342618[];
+extern char lbl_803426B0[];
+extern s32 lbl_8055F1F4;
+extern s32 fn_80235380(s32, s32);
+void *fn_802408B0(void *arg0, s32 arg1) {
+    s32 temp_r4;
+    if (arg0 != 0) {
+        *(void **)((char *)arg0 + 0xC) = lbl_803426B0;
+        *(void **)((char *)arg0 + 0x10) = lbl_803426B0 + 0x18;
+        temp_r4 = lbl_8055F1F4;
+        lbl_8055F1F4 = temp_r4 - 1;
+        fn_80235380(*(s32 *)((char *)arg0 + 0x44), temp_r4);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_80241228(void) {
 }
 
