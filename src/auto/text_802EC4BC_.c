@@ -18,3 +18,8 @@ void fn_80127464(void);
 char fn_802ECC10(void) {
     return lbl_805600E8;
 }
+
+void fn_802ECC18(u8 arg0) {
+    lbl_805600E9 = arg0;
+}
+
