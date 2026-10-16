@@ -13,3 +13,6 @@ void fn_80131268(void) {
     fn_80131234();
 }
 
+extern int lbl_8055E044;
+void fn_80131308(void) { lbl_8055E044 += 1; }
+
