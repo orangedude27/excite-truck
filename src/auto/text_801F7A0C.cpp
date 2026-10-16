@@ -16,6 +16,7 @@ void *fn_801F8188(s32 a, s32 b);
   s32 fn_801F9450(void *node);
   void *fn_801F95C4(void *node, s32 index, s32 arg);
   void fn_801F96A8(void *node);
+  void *fn_801F93FC(void);
   }
 
 struct F9Node {
@@ -26,6 +27,15 @@ struct F9Node {
 
 extern "C" void fn_801F92A8(void) {
 
+}
+
+extern "C" void fn_801F9440(F9Node *list, F9Node *node) {
+    node->next = list->next;
+    list->next = node;
+}
+
+extern "C" s32 fn_801F948C(F9Node *node) {
+    return stricmp((char *)node->vtable, (char *)lbl_8033B1EC) == 0;
 }
 
 extern "C" void fn_801FC66C(void) {
