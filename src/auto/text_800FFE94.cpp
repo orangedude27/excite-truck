@@ -26,6 +26,14 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
     OSRestoreInterrupts(level);
 }
 
+extern "C" float GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_80100C90(void* arg0, int arg1) {
+    int valid = arg1 >= 0 && arg1 < 4;
+    if (!valid) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x15E, lbl_803279CC, arg1, 0, 4);
+    }
+    return *(float*)((char*)arg0 + (arg1 * 4) + 0x5C);
+}
+
 void fn_801013B0(void) {
     return;
 }
