@@ -39,6 +39,10 @@ extern "C" void GXInitLightColor_800D8714(u32 *arg0, u32 *arg1) {
     *arg0 = *arg1;
 }
 
+extern "C" s32 fn_800D8720(s32 *arg0) {
+    return *arg0 & 0xF;
+}
+
 extern "C" s32 fn_800D8780(u32 *arg0) {
     return (*arg0 >> 13U) & 3;
 }
