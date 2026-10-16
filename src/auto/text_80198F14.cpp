@@ -133,10 +133,10 @@ extern "C" void fn_801A1358(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x1C) 
 void fn_801A1474(void* arg0, f32 scale) {
     u8* p = (u8*)arg0;
     f32* src = (f32*)(p + 0x64);
-    void* obj = *(void**)(p + 0x24);
     s32 i = 0;
     *(f32*)(p + 0x178) = *(f32*)(p + 0x170) * scale;
-    do {
+    while (i < *(s32*)(p + 0x174)) {
+        void* obj = *(void**)(p + 0x24 + i * 4);
         f32 x = src[0] * scale;
         f32 y = src[1] * scale;
         f32 z = src[2] * scale;
@@ -145,10 +145,9 @@ void fn_801A1474(void* arg0, f32 scale) {
         *(f32*)((u8*)obj + 0x30) = z;
         *(f32*)((u8*)obj + 0x24) = src[3] * scale;
         src += 4;
-        obj = *(void**)(p + 0x28 + i * 4);
         i++;
-    } while (i < *(s32*)(p + 0x174));
-    obj = *(void**)(p + 0x17c);
+    }
+    void* obj = *(void**)(p + 0x17c);
     *(f32*)((u8*)obj + 0x24) = *(f32*)(p + 0x164) * scale;
     *(f32*)((u8*)obj + 0x28) = *(f32*)(p + 0x168) * scale;
     *(f32*)((u8*)obj + 0x2c) = *(f32*)(p + 0x16c) * scale;
