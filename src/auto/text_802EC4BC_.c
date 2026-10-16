@@ -49,7 +49,7 @@ void fn_802ECC74(void) {
     temp = lbl_805600EB;
     lbl_805600ED = 1;
     if (temp != 0) {
-        while (lbl_805600E8 != 0) {
+        while ((u8)lbl_805600E8 != 0) {
             fn_802ECC20();
             fn_80127464();
         }
