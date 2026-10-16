@@ -152,6 +152,11 @@ extern "C" void fn_800F8234(s32 arg0) {
     fn_800F65F0(arg0 - 0xC);
 }
 
+extern "C" s32 __dt__Q36nw4hbm3snd18SoundArchivePlayerFv(s32);
+extern "C" void fn_800F823C(s32 arg0) {
+    __dt__Q36nw4hbm3snd18SoundArchivePlayerFv(arg0 - 0xC);
+}
+
 extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6detail10BasicSound(void **arg0, void *arg1) {
     if (arg1 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325C00, 0x55, lbl_80325C18);
