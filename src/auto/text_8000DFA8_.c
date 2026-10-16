@@ -127,6 +127,10 @@ void fn_80010EC8(void) {
     fn_80010F20();
 }
 
+void fn_80011A2C(void *arg0) {
+    fn_802346C8(fn_80010BEC(arg0));
+}
+
 void fn_80011A50(void) {
     lbl_8055D4A8 = 0;
     fn_80234AEC();
