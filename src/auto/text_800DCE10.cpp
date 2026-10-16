@@ -19,7 +19,7 @@ extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_800DCE50(void **arg0) {
-    *arg0 = (void *)&lbl_80320548;
+    *arg0 = (void *)(s32)&lbl_80320548;
 }
 
 extern "C" s32 fn_800DCE60(void) {
@@ -70,5 +70,11 @@ extern "C" void fn_800DCE68(void *arg0, void *arg1) {
     ((u8 *)arg0)[1] = r0_2;
     ((u8 *)arg0)[2] = r0_3;
     ((u8 *)arg0)[3] = r0_4;
+}
+
+void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, u32 arg2) {
+    if (arg2 >= 2) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80320B8C, 0x5f, (const char *)&lbl_80320B5C);
+    }
 }
 
