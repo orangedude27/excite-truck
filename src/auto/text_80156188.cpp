@@ -201,6 +201,26 @@ void fn_80156DCC(void *arg0, s32 arg1) {
     *(u32 *)((u8 *)temp_r31 + 0xE8) = var_r29;
 }
 
+extern "C" void* fn_801570D0(void* arg0, s32 arg1) {
+    extern u8 lbl_8032E3F8[];
+    struct Obj { virtual void c(s32); };
+    if (arg0 != 0) {
+        Obj* obj = *(Obj**)((u8*)arg0 + 8);
+        *(u32*)arg0 = (u32)lbl_8032E3F8;
+        if (obj != 0) {
+            obj->c(1);
+        }
+        obj = *(Obj**)((u8*)arg0 + 4);
+        if (obj != 0) {
+            obj->c(1);
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" void fn_80157170(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_b->v2();
 }
@@ -231,6 +251,6 @@ extern "C" void fn_80157224(void* arg0) {
 }
 
 extern "C" void fn_80157238(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->update();
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v6();
 }
 
