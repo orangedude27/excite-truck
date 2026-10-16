@@ -22,13 +22,11 @@ void fn_80243470(void* arg0) {
 
 #pragma dont_inline on
 s32 fn_80243478(s32 arg0) {
-    s32 count;
+    s32 count = 0;
+    s32 (*entry)[3] = lbl_803428B0[arg0];
     s32 i;
-    s32 (*entry)[3];
-    entry = lbl_803428B0[arg0];
-    count = 0;
     for (i = 0; i < 16; i++) {
-        if ((*entry)[0] == 0) break;
+        if ((*entry)[0] == 0) return count;
         count++;
         entry++;
     }
@@ -43,8 +41,8 @@ s32 fn_80243710(s32 arg0, s32 arg1) {
 void fn_802438EC(char* arg0) {
     s32 len = strlen(arg0);
     if (len > 0) {
-        char* end = arg0 + len;
-        if ((u8)end[-1] == '_') end[-1] = 0;
+        u8* end = (u8*)((u32)len + (u32)arg0);
+        if ((s32)end[-1] == '_') end[-1] = 0;
     }
 }
 
