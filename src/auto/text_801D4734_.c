@@ -410,7 +410,6 @@ s32 fn_801D7214(void *arg0) {
 
 extern f32 lbl_8055E3C8;
 extern f32 lbl_80562ADC;
-void fn_801D6FB8(void);
 void fn_8016A240(void *);
 void fn_801D7240(void *arg0) {
     f32 f2;
