@@ -27,10 +27,8 @@ extern signed char lbl_8055E060;
 extern void* lbl_8042F53C[];
 extern s32 fn_80131920(s32, s32);
 extern void __register_global_object(void*, void (*)(void*), void*);
-int fn_8013181C(void) {
-    if (lbl_8032B510) {
-        fn_802E30C8(lbl_8032B510);
-    }
+s32 fn_8013181C(void) {
+    fn_802E30C8(lbl_8032B510);
     return 0;
 }
 
@@ -185,6 +183,5 @@ extern void fn_802E317C(const char*, ...);
 extern char lbl_8032B73C;
 extern char lbl_80559B10[], lbl_80559B18[], lbl_80559B1C[];
 extern char lbl_8032B7BC[];
-extern double atof();
 extern int sscanf(const char*, ...);
 typedef struct { void** vtable; } Unk80132BD0;
