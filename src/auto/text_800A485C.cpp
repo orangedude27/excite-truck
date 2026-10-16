@@ -417,6 +417,12 @@ extern "C" void fn_800CF290(void) {
 
 }
 
+extern "C" void fn_800CF294(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0x20) = 0;
+    *(const char **)((u8 *)arg0) = lbl_8031E770;
+    *(s32 *)((u8 *)arg0 + 0x24) = 0;
+}
+
 extern "C" s32 fn_800CF2B0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
