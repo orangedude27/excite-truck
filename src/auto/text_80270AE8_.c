@@ -167,6 +167,15 @@ void fn_80272354(void *arg0) {
     *(int *)((char *)arg0 + 0x5C) = 2;
 }
 
+extern int fn_802726AC(void);
+int fn_802726EC(float farg0, float farg1, float farg2) {
+    int result = 0;
+    if (farg0 == farg1 || farg0 == farg2 || fn_802726AC() != 0) {
+        result = 1;
+    }
+    return result;
+}
+
 void fn_802733F0(void) {
 }
 
