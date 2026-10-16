@@ -48,7 +48,7 @@ extern s32 lbl_8055B560;
 extern s32 lbl_8055B568;
 
 void fn_8020A550(void) {
-    char buf[68];
+    char buf[64];
     s32* var_r29;
     s32* var_r30;
     s32 var_r27;
