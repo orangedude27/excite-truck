@@ -6,6 +6,8 @@ extern float lbl_8055FC44;
 extern float lbl_8055FC48;
 
 extern int lbl_8055FC70;
+extern int lbl_8055FC78;
+extern void fn_802CFFAC(unsigned char, unsigned char, unsigned char);
 extern float lbl_8055FC38;
 extern float lbl_8055FC3C;
 extern float lbl_8055FC40;
