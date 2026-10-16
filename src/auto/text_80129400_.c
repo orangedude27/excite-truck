@@ -20,6 +20,8 @@ void fn_802E830C(void *);
 void fn_80127D58(void *);
 void fn_802E7D0C(void);
 
+void *__AXFXGetLfoSinTable_801297F4(void) { return lbl_804223C0; }
+
 s32 fn_80129890(void) {
     s32 count = 0;
     s32 i = 0;
