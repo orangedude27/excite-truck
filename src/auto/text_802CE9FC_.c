@@ -5,7 +5,7 @@ extern void *lbl_8055FE1C;
 extern unsigned char lbl_804C9984[];
 extern char lbl_8034C1C4[];
 extern void fn_802D2ED8(int, int);
-extern int fn_802E317C(const char *);
+extern int fn_802E317C(const char *, ...);
 extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -186,6 +186,66 @@ void fn_802D3134(void) {
 extern void *lbl_8055FD58;
 void* fn_802D3138(void) {
     return (char*)lbl_8055FD58 + 0x24;
+}
+
+void fn_802D37E4(void) {
+    int i;
+    unsigned char *p;
+
+    p = lbl_804C9984;
+    for (i = 0; i < 4; i++) {
+        p[0xC] = 0; p[0xD] = 0;
+        p[0x24] = 0; p[0x25] = 0;
+        p[0x3C] = 0; p[0x3D] = 0;
+        p[0x54] = 0; p[0x55] = 0;
+        p[0x6C] = 0; p[0x6D] = 0;
+        p[0x84] = 0; p[0x85] = 0;
+        p[0x9C] = 0; p[0x9D] = 0;
+        p[0xB4] = 0; p[0xB5] = 0;
+        p[0xCC] = 0; p[0xCD] = 0;
+        p[0xE4] = 0; p[0xE5] = 0;
+        p[0xFC] = 0; p[0xFD] = 0;
+        p[0x114] = 0; p[0x115] = 0;
+        p[0x12C] = 0; p[0x12D] = 0;
+        p[0x144] = 0; p[0x145] = 0;
+        p[0x15C] = 0; p[0x15D] = 0;
+        p[0x174] = 0; p[0x175] = 0;
+        p += 0x180;
+    }
+    *(int *)(lbl_804C9984 + 0x700) = 0;
+}
+
+void fn_802D3894(void) {
+    int i;
+    unsigned char *p;
+
+    i = 0;
+    p = lbl_804C9984;
+    do {
+        if (p[0xC] == 0)
+            break;
+        fn_802E317C(lbl_8034C1C4);
+        i++;
+        p += 0x18;
+    } while (i < 0x40);
+}
+
+void fn_802D3900(void) {
+    int i;
+    unsigned char *base;
+    void *light;
+    unsigned long result;
+
+    base = lbl_804C9984;
+    i = 0;
+    while (i < *(int *)(base + 0x700)) {
+        light = *(void **)(base + 0x600 + i * 4);
+        GXInitLightDir(*(unsigned short *)light, *(unsigned short *)((char *)light + 4), &result);
+        *(unsigned char *)((char *)light + 0xD) =
+            result != *(unsigned long *)((char *)light + 8);
+        i++;
+    }
+    *(int *)(base + 0x700) = 0;
 }
 
 extern unsigned long lbl_8055D0B8;
