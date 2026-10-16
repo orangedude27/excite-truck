@@ -1,3 +1,5 @@
+extern unsigned int lbl_804C1410[];
+
 extern char lbl_8055FC94;
 extern char lbl_8055D030[];
 extern char lbl_8034B4E0[];
@@ -26,15 +28,43 @@ void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
 
+void *fn_802C86DC(void) {
+    return lbl_804C1410;
+}
+
 extern void *lbl_8055D018;
 void fn_802C86E8(void* hi) {
     lbl_8055D018 = hi;
+}
+
+extern unsigned int lbl_804C1410[];
+extern void PSQUATMultiply(void *, unsigned int, void *);
+extern void fn_802D02F8(unsigned int, unsigned int);
+extern void fn_802C7734(unsigned int);
+extern void fn_802C8B70(void);
+void fn_802C88D4(unsigned int arg0) {
+    PSQUATMultiply((void *)&lbl_804C1410[9], arg0, lbl_804C1410);
+}
+
+void fn_802C8B08(unsigned int *arg0) {
+    unsigned int *src = lbl_804C1410;
+    arg0[0] = src[0]; arg0[1] = src[1];
+    arg0[2] = src[2]; arg0[3] = src[3];
+    arg0[4] = src[4]; arg0[5] = src[5];
+    arg0[6] = src[6]; arg0[7] = src[7];
+    arg0[8] = src[8]; arg0[9] = src[9];
+    arg0[10] = src[10]; arg0[11] = src[11];
 }
 
 extern void fn_802CAD74(void);
 void fn_802C8B70(void) {
     fn_802CAD74();
     lbl_8055FC70 = 2;
+}
+
+void fn_802C8B98(unsigned int arg0, unsigned int arg1) {
+    fn_802C7734(arg1);
+    fn_802C8B70();
 }
 
 extern void fn_801E4FF4(void);
