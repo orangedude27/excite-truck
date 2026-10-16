@@ -350,6 +350,14 @@ void fn_801FF6A4(void* arg0) {
     *(int*)((char*)arg0 + 0x4C0) = 0;
 }
 
+extern "C" void* fn_801FF6B4(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        lbl_8055EC94 = 0;
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_801FEFC4(void) {
 
 }
