@@ -9,3 +9,5 @@ void fn_8028E584(void) {
 
 int fn_802916DC(void) { return 0; }
 
+void fn_802916E4(void) {}
+
