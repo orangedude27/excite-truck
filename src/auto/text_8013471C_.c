@@ -45,9 +45,18 @@ void fn_80134A88(void) {
 
 }
 
+extern s32 fn_801769A8(void);
+extern s32 fn_80134D54(void);
 extern f32 fn_80134C1C(void);
 extern f32 fn_80134D20(void);
+extern f32 fn_80134D78(void);
+extern f32 fn_80134DF8(void);
 extern f32 fn_80134E00(void);
+extern f32 lbl_80560108;
+extern f32 lbl_8056010C;
+extern f32 lbl_80561304;
+extern f64 lbl_80561308;
+extern f64 lbl_80561310;
 f32 fn_80134E34(f32 arg0) {
     f32 f30;
     f32 f31;
