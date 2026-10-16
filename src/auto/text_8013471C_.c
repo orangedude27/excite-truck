@@ -45,7 +45,13 @@ void fn_80134A88(void) {
 
 }
 
-extern s32 fn_80134D54(void);
+f32 fn_80134E00(void) {
+    if ((fn_801769A8() >> 8) & 1) {
+        return fn_80134D78();
+    }
+    return fn_80134DF8();
+}
+
 extern f32 fn_80134C1C(void);
 extern f32 fn_80134D20(void);
 extern f32 fn_80134E00(void);
