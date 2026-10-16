@@ -13,6 +13,14 @@ extern "C" void* fn_80107FE4(void* arg0, const void* arg1) {
     return arg0;
 }
 
+extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
+    extern s32 fn_80128668(void);
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 extern "C" u8 fn_8010A33C(void) {
     return 2;
 }
