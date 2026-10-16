@@ -212,23 +212,22 @@ extern char lbl_8055AA44[];
 extern Vec lbl_80438498;
 extern char lbl_8055E83D;
 void fn_801C7A28(void) {
-    Vec *src = &lbl_80438268;
-    Vec *dst = &lbl_80438498;
-    dst->x = src->x;
-    dst->y = src->y;
-    dst->z = src->z;
+    lbl_80438498.x = lbl_80438268.x;
+    lbl_80438498.y = lbl_80438268.y;
+    lbl_80438498.z = lbl_80438268.z;
     lbl_8055E83A = 0;
     lbl_8055E868 = fn_801C6CB0;
     lbl_8055E83D = 0;
-    ((void (*)(f32, f32))fn_801C78D8)(src->y, src->x);
+    ((void (*)(f32, f32))fn_801C78D8)(lbl_80438268.y, lbl_80438268.x);
 }
 
+extern f64 atof(const char *);
 void fn_801C7A6C(void) {
     f32 value = (f32)atof(lbl_804380F0);
-    lbl_80438498.x = lbl_80562970;
-    lbl_80438498.y = lbl_80562970;
-    lbl_80438498.z = value;
-    strcpy(lbl_804380F0, lbl_8055AA44);
+    ((Vec *)0x80438498)->x = lbl_80562970;
+    ((Vec *)0x80438498)->y = lbl_80562970;
+    ((Vec *)0x80438498)->z = value;
+    strcpy(lbl_804380F0, (char *)0x8055AA44);
 }
 
 void fn_801C7AC4(void) {
@@ -383,5 +382,3 @@ void fn_801C7254(void *arg0) {
     t = p[2]; p[2] = p[6]; p[6] = t;
     t = p[5]; p[5] = p[7]; p[7] = t;
 }
-extern char lbl_8055E83D;
-extern char lbl_8055E83D;
