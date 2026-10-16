@@ -22,6 +22,10 @@ typedef struct {
     char *name;
     s32 state;
 } UnkStruct_801D6618;
+
+typedef struct Unk801D77D8 {
+    void (**vtable)(struct Unk801D77D8 *);
+} Unk801D77D8;
 extern char lbl_80338F50[];
 extern char lbl_80338CB0[];
 extern char lbl_80338C78[];
@@ -690,7 +694,9 @@ s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
 void fn_801D77D8(void *arg0) {
-    ((void (*)(void *))(*(void **)(*(u32 *)arg0 + 0x34)))(arg0);
+    register void **vtable = *(void ***)arg0;
+    register void *func = vtable[13];
+    ((void (*)(void *))func)(arg0);
 }
 
 void fn_801D77E8(void) {
@@ -857,8 +863,10 @@ void *fn_801D7EC0(void *arg0, s32 arg1) {
 }
 
 s32 fn_801D7F5C(s32 arg0, s32 arg1) {
-    if (arg0 == 0) return 0;
-    if (arg1 > 0) fn_80128668();
+    if (arg0 == 0 || arg1 <= 0) {
+        return arg0;
+    }
+    fn_80128668();
     return arg0;
 }
 
