@@ -183,6 +183,27 @@ void *fn_801D7924(void *arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_801D796C(void *arg0, s32 *arg1, s32 arg2) {
+    s32 *entry;
+    s32 idx;
+
+    entry = arg1;
+    for (idx = 0; idx < arg2; idx++, entry++) {
+        if (((s32 *)arg0)[1] != 0) {
+            if (fn_801D9B28(*entry) != 0) {
+                return 1;
+            }
+        } else if (((s32 *)arg0)[2] == *entry) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+char *fn_801D7C6C(void) {
+    return lbl_8033890C;
+}
+
 void fn_801D8620(void) {
 
 }
