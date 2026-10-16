@@ -230,6 +230,11 @@ void* fn_8011FF24(void) {
     return lbl_8055DEF0;
 }
 
+void AXFXSetHooks_8011FFB8(void *arg0, void *arg1) {
+    lbl_8055DEF8 = arg0;
+    lbl_8055DEFC = arg1;
+}
+
 extern void *lbl_8055DEF8;
 extern void *lbl_8055DEFC;
 extern u32 lbl_8055DEF4;
