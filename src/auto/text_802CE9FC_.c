@@ -48,6 +48,10 @@ void* fn_802D30E4(void) {
     return (char*)lbl_8055FD54 + 0x24;
 }
 
+void fn_802D30FC(void) {
+    fn_802D30F0();
+}
+
 extern void fn_802D30F0(void);
 extern void fn_802D307C(void);
 void* fn_802D3104(void) {
