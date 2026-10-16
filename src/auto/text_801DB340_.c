@@ -11,6 +11,8 @@ extern int fn_801DC258(float *, int *, short *, float, float);
 extern int fn_80128670(void);
 extern int fn_801D049C(void);
 
+void fn_801DB340(int arg0) { fn_801DB13C(arg0 - 4); }
+
 void fn_801DCA5C(void) {
     fn_8012C4D8();
 }
@@ -24,9 +26,9 @@ void fn_801DCDA0(void) {
 }
 
 void fn_801DCDA4(void) {
-    if (lbl_80446F08[2] != 0) {
+    if (*(volatile int *)((char *)lbl_80446F08 + 8) != 0) {
         fn_80128670();
-        lbl_80446F08[2] = 0;
+        *(volatile int *)((char *)lbl_80446F08 + 8) = 0;
     }
     lbl_8055E994(lbl_8055E990);
     lbl_8055E994 = 0;
@@ -43,7 +45,7 @@ void fn_801DCE10(void) {
 
 }
 
-int fn_801DCE14(short *arg0, float *arg1, float *arg2, int *arg4) {
+int fn_801DCE14(short *arg0, float *arg1, float *arg2, int arg3, int *arg4) {
     float spC;
     int sp8;
 
@@ -90,6 +92,13 @@ extern void *lbl_8055E9A8;
 void fn_801DCF00(void) {
     lbl_8055E9A8 = 0;
 }
+
+float fn_801DCF0C(void) {
+    volatile float sp8 = lbl_80562BB8;
+    ((int (*)(float *, int, int, int))fn_801DC258)((float *)&sp8, 0, 0, 0);
+    return sp8;
+}
+
 extern float lbl_80562B70;
 extern float lbl_80562BB8;
 extern int fn_801DC258(float *, int *, short *, float, float);
