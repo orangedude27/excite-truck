@@ -25,11 +25,11 @@ s32 fn_8016A878(const char* arg0) {
     s32 offset;
     s32 count;
     s32 i;
-    state = (s32*)&lbl_80430340;
+    state = &lbl_80430340.unk_0x4;
     count = 0;
     i = 0;
     offset = 0;
-    while (i < state[1]) {
+    while (i < *state) {
         if (stricmp(lbl_80430340.unk_0x0 + offset + 1, arg0) == 0) count++;
         offset += 0x2C;
         i++;
