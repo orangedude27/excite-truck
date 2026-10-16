@@ -43,6 +43,18 @@ s32 fn_802619D8(s32 *arg0, s32 arg1) {
     return *arg0 + arg1 * 4;
 }
 
+void fn_802619E8(void *arg0, s32 arg1, s32 arg2) {
+    *(s32 *)((u8 *)arg0 + 0) = arg1;
+    *(s32 *)((u8 *)arg0 + 4) = 5;
+    *(s32 *)((u8 *)arg0 + 8) = arg2;
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+}
+
+s32 fn_80261A08(s32 *arg0, s32 arg1) {
+    return *arg0 + arg1 * 4;
+}
+
 void fn_80261A18(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 8) = arg1;
     *(s32 *)((u8 *)arg0 + 4) = 8;
