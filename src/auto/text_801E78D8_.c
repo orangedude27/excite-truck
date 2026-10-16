@@ -47,7 +47,7 @@ long fn_801E7E2C(void) {
     return -1;
 }
 
-extern void *lbl_8055EB04;
+extern float *lbl_8055EB04;
 void* fn_801E7E34(void) {
     return lbl_8055EB04;
 }
