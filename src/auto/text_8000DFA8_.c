@@ -52,7 +52,7 @@ void fn_8000F3E8(void) {
 
 void fn_8000F40C(void) {
     if (lbl_8055D4D0 != 0) {
-        fn_80235380();
+        fn_80235380(lbl_8055D4D0);
         lbl_8055D4D0 = 0;
     }
 }
