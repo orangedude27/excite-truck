@@ -271,6 +271,11 @@ extern "C" void *fn_8022855C(void *p,s32 unused,s32 a,s32 b){fn_80218F80();*(s32
 
 extern "C" s32 fn_80228DA4(void) { return 0; }
 
+extern "C" void fn_80228DAC(void *arg0) {
+    TruckIface *obj = *(TruckIface **)((u8 *)arg0 + 0x268);
+    obj->vf7();
+}
+
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229054(
     void* this_, s32 flag) {
     if (this_) {
