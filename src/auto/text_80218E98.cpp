@@ -80,6 +80,8 @@ extern "C" void *fn_80219568(void *, s32, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_80219718(void *);
 extern "C" void fn_80219440(void *, s32, void *, s32);
 extern f32 lbl_805634A4;
+extern "C" f32 lbl_805634A8;
+extern "C" void fn_802C5280(void *, s32, s32, s32, s32, void *);
 extern char lbl_8033D878[];
 extern char lbl_8033F768[];
 extern "C" u32 *fn_80216708(void);
