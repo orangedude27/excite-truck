@@ -39,6 +39,10 @@ void fn_8020C8FC(void) {
 
 }
 
+void fn_8020C900(s8 arg0) {
+    lbl_8055EE40 = arg0;
+}
+
 void fn_8020C918(void) {
 
 }
