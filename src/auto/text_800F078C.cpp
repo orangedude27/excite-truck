@@ -6,3 +6,6 @@
 extern "C" void fn_800F0E64(s32);
 extern "C" u32 lbl_8055DE48;
 
+extern "C" s32 fn_800F0E40(s32 arg0) {
+    return arg0 + 0xD8;
+}
