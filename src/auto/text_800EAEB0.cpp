@@ -563,6 +563,7 @@ extern "C" void fn_800EFB6C(void* this_, s32 arg1) {
 #pragma small_data off
 extern u8 lbl_80323B28[];
 extern u8 lbl_80323C74[];
+extern u8 lbl_80323C3C[];
 #pragma pop
 extern "C" s32 fn_800EFBAC(void* arg0) {
     return *(s32*)&((u8*)arg0)[0x3C];
