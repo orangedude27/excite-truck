@@ -9,6 +9,11 @@ extern unsigned char lbl_8055D900;
 extern int lbl_8055D8F4;
 extern unsigned int lbl_8037B8C0;
 extern const char lbl_80302848[];
+int fn_8003B380(int value) {
+    lbl_8055D8F0 = value;
+    return 1;
+}
+
 int fn_8003BB48(void) {
     return ((int *)lbl_8037B8A0)[1];
 }
