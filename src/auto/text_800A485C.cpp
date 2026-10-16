@@ -31,7 +31,7 @@ extern "C" MEMAllocator lbl_804075E0;
 extern "C" MEMAllocator* lbl_80559708;
 extern "C" void* lbl_8055DD98;
 extern "C" void* lbl_8055DDF0;
-extern "C" void* fn_800C6914(void*);
+extern "C" void* fn_800C6914(void*, void* = 0);
 extern "C" void fn_800C6A1C(void*, s32);
 extern "C" void fn_800C6CE8(void*);
 extern "C" void fn_800C7998(void*);
@@ -189,6 +189,18 @@ extern "C" void *fn_800D19F8(void *arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" void Start__Q210homebutton9RemoteSpkFv(void *this_ptr) {
+    if (((u8 *)this_ptr)[0x1EC] != 0) {
+        OSAlarm *alarm = (OSAlarm *)((u8 *)this_ptr + 0x1A0);
+        OSCreateAlarm(alarm);
+        
+        OSTime time = OSGetTime();
+        s32 time_base = *(s32 *)0x800000F8;
+        
+        OSSetPeriodicAlarm(alarm, time_base >> 2, 0, (OSAlarmHandler)&fn_800D16C4);
+    }
 }
 
 extern "C" void fn_800D1AE4(OSAlarm *arg0) {
@@ -447,27 +459,20 @@ extern "C" void fn_800D2480(void) {
 
 extern "C" void fn_800D16C4(OSAlarm*, void*);
 extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *this_ptr, long arg1, int arg2, signed char arg3) {
-    void *r26 = this_ptr;
-    int r27 = arg1;
-    int r28 = arg2;
-    signed char r29 = arg3;
-    
-    if (((u8 *)r26)[0x1EC] != 0) {
-        ARCHandle handle;
+    if (((u8 *)this_ptr)[0x1EC] != 0) {
         ARCFileInfo info;
-        void *start_addr;
-        s32 val1;
+        ARCHandle handle;
         
-        ARCFastOpen((ARCHandle *)((u8 *)r26 + 0x1D0), r28, &info);
-        start_addr = ARCGetStartAddrInMem(&info);
-        val1 = fn_80116A30(&info);
+        ARCFastOpen((ARCHandle *)((u8 *)this_ptr + 0x1D0), arg2, &info);
+        void *start_addr = ARCGetStartAddrInMem(&info);
+        s32 val1 = fn_80116A30(&info);
         fn_80116A38(&info);
         
-        u8 *entry = (u8 *)r26 + ((s32)r27 * 0x68);
+        u8 *entry = (u8 *)this_ptr + ((s32)arg1 * 0x68);
         entry[0x5E] = 0;
-        *(s32 *)(entry + 0x58) = r28;
+        *(s32 *)(entry + 0x58) = arg2;
         *(s32 *)(entry + 0x54) = val1;
-        entry[0x5D] = r29;
+        entry[0x5D] = arg3;
         *(s32 *)(entry + 0x50) = (s32)start_addr;
     }
 }
