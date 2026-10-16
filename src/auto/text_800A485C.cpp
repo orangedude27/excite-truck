@@ -152,7 +152,7 @@ s32 fn_800D3824(void) {
     tmp |= val;
     return tmp >> 31;
 }
-u8 fn_800D3838(u8 *arg0) {
+extern "C" u8 fn_800D3838(u8 *arg0) {
     return *arg0;
 }
 
