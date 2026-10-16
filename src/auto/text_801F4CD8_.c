@@ -15,6 +15,7 @@ extern void fn_801F7280(void *, void *, void *);
 extern void fn_801F70D0(void *, int);
 extern void fn_801F6D60(void *, int);
 extern void fn_801F6A08(void *, int);
+extern void fn_801F75A4(void *, void *, void *);
 void fn_801F4D64(void) {
     fn_801F70D0(lbl_8055EC18, 1);
     lbl_8055EC18 = 0;
