@@ -15,7 +15,7 @@ extern char lbl_8034C620[];
 extern char lbl_8034C650[];
 extern unsigned char lbl_804C5700[12];
 extern void fn_802D9230(void *);
-extern void fn_802E317C(const char *, void *);
+extern void fn_802E317C(const char *, ...);
 extern void GXInitTexObjWrapMode(void *, int, int);
 extern void GXLoadTexObj(void *, int);
 extern void DCFlushRange(void *, unsigned int);
