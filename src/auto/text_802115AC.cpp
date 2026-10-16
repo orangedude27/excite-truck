@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern "C" void fn_8021915C(void *, unsigned int);
+
 extern "C" void fn_80221E7C(void);
 extern "C" void fn_80215270(void);
 extern "C" void fn_8022E4BC(s32);
@@ -218,6 +220,14 @@ extern "C" void fn_80215420(void) {
 
 extern "C" void fn_80215424(void) {
 
+}
+
+extern "C" void fn_80215428(void *arg0) {
+    u8 flag = *((u8 *)arg0 + 0x1A);
+    *((u8 *)arg0 + 0x19) = 1;
+    if (flag != 0) {
+        *((u8 *)arg0 + 0x234) = 1;
+    }
 }
 
 extern "C" void fn_80215464(void) {
