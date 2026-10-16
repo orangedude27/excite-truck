@@ -56,6 +56,10 @@ void fn_801282E8(void) {
 
 }
 
+s32 fn_801284E8(void) {
+    fn_8012834C(NULL, NULL, 1);
+}
+
 void fn_801284F0(void *arg0, void *arg1) {
     fn_8012834C(arg0, arg1, 2);
 }
@@ -110,6 +114,8 @@ const char* __AXGetStudio_80129164(void) {
     return lbl_8032A068;
 }
 
+s32 fn_8012919C(void *arg0) { return ((s32 *)arg0)[2]; }
+
 void fn_801291BC(void) {
 
 }
@@ -149,46 +155,50 @@ void fn_80128670(s32 arg0) {
 }
 
 void fn_801286A0(void *arg0, s32 arg1) {
+    void *r31 = arg0;
     s32 r7 = arg1 & ~0x3F;
     s32 r6 = ((s32 *)arg0)[-6];
     s32 r0 = ((s32 *)arg0)[-5];
     
     ((s32 *)arg0)[-6] = r6 - r7;
     ((s32 *)arg0)[-5] = r0 - r7;
-    
-    ((s32 *)lbl_8041E140)[1] = ((s32 *)lbl_8041E140)[1] - r7;
-    
+    ((s32 *)lbl_8041E140)[1] -= r7;
     fn_801281F4(((s32 *)arg0)[-5], r6 - r7);
-    
-    ((s32 *)arg0)[r0 - r7] = 0x53544B41;
+    ((s32 *)r31)[r0 - r7] = 0x53544B41;
 }
 
 void fn_80128714(void *arg0, s32 arg1, s32 arg2) {
-    s32 *ptr = (s32 *)arg0;
+    void *r29;
+    char *r30;
+    s32 r31;
     
-    ptr[2] = arg2;
-    ptr[1] = 0;
-    ptr[4] = 0;
-    ptr[3] = arg1;
+    r29 = arg0;
+    r30 = lbl_8032A000;
+    r31 = 0;
+    
+    ((s32 *)arg0)[2] = arg2;
+    ((s32 *)arg0)[1] = 0;
+    ((s32 *)arg0)[4] = 0;
+    ((s32 *)arg0)[3] = arg1;
     
     if (arg1 == 0) {
-        goto skip_init;
+        goto skip;
     }
     
-    fn_802E30C8(&lbl_8032A000[0xE8], NULL, NULL);
-    fn_802E30C8(&lbl_8032A000[0x10C], &ptr[3], &ptr[2] + ptr[3]);
-    ptr[7] = 0;
-    ptr[6] = 0;
-    ptr[5] = 0x200;
+    fn_802E30C8(&lbl_8032A000[0xE8], (void *)arg1, (void *)arg2);
+    fn_802E30C8(&lbl_8032A000[0x10C], &((s32 *)arg0)[3], (void *)((s32)((s32 *)arg0)[3] + ((s32 *)arg0)[2]));
+    ((s32 *)arg0)[7] = 0;
+    ((s32 *)arg0)[6] = 0;
+    ((s32 *)arg0)[5] = 0x200;
     return;
     
-skip_init:
+skip:
     if (arg2 != 0) {
-        s32 temp = arg2 >> 10;
-        fn_802E317C(&lbl_8032A000[0x130], (void *)(temp + (temp < 0 ? 1 : 0)));
+        s32 shifted = arg2 >> 10;
+        fn_802E317C(&lbl_8032A000[0x130], (void *)(shifted + (shifted >> 31)));
     }
-    ptr[7] = 0;
-    ptr[6] = 0;
+    ((s32 *)arg0)[7] = 0;
+    ((s32 *)arg0)[6] = 0;
 }
 
 s32 fn_801288A4(void) {
