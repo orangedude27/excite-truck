@@ -10,6 +10,11 @@ extern unsigned char lbl_8041DF58[];
 extern int fn_80127AA0(void);
 extern int fn_80127464(int);
 extern int fn_80127AB8(void *);
+void fn_80127A50(int arg0) {
+    fn_80127464(arg0);
+    fn_80127AB8((void *)arg0);
+}
+
 void fn_80127A84(int *arg0, int *arg1, int *arg2) {
     *arg0 = lbl_8055DF58;
     *arg1 = lbl_8055DF5C;
