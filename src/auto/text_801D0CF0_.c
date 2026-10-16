@@ -7,6 +7,24 @@ void __AXDSPInitCallback_801D0CF0(void) {
     lbl_8055E8E8 = 0;
 }
 
+void *__dt__Q34nw4r2ef6EffectFv_801D0D7C(void *arg0, int arg1) {
+    extern void fn_801D0DFC(void);
+    extern void *lbl_803381C0[];
+    extern void *fn_80128668(void *);
+    if (arg0) {
+        *(void **)arg0 = lbl_803381C0;
+        fn_801D0DFC();
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+void fn_801D0DDC(void *arg0) {
+    int index = lbl_8055E8E8;
+    lbl_80438818[index] = arg0;
+    lbl_8055E8E8 = index + 1;
+}
+
 void fn_801D0DFC(void) {
     lbl_8055E8E8--;
 }
