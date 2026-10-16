@@ -501,7 +501,7 @@ f32 fn_80011EB0(s32 arg0) {
 }
 
 f32 fn_80011EC8(s32 arg0) {
-    return *((f32 *)&lbl_80350EC4[5] + arg0 * 5);
+    return lbl_80350ED8[arg0 * 5];
 }
 
 void fn_8000F158(void) {
