@@ -166,12 +166,16 @@ extern u8 lbl_802F4B90[];
 extern "C" void DVDClose(void*);
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32);
 extern "C" void fn_800EB3AC(void* arg0) {
-    *(s32*)arg0 = 0;
-    *(f32*)((u8*)arg0 + 4) = lbl_80560FEC;
-    *(f32*)((u8*)arg0 + 8) = lbl_80560FE8;
-    *(f32*)((u8*)arg0 + 0xC) = lbl_80560FE8;
-    *(f32*)((u8*)arg0 + 0x10) = *(f32*)(lbl_802F4B90 + 0x1FC);
-    *(u8*)((u8*)arg0 + 0x14) = 0x7F;
+    volatile u8* p = (volatile u8*)arg0;
+    f32 a = lbl_80560FE8;
+    f32 b = *(f32*)(lbl_802F4B90 + 0x1FC);
+    f32 c = lbl_80560FEC;
+    *(volatile f32*)(p + 8) = a;
+    *(volatile f32*)(p + 0x10) = b;
+    p[0x14] = 0x7F;
+    *(volatile f32*)(p + 0xC) = a;
+    *(volatile f32*)(p + 4) = c;
+    *(volatile s32*)p = 0;
 }
 
 extern "C" void fn_800EB41C(void* arg0) {
@@ -184,6 +188,20 @@ extern "C" f32 fn_800EB430(void* arg0) {
     if (*(s32*)arg0 == 0 && lbl_80560FF0 == *(f32*)((u8*)arg0 + 0x10))
         return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(lbl_80560FF0);
     return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(*(f32*)((u8*)arg0 + 4) / lbl_80560FF4);
+}
+
+void fn_800EBB88(void* arg0) {
+    u32* p = (u32*)arg0;
+    u32* q = (u32*)((u8*)arg0 + 8);
+    p[2] = 0; p[3] = 0; p[0] = 0; p[1] = 0;
+    p[2] = (u32)q; p[3] = (u32)q;
+}
+
+extern "C" void fn_800EC848(void** head, void* node) {
+    u32 level = OSDisableInterrupts();
+    *(void**)node = *head;
+    *head = node;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" void *fn_800ECAEC(void *arg0) {
@@ -210,6 +228,15 @@ extern "C" void fn_800F27AC(void *);
 extern "C" void fn_800ECC58(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x108) = 0;
     ((void (*)(void))fn_800F27AC)();
+}
+
+s32 nw4hbm::snd::MemorySoundArchive::detail_GetFileAddress(u32 id) const {
+    struct { s32 v[13]; } local;
+    if (!fn_800F283C((void *)this, id, 0, &local.v[0])) return 0;
+    if (!fn_800F2824((void *)this, local.v[0], &local.v[8])) return 0;
+    if (!fn_800F282C((void *)this, local.v[0], local.v[1], &local.v[2])) return 0;
+    if (local.v[9] != 0) return 0;
+    return local.v[10] + local.v[3] + *(u32 *)((u8 *)this + 0x108);
 }
 
 extern u8 lbl_803231D8[];
