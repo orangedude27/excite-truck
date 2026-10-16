@@ -66,8 +66,41 @@ extern void* lbl_8055A510;
 void fn_8019F1A4(void) __attribute__((noreturn));
 
 extern "C" s32 fn_80128668(void);
+void fn_801A5C4C(void);
+void fn_80199870(void* arg0) {
+    u32 value = *(u32*)((u8*)arg0 + 0x10);
+    if ((u32)(value - 0x50430000) == 0x4152 ||
+        (u32)(value - 0x41430000) == 0x4152) {
+        fn_801A5C4C();
+    }
+}
+
 extern "C" s32 fn_8019A780(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
+}
+
+void fn_8019A788(void* arg0, void* arg1, void* arg3, void* arg4, s32 arg5, f32 farg1, f32 farg2) {
+    extern s32 fn_80199894(void*, void*, f32*, s32, void*, f32, f32, f32, f32, f32);
+    f32 sp10, spC, sp8;
+    f32 scale = lbl_805622DC;
+    if (*(s32*)((u8*)arg0 + 4) != 0 || arg4 != 0) {
+        fn_80199894(arg0, arg4, (f32*)0, arg5, arg4, farg2, farg1, 0.0f, 0.0f, 0.0f);
+        return;
+    }
+    sp8 = *(f32*)arg3 * scale;
+    spC = *((f32*)arg3 + 1) * scale;
+    sp10 = *((f32*)arg3 + 2) * scale;
+    fn_80199894(arg1, arg0, &sp8, arg5, arg4, farg2, farg1, 0.0f, 0.0f, 0.0f);
+}
+
+void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    extern void fn_8019A820(void*, s32, s32, s32, f32);
+    fn_8019A820((u8*)arg0 + 0x34, arg1, arg2, arg3, *(f32*)((u8*)arg0 + 0x24));
+}
+
+void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
+    extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
+    fn_8019AA34((u8*)arg0 + 0x34, arg1, (u8*)arg1 + 0x34, arg2, arg3, arg1, *(f32*)((u8*)arg0 + 0x24), *(f32*)((u8*)arg1 + 0x24));
 }
 
 extern "C" s32 fn_8019BD4C(void *arg0) {
@@ -75,8 +108,9 @@ extern "C" s32 fn_8019BD4C(void *arg0) {
 }
 
 extern void fn_8019CCCC(void*, f32, s32);
+extern void fn_8019CCCC(void*, void*, s32, f32);
 void fn_8019CE3C(void* arg0, s32 arg1) {
-    fn_8019CCCC((u8*)arg0 + 0x34, *(f32*)((u8*)arg0 + 0x24), arg1);
+    fn_8019CCCC(arg0, (u8*)arg0 + 0x34, arg1, *(f32*)((u8*)arg0 + 0x24));
 }
 
 extern "C" f32 fn_8019DDEC(void *arg0) {
@@ -91,6 +125,8 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
 }
 
 s32 fn_8019E874(void*, void**, void*, f32, f32, f32, f32);
+extern void fn_8019AA34(void*, void*, void*, s32, s32, void*, f32, f32);
+extern void fn_8019A820(void*, s32, s32, s32, f32);
 s32 fn_8019EA7C(void* arg0, void** arg1) {
     void* temp_r3;
     void* temp_r5;
@@ -108,8 +144,7 @@ s32 fn_8019EA7C(void* arg0, void** arg1) {
     temp_f4 = *(f32*)((u8*)temp_r5 + 0x24) - *(f32*)((u8*)temp_r3 + 0x24);
     temp_f1 = *(f32*)((u8*)temp_r5 + 0x2C);
     temp_f2 = temp_f3 - *(f32*)((u8*)temp_r3 + 0x28);
-    sp20 = temp_f4;
-    spC = temp_f2;
+    sp20 = temp_f4; spC = temp_f2;
     sp1C = temp_f1 - *(f32*)((u8*)temp_r3 + 0x2C);
     return fn_8019E874(arg0, arg1, temp_r5, temp_f1, temp_f2, temp_f3, temp_f4) != 0;
 }
