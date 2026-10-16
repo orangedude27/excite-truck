@@ -117,6 +117,8 @@ void fn_801B8AD8(void) {
 
 }
 
+int fn_801B8ADC(void) { return 1; }
+
 void fn_801B8AEC(void) {
 
 }
