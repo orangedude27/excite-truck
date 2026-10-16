@@ -12,6 +12,7 @@ extern "C" char lbl_8055B750[];
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" int stricmp(const char *, const char *);
 extern "C" void *memcpy(void *, const void *, unsigned long);
+extern u8 lbl_8033CAE8[];
 extern "C" s32 fn_80214E10(s32);
 extern "C" s32 fn_80214FE0(s32, s32, s32, s32);
 extern "C" s32 fn_80206430(void);
@@ -115,6 +116,30 @@ extern "C" void fn_80212340(void *arg0) {
         }
         p[3] = 0;
     }
+}
+
+extern "C" void fn_80214D50(s32 arg0) {
+    s32 index;
+    s32 offset;
+    void *obj;
+    float value;
+    if (fn_80206430() == 0) return;
+    index = lbl_8055EF5C + 1;
+    lbl_8055EF5C = index;
+    if (index >= 4) {
+        index = 0;
+        lbl_8055EF5C = 0;
+    }
+    offset = arg0 * 0x18;
+    obj = *(void **)(lbl_80490558 + offset + index * 4 + 8);
+    if (obj == 0) return;
+    value = *(float *)(lbl_80490558 + offset + 4) * fn_80209028();
+    if (value == *(float *)((char *)obj + 8)) return;
+    *((u8 *)obj + 0x4D) = 1;
+    *(float *)((char *)obj + 8) = value;
+    *((u8 *)obj + 0x49) = 1;
+    *((u8 *)obj + 0x4B) = 0;
+    *((u8 *)obj + 0x4A) = 0;
 }
 
 extern "C" void fn_80214FD8(void) { fn_80214E10(0); }
