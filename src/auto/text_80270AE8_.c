@@ -133,14 +133,31 @@ f32 fn_802715F0(void *arg0) {
     return lbl_8055F540;
 }
 
+int fn_80271FAC(const char *arg0) {
+    char **entry;
+    int i;
+    entry = lbl_80346B54;
+    i = 0;
+loop:
+    if (i != 11 && stricmp(arg0, *entry) == 0) {
+        return i;
+    }
+    i++;
+    if (i >= 18) {
+        return 11;
+    }
+    entry++;
+    goto loop;
+}
+
 extern int stricmp(const char *, const char *);
 extern char *lbl_80346B54[];
 extern float lbl_80563F48;
 extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
 void fn_80272354(void *arg0) {
-    float value = lbl_80563F48;
     float other = lbl_80563F88;
+    float value = lbl_80563F48;
     *(float *)((char *)arg0 + 0x0) = value;
     *(float *)((char *)arg0 + 0x4) = value;
     *(float *)((char *)arg0 + 0x8) = value;
@@ -148,6 +165,16 @@ void fn_80272354(void *arg0) {
     memset((char *)arg0 + 0x10, 0, 8);
     *(int *)((char *)arg0 + 0x58) = 0;
     *(int *)((char *)arg0 + 0x5C) = 2;
+}
+
+extern int fn_80128668(void);
+extern void fn_80271624(void);
+extern signed char lbl_8055F558;
+int fn_80273978(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
 }
 
 extern int lbl_8049F9D8;
