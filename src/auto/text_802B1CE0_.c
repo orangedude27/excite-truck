@@ -10,6 +10,24 @@ int fn_802B1D38(int arg0) {
     return -2;
 }
 
+int fn_802B1DA0(void *arg0) {
+    int tag = *(int *)arg0;
+    switch (tag) {
+    case 0x53494E44:
+        return ((int *)arg0)[8];
+    case 0x4E444C32:
+        return ((int *)arg0)[7] - 2;
+    default:
+        return 0x3E8;
+    }
+}
+
+extern char lbl_8055CDB8[];
+int stricmp(const char *, const char *);
+int fn_802B1DE8(void **arg0) {
+    return stricmp((char *)lbl_8055CDB8, (*(char *(**)(void *))(*(void ***)arg0 + 2))(arg0)) == 0;
+}
+
 void fn_802B1FC0(void *arg0) {
     ((int *)arg0)[0] = 0;
     ((int *)arg0)[2] = 0;
