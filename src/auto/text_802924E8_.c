@@ -35,3 +35,17 @@ extern int lbl_802FA998[];
 extern char lbl_80349208[];
 void fn_80292EA8(void *arg0) { *(s32 *)((u8 *)arg0 + 0x180) = 0; }
 
+void fn_80292EB4(void *arg0) { *(s32 *)((u8 *)arg0 + 0x180) = 0; }
+
+int fn_80292EC0(void *arg0, const char *arg1, s32 *arg2, s32 arg3) {
+    s32 i;
+    u8 *entry;
+    for (i = 0, entry = (u8 *)arg0; i < *(s32 *)((u8 *)arg0 + 0x180); i++, entry += 0x18) {
+        if (fn_8002B1D8(arg1, (char *)entry, 0xF) == 0) {
+            *arg2 = i;
+            return 1;
+        }
+    }
+    return 0;
+}
+
