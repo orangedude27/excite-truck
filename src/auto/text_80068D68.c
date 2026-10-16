@@ -78,7 +78,8 @@ typedef struct tHCI_CFG {
     u16 at_0x02; // at 0x2
 } tHCI_CFG;
 
-extern hcisu_h2_cb_t hcisu_h2_cb;
+extern hcisu_h2_cb_t lbl_803BD1A0;
+#define hcisu_h2_cb lbl_803BD1A0
 extern void UUSB_Register(tUUSB *uusb);
 extern void UUSB_Open(tUUSB *uusb, void *cback);
 extern void UUSB_Close(void *uusb);
