@@ -5,6 +5,18 @@ void fn_801D11D4(void) {
     fn_801D11D8();
 }
 
+extern void *fn_801284F8(int, const char *);
+extern void fn_801D0FA4(void);
+extern char lbl_80338208;
+extern char lbl_80338214;
+extern void *lbl_804348E8[];
+extern float lbl_80562A48;
+extern void fn_801819A0(void *, void *, void *, float, float, float);
+extern float lbl_80562A4C;
+void fn_801D1244(float *arg0) {
+    *arg0 = lbl_80562A4C;
+}
+
 void fn_801D1008(void*, unsigned int);
 void fn_80128668(void*);
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801D130C(long arg0, long arg1) {
