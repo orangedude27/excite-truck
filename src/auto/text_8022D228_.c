@@ -62,6 +62,11 @@ int fn_8022DB94(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_8022DBD4(void *arg0) {
+    int *array = *(int **)arg0;
+    return array[*(int *)((char *)arg0 + 0xC)];
+}
+
 void *fn_8022DCC4(void *arg0, char **arg1, int arg2, int arg3) {
     char **var_r31 = arg1;
     char *var_r30 = (char *)arg0;
