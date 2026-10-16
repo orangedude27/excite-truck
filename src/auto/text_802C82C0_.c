@@ -462,6 +462,12 @@ int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_802C9E3C(int *arg
     return arg0;
 }
 
+void fn_802CA008(void *arg0) {
+    if (((int (*)(int, float))fn_802C9640)((int)((char *)arg0 + 4), *(float *)((char *)arg0 + 0x10)) != 0) {
+        fn_801E7894(*(int *)arg0);
+    }
+}
+
 extern char lbl_8055FC94;
 extern char lbl_8055D030[];
 extern char lbl_8034B4E0[];
