@@ -29,22 +29,30 @@ extern "C" s32 fn_800DCE60(void) {
 }
 
 extern "C" void fn_800DCE68(void *arg0, const void *arg1) {
+    u8 buf[4];
     s16 val;
-    u8 b0, b1, b2, b3;
     
     val = ((const s16 *)arg1)[0];
-    b0 = (val < 0) ? 0 : (val > 255) ? 255 : (u8)val;
+    if (val < 0) buf[0] = 0;
+    else if (val > 255) buf[0] = 255;
+    else buf[0] = (u8)val;
     
     val = ((const s16 *)arg1)[1];
-    b1 = (val < 0) ? 0 : (val > 255) ? 255 : (u8)val;
+    if (val < 0) buf[1] = 0;
+    else if (val > 255) buf[1] = 255;
+    else buf[1] = (u8)val;
     
     val = ((const s16 *)arg1)[2];
-    b2 = (val < 0) ? 0 : (val > 255) ? 255 : (u8)val;
+    if (val < 0) buf[2] = 0;
+    else if (val > 255) buf[2] = 255;
+    else buf[2] = (u8)val;
     
     val = ((const s16 *)arg1)[3];
-    b3 = (val < 0) ? 0 : (val > 255) ? 255 : (u8)val;
+    if (val < 0) buf[3] = 0;
+    else if (val > 255) buf[3] = 255;
+    else buf[3] = (u8)val;
     
-    *(u32 *)arg0 = b0 | (b1 << 8) | (b2 << 16) | (b3 << 24);
+    *(u32 *)arg0 = *(u32 *)buf;
 }
 
 void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *out, const void *this_ptr, u32 index);
