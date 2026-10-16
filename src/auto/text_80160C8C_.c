@@ -106,11 +106,23 @@ unsigned char fn_80165040(void *arg0) {
     return *((unsigned char *)arg0 + 5);
 }
 
+unsigned char fn_80165048(void *arg0) {
+    return *((unsigned char *)arg0 + 5);
+}
+
 void fn_80165248(void) {
 
 }
 
 int fn_801657D4(void) { return 1; }
+
+void fn_801657DC(void) {
+    int sp10[2];
+    float sp8;
+    fn_80020434(sp10, &sp8);
+    fn_8026A2CC(sp10, 0, sp8);
+    fn_8000C630(0x15, -1);
+}
 
 void fn_80165820(void) {
 }
