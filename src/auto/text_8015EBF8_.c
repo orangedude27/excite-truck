@@ -79,7 +79,21 @@ void fn_8015F558(void) {
 void fn_8015F79C(void) {
 }
 
+int fn_80160268(int arg0) {
+    int temp_r4;
+    temp_r4 = arg0 >> 31;
+    return (temp_r4 ^ arg0) - temp_r4;
+}
+
 void fn_80160278(void) {
+}
+
+void fn_8016029C(f32 *arg0, f32 *arg1) {
+    register f32 b = arg1[2];
+    register f32 a = arg1[0];
+
+    arg0[0] = a;
+    arg0[1] = b;
 }
 
 void fn_801602B0(void) {
