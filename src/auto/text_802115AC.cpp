@@ -602,6 +602,10 @@ extern "C" void fn_802159AC(void *arg0) {
     ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf13();
 }
 
+extern "C" void fn_802159C0(void *arg0) {
+    ((VfObj *)*(void **)((char *)arg0 + 0x244))->vf14();
+}
+
 extern "C" void fn_80215B08(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
     obj->vf21();
