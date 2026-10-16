@@ -20,6 +20,14 @@ extern void fn_80129324(s32);
 extern void fn_80206518(void);
 extern u32 lbl_8055D3B0;
 extern u32 lbl_8055D3B8;
+extern u8 lbl_802FBC7C[];
+extern void fn_8000A8C4(void);
+extern void fn_8020C920(void*);
+extern void fn_802103B8(void*);
+void fn_8000AAE4(void* arg0);
+void fn_8000AB48(void* arg0, s32 arg1);
+void fn_8000ABE0(s32 arg0);
+u32 fn_8000AC38(void);
 
 void* fn_80009D70(void* arg0, s32 arg1) {
     void* tmp;
