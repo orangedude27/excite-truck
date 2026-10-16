@@ -191,6 +191,8 @@ extern "C" void fn_80144358(void) {
 
 extern "C" u32 fn_8014435C(void) { return 1; }
 
+extern "C" u32 fn_801443E8(void) { return 1; }
+
 extern "C" void fn_80144408(void) {
 
 }
