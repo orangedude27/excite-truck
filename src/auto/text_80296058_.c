@@ -8,3 +8,8 @@ void fn_80296060(void) {
 void fn_80296064(void) {
 
 }
+
+void fn_80296070(void) {
+
+}
+
