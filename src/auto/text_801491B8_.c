@@ -17,10 +17,26 @@ typedef struct {
     s32 (*fn)(void *, s32);
 } VTable80154618;
 extern void fn_802E30C8();
+typedef struct { s32 v[4]; } S4_80149234;
 extern s32 lbl_802F93D0[];
 extern f32 lbl_805615D4;
 extern f64 lbl_805615D8;
 extern f32 lbl_80561628;
+
+void fn_80149210(void *arg0) {
+    s32 x = ((s32 *)arg0)[1] + 1;
+    ((s32 *)arg0)[1] = (s32)(((u32)(x << 30) - (u32)(x >> 31)) + (u32)(x >> 31) + 0) >> 0;
+    ((s32 *)arg0)[1] = (s32)((((u32)(x << 30) - (u32)(x >> 31)) << 2 | ((u32)(x << 30) - (u32)(x >> 31)) >> 30) + (u32)(x >> 31));
+}
+
+s32 fn_80149234(void *arg0) {
+    s32 sp8[4];
+    *(s32 *)(sp8 + 0) = lbl_802F93D0[0];
+    *(s32 *)(sp8 + 1) = lbl_802F93D0[1];
+    *(s32 *)(sp8 + 2) = lbl_802F93D0[2];
+    *(s32 *)(sp8 + 3) = lbl_802F93D0[3];
+    return sp8[((s32 *)arg0)[1]];
+}
 
 void fn_8014ACCC(void) {
 
