@@ -13,8 +13,55 @@ extern void *lbl_804C07F0[];
 extern unsigned char lbl_8055CF70;
 extern int lbl_8055FADC;
 extern int lbl_8055CF6C;
+void fn_802BF40C(void) {
+    int i;
+    void **obj;
+    for (i = 0; i < lbl_8055FADC; i++) {
+        obj = (void **)lbl_804C07F0[i];
+        if (obj != 0) {
+            ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+            lbl_804C07F0[i] = 0;
+        }
+    }
+    lbl_8055FADC = 0;
+    if (lbl_8055CF6C != -1) {
+        fn_802C6CF8();
+        lbl_8055CF6C = -1;
+    }
+}
+
+int fn_802BF4B0(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668((void *)arg0);
+    }
+    return arg0;
+}
+
 int fn_802BF4F0(void) {
     return (int)(unsigned int)lbl_804C07F0 != 0;
+}
+
+void fn_802BF508(void) {
+    int index;
+    int saved;
+
+    index = fn_801E85B4();
+    if (lbl_804C07F0[index] != 0 && lbl_8055CF70 != 0) {
+        saved = fn_802C2C00(0);
+        ((void (*)(void *))(*(void ***)lbl_804C07F0[index])[2])(lbl_804C07F0[index]);
+        fn_802C2C00(saved);
+    }
+    fn_802BF160();
+}
+
+extern void fn_801284F8(int, const char*);
+extern void* fn_802BF780(void);
+extern const char lbl_8034AD90[];
+extern void* lbl_804C07F0[];
+extern float lbl_80564DA8, lbl_80564DB0, lbl_8055FAE0;
+int fn_802BF740(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668((void*)0);
+    return arg0;
 }
 
 void fn_802C0054(void *dst, const void *src) {
