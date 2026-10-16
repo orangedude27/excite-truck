@@ -36,6 +36,12 @@ void fn_80203EC0(void) {
 
 }
 
+void fn_80203EC4(void) {
+    if (fn_80202BE4() == 0) {
+        fn_802CB288(lbl_8055ECFC);
+    }
+}
+
 void fn_80203F0C(void) {
 
 }
