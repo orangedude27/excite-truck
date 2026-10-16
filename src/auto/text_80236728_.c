@@ -34,3 +34,10 @@ void fn_80236918(void* alarm) {
 
 extern void fn_80237AA0(void);
 extern void fn_80236960(void);
+extern float lbl_805636E0;
+extern void fn_8002F6AC(void *, void (*)(void));
+extern void fn_80128668(void *);
+extern void fn_80237968(void);
+extern void fn_80237A08(void);
+extern char lbl_8034095C[];
+extern char lbl_80340970[];
