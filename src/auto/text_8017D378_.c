@@ -86,15 +86,9 @@ void fn_8017DA8C(void *arg0) {
 float fn_8017E380(void) { extern float lbl_80561C2C; return lbl_80561C2C; }
 
 void fn_8017E388(void *arg0) {
-    extern float lbl_80561BE0;
-    extern float lbl_80561BF4;
-    float *p = (float *)arg0;
-    p[1] = lbl_80561BE0; p[0] = lbl_80561BF4;
-    p[2] = lbl_80561BE0; p[3] = lbl_80561BE0;
-    p[4] = lbl_80561BF4; p[5] = lbl_80561BE0;
-    p[6] = lbl_80561BE0; p[7] = lbl_80561BE0;
-    p[8] = lbl_80561BF4; p[9] = lbl_80561BE0;
-    p[10] = lbl_80561BE0; p[11] = lbl_80561BE0;
+ extern float lbl_80561BE0; extern float lbl_80561BF4;
+ float a=lbl_80561BE0, b=lbl_80561BF4; float *p=(float*)arg0;
+ p[1]=a; p[0]=b; p[2]=a; p[3]=a; p[4]=b; p[5]=a; p[6]=a; p[7]=a; p[8]=b; p[9]=a; p[10]=a; p[11]=a;
 }
 
 int fn_8017E930(void *arg0, void *arg1, void *arg2) {
