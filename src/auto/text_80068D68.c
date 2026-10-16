@@ -253,14 +253,10 @@ void rfc_process_rls(void *arg0, s32 arg1, void *arg2) {
     if (mcb != NULL) {
         flags = *(u8 *)((u8 *)mcb + 0x69);
         if (flags & 0x10) {
-            goto stop_timer;
+            *(u8 *)((u8 *)mcb + 0x69) = flags & 0xFFFFFFEF;
+            rfc_port_timer_stop(mcb);
         }
-        return;
     }
-    return;
-stop_timer:
-    *(u8 *)((u8 *)mcb + 0x69) = flags & 0xFFFFFFEF;
-    rfc_port_timer_stop(mcb);
 }
 
 void fn_800932D8(void) {
