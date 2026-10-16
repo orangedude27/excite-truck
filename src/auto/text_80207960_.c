@@ -36,6 +36,13 @@ void fn_80207960(void) {
 	return;
 }
 
+signed long fn_80207964(signed long arg0) {
+    if (arg0 == 0) {
+        return 1;
+    }
+    return 0;
+}
+
 void fn_80207980(void* arg0) {
     *(signed long*)arg0 = 0;
     *((signed long*)arg0 + 1) = 0;
@@ -47,6 +54,17 @@ void fn_80207C48(void) {
 
 void fn_80207C4C(void) {
 	return;
+}
+
+void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
+    void* dst = (void*)((char*)arg0 + arg2 * 0xC);
+    *(signed long*)((char*)dst + 0x5C) = *(signed long*)arg1;
+    *(signed long*)((char*)dst + 0x60) = *((signed long*)arg1 + 1);
+    *(signed long*)((char*)dst + 0x64) = *((signed long*)arg1 + 2);
+}
+
+void fn_80207C74(void* arg0, signed long arg1) {
+    *(signed long*)((char*)arg0 + 0x8C) = arg1;
 }
 
 void fn_80207C7C(void) {
