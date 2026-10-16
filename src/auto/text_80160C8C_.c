@@ -509,6 +509,11 @@ unsigned char fn_80165050(void *arg0) {
     return *((unsigned char *)arg0 + 5);
 }
 
+extern f32 fn_80165238(void);
+f32 fn_80165238(void) {
+    return lbl_80561848;
+}
+
 int fn_80165240(void) {
     return 0;
 }
