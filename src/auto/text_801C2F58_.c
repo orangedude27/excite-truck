@@ -129,7 +129,7 @@ void fn_801C7388(void) {
     lbl_8055E839 = 0;
 }
 
-extern volatile u8 lbl_8055E83E;
+extern u8 lbl_8055E83E;
 extern char lbl_8055E841;
 extern s32 lbl_8055E844;
 extern char lbl_8055E83A;
@@ -138,7 +138,7 @@ extern void (*lbl_8055E868)(void);
 extern s32 lbl_8055E848;
 extern int atoi(const char *);
 void fn_801C7770(void) {
-    lbl_8055E83E = (u32)__cntlzw(lbl_8055E83E) >> 5;
+    lbl_8055E83E = !lbl_8055E83E;
 }
 
 void fn_801C77C0(void) {
