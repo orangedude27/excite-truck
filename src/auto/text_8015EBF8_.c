@@ -27,7 +27,9 @@ int fn_8015ECC0(void *arg0) {
 #pragma push
 #pragma auto_inline off
 int fn_8015ED18(void **arg0) {
-    return stricmp((*(char *(**)(void *))((char *)*arg0 + 8))(arg0), lbl_8055A070) == 0;
+    void *vtbl = *arg0;
+    char *(*fn)(void *) = (char *(*)(void *)) *(void **)((char *)vtbl + 8);
+    return stricmp(fn(arg0), lbl_8055A070) == 0;
 }
 int fn_8015ED90(void **arg0) {
     int count = 0;
@@ -41,6 +43,8 @@ int fn_8015ED90(void **arg0) {
     return count;
 }
 
+#pragma push
+#pragma inline_depth 0
 int fn_8015F148(void **arg0, int arg1) {
     int count = 0;
     int i;
@@ -58,7 +62,7 @@ int fn_8015F148(void **arg0, int arg1) {
     }
     return count;
 }
-
+#pragma pop
 int fn_8015F3EC(unsigned short *arg0, unsigned short *arg1) {
     return *arg0 - *arg1;
 }
@@ -79,6 +83,10 @@ void fn_80160278(void) {
 }
 
 void fn_801602B0(void) {
+}
+
+s32 fn_801602BC(s32 *arg0, s32 arg1) {
+    return *arg0 + (arg1 * 0x10);
 }
 
 void fn_801606B8(void) {
