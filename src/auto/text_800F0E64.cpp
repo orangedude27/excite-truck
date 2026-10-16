@@ -16,20 +16,20 @@ typedef s32 M2C_UNK32;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
 extern "C" s32 fn_80128668(void);
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(void *, s32, void *);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" s32 fn_800E9B88(void *);
 extern "C" s32 fn_800E9B9C(void *);
-extern "C" void *lbl_80325C00;
-extern "C" void *lbl_80325C18;
+extern "C" const char lbl_80325C00[];
+extern "C" const char lbl_80325C18[];
 extern "C" s32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(s32);
 
 M2C_UNK GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
 
 extern "C" s32 GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
 extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(void *, void *, s32);
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(void *, s32, void *);
-extern "C" void *lbl_803247E0;
-extern "C" void *lbl_803247F8;
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
+extern "C" const char lbl_803247E0[];
+extern "C" const char lbl_803247F8[];
 extern "C" s32 fn_800F26FC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
