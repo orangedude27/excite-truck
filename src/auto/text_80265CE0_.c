@@ -19,3 +19,5 @@ void fn_80265D78(void) {}
 
 int fn_80265D7C(void) { return 0; }
 
+void fn_80265D84(void) {}
+
