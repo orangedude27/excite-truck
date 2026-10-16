@@ -72,14 +72,7 @@ struct Unk8012DFCCList {
     Unk8012DFCCNode **tail;
 };
 
-static inline void CopyName8012DFE8(char *dst, const char *src, int count) {
-    while ((*dst++ = *src++) != 0) {
-        if (--count <= 0) {
-            dst[-1] = 0;
-            break;
-        }
-    }
-}
+
 extern "C" s32 fn_8012CAA0(s32);
 extern "C" void fn_8012DD00(void) {
     if (lbl_8055E014) {
@@ -103,13 +96,15 @@ extern "C" void fn_8012DFCC(Unk8012DFCCList *arg0, Unk8012DFCCNode *arg1) {
     arg1->next = 0;
 }
 
-extern "C" void fn_8012DFE8(void *arg0, const char *arg1, s32 arg2) {
-    const char *src = arg1;
-    int count;
-    char *dst;
-    dst = (char *)arg0 + 0xc;
+extern "C" void fn_8012DFE8(void *arg0, const u8 *arg1, s32 arg2) {
+    s32 count;
+    const u8 *src;
+    u8 *dst;
+    u8 ch;
+    src = arg1;
+    dst = (u8 *)arg0 + 0xc;
     count = 0x40;
-    while ((*dst++ = *src++) != 0) {
+    while ((ch = *src++, *dst++ = ch, (s8)ch != 0)) {
         if (--count <= 0) {
             dst[-1] = 0;
             break;
