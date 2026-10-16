@@ -21,7 +21,7 @@ void fn_8026A51C(void) {
 }
 
 float fn_8026A520(int arg0) {
-    if (arg0 >= 0 && arg0 < 8) {
+    if (arg0 >= 0 && (unsigned int)arg0 < 8U) {
         return lbl_80499980[arg0];
     }
     return lbl_80563C20;
