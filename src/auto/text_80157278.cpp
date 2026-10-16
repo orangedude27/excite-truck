@@ -120,6 +120,22 @@ extern "C" void* fn_80158218(void* arg0, s32 arg1) {
  return arg0;
 }
 
+extern "C" void* fn_8015868C(void* arg0, s32 arg1) {
+ if (arg0 != 0) {
+ if (arg0 != 0) {
+ if ((u32)arg0 + 8 != 0) {
+ if ((u32)arg0 + 8 != 0) {
+ if ((u32)arg0 + 8 != 0) {
+ *(u32*)((char*)arg0 + 8) = 0;
+ *(u32*)((char*)arg0 + 0xC) = 0;
+ *(u32*)((char*)arg0 + 0x10) = 0;
+ }}}
+ }
+ if (arg1 > 0) fn_80128668(arg0);
+ }
+ return arg0;
+}
+
 extern "C" void fn_80158D0C(void* arg0) {
     if (*(f32*)((char*)arg0 + 0x260) > *(f32*)((char*)arg0 + 0x24c)) {
         if (*(s32*)((char*)arg0 + 0x268) != 0) {
