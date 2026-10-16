@@ -247,9 +247,11 @@ extern "C" void fn_80158D0C(void* arg0) {
     }
 }
 
+#pragma inline off
 void fn_80158F34(void** arg0) {
 
 }
+#pragma inline reset
 
 extern "C" s32 fn_80158F60(Unk8015A368C* arg0) {
     return arg0->v21() > 0;
@@ -361,6 +363,20 @@ extern "C" f32 fn_8015A368(void* arg0) {
 
 extern "C" s32 fn_8015A404(void* arg0) {
     return *(s32*)((u8*)arg0 + 0x2620);
+}
+
+extern "C" void fn_8015A538(void* arg0, void* arg1) {
+    void* sp8 = arg1;
+    void* r4 = *(void**)((char*)arg0 + 8);
+    fn_80158F34(&sp8);
+    if (*(s32*)((char*)arg0 + 0x264) > 0) {
+        fn_8015A368(arg0);
+    }
+    void* r3 = (void*)(*(s32*)r4 + (*(s32*)((char*)arg0 + 0xC) - 1) * 0x38);
+    s32 r31 = *(s32*)((char*)r3 + 4);
+    if (r31 > 0 && fn_80179650() == 1 && *(s32*)((char*)arg1 + 0x1F0) == 0x50 && fn_801CF064() == 0) {
+        fn_8001EF5C(4, r31);
+    }
 }
 
 extern "C" void fn_8015A7D8(void* arg0, void* arg1) {
