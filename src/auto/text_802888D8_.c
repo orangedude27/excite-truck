@@ -27,3 +27,7 @@ void *__dt__Q210JASDrumSet5TPercFv_802894F4(void *arg0, int arg1) {
     return arg0;
 }
 
+int fn_80289554(int arg0) {
+    return fn_8028967C(arg0);
+}
+
