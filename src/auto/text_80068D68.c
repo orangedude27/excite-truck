@@ -998,6 +998,13 @@ void fn_80072644(void) {
     }
 }
 
+void fn_80072688(void) {
+    if (*(void **)(lbl_803C0B98 + 0x74) != 0) {
+        fn_80071450(*(void **)(lbl_803C0B98 + 0x74));
+        *(void **)(lbl_803C0B98 + 0x74) = 0;
+    }
+}
+
 void bta_dm_search_cancel_transac_cmpl(void) {
     if (*(void **)(lbl_803C0B98 + 0x14) != 0) {
         GKI_freebuf(*(void **)(lbl_803C0B98 + 0x14));
