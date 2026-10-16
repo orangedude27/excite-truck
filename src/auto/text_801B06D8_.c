@@ -6,6 +6,8 @@ extern void fn_801B2EC0(void);
 extern s32 fn_80128668(void);
 extern char lbl_80335BFC[];
 extern f32 lbl_805625BC;
+extern f32 lbl_80562604;
+extern f32 lbl_80562610;
 extern void *memset(void *, int, unsigned long);
 extern void *lbl_8055E678;
 extern u8 lbl_8055E6A0;
@@ -105,20 +107,22 @@ void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
 }
 
 void *fn_801B21B8(void *arg0) {
+    register f32 value = lbl_805625BC;
+    register s32 zero = 0;
     *(void **)arg0 = lbl_80335BFC;
-    *(s32 *)((u8 *)arg0 + 0x40) = 0;
+    *(s32 *)((u8 *)arg0 + 0x40) = zero;
     *(s32 *)((u8 *)arg0 + 0x48) = 0x2710;
-    *(f32 *)((u8 *)arg0 + 0x44) = lbl_805625BC;
-    *(s32 *)((u8 *)arg0 + 0x4C) = 0;
+    *(f32 *)((u8 *)arg0 + 0x44) = value;
+    *(s32 *)((u8 *)arg0 + 0x4C) = zero;
     *(s32 *)((u8 *)arg0 + 0x54) = 0x2710;
-    *(f32 *)((u8 *)arg0 + 0x50) = lbl_805625BC;
-    memset((u8 *)arg0 + 4, 0, 0x38);
-    *(s32 *)((u8 *)arg0 + 0x5C) = 0;
+    *(f32 *)((u8 *)arg0 + 0x50) = value;
+    memset((u8 *)arg0 + 4, zero, 0x38);
+    *(s32 *)((u8 *)arg0 + 0x5C) = zero;
     *(f32 *)((u8 *)arg0 + 0x70) = lbl_805625BC;
     *(s32 *)((u8 *)arg0 + 0x60) = -1;
     *(s32 *)((u8 *)arg0 + 0x6C) = -1;
-    *(s32 *)((u8 *)arg0 + 0x58) = 0;
-    *(s32 *)((u8 *)arg0 + 0x3C) = 0;
+    *(s32 *)((u8 *)arg0 + 0x58) = zero;
+    *(s32 *)((u8 *)arg0 + 0x3C) = zero;
     return arg0;
 }
 
