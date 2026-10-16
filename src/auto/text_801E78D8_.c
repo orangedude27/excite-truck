@@ -100,6 +100,26 @@ void fn_801E85BC(long arg0) {
     fn_8026A298(arg0);
 }
 
+long fn_801E85DC(long arg0) {
+    long temp_r30;
+    long var_r29;
+    long var_r31;
+    var_r29 = arg0;
+    if (arg0 < 0) var_r29 = (long)lbl_8055AF0C;
+    var_r31 = fn_801E866C(var_r29);
+    temp_r30 = var_r31;
+loop:
+    var_r31 = (var_r31 + 1) % fn_8026A2C8();
+    if (*fn_801EA9A0(var_r31) == 0 && var_r31 != temp_r30) goto loop;
+    fn_8026A248(var_r31, var_r29);
+    return 0;
+}
+
+long fn_801E866C(long arg0) {
+    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
+    return *(long *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x64);
+}
+
 void *fn_801E879C(void) {
     return lbl_80487DE0;
 }
