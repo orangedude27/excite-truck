@@ -19,3 +19,8 @@ void fn_802E625C(void* hi) {
 void fn_802E6AC4(void) {
     lbl_8055FFB5 = 1;
 }
+
+void fn_802E6B38(void* arg0, signed char* arg1) {
+    *arg1 = 0;
+}
+
