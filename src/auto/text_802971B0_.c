@@ -34,3 +34,11 @@ s32 fn_8029788C(void *arg0) {
     s32 neg = -val;
     return (neg | val) >> 31 & 1;
 }
+
+extern s32 fn_80296D2C(s32);
+extern s32 fn_802970C8(s32);
+extern float lbl_80564578;
+s32 fn_802978A0(void *arg0) {
+    return fn_80296D2C(*(s32 *)((u8 *)arg0 + 4));
+}
+
