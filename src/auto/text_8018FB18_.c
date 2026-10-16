@@ -162,6 +162,11 @@ int fn_80191108(void *arg0, int arg1) {
     return result + ((int (**)(void *, int))(*(void ***)*(void **)((char *)base + 8)))[6](*(void **)((char *)base + 8), amount + result);
 }
 
+void fn_801914F8(void *arg0) {
+    void *obj = *(void **)((char *)arg0 + 4);
+    ((void (**)(void))(*(void ***)obj))[10]();
+}
+
 void fn_8019150C(void *arg0, int arg1) {
     void *obj = *(void **)((char *)arg0 + 4);
     void **vtable = *(void ***)obj;
@@ -189,6 +194,16 @@ void fn_80191584(void *arg0) {
     ((void (**)(void *, int))(*(void **)*(void **)((char *)arg0 + 0x38)))[30](*(void **)((char *)arg0 + 0x38), 0);
     *(unsigned char *)((char *)*(void **)((char *)arg0 + 0x34) + 0x260c) = 0;
     *(int *)((char *)arg0 + 8) = -1;
+}
+
+void fn_80191688(void *arg0) {
+    void *obj = *(void **)((char *)arg0 + 4);
+    ((void (**)(void))(*(void ***)obj))[28]();
+}
+
+void fn_8019169C(void *arg0, void *arg1) {
+    *(void **)((char *)arg0 + 0x34) = arg1;
+    *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x1EC);
 }
 
 void fn_80192BE4(void) {
