@@ -13,19 +13,14 @@ void fn_801E78D8(long arg0) {
     long j;
     unsigned char *base;
     unsigned char *entry;
-
     count = fn_800167F4();
     fn_80206464();
-    for (i = 0; i < count; i++) {
-        fn_8020646C(i, -1);
-    }
+    for (i = 0; i < count; i++) fn_8020646C(i, -1);
     base = (unsigned char *)arg0 + 0x20;
+    j = 0;
     entry = base;
-    for (j = 0; j < *(long *)(base + 0x3C0); j++) {
-        if (*(long *)entry == 0x50) {
-            fn_8020646C(*(entry + 0x70) & 3, j);
-        }
-        entry += 0x78;
+    for (; j < *(long *)(base + 0x3C0); entry += 0x78, j++) {
+        if (*(long *)entry == 0x50) fn_8020646C(*(entry + 0x70) & 3, j);
     }
 }
 
@@ -42,6 +37,10 @@ void fn_801E7DEC(void) {
 
 long fn_801E7DF0(long arg0) {
     return lbl_80487CF0[arg0];
+}
+
+long fn_801E7E2C(void) {
+    return -1;
 }
 
 extern void *lbl_8055EB04;
