@@ -466,6 +466,10 @@ f32 fn_80011E1C(s32 arg0) {
     return lbl_80350F28[arg0][5];
 }
 
+f32 fn_80011E34(void) {
+    return lbl_80350EC4[1];
+}
+
 f32 fn_80011E44(void) {
     return lbl_80350EC4[2];
 }
