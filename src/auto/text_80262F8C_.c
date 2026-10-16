@@ -18,6 +18,12 @@ s32 fn_80262F8C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_80262FCC(void *arg0) {
+    *(f32 *)((u8 *)arg0 + 0x18) = fn_8023659C();
+    *((u8 *)arg0 + 0x1C) = 0;
+    fn_80214A9C(0x1D);
+}
+
 void fn_8026300C(void *arg0) {
     f32 temp_f0;
     f32 temp_f1;
@@ -47,11 +53,11 @@ s32 fn_80263080(void) {
 }
 
 s32 fn_802630C0(void) {
-    s32 next = lbl_8055F434 + 1;
+    s32 next;
+    next = lbl_8055F434 + 1;
+    lbl_8055F434 = next;
     if (next > lbl_8055C440) {
         lbl_8055F434 = lbl_8055C440;
-    } else {
-        lbl_8055F434 = next;
     }
     fn_80230E90(0);
     return 0;
