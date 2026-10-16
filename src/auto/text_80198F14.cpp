@@ -30,6 +30,8 @@ public:
     virtual void slot0x34(s32);
 };
 
+extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
+extern "C" void fn_801A4A10(s32, s32, s32);
 extern "C" void fn_801A44D4(void*);
 extern void* lbl_8055A508;
 extern void* lbl_8055A510;
@@ -53,16 +55,16 @@ extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_8019EC84(void* this_) {
-    void* p = *(void**)((u8*)this_ + 4);
+    VTab19* p = *(VTab19**)((u8*)this_ + 4);
     if (p == NULL) {
         return;
     }
-    ((void(*)(void*))(*(void***)p)[0x13])(p);
+    p->slot0x4C();
 }
 
-extern "C" void fn_8019ECA4(void* this_, s32 arg1) {
+extern "C" void fn_8019ECA4(VTab13* this_, s32 arg1) {
     *(s32*)((u8*)this_ + 8) = arg1;
-    ((void(*)(void*, s32))(*(void***)this_)[0xD])(this_, arg1 + 4);
+    this_->slot0x34(arg1 + 4);
 }
 
 extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
