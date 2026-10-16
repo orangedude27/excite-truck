@@ -14,6 +14,7 @@ extern void fn_80205FCC(void);
 extern void fn_802059C0(void);
 extern int fn_801B8570(void);
 extern void fn_801E866C(int);
+#pragma dont_inline fn_80205964
 int fn_80205964(void) {
     int i = 0;
     while (i < fn_801E85A4()) {
