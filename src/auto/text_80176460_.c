@@ -2,6 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
+extern u8 lbl_80430558[];
+extern s32 lbl_804303D4[];
+extern void fn_801AED68(void);
+extern void fn_801AED5C(void);
+extern s32 fn_801CF050(void);
+extern void fn_80176A34(s32);
+extern void fn_80176C4C(void);
+extern s32 fn_802E2C20(void *);
+extern void fn_80176DD4(void);
 extern f32 lbl_8055A2F4;
 extern s32 lbl_8055E3C4;
 extern f32 lbl_8055E3C8;
@@ -141,9 +150,11 @@ void fn_80176F24(void) {
 
 void fn_801775EC(void) { *(u8 *)((u8 *)0x80430558 + 0x14)=0xFF; *(s32 *)((u8 *)0x80430558+0xC)=3; }
 
-void fn_80177618(int *arg0) { (**(void (***)())(*(int *)arg0 + 0xC))(); }
+void fn_80177618(int *arg0) { volatile int *vtable = *(int **)arg0; (*(void (**)(void))(vtable + 3))(); }
 
-void fn_80177638(int *arg0) { (**(void (***)())(*(int *)arg0 + 0x14))(); }
+void fn_80177638(int *arg0) { volatile int *vtable = *(int **)arg0; (*(void (**)(void))(vtable + 5))(); }
+
+void fn_80177648(int *arg0) { volatile int *vtable = *(int **)arg0; (*(void (**)(void))(vtable + 6))(); }
 
 extern void fn_80177658(void *);
 extern void fn_80177608(void);
