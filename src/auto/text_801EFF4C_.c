@@ -17,6 +17,8 @@ int fn_801F0F18(int, int);
 int fn_801F0E88(int, int);
 int fn_801284F8(int, void *);
 int fn_801F0DC0(int, int, int);
+float fn_801E88F0(int);
+float fn_802C88E8(int);
 extern int lbl_8055B0B8;
 void fn_801F0000(int arg0) {
     fn_801F0F18(arg0, -1);
@@ -146,6 +148,19 @@ void fn_801F1474(int *arg0, void *arg1) {
 
 float fn_801F159C(void **arg0) {
     return *(float *)((char *)*arg0 + 0x18);
+}
+
+int fn_801F15A8(void **arg0, int arg1) {
+    float scale = fn_801E88F0(-1);
+    float threshold = fn_802C88E8(arg1) * (scale * scale);
+    void *base = *arg0;
+    int count = *(int *)((char *)base + 0xE8);
+    int i;
+    for (i = 0; i < count; i++) {
+        if (threshold < *(float *)((char *)base + 0x38 + i * 0x18))
+            return i;
+    }
+    return count - 1;
 }
 
 short fn_801EAC3C(void);
