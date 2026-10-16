@@ -91,10 +91,14 @@ extern void fn_801CC918(void);
 extern void fn_801CC470(void);
 extern void fn_801CD5B4(int, int, int);
 void fn_801CB5DC(int arg0, int arg1, int arg2) {
-    if (fn_80019BA8() == 0) {
-        if (fn_80161C38() != 0) return;
-        fn_801CD5B4(arg0, arg1, arg2);
+    if (fn_80019BA8() != 0) {
+        return;
     }
+    if (fn_80161C38() == 0) {
+        fn_801CD5B4(arg0, arg1, arg2);
+        return;
+    }
+    return;
 }
 
 void fn_801CB648(int arg0, int arg1, f32 farg0) {
@@ -141,6 +145,14 @@ void fn_801CB8FC(void) {
     fn_801CE8CC();
 }
 
+int fn_801CB900(int *arg0, int arg1) {
+    int result = 0;
+    if (arg0 != 0 && arg1 == fn_8001BD28(*arg0)) {
+        result = 1;
+    }
+    return result;
+}
+
 void fn_801CBD04(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
@@ -163,6 +175,23 @@ void fn_801CE6A0(void) {
 
 void fn_801CE6CC(void) {
 
+}
+
+extern unsigned char *fn_801EA9A0(void);
+extern void *lbl_8055E884;
+extern void fn_801CBD48(void *, void *);
+extern void fn_802AE220(void *);
+extern void fn_8001DFCC(void);
+void fn_801CE6D0(void *arg0, s32 arg1, s32 arg2) {
+    s32 sp10;
+    s32 spC;
+    s32 sp8;
+    spC = arg1;
+    sp8 = 3;
+    sp10 = arg2;
+    *(s32 *)((char *)arg0 + 0) = 3;
+    *(s32 *)((char *)arg0 + 4) = arg1;
+    *(s32 *)((char *)arg0 + 8) = arg2;
 }
 
 unsigned int fn_801CE898(void) {
