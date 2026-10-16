@@ -19,6 +19,11 @@ extern f32 lbl_80562FF0;
 extern f32 lbl_80563000;
 extern "C" void *memset(void *, s32, u32);
 
+struct F92VT {
+    u8 pad[8];
+    void (*fn8)(void *, s32); // 0x8
+};
+
 struct F92Obj {
     u8 pad0[0x20];
     void *f20;  // 0x20
