@@ -59,6 +59,10 @@ int fn_8027D94C(void *arg0) {
     return ((int *)arg0)[3];
 }
 
+int fn_8027D954(void *arg0, int arg1) {
+    return ((int *)arg0)[2] + arg1 * 0x1F4;
+}
+
 void fn_8027DE6C(void) {
     fn_8027B77C();
     fn_8027BF38();
