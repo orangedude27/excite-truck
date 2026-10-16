@@ -1,5 +1,6 @@
 #include <types.h>
 #include <revolution/OS/OSAlarm.h>
+#include <revolution/OS/OSTime.h>
 #include <revolution/ARC/arc.h>
 #include <string.h>
 #pragma opt_tail_call on
@@ -445,22 +446,27 @@ extern "C" void fn_800D2480(void) {
 
 extern "C" void fn_800D16C4(OSAlarm*, void*);
 extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *this_ptr, long arg1, int arg2, signed char arg3) {
-    if (((u8 *)this_ptr)[0x1EC] != 0) {
+    void *r26 = this_ptr;
+    int r27 = arg1;
+    int r28 = arg2;
+    signed char r29 = arg3;
+    
+    if (((u8 *)r26)[0x1EC] != 0) {
         ARCHandle handle;
         ARCFileInfo info;
         void *start_addr;
         s32 val1;
         
-        ARCFastOpen((ARCHandle *)((u8 *)this_ptr + 0x1D0), arg2, &info);
+        ARCFastOpen((ARCHandle *)((u8 *)r26 + 0x1D0), r28, &info);
         start_addr = ARCGetStartAddrInMem(&info);
         val1 = fn_80116A30(&info);
         fn_80116A38(&info);
         
-        u8 *entry = (u8 *)this_ptr + ((s32)arg1 * 0x68);
+        u8 *entry = (u8 *)r26 + ((s32)r27 * 0x68);
         entry[0x5E] = 0;
-        *(s32 *)(entry + 0x58) = arg2;
+        *(s32 *)(entry + 0x58) = r28;
         *(s32 *)(entry + 0x54) = val1;
-        entry[0x5D] = arg3;
+        entry[0x5D] = r29;
         *(s32 *)(entry + 0x50) = (s32)start_addr;
     }
 }
@@ -469,6 +475,14 @@ extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *this_ptr, long arg1, i
 #pragma opt_tail_call on
 extern "C" void fn_800D1C48(void);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
+    // Check cr1 for early exit - bne cr1, 0x2d9e8
+    // This is a compiler-generated check that we can't directly express in C
+    // The function saves f1-f8 and sets up a PanicStruct
+    
+    #pragma unused(file)
+    #pragma unused(line)
+    #pragma unused(msg)
+    
     u32 sp_8[2];
     u32 sp_C;
     u32 sp_10;
@@ -480,21 +494,10 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
     u32 sp_68;
     u32 sp_6C;
     u32 sp_70;
-    u32 sp_88[16];
+    u8 sp_88[16];
     
-    sp_8[0] = (u32)msg;
-    sp_8[1] = (u32)file;
-    sp_C = (u32)line;
-    sp_10 = 0;
-    sp_14 = 0;
-    sp_18 = 0;
-    sp_1C = 0;
-    sp_20 = 0;
-    sp_24 = 0;
-    sp_68 = 0x3000000;
-    sp_6C = (u32)&sp_88[0];
-    sp_70 = (u32)&sp_8[0];
-    
+    // The assembly stores: r3=msg, r4=line, r5=file into stack slots
+    // then calls fn_800D2098 with &sp_68
     fn_800D2098(&sp_68);
 }
 extern s32 lbl_8055DDD4;
