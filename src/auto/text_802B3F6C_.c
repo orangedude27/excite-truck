@@ -28,17 +28,27 @@ void fn_802B4004(void) {
     lbl_8055F9CC += 1;
 }
 
+void *fn_802B4014(void *arg0) {
+    int i = 0;
+    void *p;
+    do {
+        p = (*(void *(**)(void *, int))((char *)*(void **)arg0 + 0x60))(arg0, i);
+        if (fn_802B3FC4(p) != 0 &&
+            (*(int (**)(void *, int *))((char *)*(void **)p + 0x1C))(p, &lbl_8055CE00) == 1)
+            return p;
+        i++;
+    } while (1);
+}
+
 int fn_802B40B0(int arg0, int arg1) {
     int p;
-    if (arg0 < 0 || (unsigned int)arg0 >= 0x80)
-        return 0;
-    p = *((int *)&lbl_804BE248 + arg0);
-    if (p == 0)
-        return 0;
-    if ((int)lbl_8055F9C8 == -1)
-        return p;
-    if (arg1 == (int)lbl_8055F9C8)
-        return p;
+    if (arg0 >= 0 && (unsigned int)arg0 < 0x80) {
+        p = lbl_804BE248[arg0];
+        if (p != 0) {
+            if ((int)lbl_8055F9C8 == -1 || arg1 == (int)lbl_8055F9C8)
+                return p;
+        }
+    }
     return 0;
 }
 
