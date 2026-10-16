@@ -169,6 +169,11 @@ void fn_8021676C(void) {
 
 }
 
+void fn_802168BC(s32 arg0) {
+    lbl_8055EF74 = arg0;
+    lbl_8055EF70 = 1;
+}
+
 void fn_802168CC(void) {
     fn_8021889C();
 }
