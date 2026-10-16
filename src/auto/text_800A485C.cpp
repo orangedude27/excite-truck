@@ -159,6 +159,66 @@ extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
     return result & ((-result | result) >> 31);
 }
 
+extern "C" s32 fn_800A7688(void *, void **, void **);
+extern "C" s32 fn_800A7214(void *);
+extern "C" s32 fn_800A535C(void);
+extern "C" s32 fn_800A52DC(void);
+extern "C" s32 VFipdm_disk_convert_sector_into_block(s32 arg1, s32 arg2, u32 size, s32 *arg4, s32 *arg5) {
+    u32 shift;
+
+    *arg4 = arg1;
+    if (size > 0x200) {
+        shift = (size >> 9) & 0x7F;
+        *arg5 = arg2;
+        if (shift == 2)
+            *arg4 <<= 1;
+        else if (shift == 4)
+            *arg4 <<= 2;
+        else if (shift == 8)
+            *arg4 <<= 3;
+
+        if (shift == 2)
+            *arg5 <<= 1;
+        else if (shift == 4)
+            *arg5 <<= 2;
+        else if (shift == 8)
+            *arg5 <<= 3;
+    } else {
+        *arg5 = arg2;
+        if (size < 0x200)
+            return 4;
+    }
+    return 0;
+}
+
+extern "C" s32 VFipdm_disk_convert_block_into_sector(u32 arg1, u32 arg2, u32 size, u32 *arg4, u32 *arg5) {
+    u32 shift;
+
+    *arg4 = arg1;
+    if (size > 0x200) {
+        shift = (size >> 9) & 0x7F;
+        *arg5 = arg2;
+        if (shift == 2)
+            *arg4 >>= 1;
+        else if (shift == 4)
+            *arg4 >>= 2;
+        else if (shift == 8)
+            *arg4 >>= 3;
+
+        if (shift == 2)
+            *arg5 >>= 1;
+        else if (shift == 4)
+            *arg5 >>= 2;
+        else if (shift == 8)
+            *arg5 >>= 3;
+    } else {
+        *arg5 = arg2;
+        if (size < 0x200)
+            return 4;
+    }
+    return 0;
+}
+
 extern "C" s32 fn_800A71C4(u32 *arg0) {
     return ((u32) *arg0 >> 2U) & 1;
 }
@@ -290,6 +350,67 @@ extern "C" void fn_800B36D4(s32 arg0) {
         return;
     }
     fn_800B63FC();
+}
+
+extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *arg0) {
+    s32 i = 0;
+    s32 length = 0;
+    while (arg0[i] != 0) {
+        if (i == 8 && (arg0[i] != 0x20 || arg0[i + 1] != 0x20 || arg0[i + 2] != 0x20))
+            length++;
+        if (arg0[i] != 0x20)
+            length++;
+        i++;
+    }
+    return length;
+}
+
+extern "C" s32 fn_800A4BF4(s32, u16 *, s16 *);
+extern "C" s32 VFiPFPATH_transformInUnicode(s16 *dst, s32 src, s32 unused) {
+    s32 count = 0;
+    s32 offset = 0;
+    s16 *out = dst;
+    while (*(s8 *)(src + offset) != 0) {
+        ((s32 (*)(s32, s16 *))(*(u32 *)((u8 *)lbl_803D2140 + 0x48)))(src + offset, out);
+        s16 inLen;
+        s16 outLen;
+        fn_800A4BF4(0, (u16 *)&inLen, &outLen);
+        count++;
+        out = (s16 *)((u8 *)out + (outLen & ~1));
+        offset += inLen;
+    }
+    *out = 0;
+    return count;
+}
+
+extern "C" u8 lbl_80559230;
+extern "C" u8 lbl_80559231;
+s32 fn_800B4D00(void) {
+    u8 data[2];
+    data[0] = lbl_80559230;
+    data[1] = lbl_80559231;
+    return VFiPFSTR_StrNCmp(0, data, 0, 1, 2) == 0;
+}
+
+s32 fn_800B51FC(u8 *arg0, s32 arg1) {
+    s32 value = arg1;
+    u32 divisor = 10;
+    u32 place = 1;
+    s32 digits = 7;
+    u8 *p = arg0 + 7;
+
+    while (digits > 1 && value != 0) {
+        u32 rem = value % divisor;
+        if (rem != 0) {
+            value -= rem;
+            *p += (s8)(rem / place);
+        }
+        divisor *= 10;
+        digits--;
+        p--;
+        place *= 10;
+    }
+    return 0;
 }
 
 extern "C" s32 VFiPFCODE_CP932_isOEMMBchar(u8 arg0, s32 arg1) {
@@ -559,6 +680,7 @@ extern "C" s32 fn_800B8BE8(s32 arg0) {
     return 0;
 }
 
+#pragma dont_inline
 extern "C" s32 fn_800B8F20(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
     s32 result;
     fn_800B8004(lbl_8055DD30);
@@ -579,7 +701,6 @@ extern "C" s32 fn_800B8F20(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     fn_800B8048(lbl_8055DD30);
     return 0;
 }
-
 extern "C" u8 lbl_802F31F8[];
 extern "C" s32 lbl_8055DD2C;
 extern "C" s32 NANDInit(void);
@@ -1066,6 +1187,12 @@ extern "C" void fn_800D11E0(void* arg0) {
     *(f32*)((u8*)arg0 + 0xC) = value;
 }
 
+extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *, long);
+extern "C" void fn_800D51F4(long, long, long, long, long, long);
+void fn_800D11F0(void *arg0) {
+    Connect__Q210homebutton9RemoteSpkFl((char *)arg0 + 0x24, *(long *)arg0);
+}
+
 extern "C" void fn_800D1200(void) {
 
 }
@@ -1371,6 +1498,23 @@ extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt8Material(
     }
 }
 
+void fn_800D54E0(long a, long b, long c, long d) {
+    fn_800D51F4(a + 4, a + 0x30, b, c, d, b);
+}
+
+int fn_800D5500(void *obj, const char *name) {
+    void *entry = *(void **)((char *)obj + 0x28);
+    while (entry != (char *)obj + 0x28) {
+        if (entry == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
+        if (strcmp(name, (char *)entry + 8) == 0) {
+            if (entry == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F534, 0x23d, lbl_8031F510);
+            return *(int *)((char *)entry + 0x88);
+        }
+        entry = *(void **)entry;
+    }
+    return 0;
+}
+
 extern "C" int fn_800D56FC(void* arg0, const char* arg1, int) {
     char* node = *(char**)((char*)arg0 + 0x14);
     char* end = (char*)arg0 + 0x14;
@@ -1523,6 +1667,28 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
         *(u32 *)((u8 *)arg0 + 0xC) = arg2;
       
       return 0;
+}
+
+extern "C" s32 fn_800A53F8(void *arg0) {
+    void *sp8 = (void *)fn_800A535C;
+    void *spC = (void *)fn_800A52DC;
+    s32 result;
+    s32 value;
+
+    if (fn_800A7688(*(void **)((u8 *)arg0 + 0x1FBC), &sp8, &spC) != 0)
+        return -1;
+    result = fn_800A7214(*(void **)((u8 *)arg0 + 0x1FBC));
+    if (result != 0) {
+        fn_800A76A0(*(void **)((u8 *)arg0 + 0x1FBC));
+        if (result == 0x15) {
+            value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
+            lbl_803D2140[17] = value;
+            *(s32 *)((u8 *)arg0 + 0x1F84) = value;
+            return 0x1000;
+        }
+        return -1;
+    }
+    return 0;
 }
 
 extern "C" s32 fn_800A54AC(void *arg0) {
