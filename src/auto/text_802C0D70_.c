@@ -6,7 +6,7 @@ typedef signed long s32;
 extern char lbl_8055FB18[4];
 extern void fn_802C0FD4(int *queue);
 #pragma push
-#pragma inline off
+#pragma dont_inline on
 void fn_802C1018(void) {
     fn_802C0FD4((int *)&lbl_8055FB18);
 }
