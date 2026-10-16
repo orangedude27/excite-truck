@@ -130,6 +130,62 @@ extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
 
 extern "C" void fn_801A1358(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x1C) = arg1; }
 
+void fn_801A1474(void* arg0, f32 scale) {
+    u8* p = (u8*)arg0;
+    f32* src = (f32*)(p + 0x64);
+    void* obj = *(void**)(p + 0x24);
+    s32 i = 0;
+    *(f32*)(p + 0x178) = *(f32*)(p + 0x170) * scale;
+    do {
+        f32 x = src[0] * scale;
+        f32 y = src[1] * scale;
+        f32 z = src[2] * scale;
+        *(f32*)((u8*)obj + 0x28) = x;
+        *(f32*)((u8*)obj + 0x2c) = y;
+        *(f32*)((u8*)obj + 0x30) = z;
+        *(f32*)((u8*)obj + 0x24) = src[3] * scale;
+        src += 4;
+        obj = *(void**)(p + 0x28 + i * 4);
+        i++;
+    } while (i < *(s32*)(p + 0x174));
+    obj = *(void**)(p + 0x17c);
+    *(f32*)((u8*)obj + 0x24) = *(f32*)(p + 0x164) * scale;
+    *(f32*)((u8*)obj + 0x28) = *(f32*)(p + 0x168) * scale;
+    *(f32*)((u8*)obj + 0x2c) = *(f32*)(p + 0x16c) * scale;
+}
+
+extern void fn_8019ECC4(void);
+extern void* lbl_80333968;
+extern f32 lbl_80562370;
+void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
+    fn_8019ECC4();
+    *(void**)arg0 = &lbl_80333968;
+    if (arg2 != 0) {
+        u8 a = *((u8*)arg0 + 0x24);
+        u8 b = *((u8*)arg0 + 0x25);
+        u8 c = *((u8*)arg0 + 0x28);
+        u8 d = *((u8*)arg0 + 0x29);
+        *((u8*)arg0 + 0x24) = *((u8*)arg0 + 0x27);
+        *((u8*)arg0 + 0x27) = a;
+        *((u8*)arg0 + 0x25) = *((u8*)arg0 + 0x26);
+        *((u8*)arg0 + 0x26) = b;
+        *((u8*)arg0 + 0x28) = *((u8*)arg0 + 0x2b);
+        *((u8*)arg0 + 0x2b) = c;
+        *((u8*)arg0 + 0x29) = *((u8*)arg0 + 0x2a);
+        *((u8*)arg0 + 0x2a) = d;
+        if (*(s32*)((u8*)arg0 + 0x20) == 0x3eb)
+            *(f32*)((u8*)arg0 + 0x24) += lbl_80562370;
+    }
+    return arg0;
+}
+
+void fn_801A1F44(void* arg0, void* arg1) {
+    void* result = ((void* (*)(void*))((void**)*(void**)arg1)[10])(arg1);
+    *(s32*)((u8*)arg0) = *(s32*)((u8*)result + 0x24);
+    *(s32*)((u8*)arg0 + 4) = *(s32*)((u8*)result + 0x28);
+    *(s32*)((u8*)arg0 + 8) = *(s32*)((u8*)result + 0x2C);
+}
+
 extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -528,4 +584,6 @@ extern "C" s32 fn_801A51CC(void* arg0) {
 extern "C" void fn_801A51D4(void* arg0, s32 arg1) {
     *(s32*)((u8*)arg0 + 0x34) = arg1;
 }
-
+extern void fn_8019ECC4(void);
+extern void* lbl_80333968;
+extern f32 lbl_80562370;
