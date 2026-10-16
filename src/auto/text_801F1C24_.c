@@ -2,6 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_8029231C();
+extern void PSVECNormalize(void *, void *);
+void fn_801F3198(void *arg0) {
+    PSVECNormalize(arg0, arg0);
+}
+
 void fn_801F371C(int arg0) {
     fn_8029231C(arg0 + 4);
 }
