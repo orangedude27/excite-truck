@@ -240,6 +240,8 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229D64(
     return this_;
 }
 
+extern "C" u32 fn_80229EC4(void) { return 1; }
+
 extern "C" void fn_80229ED4(void *arg0) {
     if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
         (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
