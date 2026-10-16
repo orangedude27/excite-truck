@@ -216,6 +216,10 @@ extern "C" void fn_800F83C8(void* arg0) {
     Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl((u8*)arg0 + 0x1C);
 }
 
+extern "C" void fn_800F83D0(void* arg0) {
+    Destroy__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)arg0 + 0x1C);
+}
+
 extern "C" void* fn_800F83D8(void* arg0, unsigned long arg1) {
     void* mutex = (u8*)arg0 + 4;
     OSLockMutex(mutex);
