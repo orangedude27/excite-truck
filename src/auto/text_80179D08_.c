@@ -42,3 +42,7 @@ int fn_8017B094(void) {
     return 0x14;
 }
 
+void fn_8017B09C(void* arg0, signed char* arg1) {
+    *arg1 = 0;
+}
+
