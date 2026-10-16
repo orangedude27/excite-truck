@@ -35,6 +35,14 @@ s32 fn_8028774C(void *arg0) {
     return *((u8 *)arg0 + 0x1C) == 0;
 }
 
+void fn_802877D0(void) {
+    fn_802AC49C();
+    fn_802978E4();
+    fn_8029261C();
+    fn_8028E0F0();
+    fn_802AE394();
+}
+
 void fn_80287AF0(void* alarm) {
     fn_8028A9F4(fn_80292864(alarm));
 }
