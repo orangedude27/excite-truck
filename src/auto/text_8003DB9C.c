@@ -1,9 +1,45 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern unsigned int lbl_8055D954;
+extern unsigned int lbl_8055D950;
+extern unsigned char lbl_8055D948;
+extern unsigned int *__GXData;
+extern unsigned short *__cpReg;
+extern unsigned int lbl_8037C0E4;
+extern void GXGetVtxDesc(void);
+extern void __GXSaveFifo(void);
 
 extern char lbl_8055D949;
 char __GXIsGPFifoReady(void) {
     return lbl_8055D949;
+}
+
+extern unsigned int lbl_8055D954;
+extern unsigned int *__GXData;
+extern unsigned short *__cpReg;
+extern unsigned int lbl_8055D950;
+extern unsigned char lbl_8055D948;
+extern void GXGetVtxDesc(void);
+extern void __GXSaveFifo(void);
+extern unsigned int lbl_8037C0E4;
+int GXGetCPUFifo(void *fifo) {
+    unsigned int *src = &lbl_8037C0E4;
+    unsigned int *dst = fifo;
+    if (!lbl_8055D948) {
+        return 0;
+    }
+    GXGetVtxDesc();
+    __GXSaveFifo();
+    dst[0] = src[0];
+    dst[1] = src[1];
+    dst[2] = src[2];
+    dst[3] = src[3];
+    dst[4] = src[4];
+    dst[5] = src[5];
+    dst[6] = src[6];
+    dst[7] = src[7];
+    dst[8] = src[8];
+    return 1;
 }
 
 void GXGetFifoPtrs(void *arg0, int *arg1, int *arg2) {
@@ -38,7 +74,11 @@ void GXGetLightPos(unsigned int x, unsigned int y, unsigned int z) {
 }
 
 void GXInitLightDir(unsigned int x, unsigned int y, unsigned int *arg2) {
-    *arg2 = 0xC8000000 | ((x & 0x3FF) << 2) | ((y & 0x3FF) << 12) | 0x400000;
+    unsigned int addr = 0xC8000000;
+    addr |= x << 2;
+    addr |= y << 12;
+    addr |= 1 << 22;
+    *arg2 = *(unsigned int *)addr;
 }
 
 unsigned int GXGetLightDir(unsigned int value) {
@@ -60,7 +100,11 @@ extern void OSClearContext(void *);
 extern void OSSetCurrentContext(void *);
 extern void (*lbl_8055D978_callback)(unsigned short);
 void GXInitSpecularDir(unsigned int arg0, void *ctx) {
-    unsigned char local[0x2E0];
+    extern unsigned int lbl_8055D978;
+    extern unsigned short *__peReg;
+    extern void OSClearContext(void *);
+    extern void OSSetCurrentContext(void *);
+    char local[0x2D0];
     unsigned short value = __peReg[7];
     if (lbl_8055D978 != 0) {
         OSClearContext(local + 8);
