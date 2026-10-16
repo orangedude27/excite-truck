@@ -16,6 +16,10 @@ extern float lbl_8055FC44;
 extern float lbl_8055FC48;
 
 extern int lbl_8055FC70;
+extern void fn_802CFDE0(void);
+extern void fn_802CC770(void);
+extern void fn_802CC60C(void);
+extern void fn_802CFCA0(void);
 extern int lbl_8055FC78;
 extern void fn_802CFFAC(unsigned char, unsigned char, unsigned char);
 extern float lbl_8055FC38;
@@ -79,7 +83,8 @@ extern void fn_802D02F8(unsigned int, unsigned int);
 extern void fn_802C7734(unsigned int);
 extern void fn_802C8B70(void);
 void fn_802C88D4(unsigned int arg0) {
-    PSQUATMultiply((void *)&lbl_804C1410[9], arg0, lbl_804C1410);
+    unsigned int *base = lbl_804C1410;
+    PSQUATMultiply((void *)(base + 9), arg0, base);
 }
 
 void fn_802C8B08(unsigned int *arg0) {
@@ -101,6 +106,23 @@ void fn_802C8B70(void) {
 void fn_802C8B98(unsigned int arg0, unsigned int arg1) {
     fn_802C7734(arg1);
     fn_802C8B70();
+}
+
+void fn_802C8BD0(int arg0) {
+    fn_802C7758(arg0);
+    fn_802C8B70();
+}
+
+void fn_802C8C04(int arg0) {
+    unsigned int *src = lbl_804C1410;
+    unsigned int *dst = lbl_804C13E0;
+    unsigned int sp8[3];
+    int i;
+    for (i = 0; i < 12; i++) dst[i] = src[i];
+    lbl_8055FC35 = 1;
+    fn_802C89E8(sp8, src[11], src[10], src[9], src[8], src[7], src[6], src[5]);
+    fn_802C8638(sp8);
+    fn_802C8BD0(arg0);
 }
 
 void fn_802C8DB8(void) {
