@@ -1,3 +1,4 @@
+#include "decomp.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -34,5 +35,10 @@ int fn_80012938(float f) {
         return 2;
     }
     return 1;
+}
+
+void fn_80012954(void) {
+    char *p = fn_80012820(*(int *)((char *)fn_8001285C() + 4));
+    fn_80012938(*(float *)(p + 0x78));
 }
 
