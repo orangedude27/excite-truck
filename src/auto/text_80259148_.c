@@ -51,31 +51,48 @@ int fn_80259700(int arg0, int arg1) {
     return arg0;
 }
 
-void fn_8025AD3C(float *out,float *a,float *b,float t) {
- float z0=b[2];
- float z1=a[2];
- float y0=b[1];
- float y1=a[1];
- float x0=b[0];
- float x1=a[0];
- float dz=z0-z1;
- float dy=y0-y1;
- float dx=x0-x1;
- float rz,ry,rx;
- rz=z1+t*dz; ry=y1+t*dy; rx=x1+t*dx;
- out[2]=rz; out[1]=ry; out[0]=rx;
+extern float lbl_80563AE4;
+extern float lbl_8055F3A4;
+extern signed char lbl_8055F3A0;
+extern int fn_80236914(void);
+void fn_80259740(int arg0, float farg0) {
+    fn_80236914();
+    lbl_8055F3A4 = farg0;
+    lbl_8055F3A0 = (arg0 - 2) == 0;
+}
+
+void fn_8025AD3C(float *out, float *a, float *b, float t) {
+    float z = a[2];
+    float y = a[1];
+    float x = a[0];
+    float dz = b[2] - z;
+    float dy = b[1] - y;
+    float dx = b[0] - x;
+    float rz = z + t * dz;
+    float ry = y + t * dy;
+    float rx = x + t * dx;
+    out[2] = rz;
+    out[1] = ry;
+    out[0] = rx;
 }
 
 void fn_8025AD88(void) { PSVECDotProduct(); }
 
 void fn_8025AD8C(void *unused, float *out, float *a, float *b, float t) {
- float scale=lbl_80563B14*t;
- float max=lbl_80563AE0;
- float dx,dy,dz,x,y,z;
- if (max < scale) max=scale;
- dx=b[0]-a[0]; dy=b[1]-a[1]; dz=b[2]-a[2];
- x=a[0]+max*dx; y=a[1]+max*dy; z=a[2]+max*dz;
- out[0]=x; out[1]=y; out[2]=z;
+    float scale = lbl_80563B14 * t;
+    float max = lbl_80563AE0;
+    float dx, dy, dz, x, y, z;
+    if (max < scale)
+        max = scale;
+    dx = b[0] - a[0];
+    dy = b[1] - a[1];
+    dz = b[2] - a[2];
+    x = a[0] + max * dx;
+    y = a[1] + max * dy;
+    z = a[2] + max * dz;
+    out[0] = x;
+    out[1] = y;
+    out[2] = z;
 }
 
 float fn_8025ADF4(float arg0) { return (float)fn_8002F234(arg0); }
