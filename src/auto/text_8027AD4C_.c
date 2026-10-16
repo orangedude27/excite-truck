@@ -53,3 +53,5 @@ void fn_8027BCC8(long arg0, long arg1, long arg2) {
 
 long fn_8027C8B0(void) { return 1; }
 
+long fn_8027CB20(void) { return 1; }
+
