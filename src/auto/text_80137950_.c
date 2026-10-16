@@ -5,6 +5,10 @@ extern void *lbl_80559C00;
 extern void *lbl_8042F788[4];
 extern unsigned char lbl_8055E0E0;
 extern void fn_80128668(void*);
+void fn_80137B14(void) {
+    lbl_80559C00 = (void*)-1;
+}
+
 void* fn_80137C4C(void) {
     return lbl_80559C00;
 }
