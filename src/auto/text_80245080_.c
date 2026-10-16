@@ -21,3 +21,7 @@ extern s32 lbl_804988B0;
 
 s32 fn_802E8D7C(s32);
 void fn_80236900(void);
+
+void fn_80245124(void) {
+    fn_802E8D7C(0);
+}
