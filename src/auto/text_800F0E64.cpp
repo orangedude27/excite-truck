@@ -158,3 +158,10 @@ extern "C" void detail_AttachSound__Q36nw4hbm3snd11SoundHandleFPQ46nw4hbm3snd6de
     *(void **)((u8 *)*arg0 + 8) = arg0;
 }
 
+extern "C" s32 fn_800FB374(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
