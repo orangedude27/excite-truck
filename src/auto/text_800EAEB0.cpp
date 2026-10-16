@@ -210,6 +210,10 @@ extern "C" f32 fn_800ED07C(void *arg0) {
     return ((f32 *)arg0)[0x20 / 4];
 }
 
+extern "C" f32 fn_800ED084(void *arg0) {
+    return *(f32 *)((u8 *)arg0 + 0x34);
+}
+
 extern "C" f32 fn_800ED08C(void *arg0) {
     return ((f32 *)arg0)[0x1C / 4];
 }
