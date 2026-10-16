@@ -280,11 +280,11 @@ int fn_801F394C(int arg0, int arg1) {
 
 void fn_801F3A30(void *arg0, int arg1) {
     extern int *fn_801F1CE8(int);
-    extern double lbl_80562F98;
-    double value;
-    value = (double)(unsigned char)*fn_801F1CE8(arg1);
+    extern float lbl_80562F90;
+    float value;
+    value = (float)(unsigned char)*fn_801F1CE8(arg1);
     *(unsigned char *)((char *)arg0 + 4) = 1;
-    *(float *)((char *)arg0 + 8) = (float)(value / (double)lbl_80562F40);
+    *(float *)((char *)arg0 + 8) = value / lbl_80562F90;
 }
 
 float fn_801F3A94(void *arg0) {
@@ -293,6 +293,13 @@ float fn_801F3A94(void *arg0) {
         return fn_802923EC(*(float *)((char *)arg0 + 8));
     }
     return fn_802923EC(lbl_80562F44);
+}
+
+int fn_801F3AC0(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
 }
 
 void fn_801F3B00(void *arg0, int arg1) {
