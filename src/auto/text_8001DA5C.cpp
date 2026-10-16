@@ -192,7 +192,7 @@ extern "C" s32 fn_8001E974(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_8001ED2C(void* arg0) {
+extern "C" void fn_8001ED2C(void* arg0) {
     f32 value = lbl_80560490;
     *(s32*)((u8*)arg0 + 0x04) = 0;
     *(f32*)((u8*)arg0 + 0x08) = value;
