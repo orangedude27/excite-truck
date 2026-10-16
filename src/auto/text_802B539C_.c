@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void *lbl_8055F9E8;
+extern int stricmp(const char *, const char *);
+extern const char lbl_8034A510[];
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
 int fn_802B539C(int arg0) {
