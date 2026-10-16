@@ -37,3 +37,7 @@ unsigned int fn_802C0D34(void) {
     return 1;
 }
 
+unsigned char fn_802C0D3C(void *arg0) {
+    return *((unsigned char *)arg0 + 0x2C5C);
+}
+
