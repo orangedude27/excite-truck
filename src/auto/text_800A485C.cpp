@@ -127,6 +127,13 @@ extern "C" void fn_800D1558(void) {
 
 }
 
+extern "C" s32 fn_800D1E5C(void *arg0, s32 arg1) {
+    s32 *ptr = (s32 *)((u8 *)arg0 + arg1 * 0x68);
+    s32 val = ptr[0x50 / 4];
+    s32 neg = -val;
+    return (s32)((u32)(neg | val) >> 31);
+}
+
 extern "C" s32 fn_800D1E78(void *arg0, s32 arg1, s32 arg2) {
     void *ptr = (u8 *)arg0 + arg1 * 0x68;
     if (((s32 *)ptr)[0x50 / 4] != 0 && arg2 == ((s32 *)ptr)[0x58 / 4]) {
@@ -212,26 +219,19 @@ extern "C" u8 fn_800D3838(u8 *arg0) {
 #pragma opt_tail_call on
 #pragma opt_tail_call on
 #pragma opt_tail_call on
-s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
-    void *r31 = lbl_8055DDD4_ptr;
-    s32 r28 = (s32)arg0;
-    s32 r29 = (s32)arg1;
-    s32 r30 = (s32)arg2;
+extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
+    void *r31 = *(void **)((u8 *)lbl_8055DDD4_ptr + 0xC);
+    s32 r28 = arg0;
+    s32 r29 = arg1;
+    s32 r30 = arg2;
     
-    r31 = *(void **)((u8 *)r31 + 0xC);
-    if (r31 == 0) {
-        return 0;
-    }
-    
-    do {
+    while (r31 != NULL) {
         if (fn_800D3F94(r31, r28, r29, r30) != 0) {
             return 1;
         }
         r31 = *(void **)((u8 *)r31 + 0xC);
-        if (r31 == 0) {
-            return 0;
-        }
-    } while (1);
+    }
+    return 0;
 }
 extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
@@ -353,12 +353,8 @@ extern "C" void fn_800D2480(void) {
 
 #pragma opt_tail_call on
 #pragma opt_tail_call on
-extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) __attribute__((noreturn)) {
-    f64 f1 __attribute__((reg_struct_return));
-    s32 r31_save __attribute__((unused));
-    void *r30 __attribute__((unused));
-    
-    u32 sp_8[16];
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
+    u32 sp_8[2];
     u32 sp_C;
     u32 sp_10;
     u32 sp_14;
