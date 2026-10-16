@@ -179,6 +179,8 @@ void fn_802C7040(int arg0) {
     }
 }
 
+void fn_802C744C(int arg0, void *arg1) { fn_802C70AC(arg0, arg1, -1, -1); }
+
 void fn_802C7734(void* alarm) {
     fn_802D0610(fn_802D0514(alarm));
 }
