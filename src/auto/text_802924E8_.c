@@ -102,13 +102,28 @@ void fn_80293128(void* arg0) {
 #pragma push
 #pragma small_data off
 void fn_80293530(void* arg0) {
-    s32 i;
-    s32 count = *(s32*)((u8*)arg0 + 0x28);
-    for (i = 0; i < count; i++) {
-        s32* slot = (s32*)((u8*)arg0 + i * 4 + 8);
-        fn_802C6CF8(*slot);
-        *slot = -1;
+    s32 i = 0;
+    u8* cursor = (u8*)arg0;
+    goto check;
+body:
+    fn_802C6CF8(*(s32*)(cursor + 8));
+    *(s32*)(cursor + 8) = -1;
+    cursor += 4;
+    i++;
+check:
+    if (i < *(s32*)((u8*)arg0 + 0x28)) goto body;
+}
+
+void* fn_80293A00(void* arg0, void* arg1, int unused, int arg2, int arg3, int arg4) {
+    *(void**)arg0 = lbl_80349278;
+    fn_80293CD0(arg0, arg2, arg3, arg4);
+    *(float*)((u8*)arg0 + 4) = lbl_8056450C;
+    if (arg1) {
+        void** vt = *(void***)arg1;
+        *(float*)((u8*)arg0 + 4) = ((float (*)(void*, const char*))vt[10])(arg1, lbl_8055C988);
     }
+    *(int*)((u8*)arg0 + 0x4c2c) = 0;
+    return arg0;
 }
 
 extern unsigned char lbl_80349278[];
@@ -125,4 +140,28 @@ void* __dt__Q34nw4r2ef6EffectFv_80293A88(void* arg0, int arg1) {
 }
 
 void fn_80293AE8(void* arg0) { *(int*)((u8*)arg0 + 0x4c2c) = 0; }
+
+extern int fn_8012C33C(void *);
+extern void fn_801345D8(void *, int, const char *, int, int);
+extern void fn_80292CD8(void *, int, u8 *);
+extern int fn_802C6FC0(void *, int, int);
+extern char lbl_80349250[];
+extern void *memset(void *, int, unsigned int);
+void fn_80293CD0(void *arg0, int arg1, int arg2, int arg3) {
+    char name[0x20];
+    *(s32 *)((u8 *)arg0 + 0x28) = 0;
+    while (*(s32 *)((u8 *)arg0 + 0x28) < 8) {
+        int count = *(s32 *)((u8 *)arg0 + 0x28);
+        fn_801345D8(name, 0x20, lbl_80349250, arg1, count + 1);
+        if (fn_8012C33C(name) == 0) break;
+        if (arg3 != 0 && *(s8 *)arg3 != 0) fn_80292CD8(name, arg2, (u8 *)arg3);
+        *(int *)((u8 *)arg0 + 8 + count * 4) = fn_802C6FC0(name, arg2, 0);
+        *(s32 *)((u8 *)arg0 + 0x28) = count + 1;
+    }
+    {
+        int count = *(s32 *)((u8 *)arg0 + 0x28);
+        if (count < 8)
+            memset((u8 *)arg0 + 8 + count * 4, 0xFF, (8 - count) * 4);
+    }
+}
 
