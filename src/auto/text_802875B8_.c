@@ -40,6 +40,8 @@ s32 fn_8028774C(void *arg0) {
     return *((u8 *)arg0 + 0x1C) == 0;
 }
 
+void fn_8028775C(int arg0) { fn_802869CC(arg0 - 4); }
+
 void fn_8028777C(void) {
 }
 
@@ -143,8 +145,10 @@ void fn_802879E4(s32 arg0) {
 }
 
 void fn_80287A34(void) {
+    void **vtable;
     fn_801E12A4(); fn_802A1548();
-    ((void (*)(void))(*(void **)((u8 *)fn_801B83A0() + 0x48)))();
+    vtable = *(void ***)fn_801B83A0();
+    ((void (*)(void))vtable[18])();
 }
 
 void fn_80287A6C(s32 arg0) {
