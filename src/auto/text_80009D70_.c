@@ -36,17 +36,15 @@ void fn_8000ABE0(void* arg0);
 u32 fn_8000AC38(void);
 
 void* fn_80009D70(void* arg0, s32 arg1) {
-    void* tmp;
-    if (arg0 == NULL) goto lbl_80009DB4;
-    if (arg0 == NULL) goto lbl_80009DB4;
-    *(s32*)arg0 = 0;
-    ((s32*)arg0)[1] = 0;
-    ((s32*)arg0)[2] = 0;
-    if (arg1 <= 0) goto lbl_80009DB4;
-    tmp = arg0;
-    fn_80128668(tmp);
-    tmp = arg0;
-lbl_80009DB4:
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(s32 *)arg0 = 0;
+            *((s32 *)arg0 + 1) = 0;
+            *((s32 *)arg0 + 2) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
     return arg0;
 }
 
@@ -79,7 +77,7 @@ void fn_8000AAE0(void* arg0) {
 }
 
 void fn_8000AAE4(void* arg0) {
-    char* p = (char*)arg0 + 0x64;
+    s8* p = (s8*)arg0 + 0x64;
     s32 i;
     for (i = 0; i < ((s32*)arg0)[0x3E0 / 4]; i++) {
         fn_8000AABC(p);
@@ -93,15 +91,14 @@ void fn_8000AB44(void) {
 
 void fn_8000AB48(void* arg0, s32 arg1) {
     char* p;
-    s32 i = 0;
+    s32 i;
     fn_8000A8C4();
     fn_8000AADC(arg0);
     fn_8000A644(arg0, (void*)arg1);
     p = (char*)arg0 + 0x64;
-    while (i < ((s32*)arg0)[0x3E0 / 4]) {
+    for (i = 0; i < ((s32*)arg0)[0x3E0 / 4]; i++) {
         fn_8000AA9C(p);
         p += 0x78;
-        i++;
     }
     fn_8012DDA8(&lbl_802FBC7C);
     fn_8020C920(arg0);
