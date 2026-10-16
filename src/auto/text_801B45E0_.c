@@ -2,6 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055E6D0;
+extern int memset(void *, int, unsigned int);
+extern int lbl_8055E6D4;
+extern void fn_80128670(int);
 extern char lbl_80435C70;
 extern char lbl_80335E48;
 extern void fn_802E317C(const char *, int);
@@ -12,6 +15,30 @@ extern int fn_801B47BC();
 extern unsigned int fn_801B4BDC(void);
 extern int fn_801B4B9C(int);
 extern int fn_801B47AC(int);
+void fn_801B4720(int arg0) {
+    unsigned int i;
+    int offset;
+    int *entries;
+
+    i = 0;
+    offset = 0;
+    entries = *(int **)(arg0 + 0x18);
+    while (i < *(unsigned int *)(arg0 + 0x1C)) {
+        entries[offset / 4] = -1;
+        *(int *)((char *)entries + offset + 4) = 0;
+        *(int *)((char *)entries + offset + 8) = 0;
+        offset += 12;
+        i++;
+    }
+    *(int *)(arg0 + 8) = 0;
+    *(int *)(arg0 + 0xC) = *(int *)(arg0 + 4);
+    *(int *)(arg0 + 0x10) = *(int *)(arg0 + 4);
+    *(int *)(arg0 + 0x14) = 0;
+    *(int *)(arg0 + 0x20) = 0;
+    *(int *)(arg0 + 0x24) = 0;
+    (*(void (**)(void))(*(int *)*(int *)arg0 + 0x18))();
+}
+
 void fn_801B47B4(void *arg0) {
     fn_801B47D4(arg0, *(int *)((char *)arg0 + 0x24));
 }
@@ -22,13 +49,19 @@ int fn_801B47D4(int arg0, int arg1) {
 }
 
 int fn_801B47F0(int arg0) {
-    unsigned int r4 = *(unsigned int *)(arg0 + 0x20);
-    unsigned int r5 = *(unsigned int *)(arg0 + 0x24);
-    if (r4 < r5) return r5 - r4;
-    return r5 + (*(int *)(arg0 + 0x1C) - r4);
+    unsigned int a = *(unsigned int *)(arg0 + 0x20);
+    unsigned int b = *(unsigned int *)(arg0 + 0x24);
+    if (a >= b) return b + (*(int *)(arg0 + 0x1C) - a);
+    return b - a;
 }
 
 int fn_801B4818(void) { return 0x100000; }
+
+int fn_801B4B44(char *arg0) {
+    int result = 0;
+    if (fn_801B47F0((int)(arg0 + 4)) != 0 && *arg0 != 0) result = 1;
+    return result;
+}
 
 int fn_801B4B9C(int arg0) {
     return *fn_801B479C(arg0 + 4, fn_801B47AC(arg0 + 4));
@@ -61,8 +94,32 @@ void fn_801B4C9C(int arg0, int arg1) {
     } while (count != 0);
 }
 
+extern double lbl_80562660;
+extern float lbl_80562658;
+float fn_801B4D10(int arg0, int arg1) {
+    return (float)((arg1 - fn_801B4B9C(arg0)) % 6) / lbl_80562658;
+}
+
+void *__AXGetStudio_80178C90(void);
+int fn_801B4D80(void *, int, int, float);
+void fn_801B5060(int arg0, int arg1, float arg2) {
+ void *studio = __AXGetStudio_80178C90();
+ fn_801B4D80(studio, arg0, arg1, arg2);
+}
+
 char fn_801B526C(void) {
     return lbl_8055E6D0;
+}
+
+extern int memset(void *, int, unsigned int);
+extern int lbl_8055E6D4;
+void fn_801B5274(void) {
+    memset((char *)&lbl_80435C70 + 0x208, 0, 0x40);
+    *(int *)((char *)&lbl_80435C70 + 0x200) = 0;
+    *(int *)((char *)&lbl_80435C70 + 0x204) = 0;
+    lbl_8055E6D8 = 0;
+    lbl_8055E6D0 = 0;
+    lbl_8055E6D4 = 3;
 }
 
 void fn_801B5318(void) {
