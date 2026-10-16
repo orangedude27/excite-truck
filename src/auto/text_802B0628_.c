@@ -234,6 +234,14 @@ int fn_802B1BE4(void *arg0) {
 void fn_802B1BEC(void) {
 }
 
+void fn_802B1BF0(void *arg0, void *arg1, int arg2) {
+    float *src = (float *)((char *)((int *)arg0)[0x318 / 4] + arg2 * 0xc);
+    float *dst = (float *)arg1;
+    dst[0] = src[0];
+    dst[1] = src[1];
+    dst[2] = src[2];
+}
+
 int fn_802B1C14(void *arg0) {
     return ((int *)arg0)[4];
 }
