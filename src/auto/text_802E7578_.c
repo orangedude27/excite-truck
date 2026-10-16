@@ -69,3 +69,6 @@ void fn_802E775C(void) {
 void fn_802E7760(void) {
 }
 
+void fn_802E7764(void) {
+}
+
