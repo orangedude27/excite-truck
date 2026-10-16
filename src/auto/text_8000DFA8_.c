@@ -153,6 +153,16 @@ void fn_8000F40C(void) {
 }
 
 extern s32 lbl_8055D4CC;
+extern s32 lbl_8055D490;
+extern s32 lbl_80558A90;
+extern f32 lbl_805602C8;
+extern f64 lbl_80560268;
+extern s32 fn_8023441C(void);
+extern s32 fn_80232B70(s32);
+extern f32 fn_80011EDC(void);
+extern s32 fn_80232578(s32);
+extern char lbl_802FC414[];
+extern s32 lbl_8055D49C;
 void fn_8000F440(void) {
     lbl_8055D4CC = fn_8023512C();
 }
