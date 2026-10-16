@@ -179,6 +179,16 @@ s32 fn_80119994(void) { return 0; }
 
 s32 fn_8011999C(void) { return 0; }
 
+void fn_80119AB0(void *arg0, s32 arg1) {
+    s32 value = arg1;
+    f32 temp;
+    if (value < 0) value = 0;
+    if (value > 0x7fff) value = 0x7fff;
+    temp = (f32) fn_8002EFBC((f32)value, lbl_80561198);
+    *(s32 *)((u8 *)arg0 + 0xa4) = (s32)(lbl_805611A0 * temp);
+    fn_80119288(arg0, temp);
+}
+
 extern f64 lbl_80561198;
 extern f64 lbl_805611A8;
 extern f32 lbl_805611A0;
