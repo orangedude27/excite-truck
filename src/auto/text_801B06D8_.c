@@ -21,6 +21,14 @@ s32 fn_801B0F18(void) {
     return *(s32 *)((u8 *)lbl_8055E684 + (fn_80179630() << 7) + 0x4C);
 }
 
+u32 fn_801B0F48(u32 arg0, u32 arg1) {
+    u32 diff = arg1 - arg0;
+    if (arg0 > arg1) diff = arg0 - arg1;
+    return (0x20000U << __cntlzw(diff ^ 0x20000)) >> 31;
+}
+
+s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
+
 void fn_801B2C6C(void) {
 
 }
