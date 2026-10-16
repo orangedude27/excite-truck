@@ -654,6 +654,14 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8022927C(
     return this_;
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802292D8(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802293E0(
     void* this_, s32 flag) {
     if (this_) {
