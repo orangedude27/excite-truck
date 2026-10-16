@@ -4,6 +4,9 @@
 typedef int s32;
 typedef unsigned int u32;
 typedef float f32;
+typedef unsigned char u8;
+extern s32 lbl_8033A048;
+extern s32 lbl_802F9A08[];
 extern s32 lbl_804885E8[];
 extern f32 lbl_80562E68;
 extern f32 lbl_8055EB98[2];
@@ -26,6 +29,12 @@ void fn_801EB128(void) {
 
 void fn_801EB6A4(void) {
 
+}
+
+void fn_801EB800(void *object, s32 arg1, s32 arg2) {
+    struct V { void **vtable; };
+    struct V *v=(struct V *)object;
+    ((void (*)(void *, s32, s32))v->vtable[10])(object,arg2,arg1);
 }
 
 void fn_801EB81C(void) {
