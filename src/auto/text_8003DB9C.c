@@ -44,3 +44,7 @@ int GXGetTexObjMipMap(void *arg0) {
     return *(int *)((char *)arg0 + 0x14);
 }
 
+int GXGetTexObjLODAll(int *arg0) {
+    return *arg0 & 3;
+}
+
