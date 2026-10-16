@@ -19,6 +19,10 @@ extern "C" void fn_801014D4(s32 arg0) {
     InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(arg0 - 8);
 }
 
+extern "C" void fn_801014DC(s32 arg0) {
+    fn_800FFA6C(arg0 - 8);
+}
+
 void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
     *(int *)arg0 = arg1;
     *((int *)arg0 + 1) = arg2;
