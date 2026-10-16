@@ -65,20 +65,41 @@ typedef struct Unk801B3398 {
     s32 unk_0x34;
 } Unk801B3398;
 
-void* fn_801B3338(void* arg0) {
-    s32 found;
-    s32* obj;
+s32 fn_801B32C8(void* arg0, s32 arg1) {
+    s32 vals[2];
+    s32 idx;
+    s32 result = 0;
 
-    if (*(s32**)((char*)arg0 + 4) == NULL) {
-        return NULL;
+    vals[0] = *(s32*)((char*)arg0 + 0x20);
+    vals[1] = arg1;
+    idx = -1;
+    if (vals[0] == 0x6D) {
+        idx = 0;
+    } else if (vals[1] == 0x6D) {
+        idx = 1;
     }
-    obj = *(s32**)((char*)arg0 + 4);
-    found = 0;
-    if ((u32)(obj[4] - 0x43410000) == 0x5220
-        || (u32)(obj[4] - 0x50430000) == 0x4152
-        || (u32)(obj[4] - 0x41430000) == 0x4152
-        || (u32)(obj[4] - 0x4E430000) == 0x4152) {
-        found = 1;
+    if (idx != -1) {
+        switch (vals[!idx]) {
+        case 0x6E:
+        case 1:
+            result = 1;
+            break;
+        }
+    }
+    return result;
+}
+
+void* fn_801B3338(void* arg0) {
+    s32 found = 0;
+    s32* obj = *(s32**)((char*)arg0 + 4);
+
+    if (obj != NULL) {
+        if ((u32)(obj[4] - 0x43410000) == 0x5220
+            || (u32)(obj[4] - 0x50430000) == 0x4152
+            || (u32)(obj[4] - 0x41430000) == 0x4152
+            || (u32)(obj[4] - 0x4E430000) == 0x4152) {
+            found = 1;
+        }
     }
     if (found != 0) {
         return obj;
@@ -90,9 +111,44 @@ int fn_801B3390(void) {
     return 0x14;
 }
 
+#pragma use_lmw_stmw off
 s32 fn_801B3398(void* arg0) {
-    return fn_801796CC(1, *(Unk801B3398*)arg0, 0x38);
+    Unk801B3398 local;
+    s32* src = (s32*)arg0;
+    s32 t13, t12, t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+
+    t13 = src[13];
+    t12 = src[12];
+    t11 = src[11];
+    t10 = src[10];
+    t9 = src[9];
+    t8 = src[8];
+    t7 = src[7];
+    t6 = src[6];
+    t5 = src[5];
+    t4 = src[4];
+    t3 = src[3];
+    t2 = src[2];
+    t1 = src[1];
+    t0 = src[0];
+    local.unk_0x00 = t0;
+    local.unk_0x04 = t1;
+    local.unk_0x08 = t2;
+    local.unk_0x0C = t3;
+    local.unk_0x10 = t4;
+    local.unk_0x14 = t5;
+    local.unk_0x18 = t6;
+    local.unk_0x1C = t7;
+    local.unk_0x20 = t8;
+    local.unk_0x24 = t9;
+    local.unk_0x28 = t10;
+    local.unk_0x2C = t11;
+    local.unk_0x30 = t12;
+    local.unk_0x34 = t13;
+    fn_801796CC(1, &local, 0x38);
+    return 0x38;
 }
+#pragma use_lmw_stmw on
 void fn_801B3448(void) {
     void* p = (void*)fn_801284F8(0x5C0, &lbl_80335D3C);
     if (p == NULL) {
@@ -226,9 +282,10 @@ s32 fn_801B3FD0(void) {
 void fn_801B42D0(void* arg0) {
     u8* p = (u8*)arg0 + 0x2FC;
     void* val = *(void**)lbl_802F9630;
-    f32 init = lbl_80562650;
+    f64 init;
     s32 i;
 
+    init = lbl_80562650;
     for (i = 0; i < 0x10; i++, p += 0x2C) {
         *(s32*)(p + 0x1C) = fn_802077A4(val, 5, p + 0x10, p + 4);
         *(s32*)(p + 0x20) = 0;
