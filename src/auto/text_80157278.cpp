@@ -146,7 +146,7 @@ extern void* lbl_8032F0E8;
 extern f32 lbl_80561750;
 extern f32 lbl_80561754;
 extern f32 lbl_8056177C;
-extern f32 lbl_80558DC4;
+extern f32 lbl_80558DC4[];
 extern f32 lbl_8055E3C8;
 
 extern "C" s32 lbl_8032E540[];
