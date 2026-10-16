@@ -6,6 +6,10 @@ void AIRegisterDMACallback_800591F0(s32);
 void fn_802D992C(void);
 void fn_802D98F8(void);
 extern s32 lbl_8055FE3C;
+BOOL fn_802D9BF0(void) {
+    return lbl_8055FE3C != 0;
+}
+
 BOOL fn_802D9C04(void) {
     return (lbl_8055FE3C - 1) == 0;
 }
