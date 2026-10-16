@@ -126,6 +126,15 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
     OSRestoreInterrupts(level);
 }
 
+extern "C" void *fn_800F26FC(void *, unsigned int);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800ECB38(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_800F26FC(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern u8 lbl_803231D8[];
 extern "C" s32 fn_800F283C(void *, u32, s32, s32 *);
 extern "C" s32 fn_800F2824(void *, s32, void *);
@@ -141,14 +150,18 @@ extern "C" s32 detail_GetWaveDataFileAddress__Q36nw4hbm3snd18MemorySoundArchiveC
 }
 
 extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this_, void *stream, u32 bufferSize, s32 offset, u32 length) {
- u32 base=*(u32 *)((u8 *)this_+0x108); void *result=stream;
- if(base==0) return 0; if(bufferSize<0x20) return 0;
- if(result) {
-  *(u8 *)((u8 *)result+4)=0; *(u32 *)((u8 *)result+0xC)=0; *(u32 *)((u8 *)result+0x10)=0;
-  *(u8 **)result=lbl_803231D8; *(u32 *)((u8 *)result+0x14)=offset+base;
-  *(u32 *)((u8 *)result+0x18)=length; *(u32 *)((u8 *)result+0x1C)=0;
- }
- return result;
+    u32 base = *(u32 *)((u8 *)this_ + 0x108);
+    if (base == 0) return 0;
+    if (bufferSize < 0x20) return 0;
+    if (stream == 0) return stream;
+    *(u8 *)((u8 *)stream + 4) = 0;
+    *(u32 *)((u8 *)stream + 0xC) = 0;
+    *(u32 *)((u8 *)stream + 0x10) = 0;
+    *(u8 **)stream = lbl_803231D8;
+    *(u32 *)((u8 *)stream + 0x14) = offset + base;
+    *(u32 *)((u8 *)stream + 0x18) = length;
+    *(u32 *)((u8 *)stream + 0x1C) = 0;
+    return stream;
 }
 
 extern u8 lbl_803230E8[];
@@ -181,6 +194,12 @@ extern "C" void fn_800ECEE8(void* arg0) {
     *(s32*)((u8*)arg0 + 0x14) = 0;
     *(s32*)((u8*)arg0 + 0x18) = 0;
     *(s32*)((u8*)arg0 + 0x1C) = 0;
+}
+
+extern "C" u32 Read__Q44nw4r3snd18MemorySoundArchive16MemoryFileStreamFPvUl(void *this_, void *dst, u32 size) {
+ u32 pos=*(u32 *)((u8 *)this_+0x1C); u32 remaining=*(u32 *)((u8 *)this_+0x18)-pos; u32 count=size;
+ if(size>remaining) count=remaining;
+ memcpy(dst,(u8 *)this_+*(u32 *)((u8 *)this_+0x14)+pos,count); return count;
 }
 
 extern u8 lbl_803231C0[];
