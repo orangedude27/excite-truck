@@ -28,8 +28,7 @@ void fn_801CB464(void) {
 }
 
 void fn_801CB518(void) {
-    if (fn_80019BA8() != 0) return;
-    if (fn_80161C38() != 0) return;
+    if (fn_80019BA8() || fn_80161C38()) return;
     lbl_8055E880 = 0;
     fn_801CCCAC();
 }
