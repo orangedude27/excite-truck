@@ -28,6 +28,9 @@ extern void fn_8012BEF0(unsigned char *);
 extern void fn_8012C41C(void (*)(void), int, unsigned char *);
 extern void fn_802E589C(void);
 extern int fn_802E582C(void);
+extern char lbl_8055D1E4[];
+extern char lbl_8034D490[];
+extern char lbl_8034D4A0[];
 void fn_802E5248(int arg0, int arg1) {
     if (arg1 == 0) fn_80060CC0(arg0, 4, (void (*)())fn_802E51D0);
 }
