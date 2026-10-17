@@ -112,6 +112,16 @@ void fn_801C3C14(s32 arg0) {
     lbl_8055E7F0--;
 }
 
+extern void fn_80128670(void);
+extern s32 fn_8012850C(s32, void *);
+extern void fn_801C3D88(void *);
+extern char lbl_80336D84[];
+extern char lbl_80336D90[];
+extern char lbl_8055E7E8;
+extern char lbl_8055E7E9;
+extern char lbl_8055E7E3;
+extern s32 lbl_8055E808;
+
 s32 fn_801C3D5C(void) {
     return *(s32 *)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
 }
