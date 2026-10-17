@@ -70,6 +70,7 @@ void fn_801D4734(void) {
     }
 }
 
+extern void *lbl_804423A4[];
 s32 fn_801D5650(void *);
 
 void fn_801D47F4(void) {
