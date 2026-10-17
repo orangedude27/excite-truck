@@ -8,14 +8,33 @@ extern f32 lbl_80563D7C;
 extern f32 lbl_80563D80;
 extern f32 lbl_80563D84;
 
+void fn_8026B840(void) {}
+
+f32 fn_8026B844(f32 f) {
+    f32 c = lbl_80563D78;
+    if (f > c) {
+        f32 t = (f - lbl_80563D7C) / lbl_80563D80;
+        if (c > t) {
+            c = t;
+        }
+        return c;
+    }
+    {
+        f32 t = (lbl_80563D7C + f) / lbl_80563D84;
+        if (t > c) {
+            c = t;
+        }
+    }
+    return c;
+}
+
 BOOL fn_8026BFF0(s32 x) {
-    if (x >= 5) {
-        return 0;
+    if (x < 5) {
+        if (x >= 3) {
+            return TRUE;
+        }
     }
-    if (x >= 3) {
-        return 1;
-    }
-    return 0;
+    return FALSE;
 }
 
 void* fn_8026DDD0(void) {
