@@ -121,7 +121,7 @@ extern "C" u8 lbl_8032CAC0_vt[48];
 extern "C" u8 lbl_80559D18_str[5];
 #pragma dont_inline on
 extern "C" void fn_8013D288(void) {
-    void **slot = fn_801284F8(4, (void *)"zstm");
+    void **slot = fn_801284F8(4, &lbl_80559D18_str);
     if (slot != 0) {
         *slot = (void *)lbl_8032CAC0_vt;
     }
@@ -297,7 +297,8 @@ extern "C" u8 fn_80141FA0(void *arg0) {
 }
 
 extern "C" s32 fn_801420D4(void *arg0) {
-    return __fabsf(*(f32 *)((u8 *)arg0 + 0x2690)) <= lbl_80558DC4;
+    f64 abs = __fabs((f64)*(f32 *)((u8 *)arg0 + 0x2690));
+    return (f32)abs <= lbl_80558DC4;
 }
 
 extern "C" void fn_80142104(void *arg0) {
@@ -306,14 +307,8 @@ extern "C" void fn_80142104(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x100) = 0;
 }
 
-extern "C" void fn_80142118(void *arg0, void *arg1) {
-    *(s32 *)((u8 *)arg0 + 0x0) = *(s32 *)((u8 *)arg1 + 0x0);
-    *(s32 *)((u8 *)arg0 + 0x4) = *(s32 *)((u8 *)arg1 + 0x4);
-    *(s32 *)((u8 *)arg0 + 0x8) = *(s32 *)((u8 *)arg1 + 0x8);
-    *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)arg1 + 0xC);
-    *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)((u8 *)arg1 + 0x10);
-    *(s32 *)((u8 *)arg0 + 0x14) = *(s32 *)((u8 *)arg1 + 0x14);
-    *(s32 *)((u8 *)arg0 + 0x18) = *(s32 *)((u8 *)arg1 + 0x18);
+extern "C" S28_80142118 fn_80142118(S28_80142118 arg0) {
+    return arg0;
 }
 
 extern "C" s32 fn_80142154(void *arg0) {
