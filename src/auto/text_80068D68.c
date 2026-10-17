@@ -698,6 +698,11 @@ void fn_8006F220(void) {
     fn_80070758();
 }
 
+int fn_8006F254(s32 arg0) {
+    hcisu_h2_send_msg_now((u8 *)&lbl_803BD1A0, arg0);
+    return 1;
+}
+
 s32 fn_8007011C(void) { return 0; }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
@@ -2391,9 +2396,9 @@ void fn_800939A0(void *arg0, u8 arg1) { rfc_port_sm_execute(port_find_mcb_dlci_p
 
 void fn_800939CC(void *arg0, u8 arg1, void *arg2) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xE, arg2); }
 
-void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) { u8 flag = *(u8 *)((u8 *)arg0 + 0x6D); void *buf; u8 *frame; if (flag == 0) flag = 1; else flag = 0; buf = GKI_getpoolbuf(2); if (buf != 0) { frame = (u8 *)buf + 0x11; *(u16 *)((u8 *)buf + 4) = 9; frame[0] = (flag << 1) | 1 | (arg1 << 2); frame[1] = 0x3F; frame[2] = 1; frame[3] = fn_8009504C(3, frame, 0x3F); *(u16 *)((u8 *)buf + 2) = 4; rfc_check_send_cmd(arg0, buf); } }
+void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 flag; flag=1; if (*(u8 *)((u8 *)arg0+0x6D)==0) flag=0; buf=GKI_getpoolbuf(2); if(buf) { frame=buf+0x11; *(u16 *)(buf+4)=9; frame[0]=(flag<<1)|1|(arg1<<2); frame[1]=0x3F; frame[2]=1; frame[3]=fn_8009504C(3,frame,0x3F); *(u16 *)(buf+2)=4; rfc_check_send_cmd(arg0,buf); } }
 
-void rfc_send_ua(void *arg0, s32 arg1, void *arg2) { u8 flag = *(u8 *)((u8 *)arg0 + 0x6D); void *buf; u8 *frame; if (flag != 0) flag = 1; else flag = 0; buf = GKI_getpoolbuf(2); if (buf != 0) { frame = (u8 *)buf + 0x11; *(u16 *)((u8 *)buf + 4) = 9; frame[0] = (flag << 1) | 1 | (arg1 << 2); frame[1] = 0x73; frame[2] = 1; frame[3] = fn_8009504C(3, frame, 0x73); *(u16 *)((u8 *)buf + 2) = 4; rfc_check_send_cmd(arg0, buf); } }
+void rfc_send_ua(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 flag; flag=1; if (*(u8 *)((u8 *)arg0+0x6D)!=0) flag=0; buf=GKI_getpoolbuf(2); if(buf) { frame=buf+0x11; *(u16 *)(buf+4)=9; frame[0]=(flag<<1)|1|(arg1<<2); frame[1]=0x73; frame[2]=1; frame[3]=fn_8009504C(3,frame,0x73); *(u16 *)(buf+2)=4; rfc_check_send_cmd(arg0,buf); } }
 
 BOOLEAN SDP_ServiceSearchRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
     tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
