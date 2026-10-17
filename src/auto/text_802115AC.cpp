@@ -571,13 +571,9 @@ extern "C" void *fn_80215738(void *arg0, s32 arg1) {
     s32 old;
     if (arg0 != 0) {
         old = *(s32 *)((char *)arg0 + 4);
-        *(void **)arg0 = (void *)&lbl_8033D504;
-        if (old != 0) {
-            fn_802C2FC4(old);
-        }
-        if (arg1 > 0) {
-            ((s32 (*)(void *))fn_80128668)(arg0);
-        }
+        *(char **)arg0 = lbl_8033D504;
+        if (old != 0) fn_802C2FC4(old);
+        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
