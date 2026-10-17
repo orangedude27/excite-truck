@@ -88,19 +88,16 @@ void *fn_80234E88(const char *arg0) {
 void *fn_8023505C(void *arg0, int arg1) {
     void *node;
     int i;
-    if (arg1 == 0)
-        return *(void **)((char *)arg0 + 0x88);
+    if (arg1 == 0) return *(void **)((char *)arg0 + 0x88);
     node = *(void **)((char *)arg0 + 0x88);
     i = 0;
-    do {
-        if (i == arg1)
-            return node;
+    for (;;) {
+        if (i == arg1) return node;
         node = *(void **)((char *)node + 0x18);
         i++;
-        if (node == 0)
-            return node;
-    } while (i <= arg1);
-    return node;
+        if (node == 0) return node;
+        if (i > arg1) return node;
+    }
 }
 
 extern const char lbl_803406FC[];
@@ -124,3 +121,36 @@ void fn_802350BC(void) {
     }
 }
 
+extern void fn_802354A0(int, int, int, float, float, float, float, float);
+extern const char lbl_80340808[];
+extern const char lbl_80340834[];
+extern float lbl_805636B8;
+extern int fn_8012C33C(const char *);
+extern int fn_802CAC28(const char *, int);
+void fn_80236134(void *arg0, int arg1, const char *arg2) {
+    int id;
+    int count;
+    char *entry;
+    char *dst;
+    char ch;
+
+    if (fn_8012C33C(arg2) != 0) {
+        id = fn_802CAC28(arg2, 0);
+        count = *(int *)((char *)arg0 + 0xC);
+        entry = (char *)(*(char **)((char *)arg0 + 4) + count * 0x2C);
+        *(int *)((char *)arg0 + 0xC) = count + 1;
+        dst = entry;
+        do {
+            ch = *arg2++;
+            *dst++ = ch;
+        } while (ch != 0);
+        *(int *)(entry + 0x28) = arg1;
+        *(int *)(entry + 0x24) = id;
+    }
+}
+extern void fn_802354A0(int, int, int, float, float, float, float, float);
+extern const char lbl_80340808[];
+extern const char lbl_80340834[];
+extern float lbl_805636B8;
+extern int fn_8012C33C(const char *);
+extern int fn_802CAC28(const char *, int);
