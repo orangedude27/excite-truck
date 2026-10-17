@@ -2,6 +2,13 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
+class JStudio_JAudio {
+public:
+    class TAdaptor_sound {
+    public:
+        void endSound_fadeOut_(u32 arg0);
+    };
+};
 namespace JStudio {
 class JAudio {
 public:
@@ -1252,12 +1259,12 @@ extern "C" void fn_8015D814(void* arg0) {
     }
 }
 
-void endSound_fadeOut___Q214JStudio_JAudio14TAdaptor_soundFUl(void* self) {
-    void* ptr = *(void**)((u8*)self + 0x248);
+void JStudio::JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
+    void* ptr = *(void**)((u8*)this + 0x248);
     if (ptr != 0) {
         void (*fn)(void*) = *(void (**)(void*))((u8*)ptr + 0x24);
         fn(ptr);
-        *(void**)((u8*)self + 0x248) = 0;
+        *(void**)((u8*)this + 0x248) = 0;
     }
 }
 
