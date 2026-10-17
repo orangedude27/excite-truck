@@ -340,10 +340,35 @@ extern "C" s32 fn_800A9104(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
+extern "C" s32 fn_800AAEFC(s32 arg0, void *arg1) {
+    ((s32 *)arg1)[0x8B] = arg0;
+    ((s16 *)arg1)[0] = 0x5C;
+    ((s16 *)arg1)[1] = 0;
+    ((u8 *)arg1)[0x20A] = 0;
+    ((u8 *)arg1)[0x20B] = 0;
+    ((u8 *)arg1)[0x20C] = 0;
+    ((u8 *)arg1)[0x20E] = 0x5C;
+    ((u8 *)arg1)[0x20F] = 0;
+    ((u8 *)arg1)[0x21B] = 0;
+    ((u8 *)arg1)[0x21C] = 0x10;
+    ((u8 *)arg1)[0x21D] = 0;
+    ((s16 *)arg1)[0x10F] = 0;
+    ((s16 *)arg1)[0x110] = 0;
+    ((s16 *)arg1)[0x111] = 0;
+    ((s16 *)arg1)[0x112] = 0;
+    ((s16 *)arg1)[0x113] = 0;
+    ((s32 *)arg1)[0x8A] = 0;
+    ((s32 *)arg1)[0x8C] = 3;
+    ((s32 *)arg1)[0x8D] = 1;
+    ((s32 *)arg1)[0x8E] = -1;
+    ((s16 *)arg1)[0x11E] = 0;
+    return 0;
+}
+
 extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1);
 extern "C" void fn_800B78F4(void *arg0, void *arg1);
-extern "C" void fn_800ACA44(s32 arg4) {
-    fn_800ABC60(0, arg4);
+extern "C" void fn_800ACA44(s32 arg1) {
+    fn_800ABC60(0, arg1);
 }
 
 extern "C" void fn_800ACA50(void) {
