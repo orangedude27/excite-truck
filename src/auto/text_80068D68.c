@@ -883,6 +883,10 @@ void fn_80073A1C(void) {
 
 }
 
+void fn_80074A4C(s32 arg0) {
+    bta_dm_pm_set_mode((u8 *)arg0 + 8, 1);
+}
+
 void fn_8007AD38(void) {
 
 }
