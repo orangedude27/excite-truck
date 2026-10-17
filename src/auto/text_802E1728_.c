@@ -5,7 +5,7 @@ extern int lbl_804DB780[];
 extern char lbl_8034CD48[];
 extern char lbl_8034CD30[];
 extern void fn_802E317C(const char *, ...);
-extern void fn_802E30C8(const char *, int, int);
+extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034CEE4[];
 extern int lbl_804DB790[];
 extern int lbl_804DB7D0[];
@@ -60,6 +60,36 @@ void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
             }
         }
     }
+}
+
+int fn_802E1804(void *dst, void *src, int count, int outerBytes, int stride) {
+    int total = count * stride;
+    int rowStride = total * 2;
+    int lastStride = total * 3;
+    int dstOffset = 0;
+    int outer = 0;
+    int row = 0;
+    do {
+        int srcOffset = row * total;
+        int i;
+        for (i = 0; i < (total >> 3); i++) {
+            unsigned char *s = (unsigned char *)src + srcOffset;
+            unsigned char *d = (unsigned char *)dst + dstOffset;
+            *(unsigned int *)(d + 0) = *(unsigned int *)(s + 0);
+            *(unsigned int *)(d + 4) = *(unsigned int *)(s + 4);
+            *(unsigned int *)(d + 8) = *(unsigned int *)(s + total);
+            *(unsigned int *)(d + 12) = *(unsigned int *)(s + total + 4);
+            *(unsigned int *)(d + 16) = *(unsigned int *)(s + rowStride);
+            *(unsigned int *)(d + 20) = *(unsigned int *)(s + rowStride + 4);
+            *(unsigned int *)(d + 24) = *(unsigned int *)(s + lastStride);
+            *(unsigned int *)(d + 28) = *(unsigned int *)(s + lastStride + 4);
+            dstOffset += 32;
+            srcOffset += 8;
+        }
+        row += 4;
+        outer++;
+    } while (outer < (outerBytes >> 2));
+    return 0;
 }
 
 int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
@@ -152,16 +182,29 @@ int main(void) {
     return 0;
 }
 
+unsigned long long fn_802E2C20(void) {
+    unsigned long long now = OSGetTime();
+    if ((lbl_8055FEF8 | (int)(0 >> 31)) == 0 && lbl_8055FEFC == 0) {
+        lbl_8055FEFC = (unsigned int)now;
+        lbl_8055FEF8 = (unsigned int)(now >> 32);
+    }
+    {
+        unsigned int ticks = *(volatile unsigned int *)0x800000F8;
+        unsigned int factor = (unsigned int)(((unsigned long long)(ticks >> 2) * 0x10624dd3U) >> 32) >> 6;
+        unsigned long long diff = now - (((unsigned long long)(unsigned int)lbl_8055FEF8 << 32) | lbl_8055FEFC);
+        return __div2i(diff, factor);
+    }
+}
+
 extern int lbl_8055FEF8;
 extern unsigned int lbl_8055FEFC;
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
 unsigned long long fn_802E2C9C(void) {
     unsigned long long now = OSGetTime();
     unsigned int lo = (unsigned int)now - lbl_8055FEFC;
-    unsigned int hi = (unsigned int)(now >> 32) - (unsigned int)lbl_8055FEF8 - ((unsigned int)now < lbl_8055FEFC);
+    unsigned long long diff = now - *(unsigned long long *)&lbl_8055FEF8;
     unsigned int ticks = *(volatile unsigned int *)0x800000F8;
-    unsigned int factor = (unsigned int)(((unsigned long long)(ticks >> 2) * 0x431bde83U) >> 32) >> 15;
-    return __div2i(((unsigned long long)hi << 32 | lo) << 3, factor);
+    return __div2i((diff << 3) | ((lo << 3) >> 29), (unsigned long long)(lo << 3) | ((unsigned long long)(ticks >> 2) * 0x431c));
 }
 
 void fn_802E2CFC(void *arg0) {
