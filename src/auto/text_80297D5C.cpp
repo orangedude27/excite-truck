@@ -227,6 +227,22 @@ void fn_802994C0(void* arg0) {
     *(float*)((char*)arg0 + 0x38) = fn_801E7E18();
 }
 
+extern "C" void fn_80299504(void* arg0) {
+    float value = lbl_8056459C;
+    *(int*)arg0 = -1;
+    *(int*)((char*)arg0 + 0x34) = 0;
+    *(float*)((char*)arg0 + 0x38) = value;
+    *(int*)((char*)arg0 + 0x40) = -1;
+    *(int*)((char*)arg0 + 0x74) = 0;
+    *(float*)((char*)arg0 + 0x78) = value;
+    *(int*)((char*)arg0 + 0x80) = -1;
+    *(int*)((char*)arg0 + 0xB4) = 0;
+    *(float*)((char*)arg0 + 0xB8) = value;
+    *(int*)((char*)arg0 + 0xC0) = -1;
+    *(int*)((char*)arg0 + 0xF4) = 0;
+    *(float*)((char*)arg0 + 0xF8) = value;
+}
+
 extern "C" void fn_8029A890(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + (int)arg1 * 0x2C + 0x24) = lbl_80564590;
 }
