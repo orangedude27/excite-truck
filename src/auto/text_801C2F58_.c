@@ -359,6 +359,13 @@ void fn_801C7EF4(void) {
     fn_801C78D8();
 }
 
+extern char lbl_8055A964[7];
+void fn_801C7F00(void) {
+    strcpy(lbl_80438280, lbl_804380F0);
+    strcpy(lbl_804380F0, lbl_8055AA44);
+    if (lbl_80438280[0] == 0) strcpy(lbl_80438280, lbl_8055A964);
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
