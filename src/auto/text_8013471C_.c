@@ -1,6 +1,6 @@
 #include <types.h>
 
-extern void *fn_801284F8(u32, ...);
+extern void *fn_801284F8(u32, const void *);
 extern f32 lbl_8055E0A8;
 extern f32 lbl_80561304;
 extern void *fn_8001285C(s32);
@@ -215,7 +215,7 @@ void *fn_80134F48(void) {
 }
 #pragma scheduling on
 void *fn_80134FF8(void) {
-    void **p = ((void *(*(*)()))fn_801284F8)(4, lbl_8032BC94);
+    void **p = fn_801284F8(4, lbl_8032BC94);
     if (p != 0) {
         *p = (void*)lbl_8032BD08;
     }
