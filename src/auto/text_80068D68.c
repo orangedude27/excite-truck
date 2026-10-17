@@ -1264,10 +1264,26 @@ extern char lbl_80315700[];
 extern void *jumptable_803159A0[];
 char *bta_hh_evt_code(u32 event) {
     u32 index = event - 0x1700;
-    if (index > 0xF) {
-        return lbl_80315700 + 0x120;
+    char *base = lbl_80315700;
+    switch (index) {
+    case 0: return base + 0x108;
+    case 1: return base + 0x120;
+    case 2: return base + 0x138;
+    case 3: return base + 0x14C;
+    case 4: return base + 0x164;
+    case 5: return base + 0x178;
+    case 6: return base + 0x190;
+    case 7: return base + 0x1A8;
+    case 8: return base + 0x1BC;
+    case 9: return base + 0x1D4;
+    case 10: return base + 0x1F0;
+    case 11: return base + 0x204;
+    case 12: return base + 0x21C;
+    case 13: return base + 0x238;
+    case 14: return base + 0x250;
+    case 15: return base + 0x268;
+    default: return base + 0x284;
     }
-    return ((char *(*)(void))jumptable_803159A0[index])();
 }
 
 extern u8 lbl_803C0F78[];
