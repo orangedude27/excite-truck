@@ -42,3 +42,28 @@ void fn_801D9110(int arg0) { fn_801D893C(arg0 - 4); }
 
 void fn_801D9118(int arg0) { fn_801D89C0(arg0 - 4); }
 
+extern void *lbl_8055E96C;
+extern void *lbl_8055E964;
+extern int lbl_8055E960;
+extern float lbl_80562B28;
+extern int fn_802C6CF8(int);
+extern int fn_801D985C(int *);
+extern int fn_801D9948(int *);
+extern void fn_801D9120(float *, float *, int, float);
+void *fn_801D9260(int count) {
+    void *node = lbl_8055E96C;
+    do {
+        node = *(void **)((char *)node + 0x54);
+        if (node == 0)
+            break;
+        count--;
+    } while (count >= 0);
+    return node;
+}
+
+void fn_801D9828(void) {
+    fn_802C6CF8(lbl_8055E960);
+    fn_801D985C((int *)&lbl_8055E96C);
+    fn_801D9948((int *)&lbl_8055E964);
+}
+
