@@ -23,6 +23,18 @@ void fn_802CE474(void *arg0) {
     *(int *)((char *)arg0 + 0x3C) = -1;
 }
 
+void fn_802CE49C(void *arg0) {
+    int value;
+    if (arg0 != 0) {
+        value = *(int *)arg0;
+        if (value != 0) {
+            fn_80128670(value - 0x10);
+        }
+        fn_801342B0(*(int *)((char *)arg0 + 4), 1);
+        fn_80128668(arg0);
+    }
+}
+
 void fn_802CE6C0(void *arg0) {
     if (*(int *)((char *)arg0 + 0x38) == 2) {
         fn_802C6FB4(*(int *)((char *)arg0 + 0x30));
