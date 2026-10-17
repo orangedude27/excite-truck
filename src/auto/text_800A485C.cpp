@@ -952,6 +952,10 @@ extern "C" void* fn_800C64DC(u32 size) {
     return MEMAllocFromAllocator(lbl_80559708, size);
 }
 
+extern "C" void fn_800CF170(void*);
+extern "C" void* lbl_804075F0;
+extern "C" u32 lbl_8055DD90;
+
 extern "C" void fn_800C64E8(u32 size) {
     MEMFreeToAllocator(lbl_80559708, (void*)size);
 }
@@ -1621,32 +1625,33 @@ int fn_800D5500(void *obj, const char *name) {
     return 0;
 }
 
-extern "C" void* fn_800D55B0(void *arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        *(void **)arg0 = lbl_8031F428;
-        Clear__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)arg0 + 4);
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)arg0 + 0x10, 0);
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)arg0 + 4, 0);
-        fn_800DCE10(arg0, 0);
+extern "C" void* fn_800D55B0(void *self, s32 arg1) {
+    if (self != NULL) {
+        *(void **)self = lbl_8031F428;
+        Clear__Q46nw4hbm2ut6detail12LinkListImplFv((s32 *)self + 1);
+        if ((u8 *)self + 0x10 != NULL) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x10, 0);
+        }
+        if ((u8 *)self + 4 != NULL) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 4, 0);
+        }
+        fn_800DCE10(self, 0);
         if (arg1 > 0) {
-            ((void (*)(void *))fn_80128668)(arg0);
+            ((void (*)(void *))fn_80128668)(self);
         }
     }
-    return arg0;
+    return self;
 }
 
 extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     void *node = *(void **)((u8 *)arg0 + 8);
     void *end = (u8 *)arg0 + 8;
-    for (;;) {
-        if (node == end) {
-            return 0;
-        }
+    while (node != end) {
         if (node == NULL) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
         }
-        void *next = (void *)((u8 *)node + 8);
-        if (next == NULL) {
+        void *next = (u8 *)node + 8;
+        if (node == NULL) {
             Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
         }
         s32 result = ((s32 (*)(long, long, long, long, long))fn_800D51F4)((long)next, (long)((u8 *)node + 0x24), arg1, arg2, arg3);
@@ -1655,6 +1660,7 @@ extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         }
         node = *(void **)node;
     }
+    return 0;
 }
 
 extern "C" int fn_800D56FC(void* arg0, const char* arg1, int) {
