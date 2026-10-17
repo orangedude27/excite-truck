@@ -27,6 +27,29 @@ s32 fn_8024EBE4(s32 arg0) {
     return *(s32 *)((char *)fn_80016BC8(0) + 4);
 }
 
+extern void fn_8024739C(void);
+typedef unsigned int u32;
+extern s32 fn_80129800(s32);
+extern void fn_802E4A10(void);
+extern void fn_80216D28(void);
+extern s32 fn_80214D50(s32);
+extern u32 lbl_8055F2EC;
+extern unsigned char lbl_8034453C[];
+extern s32 fn_80128670(s32);
+extern s32 fn_80235380(s32);
+extern s32 fn_802CAC54(s32);
+extern s32 fn_80128668(void *);
+void *fn_8024FB64(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = (void *)((u32)&lbl_8034453C);
+        fn_80128670(*(s32 *)((u8 *)arg0 + 0x18));
+        fn_80235380(*(s32 *)((u8 *)arg0 + 0x24));
+        fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x20));
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_80252454(void *arg0, s32 arg1, s32 arg2) {
     s32 offset = arg1 * 0x48;
     s32 *base = *(s32 **)((char *)arg0 + 4);
