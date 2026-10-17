@@ -298,6 +298,10 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
     }
 }
 
+extern "C" s32 fn_801F9BD0(s32 **arg0, s32 **arg1) {
+    return (*arg0)[15] - (*arg1)[15];
+}
+
 extern "C" int fn_8020402C(void);
 extern "C" int fn_801F9B28();
 extern "C" void fn_801FA298(void) {
