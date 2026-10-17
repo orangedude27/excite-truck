@@ -121,7 +121,7 @@ extern "C" u8 lbl_8032CAC0_vt[48];
 extern "C" u8 lbl_80559D18_str[5];
 #pragma dont_inline on
 extern "C" void fn_8013D288(void) {
-    void **slot = fn_801284F8(4, &lbl_80559D18_str);
+    void **slot = fn_801284F8(4, &lbl_80559D18);
     if (slot != 0) {
         *slot = (void *)lbl_8032CAC0_vt;
     }
@@ -296,9 +296,10 @@ extern "C" u8 fn_80141FA0(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x19);
 }
 
+extern "C" f32 lbl_80558DC4_arr[2];
 extern "C" s32 fn_801420D4(void *arg0) {
     f64 abs = __fabs((f64)*(f32 *)((u8 *)arg0 + 0x2690));
-    return (f32)abs <= lbl_80558DC4;
+    return (f32)abs <= lbl_80558DC4_arr[0];
 }
 
 extern "C" void fn_80142104(void *arg0) {
@@ -313,9 +314,8 @@ extern "C" S28_80142118 fn_80142118(S28_80142118 arg0) {
 
 extern "C" s32 fn_80142154(void *arg0) {
     s32 result = 0;
-    s32 idx = *(s32 *)((u8 *)arg0 + 0x68);
-    if (idx < *(s32 *)(*(s8 **)((u8 *)arg0 + 0x64)) - 1) {
-        *(s32 *)((u8 *)arg0 + 0x68) = idx + 1;
+    if (*(s32 *)((u8 *)arg0 + 0x68) < *(s32 *)(*(s32 **)((u8 *)arg0 + 0x64)) - 1) {
+        *(s32 *)((u8 *)arg0 + 0x68) += 1;
         *(f32 *)((u8 *)arg0 + 0x70) = fn_8001DAE8((u8 *)arg0 + 0x6C);
         *(s32 *)((u8 *)arg0 + 0x288) = fn_8013D18C(*(s32 *)((u8 *)arg0 + 0x68));
         result = 1;
@@ -323,6 +323,13 @@ extern "C" s32 fn_80142154(void *arg0) {
     return result;
 }
 
+extern "C" u8 *fn_801421C0(u8 *arg0) {
+    s32 index = *(s32 *)(arg0 + 0x68);
+    u8 *items = *(u8 **)(arg0 + 0x64);
+    return *(u8 **)(items + 4) + index * 0x14;
+}
+
+#pragma dont_inline off
 extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
     void *obj = fn_802C6C34(*(s32 *)(arg1 + 0x59C));
     *(f32 *)((u8 *)arg0 + 0x128) = *(f32 *)((u8 *)obj + 0x30) - *(f32 *)((u8 *)obj + 0x2C);
