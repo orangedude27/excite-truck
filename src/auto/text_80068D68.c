@@ -1251,6 +1251,15 @@ void BTA_HhRemoveDev(u8 arg0) {
     }
 }
 
+void BTA_HhGetAclQueueInfo(void) {
+    void *buf = GKI_getbuf(8);
+    if (buf != 0) {
+        memset(buf, 0, 8);
+        *(u16 *)buf = 0x170E;
+        fn_80071450(buf);
+    }
+}
+
 extern char lbl_80315700[];
 extern void *jumptable_803159A0[];
 char *bta_hh_evt_code(u32 event) {
