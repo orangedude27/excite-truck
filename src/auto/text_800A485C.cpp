@@ -1,4 +1,6 @@
 #include <types.h>
+extern "C" s32 fn_800AAC08(void *arg0);
+extern "C" s32 fn_800AA924(void *arg0, void *arg1);
 extern "C" s32 fn_800A7090(void);
 extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
