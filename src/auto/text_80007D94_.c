@@ -97,18 +97,26 @@ s32 fn_800081BC(void) {
 }
 
 s32 fn_800081F0(void *arg0) {
-    if (!(*(u32 *)((u8 *)arg0 + 0x10) & 1)) {
-        return *(s32 *)((u8 *)fn_8001285C(*(s32 *)arg0) + 0xC);
+    if (*(u32 *)((u8 *)arg0 + 0x10) & 1) {
+        return 0xC8;
     }
-    return 0xC8;
+    return *(s32 *)((u8 *)fn_8001285C(*(s32 *)arg0) + 0xC);
 }
 
 void fn_8000822C(void *arg0) {
-    *(u32 *)((u8 *)arg0 + 4) = 0;
     *(s32 *)((u8 *)arg0 + 0) = -1;
+    *(u32 *)((u8 *)arg0 + 4) = 0;
     *(u32 *)((u8 *)arg0 + 0x10) = 0;
     *(u32 *)((u8 *)arg0 + 0xC) = 0;
     *(u32 *)((u8 *)arg0 + 8) = 0;
+}
+
+void fn_8000824C(void *arg0, s32 arg1) {
+    u32 temp_r3;
+    fn_8000822C(arg0);
+    temp_r3 = fn_8001285C(arg1);
+    *(u32 *)((u8 *)arg0 + 0) = *(u32 *)((u8 *)temp_r3 + 0);
+    *(u32 *)((u8 *)arg0 + 4) = *(u32 *)((u8 *)temp_r3 + 8);
 }
 
 #pragma scheduling reset
