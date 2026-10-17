@@ -400,8 +400,43 @@ extern "C" void fn_800E55B4(void *arg0, float arg1) {
     }
 }
 
+extern const char lbl_803223BC[];
+extern "C" void fn_800E56D0(void *arg0, float arg1) {
+    float value = lbl_80560F38;
+    float sum = arg1 + value;
+    if (sum > value) {}
+    else if (sum < lbl_80560F3C) value = lbl_80560F3C;
+    else value = sum;
+    float *field = (float *)((char *)arg0 + 0x144);
+    if (value != *field) {
+        *field = value;
+        *((unsigned char *)arg0 + 0x123) |= 0x20;
+    }
+}
+
+extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
+    OSDisableInterrupts();
+    void *voice = *(void **)((char *)self + 0xc);
+    void *dsp = (char *)voice + 0x138;
+    if (dsp == 0) {
+        OSRestoreInterrupts(0);
+        return 0;
+    }
+    int address = (*(unsigned short *)((char *)dsp + 0x84) << 16) +
+                  *(unsigned short *)((char *)dsp + 0x86);
+    OSRestoreInterrupts(0);
+    return address;
+}
+
 extern "C" void fn_800E5A8C(void) {
     fn_800E6A44();
+}
+
+extern "C" void fn_80033538(unsigned short);
+extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *self, int index, const void *address) {
+    unsigned int level = OSDisableInterrupts();
+    *(const void **)((char *)self + index * 0x34 + 0x2C) = address;
+    OSRestoreInterrupts(level);
 }
 
 extern "C" int GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *arg0, unsigned int arg1, int arg2) {
