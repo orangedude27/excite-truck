@@ -1034,8 +1034,8 @@ void fn_80127434(void) {
     lbl_8055DF08 = 0;
 }
 
-void fn_80127464(void) {
-    fn_80127440();
+void fn_80127464(void *alarm) {
+    fn_80127440(alarm);
 }
 
 void fn_80127468(OSAlarm *alarm, OSContext *ctx) {
