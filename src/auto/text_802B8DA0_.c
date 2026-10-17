@@ -201,6 +201,27 @@ void fn_802B9EC8(void *arg0) {
     }
 }
 
+#pragma push
+#pragma opt_common_subs off
+void fn_802B9F38(void **arg0) {
+    void *ptr = *arg0;
+    if (ptr != 0) {
+        if (ptr != 0) {
+            fn_802B9FC0(ptr);
+            if ((char *)ptr + 4 != 0) {
+                fn_8002F6AC(((int *)ptr)[4], (void (*)(void))fn_802B9C9C);
+                if ((char *)ptr + 4 != 0) {
+                    ((int *)ptr)[1] = 0;
+                    ((int *)ptr)[2] = 0;
+                    ((int *)ptr)[3] = 0;
+                }
+            }
+            fn_80128668(ptr);
+        }
+        *arg0 = 0;
+    }
+}
+#pragma pop
 void fn_802B9FC0(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
