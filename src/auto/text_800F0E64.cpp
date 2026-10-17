@@ -38,8 +38,24 @@ extern "C" const char lbl_80325C18[];
 extern "C" const char lbl_80325C64[];
 extern "C" const char lbl_80325C8C[];
 extern "C" f32 lbl_805610BC;
-extern "C" u8 lbl_80325C50[];
-extern "C" s32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(s32);
+  extern "C" u8 lbl_80325C50[];
+  extern "C" s32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(s32);
+  extern "C" u8 lbl_80325D48[];
+  extern "C" u8 lbl_80325D6C[];
+  extern "C" u8 lbl_80323834[];
+  extern "C" u8 lbl_80323810[];
+  extern "C" u8 lbl_803263B8[];
+  extern "C" u8 lbl_80326400[];
+  extern "C" u8 lbl_8055DE60;
+  extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void **, void *);
+  extern "C" void *GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void);
+  extern "C" s32 Shutdown__Q46nw4hbm3snd6detail11SoundThreadFv(void *);
+  extern "C" void *fn_800FE648(void);
+  extern "C" s32 Destroy__Q46nw4hbm3snd6detail10TaskThreadFv(void *);
+  extern "C" void *GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void);
+  extern "C" void fn_800EEB64(u8 *);
+  extern "C" void *Instance__15EmissionManagerFv(void);
+  extern "C" void fn_800E2F84(void *);
 
 M2C_UNK GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
 
@@ -597,6 +613,13 @@ void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10B
     }
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(self, (u8 *)pSound + 0xC0);
     *(u32 *)((u8 *)pSound + 0x10) = 0;
+}
+
+void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *self, void *pSound) {
+    if (pSound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326288, 0x233, (const char *)lbl_80326264);
+    }
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)self + 0xC, (u8 *)pSound + 0xC8);
 }
 
 extern "C" void NWC24Data_Init(void* arg0) {
