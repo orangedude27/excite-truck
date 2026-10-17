@@ -34,6 +34,14 @@ void fn_80288A58(int arg0, int arg1) { fn_8028E584(*(int *)lbl_8055F6E0, arg0, a
 
 void fn_80288A70(void) {}
 
+int fn_80288B40(int arg0) {
+    fn_80289084();
+    fn_80289154(arg0);
+    fn_80289268(arg0);
+    fn_80289394(arg0);
+    return arg0;
+}
+
 int fn_80287B5C(void);
 int fn_8028A330(int *, int);
 int fn_80287B14(void);
@@ -118,19 +126,14 @@ void *fn_80289EE0(void *arg0, int arg1) {
 
 void fn_80289FC4(int **arg0, int arg1, int arg2) {
     char *temp = (char *)*arg0 + arg1 * 0x68;
-    int count;
-    if (arg2 == 3 && *(void **)(temp + 0x64) == 0) {
-        count = *(int *)(temp + 0x60);
-        if (count > 0) {
-            *(volatile int **)(temp + 0x64) = (int *)(temp + fn_80287B5C() * 0x18);
-            fn_8028A330((int *)arg0, arg1);
-            return;
-        }
+    if (arg2 == 3 && *(void **)(temp + 0x64) == 0 && *(int *)(temp + 0x60) > 0) {
+        *(void **)(temp + 0x64) = temp + fn_80287B5C() * 0x18;
+        fn_8028A330((int *)arg0, arg1);
     } else if (arg2 != 3 && *(void **)(temp + 0x64) != 0) {
         *(void **)(temp + 0x64) = 0;
-        return;
+    } else if (*(void **)(temp + 0x64) != 0) {
+        fn_8028A330((int *)arg0, arg1);
     }
-    if (*(void **)(temp + 0x64) != 0) fn_8028A330((int *)arg0, arg1);
 }
 
 void fn_8028A32C(void) {}
