@@ -4,6 +4,19 @@
 #include <types.h>
 
 extern "C" {
+extern char lbl_8033AF80[];
+extern s32 lbl_8055B388;
+extern void **lbl_8055EC54;
+extern s32 lbl_8055EC58;
+void **fn_80131810(void *);
+void fn_80131818(void *);
+void fn_8013A0B0(void **, void *, void *);
+void fn_8013A198(void **, s32);
+void *fn_8000AC38(void);
+void fn_801F9AA4(void *, s32);
+}
+
+extern "C" {
 extern s32 lbl_8055B1C8;
 s32 fn_80204014(s32, s32, s32, void *);
 void *fn_802C86DC(void);
@@ -444,3 +457,26 @@ extern "C" void fn_801FC670(void) {
 
 }
 
+extern u32 lbl_8033B588;
+extern s32 lbl_8055EC48;
+void fn_802C6CF8(void);
+void *__dt__Q28PSSystem7SeqHeapFv_801EACF8(void *, s32);
+void fn_80128668(void *);
+#pragma small_data off
+extern "C" void *fn_801FC674(void *arg0, s32 arg1) {
+    void **link;
+    void *next;
+    if (arg0 != 0) {
+        *(void **)arg0 = (void *)((u8 *)&lbl_8033B588)[0];
+        link = (void **)&lbl_8055EC48;
+        while ((next = *link) != 0) {
+            if (next == arg0) { *link = *(void **)((u8 *)arg0 + 0x54); break; }
+            link = (void **)((u8 *)next + 0x54);
+        }
+        if ((u8 *)arg0 + 0x44 != 0 && *(s32 *)((u8 *)arg0 + 0x44) != -1) fn_802C6CF8();
+        __dt__Q28PSSystem7SeqHeapFv_801EACF8(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+#pragma small_data reset
