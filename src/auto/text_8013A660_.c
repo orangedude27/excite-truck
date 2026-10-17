@@ -43,3 +43,16 @@ void DBPrintf_8013B490(const char *fmt, ...) {
 void fn_8013B56C(void) {
     lbl_8055E160 = 0;
 }
+
+void *fn_8013B578(int arg0) {
+    char *base = lbl_8042F858;
+    int offset = arg0 * 8;
+    return base + offset + 8;
+}
+
+void fn_8013B6A4(int arg0, float arg1) {
+    char *p = lbl_8042F858 + arg0 * 8;
+    *(float *)(p + 0xC) = arg1;
+    *(float *)(p + 8) = arg1;
+}
+
