@@ -1512,6 +1512,8 @@ void l2c_process_timeout(void *arg) {
 }
 
 extern u8 lbl_803C4040[];
+extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
+extern void l2cu_create_conn_after_switch(void *p_lcb);
 void *l2cu_find_lcb_by_bd_addr(u8 *addr) {
     int i = 0;
     u8 *lcb = lbl_803C4040 + 8;
