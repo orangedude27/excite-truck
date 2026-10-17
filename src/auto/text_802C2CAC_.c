@@ -26,6 +26,19 @@ void fn_802C2CDC(void *arg0, s32 arg1, s32 arg2) {
     fn_802C2CE8(arg0, arg1, arg2, (s8)lbl_8055CFF8);
 }
 
+void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
+    s32 scale;
+    *(s8 *)arg0 = arg3;
+    *(s8 *)((u8 *)arg0 + 1) = 0x82;
+    scale = (arg3 == 5) ? 4 : 2;
+    *(void **)((u8 *)arg0 + 4) = fn_801284E8(&lbl_8055D000, arg1 * arg2 * scale);
+    *(s32 *)((u8 *)arg0 + 8) = arg1;
+    *(s32 *)((u8 *)arg0 + 0xC) = arg2;
+    if (arg3 == 5)
+        *(s32 *)((u8 *)arg0 + 0x10) = arg1 * 4;
+    fn_802C3014(arg0);
+}
+
 void fn_802C2FC4(void) {
     ((void (*)(void))fn_8012C4D8)();
 }
@@ -62,6 +75,28 @@ s32 fn_802C3034(s32 value) {
 
 s32 fn_802C3044(void *arg0, s32 arg1, s32 arg2) {
     return *(s32 *)((u8 *)arg0 + 0x10) * arg2 + (*(s32 *)((u8 *)arg0 + 4) + arg1 * 2);
+}
+
+extern const char lbl_8034B060[];
+extern void fn_802C3320(void);
+extern void fn_802C33A8(void);
+extern void fn_802E317C(const char *, ...);
+void fn_802C32B8(void) {
+    u8 *state = (u8 *)&lbl_8055FC00;
+    s8 mode;
+
+    if (state[1] & 4)
+        return;
+    mode = (s8)state[0];
+    if (mode != 5 && mode != 6) {
+        fn_802C3320();
+        return;
+    }
+    if (mode == 5) {
+        fn_802C33A8();
+        return;
+    }
+    fn_802E317C(lbl_8034B060, (s32)state[0]);
 }
 
 void fn_802C4C80(void* arg0) {
@@ -126,4 +161,7 @@ int fn_802C501C(void) {
 }
 
 void fn_802C5024(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {}
-
+extern const char lbl_8034B060[];
+extern void fn_802C3320(void);
+extern void fn_802C33A8(void);
+extern void fn_802E317C(const char *, ...);
