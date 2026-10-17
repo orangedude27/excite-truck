@@ -6,7 +6,7 @@ extern void fn_8002F53C(void *, void *, void *, unsigned long, unsigned long);
 extern char lbl_8055F8B0;
 extern int lbl_8055F8B8;
 extern char lbl_804BD5D8[];
-extern void fn_802A81EC(void);
+extern char fn_802A81EC[];
 void fn_802A81A0(void) {
     fn_8000D838(&lbl_8055F8B0);
     lbl_8055F8B8 = 0x7F000000;
