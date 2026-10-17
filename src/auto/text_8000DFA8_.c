@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+__declspec(section ".data") extern s32 lbl_803514A0;
+
 
 extern f32 lbl_80350EC4[];
 extern f32 lbl_80350ED8[];
@@ -409,6 +411,15 @@ void fn_80010F08(void) {
     s8 *p;
     s32 *q;
     p = (s8 *)&lbl_80351214;
+    q = (s32 *)(p + 0x288);
+    *q = 0;
+    *(s8 *)(p + 0x4) = 0;
+}
+
+void fn_80010F20(void) {
+    s8 *p;
+    s32 *q;
+    p = (s8 *)&lbl_803514A0;
     q = (s32 *)(p + 0x288);
     *q = 0;
     *(s8 *)(p + 0x4) = 0;
