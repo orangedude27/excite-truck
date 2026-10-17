@@ -932,6 +932,30 @@ void fn_800778C8(s16 arg0) {
     *(s16 *)(lbl_803C0F78 + 0x4C4) = arg0;
 }
 
+void btm_read_remote_version_complete(u8 *arg0) {
+    u8 *var_r6;
+    u16 var_r4;
+    s32 var_i;
+
+    if (arg0[0] != 0) {
+        return;
+    }
+    var_r4 = (arg0[1] + (arg0[2] << 8)) & 0xFFFF;
+    var_r6 = lbl_803C0F78 + 0x34;
+    for (var_i = 0; var_i < 4; var_i++, var_r6 += 0x11C) {
+        if (var_r6[0x119] != 0 && *(u16 *)var_r6 == var_r4) {
+            var_r6[0x118] = arg0[3];
+            *(u16 *)(var_r6 + 0x10A) = arg0[4] + (arg0[5] << 8);
+            *(u16 *)(var_r6 + 0x10C) = arg0[6] + (arg0[7] << 8);
+            return;
+        }
+    }
+}
+
+void fn_80077C94(s16 arg0) {
+    *(s16 *)(lbl_803C0F78 + 0x4C6) = arg0;
+}
+
 void fn_8007AD38(void) {
 
 }
