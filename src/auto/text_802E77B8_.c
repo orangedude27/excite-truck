@@ -64,6 +64,24 @@ void fn_802E7A14(int arg0) {
     lbl_8056000C++;
 }
 
+extern float lbl_805651A0, lbl_805651A4;
+extern int fn_8005ED8C(void), fn_8005EE20(void), fn_8005EE7C(void);
+extern int fn_80128684(void), fn_802E30C8(int *);
+extern int lbl_8034D8B4, lbl_8034D8E8;
+extern int lbl_80507258[], lbl_8056000C;
+extern int fn_80128658(int, int *);
+int fn_802E7A70(unsigned int value) {
+    int i, found = -1, count = lbl_8056000C;
+    for (i = 0; i < count; i++) {
+        if ((unsigned int)lbl_80507258[i] == value) found = i;
+    }
+    count = lbl_8056000C - 1;
+    lbl_8056000C = count;
+    lbl_80507258[found] = lbl_80507258[count];
+    fn_80128658(lbl_80507258[found], lbl_80507258);
+    return 1;
+}
+
 unsigned char fn_802E8504(int index) {
     extern unsigned char lbl_80505978[];
     return lbl_80505978[index * 0x638];
@@ -127,3 +145,9 @@ unsigned char fn_802E86B4(int index) {
 }
 
 extern int lbl_802FAE80[4];
+extern float lbl_805651A0, lbl_805651A4;
+extern unsigned char lbl_80505978[];
+extern int fn_8005ED8C(void), fn_8005EE20(void), fn_8005EE7C(void);
+extern int fn_80128684(void), fn_802E30C8(int *);
+extern int lbl_8034D8B4, lbl_8034D8E8;
+extern int fn_80128658(int, int *);
