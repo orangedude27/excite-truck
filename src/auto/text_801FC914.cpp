@@ -281,7 +281,7 @@ extern "C" void fn_801FF1C4(void* arg0, int arg1, int arg2) {
 
 extern "C" void fn_801FF260(void* arg0) {
     float value = fn_801E7E24();
-    if (fabs(value) > lbl_80558DC4) fn_801FF6FC((char*)arg0 + 0x1008);
+    if (fabs(value) > lbl_80558DC4) fn_801FF6FC((char*)arg0 + 0x1008, value);
 }
 
 extern "C" int fn_801FF2B0(void) { return 3; }
