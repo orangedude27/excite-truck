@@ -97,6 +97,14 @@ extern "C" const char lbl_80324390[];
 extern "C" const char lbl_803244FC[];
 extern "C" const char lbl_80324534[];
 extern "C" const char lbl_803245B8[];
+extern "C" void fn_800F0E64(void **arg0) {
+    void *p = *arg0;
+    if (p && *(void **)((char *)p + 0x1E0) == arg0)
+        *(void **)((char *)p + 0x1E0) = 0;
+    if (*arg0)
+        *arg0 = 0;
+}
+
 extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi_800F0E9C(void *arg0, int arg1) {
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
     extern const char lbl_80324390[];
