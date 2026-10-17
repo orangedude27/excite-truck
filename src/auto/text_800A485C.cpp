@@ -340,6 +340,17 @@ extern "C" s32 fn_800A9104(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
+extern "C" s32 fn_800AF5A0(u16);
+extern "C" s32 fn_800AFE14(void);
+extern "C" s32 fn_800B0258(void);
+extern "C" s32 fn_800AE4C0(s32, s32, s32);
+extern "C" s32 fn_800AE620(s32 arg0, s32 arg1) {
+    s32 result = fn_800AE4C0(arg0 & ((-arg0 | arg0) >> 31), 0, arg1);
+    if (result == 0)
+        return 0;
+    return result;
+}
+
 extern "C" void fn_800AF2B8(void *);
 extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[0] = 0;
@@ -422,6 +433,7 @@ extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *arg0) {
 }
 
 extern "C" s32 fn_800B6928(s8);
+extern "C" s32 fn_800AE4C0(s32, s32, s32);
 extern "C" s32 fn_800B3754(s32, s32, s32);
 extern "C" s32 fn_800AF574(void *);
 extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
