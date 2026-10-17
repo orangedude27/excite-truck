@@ -17,3 +17,5 @@ void fn_80294C68(void) {
 
 void fn_80294CC0(void) {}
 
+void fn_80294CC4(void) {}
+
