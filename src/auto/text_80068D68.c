@@ -1141,6 +1141,8 @@ void fn_8008251C(void) {
 
 void fn_800833E8(s32 arg0) { btm_cback(0, arg0); }
 
+void fn_800833F4(s32 arg0) { btm_cback(1, arg0); }
+
 void fn_80089E3C(void) {
 
 }
