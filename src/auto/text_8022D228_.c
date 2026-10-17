@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+#pragma use_lmw_stmw off
 extern int sprintf(char *, const char *, ...);
 extern char lbl_8055B958[8];
 extern float lbl_805635D0;
@@ -18,11 +19,34 @@ extern char *fn_8022D82C(void *, int, int);
 extern char *strncpy(char *, const char *, unsigned long);
 extern double fabs(double);
 extern float lbl_80558DC4;
+char *fn_8022D3F8(void *arg0, int arg1, int *arg2) {
+    char **array;
+    char *ptr;
+    if (arg1 >= 0 && arg1 < *(int *)((char *)arg0 + 8)) {
+        array = *(char ***)((char *)arg0 + 0x10);
+        ptr = array[arg1];
+        if (arg2 != 0) *arg2 = ptr[*(int *)((char *)arg0 + 4)];
+        return ptr;
+    }
+    if (arg2 != 0) *arg2 = 0;
+    return 0;
+}
+
 void fn_8022D76C(void *arg0) {
     memset(*(void **)arg0, 0, *(int *)((char *)arg0 + 0xC) * *(int *)((char *)arg0 + 0x14));
     *(int *)((char *)arg0 + 8) = 0;
     *(int *)((char *)arg0 + 0x20) = 0;
     *(int *)((char *)arg0 + 0x24) += 1;
+}
+
+void *fn_8022D7C4(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_80128670(*(int *)((char *)arg0 + 0x18));
+        fn_80128670(*(int *)((char *)arg0 + 0x1C));
+        fn_80128670(*(int *)arg0);
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
 }
 
 char *fn_8022D850(void *arg0, int arg1, int arg2, int *arg3) {
@@ -44,7 +68,7 @@ void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char a
     ptr[len] = 0;
     *(int *)((char *)arg0 + 0x24) += 1;
 }
-
+#pragma use_lmw_stmw reset
 void fn_8022D924(void *arg0, int arg1) {
     int count = *(int *)((char *)arg0 + 0x24);
     int value = *(int *)((char *)arg0 + 0x2C);
@@ -255,8 +279,7 @@ void fn_8022DE1C(void *arg0) {
 
 int fn_8022DE88(void *arg0) {
     extern float lbl_80558DC4;
-    extern double fabs(double);
-    if ((float)fabs(*(float *)((char *)arg0 + 0x10) - **(float **)((char *)arg0 + 0x18)) <= lbl_80558DC4) return 0;
+    if ((float)__fabs(*(float *)((char *)arg0 + 0x10) - **(float **)((char *)arg0 + 0x18)) <= *(volatile float *)&lbl_80558DC4) return 0;
     return 1;
 }
 
