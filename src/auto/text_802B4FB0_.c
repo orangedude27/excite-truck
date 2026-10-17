@@ -8,3 +8,8 @@ extern int fn_802B50E8(int, int, int);
 extern void *fn_801284E8(void *, int, int);
 extern int fn_802B4FB0(unsigned char);
 extern char lbl_8034A4E0[];
+
+void fn_802B52B4(void *arg0) {
+    *(int *)((char *)arg0 + 8) = 0;
+    fn_80128658(arg0);
+}
