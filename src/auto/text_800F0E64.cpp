@@ -1019,3 +1019,7 @@ extern "C" void fn_800FD888(void *arg0, f32 arg1) {
     *(f32 *)((u8 *)arg0 + 0x44C) = arg1;
 }
 
+extern "C" void fn_800FD890(void *arg0, f32 arg1) {
+    *(f32 *)((u8 *)arg0 + 0x448) = arg1;
+}
+
