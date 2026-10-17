@@ -3,6 +3,13 @@
 
 typedef signed int s32;
 typedef unsigned char u8;
+extern u8 lbl_8055F1FC;
+extern s32 lbl_8055F200;
+extern float lbl_80563758;
+extern char lbl_803425A8[];
+extern char lbl_8034288C[];
+extern s32 fn_8023512C(char *, s32, char *, s32);
+extern s32 fn_80232578(char *, char *, s32);
 s32 fn_802407B0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
