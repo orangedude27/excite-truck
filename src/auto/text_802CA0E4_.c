@@ -154,24 +154,37 @@ extern int lbl_8055FCB0;
 extern char lbl_8034B904[];
 extern char lbl_8034B914[];
 char *fn_802CAE34(int arg0) {
+    int offset;
+    char *result;
     if (arg0 == -1)
         return lbl_8034B904;
-    if (fn_802CAE00(arg0))
-        return (char *)lbl_8055FCB0 + arg0 * 0x4C + 4;
-    return lbl_8034B914;
+    if (!((int (*)(int))fn_802CAE00)(arg0))
+        return lbl_8034B914;
+    offset = arg0 * 0x4C;
+    result = (char *)lbl_8055FCB0 + offset;
+    return result + 4;
 }
-
-void fn_802CAE98(int arg0, const char *arg1) {
+#pragma dont_inline on
+void fn_802CAE98(int arg0, char *arg1) {
     char *dst;
-    if (!fn_802CAE00(arg0))
+    int count;
+    if (!((int (*)(int))fn_802CAE00)(arg0))
         return;
     dst = (char *)lbl_8055FCB0 + arg0 * 0x4C + 4;
-    while (*arg1 != 0) {
-        *dst++ = *arg1++;
-        if (--((int){0}) == 0) {}
-    }
+    count = 0x20;
+    do {
+        count--;
+        if (count <= 0) {
+            dst[-1] = 0;
+            break;
+        }
+        *dst = *arg1;
+        if ((signed char)*arg1++ == 0)
+            break;
+        dst++;
+    } while (1);
 }
-
+#pragma dont_inline reset
 int fn_802DB2C0(int);
 int fn_802CA57C(int, int, int);
 int fn_802CA4E0(int, int, int, int, int);
