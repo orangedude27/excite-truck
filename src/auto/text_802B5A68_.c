@@ -100,12 +100,10 @@ s32 fn_802B5DD0(s32 arg0) {
 extern double lbl_80564C68;
 extern float lbl_80564C70;
 extern s32 fn_802E2C20(void);
-#pragma small_data on
-#pragma small_data off
-void fn_802B5E24(s32 arg0) {
-    lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
-    lbl_8055FA08 = lbl_80564C5C;
-}
+  void fn_802B5E24(s32 arg0) {
+      lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
+      lbl_8055FA08 = lbl_80564C5C;
+  }
 u32 fn_802B5E8C(s32 arg0) {
     s32 result = fn_802B5D2C(lbl_8055CE50, arg0);
     return (u32)((-1 - result) | (result + 1)) >> 31;
@@ -232,7 +230,8 @@ s32 fn_802B6E30(void);
 #pragma dont_inline on
 s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
     s32 scale = fn_802B6E30();
-    return (s16)(arg0 + (arg1 - (arg2 >> 1)) * (s16)scale);
+    s32 delta = arg1 - (arg2 >> 1);
+    return (s16)(arg0 + delta * scale);
 }
 #pragma dont_inline reset
 extern float lbl_80564C8C;
