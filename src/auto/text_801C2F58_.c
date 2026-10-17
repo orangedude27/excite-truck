@@ -96,6 +96,10 @@ f32 fn_801C34F4(f32 arg0) {
     return (lbl_80562988 * arg0) / lbl_8056298C;
 }
 
+s32 fn_801C3508(s32 arg0, s32 arg1) {
+    return (arg0 & (1 << arg1)) != 0;
+}
+
 s32 fn_801C3A00(u32 arg0) {
     s32 i;
     for (i = 0; i < lbl_8055E804; i++) {
