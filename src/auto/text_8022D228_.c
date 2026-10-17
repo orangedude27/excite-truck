@@ -61,11 +61,12 @@ int fn_8022DA34(int arg0, int arg1) {
 }
 
 void fn_8022DA74(void *arg0, char *arg1) {
+    float high = *(float *)((char *)arg0 + 8);
     float low = *(float *)((char *)arg0 + 4);
-    float range = *(float *)((char *)arg0 + 8) - low;
-    sprintf(arg1, lbl_8055B958, *(int *)((char *)arg0 + 0x1C), lbl_805635D0 + (low + **(float **)((char *)arg0 + 0x18) * range));
+    float range = high - low;
+    sprintf(arg1, lbl_8055B958, *(int *)((char *)arg0 + 0x1C), lbl_805635D0 + (low + **(float **)((char *)arg0 + 0x18) * range), range, low);
 }
-
+#pragma scheduling reset
 float fn_8022DAB0(void *arg0) {
     float low = *(float *)((char *)arg0 + 0xC);
     return (**(float **)((char *)arg0 + 0x18) - low) / (*(float *)((char *)arg0 + 0x10) - low);
@@ -79,8 +80,8 @@ void fn_8022DAD0(void *arg0, float arg1) {
 }
 
 void fn_8022DB34(void *arg0, char *arg1) {
-    int *value = *(int **)((char *)arg0 + 4);
-    sprintf(arg1, *(char **)((char *)arg0 + 0x10), *value, arg0);
+    int value = **(int **)((char *)arg0 + 4);
+    sprintf(arg1, *(char **)((char *)arg0 + 0x10), value, arg0);
 }
 
 void fn_8022DB50(void *arg0, int arg1, int arg2, int arg3, int arg4) {
@@ -109,6 +110,12 @@ int fn_8022DBD4(void *arg0) {
 int fn_8022DBE8(void *arg0) {
     int *array = *(int **)((char *)arg0 + 4);
     return array[*(int *)((char *)arg0 + 0xC)];
+}
+
+void fn_8022DC20(void *arg0) {
+    int value = *(int *)((char *)arg0 + 0xC) - 1;
+    *(int *)((char *)arg0 + 0xC) = value;
+    if (value < 0) *(int *)((char *)arg0 + 0xC) = *(int *)((char *)arg0 + 0x10) - 1;
 }
 
 void *fn_8022DCC4(void *arg0, char **arg1, int arg2, int arg3) {
