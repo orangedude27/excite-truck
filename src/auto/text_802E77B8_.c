@@ -110,4 +110,15 @@ int fn_802E85B8(int arg0) {
 
 void fn_802E8664(void) {}
 
+void *fn_802E8668(int index) {
+    unsigned char offset = lbl_80505978[index * 0x638];
+    if (offset != 0)
+        return lbl_80505978 + index * 0x638 + offset + 0xC8;
+    return 0;
+}
+
+int fn_802E8690(int index) {
+    return *(unsigned int *)(lbl_80505978 + index * 0x638 + 0x124) == 1;
+}
+
 extern int lbl_802FAE80[4];
