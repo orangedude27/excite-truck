@@ -2504,6 +2504,20 @@ s32 btsnd_hcic_auth_request_800858B0(u8 arg0) {
     return 1;
 }
 
+BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 5;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 5;
+    p[9] = 0x14;
+    p[10] = 2;
+    p[11] = handle;
+    p[12] = handle >> 8;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 extern u8 lbl_803C3C38[];
 extern u8 lbl_803C3AF0[];
 extern u8 hidh_conn_reg(void);
