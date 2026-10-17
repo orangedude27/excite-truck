@@ -16,6 +16,13 @@ void fn_802E1728(void *arg0) {
 
 int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
 
+int fn_802E1A38(void *arg0, void *arg1) {
+    int result;
+    result = fn_802E1980(arg1, (char *)arg0 + 0x190, (char *)arg0 + 0x180, (char *)arg0 + 0x184, *(int *)((char *)arg0 + 0x104));
+    result += fn_802E1980((char *)arg1 + result, (char *)arg0 + 0x1B0, (char *)arg0 + 0x188, (char *)arg0 + 0x18c, *(int *)((char *)arg0 + 0x10c));
+    return result;
+}
+
 void fn_802E29AC(void) {
     int count = *(int *)lbl_804DB780;
     int *array = *(int **)((char *)lbl_804DB780 + 4);
@@ -41,7 +48,7 @@ void fn_802E2A1C(void) {
 void fn_802E2A54(void) {}
 
 void fn_802E2A58(void) {}
-extern void fn_802E176C(void);
+extern unsigned int fn_802E176C(unsigned int);
 extern int fn_802E1780(void *, int, int);
 extern int fn_802E1804(void *, void *, int, int, int);
 extern int fn_802E18D4(int, int, int, int, void *, void *);
