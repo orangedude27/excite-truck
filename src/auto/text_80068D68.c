@@ -1772,6 +1772,15 @@ void bta_dm_inq_results_cb(u8 *arg0) {
     }
 }
 
+void fn_80072A98(void *arg0) {
+    void *buf = GKI_getbuf(0x110);
+    if (buf != 0) {
+        *(u16 *)buf = 0x203;
+        *((u8 *)buf + 8) = *((u8 *)arg0 + 1);
+        fn_80071450(buf);
+    }
+}
+
 void bta_sys_disable(void) {
     void **pp_module;
     void *p_module;
