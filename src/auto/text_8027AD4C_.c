@@ -263,6 +263,20 @@ fetch:
 }
 long fn_8027C8B0(void) { return 1; }
 
+long fn_8027CAB4(void *arg0) {
+    long value;
+    void *result;
+    long flag;
+
+    value = fn_8027D1F4();
+    result = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), value, 0);
+    flag = 0;
+    if (result != 0 && *(long *)((char *)result + 8) == 0) {
+        flag = 1;
+    }
+    return flag;
+}
+
 long fn_8027CB20(void) { return 1; }
 
 long fn_8027CBF0(void) { return 1; }
