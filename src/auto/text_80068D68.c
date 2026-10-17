@@ -1429,6 +1429,15 @@ void fn_80072728(void) {
     ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(4, 0);
 }
 
+void fn_800729C0(s16 arg0) {
+    void *buf = GKI_getbuf(0xA);
+    if (buf != 0) {
+        *(u16 *)buf = 0x206;
+        *(u16 *)((u8 *)buf + 8) = arg0;
+        fn_80071450(buf);
+    }
+}
+
 void bta_sys_disable(void) {
     void **pp_module;
     void *p_module;
