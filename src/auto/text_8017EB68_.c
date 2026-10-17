@@ -158,13 +158,8 @@ extern float lbl_80561C9C;
 float fn_80181588(void *arg0) {
     float value = lbl_80561C98 - lbl_80561C9C * *(float *)((char *)arg0 + 0x1C);
     float result = lbl_80561C4C;
-    if (result > value) {
-    } else {
-        result = value;
-    }
-    if (result > lbl_80561C48) {
-        return lbl_80561C48;
-    }
+    result = result > value ? result : value;
+    if (lbl_80561C48 < result) return lbl_80561C48;
     return result;
 }
 
