@@ -352,6 +352,10 @@ extern "C" void fn_801FB40C(void *arg0, s32 arg1, void *arg2) {
     fn_80204014(arg1, *(s32 *)((u8 *)arg2 + 0x34), *(s32 *)((u8 *)arg0 + 0x19C), arg0);
 }
 
+extern "C" s32 fn_801FBD04(void) {
+    return -0xF;
+}
+
 extern "C" f32 fn_801FC664(void) {
     return lbl_80562FF0;
 }
