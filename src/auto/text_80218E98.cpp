@@ -1166,6 +1166,11 @@ extern "C" s32 fn_80222BD4(void *arg0) {
     return fn_802C51AC(*(s32*)((u8*)arg0 + 4));
 }
 
+extern "C" void fn_80223728(void *arg0) {
+    fn_802192AC(arg0);
+    *(f32 *)((u8 *)arg0 + 0x414) = lbl_805634A4;
+}
+
 extern "C" void fn_8022375C(void) {
 }
 
