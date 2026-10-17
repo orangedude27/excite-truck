@@ -409,6 +409,13 @@ void fn_801C819C(void) {
     fn_801C78D8();
 }
 
+extern char lbl_8055A964[7];
+void fn_801C81B8(void) {
+    strcpy(lbl_804384A8, lbl_804380F0);
+    strcpy(lbl_804380F0, lbl_8055AA44);
+    if (lbl_804384A8[0] == 0) strcpy(lbl_804384A8, lbl_8055A964);
+}
+
 void fn_801C821C(void) {
     strcpy(lbl_804385A8, lbl_804380F0);
     strcpy(lbl_804380F0, lbl_8055AA44);
