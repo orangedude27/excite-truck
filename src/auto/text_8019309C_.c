@@ -28,6 +28,36 @@ extern void fn_80193D30(void *);
 extern int fn_802E30C8(const char *, ...);
 extern char lbl_80333198[];
 
+u8 fn_801930DC(void *unused, int index) {
+    void *entry;
+    entry = lbl_804349C0[index];
+    if (entry != 0 && *((u8 *)entry + 0x2A4) != 0)
+        return *((u8 *)entry + 0x2FD);
+    return 0;
+}
+
+int fn_80193110(void *arg0, u8 arg1) {
+    if (*((u8 *)arg0 + 0x2FC) == arg1) {
+        *((u8 *)arg0 + 0x2FC) = 0xFF;
+        return 1;
+    }
+    return 0;
+}
+
+void fn_80193138(int index) {
+    void *entry = lbl_804349C0[index];
+    if (entry != 0) {
+        *((u8 *)entry + 0x304) = 0x14;
+    }
+}
+
+void fn_8019315C(int index) {
+    void *entry = lbl_804349C0[index];
+    if (entry != 0) {
+        ++*(int *)((char *)entry + 0x300);
+    }
+}
+
 u8 fn_80193184(void *unused, int index) {
     void *entry;
     entry = lbl_804349C0[index];
@@ -54,6 +84,10 @@ float fn_801931EC(float a, float b) {
     }
     if (value > floor) return value;
     return floor;
+}
+
+void fn_801933FC(void *arg0, void *arg1) {
+    fn_8019330C(arg1, (char *)*(void **)((char *)arg0 + 0x294) + 0x70);
 }
 
 void fn_801935EC(void *arg0) {
@@ -146,30 +180,18 @@ extern void fn_8018ADB4(int, float);
 extern void fn_8018ADBC(int, float);
 void fn_80194170(void *arg0, float arg1) {
     float value;
-    value = lbl_80562140;
-    if (value >= arg1) {
-    } else {
-        value = arg1;
-    }
-    if (value <= lbl_80562144) {
-    } else {
-        value = lbl_80562144;
-    }
+    if (arg1 > lbl_80562140) value = arg1;
+    else value = lbl_80562140;
+    if (value > lbl_80562144) value = lbl_80562144;
     *(float *)((char *)arg0 + 0x240) = value;
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), value);
 }
 
 void fn_801942B8(void *arg0, float arg1) {
     float value;
-    value = lbl_80562140;
-    if (value >= arg1) {
-    } else {
-        value = arg1;
-    }
-    if (value <= lbl_80562144) {
-    } else {
-        value = lbl_80562144;
-    }
+    if (arg1 > lbl_80562140) value = arg1;
+    else value = lbl_80562140;
+    if (value > lbl_80562144) value = lbl_80562144;
     *(float *)((char *)arg0 + 0x244) = value;
     fn_8018ADBC(*(int *)((char *)arg0 + 0x294), value);
 }
