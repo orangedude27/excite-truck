@@ -3,6 +3,7 @@
 
 extern unsigned char lbl_8055F714;
 extern int lbl_804B3400;
+extern int lbl_8055F728;
 extern float lbl_8055F710, lbl_805643E8, lbl_805643EC;
 extern float fn_801E88F0(int);
 extern float fn_802C9A4C(float);
