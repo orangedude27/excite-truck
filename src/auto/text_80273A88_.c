@@ -8,7 +8,7 @@ extern void fn_801BFD34(void *, void *, void *);
 extern float PSVECMag(float *);
 extern double sin(double);
 extern double cos(double);
-extern float lbl_80564024, lbl_80564020, lbl_80563FAC, lbl_80563FB0;
+extern float lbl_80564024, lbl_80564020, lbl_80563FAC, lbl_80563FB0, lbl_80563FA8;
 extern float lbl_802FA788[];
 extern char lbl_80347364[];
 extern char lbl_8049A2C8[];
