@@ -1506,6 +1506,11 @@ void fn_80089E3C(void) {
 
 }
 
+void fn_8008C04C(s16 arg0) {
+    *(s16 *)(lbl_803C4040 + 2) = arg0;
+    *(s16 *)(lbl_803C4040 + 4) = arg0;
+}
+
 void l2c_process_timeout(void *arg) {
     u16 event = *(u16 *)((u8 *)arg + 0x14);
     if (event == 4) l2c_process_held_packets(1);
