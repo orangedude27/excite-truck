@@ -7,3 +7,5 @@ extern f32 lbl_80563E78;
 extern f32 lbl_8049A218[];
 extern void fn_8026FCFC(void);
 extern void fn_8026EA8C(void);
+
+void fn_802704D0(void) { fn_8026FCFC(); }
