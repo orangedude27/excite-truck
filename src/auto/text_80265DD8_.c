@@ -210,6 +210,12 @@ char fn_8026A38C(void) {
     return lbl_8055F488;
 }
 
+extern void fn_80269BB0(void);
+void *fn_80267EE4(int);
+void fn_8026A49C(void) {
+    fn_80269BB0();
+}
+
 extern float lbl_8055F484;
 extern float lbl_80563C6C;
 extern float lbl_80499980[8];
