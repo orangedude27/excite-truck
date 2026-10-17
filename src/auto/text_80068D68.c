@@ -1293,14 +1293,11 @@ void ptim_timer_update(tPTIM_CB *p_cb) {
 
 void ptim_start_timer(tPTIM_CB *p_cb, TIMER_LIST_ENT *p_tle, UINT16 type, INT32 timeout) {
     if (p_cb->timer_queue.p_first == NULL) {
-        GKI_start_timer(p_cb->timer_id, (p_cb->period + 9) / 10, TRUE);
+        GKI_start_timer(p_cb->timer_id, p_cb->period / 10, TRUE);
     }
-
     GKI_remove_from_timer_list(&p_cb->timer_queue, p_tle);
-
     p_tle->event = type;
     p_tle->ticks = timeout;
-
     GKI_add_to_timer_list(&p_cb->timer_queue, p_tle);
 }
 
