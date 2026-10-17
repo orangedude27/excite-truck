@@ -54,7 +54,27 @@ void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
 
 void fn_8023695C(void) { fn_80237EFC(); }
 
+void fn_802379EC(void *arg0) {
+    *(int *)((char *)arg0 + 0x20) = -1;
+    *(int *)((char *)arg0 + 0x28) = 0;
+    *(int *)((char *)arg0 + 0x24) = 0;
+}
+
 void fn_80237A04(void) {
+}
+
+void fn_80237A84(void *arg0) {
+    *(int *)arg0 = -1;
+    *(int *)((char *)arg0 + 8) = 0;
+    *(int *)((char *)arg0 + 4) = 0;
+}
+
+extern char lbl_8055BA08[];
+extern char lbl_8055BA10[];
+extern char lbl_80498664[];
+extern int fn_801345D8(void *, int, const char *, int);
+extern char *fn_80029004(char *, int);
+void fn_80237A9C(void) {
 }
 
 extern int stricmp(const char *, const char *);
