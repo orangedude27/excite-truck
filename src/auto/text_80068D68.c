@@ -1016,6 +1016,17 @@ void BTA_DmSetDeviceName(char *name) {
     }
 }
 
+void BTA_DmSearch(u8 *services, u32 duration, u32 mode) {
+    u8 *buf = GKI_getbuf(0x1C);
+    if (buf != 0) {
+        *(u16 *)buf = 0x200;
+        memcpy(buf + 8, services, 0xA);
+        *(u32 *)(buf + 0x14) = duration;
+        *(u32 *)(buf + 0x18) = mode;
+        fn_80071450(buf);
+    }
+}
+
 void fn_80073CA8(void) {
     u16 *buf = GKI_getbuf(8);
     if (buf != 0) {
