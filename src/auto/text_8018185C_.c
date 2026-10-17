@@ -147,6 +147,21 @@ void fn_8018A08C(void *arg0) {
     *(float *)((unsigned char *)arg0 + 0x26d8) = lbl_8055E3C8;
 }
 
+void fn_8018A098(void *arg0, float arg1) {
+    float scale;
+    float value;
+    *(signed char *)((unsigned char *)arg0 + 0x259d) = 1;
+    scale = *(float *)((unsigned char *)arg0 + 0x2cc) * fn_80181AEC();
+    value = lbl_80434930[0] - scale;
+    value = scale + arg1 * value;
+    value = *(float *)((unsigned char *)arg0 + 0x3a0) * value;
+    *(float *)((unsigned char *)arg0 + 0x258c) = value;
+}
+
+int fn_8018A100(void *arg0) {
+    return *(float *)((unsigned char *)arg0 + 0x2618) > lbl_80434930[1];
+}
+
 void fn_8018A2BC(void) {
 
 }
