@@ -1488,6 +1488,18 @@ tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
     return 0;
 }
 
+tBTM_SEC_DEV_REC *btm_find_dev(BD_ADDR bd_addr) {
+    s32 i;
+    u8 *entry;
+    entry = lbl_803C0F78 + 0x1F30;
+    for (i = 0; i < 16; i++, entry += 0x88) {
+        if ((entry[0x76] & 0x80) && memcmp(entry + 0x1C, bd_addr, 6) == 0) {
+            return (tBTM_SEC_DEV_REC *)entry;
+        }
+    }
+    return 0;
+}
+
 void btm_db_reset(void) {
     u8 param = 12;
     btm_inq_db_reset();
@@ -3051,3 +3063,4 @@ void fn_8006BAA4(u32 arg0) {
 extern u32 lbl_8055DCA4;
 extern char lbl_80315700[];
 extern void *jumptable_803159A0[];
+extern u8 lbl_80559060[];
