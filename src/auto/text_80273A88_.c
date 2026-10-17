@@ -134,7 +134,7 @@ void fn_80276044(int arg0) {
 
 int fn_802704D4(int, int);
 int fn_80276BE4(int, int);
-int fn_80274730(float, float, float, float);
+int fn_80274730(void *, float, float, float, float);
 void fn_80276054(int arg0) {
     fn_802704D4(4, arg0);
 }
