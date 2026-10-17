@@ -248,6 +248,11 @@ extern "C" s32 VFipdm_disk_convert_block_into_sector(u32 arg1, u32 arg2, u32 siz
     return 0;
 }
 
+extern "C" s32 fn_800A625C(void *arg0, s32 arg1) {
+    *(s32 *)((char *)arg0 + 0x2C) = arg1;
+    return 0;
+}
+
 extern "C" s32 fn_800A71C4(u32 *arg0) {
     return ((u32) *arg0 >> 2U) & 1;
 }
@@ -2264,6 +2269,40 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
         *(u32 *)((u8 *)arg0 + 0xC) = arg2;
       
       return 0;
+}
+
+extern "C" void fn_800A52DC(u32 arg0) {
+    u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
+    s32 i;
+    for (i = 0; i < 13; i++, ptr += 0x3F90) {
+        if (*(u32 *)(ptr + 0x1FBC) == arg0) {
+            u16 value = *(u16 *)(ptr + 0x1F8C);
+            if (value & 8) {
+                *(u16 *)(ptr + 0x1F8C) = value | 0x20;
+            }
+            *(u16 *)(ptr + 0x1F8C) &= ~0xC;
+        }
+        if (*(u32 *)(ptr + 0x3F84) == arg0) {
+            u16 value = *(u16 *)(ptr + 0x3F54);
+            if (value & 8) {
+                *(u16 *)(ptr + 0x3F54) = value | 0x20;
+            }
+            *(u16 *)(ptr + 0x3F54) &= ~0xC;
+        }
+    }
+}
+
+extern "C" void fn_800A535C(u32 arg0) {
+    u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
+    s32 i;
+    for (i = 0; i < 13; i++, ptr += 0x3F90) {
+        if (*(u32 *)(ptr + 0x1FBC) == arg0) {
+            *(u16 *)(ptr + 0x1F8C) |= 0x14;
+        }
+        if (*(u32 *)(ptr + 0x3F84) == arg0) {
+            *(u16 *)(ptr + 0x3F54) |= 0x14;
+        }
+    }
 }
 
 extern "C" s32 fn_800A53B4(void *arg0) {
