@@ -203,3 +203,5 @@ void fn_80263BCC(void *arg0) {
 
 void fn_80263D10(void) {}
 
+void fn_80263D14(void) {}
+
