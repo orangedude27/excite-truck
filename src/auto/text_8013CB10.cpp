@@ -122,8 +122,7 @@ extern "C" void **fn_801284F8(s32, void *);
 static char lbl_80559D18[] = "zstm";
 #pragma dont_inline on
 extern "C" void fn_8013D288(void) {
-    void *name = (void *)lbl_80559D18;
-    void **slot = fn_801284F8(4, name);
+    void **slot = fn_801284F8(4, (void *)"zstm");
     if (slot != 0) {
         *slot = (void *)lbl_8032CAC0_vt;
     }
@@ -368,6 +367,13 @@ extern "C" void fn_80142B60(void *arg0) {
     p[0x49] = 1;
     p[0x4B] = 0;
     p[0x4A] = 0;
+}
+
+extern "C" void fn_80142B78(void *arg0, f32 arg1) {
+    if (arg1 != *(f32 *)((u8 *)arg0 + 4)) {
+        *(f32 *)((u8 *)arg0 + 4) = arg1;
+        *(u8 *)((u8 *)arg0 + 0x4E) = 1;
+    }
 }
 
 #pragma dont_inline off
