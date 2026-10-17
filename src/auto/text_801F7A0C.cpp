@@ -422,6 +422,11 @@ extern "C" void fn_801FC4D8(void **arg0, void *arg1) {
     *arg0 = arg1;
 }
 
+extern "C" void fn_801FC644(void **arg0, void *arg1) {
+    *(void **)((u8 *)arg1 + 0x14) = *arg0;
+    *arg0 = arg1;
+}
+
 extern "C" f32 fn_801FC664(void) {
     return lbl_80562FF0;
 }
