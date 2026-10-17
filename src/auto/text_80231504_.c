@@ -183,15 +183,22 @@ void fn_802337A0(f64 a, s32 b, f64 c, s32 d, f64 e, f64 f, s32 g, f64 h, char *f
     fn_80232BA4(buffer, b, d, g, a, c, f, e, h);
 }
 
+#pragma scheduling off
 void fn_80233DD8(s32 *arg0, s32 arg1) {
     s32 temp_r31 = fn_8022EDC4();
     lbl_8055F050 = fn_80230B9C(arg1);
-    fn_802C8B98(*arg0, temp_r31);
+    fn_802C8B98(*arg0, (s32)temp_r31);
 }
-
+#pragma scheduling reset
 void fn_80233E34(s32 *arg0, s32 arg1, s32 arg2) {
     lbl_8055F050 = fn_80230B9C(arg2);
     fn_802C8B98(*arg0, arg1);
+}
+
+extern void fn_802C8C04(s32);
+void fn_80233E80(s32 *arg0, s32 arg1) {
+    lbl_8055F050 = fn_80230B9C(arg1);
+    fn_802C8C04(*arg0);
 }
 
 void fn_8023441C(const char *arg0) {
