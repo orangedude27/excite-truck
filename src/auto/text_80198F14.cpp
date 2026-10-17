@@ -511,7 +511,7 @@ extern "C" void* fn_801A1520(void*, void*, s32);
 #pragma scheduling off
 void** fn_801A1898(void** arg0) {
     fn_801A1520(arg0, arg0, 0);
-    *arg0 = &lbl_80333918;
+    *arg0 = (void*)((u8*)&lbl_80333918);
     return arg0;
 }
 #pragma scheduling on
