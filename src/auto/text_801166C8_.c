@@ -25,6 +25,7 @@ extern void fn_80127398(s32);
 extern void fn_802E300C(s32);
 extern void* lbl_8041D728[];
 extern u8 lbl_802F6A40[];
+extern u8 lbl_8041D508[];
 
 void* ARCGetStartAddrInMem(ARCFileInfo* info) {
     return (void*)((s32)info->handle->archiveStartAddr + info->startOffset);
@@ -172,6 +173,62 @@ void fn_80116DDC(void* arg0, s32 arg1) {
     s32 new_val = arg1 + (s32)result + current;
     ptr[0x290 / 4] = new_val;
     fn_8011FF2C(arg1);
+}
+
+extern u8 lbl_8041D508[];
+extern s32 (*lbl_8055DEC8)(s32);
+extern s32 lbl_8055DECC;
+extern s32 lbl_8055DED0;
+s32 fn_80116E54(s32 (*arg0)(s32), s32 arg1) {
+    s32 (*func)(s32);
+    s32 result;
+    if (arg0 == 0)
+        return 0;
+    func = lbl_8055DEC8;
+    if (func == 0) {
+        func = arg0;
+        lbl_8055DEC8 = arg0;
+    }
+    if ((u32)func != (u32)arg0) {
+        if (lbl_8055DED0 != 0)
+            return 0;
+        lbl_8055DEC8 = arg0;
+    }
+    result = lbl_8055DEC8(arg1);
+    if (result != 0)
+        lbl_8055DECC = result;
+    return lbl_8055DECC != 0;
+}
+
+void fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
+    u32 count = arg2 >> 1;
+    u32 blocks;
+    if (count == 0)
+        return;
+    blocks = count >> 3;
+    if (blocks != 0) {
+        do {
+            arg0[0] = (s8)(arg1[0] >> 8);
+            arg0[1] = (s8)(arg1[1] >> 8);
+            arg0[2] = (s8)(arg1[2] >> 8);
+            arg0[3] = (s8)(arg1[3] >> 8);
+            arg0[4] = (s8)(arg1[4] >> 8);
+            arg0[5] = (s8)(arg1[5] >> 8);
+            arg0[6] = (s8)(arg1[6] >> 8);
+            arg0[7] = (s8)(arg1[7] >> 8);
+            arg1 += 8;
+            arg0 += 8;
+            blocks--;
+        } while (blocks != 0);
+        count &= 7;
+    }
+    if (count != 0) {
+        do {
+            *arg0++ = (s8)(*arg1 >> 8);
+            arg1++;
+            count--;
+        } while (count != 0);
+    }
 }
 
 extern s32 fn_80117074(void*);
