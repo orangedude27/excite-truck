@@ -62,7 +62,7 @@ extern "C" f32 lbl_805610BC;
     extern u8 lbl_80412CB8[];
     #pragma pop
     extern u8 lbl_8055DE68;
-    extern "C" void __dt__10TitleSceneFv(void*);
+    extern "C" void* __dt__10TitleSceneFv(void*, s32);
     extern "C" void __register_global_object(void*, void*, void*, void*);
     extern "C" void OSSendMessage(void*, void*, u32);
     extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
@@ -644,24 +644,19 @@ extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
 
 extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(
     void* this_, void* pHeap) {
-    void* r30;
-    void* r29;
-    void* r31;
     if (pHeap == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C50, 0x256,
                                      (const char*)lbl_80325D6C);
     }
-    r30 = pHeap;
-    r29 = this_;
-    *(void**)((u8*)r30 + 0x38) = r29;
-    if (r29 == 0) {
+    *(void**)((u8*)pHeap + 0x38) = this_;
+    if (this_ == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323834, 0x233,
                                      (const char*)lbl_80323810);
     }
-    r31 = (void*)((u8*)r29 + 0x1C);
+    s32 sp8 = (s32)((u8*)this_ + 0x1C);
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
-        (void*)((u8*)r29 + 0x18), (void**)&r31, (void*)((u8*)r30 + 0x2C));
-    *(u8*)((u8*)r29 + 0x2D) = 1;
+        (void*)((u8*)this_ + 0x18), (void**)&sp8, (void*)((u8*)pHeap + 0x2C));
+    *(u8*)((u8*)this_ + 0x2D) = 1;
 }
 
 extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
