@@ -1040,6 +1040,22 @@ void BTA_HhClose(s16 arg0) {
     }
 }
 
+extern char lbl_803156D0[];
+void BTA_HhOpen(const u8 *arg0, s8 arg1, s8 arg2) {
+    u8 *buf = GKI_getbuf(0x10);
+    if (buf != 0) {
+        memset(buf, 0, 0x10);
+        *(u16 *)buf = 0x1700;
+        *(u16 *)(buf + 6) = 0xFF;
+        buf[0xE] = arg2;
+        buf[0xF] = arg1;
+        fn_80070FA4(buf + 8, arg0);
+        fn_80071450(buf);
+    } else if (lbl_8055DC80 >= 1) {
+        fn_8007093C(0x500, lbl_803156D0);
+    }
+}
+
 void BTA_HhSendData(u8 arg0, void *arg1) {
     u8 *buf = GKI_getbuf(0x14);
     if (buf != 0) {
