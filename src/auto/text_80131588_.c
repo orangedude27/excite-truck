@@ -287,6 +287,11 @@ struct Unk80132968Vector { s32 x, y, z; } fn_80132968(void *arg1, s32 arg2, stru
 }
 #pragma pop
 
+struct Unk80132AE4Value {
+    struct { s32 a[9]; } matrix;
+    struct Unk80132968Vector vector;
+};
+
 u64 fn_80132A48(void *arg0, s32 arg1, void *arg2) {
     u64 result;
     if (((s32 (**)(void *))(*(void **)arg0))[3](arg0) != 0) {
