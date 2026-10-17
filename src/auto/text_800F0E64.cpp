@@ -97,6 +97,11 @@ extern "C" const char lbl_80324390[];
 extern "C" const char lbl_803244FC[];
 extern "C" const char lbl_80324534[];
 extern "C" const char lbl_803245B8[];
+extern "C" void fn_800F1080(void *arg0, int arg1, int arg2) {
+    *(int *)((char *)arg0 + 0x50) = arg1;
+    *(int *)((char *)arg0 + 0x54) = arg1 + arg2;
+}
+
 extern "C" void fn_800F2004(void *arg0, f32 farg0) {
     OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x68) = farg0;
