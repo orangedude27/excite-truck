@@ -158,6 +158,11 @@ void *fn_801E8718(long arg0) {
     return lbl_80487D00 + arg0 * 0x38;
 }
 
+float fn_801E8738(long arg0) {
+    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
+    return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x34);
+}
+
 void *fn_801E879C(void) {
     return lbl_80487DE0;
 }
