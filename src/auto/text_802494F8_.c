@@ -195,6 +195,10 @@ s32 fn_8024B5F8(s32 arg0, s32 arg1) {
     return arg0 + arg1 * 0x68 + 0xAA;
 }
 
+s32 fn_8024B608(s32 arg0, s32 arg1) {
+    return arg0 + arg1 * 0x68 + 0x78;
+}
+
 s32 fn_8024B618(s32 arg0, s32 arg1) {
     return arg0 + arg1 * 0x68 + 0xDC;
 }
