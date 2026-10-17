@@ -1352,6 +1352,17 @@ void fn_80072434(void) {
     ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(3, 0);
 }
 
+void bta_dm_disc_result(void *arg0) {
+    ((void (*)(u32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)arg0 + 8);
+    {
+        void *buf = GKI_getbuf(0x110);
+        if (buf != 0) {
+            *(u16 *)buf = 0x207;
+            fn_80071450(buf);
+        }
+    }
+}
+
 void fn_800725B4(void *arg0) {
     *(void **)(lbl_803C0B98 + 0x74) = GKI_getbuf(0x1C);
     memcpy(*(void **)(lbl_803C0B98 + 0x74), arg0, 0x1C);
