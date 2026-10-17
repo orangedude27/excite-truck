@@ -15,7 +15,7 @@ long fn_801E89C8(long);
 float fn_802C99E8(void *, float);
 void fn_801ED718(void *);
 void fn_801ECC70(void);
-long fn_801F159C(long);
+float fn_801F159C(long);
 long fn_80201018(long, void *, long);
 long fn_801ECB60(void);
 extern unsigned int lbl_8055EBC8;
@@ -52,6 +52,39 @@ void fn_801EC714(void *arg0, float *arg1, float *arg2) {
     *arg1 = *(float *)((char *)arg0 + 8) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 4));
     *arg2 = *(float *)((char *)arg0 + 0x10) + (*(*(float **)arg0) * *(float *)((char *)arg0 + 0xC));
 }
+
+float fn_802C88D4(void *);
+float fn_801E88F0(long);
+#pragma push
+#pragma processor 750
+#pragma scheduling 7400
+void fn_801ECB80(void *arg0) {
+    float value;
+    long *count;
+    long offset;
+    long i;
+    value = fn_802C88D4((char *)arg0 + 0x28);
+    value *= fn_801E88F0(-1);
+    count = *(long **)((char *)arg0 + 0x174);
+    i = 0;
+    offset = 0;
+    *(long *)((char *)arg0 + 0x3F8) = *count - 1;
+    for (; i < *count; offset += 8, i++) {
+        if (value < *(float *)(*(char **)((char *)arg0 + 0x170) + offset)) {
+            *(long *)((char *)arg0 + 0x3F8) = i;
+            break;
+        }
+    }
+    if (*(long *)((char *)arg0 + 0x3F8) < *(long *)((char *)arg0 + 0x3FC))
+        *(long *)((char *)arg0 + 0x3F8) = *(long *)((char *)arg0 + 0x3FC);
+    if (*(long *)((char *)arg0 + 0x3F8) >= **(long **)((char *)arg0 + 0x174))
+        *(long *)((char *)arg0 + 0x3F8) = **(long **)((char *)arg0 + 0x174) - 1;
+    if (*(long *)((char *)arg0 + 0x40) == fn_801E866C(-1)) {
+        long n = *(long *)((char *)arg0 + 0x3F8);
+        *(long *)((char *)arg0 + 0x3F8) = n > 1 ? 1 : n;
+    }
+}
+#pragma pop
 
 long fn_801ECC8C(unsigned int arg0) {
     long result = 0;
