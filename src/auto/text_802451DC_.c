@@ -66,28 +66,26 @@ extern int fn_8012C33C(void *, void *);
 extern int fn_80214D50(int);
 extern char lbl_8034308C[];
 void fn_80245CC8(void *arg0) {
-    unsigned char result;
-    void **obj;
-    *(unsigned char *)((char *)arg0 + 0x1C) = 1;
-    result = fn_8012C33C(lbl_8034308C, lbl_8034308C);
-    *(unsigned char *)((char *)arg0 + 0x1D) = result;
-    if (result == 0) {
-        obj = (void **)arg0 + 1;
-        ((void (*)(void *))(*(void **)((char *)*obj + 8)))((char *)arg0 + 4);
-    }
-    *(unsigned char *)((char *)arg0 + 0x1E) = 1;
+ unsigned char result;
+ *(unsigned char*)((char*)arg0+0x1C)=1;
+ result=fn_8012C33C(lbl_8034308C, 0);
+ *(unsigned char*)((char*)arg0+0x1D)=result;
+ if(result==0) {
+   void **obj=(void**)((char*)arg0+4);
+   ((void(*)(void*))(*(void**)((char*)*obj+8)))((char*)arg0+4);
+ }
+ *(unsigned char*)((char*)arg0+0x1E)=1;
 }
 
 void fn_80245D2C(void *arg0) {
-    unsigned char result;
-    void **obj;
-    result = *(unsigned char *)((char *)arg0 + 0x1D);
-    *(unsigned char *)((char *)arg0 + 0x1C) = 0;
-    if (result == 0) {
-        obj = (void **)arg0 + 1;
-        ((void (*)(void *))(*(void **)((char *)*obj + 0xC)))((char *)arg0 + 4);
-    }
-    fn_80214D50(4);
+ unsigned char result;
+ result=*(unsigned char*)((char*)arg0+0x1D);
+ *(unsigned char*)((char*)arg0+0x1C)=0;
+ if(result==0) {
+   void **obj=(void**)((char*)arg0+4);
+   ((void(*)(void*))(*(void**)((char*)*obj+0xC)))((char*)arg0+4);
+ }
+ fn_80214D50(4);
 }
 
 int fn_802461D0(int arg0, int arg1) {
@@ -138,6 +136,36 @@ void fn_80246498(void *arg0) {
 
 void fn_802464A8(void *arg0) {
     *((signed char *)arg0 + 0x19) = 0;
+}
+
+extern int fn_80230E90(int);
+extern int fn_80216D28(void);
+int fn_802464B4(void *arg0, int arg1) {
+    switch (arg1) {
+    case 0x125:
+        if (*(unsigned char *)((char *)arg0 + 0x19) == 0) {
+            fn_80214CB4(0); fn_80230E90(0);
+        } else fn_80216D28();
+        goto done;
+    case 0x127:
+        if (*(unsigned char *)((char *)arg0 + 0x19) == 0) {
+            fn_80214CB4(1); fn_80230E90(0);
+        } else fn_80216D28();
+        goto done;
+    case 0x126:
+        if (*(unsigned char *)((char *)arg0 + 0x19) != 0) {
+            fn_80214CB4(0); fn_80230E90(0);
+        } else fn_80216D28();
+        goto done;
+    case 0x128:
+        if (*(unsigned char *)((char *)arg0 + 0x19) != 0) {
+            fn_80214CB4(1); fn_80230E90(0);
+        } else fn_80216D28();
+        goto done;
+    default: return 0;
+    }
+done:
+    return 1;
 }
 
 extern int fn_80129AF4(void);
