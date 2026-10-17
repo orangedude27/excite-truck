@@ -171,7 +171,7 @@ void *fn_8001BE94(void *dest, int val, size_t count) {
 s32 fn_8001BC18(s32 arg0);
 #pragma dont_inline reset
 f32 fn_8001BEC4(s32 arg0) {
-    return *(f32 *)fn_8001BC18(arg0);
+    return *(f32 *)((s32 (*)(s32))fn_8001BC18)(arg0);
 }
 void fn_8001BF0C(f32 arg0) {
     f32 temp = arg0;
@@ -259,6 +259,10 @@ s32 *fn_8001C4E0(s32 arg0) {
     } while (*entry != 0);
     fn_802E317C(lbl_802FD85C);
     return 0;
+}
+
+void fn_8001C714(void) {
+    fn_80131234(*(s32 *)((u8 *)fn_8001C4E0(0) + 8));
 }
 
 #pragma scheduling off
