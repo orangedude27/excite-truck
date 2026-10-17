@@ -52,6 +52,43 @@ void fn_802CAD68(void) {
     lbl_8055FCB8 = -2;
 }
 
+void fn_802CAD74(int arg0) {
+    int *p;
+    int value;
+    if (arg0 == lbl_8055FCB8)
+        return;
+    if (arg0 == -1) {
+        lbl_8055FCB8 = arg0;
+        return;
+    }
+    lbl_8055FCB8 = arg0;
+    p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
+    p[0x48 / 4]++;
+    value = p[0x40 / 4];
+    if (value != 0)
+        fn_802D9160(value, 0);
+    else
+        fn_802D9160(p[0x28 / 4], 0);
+}
+
+void fn_802CADD0(int arg0, int arg1) {
+    int value;
+    if (arg0 == -1)
+        value = 0;
+    else
+        value = *(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x28);
+    fn_802DBDE8(arg1, value);
+}
+
+int fn_802CAE00(int arg0) {
+    int value = 0;
+    if (arg0 >= 0 && arg0 < 0x200 &&
+        *(int *)(lbl_8055FCB0 + arg0 * 0x4C) > 0) {
+        value = 1;
+    }
+    return value;
+}
+
 int fn_802DB2C0(int);
 int fn_802CA57C(int, int, int);
 int fn_802CA4E0(int, int, int, int, int);
