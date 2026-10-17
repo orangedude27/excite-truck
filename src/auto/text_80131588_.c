@@ -359,7 +359,4 @@ extern void fn_802E317C(const char*, ...);
 extern char lbl_80559B24[];
 extern char lbl_8032B818[], lbl_8032B840[];
 typedef struct { void** vtable; } Unk80132BD0;
-struct Unk80132AE4Value {
-    struct { s32 a[9]; } matrix;
-    struct Unk80132968Vector vector;
-};
+
