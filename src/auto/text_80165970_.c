@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80128668(void *);
+extern unsigned char lbl_8055E32C;
 extern float lbl_805618F0;
 extern float lbl_8055E318;
 extern float fn_80129DC4(int, float, float, float);
@@ -125,6 +126,28 @@ int fn_80166F78(float *arg0) {
     return lbl_8055E318 > *arg0;
 }
 
+extern float lbl_8055E324;
+extern float fn_801660C0(void);
+extern void fn_802E30C8(char *, ...);
+extern char lbl_8032FF8C[];
+extern char lbl_8032FFC4[];
+void fn_80167684(float arg0) {
+    float temp_f31;
+    if (!lbl_8055E32B && arg0 < *(float *)((char *)&lbl_8042FE38 + 0x5C)) {
+        temp_f31 = (lbl_8055E324 - fn_801660C0()) / *(float *)((char *)&lbl_8042FE38 + 0x60);
+        if (temp_f31 > arg0) {
+            fn_802E30C8(lbl_8032FF8C);
+            fn_802E30C8(lbl_8032FFC4, arg0, temp_f31);
+            lbl_8055E32B = 1;
+        }
+    }
+}
+
+#pragma push
+#pragma small_data off
+unsigned char fn_80167758(void) { return *((unsigned char *)&lbl_8042FE38 + 0x4E); }
+int fn_80167768(float arg0) { return arg0 > *(float *)((char *)&lbl_8042FE38 + 0x50); }
+#pragma pop
 extern float lbl_80561898;
 extern float lbl_805618D8;
 extern float lbl_805618DC;
