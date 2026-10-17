@@ -1324,6 +1324,39 @@ void btm_db_reset(void) {
     }
 }
 
+void BTM_DeviceReset(void (*arg0)(void *)) {
+    u32 zero = 0;
+    if (*(u32 *)(lbl_803C0F78 + 0x58C) != 0 &&
+        *(u32 *)(lbl_803C0F78 + 0x58C) != (u32)arg0)
+        return;
+    btm_acl_device_down();
+    btm_db_reset();
+    *(volatile u32 *)(lbl_803C0F78 + 0x58C) = (u32)arg0;
+    *(volatile u8 *)(lbl_803C0F78 + 0x64E) = zero;
+    *(volatile u8 *)(lbl_803C0F78 + 0x64F) = 5;
+    btu_start_timer(lbl_803C0F78 + 0x574, 1, 4, 0);
+    ((void (*)(void))btsnd_hcic_reset)();
+    if (*(void (**)(void *))(lbl_803C0F78 + 0x568) != NULL)
+        (*(void (**)(void *))(lbl_803C0F78 + 0x568))((void *)1);
+}
+
+void BTM_SendHciReset(void (*arg0)(void)) {
+    u32 zero = 0;
+    if (*(u32 *)(lbl_803C0F78 + 0x58C) != 0 &&
+        *(u32 *)(lbl_803C0F78 + 0x58C) != (u32)arg0 &&
+        *(u32 *)(lbl_803C0F78 + 0x620) != (u32)arg0)
+        return;
+    btm_acl_device_down();
+    btm_db_reset();
+    *(volatile u32 *)(lbl_803C0F78 + 0x620) = (u32)arg0;
+    *(volatile u8 *)(lbl_803C0F78 + 0x64E) = zero;
+    *(volatile u8 *)(lbl_803C0F78 + 0x64F) = 5;
+    btu_start_timer(lbl_803C0F78 + 0x574, 1, 4, 0);
+    ((void (*)(void))btsnd_hcic_reset)();
+    if (*(void (**)(void *))(lbl_803C0F78 + 0x568) != NULL)
+        (*(void (**)(void *))(lbl_803C0F78 + 0x568))((void *)1);
+}
+
 u8 fn_80079514(void) {
     return (u8)((lbl_803C0F78[0x64E] - 5) == 0);
 }
@@ -1707,6 +1740,11 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
         return BTM_CMD_STARTED;
     }
     return BTM_NO_RESOURCES;
+}
+
+void fn_8007F588(s8 arg0) {
+    lbl_803C0F78[0x1978] = arg0;
+    memset(&lbl_803C0F78[0x1954], 0xFF, 6);
 }
 
 void fn_8008251C(void) {
