@@ -237,4 +237,4 @@ extern void fn_802C3754(s32, s32, s32, s32, s32, s32);
 extern void fn_802DB2C8(void);
 extern void fn_802C3478(void);
 extern void fn_802C365C(void);
-extern void fn_802C356C(void);
+extern void fn_802C356C(s32, s32, s32, s32, u32);
