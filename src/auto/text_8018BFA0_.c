@@ -32,13 +32,30 @@ int fn_8018C514(void *arg0, void *arg1) {
     }
     return best;
 }
+
+void fn_8018F6F8(void *arg0) {
+    int i;
+    char *type = (char *)&lbl_80332840;
+    char *entry = (char *)arg0 + 0x152C;
+    for (i = 0x11; i != 0; i--) {
+        if (*(int *)entry != 0 && *(int *)(entry + 0x7C) == 0 &&
+            (unsigned int)(*(int *)type - 0xE) <= 2U) {
+            *(int *)(entry + 0x7C) = 4;
+            *(char *)(entry + 0x78) = 0;
+            *(float *)(entry + 0xC) = lbl_80561F74;
+            *(float *)(entry + 0x10) = *(float *)(entry + 0x14) / lbl_80562050;
+        }
+        type += 0x40;
+        entry += 0x80;
+    }
+}
+
 extern float lbl_80561F74;
 extern float lbl_80562050;
 extern float lbl_80561F8C;
 extern float lbl_8055E3C8;
 extern float lbl_80561F70;
 extern int lbl_80332840;
-void *fn_801B83A0(void);
 int fn_80161A38(int, int, int);
 int fn_801DFF1C(int);
 float PSQUATMultiply(void *, void *);
