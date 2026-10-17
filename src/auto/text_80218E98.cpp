@@ -1485,6 +1485,10 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802295AC(void *arg0, 
     return arg0;
 }
 
+extern "C" void fn_80229604(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x24C) = 0;
+}
+
 extern "C" void fn_80229610(void) {
 }
 
