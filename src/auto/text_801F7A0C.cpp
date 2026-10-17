@@ -597,6 +597,69 @@ extern "C" s32 fn_801FBD94(void *arg0) {
     return flags | 1;
 }
 
+extern "C" void fn_801FBEA8(void* arg0) {
+ void* obj = fn_801284F8(0x2C, lbl_8033B51C);
+ if (obj != 0) {
+ f32 zero, one, x, y;
+ one = lbl_80563010;
+ zero = lbl_80562FFC;
+ *(void**)obj = lbl_80333B98;
+ x = *(f32*)((char*)arg0 + 0x58);
+ *(s32*)((char*)obj + 0xC) = 0;
+ y = *(f32*)((char*)arg0 + 0x5C);
+ *(s32*)((char*)obj + 4) = 0;
+ *(s32*)((char*)obj + 8) = 0;
+ *(s32*)((char*)obj + 0x18) = 0x54554245;
+ *(f32*)((char*)obj + 0x10) = one;
+ *(f32*)((char*)obj + 0x14) = zero;
+ *(s32*)((char*)obj + 0x20) = 100;
+ *(s32*)((char*)obj + 0x1C) = 0;
+ 
+ *(f32*)((char*)obj + 0x24) = x;
+ *(f32*)((char*)obj + 0x28) = y;
+ *(void**)obj = lbl_80333918;
+ }
+}
+
+extern "C" void fn_801FBF48(void* arg0) {
+ void* obj = fn_801284F8(0x2C, lbl_8033B52C);
+ if (obj != 0) {
+ f32 zero, one, x, y;
+ one = lbl_80563010;
+ zero = lbl_80562FFC;
+ *(void**)obj = lbl_80333B98;
+ x = *(f32*)((char*)arg0 + 0x58);
+ *(s32*)((char*)obj + 0xC) = 0;
+ y = *(f32*)((char*)arg0 + 0x5C);
+ *(s32*)((char*)obj + 4) = 0;
+ *(s32*)((char*)obj + 8) = 0;
+ *(s32*)((char*)obj + 0x18) = 0x52494E47;
+ *(f32*)((char*)obj + 0x10) = one;
+ *(f32*)((char*)obj + 0x14) = zero;
+ *(s32*)((char*)obj + 0x20) = 100;
+ *(s32*)((char*)obj + 0x1C) = 0;
+ *(void**)obj = lbl_803337C8;
+ *(f32*)((char*)obj + 0x24) = x;
+ *(f32*)((char*)obj + 0x28) = y;
+ 
+ }
+}
+
+#pragma push
+#pragma paired_single off
+extern "C" void fn_801FBFE8(void* arg0) {
+ f64 value = lbl_80563010;
+ void* obj = fn_801284F8(0xE0, lbl_8033B53C);
+ if (obj != 0) fn_801A324C(obj, 0, (char*)arg0 + 0x58, value, *(f32*)((char*)arg0 + 0x4C));
+}
+extern "C" void* fn_801FC228(void* arg0, s32 arg1) {
+ if (arg0 != 0) {
+ *(void**)((char*)arg0 + 0x108) = lbl_8033B418;
+ if (arg1 > 0) fn_80128668();
+ }
+ return arg0;
+}
+
 extern "C" void fn_801FC4D8(void **arg0, void *arg1) {
     *(void **)((u8 *)arg1 + 0x68) = *arg0;
     *arg0 = arg1;
@@ -646,6 +709,13 @@ extern "C" void *fn_801FC674(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+
+extern "C" void fn_801FC720(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x50) == 0 && fn_801F7A0C() != 0) {
+        fn_802C70AC(*(s32 *)((u8 *)arg0 + 0x3C), (u8 *)arg0 + 4, -1, -15);
+    }
+}
+
 #pragma small_data reset
 extern "C" {
 extern u8 lbl_8033B418[], lbl_8033B53C[], lbl_8033B52C[], lbl_8033B51C[];
