@@ -1207,7 +1207,7 @@ extern "C" s32 fn_800B8BE8(s32 arg0) {
 #pragma dont_inline
 extern "C" s32 fn_800B8F20(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
     s32 result;
-    s32 sem = arg5 ? arg5 : lbl_8055DD30;
+    s32 sem = arg5 != 0 ? arg5 : lbl_8055DD30;
     fn_800B8004(sem);
     *arg4 = 0;
     if (arg0 == 0) {
