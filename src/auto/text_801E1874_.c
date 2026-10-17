@@ -10,7 +10,7 @@ extern float lbl_80562CAC;
 extern float lbl_80562CC8;
 extern float lbl_80562CCC;
 extern float lbl_80562CD0;
-extern float lbl_80562D4;
+extern float lbl_80562CD4;
 void fn_801E1B30(void);
 extern const char lbl_80339878[];
 extern const char lbl_80339884[];
