@@ -279,6 +279,10 @@ extern "C" s32 fn_80141F7C(f32 arg0) {
     return (f32)__fabs((f64)arg0) <= *(volatile f32 *)0x80558DC4;
 }
 
+extern "C" u8 fn_80141FA0(void *arg0) {
+    return *(u8 *)((u8 *)arg0 + 0x19);
+}
+
 extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
     void *obj = fn_802C6C34(*(s32 *)(arg1 + 0x59C));
     *(f32 *)((u8 *)arg0 + 0x128) = *(f32 *)((u8 *)obj + 0x30) - *(f32 *)((u8 *)obj + 0x2C);
