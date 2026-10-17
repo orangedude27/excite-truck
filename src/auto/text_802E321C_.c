@@ -37,6 +37,16 @@ s32 *fn_802E333C(void) {
     }
     return (s32 *)lbl_8055FF18;
 }
+
+s32 *fn_802E336C(void) {
+    s32 *temp_r3;
+    temp_r3 = (s32 *)fn_802E32C4();
+    if (temp_r3 != 0) {
+        return temp_r3;
+    }
+    return (s32 *)lbl_8055FF1C;
+}
+
 void fn_802E339C(void) {
     s32 *p = (s32 *)fn_802E333C();
     ((void (*)(void))(*(s32 **)((char *)*p + 0x24)))();
