@@ -348,6 +348,16 @@ void fn_802C7AD4(void) { fn_802C7A94(9); }
 
 void fn_802C7ADC(void) { fn_802D754C(0); }
 
+void fn_802C8218(s32 arg0) {
+    s32 var_r0;
+
+    var_r0 = 1;
+    if (arg0 != 0) {
+        var_r0 = 2;
+    }
+    lbl_8055D00C = var_r0;
+}
+
 extern int lbl_8055D008;
 extern void fn_8012C4E4(void *, int);
 
