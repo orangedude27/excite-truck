@@ -229,6 +229,11 @@ float fn_801E8874(long arg0) {
     return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x4C);
 }
 
+float fn_801E8894(long arg0) {
+    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
+    return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x50);
+}
+
 extern void *lbl_8055AF08;
 void* fn_801E89EC(void) {
     return lbl_8055AF08;
