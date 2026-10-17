@@ -1457,6 +1457,10 @@ extern "C" void fn_80228DAC(void *arg0) {
 
 extern "C" void fn_80228DC0(void) { }
 
+extern "C" s32 fn_80228F40(s32 arg0, s32 arg1) {
+    return arg0 + arg1 * 1000;
+}
+
 extern "C" void *fn_80223208(void *, unsigned int);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80228F4C(void *arg0, int arg1) {
     if (arg0 != 0) {
