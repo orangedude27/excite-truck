@@ -10,8 +10,8 @@ char fn_802CA7DC(const char *arg0) { return (signed char)*arg0 == 0x2A; }
 
 int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
 
-void fn_802CAC28(void) {
-    fn_802CA898(0, 0, 0xE);
+void fn_802CAC28(int arg0, int arg1) {
+    fn_802CA898(arg0, arg1, 0, 0xE);
 }
 
 void fn_802CAC34(int arg1) {
