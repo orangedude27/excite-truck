@@ -279,8 +279,7 @@ extern "C" void* fn_802992C4(void* arg0, int arg1) {
     return arg0;
 }
 
-extern "C" void fn_802997F4(void*);
-extern "C" float fn_801E7E18(void);
+  extern "C" float fn_801E7E18(void);
 void fn_802994C0(void* arg0) {
     *(int*)arg0 = -1;
     *(int*)((char*)arg0 + 0x34) = 2;
