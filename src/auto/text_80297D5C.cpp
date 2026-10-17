@@ -30,7 +30,7 @@ extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
 extern float lbl_80564590;
 extern float lbl_8056459C;
 extern float lbl_80558DC4;
-void fn_80297ED4(void) {
+extern "C" void fn_80297ED4(void) {
 }
 
 void fn_80298124(void) {
