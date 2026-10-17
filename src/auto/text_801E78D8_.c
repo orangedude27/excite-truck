@@ -330,6 +330,15 @@ void fn_801E8D48(void) {
     fn_801E87D4(0);
 }
 
+void fn_801E9564(long arg0) {
+    long i;
+    for (i = 0; i < 5; i++) fn_801E8D48();
+    fn_80127464();
+    fn_801E8F10(arg0);
+    for (i = 0; i < 0xC; i++) fn_801E8DD4();
+    for (i = 0; i < 0x40; i++) fn_801E8E38();
+}
+
 void fn_801E9BE4(void) {
     long value = lbl_8055AF10;
     if (value != -1) fn_802C6CF8(value);
