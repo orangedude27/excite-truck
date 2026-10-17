@@ -68,6 +68,54 @@ int fn_80297D90(int* out, int value) {
     return 0;
 }
 
+extern "C" void fn_80297DC8(void* arg0) {
+    float f0 = lbl_805645B4;
+    float f1 = lbl_805645B0;
+    float f2 = lbl_805645AC;
+    float f3 = lbl_805645A8;
+    float f4 = lbl_805645A4;
+    float f5 = lbl_805645A0;
+    float f6 = lbl_8056459C;
+    float f7 = lbl_80564598;
+    float f8 = lbl_80564594;
+    float f9 = lbl_80564590;
+    float tmp[6];
+    float tmp2[3];
+    *(int*)((char*)arg0 + 0x4) = 0xC0;
+    *(float*)((char*)arg0 + 0x8) = f9;
+    *(float*)((char*)arg0 + 0xC) = f8;
+    *(int*)arg0 = 1;
+    tmp[0] = f7;
+    tmp[1] = f8;
+    tmp[2] = f7;
+    tmp2[0] = f9;
+    tmp2[1] = f9;
+    tmp2[2] = f9;
+    *(float*)((char*)arg0 + 0x10) = tmp[0];
+    *(float*)((char*)arg0 + 0x14) = tmp[1];
+    *(float*)((char*)arg0 + 0x18) = tmp[2];
+    *(float*)((char*)arg0 + 0x1C) = tmp2[0];
+    *(float*)((char*)arg0 + 0x20) = tmp2[1];
+    *(float*)((char*)arg0 + 0x24) = tmp2[2];
+    *(float*)((char*)arg0 + 0x28) = f6;
+    *(float*)((char*)arg0 + 0x30) = f5;
+    *(float*)((char*)arg0 + 0x50) = f9;
+    *(float*)((char*)arg0 + 0x54) = f4;
+    *(float*)((char*)arg0 + 0x58) = f3;
+    *(float*)((char*)arg0 + 0x5C) = f2;
+    *(float*)((char*)arg0 + 0x70) = f1;
+    *(float*)((char*)arg0 + 0x68) = f1;
+    *(float*)((char*)arg0 + 0x60) = f1;
+    *(float*)((char*)arg0 + 0x74) = f0;
+    *(float*)((char*)arg0 + 0x6C) = f0;
+    *(float*)((char*)arg0 + 0x64) = f0;
+    *(float*)((char*)arg0 + 0x80) = f9;
+    *(int*)((char*)arg0 + 0x84) = 0x40;
+    *(unsigned char*)((char*)arg0 + 0x88) = 1;
+    *(int*)((char*)arg0 + 0x44) = 2;
+    *(unsigned char*)((char*)arg0 + 0x89) = 1;
+}
+
 extern "C" void fn_80297ED4(void) {
 }
 
@@ -89,11 +137,9 @@ void fn_80298160(void) {
     }
 }
 
-void *fn_80299A04(void *, unsigned int);
-extern void *lbl_8055F7CC;
-void* fn_802981EC(unsigned int size) {
-    return fn_80299A04(lbl_8055F7CC, size);
-}
+  void* fn_802981EC(unsigned int size) {
+      return fn_80299A04(lbl_8055F7CC, size);
+  }
 
 void fn_802981F8(void* self) {
     float values[3];
