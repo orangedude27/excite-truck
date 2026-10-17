@@ -653,6 +653,12 @@ extern "C" void fn_800F7110(void *self, unsigned long taskId) {
     ((void (*)(void*, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(manager, id);
 }
 
+extern "C" void fn_800F768C(void *self, unsigned long taskId) {
+    unsigned long id = taskId;
+    void* manager = ((void* (*)(void))fn_800FDE60)();
+    ((void (*)(void*, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(manager, id);
+}
+
 extern "C" s32 fn_800F76C0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
