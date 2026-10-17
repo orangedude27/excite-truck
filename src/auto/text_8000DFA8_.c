@@ -404,6 +404,16 @@ void fn_80010EF0(void) {
     *q = 0;
     *(s8 *)(p + 0x4) = 0;
 }
+
+void fn_80010F08(void) {
+    s8 *p;
+    s32 *q;
+    p = (s8 *)&lbl_80351214;
+    q = (s32 *)(p + 0x288);
+    *q = 0;
+    *(s8 *)(p + 0x4) = 0;
+}
+
 #pragma scheduling on
 extern void fn_80011280(s32, s32);
 extern void fn_8000E3B4(s32);
