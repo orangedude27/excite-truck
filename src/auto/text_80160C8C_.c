@@ -333,18 +333,18 @@ extern void fn_801475D0(void *, ...);
 s32 fn_80162800(void *arg0) {
     s32 sp8;
     s32 value;
-    register f32 limit = lbl_8055E3C8;
+    f64 limit = lbl_8055E3C8;
     void **vtable;
     vtable = *(void ***)arg0;
     if (limit > ((f32 (*)(void *))vtable[0x34 / 4])(arg0)) {
         vtable = *(void ***)arg0;
         if (((s32 (*)(void *))vtable[0x28 / 4])(arg0) == 0) {
-            value = ((s32 (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, (void *)lbl_8032FA38);
+            value = ((s32 (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, &lbl_8032FA38);
             fn_801476D8(value, -1, lbl_8055E2F8);
-            ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x0C / 4])(lbl_8055E2E0, (void *)lbl_8032FA44);
+            ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x0C / 4])(lbl_8055E2E0, &lbl_8032FA44);
             fn_801476C4();
             fn_80130980(&sp8, 0x14, 3, *(f32 *)((char *)arg0 + 0x84) - *(f32 *)((char *)arg0 + 0x98));
-            fn_801475D0(lbl_8055E2E0, lbl_8055A0EC, lbl_8055A0DC, &sp8);
+            fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, &sp8);
         }
     }
     return 0;
@@ -362,6 +362,10 @@ s32 fn_801628E8(void *arg0) {
 }
 
 s32 fn_80163058(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
+
+u8 fn_80163864(void *arg0) {
+    return *((u8 *)arg0 + 0x56C);
+}
 
 unsigned char fn_80163F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x56D);
