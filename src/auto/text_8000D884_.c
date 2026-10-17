@@ -83,6 +83,11 @@ void fn_8000DBC8(int arg0) {
     lbl_8034F628[lbl_8055D460] = arg0;
     lbl_8055D460++;
 }
+
+int fn_8000DC70(int arg0) {
+    return (int)((char *)lbl_8055D46C + arg0 * 0x12 + 0x64);
+}
+
 extern int lbl_8055D460;
 extern unsigned int lbl_8034F628[];
 extern char lbl_802FC264[];
