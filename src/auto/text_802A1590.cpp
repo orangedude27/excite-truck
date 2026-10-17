@@ -8,6 +8,7 @@ extern "C" s32 fn_80128668(void);
 extern "C" void fn_8028E398(void*);
 extern "C" int lbl_80349B28[];
 extern "C" void* lbl_804BCF88[];
+extern "C" int fn_801EF024(void*);
 extern "C" f32 lbl_80564728;
 extern "C" int lbl_80349B50[];
 extern "C" int lbl_80349AD8[];
