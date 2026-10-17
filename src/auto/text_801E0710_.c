@@ -4,7 +4,7 @@
 
 extern f64 fn_8002F234(f32);
 extern void *fn_801284E8(void *, s32);
-extern char lbl_8032C108[];
+extern unsigned int lbl_8032C108;
 extern f32 lbl_80562C78;
 extern f32 lbl_80562C7C;
 
@@ -14,14 +14,18 @@ extern void NWC24Data_Init_801E1028(void *);
 extern void fn_801E07E8(void);
 extern void fn_8002F53C(void *, void *, void *, s32, s32);
 void fn_801E0864(void *arg0) {
+    int zero;
+    int minus;
     float x;
     float y;
+    zero = 0;
+    minus = -1;
     x = lbl_80562C78;
     y = lbl_80562C7C;
-    *(int *)arg0 = -1;
-    *((char *)arg0 + 4) = 0;
-    *(int *)((char *)arg0 + 0x10) = 0;
-    *(int *)((char *)arg0 + 0x14) = 0;
+    *(int *)arg0 = minus;
+    *((char *)arg0 + 4) = zero;
+    *(int *)((char *)arg0 + 0x10) = zero;
+    *(int *)((char *)arg0 + 0x14) = zero;
     *(float *)((char *)arg0 + 8) = x;
     *(float *)((char *)arg0 + 0xC) = y;
 }
@@ -30,20 +34,22 @@ int fn_801E0ED4(int arg0, int arg1) {
     return arg1 > arg0 ? arg1 : arg0;
 }
 
+#pragma scheduling off
 float fn_801E0EE4(void *arg0, void *arg1) {
     float delta[2];
     delta[1] = *(float *)((char *)arg0 + 4) - *(float *)((char *)arg1 + 4);
     delta[0] = *(float *)arg0 - *(float *)arg1;
     return (float)fn_8002F234(delta[0] * delta[0] + delta[1] * delta[1]);
 }
-
+#pragma scheduling on
 void fn_801E0F34(int arg0) {
     void *ptr;
-    int size;
-    size = (arg0 << 3) + 8;
-    ptr = fn_801284E8(lbl_8032C108, size);
-    *(int *)((char *)ptr + 4) = arg0;
-    *(int *)ptr = arg0;
+    int value;
+    value = arg0;
+    arg0 = (arg0 << 3) + 8;
+    ptr = fn_801284E8((void *)&lbl_8032C108, arg0);
+    *(int *)((char *)ptr + 4) = value;
+    *(int *)ptr = value;
 }
 
 void fn_801E0F78(f32 *arg0, f32 *arg1, f32 *arg2, f32 arg3) {
