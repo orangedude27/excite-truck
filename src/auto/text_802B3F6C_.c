@@ -59,6 +59,10 @@ int fn_802B475C(void* arg0) {
     return ((int*)*(void**)arg0)[index];
 }
 
+int fn_802B4BC0(int arg0, int arg1, int arg2) {
+    return arg0 + (((arg1 & 0x1F) + ((arg2 << 5) & 0x3E0)) << 3);
+}
+
 void fn_802B4BD8(void) {}
 
 void fn_802B4CB4(void *arg0) {
