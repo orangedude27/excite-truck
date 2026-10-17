@@ -393,6 +393,10 @@ void fn_8024BB5C(void *arg0) {
     *(s32 *)((char *)arg0 + 0x10) = result;
 }
 
+s32 fn_8024BB7C(void *arg0) {
+    return *(s32 *)((char *)lbl_802FA4B0 + (*(s32 *)((char *)arg0 + 0x10) << 3) + 4);
+}
+
 void *fn_80012870(s32, s32);
 extern char lbl_80343E60[];
 void fn_8024BBF4(void *arg0) {
