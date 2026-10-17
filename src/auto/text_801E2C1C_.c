@@ -24,6 +24,24 @@ extern void fn_8012A13C(void *, s32, s32);
 #pragma push
 #pragma small_data off
 #pragma pop
+int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
+    int table = fn_802C6C34();
+    int count = *(int *)(table + 0x10);
+    int offset = 0;
+    while (count > 0) {
+        int entry = *(int *)(*(int *)(table + 0x14) + offset);
+        if (*(unsigned int *)entry == 0x4D524A54 && arg1 >= 0 && arg1 < *(int *)(entry + 8)) {
+            int item = entry + arg1 * 0x50;
+            *arg2 = (void *)(item + 0xC);
+            *arg3 = (void *)(item + 0x2C);
+            return 1;
+        }
+        offset += 4;
+        count--;
+    }
+    return 0;
+}
+
 void fn_801E2F00(void) {
     void *p = fn_801284F8(0x20, &lbl_803398D8);
     if (p != 0) {
@@ -54,21 +72,21 @@ s32 fn_801E320C(void) {
 
 #pragma push
 #pragma small_data off
-void fn_801E33E4(void) {
+void fn_801E33E4(void *arg0, void *arg1) {
     f32 sp[12];
-    sp[0] = lbl_80562CE8;
-    sp[1] = lbl_80562CEC;
-    sp[2] = lbl_80562CEC;
-    sp[3] = lbl_80562CEC;
-    sp[4] = lbl_80562CE8;
-    sp[5] = lbl_80562CEC;
-    sp[6] = lbl_80562CEC;
-    sp[7] = lbl_80562CEC;
-    sp[8] = lbl_80562CE8;
-    sp[9] = lbl_80562CEC;
-    sp[10] = lbl_80562CEC;
-    sp[11] = lbl_80562CEC;
-    fn_801E3284(0, 0, (s32)sp);
+    sp[0] = 1.0f;
+    sp[1] = 0.0f;
+    sp[2] = 0.0f;
+    sp[3] = 0.0f;
+    sp[4] = 1.0f;
+    sp[5] = 0.0f;
+    sp[6] = 0.0f;
+    sp[7] = 0.0f;
+    sp[8] = 1.0f;
+    sp[9] = 0.0f;
+    sp[10] = 0.0f;
+    sp[11] = 0.0f;
+    fn_801E3284(arg0, arg1, (s32)sp);
 }
 void fn_801E3440(void* arg0) {
     f32 sp[12];
