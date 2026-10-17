@@ -134,6 +134,11 @@ public:
 
 extern "C" s32 lbl_8042FD34[];
 
+struct UnkFD34 {
+    s32* items;
+    s32 count;
+};
+
 class UnkVt34 {
 public:
     virtual void v0();
@@ -1263,7 +1268,8 @@ extern "C" void fn_8015D814(void* arg0) {
 void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
     void* ptr = *(void**)((u8*)this + 0x248);
     if (ptr != 0) {
-        void (*fn)(void*) = *(void (**)(void*))((u8*)ptr + 0x24);
+        void* vtable = *(void**)ptr;
+        vfn0_t fn = *(vfn0_t*)((u8*)vtable + 0x24);
         fn(ptr);
         *(void**)((u8*)this + 0x248) = 0;
     }
