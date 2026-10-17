@@ -6,9 +6,9 @@ extern void fn_8002F53C(void *, void *, void *, unsigned long, unsigned long);
 extern char lbl_8055F8B0;
 extern int lbl_8055F8B8;
 extern char lbl_804BD5D8[];
-extern char fn_802A81EC[];
+extern void fn_802A81EC(void);
 void fn_802A81A0(void) {
     fn_8000D838(&lbl_8055F8B0);
-    lbl_8055F8B8 = 0x7F000000;
+    *(volatile int *)&lbl_8055F8B8 = 0x7F000000;
     fn_8002F53C(lbl_804BD5D8, fn_802A81EC, 0, 0x1C, 8);
 }
