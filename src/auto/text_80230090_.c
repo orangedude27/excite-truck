@@ -17,7 +17,23 @@ void fn_80230B38(void* alarm) {
 
 void fn_80230DA0(void) {}
 
-void fn_80230E54(void) {}
+void fn_80230DA4(float a, float b) {
+    float value;
+    lbl_8055F030 = a;
+    value = (float)fn_8002EFB4();
+    if (value < lbl_80563614) value += b;
+    lbl_8055F02C = b - value;
+}
+
+float fn_80230DF4(float a, float b) {
+    float value = (float)fn_8002EFB4(a + lbl_8055F02C);
+    if (value < lbl_80563614) value += b;
+    value /= b;
+    if (value < lbl_8056365C) value = lbl_80563610 - value;
+    return value;
+}
+
+void fn_80230E54(float a, float b) {}
 
 void fn_8023108C(u8 arg0) {
     lbl_8055B998 = arg0;
