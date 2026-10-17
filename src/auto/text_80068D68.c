@@ -1893,6 +1893,21 @@ s32 fn_8007FEFC(u16 handle) {
     return 0;
 }
 
+void btm_sec_update_clock_offset(UINT16 handle, UINT16 clock_offset) {
+    tBTM_SEC_DEV_REC *dev;
+    tBTM_INQ_INFO *inq;
+
+    dev = btm_find_dev_by_handle(handle);
+    if (dev != NULL) {
+        clock_offset |= 0x8000;
+        *(UINT16 *)((u8 *)dev + 0x1A) = clock_offset;
+        inq = BTM_InqDbRead((u8 *)dev + 0x1C);
+        if (inq != NULL) {
+            *(UINT16 *)inq = clock_offset;
+        }
+    }
+}
+
 s32 fn_8008128C(void *arg0) {
     void *dev = btm_find_dev(arg0);
     if (dev != NULL) {
