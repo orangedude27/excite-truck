@@ -1511,6 +1511,33 @@ void fn_8008C04C(s16 arg0) {
     *(s16 *)(lbl_803C4040 + 4) = arg0;
 }
 
+BOOL l2cap_link_chk_pkt_end(void) {
+    u8 *p_lcb;
+    u8 *p_buf;
+    u16 offset, len, l2cap_len;
+    p_lcb = *(u8 **)(lbl_803C4040 + 0x7BC);
+    if (p_lcb == 0) return TRUE;
+    p_buf = *(u8 **)(p_lcb + 0x50);
+    if (p_buf == 0) return TRUE;
+    offset = *(u16 *)(p_buf + 4);
+    len = *(u16 *)(p_buf + 2);
+    l2cap_len = (u16)(p_buf[offset + 0x0C] | (p_buf[offset + 0x0D] << 8));
+    if (l2cap_len <= len - 8) {
+        *(u8 **)(p_lcb + 0x50) = 0;
+        return TRUE;
+    }
+    return FALSE;
+}
+
+void l2c_link_role_changed(u8 *bd_addr, u8 new_role) {
+    u8 *p_lcb, *entry;
+    s32 i;
+    p_lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
+    if (p_lcb != 0) p_lcb[0x30] = new_role;
+    for (i = 0, entry = lbl_803C4040 + 8; i < 4; i++, entry += 0x5C)
+        if (entry[0] != 0 && *(s32 *)(entry + 4) == 2) l2cu_create_conn_after_switch(entry);
+}
+
 void l2c_process_timeout(void *arg) {
     u16 event = *(u16 *)((u8 *)arg + 0x14);
     if (event == 4) l2c_process_held_packets(1);
