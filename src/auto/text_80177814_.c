@@ -117,6 +117,19 @@ void fn_80177A54(void) {
     }
     lbl_8055E3C0 = 0;
 }
+
+void fn_80177EE4(void) {
+    int i;
+    if (lbl_8055E44C != 0) {
+        for (i = 0; i < 8; i++) {
+            if (fn_8017960C(i) != 0) {
+                fn_8018A180();
+            }
+        }
+        lbl_8055E44C = 0;
+    }
+}
+
 #pragma dont_inline off
 long fn_801781B8(void) { return 0; }
 
@@ -158,6 +171,18 @@ unsigned char *fn_801781F4(long arg0) {
 void fn_80178224(void) {
     if (fn_801284F8(0x2780, &lbl_8055A304) != 0)
         fn_801A6484();
+}
+
+void fn_80178258(void) {
+    if (fn_801284F8(0xD0, &lbl_8033192C) != 0) {
+        fn_8017ACCC();
+    }
+}
+
+void fn_80178290(void) {
+    if (fn_801284F8(0x1FC, &lbl_80331938) != 0) {
+        fn_801AFD20(NULL);
+    }
 }
 
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
