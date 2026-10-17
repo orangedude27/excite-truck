@@ -17,6 +17,13 @@ void fn_801964D0(void);
 void fn_80128668(void *);
 void fn_80193138(int);
 
+extern unsigned char lbl_8055A4B8[];
+extern float lbl_80562178, lbl_8056217C;
+extern void fn_8017B4E0(void *, float *, float *, float);
+extern void fn_80193D30(void *);
+extern int fn_802E30C8(const char *, ...);
+extern char lbl_80333198[];
+
 void fn_8019386C(void) {
     fn_80193CE0();
 }
