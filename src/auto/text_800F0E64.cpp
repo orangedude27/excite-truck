@@ -357,6 +357,14 @@ extern "C" void fn_800F4FF4(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, unsigned long start, unsigned long end) {
     unsigned long* entries = *(unsigned long**)((char*)self + 0x14);
     unsigned long i = 0, offset = 0;
@@ -403,7 +411,7 @@ extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3sn
   extern u8 lbl_80326264[];
 #pragma pop
 extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void);
-void fn_800F7110(void *self, unsigned long taskId) {
+extern "C" void fn_800F7110(void *self, unsigned long taskId) {
     fn_800FDE60();
     CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(taskId);
 }
