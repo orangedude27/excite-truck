@@ -101,18 +101,20 @@ void fn_801D2A24(void *obj_) {
 }
 #pragma dont_inline off
 
-void fn_801D2AD4(void) {
+void fn_801D2AD4(void *arg0) {
     UnkObj *list = (UnkObj *)fn_80131810();
-    UnkObj *obj;
     s32 i;
 
     if (list == NULL) {
         return;
     }
-    for (i = 0; (obj = (UnkObj *)list->vt->child(list, i)) != NULL; i++) {
+    i = 0;
+    while (list->vt->child(list, i) != NULL) {
+        UnkObj *obj = (UnkObj *)list->vt->child(list, i);
         if (strncmp(obj->vt->fn8(obj), (char *)&lbl_8055AC28, 7) == 0) {
             fn_801D2A24(obj);
         }
+        i++;
     }
     fn_80131818(list);
 }
