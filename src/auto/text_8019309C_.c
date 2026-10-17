@@ -310,6 +310,10 @@ void fn_80196328(void *arg0) {
     fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 0);
 }
 
+extern int fn_801B2F24(void);
+extern void fn_801B2F40(int);
+extern int fn_8019643C(void);
+
 void fn_8019639C(void) {
     fn_80194844();
 }
