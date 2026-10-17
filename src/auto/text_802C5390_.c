@@ -319,6 +319,23 @@ void fn_802C7A44(void) {
     lbl_8055FC20 = 1;
     fn_802C543C();
 }
-extern int lbl_8055D008;
-extern void fn_8012C4E4(void *, int);
+
+void fn_802C7A50(void) {
+    int i = 0;
+    do {
+        fn_802C5720(i);
+        i++;
+    } while (i < 9);
+    lbl_8055FC20 = 0;
+}
+
+void fn_802C7A94(int arg0) {
+    fn_802C7758();
+    fn_802C5720(arg0);
+    if (arg0 == 9) {
+        fn_802C543C();
+    }
+}
+
+void fn_802C7AD4(void) { fn_802C7A94(9); }
 
