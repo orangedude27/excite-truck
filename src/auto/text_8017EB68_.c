@@ -151,6 +151,12 @@ void fn_80181474(void *arg0, float arg1, float arg2) {
  *(float *)((char *)arg0+0x328)=arg2;
 }
 
+void fn_80181480(void *arg0, int arg1) {
+ int old=*(int *)((char *)arg0+0x50);
+ *(int *)((char *)arg0+0x54)=arg1;
+ if(old>arg1) *(int *)((char *)arg0+0x50)=arg1;
+}
+
 float fn_80181568(void *arg0) {
     float value = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x18);
     if (value < lbl_80561C48) return value;
