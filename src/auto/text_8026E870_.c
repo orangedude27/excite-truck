@@ -31,6 +31,20 @@ s32 fn_8026EA14(s32 arg0) {
     return result;
 }
 
+f32 fn_8026EA44(s32 arg0) {
+    switch (arg0) {
+    case 6:
+        return lbl_80563E38;
+    case 8:
+    case 4:
+        return lbl_80563E3C;
+    case 7:
+        return lbl_80563E30;
+    default:
+        return lbl_80563E3C;
+    }
+}
+
 f32 fn_8026EAEC(f32 farg0) {
     f32 value = farg0;
     if (fn_80178CA4() > 1)
