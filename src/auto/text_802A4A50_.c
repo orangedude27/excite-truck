@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned long u32;
 typedef signed long s32;
 typedef float f32;
+typedef struct { f32 x, y, z; } Vec3;
 void fn_802C2C00(s32);
 void *fn_801E1F44(void);
 void fn_802C2C00(s32);
@@ -206,7 +207,7 @@ void fn_802A6408(void *arg0) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling off
 void fn_802A6758(void *arg0, f32 *arg1) {
     u8 *dst = *(u8 **)arg0 + (*(s32 *)((u8 *)arg0 + 4) * 0xC);
     f32 z;
@@ -216,10 +217,8 @@ void fn_802A6758(void *arg0, f32 *arg1) {
     y = arg1[1];
     z = arg1[2];
     *(f32 *)dst = x;
-    dst += 4;
-    *(f32 *)dst = y;
-    dst += 4;
-    *(f32 *)dst = z;
+    *(f32 *)(dst + 4) = y;
+    *(f32 *)(dst + 8) = z;
     *(s32 *)((u8 *)arg0 + 4) += 1;
 }
 #pragma pop
