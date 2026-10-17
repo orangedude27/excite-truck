@@ -87,6 +87,61 @@ s32 fn_802E36D8(s32 arg0) {
     return -1;
 }
 
+void fn_802E3734(s32 *arg0) {
+    s32 obj = fn_802E33D8(*arg0, lbl_8034CFB4, 0xE4);
+    s32 entry = *(s32 *)(obj + 0x24);
+    ((void (*)(s32))(*(s32 *)entry + 0x2C))(entry);
+    ((void (*)(s32, s32))(*(s32 *)entry + 0x1C))(entry, entry);
+    *(s32 *)(obj + 0x24) = 0;
+    *((unsigned char *)obj + 0x20) = 0;
+    *arg0 = -1;
+}
+
+void fn_802E37C4(s32 arg0) {
+    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x125);
+    ((void (*)(s32))(*(s32 *)*(s32 *)(obj + 0x24) + 0x18))(*(s32 *)(obj + 0x24));
+}
+
+void fn_802E3898(s32 arg0, const char *arg1, s32 *arg2) {
+    s32 total;
+    s32 result;
+    s32 obj;
+    s32 entry;
+    s32 count;
+    total = *arg2;
+    obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x142);
+    result = 0;
+    if (total > 0) {
+        do {
+            entry = *(s32 *)(obj + 0x24);
+            count = ((s32 (*)(s32, const char *, s32))(*(s32 *)entry + 8))(entry, arg1, total - result);
+            if (count < 0) { result = count; break; }
+            if (count <= 0) break;
+            result += count;
+            arg1 += count;
+        } while (total > 0);
+    }
+    *arg2 = result;
+}
+
+void fn_802E3930(s32 arg0, s32 arg1, s32 arg2) {
+    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x15e);
+    s32 entry = *(s32 *)(obj + 0x24);
+    ((void (*)(s32, s32, s32))(*(s32 **)entry)[4])(entry, arg1, arg2);
+}
+
+void fn_802E3990(s32 arg0) {
+    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x16c);
+    s32 entry = *(s32 *)(obj + 0x24);
+    ((void (*)(s32))(*(s32 **)entry)[5])(entry);
+}
+
+s32 fn_802E39D0(s32 arg0, s32 arg1, s32 arg2) {
+    s32 sp8 = arg2;
+    fn_802E3898(arg0, (const char *)arg1, &sp8);
+    return sp8 == arg2;
+}
+
 void fn_802E3DCC(void) {
     lbl_8055FF24 = (void*)fn_802E98C8();
 }
