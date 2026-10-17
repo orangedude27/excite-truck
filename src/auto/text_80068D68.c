@@ -841,6 +841,8 @@ void fn_80072C38(void) {
     BTM_CancelRemoteDeviceName();
 }
 
+s32 fn_80072EF4(void) { return 0xB; }
+
 extern void fn_80070FA4(void *, const void *);
 extern void *GKI_getbuf(unsigned short);
 void fn_80073464(void) {
