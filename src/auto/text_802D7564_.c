@@ -106,7 +106,7 @@ void fn_802D93E8(int arg0) {
 extern int GXGetTexObjMipMap(void *);
 extern void *GXGetTexObjFmt(void *);
 extern void GXCopyTex(void *, int);
-extern void GXSetTexCopySrc(int, int, unsigned short, unsigned short);
+extern void GXSetTexCopySrc(unsigned short, unsigned short, unsigned short, unsigned short);
 extern void GXSetTexCopyDst(unsigned short, unsigned short, int, unsigned char);
 extern void GXSetZMode(int, int, int);
 extern void GXSetColorUpdate(int);
