@@ -3,6 +3,7 @@
 #pragma opt_tail_call on
 
 extern void fn_8017A57C(void) __attribute__((noreturn));
+extern void fn_801AC240(void *);
 
 extern void fn_8017B0B0(void *);
 extern int lbl_8033585C[64];
@@ -97,6 +98,29 @@ void fn_801AC254(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x220) != 0) {
         *(unsigned char *)((char *)arg0 + 0x220) = 0;
     }
+}
+
+void *fn_801AC26C(void) {
+    void *obj = fn_801284F8(0x244, &lbl_80335718);
+    if (obj != 0) {
+        fn_801A9700(obj);
+        *(void **)obj = &lbl_80335744;
+        *(void **)((char *)obj + 0x23C) = (char *)&lbl_80335744 + 0x54;
+    }
+    return obj;
+}
+
+void *fn_801AC330(void *arg0) {
+    fn_801A9700(arg0);
+    *(void **)arg0 = &lbl_80335808;
+    if (lbl_8055E5EC == 0) {
+        lbl_8055E5F0 = 0;
+    }
+    *(int *)((char *)arg0 + 0x250) = lbl_8055E5EC;
+    lbl_8055E5EC = lbl_8055E5EC + 1;
+    lbl_80435628[*(int *)((char *)arg0 + 0x250)] = arg0;
+    *(int *)((char *)arg0 + 0x254) = -1;
+    return arg0;
 }
 
 void fn_801AD5EC(void) {
