@@ -25,7 +25,6 @@ extern "C" void fn_80148EDC(void *);
 
 class ThreadObject80144F40 {
 public:
-    virtual void f0();
     virtual void destroy(s32);
 };
 
