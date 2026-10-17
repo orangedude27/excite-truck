@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055B8B0[];
+#pragma small_data off
 extern char lbl_80490968[];
 extern char *strstr(const char *, const char *);
 extern void fn_8022C9D0(void);
@@ -21,7 +22,7 @@ void fn_8022A7D0(void) {
 }
 
 int fn_8022A7D4(const char *arg0) {
-    return strstr(arg0, lbl_8055B8B0) != 0;
+    return strstr(arg0, (const char *)&lbl_8055B8B0[0]) != 0;
 }
 
 unsigned int fn_8022A834(unsigned int arg0) {
@@ -109,16 +110,38 @@ int fn_8022B2D4(int arg0, const char *arg1, int arg2, int arg3) {
     return bestIndex;
 }
 
+void fn_8022BAD0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, double arg7, int arg8) {
+    int a = arg0 ^ 0x8000;
+    int b = arg1 ^ 0x8000;
+    int c = arg2 ^ 0x8000;
+    int d = arg3 ^ 0x8000;
+    int e = arg4 ^ 0x8000;
+    double f = arg7;
+    fn_8022BD40(c, e, arg8, a - lbl_80563590, b - lbl_80563590, d - lbl_80563590, f - lbl_80563590, arg5, arg6);
+}
+
+void fn_8022C9D0(void) {
+    int i;
+    for (i = 0; i < 0x100; i++) {
+        if ((unsigned char)lbl_80490968[i * 0x74] != 0) fn_8022A8E4(i);
+    }
+}
+
+float fn_8022CA40(void *arg0) {
+    float value = *(float *)((char *)arg0 + 0x34);
+    if (value < lbl_80563588) return lbl_80563588;
+    return value / fn_80232B70(*(int *)((char *)arg0 + 8));
+}
+
 extern double lbl_80563590;
 extern int fn_80232B70(int);
 extern char lbl_8033FF98[];
 extern int stricmp(const char *, const char *);
 int fn_8022CC8C(const char *arg0) {
-    int i;
-    for (i = 0; i < 0x1b; i++) {
-        if (stricmp(arg0, *(const char **)(lbl_8033FF98 + i * 8 + 4)) == 0) {
-            return *(int *)(lbl_8033FF98 + i * 8);
-        }
+    unsigned int i;
+    char *p = lbl_8033FF98;
+    for (i = 0; i < 0x1b; i++, p += 8) {
+        if (stricmp(arg0, *(const char **)(p + 4)) == 0) return *(int *)(lbl_8033FF98 + i * 8);
     }
     return 0x1a;
 }
