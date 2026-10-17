@@ -25,6 +25,11 @@ void fn_80278210(void) {}
 
 void fn_80278284(void) {}
 
+void fn_80278288(void) {
+    if (lbl_8055F5B0 != 0) fn_80128670(lbl_8055F5B0 - 0x10);
+    lbl_8055F5B0 = 0; lbl_8055F5B4 = 0;
+}
+
 void fn_80278318(void) {
     fn_802E30C8(lbl_803475B4, lbl_8055E3C4);
     lbl_8055F5B8 = 0; lbl_8055F5BA = 0; lbl_8055F5B9 = 0;
