@@ -27,6 +27,20 @@ extern void* lbl_8041D728[];
 extern u8 lbl_802F6A40[];
 extern u8 lbl_8041D508[];
 
+BOOL ARCFastOpen(ARCHandle *arg0, s32 arg1, ARCFileInfo *arg2) {
+    u32 *fst = (u32 *)arg0->FSTStart;
+    u32 *entry;
+    if (arg1 < 0 || (u32)arg1 >= arg0->entryNum)
+        return FALSE;
+    entry = (u32 *)((u8 *)fst + arg1 * 0xC);
+    if ((entry[0] & 0xFF000000) != 0)
+        return FALSE;
+    arg2->handle = arg0;
+    arg2->startOffset = entry[1];
+    arg2->length = entry[2];
+    return TRUE;
+}
+
 void* ARCGetStartAddrInMem(ARCFileInfo* info) {
     return (void*)((s32)info->handle->archiveStartAddr + info->startOffset);
 }
@@ -176,13 +190,16 @@ void fn_80116DDC(void* arg0, s32 arg1) {
 }
 
 void fn_80116E2C(const u8 *arg0) {
-    const u8 *src = arg0;
     u8 *dst = lbl_8041D508;
-    u8 c;
+    s8 c;
     do {
-        c = *src++;
-        *dst++ = c;
-    } while (c != 0);
+        c = (s8)*arg0;
+        *dst = c;
+        if (c == 0)
+            return;
+        dst++;
+        arg0++;
+    } while (1);
 }
 
 extern u8 lbl_8041D508[];
@@ -220,27 +237,19 @@ void fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
     blocks = count >> 3;
     if (blocks != 0) {
         do {
-            arg0[0] = (s8)(arg1[0] >> 8);
-            arg0[1] = (s8)(arg1[1] >> 8);
-            arg0[2] = (s8)(arg1[2] >> 8);
-            arg0[3] = (s8)(arg1[3] >> 8);
-            arg0[4] = (s8)(arg1[4] >> 8);
-            arg0[5] = (s8)(arg1[5] >> 8);
-            arg0[6] = (s8)(arg1[6] >> 8);
-            arg0[7] = (s8)(arg1[7] >> 8);
-            arg1 += 8;
-            arg0 += 8;
-            blocks--;
-        } while (blocks != 0);
+            arg0[0]=(s8)(arg1[0]>>8); arg0[1]=(s8)(arg1[1]>>8);
+            arg0[2]=(s8)(arg1[2]>>8); arg0[3]=(s8)(arg1[3]>>8);
+            arg0[4]=(s8)(arg1[4]>>8); arg0[5]=(s8)(arg1[5]>>8);
+            arg0[6]=(s8)(arg1[6]>>8); arg0[7]=(s8)(arg1[7]>>8);
+            arg1+=8; arg0+=8;
+        } while (--blocks != 0);
         count &= 7;
     }
-    if (count != 0) {
-        do {
-            *arg0++ = (s8)(*arg1 >> 8);
-            arg1++;
-            count--;
-        } while (count != 0);
-    }
+    if (count == 0)
+        return;
+    do {
+        *arg0++=(s8)(*arg1++ >> 8);
+    } while (--count != 0);
 }
 
 extern s32 fn_80117074(void*);
@@ -270,6 +279,32 @@ void fn_801175C4(s32 arg0,s32 arg1){
 }
 
 void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
+
+void fn_80118C1C(void *arg0, s32 arg1) {
+    s32 temp_r0 = *(s32*)((u8*)arg0 + 0x264);
+    if (temp_r0 != 0) {
+        *(s32*)((u8*)arg0 + 0x264) = 0;
+        *(s32*)((u8*)arg0 + 0x29C) += arg1 - temp_r0;
+    }
+}
+
+void fn_80118F1C(void *arg0, s32 arg1) {
+    s32 temp_r0 = *(s32*)((u8*)arg0 + 0x274);
+    if (temp_r0 != 0) {
+        u32 temp_r5 = *(u32*)((u8*)arg0 + 0x278);
+        u32 temp_r6 = arg1 - temp_r0;
+        *(s32*)((u8*)arg0 + 0x274) = 0;
+        if (temp_r6 > temp_r5) {
+            *(u32*)((u8*)arg0 + 0x280) = temp_r5;
+            *(s32*)((u8*)arg0 + 0x284) = *(s32*)((u8*)arg0 + 0x27C);
+            *(u32*)((u8*)arg0 + 0x278) = temp_r6;
+            *(s32*)((u8*)arg0 + 0x27C) = *(s32*)((u8*)arg0 + 0xC);
+        } else if (temp_r6 > *(u32*)((u8*)arg0 + 0x280)) {
+            *(u32*)((u8*)arg0 + 0x280) = temp_r6;
+            *(s32*)((u8*)arg0 + 0x284) = *(s32*)((u8*)arg0 + 0xC);
+        }
+    }
+}
 
 void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
