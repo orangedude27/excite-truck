@@ -15,7 +15,6 @@ extern int __dt__15shdStateMachineFv_801B496C(int);
 extern void *lbl_8055E6D8;
 extern int *fn_801B479C();
 extern int fn_801B47BC();
-extern unsigned int fn_801B4BDC(void);
 extern int fn_801B4B9C(int);
 extern int fn_801B47AC(int);
 extern int fn_802E30C8(int *);
@@ -120,6 +119,10 @@ int fn_801B4B44(char *arg0) {
 
 int fn_801B4B9C(int arg0) {
     return *fn_801B479C(arg0 + 4, fn_801B47AC(arg0 + 4));
+}
+
+unsigned int fn_801B4BDC(void) {
+    return *fn_801B479C();
 }
 
 int fn_801B4C1C(int arg0, int arg1) {
