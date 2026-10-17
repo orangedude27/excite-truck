@@ -245,7 +245,7 @@ void fn_801CCAEC(int arg0) {
     }
 }
 
-void fn_801CCB48(void) {
+void fn_801CCB48(int arg0) {
     int index;
     unsigned char *manager;
     char *base;
