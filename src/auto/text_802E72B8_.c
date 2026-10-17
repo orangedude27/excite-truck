@@ -17,6 +17,12 @@ int fn_802E72B8(int arg0) {
     return (arg0 + 0x7ff) / 2048;
 }
 
+void fn_802E7318(void) {
+    lbl_8055FFDC = 0;
+    lbl_8055FFD8 = 0;
+    lbl_8055FFE0 = 1;
+}
+
 void fn_802E746C(int arg0, int *arg1, int *arg2) {
     unsigned char *entry = lbl_804FC978 + arg0 * 0x90;
     *arg1 = *(int *)entry;
