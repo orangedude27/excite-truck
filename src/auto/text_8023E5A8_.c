@@ -2,6 +2,13 @@
 // split_file divides it into the game's real files (file_status shows its range).
 typedef unsigned char u8;
 typedef signed int s32;
+extern s32 lbl_8055F1B4;
+extern s32 lbl_8055F1B8;
+extern u8 lbl_8055F1BC;
+extern s32 lbl_8055F1C0;
+extern u8 lbl_8055F1C4;
+extern void *lbl_8055F1B0;
+extern s32 fn_802E8D84(void);
 extern u8 lbl_80341CC8[];
 extern u8 lbl_8055F1AC;
 extern s32 lbl_8055F1C8;
@@ -39,11 +46,11 @@ void fn_8023F870(void) {
 void fn_8023F874(void) {}
 
 int fn_8023F91C(int *arg0) {
-    if (fn_802E8D84() != 0) {
+    int result = fn_802E8D84();
+    if (result != 0) {
         *arg0 = -2;
-        return 1;
     }
-    return 0;
+    return result != 0;
 }
 extern s32 lbl_8055F1B4;
 extern s32 lbl_8055F1B8;
