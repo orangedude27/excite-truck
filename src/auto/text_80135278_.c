@@ -30,22 +30,15 @@ void fn_801357A4();
 
 extern void *fn_80156A40(void);
 
-typedef struct {
-    float unk_0;
-    float unk_4;
-} Diffs2_80135278;
-
-static float fn_80135278_dot(float *a, Diffs2_80135278 d) {
-    return a[0] * d.unk_0 + a[1] * d.unk_4;
+static float fn_80135278_dot(float *a, float *d) {
+    return a[0] * d[0] + a[1] * d[1];
 }
 
 float fn_80135278(float *a, float *b, float *c) {
-    struct Diffs { float x; float y; } d;
-    float dx = b[0] - c[0];
-    float dy = b[1] - c[1];
-    d.x = dx;
-    d.y = dy;
-    return a[0] * dx + a[1] * dy;
+    float d[2];
+    d[0] = b[0] - c[0];
+    d[1] = b[1] - c[1];
+    return fn_80135278_dot(a, d);
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
