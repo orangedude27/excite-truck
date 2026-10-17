@@ -20,24 +20,25 @@ extern void fn_80127F70(void*);
 extern void fn_80127F94(void*);
 extern s32 fn_8011A7CC(DVDFileInfo *);
 extern s32 OSDisableInterrupts(void);
-void fn_80127440(void);
+void fn_80127440();
 extern void fn_80127398(s32);
 extern void fn_802E300C(s32);
 extern void* lbl_8041D728[];
 extern u8 lbl_802F6A40[];
 extern u8 lbl_8041D508[];
 
-BOOL ARCFastOpen(ARCHandle *arg0, s32 arg1, ARCFileInfo *arg2) {
-    u32 *fst = (u32 *)arg0->FSTStart;
-    u32 *entry;
-    if (arg1 < 0 || (u32)arg1 >= arg0->entryNum)
+BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
+    u32 *nodes = (u32 *)handle->FSTStart;
+    s32 offset;
+    offset = entrynum * 0xC;
+    if (entrynum < 0 || (u32)entrynum >= handle->entryNum ||
+        (*(u32 *)((u8 *)nodes + offset) & 0xFF000000) != 0) {
         return FALSE;
-    entry = (u32 *)((u8 *)fst + arg1 * 0xC);
-    if ((entry[0] & 0xFF000000) != 0)
-        return FALSE;
-    arg2->handle = arg0;
-    arg2->startOffset = entry[1];
-    arg2->length = entry[2];
+    }
+    info->handle = handle;
+    offset += (s32)nodes;
+    info->startOffset = *(u32 *)(offset + 4);
+    info->length = *(u32 *)(offset + 8);
     return TRUE;
 }
 
@@ -282,12 +283,12 @@ void fn_801175C4(s32 arg0,s32 arg1){
 void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
 
 void fn_80118C1C(void *arg0, s32 arg1) {
-    s32 temp_r0 = *(s32*)((u8*)arg0 + 0x264);
+    s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0x264);
     if (temp_r0 != 0) {
+        s32 temp_r5 = *(s32 *)((u8 *)arg0 + 0x29c);
         s32 temp_r4 = arg1 - temp_r0;
-        s32 temp_r5 = *(s32*)((u8*)arg0 + 0x29C);
-        *(s32*)((u8*)arg0 + 0x264) = 0;
-        *(s32*)((u8*)arg0 + 0x29C) = temp_r5 + temp_r4;
+        *(s32 *)((u8 *)arg0 + 0x264) = 0;
+        *(s32 *)((u8 *)arg0 + 0x29c) = temp_r5 + temp_r4;
     }
 }
 
@@ -325,8 +326,42 @@ void fn_80119218(void *arg0, s16 arg1, s16 arg2, s16 arg3) {
     *(s32*)((u8*)arg0 + 0x1C) |= 0x212;
 }
 
+extern void AXSetVoiceState(s32);
+s32 fn_8011943C(void *arg0, s32 arg1) {
+    s32 temp_r0;
+    temp_r0 = *(s32 *)arg0;
+    if (temp_r0 != 0) {
+        ((void (*)())AXSetVoiceState)(temp_r0, arg1);
+    }
+    if (*(s32 *)((u8 *)arg0 + 4) != 0) {
+        ((void (*)())AXSetVoiceState)(*(s32 *)((u8 *)arg0 + 4), arg1);
+    }
+}
+
 s32 fn_801194D0(void* arg0) {
  return *(u16*)((u8*)arg0+0x1be) + (*(u16*)((u8*)arg0+0x1bc)<<16);
+}
+
+s32 fn_801194E4(void *arg0) {
+    s32 first;
+    s32 current;
+    s32 result;
+    do {
+        first = fn_801194D0(*(void **)arg0);
+        fn_801194D0(*(void **)arg0);
+        result = fn_801194D0(*(void **)arg0);
+    } while ((u32)(result - first) >= 0x400);
+    current = result * 2 - *(s32 *)((u8 *)arg0 + 0x10);
+    if (*(s32 *)((u8 *)arg0 + 4) != 0)
+        current *= 2;
+    return current;
+}
+
+void fn_80119558(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0x34) = 1;
+    fn_80119498(arg0);
+    *(s32 *)((u8 *)arg0 + 0x48) = fn_801194E4(arg0);
+    *(s32 *)((u8 *)arg0 + 0x50) = fn_80116D30();
 }
 
 extern f64 lbl_80561198;
@@ -376,6 +411,28 @@ s32 fn_80119C0C(void *arg0, s32 arg1) {
         *(s32 *)((u8 *)arg0 + 0x64) = 0;
     }
     return *(s32 *)((u8 *)arg0 + 0x64);
+}
+
+s32 fn_80119CB0(void *arg0, s32 arg1) {
+    s32 *var_r3;
+    if (arg1 != 0) {
+        if (*(s32 *)((u8 *)arg0 + 0xb0) != 0) {
+            fn_801195A0((u8 *)arg0 + 0x7c);
+        }
+        var_r3 = (s32 *)((u8 *)arg0 + 0xb4);
+        *(s32 *)((u8 *)arg0 + 0xb4) = 1;
+    } else {
+        if (*(s32 *)((u8 *)arg0 + 0xb0) == 0) {
+            if (*(s32 *)((u8 *)arg0 + 0xbc) == 0) {
+                fn_80119558((u8 *)arg0 + 0x7c);
+            }
+        } else {
+            fn_80119498((u8 *)arg0 + 0x7c);
+        }
+        var_r3 = (s32 *)((u8 *)arg0 + 0xb4);
+        *(s32 *)((u8 *)arg0 + 0xb4) = 0;
+    }
+    return *var_r3;
 }
 
 extern s32 lbl_8055DEE0[];
