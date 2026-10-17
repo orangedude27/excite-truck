@@ -1154,16 +1154,17 @@ f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC8D8(void *arg0, s32 arg1, f32 value) {
     u32 token;
-    if (arg1 < 0 || arg1 >= 4) {
-        /* assertion is compiled out */
-    }
+    if (arg1 < 0 || arg1 >= 4)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x32f, lbl_803268E4, arg1, 0, 4);
     token = OSDisableInterrupts();
     *(f32 *)((char *)arg0 + 0x480 + arg1 * 4) = value;
     OSRestoreInterrupts(token);
 }
 
 extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC974(void *self, s32 bus) {
-    if (bus < 0 || bus >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x336, lbl_803268E4, bus, 0, 4);
+    s32 valid = 0;
+    if (bus >= 0 && bus < 4) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x336, lbl_803268E4, bus, 0, 4);
     return *(f32 *)((u8 *)self + 0x480 + bus * 4);
 }
 
