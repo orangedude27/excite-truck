@@ -971,11 +971,12 @@ void fn_80077C94(s16 arg0) {
 
 u16 BTM_GetNumAclLinks(void)
 {
+    u8 *p = lbl_803C0F78;
     u16 count = 0;
-    if (lbl_803C0F78[0x14D]) count = 1;
-    if (lbl_803C0F78[0x269]) count++;
-    if (lbl_803C0F78[0x385]) count++;
-    if (lbl_803C0F78[0x4A1]) count++;
+    if (p[0x14D]) count = 1;
+    if (p[0x269]) count++;
+    if (p[0x385]) count++;
+    if (p[0x4A1]) count++;
     return count;
 }
 
