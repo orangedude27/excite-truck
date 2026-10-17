@@ -207,8 +207,85 @@ void fn_80007210(void) {
     lbl_8055D348 = fn_802E2C20();
 }
 
+void fn_80007318(void) {
+    u8 sp8[0x10];
+    u32 *base = (u32 *)lbl_8034EE84;
+    void *obj;
+    fn_80005C20();
+    fn_80230B5C(sp8);
+    fn_802C8638(sp8);
+    fn_802C974C(lbl_80560130, lbl_80560124, lbl_8056019C);
+    base[0x1C / 4] = 0;
+    base[0x24 / 4] = fn_801E866C();
+    obj = fn_801EA9A0();
+    base[0x28 / 4] = (u32)obj;
+    base[0x2C / 4] = ((u32 *)obj)[2];
+    base[0x30 / 4] = (u32)((u8 *)obj + 0xC);
+    *(f32 *)&base[0x10 / 4] = fn_80005FE0(0, 0);
+    fn_800057BC();
+    fn_80011A2C();
+    fn_802C9904();
+}
+
+void fn_800073D8(s32 arg0) {
+    s32 *p;
+    fn_80005C20();
+    p = (s32 *)*(u32 *)((u8 *)lbl_8034EEB8 + 0x5C);
+    if (p[2] != 3) {
+        p[2] = 3;
+        if (fn_80009C84() != 0) {
+            p[3] = lbl_8055D348;
+        } else {
+            p[3] = fn_802E2C20();
+        }
+    }
+    switch (arg0) {
+    case 0: p[4] = 0; break;
+    case 1: p[4] = 1; break;
+    case 2: p[4] = 2; break;
+    }
+    fn_800066B4(p);
+    fn_80011A2C();
+}
+
 void fn_80007498(void) {
     fn_80011A50();
+}
+
+s32 fn_8000749C(void) {
+    if (lbl_8055D340[1] == 0) return 0;
+    if (lbl_8055D340[0] == 0) return 0;
+    return 1;
+}
+
+s32 fn_800074C4(void) {
+    s32 result = 0;
+    if (lbl_8055D340[1] == 0) return result;
+    if (lbl_8055D340[2] == 0) return result;
+    result = 1;
+    return result;
+}
+
+s32 fn_800074EC(s32 arg0) {
+    s32 result;
+    if (fn_800213DC() != 0) {
+        result = 1;
+    } else if (fn_801DF238(arg0) != 0) {
+        result = 1;
+    } else {
+        fn_802E4A10();
+        result = fn_80137C98();
+        return fn_80007554(result, 0x3e8, arg0);
+    }
+    return result;
+}
+
+s32 fn_800075A0(s32 arg0) {
+    u32 p = *(u32 *)((u8 *)&lbl_8034EEB8 + arg0 * 0x10 + 0x10);
+    if (p == *(u32 *)((u8 *)&lbl_8034EEB8 + 0x58)) return 0;
+    if (p == *(u32 *)((u8 *)&lbl_8034EEB8 + 8)) return 0;
+    if (p == *(u32 *)((u8 *)&lbl_8034EEB8 + 0x5c)) return 0;
+    return 1;
 }
 
 s32 fn_800075E4(s32 arg0, s32 arg1) {
