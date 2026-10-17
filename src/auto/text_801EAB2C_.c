@@ -9,6 +9,41 @@ extern void fn_801EAB2C(void*);
 extern void fn_801EAB80(void*, s32);
 extern u8 lbl_80339E3C[];
 
+extern int fn_80176948(int, int, int);
+extern float lbl_80562E60;
+extern float lbl_80562E64;
+extern short lbl_80562E28;
+extern int lbl_80339E60;
+void fn_801EAB2C(void *arg0) {
+    float a = lbl_80562E60;
+    float b = lbl_80562E64;
+    float *p = (float *)arg0;
+    *(int *)arg0 = (int)&lbl_80339E60;
+    p[1] = a;
+    p[2] = b;
+    p[3] = b;
+    p[4] = b;
+    p[5] = a;
+    p[6] = b;
+    p[7] = b;
+    p[8] = b;
+    p[9] = a;
+    p[10] = b;
+    p[11] = b;
+    p[12] = b;
+    *(short *)((char *)arg0 + 0x38) = lbl_80562E28;
+}
+
+void fn_801EAB80(void *arg0, long arg1) {
+    fn_80176948(arg1, (long)arg0 + 0x34, (long)arg0);
+}
+
+void fn_801EAB90(void *arg0, int arg1) {
+    int offset = *(int *)((char *)arg0 + 0x34);
+    void **vtable = *(void ***)arg0;
+    ((void (*)(void *, int))vtable[8])(arg0, arg1 + offset);
+}
+
 s16 fn_801EAC3C(void* arg0) {
     return *(s16*)((u8*)arg0 + 0x38);
 }
