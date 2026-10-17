@@ -1875,11 +1875,13 @@ void btm_remove_sco_links(BD_ADDR addr) {
     }
 }
 
+extern u8 lbl_8031A3B0[];
 void btm_sco_acl_removed(BD_ADDR addr) {
-    u16 i;
     u8 *entry;
+    u16 i;
     entry = lbl_803C0F78 + 0x1854;
-    for (i = 0; i < 3; i++, entry += 0x34) {
+    i = 0;
+    for (; i < 3; i++, entry += 0x34) {
         if (*(u16 *)(entry + 8) != 0 &&
             (addr == 0 || (memcmp(entry + 0x28, addr, 6) == 0 && entry[0xD] != 0))) {
             *(u16 *)(entry + 8) = 0;
