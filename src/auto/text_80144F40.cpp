@@ -482,6 +482,7 @@ extern "C" void fn_802E317C(const char *, ...);
         fn_80145B94(arg0, (u32)buffer);
     }
 }
+  #pragma scheduling on
 
 extern int vsprintf(char *, const char *, va_list);
 extern unsigned int strlen(const char *);
