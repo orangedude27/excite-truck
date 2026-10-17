@@ -1494,6 +1494,9 @@ extern "C" void fn_80229610(void) {
 
 extern "C" u32 fn_80229614(void) { return 1; }
 
+extern "C" void fn_8022961C(void) {
+}
+
 extern "C" u32 fn_80229620(void) { return 1; }
 
 extern "C" void fn_80229628(void *arg0) {
