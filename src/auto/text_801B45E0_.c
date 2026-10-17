@@ -132,7 +132,8 @@ int fn_801B4C1C(int arg0, int arg1) {
 }
 
 int fn_801B4BDC(int arg0) {
-    return *fn_801B479C(arg0 + 4, fn_801B47D4(arg0 + 4, *(int *)(arg0 + 0x24)));
+    void *p = (void *)(arg0 + 4);
+    return *fn_801B479C(arg0 + 4, fn_801B47B4(p));
 }
 
 void fn_801B4C58(int arg0) {
