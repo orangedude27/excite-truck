@@ -780,6 +780,8 @@ extern "C" s32 fn_800BA160(s32 arg0) {
 }
 #pragma push
 #pragma small_data off
+extern "C" u32 lbl_8031C2B8[];
+extern "C" u32 lbl_802F3F54[];
 extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     if (arg0 == 0 || arg1 == 0 || arg4 != 0) {
         return 1;
@@ -900,6 +902,41 @@ extern "C" void fn_800BBCB4(void* context) {
     *(s32*)((u8*)context + 0x24) = 0;
     IOS_Close(*(s32*)context);
     *(s32*)context = -1;
+}
+
+void fn_800BEDE0(void *arg0, void *arg1) {
+    u32 rate;
+    *(s32 *)arg1 = *(s32 *)((u8 *)arg0 + 4) == 0;
+    rate = 0xAC44;
+    switch (*(s16 *)((u8 *)arg0 + 0x1C)) {
+    case 1: rate = 0xBB80; break;
+    case 2: rate = 0x7D00; break;
+    }
+    if (*(s32 *)arg1 == 0)
+        rate = (rate + (rate >> 31)) >> 1;
+    *(u32 *)((u8 *)arg1 + 4) = rate;
+    *(s32 *)((u8 *)arg1 + 8) = (s8)*(u8 *)arg0;
+    *(s32 *)((u8 *)arg1 + 0x10) = *(s32 *)((u8 *)arg0 + 0xED74);
+    *(s32 *)((u8 *)arg1 + 0xC) = *(s32 *)((u8 *)arg0 + 0xED70);
+}
+
+u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
+    u32 bits = *arg2;
+    u32 index = (bits >> 3) & 0x1FFF;
+    s32 shift = 0x18 - (bits & 7);
+    *arg2 = bits + arg1;
+    u8 a, b, c;
+    if (index < 0x1FFE) {
+        a = arg0[index];
+        b = arg0[index + 1];
+        c = arg0[index + 2];
+    } else {
+        a = arg0[index];
+        b = arg0[(index + 1) & 0x1FFF];
+        c = arg0[(index + 2) & 0x1FFF];
+    }
+    u32 value = (a << 16) | (b << 8) | c;
+    return (value & lbl_802F3F54[shift]) >> (shift - arg1);
 }
 
 void fn_800C3D9C(void) {
@@ -1710,7 +1747,7 @@ extern "C" void fn_800CA148(OSAlarm *alarm, OSContext *ctx) {
     fn_800D15B4(OSGetAlarmUserData(alarm));
 }
 
-extern "C" void fn_800CA234(s32 arg0) {
+extern "C" void fn_800CA234(s32 arg0, s32 arg1) {
     if (arg0 == 1) {
         *(u8 *)((u8 *)lbl_8055DD98 + 0x8a) = 1;
     }
@@ -1718,7 +1755,7 @@ extern "C" void fn_800CA234(s32 arg0) {
     if (vt == NULL) {
         return;
     }
-    (*(void (*)(void))vt)();
+    (*(void (*)(s32, s32))vt)(arg0, arg1);
 }
 
 s32 homebutton::HomeButton::getPaneNo(const char *name) {
