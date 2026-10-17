@@ -62,8 +62,30 @@ void cbForCancelSync(void) {
     OSWakeupThread(__DVDThreadQueue);
 }
 
+void fn_800356F4(s32 arg0, s32 arg1, s32 arg2) {
+    s32 enabled;
+    u32 index;
+    u8 *info;
+    enabled = OSDisableInterrupts();
+    if (lbl_8055D848 >= 5) {
+        lbl_8055D848 = 0;
+    }
+    index = lbl_8055D848;
+    info = (u8 *)__ErrorInfo + index * 0x14;
+    *(s32 *)(info + 0x1C) = arg0;
+    *(s32 *)(info + 0x20) = arg1;
+    *(s32 *)(info + 0x24) = arg2;
+    *(s32 *)(info + 0x2C) = OSGetTick();
+    lbl_8055D848 = index + 1;
+    OSRestoreInterrupts(enabled);
+}
+
 void fn_800357A8(void) {
 
+}
+
+void fn_80035C64(void) {
+    fn_8003AF1C(0, 0, fn_80035B88);
 }
 
 extern s32 lbl_8055D890;
