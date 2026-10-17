@@ -72,6 +72,19 @@ void fn_8017C7C4(void) {
 
 }
 
+extern unsigned int fn_801B60F4(void *, float);
+extern void fn_801B6428(unsigned int, void *);
+extern void fn_801B63E0(unsigned int, void *);
+void fn_8017D0C8(void *arg0) {
+    unsigned int next = fn_801B60F4((char *)arg0 + 0x60, *(float *)((char *)arg0 + 0x2C));
+    unsigned int old = *(unsigned int *)((char *)arg0 + 0x184);
+    if (next != old) {
+        if (old != 0) fn_801B6428(old, arg0);
+        *(unsigned int *)((char *)arg0 + 0x184) = next;
+        if (next != 0) fn_801B63E0(next, arg0);
+    }
+}
+
 void fn_8017D140(unsigned char *dst, unsigned char *src, int count) {
     goto check;
 loop:
