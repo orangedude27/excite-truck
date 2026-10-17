@@ -7,12 +7,25 @@ extern u8 lbl_8055CFF8;
 extern u8 lbl_8055D000;
 extern void *fn_801284E8(void *, s32);
 void fn_802C2CE8(void *, s32, s32, s8);
+void fn_802C3014(void *);
 
 void fn_802C5024(s32, s32, s32, s32);
 
 extern void fn_8012C4D8(void);
 
 extern s32 lbl_8055FC00;
+s32 fn_802C2CAC(s32 arg0) {
+    return ((arg0 * 8) & 0xF8) | (((((arg0 << 9) & 0xF80000) | 0xFF000000) & ~0xF800) | ((arg0 << 6) & 0xF800));
+}
+
+s32 fn_802C2CC4(s32 arg0) {
+    return ((arg0 * 8) & 0xF8) | (((((arg0 << 8) & 0xF80000) | 0xFF000000) & ~0xFC00) | ((arg0 << 5) & 0xFC00));
+}
+
+void fn_802C2CDC(void) {
+    fn_802C2CE8(0, 0, 0, (s8)lbl_8055CFF8);
+}
+
 void fn_802C2FC4(void) {
     ((void (*)(void))fn_8012C4D8)();
 }
