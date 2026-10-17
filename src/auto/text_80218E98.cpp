@@ -2074,7 +2074,7 @@ extern "C" void *lbl_8033DCF8[];
 extern "C" void fn_802C6CF8(s32);
 extern "C" void fn_80229FF0(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x244) = 1;
-    ((VfObj *)arg0)->vf18();
+    ((VfObj *)arg0)->vf17();
 }
 
 extern "C" void fn_8022A008(void *arg0) {
