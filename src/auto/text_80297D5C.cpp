@@ -204,6 +204,21 @@ extern "C" void fn_80298B48(void* arg0) {
     }
 }
 
+extern "C" void* fn_802992C4(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        *(int*)((char*)arg0 + 0x34) = 0;
+        *(int*)((char*)arg0 + 0x74) = 0;
+        *(int*)((char*)arg0 + 0xB4) = 0;
+        *(int*)((char*)arg0 + 0xF4) = 0;
+        fn_802CAC54(*(int*)((char*)arg0 + 0x100));
+        *(int*)((char*)arg0 + 0x100) = -1;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" void fn_8029A890(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + (int)arg1 * 0x2C + 0x24) = lbl_80564590;
 }
