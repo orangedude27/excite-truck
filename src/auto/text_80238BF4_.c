@@ -9,7 +9,7 @@ typedef signed long s32;
 typedef unsigned long u32;
 typedef float f32;
 typedef int BOOL;
-extern void fn_8023905C(void);
+extern s32 fn_8023905C(void);
 extern s32 fn_80128668(void);
 extern s32 fn_802E2C20(void);
 extern void fn_80238FCC(u32, u32);
@@ -67,23 +67,19 @@ void fn_80238BF4(void *, s32);
 void fn_802CAC54(void);
 void fn_8012C4D8(void);
 void fn_8023986C(void *arg0) {
-    void *state = *(void **)((u8 *)arg0 + 0x14);
-    if (state != 0) {
+    if (*(void **)((u8 *)arg0 + 0x14) != 0) {
         u32 i = 0;
-        u32 offset = 0;
-        s32 sentinel = -2;
+        s32 offset = 0;
         do {
-            s32 *values = *(s32 **)((u8 *)state + 0x18);
-            if (*(s32 *)((u8 *)values + offset) != -2) {
+            if (*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) != -2) {
                 fn_802CAC54();
-                values = *(s32 **)((u8 *)state + 0x18);
-                *(s32 *)((u8 *)values + offset) = sentinel;
+                *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) = -2;
             }
             offset += 0x14;
             i++;
-        } while (i < *(u32 *)((u8 *)state + 8));
+        } while (i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8));
         fn_8012C4D8();
-        *(void **)((u8 *)arg0 + 0x14) = 0;
+        *(u32 *)((u8 *)arg0 + 0x14) = 0;
     }
 }
 
