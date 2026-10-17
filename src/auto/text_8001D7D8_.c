@@ -31,3 +31,7 @@ int fn_8001D884(int arg0) {
     return arg0;
 }
 
+int fn_8001DA48(int *arg0, int arg1) {
+    return arg0[arg1];
+}
+
