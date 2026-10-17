@@ -232,11 +232,12 @@ extern "C" void fn_801FEF80(void* arg0) {
 
 extern "C" char* strncpy(char*, const char*, unsigned long);
 extern "C" void fn_801FEF90(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 4);
-    if (obj != 0) {
-        register void** vtable = *(void***)obj;
-        ((void (*)(void*, int))vtable[5])(obj, 0);
-    }
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v5(int);
+    };
+    Obj* obj = *(Obj**)((char*)arg0 + 4);
+    if (obj != 0) obj->v5(0);
 }
 
 extern "C" void fn_801FEFB4(void* arg0) {
