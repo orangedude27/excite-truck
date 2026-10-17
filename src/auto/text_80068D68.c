@@ -1049,6 +1049,14 @@ void BTA_DmPinReply(u8 *bd_addr, u8 accept, u8 pin_len, u8 *pin_code) {
     }
 }
 
+u8 fn_80073E5C(u8 *arg0) {
+    u8 result;
+    fn_8006EAD0();
+    result = BTM_SecDeleteDevice(arg0);
+    fn_8006EAD4();
+    return result == 0;
+}
+
 void fn_80073EA4(void) {
     s16 *buf;
 
