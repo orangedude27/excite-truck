@@ -1411,6 +1411,25 @@ void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
 
 s32 fn_8007A3B4(s32 value) { s32 old = *(s32 *)(lbl_803C0F78 + 0x568); *(s32 *)(lbl_803C0F78 + 0x568) = value; return old; }
 
+void btm_delete_stored_link_key_complete(u8 *p) {
+    void (*callback)(u8 *);
+    u8 param[4];
+    callback = *(void (**)(u8 *))(lbl_803C0F78 + 0x570);
+    *(void (**)(u8 *))(lbl_803C0F78 + 0x570) = NULL;
+    if (callback != NULL) {
+        param[0] = 4;
+        param[1] = p[0];
+        *(u16 *)(param + 2) = p[1] + (p[2] << 8);
+        callback(param);
+    }
+}
+
+void fn_8007ABE8(void) {
+    u8 *base = lbl_803C0F78;
+    void (*callback)(void) = *(void (**)(void))(base + 0x568);
+    if (callback != NULL) callback();
+}
+
 void fn_8007AD38(void) {
 
 }
@@ -2050,19 +2069,37 @@ void fn_8008EF90(void *arg0, void *arg1) {
     }
 }
 
-int port_flow_control_user(void *arg0) {
-    unsigned char flow = 0;
-    void *port;
-    if (*((unsigned char *)arg0 + 0x24) == 0) {
-        port = *(void **)((char *)arg0 + 0x6c);
-        if (port && *((unsigned char *)port + 0x71) &&
-            *(unsigned int *)((char *)arg0 + 0x28) <= 0x1f40 &&
-            *(unsigned short *)((char *)arg0 + 0x20) <= 0x10) flow = 1;
+void *port_find_dlci_port(unsigned int arg0) {
+    int i;
+    for (i = 0; i < 5; i++) {
+        char *port = (char *)&lbl_803C4828 + i * 0xa4 + 0x68;
+        unsigned char dlci;
+        if (*(unsigned char *)(port + 1) == 0 && *(int *)(port + 0x6c) == 0) {
+            dlci = *(unsigned char *)(port + 0xd);
+            if (dlci == arg0) return port;
+            if ((arg0 & 1) && dlci == arg0 - 1) {
+                *(unsigned char *)(port + 0xd) = dlci + 1;
+                return port;
+            }
+        }
     }
-    if (*((unsigned char *)arg0 + 0x25) == flow) return 0;
-    *((unsigned char *)arg0 + 0x25) = flow;
-    if (flow) return 0x10000;
-    return 0x30000;
+    return 0;
+}
+
+int port_flow_control_user(void *arg0) {
+    unsigned char var_r5 = 0;
+    void *temp_r4;
+    if (*((unsigned char *)arg0 + 0x24) != 0) goto done;
+    temp_r4 = *(void **)((char *)arg0 + 0x6c);
+    if (temp_r4 == 0) goto done;
+    if (*((unsigned char *)temp_r4 + 0x71) == 0) goto done;
+    if (*(unsigned int *)((char *)arg0 + 0x28) > 0x1f40) goto done;
+    if (*(unsigned short *)((char *)arg0 + 0x20) > 0x10) var_r5 = 1;
+done:
+    if (*((unsigned char *)arg0 + 0x25) == var_r5) return 0;
+    *((unsigned char *)arg0 + 0x25) = var_r5;
+    if (var_r5 == 0) return 0x30000;
+    return 0x10000;
 }
 
 int port_get_signal_changes(void *arg0, int arg1, int arg2) {
