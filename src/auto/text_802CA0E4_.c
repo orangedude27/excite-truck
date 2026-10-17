@@ -18,8 +18,8 @@ void fn_802CAC34(int arg0, int arg1) {
     fn_802CA898(arg0, 0, arg1, 0xE);
 }
 
-void fn_802CAC44(int arg1) {
-    fn_802CA898(0, 0, arg1);
+void fn_802CAC44(int arg0, int arg1) {
+    fn_802CA898(arg0, 0, 0, arg1);
 }
 
 int fn_802DB2C0(int);
