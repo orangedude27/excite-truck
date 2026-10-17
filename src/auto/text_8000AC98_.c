@@ -52,3 +52,35 @@ void fn_8000BD98(void) {
     return;
 }
 
+int fn_8000BD9C(int, int, int);
+extern float lbl_805601FC, lbl_80560204;
+extern char lbl_8034F5F8, lbl_8034F604;
+int fn_80230B5C(int *);
+int fn_802C8638(int *);
+int fn_802C974C(float, float, float);
+int fn_80010074(int, int, int *, float, float, float);
+int fn_80011A2C(void);
+int fn_802C9904(void);
+extern int lbl_80558A48;
+extern float lbl_805601F8, lbl_80560200, lbl_80560208, lbl_8056020C;
+extern int lbl_8034F5B8;
+void fn_8000C630(int arg0, int arg1) {
+    int i;
+    if (arg1 == -1) {
+        for (i = 0; i < 4; i++) fn_8000C630(arg0, i);
+    } else {
+        *(int *)((char *)&lbl_8034F5B8 + arg1 * 8 + 4) = arg0;
+    }
+}
+int fn_8000BD9C(int, int, int);
+extern float lbl_805601FC, lbl_80560204;
+extern char lbl_8034F5F8, lbl_8034F604;
+int fn_80230B5C(int *);
+int fn_802C8638(int *);
+int fn_802C974C(float, float, float);
+int fn_80010074(int, int, int *, float, float, float);
+int fn_80011A2C(void);
+int fn_802C9904(void);
+extern int lbl_80558A48;
+extern float lbl_805601F8, lbl_80560200, lbl_80560208, lbl_8056020C;
+extern int lbl_8034F5B8;
