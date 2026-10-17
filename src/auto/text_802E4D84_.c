@@ -109,7 +109,7 @@ void fn_802E61EC(void *arg0, float farg0) {
 }
 
 void fn_802E620C(void *arg0, float farg0) {
-    if (lbl_8055FF8C == (void *)2) {
+    if ((int)lbl_8055FF8C == 2) {
         *(float *)((char *)arg0 + 0x14) = farg0;
         return;
     }
