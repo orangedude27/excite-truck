@@ -147,27 +147,8 @@ void fn_80166E54(void *arg0) {
     *(float *)((char *)arg0 + 0xC) += lbl_805618F0;
 }
 
-float fn_80166DD4(float *arg0) {
-    float factor;
-    float start;
-    float end;
-    float oldValue;
-    float oldTarget;
-    float ratio;
-    end = arg0[3];
-    start = arg0[2];
-    if ((float)__fabs(start - end) <= lbl_80558DC4) return arg0[0];
-    factor = lbl_805618D0;
-    oldValue = arg0[0];
-    oldTarget = arg0[1];
-    ratio = (lbl_8055E318 - start) / (end - start);
-    factor = factor < ratio ? factor : ratio;
-    factor = factor > lbl_8056189C ? factor : lbl_8056189C;
-    return oldValue + factor * (oldTarget - oldValue);
-}
-
 void fn_80166E68(float *arg0, float arg1) {
-    double value;
+    float value;
     float factor;
     float start;
     float end;
@@ -177,10 +158,13 @@ void fn_80166E68(float *arg0, float arg1) {
     if ((float)__fabs(start - end) <= lbl_80558DC4) {
         value = arg0[0];
     } else {
-        float oldTarget = arg0[1];
-        float oldValue = arg0[0];
-        float ratio = (lbl_8055E318 - start) / (end - start);
+        float oldTarget;
+        float oldValue;
+        float ratio;
         factor = lbl_805618D0;
+        oldTarget = ((volatile float *)arg0)[1];
+        oldValue = arg0[0];
+        ratio = (lbl_8055E318 - start) / (end - start);
         factor = factor < ratio ? factor : ratio;
         factor = factor > lbl_8056189C ? factor : lbl_8056189C;
         value = oldValue + factor * (oldTarget - oldValue);
@@ -190,7 +174,8 @@ void fn_80166E68(float *arg0, float arg1) {
     arg0[2] = lbl_8055E318;
     {
         double target = arg1;
-        arg0[3] = lbl_8055E318 + (float)__fabs((float)value - (float)target) / arg0[4];
+        double current = value;
+        arg0[3] = lbl_8055E318 + (float)__fabs((float)current - (float)target) / arg0[4];
     }
 }
 
