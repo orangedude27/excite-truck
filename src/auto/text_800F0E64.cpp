@@ -1109,15 +1109,15 @@ extern "C" const char lbl_8032687C[];
 extern "C" u8 lbl_8041506C[];
 #pragma pop
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
-    void *node = *(void **)((u8 *)&lbl_8041506C + 4);
-    void *end = (u8 *)&lbl_8041506C + 4;
-    void *player;
-    while (node != end) {
-        player = node;
-        node = *(void **)node;
-        if (player == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326B8C, 0x23D, lbl_80326B68);
-        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)player - 8);
-    }
+    void *cur = *(void **)(lbl_8041506C + 4);
+    void *end = lbl_8041506C + 4;
+    do {
+        void *item = cur;
+        cur = *(void **)cur;
+        if (item == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326B8C, 0x23D, (char *)lbl_80326B68);
+        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)item - 8);
+    } while (cur != end);
 }
 
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
