@@ -56,6 +56,12 @@ void *fn_801DA03C(int **arg0, int arg1) {
     return 0;
 }
 
+int fn_801DA688(void *arg0) {
+    if (*(void **)((char *)arg0 + 4) != 0)
+        return *(float *)((char *)arg0 + 0xC) <= lbl_80562B38;
+    return 0;
+}
+
 extern float lbl_80562B3C;
 float fn_801DA6B8(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 4);
