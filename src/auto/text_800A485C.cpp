@@ -2141,6 +2141,26 @@ extern "C" s32 fn_800CEDE0(void *arg0) {
 
 extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800A4B54(s32);
+s32 fn_800A4A8C(u8 *arg0) {
+    u8 *ptr = arg0;
+    do {
+        ++ptr;
+    } while ((s8)*ptr != 0);
+    return ptr - arg0;
+}
+
+void fn_800A4AAC(u8 *arg0, u8 *arg1) {
+    u8 *dst = arg0;
+    u8 *src = arg1;
+    u8 ch;
+    do {
+        ++src;
+        ++dst;
+        ch = *src;
+        *dst = ch;
+    } while ((s8)ch != 0);
+}
+
 extern "C" s32 fn_800A4AD0(u8 *arg0, u8 *arg1) {
     u8 a;
     u8 b;
