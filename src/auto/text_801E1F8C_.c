@@ -7,6 +7,18 @@ extern char lbl_8055EA38;
 void fn_801A47C8(void);
 void fn_801A47FC(int);
 void fn_8015F670(int *, int);
+#pragma scheduling off
+void fn_801E2084(void *arg0, void *arg1) {
+    int i = 0;
+    void **entry = (void **)arg1;
+    do {
+        void *obj = *(void **)((char *)entry + 0x14);
+        ((void (*)(void *, void *))(*(void ***)obj)[4])(obj, arg0);
+        entry++;
+        i++;
+    } while (i < *(int *)((char *)arg1 + 0x24));
+}
+#pragma scheduling on
 void fn_801E2100(void *arg0, void *arg1) {
     int result;
     int (*first)(int);
@@ -17,6 +29,12 @@ void fn_801E2100(void *arg0, void *arg1) {
         if (result != 0)
             *((unsigned char *)arg1 + 0x1C) = 1;
     }
+}
+
+void *fn_801A4548(void *);
+extern void *lbl_80339890[];
+void fn_801E2188(void) {
+    lbl_8055EA3C = fn_801A4548(&lbl_80339890);
 }
 
 void fn_801E21B4(void* hi) {
