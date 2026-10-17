@@ -119,6 +119,7 @@ long fn_801ADA94(long arg0) {
 }
 
 extern void fn_801AC240(void *);
+extern float lbl_8055E3C8;
 typedef void (*Fn801ADA9C)(void *, void *, void *);
 extern unsigned char lbl_8055A8A0;
 extern unsigned char lbl_8055A8B0;
