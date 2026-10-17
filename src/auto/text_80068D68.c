@@ -55,6 +55,7 @@ extern void fn_800916F4(void *, s32, s16 *);
 extern char lbl_803140D0[];
 extern char lbl_80315048[];
 extern u8 lbl_803C0C14[];
+extern void bta_dm_signal_strength_timer_cback(void *);
 extern s32 fn_8008128C(void *);
 extern char lbl_803140E8[];
 extern char lbl_803BF240[2000];
