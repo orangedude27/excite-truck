@@ -234,6 +234,8 @@ extern "C" void fn_802CAC54(int);
 extern float lbl_805645B8;
 extern "C" void fn_8029A890(void*, void*);
 extern "C" void fn_8029BA94(void*, void*);
+extern "C" int fn_8029C024(int*);
+extern "C" int fn_8029C054(int*);
 extern "C" void fn_8029BE54(void*, void*);
 void fn_8029BE54(void* arg0, void* arg1) {
     int count = *(int*)((char*)arg0 + 0xA4);
