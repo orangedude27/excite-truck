@@ -82,7 +82,11 @@ extern char lbl_8055D250;
 extern char lbl_8034DEC4[];
 u32 fn_802E8D84(void) { return 1; }
 
+void fn_802E9160(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)((char*)arg0+0x260)=0; *(int*)((char*)arg0+0x264)=0; *(int*)((char*)arg0+0x268)=0; *(int*)((char*)arg0+0x26c)=0; *(int*)arg0=1; }
+
 int fn_802E91AC(int *arg0) { return *arg0 == 0; }
+
+unsigned int fn_802E91BC(int *arg0) { int value=*arg0 ^ 2; return (unsigned int)(((value >> 1) - (value & 2))) >> 31; }
 
 extern int fn_802E2C20(void);
 extern void fn_802E30C8(const char *, ...);
