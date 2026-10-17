@@ -117,6 +117,10 @@ void fn_80166E54(void *arg0) {
     *(float *)((char *)arg0 + 0xC) += lbl_805618F0;
 }
 
+void fn_80166F3C(float *arg0) {
+    *arg0 = lbl_8055E318 + ((float (*)(int))fn_80129DC4)(3);
+}
+
 int fn_80166F78(float *arg0) {
     return lbl_8055E318 > *arg0;
 }
