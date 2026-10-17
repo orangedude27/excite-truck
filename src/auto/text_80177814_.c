@@ -27,6 +27,7 @@ extern void *lbl_804340C0[];
 extern void **lbl_8055E434;
 extern int lbl_8055E438;
 extern int lbl_8055E468;
+extern int lbl_8055E448;
 extern unsigned char lbl_8055E44C;
 extern long lbl_80331938;
 extern long lbl_8033192C;
