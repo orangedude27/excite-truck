@@ -16,14 +16,18 @@ static void Init5(s32 *p) {
     p[4] = 0;
 }
 
+static void Init5z(s32 z, s32 *p) {
+    p[0] = z;
+    p[1] = 0x7B;
+    p[2] = z;
+    p[3] = z;
+    p[4] = z;
+}
+
 #pragma scheduling off
 void fn_8001EEE8(void) {
     fn_8000D838(&lbl_8055D5E8);
-    lbl_80358668[0] = 0;
-    lbl_80358668[1] = 0x7B;
-    lbl_80358668[2] = 0;
-    lbl_80358668[3] = 0;
-    lbl_80358668[4] = 0;
+    Init5(lbl_80358668);
     lbl_8055D5F0 = 0x7F000000;
 }
 #pragma scheduling on
