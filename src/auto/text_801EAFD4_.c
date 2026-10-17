@@ -254,6 +254,24 @@ f32 fn_801EC114(void) {
     return lbl_8055EBA4;
 }
 
+void fn_801EC11C(void) {
+    if (*(s32 *)&lbl_8055EBA0 == 0) {
+        fn_802AEAA8();
+    }
+}
+
+void fn_801EC130(s32 arg0, void *arg1, s32 arg2) {
+    if (((s32 *)arg1)[1] != -1) {
+        fn_802C6FB4(arg2);
+        fn_802C703C(((s32 *)arg1)[1]);
+    }
+    if (*(s32 *)arg1 == 1) {
+        void *obj = (void *)fn_801EB110(arg1);
+        void **vt = *(void ***)obj;
+        ((void (*)(void *, void *))vt[5])(obj, arg1);
+    }
+}
+
 void fn_801EC19C(void) {
 
 }
