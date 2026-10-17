@@ -192,6 +192,8 @@ void fn_8029FE00(void) {
     qsort(lbl_804B5070, count, 0x78, (int (*)(const void *, const void *))fn_8029FDF0);
 }
 
+#pragma push
+#pragma dont_inline on
 int fn_8029FE1C(int arg0) {
     int sp8 = arg0;
     if (arg0 <= 0) return 0;
@@ -287,3 +289,29 @@ int fn_802A0720(int *arg0, int arg1) {
     return 4;
 }
 
+#pragma push
+#pragma inline off
+void fn_802A0794(void *arg0) {
+    Unk802A0794Params params;
+    unsigned char *object;
+    params.unk_0x18 = *(short *)((char *)arg0 + 0x2C);
+    params.values[0] = *(float *)((char *)arg0 + 4);
+    params.values[1] = *(float *)((char *)arg0 + 8);
+    params.values[2] = *(float *)((char *)arg0 + 12);
+    params.values[3] = *(float *)((char *)arg0 + 16);
+    params.values[4] = *(float *)((char *)arg0 + 20);
+    params.values[5] = *(float *)((char *)arg0 + 24);
+    params.unk_0x1C = *(int *)((char *)arg0 + 0x28);
+    object = (unsigned char *)fn_8029FE1C(params.unk_0x1C);
+    if (object != 0) {
+        fn_802A042C(object, &params);
+        if (object[0x60] != 0)
+            fn_802A01C8(object, &params);
+        if (object[0x6C] != 0)
+            fn_802A02F4(object, &params);
+    } else {
+        fn_802E30C8(lbl_803498AC, params.unk_0x1C);
+    }
+    *(short *)((char *)arg0 + 0x2C) = params.unk_0x18;
+}
+#pragma pop
