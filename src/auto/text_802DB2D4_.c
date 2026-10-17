@@ -156,5 +156,7 @@ int fn_802DC6AC(int a, unsigned int b) {
     return (*(int *)((char *)base + ((i + (j << 7)) << 6) + 0x20) & 0xffff) | ((unsigned int)v << 16);
 }
 
+void fn_802DD228(void) { if (lbl_8055FEC0 != 0) { fn_802D3E88(); lbl_8055FEC0 = 0; } fn_802DBDD8(); fn_802CADD0(-1, 1); GXSetNumIndStages(0); GXSetTevDirect(0); }
+
 void fn_802DD42C(void) { fn_802CFF64(); }
 
