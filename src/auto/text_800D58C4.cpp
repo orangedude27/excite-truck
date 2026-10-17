@@ -24,6 +24,8 @@ extern "C" void MEMFreeToAllocator(s32);
 extern "C" s32 lbl_8055DDF0;
 int strncmp(const char *, const char *, unsigned int);
 extern "C" int strncmp(const char *, const char *, unsigned int);
+extern "C" s32 fn_800D58C4(const char* a, const char* b) { return strncmp(a, b, 0x10) == 0; }
+
 extern "C" int fn_800D58F0(const char *a, const char *b) { return strncmp(a, b, 0x14) == 0; }
 
 extern "C" s32 fn_800D591C(void* arg0) {
@@ -64,11 +66,11 @@ extern "C" void fn_800D598C(void* arg0) {
 extern "C" int IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(unsigned int *color, unsigned char alpha) {
     if (alpha != 0xff) return 1;
     if (color == 0) return 0;
-    if (color[0] != 0xffff0000) return 1;
-    if (color[1] != 0xffff0000) return 1;
-    if (color[2] != 0xffff0000) return 1;
-    if (color[3] != 0xffff0000) return 1;
-    return 0;
+    if ((color[0] + 0x10000) != 0xffff) return 1;
+    if ((color[1] + 0x10000) != 0xffff) return 1;
+    if ((color[2] + 0x10000) != 0xffff) return 1;
+    if ((color[3] + 0x10000) == 0xffff) return 0;
+    return 1;
 }
 
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out,void* color,u8 alpha) {
