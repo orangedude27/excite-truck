@@ -112,6 +112,10 @@ void fn_802751AC(void *arg0, float angle) {
     *(float *)((char *)arg0 + 0xBC) = lbl_80564024 * angle;
 }
 
+void fn_80276044(int arg0) {
+    fn_80276BE4(arg0 + 0x58, arg0 + 0xBC);
+}
+
 int fn_802704D4(int, int);
 int fn_80276BE4(int, int);
 int fn_80274730(float, float, float, float);
