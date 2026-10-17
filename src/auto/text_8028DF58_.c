@@ -50,11 +50,13 @@ void fn_8028E080(void) {
     int *entries = base;
     int i = 0;
     lbl_8055F73C = 0;
-    while (i < *(int *)((char *)base + 0x100)) {
-        fn_8028F8E0(*entries, lbl_8055F738);
-        entries++;
-        i++;
-    }
+    goto test;
+body:
+    fn_8028F8E0(*entries, lbl_8055F738);
+    entries++;
+    i++;
+test:
+    if (i < *(int *)((char *)base + 0x100)) goto body;
 }
 void fn_8028E0F0(void) {
     fn_8028F5A4();
@@ -96,13 +98,13 @@ extern int lbl_804B35B4;
 extern int fn_8028F858(int, int);
 #pragma push
 #pragma small_data off
-#pragma pop
 void fn_8028E398(int arg0) {
     if (fn_8028EDA8((unsigned int *)&lbl_804B35B4, arg0) != 0) {
         fn_8028EDA8((unsigned int *)&lbl_804B34B0, arg0);
         fn_8028F858(arg0, 1);
     }
 }
+#pragma pop
 void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
 }
@@ -261,6 +263,13 @@ int fn_8028F858(int arg0, int arg1) {
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+void fn_8028F8C4(int arg0) {
+    char *p = (char *)arg0;
+    *(int *)(p + 0x90) = -1;
+    *(int *)(p + 0x94) = 0;
+    *(float *)(p + 0x9C) = lbl_80564420;
 }
 
 extern int fn_80128668(void);
