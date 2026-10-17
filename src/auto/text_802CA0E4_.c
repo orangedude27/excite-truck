@@ -6,7 +6,11 @@
 #pragma push
 #pragma small_data on
 DECL_SECTION(".sdata") extern int lbl_8055FCB0;
+DECL_SECTION(".sdata") extern int lbl_8055FCB4;
+DECL_SECTION(".sdata") extern int lbl_8055FCB8;
 void fn_802D8FB4(void);
+void fn_802D9160(int, int);
+void fn_802DBDE8(int, int);
 #pragma small_data off
 #pragma pop
 
