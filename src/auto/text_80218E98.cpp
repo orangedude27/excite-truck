@@ -1145,7 +1145,8 @@ extern "C" void fn_80222468(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_802328D4(void*);
-extern "C" int lbl_8033F9E0[];
+extern "C" s32 lbl_8033F9E0[];
+extern "C" s32 fn_80232578(s32);
 extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void**)arg0 = &lbl_8033F9E0;
