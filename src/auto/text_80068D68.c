@@ -2266,6 +2266,15 @@ void fn_800934D8(void *arg0, s16 arg1) {
     fn_800916F4(arg0, 7, &sp8);
 }
 
+extern void rfc_send_rpn(void *, u16, u8, u16, u16);
+extern void rfc_send_msc(void *, u16, u8, void *);
+extern void PORT_PortNegCnf(void *, u16, u8, u8);
+extern void rfc_port_timer_start(void *, u16);
+void fn_800937A0(void *p, u16 a1, u16 a2, u16 a3) {
+    if (*(u8 *)((u8 *)p + 0x6c) == 5)
+        rfc_send_rpn(p, a1, 0, a2, a3);
+}
+
 tCONN_CB *sdpu_allocate_ccb(void) {
     UINT16 xx;
     tCONN_CB *p_ccb;
