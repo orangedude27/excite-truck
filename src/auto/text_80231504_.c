@@ -270,6 +270,11 @@ s32 fn_80234654(void) {
     }
     return var_r29;
 }
+
+void fn_80234AEC(void) {
+    *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
+}
+
 extern s32 fn_802315FC(s32);
 extern void fn_802E30C8(const char *);
 extern void fn_802E317C(const char *);
