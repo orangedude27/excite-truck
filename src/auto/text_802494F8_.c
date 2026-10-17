@@ -263,6 +263,12 @@ s32 fn_8024B974(void *arg0) {
     return *(s32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC + 0x28);
 }
 
+void fn_8024B988(void *arg0) {
+    s32 count = *(s32 *)((char *)arg0 + 0x14);
+    s32 index = *(s32 *)((char *)arg0 + 0x10);
+    *(s32 *)((char *)arg0 + 0x10) = (count + index - 1) % count;
+}
+
 void *fn_80012870(s32, s32);
 extern char lbl_80343E60[];
 void fn_8024BBF4(void *arg0) {
