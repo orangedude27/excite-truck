@@ -41,7 +41,7 @@ extern char lbl_80559B24[]; /* "%f, %f" */
 extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
 extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
 s32 fn_8013181C(void) {
-    fn_802E30C8(lbl_8032B510);
+    fn_802E30C8(lbl_8032B510, lbl_8032B510);
     return 0;
 }
 
@@ -238,3 +238,14 @@ extern void fn_802E317C(const char*, ...);
 extern char lbl_80559B24[];
 extern char lbl_8032B818[], lbl_8032B840[];
 typedef struct { void** vtable; } Unk80132BD0;
+extern int sprintf(char *, const char *, ...);
+extern char lbl_80559B50[];
+typedef struct {
+    void *vtable;
+    void *pad0;
+    void *pad4;
+    void *pad8;
+    s32 (*vf3)(void *, char *);
+    s32 (*vf4)(void *, char *);
+    void *pad18;
+} Unk801328D4;
