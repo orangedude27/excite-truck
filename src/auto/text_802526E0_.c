@@ -39,7 +39,7 @@ extern void fn_801BD808(void);
 extern void fn_801BDA70(void *);
 extern void fn_801BDA74(s32, void *);
 extern void fn_80252B88(s32);
-extern void *memset(void *, int, unsigned int);
+
 extern u8 lbl_80498D00[];
 extern void fn_802526E0(void *);
 extern void fn_801BE400(s32, void *, f32);
