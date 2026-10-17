@@ -236,3 +236,5 @@ int fn_80181800(void *arg0) {
     return result;
 }
 
+unsigned char fn_8018184C(void *arg0) { return *((unsigned char *)arg0 + 0x344); }
+
