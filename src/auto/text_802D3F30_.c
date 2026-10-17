@@ -15,6 +15,11 @@ extern void *fn_8012850C(s32, void *);
 extern void DCInvalidateRange(void *, u32);
 extern void fn_802D6C68(void);
 extern void GXSetArray(u32, void *, u32);
+extern void GXLoadPosMtxImm(void *, u32);
+extern void PSMTXRotTrig(void *, void *, f32, f32, f32);
+extern f32 lbl_80565008;
+extern u8 lbl_8055FD19;
+extern u32 lbl_804C5650[];
 void fn_802D3F30(void) {
 }
 
