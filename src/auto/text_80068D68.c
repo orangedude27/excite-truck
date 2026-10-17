@@ -1563,6 +1563,30 @@ u8 fn_80079514(void) {
     return (u8)((lbl_803C0F78[0x64E] - 5) == 0);
 }
 
+void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
+    if (p[0] == 0) {
+        lbl_803C0F78[0x636] = p[1];
+        *(u16 *)(lbl_803C0F78 + 0x638) = p[2] + (p[3] << 8);
+        lbl_803C0F78[0x63A] = p[4];
+        *(u16 *)(lbl_803C0F78 + 0x63C) = p[5] + (p[6] << 8);
+        *(u16 *)(lbl_803C0F78 + 0x63E) = p[7] + (p[8] << 8);
+    }
+    lbl_803C0F78[0x64E] = 4;
+    lbl_803C0F78[0x64F] = 4;
+    btu_start_timer(lbl_803C0F78 + 0x574, 1, 1);
+    btsnd_hcic_reset_800857CC();
+}
+
+void btm_read_local_name_complete(UINT8 *p, UINT16 evt_len) {
+    tBTM_CMPL_CB *callback = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5A8);
+    fn_80070F90(lbl_803C0F78 + 0x590);
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5A8) = NULL;
+    if (callback != NULL) {
+        if (p[0] == 0) callback(p + 1);
+        else callback(NULL);
+    }
+}
+
 tBTM_STATUS fn_8007A240(void (*arg0)(void *, void *)) {
     if (arg0 != 0) arg0(lbl_803C0F78 + 0x630, lbl_803C0F78);
     return 0;
