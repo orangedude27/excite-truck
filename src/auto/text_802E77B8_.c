@@ -107,4 +107,7 @@ int fn_802E85B8(int arg0) {
     values[3] = *p;
     return values[arg0];
 }
+
+void fn_802E8664(void) {}
+
 extern int lbl_802FAE80[4];
