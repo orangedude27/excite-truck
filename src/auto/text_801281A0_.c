@@ -32,7 +32,7 @@ void fn_80128714(void *, s32, s32);
 
 u32 fn_801281A0(s32 arg0) {
     u32 vals[4];
-    u32 *p = (u32 *)((u8 *)&lbl_802F8E40 + 0);
+    u32 *p = (u32 *)&lbl_802F8E40;
     vals[0] = *p++;
     vals[1] = *p++;
     vals[2] = *p++;
