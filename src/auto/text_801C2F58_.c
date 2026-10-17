@@ -482,21 +482,65 @@ void fn_801C9830(void) {
     return;
 }
 
+extern void fn_801C855C(void);
+extern void fn_80128670(void *);
+extern s32 fn_8012850C(s32, void *);
+extern void fn_801C3D88(void *);
+extern char lbl_80336D84[];
+extern char lbl_80336D90[];
+extern char lbl_8055E7E8;
+extern char lbl_8055E7E9;
+extern char lbl_8055E7E3;
+extern s32 lbl_8055E808;
+void fn_801C9834(void) {
+    u8 *p;
+    s32 idx;
+    s32 i;
+
+    fn_801C855C();
+    p = (u8 *)lbl_80337474;
+    idx = 0;
+    for (i = 0; i < 11; i++) {
+        if (p[0] == 0xFF) {
+            lbl_8055E824 = idx;
+            continue;
+        }
+        idx++;
+        if (p[1] == 0xFF) {
+            lbl_8055E824 = idx;
+            continue;
+        }
+        idx++;
+        if (p[2] == 0xFF) {
+            lbl_8055E824 = idx;
+            continue;
+        }
+        idx++;
+        if (p[3] == 0xFF) {
+            lbl_8055E824 = idx;
+            continue;
+        }
+        idx++;
+        if (p[4] == 0xFF) {
+            lbl_8055E824 = idx;
+            continue;
+        }
+        idx++;
+        p += 5;
+    }
+    lbl_8055E838 = 0;
+}
+
 void fn_801C98F0(void) {
     fn_801C9444();
 }
 
-void fn_801C98F4(u8 *str, s32 len) {
-    u8 *p = str;
-    s32 ctr = len;
-    if (len > 0) {
-        do {
-            while ((s8)*p != 0) {
-                p++;
-            }
-            p++;
-            ctr--;
-        } while (ctr != 0);
+void fn_801C98F4(u8 *p, s32 n) {
+    s32 i;
+    if (n <= 0) return;
+    for (i = 0; i < n; i++) {
+        while ((s8)*p != 0) p++;
+        p++;
     }
 }
 
