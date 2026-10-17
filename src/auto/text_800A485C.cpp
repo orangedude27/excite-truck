@@ -364,6 +364,22 @@ extern "C" s32 fn_800AF4F0(void *arg0, s32 arg1) {
     return 0;
 }
 
+extern "C" s32 fn_800AF530(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+    *(void **)((u8 *)arg0 + 0x30) = arg1;
+    *(s32 *)((u8 *)arg0 + 0x34) = arg2;
+    *(s32 *)((u8 *)arg0 + 8) = arg3;
+    *(s32 *)arg0 = 1;
+    if (arg1 != 0) {
+        *(s32 *)((u8 *)arg1 + 8) = 0;
+    }
+    *(s32 *)((u8 *)arg0 + 0x18) = 0;
+    *(s32 *)((u8 *)arg0 + 0x14) = 0;
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+    return 0;
+}
+
 extern "C" s32 fn_800AF584(void *arg0) {
     return *(s32 *)((char *)lbl_802EEF40 + (*(s32 *)arg0 + 0x1C) * 0x14 + 8);
 }
