@@ -4,10 +4,72 @@
 typedef signed int s32;
 typedef unsigned char u8;
 typedef float f32;
+static inline void CleanupEntries(void *table) {
+    extern s32 fn_802CAC54(s32);
+    extern s32 fn_80128670(s32);
+    extern s32 fn_80128668(void *);
+    s32 i, offset;
+    u8 *entry;
+    if (table != 0) {
+        i = 0;
+        offset = 0;
+        for (; i < *(s32 *)((u8 *)table + 4); offset += 0x38, i++) {
+            entry = *(u8 **)table + offset;
+            fn_802CAC54(*(s32 *)(entry + 0x20));
+            fn_802CAC54(*(s32 *)(entry + 0x24));
+        }
+        fn_80128670(*(s32 *)table);
+        fn_80128668(table);
+    }
+}
 extern double lbl_80563958;
 extern unsigned char lbl_80498C48[];
 s32 fn_8001668C(s32, s32);
 s32 *fn_80016BC8(s32);
+extern unsigned char lbl_803444D8[];
+extern void *lbl_8055F2E4;
+extern s32 lbl_8055F2E8;
+#pragma push
+#pragma use_lmw_stmw off
+void *fn_8024E920(void *arg0, s32 arg1) {
+    extern unsigned char lbl_8034453C[];
+    extern s32 fn_80128670(s32);
+    extern s32 fn_80235380(s32);
+    extern s32 fn_802CAC54(s32);
+    extern s32 fn_80128668(void *);
+    register void *table;
+    register s32 offset;
+    register s32 i;
+    register unsigned char *entry;
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_803444D8;
+        fn_80128670(*(s32 *)((u8 *)arg0 + 0xCC));
+        if (--lbl_8055F2E8 == 0) {
+            table = lbl_8055F2E4;
+            if (table != 0) {
+                i = 0;
+                offset = 0;
+                for (; i < *(s32 *)((u8 *)table + 4); offset += 0x38, i++) {
+                    entry = *(u8 **)table + offset;
+                    fn_802CAC54(*(s32 *)(entry + 0x20));
+                    fn_802CAC54(*(s32 *)(entry + 0x24));
+                }
+                fn_80128670(*(s32 *)table);
+                fn_80128668(table);
+            }
+            lbl_8055F2E4 = 0;
+        }
+        if (arg0 != 0) {
+            *(void **)arg0 = lbl_8034453C;
+            fn_80128670(*(s32 *)((u8 *)arg0 + 0x18));
+            fn_80235380(*(s32 *)((u8 *)arg0 + 0x24));
+            fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x20));
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+#pragma pop
 s32 fn_8024EB94(void *arg0) { return *(s32 *)((char *)arg0 + 0x1C); }
 
 s32 fn_8024EB9C(void *arg0, s32 arg1) { return *(s32 *)((char *)arg0 + 0xCC) + arg1 * 0x14; }
@@ -70,10 +132,10 @@ extern f32 fn_80216CB4(void);
 #pragma processor 750
 void fn_802514B4(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h) {
     s32 value = *(s32 *)(*(char **)((char *)arg0 + 0xCC) + arg1 * 0x14 + 0x10);
-    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 0, x, y, lbl_80563960, w, h, -1);
+    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 0, -1, x, y, lbl_80563960, w, h);
     fn_80216CB4();
-    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 3, x, y, lbl_80563960, w, h, value);
-    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 6, x, y, lbl_80563960, w, h, -1);
+    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 3, value, x, y, lbl_80563960, w, h);
+    fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 6, -1, x, y, lbl_80563960, w, h);
 }
 #pragma pop
 extern void fn_80255904(s32);
