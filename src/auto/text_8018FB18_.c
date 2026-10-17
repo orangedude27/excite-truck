@@ -441,6 +441,10 @@ s32 fn_80192C4C(void *arg0) {
     return (s32)((u32)(-bit | bit) >> 31);
 }
 
+s32 fn_80192C68(void *arg0) {
+    return (((u8)*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 5) & 7) - 1;
+}
+
 extern f32 lbl_8056208C;
 extern f32 lbl_80562090;
 extern f32 lbl_805620AC;
