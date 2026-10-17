@@ -51,6 +51,10 @@ extern unsigned int lbl_8034D098;
 extern void DVDInit(void);
 extern void OSReport(const char *);
 extern unsigned int lbl_8034D098;
+extern int DVDReadAsyncPrio(void *, int, int, int);
+extern int DVDGetCommandBlockStatus(void *);
+extern unsigned int lbl_8055D1BC;
+extern unsigned int lbl_8034D180;
 extern void DVDInit(void);
 extern void OSReport(const char *);
 extern int DVDClose(void *);
@@ -92,19 +96,23 @@ void fn_802E4408(int unused, void *arg0) {
     }
 }
 
+#pragma scheduling off
 int fn_802E4648(void *arg0) {
-    fn_802E317C((void *)&lbl_8034D198, (char *)arg0 + 0x40);
+    void *data;
+    data = arg0;
+    fn_802E317C(lbl_8034D198, (char *)data + 0x40);
     return -1;
 }
-
+#pragma scheduling on
 int fn_802E4680(void *arg0) {
     return *(int *)((char *)arg0 + 0x88);
 }
 
+#pragma scheduling off
 void fn_802E4688(void *arg0, int arg1) {
     ((void (*)(void *, int))(*(void ***)arg0)[8])(arg0, *(int *)((char *)arg0 + 0x88) + arg1);
 }
-
+#pragma scheduling on
 void fn_802E46A0(void) {
 }
 
