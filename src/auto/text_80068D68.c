@@ -1038,14 +1038,62 @@ update:
 
 s32 fn_80078310(s32 arg0)
 {
+    s32 result;
     if (arg0 == 0) {
         *(s32 *)(lbl_803C0F78 + 0x4C8) = 0;
-        return 0;
+        result = 0;
+    } else if (*(s32 *)(lbl_803C0F78 + 0x4C8) != 0) {
+        result = 2;
+    } else {
+        *(s32 *)(lbl_803C0F78 + 0x4C8) = arg0;
+        result = 0;
     }
-    if (*(s32 *)(lbl_803C0F78 + 0x4C8) != 0) return 2;
-    *(s32 *)(lbl_803C0F78 + 0x4C8) = arg0;
+    return result;
+}
+
+BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
+    u8 *entry;
+    s32 i;
+    entry = lbl_803C0F78 + 0x1F30;
+    for (i = 0; i < 16; i++, entry += 0x88) {
+        if ((entry[0x76] & 0x80) && memcmp(entry + 0x1C, bd_addr, 6) == 0) break;
+    }
+    if (i == 16) return FALSE;
+    entry[0x76] = 0;
+    BTM_DeleteStoredLinkKey(bd_addr, 0);
+    return TRUE;
+}
+
+char *BTM_SecReadDevName(BD_ADDR bd_addr) {
+    u8 *entry;
+    s32 i;
+    char *name;
+    i = 0;
+    name = 0;
+    entry = lbl_803C0F78 + 0x1F30;
+    do {
+        if ((entry[0x76] & 0x80) && memcmp(entry + 0x1C, bd_addr, 6) == 0) {
+            name = (char *)entry + 0x35;
+            break;
+        }
+        i++;
+        entry += 0x88;
+    } while (i < 16);
+    return name;
+}
+
+tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
+    u8 *entry = lbl_803C0F78 + 0x1F30;
+    s32 i, j;
+    for (i = 0; i < 4; i++) {
+        for (j = 0; j < 4; j++, entry += 0x88) {
+            if ((entry[0x76] & 0x80) && *(u16 *)(entry + 0x18) == handle) return (tBTM_SEC_DEV_REC *)entry;
+        }
+    }
     return 0;
 }
+
+void *fn_8007A394(void) { return lbl_803C0F78 + 0x648; }
 
 void fn_8007AD38(void) {
 
