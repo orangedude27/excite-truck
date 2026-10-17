@@ -17,3 +17,10 @@ void fn_802A7C24(void) {
 void fn_802A7C64(void) {
 }
 
+void fn_802A7C68(void) {
+    if ((fn_801C5B60() == 0) &&
+        ((u32)(*(u32 *)((u8 *)fn_801E87A8() + 4) + 0xFFE80000) != 0x304U)) {
+        fn_802A7EEC();
+    }
+}
+
