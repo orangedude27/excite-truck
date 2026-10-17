@@ -1021,6 +1021,14 @@ void fn_80075AA4(void *arg0) {
     (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, arg0);
 }
 
+void fn_80076228(void) {
+    s16 *ptr = GKI_getbuf(8);
+    if (ptr != 0) {
+        *ptr = 0x170D;
+        fn_80071450(ptr);
+    }
+}
+
 extern void l2c_link_hci_disc_comp(u16, u8);
 void btm_acl_device_down(void)
 {
