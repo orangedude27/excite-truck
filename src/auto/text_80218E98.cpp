@@ -693,6 +693,16 @@ extern "C" s32 fn_8021C318(void *arg0) {
     return *p == *(s32 *)((u8 *)arg0 + 0x2AC);
 }
 
+extern "C" void fn_8021C478(void *arg0) {
+    void *value;
+    if (fn_80129BC4() != 0) {
+        value = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C),
+                            *(s32 *)((u8 *)arg0 + 0x2AC), arg0);
+        *(void **)((u8 *)arg0 + 0x2A8) = value;
+        ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 1, value, 4);
+    }
+}
+
 extern "C" void fn_8021C6D0(void);
 extern "C" void *lbl_8033F180;
 extern "C" void fn_8022EE98(s32);
