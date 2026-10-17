@@ -6,6 +6,7 @@ extern void fn_8017A57C(void) __attribute__((noreturn));
 
 extern void fn_8017B0B0(void *);
 extern int lbl_8033585C[64];
+extern float lbl_8055E3C8;
 extern void fn_80179EE8(void *, unsigned int);
 extern void fn_80128668(void *);
 extern void *fn_801792F8(void);
