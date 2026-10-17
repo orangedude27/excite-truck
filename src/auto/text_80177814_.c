@@ -27,6 +27,12 @@ extern void *lbl_804340C0[];
 extern void **lbl_8055E434;
 extern int lbl_8055E438;
 extern int lbl_8055E468;
+extern unsigned char lbl_8055E44C;
+extern long lbl_80331938;
+extern long lbl_8033192C;
+extern void fn_801AFD20(void *);
+extern void fn_8017ACCC(void);
+extern void fn_8018A180(void);
 int fn_802E2C20(void);
 extern int lbl_8055E464;
 void fn_80177814(int *arg0) {
