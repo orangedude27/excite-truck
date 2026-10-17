@@ -19,6 +19,7 @@ int fn_802E2C20(void);
 extern int fn_80145E70(void*);
 extern char lbl_8033BB18[];
 extern int lbl_8055ED3C, lbl_8055ED40, lbl_8055ED44;
+struct Obj80204 { void (*dtor)(void *, int); };
 #pragma dont_inline
 unsigned int fn_8020437C(void) {
     int temp = fn_80204354() ^ 0xDAC;
@@ -43,10 +44,10 @@ void fn_80204460(void) {
 }
 
 void fn_8020449C(void) {
-    int obj;
+    void *obj;
     lbl_8055ED3C = 0;
-    obj = (int)lbl_8055ED44;
-    if (obj != 0) (*(void (**)(void *, int))(*(int *)obj + 8))((void *)obj, 1);
+    obj = (void *)lbl_8055ED44;
+    if (obj != 0) ((void (**)(void *, int))((int)*(void **)obj + 8))[0](obj, 1);
     lbl_8055ED44 = 0;
 }
 
