@@ -239,12 +239,6 @@ void fn_802B0144(void) {
 }
 
 extern void fn_802C10C8(void);
-extern void fn_802B4E44(int);
-extern void fn_802DBE4C(void);
-extern void fn_802BDD58(void);
-extern void fn_802DBECC(void);
-extern void fn_802B2D94(int);
-extern void fn_802B4E30(void);
 void fn_802B05D8(void) { fn_802C10C8(); }
 
 void* fn_802B05DC(void) {
