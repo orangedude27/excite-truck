@@ -5,6 +5,9 @@ extern char lbl_8055E160;
 extern int lbl_802F9350[3];
 extern int fn_80028E00(char *, int);
 extern int fn_8013A6D4(int);
+extern int fn_802E317C(char *, ...);
+extern char lbl_8032C1A0[];
+typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
 int fn_8013A6C4(void *arg0, void *arg1) {
     return *(int *)((char *)arg0 + 8) - *(int *)((char *)arg1 + 8);
 }
@@ -16,6 +19,12 @@ int fn_8013A6D4(int arg0) {
     values[1] = *p++;
     values[2] = *p;
     return values[arg0];
+}
+
+char *fn_8013A708(char *arg0, int arg1, int arg2) {
+    strcpy(arg0, (char *)fn_8013A6D4(arg1));
+    fn_80028E00(arg0, arg2);
+    return arg0;
 }
 
 void DBPrintf_8013B490(const char *fmt, ...) {
