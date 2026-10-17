@@ -349,6 +349,18 @@ void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self,
 
 extern "C" void fn_800FDE60(void);
 extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(unsigned long);
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
+extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void *);
+extern "C" void Update__Q36nw4hbm3snd11SoundPlayerFv(void *);
+extern "C" void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *, s32);
+extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *, void *);
+#pragma push
+#pragma small_data off
+extern u8 lbl_803262E8[];
+extern u8 lbl_803262C4[];
+extern u8 lbl_803262B8[];
+extern u8 lbl_80326294[];
+#pragma pop
 extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void);
 void fn_800F7110(void* self, unsigned long taskId) {
     fn_800FDE60();
@@ -620,5 +632,22 @@ extern "C" void fn_800FC76C(void *self, s32 value) {
 
 extern "C" s32 fn_800FC7AC(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x458);
+}
+
+extern "C" const char lbl_803268E4[];
+void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC7B4(void *self, s32 bus, f32 value) {
+    if (bus < 0 || bus >= 4) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x322, lbl_803268E4, bus, 0, 4);
+    }
+    u32 token = OSDisableInterrupts();
+    *(f32 *)((u8 *)self + 0x470 + bus * 4) = value;
+    OSRestoreInterrupts(token);
+}
+
+f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32 arg0, s32 arg1) {
+    s32 valid = 0;
+    if (arg1 >= 0 && arg1 < 4) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x329, lbl_803268E4, arg1, 0, 4);
+    return *(f32 *)(arg0 + arg1 * 4 + 0x470);
 }
 
