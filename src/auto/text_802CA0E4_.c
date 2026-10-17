@@ -10,10 +10,27 @@ char fn_802CA7DC(const char *arg0) { return (signed char)*arg0 == 0x2A; }
 
 int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
 
+void fn_802CAC28(void) {
+    fn_802CA898(0, 0, 0xE);
+}
+
+void fn_802CAC34(int arg1) {
+    fn_802CA898(0, arg1, 0xE);
+}
+
+void fn_802CAC44(int arg1) {
+    fn_802CA898(0, 0, arg1);
+}
+
 int fn_802DB2C0(int);
 int fn_802CA57C(int, int, int);
 int fn_802CA4E0(int, int, int, int, int);
-int fn_802CA898(int, int, int);
+int fn_802CA898(int, int, int, int);
+#pragma push
+#pragma small_data on
+DECL_SECTION(".sdata") extern int lbl_8055FCB0;
+#pragma small_data off
+#pragma pop
 void fn_802D8FB4(void);
 extern int lbl_8055D058;
 extern int lbl_8055D078;
