@@ -1,6 +1,11 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void *fn_80131810(void *);
+extern void fn_80131818(void *);
+extern void fn_8029FB00(void *);
+extern char lbl_8034989C[];
+extern char lbl_8055CB60[];
 extern unsigned char lbl_804B5070[];
 extern int lbl_8055F81C;
 extern unsigned char lbl_804B6E70[];
@@ -173,16 +178,78 @@ check:
     return -1;
 }
 
+extern void *fn_802AE4C8(int);
+extern void fn_8029F658(void *);
+extern char lbl_80349854[];
+extern int strncmp(const char *, const char *, unsigned int);
+#pragma push
+#pragma use_lmw_stmw off
+void fn_8029FEF8(void) {
+    void **object;
+    int i = 0;
+    int j;
+    void **child;
+    register void **vtable;
+    while ((object = fn_802AE4C8(i)) != 0) {
+        j = 0;
+        while ((vtable = (void **)*object, ((void *(*)(void *, int))vtable[3])(object, j)) != 0) {
+            child = (vtable = (void **)*object, ((void *(*)(void *, int))vtable[3])(object, j));
+            if (strncmp((vtable = (void **)*child, ((const char *(*)(void *))vtable[2])(child)), lbl_80349854, 9) == 0)
+                fn_8029F658(child);
+            j++;
+        }
+        i++;
+    }
+}
+#pragma pop
 void fn_8029FFBC(void) {
     unsigned char *current = lbl_804B5070;
     int i = 0;
+    void *value;
+    goto check;
+loop:
+    value = *(void **)(current + 0x64);
+    if (value != 0)
+        fn_8028E528();
+    value = *(void **)(current + 0x70);
+    if (value != 0)
+        fn_80292B48();
+    current += 0x78;
+    i++;
+check:
+    if (i < lbl_8055F81C)
+        goto loop;
+}
+
+void fn_802A002C(void) {
+    unsigned char *current = lbl_804B5070;
+    int i = 0;
+    void *object;
+    void **vtable;
+    goto check;
+loop:
+    object = *(void **)(current + 0x70);
+    if (object != 0) {
+        vtable = *(void ***)object;
+        ((void (*)(void *))vtable[3])(object);
+    }
+    current += 0x78;
+    i++;
+check:
+    if (i < lbl_8055F81C)
+        goto loop;
+}
+
+int fn_802A0720(int *arg0, int arg1) {
+    int i = 0;
+    int offset = 0;
     do {
-        if (*(int *)(current + 0x64) != 0)
-            fn_8028E528();
-        if (*(int *)(current + 0x70) != 0)
-            fn_80292B48();
-        current += 0x78;
+        int *base = (int *)lbl_804B9B7C[0];
+        if (*(int *)((unsigned char *)base + offset) == *arg0)
+            fn_802A0794((unsigned char *)base + offset);
+        offset += 0x34;
         i++;
-    } while (i < lbl_8055F81C);
+    } while (i < lbl_804B9B7C[1]);
+    return 4;
 }
 
