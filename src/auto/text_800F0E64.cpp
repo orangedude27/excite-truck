@@ -1031,3 +1031,7 @@ extern "C" void fn_800FD8A0(void *arg0, f32 arg1) {
     *(f32 *)((u8 *)arg0 + 0x440) = arg1;
 }
 
+extern "C" void fn_800FD8A8(void *arg0, float farg0) {
+    *(float *)((char *)arg0 + 0x450) = farg0;
+}
+
