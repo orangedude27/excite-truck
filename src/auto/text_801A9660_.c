@@ -13,7 +13,7 @@ extern void *fn_801284F8(int, ...);
 extern void fn_801AC330(void);
 extern void fn_801AC26C(void);
 extern void fn_802E317C(const char *, ...);
-extern void fn_801A9700(void **);
+extern void **fn_801A9700(void **);
 extern int lbl_8055E3C4;
 extern int lbl_8055A858;
 extern int jumptable_80335578[];
