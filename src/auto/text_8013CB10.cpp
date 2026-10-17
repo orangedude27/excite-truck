@@ -383,6 +383,11 @@ extern "C" s32 fn_80142B94(s32 arg0, s32 arg1, s32 arg2) {
     return arg2;
 }
 
+extern "C" s32 fn_80142BB4(void *arg0) {
+    s32 count = *(s32 *)((u8 *)arg0 + 4);
+    return (count + (*(s32 *)((u8 *)arg0 + 8) - *(s32 *)((u8 *)arg0 + 0xC))) % count;
+}
+
 #pragma dont_inline off
 extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
     void *obj = fn_802C6C34(*(s32 *)(arg1 + 0x59C));
