@@ -1,3 +1,5 @@
+extern void *lbl_8055F28C;
+static inline int find_sound_entry(int id);
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
 extern s32 lbl_802FA4B0[];
