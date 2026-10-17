@@ -95,7 +95,7 @@ void fn_80013E1C(s32 arg0) {
 void fn_80013EAC(s32 arg0, s32 arg1) {
     void *obj = *(void **)((u8 *)lbl_803577E0[arg0] + 0x50);
     if (arg1 < 1) arg1 = 1;
-    fn_80013BD0(obj, arg1, 0);
+    fn_80013BD0(obj, arg1, 0, 0);
 }
 
 void fn_80014638(void *arg0) {
