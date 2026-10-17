@@ -23,6 +23,15 @@ void fn_80033538(void *arg0, short arg1) {
     OSRestoreInterrupts(state);
 }
 
+void fn_800337C4(void *arg0, void *arg1) {
+    int state;
+    state = OSDisableInterrupts();
+    *(unsigned short *)((char *)arg0 + 0x1AC) = *(unsigned short *)arg1;
+    *(short *)((char *)arg0 + 0x1AE) = *(short *)((char *)arg1 + 2);
+    *(unsigned int *)((char *)arg0 + 0x1C) |= 0x200;
+    OSRestoreInterrupts(state);
+}
+
 void fn_80033B74(void *arg0, short arg1, short arg2) {
     int state = OSDisableInterrupts();
     *(short *)((char *)arg0 + 0x200) = arg1;
