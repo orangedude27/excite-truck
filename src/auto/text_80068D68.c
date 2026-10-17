@@ -2362,6 +2362,29 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+BOOLEAN btsnd_hcic_write_pin_type(UINT8 type) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 4;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0xA; p[9] = 0xC; p[10] = 1; p[11] = type;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
+BOOLEAN btsnd_hcic_read_stored_key(BD_ADDR bd_addr, BOOLEAN read_all_flag) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 10;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0xD; p[9] = 0xC; p[10] = 7;
+    p[11] = bd_addr[5]; p[12] = bd_addr[4]; p[13] = bd_addr[3];
+    p[14] = bd_addr[2]; p[15] = bd_addr[1]; p[16] = bd_addr[0];
+    p[17] = read_all_flag;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 s32 btsnd_hcic_switch_role_8008515C(BD_ADDR bd_addr, UINT8 role) {
     u8 *p = GKI_getpoolbuf(2);
     if (p == NULL) return 0;
