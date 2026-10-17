@@ -30,7 +30,7 @@ extern "C" s32 fn_800D591C(void* arg0) {
 
 extern "C" s32 fn_800D5944(void* arg0, u32 arg1) {
     s32 result = 0;
-    if (*(u32*)arg0 == arg1 &&
+    if (arg1 == *(u32*)arg0 &&
         *(u16*)((u8*)arg0 + 4) == 0xFEFF &&
         *(u16*)((u8*)arg0 + 6) == 8) {
         result = 1;
@@ -45,8 +45,8 @@ extern "C" void fn_800D5978(void* arg0) {
 }
 
 extern "C" void fn_800D598C(void* arg0) {
-    s32 value = *(s32*)((u8*)arg0 + 4);
-    if (value != 0) {
+    void* buffer = *(void**)((u8*)arg0 + 4);
+    if (buffer != 0) {
         MEMFreeToAllocator(lbl_8055DDF0);
         *(u32*)((u8*)arg0 + 4) = 0;
         *(u8*)((u8*)arg0) = 0;
