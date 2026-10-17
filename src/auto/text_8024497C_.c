@@ -17,3 +17,5 @@ void fn_80128668(void *);
 extern char lbl_80342ED8[];
 void fn_80244C50(void) { fn_8013C804(); }
 
+void fn_80244C54(void) { fn_8013C8B8(); }
+
