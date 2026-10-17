@@ -109,6 +109,36 @@ void fn_802D0E48(int arg0) {
     }
 }
 
+int fn_802D0EC8(int arg0) {
+    switch (arg0) {
+    case 8:
+        return 2;
+    case 9:
+        return 3;
+    default:
+        return arg0;
+    }
+}
+
+void fn_802D1B58(void) {
+    int m[8];
+    int *p = (int *)lbl_802FAC70;
+    float *a = (float *)lbl_804C5690;
+
+    m[0] = p[0];
+    m[1] = p[1];
+    m[2] = p[2];
+    m[3] = p[3];
+    m[4] = p[4];
+    m[5] = p[5];
+    m[6] = p[6];
+    m[7] = p[7];
+    *(float *)&m[0] = lbl_80564F94 * -a[1];
+    *(float *)&m[1] = lbl_80564F94 * -a[4];
+    *(float *)&m[2] = lbl_80564F94 * -a[7];
+    GXLoadTexMtxImm(m, 0x21, 1);
+}
+
 void fn_802D2614(void) {
     fn_802D14D8();
     fn_802D1678();
@@ -330,9 +360,9 @@ void fn_802D3D94(void *arg1, int arg0) {
 }
 
 void fn_802D3DAC(void) {
-    int id;
+    unsigned int id;
 
-    if ((lbl_8055FDD0 & 0x3F) == 0) {
+    if ((lbl_8055FDD0 & 0x3FU) == 0) {
         OSReport(lbl_8034C204);
     }
     id = lbl_8055FDD0;
