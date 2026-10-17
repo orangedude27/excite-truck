@@ -900,6 +900,16 @@ void fn_80074A4C(s32 arg0) {
     bta_dm_pm_set_mode((u8 *)arg0 + 8, 1);
 }
 
+void bta_hh_api_disc_act(void *arg0, void *arg1) {
+    u8 status;
+    if (arg1 != 0)
+        status = (u8)*(u16 *)((u8 *)arg1 + 6);
+    else
+        status = *((u8 *)arg0 + 0x16);
+    if (HID_HostCloseDev() != 0)
+        (*(void (**)(int, u8 *))(lbl_803C0D48 + 0x224))(3, &status);
+}
+
 void fn_8007AD38(void) {
 
 }
@@ -1128,6 +1138,8 @@ void fn_8008251C(void) {
     sdp_init();
     btm_discovery_db_init();
 }
+
+void fn_800833E8(s32 arg0) { btm_cback(0, arg0); }
 
 void fn_80089E3C(void) {
 
