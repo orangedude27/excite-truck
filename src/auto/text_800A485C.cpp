@@ -2151,6 +2151,13 @@ extern "C" s32 fn_800CEDE0(void *arg0) {
 
 extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800A4B54(s32);
+extern "C" s32 fn_800A485C(s32 arg0) {
+    if ((arg0 >= 0x61) && (arg0 <= 0x7A)) {
+        return arg0 - 0x20;
+    }
+    return arg0;
+}
+
 s32 fn_800A4A8C(u8 *arg0) {
     u8 *ptr = arg0;
     do {
