@@ -79,5 +79,4 @@ extern const char lbl_80329E30[];
 extern u8 lbl_8041D790[];
 extern u8 lbl_8041DC10[];
 extern s32 lbl_8041DF30[];
-struct State { s32 *next; s32 size; s32 zero; };
-extern struct State lbl_8041DEE0;
+
