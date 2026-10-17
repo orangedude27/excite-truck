@@ -6,6 +6,12 @@
 extern void *lbl_8055D1C0;
 extern u16 lbl_8055FF50;
 void fn_802E4A2C(void);
+extern s32 lbl_8055FF5C;
+extern u16 lbl_8055FF5A;
+extern u16 lbl_804FC418[];
+extern void fn_802E47E8(void);
+void fn_802E46AC(void) {}
+
 void fn_802E46E4(void) {
     lbl_8055D1C0 = (void*)-1;
 }
