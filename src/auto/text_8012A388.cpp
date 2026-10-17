@@ -105,6 +105,11 @@ extern "C" void fn_8012AC98(s32 arg0) {
     fn_8012AC28(arg0, 0);
 }
 
+extern "C" s32 fn_8012B2C4(s32, s32, s32);
+extern "C" void fn_8012B314(s32 arg0, s32 arg1, s32 arg2) {
+    fn_8012B2C4(arg1, arg0, arg2);
+}
+
 extern "C" void fn_8012B324(void) {
 
 }
@@ -113,7 +118,27 @@ extern "C" void fn_8012B328(void) {
 
 }
 
+s32 fn_8012B50C(void *arg0, void *arg1) {
+    if ((*(u32 *)((char *)arg0 + 0x34) & 0x20) &&
+        (*(u32 *)((char *)arg1 + 0x34) & 0x10)) {
+        return 1;
+    }
+    return 0;
+}
+
 extern "C" u32 fn_8012BB18(void) { return 1; }
+
+void fn_8012BC24(s32 **arg0, s32 *arg1) {
+    s32 *var = *arg0;
+
+    while (var != 0) {
+        if (var == arg1) {
+            *arg0 = (s32 *)((char *)arg1 + 0xA8)[0];
+            return;
+        }
+        var = (s32 *)((char *)var + 0xA8);
+    }
+}
 
 extern "C" void fn_8012DDA8(s32);
 extern "C" void fn_8012E81C(s32);
