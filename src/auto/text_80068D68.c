@@ -2370,7 +2370,7 @@ BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
     p[8] = 0xF; p[9] = 4; p[10] = 4;
     p[11] = handle; p[12] = handle >> 8;
     p[13] = packet_types; p[14] = packet_types >> 8;
-    btu_hcif_send_cmd(handle >> 8, 4, 0xF);
+    btu_hcif_send_cmd(p);
     return TRUE;
 }
 
