@@ -2,6 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
+typedef struct {
+    char pad[0x34];
+    void (*fn)(void *);
+} VTbl_801D77D8;
+
+typedef struct {
+    VTbl_801D77D8 *vtable;
+} Obj_801D77D8;
+
 extern void fn_801D59C8(s32, s32);
 
 extern char lbl_803385D0[];
@@ -337,11 +346,12 @@ void fn_801D6600(void *arg0) {
 
 extern char lbl_803387A8[];
 extern char lbl_803387C8[];
-#pragma scheduling on
+#pragma scheduling off
 void fn_801D6618(UnkStruct_801D6618 *arg0) {
-    char *name = lbl_80338C40;
-    ((volatile UnkStruct_801D6618 *)arg0)->name = name;
-    ((volatile UnkStruct_801D6618 *)arg0)->state = 0;
+    UnkStruct_801D6618 tmp;
+    tmp.name = lbl_80338C40;
+    tmp.state = 0;
+    *arg0 = tmp;
 }
 #pragma scheduling reset
 void *fn_801D6630(void *arg0, s32 arg1) {
@@ -691,8 +701,9 @@ s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
 void fn_801D77D8(void *arg0) {
-    void **vtable = *(void ***)arg0;
-    ((void (*)(void *))vtable[0xD])(arg0);
+    register void **vtable = *(void ***)arg0;
+    register void (*fn)(void *) = *(void (**)(void *))((u8 *)vtable + 0x34);
+    fn(arg0);
 }
 
 void fn_801D77E8(void) {
