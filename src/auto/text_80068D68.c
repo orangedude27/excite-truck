@@ -1438,6 +1438,23 @@ void fn_800729C0(s16 arg0) {
     }
 }
 
+void bta_dm_inq_results_cb(u8 *arg0) {
+    volatile u8 local[0x108];
+    void *info;
+
+    fn_80070FA4((void *)local, arg0 + 2);
+    memcpy((void *)(local + 6), arg0 + 8, 3);
+    local[9] = arg0[0xE];
+    info = BTM_InqDbRead(arg0 + 2);
+    if (info != 0) {
+        local[10] = 0;
+    }
+    ((void (*)(u32, void *))*(u32 *)lbl_803C0B98)(0, (void *)local);
+    if (info != 0) {
+        *((u8 *)info + 0x10) = local[10];
+    }
+}
+
 void bta_sys_disable(void) {
     void **pp_module;
     void *p_module;
