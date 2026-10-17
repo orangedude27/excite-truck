@@ -39,8 +39,15 @@ static float fn_80135278_dot(float *a, Diffs2_80135278 d) {
     return a[0] * d.unk_0 + a[1] * d.unk_4;
 }
 
+static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
+    Diffs2_80135278 r;
+    r.unk_0 = b[0] - c[0];
+    r.unk_4 = b[1] - c[1];
+    return r;
+}
+
 float fn_80135278(float *a, float *b, float *c) {
-    return fn_80135278_dot(a, (Diffs2_80135278){b[0] - c[0], b[1] - c[1]});
+    return fn_80135278_dot(a, fn_80135278_diff(b, c));
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
