@@ -76,8 +76,9 @@ extern "C" s32 fn_802E4CA8(void *, s32, s32);
 extern "C" s32 fn_802E7354(void *);
 extern "C" s32 fn_802E746C(s32 *, s32 *);
 extern "C" void fn_8012A7FC(void) {
+    s32 value = 0x32;
     lbl_8055DFF9 = 1;
-    fn_802E2D74(0x32);
+    fn_802E2D74(value);
 }
 
 extern "C" s32 fn_8012AB34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
@@ -99,12 +100,12 @@ extern "C" s32 fn_8012ABB0(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_8012AC28(s32 arg0, s32 arg1) {
-    s32 sp10;
+    u8 buffer[0x104];
     s32 spC = -1;
     s32 sp8;
 
-    fn_802E4CA8(&sp10, arg0, 0x104);
-    if (fn_802E7354(&sp10) != -1) {
+    fn_802E4CA8(buffer, arg0, 0x104);
+    if (fn_802E7354(buffer) != -1) {
         fn_802E746C(&spC, &sp8);
         if (arg1 != 0) *(s32 *)arg1 = sp8;
     }
@@ -155,6 +156,15 @@ extern "C" void fn_8012BC24(void **arg0, void *arg1) {
         }
         var = (void **)((char *)*var + 0xA8);
     }
+}
+
+extern "C" void *fn_8012BD3C(void *arg0, const char *arg1) {
+    void *entry = arg0;
+    do {
+        if (stricmp(arg1, (const char *)entry) == 0) break;
+        entry = *(void **)((char *)entry + 0xA8);
+    } while (entry != 0);
+    return entry;
 }
 
 extern "C" void fn_8012DDA8(s32);
@@ -357,6 +367,16 @@ extern "C" void *fn_8012C58C(void *arg0) {
         var_r5 = *(void **)((u8 *)arg0 - 8);
     }
     return var_r5;
+}
+
+extern "C" s32 fn_8012C6F0(void *arg0) {
+    s32 temp_r4;
+    void *temp_r5;
+    temp_r5 = *(void **)((u8 *)arg0 + 4);
+    temp_r4 = *(s32 *)((u8 *)temp_r5 + 0x2C) +
+              *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x80);
+    return ((temp_r4 + *(s32 *)((u8 *)temp_r5 + 0x28) + 0x7FF) & 0xFFFFF800) -
+           (temp_r4 & 0xFFFFF800);
 }
 
 extern "C" s32 stricmp(const char *, const char *);
