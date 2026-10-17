@@ -13,6 +13,13 @@ extern void *fn_801792F8(void);
 extern void *fn_801284F8(int, ...);
 extern void fn_801AC330(void);
 extern void fn_801AC26C(void);
+extern int lbl_8055E5E4;
+extern int lbl_8055E5EC;
+extern int lbl_8055E5F0;
+extern char lbl_80335718[];
+extern char lbl_80335744[];
+extern char lbl_80335808[];
+extern void *lbl_80435628[];
 extern void fn_802E317C(const char *, ...);
 extern void **fn_801A9700(void **);
 extern int lbl_8055E3C4;
@@ -47,35 +54,39 @@ void fn_801ABFF4(void) {
 }
 
 void fn_801AC184(void *arg0) {
-    void *p = arg0;
-    int a = *(int *)((char *)p + 0x1EC);
-    int b = *(int *)((char *)p + 0x1F0);
-    int c = *(int *)((char *)p + 0x1F4);
-    int d = *(int *)((char *)p + 0x1F8);
-    int e = *(int *)((char *)p + 0x1FC);
-    int f = *(int *)((char *)p + 0x200);
-    int g = *(int *)((char *)p + 0x204);
-    int h = *(int *)((char *)p + 0x208);
-    int i = *(int *)((char *)p + 0x20C);
-    int j = *(int *)((char *)p + 0x210);
-    int k = *(int *)((char *)p + 0x214);
-    int l = *(int *)((char *)p + 0x218);
-    *(int *)((char *)p + 0x3C) = a;
-    *(int *)((char *)p + 0x40) = b;
-    *(int *)((char *)p + 0x44) = c;
-    *(int *)((char *)p + 0x48) = d;
-    *(int *)((char *)p + 0x4C) = e;
-    *(int *)((char *)p + 0x50) = f;
-    *(int *)((char *)p + 0x54) = g;
-    *(int *)((char *)p + 0x58) = h;
-    *(int *)((char *)p + 0x5C) = i;
-    *(int *)((char *)p + 0x60) = j;
-    *(int *)((char *)p + 0x64) = k;
-    *(int *)((char *)p + 0x68) = l;
-    fn_8017A580(p, l, k, j, i, h, g, f, e);
-    fn_8017B164(p);
-    *(unsigned char *)((char *)p + 0x223) = 1;
-    *(unsigned char *)((char *)p + 0x234) = *(unsigned char *)((char *)p + 0x235);
+    unsigned int *dst = (unsigned int *)((char *)arg0 + 0x3C);
+    unsigned int *src = (unsigned int *)((char *)arg0 + 0x1EC);
+
+    unsigned int t0 = src[0];
+    unsigned int t1 = src[1];
+    unsigned int t2 = src[2];
+    unsigned int t3 = src[3];
+    unsigned int t4 = src[4];
+    unsigned int t5 = src[5];
+    unsigned int t6 = src[6];
+    unsigned int t7 = src[7];
+    unsigned int t8 = src[8];
+    unsigned int t9 = src[9];
+    unsigned int t10 = src[10];
+    unsigned int t11 = src[11];
+
+    dst[0] = t0;
+    dst[1] = t1;
+    dst[2] = t2;
+    dst[3] = t3;
+    dst[4] = t4;
+    dst[5] = t5;
+    dst[6] = t6;
+    dst[7] = t7;
+    dst[8] = t8;
+    dst[9] = t9;
+    dst[10] = t10;
+    dst[11] = t11;
+
+    fn_8017A580((char *)arg0 + 0x3C, t11, t10, t9, t8, t7, t6, t5, t4);
+    fn_8017B164(arg0);
+    *(unsigned char *)((char *)arg0 + 0x223) = 1;
+    *(unsigned char *)((char *)arg0 + 0x234) = *(unsigned char *)((char *)arg0 + 0x235);
 }
 
 #pragma dont_inline on
