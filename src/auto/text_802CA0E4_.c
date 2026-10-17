@@ -52,6 +52,7 @@ void fn_802CAD68(void) {
     lbl_8055FCB8 = -2;
 }
 
+#pragma dont_inline fn_802CAD74
 void fn_802CAD74(int arg0) {
     int *p;
     int value;
@@ -70,14 +71,12 @@ void fn_802CAD74(int arg0) {
     else
         fn_802D9160(p[0x28 / 4], 0);
 }
-
 void fn_802CADD0(int arg0, int arg1) {
-    int value;
-    if (arg0 == -1)
-        value = 0;
-    else
-        value = *(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x28);
-    fn_802DBDE8(arg1, value);
+    if (arg0 == -1) {
+        fn_802DBDE8(arg1, 0);
+    } else {
+        fn_802DBDE8(arg1, *(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x28));
+    }
 }
 
 int fn_802CAE00(int arg0) {
@@ -159,6 +158,11 @@ unsigned short fn_802CB3FC(int arg0) {
         return q[1];
     return q[0];
 }
+
+int fn_802CC404(void *arg0) {
+    return *(int *)(*(char **)((char *)arg0 + 0x38) + 4);
+}
+
 void fn_802CC73C(char arg0) {
     lbl_8055D07D = arg0;
 }
