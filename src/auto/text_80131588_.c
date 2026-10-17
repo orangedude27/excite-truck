@@ -52,10 +52,9 @@ extern char lbl_80559B24[]; /* "%f, %f" */
 extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
 extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
 s32 fn_8013181C(void) {
-    fn_802E30C8(lbl_8032B510, lbl_8032B510);
+    fn_802E30C8(lbl_8032B510);
     return 0;
 }
-
 void* fn_8013184C(void) {
     if (lbl_8055E060 == 0) {
         ((void* volatile*)lbl_8042F53C)[0] = lbl_8032B64C;
@@ -192,6 +191,19 @@ s32 fn_8013284C(void *arg0, s32 arg1) {
         return 0;
     }
     return (*(s32(**)(void*))(*(s32*)obj + 24))(obj);
+}
+
+s32 fn_801328D4(void *arg0, s32 arg1) {
+    char buf[0x20];
+    s32 (*vtable[8])(void *, char *);
+    *(void ***)vtable = *(void ***)arg0;
+    if (vtable[3](arg0, buf) != 0) {
+        void *ptr = *(void **)((char *)arg0 + 0x18);
+        s32 (*vt2[4])(void *, s32);
+        *(void ***)vt2 = *(void ***)ptr;
+        return vt2[2](ptr, vtable[5](arg0, buf));
+    }
+    return 0;
 }
 
 u64 fn_80132A48(void *arg0, s32 arg1, void *arg2) {
