@@ -140,6 +140,9 @@ void fn_802D08CC(int arg0) {
 void fn_802D0910(void) {
 }
 
+void fn_802D09E4(void) {
+}
+
 extern float lbl_80564F94;
 extern unsigned char lbl_804C5690[];
 extern unsigned char lbl_802FAC70[];
