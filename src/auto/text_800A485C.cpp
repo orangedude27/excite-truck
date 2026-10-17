@@ -1207,23 +1207,23 @@ extern "C" s32 fn_800B8BE8(s32 arg0) {
 #pragma dont_inline
 extern "C" s32 fn_800B8F20(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
     s32 result;
-    volatile s32 sem = lbl_8055DD30;
-    fn_800B8004(sem);
+    volatile s32 *sp = &lbl_8055DD30;
+    fn_800B8004(*sp);
     *arg4 = 0;
     if (arg0 == 0) {
-        fn_800B8048(sem);
+        fn_800B8048(*sp);
         return -0x14;
     }
     if (arg1 == 0) {
-        fn_800B8048(sem);
+        fn_800B8048(*sp);
         return -0x14;
     }
     result = fn_800B960C(arg3, arg1, arg2, 0x200, arg4, arg0);
     if (result != 0) {
-        fn_800B8048(sem);
+        fn_800B8048(*sp);
         return result;
     }
-    fn_800B8048(sem);
+    fn_800B8048(*sp);
     return 0;
 }
 extern "C" u8 lbl_802F31F8[];
