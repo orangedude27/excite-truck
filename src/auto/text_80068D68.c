@@ -2362,6 +2362,22 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+BOOLEAN btsnd_hcic_write_policy_set(UINT16 handle, UINT16 settings) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 7;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0xD;
+    p[9] = 8;
+    p[10] = 4;
+    p[11] = handle;
+    p[12] = handle >> 8;
+    p[13] = settings;
+    p[14] = settings >> 8;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 BOOLEAN btsnd_hcic_reset(UINT8 local_controller_id) {
     u8 *p = GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
