@@ -37,9 +37,11 @@ void fn_80207960(void) {
 }
 
 signed long fn_80207964(signed long arg0) {
-    if (arg0 == 0) {
-        return 1;
+    if (arg0 != 0) {
+        goto nonzero;
     }
+    return 1;
+nonzero:
     return 0;
 }
 
@@ -57,10 +59,13 @@ void fn_80207C4C(void) {
 }
 
 void fn_80207C50(void* arg0, void* arg1, signed long arg2) {
+    signed long c = *((signed long*)arg1 + 2);
+    signed long b = *((signed long*)arg1 + 1);
+    signed long a = *(signed long*)arg1;
     void* dst = (void*)((char*)arg0 + arg2 * 0xC);
-    *(signed long*)((char*)dst + 0x5C) = *(signed long*)arg1;
-    *(signed long*)((char*)dst + 0x60) = *((signed long*)arg1 + 1);
-    *(signed long*)((char*)dst + 0x64) = *((signed long*)arg1 + 2);
+    *(signed long*)((char*)dst + 0x5C) = a;
+    *(signed long*)((char*)dst + 0x60) = b;
+    *(signed long*)((char*)dst + 0x64) = c;
 }
 
 void fn_80207C74(void* arg0, signed long arg1) {
@@ -69,6 +74,31 @@ void fn_80207C74(void* arg0, signed long arg1) {
 
 void fn_80207C7C(void) {
 	return;
+}
+
+void fn_80207E70(void* arg0);
+
+void fn_80207C80(void* arg0) {
+    signed long i = 0;
+    signed long offset = 0;
+    while (i < *(signed long*)((char*)arg0 + 0x10)) {
+        fn_802067C8(*(signed long*)((char*)*(void***)((char*)arg0 + 0xC) + offset),
+                    (char*)arg0 + 0x5C, *(signed long*)((char*)arg0 + 0x8C));
+        offset += 4;
+        i += 1;
+    }
+    fn_8020835C(arg0);
+    fn_80207F34(arg0);
+    i = 0;
+    offset = 0;
+    while (i < *(signed long*)((char*)arg0 + 0x10)) {
+        fn_80206824(*(signed long*)((char*)*(void***)((char*)arg0 + 0xC) + offset),
+                    (char*)arg0 + 0x5C, *(signed long*)((char*)arg0 + 0x8C));
+        offset += 4;
+        i += 1;
+    }
+    fn_8020815C(arg0);
+    fn_80207E70(arg0);
 }
 
 signed long fn_80207D40(void* arg0) {
@@ -81,6 +111,8 @@ signed long fn_80207D40(void* arg0) {
     *(signed long*)(((signed char*)arg0) + 8) = temp_r3;
     return 1;
 }
+
+void fn_80207D8C(void* arg0) { if (fn_80207D40(arg0)) { fn_80207C80(arg0); (*(void (**)(void*, void*))(*(void***)((char*)arg0 + 0x90)))(*(void**)((char*)arg0 + 0x90), (char*)arg0 + 0x5C); } }
 
 extern void fn_80207C80(void*);
 extern void* lbl_802F9DC8[];
@@ -144,7 +176,7 @@ void fn_802089B0(void* self) {
     if (self == 0) {
         return;
     }
-    (*(void(**)(void*, signed long))(*(Vt**)self + 1))(self, 1);
+    ((Vt*)*(void**)self)->f(self, 1);
 }
 
 signed long fn_802089D0(signed long arg0, signed long arg1) {
