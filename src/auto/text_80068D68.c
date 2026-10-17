@@ -1411,6 +1411,20 @@ void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
 
 s32 fn_8007A3B4(s32 value) { s32 old = *(s32 *)(lbl_803C0F78 + 0x568); *(s32 *)(lbl_803C0F78 + 0x568) = value; return old; }
 
+void btm_read_stored_link_key_complete(u8 *p) {
+    void (*callback)(u8 *);
+    u8 param[6];
+    callback = *(void (**)(u8 *))(lbl_803C0F78 + 0x570);
+    *(void (**)(u8 *))(lbl_803C0F78 + 0x570) = NULL;
+    if (callback != NULL) {
+        param[0] = 2;
+        param[1] = p[0];
+        *(u16 *)(param + 2) = p[1] + (p[2] << 8);
+        *(u16 *)(param + 4) = p[3] + (p[4] << 8);
+        callback(param);
+    }
+}
+
 void btm_write_stored_link_key_complete(u8 *p) {
     void (*callback)(u8 *);
     u8 param[3];
