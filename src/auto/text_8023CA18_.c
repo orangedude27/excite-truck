@@ -15,3 +15,5 @@ s32 fn_8023CB80(void* arg0) {
     fn_80236900(arg0);
     return 1;
 }
+extern s32 lbl_8055BB68;
+extern s32 lbl_803415E8;
