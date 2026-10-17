@@ -4,6 +4,26 @@
 #include <types.h>
 
 extern "C" {
+extern void **lbl_8055EC74;
+extern s32 lbl_8055EC78;
+extern u8 lbl_8055EC3C;
+extern void *lbl_8055EC4C;
+extern u8 lbl_8033B5B8[];
+void fn_801F9BE8(void);
+void fn_801B5D30(void *);
+void fn_801792F4(void);
+void *fn_8013184C(void);
+void *fn_801284F8(u32, void *);
+void *fn_801A4A8C(void *, s32, s32, s32, s32, void *);
+void *fn_801E87A8(void);
+s32 fn_802C9C58(s32);
+void fn_802C7A44(void);
+void fn_802C7A50(void);
+void fn_802C7AD4(void);
+}
+
+
+extern "C" {
 extern char lbl_8033AF80[];
 extern s32 lbl_8055B388;
 extern void **lbl_8055EC54;
