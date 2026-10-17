@@ -14,6 +14,16 @@ extern int lbl_803401A0;
 extern float lbl_805635C0;
 extern float lbl_805635C4;
 void fn_80128668(void);
+extern char *fn_8022D82C(void *, int, int);
+extern char *strncpy(char *, const char *, unsigned long);
+extern double fabs(double);
+extern float lbl_80558DC4;
+char *fn_8022D850(void *arg0, int arg1, int arg2, int *arg3) {
+    char *ptr = fn_8022D82C(arg0, arg1, arg2);
+    if (arg3 != 0) *arg3 = (signed char)*ptr;
+    return ptr + 1;
+}
+
 void fn_8022D924(void *arg0, int arg1) {
     int count = *(int *)((char *)arg0 + 0x24);
     int value = *(int *)((char *)arg0 + 0x2C);
