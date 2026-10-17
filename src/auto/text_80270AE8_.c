@@ -18,6 +18,7 @@ extern int lbl_8049A258;
 extern int lbl_8049F9D8;
 #pragma pop
 extern int lbl_8055F554;
+extern int lbl_8055F54C;
 extern float lbl_80563E78;
 void fn_80270AE8(void *arg0) {
     float value = lbl_80563E78;
@@ -194,16 +195,23 @@ int fn_80272C24(float farg0, float farg1, float farg2, float farg3) {
 }
 
 void fn_80273354(void) {
-    memset(&lbl_8049A258, 0, 0x64);
-    *(int *)((char *)&lbl_8049A258 + 0x1C) = 1;
-    *(int *)((char *)&lbl_8049A258 + 0x18) = 0;
-    *(int *)((char *)&lbl_8049A258 + 0x2C) = 1;
-    *(int *)((char *)&lbl_8049A258 + 0x30) = 1;
-    *(int *)((char *)&lbl_8049A258 + 0x40) = 2;
-    *(int *)((char *)&lbl_8049A258 + 0x44) = 3;
-    *(int *)((char *)&lbl_8049A258 + 0x54) = 5;
-    *(int *)((char *)&lbl_8049A258 + 0x58) = 3;
-    ((void (*)(int, int, int, void *))fn_8027156C)(3, 2, 1, &lbl_8049A258);
+    int *ptr = &lbl_8049A258;
+    memset(ptr, 0, 0x64);
+    *(int *)((char *)ptr + 0x1C) = 1;
+    *(int *)((char *)ptr + 0x18) = 0;
+    *(int *)((char *)ptr + 0x2C) = 1;
+    *(int *)((char *)ptr + 0x30) = 1;
+    *(int *)((char *)ptr + 0x40) = 2;
+    *(int *)((char *)ptr + 0x44) = 3;
+    *(int *)((char *)ptr + 0x54) = 5;
+    *(int *)((char *)ptr + 0x58) = 3;
+    ((void (*)(int, int, int, void *))fn_8027156C)(3, 2, 1, ptr);
+}
+
+extern int lbl_8055F54C;
+void fn_802733C8(void) {
+    fn_80271578();
+    lbl_8055F54C = 0x12;
 }
 
 void fn_802733F0(void) {
