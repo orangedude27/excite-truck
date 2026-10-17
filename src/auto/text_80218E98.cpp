@@ -676,7 +676,7 @@ extern "C" void fn_8021BF90(void *arg0) {
         value = fn_80217BD8(*(s32 *)((u8 *)arg0 + 0x2C),
                             *(s32 *)((u8 *)arg0 + 0x2AC), arg0);
         *(void **)((u8 *)arg0 + 0x2A8) = value;
-        fn_80219440(arg0, 1, value, 4);
+        ((void (*)(void *, s32, void *, s32))fn_80219440)(arg0, 1, value, 4);
     }
 }
 
