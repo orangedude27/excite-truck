@@ -26,6 +26,14 @@ void fn_802E8874(void) {
     }
 }
 
+int fn_802E888C(int arg0) {
+    int result;
+    ((void (*)(void))fn_802E883C)();
+    result = fn_802E8744(lbl_8034DB28 + arg0 * 0x38);
+    ((void (*)(void))fn_802E8874)();
+    return result;
+}
+
 void fn_802E8918(void) {
     fn_802E2E38(1);
 }
