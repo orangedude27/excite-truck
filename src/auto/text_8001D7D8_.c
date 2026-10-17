@@ -31,6 +31,32 @@ int fn_8001D884(int arg0) {
     return arg0;
 }
 
+int fn_8001D9B4(int *arg0, int arg1) {
+    int value;
+
+    value = arg0[0];
+    if (value >= 0 && value <= arg1) {
+        return 0;
+    }
+    value = arg0[1];
+    if (value >= 0 && value <= arg1) {
+        return 1;
+    }
+    value = arg0[2];
+    if (value >= 0 && value <= arg1) {
+        return 2;
+    }
+    value = arg0[3];
+    if (value >= 0 && value <= arg1) {
+        return 3;
+    }
+    value = arg0[4];
+    if (value >= 0 && value <= arg1) {
+        return 4;
+    }
+    return -1;
+}
+
 int fn_8001DA48(int *arg0, int arg1) {
     return arg0[arg1];
 }
