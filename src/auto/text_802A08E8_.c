@@ -5,7 +5,7 @@
 extern u8 lbl_8055F834[];
 extern int lbl_8055CB68;
 extern int fn_80128670(int);
-extern int fn_801EF024(int (*)(void *));
+extern long fn_801EF024(long (*)(void *));
 extern void fn_802CAC54(int);
 extern void fn_80128668(void*);
 void* fn_802A08E8(void* arg0, s32 arg1) {
