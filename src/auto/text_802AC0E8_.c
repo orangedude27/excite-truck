@@ -49,9 +49,54 @@ void fn_802AC49C(void) {
 extern float lbl_80564ACC;
 extern float lbl_8055E3C8;
 extern int lbl_8055CD70;
-extern int lbl_80349FA4;
+extern char lbl_80349FA4[];
 extern void *fn_801284F8(int, void *, void *);
 extern void *fn_8012850C(int, void *);
 extern int fn_802AC4A8(const char *, int);
 void fn_802AD308(void) {}
+
+void fn_802AD414(void *arg0, float farg0) {
+    int outer = 0;
+    int offset = 0;
+    while (outer < *(int *)((char *)arg0 + 0x24)) {
+        int inner = 0;
+        int byteOffset = 0;
+        char *group = *(char **)((char *)arg0 + 0x28) + offset;
+        int count = *(int *)(group + 4) - 1;
+        if (count > 0) {
+            do {
+                char *entries = *(char **)(group + 8);
+                float a = *(float *)(entries + byteOffset);
+                char *entry = entries + byteOffset;
+                float b = *(float *)(entries + (inner + 1) * 0x38);
+                if (farg0 >= a && farg0 <= lbl_80564ACC + b) {
+                    int idx = *(int *)group;
+                    char *records = *(char **)((char *)arg0 + 0x20);
+                    char *record = records + idx * 0x28;
+                    int *p = *(int **)(record + 4);
+                    if (p) *p = *(int *)(entry + 0x34);
+                    break;
+                }
+                byteOffset += 0x38;
+                inner++;
+            } while (--count != 0);
+        }
+        offset += 0xC;
+        outer++;
+    }
+}
+
+void *fn_802ADDD8(void *arg0, int arg1) {
+    int *obj = (int *)fn_801284F8(0x10, &lbl_80349FA4, &lbl_80349FA4);
+    if (obj) {
+        int data = (int)fn_8012850C(arg1 * 0x74, &lbl_8055CD70);
+        obj[0] = data;
+        obj[2] = arg1;
+        obj[1] = 0;
+        obj[3] = data;
+    }
+    *(int **)arg0 = obj;
+    *(float *)((char *)arg0 + 4) = lbl_8055E3C8;
+    return arg0;
+}
 
