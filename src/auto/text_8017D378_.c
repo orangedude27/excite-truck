@@ -63,6 +63,10 @@ extern void fn_8017D380(float *, int);
 extern float fn_8017D378(void);
 extern int lbl_8055D430;
 extern float lbl_80561C0C;
+long fn_8017EAF4(long);
+long fn_8017EAFC(long);
+long fn_8017EB04(long);
+void fn_8017DEE0(void *, long, long, short, float);
 void fn_8017DA8C(void *arg0) {
     float sp[3];
     int flags;
