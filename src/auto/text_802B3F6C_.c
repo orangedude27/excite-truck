@@ -53,12 +53,12 @@ int fn_802B40B0(int arg0, int arg1) {
 }
 
 int fn_80129D90(int, int, int);
+#pragma scheduling off
 int fn_802B475C(void* arg0) {
-    int count = *(int*)((char*)arg0 + 4);
-    int index = fn_80129D90(0, 0, count);
+    int index = fn_80129D90(0, 0, *(int*)((char*)arg0 + 4));
     return ((int*)*(void**)arg0)[index];
 }
-
+#pragma scheduling on
 int fn_802B4BC0(int arg0, int arg1, int arg2) {
     return arg0 + (((arg1 & 0x1F) + ((arg2 << 5) & 0x3E0)) << 3);
 }
@@ -129,6 +129,39 @@ void fn_802B4E3C(void* hi) {
     lbl_8055F9C8 = hi;
 }
 
+extern int fn_802B3DA4(int, unsigned short, int);
+void fn_802B4E44(int arg0, int arg1) {
+    int **table = (int **)&lbl_804BE248;
+    int **tableEnd = table + 0x80;
+    while (table < tableEnd) {
+        int **slots = (int **)*table++;
+        if (slots != 0) {
+            int **slot = slots;
+            int **slotEnd = slots + 0x400;
+            while (slot < slotEnd) {
+                int *entry = *slot++;
+                if (entry != 0) {
+                    int count = 0;
+                    int offset = 0;
+                    while (count < entry[1]) {
+                        char *record = (char *)entry[0] + offset;
+                        int index = 0;
+                        char *out = record + 0xC;
+                        while (index < 6) {
+                            int value = fn_802B3DA4(arg0, *(unsigned short *)(record + 8), index);
+                            *(int *)out = value;
+                            index++;
+                            out += 4;
+                        }
+                        offset += 0x24;
+                        count++;
+                    }
+                }
+            }
+        }
+    }
+}
+
 void *fn_802B4F10(void *out, int x, int y, int a, int b) {
     int r = fn_802B40B0(a, b);
     if (r != 0) {
@@ -141,4 +174,5 @@ void *fn_802B4F10(void *out, int x, int y, int a, int b) {
     }
     return NULL;
 }
-
+typedef struct { int *ptr; int value; } Slot;
+typedef struct { char *data; int count; } Entry;
