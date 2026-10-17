@@ -68,6 +68,8 @@ void fn_802409AC(void *arg0, s32 arg1) {
 
 void fn_802411C8(void) { fn_8023FE20(); }
 
+void fn_802411CC(void) { fn_8023FE34(); }
+
 void fn_80241228(void) {
 }
 
