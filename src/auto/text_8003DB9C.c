@@ -306,13 +306,17 @@ void GXInitLightPos(void *arg0, float farg0, float farg1, float farg2) {
 }
 
 void GXGetLightDir_Internal(void *arg0, float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
-    extern float lbl_80560B5C;
-    *(float *)((char *)arg0 + 0x34) = farg3;
-    *(float *)((char *)arg0 + 0x38) = farg4;
-    *(float *)((char *)arg0 + 0x3C) = farg5;
-    *(float *)((char *)arg0 + 0x28) = lbl_80560B5C * farg0;
-    *(float *)((char *)arg0 + 0x2C) = lbl_80560B5C * farg1;
-    *(float *)((char *)arg0 + 0x30) = lbl_80560B5C * farg2;
+ extern float lbl_80560B5C;
+ float a, b, c;
+ *(volatile float *)((char *)arg0 + 0x34) = farg3;
+ a = lbl_80560B5C * farg0;
+ b = lbl_80560B5C * farg1;
+ *(volatile float *)((char *)arg0 + 0x38) = farg4;
+ c = lbl_80560B5C * farg2;
+ *(volatile float *)((char *)arg0 + 0x3C) = farg5;
+ *(volatile float *)((char *)arg0 + 0x28) = a;
+ *(volatile float *)((char *)arg0 + 0x2C) = b;
+ *(volatile float *)((char *)arg0 + 0x30) = c;
 }
 
 void GXInitLightColor(void *arg0, s32 *arg1) { *(s32 *)((char *)arg0 + 0xC) = *arg1; }
@@ -329,6 +333,13 @@ void GXLoadLightObjImm(void *arg0, s32 arg1) {
     fifo32[0] = 0;
     for (i = 0; i < 6; i++) fifo32[0] = ((unsigned int *)src)[i * 2];
     *__GXData; 
+}
+
+extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
+void GXInitTexObjCI(void *obj, void *image, unsigned short width, unsigned short height, int format, int wrap_s, int wrap_t, int mipmap, int tlut_name) {
+    GXInitTexObj(obj, image, width, height, format, wrap_s, wrap_t, mipmap);
+    *(int *)((char *)obj + 0x18) = tlut_name;
+    *(unsigned char *)((char *)obj + 0x1F) &= ~2;
 }
 
 void GXInitTexObjTlut(void* arg0, int arg1) {
