@@ -26,6 +26,28 @@ void fn_802DBDE8(int, int);
 
 extern char lbl_8055D07D;
 extern float lbl_80564F30;
+void fn_802CA1E0(void) {
+    int i;
+    int offset;
+    if (lbl_8055D03C != -1) {
+        fn_802CAC54(lbl_8055D03C);
+        lbl_8055D03C = -1;
+    }
+    fn_802CAC54(lbl_8055FCB4);
+    lbl_8055FCB4 = -1;
+    i = 0;
+    offset = 0;
+    do {
+        if (*(int *)(lbl_8055FCB0 + offset) != 0)
+            fn_802E317C(lbl_8034B5F0, i, lbl_8055FCB0 + offset + 4);
+        i++;
+        offset += 0x4C;
+    } while (i < 0x200);
+    fn_802CB6B4();
+    fn_80128670(lbl_8055FCB0);
+    lbl_8055FCB0 = 0;
+}
+
 int fn_802CA294(int arg0) {
     int offset = arg0 * 0x4C;
     int *base = (int *)lbl_8055FCB0;
@@ -33,14 +55,13 @@ int fn_802CA294(int arg0) {
 }
 
 int fn_802CA380(int arg0) {
-    int sp10;
+    char sp10[0x20];
     int sp8;
-    int dummy[8];
     int result;
     int temp;
     result = 0;
-    fn_802CA2A8(&sp10, 0x20, arg0);
-    temp = fn_8012C5B8(&sp10, 0x54455820, &sp8);
+    fn_802CA2A8(sp10, 0x20, arg0);
+    temp = fn_8012C5B8(sp10, 0x54455820, &sp8);
     if (temp != 0) {
         result = fn_8012C6F0();
         fn_8012C958(temp);
@@ -119,6 +140,36 @@ int fn_802CAE00(int arg0) {
         value = 1;
     }
     return value;
+}
+
+extern int fn_802C90E0(void);
+extern void fn_802E30C8(const char *, ...);
+extern int fn_802CA3F4(void *, int, int, int, int);
+extern int fn_802D8E9C(void *, unsigned int);
+extern char lbl_8034B618[];
+extern char lbl_8034B538[];
+extern void *jumptable_8034B794[];
+extern int fn_802CAE00(int);
+extern int lbl_8055FCB0;
+extern char lbl_8034B904[];
+extern char lbl_8034B914[];
+char *fn_802CAE34(int arg0) {
+    if (arg0 == -1)
+        return lbl_8034B904;
+    if (fn_802CAE00(arg0))
+        return (char *)lbl_8055FCB0 + arg0 * 0x4C + 4;
+    return lbl_8034B914;
+}
+
+void fn_802CAE98(int arg0, const char *arg1) {
+    char *dst;
+    if (!fn_802CAE00(arg0))
+        return;
+    dst = (char *)lbl_8055FCB0 + arg0 * 0x4C + 4;
+    while (*arg1 != 0) {
+        *dst++ = *arg1++;
+        if (--((int){0}) == 0) {}
+    }
 }
 
 int fn_802DB2C0(int);
@@ -229,3 +280,7 @@ int fn_802CA2A8(void *, int, int);
 int fn_8012C5B8(void *, int, int *);
 int fn_8012C6F0(void);
 int fn_8012C958(int);
+extern char lbl_8034B538[];
+extern char lbl_8034B904[];
+extern char lbl_8034B914[];
+extern int fn_802CAE00(int);
