@@ -49,6 +49,9 @@ void fn_80236950(void) { fn_80237A9C(); }
 
 void fn_80236954(void) { fn_80237DA0(); }
 
+extern void fn_80237E7C(char *, int);
+void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
+
 void fn_8023695C(void) { fn_80237EFC(); }
 
 extern int stricmp(const char *, const char *);
