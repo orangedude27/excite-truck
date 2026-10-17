@@ -7,12 +7,12 @@ extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12L
 
 struct Obj_800D7738;
 struct Vtbl_800D7738 {
-    virtual void v0(Obj_800D7738*);
-    virtual void v1(Obj_800D7738*);
-    virtual void v2(Obj_800D7738*);
-    virtual void v3(Obj_800D7738*);
-    virtual void v4(Obj_800D7738*);
-    virtual void v5(Obj_800D7738*);
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
 };
 struct Obj_800D7738 : Vtbl_800D7738 {};
 struct Ptr_800D7738 { Obj_800D7738* v; };
