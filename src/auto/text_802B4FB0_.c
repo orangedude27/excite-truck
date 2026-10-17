@@ -8,6 +8,9 @@ extern int fn_802B50E8(int, int, int);
 extern void *fn_801284E8(void *, int);
 extern int fn_802B4FB0(unsigned char);
 extern char lbl_8034A4E0[];
+extern int fn_802E3D04(void);
+extern int fn_802E39D0(void *, int);
+extern void fn_802E3734(int *);
 
 int fn_802B5070(void *arg0, int arg1) {
     int result = 0;
@@ -29,19 +32,19 @@ void *fn_802B51E4(int arg0, int arg1) {
     *(void **)(result + 8) = result + 0xC;
     return result;
 }
-#pragma dont_inline off
-void *fn_802B5240(int arg0) {
+#pragma scheduling off
+void *fn_802B5240(void *arg0) {
     int spC;
     int sp8;
     void *result = 0;
-    if (fn_802B4FD0((void *)arg0, &spC, &sp8) != 0) {
+    if (fn_802B4FD0(arg0, &spC, &sp8) != 0) {
         result = fn_802B51E4(spC, sp8);
-        fn_802B50E8(arg0, *(int *)((char *)result + 8),
+        fn_802B50E8((int)arg0, *(int *)((char *)result + 8),
                     *(int *)result * *(int *)((char *)result + 4));
     }
     return result;
 }
-
+#pragma scheduling on
 void fn_802B52B4(void *arg0) {
     *(int *)((char *)arg0 + 8) = 0;
     fn_80128658(arg0);
