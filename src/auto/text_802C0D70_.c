@@ -6,7 +6,7 @@ extern float lbl_8055FB10;
 extern float lbl_80564E30;
 extern float lbl_80564E34;
 extern char lbl_8034AE98[];
-extern float fn_8002F234(float);
+extern double fn_8002F234(double);
 extern double atan(double);
 extern double cos(double);
 extern double sin(double);
@@ -18,6 +18,20 @@ extern char lbl_8055FB18[4];
 extern void fn_802C0FD4(int *queue);
 #pragma push
 #pragma dont_inline on
+void fn_802C0D70(float *arg0) {
+    float length;
+    float y;
+    length = fn_8002F234(arg0[0] * arg0[0] + arg0[2] * arg0[2]);
+    y = -arg0[1];
+    if (atan(y / length) < lbl_8055FB10) {
+        fn_802E30C8(lbl_8034AE98, lbl_80564E30 * atan(y / length) / lbl_80564E34,
+                    lbl_80564E30 * lbl_8055FB10 / lbl_80564E34, lbl_80564E30);
+        arg0[0] *= cos(lbl_8055FB10) / length;
+        arg0[1] = -sin(lbl_8055FB10);
+        arg0[2] *= cos(lbl_8055FB10) / length;
+    }
+}
+
 void fn_802C0FD4(int *queue) {
     s32 handle;
     handle = *queue;
