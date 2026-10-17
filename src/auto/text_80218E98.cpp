@@ -1377,6 +1377,13 @@ extern "C" void fn_80223CC4(void *arg0) {
     fn_802192AC(arg0);
 }
 
+extern "C" void fn_802ED038(s32, f32, f32, f32, f32);
+extern "C" void fn_802ECFEC(void);
+extern "C" void *lbl_8033E2CC[];
+extern "C" void fn_8022419C(void *arg0) {
+ s32 ptr=*(s32 *)((u8 *)arg0+0x254); if(ptr) fn_802ED038(ptr,*(f32 *)((u8 *)arg0+0x244),*(f32 *)((u8 *)arg0+0x248),*(f32 *)((u8 *)arg0+0x24C),*(f32 *)((u8 *)arg0+0x250));
+}
+
 extern "C" void fn_80225918(void *arg0) {
     fn_802192AC(arg0);
 }
