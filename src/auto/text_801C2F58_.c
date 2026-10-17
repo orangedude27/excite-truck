@@ -126,6 +126,21 @@ s32 fn_801C3D5C(void) {
     return *(s32 *)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
 }
 
+void fn_801C9834(void);
+void fn_801C4AD0(void) {
+    lbl_8055E7E9 = 0;
+    lbl_8055E7E8 = 0;
+    lbl_8055E7E2 = 0;
+    lbl_8055E7E3 = 0;
+    lbl_8055E7F0 = 0;
+    lbl_8055E804 = 0;
+    lbl_8055E808 = 0;
+    lbl_8055E7E4 = lbl_80562970;
+    *(f32 *)&lbl_80437E24[2] = lbl_80562994;
+    *(s32 *)&lbl_80437E24[0] = 0;
+    fn_801C9834();
+}
+
 extern void fn_801C98F0(void);
 
 void fn_801C4B10(void) {
