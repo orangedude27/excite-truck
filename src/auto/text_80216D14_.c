@@ -196,54 +196,111 @@ void fn_802184D0(void *arg0) {
 int fn_8021885C(void *arg0, int arg1) {
     return (*(int *)((char *)arg0 + 0x464) & fn_80216D14(arg1)) == 0;
 }
+#pragma dont_inline on
 void fn_80218A34(void *arg0, int arg1) {
-    char *base = (char *)arg0;
-    int mask = fn_80216D14(arg1);
-    int i;
-    if (*(int *)(base + 0x468) & mask) {
-        mask = fn_80216D14(arg1);
-        *(int *)(base + 0x468) &= ~mask;
-        for (i = 0; i < *(int *)(base + 0x430); i++) {
-            void *obj = *(void **)(base + 0x30 + i * 4);
-            if ((*(int *)(base + 0x468) & *(int *)((char *)obj + 0x238)) == 0) {
-                *(unsigned char *)((char *)obj + 0x1B) = 1;
-                if (*(unsigned char *)((char *)obj + 0x1A) != 0)
-                    *(unsigned char *)((char *)obj + 0x234) = 1;
+    char *base=(char *)arg0, *cursor;
+    int i, one=1;
+    int mask=fn_80216D14(arg1);
+    if (*(int *)(base+0x468)&mask) {
+        mask=fn_80216D14(arg1);
+        *(int *)(base+0x468)&=~mask;
+        cursor=base;
+        i=0;
+        for (; i<*(int *)(base+0x430); i++,cursor+=4) {
+            void *obj=*(void **)(cursor+0x30);
+            if ((*(int *)(base+0x468)&*(int *)((char *)obj+0x238))==0) {
+                *(unsigned char *)((char *)obj+0x1B)=one;
+                if (*(unsigned char *)((char *)obj+0x1A))
+                    *(unsigned char *)((char *)obj+0x234)=one;
             }
         }
     }
 }
-
 void fn_80218ADC(void *arg0, int arg1) {
-    char *base = (char *)arg0;
-    int mask = fn_80216D14(arg1);
-    int i;
-    if ((*(int *)(base + 0x468) & mask) == 0) {
-        mask = fn_80216D14(arg1);
-        *(int *)(base + 0x468) |= mask;
-        for (i = 0; i < *(int *)(base + 0x430); i++) {
-            void *obj = *(void **)(base + 0x30 + i * 4);
-            if (*(int *)(base + 0x468) & *(int *)((char *)obj + 0x238)) {
-                *(unsigned char *)((char *)obj + 0x1B) = 0;
-                if (*(unsigned char *)((char *)obj + 0x1A) != 0)
-                    *(unsigned char *)((char *)obj + 0x234) = 1;
+    char *base=(char *)arg0, *cursor;
+    int i, one=1, zero=0;
+    int mask=fn_80216D14(arg1);
+    if ((*(int *)(base+0x468)&mask)==0) {
+        mask=fn_80216D14(arg1);
+        *(int *)(base+0x468)|=mask;
+        cursor=base;
+        i=0;
+        for (; i<*(int *)(base+0x430); i++,cursor+=4) {
+            void *obj=*(void **)(cursor+0x30);
+            if (*(int *)(base+0x468)&*(int *)((char *)obj+0x238)) {
+                *(unsigned char *)((char *)obj+0x1B)=zero;
+                if (*(unsigned char *)((char *)obj+0x1A))
+                    *(unsigned char *)((char *)obj+0x234)=one;
             }
         }
     }
 }
-
 void fn_80218B88(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    char *base = (char *)arg0;
-    int mask = fn_80216D14(arg1);
-    int i;
-    for (i = 0; i < *(int *)(base + 0x430); i++) {
-        void *obj = *(void **)(base + 0x30 + i * 4);
-        if (mask & *(int *)((char *)obj + 0x238)) {
-            void **vtable = *(void ***)obj;
-            ((void (*)(void *, int, int))vtable[8])(obj, arg2, arg3);
+    char *base=(char *)arg0, *cursor;
+    int i, mask=fn_80216D14(arg1);
+    cursor=base;
+    i=0;
+    for (; i<*(int *)(base+0x430); i++,cursor+=4) {
+        void *obj=*(void **)(cursor+0x30);
+        if (mask&*(int *)((char *)obj+0x238)) {
+            void **vtable=*(void ***)obj;
+            ((void (*)(void *,int,int))vtable[8])(obj,arg2,arg3);
         }
     }
 }
 
+void fn_80218C14(void *arg0, int arg1, void *arg2) {
+    char *dst = (char *)arg0 + arg1 * 0x3C;
+    unsigned int *src = (unsigned int *)arg2;
+    unsigned int *out = (unsigned int *)(dst + 0x6A0);
+    int i;
+    for (i = 0; i < 12; i++) out[i] = src[i];
+    *(float *)(dst + 0x6D0) = ((float *)arg2)[12];
+    *(float *)(dst + 0x6D4) = ((float *)arg2)[13];
+    *(float *)(dst + 0x6D8) = ((float *)arg2)[14];
+}
+
+void fn_80218C98(void *arg0, void **arg1, int arg2) {
+    char *base = (char *)arg0;
+    char *obj = (char *)arg1;
+    int count = *(int *)(base + 0x430);
+    *(void **)(base + 0x30 + count * 4) = arg1;
+    *(int *)(base + 0x430) = count + 1;
+    if (((int (**)(void *))(*(void ***)obj))[0x68 / 4](arg1) != 0 &&
+        *(int *)(base + 0x450) == 0 &&
+        *(unsigned char *)(base + 0xDE4) != 0) {
+        fn_80218198(arg0, arg1);
+    }
+    *(int *)(obj + 0x238) = fn_80216D14(arg2);
+    *(void **)(obj + 0x2C) = arg0;
+    ((void (**)(void *))(*(void ***)obj))[0x14 / 4](arg1);
+}
+
+void fn_80218D54(void *arg0, int arg1) {
+    char *base = (char *)arg0;
+    char *cursor = base;
+    int i = 0;
+    while (i < *(int *)(base + 0x430)) {
+        void **obj = *(void ***)(cursor + 0x30);
+        void **vtable = *(void ***)obj;
+        if (((int (*)(void *))vtable[0x68 / 4])(obj) != 0 &&
+            ((int (*)(void *))vtable[0x18 / 4])(obj) == arg1) {
+            fn_80218198(arg0, obj);
+            return;
+        }
+        cursor += 4;
+        i++;
+    }
+}
+
+extern void fn_80214D50(int);
+void fn_80218E08(void *arg0, int arg1) {
+    if ((unsigned char)lbl_8055EFAC != 0) return;
+    if (arg1 == 0xD || (unsigned int)arg1 == 0x113) fn_80214D50(2);
+    else if ((unsigned int)arg1 == 0x1B) fn_80214D50(3);
+    else fn_80214D50(0);
+}
+
+#pragma dont_inline reset
 extern int qsort(void *, int, int, int (*)(const void *, const void *), void *);
 int fn_80217BC8(int *, int *);
