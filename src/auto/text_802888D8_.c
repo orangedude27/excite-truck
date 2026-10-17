@@ -44,6 +44,17 @@ void fn_802888D8(void) {
     fn_80287B38(fn_80288A74);
 }
 
+void fn_80288988(void) {
+    fn_80289EE0((void *)lbl_8055F6E4, 1);
+    lbl_8055F6E4 = 0;
+    __dt__12PhysicsWorldFv_80289C20(lbl_8055F6E0, 1);
+    lbl_8055F6E0 = 0;
+    __dt__Q210JASDrumSet5TPercFv_802894F4((void *)lbl_8055F6DC, 1);
+    lbl_8055F6DC = 0;
+    fn_80288B88((void *)lbl_8055F6D8, 1);
+    lbl_8055F6D8 = 0;
+}
+
 void fn_802889F0(void) {
     fn_80289554(lbl_8055F6DC);
     fn_80289F54(lbl_8055F6E4);
