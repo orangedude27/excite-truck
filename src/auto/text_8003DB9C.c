@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 typedef signed long s32;
+extern unsigned char lbl_80558E80[];
+extern int __cntlzw(unsigned int);
 extern unsigned int lbl_8055D954;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
@@ -301,6 +303,14 @@ void GXInitTexObjTlut(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
 }
 
+extern unsigned char lbl_80558E80[];
+void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
+    s32 value = *arg0;
+    value = (value & ~0x10) | (((unsigned int)__builtin_clz(arg2 - 1) >> 1) & 0x10);
+    *arg0 = value;
+    *arg0 = (value & ~0xE0) | ((lbl_80558E80[arg1] << 5) & 0xE0);
+}
+
 int GXGetTexObjHeight(void *arg0) {
     return ((int *)arg0)[4];
 }
@@ -319,6 +329,25 @@ int GXGetTexObjLODAll(int *arg0) {
 
 int GXGetTexObjWrap_Internal(unsigned int *arg0) {
     return (*arg0 >> 2) & 3;
+}
+
+void GXLoadTexObj(void *arg0, unsigned int arg1) {
+    void *result;
+    result = ((void *(*)(void *))__GXData[0x518 / 4])(arg0);
+    GXLoadTexObjPreLoaded(arg0, result, arg1);
+}
+
+void GXInitTlutObj(void *arg0, unsigned int arg1, int arg2, short arg3) {
+    unsigned int value;
+    unsigned int size;
+    value = *(unsigned int *)((char *)arg0 + 4);
+    value = (value & 0xFF) | ((arg1 << 27) & 0xFFFFFF00);
+    size = 0;
+    size = (size & ~0x00300000) | ((arg2 << 10) & 0x00300000);
+    *(short *)((char *)arg0 + 8) = arg3;
+    value = (value & 0x00FFFFFF) | 0x64000000;
+    *(unsigned int *)arg0 = size;
+    *(unsigned int *)((char *)arg0 + 4) = value;
 }
 
 unsigned short GXGetTexObjTlut(void *arg0) {
