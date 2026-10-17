@@ -146,6 +146,11 @@ void GXInitLightAttnK_80181464(void *arg0, float farg0, float farg1, float farg2
     *(float *)((char *)arg0 + 0x320) = farg2;
 }
 
+void fn_80181474(void *arg0, float arg1, float arg2) {
+ *(float *)((char *)arg0+0x324)=arg1;
+ *(float *)((char *)arg0+0x328)=arg2;
+}
+
 float fn_80181568(void *arg0) {
     float value = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x18);
     if (value < lbl_80561C48) return value;
@@ -182,10 +187,12 @@ void fn_801815DC(void *arg0, float arg1) {
 }
 
 void fn_80181700(void *arg0, int arg1) {
+    void *value;
     *(unsigned char *)((char *)arg0 + 0x350) = arg1;
-    if (arg1 == 0 && *(int *)((char *)arg0 + 8) >= 0) {
-        fn_802E8518();
-    }
+    if (arg1 != 0) return;
+    value = *(void **)((char *)arg0 + 8);
+    if ((int)value < 0) return;
+    fn_802E8518();
 }
 
 void fn_80181720(void *arg0) {
