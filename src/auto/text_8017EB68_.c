@@ -163,6 +163,26 @@ void fn_80181480(void *arg0, int arg1) {
  if(old>arg1) *(int *)((char *)arg0+0x50)=arg1;
 }
 
+float fn_80181498(void *arg0) {
+ float f31=*(float *)((char *)arg0+0xC);
+ float f2;
+ float f0;
+ if (f31 <= lbl_80561C48) f31=lbl_80561C48;
+ f2=*(float *)((char *)arg0+0xC);
+ if (f2 >= lbl_80561C58) {} else f2=lbl_80561C58;
+ f0=*(float *)((char *)arg0+0xC)+*(float *)((char *)arg0+0x10);
+ if (f31 < f0) f31=f0;
+ if (f31 > f2) f31=f2;
+ if (((int (*)(void *))(*(char **)arg0+0x5C))(arg0)) f31=*(float *)((char *)arg0+0xC);
+ return f31;
+}
+
+float fn_80181548(void *arg0) {
+    float value = *(float *)((char *)arg0 + 0x20) + *(float *)((char *)arg0 + 0x24);
+    if (value < lbl_80561C48) return value;
+    return lbl_80561C48;
+}
+
 float fn_80181568(void *arg0) {
     float value = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x18);
     if (value < lbl_80561C48) return value;
