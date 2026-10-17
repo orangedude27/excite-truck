@@ -7,6 +7,9 @@ extern int lbl_8034AFC8;
 extern int lbl_8055FB54;
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
+void fn_802B52C0(void *);
+int fn_802CA294(void *, int, int, int, void *);
+int fn_802D9628(short, short, unsigned int);
 void fn_802C1C28(void) {}
 
 void fn_802C1C2C(void) {}
