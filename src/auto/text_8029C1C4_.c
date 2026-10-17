@@ -73,6 +73,19 @@ void fn_8029C934(void) {
     lbl_8055F7F0 = 0;
 }
 
+extern void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *, int);
+extern int lbl_804B5030[];
+void fn_8029CB3C(void) {
+    int *p = (int *)lbl_804B5030;
+    int i = 0;
+    while (i < lbl_8055F7F4) {
+        __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888((void *)*p, 1);
+        ++p;
+        ++i;
+    }
+    lbl_8055F7F4 = 0;
+}
+
 void fn_8029CD14(void) {
     if (lbl_8055F7F8 != 0) {
         ((void (*)(int))fn_8028E398)(lbl_8055F7F8);
