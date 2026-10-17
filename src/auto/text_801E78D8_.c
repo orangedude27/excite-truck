@@ -278,11 +278,30 @@ void fn_801E89F4(void *arg0) {
     lbl_8055AF08 = arg0;
 }
 
+void fn_801E8C84(float *arg0) {
+    float scale = lbl_804881D8[3];
+    arg0[0] = lbl_804881D8[0] * scale;
+    arg0[1] = lbl_804881D8[1] * scale;
+    arg0[2] = lbl_804881D8[2] * scale;
+}
+
 void fn_801E8CB8(float *arg0, float *arg1) {
     arg0[0] = lbl_804881D8[0];
     arg0[1] = lbl_804881D8[1];
     arg0[2] = lbl_804881D8[2];
     arg1[0] = lbl_804881D8[3];
+}
+
+void fn_801E8CE4(void) {
+    fn_80297984();
+    fn_802889F0();
+    if (lbl_8055EB24 != 0) ((void (*)(void))lbl_8055EB24)();
+    fn_80287914();
+    fn_801FA1D4();
+    fn_802C1A08();
+    memset(lbl_80487CE0, 0, 0x10);
+    lbl_8055EB18 = lbl_80562DBC;
+    lbl_8055EB14 = lbl_80562DBC;
 }
 
 extern unsigned char lbl_80487D00[];
