@@ -4,6 +4,7 @@
 #include <types.h>
 struct State { s32 *next; s32 size; s32 zero; };
 extern struct State lbl_8041DEE0;
+extern u8 lbl_8041D790[];
 extern void fn_80127968(void);
 extern void *memset(void*, int, unsigned long);
 extern u32 lbl_8055DF1C;
