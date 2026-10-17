@@ -114,8 +114,8 @@ int fn_802BA580(int, float *, float);
 void fn_802BD414(int arg0, volatile int *arg1) {
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
-        int first = arg1[0];
         int second = arg1[1];
+        int first = arg1[0];
         result[0] = second;
         result[2] = first;
         result[1] = 0;
@@ -148,7 +148,16 @@ void deleteThreads__6SystemFv_802BDCA4(void **arg0) {
 }
 
 void fn_802C2930(void*, unsigned int);
-void fn_80128668(void*);
+void fn_802BD018(void *arg0) {
+    void *obj = *(void **)arg0;
+    if (obj != 0) {
+        *(int *)obj = 0;
+        ((int *)obj)[1] = 0;
+        ((int *)obj)[2] = 0;
+        fn_80128668(obj);
+        *(void **)arg0 = 0;
+    }
+}
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_802C2930((void*)arg0, 0);
@@ -169,11 +178,45 @@ void fn_802BDD58(void) {
     if (fn_8020403C() != 0) fn_802BD814();
 }
 
+void fn_802BDFBC(void *arg0, int arg1, float farg0) {
+    float value;
+    void *node;
+    value = farg0;
+    if (arg1 < 8) value = lbl_80564D18;
+    else if (arg1 > 8) value = lbl_80564D14;
+    node = *(void **)((char *)arg0 + 4);
+    while (node != 0) {
+        *(float *)((char *)node + 0xC) = value;
+        node = *(void **)node;
+    }
+}
+
 extern float lbl_80564D14;
 extern float lbl_80564D18;
-void fn_802BDFF4(void *arg0) {
-    if (*(void **)((char *)arg0 - 8) != 0) {
-        fn_802BAF98();
+void fn_802BDFF4(int *arg0) {
+    if (arg0[-2] != 0) fn_802BAF98();
+}
+
+extern int lbl_804C00D4;
+int fn_802BE1D8(void) {
+    int sum = 0;
+    int i = 0;
+    int offset = 0;
+    while (i < *(int *)((char *)&lbl_804C00D4 + 4)) {
+        sum += fn_802BD0C8(*(char **)&lbl_804C00D4 + offset);
+        offset += 0x60;
+        i++;
+    }
+    return sum;
+}
+
+void fn_802BE244(void) {
+    int offset = 0;
+    int i = 0;
+    while (i < *(int *)((char *)&lbl_804C00D4 + 4)) {
+        fn_802BD0F4(*(char **)&lbl_804C00D4 + offset);
+        offset += 0x60;
+        i++;
     }
 }
 
