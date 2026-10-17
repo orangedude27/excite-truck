@@ -1,14 +1,50 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern float lbl_80563490;
 extern int fn_802368B4(int);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055EFAC;
+int fn_80216D14(int arg0) {
+    int result = 1 << arg0;
+    return result & ~(arg0 >> 31);
+}
+
 void fn_80216D28(void) {
     lbl_8055EFAC = 1;
 }
 
 void fn_80216D34(void) {
     lbl_8055EFAC = 0;
+}
+
+void fn_8021734C(void *arg0) {
+    int i;
+    char *base = (char *)arg0;
+    for (i = 0; i < *(int *)(base + 0x430); i++) {
+        void *obj = *(void **)(base + i * 4 + 0x30);
+        void **vtable = *(void ***)obj;
+        ((void (*)(void *))vtable[3])(obj);
+        if (*(int *)(base + 0x440) != 0) {
+            int value = *(int *)((char *)obj + 0x23C);
+            if (*(int *)((char *)obj + 0x240) != 0) value = **(int **)((char *)obj + 0x240);
+            fn_802368B4(value);
+        }
+    }
+    if (*(void **)(base + 0x438) != 0) (*(void (**)(void))((char *)base + 0x438))();
+}
+
+void fn_802173F8(void *arg0) {
+    char *base = (char *)arg0;
+    int i;
+    if (*(void **)(base + 0x43C) != 0) (*(void (**)(void))((char *)base + 0x43C))();
+    i = *(int *)(base + 0x430) - 1;
+    while (i >= 0) {
+        void *obj = *(void **)(base + i * 4 + 0x30);
+        void **vtable = *(void ***)obj;
+        ((void (*)(void *))vtable[4])(obj);
+        i--;
+    }
+    fn_80216D28();
 }
 
 void fn_80217478(void) {
@@ -93,6 +129,21 @@ void fn_80218198(void *arg0, void **arg1) {
         if (old != 0) (*(void (**)(void *))(*(void ***)old + 0x38))(old);
         *(void ***)((char *)arg0 + 0x450) = arg1;
         if (arg1 != 0) (*(void (**)(void *))(*(void ***)arg1 + 0x34))(arg1);
+    }
+}
+
+extern float lbl_80563490;
+void fn_802184D0(void *arg0) {
+    int i;
+    char *base = (char *)arg0;
+    float threshold = lbl_80563490;
+    for (i = 0; i < *(int *)(base + 0x430); i++) {
+        void *obj = *(void **)(base + 0x30 + i * 4);
+        if (*(unsigned char *)((char *)obj + 0x1A) != 0 ||
+            *(float *)((char *)obj + 0x20) >= threshold) {
+            void **vtable = *(void ***)obj;
+            ((void (*)(void *))vtable[11])(obj);
+        }
     }
 }
 
