@@ -107,7 +107,7 @@ extern const char lbl_803406FC[];
 extern const char lbl_80340724[];
 extern const char lbl_80340760[];
 extern int stricmp(const char *, const char *);
-extern void fn_802E30C8(const char *, unsigned int);
+extern void fn_802E30C8(const char *, ...);
 extern void fn_80235380(void *);
 void fn_8023509C(void) {
     if (lbl_8055F084 != 0)
