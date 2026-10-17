@@ -239,6 +239,11 @@ int fn_8018B084(void *arg0) {
     return *(int *)(base + index * 0x9c + 0x20);
 }
 
+void fn_8018B09C(void *arg0) {
+    fn_8017D2C8();
+    *(float *)((unsigned char *)arg0 + 0x26dc) = lbl_8055E3C8;
+}
+
 void fn_8018B0D0(void *arg0, int arg1) {
     *(int *)((unsigned char *)arg0 + 0x2610) = arg1;
 }
