@@ -14,9 +14,7 @@ void fn_80288A1C(void) {}
 
 extern void *lbl_8055F6E0;
 extern int fn_8028E584(int, int, int);
-void fn_80288A40(int arg0, int arg1) {
-    fn_8028E584(*(int *)((char *)lbl_8055F6E0 + 4), arg0, arg1);
-}
+void fn_80288A40(int arg0, int arg1) { fn_8028E584(*(int *)((char *)lbl_8055F6E0 + 4), arg0, arg1); }
 
 void fn_80288A58(int arg0, int arg1) {
     fn_8028E584(*(int *)lbl_8055F6E0, arg0, arg1);
