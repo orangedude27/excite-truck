@@ -39,6 +39,11 @@ void fn_802C2CE8(void *arg0, s32 arg1, s32 arg2, s8 arg3) {
     fn_802C3014(arg0);
 }
 
+void fn_802C2D94(void *arg0) {
+    fn_80128658(*(s32 *)((u8 *)arg0 + 4));
+    memset(arg0, 0, 0x24);
+}
+
 void fn_802C2FC4(void) {
     ((void (*)(void))fn_8012C4D8)();
 }
