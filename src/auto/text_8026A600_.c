@@ -10,3 +10,9 @@ void *fn_8026A600(void *arg0) {
     fn_80266120((char *)arg0 + 0x178);
     return arg0;
 }
+
+unsigned char fn_8026B0C0(int arg0) {
+    extern unsigned char lbl_80499E60[];
+    return lbl_80499E60[arg0 * 0x6C];
+}
+
