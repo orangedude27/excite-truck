@@ -131,7 +131,6 @@ s32 fn_8023A734(s32 arg0, s32 arg1) {
 }
 
 extern s32 fn_80128670(s32);
-extern s32 lbl_8034109C;
 extern s32 lbl_80341108;
 extern s32 fn_802328D4(s32);
 #pragma small_data off
@@ -326,12 +325,18 @@ extern float lbl_80563730;
 extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, float);
 #pragma scheduling off
 void fn_8023B0BC(void *arg0) {
-    s32 a = *(s32 *)((char *)arg0 + 0x10);
-    s32 b = *(s32 *)((char *)arg0 + 0xC);
-    s32 c = *(s32 *)((char *)arg0 + 8);
-    s32 d = *(s32 *)((char *)arg0 + 4);
-    s32 e = fn_80131234(&lbl_80341268);
-    volatile s32 stackZero = 0;
+    s32 a;
+    s32 b;
+    s32 c;
+    s32 d;
+    s32 e;
+    volatile s32 stackZero;
+    a = *(s32 *)((char *)arg0 + 0x10);
+    b = *(s32 *)((char *)arg0 + 0xC);
+    c = *(s32 *)((char *)arg0 + 8);
+    d = *(s32 *)((char *)arg0 + 4);
+    e = fn_80131234(&lbl_80341268[0]);
+    stackZero = 0;
     (void)stackZero;
     fn_8022BAD0(0xC9, d, c, 0, b, a, e,
                 *(s32 *)((char *)arg0 + 0x18), lbl_80563730);
