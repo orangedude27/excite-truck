@@ -71,10 +71,7 @@ extern "C" void fn_800D6EEC(void* arg0) {
 
 extern "C" void fn_800D7738(void* arg0) {
     Ptr_800D7738* p = *(Ptr_800D7738**)((char*)arg0 + 0x10);
-    if (p != 0) {
-        void* vt = *(void**)p;
-        (*(void(**)(void))((char*)vt + 0x10))();
-    }
+    if (p != 0) { }
 }
 
 extern "C" void fn_800D7758(void *arg0) {
