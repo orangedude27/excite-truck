@@ -42,6 +42,12 @@ void fn_801939C8(void *arg0) {
     }
 }
 
+void fn_80193A38(void *arg0) {
+    void *obj = *(void **)((unsigned char *)arg0 + 0x294);
+    *(unsigned char *)((unsigned char *)arg0 + 0x2A4) = 0;
+    *(int *)((unsigned char *)obj + 0x24) = *(int *)((unsigned char *)obj + 0x28);
+}
+
 void fn_8019416C(void) {
 
 }
