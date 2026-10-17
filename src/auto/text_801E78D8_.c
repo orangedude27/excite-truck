@@ -239,6 +239,11 @@ long fn_801E8954(long arg0) {
     return (*(unsigned long *)(lbl_80487D00 + arg0 * 0x38 + 0x30)) & 1;
 }
 
+long fn_801E897C(long arg0) {
+    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
+    return (*(unsigned long *)(lbl_80487D00 + arg0 * 0x38 + 0x30) >> 1) & 1;
+}
+
 extern void *lbl_8055AF08;
 void* fn_801E89EC(void) {
     return lbl_8055AF08;
