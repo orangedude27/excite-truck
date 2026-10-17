@@ -1093,6 +1093,11 @@ tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
     return 0;
 }
 
+tBTM_STATUS fn_8007A240(void (*arg0)(void *, void *)) {
+    if (arg0 != 0) arg0(lbl_803C0F78 + 0x630, lbl_803C0F78);
+    return 0;
+}
+
 void fn_8007A280(u8 *arg0) {
     u8 *base;
     if (arg0[0] != 0) return;
