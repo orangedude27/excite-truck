@@ -79,6 +79,12 @@ extern "C" int lbl_8033F4B8[];
 extern "C" int lbl_8033FB38[];
 extern "C" void fn_80222340(void *, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_80218F80(void);
+extern "C" char lbl_8033E560[];
+extern "C" char lbl_8033DA60[];
+extern "C" s32 fn_80232578(s32);
+extern "C" void fn_802E317C(const char *, ...);
+extern f32 lbl_8056351C;
+extern f64 lbl_80563520;
 extern "C" void fn_8023986C(s32);
 extern "C" void fn_8023967C(s32, s32);
 extern "C" void fn_8021915C(void *, u32);
@@ -1182,6 +1188,29 @@ extern "C" void *fn_80222718(void *arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_80222788(void *arg0, s32 arg1, s32 arg2, f32 arg3, s32 arg4) {
+    f32 spC;
+    f32 sp8;
+    if (*(s32 *)((u8 *)arg0 + 4) != 0) {
+        fn_80230C30(&spC, &sp8, arg1, arg2);
+        fn_802353F4(*(s32 *)((u8 *)arg0 + 4), arg4, spC, sp8, arg3);
+    }
+}
+
+extern "C" void fn_80222800(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
+    s32 field;
+    *arg3 = arg1;
+    *arg4 = arg2;
+    field = *(s32 *)((u8 *)arg0 + 4);
+    if (field == 0) {
+        *arg5 = arg1 + 0xA;
+        *arg6 = arg2 + 0xA;
+    } else {
+        *arg5 = arg1 + (s32)fn_80235EF0(0, 0);
+        *arg6 = arg2 + (s32)fn_80235F64(field, 0);
+    }
+}
+
 extern "C" int lbl_8033F998[];
 extern "C" void* __dt__14CollisionSpaceFv_80222998(void* arg0, s32 arg1) {
     if (arg0 != 0) {
@@ -1200,8 +1229,51 @@ extern "C" void fn_802229FC(void *arg0) {
     }
 }
 
+extern "C" void fn_80222A3C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    f32 spC;
+    f32 sp8;
+    s32 field = *(s32 *)((u8 *)arg0 + 4);
+    if (fn_802C51AC(field) != 0) {
+        spC = lbl_805634A8;
+        sp8 = lbl_805634A8;
+        fn_80230C30(&spC, &sp8, arg1, arg2);
+        if ((s32)(arg3 + 0x10000) != -1) {
+            s32 count = fn_802C51AC(field);
+            fn_802C5320(field, arg3 % count, spC, sp8, lbl_805634A8,
+                        *(f32 *)((u8 *)arg0 + 8), *(f32 *)((u8 *)arg0 + 0xC));
+        }
+    }
+}
+
 extern "C" s32 fn_80222BD4(void *arg0) {
     return fn_802C51AC(*(s32*)((u8*)arg0 + 4));
+}
+
+extern "C" char lbl_8033E560[];
+extern "C" char lbl_8033DA60[];
+extern "C" void fn_802E317C(const char *, ...);
+extern f32 lbl_8056351C;
+extern f64 lbl_80563520;
+extern "C" void *fn_80222BDC(void *arg0, void *arg1, s32 arg2) {
+    s32 sp8;
+    s32 spC;
+    f32 f;
+    f64 d;
+    fn_80218F80();
+    *(s32 *)((u8 *)arg0 + 0x244) = arg2;
+    *(void **)arg0 = lbl_8033E560;
+    sp8 = fn_80232578((s32)((u8 *)arg1 + 0x40));
+    *(s32 *)((u8 *)arg0 + 0x248) = sp8;
+    if (sp8 != 0) {
+        fn_802E317C(lbl_8033DA60, (u8 *)arg1 + 0x40);
+    }
+    spC = 0x43300000;
+    *(s32 *)((u8 *)arg0 + 0x24C) = *(s32 *)((u8 *)arg1 + 0xA0);
+    f = lbl_8056351C;
+    d = lbl_80563520;
+    *(s32 *)((u8 *)arg0 + 0x250) = (s32) f;
+    *(f32 *)((u8 *)arg0 + 0x254) = f;
+    return arg0;
 }
 
 extern "C" void fn_80223728(void *arg0) {
