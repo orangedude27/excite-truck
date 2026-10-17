@@ -995,3 +995,5 @@ extern "C" float fn_800FD848(void *arg0) { return *(float *)((char *)arg0 + 0x45
 
 extern "C" float fn_800FD850(void *arg0) { return *(float *)((char *)arg0 + 0x44C); }
 
+extern "C" float fn_800FD858(void *arg0) { return *(float *)((char *)arg0 + 0x448); }
+
