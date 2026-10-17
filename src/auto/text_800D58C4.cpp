@@ -618,6 +618,48 @@ extern "C" void* FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb(void* self,const char* 
 
 extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self,void* info){ extern const char lbl_8031E8FC[]; extern const char lbl_8031E8D8[]; if(*((u8*)self+0xCF)&1){ struct Obj{virtual void a0();virtual void a1();virtual void a2();virtual void a3();virtual void a4();}; ((Obj*)self)->a4(); void* end=(u8*)self+0x14; void* node=*(void**)((u8*)self+0x14); do { if(!node)Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC,0x23D,lbl_8031E8D8); struct Child{virtual void a0();virtual void a1();virtual void a2();virtual void a3();virtual void Draw(void*);}; ((Child*)((u8*)node-4))->Draw(info); node=*(void**)node;}while(node!=end); } }
 
+extern "C" void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* transform, bool flag) {
+    extern const char lbl_8031FF90[];
+    extern const char lbl_803200C8[];
+    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(void*, bool); };
+    if (!transform) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x254, lbl_803200C8);
+    ((Obj*)transform)->v3(self, flag);
+}
+
+extern "C" void UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* transform, bool flag) {
+    struct Node { Node* next; Node* prev; };
+    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); };
+    extern const char lbl_8031E8FC[];
+    extern const char lbl_8031E8D8[];
+    ((Obj*)self)->v5();
+    if (flag) {
+        Node* end = (Node*)((char*)self + 0x14);
+        Node* node = *(Node**)((char*)self + 0x14);
+        while (node != end) {
+            if (!node) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23d, lbl_8031E8D8);
+            (*(void (**)(void*, void*, bool))(*(char**)node - 4 + 0x48))((char*)node - 4, transform, flag);
+            node = node->next;
+        }
+    }
+}
+
+extern "C" void fn_800DC204(void* self, void* arg) {
+    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(int, void*); };
+    ((Obj*)self)->v16(0, arg);
+}
+
+extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void* self, void* link) {
+    extern const char lbl_8031FF90[];
+    extern const char lbl_803200F8[];
+    extern const char lbl_8031FF54[];
+    extern const char lbl_8031FF30[];
+    void* iterator;
+    if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x289, lbl_803200F8);
+    iterator = (char*)self + 0x20;
+    if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self + 0x1c, &iterator, link);
+}
+
 extern "C" s32 fn_800DC6DC(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
 }
