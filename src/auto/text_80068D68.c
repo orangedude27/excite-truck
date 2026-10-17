@@ -971,6 +971,14 @@ void fn_80073A1C(void) {
 
 }
 
+void fn_80073AF8(void) {
+    void *buf = GKI_getbuf(8);
+    if (buf != 0) {
+        *(u16 *)buf = 0x101;
+        fn_80071450(buf);
+    }
+}
+
 void fn_80073EA4(void) {
     s16 *buf;
 
