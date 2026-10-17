@@ -1,6 +1,28 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct {
+    void *vtbl;
+    void (*d0)(void *);
+    void (*d1)(void *);
+    void (*d2)(void *);
+    void (*d3)(void *);
+    void (*d4)(void *);
+    void (*d5)(void *);
+    void (*d6)(void *);
+    void (*d7)(void *);
+    void (*d8)(void *);
+    void (*d9)(void *);
+    void (*d10)(void *);
+    void (*d11)(void *);
+    void (*d12)(void *);
+    void (*d13)(void *);
+    void (*d14)(void *);
+    void (*d15)(void *);
+    void (*d16)(void *);
+    void (*v4C)(void *);
+} TObj4C;
+
 void fn_80171D10(int arg0) { fn_80171930(arg0 - 4); }
 
 void fn_80171D18(int arg0) { fn_80171934(arg0 - 4); }
@@ -51,7 +73,8 @@ int fn_80171EC0(void) {
 }
 
 unsigned int fn_801720E0(unsigned int arg0) {
-    return ((arg0 >> 1) & 0x7F7F7F) | (arg0 & 0xFF000000);
+    unsigned int value = (arg0 & 0x7F7F7F) | ((arg0 & 0xFF000000) >> 1);
+    return value | (arg0 & 0xFF000000);
 }
 
 float fn_801725C8(float arg0) {
@@ -167,10 +190,10 @@ void fn_80174794(void *arg0) {
     }
 }
 
+typedef void (*Fn_80175228)(void *);
 void fn_80175228(void *arg0) {
-    register void *vtable = *(void **)arg0;
-    register void *slot = *(void **)((char *)vtable + 0x4C);
-    ((void (*)(void))slot)();
+    register void **vt = *(void ***)arg0;
+    ((void (*)(void *))vt[0x13])(arg0);
 }
 
 extern float lbl_80561AEC;
