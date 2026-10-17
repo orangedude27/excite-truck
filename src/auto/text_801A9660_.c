@@ -8,7 +8,7 @@ extern void fn_8017B0B0(void *);
 extern int lbl_8033585C[64];
 extern void fn_80179EE8(void *, unsigned int);
 extern void fn_80128668(void *);
-extern void fn_801792F8(void);
+extern void *fn_801792F8(void);
 extern void *fn_801284F8(int, ...);
 extern void fn_801AC330(void);
 extern void fn_801AC26C(void);
