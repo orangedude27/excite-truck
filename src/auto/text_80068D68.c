@@ -956,6 +956,34 @@ void fn_80073A1C(void) {
 
 }
 
+void fn_80073EA4(void) {
+    s16 *buf;
+
+    buf = (s16 *)GKI_getbuf(8);
+    if (buf != 0) {
+        *buf = 0x10C;
+        fn_80071450(buf);
+    }
+}
+
+s32 bta_dm_sm_execute(BT_HDR *p_msg) {
+    extern u8 lbl_802EEA38[];
+    extern u8 lbl_802EEA6C[];
+    typedef void (*tAction)(BT_HDR *);
+    s32 i;
+    u16 event;
+    u8 action;
+
+    for (i = 0; i < 2; i++) {
+        event = p_msg->event;
+        action = lbl_802EEA6C[i + 3 * (event & 0xFF)];
+        if (action == 0xD)
+            break;
+        ((tAction *)lbl_802EEA38)[action](p_msg);
+    }
+    return 1;
+}
+
 void fn_800740A4(void) {
     BTM_PmRegister(4, lbl_803C0C14 + 0x95, 0);
 }
