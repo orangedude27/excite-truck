@@ -31,6 +31,18 @@ extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
 extern float lbl_80564590;
 extern float lbl_8056459C;
 extern float lbl_80558DC4;
+int fn_80297D5C(int* out, int value) {
+    int i = 1;
+    do {
+        if (i * i == value) {
+            *out = i;
+            return 1;
+        }
+        i++;
+    } while (i <= 0x10);
+    return 0;
+}
+
 int fn_80297D90(int* out, int value) {
     int i = 0;
     do {
@@ -117,12 +129,12 @@ void fn_802982C0(void *arg0) {
 extern "C" int fn_802984D0(void*, short*);
 extern "C" void fn_802994C0(void*, unsigned int);
 extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
-void fn_80298458(void* arg0, unsigned int arg1, short arg2) {
+void fn_80298458(int arg0, int arg1, short arg2) {
     short value = arg2;
-    void* item = (char*)arg0 + arg1 * 0x2c;
-    if (fn_802984D0(item, &value) != 0) {
+    int item = arg0 + arg1 * 0x2c;
+    if (fn_802984D0((void*)item, &value) != 0) {
         fn_802994C0(lbl_8055F7C4, arg1);
-        fn_80299338(lbl_8055F7C4, arg1, item, (char*)item + 0xc, (char*)item + 0x18, value);
+        fn_80299338(lbl_8055F7C4, arg1, (void*)item, (void*)(item + 0xc), (void*)(item + 0x18), value);
     }
 }
 
