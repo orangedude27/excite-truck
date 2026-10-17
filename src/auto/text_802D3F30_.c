@@ -87,6 +87,20 @@ void fn_802D6B54(void* alarm) {
     fn_802D5F88(fn_802D62E4(alarm));
 }
 
+extern void fn_802D6170(void *);
+extern void fn_802D61BC(void);
+extern s32 lbl_8055FD1C;
+void fn_802D6B78(void) {
+    fn_802D5FE4(0);
+}
+
+void fn_802D6B7C(void) {
+    fn_802D6170(0);
+}
+
+void fn_802D6C44(void) {
+}
+
 void fn_802D6C4C(f32 arg0) {
     lbl_8055FDE0 = arg0;
 }
