@@ -192,6 +192,14 @@ void fn_800063A4(void) {
     fn_801C6B70();
 }
 
+void fn_80006550(void *arg0, s32 arg1) {
+    s32 temp_r0;
+    temp_r0 = *(s32 *)((u8 *)arg0 + 0x10) + arg1;
+    *(s32 *)((u8 *)arg0 + 0x10) = temp_r0;
+    if (temp_r0 < 0) *(s32 *)((u8 *)arg0 + 0x10) = 0;
+    if (*(s32 *)((u8 *)arg0 + 0x10) >= 3) *(s32 *)((u8 *)arg0 + 0x10) = 2;
+}
+
 void fn_80006E50(void) {
 }
 
