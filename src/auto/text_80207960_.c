@@ -50,6 +50,37 @@ void fn_80207980(void* arg0) {
     *((signed long*)arg0 + 1) = 0;
 }
 
+extern void fn_80207DE0(void*);
+extern void fn_802E30C8(const char*, ...);
+extern void fn_80128670(void);
+extern void fn_80127E28(void*);
+extern char lbl_8033BE08[];
+extern char lbl_8033BEE8[];
+void* fn_80207B60(void* arg0, signed long arg1) {
+    signed long i;
+    signed long offset;
+    void* obj;
+    if (arg0 == 0) return arg0;
+    *(void**)arg0 = lbl_8033BEE8;
+    fn_80207DE0(arg0);
+    i = 0; offset = 0;
+    while (i < *(signed long*)((char*)arg0 + 0x10)) {
+        fn_802E30C8(lbl_8033BE08, *(signed long*)((char*)*(void***)((char*)arg0 + 0xC) + offset) + 0x37);
+        offset += 4; i++;
+    }
+    if (*(void**)((char*)arg0 + 0xC) != 0) {
+        fn_80128670();
+        *(void**)((char*)arg0 + 0xC) = 0;
+    }
+    obj = *(void**)((char*)arg0 + 0x90);
+    *(signed long*)((char*)arg0 + 0x10) = 0;
+    if (obj != 0) (*(void (**)(void*))(*(void**)(*(char**)obj + 0x24)))(obj);
+    fn_80127E28(arg0);
+    *(char*)((char*)arg0 + 4) = 0;
+    if (arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 void fn_80207C48(void) {
 	return;
 }
@@ -142,6 +173,44 @@ void fn_80207DE0(void* arg0) {
         var_r29 += 1;
     }
     *(signed long*)(((signed char*)var_r28) + 0x114) = 0;
+}
+
+extern void* memmove(void*, const void*, unsigned long);
+void fn_80207E70(void* arg0) {
+    void* cur;
+    void* dst;
+    void* src;
+    signed long i;
+    void* base;
+    void* temp;
+    void* sub;
+    void* vt;
+    signed long temp_r5;
+    base = arg0;
+    cur = base;
+    src = (char*)base + 0x98;
+    dst = (char*)base + 0x94;
+    i = 0;
+    while (i < *(signed long*)((char*)base + 0x114)) {
+        temp = *(void**)((char*)cur + 0x94);
+        sub = *(void**)((char*)temp + 0xC);
+        vt = *(void**)sub;
+        if (((signed long (**)(void*))((char*)vt + 0x24))[0](sub) == 3) {
+            temp = *(void**)((char*)cur + 0x94);
+            if (temp != 0) {
+                vt = *(void**)temp;
+                ((void (**)(void*, signed long))((char*)vt + 0x8))[0](temp, 1);
+            }
+            temp_r5 = *(signed long*)((char*)base + 0x114) - 1;
+            *(signed long*)((char*)base + 0x114) = temp_r5;
+            memmove(dst, src, (unsigned long)(temp_r5 - i) * 4);
+        } else {
+            cur = (char*)cur + 4;
+            src = (char*)src + 4;
+            dst = (char*)dst + 4;
+            i++;
+        }
+    }
 }
 
 void fn_80208404(void) {
