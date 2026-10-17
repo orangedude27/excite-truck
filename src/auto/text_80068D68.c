@@ -885,6 +885,10 @@ void fn_80071298(void *a, void *b, void *c) {
     if (callback != 0) callback(7, a, b, c);
 }
 
+void fn_8007143C(u32 index, u32 value) {
+    ((u32 *)lbl_803C0AD8)[index & 0xFF] = value;
+}
+
 void fn_8007148C(s32 arg0) {
     fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
 }
