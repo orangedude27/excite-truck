@@ -52,6 +52,20 @@ void fn_801EB634(void *arg0, s32 arg1) {
     if (*(s32 *)arg0) *(s32 *)arg0 += arg1;
 }
 
+extern void fn_801EB66C(void *, s32);
+void fn_801EB66C(void *arg0, s32 arg1) {
+    u8 a, b, c, d;
+    a = ((u8 *)arg0)[0];
+    d = ((u8 *)arg0)[3];
+    ((u8 *)arg0)[0] = d;
+    ((u8 *)arg0)[3] = a;
+    b = ((u8 *)arg0)[1];
+    c = ((u8 *)arg0)[2];
+    ((u8 *)arg0)[1] = c;
+    ((u8 *)arg0)[2] = b;
+    if (*(s32 *)arg0) *(s32 *)arg0 += arg1;
+}
+
 void fn_801EB6A4(void) {
 
 }
