@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
+typedef void (*vfn0_t)(void*);
 class JStudio_JAudio {
 public:
     class TAdaptor_sound {
