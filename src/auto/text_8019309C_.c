@@ -22,11 +22,18 @@ void fn_80128668(void *);
 void fn_80193138(int);
 
 extern unsigned char lbl_8055A4B8[];
-extern float lbl_80562178, lbl_8056217C;
+extern float lbl_80562178, lbl_8056217C, lbl_8055E558;
 extern void fn_8017B4E0(void *, float *, float *, float);
 extern void fn_80193D30(void *);
 extern int fn_802E30C8(const char *, ...);
 extern char lbl_80333198[];
+
+float fn_801931AC(float a, float b, float c, float d) {
+    float value = lbl_80562140 - a / d;
+    if (value > lbl_80562140) value = lbl_80562140;
+    if (value > lbl_80562144) value = lbl_80562144;
+    return b + value * (c - b);
+}
 
 void fn_801935EC(void *arg0) {
     float value = lbl_80562144;
