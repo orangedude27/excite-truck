@@ -2014,9 +2014,8 @@ extern "C" s32 fn_80229F14(void *arg0) {
 }
 
 extern "C" void fn_80229F1C(void *arg0) {
-    u8 value = *(u8 *)((char *)arg0 + 0x1A);
     *(u8 *)((char *)arg0 + 0x18) = 1;
-    if (value != 0) {
+    if (*(u8 *)((char *)arg0 + 0x1A) != 0) {
         *(u8 *)((char *)arg0 + 0x234) = 1;
     }
 }
