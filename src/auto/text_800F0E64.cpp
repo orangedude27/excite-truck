@@ -143,6 +143,12 @@ extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     OSRestoreInterrupts(token);
 }
 
+extern "C" void fn_800F1E50(void *arg0, f32 value) {
+    u32 token = OSDisableInterrupts();
+    *(f32 *)((char *)arg0 + 8) = value;
+    OSRestoreInterrupts(token);
+}
+
 extern "C" void fn_800F2004(void *arg0, f32 farg0) {
     OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x68) = farg0;
