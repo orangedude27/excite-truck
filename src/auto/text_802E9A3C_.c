@@ -52,17 +52,15 @@ void fn_802EC158(void) {
     int *ptr;
     int i;
 
-    ptr = &lbl_80560090;
-    i = 0;
     lbl_805600D0 = 0;
     lbl_805600D1 = 0;
+    ptr = &lbl_80560090;
+    i = 0;
     do {
         fn_802E622C(*ptr, lbl_805651C4);
         fn_802E61E4(*ptr, lbl_805651C4);
         i++;
-        if (i < 2) {
-            ptr++;
-        }
+        ptr++;
     } while (i < 2);
 }
 
@@ -74,7 +72,8 @@ void fn_802EC1C0(float arg0) {
     }
     fn_802EC138();
 }
-
+#pragma dont_inline reset
+#pragma dont_inline fn_802EC138
 void fn_802EC1D8(void) {
     lbl_805600C8 = 1;
 }
