@@ -7,6 +7,9 @@ extern int fn_80128668(void);
 extern double fabs(double);
 extern float lbl_80561C48;
 extern float lbl_80561C4C;
+extern float lbl_80561C98;
+extern float lbl_80561C9C;
+extern void fn_802E8518(void);
 typedef struct Unk8017Object Unk8017Object;
 typedef struct Unk8017VTable {
     void (*unk_0x0[32])(void);
@@ -143,6 +146,28 @@ void GXInitLightAttnK_80181464(void *arg0, float farg0, float farg1, float farg2
     *(float *)((char *)arg0 + 0x320) = farg2;
 }
 
+float fn_80181568(void *arg0) {
+    float value = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x18);
+    if (value > lbl_80561C48) {
+        value = lbl_80561C48;
+    }
+    return value;
+}
+
+extern void fn_802E8518(void);
+extern float lbl_80561C98;
+extern float lbl_80561C9C;
+float fn_80181588(void *arg0) {
+    float value = lbl_80561C98 - lbl_80561C9C * *(float *)((char *)arg0 + 0x1C);
+    if (value < lbl_80561C4C) {
+        value = lbl_80561C4C;
+    }
+    if (value > lbl_80561C48) {
+        value = lbl_80561C48;
+    }
+    return value;
+}
+
 float fn_801815C4(void *arg0) {
     return *(float *)((char *)arg0 + 0x28);
 }
@@ -197,9 +222,7 @@ unsigned char fn_801817AC(void *arg0) {
 
 int fn_801817B4(void *arg0) {
     int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x340) != 0) {
-        result = 1;
-    } else if (fn_801A8EE4((char *)arg0 + 0x9C) != 0) {
+    if (*(unsigned char *)((char *)arg0 + 0x340) == 0 && fn_801A8EE4((char *)arg0 + 0x9C) != 0) {
         result = 1;
     }
     return result;
@@ -207,9 +230,7 @@ int fn_801817B4(void *arg0) {
 
 int fn_80181800(void *arg0) {
     int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x340) != 0) {
-        result = 1;
-    } else if (fn_801A8EE4((char *)arg0 + 0x8C) != 0) {
+    if (*(unsigned char *)((char *)arg0 + 0x340) == 0 && fn_801A8EE4((char *)arg0 + 0x8C) != 0) {
         result = 1;
     }
     return result;
