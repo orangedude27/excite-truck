@@ -1477,6 +1477,21 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802294F4(
     return this_;
 }
 
+#pragma dont_inline on
+extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80229550(
+    void* this_, s32 flag) {
+    if (this_) {
+        if (this_ != NULL) {
+            fn_802223C4(this_, 0);
+        }
+
+        if (flag > 0) {
+            fn_80128668(this_);
+        }
+    }
+    return this_;
+}
+#pragma dont_inline reset
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802295AC(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_8021915C(arg0, 0);
