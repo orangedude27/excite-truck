@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+  extern "C" int fn_80287B14(void);
   extern "C" void* fn_80299A04(void*, unsigned int);
   extern "C" void fn_8028E584(void*, void*, float*, float);
 extern "C" void fn_80288A40(void*, float*);
@@ -142,6 +143,25 @@ void fn_80298458(int arg0, int arg1, short arg2) {
 }
 
 extern "C" void fn_80298A48(void) {
+}
+
+extern "C" void* fn_80298A4C(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        void* field8 = *(void**)((char*)arg0 + 8);
+        if (field8 != 0) {
+            fn_802976DC();
+            *(void**)((char*)arg0 + 8) = 0;
+        }
+        fn_8028E398(*(void**)((char*)arg0 + 4));
+        if (*(void**)((char*)arg0 + 0) != 0) {
+            fn_80128670(*(int*)((char*)arg0 + 0) - 0x10);
+        }
+        *(void**)((char*)arg0 + 0) = 0;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 extern "C" void fn_8029A890(void *arg0, void *arg1) {
