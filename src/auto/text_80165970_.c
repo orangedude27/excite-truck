@@ -28,6 +28,17 @@ extern unsigned char lbl_8042FEB0;
 extern float lbl_8055E320;
 #pragma push
 #pragma small_data off
+void *fn_80165970(void *arg0, int arg1) {
+    if (arg0 == 0) return arg0;
+    if (arg0 == 0) {
+        *(int *)arg0 = 0;
+        *((int *)arg0 + 1) = 0;
+        *((int *)arg0 + 2) = 0;
+    }
+    if (arg1 > 0) fn_80128668(arg0);
+    return arg0;
+}
+
 float fn_801659D0(int arg0) {
     float temp_f31;
     temp_f31 = fn_8013672C(arg0);
@@ -99,6 +110,11 @@ int fn_801667F0(void) {
     }
     return result;
 }
+
+void fn_80166E54(void *arg0) {
+    *(float *)((char *)arg0 + 0xC) += lbl_805618F0;
+}
+
 extern float lbl_80561898;
 extern float lbl_805618D8;
 extern float lbl_805618DC;
