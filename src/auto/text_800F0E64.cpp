@@ -649,9 +649,8 @@ extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3sn
 extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void);
 extern "C" void fn_800F7110(void *self, unsigned long taskId) {
     unsigned long id = taskId;
-    void *p = self;
-    fn_800FDE60();
-    CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(id);
+    void* manager = ((void* (*)(void))fn_800FDE60)();
+    ((void (*)(void*, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(manager, id);
 }
 
 extern "C" s32 fn_800F76C0(s32 arg0, s32 arg1) {
