@@ -218,6 +218,10 @@ void fn_802AFF80(void *arg0, short arg1) {
 void fn_802B0114(void) {
 }
 
+s32 fn_802B0118(void *arg0) {
+    return (*(u32 *)((u8 *)arg0 + 8) >> 6) & 7;
+}
+
 extern int fn_801E8718(int);
 extern int fn_802AEB3C();
 void fn_802B0144(void) {
