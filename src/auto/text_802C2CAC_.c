@@ -132,6 +132,37 @@ void fn_802C32B8(void) {
     fn_802E317C(lbl_8034B060, (s32)(s8)*(u8 *)lbl_8055FC00);
 }
 
+extern const char lbl_8034B094[];
+extern void fn_802C4108(s32,s32,s32,s32,s32,s32,s32);
+extern void fn_802C4610(s32,s32,s32,s32,s32,s32,s32);
+extern void fn_802C4388(s32,s32,s32,s32,s32,s32,s32);
+void fn_802C3850(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    u8 mode = *(u8 *)arg0;
+    s32 flag = 0;
+    if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
+    if (flag) {
+        flag = 0;
+        if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
+        if (flag) {
+            fn_802C4108(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
+            return;
+        }
+    }
+    if ((s8)mode == 5 && *(u8 *)arg5 == 5) {
+        fn_802C4610(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
+        return;
+    }
+    if ((s8)mode == 5) {
+        flag = 0;
+        if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
+        if (flag) {
+            fn_802C4388(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
+            return;
+        }
+    }
+    fn_802E317C(lbl_8034B094, (s32)*(s8 *)arg0, (s32)*(s8 *)arg5);
+}
+
 void fn_802C4C80(void* arg0) {
     if (arg0 == NULL) {
         return;
@@ -198,7 +229,7 @@ extern const char lbl_8034B060[];
 extern void fn_802C3320();
 extern void fn_802C33A8();
 extern void fn_802E317C(const char *, ...);
-extern void fn_802C3850(s32, s32, s32, s32, s32, s32, s32);
+extern void fn_802C3850();
 extern void fn_802C3754(s32, s32, s32, s32, s32, s32);
 extern void fn_802DB2C8(void);
 extern void fn_802C3478(void);
