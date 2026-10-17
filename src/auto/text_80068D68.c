@@ -1842,6 +1842,16 @@ tBTM_STATUS BTM_RemoveSco(UINT16 sco_inx) {
     return 1;
 }
 
+void btm_remove_sco_links(BD_ADDR addr) {
+    u8 *entry = lbl_803C0F78 + 0x1854;
+    u16 i;
+    for (i = 0; i < 3; i++, entry += 0x34) {
+        if (entry[0xD] && memcmp(entry + 0x28, addr, 6) == 0) {
+            BTM_RemoveSco(i);
+        }
+    }
+}
+
 void fn_8007DEF4(void *arg0) {
     GKI_freebuf(arg0);
 }
