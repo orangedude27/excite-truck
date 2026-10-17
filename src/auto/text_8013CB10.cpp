@@ -18,6 +18,8 @@ extern "C" u8 *fn_801B2EC0(s32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+struct S28_80142118 { s32 v[7]; };
+
 extern "C" void fn_80140A6C(void);
 extern "C" s32 fn_801B8514(void);
 extern "C" u8 *fn_8017960C(s32);
@@ -114,6 +116,17 @@ extern "C" s32 fn_8013D1F0(s32 arg0) {
 extern "C" void fn_8013D27C(void *a, void *b) {
     fn_8013D224(*(f32 *)((u8 *)a + 0x18), *(f32 *)((u8 *)b + 0x18));
 }
+
+extern "C" u8 lbl_8032CAC0_vt[48];
+extern "C" u8 lbl_80559D18_str[5];
+#pragma dont_inline on
+extern "C" void fn_8013D288(void) {
+    void **slot = fn_801284F8(4, (void *)"zstm");
+    if (slot != 0) {
+        *slot = (void *)lbl_8032CAC0_vt;
+    }
+}
+#pragma dont_inline off
 
 extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
     s32 count = 0;
@@ -283,10 +296,36 @@ extern "C" u8 fn_80141FA0(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x19);
 }
 
+extern "C" s32 fn_801420D4(void *arg0) {
+    return __fabsf(*(f32 *)((u8 *)arg0 + 0x2690)) <= lbl_80558DC4;
+}
+
 extern "C" void fn_80142104(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0xE8) = 0;
     *(s32 *)((u8 *)arg0 + 0x104) = 0;
     *(s32 *)((u8 *)arg0 + 0x100) = 0;
+}
+
+extern "C" void fn_80142118(void *arg0, void *arg1) {
+    *(s32 *)((u8 *)arg0 + 0x0) = *(s32 *)((u8 *)arg1 + 0x0);
+    *(s32 *)((u8 *)arg0 + 0x4) = *(s32 *)((u8 *)arg1 + 0x4);
+    *(s32 *)((u8 *)arg0 + 0x8) = *(s32 *)((u8 *)arg1 + 0x8);
+    *(s32 *)((u8 *)arg0 + 0xC) = *(s32 *)((u8 *)arg1 + 0xC);
+    *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)((u8 *)arg1 + 0x10);
+    *(s32 *)((u8 *)arg0 + 0x14) = *(s32 *)((u8 *)arg1 + 0x14);
+    *(s32 *)((u8 *)arg0 + 0x18) = *(s32 *)((u8 *)arg1 + 0x18);
+}
+
+extern "C" s32 fn_80142154(void *arg0) {
+    s32 result = 0;
+    s32 idx = *(s32 *)((u8 *)arg0 + 0x68);
+    if (idx < *(s32 *)(*(s8 **)((u8 *)arg0 + 0x64)) - 1) {
+        *(s32 *)((u8 *)arg0 + 0x68) = idx + 1;
+        *(f32 *)((u8 *)arg0 + 0x70) = fn_8001DAE8((u8 *)arg0 + 0x6C);
+        *(s32 *)((u8 *)arg0 + 0x288) = fn_8013D18C(*(s32 *)((u8 *)arg0 + 0x68));
+        result = 1;
+    }
+    return result;
 }
 
 extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
