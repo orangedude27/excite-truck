@@ -38,6 +38,8 @@ extern s32 lbl_80437E24[];
 extern void *fn_801C3C80(void);
 extern void qsort(void *base, size_t count, size_t size, int (*compare)(const void *, const void *));
 extern s32 fn_801C3B7C(const void *, const void *);
+extern s32 fn_801C3524(s32);
+extern char *strcpy(char *, const char *);
 extern char lbl_80437FC0[304];
 extern char lbl_80336EC8[];
 extern char lbl_80336EE8[];
@@ -118,6 +120,13 @@ void fn_801C3A3C(s32 arg0, f32 arg1, f32 arg2) {
         fn_80015A20(&values[1], &values[0]);
         fn_80015B20(arg0, &values[1], arg0);
     }
+}
+
+void fn_801C3AF8(s32 arg0, s32 arg1, f32 arg2) {
+    f32 values[3];
+    values[0] = cos(arg2);
+    values[1] = sin(arg2);
+    fn_801B7C8C(arg0, arg1, &values[1]);
 }
 
 s32 *__AXFXGetLfoSinTable_801769CC(void);
@@ -334,9 +343,9 @@ extern s32 fn_801C34CC(f32, f32);
 #pragma scheduling off
 extern s32 lbl_8055E82C;
 void fn_801C855C(void);
+extern unsigned char lbl_8055E83E;
 void fn_801C7770(void) {
-    u32 x = (u32)__cntlzw((u32)lbl_8055E83E) / 32;
-    lbl_8055E83E = x;
+    *(volatile unsigned char *)&lbl_8055E83E = lbl_8055E83E == 0;
 }
 #pragma scheduling on
 void fn_801C77C0(void) {
