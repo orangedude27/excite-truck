@@ -9,6 +9,16 @@ extern void fn_80010B80(s32, f32, f32, f32, f32);
 extern f32 lbl_80560110;
 extern f32 lbl_80560114;
 extern f32 lbl_80560118;
+extern u32 lbl_8034EEB8[];
+extern f32 lbl_8056011C;
+extern u8 lbl_8034EC78[];
+extern u8 *lbl_8055D350;
+extern void *fn_801E87A8(void);
+extern s32 fn_801E86F8(s32);
+extern void *fn_801EA9CC(void);
+extern s32 fn_801B8570(s32);
+extern s32 fn_802E2C20(void);
+extern s32 fn_80005580(s32);
 
 // split_file divides it into the game's real files (file_status shows its range).
 
