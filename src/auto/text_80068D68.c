@@ -1754,6 +1754,33 @@ void fn_8007F5A4(void) {
     }
 }
 
+void btm_sec_abort_access_req(BD_ADDR arg0) {
+    tBTM_SEC_DEV_REC *dev = btm_find_dev(arg0);
+    if (dev != NULL) {
+        if (lbl_803C0F78[0x1920] != 0) {
+            ((void (*)(BD_ADDR, void *, void *))*(u32 *)&lbl_803C0F78[0x1920])(arg0, (u8 *)dev + 0x22, (u8 *)dev + 0x35);
+        }
+        if (dev->sec_flags == 4 || dev->sec_flags == 1) {
+            dev->sec_flags = 0;
+            if (dev->p_callback != NULL && *(u32 *)dev->p_callback == 3) {
+                *(s32 *)((u8 *)dev->p_callback + 4) = 0;
+            }
+            dev->p_callback = NULL;
+        }
+    }
+}
+
+s32 fn_8007FEFC(u16 handle) {
+    tBTM_SEC_DEV_REC *dev = btm_find_dev_by_handle(handle);
+    if (dev == NULL) {
+        return 0;
+    }
+    if ((((u8 *)dev)[0x81] & 0x40) != 0) {
+        return 1;
+    }
+    return 0;
+}
+
 void fn_8008251C(void) {
     btm_init();
     l2c_init();
@@ -1799,6 +1826,18 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     p_buf[15] = response_cnt;
     btu_hcif_send_cmd(p_buf);
     return TRUE;
+}
+
+extern void fn_80070954(u32, void *, u16);
+extern void *l2cu_find_ccb_by_cid(void *, u16);
+extern void fn_80089E40(void *, u8, void *);
+extern char lbl_8031801C[];
+extern char lbl_80318040[];
+extern char lbl_8031806C[];
+extern char lbl_80318090[];
+u8 fn_80089E20(u8 value) {
+    if (value != 0xFF) lbl_803C4040[0] = value;
+    return lbl_803C4040[0];
 }
 
 void fn_80089E3C(void) {
