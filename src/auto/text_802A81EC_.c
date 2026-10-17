@@ -16,12 +16,12 @@ void fn_802A81EC(void) {
 }
 
 void fn_802A8978(void) {
+    s32* base;
     u8* entry;
     s32 j;
     s32 offset;
     s32 i;
     f32 temp;
-    s32* base;
 
     temp = lbl_8055E3C8;
     lbl_8055F8D4 = temp - lbl_8055F8D8;
@@ -37,7 +37,7 @@ void fn_802A8978(void) {
         fn_802A8A4C((s32)entry, (s32)(entry + 0x60));
         j = 0;
         while (j < fn_802A8A34((void*)(entry + 0x6c))) {
-            fn_802A8A3C((s32)(entry + 0x6c), j);
+            fn_802A8A3C((s32 *)(entry + 0x6c), j);
             fn_802A8A4C((s32)entry);
             j++;
         }
