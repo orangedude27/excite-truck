@@ -1252,6 +1252,20 @@ extern "C" void fn_80222AFC(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4
     *arg6 = *arg4 + (s32) *(f32 *)((u8 *)arg0 + 0xC);
 }
 
+extern "C" s32 fn_80222B48(void *arg0, s32 arg1, s32 arg2) {
+    s32 sp14;
+    s32 sp10;
+    s32 spC;
+    s32 sp8;
+    s32 result;
+    ((void (*)(s32 *, s32 *, s32 *, s32 *))(*(void **)((u8 *)arg0 + 0x14)))(&sp8, &spC, &sp10, &sp14);
+    result = 0;
+    if (arg1 >= sp8 && arg1 < sp10 && arg2 >= spC && arg2 < sp14) {
+        result = 1;
+    }
+    return result;
+}
+
 extern "C" s32 fn_80222BD4(void *arg0) {
     return fn_802C51AC(*(s32*)((u8*)arg0 + 4));
 }
@@ -1280,6 +1294,16 @@ extern "C" void *fn_80222BDC(void *arg0, void *arg1, s32 arg2) {
     d = lbl_80563520;
     *(s32 *)((u8 *)arg0 + 0x250) = (s32) f;
     *(f32 *)((u8 *)arg0 + 0x254) = f;
+    return arg0;
+}
+
+extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80222C8C(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_8033E560;
+        fn_802328D4((void *)*(s32 *)((u8 *)arg0 + 0x248));
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
     return arg0;
 }
 
