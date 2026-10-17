@@ -38,6 +38,8 @@ void fn_802E8918(void) {
     fn_802E2E38(1);
 }
 
+int fn_802E8AE8(void) { unsigned char sp8[0x98]; int result=0; if(NANDOpen(sp8,1)==0) { result=1; NANDClose(sp8); } return result; }
+
 extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
 void fn_802E8C2C(void) { for (;;) { if(((int(*)(int))fn_802E888C)(4)!=0) { ((void(*)(void))fn_802E8918)(); return; } if(fn_802E88D8()!=0) return; } }
@@ -50,6 +52,9 @@ void fn_802E8D7C(void* hi) {
 typedef unsigned int u32;
 extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
+extern int NANDDelete(const char *);
+extern char lbl_8034DE54[];
+extern char lbl_8034DE6C[];
 extern int NANDOpen(void *, int);
 extern int NANDClose(void *);
 extern char lbl_80560034;
