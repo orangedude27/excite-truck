@@ -35,3 +35,16 @@ int fn_80204CF0(void) {
     return *lbl_8055ED5C;
 }
 
+void fn_80205208(void) {
+    int *p = lbl_8055ED5C;
+    lbl_8055ED58 = 0;
+    if (p != 0) {
+        p[4] = 0;
+        p[2] = 0;
+        p[3] = 0;
+        fn_80131818(p[1]);
+        p[1] = 0;
+        fn_80128668(p);
+    }
+}
+
