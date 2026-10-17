@@ -145,10 +145,38 @@ u8 fn_80232B78(void *arg0) {
     return ((u8 *)arg0)[5];
 }
 
+void fn_80232B80(s32 arg0) {
+    void *value = (void *)fn_80231AF0;
+    lbl_8055F070 = arg0;
+    if (arg0 == 0) {
+        value = (void *)fn_80231D84;
+    }
+    lbl_8055B9A8 = value;
+}
+
+extern f32 lbl_8056368C;
+extern f32 lbl_80563684;
+extern void fn_80231714(void);
+extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
+void fn_80232D3C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 f0, f32 f1, f32 f2, f32 f3, f32 f4) {
+    s32 sp8 = arg2;
+    fn_80231714();
+    if ((s8)*arg0 != 0) {
+        fn_80232040((u8 *)arg0, arg1, sp8, arg3, arg4, f0, f1, f2, f3, f4, lbl_8056368C);
+    }
+}
+
+void fn_802335F0(void) {
+    fn_80233600((u8 *)-1, 9, lbl_8056368C);
+}
+
 extern int vsprintf(char *, const char *, va_list);
-extern void fn_80232BA4(char *, s32, s32, s32, f64, f64, f64, f64, f64);
-void fn_802337A0(f64 a, s32 b, f64 c, s32 d, f64 e, f64 f, s32 g, f64 h, const char *fmt, ...) {
-    char buffer[0x50];
+extern f32 lbl_8056368C;
+extern f32 lbl_80563684;
+extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
+extern void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
+void fn_802337A0(f64 a, s32 b, f64 c, s32 d, f64 e, f64 f, s32 g, f64 h, char *fmt, ...) {
+    char buffer[0x80];
     va_list args;
     va_start(args, fmt);
     vsprintf(buffer, fmt, args);
