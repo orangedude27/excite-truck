@@ -277,4 +277,12 @@ void* fn_801E89EC(void) {
 void fn_801E89F4(void *arg0) {
     lbl_8055AF08 = arg0;
 }
+
+void fn_801E8CB8(float *arg0, float *arg1) {
+    arg0[0] = lbl_804881D8[0];
+    arg0[1] = lbl_804881D8[1];
+    arg0[2] = lbl_804881D8[2];
+    arg1[0] = lbl_804881D8[3];
+}
+
 extern unsigned char lbl_80487D00[];
