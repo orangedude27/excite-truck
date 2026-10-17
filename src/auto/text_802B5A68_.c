@@ -64,12 +64,10 @@ void fn_802B5CC4(void) {
 extern s32 fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_802B05DC(void);
 extern s32 fn_802B5D2C(const char *, s32);
-#pragma small_data on
-extern const char lbl_8055CE38[];
-extern const char lbl_8055CE40[];
-extern const char lbl_8055CE48[];
-extern const char lbl_8055CE50[];
-#pragma small_data off
+__declspec(section ".sdata") extern const char lbl_8055CE38[];
+__declspec(section ".sdata") extern const char lbl_8055CE40[];
+__declspec(section ".sdata") extern const char lbl_8055CE48[];
+__declspec(section ".sdata") extern const char lbl_8055CE50[];
 extern s32 lbl_804BFF80;
 extern void fn_802B83CC(void);
 extern s32 fn_802B8510(s32);
