@@ -191,8 +191,31 @@ void *fn_8024AFF8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_8024B618(s32 arg0, s32 arg1) {
+    return arg0 + arg1 * 0x68 + 0xDC;
+}
+
 void fn_8024B6A8(void) {
     fn_8024B260();
+}
+
+void fn_8024B6AC(void *arg0) {
+    s32 index = fn_80214D04();
+    s32 *array = *(s32 **)((char *)arg0 + 0x18);
+    char *dst = (char *)arg0 + 0x64;
+    char *src = *(char **)((char *)array[index] + 0x10);
+    s32 count = 0x32;
+    *(s32 *)((char *)arg0 + 0x9C) = index;
+    do {
+        char c = *src++;
+        *dst++ = c;
+        if (c == 0)
+            break;
+        count--;
+    } while (count > 0);
+    if (count == 0)
+        dst[-1] = 0;
+    *(s32 *)((char *)arg0 + 0x98) = *(s32 *)array[index];
 }
 
 s32 fn_8024B874(s32 arg0) { return arg0 + 0x64; }
