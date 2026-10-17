@@ -34,3 +34,6 @@ void fn_802BE780(void *arg0) {
         *(void **)arg0 = NULL;
     }
 }
+
+void fn_802BE7F4(void) {}
+
