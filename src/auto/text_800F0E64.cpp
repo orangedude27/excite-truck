@@ -51,7 +51,7 @@ extern "C" f32 lbl_805610BC;
   extern "C" void *GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void);
   extern "C" s32 Shutdown__Q46nw4hbm3snd6detail11SoundThreadFv(void);
   extern "C" void *fn_800FE648(void);
-  extern "C" s32 Destroy__Q46nw4hbm3snd6detail10TaskThreadFv(void *);
+  extern "C" s32 Destroy__Q46nw4hbm3snd6detail10TaskThreadFv(void);
   extern "C" void *GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void);
   extern "C" void fn_800EEB64(u8 *);
   extern "C" void *Instance__15EmissionManagerFv(void);
@@ -629,6 +629,39 @@ extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
                                      (const char*)lbl_80325D48);
     }
     *(u16*)&((u8*)this_)[0x26] = (u16)limit;
+}
+
+extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(
+    void* this_, void* pHeap) {
+    if (pHeap == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C50, 0x256,
+                                     (const char*)lbl_80325D6C);
+    }
+    *(void**)((u8*)pHeap + 0x38) = this_;
+    if (this_ == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323834, 0x233,
+                                     (const char*)lbl_80323810);
+    }
+    s32 sp8 = (s32)((u8*)this_ + 0x1C);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
+        (void*)((u8*)this_ + 0x18), (void**)&sp8, (void*)((u8*)pHeap + 0x2C));
+    *(u8*)((u8*)this_ + 0x2D) = 1;
+}
+
+extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
+    void* this_, void* pHandle, u32 id, void* pAmbient, void* pPlayer,
+    void* pInfo) {
+    void* pSound;
+    void* (*fn)(void*, void*, u32, void*, void*, void*);
+
+    fn = *(void* (**)(void*, void*, u32, void*, void*, void*))(*(u32*)this_ +
+                                                                0x0C);
+    pSound = fn(this_, pHandle, id, pAmbient, pPlayer, pInfo);
+
+    if (pSound != 0 && *(void**)&((u8*)pSound)[0x00] == 0) {
+        void (*cb)(void*) = *(void (**)(void*))(*(u32*)pHandle + 0x14);
+        cb(pHandle);
+    }
 }
 
 extern "C" void NWC24Data_Init(void* arg0) {
