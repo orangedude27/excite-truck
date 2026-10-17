@@ -3594,6 +3594,19 @@ void fn_8009757C(u8 *p_ccb) {
     }
 }
 
+void sdp_conn_timeout(tCONN_CB *p_ccb) {
+    extern char lbl_8031A4B8[];
+    extern u8 lbl_803C4C40[];
+    extern void fn_80099F58(void *);
+    if (lbl_803C4C40[0x4630] >= 4) {
+        fn_8007096C(0xA0003, lbl_8031A4B8, p_ccb->con_state, p_ccb->connection_id);
+    }
+    L2CA_DisconnectReq(p_ccb->connection_id);
+    if (*(void (**)(UINT16))((u8 *)p_ccb + 0x414) != NULL)
+        (*(void (**)(UINT16))((u8 *)p_ccb + 0x414))(0xFFF1);
+    fn_80099F58(p_ccb);
+}
+
 tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16 handle) {
     u8 *p = lbl_803C4C40 + 0x3C;
     int i;
@@ -3642,17 +3655,15 @@ BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) 
 void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
     UINT16 i;
     UINT16 x;
-
     if (num_attr <= 1) return;
     num_attr--;
-    for (i = 0; i < num_attr;) {
+    for (i = 0; i < num_attr; i++) {
         if (p_db->attr_filters[i] > p_db->attr_filters[i + 1]) {
             x = p_db->attr_filters[i];
             p_db->attr_filters[i] = p_db->attr_filters[i + 1];
             p_db->attr_filters[i + 1] = x;
             i = (UINT16)-1;
         }
-        i++;
     }
 }
 
