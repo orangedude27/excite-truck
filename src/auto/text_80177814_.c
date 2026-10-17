@@ -386,6 +386,12 @@ char fn_801796C4(void) {
 long fn_801796CC(long arg0, long arg1, long arg2) {
     return fn_8017873C((long*)&lbl_80430870, arg0, arg1, arg2, arg0);
 }
+
+extern int lbl_80431874[];
+long fn_801796EC(long arg0, long arg1, long arg2) {
+    return fn_8017873C((long*)&lbl_80431874, arg0, arg1, arg2, arg0);
+}
+
 #pragma dont_inline off
 void DBPrintf_80179758(const char *fmt, ...) {
 #pragma unused(fmt)
