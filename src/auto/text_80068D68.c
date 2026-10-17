@@ -1143,6 +1143,21 @@ void fn_800833E8(s32 arg0) { btm_cback(0, arg0); }
 
 void fn_800833F4(s32 arg0) { btm_cback(1, arg0); }
 
+u16 gap_convert_btm_status(u16 status) {
+    switch (status) {
+    case 0: return 0;
+    case 1: return 0x10B;
+    case 2: return 0x103;
+    case 3: return 0x109;
+    case 4: return 0x10C;
+    case 5: return 0x10D;
+    case 6: return 0x115;
+    case 7:
+    case 8:
+    default: return 0x114;
+    }
+}
+
 void fn_80089E3C(void) {
 
 }
