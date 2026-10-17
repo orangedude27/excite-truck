@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern const char *lbl_802F9588[];
 struct Entry_801A75B4 { const char *name; char pad[20]; };
 extern float fn_801A7F98(void);
 extern float lbl_80562470;
@@ -11,35 +12,33 @@ void fn_801A7F8C(void) {
 }
 
 int fn_801A8E38(void) {
-    fn_801A7F98();
-    return (fn_801A7F98(), 0);
+    return fn_801A7F98() < lbl_80562470;
 }
 
 int fn_801A8E68(void *arg0) {
     int state = *(int *)arg0;
-    int result = 0;
     if (state >= 7)
         return 0;
     if (state < 1)
         return 0;
-    if (fn_801A8E38()) {
-        if (*(unsigned char *)((char *)arg0 + 0xC) == 0) {
-            *(unsigned char *)((char *)arg0 + 0xC) = 1;
-            result = 1;
-        }
-    } else {
+    if (fn_801A8E38() == 0) {
         *(unsigned char *)((char *)arg0 + 0xC) = 0;
+        return 0;
     }
-    return result;
+    if (*(unsigned char *)((char *)arg0 + 0xC) != 0)
+        return 0;
+    *(unsigned char *)((char *)arg0 + 0xC) = 1;
+    return 1;
 }
 
 int fn_801A8EE4(unsigned int *arg0) {
     unsigned int value = *arg0 - 1;
+    int result = 0;
     if (value > 5)
-        return 0;
-    if (((1U << value) & 0x2D) != 0)
-        return 1;
-    return 0;
+        return result;
+    if ((1U << value) & 0x2D)
+        result = 1;
+    return result;
 }
 
 extern void fn_801A7628(void);
