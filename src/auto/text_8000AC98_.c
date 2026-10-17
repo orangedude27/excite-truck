@@ -39,6 +39,29 @@ void fn_8000AD20(void) {
 
 int fn_8000AD24(void) { return 0; }
 
+extern int lbl_8034F5D8;
+extern int lbl_8055D3E0;
+extern int fn_802E4A10(void);
+extern void *lbl_8055D3D0;
+extern int lbl_8055D3DC;
+extern int lbl_8055D3E4;
+extern char lbl_802FBC90[];
+void fn_8000ADE0(int arg0) {
+    void (*callback)(void);
+    if (arg0 != 1 && arg0 != 0x12 && arg0 != 0x18)
+        lbl_8055D3DC = arg0;
+    if (lbl_8055D3D0 != 0) {
+        callback = *(void (**)(void))((char *)lbl_8055D3D0 + 0x10);
+        if (callback != 0) callback();
+    }
+    lbl_8055D3D0 = lbl_802FBC90 + arg0 * 0x14;
+    if (lbl_8055D3D0 != 0) {
+        callback = *(void (**)(void))((char *)lbl_8055D3D0 + 0xC);
+        if (callback != 0) callback();
+    }
+    lbl_8055D3E4 = fn_802E4A10();
+}
+
 int fn_800070DC(void);
 void fn_8000AEC4(void) {
     fn_800070DC();
