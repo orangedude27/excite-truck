@@ -28,6 +28,13 @@ s32 fn_8028A85C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8028A9BC(void) {
+    fn_8028BD60(lbl_8055F6F0);
+    fn_8028BD60(lbl_8055F6F4);
+    fn_8028CA70(lbl_8055F6F8);
+    fn_8028AB14();
+}
+
 extern s32 lbl_8055F704;
 extern void fn_8028E398();
 void fn_8028B4CC(void) {
