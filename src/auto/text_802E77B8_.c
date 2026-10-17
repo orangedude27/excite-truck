@@ -64,10 +64,32 @@ void fn_802E7A14(int arg0) {
     lbl_8056000C++;
 }
 
+unsigned char fn_802E8504(int index) {
+    extern unsigned char lbl_80505978[];
+    return lbl_80505978[index * 0x638];
+}
+
 extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
 extern unsigned char lbl_80505978[];
 void fn_802E8528(int, float);
 void fn_802E8524(void) {}
+
+void fn_802E8528(int index, float value) {
+    float scaled = (value - lbl_80565198) * lbl_8056519C;
+    float rounded;
+    int converted;
+    int magnitude;
+    unsigned short result = 0xFFFF;
+    if (scaled < lbl_80565164)
+        rounded = scaled - lbl_80565170;
+    else
+        rounded = lbl_80565170 + scaled;
+    converted = (int)rounded;
+    magnitude = converted & ((-converted & ~converted) >> 31);
+    if (magnitude < 0xFFFF)
+        result = magnitude;
+    *(unsigned short *)(lbl_80505978 + index * 0x638 + 0xB0) = result;
+}
 
 void fn_802E85A8(void) {}
 
