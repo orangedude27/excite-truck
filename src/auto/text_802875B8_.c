@@ -17,7 +17,7 @@ extern f32 fn_8023659C(void);
 extern s32 fn_80214AF0(s32);
 extern s32 lbl_8055F6C4;
 extern s32 lbl_80488648[];
-extern void fn_801EE0C8(s32);
+extern s32 fn_801EE0C8(s32);
 extern s32 fn_801E2CCC(s32, s32);
 extern s32 fn_8002F6AC(s32, void (*)(void));
 extern void fn_80287C80(void);
@@ -228,15 +228,29 @@ void fn_80287B58(void) {
     fn_80288870();
 }
 
+void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
+    Obj *obj;
+    obj = *arg1;
+    if (obj != 0 && ((s32 (*)(Obj *, s32))obj->vtable[2])(obj, arg2) != 0) {
+    } else {
+        fn_802E317C(lbl_80348A4C, arg2);
+    }
+    obj = *arg1;
+    obj = ((Obj *(*)(Obj *, s32))obj->vtable[2])(obj, arg2);
+    ((void (*)(Obj *, Obj *, s32))obj->vtable[13])(arg0, obj, arg3);
+}
+
 s32 fn_80288060(s32 arg0, s32 arg1) {
     return *(s32 *)(arg0 + (arg1 << 2) + 4);
 }
 
 void fn_80288070(s32 arg0, s32 arg1, s32 arg2) {
     s32 index = (arg0 - lbl_8055F6C4) / 40;
-    s32 value = 0;
-    if (index < 8)
+    s32 value;
+    if ((unsigned int)index < 8U)
         value = lbl_80488648[index];
+    else
+        value = 0;
     fn_801EE0C8(value);
     fn_801E2CCC(arg1, arg2);
 }
