@@ -1114,6 +1114,19 @@ extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_80235380(int);
+extern "C" char lbl_8033F9BC[];
+extern "C" void *fn_80222718(void *arg0, s32 arg1) {
+    s32 old;
+    if (arg0 != 0) {
+        old = *(s32 *)((char *)arg0 + 4);
+        *(char **)arg0 = lbl_8033F9BC;
+        if (old != 0) fn_80235380(old);
+        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 extern "C" int lbl_8033F998[];
 extern "C" void* __dt__14CollisionSpaceFv_80222998(void* arg0, s32 arg1) {
     if (arg0 != 0) {
