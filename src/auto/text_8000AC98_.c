@@ -187,6 +187,29 @@ int *fn_8000C69C(void) {
     }
 }
 
+void fn_8000C6E4(void) {
+    switch ((int)lbl_8055D3DC) {
+    case 0: lbl_8055D3DC = 0x14; return;
+    case 20: lbl_8055D3DC = 0x13; return;
+    default:
+    case 19: lbl_8055D3DC = 0; return;
+    }
+}
+
+void fn_8000C730(void) {
+    if (lbl_8055D3DC == 19) {
+        lbl_8055D3DC = 20;
+    } else if (lbl_8055D3DC < 19) {
+        if (lbl_8055D3DC == 0) {
+            lbl_8055D3DC = 19;
+        } else {
+            lbl_8055D3DC = 0;
+        }
+    } else {
+        lbl_8055D3DC = 0;
+    }
+}
+
 int fn_8000BD9C(int, int, int);
 extern float lbl_805601FC, lbl_80560204;
 extern char lbl_8034F5F8, lbl_8034F604;
