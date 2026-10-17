@@ -32,6 +32,12 @@ void DBPrintf_80270B00(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+#pragma dont_inline on
+int fn_80270B50(void) {
+    return *(int *)((char *)fn_801E87A8() + 4);
+}
+#pragma dont_inline reset
+
 void fn_80270B74(void) {
     *(int *)((char *)&lbl_8049F9D8 + 0x00) = 0;
     *(int *)((char *)&lbl_8049F9D8 + 0x1C) = 0;
