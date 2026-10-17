@@ -4,6 +4,7 @@
 extern void fn_80128668(void *);
 extern float lbl_805618F0;
 extern float lbl_8055E318;
+extern float fn_80129DC4(int, float, float, float);
 
 extern unsigned char lbl_8055E32A;
 extern unsigned char lbl_8055E32B;
