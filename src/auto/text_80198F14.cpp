@@ -506,6 +506,15 @@ extern "C" void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
     return arg0;
 }
 
+extern int lbl_80333918[64];
+extern "C" void* fn_801A1520(void*, void*, s32);
+#pragma scheduling off
+void** fn_801A1898(void** arg0) {
+    fn_801A1520(arg0, arg0, 0);
+    *arg0 = &lbl_80333918;
+    return arg0;
+}
+#pragma scheduling on
 void fn_801A1F44(void* arg0, void* arg1) {
     void* result = ((void* (*)(void*))((void**)*(void**)arg1)[10])(arg1);
     *(s32*)((u8*)arg0) = *(s32*)((u8*)result + 0x24);
