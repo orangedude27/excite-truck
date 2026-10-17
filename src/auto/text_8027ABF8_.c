@@ -9,7 +9,7 @@ extern void *fn_8027ACBC(void *, void *);
 #pragma push
 #pragma small_data off
 void fn_8027ABF8(void *node) {
-    fn_8027ACBC((void *)0x804A433C, node);
+    fn_8027ACBC(lbl_804A433C, node);
 }
 int fn_8027AC08(void *arg0, int arg1) {
     int count = *(int *)((char *)arg0 + 0x88);
