@@ -70,6 +70,8 @@ void fn_801D4734(void) {
     }
 }
 
+s32 fn_801D5650(void *);
+
 void fn_801D47F4(void) {
     fn_801D57F0();
 }
