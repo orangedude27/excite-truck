@@ -396,9 +396,38 @@ extern "C" s32 fn_800A7568(void *arg0, s32 arg1) {
     return var_r31;
 }
 
+extern "C" s32 fn_800A7610(void *arg0) {
+    s32 temp;
+    if ((*(u32 *)arg0 & 4) == 0) return 0xD;
+    temp = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+    if (temp != 0) return temp;
+    temp = fn_800A6808(*(void **)((u8 *)arg0 + 4));
+    if (temp != 0) return temp;
+    *(u32 *)arg0 &= ~4U;
+    return 0;
+}
+
 extern "C" s32 fn_800A76A0(void *arg0) {
     *(u32 *)((u8 *)arg0 + 0x20) = 0;
     *(u32 *)((u8 *)arg0 + 0x24) = 0;
+    return 0;
+}
+
+extern "C" s32 VFiPFCACHE_SearchForFreePage(void *arg0, void **arg1) {
+    void *page = *(void **)((u8 *)arg0 + 0x24);
+    do {
+        u16 flags = *(u16 *)page;
+        if ((flags & 1) == 0) {
+            *arg1 = page;
+            return 1;
+        }
+        if (*(u32 *)((u8 *)page + 0x18) != 0xFFFFFFFF) {
+            *arg1 = page;
+            return 0;
+        }
+        page = *(void **)((u8 *)page + 0x24);
+    } while (page != arg0);
+    *arg1 = 0;
     return 0;
 }
 
