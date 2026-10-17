@@ -58,9 +58,19 @@ extern float PSVECDotProduct(float *, float *);
 extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A808, lbl_8033A660, lbl_8033A958, lbl_8033AC58;
 extern int lbl_8055B128;
 extern float lbl_80562F40;
+#pragma push
+#pragma small_data off
+extern int lbl_8033A628;
+extern int lbl_8033A8C8;
+#pragma pop
 void fn_801F1EEC(void) {
-    void *p = fn_801284F8(12, &lbl_8033A628);
-    if (p) { *(void **)p = &lbl_8033A8C8; *(int *)((char *)p + 8) = 0; *(char *)((char *)p + 4) = 0; }
+    void *type = &lbl_8033A628;
+    void *p = fn_801284F8(12, type);
+    if (p != 0) {
+        *(void **)p = &lbl_8033A8C8;
+        *(int *)((char *)p + 8) = 0;
+        *(char *)((char *)p + 4) = 0;
+    }
 }
 void fn_801F1F84(void) {
     void *p = fn_801284F8(0xC, &lbl_8033A644);
@@ -100,7 +110,6 @@ void fn_801F2108(void) {
 
 #pragma push
 #pragma small_data off
-#pragma pop
 void fn_801F224C(void) {
     void *p = fn_801284F8(8, &lbl_8033A6A0);
     if (p != 0) {
@@ -108,6 +117,7 @@ void fn_801F224C(void) {
         *(int *)((char *)p + 4) = 0;
     }
 }
+#pragma pop
 int fn_801F2294(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
@@ -500,9 +510,12 @@ extern int lbl_8033A7A0;
 extern int fn_802CD33C(int, int, int);
 #pragma push
 #pragma small_data off
+extern int lbl_8033A7A0;
 void *fn_801F3EF8(void *arg0, int arg1) {
+    void *vtable = (void *)0;
     if (arg0 != 0) {
-        *(void **)arg0 = (void *)&lbl_8033A7A0;
+        vtable = (void *)&lbl_8033A7A0;
+        *(void **)arg0 = vtable;
         if (arg1 > 0) fn_80128668();
     }
     return arg0;
