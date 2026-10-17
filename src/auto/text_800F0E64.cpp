@@ -43,6 +43,8 @@ extern "C" const char lbl_80325C18[];
 extern "C" const char lbl_80325C64[];
 extern "C" const char lbl_80325C8C[];
 extern "C" f32 lbl_805610BC;
+extern "C" f32 lbl_8056107C;
+extern "C" const char lbl_803244D4[];
   extern "C" u8 lbl_80325C50[];
   extern "C" s32 detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(s32);
   extern "C" u8 lbl_80325D48[];
