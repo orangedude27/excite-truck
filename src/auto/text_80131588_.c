@@ -145,6 +145,36 @@ s32 fn_80132098(void* arg0, s32 index, void* dst1, void* dst2) {
     return 0;
 }
 
+extern char lbl_8032B764[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling on
+s32 fn_801320D8(void* arg0, const char* name) {
+    volatile struct { const char* name; s32 value; } key;
+    s32 index;
+    char* found;
+    s32 offset;
+    key.name = name;
+    key.value = 0;
+    found = NULL;
+    index = 0;
+    offset = 0;
+    while (index < *(s32*)((char*)arg0 + 0xC)) {
+        if (stricmp(name, *(char**)(*(char**)((char*)arg0 + 0x10) + offset)) == 0) {
+            found = *(char**)((char*)arg0 + 0x10) + index * 8;
+            break;
+        }
+        offset += 8;
+        index++;
+    }
+    if (found == NULL && *(void**)((char*)arg0 + 0x14) != NULL)
+        found = ((char* (*)(void*, const char*))fn_80131C88)(*(void**)((char*)arg0 + 0x14), name);
+    if (found == NULL)
+        fn_802E317C(lbl_8032B764, name,
+            ((char* (*)(void*))(*(void**)((char*)*(void**)arg0 + 8)))(arg0));
+    return *(s32*)(found + 4);
+}
+#pragma pop
 extern int atoi(const char*);
 s32 fn_801321BC(void* arg0) {
     void** vtable = *(void***)(*(void**)arg0);
@@ -164,6 +194,40 @@ s32 fn_80132220(void* arg0) {
     return result;
 }
 
+extern unsigned long strlen(const char*);
+extern char lbl_8032B790[];
+#pragma push
+#pragma use_lmw_stmw off
+s32 fn_80132290(void* arg0, const char* arg1, const char* arg2) {
+    const char* value = ((char* (*)(void*))(*(void**)((char*)*(void**)arg0 + 0x14)))(arg0);
+    s32 index = 0;
+    while ((s8)*arg2 != 0) {
+        if (stricmp(arg2, value) == 0) return index;
+        arg2 = &arg2[strlen(arg2)] + 1;
+        index++;
+    }
+    fn_802E317C(lbl_8032B790, value, arg1,
+        ((char* (*)(void*))(*(void**)((char*)*(void**)arg0 + 8)))(arg0));
+    return -1;
+}
+
+extern char lbl_8032B80C[], lbl_8032B7E4[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling on
+void fn_80132410(void* arg0, void* arg1, const char* arg2) {
+    typedef struct { s32 x,y,z; } Vector;
+    Vector values;
+    const char* value = ((char* (**)(void*, const char*))(*(void**)arg1))[5](arg1, arg2);
+    if (sscanf(value, lbl_8032B80C, &values.x, &values.y, &values.z) != 3) {
+        fn_802E317C(lbl_8032B7E4, value, arg2,
+            ((char* (**)(void*))(*(void**)arg1))[2](arg1));
+    }
+    *(Vector*)arg0 = values;
+}
+#pragma pop
+
+#pragma pop
 s32 fn_8013284C(void *arg0, s32 arg1) {
     s32 count;
     s32 i;
@@ -206,6 +270,23 @@ s32 fn_801328D4(void *arg0, s32 arg1) {
     return 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling on
+struct Unk80132968Vector { s32 x, y, z; } fn_80132968(void *arg1, s32 arg2, struct Unk80132968Vector *arg3) {
+    struct Unk80132968Vector copy;
+    struct Unk80132968Vector result;
+    struct Unk80132968Vector value;
+    if (((s32 (**)(void *, s32))*(void **)arg1)[3](arg1, arg2)) {
+        ((void (**)(struct Unk80132968Vector *, void *, s32))*(void **)arg1)[13](&value, arg1, arg2);
+        result = value;
+    } else {
+        result = *arg3;
+    }
+    return copy = result;
+}
+#pragma pop
+
 u64 fn_80132A48(void *arg0, s32 arg1, void *arg2) {
     u64 result;
     if (((s32 (**)(void *))(*(void **)arg0))[3](arg0) != 0) {
@@ -215,6 +296,23 @@ u64 fn_80132A48(void *arg0, s32 arg1, void *arg2) {
     }
     return result;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling on
+void fn_80132AE4(void* arg0, void* arg1, s32 arg2, void* arg3) {
+    typedef struct { s32 a[9]; } Matrix;
+    typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Value;
+    Value value;
+    Value* source = arg3;
+    if (((s32 (**)(void*, s32))*(void**)arg1)[3](arg1, arg2)) {
+        ((void (**)(Value*, void*, s32))*(void**)arg1)[17](&value, arg1, arg2);
+        source = &value;
+    }
+    ((Value*)arg0)->matrix = source->matrix;
+    ((Value*)arg0)->vector = source->vector;
+}
+#pragma pop
 
 s32 fn_80132C48(void) { return 0; }
 
@@ -261,3 +359,7 @@ extern void fn_802E317C(const char*, ...);
 extern char lbl_80559B24[];
 extern char lbl_8032B818[], lbl_8032B840[];
 typedef struct { void** vtable; } Unk80132BD0;
+struct Unk80132AE4Value {
+    struct { s32 a[9]; } matrix;
+    struct Unk80132968Vector vector;
+};
