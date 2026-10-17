@@ -141,6 +141,9 @@ void fn_80298458(int arg0, int arg1, short arg2) {
     }
 }
 
+extern "C" void fn_80298A48(void) {
+}
+
 extern "C" void fn_8029A890(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + (int)arg1 * 0x2C + 0x24) = lbl_80564590;
 }
