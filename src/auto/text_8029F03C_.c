@@ -6,6 +6,7 @@ typedef struct Unk802A0794Params {
     short unk_0x18;
     int unk_0x1C;
 } Unk802A0794Params;
+extern void fn_802A0794(void *);
 extern void fn_802A042C(void *, Unk802A0794Params *);
 extern void fn_802A01C8(void *, Unk802A0794Params *);
 extern void fn_802A02F4(void *, Unk802A0794Params *);
