@@ -15,6 +15,7 @@ extern int lbl_8055F0B0;
 extern int lbl_8055F0B4;
 extern int lbl_8055F0B8;
 extern char *lbl_8055F0BC;
+extern char *lbl_8055F0C0;
 extern char lbl_8055F0C4;
 extern char lbl_8055F0C5;
 extern char lbl_8055F0C6;
