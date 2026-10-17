@@ -12,6 +12,7 @@ extern "C" float fn_801E7E24(void);
   extern "C" void fn_802976DC(void);
   extern "C" void fn_80128670(int);
   extern "C" void fn_80298FBC(void*);
+extern "C" void fn_802CAC54(int);
 extern "C" void fn_8029BDC4(void*);
 extern "C" void fn_80299544(void);
 extern "C" void fn_802982C0(void);
@@ -142,6 +143,19 @@ void fn_80298458(int arg0, int arg1, short arg2) {
     }
 }
 
+extern "C" void* fn_80298868(void* arg0) {
+    char* p = (char*)arg0;
+    int i = 0;
+    while (i < 4) {
+        if (*(unsigned char*)(p + 0x28) == 0) {
+            return (void*)(p + i * 0x2C);
+        }
+        p += 0x2C;
+        i++;
+    }
+    return 0;
+}
+
 extern "C" void fn_80298A48(void) {
 }
 
@@ -162,6 +176,32 @@ extern "C" void* fn_80298A4C(void* arg0, int arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" void fn_80298AD8(void* arg0) {
+    int offset = 0;
+    int i = 0;
+    while (i < fn_80287B14()) {
+        i++;
+        {
+            char* base = (char*)*(void**)arg0;
+            *(unsigned char*)(base + offset + 0x19) = 0;
+            offset += 0x20;
+        }
+    }
+}
+
+extern "C" void fn_80298B48(void* arg0) {
+    int offset = 0;
+    int i = 0;
+    while (i < fn_80287B14()) {
+        unsigned char val = *(unsigned char*)((char*)*(void**)arg0 + offset + 0x19);
+        if (val != 0) {
+            fn_80298FBC(arg0);
+        }
+        offset += 0x20;
+        i++;
+    }
 }
 
 extern "C" void fn_8029A890(void *arg0, void *arg1) {
