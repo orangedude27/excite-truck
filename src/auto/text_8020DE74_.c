@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma scheduling off
 void fn_8020F330(void *arg0) {
     void *temp_r3;
 
@@ -11,7 +12,7 @@ void fn_8020F330(void *arg0) {
         *(signed char *)((char *)temp_r3 + 0x4A) = 0;
     }
 }
-
+#pragma scheduling on
 void fn_8020F354(void *arg0) {
     void *temp_r3;
 
