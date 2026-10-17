@@ -7,6 +7,8 @@ extern float lbl_80561DE0;
 extern float lbl_80561F28;
 extern float lbl_80558DC4;
 extern void *__AXFXGetLfoSinTable_801769CC(void);
+extern int fn_8017D2C8();
+extern float lbl_8055E3C8;
 
 void fn_8018C510(void);
 void __AXDSPInitCallback_801AFC38(void);
@@ -223,6 +225,18 @@ float fn_8018AE7C(void *arg0) {
 
 void fn_8018AF00(void) {
 
+}
+
+int fn_8018B06C(void *arg0) {
+    int index = *(int *)((unsigned char *)arg0 + 0x1ec);
+    int base = lbl_8055E918;
+    return *(int *)(base + index * 0x9c + 0x14);
+}
+
+int fn_8018B084(void *arg0) {
+    int index = *(int *)((unsigned char *)arg0 + 0x1ec);
+    int base = lbl_8055E918;
+    return *(int *)(base + index * 0x9c + 0x20);
 }
 
 void fn_8018B0D0(void *arg0, int arg1) {
