@@ -32,7 +32,6 @@ public:
 };
 class F9Manager {
 public:
-    virtual void s4();
     virtual void s8();
     virtual void sC();
     virtual void s10();
