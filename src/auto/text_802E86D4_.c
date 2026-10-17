@@ -19,6 +19,13 @@ void fn_802E883C(void) {
     lbl_8056002C += 1;
 }
 
+void fn_802E8874(void) {
+    lbl_8056002C -= 1;
+    if (lbl_8056002C == 0) {
+        fn_802E870C();
+    }
+}
+
 void fn_802E8918(void) {
     fn_802E2E38(1);
 }
