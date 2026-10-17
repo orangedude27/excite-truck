@@ -30,6 +30,12 @@ void fn_801357A4();
 
 extern void *fn_80156A40(void);
 
+#pragma dont_inline on
+static float fn_80135278_dot(float *a, float *d) {
+    return a[0] * d[0] + a[1] * d[1];
+}
+#pragma dont_inline off
+
 float fn_80135278(float *a, float *b, float *c) {
     volatile float d0 = b[0] - c[0];
     volatile float d1 = b[1] - c[1];
