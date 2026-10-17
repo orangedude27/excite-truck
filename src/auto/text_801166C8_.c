@@ -190,15 +190,16 @@ void fn_80116DDC(void* arg0, s32 arg1) {
 }
 
 void fn_80116E2C(const u8 *arg0) {
+    const u8 *src = arg0;
     u8 *dst = lbl_8041D508;
-    s8 c;
+    u8 c;
     do {
-        c = (s8)*arg0;
+        c = *src;
         *dst = c;
-        if (c == 0)
+        if ((s8)c == 0)
             return;
         dst++;
-        arg0++;
+        src++;
     } while (1);
 }
 
@@ -283,8 +284,10 @@ void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
 void fn_80118C1C(void *arg0, s32 arg1) {
     s32 temp_r0 = *(s32*)((u8*)arg0 + 0x264);
     if (temp_r0 != 0) {
+        s32 temp_r4 = arg1 - temp_r0;
+        s32 temp_r5 = *(s32*)((u8*)arg0 + 0x29C);
         *(s32*)((u8*)arg0 + 0x264) = 0;
-        *(s32*)((u8*)arg0 + 0x29C) += arg1 - temp_r0;
+        *(s32*)((u8*)arg0 + 0x29C) = temp_r5 + temp_r4;
     }
 }
 
