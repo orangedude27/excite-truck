@@ -312,9 +312,7 @@ void fn_80299628(void* arg0) {
         void* p = arg0;
         int i = 0;
         do {
-            if (*(int*)((char*)p + 0x34) != 0) {
-                fn_80299830(arg0, i);
-            }
+            if (*(int*)((char*)p + 0x34) != 0) fn_80299830(arg0, i);
             p = (char*)p + 0x40;
             i++;
         } while (i < 4);
