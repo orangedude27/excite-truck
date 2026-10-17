@@ -81,6 +81,7 @@ extern char lbl_8055BA10[];
 extern char lbl_80498664[];
 extern int fn_801345D8(void *, int, const char *, int);
 extern char *fn_80029004(char *, int);
+extern char *fn_80237C40(void);
 void fn_80237A9C(void) {
 }
 
