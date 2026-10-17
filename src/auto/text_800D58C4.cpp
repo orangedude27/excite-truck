@@ -69,6 +69,21 @@ extern "C" void fn_800D6EEC(void* arg0) {
     *(volatile u8*)(p + 0x20) = 0;
 }
 
+extern "C" void fn_800D76BC(void *arg0, int arg1) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual void v6(); virtual void v7(); virtual void v8(int, int);
+    };
+    Obj* obj = *(Obj**)((char*)arg0 + 0x10);
+    if (obj) obj->v8(arg1, 1);
+}
+
+extern "C" void fn_800D76E0(void *arg0) {
+    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(int); };
+    ((Obj*)arg0)->v2(0);
+}
+
 extern "C" void fn_800D76F4(void *arg0, int arg1, int arg2) {
     struct Obj {
         virtual void v0(); virtual void v1(); virtual void v2();
@@ -128,10 +143,10 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D7F58(void *arg0, void *arg1) {
-    f32 v1 = ((f32 *)arg1)[1];
-    f32 v0 = ((f32 *)arg1)[0];
-    ((f32 *)arg0)[0] = v0;
-    ((f32 *)arg0)[1] = v1;
+    f32 first = ((f32 *)arg1)[0];
+    f32 second = ((f32 *)arg1)[1];
+    ((f32 *)arg0)[0] = first;
+    ((f32 *)arg0)[1] = second;
 }
 
 extern "C" void fn_800D7F6C(s32 *arg0) {
@@ -217,6 +232,10 @@ extern "C" int fn_800D87C8(void *arg0) {
 
 extern "C" void fn_800D87D4(GXColor *arg0, const GXColor *arg1) {
     *arg0 = *arg1;
+}
+
+extern "C" int fn_800D87F8(void *arg0) {
+    return (*(unsigned int*)((char*)arg0 + 0x4c) >> 7) & 1;
 }
 
 extern "C" void fn_800D8804(GXColor *arg0, const GXColor *arg1) {
