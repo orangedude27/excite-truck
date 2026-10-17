@@ -938,6 +938,16 @@ void fn_8007301C(void *arg0) {
     if (*callback != 0) (*callback)(0, arg0);
 }
 
+void fn_80073044(u8 *arg0) {
+    if (arg0[0xC] != 0) {
+        lbl_803C0C14[0x6C] = arg0[8];
+        *(u16 *)(lbl_803C0C14 + 0x70) = *(u16 *)(arg0 + 0xA);
+        bta_dm_signal_strength_timer_cback(0);
+    } else {
+        fn_8007148C((s32)(lbl_803C0C14 + 0x54));
+    }
+}
+
 extern void fn_80070FA4(void *, const void *);
 extern void *GKI_getbuf(unsigned short);
 void fn_80073464(void) {
