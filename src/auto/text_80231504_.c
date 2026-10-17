@@ -94,7 +94,9 @@ s32 fn_802316A4(void *arg0) {
     return 0;
 }
 
+#pragma dont_inline on
 void fn_80231714(s32 *arg0) {}
+#pragma dont_inline off
 
 s32 fn_80231718(s32 arg0) {
     u32 value = (u32)lbl_8055F060;
