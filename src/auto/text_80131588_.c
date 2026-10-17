@@ -27,7 +27,7 @@ void fn_80131818(void) {
     fn_8012C4D8();
 }
 
-extern void fn_802E30C8(const char*, ...);
+extern s32 fn_802E30C8(const char*, ...);
 extern const char lbl_8032B510[];
 extern char lbl_8032B64C[], lbl_8032B574[], lbl_8042F530[];
 extern int lbl_80559B08, lbl_80559B0C;
@@ -41,7 +41,7 @@ extern char lbl_80559B24[]; /* "%f, %f" */
 extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
 extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
 s32 fn_8013181C(void) {
-    fn_802E30C8(lbl_8032B510, lbl_8032B510);
+    fn_802E30C8(lbl_8032B510);
     return 0;
 }
 
@@ -154,29 +154,33 @@ s32 fn_80132220(void* arg0) {
     return result;
 }
 
-s32 fn_8013284C(void* arg0, s32 arg1) {
-    s32 count = *(s32*)((char*)arg0 + 0xC);
+s32 fn_8013284C(void *arg0, s32 arg1) {
+    s32 count;
+    s32 i;
+    void** entries;
+    char* name;
+    void* obj;
+
+    count = *(s32*)((char*)arg0 + 0xC);
     if (count > 0) {
-        void** arr = *(void***)((char*)arg0 + 0x10);
-        u32 i = 0;
+        entries = *(void***)((char*)arg0 + 0x10);
+        i = 0;
         do {
-            char* name = (char*)arr[i];
+            name = entries[i];
             if (*name == '@') {
                 if (arg1-- == 0) {
-                    void* obj = *(void**)((char*)arg0 + 0x18);
-                    return ((s32 (*)(void*, void*))(*(void**)((char*)*(void**)obj + 0x60)))(obj, *(void**)((char*)arr + i * 8 + 4));
+                    obj = *(void**)((char*)arg0 + 0x18);
+                    return (*(s32(**)(void*, void*))(*(s32*)obj + 12))(obj, entries[2 * i + 1]);
                 }
             }
             i++;
-        } while (i < (u32)count);
+        } while (--count);
     }
-    {
-        void* obj = *(void**)((char*)arg0 + 0x14);
-        if (obj != NULL) {
-            return ((s32 (*)(void*))(*(void**)((char*)*(void**)obj + 0x60)))(obj);
-        }
+    obj = *(void**)((char*)arg0 + 0x14);
+    if (obj == NULL) {
+        return 0;
     }
-    return 0;
+    return (*(s32(**)(void*))(*(s32*)obj + 24))(obj);
 }
 
 u64 fn_80132A48(void *arg0, s32 arg1, void *arg2) {
