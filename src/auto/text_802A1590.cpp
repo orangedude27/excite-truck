@@ -46,6 +46,16 @@ public:
     virtual void v8(); // 0x24
 };
 
+class LocalCall {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual s32 call(void*);
+};
+
 class TBlackPlane {
 public:
     TBlackPlane() {}
