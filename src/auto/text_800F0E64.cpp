@@ -415,6 +415,25 @@ extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
     return 1;
 }
 
+extern "C" s32 ReadSoundArchivePlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPQ46nw4hbm3snd12SoundArchive22SoundArchivePlayerInfo(void *arg0, void *arg1) {
+    extern const char lbl_80324D08[];
+    extern char lbl_805598B0;
+    void *ref = *(void **)((char *)arg0 + 0x28);
+    void *data;
+    if (*((u8 *)ref + 0x29) != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598B0, 0x6f, lbl_80324D08);
+    data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)ref + 0x28), *(u32 *)((char *)ref + 0x2c), ref);
+    if (arg1 == 0) return 0;
+    *(u32 *)((char *)arg1 + 0x00) = *(u16 *)((char *)data + 0x00);
+    *(u32 *)((char *)arg1 + 0x04) = *(u16 *)((char *)data + 0x02);
+    *(u32 *)((char *)arg1 + 0x08) = *(u16 *)((char *)data + 0x04);
+    *(u32 *)((char *)arg1 + 0x0c) = *(u16 *)((char *)data + 0x06);
+    *(u32 *)((char *)arg1 + 0x10) = *(u16 *)((char *)data + 0x08);
+    *(u32 *)((char *)arg1 + 0x14) = *(u16 *)((char *)data + 0x0a);
+    *(u32 *)((char *)arg1 + 0x18) = *(u16 *)((char *)data + 0x0c);
+    return 1;
+}
+
 extern "C" const char lbl_80324CDC[];
 extern "C" char lbl_805598A8;
 extern "C" const char lbl_80324D08[];
@@ -629,8 +648,10 @@ extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3sn
 #pragma pop
 extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void);
 extern "C" void fn_800F7110(void *self, unsigned long taskId) {
+    unsigned long id = taskId;
+    void *p = self;
     fn_800FDE60();
-    CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(taskId);
+    CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(id);
 }
 
 extern "C" s32 fn_800F76C0(s32 arg0, s32 arg1) {
@@ -1154,9 +1175,7 @@ f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC8D8(void *arg0, s32 arg1, f32 value) {
     u32 token;
-    if (arg1 < 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x32f, lbl_803268E4, arg1, 0, 4);
-    if (arg1 >= 4)
+    if (arg1 < 0 || arg1 >= 4)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x32f, lbl_803268E4, arg1, 0, 4);
     token = OSDisableInterrupts();
     *(f32 *)((char *)arg0 + 0x480 + arg1 * 4) = value;
