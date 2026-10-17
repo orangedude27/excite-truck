@@ -10,6 +10,8 @@ extern const char lbl_8055CC88[];
 extern int fn_802E2C20(void);
 extern int sscanf(const char *, ...);
 extern void fn_802AC344(void);
+void fn_802AC454(void) { fn_802AC344(); }
+
 void fn_802AC49C(void) {
     lbl_8055F93C = 0;
 }
