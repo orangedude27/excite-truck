@@ -116,6 +116,8 @@ extern "C" void fn_800D1C48(void);
 #include <revolution/MEM/mem_allocator.h>
 #include <revolution/MEM/mem_expHeap.h>
 #include <revolution/MEM/mem_frameHeap.h>
+extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1);
+
 extern "C" void fn_800B7610(OSAlarm *alarm, OSContext *ctx);
 
 
@@ -1342,6 +1344,10 @@ s32 isPlayingSoundId__Q210homebutton10ControllerCFi(void *arg0, s32 arg1) {
 extern "C" void fn_800D1300(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x42) = 0;
     *(u8 *)((u8 *)arg0 + 0x43) = 0;
+}
+
+extern "C" void fn_800D1548(void *arg0) {
+    fn_800D1EA8(*(void **)((char *)arg0 + 0x24), *(s32 *)arg0);
 }
 
 extern "C" void fn_800D1558(void) {
