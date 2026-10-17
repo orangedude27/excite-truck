@@ -20,17 +20,16 @@ int fn_802B5070(void *arg0, int arg1) {
     return result;
 }
 
-#pragma scheduling off
+#pragma dont_inline on
 void *fn_802B51E4(int arg0, int arg1) {
-    int count = arg0 * arg1;
-    int size = count << 2;
+    int size = arg0 * arg1 * 4;
     char *result = fn_801284E8(lbl_8034A4E0, size + 0xC);
     *(int *)result = arg0;
     *(int *)(result + 4) = arg1;
     *(void **)(result + 8) = result + 0xC;
     return result;
 }
-#pragma scheduling on
+#pragma dont_inline off
 void *fn_802B5240(int arg0) {
     int spC;
     int sp8;
