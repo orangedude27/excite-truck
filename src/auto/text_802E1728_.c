@@ -31,4 +31,12 @@ void fn_802E2A1C(void) {
 void fn_802E2A54(void) {}
 
 void fn_802E2A58(void) {}
-
+extern void fn_802E176C(void);
+extern int fn_802E1780(void *, int, int);
+extern int fn_802E1804(void *, void *, int, int, int);
+extern int fn_802E18D4(int, int, int, int, void *, void *);
+extern void DCFlushRange(void *, int);
+typedef struct { char data[0x20]; } GXTexObj;
+extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
+extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
+extern float lbl_805650F0;
