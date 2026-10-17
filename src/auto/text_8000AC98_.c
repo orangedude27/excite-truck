@@ -95,11 +95,30 @@ void fn_8000B288(void* alarm) {
     fn_801DF110(fn_8000B210(alarm));
 }
 
+int fn_8000B33C(void **arg0, int arg1, int arg2) {
+    register void **vtable = (void **)*arg0;
+    if (((int (*)(void))((char *)vtable + 0xC))() != 0)
+        return ((int (*)(void *, int))((char *)vtable + 0x2C))(arg0, arg1);
+    return arg2;
+}
+
 void fn_8000B3B4(void) {
     void (*callback)(void);
     callback = *(void (**)(void))(lbl_802FBC90 + lbl_8055D3DC * 0x14);
     if (callback != 0)
         callback();
+}
+
+void fn_8000B3DC(unsigned char arg0) {
+    extern unsigned char lbl_8055D3EC;
+    extern void fn_8000B5A8(void);
+    extern void fn_8000B3B4(void);
+    extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
+    lbl_8055D3EC = arg0;
+    ((void (*)(int))fn_8000ADE0)(0x12);
+    AXFXSetHooks_8020DE10(fn_8000B5A8,
+        (int)fn_8000B3B4 & (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31,
+        lbl_8055D3EC);
 }
 
 void fn_8000BD98(void) {
@@ -140,3 +159,28 @@ int fn_802C9904(void);
 extern int lbl_80558A48;
 extern float lbl_805601F8, lbl_80560200, lbl_80560208, lbl_8056020C;
 extern int lbl_8034F5B8;
+extern unsigned char lbl_8055D3D5, lbl_8055D3EC;
+extern int lbl_8055D3E8;
+extern char lbl_802FBF38[];
+extern int fn_8017685C(int);
+extern int fn_801AF6FC(void);
+extern int fn_801AF92C(void *);
+extern void *fn_801EA9A0(int);
+extern int fn_802E30C8(char *, int);
+extern int fn_80127954(void);
+extern int fn_80128684(void);
+extern int fn_80265D78(void);
+extern int fn_80133348(int, char *, int);
+extern int fn_802B87A0(void);
+extern int fn_80210904(void);
+extern int fn_8020D1C8(void);
+extern int fn_8000CEF0(void);
+extern int fn_80006E54(void);
+extern int fn_80206228(void);
+extern int fn_801618B4(void);
+extern int fn_801CB8C0(void);
+extern int fn_80238920(void);
+extern int fn_801E8820(void (*)(void));
+extern int fn_801E7DEC(int);
+extern char lbl_802FBEC8[];
+extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
