@@ -26,7 +26,6 @@ extern "C" void fn_80148EDC(void *);
 class ThreadObject80144F40 {
 public:
     virtual void f0();
-    virtual void f1();
     virtual void destroy(s32);
 };
 
@@ -804,13 +803,11 @@ extern "C" void fn_80148EDC(void *arg0) {
 }
 
 extern "C" void deleteThreads__6SystemFv(void *arg0) {
-    void *p = *(void **)arg0;
+    ThreadObject80144F40 *p = *(ThreadObject80144F40 **)arg0;
     if (p) {
-        if (p) {
-            void **vt = *(void ***)p;
-            ((void (*)(void *, s32))vt[2])(p, 1);
-        }
-        *(void **)arg0 = NULL;
+        if (p)
+            p->destroy(1);
+        *(ThreadObject80144F40 **)arg0 = 0;
     }
 }
 
