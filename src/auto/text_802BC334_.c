@@ -114,8 +114,8 @@ int fn_802BA580(int, float *, float);
 void fn_802BD414(int arg0, volatile int *arg1) {
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
-        int second = arg1[1];
         int first = arg1[0];
+        int second = arg1[1];
         result[0] = second;
         result[2] = first;
         result[1] = 0;
@@ -161,6 +161,12 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
 
 void fn_802BDD54(void) {
     fn_802BD814();
+}
+
+void fn_802BDD58(void) {
+    fn_801E7E18();
+    fn_802C173C();
+    if (fn_8020403C() != 0) fn_802BD814();
 }
 
 extern float lbl_80564D14;
