@@ -250,8 +250,8 @@ extern "C" s32 VFipdm_disk_convert_block_into_sector(u32 arg1, u32 arg2, u32 siz
 
 extern "C" int fn_800A499C(const char *, int, int);
 extern "C" const char lbl_803D1640[];
-int fn_800A6048(void) {
-    fn_800A499C(lbl_803D1640, 0, 0xA2C);
+extern "C" int fn_800A6048(void) {
+    fn_800A499C((const char *)&lbl_803D1640, 0, 0xA2C);
     return 0;
 }
 
