@@ -167,9 +167,8 @@ void fn_801EBCAC(void) {
         s32 *p = lbl_804885E8;
         u32 i = 0;
         for (; i < 0x18; i++, p++) {
-            void **obj = *(void ***)p;
-            void **vt = *(void ***)*obj;
-            ((void (*)(void))vt[7])();
+            Obj *obj = (Obj *)*p;
+            ((void (*)(void))obj->vt[7])();
         }
     }
 }
@@ -185,6 +184,12 @@ void fn_801EBD18(s32 arg0) {
         fn_801E8718(arg0);
         fn_802BF598(temp);
     }
+}
+
+extern void fn_802B0144(void);
+void fn_801EB634_keep(void);
+void fn_801EBEF4(f32 farg0) {
+    lbl_8055EB98[0] = farg0 * farg0;
 }
 
 extern f32 lbl_8055EBA4;
