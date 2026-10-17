@@ -33,6 +33,21 @@ void *fn_802E4CA4(int arg0) {
     return fn_802E4C1C(arg0);
 }
 
+extern void fn_80128668(void *);
+extern void fn_80128670(int);
+void *fn_802E4CE0(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(char **)arg0 = lbl_8034D1D0;
+        fn_80128670(*(int *)((char *)arg0 + 4));
+        *(int *)((char *)arg0 + 4) = 0;
+        *(int *)((char *)arg0 + 8) = 0;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 int fn_802E4D60(void *arg0, int arg1) {
     return *(int *)((char *)arg0 + 4) + arg1;
 }
