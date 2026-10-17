@@ -15,6 +15,112 @@ extern int fn_802E61E4(int, float);
 extern char lbl_805600C8;
 extern void *lbl_80560080;
 extern int fn_802EBD40(void);
+extern long lbl_80507600[];
+extern long lbl_8034E9C8;
+extern long lbl_8034E9B0;
+extern long fn_800B7BDC(long);
+extern char lbl_8055D278;
+extern char lbl_8055D280;
+extern long lbl_8034E260;
+extern long jumptable_8034E2F8[];
+extern int OSReport(const char *, ...);
+extern char lbl_8034E370;
+extern char lbl_80560061;
+extern int lbl_80560068;
+long *fn_802E9A3C(long arg0, long arg1) {
+    lbl_80560060 = 1;
+    if (lbl_80507600 != 0) {
+        lbl_80507600[1] = arg0;
+        lbl_80507600[0] = (long)&lbl_8034E9C8;
+        lbl_80507600[3] = arg1;
+    }
+    return lbl_80507600;
+}
+
+void *fn_802E9B54(void *arg0, long arg1) {
+    long *p = (long *)arg0;
+    long value;
+    if (p != 0) {
+        value = p[1];
+        p[0] = (long)&lbl_8034E9B0;
+        if (value != 0) {
+            fn_800B7BDC(value);
+            p[1] = 0;
+        }
+        if (arg1 > 0) lbl_80560060 = 0;
+    }
+    return arg0;
+}
+
+void *fn_802E9BEC(long arg0) {
+    long v = arg0 + 10;
+    if ((unsigned long)v > 29) return 0;
+    switch (v) {
+    case 0: return &lbl_8055D278;
+    case 1: return (char *)&lbl_8034E260 + 0x2c;
+    case 2: return (char *)&lbl_8034E260 + 0x38;
+    case 3: return (char *)&lbl_8034E260 + 0x44;
+    case 4: return (char *)&lbl_8034E260 + 0x50;
+    case 5: return (char *)&lbl_8034E260 + 0x5c;
+    case 6: return (char *)&lbl_8034E260 + 0x6c;
+    case 7: return (char *)&lbl_8034E260 + 0x7c;
+    case 8: return (char *)&lbl_8034E260 + 0x88;
+    case 9: return &lbl_8055D280;
+    default: return 0;
+    }
+}
+
+void fn_802E9C68(long arg0) {
+    OSReport(&lbl_8034E370, arg0);
+    lbl_80560061 = 1;
+    lbl_80560068++;
+}
+
+extern char lbl_8034E390;
+extern char lbl_8034E3E0;
+extern char lbl_8034E3F0;
+extern char lbl_805076B8;
+extern int lbl_8056007C;
+extern void *lbl_8055D274;
+extern char lbl_8055D2A4;
+extern int fn_800B7E5C(signed char, int);
+extern int fn_800B7B34(signed char);
+extern int fn_802EA5D4(void *, int);
+void fn_802E9CAC(int arg0) {
+    OSReport(&lbl_8034E390, arg0);
+    lbl_80560061 = 0;
+    lbl_80560068++;
+}
+
+extern char lbl_8034E3E0, lbl_8034E3F0, lbl_805076B8, lbl_80560061, lbl_8055D2A4;
+void fn_802E9E54(unsigned char *arg0, unsigned char *arg1, int arg2) {
+    unsigned char *dst = arg0, *src = arg1;
+    int count = arg2;
+    do {
+        if (count <= 1) break;
+        if ((signed char)*src == 0) break;
+        if (*src < 0x80) {
+            *dst++ = *src++;
+            count--;
+        } else {
+            unsigned char ch = *++src;
+            count--;
+            *dst++ = 0x3F;
+            if ((signed char)ch == 0) break;
+            src++;
+        }
+    } while (1);
+    *dst = 0;
+}
+
+void fn_802EA7E0(void) {
+    lbl_8056007C = 0;
+    if ((unsigned char)lbl_80560061 != 0) {
+        fn_802EA5D4(lbl_8055D274, 0);
+        if (lbl_8056007C == 0) fn_802EA5D4(&lbl_8055D2A4, 8);
+    }
+}
+
 int fn_802EBE00(int arg0) {
     if (arg0 == 1) fn_802EBD40();
     return 0;
@@ -74,7 +180,6 @@ void fn_802EC1C0(float arg0) {
     fn_802EC138();
 }
 #pragma dont_inline reset
-#pragma dont_inline fn_802EC138
 void fn_802EC1D8(void) {
     lbl_805600C8 = 1;
 }
