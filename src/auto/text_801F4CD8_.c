@@ -196,9 +196,9 @@ void fn_801F7220(void *arg0) {
     }
 }
 
-extern void fn_801F6A98(void *, void *);
+extern void fn_801F6A98(void *);
 void fn_801F73E0(void) {
-    fn_801F6A98(lbl_8055EC10, 0);
+    fn_801F6A98(lbl_8055EC10);
 }
 extern void fn_801F6B98(void *);
 extern void fn_801F6DF0(void *);
