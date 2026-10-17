@@ -23,7 +23,7 @@ extern void *fn_801284F8(int, void *);
 extern int fn_80287B38(void *);
 extern int lbl_8055F6D8;
 extern char lbl_80348A90[];
-extern void fn_80288A74(void);
+extern void fn_80288A74(void **, int);
 void fn_802888D8(void) {
     int r3;
     int r0;
