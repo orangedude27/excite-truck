@@ -18,15 +18,14 @@ void fn_802AA1D0(unsigned int arg0) {
     extern int lbl_8055F928;
     extern int lbl_80488648[];
     extern int fn_801EE0C8(int);
-    extern void fn_802C77F0(float *);
+    extern void fn_802C77F0(int, float *);
     float sp[8];
-    char *p = (char *)lbl_8055F928 + arg0 * 0x108;
-    int v = arg0 < 8 ? lbl_80488648[arg0] : 0;
-    fn_801EE0C8(v);
-    fn_802C77F0(sp);
-    *(float *)(p + 0xF8) = sp[1] - sp[0];
-    *(float *)(p + 0x100) = sp[3] - sp[2];
-    *(float *)(p + 0xFC) = sp[5] - sp[4];
+    int *p = (int *)(lbl_8055F928 + arg0 * 0x108);
+    int v = fn_801EE0C8(arg0 < 8 ? lbl_80488648[arg0] : 0);
+    fn_802C77F0(v, sp);
+    *(float *)((char *)p + 0xF8) = sp[1] - sp[0];
+    *(float *)((char *)p + 0x100) = sp[3] - sp[2];
+    *(float *)((char *)p + 0xFC) = sp[5] - sp[4];
 }
 
 void fn_802AAF00(int a, int b, int c) {}
