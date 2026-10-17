@@ -22,6 +22,7 @@ extern char lbl_8032C1A0[];
 extern char lbl_8032C1E8[];
 extern char lbl_8032C1F8[];
 typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
+typedef struct { int pad[9]; float (*m_float)(char *); } unkVtableFloat;
 void fn_8013A660(unkVtable **arg0, char *arg1, char *arg2) {
     int result;
     result = (*arg0)->m_fn();
@@ -53,7 +54,7 @@ int fn_8013A760(unkVtable **arg0, int arg1) {
     char buffer[0x20];
     int i = 0;
     do {
-        if ((*arg0)->m_fn() != 0)
+        if (((int (*)(char *))(*arg0)->m_fn)(fn_8013A708(buffer, i, arg1)) != 0)
             return 1;
         i++;
     } while (i < 3);
