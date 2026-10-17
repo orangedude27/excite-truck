@@ -253,10 +253,13 @@ extern char lbl_8055AA54[];
 extern s32 fn_801C34CC(f32, f32);
 #pragma push
 #pragma peephole off
+#pragma push
+#pragma peephole off
 void fn_801C7770(void) {
-    volatile u8* p = &lbl_8055E83E;
+    volatile u8 *p = (u8 *)&lbl_8055E838;
     *p = (u32)__cntlzw(*p) >> 5;
 }
+#pragma pop
 #pragma pop
 void fn_801C77C0(void) {
     lbl_8055E844 = atoi(lbl_804380F0);
@@ -464,6 +467,13 @@ void fn_801C94B8(void) {
 
 void fn_801C94BC(void) {
     fn_80238B44();
+}
+
+void fn_801C95EC(f32 arg0) {
+    lbl_8055E81C = arg0;
+    lbl_8055E820 = arg0;
+    lbl_8055E824 = arg0;
+    fn_801C957C(1);
 }
 
 void fn_801C9830(void) {
