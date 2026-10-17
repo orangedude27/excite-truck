@@ -50,8 +50,18 @@ s32 fn_802A0944(void *arg0) {
 void fn_802A0AF8(void) {
 }
 
+void fn_802A0AFC(void) {
+    fn_801EF024(fn_802A0944);
+    fn_802CAC54(*(int *)lbl_8055CB68);
+    {
+        int value = *(int *)lbl_8055F834;
+        *(int *)lbl_8055CB68 = -2;
+        if (value != 0) fn_80128670(value - 0x10);
+        *(int *)lbl_8055F834 = 0;
+    }
+}
+
 void fn_802A0B50(void) {
 }
 
-#include <types.h>
-extern u8 lbl_8055F834[];
+
