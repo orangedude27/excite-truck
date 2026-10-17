@@ -3446,6 +3446,60 @@ void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 
 
 void rfc_send_ua(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 flag; flag=1; if (*(u8 *)((u8 *)arg0+0x6D)!=0) flag=0; buf=GKI_getpoolbuf(2); if(buf) { frame=buf+0x11; *(u16 *)(buf+4)=9; frame[0]=(flag<<1)|1|(arg1<<2); frame[1]=0x73; frame[2]=1; frame[3]=fn_8009504C(3,frame,0x73); *(u16 *)(buf+2)=4; rfc_check_send_cmd(arg0,buf); } }
 
+void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
+    u8 *buf;
+    u8 *frame;
+    s32 flag;
+    flag = 1;
+    if (*((u8 *)arg0 + 0x6D) == 0) flag = 0;
+    buf = GKI_getpoolbuf(2);
+    if (buf != 0) {
+        frame = buf + 0x11;
+        *(u16 *)(buf + 4) = 9;
+        frame[0] = ((flag << 1) | 1) | (arg1 << 2);
+        frame[1] = 0x53;
+        frame[2] = 1;
+        frame[3] = fn_8009504C(3, frame, 0x53);
+        *(u16 *)(buf + 2) = 4;
+        rfc_check_send_cmd(arg0, buf);
+    }
+}
+
+void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
+    u8 *buf = GKI_getpoolbuf(2);
+    if (buf != 0) {
+        *(u16 *)(buf + 4) = 0xC;
+        buf[0x14] = (u8)((((s32)(-arg1 | arg1) >> 31) & 2) | 0xA1);
+        buf[0x15] = 1;
+        *(u16 *)(buf + 2) = 2;
+        rfc_send_buf_uih(arg0, 0, buf, 2);
+    }
+}
+
+void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
+    u8 *buf = GKI_getpoolbuf(2);
+    if (buf != 0) {
+        *(u16 *)(buf + 4) = 0xC;
+        buf[0x14] = (u8)((((s32)(-arg1 | arg1) >> 31) & 2) | 0x61);
+        buf[0x15] = 1;
+        *(u16 *)(buf + 2) = 2;
+        rfc_send_buf_uih(arg0, 0, buf, 2);
+    }
+}
+
+void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
+    u8 *buf = GKI_getpoolbuf(2);
+    if (buf != 0) {
+        *(u16 *)(buf + 4) = 0xC;
+        buf[0x14] = (u8)((((s32)(-arg2 | arg2) >> 31) & 2) | 0x51);
+        buf[0x15] = 5;
+        buf[0x16] = (u8)((arg1 << 2) | 3);
+        buf[0x17] = arg3 | 1;
+        *(u16 *)(buf + 2) = 4;
+        rfc_send_buf_uih(arg0, 0, buf, buf[0x17], buf[0x16]);
+    }
+}
+
 void fn_80095518(void *arg0) {
     u16 state = *(u16 *)((u8 *)arg0 + 0x14);
     if (state == 12) rfc_port_sm_execute(*(void **)((u8 *)arg0 + 0x10), 5, 0);
@@ -3540,6 +3594,15 @@ void fn_8009757C(u8 *p_ccb) {
     }
 }
 
+tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16 handle) {
+    u8 *p = lbl_803C4C40 + 0x3C;
+    int i;
+    for (i = 0; i < 4; i++, p += 0x478) {
+        if (p[0] != 0 && *(UINT16 *)(p + 0x22) == handle) return (tCONN_CB *)p;
+    }
+    return NULL;
+}
+
 tCONN_CB *sdpu_allocate_ccb(void) {
     UINT16 xx;
     tCONN_CB *p_ccb;
@@ -3548,11 +3611,10 @@ tCONN_CB *sdpu_allocate_ccb(void) {
         if (p_ccb->con_state == SDP_STATE_IDLE) {
             memset(p_ccb, 0, sizeof(tCONN_CB));
             p_ccb->timer_entry.param = (UINT32)p_ccb;
-            return (p_ccb);
+            return p_ccb;
         }
     }
-
-    return (NULL);
+    return NULL;
 }
 
 void fn_80099F58(void *arg0) {
@@ -3581,22 +3643,16 @@ void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
     UINT16 i;
     UINT16 x;
 
-    if (num_attr <= 1) {
-        return;
-    } else if (num_attr > SDP_MAX_ATTR_FILTERS) {
-        num_attr = SDP_MAX_ATTR_FILTERS;
-    }
-
+    if (num_attr <= 1) return;
     num_attr--;
     for (i = 0; i < num_attr;) {
         if (p_db->attr_filters[i] > p_db->attr_filters[i + 1]) {
             x = p_db->attr_filters[i];
             p_db->attr_filters[i] = p_db->attr_filters[i + 1];
             p_db->attr_filters[i + 1] = x;
-            i = 0;
-        } else {
-            i++;
+            i = (UINT16)-1;
         }
+        i++;
     }
 }
 
