@@ -263,6 +263,7 @@ extern "C" void *fn_801F96C8(void *node) {
     return list;
 }
 
+#pragma dont_inline on
 extern "C" void fn_801F9928(void *list, s32 arg) {
     s32 i = 0;
     void *cur = (*(FListVT **)list)->get(list, 0);
@@ -297,6 +298,18 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
         cur = next;
     }
 }
+
+extern "C" void fn_801F9AA4(void *arg0, s32 arg1) {
+    void **obj = fn_80131810(arg0);
+    if (obj != 0) {
+        if ((*(s32 (**)(void *, void *))((u8 *)*obj + 0x10))(obj, &lbl_8055B388) != 0) {
+            void *list = (*(void *(**)(void *, void *))((u8 *)*obj + 8))(obj, &lbl_8055B388);
+            fn_801F9928(list, arg1);
+        }
+        fn_80131818(obj);
+    }
+}
+#pragma dont_inline reset
 
 extern "C" s32 fn_801F9BD0(s32 **arg0, s32 **arg1) {
     return (*arg0)[15] - (*arg1)[15];
