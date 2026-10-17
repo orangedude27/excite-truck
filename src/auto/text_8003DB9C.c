@@ -159,9 +159,9 @@ void __GXSetVAT(void) {
     *(unsigned char *)((char *)ptr + 0x5FB) = 0;
 }
 
-void GXSetArray(unsigned int arg0, unsigned int arg1, unsigned int arg2) {
-    unsigned int size;
-    unsigned int base;
+void GXSetArray(s32 arg0, unsigned int arg1, unsigned int arg2) {
+    s32 size;
+    s32 base;
     size = arg0;
     if (size == 0x19) {
         size = 0xA;
