@@ -1097,6 +1097,8 @@ void *fn_8007A394(void) { return lbl_803C0F78 + 0x648; }
 
 void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
 
+s32 fn_8007A3B4(s32 value) { s32 old = *(s32 *)(lbl_803C0F78 + 0x568); *(s32 *)(lbl_803C0F78 + 0x568) = value; return old; }
+
 void fn_8007AD38(void) {
 
 }
