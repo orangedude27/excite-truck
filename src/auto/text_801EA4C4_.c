@@ -78,3 +78,7 @@ void fn_801EA9DC(s32 arg0, void *arg1) {
     *(s32 *)((u8 *)base + (index << 2) + 0x5E8) = arg0;
 }
 
+void fn_801EAB10(s32 arg0, s32 arg1) {
+    *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78 + arg0 * 0xBC) + 8) = arg1;
+}
+
