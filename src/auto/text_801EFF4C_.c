@@ -175,13 +175,18 @@ int fn_801F196C();
 int fn_801F1848(void) {
     return lbl_80488798[fn_801F196C()];
 }
+#pragma push
+#pragma small_data off
+#pragma pop
 void fn_801F1878(void *arg0) {
     int index = fn_801F196C(*(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
     if (lbl_80488798[index] != 0) {
-        fn_802E317C((const char *)&lbl_8033A544, *(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
+        fn_802E317C((const char *)&lbl_8033A544, *(int *)((char *)arg0 + 0xC), *(int *)((char *)arg0 + 8));
     }
     lbl_80488798[index] = (int)arg0;
 }
+
+int fn_801F196C(int a, int b) { return b + a * 4; }
 
 short fn_801EAC3C(void);
 int fn_801F1494(int, void *, short);
