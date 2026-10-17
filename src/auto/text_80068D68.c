@@ -1363,6 +1363,20 @@ void bta_dm_disc_result(void *arg0) {
     }
 }
 
+extern void fn_80072524(void);
+void bta_dm_search_result(void *arg0) {
+    if (*(u32 *)((u8 *)arg0 + 0x108) != 0)
+        ((void (*)(u32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)arg0 + 8);
+    if (lbl_803C0B98[0x78] == 0) {
+        lbl_803C0B98[0x78] = 0;
+        bta_dm_discover_next_device();
+    } else {
+        lbl_803C0B98[0x79] = 1;
+        *(void (**)(void))(lbl_803C0B98 + 0x48) = fn_80072524;
+        fn_8007146C((s32)(lbl_803C0B98 + 0x40), 0, 0xBB8);
+    }
+}
+
 void fn_80072524(void) {
     if (lbl_8055DC80 >= 4)
         fn_8007093C(0x503, lbl_80315048);
