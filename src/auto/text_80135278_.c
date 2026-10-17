@@ -46,16 +46,16 @@ static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
     return r;
 }
 
+#pragma dont_inline on
 static float fn_80135278_dot2(float *a, float *d) {
     return a[0] * d[0] + a[1] * d[1];
 }
+#pragma dont_inline off
 
 float fn_80135278(float *a, float *b, float *c) {
     float dx = b[0] - c[0];
     float dy = b[1] - c[1];
-    float x = a[0] * dx;
-    float y = a[1] * dy;
-    return x + y;
+    return fn_80135278_dot2(a, &dx);
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
