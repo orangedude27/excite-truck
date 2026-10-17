@@ -77,3 +77,45 @@ void fn_8027445C(void) {
     fn_80274268();
 }
 
+void fn_802751AC(void *arg0, float angle) {
+    float axis[3], input[3], matrix[12];
+    float mag, scale, x, y, z, s, c, t;
+    unsigned int *src = (unsigned int *)((char *)arg0 + 0xC0);
+    unsigned int *dst = (unsigned int *)((char *)arg0 + 0x58);
+    int i;
+    for (i = 0; i < 12; i++) dst[i] = src[i];
+    input[0] = lbl_80564024 * lbl_802FA788[3];
+    input[1] = lbl_80564024 * lbl_802FA788[4];
+    input[2] = lbl_80564024 * lbl_802FA788[5];
+    axis[0] = lbl_802FA788[0]; axis[1] = lbl_802FA788[1]; axis[2] = lbl_802FA788[2];
+    mag = PSVECMag(input);
+    if (mag > lbl_80564020) {
+        scale = lbl_80563FAC / mag;
+        x = input[0] * scale; y = input[1] * scale; z = input[2] * scale;
+        s = (float)sin(angle); c = (float)cos(angle); t = lbl_80563FAC - c;
+        matrix[0] = c + t * x * x;
+        matrix[1] = y * (t * x) + s * z;
+        matrix[2] = z * (t * x) - s * y;
+        matrix[3] = y * (t * x) - s * z;
+        matrix[4] = c + t * y * y;
+        matrix[5] = z * (t * y) + s * x;
+        matrix[6] = z * (t * x) + s * y;
+        matrix[7] = z * (t * y) - s * x;
+        matrix[8] = c + t * z * z;
+    } else {
+        matrix[0] = lbl_80563FAC; matrix[1] = lbl_80563FB0; matrix[2] = lbl_80563FB0;
+        matrix[3] = lbl_80563FB0; matrix[4] = lbl_80563FAC; matrix[5] = lbl_80563FB0;
+        matrix[6] = lbl_80563FB0; matrix[7] = lbl_80563FB0; matrix[8] = lbl_80563FAC;
+    }
+    fn_801BFD34((char *)arg0 + 0x7C, axis, (char *)arg0 + 0xC0);
+    fn_80015B20((char *)arg0 + 0x58, matrix, (char *)arg0 + 0xC0);
+    *(float *)((char *)arg0 + 0xBC) = lbl_80564024 * angle;
+}
+
+int fn_802704D4(int, int);
+int fn_80276BE4(int, int);
+int fn_80274730(float, float, float, float);
+void fn_80276054(int arg0) {
+    fn_802704D4(4, arg0);
+}
+
