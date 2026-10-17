@@ -10,7 +10,7 @@ extern double lbl_805636D8;
 extern char lbl_803408D8[];
 int fn_802E2C20(void);
 void fn_80236674(void);
-void fn_802E30C8(const char *);
+void fn_802E30C8(const char *, ...);
 void fn_802365D8(void);
 void fn_80236550(void) {
     if (lbl_8055F09C - lbl_8055F094 > 0x989680) {
