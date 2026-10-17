@@ -320,6 +320,10 @@ void* fn_80179300(void) {
     return lbl_8055E458;
 }
 
+void fn_80179308(void) {
+    lbl_8055E448 += 1;
+}
+
 void* fn_80179318(void) {
     return (void *)lbl_8055E448;
 }
