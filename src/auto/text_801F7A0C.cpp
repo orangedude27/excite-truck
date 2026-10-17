@@ -302,6 +302,24 @@ extern "C" s32 fn_801F9BD0(s32 **arg0, s32 **arg1) {
     return (*arg0)[15] - (*arg1)[15];
 }
 
+extern "C" s32 fn_801F9CF8(void *arg0) {
+    if (lbl_8055EC54 != 0) {
+        s32 low = 0;
+        s32 high = lbl_8055EC58 - 1;
+        while (low <= high) {
+            s32 mid = (low + high) / 2;
+            void *node = lbl_8055EC54[mid];
+            if (*(s32 *)arg0 > *(s32 *)((u8 *)node + 0x3C)) low = mid + 1;
+            else if (*(s32 *)arg0 < *(s32 *)((u8 *)node + 0x3C)) high = mid - 1;
+            else {
+                *((u8 *)node + 0x40) = *((u8 *)arg0 + 4);
+                return 8;
+            }
+        }
+    }
+    return 8;
+}
+
 extern "C" int fn_8020402C(void);
 extern "C" int fn_801F9B28();
 extern "C" void fn_801FA298(void) {
