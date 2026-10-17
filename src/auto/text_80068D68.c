@@ -2317,6 +2317,15 @@ done:
     return;
 }
 
+void *fn_80095C64(void **head, u32 attr) {
+    void *p = *head;
+    while (p != NULL) {
+        if (*(u16 *)((u8 *)p + 4) == attr) return p;
+        p = *(void **)p;
+    }
+    return NULL;
+}
+
 u8 fn_80096670(u8 value) {
     if (value != 0xFF) lbl_803C4C40[0x4630] = value;
     return lbl_803C4C40[0x4630];
