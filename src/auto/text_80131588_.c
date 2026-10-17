@@ -38,7 +38,7 @@ void fn_80131818(void) {
     fn_8012C4D8();
 }
 
-extern void fn_802E30C8(const char*, ...);
+extern void fn_802E30C8(void*, ...);
 extern const char lbl_8032B510[];
 extern char lbl_8032B64C[], lbl_8032B574[], lbl_8042F530[];
 extern int lbl_80559B08, lbl_80559B0C;
@@ -52,7 +52,7 @@ extern char lbl_80559B24[]; /* "%f, %f" */
 extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
 extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
 s32 fn_8013181C(void) {
-    fn_802E30C8(lbl_8032B510);
+    ((void (*)(const char *, ...))fn_802E30C8)(lbl_8032B510);
     return 0;
 }
 void* fn_8013184C(void) {
