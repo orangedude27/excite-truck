@@ -49,7 +49,7 @@ extern "C" f32 lbl_805610BC;
   extern "C" u8 lbl_8055DE60;
   extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void **, void *);
   extern "C" void *GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void);
-  extern "C" s32 Shutdown__Q46nw4hbm3snd6detail11SoundThreadFv(void *);
+  extern "C" s32 Shutdown__Q46nw4hbm3snd6detail11SoundThreadFv(void);
   extern "C" void *fn_800FE648(void);
   extern "C" s32 Destroy__Q46nw4hbm3snd6detail10TaskThreadFv(void *);
   extern "C" void *GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void);
