@@ -18,7 +18,7 @@ extern int fn_80128658(int);
 void fn_8000D94C(void) {
     int zero;
     zero = 0;
-    lbl_8055D46C[0] = zero;
+    lbl_8055D46C = (int *)zero;
     fn_80128658(lbl_8055D468);
     lbl_8055D468 = zero;
 }
