@@ -120,6 +120,16 @@ void fn_801D9828(void) {
     fn_801D9948((int *)&lbl_8055E964);
 }
 
+void fn_801D98F0(void **arg0) {
+    void *node = *arg0;
+    while (node != 0) {
+        void *next = *(void **)((char *)node + 0xC);
+        fn_80128668(node);
+        node = next;
+    }
+    *arg0 = 0;
+}
+
 void fn_801D9A08(void) {
     void *node = lbl_8055E96C;
     while (node != 0) {
@@ -139,6 +149,7 @@ void *fn_801D9A54(const char *arg0) {
     return 0;
 }
 
+#pragma scheduling off
 void fn_801D9AB8(void *arg0, float weight) {
     void *node;
     float value;
@@ -153,7 +164,7 @@ void fn_801D9AB8(void *arg0, float weight) {
         node = *(void **)((char *)node + 0xC);
     }
 }
-
+#pragma scheduling on
 extern unsigned char lbl_8055E968;
 extern float lbl_80562B2C;
 extern int strcmp(const char *, const char *);
