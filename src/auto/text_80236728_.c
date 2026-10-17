@@ -80,7 +80,7 @@ void fn_80237A9C(void) {
 extern int stricmp(const char *, const char *);
 extern char lbl_8034094C[];
 extern void *fn_801284F8(int, char *);
-void fn_80237C40(void) {
+char *fn_80237C40(void) {
     char *p = fn_801284F8(0x34, lbl_8034094C);
     int i;
     for (i=0;i<0x21;i++) p[i]=0;
