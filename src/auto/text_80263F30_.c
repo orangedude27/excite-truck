@@ -6,6 +6,7 @@ extern void *lbl_8055C458;
 extern void fn_80236914(void);
 extern void fn_80264098(void *, int);
 extern void *fn_80264A54(void);
+extern void *fn_80264580(void);
 #pragma dont_inline on
 void fn_80264098(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 4) = arg1;
