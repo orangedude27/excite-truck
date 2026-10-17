@@ -5,7 +5,6 @@
 extern unsigned char lbl_8055E45E;
 extern long lbl_80430870;
 extern int lbl_80430590[];
-#pragma small_data off
 extern int lbl_80430830[];
 
 void fn_80179EE8(void*, unsigned int);
@@ -384,11 +383,9 @@ char fn_801796C4(void) {
 }
 
 #pragma dont_inline on
-#pragma small_data off
 long fn_801796CC(long arg0, long arg1, long arg2) {
     return fn_8017873C((long*)&lbl_80430870, arg0, arg1, arg2, arg0);
 }
-#pragma small_data on
 #pragma dont_inline off
 void DBPrintf_80179758(const char *fmt, ...) {
 #pragma unused(fmt)
