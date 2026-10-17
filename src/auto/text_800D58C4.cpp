@@ -60,8 +60,7 @@ extern "C" void fn_800D6EEC(void* arg0) {
 extern "C" void fn_800D7758(void *arg0) {
     void **p = *(void ***)((char *)arg0 + 0x10);
     if (p != 0) {
-        void (**vtable)(void) = *(void (***)(void))p;
-        vtable[7]();
+        (*(void (**)(void))(*(char **)p + 0x1c))();
     }
 }
 
@@ -144,6 +143,10 @@ extern "C" u32 fn_800D8750(u32 *arg0) {
 
 extern "C" u32 fn_800D875C(u32 *arg0) {
     return (*arg0 >> 12) & 1;
+}
+
+extern "C" s32 fn_800D8768(u32* arg0) {
+    return ((u32)*arg0 >> 0x17U) & 1;
 }
 
 extern "C" s32 fn_800D8780(u32 *arg0) {
