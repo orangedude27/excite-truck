@@ -7,6 +7,8 @@ extern int lbl_8034AFC8;
 extern int lbl_8055FB54;
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
+void fn_802C1C28(void) {}
+
 void fn_802C2054(int arg0) { fn_802C1F80(arg0 - 4); }
 
 void fn_802C205C(int arg0) { fn_802C1F84(arg0 - 4); }
