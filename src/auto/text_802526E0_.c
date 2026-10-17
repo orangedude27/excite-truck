@@ -1,4 +1,18 @@
 #include "types.h"
+extern s8 lbl_8055F308;
+extern u8 lbl_80498D00[];
+extern f32 lbl_8055F30C, lbl_805639CC, lbl_805639E0, lbl_805639F8, lbl_805639E8;
+extern u8 lbl_8055F310;
+extern const char lbl_803447A8[];
+void fn_801BD808(void);
+void fn_801BDA70(void *);
+void fn_801BDA74(s32, void *);
+void fn_80252B88(s32);
+void fn_802526E0(void *);
+void fn_801BE400(s32, void *, f32);
+void fn_80252C90(void);
+void fn_802E30C8(const char *, const char *);
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
