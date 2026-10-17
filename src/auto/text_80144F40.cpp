@@ -468,7 +468,6 @@ extern "C" int vsprintf(char *, const char *, va_list);
 extern "C" unsigned int strlen(const char *);
 extern "C" void fn_802E317C(const char *, ...);
   extern "C" char lbl_8032D1A4[];
-  #pragma scheduling off
   extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
     char buffer[0x200];
     if (arg0 != 0) {
