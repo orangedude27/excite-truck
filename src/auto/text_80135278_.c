@@ -144,13 +144,18 @@ void fn_80136714(void *arg0) {
 extern void *fn_80156A40(void);
 
 typedef struct {
-    void **vtbl;
+    void *unk_0;
+    void *unk_4;
+    void *(*unk_8)(void *, s32);
+} Vt_8013672C;
+
+typedef struct {
+    Vt_8013672C *vtbl;
 } Unk_8013672C_vt;
 
 float fn_8013672C(void) {
-    void *obj = fn_80156A40();
-    void *r = ((void *(*(*)(char *, s32))(char *, s32))(*(char **)obj + 8))(obj, 0);
-    return *(float *)((char *)r + 8);
+    Unk_8013672C_vt *obj = fn_80156A40();
+    return *(float *)((char *)obj->vtbl->unk_8(obj, 0) + 8);
 }
 
 void fn_80136764(void) {
