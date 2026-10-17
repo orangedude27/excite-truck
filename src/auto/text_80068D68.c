@@ -2362,6 +2362,40 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
+    u8 *p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 7;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0xF; p[9] = 4; p[10] = 4;
+    p[11] = handle; p[12] = handle >> 8;
+    p[13] = packet_types; p[14] = packet_types >> 8;
+    btu_hcif_send_cmd(handle >> 8, 4, 0xF);
+    return TRUE;
+}
+
+BOOLEAN btsnd_hcic_auth_request(UINT16 handle) {
+    u8 *p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 5;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0x11; p[9] = 4; p[10] = 2;
+    p[11] = handle; p[12] = handle >> 8;
+    btu_hcif_send_cmd(2, 4, 0x11);
+    return TRUE;
+}
+
+BOOLEAN btsnd_hcic_set_conn_encrypt(UINT16 handle, BOOLEAN enable) {
+    u8 *p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 6;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0x13; p[9] = 4; p[10] = 3;
+    p[11] = handle; p[12] = handle >> 8; p[13] = enable;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 s32 btsnd_hcic_link_key_neg_reply_800843D8(u8 *arg0) {
     u8 *buf = (u8 *)GKI_getpoolbuf(2);
     if (buf == 0) return 0;
