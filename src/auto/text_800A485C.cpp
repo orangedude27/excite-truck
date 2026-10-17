@@ -342,6 +342,42 @@ extern "C" s32 fn_800A71E0(void *arg0) {
     return temp_r3 & ((s32) (-temp_r3 | temp_r3) >> 0x1F);
 }
 
+extern "C" s32 fn_800A625C(void *, s32);
+extern "C" s32 fn_800A62A8(void *);
+extern "C" s32 fn_800A7214(void *arg0) {
+    s32 result;
+    if (!(*(u32 *)arg0 & 4)) {
+        return 0xB;
+    }
+    result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+    if (result != 0) return result;
+    result = fn_800A62A8(*(void **)((u8 *)arg0 + 4));
+    if (result != 0) return result;
+    *(u32 *)arg0 |= 4;
+    return 0;
+}
+
+extern "C" s32 fn_800A6358(void *);
+extern "C" s32 fn_800A6728(void *, s32);
+extern "C" s32 fn_800A6B74(void *);
+extern "C" s32 fn_800A728C(void *arg0) {
+    s32 result;
+    u32 *flags = (u32 *)arg0;
+    void *handle = *(void **)((u8 *)arg0 + 4);
+    if (*flags & 8) return 0xC;
+    result = fn_800A625C(handle, (s32)arg0);
+    if (result != 0) return result;
+    result = fn_800A6358(handle);
+    if (result != 0) return result;
+    result = fn_800A6B74(arg0);
+    if (result != 0) {
+        fn_800A6728(handle, 0);
+        return result;
+    }
+    *flags = (*flags & ~2) | 8;
+    return 0;
+}
+
 extern "C" void fn_800A8B94(void *arg0, s32 arg1, s32 arg2, s16 arg3, s16 arg4) {
     *(s32 *)((u8 *)arg0 + 0x162C) = arg1;
     *(s32 *)((u8 *)arg0 + 0x1638) = arg2;
