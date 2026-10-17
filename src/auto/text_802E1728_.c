@@ -93,6 +93,48 @@ void fn_802E2A54(void) {}
 
 void fn_802E2A58(void) {}
 
+extern void DCStoreRange(void *, int);
+extern void fn_80127D58(void *);
+extern void fn_802E29AC(void);
+extern void fn_802EC7AC(void);
+extern void fn_802CFBA8(void);
+extern void fn_802EC038(void);
+extern void fn_802E759C(void);
+extern void fn_802E56F0(void);
+extern void fn_80129864(void);
+extern void fn_801275AC(void);
+extern void fn_802E8D2C(void);
+extern void fn_80127EF8(void);
+extern void fn_802E46E4(void);
+extern void fn_802E7330(void);
+extern void fn_802E99A8(void);
+extern void fn_801282A0(void);
+extern void fn_802E2A58(void);
+extern void fn_802E3090(void);
+extern void fn_801293C4(void);
+extern void fn_802E34DC(void);
+extern void fn_802E77AC(void);
+extern void fn_802E2A1C(void);
+extern int fn_80004D64(void *);
+extern int fn_802E2A5C(void);
+extern void fn_80004E20(void);
+extern void fn_802E2B34(void);
+extern void OSPanic(const char *, int, const char *, ...);
+extern char lbl_8034CD8C[];
+extern char lbl_8055D174[];
+int main(void) {
+    int data[0x41];
+    int i;
+    for (i = 0; i < 0x40; i++)
+        data[i] = 0;
+    if (fn_80004D64(&data[1]) && fn_802E2A5C()) {
+        fn_80004E20();
+        fn_802E2B34();
+    }
+    OSPanic(lbl_8034CD8C, 0xD2, lbl_8055D174);
+    return 0;
+}
+
 void fn_802E2CFC(void *arg0) {
     struct OSTimeCalendar calendar;
     OSTicksToCalendarTime(OSGetTime(), &calendar);
@@ -107,15 +149,16 @@ void fn_802E2CFC(void *arg0) {
 }
 
 u64 fn_802E2D74(int arg0) {
+    long long limit = (long long)arg0 * 1000;
     u64 start = fn_802E2C9C();
-    u64 elapsed;
-    do { elapsed = fn_802E2C9C() - start; } while (elapsed < (u64)(arg0 * 1000));
-    return elapsed;
+    u64 now;
+    do { now = fn_802E2C9C(); } while ((long long)(now - start) < limit);
+    return now - start;
 }
 
 void fn_802E2E0C(int arg0, int arg1) {
     int index = lbl_8055FF00;
-    lbl_8055FF00 = index + 1;
+    *(volatile int *)&lbl_8055FF00 = index + 1;
     lbl_804DB790[index] = arg0;
     lbl_804DB7D0[index] = arg1;
 }
@@ -133,4 +176,31 @@ typedef struct { char data[0x20]; } GXTexObj;
 extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
 extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
 extern float lbl_805650F0;
+extern void DCStoreRange(void *, int);
+extern void fn_80127D58(void *);
+extern void fn_802E29AC(void);
+extern void fn_802EC7AC(void);
+extern void fn_802CFBA8(void);
+extern void fn_802EC038(void);
+extern void fn_802E759C(void);
+extern void fn_802E56F0(void);
+extern void fn_80129864(void);
+extern void fn_801275AC(void);
+extern void fn_802E8D2C(void);
+extern void fn_80127EF8(void);
+extern void fn_802E46E4(void);
+extern void fn_802E7330(void);
+extern void fn_802E99A8(void);
+extern void fn_801282A0(void);
+extern void fn_802E3090(void);
+extern void fn_801293C4(void);
+extern void fn_802E34DC(void);
+extern void fn_802E77AC(void);
+extern int fn_80004D64(void *);
+extern int fn_802E2A5C(void);
+extern void fn_80004E20(void);
+extern void OSPanic(const char *, int, const char *, ...);
+extern char lbl_8034CD8C[];
+extern char lbl_8055D174[];
+extern void fn_802E2B34(void);
 
