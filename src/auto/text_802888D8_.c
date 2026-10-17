@@ -5,6 +5,11 @@ extern int lbl_8055F6DC;
 extern int lbl_8055F6E4;
 extern int fn_80289554(int);
 extern int fn_80289F54(int);
+extern int fn_80287B5C(void);
+extern int fn_80287B14(void);
+extern int fn_8028A330(int *, int);
+extern int fn_8028E398(int);
+extern int fn_80128668(void *);
 void fn_802889F0(void) {
     fn_80289554(lbl_8055F6DC);
     fn_80289F54(lbl_8055F6E4);
