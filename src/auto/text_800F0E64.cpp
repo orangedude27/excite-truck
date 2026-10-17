@@ -70,6 +70,7 @@ extern "C" void fn_800FA7E0(void*);
 extern "C" void OSInitMessageQueue(void*, void*, s32);
 extern "C" void RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNodePFv_v(void*, void*, void (*)(void));
 extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNode(void*, void*);
+extern "C" void memset(void*, s32, u32);
     extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
     extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void);
 
@@ -712,7 +713,7 @@ extern "C" void fn_800FA350(void) {
 }
 
 extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
-    if (lbl_8055DE68 == 0) {
+    if ((s8)lbl_8055DE68 == 0) {
         u32* p = (u32*)&lbl_80412CC8[0x2384];
         p[1] = 0;
         p[2] = 0;
@@ -739,6 +740,53 @@ extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
         }
     }
     return this_;
+}
+
+extern "C" void fn_800FA6E8(void) {
+    if ((s8)lbl_8055DE68 == 0) {
+        u32* p = (u32*)&lbl_80412CC8[0x2384];
+        p[1] = 0;
+        p[2] = 0;
+        p[0] = 0;
+        p[1] = 0;
+        p[3] = 0;
+        *(void**)p[1] = (void*)p;
+        *(void**)p[2] = (void*)p;
+        ((u8*)p)[0x10] = 0;
+        __register_global_object((void*)&lbl_80412CC8[0x2388], (void*)&__dt__10TitleSceneFv,
+                                 (void*)&lbl_80412CB8, (void*)&lbl_80412CC8[0x2388]);
+        lbl_8055DE68 = 1;
+    }
+    OSSendMessage((void*)&lbl_80412CC8[0x2338], (void*)1, 0);
+    detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv();
+    UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv();
+}
+
+extern "C" s32 fn_800FA77C(s32 arg0) {
+    OSInitMessageQueue((void*)(arg0 + 0x2338), (void*)(arg0 + 0x2358), 8);
+    Instance__15EmissionManagerFv();
+    {
+        void* node = (void*)(arg0 + 0x2378);
+        RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNodePFv_v(
+            node, (void*)&fn_800FA6E8, fn_800FA6E8);
+    }
+    fn_800FA7E0((void*)arg0);
+    Instance__15EmissionManagerFv();
+    {
+        void* node = (void*)(arg0 + 0x2378);
+        UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNode(
+            node, node);
+    }
+    return 0;
+}
+
+extern "C" void fn_800FA9E8(void* arg0) {
+    OSDisableInterrupts();
+    *(s32*)arg0 = 0;
+    *(s32*)((u8*)arg0 + 4) = 0;
+    *(s32*)((u8*)arg0 + 8) = 0;
+    *(s32*)((u8*)arg0 + 0xC) = 0;
+    OSRestoreInterrupts(0);
 }
 
 extern "C" void NWC24Data_Init(void* arg0) {
