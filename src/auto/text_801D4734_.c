@@ -187,8 +187,7 @@ s32 fn_801D5014(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma scheduling reset
 s32 fn_801D50A0(void) { return 0; }
 
-  void fn_801D5328(s32, s32);
-  void fn_801D50B0(s32 arg0) {
+    void fn_801D50B0(s32 arg0) {
     fn_801D5328(arg0, 0);
 }
 
@@ -349,10 +348,8 @@ extern char lbl_803387A8[];
 extern char lbl_803387C8[];
 #pragma scheduling off
 void fn_801D6618(UnkStruct_801D6618 *arg0) {
-    UnkStruct_801D6618 tmp;
-    tmp.name = lbl_80338C40;
-    tmp.state = 0;
-    *arg0 = tmp;
+    ((volatile UnkStruct_801D6618 *)arg0)->name = lbl_80338C40;
+    ((volatile UnkStruct_801D6618 *)arg0)->state = 0;
 }
 #pragma scheduling reset
 void *fn_801D6630(void *arg0, s32 arg1) {
@@ -701,9 +698,9 @@ s32 fn_801D77B8(s32 arg0);
 s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
-void fn_801D77D8(Obj_801D77D8 *arg0) {
-    VTbl_801D77D8 *vt = arg0->vtable;
-    vt->fn(arg0);
+void fn_801D77D8(void *arg0) {
+    void **vtable = *(void ***)arg0;
+    ((void (*)(void *))vtable[0xD])(arg0);
 }
 
 void fn_801D77E8(void) {
