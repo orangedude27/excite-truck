@@ -236,13 +236,13 @@ extern void fn_801C7964(void);
 extern s32 lbl_8055E828;
 extern char lbl_8055AA54[];
 extern s32 fn_801C34CC(f32, f32);
+#pragma push
+#pragma peephole off
 void fn_801C7770(void) {
-    u32 value = lbl_8055E83E;
-    u32 count = (u32)__cntlzw(value);
-    u32 high = count >> 5;
-    lbl_8055E83E = (u8)high;
+    volatile u8* p = &lbl_8055E83E;
+    *p = (u32)__cntlzw(*p) >> 5;
 }
-
+#pragma pop
 void fn_801C77C0(void) {
     lbl_8055E844 = atoi(lbl_804380F0);
     lbl_8055E841 = 0;
@@ -302,8 +302,8 @@ void fn_801C79E0(void) {
 
 extern char lbl_80438280[];
 extern char lbl_80438380[];
-extern char lbl_8055A95C[];
-extern char lbl_8055AA44[];
+extern char lbl_8055A95C[7];
+extern char lbl_8055AA44[4];
 extern Vec lbl_80438498;
 extern char lbl_8055E83D;
 void fn_801C7A28(void) {
