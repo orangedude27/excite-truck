@@ -10,6 +10,9 @@ extern char lbl_8034CEE4[];
 extern int lbl_804DB790[];
 extern int lbl_804DB7D0[];
 extern int lbl_8055FF00;
+extern int lbl_8055FEF8;
+extern unsigned int lbl_8055FEFC;
+extern unsigned long long __div2i(unsigned long long, unsigned long long);
 typedef unsigned long long u64;
 extern u64 fn_802E2C9C(void);
 extern u64 OSGetTime(void);
@@ -131,16 +134,34 @@ extern void OSPanic(const char *, int, const char *, ...);
 extern char lbl_8034CD8C[];
 extern char lbl_8055D174[];
 int main(void) {
-    int data[0x41];
+    int local[0x41];
+    int *p = &local[1];
     int i;
-    for (i = 0; i < 0x40; i++)
-        data[i] = 0;
-    if (fn_80004D64(&data[1]) && fn_802E2A5C()) {
-        fn_80004E20();
-        fn_802E2B34();
+    for (i = 0; i < 0x20; i++) {
+        p[0] = 0;
+        p[1] = 0;
+        p += 2;
+    }
+    if (fn_80004D64(&local[2]) != 0) {
+        if (fn_802E2A5C() != 0) {
+            fn_80004E20();
+            fn_802E2B34();
+        }
     }
     OSPanic(lbl_8034CD8C, 0xD2, lbl_8055D174);
     return 0;
+}
+
+extern int lbl_8055FEF8;
+extern unsigned int lbl_8055FEFC;
+extern unsigned long long __div2i(unsigned long long, unsigned long long);
+unsigned long long fn_802E2C9C(void) {
+    unsigned long long now = OSGetTime();
+    unsigned int lo = (unsigned int)now - lbl_8055FEFC;
+    unsigned int hi = (unsigned int)(now >> 32) - (unsigned int)lbl_8055FEF8 - ((unsigned int)now < lbl_8055FEFC);
+    unsigned int ticks = *(volatile unsigned int *)0x800000F8;
+    unsigned int factor = (unsigned int)(((unsigned long long)(ticks >> 2) * 0x431bde83U) >> 32) >> 15;
+    return __div2i(((unsigned long long)hi << 32 | lo) << 3, factor);
 }
 
 void fn_802E2CFC(void *arg0) {
