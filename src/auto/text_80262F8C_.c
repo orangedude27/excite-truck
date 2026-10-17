@@ -161,9 +161,38 @@ extern s32 fn_80133460(s32, const u8 *, u8, s32);
 extern s32 fn_801333E8(s32, const u8 *, u8 *, u8 *);
 extern const u8 lbl_803462B8[];
 extern const u8 lbl_803462A8[];
+extern const u8 lbl_80346280[];
 void fn_80263980(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x24);
     fn_80133460(value + 8, lbl_803462B8, *((u8 *)arg0 + 0x28), value);
+}
+
+void fn_80263AB4(void *arg0) {
+    s32 ticks = fn_802E2C20();
+    f32 value = (f32)ticks;
+    value = value / lbl_80563BD8;
+    value -= *(f32 *)((u8 *)arg0 + 0x2C);
+    if (value < lbl_80563BE8)
+        fn_802E8528(*(s32 *)((u8 *)arg0 + 0x24), lbl_80563BD4, lbl_80563BEC);
+    else
+        fn_802E8528(*(s32 *)((u8 *)arg0 + 0x24), lbl_80563BEC, lbl_80563BEC);
+    if (lbl_8055F434 == *(s32 *)((u8 *)arg0 + 0x20)) {
+        *(s32 *)((u8 *)arg0 + 0x1C) = 1;
+        *((u8 *)arg0 + 0x29) = 1;
+    } else {
+        *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+        *((u8 *)arg0 + 0x29) = 0;
+    }
+}
+
+extern const u8 lbl_80346280[];
+void fn_80263B68(void *arg0, s32 arg1) {
+    s32 value;
+    *(s32 *)((u8 *)arg0 + 0x24) = arg1;
+    *(s32 *)((u8 *)arg0 + 0x20) = (arg1 * 2) + 1;
+    fn_801333E8(arg1 + 8, lbl_80346280, (u8 *)arg0 + 0x28, (u8 *)arg0 + 0x28);
+    value = *(s32 *)((u8 *)arg0 + 0x24);
+    *(s32 *)((u8 *)arg0 + 0x2C) |= 1 << value;
 }
 
 extern const u8 lbl_80346294[];
