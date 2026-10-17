@@ -33,6 +33,11 @@ void fn_802BE364(void *arg0) {
     *(s32 *)((char *)arg0 + 8) = 0;
 }
 
+s32 fn_802BE378(s32 arg0) {
+    s32 temp = 0x400 / (arg0 * 2);
+    return temp * temp;
+}
+
 void fn_802BE780(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
