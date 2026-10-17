@@ -1024,6 +1024,20 @@ void fn_80073CA8(void) {
     }
 }
 
+void BTA_DmPinReply(u8 *bd_addr, u8 accept, u8 pin_len, u8 *pin_code) {
+    u8 *buf = GKI_getbuf(0x20);
+    if (buf != 0) {
+        *(u16 *)buf = 0x107;
+        fn_80070FA4(buf + 8, bd_addr);
+        buf[0xE] = accept;
+        if (accept != 0) {
+            buf[0xF] = pin_len;
+            memcpy(buf + 0x10, pin_code, pin_len);
+        }
+        fn_80071450(buf);
+    }
+}
+
 void fn_80073EA4(void) {
     s16 *buf;
 
