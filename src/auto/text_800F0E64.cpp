@@ -415,6 +415,21 @@ extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
     return 1;
 }
 
+extern "C" const char lbl_80324CDC[];
+extern "C" char lbl_805598A8;
+extern "C" const char lbl_80324D08[];
+extern "C" char lbl_805598B0;
+extern "C" s32 GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(void *arg0) {
+    void *data = *(void **)((char *)arg0 + 0x28);
+    void *p;
+    if (*((u8 *)data + 0x11) != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A8, 0x6f, lbl_80324CDC);
+    p = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)data + 0x10), *(u32 *)((char *)data + 0x14), data);
+    if (p == 0)
+        return 0;
+    return *(s32 *)p;
+}
+
 extern "C" s32 GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(void *this_) {
  void *pData;
  void *p;
@@ -1135,6 +1150,33 @@ f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32
     if (arg1 >= 0 && arg1 < 4) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x329, lbl_803268E4, arg1, 0, 4);
     return *(f32 *)(arg0 + arg1 * 4 + 0x470);
+}
+
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC8D8(void *arg0, s32 arg1, f32 value) {
+    u32 token;
+    if (arg1 < 0 || arg1 >= 4) {
+        /* assertion is compiled out */
+    }
+    token = OSDisableInterrupts();
+    *(f32 *)((char *)arg0 + 0x480 + arg1 * 4) = value;
+    OSRestoreInterrupts(token);
+}
+
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC974(void *self, s32 bus) {
+    if (bus < 0 || bus >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x336, lbl_803268E4, bus, 0, 4);
+    return *(f32 *)((u8 *)self + 0x480 + bus * 4);
+}
+
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC9FC(void *self, s32 bus, f32 value) {
+    if (bus < 0 || bus >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x33C, lbl_803268E4, bus, 0, 4);
+    u32 token = OSDisableInterrupts();
+    *(f32 *)((u8 *)self + 0x490 + bus * 4) = value;
+    OSRestoreInterrupts(token);
+}
+
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FCA98(void *self, s32 bus) {
+    if (bus < 0 || bus >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x343, lbl_803268E4, bus, 0, 4);
+    return *(f32 *)((u8 *)self + 0x490 + bus * 4);
 }
 
 extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(void *a,int n,u16 *p){void *x=*(void **)((u8*)a+4);if(*((u8*)x+16)!=2)return;int i=0,o=0;do{x=*(void **)((u8*)a+4);*(u16*)((u8*)x+0x518+o)=*p++;i++;o+=2;}while(i<n&&i<2);*((u8*)x+0x51)=1;}
