@@ -1251,6 +1251,16 @@ void BTA_HhRemoveDev(u8 arg0) {
     }
 }
 
+extern char lbl_80315700[];
+extern void *jumptable_803159A0[];
+char *bta_hh_evt_code(u32 event) {
+    u32 index = event - 0x1700;
+    if (index > 0xF) {
+        return lbl_80315700 + 0x120;
+    }
+    return ((char *(*)(void))jumptable_803159A0[index])();
+}
+
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80317008[];
 extern u8 *lbl_80559030;
@@ -3014,3 +3024,5 @@ void fn_8006BAA4(u32 arg0) {
     DBPrintf_8006CFA8(lbl_80313794);
 }
 extern u32 lbl_8055DCA4;
+extern char lbl_80315700[];
+extern void *jumptable_803159A0[];
