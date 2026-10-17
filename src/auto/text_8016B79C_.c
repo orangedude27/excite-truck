@@ -48,9 +48,6 @@ typedef struct {
     void (*d14)(void *);
     void (*d15)(void *);
     void (*d16)(void *);
-    void (*d17)(void *);
-    void (*d18)(void *);
-    void (*d19)(void *);
     void (*v4C)(void *);
 } TObj4C;
 void *fn_8016B79C(void *arg0, s32 arg1) {
