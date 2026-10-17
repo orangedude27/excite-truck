@@ -38,8 +38,42 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+extern void *BootInfo_8055D844;
+extern u8 *FstStringStart_8055D83C;
+extern void *lbl_8055D81C;
+extern void *lbl_8055D820;
+extern void *lbl_8055D824;
+void __DSP_remove_task(void *task) {
+    *(u32 *)((u8 *)task + 8) = 0;
+    *(u32 *)task = 3;
+    if (lbl_8055D820 == task) {
+        void *next = *(void **)((u8 *)task + 0x38);
+        if (next != 0) {
+            lbl_8055D820 = next;
+            *(void **)((u8 *)next + 0x3c) = 0;
+            return;
+        }
+        lbl_8055D824 = 0; lbl_8055D81C = 0; lbl_8055D820 = 0;
+        return;
+    }
+    if (lbl_8055D81C == task) {
+        lbl_8055D81C = *(void **)((u8 *)task + 0x3c);
+        *(void **)((u8 *)lbl_8055D81C + 0x38) = 0;
+        lbl_8055D824 = lbl_8055D820;
+        return;
+    }
+    lbl_8055D824 = *(void **)((u8 *)task + 0x38);
+    *(void **)((u8 *)*(void **)((u8 *)task + 0x3c) + 0x38) = *(void **)((u8 *)task + 0x38);
+    *(void **)((u8 *)*(void **)((u8 *)task + 0x38) + 0x3c) = *(void **)((u8 *)task + 0x3c);
+}
+
 extern void DVDCancel(void);
 extern u32 MaxEntryNum_8055D838;
+extern void *BootInfo_8055D844;
+extern u8 *FstStringStart_8055D83C;
+extern void *lbl_8055D81C;
+extern void *lbl_8055D820;
+extern void *lbl_8055D824;
 extern u8 *FstStart_8055D840;
 extern u32 __DVDLayoutFormat;
 extern u32 lbl_8055D848;
