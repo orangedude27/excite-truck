@@ -2802,6 +2802,29 @@ void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 
 
 void rfc_send_ua(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 flag; flag=1; if (*(u8 *)((u8 *)arg0+0x6D)!=0) flag=0; buf=GKI_getpoolbuf(2); if(buf) { frame=buf+0x11; *(u16 *)(buf+4)=9; frame[0]=(flag<<1)|1|(arg1<<2); frame[1]=0x73; frame[2]=1; frame[3]=fn_8009504C(3,frame,0x73); *(u16 *)(buf+2)=4; rfc_check_send_cmd(arg0,buf); } }
 
+void fn_80095518(void *arg0) {
+    u16 state = *(u16 *)((u8 *)arg0 + 0x14);
+    if (state == 12) rfc_port_sm_execute(*(void **)((u8 *)arg0 + 0x10), 5, 0);
+    else if (state == 11) fn_800916F4(*(void **)((u8 *)arg0 + 0x10), 5, 0);
+}
+
+void rfc_sec_check_complete(void *arg0, s8 arg1) {
+    if (*((u8 *)arg0 + 1)) {
+        u8 state = *((u8 *)arg0 + 0x68);
+        if (state == 2 || state == 3) rfc_port_sm_execute(arg0, 15, &arg1);
+    }
+}
+
+void fn_8009578C(void *arg0) {
+    void *port = *(void **)((u8 *)arg0 + 0x6c);
+    u16 credit;
+    if (*((u8 *)port + 0x72) == 2) {
+        credit = *(u16 *)((u8 *)arg0 + 0x98);
+        if (credit) *(u16 *)((u8 *)arg0 + 0x98) = credit - 1;
+        if (*(u16 *)((u8 *)arg0 + 0x98) == 0) *((u8 *)arg0 + 0x24) = 1;
+    }
+}
+
 BOOLEAN SDP_ServiceSearchRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
     tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
     if (p_ccb == NULL) return FALSE;
