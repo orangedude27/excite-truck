@@ -127,6 +127,7 @@ s32 fn_801C3D5C(void) {
 }
 
 extern void fn_801C98F0(void);
+extern void fn_801C9834(void);
 
 void fn_801C4B10(void) {
     lbl_8055E804 = 0;
