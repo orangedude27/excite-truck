@@ -9,6 +9,14 @@ extern "C" void *fn_80128668(void *);
 extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *);
 extern "C" void __ct__Q46nw4hbm3snd6detail9WsdPlayerFv(void *, void *);
 extern "C" char lbl_803275EC[];
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FF9B8(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void *fn_800FFA10(void *arg0, int arg1) {
     __ct__Q44nw4r3snd6detail10BasicSoundFv(arg0);
     *(void **)arg0 = lbl_803275EC;
