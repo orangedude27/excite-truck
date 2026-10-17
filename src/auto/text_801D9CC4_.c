@@ -56,6 +56,19 @@ void *fn_801DA03C(int **arg0, int arg1) {
     return 0;
 }
 
+int fn_801DA648(void *arg0) {
+    void *obj;
+    int count;
+    float *values;
+    obj = *(void **)((char *)arg0 + 4);
+    if (obj != 0) {
+        count = *(int *)((char *)obj + 0x10);
+        values = *(float **)((char *)obj + 0x14);
+        return *(float *)((char *)arg0 + 0xC) >= values[(count - 1) * 8];
+    }
+    return 0;
+}
+
 int fn_801DA688(void *arg0) {
     if (*(void **)((char *)arg0 + 4) != 0)
         return *(float *)((char *)arg0 + 0xC) <= lbl_80562B38;
