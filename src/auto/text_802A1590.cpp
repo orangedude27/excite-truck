@@ -13,6 +13,7 @@ extern "C" int lbl_8055CBB0[];
 extern "C" void fn_802A3500(void*, s32);
 extern "C" void fn_802A30BC(void*, s32);
 extern "C" void fn_802A31DC(void*, s32);
+extern "C" s32 fn_802A47A8(void*);
 extern "C" void fn_802A2AE8(void*, s32);
 extern "C" void fn_802A2BF4(void*, s32);
 extern "C" void fn_802A2D04(void*, s32);
