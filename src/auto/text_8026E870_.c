@@ -19,6 +19,44 @@ extern double fn_8002EF30(f32);
 extern void fn_8026FCFC(void);
 extern void fn_8026EA8C(void);
 
+f32 fn_8026EAEC(f32 farg0) {
+    f32 value = farg0;
+    if (fn_80178CA4() > 1)
+        value = lbl_80563E58 * (f32)atan((double)(lbl_80563E54 * (f32)fn_8002EF30(value * lbl_80563E50)));
+    return value;
+}
+
+f32 fn_8026ECE4(f32 *arg1) {
+    f32 value = fn_8026EB4C();
+    if (value > lbl_8055F52C) {
+        f32 denom = (f32)cos((double)(lbl_8055F52C * lbl_80563E68));
+        *arg1 *= (f32)cos((double)(value * lbl_80563E68)) / denom;
+    }
+    return value;
+}
+
+s32 fn_8026F408(s32 arg0) { return arg0 <= 8; }
+
+f32 fn_8026FCE0(f32 farg0, f32 farg1) {
+    return ((lbl_80563E30 - farg1) * farg0) + (farg1 * (farg0 * farg0));
+}
+
+extern f32 lbl_80563ED8;
+extern f32 lbl_80563F1C;
+extern f32 lbl_80563E40;
+extern f32 lbl_80563E44;
+extern f32 lbl_80563E48;
+extern f32 lbl_80563E4C;
+extern f32 lbl_80563E38;
+extern f32 lbl_80563E3C;
+extern s32 lbl_8049A208[];
+void fn_8027045C(void) {
+    ((f32 *)&lbl_8049A208)[0] = lbl_80563ED8;
+    ((f32 *)&lbl_8049A208)[1] = lbl_80563E78;
+    ((f32 *)&lbl_8049A208)[2] = lbl_80563E78;
+    ((f32 *)&lbl_8049A208)[3] = lbl_80563F1C;
+}
+
 void fn_80270484(void) {
     f32 value = lbl_80563E78;
     lbl_8049A218[0] = value;
