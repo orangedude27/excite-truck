@@ -12,6 +12,9 @@ static inline int find_sound_entry_inline(int *key) {
     }
     return -1;
 }
+static inline int has_sound_entry(int *key) {
+    return find_sound_entry_inline(key) != -1;
+}
 static inline int find_sound_entry(int id);
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
@@ -50,13 +53,15 @@ void fn_80249584(void) {}
 
 void fn_80249588(void) {}
 
+#pragma push
+#pragma scheduling off
 int fn_8024958C(int *arg0) {
     int result = arg0[2] == 0x180302;
     if (result) result = find_sound_entry_inline(arg0) != -1;
     if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
     return result;
 }
-
+#pragma pop
 int fn_80249660(void) { return 1; }
 
 int fn_80249668(int *arg0) {
