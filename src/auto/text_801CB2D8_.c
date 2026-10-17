@@ -133,6 +133,21 @@ void fn_801CB6B4(void) {
     }
 }
 
+extern void fn_801CD970(int);
+void fn_801CB7BC(int arg0) {
+    if (fn_80019BA8() != 0) goto done;
+    switch (fn_80161C38()) {
+    case 0:
+        goto action;
+    default:
+        goto done;
+    }
+action:
+    fn_801CD970(arg0);
+done:
+    return;
+}
+
 extern void fn_801CDDCC(void);
 void fn_801CB808(void) {
     if (fn_80019BA8() || fn_80161C38()) return;
