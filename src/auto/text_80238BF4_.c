@@ -62,24 +62,8 @@ void fn_8023976C(u32 arg0) {
     }
 }
 
-s32 fn_802E2C20(void);
-void fn_80238BF4(void *, s32);
-void fn_802CAC54(void);
-void fn_8012C4D8(void);
 void fn_8023986C(void *arg0) {
-    if (*(void **)((u8 *)arg0 + 0x14) != 0) {
-        u32 i = 0;
-        s32 offset = 0;
-        do {
-            if (*(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) != -2) {
-                fn_802CAC54();
-                *(s32 *)(*(u8 **)(*(u8 **)((u8 *)arg0 + 0x14) + 0x18) + offset) = -2;
-            }
-            offset += 0x14;
-            i++;
-        } while (i < *(u32 *)(*(u8 **)((u8 *)arg0 + 0x14) + 8));
-        fn_8012C4D8();
-        *(u32 *)((u8 *)arg0 + 0x14) = 0;
-    }
+ u8 *data=*(u8 **)((u8 *)arg0+0x14); u32 i; s32 offset;
+ if(data!=0){i=0;offset=0;do{if(*(s32 *)(*(u8 **)(data+0x18)+offset)!=-2){fn_802CAC54();*(s32 *)(*(u8 **)(data+0x18)+offset)=-2;}offset+=0x14;i++;}while(i<*(u32 *)(data+8));fn_8012C4D8();*(u32 *)((u8 *)arg0+0x14)=0;}
 }
 
