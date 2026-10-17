@@ -48,6 +48,10 @@ void fn_802CAD28(int arg0) {
     ((void (*)(int))fn_802D8FB4)(p[0x28 / 4]);
 }
 
+void fn_802CAD68(void) {
+    lbl_8055FCB8 = -2;
+}
+
 int fn_802DB2C0(int);
 int fn_802CA57C(int, int, int);
 int fn_802CA4E0(int, int, int, int, int);
