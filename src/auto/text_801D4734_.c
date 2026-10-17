@@ -4,8 +4,8 @@
 
 typedef struct {
     char pad[0x34];
-    void (*fn)(void *);
     void (*fnD)(void *);
+    void (*fn)(void *);
 } VTbl_801D77D8;
 
 typedef struct {
