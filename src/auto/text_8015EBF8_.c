@@ -39,7 +39,6 @@ int fn_8015ECC0(void *arg0) {
 
 #pragma push
 #pragma auto_inline off
-#pragma scheduling off
 int fn_8015ED18(void **arg0) {
     void **vtable = *(void ***)arg0;
     return stricmp((*(char *(*)(void **))((char *)vtable[2]))(arg0), lbl_8055A070) == 0;
