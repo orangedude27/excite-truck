@@ -319,6 +319,10 @@ int GXGetTexObjHeight(void *arg0) {
     return ((int *)arg0)[4];
 }
 
+s32 GXGetTexObjFmt(void *arg0) {
+    return (*(s32 *)((char *)arg0 + 0xC) << 5) & 0x1FFFFFE0;
+}
+
 unsigned short GXGetTexObjWrapT(void *arg0) {
     return (unsigned short)(((*(unsigned int *)((char *)arg0 + 8)) >> 10) & 0x3ff) + 1;
 }
