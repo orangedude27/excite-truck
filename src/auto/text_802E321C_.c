@@ -80,8 +80,8 @@ s32 fn_802E367C(s32 arg0) {
 }
 
 s32 fn_802E36D8(s32 arg0) {
-    s32 obj = fn_802E333C();
-    s32 value = ((s32 (*)(s32, s32))(*(s32 *)obj + 0x10))(obj, arg0);
+          s32 obj = (s32)fn_802E333C();
+      s32 value = ((s32 (*)(s32, s32))(*(s32 *)obj + 0x10))(obj, arg0);
     if (value != 0) return fn_802E35C0((const char *)arg0, value);
     return -1;
 }
