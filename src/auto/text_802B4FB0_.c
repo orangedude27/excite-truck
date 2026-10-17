@@ -18,6 +18,7 @@ extern int fn_802E3D04(void);
 extern int fn_802E39D0(int, void *, int);
 extern void fn_802E3734(int *);
 
+#pragma dont_inline on
 int fn_802B5070(void *arg0, int arg1) {
     int result = 0;
     if (*(unsigned char *)((char *)arg0 + 2) == 2 &&
@@ -36,20 +37,18 @@ int fn_802B50E8(int arg0, int arg1, int arg2) {
     char header[0x12];
     int value;
     int i;
-    int (*read_fn)(void *, void *, int) =
-        (int (*)(void *, void *, int))fn_802E39D0;
 
     handle = fn_802E3D04();
     if (handle != -1) {
-        if (read_fn((void *)handle, header, 0x12) != 0 &&
+        if (fn_802E39D0(handle, header, 0x12) != 0 &&
             fn_802B5070(header, arg2) != 0) {
             if ((unsigned char)header[0x10] == 0x20) {
-                result = read_fn((void *)handle, (void *)arg1, arg2 * 4);
+                result = fn_802E39D0(handle, (void *)arg1, arg2 * 4);
             } else {
                 result = 1;
                 i = 0;
                 while (result != 0 && i < arg2) {
-                    if (read_fn((void *)handle, &value, 3) != 0) {
+                    if (fn_802E39D0(handle, &value, 3) != 0) {
                         *(int *)(arg1 + i * 4) = value;
                     } else {
                         result = 0;
