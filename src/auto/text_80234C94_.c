@@ -1,4 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern void fn_802354A0(int, int, int, float, float, float, float, float);
+extern const char lbl_80340808[];
+extern const char lbl_80340834[];
+extern float lbl_805636B8;
+extern int fn_8012C33C(const char *);
+extern int fn_802CAC28(const char *, int);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80128668(void *);
@@ -152,18 +158,24 @@ void fn_80236134(void *arg0, int arg1, const char *arg2) {
     int count;
     char *entry;
     char *dst;
+    int i;
     char ch;
 
     if (fn_8012C33C(arg2) != 0) {
         id = fn_802CAC28(arg2, 0);
         count = *(int *)((char *)arg0 + 0xC);
-        entry = (char *)(*(char **)((char *)arg0 + 4) + count * 0x2C);
+        entry = *(char **)((char *)arg0 + 4) + count * 0x2C;
         *(int *)((char *)arg0 + 0xC) = count + 1;
         dst = entry;
-        do {
+        i = 0x21;
+        while (i-- > 0)
+            ;
+        for (;;) {
             ch = *arg2++;
             *dst++ = ch;
-        } while (ch != 0);
+            if ((signed char)ch == 0)
+                break;
+        }
         *(int *)(entry + 0x28) = arg1;
         *(int *)(entry + 0x24) = id;
     }
