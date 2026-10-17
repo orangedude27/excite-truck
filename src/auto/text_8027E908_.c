@@ -6,13 +6,51 @@ void* fn_8027ED70(void) {
     return lbl_8055F680;
 }
 
+void fn_8027EE74(int arg0) {
+    extern unsigned char lbl_8055F684;
+    extern int fn_80236914(void);
+    lbl_8055F684 = (arg0 - 2) == 0 ? 1 : 0;
+    fn_80236914();
+}
+
+int fn_8027EE88(void) {
+    extern unsigned char lbl_8055F684, lbl_8055F685;
+    extern int lbl_80348078;
+    extern void *fn_8027ED70(void);
+    void *obj;
+    if (lbl_8055F685 == 0 && lbl_8055F684 != 0) {
+        lbl_8055F685 = 1;
+        obj = fn_8027ED70();
+        ((void (*)(void *))(*(void ***)obj)[14])(&lbl_80348078);
+    }
+    return 0;
+}
+
+void fn_8027F204(char *src) {
+    extern int lbl_8055F69C;
+    extern int lbl_80348270;
+    extern int fn_802E30C8(const char *);
+    int index, i;
+    char *dst;
+    int *state = (int *)lbl_8055F69C;
+    if (state == 0) return;
+    if (state[0x44 / 4] + 1 <= state[0x48 / 4]) {
+        index = state[0x44 / 4];
+        state[0x44 / 4] = index + 1;
+        dst = *(char **)((char *)state + 0x40) + index * 0x1e;
+        for (i = 0; i < 0x1e; i++) {
+            char c = *src++;
+            *dst++ = c;
+            if (c == 0) return;
+        }
+        dst[-1] = 0;
+        return;
+    }
+    fn_802E30C8((const char *)&lbl_80348270);
+}
+
 int fn_80280898(void) { extern unsigned int lbl_8055F688; extern int fn_80216D28(void); if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
 
-extern int fn_80128668();
-extern char lbl_80348798[];
-extern unsigned int lbl_8055F688;
-struct Fn8027F834List { void **items; int count; };
-extern struct Fn8027F834List lbl_804B3048;
 extern int fn_80216D28();
 extern int fn_8025C204(int);
 extern unsigned char lbl_8055F684;
