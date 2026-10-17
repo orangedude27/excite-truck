@@ -24,6 +24,7 @@ extern "C" u8 lbl_8055DFF9;
 extern "C" void *lbl_8055E000;
 extern "C" s32 fn_8012BC50(void *, void *, s32);
 extern "C" s32 fn_8012E9F0(s32, s32);
+extern "C" void fn_8012E67C(s32, s32);
 extern "C" void fn_8012D3D8(s32);
 extern "C" void fn_8012D8A8(s32);
 extern "C" void *fn_801282EC(u32);
@@ -414,8 +415,57 @@ extern "C" s32 fn_8012E938(s32 arg0) {
     return fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0;
 }
 
+extern "C" void *fn_8012EC90(s32 arg0) {
+    void *obj = fn_801284F8(0x2C, lbl_805599C8);
+    memset(obj, 0, 0x2C);
+    *(s32 *)obj = arg0;
+    fn_801282EC(0x80);
+    s32 data = (s32)fn_8012850C(arg0 * 2, lbl_805599D0);
+    *(s32 *)((u8 *)obj + 8) = 0;
+    *(s32 *)((u8 *)obj + 4) = data;
+    *(s32 *)((u8 *)obj + 0x10) = 0;
+    *(s32 *)((u8 *)obj + 0x18) = 0;
+    *(s32 *)((u8 *)obj + 0x14) = data + arg0;
+    *(s32 *)((u8 *)obj + 0x20) = 0;
+    *(s32 *)((u8 *)obj + 0x28) = 0;
+    *(s32 *)((u8 *)obj + 0x24) = 0;
+    return obj;
+}
+
+extern "C" void fn_8012ED20(void *arg0) {
+    s32 i;
+    u8 *p;
+    for (i = 0, p = (u8 *)arg0 + 8; i < 2; i++, p += 0x10) {
+        if (*(s32 *)p != 0) {
+            fn_8012C90C((void *)*(s32 *)p);
+            fn_8012C958((void *)*(s32 *)p);
+            *(s32 *)p = 0;
+        }
+    }
+    fn_80128670(*(s32 *)((u8 *)arg0 + 8));
+    fn_80128668(arg0);
+}
+
 extern "C" s32 fn_8012EE78(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
+}
+
+extern "C" s32 fn_8012EFB0(void *arg0, void *arg1, s32 arg2) {
+    s32 pos = *(s32 *)((u8 *)arg0 + 0x28);
+    s32 i;
+    u8 *p;
+    if (pos + arg2 >= *(s32 *)((u8 *)arg0 + 0x24)) return 0;
+    for (i = 0, p = (u8 *)arg0 + 4; i < 2; i++, p += 0x10) {
+        s32 start;
+        if (*(s32 *)(p + 0xC) != 2) continue;
+        start = *(s32 *)(p + 8);
+        if (pos >= start && pos < start + *(s32 *)arg0) {
+            memcpy(arg1, (u8 *)*(void **)p + (pos - start), arg2);
+            *(s32 *)((u8 *)arg0 + 0x28) += arg2;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 extern "C" void fn_802E30C8(const char *, ...);
