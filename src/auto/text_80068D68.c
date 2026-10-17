@@ -2322,6 +2322,19 @@ u8 fn_80096670(u8 value) {
     return lbl_803C4C40[0x4630];
 }
 
+void *fn_80096904(void *arg0, u32 arg1, u32 arg2) {
+    u16 count = *(u16 *)((u8 *)arg0 + 8);
+    u8 *p = (u8 *)arg0 + 0xC;
+    u16 i = 0;
+    while (i < count) {
+        u16 value = *(u16 *)(p + 8);
+        if (value >= arg1 && value <= arg2) return p;
+        i++;
+        p += 0xC;
+    }
+    return NULL;
+}
+
 tCONN_CB *sdpu_allocate_ccb(void) {
     UINT16 xx;
     tCONN_CB *p_ccb;
