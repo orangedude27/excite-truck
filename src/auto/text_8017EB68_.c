@@ -127,6 +127,8 @@ void fn_80181440(void) {
 
 }
 
+int fn_80181444(void *arg0) { return *(int *)((char *)arg0 + 0x34C); }
+
 float fn_801815C4(void *arg0) {
     return *(float *)((char *)arg0 + 0x28);
 }
