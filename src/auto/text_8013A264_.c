@@ -40,8 +40,8 @@ void *fn_8013A604(void **arg0, f32 value) {
     s32 found;
     while (node != 0) {
         found = 0;
-        if (value >= node->lo) found = 1;
-        if (value <= node->hi && found) return (u8 *)node + 8;
+        if (value >= node->lo && value <= node->hi) found = 1;
+        if (found) return (u8 *)node + 8;
         node = node->next;
     }
     return (u8 *)arg0 + 4;
