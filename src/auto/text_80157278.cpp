@@ -1028,11 +1028,9 @@ extern "C" void* fn_8015CBBC(void* arg0, s32 arg1) {
 extern "C" u32 fn_8015CC28(void) { return 1; }
 
 extern "C" s32 fn_8015CC30(void* arg0) {
-    f32 temp_f1 = *(f32*)((char*)arg0 + 0x250);
-    f32 var_f0;
-    if (temp_f1 < lbl_80561754) var_f0 = temp_f1 - lbl_80561760;
-    else var_f0 = lbl_80561760 + temp_f1;
-    return (s32)var_f0;
+    f32 x = *(f32*)((char*)arg0 + 0x250);
+    if (x < lbl_80561754) return (s32)(x - lbl_80561760);
+    return (s32)(lbl_80561760 + x);
 }
 
 extern "C" void fn_8015CC6C(void* arg0, f32 farg0) {
@@ -1044,6 +1042,10 @@ extern "C" void fn_8015CD0C(void) {
 }
 
 extern "C" void fn_8015CDD8(void) {
+}
+
+extern "C" s32 fn_8015CE48(void) {
+    return 0xE;
 }
 
 extern "C" void fn_8015D270(void* arg0, void* arg1) {
