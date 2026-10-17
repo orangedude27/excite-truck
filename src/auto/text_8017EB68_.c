@@ -6,6 +6,7 @@ extern int fn_801A8EE4(void *);
 extern int fn_80128668(void);
 extern double fabs(double);
 extern float lbl_80561C48;
+extern float lbl_80561C58;
 extern float lbl_80561C4C;
 extern float lbl_80561C98;
 extern float lbl_80561C9C;
