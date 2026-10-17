@@ -152,7 +152,7 @@ s32 fn_802C5EB8(void *arg0, u32 arg1) {
     s32 count = *(s32 *)((char *)arg0 + 0x10);
     u32 *result = NULL;
     s32 i;
-    for (i = 0; i != count; i++) {
+    for (i = 0; i < count; i++) {
         u32 *entry = *(u32 **)(*(char **)((char *)arg0 + 0x14) + i * 4);
         if (*entry == arg1) {
             result = entry;
@@ -247,7 +247,7 @@ void fn_802C6C34(void) { fn_802C53A8(); }
 #pragma push
 #pragma small_data off
 #pragma pop
-void fn_802C6FA8(void) { fn_802C5DF0((int *)(unsigned long)&fn_802D6C48); }
+void fn_802C6FA8(void) { fn_802C5DF0((int *)fn_802D6C48); }
 void fn_802C5DF0(int*);
 int fn_802C90E0(void);
 int fn_802E30C8(const char*, int);
@@ -405,6 +405,9 @@ void fn_802C8218(s32 arg0) {
 void fn_802C8230(void) {
     fn_802DB2B4();
 }
+
+extern void fn_802DB2B8(void);
+void fn_802C8234(void) { fn_802DB2B8(); }
 
 extern int lbl_8055D008;
 extern void fn_8012C4E4(void *, int);
