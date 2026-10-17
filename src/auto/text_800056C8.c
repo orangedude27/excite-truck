@@ -312,6 +312,12 @@ void *fn_80007BB0(void) {
     return lbl_802FB668;
 }
 
+void fn_80007BBC(void) {
+    void **base = (void **)lbl_8055D350;
+    if ((*(u32 *)((u8 *)base[2] + 4) & 0x200) == 0) return;
+    fn_801B84C0(*(void **)((u8 *)base + 0x1C));
+}
+
 extern u8 lbl_802FB630[];
 void *fn_80007BDC(void) {
     return lbl_802FB630;
@@ -334,6 +340,11 @@ void *fn_80007BF8(void) {
 extern u8 lbl_802FB604[];
 void *fn_80007C04(void) {
     return lbl_802FB604;
+}
+
+void fn_80007C10(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 4) = (fn_801769B8() != 0);
+    *(u8 *)((u8 *)arg0 + 5) = 0;
 }
 
 extern s32 fn_8000C630(s32, s32);
