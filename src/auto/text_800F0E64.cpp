@@ -665,6 +665,7 @@ extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11Sou
 }
 
 extern "C" void fn_800FA350(void) {
+    void *v;
     if (lbl_8055DE60 != 0) {
         GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv();
         if (Shutdown__Q46nw4hbm3snd6detail11SoundThreadFv() == 0) {
@@ -676,10 +677,10 @@ extern "C" void fn_800FA350(void) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803263B8, 0x91,
                                          (const char*)lbl_80326400);
         }
-        GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
-        fn_800EEB64((u8*)0);
-        Instance__15EmissionManagerFv();
-        fn_800E2F84((void*)0);
+        v = GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
+        fn_800EEB64(v);
+        v = Instance__15EmissionManagerFv();
+        fn_800E2F84(v);
         lbl_8055DE60 = 0;
     }
 }
