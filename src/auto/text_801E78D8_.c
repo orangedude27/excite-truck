@@ -210,4 +210,4 @@ void* fn_801E89EC(void) {
 void fn_801E89F4(void *arg0) {
     lbl_8055AF08 = arg0;
 }
-
+extern unsigned char lbl_80487D00[];
