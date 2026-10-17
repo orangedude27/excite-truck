@@ -265,6 +265,17 @@ float fn_801E8894(long arg0) {
     return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x50);
 }
 
+void fn_801E88B4(long *arg0, long *arg1, long *arg2, long *arg3, long arg4) {
+    long index = arg4;
+    char *base;
+    if (index < 0) index = (long)lbl_8055AF0C;
+    base = (char *)lbl_8055EB04 + index * 0xE0;
+    *arg0 = *(long *)(base + 0x3C);
+    *arg1 = *(long *)(base + 0x40);
+    *arg2 = *(long *)(base + 0x44);
+    *arg3 = *(long *)(base + 0x48);
+}
+
 long fn_801E8954(long arg0) {
     if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
     return (*(unsigned long *)(lbl_80487D00 + arg0 * 0x38 + 0x30)) & 1;
