@@ -161,6 +161,16 @@ long fn_801EEE38(void) {
     } while (1);
 }
 
+extern void fn_801EC750(void *);
+extern int lbl_8033A2D4[64];
+#pragma scheduling off
+void **fn_801EEEB0(void **arg0) {
+    fn_801EC750(arg0);
+    *arg0 = &lbl_8033A2D4;
+    return arg0;
+}
+#pragma scheduling on
+
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801EEEEC(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_801EC9CC((void*)arg0, 0);
