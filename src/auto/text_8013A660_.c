@@ -47,6 +47,29 @@ char *fn_8013A708(char *arg0, int arg1, int arg2) {
     return arg0;
 }
 
+int fn_8013A860(float *arg0, unkVtable **arg1) {
+    int result = (*arg1)->m_fn();
+    if (result != 0) {
+        arg0[0] = ((float (*)(void))(*arg1)->m_fn)();
+        arg0[1] = ((float (*)(void))(*arg1)->m_fn)();
+    }
+    return result;
+}
+
+extern void *fn_8001285C(int);
+extern void *fn_80012820(int);
+extern int fn_8013A760(unkVtable **, int);
+extern void fn_8013A7E8(unkVtable **, char *, char *);
+extern float fn_8013A90C(void *, int, int, float);
+extern void fn_8013B6C0(int *, float *, int);
+extern char lbl_8032C264[];
+float fn_8013AA68(void *, void *, void *, void *);
+void fn_8013AC2C(int *arg0) {
+    void *p = fn_80012820(*(int *)((char *)fn_8001285C(*arg0) + 4));
+    void *obj = *(void **)((char *)p + 0x80);
+    ((void (*)(void *, char *, float))(*(void ***)obj)[10])(obj, lbl_8032C264, lbl_80561440);
+}
+
 void DBPrintf_8013B490(const char *fmt, ...) {
 #pragma unused(fmt)
 }
@@ -59,6 +82,11 @@ void *fn_8013B578(int arg0) {
     char *base = lbl_8042F858;
     int offset = arg0 * 8;
     return base + offset + 8;
+}
+
+float fn_8013B650(int arg0) {
+    float temp = fn_80134B58((float *)lbl_8032C364, lbl_80561434);
+    return fn_8013B5DC(arg0, 3) + temp;
 }
 
 void fn_8013B6A4(int arg0, float arg1) {
@@ -79,10 +107,11 @@ extern float fn_80134B58(float *, float);
 extern float fn_8013B5DC(int, int);
 extern void *fn_8013B578(int);
 void fn_8013B6C0(int *arg0, float *arg1, int arg2) {
+    char *p = (char *)lbl_802F9360;
+    p += arg2 * 8;
     if (arg2 <= 4) {
-        int *p = (int *)((char *)lbl_802F9360 + arg2 * 8);
-        *arg0 = p[0];
-        *arg1 = *(float *)((char *)p + 4);
+        *arg0 = *(int *)p;
+        *arg1 = *(float *)(p + 4);
     } else {
         fn_802E317C(lbl_8032C374, arg2);
         *arg0 = 0;
@@ -94,6 +123,6 @@ float fn_8013B744(int arg0) {
     if (lbl_8055E161 != 0) {
         return lbl_80561440 - lbl_80561460 * (float)arg0;
     }
-    return *(float *)((char *)fn_8013B578(0) + 4) * lbl_80559C98;
+    return *(float *)((char *)fn_8013B578(arg0) + 4) * lbl_80559C98;
 }
 
