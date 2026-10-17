@@ -1,6 +1,6 @@
 extern void *lbl_80560078;
 extern char lbl_80560060;
-extern char lbl_8052E658;
+extern char lbl_8052E658[0x610];
 extern int lbl_80560090;
 extern char lbl_805600D0;
 extern char lbl_805600D1;
@@ -61,16 +61,19 @@ void fn_802EC158(void) {
         fn_802E622C(*ptr, lbl_805651C4);
         fn_802E61E4(*ptr, lbl_805651C4);
         i++;
-        ptr++;
+        if (i < 2) {
+            ptr++;
+        }
     } while (i < 2);
 }
 
 void fn_802EC1C0(float arg0) {
-    char flag = lbl_805600D0;
+    unsigned char flag = lbl_805600D0;
     lbl_8055D270 = arg0;
-    if (flag != 0) {
-        fn_802EC138();
+    if (flag == 0) {
+        return;
     }
+    fn_802EC138();
 }
 
 void fn_802EC1D8(void) {
