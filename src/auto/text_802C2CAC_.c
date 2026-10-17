@@ -109,21 +109,22 @@ extern void fn_802C3320(void);
 extern void fn_802C33A8(void);
 extern void fn_802E317C(const char *, ...);
 void fn_802C32B8(void) {
-    u8 *state = (u8 *)&lbl_8055FC00;
+    u8 *state = (u8 *)lbl_8055FC00;
     s8 mode;
-
-    if (state[1] & 4)
-        return;
+    s32 flag;
+    if (state[1] & 4) return;
     mode = (s8)state[0];
-    if (mode != 5 && mode != 6) {
+    flag = 0;
+    if (mode != 5 && mode != 6) flag = 1;
+    if (flag != 0) {
         fn_802C3320();
         return;
     }
-    if (mode == 5) {
+    if ((s8)state[0] == 5) {
         fn_802C33A8();
         return;
     }
-    fn_802E317C(lbl_8034B060, (s32)state[0]);
+    fn_802E317C(lbl_8034B060, (s32)(s8)*(u8 *)lbl_8055FC00);
 }
 
 void fn_802C4C80(void* arg0) {
@@ -192,3 +193,9 @@ extern const char lbl_8034B060[];
 extern void fn_802C3320(void);
 extern void fn_802C33A8(void);
 extern void fn_802E317C(const char *, ...);
+extern void fn_802C3850(s32, s32, s32, s32, s32, s32, s32);
+extern void fn_802C3754(s32, s32, s32, s32, s32, s32);
+extern void fn_802DB2C8(void);
+extern void fn_802C3478(void);
+extern void fn_802C365C(void);
+extern void fn_802C356C(void);
