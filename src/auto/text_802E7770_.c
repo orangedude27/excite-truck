@@ -3,3 +3,11 @@
 
 void fn_802E7770(void) {
 }
+
+int fn_802E7774(int (*arg0)(void)) {
+    if (arg0 != 0) {
+        arg0();
+    }
+    return 0;
+}
+
