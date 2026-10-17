@@ -14,3 +14,6 @@ int fn_802E7774(int (*arg0)(void)) {
 void fn_802E77A8(void) {
 }
 
+void fn_802E77AC(void) {
+}
+
