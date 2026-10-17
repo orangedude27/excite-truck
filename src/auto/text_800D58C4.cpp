@@ -69,6 +69,25 @@ extern "C" void fn_800D6EEC(void* arg0) {
     *(volatile u8*)(p + 0x20) = 0;
 }
 
+extern "C" void fn_800D7698(void *arg0, int arg1) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+        virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35();
+        virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
+        virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43();
+        virtual void v44(int);
+    };
+    Obj* obj = *(Obj**)((char*)arg0 + 0x10);
+    if (obj) obj->v44(arg1);
+}
+
 extern "C" void fn_800D76BC(void *arg0, int arg1) {
     struct Obj {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
@@ -145,10 +164,10 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D7F58(void *arg0, void *arg1) {
-    f32 first = ((f32 *)arg1)[0];
-    f32 second = ((f32 *)arg1)[1];
-    ((f32 *)arg0)[0] = first;
-    ((f32 *)arg0)[1] = second;
+    f32 v0 = ((f32 *)arg1)[0];
+    f32 v1 = ((f32 *)arg1)[1];
+    ((f32 *)arg0)[0] = v0;
+    ((f32 *)arg0)[1] = v1;
 }
 
 extern "C" void fn_800D7F6C(s32 *arg0) {
@@ -241,6 +260,10 @@ extern "C" int fn_800D87F8(void *arg0) {
 }
 
 extern "C" void fn_800D8804(GXColor *arg0, const GXColor *arg1) {
+    *arg0 = *arg1;
+}
+
+extern "C" void fn_800D8834(u8 *arg0, u8 *arg1) {
     *arg0 = *arg1;
 }
 
