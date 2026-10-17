@@ -2317,6 +2317,15 @@ done:
     return;
 }
 
+BOOLEAN SDP_ServiceSearchRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
+    tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
+    if (p_ccb == NULL) return FALSE;
+    *(u8 *)((u8 *)p_ccb + 0x474) = 0;
+    *(u32 *)((u8 *)p_ccb + 0x410) = (u32)p_db;
+    *(u32 *)((u8 *)p_ccb + 0x414) = (u32)p_cb;
+    return TRUE;
+}
+
 BOOLEAN SDP_ServiceSearchAttributeRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
     tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
     if (p_ccb == NULL) return FALSE;
@@ -2372,7 +2381,7 @@ void fn_8009757C(tCONN_CB *p_ccb) {
         p_ccb->disc_state = 3;
         process_service_search_attr_rsp(p_ccb, NULL, 0);
     } else {
-        p_ccb->disc_state = 0;
+        *(u16 *)((u8 *)p_ccb + 0x46c) = 0;
         sdp_snd_service_search_req(p_ccb, 0, NULL);
     }
 }
