@@ -159,8 +159,8 @@ extern "C" void fn_8020899C(int, int);
 extern "C" int fn_80128668(void *);
 extern "C" void fn_80206C70(void *arg0) {
     struct Callback {
-        virtual void slot0();
         virtual void slot1(int);
+        virtual void slot0();
     };
     fn_8012A364(lbl_8055ED90, arg0);
     if (--lbl_8055ED8C == 0) {
@@ -217,11 +217,10 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
 }
 
 extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
-    void *result;
-    if (arg2 == 0) return 0;
-    result = fn_802072E4(arg2, arg0, arg1);
-    if (*(int *)((u8 *)result + 0xC) == 0) return 0;
-    return result;
+    void *value = arg2;
+    if (value) value = fn_802072E4(value, arg0, arg1);
+    if (*(int *)((u8 *)value + 0xC) != 0) return value;
+    return 0;
 }
 
 extern "C" void fn_80207924(void *arg0) {
