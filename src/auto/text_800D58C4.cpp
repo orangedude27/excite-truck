@@ -57,6 +57,12 @@ extern "C" void fn_800D598C(void* arg0) {
     }
 }
 
+extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out,void* color,u8 alpha) {
+ u8* d=(u8*)out; const u8* s=(const u8*)color;
+ d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3];
+ if(alpha!=0xff) d[3]=(u8)((s[3]*alpha)/255);
+}
+
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
     extern f32 lbl_80560E78;
     extern f32 lbl_80560E7C;
@@ -533,6 +539,21 @@ extern "C" char* fn_800D9584(char* arg0, const char* arg1) {
     return strncpy(arg0 + 4, arg1, 0x14);
 }
 
+extern "C" s32 GXGetTexObjLODAll(void*);
+extern "C" s32 GXGetTexObjWrap_Internal(void*);
+extern "C" void GXInitTexObjWrapMode(void*,s32,s32);
+extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*,void*,u32);
+extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void* self,u8 index,void* palette) {
+ extern const char lbl_8031F990[]; extern const char lbl_8031FDE8[];
+ u32 count=*(u32*)((char*)self+0x50)>>28;
+ if(index>=count) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990,0x409,lbl_8031FDE8);
+ void* dst=(u8*)*(void**)((char*)self+0x58)+((u32)index<<5);
+ s32 lod=GXGetTexObjLODAll(dst);
+ s32 wrap=GXGetTexObjWrap_Internal(dst);
+ InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(dst,palette,0);
+ GXInitTexObjWrapMode(dst,lod,wrap);
+}
+
 extern "C" void GXGetTexObjWidth(void*, int, int);
 extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8 index, const void* tex) {
     extern const char lbl_8031F990[]; extern const char lbl_8031FDE8[];
@@ -551,7 +572,27 @@ extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8
 }
 
 extern "C" void fn_800DAFA8(void* arg0, void* arg1) {
-    (*(void (**)(void*, void*))(*(char**)arg1 + 0x14))(arg1, arg0);
+    void** vtable = *(void***)arg1;
+    ((void (*)(void*, void*))vtable[5])(arg1, arg0);
+}
+
+extern "C" void fn_800DAFC4(void* arg0, u32 arg1) {
+    extern const char lbl_8031F1FC[];
+    extern const char lbl_8031F1D8[];
+    void* end = (u8*)arg0 + 0x1C;
+    void* node = *(void**)((u8*)arg0 + 0x1C);
+    do {
+        void* next = *(void**)node;
+        if (arg1 == 0 || *(u32*)((u8*)node + 8) == arg1) {
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            void* it = node;
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((u8*)arg0 + 0x18, &it);
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            *(u32*)((u8*)node + 8) = 0;
+            *(u16*)((u8*)node + 0xC) = 0;
+        }
+        node = next;
+    } while (node != end);
 }
 
 extern "C" void fn_800DB084(void* arg0) {
@@ -653,14 +694,14 @@ extern "C" void DrawSelf__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self
         void* pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
         void* args[2];
         args[0] = pos;
-        args[1] = *(void**)((u8*)self + 0x4C);
+        args[1] = (u8*)self + 0x4C;
         DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(args, args[1], &color);
     }
 }
 
 extern "C" void Animate__Q36nw4hbm3lyt4PaneFUl(void* self, u32 flags) {
-    void (**vtable)(void) = *(void (***)(void))self;
-    vtable[8]();
+    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); };
+    ((Obj*)self)->v4();
     if ((*(u8*)((u8*)self + 0xCF) & 1) == 0 && (flags & 1) == 0) {
         void* end = (u8*)self + 0x14;
         void* node = *(void**)((u8*)self + 0x14);
