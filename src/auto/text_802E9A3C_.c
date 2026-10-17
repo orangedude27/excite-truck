@@ -41,6 +41,7 @@ void fn_802EC12C(void) {
     lbl_80560078 = (void*)-1;
 }
 
+#pragma dont_inline fn_802EC138
 void fn_802EC138(void) {
     if ((unsigned char)lbl_805600D0 == 0) {
         lbl_805600D1 = 1;
