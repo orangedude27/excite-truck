@@ -147,7 +147,7 @@ void fn_80298160(void) {
     }
 }
 
-void* fn_802981EC(unsigned int size) {
+extern "C" void* fn_802981EC(unsigned int size) {
     return fn_80299A04(lbl_8055F7CC, size);
 }
 
