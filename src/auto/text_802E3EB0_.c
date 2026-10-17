@@ -56,7 +56,6 @@ extern int DVDGetCommandBlockStatus(void *);
 extern unsigned int lbl_8055D1BC;
 extern unsigned int lbl_8034D180;
 extern void DVDInit(void);
-extern void OSReport(const char *);
 extern int DVDClose(void *);
 extern void fn_802E30C8(const char *, void *);
 extern void fn_802E3F38(void *);
