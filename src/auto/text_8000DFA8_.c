@@ -395,12 +395,16 @@ void fn_80010E94(f32 x, f32 y, f32 a, f32 b, s32 c, s32 d) {
         fn_802354A0(c, d, -1, x, y, lbl_80560264, a, b);
     }
 }
+#pragma scheduling off
 void fn_80010EF0(void) {
-    Unk80350F88 *base = (Unk80350F88 *)&lbl_80350F88;
-    base->unk_0x288 = 0;
-    base->unk_0x04 = 0;
+    s8 *p;
+    s32 *q;
+    p = (s8 *)&lbl_80350F88;
+    q = (s32 *)(p + 0x288);
+    *q = 0;
+    *(s8 *)(p + 0x4) = 0;
 }
-
+#pragma scheduling on
 extern void fn_80011280(s32, s32);
 extern void fn_8000E3B4(s32);
 extern void fn_8000E874(s32);
@@ -605,6 +609,22 @@ s32 fn_8000DFA8(s32 arg0) {
 
 s32 fn_8000DFC0(s32 arg0) {
     return lbl_802FC2A8[arg0 * 3 + 2];
+}
+
+s32 fn_8000E2D8(s32 arg0) {
+    switch (arg0) {
+    case 0:
+    case 3:
+        return 0;
+    case 1:
+        return -0x29FFC4;
+    case 2:
+        return -0x32D37D;
+    case 4:
+        return 0xFF2D2DC8;
+    default:
+        return -0x100;
+    }
 }
 
 s32 fn_8000E338(s32 arg0) {
