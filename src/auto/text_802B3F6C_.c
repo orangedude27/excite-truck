@@ -52,6 +52,15 @@ int fn_802B40B0(int arg0, int arg1) {
     return 0;
 }
 
+int fn_80129D90(int, int, int);
+int fn_802B475C(void* arg0) {
+    int count = *(int*)((char*)arg0 + 4);
+    int index = fn_80129D90(0, 0, count);
+    return ((int*)*(void**)arg0)[index];
+}
+
+void fn_802B4BD8(void) {}
+
 void fn_802B4CB4(void *arg0) {
     void *p = *(void **)arg0;
     if (p != NULL) {
