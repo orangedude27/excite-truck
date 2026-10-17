@@ -25,6 +25,21 @@ void fn_8019416C(void) {
 
 }
 
+void fn_801942F0(void *arg0, int arg1) {
+    if ((*(int *)((unsigned char *)arg0 + 0x2D0) & 0x20) || arg1 != 0) {
+        *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x267C) = 1;
+    } else {
+        *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x267C) = 0;
+    }
+}
+
+void fn_801945F8(void *arg0) {
+    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) == 0x50 &&
+        *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24) == 3) {
+        fn_80194590(arg0);
+    }
+}
+
 void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
     float x, y;
     double pair;
@@ -41,7 +56,9 @@ extern void fn_8013B744(int);
 extern void fn_80194FD0(void);
 void fn_80194F70(void *arg0, float *a, float *b) {
     float diff[4];
-    diff[0] = a[0] - b[0]; diff[1] = a[1] - b[1]; diff[2] = a[2] - b[2];
+    diff[0] = a[0] - b[0];
+    diff[1] = a[1] - b[1];
+    diff[2] = a[2] - b[2];
     PSVECDotProduct(arg0, diff);
 }
 
