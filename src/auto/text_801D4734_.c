@@ -252,6 +252,10 @@ void fn_801D5730(void) {
     }
 }
 
+void fn_801D5A14(s32 arg0) {
+    fn_801D59C8(arg0, 2);
+}
+
 void fn_801D5A1C(s32 arg0) {
     fn_801D59C8(arg0, 1);
 }
