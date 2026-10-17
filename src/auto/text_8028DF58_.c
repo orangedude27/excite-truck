@@ -16,6 +16,7 @@ extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
 #pragma push
 #pragma small_data off
+typedef int lbl_804B34B0_t;
 void fn_8028DFB0(void) {
     int *base = &lbl_804B34B0;
     if (base[0x40] > 0) {
