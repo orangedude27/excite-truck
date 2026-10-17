@@ -1337,6 +1337,10 @@ extern "C" void fn_802237D0(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x41C) = 1;
 }
 
+extern "C" void fn_802237DC(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x41C) = 0;
+}
+
 extern "C" s32 fn_802237E8(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x2C8);
 }
