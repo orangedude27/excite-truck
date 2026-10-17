@@ -11,21 +11,17 @@ extern f32 lbl_80562C7C;
 extern void *lbl_8055EA10;
 
 extern void NWC24Data_Init_801E1028(void *);
-extern void fn_801E07E8(void);
+extern void *fn_801E07E8(void *, s32);
 extern void fn_8002F53C(void *, void *, void *, s32, s32);
 void fn_801E0864(void *arg0) {
-    int zero;
-    int minus;
     float x;
     float y;
-    zero = 0;
-    minus = -1;
-    x = lbl_80562C78;
     y = lbl_80562C7C;
-    *(int *)arg0 = minus;
-    *((char *)arg0 + 4) = zero;
-    *(int *)((char *)arg0 + 0x10) = zero;
-    *(int *)((char *)arg0 + 0x14) = zero;
+    x = lbl_80562C78;
+    *(int *)arg0 = -1;
+    *((char *)arg0 + 4) = 0;
+    *(int *)((char *)arg0 + 0x10) = 0;
+    *(int *)((char *)arg0 + 0x14) = 0;
     *(float *)((char *)arg0 + 8) = x;
     *(float *)((char *)arg0 + 0xC) = y;
 }
@@ -113,6 +109,37 @@ void fn_801E1684(void) {
 
 void fn_801E1688(void) {
 
+}
+
+void fn_801E168C(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0x6C) = -1;
+    *(s32 *)((u8 *)arg0 + 0x0C) = -1;
+    *(u8 *)((u8 *)arg0 + 0x10) = 0;
+    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+    *(s32 *)((u8 *)arg0 + 0x20) = 0;
+    *(f32 *)((u8 *)arg0 + 0x14) = lbl_80562C78;
+    *(f32 *)((u8 *)arg0 + 0x18) = lbl_80562C7C;
+    *(s32 *)((u8 *)arg0 + 0x70) = -1;
+    *(s32 *)((u8 *)arg0 + 0x24) = -1;
+    *(u8 *)((u8 *)arg0 + 0x28) = 0;
+    *(s32 *)((u8 *)arg0 + 0x34) = 0;
+    *(s32 *)((u8 *)arg0 + 0x38) = 0;
+    *(f32 *)((u8 *)arg0 + 0x2C) = lbl_80562C78;
+    *(f32 *)((u8 *)arg0 + 0x30) = lbl_80562C7C;
+    *(s32 *)((u8 *)arg0 + 0x74) = -1;
+    *(s32 *)((u8 *)arg0 + 0x3C) = -1;
+    *(u8 *)((u8 *)arg0 + 0x40) = 0;
+    *(s32 *)((u8 *)arg0 + 0x4C) = 0;
+    *(s32 *)((u8 *)arg0 + 0x50) = 0;
+    *(f32 *)((u8 *)arg0 + 0x44) = lbl_80562C78;
+    *(f32 *)((u8 *)arg0 + 0x48) = lbl_80562C7C;
+    *(s32 *)((u8 *)arg0 + 0x78) = -1;
+    *(s32 *)((u8 *)arg0 + 0x54) = -1;
+    *(u8 *)((u8 *)arg0 + 0x58) = 0;
+    *(s32 *)((u8 *)arg0 + 0x64) = 0;
+    *(s32 *)((u8 *)arg0 + 0x68) = 0;
+    *(f32 *)((u8 *)arg0 + 0x5C) = lbl_80562C78;
+    *(f32 *)((u8 *)arg0 + 0x60) = lbl_80562C7C;
 }
 
 void fn_801E1868(void) {
