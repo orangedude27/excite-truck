@@ -1857,6 +1857,28 @@ void fn_80089E3C(void) {
 
 }
 
+void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
+{
+    u8 addr[6];
+    void *lcb;
+    void *ccb;
+    u8 state;
+    u8 status_copy = status;
+    memcpy(addr, bd_addr, 6);
+    lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
+    if (lcb == 0) {
+        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80318C8C);
+    } else {
+        state = status ? 8 : 7;
+        ccb = *(void **)((u8 *)lcb + 8);
+        while (ccb != 0) {
+            void *next = *(void **)((u8 *)ccb + 8);
+            fn_80089E40(ccb, state, addr);
+            ccb = next;
+        }
+    }
+}
+
 void fn_8008C04C(s16 arg0) {
     *(s16 *)(lbl_803C4040 + 2) = arg0;
     *(s16 *)(lbl_803C4040 + 4) = arg0;
@@ -1900,6 +1922,12 @@ void l2c_link_role_change_failed(void) {
     s32 i;
     for (i = 0, entry = lbl_803C4040 + 8; i < 4; i++, entry += 0x5C)
         if (entry[0] != 0 && *(s32 *)(entry + 4) == 2) l2cu_create_conn_after_switch(entry);
+}
+
+void fn_8008C464(u8 *bd_addr) {
+    void *lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
+    if (lcb != 0 && *(u32 *)((u8 *)lcb + 8) == 0)
+        btu_start_timer((u8 *)lcb + 0x10, 2, 0x78);
 }
 
 void l2c_process_timeout(void *arg) {
