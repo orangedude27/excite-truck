@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+void fn_802C5024(s32, s32, s32, s32);
+
 extern void fn_8012C4D8(void);
 
 extern s32 lbl_8055FC00;
