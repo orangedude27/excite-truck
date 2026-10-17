@@ -7,6 +7,10 @@
     extern void fn_80195654(void *);
     extern void fn_801933FC(void *, void *);
     extern double fn_8002F234(float);
+    extern float lbl_8055E584, lbl_8055E588;
+    extern void fn_80129DC4(int, float, float);
+    extern void fn_8013530C(void *, int);
+    extern int lbl_8055E550;
     extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204;
 
     typedef unsigned char u8;
@@ -26,6 +30,19 @@ extern char lbl_80333198[];
 
 void fn_8019386C(void) {
     fn_80193CE0();
+}
+
+void fn_80193878(void *arg0) {
+    float a[3], b[3];
+    void *obj;
+    a[0] = lbl_80562144;
+    a[1] = lbl_80562144;
+    a[2] = lbl_80562178;
+    obj = *(void **)((unsigned char *)arg0 + 0x294);
+    b[0] = *(float *)((unsigned char *)obj + 0x94) + lbl_8056217C;
+    b[1] = *(float *)((unsigned char *)obj + 0x98) + lbl_80562144;
+    b[2] = *(float *)((unsigned char *)obj + 0x9C) + lbl_80562144;
+    fn_8017B4E0(obj, a, b, lbl_80562140);
 }
 
 extern unsigned char lbl_8055A4B8[];
