@@ -101,7 +101,6 @@ void fn_8027156C(void) {
 typedef signed int s32;
 typedef unsigned char u8;
 void *fn_80178C9C(void);
-s32 fn_80270B50(void);
 s32 fn_80270EC4(void *, s32);
 void fn_80271578(void) {
     s32 temp_r31;
