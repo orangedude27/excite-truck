@@ -85,6 +85,7 @@ char *fn_80237C40(void) {
     int i;
     for (i=0;i<0x21;i++) p[i]=0;
     *(int *)(p+0x28)=0; *(int *)(p+0x2c)=0; *(int *)(p+0x24)=0;
+      return p;
 }
 
 void fn_80237D00(void *arg0) {
