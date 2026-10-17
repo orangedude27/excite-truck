@@ -2382,6 +2382,32 @@ void fn_800853F8(u8 *arg0, u16 arg1, u16 arg2) {
     btu_hcif_send_cmd(arg1 >> 8, 4, 0xC, 0x1E, 0);
 }
 
+BOOL btsnd_hcic_write_pin_type_8008543C(u32 pin_type) {
+    u8 *buf = GKI_getpoolbuf(2);
+    if (buf == NULL) return FALSE;
+    *(u16 *)(buf + 2) = 4;
+    *(u16 *)(buf + 4) = 0;
+    buf[8] = 0x20;
+    buf[9] = 0xC;
+    buf[10] = 1;
+    buf[11] = pin_type;
+    btu_hcif_send_cmd(0xC, 0x20, 0);
+    return TRUE;
+}
+
+BOOL btsnd_hcic_write_pin_type_800854B0(u32 pin_type) {
+    u8 *buf = GKI_getpoolbuf(2);
+    if (buf == NULL) return FALSE;
+    *(u16 *)(buf + 2) = 4;
+    *(u16 *)(buf + 4) = 0;
+    buf[8] = 0x22;
+    buf[9] = 0xC;
+    buf[10] = 1;
+    buf[11] = pin_type;
+    btu_hcif_send_cmd(0xC, 0x22, 0);
+    return TRUE;
+}
+
 void fn_80085568(void *arg0, u16 arg1, u16 arg2) {
     ((u16 *)((u8 *)arg0 + 2))[0] = 7;
     ((u16 *)((u8 *)arg0 + 4))[0] = 0;
@@ -2393,6 +2419,40 @@ void fn_80085568(void *arg0, u16 arg1, u16 arg2) {
     ((u8 *)arg0)[13] = arg2;
     ((u8 *)arg0)[14] = arg2 >> 8;
     btu_hcif_send_cmd(arg0);
+}
+
+BOOLEAN btsnd_hcic_set_host_buf_size(UINT16 acl_len, UINT8 sco_len, UINT16 acl_num, UINT16 sco_num) {
+    BT_HDR *buf = GKI_getpoolbuf(2);
+    u8 *p;
+    if (buf == NULL) return FALSE;
+    buf->len = 10;
+    buf->offset = 0;
+    p = (u8 *)(buf + 1);
+    p[0] = 0x33; p[1] = 0xC; p[2] = 7;
+    p[3] = acl_len; p[4] = acl_len >> 8;
+    p[5] = sco_len;
+    p[6] = acl_num; p[7] = acl_num >> 8;
+    p[8] = sco_num; p[9] = sco_num >> 8;
+    btu_hcif_send_cmd(0, buf);
+    return TRUE;
+}
+
+s32 btsnd_hcic_write_policy_set_80085668(u16 arg0, u16 arg1) {
+    u8 *buf = GKI_getpoolbuf(2);
+    register u16 first = arg0;
+    register u16 second = arg1;
+    if (buf == NULL) return 0;
+    *(u16 *)(buf + 2) = 7;
+    *(u16 *)(buf + 4) = 0;
+    buf[8] = 0x37;
+    buf[9] = 0xC;
+    buf[10] = 4;
+    buf[11] = first;
+    buf[12] = first >> 8;
+    buf[13] = second;
+    buf[14] = second >> 8;
+    btu_hcif_send_cmd(first >> 8, 4, 0xC, 0x37);
+    return 1;
 }
 
 s32 btsnd_hcic_reset_800857CC(void) {
@@ -2432,6 +2492,25 @@ s32 btsnd_hcic_auth_request_800858B0(u8 arg0) {
     p[11] = arg0; p[12] = 0;
     btu_hcif_send_cmd(2, 0x14, 3);
     return 1;
+}
+
+extern u8 lbl_803C3C38[];
+extern u8 lbl_803C3AF0[];
+extern u8 hidh_conn_reg(void);
+extern u8 hidh_conn_initiate(void);
+extern void hidd_pm_set_now(void *);
+u8 HID_HostRegister(void *arg0) {
+    u8 result;
+    if (lbl_803C3C38[0x400] != 0)
+        return 2;
+    if (arg0 == 0)
+        return 5;
+    result = hidh_conn_reg();
+    if (result != 0)
+        return result;
+    *(void **)(lbl_803C3C38 + 0x340) = arg0;
+    lbl_803C3C38[0x400] = 1;
+    return 0;
 }
 
 extern char lbl_80317CC8[];
