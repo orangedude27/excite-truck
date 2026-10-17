@@ -2033,10 +2033,12 @@ extern "C" s32 fn_80229F58(s32 arg0) {
 }
 
 extern "C" s32 fn_80229F60(void *arg0) {
-    if (*(u8 *)((char *)arg0 + 0x18) != 0) {
-        return 2;
+    volatile u8 *value = (volatile u8 *)((char *)arg0 + 0x18);
+    s32 result = 0;
+    if (*value != 0) {
+        result = 2;
     }
-    return 0;
+    return result;
 }
 
 extern "C" void fn_8022A014(void *arg0) {
