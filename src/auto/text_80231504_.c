@@ -115,7 +115,7 @@ s32 fn_80231730(s32 arg0) {
 }
 
 void fn_80231ADC(void) {
-    *(s32 *)(lbl_8049846C + 1) = 0;
+    *(s32 *)(lbl_8049846C + 4) = 0;
 }
 
 void fn_80232024(u8 **arg0) {
@@ -167,8 +167,12 @@ void fn_80232D3C(char *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 f0, f32
     }
 }
 
+extern s32 fn_8022EDC4(void);
+extern s32 fn_80230B9C(s32);
+extern void fn_8022C8B98(void);
+extern void fn_802C8B98(s32, s32);
+extern s32 lbl_8055F050;
 void fn_802335F0(void) {
-    fn_80233600((u8 *)-1, 9, lbl_8056368C);
 }
 void fn_802337A0(f64 a, s32 b, f64 c, s32 d, f64 e, f64 f, s32 g, f64 h, char *fmt, ...) {
     char buffer[0x80];
@@ -176,6 +180,17 @@ void fn_802337A0(f64 a, s32 b, f64 c, s32 d, f64 e, f64 f, s32 g, f64 h, char *f
     va_start(args, fmt);
     vsprintf(buffer, fmt, args);
     fn_80232BA4(buffer, b, d, g, a, c, f, e, h);
+}
+
+void fn_80233DD8(s32 *arg0, s32 arg1) {
+    s32 temp_r31 = fn_8022EDC4();
+    lbl_8055F050 = fn_80230B9C(arg1);
+    fn_802C8B98(*arg0, temp_r31);
+}
+
+void fn_80233E34(s32 *arg0, s32 arg1, s32 arg2) {
+    lbl_8055F050 = fn_80230B9C(arg2);
+    fn_802C8B98(*arg0, arg1);
 }
 
 void fn_8023441C(const char *arg0) {
