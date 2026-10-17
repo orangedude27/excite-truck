@@ -72,6 +72,15 @@ void fn_802411CC(void) { fn_8023FE34(); }
 
 void fn_802411D0(void) { fn_8023FE60(); }
 
+s32 fn_802411D4(void) {
+    s32 var_r31;
+    var_r31 = 0;
+    if ((fn_802E8504(0) != 0) && (fn_802E8504(1) != 0)) {
+        var_r31 = 1;
+    }
+    return var_r31;
+}
+
 void fn_80241228(void) {
 }
 
