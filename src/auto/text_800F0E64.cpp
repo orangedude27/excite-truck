@@ -344,6 +344,14 @@ extern "C" void fn_800F4F04(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F24(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_800F4F7C(void *arg0) {
     s32 *p = (s32 *)((u8 *)arg0 + 4);
     *(s32 *)((u8 *)arg0 + 4) = 0;
