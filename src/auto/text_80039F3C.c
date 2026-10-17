@@ -24,6 +24,29 @@ extern char lbl_80302384[];
 extern void fn_8003A10C(void);
 extern char lbl_8037B6D0[];
 extern int NANDPrivateCreateDirAsync(const char *, int, int, void (*)(int), void *);
+extern void (*lbl_8055D8D0)(int, int);
+extern int NANDCloseAsync(void *, void *, void *);
+extern int NANDWriteAsync(void *, void *, int, void *, void *);
+extern int NANDPrivateOpenAsync(const char *, void *, int, void *, void *);
+extern char lbl_8037B640[], lbl_80302368[];
+extern void fn_80039F3C(int);
+extern void fn_80039F68(int);
+extern void fn_80039FC4(int);
+void __DVDShowFatalMessage(void) {
+ unsigned char bg[4]={0,0,0,0}; unsigned char fg[4]={255,255,255,0}; const char *msg;
+ if(SCGetLanguage()==0) OSSetFontEncode(1); else OSSetFontEncode(0);
+ msg=(SCGetLanguage()>6)?lbl_802EE878[1]:lbl_802EE878[SCGetLanguage()];
+ OSFatal(fg,bg,msg);
+}
+
+extern void __DVDShowFatalMessage(void);
+extern void (*lbl_8055D8D0)(int, int);
+int DVDSetAutoFatalMessaging(int enable) {
+ int old; OSDisableInterrupts(); old=FatalFunc_8055D8D8 != 0;
+ if(enable) FatalFunc_8055D8D8=__DVDShowFatalMessage; else FatalFunc_8055D8D8=0;
+ OSRestoreInterrupts(); return old;
+}
+
 void __DVDPrintFatalMessage(void) {
     if (FatalFunc_8055D8D8 != 0) {
         FatalFunc_8055D8D8();
