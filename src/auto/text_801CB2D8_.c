@@ -69,6 +69,20 @@ done:
     return;
 }
 
+void fn_801CB3AC(int arg0) {
+    if (fn_80019BA8() != 0) goto done;
+    switch (fn_80161C38()) {
+    case 0:
+        goto action;
+    default:
+        goto done;
+    }
+action:
+    fn_801CCB48(arg0);
+done:
+    return;
+}
+
 void fn_801CB3F8(void) {
     int count, i;
     if (fn_80019BA8() || fn_80161C38()) return;
