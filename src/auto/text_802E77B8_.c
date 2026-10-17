@@ -64,6 +64,11 @@ void fn_802E7A14(int arg0) {
     lbl_8056000C++;
 }
 
+extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
+extern unsigned char lbl_80505978[];
+void fn_802E8528(int, float);
+void fn_802E8524(void) {}
+
 void fn_802E85A8(void) {}
 
 void fn_802E85AC(void) {}
