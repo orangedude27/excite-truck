@@ -15,3 +15,6 @@ void fn_8028A614(void) {
     lbl_804B322C[1] = lbl_80564274;
     lbl_804B322C[2] = lbl_80564274;
 }
+#include <types.h>
+#pragma section ".ctors$00"
+DECL_SECTION(".ctors$00") funcptr_t D_802ED4E0 = fn_8028A614;
