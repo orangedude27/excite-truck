@@ -1189,6 +1189,12 @@ extern "C" void* __dt__14CollisionSpaceFv_80222998(void* arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_802229FC(void *arg0) {
+    if (fn_802C51AC(*(s32 *)((u8 *)arg0 + 4)) != 0) {
+        fn_802C51AC(*(s32 *)((u8 *)arg0 + 4));
+    }
+}
+
 extern "C" s32 fn_80222BD4(void *arg0) {
     return fn_802C51AC(*(s32*)((u8*)arg0 + 4));
 }
