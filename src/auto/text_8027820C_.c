@@ -108,3 +108,8 @@ extern const char lbl_80347590[];
 extern const char lbl_803475B4[];
 extern const char lbl_80347660[];
 extern char lbl_804A15D0[];
+extern int lbl_8055F5B0;
+extern int lbl_8055F5C4;
+extern const char lbl_80347580[];
+extern int fn_8012850C(int, const char *, int);
+extern void *fn_8002F37C(void *, int, int, int);
