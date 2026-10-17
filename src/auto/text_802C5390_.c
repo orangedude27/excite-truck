@@ -36,6 +36,12 @@ void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
     }
 }
 
+#pragma dont_inline on
+void fn_802C543C(void) {
+    lbl_804C1338[0] = 0;
+}
+#pragma dont_inline off
+
 int fn_802C544C(void **a, void **b) {
     void *right = *b;
     void *left = *a;
