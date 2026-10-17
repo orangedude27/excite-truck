@@ -956,6 +956,10 @@ void fn_80073A1C(void) {
 
 }
 
+void fn_800740A4(void) {
+    BTM_PmRegister(4, lbl_803C0C14 + 0x95, 0);
+}
+
 void bta_dm_pm_btm_cback(void *arg0, s8 arg1, s16 arg2, s8 arg3) {
     u8 *buf = GKI_getbuf(0x14);
     if (buf != 0) {
