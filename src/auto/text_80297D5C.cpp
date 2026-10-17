@@ -25,9 +25,15 @@ extern "C" void fn_80298BBC(void*);
 extern "C" void fn_8029BA8C(void*);
 extern "C" void fn_80299628(void);
 extern "C" void fn_8029871C(void*, void*, float);
+extern "C" int fn_802984D0(void*, short*);
+extern "C" void fn_802994C0(void*, unsigned int);
+extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
 extern float lbl_80564590;
 extern float lbl_8056459C;
 extern float lbl_80558DC4;
+void fn_80297ED4(void) {
+}
+
 void fn_80298124(void) {
     fn_80298BBC(lbl_8055F7C8);
     fn_8029BA8C(lbl_8055F7D8);
@@ -94,6 +100,18 @@ void fn_802982C0(void *arg0) {
         var_r30 += 1;
         var_r31 = (char *)var_r31 + 0x2c;
     } while (var_r30 < 4);
+}
+
+extern "C" int fn_802984D0(void*, short*);
+extern "C" void fn_802994C0(void*, unsigned int);
+extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
+void fn_80298458(void* arg0, unsigned int arg1, short arg2) {
+    short value = arg2;
+    void* item = (char*)arg0 + arg1 * 0x2c;
+    if (fn_802984D0(item, &value) != 0) {
+        fn_802994C0(lbl_8055F7C4, arg1);
+        fn_80299338(lbl_8055F7C4, arg1, item, (char*)item + 0xc, (char*)item + 0x18, value);
+    }
 }
 
 void fn_8029B138(void *arg0, int arg1, float *arg2, float *arg3, float *arg4, float *arg5) {
