@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern s32 fn_80161E40(s32);
+
 extern int lbl_8032F698;
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
@@ -361,12 +363,19 @@ s32 fn_801628E8(void *arg0) {
     return 1;
 }
 
+s32 fn_80162FE8(void *arg0) {
+    volatile f32 value = *((f32 *)((char *)arg0 + 0x5B8));
+    if (((s32 (*)(void))(*(void ***)arg0)[0x28 / 4])() != 0) {
+        return *((f32 *)((char *)arg0 + 0x5B4)) > value;
+    }
+    return *((s32 *)((char *)arg0 + 8)) != 0;
+}
+
 s32 fn_80163058(void *arg0) { return *(s32 *)((u8 *)arg0 + 8) == 1; }
 
 s32 fn_801634F0(void *arg0) {
     s32 result = 0;
-    void **vtable = *(void ***)arg0;
-    if (((s32 (*)(void *))vtable[0x24 / 4])(arg0) != 0 &&
+    if (((s32 (*)(void))(*(s32 (**)(void))(*(char **)arg0 + 0x24)))() != 0 &&
         *((u8 *)arg0 + 0x90) != 0) {
         result = 1;
     }
