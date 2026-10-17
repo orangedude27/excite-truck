@@ -370,30 +370,48 @@ extern "C" void fn_800F2D28(void *arg0) {
 
 extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl(void *self, const void *chunk, u32 size) {
     extern const char lbl_80324868[];
+    const char *base = lbl_80324868;
     const u32 *data = (const u32 *)chunk;
-    if (chunk == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324868, 0x78, lbl_80324868 + 0x198);
+    if (data == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x78, base + 0x198);
     if (data[0] != 0x494E464FU)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324868, 0x7B, lbl_80324868 + 0x1C4);
-    *(const void **)((char *)self + 0x28) = data + 2;
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x7B, base + 0x1C4);
+    *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
 }
 
 extern "C" s32 ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(void *self, u32 index, void *info) {
     extern const char lbl_80324BD4[];
     extern char lbl_80559878;
-    u64 ref = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(self, index);
-    u8 type = (u8)(ref >> 32);
-    u32 offset = (u32)ref;
-    const void *base = *(const void **)((char *)self + 0x28);
-    if (type != 1)
+    u64 result = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(self, index);
+    u32 type = (u32)(result >> 32);
+    u32 offset = (u32)result;
+    void *base = *(void **)((char *)self + 0x28);
+    if ((u8)type != 1)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559878, 0x70, lbl_80324BD4);
-    u8 *data = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(type, offset, (void *)base);
-    if (data == 0)
+    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(type, offset, base);
+    if (!data)
         return 0;
-    *(u32 *)((char *)info + 0) = *(u32 *)(data + 0);
-    *(u32 *)((char *)info + 4) = *(u32 *)(data + 4);
-    *(u32 *)((char *)info + 12) = data[12];
-    *(u32 *)((char *)info + 8) = *(u32 *)(data + 8);
+    *(u32 *)((char *)info + 0) = *(u32 *)((char *)data + 0);
+    *(u32 *)((char *)info + 4) = *(u32 *)((char *)data + 4);
+    *(u32 *)((char *)info + 12) = *(u8 *)((char *)data + 12);
+    *(u32 *)((char *)info + 8) = *(u32 *)((char *)data + 8);
+    return 1;
+}
+
+extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive13WaveSoundInfo(void *self, u32 index, void *info) {
+    extern const char lbl_80324B7C[];
+    extern char lbl_80559868;
+    u64 result = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(self, index);
+    u32 type = (u32)(result >> 32);
+    u32 offset = (u32)result;
+    void *base = *(void **)((char *)self + 0x28);
+    if ((u8)type != 3)
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559868, 0x72, lbl_80324B7C);
+    void *data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(type, offset, base);
+    if (!data)
+        return 0;
+    *(u32 *)((char *)info + 0) = *(u32 *)((char *)data + 0);
+    *(u32 *)((char *)info + 4) = *(u8 *)((char *)data + 8);
     return 1;
 }
 
@@ -1118,6 +1136,8 @@ f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x329, lbl_803268E4, arg1, 0, 4);
     return *(f32 *)(arg0 + arg1 * 4 + 0x470);
 }
+
+extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(void *a,int n,u16 *p){void *x=*(void **)((u8*)a+4);if(*((u8*)x+16)!=2)return;int i=0,o=0;do{x=*(void **)((u8*)a+4);*(u16*)((u8*)x+0x518+o)=*p++;i++;o+=2;}while(i<n&&i<2);*((u8*)x+0x51)=1;}
 
 extern "C" int fn_800FD810(void* arg0, int arg1) {
     void* temp_r6 = *(void**)((char*)arg0 + 4);
