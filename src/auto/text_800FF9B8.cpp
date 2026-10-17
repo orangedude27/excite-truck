@@ -4,6 +4,20 @@
 typedef unsigned int u32;
 extern "C" u32 lbl_8055DE88;
 extern "C" void fn_800FFE94(int);
+extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
+extern "C" void *fn_80128668(void *);
+extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *);
+extern "C" void __ct__Q46nw4hbm3snd6detail9WsdPlayerFv(void *, void *);
+extern "C" char lbl_803275EC[];
+extern "C" void *fn_800FFA10(void *arg0, int arg1) {
+    __ct__Q44nw4r3snd6detail10BasicSoundFv(arg0);
+    *(void **)arg0 = lbl_803275EC;
+    __ct__Q46nw4hbm3snd6detail9WsdPlayerFv((char *)arg0 + 0xD8, lbl_803275EC);
+    *(int *)((char *)arg0 + 0x1B0) = arg1;
+    *(int *)((char *)arg0 + 0x1AC) = 0;
+    return arg0;
+}
+
 extern "C" int fn_800FFA6C(int arg0, int arg1) {
     extern void fn_80128668(void);
     if (arg0 != 0 && arg1 > 0) fn_80128668();
