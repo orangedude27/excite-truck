@@ -358,6 +358,10 @@ void fn_802C8218(s32 arg0) {
     lbl_8055D00C = var_r0;
 }
 
+void fn_802C8230(void) {
+    fn_802DB2B4();
+}
+
 extern int lbl_8055D008;
 extern void fn_8012C4E4(void *, int);
 
