@@ -621,9 +621,9 @@ extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self,voi
 extern "C" void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* transform, bool flag) {
     extern const char lbl_8031FF90[];
     extern const char lbl_803200C8[];
-    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(void*, bool); };
+    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(void*, bool); };
     if (!transform) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x254, lbl_803200C8);
-    ((Obj*)transform)->v3(self, flag);
+    ((Obj*)transform)->v2(self, flag);
 }
 
 extern "C" void UnbindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* transform, bool flag) {
