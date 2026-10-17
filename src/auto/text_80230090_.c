@@ -73,3 +73,11 @@ void fn_80230F6C(s32 *arg0) { *arg0 = -0x35BC; }
 void fn_8023108C(u8 arg0) {
     lbl_8055B998 = arg0;
 }
+
+void fn_80231380(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
+    f32 *p = (f32 *)arg0;
+    p[0] = farg0; p[1] = farg1; p[2] = farg2;
+    *(s32 *)(p + 3) = arg1;
+    p[4] = farg3; p[5] = farg4;
+}
+
