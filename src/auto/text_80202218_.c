@@ -26,11 +26,10 @@ extern int fn_801E85A4(void);
 extern int fn_8012C33C(void);
 extern int fn_802C6FC0(int, int, int);
 int fn_80202218(void) {
-    int value = lbl_8055B410;
     if (fn_801E85A4() == 1) {
-        value = lbl_8055ECD4;
+        return lbl_8055ECD4;
     }
-    return value;
+    return lbl_8055B410;
 }
 
 int fn_80202248(int arg0) {
