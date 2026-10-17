@@ -6,6 +6,11 @@ extern char lbl_80490968[];
 extern char *strstr(const char *, const char *);
 extern void fn_8022C9D0(void);
 extern void fn_8022CAA8(void *);
+extern float lbl_80563588;
+extern char *strncpy(char *, const char *, unsigned int);
+extern void fn_8023293C(void *, char *, float);
+extern int fn_800241CC(int);
+extern void fn_8022B390(const char *, const char *, int, int *, int *);
 void fn_8022A7D0(void) {
     fn_8022C9D0();
 }
@@ -54,5 +59,30 @@ int fn_8022AB18(int unused, int arg1, int arg2) {
         return *(int *)((char *)p + 0x50);
     }
     return 0;
+}
+
+extern float lbl_80563588;
+extern char *strncpy(char *, const char *, unsigned int);
+extern void fn_8023293C(void *, char *, float);
+extern int fn_800241CC(int);
+extern void fn_8022B390(const char *, const char *, int, int *, int *);
+int fn_8022B2D4(int arg0, const char *arg1, int arg2, int arg3) {
+    int bestIndex = 0;
+    int best = -1;
+    int i = 0;
+    do {
+        int x;
+        int y;
+        int cost;
+        fn_8022B390((const char *)arg0, arg1, i, &x, &y);
+        cost = fn_800241CC(y - arg3);
+        cost += fn_800241CC(x - arg2);
+        if (best < 0 || cost < best) {
+            bestIndex = i;
+            best = cost;
+        }
+        i++;
+    } while (i != 0 && (signed char)arg1[i - 1] != 0);
+    return bestIndex;
 }
 
