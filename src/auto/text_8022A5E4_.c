@@ -2,7 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055B8B0[];
-#pragma small_data off
 extern char lbl_80490968[];
 extern char *strstr(const char *, const char *);
 extern void fn_8022C9D0(void);
