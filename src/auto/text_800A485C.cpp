@@ -315,6 +315,13 @@ extern "C" void fn_800A68C8(void *arg0) {
     fn_800A76B4(arg0, 0);
 }
 
+#pragma dont_inline on
+extern "C" void fn_800A68DC(s32 arg0) {
+    *(u32 *)arg0 |= 4;
+    fn_800A76B4((void *)arg0, 1);
+}
+#pragma dont_inline reset
+
 extern "C" s32 fn_800A71C4(u32 *arg0) {
     return ((u32) *arg0 >> 2U) & 1;
 }
