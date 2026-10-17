@@ -92,7 +92,6 @@ void fn_802E4408(int unused, void *arg0) {
     }
 }
 
-extern unsigned int lbl_8034D198;
 int fn_802E4648(void *arg0) {
     fn_802E317C((void *)&lbl_8034D198, (char *)arg0 + 0x40);
     return -1;
