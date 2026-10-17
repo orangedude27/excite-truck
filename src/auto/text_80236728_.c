@@ -11,7 +11,14 @@ extern void fn_80237A08(void);
 extern char lbl_8034095C[];
 extern char lbl_80340970[];
 
+extern int lbl_8055F0B0;
+extern int lbl_8055F0B4;
+extern int lbl_8055F0B8;
+extern char *lbl_8055F0BC;
 extern char lbl_8055F0C4;
+extern char lbl_8055F0C5;
+extern char lbl_8055F0C6;
+extern char lbl_8055F0C7;
 void fn_80236774(void) {
     lbl_8055F0C4 = 0;
 }
