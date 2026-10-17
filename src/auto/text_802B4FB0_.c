@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80128658(void *);
-extern int fn_802B4FD0(void *, ...);
+extern int fn_802B4FD0(void *, int *, int *);
 extern void *fn_802B51E4(int, int);
 extern int fn_802B50E8(int, int, int);
 extern void *fn_801284E8(void *, int);
@@ -20,15 +20,17 @@ int fn_802B5070(void *arg0, int arg1) {
     return result;
 }
 
+#pragma scheduling off
 void *fn_802B51E4(int arg0, int arg1) {
-    int size = arg0 * arg1 * 4;
+    int count = arg0 * arg1;
+    int size = count << 2;
     char *result = fn_801284E8(lbl_8034A4E0, size + 0xC);
     *(int *)result = arg0;
     *(int *)(result + 4) = arg1;
     *(void **)(result + 8) = result + 0xC;
     return result;
 }
-
+#pragma scheduling on
 void *fn_802B5240(int arg0) {
     int spC;
     int sp8;
