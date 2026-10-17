@@ -10,6 +10,19 @@ void fn_802889F0(void) {
     fn_80289F54(lbl_8055F6E4);
 }
 
+extern int lbl_8055F6E0[];
+extern int fn_8028E584(int, int, int, int *);
+void fn_80288A40(int arg0, int arg1) {
+    fn_8028E584(lbl_8055F6E0[1], arg0, arg1, lbl_8055F6E0);
+}
+
+void fn_80288A58(int arg0, int arg1) {
+    fn_8028E584(lbl_8055F6E0[0], arg0, arg1, lbl_8055F6E0);
+}
+
+void fn_80288A70(void) {
+}
+
 int fn_802894B4(int arg0) {
     fn_802896E4();
     fn_802897E0(arg0);
