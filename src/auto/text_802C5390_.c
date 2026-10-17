@@ -137,6 +137,10 @@ s32 fn_802C5E7C(void) {
     return 0;
 }
 
+void fn_802C6068(void *arg0) {
+    *(s16 *)((char *)arg0 + 4) = 0;
+}
+
 void fn_802C6074(s32 *arg0) {
     *arg0 = 0;
 }
