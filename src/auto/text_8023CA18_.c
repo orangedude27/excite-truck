@@ -43,7 +43,7 @@ void* fn_8023D134(void* arg0, s32 arg1) {
 
 void fn_8023D1C0(void) {
     lbl_8055BB68 = 0;
-    fn_8023CC84(&lbl_803415CC);
+    fn_8023CC84(lbl_803415CC);
     lbl_8055BB68 = 2;
 }
 
