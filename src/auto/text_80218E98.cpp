@@ -1384,6 +1384,23 @@ extern "C" void fn_8022419C(void *arg0) {
  s32 ptr=*(s32 *)((u8 *)arg0+0x254); if(ptr) fn_802ED038(ptr,*(f32 *)((u8 *)arg0+0x244),*(f32 *)((u8 *)arg0+0x248),*(f32 *)((u8 *)arg0+0x24C),*(f32 *)((u8 *)arg0+0x250));
 }
 
+extern "C" void *fn_802242A4(void *arg0,s32 arg1) {
+ s32 ptr; if(arg0){ ptr=*(s32 *)((u8 *)arg0+0x254); *(void ***)arg0=lbl_8033E2CC; if(ptr) fn_802C519C((void *)ptr); *(volatile s32 *)((u8 *)arg0+0x254)=0; fn_8021915C(arg0,0); if(arg1>0) fn_80128668(arg0); } return arg0;
+}
+
+extern "C" void fn_80224328(void *arg0) {
+ s32 ptr=*(s32 *)((u8 *)arg0+0x254); if(ptr) fn_802C5320(ptr,0,lbl_805634A8,*(f32 *)((u8 *)arg0+0x244),*(f32 *)((u8 *)arg0+0x248),*(f32 *)((u8 *)arg0+0x24C),*(f32 *)((u8 *)arg0+0x250));
+}
+
+extern "C" s32 fn_80224B0C(void *arg0, s32 arg1) {
+    void *p = *(void **)((u8 *)arg0 + 0x258);
+    if (p != 0 && *(s32 *)((u8 *)arg0 + 0x254) != *(s32 *)p)
+        return 0;
+    if (arg1 == 0xD || (u32)arg1 == 0x126 || (u32)arg1 == 0x128)
+        return 1;
+    return 0;
+}
+
 extern "C" void fn_80225918(void *arg0) {
     fn_802192AC(arg0);
 }
@@ -1897,6 +1914,17 @@ void fn_802299FC(void *arg0) {
         *(int *)((char *)arg0 + 0x250), y, diff, x);
 }
 
+extern "C" void *lbl_8033DF30[];
+extern "C" void *lbl_8033DEAC[];
+extern "C" void fn_802328D4(void *);
+extern "C" void fn_80227C9C(s32, f32, f32, f32, f32);
+extern "C" f64 lbl_805634B8;
+extern "C" void fn_80229A94(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x1A)) *(u8 *)((u8 *)arg0 + 0x234) = 1;
+    *(u8 *)((u8 *)arg0 + 0x19) = 1;
+    ((void (**)(void *, s32, s32))(*(void ***)arg0))[15](arg0, *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
+}
+
 extern "C" void fn_80229AC4(void *arg0) {
     int *p = *(int **)((char *)arg0 + 0x254);
     if (p != 0) {
@@ -2209,3 +2237,5 @@ extern void fn_80219044(void *);
 extern "C" int sprintf(char *, const char *, ...);
 extern "C" void fn_801E4BEC(s32, s32, s32, s32, s32, s32);
 extern "C" void *lbl_8033F0FC;
+extern "C" void *lbl_8033E1C4[];
+extern "C" char lbl_8055B88C[];
