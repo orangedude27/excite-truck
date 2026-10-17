@@ -2383,6 +2383,31 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+u8 btsnd_hcic_inq_cancel(void) {
+    u8 *p;
+    p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 3;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 2; p[9] = 4; p[10] = 0;
+    btu_hcif_send_cmd(p, 2);
+    return TRUE;
+}
+
+BOOLEAN btsnd_hcic_per_inq_mode(UINT16 max_period, UINT16 min_period, const LAP inq_lap, UINT8 duration, UINT8 response_cnt) {
+    u8 *p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 0xC;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 3; p[9] = 4; p[10] = 9;
+    p[11] = max_period; p[12] = max_period >> 8;
+    p[13] = min_period; p[14] = min_period >> 8;
+    p[15] = inq_lap[2]; p[16] = inq_lap[1]; p[17] = inq_lap[0];
+    p[18] = duration; p[19] = response_cnt;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
     u8 *p = (u8 *)GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
