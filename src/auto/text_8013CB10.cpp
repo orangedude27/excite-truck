@@ -8,7 +8,6 @@ extern "C" f32 fn_8001DAE8(void *);
 extern "C" s32 lbl_802F9398[6];
 struct S6_8013D18C { s32 v[6]; };
 extern "C" void **fn_801284F8(s32, void *);
-extern "C" void fn_8013D288(void) __attribute__((noreturn));
 extern "C" f32 lbl_80561498;
 extern "C" s32 fn_80176A1C(void);
 extern "C" int strcmp(const char *, const char *);
@@ -229,6 +228,11 @@ extern "C" void fn_80141454(void) {
 
 }
 
+extern "C" void fn_802A96E8(s32, s32, s32, s32, s32, void *);
+extern "C" void fn_80141558(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    fn_802A96E8(arg1, arg2, arg3, *(s32 *)((char *)arg0 + 0), *(s32 *)((char *)arg0 + 4), arg0);
+}
+
 extern "C" void fn_80141C84(void *arg0, s32 arg1) {
     u8 *p = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
     *(s32 *)(p + 0x88) = *(s32 *)(p + 0x10C);
@@ -256,6 +260,23 @@ extern "C" void *fn_80141EB0(s32 *arg0) {
         arg0[3] = (((volatile s32 *)arg0)[3] + 1) % ((volatile s32 *)arg0)[1];
     }
     return result;
+}
+
+extern "C" s32 fn_80141F28(void *arg0, s32 arg1) {
+    s32 head = *(s32 *)((char *)arg0 + 0xC);
+    s32 capacity = *(s32 *)((char *)arg0 + 4);
+    s32 count = capacity + (*(s32 *)((char *)arg0 + 8) - head);
+    s32 result;
+    if (arg1 >= count % capacity) {
+        result = *(s32 *)arg0 + ((arg1 + (capacity + head)) % capacity) * 12;
+    } else {
+        result = 0;
+    }
+    return result;
+}
+
+extern "C" s32 fn_80141F7C(f32 arg0) {
+    return (f32)__fabs((f64)arg0) <= *(volatile f32 *)0x80558DC4;
 }
 
 extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
