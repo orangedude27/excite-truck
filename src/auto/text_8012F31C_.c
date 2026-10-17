@@ -59,3 +59,8 @@ void fn_8012F4AC(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 4) = offset + arg2;
 }
 
+void fn_8012F550(void *arg0, s32 *arg1, s32 arg2) {
+    *arg1 = *(*(s32 **)arg0) + ((s32 *)arg0)[1];
+    ((s32 *)arg0)[1] += arg2;
+}
+
