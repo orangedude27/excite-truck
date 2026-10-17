@@ -1932,15 +1932,15 @@ void btu_hcif_connection_request_evt(u8 *event) {
     u8 dev_class[3];
     u8 link_type;
 
-    bda[0] = event[0];
-    bda[1] = event[1];
-    bda[2] = event[2];
-    bda[3] = event[3];
-    bda[4] = event[4];
-    bda[5] = event[5];
-    dev_class[0] = event[6];
+    bda[5] = event[0];
+    bda[4] = event[1];
+    bda[3] = event[2];
+    bda[2] = event[3];
+    bda[1] = event[4];
+    bda[0] = event[5];
+    dev_class[2] = event[6];
     dev_class[1] = event[7];
-    dev_class[2] = event[8];
+    dev_class[0] = event[8];
     link_type = event[9];
     if (link_type == 1) {
         btm_sec_conn_req(bda, dev_class);
