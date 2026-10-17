@@ -472,7 +472,7 @@ extern "C" f32 fn_80147204(void *arg0, const char *arg1) {
 
 extern "C" int vsprintf(char *, const char *, va_list);
 extern "C" unsigned int strlen(const char *);
-extern "C" void fn_802E317C(const char *, s32, const char *);
+extern "C" void fn_802E317C(const char *, ...);
   extern "C" char lbl_8032D1A4[];
 extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
     char buffer[0x200];
@@ -498,7 +498,9 @@ void fn_80145B94(void *, const char *);
 extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
     char buffer[0x200];
     va_list args;
-    void *result = ((void *(*)(void *))(*(void ***)arg0)[3])(arg0);
+    void **vtable = *(void ***)arg0;
+    void *(*method)(void *) = (void *(*)(void *))vtable[3];
+    void *result = method(arg0);
     if (result != 0) {
         va_start(args, format);
         vsprintf(buffer, format, args);
