@@ -2054,6 +2054,12 @@ void fn_800911DC(void) {
 
 }
 
+void fn_800916D8(void *callback, u32 cid) {
+    u32 index = cid - 0x40;
+    u8 *base = lbl_803C4828;
+    *(void **)(base + 0x3C + index * 4) = callback;
+}
+
 void rfc_process_rls(void *arg0, s32 arg1, void *arg2) {
     void *mcb;
 
