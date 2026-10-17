@@ -31,6 +31,7 @@ extern s32 fn_802BAA68(s32, void *);
 extern void fn_8016CDE0(void *);
 extern void fn_8016C168(void);
 typedef struct {
+    void *vtbl;
     void (*d0)(void *);
     void (*d1)(void *);
     void (*d2)(void *);
