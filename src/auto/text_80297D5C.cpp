@@ -222,6 +222,8 @@ extern "C" void fn_8029BDC4(void* arg0) {
     } while (i < *(int*)((char*)arg0 + 0xA4));
 }
 
+extern "C" void fn_802CAC54(int);
+extern float lbl_805645B8;
 extern "C" void fn_8029A890(void*, void*);
 extern "C" void fn_8029BA94(void*, void*);
 extern "C" void fn_8029BE54(void*, void*);
