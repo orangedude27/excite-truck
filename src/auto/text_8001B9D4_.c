@@ -173,6 +173,11 @@ s32 fn_8001BC18(s32 arg0);
 f32 fn_8001BEC4(s32 arg0) {
     return *(f32 *)((s32 (*)(s32))fn_8001BC18)(arg0);
 }
+
+f32 fn_8001BEE8(s32 arg0) {
+    return *(f32 *)((s32 (*)(s32))fn_8001BC20)(arg0);
+}
+
 void fn_8001BF0C(f32 arg0) {
     f32 temp = arg0;
     fn_8001BC28(*(s32 *)&temp);
