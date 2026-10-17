@@ -6,7 +6,7 @@ extern void fn_8029C650(void);
 extern void *fn_8029D464(void *, int);
 extern int lbl_8055F7F8;
 extern int lbl_8055F7F0;
-extern int lbl_804B5010;
+extern int lbl_804B5010[];
 extern int lbl_8055CAA8;
 extern void fn_8028E398(void);
 extern void fn_802C6CF8(void);
