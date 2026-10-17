@@ -174,6 +174,19 @@ void fn_80116DDC(void* arg0, s32 arg1) {
     fn_8011FF2C(arg1);
 }
 
+extern s32 fn_80117074(void*);
+extern s32 fn_80116D30(void);
+void fn_80117330(void* arg0) {
+ u8* p=(u8*)arg0;
+ if(*(s32*)(p+0x268)==0) {
+  *(s32*)(p+0x268)=fn_80116D30();
+  *(s32*)(p+0x26c)=*(s32*)(p+0x258)-1;
+  *(s32*)(p+0x330)=0;
+ }
+}
+
+void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
+
 void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
 }
@@ -225,6 +238,38 @@ s32 fn_80119C0C(void *arg0, s32 arg1) {
         *(s32 *)((u8 *)arg0 + 0x64) = 0;
     }
     return *(s32 *)((u8 *)arg0 + 0x64);
+}
+
+extern s32 lbl_8055DEE0[];
+extern s32 lbl_8055DEE4;
+extern s32 lbl_8055DEE8;
+extern void fn_80119DD0(void);
+extern void fn_8011A6A0(void *);
+extern void TRKGetFreeBuffer(void *);
+void *fn_8011A168(void *arg0) {
+    s32 *src = (s32 *)arg0;
+    if (arg0 == NULL) {
+        lbl_8055DEE0[0] = 0;
+        lbl_8055DEE0[1] = 0;
+    } else {
+        lbl_8055DEE0[0] = src[0];
+        lbl_8055DEE4 = src[1];
+    }
+    return &fn_80119DD0;
+}
+
+s32 fn_8011A7CC(DVDFileInfo *info) {
+    s32 *p = (s32 *)info;
+    s32 status;
+    if (p[0x20 / 4] != 0) return 0;
+    if (p[0x50 / 4] != 0) return 0;
+    status = DVDGetDriveStatus();
+    if (status == 0) {
+        fn_8011A6A0(info);
+    } else if (status == 0xB) {
+        p[0x20 / 4] = 1;
+    }
+    return p[0x24 / 4];
 }
 
 s32 fn_8011A870(void *arg0, s32 arg1) {
