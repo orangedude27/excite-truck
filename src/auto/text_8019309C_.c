@@ -33,16 +33,19 @@ void fn_8019386C(void) {
 }
 
 void fn_80193878(void *arg0) {
-    float a[3], b[3];
+    float a[3], b[3], low[3];
     void *obj;
+    low[0] = lbl_8056217C;
+    low[1] = lbl_80562144;
+    low[2] = lbl_80562144;
     a[0] = lbl_80562144;
     a[1] = lbl_80562144;
     a[2] = lbl_80562178;
     obj = *(void **)((unsigned char *)arg0 + 0x294);
-    b[0] = *(float *)((unsigned char *)obj + 0x94) + lbl_8056217C;
-    b[1] = *(float *)((unsigned char *)obj + 0x98) + lbl_80562144;
-    b[2] = *(float *)((unsigned char *)obj + 0x9C) + lbl_80562144;
-    fn_8017B4E0(obj, a, b, lbl_80562140);
+    b[0] = *(float *)((unsigned char *)obj + 0x94) + low[0];
+    b[1] = *(float *)((unsigned char *)obj + 0x98) + a[0];
+    b[2] = *(float *)((unsigned char *)obj + 0x9C) + a[0];
+    fn_8017B4E0(*(void **)((unsigned char *)arg0 + 0x294), a, b, lbl_80562140);
 }
 
 extern unsigned char lbl_8055A4B8[];
@@ -74,6 +77,10 @@ void fn_80193A38(void *arg0) {
 
 void fn_80193CD4(void *arg0) {
     *(signed char *)((char *)arg0 + 0x2A5) = 1;
+}
+
+void fn_80193D20(void) {
+    fn_80129DC4(3, lbl_8055E584, lbl_8055E588);
 }
 
 void fn_8019416C(void) {
