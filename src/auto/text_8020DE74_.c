@@ -12,10 +12,9 @@ void fn_8020F330(void *arg0) {
         *(signed char *)((char *)temp_r3 + 0x4A) = 0;
     }
 }
-#pragma scheduling on
+#pragma scheduling off
 void fn_8020F354(void *arg0) {
     void *temp_r3;
-
     temp_r3 = *(void **)((char *)arg0 + 0x2C);
     if (temp_r3 != 0) {
         *(signed char *)((char *)temp_r3 + 0x49) = 1;
@@ -23,8 +22,6 @@ void fn_8020F354(void *arg0) {
         *(signed char *)((char *)temp_r3 + 0x4A) = 0;
     }
 }
-
-#pragma scheduling off
 void fn_8020F378(void *arg0) {
     void *temp_r3;
 
