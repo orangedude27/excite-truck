@@ -378,6 +378,24 @@ extern "C" s32 fn_800A728C(void *arg0) {
     return 0;
 }
 
+extern "C" s32 fn_800A7568(void *arg0, s32 arg1) {
+    s32 temp_r3;
+    s32 temp_r3_2;
+    s32 var_r31;
+
+    var_r31 = 0;
+    if (*(s32 *)arg0 & 8) {
+        temp_r3 = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+        if (temp_r3 != 0) return temp_r3;
+        temp_r3_2 = fn_800A6728(*(void **)((u8 *)arg0 + 4), arg1);
+        if (temp_r3_2 != 0) var_r31 = temp_r3_2;
+    } else var_r31 = 0xE;
+    if ((var_r31 == 0) || ((u32)arg1 == 1U)) {
+        *(u32 *)arg0 = *(u32 *)arg0 & 0xFFFFFFFD & 0xFFFFFFF7;
+    }
+    return var_r31;
+}
+
 extern "C" void fn_800A8B94(void *arg0, s32 arg1, s32 arg2, s16 arg3, s16 arg4) {
     *(s32 *)((u8 *)arg0 + 0x162C) = arg1;
     *(s32 *)((u8 *)arg0 + 0x1638) = arg2;
@@ -2258,11 +2276,7 @@ extern "C" s32 fn_800A485C(s32 arg0) {
     return arg0;
 }
 
-s32 fn_800A4A8C(u8 *arg0) {
-    u8 *ptr = arg0;
-    do { ++ptr; } while ((s8)*ptr != 0);
-    return ptr - arg0;
-}
+s32 fn_800A4A8C(u8 *arg0) { u8 *ptr = arg0; do { ++ptr; } while ((s8)*ptr != 0); return ptr - arg0; }
 
 void fn_800A4AAC(char *dst, char *src) {
     do {
