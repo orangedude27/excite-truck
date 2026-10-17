@@ -971,6 +971,25 @@ void fn_80073A1C(void) {
 
 }
 
+s32 BTA_EnableBluetooth(void *arg0) {
+    void *buf;
+    extern u32 lbl_80560D18;
+    extern u32 lbl_80560D20;
+    memset(lbl_803C0C14, 0, 0x104);
+    fn_8006EAD0();
+    fn_8007143C(1, (u32)&lbl_80560D18);
+    fn_8007143C(2, (u32)&lbl_80560D20);
+    fn_8006EAD4();
+    buf = GKI_getbuf(0xC);
+    if (buf != 0) {
+        *(u16 *)buf = 0x100;
+        *(void **)((char *)buf + 8) = arg0;
+        fn_80071450(buf);
+        return 0;
+    }
+    return 1;
+}
+
 void fn_80073AF8(void) {
     void *buf = GKI_getbuf(8);
     if (buf != 0) {
