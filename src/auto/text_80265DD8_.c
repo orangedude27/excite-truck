@@ -189,6 +189,23 @@ void fn_8026A2C8(void) {
     fn_801EA994();
 }
 
+void fn_8026A2CC(int *arg0, int arg1, float arg2) {
+    int *dst = (int *)((char *)lbl_80499080 + arg1 * 0x228 + 0x1a4);
+    dst[0] = arg0[0];
+    dst[1] = arg0[1];
+    dst[2] = arg0[2];
+    dst[3] = arg0[3];
+    dst[4] = arg0[4];
+    dst[5] = arg0[5];
+    dst[6] = arg0[6];
+    dst[7] = arg0[7];
+    dst[8] = arg0[8];
+    dst[9] = arg0[9];
+    dst[10] = arg0[10];
+    dst[11] = arg0[11];
+    *(float *)((char *)dst + 0x30) = arg2;
+}
+
 char fn_8026A38C(void) {
     return lbl_8055F488;
 }
@@ -221,3 +238,4 @@ int fn_8026A554(int *arg0) {
     return 4;
 }
 extern float lbl_80563C20;
+extern int lbl_80499E50[];
