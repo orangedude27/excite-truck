@@ -125,7 +125,8 @@ extern void *fn_802C5A60(int, int, u16);
 extern int lbl_8034B1F0;
 void fn_802C5C40(int *arg0, int arg1, int arg2) {
     int temp_r30 = *arg0;
-    fn_802CAC28((void *)&lbl_8034B1F0, 0);
+    int *p = &lbl_8034B1F0;
+    fn_802CAC28(p, 0);
     *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(temp_r30, arg2, *(s16 *)((char *)arg2 + arg1 * 4 + 0x14 + 6) - 1);
 }
 
