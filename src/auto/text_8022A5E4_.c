@@ -21,7 +21,7 @@ void fn_8022A7D0(void) {
 }
 
 int fn_8022A7D4(const char *arg0) {
-    return strstr(arg0, ".img") != 0;
+    return strstr(arg0, lbl_8055B8B0) != 0;
 }
 
 unsigned int fn_8022A834(unsigned int arg0) {
