@@ -31,7 +31,6 @@ void* fn_80012854(void) {
 
 extern char lbl_80352AD0[];
 extern int lbl_802FC700;
-extern void fn_802E317C(int *, int, int);
 extern void fn_80131818(void *);
 extern char lbl_8035183C[];
 extern char lbl_8055D500;
