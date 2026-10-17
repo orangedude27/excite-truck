@@ -39,6 +39,10 @@ s32 fn_802C3034(s32 value) {
     return old;
 }
 
+s32 fn_802C3044(void *arg0, s32 arg1, s32 arg2) {
+    return *(s32 *)((u8 *)arg0 + 0x10) * arg2 + (*(s32 *)((u8 *)arg0 + 4) + arg1 * 2);
+}
+
 void fn_802C4C80(void* arg0) {
     if (arg0 == NULL) {
         return;
