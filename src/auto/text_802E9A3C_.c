@@ -27,6 +27,14 @@ extern int OSReport(const char *, ...);
 extern char lbl_8034E370;
 extern char lbl_80560061;
 extern int lbl_80560068;
+extern int lbl_805600A0;
+extern int lbl_805600A4;
+extern int lbl_805600B8;
+extern char lbl_80560062;
+extern char lbl_80560063;
+extern char lbl_8034E95C;
+extern char lbl_8034E980;
+extern int fn_802E2C20(void);
 long *fn_802E9A3C(long arg0, long arg1) {
     lbl_80560060 = 1;
     if (lbl_80507600 != 0) {
@@ -94,23 +102,19 @@ void fn_802E9CAC(int arg0) {
 
 extern char lbl_8034E3E0, lbl_8034E3F0, lbl_805076B8, lbl_80560061, lbl_8055D2A4;
 void fn_802E9E54(unsigned char *arg0, unsigned char *arg1, int arg2) {
-    unsigned char *dst = arg0, *src = arg1;
+    unsigned char *dst = arg0;
+    unsigned char *src = arg1;
     int count = arg2;
-    do {
-        if (count <= 1) break;
-        if ((signed char)*src == 0) break;
-        if (*src < 0x80) {
-            *dst++ = *src++;
-            count--;
-        } else {
+    for (;;) {
+        if (count <= 1 || (signed char)*src == 0) { *dst = 0; return; }
+        if (*src < 0x80) { *dst++ = *src++; count--; }
+        else {
             unsigned char ch = *++src;
             count--;
             *dst++ = 0x3F;
-            if ((signed char)ch == 0) break;
-            src++;
+            if ((signed char)ch != 0) src++;
         }
-    } while (1);
-    *dst = 0;
+    }
 }
 
 void fn_802EA7E0(void) {
