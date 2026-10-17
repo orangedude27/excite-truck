@@ -2,6 +2,16 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
+namespace JStudio {
+class JAudio {
+public:
+    class TAdaptor_sound {
+    public:
+        void endSound_fadeOut_(u32 arg0);
+    };
+};
+}
+
 extern "C" s32 lbl_804348E8[];
 extern "C" void* lbl_8032F2BC;
 extern "C" void* lbl_8032EBF8;
@@ -417,11 +427,13 @@ extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 extern "C" void fn_80158558(s32 arg0) {
+    #pragma scheduling off
     s32* state = lbl_8042FD34;
     s32* items = (s32*)state[0];
     s32* slot = items + state[1];
     state[1] += 1;
     *slot = arg0;
+    #pragma scheduling on
 }
 
 extern "C" void fn_8015857C(u32 arg0) {
@@ -1152,6 +1164,45 @@ extern "C" void fn_8015D400(Unk801577F0* arg0) {
 
 extern "C" u32 fn_8015D498(void) { return 1; }
 
+extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 arg1) {
+    class LocalVtable {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+        virtual void v32(); virtual void v33(f32*); virtual void v34();
+        virtual void v35(f32*); virtual s32 v36();
+    };
+    if (arg1 >= ((LocalVtable*)arg0)->v36()) {
+        return *(f32*)((u8*)arg0->mData + arg1 * 0x38 + 0x10);
+    }
+    return lbl_80561754;
+}
+
+extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
+    s32 count = arg0->mCount;
+    s32 i = 0;
+    s32 offset = 0;
+    if (count > 0) {
+        while (i < count) {
+            s32 value = *(s32*)((u8*)arg0->mData + offset + 0x14);
+            if (arg1 >= value) {
+                if (value < 0) break;
+                offset += 0x38;
+                i++;
+            } else {
+                break;
+            }
+        }
+    }
+    return i;
+}
+
 extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E668[arg0->GetType()]);
 }
@@ -1164,6 +1215,50 @@ extern "C" void fn_8015D6FC(Unk8015A368C* arg0) {
 extern void* lbl_8032E9E0[];
 extern "C" void fn_8015D73C(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E9E0[arg0->GetType()]);
+}
+
+extern "C" s32 fn_8015D77C(void* arg0) {
+    s32 count = *(s32*)((u8*)arg0 + 0xC);
+    s32 i = 0;
+    s32 offset = 0;
+    u8* base = (u8*)arg0 + 8;
+    for (; count > 0; count--) {
+        if (*(s32*)(base + offset + 0x14) >= 0)
+            return *(s32*)(base + i * 0x38 + 0x14);
+        offset += 0x38;
+        i++;
+    }
+    return 0;
+}
+
+extern "C" s32 fn_8015D7CC(void* arg0) {
+    s32 count = *(s32*)((u8*)arg0 + 0xC);
+    s32 offset = count * 0x38;
+    u8* base = (u8*)arg0 + 8;
+    while (count > 0) {
+        if (*(s32*)(base + offset + 0x14) >= 0)
+            return *(s32*)(base + (count - 1) * 0x38 + 0x14);
+        count--;
+        offset -= 0x38;
+    }
+    return 0;
+}
+
+extern "C" void fn_8015D814(void* arg0) {
+    if (*(s32*)((u8*)arg0 + 0x248) == 0) {
+        void* obj = *(void**)((u8*)arg0 + 0x244);
+        s32 (*fn)(void*) = *(s32 (**)(void*))((u8*)obj + 0xC);
+        *(s32*)((u8*)arg0 + 0x248) = fn(obj);
+    }
+}
+
+void endSound_fadeOut___Q214JStudio_JAudio14TAdaptor_soundFUl(void* self) {
+    void* ptr = *(void**)((u8*)self + 0x248);
+    if (ptr != 0) {
+        void (*fn)(void*) = *(void (**)(void*))((u8*)ptr + 0x24);
+        fn(ptr);
+        *(void**)((u8*)self + 0x248) = 0;
+    }
 }
 
 extern "C" void fn_8015E0FC(void) {
@@ -1230,6 +1325,24 @@ extern "C" void fn_8015E5F4(Unk801577F0V* arg0, s32 arg1) {
     }
 }
 
+extern "C" void fn_8015E778(Unk801577F0V* arg0, s32 arg1, s32 arg2, f32 farg0) {
+    if (arg0->m54 != 0) {
+        UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
+        s32 count = arg0->mCount;
+        for (s32 j = 0; j < count; j++) {
+            entries[j]->v16(arg1, arg2, (s32)farg0);
+        }
+    }
+}
+#pragma scheduling off
+extern "C" void fn_8015E80C(Unk801577F0V* arg0, s32 arg1) {
+    UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
+    s32 count = arg0->mCount;
+    for (s32 j = 0; j < count; j++) {
+        entries[j]->v18(arg1);
+    }
+}
+#pragma scheduling on
 extern "C" s32 fn_80159338(void) {
     return 3;
 }
