@@ -928,6 +928,16 @@ void bta_hh_api_disc_act(void *arg0, void *arg1) {
         (*(void (**)(int, u8 *))(lbl_803C0D48 + 0x224))(3, &status);
 }
 
+extern void l2c_link_hci_disc_comp(u16, u8);
+void btm_acl_device_down(void)
+{
+    u8 *entry;
+    u32 i;
+    for (i = 0, entry = lbl_803C0F78 + 0x34; i < 4; i++, entry += 0x11C) {
+        if (entry[0x119]) l2c_link_hci_disc_comp(*(u16 *)entry, 3);
+    }
+}
+
 void fn_800778C8(s16 arg0) {
     *(s16 *)(lbl_803C0F78 + 0x4C4) = arg0;
 }
@@ -959,8 +969,81 @@ void fn_80077C94(s16 arg0) {
     *(s16 *)(lbl_803C0F78 + 0x4C6) = arg0;
 }
 
+u16 BTM_GetNumAclLinks(void)
+{
+    u16 count = 0;
+    if (lbl_803C0F78[0x14D]) count = 1;
+    if (lbl_803C0F78[0x269]) count++;
+    if (lbl_803C0F78[0x385]) count++;
+    if (lbl_803C0F78[0x4A1]) count++;
+    return count;
+}
+
 u8 fn_80077DD8(void) {
     return lbl_803C0F78[0x27BF];
+}
+
+u16 BTM_GetHCIConnHandle(u8 *arg0) {
+    u32 var_r31;
+    u8 *var_r30;
+
+    var_r31 = 0;
+    var_r30 = lbl_803C0F78 + 0x34;
+loop:
+    if (var_r30[0x119] != 0 && memcmp(var_r30 + 8, arg0, 6) == 0) {
+        goto found;
+    }
+    var_r31++;
+    var_r30 += 0x11C;
+    if (var_r31 < 4) {
+        goto loop;
+    }
+    var_r30 = 0;
+found:
+    if (var_r30 != 0) {
+        return *(u16 *)var_r30;
+    }
+    return 0xFFFF;
+}
+
+void btm_process_clk_off_comp_evt(u16 arg0, u16 arg1) {
+    u8 *base;
+    u32 i;
+
+    base = lbl_803C0F78;
+    i = 0;
+    if (base[0x14D] != 0 && *(u16 *)(base + 0x34) == arg0) {
+        goto update;
+    }
+    i = 1;
+    if (base[0x269] != 0 && *(u16 *)(base + 0x150) == arg0) {
+        goto update;
+    }
+    i = 2;
+    if (base[0x385] != 0 && *(u16 *)(base + 0x26C) == arg0) {
+        goto update;
+    }
+    i = 3;
+    if (base[0x4A1] != 0 && *(u16 *)(base + 0x388) == arg0) {
+        goto update;
+    }
+    i = 4;
+update:
+    if (i >= 4) {
+        return;
+    }
+    *(u16 *)(base + i * 0x11C + 0x3A) = arg1;
+}
+
+s32 fn_80078310(s32 arg0)
+{
+    if (arg0 == 0) {
+        *(s32 *)(lbl_803C0F78 + 0x4C8) = 0;
+        return 0;
+    }
+    if (*(s32 *)(lbl_803C0F78 + 0x4C8) != 0) return 2;
+    *(s32 *)(lbl_803C0F78 + 0x4C8) = arg0;
+    return 0;
 }
 
 void fn_8007AD38(void) {
