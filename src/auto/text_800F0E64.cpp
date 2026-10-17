@@ -353,6 +353,14 @@ extern "C" void fn_800F4F7C(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F4F9C(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_800F4FF4(void *arg0) {
     s32 *p = (s32 *)((u8 *)arg0 + 4);
     *(s32 *)((u8 *)arg0 + 4) = 0;
@@ -368,6 +376,18 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014(void *arg0, 
         if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
+}
+
+extern "C" s32 GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(void *self, void *archive) {
+    s32 size;
+    if (archive == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x119, lbl_80324EA4);
+    }
+    size = 0;
+    if (fn_800F2814(archive) != 0) {
+        size = *(s32 *)((u8 *)archive + 0x18);
+    }
+    return size * 0xA000;
 }
 
 void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, unsigned long start, unsigned long end) {
