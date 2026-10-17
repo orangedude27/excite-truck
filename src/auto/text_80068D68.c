@@ -836,6 +836,18 @@ void fn_80070F90(void *arg0) {
     GKI_remove_from_timer_list((void *)(lbl_803C0A50 + 0x40), arg0);
 }
 
+extern void (*lbl_803C0AD8_callback)(void);
+void fn_80070FA4(void *arg0, const void *arg1) {
+    const unsigned char *src = (const unsigned char *)arg1;
+    unsigned char *dst = (unsigned char *)arg0;
+    dst[0] = src[0];
+    dst[1] = src[1];
+    dst[2] = src[2];
+    dst[3] = src[3];
+    dst[4] = src[4];
+    dst[5] = src[5];
+}
+
 s32 bdcmp(u8 *arg0, u8 *arg1) {
     u8 *p0 = arg0 + 2;
     u8 *p1 = arg1 + 2;
