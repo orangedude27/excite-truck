@@ -1747,6 +1747,13 @@ void fn_8007F588(s8 arg0) {
     memset(&lbl_803C0F78[0x1954], 0xFF, 6);
 }
 
+void fn_8007F5A4(void) {
+    if (lbl_803C0F78[0x1978] == 3) {
+        btsnd_hcic_write_pin_type_8008543C(1);
+        btsnd_hcic_write_pin_type_800854B0(1);
+    }
+}
+
 void fn_8008251C(void) {
     btm_init();
     l2c_init();
