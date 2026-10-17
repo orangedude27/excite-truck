@@ -163,7 +163,7 @@ extern float lbl_805618D8;
 extern float lbl_805618DC;
 extern float lbl_805618E0;
 extern float lbl_8055E318;
-extern float lbl_80558DC4;
+
 extern float fn_80129DC4(int, float, float, float);
 extern void fn_80128670(void *);
 extern void fn_80139E18(void);
