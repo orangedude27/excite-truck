@@ -321,6 +321,10 @@ int GXGetTexObjWrap_Internal(unsigned int *arg0) {
     return (*arg0 >> 2) & 3;
 }
 
+unsigned short GXGetTexObjTlut(void *arg0) {
+    return *(unsigned short *)((char *)arg0 + 8);
+}
+
 extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
 void GXSetTevDirect(int arg0) {
     GXSetTevIndirect(arg0, 0, 0, 0, 0, 0, 0, 0);
