@@ -91,9 +91,11 @@ void fn_802645FC(void *arg0) {
     extern float lbl_80563BF8;
     extern float lbl_8055C454;
     extern float lbl_80563BF0;
-    *(float *)((char *)arg0 + 0x18) = lbl_80563BF8;
+    float a = lbl_80563BF8;
+    float b = lbl_80563BF0;
+    *(float *)((char *)arg0 + 0x18) = a;
     *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
-    *(float *)((char *)arg0 + 0x20) = lbl_80563BF0;
+    *(float *)((char *)arg0 + 0x20) = b;
 }
 
 void fn_80264618(void *arg0) {
@@ -282,7 +284,7 @@ extern void fn_80236954(void *);
 extern int fn_8023695C(void *);
 extern void fn_80216CA8(void);
 extern void fn_802168BC(int);
-extern char lbl_803464EC[4];
+extern char lbl_803464EC[];
 extern void *lbl_8055F44C;
 extern unsigned char lbl_8055F450;
 int fn_80128668(void);
@@ -291,6 +293,7 @@ int fn_80128668(void);
 void fn_80265A28(void) {
     fn_80236954(lbl_803464EC);
 }
+#pragma pop
 void fn_80265A34(void) {
     fn_80236914();
     if (fn_8023695C(lbl_803464EC) == 2) {
