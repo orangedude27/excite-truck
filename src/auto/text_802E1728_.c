@@ -49,7 +49,7 @@ void fn_802E2A54(void) {}
 
 void fn_802E2A58(void) {}
 extern unsigned int fn_802E176C(unsigned int);
-extern int fn_802E1780(void *, int, int);
+extern void fn_802E1780(void *, unsigned int, int);
 extern int fn_802E1804(void *, void *, int, int, int);
 extern int fn_802E18D4(int, int, int, int, void *, void *);
 extern void DCFlushRange(void *, int);
