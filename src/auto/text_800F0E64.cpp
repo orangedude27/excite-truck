@@ -746,13 +746,13 @@ extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
 extern "C" void fn_800FA6E8(void) {
     if ((s8)lbl_8055DE68 == 0) {
         u32* p = (u32*)&lbl_80412CC8[0x2384];
-        p[1] = 0;
-        p[2] = 0;
         p[0] = 0;
         p[1] = 0;
+        p[2] = 0;
         p[3] = 0;
-        *(void**)p[1] = (void*)p;
-        *(void**)p[2] = (void*)p;
+        p[4] = 0;
+        p[5] = (u32)p;
+        p[6] = (u32)p;
         ((u8*)p)[0x10] = 0;
         __register_global_object((void*)&lbl_80412CC8[0x2388], (void*)&__dt__10TitleSceneFv,
                                  (void*)&lbl_80412CB8, (void*)&lbl_80412CC8[0x2388]);
@@ -811,6 +811,13 @@ extern "C" void fn_800FA9E8(void* arg0) {
 extern "C" void NWC24Data_Init(void* arg0) {
     *(int*)arg0 = 0;
     *((int*)arg0 + 1) = 0;
+}
+
+extern "C" void fn_800FB358(void *arg0) {
+    extern char lbl_80326AC0[];
+    *(s32 *)((u8 *)arg0 + 0x14) = 0;
+    *(void **)((u8 *)arg0 + 0) = lbl_80326AC0;
+    *(s32 *)((u8 *)arg0 + 0x18) = 0;
 }
 
 extern "C" s32 fn_800FB374(s32 arg0, s32 arg1) {
