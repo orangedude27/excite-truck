@@ -1,3 +1,8 @@
+extern unsigned char lbl_8055FD91;
+extern unsigned char lbl_8055D0FF;
+extern char lbl_8055D100;
+extern void fn_802CEC04(void);
+extern void fn_802E2E0C(void (*)(void), void *);
 extern unsigned short lbl_8055FD86;
 extern unsigned char lbl_8055FD60;
 extern float lbl_80564F94;
@@ -21,6 +26,29 @@ extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
 extern char lbl_8055FD3C;
 void fn_802CEC44(void) {
     lbl_8055FD3C = 1;
+}
+
+void fn_802CF048(int arg0) {
+    if (arg0 != 0) {
+        GXSetGPMetric(0x23, 0x16);
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = 0x2402C004;
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = 0x23000020;
+        *(volatile unsigned char *)0xCC008000 = 0x10;
+        *(volatile unsigned short *)0xCC008000 = 0;
+        *(volatile unsigned short *)0xCC008000 = 0x1006;
+        *(volatile unsigned int *)0xCC008000 = 0x84400;
+        return;
+    }
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0x24000000;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0x23000000;
+    *(volatile unsigned char *)0xCC008000 = 0x10;
+    *(volatile unsigned short *)0xCC008000 = 0;
+    *(volatile unsigned short *)0xCC008000 = 0x1006;
+    *(volatile unsigned int *)0xCC008000 = 0;
 }
 
 void fn_802CF104(void) {
