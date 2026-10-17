@@ -11,13 +11,13 @@ void fn_802889F0(void) {
 }
 
 extern int lbl_8055F6E0[];
-extern int fn_8028E584(int, int, int, int *);
+extern int fn_8028E584(int, int, int);
 void fn_80288A40(int arg0, int arg1) {
-    fn_8028E584(lbl_8055F6E0[1], arg0, arg1, lbl_8055F6E0);
+    fn_8028E584(lbl_8055F6E0[1], arg0, arg1);
 }
 
 void fn_80288A58(int arg0, int arg1) {
-    fn_8028E584(lbl_8055F6E0[0], arg0, arg1, lbl_8055F6E0);
+    fn_8028E584(lbl_8055F6E0[0], arg0, arg1);
 }
 
 void fn_80288A70(void) {
