@@ -1538,6 +1538,13 @@ void l2c_link_role_changed(u8 *bd_addr, u8 new_role) {
         if (entry[0] != 0 && *(s32 *)(entry + 4) == 2) l2cu_create_conn_after_switch(entry);
 }
 
+void l2c_link_role_change_failed(void) {
+    u8 *entry;
+    s32 i;
+    for (i = 0, entry = lbl_803C4040 + 8; i < 4; i++, entry += 0x5C)
+        if (entry[0] != 0 && *(s32 *)(entry + 4) == 2) l2cu_create_conn_after_switch(entry);
+}
+
 void l2c_process_timeout(void *arg) {
     u16 event = *(u16 *)((u8 *)arg + 0x14);
     if (event == 4) l2c_process_held_packets(1);
