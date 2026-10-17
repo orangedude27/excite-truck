@@ -3,6 +3,21 @@
 
 extern char lbl_8055E839;
 extern s32 lbl_8055E828;
+extern s32 lbl_8055E81C;
+extern s32 lbl_8055E820;
+extern s32 lbl_8055E824;
+extern char lbl_8055E838;
+extern void (*lbl_8055E86C)(void);
+extern s32 lbl_8055E870;
+extern char lbl_80337474[];
+extern char lbl_80438464[];
+extern char lbl_8043846C[];
+extern char lbl_80438478[];
+extern char lbl_80438484[];
+extern char lbl_80438490[];
+extern char lbl_80438564[];
+extern char lbl_804383F8[];
+extern char lbl_80438408[];
 extern char lbl_8055AA54[];
   
 // Code of main that had no source file yet: decomp.wtf gave it this one.
