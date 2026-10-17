@@ -215,7 +215,7 @@ void *fn_80134F48(void) {
     return result;
 }
 #pragma dont_inline reset
-#pragma scheduling off
+#pragma scheduling on
 void *fn_80134FF8(void) {
     void **p = fn_801284F8(4, lbl_8032BC94);
     if (p != 0) {
@@ -223,7 +223,6 @@ void *fn_80134FF8(void) {
     }
     return p;
 }
-#pragma scheduling on
 s32 fn_80135038(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
