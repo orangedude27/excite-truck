@@ -81,6 +81,8 @@ s32 fn_80263658(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8026381C(void) {}
+
 s32 fn_802638C8(void *arg0, s32 arg1) {
     if (*((u8 *)arg0 + 0x29) != 0 && arg1 != 0x126) {
         if (arg1 < 0x126) {
