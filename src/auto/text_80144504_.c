@@ -5,6 +5,7 @@
 
 extern f32 lbl_805615B8;
 extern f32 lbl_805615BC;
+extern f32 lbl_805615C0;
 extern f32 lbl_805615C4;
 extern f32 lbl_805615C8;
 extern f32 lbl_805615CC;
@@ -71,11 +72,37 @@ void fn_80144C54(void *arg0) {
 }
 
 unsigned int fn_80144C68(unsigned int arg0, unsigned int arg1, unsigned int arg2, unsigned int arg3) {
-    return ((arg2 & 0xFF) << 8) | ((arg1 & 0xFF) << 16) | ((arg0 >> 24) & 0xFF) | (arg3 & 0xFF);
+    unsigned int x = arg2;
+    unsigned int y = arg1;
+    x = (x << 8) & 0xFF00;
+    y = (y << 16) & 0xFF0000;
+    x |= arg3;
+    y |= arg0 >> 24;
+    return x | y;
 }
 
 float fn_80144C80(float farg0, float farg1, float farg2) {
     return farg0 + (farg2 * (farg1 - farg0));
+}
+
+extern f32 lbl_805615C0;
+s32 fn_80144C90(f32 farg0) {
+    f32 x;
+    if (farg0 < lbl_805615BC) {
+        x = farg0 - lbl_805615C0;
+    } else {
+        x = lbl_805615C0 + farg0;
+    }
+    return (s32)x;
+}
+
+void fn_80144D64(s32 *dst, s32 *src) {
+    s32 a = src[0];
+    s32 b = src[1];
+    s32 c = src[2];
+    dst[0] = a;
+    dst[1] = b;
+    dst[2] = c;
 }
 
 void fn_80144D80(f32 *arg0, f32 farg0, f32 farg1, f32 farg2) {
