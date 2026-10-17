@@ -34,7 +34,7 @@ void fn_801E2100(void *arg0, void *arg1) {
 void *fn_801A4548(void *);
 extern void *lbl_80339890[];
 void fn_801E2188(void) {
-    lbl_8055EA3C = fn_801A4548(&lbl_80339890);
+    lbl_8055EA3C = fn_801A4548(&lbl_80339890[0]);
 }
 
 void fn_801E21B4(void* hi) {
