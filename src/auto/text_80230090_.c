@@ -4,11 +4,20 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern u8 lbl_8055B998;
+extern f32 lbl_8055F02C;
+extern f32 lbl_8055F030;
+extern f32 lbl_80563610;
+extern f32 lbl_80563614;
+extern f32 lbl_8056365C;
+extern f32 lbl_80563660;
+f64 fn_8002EFB4();
 void fn_80230B38(void* alarm) {
     fn_802C2B48(fn_802C855C(alarm));
 }
 
 void fn_80230DA0(void) {}
+
+void fn_80230E54(void) {}
 
 void fn_8023108C(u8 arg0) {
     lbl_8055B998 = arg0;
