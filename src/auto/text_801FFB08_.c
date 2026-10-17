@@ -31,4 +31,8 @@ void fn_8020095C(int *arg0) {
         fn_80128668(arg0);
     }
 }
-
+extern int fn_801E2CCC(int *);
+extern int fn_802E30C8(const char *, int, int);
+extern int lbl_8055ECA8;
+extern char lbl_8033B938[];
+extern char lbl_804888A8[];
