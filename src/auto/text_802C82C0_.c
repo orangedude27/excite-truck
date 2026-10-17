@@ -159,18 +159,17 @@ void fn_802C8BD0(int arg0) {
 #pragma dont_inline off
 
 void fn_802C8C04(int arg0) {
+    unsigned int *src = lbl_804C1410;
+    unsigned int *dst = lbl_804C13E0;
+    unsigned int sp8[18];
     unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
-    unsigned int sp8[3];
-    v0=lbl_804C1410[0];
-    lbl_804C13E0[0]=v0;
-    v1=lbl_804C1410[1]; v2=lbl_804C1410[2]; v3=lbl_804C1410[3];
-    v4=lbl_804C1410[4]; v5=lbl_804C1410[5]; v6=lbl_804C1410[6];
-    v7=lbl_804C1410[7]; v8=lbl_804C1410[8]; v9=lbl_804C1410[9];
-    v10=lbl_804C1410[10]; v11=lbl_804C1410[11];
-    lbl_804C13E0[1]=v1; lbl_804C13E0[2]=v2; lbl_804C13E0[3]=v3;
-    lbl_804C13E0[4]=v4; lbl_804C13E0[5]=v5; lbl_804C13E0[6]=v6;
-    lbl_804C13E0[7]=v7; lbl_804C13E0[8]=v8; lbl_804C13E0[9]=v9;
-    lbl_804C13E0[10]=v10; lbl_804C13E0[11]=v11;
+    v0 = *src++; *dst++ = v0;
+    v1 = *src++; v2 = *src++; v3 = *src++;
+    v4 = *src++; v5 = *src++; v6 = *src++;
+    v7 = *src++; v8 = *src++; v9 = *src++;
+    v10 = *src++; v11 = *src++;
+    *dst++=v1; *dst++=v2; *dst++=v3; *dst++=v4; *dst++=v5; *dst++=v6;
+    *dst++=v7; *dst++=v8; *dst++=v9; *dst++=v10; *dst++=v11;
     lbl_8055FC35=1;
     fn_802C89E8(sp8, v11, v10, v9, v8, v7, v6, v5);
     fn_802C8638(sp8);
@@ -238,6 +237,11 @@ void fn_802C92D0(void) {
 }
 
 void fn_802C92D8(void) {
+    fn_802C8D74();
+}
+
+void fn_802C9118(void) {
+    lbl_8055FC70 = 2;
     fn_802C8D74();
 }
 
