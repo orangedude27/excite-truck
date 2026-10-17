@@ -350,6 +350,33 @@ void fn_8027CCB4(long arg0, long arg1, long arg2, long arg3) {
         if (temp_r3 != 0x134) fn_80012790(temp_r3);
     }
 }
+
+extern long lbl_80347B5C;
+#pragma use_lmw_stmw off
+__declspec(section ".rodata") extern long lbl_80347B5C;
+#pragma use_lmw_stmw off
+void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
+    long temp_r3;
+    long temp_r3_2;
+    long temp_r3_3;
+    temp_r3 = fn_80012810();
+    if (temp_r3 != 0x130) {
+        if (temp_r3 != 0x134) fn_80012794();
+        fn_80012790(0x130);
+    }
+    temp_r3_2 = fn_8000DA10();
+    if (temp_r3_2 != arg1) fn_8000D984(arg1);
+    fn_8027C59C(arg2);
+    fn_8027B2F8(arg0, &lbl_80347B5C, 1);
+    if (temp_r3_2 != arg1) fn_8000D984(temp_r3_2);
+    fn_8027C610();
+    temp_r3_3 = fn_80012810();
+    if (temp_r3 != temp_r3_3) {
+        if (temp_r3_3 != 0x134) fn_80012794();
+        if (temp_r3 != 0x134) fn_80012790(temp_r3);
+    }
+}
+
 #pragma use_lmw_stmw on
 long fn_8027CE4C(long arg0) {
     long value = *fn_8027C120(lbl_8055F654, arg0);
