@@ -92,9 +92,44 @@ void fn_8020268C(void) {
     fn_802C9C58(saved);
 }
 
+extern int lbl_8055ECDC;
+extern int fn_802023E4(void);
+extern int fn_80202218(void);
+extern void *fn_802023C8(void);
+extern int fn_802022E4(const Vec *);
+extern int fn_80202378(int, int, int, int);
+extern int fn_802CE744(int, int);
+extern int fn_802CE4F4(int);
+void fn_80202924(void) {
+    int temp, index, center, result;
+    Vec *p;
+    if (lbl_8055ECC0 <= 0) return;
+    lbl_8055ECDC = -1;
+    if (lbl_8055ECE0 != 0) {
+        p = fn_802023C8();
+        temp = fn_802022E4(p);
+        lbl_8055ECDC = temp;
+        center = fn_80202218();
+        index = 0;
+        do {
+            result = fn_80202378(temp, center, 1, index);
+            if (result < 0) break;
+            fn_802CE744(*(int *)(lbl_8055ECC4 + result * 16 + 12), 0);
+            index++;
+        } while (1);
+    }
+    lbl_8055ECE0 = 0;
+    fn_802CE4F4(lbl_8055ECC8);
+}
+
 extern unsigned char lbl_8055ECE0;
 extern int lbl_8055ECC8, lbl_8055ECCC, lbl_8055ECD0;
 extern int lbl_804888E0[];
+extern float lbl_805630A4, lbl_805630B0, lbl_805630B4;
+extern double lbl_805630A8;
+extern double fn_8002EFB4(double);
+extern int fn_802C7A3C(float, float, float);
+extern void fn_802C70AC(int, float *, int, int);
 int fn_802CE850(int);
 void fn_802CE6C0(int);
 int fn_802CE49C(int);
