@@ -15,9 +15,15 @@ void fn_801CEFC4(void) {
     lbl_8055E8A0 = 0;
 }
 
-extern char lbl_8033807C;
-extern char lbl_80338060;
-extern void fn_802E30C8(char *);
+extern char lbl_8033807C[];
+extern char lbl_80338060[];
+extern void fn_802E30C8(char *, ...);
+#pragma small_data off
+void fn_801CEFE8(void) {
+    fn_802E30C8(lbl_80338060);
+    lbl_8055E8A0 = 1;
+}
+#pragma small_data on
 extern void fn_801AED68(void);
 extern void fn_801AED5C(void);
 int fn_801CF050(void) {
