@@ -72,3 +72,9 @@ char *fn_80252494(void *arg0, s32 arg1) {
     return base + offset + 0x21;
 }
 
+u8 fn_802524A8(void *arg0, s32 arg1) {
+    s32 offset = arg1 * 0x48;
+    s32 *base = *(s32 **)((char *)arg0 + 4);
+    return *(u8 *)((char *)base + offset + 0x41);
+}
+
