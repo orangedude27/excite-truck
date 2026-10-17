@@ -20,6 +20,22 @@ void fn_80288A58(int arg0, int arg1) { fn_8028E584(*(int *)lbl_8055F6E0, arg0, a
 
 void fn_80288A70(void) {}
 
+int fn_80287B5C(void);
+int fn_8028A330(int *, int);
+int fn_80287B14(void);
+int fn_8028E398(int);
+int fn_80128668(void *);
+void *fn_80288B88(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8028E398(*(int *)((char *)arg0 + 0x68));
+        fn_8028E398(*(int *)((char *)arg0 + 0x64));
+        fn_8028E398(*(int *)((char *)arg0 + 0x60));
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 int fn_802894B4(int arg0) {
     fn_802896E4();
     fn_802897E0(arg0);
