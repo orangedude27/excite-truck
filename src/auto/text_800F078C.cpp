@@ -44,7 +44,7 @@ extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void*, const voi
 extern "C" u8 lbl_803240D4[];
 extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void*, const void*, s32);
 extern "C" void Prepare__Q46nw4hbm3snd6detail8SeqSoundFPCvl(void* arg0, const void* arg1, s32 arg2) {
-    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)&lbl_80324060, 0x70, (const char*)lbl_803240D4);
+    if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324060, 0x70, (const char*)lbl_803240D4);
     SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl((u8*)arg0 + 0xD8, arg1, arg2);
 }
 #pragma small_data on
