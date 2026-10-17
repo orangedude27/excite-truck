@@ -96,6 +96,25 @@ void fn_801E3440(void* arg0) {
     *(f32*)((u8*)arg0 + 8) = sp[11];
 }
 
+#pragma push
+#pragma small_data off
+void fn_801E3488(void *arg0, void *arg1) {
+    f32 sp[12];
+    sp[0] = 1.0f;
+    sp[1] = 0.0f;
+    sp[2] = 0.0f;
+    sp[3] = 0.0f;
+    sp[4] = 1.0f;
+    sp[5] = 0.0f;
+    sp[6] = 0.0f;
+    sp[7] = 0.0f;
+    sp[8] = 1.0f;
+    sp[9] = 0.0f;
+    sp[10] = 0.0f;
+    sp[11] = 0.0f;
+    ((void (*)(void *, void *, f32 *))fn_801E3440)(arg0, arg1, sp);
+}
+
 void fn_801E34E4(s32 *arg0, s32 arg1) {
     s32 sp8[12];
     s32 val = *arg0;
