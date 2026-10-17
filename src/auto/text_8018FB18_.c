@@ -20,7 +20,7 @@ typedef unsigned int uint;
 
 extern void *lbl_804349A0[];
 extern int lbl_8055E518;
-extern float lbl_80562080, lbl_8056208C, lbl_80562090, lbl_805620AC;
+extern float lbl_80562080, lbl_8056208C, lbl_80562090, lbl_80562094, lbl_805620AC, lbl_80562138;
 extern double lbl_805620B0;
 int fn_801B665C();
 void fn_80191084();
@@ -451,20 +451,60 @@ extern f32 lbl_805620AC;
 extern f64 lbl_805620B0;
 f32 fn_80192C7C(void *arg0) {
     f32 var_f4;
-    u8 temp_r0;
-    u8 temp_r4;
-    temp_r4 = *(u8 *)((char *)*(void **)((char *)arg0 + 8) + 6);
-    temp_r0 = ((temp_r4 >> 4) & 0xF & ~0xF0) | (temp_r4 & 0xF0);
+    u8 temp_r4 = *(u8 *)((char *)*(void **)((char *)arg0 + 8) + 6);
+    u8 temp_r0 = ((temp_r4 >> 4) & 0xF & ~0xF0) | (temp_r4 & 0xF0);
+    f32 value = ((f32)temp_r0 - lbl_8056208C) / lbl_805620AC;
     var_f4 = lbl_80562090;
-    if (var_f4 < (((f32)temp_r0 - lbl_8056208C) / lbl_805620AC)) {
-    } else {
-        var_f4 = ((f32)temp_r0 - lbl_8056208C) / lbl_805620AC;
+    if (var_f4 < value) {
+        var_f4 = value;
     }
+    value = ((f32)temp_r0 - lbl_8056208C) / lbl_805620AC;
     if (var_f4 > lbl_8056208C) {
     } else {
         var_f4 = lbl_8056208C;
     }
     return lbl_8056208C + (var_f4 * lbl_80562090);
+}
+
+extern f32 lbl_80562094;
+extern f32 lbl_80562138;
+f32 fn_80192D10(void *arg0) {
+    f32 var_f4;
+    f64 d;
+
+    d = (double)*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 5);
+    var_f4 = lbl_80562090;
+    if (var_f4 < (f32)((d - lbl_805620B0) / lbl_805620AC)) {
+        d = d - lbl_805620B0;
+        var_f4 = (f32)(d / lbl_805620AC);
+    }
+    if (var_f4 > lbl_8056208C) {
+    } else {
+        var_f4 = lbl_8056208C;
+    }
+    return lbl_80562094 + (var_f4 * lbl_80562138);
+}
+
+f32 fn_80192D98(void *arg0) {
+    f32 var_f4;
+    f64 d;
+
+    d = (double)*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 4);
+    var_f4 = lbl_80562090;
+    if (var_f4 < (f32)((d - lbl_805620B0) / lbl_805620AC)) {
+        d = d - lbl_805620B0;
+        var_f4 = (f32)(d / lbl_805620AC);
+    }
+    if (var_f4 > lbl_8056208C) {
+    } else {
+        var_f4 = lbl_8056208C;
+    }
+    return lbl_80562094 + (var_f4 * lbl_80562138);
+}
+
+s32 fn_80192E20(void *arg0) {
+    s32 bit = (*(s8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 7) & 1;
+    return (s32)((u32)(-bit | bit) >> 31);
 }
 
 float fn_80192E3C(void *arg0) {
