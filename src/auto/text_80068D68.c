@@ -2322,6 +2322,12 @@ void fn_8008251C(void) {
     btm_discovery_db_init();
 }
 
+void fn_80082548(void) {
+ memset(&lbl_803C0A50, 0, 0x84);
+ *(u16 *)((u8 *)&lbl_803C0A50 + 0x7e)=0x2a4;
+ *(u16 *)((u8 *)&lbl_803C0A50 + 0x80)=1;
+}
+
 void fn_800833E8(s32 arg0) { btm_cback(0, arg0); }
 
 void fn_800833F4(s32 arg0) { btm_cback(1, arg0); }
