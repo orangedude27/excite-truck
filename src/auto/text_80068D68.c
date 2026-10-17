@@ -970,16 +970,19 @@ s32 bta_dm_sm_execute(BT_HDR *p_msg) {
     extern u8 lbl_802EEA38[];
     extern u8 lbl_802EEA6C[];
     typedef void (*tAction)(BT_HDR *);
-    s32 i;
+    u8 *table = lbl_802EEA6C;
+    s32 i = 0;
     u16 event;
     u8 action;
 
-    for (i = 0; i < 2; i++) {
-        event = p_msg->event;
-        action = lbl_802EEA6C[i + 3 * (event & 0xFF)];
-        if (action == 0xD)
-            break;
+loop:
+    event = p_msg->event;
+    action = table[((event & 0xFF) * 4) - (event & 0xFF) + i];
+    if (action != 0xD) {
         ((tAction *)lbl_802EEA38)[action](p_msg);
+        i++;
+        if (i < 2)
+            goto loop;
     }
     return 1;
 }
@@ -1012,6 +1015,10 @@ void bta_hh_api_disc_act(void *arg0, void *arg1) {
         status = *((u8 *)arg0 + 0x16);
     if (HID_HostCloseDev() != 0)
         (*(void (**)(int, u8 *))(lbl_803C0D48 + 0x224))(3, &status);
+}
+
+void fn_80075AA4(void *arg0) {
+    (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, arg0);
 }
 
 extern void l2c_link_hci_disc_comp(u16, u8);
