@@ -99,8 +99,8 @@ extern long lbl_8055EED4;
 extern long lbl_8055EEF0;
 extern long lbl_8055B658;
 void fn_802108C8(void) {
-    lbl_8055EED4 = fn_80145E70(&lbl_8033C9BC);
-    lbl_8055EEF0 = fn_802090D4(&lbl_8033C9C8);
+    lbl_8055EED4 = fn_80145E70(&lbl_8033C9BC[0]);
+    lbl_8055EEF0 = fn_802090D4(&lbl_8033C9C8[0]);
 }
 
 void fn_80210904(void) {
