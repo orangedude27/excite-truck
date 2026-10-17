@@ -102,8 +102,7 @@ extern s32 fn_802E2C20(void);
 #pragma small_data on
 #pragma small_data off
 void fn_802B5E24(s32 arg0) {
-    const char *fmt = (const char *)&lbl_8055CE48;
-    lbl_8055FA28 = fn_802B5D2C(fmt, arg0);
+    lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
     lbl_8055FA08 = lbl_80564C5C;
 }
 u32 fn_802B5E8C(s32 arg0) {
@@ -112,7 +111,7 @@ u32 fn_802B5E8C(s32 arg0) {
 }
 
 extern void* lbl_8055FA44;
-s32 fn_802B5D94(void);
+
 void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
 }
@@ -164,9 +163,7 @@ extern s32 fn_8026E214(void *, void *);
 extern void deleteThreads__6SystemFv(void *);
 extern s32 fn_802C6CF8(void);
 extern s32 lbl_804BFA70;
-void fn_802B61E0(void) {
-    lbl_8055FA08 = (float)fn_802E2C20() / lbl_80564C70;
-}
+void fn_802B61E0(void) { volatile double temp = lbl_80564C68; lbl_8055FA08 = (float)fn_802E2C20() / lbl_80564C70; }
 
 s32 fn_802B6270(void) {
     return lbl_8055FA40 == 7;
