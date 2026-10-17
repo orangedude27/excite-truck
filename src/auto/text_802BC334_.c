@@ -10,6 +10,26 @@ int fn_802BC334(int arg0) {
     return -2;
 }
 
+void *fn_802BE844(short, short, short);
+void fn_802BC39C(void);
+void fn_802BC3DC(void) {
+    fn_802BC39C();
+}
+
+void fn_802BC44C(void *arg0) {
+    int offset = 0;
+    int i = 0;
+    char *entry;
+    goto check;
+loop:
+    entry = *(char **)arg0 + offset;
+    fn_802BC3E0(*(short *)(entry + 4), *(short *)(entry + 6), fn_802BC424(*(short *)(entry + 4)), entry);
+    offset += 0x10;
+    i++;
+check:
+    if (i < *(int *)((char *)arg0 + 4)) goto loop;
+}
+
 void *fn_802BC4D4(void *arg0) {
     return *(void **)(*(char **)((char *)arg0 + 4) + 0xC);
 }
