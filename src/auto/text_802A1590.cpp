@@ -62,21 +62,24 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_802A1790(void) {}
+
 extern "C" void fn_802A1860(void) {}
 
 extern "C" s32 fn_802A1C30(void* arg0) {
+    void* saved = arg0;
     s32 index = *(s32*)((char*)arg0 + 0x2C);
     if (index >= 0 && index < 8) {
-        void* obj = lbl_804BCF88[index];
+        ebi::title::TPlaneSub* obj = (ebi::title::TPlaneSub*)lbl_804BCF88[index];
         if (obj != 0) {
             if (*(f32*)((char*)arg0 + 0x24) > lbl_80564728) {
-                (*(void (**)(void*))(*(void**)((char*)*(void**)obj + 0x20)))(obj);
+                obj->update();
             } else {
-                (*(void (**)(void*))(*(void**)((char*)*(void**)obj + 0x24)))(obj);
+                obj->v8();
             }
         }
     }
-    return 0x30;
+    return (s32)saved + 0x30 - (s32)saved;
 }
 
 extern "C" void fn_802A1CBC(void) {}
