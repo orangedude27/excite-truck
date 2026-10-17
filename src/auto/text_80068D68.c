@@ -873,6 +873,12 @@ void fn_80071230(void *arg0, void *arg1, void *arg2) {
         callback(5, arg0, arg1, arg2);
 }
 
+void fn_80071264(void *a, void *b, void *c) {
+    extern u8 lbl_803C0AD8[];
+    void (*callback)(s32, void *, void *, void *) = *(void (**)(s32, void *, void *, void *))(lbl_803C0AD8 + 0x84);
+    if (callback != 0) callback(6, a, b, c);
+}
+
 void fn_8007148C(s32 arg0) {
     fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
 }
