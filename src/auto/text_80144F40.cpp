@@ -250,6 +250,18 @@ extern "C" void fn_80145B50(void *arg0, s32 arg1) {
     *(f32 *)arg0 = lbl_80561608 * value;
 }
 
+#pragma dont_inline on
+extern "C" void fn_80145B94(void *arg0, u32 arg1) {
+    f32 input = *(f32 *)((u8 *)arg0 + 8);
+    f32 scale = fn_801452B4(input);
+    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+    f32 last = *(f32 *)((u8 *)arg0 + 0x10);
+    s32 a = *(s32 *)((u8 *)arg0 + 0x18);
+    s32 b = *(s32 *)((u8 *)arg0 + 0x14);
+    fn_8000FF88(a, b, arg1, last, value, scale);
+}
+#pragma dont_inline reset
+
 extern "C" void fn_80145C7C(void *arg0, u32 arg1) {
     f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 temp_f2 = ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
@@ -414,11 +426,10 @@ extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
 extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
-    s32 count = arg2;
-    while (count > 0) {
-        count--;
-    }
-    *arg0 = 0;
+    do {
+        arg2--;
+    } while (arg2 > 0);
+    *--arg0 = 0;
     while ((s8)*arg1 != 0) {
         *arg0++ = (u8)*arg1++;
     }
@@ -469,20 +480,21 @@ extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
 extern int vsprintf(char *, const char *, va_list);
 extern unsigned int strlen(const char *);
 extern char lbl_8032D1A4[];
-void fn_802E317C(const char *, unsigned int, const char *, ...);
+
 void fn_80145B94(void *, const char *);
 extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
-    struct VTable { void *unused[3]; void *(*get)(void *); };
     char buffer[0x200];
     va_list args;
-    void *result = ((VTable *)*(void ***)arg0)->get(arg0);
+    void *result = ((void *(*)(void *))(*(void ***)arg0)[3])(arg0);
     if (result != 0) {
         va_start(args, format);
         vsprintf(buffer, format, args);
         va_end(args);
-        if (strlen(buffer) >= 0x200)
-            fn_802E317C(lbl_8032D1A4, strlen(buffer), format);
-        fn_80145B94(result, buffer);
+        if (strlen(buffer) >= 0x200) {
+            s32 length = strlen(buffer);
+            fn_802E317C(lbl_8032D1A4, length, format);
+        }
+        fn_80145B94(result, (u32)buffer);
     }
 }
 
@@ -519,8 +531,10 @@ extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 valu
     va_list args;
     va_start(args, value);
     vsprintf(text, format, args);
-    if (strlen(text) >= 0x200)
-        fn_802E317C(lbl_8032D1A4, strlen(text), format);
+    if (strlen(text) >= 0x200) {
+        s32 length = strlen(text);
+        fn_802E317C(lbl_8032D1A4, length, format);
+    }
     fn_80147CEC(buffer, (s32)arg0, (s32)arg1, value);
     fn_80147230(buffer, (const char *)&lbl_80559E1C, text);
 }
@@ -537,11 +551,7 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
     s32 b = fn_801450A0((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
     s32 c = fn_801450A0((arg0 >> 16) & 0xFF, (arg1 >> 16) & 0xFF, arg2);
     s32 d = fn_801450A0(arg0 >> 24, arg1 >> 24, arg2);
-    u32 result = (b & 0xFF) << 8;
-    result |= a & 0xFF;
-    u32 high = (c & 0xFF) << 16;
-    high |= (d & 0xFF) << 24;
-    return result | high;
+    return ((d & 0xFF) << 24) | ((c & 0xFF) << 16) | ((b & 0xFF) << 8) | (a & 0xFF);
 }
 #pragma dont_inline off
 extern "C" void fn_80147EE0(void *arg0, f32 scale) {
@@ -784,10 +794,13 @@ extern "C" void fn_80148EDC(void *arg0) {
 
 extern "C" void deleteThreads__6SystemFv(void *arg0) {
     void *p = *(void **)arg0;
-    if (p != NULL) {
-        ((void (*)(void *, s32))((void **)*(void **)p)[2])(p, 1);
-        *(void **)arg0 = NULL;
-    }
+    if (!p)
+        return;
+    if (!p)
+        return;
+    void **vtable = *(void ***)p;
+    ((void (*)(void *, s32))vtable[2])(p, 1);
+    *(void **)arg0 = 0;
 }
 
 extern "C" void fn_8014822C(void) {
