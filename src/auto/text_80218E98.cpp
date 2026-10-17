@@ -2069,6 +2069,14 @@ extern "C" s32 fn_80229F60(void *arg0) {
     return result;
 }
 
+extern "C" void *lbl_8033E878[];
+extern "C" void *lbl_8033DCF8[];
+extern "C" void fn_802C6CF8(s32);
+extern "C" void fn_80229FF0(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x244) = 1;
+    ((VfObj *)arg0)->vf18();
+}
+
 extern "C" void fn_8022A008(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
 }
@@ -2105,6 +2113,23 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8022A0CC(void *arg0, 
     if (arg0 != 0) {
         fn_8021915C(arg0, 0);
         if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+extern "C" void *fn_8022A124(void *arg0, s32 arg1) {
+    s32 temp_r0;
+
+    if (arg0 != 0) {
+        temp_r0 = *(s32 *)((u8 *)arg0 + 4);
+        *(void **)arg0 = lbl_8033DCF8;
+        if (temp_r0 != -1) {
+            fn_802C6CF8(temp_r0);
+            *(s32 *)((u8 *)arg0 + 4) = -1;
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
