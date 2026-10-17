@@ -33,12 +33,13 @@ void fn_801C1320(void* arg0) {
 
 #pragma dont_inline on
 extern void fn_801C1B60(int);
-extern "C" void fn_801C1B60(int arg0) {
+#pragma force_active on
+void fn_801C1B60(int arg0) {
     fn_801C1218();
     fn_801C1364(arg0);
     fn_801C1320((void*)arg0);
 }
-#pragma dont_inline reset
+#pragma force_active reset
 void fn_801C1B9C(void) {
     return;
 }
