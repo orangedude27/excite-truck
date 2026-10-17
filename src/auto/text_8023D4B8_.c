@@ -77,23 +77,38 @@ void fn_8023DB68(void) {
     }
 }
 
+void fn_8023DBCC(void) {
+    char *var_r31;
+    s32 var_r30;
+
+    fn_80137C78(lbl_8055BC54);
+    var_r31 = (char *)&lbl_804987D0;
+    var_r30 = 0;
+loop_1:
+    if (var_r30 < lbl_8055BC54) {
+        fn_80137C84(*(s32 *)var_r31, var_r30);
+        var_r31 += 4;
+        var_r30 += 1;
+        goto loop_1;
+    }
+    lbl_8055BC54 = -1;
+}
+
 char *fn_8023DC38(char *arg0) {
     char **var_r31;
     s32 var_r30;
 
     var_r31 = (char **)&lbl_802FA0A8;
     var_r30 = 0;
-loop_1:
-    if (stricmp(*(char **)(var_r31 + 1), arg0) == 0) {
-        return (char *)&lbl_802FA0A8 + (var_r30 * 8);
+    while (var_r30 < 0x1D) {
+        if (stricmp(*(char **)(var_r31 + 1), arg0) == 0) {
+            return (char *)&lbl_802FA0A8 + (var_r30 * 8);
+        }
+        var_r31 += 2;
+        var_r30 += 1;
     }
-    var_r30 += 1;
-    var_r31 += 1;
-    if (var_r30 >= 0x1D) {
-        fn_802E317C(lbl_80341B9C, arg0);
-        return 0;
-    }
-    goto loop_1;
+    fn_802E317C(lbl_80341B9C, arg0);
+    return 0;
 }
 
 char *fn_8023DCCC(char *arg0) {
@@ -107,7 +122,7 @@ loop_1:
         return (char *)&lbl_802FA190 + (var_r30 * 8);
     }
     var_r30 += 1;
-    var_r31 += 1;
+    var_r31 += 2;
     if (var_r30 >= 0x11) {
         return 0;
     }
@@ -169,6 +184,34 @@ void fn_8023E16C(void *arg0, int arg1) {
         fn_8022D894(arg0, arg1, var_r31, fn_8022D850(arg0, arg1, var_r31, 0), 0);
         var_r31--;
     } while (var_r31 > 0);
+}
+
+void *fn_8023E440(void *arg0, void *arg1) {
+    extern int fn_801A902C(void);
+    extern void fn_801A9050(void *, int);
+    extern void fn_8023E33C(void *);
+    extern char lbl_80341C50[];
+    struct Out { int first; int pad; unsigned int second; char tail[4]; } out;
+    int zero = 0;
+    int i;
+    *(char *)arg0 = zero;
+    *(s32 *)((char *)arg0 + 4) = -1;
+    *((char *)arg0 + 8) = zero;
+    *(char **)((char *)arg0 + 0xC) = lbl_80341C50;
+    *(s32 *)((char *)arg0 + 0x10) = -1;
+    i = fn_801A902C();
+    goto test;
+loop:
+    out.pad = zero;
+    out.tail[0] = zero;
+    fn_801A9050(&out, i);
+    if (out.first == *(s32 *)arg1 && out.second == *(unsigned int *)((char *)arg1 + 8))
+        *(s32 *)((char *)arg0 + 0x10) = i;
+test:
+    if (i-- > 0)
+        goto loop;
+    fn_8023E33C(arg0);
+    return arg0;
 }
 
 extern int lbl_80341C40[];
