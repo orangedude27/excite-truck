@@ -95,7 +95,6 @@ void fn_802DC078(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     }
 }
 
-extern void GXClearVtxDesc();
 extern void GXSetVtxDesc(int, int);
 extern void GXSetVtxAttrFmt(int, int, int, int, int);
 extern void GXSetArray(int, void *, int);
