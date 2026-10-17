@@ -6,6 +6,8 @@ extern int lbl_802FC638[];
 extern int lbl_802FC69C;
 void fn_80012778(void) { fn_80012984(0x12F); }
 
+void fn_80012780(void) { fn_80012984(0x130); }
+
 void fn_80012790(void) {
     fn_80012984();
 }
