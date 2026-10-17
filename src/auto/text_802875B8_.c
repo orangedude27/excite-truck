@@ -15,6 +15,15 @@ extern s32 lbl_804B31E0[];
 extern s32 lbl_8055F6C0;
 extern f32 fn_8023659C(void);
 extern s32 fn_80214AF0(s32);
+extern s32 lbl_8055F6C4;
+extern s32 lbl_80488648[];
+extern void fn_801EE0C8(s32);
+extern s32 fn_801E2CCC(s32, s32);
+extern s32 fn_8002F6AC(s32, void (*)(void));
+extern void fn_80287C80(void);
+extern void fn_802E317C(const char *, s32);
+extern const char lbl_80348A4C[];
+typedef struct Obj { void **vtable; } Obj;
 void* fn_802875B8(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
@@ -227,7 +236,24 @@ void fn_802882A0(void){if(*(s32*)lbl_804B3150)fn_80128670(*(s32*)lbl_804B3150-0x
 
 void fn_802885C0(void) {}
 
+s32 fn_802885C4(void *arg0, void *arg1) {
+    return (s32)(lbl_80564268 * (*(f32 *)((u8 *)arg0 + 8) - *(f32 *)((u8 *)arg1 + 8)));
+}
+
+void fn_802887EC(void) {
+    s32 i;
+    for (i = 0; i < lbl_8055F6C0; i++) {
+        ((void (*)(void *, s32))((s32 *)lbl_804B3150)[36 + i])((u8 *)lbl_804B3150 + 16, ((s32 *)lbl_804B3150)[1]);
+    }
+}
+
 void fn_80288868(void* hi) {
     lbl_8055F6C8 = hi;
+}
+
+void fn_80288870(void) {
+    s32 value = *(s32 *)&lbl_8055F6C8;
+    value = (value * 0x12B9B0A1 + 0x1CCE8AC1) & 0x7FFFFFFF;
+    *(s32 *)&lbl_8055F6C8 = value;
 }
 
