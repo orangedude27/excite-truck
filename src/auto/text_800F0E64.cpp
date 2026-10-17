@@ -1154,7 +1154,9 @@ f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC8D8(void *arg0, s32 arg1, f32 value) {
     u32 token;
-    if (arg1 < 0 || arg1 >= 4)
+    if (arg1 < 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x32f, lbl_803268E4, arg1, 0, 4);
+    if (arg1 >= 4)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x32f, lbl_803268E4, arg1, 0, 4);
     token = OSDisableInterrupts();
     *(f32 *)((char *)arg0 + 0x480 + arg1 * 4) = value;
