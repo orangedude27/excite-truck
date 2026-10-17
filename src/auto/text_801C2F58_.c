@@ -402,6 +402,34 @@ void fn_801C819C(void) {
     fn_801C78D8();
 }
 
+void fn_801C821C(void) {
+    strcpy(lbl_804385A8, lbl_804380F0);
+    strcpy(lbl_804380F0, lbl_8055AA44);
+    if (lbl_804385A8[0] == 0)
+        strcpy(lbl_804385A8, lbl_8055A95C);
+    lbl_8055E83A = 0;
+    lbl_8055E868 = fn_801C6CB0;
+    lbl_8055E83C = 0;
+}
+#pragma push
+#pragma small_data off
+#pragma pop
+void fn_801C8298(void) {
+    strcpy(lbl_804384A8, lbl_8055AA44);
+    strcpy(lbl_804385A8, lbl_8055AA44);
+    lbl_8055E864 = 0;
+    fn_801C7BA0();
+}
+#pragma push
+#pragma small_data on
+#pragma pop
+void fn_801C83D0(void) {
+    f32 value = (f32)atof(lbl_804380F0);
+    lbl_8055A958 = value;
+    sprintf(lbl_80437FC0, lbl_80336FDC, value);
+    fn_801C957C(0);
+}
+
 void fn_801C94B8(void) {
     fn_80238A74();
 }
