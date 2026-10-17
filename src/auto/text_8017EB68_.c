@@ -179,3 +179,5 @@ int fn_80181784(void *arg0) {
 
 unsigned char fn_8018178C(void *arg0) { return *((unsigned char *)arg0 + 0x5B); }
 
+float fn_80181794(void *arg0) { return *(float *)((char *)arg0 + 0x32C); }
+
