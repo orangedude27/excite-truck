@@ -7,6 +7,17 @@ void __AXDSPInitCallback_801D0CF0(void) {
     lbl_8055E8E8 = 0;
 }
 
+void fn_801D0CFC(void) {
+    int i;
+    for (i = lbl_8055E8E8 - 1; i >= 0; i--) {
+        void *obj = lbl_80438818[i];
+        if (obj != 0) {
+            ((void (*)(int))(*(void ***)obj)[2])(1);
+        }
+    }
+    lbl_8055E8E8 = 0;
+}
+
 void *__dt__Q34nw4r2ef6EffectFv_801D0D7C(void *arg0, int arg1) {
     extern void fn_801D0DFC(void);
     extern void *lbl_803381C0[];
@@ -29,13 +40,36 @@ void fn_801D0DFC(void) {
     lbl_8055E8E8--;
 }
 
-typedef struct CallbackVTable {
-    void *unk[3];
-    void (*callback12)(void *);
-    void *unk10[2];
-    void (*callback24)(void *);
-} CallbackVTable;
+void fn_801D0E0C(void) {
+    int i;
+    for (i = 0; i < lbl_8055E8E8; i++) {
+        void *obj = lbl_80438818[i];
+        ((void (*)(void *))(*(void ***)obj)[3])(obj);
+    }
+}
 
-typedef struct CallbackObject {
-    CallbackVTable *vtable;
-} CallbackObject;
+void fn_801D0E70(void) {
+    int i;
+    for (i = 0; i < lbl_8055E8E8; i++) {
+        void *obj = lbl_80438818[i];
+        ((void (*)(void *))(*(void ***)obj)[6])(obj);
+    }
+}
+
+void fn_801D0ED4(void) {
+    int i;
+    for (i = 0; i < lbl_8055E8E8; i++) {
+        void *obj = lbl_80438818[i];
+        ((void (*)(void *))(*(void ***)obj)[4])(obj);
+    }
+}
+
+void fn_801D0F38(void) {
+    int i;
+    for (i = 0; i < lbl_8055E8E8; i++) {
+        void *obj = lbl_80438818[i];
+        ((void (*)(void *))(*(void ***)obj)[5])(obj);
+    }
+}
+
+
