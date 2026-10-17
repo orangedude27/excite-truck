@@ -80,6 +80,15 @@ check:
     if (--count >= 0) goto loop;
 }
 
+extern void fn_8017A804(void);
+int fn_8017D274(void *arg0, void *arg1) {
+    fn_8017A804();
+    *(float *)((char *)arg1 + 0x14) = *(float *)((char *)arg0 + 0x118);
+    *(float *)((char *)arg1 + 0x18) = *(float *)((char *)arg0 + 0x11C);
+    *(float *)((char *)arg1 + 0x1C) = *(float *)((char *)arg0 + 0x120);
+    return 0x20;
+}
+
 void fn_8017D2C8(void) {
     fn_8017B3A8();
 }
