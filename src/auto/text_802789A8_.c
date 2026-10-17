@@ -5,3 +5,5 @@ void fn_802789A8(void) {}
 
 void fn_802789AC(void) {}
 
+void fn_802789B0(void) {}
+
