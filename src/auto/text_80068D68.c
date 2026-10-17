@@ -2266,13 +2266,33 @@ void fn_800934D8(void *arg0, s16 arg1) {
     fn_800916F4(arg0, 7, &sp8);
 }
 
-extern void rfc_send_rpn(void *, u16, u8, u16, u16);
-extern void rfc_send_msc(void *, u16, u8, void *);
-extern void PORT_PortNegCnf(void *, u16, u8, u8);
-extern void rfc_port_timer_start(void *, u16);
 void fn_800937A0(void *p, u16 a1, u16 a2, u16 a3) {
     if (*(u8 *)((u8 *)p + 0x6c) == 5)
         rfc_send_rpn(p, a1, 0, a2, a3);
+}
+
+void RFCOMM_ControlReq(void *mcb, u8 dlci, void *ctrl) {
+    u8 *port = port_find_mcb_dlci_port(mcb, dlci);
+    if (port[2] == 2) {
+        if (port[0x68] != 4)
+            return;
+        port[0x64] |= 1;
+        port[0x69] |= 8;
+        rfc_send_msc(mcb, dlci, 1, ctrl);
+        rfc_port_timer_start(port, 0x3c);
+    }
+}
+
+void RFCOMM_FlowReq(void *mcb, u8 dlci, u8 state) {
+    u8 *port = port_find_mcb_dlci_port(mcb, dlci);
+    if (port[2] == 2) {
+        if (port[0x68] != 4)
+            return;
+        port[0x5e] = state == 0;
+        port[0x69] |= 8;
+        rfc_send_msc(mcb, dlci, 1, port + 0x5a);
+        rfc_port_timer_start(port, 0x3c);
+    }
 }
 
 tCONN_CB *sdpu_allocate_ccb(void) {
