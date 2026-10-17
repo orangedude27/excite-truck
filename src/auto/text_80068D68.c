@@ -1638,6 +1638,33 @@ void bta_dm_pin_reply(void *arg0) {
  }
 }
 
+void bta_dm_search_cancel(void) {
+    BTM_ClearInqDb(0);
+    if ((u16)fn_8007B340() != 0) {
+        BTM_CancelInquiry();
+        ((void (*)(s32, s32))*(u32 *)lbl_803C0B98)(4, 0);
+        {
+            void *buf = GKI_getbuf(0x110);
+            if (buf != 0) {
+                *(u16 *)buf = 0x207;
+                fn_80071450(buf);
+            }
+        }
+    } else if (*(s32 *)(lbl_803C0B98 + 8) == 0) {
+        BTM_CancelRemoteDeviceName();
+    }
+}
+
+void bta_dm_disc_rmt_name(void *arg0) {
+    void *buf = GKI_getbuf(0x110);
+    if (buf != 0) {
+        *(u16 *)buf = 0x207;
+        fn_80071450(buf);
+    }
+    *(s32 *)((u8 *)arg0 + 0x108) = 0;
+    ((void (*)(s32, void *))*(u32 *)lbl_803C0B98)(2, (u8 *)arg0 + 8);
+}
+
 void fn_80072434(void) {
     ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(3, 0);
 }
