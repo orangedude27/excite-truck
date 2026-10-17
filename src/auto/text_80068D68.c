@@ -884,6 +884,18 @@ void fn_80073A1C(void) {
 
 }
 
+void bta_dm_pm_btm_cback(void *arg0, s8 arg1, s16 arg2, s8 arg3) {
+    u8 *buf = GKI_getbuf(0x14);
+    if (buf != 0) {
+        *(u16 *)(buf + 0) = 0x109;
+        buf[0xE] = arg1;
+        *(u16 *)(buf + 0x10) = arg2;
+        buf[0x12] = arg3;
+        fn_80070FA4(buf + 8, arg0);
+        fn_80071450(buf);
+    }
+}
+
 void fn_80074A4C(s32 arg0) {
     bta_dm_pm_set_mode((u8 *)arg0 + 8, 1);
 }
