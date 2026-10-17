@@ -108,6 +108,8 @@ void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
     fn_802E30C8(lbl_8034E130, arg3, arg1);
 }
 
+void fn_802E95CC(int arg0, void **arg1) { void *obj=*arg1; *(int*)((char*)obj+0x254)=arg0; *(char*)((char*)obj+0x250)=1; }
+
 void fn_802E986C(void) {}
 
 void fn_802E9870(void) {}
