@@ -1240,6 +1240,17 @@ void BTA_HhAddDev(const u8 *arg0, u16 arg1, u8 arg2, u8 arg3, const void *arg4) 
     }
 }
 
+void BTA_HhRemoveDev(u8 arg0) {
+    void *buf = GKI_getbuf(0x1C);
+    if (buf != 0) {
+        memset(buf, 0, 0x1C);
+        *(u16 *)buf = 0x170A;
+        *(u16 *)((u8 *)buf + 0x10) = 0xC;
+        *(u16 *)((u8 *)buf + 6) = arg0;
+        fn_80071450(buf);
+    }
+}
+
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80317008[];
 extern u8 *lbl_80559030;
