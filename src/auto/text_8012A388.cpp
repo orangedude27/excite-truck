@@ -159,11 +159,11 @@ extern "C" void fn_8012BC24(void **arg0, void *arg1) {
 
 extern "C" void *fn_8012BD3C(void *arg0, const char *arg1) {
     void *entry = arg0;
-    while (1) {
-        if (stricmp(arg1, (const char *)entry) == 0) return entry;
+    do {
+        if (stricmp(arg1, (const char *)entry) == 0) break;
         entry = *(void **)((char *)entry + 0xA8);
-        if (entry == 0) return 0;
-    }
+    } while (entry != 0);
+    return entry;
 }
 
 extern "C" void fn_8012DDA8(s32);
@@ -331,8 +331,37 @@ extern "C" void fn_8012E40C(void *arg0, s32 arg1) {
     fn_8012D024(arg0, arg1);
 }
 
+extern "C" void *fn_8012E460(void *arg0) {
+    void *node = *(void **)((u8 *)arg0 + 0xC);
+    void *result = 0;
+    if (node != 0) {
+        result = node;
+        *(void **)((u8 *)arg0 + 0xC) = *(void **)node;
+        *(void **)node = *(void **)((u8 *)arg0 + 8);
+        *(void **)((u8 *)arg0 + 8) = node;
+    }
+    return result;
+}
+
 extern "C" s32 fn_8012E490(s32 *arg0) {
     return *arg0;
+}
+
+extern "C" void fn_8012E5E4(void *arg0, void *arg1) {
+    void **link = (void **)((u8 *)arg0 + 8);
+    s32 found = 0;
+    while (*link != 0) {
+        if (*link == arg1) {
+            *link = *(void **)arg1;
+            found = 1;
+            break;
+        }
+        link = (void **)*link;
+    }
+    if (found != 0) {
+        *(void **)arg1 = *(void **)((u8 *)arg0 + 0xC);
+        *(void **)((u8 *)arg0 + 0xC) = arg1;
+    }
 }
 
 extern "C" s32 fn_8012E674(void *arg0) {
