@@ -51,9 +51,8 @@ void fn_80193138(int index) {
     if (entry) *((u8 *)entry + 0x304) = 0x14;
 }
 
-void fn_8019315C(int index) {
-    void *entry;
-    entry = lbl_804349C0[index];
+void fn_8019315C(void *unused, int index) {
+    void *entry = lbl_804349C0[index];
     if (entry) ++*(int *)((char *)entry + 0x300);
 }
 
