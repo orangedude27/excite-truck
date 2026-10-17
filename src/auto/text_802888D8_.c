@@ -10,6 +10,15 @@ extern int fn_80287B14(void);
 extern int fn_8028A330(int *, int);
 extern int fn_8028E398(int);
 extern int fn_80128668(void *);
+extern int fn_80289084(void);
+extern int fn_80289154(int);
+extern int fn_80289268(int);
+extern int fn_80289394(int);
+extern void *fn_801284F8(int, void *);
+extern int fn_80287B38(void *);
+extern int lbl_8055F6D8;
+extern char lbl_80348A90[];
+extern void fn_80288A74(void);
 void fn_802889F0(void) {
     fn_80289554(lbl_8055F6DC);
     fn_80289F54(lbl_8055F6E4);
@@ -109,14 +118,19 @@ void *fn_80289EE0(void *arg0, int arg1) {
 
 void fn_80289FC4(int **arg0, int arg1, int arg2) {
     char *temp = (char *)*arg0 + arg1 * 0x68;
-    if (arg2 == 3 && *(void **)(temp + 0x64) == 0 && *(int *)(temp + 0x60) > 0) {
-        *(void **)(temp + 0x64) = temp + fn_80287B5C() * 0x18;
-        fn_8028A330((int *)arg0, arg1);
+    int count;
+    if (arg2 == 3 && *(void **)(temp + 0x64) == 0) {
+        count = *(int *)(temp + 0x60);
+        if (count > 0) {
+            *(volatile int **)(temp + 0x64) = (int *)(temp + fn_80287B5C() * 0x18);
+            fn_8028A330((int *)arg0, arg1);
+            return;
+        }
     } else if (arg2 != 3 && *(void **)(temp + 0x64) != 0) {
         *(void **)(temp + 0x64) = 0;
-    } else if (*(void **)(temp + 0x64) != 0) {
-        fn_8028A330((int *)arg0, arg1);
+        return;
     }
+    if (*(void **)(temp + 0x64) != 0) fn_8028A330((int *)arg0, arg1);
 }
 
 void fn_8028A32C(void) {}
