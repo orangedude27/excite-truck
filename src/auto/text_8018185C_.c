@@ -169,6 +169,8 @@ void fn_8018AE24(void *arg0, signed char arg1) {
     *((signed char *)arg0 + 0x260D) = arg1;
 }
 
+void fn_8018AE2C(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x2600) = farg0; }
+
 extern f32 fn_8018AE3C(void);
 f32 fn_8018AE3C(void) {
     return lbl_80561CAC;
