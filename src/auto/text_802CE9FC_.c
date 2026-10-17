@@ -156,6 +156,12 @@ void* fn_802D30E4(void) {
     return (char*)lbl_8055FD54 + 0x24;
 }
 
+#pragma dont_inline on
+void* fn_802D30F0(void) {
+    return (char*)lbl_8055FE1C + 0x24;
+}
+#pragma dont_inline off
+
 void fn_802D30FC(void) {
     fn_802D30F0();
 }
@@ -279,8 +285,10 @@ void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
 void fn_802D3BB0(void) {}
 
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
-void fn_802D3D94(int arg0, void *arg1) {
-    GXLoadTexMtxImm(arg1, (arg0 * 4 - arg0) + 0x1E, 1);
+void fn_802D3D94(void *arg1, int arg0) {
+    int id = arg0 * 4 - arg0;
+    int arg2 = 1;
+    GXLoadTexMtxImm(arg1, id + 30, arg2);
 }
 
 extern unsigned long lbl_8055D0B8;
