@@ -1489,9 +1489,51 @@ void *l2cu_find_lcb_by_handle(u16 handle) {
 
 u8 fn_8008D7C4(void) { return lbl_803C4040[1]; }
 
+void *l2cu_find_ccb_by_cid(void *p_lcb, u16 cid) {
+    u8 *p_ccb = 0;
+    if (cid >= 0x40) {
+        p_ccb = lbl_803C4040 + 0x178 + (((u16)(cid - 0x40)) * 0x7c);
+        if (p_ccb[0] == 0)
+            p_ccb = 0;
+        else if (p_lcb != 0 && p_lcb != *(void **)(p_ccb + 0x10))
+            p_ccb = 0;
+    }
+    return p_ccb;
+}
+
+void *fn_8008EBE4(s16 psm) {
+    u8 *p_rcb = lbl_803C4040 + 0x650;
+    int i;
+    for (i = 0; i < 8; i++) {
+        if (p_rcb[i * 0x2c] == 0) {
+            p_rcb[i * 0x2c] = 1;
+            *(s16 *)(p_rcb + i * 0x2c + 2) = psm;
+            return p_rcb + i * 0x2c;
+        }
+    }
+    return 0;
+}
+
 void fn_8008EC30(void *arg0) {
     *(u8 *)arg0 = 0;
     *(u16 *)((u8 *)arg0 + 2) = 0;
+}
+
+void *l2cu_find_rcb_by_psm(u16 psm) {
+    u8 *p_rcb = lbl_803C4040 + 0x650;
+    int i;
+    for (i = 0; i < 2; i++) {
+        if (p_rcb[0] != 0 && *(u16 *)(p_rcb + 2) == psm)
+            return p_rcb;
+        if (p_rcb[0x2c] != 0 && *(u16 *)(p_rcb + 0x2e) == psm)
+            return p_rcb + 0x2c;
+        if (p_rcb[0x58] != 0 && *(u16 *)(p_rcb + 0x5a) == psm)
+            return p_rcb + 0x58;
+        if (p_rcb[0x84] != 0 && *(u16 *)(p_rcb + 0x86) == psm)
+            return p_rcb + 0x84;
+        p_rcb += 0xb0;
+    }
+    return 0;
 }
 
 void fn_800911DC(void) {
