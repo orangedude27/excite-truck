@@ -356,6 +356,11 @@ extern "C" f32 fn_801429D0(f32 arg0, f32 arg1) {
     return arg0;
 }
 
+extern "C" f32 fn_801429E0(f32 arg0, f32 arg1) {
+    if (!(arg0 < arg1)) return arg1;
+    return arg0;
+}
+
 #pragma dont_inline off
 extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
     void *obj = fn_802C6C34(*(s32 *)(arg1 + 0x59C));
