@@ -24,6 +24,10 @@ s32 stricmp(const char*, const char*);
 extern void* memset(void*, int, unsigned long);
 extern char lbl_80358698[0x2080];
 
+s32 fn_8001F9A4();
+s32 fn_8001FA20();
+s32 fn_8001FA8C();
+
 void fn_8001EF38(void* alarm) {
     fn_8001EFF0(fn_8001F528(alarm));
 }
