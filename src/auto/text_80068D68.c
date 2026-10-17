@@ -3138,6 +3138,15 @@ void fn_8008EF90(void *arg0, void *arg1) {
     }
 }
 
+void l2cu_device_reset(void) {
+    s32 i;
+    u8 *entry;
+    for (i = 0, entry = lbl_803C4040 + 8; i < 4; i++, entry += 0x5C) {
+        if (entry[0] && *(u16 *)(entry + 0x28) != 0xFFFF)
+            l2c_link_hci_disc_comp(*(u16 *)(entry + 0x28), 0xFF);
+    }
+}
+
 void *port_find_dlci_port(unsigned int arg0) {
     int i;
     for (i = 0; i < 5; i++) {
