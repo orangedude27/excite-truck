@@ -102,6 +102,24 @@ extern "C" void fn_800F1080(void *arg0, int arg1, int arg2) {
     *(int *)((char *)arg0 + 0x54) = arg1 + arg2;
 }
 
+extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
+    extern void Release__Q46nw4hbm3snd6detail7ChannelFv(void *);
+    extern void fn_800EA880(void *, int);
+    void *channel = *(void **)((char *)arg0 + 0xB8);
+    while (channel != 0) {
+        int length = *(int *)((char *)channel + 0xD4);
+        if (length > 0) {
+            length--;
+            *(int *)((char *)channel + 0xD4) = length;
+            if (length == 0)
+                Release__Q46nw4hbm3snd6detail7ChannelFv(channel);
+        }
+        if (*(unsigned char *)((char *)channel + 0x3C) == 0)
+            fn_800EA880(channel, 1);
+        channel = *(void **)((char *)channel + 0xE4);
+    }
+}
+
 extern "C" void fn_800F2004(void *arg0, f32 farg0) {
     OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x68) = farg0;
