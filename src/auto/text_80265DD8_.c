@@ -10,6 +10,14 @@ extern float lbl_80563C20;
 void fn_802693F4(void);
 extern void fn_80265E08(void*);
 extern float lbl_80563C24;
+extern float lbl_80563C44;
+extern float lbl_80563C48;
+extern float lbl_80563C2C;
+extern float lbl_80563C34;
+extern float lbl_80563C4C;
+extern float lbl_80563C50;
+extern float lbl_80563C98;
+extern char lbl_80499920[];
 extern float lbl_8055C4E0;
 extern float lbl_8055C4E4;
 extern int lbl_8055C4E8;
@@ -178,6 +186,39 @@ void fn_80268B94(int arg0) {
     lbl_8055F4A0 = arg0;
     lbl_8055F4A4 = arg0;
     fn_801E9DC4(&lbl_8055F4A8);
+}
+
+extern char lbl_80499920[];
+extern float lbl_80563C44, lbl_80563C48, lbl_80563C2C, lbl_80563C34, lbl_80563C4C, lbl_80563C50;
+extern float lbl_80563C98;
+extern int fn_80178CA4(void);
+int fn_80268BA4(int arg0) {
+    register unsigned int shift = arg0 - 4;
+    if (shift > 0x13) {
+        return 0;
+    }
+    return ((1U << shift) & 0x80037) != 0;
+}
+
+void fn_8026A248(int arg0, int arg1) {
+    *(int *)((char *)fn_80267EE4(arg1) + 0x24) = arg0;
+}
+
+extern void fn_802735F4(int, int);
+extern void fn_80135DC4(void *, int, int);
+extern void fn_80134E34(float);
+extern void fn_80136468(int *, void *);
+extern void fn_80128670(void);
+extern void fn_8013530C(void *, int);
+extern void fn_80268BD4(void *, int, float, float);
+extern float lbl_80563C28;
+extern float lbl_80563C9C;
+extern char lbl_80499950[];
+int fn_8026A27C(int arg0) {
+    volatile int *p = lbl_80499E50;
+    int value = p[arg0];
+    p[arg0] = 0;
+    return value;
 }
 
 extern void fn_801EA994(void);
