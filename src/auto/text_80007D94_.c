@@ -92,4 +92,23 @@ const char* fn_80008188(void) {
     return *(const char**)((u8*)&lbl_8034EF38 + fn_800080E8() * 0xC + 4);
 }
 
+s32 fn_800081BC(void) {
+    return *(s32 *)((u8 *)&lbl_8034EF38 + fn_800080E8() * 0xC + 8);
+}
+
+s32 fn_800081F0(void *arg0) {
+    if (!(*(u32 *)((u8 *)arg0 + 0x10) & 1)) {
+        return *(s32 *)((u8 *)fn_8001285C(*(s32 *)arg0) + 0xC);
+    }
+    return 0xC8;
+}
+
+void fn_8000822C(void *arg0) {
+    *(u32 *)((u8 *)arg0 + 4) = 0;
+    *(s32 *)((u8 *)arg0 + 0) = -1;
+    *(u32 *)((u8 *)arg0 + 0x10) = 0;
+    *(u32 *)((u8 *)arg0 + 0xC) = 0;
+    *(u32 *)((u8 *)arg0 + 8) = 0;
+}
+
 #pragma scheduling reset
