@@ -11,6 +11,7 @@ extern int fn_80287B14(void);
 extern int fn_8028A330(int *, int);
 extern int fn_8028E398(int);
 extern int fn_80128668(void *);
+extern void *fn_80288B88(void *, int);
 extern int fn_80289084(void);
 extern int fn_80289154(int);
 extern int fn_80289268(int);
@@ -20,6 +21,25 @@ extern int fn_80287B38(void *);
 extern int lbl_8055F6D8;
 extern char lbl_80348A90[];
 extern void fn_80288A74(void);
+void fn_802888D8(void) {
+    int r3;
+    int r0;
+    r3 = (int)fn_801284F8(0x6c, lbl_80348A90 + 0xc);
+    if (r3) r3 = fn_80288B40(r3);
+    lbl_8055F6D8 = r3;
+    r3 = (int)fn_801284F8(8, lbl_80348A90 + 0x20);
+    if (r3) r3 = fn_80289BE8(r3);
+    lbl_8055F6E0 = (void *)r3;
+    r3 = (int)fn_801284F8(0xa8, lbl_80348A90 + 0x30);
+    if (r3) r3 = fn_802894B4(r3);
+    lbl_8055F6DC = r3;
+    r3 = (int)fn_801284F8(8, lbl_80348A90 + 0x44);
+    r0 = r3;
+    if (r3) r0 = fn_80289EA0(r3);
+    lbl_8055F6E4 = r0;
+    fn_80287B38(fn_80288A74);
+}
+
 void fn_802889F0(void) {
     fn_80289554(lbl_8055F6DC);
     fn_80289F54(lbl_8055F6E4);
