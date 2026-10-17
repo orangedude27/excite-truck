@@ -157,7 +157,7 @@ extern int lbl_8055F978;
 void fn_802AEAA8(void) { fn_802BDC3C(); }
 
 void fn_802AEAAC(void) {
-    int i, offset;
+    int offset, i;
     if (lbl_8055F970 == 0) {
         fn_802B59A4(0);
         fn_802B0288();
@@ -167,10 +167,9 @@ void fn_802AEAAC(void) {
     lbl_8055F974 = *(int *)(lbl_8055F970 + 4);
     lbl_8055F978 = *(int *)(lbl_8055F970 + 8);
     do {
-        fn_802BB674(*(int *)(lbl_8055F970 + offset + 0xC), i);
-        i++;
+        fn_802BB674(*(int *)((char *)lbl_8055F970 + offset + 0xC), i);
         offset += 8;
-    } while (i < 4);
+    } while (++i < 4);
     fn_802C10CC(*(int *)(lbl_8055F970 + 0x2C));
 }
 
@@ -214,6 +213,9 @@ void fn_802AFF80(void *arg0, short arg1) {
     if (index >= limit) return;
     *(short *)(*(short **)arg0 + index) = arg1;
     *(unsigned short *)((char *)arg0 + 4) = index + 1;
+}
+
+void fn_802B0114(void) {
 }
 
 extern int fn_801E8718(int);
