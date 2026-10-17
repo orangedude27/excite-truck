@@ -72,6 +72,32 @@ s32 fn_802C4F14(s32* arg0) {
     return 0;
 }
 
+void fn_802C4F2C(void *arg0, s32 *arg1, s32 *arg2) {
+    if (arg0 == 0) {
+        *arg2 = 0;
+        *arg1 = 0;
+    } else {
+        *arg1 = *(s32 *)((u8 *)arg0 + 8);
+        *arg2 = *(s32 *)((u8 *)arg0 + 0xC);
+    }
+}
+
+void fn_802C4F58(void *arg0, s32 arg1, const char *arg2, s32 arg3) {
+    s32 var_r28 = (s32)arg0;
+    const unsigned char *var_r30 = (const unsigned char *)arg2;
+    unsigned char temp_r0;
+    for (;;) {
+        temp_r0 = *var_r30++;
+        if ((s8)temp_r0 == 0)
+            break;
+        if ((s8)temp_r0 < 0x20 || temp_r0 > 0x7f)
+            fn_802C5024(var_r28, arg1, 0x23, arg3);
+        else
+            fn_802C5024(var_r28, arg1, (s32)(s8)temp_r0, arg3);
+        var_r28 += 8;
+    }
+}
+
 extern unsigned int strlen(const char *);
 unsigned int fn_802C4FF8(const char *s) { return strlen(s) * 8; }
 
