@@ -143,6 +143,10 @@ void fn_8018A088(void) {
 
 }
 
+void fn_8018A08C(void *arg0) {
+    *(float *)((unsigned char *)arg0 + 0x26d8) = lbl_8055E3C8;
+}
+
 void fn_8018A2BC(void) {
 
 }
@@ -229,14 +233,12 @@ void fn_8018AF00(void) {
 
 int fn_8018B06C(void *arg0) {
     int index = *(int *)((unsigned char *)arg0 + 0x1ec);
-    int base = lbl_8055E918;
-    return *(int *)(base + index * 0x9c + 0x14);
+    return ((int *)lbl_8055E918)[index * 0x9c / 4 + 5];
 }
 
 int fn_8018B084(void *arg0) {
     int index = *(int *)((unsigned char *)arg0 + 0x1ec);
-    int base = lbl_8055E918;
-    return *(int *)(base + index * 0x9c + 0x20);
+    return ((int *)lbl_8055E918)[index * 0x9c / 4 + 8];
 }
 
 void fn_8018B09C(void *arg0) {
