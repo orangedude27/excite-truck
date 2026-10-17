@@ -60,19 +60,27 @@ int fn_8022DA34(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_8022DA74(void *arg0, char *arg1) {
+    float low = *(float *)((char *)arg0 + 4);
+    float range = *(float *)((char *)arg0 + 8) - low;
+    sprintf(arg1, lbl_8055B958, *(int *)((char *)arg0 + 0x1C), lbl_805635D0 + (low + **(float **)((char *)arg0 + 0x18) * range));
+}
+
 float fn_8022DAB0(void *arg0) {
     float low = *(float *)((char *)arg0 + 0xC);
     return (**(float **)((char *)arg0 + 0x18) - low) / (*(float *)((char *)arg0 + 0x10) - low);
 }
 
 void fn_8022DAD0(void *arg0, float arg1) {
+    float high = *(float *)((char *)arg0 + 0x10);
     float low = *(float *)((char *)arg0 + 0xC);
     float step = *(float *)((char *)arg0 + 0x14);
-    **(float **)((char *)arg0 + 0x18) = step * (float)(int)(lbl_805635D4 + ((low + arg1 * (*(float *)((char *)arg0 + 0x10) - low)) / step));
+    **(float **)((char *)arg0 + 0x18) = step * (float)(int)(lbl_805635D4 + ((low + arg1 * (high - low)) / step));
 }
 
 void fn_8022DB34(void *arg0, char *arg1) {
-    sprintf(arg1, *(char **)((char *)arg0 + 0x10), **(int **)((char *)arg0 + 4), arg0);
+    int *value = *(int **)((char *)arg0 + 4);
+    sprintf(arg1, *(char **)((char *)arg0 + 0x10), *value, arg0);
 }
 
 void fn_8022DB50(void *arg0, int arg1, int arg2, int arg3, int arg4) {
@@ -183,10 +191,9 @@ void fn_8022DE1C(void *arg0) {
 
 int fn_8022DEC4(void *arg0) {
     extern float lbl_80558DC4;
-    extern float fabsf(float);
-    if (fabsf(*(float *)((char *)arg0 + 0xC) - **(float **)((char *)arg0 + 0x18)) <= lbl_80558DC4)
-        return 0;
-    return 1;
+    float diff = *(float *)((char *)arg0 + 0xC) - **(float **)((char *)arg0 + 0x18);
+    if (diff < 0.0f) diff = -diff;
+    return diff <= lbl_80558DC4 ? 0 : 1;
 }
 
 void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
@@ -195,19 +202,29 @@ void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
 }
 
 void fn_8022DF14(void *arg0) {
-    int *ptr = *(int **)((char *)arg0 + 4);
-    int limit = *(int *)((char *)arg0 + 0xC);
-    int value = *ptr + 1;
-    if (limit < value) value = limit;
-    if (value > *(int *)((char *)arg0 + 8)) *ptr = value;
+    int *temp_r6;
+    int temp_r5;
+    int var_r0;
+    int var_r3;
+    temp_r6 = *(int **)((char *)arg0 + 4);
+    temp_r5 = *(int *)((char *)arg0 + 0xC);
+    var_r0 = *temp_r6 + 1;
+    if (temp_r5 < var_r0) var_r0 = temp_r5;
+    var_r3 = *(int *)((char *)arg0 + 8);
+    if (var_r0 > var_r3) *temp_r6 = var_r0;
 }
 
 void fn_8022DF48(void *arg0) {
-    int *ptr = *(int **)((char *)arg0 + 4);
-    int limit = *(int *)((char *)arg0 + 0xC);
-    int value = *ptr - 1;
-    if (limit < value) value = limit;
-    if (value > *(int *)((char *)arg0 + 8)) *ptr = value;
+    int *temp_r6;
+    int temp_r5;
+    int var_r0;
+    int var_r3;
+    temp_r6 = *(int **)((char *)arg0 + 4);
+    temp_r5 = *(int *)((char *)arg0 + 0xC);
+    var_r0 = *temp_r6 - 1;
+    if (temp_r5 < var_r0) var_r0 = temp_r5;
+    var_r3 = *(int *)((char *)arg0 + 8);
+    if (var_r0 > var_r3) *temp_r6 = var_r0;
 }
 
 int fn_8022DF9C(void *arg0) {
