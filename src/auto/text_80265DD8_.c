@@ -206,6 +206,15 @@ void fn_8026A2CC(int *arg0, int arg1, float arg2) {
     *(float *)((char *)dst + 0x30) = arg2;
 }
 
+int fn_8026A344(int arg0) {
+    return *(int *)((char *)fn_80267EE4(arg0) + 0x20);
+}
+
+#pragma dont_inline on
+void *fn_80267EE4();
+int fn_8026A368(void) {
+    return *(int *)((char *)fn_80267EE4() + 0x10);
+}
 char fn_8026A38C(void) {
     return lbl_8055F488;
 }
@@ -214,6 +223,23 @@ extern void fn_80269BB0(void);
 void *fn_80267EE4(int);
 void fn_8026A49C(void) {
     fn_80269BB0();
+}
+
+void fn_8026A4A0(int arg0, void *arg1, float *arg2) {
+    char *base = (char *)fn_80267EE4(arg0);
+    *(int *)((char *)arg1 + 0x00) = *(int *)(base + 0x58);
+    *(int *)((char *)arg1 + 0x04) = *(int *)(base + 0x5c);
+    *(int *)((char *)arg1 + 0x08) = *(int *)(base + 0x60);
+    *(int *)((char *)arg1 + 0x0c) = *(int *)(base + 0x64);
+    *(int *)((char *)arg1 + 0x10) = *(int *)(base + 0x68);
+    *(int *)((char *)arg1 + 0x14) = *(int *)(base + 0x6c);
+    *(int *)((char *)arg1 + 0x18) = *(int *)(base + 0x70);
+    *(int *)((char *)arg1 + 0x1c) = *(int *)(base + 0x74);
+    *(int *)((char *)arg1 + 0x20) = *(int *)(base + 0x78);
+    *(int *)((char *)arg1 + 0x24) = *(int *)(base + 0x7c);
+    *(int *)((char *)arg1 + 0x28) = *(int *)(base + 0x80);
+    *(int *)((char *)arg1 + 0x2c) = *(int *)(base + 0x84);
+    *arg2 = *(float *)(base + 0xbc);
 }
 
 extern float lbl_8055F484;
