@@ -31,6 +31,22 @@ s32 fn_802EC4BC(void) {
     return fn_802E9A0C() == 1;
 }
 
+s32 fn_802EC4E8(s32 arg0) {
+    char sp10[0x40];
+    s32 sp8;
+    s32 temp_r30;
+    s32 temp_r31;
+    fn_801345D8(sp10, 0x40, lbl_8034E9E0, arg0);
+    sp8 = fn_802E36D8(sp10);
+    if (sp8 == -1) fn_802E317C(lbl_8034E9E0 + 0x10, sp10);
+    temp_r30 = fn_802E37C4(sp8);
+    fn_801282EC(0x20);
+    temp_r31 = fn_8012850C(temp_r30, lbl_8034E9E0 + 0x28);
+    fn_802E3804(sp8, temp_r31, temp_r30);
+    fn_802E3734(&sp8);
+    return temp_r31;
+}
+
 extern u32 lbl_80558860;
 extern char lbl_8034E9E0[];
 extern void *jumptable_8034EA80[];
