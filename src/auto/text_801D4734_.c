@@ -99,10 +99,12 @@ void fn_801D48F8(void) {
     fn_801D592C();
 }
 
-void fn_801D48FC(void) {
-    fn_801D5A14();
+void fn_801D5A14(s32 arg0);
+void fn_801D48FC(s32 arg0) {
+    fn_801D5A14(arg0);
 }
 
+void fn_801D5A14(s32 arg0);
 void fn_801D5A1C(s32 arg0);
 void fn_801D4900(s32 arg0) {
     fn_801D5A1C(arg0);
