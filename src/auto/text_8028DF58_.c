@@ -105,7 +105,7 @@ extern int fn_8028F858(int, int);
 #pragma small_data off
 void fn_8028E398(int arg0) {
     if (fn_8028EDA8(&lbl_804B35B4[0], arg0) != 0) {
-        fn_8028EDA8((unsigned int *)lbl_804B34B0, arg0);
+        fn_8028EDA8((unsigned int *)lbl_804B34B0_arr, arg0);
         fn_8028F858(arg0, 1);
     }
 }
