@@ -276,6 +276,12 @@ extern "C" s32 fn_800A6298(void *arg0, u16 *arg1) {
     return 0;
 }
 
+extern "C" void fn_800A76B4(void *, s32);
+extern "C" void fn_800A68C8(void *arg0) {
+    *(u32 *)arg0 &= 0xFFFFFFFB;
+    fn_800A76B4(arg0, 0);
+}
+
 extern "C" s32 fn_800A71C4(u32 *arg0) {
     return ((u32) *arg0 >> 2U) & 1;
 }
