@@ -1102,6 +1102,14 @@ void BTA_HhAddDev(const u8 *arg0, u16 arg1, u8 arg2, u8 arg3, const void *arg4) 
     }
 }
 
+extern u8 *lbl_80559030;
+extern u8 lbl_80315A64[];
+extern void fn_800716F0(void *);
+void fn_80076E70(void) {
+    *(u16 *)(lbl_803C0F78 + 0x4C6) = 0x7D00;
+    lbl_803C0F78[0x27BF] = 0xFF;
+}
+
 extern void l2c_link_hci_disc_comp(u16, u8);
 void btm_acl_device_down(void)
 {
