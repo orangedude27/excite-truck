@@ -434,25 +434,22 @@ void fn_8024BBF4(void *arg0) {
     s32 spC, sp8;
     void *obj;
     void *result;
-    void **vtable;
     char *src, *dst;
     s32 count;
-    int (*get_name)(void *, char *);
-    obj = *(void **)((char *)arg0 + 0x30);
-    if (obj != 0) {
-        vtable = *(void ***)((char *)obj + 0xC);
-        ((void (*)(void *, s32 *, s32 *))vtable[14])(obj, &sp8, &spC);
+    if ((obj = *(void **)((char *)arg0 + 0x30)) != 0) {
+        ((void (*)(void *, s32 *, s32 *))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x38))(obj, &sp8, &spC);
         result = fn_80012870(sp8, spC);
         *(s32 *)((char *)arg0 + 0x34) = *(s32 *)result;
         obj = *(void **)((char *)result + 0x20);
-        vtable = *(void ***)obj;
-        get_name = (int (*)(void *, char *))vtable[5];
-        src = (char *)get_name(obj, lbl_80343E60);
+        src = (char *)((char *(*)(void *, char *))*(void **)((char *)*(void **)obj + 0x14))(obj, lbl_80343E60);
         dst = (char *)arg0 + 0x38;
         count = 0x64;
         do {
             count--;
-            if (count <= 0) { dst[-1] = 0; break; }
+            if (count <= 0) {
+                dst[-1] = 0;
+                break;
+            }
             {
                 char c = *src++;
                 *dst++ = c;
@@ -464,4 +461,12 @@ void fn_8024BBF4(void *arg0) {
         *(char *)((char *)arg0 + 0x38) = 0;
     }
 }
-
+extern void *lbl_8055F28C;
+static inline int find_sound_entry(int id) {
+    int i;
+    int count = *(int *)((char *)lbl_8055F28C + 4);
+    for (i = 0; i < count; i++) {
+        if (*(int *)(*(char **)lbl_8055F28C + i * 0x18) == id) return i;
+    }
+    return -1;
+}
