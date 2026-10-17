@@ -49,6 +49,13 @@ extern s32 lbl_80438220[12];
 extern f32 lbl_8056296C;
 extern f32 lbl_8055E3C8;
 extern f32 lbl_80562970;
+extern f32 cos(f32);
+extern f32 sin(f32);
+extern void fn_801B7C8C(s32, s32, f32 *);
+extern void *fn_80178C9C(void);
+extern void fn_801B8054(s32, void *, f32, f32);
+extern void fn_80015A20(void *, f32 *);
+extern void fn_80015B20(s32, void *, s32);
 extern f32 lbl_80562978;
 extern f32 lbl_80562994;
 extern f32 lbl_80562974;
@@ -79,6 +86,38 @@ s32 fn_801C34CC(f32 arg0, f32 arg1) {
     f32 diff = arg0 - arg1;
     f64 abs = __fabs((f64)diff);
     return (f32)abs <= lbl_80558DC4[0];
+}
+
+s32 fn_801C3A00(u32 arg0) {
+    s32 i;
+    for (i = 0; i < lbl_8055E804; i++) {
+        if (arg0 == (1U << i))
+            return i;
+    }
+    return -1;
+}
+
+extern f32 cos(f32);
+extern f32 sin(f32);
+extern void fn_801B7C8C(s32, s32, f32 *);
+extern void *fn_80178C9C(void);
+extern void fn_801B8054(s32, void *, f32, f32);
+extern void fn_80015A20(void *, f32 *);
+extern void fn_80015B20(s32, void *, s32);
+void fn_801C3A3C(s32 arg0, f32 arg1, f32 arg2) {
+    void *p = fn_80178C9C();
+    void *r = *(void **)(*(char **)((char *)p + 0x2C) + 0x20);
+    while (r != 0 && *(u8 *)((char *)r + 0x34) != 0)
+        r = *(void **)((char *)r + 0x14);
+    fn_801B8054(arg0, p, lbl_80562970, (r != 0 ? *(f32 *)((char *)r + 0x1C) : lbl_80562970) + arg1);
+    {
+        f32 values[3];
+        values[0] = arg2;
+        values[1] = lbl_80562970;
+        values[2] = lbl_80562970;
+        fn_80015A20(&values[1], &values[0]);
+        fn_80015B20(arg0, &values[1], arg0);
+    }
 }
 
 s32 *__AXFXGetLfoSinTable_801769CC(void);
@@ -143,23 +182,20 @@ void fn_801C4AD0(void) {
 
 extern void fn_801C98F0(void);
 
+#pragma scheduling off
 void fn_801C4B10(void) {
     lbl_8055E804 = 0;
-    do {
-        lbl_8055E804 += 1;
-    } while ((s32)fn_8017960C(lbl_8055E804) != 0);
+    while ((s32)fn_8017960C(lbl_8055E804 += 1) != 0) {
+    }
     lbl_8055E7F8 = fn_8012850C(0xC300, lbl_80336D84);
     fn_801C3D88(lbl_80336D90);
 }
-
+#pragma scheduling on
 void fn_801C4B74(void) {
-    fn_801C98F0();
-    if (lbl_8055E7F8 != 0) {
-        fn_80128670();
-        lbl_8055E7F8 = 0;
+    if (fn_801C9830_dummy(), lbl_8055E7F8 != 0) {
     }
 }
-
+#pragma scheduling on
 char fn_801C5B60(void) {
     return lbl_8055E7E2;
 }
