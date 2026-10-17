@@ -14,13 +14,38 @@ void fn_802E1728(void *arg0) {
     }
 }
 
+unsigned int fn_802E176C(unsigned int arg0) {
+    return 1U << (32 - __cntlzw(arg0));
+}
+
+void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
+    int x;
+    int y;
+    int row;
+
+    x = 0;
+    y = 0;
+    for (row = 0; row < 4; row++) {
+        int i;
+        for (i = 0; i < (arg1 >> 3); i++) {
+            unsigned char *p = (unsigned char *)arg0 + (i + row * arg2) * 2;
+            p[0] = (unsigned char)(x - i + 0x80);
+            y++;
+            p[1] = (unsigned char)(y - row - 1 + 0x80);
+            if (y == 4) {
+                y = 0;
+                x++;
+            }
+        }
+    }
+}
+
 int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
 
-int fn_802E1A38(void *arg0, void *arg1) {
+void fn_802E1A38(void *arg0, int arg1) {
     int result;
     result = fn_802E1980(arg1, (char *)arg0 + 0x190, (char *)arg0 + 0x180, (char *)arg0 + 0x184, *(int *)((char *)arg0 + 0x104));
-    result += fn_802E1980((char *)arg1 + result, (char *)arg0 + 0x1B0, (char *)arg0 + 0x188, (char *)arg0 + 0x18c, *(int *)((char *)arg0 + 0x10c));
-    return result;
+    fn_802E1980(arg1 + result, (char *)arg0 + 0x1b0, (char *)arg0 + 0x188, (char *)arg0 + 0x18c, *(int *)((char *)arg0 + 0x10c));
 }
 
 void fn_802E29AC(void) {
