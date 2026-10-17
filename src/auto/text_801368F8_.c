@@ -33,17 +33,17 @@ void fn_80136EA4(void *arg0, s32 arg1) {
     s32 stride;
     s32 base;
     s32 index;
-    values[0] = *(s32 *)((char *)0x8032BEB4);
-    values[1] = *(s32 *)((char *)0x8032BEB4 + 4);
-    values[2] = *(s32 *)((char *)0x8032BEB4 + 8);
+    values[0] = *(s32 *)((char *)&lbl_8032BEB4 + 0);
+    values[1] = *(s32 *)((char *)&lbl_8032BEB4 + 4);
+    values[2] = *(s32 *)((char *)&lbl_8032BEB4 + 8);
     stride = *(s32 *)((char *)arg0 + 0xC);
     base = *(s32 *)((char *)arg0 + 0x10);
     index = *(s32 *)((char *)arg0 + 0);
-    fn_801376A8(base + arg1 * stride + index * 8 + 0x18, values, arg1, base, (s32 *)0x8032BEB4);
+    fn_801376A8(base + arg1 * stride + index * 8 + 0x18, values, arg1, base, &lbl_8032BEB4);
 }
 
 s32 fn_8013705C(f32 arg0, f32 arg1) {
-    return arg0 * arg1 >= *(f32 *)0x80561368;
+    return arg0 * arg1 >= lbl_80561368;
 }
 
 float fn_80137850(void *arg0) {
