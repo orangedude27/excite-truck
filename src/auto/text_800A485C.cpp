@@ -342,6 +342,83 @@ extern "C" s32 fn_800A9104(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
+extern "C" void fn_800B3A70(u8 *buf, u8 *short_name, u32 flags);
+extern "C" void fn_800B3BEC(u8 *buf, u8 flags);
+extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
+    u8 buf[13];
+    u32 sum;
+    u32 i;
+    u32 n;
+
+    fn_800B3A70(buf, &p_ent[0x20E], 0);
+    sum = 0;
+    i = 0;
+    n = 0xB;
+    while (n) {
+        n--;
+        sum = ((sum >> 1) + ((sum & 1) ? 0x80 : 0) + buf[i]) & 0xFF;
+        i++;
+    }
+    return (u8)sum;
+}
+
+extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
+    fn_800B3BEC(&p_ent[0x20E], p_buf[0xB]);
+    if ((s8)p_ent[0x20E] == 5) {
+        p_ent[0x20E] = (u8)-0x1B;
+    }
+}
+
+extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
+    u16 tmp;
+    u32 tmp32;
+
+    p_ent[0x21C] = p_buf[0xB];
+    p_ent[0x21B] = p_buf[0xC];
+    p_ent[0x21D] = p_buf[0xD];
+
+    tmp = *(u16 *)&p_buf[0xE];
+    *(u16 *)&p_ent[0x21E] = (u16)((tmp << 8) | (tmp >> 8));
+
+    tmp = *(u16 *)&p_buf[0x10];
+    *(u16 *)&p_ent[0x220] = (u16)((tmp << 8) | (tmp >> 8));
+
+    tmp = *(u16 *)&p_buf[0x12];
+    *(u16 *)&p_ent[0x222] = (u16)((tmp << 8) | (tmp >> 8));
+
+    tmp = *(u16 *)&p_buf[0x16];
+    *(u16 *)&p_ent[0x224] = (u16)((tmp << 8) | (tmp >> 8));
+
+    tmp = *(u16 *)&p_buf[0x18];
+    *(u16 *)&p_ent[0x226] = (u16)((tmp << 8) | (tmp >> 8));
+
+    tmp32 = *(u32 *)&p_buf[0x1C];
+    p_ent[0x228] = (u8)((tmp32 >> 24) & 0xFF);
+    p_ent[0x229] = (u8)((tmp32 >> 16) & 0xFF);
+    p_ent[0x22A] = (u8)((tmp32 >> 8) & 0xFF);
+    p_ent[0x22B] = (u8)(tmp32 & 0xFF);
+
+    tmp = *(u16 *)&p_buf[0x1A];
+    p_ent[0x234] = (u8)((tmp >> 8) & 0xFF);
+    p_ent[0x235] = (u8)(tmp & 0xFF);
+
+    tmp = *(u16 *)&p_buf[0x14];
+    p_ent[0x236] = (u8)((tmp >> 8) & 0xFF);
+    p_ent[0x237] = (u8)(tmp & 0xFF);
+}
+
+extern "C" void fn_800AABE0(void) {
+    s32 spC;
+    s32 sp8;
+    fn_800AA924(&spC, &sp8);
+}
+
+extern "C" void fn_800AAED8(void) {
+    s32 sp8;
+    s32 spC;
+    fn_800AAC08(&sp8);
+}
+
 extern "C" s32 fn_800AAEFC(s32 arg0, void *arg1) {
     ((s32 *)arg1)[0x8B] = arg0;
     ((s16 *)arg1)[0] = 0x5C;
@@ -509,6 +586,13 @@ extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
     (*(s32 *)((u8 *)arg0 + 4)) = arg1;
     (*(s32 *)((u8 *)arg0 + 0xC)) = arg2;
 }
+
+extern "C" void fn_800B36D4(s32 arg0);
+extern "C" void fn_800B783C(void *arg0);
+extern "C" s32 fn_800B77C0(void *arg0);
+extern "C" s32 fn_800B5E14(void *arg0);
+extern "C" s32 fn_800A98B8(void *arg0, s32 arg1, s32 arg2, void *arg3);
+extern "C" s32 fn_800A95B4(void *arg0);
 
 extern "C" void fn_800B36C4(s32 arg0, s32 arg1, s32 arg2) {
     fn_800B23F8(arg0, arg1, arg2, 0);
@@ -908,10 +992,12 @@ extern "C" s32 fn_800BA160(s32 arg0) {
 extern "C" u32 lbl_8031C2B8[];
 extern "C" u32 lbl_802F3F54[];
 extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    if (arg0 == 0 || arg1 == 0 || arg4 != 0) {
+    s32 val;
+    if (arg0 == 0 || arg1 == 0 || arg4 == 0) {
         return 1;
     }
-    return fn_800BA49C(arg3, arg1, arg2, *(s32 *)(lbl_80407300 + 4));
+    val = *(s32 *)(lbl_80407300 + 4);
+    return fn_800BA49C(arg3, arg1, arg2, val);
 }
 
 extern "C" s32 fn_800BA204(s32 arg0) {
