@@ -200,6 +200,13 @@ f32 fn_8018AE54(void) {
     return lbl_80561CAC;
 }
 
+char *fn_8018AE5C(void) {
+    if (lbl_8055E4F8 == 0) {
+        lbl_8055E4F8 = 1;
+    }
+    return lbl_80434990;
+}
+
 void fn_8018AF00(void) {
 
 }
