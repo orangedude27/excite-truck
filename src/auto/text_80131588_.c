@@ -38,7 +38,7 @@ void fn_80131818(void) {
     fn_8012C4D8();
 }
 
-extern void fn_802E30C8(const char*, ...);
+extern void fn_802E30C8();
 extern const char lbl_8032B510[];
 extern char lbl_8032B64C[], lbl_8032B574[], lbl_8042F530[];
 extern int lbl_80559B08, lbl_80559B0C;
