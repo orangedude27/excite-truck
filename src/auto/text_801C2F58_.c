@@ -38,7 +38,7 @@ extern s32 lbl_80437E24[];
 extern void *fn_801C3C80(void);
 extern void qsort(void *base, size_t count, size_t size, int (*compare)(const void *, const void *));
 extern s32 fn_801C3B7C(const void *, const void *);
-extern s32 fn_801C3524(s32);
+extern s32 fn_801C3524(char *);
 extern char *strcpy(char *, const char *);
 extern char lbl_80437FC0[304];
 extern char lbl_80336EC8[];
