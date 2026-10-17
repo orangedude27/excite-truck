@@ -8,6 +8,10 @@ extern void fn_802E870C(void);
 extern int fn_802E8744(void *);
 extern void fn_80127464(void);
 
+void fn_802E8838(void) {
+    fn_80127464();
+}
+
 void fn_802E8918(void) {
     fn_802E2E38(1);
 }
