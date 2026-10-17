@@ -15,7 +15,7 @@ extern unsigned char lbl_8055E32A;
 extern unsigned char lbl_8055E32B;
 #pragma push
 #pragma small_data off
-extern unsigned char lbl_8042FE38;
+__declspec(section ".data") extern unsigned char lbl_8042FE38;
 extern unsigned char lbl_8042FEB0;
 #pragma pop
 extern float lbl_8056189C;
@@ -128,10 +128,17 @@ extern double fabs(double);
 #pragma small_data off
 #pragma push
 #pragma small_data off
+extern float lbl_80558DC4;
+#pragma push
+#pragma inline off
+#pragma small_data off
+#pragma push
+#pragma small_data off
 #pragma pop
 void fn_801662FC(void) {
-    int flag = (unsigned char)lbl_8055E330++ == 255;
-    lbl_8055E329 = flag;
+    int flag;
+    lbl_8055E329 = flag = ((unsigned char)lbl_8055E330 == 255);
+    lbl_8055E330++;
     if (flag && lbl_8055E328) {
         if (!((float)__fabs(lbl_8055E31C - lbl_805618D0) <= lbl_80558DC4)) {
             fn_802E30C8(lbl_8032FEC0, lbl_8055E31C, lbl_8055E320, *(float *)((char *)&lbl_8042FE38 + 0x48), fn_80166274());
