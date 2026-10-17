@@ -323,6 +323,10 @@ s32 GXGetTexObjFmt(void *arg0) {
     return (*(s32 *)((char *)arg0 + 0xC) << 5) & 0x1FFFFFE0;
 }
 
+unsigned short GXGetTexObjWrapS(void *arg0) {
+    return (unsigned short)(((*(unsigned int *)((char *)arg0 + 8)) & 0x3FF) + 1);
+}
+
 unsigned short GXGetTexObjWrapT(void *arg0) {
     return (unsigned short)(((*(unsigned int *)((char *)arg0 + 8)) >> 10) & 0x3ff) + 1;
 }
