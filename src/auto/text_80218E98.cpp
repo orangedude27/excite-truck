@@ -2069,6 +2069,10 @@ extern "C" s32 fn_80229F60(void *arg0) {
     return result;
 }
 
+extern "C" void fn_8022A008(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x244) = 0;
+}
+
 extern "C" void fn_8022A014(void *arg0) {
     if ((*(u8 *)((u8 *)arg0 + 0x1A)) != 0) {
         (*(u8 *)((u8 *)arg0 + 0x234)) = 1;
