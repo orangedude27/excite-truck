@@ -402,6 +402,23 @@ f32 fn_8016FD58(void) {
     return lbl_8055E3C8;
 }
 
+void fn_8016FD60(void *arg0, void *arg1) {
+    s32 g;
+    s32 d, c, b, a;
+    f32 f, e;
+    volatile s32 *src = (volatile s32 *)arg1;
+    volatile f32 *fsrc = (volatile f32 *)((u8 *)arg1 + 0x10);
+    a = src[0]; b = src[1]; c = src[2]; d = src[3];
+    e = fsrc[0]; f = fsrc[1]; g = src[6];
+    *(s32 *)arg0 = a;
+    *((s32 *)arg0 + 1) = b;
+    *((s32 *)arg0 + 2) = c;
+    *((s32 *)arg0 + 3) = d;
+    *(f32 *)((u8 *)arg0 + 0x10) = e;
+    *(f32 *)((u8 *)arg0 + 0x14) = f;
+    *((s32 *)arg0 + 6) = g;
+}
+
 void fn_8016FD9C(f32 *arg0, void *arg1) {
     char sp8[0x20];
     f32 value = *arg0;
@@ -415,7 +432,7 @@ void fn_8016FD9C(f32 *arg0, void *arg1) {
 
 #pragma scheduling off
 void fn_8016FE1C(void *arg0) {
-    ((TObj4C *)arg0)->v4C(arg0);
+    ((void (**)(void *))(*(void **)arg0))[19](arg0);
 }
 #pragma scheduling on
 void fn_8016FF98(void *arg0) {
