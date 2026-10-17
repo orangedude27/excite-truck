@@ -196,6 +196,13 @@ void *fn_8024AFF8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+int fn_8024B214(char *arg0, char *arg1) {
+    unsigned char first = ((unsigned char *)arg0)[4];
+    if (first != 0 && ((unsigned char *)arg1)[4] == 0) return 1;
+    if (((unsigned char *)arg1)[4] != 0 && first == 0) return -1;
+    return stricmp(*(char **)arg0, *(char **)arg1);
+}
+
 void fn_8024B544(void *arg0, char *arg1) {
     s32 offset;
     s32 index;
@@ -380,15 +387,29 @@ s32 fn_8024B9EC(void *arg0) {
     return *(s32 *)(*(char **)((char *)arg0 + 0x10) + *(s32 *)((char *)arg0 + 0x11C) * 8);
 }
 
-void fn_8024BAA0(void *arg0) {
-    s32 index = *(s32 *)((char *)arg0 + 0x11C);
+void fn_8024BA00(void *arg0) {
     s32 count = *(s32 *)((char *)arg0 + 0x14);
-    s32 next = (index + 1) % count;
+    s32 index = *(s32 *)((char *)arg0 + 0x11C);
     s32 *items = *(s32 **)((char *)arg0 + 0x10);
+    s32 next = (count + index - 1) % count;
     void *object = *(void **)((char *)arg0 + 0x124);
     *(s32 *)((char *)arg0 + 0x11C) = next;
-    ((void (*)(void *, s32, s32, s32, s32))(*(void ***)((char *)object + 0xC))[12])(object, *(s32 *)((char *)arg0 + 0x120), items[next * 2 + 1], count, index + 1);
-    fn_801345D8((char *)arg0 + 0x128, 0x20, &lbl_80343E70, items[next * 2 + 1], &lbl_8055BFF8);
+    ((void (*)(void *, s32, s32, s32, s32))(*(void ***)((char *)object + 0xC))[12])(object, *(s32 *)((char *)arg0 + 0x120), *(s32 *)((char *)items + next * 8 + 4), count - 1, count);
+    fn_801345D8((char *)arg0 + 0x128, 0x20, &lbl_80343E70, *(s32 *)((char *)items + next * 8 + 4), &lbl_8055BFF8);
+}
+
+void fn_8024BAA0(void *arg0) {
+    s32 index, count, next;
+    s32 *items;
+    void *object;
+    index = *(s32 *)((char *)arg0 + 0x11C);
+    count = *(s32 *)((char *)arg0 + 0x14);
+    next = (index + 1) % count;
+    items = *(s32 **)((char *)arg0 + 0x10);
+    *(s32 *)((char *)arg0 + 0x11C) = next;
+    object = *(void **)((char *)arg0 + 0x124);
+    ((void (*)(void *, s32, s32, s32, s32))(*(void ***)((char *)object + 0xC))[12])(object, *(s32 *)((char *)arg0 + 0x120), *(s32 *)((char *)items + next * 8 + 4), count, index + 1);
+    fn_801345D8((char *)arg0 + 0x128, 0x20, &lbl_80343E70, *(s32 *)((char *)items + next * 8 + 4), &lbl_8055BFF8);
 }
 
 void fn_8024BB3C(void *arg0) {
