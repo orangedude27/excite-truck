@@ -1893,6 +1893,14 @@ s32 fn_8007FEFC(u16 handle) {
     return 0;
 }
 
+s32 fn_8008128C(void *arg0) {
+    void *dev = btm_find_dev(arg0);
+    if (dev != NULL) {
+        return (s32)dev + 0x10;
+    }
+    return 0;
+}
+
 void fn_8008251C(void) {
     btm_init();
     l2c_init();
@@ -1938,6 +1946,26 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     p_buf[15] = response_cnt;
     btu_hcif_send_cmd(p_buf);
     return TRUE;
+}
+
+void fn_80085384(u8 *arg0, u8 arg1) {
+    *(u16 *)(arg0 + 2) = 4; *(u16 *)(arg0 + 4) = 0;
+    arg0[8] = 0x1A; arg0[9] = 0xC; arg0[10] = 1; arg0[11] = arg1;
+    btu_hcif_send_cmd(0xC, 0x1A, 0, 4);
+}
+
+void fn_800853B4(u8 *arg0, u16 arg1, u16 arg2) {
+    *(u16 *)(arg0 + 2) = 7; *(u16 *)(arg0 + 4) = 0;
+    arg0[8] = 0x1C; arg0[9] = 0xC; arg0[10] = 4;
+    arg0[11] = arg1; arg0[12] = arg1 >> 8; arg0[13] = arg2; arg0[14] = arg2 >> 8;
+    btu_hcif_send_cmd(arg1 >> 8, 4, 0xC, 0x1C, 0);
+}
+
+void fn_800853F8(u8 *arg0, u16 arg1, u16 arg2) {
+    *(u16 *)(arg0 + 2) = 7; *(u16 *)(arg0 + 4) = 0;
+    arg0[8] = 0x1E; arg0[9] = 0xC; arg0[10] = 4;
+    arg0[11] = arg1; arg0[12] = arg1 >> 8; arg0[13] = arg2; arg0[14] = arg2 >> 8;
+    btu_hcif_send_cmd(arg1 >> 8, 4, 0xC, 0x1E, 0);
 }
 
 s32 btsnd_hcic_reset_800857CC(void) {
