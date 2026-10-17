@@ -244,6 +244,12 @@ void fn_802B0144(void) {
     fn_802AEB3C();
 }
 
+void fn_802B0288(void *arg0) {
+    if ((void *)lbl_8055F970 != arg0)
+        fn_802B4E44(*(int *)((char *)arg0 + 8));
+    lbl_8055F970 = (int)arg0;
+}
+
 extern void fn_802C10C8(void);
 void fn_802B05D8(void) { fn_802C10C8(); }
 
