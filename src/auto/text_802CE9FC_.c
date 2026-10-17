@@ -47,6 +47,7 @@ void fn_802D050C(void* hi) {
 
 extern unsigned char lbl_8055FD78;
 extern int GXSetCullMode(int);
+extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
 extern int lbl_8055D0BC;
 extern int lbl_8055D0C0;
 extern unsigned char lbl_8055FD18;
@@ -275,6 +276,11 @@ void *fn_802D39A4(float value) {
 void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
 
 void fn_802D3BB0(void) {}
+
+extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
+void fn_802D3D94(int arg0, void *arg1) {
+    GXLoadTexMtxImm(arg1, (arg0 * 4 - arg0) + 0x1E, 1);
+}
 
 extern unsigned long lbl_8055D0B8;
 extern unsigned char lbl_804C5710[4];
