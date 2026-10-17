@@ -2287,26 +2287,39 @@ void fn_800937A0(void *p, u16 a1, u16 a2, u16 a3) {
 
 void RFCOMM_ControlReq(void *mcb, u8 dlci, void *ctrl) {
     void *port = port_find_mcb_dlci_port(mcb, dlci);
-    if (*(u8 *)((u8 *)port + 2) == 2) {
-        if (*(u8 *)((u8 *)port + 0x68) != 4)
-            return;
-        *(u8 *)((u8 *)port + 0x64) |= 1;
-        *(u8 *)((u8 *)port + 0x69) |= 8;
-        rfc_send_msc(mcb, dlci, 1, ctrl);
-        rfc_port_timer_start(port, 0x3c);
-    }
+    if (*(u8 *)((u8 *)port + 2) != 2)
+        goto done;
+    if (*(u8 *)((u8 *)port + 0x68) == 4)
+        goto valid;
+    goto done;
+valid:
+    *(u8 *)((u8 *)port + 0x64) |= 1;
+    *(u8 *)((u8 *)port + 0x69) |= 8;
+    rfc_send_msc(mcb, dlci, 1, ctrl);
+    rfc_port_timer_start(port, 0x3c);
+done:
+    return;
 }
 
 void RFCOMM_FlowReq(void *mcb, u8 dlci, u8 state) {
-    u8 *port = port_find_mcb_dlci_port(mcb, dlci);
-    if (port[2] == 2) {
-        if (port[0x68] != 4)
-            return;
-        port[0x5e] = state == 0;
-        port[0x69] |= 8;
-        rfc_send_msc(mcb, dlci, 1, port + 0x5a);
-        rfc_port_timer_start(port, 0x3c);
-    }
+    void *port = port_find_mcb_dlci_port(mcb, dlci);
+    if (*(u8 *)((u8 *)port + 2) != 2)
+        goto done;
+    if (*(u8 *)((u8 *)port + 0x68) == 4)
+        goto valid;
+    goto done;
+valid:
+    *(u8 *)((u8 *)port + 0x5e) = state == 0;
+    *(u8 *)((u8 *)port + 0x69) |= 8;
+    rfc_send_msc(mcb, dlci, 1, (u8 *)port + 0x5a);
+    rfc_port_timer_start(port, 0x3c);
+done:
+    return;
+}
+
+u8 fn_80096670(u8 value) {
+    if (value != 0xFF) lbl_803C4C40[0x4630] = value;
+    return lbl_803C4C40[0x4630];
 }
 
 tCONN_CB *sdpu_allocate_ccb(void) {
