@@ -18,3 +18,5 @@ void fn_802DB2B0(void) {
 
 void fn_802DB2B4(void) {}
 
+void fn_802DB2B8(void) {}
+
