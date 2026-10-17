@@ -566,6 +566,15 @@ void GXInitTexCacheRegion(void *obj, signed char arg1, unsigned int arg2, int ar
     *(unsigned int *)((char *)obj + 4) = value;
 }
 
+void GXInvalidateTexAll(void) {
+    __GXFlushTextureState();
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0x66001000;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0x66001100;
+    __GXFlushTextureState();
+}
+
 void *GXSetTexRegionCallback(void *callback) {
     void *old = (void *)*((unsigned int *)((char *)__GXData + 0x518));
     *((unsigned int *)((char *)__GXData + 0x518)) = (unsigned int)callback;
@@ -576,6 +585,31 @@ void *GXSetTlutRegionCallback(void *callback) {
     void *old = (void *)*((unsigned int *)((char *)__GXData + 0x51C));
     *((unsigned int *)((char *)__GXData + 0x51C)) = (unsigned int)callback;
     return old;
+}
+
+void __SetSURegs(s32 arg0, s32 arg1) {
+    unsigned int *data = __GXData;
+    unsigned int *tex = data + arg0;
+    unsigned int *su = data + arg1;
+    unsigned int value;
+    unsigned int su1;
+    unsigned int su2;
+    unsigned int mode;
+    value = tex[0x564 / 4];
+    su1 = (su[0x108 / 4] & 0xFFFF0000) | (value & 0x3FF);
+    su[0x108 / 4] = su1;
+    su2 = (su[0x128 / 4] & 0xFFFF0000) | ((value >> 10) & 0x3FF);
+    su[0x128 / 4] = su2;
+    mode = tex[0x584 / 4];
+    su1 = (su1 & 0xFFFEFFFF) | ((__cntlzw((mode & 3) - 1) << 11) & 0x10000);
+    su[0x108 / 4] = su1;
+    su2 = (su2 & 0xFFFEFFFF) | ((__cntlzw(((mode >> 2) & 3) - 1) << 11) & 0x10000);
+    su[0x128 / 4] = su2;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = su[0x108 / 4];
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = su[0x128 / 4];
+    *((unsigned short *)((char *)data + 2)) = 0;
 }
 
 extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
