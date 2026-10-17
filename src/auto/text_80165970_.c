@@ -142,7 +142,7 @@ unsigned char fn_80167634(int arg0) { void *base; if (!((int (*)(void))fn_801667
 
 extern float lbl_8055E324;
 extern float fn_801660C0(void);
-extern void fn_802E30C8(char *, ...);
+
 extern char lbl_8032FF8C[];
 extern char lbl_8032FFC4[];
 void fn_80167684(float arg0) {
