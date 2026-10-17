@@ -82,22 +82,4 @@ typedef struct { char data[0x20]; } GXTexObj;
 extern void GXInitTexObj(GXTexObj *, void *, unsigned short, unsigned short, int, int, int, int);
 extern void GXInitTexObjLOD(GXTexObj *, int, int, int, int, int, float, float, float);
 extern float lbl_805650F0;
-extern char lbl_8034CEE4[];
-extern int lbl_804DB790[];
-extern int lbl_804DB7D0[];
-extern int lbl_8055FF00;
-typedef unsigned long long u64;
-extern u64 fn_802E2C9C(void);
-extern u64 OSGetTime(void);
-struct OSTimeCalendar {
-    int sec;
-    int min;
-    int hour;
-    int mday;
-    int month;
-    int year;
-    int wday;
-    int yday;
-    int msec;
-};
-extern void OSTicksToCalendarTime(u64, struct OSTimeCalendar *);
+
