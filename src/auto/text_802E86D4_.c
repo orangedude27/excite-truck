@@ -55,6 +55,7 @@ extern int fn_802E88D8(void);
 void fn_802E8C2C(void) { for (;;) { if(((int(*)(int))fn_802E888C)(4)!=0) { ((void(*)(void))fn_802E8918)(); return; } if(fn_802E88D8()!=0) return; } }
 
 extern void *lbl_80560024;
+extern void fn_802E30C8(const char *, ...);
 void fn_802E8D7C(void* hi) {
     lbl_80560024 = hi;
 }
