@@ -11,7 +11,7 @@ extern s32 lbl_8055FF20;
 extern s32 fn_802E321C(const char *);
 extern s32 fn_802E3270(s32);
 extern s32 fn_802E32C4();
-__declspec(section ".data") extern s32 lbl_8055FF18;
+extern s32 lbl_8055FF18;
 extern s32 lbl_8055FF1C;
 
 extern char lbl_8034CFB4[];
