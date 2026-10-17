@@ -35,3 +35,13 @@ void fn_80297998(void) {
     lbl_8055F7A4 = 0;
 }
 
+extern void *lbl_8055F7A8;
+extern int lbl_8055F7AC;
+extern void *lbl_804B4F10;
+extern const char lbl_803493F8[];
+extern void fn_80128670(void *);
+extern void fn_802C6CF8(void *);
+extern void *fn_8012850C(int, const char *);
+extern void *fn_8002F37C(void (*)(void), int, int, int);
+void fn_80297A80(void) {}
+
