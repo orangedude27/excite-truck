@@ -1042,6 +1042,10 @@ extern "C" void fn_80220B3C(void *arg0) {
     }
 }
 
+extern "C" void fn_80221538(void *arg0) {
+    *(u8 *)((u8 *)arg0 + 0x250) = 0;
+}
+
 extern "C" void fn_80221E7C(void *arg0) {
     void *temp = *(void **)((u8 *)arg0 + 0x14);
     if (temp != 0 && *(u8 *)((u8 *)temp + 0x1A) != 0)
