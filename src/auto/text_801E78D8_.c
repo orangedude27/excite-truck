@@ -384,6 +384,33 @@ void fn_801E8D48(void) {
     fn_801E87D4(0);
 }
 
+void fn_801E8DD4(void) {
+    long spC;
+    long sp8;
+    memset(&sp8, 0, 8);
+    sp8 = 0x50616E6C;
+    spC = 8;
+    if (((int (*)(int, void *))fn_801284F8)(0x7C, &lbl_80339CB4) != 0) fn_801EAD6C(&sp8);
+    ((void (*)(void))fn_801E87D4)();
+}
+
+void fn_801E8E38(void) {
+    float sp1C;
+    float sp18;
+    float sp14;
+    float sp10;
+    long spC;
+    long sp8;
+    sp8 = 0x4D555450;
+    spC = 0x18;
+    sp10 = lbl_80562DB0;
+    sp1C = lbl_80562DA8;
+    sp18 = lbl_80562DA8;
+    sp14 = lbl_80562DA8;
+    if (((int (*)(int, void *, void *, float, float, float, float, float, float))fn_801284F8)(0x7C, &lbl_80339CB4, &sp8, sp10, sp1C, sp18, sp14, sp14, sp14) != 0) fn_801EAD6C(&sp8);
+    ((void (*)(void))fn_801E87D4)();
+}
+
 void *fn_801E8EA4(long arg0) {
     unsigned char *entry = lbl_80339CC0;
     do {
@@ -408,6 +435,50 @@ void fn_801E9564(long arg0) {
     for (i = 0; i < 0x40; i++) fn_801E8E38();
 }
 
+#pragma paired_single off
+#pragma paired_single off
+void fn_801E95DC(void) {
+    extern double fn_8002EFB4(double, double);
+    extern float fn_80203FE0(void);
+    extern void fn_802C7D54(long, float *, long, float, float, float);
+    extern void *lbl_80488648[];
+    extern double lbl_80562E10;
+    extern float lbl_80562E18;
+    float matrix[12];
+    float y, x;
+    float time;
+    long flags;
+    unsigned long index;
+    char *entry;
+    long mode;
+    if (lbl_8055AF10 != -1) {
+        matrix[1] = lbl_80562DBC;
+        matrix[0] = lbl_80562DD4;
+        matrix[2] = lbl_80562DBC;
+        matrix[3] = lbl_80562DBC;
+        matrix[4] = lbl_80562DD4;
+        matrix[5] = lbl_80562DBC;
+        matrix[6] = lbl_80562DBC;
+        matrix[7] = lbl_80562DBC;
+        matrix[8] = lbl_80562DD4;
+        matrix[9] = lbl_80562DBC;
+        matrix[10] = lbl_80562DBC;
+        matrix[11] = lbl_80562DBC;
+        time = ((float (*)(float))fn_801E7E18)(lbl_80562DD4);
+        x = lbl_80562DD4 - (float)fn_8002EFB4(time, lbl_80562E10);
+        y = lbl_80562DBC;
+        index = fn_801E866C((long)lbl_8055AF0C);
+        if (index < 8) entry = lbl_80488648[index];
+        else entry = 0;
+        matrix[10] = *(float *)(entry + 0x2c);
+        y = (float)y - matrix[10] / fn_80203FE0();
+        flags = *(long *)((char *)fn_801E87A8() + 0x10);
+        mode = 2;
+        if (flags & 2) mode = 1;
+        fn_802C7D54(lbl_8055AF10, matrix, mode, x, y, lbl_80562E18);
+    }
+}
+#pragma paired_single reset
 void fn_801E9BE4(void) {
     long value = lbl_8055AF10;
     if (value != -1) fn_802C6CF8(value);
