@@ -81,4 +81,3 @@ extern s32 lbl_8055CC58;
 extern s32 lbl_804BD740;
 extern s32 lbl_804BD790;
 extern f32 lbl_80564978;
-extern f32 fn_801EA0E8(f32, f32);
