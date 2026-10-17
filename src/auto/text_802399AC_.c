@@ -134,11 +134,14 @@ extern s32 fn_80128670(s32);
 extern s32 lbl_80341108;
 extern s32 fn_802328D4(s32);
 #pragma small_data off
+__declspec(section ".data") extern s32 lbl_8034109C;
 void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(s32 **)((char *)arg0 + 0xC) = (s32 *)&lbl_8034109C;
+        *(s32 **)((char *)arg0 + 0xC) = &lbl_8034109C;
         fn_80128670(*(s32 *)((char *)arg0 + 0x10));
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
@@ -168,18 +171,27 @@ void *fn_8023AA2C(void *arg0, s32 arg1, ...) {
     s32 *values;
     s32 offset = 0;
     s32 value;
+
     *(unsigned char *)arg0 = 0;
     *(s32 *)((char *)arg0 + 4) = -1;
     *(unsigned char *)((char *)arg0 + 8) = 0;
     *(s32 *)((char *)arg0 + 0xC) = (s32)&lbl_803410D8;
     *(s32 *)((char *)arg0 + 0x14) = 0;
     va_start(ap, arg1);
-    do { (*(s32 *)((char *)arg0 + 0x14))++; value = va_arg(ap, s32); } while (value != 0);
+    do {
+        (*(s32 *)((char *)arg0 + 0x14))++;
+        value = va_arg(ap, s32);
+    } while (value != 0);
     va_end(ap);
     *(s32 **)((char *)arg0 + 0x10) = (s32 *)fn_8012850C(*(s32 *)((char *)arg0 + 0x14) * 4, &lbl_803412A4);
+
     va_start(ap, arg1);
     values = *(s32 **)((char *)arg0 + 0x10);
-    do { value = va_arg(ap, s32); *(s32 *)((char *)values + offset) = value; offset += 4; } while (value != 0);
+    do {
+        value = va_arg(ap, s32);
+        *(s32 *)((char *)values + offset) = value;
+        offset += 4;
+    } while (value != 0);
     va_end(ap);
     *(s32 *)((char *)arg0 + 0x18) = arg1;
     return arg0;
@@ -323,7 +335,7 @@ extern s32 lbl_80341268[];
 #pragma pop
 extern float lbl_80563730;
 extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
-#pragma scheduling off
+#pragma scheduling on
 void fn_8023B0BC(void *arg0) {
     s32 sp8;
     s32 temp_r28;
@@ -331,14 +343,18 @@ void fn_8023B0BC(void *arg0) {
     s32 temp_r30;
     s32 temp_r31;
     s32 temp_r3;
-
-    temp_r31 = *(s32 *)((char *)arg0 + 0x10);
-    temp_r30 = *(s32 *)((char *)arg0 + 0xC);
-    temp_r29 = *(s32 *)((char *)arg0 + 8);
-    temp_r28 = *(s32 *)((char *)arg0 + 4);
+    float f;
+    s32 temp_r10;
+    void *p = arg0;
+    temp_r28 = *(s32 *)((char *)p + 0x10);
+    temp_r29 = *(s32 *)((char *)p + 0xC);
+    temp_r30 = *(s32 *)((char *)p + 8);
+    temp_r31 = *(s32 *)((char *)p + 4);
     temp_r3 = fn_80131234(&lbl_80341268[0]);
+    temp_r10 = *(s32 *)((char *)p + 0x18);
+    f = lbl_80563730;
     sp8 = 0;
-    fn_8022BAD0(0xC9, temp_r28, temp_r29, 0, temp_r30, temp_r31, temp_r3, *(s32 *)((char *)arg0 + 0x18), sp8, lbl_80563730);
+    fn_8022BAD0(0xC9, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, temp_r10, sp8, f);
 }
 s32 fn_8023B138(void *arg0) {
     void *object = lbl_8055F10C;
