@@ -95,6 +95,78 @@ void fn_802CFFA4(unsigned short arg0) {
     lbl_8055FD86 = arg0;
 }
 
+void fn_802D0014(float a, float b, float c) {
+    extern unsigned char lbl_804C97B0[];
+    extern float lbl_80558DC4;
+    float d = c < 0.0f ? -c : c;
+    ((float *)lbl_804C97B0)[2] = b;
+    if (d > lbl_80558DC4) {
+        lbl_804C97B0[0] = 1;
+        ((float *)lbl_804C97B0)[3] = a + ((b - a) / c);
+    } else {
+        ((float *)lbl_804C97B0)[3] = b;
+        lbl_804C97B0[0] = 0;
+    }
+    ((float *)lbl_804C97B0)[4] = c;
+    lbl_804C97B0[0x1C] = 1;
+}
+
+void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
+    extern char lbl_804C97D0;
+    unsigned char *p = (unsigned char *)&lbl_804C97D0;
+    p[4] = a; p[5] = b; p[6] = c; p[7] = 0xFF; p[0x5C] = 1;
+}
+
+void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
+    extern char lbl_804C97D0;
+    unsigned char *p = (unsigned char *)&lbl_804C97D0;
+    p[0] = a; p[1] = b; p[2] = c; p[3] = 0; p[0x5C] = 1;
+}
+
+void fn_802D01B0(float *p, float v) {
+    extern char lbl_804C97D0;
+    float *out = (float *)((unsigned char *)&lbl_804C97D0 + 0xC);
+    out[0] = p[0]; out[1] = p[1]; out[2] = p[2]; out[3] = v;
+    *((unsigned char *)&lbl_804C97D0 + 0x5C) = 1;
+}
+
+void fn_802D02F8(signed char arg1) {
+    extern unsigned char lbl_804C9778[];
+    extern unsigned char fn_802CEA1C(void);
+    unsigned int value;
+    unsigned char high, mid;
+    lbl_804C9778[0x2d] = arg1;
+    lbl_804C9778[0x2c] = 1;
+    value = fn_802CEA1C();
+    lbl_804C9778[0x31] = value;
+    high = (unsigned char)(value >> 24);
+    lbl_804C9778[0x2e] = high;
+    mid = (unsigned char)(value >> 16);
+    lbl_804C9778[0x2f] = mid;
+    high = (unsigned char)(value >> 8);
+    lbl_804C9778[0x30] = high;
+    *(unsigned char *)((unsigned char *)&value + 3) = (unsigned char)value;
+    *(unsigned char *)((unsigned char *)&value + 2) = high;
+}
+
+void fn_802D0368(float arg0, float arg1, float arg2, float arg3) {
+    extern float lbl_80564F94;
+    extern unsigned char lbl_804C9778[];
+    extern unsigned char lbl_804C97B0[];
+    extern double fn_8002EF30(void *, float);
+    float result;
+    *(float *)(lbl_804C9778 + 4) = arg0;
+    lbl_804C9778[0] = 1;
+    *(float *)(lbl_804C9778 + 8) = arg1;
+    *(float *)(lbl_804C9778 + 0xc) = arg2;
+    *(float *)(lbl_804C9778 + 0x14) = arg3;
+    result = (float)fn_8002EF30(lbl_804C9778, arg2 * lbl_80564F94);
+    *(float *)(lbl_804C97B0 + 0x14) = arg0;
+    *(float *)(lbl_804C9778 + 0x10) = result;
+    *(float *)(lbl_804C97B0 + 0x18) = arg1;
+    lbl_804C97B0[0x1c] = 1;
+}
+
 extern void *lbl_8055FD54;
 extern void* fn_802D30F0(void);
 extern void fn_802D307C(void);
@@ -141,6 +213,59 @@ void fn_802D0910(void) {
 }
 
 void fn_802D09E4(void) {
+}
+
+void fn_802D0BD8(void) {
+    extern void *lbl_8055FD64;
+    extern float lbl_80564F88;
+    extern float lbl_80564F8C;
+    extern double lbl_80564FA0;
+    extern void VIGetNextField(void);
+    extern void GXSetViewportJitter(unsigned short, float, float, float, float, float, float);
+    extern void GXSetViewport(unsigned short, float, float, float, float, float, float);
+    extern void GXInvalidateVtxCache(void);
+    extern void GXInvalidateTexAll(void);
+    unsigned char *p;
+    unsigned short x;
+    p = (unsigned char *)lbl_8055FD64;
+    if (p[0x18]) {
+        VIGetNextField();
+        x = *(unsigned short *)(p + 4);
+        GXSetViewportJitter(x, lbl_80564F88, lbl_80564F88, (float)x, (float)*(unsigned short *)(p + 6), lbl_80564F88, lbl_80564F8C);
+    } else {
+        x = *(unsigned short *)(p + 4);
+        GXSetViewport(x, lbl_80564F88, lbl_80564F88, (float)x, (float)*(unsigned short *)(p + 6), lbl_80564F88, lbl_80564F8C);
+    }
+    GXInvalidateVtxCache();
+    GXInvalidateTexAll();
+}
+
+int fn_802D0DD4(void *dst, void *src) {
+    float a,b,c,d,e,f,g,h,i,j,k,l;
+    a = *(float *)((unsigned char *)src + 8);
+    b = *(float *)((unsigned char *)src + 0x14);
+    c = *(float *)((unsigned char *)src + 0x20);
+    d = *(float *)((unsigned char *)src + 0x2c);
+    e = *(float *)((unsigned char *)src + 0);
+    f = *(float *)((unsigned char *)src + 4);
+    g = *(float *)((unsigned char *)src + 0xc);
+    h = *(float *)((unsigned char *)src + 0x10);
+    i = *(float *)((unsigned char *)src + 0x18);
+    j = *(float *)((unsigned char *)src + 0x1c);
+    k = *(float *)((unsigned char *)src + 0x24);
+    l = *(float *)((unsigned char *)src + 0x28);
+    *(float *)((unsigned char *)dst + 0) = e;
+    *(float *)((unsigned char *)dst + 0x10) = f;
+    *(float *)((unsigned char *)dst + 0x20) = -a;
+    *(float *)((unsigned char *)dst + 4) = g;
+    *(float *)((unsigned char *)dst + 0x14) = h;
+    *(float *)((unsigned char *)dst + 0x24) = -b;
+    *(float *)((unsigned char *)dst + 8) = i;
+    *(float *)((unsigned char *)dst + 0x18) = j;
+    *(float *)((unsigned char *)dst + 0x28) = -c;
+    *(float *)((unsigned char *)dst + 0xc) = k;
+    *(float *)((unsigned char *)dst + 0x1c) = l;
+    *(float *)((unsigned char *)dst + 0x2c) = -d;
 }
 
 extern float lbl_80564F94;
