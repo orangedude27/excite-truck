@@ -8,6 +8,7 @@ extern char lbl_80340280[];
 extern char lbl_80340290[];
 extern void *fn_801284F8(u32, void *);
 typedef void (*VFunc)(s32);
+struct Vtbl8022E { void *pad; VFunc dtor; };
 extern void *fn_8012A13C(void *, void *, u32, u32);
 extern void *fn_8012A2D8(void **);
 extern void fn_8012A364(void **, void *);
@@ -67,6 +68,7 @@ void fn_8022EAB8(void) {
     }
 }
 
+#pragma dont_inline on
 void fn_8022EB30(void *arg0) {
     fn_8012A364(lbl_8055F000, arg0);
     if (--lbl_8055EFFC == 0) {
@@ -76,7 +78,7 @@ void fn_8022EB30(void *arg0) {
         lbl_8055F000 = 0;
     }
 }
-
+#pragma dont_inline off
 void fn_8022EB90(void) {
     s32 *p;
     if (lbl_8055F004) fn_802E317C(lbl_803402A0);
@@ -144,6 +146,10 @@ s32 fn_8022EDC4(void) {
     s32 *p = (s32 *)((s32 *)lbl_8055F004)[1];
     if (p) return *p;
     return 0;
+}
+
+void fn_8022EE98(void *arg0) {
+    fn_8022EB30(arg0);
 }
 
 extern f32 lbl_805635E0;
