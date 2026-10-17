@@ -132,17 +132,115 @@ void fn_80218198(void *arg0, void **arg1) {
     }
 }
 
+int fn_802182F0(void *arg0, void *arg1) {
+    int i;
+    for (i = 0; i < *(int *)((char *)arg0 + 0x430); i++) {
+        if (*(void **)((char *)arg0 + 0x30 + i * 4) == arg1) return i;
+    }
+    return -1;
+}
+
+int fn_8021832C(void *arg0) {
+    void *obj;
+    void **vtable;
+    obj = *(void **)((char *)arg0 + 0x44C);
+    if (obj != 0) {
+        vtable = *(void ***)obj;
+        return ((int (*)(void *))vtable[24])(obj);
+    }
+    obj = *(void **)((char *)arg0 + 0x448);
+    if (obj != 0) {
+        vtable = *(void ***)obj;
+        return ((int (*)(void *))vtable[24])(obj);
+    }
+    return 0;
+}
+
+void fn_80218464(void *arg0) {
+    int i = 0;
+    char *base = (char *)arg0;
+    char *cursor = base;
+    while (i < *(int *)(base + 0x430)) {
+        void *obj = *(void **)(cursor + 0x30);
+        void **vtable = *(void ***)obj;
+        ((void (*)(void *))vtable[32])(obj);
+        cursor += 4;
+        i++;
+    }
+}
+
 extern float lbl_80563490;
 void fn_802184D0(void *arg0) {
-    int i;
+    int i = 0;
     char *base = (char *)arg0;
+    char *cursor = base;
     float threshold = lbl_80563490;
-    for (i = 0; i < *(int *)(base + 0x430); i++) {
-        void *obj = *(void **)(base + 0x30 + i * 4);
-        if (*(unsigned char *)((char *)obj + 0x1A) != 0 ||
-            *(float *)((char *)obj + 0x20) >= threshold) {
+    while (i < *(int *)(base + 0x430)) {
+        int call = 0;
+        void *obj = *(void **)(cursor + 0x30);
+        if (*(unsigned char *)((char *)obj + 0x1A) == 0) {
+            if (*(float *)((char *)obj + 0x20) >= threshold) call = 1;
+        } else {
+            call = 1;
+        }
+        if (call != 0) {
             void **vtable = *(void ***)obj;
             ((void (*)(void *))vtable[11])(obj);
+        }
+        cursor += 4;
+        i++;
+    }
+}
+
+#pragma dont_inline on
+int fn_8021885C(void *arg0, int arg1) {
+    return (*(int *)((char *)arg0 + 0x464) & fn_80216D14(arg1)) == 0;
+}
+void fn_80218A34(void *arg0, int arg1) {
+    char *base = (char *)arg0;
+    int mask = fn_80216D14(arg1);
+    int i;
+    if (*(int *)(base + 0x468) & mask) {
+        mask = fn_80216D14(arg1);
+        *(int *)(base + 0x468) &= ~mask;
+        for (i = 0; i < *(int *)(base + 0x430); i++) {
+            void *obj = *(void **)(base + 0x30 + i * 4);
+            if ((*(int *)(base + 0x468) & *(int *)((char *)obj + 0x238)) == 0) {
+                *(unsigned char *)((char *)obj + 0x1B) = 1;
+                if (*(unsigned char *)((char *)obj + 0x1A) != 0)
+                    *(unsigned char *)((char *)obj + 0x234) = 1;
+            }
+        }
+    }
+}
+
+void fn_80218ADC(void *arg0, int arg1) {
+    char *base = (char *)arg0;
+    int mask = fn_80216D14(arg1);
+    int i;
+    if ((*(int *)(base + 0x468) & mask) == 0) {
+        mask = fn_80216D14(arg1);
+        *(int *)(base + 0x468) |= mask;
+        for (i = 0; i < *(int *)(base + 0x430); i++) {
+            void *obj = *(void **)(base + 0x30 + i * 4);
+            if (*(int *)(base + 0x468) & *(int *)((char *)obj + 0x238)) {
+                *(unsigned char *)((char *)obj + 0x1B) = 0;
+                if (*(unsigned char *)((char *)obj + 0x1A) != 0)
+                    *(unsigned char *)((char *)obj + 0x234) = 1;
+            }
+        }
+    }
+}
+
+void fn_80218B88(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    char *base = (char *)arg0;
+    int mask = fn_80216D14(arg1);
+    int i;
+    for (i = 0; i < *(int *)(base + 0x430); i++) {
+        void *obj = *(void **)(base + 0x30 + i * 4);
+        if (mask & *(int *)((char *)obj + 0x238)) {
+            void **vtable = *(void ***)obj;
+            ((void (*)(void *, int, int))vtable[8])(obj, arg2, arg3);
         }
     }
 }
