@@ -65,6 +65,11 @@ extern "C" f32 lbl_805610BC;
     extern "C" void* __dt__10TitleSceneFv(void*, s32);
     extern "C" void __register_global_object(void*, void*, void*, void*);
     extern "C" void OSSendMessage(void*, void*, u32);
+extern "C" void fn_800FA6E8(void);
+extern "C" void fn_800FA7E0(void*);
+extern "C" void OSInitMessageQueue(void*, void*, s32);
+extern "C" void RegisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNodePFv_v(void*, void*, void (*)(void));
+extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3snd6detail9AxManager16CallbackListNode(void*, void*);
     extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
     extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void);
 
