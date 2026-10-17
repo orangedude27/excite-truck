@@ -165,10 +165,10 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
 }
 
 void fn_801785A4(void **arg0) {
-    long index = lbl_8055E438;
+    int index = lbl_8055E438;
     lbl_8055E434[index] = arg0;
     lbl_8055E438 = index + 1;
-    if (((int (*)(void *))(*(long *)*(void **)arg0 + 0x40))(*arg0) != 0) {
+    if (((int (*)(void *))(*(int **)*(void **)arg0 + 0x40))(*arg0) != 0) {
         fn_801B5318(arg0);
     }
 }
@@ -186,11 +186,10 @@ int fn_80178604(void *arg0) {
 }
 
 long fn_8017873C(long *arg0, long arg1, long arg2, long arg3, long arg4) {
-    long offset = *arg0;
-    if ((unsigned long)(arg3 + offset + 1) < 0x1000) {
-        *(unsigned char *)((char *)arg0 + offset + 4) = arg1;
-        memcpy((char *)arg0 + offset + 5, (void *)arg2, arg3);
-        *arg0 = offset + arg3 + 1;
+    if ((unsigned long)(arg3 + *arg0 + 1) < 0x1000) {
+        *(unsigned char *)((char *)arg0 + *arg0 + 4) = arg1;
+        memcpy((char *)arg0 + *arg0 + 5, (void *)arg2, arg3);
+        *arg0 = arg3 + *arg0 + 1;
     }
     return 0;
 }
@@ -289,9 +288,9 @@ void* fn_80179300(void) {
     return lbl_8055E458;
 }
 
-extern void *lbl_8055E448;
+extern int lbl_8055E448;
 void* fn_80179318(void) {
-    return lbl_8055E448;
+    return (void *)lbl_8055E448;
 }
 
 void fn_801CEFE8(void);
@@ -346,6 +345,10 @@ void fn_801796BC(unsigned char arg0) {
 extern char lbl_8055E45F;
 char fn_801796C4(void) {
     return lbl_8055E45F;
+}
+
+long fn_801796CC(long arg0, long arg1, long arg2) {
+    fn_8017873C(&lbl_80430870, arg0, arg1, arg2, arg0);
 }
 
 void DBPrintf_80179758(const char *fmt, ...) {
