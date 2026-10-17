@@ -4,7 +4,7 @@
 extern int lbl_804DB780[];
 extern char lbl_8034CD48[];
 extern char lbl_8034CD30[];
-extern void fn_802E317C(const char *);
+extern void fn_802E317C(const char *, ...);
 extern void fn_802E30C8(const char *, int, int);
 extern char lbl_8034CEE4[];
 extern int lbl_804DB790[];
