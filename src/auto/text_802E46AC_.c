@@ -12,13 +12,14 @@ extern u16 lbl_804FC418[];
 extern void fn_802E47E8(void);
 void fn_802E46AC(void) {}
 
+#pragma dont_inline on
+#pragma dont_inline off
 void fn_802E46B0(void) {
     lbl_8055FF5C = 0;
     fn_802E47E8();
     lbl_8055D1C0 = (void *)-1;
     fn_802E46AC();
 }
-
 void fn_802E46E4(void) {
     lbl_8055D1C0 = (void*)-1;
 }
@@ -39,5 +40,31 @@ s32 fn_802E47F8(void) {
     return 0;
 }
 
+#pragma dont_inline on
+#pragma dont_inline off
+s32 fn_802E499C(u16 *str) {
+    s32 len;
+    u16 *p;
+    u16 *q;
+    u16 a;
+    u16 b;
+    len = 0;
+    p = str;
+    while (*p != 0) { len++; p++; }
+    q = lbl_804FC418 + (0x20 - len);
+    while (len > 0) {
+        a = *str;
+        b = *q;
+        if (a != b && a != 0xFFFF) return 0;
+        str++;
+        q++;
+        len--;
+    }
+    return 1;
+}
+
 s32 fn_802E4A10(void) { return (lbl_8055FF5A >> 12) & 0xF; }
+
+extern u8 lbl_804FC458[];
+u8 fn_802E4A1C(s32 arg0) { return lbl_804FC458[arg0]; }
 
