@@ -16,9 +16,11 @@ float fn_801A6390(int arg0, int arg1) {
     return lbl_8056241C * (float)delta;
 }
 
+#pragma dont_inline on
 float fn_801A63C4(int arg0, int arg1) {
     return (lbl_80562428 * fn_801A6390(arg0, arg1)) / lbl_8056241C;
 }
+#pragma dont_inline off
 
 void fn_801A63F4(void *arg0, void *arg1, void *arg2, void *arg3) {
     float *out = (float *)arg0;
@@ -77,5 +79,28 @@ void fn_801A6558(void *arg0) {
     memset(*(void **)((char *)arg0 + 0x2700), 0, 0xE7);
     if (*(unsigned char *)((char *)arg0 + 0x2740))
         fn_801A67B0(arg0);
+}
+
+float fn_801A70EC(int arg0, void* arg1, void* arg2, int arg3) {
+    float den = fn_801A63C4(*(int*)((char*)arg2+4), *(int*)((char*)arg1+4));
+    float ratio = fn_801A63C4(arg3, *(int*)((char*)arg1+4)) / den;
+    fn_8012F57C(arg0, (char*)arg1+0x2a, (char*)arg2+0x2a, ratio);
+    return ratio;
+}
+
+void fn_801A7530(void* arg0, void* arg1) {
+    if (*(int*)((char*)arg0 + 0x2610) == 0 || *(unsigned char*)((char*)arg0 + 0x2741) != 0) {
+        float zero = lbl_8056242C;
+        *(float*)((char*)arg1 + 4) = zero;
+        *(float*)((char*)arg1 + 8) = zero;
+        *(float*)((char*)arg1 + 0xc) = zero;
+        *(float*)((char*)arg1 + 0) = zero;
+    } else {
+        float* value = fn_80265D98();
+        *(float*)((char*)arg1 + 0) = value[0];
+        *(int*)((char*)arg1 + 4) = *(int*)((char*)value + 4);
+        *(int*)((char*)arg1 + 8) = *(int*)((char*)value + 8);
+        *(int*)((char*)arg1 + 0xc) = *(int*)((char*)value + 0xc);
+    }
 }
 
