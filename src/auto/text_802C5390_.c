@@ -309,6 +309,12 @@ s32 fn_802C7830(char *arg0, s32 arg1, signed char c) {
     return value;
 }
 
+extern int lbl_804C13B4[];
+extern void fn_802C7A00(void);
+void fn_802C7A00(void) {
+    lbl_804C13B4[0] = 0;
+}
+
 void fn_802C7A10(void* alarm) {
     fn_8012C58C(fn_802C53A8(alarm));
 }
