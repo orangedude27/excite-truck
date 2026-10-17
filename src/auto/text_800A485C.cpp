@@ -268,6 +268,12 @@ extern "C" s32 fn_800A71E0(void *arg0) {
     return temp_r3 & ((s32) (-temp_r3 | temp_r3) >> 0x1F);
 }
 
+extern "C" void fn_800A8BB8(void *arg0, s32 arg1) {
+    if (arg1 != 0) {
+        *(s32 *)((u8 *)arg0 + 0x1640) = arg1;
+    }
+}
+
 extern "C" void VFiPFCACHE_FreeFATPage(void *arg0, void *arg1) {
     u8 *page = (u8 *)arg1;
     void *head = *(void **)((u8 *)arg0 + 0x1630);
