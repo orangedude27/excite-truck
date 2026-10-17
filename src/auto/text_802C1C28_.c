@@ -4,6 +4,7 @@
 extern void *lbl_8055FB50;
 extern int lbl_8034AFB8;
 extern int lbl_8034AFC8;
+extern int lbl_8034AFD8;
 extern int lbl_8055FB54;
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
