@@ -22,6 +22,8 @@ void fn_802C1F80(int arg0) {}
 #pragma dont_inline on
 void fn_802C1F84(int arg0) {}
 
+void fn_802C1F88(int arg0) {}
+
 #pragma dont_inline off
 
 void fn_802C2054(int arg0) { fn_802C1F80(arg0 - 4); }
