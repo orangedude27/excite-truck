@@ -213,6 +213,37 @@ void GXGetPointSize(s32 arg0) {
     __peReg[1] = value;
 }
 
+void GXInitLightAttnA(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 type;
+    s32 clz3;
+    s32 clz2;
+    unsigned short value;
+
+    type = 0;
+    if (arg0 == 1) {
+        type = 1;
+    } else if (arg0 == 3) {
+        type = 1;
+    }
+    clz3 = __cntlzw(arg0 - 3);
+    clz2 = __cntlzw(arg0 - 2);
+    value = __peReg[1];
+    value = (value & ~1) | type;
+    value = (value & ~0x800) | ((clz3 << 6) & 0x800);
+    value = (value & ~2) | ((clz2 >> 4) & 2);
+    value = (value & ~0xF000) | ((arg3 << 12) & 0xF000);
+    value = (value & ~0x700) | ((arg1 << 8) & 0x700);
+    value = (value & ~0xE0) | ((arg2 << 5) & 0xE0);
+    value = (value & ~0xFF000000) | 0x41000000;
+    __peReg[1] = value;
+}
+
+void GXInitLightAttnK(s32 arg0) {
+    unsigned short value = __peReg[1];
+    value = (value & 0xFFF7) | ((arg0 & 1) << 3);
+    __peReg[1] = value;
+}
+
 void GXInitLightSpot(s32 arg0, s32 arg1) {
     unsigned int reg = 0;
 
@@ -321,6 +352,42 @@ void __GXPEInit(void) {
     __OSUnmaskInterrupts(0x1000);
 
     __peReg[5] |= 0xF;
+}
+
+void GXSetCopyClear(unsigned char *color, s32 depth) {
+    unsigned int value;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    value = color[0] | (color[3] << 8) | 0x4F000000;
+    *(volatile unsigned int *)0xCC008000 = value;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    value = color[2] | (color[1] << 8) | 0x50000000;
+    *(volatile unsigned int *)0xCC008000 = value;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    value = (depth & 0xFFFFFF) | 0x51000000;
+    *(volatile unsigned int *)0xCC008000 = value;
+    *(unsigned short *)((char *)__GXData + 2) = 0;
+}
+
+void GXSetDispCopyGamma(s32 arg0) {
+    __GXData[0x23C/4] = (__GXData[0x23C/4] & ~0x180) | ((arg0 << 7) & 0x180);
+}
+
+void GXClearBoundingBox(void) {
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0x550003FF;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0x560003FF;
+    *(unsigned short *)((char *)__GXData + 2) = 0;
+}
+
+void GXInitLightAttn(void *arg0, float farg0, float farg1, float farg2, float farg3, float farg4, float farg5) {
+    float *p = (float *)((char *)arg0 + 0x10);
+    p[0] = farg0;
+    p[1] = farg1;
+    p[2] = farg2;
+    p[3] = farg3;
+    p[4] = farg4;
+    p[5] = farg5;
 }
 
 void GXInitLightPos(void *arg0, float farg0, float farg1, float farg2) {
@@ -496,7 +563,53 @@ void GXSetTevDirect(int arg0) {
 
 void __GXUpdateBPMask(void) {}
 
+void GXSetClipMode(s32 arg0) {
+    register volatile unsigned char *fifo = (volatile unsigned char *)0xCC008000;
+    *fifo = 0x10;
+    *(volatile unsigned int *)fifo = 0x1005;
+    *(volatile unsigned int *)fifo = arg0;
+    *(unsigned short *)((char *)__GXData + 2) = 1;
+}
+
+void __GXSetMatrixIndex(s32 arg0) {
+    unsigned int *data = __GXData;
+
+    if (arg0 < 5) {
+        *(volatile unsigned char *)0xCC008000 = 8;
+        *(volatile unsigned char *)0xCC008000 = 0x30;
+        *(volatile unsigned int *)0xCC008000 = data[0x80 / 4];
+        *(volatile unsigned char *)0xCC008000 = 0x10;
+        *(volatile unsigned int *)0xCC008000 = 0x1018;
+        *(volatile unsigned int *)0xCC008000 = data[0x80 / 4];
+    } else {
+        *(volatile unsigned char *)0xCC008000 = 8;
+        *(volatile unsigned char *)0xCC008000 = 0x40;
+        *(volatile unsigned int *)0xCC008000 = data[0x84 / 4];
+        *(volatile unsigned char *)0xCC008000 = 0x10;
+        *(volatile unsigned int *)0xCC008000 = 0x1019;
+        *(volatile unsigned int *)0xCC008000 = data[0x84 / 4];
+    }
+    *(unsigned short *)((char *)data + 2) = 1;
+}
+
 void GXClearGPMetric(void) {
     __cpReg[2] = 4;
+}
+
+void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
+    volatile unsigned short *cp;
+    unsigned int first, second, low;
+    cp=__cpReg; first=cp[0x42/2]; second=first;
+    do { low=cp[0x40/2]; second=cp[0x42/2]; } while (second != first);
+    *arg2=(second<<16)|low;
+    cp=__cpReg; first=cp[0x46/2]; second=first;
+    do { low=cp[0x44/2]; second=cp[0x46/2]; } while (second != first);
+    *arg3=(second<<16)|low;
+    cp=__cpReg; first=cp[0x4A/2]; second=first;
+    do { low=cp[0x48/2]; second=cp[0x4A/2]; } while (second != first);
+    *arg0=(second<<16)|low;
+    cp=__cpReg; first=cp[0x4E/2]; second=first;
+    do { low=cp[0x4C/2]; second=cp[0x4E/2]; } while (second != first);
+    *arg1=(second<<16)|low;
 }
 
