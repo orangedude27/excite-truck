@@ -11,3 +11,6 @@ int fn_802E7774(int (*arg0)(void)) {
     return 0;
 }
 
+void fn_802E77A8(void) {
+}
+
