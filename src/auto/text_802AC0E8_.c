@@ -50,53 +50,56 @@ extern float lbl_80564ACC;
 extern float lbl_8055E3C8;
 extern int lbl_8055CD70;
 extern char lbl_80349FA4[];
+extern float lbl_8055E3C8;
+extern int lbl_8055CD70;
+extern char lbl_80349FB0[];
+extern void fn_802E30C8(const char *, ...);
 extern void *fn_801284F8(int, void *, void *);
 extern void *fn_8012850C(int, void *);
 extern int fn_802AC4A8(const char *, int);
 void fn_802AD308(void) {}
 
 void fn_802AD414(void *arg0, float farg0) {
-    int outer = 0;
-    int offset = 0;
-    while (outer < *(int *)((char *)arg0 + 0x24)) {
-        int inner = 0;
-        int byteOffset = 0;
-        char *group = *(char **)((char *)arg0 + 0x28) + offset;
-        int count = *(int *)(group + 4) - 1;
-        if (count > 0) {
-            do {
-                char *entries = *(char **)(group + 8);
-                float a = *(float *)(entries + byteOffset);
-                char *entry = entries + byteOffset;
-                float b = *(float *)(entries + (inner + 1) * 0x38);
-                if (farg0 >= a && farg0 <= lbl_80564ACC + b) {
-                    int idx = *(int *)group;
-                    char *records = *(char **)((char *)arg0 + 0x20);
-                    char *record = records + idx * 0x28;
-                    int *p = *(int **)(record + 4);
-                    if (p) *p = *(int *)(entry + 0x34);
-                    break;
-                }
-                byteOffset += 0x38;
-                inner++;
-            } while (--count != 0);
-        }
-        offset += 0xC;
-        outer++;
+ int outer, offset, inner, byteOffset, count, idx; char *group,*entries,*entry,*records,*record; int *p; float a,b;
+ outer=0; offset=0;
+ while (outer < *(int *)((char *)arg0+0x24)) {
+  inner=0; byteOffset=0; group=*(char **)((char *)arg0+0x28)+offset;
+  count=*(int *)(group+4)-1;
+  if (count>0) {
+   entries=*(char **)(group+8);
+   do {
+    a=*(float *)(entries+byteOffset); entry=entries+byteOffset;
+    b=*(float *)(entries+(inner+1)*0x38);
+    if (farg0>=a && farg0<=lbl_80564ACC+b) {
+     idx=*(int *)group; records=*(char **)((char *)arg0+0x20); record=records+idx*0x28;
+     p=*(int **)(record+4); if(p) *p=*(int *)(entry+0x34);
+     break;
     }
+    byteOffset+=0x38; inner++;
+   } while(--count);
+  }
+  offset+=0xC; outer++;
+ }
 }
 
-void *fn_802ADDD8(void *arg0, int arg1) {
-    int *obj = (int *)fn_801284F8(0x10, &lbl_80349FA4, &lbl_80349FA4);
-    if (obj) {
-        int data = (int)fn_8012850C(arg1 * 0x74, &lbl_8055CD70);
-        obj[0] = data;
-        obj[2] = arg1;
-        obj[1] = 0;
-        obj[3] = data;
-    }
-    *(int **)arg0 = obj;
-    *(float *)((char *)arg0 + 4) = lbl_8055E3C8;
-    return arg0;
+void *fn_802ADDD8(void *arg0,int arg1) {
+ int *obj; int data;
+ obj=(int *)fn_801284F8(0x10,&lbl_80349FA4,&lbl_80349FA4);
+ if(obj){data=(int)fn_8012850C(arg1*0x74,&lbl_8055CD70);obj[0]=data;obj[2]=arg1;obj[1]=0;obj[3]=data;}
+ *(int **)arg0=obj; *(float *)((char *)arg0+4)=lbl_8055E3C8; return arg0;
+}
+
+int fn_802ADF34(void **arg0,char *arg1,int arg2) {
+ int result,index,count; char *header,*entry,*dst; char c;
+ result=fn_802AC4A8(arg1,arg2);
+ if(result!=0){
+  header=(char *)*arg0; index=*(int *)(header+4); entry=*(char **)header+index*0x74;
+  *(int *)(header+4)=index+1; dst=entry; count=0x64;
+  while(count>0){c=*arg1++;*dst++=c;if((signed char)c==0)break;count--;}
+  if(count==0)dst[-1]=0;
+  *(int *)(entry+0x64)=result;entry[0x68]=0;entry[0x69]=0;
+  return *(int *)(header+4)-1;
+ }
+ return -1;
 }
 
