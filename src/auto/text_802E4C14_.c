@@ -33,6 +33,9 @@ void *fn_802E4CA4(int arg0) {
     return fn_802E4C1C(arg0);
 }
 
+void fn_802E4CDC(void) {
+}
+
 extern void fn_80128668(void *);
 extern void fn_80128670(int);
 void *fn_802E4CE0(void *arg0, int arg1) {
