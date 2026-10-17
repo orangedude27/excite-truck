@@ -15,6 +15,7 @@ void fn_802DBDE8(int, int);
 #pragma pop
 
 extern char lbl_8055D07D;
+extern float lbl_80564F30;
 char fn_802CA7D4(void) { return 1; }
 
 char fn_802CA7DC(const char *arg0) { return (signed char)*arg0 == 0x2A; }
