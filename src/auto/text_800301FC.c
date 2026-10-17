@@ -60,6 +60,8 @@ void TRKConstructEvent(void) {
     lbl_8055D6A8 = 0;
 }
 
+void TRKInitializeEventQueue(void) { }
+
 void TRKMessageSend(void) {
     OSRegisterVersion(lbl_80558DD8);
     TRKAppendBuffer_ui32();
@@ -106,35 +108,21 @@ void TRKReadBuffer1_ui64(void) {
 }
 
 void TRKAppendBuffer_ui32(void) {
-    u32 *a;
-    u32 *b;
-    s32 i;
-
+    u32 *a = lbl_8035BF20;
+    u32 *b = (u32 *)lbl_8035BEA0;
+    s32 i = 2;
     lbl_8055D6E8 = 0;
-    a = lbl_8035BF20;
-    b = (u32 *)lbl_8035BEA0;
-    i = 2;
     do {
-        a[0] = 0; b[0] = 0;
-        a[1] = 0; b[1] = 0;
-        a[2] = 0; b[2] = 0;
-        a[3] = 0; b[3] = 0;
-        a[4] = 0; b[4] = 0;
-        a[5] = 0; b[5] = 0;
-        a[6] = 0; b[6] = 0;
-        a[7] = 0; b[7] = 0;
-        a[8] = 0; b[8] = 0;
-        a[9] = 0; b[9] = 0;
-        a[10] = 0; b[10] = 0;
-        a[11] = 0; b[11] = 0;
-        a[12] = 0; b[12] = 0;
-        a[13] = 0; b[13] = 0;
-        a[14] = 0; b[14] = 0;
-        a[15] = 0;
-        a += 16;
-        b[15] = 0;
-        b += 16;
-    } while (--i != 0);
+        a[0] = 0; b[0] = 0; a[1] = 0; b[1] = 0;
+        a[2] = 0; b[2] = 0; a[3] = 0; b[3] = 0;
+        a[4] = 0; b[4] = 0; a[5] = 0; b[5] = 0;
+        a[6] = 0; b[6] = 0; a[7] = 0; b[7] = 0;
+        a[8] = 0; b[8] = 0; a[9] = 0; b[9] = 0;
+        a[10] = 0; b[10] = 0; a[11] = 0; b[11] = 0;
+        a[12] = 0; b[12] = 0; a[13] = 0; b[13] = 0;
+        a[14] = 0; a[15] = 0; b[14] = 0; b[15] = 0;
+        a += 16; b += 16;
+    } while (--i);
 }
 
 void TRKReadBuffer(void *arg0) {
@@ -150,7 +138,7 @@ void TRKAppendBuffer(void *arg0) {
 }
 
 void TRKReleaseBuffer(void *arg0) {
-    s32 index = *(s32 *)((u8 *)arg0 + 0xC) * 4;
+    s32 index = *(s32 *)((u8 *)arg0 + 0xC);
     u32 *head = (u32 *)lbl_8035BEA0;
     u32 *tail = lbl_8035BF20;
     u32 first = head[index];
@@ -179,6 +167,44 @@ void TRKReleaseBuffer(void *arg0) {
         *(void **)prev = next;
         *(void **)((u8 *)next + 4) = prev;
     }
+}
+
+extern void fn_80033148(void *);
+void TRKGetFreeBuffer(void *arg0) {
+    s32 level = OSDisableInterrupts();
+    TRKReleaseBuffer(arg0);
+    if (*(u16 *)((u8 *)arg0 + 0x148) == 1) {
+        *(volatile u32 *)((u8 *)arg0 + 0x20) = 1;
+        fn_80033148(arg0);
+        {
+            void *head = (void *)lbl_8035BEA0[0];
+            *(void **)arg0 = head;
+            lbl_8035BEA0[0] = (s32)arg0;
+        }
+        *(volatile u32 *)((u8 *)arg0 + 0xC) = 0;
+    }
+    OSRestoreInterrupts(level);
+}
+
+void TRKProcessInput(void *arg0, s32 arg1) {
+    s32 irq;
+    s32 index;
+    void *node;
+    irq = OSDisableInterrupts();
+    TRKReleaseBuffer(arg0);
+    index = arg1 * 4;
+    node = *(void **)((u8 *)&lbl_8035BEA0 + index);
+    *(void **)arg0 = node;
+    *(void **)((u8 *)arg0 + 4) = 0;
+    if (node != 0) {
+        *(void **)((u8 *)*(void **)((u8 *)&lbl_8035BEA0 + index) + 4) = arg0;
+        *(void **)((u8 *)&lbl_8035BEA0 + index) = arg0;
+    } else {
+        *(void **)((u8 *)&lbl_8035BEA0 + index) = arg0;
+        *(void **)((u8 *)&lbl_8035BF20 + index) = arg0;
+    }
+    *(s32 *)((u8 *)arg0 + 0xC) = arg1;
+    OSRestoreInterrupts(irq);
 }
 
 void usr_puts_serial(void) {
@@ -304,6 +330,16 @@ void AXGetAuxCCallback(void **arg0, void **arg1) {
 
 void* fn_80031248(void) {
     return lbl_8055D73C;
+}
+
+void *gdev_cc_initialize(void) {
+    s32 old;
+    s32 next;
+    old = lbl_8055D748;
+    next = (old + 1) & 1;
+    lbl_8055D748 = next;
+    lbl_8055D744 = (u8 *)&lbl_8035E820 + next * 0x300;
+    return (u8 *)&lbl_8035E820 + old * 0x300;
 }
 
 void CircleBufferWriteBytes(void) {
@@ -435,6 +471,23 @@ s32 AXRmtGetSamplesLeft(void) {
         return result + lbl_8055D758;
     }
     return result;
+}
+
+void AXRmtAdvancePtr(s32 arg0) {
+    s32 end;
+    s32 next;
+    end = lbl_8055D754 - 0x24;
+    if (end < 0)
+        end += lbl_8055D758;
+    end -= lbl_8055D750;
+    if (end < 0)
+        end += lbl_8055D758;
+    if (arg0 > end)
+        arg0 = end;
+    next = lbl_8055D750 + arg0;
+    lbl_8055D750 = next;
+    if (next >= lbl_8055D758)
+        lbl_8055D750 = next - lbl_8055D758;
 }
 
 extern u8 lbl_80363BE0[];
