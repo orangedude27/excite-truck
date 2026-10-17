@@ -162,7 +162,6 @@ void fn_802D3100(void) {
     fn_802D30F0();
 }
 
-extern void fn_802D30F0(void);
 extern void fn_802D307C(void);
 void* fn_802D3104(void) {
     struct { char pad[0x24]; char m; } *p;
@@ -251,16 +250,20 @@ void fn_802D3900(void) {
 extern char lbl_8034C1E4[];
 extern float lbl_80564F88;
 void *fn_802D39A4(float value) {
-    unsigned char *p = lbl_804C9984;
+    unsigned char *p;
     int i;
-    unsigned char *found = 0;
-    for (i = 0; i < 0x40; i++) {
+    unsigned char *found;
+    p = lbl_804C9984;
+    i = 0;
+    found = 0;
+    do {
         if (p[0xC] == 0) {
             found = lbl_804C9984 + i * 0x18;
             break;
         }
         p += 0x18;
-    }
+        i++;
+    } while (i < 0x40);
     if (found == 0) fn_802E317C(lbl_8034C1E4);
     found[0xC] = 1;
     found[0xD] = 0;
