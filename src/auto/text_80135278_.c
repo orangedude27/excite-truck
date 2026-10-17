@@ -4,6 +4,7 @@
 typedef signed long s32;
 typedef unsigned char u8;
 
+void fn_8013605C(void *);
 void fn_80135F64(int, s32, s32, s32, s32);
 extern float lbl_8055E3C8;
 extern float lbl_8056133C;
