@@ -3194,13 +3194,12 @@ void Port_TimeOutCloseMux(void *arg0) {
     extern char lbl_80319478[];
     extern void fn_8007093C(u32, void *);
     extern void port_rfc_closed(void *, s32);
-    s32 i;
     u8 *entry;
+    s32 i;
 
     if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319478);
-    for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4) {
+    for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4)
         if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed(entry, 0x12);
-    }
 }
 
 void *port_find_dlci_port(unsigned int arg0) {
