@@ -136,7 +136,7 @@ void* fn_801FE188(void* arg0) {
     return arg0;
 }
 
-int fn_802C7040(int);
+extern "C" void fn_802C7040(int);
 float fn_80129DC4(int, void *, float, float);
 int fn_801FE88C(void *, void *);
 extern const char lbl_8033B638[];
