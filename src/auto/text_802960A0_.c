@@ -10,7 +10,7 @@ int fn_802969B4(unsigned int arg0, unsigned int arg1, float farg0) {
 }
 
 void fn_80296AAC(void *arg0) {
-    memset(arg0, 0, 0x30);
+    memset(0, 0, 0x30);
     *(float *)((char *)arg0 + 0x10) = lbl_80564560;
     *(float *)((char *)arg0 + 8) = lbl_80564560;
     *(float *)((char *)arg0 + 0) = lbl_80564564;
@@ -19,3 +19,7 @@ void fn_80296AAC(void *arg0) {
     *(int *)((char *)arg0 + 0x2C) = 10;
     *(int *)((char *)arg0 + 0x14) = -1;
 }
+
+void fn_80296D24(void) {
+}
+
