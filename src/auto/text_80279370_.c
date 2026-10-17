@@ -18,6 +18,8 @@ void fn_80279370(void) {
     } while (var_r31 < 4);
 }
 
+void fn_802793AC(void) {}
+
 extern unsigned char lbl_804A16E8[];
 extern float lbl_805640D8;
 extern float lbl_805640DC;
