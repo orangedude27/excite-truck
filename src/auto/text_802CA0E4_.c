@@ -168,21 +168,19 @@ char *fn_802CAE34(int arg0) {
 void fn_802CAE98(int arg0, char *arg1) {
     char *dst;
     int count;
+    char value;
     if (!((int (*)(int))fn_802CAE00)(arg0))
         return;
     dst = (char *)lbl_8055FCB0 + arg0 * 0x4C + 4;
     count = 0x20;
-    do {
-        count--;
-        if (count <= 0) {
-            dst[-1] = 0;
+    while (--count > 0) {
+        value = *arg1++;
+        if ((signed char)value == 0)
             break;
-        }
-        *dst = *arg1;
-        if ((signed char)*arg1++ == 0)
-            break;
-        dst++;
-    } while (1);
+        *dst++ = value;
+    }
+    if (count == 0)
+        dst[-1] = 0;
 }
 #pragma dont_inline reset
 int fn_802DB2C0(int);
@@ -297,3 +295,4 @@ extern char lbl_8034B538[];
 extern char lbl_8034B904[];
 extern char lbl_8034B914[];
 extern int fn_802CAE00(int);
+extern char lbl_8034B538[];
