@@ -427,6 +427,11 @@ extern "C" void fn_801FC644(void **arg0, void *arg1) {
     *arg0 = arg1;
 }
 
+extern "C" s32 lbl_8055EC70;
+extern "C" void fn_801FC654(void *arg0, s32 arg1, void *arg2) {
+    ((void (*)(s32, s32, s32))fn_80204014)(arg1, *(s32 *)((u8 *)arg2 + 0x34), lbl_8055EC70);
+}
+
 extern "C" f32 fn_801FC664(void) {
     return lbl_80562FF0;
 }
