@@ -130,7 +130,7 @@ unsigned char fn_801671AC(int arg0) { void *base; if (!((int (*)(void))fn_801667
 
 unsigned char fn_80167544(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5D)); }
 
-unsigned char fn_80167594(int arg0) { if (((int (*)(void))fn_801667F0)()) return *((unsigned char *)((char *)*(void **)&lbl_8055E32C + arg0 * 0x88 + 0x5E)); return 0; }
+unsigned char fn_80167594(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x5E)); }
 
 unsigned char fn_801675E4(int arg0) { if (((int (*)(void))fn_801667F0)()) return *((unsigned char *)((char *)*(void **)&lbl_8055E32C + arg0 * 0x88 + 0x5F)); return 0; }
 
