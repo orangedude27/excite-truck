@@ -376,6 +376,13 @@ extern "C" void fn_80142B78(void *arg0, f32 arg1) {
     }
 }
 
+extern "C" s32 fn_80142B94(s32 arg0, s32 arg1, s32 arg2) {
+    s32 v = arg1;
+    if (arg0 > v) v = arg0;
+    if (v < arg2) arg2 = v;
+    return arg2;
+}
+
 #pragma dont_inline off
 extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
     void *obj = fn_802C6C34(*(s32 *)(arg1 + 0x59C));
