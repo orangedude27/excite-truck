@@ -17,7 +17,7 @@ extern int *fn_801B479C();
 extern int fn_801B47BC();
 extern int fn_801B4B9C(int);
 extern int fn_801B47AC(int);
-extern int fn_802E30C8(int *);
+extern int fn_802E30C8(int *, ...);
 extern int fn_801284F8(int, int *);
 extern int fn_801B4904(void);
 #pragma push
@@ -126,8 +126,7 @@ int fn_801B4B9C(int arg0) {
 int fn_801B4BDC(int arg0);
 
 int fn_801B4C1C(int arg0, int arg1) {
-    int result;
-    result = (int)fn_801B4BDC(arg0);
+    int result = (int)fn_801B4BDC(arg0);
     return arg1 >= result;
 }
 
