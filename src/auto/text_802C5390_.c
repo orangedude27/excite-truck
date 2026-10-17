@@ -11,6 +11,7 @@ void fn_802C57B4(int, int, int, unsigned char, float);
 
 extern int lbl_804C1338[];
 extern unsigned char lbl_804C1348[];
+extern int lbl_804C13A8[];
 char *fn_802CAE34(char *);
 int stricmp(const char *, const char *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -205,7 +206,7 @@ void fn_802C6C30(void) {}
 
 void fn_802C6C34(void) { fn_802C53A8(); }
 
-void fn_802C6FA8(void) { fn_802C5DF0(&fn_802D6C48); }
+void fn_802C6FA8(void) { fn_802C5DF0((int *)&fn_802D6C48); }
 
 extern int fn_802D6C48;
 void fn_802C5DF0(int*);
@@ -342,6 +343,8 @@ void fn_802C7A94(int arg0) {
 }
 
 void fn_802C7AD4(void) { fn_802C7A94(9); }
+
+void fn_802C7ADC(void) { fn_802D754C(0); }
 
 extern int lbl_8055D008;
 extern void fn_8012C4E4(void *, int);
