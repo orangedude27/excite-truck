@@ -13,6 +13,10 @@ extern void fn_801282EC(s32);
 extern void *fn_8012850C(s32, void *);
 extern void DCInvalidateRange(void *, u32);
 extern void fn_802D6C68(void);
+extern void GXSetArray(u32, void *, u32);
+void fn_802D3F30(void) {
+}
+
 void fn_802D657C(s32 *arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
