@@ -127,7 +127,7 @@ void fn_802BBCC4(void) {
 
   extern int lbl_804C0098[];
 extern void fn_802BB8E4(int*);
-extern unsigned int fn_802D972C(int, int, ...);
+extern unsigned int fn_802D972C(int, int);
 extern int fn_802E30C8(const char*, int, int, unsigned int);
 extern char lbl_8034AAF0[];
 void fn_802BBE34(void) {
