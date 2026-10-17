@@ -40,7 +40,7 @@ void fn_802E8918(void) {
 
 extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
-void fn_802E8C2C(void) { for (;;) { if(fn_802E888C(4)!=0) { fn_802E8918(); return; } if(fn_802E88D8()!=0) return; } }
+void fn_802E8C2C(void) { for (;;) { if(((int(*)(int))fn_802E888C)(4)!=0) { ((void(*)(void))fn_802E8918)(); return; } if(fn_802E88D8()!=0) return; } }
 
 extern void *lbl_80560024;
 void fn_802E8D7C(void* hi) {
