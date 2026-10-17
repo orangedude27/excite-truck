@@ -164,8 +164,9 @@ int fn_80133780(void *arg0, void *arg1) {
 
 __declspec(section ".data") extern int lbl_802FE850;
 static inline int is_line_space(int c) {
+    int table = *(int *)((char *)&lbl_802FE850 + 0x38);
     return (c < 0 || c >= 256) ? 0 :
-        (*(unsigned short *)(*(int *)(*(int *)((char *)&lbl_802FE850 + 0x38) + 8) + c * 2) & 0x100);
+        (*(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100);
 }
 extern int lbl_802F9308[];
 extern int fn_802E30C8(const char *, ...);
@@ -222,26 +223,11 @@ float fn_80133960(const char *arg0) {
 #pragma push
 #pragma peephole on
 int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
-    char *limit;
-    char *end;
-    char *start;
-    char *p;
-    int table;
-    p = *arg0;
-    start = arg2;
-    end = p + arg1;
-    limit = arg2 + arg3 - 1;
-    table = *(int *)((char *)&lbl_802FE850 + 0x38);
-test:
-    if (p < end) {
-        int c = (signed char)*p;
-        int invalid = 0;
-        int space;
-        if (c < 0 || c >= 256) invalid = 1;
-        if (invalid) space = 0;
-        else space = *(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100;
-        if (space) { p++; goto test; }
-    }
+    char *p = *arg0;
+    char *start = arg2;
+    char *end = p + arg1;
+    char *limit = arg2 + arg3 - 1;
+    while (p < end && is_line_space((signed char)*p)) p++;
     while (p < end && arg2 < limit && (signed char)*p != 13 && (signed char)*p != 10)
         *arg2++ = *p++;
     *arg2 = 0;
