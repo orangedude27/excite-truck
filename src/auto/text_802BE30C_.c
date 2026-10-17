@@ -27,6 +27,12 @@ void* fn_802BE30C(void* arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_802BE364(void *arg0) {
+    *(s32 *)((char *)arg0 + 4) = 0;
+    *(s32 *)((char *)arg0 + 0) = 0;
+    *(s32 *)((char *)arg0 + 8) = 0;
+}
+
 void fn_802BE780(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
@@ -36,19 +42,25 @@ void fn_802BE780(void *arg0) {
 }
 
 s32 fn_802BE7C4(s32 arg0, s32 arg1, s32 arg2) {
-    s32 divisor = arg2 << 1;
-    s32 a = ((arg0 - arg2) + 0x200) / divisor;
-    s32 b = 0x400 / divisor;
-    s32 c = ((arg1 - arg2) + 0x200) / divisor;
-    return a + c * b;
+    s32 result;
+    s32 scale;
+    s32 value;
+    result = arg0 - arg2;
+    scale = arg2 * 2;
+    result = (result + 0x200) / scale;
+    value = 0x400 / scale;
+    arg1 = (arg1 - arg2 + 0x200) / scale;
+    return arg1 + result * value;
 }
 
 void fn_802BE7F4(void) {}
 
 void fn_802BE7F8(void) {
+    s32 flags = 0x200;
+    flags |= 0x84;
     fn_802BE694();
     lbl_804C07E4.ptr = lbl_8055FAC8;
-    lbl_804C07E4.flags = 0x800284;
+    lbl_804C07E4.flags = flags | 0x800000;
     lbl_804C07E4.value = 0;
 }
 
