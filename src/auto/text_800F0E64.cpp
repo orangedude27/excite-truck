@@ -1080,3 +1080,7 @@ extern "C" int fn_800FD8CC(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x49) != 0;
 }
 
+extern "C" int fn_800FD8E0(void* arg0) {
+    return *((unsigned char*)arg0 + 0x4A) != 0;
+}
+
