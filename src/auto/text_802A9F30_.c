@@ -14,9 +14,54 @@ void fn_8028E398(int);
 void fn_80128668(void *);
 extern void *lbl_8055F924;
 void fn_8028E080(void);
+void fn_802AA1D0(unsigned int arg0) {
+    extern int lbl_8055F928;
+    extern int lbl_80488648[];
+    extern int fn_801EE0C8(int);
+    extern void fn_802C77F0(float *);
+    float sp[8];
+    char *p = (char *)lbl_8055F928 + arg0 * 0x108;
+    int v = arg0 < 8 ? lbl_80488648[arg0] : 0;
+    fn_801EE0C8(v);
+    fn_802C77F0(sp);
+    *(float *)(p + 0xF8) = sp[1] - sp[0];
+    *(float *)(p + 0x100) = sp[3] - sp[2];
+    *(float *)(p + 0xFC) = sp[5] - sp[4];
+}
+
 void fn_802AAF00(int a, int b, int c) {}
 
 void fn_802AB500(void) {}
+
+void fn_802AB504(void) {
+    extern void fn_801EF024(void (*)(void));
+    extern void fn_80128670(void *);
+    extern void fn_802CAC54(int);
+    extern void fn_802A9F30(void), fn_802A9F90(void), fn_802A9FB0(void);
+    extern unsigned char lbl_8055F92C;
+    extern void *lbl_8055F924;
+    extern int lbl_8055F928, lbl_8055CC60, lbl_8055CC64;
+    int *p;
+    int *q;
+    lbl_8055F92C = 0;
+    fn_801EF024(fn_802A9F30);
+    fn_801EF024(fn_802A9F90);
+    fn_801EF024(fn_802A9FB0);
+    p = (int *)lbl_8055F924;
+    if (p) {
+        fn_8028E398(p[0]);
+        fn_8028E398(p[1]);
+        fn_80128668(p);
+    }
+    lbl_8055F924 = 0;
+    q = (int *)lbl_8055F928;
+    if (q) fn_80128670((char *)q - 0x10);
+    lbl_8055F928 = 0;
+    fn_802CAC54(lbl_8055CC60);
+    lbl_8055CC60 = -2;
+    fn_802CAC54(lbl_8055CC64);
+    lbl_8055CC64 = -2;
+}
 
 void fn_802AB6D0(void) {}
 
