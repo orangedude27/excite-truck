@@ -5,15 +5,17 @@
 
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
 
+struct Obj_800D7738;
 struct Vtbl_800D7738 {
-    virtual void v0();
-    virtual void v1();
-    virtual void v2();
-    virtual void v3();
-    virtual void v4();
-    virtual void v5();
+    virtual void v0(Obj_800D7738*);
+    virtual void v1(Obj_800D7738*);
+    virtual void v2(Obj_800D7738*);
+    virtual void v3(Obj_800D7738*);
+    virtual void v4(Obj_800D7738*);
+    virtual void v5(Obj_800D7738*);
 };
-struct Ptr_800D7738 { Vtbl_800D7738* v; };
+struct Obj_800D7738 : Vtbl_800D7738 {};
+struct Ptr_800D7738 { Obj_800D7738* v; };
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
     extern f32 lbl_80560E78;
@@ -68,9 +70,10 @@ extern "C" void fn_800D6EEC(void* arg0) {
 }
 
 extern "C" void fn_800D7738(void* arg0) {
-    void* p = *(void**)((char*)arg0 + 0x10);
+    Ptr_800D7738* p = *(Ptr_800D7738**)((char*)arg0 + 0x10);
     if (p != 0) {
-        (*(void(**)(void))(*(char**)p + 0x14))();
+        void* vt = *(void**)p;
+        (*(void(**)(void))((char*)vt + 0x10))();
     }
 }
 
@@ -103,10 +106,8 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
 }
 
 extern "C" void fn_800D7F58(void* arg0, void* arg1) {
-    f32 v0 = ((f32*)arg1)[0];
-    f32 v1 = ((f32*)arg1)[1];
-    ((f32*)arg0)[0] = v0;
-    ((f32*)arg0)[1] = v1;
+    ((f32*)arg0)[0] = ((f32*)arg1)[0];
+    ((f32*)arg0)[1] = ((f32*)arg1)[1];
 }
 
 extern "C" void fn_800D7F6C(s32 *arg0) {
