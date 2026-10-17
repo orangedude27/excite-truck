@@ -67,16 +67,98 @@ void fn_8024C464(void) {
     }
 }
 
+void fn_802E6FBC(void);
+void fn_802E712C(void);
+void fn_802E6CA8(void);
+void fn_8000DA80(void);
+int fn_8023FAD4(void *, int);
+extern int lbl_8055F2C4;
+extern char lbl_80343F78[];
+extern char lbl_80343F68[];
+int fn_80131234(const char *);
+int fn_80215214(int, int);
+int fn_8024C550(void) {
+    fn_802E6FBC();
+    fn_8024C464();
+    return 0;
+}
+
+int fn_8024C578(int arg0) {
+    int result;
+    if (((int (*)())fn_8000DBAC)() != 0) {
+        int sp[4];
+        short last;
+        sp[0] = 0;
+        sp[1] = 0;
+        sp[2] = 0;
+        sp[3] = 0;
+        last = 0;
+        if (fn_8023FAD4(sp, 0x12) != 0) {
+            fn_8000D984(arg0);
+            fn_8000DA80();
+            fn_8000DA1C(sp);
+            fn_802E6FBC();
+            fn_8024C464();
+            result = 1;
+        } else {
+            result = 0;
+        }
+    } else {
+        lbl_8055F2C4 = (int)(lbl_80498A00 + arg0 * 0x12);
+        fn_8000D984(arg0);
+        fn_8024C464();
+        result = 1;
+    }
+    return result;
+}
+
+int fn_8024C6F4(void) {
+    int result = 0;
+    int temp;
+    if (((int (*)())fn_8000DBAC)() != 0) {
+        temp = fn_80131234(lbl_80343F78);
+        fn_80131234(lbl_80343F68);
+        if (fn_80215214(temp, 0) != 0)
+            result = 1;
+    }
+    return result;
+}
+
 void fn_8024CF38(void) {
     fn_8024CC54(&fn_8024CEF0, 0, 1);
 }
 
-void fn_8024CF48(void *arg0) {
+int fn_8024CF48(int *arg0) {
     fn_8024CC54(arg0, 0, 0);
 }
 
 void fn_8024CF54(void) {
     lbl_8055F2C8 = 1;
     fn_8024C768();
+}
+
+void fn_8024CFE8(void *arg0) {
+    *(float *)((char *)arg0 + 0x40) = (float)*(int *)((char *)arg0 + 0x10) /
+        (float)fn_80232B70(*(int *)((char *)arg0 + 0x34));
+}
+
+int fn_8024D054(void *arg0, int arg1) {
+    int value;
+    switch (arg1) {
+    case 0x6f:
+        value = (int)strlen(*(char **)((char *)arg0 + 0x2c));
+        if (value >= *(int *)((char *)arg0 + 0x30) + 1)
+            value = *(int *)((char *)arg0 + 0x30) + 1;
+        *(int *)((char *)arg0 + 0x30) = value;
+        *(char *)((char *)arg0 + 0x48) = 1;
+        return 1;
+    case 0x20:
+        *(char *)((char *)arg0 + 0x48) = 1;
+        value = *(int *)((char *)arg0 + 0x30) - 1;
+        *(int *)((char *)arg0 + 0x30) = value & ~(value >> 31);
+        return 1;
+    default:
+        return 0;
+    }
 }
 
