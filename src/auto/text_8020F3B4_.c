@@ -17,8 +17,8 @@ extern long lbl_8055EEC4;
 long fn_8020F3B4(void) { return -1; }
 
 long fn_8020F3BC(long arg0, long arg1, long arg2) {
-    register long result = arg1;
-    fn_801345D8(result, arg2, &lbl_8055B664, arg0);
+    long result = arg1;
+    fn_801345D8(arg1, arg2, &lbl_8055B664, arg0);
     return result;
 }
 
@@ -59,6 +59,25 @@ long fn_8020F6FC(void) {
     long value = entries[index];
     lbl_8055EEC4 = (index + 1) % count;
     return value;
+}
+
+void fn_8021031C(void) {
+    memset(&lbl_80489CA0, 0, 0x6400);
+    fn_802E6BD8(0x546D7573, 0, &lbl_80489CA0, 0x6400, 0);
+    fn_8000DBC8(&fn_8020F6E0);
+}
+
+extern long fn_80207848(void *, long);
+extern long fn_802EC1D8(void);
+extern long fn_802EC12C(void);
+extern long fn_8020FCC4(void);
+extern long lbl_8033C9AC;
+extern long lbl_8055EED0;
+void fn_8021037C(void) {
+    lbl_8055EED0 = fn_80207848(&lbl_8033C9AC, 1);
+    fn_802EC1D8();
+    fn_802EC12C();
+    fn_8020FCC4();
 }
 
 void fn_802103B8(void) {
@@ -105,11 +124,6 @@ extern signed char lbl_8055EEF6;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
  // split_file divides it into the game's real files (file_status shows its range).
 
-extern struct Unk_804900AC {
-    long *m_entries;
-    long m_count;
-    long m_capacity;
-} lbl_804900AC;
     extern long fn_802EC104(long);
 extern void fn_8020F730(void);
 extern long fn_8020F9F4(void);
