@@ -8,6 +8,8 @@ extern f32 lbl_8049A218[];
 extern f32 lbl_8055F52C;
 extern f32 lbl_80563E68;
 extern f32 lbl_80563E30;
+extern f32 lbl_80563E38;
+extern f32 lbl_80563E3C;
 extern f32 lbl_80563E50;
 extern f32 lbl_80563E54;
 extern f32 lbl_80563E58;
