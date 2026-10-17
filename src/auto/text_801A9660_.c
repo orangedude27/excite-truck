@@ -78,6 +78,13 @@ void fn_801AC184(void *arg0) {
     *(unsigned char *)((char *)p + 0x234) = *(unsigned char *)((char *)p + 0x235);
 }
 
+#pragma dont_inline on
+void fn_801AC240(void *arg0) {
+    *(unsigned char *)((char *)arg0 + 0x220) = 1;
+    *(float *)((char *)arg0 + 0x21C) = lbl_8055E3C8;
+}
+#pragma dont_inline off
+
 void fn_801AC254(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x220) != 0) {
         *(unsigned char *)((char *)arg0 + 0x220) = 0;
