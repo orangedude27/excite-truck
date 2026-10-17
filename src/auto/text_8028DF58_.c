@@ -56,7 +56,6 @@ void fn_8028E080(void) {
         i++;
     }
 }
-#pragma pop
 void fn_8028E0F0(void) {
     fn_8028F5A4();
     fn_8028EE28((char *)&lbl_804B34B0 + 0x208);
@@ -250,6 +249,8 @@ int fn_8028F040(int *arg0, int *arg1, int arg2) {
 
 void fn_8028F5A4(void) {
 }
+
+void fn_8028F854(void) {}
 
 extern int fn_80128668(void);
 int fn_8029169C(int arg0, int arg1) {
