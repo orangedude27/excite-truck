@@ -125,3 +125,5 @@ void fn_8023BF68(void) {
     }
 }
 
+void fn_8023C20C(void) {}
+
