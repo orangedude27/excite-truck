@@ -4,7 +4,7 @@
 extern void *lbl_8055FB50;
 extern int lbl_8034AFB8;
 extern int lbl_8034AFC8;
-extern int lbl_8034AFD8;
+extern char lbl_8034AFD8[];
 extern int lbl_8055FB54;
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
@@ -65,3 +65,6 @@ void fn_802C217C(void) {
 void* fn_802C21B8(void) {
     return lbl_8055FB50;
 }
+
+void fn_802C21C0(void) { if (lbl_8055FB54 != 0) fn_802B52C0(&lbl_8034AFD8); }
+
