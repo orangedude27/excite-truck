@@ -28,13 +28,13 @@ s32 fn_802E321C(const char *arg0) {
     return strncmp(prefix, arg0, strlen(prefix)) == 0;
 }
 #pragma small_data off
-s32 fn_802E333C(void) {
-    s32 temp_r3;
-    temp_r3 = fn_802E32C4();
+s32 *fn_802E333C(void) {
+    s32 *temp_r3;
+    temp_r3 = (s32 *)fn_802E32C4();
     if (temp_r3 != 0) {
         return temp_r3;
     }
-    return (s32)&lbl_8055FF18;
+    return &lbl_8055FF18;
 }
 
 void fn_802E339C(void) {
@@ -46,7 +46,7 @@ s32 fn_802E33D0(void) { return 0; }
 
 void fn_802E3498(void) {
     memset(lbl_804DB810, 0, 0x280);
-    if (lbl_8055FF18 == 0) lbl_8055FF18 = fn_802E3F94();
+          if ((s32)lbl_8055FF18 == 0) *(s32 *)&lbl_8055FF18 = (s32)fn_802E3F94();
 }
 
 void fn_802E3550(void) {
