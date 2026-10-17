@@ -202,6 +202,11 @@ void fn_800070D4(void) {
 void fn_800070D8(void) {
 }
 
+void fn_80007210(void) {
+    fn_800070DC();
+    lbl_8055D348 = fn_802E2C20();
+}
+
 void fn_80007498(void) {
     fn_80011A50();
 }
