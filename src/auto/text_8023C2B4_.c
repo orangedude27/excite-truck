@@ -19,6 +19,42 @@ s32 fn_8023C2E4(void* arg0) {
     return 1;
 }
 
+s32 fn_80214D04(void);
+s32 fn_80214BE4(s32, s32);
+void fn_802E30C8(void *);
+void fn_802C82C4(s32);
+void fn_802090BC(void);
+extern s32 lbl_8055F144, lbl_8055F148, lbl_8055F14C, lbl_8055F150, lbl_8055F154;
+extern char lbl_8055BB48[];
+__declspec(section ".sdata") extern char lbl_8055BB48[];
+s32 fn_8023C308(s32 arg0) {
+    s32 mode, cur, val, diff;
+    if (arg0) {
+        mode = (u32)(fn_80214D04() - 2) == 0;
+        cur = lbl_8055F154;
+        if (mode) {
+            val = cur - 5;
+            val = val & ~(val >> 31);
+        } else {
+            val = cur + 5;
+            if (val > 0x46) val = 0x46;
+        }
+        diff = val - cur;
+        lbl_8055F154 = cur + diff;
+        if (diff) fn_80214BE4(7, 0);
+    }
+    if (lbl_8055F148 != lbl_8055F150) {
+        lbl_8055F150 = lbl_8055F148;
+        fn_802E30C8(lbl_8055BB48);
+        fn_802C82C4(lbl_8055F148);
+    }
+    if (lbl_8055F144 != lbl_8055F14C) {
+        lbl_8055F14C = lbl_8055F144;
+        fn_802090BC();
+    }
+    return 0;
+}
+
 s32 fn_80236914(void*); /* extern */
 void fn_8023C55C(void*); /* extern */
 int fn_8027AA48(void); /* extern */
@@ -27,6 +63,21 @@ extern char lbl_80341430[16];
 extern char lbl_8034143C[16];
 s32 fn_8023C3CC(void) {
     return 0;
+}
+
+extern s32 fn_80128668();
+extern s32 fn_80128670(s32);
+extern s32 lbl_80341448;
+__declspec(section ".data") extern s32 lbl_80341448;
+void *__dt__Q28PSSystem7SeqHeapFv_8023C79C(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(s32 **)((char *)arg0 + 0xC) = &lbl_80341448;
+        fn_80128670(*(s32 *)((char *)arg0 + 0x10));
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 void fn_8023C94C(void) {
