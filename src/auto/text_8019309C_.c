@@ -72,6 +72,10 @@ void fn_80193A38(void *arg0) {
     *(int *)((unsigned char *)obj + 0x24) = *(int *)((unsigned char *)obj + 0x28);
 }
 
+void fn_80193CD4(void *arg0) {
+    *(signed char *)((char *)arg0 + 0x2A5) = 1;
+}
+
 void fn_8019416C(void) {
 
 }
