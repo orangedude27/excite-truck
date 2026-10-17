@@ -36,6 +36,19 @@ void fn_80039F3C(int arg0) { if (lbl_8055D8D0 != 0) lbl_8055D8D0(2 - ((unsigned 
 
 void fn_80039F68(int arg0) { if (NANDCloseAsync(lbl_8037B640, fn_80039F3C, lbl_8037B6D0) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2, 0); }
 
+void fn_80039FC4(int arg0) {
+ if (arg0 == 0) {
+  if (NANDWriteAsync(lbl_8037B640, lbl_8037B640+0x160, 0x80, fn_80039F68, lbl_8037B640+0x90) != 0 &&
+      NANDCloseAsync(lbl_8037B640, fn_80039F3C, lbl_8037B640+0x90) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+ } else if (lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+}
+
+void fn_8003A074(int arg0) {
+ if (arg0 == 0 || arg0 == -6) {
+  if (NANDPrivateOpenAsync(lbl_80302368,lbl_8037B640,2,fn_80039FC4,lbl_8037B6D0) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+ } else if (lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+}
+
 void __DVDShowFatalMessage(void) {
  unsigned char bg[4]={0,0,0,0}; unsigned char fg[4]={255,255,255,0}; const char *msg;
  if(SCGetLanguage()==0) OSSetFontEncode(1); else OSSetFontEncode(0);
