@@ -933,15 +933,18 @@ void fn_800778C8(s16 arg0) {
 }
 
 void btm_read_remote_version_complete(u8 *arg0) {
+    u8 status;
     u8 *var_r6;
     u16 var_r4;
     s32 var_i;
 
-    if (arg0[0] != 0) {
+    status = arg0[0];
+    var_r6 = lbl_803C0F78 + 0x34;
+    if (status != 0) {
         return;
     }
-    var_r4 = (arg0[1] + (arg0[2] << 8)) & 0xFFFF;
-    var_r6 = lbl_803C0F78 + 0x34;
+    var_r4 = arg0[1];
+    var_r4 = (var_r4 + (arg0[2] << 8)) & 0xFFFF;
     for (var_i = 0; var_i < 4; var_i++, var_r6 += 0x11C) {
         if (var_r6[0x119] != 0 && *(u16 *)var_r6 == var_r4) {
             var_r6[0x118] = arg0[3];
