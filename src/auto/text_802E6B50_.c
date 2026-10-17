@@ -29,5 +29,7 @@ void *fn_802E6B98(int arg0) {
 
 void fn_802E6CA4(void) {}
 
+void fn_802E7128(void) { fn_802E6FBC(); }
+
 void fn_802E712C(void) {}
 
