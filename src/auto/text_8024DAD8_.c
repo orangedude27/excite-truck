@@ -8,7 +8,7 @@ static inline void CleanupEntries(void *table) {
     extern s32 fn_802CAC54(s32);
     extern s32 fn_80128670(s32);
     extern s32 fn_80128668(void *);
-    s32 i, offset;
+    s32 offset, i;
     u8 *entry;
     if (table != 0) {
         i = 0;
@@ -37,26 +37,14 @@ void *fn_8024E920(void *arg0, s32 arg1) {
     extern s32 fn_80235380(s32);
     extern s32 fn_802CAC54(s32);
     extern s32 fn_80128668(void *);
-    register void *table;
-    register s32 offset;
-    register s32 i;
-    register unsigned char *entry;
+    unsigned char *entry;
+    s32 i, offset;
+    void *table;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_803444D8;
         fn_80128670(*(s32 *)((u8 *)arg0 + 0xCC));
         if (--lbl_8055F2E8 == 0) {
-            table = lbl_8055F2E4;
-            if (table != 0) {
-                i = 0;
-                offset = 0;
-                for (; i < *(s32 *)((u8 *)table + 4); offset += 0x38, i++) {
-                    entry = *(u8 **)table + offset;
-                    fn_802CAC54(*(s32 *)(entry + 0x20));
-                    fn_802CAC54(*(s32 *)(entry + 0x24));
-                }
-                fn_80128670(*(s32 *)table);
-                fn_80128668(table);
-            }
+            CleanupEntries(lbl_8055F2E4);
             lbl_8055F2E4 = 0;
         }
         if (arg0 != 0) {
