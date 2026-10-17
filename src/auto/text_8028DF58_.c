@@ -252,6 +252,17 @@ void fn_8028F5A4(void) {
 
 void fn_8028F854(void) {}
 
+int fn_8028F858(int arg0, int arg1) {
+    int value;
+    if (arg0 != 0) {
+        fn_802CAC54(*(int *)(arg0 + 0xA4));
+        value = *(int *)(arg0 + 0x8C);
+        if (value != 0) fn_80128670(value - 0x10);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern int fn_80128668(void);
 int fn_8029169C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
