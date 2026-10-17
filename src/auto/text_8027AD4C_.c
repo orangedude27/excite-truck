@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_804A4380[];
-void fn_8027B8E4(void *, long);
+long fn_8027B8E4(void *, long);
 void fn_8027B984(void *, long);
 long fn_8027BAB8(void *);
 void fn_8027AF94(void *);
@@ -225,13 +225,16 @@ void fn_8027C610(void) {
 long fn_8027C71C(void *arg0) {
     long value;
     void *result;
+    long flag;
 
     value = fn_8027D1F4();
     fn_8000DA10();
-    result = fn_8001BB58(*(long *)((char *)arg0 + 4), value, 0);
-    if (result == 0)
-        return 0;
-    return *(long *)((char *)result + 8) == 0;
+    result = fn_8001BB58(0, *(long *)((char *)arg0 + 4), value + 0);
+    flag = 0;
+    if (result != 0 && *(long *)((char *)result + 8) == 0) {
+        flag = 1;
+    }
+    return flag;
 }
 
 long fn_8027C650(void);
@@ -335,8 +338,7 @@ void fn_8027CCB4(long arg0, long arg1, long arg2, long arg3) {
 }
 #pragma small_data reset
 long fn_8027CE4C(long arg0) {
-    long value;
-    value = *fn_8027C120(lbl_8055F654, arg0);
+    long value = *fn_8027C120(lbl_8055F654, arg0);
     switch (value) {
     case 0:
         return fn_8027C8B0();
