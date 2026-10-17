@@ -85,9 +85,8 @@ int fn_802E4400(void *arg0) {
     return *(int *)((char *)arg0 + 0x84);
 }
 
-extern unsigned int lbl_8055FF38;
-extern unsigned char lbl_804FBAA0[0x10 * 0x91];
-extern unsigned int lbl_8034D038;
-extern unsigned int lbl_8034D054;
-extern unsigned int lbl_8055FF40;
-extern void fn_802E317C(void *);
+void fn_802E4408(int unused, void *arg0) {
+    if (arg0 != 0) {
+        ((void (*)(void *, int))(*(void ***)arg0)[12])(arg0, 1);
+    }
+}
