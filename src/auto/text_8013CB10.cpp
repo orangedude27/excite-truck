@@ -333,8 +333,8 @@ extern "C" void fn_80142948(void *arg0) {
 }
 
 extern "C" s32 fn_80142978(void *arg0) {
-    f32 diff = fn_8001DAE8((u8 *)arg0 + 4) - *(f32 *)((u8 *)arg0 + 4);
-    return !(diff <= lbl_805614A4) && diff < *(f32 *)arg0;
+    f32 diff = fn_8001DAE8(arg0) - *(f32 *)((u8 *)arg0 + 4);
+    return diff >= lbl_805614A4 && diff < *(f32 *)arg0;
 }
 
 #pragma dont_inline off
