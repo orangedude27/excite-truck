@@ -2317,6 +2317,16 @@ done:
     return;
 }
 
+BOOLEAN SDP_ServiceSearchAttributeRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
+    tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
+    if (p_ccb == NULL) return FALSE;
+    *(u8 *)((u8 *)p_ccb + 0x474) = 0;
+    *(u32 *)((u8 *)p_ccb + 0x410) = (u32)p_db;
+    *(u32 *)((u8 *)p_ccb + 0x414) = (u32)p_cb;
+    *(u8 *)((u8 *)p_ccb + 0x475) = 1;
+    return TRUE;
+}
+
 void *fn_80095C64(void **head, u32 attr) {
     void *p = *head;
     while (p != NULL) {
@@ -2331,6 +2341,17 @@ u8 fn_80096670(u8 value) {
     return lbl_803C4C40[0x4630];
 }
 
+tSDP_RECORD *sdp_db_find_record(UINT32 handle) {
+    u8 *base = lbl_803C4C40;
+    u8 *start = base + 0x1224;
+    u8 *end = base + (u32)(*(u16 *)(base + 0x1222)) * 0x298;
+    u32 count = (u32)(end + 0x14bb - start) / 0x298;
+    u8 *p;
+    for (p = start; count != 0; count--, p += 0x298)
+        if (*(u32 *)p == handle) return (tSDP_RECORD *)p;
+    return NULL;
+}
+
 void *fn_80096904(void *arg0, u32 arg1, u32 arg2) {
     u16 count = *(u16 *)((u8 *)arg0 + 8);
     u8 *p = (u8 *)arg0 + 0xC;
@@ -2342,6 +2363,18 @@ void *fn_80096904(void *arg0, u32 arg1, u32 arg2) {
         p += 0xC;
     }
     return NULL;
+}
+
+extern void process_service_search_attr_rsp(tCONN_CB *, u8 *, u16);
+extern void sdp_snd_service_search_req(tCONN_CB *, u8, u8 *);
+void fn_8009757C(tCONN_CB *p_ccb) {
+    if (p_ccb->is_attr_search) {
+        p_ccb->disc_state = 3;
+        process_service_search_attr_rsp(p_ccb, NULL, 0);
+    } else {
+        p_ccb->disc_state = 0;
+        sdp_snd_service_search_req(p_ccb, 0, NULL);
+    }
 }
 
 tCONN_CB *sdpu_allocate_ccb(void) {
