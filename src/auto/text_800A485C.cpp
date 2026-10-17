@@ -5,6 +5,9 @@ extern "C" s32 fn_800A76A0(void *);
 extern "C" void *lbl_8055DD94;
 extern "C" u32 lbl_8055DD90;
 extern "C" void fn_800C4BD8(s32, s32);
+extern "C" void fn_800C4B5C(s32, s32);
+extern "C" void *fn_800C4B8C(s32);
+extern "C" void *lbl_802EEF40;
 extern "C" void fn_800BEE64(void *, s32, s32);
 extern "C" void fn_800C3960(void *, s32, s32, s32);
 extern "C" void fn_800C3574(void *, void *, s32, s32, s32);
@@ -952,6 +955,16 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
 
 void fn_800C3D9C(void) {
     fn_800C4BD0();
+}
+
+extern "C" void fn_800C4B5C(s32 arg0, s32 arg1) {
+    s32 t;
+    s32 s;
+
+    t = (arg0 << 0x1E) - (arg0 >> 0x1F);
+    s = arg0 >> 0x1F;
+    lbl_8055DD90 = (arg0 + arg1) - 4;
+    lbl_8055DD94 = (void *)(arg0 + ((t << 2) + s) - 4);
 }
 
 extern "C" void* fn_800C4B8C(s32 arg0) {
