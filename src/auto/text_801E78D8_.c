@@ -157,6 +157,11 @@ void fn_801E86E8(long arg0, long arg1) {
     fn_8026A248(arg0, arg1);
 }
 
+long fn_801E86F8(long arg0) {
+    if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
+    return *(long *)((char *)lbl_8055EB04 + arg0 * 4 + 0x384);
+}
+
 extern unsigned char lbl_80487D00[];
 void *fn_801E8718(long arg0) {
     if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
