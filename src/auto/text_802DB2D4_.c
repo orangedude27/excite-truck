@@ -9,12 +9,9 @@ extern float lbl_8055D148;
 extern unsigned char lbl_804DB068[];
 extern unsigned char lbl_802FACF8[];
 extern unsigned char lbl_802FACD8[];
-void fn_802DB394(void) {
-    GXSetTevOp(0, 3);
-    GXSetTevOp(1, 3);
-    GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
-    GXSetTevAlphaIn(1, 0, 7, 7, 7);
-}
+int fn_802DB378(int arg0, int arg1) { int result = 0xFF; if (arg0 == 2) { if (arg1 == 0) result = 4; } return result; }
+
+void fn_802DB394(void) { GXSetTevOp(0, 3); GXSetTevOp(1, 3); GXSetTevAlphaOp(1, 0, 0, 0, 1, 0); GXSetTevAlphaIn(1, 0, 7, 7, 7); }
 
 void fn_802DB4E4(void) {
     float m[12] = {0};
