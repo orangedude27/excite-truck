@@ -56,11 +56,14 @@ void fn_801CB320(void) {
 
 void fn_801CB360(int arg0) {
     if (fn_80019BA8() != 0) goto done;
-    if (fn_80161C38() == 0) {
-        fn_801CCAEC(arg0);
-    } else {
+    switch (fn_80161C38()) {
+    case 0:
+        goto action;
+    default:
         goto done;
     }
+action:
+    fn_801CCAEC(arg0);
 done:
     return;
 }
@@ -115,12 +118,12 @@ done:
 }
 
 void fn_801CB648(int arg0, int arg1, f32 farg0) {
-    if (fn_80019BA8() != 0) goto done;
-    if (fn_80161C38() == 0) {
+    if (fn_80019BA8()) return;
+    if (!fn_80161C38()) {
         fn_801CD7BC(arg0, arg1, farg0);
+    } else {
+        return;
     }
-done:
-    return;
 }
 
 void fn_801CB6B4(void) {
@@ -308,6 +311,7 @@ unsigned int fn_801CE898(void) {
     return (unsigned int)(half - temp) >> 31;
 }
 
+#pragma small_data off
 void *fn_801CE9A0(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         *(void **)((char *)arg0 + 4) = (void *)lbl_80338024;
@@ -321,7 +325,7 @@ void *fn_801CE9A0(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-
+#pragma small_data on
 void fn_801CEA28(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
