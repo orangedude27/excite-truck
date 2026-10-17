@@ -138,13 +138,31 @@ void fn_801334F4(int arg0, int arg1, char *arg2, int arg3) {
     }
 }
 
+#pragma push
+#pragma peephole on
+int fn_8013358C(int arg0, int arg1, char *arg2) {
+    void *result;
+    int first = arg0;
+    int second = arg1;
+    fn_80133E10(&result, first, second);
+    strncpy((char*)result + 0x14, arg2, 0x10);
+    *((char*)result + 0x23) = 0;
+    *(int*)((char*)result + 0xC) = fn_801338D8((char*)result + 0x14);
+    *(float*)((char*)result + 0x10) = fn_80133960((char*)result + 0x14);
+    *((unsigned char*)result + 8) = fn_80133844((char*)result + 0x14);
+    *(int*)result = 3;
+    if (strlen(arg2) > 15) {
+        fn_802E30C8(lbl_8032B8F8, arg2, (char*)result + 0x14);
+    }
+}
+#pragma pop
 int fn_80133780(void *arg0, void *arg1) {
     int result = *(int *)((char *)arg0 + 4) - *(int *)((char *)arg1 + 4);
     if (result == 0) result = fn_8002B1D8((char *)arg0 + 0x24, (char *)arg1 + 0x24, 0x13);
     return result;
 }
 
-extern int lbl_802FE850;
+__declspec(section ".data") extern int lbl_802FE850;
 extern int lbl_802F9308[];
 extern int fn_802E30C8(const char *, ...);
 extern double atof(const char *);
@@ -195,6 +213,27 @@ float fn_80133960(const char *arg0) {
     }
     if (!isNumber && ((unsigned char)(c - '-') > 1)) return (float)fn_80133844(arg0);
     return (float)atof(arg0);
+}
+
+int fn_80133A08(char **arg0, int arg1, char *arg2, int arg3) {
+    char *p = *arg0;
+    char *start = arg2;
+    char *end = p + arg1;
+    char *limit = arg2 + arg3 - 1;
+    int table = *(int *)((char *)&lbl_802FE850 + 0x38);
+    while (p < end) {
+        int c = (signed char)*p;
+        int space;
+        if (c < 0 || c >= 256) space = 0;
+        else space = *(unsigned short *)(*(int *)(table + 8) + c * 2) & 0x100;
+        if (!space) break;
+        p++;
+    }
+    while (p < end && arg2 < limit && (signed char)*p != 13 && (signed char)*p != 10)
+        *arg2++ = *p++;
+    *arg2 = 0;
+    *arg0 = p;
+    return arg2 != start;
 }
 
 int fn_80133AD8(int arg0) {
