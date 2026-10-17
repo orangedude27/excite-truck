@@ -115,6 +115,16 @@ void fn_801D9828(void) {
     fn_801D9948((int *)&lbl_8055E964);
 }
 
+void *fn_801D9A54(const char *arg0) {
+    void *node = lbl_8055E96C;
+    while (node != 0) {
+        if (strcmp(arg0, (const char *)node) == 0)
+            return node;
+        node = *(void **)((char *)node + 0x54);
+    }
+    return 0;
+}
+
 extern unsigned char lbl_8055E968;
 extern float lbl_80562B2C;
 extern int strcmp(const char *, const char *);
