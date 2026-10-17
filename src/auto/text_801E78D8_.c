@@ -212,6 +212,13 @@ void fn_801E882C(void) {
     lbl_8055EB08 = 1;
 }
 
+int fn_801E8838(void) {
+    if (lbl_8055EB04 != 0) {
+        return *(int *)((char *)lbl_8055EB04 + 0xDB0);
+    }
+    return 0xFF;
+}
+
 extern void *lbl_8055AF08;
 void* fn_801E89EC(void) {
     return lbl_8055AF08;
