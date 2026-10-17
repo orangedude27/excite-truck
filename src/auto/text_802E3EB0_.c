@@ -96,8 +96,16 @@ void fn_802E4408(int unused, void *arg0) {
     }
 }
 
+void fn_802E442C(void) {
+    OSReport((const char *)&lbl_8055D1BC);
+}
+
 int fn_802E4438(void *arg0) {
     return *(int *)((char *)arg0 + 0x8C);
+}
+
+int fn_802E461C(void *arg0) {
+    return DVDGetCommandBlockStatus((char *)arg0 + 4) == 0;
 }
 
 #pragma scheduling off
