@@ -84,25 +84,41 @@ extern void fn_8017A580(void *, f32);
 extern f32 lbl_80562598;
 extern f32 lbl_80562588;
 void fn_801B022C(void *arg0) {
+    f32 sp8, spC, sp10;
     s32 temp_r0;
     void *var_r31;
     fn_8017B164();
     *(f32 *)((u8 *)arg0 + 0x1EC) = lbl_80562578;
     *(u8 *)((u8 *)arg0 + 0x1F8) = 0;
+    sp8 = lbl_80562578;
+    spC = lbl_80562598;
+    sp10 = lbl_80562578;
+    *(f32 *)((u8 *)arg0 + 0x60) = lbl_80562578;
+    *(f32 *)((u8 *)arg0 + 0x64) = lbl_80562598;
+    *(f32 *)((u8 *)arg0 + 0x68) = lbl_80562578;
     fn_8017A580(arg0, lbl_80562578);
     temp_r0 = *(s32 *)((u8 *)arg0 + 0x28);
     *(s32 *)((u8 *)arg0 + 0x24) = temp_r0;
-    if (temp_r0 > 0) {
-        var_r31 = *(void **)((u8 *)arg0 + 0x14);
-    } else {
-        var_r31 = NULL;
-    }
+    if (temp_r0 > 0) var_r31 = *(void **)((u8 *)arg0 + 0x14);
+    else var_r31 = NULL;
     if (var_r31 != NULL) {
         (*(void (**)(void *))(*(u32 *)var_r31 + 0x28))(var_r31);
         *(f32 *)((u8 *)var_r31 + 0x24) = lbl_80562588;
     }
     lbl_8055E654 = 0;
     *(s32 *)((u8 *)arg0 + 0x24) = 0;
+}
+
+s32 fn_801B0588(void *arg0, u8 *arg1) {
+    if (*arg1 != 0) return 0x21;
+    return 1;
+}
+
+s32 fn_801B05A0(void *arg0, u8 *arg1) {
+    *arg1 = *(u8 *)((u8 *)arg0 + 0x1F8);
+    if (*(u8 *)((u8 *)arg0 + 0x1F8) != 0)
+        return fn_8017D274(arg1 + 1) + 1;
+    return 1;
 }
 
 void __AXDSPInitCallback_801AFC38(void) {
