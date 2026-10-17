@@ -22,7 +22,7 @@ long fn_8027CB28(void);
 extern long lbl_8055F654;
 long *fn_8027C120(long, long);
 long fn_8027C8B0(void);
-long fn_802E317C(char *, long);
+int fn_802E317C(char *, long);
 extern unsigned char lbl_8055F650;
 long fn_80019B3C(void);
 extern char lbl_80347A5C[];
