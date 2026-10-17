@@ -23,7 +23,7 @@ extern f64 sin(f32);
 extern void *lbl_803577E0[];
 extern u8 lbl_802FCBEC[], lbl_802FCBF8[], lbl_802FCBC8[];
 extern s32 fn_802C9A58(void);
-extern void fn_80013BD0(void *, s32, s32);
+extern void fn_80013BD0();
 extern f32 lbl_80560360, lbl_80560368, lbl_8056036C, lbl_80560370, lbl_80560374, lbl_80560398;
 extern f32 fn_801E7E24(void);
 extern f32 fn_801E7E24(void);
@@ -32,7 +32,11 @@ void fn_80013C98(f32 *arg0) {
     f32 value;
     if (fn_801E7E24() > lbl_80560360) {
         value = *arg0 + fn_801E7E24() / lbl_80560364;
-        if (value >= lbl_80560368) value = lbl_80560368;
+        if (value >= lbl_80560368) {
+            value = lbl_80560368;
+        } else {
+            value = value;
+        }
         *arg0 = value;
     }
 }
@@ -41,7 +45,11 @@ void fn_80013CFC(f32 *arg0) {
     f32 value;
     if (fn_801E7E24() > lbl_80560360) {
         value = *arg0 - fn_801E7E24() / lbl_80560364;
-        if (value <= lbl_80560360) value = lbl_80560360;
+        if (value <= lbl_80560360) {
+            value = lbl_80560360;
+        } else {
+            value = value;
+        }
         *arg0 = value;
     }
 }
@@ -88,6 +96,19 @@ void fn_80013EAC(s32 arg0, s32 arg1) {
     void *obj = *(void **)((u8 *)lbl_803577E0[arg0] + 0x50);
     if (arg1 < 1) arg1 = 1;
     fn_80013BD0(obj, arg1, 0);
+}
+
+void fn_80014638(void *arg0) {
+    f32 zero = lbl_80560368;
+    s32 a = 0;
+    f32 one = lbl_80560398;
+    s32 six = 6;
+    *(s32 *)((u8 *)arg0 + 0x14) = six;
+    *(f32 *)((u8 *)arg0 + 0x1C) = one;
+    *(u8 *)((u8 *)arg0 + 0x20) = a;
+    *(f32 *)((u8 *)arg0 + 0x2C) = zero;
+    *(f32 *)((u8 *)arg0 + 0x28) = zero;
+    *(s32 *)((u8 *)arg0 + 0x24) = a;
 }
 
 void fn_80014750(void *arg0) {
@@ -182,19 +203,17 @@ void fn_80015AA0(void *arg0, f32 angle) {
 }
 
 void fn_80015E30(void *arg0, f32 angle) {
-    f32 c;
-    f32 s;
-    c = (f32)cos();
-    s = (f32)sin(angle);
+    f32 temp_f31 = (f32)cos();
+    f32 temp_f3 = (f32)sin(angle);
     *(f32 *)((u8 *)arg0 + 4) = lbl_80560360;
     *(f32 *)((u8 *)arg0 + 0) = lbl_80560368;
     *(f32 *)((u8 *)arg0 + 8) = lbl_80560360;
     *(f32 *)((u8 *)arg0 + 0xC) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 0x10) = c;
-    *(f32 *)((u8 *)arg0 + 0x14) = s;
+    *(f32 *)((u8 *)arg0 + 0x10) = temp_f31;
+    *(f32 *)((u8 *)arg0 + 0x14) = temp_f3;
     *(f32 *)((u8 *)arg0 + 0x18) = lbl_80560360;
-    *(f32 *)((u8 *)arg0 + 0x1C) = -s;
-    *(f32 *)((u8 *)arg0 + 0x20) = c;
+    *(f32 *)((u8 *)arg0 + 0x1C) = -temp_f3;
+    *(f32 *)((u8 *)arg0 + 0x20) = temp_f31;
 }
 
 void fn_80015EB0(void *arg0, f32 angle) {
