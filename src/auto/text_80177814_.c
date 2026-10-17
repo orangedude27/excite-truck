@@ -174,18 +174,18 @@ void fn_80178224(void) {
         fn_801A6484();
 }
 
+#pragma scheduling off
 void fn_80178258(void) {
     if (fn_801284F8(0xD0, &lbl_8033192C) != 0) {
         fn_8017ACCC();
     }
 }
-
 void fn_80178290(void) {
     if (fn_801284F8(0x1FC, &lbl_80331938) != 0) {
-        fn_801AFD20(NULL);
+        fn_801AFD20((void *)&lbl_80331938);
     }
 }
-
+#pragma scheduling on
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8017831C(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_80179EE8((void*)arg0, 0);
@@ -382,10 +382,13 @@ char fn_801796C4(void) {
     return lbl_8055E45F;
 }
 
+#pragma dont_inline on
+#pragma small_data off
 long fn_801796CC(long arg0, long arg1, long arg2) {
-    fn_8017873C(&lbl_80430870, arg0, arg1, arg2, arg0);
+    return fn_8017873C((long*)&lbl_80430870, arg0, arg1, arg2, arg0);
 }
-
+#pragma small_data on
+#pragma dont_inline off
 void DBPrintf_80179758(const char *fmt, ...) {
 #pragma unused(fmt)
 }
