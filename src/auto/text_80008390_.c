@@ -7,6 +7,14 @@ extern void *fn_801E87A8(void);
 extern s32 fn_8026E20C(void);
 extern void fn_8026E204(s32);
 extern s32 lbl_8034F3D0;
+void fn_80008618(s32 arg0) {
+    s32 value = fn_8026E20C();
+    s32 result = value | arg0;
+    if (value & arg0)
+        result = value & ~arg0;
+    fn_8026E204(result);
+}
+
 s32 fn_8000865C(void) {
     return (*(u32 *)((char *)fn_801E87A8() + 0x10) >> 1) & 1;
 }
