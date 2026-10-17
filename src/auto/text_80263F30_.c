@@ -85,10 +85,10 @@ float fn_80264588(void) {
 }
 
 int fn_802645C0(void) {
-    extern float lbl_80558DC4;
+    extern float lbl_80558DC4[];
     float v = *(float *)((char *)lbl_8055F444 + 0x18);
     double abs = __fabs((double)v);
-    return (float)abs == lbl_80558DC4 || (float)abs <= lbl_80558DC4;
+    return (float)abs <= lbl_80558DC4[0];
 }
 
 void fn_802645EC(void) {
@@ -108,7 +108,7 @@ void fn_802645FC(void *arg0) {
 }
 
 void fn_80264618(void *arg0) {
-    extern float lbl_80558DC4;
+    extern float lbl_80558DC4[];
     extern float lbl_80563BF0;
     extern float fn_80214D48(void);
     extern int fn_802645C0(void);
@@ -120,7 +120,7 @@ void fn_80264618(void *arg0) {
     a = *(float *)((char *)arg0 + 0x1C);
     a = a < 0.0f ? -a : a;
     a = a * a;
-    if (a == lbl_80558DC4) {
+    if (a == lbl_80558DC4[0]) {
         fn_80221F94(0, 0);
         fn_80216CA8();
         a = fn_80214D48();
