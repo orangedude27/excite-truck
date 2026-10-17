@@ -6,9 +6,11 @@ extern void *lbl_8055C458;
 extern void fn_80236914(void);
 extern void fn_80264098(void *, int);
 extern void *fn_80264A54(void);
+#pragma dont_inline on
 void fn_80264098(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 4) = arg1;
 }
+#pragma dont_inline off
 
 #pragma dont_inline on
 #pragma dont_inline off
@@ -80,6 +82,13 @@ float fn_80264588(void) {
         return *(float *)((char *)lbl_8055F444 + 0x20);
     }
     return lbl_80563BF4;
+}
+
+int fn_802645C0(void) {
+    extern float lbl_80558DC4;
+    float v = *(float *)((char *)lbl_8055F444 + 0x18);
+    double abs = __fabs((double)v);
+    return (float)abs == lbl_80558DC4 || (float)abs <= lbl_80558DC4;
 }
 
 void fn_802645EC(void) {
