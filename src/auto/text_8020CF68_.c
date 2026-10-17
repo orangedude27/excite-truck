@@ -25,11 +25,11 @@ void fn_8020CF68(void) {
 }
 
 void fn_8020D178(void) {
-    lbl_8055EE74 = (int)fn_802090D4(&lbl_8033C6B0);
+    lbl_8055EE74 = (int)fn_802090D4(lbl_8033C6B0);
     fn_80209190(lbl_8055EE74, lbl_8056331C);
     lbl_8055EE7C = 0;
     lbl_8055EE80 = 0;
-    lbl_8055EEA0 = (int)fn_80145E70(&lbl_8033C6BC);
+    lbl_8055EEA0 = (int)fn_80145E70(lbl_8033C6BC);
 }
 
 void fn_8020D1C8(void) {
@@ -63,14 +63,13 @@ void fn_8020D224(void) {
     fn_80230E90(1);
 }
 
+#pragma scheduling off
 void fn_8020D29C(void) {
-    float value = lbl_8056331C;
     lbl_8055EE94 = 0;
-    fn_80209190(lbl_8055EE74, value);
+    fn_80209190(lbl_8055EE74, lbl_8056331C);
     fn_80206454();
     fn_801769EC();
 }
-
 extern void *lbl_8055EE7C;
 extern void *lbl_8055EE80;
 void AXFXSetHooks_8020DE10(void *arg0, void *arg1) {
