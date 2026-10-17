@@ -3,6 +3,15 @@
 
 extern int *lbl_8055D46C;
 extern int lbl_8055D464;
+extern int lbl_80558A88;
+extern unsigned char lbl_8055D470;
+extern char lbl_802FC240[];
+extern int fn_801284E8(const char *, int);
+extern void fn_802E6BD8(int, int, int, int, void *);
+extern void fn_8000DD98(void);
+extern void fn_8000D984(int);
+extern void fn_8000DA80(void);
+extern void fn_8000DC84(void);
 extern int lbl_8055D468;
 extern unsigned char lbl_8034F650[];
 extern int fn_8000DF2C(int);
