@@ -427,17 +427,22 @@ extern "C" void fn_801FA738(void) {
 
 #pragma use_lmw_stmw off
 extern "C" void *fn_801FA8E0(s32 arg0, s32 arg1, s32 arg2) {
-    s32 id = lbl_8055EC78++;
+    s32 id;
     void **list;
     void *context;
+    void *node;
+    id = lbl_8055EC78;
+    lbl_8055EC78 = id + 1;
     context = fn_8013184C();
     list = lbl_8055EC74;
-    void *node = fn_801284F8(0x4C, lbl_8033B5B8);
+    void *tag = lbl_8033B5B8;
+    node = fn_801284F8(0x4C, tag);
     if (node != 0) node = fn_801A4A8C(node, id, arg2, arg0, arg1, context);
     *(void **)((u8 *)node + 0x44) = *list;
     *list = node;
     return (u8 *)node + 4;
 }
+#pragma use_lmw_stmw reset
 extern void **lbl_8055EC74;
 extern s32 lbl_8055EC78;
 extern u8 lbl_8055EC3C;
@@ -635,3 +640,9 @@ extern "C" void *fn_801FC674(void *arg0, s32 arg1) {
     return arg0;
 }
 #pragma small_data reset
+extern "C" {
+extern u8 lbl_8033B418[], lbl_8033B53C[], lbl_8033B52C[], lbl_8033B51C[];
+extern u8 lbl_80333B98[], lbl_803337C8[], lbl_80333918[];
+extern f32 lbl_80563010, lbl_80562FFC;
+void fn_801A324C(void*, s32, void*, f32, f32);
+}
