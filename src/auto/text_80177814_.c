@@ -5,6 +5,7 @@
 extern unsigned char lbl_8055E45E;
 extern long lbl_80430870;
 extern int lbl_80430590[];
+#pragma small_data off
 extern int lbl_80430830[];
 
 void fn_80179EE8(void*, unsigned int);
