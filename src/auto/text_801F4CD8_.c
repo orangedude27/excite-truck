@@ -204,7 +204,6 @@ void fn_801F73E0(void) {
 extern void fn_801F6B98(void *);
 void fn_801F73E8(void) { fn_801F6B98(lbl_8055EC10); }
 
-extern void fn_801F6DF0(void *);
 extern void fn_801F6EC0(void *);
 void fn_801F73F8(void) { fn_801F6EC0(lbl_8055EC14); }
 
