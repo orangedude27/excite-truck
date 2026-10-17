@@ -534,9 +534,8 @@ extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         fn_802E317C(lbl_8032D1A4, strlen(text), format);
     fn_80147CEC(buffer, (s32)arg0, (s32)arg1, value);
     fn_80147230(buffer, (const char *)&lbl_80559E1C, text);
-}
-#pragma scheduling on
-extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
+  }
+  extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
     u32 tmp;
     fn_80147DC0(&tmp, arg0, arg1);
     fn_801476D8(&tmp, fn_80147C50(arg2, arg3, arg5), arg4);
