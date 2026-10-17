@@ -1457,10 +1457,12 @@ void fn_80089E3C(void) {
 
 extern u8 lbl_803C4040[];
 void *l2cu_find_lcb_by_bd_addr(u8 *addr) {
-    u8 *lcb;
-    int i;
-    for (i = 0, lcb = lbl_803C4040 + 8; i < 4; i++, lcb += 0x5C) {
+    int i = 0;
+    u8 *lcb = lbl_803C4040 + 8;
+    while (i < 4) {
         if (lcb[0] && memcmp(lcb + 0x2A, addr, 6) == 0) return lcb;
+        lcb += 0x5C;
+        i++;
     }
     return 0;
 }
