@@ -14,6 +14,8 @@ void fn_802E4C14(void) {
 void fn_802E4C18(void) {
 }
 
+#pragma dont_inline on
+#pragma scheduling off
 void *fn_802E4C1C(int arg0) {
     char *object = fn_801284F8(0xC, &lbl_8055D1C8);
     if (object != 0) {
@@ -25,8 +27,8 @@ void *fn_802E4C1C(int arg0) {
     return object;
 }
 
-void fn_802E4CA4(int arg0) {
-    fn_802E4C1C(arg0);
+void *fn_802E4CA4(int arg0) {
+    return fn_802E4C1C(arg0);
 }
 
 int fn_802E4D60(void *arg0, int arg1) {
