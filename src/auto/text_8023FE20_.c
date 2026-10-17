@@ -73,6 +73,14 @@ void fn_802409AC(void *arg0, s32 arg1) {
     }
 }
 
+s32 fn_802411A4(s32 *arg0) {
+    if (lbl_8055F1FC != 0) {
+        *arg0 = lbl_8055F200;
+        return 1;
+    }
+    return 0;
+}
+
 void fn_802411C8(void) { fn_8023FE20(); }
 
 void fn_802411CC(void) { fn_8023FE34(); }
