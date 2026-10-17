@@ -340,12 +340,19 @@ extern "C" s32 fn_800A9104(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
+extern "C" s32 fn_800ABC60(void *arg0, void *arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5);
+extern "C" void fn_800ACA44(s32 arg4) {
+    fn_800ABC60(0, 0, 0, 0, arg4, 0);
+}
+
 extern "C" s32 fn_800AF5A0(u16);
 extern "C" s32 fn_800AFE14(void);
 extern "C" s32 fn_800B0258(void);
 extern "C" s32 fn_800AE4C0(s32, s32, s32);
 extern "C" s32 fn_800AE620(s32 arg0, s32 arg1) {
-    s32 result = fn_800AE4C0(arg0 & ((-arg0 | arg0) >> 31), 0, arg1);
+    s32 result;
+    s32 sign = (-arg0 | arg0) >> 31;
+    result = fn_800AE4C0(arg1, 0, arg0 & sign);
     if (result == 0)
         return 0;
     return result;
@@ -358,7 +365,7 @@ extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
-extern "C" s32 VFiPFFAT_TraceClustersChain(void *arg0, s32 arg1, s32 *arg2) {
+extern "C" s32 VFiPFFAT_TraceClustersChain(void *arg0, u16 arg1, s32 *arg2) {
     s32 result;
 
     switch (*(s32 *)((u8 *)arg0 + 0x1C)) {
@@ -606,6 +613,7 @@ extern "C" void fn_800B7408(s32* arg0, void* arg1) {
 
 extern "C" void* fn_800B1BDC(void*);
 extern "C" void fn_800B73BC(void*);
+extern "C" s32 fn_800ABC60(void *arg0, void *arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5);
 extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
     fn_800B73BC(fn_800B1BDC(alarm));
