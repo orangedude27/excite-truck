@@ -383,6 +383,11 @@ void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv_800F6F18(void* self,
 
 extern "C" void fn_800FDE60(void);
 extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(unsigned long);
+extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
+extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *);
+extern "C" const char lbl_80325640[];
+extern "C" const char lbl_80324E88[];
+extern "C" const char lbl_80324EA4[];
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
 extern "C" void detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(void *);
 extern "C" void Update__Q36nw4hbm3snd11SoundPlayerFv(void *);
@@ -805,6 +810,15 @@ extern "C" void fn_800FA9E8(void* arg0) {
     *(s32*)((u8*)arg0 + 4) = 0;
     *(s32*)((u8*)arg0 + 8) = 0;
     *(s32*)((u8*)arg0 + 0xC) = 0;
+    OSRestoreInterrupts(0);
+}
+
+extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *self, void *ptr) {
+    OSDisableInterrupts();
+    u32 idx = ((u8 *)ptr - (u8 *)*(void **)self) / *(u32 *)((u8 *)self + 8);
+    u8 *block = (u8 *)self + (idx >> 3);
+    *(u8 *)(block + 0x14) = *(u8 *)(block + 0x14) & ~(1 << (idx & 7));
+    *(s32 *)((u8 *)self + 0x10) = *(s32 *)((u8 *)self + 0x10) - 1;
     OSRestoreInterrupts(0);
 }
 
