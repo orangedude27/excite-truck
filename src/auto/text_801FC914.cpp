@@ -17,7 +17,7 @@ void fn_801FCF18(void*, int, int);
 void fn_801FF484(void*, void*);
 float fn_801E7E24(void);
 extern float lbl_80558DC4;
-void fn_801FF6FC(void*, float = 0.0f);
+void fn_801FF6FC(void*, float);
 void fn_801FF3AC(void*, float);
     float fabs(float);
     void fn_801FF770(void*);
@@ -369,7 +369,7 @@ extern "C" void* fn_801FF6B4(void* arg0, int arg1) {
 }
 
 extern "C" void fn_801FF924(void*, void*, float);
-void fn_801FF6FC(void* arg0, float farg0) {
+extern "C" void fn_801FF6FC(void* arg0, float farg0) {
     int i = 0;
     char* p = (char*)arg0;
     while (i < *(int*)((char*)arg0 + 0x4C0)) {
