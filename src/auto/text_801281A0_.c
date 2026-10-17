@@ -1,7 +1,7 @@
 #include <types.h>
 
 extern char lbl_8055DF88;
-extern u32 lbl_802F8E40;
+__declspec(section ".data") extern u32 lbl_802F8E40;
 extern u32 lbl_80559968;
 extern char lbl_8032A430[];
 extern char lbl_8032A01C[];
@@ -30,12 +30,15 @@ void fn_80128714(void *, s32, s32);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-s32 *fn_801281A0(s32 arg0) {
-    s32 vals[4];
-    s32 *p = (s32 *)&lbl_802F8E40;
-    vals[0] = p[0]; vals[1] = p[1]; vals[2] = p[2]; vals[3] = p[3];
-    if (arg0 >= 0 && arg0 < 4) return &vals[arg0];
-    return (s32 *)&lbl_80559968;
+u32 fn_801281A0(s32 arg0) {
+    u32 vals[4];
+    u32 *p = (u32 *)((u8 *)&lbl_802F8E40 + 0);
+    vals[0] = *p++;
+    vals[1] = *p++;
+    vals[2] = *p++;
+    vals[3] = *p;
+    if (arg0 >= 0 && (u32)arg0 < 4) return vals[arg0];
+    return (u32)&lbl_80559968;
 }
 
 s32 fn_801281F4(s32 arg0, s32 arg1) {
