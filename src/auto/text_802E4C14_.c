@@ -2,7 +2,7 @@
 extern void *fn_801284F8(int, void *);
 extern int fn_8012850C(int, void *);
 extern void fn_802E30C8(const char *, ...);
-extern char lbl_8055D1C8[];
+extern int lbl_8055D1C8;
 extern char lbl_8034D1D0[];
 extern char lbl_8034D204[];
 extern char lbl_8034D1F0[];
@@ -12,6 +12,21 @@ void fn_802E4C14(void) {
 }
 
 void fn_802E4C18(void) {
+}
+
+void *fn_802E4C1C(int arg0) {
+    char *object = fn_801284F8(0xC, &lbl_8055D1C8);
+    if (object != 0) {
+        *(char **)object = lbl_8034D1D0;
+        *(int *)(object + 8) = arg0;
+        *(int *)(object + 4) = fn_8012850C(arg0, lbl_8034D204);
+        fn_802E30C8(lbl_8034D1F0, arg0 / 1024);
+    }
+    return object;
+}
+
+void fn_802E4CA4(int arg0) {
+    fn_802E4C1C(arg0);
 }
 
 int fn_802E4D60(void *arg0, int arg1) {
