@@ -1158,6 +1158,27 @@ u16 gap_convert_btm_status(u16 status) {
     }
 }
 
+BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt) {
+    u8 *p_buf;
+    u8 lap2;
+    u8 lap1;
+    if ((p_buf = GKI_getpoolbuf(2)) == NULL) return FALSE;
+    *(u16*)&p_buf[2] = 8;
+    *(u16*)&p_buf[4] = 0;
+    p_buf[8] = 1;
+    p_buf[9] = 4;
+    p_buf[10] = 5;
+    lap2 = inq_lap[2];
+    p_buf[11] = lap2;
+    lap1 = inq_lap[1];
+    p_buf[12] = lap1;
+    p_buf[13] = inq_lap[0];
+    p_buf[14] = duration;
+    p_buf[15] = response_cnt;
+    btu_hcif_send_cmd(p_buf);
+    return TRUE;
+}
+
 void fn_80089E3C(void) {
 
 }
