@@ -44,7 +44,7 @@ void fn_802E8D7C(void* hi) {
 }
 
 typedef unsigned int u32;
-extern void fn_802E95E0(void *, void *);
+extern int fn_802E95E0(void *, void (*)(void), int);
 extern void fn_802E317C(const char *, ...);
 extern void fn_802E6B94(void);
 extern void fn_802E6B50(void);
