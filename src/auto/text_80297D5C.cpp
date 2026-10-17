@@ -35,6 +35,14 @@ extern "C" void fn_802994C0(void*, unsigned int);
 extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
 extern float lbl_80564590;
 extern float lbl_8056459C;
+extern float lbl_80564594;
+extern float lbl_80564598;
+extern float lbl_805645A0;
+extern float lbl_805645A4;
+extern float lbl_805645A8;
+extern float lbl_805645AC;
+extern float lbl_805645B0;
+extern float lbl_805645B4;
 extern float lbl_80558DC4;
 int fn_80297D5C(int* out, int value) {
     int i = 1;
