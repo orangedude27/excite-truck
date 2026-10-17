@@ -15,12 +15,11 @@ void fn_80253258(void) {
     extern float lbl_80563A04, lbl_80563A08, lbl_80563A0C, lbl_80563A10;
     extern void PSVECNormalize(float *, float *);
     extern void fn_802C9A1C(float *);
+    float x, y, z, scale;
     float v[3];
-    v[0] = lbl_80563A04 * lbl_80563A10;
-    v[1] = lbl_80563A08 * lbl_80563A10;
-    v[2] = lbl_80563A0C * lbl_80563A10;
-    PSVECNormalize(v, v);
-    fn_802C9A1C(v);
+    x = lbl_80563A04; y = lbl_80563A08; z = lbl_80563A0C; scale = lbl_80563A10;
+    v[0] = x * scale; v[1] = y * scale; v[2] = z * scale;
+    PSVECNormalize(v, v); fn_802C9A1C(v);
 }
 
 void *fn_8025343C(void *arg0) {
@@ -36,6 +35,28 @@ void *fn_8025343C(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x20) = fn_801284E8(lbl_803447C0, fn_801F0008());
     *(s32 *)((u8 *)arg0 + 0x24) = fn_801284E8(lbl_803447CC, fn_801F0008());
     return arg0;
+}
+
+void *__dt__Q210JASDrumSet5TPercFv_802534B0(void *arg0, s32 arg1) {
+    extern void fn_80128658(s32);
+    if (arg0 != 0) {
+        fn_80128658(*(s32 *)((u8 *)arg0 + 0x20));
+        fn_80128658(*(s32 *)((u8 *)arg0 + 0x24));
+        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
+void fn_80253C48(void *arg0) {
+    s32 temp = *(s32 *)((u8 *)arg0 + 0x28);
+    if (temp != -1) {
+        fn_802C6CF8(temp);
+        *(s32 *)((u8 *)arg0 + 0x28) = -1;
+    }
+    if (*(s32 *)((u8 *)arg0 + 0x3FC) != 0) {
+        fn_801D21B4();
+        *(s32 *)((u8 *)arg0 + 0x3FC) = 0;
+    }
 }
 
 void *fn_802556BC(void *arg0, s32 arg1) {
