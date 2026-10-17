@@ -2270,6 +2270,10 @@ extern "C" s32 fn_800A53B4(void *arg0) {
     return (((u16)*(u16 *)((u8 *)arg0 + 0x1F8C)) >> 2) & 1;
 }
 
+extern "C" s32 fn_800A53C0(void *arg0) {
+    return (((u16)*(u16 *)((u8 *)arg0 + 0x1F8C)) >> 4) & 1;
+}
+
 extern "C" void fn_800A53CC(void *arg0) { *(u16 *)((u8 *)arg0 + 0x1F8C) = (u16)(*(u16 *)((u8 *)arg0 + 0x1F8C) & 0xFFFFFFEF); }
 
 extern "C" s32 fn_800A53DC(void *arg0) { return ((u16)*(u16 *)((u8 *)arg0 + 0x1F8C) >> 5U) & 1; }
