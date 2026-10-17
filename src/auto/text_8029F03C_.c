@@ -23,7 +23,7 @@ extern int fn_80128670(void);
 extern int fn_801EF024(void *);
 extern void fn_8029FDDC(void);
 extern void fn_8029FFBC(void);
-extern void fn_802A0720(void);
+extern int fn_802A0720(int *, int);
 extern void fn_802A0620(void);
 extern void fn_802A002C(void);
 extern int fn_801E85A4(void);
@@ -56,47 +56,26 @@ void fn_8029F03C(void) {
 }
 
 void fn_8029F0D0(void) {
-    if (lbl_8055F820 != 0) {
-        fn_80128670();
-    }
-    lbl_8055F820 = 0;
-    fn_801EF024(&fn_802A0720);
-    fn_801EF024(&fn_802A0620);
-    fn_8029FDDC();
-    fn_8029FFBC();
+ int *p=(int*)lbl_8055F820; if(p) fn_80128670();
+ lbl_8055F820=0; fn_801EF024(fn_802A0720); fn_801EF024(fn_802A0620); fn_8029FDDC(); fn_8029FFBC();
 }
 
 void fn_8029F124(void) {
-    int i = 0;
-    int offset = 0;
-    int zero = 0;
-    fn_802A002C();
-    do {
-        i++;
-        *(int *)((unsigned char *)lbl_8055F820 + offset) = zero;
-        offset += 4;
-    } while (i < fn_801E85A4());
+ int offset=0, i=0, zero=0; fn_802A002C();
+ do { ++i; *(int*)((char*)lbl_8055F820+offset)=zero; offset+=4; } while(i<fn_801E85A4());
 }
 
 void fn_8029F300(void) {
-    int i = 0;
-    int offset = 0;
-    int zero = 0;
-    int a, b, c, d;
-    fn_802029FC();
-    do {
-        if (fn_801E85A4() == 1) {
-            fn_802C92D0();
-            if (((unsigned int)*(int *)((unsigned char *)lbl_8055F820 + offset) >> 24) != 0) {
-                fn_801E88B4(&a, &b, &c, &d, i);
-                fn_802C92DC(a, b, c, d, *(int *)((unsigned char *)lbl_8055F820 + offset));
-                fn_802C92D8();
-            }
-        }
-        i++;
-        *(int *)((unsigned char *)lbl_8055F820 + offset) = zero;
-        offset += 4;
-    } while (i < fn_801E85A4());
+ int offset=0, i=0, zero=0, a,b,c,d; fn_802029FC();
+ do {
+  if(fn_801E85A4()==1) { fn_802C92D0();
+   if(((unsigned int)*(int*)((char*)lbl_8055F820+offset)>>24)!=0) {
+    fn_801E88B4(&a,&b,&c,&d,i);
+    fn_802C92DC(a,b,c,d,*(int*)((char*)lbl_8055F820+offset));
+   } fn_802C92D8();
+  }
+  ++i; *(int*)((char*)lbl_8055F820+offset)=zero; offset+=4;
+ } while(i<fn_801E85A4());
 }
 
 int fn_8029F3BC(unsigned char *arg0) {
@@ -193,3 +172,17 @@ check:
     if (i < lbl_8055F81C) goto loop;
     return -1;
 }
+
+void fn_8029FFBC(void) {
+    unsigned char *current = lbl_804B5070;
+    int i = 0;
+    do {
+        if (*(int *)(current + 0x64) != 0)
+            fn_8028E528();
+        if (*(int *)(current + 0x70) != 0)
+            fn_80292B48();
+        current += 0x78;
+        i++;
+    } while (i < lbl_8055F81C);
+}
+
