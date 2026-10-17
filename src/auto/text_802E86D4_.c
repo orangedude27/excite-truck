@@ -50,6 +50,9 @@ void fn_802E8D7C(void* hi) {
 typedef unsigned int u32;
 extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
+extern int NANDOpen(void *, int);
+extern int NANDClose(void *);
+extern char lbl_80560034;
 extern int fn_802E95E0(void *, void (*)(void), int);
 extern int fn_802E2C20(void);
 extern void fn_802E30C8(const char *, ...);
@@ -88,7 +91,7 @@ void fn_802E9160(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)(
 
 int fn_802E91AC(int *arg0) { return *arg0 == 0; }
 
-unsigned int fn_802E91BC(int *arg0) { int value=*arg0 ^ 2; return (unsigned int)(((value >> 1) - (value & 2))) >> 31; }
+unsigned int fn_802E91BC(int *arg0) { int value=*arg0 ^ 2; int shifted=value >> 1; int masked=value & 2; int result=shifted-masked; return (unsigned int)result >> 31; }
 
 extern int fn_802E2C20(void);
 extern void fn_802E30C8(const char *, ...);
