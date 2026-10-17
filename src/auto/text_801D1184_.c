@@ -1,18 +1,18 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #pragma small_data off
-extern char lbl_80338208;
-extern char lbl_80338214;
+extern char lbl_80338208[];
+extern char lbl_80338214[];
 #pragma small_data on
 
 void fn_801D1184(void) {
     extern void *fn_801284F8(int, const char *);
     extern void fn_801D0FA4(void);
     void *object;
-    object = fn_801284F8(4, (const char *)&lbl_80338208);
+    object = fn_801284F8(4, (const char *)&lbl_80338208[0]);
     if (object != 0) {
         fn_801D0FA4();
-        *(void **)object = &lbl_80338214;
+        *(void **)object = &lbl_80338214[0];
     }
 }
 
