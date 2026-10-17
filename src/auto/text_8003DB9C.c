@@ -196,6 +196,48 @@ void GXSetNumTexGens(unsigned int value) {
     data[0x5FC / 4] |= 4;
 }
 
+void GXSetMisc(s32 which, unsigned short value) {
+    switch (which) {
+    case 1:
+        __GXData[1] = value;
+        *(unsigned short *)__GXData = __cntlzw(value & 0xFFFF) >> 5;
+        *(unsigned short *)((char *)__GXData + 2) = 1;
+        if (value != 0) {
+            __GXData[0x5FC / 4] |= 8;
+        }
+        return;
+    case 2:
+        *((unsigned char *)__GXData + 0x5F9) = value != 0;
+        return;
+    case 3:
+        *((unsigned char *)__GXData + 0x5FA) = value != 0;
+        return;
+    default:
+        return;
+    }
+}
+
+void GXGetVtxDesc(void) {
+    if (__GXData[0x5FC / 4] != 0) {
+        __GXSetDirtyState();
+    }
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    *(volatile unsigned int *)0xCC008000 = 0;
+    PPCSync(0xCC010000);
+}
+
+void GXGetVtxDescv(void) {
+    while (PPCMfwpar() & 1) {
+    }
+    PPCMtwpar(0x0C008000);
+}
+
 void __GXSetGenMode(void) {
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = __GXData[0x22C / 4];
