@@ -1489,14 +1489,17 @@ tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
 }
 
 tBTM_SEC_DEV_REC *btm_find_dev(BD_ADDR bd_addr) {
-    s32 i;
     u8 *entry;
+    s32 i;
     entry = lbl_803C0F78 + 0x1F30;
-    for (i = 0; i < 16; i++, entry += 0x88) {
+    i = 0;
+    do {
         if ((entry[0x76] & 0x80) && memcmp(entry + 0x1C, bd_addr, 6) == 0) {
             return (tBTM_SEC_DEV_REC *)entry;
         }
-    }
+        i++;
+        entry += 0x88;
+    } while (i < 16);
     return 0;
 }
 
