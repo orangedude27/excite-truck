@@ -318,6 +318,21 @@ void fn_80196414(void *arg0) {
     fn_80196DC4(arg0);
 }
 
+extern int fn_801B2F24(void);
+extern void fn_801B2F40(int);
+extern int fn_8019643C(void);
+int fn_80196468(int arg0) {
+    int end = fn_801B2F24();
+    int i = arg0;
+    while (i <= end) {
+        fn_801B2F40(i - 1);
+        if (fn_8019643C() != 0)
+            return 1;
+        i++;
+    }
+    return 0;
+}
+
 void fn_80196A9C(void) {
     fn_8019684C();
 }
