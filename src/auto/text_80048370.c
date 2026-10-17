@@ -41,23 +41,19 @@ void WPADiDisableRecalibration(s32 chan) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma opt_common_subs off
 void WPADiSamplingCallback(s32 chan, s32 result) {
     extern u32 fn_80062460(s32);
-    BOOL interrupts;
+    s32 enabled;
     KPADInsideStatus *status = &inside_kpads[chan];
     status->sampling_restart = 0;
     if (result != 0) {
         status->data_format_failed = 1;
-    } else if (fn_80062460(chan) == status->is_dpd_enabled && status->data_format_failed == 0) {
-        KPADInsideStatus *inner = &inside_kpads[chan];
-        interrupts = OSDisableInterrupts();
-        if (inner->sampling_pending != 0) {
-            inner->sampling_pending = 0;
-            if (inner->dpd_ctrl_callback != 0) {
-                inner->dpd_ctrl_callback(chan, 1);
-            }
+    } else {
+        enabled = fn_80062460(chan);
+        if (enabled == status->is_dpd_enabled && status->data_format_failed == 0) {
+            KPADNotifySampling(chan);
         }
-        OSRestoreInterrupts(interrupts);
     }
 }
 #pragma pop
