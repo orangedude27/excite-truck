@@ -69,6 +69,16 @@ extern "C" void fn_800D6EEC(void* arg0) {
     *(volatile u8*)(p + 0x20) = 0;
 }
 
+extern "C" void fn_800D7718(void *arg0) {
+    struct Obj {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+    };
+    Obj* obj = *(Obj**)((char*)arg0 + 0x10);
+    if (obj) obj->v2();
+}
+
 extern "C" void fn_800D7738(void* arg0) {
     Obj_800D7738* p = *(Obj_800D7738**)((char*)arg0 + 0x10);
     if (p != 0) p->v3();
@@ -102,9 +112,11 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
     }
 }
 
-extern "C" void fn_800D7F58(void* arg0, void* arg1) {
-    ((f32*)arg0)[0] = ((f32*)arg1)[0];
-    ((f32*)arg0)[1] = ((f32*)arg1)[1];
+extern "C" void fn_800D7F58(void *arg0, void *arg1) {
+    f32 v1 = ((f32 *)arg1)[1];
+    f32 v0 = ((f32 *)arg1)[0];
+    ((f32 *)arg0)[0] = v0;
+    ((f32 *)arg0)[1] = v1;
 }
 
 extern "C" void fn_800D7F6C(s32 *arg0) {
