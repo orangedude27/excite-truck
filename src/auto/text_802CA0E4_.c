@@ -168,20 +168,35 @@ char *fn_802CAE34(int arg0) {
 void fn_802CAE98(int arg0, char *arg1) {
     char *dst;
     int count;
-    char value;
     if (!((int (*)(int))fn_802CAE00)(arg0))
         return;
     dst = (char *)lbl_8055FCB0 + arg0 * 0x4C + 4;
     count = 0x20;
-    while (--count > 0) {
-        value = *arg1++;
-        if ((signed char)value == 0)
+    do {
+        count--;
+        if (count <= 0) {
+            dst[-1] = 0;
             break;
-        *dst++ = value;
-    }
-    if (count == 0)
-        dst[-1] = 0;
+        }
+        *dst = *arg1;
+        if ((signed char)*arg1++ == 0)
+            break;
+        dst++;
+    } while (1);
 }
+
+void fn_802CAF1C(int arg0, signed char arg1, signed char arg2) {
+    int offset;
+    int ptr;
+    if (fn_802CAE00(arg0)) {
+        offset = arg0 * 0x4C;
+        ptr = *(int *)(lbl_8055FCB0 + offset + 0x2C);
+        *(signed char *)(ptr + 8) = arg1;
+        ptr = *(int *)(lbl_8055FCB0 + offset + 0x2C);
+        *(signed char *)(ptr + 9) = arg2;
+    }
+}
+
 #pragma dont_inline reset
 int fn_802DB2C0(int);
 int fn_802CA57C(int, int, int);
@@ -252,6 +267,12 @@ unsigned short fn_802CB3FC(int arg0) {
     if ((int)q[1] > (int)q[0])
         return q[1];
     return q[0];
+}
+
+void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
+    fn_802CBBE8(arg1, arg2);
+    *(int **)((char *)arg2 + 0x14) = *arg0;
+    *arg0 = arg2;
 }
 
 int fn_802CC404(void *arg0) {
