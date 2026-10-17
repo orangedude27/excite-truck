@@ -212,8 +212,8 @@ extern "C" void fn_800E402C(void *arg0) {
 
 extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     unsigned int level = OSDisableInterrupts();
+    void **iterator = *(void ***)((char *)this_ + 0x18);
     void *end = (char *)this_ + 0x18;
-    void **iterator = *(void ***)end;
     while (iterator != end) {
         void *node = *iterator;
         if (node == 0) {
@@ -259,16 +259,16 @@ extern "C" int fn_800E4520(int arg0, int arg1) {
 extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
     if (this_ != 0) {
         *(void **)((char *)this_ + 8) = (void *)&lbl_80322498;
-        int *base = (int *)this_;
+        int **outer = (int **)this_;
         for (int i = 0; i < 2; i++) {
-            int *p = base + 1;
+            int *inner = outer[1];
             for (int j = 0; j < 4; j++) {
-                if (*p != 0) {
-                    TRKGetFreeBuffer(p);
+                if (inner[0] != 0) {
+                    TRKGetFreeBuffer(&inner[0]);
                 }
-                p++;
+                inner++;
             }
-            base += 4;
+            outer += 4;
         }
         if (arg1 > 0) {
             fn_80128668(this_);
@@ -296,6 +296,13 @@ extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *this_, u8 paused) {
     u8 flags = *(u8 *)((char *)this_ + 0x123);
     *(u8 *)((char *)this_ + 0x123) = flags | 2;
     OSRestoreInterrupts(level);
+}
+
+extern "C" void fn_800E5444(void *arg0, float farg0) {
+    if (farg0 != *(float *)((char *)arg0 + 0x184)) {
+        *(float *)((char *)arg0 + 0x184) = farg0;
+        *(unsigned char *)((char *)arg0 + 0x123) |= 8;
+    }
 }
 
 extern "C" void fn_800E5A8C(void) {
