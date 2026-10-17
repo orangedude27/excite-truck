@@ -399,6 +399,13 @@ extern "C" void fn_8012E5E4(void *arg0, void *arg1) {
     }
 }
 
+extern "C" void fn_8012E630(void *arg0) {
+    fn_8012D3D8(*(s32 *)((u8 *)arg0 + 0x4C));
+    fn_8012D8A8(*(s32 *)((u8 *)arg0 + 0x4C));
+    *(s32 *)((u8 *)arg0 + 0x4C) = 0;
+    *((u8 *)arg0 + 0xC) = 0;
+}
+
 extern "C" s32 fn_8012E674(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
 }
