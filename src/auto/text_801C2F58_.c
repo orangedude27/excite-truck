@@ -251,16 +251,14 @@ extern void fn_801C7964(void);
 extern s32 lbl_8055E828;
 extern char lbl_8055AA54[];
 extern s32 fn_801C34CC(f32, f32);
-#pragma push
-#pragma peephole off
-#pragma push
-#pragma peephole off
+#pragma scheduling off
+extern s32 lbl_8055E82C;
+void fn_801C855C(void);
 void fn_801C7770(void) {
-    volatile u8 *p = (u8 *)&lbl_8055E838;
-    *p = (u32)__cntlzw(*p) >> 5;
+    u32 x = (u32)__cntlzw((u32)lbl_8055E83E) / 32;
+    lbl_8055E83E = x;
 }
-#pragma pop
-#pragma pop
+#pragma scheduling on
 void fn_801C77C0(void) {
     lbl_8055E844 = atoi(lbl_804380F0);
     lbl_8055E841 = 0;
@@ -476,12 +474,30 @@ void fn_801C95EC(f32 arg0) {
     fn_801C957C(1);
 }
 
+void fn_801C96E4(void) {
+    lbl_8055E82C = lbl_8055E828 / 10;
+}
+
 void fn_801C9830(void) {
     return;
 }
 
 void fn_801C98F0(void) {
     fn_801C9444();
+}
+
+void fn_801C98F4(u8 *str, s32 len) {
+    u8 *p = str;
+    s32 ctr = len;
+    if (len > 0) {
+        do {
+            while ((s8)*p != 0) {
+                p++;
+            }
+            p++;
+            ctr--;
+        } while (ctr != 0);
+    }
 }
 
 extern s32 strlen(const char*);
