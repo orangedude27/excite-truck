@@ -1366,6 +1366,17 @@ extern "C" void fn_80223800(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4
 
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
+extern "C" void fn_80223CC4(void *arg0) {
+    void *obj = *(void **)((u8 *)arg0 + 0x264);
+    s32 a = *(s32 *)((u8 *)arg0 + 0x24C);
+    s32 b = *(s32 *)((u8 *)obj + 0xC);
+    if (a == b)
+        *(f32 *)((u8 *)arg0 + 0x25C) = lbl_805634A8;
+    else
+        *(f32 *)((u8 *)arg0 + 0x25C) = lbl_805634A4;
+    fn_802192AC(arg0);
+}
+
 extern "C" void fn_80225918(void *arg0) {
     fn_802192AC(arg0);
 }
@@ -1887,6 +1898,11 @@ extern "C" void fn_80229AC4(void *arg0) {
 }
 
 extern "C" u32 fn_80229ADC(void) { return 1; }
+
+extern "C" void fn_80229AE4(void *arg0, s32 arg1, s32 arg2) {
+    void *obj = *(void **)((u8 *)arg0 + 0x244);
+    ((void (*)(void *, s32, s32, s32, s32))(*(u32 *)*(u32 *)obj + 0x18))(obj, *(s32 *)((u8 *)arg0 + 0x248), *(s32 *)((u8 *)arg0 + 0x24C), arg1, arg2);
+}
 
 extern "C" void fn_80229B0C(void *arg0, s32 arg1, s32 arg2) {
     ((void (*)(void *, s32, s32))fn_80219264)(arg0, arg1, arg2);
