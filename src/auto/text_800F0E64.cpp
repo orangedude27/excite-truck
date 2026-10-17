@@ -74,11 +74,6 @@ extern "C" void OSInitMutex(void*);
 extern "C" void *GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(s32, u32, void*);
 extern "C" const char lbl_80324CB0[];
 extern "C" const char lbl_805598A0[];
-#pragma push
-#pragma small_data off
-extern u8 lbl_80324CB0_sda[];
-extern u8 lbl_805598A0_sda[];
-#pragma pop
 extern "C" void fn_800FA6E8(void);
 extern "C" void fn_800FA7E0(void*);
 extern "C" void OSInitMessageQueue(void*, void*, s32);
