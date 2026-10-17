@@ -305,6 +305,13 @@ extern "C" void fn_800E5444(void *arg0, float farg0) {
     }
 }
 
+extern "C" void fn_800E54EC(void *arg0, float farg0) {
+    if (farg0 != *(float *)((char *)arg0 + 0x130)) {
+        *(float *)((char *)arg0 + 0x130) = farg0;
+        *(unsigned char *)((char *)arg0 + 0x123) |= 0x20;
+    }
+}
+
 extern "C" void fn_800E5A8C(void) {
     fn_800E6A44();
 }
