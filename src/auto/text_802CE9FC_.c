@@ -27,6 +27,8 @@ void fn_802CF104(void) {
     fn_802CF048(1);
 }
 
+void fn_802CF5D0(void) {}
+
 void fn_802CFEEC(void* alarm) {
     fn_802CFDE0(fn_802CFCA0(alarm));
 }
@@ -118,21 +120,25 @@ int fn_802D0EC8(int arg0) {
 }
 
 void fn_802D1B58(void) {
-    int m[8];
+    float m[8];
+    float f = lbl_80564F94;
+    float *t = (float *)lbl_804C5690;
+    float a = -t[1];
+    float b = -t[4];
+    float c = -t[7];
     int *p = (int *)lbl_802FAC70;
-    float *a = (float *)lbl_804C5690;
 
-    m[0] = p[0];
-    m[1] = p[1];
-    m[2] = p[2];
-    m[3] = p[3];
-    m[4] = p[4];
-    m[5] = p[5];
-    m[6] = p[6];
-    m[7] = p[7];
-    *(float *)&m[0] = lbl_80564F94 * -a[1];
-    *(float *)&m[1] = lbl_80564F94 * -a[4];
-    *(float *)&m[2] = lbl_80564F94 * -a[7];
+    *(int *)&m[0] = p[0];
+    *(int *)&m[1] = p[1];
+    *(int *)&m[2] = p[2];
+    *(int *)&m[3] = p[3];
+    *(int *)&m[4] = p[4];
+    *(int *)&m[5] = p[5];
+    *(int *)&m[6] = p[6];
+    *(int *)&m[7] = p[7];
+    m[0] = f * a;
+    m[1] = f * b;
+    m[2] = f * c;
     GXLoadTexMtxImm(m, 0x21, 1);
 }
 
@@ -357,14 +363,10 @@ void fn_802D3D94(void *arg1, int arg0) {
 }
 
 void fn_802D3DAC(void) {
-    unsigned int id;
-
-    if ((lbl_8055FDD0 & 0x3FU) == 0) {
+    if ((lbl_8055FDD0 & 0x3F) == 0) {
         OSReport(lbl_8034C204);
     }
-    id = lbl_8055FDD0;
-    lbl_8055FDD0 = id + 1;
-    GXInitVtxDescList(id);
+    GXInitVtxDescList(lbl_8055FDD0++);
     GXDisableBreakPt();
 }
 
