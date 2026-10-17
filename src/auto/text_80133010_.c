@@ -1,5 +1,11 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern int fn_802E30C8(const char *, ...);
+extern int fn_801338D8(const char *);
+extern float fn_80133960(const char *);
+extern int fn_80133844(const char *);
+extern unsigned long strlen(const char *);
+extern const char lbl_8032B8F8[];
 
 extern int lbl_8055E07C;
 extern int lbl_80559B58;
@@ -14,6 +20,37 @@ extern int fn_80133E10(void **, int, int);
 extern int fn_8013323C(int, int, float);
 int fn_80133010(void) { int val=lbl_8055E07C; unsigned int tmp=(unsigned int)(-val)|(unsigned int)val; return tmp>>31; }
 
+extern int lbl_8055E078, lbl_8055E080;
+extern const char lbl_8032B880[], lbl_8032B88C[];
+extern void* fn_801284F8(int, const char*);
+extern void fn_80133FCC(void);
+extern void fn_801341B4(int, int);
+extern void fn_802E6BD8(int, int, int, int, void (*)(void));
+extern void fn_8000DBC8(void (*)(int, int));
+#pragma push
+#pragma optimize_for_size on
+void fn_80133024(void) {
+    void *p;
+    lbl_8055E078 = 1;
+    p = fn_801284F8(0x6D68, lbl_8032B880);
+    lbl_8055E07C = (int)p;
+    *(int*)((char*)p + 4) = 0;
+    lbl_8055E080 = 0;
+    lbl_8042F718[1] = 0;
+    lbl_8042F718[3] = 0;
+    lbl_8042F718[5] = 0;
+    lbl_8042F718[7] = 0;
+    lbl_8042F718[9] = 0;
+    lbl_8042F718[11] = 0;
+    lbl_8042F718[13] = 0;
+    lbl_8042F718[15] = 0;
+    if (fn_80133BA0(lbl_80559B58, 0, 0x12) == 0) {
+        fn_802E317C(lbl_8032B88C, lbl_80559B58);
+    }
+    fn_802E6BD8(0x4F505473, 6, lbl_8055E07C, 0x6D68, fn_80133FCC);
+    fn_8000DBC8(fn_801341B4);
+}
+#pragma pop
 void fn_801330E8(int arg0) {
  if (!fn_80133BA0(lbl_80559B58,0,arg0)) {
    const char *fmt=lbl_8032B8B0;
