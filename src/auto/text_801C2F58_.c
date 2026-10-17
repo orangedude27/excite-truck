@@ -59,6 +59,7 @@ extern void fn_801B8054(s32, void *, f32, f32);
 extern void fn_80015A20(void *, f32 *);
 extern void fn_80015B20(s32, void *, s32);
 extern f32 lbl_80562978;
+extern f32 lbl_80562980;
 extern f32 lbl_80562994;
 extern f32 lbl_80562974;
 extern f32 lbl_805629C8;
@@ -100,6 +101,30 @@ s32 fn_801C3508(s32 arg0, s32 arg1) {
     return (arg0 & (1 << arg1)) != 0;
 }
 
+#pragma auto_inline off
+s32 fn_801C3954(s32 arg0) {
+    char buf[0x100];
+    char *p;
+    s32 result;
+
+    strcpy(buf, (char *)arg0);
+    p = buf;
+    result = 0;
+    while (1) {
+        s32 found = 0;
+        while (*p != ' ' && *p != 0)
+            p++;
+        if (*p == 0)
+            found = 1;
+        *p = 0;
+        result |= fn_801C3524(buf);
+        if (found)
+            break;
+        p++;
+    }
+    return result;
+}
+#pragma auto_inline on
 s32 fn_801C3A00(u32 arg0) {
     s32 i;
     for (i = 0; i < lbl_8055E804; i++) {
