@@ -572,6 +572,12 @@ void *GXSetTexRegionCallback(void *callback) {
     return old;
 }
 
+void *GXSetTlutRegionCallback(void *callback) {
+    void *old = (void *)*((unsigned int *)((char *)__GXData + 0x51C));
+    *((unsigned int *)((char *)__GXData + 0x51C)) = (unsigned int)callback;
+    return old;
+}
+
 extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
 void GXSetTevDirect(int arg0) {
     GXSetTevIndirect(arg0, 0, 0, 0, 0, 0, 0, 0);
