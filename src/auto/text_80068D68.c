@@ -1095,6 +1095,8 @@ tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
 
 void *fn_8007A394(void) { return lbl_803C0F78 + 0x648; }
 
+void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
+
 void fn_8007AD38(void) {
 
 }
