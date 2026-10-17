@@ -1411,6 +1411,22 @@ void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
 
 s32 fn_8007A3B4(s32 value) { s32 old = *(s32 *)(lbl_803C0F78 + 0x568); *(s32 *)(lbl_803C0F78 + 0x568) = value; return old; }
 
+extern char lbl_80316220[];
+extern void fn_8008534C(void *, u16);
+tBTM_STATUS BTM_WritePageTimeout(UINT16 timeout) {
+    void *buf;
+    if (lbl_803C0F78[0x27c0] >= 4) {
+        fn_80070954(0xD0003, lbl_80316220, timeout);
+    }
+    *(u16 *)(lbl_803C0F78 + 0x64c) = (timeout * 0x271) / 1000;
+    buf = GKI_getpoolbuf(2);
+    if (buf != NULL) {
+        fn_8008534C(buf, timeout);
+        return 0;
+    }
+    return 3;
+}
+
 void btm_read_stored_link_key_complete(u8 *p) {
     void (*callback)(u8 *);
     u8 param[6];
