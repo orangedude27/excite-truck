@@ -4,6 +4,7 @@
 #include <revolution/ARC/arc.h>
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSContext.h>
+#include <revolution/DVD/dvd.h>
 
 extern void* fn_802ECC74(void*);
 extern f32 lbl_80329D48[];
@@ -224,6 +225,54 @@ s32 fn_80119C0C(void *arg0, s32 arg1) {
         *(s32 *)((u8 *)arg0 + 0x64) = 0;
     }
     return *(s32 *)((u8 *)arg0 + 0x64);
+}
+
+s32 fn_8011A870(void *arg0, s32 arg1) {
+    s32* p = (s32*)arg0;
+    s32 result;
+    if (arg1 & 1) {
+        if (p[0x50/4] == 0) {
+            p[0x50/4] = 1;
+        }
+        if (arg1 & 0x80000000) {
+            do {
+            } while (p[0x24/4] != 0);
+        }
+    } else if (arg1 & 2) {
+        if ((u32)p[0x50/4] == 1U) {
+            p[0x50/4] = 0;
+        }
+        if (arg1 & 0x80000000) {
+            fn_8011A7CC(arg0);
+        }
+    }
+    result = p[0x50/4];
+    return result;
+}
+
+s32 fn_8011AC04(s32 arg1) {
+    return (arg1 + 0x7FFF) & 0xFFFF8000;
+}
+
+void fn_8011AC10(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 temp_r4;
+    s32 temp_r29;
+    s32* p = (s32*)arg0;
+    OSDisableInterrupts();
+    temp_r4 = arg1;
+    temp_r29 = arg2 & 0xFFFF8000;
+    temp_r4 = temp_r4 + temp_r29;
+    p[0xA0/4] = temp_r29;
+    p[0x40/4] = temp_r29;
+    p[0xA4/4] = arg1;
+    p[0x9C/4] = arg1;
+    p[0xAC/4] = arg1;
+    p[0xA8/4] = temp_r4;
+    p[0x4C/4] = 0;
+    p[0xB8/4] = arg3;
+    p[0xBC/4] = arg4;
+    p[0xD0/4] = (s32)arg0;
+    OSRestoreInterrupts(temp_r4);
 }
 
 extern f32 lbl_80329D48[];
