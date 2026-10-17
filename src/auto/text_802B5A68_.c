@@ -51,6 +51,19 @@ void* fn_802B5AC0(void* arg0, s32 arg1) {
     return arg0;
 }
 
+__declspec(section ".data") extern u32 lbl_802FAB30;
+extern u32 lbl_8055CE30;
+u32 fn_802B5B18(s32 arg0) {
+    u32 vals[4];
+    u32 *p = (u32 *)&lbl_802FAB30;
+    vals[0] = *p++;
+    vals[1] = *p++;
+    vals[2] = *p++;
+    vals[3] = *p;
+    if (arg0 >= 0 && (u32)arg0 < 4) return vals[arg0];
+    return (u32)&lbl_8055CE30;
+}
+
 void fn_802B5B6C(void) {
     fn_802B59A4(lbl_8055FA3C);
 }
@@ -164,7 +177,9 @@ extern s32 fn_8026E214(void *, void *);
 extern void deleteThreads__6SystemFv(void *);
 extern s32 fn_802C6CF8(void);
 extern s32 lbl_804BFA70;
-void fn_802B61E0(void) { volatile double temp = lbl_80564C68; lbl_8055FA08 = (float)fn_802E2C20() / lbl_80564C70; }
+void fn_802B61E0(void) {
+    lbl_8055FA08 = (float)fn_802E2C20() / lbl_80564C70;
+}
 
 s32 fn_802B6270(void) {
     return lbl_8055FA40 == 7;
