@@ -494,11 +494,11 @@ extern "C" s32 fn_800A8F28(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 }
 
 extern "C" s32 VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(void *arg0, void *arg1, u32 arg2, s32 arg3, s32 arg4) {
-    s32 temp_r3;
+    s32 result;
     if (arg2 >= *(u32 *)((u8 *)arg0 + 8))
         return 0x10;
-    temp_r3 = VFiPFCACHE_DoReadNumSector((void *)arg0, arg2, arg3, arg4, (s32)arg1);
-    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+    result = ((s32 (*)(void *, s32, s32, u32, s32, s32))VFiPFCACHE_DoReadNumSector)(arg0, (s32)((u8 *)arg0 + 0x1634), (s32)arg1, arg2, arg3, arg4);
+    return result & ((-result | result) >> 31);
 }
 
 extern "C" s32 fn_800A8504(void *, void *, s32, s32);
