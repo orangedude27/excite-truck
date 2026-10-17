@@ -137,9 +137,15 @@ void fn_8024CF54(void) {
     fn_8024C768();
 }
 
+void fn_8024CFB4(void) {
+    int sp8;
+    if (((int (*)(int *))fn_8024CF48)(&sp8) != 0) fn_8000D984(sp8);
+}
+
 void fn_8024CFE8(void *arg0) {
-    *(float *)((char *)arg0 + 0x40) = (float)*(int *)((char *)arg0 + 0x10) /
-        (float)fn_80232B70(*(int *)((char *)arg0 + 0x34));
+    int a = *(int *)((char *)arg0 + 0x10);
+    int b = fn_80232B70(*(int *)((char *)arg0 + 0x34));
+    *(float *)((char *)arg0 + 0x40) = (float)a / (float)b;
 }
 
 int fn_8024D054(void *arg0, int arg1) {
@@ -147,9 +153,10 @@ int fn_8024D054(void *arg0, int arg1) {
     switch (arg1) {
     case 0x6f:
         value = (int)strlen(*(char **)((char *)arg0 + 0x2c));
-        if (value >= *(int *)((char *)arg0 + 0x30) + 1)
-            value = *(int *)((char *)arg0 + 0x30) + 1;
-        *(int *)((char *)arg0 + 0x30) = value;
+        if (value < *(int *)((char *)arg0 + 0x30) + 1)
+            *(int *)((char *)arg0 + 0x30) = value;
+        else
+            *(int *)((char *)arg0 + 0x30) += 1;
         *(char *)((char *)arg0 + 0x48) = 1;
         return 1;
     case 0x20:
