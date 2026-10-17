@@ -362,15 +362,64 @@ extern "C" s32 fn_801FBD04(void) {
 }
 
 extern "C" s32 fn_801FBD0C(void *arg0) {
+    s32 result;
+    s32 flags;
+    f32 cz;
+    f32 cy;
+    f32 cx;
+    f32 z;
+    f32 y;
+    f32 x;
     f32 delta[3];
-    void *camera = fn_802C86DC();
-    delta[0] = *(f32 *)((u8 *)arg0 + 0x24) - *(f32 *)((u8 *)camera + 0x24);
-    delta[1] = *(f32 *)((u8 *)arg0 + 0x28) - *(f32 *)((u8 *)camera + 0x28);
-    delta[2] = *(f32 *)((u8 *)arg0 + 0x2C) - *(f32 *)((u8 *)camera + 0x2C);
-    if (PSVECDotProduct(delta, (const f32 *)((u8 *)arg0 + 0x18)) < lbl_80562FF0) {
-        return 0x11;
-    }
-    return 0x21;
+    void *camera;
+
+    camera = fn_802C86DC();
+    x = *(f32 *)((u8 *)arg0 + 0x24);
+    y = *(f32 *)((u8 *)arg0 + 0x28);
+    cx = *(f32 *)((u8 *)camera + 0x24);
+    z = *(f32 *)((u8 *)arg0 + 0x2C);
+    delta[0] = x - cx;
+    cy = *(f32 *)((u8 *)camera + 0x28);
+    delta[1] = y - cy;
+    cz = *(f32 *)((u8 *)camera + 0x2C);
+    delta[2] = z - cz;
+    result = PSVECDotProduct(delta, (const f32 *)((u8 *)arg0 + 0x18)) < lbl_80562FF0;
+    flags = 0x20;
+    if (result) flags = 0x10;
+    return flags | 1;
+}
+
+extern "C" s32 fn_801FBD94(void *arg0) {
+    s32 result;
+    s32 flags;
+    f32 cz;
+    f32 cy;
+    f32 cx;
+    f32 z;
+    f32 y;
+    f32 x;
+    f32 delta[3];
+    void *camera;
+
+    camera = fn_802C86DC();
+    x = *(f32 *)((u8 *)arg0 + 0x24);
+    y = *(f32 *)((u8 *)arg0 + 0x28);
+    cx = *(f32 *)((u8 *)camera + 0x24);
+    z = *(f32 *)((u8 *)arg0 + 0x2C);
+    delta[0] = x - cx;
+    cy = *(f32 *)((u8 *)camera + 0x28);
+    delta[1] = y - cy;
+    cz = *(f32 *)((u8 *)camera + 0x2C);
+    delta[2] = z - cz;
+    result = PSVECDotProduct(delta, (const f32 *)arg0) < lbl_80562FF0;
+    flags = 0x20;
+    if (result) flags = 0x10;
+    return flags | 1;
+}
+
+extern "C" void fn_801FC4D8(void **arg0, void *arg1) {
+    *(void **)((u8 *)arg1 + 0x68) = *arg0;
+    *arg0 = arg1;
 }
 
 extern "C" f32 fn_801FC664(void) {
