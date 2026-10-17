@@ -166,6 +166,11 @@ void fn_8022DE1C(void *arg0) {
     *temp_r4 = var_f4;
 }
 
+void fn_8022DF00(void *arg0, int *arg1, int *arg2) {
+    *arg1 = *(int *)((char *)arg0 + 4);
+    *arg2 = 4;
+}
+
 int fn_8022DF9C(void *arg0) {
     int *ptr = *(int **)((char *)arg0 + 4);
     return *(int *)((char *)arg0 + 8) != *ptr;
