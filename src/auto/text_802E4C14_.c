@@ -26,6 +26,8 @@ void *fn_802E4C1C(int arg0) {
     }
     return object;
 }
+#pragma scheduling on
+#pragma dont_inline off
 
 void *fn_802E4CA4(int arg0) {
     return fn_802E4C1C(arg0);
