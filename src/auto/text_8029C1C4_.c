@@ -52,8 +52,8 @@ void fn_8029C25C(void) {
     int *p;
     int i;
     float v = fn_801E7E24();
-    if (fabsf(v) > lbl_80558DC4) {
-        p = &lbl_804B5010;
+    if (__fabsf(v) > lbl_80558DC4) {
+        p = (int *)&lbl_804B5010;
         i = 0;
         do { fn_8029D574(*p++); ++i; } while (i < lbl_8055F7F0);
     }
@@ -62,13 +62,9 @@ void fn_8029C25C(void) {
 void fn_8029C650(void) { register int value=lbl_8055CAA8; if(value != -1) fn_802C6CF8(); }
 
 void fn_8029C934(void) {
-    int i = 0;
-    int *p = (int *)&lbl_804B5010;
-    do {
-        fn_8029D464((void *)*p, 1);
-        ++p;
-    } while (++i < lbl_8055F7F0);
-    lbl_8055F7F0 = 0;
+ int i=0; int *p=&lbl_804B5010;
+ while(i<lbl_8055F7F0) { fn_8029D464((void *)*p,1); ++p; ++i; }
+ lbl_8055F7F0=0;
 }
 
 void fn_8029CD14(void) {
