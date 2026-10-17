@@ -15,5 +15,7 @@ void fn_802E6B50(void) {
     lbl_8055FFC5 = 0;
 }
 
+void fn_802E6B94(void) {}
+
 void fn_802E6CA4(void) {}
 
