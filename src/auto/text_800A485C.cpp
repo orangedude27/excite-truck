@@ -979,8 +979,7 @@ extern "C" void fn_800B7408(s32* arg0, void* arg1) {
 extern "C" s32 fn_800B74B8(s8 arg0) {
     extern void fn_800B73BC(void*);
     fn_800B6928(arg0);
-    ((s32 (*)(s32))fn_800B73BC)(arg0);
-    return 0;
+    return ((s32 (*)(void))fn_800B73BC)();
 }
 #pragma dont_inline reset
 
