@@ -507,11 +507,11 @@ void fn_801F3EA4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     fn_802CD33C(arg4, arg5, 0);
 }
 extern int fn_802CD33C(int, int, int);
-extern int lbl_8033A7A0;
+extern int lbl_8033A7A0_arr[];
 void *fn_801F3EF8(void *arg0, int arg1) {
     void *vtable = (void *)0;
     if (arg0 != 0) {
-        vtable = (void *)&lbl_8033A7A0;
+        vtable = (void *)&lbl_8033A7A0_arr[0];
         *(void **)arg0 = vtable;
         if (arg1 > 0) fn_80128668();
     }
