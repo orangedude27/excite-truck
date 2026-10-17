@@ -427,12 +427,14 @@ void fn_801C821C(void) {
 }
 #pragma push
 #pragma scheduling off
+#pragma dont_inline on
 void fn_801C8298(void) {
     strcpy(lbl_804384A8, lbl_8055AA44);
     strcpy(lbl_804385A8, lbl_8055AA44);
     lbl_8055E864 = 0;
     fn_801C7BA0();
 }
+#pragma dont_inline off
 #pragma pop
 void fn_801C83D0(void) {
     f32 value = (f32)atof(lbl_804380F0);
@@ -554,7 +556,7 @@ void fn_801C6D94(void) {
     r0 = *src;   *src++;
     *dst = r0;   dst++;
     
-    fn_801C957C(1, r4, r5, r6, r7, r8, r9, r10);
+    fn_801C957C(1);
 }
 
 void fn_801C7254(void *arg0) {
