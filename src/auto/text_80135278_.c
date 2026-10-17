@@ -31,11 +31,9 @@ void fn_801357A4();
 extern void *fn_80156A40(void);
 
 float fn_80135278(float *a, float *b, float *c) {
-    float dx = b[0] - c[0];
-    float dy = b[1] - c[1];
-    volatile float d0 = dx;
-    volatile float d1 = dy;
-    return a[0] * dx + a[1] * dy;
+    volatile float d0 = b[0] - c[0];
+    volatile float d1 = b[1] - c[1];
+    return a[0] * (b[0] - c[0]) + a[1] * (b[1] - c[1]);
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
@@ -119,6 +117,26 @@ int fn_801363A0(void *arg0, void *arg1) {
     int var = *(int *)((char *)*((void **)*(void **)arg1 + 0x14) + 0x10);
     if (var == 0) var = *(int *)((char *)*(void **)((char *)arg0 + 0x2C) + 0x18);
     return temp_r31 + (unsigned int)(*(float *)((char *)arg1 + 4) * (float)(var - temp_r31));
+}
+
+s32 fn_801366C0(void *arg0, void *arg1, float farg0) {
+    if (*(s32 *)((char *)arg0 + 4) != 0) {
+        if (*(s32 *)(*(s32 *)((char *)arg0 + 0x2C) + 0x1C) == 0) {
+            return 0;
+        }
+    }
+    {
+        float t = (*(float *)((char *)arg1 + 0)) * (*(float *)((char *)arg0 + 0x10))
+                + (*(float *)((char *)arg1 + 8)) * (*(float *)((char *)arg0 + 0x14));
+        return t < -t;
+    }
+}
+
+void fn_80136714(void *arg0) {
+    float a = *(float *)((char *)arg0 + 0x10);
+    float b = *(float *)((char *)arg0 + 0x14);
+    *(float *)((char *)arg0 + 0x38) = b;
+    *(float *)((char *)arg0 + 0x3C) = -a;
 }
 
 extern void *fn_80156A40(void);
