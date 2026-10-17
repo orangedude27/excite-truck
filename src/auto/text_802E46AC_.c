@@ -12,6 +12,13 @@ extern u16 lbl_804FC418[];
 extern void fn_802E47E8(void);
 void fn_802E46AC(void) {}
 
+void fn_802E46B0(void) {
+    lbl_8055FF5C = 0;
+    fn_802E47E8();
+    lbl_8055D1C0 = (void *)-1;
+    fn_802E46AC();
+}
+
 void fn_802E46E4(void) {
     lbl_8055D1C0 = (void*)-1;
 }
@@ -31,4 +38,6 @@ void fn_802E47E8(void) {
 s32 fn_802E47F8(void) {
     return 0;
 }
+
+s32 fn_802E4A10(void) { return (lbl_8055FF5A >> 12) & 0xF; }
 
