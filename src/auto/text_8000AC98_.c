@@ -52,6 +52,8 @@ void fn_8000BD98(void) {
     return;
 }
 
+void fn_8000BF10(int arg0, int arg1) { fn_8000BD9C(0, arg0, arg1); }
+
 int fn_8000BD9C(int, int, int);
 extern float lbl_805601FC, lbl_80560204;
 extern char lbl_8034F5F8, lbl_8034F604;
