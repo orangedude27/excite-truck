@@ -21,25 +21,35 @@ void *fn_8022F2FC(char *arg0) {
     return 0;
 }
 
+extern char lbl_80340394[];
+extern char lbl_803403CC[];
+extern char lbl_80340408[];
+int fn_80230020(void);
+void fn_8022F824(void *);
+void fn_802E30C8(void *);
+void fn_802E317C(const char *, ...);
+void *fn_801284F8(int, const char *);
+void fn_80128668(void *);
+int fn_8022EDC4(void);
+void fn_801BFD34(void *, void *, int);
 void fn_8022F364(void *arg0) {
     void *node;
-    void *next;
     if (arg0 == 0) return;
     node = lbl_8055F014;
     if (node == 0) {
-        node = (void *)fn_801284F8(0xc, 0x803403CC);
+        node = fn_801284F8(0xc, lbl_803403CC);
         lbl_8055F014 = node;
         *(void **)node = arg0;
         *(int *)((char *)node + 4) = 1;
         *(void **)((char *)node + 8) = 0;
-        return;
+    } else {
+        while (*(void **)((char *)node + 8) != 0) node = *(void **)((char *)node + 8);
+        *(void **)((char *)node + 8) = fn_801284F8(0xc, lbl_803403CC);
+        node = *(void **)((char *)node + 8);
+        *(void **)node = arg0;
+        *(int *)((char *)node + 4) = 1;
+        *(void **)((char *)node + 8) = 0;
     }
-    while ((next = *(void **)((char *)node + 8)) != 0) node = next;
-    next = (void *)fn_801284F8(0xc, 0x803403CC);
-    *(void **)((char *)node + 8) = next;
-    *(void **)next = arg0;
-    *(int *)((char *)next + 4) = 1;
-    *(void **)((char *)next + 8) = 0;
 }
 
 void fn_8022F77C(void *arg0) {
