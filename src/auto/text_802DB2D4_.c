@@ -3,6 +3,43 @@
 
 extern void *lbl_8055FEA8;
 extern void *lbl_8055FEAC;
+extern void GXLoadTexMtxImm(float *, unsigned int, unsigned char);
+extern float lbl_8055D148;
+extern unsigned char lbl_804DB068[];
+extern unsigned char lbl_802FACF8[];
+extern unsigned char lbl_802FACD8[];
+void fn_802DB4E4(void) {
+    float m[12] = {0};
+    m[0] = *(float *)(lbl_804DB068 + 0xc);
+    m[6] = *(float *)(lbl_804DB068 + 0x10);
+    m[2] = *(float *)(lbl_804DB068 + 0x18);
+    m[8] = *(float *)(lbl_804DB068 + 0x1c);
+    GXLoadTexMtxImm(m, 0x1e, 1);
+    GXLoadTexMtxImm(&m[2], 0x21, 1);
+}
+
+void fn_802DB58C(void) {
+    int m[12];
+    int *p = (int *)lbl_802FACD8;
+    m[0] = p[0]; m[1] = p[1]; m[2] = p[2]; m[3] = p[3];
+    m[4] = p[4]; m[5] = p[5]; m[6] = p[6]; m[7] = p[7];
+    m[8] = p[8]; m[9] = p[9]; m[10] = p[10]; m[11] = p[11];
+    *(float *)&m[0] = *(float *)(lbl_804DB068 + 0xc);
+    *(float *)&m[6] = *(float *)(lbl_804DB068 + 0xc);
+    GXLoadTexMtxImm((float *)m, 0x1e, 1);
+}
+
+void fn_802DB620(void) {
+    int m[12];
+    int *p = (int *)lbl_802FACF8;
+    m[0] = p[0]; m[1] = p[1]; m[2] = p[2]; m[3] = p[3];
+    m[4] = p[4]; m[5] = p[5]; m[6] = p[6]; m[7] = p[7];
+    m[8] = p[8]; m[9] = p[9]; m[10] = p[10]; m[11] = p[11];
+    *(float *)&m[0] = lbl_8055D148;
+    *(float *)&m[6] = lbl_8055D148;
+    GXLoadTexMtxImm((float *)m, 0x1e, 1);
+}
+
 void fn_802DBDD8(void) {
     lbl_8055FEA8 = 0;
     lbl_8055FEAC = 0;
@@ -110,4 +147,6 @@ int fn_802DC6AC(int a, unsigned int b) {
     unsigned short v = *(unsigned short *)((char *)base + ((i + (j << 7)) << 6));
     return (*(int *)((char *)base + ((i + (j << 7)) << 6) + 0x20) & 0xffff) | ((unsigned int)v << 16);
 }
+
+void fn_802DD42C(void) { fn_802CFF64(); }
 
