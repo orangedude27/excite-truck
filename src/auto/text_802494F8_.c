@@ -195,33 +195,72 @@ s32 fn_8024B618(s32 arg0, s32 arg1) {
     return arg0 + arg1 * 0x68 + 0xDC;
 }
 
+void fn_8024B628(void *arg0) {
+    s32 index;
+
+    fn_80214CB4(*(s32 *)((char *)arg0 + 0x280));
+    index = *(s32 *)((char *)arg0 + 0x1C);
+    do {
+        fn_80214A9C(index + 1);
+        index++;
+    } while (index < *(s32 *)((char *)arg0 + 0x20));
+    if (*(unsigned char *)((char *)arg0 + 0x284) == 0) {
+        fn_80214A9C(10);
+    } else {
+        fn_80214AF0(10);
+    }
+    fn_8024B260(arg0);
+}
+
 void fn_8024B6A8(void) {
     fn_8024B260();
 }
 
 void fn_8024B6AC(void *arg0) {
-    s32 index = fn_80214D04();
-    s32 *array = *(s32 **)((char *)arg0 + 0x18);
-    char *dst = (char *)arg0 + 0x64;
-    char *src = *(char **)((char *)array[index] + 0x10);
-    s32 count = 0x32;
+    s32 index;
+    s32 count;
+    s32 *array;
+    char *src;
+    char *dst;
+    char c;
+
+    index = fn_80214D04();
     *(s32 *)((char *)arg0 + 0x9C) = index;
-    do {
-        char c = *src++;
-        *dst++ = c;
-        if (c == 0)
-            break;
-        count--;
-    } while (count > 0);
-    if (count == 0)
-        dst[-1] = 0;
-    *(s32 *)((char *)arg0 + 0x98) = *(s32 *)array[index];
+    array = *(s32 **)((char *)arg0 + 0x18);
+    dst = (char *)arg0 + 0x64;
+    count = 0x32;
+    src = *(char **)((char *)array[index] + 0x10);
+    goto decrement;
+copy:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0)
+        goto decrement;
+    goto done;
+decrement:
+    count--;
+    if (count > 0)
+        goto copy;
+    *(s32 *)0 = 0;
+    dst[-1] = 0;
+done:
+    array = *(s32 **)((char *)arg0 + 0x18);
+    index = *(s32 *)((char *)arg0 + 0x9C);
+    *(s32 *)((char *)arg0 + 0x98) = array[index];
 }
 
 s32 fn_8024B874(s32 arg0) { return arg0 + 0x64; }
 
 s32 fn_8024B8CC(s32 arg0) {
     return arg0 + 0x4C;
+}
+
+void fn_8024B970(void) {
+    fn_8024B6AC(0);
+}
+
+s32 fn_8024B974(void *arg0) {
+    return *(s32 *)((char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC + 0x28);
 }
 
 void *fn_80012870(s32, s32);
