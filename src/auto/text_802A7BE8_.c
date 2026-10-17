@@ -13,3 +13,7 @@ void fn_802A7C24(void) {
     fn_80235380((void *)lbl_8055F8C0);
     lbl_8055F8C0 = 0;
 }
+
+void fn_802A7C64(void) {
+}
+
