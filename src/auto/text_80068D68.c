@@ -1102,6 +1102,34 @@ void BTA_HhAddDev(const u8 *arg0, u16 arg1, u8 arg2, u8 arg3, const void *arg4) 
     }
 }
 
+extern u8 lbl_803C0F78[];
+extern u8 *lbl_80559030;
+extern u8 lbl_8055DC80;
+extern u8 lbl_803C0D48[];
+extern u8 lbl_80315A64[];
+extern void *GKI_getbuf(u16);
+extern void fn_800716F0(void *);
+s32 bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, u32 arg4, u32 arg5) {
+    if (lbl_8055DC80 >= 5) {
+        fn_80070954(0x504, lbl_80315A64, arg4);
+    }
+    *((u8 *)arg0 + 0x16) = arg1;
+    *((u8 *)arg0 + 0x18) = 1;
+    *(u16 *)((u8 *)arg0 + 0xE) = arg2;
+    *((u8 *)arg0 + 0x13) = arg4;
+    *((u8 *)arg0 + 0x15) = arg5;
+    if (arg3 != 0) {
+        fn_800716F0((u8 *)arg0 + 4);
+        if (*(u16 *)arg3 != 0) {
+            *(void **)((u8 *)arg0 + 4) = GKI_getbuf(*(u16 *)arg3);
+            if (*(void **)((u8 *)arg0 + 4) != 0) {
+                *(u16 *)arg0 = *(u16 *)arg3;
+                memcpy(*(void **)((u8 *)arg0 + 4), *(void **)((u8 *)arg3 + 4), *(u16 *)arg3);
+            }
+        }
+    }
+}
+
 extern u8 *lbl_80559030;
 extern u8 lbl_80315A64[];
 extern void fn_800716F0(void *);
@@ -1273,6 +1301,10 @@ tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
         }
     }
     return 0;
+}
+
+u8 fn_80079514(void) {
+    return (u8)((lbl_803C0F78[0x64E] - 5) == 0);
 }
 
 tBTM_STATUS fn_8007A240(void (*arg0)(void *, void *)) {
