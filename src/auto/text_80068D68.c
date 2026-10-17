@@ -2362,6 +2362,19 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+s32 btsnd_hcic_switch_role_8008515C(BD_ADDR bd_addr, UINT8 role) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (p == NULL) return 0;
+    *(u16 *)(p + 2) = 10;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0x12; p[9] = 0xC; p[10] = 7;
+    p[11] = bd_addr[5]; p[12] = bd_addr[4]; p[13] = bd_addr[3];
+    p[14] = bd_addr[2]; p[15] = bd_addr[1]; p[16] = bd_addr[0];
+    p[17] = role;
+    btu_hcif_send_cmd(p);
+    return 1;
+}
+
 void fn_80085384(u8 *arg0, u8 arg1) {
     *(u16 *)(arg0 + 2) = 4; *(u16 *)(arg0 + 4) = 0;
     arg0[8] = 0x1A; arg0[9] = 0xC; arg0[10] = 1; arg0[11] = arg1;
@@ -2453,6 +2466,28 @@ s32 btsnd_hcic_write_policy_set_80085668(u16 arg0, u16 arg1) {
     buf[14] = second >> 8;
     btu_hcif_send_cmd(first >> 8, 4, 0xC, 0x37);
     return 1;
+}
+
+BOOLEAN btsnd_hcic_write_cur_iac_lap(UINT8 num_cur_iac, LAP cur_iac_lap[]) {
+    UINT8 *p_buf = GKI_getpoolbuf(2);
+    UINT8 *p;
+    UINT8 i;
+    if (p_buf == NULL) return FALSE;
+    *(u16 *)(p_buf + 2) = (num_cur_iac * 3) + 4;
+    *(u16 *)(p_buf + 4) = 0;
+    p_buf[8] = 0x3A;
+    p_buf[9] = 0xC;
+    p_buf[10] = (num_cur_iac * 3) + 1;
+    p_buf[11] = num_cur_iac;
+    p = p_buf + 0xC;
+    for (i = 0; i < num_cur_iac; i++) {
+        p[0] = cur_iac_lap[i][2];
+        p[1] = cur_iac_lap[i][1];
+        p[2] = cur_iac_lap[i][0];
+        p += 3;
+    }
+    btu_hcif_send_cmd(p_buf);
+    return TRUE;
 }
 
 s32 btsnd_hcic_inq_cancel_8008576C(void) {
