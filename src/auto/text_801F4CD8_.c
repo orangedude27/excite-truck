@@ -70,6 +70,17 @@ int fn_801F4E44(const char *arg0) {
     return 0;
 }
 
+int fn_801F52BC(void *arg0, void *arg1, void *arg2, void *arg3) {
+    int result;
+    if (((int (*)(void))(*(void ***)arg0)[3])() != 0) {
+        void *value = ((void *(*)(void *, void *))(*(void ***)arg0)[5])(arg0, arg1);
+        result = ((int (*)(void *, void *, void *))fn_8012F9E8)(arg2, arg3, value);
+    } else {
+        result = 0;
+    }
+    return result;
+}
+
 void fn_801F596C(void) {
 
 }
@@ -185,8 +196,7 @@ void fn_801F7220(void *arg0) {
     }
 }
 
-extern void fn_801F6A98(void *, int);
-void fn_801F73E0(void);
+extern void fn_801F6A98(void *, void *);
 extern void fn_801F6B98(void *);
 extern void fn_801F6DF0(void *);
 extern void fn_801F6EC0(void *);
