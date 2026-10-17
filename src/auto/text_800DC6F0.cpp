@@ -25,6 +25,18 @@ struct Color {
     u8 b3;
 };
 
+extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*, void*, u32);
+extern "C" void GetVtxColor__Q36nw4hbm3lyt7PictureCFUl(Color* out, const void* this_, u32 idx) {
+    if (idx >= 4) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80320320, 0xFB, (const char*)lbl_803203D8);
+    }
+    const u8* p = (const u8*)this_ + idx * 4 + 0xD4;
+    out->b0 = p[0];
+    out->b1 = p[1];
+    out->b2 = p[2];
+    out->b3 = p[3];
+}
+
 extern "C" void SetVtxColor__Q36nw4hbm3lyt7PictureFUlQ36nw4hbm2ut5Color(
     void* this_, u32 idx, const Color* color) {
     if (idx >= 4) {
