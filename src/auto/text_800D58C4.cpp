@@ -71,12 +71,14 @@ extern "C" void fn_800D6EEC(void* arg0) {
 
 extern "C" void fn_800D76BC(void *arg0, int arg1) {
     struct Obj {
-        virtual void v0(); virtual void v1(); virtual void v2();
-        virtual void v3(); virtual void v4(); virtual void v5();
-        virtual void v6(); virtual void v7(); virtual void v8(int, int);
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(int, int);
     };
     Obj* obj = *(Obj**)((char*)arg0 + 0x10);
-    if (obj) obj->v8(arg1, 1);
+    if (obj) obj->v16(arg1, 1);
 }
 
 extern "C" void fn_800D76E0(void *arg0) {
