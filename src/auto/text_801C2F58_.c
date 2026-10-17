@@ -483,15 +483,6 @@ void fn_801C9830(void) {
 }
 
 extern void fn_801C855C(void);
-extern void fn_80128670(void *);
-extern s32 fn_8012850C(s32, void *);
-extern void fn_801C3D88(void *);
-extern char lbl_80336D84[];
-extern char lbl_80336D90[];
-extern char lbl_8055E7E8;
-extern char lbl_8055E7E9;
-extern char lbl_8055E7E3;
-extern s32 lbl_8055E808;
 void fn_801C9834(void) {
     u8 *p;
     s32 idx;
