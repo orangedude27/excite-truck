@@ -2362,6 +2362,22 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+s32 btsnd_hcic_exit_sniff_mode_80084AE8(u8 *p, u16 handle) {
+    if (p == NULL) {
+        p = GKI_getpoolbuf(2);
+        if (p == NULL) return 0;
+    }
+    *(u16 *)(p + 2) = 5;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 6;
+    p[9] = 8;
+    p[10] = 2;
+    p[11] = handle;
+    p[12] = handle >> 8;
+    btu_hcif_send_cmd(p);
+    return 1;
+}
+
 BOOLEAN btsnd_hcic_switch_role(BD_ADDR bd_addr, UINT8 role) {
     u8 *p = GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
