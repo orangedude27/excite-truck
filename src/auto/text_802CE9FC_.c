@@ -39,7 +39,7 @@ void fn_802CFFA4(unsigned short arg0) {
 }
 
 extern void *lbl_8055FD54;
-extern void fn_802D30F0(void);
+extern void* fn_802D30F0(void);
 extern void fn_802D307C(void);
 void fn_802D050C(void* hi) {
     lbl_8055FD54 = hi;
