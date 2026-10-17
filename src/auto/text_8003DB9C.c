@@ -311,6 +311,10 @@ void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
     *arg0 = (value & ~0xE0) | ((lbl_80558E80[arg1] << 5) & 0xE0);
 }
 
+void GXGetTexObjWidth(void *arg0, s32 arg1) {
+    *(s32 *)((char *)arg0 + 0x10) = arg1;
+}
+
 int GXGetTexObjHeight(void *arg0) {
     return ((int *)arg0)[4];
 }
@@ -352,6 +356,21 @@ void GXInitTlutObj(void *arg0, unsigned int arg1, int arg2, short arg3) {
 
 unsigned short GXGetTexObjTlut(void *arg0) {
     return *(unsigned short *)((char *)arg0 + 8);
+}
+
+void GXLoadTlut(void *arg0, int arg1) {
+    void *obj;
+    obj = ((void *(*)(int))__GXData[0x51C / 4])(arg1);
+    __GXFlushTextureState();
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = *(unsigned int *)((char *)arg0 + 4);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = *(unsigned int *)obj;
+    __GXFlushTextureState();
+    *(unsigned int *)((char *)obj + 4) = (*(unsigned int *)arg0 & 0xFFFFFC00) | (*(unsigned int *)obj & 0x3FF);
+    *(unsigned int *)((char *)obj + 8) = *(unsigned int *)((char *)arg0 + 4);
+    *(unsigned int *)((char *)obj + 0xC) = *(unsigned int *)((char *)arg0 + 8);
+    *(unsigned int *)arg0 = *(unsigned int *)((char *)obj + 4);
 }
 
 extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
