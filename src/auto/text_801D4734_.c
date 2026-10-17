@@ -5,6 +5,7 @@
 typedef struct {
     char pad[0x34];
     void (*fn)(void *);
+    void (*fnD)(void *);
 } VTbl_801D77D8;
 
 typedef struct {
@@ -700,10 +701,9 @@ s32 fn_801D77B8(s32 arg0);
 s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
-void fn_801D77D8(void *arg0) {
-    register void **vtable = *(void ***)arg0;
-    register void (*fn)(void *) = *(void (**)(void *))((u8 *)vtable + 0x34);
-    fn(arg0);
+void fn_801D77D8(Obj_801D77D8 *arg0) {
+    VTbl_801D77D8 *vt = arg0->vtable;
+    vt->fn(arg0);
 }
 
 void fn_801D77E8(void) {
