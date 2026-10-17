@@ -146,15 +146,14 @@ extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
 
 extern "C" u32 fn_8012BB18(void) { return 1; }
 
-void fn_8012BC24(s32 **arg0, s32 *arg1) {
-    s32 *var = *arg0;
-
-    while (var != 0) {
-        if (var == arg1) {
-            *arg0 = (s32 *)((char *)arg1 + 0xA8)[0];
+extern "C" void fn_8012BC24(void **arg0, void *arg1) {
+    void **var = arg0;
+    while (*var != 0) {
+        if (*var == arg1) {
+            *var = *(void **)((char *)arg1 + 0xA8);
             return;
         }
-        var = (s32 *)((char *)var + 0xA8);
+        var = (void **)((char *)*var + 0xA8);
     }
 }
 
