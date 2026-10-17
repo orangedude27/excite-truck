@@ -25,6 +25,7 @@ void fn_801D32DC(void) {
 
 int fn_801D36E8(void);
 int fn_801D3FA4(int, int, int, int, int, int, int);
+#pragma scheduling off
 int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     int result;
 
@@ -33,6 +34,37 @@ int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     return result;
 }
 
+extern int fn_801D411C(void *);
+extern void *lbl_804421D8[];
+int fn_801D36E8(void) {
+    float bestValue;
+    void **entry;
+    void *best;
+    int index;
+
+    bestValue = lbl_80562AB8;
+    entry = (void **)&lbl_804421D8;
+    best = 0;
+    index = 0;
+    goto check;
+loop:
+    if ((*(int (**)(void *))(*(int *)*entry + 0x44))(*entry) == 0)
+        return (int)((void **)&lbl_804421D8)[index];
+    if (best != 0 && *(float *)((char *)*entry + 0x224) >= bestValue)
+        goto next;
+    best = *entry;
+    bestValue = *(float *)((char *)best + 0x224);
+next:
+    entry++;
+    index++;
+check:
+    if (index < *(int *)&lbl_8055E940)
+        goto loop;
+    fn_801D411C(best);
+    return (int)best;
+}
+
+#pragma scheduling on
 unsigned int fn_801D37AC(void *arg0) {
     int temp_r4;
     temp_r4 = *(int *)((char *)arg0 + 0x1EC);
