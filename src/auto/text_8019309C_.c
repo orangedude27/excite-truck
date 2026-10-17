@@ -318,8 +318,26 @@ void fn_8019639C(void) {
     fn_80194844();
 }
 
+void fn_801963A0(void *arg0) {
+    float value;
+    float delta;
+    fn_801961F8();
+    value = *(float *)((char *)*(void **)((char *)arg0 + 0x294) + 0x25D4);
+    delta = lbl_8056223C * value;
+    lbl_8055E57C += delta;
+    fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 1);
+    fn_801958C4(arg0);
+    fn_801959AC(arg0);
+    fn_80195CA8(arg0);
+}
+
 void fn_80196414(void *arg0) {
     fn_80196DC4(arg0);
+}
+
+void fn_80196418(void *arg0) {
+    int value = *(int *)((char *)arg0 + 0x210);
+    if (value == 0) fn_80195830(arg0);
 }
 
 extern int fn_801B2F24(void);
@@ -330,8 +348,7 @@ int fn_80196468(int arg0) {
     int i = arg0;
     while (i <= end) {
         fn_801B2F40(i - 1);
-        if (fn_8019643C() != 0)
-            return 1;
+        if (fn_8019643C() != 0) return 1;
         i++;
     }
     return 0;
