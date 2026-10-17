@@ -23,8 +23,10 @@ void fn_801D11D4(void) {
 
 extern void *fn_801284F8(int, const char *);
 extern void fn_801D0FA4(void);
+#pragma small_data off
 extern char lbl_80338208;
 extern char lbl_80338214;
+#pragma small_data on
 extern void *lbl_804348E8[];
 extern float lbl_80562A48;
 extern void fn_801819A0(void *, void *, void *, float, float, float);
