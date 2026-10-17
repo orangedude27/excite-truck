@@ -426,16 +426,13 @@ void fn_801C821C(void) {
     lbl_8055E83C = 0;
 }
 #pragma push
-#pragma small_data off
-#pragma pop
+#pragma scheduling off
 void fn_801C8298(void) {
     strcpy(lbl_804384A8, lbl_8055AA44);
     strcpy(lbl_804385A8, lbl_8055AA44);
     lbl_8055E864 = 0;
     fn_801C7BA0();
 }
-#pragma push
-#pragma small_data on
 #pragma pop
 void fn_801C83D0(void) {
     f32 value = (f32)atof(lbl_804380F0);
