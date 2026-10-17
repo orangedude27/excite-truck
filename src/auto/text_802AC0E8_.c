@@ -50,6 +50,8 @@ extern float lbl_80564ACC;
 extern float lbl_8055E3C8;
 extern int lbl_8055CD70;
 extern char lbl_80349FA4[];
+extern void fn_802AD4C4(void *, int, float);
+extern int strcmp(const char *, const char *);
 extern float lbl_8055E3C8;
 extern int lbl_8055CD70;
 extern char lbl_80349FB0[];
@@ -103,5 +105,11 @@ int fn_802ADF34(void **arg0,char *arg1,int arg2) {
  return -1;
 }
 
+void fn_802AE02C(void *arg0,int arg1){unsigned char *entry;entry=(unsigned char *)*(char **)*(char **)arg0+arg1*0x74;if(!entry[0x69]){if(!entry[0x68]){fn_802E30C8(lbl_80349FB0,arg1);entry[0x68]=1;*(float *)(entry+0x6c)=*(float *)((char *)arg0+4);}entry[0x69]=1;*(float *)(entry+0x70)=*(float *)((char *)arg0+4);}}
+
 void fn_802AE0B8(int **arg0,int arg1){unsigned char *p; p=(unsigned char *)**arg0+arg1*0x74;if(p[0x69])p[0x69]=0;}
+
+void fn_802AE0E0(void **arg0){int off=0,i=0;while(i<*(int *)(*(char **)arg0+4)){*(unsigned char *)(*(char **)*(char **)arg0+off+0x68)=0;off+=0x74;i++;}}
+
+void fn_802AE118(void *arg0){int i=0,off=0;char *container=*(char **)arg0;while(i<*(int *)(container+4)){unsigned char *entry=(unsigned char *)*(char **)container+off;if(entry[0x68])*(float *)(entry+0x6c)=*(float *)((char *)arg0+4)-*(float *)(*(char **)(entry+0x64)+0x2c);off+=0x74;i++;}}
 
