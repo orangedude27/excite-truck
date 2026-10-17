@@ -17,7 +17,7 @@ extern void *lbl_80560080;
 extern int fn_802EBD40(void);
 extern long lbl_80507600[];
 extern long lbl_8034E9C8;
-extern long lbl_8034E9B0;
+__declspec(section ".rodata") extern long lbl_8034E9B0;
 extern long fn_800B7BDC(long);
 extern char lbl_8055D278;
 extern char lbl_8055D280;
@@ -43,6 +43,32 @@ long *fn_802E9A3C(long arg0, long arg1) {
         lbl_80507600[3] = arg1;
     }
     return lbl_80507600;
+}
+
+extern char lbl_8055D258;
+extern long fn_800B7C34(long, void *);
+extern long fn_800B7C08(long, long *);
+long *fn_802E9A6C(long arg0) {
+    extern long fn_802E30C8(char *, long);
+    long info[8];
+    long *p = lbl_80507600;
+    lbl_80560060 = 1;
+    if (p != 0) {
+        p[0] = (long)&lbl_8034E9B0;
+        p[1] = fn_800B7C34(arg0, &lbl_8055D258);
+        p[2] = 0;
+        if (p[1] != 0) {
+            if (fn_800B7C08(p[1], info) == 0) p[2] = info[0];
+            else {
+                ((long (*)(char *, ...))fn_802E30C8)((char *)&lbl_8034E260, arg0);
+                fn_800B7BDC(p[1]);
+                p[1] = 0;
+            }
+        }
+    }
+    if (p[1] != 0) return p;
+    if (p != 0) ((void (*)(long *, long))((long *)p[0])[2])(p, 1);
+    return 0;
 }
 
 void *fn_802E9B54(void *arg0, long arg1) {
@@ -130,6 +156,41 @@ void fn_802EAA08(void) {
         memmove((char *)&lbl_805600A0, (char *)&lbl_805600A0 + lbl_805600A4, lbl_805600B8 - lbl_805600A4);
         lbl_805600B8 -= lbl_805600A4;
     }
+}
+
+int fn_802EAA58(int *arg0, int arg1) {
+    int sizeOk;
+    int channelOk;
+    int channels;
+    int valid;
+    int result;
+    int rate;
+    int size;
+    if (arg1 != 0) {
+        switch (arg0[1]) {
+        case 11025: case 22050: case 44100: break;
+        default: return 0;
+        }
+    }
+    channels = arg0[2];
+    result = 0;
+    valid = 0;
+    channelOk = 1;
+    if (channels != 1 && channels != 2) channelOk = 0;
+    if (channelOk) {
+        int rateOk;
+        rate = arg0[1];
+        rateOk = 0;
+        if (rate >= 8000 && rate <= 60000) rateOk = 1;
+        if (rateOk) valid = 1;
+    }
+    if (valid) {
+        size = arg0[4];
+        sizeOk = 0;
+        if (size != 0 && (unsigned int)size <= 0x1200) sizeOk = 1;
+        if (sizeOk) result = 1;
+    }
+    return result;
 }
 
 int fn_802EBE00(int arg0) {
