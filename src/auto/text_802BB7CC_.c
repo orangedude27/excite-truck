@@ -78,6 +78,38 @@ void fn_802BB958(short arg0, int arg1, unsigned char* arg2, unsigned char* arg3)
     } while (var_r28 < 6);
 }
 
+#pragma dont_inline fn_802BB87C
+void fn_802BBBC8(void) {
+    extern int lbl_80564CF8;
+    extern int lbl_80564CFC;
+    extern int lbl_804C0098[];
+    extern int lbl_804C00B0[];
+    extern signed char lbl_8055CF30[];
+    extern signed char lbl_8055FA90;
+    extern char lbl_8034AAB8[];
+    extern char lbl_8034AAC4[];
+    extern void fn_801345D8(void *, int, char *, int, signed char);
+    extern int fn_802CA294(void);
+    extern int fn_802E317C(char *, int);
+    extern signed char fn_802B05E4(void);
+    int args[2];
+    int *out0 = lbl_804C0098;
+    int *out1 = lbl_804C00B0;
+    int i = 0;
+    args[0] = lbl_80564CF8;
+    args[1] = lbl_80564CFC;
+    do {
+        fn_801345D8(&args[0], 0x20, lbl_8034AAB8, args[i / 3], lbl_8055CF30[i % 3]);
+        *out0 = fn_802BB87C((int)&args[0]);
+        if (*out0 == -2) fn_802E317C(lbl_8034AAC4, i);
+        if (*out0 == -2) *out1 = 0;
+        else *out1 = fn_802CA294();
+        i++;
+        out0++;
+        out1++;
+    } while (i < 6);
+    lbl_8055FA90 = fn_802B05E4();
+}
 void fn_802BBCC4(void) {
     extern int lbl_804C0098[];
     extern int lbl_804C00B0[];
@@ -95,7 +127,7 @@ void fn_802BBCC4(void) {
 
   extern int lbl_804C0098[];
 extern void fn_802BB8E4(int*);
-extern unsigned int fn_802D972C(int, int);
+extern unsigned int fn_802D972C(int, int, ...);
 extern int fn_802E30C8(const char*, int, int, unsigned int);
 extern char lbl_8034AAF0[];
 void fn_802BBE34(void) {
@@ -126,6 +158,46 @@ int fn_802BBF94(unsigned int arg0) {
     return ((arg0 >> 4) & 0xF) | (arg0 & 0xF);
 }
 
+#pragma dont_inline fn_802BBF94
+void fn_802BBFA4(unsigned char *arg0, int arg1, int arg2, int arg3) {
+    int i;
+    int sum;
+    int delta;
+    unsigned char *p;
+    unsigned char value;
+
+    p = arg0;
+    i = 0;
+    do {
+        *p = fn_802BBF94(*p);
+        i++;
+        p++;
+    } while (i < 6);
+
+    sum = arg0[0] + arg0[1] + arg0[2] + arg0[3] + arg0[4] + arg0[5];
+    if (sum != 0xFF) {
+        value = arg0[arg1];
+        delta = sum - 0xFF;
+        if ((int)value >= delta) {
+            arg0[arg1] = value - delta;
+            return;
+        }
+        i = 0;
+        p = arg0;
+        while (sum != 0xFF && i < 6) {
+            if (i != arg2) {
+                value = *p;
+                delta = sum - 0xFF;
+                if (delta < value)
+                    value = delta;
+                sum -= value;
+                *p -= value;
+            }
+            i++;
+            p++;
+        }
+    }
+}
 extern int lbl_804C0098[4];
 int __AXGetStackHead_802BC30C(int index) { return lbl_804C0098[index]; }
 extern int fn_802CAC54(int);
