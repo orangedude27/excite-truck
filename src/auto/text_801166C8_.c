@@ -20,7 +20,7 @@ extern void fn_80127F70(void*);
 extern void fn_80127F94(void*);
 extern s32 fn_8011A7CC(DVDFileInfo *);
 extern s32 OSDisableInterrupts(void);
-void fn_80127440();
+void fn_80127440(void*);
 extern void fn_80127398(s32);
 extern void fn_802E300C(s32);
 extern void* lbl_8041D728[];
