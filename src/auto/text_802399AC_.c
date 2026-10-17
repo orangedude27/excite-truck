@@ -163,39 +163,29 @@ s32 fn_8023A8B0(void) {
 extern s32 lbl_803410D8;
 extern s32 lbl_803412A4;
 extern void *fn_8012850C(s32, s32 *);
-#pragma push
 #pragma small_data off
-#pragma pop
 void *fn_8023AA2C(void *arg0, s32 arg1, ...) {
     va_list ap;
     s32 *values;
     s32 offset = 0;
     s32 value;
-
     *(unsigned char *)arg0 = 0;
     *(s32 *)((char *)arg0 + 4) = -1;
     *(unsigned char *)((char *)arg0 + 8) = 0;
     *(s32 *)((char *)arg0 + 0xC) = (s32)&lbl_803410D8;
     *(s32 *)((char *)arg0 + 0x14) = 0;
     va_start(ap, arg1);
-    do {
-        (*(s32 *)((char *)arg0 + 0x14))++;
-        value = va_arg(ap, s32);
-    } while (value != 0);
+    do { (*(s32 *)((char *)arg0 + 0x14))++; value = va_arg(ap, s32); } while (value != 0);
     va_end(ap);
     *(s32 **)((char *)arg0 + 0x10) = (s32 *)fn_8012850C(*(s32 *)((char *)arg0 + 0x14) * 4, &lbl_803412A4);
-
     va_start(ap, arg1);
     values = *(s32 **)((char *)arg0 + 0x10);
-    do {
-        value = va_arg(ap, s32);
-        *(s32 *)((char *)values + offset) = value;
-        offset += 4;
-    } while (value != 0);
+    do { value = va_arg(ap, s32); *(s32 *)((char *)values + offset) = value; offset += 4; } while (value != 0);
     va_end(ap);
     *(s32 *)((char *)arg0 + 0x18) = arg1;
     return arg0;
 }
+#pragma small_data on
 void fn_8023ACCC(void) {}
 
 void fn_8023ACD0(void *arg0) {
@@ -330,19 +320,22 @@ void fn_8023B054(void *arg0) {
 
 #pragma push
 #pragma small_data off
-extern s32 lbl_80341268;
+extern s32 lbl_80341268[];
 #pragma pop
 extern float lbl_80563730;
 extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, float);
+#pragma scheduling off
 void fn_8023B0BC(void *arg0) {
     s32 a = *(s32 *)((char *)arg0 + 0x10);
     s32 b = *(s32 *)((char *)arg0 + 0xC);
     s32 c = *(s32 *)((char *)arg0 + 8);
     s32 d = *(s32 *)((char *)arg0 + 4);
     s32 e = fn_80131234(&lbl_80341268);
-    fn_8022BAD0(0xC9, d, c, 0, b, a, e, *(s32 *)((char *)arg0 + 0x18), lbl_80563730);
+    volatile s32 stackZero = 0;
+    (void)stackZero;
+    fn_8022BAD0(0xC9, d, c, 0, b, a, e,
+                *(s32 *)((char *)arg0 + 0x18), lbl_80563730);
 }
-
 s32 fn_8023B138(void *arg0) {
     void *object = lbl_8055F10C;
     if (((s32 (*)(void *))(*(void ***)object)[24])(object) == 0) {
