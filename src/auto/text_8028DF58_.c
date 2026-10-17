@@ -14,6 +14,7 @@ extern void fn_8028ED80(void *);
 extern void fn_8028F2EC(void);
 extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
+extern int lbl_804B34B0_arr[];
 #pragma push
 #pragma small_data off
 typedef int lbl_804B34B0_t;
@@ -103,8 +104,8 @@ extern int fn_8028F858(int, int);
 #pragma push
 #pragma small_data off
 void fn_8028E398(int arg0) {
-    if (fn_8028EDA8((unsigned int *)&lbl_804B35B4, arg0) != 0) {
-        fn_8028EDA8((unsigned int *)&lbl_804B34B0, arg0);
+    if (fn_8028EDA8(&lbl_804B35B4[0], arg0) != 0) {
+        fn_8028EDA8((unsigned int *)lbl_804B34B0, arg0);
         fn_8028F858(arg0, 1);
     }
 }
