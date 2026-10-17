@@ -103,7 +103,7 @@ extern s32 fn_802E2C20(void);
 #pragma small_data on
 #pragma small_data off
 void fn_802B5E24(s32 arg0) {
-    lbl_8055FA28 = fn_802B5D2C((const char *)&lbl_8055CE48[0], arg0);
+    lbl_8055FA28 = fn_802B5D2C((const char *)&lbl_8055CE48, arg0);
     lbl_8055FA08 = lbl_80564C5C;
 }
 u32 fn_802B5E8C(s32 arg0) {
