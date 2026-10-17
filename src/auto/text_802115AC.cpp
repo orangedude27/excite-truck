@@ -170,9 +170,10 @@ extern "C" void fn_80211F64(void) {
 
 extern "C" void fn_80211FF0(void) {
     s32 sp8;
-    s32 (*temp_r12)(s32 *);
+    s32 (*cb)(s32 *);
+    cb = lbl_8055EF0C;
     sp8 = -2;
-    if ((temp_r12 = lbl_8055EF0C, ((temp_r12 == 0) != 0)) || (temp_r12(&sp8) != 0)) {
+    if (cb != 0 && cb(&sp8) != 0) {
         fn_802168BC(sp8);
     }
 }
@@ -564,14 +565,19 @@ void fn_802C40E8(int, int, int);
 void fn_802C4F2C(int, int *, int *);
 int fn_802C4EE4(int);
 int fn_802C4EFC(int);
-extern int lbl_8033D504;
-void *fn_80215738(void *arg0, int arg1) {
-    int temp_r0;
+extern "C" char lbl_8033D504[];
+extern "C" s32 fn_802C2FC4(s32);
+extern "C" void *fn_80215738(void *arg0, s32 arg1) {
+    s32 old;
     if (arg0 != 0) {
-        temp_r0 = *(int *)((char *)arg0 + 4);
+        old = *(s32 *)((char *)arg0 + 4);
         *(void **)arg0 = (void *)&lbl_8033D504;
-        if (temp_r0 != 0) fn_802C2FC4(temp_r0);
-        if (arg1 > 0) fn_80128668(arg0);
+        if (old != 0) {
+            fn_802C2FC4(old);
+        }
+        if (arg1 > 0) {
+            ((s32 (*)(void *))fn_80128668)(arg0);
+        }
     }
     return arg0;
 }
