@@ -66,6 +66,7 @@ extern "C" f32 lbl_805610BC;
     extern "C" void __register_global_object(void*, void*, void*, void*);
     extern "C" void OSSendMessage(void*, void*, u32);
     extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
+    extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void);
 
 M2C_UNK GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
 
@@ -708,6 +709,24 @@ extern "C" void fn_800FA350(void) {
         fn_800E2F84(v);
         lbl_8055DE60 = 0;
     }
+}
+
+extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
+    if (lbl_8055DE68 == 0) {
+        u32* p = (u32*)&lbl_80412CC8[0x2384];
+        p[1] = 0;
+        p[2] = 0;
+        p[0] = 0;
+        p[1] = 0;
+        p[3] = 0;
+        *(void**)p[1] = (void*)p;
+        *(void**)p[2] = (void*)p;
+        ((u8*)p)[0x10] = 0;
+        __register_global_object((void*)&lbl_80412CC8[0x2388], (void*)&__dt__10TitleSceneFv,
+                                 (void*)&lbl_80412CB8, (void*)&lbl_80412CC8[0x2388]);
+        lbl_8055DE68 = 1;
+    }
+    return &lbl_80412CC8[0x2388];
 }
 
 extern "C" void NWC24Data_Init(void* arg0) {
