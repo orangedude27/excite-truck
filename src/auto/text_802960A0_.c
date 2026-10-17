@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-void fn_8029690C(void);
+
 extern float lbl_80564560;
 extern float lbl_80564564;
 extern float lbl_80564568;
@@ -9,6 +9,30 @@ extern void *lbl_8055F788;
 int stricmp(const char *, const char *);
 extern void *lbl_8055F788;
 int stricmp(const char *, const char *);
+void fn_80296838(void *arg0) {
+    int i;
+    int offset;
+    void *entry;
+    if (arg0 == 0) return;
+    if (*(void **)((char *)arg0 + 0x24) != 0) {
+        i = 0;
+        offset = 0;
+        while (i < *(int *)((char *)arg0 + 0x2C)) {
+            entry = (char *)*(void **)((char *)arg0 + 0x24) + offset;
+            if (*(int *)((char *)entry + 0x18) != -1 &&
+                *(int *)((char *)entry + 0x18) != -2) {
+                fn_802CAC54();
+                *(int *)((char *)entry + 0x18) = -2;
+            }
+            offset += 0x30;
+            i++;
+        }
+        fn_80128670((char *)*(void **)((char *)arg0 + 0x24) - 0x10);
+        *(void **)((char *)arg0 + 0x24) = 0;
+    }
+    fn_80128668(arg0);
+}
+
 void fn_802968E8(void *arg0) {
     int count = *(int *)((char *)arg0 + 0x28);
     *(int *)((char *)arg0 + 0x28) = count + 1;
