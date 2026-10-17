@@ -23,10 +23,10 @@ extern s32 fn_802E33D8(s32, const char *, s32);
 extern void* lbl_8055FF24;
 s32 fn_802E98C8(void);
 #pragma small_data on
+__declspec(section ".sdata") extern char lbl_8055D1A0[];
 s32 fn_802E321C(const char *arg0) {
     const char *prefix = lbl_8055D1A0;
-    s32 len = strlen(prefix);
-    return strncmp(prefix, arg0, len) == 0;
+    return strncmp(prefix, arg0, strlen(prefix)) == 0;
 }
 #pragma small_data off
 s32 *fn_802E333C(void) {
@@ -35,7 +35,7 @@ s32 *fn_802E333C(void) {
     if (temp_r3 != 0) {
         return temp_r3;
     }
-    return &lbl_8055FF18;
+    return (s32 *)lbl_8055FF18;
 }
 void fn_802E339C(void) {
     s32 *p = (s32 *)fn_802E333C();
