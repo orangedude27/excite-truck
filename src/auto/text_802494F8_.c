@@ -191,6 +191,23 @@ void *fn_8024AFF8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8024B544(void *arg0, char *arg1) {
+    s32 offset;
+    s32 index;
+    *(s32 *)((char *)arg0 + 0x280) = 0;
+    if (arg1 != 0) {
+        index = 0;
+        offset = 0;
+        while (index < *(s32 *)((char *)arg0 + 0x1C)) {
+            if (stricmp(*(char **)((char *)*(s32 **)((char *)arg0 + 0x18) + offset), arg1) == 0) {
+                *(s32 *)((char *)arg0 + 0x280) = index;
+            }
+            offset += 8;
+            index++;
+        }
+    }
+}
+
 s32 fn_8024B5D4(void *arg0, s32 arg1) {
     extern s32 lbl_8055BFD8;
     if (arg1 < *(s32 *)((char *)arg0 + 0x1C)) {
@@ -356,6 +373,17 @@ void fn_8024B9CC(void *arg0, s32 *arg1, s32 *arg2) {
 
 s32 fn_8024B9EC(void *arg0) {
     return *(s32 *)(*(char **)((char *)arg0 + 0x10) + *(s32 *)((char *)arg0 + 0x11C) * 8);
+}
+
+void fn_8024BB3C(void *arg0) {
+    s32 value = *(s32 *)((char *)arg0 + 0x10) - 1;
+    *(s32 *)((char *)arg0 + 0x10) = value & ((-value & ~value) >> 31);
+}
+
+void fn_8024BB5C(void *arg0) {
+    s32 value = *(s32 *)((char *)arg0 + 0x10) + 1;
+    if (value > 2) value = 2;
+    *(s32 *)((char *)arg0 + 0x10) = value;
 }
 
 void *fn_80012870(s32, s32);
