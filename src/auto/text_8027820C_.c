@@ -1,3 +1,6 @@
+extern int lbl_8055F5B0;
+extern int lbl_8055F5C4;
+extern void fn_80128670(int);
 extern char lbl_8055F5BA;
 extern char lbl_8055F5BB;
 extern char lbl_8055F5B9;
