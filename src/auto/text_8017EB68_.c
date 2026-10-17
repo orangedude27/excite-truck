@@ -113,6 +113,11 @@ int fn_801813D8(int arg0, int arg1) {
     return arg0;
 }
 
+void fn_80181418(void *arg0, int arg1) {
+ *(int *)((char *)arg0+4)=arg1;
+ *(unsigned char *)((char *)arg0+0xC)=0;
+}
+
 extern void lbl_80331EFC(void);
 void fn_80181428(void **arg0) {
     *arg0 = (void *)&lbl_80331EFC;
