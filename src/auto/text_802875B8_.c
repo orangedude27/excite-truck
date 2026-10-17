@@ -228,6 +228,10 @@ void fn_80287B58(void) {
     fn_80288870();
 }
 
+s32 fn_80288060(s32 arg0, s32 arg1) {
+    return *(s32 *)(arg0 + (arg1 << 2) + 4);
+}
+
 s32 fn_80288208(s32 arg0){return lbl_8055F6C0+arg0*0x28;}
 
 void fn_8028829C(void) {}
