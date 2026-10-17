@@ -3500,6 +3500,49 @@ void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
     }
 }
 
+void rfc_send_test(s32 arg0, s32 arg1, void *p_buf) {
+    u8 *p = p_buf;
+    u16 len = *(u16 *)(p + 4);
+    u16 count;
+    u8 *src;
+    u8 *dst;
+    if (len < 0x10) {
+        count = *(u16 *)(p + 2);
+        src = p + len + count + 7;
+        dst = p + count + 0x17;
+        do {
+            *dst-- = *src--;
+        } while (++len < count);
+        *(u16 *)(p + 4) = 0x10;
+    }
+    len = *(u16 *)(p + 4) - 2;
+    *(u16 *)(p + 4) = len;
+    p[len + 8] = (((-arg1 | arg1) >> 31) & 2) | 0x21;
+    p[len + 9] = (*(u16 *)(p + 2) << 1) | 1;
+    count = *(u16 *)(p + 2);
+    *(u16 *)(p + 2) = count + 2;
+    rfc_send_buf_uih(0, count);
+}
+
+void rfc_send_credit(void *p_mcb, UINT8 credits, UINT8 arg2, u32 arg3) {
+    u8 state = *(u8 *)((u8 *)p_mcb + 0x6D);
+    void *p_buf;
+    u8 *p;
+    if (state == 0) state = 0;
+    else state = 1;
+    p_buf = GKI_getpoolbuf(2);
+    if (p_buf == NULL) return;
+    p = p_buf;
+    *(u16 *)(p + 4) = 9;
+    p[0x11] = (state << 1) | 1 | (credits << 2);
+    p[0x12] = 0xFF;
+    p[0x13] = 1;
+    p[0x14] = arg2;
+    p[0x15] = fn_8009504C(2, p + *(u16 *)(p + 4) + 8, 9);
+    *(u16 *)(p + 2) = 5;
+    rfc_check_send_cmd(p_mcb, p_buf);
+}
+
 void fn_80095518(void *arg0) {
     u16 state = *(u16 *)((u8 *)arg0 + 0x14);
     if (state == 12) rfc_port_sm_execute(*(void **)((u8 *)arg0 + 0x10), 5, 0);
@@ -3592,6 +3635,28 @@ void fn_8009757C(u8 *p_ccb) {
         *(u16 *)(p_ccb + 0x46c) = 0;
         sdp_snd_service_search_req((tCONN_CB *)p_ccb, 0, NULL);
     }
+}
+
+void *add_record(void *ctx, void *data) {
+    u32 size = *(u32 *)((u8 *)ctx + 4);
+    void *record;
+    void *node;
+    if (size < 0x14) return NULL;
+    record = *(void **)((u8 *)ctx + 0x68);
+    *(u32 *)((u8 *)ctx + 4) = size - 0x14;
+    *(void **)((u8 *)ctx + 0x68) = (u8 *)record + 0x14;
+    *(u32 *)record = 0;
+    *(u32 *)((u8 *)record + 4) = 0;
+    memcpy((u8 *)record + 0xC, data, 6);
+    node = *(void **)((u8 *)ctx + 8);
+    if (node == NULL) {
+        *(void **)((u8 *)ctx + 8) = record;
+    } else {
+        while (*(void **)((u8 *)node + 4) != NULL)
+            node = *(void **)((u8 *)node + 4);
+        *(void **)((u8 *)node + 4) = record;
+    }
+    return record;
 }
 
 void sdp_conn_timeout(tCONN_CB *p_ccb) {
