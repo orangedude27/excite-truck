@@ -6,6 +6,14 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80128668(void*);
+extern void fn_802BE694(void);
+extern void fn_802BE72C(void);
+extern void *lbl_8055FAC8;
+extern struct {
+    void *ptr;
+    s32 value;
+    s32 flags;
+} lbl_804C07E4;
 void* fn_802BE30C(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
