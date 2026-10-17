@@ -28,6 +28,17 @@ extern void fn_80193D30(void *);
 extern int fn_802E30C8(const char *, ...);
 extern char lbl_80333198[];
 
+int fn_8019309C(void *arg0, int index, signed char arg2) {
+    void *entry = lbl_804349C0[index];
+    int result = 0;
+    if (entry != 0 && *((u8 *)entry + 0x2A4) != 0) {
+        result = 1;
+        *((u8 *)entry + 0x2FC) = *((unsigned int *)((char *)arg0 + 0x290));
+        *((u8 *)arg0 + 0x2FD) = arg2;
+    }
+    return result;
+}
+
 u8 fn_801930DC(void *unused, int index) {
     void *entry;
     entry = lbl_804349C0[index];
@@ -288,7 +299,8 @@ extern void fn_8018AE24(int, int);
 extern void fn_80136EA4(int, int);
 extern void fn_80136E8C(int, int, int);
 void fn_80196328(void *arg0) {
-    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), lbl_80562140);
+    float value = lbl_80562140;
+    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), value);
     fn_8018ADB4(*(int *)((char *)arg0 + 0x294), lbl_80562144);
     fn_8018ADAC(*(int *)((char *)arg0 + 0x294), lbl_80562144);
     fn_8018AE24(*(int *)((char *)arg0 + 0x294), 0);
