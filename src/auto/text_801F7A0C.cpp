@@ -430,8 +430,8 @@ extern "C" void *fn_801FA8E0(s32 arg0, s32 arg1, s32 arg2) {
     s32 id = lbl_8055EC78++;
     void **list;
     void *context;
-    list = lbl_8055EC74;
     context = fn_8013184C();
+    list = lbl_8055EC74;
     void *node = fn_801284F8(0x4C, lbl_8033B5B8);
     if (node != 0) node = fn_801A4A8C(node, id, arg2, arg0, arg1, context);
     *(void **)((u8 *)node + 0x44) = *list;
