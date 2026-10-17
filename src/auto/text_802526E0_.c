@@ -18,6 +18,12 @@ void fn_802E30C8(const char *, const char *);
 
 extern s32 lbl_8055EAA8, lbl_8055EAAC, lbl_8055F2F8;
 void fn_801BD790(void);
+void fn_80252B88(s32 arg0) {
+    u8 sp8[0x28];
+    fn_802526E0(sp8);
+    fn_801BE400(arg0, sp8, lbl_805639E8);
+}
+
 void fn_80252BC8(void) {
     fn_801BD790();
     lbl_8055F2F8 = 0;
