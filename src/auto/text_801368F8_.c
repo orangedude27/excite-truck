@@ -16,12 +16,14 @@ extern void fn_801376A8(s32, s32 *, s32, s32, s32 *);
 extern void fn_80136D20(void);
 void fn_80136CB8(void *arg0, s32 arg1) {
     s32 base;
+    f32 value;
     fn_80136D20();
+    value = lbl_80561368;
     base = *(s32 *)((char *)arg0 + 0x10) + arg1 * *(s32 *)((char *)arg0 + 0xC);
-    *(f32 *)((char *)base + 8) = *(f32 *)0x80561368;
-    *(f32 *)((char *)base + 0xC) = *(f32 *)0x80561368;
+    *(f32 *)((char *)base + 8) = value;
+    *(f32 *)((char *)base + 0xC) = value;
     base = *(s32 *)((char *)arg0 + 0x10) + arg1 * *(s32 *)((char *)arg0 + 0xC);
-    *(f32 *)((char *)base + 0x10) = *(f32 *)0x80561368;
+    *(f32 *)((char *)base + 0x10) = value;
 }
 
 void fn_80136E8C(void *arg0, s32 arg1, signed char arg2) {
@@ -33,13 +35,13 @@ void fn_80136EA4(void *arg0, s32 arg1) {
     s32 stride;
     s32 base;
     s32 index;
-    values[0] = *(s32 *)((char *)&lbl_8032BEB4 + 0);
+    values[0] = *(s32 *)((char *)&lbl_8032BEB4);
     values[1] = *(s32 *)((char *)&lbl_8032BEB4 + 4);
     values[2] = *(s32 *)((char *)&lbl_8032BEB4 + 8);
     stride = *(s32 *)((char *)arg0 + 0xC);
+    index = *(s32 *)((char *)arg0);
     base = *(s32 *)((char *)arg0 + 0x10);
-    index = *(s32 *)((char *)arg0 + 0);
-    fn_801376A8(base + arg1 * stride + index * 8 + 0x18, values, arg1, base, &lbl_8032BEB4);
+    fn_801376A8(base + arg1 * stride + index * 8 + 0x18, (s32 *)((char *)&values[0]), arg1, base, &lbl_8032BEB4);
 }
 
 s32 fn_8013705C(f32 arg0, f32 arg1) {
