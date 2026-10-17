@@ -14,6 +14,8 @@ void fn_8028E398(int);
 void fn_80128668(void *);
 extern void *lbl_8055F924;
 void fn_8028E080(void);
+void fn_802AAF00(int a, int b, int c) {}
+
 void fn_802AB6D0(void) {}
 
 void fn_802AB6D4(void) {
