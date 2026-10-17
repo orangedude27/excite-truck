@@ -230,6 +230,10 @@ void fn_80287B58(void) {
     fn_80288870();
 }
 
+s32 fn_80287B94(s32 arg0, s32 arg1) {
+    return arg0 + fn_80287B5C(arg1 - arg0);
+}
+
 void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
     Obj *obj;
     obj = *arg1;
