@@ -30,15 +30,17 @@ void fn_801357A4();
 
 extern void *fn_80156A40(void);
 
-static float fn_80135278_dot(float *a, float *d) {
-    return a[0] * d[0] + a[1] * d[1];
+typedef struct {
+    float unk_0;
+    float unk_4;
+} Diffs2_80135278;
+
+static float fn_80135278_dot(float *a, Diffs2_80135278 d) {
+    return a[0] * d.unk_0 + a[1] * d.unk_4;
 }
 
 float fn_80135278(float *a, float *b, float *c) {
-    float d[2];
-    d[0] = b[0] - c[0];
-    d[1] = b[1] - c[1];
-    return fn_80135278_dot(a, d);
+    return fn_80135278_dot(a, (Diffs2_80135278){b[0] - c[0], b[1] - c[1]});
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
