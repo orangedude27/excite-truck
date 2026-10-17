@@ -190,8 +190,8 @@ extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
 
 extern "C" s32 fn_800A7688(void *, void **, void **);
 extern "C" s32 fn_800A7214(void *);
-extern "C" s32 fn_800A535C(void);
-extern "C" s32 fn_800A52DC(void);
+extern "C" void fn_800A535C(u32);
+extern "C" void fn_800A52DC(u32);
 extern "C" s32 VFipdm_disk_convert_sector_into_block(s32 arg1, s32 arg2, u32 size, s32 *arg4, s32 *arg5) {
     u32 shift;
 
