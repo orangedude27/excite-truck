@@ -24,6 +24,7 @@ extern "C" int lbl_8055F870;
 extern "C" float lbl_80564734;
 extern "C" float lbl_80564744;
 extern "C" void fn_802A4524(void*);
+extern "C" s32 fn_80287B14(void*);
 
 namespace ebi {
 namespace title {
@@ -92,6 +93,22 @@ extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" void fn_802A1F00(void *arg0) {
+    float f30 = lbl_80564744;
+    float f31 = lbl_80564734;
+    s32 count = 0;
+    void* p = arg0;
+    while (count < fn_802A47A8(p)) {
+        *(float*)((char*)p + 0x14) = f30;
+        count++;
+        *(float*)((char*)p + 0x18) = f31;
+        *(float*)((char*)p + 0x1C) = f30;
+        *(float*)((char*)p + 0x20) = f30;
+        p = (char*)p + 0x10;
+    }
+    fn_802A4524(*(void**)((char*)arg0 + 0x10));
 }
 
 extern "C" void fn_802A2118(void *arg0) {
