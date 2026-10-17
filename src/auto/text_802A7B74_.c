@@ -9,7 +9,6 @@ extern double fn_8002F208(double);
 extern void fn_8002F53C(void *, void (*)(void), int, int, int);
 extern float lbl_8055F880, lbl_8055F884;
 extern double lbl_805648E0, lbl_805648E8;
-#pragma scheduling off
 void fn_802A7B74(void) {
     fn_8000D838(&lbl_8055F878);
     lbl_8055F880 = (float) fn_8002F208(lbl_805648E0);
