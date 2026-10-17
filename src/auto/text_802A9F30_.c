@@ -14,6 +14,19 @@ void fn_8028E398(int);
 void fn_80128668(void *);
 extern void *lbl_8055F924;
 void fn_8028E080(void);
+__declspec(section ".sdata") extern float lbl_805649F0;
+void fn_802A9FE0(void *arg0) {
+    float value = lbl_805649F0;
+    int i;
+    for (i = 0; i <= 0xC0; i += 4) *(float *)((char *)arg0 + i) = value;
+    *(unsigned char *)((char *)arg0 + 0xC4) = 0;
+    *(float *)((char *)arg0 + 0xCC) = value;
+    *(float *)((char *)arg0 + 0xC8) = value;
+    *(float *)((char *)arg0 + 0xD0) = value;
+    *(float *)((char *)arg0 + 0xD4) = value;
+    *(float *)((char *)arg0 + 0xD8) = value;
+}
+
 void fn_802AA0C8(void *arg0) {
     extern float lbl_805649F0;
     extern float lbl_805649F4;
