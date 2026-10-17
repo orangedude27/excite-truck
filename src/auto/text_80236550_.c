@@ -12,6 +12,10 @@ int fn_802E2C20(void);
 void fn_80236674(void);
 void fn_802E30C8(const char *);
 void fn_802365D8(void);
+float fn_8023659C(void) {
+    return (float)(lbl_8055F09C - lbl_8055F094) / lbl_805636D0;
+}
+
 void fn_802365D8(void) {
     lbl_8055F094 = fn_802E2C20();
     fn_80236674();
@@ -20,3 +24,21 @@ void fn_802365D8(void) {
 void fn_80236600(void) {
     lbl_8055F0A0 = 1;
 }
+
+void fn_8023660C(void) {
+    int temp;
+    int value;
+
+    lbl_8055BA00 = 0;
+    if (lbl_8055F0A0 != 0) {
+        value = 1;
+        temp = fn_802E2C20() - lbl_8055F09C + lbl_8055F094 - 0x10;
+        if (temp > 1) {
+            value = temp;
+        }
+        lbl_8055F094 = value;
+        lbl_8055F0A0 = 0;
+    }
+    fn_80236674();
+}
+
