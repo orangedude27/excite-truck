@@ -1917,6 +1917,11 @@ void fn_80072A98(void *arg0) {
     }
 }
 
+void fn_80072AE4(u8 *arg0, u8 *arg1, u8 *arg2) {
+    strncpy((char *)lbl_803C0B98 + 0x20, (char *)arg2, 0x1F);
+    BTM_SecDeleteRmtNameNotifyCallback(fn_80072AE4);
+}
+
 void bta_dm_remname_cback(u8 *arg0) {
     void *buf;
     u8 *addr;
