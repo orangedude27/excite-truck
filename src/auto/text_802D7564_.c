@@ -103,6 +103,32 @@ void fn_802D93E8(int arg0) {
     lbl_8055FE24 = arg0;
 }
 
+extern int GXGetTexObjMipMap(void *);
+extern void *GXGetTexObjFmt(void *);
+extern void GXCopyTex(void *, int);
+extern void GXSetTexCopySrc(unsigned short, unsigned short, unsigned short, unsigned short);
+extern void GXSetTexCopyDst(unsigned short, unsigned short, int, unsigned char);
+extern void GXSetZMode(int, int, int);
+extern void GXSetColorUpdate(int);
+extern void fn_802CFF50(void);
+void fn_802D9418(void) {
+    register int zero;
+    void *obj;
+    unsigned int s, t;
+    fn_802D2614();
+    obj = (char *)lbl_8055FE24 + 0x24;
+    s = GXGetTexObjWrapS(obj) & 0xFFFF;
+    t = GXGetTexObjWrapT(obj) & 0xFFFF;
+    zero = 0;
+    GXSetTexCopySrc(zero, zero, s, t);
+    GXSetTexCopyDst(s, t, GXGetTexObjMipMap(obj), zero);
+    GXSetZMode(1, 7, 1);
+    GXSetColorUpdate(1);
+    GXCopyTex(GXGetTexObjFmt(obj), 1);
+    lbl_8055FE24 = zero;
+    fn_802CFF50();
+}
+
 extern void *lbl_8055FE28;
 extern void *lbl_8034C5B8;
 extern void *lbl_8034C4B0;
