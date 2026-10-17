@@ -34,6 +34,8 @@ extern int fn_802E582C(void);
 extern char lbl_8055D1E4[];
 extern char lbl_8034D490[];
 extern char lbl_8034D4A0[];
+extern void fn_802E317C(char *, int, void *);
+extern int lbl_8055FF98;
 void fn_802E5248(int arg0, int arg1) {
     if (arg1 == 0) fn_80060CC0(arg0, 4, (void (*)())fn_802E51D0);
 }
