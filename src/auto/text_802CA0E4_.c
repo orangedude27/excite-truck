@@ -3,6 +3,12 @@
 
 #include <macros.h>
 
+#pragma push
+#pragma small_data on
+DECL_SECTION(".sdata") extern int lbl_8055FCB0;
+#pragma small_data off
+#pragma pop
+
 extern char lbl_8055D07D;
 char fn_802CA7D4(void) { return 1; }
 
