@@ -100,15 +100,20 @@ void fn_80263820(void *arg0) {
         *(s32 *)((u8 *)arg0 + 0x18) = 0;
 }
 
+#pragma scheduling off
 void fn_80263848(void *arg0, s32 arg1) {
-    s32 a = *(s32 *)((u8 *)arg0 + 4);
-    s32 b = *(s32 *)((u8 *)arg0 + 8);
-    s32 c = *(s32 *)((u8 *)arg0 + 0xC);
-    s32 d = *(s32 *)((u8 *)arg0 + 0x10);
-    s32 e = fn_80131234(lbl_80346324, lbl_80346324);
-    fn_8022BAD0(0x12, a, b, 0, c, d, e, *(s32 *)((u8 *)arg0 + 0x18), lbl_80563BD4);
+    s32 temp_r31 = *(s32 *)((u8 *)arg0 + 0x10);
+    s32 temp_r30 = *(s32 *)((u8 *)arg0 + 0xC);
+    s32 temp_r29 = *(s32 *)((u8 *)arg0 + 8);
+    s32 temp_r28 = *(s32 *)((u8 *)arg0 + 4);
+    s32 temp_r3 = ((s32 (*)(const u8 *))fn_80131234)(lbl_80346324);
+    volatile s32 sp8 = 0;
+    fn_8022BAD0(0x12, temp_r28, temp_r29, 0, temp_r30, temp_r31, temp_r3, *(s32 *)((u8 *)arg0 + 0x18), lbl_80563BD4);
 }
 
+void fn_802638C4(void) {}
+
+#pragma scheduling on
 s32 fn_802638C8(void *arg0, s32 arg1) {
     if (*((u8 *)arg0 + 0x29) != 0 && arg1 != 0x126) {
         if (arg1 < 0x126) {
