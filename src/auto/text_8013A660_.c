@@ -3,11 +3,20 @@
 
 extern char lbl_8055E160;
 extern int lbl_802F9350[3];
+extern char lbl_8042F858[];
 extern int fn_80028E00(char *, int);
 extern int fn_8013A6D4(int);
 extern int fn_802E317C(char *, ...);
 extern char lbl_8032C1A0[];
 typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
+void fn_8013A660(unkVtable **arg0, char *arg1, char *arg2) {
+    int result;
+    result = (*arg0)->m_fn();
+    if (result == 0) {
+        fn_802E317C(lbl_8032C1A0, arg2, arg1);
+    }
+}
+
 int fn_8013A6C4(void *arg0, void *arg1) {
     return *(int *)((char *)arg0 + 8) - *(int *)((char *)arg1 + 8);
 }
