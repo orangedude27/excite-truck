@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-
+  
+extern struct Unk_804900AC { long *m_entries; long m_count; long m_capacity; } lbl_804900AC;
 extern long fn_801345D8(long, long, long *, long);
 extern long lbl_8055B664;
 extern signed char lbl_8055EEF4;
