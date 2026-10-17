@@ -10,6 +10,8 @@ void fn_802889F0(void) {
     fn_80289F54(lbl_8055F6E4);
 }
 
+void fn_80288A1C(void) {}
+
 extern int lbl_8055F6E0[];
 extern int fn_8028E584(int, int, int);
 void fn_80288A40(int arg0, int arg1) {
