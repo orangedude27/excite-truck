@@ -2,6 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern long fn_800167F4(void);
+extern float fn_80129DC4(long, float, float);
+extern void PSVECNormalize(float *, float *);
+extern float lbl_80562DBC, lbl_80562DC0, lbl_80562DD4, lbl_80562DD8;
+extern float lbl_80562DDC, lbl_80562DE0;
+extern float lbl_802F99F8[4];
 extern long lbl_8055AF10;
 extern void fn_802C6CF8(long);
 extern void fn_80127464(void);
@@ -328,6 +333,21 @@ void fn_801E8D48(void) {
                     lbl_80562DF8, lbl_80562DF4))
         fn_801F19FC(&init);
     fn_801E87D4(0);
+}
+
+void *fn_801E8EA4(long arg0) {
+    unsigned char *entry = lbl_80339CC0;
+    do {
+        if (*(long *)(entry + 4) == arg0) break;
+        entry += 0xC;
+    } while (*(long *)entry != 0);
+    if (*(long *)entry == 0) fn_802E317C(lbl_80339CFC);
+    return entry;
+}
+
+long fn_801E952C(long arg0) {
+    memset((void *)arg0, 0, 0x3F8);
+    return arg0;
 }
 
 void fn_801E9564(long arg0) {
