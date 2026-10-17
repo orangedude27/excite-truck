@@ -109,6 +109,15 @@ void fn_8028E398(int arg0) {
         fn_8028F858(arg0, 1);
     }
 }
+
+extern int lbl_804B36B8[];
+void fn_8028E528(int arg0) {
+    if (fn_8028EF44(&lbl_804B36B8[0], arg0) != 0) {
+        fn_8028EF44((unsigned int *)lbl_804B34B0_arr, arg0);
+        fn_8028F858(arg0, 1);
+    }
+}
+
 #pragma pop
 void fn_8028E584(void) {
     fn_8028FB98(lbl_80564424);
