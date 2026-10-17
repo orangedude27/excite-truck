@@ -126,6 +126,30 @@ public:
     s32 m260;
 };
 
+class Unk8015E910V {
+public:
+    virtual void v0(s32);
+    virtual void v1(s32);
+    virtual void v2(s32);
+    virtual void v3(s32);
+    virtual void v4(s32);
+    virtual void v5(s32);
+    virtual void v6(s32);
+    virtual void v7(s32);
+    virtual s32 v8(s32);
+};
+
+class Unk8015EA24V {
+public:
+    virtual void v0(s32);
+    virtual void v1(s32);
+    virtual void v2(s32);
+    virtual void v3(s32);
+    virtual void v4(s32);
+    virtual void v5(s32);
+    virtual void v6(s32);
+};
+
 class Unk801584D4 {
 public:
     virtual void v0();
@@ -442,13 +466,11 @@ extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 extern "C" void fn_80158558(s32 arg0) {
-    #pragma scheduling off
     s32* state = lbl_8042FD34;
     s32* items = (s32*)state[0];
     s32* slot = items + state[1];
     state[1] += 1;
     *slot = arg0;
-    #pragma scheduling on
 }
 
 extern "C" void fn_8015857C(u32 arg0) {
@@ -1356,6 +1378,41 @@ extern "C" void fn_8015E80C(Unk801577F0V* arg0, s32 arg1) {
         entries[j]->v18(arg1);
     }
 }
+
+extern "C" s32 fn_8015E910(void *arg0, s32 arg1) {
+    s32 offset = 0;
+    s32 i = 0;
+    while (i < *(s32 *)((char *)arg0 + 8)) {
+        void *obj = *(void **)((char *)*(void **)((char *)arg0 + 4) + offset);
+        if (((s32 (**)(void *, s32))*(void **)obj)[16](obj, arg1) != 0) return 1;
+        offset += 4;
+        i += 1;
+    }
+    return 0;
+}
+
+extern "C" void fn_8015E9A4(void *arg0, s32 arg1) {
+    s32 offset = 0;
+    s32 i = 0;
+    while (i < *(s32 *)((char *)arg0 + 8)) {
+        void *obj = *(void **)((char *)*(void **)((char *)arg0 + 4) + offset);
+        ((void (**)(void *, s32))*(void **)obj)[18](obj, arg1);
+        offset += 4;
+        i += 1;
+    }
+}
+
+extern "C" void fn_8015EA24(void *arg0, s32 arg1) {
+    s32 offset = 0;
+    s32 i = 0;
+    while (i < *(s32 *)((char *)arg0 + 8)) {
+        void *obj = *(void **)((char *)*(void **)((char *)arg0 + 4) + offset);
+        ((void (**)(void *, s32))*(void **)obj)[13](obj, arg1);
+        offset += 4;
+        i += 1;
+    }
+}
+
 #pragma scheduling on
 extern "C" s32 fn_80159338(void) {
     return 3;
