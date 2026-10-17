@@ -11,6 +11,10 @@ void fn_801E9C80(void) {
 
 }
 
+s32 fn_801DCE14(void *, void *, s32, s32, s32, s32);
+extern f32 lbl_80562E2C;
+void fn_801E9DC4(s16 *arg0) { *arg0 = -1; }
+
 f32 fn_801E9DD0(void) {
     return fn_801E9DDC();
 }
