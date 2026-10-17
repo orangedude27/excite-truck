@@ -2287,6 +2287,28 @@ extern "C" u16 fn_800A4F08(void *arg0) {
     return (u16)(*(u32 *)((u8 *)arg0 + 4) - *(u32 *)arg0);
 }
 
+extern "C" s32 VFiPFSTR_StrCmp(void *arg0, s32 arg1) {
+    u16 converted;
+    u16 *str;
+    u16 current;
+    s32 result;
+    s32 (*convert)(s32, u16 *);
+
+    if (*(u32 *)((u8 *)arg0 + 0xC) == 1) {
+        return fn_800A4AD0(*(u8 **)arg0, (u8 *)arg1);
+    }
+    str = *(u16 **)arg0;
+    convert = *(s32 (**)(s32, u16 *))((u8 *)lbl_803D2140 + 0x48);
+    do {
+        convert(arg1, &converted);
+        current = *str;
+        ++arg1;
+        str += 1;
+        result = converted;
+    } while (current == converted && str[-1] != 0 && converted != 0);
+    return str[-1] - result;
+}
+
 extern "C" void fn_800A52DC(u32 arg0) {
     u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
     s32 i;
