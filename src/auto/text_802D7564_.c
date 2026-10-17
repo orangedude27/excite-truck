@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern unsigned char lbl_804C5700[12];
+extern void GXLoadTexObj(void *, int);
 extern void fn_80128670(void *);
 extern void *lbl_8055FE28;
 extern void *lbl_8055FE18;
@@ -31,6 +33,26 @@ void fn_802D7564(void) {
 void fn_802D8DA0(void) {
     fn_80128670(lbl_8055FE28);
     lbl_8055FE28 = 0;
+}
+
+extern void fn_802D81C4(void *, int);
+extern void fn_802D86BC(void *, int);
+void fn_802D8DCC(void *arg0, int arg1) {
+ unsigned int kind;
+ unsigned char t;
+ unsigned char *p = *(unsigned char **)((char *)arg0 + 0x2C);
+t=p[0]; p[0]=p[3]; p[3]=t;
+t=p[1]; p[1]=p[2]; p[2]=t;
+if (*(int *)(p+0) != 0) *(unsigned char **)(p+0) = p + *(int *)(p+0);
+t=p[4]; p[4]=p[7]; p[7]=t;
+t=p[5]; p[5]=p[6]; p[6]=t;
+if (*(int *)(p+4) != 0) *(unsigned char **)(p+4) = p + *(int *)(p+4);
+t=p[8]; p[8]=p[11]; p[11]=t;
+t=p[9]; p[9]=p[10]; p[10]=t;
+if (*(int *)(p+8) != 0) *(unsigned char **)(p+8) = p + *(int *)(p+8);
+kind=*(unsigned int *)arg0;
+if (kind == 0x40 || kind == 0) fn_802D81C4(arg0,arg1);
+else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0,arg1);
 }
 
 void fn_802D9154(void) {
