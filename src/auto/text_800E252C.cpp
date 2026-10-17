@@ -340,6 +340,23 @@ extern "C" void fn_800E54EC(void *arg0, float farg0) {
     }
 }
 
+extern "C" void fn_800E5550(void *arg0, float arg1) {
+    float value;
+    if (arg1 > lbl_80560F38) {
+        value = lbl_80560F38;
+    } else if (arg1 < lbl_80560F3C) {
+        value = lbl_80560F3C;
+    } else {
+        value = arg1;
+    }
+    float *field = (float *)((char *)arg0 + 0x138);
+    if (value != *field) {
+        unsigned char *flags = (unsigned char *)arg0 + 0x123;
+        *field = value;
+        *flags |= 0x40;
+    }
+}
+
 extern "C" void fn_800E5594(void *arg0, int arg1) {
     int *field = (int *)((char *)arg0 + 0x13c);
     if (*field != arg1) {
