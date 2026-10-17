@@ -255,6 +255,10 @@ s32 fn_8024B8CC(s32 arg0) {
     return arg0 + 0x4C;
 }
 
+s32 fn_8024B8D4(s32 arg0) {
+    return arg0 + 0x98;
+}
+
 void fn_8024B970(void *arg0) {
     fn_8024B6AC(arg0);
 }
