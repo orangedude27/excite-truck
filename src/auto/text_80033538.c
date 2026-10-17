@@ -76,6 +76,15 @@ void fn_80033A34(void *arg0, float arg1) {
     OSRestoreInterrupts(state);
 }
 
+void fn_80033AAC(void *arg0, void *arg1) {
+ int state=OSDisableInterrupts();
+ *(unsigned short *)((char *)arg0+0x1F6)=*(unsigned short *)arg1;
+ *(unsigned short *)((char *)arg0+0x1F8)=*(unsigned short *)((char *)arg1+2);
+ *(unsigned short *)((char *)arg0+0x1FA)=*(unsigned short *)((char *)arg1+4);
+ *(unsigned int *)((char *)arg0+0x1C)|=0x80000;
+ OSRestoreInterrupts(state);
+}
+
 void fn_80033B74(void *arg0, short arg1, short arg2) {
     int state = OSDisableInterrupts();
     *(short *)((char *)arg0 + 0x200) = arg1;
