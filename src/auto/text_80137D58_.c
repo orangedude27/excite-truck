@@ -4,3 +4,10 @@
 void fn_80137F2C(void) {
 
 }
+
+void fn_80138434(void) {
+    fn_80137F2C();
+}
+
+void fn_80138958(void *arg0, float *arg1) { fn_801386D0(arg1[0], arg1[1], arg1[2]); }
+
