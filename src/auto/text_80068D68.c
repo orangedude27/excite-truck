@@ -930,6 +930,27 @@ void fn_80072C38(void) {
     BTM_CancelRemoteDeviceName();
 }
 
+void bta_dm_pinname_cback(u8 *arg0) {
+    u8 local[0x108];
+    u16 len;
+    void (*callback)(int, void *, void *);
+
+    fn_80070FA4(local, lbl_803C0C14 + 0xF8);
+    local[0xFE] = lbl_803C0C14[0xFE];
+    local[0xFF] = lbl_803C0C14[0xFF];
+    local[0x100] = lbl_803C0C14[0x100];
+    if (arg0 != 0 && *(u16 *)arg0 == 0) {
+        len = *(u16 *)(arg0 + 2);
+        if (len >= 0x20) len = 0x20;
+        memcpy(local + 6, arg0 + 4, len);
+        local[0x26] = 0;
+    } else {
+        local[6] = 0;
+    }
+    callback = *(void (**)(int, void *, void *))(lbl_803C0C14 + 0x50);
+    callback(2, local, lbl_803C0C14);
+}
+
 s32 fn_80072EF4(void) { return 0xB; }
 
 void fn_8007301C(void *arg0) {
@@ -1875,6 +1896,18 @@ void fn_80072A98(void *arg0) {
     if (buf != 0) {
         *(u16 *)buf = 0x203;
         *((u8 *)buf + 8) = *((u8 *)arg0 + 1);
+        fn_80071450(buf);
+    }
+}
+
+void bta_dm_disc_remname_cback(u8 *arg0) {
+    void *buf;
+    fn_8007148C((s32)(lbl_803C0B98 + 0x58));
+    buf = GKI_getbuf(0x110);
+    if (buf != 0) {
+        fn_80070FA4((u8 *)buf + 8, lbl_803C0B98 + 0x1A);
+        strncpy((char *)buf + 0xE, (char *)arg0 + 4, 0x20);
+        *(u16 *)buf = 0x204;
         fn_80071450(buf);
     }
 }
