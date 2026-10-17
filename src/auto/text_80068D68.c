@@ -843,6 +843,12 @@ void fn_80072C38(void) {
 
 s32 fn_80072EF4(void) { return 0xB; }
 
+void fn_8007301C(void *arg0) {
+    void (**callback)(s32, void *);
+    callback = (void (**)(s32, void *))(lbl_803C0C14 + 0x50);
+    if (*callback != 0) (*callback)(0, arg0);
+}
+
 extern void fn_80070FA4(void *, const void *);
 extern void *GKI_getbuf(unsigned short);
 void fn_80073464(void) {
