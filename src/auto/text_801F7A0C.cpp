@@ -206,7 +206,9 @@ struct F9List {
     void *next2;  // 0x20
 };
 
+#pragma dont_inline on
 extern "C" u32 fn_801F7A0C(void) { return 1; }
+#pragma dont_inline reset
 
 extern "C" int stricmp(const char *, const char *);
 extern "C" const char lbl_8033B00C[];
