@@ -32,6 +32,12 @@ void fn_801EA4C4(void) {
     base[0x604 / 4] = 7;
 }
 
+void fn_801EA56C(void) {
+    fn_80128668(*(s32 *)&lbl_8055EB78);
+    lbl_8055EB78 = 0;
+    lbl_8055EB7C = 0;
+}
+
 s32 fn_801EA994(void) {
     return *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4);
 }
@@ -76,6 +82,21 @@ void fn_801EA9DC(s32 arg0, void *arg1) {
     value = *(s32 *)((u8 *)base + 0x5E0) - 1;
     if (value < index) index = value;
     *(s32 *)((u8 *)base + (index << 2) + 0x5E8) = arg0;
+}
+
+void fn_801EAA94(s32 arg0, s32 arg1) {
+    u8 flag;
+    s32 result;
+    u8 *entry;
+    flag = 1;
+    entry = (u8 *)(*(s32 *)&lbl_8055EB78 + arg0 * 0xBC);
+    *(s32 *)(entry + 0x44) = arg1;
+    if (arg1 != 0x50) {
+        result = 0;
+        if (arg1 == 0x52 && fn_80265D7C() != 0) result = 1;
+        if (result == 0) flag = 0;
+    }
+    *entry = flag;
 }
 
 void fn_801EAB10(s32 arg0, s32 arg1) {
