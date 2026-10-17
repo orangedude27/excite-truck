@@ -618,7 +618,6 @@ extern "C" void fn_800B7408(s32* arg0, void* arg1) {
 
 extern "C" void* fn_800B1BDC(void*);
 extern "C" void fn_800B73BC(void*);
-extern "C" s32 fn_800ABC60(void *arg0, void *arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5);
 extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
     fn_800B73BC(fn_800B1BDC(alarm));
