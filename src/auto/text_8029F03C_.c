@@ -200,6 +200,7 @@ int fn_8029FE1C(int arg0) {
     return fn_800241DC(&sp8, lbl_804B5070, lbl_8055F81C, 0x78, fn_8029FDF0);
 }
 
+#pragma pop
 int fn_8029FE6C(const char *arg0) {
     unsigned char *current = lbl_804B6E70;
     int i = 0;
