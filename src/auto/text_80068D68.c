@@ -1303,6 +1303,27 @@ tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
     return 0;
 }
 
+void btm_db_reset(void) {
+    u8 param = 12;
+    btm_inq_db_reset();
+    btm_discovery_db_reset();
+    if (*(void (**)(void *))(lbl_803C0F78 + 0x5A8)) {
+        void (*callback)(void *) = *(void (**)(void *))(lbl_803C0F78 + 0x5A8);
+        *(void (**)(void *))(lbl_803C0F78 + 0x5A8) = NULL;
+        if (callback) callback(NULL);
+    }
+    if (*(void (**)(void *))(lbl_803C0F78 + 0x5C4)) {
+        void (*callback)(void *) = *(void (**)(void *))(lbl_803C0F78 + 0x5C4);
+        *(void (**)(void *))(lbl_803C0F78 + 0x5C4) = NULL;
+        if (callback) callback(&param);
+    }
+    if (*(void (**)(void *))(lbl_803C0F78 + 0x5E0)) {
+        void (*callback)(void *) = *(void (**)(void *))(lbl_803C0F78 + 0x5E0);
+        *(void (**)(void *))(lbl_803C0F78 + 0x5E0) = NULL;
+        if (callback) callback(&param);
+    }
+}
+
 u8 fn_80079514(void) {
     return (u8)((lbl_803C0F78[0x64E] - 5) == 0);
 }
