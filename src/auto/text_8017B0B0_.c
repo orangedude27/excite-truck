@@ -26,7 +26,7 @@ void *fn_8017B0B0(void *arg0) {
 
 void fn_8017B0F8(void *arg0, float *arg1) {
     fn_80179D94();
-    *(int *)((char *)arg0 + 0xD0) = 0;
+    *(volatile int *)((char *)arg0 + 0xD0) = 0;
     fn_8017B2D0(arg0, arg1[2], arg1[3], arg1[4], arg1[5]);
     *(int *)((char *)arg0 + 0x184) = 0;
     fn_8017B198(arg0);
@@ -37,6 +37,29 @@ void fn_8017B164(void *arg0) {
     fn_8017B198(arg0);
 }
 
+void fn_8017B4AC(float *arg0, float *arg1) {
+    float x = arg0[0x13C / 4] + arg1[0];
+    float y = arg0[0x140 / 4] + arg1[1];
+    float z = arg0[0x144 / 4] + arg1[2];
+    arg0[0x13C / 4] = x;
+    arg0[0x140 / 4] = y;
+    arg0[0x144 / 4] = z;
+}
+
+extern float lbl_80561BA8;
+#pragma scheduling off
+void fn_8017B6A8(void *arg0) {
+    float value = lbl_80561BA8;
+    *(int *)((char *)arg0 + 0x1E4) = 0;
+    *(float *)((char *)arg0 + 0x188) = value;
+    *(float *)((char *)arg0 + 0x18C) = value;
+    *(float *)((char *)arg0 + 0x190) = value;
+    *(float *)((char *)arg0 + 0x194) = value;
+    *(float *)((char *)arg0 + 0x198) = value;
+    *(float *)((char *)arg0 + 0x19C) = value;
+    *(float *)((char *)arg0 + 0x1A0) = value;
+}
+#pragma scheduling on
 void fn_8017C7BC(void) {
 
 }
