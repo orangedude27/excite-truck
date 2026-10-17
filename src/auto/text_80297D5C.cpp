@@ -138,6 +138,14 @@ void fn_80298458(int arg0, int arg1, short arg2) {
     }
 }
 
+extern "C" void fn_8029A890(void *arg0, void *arg1) {
+    *(float *)((char *)arg0 + (int)arg1 * 0x2C + 0x24) = lbl_80564590;
+}
+
+extern "C" void fn_8029A8A4(void *arg0, void *arg1) {
+    *(unsigned char *)((char *)arg0 + (int)arg1 * 0x2C + 0x28) = 1;
+}
+
 void fn_8029B138(void *arg0, int arg1, float *arg2, float *arg3, float *arg4, float *arg5) {
     float temp_f1;
     float temp_f1_2;
@@ -272,8 +280,8 @@ int fn_8029BFF8(void* arg0) {
 
 extern void* lbl_8055F7D4;
 extern "C" int fn_8029C024(int *arg0) {
-    void *value = (void *)*arg0;
-    fn_8029A890(lbl_8055F7D4, value);
+    int value = *arg0;
+    fn_8029A890(lbl_8055F7D4, (void *)value);
     return 4;
 }
 
