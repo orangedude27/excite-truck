@@ -251,12 +251,45 @@ done:
 
 s32 fn_8024B874(s32 arg0) { return arg0 + 0x64; }
 
+s32 *fn_8024B87C(void *arg0, s32 arg1) {
+    extern s32 lbl_8055BFD8;
+    if (arg1 < *(s32 *)((char *)arg0 + 0x1C)) {
+        return *(s32 **)(*(s32 **)((char *)arg0 + 0x18) + arg1) + 1;
+    }
+    return &lbl_8055BFD8;
+}
+
+s32 fn_8024B8A4(void *arg0, s32 arg1) {
+    if (arg1 < *(s32 *)((char *)arg0 + 0x1C)) {
+        return *(s32 *)*(s32 **)(*(s32 **)((char *)arg0 + 0x18) + arg1);
+    }
+    return -1;
+}
+
 s32 fn_8024B8CC(s32 arg0) {
     return arg0 + 0x4C;
 }
 
 s32 fn_8024B8D4(s32 arg0) {
     return arg0 + 0x98;
+}
+
+void fn_8024B8DC(void *arg0) {
+    s32 index;
+    s32 **array;
+    fn_80214CB4(*(s32 *)((char *)arg0 + 0x9C));
+    index = 0;
+    array = *(s32 ***)((char *)arg0 + 0x18);
+    while (index < *(s32 *)((char *)arg0 + 0x20)) {
+        if (index < *(s32 *)((char *)arg0 + 0x1C)) {
+            if (*(unsigned char *)((char *)array[index] + 0x14) == 0) {
+                fn_80214B44(index + 1);
+            }
+        } else {
+            fn_80214A9C(index + 1);
+        }
+        index++;
+    }
 }
 
 void fn_8024B970(void *arg0) {
