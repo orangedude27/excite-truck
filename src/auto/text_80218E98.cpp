@@ -960,6 +960,28 @@ extern "C" s32 fn_8021F478(s32 *arg0) {
     return 0;
 }
 
+extern "C" s32 fn_8021FBC4(void* arg0, s32 arg1, s32 arg2) {
+    s32 x = *(s32*)((u8*)arg0 + 0x264);
+    s32 r7 = 0;
+    s32 r8 = 0;
+    s32 r9 = 0;
+    if (arg1 >= x - 0x14 && arg1 < x + *(s32*)((u8*)arg0 + 0x26C) + 0x14) r9 = 1;
+    if (r9 != 0 && arg2 >= *(s32*)((u8*)arg0 + 0x268) - 0x14) r8 = 1;
+    if (r8 != 0 && arg2 < *(s32*)((u8*)arg0 + 0x268) + *(s32*)((u8*)arg0 + 0x270) + 0x14) r7 = 1;
+    return r7;
+}
+
+extern "C" u8 lbl_8033E7F4[];
+extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv_8022003C(void* arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void**)arg0 = lbl_8033E7F4;
+        fn_802C519C(*(void**)((u8*)arg0 + 0x254));
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_8022071C(void *arg0) {
     void *result;
     if (fn_80129BC4() != 0) {
