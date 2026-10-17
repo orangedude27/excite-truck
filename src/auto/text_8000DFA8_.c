@@ -603,6 +603,10 @@ s32 fn_8000DFA8(s32 arg0) {
     return lbl_802FC2A8[arg0 * 3 + 1];
 }
 
+s32 fn_8000DFC0(s32 arg0) {
+    return lbl_802FC2A8[arg0 * 3 + 2];
+}
+
 s32 fn_8000E338(s32 arg0) {
     s32 var_r3;
 
