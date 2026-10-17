@@ -121,14 +121,17 @@ int fn_801B4B9C(int arg0) {
     return *fn_801B479C(arg0 + 4, fn_801B47AC(arg0 + 4));
 }
 
-unsigned int fn_801B4BDC(void) {
-    return *fn_801B479C();
-}
+int fn_801B4BDC(int arg0);
 
 int fn_801B4C1C(int arg0, int arg1) {
     int result;
-    result = (int)fn_801B4BDC();
+    result = (int)fn_801B4BDC(arg0);
     return arg1 >= result;
+}
+
+int fn_801B4BDC(int arg0) {
+    void *p = (void *)(arg0 + 4);
+    return *fn_801B479C((int)p, fn_801B47B4(p));
 }
 
 void fn_801B4C58(int arg0) {
