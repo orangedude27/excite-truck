@@ -4,7 +4,11 @@ static inline int find_sound_entry_inline(int *key) {
     int i;
     int count = *(int *)((char *)table + 4);
     for (i = 0; i < count; i++) {
-        if (*key == *(int *)(*(char **)table + i * 0x18)) return i;
+        int value;
+        int id;
+        value = *(int *)(*(char **)table + i * 0x18);
+        id = *key;
+        if (value == id) return i;
     }
     return -1;
 }
