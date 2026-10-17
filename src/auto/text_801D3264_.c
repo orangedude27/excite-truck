@@ -8,7 +8,6 @@ extern void fn_801D32CC(void);
 extern void fn_801D32C8(void);
 extern void fn_8000D838(void *);
 extern void fn_8002F53C(void *, void (*)(void), int, int, int);
-#pragma scheduling off
 void fn_801D3264(void) {
     fn_8000D838(&lbl_8055E928);
     fn_8002F53C(lbl_80438898, fn_801D32CC, 0, 0x18, 8);
