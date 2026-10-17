@@ -193,6 +193,10 @@ void fn_8018A120(void *arg0) {
     }
 }
 
+void fn_8018A174(void *arg0) {
+    *(float *)((unsigned char *)arg0 + 0x2650) = lbl_80561D2C;
+}
+
 void fn_8018A2BC(void) {
 
 }
