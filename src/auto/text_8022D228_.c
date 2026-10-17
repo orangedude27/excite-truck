@@ -1,5 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern int sprintf(char *, const char *, ...);
+extern char lbl_8055B958[8];
+extern float lbl_805635D0;
 extern float lbl_805635D4;
 extern double lbl_805635C8;
 extern int lbl_803401A0;
@@ -169,13 +172,10 @@ int fn_8022DF9C(void *arg0) {
 }
 
 float fn_8022DFBC(void *arg0) {
-    int temp_r6;
-    int temp_r5;
-    int temp_r0;
-    temp_r6 = *(int *)((char *)arg0 + 8);
-    temp_r5 = **(int **)((char *)arg0 + 4);
-    temp_r0 = *(int *)((char *)arg0 + 0xC);
-    return (float)(temp_r5 - temp_r6) / (float)(temp_r0 - temp_r6);
+    int temp_r6 = *(int *)((char *)arg0 + 8);
+    int temp_r0 = *(int *)((char *)arg0 + 0xC) - temp_r6;
+    int temp_r5 = **(int **)((char *)arg0 + 4) - temp_r6;
+    return (float)temp_r5 / (float)temp_r0;
 }
 
 void fn_8022E014(void *arg0, float arg1) {
