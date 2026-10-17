@@ -206,11 +206,10 @@ void fn_8026A2CC(int *arg0, int arg1, float arg2) {
     *(float *)((char *)dst + 0x30) = arg2;
 }
 
+#pragma dont_inline on
 int fn_8026A344(int arg0) {
     return *(int *)((char *)fn_80267EE4(arg0) + 0x20);
 }
-
-#pragma dont_inline on
 void *fn_80267EE4();
 int fn_8026A368(void) {
     return *(int *)((char *)fn_80267EE4() + 0x10);
