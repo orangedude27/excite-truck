@@ -8,3 +8,14 @@ typedef struct FileNode {
 } FileNode;
 extern FileNode __files;
 extern int fflush(FileNode*);
+
+int __flush_all(void) {
+    int result = 0;
+    FileNode* file = &__files;
+    while (file != 0) {
+        if (((file->flags >> 22) & 7) != 0 && fflush(file) != 0)
+            result = -1;
+        file = file->next;
+    }
+    return result;
+}
