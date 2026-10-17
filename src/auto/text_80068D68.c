@@ -1783,6 +1783,20 @@ u8 fn_8007B340(void) {
     return lbl_803C0F78[0x1848];
 }
 
+tBTM_INQ_INFO *BTM_InqDbFirst(void) {
+    u8 *entry = lbl_803C0F78 + 0x16E4;
+    s32 i;
+    for (i = 0; i < 2; i++, entry += 0xA8) {
+        if (entry[0x1A]) return (tBTM_INQ_INFO *)(entry + 8);
+        if (entry[0x36]) return (tBTM_INQ_INFO *)(entry + 0x24);
+        if (entry[0x52]) return (tBTM_INQ_INFO *)(entry + 0x40);
+        if (entry[0x6E]) return (tBTM_INQ_INFO *)(entry + 0x5C);
+        if (entry[0x8A]) return (tBTM_INQ_INFO *)(entry + 0x78);
+        if (entry[0xA6]) return (tBTM_INQ_INFO *)(entry + 0x94);
+    }
+    return 0;
+}
+
 void fn_8007BC88(void) {
 
 }
@@ -3158,6 +3172,35 @@ void *l2cu_find_lcb_by_state(s32 state) {
     entry += 0x5B;
     if (*++entry && *(s32 *)(entry + 4) == state) return entry;
     return 0;
+}
+
+void PORT_CloseInd(void *arg0) {
+    extern u8 lbl_803C4828[];
+    extern char lbl_80319468[];
+    extern void fn_8007093C(u32, void *);
+    extern void port_rfc_closed(void *, s32);
+    extern void rfc_release_multiplexer_channel(void *);
+    u8 *entry;
+    s32 i;
+
+    if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319468);
+    for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4)
+        if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed(entry, 0x10);
+    rfc_release_multiplexer_channel(arg0);
+}
+
+void Port_TimeOutCloseMux(void *arg0) {
+    extern u8 lbl_803C4828[];
+    extern char lbl_80319478[];
+    extern void fn_8007093C(u32, void *);
+    extern void port_rfc_closed(void *, s32);
+    s32 i;
+    u8 *entry;
+
+    if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319478);
+    for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4) {
+        if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed(entry, 0x12);
+    }
 }
 
 void *port_find_dlci_port(unsigned int arg0) {
