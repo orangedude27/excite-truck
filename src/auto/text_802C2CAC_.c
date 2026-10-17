@@ -106,3 +106,6 @@ unsigned int fn_802C4FF8(const char *s) { return strlen(s) * 8; }
 int fn_802C501C(void) {
     return 8;
 }
+
+void fn_802C5024(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {}
+
