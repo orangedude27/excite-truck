@@ -11,6 +11,9 @@ extern int sprintf(char *, const char *, ...);
 extern const char lbl_80347A08[];
 extern const char lbl_80347A1C[];
 extern const float lbl_80564120;
+void fn_80279D3C(void) {
+}
+
 void fn_8027A888(float *arg0) {
     float zero = lbl_80564120;
     arg0[0] = zero;
