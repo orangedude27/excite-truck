@@ -3,12 +3,14 @@
 
 #pragma push
 #pragma small_data off
-extern int lbl_804A433C;
+extern char lbl_804A433C[];
 #pragma pop
 extern void *fn_8027ACBC(void *, void *);
 #pragma push
 #pragma small_data off
-void fn_8027ABF8(void *node) { fn_8027ACBC(&lbl_804A433C, node); }
+void fn_8027ABF8(void *node) {
+    fn_8027ACBC((void *)0x804A433C, node);
+}
 int fn_8027AC08(void *arg0, int arg1) {
     int count = *(int *)((char *)arg0 + 0x88);
     void *entry = arg0;
@@ -30,7 +32,24 @@ int fn_8027AC64(void *arg0) {
     return *(int *)((char *)arg0 + 0xF8);
 }
 
+#pragma push
+#pragma small_data off
 int fn_8027AC80(void *arg0) {
-    return fn_8027ACBC(&lbl_804A433C, *(void **)((char *)arg0 + 0xE8)) != 0;
+    return fn_8027ACBC((void *)&lbl_804A433C, *(void **)((char *)arg0 + 0xE8)) != 0;
 }
 
+void *fn_8027ACBC(void *arg0, void *arg1) {
+    int count = *(int *)((char *)arg0 + 0x30);
+    int i = 0;
+    void **entry = (void **)arg0;
+    while (count-- > 0) {
+        void *item = *entry;
+        if ((int)arg1 == *(int *)item)
+            return ((void **)arg0)[i];
+        entry++;
+        i++;
+    }
+    return 0;
+}
+
+#pragma pop
