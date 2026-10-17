@@ -3,7 +3,7 @@
 extern int fn_80128668();
 extern char lbl_80348798[];
 extern unsigned int lbl_8055F688;
-struct Fn8027F834List { void **items; int count; };
+struct Fn8027F834List { void **items; int count; int pad[2]; };
 extern struct Fn8027F834List lbl_804B3048;
 
 extern void *lbl_8055F680;
@@ -52,6 +52,44 @@ void fn_8027F204(char *src) {
         return;
     }
     fn_802E30C8((const char *)&lbl_80348270);
+}
+
+void *fn_8027F834(void *arg0, int arg1) {
+    int temp_r0, var_ctr, var_r7;
+    unsigned int *var_r6;
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_80348798;
+        if (lbl_8055F688 == (unsigned int)arg0) lbl_8055F688 = 0;
+        var_r6 = (unsigned int *)lbl_804B3048.items;
+        var_r7 = 0;
+        var_ctr = lbl_804B3048.count;
+        if (var_ctr > 0) {
+            do {
+                if (*var_r6 == (unsigned int)arg0) break;
+                var_r6 += 4;
+                var_r7 += 1;
+            } while (--var_ctr != 0);
+            if (var_ctr == 0) var_r7 = -1;
+        } else {
+            var_r7 = -1;
+        }
+        if (var_r7 != -1 && var_r7 >= 0 && var_r7 < lbl_804B3048.count) {
+            temp_r0 = lbl_804B3048.count - 1;
+            if (var_r7 != temp_r0)
+                ((unsigned int *)lbl_804B3048.items)[var_r7] = ((unsigned int *)lbl_804B3048.items)[temp_r0];
+            lbl_804B3048.count = lbl_804B3048.count - 1;
+        }
+        if (arg0 != 0) {
+            *((unsigned char *)arg0 + 0x18) = 0;
+            *((unsigned char *)arg0 + 0x50) = 0;
+            *((unsigned char *)arg0 + 0x5C) = 0;
+            *(int *)((char *)arg0 + 0x24) = 1;
+            *(int *)((char *)arg0 + 0x20) = 0;
+            *((unsigned char *)arg0 + 0x44) = 0;
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
 }
 
 int fn_80280898(void) { extern unsigned int lbl_8055F688; extern int fn_80216D28(void); if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
