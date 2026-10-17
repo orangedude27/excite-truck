@@ -191,6 +191,10 @@ void *fn_8024AFF8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_8024B5F8(s32 arg0, s32 arg1) {
+    return arg0 + arg1 * 0x68 + 0xAA;
+}
+
 s32 fn_8024B618(s32 arg0, s32 arg1) {
     return arg0 + arg1 * 0x68 + 0xDC;
 }
@@ -250,11 +254,11 @@ done:
 }
 
 void fn_8024B830(void *arg0, s32 arg1) {
-    s32 index;
     s32 offset;
-    *(s32 *)((char *)arg0 + 0x9C) = -1;
+    s32 index;
     index = 0;
     offset = 0;
+    *(s32 *)((char *)arg0 + 0x9C) = -1;
     while (index < *(s32 *)((char *)arg0 + 0x1C)) {
         if (arg1 == **(s32 **)((char *)*(s32 **)((char *)arg0 + 0x18) + offset)) {
             *(s32 *)((char *)arg0 + 0x9C) = index;
@@ -291,14 +295,15 @@ s32 fn_8024B8D4(s32 arg0) {
 }
 
 void fn_8024B8DC(void *arg0) {
+    register void *base = arg0;
     s32 offset;
     s32 index;
-    fn_80214CB4(*(s32 *)((char *)arg0 + 0x9C));
+    fn_80214CB4(*(s32 *)((char *)base + 0x9C));
     index = 0;
     offset = 0;
-    while (index < *(s32 *)((char *)arg0 + 0x20)) {
-        if (index < *(s32 *)((char *)arg0 + 0x1C)) {
-            if (*(unsigned char *)((char *)*(s32 *)((char *)*(s32 **)((char *)arg0 + 0x18) + offset) + 0x14) == 0) {
+    while (index < *(s32 *)((char *)base + 0x20)) {
+        if (index < *(s32 *)((char *)base + 0x1C)) {
+            if (*(unsigned char *)((char *)*(s32 *)((char *)*(s32 **)((char *)base + 0x18) + offset) + 0x14) == 0) {
                 fn_80214B44(index + 1);
             }
         } else {
@@ -330,9 +335,11 @@ void fn_8024B9AC(void *arg0) {
 }
 
 void fn_8024B9CC(void *arg0, s32 *arg1, s32 *arg2) {
-    char *entry = (char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC;
-    *arg1 = *(s32 *)(entry + 0x20);
-    *arg2 = *(s32 *)(entry + 0x24);
+    register char *entry = (char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC;
+    register s32 value1 = *(s32 *)(entry + 0x20);
+    register s32 value2 = *(s32 *)(entry + 0x24);
+    *arg1 = value1;
+    *arg2 = value2;
 }
 
 s32 fn_8024B9EC(void *arg0) {
