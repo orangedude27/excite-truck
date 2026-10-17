@@ -21,6 +21,18 @@ extern u64 lbl_8055DF18;
 extern u64 lbl_8055DF20;
 extern u64 fn_802E2C9C(void);
 
+s32 fn_80127538(void) {
+    memset(lbl_8041D790, 0, 0x480);
+    memset(lbl_8041DC10, 0, 0x10);
+    fn_80127968();
+    fn_80127C90(fn_80127968, lbl_80329EF4);
+    lbl_8055DF1C = 0;
+    lbl_8055DF18 = 0;
+    lbl_8055DF30 = 0;
+    lbl_8055DF34 = 0;
+    return 1;
+}
+
 void fn_80127930(void* alarm) {
     fn_801274C8(fn_8012766C(alarm));
 }
@@ -67,3 +79,5 @@ extern const char lbl_80329E30[];
 extern u8 lbl_8041D790[];
 extern u8 lbl_8041DC10[];
 extern s32 lbl_8041DF30[];
+struct State { s32 *next; s32 size; s32 zero; };
+extern struct State lbl_8041DEE0;
