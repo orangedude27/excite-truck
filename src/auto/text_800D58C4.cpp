@@ -438,6 +438,11 @@ extern "C" s32 fn_800D9434(void *arg0) {
     return a + b + c + d + y + e + f + g + h + (((x >> 0x18) & 0xF) * 0x14);
 }
 
+extern "C" char* strncpy(char*, const char*, unsigned int);
+extern "C" char* fn_800D9584(char* arg0, const char* arg1) {
+    return strncpy(arg0 + 4, arg1, 0x14);
+}
+
 extern "C" void fn_800DB084(void* arg0) {
     void* vtable = *(void**)arg0;
     (*(void (**)(void*, int))((u8*)vtable + 0x14))(arg0, 0);
@@ -471,11 +476,60 @@ extern "C" void fn_800DB83C(void) {
 
 }
 
+extern "C" u8 GetColorElement__Q36nw4hbm3lyt4PaneCFUl(void* self, u32 index) {
+    extern const char lbl_8031FF90[];
+    extern const char lbl_80320090[];
+    if (index >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x13F, lbl_80320090);
+    if ((s32)index == 0x10) return *((u8*)self + 0xCD);
+    struct Obj {
+        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
+        virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
+        virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
+        virtual void a12(); virtual void a13(); virtual u8 v14(u32);
+    };
+    return ((Obj*)self)->v14(index);
+}
+
+extern "C" void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc(void* self, u32 index, u8 color) {
+    extern const char lbl_8031FF90[];
+    extern const char lbl_80320090[];
+    if (index >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x14E, lbl_80320090);
+    if ((s32)index == 0x10) {
+        *((u8*)self + 0xCD) = color;
+    } else {
+        struct Obj {
+            virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
+            virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
+            virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
+            virtual void a12(); virtual void a13(); virtual void v14(u32, u8);
+        };
+        ((Obj*)self)->v14(index, color);
+    }
+}
+
 extern "C" s32 fn_800DB958(void) { return 0xFF; }
 
 extern "C" void fn_800DB960(void) {
 
 }
+
+extern "C" void* FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb(void* self,const char* name,bool recursive) {
+    extern s32 fn_800D58C4(void*); extern const char lbl_8031E8FC[]; extern const char lbl_8031E8D8[];
+    if (fn_800D58C4((u8*)self+0xB4)) return self;
+    if (recursive) {
+        void* end=(u8*)self+0x14; void* node=*(void**)((u8*)self+0x14);
+        do {
+            if (!node) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC,0x23D,lbl_8031E8D8);
+            struct Obj { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11(); virtual void a12(); virtual void a13(); virtual void a14(); virtual void a15(); virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19(); virtual void a20(); virtual void a21(); virtual void a22(); virtual void a23(); virtual void a24(); virtual void a25(); virtual void a26(); virtual void a27(); virtual void a28(); virtual void a29(); virtual void a30(); virtual void a31(); virtual void a32(); virtual void a33(); virtual void a34(); virtual void a35(); virtual void a36(); virtual void a37(); virtual void a38(); virtual void a39(); virtual void a40(); virtual void a41(); virtual void a42(); virtual void a43(); virtual void a44(); virtual void a45(); virtual void a46(); virtual void a47(); virtual void a48(); virtual void a49(); virtual void a50(); virtual void a51(); virtual void a52(); virtual void a53(); virtual void a54(); virtual void a55(); virtual void a56(); virtual void a57(); virtual void a58(); virtual void a59(); virtual void a60(); virtual void a61(); virtual void a62(); virtual void* find(const char*,bool); };
+            void* found=((Obj*)((u8*)node-4))->find(name,true);
+            if(found)return found;
+            node=*(void**)node;
+        } while(node!=end);
+    }
+    return 0;
+}
+
+extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self,void* info){ extern const char lbl_8031E8FC[]; extern const char lbl_8031E8D8[]; if(*((u8*)self+0xCF)&1){ struct Obj{virtual void a0();virtual void a1();virtual void a2();virtual void a3();virtual void a4();}; ((Obj*)self)->a4(); void* end=(u8*)self+0x14; void* node=*(void**)((u8*)self+0x14); do { if(!node)Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC,0x23D,lbl_8031E8D8); struct Child{virtual void a0();virtual void a1();virtual void a2();virtual void a3();virtual void Draw(void*);}; ((Child*)((u8*)node-4))->Draw(info); node=*(void**)node;}while(node!=end); } }
 
 extern "C" s32 fn_800DC6DC(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
