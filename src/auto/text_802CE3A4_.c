@@ -13,6 +13,16 @@ int fn_801342B0(int, int);
 char *strcpy(char *, const char *);
 void fn_802C6FB4(int);
 void fn_802C703C(int);
+void fn_802CE474(void *arg0) {
+    *(int *)((char *)arg0 + 4) = 0;
+    *(unsigned char *)arg0 = 0;
+    *(int *)((char *)arg0 + 0x38) = 0;
+    *(int *)((char *)arg0 + 0x34) = -1;
+    *(int *)((char *)arg0 + 0x30) = 0;
+    *(int *)((char *)arg0 + 0x2C) = -1;
+    *(int *)((char *)arg0 + 0x3C) = -1;
+}
+
 void fn_802CE6C0(void *arg0) {
     if (*(int *)((char *)arg0 + 0x38) == 2) {
         fn_802C6FB4(*(int *)((char *)arg0 + 0x30));
