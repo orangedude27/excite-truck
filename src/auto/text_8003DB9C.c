@@ -76,6 +76,15 @@ int GXGetFifoCount(void *arg0) {
 
 unsigned char GXGetFifoWrap(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
 
+unsigned int GXSetBreakPtCallback(unsigned int value) {
+    extern void OSRestoreInterrupts(void);
+    unsigned int old = lbl_8055D954;
+    OSDisableInterrupts();
+    lbl_8055D954 = value;
+    OSRestoreInterrupts();
+    return old;
+}
+
 extern void *lbl_8055D94C;
 void* GXGetCurrentGXThread(void) {
     return lbl_8055D94C;
@@ -127,10 +136,9 @@ void GXClearVtxDesc(void) {
 }
 
 void __GXSetVAT(void) {
-    unsigned int *data = __GXData;
-    unsigned char mask = *(unsigned char *)((char *)data + 0x5FB);
+    unsigned int *ptr = __GXData;
     unsigned int i = 0;
-    unsigned int *ptr = data;
+    unsigned int mask = *(unsigned char *)((char *)ptr + 0x5FB);
     do {
         if (mask & 1) {
             *(volatile unsigned char *)0xCC008000 = 8;
@@ -148,11 +156,38 @@ void __GXSetVAT(void) {
         ptr++;
     } while (mask);
     *(volatile unsigned char *)0xCC008000 = 0;
-    *(unsigned char *)((char *)data + 0x5FB) = 0;
+    *(unsigned char *)((char *)ptr + 0x5FB) = 0;
+}
+
+void GXSetArray(unsigned int arg0, unsigned int arg1, unsigned int arg2) {
+    unsigned int size;
+    unsigned int base;
+    size = arg0;
+    if (size == 0x19) {
+        size = 0xA;
+    }
+    base = size - 0x9;
+    *(volatile unsigned char *)0xCC008000 = 8;
+    *(volatile unsigned char *)0xCC008000 = base | 0xA0;
+    *(volatile unsigned int *)0xCC008000 = arg1 & 0x3FFFFFFF;
+    *(volatile unsigned char *)0xCC008000 = 8;
+    *(volatile unsigned char *)0xCC008000 = base | 0xB0;
+    *(volatile unsigned int *)0xCC008000 = arg2;
 }
 
 void GXInvalidateVtxCache(void) {
     *(volatile unsigned char *)0xCC008000 = 0x48;
+}
+
+void GXSetNumTexGens(unsigned int value) {
+    unsigned int *data = __GXData;
+    unsigned int v = data[0x254 / 4];
+    v = (v & ~0xF) | (value & 0xF);
+    data[0x254 / 4] = v;
+    v = data[0x5FC / 4];
+    v |= 0x200;
+    v |= 4;
+    data[0x5FC / 4] = v;
 }
 
 void GXInitLightSpot(s32 arg0, s32 arg1) {
