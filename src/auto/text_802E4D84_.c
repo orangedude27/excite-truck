@@ -35,7 +35,7 @@ extern char lbl_8055D1E4[];
 extern char lbl_8034D490[];
 extern char lbl_8034D4A0[];
 extern char lbl_8034D5B0[];
-extern void fn_802E317C(char *, int, void *);
+extern void fn_802E317C(char *, int, void *, ...);
 extern int lbl_8055FF98;
 void fn_802E5248(int arg0, int arg1) {
     if (arg1 == 0) fn_80060CC0(arg0, 4, (void (*)())fn_802E51D0);
@@ -97,6 +97,18 @@ void fn_802E58B8(unsigned char *arg0) {
     }
     fn_8012BEF0(arg0);
     fn_8012C41C(fn_802E589C, 0, arg0);
+}
+
+void fn_802E6138(void *arg0) {
+    if (((unsigned char *)arg0)[0x23] != 0) {
+        fn_802E317C(lbl_8034D5B0, *(int *)arg0, *(void **)((char *)arg0 + 0x1C));
+    }
+    {
+        void *temp_r4 = *(void **)((char *)arg0 + 0x1C);
+        *(int *)((char *)temp_r4 + 0x98) -= 1;
+    }
+    ((unsigned char *)arg0)[0x20] = 0;
+    lbl_8055FF98 -= 1;
 }
 
 void fn_802E61A8(void *arg0) {
