@@ -171,6 +171,7 @@ f32 fn_80134E34(f32 arg0) {
     return arg0 - f30 * f31;
 }
 
+#pragma dont_inline on
 void *fn_80134E90(void) {
     void *p = fn_801284F8(0x30C, lbl_8032BC50);
     if (p != 0) {
