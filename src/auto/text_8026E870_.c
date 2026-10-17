@@ -21,9 +21,12 @@ extern void fn_8026EA8C(void);
 
 s32 fn_8026EA14(s32 arg0) {
     s32 shift = arg0 - 4;
+    s32 result = 0;
     if ((unsigned)shift > 0x13)
-        return 0;
-    return ((1 << shift) & 0x80017) != 0;
+        return result;
+    if ((1 << shift) & 0x80017)
+        result = 1;
+    return result;
 }
 
 f32 fn_8026EAEC(f32 farg0) {
@@ -56,6 +59,7 @@ extern f32 lbl_80563E48;
 extern f32 lbl_80563E4C;
 extern f32 lbl_80563E38;
 extern f32 lbl_80563E3C;
+extern f32 lbl_80563E38;
 extern f32 lbl_80563E38;
 extern s32 lbl_8049A208[];
 void fn_8027045C(void) {
