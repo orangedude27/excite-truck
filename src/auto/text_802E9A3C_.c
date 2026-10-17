@@ -25,8 +25,7 @@ void* fn_802EC0FC(void) {
 }
 
 char *fn_802EC104(int arg0) {
-    int offset = arg0 * 0x610;
-    return (char *)&lbl_8052E658 + offset + 0x408;
+    return lbl_8052E658 + arg0 * 0x610 + 0x408;
 }
 
 void fn_802EC11C(void *arg0) {
