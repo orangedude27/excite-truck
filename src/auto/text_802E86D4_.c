@@ -80,3 +80,5 @@ void fn_802E9878(void) {}
 
 void fn_802E987C(void) {}
 
+void fn_802E9880(void) {}
+
