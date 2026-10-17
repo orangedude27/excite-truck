@@ -10,6 +10,9 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern u8 lbl_803C4040[];
+extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
+extern void l2cu_create_conn_after_switch(void *p_lcb);
 extern u8 lbl_80392960[];
 extern u8 lbl_803C0D48[];
 extern u8 lbl_803C0B98[];
