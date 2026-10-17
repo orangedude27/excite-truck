@@ -36,8 +36,9 @@ u8 fn_801930DC(void *unused, int index) {
     return 0;
 }
 
-int fn_80193110(void *arg0, u8 arg1) {
-    if (*((u8 *)arg0 + 0x2FC) == arg1) {
+int fn_80193110(void *arg0, int arg1) {
+    u8 value = arg1;
+    if (*((u8 *)arg0 + 0x2FC) == value) {
         *((u8 *)arg0 + 0x2FC) = 0xFF;
         return 1;
     }
@@ -45,17 +46,15 @@ int fn_80193110(void *arg0, u8 arg1) {
 }
 
 void fn_80193138(int index) {
-    void *entry = lbl_804349C0[index];
-    if (entry != 0) {
-        *((u8 *)entry + 0x304) = 0x14;
-    }
+    void *entry;
+    entry = lbl_804349C0[index];
+    if (entry) *((u8 *)entry + 0x304) = 0x14;
 }
 
 void fn_8019315C(int index) {
-    void *entry = lbl_804349C0[index];
-    if (entry != 0) {
-        ++*(int *)((char *)entry + 0x300);
-    }
+    void *entry;
+    entry = lbl_804349C0[index];
+    if (entry) ++*(int *)((char *)entry + 0x300);
 }
 
 u8 fn_80193184(void *unused, int index) {
@@ -87,7 +86,7 @@ float fn_801931EC(float a, float b) {
 }
 
 void fn_801933FC(void *arg0, void *arg1) {
-    fn_8019330C(arg1, (char *)*(void **)((char *)arg0 + 0x294) + 0x70);
+    fn_8019330C(arg1, arg0, *(int *)((char *)arg0 + 0x294) + 0x70);
 }
 
 void fn_801935EC(void *arg0) {
