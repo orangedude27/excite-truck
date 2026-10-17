@@ -362,7 +362,7 @@ extern u8 lbl_803262B8[];
 extern u8 lbl_80326294[];
 #pragma pop
 extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void);
-void fn_800F7110(void* self, unsigned long taskId) {
+void fn_800F7110(void *self, unsigned long taskId) {
     fn_800FDE60();
     CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(taskId);
 }
@@ -544,6 +544,35 @@ void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void* self, int shouldD
     return self;
 }
 
+void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
+    void *pHead = *(void **)((u8 *)self + 4);
+    void *pEnd = (u8 *)self + 4;
+    void *pPlayer;
+    while (pHead != pEnd) {
+        pPlayer = pHead;
+        if (pPlayer == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262E8, 0x23D, (const char *)lbl_803262C4);
+        }
+        pHead = *(void **)pPlayer;
+        Update__Q36nw4hbm3snd11SoundPlayerFv((u8 *)pPlayer - 0xC0);
+    }
+    detail_SortPriorityList__Q36nw4hbm3snd11SoundPlayerFv(self);
+}
+
+void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *self, s32 arg1) {
+    void *pHead = *(void **)((u8 *)self + 4);
+    void *pEnd = (u8 *)self + 4;
+    void *pPlayer;
+    while (pHead != pEnd) {
+        pPlayer = pHead;
+        if (pPlayer == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262E8, 0x23D, (const char *)lbl_803262C4);
+        }
+        pHead = *(void **)pPlayer;
+        StopAllSound__Q36nw4hbm3snd11SoundPlayerFi((u8 *)pPlayer - 0xC0, arg1);
+    }
+}
+
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *this_, f32 farg0) {
     if (!(farg0 >= lbl_805610BC)) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x99, lbl_80325C64);
     *(f32 *)&((u8 *)this_)[0x28] = farg0;
@@ -558,6 +587,14 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
     if (arg1 >= 0 && arg1 < 4) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x103, lbl_80325C8C, arg1, 0, 4);
     return *(f32 *)((u8 *)(arg0 + arg1 * 4) + 0x38);
+}
+
+void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *self, void *pSound) {
+    if (pSound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803262B8, 0x233, (const char *)lbl_80326294);
+    }
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(self, (u8 *)pSound + 0xC0);
+    *(u32 *)((u8 *)pSound + 0x10) = 0;
 }
 
 extern "C" void NWC24Data_Init(void* arg0) {
