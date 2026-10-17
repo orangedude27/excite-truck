@@ -954,7 +954,7 @@ extern "C" void* fn_800C64DC(u32 size) {
 }
 
 extern "C" void fn_800CF170(void*);
-extern "C" void* lbl_804075F0;
+extern "C" void* lbl_804075F0[];
 extern "C" u32 lbl_8055DD90;
 
 extern "C" void fn_800C64E8(u32 size) {
@@ -1014,6 +1014,11 @@ extern "C" void fn_800C675C(u32 size) {
 
 u8 fn_800C6768(void) {
     return *(u8 *)((char *)lbl_8055DD98 + 0x88);
+}
+
+extern "C" void fn_800C687C(void) {
+    fn_800CF170(lbl_8055DD98);
+    MEMDestroyFrmHeap(*(MEMiHeapHead **)((char *)lbl_804075F0 + 4));
 }
 
 extern "C" void fn_800C68B0(void) {
