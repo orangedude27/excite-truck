@@ -65,6 +65,5 @@ f32 fn_802798E8(void *arg0) {
     return *(f32 *)((char *)arg0 + 0x294);
 }
 
-extern void fn_802795E8(void);
 void fn_80279CD8(void) { fn_802795E8(); }
 
