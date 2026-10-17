@@ -1,6 +1,16 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct Unk802A0794Params {
+    float values[6];
+    short unk_0x18;
+    int unk_0x1C;
+} Unk802A0794Params;
+extern void fn_802A042C(void *, Unk802A0794Params *);
+extern void fn_802A01C8(void *, Unk802A0794Params *);
+extern void fn_802A02F4(void *, Unk802A0794Params *);
+extern void fn_802E30C8(const char *, ...);
+extern char lbl_803498AC[];
 extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
 extern void fn_8029FB00(void *);
@@ -151,19 +161,21 @@ void fn_8029F5C8(void *arg0, unsigned char *arg1) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma processor 750
 void fn_8029FD04(void) {
     void **object;
     int i;
     void **child;
+    register void **vtable;
     lbl_804B9B7C[1] = 0;
     object = fn_80131810(lbl_8034989C);
     if (object != 0) {
         i = 1;
-        child = ((void *(*)(void *, int))((void **)*object)[3])(object, 0);
+        child = (vtable = (void **)*object, ((void *(*)(void *, int))vtable[3])(object, 0));
         while (child != 0) {
-            if (stricmp(((const char *(*)(void *))((void **)*child)[2])(child), lbl_8055CB60) == 0)
+            if (stricmp((vtable = (void **)*child, ((const char *(*)(void *))vtable[2])(child)), lbl_8055CB60) == 0)
                 fn_8029FB00(child);
-            child = ((void *(*)(void *, int))((void **)*object)[3])(object, i++);
+            child = (vtable = (void **)*object, ((void *(*)(void *, int))vtable[3])(object, i++));
         }
         fn_80131818(object);
     }
