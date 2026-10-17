@@ -8,13 +8,16 @@ extern void fn_802B3F6C(void);
 #pragma small_data off
 extern unsigned char lbl_804BE1F0;
 #pragma pop
-extern GlobalObject lbl_804BE1FC;
+extern int lbl_804BE1FC[];
 extern unsigned char lbl_8055F9A8;
 
 void fn_802B3F14(void) {
+    struct Obj { void *vtable; int unk4; int unk8; };
+    struct Obj *obj;
     fn_8000D838(&lbl_8055F9A8);
-    lbl_804BE1FC.vtable = (char *)&lbl_804BE1FC + 0xC;
-    lbl_804BE1FC.unk8 = 0x10;
-    lbl_804BE1FC.unk4 = 0;
-    __register_global_object(&lbl_804BE1FC, fn_802B3F6C, &lbl_804BE1F0);
+    obj = (struct Obj *)&lbl_804BE1FC;
+    obj->vtable = (void *)((char *)obj + 0xC);
+    obj->unk8 = 0x10;
+    obj->unk4 = 0;
+    __register_global_object(obj, fn_802B3F6C, &lbl_804BE1F0);
 }
