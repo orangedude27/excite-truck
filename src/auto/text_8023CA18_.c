@@ -1,6 +1,6 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
-extern s32 lbl_803415CC;
+extern char lbl_803415CC[0xC0];
 extern s32 lbl_8055BB68;
 extern s32 lbl_803415E8;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -39,6 +39,12 @@ void* fn_8023D134(void* arg0, s32 arg1) {
     }
     if (arg1 > 0) fn_80128668(arg0);
     return arg0;
+}
+
+void fn_8023D1C0(void) {
+    lbl_8055BB68 = 0;
+    fn_8023CC84(&lbl_803415CC);
+    lbl_8055BB68 = 2;
 }
 
 void fn_8023D1F8(void) {}
