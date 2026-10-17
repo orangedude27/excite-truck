@@ -91,6 +91,10 @@ extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_802A2118(void *arg0) {
+    fn_802A47A8((void*)*(void**)((char*)arg0 + 0x10));
+}
+
 extern "C" f32 lbl_80558DC4;
 extern "C" f32 lbl_80564730;
 extern "C" f32 lbl_80564750;
@@ -134,8 +138,7 @@ extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
 
 extern "C" void* fn_802A3314(void* arg0, void* arg1) {
     *(void**)arg0 = lbl_80349B28;
-    void* vtable = *(void**)arg1;
-    s32 result = (*(s32 (**)(void*, void*))( (char*)vtable + 0x14))(arg1, (void*)lbl_8055CBB0);
+    s32 result = (*(s32 (**)(void*, void*))(*(void**)((char*)arg1 + 0x14)))(arg1, (void*)lbl_8055CBB0);
     fn_802A3500(arg0, result);
     return arg0;
 }
