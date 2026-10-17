@@ -10,6 +10,7 @@ extern "C" int lbl_80349B28[];
 extern "C" void* lbl_804BCF88[];
 extern "C" int fn_801EF024(void*);
 extern "C" s32 fn_802A1C30(void*);
+extern "C" void fn_802A1DC0(void);
 extern "C" f32 lbl_80564728;
 extern "C" int lbl_80349B50[];
 extern "C" int lbl_80349AD8[];
@@ -65,16 +66,19 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_802A172C(void) {
-    int i = 0;
-    void** p = lbl_804BCF88;
+    int var_r30;
+    void** var_r31;
+    void* temp_r3;
+    var_r31 = lbl_804BCF88;
+    var_r30 = 0;
     do {
-        void* obj = *p;
-        if (obj != 0) {
-            ((void (*)(void))(*(void***)obj)[4])();
+        temp_r3 = *var_r31;
+        if (temp_r3 != 0) {
+            ((void (*)(void))(*(void***)temp_r3)[4])();
         }
-        ++i;
-        ++p;
-    } while (i < 8);
+        var_r30 += 1;
+        var_r31 += 1;
+    } while (var_r30 < 8);
 }
 
 extern "C" void fn_802A1790(void) {}
