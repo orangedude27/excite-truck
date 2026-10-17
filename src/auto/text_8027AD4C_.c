@@ -244,21 +244,20 @@ long fn_8027C788(void *arg0) {
     long index = 0;
     char *name;
     long value;
-    volatile void **vtable;
     goto fetch;
 body:
-    vtable = *(volatile void ***)item;
-    name = ((char *(*)(void *))vtable[2])(item);
+    name = ((char *(*)(void *))(*(void ***)item)[2])(item);
     if (stricmp(name, lbl_80347A50) == 0) {
-        vtable = *(volatile void ***)item;
-        value = ((long (*)(void *, char *))vtable[5])(item, lbl_80347A5C);
+        value = ((long (*)(void *, char *))(*(void ***)item)[5])(item, lbl_80347A5C);
         fn_8027C120(lbl_8055F654, value);
-        if (fn_8027C650() == 0) return 0;
+        if (fn_8027C650() == 0)
+            return 0;
     }
     index++;
 fetch:
     item = ((void *(*)(void *, long))(*(void ***)*(void **)((char *)arg0 + 8))[24])(*(void **)((char *)arg0 + 8), index);
-    if (item != 0) goto body;
+    if (item != 0)
+        goto body;
     return 1;
 }
 long fn_8027C8B0(void) { return 1; }
@@ -327,7 +326,9 @@ finish_b:
 }
 
 extern long lbl_80347B4C;
-#pragma small_data off
+#pragma use_lmw_stmw off
+__declspec(section ".rodata") extern long lbl_80347B4C;
+#pragma use_lmw_stmw off
 void fn_8027CCB4(long arg0, long arg1, long arg2, long arg3) {
     long temp_r3;
     long temp_r3_2;
@@ -349,7 +350,7 @@ void fn_8027CCB4(long arg0, long arg1, long arg2, long arg3) {
         if (temp_r3 != 0x134) fn_80012790(temp_r3);
     }
 }
-#pragma small_data reset
+#pragma use_lmw_stmw on
 long fn_8027CE4C(long arg0) {
     long value = *fn_8027C120(lbl_8055F654, arg0);
     switch (value) {
