@@ -2376,13 +2376,13 @@ void *fn_80096904(void *arg0, u32 arg1, u32 arg2) {
 
 extern void process_service_search_attr_rsp(tCONN_CB *, u8 *, u16);
 extern void sdp_snd_service_search_req(tCONN_CB *, u8, u8 *);
-void fn_8009757C(tCONN_CB *p_ccb) {
-    if (p_ccb->is_attr_search) {
-        p_ccb->disc_state = 3;
-        process_service_search_attr_rsp(p_ccb, NULL, 0);
+void fn_8009757C(u8 *p_ccb) {
+    if (p_ccb[0x475]) {
+        p_ccb[0x474] = 3;
+        process_service_search_attr_rsp((tCONN_CB *)p_ccb, NULL, 0);
     } else {
-        *(u16 *)((u8 *)p_ccb + 0x46c) = 0;
-        sdp_snd_service_search_req(p_ccb, 0, NULL);
+        *(u16 *)(p_ccb + 0x46c) = 0;
+        sdp_snd_service_search_req((tCONN_CB *)p_ccb, 0, NULL);
     }
 }
 
