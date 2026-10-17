@@ -346,7 +346,8 @@ void fn_802C7A94(int arg0) {
 
 void fn_802C7AD4(void) { fn_802C7A94(9); }
 
-void fn_802C7ADC(void) { fn_802D754C(0); }
+void fn_802D754C(void);
+void fn_802C7ADC(void) { fn_802D754C(); }
 
 void fn_802C8218(s32 arg0) {
     s32 var_r0;
