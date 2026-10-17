@@ -3,6 +3,19 @@
 
 extern "C" unsigned int lbl_8055DE10;
 extern void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void*, void*);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+extern "C" const char lbl_803204F8[];
+extern "C" const char lbl_803204BC[];
+extern "C" const char lbl_80320C14[];
+extern "C" const char lbl_80320C60[];
+extern "C" unsigned char GetVtxColorElement__Q36nw4hbm3lyt7PictureCFUl_800E0350(void* self, unsigned long idx) {
+    if (idx >= 0x10) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803204F8, 0xC7, lbl_803204BC);
+    unsigned long hi = idx & ~3UL;
+    unsigned long lo = idx & 3;
+    unsigned char* p = (unsigned char*)((unsigned long)self + hi);
+    return p[lo + 0xE4];
+}
+
 extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc_800E03BC(void* this_, unsigned long idx, unsigned char color) {
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
     extern const char lbl_803204B0[];
