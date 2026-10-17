@@ -21,6 +21,27 @@ void fn_8019386C(void) {
     fn_80193CE0();
 }
 
+extern unsigned char lbl_8055A4B8[];
+extern void fn_801945F8(void *);
+extern float lbl_80562140, lbl_80562144, lbl_80562178, lbl_8056217C;
+extern void fn_8017B4E0(void *, float *, float *, float);
+extern void fn_80193D30(void *);
+extern void fn_801942F0(void *, int);
+extern int fn_802E30C8(const char *, ...);
+extern char lbl_80333198[];
+void fn_801939C8(void *arg0) {
+    void *obj;
+    if (*(unsigned char *)((unsigned char *)arg0 + 0x2A4)) {
+        fn_802E30C8(lbl_80333198, *(int *)((unsigned char *)arg0 + 0x290));
+    } else {
+        obj = *(void **)((unsigned char *)arg0 + 0x294);
+        *(unsigned char *)((unsigned char *)arg0 + 0x2A4) = 1;
+        *(float *)((unsigned char *)arg0 + 0x24C) = *(float *)((unsigned char *)obj + 0x5B0);
+        fn_801942F0(arg0, 1);
+        fn_80193D30(arg0);
+    }
+}
+
 void fn_8019416C(void) {
 
 }
@@ -36,9 +57,8 @@ void fn_801942F0(void *arg0, int arg1) {
 extern float lbl_8055A488;
 extern float lbl_8056215C;
 void fn_801945F8(void *arg0) {
-    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) != 0x50) {
-        fn_80194590(arg0);
-    } else if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24) == 3) {
+    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) != 0x50 ||
+        *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24) == 3) {
         fn_80194590(arg0);
     }
 }
@@ -59,15 +79,11 @@ extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
 extern void fn_80194FD0(void);
 void fn_80194F70(void *arg0, float *a, float *b) {
-    float diff[3];
     float x, y, z;
-    x = a[0]; y = b[0];
-    diff[0] = x - y;
-    x = a[1]; y = b[1];
-    diff[1] = x - y;
-    x = a[2]; y = b[2];
-    diff[2] = x - y;
-    PSVECDotProduct(arg0, diff);
+    x = a[0] - b[0];
+    y = a[1] - b[1];
+    z = a[2] - b[2];
+    PSVECDotProduct(arg0, &x);
 }
 
 void fn_80194FC4(void) {
