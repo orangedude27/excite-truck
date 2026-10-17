@@ -82,6 +82,20 @@ float fn_80264588(void) {
     return lbl_80563BF4;
 }
 
+void fn_802645EC(void) {
+    extern float lbl_8055C454;
+    *(float *)((char *)lbl_8055F444 + 0x1C) = lbl_8055C454;
+}
+
+void fn_802645FC(void *arg0) {
+    extern float lbl_80563BF8;
+    extern float lbl_8055C454;
+    extern float lbl_80563BF0;
+    *(float *)((char *)arg0 + 0x18) = lbl_80563BF8;
+    *(float *)((char *)arg0 + 0x1C) = lbl_8055C454;
+    *(float *)((char *)arg0 + 0x20) = lbl_80563BF0;
+}
+
 void fn_80264618(void *arg0) {
     extern float lbl_80558DC4;
     extern float lbl_80563BF0;
