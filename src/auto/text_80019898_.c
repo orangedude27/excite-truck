@@ -12,3 +12,5 @@ int fn_80019B60(void) { return (lbl_8055D5A0 >> 3) & 1; }
 
 int fn_80019B6C(void) { return (lbl_8055D5A0 >> 6) & 1; }
 
+int fn_80019B78(void) { return (lbl_8055D5A0 >> 7) & 1; }
+
