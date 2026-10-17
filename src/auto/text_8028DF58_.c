@@ -41,6 +41,14 @@ void fn_8028DFFC(void) {
     lbl_8055F73D = 1;
 }
 
+void fn_8028E024(void) {
+    if (*((int *)((char *)&lbl_804B34B0_arr[0] + 0x100)) > 0) {
+        fn_8028F2EC();
+        lbl_8055F740 = lbl_804B34B0_arr[0];
+    }
+    lbl_8055F744 = 0;
+}
+
 void fn_8028E070(float farg0) {
     lbl_8055F738 = farg0;
     lbl_8055F73C = 1;
