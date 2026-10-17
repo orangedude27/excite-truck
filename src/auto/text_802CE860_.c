@@ -3,4 +3,6 @@
 
 extern int fn_801E4FF4();
 extern int fn_801E4F20(int);
+void fn_802CE860(int arg0) { fn_801E4F20(arg0 * 4); }
+
 void fn_802CE868(void) { fn_801E4FF4(); }
