@@ -2071,6 +2071,19 @@ extern "C" s32 fn_80229F60(void *arg0) {
     return result;
 }
 
+extern "C" void *fn_80229F78(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_8033E878;
+        fn_802C519C(*(void **)((u8 *)arg0 + 0x25C));
+        fn_802C519C(*(void **)((u8 *)arg0 + 0x260));
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" void *lbl_8033E878[];
 extern "C" void *lbl_8033DCF8[];
 extern "C" void fn_802C6CF8(s32);
