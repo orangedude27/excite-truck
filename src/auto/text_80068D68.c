@@ -1117,6 +1117,7 @@ void BTA_HhAddDev(const u8 *arg0, u16 arg1, u8 arg2, u8 arg3, const void *arg4) 
 }
 
 extern u8 lbl_803C0F78[];
+extern u8 lbl_80317008[];
 extern u8 *lbl_80559030;
 extern u8 lbl_8055DC80;
 extern u8 lbl_803C0D48[];
@@ -1893,6 +1894,16 @@ s32 fn_8007FEFC(u16 handle) {
     return 0;
 }
 
+extern u8 lbl_80317008[];
+void btm_sec_pin_code_request_timeout(void) {
+    if (lbl_803C0F78[0x27C0] >= 4) {
+        fn_8007093C(0xD0003, lbl_80317008);
+    }
+    *(u32 *)(lbl_803C0F78 + 0x194C) = 0;
+    memset(lbl_803C0F78 + 0x1954, 0xFF, 6);
+    btsnd_hcic_link_key_neg_reply_800840C8(lbl_803C0F78 + 0x27B4);
+}
+
 void btm_sec_update_clock_offset(UINT16 handle, UINT16 clock_offset) {
     tBTM_SEC_DEV_REC *dev;
     tBTM_INQ_INFO *inq;
@@ -1914,6 +1925,28 @@ s32 fn_8008128C(void *arg0) {
         return (s32)dev + 0x10;
     }
     return 0;
+}
+
+void btu_hcif_connection_request_evt(u8 *event) {
+    u8 bda[6];
+    u8 dev_class[3];
+    u8 link_type;
+
+    bda[0] = event[0];
+    bda[1] = event[1];
+    bda[2] = event[2];
+    bda[3] = event[3];
+    bda[4] = event[4];
+    bda[5] = event[5];
+    dev_class[0] = event[6];
+    dev_class[1] = event[7];
+    dev_class[2] = event[8];
+    link_type = event[9];
+    if (link_type == 1) {
+        btm_sec_conn_req(bda, dev_class);
+    } else {
+        btm_sco_conn_req(bda, dev_class, link_type);
+    }
 }
 
 void fn_8008251C(void) {
