@@ -191,6 +191,14 @@ void *fn_8024AFF8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_8024B5D4(void *arg0, s32 arg1) {
+    extern s32 lbl_8055BFD8;
+    if (arg1 < *(s32 *)((char *)arg0 + 0x1C)) {
+        return *(s32 *)((char *)*(s32 **)((char *)arg0 + 0x18) + arg1 * 8);
+    }
+    return (s32)&lbl_8055BFD8;
+}
+
 s32 fn_8024B5F8(s32 arg0, s32 arg1) {
     return arg0 + arg1 * 0x68 + 0xAA;
 }
