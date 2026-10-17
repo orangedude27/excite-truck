@@ -61,3 +61,18 @@ void fn_80243C18(void) {
     fn_80221E7C();
 }
 
+extern void fn_80243938(char *, char *);
+void fn_802443C0(void *arg0) {
+    char *str;
+    fn_802438EC(*(char **)((u8 *)arg0 + 0x18));
+    str = *(char **)((u8 *)arg0 + 0x18);
+    if (strlen(str) != 0) {
+        str[strlen(str) - 1] = 0;
+    }
+    fn_80243938(*(char **)((u8 *)arg0 + 0x18), *(char **)((u8 *)arg0 + 0x1C));
+}
+
+u8 fn_80244550(void *arg0) {
+    return *((u8 *)arg0 + 0x28);
+}
+
