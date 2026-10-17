@@ -143,9 +143,9 @@ void fn_80298160(void) {
     }
 }
 
-  void* fn_802981EC(unsigned int size) {
-      return fn_80299A04(lbl_8055F7CC, size);
-  }
+void* fn_802981EC(unsigned int size) {
+    return fn_80299A04(lbl_8055F7CC, size);
+}
 
 void fn_802981F8(void* self) {
     float values[3];
@@ -301,6 +301,23 @@ extern "C" void fn_80299504(void* arg0) {
     *(int*)((char*)arg0 + 0xC0) = -1;
     *(int*)((char*)arg0 + 0xF4) = 0;
     *(float*)((char*)arg0 + 0xF8) = value;
+}
+
+void fn_80299628(void* arg0) {
+    fn_802C8BD0(*(int*)((char*)arg0 + 0x100));
+    if (fn_802C8DBC(0x14) != 0) {
+        void* p = arg0;
+        int i = 0;
+        do {
+            if (*(int*)((char*)p + 0x34) != 0) {
+                fn_80299830(arg0, i);
+            }
+            p = (char*)p + 0x40;
+            i++;
+        } while (i < 4);
+        fn_802C8E48();
+    }
+    fn_802C8D74();
 }
 
 extern "C" void fn_80299830(void*, int);
