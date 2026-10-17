@@ -1,6 +1,6 @@
 #include <types.h>
 
-extern void *fn_801284F8(u32, const void *);
+extern void *fn_801284F8(u32, ...);
 extern f32 lbl_8055E0A8;
 extern f32 lbl_80561304;
 extern void *fn_8001285C(s32);
@@ -213,15 +213,14 @@ void *fn_80134F48(void) {
     if (result != 0) { result = fn_801A520C(result, p); }
     return result;
 }
-#pragma scheduling off
+#pragma scheduling on
 void *fn_80134FF8(void) {
-    void **p = fn_801284F8(4, lbl_8032BC94);
+    void **p = ((void *(*(*)()))fn_801284F8)(4, lbl_8032BC94);
     if (p != 0) {
         *p = (void*)lbl_8032BD08;
     }
     return p;
 }
-#pragma scheduling on
 s32 fn_80135038(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -277,10 +276,11 @@ void fn_80135198(void) {
 
 }
 
+#pragma peephole off
 s32 fn_8013519C(s32 arg0) {
     return fn_802E317C(lbl_8032BD98, arg0);
 }
-
+#pragma peephole on
 extern const char lbl_8032BD98[];
 extern s32 fn_802E317C(const char *, ...);
 s32 fn_801351AC(void) {
@@ -288,8 +288,8 @@ s32 fn_801351AC(void) {
 }
 
 void fn_801351B4(void *param) {
-    register void **vtable = *(void ***)param;
-    register void (*fn)(void) = *(void (**)(void))((u8 *)vtable + 0x10);
+    void **vtable = *(void ***)param;
+    void (*fn)(void) = *(void **)((u8 *)vtable + 0x10);
     fn();
 }
 
