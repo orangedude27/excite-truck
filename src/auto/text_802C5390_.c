@@ -9,6 +9,8 @@ void* fn_802C5390(void);
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
 
+extern int lbl_8055D00C;
+extern void fn_802DB2B4(void);
 extern int lbl_804C1338[];
 extern unsigned char lbl_804C1348[];
 extern int lbl_804C13A8[];
