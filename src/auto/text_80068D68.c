@@ -1803,6 +1803,13 @@ tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
     return BTM_SUCCESS;
 }
 
+void btm_pm_sm_alloc(u8 index) {
+    u8 *entry;
+    entry = lbl_803C0F78 + 0x4cc + index * 0x22;
+    memset(entry, 0, 0x22);
+    entry[0x20] = 0;
+}
+
 void btm_pm_proc_cmd_status(UINT8 status) {
     u8 *base = lbl_803C0F78;
     u8 state = base[0x564];
@@ -1864,6 +1871,20 @@ void btm_remove_sco_links(BD_ADDR addr) {
     for (i = 0; i < 3; i++, entry += 0x34) {
         if (entry[0xD] && memcmp(entry + 0x28, addr, 6) == 0) {
             BTM_RemoveSco(i);
+        }
+    }
+}
+
+void btm_sco_acl_removed(BD_ADDR addr) {
+    u16 i;
+    u8 *entry;
+    entry = lbl_803C0F78 + 0x1854;
+    for (i = 0; i < 3; i++, entry += 0x34) {
+        if (*(u16 *)(entry + 8) != 0 &&
+            (addr == 0 || (memcmp(entry + 0x28, addr, 6) == 0 && entry[0xD] != 0))) {
+            *(u16 *)(entry + 8) = 0;
+            *(u32 *)(entry + 0x10) = 0;
+            ((void (*)(u16))*(u32 *)(entry + 4))(i);
         }
     }
 }
@@ -2238,26 +2259,19 @@ extern unsigned char lbl_803C0F78[];
 extern int memcmp(const void *, const void *, unsigned long);
 int btm_num_sco_links_active(void) {
     int count;
-    u8 *base;
-    UINT16 state;
+    unsigned char *base;
+    unsigned short state;
     base = lbl_803C0F78;
     count = 0;
-    state = *(UINT16 *)(base + 0x185c);
-    if ((s16)state < 7) {
-        if ((s16)state >= 2)
-            count = 1;
-    }
-    state = *(UINT16 *)(base + 0x1890);
-    if ((s16)state < 7) {
-        if ((s16)state >= 2)
-            count++;
-    }
-    state = *(UINT16 *)(base + 0x18c4);
-    if ((s16)state >= 7)
-        return count;
-    if ((s16)state < 2)
-        return count;
-    count++;
+    state = *(unsigned short *)(base + 0x185c);
+    if (state >= 2 && state < 7)
+        count = 1;
+    state = *(unsigned short *)(base + 0x1890);
+    if (state >= 2 && state < 7)
+        count++;
+    state = *(unsigned short *)(base + 0x18c4);
+    if (state >= 2 && state < 7)
+        count++;
     return count;
 }
 
