@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <macros.h>
+extern void fn_802E317C(const char *, ...);
 extern int lbl_8055D03C;
 extern char lbl_8034B5F0[];
 void fn_802CAC54(int);
@@ -34,6 +35,7 @@ int fn_802CA294(int arg0) {
 int fn_802CA380(int arg0) {
     int sp10;
     int sp8;
+    int dummy[8];
     int result;
     int temp;
     result = 0;
