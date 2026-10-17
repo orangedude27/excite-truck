@@ -23,6 +23,13 @@ extern "C" void fn_80148DFC(void *);
 extern "C" void fn_80148E6C(void *);
 extern "C" void fn_80148EDC(void *);
 
+class ThreadObject80144F40 {
+public:
+    virtual void f0();
+    virtual void f1();
+    virtual void destroy(s32);
+};
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -426,18 +433,18 @@ extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
 extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
-    while (arg2 > 0) {
-        arg2--;
-    }
-    arg0[-1] = 0;
-    for (;;) {
-        s8 c = *arg1++;
-        *arg0 = c;
-        arg0++;
-        if (!c) {
-            break;
+    if (arg2 == 0) {
+        while (arg2 > 0) {
+            arg2--;
         }
+        arg0[-1] = 0;
+        return;
     }
+    do {
+        s8 c = *arg1++;
+        *arg0++ = c;
+        if (!c) break;
+    } while (1);
 }
 
 extern void lbl_8032D260(void);
@@ -468,7 +475,7 @@ extern "C" int vsprintf(char *, const char *, va_list);
 extern "C" unsigned int strlen(const char *);
 extern "C" void fn_802E317C(const char *, ...);
   extern "C" char lbl_8032D1A4[];
-  extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
+extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
     char buffer[0x200];
     if (arg0 != 0) {
         va_list args;
