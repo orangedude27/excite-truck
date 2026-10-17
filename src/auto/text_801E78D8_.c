@@ -436,7 +436,6 @@ void fn_801E9564(long arg0) {
 }
 
 #pragma paired_single off
-#pragma paired_single off
 void fn_801E95DC(void) {
     extern double fn_8002EFB4(double, double);
     extern float fn_80203FE0(void);
@@ -445,7 +444,7 @@ void fn_801E95DC(void) {
     extern double lbl_80562E10;
     extern float lbl_80562E18;
     float matrix[12];
-    float y, x;
+    float x, y;
     float time;
     long flags;
     unsigned long index;
@@ -465,8 +464,9 @@ void fn_801E95DC(void) {
         matrix[10] = lbl_80562DBC;
         matrix[11] = lbl_80562DBC;
         time = ((float (*)(float))fn_801E7E18)(lbl_80562DD4);
-        x = lbl_80562DD4 - (float)fn_8002EFB4(time, lbl_80562E10);
+        time = (float)fn_8002EFB4(time, lbl_80562E10);
         y = lbl_80562DBC;
+        x = lbl_80562DD4 - time;
         index = fn_801E866C((long)lbl_8055AF0C);
         if (index < 8) entry = lbl_80488648[index];
         else entry = 0;
