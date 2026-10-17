@@ -80,14 +80,11 @@ void *fn_801491B8(void *arg0, s32 arg1) {
 }
 
 void fn_80149210(void *arg0) {
-    u32 x = ((u32 *)arg0)[1];
-    u32 b;
-    u32 t;
-    x = x + 1;
-    b = x >> 31;
-    t = x << 30;
-    t = t - b;
-    ((u32 *)arg0)[1] = ((t << 2) | (t >> 30)) + b;
+    u32 *p = (u32 *)arg0;
+    u32 x = p[1] + 1;
+    u32 t = x << 30;
+    u32 b = x >> 31;
+    p[1] = (t - b) * 4 + b;
 }
 
 s32 fn_80149234(void *arg0) {
@@ -100,8 +97,7 @@ extern s32 fn_8014D918(void*, s32, s32);
 extern s32 lbl_8055E240;
 extern f32 lbl_80561714, lbl_80561718;
 s32 fn_80149274(void **arg0) {
-    s32 (*fn)(void*);
-    fn = (s32 (*)(void*))((void**)*arg0)[4];
+    s32 (*fn)(void*) = (s32 (*)(void*))*arg0;
     return fn(arg0) & 0xFF7F7F7F;
 }
 
@@ -462,24 +458,20 @@ void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
 }
 
 void fn_8014C6F0(void *arg0, void *arg1) {
-    volatile Copy8014C6F0 *src = (volatile Copy8014C6F0 *)arg1;
-    volatile Copy8014C6F0 *dst = (volatile Copy8014C6F0 *)arg0;
-    register s32 a, b, c, d, g;
-    register f32 e, f;
-    a = src->a;
-    b = src->b;
-    c = src->c;
-    d = src->d;
-    e = src->e;
-    f = src->f;
-    g = src->g;
-    dst->a = a;
-    dst->b = b;
-    dst->c = c;
-    dst->d = d;
-    dst->e = e;
-    dst->f = f;
-    dst->g = g;
+    s32 g;
+    s32 d, c, b, a;
+    f32 f, e;
+    volatile s32 *src = (volatile s32 *)arg1;
+    volatile f32 *fsrc = (volatile f32 *)((u8 *)arg1 + 0x10);
+    a = src[0]; b = src[1]; c = src[2]; d = src[3];
+    e = fsrc[0]; f = fsrc[1]; g = src[6];
+    *(s32 *)arg0 = a;
+    *((s32 *)arg0 + 1) = b;
+    *((s32 *)arg0 + 2) = c;
+    *((s32 *)arg0 + 3) = d;
+    *(f32 *)((u8 *)arg0 + 0x10) = e;
+    *(f32 *)((u8 *)arg0 + 0x14) = f;
+    *((s32 *)arg0 + 6) = g;
 }
 
 void fn_8014C72C(void **arg0) {
@@ -745,13 +737,17 @@ extern s32 fn_80145E70(void *arg0);
 extern s32 lbl_8032DB34;
 extern s32 lbl_8032DB40;
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 index = ((s32 *)arg0)[1];
-    s32 value = *arg1;
-    s32 *data = *(s32 **)arg0;
-    s32 *slot = data + index;
-    ((s32 *)arg0)[1] = index + 1;
-    *slot = value;
-    return slot;
+    s32 next;
+    s32 value;
+    s32 index;
+    s32 *data;
+    value = *arg1;
+    index = ((s32 *)arg0)[1];
+    next = index + 1;
+    data = *(s32 **)arg0;
+    ((s32 *)arg0)[1] = next;
+    data[index] = value;
+    return &data[index];
 }
 
 s32 fn_80150AD8(s32 arg0, s32 arg1) {
