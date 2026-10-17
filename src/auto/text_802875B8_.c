@@ -216,6 +216,8 @@ void fn_80287B58(void) {
     fn_80288870();
 }
 
+void fn_8028829C(void) {}
+
 void fn_80288868(void* hi) {
     lbl_8055F6C8 = hi;
 }
