@@ -2141,6 +2141,57 @@ extern "C" s32 fn_800CEDE0(void *arg0) {
 
 extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800A4B54(s32);
+extern "C" s32 fn_800A4AD0(u8 *arg0, u8 *arg1) {
+    u8 a;
+    u8 b;
+    do {
+        arg0++;
+        arg1++;
+        a = *arg0;
+        if (a == 0) break;
+        b = *arg1;
+        if (b == 0) break;
+        if (a != b) break;
+    } while (1);
+    return a - *arg1;
+}
+
+extern "C" s32 fn_800A4B08(u8 *arg0, u8 *arg1, s32 arg2) {
+    u8 a;
+    u8 b;
+    while (arg2 != 0) {
+        a = *arg0;
+        if (a == 0) break;
+        b = *arg1;
+        if (b == 0) break;
+        if (a != b) return a - *(volatile u8 *)arg1;
+        arg0++;
+        arg1++;
+        arg2--;
+    }
+    return 0;
+}
+
+s32 fn_800A4B54(u8 *arg0) {
+    u8 *ptr = arg0;
+    do {
+        ptr += 2;
+    } while (*(u16 *)ptr != 0);
+    return (ptr - arg0) >> 1;
+}
+
+extern "C" void fn_800A4B78(u16 *arg0, u16 *arg1) {
+    u16 *dst = arg0;
+    u16 *src = arg1;
+    u16 value;
+    do {
+        src++;
+        dst++;
+        value = *src;
+        *dst = value;
+    } while (value != 0);
+}
+
 extern "C" s32 fn_800A4B9C(u16 *arg0, u16 *arg1, s32 arg2) {
     while (arg2 != 0) {
         u16 a = *arg0;
