@@ -228,7 +228,7 @@ int fn_80161ECC(void) {
 }
 
 int fn_8016208C(void) {
-    extern void *fn_8001285C(void);
+    extern void *fn_8001285C();
     extern int stricmp(const char *, const char *);
     extern char lbl_8032F5DC[];
     int count = 0, i = 0;
