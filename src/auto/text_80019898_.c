@@ -6,3 +6,5 @@ int fn_80019B3C(void) { return lbl_8055D5A0 & 1; }
 
 int fn_80019B48(void) { return (lbl_8055D5A0 >> 1) & 1; }
 
+int fn_80019B54(void) { return (lbl_8055D5A0 >> 2) & 1; }
+
