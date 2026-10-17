@@ -76,8 +76,30 @@ void fn_8000AEC4(void) {
     fn_800070DC();
 }
 
+int fn_8000AEC8(int arg0) {
+    int i;
+    int *p = &lbl_8034F5D8;
+    for (i = lbl_8055D3E0; i > 0; i--) {
+        if (arg0 == *p) return 1;
+        p++;
+    }
+    return 0;
+}
+
+void fn_8000AF04(void) {
+    lbl_8055D3E0 = 1;
+    lbl_8034F5D8 = 4;
+}
+
 void fn_8000B288(void* alarm) {
     fn_801DF110(fn_8000B210(alarm));
+}
+
+void fn_8000B3B4(void) {
+    void (*callback)(void);
+    callback = *(void (**)(void))(lbl_802FBC90 + lbl_8055D3DC * 0x14);
+    if (callback != 0)
+        callback();
 }
 
 void fn_8000BD98(void) {
