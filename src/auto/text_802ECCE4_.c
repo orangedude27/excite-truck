@@ -17,6 +17,10 @@ extern s32 lbl_8055D300;
 extern void *fn_801284F8(s32, const char *);
 extern s32 fn_802ECD68(void *, void *, s32);
 #pragma scheduling reset
+void fn_802ECEC0(void) {
+    fn_802ECDF4();
+}
+
 void fn_802ECEC4(void) {
     fn_802ECEC0();
     fn_802ECE48(lbl_8055D300);
