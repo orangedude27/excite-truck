@@ -43,7 +43,6 @@ int fn_8015ED18(void **arg0) {
     void **vtable = *(void ***)arg0;
     return stricmp((*(char *(*)(void **))((char *)vtable[2]))(arg0), lbl_8055A070) == 0;
 }
-#pragma scheduling reset
 int fn_8015ED90(void **arg0) {
     int count = 0;
     int i;
