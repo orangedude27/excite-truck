@@ -123,8 +123,9 @@ extern char lbl_8032FF08[];
 #pragma push
 void fn_801662FC(void) {
     int flag;
-    lbl_8055E329 = flag = ((unsigned char)lbl_8055E330 == 255);
-    lbl_8055E330++;
+    int count = lbl_8055E330;
+    lbl_8055E329 = flag = ((unsigned char)count == 255);
+    lbl_8055E330 = count + 1;
     if (flag && lbl_8055E328) {
         if (!((float)__fabs(lbl_8055E31C - lbl_805618D0) <= lbl_80558DC4)) {
             fn_802E30C8(lbl_8032FEC0, lbl_8055E31C, lbl_8055E320, *(float *)((char *)&lbl_8042FE38 + 0x48), fn_80166274());
@@ -144,6 +145,53 @@ int fn_801667F0(void) {
 
 void fn_80166E54(void *arg0) {
     *(float *)((char *)arg0 + 0xC) += lbl_805618F0;
+}
+
+float fn_80166DD4(float *arg0) {
+    float factor;
+    float start;
+    float end;
+    float oldValue;
+    float oldTarget;
+    float ratio;
+    end = arg0[3];
+    start = arg0[2];
+    if ((float)__fabs(start - end) <= lbl_80558DC4) return arg0[0];
+    factor = lbl_805618D0;
+    oldValue = arg0[0];
+    oldTarget = arg0[1];
+    ratio = (lbl_8055E318 - start) / (end - start);
+    factor = factor < ratio ? factor : ratio;
+    factor = factor > lbl_8056189C ? factor : lbl_8056189C;
+    return oldValue + factor * (oldTarget - oldValue);
+}
+
+void fn_80166E68(float *arg0, float arg1) {
+    double value;
+    float factor;
+    float start;
+    float end;
+    if ((float)__fabs(arg1 - arg0[1]) <= lbl_80558DC4) return;
+    end = arg0[3];
+    start = arg0[2];
+    if ((float)__fabs(start - end) <= lbl_80558DC4) {
+        value = arg0[0];
+    } else {
+        float oldTarget = arg0[1];
+        float oldValue = arg0[0];
+        float ratio = (lbl_8055E318 - start) / (end - start);
+        factor = lbl_805618D0;
+        factor = factor < ratio ? factor : ratio;
+        factor = factor > lbl_8056189C ? factor : lbl_8056189C;
+        value = oldValue + factor * (oldTarget - oldValue);
+    }
+    arg0[1] = arg1;
+    arg0[0] = value;
+    arg0[2] = lbl_8055E318;
+    {
+        double target = arg1;
+        arg0[3] = lbl_8055E318 + (float)__fabs((float)value - (float)target) / arg0[4];
+    }
 }
 
 void fn_80166F3C(float *arg0) {
