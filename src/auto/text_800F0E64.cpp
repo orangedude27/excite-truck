@@ -993,3 +993,5 @@ f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32
 
 extern "C" float fn_800FD848(void *arg0) { return *(float *)((char *)arg0 + 0x454); }
 
+extern "C" float fn_800FD850(void *arg0) { return *(float *)((char *)arg0 + 0x44C); }
+
