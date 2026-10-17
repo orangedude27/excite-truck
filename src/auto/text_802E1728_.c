@@ -6,6 +6,25 @@ extern char lbl_8034CD48[];
 extern char lbl_8034CD30[];
 extern void fn_802E317C(const char *);
 extern void fn_802E30C8(const char *, int, int);
+extern char lbl_8034CEE4[];
+extern int lbl_804DB790[];
+extern int lbl_804DB7D0[];
+extern int lbl_8055FF00;
+typedef unsigned long long u64;
+extern u64 fn_802E2C9C(void);
+extern u64 OSGetTime(void);
+struct OSTimeCalendar {
+    int sec;
+    int min;
+    int hour;
+    int mday;
+    int month;
+    int year;
+    int wday;
+    int yday;
+    int msec;
+};
+extern void OSTicksToCalendarTime(u64, struct OSTimeCalendar *);
 void fn_802E1728(void *arg0) {
     int value = *(int *)((char *)arg0 + 0x178);
     if (value != 0) {
