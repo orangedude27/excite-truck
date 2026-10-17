@@ -8,6 +8,9 @@ extern char lbl_8034D204[];
 extern char lbl_8034D1F0[];
 // split_file divides it into the game's real files (file_status shows its range).
 
+void fn_802E4C14(void) {
+}
+
 int fn_802E4D60(void *arg0, int arg1) {
     return *(int *)((char *)arg0 + 4) + arg1;
 }
