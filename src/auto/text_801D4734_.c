@@ -25,7 +25,7 @@ extern f32 lbl_80562AE4;
 s32 fn_801E1F78(void);
 extern f32 lbl_80562AE0;
 extern f32 lbl_80562AEC;
-extern const char lbl_80338C40[];
+extern char lbl_80338C40[];
 extern char lbl_803387A8[];
 
 typedef struct {
@@ -372,9 +372,8 @@ extern char lbl_803387A8[];
 extern char lbl_803387C8[];
 #pragma scheduling on
 void fn_801D6618(UnkStruct_801D6618 *arg0) {
-    volatile s32 *p = (volatile s32 *)arg0;
-    p[0] = (s32)lbl_80338C40;
-    p[1] = 0;
+    ((volatile UnkStruct_801D6618 *)arg0)->name = (char *)lbl_80338C40;
+    ((volatile UnkStruct_801D6618 *)arg0)->state = 0;
 }
 void *fn_801D6630(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
