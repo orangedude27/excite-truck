@@ -3,6 +3,7 @@ extern "C" s32 fn_800A7090(void);
 extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
 extern "C" void *lbl_8055DD94;
+extern "C" u32 lbl_8055DD90;
 extern "C" s32 lbl_8055DD30;
 extern "C" s32 fn_800B8004(s32);
 extern "C" s32 fn_800B8048(s32);
