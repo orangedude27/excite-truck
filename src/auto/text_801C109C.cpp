@@ -3,7 +3,6 @@
 
 extern void fn_801C1218(int);
 extern void fn_801C1364(int);
-extern void fn_801C1320(int);
 extern int fn_801284F8(int, int *);
 extern int fn_801C109C(int, int, int, int);
 extern int fn_80128668(int);
@@ -32,12 +31,13 @@ void fn_801C1320(void* arg0) {
     }
 }
 
+#pragma dont_inline on
 void fn_801C1B60(int arg0) {
     fn_801C1218(arg0);
     fn_801C1364(arg0);
-    fn_801C1320(arg0);
+    fn_801C1320((void*)arg0);
 }
-
+#pragma dont_inline reset
 void fn_801C1B9C(void) {
     return;
 }
