@@ -38,6 +38,12 @@ void fn_80264404(void *arg0) {
     *(void **)((char *)arg0 + 8) = fn_80264A54();
 }
 
+void fn_80264444(void *arg0) {
+    *(void **)arg0 = 0;
+    fn_80264098(arg0, 5);
+    *(void **)((char *)arg0 + 8) = fn_80264580();
+}
+
 void fn_80264484(void *arg0) {
     extern void *fn_801284F8(unsigned int, void *);
     extern char lbl_803464A8[];
