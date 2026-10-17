@@ -189,6 +189,30 @@ void GXSetNumTexGens(unsigned int value) {
     data[0x5FC / 4] |= 4;
 }
 
+void __GXSetGenMode(void) {
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = __GXData[0x22C / 4];
+    *(unsigned short *)((char *)__GXData + 2) = 0;
+}
+
+void GXGetCullMode(s32 arg0, s32 arg1) {
+    unsigned int value = (arg1 & 0xFF000000) | (arg0 << 8);
+    __peReg[3] = value;
+}
+
+void GXGetLineWidth(s32 arg0) {
+    unsigned int value = 0;
+    value = (value & ~3) | (arg0 & 3);
+    value |= 4;
+    __peReg[4] = value;
+}
+
+void GXGetPointSize(s32 arg0) {
+    unsigned short value = __peReg[1];
+    value = (value & ~0x10) | ((arg0 << 4) & 0x10);
+    __peReg[1] = value;
+}
+
 void GXInitLightSpot(s32 arg0, s32 arg1) {
     unsigned int reg = 0;
 
@@ -386,6 +410,10 @@ int GXGetTexObjWrap_Internal(unsigned int *arg0) {
     return (*arg0 >> 2) & 3;
 }
 
+int GXGetTexObjAll(void *obj) {
+    return (*(unsigned char *)((char *)obj + 0x1F)) & 1;
+}
+
 void GXLoadTexObj(void *arg0, unsigned int arg1) {
     unsigned int *data = __GXData;
     void *result;
@@ -424,6 +452,39 @@ void GXLoadTlut(void *arg0, int arg1) {
     *(unsigned int *)((char *)obj + 8) = *(unsigned int *)((char *)arg0 + 4);
     *(unsigned int *)((char *)obj + 0xC) = *(unsigned int *)((char *)arg0 + 8);
     *(unsigned int *)arg0 = value;
+}
+
+void GXInitTexCacheRegion(void *obj, signed char arg1, unsigned int arg2, int arg3, unsigned int arg4, int arg5) {
+    int size;
+    int tmem_even;
+    int tmem_odd;
+    unsigned int value;
+
+    if (arg3 == 0) size = 3;
+    else if (arg3 == 1) size = 4;
+    else if (arg3 == 2) size = 5;
+    else size = arg3;
+
+    value = 0;
+    value |= (arg2 >> 5) & 0x7FFF;
+    value |= (size << 15) & 0x38000;
+    value |= (size << 18) & 0x1C0000;
+    *(unsigned int *)obj = value;
+
+    if (arg5 == 0) tmem_even = 3;
+    else if (arg5 == 1) tmem_even = 4;
+    else if (arg5 == 2) tmem_even = 5;
+    else if (arg5 == 3) tmem_even = 0;
+    else tmem_even = arg5;
+
+    tmem_odd = tmem_even;
+    *(unsigned char *)((char *)obj + 0xC) = arg1;
+    *(unsigned char *)((char *)obj + 0xD) = 1;
+    value = 0;
+    value |= (arg4 >> 5) & 0x7FFF;
+    value |= (tmem_odd << 15) & 0x38000;
+    value |= (tmem_odd << 18) & 0x1C0000;
+    *(unsigned int *)((char *)obj + 4) = value;
 }
 
 extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
