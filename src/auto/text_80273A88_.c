@@ -112,6 +112,22 @@ void fn_802751AC(void *arg0, float angle) {
     *(float *)((char *)arg0 + 0xBC) = lbl_80564024 * angle;
 }
 
+void fn_80275FC0(void *arg0) {
+    *(int *)((char *)arg0 + 0x58) = *(int *)((char *)arg0 + 0x1A4);
+    *(int *)((char *)arg0 + 0x5C) = *(int *)((char *)arg0 + 0x1A8);
+    *(int *)((char *)arg0 + 0x60) = *(int *)((char *)arg0 + 0x1AC);
+    *(int *)((char *)arg0 + 0x64) = *(int *)((char *)arg0 + 0x1B0);
+    *(int *)((char *)arg0 + 0x68) = *(int *)((char *)arg0 + 0x1B4);
+    *(int *)((char *)arg0 + 0x6C) = *(int *)((char *)arg0 + 0x1B8);
+    *(int *)((char *)arg0 + 0x70) = *(int *)((char *)arg0 + 0x1BC);
+    *(int *)((char *)arg0 + 0x74) = *(int *)((char *)arg0 + 0x1C0);
+    *(int *)((char *)arg0 + 0x78) = *(int *)((char *)arg0 + 0x1C4);
+    *(int *)((char *)arg0 + 0x7C) = *(int *)((char *)arg0 + 0x1C8);
+    *(int *)((char *)arg0 + 0x80) = *(int *)((char *)arg0 + 0x1CC);
+    *(int *)((char *)arg0 + 0x84) = *(int *)((char *)arg0 + 0x1D0);
+    *(float *)((char *)arg0 + 0xBC) = *(float *)((char *)arg0 + 0x1D4);
+}
+
 void fn_80276044(int arg0) {
     fn_80276BE4(arg0 + 0x58, arg0 + 0xBC);
 }
