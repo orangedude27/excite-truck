@@ -5,6 +5,11 @@ extern char lbl_8055B8B0[];
 extern char lbl_80490968[];
 extern char *strstr(const char *, const char *);
 extern void fn_8022C9D0(void);
+extern int fn_80232B70(int);
+extern void fn_8022A8E4(int);
+extern double lbl_80563590;
+extern char lbl_8033FF98[];
+extern int stricmp(const char *, const char *);
 extern void fn_8022CAA8(void *);
 extern float lbl_80563588;
 extern char *strncpy(char *, const char *, unsigned int);
@@ -70,6 +75,13 @@ int fn_8022AB94(const char *arg0, char arg1) {
     return count;
 }
 
+void fn_8022ABC8(void *arg0, const char *arg1, int arg2) {
+    char buffer[0x800];
+    strncpy(buffer, arg1, arg2);
+    buffer[arg2] = 0;
+    fn_8023293C(arg0, buffer, lbl_80563588);
+}
+
 extern float lbl_80563588;
 extern char *strncpy(char *, const char *, unsigned int);
 extern void fn_8023293C(void *, char *, float);
@@ -79,7 +91,7 @@ int fn_8022B2D4(int arg0, const char *arg1, int arg2, int arg3) {
     int bestIndex = 0;
     int best = -1;
     int i = 0;
-    do {
+    while (1) {
         int x;
         int y;
         int cost;
@@ -91,7 +103,23 @@ int fn_8022B2D4(int arg0, const char *arg1, int arg2, int arg3) {
             best = cost;
         }
         i++;
-    } while (i != 0 && (signed char)arg1[i - 1] != 0);
+        if (i == 0) break;
+        if ((signed char)arg1[i - 1] == 0) break;
+    }
     return bestIndex;
+}
+
+extern double lbl_80563590;
+extern int fn_80232B70(int);
+extern char lbl_8033FF98[];
+extern int stricmp(const char *, const char *);
+int fn_8022CC8C(const char *arg0) {
+    int i;
+    for (i = 0; i < 0x1b; i++) {
+        if (stricmp(arg0, *(const char **)(lbl_8033FF98 + i * 8 + 4)) == 0) {
+            return *(int *)(lbl_8033FF98 + i * 8);
+        }
+    }
+    return 0x1a;
 }
 
