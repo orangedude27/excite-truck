@@ -33,7 +33,7 @@ void *fn_802B5240(int arg0) {
     int spC;
     int sp8;
     void *result = 0;
-    if (fn_802B4FD0(&spC, &sp8) != 0) {
+    if (fn_802B4FD0((void *)arg0, &spC, &sp8) != 0) {
         result = fn_802B51E4(spC, sp8);
         fn_802B50E8(arg0, *(int *)((char *)result + 8),
                     *(int *)result * *(int *)((char *)result + 4));
