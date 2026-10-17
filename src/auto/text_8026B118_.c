@@ -73,7 +73,7 @@ int fn_8026B734(int arg0, float *arg1) {
     return 0;
 }
 
-void fn_8026A1F0(int, int);
+
 unsigned char fn_8026B7B4(int arg0) {
     return lbl_8049A0E8[arg0 * 0x10];
 }
