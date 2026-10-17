@@ -198,6 +198,18 @@ void fn_801EBD18(s32 arg0) {
     }
 }
 
+void fn_801EBD70(void) {
+    f32 temp;
+    if (lbl_8055EBA0 == 0) {
+        fn_802B0144();
+        if (fn_801E85A4() == 1) {
+            temp = fn_801E8738(-1);
+            fn_801E8718(-1);
+            fn_802BF598(temp);
+        }
+    }
+}
+
 extern void fn_802B0144(void);
 void fn_801EB634_keep(void);
 void fn_801EBEF4(f32 farg0) {
