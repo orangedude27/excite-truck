@@ -29,6 +29,21 @@ void fn_802CAC44(int arg0, int arg1) {
     fn_802CA898(arg0, 0, 0, arg1);
 }
 
+void fn_802CAD28(int arg0) {
+    int *p;
+    int value;
+    if (arg0 == -1)
+        return;
+    p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
+    value = --p[0];
+    if (value != 0)
+        return;
+    if (p[0x2C / 4] == 0)
+        return;
+    p[0x2C / 4] = 0;
+    ((void (*)(int))fn_802D8FB4)(p[0x28 / 4]);
+}
+
 int fn_802DB2C0(int);
 int fn_802CA57C(int, int, int);
 int fn_802CA4E0(int, int, int, int, int);
