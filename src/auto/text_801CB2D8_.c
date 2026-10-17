@@ -23,6 +23,7 @@ extern unsigned char *fn_801EA9A0(void);
 extern int fn_801EA994(void);
 extern void fn_801CCBA4(void);
 extern void fn_801CCAEC(int);
+extern void fn_801CCB48(int);
 extern void fn_801CCCAC(void);
 extern int fn_801CE874(int);
 extern void fn_801CCDAC(int, int, int);
