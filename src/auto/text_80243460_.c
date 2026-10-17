@@ -72,7 +72,19 @@ void fn_802443C0(void *arg0) {
     fn_80243938(*(char **)((u8 *)arg0 + 0x18), *(char **)((u8 *)arg0 + 0x1C));
 }
 
+void fn_8024442C(void *arg0) {
+    u8 *field = (u8 *)arg0 + 0x29;
+    *field = !*field;
+}
+
 u8 fn_80244550(void *arg0) {
     return *((u8 *)arg0 + 0x28);
+}
+
+s32 fn_80244558(void *arg0) {
+    char *str = *(char **)((u8 *)arg0 + 0x18);
+    s32 len = strlen(str);
+    if (len > 0 && *(s8 *)((u32)len + (u32)str - 1) == '_') len--;
+    return len;
 }
 
