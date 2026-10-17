@@ -50,3 +50,7 @@ void fn_802A8978(void) {
 s32 fn_802A8A34(void* ptr) {
     return ((s32*)ptr)[1];
 }
+
+s32 fn_802A8A3C(s32 *arg0, s32 arg1) {
+    return *arg0 + arg1 * 0x28;
+}
