@@ -25,7 +25,7 @@ extern f32 lbl_80562AE4;
 s32 fn_801E1F78(void);
 extern f32 lbl_80562AE0;
 extern f32 lbl_80562AEC;
-extern char lbl_80338C40[];
+extern const char lbl_80338C40[];
 extern char lbl_803387A8[];
 
 typedef struct {
@@ -239,6 +239,18 @@ void fn_801D5454(void *arg0) {
     *(f32 *)(lbl_804422F0 + 0x1C) = z;
 }
 
+s32 fn_801D5650(void *alarm) {
+    s32 offset;
+    s32 i;
+    offset = 0;
+    i = 0;
+    while (i < *(s32 *)((u8 *)lbl_804423A4 + 4)) {
+        fn_801D50B8(*(s32 *)((u8 *)lbl_804423A4[0] + offset));
+        offset += 4;
+        i += 1;
+    }
+}
+#pragma scheduling on
 extern void *lbl_804423A4[];
 extern f32 lbl_80562ADC, lbl_80562AE0, lbl_80562B08;
 void fn_801D5730(void) {
@@ -358,12 +370,12 @@ void fn_801D6600(void *arg0) {
 
 extern char lbl_803387A8[];
 extern char lbl_803387C8[];
-#pragma scheduling off
+#pragma scheduling on
 void fn_801D6618(UnkStruct_801D6618 *arg0) {
-    ((volatile UnkStruct_801D6618 *)arg0)->name = lbl_80338C40;
-    ((volatile UnkStruct_801D6618 *)arg0)->state = 0;
+    volatile s32 *p = (volatile s32 *)arg0;
+    p[0] = (s32)lbl_80338C40;
+    p[1] = 0;
 }
-#pragma scheduling reset
 void *fn_801D6630(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         *(s32 *)((u8 *)arg0 + 4) = 0;
@@ -710,10 +722,7 @@ s32 fn_801D77B8(s32 arg0);
 s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
-void fn_801D77D8(void *arg0) {
-    void **vtable = *(void ***)arg0;
-    ((void (*)(void *))vtable[0xD])(arg0);
-}
+void fn_801D77D8(void *arg0) { void **vtable = *(void ***)arg0; ((void (*)(void *))vtable[0xD])(arg0); }
 
 void fn_801D77E8(void) {
 
@@ -879,12 +888,13 @@ void *fn_801D7EC0(void *arg0, s32 arg1) {
 }
 
 s32 fn_801D7F5C(s32 arg0, s32 arg1) {
-    if (arg0 != 0) {
-        if (arg1 <= 0) {
-            return arg0;
-        }
-        fn_80128668();
+    if (arg0 == 0) {
+        return arg0;
     }
+    if (arg1 <= 0) {
+        return arg0;
+    }
+    fn_80128668();
     return arg0;
 }
 
