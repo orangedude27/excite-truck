@@ -1418,6 +1418,10 @@ void bta_dm_search_cancel_transac_cmpl(void) {
     ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(4, 0);
 }
 
+void fn_80072728(void) {
+    ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(4, 0);
+}
+
 void bta_sys_disable(void) {
     void **pp_module;
     void *p_module;
