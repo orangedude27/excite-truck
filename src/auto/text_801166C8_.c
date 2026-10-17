@@ -225,6 +225,38 @@ void fn_8011BC48(void) {
     fn_80120084();
 }
 
+void fn_8011BDF0(s32 arg0) {
+    s32 temp;
+    s32 old;
+    temp = arg0 - 8;
+    if (temp != 0 && *(s32 *)(temp + 0x30) != 0) {
+        old = OSEnableInterrupts();
+        fn_8011BD20(temp);
+        OSRestoreInterrupts(old);
+    }
+}
+
+void fn_8011BEC8(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+    s32 one = 1;
+    s32 old;
+
+    OSDisableInterrupts();
+    *(s32 *)((u8 *)arg1 + 0xC) = one;
+    *(s32 *)((u8 *)arg1 + 0x14) = arg2;
+    *(s32 *)((u8 *)arg1 + 0x18) = arg3;
+    *(s32 *)((u8 *)arg1 + 0x10) = 0;
+    *(void **)arg1 = *(void **)((u8 *)arg0 + 0x30);
+    old = *(s32 *)((u8 *)arg0 + 0x38);
+    *(void **)((u8 *)arg0 + 0x30) = arg1;
+    *(s32 *)((u8 *)arg0 + 0x38) = old + one;
+    OSRestoreInterrupts(old);
+}
+
+s32 fn_8011BFFC(void *arg0, void *arg1, void *arg2, void *arg3, s32 arg4) {
+    s32 temp = fn_8011BF4C(arg2, arg3, arg4) * 2;
+    return temp | fn_8011BF4C(arg0, arg1, arg4);
+}
+
 u32 fn_8011C06C(void *arg0) {
     s32 oldInterrupts;
     s32 value;
