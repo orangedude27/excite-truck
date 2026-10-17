@@ -63,6 +63,19 @@ void fn_800339B0(void *arg0, void *arg1) {
     OSRestoreInterrupts(state);
 }
 
+extern float lbl_80560AE8;
+extern unsigned int __cvt_fp2unsigned(float);
+void fn_80033A34(void *arg0, float arg1) {
+    int state;
+    unsigned int value;
+    state = OSDisableInterrupts();
+    value = __cvt_fp2unsigned(lbl_80560AE8 * arg1);
+    *(unsigned short *)((char *)arg0 + 0x1EA) = value;
+    *(unsigned short *)((char *)arg0 + 0x1E8) = value >> 16;
+    *(unsigned int *)((char *)arg0 + 0x1C) |= 0x40000;
+    OSRestoreInterrupts(state);
+}
+
 void fn_80033B74(void *arg0, short arg1, short arg2) {
     int state = OSDisableInterrupts();
     *(short *)((char *)arg0 + 0x200) = arg1;
