@@ -9,6 +9,19 @@ extern s32 fn_80297654;
 extern void *lbl_803493C0;
 extern float lbl_80564578;
 
+float fn_8029748C(void *arg0) {
+    s32 count = *(s32 *)((u8 *)arg0 + 4);
+    float max = lbl_80564578;
+    s32 offset = 0;
+    while (count > 0) {
+        float value = *(float *)(*(u8 **)arg0 + offset + 0x14);
+        if (max <= value) max = value;
+        offset += 0x18;
+        count--;
+    }
+    return max;
+}
+
 void fn_802976D0(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
 }
@@ -39,6 +52,11 @@ s32 fn_8029788C(void *arg0) {
 extern s32 fn_80296D2C(s32);
 extern s32 fn_802970C8(s32);
 extern float lbl_80564578;
+extern char lbl_8055CA40[];
+extern char *lbl_8055CA38[];
+extern char lbl_80349384[];
+extern int stricmp(const char *, const char *);
+extern int fn_802E317C(char *, ...);
 s32 fn_802978A0(void *arg0) {
     return fn_80296D2C(*(s32 *)((u8 *)arg0 + 4));
 }
