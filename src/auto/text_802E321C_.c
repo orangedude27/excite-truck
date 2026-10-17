@@ -142,6 +142,9 @@ s32 fn_802E39D0(s32 arg0, s32 arg1, s32 arg2) {
     return sp8 == arg2;
 }
 
+void fn_802E3D00(void) {
+}
+
 void fn_802E3DCC(void) {
     lbl_8055FF24 = (void*)fn_802E98C8();
 }
