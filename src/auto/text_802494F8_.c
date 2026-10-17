@@ -249,6 +249,21 @@ done:
     *(s32 *)((char *)arg0 + 0x98) = array[index];
 }
 
+void fn_8024B830(void *arg0, s32 arg1) {
+    s32 index;
+    s32 offset;
+    *(s32 *)((char *)arg0 + 0x9C) = -1;
+    index = 0;
+    offset = 0;
+    while (index < *(s32 *)((char *)arg0 + 0x1C)) {
+        if (arg1 == **(s32 **)((char *)*(s32 **)((char *)arg0 + 0x18) + offset)) {
+            *(s32 *)((char *)arg0 + 0x9C) = index;
+        }
+        offset += 4;
+        index++;
+    }
+}
+
 s32 fn_8024B874(s32 arg0) { return arg0 + 0x64; }
 
 s32 fn_8024B87C(void *arg0, s32 arg1) {
@@ -312,6 +327,16 @@ void fn_8024B9AC(void *arg0) {
     s32 index = *(s32 *)((char *)arg0 + 0x10);
     s32 count = *(s32 *)((char *)arg0 + 0x14);
     *(s32 *)((char *)arg0 + 0x10) = (index + 1) % count;
+}
+
+void fn_8024B9CC(void *arg0, s32 *arg1, s32 *arg2) {
+    char *entry = (char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC;
+    *arg1 = *(s32 *)(entry + 0x20);
+    *arg2 = *(s32 *)(entry + 0x24);
+}
+
+s32 fn_8024B9EC(void *arg0) {
+    return *(s32 *)(*(char **)((char *)arg0 + 0x10) + *(s32 *)((char *)arg0 + 0x11C) * 8);
 }
 
 void *fn_80012870(s32, s32);
