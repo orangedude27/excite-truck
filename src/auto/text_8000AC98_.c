@@ -177,6 +177,16 @@ void fn_8000C630(int arg0, int arg1) {
         *(int *)((char *)&lbl_8034F5B8 + arg1 * 8 + 4) = arg0;
     }
 }
+
+int *fn_8000C69C(void) {
+    switch (lbl_8055D3DC) {
+    case 0: return &lbl_80558A50;
+    case 19: return &lbl_80558A58;
+    case 20: return &lbl_80558A60;
+    default: return &lbl_80558A68;
+    }
+}
+
 int fn_8000BD9C(int, int, int);
 extern float lbl_805601FC, lbl_80560204;
 extern char lbl_8034F5F8, lbl_8034F604;
