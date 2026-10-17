@@ -6,8 +6,8 @@ extern double fn_8002EFB0();
 extern void fn_8029231C();
 extern void PSVECNormalize(void *, void *);
 extern void *fn_801284F8(int, void *);
-extern int lbl_8033A6A0;
-extern int lbl_8033A710;
+extern int lbl_8033A6A0[2];
+extern int lbl_8033A710[2];
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -114,7 +114,7 @@ void fn_801F224C(void) {
     void *p = fn_801284F8(8, &lbl_8033A6A0);
     if (p != 0) {
         *(void **)p = &lbl_8033A710;
-        *(int *)((char *)p + 4) = 0;
+        *(int *)p = *(int *)((char *)p + 4);
     }
 }
 #pragma pop
