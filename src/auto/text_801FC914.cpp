@@ -17,7 +17,7 @@ void fn_801FCF18(void*, int, int);
 void fn_801FF484(void*, void*);
 float fn_801E7E24(void);
 extern float lbl_80558DC4;
-void fn_801FF6FC(void*);
+void fn_801FF6FC(void*, ...);
 void fn_801FF3AC(void*, float);
     float fabs(float);
     void fn_801FF770(void*);
