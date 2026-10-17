@@ -2419,6 +2419,18 @@ BOOLEAN btsnd_hcic_disconnect(UINT16 handle, UINT8 reason) {
     return TRUE;
 }
 
+BOOLEAN btsnd_hcic_add_SCO_conn(UINT16 handle, UINT16 packet_types) {
+    u8 *p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 7;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 7; p[9] = 4; p[10] = 4;
+    p[11] = handle; p[12] = handle >> 8;
+    p[13] = packet_types; p[14] = packet_types >> 8;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
     u8 *p = (u8 *)GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
