@@ -39,4 +39,9 @@ void fn_8020F39C(void) {
 void fn_8020F3A0(void *arg0) {
     *(signed char *)((char *)arg0 + 0x72) = 1;
 }
-
+extern float lbl_80563368;
+extern float lbl_80563370;
+extern float lbl_805633DC;
+extern float lbl_805633F4;
+extern float lbl_805633F8;
+extern float lbl_805633FC;
