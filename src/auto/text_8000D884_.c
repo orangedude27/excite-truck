@@ -14,7 +14,7 @@ extern void fn_8000DA80(void);
 extern void fn_8000DC84(void);
 extern int lbl_8055D468;
 extern unsigned char lbl_8034F650[];
-extern int fn_8000DF2C(int);
+extern void fn_8000DF2C(int);
 extern void *memset(void *, int, unsigned int);
 extern void fn_80247624(void);
 extern void *fn_80131234(const char *);
@@ -24,6 +24,39 @@ extern void fn_80247624(void);
 extern void *fn_80131234(const char *);
 extern char lbl_802FC24C[];
 extern int fn_80128658(int);
+void fn_8000D884(int arg0, int arg1, int arg2, int arg3, int arg4) {
+    int *entry;
+    int count;
+    int offset;
+
+    count = lbl_8055D464;
+    entry = (int *)(lbl_8034F650 + count * 0x18);
+    entry[0] = arg0;
+    entry[1] = arg1;
+    entry[2] = arg2;
+    entry[3] = arg3;
+    entry[4] = arg4;
+    lbl_8055D464 = count + 1;
+    entry[5] = lbl_80558A88;
+    offset = arg3 * 4;
+    lbl_80558A88 += offset;
+}
+
+void fn_8000D8C8(void) {
+    int size;
+    int i;
+    size = fn_801284E8(lbl_802FC240, lbl_80558A88);
+    lbl_8055D470 = 1;
+    lbl_8055D468 = size;
+    fn_802E6BD8(0x49646E74, 2, size, lbl_80558A88, fn_8000DC84);
+    lbl_8055D46C = (int *)lbl_8055D468;
+    fn_8000DD98();
+    for (i = 3; i >= 0; i--) {
+        fn_8000D984(i);
+        fn_8000DA80();
+    }
+}
+
 void fn_8000D94C(void) {
     int zero;
     zero = 0;
