@@ -33,7 +33,6 @@ extern void *fn_80156A40(void);
 static float fn_80135278_dot(float *a, float *d) {
     return a[0] * d[0] + a[1] * d[1];
 }
-#pragma dont_inline off
 
 float fn_80135278(float *a, float *b, float *c) {
     float d[2];
