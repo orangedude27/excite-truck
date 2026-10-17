@@ -109,8 +109,9 @@ int stricmp(const char *, const char *);
 extern float lbl_80564BD0;
 void fn_802BAFF8(int, void *);
 typedef struct { float x, y, z; } Vec3_802B;
+#pragma scheduling off
 void fn_802B110C(void (*fn)(void *), void *arg) { fn(arg); }
-
+#pragma scheduling on
 void fn_802B111C(void *arg0) {
     ((int *)arg0)[1] = (int)((char *)arg0 + 0x10);
     ((int *)arg0)[3] = 6;
@@ -237,7 +238,7 @@ int fn_802B1B50(int *arg0, int arg1) {
     return *arg0 + (arg1 << 7);
 }
 
-extern void fn_802CAC54(int);
+
 extern float lbl_80564BF8;
 extern int fn_802DA704(int, void *, int);
 extern void fn_802DAA18(void);
