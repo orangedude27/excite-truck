@@ -1,6 +1,13 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern float lbl_80563368;
+extern float lbl_80563370;
+extern float lbl_805633DC;
+extern float lbl_805633F4;
+extern float lbl_805633F8;
+extern float lbl_805633FC;
+
 #pragma scheduling off
 void fn_8020F1F8(void *arg0) {
     void *temp_r3;
