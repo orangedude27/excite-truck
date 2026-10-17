@@ -205,9 +205,11 @@ public:
     u8* mData;
     s32 mCount;
     u8 pad_10[0x40];
-    s32 m50;
-    u8 m54;
-};
+          s32 m50;
+      u8 m54;
+      u8 pad_55[0x1F3];
+      s32 m248;
+  };
 
 class UnkVt33 {
 public:
@@ -1266,12 +1268,10 @@ extern "C" void fn_8015D814(void* arg0) {
 }
 
 void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
-    void* ptr = *(void**)((u8*)this + 0x248);
-    if (ptr != 0) {
-        void* vtable = *(void**)ptr;
-        vfn0_t fn = *(vfn0_t*)((u8*)vtable + 0x24);
-        fn(ptr);
-        *(void**)((u8*)this + 0x248) = 0;
+    Unk801577F0V* self = (Unk801577F0V*)this;
+    if (self->m50 != 0) {
+        self->v16();
+        self->m50 = 0;
     }
 }
 
@@ -1344,7 +1344,7 @@ extern "C" void fn_8015E778(Unk801577F0V* arg0, s32 arg1, s32 arg2, f32 farg0) {
         UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
         s32 count = arg0->mCount;
         for (s32 j = 0; j < count; j++) {
-            entries[j]->v16(arg1, arg2, (s32)farg0);
+            entries[j]->v16(arg1, arg2, farg0);
         }
     }
 }
