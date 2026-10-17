@@ -175,7 +175,7 @@ extern void fn_8006A300(void);
 extern u8 fn_8006A1DC(void);
 extern void fn_8006BAD8(void);
 extern s32 SCCheckStatus(void);
-extern void BTA_EnableBluetooth(void *);
+extern s32 BTA_EnableBluetooth(void *);
 extern s32 SCSetBtDeviceInfoArray(void *);
 extern void SCFlushAsync(void *);
 void fn_8006A1BC(u32 r3, u32 r4)
