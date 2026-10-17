@@ -2,6 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <macros.h>
+extern int lbl_8055D03C;
+extern char lbl_8034B5F0[];
+void fn_802CAC54(int);
+void fn_802CB6B4(void);
+int fn_80128670(int);
+int fn_802CA2A8(void *, int, int);
+int fn_8012C5B8(void *, int, int *);
+int fn_8012C6F0(void);
+int fn_8012C958(int);
 
 #pragma push
 #pragma small_data on
@@ -16,6 +25,25 @@ void fn_802DBDE8(int, int);
 
 extern char lbl_8055D07D;
 extern float lbl_80564F30;
+int fn_802CA294(int arg0) {
+    return *(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x28);
+}
+
+int fn_802CA380(int arg0) {
+    int sp10;
+    int sp8;
+    int result;
+    int temp;
+    result = 0;
+    fn_802CA2A8(&sp10, 0x20, arg0);
+    temp = fn_8012C5B8(&sp10, 0x54455820, &sp8);
+    if (temp != 0) {
+        result = fn_8012C6F0();
+        fn_8012C958(temp);
+    }
+    return result;
+}
+
 char fn_802CA7D4(void) { return 1; }
 
 char fn_802CA7DC(const char *arg0) { return (signed char)*arg0 == 0x2A; }
