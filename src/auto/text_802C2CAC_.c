@@ -110,8 +110,8 @@ s32 fn_802C3130(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern const char lbl_8034B060[];
-extern void fn_802C3320(void);
-extern void fn_802C33A8(void);
+extern void fn_802C3320();
+extern void fn_802C33A8();
 extern void fn_802E317C(const char *, ...);
 void fn_802C32B8(void) {
     u8 *state = (u8 *)lbl_8055FC00;
