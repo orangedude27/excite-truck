@@ -1577,6 +1577,23 @@ void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
     btsnd_hcic_reset_800857CC();
 }
 
+tBTM_STATUS BTM_SetLocalDeviceName(char *p_name) {
+    void *buf;
+
+    if (p_name == NULL) return 5;
+    if (lbl_803C0F78[0x64E] <= 1) return 0xC;
+    buf = GKI_getpoolbuf(2);
+    if (buf != NULL) {
+        if ((void *)lbl_803C0F78 != (void *)p_name) {
+            memset(lbl_803C0F78, 0, 0x20);
+            strncpy((char *)lbl_803C0F78, p_name, 0x1F);
+        }
+        ((BOOLEAN (*)(void *, BD_NAME))btsnd_hcic_change_name)(buf, lbl_803C0F78);
+        return 1;
+    }
+    return 3;
+}
+
 void btm_read_local_name_complete(UINT8 *p, UINT16 evt_len) {
     tBTM_CMPL_CB *callback = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x5A8);
     fn_80070F90(lbl_803C0F78 + 0x590);
@@ -1632,6 +1649,30 @@ void *fn_8007A394(void) { return lbl_803C0F78 + 0x648; }
 void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
 
 s32 fn_8007A3B4(s32 value) { s32 old = *(s32 *)(lbl_803C0F78 + 0x568); *(s32 *)(lbl_803C0F78 + 0x568) = value; return old; }
+
+void btm_vsc_complete(UINT8 *p, UINT16 cc_opcode, UINT16 evt_len, tBTM_CMPL_CB *p_vsc_cplt_cback) {
+    u8 packet[0x108];
+    u8 *src = p;
+    tBTM_CMPL_CB *callback = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x61C);
+
+    lbl_803C0F78[0x650] = 0;
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x61C) = NULL;
+    if (callback != NULL) {
+        *(u16 *)(packet + 0) = cc_opcode;
+        *(u16 *)(packet + 2) = evt_len;
+        memcpy(packet + 4, src, evt_len);
+        callback(packet);
+    }
+}
+
+extern char lbl_803161E0[];
+extern char lbl_80316464[];
+s32 fn_8007A534(s32 arg0) {
+    if (*(s32 *)(lbl_803C0F78 + 0x56C) != 0 && arg0 != 0)
+        return 2;
+    *(s32 *)(lbl_803C0F78 + 0x56C) = arg0;
+    return 0;
+}
 
 extern char lbl_80316220[];
 extern void fn_8008534C(void *, u16);
