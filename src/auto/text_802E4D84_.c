@@ -37,6 +37,11 @@ extern char lbl_8034D4A0[];
 extern char lbl_8034D5B0[];
 extern void fn_802E317C(char *, int, void *, ...);
 extern int lbl_8055FF98;
+extern char lbl_8034D584[];
+extern char lbl_8034D528[];
+extern void fn_80128670(int);
+extern void fn_8012C4D8(void);
+extern void fn_8012BF24(void *);
 void fn_802E5248(int arg0, int arg1) {
     if (arg1 == 0) fn_80060CC0(arg0, 4, (void (*)())fn_802E51D0);
 }
@@ -97,6 +102,20 @@ void fn_802E58B8(unsigned char *arg0) {
     }
     fn_8012BEF0(arg0);
     fn_8012C41C(fn_802E589C, 0, arg0);
+}
+
+void fn_802E5A54(void) {
+    int i;
+    unsigned char *ptr;
+
+    for (i = 0; i < lbl_8055FFA0; i++) {
+        fn_802E5D5C(lbl_8055FF9C[i]);
+    }
+    lbl_8055FFA0 = 0;
+    for (i = 0, ptr = lbl_804FC558; i < lbl_8055FF78; i++, ptr += 0x20) {
+        fn_8012BF24(ptr);
+    }
+    lbl_8055FF78 = 0;
 }
 
 float fn_802E6040(void *arg0) {
