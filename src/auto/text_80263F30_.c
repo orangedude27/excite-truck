@@ -82,9 +82,65 @@ float fn_80264588(void) {
     return lbl_80563BF4;
 }
 
+void fn_80264618(void *arg0) {
+    extern float lbl_80558DC4;
+    extern float lbl_80563BF0;
+    extern float fn_80214D48(void);
+    extern int fn_802645C0(void);
+    extern void fn_80221F94(void *, int);
+    extern void fn_80216CA8(void);
+    float a;
+    float b;
+    float c;
+    a = *(float *)((char *)arg0 + 0x1C);
+    a = a < 0.0f ? -a : a;
+    a = a * a;
+    if (a == lbl_80558DC4) {
+        fn_80221F94(0, 0);
+        fn_80216CA8();
+        a = fn_80214D48();
+    }
+    b = *(float *)((char *)arg0 + 0x18);
+    b = b - a;
+    if (lbl_80563BF0 <= b) {
+        b = lbl_80563BF0;
+    }
+    *(float *)((char *)arg0 + 0x18) = b;
+    if (fn_802645C0() != 0) {
+        c = *(float *)((char *)arg0 + 0x20);
+        c = c + a;
+        *(float *)((char *)arg0 + 0x20) = c;
+        a = fn_80214D48();
+    }
+    c = *(float *)((char *)arg0 + 0x1C);
+    c = c - a;
+    if (lbl_80563BF0 <= c) {
+        c = lbl_80563BF0;
+    }
+    *(float *)((char *)arg0 + 0x1C) = c;
+}
+
 extern void *lbl_8055F448;
 void* fn_80264A54(void) {
     return lbl_8055F448;
+}
+
+void fn_80264FD4(void *arg0) {
+    void *v = *(void **)arg0;
+    void (*fn)(void) = *(void (**)(void))((char *)v + 0x1C);
+    fn();
+}
+
+void fn_8026523C(void *arg0) {
+    extern char lbl_80346618[];
+    extern float lbl_80563BF0;
+    float value = lbl_80563BF0;
+    *(void **)arg0 = lbl_80346618;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    *(int *)((char *)arg0 + 0x18) = 0;
+    *(unsigned char *)((char *)arg0 + 0x1C) = 0;
+    *(int *)((char *)arg0 + 0xB4) = 0;
+    *(float *)((char *)arg0 + 0xB8) = value;
 }
 
 int strlen(char *);
