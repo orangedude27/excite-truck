@@ -303,6 +303,12 @@ void fn_802C7A10(void* alarm) {
 void fn_802C7A34(void) { fn_802DA704(); }
 
 extern void fn_802DA80C(void);
+void fn_802C7A38(void) { fn_802DA80C(); }
+
+extern void fn_802DA918(void);
+void fn_802C7A3C(void) { fn_802DA918(); }
+
+extern void fn_802DA80C(void);
 extern void fn_802DA918(void);
 extern void fn_802DA550(void);
 void fn_802C7A40(void) { fn_802DA550(); }
