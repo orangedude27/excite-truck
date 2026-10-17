@@ -14,8 +14,8 @@ void *fn_8023E5A8(void) {
 }
 
 void fn_8023EC94(void) {
-    s32 i;
     u8 *p;
+    s32 i;
 
     p = &lbl_8055F1AC;
     i = 0;
@@ -26,8 +26,7 @@ void fn_8023EC94(void) {
             fn_80214A9C(i + 1);
         }
         i++;
-        p++;
-    } while (i < 3);
+    } while (i < 3 && (p++, 1));
 }
 
 s32 fn_8023ECF8(void) {
@@ -36,4 +35,6 @@ s32 fn_8023ECF8(void) {
 
 void fn_8023F870(void) {
 }
+
+void fn_8023F874(void) {}
 
