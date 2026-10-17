@@ -16,3 +16,5 @@ s32 fn_802DB2A8(void) {
 void fn_802DB2B0(void) {
 }
 
+void fn_802DB2B4(void) {}
+
