@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern void fn_80127968(void);
+extern void *memset(void*, int, unsigned long);
 extern u32 lbl_8055DF1C;
 extern s32 lbl_8055DF44;
 extern const char lbl_80329EF4[];
