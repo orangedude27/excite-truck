@@ -11,6 +11,12 @@ extern s32 fn_80230E90(s32);
 extern f32 fn_8023659C(void);
 extern s32 fn_80214AF0(s32);
 extern s32 fn_80128668(void);
+extern s32 fn_80131234(const u8 *, const u8 *);
+extern void fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, f32);
+extern s32 fn_802328D4(s32);
+extern const u8 lbl_80346324[];
+extern const u8 lbl_80346120[];
+extern f32 lbl_80563BD4;
 s32 fn_80262F8C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -76,12 +82,12 @@ s32 fn_80263658(s32 arg0, s32 arg1) {
 }
 
 s32 fn_802638C8(void *arg0, s32 arg1) {
-    if (*((u8 *)arg0 + 0x29) != 0) {
-        if (arg1 < 0x125) {
-        } else if (arg1 < 0x126) {
-            if (*((u8 *)arg0 + 0x28) == 0) *((u8 *)arg0 + 0x28) = 1;
-        } else if (arg1 >= 0x128) {
-        } else if (*((u8 *)arg0 + 0x28) != 0) {
+    if (*((u8 *)arg0 + 0x29) != 0 && arg1 != 0x126) {
+        if (arg1 < 0x126) {
+            if (arg1 >= 0x125 && *((u8 *)arg0 + 0x28) == 0) {
+                *((u8 *)arg0 + 0x28) = 1;
+            }
+        } else if (arg1 < 0x128 && *((u8 *)arg0 + 0x28) != 0) {
             *((u8 *)arg0 + 0x28) = 0;
         }
     }
