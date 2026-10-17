@@ -23,6 +23,7 @@ extern s32 fn_802B59A4(s32);
 extern s32 fn_802B321C(s32, void **, s32, s32);
 extern s32 fn_802B3F0C(s32);
 extern void fn_80128668(void*);
+extern const char lbl_8055CE48[];
 void* fn_802B5A68(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
@@ -101,7 +102,8 @@ extern s32 fn_802E2C20(void);
 #pragma small_data on
 #pragma small_data off
 void fn_802B5E24(s32 arg0) {
-    lbl_8055FA28 = fn_802B5D2C((const char *)&lbl_8055CE48, arg0);
+    const char *fmt = (const char *)&lbl_8055CE48;
+    lbl_8055FA28 = fn_802B5D2C(fmt, arg0);
     lbl_8055FA08 = lbl_80564C5C;
 }
 u32 fn_802B5E8C(s32 arg0) {
