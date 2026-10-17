@@ -70,6 +70,8 @@ void fn_802411C8(void) { fn_8023FE20(); }
 
 void fn_802411CC(void) { fn_8023FE34(); }
 
+void fn_802411D0(void) { fn_8023FE60(); }
+
 void fn_80241228(void) {
 }
 
