@@ -2431,6 +2431,18 @@ BOOLEAN btsnd_hcic_add_SCO_conn(UINT16 handle, UINT16 packet_types) {
     return TRUE;
 }
 
+BOOLEAN btsnd_hcic_link_key_neg_reply(BD_ADDR bd_addr) {
+    u8 *p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 9;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0xC; p[9] = 4; p[10] = 6;
+    p[11] = bd_addr[5]; p[12] = bd_addr[4]; p[13] = bd_addr[3];
+    p[14] = bd_addr[2]; p[15] = bd_addr[1]; p[16] = bd_addr[0];
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
     u8 *p = (u8 *)GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
