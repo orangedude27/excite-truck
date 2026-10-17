@@ -1,5 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern signed char lbl_8055E4F8;
+extern char lbl_80434990[];
+extern float lbl_80561CDC;
+extern float lbl_80561DE0;
+extern float lbl_80561F28;
+extern float lbl_80558DC4;
+extern void *__AXFXGetLfoSinTable_801769CC(void);
 
 void fn_8018C510(void);
 void __AXDSPInitCallback_801AFC38(void);
