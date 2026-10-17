@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 int fn_8012C33C(void);
+extern float lbl_80564D14;
+extern float lbl_80564D18;
 int fn_802CAC28(int, int);
 int fn_802BC334(int arg0) {
     int valid = 0;
@@ -159,6 +161,14 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
 
 void fn_802BDD54(void) {
     fn_802BD814();
+}
+
+extern float lbl_80564D14;
+extern float lbl_80564D18;
+void fn_802BDFF4(void *arg0) {
+    if (*(void **)((char *)arg0 - 8) != 0) {
+        fn_802BAF98();
+    }
 }
 
 void *fn_801284F8(int, int);
