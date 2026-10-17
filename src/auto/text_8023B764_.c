@@ -127,3 +127,15 @@ void fn_8023BF68(void) {
 
 void fn_8023C20C(void) {}
 
+void fn_8023C210(void *dst, void *src) {
+    *(s32 *)((u8 *)dst + 4) = *(s32 *)((u8 *)src + 0);
+    *(s32 *)((u8 *)dst + 8) = *(s32 *)((u8 *)src + 4);
+    *(s32 *)((u8 *)dst + 0xC) = *(s32 *)((u8 *)src + 8);
+    *(u8 *)((u8 *)dst + 0x10) = *((u8 *)src + 0xC);
+    *(u8 *)((u8 *)dst + 0x11) = *((u8 *)src + 0xD);
+    *(u8 *)((u8 *)dst + 0x12) = *((u8 *)src + 0xE);
+    __builtin_memcpy((u8 *)dst + 0x14, (u8 *)src + 0x10, 0xA0);
+}
+
+void fn_8023C268(void) {}
+
