@@ -58,6 +58,25 @@ public:
 } // namespace ebi
 
 extern "C" u8 fn_802A4A20(void);
+extern "C" void fn_802A1660(void) {
+    int var_r29;
+    void** var_r30;
+    int var_r31 = 0;
+    fn_801EF024((void*)fn_802A1C30);
+    fn_802A1DC0();
+    var_r30 = lbl_804BCF88;
+    var_r29 = 0;
+    do {
+        void* obj = *var_r30;
+        if (obj != 0) {
+            ((void (*)(int))(*(void***)obj)[2])(1);
+            *var_r30 = (void*)var_r31;
+        }
+        var_r29++;
+        var_r30++;
+    } while (var_r29 < 8);
+}
+
 extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -66,8 +85,8 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_802A172C(void) {
-    int var_r30;
     void** var_r31;
+    int var_r30;
     void* temp_r3;
     var_r31 = lbl_804BCF88;
     var_r30 = 0;
@@ -236,7 +255,6 @@ extern "C" void* __dt__14CollisionSpaceFv_802A366C(void* arg0, s32 arg1) {
 
 extern "C" int lbl_80349B50[];
 extern "C" int lbl_80349AD8[];
-extern "C" int lbl_8055CBB0[];
 extern "C" void fn_802A3500(void*, s32);
 extern "C" void fn_802A30BC(void*, s32);
 extern "C" void fn_802A31DC(void*, s32);
