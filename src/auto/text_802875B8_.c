@@ -232,6 +232,20 @@ s32 fn_80288060(s32 arg0, s32 arg1) {
     return *(s32 *)(arg0 + (arg1 << 2) + 4);
 }
 
+void fn_80288070(s32 arg0, s32 arg1, s32 arg2) {
+    s32 index = (arg0 - lbl_8055F6C4) / 40;
+    s32 value = 0;
+    if (index < 8)
+        value = lbl_80488648[index];
+    fn_801EE0C8(value);
+    fn_801E2CCC(arg1, arg2);
+}
+
+void fn_802881D4(void) {
+    fn_8002F6AC(lbl_8055F6C4, fn_80287C80);
+    lbl_8055F6C4 = 0;
+}
+
 s32 fn_80288208(s32 arg0){return lbl_8055F6C0+arg0*0x28;}
 
 void fn_8028829C(void) {}
