@@ -3,3 +3,6 @@
 
 extern unsigned int lbl_8055D5A0;
 int fn_80019B3C(void) { return lbl_8055D5A0 & 1; }
+
+int fn_80019B48(void) { return (lbl_8055D5A0 >> 1) & 1; }
+
