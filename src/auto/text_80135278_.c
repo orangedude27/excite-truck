@@ -28,12 +28,13 @@ void fn_80135390(Unk_80135278 *);
 void fn_801355C0(void *, s32, s32, void *, s32);
 void fn_801357A4();
 
+extern void *fn_80156A40(void);
+
 float fn_80135278(float *a, float *b, float *c) {
     float dx = b[0] - c[0];
     float dy = b[1] - c[1];
-    volatile float d[2];
-    d[0] = dx;
-    d[1] = dy;
+    volatile float d0 = dx;
+    volatile float d1 = dy;
     return a[0] * dx + a[1] * dy;
 }
 
@@ -111,6 +112,20 @@ void fn_80135F4C(void *arg0) {
 
 void fn_8013605C(void *arg0) {
     *(signed char *)((char *)arg0 + 0x64) = 0;
+}
+
+int fn_801363A0(void *arg0, void *arg1) {
+    int temp_r31 = *(int *)((char *)*(void **)arg1 + 0x10);
+    int var = *(int *)((char *)*((void **)*(void **)arg1 + 0x14) + 0x10);
+    if (var == 0) var = *(int *)((char *)*(void **)((char *)arg0 + 0x2C) + 0x18);
+    return temp_r31 + (unsigned int)(*(float *)((char *)arg1 + 4) * (float)(var - temp_r31));
+}
+
+extern void *fn_80156A40(void);
+float fn_8013672C(void) {
+    void *obj = fn_80156A40();
+    void *ret = ((void *(*)(void *, s32))((void **)*(void **)obj)[2])(obj, 0);
+    return *(float *)((char *)ret + 8);
 }
 
 void fn_80136764(void) {
