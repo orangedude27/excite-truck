@@ -1168,6 +1168,23 @@ extern "C" s32 fn_80222BD4(void *arg0) {
 extern "C" void fn_8022375C(void) {
 }
 
+extern "C" void fn_80223644(void);
+extern "C" void fn_802235B4(void);
+extern "C" s32 fn_80223760(void *arg0, s32 arg1) {
+    if (*(u8 *)((u8 *)arg0 + 0x41C) != 0)
+        return 0;
+    switch (arg1) {
+    case 0x125:
+        fn_80223644();
+        return 1;
+    case 0x127:
+        fn_802235B4();
+        return 1;
+    default:
+        return 0;
+    }
+}
+
 extern "C" void fn_802237D0(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x41C) = 1;
 }
