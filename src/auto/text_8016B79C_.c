@@ -30,6 +30,26 @@ extern void fn_8016B4FC(void *);
 extern s32 fn_802BAA68(s32, void *);
 extern void fn_8016CDE0(void *);
 extern void fn_8016C168(void);
+typedef struct {
+    void (*d0)(void *);
+    void (*d1)(void *);
+    void (*d2)(void *);
+    void (*d3)(void *);
+    void (*d4)(void *);
+    void (*d5)(void *);
+    void (*d6)(void *);
+    void (*d7)(void *);
+    void (*d8)(void *);
+    void (*d9)(void *);
+    void (*d10)(void *);
+    void (*d11)(void *);
+    void (*d12)(void *);
+    void (*d13)(void *);
+    void (*d14)(void *);
+    void (*d15)(void *);
+    void (*d16)(void *);
+    void (*v4C)(void *);
+} TObj4C;
 void *fn_8016B79C(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         if (*(s32 *)((u8 *)arg0 + 0x10) != 0) {
@@ -347,52 +367,35 @@ void fn_8016E918(void *arg0) {
 
 extern f32 lbl_805619A4;
 extern void fn_802AE0E0(s32);
+#pragma scheduling off
 void fn_8016E984(void *arg0) {
-    register s32 zero = 0;
-    register s32 one = 1;
     s32 temp = *(s32 *)((u8 *)arg0 + 0xC);
-    *(s32 *)arg0 = zero;
+    void *p;
+    *(s32 *)arg0 = 0;
     *(f32 *)((u8 *)arg0 + 4) = lbl_805619A4;
-    *((u8 *)arg0 + 8) = one;
-    *((u8 *)arg0 + 9) = zero;
-    *((u8 *)arg0 + 0x10) = zero;
-    *(s32 *)((u8 *)arg0 + 0xF8) = zero;
-    *(s32 *)((u8 *)arg0 + 0xFC) = zero;
-    *(s32 *)((u8 *)arg0 + 0x100) = zero;
-    *(s32 *)((u8 *)arg0 + 0x104) = zero;
+    *((u8 *)arg0 + 8) = 1;
+    *((u8 *)arg0 + 9) = 0;
+    *((u8 *)arg0 + 0x10) = 0;
+    *(s32 *)((u8 *)arg0 + 0xF8) = 0;
+    *(s32 *)((u8 *)arg0 + 0xFC) = 0;
+    *(s32 *)((u8 *)arg0 + 0x100) = 0;
+    *(s32 *)((u8 *)arg0 + 0x104) = 0;
     if (temp != 0) fn_802AE0E0(temp);
-    if (*(void **)((u8 *)arg0 + 0x14)) {
-        void *p = *(void **)((u8 *)arg0 + 0x14);
-        *((u8 *)p + 0x4A) = one;
-        *((u8 *)p + 0x4C) = zero;
-    }
-    if (*(void **)((u8 *)arg0 + 0x18)) {
-        void *p = *(void **)((u8 *)arg0 + 0x18);
-        *((u8 *)p + 0x4A) = one;
-        *((u8 *)p + 0x4C) = zero;
-    }
-    if (*(void **)((u8 *)arg0 + 0x1C)) {
-        void *p = *(void **)((u8 *)arg0 + 0x1C);
-        *((u8 *)p + 0x4A) = one;
-        *((u8 *)p + 0x4C) = zero;
-    }
-    {
-        void *p = *(void **)((u8 *)arg0 + 0x24);
-        *((u8 *)arg0 + 0x20) = zero;
-        if (p) { *((u8 *)p + 0x4A) = one; *((u8 *)p + 0x4C) = zero; }
-    }
-    if (*(void **)((u8 *)arg0 + 0x28)) {
-        void *p = *(void **)((u8 *)arg0 + 0x28);
-        *((u8 *)p + 0x4A) = one;
-        *((u8 *)p + 0x4C) = zero;
-    }
-    if (*(void **)((u8 *)arg0 + 0x2C)) {
-        void *p = *(void **)((u8 *)arg0 + 0x2C);
-        *((u8 *)p + 0x4A) = one;
-        *((u8 *)p + 0x4C) = zero;
-    }
+    p = *(void **)((u8 *)arg0 + 0x14);
+    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    p = *(void **)((u8 *)arg0 + 0x18);
+    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    p = *(void **)((u8 *)arg0 + 0x1C);
+    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    p = *(void **)((u8 *)arg0 + 0x24);
+    *((u8 *)arg0 + 0x20) = 0;
+    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    p = *(void **)((u8 *)arg0 + 0x28);
+    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    p = *(void **)((u8 *)arg0 + 0x2C);
+    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
 }
-
+#pragma scheduling on
 extern f32 fn_8016FD58(void);
 f32 fn_8016FD58(void) {
     return lbl_8055E3C8;
@@ -409,10 +412,9 @@ void fn_8016FD9C(f32 *arg0, void *arg1) {
     fn_801475D0(arg1, lbl_8055A248, lbl_8055A268, sp8);
 }
 
-void fn_8016FE1C(void *arg0) {
-    ((void (*)(void *))(*(void ***)arg0)[19])(arg0);
-}
-
+#pragma scheduling off
+void fn_8016FE1C(void *arg0) { void * volatile *p = *(void * volatile **)arg0; ((void (*)(void *))p[19])(arg0); }
+#pragma scheduling on
 void fn_8016FF98(void *arg0) {
     s32 found = 0;
     s32 count = *(s32 *)((u8 *)arg0 + 8);
