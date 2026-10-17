@@ -6,6 +6,9 @@
 #include <revolution/OS/OSContext.h>
 
 extern void* fn_802ECC74(void*);
+extern f32 lbl_80329D48[];
+extern f64 lbl_805611D8;
+extern void fn_8011A330(void *);
 void AXFXSetHooks_8011FFB8();
 void fn_80120084();
 extern void *lbl_8055DEF8;
