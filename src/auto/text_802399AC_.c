@@ -136,7 +136,7 @@ extern s32 fn_802328D4(s32);
 #pragma small_data off
 void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(s32 **)((char *)arg0 + 0xC) = &lbl_8034109C;
+        *(s32 **)((char *)arg0 + 0xC) = (s32 *)lbl_8034109C;
         fn_80128670(*(s32 *)((char *)arg0 + 0x10));
         if (arg1 > 0) fn_80128668(arg0);
     }
