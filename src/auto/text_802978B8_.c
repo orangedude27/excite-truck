@@ -16,6 +16,10 @@ void fn_80297988(void) {
     fn_80297A08();
 }
 
+void fn_8029798C(void) {
+    fn_80297C3C();
+}
+
 void fn_80297990(void* hi) {
     lbl_8055F7B0 = hi;
 }
