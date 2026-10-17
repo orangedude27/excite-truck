@@ -1008,6 +1008,13 @@ extern "C" void fn_800B7684(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC(fn_800A9B0C(alarm));
 }
 
+extern "C" s32 fn_800B6A8C(s8);
+extern "C" s32 fn_800B76E8(s8 arg0) {
+    extern void fn_800B73E4(void*);
+    fn_800B6A8C(arg0);
+    return ((s32 (*)(void))fn_800B73E4)();
+}
+
 extern "C" void fn_800B7710(void *arg0) {
     extern s32 fn_800B7F28(s32 *);
     s32 sp8;
