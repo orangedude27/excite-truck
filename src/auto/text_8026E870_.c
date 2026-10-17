@@ -19,6 +19,13 @@ extern double fn_8002EF30(f32);
 extern void fn_8026FCFC(void);
 extern void fn_8026EA8C(void);
 
+s32 fn_8026EA14(s32 arg0) {
+    s32 shift = arg0 - 4;
+    if ((unsigned)shift > 0x13)
+        return 0;
+    return ((1 << shift) & 0x80017) != 0;
+}
+
 f32 fn_8026EAEC(f32 farg0) {
     f32 value = farg0;
     if (fn_80178CA4() > 1)
@@ -49,6 +56,7 @@ extern f32 lbl_80563E48;
 extern f32 lbl_80563E4C;
 extern f32 lbl_80563E38;
 extern f32 lbl_80563E3C;
+extern f32 lbl_80563E38;
 extern s32 lbl_8049A208[];
 void fn_8027045C(void) {
     ((f32 *)&lbl_8049A208)[0] = lbl_80563ED8;
