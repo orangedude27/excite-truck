@@ -1806,22 +1806,38 @@ tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
 void btm_pm_proc_cmd_status(UINT8 status) {
     u8 *base = lbl_803C0F78;
     u8 state = base[0x564];
-    u8 index = base[0x565];
+    u8 index;
+    u8 result;
     u8 *entry;
     if (state >= 4) return;
     if (status == 0) {
-        base[state * 0x22 + 0x4EC] = 4;
+        result = 4;
+        base[state * 0x22 + 0x4EC] = result;
     } else {
-        status = 5;
+        result = 5;
     }
+    index = base[0x565];
     if (index != 0x80) {
         entry = base + (index << 3);
         if (entry[0x558] & 2) {
-            void (*callback)(void *, u8, u8) = *(void (**)(void *, u8, u8))(entry + 0x554);
+            void (*callback)(void *, s32, s32) = *(void (**)(void *, s32, s32))(entry + 0x554);
             callback(base + state * 0x11C + 0x3C, 0, status);
         }
     }
     base[0x564] = 4;
+    (void)result;
+}
+
+void fn_8007D4C4(void) {
+    extern u32 lbl_802EEBF8[];
+    u32 *src = lbl_802EEBF8;
+    u8 *dst = lbl_803C0F78;
+    *(u16 *)(dst + 0x18F6) = 0xFFFF;
+    *(u32 *)(dst + 0x18F8) = src[0];
+    *(u32 *)(dst + 0x18FC) = src[1];
+    *(u32 *)(dst + 0x1900) = src[2];
+    *(u32 *)(dst + 0x1904) = src[3];
+    dst[0x1909] = 2;
 }
 
 tBTM_STATUS BTM_RemoveSco(UINT16 sco_inx) {
@@ -2364,6 +2380,19 @@ void fn_800853F8(u8 *arg0, u16 arg1, u16 arg2) {
     arg0[8] = 0x1E; arg0[9] = 0xC; arg0[10] = 4;
     arg0[11] = arg1; arg0[12] = arg1 >> 8; arg0[13] = arg2; arg0[14] = arg2 >> 8;
     btu_hcif_send_cmd(arg1 >> 8, 4, 0xC, 0x1E, 0);
+}
+
+void fn_80085568(void *arg0, u16 arg1, u16 arg2) {
+    ((u16 *)((u8 *)arg0 + 2))[0] = 7;
+    ((u16 *)((u8 *)arg0 + 4))[0] = 0;
+    ((u8 *)arg0)[8] = 0x28;
+    ((u8 *)arg0)[9] = 0xC;
+    ((u8 *)arg0)[10] = 4;
+    ((u8 *)arg0)[11] = arg1;
+    ((u8 *)arg0)[12] = arg1 >> 8;
+    ((u8 *)arg0)[13] = arg2;
+    ((u8 *)arg0)[14] = arg2 >> 8;
+    btu_hcif_send_cmd(arg0);
 }
 
 s32 btsnd_hcic_reset_800857CC(void) {
