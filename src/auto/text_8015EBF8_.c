@@ -9,6 +9,12 @@ void fn_8015F584(int *arg0);
 void fn_8015F5F4(int *arg0);
 extern float lbl_805617D0;
 int stricmp(const char *, const char *);
+
+struct VA {
+    void *s0;
+    void *s1;
+    char *(*f)(void **);
+};
 void fn_80136594(int *, void *, void *);
 void* fn_8015EBF8(void* arg0, s32 arg1) {
     if (arg0 != 0) {
