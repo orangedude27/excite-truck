@@ -113,12 +113,12 @@ void fn_8000822C(void *arg0) {
     *(u32 *)((u8 *)arg0 + 8) = 0;
 }
 
+void fn_8000822C(void *);
+#pragma dont_inline fn_8000822C
 void fn_8000824C(void *arg0, s32 arg1) {
     void *temp_r3;
     fn_8000822C(arg0);
     temp_r3 = (void *)fn_8001285C(arg1);
-    *(u32 *)((u8 *)arg0 + 0) = *(u32 *)((u8 *)temp_r3 + 0);
+    *(u32 *)((u8 *)arg0) = *(u32 *)((u8 *)temp_r3);
     *(u32 *)((u8 *)arg0 + 4) = *(u32 *)((u8 *)temp_r3 + 8);
 }
-
-#pragma scheduling reset
