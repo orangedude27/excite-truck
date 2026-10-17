@@ -53,6 +53,7 @@ void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
     out[2] = a[2] + t * (b[2] - a[2]);
 }
 
+extern float lbl_8055A488, lbl_8056215C;
 extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
 extern void fn_80194FD0(void);
