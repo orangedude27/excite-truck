@@ -32,6 +32,10 @@ extern char lbl_8037B640[], lbl_80302368[];
 extern void fn_80039F3C(int);
 extern void fn_80039F68(int);
 extern void fn_80039FC4(int);
+void fn_80039F3C(int arg0) { if (lbl_8055D8D0 != 0) lbl_8055D8D0(2 - ((unsigned int)__builtin_clz(arg0) >> 5), 0); }
+
+void fn_80039F68(int arg0) { if (NANDCloseAsync(lbl_8037B640, fn_80039F3C, lbl_8037B6D0) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2, 0); }
+
 void __DVDShowFatalMessage(void) {
  unsigned char bg[4]={0,0,0,0}; unsigned char fg[4]={255,255,255,0}; const char *msg;
  if(SCGetLanguage()==0) OSSetFontEncode(1); else OSSetFontEncode(0);
