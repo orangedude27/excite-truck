@@ -5,6 +5,7 @@ extern void *lbl_8055FE1C;
 extern unsigned char lbl_804C9984[];
 extern char lbl_8034C1C4[];
 extern void fn_802D2ED8(int, int);
+extern unsigned char lbl_804C5700[12];
 extern int fn_802E317C(const char *, ...);
 extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
 
