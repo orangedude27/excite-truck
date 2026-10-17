@@ -12,6 +12,21 @@ extern "C" void fn_800F07E4(s32 arg0) {
     __dt__Q46nw4hbm3snd6detail9SeqPlayerFv(arg0 - 8);
 }
 
+extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void);
+extern "C" void fn_800EEE8C(void*, const void*);
+extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void);
+extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, unsigned int);
+extern "C" void fn_80128668(void*);
+extern "C" void* lbl_8032428C;
+extern "C" void* lbl_80324060;
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+extern "C" void Setup__Q46nw4hbm3snd6detail9SeqPlayerFPQ46nw4hbm3snd6detail17SeqTrackAllocatorUliPQ46nw4hbm3snd6detail14NoteOnCallback(void*, unsigned long, int, int, void*);
+extern "C" void fn_800F0850(void *arg0) {
+    InitParam__Q44nw4r3snd6detail10BasicSoundFv();
+    *(s32*)((u8*)arg0 + 0x1EC) = 0;
+    *(s32*)((u8*)arg0 + 0x1F0) = 0;
+}
+
 extern "C" s32 fn_800F0E24(void* arg0) {
     return *(s32*)((u8*)arg0 + 0x1E0) != 0;
 }
