@@ -96,6 +96,22 @@ void fn_802E58B8(unsigned char *arg0) {
     fn_8012C41C(fn_802E589C, 0, arg0);
 }
 
+void fn_802E61EC(void *arg0, float farg0) {
+    if (lbl_8055FF8C != 0) {
+        *(float *)((char *)arg0 + 0xC) = farg0;
+        return;
+    }
+    *(float *)((char *)arg0 + 0xC) = lbl_8056512C;
+}
+
+void fn_802E620C(void *arg0, float farg0) {
+    if (lbl_8055FF8C == (void *)2) {
+        *(float *)((char *)arg0 + 0x14) = farg0;
+        return;
+    }
+    *(float *)((char *)arg0 + 0x14) = lbl_80565128;
+}
+
 void fn_802E622C(void *arg0, float farg0) { *(float *)((char *)arg0 + 0x10) = farg0; }
 
 void fn_802E6234(void) {}
@@ -145,4 +161,6 @@ void fn_802E6B34(void) {
 void fn_802E6B38(void* arg0, signed char* arg1) {
     *arg1 = 0;
 }
+
+void fn_802E6B44(int arg0, int arg1) { fn_802E5264(arg0, arg1); }
 
