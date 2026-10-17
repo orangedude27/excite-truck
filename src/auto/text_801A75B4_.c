@@ -20,3 +20,17 @@ int fn_801A902C(void) {
     return 0x15;
 }
 
+void fn_801A9050(void *arg0, int arg1) {
+    int zero[8] = {0};
+    fn_801A9110(arg0, lbl_802F9588[arg1]);
+}
+
+void fn_801A90A4(char *arg0, int arg1, const char *arg2) {
+    const char **entry = (const char **)fn_801A9234(arg2);
+    if (entry != 0)
+        strncpy(arg0, *entry, arg1);
+    else
+        arg0[0] = 0;
+    arg0[arg1 - 1] = 0;
+}
+
