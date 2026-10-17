@@ -100,7 +100,9 @@ extern s32 fn_8014D918(void*, s32, s32);
 extern s32 lbl_8055E240;
 extern f32 lbl_80561714, lbl_80561718;
 s32 fn_80149274(void **arg0) {
-    return ((s32 (*)(void *))(*(void **)((char *)*arg0 + 0x10)))(arg0) & 0xFF7F7F7F;
+    s32 (*fn)(void*);
+    fn = (s32 (*)(void*))((void**)*arg0)[4];
+    return fn(arg0) & 0xFF7F7F7F;
 }
 
 void fn_801492AC(void *arg0, f32 *arg1, s32 arg2) {
@@ -212,6 +214,28 @@ void fn_80149588(s32 arg0) {
         }
     }
 }
+
+extern s32 lbl_8055E3C4;
+extern f32 lbl_80561638, lbl_8056163C;
+extern f64 lbl_80561640;
+extern f64 sin(f64);
+#pragma dont_inline on
+f32 fn_801495D4(s32 arg0) {
+    f32 angle;
+    f32 fraction;
+    s32 quotient;
+    s32 remainder;
+    union { f64 d; u32 words[2]; } bits;
+    bits.words[0] = 0x43300000;
+    bits.words[1] = arg0 ^ 0x8000;
+    angle = (f32)(bits.d - lbl_80561640);
+    quotient = lbl_8055E3C4 / arg0;
+    remainder = lbl_8055E3C4 - quotient * arg0;
+    bits.words[1] = remainder ^ 0x8000;
+    fraction = (f32)(bits.d - lbl_80561640);
+    return lbl_8056163C + lbl_8056163C * (f32)sin((f64)(lbl_80561638 * fraction / angle));
+}
+#pragma dont_inline off
 
 void fn_80149650(void) { fn_801495D4(0x40); }
 
@@ -440,11 +464,22 @@ void fn_8014AF60(void *arg0, void *arg1, s32 arg2) {
 void fn_8014C6F0(void *arg0, void *arg1) {
     volatile Copy8014C6F0 *src = (volatile Copy8014C6F0 *)arg1;
     volatile Copy8014C6F0 *dst = (volatile Copy8014C6F0 *)arg0;
-    s32 a=src->a, b=src->b, c=src->c, d=src->d;
-    f32 e=src->e, f=src->f;
-    s32 g=src->g;
-    dst->a=a; dst->b=b; dst->c=c; dst->d=d;
-    dst->e=e; dst->f=f; dst->g=g;
+    register s32 a, b, c, d, g;
+    register f32 e, f;
+    a = src->a;
+    b = src->b;
+    c = src->c;
+    d = src->d;
+    e = src->e;
+    f = src->f;
+    g = src->g;
+    dst->a = a;
+    dst->b = b;
+    dst->c = c;
+    dst->d = d;
+    dst->e = e;
+    dst->f = f;
+    dst->g = g;
 }
 
 void fn_8014C72C(void **arg0) {
@@ -683,6 +718,13 @@ void fn_8014E7D8(void) {
 
 }
 
+s32 fn_8014EFC0(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668((void *)arg0);
+    }
+    return arg0;
+}
+
 s32 fn_8014F088(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668((void *)arg0);
@@ -703,12 +745,13 @@ extern s32 fn_80145E70(void *arg0);
 extern s32 lbl_8032DB34;
 extern s32 lbl_8032DB40;
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 value = *arg1;
     s32 index = ((s32 *)arg0)[1];
+    s32 value = *arg1;
     s32 *data = *(s32 **)arg0;
+    s32 *slot = data + index;
     ((s32 *)arg0)[1] = index + 1;
-    data[index] = value;
-    return &data[index];
+    *slot = value;
+    return slot;
 }
 
 s32 fn_80150AD8(s32 arg0, s32 arg1) {
