@@ -14,6 +14,47 @@ void fn_8028E398(int);
 void fn_80128668(void *);
 extern void *lbl_8055F924;
 void fn_8028E080(void);
+void fn_802AA0C8(void *arg0) {
+    extern float lbl_805649F0;
+    extern float lbl_805649F4;
+    volatile float first = lbl_805649F0;
+    volatile float second = lbl_805649F4;
+    *(unsigned char *)((char *)arg0 + 0xDC) = 0;
+    *(float *)((char *)arg0 + 0xE0) = first;
+    *(float *)((char *)arg0 + 0xE4) = second;
+    *(int *)((char *)arg0 + 0xE8) = -1;
+}
+
+void fn_802AA0EC(void *arg0) {
+    extern float lbl_805649F0;
+    volatile float value = lbl_805649F0;
+    *(unsigned char *)((char *)arg0 + 0xEC) = 0;
+    *(float *)((char *)arg0 + 0xF0) = value;
+}
+
+extern float PSVECDotProduct(const void *, const void *);
+void fn_802AA100(void *arg0, void *arg1, void *arg2, void *arg3) {
+    float sp1C, sp18, sp14, sp10, spC, sp8;
+    float dot0, dot1, x1, x0, y1, x2, y0, y2;
+    dot0 = PSVECDotProduct(arg1, arg2);
+    dot1 = PSVECDotProduct(arg1, arg3);
+    x1 = ((float *)arg2)[1] * dot0;
+    x0 = ((float *)arg2)[0] * dot0;
+    y1 = ((float *)arg3)[1] * dot1;
+    x2 = ((float *)arg2)[2] * dot0;
+    y0 = ((float *)arg3)[0] * dot1;
+    sp14 = x0;
+    y2 = ((float *)arg3)[2] * dot1;
+    sp18 = x1;
+    sp1C = x2;
+    ((float *)arg0)[1] = x1 + y1;
+    ((float *)arg0)[0] = x0 + y0;
+    ((float *)arg0)[2] = x2 + y2;
+    sp8 = y0;
+    spC = y1;
+    sp10 = y2;
+}
+
 void fn_802AA1D0(unsigned int arg0) {
     extern int lbl_8055F928;
     extern int lbl_80488648[];
@@ -26,6 +67,35 @@ void fn_802AA1D0(unsigned int arg0) {
     *(float *)((char *)p + 0xF8) = sp[1] - sp[0];
     *(float *)((char *)p + 0x100) = sp[3] - sp[2];
     *(float *)((char *)p + 0xFC) = sp[5] - sp[4];
+}
+
+void fn_802AAC80(void *arg0, void *arg1, float farg0) {
+    extern void fn_801E86F8(int);
+    extern float lbl_805649F0, lbl_805649FC, lbl_80564A04;
+    volatile float step = lbl_80564A04;
+    float current;
+    fn_801E86F8(0);
+    if (*(unsigned char *)((char *)arg0 + 0xEC)) {
+        current = *(float *)((char *)arg0 + 0xF0);
+        *(unsigned char *)((char *)arg0 + 0xEC) = 0;
+        current = current + step * farg0;
+        if (current < lbl_805649FC) {
+            *(float *)((char *)arg0 + 0xF0) = current;
+        } else {
+            *(float *)((char *)arg0 + 0xF0) = lbl_805649FC;
+        }
+    } else if (*(unsigned char *)((char *)arg1 + 0x118)) {
+        *(float *)((char *)arg0 + 0xF0) = lbl_805649F0;
+    } else {
+        current = *(float *)((char *)arg0 + 0xF0) - step * farg0;
+        if (current > lbl_805649F0) {
+            *(float *)((char *)arg0 + 0xF0) = current;
+        } else {
+            *(float *)((char *)arg0 + 0xF0) = lbl_805649F0;
+        }
+    }
+    if (*(unsigned int *)((char *)arg1 + 0x68) & 8)
+        *(float *)((char *)arg0 + 0xF0) = lbl_805649F0;
 }
 
 void fn_802AAF00(int a, int b, int c) {}
@@ -118,4 +188,5 @@ void fn_802AC070(void) {
     ((void (*)(void *, float, float, float))fn_802C2B78)((void *)lbl_804BD7B0, *(float *)&lbl_804BD7B0[1], *(float *)&lbl_804BD7B0[2], *(float *)&lbl_804BD7B0[3]);
     fn_802C2C00(lbl_8055F92D);
 }
-
+struct Obj802AAC80 { char pad[0xEC]; unsigned char flag; float value; };
+struct Ctrl802AAC80 { char pad[0x68]; unsigned int flags; char pad2[0xAC]; unsigned char flag; };
