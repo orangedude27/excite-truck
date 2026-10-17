@@ -136,7 +136,10 @@ extern const char lbl_8034B094[];
 extern void fn_802C4108();
 extern void fn_802C4610();
 extern void fn_802C4388();
-void fn_802C3850(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+extern void fn_802C4108(s32,s32,s32,s32,s32,s32,s32,s32);
+extern void fn_802C4610(s32,s32,s32,s32,s32,s32,s32,s32);
+extern void fn_802C4388(s32,s32,s32,s32,s32,s32,s32,s32);
+void fn_802C3850(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
     u8 mode = *(u8 *)arg0;
     s32 flag = 0;
     if ((s8)mode != 5 && (s8)mode != 6) flag = 1;
@@ -144,19 +147,19 @@ void fn_802C3850(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
         flag = 0;
         if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
         if (flag) {
-            fn_802C4108(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
+            fn_802C4108(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
             return;
         }
     }
-    if ((s8)mode == 5 && *(u8 *)arg5 == 5) {
-        fn_802C4610(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
+    if ((s8)mode == 5 && (s32)*(u8 *)arg5 == 5) {
+        fn_802C4610(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
         return;
     }
     if ((s8)mode == 5) {
         flag = 0;
         if (*(s8 *)arg5 != 5 && *(s8 *)arg5 != 6) flag = 1;
         if (flag) {
-            fn_802C4388(arg0,arg1,arg2,arg3,arg4,arg5,arg6);
+            fn_802C4388(arg0,arg1,arg2,arg3,arg4,arg5,arg6,arg7);
             return;
         }
     }
