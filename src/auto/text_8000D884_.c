@@ -80,6 +80,12 @@ void fn_8000DA80(void) {
     } while (i < lbl_8055D464);
 }
 
+void fn_8000DB18(void) {
+    int *entry;
+    entry = (int *)((char *)lbl_8055D46C + *lbl_8055D46C * 0x18);
+    entry[1] = 2;
+}
+
 int fn_8000DBAC(int arg0) {
     return *(int *)((char *)lbl_8055D46C + arg0 * 0x18 + 4) == 0;
 }
