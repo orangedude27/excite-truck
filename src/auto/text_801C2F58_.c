@@ -127,14 +127,22 @@ s32 fn_801C3D5C(void) {
 }
 
 extern void fn_801C98F0(void);
-extern void fn_801C9834(void);
 
 void fn_801C4B10(void) {
     lbl_8055E804 = 0;
-    while ((s32)fn_8017960C(lbl_8055E804 += 1) != 0) {
-    }
+    do {
+        lbl_8055E804 += 1;
+    } while ((s32)fn_8017960C(lbl_8055E804) != 0);
     lbl_8055E7F8 = fn_8012850C(0xC300, lbl_80336D84);
     fn_801C3D88(lbl_80336D90);
+}
+
+void fn_801C4B74(void) {
+    fn_801C98F0();
+    if (lbl_8055E7F8 != 0) {
+        fn_80128670();
+        lbl_8055E7F8 = 0;
+    }
 }
 
 char fn_801C5B60(void) {
@@ -542,7 +550,7 @@ void fn_801C9834(void) {
     }
     lbl_8055E838 = 0;
 }
-
+#pragma scheduling on
 void fn_801C98F0(void) {
     fn_801C9444();
 }
