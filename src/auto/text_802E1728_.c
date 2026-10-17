@@ -6,6 +6,8 @@ extern char lbl_8034CD48[];
 extern char lbl_8034CD30[];
 extern void fn_802E317C(const char *);
 extern void fn_802E30C8(const char *, int, int);
+int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
+
 void fn_802E29AC(void) {
     int count = *(int *)lbl_804DB780;
     int *array = *(int **)((char *)lbl_804DB780 + 4);
