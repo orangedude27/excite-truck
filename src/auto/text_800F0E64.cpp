@@ -494,6 +494,27 @@ extern "C" void DisposeCallbackFunc__Q36nw4hbm3snd9SoundHeapFPvUlPv(void* arg0, 
     DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(arg0, arg1, arg2);
 }
 
+void __ct__Q36nw4hbm3snd11SoundPlayerFv(void* self) {
+    u8* p = (u8*)self;
+    *(void**)(p + 4) = 0; *(void**)(p + 8) = 0;
+    *(void**)(p + 0x10) = 0; *(void**)(p + 0x14) = 0;
+    *(void**)(p + 0x1c) = 0; *(void**)(p + 0x20) = 0;
+    *(void**)p = 0;
+    *(void**)(p + 4) = p + 4; *(void**)(p + 8) = p + 4;
+    *(u32*)(p + 0xc) = 0;
+    *(void**)(p + 0x10) = p + 0x10; *(void**)(p + 0x14) = p + 0x10;
+    *(u32*)(p + 0x18) = 0;
+    *(void**)(p + 0x1c) = p + 0x1c; *(void**)(p + 0x20) = p + 0x1c;
+    *(u16*)(p + 0x24) = 1; *(u16*)(p + 0x26) = 1;
+    *(u8*)(p + 0x2d) = 0; *(f32*)(p + 0x28) = lbl_805610B8;
+    *(u32*)(p + 0x30) = 1; *(u8*)(p + 0x2c) = 0;
+    *(f32*)(p + 0x34) = lbl_805610B8;
+    *(f32*)(p + 0x38) = lbl_805610B8;
+    *(f32*)(p + 0x3c) = lbl_805610B8;
+    *(f32*)(p + 0x40) = lbl_805610B8;
+    *(f32*)(p + 0x44) = lbl_805610B8;
+}
+
 extern "C" void fn_800F8520(void *arg0) {
     s32 *p = (s32 *)((u8 *)arg0 + 4);
     *(s32 *)((u8 *)arg0 + 4) = 0;
@@ -501,6 +522,14 @@ extern "C" void fn_800F8520(void *arg0) {
     *(s32 *)arg0 = 0;
     *(s32 *)((u8 *)arg0 + 4) = (s32)p;
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
+}
+
+void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void* self, int shouldDelete) {
+    if (self) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(self, 0);
+        if (shouldDelete > 0) ((void (*)(void*))fn_80128668)(self);
+    }
+    return self;
 }
 
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *this_, f32 farg0) {
@@ -538,8 +567,8 @@ extern "C" const char lbl_80326768[];
 extern "C" const char lbl_8032687C[];
 extern "C" s32 lbl_8041506C;
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
-    void **end = (void **)((u8 *)&lbl_8041506C + 4);
-    void *node = *end;
+    void *node = *(void **)((u8 *)&lbl_8041506C + 4);
+    void *end = (u8 *)&lbl_8041506C + 4;
     while (node != end) {
         void *player = node;
         node = *(void **)node;
@@ -587,5 +616,9 @@ extern "C" void fn_800FC76C(void *self, s32 value) {
     u32 token = OSDisableInterrupts();
     *(s32 *)((u8 *)self + 0x458) = value;
     OSRestoreInterrupts(token);
+}
+
+extern "C" s32 fn_800FC7AC(void *arg0) {
+    return *(s32 *)((u8 *)arg0 + 0x458);
 }
 
