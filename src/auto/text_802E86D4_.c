@@ -19,6 +19,20 @@ extern int NANDDelete(const char *);
 extern char lbl_8034DE54[];
 extern char lbl_8034DE6C[];
 
+#pragma dont_inline on
+void fn_802E86D4(void) {
+    void **object = (void **)lbl_80560024;
+    void **vtable = *(void ***)object;
+    ((void (*)(void))*(void **)((char *)vtable + 8))();
+    lbl_80560028 = 1;
+}
+void fn_802E870C(void) {
+    void **object = (void **)lbl_80560024;
+    void **vtable = *(void ***)object;
+    ((void (*)(void))*(void **)((char *)vtable + 12))();
+    lbl_80560028 = 0;
+}
+
 void fn_802E8838(void) {
     fn_80127464();
 }
@@ -45,11 +59,42 @@ int fn_802E888C(int arg0) {
     return result;
 }
 
+int fn_802E88D8(void) {
+    int result = fn_802E888C(0);
+    if (result != 0) {
+        lbl_80560034 = 1;
+        return 1;
+    }
+    return 0;
+}
+
 void fn_802E8918(void) {
     fn_802E2E38(1);
 }
 
 int fn_802E8AE8(void) { unsigned char sp8[0x98]; int result=0; if(NANDOpen(sp8,1)==0) { result=1; NANDClose(sp8); } return result; }
+
+void fn_802E8B98(void) {
+    if (lbl_80560030 != 0) {
+        fn_802E8B34((const char *)0);
+        fn_802E8B34(lbl_8034DD78);
+    } else {
+        fn_802E8B34(lbl_8034DE94);
+    }
+}
+
+int fn_802E8BE4(void) {
+    for (;;) {
+        if (((int (*)(int))fn_802E888C)(1) != 0) {
+            fn_802E8B98();
+            return 1;
+        }
+        if (fn_802E88D8() != 0)
+            return 0;
+    }
+}
+
+#pragma dont_inline reset
 
 extern int fn_8012C4D8(int);
 extern int fn_802E88D8(void);
