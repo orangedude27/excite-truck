@@ -16,7 +16,7 @@ void fn_801EFFF8(int arg0) {
 int fn_801F0F18(int, int);
 int fn_801F0E88(int, int);
 int fn_801284F8(int, void *);
-int fn_801F0DC0(int, int, int);
+int fn_801F0DC0(int, int, int, int);
 float fn_801E88F0(int);
 float fn_802C88E8(int);
 extern int lbl_8055B0B8;
@@ -187,6 +187,18 @@ void fn_801F1878(void *arg0) {
 }
 
 int fn_801F196C(int a, int b) { return b + a * 4; }
+
+int fn_801F1978(int arg) {
+    int value = arg & ~0x10;
+    int result = -1;
+    switch (value) {
+    case 0: result = 0x101; break;
+    case 1: result = 0x102; break;
+    case 2: result = 0x200; break;
+    default: fn_802E317C("x"); break;
+    }
+    return result;
+}
 
 short fn_801EAC3C(void);
 int fn_801F1494(int, void *, short);
