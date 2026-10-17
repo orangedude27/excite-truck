@@ -49,6 +49,25 @@ void fn_802409A4(void *arg0, signed char arg1) {
     *(signed char *)((char *)arg0 + 0x2E8) = arg1;
 }
 
+void fn_802409AC(void *arg0, s32 arg1) {
+    s32 i;
+    void *entry;
+    void *item;
+    s32 count;
+    count = *(s32 *)((char *)arg0 + 0x2C);
+    entry = arg0;
+    *(s32 *)((char *)arg0 + 0x18 + count * 4) = arg1;
+    *(s32 *)((char *)arg0 + 0x2C) = count + 1;
+    for (i = 0; i < *(s32 *)((char *)arg0 + 0x2C); i++) {
+        item = *(void **)((char *)entry + 0x18);
+        *(u8 *)item = (*(u8 *)((char *)arg0 + 0x38) != 0 && i == *(s32 *)((char *)arg0 + 0x30));
+        *(s32 *)((char *)item + 4) = *(s32 *)((char *)arg0 + 0x34);
+        entry = (char *)entry + 4;
+    }
+}
+
+void fn_802411C8(void) { fn_8023FE20(); }
+
 void fn_80241228(void) {
 }
 
