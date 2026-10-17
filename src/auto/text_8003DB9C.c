@@ -366,6 +366,8 @@ void GXInitTexObjCI(void *obj, void *image, unsigned short width, unsigned short
     *(unsigned char *)((char *)obj + 0x1F) &= ~2;
 }
 
+void GXInitTexObjWrapMode(int *obj, int wrap_s, int wrap_t) { *obj = (*obj & 0xFFFFFFFC) | wrap_s; *obj = (*obj & 0xFFFFFFF3) | (wrap_t << 2); }
+
 void GXInitTexObjTlut(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
 }
@@ -493,4 +495,8 @@ void GXSetTevDirect(int arg0) {
 }
 
 void __GXUpdateBPMask(void) {}
+
+void GXClearGPMetric(void) {
+    __cpReg[2] = 4;
+}
 
