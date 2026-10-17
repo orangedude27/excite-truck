@@ -1986,6 +1986,11 @@ extern "C" void fn_80229E74(void *arg0) {
     }
 }
 
+extern "C" void fn_80229EB4(void *arg0) {
+    *(u8 *)((char *)arg0 + 0x268) = 0;
+    *(s32 *)((char *)arg0 + 0x260) = 0;
+}
+
 extern "C" u32 fn_80229EC4(void) { return 1; }
 
 extern "C" u32 fn_80229ECC(void) { return 1; }
@@ -2008,6 +2013,14 @@ extern "C" s32 fn_80229F14(void *arg0) {
     return *(s32 *)((char *)arg0 + 0xA5C);
 }
 
+extern "C" void fn_80229F1C(void *arg0) {
+    u8 value = *(u8 *)((char *)arg0 + 0x1A);
+    *(u8 *)((char *)arg0 + 0x18) = 1;
+    if (value != 0) {
+        *(u8 *)((char *)arg0 + 0x234) = 1;
+    }
+}
+
 extern "C" void fn_80229F38(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x18) = 0;
     if ((s32)*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
@@ -2018,6 +2031,13 @@ extern "C" void fn_80229F38(void *arg0) {
 extern "C" s32 fn_80229F58(s32);
 extern "C" s32 fn_80229F58(s32 arg0) {
     return arg0 + 0x254;
+}
+
+extern "C" s32 fn_80229F60(void *arg0) {
+    if (*(u8 *)((char *)arg0 + 0x18) != 0) {
+        return 2;
+    }
+    return 0;
 }
 
 extern "C" void fn_8022A014(void *arg0) {
