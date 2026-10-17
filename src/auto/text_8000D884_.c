@@ -7,6 +7,22 @@ extern int lbl_8055D468;
 extern unsigned char lbl_8034F650[];
 extern int fn_8000DF2C(int);
 extern void *memset(void *, int, unsigned int);
+extern void fn_80247624(void);
+extern void *fn_80131234(const char *);
+extern char lbl_802FC24C[];
+extern int fn_80128658(int);
+extern void fn_80247624(void);
+extern void *fn_80131234(const char *);
+extern char lbl_802FC24C[];
+extern int fn_80128658(int);
+void fn_8000D94C(void) {
+    int zero;
+    zero = 0;
+    lbl_8055D46C[0] = zero;
+    fn_80128658(lbl_8055D468);
+    lbl_8055D468 = zero;
+}
+
 void fn_8000D984(int arg0) {
     unsigned char *entry;
     int i;
@@ -73,37 +89,39 @@ extern unsigned int lbl_8034F628[];
 extern char lbl_802FC264[];
 extern void fn_802E30C8(const char *, int);
 void fn_8000DBC8(int arg0) {
-    int i;
-    for (i = 0; i < lbl_8055D460; i++) {
-        if (lbl_8034F628[i] == (unsigned int)arg0) {
-            fn_802E30C8(lbl_802FC264, arg0);
-            return;
+    int count;
+    unsigned int *entry;
+
+    count = lbl_8055D460;
+    entry = lbl_8034F628;
+    if (count > 0) {
+        for (; count != 0; count--) {
+            if (*entry == (unsigned int)arg0) {
+                fn_802E30C8(lbl_802FC264, arg0);
+                return;
+            }
+            entry++;
         }
     }
-    lbl_8034F628[lbl_8055D460] = arg0;
-    lbl_8055D460++;
+    count = lbl_8055D460;
+    lbl_8034F628[count] = arg0;
+    lbl_8055D460 = count + 1;
 }
 
-void fn_8000DC28(unsigned char *arg0, int arg1) {
-    int count;
-    unsigned char *src;
-    unsigned char *dst;
-    unsigned char c;
+void fn_8000DC28(const char *arg0, int arg1) {
+    register char *dst;
+    register unsigned char c;
+    register int count;
 
-    src = arg0;
-    dst = (unsigned char *)((char *)lbl_8055D46C + arg1 * 0x12 + 0x64);
+    dst = (char *)lbl_8055D46C + arg1 * 0x12 + 0x64;
     count = 0x12;
-loop:
-    c = *src++;
-    *dst++ = c;
-    if ((signed char)c == 0)
-        return;
-    count--;
-    if (count <= 0) {
-        dst[-1] = 0;
-        return;
+    while (count-- > 0) {
     }
-    goto loop;
+    dst[-1] = 0;
+    do {
+        c = *arg0++;
+        *dst++ = c;
+    } while ((signed char)c != 0);
 }
 
 int fn_8000DC70(int arg0) {
