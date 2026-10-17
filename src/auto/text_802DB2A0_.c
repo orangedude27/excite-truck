@@ -24,3 +24,5 @@ void fn_802DB2BC(void) {}
 
 void fn_802DB2C0(void) {}
 
+void fn_802DB2C4(void) {}
+
