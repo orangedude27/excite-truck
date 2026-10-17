@@ -249,6 +249,7 @@ void fn_801CCB48(int arg0) {
     int index;
     unsigned char *manager;
     char *base;
+    (void)arg0;
     base = (char *)lbl_8055E884;
     manager = fn_801EA9A0();
     if (*manager != 0) {
