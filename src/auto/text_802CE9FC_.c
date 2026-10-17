@@ -1,5 +1,11 @@
 extern unsigned short lbl_8055FD86;
 extern unsigned char lbl_8055FD60;
+extern float lbl_80564F94;
+extern unsigned char lbl_804C5690[];
+extern unsigned char lbl_802FAC70[];
+extern unsigned char lbl_8055FD24;
+extern void GXSetAlphaCompare(int, unsigned char, int, int, int);
+extern void GXSetZMode(int, int, int);
 extern int lbl_802FACB0[6];
 extern void *lbl_8055FE1C;
 extern unsigned char lbl_804C9984[];
@@ -82,6 +88,25 @@ void fn_802D08CC(int arg0) {
 }
 
 void fn_802D0910(void) {
+}
+
+extern float lbl_80564F94;
+extern unsigned char lbl_804C5690[];
+extern unsigned char lbl_802FAC70[];
+extern void GXSetAlphaCompare(int, unsigned char, int, int, int);
+extern void GXSetZMode(int, int, int);
+extern unsigned char lbl_8055FD24;
+void fn_802D0E48(int arg0) {
+    switch (arg0) {
+    case 0:
+        GXSetAlphaCompare(3, lbl_8055FD24, 1, 0, 0);
+        GXSetZMode(1, 3, 0);
+        return;
+    case 1:
+        GXSetAlphaCompare(4, lbl_8055FD24, 1, 0, 0);
+        GXSetZMode(1, 3, 1);
+        return;
+    }
 }
 
 void fn_802D2614(void) {
@@ -284,11 +309,50 @@ void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
 
 void fn_802D3BB0(void) {}
 
+extern void OSReport(const char *, ...);
+extern void GXInitVtxDescList(int);
+extern void GXDisableBreakPt(void);
+extern void GXLoadTexObj(void *, int, void *);
+extern volatile int lbl_8055FDD0;
+extern char lbl_8034C204[];
+void fn_802D3D6C(void) {
+    lbl_804C5700[12] = 1;
+}
+
+void fn_802D3D80(void) {
+    lbl_804C5700[12] = 0;
+}
+
 extern void GXLoadTexMtxImm(void *, unsigned int, unsigned char);
 void fn_802D3D94(void *arg1, int arg0) {
-    int id = arg0 * 4 - arg0;
-    int arg2 = 1;
-    GXLoadTexMtxImm(arg1, id + 30, arg2);
+    unsigned int id;
+    GXLoadTexMtxImm(arg1, arg0 * 30, 1);
+}
+
+void fn_802D3DAC(void) {
+    int id;
+
+    if ((lbl_8055FDD0 & 0x3F) == 0) {
+        OSReport(lbl_8034C204);
+    }
+    id = lbl_8055FDD0;
+    lbl_8055FDD0 = id + 1;
+    GXInitVtxDescList(id);
+    GXDisableBreakPt();
+}
+
+void fn_802D3DF8(int arg0, signed char arg1, float farg0, float farg1) {
+    float mtx[2][3];
+
+    lbl_804C5700[13] = 1;
+    GXLoadTexObj((char *)arg0 + 0x24, 2, lbl_804C5700);
+    *(int *)&mtx[0][1] = 0;
+    *(int *)&mtx[1][1] = 0;
+    *(int *)&mtx[0][2] = 0;
+    *(int *)&mtx[1][2] = 0;
+    mtx[0][0] = farg0;
+    mtx[1][0] = farg1;
+    GXSetIndTexMtx(1, mtx, arg1);
 }
 
 extern unsigned long lbl_8055D0B8;
