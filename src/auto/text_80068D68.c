@@ -2408,6 +2408,17 @@ BOOLEAN btsnd_hcic_per_inq_mode(UINT16 max_period, UINT16 min_period, const LAP 
     return TRUE;
 }
 
+BOOLEAN btsnd_hcic_disconnect(UINT16 handle, UINT8 reason) {
+    u8 *p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 6;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 6; p[9] = 4; p[10] = 3;
+    p[11] = handle; p[12] = handle >> 8; p[13] = reason;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 BOOLEAN btsnd_hcic_change_conn_type(UINT16 handle, UINT16 packet_types) {
     u8 *p = (u8 *)GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
