@@ -66,3 +66,9 @@ u8 fn_80252480(void *arg0, s32 arg1) {
     return *(u8 *)((char *)base + offset + 0x20);
 }
 
+char *fn_80252494(void *arg0, s32 arg1) {
+    s32 offset = arg1 * 0x48;
+    char *base = *(char **)((char *)arg0 + 4);
+    return base + offset + 0x21;
+}
+
