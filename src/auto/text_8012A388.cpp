@@ -178,6 +178,12 @@ extern "C" void fn_8012BF24(void *arg0) {
     fn_8012E498(arg0);
 }
 
+extern "C" s32 fn_8012B534(s32 *, s32);
+extern "C" s32 fn_8012C33C(void) {
+    s32 sp8;
+    return fn_8012B534(&sp8, 0) != 0;
+}
+
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012C370(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 result;
@@ -229,6 +235,22 @@ extern "C" void fn_8012C4D8(void *arg0) {
 
 extern "C" void fn_8012CC20(void) {
     fn_8012CC24();
+}
+
+extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
+    arg0[0] = arg1[0];
+    arg0[1] = arg1[1];
+    arg0[2] = arg1[2];
+    arg0[3] = arg1[3];
+    arg0[4] = arg1[4];
+    arg0[5] = arg1[5];
+    arg0[6] = arg1[6];
+    arg0[7] = arg1[7];
+    arg0[8] = arg1[8];
+    arg0[9] = arg1[9];
+    arg0[10] = arg1[10];
+    arg0[11] = arg1[11];
+    arg0[12] = arg1[12];
 }
 
 extern "C" u32 fn_8012D3D0(void) { return 1; }
@@ -327,7 +349,7 @@ extern "C" void fn_8012D024(void *, s32);
 extern "C" void fn_8012E40C(void *arg0, s32 arg1) {
     fn_8012D40C((s32)arg0);
     fn_8012D1A8((s32)arg0);
-    *(s32 *)((u8 *)arg0 + 0xBC) = 0;
+    *(volatile s32 *)((u8 *)arg0 + 0xBC) = 0;
     fn_8012D024(arg0, arg1);
 }
 
@@ -366,6 +388,10 @@ extern "C" void fn_8012E5E4(void *arg0, void *arg1) {
 
 extern "C" s32 fn_8012E674(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
+}
+
+extern "C" s32 fn_8012E938(s32 arg0) {
+    return fn_8012BD3C(lbl_8055E000, (const char *)arg0) != 0;
 }
 
 extern "C" s32 fn_8012EE78(void *arg0) {
