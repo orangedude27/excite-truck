@@ -15,6 +15,11 @@ int fn_802B539C(int arg0) {
 
 void fn_802B5404(int *arg0) { int temp = *arg0; if (temp != -2) { fn_802CAC54(temp); *arg0 = -2; } }
 
+int fn_802B5488(void *arg0) {
+    const char *name = (*(const char *(**)(void *))(*(void ***)arg0 + 2))(arg0);
+    return stricmp(lbl_8034A510, name) == 0;
+}
+
 void* fn_802B59CC(void) {
     return lbl_8055F9E8;
 }
@@ -26,3 +31,4 @@ extern int fn_8013184C(void);
 extern const char lbl_8034A588[];
 struct TplLike { void *entries; unsigned int count; };
 extern struct TplLike lbl_804BE4AC;
+extern struct TplLike lbl_804BE454;
