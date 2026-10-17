@@ -216,3 +216,14 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
     return this_;
 }
 
+extern int lbl_8055ED94;
+extern char lbl_8033BD58;
+extern "C" void fn_80206B14(void);
+extern "C" void *fn_802072E4(void *, int, int);
+extern "C" void fn_802E30C8(const char *, ...);
+extern int lbl_8055ED94;
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" void fn_80207938(int arg0) {
+    fn_802E30C8(&lbl_8033BD58, ++lbl_8055ED94, arg0);
+}
+
