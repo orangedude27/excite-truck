@@ -74,3 +74,5 @@ void fn_802E986C(void) {}
 
 void fn_802E9870(void) {}
 
+void fn_802E9874(void) {}
+
