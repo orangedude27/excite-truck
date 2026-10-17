@@ -2385,7 +2385,10 @@ extern "C" s32 fn_800A4B9C(u16 *arg0, u16 *arg1, s32 arg2) {
 
 extern "C" s32 fn_800A4BE8(s32 arg0, s32 arg1) { return (arg0 << 16) + arg1; }
 
-void fn_800A4BF4(u32 arg0, s16 *arg1, u16 *arg2) { *arg1 = arg0 >> 16; *arg2 = arg0; }
+void fn_800A4BF4(u32 arg0, s16 *arg1, u16 *arg2) {
+    *arg1 = arg0 >> 16;
+    *arg2 = arg0;
+}
 
 extern "C" u32 fn_800A4C04(u8 *arg0) { return (arg0[1] << 8) | arg0[0]; }
 
