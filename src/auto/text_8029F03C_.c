@@ -5,7 +5,7 @@ extern void *fn_80131810(void *);
 extern void fn_80131818(void *);
 extern void fn_8029FB00(void *);
 extern char lbl_8034989C[];
-extern char lbl_8055CB60[];
+__declspec(section ".sdata") extern char lbl_8055CB60[];
 extern unsigned char lbl_804B5070[];
 extern int lbl_8055F81C;
 extern unsigned char lbl_804B6E70[];
@@ -148,6 +148,27 @@ void fn_8029F5C8(void *arg0, unsigned char *arg1) {
         *(int *)((unsigned char *)arg0 + 4) = 0;
     }
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+void fn_8029FD04(void) {
+    void **object;
+    int i;
+    void **child;
+    lbl_804B9B7C[1] = 0;
+    object = fn_80131810(lbl_8034989C);
+    if (object != 0) {
+        i = 1;
+        child = ((void *(*)(void *, int))((void **)*object)[3])(object, 0);
+        while (child != 0) {
+            if (stricmp(((const char *(*)(void *))((void **)*child)[2])(child), lbl_8055CB60) == 0)
+                fn_8029FB00(child);
+            child = ((void *(*)(void *, int))((void **)*object)[3])(object, i++);
+        }
+        fn_80131818(object);
+    }
+}
+#pragma pop
 
 int fn_8029FDF0(int *arg0, int *arg1) {
     return *arg0 - *arg1;
