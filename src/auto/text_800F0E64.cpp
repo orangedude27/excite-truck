@@ -368,6 +368,35 @@ extern "C" void fn_800F2D28(void *arg0) {
     *(s32*)((u8*)arg0 + 0x40) = 0;
 }
 
+extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl(void *self, const void *chunk, u32 size) {
+    extern const char lbl_80324868[];
+    const u32 *data = (const u32 *)chunk;
+    if (chunk == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324868, 0x78, lbl_80324868 + 0x198);
+    if (data[0] != 0x494E464FU)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324868, 0x7B, lbl_80324868 + 0x1C4);
+    *(const void **)((char *)self + 0x28) = data + 2;
+}
+
+extern "C" s32 ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(void *self, u32 index, void *info) {
+    extern const char lbl_80324BD4[];
+    extern char lbl_80559878;
+    u64 ref = impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(self, index);
+    u8 type = (u8)(ref >> 32);
+    u32 offset = (u32)ref;
+    const void *base = *(const void **)((char *)self + 0x28);
+    if (type != 1)
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559878, 0x70, lbl_80324BD4);
+    u8 *data = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(type, offset, (void *)base);
+    if (data == 0)
+        return 0;
+    *(u32 *)((char *)info + 0) = *(u32 *)(data + 0);
+    *(u32 *)((char *)info + 4) = *(u32 *)(data + 4);
+    *(u32 *)((char *)info + 12) = data[12];
+    *(u32 *)((char *)info + 8) = *(u32 *)(data + 8);
+    return 1;
+}
+
 extern "C" s32 GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(void *this_) {
  void *pData;
  void *p;
@@ -1177,4 +1206,10 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail10StrmPlayerFv(void* arg0, int arg1) 
     }
     return arg0;
 }
-
+extern "C" void Setup__Q46nw4hbm3snd6detail10StrmPlayerFPCQ56nw4hbm3snd6detail10StrmPlayer10StrmHeader(void *, const void *);
+extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *, void *);
+extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
+extern "C" f32 lbl_805610C0;
+extern "C" f32 lbl_805610C4;
+extern "C" const char lbl_80326768[];
+extern "C" const char lbl_803269A0[];
