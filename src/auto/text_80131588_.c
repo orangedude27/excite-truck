@@ -238,14 +238,3 @@ extern void fn_802E317C(const char*, ...);
 extern char lbl_80559B24[];
 extern char lbl_8032B818[], lbl_8032B840[];
 typedef struct { void** vtable; } Unk80132BD0;
-extern int sprintf(char *, const char *, ...);
-extern char lbl_80559B50[];
-typedef struct {
-    void *vtable;
-    void *pad0;
-    void *pad4;
-    void *pad8;
-    s32 (*vf3)(void *, char *);
-    s32 (*vf4)(void *, char *);
-    void *pad18;
-} Unk801328D4;
