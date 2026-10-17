@@ -18,7 +18,7 @@ extern "C" char lbl_8033D268[];
 extern "C" char lbl_8055B810[];
 
 extern "C" s32 fn_802168E4(void);
-extern "C" s32 fn_802168DC(s32);
+extern "C" s32 fn_802168DC(s32, s32);
 extern "C" s32 fn_802168D4(s32);
 extern "C" s32 fn_802168CC(s32, float);
 extern "C" s32 fn_802168E0(s32, s32, s32);
@@ -27,7 +27,7 @@ extern "C" char lbl_8033D328[];
 extern "C" char lbl_8033D2A0[];
 extern "C" char lbl_8033D274[];
 
-extern "C" s32 fn_802168DC(s32);
+extern "C" s32 fn_802168DC(s32, s32);
 extern "C" s32 fn_802168D4(s32);
 extern "C" s32 fn_802168CC(s32, float);
 extern "C" s32 fn_802168E0(s32, s32, s32);
@@ -279,8 +279,9 @@ extern "C" void fn_80214A9C(s32 arg0) {
 }
 
 extern "C" void fn_80214B44(s32 arg0) {
-    if (fn_802168E4() != 0) {
-        fn_802168DC(arg0);
+    s32 temp = fn_802168E4();
+    if (temp != 0) {
+        ((s32 (*)(s32, s32))fn_802168DC)(temp, arg0);
     } else {
         fn_802E317C(lbl_8033D2E0);
     }
