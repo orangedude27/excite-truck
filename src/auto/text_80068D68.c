@@ -1894,6 +1894,45 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+s32 btsnd_hcic_reset_800857CC(void) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (!p) return 0;
+    p[2] = 3; p[3] = 0;
+    p[4] = 0; p[5] = 0;
+    p[8] = 3; p[9] = 0x10; p[10] = 0;
+    btu_hcif_send_cmd(0, 3);
+    return 1;
+}
+
+void fn_80085828(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    p[2] = 3; p[3] = 0;
+    p[4] = 0; p[5] = 0;
+    p[8] = 5; p[9] = 0x10; p[10] = 0;
+    btu_hcif_send_cmd(5, 0, 3);
+}
+
+s32 btsnd_hcic_inq_cancel_80085850(void) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (!p) return 0;
+    p[2] = 3; p[3] = 0;
+    p[4] = 0; p[5] = 0;
+    p[8] = 9; p[9] = 0x10; p[10] = 0;
+    btu_hcif_send_cmd(9, 0);
+    return 1;
+}
+
+s32 btsnd_hcic_auth_request_800858B0(u8 arg0) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (!p) return 0;
+    p[2] = 5; p[3] = 0;
+    p[4] = 0; p[5] = 0;
+    p[8] = 3; p[9] = 0x14; p[10] = 2;
+    p[11] = arg0; p[12] = 0;
+    btu_hcif_send_cmd(2, 0x14, 3);
+    return 1;
+}
+
 extern char lbl_80317CC8[];
 extern char lbl_80317CFC[];
 extern char lbl_80318C8C[];
@@ -2266,6 +2305,28 @@ void fn_800934D8(void *arg0, s16 arg1) {
     fn_800916F4(arg0, 7, &sp8);
 }
 
+void RFCOMM_DlcEstablishReq(void *arg0, s32 arg1) {
+    port_find_mcb_dlci_port(arg0, (u8)arg1);
+    if (*((u8 *)arg0 + 0x6C) != 5) {
+        PORT_DlcEstablishCnf(arg0, arg1, 0, 1); return;
+    }
+    rfc_port_sm_execute(9, 0);
+}
+
+void RFCOMM_DlcEstablishRsp(void *arg0, s32 arg1, u16 arg3) {
+    u16 sp8 = arg3;
+    port_find_mcb_dlci_port(arg0, (u8)arg1);
+    if (*((u8 *)arg0 + 0x6C) != 5 && sp8 == 0) {
+        PORT_DlcReleaseInd(arg0, arg1); return;
+    }
+    rfc_port_sm_execute(0xB, &sp8);
+}
+
+void fn_800936BC(void *p, u16 a1, u16 a2, u16 a3, u16 a4, u16 a5, u16 a6) {
+    if (*((u8 *)p + 0x6C) == 5)
+        rfc_send_pn(p, a1, a2, a3, a4, a5, a6);
+}
+
 void RFCOMM_PortNegReq(void *mcb, u8 dlci, void *pars) {
     void *port = port_find_mcb_dlci_port(mcb, dlci);
     if (*(u8 *)((u8 *)mcb + 0x6c) != 5) {
@@ -2317,6 +2378,23 @@ done:
     return;
 }
 
+void RFCOMM_LineStatusReq(void *arg0, s32 arg1, s32 arg2) {
+    void *mcb = port_find_mcb_dlci_port(arg0, (u8)arg1);
+    if (*((u8 *)mcb + 2) != 2) return;
+    if (*((u8 *)mcb + 0x68) != 4) return;
+    *((u8 *)mcb + 0x69) |= 0x10;
+    rfc_send_rls(arg0, arg1, 1, arg2);
+    rfc_port_timer_start(mcb, 0x3C);
+}
+
+void fn_800939A0(void *arg0, u8 arg1) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xC, 0); }
+
+void fn_800939CC(void *arg0, u8 arg1, u8 arg2) { port_find_mcb_dlci_port(arg0, arg1); rfc_port_sm_execute(0xE, arg2); }
+
+void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) { u8 flag = *(u8 *)((u8 *)arg0 + 0x6D); void *buf; u8 *frame; if (flag == 0) flag = 1; else flag = 0; buf = GKI_getpoolbuf(2); if (buf != 0) { frame = (u8 *)buf + 0x11; *(u16 *)((u8 *)buf + 4) = 9; frame[0] = (flag << 1) | 1 | (arg1 << 2); frame[1] = 0x3F; frame[2] = 1; frame[3] = fn_8009504C(3, frame, 0x3F); *(u16 *)((u8 *)buf + 2) = 4; rfc_check_send_cmd(arg0, buf); } }
+
+void rfc_send_ua(void *arg0, s32 arg1, void *arg2) { u8 flag = *(u8 *)((u8 *)arg0 + 0x6D); void *buf; u8 *frame; if (flag != 0) flag = 1; else flag = 0; buf = GKI_getpoolbuf(2); if (buf != 0) { frame = (u8 *)buf + 0x11; *(u16 *)((u8 *)buf + 4) = 9; frame[0] = (flag << 1) | 1 | (arg1 << 2); frame[1] = 0x73; frame[2] = 1; frame[3] = fn_8009504C(3, frame, 0x73); *(u16 *)((u8 *)buf + 2) = 4; rfc_check_send_cmd(arg0, buf); } }
+
 BOOLEAN SDP_ServiceSearchRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
     tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
     if (p_ccb == NULL) return FALSE;
@@ -2351,13 +2429,12 @@ u8 fn_80096670(u8 value) {
 }
 
 tSDP_RECORD *sdp_db_find_record(UINT32 handle) {
-    u8 *base = lbl_803C4C40;
-    u8 *start = base + 0x1224;
-    u8 *end = base + (u32)(*(u16 *)(base + 0x1222)) * 0x298;
-    u32 count = (u32)(end + 0x14bb - start) / 0x298;
+    u8 *start = &lbl_803C4C40[0x1224];
+    u8 *end = start + (u32)(*(u16 *)&lbl_803C4C40[0x1222]) * 0x298;
     u8 *p;
-    for (p = start; count != 0; count--, p += 0x298)
+    for (p = start; p < end; p += 0x298) {
         if (*(u32 *)p == handle) return (tSDP_RECORD *)p;
+    }
     return NULL;
 }
 
