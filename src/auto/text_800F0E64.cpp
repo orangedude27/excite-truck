@@ -1108,8 +1108,9 @@ extern "C" s32 lbl_8041506C;
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
     void *node = *(void **)((u8 *)&lbl_8041506C + 4);
     void *end = (u8 *)&lbl_8041506C + 4;
+    void *player;
     while (node != end) {
-        void *player = node;
+        player = node;
         node = *(void **)node;
         if (player == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326B8C, 0x23D, lbl_80326B68);
         UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)player - 8);
