@@ -221,8 +221,71 @@ s32 fn_80119C0C(void *arg0, s32 arg1) {
     return *(s32 *)((u8 *)arg0 + 0x64);
 }
 
+extern f32 lbl_80329D48[];
+extern f64 lbl_805611D8;
+extern void fn_8011A330(void *);
+void fn_8011AC84(void *arg0) {
+    fn_8011A330(arg0);
+    if (*(s32 *)((u8 *)arg0 + 0xB0) == 0) {
+        DVDClose((u8 *)arg0 + 0x54);
+    }
+}
+
+void fn_8011AE68(s32 arg0, f32 *arg1, u32 arg2, f32 farg0) {
+    s32 *out = (s32 *)arg0;
+    f32 *in = arg1;
+    u32 i;
+    for (i = 0; i < arg2; i++) {
+        f32 v = *in * farg0;
+        *(s16 *)((u8 *)out + 2) = (s16)(v * 32767.0f + 0.5f);
+        in++;
+        out++;
+    }
+}
+
+void fn_8011AED8(s32 arg0, f32 *arg1, u32 arg2, f32 farg0) {
+    s32 *out = (s32 *)arg0;
+    f32 *in = arg1;
+    u32 i;
+    for (i = 0; i < arg2; i++) {
+        f32 v1 = in[0] * farg0;
+        f32 v2 = in[1] * farg0;
+        *(s16 *)((u8 *)out + 2) = (s16)(v1 * 32767.0f + 0.5f);
+        *(s16 *)((u8 *)out + 4) = (s16)(v2 * 32767.0f + 0.5f);
+        in += 2;
+        out += 2;
+    }
+}
+
 void fn_8011BC48(void) {
     fn_80120084();
+}
+
+void fn_8011BCAC(void **head, void *node) {
+    void *cur = *head;
+    u32 key;
+    if (cur == 0) {
+        *(void **)((u8 *)node + 4) = 0;
+        *head = node;
+        return;
+    }
+    key = *(u32 *)((u8 *)node + 8);
+    if (key >= *(u32 *)((u8 *)cur + 8)) {
+        *(void **)((u8 *)node + 4) = cur;
+        *head = node;
+        return;
+    }
+    while (*(void **)((u8 *)cur + 4) != 0) {
+        void *next = *(void **)((u8 *)cur + 4);
+        if (key >= *(u32 *)((u8 *)next + 8)) {
+            *(void **)((u8 *)node + 4) = next;
+            *(void **)((u8 *)cur + 4) = node;
+            return;
+        }
+        cur = next;
+    }
+    *(void **)((u8 *)node + 4) = 0;
+    *(void **)((u8 *)cur + 4) = node;
 }
 
 void fn_8011BDF0(s32 arg0) {
@@ -239,7 +302,6 @@ void fn_8011BDF0(s32 arg0) {
 void fn_8011BEC8(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 one = 1;
     s32 old;
-
     OSDisableInterrupts();
     *(s32 *)((u8 *)arg1 + 0xC) = one;
     *(s32 *)((u8 *)arg1 + 0x14) = arg2;
