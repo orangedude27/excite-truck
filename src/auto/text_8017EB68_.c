@@ -183,3 +183,5 @@ float fn_80181794(void *arg0) { return *(float *)((char *)arg0 + 0x32C); }
 
 float fn_8018179C(void *arg0) { return *(float *)((char *)arg0 + 0x330); }
 
+float fn_801817A4(void *arg0) { return *(float *)((char *)arg0 + 0x334); }
+
