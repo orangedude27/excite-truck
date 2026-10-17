@@ -780,6 +780,24 @@ extern "C" s32 fn_800FA77C(s32 arg0) {
     return 0;
 }
 
+extern "C" void Setup__Q46nw4hbm3snd6detail14StrmBufferPoolFPvUli(void* this_, u32 size, s32 count) {
+    if (count != 0) {
+        u32 level = OSDisableInterrupts();
+        *(u32*)this_ = size;
+        *(u32*)((u8*)this_ + 4) = count;
+        *(u32*)((u8*)this_ + 8) = count / count;
+        *(u32*)((u8*)this_ + 0xC) = count;
+        *(u32*)((u8*)this_ + 0x10) = 0;
+        memset((void*)((u8*)this_ + 0x14), 0, 4);
+        if (*(s32*)((u8*)this_ + 0xC) > 0x20) {
+            extern const char lbl_803264E0[];
+            extern const char lbl_803264F4[];
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803264E0, 0x2A, lbl_803264F4);
+        }
+        OSRestoreInterrupts(level);
+    }
+}
+
 extern "C" void fn_800FA9E8(void* arg0) {
     OSDisableInterrupts();
     *(s32*)arg0 = 0;
@@ -799,6 +817,13 @@ extern "C" s32 fn_800FB374(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
+extern "C" void fn_800FB620(void *self) {
+    if (*(u8 *)((u8 *)self + 0x48) != 0) {
+        ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
+    }
 }
 
 extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
