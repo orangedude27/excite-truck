@@ -76,9 +76,8 @@ extern "C" s32 fn_802E4CA8(void *, s32, s32);
 extern "C" s32 fn_802E7354(void *);
 extern "C" s32 fn_802E746C(s32 *, s32 *);
 extern "C" void fn_8012A7FC(void) {
-    s32 value = 0x32;
     lbl_8055DFF9 = 1;
-    fn_802E2D74(value);
+    fn_802E2D74(0x32);
 }
 
 extern "C" s32 fn_8012AB34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
@@ -377,6 +376,17 @@ extern "C" s32 fn_8012C6F0(void *arg0) {
               *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x80);
     return ((temp_r4 + *(s32 *)((u8 *)temp_r5 + 0x28) + 0x7FF) & 0xFFFFF800) -
            (temp_r4 & 0xFFFFF800);
+}
+
+extern "C" void fn_802E7548(s32);
+extern "C" u8 lbl_8032AC88[];
+extern "C" void fn_8012C90C(void *arg0) {
+    s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0xC);
+    if (temp_r0 != -1) {
+        fn_802E7548(temp_r0);
+        *(s32 *)((u8 *)arg0 + 0xC) = -1;
+        *(s32 *)((u8 *)arg0 + 0x10) = 0;
+    }
 }
 
 extern "C" s32 stricmp(const char *, const char *);
