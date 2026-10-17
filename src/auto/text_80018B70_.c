@@ -64,8 +64,8 @@ extern s32 lbl_8055DDF8;
 extern void *lbl_8055D58C;
 extern char lbl_802FD404[];
 extern void *lbl_802FD3CC;
-extern void *lbl_802FD3A0;
-extern void *lbl_802FD3B4;
+extern char lbl_802FD3A0[];
+extern char lbl_802FD3B4[];
 extern void *lbl_802FD2DC;
 extern const char lbl_80558C54[];
 extern void *lbl_803580A4;
@@ -117,15 +117,16 @@ s32 fn_80019534(void) {
     s32 ret;
     void **obj;
     void **vtable;
+    void *target = (void *)0x802FD3A0;
 
     obj = (void **)lbl_8055D58C;
     if (obj != 0) {
         vtable = (void **)obj[0];
-        ret = ((s32 (*)(void *))vtable[4])((void *)0x802FD3A0);
+        ret = ((s32 (*)(void *))vtable[4])(target);
         if (ret != 0) {
             obj = (void **)lbl_8055D58C;
             vtable = (void **)obj[0];
-            ret = ((s32 (*)(void *))vtable[2])((void *)0x802FD3A0);
+            ret = ((s32 (*)(void *))vtable[2])(target);
             ret = ((s32 (*)(void *, s32))vtable[6])((void *)0x802FD3B4, 0);
         }
     }
