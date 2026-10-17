@@ -81,6 +81,15 @@ s32 fn_802411D4(void) {
     return var_r31;
 }
 
+extern u8 lbl_8055F1FC;
+extern s32 lbl_8055F200;
+extern float lbl_80563758;
+extern char lbl_803425A8[];
+extern char lbl_8034288C[];
+s32 fn_8023512C(char *, s32, char *, s32);
+s32 fn_80232578(char *, char *, s32);
+void fn_80241224(void) {}
+
 void fn_80241228(void) {
 }
 
