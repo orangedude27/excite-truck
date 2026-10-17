@@ -136,9 +136,10 @@ void GXClearVtxDesc(void) {
 }
 
 void __GXSetVAT(void) {
-    unsigned int *ptr = __GXData;
+    unsigned int *data = __GXData;
+    unsigned int *ptr = data;
     unsigned int i = 0;
-    unsigned int mask = *(unsigned char *)((char *)ptr + 0x5FB);
+    unsigned int mask = *(unsigned char *)((char *)data + 0x5FB);
     do {
         if (mask & 1) {
             *(volatile unsigned char *)0xCC008000 = 8;
@@ -152,11 +153,11 @@ void __GXSetVAT(void) {
             *(volatile unsigned int *)0xCC008000 = ptr[0x5C / 4];
         }
         mask >>= 1;
-        i++;
         ptr++;
+        i++;
     } while (mask);
     *(volatile unsigned char *)0xCC008000 = 0;
-    *(unsigned char *)((char *)ptr + 0x5FB) = 0;
+    *(unsigned char *)((char *)data + 0x5FB) = 0;
 }
 
 void GXSetArray(s32 arg0, unsigned int arg1, unsigned int arg2) {
@@ -181,13 +182,9 @@ void GXInvalidateVtxCache(void) {
 
 void GXSetNumTexGens(unsigned int value) {
     unsigned int *data = __GXData;
-    unsigned int v = data[0x254 / 4];
-    v = (v & ~0xF) | (value & 0xF);
-    data[0x254 / 4] = v;
-    v = data[0x5FC / 4];
-    v |= 0x200;
-    v |= 4;
-    data[0x5FC / 4] = v;
+    data[0x254 / 4] = (data[0x254 / 4] & 0x0FFFFFFF) | (value & 0xF0000000);
+    data[0x5FC / 4] |= 0x200;
+    data[0x5FC / 4] |= 4;
 }
 
 void GXInitLightSpot(s32 arg0, s32 arg1) {
@@ -323,4 +320,11 @@ int GXGetTexObjLODAll(int *arg0) {
 int GXGetTexObjWrap_Internal(unsigned int *arg0) {
     return (*arg0 >> 2) & 3;
 }
+
+extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
+void GXSetTevDirect(int arg0) {
+    GXSetTevIndirect(arg0, 0, 0, 0, 0, 0, 0, 0);
+}
+
+void __GXUpdateBPMask(void) {}
 
