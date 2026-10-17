@@ -148,6 +148,10 @@ void fn_80267EE0(void) {
     fn_802734F0();
 }
 
+void *fn_80267EE4(int arg0) {
+    return lbl_80499080 + arg0 * 0x228;
+}
+
 char fn_8026A38C(void) {
     return lbl_8055F488;
 }
