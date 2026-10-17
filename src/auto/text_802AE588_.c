@@ -190,6 +190,12 @@ void fn_802AFE64(int *arg0, short a, short b, short c, short d, int e, int f, in
     *(int *)(p + 28) = g;
 }
 
+void fn_802AFEA4(int *arg0, short arg1) {
+    int index = *arg0;
+    *arg0 = index + 1;
+    *(short *)((char *)arg0 + index * 0x1C + 8) = arg1;
+}
+
 int fn_802AFF54(void *arg0) {
     return ((int *)arg0)[1];
 }
