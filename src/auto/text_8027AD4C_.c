@@ -22,7 +22,7 @@ long fn_8027CB28(void);
 extern long lbl_8055F654;
 long *fn_8027C120(long, long);
 long fn_8027C8B0(void);
-long fn_802E317C(char *, ...);
+long fn_802E317C(char *, long);
 extern unsigned char lbl_8055F650;
 long fn_80019B3C(void);
 extern char lbl_80347A5C[];
@@ -231,6 +231,31 @@ long fn_8027C71C(void *arg0) {
     return *(long *)((char *)result + 8) == 0;
 }
 
+long fn_8027C650(void);
+extern char lbl_80347A50[];
+#pragma dont_inline on
+long fn_8027C788(void *arg0) {
+    void *item;
+    long index = 0;
+    char *name;
+    long value;
+    volatile void **vtable;
+    goto fetch;
+body:
+    vtable = *(volatile void ***)item;
+    name = ((char *(*)(void *))vtable[2])(item);
+    if (stricmp(name, lbl_80347A50) == 0) {
+        vtable = *(volatile void ***)item;
+        value = ((long (*)(void *, char *))vtable[5])(item, lbl_80347A5C);
+        fn_8027C120(lbl_8055F654, value);
+        if (fn_8027C650() == 0) return 0;
+    }
+    index++;
+fetch:
+    item = ((void *(*)(void *, long))(*(void ***)*(void **)((char *)arg0 + 8))[24])(*(void **)((char *)arg0 + 8), index);
+    if (item != 0) goto body;
+    return 1;
+}
 long fn_8027C8B0(void) { return 1; }
 
 long fn_8027CB20(void) { return 1; }
@@ -282,17 +307,43 @@ finish_b:
     }
 }
 
+extern long lbl_80347B4C;
+#pragma small_data off
+void fn_8027CCB4(long arg0, long arg1, long arg2, long arg3) {
+    long temp_r3;
+    long temp_r3_2;
+    long temp_r3_3;
+    temp_r3 = fn_80012810();
+    if (temp_r3 != 0x130) {
+        if (temp_r3 != 0x134) fn_80012794();
+        fn_80012790(0x130);
+    }
+    temp_r3_2 = fn_8000DA10();
+    if (temp_r3_2 != arg1) fn_8000D984(arg1);
+    fn_8027C59C(arg2);
+    fn_8027B2F8(arg0, &lbl_80347B4C, 1);
+    if (temp_r3_2 != arg1) fn_8000D984(temp_r3_2);
+    fn_8027C610();
+    temp_r3_3 = fn_80012810();
+    if (temp_r3 != temp_r3_3) {
+        if (temp_r3_3 != 0x134) fn_80012794();
+        if (temp_r3 != 0x134) fn_80012790(temp_r3);
+    }
+}
+#pragma small_data reset
 long fn_8027CE4C(long arg0) {
     long value = *fn_8027C120(lbl_8055F654, arg0);
     switch (value) {
-    case 0: return fn_8027C8B0();
-    case 1: return fn_8027CB20();
+    case 0:
+        return fn_8027C8B0();
+    case 1:
+        return fn_8027CB20();
     default:
         fn_802E317C(lbl_80347C38, arg0);
         return 1;
     }
 }
-
+#pragma dont_inline off
 long fn_8027D1F4(void) {
     return *(long *)((char *)lbl_8055F654 + 0xB01C);
 }
