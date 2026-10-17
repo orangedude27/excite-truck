@@ -1169,7 +1169,9 @@ extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_8
 }
 
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC9FC(void *self, s32 bus, f32 value) {
-    if (bus < 0 || bus >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x33C, lbl_803268E4, bus, 0, 4);
+    s32 valid = 0;
+    if (bus >= 0 && bus < 4) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x33C, lbl_803268E4, bus, 0, 4);
     u32 token = OSDisableInterrupts();
     *(f32 *)((u8 *)self + 0x490 + bus * 4) = value;
     OSRestoreInterrupts(token);
