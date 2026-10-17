@@ -11,6 +11,10 @@ extern s32 fn_80128668(void);
 extern void fn_8000BF20(void *);
 extern void fn_8000C0E8(void);
 extern u8 lbl_803413A8[];
+extern s32 atoi(void);
+extern void fn_802E317C(const char *);
+extern const char lbl_80341354[];
+extern s32 lbl_8055BB30;
 void fn_8023B8AC(s32 arg0) {
     fn_8000ABE0();
     fn_800126C0(arg0, arg0 + 0x3F8);
@@ -61,7 +65,7 @@ void fn_8023BB0C(void) {
 
 int fn_8023BC24(int ignored, int arg1, int arg2) {
     int *obj = (int *)fn_8027DB40(1);
-    int result = fn_8024DAE0(arg1, arg2, (int)obj, 0, 0, 0);
+    int result = fn_8024DAE0(arg1, arg2, 0, (int)obj, 0, 0);
     if (obj != 0) ((void (*)(int *, int))(*(int **)obj)[2])(obj, 1);
     return result;
 }
@@ -85,14 +89,14 @@ extern void fn_80137C80(int);
 extern void fn_80137C78(int);
 void fn_8023BDEC(void) {
     int i = 0;
-loop:
-    fn_80137C80(i);
-    i++;
-    if (i < fn_80137C74()) goto loop;
+    do {
+        fn_80137C80(i);
+        i++;
+    } while (i < fn_80137C74());
     fn_80137C78(1);
 }
 
-void fn_8023BE38(int arg0, int flag) {
+void fn_8023BE38(int ignored, int flag) {
     fn_80012794();
     fn_80012790(0x130);
     fn_802411C8();
@@ -102,10 +106,22 @@ void fn_8023BE38(int arg0, int flag) {
         do {
             fn_8023BB0C();
             fn_8023B5E0();
-        } while (fn_8023FF1C(arg0) != 1);
+        } while (fn_8023FF1C(flag) != 1);
     }
     fn_8023BDEC();
     fn_80012794();
     fn_80012778();
+}
+
+extern s32 atoi(void);
+extern void fn_802E317C(const char *);
+extern const char lbl_80341354[];
+extern s32 lbl_8055BB30;
+void fn_8023BF68(void) {
+    s32 value = atoi();
+    lbl_8055BB30 = value;
+    if (value == 0 || (((value >> 31) ^ value) - (value >> 31)) > 4) {
+        fn_802E317C(lbl_80341354);
+    }
 }
 
