@@ -13,3 +13,15 @@ void fn_802DAE18(void) {
         lbl_8055FE78 = 0;
     }
 }
+typedef struct {
+    unsigned char kind;
+    unsigned char format;
+    unsigned char pad2[2];
+    void *buffer;
+    int width;
+    int height;
+    int size;
+    int pad14[2];
+    int width2;
+    int height2;
+} DB168Config;
