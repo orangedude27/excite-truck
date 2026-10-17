@@ -9,6 +9,7 @@ extern void fn_8000D838(void *);
 extern void fn_802A8F94(void);
 extern void __register_global_object(void *, void (*)(void), void *, int);
 
+#pragma scheduling off
 void fn_802A8F34(void) {
     fn_8000D838(&lbl_8055F8C8);
     lbl_804BD6C4.p = (char *)&lbl_804BD6C4 + 12;
