@@ -76,3 +76,5 @@ void fn_802E9870(void) {}
 
 void fn_802E9874(void) {}
 
+void fn_802E9878(void) {}
+
