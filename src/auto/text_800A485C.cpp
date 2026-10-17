@@ -349,6 +349,19 @@ extern "C" s32 fn_800A9104(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
+extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
+    u16 i;
+    for (i = 0; i < 3; i++) {
+        u8 *dir = arg0 + i * 0x280;
+        *(s32 *)(dir + 0xE3C) = 0;
+        fn_800AF574(dir + 0xE44);
+    }
+    *(u32 *)(arg0 + 0x15BC) &= ~1U;
+    *(u32 *)(arg0 + 0x15DC) &= ~1U;
+    *(u32 *)(arg0 + 0x15FC) &= ~1U;
+    *(s32 *)(arg0 + 0x1620) = 0;
+}
+
 extern "C" void fn_800B3A70(u8 *buf, u8 *short_name, u32 flags);
 extern "C" void fn_800B3BEC(u8 *buf, u8 flags);
 extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
