@@ -13,6 +13,10 @@ extern void *lbl_8055EA10;
 extern void NWC24Data_Init_801E1028(void *);
 extern void fn_801E07E8(void);
 extern void fn_8002F53C(void *, void *, void *, s32, s32);
+int fn_801E0ED4(int arg0, int arg1) {
+    return arg1 > arg0 ? arg1 : arg0;
+}
+
 void fn_801E0F78(f32 *arg0, f32 *arg1, f32 *arg2, f32 arg3) {
     f32 x = arg2[0];
     f32 y = arg2[1];
