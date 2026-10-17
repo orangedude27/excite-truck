@@ -380,15 +380,25 @@ s32 fn_8024B9EC(void *arg0) {
     return *(s32 *)(*(char **)((char *)arg0 + 0x10) + *(s32 *)((char *)arg0 + 0x11C) * 8);
 }
 
+void fn_8024BAA0(void *arg0) {
+    s32 index = *(s32 *)((char *)arg0 + 0x11C);
+    s32 count = *(s32 *)((char *)arg0 + 0x14);
+    s32 next = (index + 1) % count;
+    s32 *items = *(s32 **)((char *)arg0 + 0x10);
+    void *object = *(void **)((char *)arg0 + 0x124);
+    *(s32 *)((char *)arg0 + 0x11C) = next;
+    ((void (*)(void *, s32, s32, s32, s32))(*(void ***)((char *)object + 0xC))[12])(object, *(s32 *)((char *)arg0 + 0x120), items[next * 2 + 1], count, index + 1);
+    fn_801345D8((char *)arg0 + 0x128, 0x20, &lbl_80343E70, items[next * 2 + 1], &lbl_8055BFF8);
+}
+
 void fn_8024BB3C(void *arg0) {
     s32 value = *(s32 *)((char *)arg0 + 0x10) - 1;
     *(s32 *)((char *)arg0 + 0x10) = value & ((-value & ~value) >> 31);
 }
 
 void fn_8024BB5C(void *arg0) {
-    s32 value = *(s32 *)((char *)arg0 + 0x10);
-    s32 result = 2;
-    value++;
+    register s32 result = 2;
+    register s32 value = *(s32 *)((char *)arg0 + 0x10) + 1;
     if (value <= 2) result = value;
     *(s32 *)((char *)arg0 + 0x10) = result;
 }
