@@ -21,11 +21,9 @@ typedef int lbl_804B34B0_t;
 #pragma push
 #pragma small_data off
 void fn_8028DFB0(void) {
-    int *base = (int *)(&lbl_804B34B0);
-    int count = *(base + 0x40);
-    if (count > 0) {
+    if (*((int *)((char *)&lbl_804B34B0_arr[0] + 0x100)) > 0) {
         fn_8028F2EC();
-        lbl_8055F740 = *base;
+        lbl_8055F740 = lbl_804B34B0_arr[0];
     }
     lbl_8055F744 = 0;
 }
@@ -51,7 +49,7 @@ void fn_8028E070(float farg0) {
 #pragma push
 #pragma small_data off
 void fn_8028E080(void) {
-    int *base = &lbl_804B34B0;
+    int *base = &lbl_804B34B0_arr[0];
     int *entries = base;
     int i = 0;
     lbl_8055F73C = 0;
@@ -63,6 +61,7 @@ body:
 test:
     if (i < *(int *)((char *)base + 0x100)) goto body;
 }
+#pragma pop
 void fn_8028E0F0(void) {
     fn_8028F5A4();
     fn_8028EE28((char *)&lbl_804B34B0 + 0x208);
