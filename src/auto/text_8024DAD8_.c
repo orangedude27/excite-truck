@@ -41,7 +41,7 @@ extern s32 fn_802CAC54(s32);
 extern s32 fn_80128668(void *);
 void *fn_8024FB64(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = (void *)((u32)&lbl_8034453C);
+        *(void **)arg0 = lbl_8034453C;
         fn_80128670(*(s32 *)((u8 *)arg0 + 0x18));
         fn_80235380(*(s32 *)((u8 *)arg0 + 0x24));
         fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x20));
