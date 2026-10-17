@@ -4,6 +4,17 @@
 
 #include <types.h>
 
+extern s32 lbl_8055F6F0;
+extern s32 lbl_8055F6F4;
+extern s32 lbl_8055F6F8;
+extern void *lbl_8055F6FC;
+extern struct Obj8028 { void **vtable; } *lbl_804B3238[];
+extern void fn_8028BD60(s32);
+extern void fn_8028CA70(s32);
+extern void fn_8028AB14(void);
+extern void fn_8028BD5C(s32);
+extern void fn_8028C938(s32);
+
 extern void fn_80288A70(void *, f32 *);
 extern void fn_8028AA6C(void *, s32, f32);
 extern s32 lbl_8055F700;
