@@ -26,7 +26,6 @@ f32 PSVECDotProduct(const f32 *, const f32 *);
 
 class F9Resource {
 public:
-    virtual void s4();
     virtual void *s8(void *);
     virtual void sC();
     virtual s32 s10(void *);
@@ -324,26 +323,24 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
 
 #pragma dont_inline on
 extern "C" void fn_801F9AA4(void *arg0, s32 arg1) {
-    void **obj = fn_80131810(arg0);
+    F9Resource *obj = (F9Resource *)fn_80131810(arg0);
     if (obj != 0) {
-        if ((*(s32 (**)(void *, void *))((u8 *)*obj + 0x10))(obj, &lbl_8055B388) != 0) {
-            void *list = (*(void *(**)(void *, void *))((u8 *)*obj + 8))(obj, &lbl_8055B388);
-            fn_801F9928(list, arg1);
+        if (obj->s10(&lbl_8055B388) != 0) {
+            fn_801F9928(obj->s8(&lbl_8055B388), arg1);
         }
         fn_80131818(obj);
     }
 }
-
 extern "C" int fn_801F9B28(void) {
     void *list;
-    void **obj;
-    fn_8013A0B0(&list, lbl_8033AF80 + 0x35C, &lbl_8055B388);
+    char *base = lbl_8033AF80;
+    fn_8013A0B0(&list, base + 0x35C, &lbl_8055B388);
     if (list != 0) fn_801F9928(list, 3);
-    fn_801F9AA4(lbl_8033AF80 + 0x368, 3);
-    obj = *(void ***)((u8 *)fn_8000AC38() + 0x20);
-    if ((*(s32 (**)(void *, void *, s32))((u8 *)*obj + 0x30))(obj, lbl_8033AF80 + 0x378, 0) != 0)
-        fn_801F9AA4(lbl_8033AF80 + 0x38C, 3);
-    fn_801F9AA4(lbl_8033AF80 + 0x39C, 2);
+    fn_801F9AA4(base + 0x368, 3);
+    F9Manager *obj = *(F9Manager **)((u8 *)fn_8000AC38() + 0x20);
+    if (obj->s30(base + 0x378, 0) != 0)
+        fn_801F9AA4(base + 0x38C, 3);
+    fn_801F9AA4(base + 0x39C, 2);
     fn_8013A198(&list, -1);
 }
 #pragma dont_inline reset
