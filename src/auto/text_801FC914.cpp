@@ -142,7 +142,7 @@ int fn_801FE88C(void *, void *);
 extern const char lbl_8033B638[];
 extern const char lbl_8033B654[];
 extern int lbl_8033B760;
-void fn_801FE510(void *arg0, void *arg1) {
+extern "C" void fn_801FE510(void *arg0, void *arg1) {
     void *p = arg1;
     while (p != 0) {
         fn_802C7040(*(int *)((char *)p + 4));
