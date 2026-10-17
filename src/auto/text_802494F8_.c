@@ -1,9 +1,10 @@
 extern void *lbl_8055F28C;
 static inline int find_sound_entry_inline(int *key) {
+    void *table = lbl_8055F28C;
     int i;
-    int count = *(int *)((char *)lbl_8055F28C + 4);
+    int count = *(int *)((char *)table + 4);
     for (i = 0; i < count; i++) {
-        if (*(int *)(*(char **)lbl_8055F28C + i * 0x18) == *key) return i;
+        if (*key == *(int *)(*(char **)table + i * 0x18)) return i;
     }
     return -1;
 }
@@ -45,10 +46,10 @@ void fn_80249584(void) {}
 
 void fn_80249588(void) {}
 
-unsigned char fn_8024958C(int *arg0) {
+int fn_8024958C(int *arg0) {
     int result = arg0[2] == 0x180302;
-    if (result) result = find_sound_entry(arg0[0]) != -1;
-    if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry(arg0[0]) * 0x18 + 0x14);
+    if (result) result = find_sound_entry_inline(arg0) != -1;
+    if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
     return result;
 }
 
