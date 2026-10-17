@@ -148,10 +148,8 @@ void GXInitLightAttnK_80181464(void *arg0, float farg0, float farg1, float farg2
 
 float fn_80181568(void *arg0) {
     float value = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x18);
-    if (value > lbl_80561C48) {
-        value = lbl_80561C48;
-    }
-    return value;
+    if (value < lbl_80561C48) return value;
+    return lbl_80561C48;
 }
 
 extern void fn_802E8518(void);
@@ -159,13 +157,15 @@ extern float lbl_80561C98;
 extern float lbl_80561C9C;
 float fn_80181588(void *arg0) {
     float value = lbl_80561C98 - lbl_80561C9C * *(float *)((char *)arg0 + 0x1C);
-    if (value < lbl_80561C4C) {
-        value = lbl_80561C4C;
+    float result = lbl_80561C4C;
+    if (result > value) {
+    } else {
+        result = value;
     }
-    if (value > lbl_80561C48) {
-        value = lbl_80561C48;
+    if (result > lbl_80561C48) {
+        return lbl_80561C48;
     }
-    return value;
+    return result;
 }
 
 float fn_801815C4(void *arg0) {
@@ -184,6 +184,13 @@ void fn_801815DC(void *arg0, float arg1) {
     float value = lbl_80561C48 < arg1 ? lbl_80561C48 : arg1;
     value = value > lbl_80561C4C ? value : lbl_80561C4C;
     *(float *)((char *)arg0 + 0x20) = value;
+}
+
+void fn_80181700(void *arg0, int arg1) {
+    *(unsigned char *)((char *)arg0 + 0x350) = arg1;
+    if (arg1 == 0 && *(int *)((char *)arg0 + 8) >= 0) {
+        fn_802E8518();
+    }
 }
 
 void fn_80181720(void *arg0) {
