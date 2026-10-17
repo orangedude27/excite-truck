@@ -1,6 +1,32 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <revolution/MEM.h>
+#include "revolution/KPAD/__KPAD.h"
+#include "revolution/OS/OSInterrupt.h"
+
+#pragma push
+#pragma use_lmw_stmw off
+void WPADiDisableRecalibration(s32 chan) {
+    BOOL inner;
+    BOOL interrupts;
+    BOOL enabled;
+    KPADInsideStatus *status = &inside_kpads[chan];
+    interrupts = OSDisableInterrupts();
+    enabled = status->is_dpd_enabled;
+    status->is_dpd_enabled = 0;
+    if (enabled) {
+        inner = OSDisableInterrupts();
+        if (status->sampling_pending == 0 && WPADProbe(chan, 0) != -1) {
+            status->sampling_pending = 1;
+            if (status->dpd_ctrl_callback != 0) {
+                status->dpd_ctrl_callback(chan, 0);
+            }
+        }
+        OSRestoreInterrupts(inner);
+    }
+    OSRestoreInterrupts(interrupts);
+}
+#pragma pop
 
 MEMiHeapHead* MEMCreateExpHeapEx(void *start, u32 size, u16 opt) {
     u32 end = ((u32)size + (u32)start) & ~3;
