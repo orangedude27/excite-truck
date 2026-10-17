@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 typedef int s32;
 extern unsigned char lbl_8055E968;
+extern void *lbl_8055E96C;
 extern float lbl_80562B2C;
 extern void fn_80178DBC(int, float);
 extern void fn_801D9AB8(void *, float);
