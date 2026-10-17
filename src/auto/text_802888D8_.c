@@ -56,11 +56,7 @@ void fn_80288A58(int arg0, int arg1) { fn_8028E584(*(int *)lbl_8055F6E0, arg0, a
 void fn_80288A70(void) {}
 
 int fn_80288B40(int arg0) {
-    fn_80289084();
-    fn_80289154(arg0);
-    fn_80289268(arg0);
-    fn_80289394(arg0);
-    return arg0;
+    fn_80289084(); fn_80289154(arg0); fn_80289268(arg0); fn_80289394(arg0); return arg0;
 }
 
 int fn_80287B5C(void);
