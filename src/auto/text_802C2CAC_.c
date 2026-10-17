@@ -99,6 +99,11 @@ s32 fn_802C307C(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
     return *arg2 < *arg4;
 }
 
+s32 fn_802C3130(void *arg0, s32 arg1, s32 arg2) {
+    if (arg1 >= *(s32 *)((u8 *)arg0 + 0x14) && arg2 >= *(s32 *)((u8 *)arg0 + 0x18) && arg1 < *(s32 *)((u8 *)arg0 + 0x1C) && arg2 < *(s32 *)((u8 *)arg0 + 0x20)) return 1;
+    return 0;
+}
+
 extern const char lbl_8034B060[];
 extern void fn_802C3320(void);
 extern void fn_802C33A8(void);
