@@ -15,6 +15,14 @@ extern float lbl_80560AF0;
 extern float lbl_80560AF4;
 extern float lbl_80560AF8;
 extern float lbl_80560AFC;
+void fn_80033B74(void *arg0, short arg1, short arg2) {
+    OSDisableInterrupts();
+    *(short *)((char *)arg0 + 0x200) = arg1;
+    *(short *)((char *)arg0 + 0x202) = arg2;
+    *(unsigned int *)((char *)arg0 + 0x1C) |= 0x00200000;
+    OSRestoreInterrupts(0);
+}
+
 void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
     float angle = ((float)arg0 * lbl_80560AF0) / lbl_80560AF4;
     float c = (float)cos((double)angle);
@@ -24,3 +32,21 @@ void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
     *arg2 = coef;
     *arg1 = 0x7fff - (unsigned short)coef;
 }
+
+void fn_80033C8C(void *arg0, short arg1) {
+    int state = OSDisableInterrupts();
+    *(short *)((char *)arg0 + 0x20C) = arg1;
+    *(unsigned int *)((char *)arg0 + 0x1C) |= 0x01000000;
+    OSRestoreInterrupts(state);
+}
+
+void *__AXGetCurrentProfile(void) {
+    unsigned int index;
+    if (lbl_8055D7F0 != 0) {
+        index = lbl_8055D7F4;
+        lbl_8055D7F4 = (index + 1) % lbl_8055D7F8;
+        return lbl_8055D7FC + index * 0x38;
+    }
+    return 0;
+}
+
