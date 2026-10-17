@@ -9,6 +9,21 @@ void fn_80138434(void) {
     fn_80137F2C();
 }
 
+void fn_801384A0(void);
+void fn_801386D0(float, float, float);
+void fn_80138958(void *, float *);
+void fn_80138594(void *arg0) {
+    void *node;
+
+    node = *(void **)((char *)arg0 + 0x24);
+    while (node != 0) {
+        if (*(unsigned int *)node == 1) {
+            fn_80138958(arg0, (float *)((char *)node + 8));
+        }
+        node = *(void **)((char *)node + 4);
+    }
+}
+
 extern float lbl_805613A4;
 int fn_801388F4(void *arg0) { float spC,sp8,temp_f2,temp_f4; double temp_f3; void *p; p=*(void **)((char*)arg0+0x14); sp8=*(float*)((char*)arg0+8); spC=*(float*)((char*)arg0+0xC); temp_f3=-sp8; temp_f4=(float)temp_f3; temp_f2=spC**(float*)((char*)p+8); sp8=spC; spC=(float)temp_f3; if(temp_f2+temp_f4**(float*)((char*)p+0xC)<lbl_805613A4)return 1;return 0; }
 
