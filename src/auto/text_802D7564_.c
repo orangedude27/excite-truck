@@ -59,6 +59,31 @@ void fn_802D9154(void) {
     fn_802D7600(lbl_8055D118);
 }
 
+extern void fn_802D6C68(void);
+extern void fn_802CFF5C(void *);
+extern void fn_802CFFA4(unsigned int);
+extern void GXLoadTlut(void *, int);
+extern unsigned int lbl_8055FD1C;
+extern unsigned char lbl_8055FD24;
+extern unsigned int lbl_8055FD30;
+void fn_802D9160(void *arg0) {
+    char *obj = (char *)arg0;
+    fn_802D6C68();
+    lbl_8055FE18 = arg0;
+    fn_802CFF5C((void *)(*(unsigned int *)(obj + 0xE0) | (lbl_8055FD1C & ~0x14E)));
+    fn_802CFFA4(*(unsigned int *)(obj + 0xDC));
+    lbl_8055FD24 = *(unsigned char *)(obj + 0xE4);
+    if (*(int *)(obj + 0x70) != 0) GXLoadTlut(obj + 0x64, 0);
+    GXLoadTexObj(obj + 0x24, 0);
+    if (*(unsigned char *)(obj + 0xCC) != 0) {
+        if (*(int *)(obj + 0xC4) != 0) GXLoadTlut(obj + 0xB8, 1);
+        GXLoadTexObj(obj + 0x78, 1);
+    }
+    *(volatile unsigned int *)(obj + 0xEC) = lbl_8055FD30;
+    *(unsigned int *)(obj + 0xF0) += 1;
+    lbl_804C5700[8] = *(volatile unsigned char *)(obj + 0xCC);
+}
+
 extern void *lbl_8055FE1C;
 extern void *lbl_8055FE20;
 extern char lbl_8034C5F0[];
