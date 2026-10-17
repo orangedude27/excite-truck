@@ -426,12 +426,17 @@ extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
 extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
-    do {
+    while (arg2 > 0) {
         arg2--;
-    } while (arg2 > 0);
-    *--arg0 = 0;
-    while ((s8)*arg1 != 0) {
-        *arg0++ = (u8)*arg1++;
+    }
+    arg0[-1] = 0;
+    for (;;) {
+        s8 c = *arg1++;
+        *arg0 = c;
+        arg0++;
+        if (!c) {
+            break;
+        }
     }
 }
 
@@ -462,8 +467,9 @@ extern "C" f32 fn_80147204(void *arg0, const char *arg1) {
 extern "C" int vsprintf(char *, const char *, va_list);
 extern "C" unsigned int strlen(const char *);
 extern "C" void fn_802E317C(const char *, ...);
-extern "C" char lbl_8032D1A4[];
-extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
+  extern "C" char lbl_8032D1A4[];
+  #pragma scheduling off
+  extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
     char buffer[0x200];
     if (arg0 != 0) {
         va_list args;
@@ -525,20 +531,19 @@ extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 extern "C" void fn_80147CEC(void *, s32, s32, f64);
+#pragma scheduling off
 extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 value, ...) {
     char text[0x200];
     char buffer[0x20];
     va_list args;
     va_start(args, value);
     vsprintf(text, format, args);
-    if (strlen(text) >= 0x200) {
-        s32 length = strlen(text);
-        fn_802E317C(lbl_8032D1A4, length, format);
-    }
+    if (strlen(text) >= 0x200)
+        fn_802E317C(lbl_8032D1A4, strlen(text), format);
     fn_80147CEC(buffer, (s32)arg0, (s32)arg1, value);
     fn_80147230(buffer, (const char *)&lbl_80559E1C, text);
 }
-
+#pragma scheduling on
 extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
     u32 tmp;
     fn_80147DC0(&tmp, arg0, arg1);
@@ -794,13 +799,13 @@ extern "C" void fn_80148EDC(void *arg0) {
 
 extern "C" void deleteThreads__6SystemFv(void *arg0) {
     void *p = *(void **)arg0;
-    if (!p)
-        return;
-    if (!p)
-        return;
-    void **vtable = *(void ***)p;
-    ((void (*)(void *, s32))vtable[2])(p, 1);
-    *(void **)arg0 = 0;
+    if (p) {
+        if (p) {
+            void **vt = *(void ***)p;
+            ((void (*)(void *, s32))vt[2])(p, 1);
+        }
+        *(void **)arg0 = NULL;
+    }
 }
 
 extern "C" void fn_8014822C(void) {
