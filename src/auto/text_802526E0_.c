@@ -23,6 +23,11 @@ void fn_80252BC8(void) {
     lbl_8055F2F8 = 0;
 }
 
+void fn_80252C78(void) {
+    lbl_8055F308 = 1;
+    lbl_8055F2F8 -= 1;
+}
+
 extern s8 lbl_8055F308;
 extern void fn_801BD808(void);
 extern void fn_801BDA70(void *);
