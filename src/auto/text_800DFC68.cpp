@@ -8,6 +8,12 @@ extern "C" const char lbl_803204F8[];
 extern "C" const char lbl_803204BC[];
 extern "C" const char lbl_80320C14[];
 extern "C" const char lbl_80320C60[];
+extern "C" void GetVtxColor__Q36nw4hbm3lyt7PictureCFUl_800E0238(unsigned char* out, const void* self, unsigned long idx) {
+    if (idx >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0x168, lbl_80320C60);
+    const unsigned char* p = (const unsigned char*)((unsigned long)self + idx * 4 + 0xE4);
+    out[0] = p[0]; out[1] = p[1]; out[2] = p[2]; out[3] = p[3];
+}
+
 extern "C" void SetVtxColor__Q36nw4hbm3lyt7PictureFUlQ36nw4hbm2ut5Color_800E02C4(void* self, unsigned long idx, const unsigned char* color) {
     if (idx >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0x173, lbl_80320C60);
     unsigned char* p = (unsigned char*)((unsigned long)self + idx * 4 + 0xE4);
