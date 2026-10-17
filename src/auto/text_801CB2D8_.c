@@ -12,8 +12,8 @@ extern int fn_8001C0E8(int, int);
 extern int fn_80128668(void *);
 #pragma push
 #pragma small_data off
-extern int lbl_80338024;
-extern int lbl_80338038;
+extern char lbl_80338024[];
+extern char lbl_80338038[];
 #pragma pop
 extern int fn_8001BF34(f32);
 extern void fn_8001BF0C(f32, f32);
@@ -124,14 +124,21 @@ void fn_801CB55C(int arg0, int arg1) {
 extern void fn_801CC918(void);
 extern void fn_801CC470(void);
 extern void fn_801CD5B4(int, int, int);
+#pragma scheduling off
 void fn_801CB5DC(int arg0, int arg1, int arg2) {
-    if (fn_80019BA8() != 0) return;
-    if (fn_80161C38() != 0) goto done;
+    if (fn_80019BA8() != 0) goto done;
+    switch (fn_80161C38()) {
+    case 0:
+        goto action;
+    default:
+        goto done;
+    }
+action:
     fn_801CD5B4(arg0, arg1, arg2);
 done:
     return;
 }
-
+#pragma scheduling on
 void fn_801CB648(int arg0, int arg1, f32 farg0) {
     if (fn_80019BA8()) return;
     if (!fn_80161C38()) {
@@ -140,7 +147,7 @@ void fn_801CB648(int arg0, int arg1, f32 farg0) {
         return;
     }
 }
-
+#pragma scheduling on
 void fn_801CB6B4(void) {
     if (fn_80019BA8() == 0) {
         int result = fn_80161C38();
@@ -344,15 +351,16 @@ unsigned int fn_801CE898(void) {
 
 #pragma small_data off
 void *fn_801CE9A0(void *arg0, s32 arg1) {
-    if (arg0 != NULL) {
-        *(void **)((char *)arg0 + 4) = (void *)lbl_80338024;
+    if (arg0 != 0) {
+        *(void **)((char *)arg0 + 4) = (void *)&((char *)lbl_80338024)[0];
         fn_801CEA28((char *)arg0 + 8);
         fn_801CEA28((char *)arg0 + 0xC);
-        *(void **)((char *)arg0 + 4) = (void *)lbl_80338038;
-        fn_801CBD04(arg0);
-        if (arg1 > 0) {
-            fn_80128668(arg0);
+        if (arg0 != 0) {
+            *(void **)((char *)arg0 + 4) = (void *)&((char *)lbl_80338038)[0];
+            fn_801CBD04(arg0);
         }
+        if (arg1 > 0)
+            fn_80128668(arg0);
     }
     return arg0;
 }
