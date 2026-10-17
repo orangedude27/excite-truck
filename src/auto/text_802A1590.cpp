@@ -14,7 +14,7 @@ extern "C" void fn_802A1DC0(void);
 extern "C" f32 lbl_80564728;
 extern "C" int lbl_80349B50[];
 extern "C" int lbl_80349AD8[];
-extern "C" int lbl_8055CBB0[];
+extern "C" int lbl_8055CBB0;
 extern "C" void fn_802A3500(void*, s32);
 extern "C" void fn_802A30BC(void*, s32);
 extern "C" void fn_802A31DC(void*, s32);
