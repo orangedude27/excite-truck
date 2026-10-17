@@ -62,6 +62,15 @@ void fn_8000ADE0(int arg0) {
     lbl_8055D3E4 = fn_802E4A10();
 }
 
+int fn_80129374(int, int);
+void fn_8000AE78(int arg0) {
+    int i = 0;
+    do {
+        fn_80129374(i, arg0);
+        i++;
+    } while (i < 2);
+}
+
 int fn_800070DC(void);
 void fn_8000AEC4(void) {
     fn_800070DC();
