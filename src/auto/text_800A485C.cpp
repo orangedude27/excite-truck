@@ -256,18 +256,13 @@ extern "C" int fn_800A6048(void) {
 }
 
 extern "C" s32 fn_800B7FC4(s32);
-s32 fn_800A61D0(void *arg0) {
-    if (*(s16 *)((u8 *)arg0 + 0xC) != 0) {
-        return 0x10;
-    }
-    if (*(s16 *)((u8 *)arg0 + 0xE) != 0) {
-        return 0x11;
-    }
-    if (fn_800B7FC4(*(s32 *)((u8 *)arg0 + 0x14)) != 0) {
-        return 0x13;
-    }
-    *(u32 *)arg0 &= ~1;
-    *(u16 *)((u8 *)&lbl_803D1640 + 2) -= 1;
+extern "C" s32 fn_800A61D0(void *arg0) {
+    volatile u32 *flags = (volatile u32 *)arg0;
+    if (*(s16 *)((u8 *)arg0 + 0xC) != 0) return 0x10;
+    if (*(s16 *)((u8 *)arg0 + 0xE) != 0) return 0x11;
+    if (fn_800B7FC4(*(s32 *)((u8 *)arg0 + 0x14)) != 0) return 0x13;
+    *flags &= ~1;
+    *(volatile u16 *)((u8 *)&lbl_803D1640 + 2) -= 1;
     return 0;
 }
 
