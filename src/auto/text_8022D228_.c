@@ -260,6 +260,14 @@ void fn_8022DF48(void *arg0) {
     if (var_r0 > var_r3) *temp_r6 = var_r0;
 }
 
+extern char *fn_8022D82C(void *, int, int);
+extern char *strncpy(char *, const char *, unsigned long);
+extern double fabs(double);
+int fn_8022DF7C(void *arg0) {
+    int *ptr = *(int **)((char *)arg0 + 4);
+    return *(int *)((char *)arg0 + 0xC) != *ptr;
+}
+
 int fn_8022DF9C(void *arg0) {
     int *ptr = *(int **)((char *)arg0 + 4);
     return *(int *)((char *)arg0 + 8) != *ptr;
