@@ -1055,6 +1055,22 @@ void BTA_HhSendData(u8 arg0, void *arg1) {
     }
 }
 
+void BTA_HhAddDev(const u8 *arg0, u16 arg1, u8 arg2, u8 arg3, const void *arg4) {
+    u8 *buf = GKI_getbuf(0x1C);
+    if (buf != 0) {
+        memset(buf, 0, 0x1C);
+        *(u16 *)buf = 0x170A;
+        *(u16 *)(buf + 0x10) = 0xB;
+        *(u16 *)(buf + 6) = 0xFF;
+        *(u16 *)(buf + 0xE) = arg1;
+        buf[0x12] = arg2;
+        buf[0x13] = arg3;
+        memcpy(buf + 0x14, arg4, 8);
+        fn_80070FA4(buf + 8, arg0);
+        fn_80071450(buf);
+    }
+}
+
 extern void l2c_link_hci_disc_comp(u16, u8);
 void btm_acl_device_down(void)
 {
