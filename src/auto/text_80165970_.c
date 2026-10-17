@@ -3,7 +3,7 @@
 
 #pragma push
 #pragma small_data off
-extern float lbl_80558DC4;
+__declspec(section ".data") extern float lbl_80558DC4;
 #pragma pop
 extern void fn_80128668(void *);
 extern unsigned char lbl_8055E32C;
