@@ -81,6 +81,24 @@ s32 fn_80263658(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern const u8 lbl_80346048[];
+extern f32 lbl_80563BD8;
+extern f32 lbl_80563BE8;
+extern f32 lbl_80563BEC;
+extern s32 fn_802E2C20(void);
+extern s32 fn_802E8528(s32, f32, f32);
+void *fn_80263740(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (arg0 != 0) {
+            *(const u8 **)arg0 = lbl_80346120;
+            fn_802328D4(*(s32 *)((u8 *)arg0 + 0x18));
+            *(s32 *)((u8 *)arg0 + 0x18) = 0;
+        }
+        if (arg1 > 0) ((s32 (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 void *fn_802637B0(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(const u8 **)arg0 = lbl_80346120;
