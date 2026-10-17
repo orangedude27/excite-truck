@@ -17,9 +17,12 @@ extern unsigned char lbl_8055F744;
 #pragma push
 #pragma small_data off
 typedef int lbl_804B34B0_t;
+#pragma push
+#pragma small_data off
 void fn_8028DFB0(void) {
-    int *base = &lbl_804B34B0;
-    if (base[0x40] > 0) {
+    int *base = (int *)(&lbl_804B34B0);
+    int count = *(base + 0x40);
+    if (count > 0) {
         fn_8028F2EC();
         lbl_8055F740 = *base;
     }
@@ -95,7 +98,7 @@ extern int fn_8028F7AC(int, int);
 extern void fn_8028ED8C(void *, int);
 extern void fn_8028F5A0(int, int);
 extern int lbl_8055C8E0;
-extern int lbl_804B35B4;
+extern int lbl_804B35B4[];
 extern int fn_8028F858(int, int);
 #pragma push
 #pragma small_data off
