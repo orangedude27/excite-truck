@@ -1455,6 +1455,14 @@ void fn_80089E3C(void) {
 
 }
 
+void l2c_process_timeout(void *arg) {
+    u16 event = *(u16 *)((u8 *)arg + 0x14);
+    if (event == 4) l2c_process_held_packets(1);
+    else if (event == 2) l2c_link_timeout(*(void **)((u8 *)arg + 0x10));
+    else if (event > 2 && event < 4) fn_80089E40(*(void **)((u8 *)arg + 0x10), 0x1E, 0);
+    else if (event == 0x49) return;
+}
+
 extern u8 lbl_803C4040[];
 void *l2cu_find_lcb_by_bd_addr(u8 *addr) {
     int i = 0;
@@ -1480,6 +1488,11 @@ void *l2cu_find_lcb_by_handle(u16 handle) {
 }
 
 u8 fn_8008D7C4(void) { return lbl_803C4040[1]; }
+
+void fn_8008EC30(void *arg0) {
+    *(u8 *)arg0 = 0;
+    *(u16 *)((u8 *)arg0 + 2) = 0;
+}
 
 void fn_800911DC(void) {
 
