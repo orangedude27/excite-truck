@@ -31,6 +31,9 @@ void fn_802CF5D0(void) {}
 
 void fn_802CF5F8(void) {}
 
+void fn_802CF5FC(void) {
+}
+
 void fn_802CFEEC(void* alarm) {
     fn_802CFDE0(fn_802CFCA0(alarm));
 }
