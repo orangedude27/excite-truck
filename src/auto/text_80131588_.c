@@ -9,6 +9,17 @@ extern int sscanf(const char*, ...);
 extern s32 fn_80128668(void);
 extern int stricmp(const char*, const char*);
 extern s32 fn_80131C88(s32);
+extern int sprintf(char *, const char *, ...);
+extern char lbl_80559B50[];
+typedef struct {
+    void *vtable;
+    void *pad0;
+    void *pad4;
+    void *pad8;
+    s32 (*vf3)(void *, char *);
+    s32 (*vf4)(void *, char *);
+    void *pad18;
+} Unk801328D4;
 
 unsigned char* fn_801317F0(void* arg0) {
     unsigned char* p = *(unsigned char**)((char*)arg0 + 4);
