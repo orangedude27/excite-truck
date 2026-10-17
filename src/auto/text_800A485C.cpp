@@ -347,6 +347,27 @@ extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
+extern "C" s32 fn_800AF4F0(void *arg0, s32 arg1) {
+    void *r5;
+
+    r5 = *(void **)((u8 *)arg0 + 0x30);
+    *(s32 *)((u8 *)arg0 + 8) = arg1;
+    *(s32 *)arg0 = 1;
+    if (r5 != 0) {
+        *(s32 *)((u8 *)r5 + 8) = 0;
+    }
+    *(s32 *)((u8 *)arg0 + 0x18) = 0;
+    *(s32 *)((u8 *)arg0 + 0x14) = 0;
+    *(s32 *)((u8 *)arg0 + 0xC) = 0;
+    *(s32 *)((u8 *)arg0 + 0x10) = 0;
+    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+    return 0;
+}
+
+extern "C" s32 fn_800AF584(void *arg0) {
+    return *(s32 *)((char *)lbl_802EEF40 + (*(s32 *)arg0 + 0x1C) * 0x14 + 8);
+}
+
 extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
     extern s32 fn_800B5618(void *, void *, u16, u16, s32);
     u16 sp8;
@@ -953,18 +974,53 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     return (value & lbl_802F3F54[shift]) >> (shift - arg1);
 }
 
+extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    if (arg3 == 0) {
+        fn_800C3960(lbl_802F4088, arg1, 0x3FF, arg3);
+        fn_800C3574(lbl_802F4108, (void *)arg0, arg2 + 1, arg1 + 4, arg3);
+        return;
+    }
+    fn_800C3960(lbl_802F4088, arg1, 0x3FF, arg3);
+    fn_800C3574(lbl_802F4108, (void *)arg0, arg2 + 1, arg1 + 2, arg3);
+}
+
+extern "C" s32 fn_800C3CDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 *p;
+
+    fn_800C4B5C(arg2, arg3);
+    p = (s32 *)fn_800C4B8C(0xED78);
+    fn_800C4BD8(0, 0xED78);
+    p[1] = 0;
+    p[2] = 0;
+    p[3] = 0;
+    p[5] = 0;
+    p[6] = 0;
+    p[0x271] = 0;
+    p[0x272] = 0;
+    p[0x273] = 0;
+    p[0x274] = 0;
+    p[0x275] = 0;
+    p[0x276] = 0;
+    p[0x277] = 0;
+    p[0x278] = 0;
+    *(u16 *)&p[0x9FC] = 0x400;
+    p[0x9F6] = arg1;
+    fn_800BEE64(p, arg0, 0);
+    return (s32)p;
+}
+
 void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
 
 extern "C" void fn_800C4B5C(s32 arg0, s32 arg1) {
-    s32 t;
-    s32 s;
+    u32 t;
+    u32 s;
 
     t = (arg0 << 0x1E) - (arg0 >> 0x1F);
     s = arg0 >> 0x1F;
     lbl_8055DD90 = (arg0 + arg1) - 4;
-    lbl_8055DD94 = (void *)(arg0 + ((t << 2) + s) - 4);
+    lbl_8055DD94 = (void *)(arg0 + ((t << 2) | (t >> 0x1E)) + s - 4);
 }
 
 extern "C" void* fn_800C4B8C(s32 arg0) {
