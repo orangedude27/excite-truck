@@ -130,9 +130,8 @@ s32 fn_801366C0(void *arg0, void *arg1, float farg0) {
             return 0;
         }
     }
-    farg0 = -farg0;
     return ((*(float *)((char *)arg1 + 0)) * (*(float *)((char *)arg0 + 0x10))
-          + (*(float *)((char *)arg1 + 8)) * (*(float *)((char *)arg0 + 0x14))) < farg0;
+          + (*(float *)((char *)arg1 + 8)) * (*(float *)((char *)arg0 + 0x14))) < -farg0;
 }
 
 void fn_80136714(void *arg0) {
@@ -143,10 +142,15 @@ void fn_80136714(void *arg0) {
 }
 
 extern void *fn_80156A40(void);
+
+typedef struct {
+    void **vtbl;
+} Unk_8013672C_vt;
+
 float fn_8013672C(void) {
     void *obj = fn_80156A40();
-    void *ret = ((void *(*)(void *, s32))((void **)*(void **)obj)[2])(obj, 0);
-    return *(float *)((char *)ret + 8);
+    void *r = ((void *(*(*)(char *, s32))(char *, s32))(*(char **)obj + 8))(obj, 0);
+    return *(float *)((char *)r + 8);
 }
 
 void fn_80136764(void) {
