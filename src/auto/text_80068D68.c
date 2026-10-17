@@ -1143,6 +1143,45 @@ void fn_8007AD38(void) {
 
 }
 
+tBTM_STATUS BTM_SetInquiryScanType(UINT16 arg0) {
+    void *p_buf;
+    if (arg0 != 0 && arg0 != 1) return BTM_ILLEGAL_VALUE;
+    if (!(lbl_803C0F78[0x643] & 0x10)) return BTM_MODE_UNSUPPORTED;
+    if (arg0 != *(u16 *)(lbl_803C0F78 + 0x16A4)) {
+        if ((u8)fn_80079514() == 0) return BTM_WRONG_MODE;
+        p_buf = GKI_getpoolbuf(2);
+        if (p_buf == 0) return BTM_NO_RESOURCES;
+        fn_80085DC4(p_buf, (u8)arg0);
+        *(u16 *)(lbl_803C0F78 + 0x16A4) = arg0;
+    }
+    return BTM_SUCCESS;
+}
+
+tBTM_STATUS BTM_SetPageScanType(UINT16 arg0) {
+    void *p_buf;
+    if (arg0 != 0 && arg0 != 1) return BTM_ILLEGAL_VALUE;
+    if (!(lbl_803C0F78[0x643] & 0x20)) return BTM_MODE_UNSUPPORTED;
+    if (arg0 != *(u16 *)(lbl_803C0F78 + 0x16A6)) {
+        if ((u8)fn_80079514() == 0) return BTM_WRONG_MODE;
+        p_buf = GKI_getpoolbuf(2);
+        if (p_buf == 0) return BTM_NO_RESOURCES;
+        fn_80085E24(p_buf, (u8)arg0);
+        *(u16 *)(lbl_803C0F78 + 0x16A6) = arg0;
+    }
+    return BTM_SUCCESS;
+}
+
+tBTM_STATUS BTM_SetInquiryMode(UINT8 arg0) {
+    if (arg0 != 0 && arg0 != 1) return BTM_ILLEGAL_VALUE;
+    if (!(lbl_803C0F78[0x643] & 0x40)) return BTM_MODE_UNSUPPORTED;
+    if (!fn_80079514()) return BTM_WRONG_MODE;
+    if (GKI_getpoolbuf(2) != 0) {
+        fn_80085DF4(arg0);
+        return BTM_SUCCESS;
+    }
+    return BTM_NO_RESOURCES;
+}
+
 u8 fn_8007B340(void) {
     return lbl_803C0F78[0x1848];
 }
@@ -1415,6 +1454,30 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
 void fn_80089E3C(void) {
 
 }
+
+extern u8 lbl_803C4040[];
+void *l2cu_find_lcb_by_bd_addr(u8 *addr) {
+    u8 *lcb;
+    int i;
+    for (i = 0, lcb = lbl_803C4040 + 8; i < 4; i++, lcb += 0x5C) {
+        if (lcb[0] && memcmp(lcb + 0x2A, addr, 6) == 0) return lcb;
+    }
+    return 0;
+}
+
+void *l2cu_find_lcb_by_handle(u16 handle) {
+    u8 *lcb = lbl_803C4040 + 8;
+    if (lcb[0] && *(u16 *)(lcb + 0x28) == handle) return lcb;
+    lcb += 0x5C;
+    if (lcb[0] && *(u16 *)(lcb + 0x28) == handle) return lcb;
+    lcb += 0x5C;
+    if (lcb[0] && *(u16 *)(lcb + 0x28) == handle) return lcb;
+    lcb += 0x5C;
+    if (lcb[0] && *(u16 *)(lcb + 0x28) == handle) return lcb;
+    return 0;
+}
+
+u8 fn_8008D7C4(void) { return lbl_803C4040[1]; }
 
 void fn_800911DC(void) {
 
