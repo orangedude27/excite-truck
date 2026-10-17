@@ -100,6 +100,34 @@ extern "C" void fn_800FDFF8(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
+#pragma push
+#pragma small_data off
+extern u8 lbl_80326E08[];
+#pragma pop
+extern "C" s32 MEMFreeByStateToFrmHeap(s32);
+#pragma push
+#pragma small_data off
+#pragma pop
+extern "C" s32 Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0)
+{
+    u32 temp_r31;
+    const char *base = (const char *)lbl_80326E08;
+    s32 var_r29;
+
+    if (*(s32 *)((u8 *)arg0 + 0x18) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x45, base + 0x68);
+    }
+    temp_r31 = OSDisableInterrupts();
+    var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
+    do {
+        if (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(arg0) == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(base, 0x4C, base + 0xA8);
+        }
+        var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
+    } while (var_r29 == 0);
+    OSRestoreInterrupts(temp_r31);
+    return var_r29;
+}
 extern "C" s32 fn_800FE0DC(void *arg0) {
     void *p = *(void **)((u8 *)arg0 + 0x18);
     return *(s32 *)((u8 *)p + 0x40);
@@ -111,6 +139,24 @@ extern "C" void *fn_800FE648(void) {
         lbl_8055DE80 = 1;
     }
     return lbl_8041B138;
+}
+
+#pragma push
+#pragma small_data off
+extern u8 lbl_80326FD8[];
+extern u8 lbl_80326FEC[];
+#pragma pop
+extern "C" s32 Destroy__Q46nw4hbm3snd6detail10TaskThreadFv(void *arg0) {
+    if (*(u8 *)((u8 *)arg0 + 0x2360) == 0) return 0;
+    if ((s8)lbl_8055DE80 == 0) {
+        lbl_8041B138[0x2360] = 0;
+        lbl_8055DE80 = 1;
+    }
+    if (OSSendMessage((OSMessageQueue *)(lbl_8041B138 + 0x2320), (OSMessage)2, 0) == 0) return 0;
+    if (OSJoinThread((OSThread *)arg0, 0) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326FD8, 0x62, (const char *)lbl_80326FEC);
+    *(u8 *)((u8 *)arg0 + 0x2360) = 0;
+    return 1;
 }
 
 extern "C" void fn_800FE804(void *arg0) {
@@ -243,6 +289,45 @@ extern "C" void __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, u32 arg1) {
     }
 }
 
+#pragma push
+#pragma small_data off
+extern u8 lbl_8032734C[];
+extern u8 lbl_80327370[];
+extern u8 lbl_80327040[];
+extern u8 lbl_80327304[];
+extern u8 lbl_8041D4AC[];
+#pragma pop
+extern "C" void fn_800FF708(void *);
+#pragma push
+#pragma small_data off
+#pragma pop
+extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FF824(void) {
+    void *cur = *(void **)(lbl_8041D4AC + 4);
+    void *end = lbl_8041D4AC + 4;
+    do {
+        void *item = cur;
+        cur = *(void **)cur;
+        if (item == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23D, (char *)lbl_8032734C);
+        fn_800FF708((u8 *)item - 0x94);
+    } while (cur != end);
+}
+#pragma push
+#pragma small_data off
+#pragma pop
+extern "C" void detail_StopAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void) {
+    void *cur = *(void **)(lbl_8041D4AC + 4);
+    void *end = lbl_8041D4AC + 4;
+    do {
+        void *item = cur;
+        cur = *(void **)cur;
+        if (item == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23D, (char *)lbl_8032734C);
+        Stop__Q36nw4hbm3snd10WavePlayerFv((u8 *)item - 0x94);
+    } while (cur != end);
+    if (*(u32 *)lbl_8041D4AC != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327040, 0x319, (char *)lbl_80327304);
+}
 extern "C" s32 fn_80128668(void *);
 
 extern "C" void fn_800FDE60(void);
