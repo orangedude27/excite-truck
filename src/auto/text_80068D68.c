@@ -933,6 +933,9 @@ void fn_80072C38(void) {
 void bta_dm_pinname_cback(u8 *arg0) {
     u8 local[0x108];
     u16 len;
+    u32 copy_len;
+    u8 *dst;
+    const u8 *src;
     void (*callback)(int, void *, void *);
 
     fn_80070FA4(local, lbl_803C0C14 + 0xF8);
@@ -941,8 +944,11 @@ void bta_dm_pinname_cback(u8 *arg0) {
     local[0x100] = lbl_803C0C14[0x100];
     if (arg0 != 0 && *(u16 *)arg0 == 0) {
         len = *(u16 *)(arg0 + 2);
-        if (len >= 0x20) len = 0x20;
-        memcpy(local + 6, arg0 + 4, len);
+        dst = local + 6;
+        src = arg0 + 4;
+        copy_len = 0x20;
+        if (len < 0x20) copy_len = len;
+        memcpy(dst, src, copy_len);
         local[0x26] = 0;
     } else {
         local[6] = 0;
