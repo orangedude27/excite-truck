@@ -28,7 +28,7 @@ void **fn_8013A598(void **arg0, s32 arg1) {
     if (arg0 != 0) {
         while (*arg0 != 0) {
             *arg0 = *(void **)((u8 *)*arg0 + 0x24);
-            fn_80128668(arg0);
+            fn_80128668();
         }
         if (arg1 > 0) fn_80128668(arg0);
     }
