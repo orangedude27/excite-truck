@@ -101,6 +101,35 @@ u16 fn_802C5A50(int arg0, int arg1) {
     return (u16)((arg0 << 8) | arg1);
 }
 
+extern void fn_802CAC54(int);
+extern s8 lbl_8055FC21;
+void fn_802C5BA0(int *arg0) {
+    u16 temp;
+    fn_802CAC54(*arg0);
+    temp = *(u16 *)((char *)arg0 + 4);
+    temp--;
+    *(u16 *)((char *)arg0 + 4) = temp;
+    if (temp == 0) {
+        lbl_8055FC21 = 1;
+    }
+}
+
+u16 fn_802C5BEC(int arg0, u16 arg1) {
+    int a = fn_802C5A50(5, arg1);
+    int b = arg0 & 0xFFFE;
+    int c = a + b;
+    return c & 0xFFFF;
+}
+
+extern void fn_802CAC28(void);
+extern void *fn_802C5A60(int, int, u16);
+extern int lbl_8034B1F0;
+void fn_802C5C40(int *arg0, int arg1, int arg2) {
+    int temp_r30 = *arg0;
+    fn_802CAC28();
+    *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(temp_r30, arg2, *(s16 *)((char *)arg2 + arg1 * 4 + 0x14 + 6) - 1);
+}
+
 void fn_802C6074(s32 *arg0) {
     *arg0 = 0;
 }
@@ -238,19 +267,25 @@ float fn_802C7808(void) {
     return *(float *)((char *)(*(void **)((char *)fn_802C5390() + 4)) + 0x1C);
 }
 
-s32 fn_802C7830(char *arg0) {
+s32 fn_802C7830(char *arg0, s32 arg1, signed char c) {
     s32 value = 0;
-    signed char c = *arg0;
-    while (c != 0) {
+    s32 is_digit;
+    do {
         value <<= 4;
-        if ((c >= '0') && (c <= '9')) {
-            value |= c - '0';
-        } else {
+        is_digit = 0;
+        if (c >= '0') {
+            if (c <= '9') {
+                is_digit = 1;
+            }
+        }
+        if (is_digit == 0) {
             value |= c - '7';
+        } else {
+            value |= c - '0';
         }
         arg0++;
         c = *arg0;
-    }
+    } while (c != 0);
     return value;
 }
 
