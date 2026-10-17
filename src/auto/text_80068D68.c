@@ -1016,6 +1016,14 @@ void BTA_DmSetDeviceName(char *name) {
     }
 }
 
+void fn_80073CA8(void) {
+    u16 *buf = GKI_getbuf(8);
+    if (buf != 0) {
+        *buf = 0x201;
+        fn_80071450(buf);
+    }
+}
+
 void fn_80073EA4(void) {
     s16 *buf;
 
