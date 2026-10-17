@@ -11,6 +11,24 @@ void fn_80015EB0(float);
 void fn_80015E30(void *, float);
 void fn_80015B20(void *, void *, void *);
 void fn_80015AA0(void *, float);
+void fn_8022F824(void *arg0) {
+    fn_8022F418();
+    fn_802CAC54(*(int *)((char *)arg0 + 0x30));
+    fn_8022F77C(arg0);
+    fn_80128668(arg0);
+}
+
+void fn_8022FF10(void *arg0, void *arg1) {
+    int sp8;
+    float temp_f31 = *(float *)((char *)arg1 + 0);
+    float temp_f30 = *(float *)((char *)arg1 + 8);
+    fn_80015EB0(*(float *)((char *)arg1 + 4));
+    fn_80015E30(&sp8, temp_f31);
+    fn_80015B20(arg0, arg0, &sp8);
+    fn_80015AA0(&sp8, temp_f30);
+    fn_80015B20(arg0, arg0, &sp8);
+}
+
 void fn_8022FF90(void *arg0) {
     float f0 = lbl_805635FC;
     float f1 = lbl_8056360C;
