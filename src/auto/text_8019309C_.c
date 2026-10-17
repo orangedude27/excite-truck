@@ -280,6 +280,22 @@ void fn_801961F8(void) {
 
 }
 
+extern float fn_801671FC(int);
+extern int fn_801B89F8(void);
+extern int lbl_8055E0D0;
+extern void fn_8018ADAC(int, float);
+extern void fn_8018AE24(int, int);
+extern void fn_80136EA4(int, int);
+extern void fn_80136E8C(int, int, int);
+void fn_80196328(void *arg0) {
+    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), lbl_80562140);
+    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), lbl_80562144);
+    fn_8018ADAC(*(int *)((char *)arg0 + 0x294), lbl_80562144);
+    fn_8018AE24(*(int *)((char *)arg0 + 0x294), 0);
+    fn_80136EA4(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290));
+    fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 0);
+}
+
 void fn_8019639C(void) {
     fn_80194844();
 }
@@ -351,6 +367,15 @@ void fn_80193138(int);
 void fn_801964D0(void);
 void fn_80128668(void *);
 void fn_80193138(int);
+extern float fn_801671FC(int);
+extern int fn_801B89F8(void);
+extern int lbl_8055E0D0;
+extern void fn_8018ADBC(int, float);
+extern void fn_8018ADB4(int, float);
+extern void fn_8018ADAC(int, float);
+extern void fn_8018AE24(int, int);
+extern void fn_80136EA4(int, int);
+extern void fn_80136E8C(int, int, int);
 int fn_80198EA4(void) { return 0; }
 extern void fn_801958D8(void);
 extern void fn_80195F6C(void *, void *);
