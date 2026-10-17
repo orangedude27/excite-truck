@@ -2219,6 +2219,57 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     return BTM_NO_RESOURCES;
 }
 
+BOOLEAN btm_is_sco_active(UINT16 handle) {
+    if (handle == *(UINT16 *)(lbl_803C0F78 + 0x185e) &&
+        *(UINT16 *)(lbl_803C0F78 + 0x185c) == 4)
+        return TRUE;
+    if (handle == *(UINT16 *)(lbl_803C0F78 + 0x1892) &&
+        *(UINT16 *)(lbl_803C0F78 + 0x1890) == 4)
+        return TRUE;
+    if (handle == *(UINT16 *)(lbl_803C0F78 + 0x18c6) &&
+        *(UINT16 *)(lbl_803C0F78 + 0x18c4) == 4)
+        return TRUE;
+    return FALSE;
+}
+
+extern unsigned char lbl_803C0F78[];
+extern int memcmp(const void *, const void *, unsigned long);
+int btm_num_sco_links_active(void) {
+    int count;
+    s16 state;
+    count = 0;
+    state = *(s16 *)(lbl_803C0F78 + 0x185c);
+    if (state < 7) {
+        if (state >= 2)
+            count = 1;
+    }
+    state = *(s16 *)(lbl_803C0F78 + 0x1890);
+    if (state < 7) {
+        if (state >= 2)
+            count++;
+    }
+    state = *(s16 *)(lbl_803C0F78 + 0x18c4);
+    if (state >= 7)
+        return count;
+    if (state < 2)
+        return count;
+    return count + 1;
+}
+
+BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR addr) {
+    int i;
+    u8 *link;
+    i = 0;
+    link = lbl_803C0F78 + 0x1854;
+    do {
+        if (memcmp(link + 0x28, addr, 6) == 0 && *(UINT16 *)(link + 8) == 4)
+            return TRUE;
+        i++;
+        link += 0x34;
+    } while ((unsigned)i < 3);
+    return FALSE;
+}
+
 void fn_8007F588(s8 arg0) {
     lbl_803C0F78[0x1978] = arg0;
     memset(&lbl_803C0F78[0x1954], 0xFF, 6);
