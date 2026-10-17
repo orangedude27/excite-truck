@@ -12,8 +12,7 @@ int stricmp(const char *, const char *);
 void *fn_80296950(const char *arg0) {
     void *node = lbl_8055F788;
     while (node != 0) {
-        if (stricmp(arg0, (const char *)node) == 0)
-            return node;
+        if (stricmp(arg0, (const char *)node) == 0) return node;
         node = *(void **)((char *)node + 0x20);
     }
     return 0;
