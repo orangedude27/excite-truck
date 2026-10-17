@@ -19,6 +19,8 @@ extern int fn_80028E00(char *, int);
 extern int fn_8013A6D4(int);
 extern int fn_802E317C(char *, ...);
 extern char lbl_8032C1A0[];
+extern char lbl_8032C1E8[];
+extern char lbl_8032C1F8[];
 typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
 void fn_8013A660(unkVtable **arg0, char *arg1, char *arg2) {
     int result;
@@ -47,11 +49,33 @@ char *fn_8013A708(char *arg0, int arg1, int arg2) {
     return arg0;
 }
 
+int fn_8013A760(unkVtable **arg0, int arg1) {
+    char buffer[0x20];
+    int i = 0;
+    do {
+        if ((*arg0)->m_fn() != 0)
+            return 1;
+        i++;
+    } while (i < 3);
+    return 0;
+}
+
+void fn_8013A7E8(unkVtable **arg0, char *arg1, char *arg2) {
+    char buffer[0x20];
+    int i = 0;
+    do {
+        fn_8013A660(arg0, fn_8013A708(buffer, i, (int)arg1), arg2);
+        i++;
+    } while (i < 3);
+}
+
+extern char lbl_8032C1E8[];
+extern char lbl_8032C1F8[];
 int fn_8013A860(float *arg0, unkVtable **arg1) {
-    int result = (*arg1)->m_fn();
+    int result = ((int (*)(char *))(*arg1)->m_fn)(lbl_8032C1E8);
     if (result != 0) {
-        arg0[0] = ((float (*)(void))(*arg1)->m_fn)();
-        arg0[1] = ((float (*)(void))(*arg1)->m_fn)();
+        arg0[0] = ((float (*)(char *))(*arg1)->m_fn)(lbl_8032C1F8);
+        arg0[1] = ((float (*)(char *))(*arg1)->m_fn)(lbl_8032C1E8);
     }
     return result;
 }
