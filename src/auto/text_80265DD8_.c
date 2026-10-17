@@ -185,6 +185,10 @@ void fn_8026A2B0(int arg0) {
     lbl_80499E50[arg0] = 1;
 }
 
+void fn_8026A2C8(void) {
+    fn_801EA994();
+}
+
 char fn_8026A38C(void) {
     return lbl_8055F488;
 }
