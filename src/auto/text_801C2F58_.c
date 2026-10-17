@@ -90,6 +90,12 @@ s32 fn_801C34CC(f32 arg0, f32 arg1) {
     return (f32)abs <= lbl_80558DC4[0];
 }
 
+f32 fn_801C34F4(f32 arg0) {
+    extern f32 lbl_80562988;
+    extern f32 lbl_8056298C;
+    return (lbl_80562988 * arg0) / lbl_8056298C;
+}
+
 s32 fn_801C3A00(u32 arg0) {
     s32 i;
     for (i = 0; i < lbl_8055E804; i++) {
