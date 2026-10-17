@@ -85,7 +85,7 @@ s32 fn_802B5DD0(s32 arg0) {
     s32 temp_r3;
     s32 result;
 
-    temp_r31 = fn_802B5D2C(lbl_8055CE48, arg0);
+    temp_r31 = fn_802B5D2C((const char *)&lbl_8055CE48, arg0);
     temp_r3 = fn_802B05DC();
     result = 0;
     if ((temp_r31 != -1) && (temp_r31 != temp_r3)) {
@@ -100,10 +100,12 @@ s32 fn_802B5DD0(s32 arg0) {
 extern double lbl_80564C68;
 extern float lbl_80564C70;
 extern s32 fn_802E2C20(void);
-  void fn_802B5E24(s32 arg0) {
-      lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
-      lbl_8055FA08 = lbl_80564C5C;
-  }
+#pragma small_data on
+#pragma small_data off
+void fn_802B5E24(s32 arg0) {
+    lbl_8055FA28 = fn_802B5D2C((const char *)&lbl_8055CE48[0], arg0);
+    lbl_8055FA08 = lbl_80564C5C;
+}
 u32 fn_802B5E8C(s32 arg0) {
     s32 result = fn_802B5D2C(lbl_8055CE50, arg0);
     return (u32)((-1 - result) | (result + 1)) >> 31;
