@@ -155,6 +155,7 @@ extern void fn_801E8718(s32);
 extern f32 fn_801E8738(s32);
 extern void fn_802BF598(f32);
 extern s32 fn_801E85A4(void);
+extern void fn_802B0144(void);
 void fn_801EBC70(void) {
     if (lbl_8055EBA0 != 0) {
         fn_802CD254(((s32 *)lbl_8055EBA0)[1]);
