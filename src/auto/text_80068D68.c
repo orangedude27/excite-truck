@@ -1832,6 +1832,15 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+extern char lbl_80317CC8[];
+extern char lbl_80317CFC[];
+extern char lbl_80318C8C[];
+void fn_80089248(void)
+{
+    L2CA_Deregister(0x11);
+    L2CA_Deregister(0x13);
+}
+
 extern void fn_80070954(u32, void *, u16);
 extern void *l2cu_find_ccb_by_cid(void *, u16);
 extern void fn_80089E40(void *, u8, void *);
