@@ -6,6 +6,10 @@
 extern void fn_8012C4D8(void);
 
 extern s32 lbl_8055FC00;
+void fn_802C2FC4(void) {
+    ((void (*)(void))fn_8012C4D8)();
+}
+
 s32 fn_802C3034(s32 value) {
     s32 old;
 
