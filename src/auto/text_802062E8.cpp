@@ -216,6 +216,19 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
     return this_;
 }
 
+extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
+    void *result;
+    if (arg2 == 0) return 0;
+    result = fn_802072E4(arg2, arg0, arg1);
+    if (*(int *)((u8 *)result + 0xC) == 0) return 0;
+    return result;
+}
+
+extern "C" void fn_80207924(void *arg0) {
+    struct Obj { virtual void v0(int); };
+    ((Obj *)arg0)->v0(-1);
+}
+
 extern int lbl_8055ED94;
 extern char lbl_8033BD58;
 extern "C" void fn_80206B14(void);
