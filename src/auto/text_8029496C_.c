@@ -5,6 +5,7 @@ int fn_80287B14(void);
 int fn_802CAC54(int);
 extern int lbl_8055C990;
 extern int lbl_8055C994;
+#pragma scheduling off
 void fn_80294C68(void) {
     int i;
     fn_802CAC54(lbl_8055C990);
@@ -12,10 +13,16 @@ void fn_80294C68(void) {
     lbl_8055C990 = -1;
     i = 0;
     lbl_8055C994 = -1;
-    do { i++; } while (i < fn_80287B14());
+    goto loop;
+loop:
+    i = i + 1;
+    if (i < fn_80287B14()) goto loop;
 }
-
+#pragma scheduling on
 void fn_80294CC0(void) {}
 
 void fn_80294CC4(void) {}
+
+void fn_80294ED4(void);
+void fn_80294CC8(void) { fn_80294ED4(); }
 
