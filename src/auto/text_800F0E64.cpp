@@ -73,6 +73,7 @@ extern "C" const char lbl_803244D4[];
     extern "C" void __register_global_object(void*, void*, void*, void*);
     extern "C" void OSSendMessage(void*, void*, u32);
 extern "C" void OSInitMutex(void*);
+extern "C" u64 impl_GetSoundInfoOffset__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(void *, u32);
 extern "C" void *GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(s32, u32, void*);
 extern "C" const char lbl_80324CB0[];
 extern "C" char lbl_805598A0;
@@ -157,6 +158,17 @@ extern "C" void fn_800F1E50(void *arg0, f32 value) {
     u32 token = OSDisableInterrupts();
     *(f32 *)((char *)arg0 + 8) = value;
     OSRestoreInterrupts(token);
+}
+
+extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800F1E90(void* arg0, f32 farg0) {
+    f32 minVolume = lbl_8056107C;
+    if (!(farg0 >= minVolume)) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x25B, lbl_803244D4);
+    }
+    void* self = arg0;
+    OSDisableInterrupts();
+    *(f32*)((char*)self + 0xC) = farg0;
+    ((void (*)(void))OSRestoreInterrupts)();
 }
 
 extern "C" void fn_800F1F04(void* arg0, f32 farg0) {
