@@ -61,14 +61,10 @@ int fn_8022DA34(int arg0, int arg1) {
 }
 
 void fn_8022DA74(void *arg0, char *arg1) {
-    float value = *(float *)((char *)arg0 + 8);
+    float high = *(float *)((char *)arg0 + 8);
     float low = *(float *)((char *)arg0 + 4);
-    float range = value - low;
-    value = **(float **)((char *)arg0 + 0x18);
-    value = value * range;
-    value = low + value;
-    value = lbl_805635D0 + value;
-    sprintf(arg1, lbl_8055B958, *(int *)((char *)arg0 + 0x1C), value);
+    float range = high - low;
+    sprintf(arg1, lbl_8055B958, *(int *)((char *)arg0 + 0x1C), lbl_805635D0 + (low + **(float **)((char *)arg0 + 0x18) * range), range, low);
 }
 #pragma scheduling reset
 float fn_8022DAB0(void *arg0) {
@@ -129,10 +125,23 @@ void fn_8022DC20(void *arg0) {
 }
 
 void fn_8022DC40(void *arg0, int arg1) {
+    int step;
     *(int *)((char *)arg0 + 0xC) = arg1;
-    while (*(int *)((char *)arg0 + 0xC) >= *(int *)((char *)arg0 + 0x10)) {
-        *(int *)((char *)arg0 + 0xC) -= arg1;
-    }
+    goto check;
+loop:
+    *(int *)((char *)arg0 + 0xC) -= step;
+check:
+    step = *(int *)((char *)arg0 + 0x10);
+    if (*(int *)((char *)arg0 + 0xC) >= step) goto loop;
+}
+
+int fn_8022DC68(void *arg0, int arg1) {
+    int value;
+    int saved = *(int *)((char *)arg0 + 0xC);
+    fn_8022DC40(arg0, arg1);
+    value = fn_8022DBD4(arg0);
+    fn_8022DC40(arg0, saved);
+    return value;
 }
 
 void *fn_8022DCC4(void *arg0, char **arg1, int arg2, int arg3) {
