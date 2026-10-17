@@ -4,6 +4,14 @@
 
 #include <types.h>
 
+extern f32 fn_801E7E18(void);
+extern s32 lbl_804B32B8[];
+extern void fn_8028BC88(s32);
+extern f32 lbl_805643A0;
+extern f32 lbl_80564394;
+extern s32 fn_80287B94(s32, s32, f32, f32, f32);
+extern s32 fn_8028CD80(s32, s32, void *, f32 *, f32);
+
 extern s32 lbl_8055F6F0;
 extern s32 lbl_8055F6F4;
 extern s32 lbl_8055F6F8;
@@ -28,11 +36,32 @@ s32 fn_8028A85C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8028A92C(void) {
+    s32 i;
+    fn_8028BD5C(lbl_8055F6F0);
+    fn_8028BD5C(lbl_8055F6F4);
+    fn_8028C938(lbl_8055F6F8);
+    ((void (*)(void *))(*(void ***)lbl_8055F6FC)[4])(lbl_8055F6FC);
+    for (i = 0; i < 8; i++) {
+        struct Obj8028 *p = *(struct Obj8028 **)((u8 *)lbl_804B3238 + i * 0x10);
+        if (p) ((void (*)(void *))p->vtable[4])(p);
+    }
+}
+
 void fn_8028A9BC(void) {
     fn_8028BD60(lbl_8055F6F0);
     fn_8028BD60(lbl_8055F6F4);
     fn_8028CA70(lbl_8055F6F8);
     fn_8028AB14();
+}
+
+void fn_8028A9F4(void) {
+    s32 i;
+    ((void (*)(void *))(*(void ***)lbl_8055F6FC)[5])(lbl_8055F6FC);
+    for (i = 0; i < 8; i++) {
+        struct Obj8028 *p = *(struct Obj8028 **)((u8 *)lbl_804B3238 + i * 0x10);
+        if (p) ((void (*)(void *))p->vtable[5])(p);
+    }
 }
 
 extern s32 lbl_8055F704;
@@ -62,6 +91,23 @@ s32 fn_8028BA44(void *arg0) {
     gval = lbl_8055F700;
     fn_8028AA6C(arg0, gval, val);
     return 0x14;
+}
+
+extern f32 fn_801E7E18(void);
+extern s32 lbl_804B32B8[];
+extern f32 lbl_805643A0;
+extern f32 lbl_80564394;
+extern s32 fn_80287B94(s32, s32, f32, f32, f32);
+extern s32 fn_8028CD80(s32, s32, void *, f32 *, f32);
+s32 fn_8028BA9C(void *arg0) {
+    f32 values[3];
+    s32 temp;
+    values[0] = *(f32 *)((u8 *)arg0 + 0xC) * lbl_805643A0;
+    values[1] = *(f32 *)((u8 *)arg0 + 0x10) * lbl_805643A0;
+    values[2] = *(f32 *)((u8 *)arg0 + 0x14) * lbl_805643A0;
+    temp = fn_80287B94(0x18, 0x30, values[0], values[1], values[2]);
+    fn_8028CD80(lbl_8055F6F8, temp, arg0, values, lbl_80564394);
+    return 0x1C;
 }
 
 void fn_8028BC18(void) {
