@@ -6,6 +6,10 @@ extern "C" void fn_802073A4(void);
 extern int lbl_8055ED8C;
 extern void *lbl_8055ED90;
 extern char lbl_8033BD3C;
+extern char lbl_8033BD4C;
+extern char lbl_8055B4C0[];
+extern char lbl_8055B4C8[];
+extern "C" void *fn_80206BF8(int, void*);
 extern float lbl_805631FC;
 extern float lbl_80563204;
 extern "C" int fn_8012A364(void*, void*);
@@ -154,11 +158,14 @@ extern "C" void fn_80208620(int, void *);
 extern "C" void fn_8020899C(int, int);
 extern "C" int fn_80128668(void *);
 extern "C" void fn_80206C70(void *arg0) {
-    extern void *lbl_8055ED90;
+    struct Callback {
+        virtual void slot0();
+        virtual void slot1(int);
+    };
     fn_8012A364(lbl_8055ED90, arg0);
     if (--lbl_8055ED8C == 0) {
-        if (lbl_8055ED90 != 0)
-            ((void (*)(void *, int))(*(void ***)lbl_8055ED90)[1])(lbl_8055ED90, 1);
+        if (lbl_8055ED90)
+            ((Callback *)lbl_8055ED90)->slot1(1);
         lbl_8055ED90 = 0;
     }
 }
@@ -174,6 +181,20 @@ extern "C" float fn_80206CD0(void* arg0, float arg1) {
 
 extern "C" f32 fn_802072DC(void) {
     return lbl_805631FC;
+}
+
+extern "C" void *fn_802072E4(void *, int, int);
+extern void fn_802065F8(void);
+extern void fn_802085E8(int, void *);
+extern void *fn_80208994(int, int, int, float);
+extern float lbl_805631F8;
+extern char lbl_8033BD90;
+extern char lbl_8033BD78;
+extern "C" void fn_80207428(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    fn_802072E4(arg0, arg1, arg2);
+    *(int *)((char *)arg0 + 0x10) = arg3;
+    *(void **)arg0 = &lbl_8033BD78;
+    fn_80206750(arg0, arg3, arg4);
 }
 
 extern "C" void fn_8020769C(void) {
