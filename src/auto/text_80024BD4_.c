@@ -14,3 +14,9 @@ int fn_80024BEC(short *arg0, unsigned char *arg1, int arg2) {
     return 1;
 }
 
+int fn_80024C38(signed char *arg0, signed char arg1) {
+    if (arg0 == 0) return 0;
+    *arg0 = arg1;
+    return 1;
+}
+
