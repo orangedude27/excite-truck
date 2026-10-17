@@ -1,6 +1,13 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern u8 lbl_8055E3E4;
+extern char lbl_803316B4[];
+int fn_80176F9C(void);
+void fn_80176F24(void);
+void fn_80176FC4(void);
+void fn_801775EC(void);
+void fn_80177048(void);
 
 extern void fn_80179308(void);
 extern u8 lbl_80430558[];
@@ -295,15 +302,14 @@ void fn_80176DE0(void) {
 
 #pragma dont_inline on
 void fn_80176E4C(void) {
-    u8 *p = lbl_80430558;
     fn_80179308();
     fn_801769EC();
-    *(s32 *)(p + 0xC) = 1;
-    *(s32 *)(p + 0x10) = 0;
-    *(s32 *)(p + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
-    *(s32 *)p = lbl_8055E3C4 + 3;
-    *(s32 *)(p + 8) = 0;
-    *(u8 *)(p + 0x14) = 0;
+    *(s32 *)(lbl_80430558 + 0xC) = (s32)((char *)lbl_80430558 - (char *)lbl_80430558) + 1;
+    *(s32 *)(lbl_80430558 + 0x10) = 0;
+    *(s32 *)(lbl_80430558 + 4) = ((s32 (*)(void))fn_802E2C20)() + 0x32;
+    *(s32 *)lbl_80430558 = lbl_8055E3C4 + 3;
+    *(s32 *)(lbl_80430558 + 8) = 0;
+    *(u8 *)(lbl_80430558 + 0x14) = 0;
 }
 void fn_80176F24(void) {
     fn_80176EC0();
