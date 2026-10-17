@@ -26,7 +26,9 @@ void fn_802DBDE8(int, int);
 extern char lbl_8055D07D;
 extern float lbl_80564F30;
 int fn_802CA294(int arg0) {
-    return *(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x28);
+    int offset = arg0 * 0x4C;
+    int *base = (int *)lbl_8055FCB0;
+    return *(int *)((char *)base + offset + 0x28);
 }
 
 int fn_802CA380(int arg0) {
