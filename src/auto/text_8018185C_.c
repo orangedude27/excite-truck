@@ -9,6 +9,27 @@ extern float lbl_80558DC4;
 extern void *__AXFXGetLfoSinTable_801769CC(void);
 extern int fn_8017D2C8();
 extern float lbl_8055E3C8;
+extern float lbl_80561D2C;
+extern int fn_801C1BA4(int, int);
+extern int fn_801C1C1C();
+extern void *fn_801D2008(void *);
+extern int fn_801C1C7C(int);
+extern void fn_801D21B4();
+extern void *__AXFXGetLfoSinTable_801769CC(void);
+extern void fn_801BD694(int, signed char);
+extern void fn_801AFC28(void);
+extern void fn_80181AFC(void);
+extern void fn_8018C50C(void);
+extern void fn_80204A1C(void *, void *);
+extern unsigned char lbl_8055A3B6;
+extern int lbl_8055E4D0;
+extern int lbl_8055E4D4;
+extern unsigned char lbl_8055E4F4;
+extern unsigned char lbl_8055E4F6;
+extern float lbl_80561CD8;
+extern float lbl_80561D34;
+extern int lbl_80332478;
+extern int lbl_8055A3AC;
 extern int fn_801B2F2C(int);
 extern float lbl_8055E4E0;
 
@@ -165,14 +186,10 @@ int fn_8018A100(void *arg0) {
 
 void fn_8018A120(void *arg0) {
     void *object;
-    void **vtable;
-    void (*method)(void *);
     if (fn_801B2F2C(*(int *)((unsigned char *)arg0 + 0x1ec)) == 0) {
         object = *(void **)((unsigned char *)arg0 + 0x2584);
         *(float *)((unsigned char *)arg0 + 0x25bc) = lbl_8055E4E0;
-        vtable = *(void ***)object;
-        method = *(void (**)(void *))((unsigned char *)vtable + 0x38);
-        method(object);
+        ((void (**)(void *))(*(void ***)object))[14](object);
     }
 }
 
