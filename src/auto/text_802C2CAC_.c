@@ -3,6 +3,11 @@
 
 #include <types.h>
 
+extern u8 lbl_8055CFF8;
+extern u8 lbl_8055D000;
+extern void *fn_801284E8(void *, s32);
+void fn_802C2CE8(void *, s32, s32, s8);
+
 void fn_802C5024(s32, s32, s32, s32);
 
 extern void fn_8012C4D8(void);
