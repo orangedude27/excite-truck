@@ -48,11 +48,14 @@ long *fn_802E9A3C(long arg0, long arg1) {
 extern char lbl_8055D258;
 extern long fn_800B7C34(long, void *);
 extern long fn_800B7C08(long, long *);
+#pragma push
+#pragma processor 750
 long *fn_802E9A6C(long arg0) {
     extern long fn_802E30C8(char *, long);
     long info[8];
-    long *p = lbl_80507600;
+    long *p;
     lbl_80560060 = 1;
+    p = lbl_80507600;
     if (p != 0) {
         p[0] = (long)&lbl_8034E9B0;
         p[1] = fn_800B7C34(arg0, &lbl_8055D258);
@@ -70,7 +73,7 @@ long *fn_802E9A6C(long arg0) {
     if (p != 0) ((void (*)(long *, long))((long *)p[0])[2])(p, 1);
     return 0;
 }
-
+#pragma pop
 void *fn_802E9B54(void *arg0, long arg1) {
     long *p = (long *)arg0;
     long value;
@@ -126,6 +129,46 @@ void fn_802E9CAC(int arg0) {
     lbl_80560068++;
 }
 
+static inline void fn_802E9CF0_SetConfig(char *config, char *buffer0, char *buffer1) {
+    *(void **)config = buffer0;
+    *(void **)(config + 4) = buffer1;
+    *(short *)(config + 8) = 4;
+    *(short *)(config + 10) = 4;
+    *(long *)(config + 12) = 1;
+}
+static inline void fn_802E9CF0_SetState(char *state, char *config) {
+    *(void **)(state + 4) = config;
+}
+static inline unsigned char fn_802E9CF0_GetFlag(char *state) {
+    return ((unsigned char *)state)[9] >> 4 & 1;
+}
+extern long fn_800B7CE8(long, void *, void *);
+extern long fn_800B7DB0(long, void (*)(long), void (*)(int));
+extern long fn_800B7968(long, long, long, void *);
+extern void fn_802E317C(const char *, ...);
+#pragma push
+#pragma opt_propagation off
+void fn_802E9CF0(void) {
+    char *strings = (char *)&lbl_8034E260;
+    char *base = (char *)lbl_80507600;
+    char *config = base + 0xC4;
+    char *state;
+    *(void *volatile *)(base + 0xC4) = base + 0xD8;
+    *(void *volatile *)(config + 4) = base + 0x218;
+    state = base + 0xB8;
+    *(volatile short *)(config + 8) = 4;
+    *(volatile short *)(config + 10) = 4;
+    *(volatile long *)(config + 12) = 1;
+    *(void *volatile *)(state + 4) = config;
+    if (fn_800B7CE8(0x20000, state, config) != 0)
+        fn_802E317C(strings + 0x14C);
+    if (fn_800B7DB0(0, fn_802E9C68, fn_802E9CAC) != 0)
+        fn_802E317C(strings + 0x15C);
+    if (fn_800B7968(0, 0, 0, base + 0xB8) != 0)
+        fn_802E317C(strings + 0x170);
+    lbl_80560061 = ((unsigned char *)(base + 0xB8))[9] >> 4 & 1;
+}
+#pragma pop
 extern char lbl_8034E3E0, lbl_8034E3F0, lbl_805076B8, lbl_80560061, lbl_8055D2A4;
 void fn_802E9E54(unsigned char *arg0, unsigned char *arg1, int arg2) {
     unsigned char *dst = arg0;
