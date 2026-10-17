@@ -7,6 +7,7 @@ extern char lbl_802F9940;
 extern char lbl_8033819C;
 extern int stricmp(const char *, const char *);
 extern int fn_802E317C(const char *, ...);
+typedef struct { const char *name; int value; } Entry;
 void fn_801D049C(void) {
     lbl_8055E8C0 = 0;
 }
