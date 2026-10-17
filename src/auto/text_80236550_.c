@@ -12,6 +12,7 @@ int fn_802E2C20(void);
 void fn_80236674(void);
 void fn_802E30C8(const char *, ...);
 void fn_802365D8(void);
+#pragma dont_inline on
 void fn_80236550(void) {
     if (lbl_8055F09C - lbl_8055F094 > 0x989680) {
         fn_802E30C8(lbl_803408D8);
@@ -40,12 +41,27 @@ void fn_8023660C(void) {
     if (lbl_8055F0A0 != 0) {
         value = 1;
         temp = fn_802E2C20() - lbl_8055F09C + lbl_8055F094 - 0x10;
-        if (temp > 1) {
-            value = temp;
-        }
+        if (temp > 1) value = temp;
         lbl_8055F094 = value;
         lbl_8055F0A0 = 0;
     }
     fn_80236674();
+}
+
+int fn_802ECC10(void);
+void fn_80236550(void);
+extern int lbl_8055F094, lbl_8055F098, lbl_8055F09C;
+void fn_80236674(void) {
+    int time;
+
+    if (lbl_8055F0A0 == 0) {
+        fn_80236550();
+        time = fn_802E2C20();
+        if (fn_802ECC10() != 0) {
+            lbl_8055F094 += time - lbl_8055F09C;
+        }
+        lbl_8055F098 = time;
+        lbl_8055F09C = time;
+    }
 }
 
