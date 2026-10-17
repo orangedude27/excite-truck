@@ -20,6 +20,7 @@ void fn_80236550(void) {
     }
 }
 
+#pragma dont_inline off
 float fn_8023659C(void) {
     return (float)(lbl_8055F09C - lbl_8055F094) / lbl_805636D0;
 }
