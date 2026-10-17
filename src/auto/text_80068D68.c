@@ -2328,6 +2328,21 @@ void fn_80082548(void) {
  *(u16 *)((u8 *)&lbl_803C0A50 + 0x80)=1;
 }
 
+extern u8 lbl_803C3740[];
+extern void gap_connect_ind(void), gap_connect_cfm(void), gap_config_ind(void), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(void), gap_congestion_ind(void);
+void fn_800826D4(void) {
+ *(void **)(lbl_803C3740+0x84)=gap_connect_ind;
+ *(void **)(lbl_803C3740+0x88)=gap_connect_cfm;
+ *(void **)(lbl_803C3740+0x8c)=0;
+ *(void **)(lbl_803C3740+0x90)=gap_config_ind;
+ *(void **)(lbl_803C3740+0x94)=gap_config_cfm;
+ *(void **)(lbl_803C3740+0x98)=gap_disconnect_ind;
+ *(void **)(lbl_803C3740+0x9c)=0;
+ *(void **)(lbl_803C3740+0xa0)=0;
+ *(void **)(lbl_803C3740+0xa4)=gap_data_ind;
+ *(void **)(lbl_803C3740+0xa8)=gap_congestion_ind;
+}
+
 void fn_800833E8(s32 arg0) { btm_cback(0, arg0); }
 
 void fn_800833F4(s32 arg0) { btm_cback(1, arg0); }
