@@ -5,6 +5,48 @@ extern "C" float lbl_80561124;
 extern "C" int OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(int);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...) __attribute__((noreturn));
+extern "C" int fn_800FEC1C(void*, const void*);
+extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void*, void*, const void*);
+extern "C" char lbl_80327AF4[];
+extern "C" void fn_800EC890(void*);
+extern "C" float lbl_80561120;
+extern "C" void InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void* arg0, int arg1, const void* arg2, unsigned long arg3) {
+    float f0 = lbl_80561124;
+    float f1 = lbl_80561120;
+    *((char*)arg0 + 0x1E) = 0;
+    *((char*)arg0 + 0x1F) = 0;
+    *((char*)arg0 + 0x20) = 0;
+    *((char*)arg0 + 0x21) = 0;
+    *((char*)arg0 + 0x1C) = 0;
+    *(float*)((char*)arg0 + 0x24) = f1;
+    *(float*)((char*)arg0 + 0x3C) = f1;
+    *(float*)((char*)arg0 + 0x28) = f0;
+    *(float*)((char*)arg0 + 0x2C) = f0;
+    *(float*)((char*)arg0 + 0x34) = f0;
+    *(float*)((char*)arg0 + 0x38) = f0;
+    *(float*)((char*)arg0 + 0x30) = f1;
+    *(float*)((char*)arg0 + 0x40) = f0;
+    *(int*)((char*)arg0 + 0x44) = 1;
+    *(float*)((char*)arg0 + 0x48) = f1;
+    *(float*)((char*)arg0 + 0x4C) = f0;
+    *(float*)((char*)arg0 + 0x50) = f0;
+    *(float*)((char*)arg0 + 0x54) = f0;
+    *(float*)((char*)arg0 + 0x58) = f0;
+    *(float*)((char*)arg0 + 0x6C) = f0;
+    *(float*)((char*)arg0 + 0x7C) = f0;
+    *(float*)((char*)arg0 + 0x70) = f0;
+    *(float*)((char*)arg0 + 0x80) = f0;
+    *(float*)((char*)arg0 + 0x74) = f0;
+    *(float*)((char*)arg0 + 0x84) = f0;
+    *(float*)((char*)arg0 + 0x78) = f0;
+    *(float*)((char*)arg0 + 0x88) = f0;
+    *(int*)((char*)arg0 + 0xD0) = 0;
+    *(int*)((char*)arg0 + 0x8C) = arg1;
+    *((char*)arg0 + 0x90) = 0x40;
+    *(const void**)((char*)arg0 + 0x94) = arg2;
+    *(unsigned long*)((char*)arg0 + 0x98) = arg3;
+}
+
 extern "C" void fn_80100908(void* arg0, float arg1) {
     int level = OSDisableInterrupts();
     *(float*)((char*)arg0 + 0x28) = arg1;
