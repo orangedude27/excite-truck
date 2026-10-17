@@ -2381,7 +2381,7 @@ BOOLEAN btsnd_hcic_auth_request(UINT16 handle) {
     *(u16 *)(p + 4) = 0;
     p[8] = 0x11; p[9] = 4; p[10] = 2;
     p[11] = handle; p[12] = handle >> 8;
-    btu_hcif_send_cmd(2, 4, 0x11);
+    btu_hcif_send_cmd(p);
     return TRUE;
 }
 
