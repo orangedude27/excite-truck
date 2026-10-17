@@ -70,6 +70,41 @@ void fn_80288A58(int arg0, int arg1) { fn_8028E584(*(int *)lbl_8055F6E0, arg0, a
 
 void fn_80288A70(void) {}
 
+extern float fn_801E7E24(void);
+extern int lbl_8055F6D8, lbl_8055F6DC, lbl_8055F6E4;
+extern float lbl_80558DC4, lbl_80564270;
+extern int fn_80288BF0(int, int, int);
+extern int fn_80289558(int, int);
+extern void fn_80289FC4(int **, int, int);
+__declspec(section ".data") extern float lbl_80558DC4;
+void fn_80288A74(void **arg0, int arg1) {
+    void **q;
+    int i;
+    void **p;
+    int temp;
+    int *obj;
+    float limit;
+    float value;
+
+    value = __fabs(fn_801E7E24());
+    if (!(value <= lbl_80558DC4)) {
+        limit = lbl_80564270;
+        p = arg0;
+        q = arg0;
+        for (i = 0; i < arg1; i++) {
+            if (*((unsigned char *)q + 0xC) && *((float *)q + 2) < limit) {
+                obj = (int *)*q;
+                temp = obj[23];
+                fn_80288BF0(lbl_8055F6D8, *(int *)((char *)p + 4), temp);
+                fn_80289558(lbl_8055F6DC, *(int *)((char *)p + 4));
+                fn_80289FC4((int **)lbl_8055F6E4, *(int *)((char *)p + 4), temp);
+            }
+            p = (void **)((char *)p + 0x10);
+            q = (void **)((char *)q + 0x10);
+        }
+    }
+}
+
 int fn_80288B40(int arg0) {
     fn_80289084(); fn_80289154(arg0); fn_80289268(arg0); fn_80289394(arg0); return arg0;
 }
@@ -89,8 +124,9 @@ void *fn_80288B88(void *arg0, int arg1) {
     return arg0;
 }
 
+void fn_802896E4(void *);
 int fn_802894B4(int arg0) {
-    fn_802896E4();
+    fn_802896E4((void *)arg0);
     fn_802897E0(arg0);
     fn_80289554(arg0);
     return arg0;
@@ -118,6 +154,53 @@ int fn_8028967C(int arg0) {
         p[2] = *(int *)((char *)fn_80288208(i) + 0x24);
         p += 5;
     }
+}
+
+extern int fn_8028E61C(int *);
+extern int fn_8028E2F8(int *, int *, int, int, float, float, float, float, float, float, float);
+extern int lbl_80348B34;
+extern int lbl_8055C880;
+extern float lbl_8056427C, lbl_80564284, lbl_8056428C, lbl_8056429C;
+extern float lbl_805642B0, lbl_805642F8, lbl_805642FC, lbl_80564300;
+int fn_802897E0(int arg0) {
+    volatile float sp94, sp90, sp8C, sp88, sp84, sp80, sp7C, sp78, sp74, sp70, sp68;
+    volatile int sp64;
+    volatile float sp54, sp50, sp44, sp40, sp3C, sp38, sp34, sp30, sp2C, sp28;
+    volatile int sp24, sp20;
+    volatile float sp1C, sp18, sp14, sp10, spC, sp8;
+
+    fn_8028E61C((int *)&sp20);
+    sp24 = 0x60;
+    sp28 = lbl_805642FC;
+    sp2C = lbl_8056428C;
+    sp20 = 0;
+    sp68 = lbl_80564284;
+    sp64 = 6;
+    sp14 = lbl_805642B0;
+    sp18 = lbl_805642B0;
+    sp1C = lbl_805642B0;
+    sp30 = lbl_805642B0;
+    sp34 = lbl_805642B0;
+    sp38 = lbl_805642B0;
+    sp8 = lbl_8056428C;
+    spC = lbl_8056428C;
+    sp10 = lbl_8056428C;
+    sp3C = lbl_8056428C;
+    sp40 = lbl_8056428C;
+    sp44 = lbl_8056428C;
+    sp50 = lbl_8056429C;
+    sp54 = lbl_8056427C;
+    sp8C = lbl_80564300;
+    sp94 = lbl_80564300;
+    sp84 = lbl_80564300;
+    sp90 = lbl_80564300;
+    sp88 = lbl_80564300;
+    sp80 = lbl_80564300;
+    sp78 = lbl_805642F8;
+    sp7C = lbl_805642B0;
+    sp70 = lbl_8056427C;
+    sp74 = lbl_80564300;
+    return *(int *)((char *)arg0 + 0xA4) = fn_8028E2F8((int *)&sp20, &lbl_80348B34, lbl_8055C880, 0, lbl_80564300, lbl_8056427C, lbl_8056429C, lbl_805642B0, lbl_80564284, lbl_8056428C, lbl_805642FC);
 }
 
 int fn_80289BE8(int arg0) {
