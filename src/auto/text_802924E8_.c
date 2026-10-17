@@ -35,6 +35,13 @@ void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
     fn_802928D4(0, arg0, arg1, arg2, arg3, arg1);
 }
 
+void fn_80292B48(void *arg0) {
+    if (fn_80292FB4(lbl_804B4168, arg0) != 0 && arg0 != 0) {
+        void **vtable = *(void ***)arg0;
+        ((void (*)(void *, int))vtable[2])(arg0, 1);
+    }
+}
+
 typedef unsigned char u8;
 typedef signed char s8;
 extern int fn_8002B1D8(const char *, const char *, int);
@@ -100,15 +107,14 @@ void fn_8029311C(void* arg0) {
 #pragma pop
 void fn_80293128(void* arg0) {
     float value = fn_801E7E24(arg0);
-    float magnitude = (float)__fabsf(value);
-    if (magnitude > lbl_80558DC4) fn_802936C4(arg0);
+    if (__fabsf(value) > lbl_80558DC4) fn_802936C4(arg0);
 }
 
 #pragma push
 #pragma small_data off
 void fn_80293530(void* arg0) {
+    u8 *cursor = (u8*)arg0;
     s32 i = 0;
-    u8* cursor = (u8*)arg0;
     goto check;
 body:
     fn_802C6CF8(*(s32*)(cursor + 8));
@@ -146,6 +152,18 @@ void* __dt__Q34nw4r2ef6EffectFv_80293A88(void* arg0, int arg1) {
 
 void fn_80293AE8(void* arg0) { *(int*)((u8*)arg0 + 0x4c2c) = 0; }
 
+void fn_80293B44(void *arg0) {
+    u8 *record = (u8 *)arg0 + 0x2C;
+    s32 i = 0;
+    goto check;
+body:
+    fn_802C744C(*(void **)((u8 *)arg0 + (*(u8 *)(record + 0x48) * 4) + 8), record);
+    record += 0x4C;
+    i++;
+check:
+    if (i < *(s32 *)((u8 *)arg0 + 0x4C2C)) goto body;
+}
+
 extern int fn_8012C33C(void *);
 extern void fn_801345D8(void *, ...);
 extern void fn_80292CD8(void *, int, u8 *);
@@ -169,5 +187,9 @@ void fn_80293CD0(void *arg0, int arg1, int arg2, int arg3) {
     }
     i = *(s32 *)((u8 *)arg0 + 0x28);
     for (; i < 8; i++) *(s32 *)((u8 *)arg0 + i * 4 + 8) = -1;
+}
+
+void fn_8029433C(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0x222C) = 0;
 }
 
