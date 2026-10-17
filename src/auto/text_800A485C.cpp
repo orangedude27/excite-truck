@@ -333,7 +333,7 @@ extern "C" s32 VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(void *arg0, void *ar
     s32 temp_r3;
     if (arg2 >= *(u32 *)((u8 *)arg0 + 8))
         return 0x10;
-    temp_r3 = VFiPFCACHE_DoReadNumSector((u8 *)arg0 + 0x1634, (s32)arg1, arg2, arg3, arg4);
+    temp_r3 = VFiPFCACHE_DoReadNumSector((void *)arg0, arg2, arg3, arg4, (s32)arg1);
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
@@ -2141,6 +2141,15 @@ extern "C" s32 fn_800CEDE0(void *arg0) {
 
 extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800A4B54(s32);
+s32 fn_800A4BE8(s32 arg0, s32 arg1) {
+    return (arg0 << 16) + arg1;
+}
+
+void fn_800A4BF4(u32 arg0, s16 *arg1, u16 *arg2) {
+    *arg1 = arg0 >> 16;
+    *arg2 = arg0;
+}
+
 extern "C" void NANDSetUserData(void* arg0, s32 arg1) {
     *(s32*)((u8*)arg0 + 0xC) = arg1;
 }
