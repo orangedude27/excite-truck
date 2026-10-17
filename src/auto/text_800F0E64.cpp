@@ -1024,6 +1024,15 @@ f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800FC850(s32
     return *(f32 *)(arg0 + arg1 * 4 + 0x470);
 }
 
+extern "C" int fn_800FD810(void* arg0, int arg1) {
+    void* temp_r6 = *(void**)((char*)arg0 + 4);
+    if (arg1 >= *(int*)((char*)temp_r6 + 0x4A0)) {
+        return 0;
+    }
+    return *(int*)((char*)temp_r6 + arg1 * 0x38 + 0x4A8) +
+           *(int*)((char*)temp_r6 + 0x60) * *(int*)((char*)arg0 + 0x10);
+}
+
 extern "C" float fn_800FD848(void *arg0) { return *(float *)((char *)arg0 + 0x454); }
 
 extern "C" float fn_800FD850(void *arg0) { return *(float *)((char *)arg0 + 0x44C); }
