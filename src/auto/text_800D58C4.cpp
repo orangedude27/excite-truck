@@ -80,8 +80,8 @@ extern "C" void fn_800D76BC(void *arg0, int arg1) {
 }
 
 extern "C" void fn_800D76E0(void *arg0) {
-    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(int); };
-    ((Obj*)arg0)->v2(0);
+    struct Obj { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(int); };
+    ((Obj*)arg0)->v4(0);
 }
 
 extern "C" void fn_800D76F4(void *arg0, int arg1, int arg2) {
