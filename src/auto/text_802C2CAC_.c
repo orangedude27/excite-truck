@@ -132,6 +132,33 @@ void fn_802C32B8(void) {
     fn_802E317C(lbl_8034B060, (s32)(s8)*(u8 *)lbl_8055FC00);
 }
 
+#pragma push
+#pragma optimize_for_size on
+#pragma inline_depth(0)
+void fn_802C356C(s32 x0, s32 y0, s32 x1, s32 y1, u32 color) {
+    u32 pixel;
+    s32 width, height, skip, n;
+    u32 *p;
+    if (x1 == x0 || y1 == y0) return;
+    if (!fn_802C307C((void *)lbl_8055FC00, &x0, &y0, &x1, &y1)) return;
+    pixel = ((color >> 8) & 0xF80000) | 0xFF000000;
+    pixel = (pixel & ~0xFC00) | ((color >> 11) & 0xFC00);
+    width = x1 - x0;
+    height = y1 - y0;
+    pixel = (pixel & ~0xF8) | ((color >> 13) & 0xF8);
+    p = (u32 *)fn_802C3060((void *)lbl_8055FC00, x0, y0);
+    skip = (*(s32 *)((u8 *)lbl_8055FC00 + 0x10) - width * 4) / 4;
+    do {
+        n = width;
+        do {
+            --n;
+            *p++ = pixel;
+        } while (n > 0);
+        --height;
+        p += skip;
+    } while (height > 0);
+}
+#pragma pop
 extern const char lbl_8034B094[];
 extern void fn_802C4108();
 extern void fn_802C4610();
@@ -235,6 +262,6 @@ extern void fn_802E317C(const char *, ...);
 extern void fn_802C3850();
 extern void fn_802C3754(s32, s32, s32, s32, s32, s32);
 extern void fn_802DB2C8(void);
-extern void fn_802C3478(void);
+extern void fn_802C3478(s32, s32, s32, s32, u32);
 extern void fn_802C365C(void);
 extern void fn_802C356C(s32, s32, s32, s32, u32);
