@@ -175,6 +175,16 @@ void fn_80116DDC(void* arg0, s32 arg1) {
     fn_8011FF2C(arg1);
 }
 
+void fn_80116E2C(const u8 *arg0) {
+    const u8 *src = arg0;
+    u8 *dst = lbl_8041D508;
+    u8 c;
+    do {
+        c = *src++;
+        *dst++ = c;
+    } while (c != 0);
+}
+
 extern u8 lbl_8041D508[];
 extern s32 (*lbl_8055DEC8)(s32);
 extern s32 lbl_8055DECC;
@@ -190,9 +200,11 @@ s32 fn_80116E54(s32 (*arg0)(s32), s32 arg1) {
         lbl_8055DEC8 = arg0;
     }
     if ((u32)func != (u32)arg0) {
-        if (lbl_8055DED0 != 0)
+        if (lbl_8055DED0 == 0) {
+            lbl_8055DEC8 = arg0;
+        } else {
             return 0;
-        lbl_8055DEC8 = arg0;
+        }
     }
     result = lbl_8055DEC8(arg1);
     if (result != 0)
