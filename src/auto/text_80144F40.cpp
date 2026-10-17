@@ -258,7 +258,9 @@ extern "C" void fn_80145B50(void *arg0, s32 arg1) {
 #pragma dont_inline on
 extern "C" void fn_80145B94(void *arg0, u32 arg1) {
     f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-    f32 value = fn_801451DC(*(s32 *)((u8 *)arg0 + 0xC));
+    f32 input = *(f32 *)((u8 *)arg0 + 4);
+    s32 id = *(s32 *)((u8 *)arg0 + 0xC);
+    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(id, input);
     f32 last = *(f32 *)((u8 *)arg0 + 0x10);
     s32 b = *(s32 *)((u8 *)arg0 + 0x14);
     s32 a = *(s32 *)((u8 *)arg0 + 0x18);
@@ -438,10 +440,8 @@ extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
         return;
     }
     for (;;) {
-        u8 c = (u8)*arg1;
-        arg1++;
-        *arg0 = c;
-        arg0++;
+        u8 c = (u8)*arg1++;
+        *arg0++ = c;
         if ((s8)c == 0) return;
     }
 }
@@ -474,21 +474,7 @@ extern "C" int vsprintf(char *, const char *, va_list);
 extern "C" unsigned int strlen(const char *);
 extern "C" void fn_802E317C(const char *, ...);
   extern "C" char lbl_8032D1A4[];
-extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
-    char buffer[0x200];
-    if (arg0 != 0) {
-        va_list args;
-        va_start(args, arg1);
-        vsprintf(buffer, arg1, args);
-        if (strlen(buffer) >= 0x200) {
-            const char *format = lbl_8032D1A4;
-            s32 length = strlen(buffer);
-            const char *message = arg1;
-            fn_802E317C(format, length, message);
-        }
-        fn_80145B94(arg0, (u32)buffer);
-    }
-}
+extern "C" void fn_80147230(void *arg0, const char *arg1, ...) { char buffer[0x200]; if (arg0 != 0) { va_list args; va_start(args, arg1); vsprintf(buffer, arg1, args); size_t length = strlen(buffer); if (length >= 0x200) { length = strlen(buffer); fn_802E317C(lbl_8032D1A4, length, arg1); } fn_80145B94(arg0, (u32)buffer); } }
 
 extern int vsprintf(char *, const char *, va_list);
 extern unsigned int strlen(const char *);
@@ -498,9 +484,7 @@ void fn_80145B94(void *, const char *);
 extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
     char buffer[0x200];
     va_list args;
-    void **vtable = *(void ***)arg0;
-    void *(*method)(void *) = (void *(*)(void *))vtable[3];
-    void *result = method(arg0);
+    void *result = ((void *(*)(void *))(*(void ***)arg0)[3])(arg0);
     if (result != 0) {
         va_start(args, format);
         vsprintf(buffer, format, args);
@@ -539,9 +523,8 @@ extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         fn_80145CF4((void *)arg1, (void *)temp_r3, arg3);
 }
 
-extern "C" void fn_80147CEC(void *, s32, s32, f64);
-#pragma scheduling off
-extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 value, ...) {
+  extern "C" void fn_80147CEC(void *, s32, s32, f64);
+  extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 value, ...) {
     char text[0x200];
     char buffer[0x20];
     va_list args;
@@ -812,7 +795,7 @@ extern "C" void deleteThreads__6SystemFv(void *arg0) {
     ThreadObject80144F40 *p = *(ThreadObject80144F40 **)arg0;
     if (p) {
         if (p)
-            p->destroy(1);
+            p->destroy(sizeof(*p) != 0);
         *(ThreadObject80144F40 **)arg0 = 0;
     }
 }
