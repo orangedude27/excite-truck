@@ -2,6 +2,17 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern long fn_800167F4(void);
+extern long lbl_8055AF10;
+extern void fn_802C6CF8(long);
+extern void fn_80127464(void);
+extern void fn_801E8D48(void);
+extern void fn_801E8DD4(void);
+extern void fn_801E8E38(void);
+extern void fn_801E8F10(long);
+extern int fn_802E317C(const char *, ...);
+extern unsigned char lbl_80339CC0[];
+extern char lbl_80339CFC[];
+extern void *memset(void *, int, unsigned long);
 extern float lbl_804881D8[];
 extern void fn_80297984(void);
 extern void fn_802889F0(void);
@@ -302,6 +313,21 @@ void fn_801E8CE4(void) {
     memset(lbl_80487CE0, 0, 0x10);
     lbl_8055EB18 = lbl_80562DBC;
     lbl_8055EB14 = lbl_80562DBC;
+}
+
+void fn_801E8D48(void) {
+    struct Init { void *name; int size; float a,b,c,d,e,f,g,h; } init;
+    init.name = (void *)0x57484C50;
+    init.size = 0x28;
+    init.a = lbl_80562DF4; init.b = lbl_80562DF8;
+    init.c = lbl_80562DFC; init.d = lbl_80562DFC;
+    init.e = lbl_80562E00; init.f = lbl_80562DA0;
+    init.g = lbl_80562E04; init.h = lbl_80562E08;
+    if (fn_801284F8(0x84, &lbl_8055AF24, &init, lbl_80562E04,
+                    lbl_80562DA0, lbl_80562E00, lbl_80562DFC,
+                    lbl_80562DF8, lbl_80562DF4))
+        fn_801F19FC(&init);
+    fn_801E87D4(0);
 }
 
 extern unsigned char lbl_80487D00[];
