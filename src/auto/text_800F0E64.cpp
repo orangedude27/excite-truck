@@ -476,18 +476,18 @@ extern "C" s32 fn_800F420C(s32 arg0, s32 arg1) {
 }
 
 void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void *arg0) {
- void **obj;
- obj=*(void ***)((u8*)arg0+0x21c);
- if(obj && ((s32(*)(void*))((void**)*(void**)obj)[0x54/4])(obj)) {
- obj=*(void***)((u8*)arg0+0x21c);
- if(((s32(*)(void*))((void**)*(void**)obj)[0x28/4])(obj)) {
- obj=*(void***)((u8*)arg0+0x21c);
- ((s32(*)(void*,s32,s32))((void**)*(void**)obj)[0x4c/4])(obj,0,0);
- } else {
- obj=*(void***)((u8*)arg0+0x21c);
- ((s32(*)(void*))((void**)*(void**)obj)[0x48/4])(obj);
- }
- }
+    void **obj;
+    obj = *(void ***)((u8 *)arg0 + 0x21c);
+    if (obj && ((s32 (*)(void *))((void **)*(void **)obj)[0x54 / 4])(obj)) {
+        obj = *(void ***)((u8 *)arg0 + 0x21c);
+        if (((s32 (*)(void *))((void **)*(void **)obj)[0x28 / 4])(obj)) {
+            obj = *(void ***)((u8 *)arg0 + 0x21c);
+            ((s32 (*)(void *, s32, s32))((void **)*(void **)obj)[0x4c / 4])(obj, 0, 0);
+        } else {
+            obj = *(void ***)((u8 *)arg0 + 0x21c);
+            ((s32 (*)(void *))((void **)*(void **)obj)[0x48 / 4])(obj);
+        }
+    }
 }
 
 extern "C" s32 fn_800F4CC4(s32 arg0, s32 arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
@@ -1109,15 +1109,19 @@ extern "C" const char lbl_8032687C[];
 extern "C" u8 lbl_8041506C[];
 #pragma pop
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
-    void *cur = *(void **)(lbl_8041506C + 4);
-    void *end = lbl_8041506C + 4;
-    do {
-        void *item = cur;
-        cur = *(void **)cur;
-        if (item == 0)
-            Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326B8C, 0x23D, (char *)lbl_80326B68);
-        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)item - 8);
-    } while (cur != end);
+    void* pHead = *(void**)&lbl_8041506C[0x04];
+    void* pList = &lbl_8041506C[0x04];
+    void* p;
+
+    while (pHead != pList) {
+        p = pHead;
+        pHead = *(void**)pHead;
+        if (p == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80326B8C, 0x23D,
+                                         (const char*)lbl_80326B68);
+        }
+        UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)p)[-0x08]);
+    }
 }
 
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
