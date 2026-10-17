@@ -113,6 +113,7 @@ extern "C" void fn_800D1C48(void);
 
 #include <revolution/MEM/mem_allocator.h>
 #include <revolution/MEM/mem_expHeap.h>
+#include <revolution/MEM/mem_frameHeap.h>
 extern "C" void fn_800B7610(OSAlarm *alarm, OSContext *ctx);
 
 
@@ -1009,6 +1010,10 @@ extern "C" s32 fn_800C673C(void) {
 
 extern "C" void fn_800C675C(u32 size) {
     fn_800CEBE0(lbl_8055DD98, size);
+}
+
+u8 fn_800C6768(void) {
+    return *(u8 *)((char *)lbl_8055DD98 + 0x88);
 }
 
 extern "C" void fn_800C68B0(void) {
