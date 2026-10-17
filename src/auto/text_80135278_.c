@@ -27,6 +27,10 @@ typedef struct {
     u8 unk_28;
     s32 unk_2c;
     s32 unk_30;
+    s32 unk_34;
+    float unk_38, unk_3c, unk_40, unk_44, unk_48, unk_4c;
+    float *unk_50;
+    s32 unk_54, unk_58, unk_5c, unk_60;
 } Unk_80135278;
 
 void fn_80135390(Unk_80135278 *);
@@ -160,6 +164,34 @@ void fn_80135F4C(void *arg0) {
     int x = *(int *)(*(char **)((char *)arg0 + 0x2C) + 0x1C);
     fn_80135F64((int)arg0, x, x + 8, 1, 0);
 }
+
+#pragma dont_inline on
+void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+ s32 offset;
+ s32 i;
+ void *p;
+ fn_801353C8((void *)arg0,arg1,arg2,arg4);
+ fn_80136714((void *)arg0);
+ if(arg3 != 0 && *(s32 *)((char *)arg0+0x50)!=0) {
+  float a=lbl_8055E3C8;
+ float f=lbl_8056133C+a;
+  for(i=0,offset=0;i<*(s32 *)((char *)arg0+0x54);i++,offset+=4)
+   *(float *)(*(char **)((char *)arg0+0x50)+offset)=f;
+  fn_8013605C((void *)arg0);
+ } else fn_8013605C((void *)arg0);
+ {
+ float zero=lbl_80561320;
+ float x=*(float *)((char *)arg0+0x14)* *(float *)((char *)arg0+0x18)+ -*(float *)((char *)arg0+0x10)* *(float *)((char *)arg0+0x1C);
+ p=*(void **)((char *)arg0+4);
+ *(float *)((char *)arg0+0x44)=zero;
+ *(float *)((char *)arg0+0x4C)=zero;
+ *(s32 *)((char *)arg0+0x5C)=0;
+ *(s32 *)((char *)arg0+0x60)=0;
+ *(float *)((char *)arg0+0x48)=*(float *)((char *)p+0x1C)+*(float *)((char *)p+0x18)* *(float *)((char *)arg0+8);
+ *(float *)((char *)arg0+0x40)=x;
+ }
+}
+#pragma dont_inline off
 
 void fn_8013605C(void *arg0) {
     *(signed char *)((char *)arg0 + 0x64) = 0;
