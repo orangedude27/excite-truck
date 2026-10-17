@@ -11,7 +11,7 @@ extern "C" void **fn_801284F8(s32, void *);
 extern "C" f32 lbl_80561498;
 extern "C" s32 fn_80176A1C(void);
 extern "C" int strcmp(const char *, const char *);
-extern "C" u8 lbl_80559D18;
+
 extern "C" u8 lbl_8032CAC0;
 extern "C" s32 fn_8013D224(f32, f32);
 extern "C" u8 *fn_801B2EC0(s32);
@@ -121,7 +121,7 @@ extern "C" u8 lbl_8032CAC0_vt[48];
 static char lbl_80559D18_str[] = "zstm";
 #pragma dont_inline on
 extern "C" void fn_8013D288(void) {
-    void **slot = fn_801284F8(4, (void *)"zstm");
+    void **slot = fn_801284F8(4, &lbl_80559D18_str);
     if (slot != 0) {
         *slot = (void *)lbl_8032CAC0_vt;
     }
@@ -300,7 +300,7 @@ extern "C" f32 lbl_80558DC4_arr[2];
 extern "C" s32 fn_801420D4(void *arg0) {
     f32 diff = *(f32 *)((u8 *)arg0 + 0x2690);
     f64 abs = __fabs((f64)diff);
-    return (f32)abs <= *(volatile f32 *)0x80558DC4;
+    return (f32)abs <= lbl_80558DC4_arr[0];
 }
 
 extern "C" void fn_80142104(void *arg0) {
@@ -323,7 +323,7 @@ extern "C" s32 fn_80142154(void *arg0) {
     }
     return result;
 }
-
+#pragma dont_inline off
 extern "C" u8 *fn_801421C0(u8 *arg0) {
     s32 index = *(s32 *)(arg0 + 0x68);
     u8 *items = *(u8 **)(arg0 + 0x64);
