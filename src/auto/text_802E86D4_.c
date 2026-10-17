@@ -70,3 +70,5 @@ u32 fn_802E8D84(void) { return 1; }
 
 int fn_802E91AC(int *arg0) { return *arg0 == 0; }
 
+void fn_802E986C(void) {}
+
