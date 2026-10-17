@@ -11,6 +11,12 @@ void fn_80015EB0(float);
 void fn_80015E30(void *, float);
 void fn_80015B20(void *, void *, void *);
 void fn_80015AA0(void *, float);
+void fn_8022FFE8(int arg0) {
+    fn_8022FB6C();
+    fn_80214D48();
+    fn_8022FD9C(arg0);
+}
+
 int fn_80230020(void) {
     int count = 0;
     void *p = lbl_8055F014;
