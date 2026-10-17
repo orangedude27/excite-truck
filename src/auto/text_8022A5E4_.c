@@ -61,6 +61,15 @@ int fn_8022AB18(int unused, int arg1, int arg2) {
     return 0;
 }
 
+int fn_8022AB94(const char *arg0, char arg1) {
+    int count = 0;
+    while (*arg0 != 0) {
+        if (*arg0 == arg1) count++;
+        arg0++;
+    }
+    return count;
+}
+
 extern float lbl_80563588;
 extern char *strncpy(char *, const char *, unsigned int);
 extern void fn_8023293C(void *, char *, float);
