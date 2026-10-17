@@ -92,6 +92,38 @@ void fn_802E2A1C(void) {
 void fn_802E2A54(void) {}
 
 void fn_802E2A58(void) {}
+
+void fn_802E2CFC(void *arg0) {
+    struct OSTimeCalendar calendar;
+    OSTicksToCalendarTime(OSGetTime(), &calendar);
+    *(short *)((char *)arg0 + 0xA) = (short)calendar.sec;
+    *(short *)((char *)arg0 + 0x8) = (short)calendar.min;
+    *(short *)((char *)arg0 + 0x6) = (short)calendar.hour;
+    *(short *)((char *)arg0 + 0x4) = (short)calendar.mday;
+    *(short *)((char *)arg0 + 0x2) = (short)(calendar.month + 1);
+    *(short *)((char *)arg0 + 0x0) = (short)calendar.year;
+    *(int *)((char *)arg0 + 0x10) = calendar.wday;
+    *(int *)((char *)arg0 + 0xC) = calendar.msec;
+}
+
+u64 fn_802E2D74(int arg0) {
+    u64 start = fn_802E2C9C();
+    u64 elapsed;
+    do { elapsed = fn_802E2C9C() - start; } while (elapsed < (u64)(arg0 * 1000));
+    return elapsed;
+}
+
+void fn_802E2E0C(int arg0, int arg1) {
+    int index = lbl_8055FF00;
+    lbl_8055FF00 = index + 1;
+    lbl_804DB790[index] = arg0;
+    lbl_804DB7D0[index] = arg1;
+}
+
+void fn_802E300C(int arg0) {
+    ((void (*)(const char *, int))fn_802E317C)(lbl_8034CEE4, arg0);
+}
+
 extern unsigned int fn_802E176C(unsigned int);
 extern void fn_802E1780(void *, unsigned int, int);
 extern int fn_802E1804(void *, void *, int, int, int);
