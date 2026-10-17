@@ -18,6 +18,20 @@ extern "C" void fn_800FFE94(void* arg0) {
         *(void**)arg0 = 0;
 }
 
+extern "C" void* __ct__Q46nw4hbm3snd6detail9WsdPlayerFv(void* arg0) {
+    *(int*)((char*)arg0 + 4) = -1;
+    *(int*)((char*)arg0 + 8) = 0;
+    *(int*)((char*)arg0 + 0xC) = 0;
+    *(void**)arg0 = lbl_80327AF4;
+    *(void**)((char*)arg0 + 0x10) = lbl_80327AF4 + 0x98;
+    *(int*)((char*)arg0 + 0x14) = 0;
+    *(int*)((char*)arg0 + 0x18) = 0;
+    *((char*)arg0 + 0x1D) = 0;
+    fn_800EC890((char*)arg0 + 0xA8);
+    *(int*)((char*)arg0 + 0xC8) = 0;
+    return arg0;
+}
+
 extern "C" void InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void* arg0, int arg1, const void* arg2, unsigned long arg3) {
     float f0 = lbl_80561124;
     float f1 = lbl_80561120;
