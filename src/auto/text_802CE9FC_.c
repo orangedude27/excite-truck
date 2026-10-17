@@ -97,15 +97,12 @@ extern void GXSetAlphaCompare(int, unsigned char, int, int, int);
 extern void GXSetZMode(int, int, int);
 extern unsigned char lbl_8055FD24;
 void fn_802D0E48(int arg0) {
-    switch (arg0) {
-    case 0:
+    if (arg0 == 0) {
         GXSetAlphaCompare(3, lbl_8055FD24, 1, 0, 0);
         GXSetZMode(1, 3, 0);
-        return;
-    case 1:
+    } else if (arg0 == 1) {
         GXSetAlphaCompare(4, lbl_8055FD24, 1, 0, 0);
         GXSetZMode(1, 3, 1);
-        return;
     }
 }
 
