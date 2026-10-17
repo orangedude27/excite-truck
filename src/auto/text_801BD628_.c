@@ -1,6 +1,18 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern float lbl_80562844;
+extern float lbl_80562848;
+int fn_801BD628(float *arg0) {
+    int result = 0;
+    if (arg0[0] >= lbl_80562844 && arg0[0] <= lbl_80562848 &&
+        arg0[1] >= lbl_80562844 && arg0[1] <= lbl_80562848 &&
+        arg0[2] >= lbl_80562844 && arg0[2] <= lbl_80562848) {
+        result = 1;
+    }
+    return result;
+}
+
 void fn_801BD784(void) {
 
 }
@@ -35,19 +47,27 @@ void fn_801BEDA8(int *arg0, int *arg1, int *arg2, int *arg3, int *arg4) {
 }
 
 void fn_801BF0C4(void *arg0, void *arg1, int arg2) {
-    if (fn_801E9E78(arg2, arg0, arg1) == 0) {
-        ((float *)arg1)[0] = lbl_80562838;
-        ((float *)arg1)[1] = lbl_8056283C;
-        ((float *)arg1)[2] = lbl_80562838;
-        ((float *)arg0)[1] = lbl_805628A4;
+    if (fn_801E9E78(arg2, arg1, arg0) == 0) {
+        float a = lbl_80562838;
+        float b = lbl_8056283C;
+        float c = lbl_80562838;
+        float d = lbl_805628A4;
+        ((float *)arg1)[0] = a;
+        ((float *)arg1)[1] = b;
+        ((float *)arg1)[2] = c;
+        ((float *)arg0)[1] = d;
     }
 }
 
 void fn_801BF12C(float *arg0, float *arg1) {
-    arg0[0] = arg1[0];
-    arg0[1] = arg1[1];
-    arg0[2] = arg1[2];
-    arg0[3] = arg1[3];
+    float a = arg1[0];
+    float b = arg1[1];
+    float c = arg1[2];
+    float d = arg1[3];
+    arg0[0] = a;
+    arg0[1] = b;
+    arg0[2] = c;
+    arg0[3] = d;
 }
 
 void fn_801BF150(void *arg0, float farg0, float farg1, float farg2, float farg3) {
