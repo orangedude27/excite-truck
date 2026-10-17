@@ -1,5 +1,9 @@
 #include "types.h"
 extern u32 lbl_8055D6E8;
+extern s32 lbl_8055D6AC;
+extern s32 lbl_8055D6DC;
+extern void *lbl_8055D6E0;
+extern void TRKInitializeEventQueue(void);
 extern u32 lbl_80558DD8;
 extern u32 lbl_8035BF20[];
 extern void TRKReleaseBuffer(void *);
@@ -333,13 +337,11 @@ void* fn_80031248(void) {
 }
 
 void *gdev_cc_initialize(void) {
-    s32 old;
-    s32 next;
-    old = lbl_8055D748;
-    next = (old + 1) & 1;
+    s32 old = lbl_8055D748;
+    s32 next = (old + 1) & 1;
     lbl_8055D748 = next;
-    lbl_8055D744 = (u8 *)&lbl_8035E820 + next * 0x300;
-    return (u8 *)&lbl_8035E820 + old * 0x300;
+    lbl_8055D744 = (u8 *)&lbl_8035E820[next * 0x300];
+    return &lbl_8035E820[old * 0x300];
 }
 
 void CircleBufferWriteBytes(void) {
@@ -477,17 +479,14 @@ void AXRmtAdvancePtr(s32 arg0) {
     s32 end;
     s32 next;
     end = lbl_8055D754 - 0x24;
-    if (end < 0)
-        end += lbl_8055D758;
+    if (end < 0) end += lbl_8055D758;
     end -= lbl_8055D750;
-    if (end < 0)
-        end += lbl_8055D758;
-    if (arg0 > end)
-        arg0 = end;
+    if (end < 0) end += lbl_8055D758;
+    if (arg0 > end) arg0 = end;
     next = lbl_8055D750 + arg0;
     lbl_8055D750 = next;
-    if (next >= lbl_8055D758)
-        lbl_8055D750 = next - lbl_8055D758;
+    if (next < lbl_8055D758) return;
+    lbl_8055D750 = next - lbl_8055D758;
 }
 
 extern u8 lbl_80363BE0[];
