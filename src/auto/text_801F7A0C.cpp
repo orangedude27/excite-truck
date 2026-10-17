@@ -394,6 +394,48 @@ extern "C" void fn_801FA298(void) {
     }
 }
 
+extern "C" void fn_801FA6B8(void) {
+    void *node = lbl_8055EC4C;
+    while (node != 0) {
+        if (*((u8 *)node + 0x41) == 0 && *((u8 *)node + 0x40) != 0 && fn_801F7A0C() != 0) {
+            fn_802C70AC(*(s32 *)node, *(void **)((u8 *)node + 0x34) ? *(void **)((u8 *)node + 0x34) : (u8 *)node + 4, -1, -0xF);
+        }
+        node = *(void **)((u8 *)node + 0x44);
+    }
+}
+#pragma dont_inline reset
+
+extern "C" void fn_801FA738(void) {
+    u32 flags = *(u32 *)((u8 *)fn_801E87A8() + 0x10);
+    s32 mode = 2;
+    if (flags & 2) mode = 1;
+    s32 old = fn_802C9C58(mode);
+    fn_802C7A44();
+    void *node = lbl_8055EC4C;
+    while (node != 0) {
+        if (*((u8 *)node + 0x41) != 0 && *((u8 *)node + 0x40) != 0 && fn_801F7A0C() != 0) {
+            fn_802C70AC(*(s32 *)node, *(void **)((u8 *)node + 0x34) ? *(void **)((u8 *)node + 0x34) : (u8 *)node + 4, -1, -0xF);
+        }
+        node = *(void **)((u8 *)node + 0x44);
+    }
+    fn_802C7A50();
+    fn_802C7AD4();
+    fn_802C9C58(old);
+}
+
+#pragma use_lmw_stmw off
+extern "C" void *fn_801FA8E0(s32 arg0, s32 arg1, s32 arg2) {
+    s32 id = lbl_8055EC78++;
+    void **list;
+    void *context;
+    list = lbl_8055EC74;
+    context = fn_8013184C();
+    void *node = fn_801284F8(0x4C, lbl_8033B5B8);
+    if (node != 0) node = fn_801A4A8C(node, id, arg2, arg0, arg1, context);
+    *(void **)((u8 *)node + 0x44) = *list;
+    *list = node;
+    return (u8 *)node + 4;
+}
 extern void **lbl_8055EC74;
 extern s32 lbl_8055EC78;
 extern u8 lbl_8055EC3C;
