@@ -340,14 +340,14 @@ extern "C" s32 fn_800A9104(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
-extern "C" s32 fn_800ABC60(void *arg0, void *arg1, s32 arg2, s32 *arg3, s32 arg4, s32 arg5);
+extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1);
 extern "C" void fn_800B78F4(void *arg0, void *arg1);
 extern "C" void fn_800ACA44(s32 arg4) {
-    fn_800ABC60(0, 0, 0, 0, arg4, 0);
+    fn_800ABC60(0, arg4);
 }
 
 extern "C" void fn_800ACA50(void) {
-    fn_800ABC60((void *)1, (void *)1, 1, (s32 *)1, 1, 1);
+    fn_800ABC60(1, 1);
 }
 
 extern "C" s32 fn_800AF5A0(u16);
