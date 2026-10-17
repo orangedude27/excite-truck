@@ -96,6 +96,10 @@ void fn_802E4408(int unused, void *arg0) {
     }
 }
 
+int fn_802E4438(void *arg0) {
+    return *(int *)((char *)arg0 + 0x8C);
+}
+
 #pragma scheduling off
 int fn_802E4648(void *arg0) {
     void *data;
