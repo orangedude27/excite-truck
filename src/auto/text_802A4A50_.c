@@ -133,6 +133,20 @@ void fn_802A52FC(f32 arg0) {
     lbl_8055F888 = result;
 }
 
+void *fn_802A7614(void *, s32);
+s32 fn_802A597C(void) {
+    s32 *ptr = lbl_804BCFA8;
+    s32 i = 0;
+    goto check;
+loop:
+    fn_802A7614((void *)*ptr, 1);
+    ptr++;
+    i++;
+check:
+    if (i < lbl_8055F890) goto loop;
+    lbl_8055F890 = 0;
+}
+
 void fn_802A59E0(void) {
     s32 *ptr = lbl_804BCFA8;
     s32 i = 0;
@@ -191,17 +205,24 @@ void fn_802A6408(void *arg0) {
     }
 }
 
+#pragma push
+#pragma scheduling on
 void fn_802A6758(void *arg0, f32 *arg1) {
     u8 *dst = *(u8 **)arg0 + (*(s32 *)((u8 *)arg0 + 4) * 0xC);
-    f32 x = arg1[0];
-    f32 y = arg1[1];
-    f32 z = arg1[2];
+    f32 z;
+    f32 y;
+    f32 x;
+    x = arg1[0];
+    y = arg1[1];
+    z = arg1[2];
     *(f32 *)dst = x;
-    *(f32 *)(dst + 4) = y;
-    *(f32 *)(dst + 8) = z;
+    dst += 4;
+    *(f32 *)dst = y;
+    dst += 4;
+    *(f32 *)dst = z;
     *(s32 *)((u8 *)arg0 + 4) += 1;
 }
-
+#pragma pop
 void fn_802A6790(void *arg0) {
     f32 sp8;
     f32 spC;
