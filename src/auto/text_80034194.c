@@ -50,7 +50,8 @@ void __DSP_remove_task(void *task) {
         void *next = *(void **)((u8 *)task + 0x38);
         if (next != 0) {
             lbl_8055D820 = next;
-            *(void **)((u8 *)next + 0x3c) = 0;
+            task = *(void **)((u8 *)task + 0x38);
+            *(void **)((u8 *)task + 0x3c) = 0;
             return;
         }
         lbl_8055D824 = 0; lbl_8055D81C = 0; lbl_8055D820 = 0;
@@ -58,7 +59,8 @@ void __DSP_remove_task(void *task) {
     }
     if (lbl_8055D81C == task) {
         lbl_8055D81C = *(void **)((u8 *)task + 0x3c);
-        *(void **)((u8 *)lbl_8055D81C + 0x38) = 0;
+        task = *(void **)((u8 *)task + 0x3c);
+        *(void **)((u8 *)task + 0x38) = 0;
         lbl_8055D824 = lbl_8055D820;
         return;
     }
