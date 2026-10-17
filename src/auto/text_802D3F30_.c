@@ -83,6 +83,15 @@ void fn_802D6860(void) {
     fn_802E30C8(lbl_8034C428, lbl_8055FE00);
 }
 
+void fn_802D6B08(void *arg0) {
+    fn_802D61BC();
+    if (lbl_8055FD1C & 8) {
+        fn_802D6170(arg0);
+        return;
+    }
+    fn_802D5FE4(arg0);
+}
+
 #pragma pop
 void fn_802D6B54(void* alarm) {
     fn_802D5F88(fn_802D62E4(alarm));
