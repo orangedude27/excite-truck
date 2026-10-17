@@ -2,3 +2,6 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_802789A8(void) {}
+
+void fn_802789AC(void) {}
+
