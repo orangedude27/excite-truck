@@ -16,6 +16,8 @@ extern void *lbl_8055F924;
 void fn_8028E080(void);
 void fn_802AAF00(int a, int b, int c) {}
 
+void fn_802AB500(void) {}
+
 void fn_802AB6D0(void) {}
 
 void fn_802AB6D4(void) {
