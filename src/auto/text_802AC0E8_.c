@@ -12,6 +12,14 @@ extern int sscanf(const char *, ...);
 extern void fn_802AC344(void);
 void fn_802AC454(void) { fn_802AC344(); }
 
+void fn_802AC458(void) {
+    lbl_8055F93C = 0;
+    lbl_8055F944 = fn_802E2C20();
+    lbl_8055F948 = 0;
+    lbl_8055F940 = 0;
+    lbl_8055F94C = 1;
+}
+
 void fn_802AC49C(void) {
     lbl_8055F93C = 0;
 }
