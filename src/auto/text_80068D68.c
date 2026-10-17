@@ -2362,6 +2362,20 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+s32 btsnd_hcic_auth_request_80084570(u16 handle) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (p == NULL) return 0;
+    *(u16 *)(p + 2) = 5;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0x1F;
+    p[9] = 4;
+    p[10] = 2;
+    p[11] = handle;
+    p[12] = handle >> 8;
+    btu_hcif_send_cmd(p);
+    return 1;
+}
+
 s32 btsnd_hcic_hold_mode_80084A34(u8 *p, u16 handle, u16 max_interval, u16 min_interval) {
     if (p == NULL) {
         p = GKI_getpoolbuf(2);
