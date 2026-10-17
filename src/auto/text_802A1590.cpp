@@ -21,6 +21,9 @@ extern "C" void fn_802A2E08(void*, s32);
 extern "C" void fn_802A44B8(void*, s32);
 extern "C" int lbl_80349B78[];
 extern "C" int lbl_8055F870;
+extern "C" float lbl_80564734;
+extern "C" float lbl_80564744;
+extern "C" void fn_802A4524(void*);
 
 namespace ebi {
 namespace title {
@@ -247,6 +250,12 @@ void fn_802A4118(void *arg0, void *arg1) {
 extern "C" void fn_802A44B4(void) {
 }
 
+#pragma scheduling off
+extern "C" void fn_802A4524(void *arg0) {
+    *(f32*)((char*)arg0 + 0x18) = lbl_80564744;
+    *(s32*)((char*)arg0 + 0x4) = 0;
+}
+#pragma scheduling on
 extern "C" s32 fn_802A4958(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
