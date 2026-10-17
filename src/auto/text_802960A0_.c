@@ -7,6 +7,8 @@ extern float lbl_80564564;
 extern float lbl_80564568;
 extern void *lbl_8055F788;
 int stricmp(const char *, const char *);
+extern void *lbl_8055F788;
+int stricmp(const char *, const char *);
 void *fn_80296950(const char *arg0) {
     void *node = lbl_8055F788;
     while (node != 0) {
