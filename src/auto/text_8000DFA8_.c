@@ -80,7 +80,7 @@ extern s32 lbl_8055D494;
 extern UnkF22C *lbl_8055D4B0;
 extern void fn_802C6CF8(s32);
 extern s32 lbl_80558A94;
-extern s32 fn_802C6FC0();
+extern s32 fn_802C6FC0(s32, s32, s32);
   extern void fn_80234470(void);
   extern s32 lbl_8055D498;
   extern s32 lbl_8055D49C;
@@ -108,10 +108,12 @@ extern char lbl_802FC3DC[];
 extern s32 fn_802E317C(void *);
 extern char lbl_802FC420[];
 extern char lbl_802FC42C[];
+#pragma scheduling on
 void fn_8000F188(s32 arg0) {
-    lbl_80558A94 = ((s32 (*)(s32, s32, s32))fn_802C6FC0)(arg0, 0, 0);
+    register s32 a1 = 0;
+    lbl_80558A94 = fn_802C6FC0(arg0, 0, a1);
 }
-
+#pragma scheduling reset
 void fn_8000F1B4(void) {
     fn_802C6CF8(lbl_80558A94);
     lbl_80558A94 = -1;
