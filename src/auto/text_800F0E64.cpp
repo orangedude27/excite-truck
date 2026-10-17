@@ -16,6 +16,11 @@ typedef s32 M2C_UNK32;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
 extern "C" s32 fn_80128668(void);
+extern "C" const char lbl_80324E88[];
+extern "C" const char lbl_80324EA4[];
+extern "C" const char lbl_80325640[];
+extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
+extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *);
 extern "C" void fn_800EBB88(void*);
 extern "C" f32 lbl_805610B8;
 extern "C" void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, u32);
