@@ -31,6 +31,8 @@ extern float lbl_8055EB14;
 extern int fn_801284F8(int, void *, void *, float, float, float, float, float, float);
 extern void fn_801F19FC(void *);
 extern float lbl_80562DA0, lbl_80562DF4, lbl_80562DF8, lbl_80562DFC;
+extern float lbl_80562DA8, lbl_80562DB0;
+extern char lbl_80339CB4[];
 extern float lbl_80562E00, lbl_80562E04, lbl_80562E08;
 extern unsigned char lbl_8055AF24;
 extern void fn_80206464();
@@ -204,6 +206,19 @@ float fn_801E8738(long arg0) {
     return *(float *)((char *)lbl_8055EB04 + arg0 * 0xE0 + 0x34);
 }
 
+long fn_801E8758(long arg0) {
+    long index = arg0;
+    unsigned char *entry;
+    long value;
+    long result = 1;
+    if (index < 0) index = (long)lbl_8055AF0C;
+    entry = lbl_80487D00 + index * 0x38;
+    value = *(long *)(entry + 0x30);
+    if (value & 0x10) return result;
+    if ((value ^ *(long *)(entry + 0x34)) & 0x20) return result;
+    return 0;
+}
+
 void *fn_801E879C(void) {
     return lbl_80487DE0;
 }
@@ -276,6 +291,21 @@ void fn_801E88B4(long *arg0, long *arg1, long *arg2, long *arg3, long arg4) {
     *arg3 = *(long *)(base + 0x48);
 }
 
+float fn_801E88F0(long arg0) {
+    long index = arg0;
+    long params[4];
+    long which;
+    char *base;
+    if (index < 0) index = (long)lbl_8055AF0C;
+    params[0] = *(long *)lbl_802F99F8;
+    params[1] = *(long *)((char *)lbl_802F99F8 + 4);
+    params[2] = *(long *)((char *)lbl_802F99F8 + 8);
+    params[3] = *(long *)((char *)lbl_802F99F8 + 12);
+    which = (long)lbl_8055EB2C - 1;
+    base = (char *)lbl_8055EB04 + index * 0xE0;
+    return *(float *)(base + 0x38) * ((float *)params)[which];
+}
+
 long fn_801E8954(long arg0) {
     if (arg0 < 0) arg0 = (long)lbl_8055AF0C;
     return (*(unsigned long *)(lbl_80487D00 + arg0 * 0x38 + 0x30)) & 1;
@@ -303,6 +333,14 @@ void* fn_801E89EC(void) {
 
 void fn_801E89F4(void *arg0) {
     lbl_8055AF08 = arg0;
+}
+
+void fn_801E89FC(void) {
+    lbl_804881D8[0] = fn_80129DC4(0, lbl_80562DC0, lbl_80562DD4);
+    lbl_804881D8[1] = fn_80129DC4(0, lbl_80562DD8, lbl_80562DDC);
+    lbl_804881D8[2] = fn_80129DC4(0, lbl_80562DC0, lbl_80562DD4);
+    PSVECNormalize(lbl_804881D8, lbl_804881D8);
+    lbl_804881D8[3] = fn_80129DC4(0, lbl_80562DBC, lbl_80562DE0);
 }
 
 void fn_801E8C84(float *arg0) {
