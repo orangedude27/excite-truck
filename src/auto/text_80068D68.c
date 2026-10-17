@@ -1787,6 +1787,11 @@ void fn_8007BC88(void) {
 
 }
 
+void fn_8007C794(void) {
+    btm_process_remote_name(0, 0, 0, 0x1F);
+    btm_sec_rmt_name_request_complete(0, 0, 0x1F);
+}
+
 void fn_8007DEF4(void *arg0) {
     GKI_freebuf(arg0);
 }
@@ -2808,11 +2813,14 @@ void fn_80095518(void *arg0) {
     else if (state == 11) fn_800916F4(*(void **)((u8 *)arg0 + 0x10), 5, 0);
 }
 
-void rfc_sec_check_complete(void *arg0, s8 arg1) {
-    if (*((u8 *)arg0 + 1)) {
-        u8 state = *((u8 *)arg0 + 0x68);
-        if (state == 2 || state == 3) rfc_port_sm_execute(arg0, 15, &arg1);
+void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
+    if (*((u8 *)arg0 + 1) == 0) return;
+    if (*((u8 *)arg0 + 0x68) != 2 && *((u8 *)arg0 + 0x68) != 3) {
+        goto done;
     }
+    rfc_port_sm_execute(arg0, 15, &arg1);
+done:
+    return;
 }
 
 void fn_8009578C(void *arg0) {
