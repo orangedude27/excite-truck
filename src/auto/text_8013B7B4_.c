@@ -6,6 +6,12 @@ extern float lbl_8042F8A8[];
 extern int lbl_8055E174;
 extern float lbl_80561474;
 void fn_8013B950(void);
+void fn_8013BC34(void) {
+    *(float *)((char *)lbl_8042F8A8 + 8) = lbl_80561474;
+    lbl_8055E174 = 0;
+    *((u8 *)lbl_8042F8A8 + 4) = 0;
+}
+
 void fn_8013BC54(void) {
     lbl_8055E174++;
     if ((lbl_8055E174 & 7) == 0) {
