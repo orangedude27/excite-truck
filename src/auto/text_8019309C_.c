@@ -33,8 +33,10 @@ void fn_801942F0(void *arg0, int arg1) {
     }
 }
 
+extern float lbl_8055A488;
+extern float lbl_8056215C;
 void fn_801945F8(void *arg0) {
-    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) == 0x50 &&
+    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) != 0x50 ||
         *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24) == 3) {
         fn_80194590(arg0);
     }
