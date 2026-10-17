@@ -72,6 +72,31 @@ void fn_801C1C7C(void *arg0) {
     }
 }
 
+extern float lbl_80562930;
+void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
+    float x = arg3[0] * lbl_80562930;
+    float y = arg3[1] * lbl_80562930;
+    float z = arg3[2] * lbl_80562930;
+    int i = 0;
+    int offset = 0;
+    *(float *)((char *)arg0 + 0x58) = arg1[0];
+    *(float *)((char *)arg0 + 0x5C) = arg1[1];
+    *(float *)((char *)arg0 + 0x60) = arg1[2];
+    *(float *)((char *)arg0 + 0x64) = arg2[0];
+    *(float *)((char *)arg0 + 0x68) = arg2[1];
+    *(float *)((char *)arg0 + 0x6C) = arg2[2];
+    do {
+        float *dst = *(float **)((char *)arg0 + 0x2C);
+        float *p = (float *)((char *)dst + offset);
+        ++i;
+        p[0] += x;
+        offset += 12;
+        p[1] += y;
+        p[2] += z;
+    } while (i < *(int *)((char *)arg0 + 0x14));
+    fn_801C1B60((int)arg0);
+}
+
 void fn_801C2B9C(float* out, float* a, float* b, float scale) {
     out[1] = a[1] + b[1] * scale;
     out[0] = a[0] + b[0] * scale;
