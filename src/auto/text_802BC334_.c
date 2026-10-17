@@ -10,6 +10,17 @@ int fn_802BC334(int arg0) {
     return -2;
 }
 
+void *fn_802BC4D4(void *arg0) {
+    return *(void **)(*(char **)((char *)arg0 + 4) + 0xC);
+}
+
+double fn_8002F234(float, float);
+float fn_802BC540(void *arg0, float farg0) {
+    float x = *(float *)arg0;
+    float z = *(float *)((char *)arg0 + 8);
+    return farg0 * (float)fn_8002F234(x * x + z * z, z);
+}
+
 int fn_802BD0C8(void *arg0) {
     int result = 0;
     if (*(int *)((char *)arg0 + 4) != 0) {
@@ -23,27 +34,22 @@ int fn_802BD0C8(void *arg0) {
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
 void fn_802BD0F4(void *arg0) {
-    int i;
-    int offset;
-    int count;
-    char *entries;
-    char *entry;
+    int i, offset, count;
+    char *entries, *entry;
     void *array;
-    float x, y;
-    if (*(int *)((char *)arg0 + 4) != 0 &&
-        (array = *(void **)((char *)arg0 + 0x58)) != 0) {
+    float pos[2];
+    if (*(int *)((char *)arg0 + 4) != 0 && (array = *(void **)((char *)arg0 + 0x58)) != 0) {
         entries = *(char **)array;
         count = *(int *)(entries + 4);
-        i = 0;
-        offset = 0;
+        i = 0; offset = 0;
         while (i < count) {
             array = *(void **)((char *)arg0 + 0x58);
-            entry = *(char **)((char *)array) + offset;
-            x = *(float *)(entry + 0x30);
-            y = *(float *)(entry + 0x38);
-            *(int *)(entry + 4) = fn_802BA580(*(int *)((char *)arg0 + 4), &x, *(float *)(entry + 0x1c));
-            offset += 0x44;
-            i++;
+            entries = *(char **)array;
+            entry = entries + offset;
+            pos[0] = *(float *)(entry + 0x30);
+            pos[1] = *(float *)(entry + 0x38);
+            *(int *)(entry + 4) = fn_802BA580(*(int *)((char *)arg0 + 4), pos, *(float *)(entry + 0x1c));
+            offset += 0x44; i++;
         }
     }
 }
@@ -69,8 +75,8 @@ int fn_802BA580(int, float *, float);
 void fn_802BD414(int arg0, volatile int *arg1) {
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
-        int first = arg1[0];
         int second = arg1[1];
+        int first = arg1[0];
         result[0] = second;
         result[2] = first;
         result[1] = 0;
@@ -86,6 +92,20 @@ int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
 
 void fn_802BDC3C(void* alarm) {
     fn_802C1550(fn_802BD210(alarm));
+}
+
+extern int lbl_8034AB38, lbl_8034AC48;
+extern int lbl_8055FAA8, lbl_8055FAAC, lbl_8055FAB0;
+extern void *lbl_8055FABC;
+void deleteThreads__6SystemFv_802BDCA4(void **arg0) {
+    void *obj = *arg0;
+    if (obj != 0) {
+        if (obj != 0) {
+            void (**vtable)(void *, int) = *(void (***)(void *, int))((char *)obj + 4);
+            vtable[4](obj, 1);
+        }
+        *arg0 = 0;
+    }
 }
 
 void fn_802C2930(void*, unsigned int);
