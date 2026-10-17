@@ -81,6 +81,24 @@ s32 fn_802C3060(void *arg0, s32 arg1, s32 arg2) {
     return *(s32 *)((u8 *)arg0 + 0x10) * arg2 + (*(s32 *)((u8 *)arg0 + 4) + arg1 * 4);
 }
 
+s32 fn_802C307C(void *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 *arg4) {
+    s32 x0 = *arg1;
+    s32 x1;
+    s32 x2;
+    if (x0 >= *(s32 *)((u8 *)arg0 + 0x1C)) return 0;
+    if (*arg2 >= *(s32 *)((u8 *)arg0 + 0x20)) return 0;
+    x1 = *(s32 *)((u8 *)arg0 + 0x14);
+    if (x0 < x1) *arg1 = x1;
+    x1 = *(s32 *)((u8 *)arg0 + 0x18);
+    if (*arg2 < x1) *arg2 = x1;
+    x1 = *(s32 *)((u8 *)arg0 + 0x1C);
+    if (*arg3 > x1) *arg3 = x1;
+    x2 = *(s32 *)((u8 *)arg0 + 0x20);
+    if (*arg4 > x2) *arg4 = x2;
+    if (*arg1 >= *arg3) return 0;
+    return *arg2 < *arg4;
+}
+
 extern const char lbl_8034B060[];
 extern void fn_802C3320(void);
 extern void fn_802C33A8(void);
