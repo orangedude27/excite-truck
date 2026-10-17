@@ -51,7 +51,7 @@ extern unsigned int lbl_8034D098;
 extern void DVDInit(void);
 extern void OSReport(const char *);
 extern unsigned int lbl_8034D098;
-extern int DVDReadAsyncPrio(void *, int, int, int);
+extern int DVDReadAsyncPrio(void *, void *, int, int, int, int);
 extern int DVDGetCommandBlockStatus(void *);
 extern unsigned int lbl_8055D1BC;
 extern unsigned int lbl_8034D180;
