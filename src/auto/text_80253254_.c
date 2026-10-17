@@ -59,6 +59,18 @@ void fn_80253C48(void *arg0) {
     }
 }
 
+void fn_8025567C(void) {
+    extern u8 lbl_8055F330;
+    if (lbl_8055F330 != 0) {
+        fn_802AE9D0();
+        fn_80252BC8();
+    }
+    fn_802ABC2C();
+    fn_801EFF70();
+    fn_80203DC8();
+    fn_802C7A00();
+}
+
 void *fn_802556BC(void *arg0, s32 arg1) {
     extern char lbl_80344B98[];
     extern char lbl_80344BC0[];
