@@ -47,6 +47,8 @@ void fn_80005460(void) {
     return;
 }
 
+s32 fn_80005564(void) { return lbl_8034EEB8[0x50 / 4] != 0; }
+
 extern u32 lbl_8034EEB8[];
 extern void *fn_801E87A8(void);
 extern s32 fn_801E86F8(s32);
