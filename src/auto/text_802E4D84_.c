@@ -19,7 +19,7 @@ extern void fn_802E9A2C(void);
 extern void fn_80060CC0(int, int, void (*)());
 extern void fn_802E30C8(char *, int, char *, ...);
 extern void fn_802E5248(int, int);
-extern void fn_802E51D0(void);
+extern void fn_802E51D0();
 extern char lbl_8055D1D8[];
 extern char lbl_8034D39C[];
 extern char lbl_8034D3C0[];
@@ -44,7 +44,7 @@ extern char lbl_8034D528[];
 extern void fn_80128670(int);
 extern void fn_8012C4D8(void);
 extern void fn_8012BF24(void *);
-void fn_802E4D84(void *dst, int size, void *src) {
+void fn_802E4D84(void *dst, void *src, int size) {
     memcpy(dst, src, size);
     DCFlushRange(dst, size);
 }
@@ -56,16 +56,16 @@ unsigned short fn_802E5168(float arg0) {
     int converted;
     int result;
     if (value < lbl_8056512C) {
-        value -= lbl_80565134;
+        value = value - lbl_80565134;
     } else {
-        value += lbl_80565134;
+        value = lbl_80565134 + value;
     }
     converted = (int)value;
     result = converted & ((-converted & ~converted) >> 31);
-    if (result >= 0x8000) {
-        result = 0x8000;
+    if (result < 0x8000) {
+        return (unsigned short)result;
     }
-    return (unsigned short)result;
+    return 0x8000;
 }
 
 void fn_802E51D0(void) {
@@ -134,13 +134,13 @@ void fn_802E58B8(unsigned char *arg0) {
 }
 
 void fn_802E5A54(void) {
-    unsigned char *ptr;
     int i;
+    unsigned char *ptr;
     for (i = 0; i < lbl_8055FFA0; i++) {
         fn_802E5D5C(lbl_8055FF9C[i]);
     }
     lbl_8055FFA0 = 0;
-    for (ptr = lbl_804FC558, i = 0; i < lbl_8055FF78; ptr += 0x20, i++) {
+    for (i = 0, ptr = lbl_804FC558; i < lbl_8055FF78; i++, ptr += 0x20) {
         fn_8012BF24(ptr);
     }
     lbl_8055FF78 = 0;
