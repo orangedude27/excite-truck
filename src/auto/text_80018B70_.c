@@ -66,6 +66,7 @@ extern char lbl_802FD404[];
 extern void *lbl_802FD3CC;
 extern char lbl_802FD3A0[];
 extern char lbl_802FD3B4[];
+extern char lbl_802FD434[];
 extern void *lbl_802FD2DC;
 extern const char lbl_80558C54[];
 extern void *lbl_803580A4;
