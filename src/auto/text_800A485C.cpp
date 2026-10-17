@@ -970,6 +970,23 @@ extern "C" void fn_800C675C(u32 size) {
     fn_800CEBE0(lbl_8055DD98, size);
 }
 
+extern "C" void fn_800C68B0(void) {
+    s32 r31;
+    u8 *r30;
+    r30 = (u8 *)lbl_8055DD98;
+    if (*(void **)(r30 + 0x5C0) != NULL) {
+        Update__Q36nw4hbm3snd18SoundArchivePlayerFv(*(void **)(r30 + 0x5C0));
+    }
+    r31 = 0;
+    do {
+        if (r31 < 4) {
+            updateSound__Q210homebutton10ControllerFv(*(void **)(r30 + 0x254));
+        }
+        r31 += 1;
+        r30 += 4;
+    } while (r31 < 4);
+}
+
 extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
     void* r30 = this_ptr;
     s32 r31 = arg1;
@@ -1567,6 +1584,42 @@ int fn_800D5500(void *obj, const char *name) {
     return 0;
 }
 
+extern "C" void* fn_800D55B0(void *arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        *(void **)arg0 = lbl_8031F428;
+        Clear__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)arg0 + 4);
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)arg0 + 0x10, 0);
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)arg0 + 4, 0);
+        fn_800DCE10(arg0, 0);
+        if (arg1 > 0) {
+            ((void (*)(void *))fn_80128668)(arg0);
+        }
+    }
+    return arg0;
+}
+
+extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    void *node = *(void **)((u8 *)arg0 + 8);
+    void *end = (u8 *)arg0 + 8;
+    for (;;) {
+        if (node == end) {
+            return 0;
+        }
+        if (node == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
+        }
+        void *next = (void *)((u8 *)node + 8);
+        if (next == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F4A4, 0x23D, lbl_8031F480);
+        }
+        s32 result = ((s32 (*)(long, long, long, long, long))fn_800D51F4)((long)next, (long)((u8 *)node + 0x24), arg1, arg2, arg3);
+        if (result != 0) {
+            return result;
+        }
+        node = *(void **)node;
+    }
+}
+
 extern "C" int fn_800D56FC(void* arg0, const char* arg1, int) {
     char* node = *(char**)((char*)arg0 + 0x14);
     char* end = (char*)arg0 + 0x14;
@@ -1655,6 +1708,17 @@ extern "C" void fn_800D15B4(void*);
 extern "C" void fn_800CA148(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
     fn_800D15B4(OSGetAlarmUserData(alarm));
+}
+
+extern "C" void fn_800CA234(s32 arg0) {
+    if (arg0 == 1) {
+        *(u8 *)((u8 *)lbl_8055DD98 + 0x8a) = 1;
+    }
+    void *vt = *(void **)((u8 *)lbl_8055DD98 + 0x1b8);
+    if (vt == NULL) {
+        return;
+    }
+    (*(void (*)(void))vt)();
 }
 
 s32 homebutton::HomeButton::getPaneNo(const char *name) {
