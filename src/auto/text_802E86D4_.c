@@ -7,6 +7,9 @@ extern void fn_802E86D4(void);
 extern void fn_802E870C(void);
 extern int fn_802E8744(void *);
 extern void fn_80127464(void);
+extern int NANDDelete(const char *);
+extern char lbl_8034DE54[];
+extern char lbl_8034DE6C[];
 
 void fn_802E8838(void) {
     fn_80127464();
