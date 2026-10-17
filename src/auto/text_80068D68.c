@@ -1348,6 +1348,10 @@ void bta_dm_pin_reply(void *arg0) {
  }
 }
 
+void fn_80072434(void) {
+    ((void (*)(u32, u32))*(u32 *)lbl_803C0B98)(3, 0);
+}
+
 void fn_800725B4(void *arg0) {
     *(void **)(lbl_803C0B98 + 0x74) = GKI_getbuf(0x1C);
     memcpy(*(void **)(lbl_803C0B98 + 0x74), arg0, 0x1C);
@@ -1514,19 +1518,25 @@ void fn_8008C04C(s16 arg0) {
 BOOL l2cap_link_chk_pkt_end(void) {
     u8 *p_lcb;
     u8 *p_buf;
-    u16 offset, len, l2cap_len;
+    u8 *p_data;
+    u16 offset, len;
+    u8 hi, lo;
+    u16 l2cap_len;
     p_lcb = *(u8 **)(lbl_803C4040 + 0x7BC);
-    if (p_lcb == 0) return TRUE;
-    p_buf = *(u8 **)(p_lcb + 0x50);
-    if (p_buf == 0) return TRUE;
-    offset = *(u16 *)(p_buf + 4);
-    len = *(u16 *)(p_buf + 2);
-    l2cap_len = (u16)(p_buf[offset + 0x0C] | (p_buf[offset + 0x0D] << 8));
-    if (l2cap_len <= len - 8) {
-        *(u8 **)(p_lcb + 0x50) = 0;
-        return TRUE;
+    if (p_lcb != 0) {
+        p_buf = *(u8 **)(p_lcb + 0x50);
+        if (p_buf != 0) {
+            offset = *(u16 *)(p_buf + 4);
+            len = *(u16 *)(p_buf + 2);
+            p_data = p_buf + offset;
+            hi = p_data[0x0D];
+            lo = p_data[0x0C];
+            l2cap_len = (u16)(lo + (hi << 8));
+            if (l2cap_len > len - 8) return FALSE;
+            *(u8 **)(p_lcb + 0x50) = 0;
+        }
     }
-    return FALSE;
+    return TRUE;
 }
 
 void l2c_link_role_changed(u8 *bd_addr, u8 new_role) {
