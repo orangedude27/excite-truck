@@ -2455,6 +2455,16 @@ s32 btsnd_hcic_write_policy_set_80085668(u16 arg0, u16 arg1) {
     return 1;
 }
 
+s32 btsnd_hcic_inq_cancel_8008576C(void) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (p == 0) return 0;
+    *(u16 *)(p + 2) = 3;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 1; p[9] = 0x10; p[10] = 0;
+    btu_hcif_send_cmd(p);
+    return 1;
+}
+
 s32 btsnd_hcic_reset_800857CC(void) {
     u8 *p = GKI_getpoolbuf(2);
     if (!p) return 0;
@@ -2511,6 +2521,22 @@ u8 HID_HostRegister(void *arg0) {
     *(void **)(lbl_803C3C38 + 0x340) = arg0;
     lbl_803C3C38[0x400] = 1;
     return 0;
+}
+
+u8 HID_HostOpenDev(u32 arg0) {
+    u8 *entry;
+    u32 offset;
+    if (lbl_803C3C38[0x400] == 0)
+        return 1;
+    if (arg0 > 0x10) return 5;
+    offset = arg0 * 0x34;
+    entry = lbl_803C3C38 + offset;
+    if (entry[0] == 0)
+        return 5;
+    if (entry[0xA] != 0)
+        return 10;
+    entry[0xC] = 1;
+    return hidh_conn_initiate();
 }
 
 extern char lbl_80317CC8[];
