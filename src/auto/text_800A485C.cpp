@@ -327,6 +327,27 @@ extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
+extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
+    extern s32 fn_800B5618(void *, void *, u16, u16, s32);
+    u16 sp8;
+    u32 offset = arg1 << 1;
+    u16 mask = *(u16 *)arg0 - 1;
+    u8 shift = *((u8 *)arg0 + 0x20);
+    u32 index = *(u32 *)((u8 *)arg0 + 0x28) + (offset >> shift);
+    u16 sector = offset & mask;
+    s32 result = 0;
+    u32 i = 0;
+    sp8 = (u16)((arg2 >> 8) | (arg2 << 8));
+    while (i < *((u8 *)arg0 + 0x22)) {
+        s32 status = fn_800B5618(arg0, &sp8, (u16)index, sector, 2);
+        if (status != 0 && result == 0)
+            result = status;
+        i++;
+        index = (u16)(index + *(u32 *)((u8 *)arg0 + 0xC));
+    }
+    return result;
+}
+
 extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *arg0) {
     extern s32 fn_800AF574(void *);
     u16 i;
@@ -1694,6 +1715,18 @@ extern "C" s32 fn_800A4E80(void *arg0, s32 arg1, u32 arg2) {
       return 0;
 }
 
+void fn_800A53CC(void *arg0) {
+    *(u16 *)((u8 *)arg0 + 0x1F8C) &= (u16)~0x10;
+}
+
+s32 fn_800A53DC(void *arg0) {
+    return (*(u16 *)((u8 *)arg0 + 0x1F8C) >> 5) & 1;
+}
+
+void fn_800A53E8(void *arg0) {
+    *(u16 *)((u8 *)arg0 + 0x1F8C) &= (u16)~0x20;
+}
+
 extern "C" s32 fn_800A53F8(void *arg0) {
     void *sp8 = (void *)fn_800A535C;
     void *spC = (void *)fn_800A52DC;
@@ -1767,23 +1800,18 @@ extern "C" s32 fn_800A7090(void);
 extern "C" s32 fn_800A71A0(void);
 extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
-extern "C" s32 fn_800A586C(void *arg0, s32 p1, s32 p2, s32 p3, s32 p4) {
+extern "C" s32 fn_800A586C(void *arg0, s32 a, s32 b, s32 c, s32 d) {
     s32 result;
     s32 value;
-    result = fn_800A73A0(*(void **)((u8 *)arg0 + 0x1FBC), *(u16 *)arg0, p4);
-    if (result == 0)
-        goto done;
-    if (result != 21)
-        goto fail;
+    result = ((s32 (*)(void *, s32, s32, s32, u16, s32))fn_800A73A0)(*(void **)((u8 *)arg0 + 0x1FBC), a, b, c, *(u16 *)arg0, d);
+    if (result == 0) goto zero;
+    if (result != 21) goto fail;
     value = ((s32 (* volatile)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
     *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
     *(s32 *)((u8 *)arg0 + 0x1F84) = value;
-    result = 0x1000;
-    goto done;
-fail:
-    result = -1;
-done:
-    return result;
+    return 0x1000;
+fail: return -1;
+zero: return 0;
 }
 
 #pragma opt_tail_call on
