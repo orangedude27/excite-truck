@@ -2224,9 +2224,7 @@ extern "C" s32 fn_800A485C(s32 arg0) {
 
 s32 fn_800A4A8C(u8 *arg0) {
     u8 *ptr = arg0;
-    do {
-        ++ptr;
-    } while ((s8)*ptr != 0);
+    do { ++ptr; } while ((s8)*ptr != 0);
     return ptr - arg0;
 }
 
