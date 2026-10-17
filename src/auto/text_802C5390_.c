@@ -138,8 +138,10 @@ void fn_802C5C40(int *arg0, int arg1, int arg2) {
     *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(temp_r30, arg2, *(s16 *)((char *)arg2 + arg1 * 4 + 0x14 + 6) - 1);
 }
 
-s32 fn_802C5E7C(void) {
-    s32 result = fn_802C5EB8(0x5350484C);
+s32 fn_802C5EB8(void *, u32);
+
+s32 fn_802C5E7C(void *arg0) {
+    s32 result = fn_802C5EB8(arg0, 0x5350484C);
     if (result != 0) {
         return result + 8;
     }
