@@ -22,6 +22,10 @@ struct Ptr_800D7738 { Obj_800D7738* v; };
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" void MEMFreeToAllocator(s32);
 extern "C" s32 lbl_8055DDF0;
+int strncmp(const char *, const char *, unsigned int);
+extern "C" int strncmp(const char *, const char *, unsigned int);
+extern "C" int fn_800D58F0(const char *a, const char *b) { return strncmp(a, b, 0x14) == 0; }
+
 extern "C" s32 fn_800D591C(void* arg0) {
     s32 result = 0;
     if (*(u16*)((u8*)arg0 + 4) == 0xFEFF &&
@@ -57,10 +61,21 @@ extern "C" void fn_800D598C(void* arg0) {
     }
 }
 
+extern "C" int IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(unsigned int *color, unsigned char alpha) {
+    if (alpha != 0xff) return 1;
+    if (color == 0) return 0;
+    if (color[0] != 0xffff0000) return 1;
+    if (color[1] != 0xffff0000) return 1;
+    if (color[2] != 0xffff0000) return 1;
+    if (color[3] != 0xffff0000) return 1;
+    return 0;
+}
+
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out,void* color,u8 alpha) {
- u8* d=(u8*)out; const u8* s=(const u8*)color;
- d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3];
- if(alpha!=0xff) d[3]=(u8)((s[3]*alpha)/255);
+ const u8* s=(const u8*)color; u8* d=(u8*)out;
+ u8 a=s[0], b=s[1], c=s[2], v=s[3];
+ d[0]=a; d[1]=b; d[2]=c; d[3]=v;
+ if(alpha!=0xff) d[3]=(u8)((v*alpha)/255);
 }
 
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
@@ -560,14 +575,10 @@ extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8
     u32 count=*(u32*)((char*)self+0x50)>>28;
     if(index>=count) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990,0x425,lbl_8031FDE8);
     u8* dst=(u8*)*(void**)((char*)self+0x58)+((u32)index<<5);
-    *(u32*)(dst+0)=*(const u32*)((const u8*)tex+0);
-    *(u32*)(dst+4)=*(const u32*)((const u8*)tex+4);
-    *(u32*)(dst+8)=*(const u32*)((const u8*)tex+8);
-    *(u32*)(dst+0xc)=*(const u32*)((const u8*)tex+0xc);
-    *(u32*)(dst+0x10)=*(const u32*)((const u8*)tex+0x10);
-    *(u32*)(dst+0x14)=*(const u32*)((const u8*)tex+0x14);
-    *(u32*)(dst+0x18)=*(const u32*)((const u8*)tex+0x18);
-    *(u32*)(dst+0x1c)=*(const u32*)((const u8*)tex+0x1c);
+    *(u32*)(dst+0)=((const u32*)tex)[0]; *(u32*)(dst+4)=((const u32*)tex)[1];
+    *(u32*)(dst+8)=((const u32*)tex)[2]; *(u32*)(dst+12)=((const u32*)tex)[3];
+    *(u32*)(dst+16)=((const u32*)tex)[4]; *(u32*)(dst+20)=((const u32*)tex)[5];
+    *(u32*)(dst+24)=((const u32*)tex)[6]; *(u32*)(dst+28)=((const u32*)tex)[7];
     GXGetTexObjWidth(dst,0,0);
 }
 
