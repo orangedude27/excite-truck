@@ -26,6 +26,30 @@ extern void fn_802C88BC(s32);
 extern void fn_802C8530(void);
 extern void fn_802C8638(s32);
 extern void fn_802C974C(f32, f32, f32);
+void fn_80230090(void) {
+    extern s32 lbl_8055F028;
+    extern f32 lbl_80563610, lbl_80563614;
+    extern s32 fn_80129C64(s32);
+    extern void fn_8022EB90(void);
+    extern s32 fn_8022EDE4(f32 *, f32);
+    extern void fn_8022ED00(void);
+    extern void fn_802321D8(void);
+    extern void fn_8022F248(void);
+    extern void fn_8023509C(void);
+    extern void fn_802365D8(void);
+    extern void fn_80236728(void);
+    f32 values[12];
+    fn_80129C64(2);
+    fn_8022EB90();
+    values[0]=lbl_80563610; values[1]=lbl_80563614; values[2]=lbl_80563614;
+    values[3]=lbl_80563614; values[4]=lbl_80563610; values[5]=lbl_80563614;
+    values[6]=lbl_80563614; values[7]=lbl_80563614; values[8]=lbl_80563610;
+    values[9]=lbl_80563614; values[10]=lbl_80563614; values[11]=lbl_80563614;
+    lbl_8055F028=fn_8022EDE4(values,lbl_80563610);
+    fn_8022ED00(); fn_802321D8(); fn_8022F248(); fn_8023509C();
+    fn_802365D8(); fn_80236728();
+}
+
 void fn_80230114(void) {
     extern s32 lbl_8055F028;
     extern void fn_8022EDB8(void);
