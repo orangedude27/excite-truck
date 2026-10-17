@@ -49,6 +49,20 @@ void fn_80033918(void *arg0, void *arg1) {
     OSRestoreInterrupts(state);
 }
 
+void fn_800339B0(void *arg0, void *arg1) {
+    int state;
+    state = OSDisableInterrupts();
+    *(unsigned short *)((char *)arg0 + 0x1E8) = *(unsigned short *)arg1;
+    *(unsigned short *)((char *)arg0 + 0x1EA) = *(unsigned short *)((char *)arg1 + 2);
+    *(unsigned short *)((char *)arg0 + 0x1EC) = *(unsigned short *)((char *)arg1 + 4);
+    *(unsigned short *)((char *)arg0 + 0x1EE) = *(unsigned short *)((char *)arg1 + 6);
+    *(unsigned short *)((char *)arg0 + 0x1F0) = *(unsigned short *)((char *)arg1 + 8);
+    *(unsigned short *)((char *)arg0 + 0x1F2) = *(unsigned short *)((char *)arg1 + 0xA);
+    *(unsigned short *)((char *)arg0 + 0x1F4) = *(unsigned short *)((char *)arg1 + 0xC);
+    *(unsigned int *)((char *)arg0 + 0x1C) = (*(unsigned int *)((char *)arg0 + 0x1C) & 0xFFFBFFFF) | 0x20000;
+    OSRestoreInterrupts(state);
+}
+
 void fn_80033B74(void *arg0, short arg1, short arg2) {
     int state = OSDisableInterrupts();
     *(short *)((char *)arg0 + 0x200) = arg1;
