@@ -33,11 +33,13 @@ void fn_80007D94(const char** arg0, const char** arg1) {
     stricmp(*arg0, *arg1);
 }
 
+#pragma dont_inline on
 void fn_80007F04(void) {
     Unk8034EF38* p = &lbl_8034EF38;
     fn_80131818(p->unk_0x1E4);
     p->unk_0x1E4 = 0;
 }
+#pragma dont_inline reset
 
 void fn_80007F40(void) {
     fn_80007DA0();
@@ -106,8 +108,8 @@ done:
 }
 
 void fn_8000822C(void *arg0) {
-    *(u32 *)((u8 *)arg0 + 4) = 0;
     *(s32 *)((u8 *)arg0 + 0) = -1;
+    *(u32 *)((u8 *)arg0 + 4) = 0;
     *(u32 *)((u8 *)arg0 + 0x10) = 0;
     *(u32 *)((u8 *)arg0 + 0xC) = 0;
     *(u32 *)((u8 *)arg0 + 8) = 0;
