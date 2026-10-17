@@ -4,6 +4,7 @@ extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
 extern "C" f32 lbl_805614BC;
 extern "C" s32 fn_80128670(s32);
+extern "C" void fn_80128668(void);
 extern "C" f32 fn_8001DAE8(void *);
 extern "C" s32 lbl_802F9398[6];
 struct S6_8013D18C { s32 v[6]; };
