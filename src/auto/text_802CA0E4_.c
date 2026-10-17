@@ -6,6 +6,7 @@
 #pragma push
 #pragma small_data on
 DECL_SECTION(".sdata") extern int lbl_8055FCB0;
+void fn_802D8FB4(void);
 #pragma small_data off
 #pragma pop
 
