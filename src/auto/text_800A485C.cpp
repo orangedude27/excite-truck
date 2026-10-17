@@ -111,7 +111,7 @@ extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-int fn_800A6048();
+extern "C" int fn_800A6048();
 s32 fn_800A61D0(void *);
 s32 fn_800B75C4(void);
 void fn_800C4BD0(void) __attribute__((noreturn));
@@ -245,6 +245,13 @@ extern "C" s32 VFipdm_disk_convert_block_into_sector(u32 arg1, u32 arg2, u32 siz
         if (size < 0x200)
             return 4;
     }
+    return 0;
+}
+
+extern "C" int fn_800A499C(const char *, int, int);
+extern "C" const char lbl_803D1640[];
+int fn_800A6048(void) {
+    fn_800A499C(lbl_803D1640, 0, 0xA2C);
     return 0;
 }
 
