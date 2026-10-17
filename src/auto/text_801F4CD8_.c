@@ -197,7 +197,6 @@ void fn_801F7220(void *arg0) {
 }
 
 extern void fn_801F6A98(void *, void *);
-void fn_801F73E0(void);
 extern void fn_801F6B98(void *);
 extern void fn_801F6DF0(void *);
 extern void fn_801F6EC0(void *);
