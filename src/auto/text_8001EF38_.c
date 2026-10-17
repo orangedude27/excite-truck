@@ -24,6 +24,7 @@ s32 stricmp(const char*, const char*);
 extern void* memset(void*, int, unsigned long);
 extern char lbl_80358698[0x2080];
 
+void fn_8001F578();
 s32 fn_8001F9A4();
 s32 fn_8001FA20();
 s32 fn_8001FA8C();
@@ -168,6 +169,43 @@ void fn_8001F490(s32 arg) {
     lbl:
         memset(&lbl_80358698, 0, 0x2080);
     }
+}
+
+s32 fn_8001F9A4(s32 arg0, s32 arg1) {
+    SrcCoef *p;
+    s32 *q;
+    s32 i;
+    if (arg0 < 0 || (u32)arg0 >= 8) return 0;
+    p = &lbl_802FDF30[arg0];
+    q = p->unkC;
+    if (q == 0) return 0;
+    if (q[0] != 0) return 0;
+    i = 0;
+    if (q[1] <= 0) return q[1];
+    while (i < q[1]) {
+        if (*(s32 *)(q[0] + i * 8) > arg1) return i;
+        i++;
+    }
+    return q[1];
+}
+
+s32 fn_8001FA20(s32 arg0, s32 arg1) {
+    SrcCoef *p;
+    s32 *q;
+    if (arg0 < 0 || (u32)arg0 >= 8) return 0;
+    p = &lbl_802FDF30[arg0];
+    q = p->unkC;
+    if (q == 0) return 0;
+    if (q[0] == 0 || q[1] < arg1 || arg1 <= 0) return -1;
+    return *(s32 *)(q[0] + ((arg1 - 1) * 8));
+}
+
+s32 fn_8001FA8C(s32 arg0) {
+    SrcCoef *p;
+    if (arg0 < 0 || (u32)arg0 >= 8) return 0;
+    p = &lbl_802FDF30[arg0];
+    if (p->unkC == 0) return 0;
+    return ((s32 *)p->unkC)[1];
 }
 
 extern s32 fn_801E8838(void);
