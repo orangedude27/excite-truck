@@ -40,7 +40,7 @@ extern int fn_801EF024(void *);
 extern void fn_8029FDDC(void);
 extern void fn_8029FFBC(void);
 extern int fn_802A0720(int *, int);
-extern void fn_802A0620(void);
+extern int fn_802A0620(Unk802A0794Params *);
 extern void fn_802A002C(void);
 extern int fn_801E85A4(void);
 extern void fn_8029FEF8(void);
