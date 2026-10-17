@@ -277,6 +277,45 @@ check:
         goto loop;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+int fn_802A0620(Unk802A0794Params *arg0) {
+    int h;
+    unsigned char *object;
+    int i;
+    short g;
+    Unk802A0794Params params;
+    int f,e,d,c,b,a;
+    object = (unsigned char *)fn_8029FE1C(arg0->unk_0x1C);
+    a = ((volatile int *)arg0)[0];
+    b = ((volatile int *)arg0)[1];
+    c = ((volatile int *)arg0)[2];
+    d = ((volatile int *)arg0)[3];
+    e = ((volatile int *)arg0)[4];
+    f = ((volatile int *)arg0)[5];
+    g = *(volatile short *)&arg0->unk_0x18;
+    h = *(volatile int *)&arg0->unk_0x1C;
+    ((int *)&params)[0] = a;
+    ((int *)&params)[1] = b;
+    ((int *)&params)[2] = c;
+    ((int *)&params)[3] = d;
+    ((int *)&params)[4] = e;
+    ((int *)&params)[5] = f;
+    params.unk_0x18 = (unsigned)g;
+    params.unk_0x1C = h;
+    if (object) {
+        for (i = 0; i < *(int *)(object + 0x50); i++) {
+            if (object[0x60] != 0) fn_802A01C8(object, &params);
+            if (object[0x6C] != 0) fn_802A02F4(object, &params);
+            params.values[0] += *(float *)(object + 0x54);
+            params.values[1] += *(float *)(object + 0x58);
+            params.values[2] += *(float *)(object + 0x5C);
+        }
+    }
+    return 0x20;
+}
+#pragma pop
+
 int fn_802A0720(int *arg0, int arg1) {
     int i = 0;
     int offset = 0;
