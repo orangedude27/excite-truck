@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern char lbl_8055B8B0[];
+__declspec(section ".sdata") extern char lbl_8055B8B0[];
 extern char lbl_80490968[];
 extern char *strstr(const char *, const char *);
 extern void fn_8022C9D0(void);
@@ -21,7 +21,7 @@ void fn_8022A7D0(void) {
 }
 
 int fn_8022A7D4(const char *arg0) {
-    return strstr(arg0, lbl_8055B8B0) != 0;
+    return strstr(arg0, ".img") != 0;
 }
 
 unsigned int fn_8022A834(unsigned int arg0) {
