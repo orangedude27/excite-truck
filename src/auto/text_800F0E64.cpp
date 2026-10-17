@@ -724,6 +724,18 @@ extern "C" void* GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv(void) {
     return &lbl_80412CC8[0x2388];
 }
 
+extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
+    if (this_) {
+        if ((u8*)this_ + 0x2384 != 0) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8*)this_ + 0x2384, 0);
+        }
+        if (flag > 0) {
+            ((s32 (*)(void*))fn_80128668)(this_);
+        }
+    }
+    return this_;
+}
+
 extern "C" void NWC24Data_Init(void* arg0) {
     *(int*)arg0 = 0;
     *((int*)arg0 + 1) = 0;
