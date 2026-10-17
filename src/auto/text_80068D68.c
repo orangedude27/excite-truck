@@ -1029,6 +1029,16 @@ void fn_80076228(void) {
     }
 }
 
+void BTA_HhClose(s16 arg0) {
+    s16 *ptr = GKI_getbuf(8);
+    if (ptr != 0) {
+        memset(ptr, 0, 8);
+        *ptr = 0x1701;
+        *(s16 *)((u8 *)ptr + 6) = arg0;
+        fn_80071450(ptr);
+    }
+}
+
 extern void l2c_link_hci_disc_comp(u16, u8);
 void btm_acl_device_down(void)
 {
