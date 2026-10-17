@@ -2,6 +2,12 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
   extern "C" int fn_80287B14(void);
+  extern "C" void fn_80299830(void*, int);
+  extern "C" void fn_802C8BD0(int);
+  extern "C" int fn_802C8DBC(int);
+  extern "C" void fn_802C8E48(void);
+  extern "C" void fn_802C8D74(void);
+  extern "C" void* fn_80299FA8(void*, void*);
   extern "C" void* fn_80299A04(void*, unsigned int);
   extern "C" void fn_8028E584(void*, void*, float*, float);
 extern "C" void fn_80288A40(void*, float*);
@@ -295,6 +301,29 @@ extern "C" void fn_80299504(void* arg0) {
     *(int*)((char*)arg0 + 0xC0) = -1;
     *(int*)((char*)arg0 + 0xF4) = 0;
     *(float*)((char*)arg0 + 0xF8) = value;
+}
+
+extern "C" void fn_80299830(void*, int);
+extern "C" void fn_802C8BD0(int);
+extern "C" int fn_802C8DBC(int);
+extern "C" void fn_802C8E48(void);
+extern "C" void fn_802C8D74(void);
+extern "C" void* fn_80299FA8(void*, void*);
+void* fn_802998F4(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        void* p = arg0;
+        int i = 0;
+        while (i < *(int*)((char*)arg0 + 0x138)) {
+            fn_80299FA8(arg0, p);
+            p = (char*)p + 0x9c;
+            i++;
+        }
+        *(int*)((char*)arg0 + 0x138) = 0;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
 }
 
 extern "C" void fn_8029A890(void *arg0, void *arg1) {
