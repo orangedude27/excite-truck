@@ -4,6 +4,7 @@
 extern int lbl_8056002C;
 extern char lbl_80560028;
 extern int lbl_80560030;
+extern void *lbl_80560024;
 extern char lbl_80560034;
 extern char lbl_8034DD78[];
 extern char lbl_8034DE94[];
