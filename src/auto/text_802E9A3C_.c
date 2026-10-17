@@ -129,25 +129,12 @@ void fn_802E9CAC(int arg0) {
     lbl_80560068++;
 }
 
-static inline void fn_802E9CF0_SetConfig(char *config, char *buffer0, char *buffer1) {
-    *(void **)config = buffer0;
-    *(void **)(config + 4) = buffer1;
-    *(short *)(config + 8) = 4;
-    *(short *)(config + 10) = 4;
-    *(long *)(config + 12) = 1;
-}
-static inline void fn_802E9CF0_SetState(char *state, char *config) {
-    *(void **)(state + 4) = config;
-}
-static inline unsigned char fn_802E9CF0_GetFlag(char *state) {
-    return ((unsigned char *)state)[9] >> 4 & 1;
-}
 extern long fn_800B7CE8(long, void *, void *);
 extern long fn_800B7DB0(long, void (*)(long), void (*)(int));
 extern long fn_800B7968(long, long, long, void *);
 extern void fn_802E317C(const char *, ...);
 #pragma push
-#pragma opt_propagation off
+#pragma optimization_level 2
 void fn_802E9CF0(void) {
     char *strings = (char *)&lbl_8034E260;
     char *base = (char *)lbl_80507600;
