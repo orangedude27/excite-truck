@@ -69,7 +69,7 @@ extern "C" void fn_800D6EEC(void* arg0) {
     *(volatile u8*)(p + 0x20) = 0;
 }
 
-extern "C" void fn_800D76F4(void *arg0) {
+extern "C" void fn_800D76F4(void *arg0, int arg1, int arg2) {
     struct Obj {
         virtual void v0(); virtual void v1(); virtual void v2();
         virtual void v3(); virtual void v4(); virtual void v5();
@@ -77,11 +77,11 @@ extern "C" void fn_800D76F4(void *arg0) {
         virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13(); virtual void v14();
         virtual void v15(); virtual void v16(); virtual void v17();
-        virtual void v18(); virtual void v19(); virtual void v20();
-        virtual void v21(); virtual void v22(int);
+        virtual void v18(); virtual void v19();
+        virtual void v20(int, int, int);
     };
     Obj* obj = *(Obj**)((char*)arg0 + 0x10);
-    if (obj) obj->v22(1);
+    if (obj) obj->v20(arg1, arg2, 1);
 }
 
 extern "C" void fn_800D7718(void *arg0) {
