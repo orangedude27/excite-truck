@@ -115,6 +115,10 @@ void fn_80166E54(void *arg0) {
     *(float *)((char *)arg0 + 0xC) += lbl_805618F0;
 }
 
+int fn_80166F78(float *arg0) {
+    return lbl_8055E318 > *arg0;
+}
+
 extern float lbl_80561898;
 extern float lbl_805618D8;
 extern float lbl_805618DC;
