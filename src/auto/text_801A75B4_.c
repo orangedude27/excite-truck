@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+struct Entry_801A75B4 { const char *name; char pad[20]; };
 
 extern char lbl_8055E5C8;
 void fn_801A7F8C(void) {
@@ -32,5 +33,19 @@ void fn_801A90A4(char *arg0, int arg1, const char *arg2) {
     else
         arg0[0] = 0;
     arg0[arg1 - 1] = 0;
+}
+
+void fn_801A9110(void *arg0, const char *arg1) {
+    int i;
+    const char **table;
+    fn_801A7628();
+    table = lbl_8055E5CC;
+    for (i = 0; i < lbl_8055E5D0; i++) {
+        if (stricmp(table[i * 3], arg1) == 0) {
+            fn_801A91B0(arg0, &table[i * 3]);
+            return;
+        }
+    }
+    *(int *)arg0 = 0;
 }
 
