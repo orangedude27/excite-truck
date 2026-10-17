@@ -1341,6 +1341,10 @@ extern "C" s32 fn_802237E8(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x2C8);
 }
 
+extern "C" s32 fn_802237F0(s32 arg0, s32 arg1) {
+    return *(s32 *)(arg0 + (arg1 << 2) + 0x378);
+}
+
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
 extern "C" void fn_80225918(void *arg0) {
