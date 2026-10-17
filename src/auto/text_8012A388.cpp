@@ -23,6 +23,14 @@ extern "C" const char lbl_8032AB78[];
 extern "C" u8 lbl_8055DFF9;
 extern "C" void *lbl_8055E000;
 extern "C" s32 fn_8012BC50(void *, void *, s32);
+extern "C" s32 fn_8012E9F0(s32, s32);
+extern "C" void fn_8012D3D8(s32);
+extern "C" void fn_8012D8A8(s32);
+extern "C" void *fn_801282EC(u32);
+extern "C" void *fn_8012850C(u32, void *);
+extern "C" void *memset(void *, s32, u32);
+extern "C" u8 lbl_805599C8[];
+extern "C" u8 lbl_805599D0[];
 
 extern void fn_8012E498(void);
 extern void fn_8012CC24(void);
