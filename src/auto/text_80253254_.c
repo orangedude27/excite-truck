@@ -9,11 +9,17 @@ extern s32 fn_80128668(void);
 extern char lbl_80344B98[];
 extern char lbl_80344BC0[];
 extern void fn_80255200(void *, s32);
+void fn_80253254(void) {}
+
 void *fn_802556BC(void *arg0, s32 arg1) {
+    extern char lbl_80344B98[];
+    extern char lbl_80344BC0[];
+    extern void fn_80255200(void *, s32);
+    void *p = lbl_80344B98;
     *(s32 *)((u8 *)arg0 + 0x120) = arg1;
-    *(void **)((u8 *)arg0 + 0xFC) = lbl_80344BC0;
+    *(void **)((u8 *)arg0 + 0xFC) = (void *)lbl_80344BC0;
     *(s32 *)((u8 *)arg0 + 0x110) = 0;
-    *(void **)arg0 = lbl_80344B98;
+    *(void **)arg0 = p;
     *(u8 *)((u8 *)arg0 + 0x114) = 0;
     fn_80255200(arg0, 0);
     return arg0;
