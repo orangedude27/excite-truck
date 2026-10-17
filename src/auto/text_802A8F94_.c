@@ -18,6 +18,10 @@ void* fn_802A8F94(void* arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_802A95A8(void) {
+    fn_802A9090();
+}
+
 void fn_802A95AC(u8 arg0) {
     lbl_8055F8F1 = arg0;
 }
