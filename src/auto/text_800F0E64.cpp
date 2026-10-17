@@ -157,6 +157,13 @@ extern "C" void fn_800F1E50(void *arg0, f32 value) {
     OSRestoreInterrupts(token);
 }
 
+extern "C" f32 lbl_8056107C;
+extern "C" void fn_800F1F84(void* arg0, f32 farg0) {
+    OSDisableInterrupts();
+    *(f32*)((char*)arg0 + 0x18) = farg0;
+    ((void (*)(void))OSRestoreInterrupts)();
+}
+
 extern "C" void fn_800F2004(void *arg0, f32 farg0) {
     OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x68) = farg0;
