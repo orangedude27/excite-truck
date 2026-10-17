@@ -1052,6 +1052,12 @@ extern "C" void fn_80220B3C(void *arg0) {
     }
 }
 
+extern "C" void fn_802C40B8(s32, s32, s32);
+extern "C" void fn_80220E08(void *arg0, s32 arg1) {
+    fn_802C3034(arg1);
+    fn_802C40B8(*(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
+}
+
 extern "C" void fn_80221538(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x250) = 0;
 }
