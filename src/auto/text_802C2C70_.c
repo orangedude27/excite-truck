@@ -6,6 +6,7 @@ extern short lbl_8055FB90;
 extern short lbl_8055FB92;
 extern short lbl_8055FB94;
 void fn_8000D838(void*);
+static void set_short(volatile short *p, short v) { *p = v; }
 
 #pragma scheduling on
 void fn_802C2C70(void) {
