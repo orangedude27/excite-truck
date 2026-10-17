@@ -9,6 +9,8 @@ extern float lbl_80558DC4;
 extern void *__AXFXGetLfoSinTable_801769CC(void);
 extern int fn_8017D2C8();
 extern float lbl_8055E3C8;
+extern int fn_801B2F2C(int);
+extern float lbl_8055E4E0;
 
 void fn_8018C510(void);
 void __AXDSPInitCallback_801AFC38(void);
