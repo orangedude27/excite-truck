@@ -4,6 +4,10 @@
 
 extern void fn_8017A57C(void) __attribute__((noreturn));
 extern void fn_801AC240(void *);
+extern void fn_801AC254(void *);
+extern void fn_801ABFF8(int **);
+extern int lbl_80335940;
+extern float lbl_805624D0;
 
 extern void fn_8017B0B0(void *);
 extern int lbl_8033585C[64];
@@ -55,31 +59,34 @@ void fn_801ABFF4(void) {
 extern void fn_8017A580(void *, int, int, int, int, int, int, int);
 extern void fn_8017B164(void *);
 void fn_801AC184(void *arg0) {
-    unsigned int t0 = *(unsigned int *)((char *)arg0 + 0x1EC);
-    unsigned int t1 = *(unsigned int *)((char *)arg0 + 0x1F0);
-    unsigned int t2 = *(unsigned int *)((char *)arg0 + 0x1F4);
-    unsigned int t3 = *(unsigned int *)((char *)arg0 + 0x1F8);
-    unsigned int t4 = *(unsigned int *)((char *)arg0 + 0x1FC);
-    unsigned int t5 = *(unsigned int *)((char *)arg0 + 0x200);
-    unsigned int t6 = *(unsigned int *)((char *)arg0 + 0x204);
-    unsigned int t7 = *(unsigned int *)((char *)arg0 + 0x208);
-    unsigned int t8 = *(unsigned int *)((char *)arg0 + 0x20C);
-    unsigned int t9 = *(unsigned int *)((char *)arg0 + 0x210);
-    unsigned int t10 = *(unsigned int *)((char *)arg0 + 0x214);
-    unsigned int t11 = *(unsigned int *)((char *)arg0 + 0x218);
+    int t4;
+    int t5;
+    int t6;
+    int t7;
+    int t8;
+    int t9;
+    int t10;
 
-    *(unsigned int *)((char *)arg0 + 0x3C) = t0;
-    *(unsigned int *)((char *)arg0 + 0x40) = t1;
-    *(unsigned int *)((char *)arg0 + 0x44) = t2;
-    *(unsigned int *)((char *)arg0 + 0x48) = t3;
-    *(unsigned int *)((char *)arg0 + 0x4C) = t4;
-    *(unsigned int *)((char *)arg0 + 0x50) = t5;
-    *(unsigned int *)((char *)arg0 + 0x54) = t6;
-    *(unsigned int *)((char *)arg0 + 0x58) = t7;
-    *(unsigned int *)((char *)arg0 + 0x5C) = t8;
-    *(unsigned int *)((char *)arg0 + 0x60) = t9;
-    *(unsigned int *)((char *)arg0 + 0x64) = t10;
-    *(unsigned int *)((char *)arg0 + 0x68) = t11;
+    fn_801AC240(arg0);
+    *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg0 + 0x1EC);
+    *(int *)((char *)arg0 + 0x40) = *(int *)((char *)arg0 + 0x1F0);
+    *(int *)((char *)arg0 + 0x44) = *(int *)((char *)arg0 + 0x1F4);
+    *(int *)((char *)arg0 + 0x48) = *(int *)((char *)arg0 + 0x1F8);
+    t4 = *(int *)((char *)arg0 + 0x1FC);
+    t5 = *(int *)((char *)arg0 + 0x200);
+    t6 = *(int *)((char *)arg0 + 0x204);
+    t7 = *(int *)((char *)arg0 + 0x208);
+    t8 = *(int *)((char *)arg0 + 0x20C);
+    t9 = *(int *)((char *)arg0 + 0x210);
+    t10 = *(int *)((char *)arg0 + 0x214);
+    *(int *)((char *)arg0 + 0x4C) = t4;
+    *(int *)((char *)arg0 + 0x50) = t5;
+    *(int *)((char *)arg0 + 0x54) = t6;
+    *(int *)((char *)arg0 + 0x58) = t7;
+    *(int *)((char *)arg0 + 0x5C) = t8;
+    *(int *)((char *)arg0 + 0x60) = t9;
+    *(int *)((char *)arg0 + 0x64) = t10;
+    *(int *)((char *)arg0 + 0x68) = *(int *)((char *)arg0 + 0x218);
 
     fn_8017A580(arg0, t10, t9, t8, t7, t6, t5, t4);
     fn_8017B164(arg0);
