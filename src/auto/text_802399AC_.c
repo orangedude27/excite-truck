@@ -136,7 +136,7 @@ extern s32 fn_802328D4(s32);
 #pragma small_data off
 void *__dt__Q28PSSystem7SeqHeapFv_8023A774(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(s32 **)((char *)arg0 + 0xC) = (s32 *)lbl_8034109C;
+        *(s32 **)((char *)arg0 + 0xC) = (s32 *)&lbl_8034109C;
         fn_80128670(*(s32 *)((char *)arg0 + 0x10));
         if (arg1 > 0) fn_80128668(arg0);
     }
@@ -322,24 +322,23 @@ void fn_8023B054(void *arg0) {
 extern s32 lbl_80341268[];
 #pragma pop
 extern float lbl_80563730;
-extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, float);
+extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
 #pragma scheduling off
 void fn_8023B0BC(void *arg0) {
-    s32 a;
-    s32 b;
-    s32 c;
-    s32 d;
-    s32 e;
-    volatile s32 stackZero;
-    a = *(s32 *)((char *)arg0 + 0x10);
-    b = *(s32 *)((char *)arg0 + 0xC);
-    c = *(s32 *)((char *)arg0 + 8);
-    d = *(s32 *)((char *)arg0 + 4);
-    e = fn_80131234(&lbl_80341268[0]);
-    stackZero = 0;
-    (void)stackZero;
-    fn_8022BAD0(0xC9, d, c, 0, b, a, e,
-                *(s32 *)((char *)arg0 + 0x18), lbl_80563730);
+    s32 sp8;
+    s32 temp_r28;
+    s32 temp_r29;
+    s32 temp_r30;
+    s32 temp_r31;
+    s32 temp_r3;
+
+    temp_r31 = *(s32 *)((char *)arg0 + 0x10);
+    temp_r30 = *(s32 *)((char *)arg0 + 0xC);
+    temp_r29 = *(s32 *)((char *)arg0 + 8);
+    temp_r28 = *(s32 *)((char *)arg0 + 4);
+    temp_r3 = fn_80131234(&lbl_80341268[0]);
+    sp8 = 0;
+    fn_8022BAD0(0xC9, temp_r28, temp_r29, 0, temp_r30, temp_r31, temp_r3, *(s32 *)((char *)arg0 + 0x18), sp8, lbl_80563730);
 }
 s32 fn_8023B138(void *arg0) {
     void *object = lbl_8055F10C;
