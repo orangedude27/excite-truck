@@ -95,6 +95,10 @@ void *fn_8000DB34(int arg0) {
     return entry + 8;
 }
 
+int fn_8000DB8C(int arg0) {
+    return *(int *)((char *)lbl_8055D46C + arg0 * 0x18 + 4) == 2;
+}
+
 int fn_8000DBAC(int arg0) {
     return *(int *)((char *)lbl_8055D46C + arg0 * 0x18 + 4) == 0;
 }
