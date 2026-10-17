@@ -26,7 +26,7 @@ extern void __FreeDelayLine(void*);
 extern s32 __CtrlMsgInt(s32,s32,s32,s32,s32,u32,void*,void*,void*,s32);
 extern f32 lbl_80560D50;
 extern f32 lbl_80560D54;
-extern u8 lbl_80560D28[];
+extern u32 lbl_80560D28;
 
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80316570[];
