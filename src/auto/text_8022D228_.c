@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #pragma use_lmw_stmw off
+#pragma small_data off
 extern int sprintf(char *, const char *, ...);
 extern char lbl_8055B958[8];
 extern float lbl_805635D0;
