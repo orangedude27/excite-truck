@@ -959,6 +959,10 @@ void fn_80077C94(s16 arg0) {
     *(s16 *)(lbl_803C0F78 + 0x4C6) = arg0;
 }
 
+u8 fn_80077DD8(void) {
+    return lbl_803C0F78[0x27BF];
+}
+
 void fn_8007AD38(void) {
 
 }
