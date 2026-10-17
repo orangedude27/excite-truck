@@ -1896,12 +1896,14 @@ s32 fn_8007FEFC(u16 handle) {
 
 extern u8 lbl_80317008[];
 void btm_sec_pin_code_request_timeout(void) {
-    if (lbl_803C0F78[0x27C0] >= 4) {
+    u8 *base = lbl_803C0F78;
+
+    if (base[0x27C0] >= 4) {
         fn_8007093C(0xD0003, lbl_80317008);
     }
-    *(u32 *)(lbl_803C0F78 + 0x194C) = 0;
+    *(u32 *)(base + 0x194C) = 0;
     memset(lbl_803C0F78 + 0x1954, 0xFF, 6);
-    btsnd_hcic_link_key_neg_reply_800840C8(lbl_803C0F78 + 0x27B4);
+    btsnd_hcic_link_key_neg_reply_800840C8(base + 0x27B4);
 }
 
 void btm_sec_update_clock_offset(UINT16 handle, UINT16 clock_offset) {
