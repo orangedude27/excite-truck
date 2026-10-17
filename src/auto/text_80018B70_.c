@@ -9,7 +9,7 @@ s32 fn_80019144(s32);
 s32 fn_8027DE68(s32);
 void fn_80131234(void *);
 void fn_80131818(s32);
-void fn_80018E44(const char *, s32);
+s32 fn_80018E44(const char *, s32);
 s32 fn_802E317C(void *, void *);
 void fn_80018BA4(void);
 void fn_80018CCC(void);
@@ -106,6 +106,25 @@ s32 fn_80019604(void) {
     return var_r31;
 }
 
+s32 fn_80019664(void) {
+    void **obj;
+    void **vtable;
+    void *addr;
+
+    obj = (void **)lbl_8055D58C;
+    if (obj != 0) {
+        addr = (void *)lbl_802FD3A0;
+        vtable = (void **)obj[0];
+        if (((s32 (*)(void *))vtable[4])(addr) != 0) {
+            obj = (void **)lbl_8055D58C;
+            vtable = (void **)obj[0];
+            ((void (*)(void *))vtable[2])(addr);
+            return ((s32 (*)(void *, s32))vtable[6])((void *)lbl_802FD434, 0);
+        }
+    }
+    return 0;
+}
+
 void fn_800195C0(void) {
     if (fn_80019438() != 0) {
         fn_80131234((void *)0x802FD3CC);
@@ -150,6 +169,32 @@ s32 fn_80019098(s32 arg0) {
         }
     }
     
+    return 0;
+}
+
+__declspec(section ".data") extern void *lbl_803580A4;
+int fn_80019258(const char *name, int *out0, int *out1, int unused) {
+    int i = 0;
+    int offset = 0;
+    while (1) {
+        if (stricmp(*(const char **)(*(char **)lbl_803580A4 + offset), name) == 0)
+            break;
+        offset += 0x10;
+        i++;
+        if (i >= ((int *)lbl_803580A4)[1]) {
+            i = -1;
+            break;
+        }
+    }
+    {
+        char *p = *(char **)lbl_803580A4 + i * 0x10 + 4;
+        if (i < 0) p = 0;
+        if (p != 0) {
+            *out0 = *(int *)p;
+            *out1 = *(int *)(p + 4);
+            return 1;
+        }
+    }
     return 0;
 }
 
