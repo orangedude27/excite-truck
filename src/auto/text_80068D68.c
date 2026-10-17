@@ -1363,6 +1363,13 @@ void bta_dm_disc_result(void *arg0) {
     }
 }
 
+void fn_80072524(void) {
+    if (lbl_8055DC80 >= 4)
+        fn_8007093C(0x503, lbl_80315048);
+    lbl_803C0B98[0x78] = 0;
+    bta_dm_discover_next_device();
+}
+
 void fn_800725B4(void *arg0) {
     *(void **)(lbl_803C0B98 + 0x74) = GKI_getbuf(0x1C);
     memcpy(*(void **)(lbl_803C0B98 + 0x74), arg0, 0x1C);
