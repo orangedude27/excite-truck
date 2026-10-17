@@ -149,7 +149,7 @@ void fn_802AEA44(void) {
 
 extern void fn_802BDC3C(void);
 extern void fn_802B59A4(int);
-extern void fn_802B0288(void);
+extern void fn_802B0288();
 extern void fn_802BB674(int, int);
 extern void fn_802C10CC(int);
 extern int lbl_8055F974;
