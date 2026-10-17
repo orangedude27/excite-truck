@@ -120,6 +120,15 @@ void fn_801D9828(void) {
     fn_801D9948((int *)&lbl_8055E964);
 }
 
+void fn_801D9A08(void) {
+    void *node = lbl_8055E96C;
+    while (node != 0) {
+        fn_801D9AB8(node, lbl_80562B2C);
+        node = *(void **)((char *)node + 0x54);
+    }
+    lbl_8055E968 = 0;
+}
+
 void *fn_801D9A54(const char *arg0) {
     void *node = lbl_8055E96C;
     while (node != 0) {
@@ -128,6 +137,21 @@ void *fn_801D9A54(const char *arg0) {
         node = *(void **)((char *)node + 0x54);
     }
     return 0;
+}
+
+void fn_801D9AB8(void *arg0, float weight) {
+    void *node;
+    float value;
+    if (lbl_8055E968 != 0)
+        return;
+    *(float *)((char *)arg0 + 0x20) = weight;
+    node = *(void **)((char *)arg0 + 0x24);
+    while (node != 0) {
+        value = *(float *)node;
+        fn_80178DBC(*(int *)((char *)node + 8),
+                    value + weight * (*(float *)((char *)node + 4) - value));
+        node = *(void **)((char *)node + 0xC);
+    }
 }
 
 extern unsigned char lbl_8055E968;
