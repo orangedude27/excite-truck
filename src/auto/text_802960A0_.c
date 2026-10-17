@@ -5,6 +5,18 @@ void fn_8029690C(void);
 extern float lbl_80564560;
 extern float lbl_80564564;
 extern float lbl_80564568;
+extern void *lbl_8055F788;
+int stricmp(const char *, const char *);
+void *fn_80296950(const char *arg0) {
+    void *node = lbl_8055F788;
+    while (node != 0) {
+        if (stricmp(arg0, (const char *)node) == 0)
+            return node;
+        node = *(void **)((char *)node + 0x20);
+    }
+    return 0;
+}
+
 int fn_802969B4(unsigned int arg0, unsigned int arg1, float farg0) {
     return (int)((float)arg0 + farg0 * ((float)arg1 - (float)arg0));
 }
