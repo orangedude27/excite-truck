@@ -84,4 +84,10 @@ extern "C" void fn_800E2508(void* self) {
 }
 
 extern "C" unsigned int* fn_800E2518(void) { extern unsigned int lbl_8055DE10; return &lbl_8055DE10; }
-
+namespace nw4hbm { namespace lyt {
+class AnimTransform;
+class Window {
+public:
+    void SetAnimationEnable(AnimTransform*, bool, bool);
+};
+}}
