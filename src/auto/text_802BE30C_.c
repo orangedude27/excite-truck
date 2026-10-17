@@ -35,5 +35,22 @@ void fn_802BE780(void *arg0) {
     }
 }
 
+s32 fn_802BE7C4(s32 arg0, s32 arg1, s32 arg2) {
+    s32 divisor = arg2 << 1;
+    s32 a = ((arg0 - arg2) + 0x200) / divisor;
+    s32 b = 0x400 / divisor;
+    s32 c = ((arg1 - arg2) + 0x200) / divisor;
+    return a + c * b;
+}
+
 void fn_802BE7F4(void) {}
+
+void fn_802BE7F8(void) {
+    fn_802BE694();
+    lbl_804C07E4.ptr = lbl_8055FAC8;
+    lbl_804C07E4.flags = 0x800284;
+    lbl_804C07E4.value = 0;
+}
+
+void fn_802BE840(void) { fn_802BE72C(); }
 
