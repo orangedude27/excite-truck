@@ -42,6 +42,32 @@ void fn_8000AD20(void) {
 
 int fn_8000AD24(void) { return 0; }
 
+int fn_8000AD2C(void) {
+ int index = ((char *)lbl_8055D3D0 - lbl_802FBC90) / 0x14;
+ if (index == 0x12) goto no;
+ if (index >= 0x12) goto yes;
+ if (index >= 2) goto yes;
+ if (index >= 0) goto no;
+yes:
+ return 1;
+no:
+ return 0;
+}
+
+int fn_8000AD84(void) {
+ int index = ((char *)lbl_8055D3D0 - lbl_802FBC90) / 0x14;
+ if (index == 0x12) goto yes;
+ if (index >= 0x12) goto check24;
+ if (index == 1) goto yes;
+ goto no;
+check24:
+ if (index == 0x18) goto yes;
+no:
+ return 0;
+yes:
+ return 1;
+}
+
 extern int lbl_8034F5D8;
 extern int lbl_8055D3E0;
 extern int fn_802E4A10(void);
@@ -162,28 +188,4 @@ int fn_802C9904(void);
 extern int lbl_80558A48;
 extern float lbl_805601F8, lbl_80560200, lbl_80560208, lbl_8056020C;
 extern int lbl_8034F5B8;
-extern unsigned char lbl_8055D3D5, lbl_8055D3EC;
-extern int lbl_8055D3E8;
-extern char lbl_802FBF38[];
-extern int fn_8017685C(int);
-extern int fn_801AF6FC(void);
-extern int fn_801AF92C(void *);
-extern void *fn_801EA9A0(int);
-extern int fn_802E30C8(char *, int);
-extern int fn_80127954(void);
-extern int fn_80128684(void);
-extern int fn_80265D78(void);
-extern int fn_80133348(int, char *, int);
-extern int fn_802B87A0(void);
-extern int fn_80210904(void);
-extern int fn_8020D1C8(void);
-extern int fn_8000CEF0(void);
-extern int fn_80006E54(void);
-extern int fn_80206228(void);
-extern int fn_801618B4(void);
-extern int fn_801CB8C0(void);
-extern int fn_80238920(void);
-extern int fn_801E8820(void (*)(void));
-extern int fn_801E7DEC(int);
-extern char lbl_802FBEC8[];
-extern void AXFXSetHooks_8020DE10(void (*)(void), int, unsigned char);
+
