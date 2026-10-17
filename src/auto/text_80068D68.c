@@ -1122,10 +1122,12 @@ tBTM_STATUS fn_8007A2C8(u8 *arg0) {
 }
 
 tBTM_STATUS BTM_SetDeviceClass(DEV_CLASS dev_class) {
+    void *buf;
     memcpy(lbl_803C0F78 + 0x648, dev_class, 3);
     if (lbl_803C0F78[0x64e] <= 1) return 0xc;
-    if (GKI_getpoolbuf(2) != 0) {
-        fn_80085524((void *)dev_class);
+    buf = GKI_getpoolbuf(2);
+    if (buf != 0) {
+        fn_80085524(buf, dev_class);
         return 0;
     }
     return 3;
