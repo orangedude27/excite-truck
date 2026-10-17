@@ -17,6 +17,8 @@ extern void *lbl_80559948[];
 extern u32 lbl_8055994C[];
 extern void fn_80127F70(void*);
 extern void fn_80127F94(void*);
+extern void fn_8011A7CC(void *);
+extern s32 OSDisableInterrupts(void);
 void fn_80127440(void);
 extern void fn_80127398(s32);
 extern void fn_802E300C(s32);
@@ -234,6 +236,15 @@ void fn_8011AC84(void *arg0) {
     }
 }
 
+f32 fn_8011AE18(s32 arg0) {
+    f32 temp;
+    temp = (f32)(((u32)arg0 >> 5) & 0x1FFFFFF) * lbl_80329D48[((u32)arg0 * 4) & 0x7C];
+    if (arg0 & 0x10000000) {
+        temp = (f32)(-((f64)temp));
+    }
+    return temp;
+}
+
 void fn_8011AE68(s32 arg0, f32 *arg1, u32 arg2, f32 farg0) {
     s32 *out = (s32 *)arg0;
     f32 *in = arg1;
@@ -262,6 +273,31 @@ void fn_8011AED8(s32 arg0, f32 *arg1, u32 arg2, f32 farg0) {
 
 void fn_8011BC48(void) {
     fn_80120084();
+}
+
+s32 fn_8011BC4C(void *arg0, void *arg1) {
+    void *var_r5;
+    void *temp_r0;
+
+    if (arg0 == NULL) {
+        return 0;
+    }
+    var_r5 = *(void **)((u8 *)arg0 + 0x30);
+    if (var_r5 == arg1) {
+        *(void **)((u8 *)arg0 + 0x30) = *(void **)var_r5;
+        return 1;
+    }
+    while (1) {
+        temp_r0 = *(void **)var_r5;
+        if (temp_r0 == arg1) {
+            *(void **)var_r5 = *(void **)arg1;
+            return 1;
+        }
+        var_r5 = temp_r0;
+        if (var_r5 == NULL) {
+            return 0;
+        }
+    }
 }
 
 void fn_8011BCAC(void **head, void *node) {
