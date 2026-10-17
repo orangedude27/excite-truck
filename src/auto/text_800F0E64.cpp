@@ -356,10 +356,12 @@ extern "C" void StopAllSound__Q36nw4hbm3snd11SoundPlayerFi(void *, s32);
 extern "C" void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *, void *);
 #pragma push
 #pragma small_data off
-extern u8 lbl_803262E8[];
-extern u8 lbl_803262C4[];
-extern u8 lbl_803262B8[];
-extern u8 lbl_80326294[];
+  extern u8 lbl_803262E8[];
+  extern u8 lbl_803262C4[];
+  extern u8 lbl_803262B8[];
+  extern u8 lbl_80326294[];
+  extern u8 lbl_80326288[];
+  extern u8 lbl_80326264[];
 #pragma pop
 extern "C" void Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv(void);
 void fn_800F7110(void *self, unsigned long taskId) {
