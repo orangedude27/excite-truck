@@ -63,6 +63,41 @@ extern "C" void fn_8012A67C(void) {
     delete (Unk8012A570 *)lbl_8055E008;
     lbl_8055E008 = 0;
 }
+
+extern "C" s32 fn_802E2D74(s32);
+extern "C" s32 fn_802E39D0(s32, s32);
+extern "C" void fn_8012A80C(s32);
+extern "C" s32 fn_8012A6C8(s32, s32, s32);
+extern "C" s32 fn_8012AB34(s32, s32, s32, s32);
+extern "C" s32 fn_802E36D8(void);
+extern "C" s32 fn_802E37C4(void);
+extern "C" void fn_802E3734(s32 *);
+extern "C" s32 fn_802E4CA8(void *, s32, s32);
+extern "C" s32 fn_802E7354(void *);
+extern "C" s32 fn_802E746C(s32 *, s32 *);
+extern "C" void fn_8012A7FC(void) {
+    lbl_8055DFF9 = 1;
+    fn_802E2D74(0x32);
+}
+
+extern "C" s32 fn_8012AB34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 result = 0;
+    if (fn_802E39D0(arg0, 0x34) != 0) {
+        fn_8012A80C(arg1);
+        result = fn_8012A6C8(arg1, arg2, arg3);
+    }
+    return result;
+}
+
+extern "C" s32 fn_8012ABB0(s32 arg0, s32 arg1) {
+    s32 sp8 = fn_802E36D8();
+    if (sp8 != -1 && fn_8012AB34(sp8, arg1, arg0, fn_802E37C4()) == 0) {
+        fn_802E3734(&sp8);
+        sp8 = -1;
+    }
+    return sp8;
+}
+
 #pragma dont_inline reset
 
 extern "C" void fn_8012AC28(s32, s32);
