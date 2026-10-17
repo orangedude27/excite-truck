@@ -257,13 +257,12 @@ extern "C" void fn_80145B50(void *arg0, s32 arg1) {
 
 #pragma dont_inline on
 extern "C" void fn_80145B94(void *arg0, u32 arg1) {
-    f32 input = *(f32 *)((u8 *)arg0 + 8);
-    f32 scale = fn_801452B4(input);
-    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+    f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 value = fn_801451DC(*(s32 *)((u8 *)arg0 + 0xC));
     f32 last = *(f32 *)((u8 *)arg0 + 0x10);
-    s32 a = *(s32 *)((u8 *)arg0 + 0x18);
     s32 b = *(s32 *)((u8 *)arg0 + 0x14);
-    fn_8000FF88(a, b, arg1, last, value, scale);
+    s32 a = *(s32 *)((u8 *)arg0 + 0x18);
+    fn_8000FF88(a, b, (s32)arg1, last, value, scale);
 }
 #pragma dont_inline reset
 
@@ -431,18 +430,20 @@ extern "C" f32 fn_800108C8(const char *, f32);
 extern "C" void fn_80235380();
 extern "C" void fn_80145B94(void *, u32);
 extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
-    if (arg2 == 0) {
-        while (arg2 > 0) {
+    if (arg2 <= 0) {
+        do {
             arg2--;
-        }
+        } while (arg2 > 0);
         arg0[-1] = 0;
         return;
     }
-    do {
-        s8 c = *arg1++;
-        *arg0++ = c;
-        if (!c) break;
-    } while (1);
+    for (;;) {
+        u8 c = (u8)*arg1;
+        arg1++;
+        *arg0 = c;
+        arg0++;
+        if ((s8)c == 0) return;
+    }
 }
 
 extern void lbl_8032D260(void);
@@ -471,7 +472,7 @@ extern "C" f32 fn_80147204(void *arg0, const char *arg1) {
 
 extern "C" int vsprintf(char *, const char *, va_list);
 extern "C" unsigned int strlen(const char *);
-extern "C" void fn_802E317C(const char *, ...);
+extern "C" void fn_802E317C(const char *, s32, const char *);
   extern "C" char lbl_8032D1A4[];
 extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
     char buffer[0x200];
@@ -480,8 +481,10 @@ extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
         va_start(args, arg1);
         vsprintf(buffer, arg1, args);
         if (strlen(buffer) >= 0x200) {
+            const char *format = lbl_8032D1A4;
             s32 length = strlen(buffer);
-            fn_802E317C(lbl_8032D1A4, length, arg1);
+            const char *message = arg1;
+            fn_802E317C(format, length, message);
         }
         fn_80145B94(arg0, (u32)buffer);
     }
@@ -560,7 +563,9 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
     s32 b = fn_801450A0((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
     s32 c = fn_801450A0((arg0 >> 16) & 0xFF, (arg1 >> 16) & 0xFF, arg2);
     s32 d = fn_801450A0(arg0 >> 24, arg1 >> 24, arg2);
-    return ((d & 0xFF) << 24) | ((c & 0xFF) << 16) | ((b & 0xFF) << 8) | (a & 0xFF);
+    s32 result = ((d & 0xFF) << 24) | ((c & 0xFF) << 16);
+    result |= ((b & 0xFF) << 8) | (a & 0xFF);
+    return result;
 }
 #pragma dont_inline off
 extern "C" void fn_80147EE0(void *arg0, f32 scale) {
