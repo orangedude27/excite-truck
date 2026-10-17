@@ -21,7 +21,7 @@ extern void OSFatal(void *, void *, const char *);
 extern unsigned long long OSGetTime(void);
 extern unsigned long long __div2i(unsigned long long, unsigned long long);
 extern char lbl_80302384[];
-extern void fn_8003A10C(void);
+extern void fn_8003A10C(int);
 extern char lbl_8037B6D0[];
 extern int NANDPrivateCreateDirAsync(const char *, int, int, void (*)(int), void *);
 extern void (*lbl_8055D8D0)(int, int);
@@ -32,14 +32,15 @@ extern char lbl_8037B640[], lbl_80302368[];
 extern void fn_80039F3C(int);
 extern void fn_80039F68(int);
 extern void fn_80039FC4(int);
-void fn_80039F3C(int arg0) { if (lbl_8055D8D0 != 0) lbl_8055D8D0(2 - ((unsigned int)__builtin_clz(arg0) >> 5), 0); }
+void fn_80039F3C(int arg0) { if (lbl_8055D8D0 != 0) { int v = __cntlzw(arg0) & 0x20; lbl_8055D8D0(2 - (v >> 5), 0); } }
 
 void fn_80039F68(int arg0) { if (NANDCloseAsync(lbl_8037B640, fn_80039F3C, lbl_8037B6D0) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2, 0); }
 
 void fn_80039FC4(int arg0) {
+ char *base = lbl_8037B640;
  if (arg0 == 0) {
-  if (NANDWriteAsync(lbl_8037B640, lbl_8037B640+0x160, 0x80, fn_80039F68, lbl_8037B640+0x90) != 0 &&
-      NANDCloseAsync(lbl_8037B640, fn_80039F3C, lbl_8037B640+0x90) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
+  if (NANDWriteAsync(base, base+0x160, 0x80, fn_80039F68, base+0x90) != 0 &&
+      NANDCloseAsync(base, fn_80039F3C, base+0x90) != 0 && lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
  } else if (lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
 }
 
