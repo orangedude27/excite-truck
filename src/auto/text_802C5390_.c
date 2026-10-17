@@ -339,3 +339,6 @@ void fn_802C7A94(int arg0) {
 
 void fn_802C7AD4(void) { fn_802C7A94(9); }
 
+extern int lbl_8055D008;
+extern void fn_8012C4E4(void *, int);
+
