@@ -3147,6 +3147,19 @@ void l2cu_device_reset(void) {
     }
 }
 
+void *l2cu_find_lcb_by_state(s32 state) {
+    u8 *entry = lbl_803C4040;
+    entry += 7;
+    if (*++entry && *(s32 *)(entry + 4) == state) return entry;
+    entry += 0x5B;
+    if (*++entry && *(s32 *)(entry + 4) == state) return entry;
+    entry += 0x5B;
+    if (*++entry && *(s32 *)(entry + 4) == state) return entry;
+    entry += 0x5B;
+    if (*++entry && *(s32 *)(entry + 4) == state) return entry;
+    return 0;
+}
+
 void *port_find_dlci_port(unsigned int arg0) {
     int i;
     for (i = 0; i < 5; i++) {
