@@ -2389,7 +2389,7 @@ void RFCOMM_LineStatusReq(void *arg0, s32 arg1, s32 arg2) {
 
 void fn_800939A0(void *arg0, u8 arg1) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xC, 0); }
 
-void fn_800939CC(void *arg0, u8 arg1, u8 arg2) { port_find_mcb_dlci_port(arg0, arg1); rfc_port_sm_execute(0xE, arg2); }
+void fn_800939CC(void *arg0, u8 arg1, void *arg2) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xE, arg2); }
 
 void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) { u8 flag = *(u8 *)((u8 *)arg0 + 0x6D); void *buf; u8 *frame; if (flag == 0) flag = 1; else flag = 0; buf = GKI_getpoolbuf(2); if (buf != 0) { frame = (u8 *)buf + 0x11; *(u16 *)((u8 *)buf + 4) = 9; frame[0] = (flag << 1) | 1 | (arg1 << 2); frame[1] = 0x3F; frame[2] = 1; frame[3] = fn_8009504C(3, frame, 0x3F); *(u16 *)((u8 *)buf + 2) = 4; rfc_check_send_cmd(arg0, buf); } }
 
