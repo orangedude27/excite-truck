@@ -10,6 +10,14 @@ extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3s
 extern "C" char lbl_80327AF4[];
 extern "C" void fn_800EC890(void*);
 extern "C" float lbl_80561120;
+extern "C" void fn_800FFE94(void* arg0) {
+    void* p = *(void**)arg0;
+    if (p && *(void**)((char*)p + 0x1AC) == arg0)
+        *(void**)((char*)p + 0x1AC) = 0;
+    if (*(void**)arg0)
+        *(void**)arg0 = 0;
+}
+
 extern "C" void InitParam__Q46nw4hbm3snd6detail9WsdPlayerFiPCQ56nw4hbm3snd6detail8WsdTrack11WsdCallbackUl(void* arg0, int arg1, const void* arg2, unsigned long arg3) {
     float f0 = lbl_80561124;
     float f1 = lbl_80561120;
