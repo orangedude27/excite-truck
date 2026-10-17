@@ -17,6 +17,22 @@ extern void **fn_801A9700(void **);
 extern int lbl_8055E3C4;
 extern int lbl_8055A858;
 extern int jumptable_80335578[];
+void fn_801A9660(void) {
+    unsigned int index = *(unsigned int *)((char *)fn_801792F8() + 0x50) - 6;
+    if (index < 0x11) {
+        ((void (*)(void))jumptable_80335578[index])();
+        return;
+    }
+    if (fn_801284F8(0x23c, &lbl_8055A858) != 0) fn_801A9700(0);
+}
+
+#pragma scheduling off
+void** fn_801A9700(void** arg0) {
+    fn_8017B0B0(arg0);
+    *arg0 = &lbl_8033585C;
+    return arg0;
+}
+#pragma scheduling on
 void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801A973C(void *this_, int flag) {
     if (this_) {
         if (this_ != 0) fn_80179EE8(this_, 0);
