@@ -67,6 +67,14 @@ void fn_802E1A38(void *arg0, int arg1) {
     fn_802E1980(arg1 + result, (char *)arg0 + 0x1b0, (char *)arg0 + 0x188, (char *)arg0 + 0x18c, *(int *)((char *)arg0 + 0x10c));
 }
 
+void fn_802E27B8(void *arg0) {
+    int index = *(int *)((char *)arg0 + 0x114) + 1;
+    if (index >= *(int *)((char *)arg0 + 0x100))
+        index = 0;
+    if (*(int *)((char *)arg0 + 0x1D0 + index * 4))
+        *(int *)((char *)arg0 + 0x1D0 + index * 4) = 0;
+}
+
 void fn_802E29AC(void) {
     int count = *(int *)lbl_804DB780;
     int *array = *(int **)((char *)lbl_804DB780 + 4);
