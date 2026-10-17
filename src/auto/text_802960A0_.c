@@ -39,7 +39,5 @@ void fn_80296AAC(void *arg0) {
 
 void fn_80296D24(void) {}
 
-void fn_80296D28(void) {
-    fn_8029690C();
-}
+void fn_80296D28(void) { fn_8029690C(); }
 
