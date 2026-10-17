@@ -30,13 +30,14 @@ extern float lbl_8055E320;
 #pragma push
 #pragma small_data off
 void *fn_80165970(void *arg0, int arg1) {
-    if (arg0 == 0) return arg0;
-    if (arg0 == 0) {
-        *(int *)arg0 = 0;
-        *((int *)arg0 + 1) = 0;
-        *((int *)arg0 + 2) = 0;
-    }
+    if (arg0 == 0) goto done;
+    if (arg0 == 0) goto after_clear;
+    *(int *)arg0 = 0;
+    *((int *)arg0 + 1) = 0;
+    *((int *)arg0 + 2) = 0;
+after_clear:
     if (arg1 > 0) fn_80128668(arg0);
+done:
     return arg0;
 }
 
