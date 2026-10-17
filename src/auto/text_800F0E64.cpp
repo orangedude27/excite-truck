@@ -622,6 +622,15 @@ void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail
     Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((u8 *)self + 0xC, (u8 *)pSound + 0xC8);
 }
 
+extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
+    void* this_, s32 limit) {
+    if (limit < 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C50, 0x227,
+                                     (const char*)lbl_80325D48);
+    }
+    *(u16*)&((u8*)this_)[0x26] = (u16)limit;
+}
+
 extern "C" void NWC24Data_Init(void* arg0) {
     *(int*)arg0 = 0;
     *((int*)arg0 + 1) = 0;
