@@ -3,6 +3,9 @@
 
 extern char lbl_8055FFB5;
 extern void *lbl_8055FF8C;
+extern float lbl_80565128;
+extern float lbl_8056512C;
+extern void fn_802E5264(int, int);
 extern float lbl_804FC680[];
 extern int lbl_8055D1EC;
 extern int lbl_8055D1F0;
