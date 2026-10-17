@@ -115,6 +115,9 @@ void fn_802D6B7C(void *arg0) {
 void fn_802D6C44(void) {
 }
 
+void fn_802D6C48(void) {
+}
+
 void fn_802D6C4C(f32 arg0) {
     lbl_8055FDE0 = arg0;
 }
