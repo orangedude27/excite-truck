@@ -1,7 +1,7 @@
 #include "types.h"
 #pragma push
 #pragma small_data off
-extern int fn_802D6C48;
+extern void fn_802D6C48(void);
 #pragma pop
 void fn_802C5DF0(int*);
 extern int lbl_8055D008;
@@ -148,6 +148,34 @@ s32 fn_802C5E7C(void *arg0) {
     return 0;
 }
 
+s32 fn_802C5EB8(void *arg0, u32 arg1) {
+    s32 count = *(s32 *)((char *)arg0 + 0x10);
+    u32 *result = NULL;
+    s32 i;
+    for (i = 0; i != count; i++) {
+        u32 *entry = *(u32 **)(*(char **)((char *)arg0 + 0x14) + i * 4);
+        if (*entry == arg1) {
+            result = entry;
+            break;
+        }
+    }
+    return (s32)result;
+}
+
+void *fn_802C5EFC(int arg0) {
+    int count = lbl_804C13A8[0];
+    void *entry = (void *)(unsigned long)lbl_804C13A8[2];
+    if (count > 0) {
+        while (count-- > 0) {
+            if (*(u16 *)((char *)entry + 4) != 0 && *(int *)entry == arg0) {
+                return entry;
+            }
+            entry = (void *)((char *)entry + 0x10);
+        }
+    }
+    return 0;
+}
+
 void fn_802C6068(void *arg0) {
     *(s16 *)((char *)arg0 + 4) = 0;
 }
@@ -216,8 +244,10 @@ void fn_802C6C30(void) {}
 
 void fn_802C6C34(void) { fn_802C53A8(); }
 
-void fn_802C6FA8(void) { fn_802C5DF0((int *)&fn_802D6C48); }
-
+#pragma push
+#pragma small_data off
+#pragma pop
+void fn_802C6FA8(void) { fn_802C5DF0((int *)(unsigned long)&fn_802D6C48); }
 void fn_802C5DF0(int*);
 int fn_802C90E0(void);
 int fn_802E30C8(const char*, int);
