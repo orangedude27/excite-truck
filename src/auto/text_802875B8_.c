@@ -225,6 +225,8 @@ void fn_8028829C(void) {}
 
 void fn_802882A0(void){if(*(s32*)lbl_804B3150)fn_80128670(*(s32*)lbl_804B3150-0x10);*(s32*)lbl_804B3150=0;*(s32*)(lbl_804B3150+4)=0;lbl_804B3150[8]=0;}
 
+void fn_802885C0(void) {}
+
 void fn_80288868(void* hi) {
     lbl_8055F6C8 = hi;
 }
