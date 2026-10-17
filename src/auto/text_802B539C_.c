@@ -32,3 +32,4 @@ extern const char lbl_8034A588[];
 struct TplLike { void *entries; unsigned int count; };
 extern struct TplLike lbl_804BE4AC;
 extern struct TplLike lbl_804BE454;
+extern struct TplLike lbl_804BE4AC;
