@@ -3,3 +3,7 @@
 
 void fn_802A7BD8(void) {
 }
+
+void fn_802A7BDC(void) {
+}
+
