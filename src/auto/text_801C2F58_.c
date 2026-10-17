@@ -513,6 +513,7 @@ void fn_801C9830(void) {
 }
 
 extern void fn_801C855C(void);
+void fn_801C9834(void);
 void fn_801C9834(void) {
     u8 *p;
     s32 idx;
