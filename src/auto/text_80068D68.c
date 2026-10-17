@@ -1093,6 +1093,39 @@ tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
     return 0;
 }
 
+void fn_8007A280(u8 *arg0) {
+    u8 *base;
+    if (arg0[0] != 0) return;
+    base = lbl_803C0F78;
+    base[0x635] = arg0[1];
+    base[0x634] = arg0[2];
+    base[0x633] = arg0[3];
+    base[0x632] = arg0[4];
+    base[0x631] = arg0[5];
+    base[0x630] = arg0[6];
+}
+
+tBTM_STATUS fn_8007A2C8(u8 *arg0) {
+    u8 *base = lbl_803C0F78;
+    if (base[0x64e] < 4) return 0xc;
+    *(u16 *)(arg0 + 0) = *(u16 *)(base + 0x636);
+    *(u16 *)(arg0 + 2) = *(u16 *)(base + 0x638);
+    *(u16 *)(arg0 + 4) = *(u16 *)(base + 0x63a);
+    *(u16 *)(arg0 + 6) = *(u16 *)(base + 0x63c);
+    *(u16 *)(arg0 + 8) = *(u16 *)(base + 0x63e);
+    return 0;
+}
+
+tBTM_STATUS BTM_SetDeviceClass(DEV_CLASS dev_class) {
+    memcpy(lbl_803C0F78 + 0x648, dev_class, 3);
+    if (lbl_803C0F78[0x64e] <= 1) return 0xc;
+    if (GKI_getpoolbuf(2) != 0) {
+        fn_80085524((void *)dev_class);
+        return 0;
+    }
+    return 3;
+}
+
 void *fn_8007A394(void) { return lbl_803C0F78 + 0x648; }
 
 void *fn_8007A3A4(void) { return lbl_803C0F78 + 0x640; }
