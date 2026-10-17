@@ -305,10 +305,64 @@ extern "C" void fn_800E5444(void *arg0, float farg0) {
     }
 }
 
+extern float lbl_80560F38;
+extern float lbl_80560F50;
+extern float lbl_80560F54;
+extern float lbl_80560F3C;
+extern "C" void fn_800E5464(void *arg0, float farg0) {
+    float value = farg0;
+    if (farg0 <= lbl_80560F38) {
+        if (farg0 < lbl_80560F50)
+            value = lbl_80560F50;
+    }
+    if (value != *(float *)((char *)arg0 + 0x128)) {
+        *(float *)((char *)arg0 + 0x128) = value;
+        *(unsigned char *)((char *)arg0 + 0x123) |= 0x20;
+    }
+}
+
+extern "C" void fn_800E54A8(void *arg0, float farg0) {
+    float value = farg0;
+    if (farg0 <= lbl_80560F54) {
+        if (farg0 < lbl_80560F3C)
+            value = lbl_80560F3C;
+    }
+    if (value != *(float *)((char *)arg0 + 0x12C)) {
+        *(float *)((char *)arg0 + 0x12C) = value;
+        *(unsigned char *)((char *)arg0 + 0x123) |= 0x20;
+    }
+}
+
 extern "C" void fn_800E54EC(void *arg0, float farg0) {
     if (farg0 != *(float *)((char *)arg0 + 0x130)) {
         *(float *)((char *)arg0 + 0x130) = farg0;
         *(unsigned char *)((char *)arg0 + 0x123) |= 0x20;
+    }
+}
+
+extern "C" void fn_800E5594(void *arg0, int arg1) {
+    int *field = (int *)((char *)arg0 + 0x13c);
+    if (*field != arg1) {
+        unsigned char *flags = (unsigned char *)arg0 + 0x123;
+        *field = arg1;
+        *flags |= 0x20;
+    }
+}
+
+extern "C" void fn_800E55B4(void *arg0, float arg1) {
+    float value;
+    if (arg1 > lbl_80560F38) {
+        value = lbl_80560F38;
+    } else if (arg1 < lbl_80560F3C) {
+        value = lbl_80560F3C;
+    } else {
+        value = arg1;
+    }
+    float *field = (float *)((char *)arg0 + 0x140);
+    if (value != *field) {
+        unsigned char *flags = (unsigned char *)arg0 + 0x123;
+        *field = value;
+        *flags |= 0x20;
     }
 }
 
