@@ -117,8 +117,11 @@ void fn_8017B09C(void* arg0, signed char* arg1) {
 }
 extern int lbl_80331C28[64];
 
+extern int lbl_80331C28[];
+#pragma scheduling off
 void** fn_8017ACCC(void** arg0) {
-    fn_80179D08((void*)arg0);
+    fn_80179D08(arg0);
     *arg0 = &lbl_80331C28;
     return arg0;
 }
+#pragma scheduling on
