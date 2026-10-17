@@ -2266,18 +2266,32 @@ void fn_800934D8(void *arg0, s16 arg1) {
     fn_800916F4(arg0, 7, &sp8);
 }
 
+void RFCOMM_PortNegReq(void *mcb, u8 dlci, void *pars) {
+    void *port = port_find_mcb_dlci_port(mcb, dlci);
+    if (*(u8 *)((u8 *)mcb + 0x6c) != 5) {
+        PORT_PortNegCnf(mcb, dlci, 0, 1);
+        return;
+    }
+    if (pars == NULL)
+        *(u8 *)((u8 *)port + 0x69) |= 2;
+    else
+        *(u8 *)((u8 *)port + 0x69) |= 4;
+    rfc_send_rpn(mcb, dlci, 1, pars, 0x3f7f);
+    rfc_port_timer_start(port, 0x3c);
+}
+
 void fn_800937A0(void *p, u16 a1, u16 a2, u16 a3) {
     if (*(u8 *)((u8 *)p + 0x6c) == 5)
         rfc_send_rpn(p, a1, 0, a2, a3);
 }
 
 void RFCOMM_ControlReq(void *mcb, u8 dlci, void *ctrl) {
-    u8 *port = port_find_mcb_dlci_port(mcb, dlci);
-    if (port[2] == 2) {
-        if (port[0x68] != 4)
+    void *port = port_find_mcb_dlci_port(mcb, dlci);
+    if (*(u8 *)((u8 *)port + 2) == 2) {
+        if (*(u8 *)((u8 *)port + 0x68) != 4)
             return;
-        port[0x64] |= 1;
-        port[0x69] |= 8;
+        *(u8 *)((u8 *)port + 0x64) |= 1;
+        *(u8 *)((u8 *)port + 0x69) |= 8;
         rfc_send_msc(mcb, dlci, 1, ctrl);
         rfc_port_timer_start(port, 0x3c);
     }
