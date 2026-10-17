@@ -30,16 +30,16 @@ void fn_801357A4();
 
 extern void *fn_80156A40(void);
 
-#pragma dont_inline on
 static float fn_80135278_dot(float *a, float *d) {
     return a[0] * d[0] + a[1] * d[1];
 }
 #pragma dont_inline off
 
 float fn_80135278(float *a, float *b, float *c) {
-    volatile float d0 = b[0] - c[0];
-    volatile float d1 = b[1] - c[1];
-    return a[0] * (b[0] - c[0]) + a[1] * (b[1] - c[1]);
+    float d[2];
+    d[0] = b[0] - c[0];
+    d[1] = b[1] - c[1];
+    return fn_80135278_dot(a, d);
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
@@ -131,11 +131,9 @@ s32 fn_801366C0(void *arg0, void *arg1, float farg0) {
             return 0;
         }
     }
-    {
-        float t = (*(float *)((char *)arg1 + 0)) * (*(float *)((char *)arg0 + 0x10))
-                + (*(float *)((char *)arg1 + 8)) * (*(float *)((char *)arg0 + 0x14));
-        return t < -t;
-    }
+    farg0 = -farg0;
+    return ((*(float *)((char *)arg1 + 0)) * (*(float *)((char *)arg0 + 0x10))
+          + (*(float *)((char *)arg1 + 8)) * (*(float *)((char *)arg0 + 0x14))) < farg0;
 }
 
 void fn_80136714(void *arg0) {
