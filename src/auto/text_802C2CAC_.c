@@ -2,6 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern const char lbl_8034B078[];
+extern void fn_802C3918(s32,s32,s32,s32,s32,s32,s32,s32);
+extern void fn_802C3C68(s32,s32,s32,s32,s32,s32,s32,s32);
+extern void fn_802C3D74(s32,s32,s32,s32,s32,s32,s32,s32);
+extern void fn_802C3F00(s32,s32,s32,s32,s32,s32,s32,s32);
 
 extern u8 lbl_8055CFF8;
 extern u8 lbl_8055D000;
