@@ -112,29 +112,15 @@ float fn_80166274(void) {
     }
 }
 
+#pragma pop
 extern void fn_802E30C8(char *, ...);
 extern int lbl_8055E330;
-extern unsigned char lbl_8055E329;
+extern signed char lbl_8055E329;
 extern unsigned char lbl_8055E328;
 extern float lbl_8055E31C;
-#pragma push
-#pragma small_data off
-#pragma pop
 extern char lbl_8032FEC0[];
 extern char lbl_8032FF08[];
-extern double fabs(double);
 #pragma push
-#pragma inline off
-#pragma small_data off
-#pragma push
-#pragma small_data off
-extern float lbl_80558DC4;
-#pragma push
-#pragma inline off
-#pragma small_data off
-#pragma push
-#pragma small_data off
-#pragma pop
 void fn_801662FC(void) {
     int flag;
     lbl_8055E329 = flag = ((unsigned char)lbl_8055E330 == 255);
