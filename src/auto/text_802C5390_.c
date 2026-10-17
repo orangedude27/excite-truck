@@ -125,8 +125,16 @@ extern void *fn_802C5A60(int, int, u16);
 extern int lbl_8034B1F0;
 void fn_802C5C40(int *arg0, int arg1, int arg2) {
     int temp_r30 = *arg0;
-    fn_802CAC28((void *)&lbl_8034B1F0, 0);
+    fn_802CAC28(&lbl_8034B1F0, 0);
     *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(temp_r30, arg2, *(s16 *)((char *)arg2 + arg1 * 4 + 0x14 + 6) - 1);
+}
+
+s32 fn_802C5E7C(void) {
+    s32 result = fn_802C5EB8(0x5350484C);
+    if (result != 0) {
+        return result + 8;
+    }
+    return 0;
 }
 
 void fn_802C6074(s32 *arg0) {
@@ -293,6 +301,11 @@ void fn_802C7A10(void* alarm) {
 }
 
 void fn_802C7A34(void) { fn_802DA704(); }
+
+extern void fn_802DA80C(void);
+extern void fn_802DA918(void);
+extern void fn_802DA550(void);
+void fn_802C7A40(void) { fn_802DA550(); }
 
 extern s8 lbl_8055FC20;
 extern void fn_802C543C(void);
