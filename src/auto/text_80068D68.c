@@ -1022,6 +1022,21 @@ void fn_80075AA4(void *arg0) {
     (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, arg0);
 }
 
+void BTA_HhEnable(u8 arg0, void *arg1) {
+    u8 *buf;
+    fn_8006EAD0();
+    fn_8007143C(0x17, (u32)&lbl_80560D28);
+    fn_8006EAD4();
+    buf = GKI_getbuf(0x34);
+    if (buf != 0) {
+        memset(buf, 0, 0x34);
+        *(u16 *)buf = 0x170C;
+        *(void **)(buf + 0x30) = arg1;
+        buf[8] = arg0;
+        fn_80071450(buf);
+    }
+}
+
 void fn_80076228(void) {
     s16 *ptr = GKI_getbuf(8);
     if (ptr != 0) {
