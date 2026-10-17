@@ -10,7 +10,7 @@ void fn_8027B288(void *);
 long fn_80131818(long);
 long fn_8027D1F4(void);
 long fn_8000DA10(void);
-void *fn_8001BB58(long, ...);
+void *fn_8001BB58(long, long, long, long);
 long fn_801284F8(long, char *);
 long fn_8027C41C(long);
 long fn_8027C4B4(long, long);
@@ -228,8 +228,7 @@ long fn_8027C71C(void *arg0) {
     long flag;
 
     value = fn_8027D1F4();
-    fn_8000DA10();
-    result = fn_8001BB58(0, *(long *)((char *)arg0 + 4), value + 0);
+    result = fn_8001BB58(fn_8000DA10(), *(long *)((char *)arg0 + 4), value, 0);
     flag = 0;
     if (result != 0 && *(long *)((char *)result + 8) == 0) {
         flag = 1;
