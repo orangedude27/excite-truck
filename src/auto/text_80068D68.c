@@ -1110,14 +1110,14 @@ void fn_8007A280(u8 *arg0) {
     base[0x630] = arg0[6];
 }
 
-tBTM_STATUS fn_8007A2C8(u8 *arg0) {
-    u8 *base = lbl_803C0F78;
-    if (base[0x64e] < 4) return 0xc;
-    *(u16 *)(arg0 + 0) = *(u16 *)(base + 0x636);
-    *(u16 *)(arg0 + 2) = *(u16 *)(base + 0x638);
-    *(u16 *)(arg0 + 4) = *(u16 *)(base + 0x63a);
-    *(u16 *)(arg0 + 6) = *(u16 *)(base + 0x63c);
-    *(u16 *)(arg0 + 8) = *(u16 *)(base + 0x63e);
+tBTM_STATUS fn_8007A2C8(u16 *arg0) {
+    register u16 *base = (u16 *)lbl_803C0F78;
+    if (((u8 *)base)[0x64e] < 4) return 0xc;
+    arg0[0] = base[0x31b];
+    arg0[1] = base[0x31c];
+    arg0[2] = base[0x31d];
+    arg0[3] = base[0x31e];
+    arg0[4] = base[0x31f];
     return 0;
 }
 
@@ -1141,6 +1141,10 @@ s32 fn_8007A3B4(s32 value) { s32 old = *(s32 *)(lbl_803C0F78 + 0x568); *(s32 *)(
 
 void fn_8007AD38(void) {
 
+}
+
+u8 fn_8007B340(void) {
+    return lbl_803C0F78[0x1848];
 }
 
 void fn_8007BC88(void) {
