@@ -55,10 +55,15 @@ public:
     f32 m254;
     s32 m258;
     f32 m25c;
-    s32 m260;
-    s32 m264;
-    s32 m268;
-};
+          s32 m260;
+      s32 m264;
+      s32 m268;
+      s32 m26c;
+      s32 m270;
+      f32 m274;
+      f32 m278;
+      f32 m27c;
+  };
 
 class Unk8015A368C {
 public:
@@ -1038,11 +1043,38 @@ extern "C" void fn_8015CC6C(void* arg0, f32 farg0) {
     *(f32*)((char*)arg0 + 0x250) = farg0;
 }
 
+extern "C" void fn_8015CC74(Unk801577F0* arg0) {
+    f32 zero = lbl_80561754;
+    s32 i = 0;
+    s32 offset = 0;
+    s32 value = 0;
+    for (; i < arg0->mCount; ++i) {
+        u8* base = arg0->mData;
+        *(s32*)(base + offset) = value;
+        s32* p = (s32*)arg0->mData;
+        *(s32*)((u8*)p + offset + 4) = value;
+        p = (s32*)arg0->mData;
+        *(s32*)((u8*)p + offset + 8) = value;
+        p = (s32*)arg0->mData;
+        *(f32*)((u8*)p + offset + 0xC) = zero;
+        offset += 0x38;
+    }
+    arg0->v34();
+    *(f32*)((u8*)arg0 + 0x250) = lbl_805617C8;
+}
+
 extern "C" void fn_8015CD0C(void) {
 
 }
 
 extern "C" void fn_8015CDD8(void) {
+}
+
+extern "C" void fn_8015CDDC(Unk801577F0* arg0, void* arg1, s32 arg2, f32 farg0) {
+    if (*(s32*)((u8*)arg0 + 0x24C) == *(s32*)((u8*)arg1 + 0x1EC) &&
+        arg2 == arg0->v23()) {
+        *(f32*)((u8*)arg0 + 0x250) = farg0;
+    }
 }
 
 extern "C" s32 fn_8015CE48(void) {
