@@ -171,4 +171,12 @@ s32 fn_8001FD24(void) {
     return fn_801E8838() == 0;
 }
 
+extern s8 lbl_8055D614;
+extern s32 lbl_8055D618;
+extern s32 fn_80018FB4(void);
+void fn_8001FD4C(s8 arg0) {
+    lbl_8055D614 = arg0;
+    lbl_8055D618 = fn_80018FB4();
+}
+
 #pragma dont_inline off
