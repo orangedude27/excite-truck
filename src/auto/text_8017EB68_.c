@@ -161,6 +161,12 @@ void fn_801815DC(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x20) = value;
 }
 
+void fn_80181720(void *arg0) {
+    if (*(int *)((char *)arg0 + 8) >= 0 && fn_8026A368(*(int *)((char *)arg0 + 4)) != 0x11) {
+        fn_802E85F4(*(int *)((char *)arg0 + 8));
+    }
+}
+
 int fn_8018176C(void *arg0) {
     return *(unsigned char *)((char *)arg0 + 0x58);
 }
@@ -187,5 +193,25 @@ float fn_801817A4(void *arg0) { return *(float *)((char *)arg0 + 0x334); }
 
 unsigned char fn_801817AC(void *arg0) {
     return *((unsigned char *)arg0 + 0x338);
+}
+
+int fn_801817B4(void *arg0) {
+    int result = 0;
+    if (*(unsigned char *)((char *)arg0 + 0x340) != 0) {
+        result = 1;
+    } else if (fn_801A8EE4((char *)arg0 + 0x9C) != 0) {
+        result = 1;
+    }
+    return result;
+}
+
+int fn_80181800(void *arg0) {
+    int result = 0;
+    if (*(unsigned char *)((char *)arg0 + 0x340) != 0) {
+        result = 1;
+    } else if (fn_801A8EE4((char *)arg0 + 0x8C) != 0) {
+        result = 1;
+    }
+    return result;
 }
 
