@@ -24,6 +24,29 @@ void fn_802C70AC(s32, void *, s32, s32);
 f32 PSVECDotProduct(const f32 *, const f32 *);
 }
 
+class F9Resource {
+public:
+    virtual void s4();
+    virtual void *s8(void *);
+    virtual void sC();
+    virtual s32 s10(void *);
+};
+class F9Manager {
+public:
+    virtual void s4();
+    virtual void s8();
+    virtual void sC();
+    virtual void s10();
+    virtual void s14();
+    virtual void s18();
+    virtual void s1C();
+    virtual void s20();
+    virtual void s24();
+    virtual void s28();
+    virtual void s2C();
+    virtual s32 s30(void *, s32);
+};
+
 struct FIterVT {
     void *vtable; // 0x0
     void *vtbl;   // 0x8
@@ -299,6 +322,7 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
     }
 }
 
+#pragma dont_inline on
 extern "C" void fn_801F9AA4(void *arg0, s32 arg1) {
     void **obj = fn_80131810(arg0);
     if (obj != 0) {
@@ -308,6 +332,19 @@ extern "C" void fn_801F9AA4(void *arg0, s32 arg1) {
         }
         fn_80131818(obj);
     }
+}
+
+extern "C" int fn_801F9B28(void) {
+    void *list;
+    void **obj;
+    fn_8013A0B0(&list, lbl_8033AF80 + 0x35C, &lbl_8055B388);
+    if (list != 0) fn_801F9928(list, 3);
+    fn_801F9AA4(lbl_8033AF80 + 0x368, 3);
+    obj = *(void ***)((u8 *)fn_8000AC38() + 0x20);
+    if ((*(s32 (**)(void *, void *, s32))((u8 *)*obj + 0x30))(obj, lbl_8033AF80 + 0x378, 0) != 0)
+        fn_801F9AA4(lbl_8033AF80 + 0x38C, 3);
+    fn_801F9AA4(lbl_8033AF80 + 0x39C, 2);
+    fn_8013A198(&list, -1);
 }
 #pragma dont_inline reset
 
