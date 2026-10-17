@@ -508,13 +508,13 @@ extern "C" void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
 
 extern int lbl_80333918[64];
 extern "C" void* fn_801A1520(void*, void*, s32);
-#pragma scheduling off
+#pragma dont_inline on
 void** fn_801A1898(void** arg0) {
-    ((void* (*)(void*))fn_801A1520)(arg0);
-    *arg0 = &lbl_80333918;
+    fn_801A1520(arg0, arg0, 0);
+    *(void* volatile*)arg0 = (void*)&lbl_80333918;
     return arg0;
 }
-#pragma scheduling on
+#pragma dont_inline off
 void fn_801A1F44(void* arg0, void* arg1) {
     void* result = ((void* (*)(void*))((void**)*(void**)arg1)[10])(arg1);
     *(s32*)((u8*)arg0) = *(s32*)((u8*)result + 0x24);
@@ -796,9 +796,7 @@ extern void fn_8019EECC(void*, void*);
 extern void fn_8019EF00(void*);
 extern void fn_801E3FC8(void*, s32, f32);
 void fn_801A49FC(void* arg0) {
-    if (*(s32*)((u8*)arg0 + 0x48) != 0) {
-        fn_801D06C4();
-    }
+    if (*(s32*)((u8*)arg0 + 0x48) != 0) fn_801D06C4();
 }
 
 #pragma push
