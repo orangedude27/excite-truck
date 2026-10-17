@@ -1592,6 +1592,22 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802292D8(void *arg0, 
     return arg0;
 }
 
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229330(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_802223C4(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229388(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_802223C4(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_802293E0(
     void* this_, s32 flag) {
     if (this_) {
@@ -1766,6 +1782,14 @@ extern "C" void fn_80229884(void *arg0) {
 
 extern "C" s32 fn_802298A4(s32 arg0) {
     return arg0 + 0x258;
+}
+
+extern "C" s32 fn_802298AC(void *arg0) {
+    s32 result = 0;
+    if (*(u8 *)((char *)arg0 + 0x18) != 0) {
+        result = 2;
+    }
+    return (*(*(u8 **)((char *)arg0 + 0x254)) != 0) | result;
 }
 
 extern "C" int fn_802298DC(void *arg0) {
