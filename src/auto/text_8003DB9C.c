@@ -299,16 +299,18 @@ void __GXPEInit(void) {
     __peReg[5] |= 0xF;
 }
 
+void GXInitLightColor(void *arg0, s32 *arg1) { *(s32 *)((char *)arg0 + 0xC) = *arg1; }
+
 void GXInitTexObjTlut(void* arg0, int arg1) {
     *(int*)((char*)arg0 + 0x18) = arg1;
 }
 
 extern unsigned char lbl_80558E80[];
 void GXInitTexObjFilter(s32 *arg0, s32 arg1, s32 arg2) {
-    s32 value = *arg0;
-    value = (value & ~0x10) | (((unsigned int)__builtin_clz(arg2 - 1) >> 1) & 0x10);
-    *arg0 = value;
-    *arg0 = (value & ~0xE0) | ((lbl_80558E80[arg1] << 5) & 0xE0);
+    s32 temp = *arg0;
+    temp = (temp & ~0x10) | (((unsigned int)__cntlzw(arg2 - 1) >> 1) & 0x10);
+    *arg0 = temp;
+    *arg0 = (temp & ~0xE0) | ((lbl_80558E80[arg1] << 5) & 0xE0);
 }
 
 void GXGetTexObjWidth(void *arg0, s32 arg1) {
@@ -344,20 +346,19 @@ int GXGetTexObjWrap_Internal(unsigned int *arg0) {
 }
 
 void GXLoadTexObj(void *arg0, unsigned int arg1) {
+    unsigned int *data = __GXData;
     void *result;
-    result = ((void *(*)(void *))__GXData[0x518 / 4])(arg0);
+    result = ((void *(*)(void *))data[0x518 / 4])(arg0);
     GXLoadTexObjPreLoaded(arg0, result, arg1);
 }
 
 void GXInitTlutObj(void *arg0, unsigned int arg1, int arg2, short arg3) {
-    unsigned int value;
-    unsigned int size;
-    value = *(unsigned int *)((char *)arg0 + 4);
-    value = (value & 0xFF) | ((arg1 << 27) & 0xFFFFFF00);
-    size = 0;
-    size = (size & ~0x00300000) | ((arg2 << 10) & 0x00300000);
+    unsigned int value = *(unsigned int *)((char *)arg0 + 4);
+    unsigned int size = 0;
+    value = (arg1 << 27) | (value & 0xFF);
+    size |= arg2 << 10;
     *(short *)((char *)arg0 + 8) = arg3;
-    value = (value & 0x00FFFFFF) | 0x64000000;
+    value |= 0x64000000;
     *(unsigned int *)arg0 = size;
     *(unsigned int *)((char *)arg0 + 4) = value;
 }
@@ -368,6 +369,7 @@ unsigned short GXGetTexObjTlut(void *arg0) {
 
 void GXLoadTlut(void *arg0, int arg1) {
     void *obj;
+    unsigned int value;
     obj = ((void *(*)(int))__GXData[0x51C / 4])(arg1);
     __GXFlushTextureState();
     *(volatile unsigned char *)0xCC008000 = 0x61;
@@ -375,10 +377,12 @@ void GXLoadTlut(void *arg0, int arg1) {
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = *(unsigned int *)obj;
     __GXFlushTextureState();
-    *(unsigned int *)((char *)obj + 4) = (*(unsigned int *)arg0 & 0xFFFFFC00) | (*(unsigned int *)obj & 0x3FF);
+    value = *(unsigned int *)arg0;
+    value = (value & 0xFFFFFC00) | (*(unsigned int *)obj & 0x3FF);
+    *(unsigned int *)((char *)obj + 4) = value;
     *(unsigned int *)((char *)obj + 8) = *(unsigned int *)((char *)arg0 + 4);
     *(unsigned int *)((char *)obj + 0xC) = *(unsigned int *)((char *)arg0 + 8);
-    *(unsigned int *)arg0 = *(unsigned int *)((char *)obj + 4);
+    *(unsigned int *)arg0 = value;
 }
 
 extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
