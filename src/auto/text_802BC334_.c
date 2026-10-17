@@ -16,6 +16,23 @@ void fn_802BC3DC(void) {
     fn_802BC39C();
 }
 
+void fn_802BC3E0(short arg0, short arg1, short arg2, char *arg3) {
+    char *obj = fn_802BE844(arg0, arg1, arg2);
+    *(char **)arg3 = *(char **)(obj + 4);
+    *(char **)(obj + 4) = arg3;
+}
+
+short fn_802BC424(int arg0) {
+    short value = arg0 + 0x200;
+    int mask = 0x1FF;
+    while (1) {
+        mask >>= 1;
+        if ((value & mask) == 0)
+            break;
+    }
+    return mask + 1;
+}
+
 void fn_802BC44C(void *arg0) {
     int offset = 0;
     int i = 0;
@@ -139,4 +156,9 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
     }
     return arg0;
 }
+
+void fn_802BDD54(void) {
+    fn_802BD814();
+}
+
 void *fn_801284F8(int, int);
