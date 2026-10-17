@@ -65,45 +65,30 @@ typedef struct Unk801B3398 {
     s32 unk_0x34;
 } Unk801B3398;
 
-s32 fn_801B32C8(void* arg0, s32 arg1) {
-    s32 vals[2];
-    s32 idx = -1;
-    s32 result = 0;
-
-    if (*(s32*)((char*)arg0 + 0x20) == 0x6D) {
-        idx = 0;
-    } else if (arg1 == 0x6D) {
-        idx = 1;
-    }
-    vals[0] = *(s32*)((char*)arg0 + 0x20);
-    vals[1] = arg1;
-    if (idx != -1) {
-        switch (vals[!idx]) {
-        case 0x6E:
-        case 1:
-            result = 1;
-            break;
-        }
-    }
-    return result;
+s32 fn_801B32C8(void* arg0,s32 arg1) {
+ s32 vals[2];
+ s32 index=-1;
+ s32 result=0;
+ vals[0]=*(s32*)((char*)arg0+0x20);
+ vals[1]=arg1;
+ if(vals[0]==0x6d) index=0;
+ else if(vals[1]==0x6d) index=1;
+ if(index!=-1 && (vals[!index]==0x6e || vals[!index]==1)) result=1;
+ return result;
 }
 
 void* fn_801B3338(void* arg0) {
-    s32 found = 0;
-    s32* obj = *(s32**)((char*)arg0 + 4);
-
-    if (obj != NULL) {
-        if ((u32)(obj[4] - 0x43410000) == 0x5220
-            || (u32)(obj[4] - 0x50430000) == 0x4152
-            || (u32)(obj[4] - 0x41430000) == 0x4152
-            || (u32)(obj[4] - 0x4E430000) == 0x4152) {
-            found = 1;
-        }
-    }
-    if (found != 0) {
-        return obj;
-    }
-    return NULL;
+ s32* obj=*(s32**)((char*)arg0+4);
+ if(obj!=NULL) {
+   s32 found=0;
+   s32 magic=obj[4];
+   if((u32)(magic-0x43410000)==0x5220
+      || (u32)(magic-0x50430000)==0x4152
+      || (u32)(magic-0x41430000)==0x4152
+      || (u32)(magic-0x4E430000)==0x4152) found=1;
+   if(found!=0) return obj;
+ }
+ return NULL;
 }
 
 int fn_801B3390(void) {
@@ -111,41 +96,17 @@ int fn_801B3390(void) {
 }
 
 s32 fn_801B3398(void* arg0) {
-    Unk801B3398 local;
-    s32* src = (s32*)arg0;
-    s32 t0, t1, t2, t3, t4, t5, t6, t7;
-    s32 t8, t9, t10, t11, t12, t13;
-
-    t0 = src[0];
-    t1 = src[1];
-    t2 = src[2];
-    t3 = src[3];
-    t4 = src[4];
-    t5 = src[5];
-    t6 = src[6];
-    t7 = src[7];
-    t8 = src[8];
-    t9 = src[9];
-    t10 = src[10];
-    t11 = src[11];
-    t12 = src[12];
-    t13 = src[13];
-    local.unk_0x00 = t0;
-    local.unk_0x04 = t1;
-    local.unk_0x08 = t2;
-    local.unk_0x0C = t3;
-    local.unk_0x10 = t4;
-    local.unk_0x14 = t5;
-    local.unk_0x18 = t6;
-    local.unk_0x1C = t7;
-    local.unk_0x20 = t8;
-    local.unk_0x24 = t9;
-    local.unk_0x28 = t10;
-    local.unk_0x2C = t11;
-    local.unk_0x30 = t12;
-    local.unk_0x34 = t13;
-    fn_801796CC(1, &local, 0x38);
-    return 0x38;
+ Unk801B3398 local;
+ s32* src=(s32*)arg0;
+ s32 t0,t1,t2,t3,t4,t5,t6,t7,t8,t9,t10,t11,t12,t13;
+ t0=src[0]; t1=src[1]; t2=src[2]; t3=src[3]; t4=src[4]; t5=src[5]; t6=src[6];
+ t7=src[7]; t8=src[8]; t9=src[9]; t10=src[10]; t11=src[11]; t12=src[12]; t13=src[13];
+ local.unk_0x00=t0; local.unk_0x04=t1; local.unk_0x08=t2; local.unk_0x0C=t3;
+ local.unk_0x10=t4; local.unk_0x14=t5; local.unk_0x18=t6; local.unk_0x1C=t7;
+ local.unk_0x20=t8; local.unk_0x24=t9; local.unk_0x28=t10; local.unk_0x2C=t11;
+ local.unk_0x30=t12; local.unk_0x34=t13;
+ fn_801796CC(1,&local,0x38);
+ return 0x38;
 }
 #pragma use_lmw_stmw reset
 void fn_801B3448(void) {
@@ -280,17 +241,74 @@ s32 fn_801B3FD0(void) {
 
 #pragma scheduling off
 void fn_801B42D0(void* arg0) {
-    u8* p = (u8*)arg0 + 0x2FC;
-    void* val = *(void**)lbl_802F9630;
-    f32 init = lbl_80562650;
-    s32 i;
-
-    for (i = 0; i < 0x10; i++, p += 0x2C) {
-        *(s32*)(p + 0x1C) = fn_802077A4(val, 5, p + 0x10, p + 4);
-        *(s32*)(p + 0x20) = 0;
-        *(s32*)(p + 0x24) = 0;
-        *(f32*)(p + 0x28) = init;
-    }
-    *(s32*)((u8*)arg0 + 0x5BC) = 0;
+ void* val=*(void**)lbl_802F9630;
+ f64 init=lbl_80562650;
+ u8* p=(u8*)arg0+0x2fc;
+ s32 i=0;
+ s32 zero=0;
+ while(i<0x10) {
+   *(s32*)(p+0x1c)=fn_802077A4(val,5,p+0x10,p+4);
+   i++;
+   if(i>=0x10) break;
+   *(s32*)(p+0x20)=zero;
+   *(s32*)(p+0x24)=zero;
+   *(f32*)(p+0x28)=init;
+   p+=0x2c;
+ }
+ *(s32*)((u8*)arg0+0x5bc)=0;
 }
-#pragma scheduling reset
+
+extern void fn_802E317C(const char *, ...);
+extern u8 lbl_80335D80[];
+s32 fn_801B4428(u32* arg0, u32* arg1) {
+    u32 a = *arg0;
+    u32 b = *arg1;
+    if (a < b) return -1;
+    if (a > b) return 1;
+    fn_802E317C((const char *)lbl_80335D80);
+    return 0;
+}
+
+void* fn_801B447C(void* arg0, void* arg1, s32 arg2) {
+    s32 half;
+    s32 right;
+    if (arg2 == 1) return arg1;
+    half = (arg2 + ((u32)arg2 >> 31)) >> 1;
+    if (half > 0) *(void**)((u8*)arg1 + half * 16 + 8) = fn_801B447C(arg0, arg1, half);
+    right = arg2 - half - 1;
+    if (right > 0) *(void**)((u8*)arg1 + half * 16 + 12) = fn_801B447C(arg0, (u8*)arg1 + half * 16 + 16, right);
+    return (u8*)arg1 + half * 16;
+}
+#pragma dont_inline off
+void* fn_801B4528(void* arg0, u32* arg1, u32 arg2) {
+    while (arg1 != NULL) {
+        if (arg2 < *arg1) {
+            arg1 = (u32*)arg1[2];
+            if (arg1 == NULL) return NULL;
+        } else if (arg2 > *arg1) {
+            arg1 = (u32*)arg1[3];
+            if (arg1 == NULL) return NULL;
+        } else {
+            return arg1;
+        }
+    }
+    return NULL;
+}
+
+void* fn_801B4570(void* arg0, u32 arg1) {
+    void* found;
+    s32* node;
+    u32 idx;
+    u32 count;
+    u32* data;
+    found = fn_801B4528(arg0, *(void**)((u8*)arg0 + 0x2F8), arg1);
+    if (found == NULL) return NULL;
+    node = *(s32**)((u8*)found + 4);
+    idx = node[2];
+    count = node[1];
+    node[2] = (idx + 1) % count;
+    data = (u32*)node[0];
+    return data + idx * 2;
+}
+
+#pragma dont_inline off
