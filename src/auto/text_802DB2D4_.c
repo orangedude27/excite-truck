@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern unsigned char lbl_8055FEC0;
 extern void *lbl_8055FEA8;
 extern void *lbl_8055FEAC;
 extern void GXLoadTexMtxImm(float *, unsigned int, unsigned char);
@@ -8,6 +9,13 @@ extern float lbl_8055D148;
 extern unsigned char lbl_804DB068[];
 extern unsigned char lbl_802FACF8[];
 extern unsigned char lbl_802FACD8[];
+void fn_802DB394(void) {
+    GXSetTevOp(0, 3);
+    GXSetTevOp(1, 3);
+    GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(1, 0, 7, 7, 7);
+}
+
 void fn_802DB4E4(void) {
     float m[12] = {0};
     m[0] = *(float *)(lbl_804DB068 + 0xc);
