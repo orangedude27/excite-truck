@@ -18,10 +18,31 @@ extern char *fn_8022D82C(void *, int, int);
 extern char *strncpy(char *, const char *, unsigned long);
 extern double fabs(double);
 extern float lbl_80558DC4;
+void fn_8022D76C(void *arg0) {
+    memset(*(void **)arg0, 0, *(int *)((char *)arg0 + 0xC) * *(int *)((char *)arg0 + 0x14));
+    *(int *)((char *)arg0 + 8) = 0;
+    *(int *)((char *)arg0 + 0x20) = 0;
+    *(int *)((char *)arg0 + 0x24) += 1;
+}
+
 char *fn_8022D850(void *arg0, int arg1, int arg2, int *arg3) {
     char *ptr = fn_8022D82C(arg0, arg1, arg2);
     if (arg3 != 0) *arg3 = (signed char)*ptr;
     return ptr + 1;
+}
+
+void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char arg4) {
+    extern char *fn_8022D82C(void *, int, int);
+    extern char *strncpy(char *, const char *, unsigned long);
+    char *ptr = fn_8022D82C(arg0, arg1, arg2);
+    int next = arg1 + 1;
+    int len;
+    if (next > *(int *)((char *)arg0 + 8)) *(int *)((char *)arg0 + 8) = next;
+    len = (*(int **)((char *)arg0 + 0x18))[arg2];
+    *ptr = arg4;
+    strncpy(ptr + 1, arg3, len);
+    ptr[len] = 0;
+    *(int *)((char *)arg0 + 0x24) += 1;
 }
 
 void fn_8022D924(void *arg0, int arg1) {
@@ -230,6 +251,13 @@ void fn_8022DE1C(void *arg0) {
         var_f4 = temp_f0;
     }
     *temp_r4 = var_f4;
+}
+
+int fn_8022DE88(void *arg0) {
+    extern float lbl_80558DC4;
+    extern double fabs(double);
+    if ((float)fabs(*(float *)((char *)arg0 + 0x10) - **(float **)((char *)arg0 + 0x18)) <= lbl_80558DC4) return 0;
+    return 1;
 }
 
 int fn_8022DEC4(void *arg0) {
