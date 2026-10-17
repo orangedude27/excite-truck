@@ -4,6 +4,10 @@
 typedef signed long s32;
 typedef unsigned char u8;
 
+void fn_80135F64(int, s32, s32, s32, s32);
+extern float lbl_8055E3C8;
+extern float lbl_8056133C;
+void fn_80136714(void *);
 extern float lbl_80561320;
 extern float lbl_80561324;
 extern s32 lbl_8032BE80[];
@@ -112,6 +116,36 @@ s32 fn_801355B8(void *arg0, void *arg1) {
     return 0;
 }
 
+extern void fn_80135EA8(void *, s32, s32);
+extern void fn_80135F4C(void *);
+extern s32 lbl_8032BE6C[];
+#pragma dont_inline on
+void *fn_80135DC4(void *arg0, s32 arg1, s32 arg2) {
+    s32 v;
+    v = arg2;
+    fn_801352B8(arg0);
+    *(s32 *)((char *)arg0 + 0x58) = 0;
+    *(s32 **)arg0 = lbl_8032BE6C;
+    *(s32 *)((char *)arg0 + 0x54) = 0;
+    *(s32 *)((char *)arg0 + 0x50) = 0;
+    if (v == 0) {
+        void *obj = fn_80156A40();
+        v = ((s32 (**)(void *, s32))*(void **)obj)[2](obj, 0);
+    }
+    if (((s32 (**)(void *, s32))*(void **)arg0)[3](arg0, v) != 0) {
+        if (arg1 != 0) {
+            void *p = *(void **)((char *)arg0 + 0x2C);
+            fn_80135EA8((char *)arg0 + 0x50, *(s32 *)((char *)p + 0x18) >> 16, 2);
+        } else {
+            *(s32 *)((char *)arg0 + 0x58) = 0;
+            *(s32 *)((char *)arg0 + 0x54) = 0;
+            *(s32 *)((char *)arg0 + 0x50) = 0;
+        }
+        fn_80135F4C(arg0);
+    }
+    return arg0;
+}
+#pragma dont_inline off
 void fn_80135EF0(void *arg0) {
     if (fn_80135D60() == 1) {
         *(int *)((char *)arg0 + 0x34) = 0;
