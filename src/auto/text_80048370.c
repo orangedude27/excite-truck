@@ -26,6 +26,33 @@ void WPADiDisableRecalibration(s32 chan) {
     }
     OSRestoreInterrupts(interrupts);
 }
+
+void* AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead*, MEMiExpHeapMBlock*, void*, u32, u16);
+void* AllocFromTail_(MEMiHeapHead* heap, u32 size, s32 align) {
+    BOOL isFastAlloc;
+    MEMiExpHeapMBlock* it;
+    MEMiExpHeapHead* exp;
+    MEMiExpHeapMBlock* bestBlk;
+    u32 bestBlkSize;
+    void* bestBlkMemPtr;
+    exp = (MEMiExpHeapHead*)(heap + 1);
+    isFastAlloc = exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST;
+    bestBlk = 0;
+    bestBlkSize = 0xFFFFFFFF;
+    bestBlkMemPtr = 0;
+    for (it = exp->freeMBlocks.tail; it != 0; it = it->prev) {
+        void* start = it + 1;
+        void* end = (void*)((it->size + (u32)start - size) & ~(align - 1));
+        if ((s32)((u32)end - (u32)start) >= 0 && bestBlkSize > it->size) {
+            bestBlk = it;
+            bestBlkSize = it->size;
+            bestBlkMemPtr = end;
+            if (isFastAlloc || bestBlkSize == size) break;
+        }
+    }
+    return bestBlk != 0 ? AllocUsedBlockFromFreeBlock_(exp, bestBlk, bestBlkMemPtr, size, 1) : 0;
+}
+
 #pragma pop
 
 MEMiHeapHead* MEMCreateExpHeapEx(void *start, u32 size, u16 opt) {
