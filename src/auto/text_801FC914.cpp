@@ -471,6 +471,15 @@ extern "C" void fn_801FF0D4(void* arg0) {
     *((int*)arg0 + 1) = 0;
 }
 
+extern "C" void fn_801FF0E4(void* arg0) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v5(int);
+    };
+    Obj* obj = *(Obj**)((char*)arg0 + 4);
+    if (obj != 0) obj->v5(0);
+}
+
 extern "C" void fn_801FF108(void* arg0) {
     fn_801FF420((char*)arg0 + 0xE08);
 }
