@@ -36,8 +36,9 @@ void fn_801942F0(void *arg0, int arg1) {
 extern float lbl_8055A488;
 extern float lbl_8056215C;
 void fn_801945F8(void *arg0) {
-    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) != 0x50 ||
-        *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24) == 3) {
+    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) != 0x50) {
+        fn_80194590(arg0);
+    } else if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24) == 3) {
         fn_80194590(arg0);
     }
 }
@@ -58,10 +59,14 @@ extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
 extern void fn_80194FD0(void);
 void fn_80194F70(void *arg0, float *a, float *b) {
-    float diff[4];
-    diff[0] = a[0] - b[0];
-    diff[1] = a[1] - b[1];
-    diff[2] = a[2] - b[2];
+    float diff[3];
+    float x, y, z;
+    x = a[0]; y = b[0];
+    diff[0] = x - y;
+    x = a[1]; y = b[1];
+    diff[1] = x - y;
+    x = a[2]; y = b[2];
+    diff[2] = x - y;
     PSVECDotProduct(arg0, diff);
 }
 
