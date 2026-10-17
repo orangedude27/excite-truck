@@ -113,6 +113,16 @@ void fn_8023BE38(int ignored, int flag) {
     fn_80012778();
 }
 
+extern void fn_8001285C(void);
+extern void *fn_80012820(s32);
+extern s32 *fn_80012870(s32, s32);
+extern void fn_8023B9EC(s32, s32, s32, s32, s32);
+extern void fn_8023BE38(int, int);
+extern const s32 lbl_80341340;
+void fn_8023BEB8(s32 arg0, s32 arg1, s32 arg2) {
+    fn_8023B9EC(arg0, arg1, arg2, 0, 0);
+}
+
 extern s32 atoi(void);
 extern void fn_802E317C(const char *);
 extern const char lbl_80341354[];
