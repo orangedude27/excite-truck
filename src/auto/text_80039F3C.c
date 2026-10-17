@@ -50,6 +50,20 @@ void fn_8003A074(int arg0) {
  } else if (lbl_8055D8D0 != 0) lbl_8055D8D0(2,0);
 }
 
+extern int NANDPrivateCreateAsync(const char *, int, void *, void *, void *);
+extern char lbl_80302368[];
+extern void fn_8003A074(int);
+void fn_8003A10C(int arg0) {
+    if (arg0 == 0 || arg0 == -6) {
+        if (NANDPrivateCreateAsync(lbl_80302368, 0x3F, 0, fn_8003A074, lbl_8037B6D0) != 0 &&
+            lbl_8055D8D0 != 0) {
+            lbl_8055D8D0(2, 0);
+        }
+    } else if (lbl_8055D8D0 != 0) {
+        lbl_8055D8D0(2, 0);
+    }
+}
+
 void __DVDShowFatalMessage(void) {
  unsigned char bg[4]={0,0,0,0}; unsigned char fg[4]={255,255,255,0}; const char *msg;
  if(SCGetLanguage()==0) OSSetFontEncode(1); else OSSetFontEncode(0);
