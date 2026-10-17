@@ -30,15 +30,22 @@ void fn_801357A4();
 
 extern void *fn_80156A40(void);
 
-static float fn_80135278_dot(float *a, float *d) {
-    return a[0] * d[0] + a[1] * d[1];
+typedef struct {
+    float unk_0;
+    float unk_4;
+} Diffs2_80135278;
+
+static float fn_80135278_dot(float *a, Diffs2_80135278 d) {
+    return a[0] * d.unk_0 + a[1] * d.unk_4;
 }
 
 float fn_80135278(float *a, float *b, float *c) {
-    float d[2];
-    d[0] = b[0] - c[0];
-    d[1] = b[1] - c[1];
-    return fn_80135278_dot(a, d);
+    struct Diffs { float x; float y; } d;
+    float dx = b[0] - c[0];
+    float dy = b[1] - c[1];
+    d.x = dx;
+    d.y = dy;
+    return a[0] * dx + a[1] * dy;
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
@@ -164,5 +171,23 @@ void fn_80136764(void) {
 
 void fn_80136768(void) {
     fn_801569FC();
+}
+
+void fn_801367E8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 r;
+    void ***vtbl = (void ***)arg0;
+    r = ((s32 (*)(void))vtbl[0][3])();
+    if (r == 1) {
+        fn_801353C8((Unk_80135278 *)arg0, arg2, arg3, 0);
+    }
+}
+
+void fn_80136854(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 r;
+    void ***vtbl = (void ***)arg0;
+    r = ((s32 (*)(void))vtbl[0][3])();
+    if (r == 1) {
+        fn_80135F64((int)arg0, arg2, arg3, 1, 0);
+    }
 }
 
