@@ -14,16 +14,11 @@ void fn_80288A1C(void) {}
 
 extern int lbl_8055F6E0[];
 extern int fn_8028E584(int, int, int);
-void fn_80288A40(int arg0, int arg1) {
-    fn_8028E584(lbl_8055F6E0[1], arg0, arg1);
-}
+void fn_80288A40(int arg0, int arg1) { fn_8028E584(lbl_8055F6E0[1], arg0, arg1); }
 
-void fn_80288A58(int arg0, int arg1) {
-    fn_8028E584(lbl_8055F6E0[0], arg0, arg1);
-}
+void fn_80288A58(int arg0, int arg1) { fn_8028E584(lbl_8055F6E0[0], arg0, arg1); }
 
-void fn_80288A70(void) {
-}
+void fn_80288A70(void) {}
 
 int fn_802894B4(int arg0) {
     fn_802896E4();
