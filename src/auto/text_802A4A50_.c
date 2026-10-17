@@ -6,7 +6,6 @@ typedef unsigned char u8;
 typedef unsigned long u32;
 typedef signed long s32;
 typedef float f32;
-typedef struct { f32 x, y, z; } Vec3;
 void fn_802C2C00(s32);
 void *fn_801E1F44(void);
 void fn_802C2C00(s32);
