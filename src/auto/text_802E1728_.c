@@ -30,3 +30,5 @@ void fn_802E2A1C(void) {
 
 void fn_802E2A54(void) {}
 
+void fn_802E2A58(void) {}
+
