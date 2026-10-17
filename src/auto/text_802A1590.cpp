@@ -59,6 +59,8 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_802A1860(void) {}
+
 extern "C" void fn_802A1CBC(void) {}
 
 extern "C" void fn_802A1CC0(void) {
