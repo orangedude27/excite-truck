@@ -349,6 +349,23 @@ extern "C" s32 fn_800A9104(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
+struct CachePage {
+    s32 next;
+    s32 prev;
+    u32 pad[5];
+};
+extern "C" s32 fn_800A7C20(void *arg0, s32 arg1, void *arg2, s32 arg3);
+extern "C" s32 VFiPFCACHE_FlushAllCaches(void *arg0) {
+    s32 temp_r3;
+
+    temp_r3 = fn_800A8AD4(*(s32 *)((u8 *)arg0 + 0x1630));
+    if (temp_r3 != 0) {
+        return temp_r3;
+    }
+    temp_r3 = fn_800A8AD4(*(s32 *)((u8 *)arg0 + 0x1634));
+    return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+}
+
 extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
     u16 i;
     for (i = 0; i < 3; i++) {
@@ -361,6 +378,30 @@ extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
     *(u32 *)(arg0 + 0x15FC) &= ~1U;
     *(s32 *)(arg0 + 0x1620) = 0;
 }
+
+#pragma dont_inline on
+extern "C" void *fn_800A9B0C(void *arg0) {
+    void *vol;
+    s32 temp_r3;
+
+    vol = *(void **)((u8 *)arg0 + 8);
+    fn_800B77C0((u8 *)vol + 0x1F90);
+    temp_r3 = fn_800B5E14(vol);
+    if (temp_r3 != 0) {
+        fn_800B783C((u8 *)vol + 0x1F90);
+        lbl_803D2140[16] = temp_r3;
+        *(s32 *)((u8 *)vol + 0x1F80) = temp_r3;
+        return (void *)temp_r3;
+    }
+    temp_r3 = fn_800A95B4(arg0);
+    if (temp_r3 != 0) {
+        lbl_803D2140[16] = temp_r3;
+        *(s32 *)((u8 *)vol + 0x1F80) = temp_r3;
+    }
+    fn_800B783C((u8 *)vol + 0x1F90);
+    return (void *)temp_r3;
+}
+#pragma dont_inline reset
 
 extern "C" void fn_800B3A70(u8 *buf, u8 *short_name, u32 flags);
 extern "C" void fn_800B3BEC(u8 *buf, u8 flags);
