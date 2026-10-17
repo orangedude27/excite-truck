@@ -22,6 +22,14 @@ int fn_802B0628(int arg0) {
     return -2;
 }
 
+void fn_802B0690(int *arg0) {
+    int value = *arg0;
+    if (value != -2) {
+        fn_802CAC54(value);
+        *arg0 = -2;
+    }
+}
+
 void fn_802B06D4(void) {
     void **obj = fn_802B59CC();
     (*(void (***)(void *, void *, int))obj)[12](obj, lbl_8034A078, 0);
