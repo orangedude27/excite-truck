@@ -11,7 +11,7 @@ extern void fn_80231AF0(void);
 extern void fn_80231D84(void);
 extern u8 lbl_8055F064;
 extern u8 *lbl_8055F068;
-extern u8 lbl_8049846C[];
+extern s32 lbl_8049846C[];
 extern s32 fn_802315FC(s32);
 extern void fn_802E30C8(const char *);
 extern void fn_802E317C(const char *);
@@ -115,7 +115,7 @@ s32 fn_80231730(s32 arg0) {
 }
 
 void fn_80231ADC(void) {
-    *(s32 *)((u8 *)lbl_8049846C + 4) = 0;
+    *(s32 *)(lbl_8049846C + 1) = 0;
 }
 
 void fn_80232024(u8 **arg0) {
