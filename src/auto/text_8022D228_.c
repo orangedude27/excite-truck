@@ -57,8 +57,6 @@ char *fn_8022D850(void *arg0, int arg1, int arg2, int *arg3) {
 }
 
 void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char arg4) {
-    extern char *fn_8022D82C(void *, int, int);
-    extern char *strncpy(char *, const char *, unsigned long);
     char *ptr = fn_8022D82C(arg0, arg1, arg2);
     int next = arg1 + 1;
     int len;
@@ -69,6 +67,7 @@ void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char a
     ptr[len] = 0;
     *(int *)((char *)arg0 + 0x24) += 1;
 }
+#pragma scheduling reset
 #pragma use_lmw_stmw reset
 void fn_8022D924(void *arg0, int arg1) {
     int count = *(int *)((char *)arg0 + 0x24);
@@ -279,9 +278,9 @@ void fn_8022DE1C(void *arg0) {
 }
 
 int fn_8022DE88(void *arg0) {
-    extern float lbl_80558DC4;
-    if ((float)__fabs(*(float *)((char *)arg0 + 0x10) - **(float **)((char *)arg0 + 0x18)) <= *(volatile float *)&lbl_80558DC4) return 0;
-    return 1;
+    float diff = *(float *)((char *)arg0 + 0x10) - **(float **)((char *)arg0 + 0x18);
+    if ((float)__fabs(diff) <= lbl_80558DC4) return 0;
+    else return 1;
 }
 
 int fn_8022DEC4(void *arg0) {
