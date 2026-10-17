@@ -1,14 +1,6 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
-
-class Dispatch802A3314 {
-public:
-    virtual void v0();
-    virtual void v1();
-    virtual void v2();
-    virtual s32 v5(void*);
-};
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -231,7 +223,8 @@ extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
 extern "C" void* fn_802A3314(void* arg0, void* arg1) {
     void* self = arg0;
     *(void**)self = lbl_80349B28;
-    s32 result = ((Dispatch802A3314*)arg1)->v5(&lbl_8055CBB0);
+    void** vt = (void**)arg1;
+    s32 result = (*(s32 (**)(void*, void**))((char*)*vt + 0x14))(arg1, vt);
     fn_802A3500(self, result);
     return self;
 }
