@@ -130,6 +130,19 @@ extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0)
     }
 }
 
+extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, bool);
+extern "C" void fn_800EAD00(void *);
+extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
+    u32 token = OSDisableInterrupts();
+    void *channel = *(void **)((char *)arg0 + 0xB8);
+    while (channel) {
+        fn_800EAD00(channel);
+        channel = *(void **)((char *)channel + 0xE4);
+    }
+    *(void **)((char *)arg0 + 0xB8) = 0;
+    OSRestoreInterrupts(token);
+}
+
 extern "C" void fn_800F2004(void *arg0, f32 farg0) {
     OSDisableInterrupts();
     *(f32*)((u8*)arg0 + 0x68) = farg0;
