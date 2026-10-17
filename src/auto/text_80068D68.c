@@ -1792,6 +1792,56 @@ void fn_8007C794(void) {
     btm_sec_rmt_name_request_complete(0, 0, 0x1F);
 }
 
+tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
+    u8 i;
+    u8 *p = lbl_803C0F78 + 0x34;
+    for (i = 0; i < 4; i++, p += 0x11C) {
+        if (p[0x119] && memcmp(p + 8, remote_bda, 6) == 0) break;
+    }
+    if (i == 4) return BTM_UNKNOWN_ADDR;
+    *p_mode = lbl_803C0F78[0x4EC + i * 0x22];
+    return BTM_SUCCESS;
+}
+
+void btm_pm_proc_cmd_status(UINT8 status) {
+    u8 *base = lbl_803C0F78;
+    u8 state = base[0x564];
+    u8 index = base[0x565];
+    u8 *entry;
+    if (state >= 4) return;
+    if (status == 0) {
+        base[state * 0x22 + 0x4EC] = 4;
+    } else {
+        status = 5;
+    }
+    if (index != 0x80) {
+        entry = base + (index << 3);
+        if (entry[0x558] & 2) {
+            void (*callback)(void *, u8, u8) = *(void (**)(void *, u8, u8))(entry + 0x554);
+            callback(base + state * 0x11C + 0x3C, 0, status);
+        }
+    }
+    base[0x564] = 4;
+}
+
+tBTM_STATUS BTM_RemoveSco(UINT16 sco_inx) {
+    u8 *entry = lbl_803C0F78 + sco_inx * 0x34;
+    u16 state;
+    if (sco_inx >= 3 || (state = *(u16 *)(entry + 0x185C)) == 0) return 7;
+    if (*(u16 *)(entry + 0x185E) == 0xFFFF || state == 6) {
+        *(u16 *)(entry + 0x185E) = 0xFFFF;
+        *(u16 *)(entry + 0x185C) = 0;
+        *(u32 *)(entry + 0x1864) = 0;
+        return 0;
+    }
+    *(u16 *)(entry + 0x185C) = 5;
+    if (!btsnd_hcic_disconnect(*(u16 *)(entry + 0x185E), 0x13)) {
+        *(u16 *)(entry + 0x185C) = state;
+        return 3;
+    }
+    return 1;
+}
+
 void fn_8007DEF4(void *arg0) {
     GKI_freebuf(arg0);
 }
