@@ -5,7 +5,7 @@ extern int lbl_8056002C;
 extern char lbl_8034DB28[];
 extern void fn_802E86D4(void);
 extern void fn_802E870C(void);
-extern void fn_802E8744(void *);
+extern int fn_802E8744(void *);
 extern void fn_80127464(void);
 
 void fn_802E8918(void) {
