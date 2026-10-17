@@ -45,6 +45,44 @@ void fn_801ABFF4(void) {
     fn_8017A57C();
 }
 
+void fn_801AC184(void *arg0) {
+    void *p = arg0;
+    int a = *(int *)((char *)p + 0x1EC);
+    int b = *(int *)((char *)p + 0x1F0);
+    int c = *(int *)((char *)p + 0x1F4);
+    int d = *(int *)((char *)p + 0x1F8);
+    int e = *(int *)((char *)p + 0x1FC);
+    int f = *(int *)((char *)p + 0x200);
+    int g = *(int *)((char *)p + 0x204);
+    int h = *(int *)((char *)p + 0x208);
+    int i = *(int *)((char *)p + 0x20C);
+    int j = *(int *)((char *)p + 0x210);
+    int k = *(int *)((char *)p + 0x214);
+    int l = *(int *)((char *)p + 0x218);
+    *(int *)((char *)p + 0x3C) = a;
+    *(int *)((char *)p + 0x40) = b;
+    *(int *)((char *)p + 0x44) = c;
+    *(int *)((char *)p + 0x48) = d;
+    *(int *)((char *)p + 0x4C) = e;
+    *(int *)((char *)p + 0x50) = f;
+    *(int *)((char *)p + 0x54) = g;
+    *(int *)((char *)p + 0x58) = h;
+    *(int *)((char *)p + 0x5C) = i;
+    *(int *)((char *)p + 0x60) = j;
+    *(int *)((char *)p + 0x64) = k;
+    *(int *)((char *)p + 0x68) = l;
+    fn_8017A580(p, l, k, j, i, h, g, f, e);
+    fn_8017B164(p);
+    *(unsigned char *)((char *)p + 0x223) = 1;
+    *(unsigned char *)((char *)p + 0x234) = *(unsigned char *)((char *)p + 0x235);
+}
+
+void fn_801AC254(void *arg0) {
+    if (*(unsigned char *)((char *)arg0 + 0x220) != 0) {
+        *(unsigned char *)((char *)arg0 + 0x220) = 0;
+    }
+}
+
 void fn_801AD5EC(void) {
     fn_801AC508();
 }
