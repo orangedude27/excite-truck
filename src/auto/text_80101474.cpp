@@ -11,6 +11,16 @@ extern int InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(int);
 extern int fn_800FFA6C(int);
 extern int fn_800EC890(void *, int, int, int);
 extern float lbl_80561128;
+extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
+extern "C" void *fn_80128668(void *);
+extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80101474(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_801014CC(s32 arg0) {
     fn_801013B0(arg0 - 8);
 }
@@ -21,6 +31,25 @@ extern "C" void fn_801014D4(s32 arg0) {
 
 extern "C" void fn_801014DC(s32 arg0) {
     fn_800FFA6C(arg0 - 8);
+}
+
+extern int fn_800EC890(void *, void *, int, int, int);
+void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer(void *arg0, void *arg1) {
+    *(void **)((char *)arg0 + 0x2C) = arg1;
+    *(int *)((char *)arg0 + 0) = 0;
+    *(int *)((char *)arg0 + 4) = -1;
+    *(unsigned char *)((char *)arg0 + 0x1D) = 0x40;
+    *(unsigned char *)((char *)arg0 + 0x1C) = 2;
+    *(float *)((char *)arg0 + 0x20) = lbl_80561128;
+    *(unsigned char *)((char *)arg0 + 0x24) = 0x40;
+    *(unsigned char *)((char *)arg0 + 0x25) = 0;
+    *(unsigned char *)((char *)arg0 + 0x26) = 0;
+    *(unsigned char *)((char *)arg0 + 0x27) = 0;
+    *(unsigned char *)((char *)arg0 + 0x28) = 0;
+    *(unsigned char *)((char *)arg0 + 0x29) = 0x7F;
+    fn_800EC890((char *)arg0 + 0xC, arg1, 2, 0x40, -1);
+    *(int *)((char *)arg0 + 8) = 0;
+    *(int *)((char *)arg0 + 0x30) = 0;
 }
 
 void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
