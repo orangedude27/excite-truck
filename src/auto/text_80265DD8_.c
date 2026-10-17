@@ -63,10 +63,10 @@ void *fn_80266120(void *arg0) {
 }
 
 void fn_80266150(void *arg0) {
+    *(float *)((char *)arg0 + 0xC) = lbl_80563C2C;
     *(int *)((char *)arg0 + 4) = 0;
     *(int *)((char *)arg0 + 0) = 0;
     *(float *)((char *)arg0 + 8) = lbl_8055C4C0;
-    *(float *)((char *)arg0 + 0xC) = lbl_80563C2C;
 }
 
 void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
@@ -82,25 +82,70 @@ void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
 
 void fn_802670A0(int *arg0, int arg1) {
     int count;
-    int temp;
-    int half;
+    int x;
+    int y;
+    int div;
     int a;
     int b;
-    int div;
     count = fn_80178CA4();
-    temp = count ^ 1;
-    half = temp >> 1;
-    a = temp & count;
-    temp = half - a;
-    temp = ((unsigned int)temp) >> 31;
-    temp += 1;
-    div = (count + temp - 1) / temp;
-    a = lbl_8055CFF0 / temp;
+    x = count ^ 1;
+    y = x >> 1;
+    x &= count;
+    y -= x;
+    y = ((unsigned int)y) >> 31;
+    y += 1;
+    div = (count + y - 1) / y;
+    a = lbl_8055CFF0 / y;
     b = lbl_8055CFF4 / div;
-    arg0[0x40 / 4] = a;
-    arg0[0x44 / 4] = b;
-    arg0[0x38 / 4] = a * (arg1 / div);
-    arg0[0x3C / 4] = b * (arg1 % div);
+    arg0[16] = a;
+    arg0[17] = b;
+    arg0[14] = a * (arg1 / div);
+    arg0[15] = b * (arg1 % div);
+}
+
+extern void *fn_80267EE4(int);
+extern void fn_801EF024(void *);
+extern void fn_80278288(void);
+extern void fn_802733F0(void);
+extern void fn_80209110(void *);
+extern void *lbl_8055F490;
+extern int lbl_8055F494;
+extern float lbl_8055E3C8;
+void fn_802678E4(void) { fn_80267EE4(0); }
+
+void fn_80267E40(unsigned int arg0, float arg1, int arg2) {
+    float temp_f29;
+    float temp_f30;
+    float temp_f31;
+    int i;
+    void *p;
+    temp_f29 = lbl_8055E3C8;
+    temp_f30 = lbl_80563C6C;
+    temp_f31 = lbl_80563C2C;
+    for (i = 0; i < 4; i++) {
+        p = fn_80267EE4(i);
+        if (*(unsigned int *)((char *)p + 0x140) == arg0) {
+            if (arg1 > *(float *)((char *)p + 0x154) * (temp_f31 - ((temp_f29 - *(float *)((char *)p + 0x158)) / temp_f30))) {
+                *(float *)((char *)p + 0x158) = temp_f29;
+                *(float *)((char *)p + 0x154) = arg1;
+                return;
+            }
+        }
+    }
+}
+
+extern void fn_802734F0(void);
+extern char lbl_80499080[];
+extern float lbl_80499050[];
+extern float lbl_8055F47C;
+extern void fn_801BFD34(void *, void *, void *);
+extern void fn_80015B20(void *, void *, void *);
+extern int lbl_8055F4A0;
+extern int lbl_8055F4A4;
+extern int lbl_8055F4A8;
+extern void fn_801E9DC4(int *);
+void fn_80267EE0(void) {
+    fn_802734F0();
 }
 
 char fn_8026A38C(void) {
