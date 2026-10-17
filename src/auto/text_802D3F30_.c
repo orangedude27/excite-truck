@@ -127,6 +127,11 @@ void fn_802D6C54(int arg0, float arg1) {
     lbl_804CA308[arg0] = arg1;
 }
 
+void fn_802D6C68(void) {
+    lbl_8055FDE8 = 0;
+    lbl_8055FDEC = 0;
+}
+
 void fn_802D754C(u8 arg0) {
     lbl_8055FDE4 = arg0;
 }
