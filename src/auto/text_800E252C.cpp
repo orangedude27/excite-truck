@@ -376,7 +376,7 @@ extern "C" void fn_800E5550(void *arg0, float arg1) {
 
 extern "C" void fn_800E5594(void *arg0, int arg1) {
     int *field = (int *)((char *)arg0 + 0x13c);
-    if (*field != arg1) {
+    if (arg1 != *field) {
         unsigned char *flags = (unsigned char *)arg0 + 0x123;
         *field = arg1;
         *flags |= 0x20;
