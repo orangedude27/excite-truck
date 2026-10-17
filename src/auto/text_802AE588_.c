@@ -156,6 +156,40 @@ extern int lbl_8055F974;
 extern int lbl_8055F978;
 void fn_802AEAA8(void) { fn_802BDC3C(); }
 
+void fn_802AEAAC(void) {
+    int i, offset;
+    if (lbl_8055F970 == 0) {
+        fn_802B59A4(0);
+        fn_802B0288();
+    }
+    i = 0;
+    offset = 0;
+    lbl_8055F974 = *(int *)(lbl_8055F970 + 4);
+    lbl_8055F978 = *(int *)(lbl_8055F970 + 8);
+    do {
+        fn_802BB674(*(int *)(lbl_8055F970 + offset + 0xC), i);
+        i++;
+        offset += 8;
+    } while (i < 4);
+    fn_802C10CC(*(int *)(lbl_8055F970 + 0x2C));
+}
+
+void fn_802AFE64(int *arg0, short a, short b, short c, short d, int e, int f, int g, float h, int j) {
+    int index = *arg0;
+    char *p;
+    *arg0 = index + 1;
+    p = (char *)arg0 + index * 0x1C;
+    *(short *)(p + 4) = a;
+    *(short *)(p + 6) = b;
+    *(short *)(p + 8) = c;
+    *(short *)(p + 10) = d;
+    *(float *)(p + 12) = h;
+    *(int *)(p + 16) = e;
+    *(int *)(p + 20) = f;
+    *(int *)(p + 24) = j;
+    *(int *)(p + 28) = g;
+}
+
 int fn_802AFF54(void *arg0) {
     return ((int *)arg0)[1];
 }
