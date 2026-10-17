@@ -122,7 +122,8 @@ int fn_802E8690(int index) {
 }
 
 unsigned char fn_802E86B4(int index) {
-    return lbl_80505978[index * 0x638 + 0x630];
+    unsigned char *base = lbl_80505978;
+    return *(base + index * 0x638 + 0x630);
 }
 
 extern int lbl_802FAE80[4];
