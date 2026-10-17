@@ -177,18 +177,37 @@ void fn_80116DDC(void* arg0, s32 arg1) {
 extern s32 fn_80117074(void*);
 extern s32 fn_80116D30(void);
 void fn_80117330(void* arg0) {
- u8* p=(u8*)arg0;
- if(*(s32*)(p+0x268)==0) {
-  *(s32*)(p+0x268)=fn_80116D30();
-  *(s32*)(p+0x26c)=*(s32*)(p+0x258)-1;
-  *(s32*)(p+0x330)=0;
+ if(*(s32*)((u8*)arg0+0x268)==0) {
+  s32 value=fn_80116D30();
+  s32 count=*(s32*)((u8*)arg0+0x258);
+  *(s32*)((u8*)arg0+0x268)=value;
+  *(s32*)((u8*)arg0+0x26c)=count-1;
+  *(s32*)((u8*)arg0+0x330)=0;
  }
+}
+
+s32 fn_80117598(s32 arg0,s32 arg1){
+ s32 off=((arg0+0x340)-arg0);
+ s32* p=(s32*)(arg0-off);
+ s32 v=p[0x33c/4];
+ return (~v) & ((v-arg1 | arg1-v)>>31);
+}
+
+void fn_801175C4(s32 arg0,s32 arg1){
+ s32 off=((arg0+0x340)-arg0);
+ s32* p=(s32*)(arg0-off);
+ if(p[0x2e8/4]) fn_80117074(p);
+ p[0x33c/4]=arg1;
 }
 
 void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
 
 void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
+}
+
+s32 fn_801194D0(void* arg0) {
+ return *(u16*)((u8*)arg0+0x1be) + (*(u16*)((u8*)arg0+0x1bc)<<16);
 }
 
 extern f64 lbl_80561198;
