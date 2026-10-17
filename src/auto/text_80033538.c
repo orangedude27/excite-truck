@@ -32,6 +32,23 @@ void fn_800337C4(void *arg0, void *arg1) {
     OSRestoreInterrupts(state);
 }
 
+void fn_80033918(void *arg0, void *arg1) {
+    int state;
+    state = OSDisableInterrupts();
+    *(unsigned int *)((char *)arg0 + 0x1C0) = *(unsigned int *)arg1;
+    *(unsigned int *)((char *)arg0 + 0x1C4) = *(unsigned int *)((char *)arg1 + 4);
+    *(unsigned int *)((char *)arg0 + 0x1C8) = *(unsigned int *)((char *)arg1 + 8);
+    *(unsigned int *)((char *)arg0 + 0x1CC) = *(unsigned int *)((char *)arg1 + 0xC);
+    *(unsigned int *)((char *)arg0 + 0x1D0) = *(unsigned int *)((char *)arg1 + 0x10);
+    *(unsigned int *)((char *)arg0 + 0x1D4) = *(unsigned int *)((char *)arg1 + 0x14);
+    *(unsigned int *)((char *)arg0 + 0x1D8) = *(unsigned int *)((char *)arg1 + 0x18);
+    *(unsigned int *)((char *)arg0 + 0x1DC) = *(unsigned int *)((char *)arg1 + 0x1C);
+    *(unsigned int *)((char *)arg0 + 0x1E0) = *(unsigned int *)((char *)arg1 + 0x20);
+    *(unsigned int *)((char *)arg0 + 0x1E4) = *(unsigned int *)((char *)arg1 + 0x24);
+    *(unsigned int *)((char *)arg0 + 0x1C) |= 0x10000;
+    OSRestoreInterrupts(state);
+}
+
 void fn_80033B74(void *arg0, short arg1, short arg2) {
     int state = OSDisableInterrupts();
     *(short *)((char *)arg0 + 0x200) = arg1;
