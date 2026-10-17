@@ -54,7 +54,7 @@ extern unsigned int lbl_8034D098;
 extern int DVDReadAsyncPrio(void *, void *, int, int, int, int);
 extern int DVDGetCommandBlockStatus(void *);
 extern unsigned int lbl_8055D1BC;
-extern unsigned int lbl_8034D180;
+extern char lbl_8034D180[];
 extern void DVDInit(void);
 extern int DVDClose(void *);
 extern void fn_802E30C8(const char *, void *);
@@ -101,6 +101,16 @@ void fn_802E442C(void) {
 
 int fn_802E4438(void *arg0) {
     return *(int *)((char *)arg0 + 0x8C);
+}
+
+int fn_802E45AC(void *arg0, void *arg1, int arg2) {
+    int result;
+    result = DVDReadAsyncPrio((char *)arg0 + 4, arg1, arg2, *(int *)((char *)arg0 + 0x88), 0, 2);
+    if (result <= 0) {
+        fn_802E317C((void *)&lbl_8034D180);
+    }
+    *(int *)((char *)arg0 + 0x88) += arg2;
+    return 1;
 }
 
 int fn_802E461C(void *arg0) {
