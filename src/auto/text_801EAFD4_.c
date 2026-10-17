@@ -11,6 +11,17 @@ extern s32 lbl_804885E8[];
 extern f32 lbl_80562E68;
 extern f32 lbl_8055EB98[2];
 extern void fn_801EB9A4(s32 *);
+s32 fn_801EAFD4(void *arg0) {
+    s32 temp = *(s32 *)arg0;
+    if (temp == 0x103) {
+        return ((s32 *)arg0)[7];
+    }
+    if (temp == 0x101) {
+        return ((s32 *)arg0)[3];
+    }
+    return 0;
+}
+
 s32 fn_801EB0E8(void) { return 0; }
 
 s32 fn_801EB0F0(s32 arg0) {
