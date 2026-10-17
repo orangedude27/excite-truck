@@ -64,12 +64,11 @@ extern int lbl_8033A628;
 extern int lbl_8033A8C8;
 #pragma pop
 void fn_801F1EEC(void) {
-    void *type = &lbl_8033A628;
-    void *p = fn_801284F8(12, type);
+    void *p = fn_801284F8(12, (void *)((unsigned long)&lbl_8033A628));
     if (p != 0) {
-        *(void **)p = &lbl_8033A8C8;
-        *(int *)((char *)p + 8) = 0;
+        *(void **)p = (void *)((unsigned long)&lbl_8033A8C8);
         *(char *)((char *)p + 4) = 0;
+        *(int *)((char *)p + 8) = 0;
     }
 }
 void fn_801F1F84(void) {
@@ -99,7 +98,7 @@ void *fn_801F2064(void) {
 #pragma small_data off
 void fn_801F2108(void) {
     extern int lbl_8055B130;
-    extern int lbl_8033A7A0;
+    extern int lbl_8033A7A0[];
     void *p = fn_801284F8(0xC, &lbl_8055B130);
     if (p != 0) {
         *(void **)p = &lbl_8033A7A0;
@@ -111,10 +110,10 @@ void fn_801F2108(void) {
 #pragma push
 #pragma small_data off
 void fn_801F224C(void) {
-    void *p = fn_801284F8(8, &lbl_8033A6A0);
+    void *p = fn_801284F8(8, (void *)((unsigned long)&lbl_8033A6A0));
     if (p != 0) {
-        *(void **)p = &lbl_8033A710;
-        *(int *)p = *(int *)((char *)p + 4);
+        *(void **)p = (void *)((unsigned long)&lbl_8033A710);
+        *(int *)((char *)p + 4) = 0;
     }
 }
 #pragma pop
@@ -509,11 +508,10 @@ void fn_801F3EA4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
 extern int fn_802CD33C(int, int, int);
 extern int lbl_8033A7A0_arr[];
 void *fn_801F3EF8(void *arg0, int arg1) {
-    void *vtable = (void *)0;
     if (arg0 != 0) {
-        vtable = (void *)&lbl_8033A7A0_arr[0];
-        *(void **)arg0 = vtable;
-        if (arg1 > 0) fn_80128668();
+        *(void **)arg0 = (void *)&lbl_8033A7A0_arr[0];
+        if (arg1 <= 0) return arg0;
+        fn_80128668();
     }
     return arg0;
 }
