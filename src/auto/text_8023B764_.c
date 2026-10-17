@@ -123,6 +123,13 @@ void fn_8023BEB8(s32 arg0, s32 arg1, s32 arg2) {
     fn_8023B9EC(arg0, arg1, arg2, 0, 0);
 }
 
+void fn_8023BF4C(void *arg0) {
+    fn_8023B9EC(*(s32 *)((u8 *)arg0 + 0),
+                *(s32 *)((u8 *)arg0 + 4),
+                *(s32 *)((u8 *)arg0 + 0xC),
+                *(s32 *)((u8 *)arg0 + 8), 0);
+}
+
 extern s32 atoi(void);
 extern void fn_802E317C(const char *);
 extern const char lbl_80341354[];
