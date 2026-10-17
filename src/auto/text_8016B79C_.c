@@ -53,8 +53,9 @@ typedef struct {
 } TObj4C;
 void *fn_8016B79C(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        if (*(s32 *)((u8 *)arg0 + 0x10) != 0) {
-            fn_8002F6AC(fn_8016B4FC);
+        s32 value = *(s32 *)((u8 *)arg0 + 0x10);
+        if (value != 0) {
+            ((s32 (*)(s32, void *))fn_8002F6AC)(value, fn_8016B4FC);
             *(s32 *)((u8 *)arg0 + 0x10) = 0;
             *(s32 *)((u8 *)arg0 + 0x14) = 0;
             *(s32 *)arg0 = 0;
@@ -66,9 +67,7 @@ void *fn_8016B79C(void *arg0, s32 arg1) {
             *((s32 *)arg0 + 1) = 0;
             *((s32 *)arg0 + 2) = 0;
         }
-        if (arg1 > 0) {
-            fn_80128668(arg0);
-        }
+        if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
