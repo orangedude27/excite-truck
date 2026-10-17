@@ -201,3 +201,5 @@ void fn_80263BCC(void *arg0) {
     fn_80133460(value + 8, lbl_80346294, *((u8 *)arg0 + 0x28), value);
 }
 
+void fn_80263D10(void) {}
+
