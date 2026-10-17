@@ -151,10 +151,12 @@ void fn_802C8B98(unsigned int arg0, unsigned int arg1) {
     fn_802C8B70();
 }
 
+#pragma dont_inline on
 void fn_802C8BD0(int arg0) {
     fn_802C7758(arg0);
     ((void (*)(int))fn_802C8B70)(arg0);
 }
+#pragma dont_inline off
 
 void fn_802C8C04(int arg0) {
     unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
