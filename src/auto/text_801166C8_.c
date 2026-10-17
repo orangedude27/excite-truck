@@ -275,6 +275,18 @@ void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
 }
 
+extern void memset(void *, int, unsigned int);
+void fn_80119218(void *arg0, s16 arg1, s16 arg2, s16 arg3) {
+    void *temp_r31 = (u8*)arg0 + 0x14C;
+    memset(temp_r31, 0, 0x30);
+    *(s16*)temp_r31 = arg2;
+    *(s16*)((u8*)temp_r31 + 4) = arg3;
+    *(s16*)((u8*)arg0 + 0x1AC) = arg1;
+    *(s16*)((u8*)arg0 + 0x1AE) = 0;
+    *(s32*)((u8*)arg0 + 0x144) = 3;
+    *(s32*)((u8*)arg0 + 0x1C) |= 0x212;
+}
+
 s32 fn_801194D0(void* arg0) {
  return *(u16*)((u8*)arg0+0x1be) + (*(u16*)((u8*)arg0+0x1bc)<<16);
 }
