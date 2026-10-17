@@ -279,6 +279,11 @@ extern "C" s32 fn_8012DCC0(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_80127E28(void *);
+extern "C" void fn_80128660(s32);
+extern "C" void fn_80128670(s32);
+extern "C" void fn_8012C90C(void *);
+extern "C" void fn_8012C958(void *);
+extern "C" void *memcpy(void *, const void *, u32);
 extern "C" u8 lbl_8032ACB0[];
 namespace nw4r { namespace ef {
 class Effect {
