@@ -830,6 +830,18 @@ void fn_80070AF0(s32 arg0) {
     GKI_shutdown();
 }
 
+s32 bdcmp(u8 *arg0, u8 *arg1) {
+    u8 *p0 = arg0 + 2;
+    u8 *p1 = arg1 + 2;
+    if (arg0[0] != arg1[0]) return -1;
+    if (arg0[1] != arg1[1]) return -1;
+    if (p0[0] != p1[0]) return -1;
+    if (p0[1] != p1[1]) return -1;
+    if (p0[2] != p1[2]) return -1;
+    if (p0[3] == p1[3]) return 0;
+    return -1;
+}
+
 void fn_80071078(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x80) = arg0; }
 
 void fn_80071088(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x88) = arg0; }
@@ -914,6 +926,10 @@ void bta_hh_api_disc_act(void *arg0, void *arg1) {
         status = *((u8 *)arg0 + 0x16);
     if (HID_HostCloseDev() != 0)
         (*(void (**)(int, u8 *))(lbl_803C0D48 + 0x224))(3, &status);
+}
+
+void fn_800778C8(s16 arg0) {
+    *(s16 *)(lbl_803C0F78 + 0x4C4) = arg0;
 }
 
 void fn_8007AD38(void) {
