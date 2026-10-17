@@ -2,6 +2,8 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+struct State { s32 *next; s32 size; s32 zero; };
+extern struct State lbl_8041DEE0;
 extern void fn_80127968(void);
 extern void *memset(void*, int, unsigned long);
 extern u32 lbl_8055DF1C;
