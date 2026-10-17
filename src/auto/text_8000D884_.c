@@ -84,6 +84,28 @@ void fn_8000DBC8(int arg0) {
     lbl_8055D460++;
 }
 
+void fn_8000DC28(unsigned char *arg0, int arg1) {
+    int count;
+    unsigned char *src;
+    unsigned char *dst;
+    unsigned char c;
+
+    src = arg0;
+    dst = (unsigned char *)((char *)lbl_8055D46C + arg1 * 0x12 + 0x64);
+    count = 0x12;
+loop:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c == 0)
+        return;
+    count--;
+    if (count <= 0) {
+        dst[-1] = 0;
+        return;
+    }
+    goto loop;
+}
+
 int fn_8000DC70(int arg0) {
     return (int)((char *)lbl_8055D46C + arg0 * 0x12 + 0x64);
 }
