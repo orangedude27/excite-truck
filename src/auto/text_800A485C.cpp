@@ -1235,10 +1235,10 @@ extern "C" void fn_800D11E0(void* arg0) {
 
 extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *, s32);
 extern "C" void fn_800D51F4(long, long, long, long, long, long);
+#pragma opt_tail_call on
 void fn_800D11F0(void *arg0) {
-    Connect__Q210homebutton9RemoteSpkFl((void *)((char *)arg0 + 0x24), *(long *)arg0);
+    Connect__Q210homebutton9RemoteSpkFl(*(void **)((char *)arg0 + 0x24), *(s32 *)arg0);
 }
-
 extern "C" void fn_800D1200(void) {
 
 }
@@ -1380,7 +1380,7 @@ extern "C" void fn_800D1C18(void) {
     fn_80060CC0(r3, 4, (u32)&fn_800D1C48);
 }
 
-extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *this_ptr, long arg1) {
+extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *this_ptr, s32 arg1) {
     if (((u8 *)this_ptr)[0x1EC] != 0) {
         fn_80060CC0((void *)arg1, 1, (u32)&fn_800D1B1C);
         void *ptr = (u8 *)this_ptr + (arg1 * 0x68) + 0x30;
