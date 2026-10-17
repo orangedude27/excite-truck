@@ -1,5 +1,6 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
+extern s32 lbl_803415CC;
 extern s32 lbl_8055BB68;
 extern s32 lbl_803415E8;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
