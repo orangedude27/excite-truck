@@ -159,6 +159,10 @@ unsigned char fn_801ADA7C(void *arg0) {
     return ((unsigned char *)arg0)[0x220];
 }
 
+short fn_801ADA84(void *arg0) {
+    return *(short *)((char *)arg0 + 0x6C);
+}
+
 long fn_801ADA8C(long arg0) { return arg0 + 0x118; }
 
 long fn_801ADA94(long arg0) {
