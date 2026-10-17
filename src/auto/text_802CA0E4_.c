@@ -164,6 +164,10 @@ int fn_802CC404(void *arg0) {
     return *(int *)(*(char **)((char *)arg0 + 0x38) + 4);
 }
 
+void fn_802CC518(int arg0, float arg1) {
+    lbl_8055FCC4 = (lbl_80564F30 * arg1) / (float)arg0;
+}
+
 void fn_802CC73C(char arg0) {
     lbl_8055D07D = arg0;
 }
@@ -184,3 +188,12 @@ int fn_802CC74C(void) {
 extern void fn_802E317C(const char *, ...);
 extern char lbl_8034B7D0[];
 extern char fn_802CA7DC(const char *);
+extern int lbl_8055D03C;
+extern char lbl_8034B5F0[];
+void fn_802CAC54(int);
+void fn_802CB6B4(void);
+int fn_80128670(int);
+int fn_802CA2A8(void *, int, int);
+int fn_8012C5B8(void *, int, int *);
+int fn_8012C6F0(void);
+int fn_8012C958(int);
