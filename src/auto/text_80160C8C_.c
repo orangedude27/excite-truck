@@ -367,6 +367,15 @@ u8 fn_80163864(void *arg0) {
     return *((u8 *)arg0 + 0x56C);
 }
 
+void fn_8016386C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    if (arg1 == 5 && *((u8 *)arg0 + 0x56D) == 0) {
+        if (arg3 >= *((s32 *)((char *)arg0 + 0x570))) {
+            *((u8 *)arg0 + 0x56C) = 1;
+        }
+        *((u8 *)arg0 + 0x56D) = 1;
+    }
+}
+
 unsigned char fn_80163F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x56D);
 }
