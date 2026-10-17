@@ -98,6 +98,10 @@ void fn_802E58B8(unsigned char *arg0) {
     fn_8012C41C(fn_802E589C, 0, arg0);
 }
 
+void fn_802E61D8(void *arg0) {
+    ((unsigned char *)arg0)[0x23] = 0;
+}
+
 void fn_802E61E4(void *arg0, float farg0) {
     *(float *)((char *)arg0 + 8) = farg0;
 }
