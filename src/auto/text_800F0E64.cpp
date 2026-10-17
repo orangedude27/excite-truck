@@ -1104,7 +1104,10 @@ extern "C" const char lbl_80326B68[];
 extern "C" const char lbl_80326B8C[];
 extern "C" const char lbl_80326768[];
 extern "C" const char lbl_8032687C[];
-extern "C" s32 lbl_8041506C;
+#pragma push
+#pragma small_data off
+extern "C" u8 lbl_8041506C[];
+#pragma pop
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
     void *node = *(void **)((u8 *)&lbl_8041506C + 4);
     void *end = (u8 *)&lbl_8041506C + 4;
