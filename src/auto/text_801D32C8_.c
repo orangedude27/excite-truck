@@ -23,6 +23,34 @@ void fn_801D32DC(void) {
 
 }
 
+int fn_801D36E8(void);
+int fn_801D3FA4(int, int, int, int, int, int, int);
+int fn_801D32E0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
+    int result;
+
+    result = fn_801D36E8();
+    fn_801D3FA4(result, arg0, arg1, arg2, arg3, arg4, arg5);
+    return result;
+}
+
+unsigned int fn_801D37AC(void *arg0) {
+    int temp_r4;
+    temp_r4 = *(int *)((char *)arg0 + 0x1EC);
+    return (unsigned int)((-1 - temp_r4) | (temp_r4 + 1)) >> 31;
+}
+
+void *fn_801D3894(void *arg0, int arg1) {
+ if (arg0 != 0) {
+  *(int *)((char *)arg0 + 0x28) = 0;
+  *(char **)arg0 = &lbl_80338400;
+  *(int *)((char *)arg0 + 0x24) = 0;
+  *(float *)((char *)arg0 + 0x2C) = lbl_80562AB8;
+  if (arg0 != 0) fn_80179EE8(0);
+  if (arg1 > 0) fn_80128668(arg0);
+ }
+ return arg0;
+}
+
 int fn_801D470C(void) { return 0; }
 
 void fn_801D4714(void *a, void *b, void *c, int *arg3, int *arg4) { *arg4 = 0; *arg3 = 0; }
