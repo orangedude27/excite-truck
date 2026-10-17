@@ -502,3 +502,4 @@ extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
 extern void fn_802CEC04(void);
 extern void fn_802E2E0C(void (*)(void), void *);
+extern int lbl_804C9760[];
