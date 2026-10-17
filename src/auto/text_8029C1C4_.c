@@ -62,9 +62,14 @@ void fn_8029C25C(void) {
 void fn_8029C650(void) { register int value=lbl_8055CAA8; if(value != -1) fn_802C6CF8(); }
 
 void fn_8029C934(void) {
-   int i=0; int *p=(int *)&lbl_804B5010;
- while(i<lbl_8055F7F0) { fn_8029D464((void *)*p,1); ++p; ++i; }
- lbl_8055F7F0=0;
+    int *p = (int *)lbl_804B5010;
+    int i = 0;
+    while (i < lbl_8055F7F0) {
+        fn_8029D464((void *)*p, 1);
+        ++p;
+        ++i;
+    }
+    lbl_8055F7F0 = 0;
 }
 
 void fn_8029CD14(void) {
