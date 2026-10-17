@@ -7,7 +7,10 @@ extern "C" void fn_80288A40(void*, float*);
 extern "C" void fn_8028E398(void*);
 extern "C" void fn_80128668(void*);
 extern "C" float fn_801E7E24(void);
-extern "C" void fn_80298B48(void*);
+  extern "C" void fn_80298B48(void*);
+  extern "C" void fn_802976DC(void);
+  extern "C" void fn_80128670(int);
+  extern "C" void fn_80298FBC(void*);
 extern "C" void fn_8029BDC4(void*);
 extern "C" void fn_80299544(void);
 extern "C" void fn_802982C0(void);
@@ -143,7 +146,7 @@ extern "C" void fn_8029A890(void *arg0, void *arg1) {
 }
 
 extern "C" void fn_8029A8A4(void *arg0, void *arg1) {
-    *(unsigned char *)((char *)arg0 + (int)arg1 * 0x2C + 0x28) = 1;
+    *(unsigned char *)((char *)arg0 + (int)arg1 * 0x2C + 0x28) = 1u;
 }
 
 void fn_8029B138(void *arg0, int arg1, float *arg2, float *arg3, float *arg4, float *arg5) {
