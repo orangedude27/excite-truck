@@ -16,11 +16,11 @@ extern float lbl_80560AF4;
 extern float lbl_80560AF8;
 extern float lbl_80560AFC;
 void fn_80033B74(void *arg0, short arg1, short arg2) {
-    OSDisableInterrupts();
+    int state = OSDisableInterrupts();
     *(short *)((char *)arg0 + 0x200) = arg1;
     *(short *)((char *)arg0 + 0x202) = arg2;
     *(unsigned int *)((char *)arg0 + 0x1C) |= 0x00200000;
-    OSRestoreInterrupts(0);
+    OSRestoreInterrupts(state);
 }
 
 void AXGetLpfCoefs(unsigned int arg0, short *arg1, short *arg2) {
