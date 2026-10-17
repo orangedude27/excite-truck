@@ -2050,6 +2050,40 @@ void fn_8008EF90(void *arg0, void *arg1) {
     }
 }
 
+int port_flow_control_user(void *arg0) {
+    unsigned char flow = 0;
+    void *port;
+    if (*((unsigned char *)arg0 + 0x24) == 0) {
+        port = *(void **)((char *)arg0 + 0x6c);
+        if (port && *((unsigned char *)port + 0x71) &&
+            *(unsigned int *)((char *)arg0 + 0x28) <= 0x1f40 &&
+            *(unsigned short *)((char *)arg0 + 0x20) <= 0x10) flow = 1;
+    }
+    if (*((unsigned char *)arg0 + 0x25) == flow) return 0;
+    *((unsigned char *)arg0 + 0x25) = flow;
+    if (flow) return 0x10000;
+    return 0x30000;
+}
+
+int port_get_signal_changes(void *arg0, int arg1, int arg2) {
+    int changed = arg2 ^ arg1;
+    int signals = 0;
+    if (changed & 1) {
+        signals |= 0x10;
+        if (arg2 & 1) signals |= 0x800;
+    }
+    if (changed & 2) {
+        signals |= 8;
+        if (arg2 & 2) signals |= 0x400;
+    }
+    if (changed & 4) signals |= 0x100;
+    if (changed & 8) {
+        signals |= 0x20;
+        if (arg2 & 8) signals |= 0x1000;
+    }
+    return *((int *)((char *)arg0 + 0x88)) & signals;
+}
+
 void fn_800911DC(void) {
 
 }
