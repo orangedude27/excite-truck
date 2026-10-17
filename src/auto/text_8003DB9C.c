@@ -355,28 +355,38 @@ void __GXPEInit(void) {
 }
 
 void GXSetCopyClear(unsigned char *color, s32 depth) {
-    unsigned int value;
+    unsigned int first = 0;
+    unsigned int second = 0;
+    unsigned int third = 0;
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = color[0] | (color[3] << 8) | 0x4F000000;
-    *(volatile unsigned int *)0xCC008000 = value;
+    first |= color[0];
+    first |= color[3] << 8;
+    first |= 0x4F000000;
+    *fifo = first;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = color[2] | (color[1] << 8) | 0x50000000;
-    *(volatile unsigned int *)0xCC008000 = value;
+    second |= color[2];
+    second |= color[1] << 8;
+    second |= 0x50000000;
+    *fifo = second;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    value = (depth & 0xFFFFFF) | 0x51000000;
-    *(volatile unsigned int *)0xCC008000 = value;
+    third |= depth;
+    third |= 0x51000000;
+    *fifo = third;
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXSetDispCopyGamma(s32 arg0) {
-    __GXData[0x23C/4] = (__GXData[0x23C/4] & ~0x180) | ((arg0 << 7) & 0x180);
+    unsigned int *data = __GXData;
+    data[0x23C/4] = (data[0x23C/4] & 0xFFFFFE7F) | (arg0 << 7);
 }
 
 void GXClearBoundingBox(void) {
+    register volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = 0x550003FF;
+    *fifo = 0x550003FF;
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = 0x560003FF;
+    *fifo = 0x560003FF;
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
@@ -554,6 +564,12 @@ void GXInitTexCacheRegion(void *obj, signed char arg1, unsigned int arg2, int ar
     value |= (tmem_odd << 15) & 0x38000;
     value |= (tmem_odd << 18) & 0x1C0000;
     *(unsigned int *)((char *)obj + 4) = value;
+}
+
+void *GXSetTexRegionCallback(void *callback) {
+    void *old = (void *)*((unsigned int *)((char *)__GXData + 0x518));
+    *((unsigned int *)((char *)__GXData + 0x518)) = (unsigned int)callback;
+    return old;
 }
 
 extern void GXSetTevIndirect(int, int, int, int, int, int, int, int);
