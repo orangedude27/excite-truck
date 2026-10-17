@@ -17,6 +17,40 @@ struct Vtbl_800D7738 {
 struct Obj_800D7738 : Vtbl_800D7738 {};
 struct Ptr_800D7738 { Obj_800D7738* v; };
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+extern "C" void MEMFreeToAllocator(s32);
+extern "C" s32 lbl_8055DDF0;
+extern "C" s32 fn_800D591C(void* arg0) {
+    if (*(u16*)((u8*)arg0 + 4) == 0xFEFF &&
+        *(u16*)((u8*)arg0 + 6) == 8) {
+        return 1;
+    }
+    return 0;
+}
+
+extern "C" s32 fn_800D5944(void* arg0, u32 arg1) {
+    if (*(u32*)arg0 == arg1 &&
+        *(u16*)((u8*)arg0 + 4) == 0xFEFF &&
+        *(u16*)((u8*)arg0 + 6) == 8) {
+        return 1;
+    }
+    return 0;
+}
+
+extern "C" void fn_800D5978(void* arg0) {
+    *(u8*)((u8*)arg0) = 0;
+    *((u8*)arg0 + 1) = 0;
+    *(u32*)((u8*)arg0 + 4) = 0;
+}
+
+extern "C" void fn_800D598C(void* arg0) {
+    if (*(s32*)((u8*)arg0 + 4) != 0) {
+        MEMFreeToAllocator(lbl_8055DDF0);
+        *(u32*)((u8*)arg0 + 4) = 0;
+        *(u8*)((u8*)arg0) = 0;
+        *((u8*)arg0 + 1) = 0;
+    }
+}
+
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
     extern f32 lbl_80560E78;
     extern f32 lbl_80560E7C;
@@ -436,6 +470,56 @@ extern "C" s32 fn_800D9434(void *arg0) {
     s32 g = (x >> 5) & 4;
     s32 h = (x >> 6) & 4;
     return a + b + c + d + y + e + f + g + h + (((x >> 0x18) & 0xF) * 0x14);
+}
+
+extern "C" s32 fn_800D947C(void* arg0) {
+    u32 x = *(u32*)((u8*)arg0 + 0x4C);
+    s32 base = *(s32*)((u8*)arg0 + 0x58);
+    u32 a = (x >> 4) & 0xF;
+    u32 b = (x >> 2) & 4;
+    u32 c = (x >> 6) & 4;
+    u32 d = (x >> 12) & 4;
+    u32 e = (x >> 5) & 4;
+    u32 f = (x >> 4) & 4;
+    u32 g = (x >> 14) & 0x3C;
+    u32 h = (x >> 9) & 0x1E0;
+    u32 i = (x >> 1) & 4;
+    return (((a * 0x14) + (g + h)) + ((b + c) + (d + e) + f)) + (base + i);
+}
+
+extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void* arg0) {
+    u32 x = *(u32*)((u8*)arg0 + 0x4C);
+    s32 base = *(s32*)((u8*)arg0 + 0x58);
+    u32 a = (x >> 4) & 0xF;
+    u32 b = (x >> 2) & 4;
+    u32 c = (x >> 6) & 4;
+    u32 d = (x >> 12) & 4;
+    u32 e = (x >> 5) & 4;
+    u32 f = (x >> 4) & 4;
+    u32 g = (x >> 14) & 0x3C;
+    u32 h = (x >> 9) & 0x1E0;
+    u32 i = (x >> 13) & 0x1C;
+    u32 j = (x >> 3) & 4;
+    u32 k = (x >> 1) & 4;
+    u32 l = (x >> 18) & 0x1C;
+    return (((a * 0x14) + (g + h)) + ((b + c) + (d + e) + f)) + (base + ((i + j) + k) + l);
+}
+
+extern "C" s32 fn_800D9524(void* arg0) {
+    u32 x = *(u32*)((u8*)arg0 + 0x4C);
+    s32 base = *(s32*)((u8*)arg0 + 0x58);
+    u32 a = (x >> 12) & 3;
+    u32 b = (x >> 4) & 0xF;
+    u32 c = (x >> 6) & 4;
+    u32 d = (x >> 5) & 4;
+    u32 e = (x >> 12) & 4;
+    u32 f = (x >> 9) & 0x1E0;
+    u32 g = (x >> 14) & 0x3C;
+    u32 h = (x >> 4) & 4;
+    u32 i = (x >> 3) & 4;
+    u32 j = (x >> 1) & 4;
+    u32 k = (x >> 18) & 0x1C;
+    return (((a + b) * 0x14) + c) + ((d + e) + ((h + i) + j)) + (f + g) + (k + base);
 }
 
 extern "C" char* strncpy(char*, const char*, unsigned int);
