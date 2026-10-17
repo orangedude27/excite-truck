@@ -59,6 +59,8 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_802A1CBC(void) {}
+
 extern "C" void fn_802A1CC0(void) {
 }
 
@@ -95,12 +97,13 @@ extern "C" void* fn_802A1E80(void* arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling off
 extern "C" void fn_802A1F00(void *arg0) {
-    float f30 = lbl_80564744;
     float f31 = lbl_80564734;
+    float f30 = lbl_80564744;
     s32 count = 0;
     void* p = arg0;
-    while (count < fn_802A47A8(p)) {
+    while (count < fn_80287B14(p)) {
         *(float*)((char*)p + 0x14) = f30;
         count++;
         *(float*)((char*)p + 0x18) = f31;
@@ -110,7 +113,7 @@ extern "C" void fn_802A1F00(void *arg0) {
     }
     fn_802A4524(*(void**)((char*)arg0 + 0x10));
 }
-
+#pragma scheduling on
 extern "C" void fn_802A2118(void *arg0) {
     fn_802A47A8((void*)*(void**)((char*)arg0 + 0x10));
 }
@@ -158,7 +161,8 @@ extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
 
 extern "C" void* fn_802A3314(void* arg0, void* arg1) {
     *(void**)arg0 = lbl_80349B28;
-    s32 result = (*(s32 (**)(void*, void*))(*(void**)((char*)arg1 + 0x14)))(arg1, (void*)lbl_8055CBB0);
+    void* vtable = *(void**)arg1;
+    s32 result = (*(s32 (**)(void*, void*))( (char*)vtable + 0x14))(arg1, (void*)lbl_8055CBB0);
     fn_802A3500(arg0, result);
     return arg0;
 }
