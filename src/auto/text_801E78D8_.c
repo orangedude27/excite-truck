@@ -330,4 +330,10 @@ void fn_801E8D48(void) {
     fn_801E87D4(0);
 }
 
+void fn_801E9BE4(void) {
+    long value = lbl_8055AF10;
+    if (value != -1) fn_802C6CF8(value);
+    lbl_8055AF10 = -1;
+}
+
 extern unsigned char lbl_80487D00[];
