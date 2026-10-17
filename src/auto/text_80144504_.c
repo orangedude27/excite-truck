@@ -96,6 +96,11 @@ s32 fn_80144C90(f32 farg0) {
     return (s32)x;
 }
 
+#pragma scheduling off
+f32 fn_80144CC8(f32 farg0) {
+    return farg0 * farg0;
+}
+
 void fn_80144D64(s32 *dst, s32 *src) {
     s32 a = src[0];
     s32 b = src[1];
