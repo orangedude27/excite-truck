@@ -9,7 +9,7 @@ extern "C" void fn_80128668(void* arg0);
 extern "C" void fn_800FB374(void);
 extern "C" void __ct__Q44nw4r3snd6detail10BasicSoundFv(void*);
 extern "C" void __ct__Q46nw4hbm3snd6detail10StrmPlayerFv(void*, void*);
-extern "C" u32 lbl_80326D00;
+extern "C" u8 lbl_80326D00[16];
 extern "C" void fn_800FDE28(void* arg0);
 extern "C" u32 lbl_8055DE70;
 
@@ -24,6 +24,15 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800FD9C8(void *arg0, 
         __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
         if (arg1 > 0) fn_80128668(arg0);
     }
+    return arg0;
+}
+
+extern "C" void *fn_800FDA20(void *arg0, void *arg1) {
+    __ct__Q44nw4r3snd6detail10BasicSoundFv(arg0);
+    *(void **)arg0 = &lbl_80326D00;
+    __ct__Q46nw4hbm3snd6detail10StrmPlayerFv((u8 *)arg0 + 0xD8, &lbl_80326D00);
+    *(void **)((u8 *)arg0 + 0x5F8) = arg1;
+    *(u32 *)((u8 *)arg0 + 0x5F4) = 0;
     return arg0;
 }
 
