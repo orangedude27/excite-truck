@@ -2,6 +2,12 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include "types.h"
 
+extern f64 fn_8002F234(f32, f32, f32);
+extern void *fn_801284E8(void *, s32);
+extern char lbl_8032C108[];
+extern f32 lbl_80562C78;
+extern f32 lbl_80562C7C;
+
 extern void *lbl_8055EA10;
 
 extern void NWC24Data_Init_801E1028(void *);
