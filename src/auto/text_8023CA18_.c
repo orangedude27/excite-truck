@@ -5,6 +5,12 @@
 
 void fn_8023CA50(void) {}
 
+s32 fn_8023CB54(void) {
+    fn_801330E8(4);
+    fn_8023CA54();
+    return 0;
+}
+
 s32 fn_8023CB80(void* arg0) {
     fn_80236900(arg0);
     return 1;
