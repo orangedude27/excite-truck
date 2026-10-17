@@ -6,8 +6,8 @@ extern double fn_8002EFB0();
 extern void fn_8029231C();
 extern void PSVECNormalize(void *, void *);
 extern void *fn_801284F8(int, void *);
-extern int lbl_8033A6A0[2];
-extern int lbl_8033A710[2];
+__declspec(section ".data") extern int lbl_8033A6A0[2];
+__declspec(section ".data") extern int lbl_8033A710[2];
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -63,12 +63,14 @@ extern float lbl_80562F40;
 extern int lbl_8033A628;
 extern int lbl_8033A8C8;
 #pragma pop
+__declspec(section ".data") extern int lbl_8033A628;
+__declspec(section ".data") extern int lbl_8033A8C8;
 void fn_801F1EEC(void) {
-    void *p = fn_801284F8(12, (void *)((unsigned long)&lbl_8033A628));
+    void *p = fn_801284F8(12, &lbl_8033A628);
     if (p != 0) {
-        *(void **)p = (void *)((unsigned long)&lbl_8033A8C8);
-        *(char *)((char *)p + 4) = 0;
+        *(void **)p = &lbl_8033A8C8;
         *(int *)((char *)p + 8) = 0;
+        *(char *)((char *)p + 4) = 0;
     }
 }
 void fn_801F1F84(void) {
@@ -110,9 +112,9 @@ void fn_801F2108(void) {
 #pragma push
 #pragma small_data off
 void fn_801F224C(void) {
-    void *p = fn_801284F8(8, (void *)((unsigned long)&lbl_8033A6A0));
+    void *p = fn_801284F8(8, &lbl_8033A6A0);
     if (p != 0) {
-        *(void **)p = (void *)((unsigned long)&lbl_8033A710);
+        *(void **)p = &lbl_8033A710;
         *(int *)((char *)p + 4) = 0;
     }
 }
@@ -508,10 +510,13 @@ void fn_801F3EA4(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
 extern int fn_802CD33C(int, int, int);
 extern int lbl_8033A7A0_arr[];
 void *fn_801F3EF8(void *arg0, int arg1) {
+    extern int lbl_8033A7A0[];
     if (arg0 != 0) {
-        *(void **)arg0 = (void *)&lbl_8033A7A0_arr[0];
-        if (arg1 <= 0) return arg0;
-        fn_80128668();
+        *(void **)arg0 = (void *)&lbl_8033A7A0[0];
+        if (arg1 <= 0) {
+        } else {
+            fn_80128668();
+        }
     }
     return arg0;
 }
