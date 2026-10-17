@@ -9,6 +9,21 @@ void fn_80138434(void) {
     fn_80137F2C();
 }
 
+void *fn_8013846C(void *arg0) {
+    void *node;
+    void *best;
+
+    node = *(void **)((char *)arg0 + 0x14);
+    best = arg0;
+    while (node != arg0) {
+        if (*(unsigned int *)((char *)node + 0x10) < *(unsigned int *)((char *)best + 0x10)) {
+            best = node;
+        }
+        node = *(void **)((char *)node + 0x14);
+    }
+    return best;
+}
+
 void fn_801384A0(void);
 void fn_801386D0(float, float, float);
 void fn_80138958(void *, float *);
