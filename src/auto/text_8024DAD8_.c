@@ -50,6 +50,24 @@ void *fn_8024FB64(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma opt_common_subs off
+void *fn_802522A8(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if ((char *)arg0 + 4 != 0) {
+            fn_80128670(*(s32 *)((char *)arg0 + 0x10));
+            if ((char *)arg0 + 4 != 0) {
+                *(s32 *)((char *)arg0 + 4) = 0;
+                *(s32 *)((char *)arg0 + 8) = 0;
+                *(s32 *)((char *)arg0 + 0xC) = 0;
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+#pragma pop
+
 void fn_80252454(void *arg0, s32 arg1, s32 arg2) {
     s32 offset = arg1 * 0x48;
     s32 *base = *(s32 **)((char *)arg0 + 4);
