@@ -216,7 +216,6 @@ void fn_802C6C34(void) { fn_802C53A8(); }
 
 void fn_802C6FA8(void) { fn_802C5DF0((int *)&fn_802D6C48); }
 
-extern int fn_802D6C48;
 void fn_802C5DF0(int*);
 int fn_802C90E0(void);
 int fn_802E30C8(const char*, int);
