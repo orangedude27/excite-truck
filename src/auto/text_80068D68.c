@@ -854,6 +854,13 @@ void fn_80071088(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x88) = arg0; }
 
 void fn_80071098(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x84) = arg0; }
 
+void fn_80071230(void *arg0, void *arg1, void *arg2) {
+    void (*callback)(int, void *, void *, void *) =
+        *(void (**)(int, void *, void *, void *))(lbl_803C0AD8 + 0x84);
+    if (callback != 0)
+        callback(5, arg0, arg1, arg2);
+}
+
 void fn_8007148C(s32 arg0) {
     fn_800716B0((void **)((u8 *)&lbl_803C0AD8 + 0x68), arg0, &lbl_803C0AD8);
 }
