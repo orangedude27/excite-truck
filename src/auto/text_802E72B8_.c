@@ -9,3 +9,6 @@ extern void fn_802E3A14(int);
 extern void fn_802E3930(int, void *, int);
 extern unsigned char lbl_804FC978[];
 void fn_802E7544(void) { fn_802E3990(); }
+
+void fn_802E7548(int arg0) { fn_802E3734(&arg0); }
+
