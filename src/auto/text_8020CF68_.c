@@ -23,6 +23,32 @@ void fn_8020CF68(void) {
     fn_802104D0();
 }
 
+void fn_8020D224(void) {
+    float value;
+    lbl_8055EE94 = 1;
+    value = fn_80209028();
+    lbl_8055EE90 = value;
+    lbl_8055EE88 = value;
+    value = fn_8020A5F0();
+    lbl_8055EE8C = value;
+    lbl_8055EE84 = value;
+    if (fn_80265D64() == 0)
+        __AXDSPInitCallback_801769E0();
+    fn_80206444();
+    fn_80209190(lbl_8055EE74, lbl_80563320);
+    lbl_8055EE78 = 0;
+    lbl_8055EE9C = lbl_80563320;
+    lbl_8055EE98 = lbl_80563320;
+    fn_80230E90(1);
+}
+
+void fn_8020D29C(void) {
+    lbl_8055EE94 = 0;
+    fn_80209190(lbl_8055EE74, lbl_8056331C);
+    fn_80206454();
+    fn_801769EC();
+}
+
 extern void *lbl_8055EE7C;
 extern void *lbl_8055EE80;
 void AXFXSetHooks_8020DE10(void *arg0, void *arg1) {
