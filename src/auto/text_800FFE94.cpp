@@ -237,4 +237,8 @@ extern "C" int fn_80101414(void* arg0) {
 extern "C" int fn_80101428(void* arg0) {
     return *((unsigned char*)arg0 + 0x1D) != 0;
 }
-
+extern "C" int fn_800FEC1C(void*, const void*);
+extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void*, void*, const void*);
+extern "C" char lbl_80327AF4[];
+extern "C" void fn_800EC890(void*);
+extern "C" float lbl_80561120;
