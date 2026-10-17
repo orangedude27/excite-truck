@@ -55,7 +55,17 @@ extern "C" f32 lbl_805610BC;
   extern "C" void *GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void);
   extern "C" void fn_800EEB64(void *);
   extern "C" void *Instance__15EmissionManagerFv(void);
-  extern "C" void fn_800E2F84(void *);
+    extern "C" void fn_800E2F84(void *);
+    #pragma push
+    #pragma small_data off
+    extern u8 lbl_80412CC8[];
+    extern u8 lbl_80412CB8[];
+    #pragma pop
+    extern u8 lbl_8055DE68;
+    extern "C" void __dt__10TitleSceneFv(void*, s32);
+    extern "C" void __register_global_object(void*, void*, void*, void*);
+    extern "C" void OSSendMessage(void*, void*, u32);
+    extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
 
 M2C_UNK GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
 
@@ -651,16 +661,26 @@ extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3s
 extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
     void* this_, void* pHandle, u32 id, void* pAmbient, void* pPlayer,
     void* pInfo) {
-    void* pSound;
-    void* (*fn)(void*, void*, u32, void*, void*, void*);
+    struct SoundStartable {
+        s32 pad0;
+        s32 pad4;
+        s32 pad8;
+        void* (*StartSound)(struct SoundStartable*, void*, u32, void*, void*, void*);
+    }* self = (struct SoundStartable*)this_;
 
-    fn = *(void* (**)(void*, void*, u32, void*, void*, void*))(*(u32*)this_ +
-                                                                0x0C);
-    pSound = fn(this_, pHandle, id, pAmbient, pPlayer, pInfo);
+    void* pSound = self->StartSound(self, pHandle, id, pAmbient, pPlayer, pInfo);
 
-    if (pSound != 0 && *(void**)&((u8*)pSound)[0x00] == 0) {
-        void (*cb)(void*) = *(void (**)(void*))(*(u32*)pHandle + 0x14);
-        cb(pHandle);
+    if (pSound != 0) {
+        if (*(void**)((u8*)pSound) == 0) {
+            struct SoundHandle {
+                s32 pad0;
+                s32 pad4;
+                s32 pad8;
+                s32 padC;
+                void (*Attach)(struct SoundHandle*);
+            }* handle = (struct SoundHandle*)pHandle;
+            handle->Attach(handle);
+        }
     }
 }
 
