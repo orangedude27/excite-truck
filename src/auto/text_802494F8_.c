@@ -99,18 +99,17 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
 }
 
 void *fn_8024A204(void *arg0, s32 arg1) {
+    register s32 zero = 0;
     if (arg0 != 0) {
+        *(s32 *)((char *)arg0 + 0x11C) = zero;
         if ((unsigned int)arg0 + 0x10 != 0) {
             if ((unsigned int)arg0 + 0x10 != 0) {
-                *(s32 *)((char *)arg0 + 0x10) = 0;
-                *(s32 *)((char *)arg0 + 0x14) = 0;
-                *(s32 *)((char *)arg0 + 0x18) = 0;
+                *(s32 *)((char *)arg0 + 0x10) = zero;
+                *(s32 *)((char *)arg0 + 0x14) = zero;
+                *(s32 *)((char *)arg0 + 0x18) = zero;
             }
         }
-        *(s32 *)((char *)arg0 + 0x11C) = 0;
-        if (arg1 > 0) {
-            fn_80128668(arg0);
-        }
+        if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
@@ -192,9 +191,50 @@ void *fn_8024AFF8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8024B6A8(void) {
+    fn_8024B260();
+}
+
 s32 fn_8024B874(s32 arg0) { return arg0 + 0x64; }
 
 s32 fn_8024B8CC(s32 arg0) {
     return arg0 + 0x4C;
+}
+
+void *fn_80012870(s32, s32);
+extern char lbl_80343E60[];
+void fn_8024BBF4(void *arg0) {
+    s32 spC, sp8;
+    void *obj;
+    void *result;
+    void **vtable;
+    char *src, *dst;
+    s32 count;
+    int (*get_name)(void *, char *);
+    obj = *(void **)((char *)arg0 + 0x30);
+    if (obj != 0) {
+        vtable = *(void ***)((char *)obj + 0xC);
+        ((void (*)(void *, s32 *, s32 *))vtable[14])(obj, &sp8, &spC);
+        result = fn_80012870(sp8, spC);
+        *(s32 *)((char *)arg0 + 0x34) = *(s32 *)result;
+        obj = *(void **)((char *)result + 0x20);
+        vtable = *(void ***)obj;
+        get_name = (int (*)(void *, char *))vtable[5];
+        src = (char *)get_name(obj, lbl_80343E60);
+        dst = (char *)arg0 + 0x38;
+        count = 0x64;
+        do {
+            count--;
+            if (count <= 0) { dst[-1] = 0; break; }
+            {
+                char c = *src++;
+                *dst++ = c;
+                if ((signed char)c == 0) break;
+            }
+        } while (1);
+    } else {
+        *(s32 *)((char *)arg0 + 0x34) = -1;
+        *(char *)((char *)arg0 + 0x38) = 0;
+    }
 }
 
