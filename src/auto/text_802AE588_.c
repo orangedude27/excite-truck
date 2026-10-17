@@ -221,6 +221,35 @@ void fn_802AFF80(void *arg0, short arg1) {
     *(unsigned short *)((char *)arg0 + 4) = index + 1;
 }
 
+void fn_802B0024(void *arg0, short arg1) {
+    unsigned short count = *(unsigned short *)((char *)arg0 + 4);
+    unsigned short limit = *(unsigned short *)((char *)arg0 + 6);
+    if (limit != 0) {
+        *(unsigned short *)((char *)*(void **)arg0) = 0;
+        *(unsigned short *)((char *)arg0 + 4) = 1;
+    }
+    count = *(unsigned short *)((char *)arg0 + 4);
+    limit = *(unsigned short *)((char *)arg0 + 6);
+    if (count < limit) {
+        *(short *)((char *)*(void **)arg0 + count * 2) = arg1;
+        *(unsigned short *)((char *)arg0 + 4) = count + 1;
+    }
+}
+
+extern unsigned short fn_802B127C(int, int);
+extern float fn_801DCF48(int, float, float);
+extern float lbl_80564AF0;
+extern double lbl_80564B70;
+unsigned short fn_802B0070(int arg0) {
+    return fn_802B127C(lbl_8055F974, arg0);
+}
+
+void fn_802B009C(void *arg0, int arg1, int arg2, int arg3) {
+    *(float *)arg0 = (float)arg2 * lbl_80564AF0;
+    *(float *)((char *)arg0 + 8) = (float)arg3 * lbl_80564AF0;
+    *(float *)((char *)arg0 + 4) = fn_801DCF48(arg1, *(float *)arg0, *(float *)((char *)arg0 + 8));
+}
+
 void fn_802B0114(void) {
 }
 
@@ -244,6 +273,48 @@ void fn_802B0144(void) {
     fn_802AEB3C();
 }
 
+void fn_802B016C(void) {
+    fn_802DBE4C();
+    fn_802B14B4(lbl_8055F974);
+    fn_802BDD54();
+    fn_802B2D94(lbl_8055F978);
+    fn_802B4E30();
+    fn_802DBECC();
+}
+
+void fn_802B01A8(void) {
+    int result;
+    fn_802DBE4C();
+    result = 1;
+    if ((*(unsigned int *)((char *)fn_801E87A8() + 0x10) >> 1) & 1)
+        result = 2;
+    result = fn_802C9C58(result);
+    fn_802B14B4(lbl_8055F974);
+    fn_802C9C58(result);
+    fn_802DBECC();
+    fn_802AE728();
+    fn_80202718();
+    fn_8029790C(0);
+    fn_802AE7C0();
+}
+
+void fn_802B0218(void) {
+    if (fn_802AE7AC() != 0) {
+        fn_802DBE4C();
+        fn_802B2D94(lbl_8055F978);
+        fn_802B4E30();
+        fn_802DBECC();
+    }
+}
+
+#pragma dont_inline fn_802AE7AC
+void fn_802B0254(void) {
+    if (fn_802AE7AC() != 0) {
+        fn_802DBE4C();
+        fn_802BDD58();
+        fn_802DBECC();
+    }
+}
 void fn_802B0288(void *arg0) {
     if ((void *)lbl_8055F970 != arg0)
         fn_802B4E44(*(int *)((char *)arg0 + 8));
