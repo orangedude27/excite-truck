@@ -14,6 +14,16 @@ extern int lbl_80339258[];
 extern void *lbl_8055AD98;
 extern void *lbl_8055E984;
 
+void *__dt__14CollisionSpaceFv_801DAB70(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_80339288;
+        fn_80128670(*(void **)((char *)arg0 + 4));
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 float fn_801DAC5C(void *arg0) {
     float value;
     float max;
