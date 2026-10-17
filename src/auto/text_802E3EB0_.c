@@ -98,3 +98,6 @@ int fn_802E4648(void *arg0) {
     return -1;
 }
 
+void fn_802E46A0(void) {
+}
+
