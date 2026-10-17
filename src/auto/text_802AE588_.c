@@ -109,6 +109,7 @@ float fn_802AE6E0(void *arg0, void *arg1) {
     return (float)fn_8002F234(dx2 + dy2, dy, y0);
 }
 
+#pragma dont_inline fn_802AE7AC
 int fn_802AE7AC(void) {
     int val = *(int *)lbl_8055F984;
     unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
@@ -201,6 +202,21 @@ void fn_802AFEA4(int *arg0, short arg1) {
     *(short *)((char *)arg0 + index * 0x1C + 8) = arg1;
 }
 
+int fn_802AFEC0(int arg0) {
+    float converted;
+    int index;
+    int result;
+    if (arg0 >= 2) {
+        converted = (float)arg0;
+        index = (((*(unsigned int *)&converted) >> 23) & 0x7F) + 1;
+    } else {
+        index = 0;
+    }
+    result = *(int *)lbl_8055F984 + lbl_804BDFF0[index] * 2;
+    memset((void *)result, -1, (arg0 + 1) * 8);
+    return result;
+}
+
 int fn_802AFF54(void *arg0) {
     return ((int *)arg0)[1];
 }
@@ -283,14 +299,14 @@ void fn_802B016C(void) {
 }
 
 void fn_802B01A8(void) {
-    int result;
+    int temp;
     fn_802DBE4C();
-    result = 1;
-    if ((*(unsigned int *)((char *)fn_801E87A8() + 0x10) >> 1) & 1)
-        result = 2;
-    result = fn_802C9C58(result);
+    if (((*(unsigned int *)((char *)fn_801E87A8() + 0x10) >> 1) & 1) != 0)
+        temp = fn_802C9C58(2);
+    else
+        temp = fn_802C9C58(1);
     fn_802B14B4(lbl_8055F974);
-    fn_802C9C58(result);
+    fn_802C9C58(temp);
     fn_802DBECC();
     fn_802AE728();
     fn_80202718();
@@ -321,6 +337,35 @@ void fn_802B0288(void *arg0) {
     lbl_8055F970 = (int)arg0;
 }
 
+extern int fn_802AE7AC(void);
+extern void *fn_802BE844(s16, s16, s32, f32);
+extern float lbl_80564B6C;
+extern float lbl_80564B84;
+#pragma dont_inline fn_802AE7AC
+s32 fn_802B02C8(void *arg0) {
+    float bound;
+    float x;
+    float z;
+    s32 valid;
+
+    if (fn_802AE7AC() == 0)
+        return 0;
+    bound = lbl_80564B84 * lbl_80564AF0 * lbl_80564B6C;
+    x = *(float *)arg0;
+    valid = 0;
+    if (x > -bound && x < bound) {
+        z = *(float *)((char *)arg0 + 8);
+        if (z > -bound && z < bound)
+            valid = 1;
+    }
+    if (valid == 0)
+        return 1;
+    x = *(float *)arg0 / lbl_80564AF0;
+    z = *(float *)((char *)arg0 + 8) / lbl_80564AF0;
+    return ((*(s32 *)((char *)fn_802BE844((s16)(((s32)x & ~7) + 4),
+                                           (s16)(((s32)z & ~7) + 4),
+                                           4, *(float *)((char *)arg0 + 8)) + 8) & 0x01000000) == 0);
+}
 extern void fn_802C10C8(void);
 void fn_802B05D8(void) { fn_802C10C8(); }
 
