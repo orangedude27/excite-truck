@@ -1,6 +1,11 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern u8 lbl_8055F8F0;
+extern s32 lbl_8055CC58;
+extern s32 lbl_804BD740;
+extern s32 lbl_804BD790;
+extern f32 lbl_80564978;
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern u8 lbl_8055F8F1;
@@ -16,6 +21,17 @@ void* fn_802A8F94(void* arg0, s32 arg1) {
             fn_80128668(arg0);
     }
     return arg0;
+}
+
+s32 fn_802A9048(void) {
+    u32 value = *((u32 *)fn_801E87A8() + 1);
+    if (value & 0x100) {
+        value -= 0x180000;
+        if (value != 0x303 && value != 0x304) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 void fn_802A95A8(void) {
