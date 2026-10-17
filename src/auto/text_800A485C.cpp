@@ -382,21 +382,16 @@ extern "C" s32 fn_800A728C(void *arg0) {
 extern "C" s32 fn_800A7568(void *arg0, s32 arg1) {
     s32 temp_r3;
     s32 temp_r3_2;
-    s32 var_r31;
-    var_r31 = 0;
+    s32 var_r31 = 0;
     if (*(s32 *)arg0 & 8) {
         temp_r3 = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
         if (temp_r3 != 0) return temp_r3;
         temp_r3_2 = fn_800A6728(*(void **)((u8 *)arg0 + 4), arg1);
         if (temp_r3_2 != 0) var_r31 = temp_r3_2;
-        goto block_6;
-    }
-    var_r31 = 0xE;
-block_6:
+    } else var_r31 = 0xE;
     if ((var_r31 == 0) || ((u32)arg1 == 1U)) {
-        struct Bits { unsigned b0:1; unsigned b1:1; unsigned b2:1; unsigned b3:1; unsigned rest:28; };
-        ((struct Bits *)arg0)->b1 = 0;
-        ((struct Bits *)arg0)->b3 = 0;
+        *(u32 *)arg0 &= ~2U;
+        *(u32 *)arg0 &= ~8U;
     }
     return var_r31;
 }
