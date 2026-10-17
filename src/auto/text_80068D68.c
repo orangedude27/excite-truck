@@ -2362,6 +2362,26 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+s32 btsnd_hcic_hold_mode_80084A34(u8 *p, u16 handle, u16 max_interval, u16 min_interval) {
+    if (p == NULL) {
+        p = GKI_getpoolbuf(2);
+        if (p == NULL) return 0;
+    }
+    *(u16 *)(p + 2) = 9;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 5;
+    p[9] = 8;
+    p[10] = 6;
+    p[11] = handle;
+    p[12] = handle >> 8;
+    p[13] = max_interval;
+    p[14] = max_interval >> 8;
+    p[15] = min_interval;
+    p[16] = min_interval >> 8;
+    btu_hcif_send_cmd(p);
+    return 1;
+}
+
 s32 btsnd_hcic_exit_sniff_mode_80084AE8(u8 *p, u16 handle) {
     if (p == NULL) {
         p = GKI_getpoolbuf(2);
