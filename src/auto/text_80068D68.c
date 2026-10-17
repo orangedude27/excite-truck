@@ -2362,6 +2362,18 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+BOOLEAN btsnd_hcic_reset(UINT8 local_controller_id) {
+    u8 *p = GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 3;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 3;
+    p[9] = 0xC;
+    p[10] = 0;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
 BOOLEAN btsnd_hcic_write_pin_type(UINT8 type) {
     u8 *p = GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
