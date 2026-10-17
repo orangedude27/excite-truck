@@ -72,3 +72,5 @@ int fn_802E91AC(int *arg0) { return *arg0 == 0; }
 
 void fn_802E986C(void) {}
 
+void fn_802E9870(void) {}
+
