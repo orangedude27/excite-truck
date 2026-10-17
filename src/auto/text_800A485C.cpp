@@ -1018,7 +1018,7 @@ u8 fn_800C6768(void) {
 
 extern "C" void fn_800C687C(void) {
     fn_800CF170(lbl_8055DD98);
-    MEMDestroyFrmHeap(*(MEMiHeapHead **)((char *)lbl_804075F0 + 4));
+    MEMDestroyFrmHeap(*(MEMiHeapHead **)(lbl_804075F0 + 1));
 }
 
 extern "C" void fn_800C68B0(void) {
