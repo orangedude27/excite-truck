@@ -23,6 +23,10 @@ extern "C" void fn_8029BDC4(void*);
 extern "C" void fn_80299544(void);
 extern "C" void fn_802982C0(void);
 extern "C" void fn_8029998C(void);
+extern "C" void fn_80299FE0(void *, void *, float);
+extern "C" void fn_80299A88(void *, void *, unsigned int, float);
+extern "C" char lbl_803494D0[];
+extern "C" void fn_8029998C(void);
 extern "C" void fn_8029A17C(void);
 extern void* lbl_8055F7CC;
 extern void* lbl_8055F7E0;
@@ -319,27 +323,39 @@ void fn_80299628(void* arg0) {
     fn_802C8D74();
 }
 
+extern "C" void* fn_802997F4(void* arg0, int arg1) {
+    void* p = arg0;
+    int i = 0;
+    do {
+        if (*(int*)p == arg1) {
+            return (char*)arg0 + (i << 6);
+        }
+        p = (char*)p + 0x40;
+        i++;
+    } while (i < 4);
+    return 0;
+}
+
 extern "C" void fn_80299830(void*, int);
 extern "C" void fn_802C8BD0(int);
 extern "C" int fn_802C8DBC(int);
 extern "C" void fn_802C8E48(void);
 extern "C" void fn_802C8D74(void);
 extern "C" void* fn_80299FA8(void*, void*);
-void* fn_802998F4(void* arg0, int arg1) {
+void fn_802998F4(void* arg0, int arg1) {
     if (arg0 != 0) {
         void* p = arg0;
         int i = 0;
-        while (i < *(int*)((char*)arg0 + 0x138)) {
+        do {
             fn_80299FA8(arg0, p);
             p = (char*)p + 0x9c;
             i++;
-        }
+        } while (i < *(int*)((char*)arg0 + 0x138));
         *(int*)((char*)arg0 + 0x138) = 0;
         if (arg1 > 0) {
             fn_80128668(arg0);
         }
     }
-    return arg0;
 }
 
 extern "C" void fn_8029A890(void *arg0, void *arg1) {
