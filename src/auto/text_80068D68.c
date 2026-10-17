@@ -703,6 +703,11 @@ int fn_8006F254(s32 arg0) {
     return 1;
 }
 
+int fn_8006F284(s32 arg0) {
+    hcisu_h2_receive_msg((u16)(arg0 - 8 - *(u16 *)((u8 *)&lbl_803BD1A0 + 0x12)), (u8 *)&lbl_803BD1A0);
+    return 0;
+}
+
 s32 fn_8007011C(void) { return 0; }
 
 /* uusb control block at lbl_803BD1E0 (96 bytes): fd @0, state u8 @0x29,
