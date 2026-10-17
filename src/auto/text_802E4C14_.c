@@ -11,6 +11,9 @@ extern char lbl_8034D1F0[];
 void fn_802E4C14(void) {
 }
 
+void fn_802E4C18(void) {
+}
+
 int fn_802E4D60(void *arg0, int arg1) {
     return *(int *)((char *)arg0 + 4) + arg1;
 }
