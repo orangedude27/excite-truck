@@ -70,6 +70,19 @@ void fn_802DBC70(int arg0, int arg1) {
     }
 }
 
+extern void fn_802DBCFC(int,int);
+void fn_802DBCFC(int arg0, int arg1) {
+    if ((void *)lbl_8055FEA8 != (void *)arg0) {
+        lbl_8055FEA8 = (void *)arg0;
+        lbl_8055FEAC = (void *)arg1;
+        GXClearVtxDesc();
+        GXSetVtxDesc(9, 3);
+        GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+        GXSetArray(9, (void *)arg0, 0xC);
+        DCFlushRange((void *)arg0, arg1 * 0xC);
+    }
+}
+
 void fn_802DBDD8(void) {
     lbl_8055FEA8 = 0;
     lbl_8055FEAC = 0;
