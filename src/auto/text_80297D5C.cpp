@@ -31,6 +31,18 @@ extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
 extern float lbl_80564590;
 extern float lbl_8056459C;
 extern float lbl_80558DC4;
+int fn_80297D90(int* out, int value) {
+    int i = 0;
+    do {
+        if ((1 << i) == value) {
+            *out = i;
+            return 1;
+        }
+        i++;
+    } while (i < 0xa);
+    return 0;
+}
+
 extern "C" void fn_80297ED4(void) {
 }
 
