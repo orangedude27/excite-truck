@@ -28,6 +28,11 @@ void fn_802D7564(void) {
     }
 }
 
+void fn_802D8DA0(void) {
+    fn_80128670(lbl_8055FE28);
+    lbl_8055FE28 = 0;
+}
+
 void fn_802D9154(void) {
     fn_802D7600(lbl_8055D118);
 }
