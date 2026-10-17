@@ -98,6 +98,14 @@ int fn_802E4648(void *arg0) {
     return -1;
 }
 
+int fn_802E4680(void *arg0) {
+    return *(int *)((char *)arg0 + 0x88);
+}
+
+void fn_802E4688(void *arg0, int arg1) {
+    ((void (*)(void *, int))(*(void ***)arg0)[8])(arg0, *(int *)((char *)arg0 + 0x88) + arg1);
+}
+
 void fn_802E46A0(void) {
 }
 
