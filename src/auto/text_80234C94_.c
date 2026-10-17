@@ -121,6 +121,26 @@ void fn_802350BC(void) {
     }
 }
 
+void fn_80235380(void *arg0) {
+    int count;
+    void *node;
+    void *next;
+
+    count = *(int *)((char *)arg0 + 0x80) - 1;
+    *(int *)((char *)arg0 + 0x80) = count;
+    if (count <= 0) {
+        node = *(void **)((char *)arg0 + 0x88);
+        while (node != 0) {
+            next = *(void **)((char *)node + 0x18);
+            fn_80128668(node);
+            node = next;
+        }
+        fn_802CAC54(*(int *)((char *)arg0 + 0x84));
+        fn_80234DE4((unsigned int)arg0);
+        fn_80128668(arg0);
+    }
+}
+
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
 extern const char lbl_80340834[];
