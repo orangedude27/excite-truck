@@ -1039,3 +1039,7 @@ extern "C" void fn_800FD8B0(void *arg0, float farg0) {
     *(float *)((char *)arg0 + 0x43C) = farg0;
 }
 
+extern "C" int fn_800FD8B8(void *arg0) {
+    return *(unsigned char *)((char *)arg0 + 0x4B) != 0;
+}
+
