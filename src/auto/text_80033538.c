@@ -15,6 +15,14 @@ extern float lbl_80560AF0;
 extern float lbl_80560AF4;
 extern float lbl_80560AF8;
 extern float lbl_80560AFC;
+void fn_80033538(void *arg0, short arg1) {
+    int state;
+    state = OSDisableInterrupts();
+    *(short *)((char *)arg0 + 0x14A) = arg1;
+    *(unsigned int *)((char *)arg0 + 0x1C) |= 8;
+    OSRestoreInterrupts(state);
+}
+
 void fn_80033B74(void *arg0, short arg1, short arg2) {
     int state = OSDisableInterrupts();
     *(short *)((char *)arg0 + 0x200) = arg1;
