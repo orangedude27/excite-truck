@@ -6,6 +6,14 @@ extern char lbl_8034CD48[];
 extern char lbl_8034CD30[];
 extern void fn_802E317C(const char *);
 extern void fn_802E30C8(const char *, int, int);
+void fn_802E1728(void *arg0) {
+    int value = *(int *)((char *)arg0 + 0x178);
+    if (value != 0) {
+        fn_80120084(value);
+        *(int *)((char *)arg0 + 0x178) = 0;
+    }
+}
+
 int fn_802E1954(int arg0) { return (arg0 + 0x7F) & 0xFFFFFF80; }
 
 void fn_802E29AC(void) {
