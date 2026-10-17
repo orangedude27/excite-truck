@@ -99,6 +99,11 @@ void fn_802E58B8(unsigned char *arg0) {
     fn_8012C41C(fn_802E589C, 0, arg0);
 }
 
+float fn_802E6040(void *arg0) {
+    if (arg0 != 0) return *(float *)((char *)arg0 + 0xA4);
+    return lbl_8056512C;
+}
+
 void fn_802E6138(void *arg0) {
     if (((unsigned char *)arg0)[0x23] != 0) {
         fn_802E317C(lbl_8034D5B0, *(int *)arg0, *(void **)((char *)arg0 + 0x1C));
