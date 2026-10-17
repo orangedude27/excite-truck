@@ -2,6 +2,16 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma scheduling off
+void fn_8020F1F8(void *arg0) {
+    void *temp_r3;
+    temp_r3 = *(void **)((char *)arg0 + 0x50);
+    if (temp_r3 != 0) {
+        *(signed char *)((char *)temp_r3 + 0x49) = 1;
+        *(signed char *)((char *)temp_r3 + 0x4B) = 0;
+        *(signed char *)((char *)temp_r3 + 0x4A) = 0;
+    }
+}
+
 void fn_8020F330(void *arg0) {
     void *temp_r3;
 
