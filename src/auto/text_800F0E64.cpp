@@ -138,7 +138,7 @@ extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0)
     }
 }
 
-extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, bool);
+extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, u8);
 extern "C" void fn_800EAD00(void *);
 extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     u32 token = OSDisableInterrupts();
