@@ -267,7 +267,7 @@ s32 *fn_8001C4E0(s32 arg0) {
 }
 
 void fn_8001C714(void) {
-    fn_80131234(*(s32 *)((u8 *)fn_8001C4E0(0) + 8));
+    fn_80131234(*(s32 *)((u8 *)((s32 *(*)(void))fn_8001C4E0)() + 8));
 }
 
 #pragma scheduling off
