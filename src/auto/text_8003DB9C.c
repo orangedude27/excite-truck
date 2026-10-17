@@ -87,10 +87,79 @@ void *GXInitVtxDescList(void) {
     return temp;
 }
 
-void GXInitLightSpot(int arg0, unsigned int arg1) {
-    unsigned int reg = arg1;
+void __GXSetVCD(void) {
+    unsigned int *data = __GXData;
+    unsigned int value;
+    unsigned int count;
 
-    __peReg[2] = (reg & 0xFF) | ((arg0 << 8) & 0x100);
+    *(volatile unsigned char *)0xCC008000 = 8;
+    *(volatile unsigned char *)0xCC008000 = 0x50;
+    *(volatile unsigned int *)0xCC008000 = data[0x14 / 4];
+    *(volatile unsigned char *)0xCC008000 = 8;
+    *(volatile unsigned char *)0xCC008000 = 0x60;
+    *(volatile unsigned int *)0xCC008000 = data[0x18 / 4];
+    if (*(unsigned char *)((char *)data + 0x525)) {
+        count = 2;
+    } else {
+        count = *(unsigned char *)((char *)data + 0x524) != 0;
+    }
+    value = (data[0x14 / 4] & 0x78000) >> 15;
+    value = (0x21 - __builtin_clz(value)) >> 1;
+    count = count * 4;
+    value |= count;
+    count = 0x21 - __builtin_clz(data[0x18 / 4] & 0xFFFF);
+    value |= count << 28;
+    *(volatile unsigned char *)0xCC008000 = 0x10;
+    *(volatile unsigned int *)0xCC008000 = 0x1008;
+    *(volatile unsigned int *)0xCC008000 = value;
+    *(unsigned short *)((char *)data + 2) = 1;
+}
+
+void GXClearVtxDesc(void) {
+    unsigned int *data = __GXData;
+    unsigned int zero = 0;
+    unsigned int value = 1;
+    data[0x14 / 4] = (zero & ~0x600) | ((value << 9) & 0x600);
+    data[0x18 / 4] = zero;
+    *((unsigned char *)data + 0x524) = zero;
+    *((unsigned char *)data + 0x525) = zero;
+    data[0x5FC / 4] |= 8;
+}
+
+void __GXSetVAT(void) {
+    unsigned int *data = __GXData;
+    unsigned char mask = *(unsigned char *)((char *)data + 0x5FB);
+    unsigned int i = 0;
+    unsigned int *ptr = data;
+    do {
+        if (mask & 1) {
+            *(volatile unsigned char *)0xCC008000 = 8;
+            *(volatile unsigned char *)0xCC008000 = i | 0x70;
+            *(volatile unsigned int *)0xCC008000 = ptr[0x1C / 4];
+            *(volatile unsigned char *)0xCC008000 = 8;
+            *(volatile unsigned char *)0xCC008000 = i | 0x80;
+            *(volatile unsigned int *)0xCC008000 = ptr[0x3C / 4];
+            *(volatile unsigned char *)0xCC008000 = 8;
+            *(volatile unsigned char *)0xCC008000 = i | 0x90;
+            *(volatile unsigned int *)0xCC008000 = ptr[0x5C / 4];
+        }
+        mask >>= 1;
+        i++;
+        ptr++;
+    } while (mask);
+    *(volatile unsigned char *)0xCC008000 = 0;
+    *(unsigned char *)((char *)data + 0x5FB) = 0;
+}
+
+void GXInvalidateVtxCache(void) {
+    *(volatile unsigned char *)0xCC008000 = 0x48;
+}
+
+void GXInitLightSpot(s32 arg0, s32 arg1) {
+    unsigned int reg = 0;
+
+    reg = (reg & 0xFFFFFE00) | (arg1 & 0xFF) | ((arg0 & 1) << 8);
+    __peReg[2] = reg;
 }
 
 void GXInitLightDistAttn(unsigned int arg0) {
