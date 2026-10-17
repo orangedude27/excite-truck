@@ -1259,7 +1259,7 @@ extern "C" void fn_8015D814(void* arg0) {
     }
 }
 
-void JStudio::JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
+void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
     void* ptr = *(void**)((u8*)this + 0x248);
     if (ptr != 0) {
         void (*fn)(void*) = *(void (**)(void*))((u8*)ptr + 0x24);
