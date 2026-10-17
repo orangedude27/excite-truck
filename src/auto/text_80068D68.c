@@ -1906,6 +1906,20 @@ void fn_80072A98(void *arg0) {
     }
 }
 
+void bta_dm_remname_cback(u8 *arg0) {
+    void *buf;
+    u8 *addr;
+    fn_8007148C((s32)(lbl_803C0B98 + 0x58));
+    buf = GKI_getbuf(0x110);
+    if (buf != 0) {
+        addr = *(u8 **)(lbl_803C0B98 + 4) + 2;
+        fn_80070FA4((u8 *)buf + 8, addr);
+        strncpy((char *)buf + 0xE, (char *)arg0 + 4, 0x20);
+        *(u16 *)buf = 0x204;
+        fn_80071450(buf);
+    }
+}
+
 void bta_dm_disc_remname_cback(u8 *arg0) {
     void *buf;
     fn_8007148C((s32)(lbl_803C0B98 + 0x58));
