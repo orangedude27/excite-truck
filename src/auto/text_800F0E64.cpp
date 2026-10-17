@@ -274,7 +274,7 @@ extern "C" s32 GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(vo
  void *p;
  pData = *(void**)((u8*)this_ + 0x28);
  if (((u8*)pData)[0x21] != 0) {
-   Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_805598A0, 0x6F, (const char*)lbl_80324CB0);
+   Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598A0, 0x6F, lbl_80324CB0);
  }
  p = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(((u8*)pData)[0x20], *(u32*)((u8*)pData + 0x24), pData);
  if (p == 0) return 0;
