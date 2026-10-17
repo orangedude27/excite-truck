@@ -18,7 +18,7 @@ extern void *lbl_80559948[];
 extern u32 lbl_8055994C[];
 extern void fn_80127F70(void*);
 extern void fn_80127F94(void*);
-extern void fn_8011A7CC(void *);
+extern s32 fn_8011A7CC(DVDFileInfo *);
 extern s32 OSDisableInterrupts(void);
 void fn_80127440(void);
 extern void fn_80127398(s32);
