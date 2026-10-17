@@ -95,8 +95,9 @@ void fn_802D6B78(void) {
     fn_802D5FE4(0);
 }
 
+extern void fn_802D6170();
 void fn_802D6B7C(void) {
-    fn_802D6170(0);
+    fn_802D6170();
 }
 
 void fn_802D6C44(void) {
