@@ -93,9 +93,11 @@ int fn_801B47AC(int arg0) {
 }
 #pragma dont_inline off
 
+#pragma dont_inline on
 int fn_801B47B4(void *arg0) {
     return fn_801B47D4(arg0, *(int *)((char *)arg0 + 0x24));
 }
+#pragma dont_inline off
 
 int fn_801B47D4(int arg0, int arg1) {
     if (arg1 != 0) return arg1 - 1;
@@ -130,8 +132,7 @@ int fn_801B4C1C(int arg0, int arg1) {
 }
 
 int fn_801B4BDC(int arg0) {
-    void *p = (void *)(arg0 + 4);
-    return *fn_801B479C((int)p, fn_801B47B4(p));
+    return *fn_801B479C(arg0 + 4, fn_801B47D4(arg0 + 4, *(int *)(arg0 + 0x24)));
 }
 
 void fn_801B4C58(int arg0) {
