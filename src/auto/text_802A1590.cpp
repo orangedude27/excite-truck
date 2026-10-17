@@ -40,6 +40,7 @@ public:
     virtual void v5();
     virtual void v6();
     virtual void update(); // 0x20
+    virtual void v8(); // 0x24
 };
 
 class TBlackPlane {
@@ -62,6 +63,21 @@ extern "C" s32 fn_802A16EC(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_802A1860(void) {}
+
+extern "C" s32 fn_802A1C30(void* arg0) {
+    s32 index = *(s32*)((char*)arg0 + 0x2C);
+    if (index >= 0 && index < 8) {
+        void* obj = lbl_804BCF88[index];
+        if (obj != 0) {
+            if (*(f32*)((char*)arg0 + 0x24) > lbl_80564728) {
+                (*(void (**)(void*))(*(void**)((char*)*(void**)obj + 0x20)))(obj);
+            } else {
+                (*(void (**)(void*))(*(void**)((char*)*(void**)obj + 0x24)))(obj);
+            }
+        }
+    }
+    return 0x30;
+}
 
 extern "C" void fn_802A1CBC(void) {}
 
