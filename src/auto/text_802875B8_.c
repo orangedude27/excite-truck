@@ -216,6 +216,8 @@ void fn_80287B58(void) {
     fn_80288870();
 }
 
+s32 fn_80288208(s32 arg0){return lbl_8055F6C0+arg0*0x28;}
+
 void fn_8028829C(void) {}
 
 void fn_802882A0(void){if(*(s32*)lbl_804B3150)fn_80128670(*(s32*)lbl_804B3150-0x10);*(s32*)lbl_804B3150=0;*(s32*)(lbl_804B3150+4)=0;lbl_804B3150[8]=0;}
