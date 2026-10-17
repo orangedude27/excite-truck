@@ -24,18 +24,20 @@ int fn_802969B4(unsigned int arg0, unsigned int arg1, float farg0) {
 }
 
 void fn_80296AAC(void *arg0) {
-    memset(0, 0, 0x30);
-    *(float *)((char *)arg0 + 0x10) = lbl_80564560;
-    *(float *)((char *)arg0 + 8) = lbl_80564560;
-    *(float *)((char *)arg0 + 0) = lbl_80564564;
-    *(float *)((char *)arg0 + 0x1C) = lbl_80564568;
+    float value0 = lbl_80564560;
+    float value1 = lbl_80564564;
+    float value2 = lbl_80564568;
+    memset(arg0, 0, 0x30);
+    *(float *)((char *)arg0 + 0x10) = value0;
+    *(float *)((char *)arg0 + 8) = value0;
+    *(float *)((char *)arg0 + 0) = value1;
+    *(float *)((char *)arg0 + 0x1C) = value2;
     *(int *)((char *)arg0 + 0x18) = -1;
     *(int *)((char *)arg0 + 0x2C) = 10;
     *(int *)((char *)arg0 + 0x14) = -1;
 }
 
-void fn_80296D24(void) {
-}
+void fn_80296D24(void) {}
 
 void fn_80296D28(void) {
     fn_8029690C();
