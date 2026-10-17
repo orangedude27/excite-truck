@@ -22,8 +22,8 @@ s32 fn_802C2CC4(s32 arg0) {
     return ((arg0 * 8) & 0xF8) | (((((arg0 << 8) & 0xF80000) | 0xFF000000) & ~0xFC00) | ((arg0 << 5) & 0xFC00));
 }
 
-void fn_802C2CDC(void) {
-    fn_802C2CE8(0, 0, 0, (s8)lbl_8055CFF8);
+void fn_802C2CDC(void *arg0, s32 arg1, s32 arg2) {
+    fn_802C2CE8(arg0, arg1, arg2, (s8)lbl_8055CFF8);
 }
 
 void fn_802C2FC4(void) {
