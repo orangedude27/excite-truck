@@ -355,8 +355,42 @@ int fn_80196468(int arg0) {
     return 0;
 }
 
+void fn_801967A4(void *arg0) {
+    int value = *(int *)((char *)arg0 + 0x210);
+    switch (value) {
+    case 0:
+        fn_80198530();
+        fn_801965AC(arg0);
+        return;
+    case 1:
+        fn_80196AA0();
+        return;
+    }
+}
+
+void fn_801967FC(void *arg0) {
+    float value;
+    int active = *(u8 *)((char *)arg0 + 0x250);
+    *(int *)((char *)arg0 + 0x300) = 0;
+    if (active != 0) {
+        *(float *)((char *)arg0 + 0x254) *= lbl_8056224C;
+        return;
+    }
+    value = *(float *)((char *)arg0 + 0x254) + lbl_80562148;
+    if (lbl_80562140 < value) {
+        *(float *)((char *)arg0 + 0x254) = value;
+    }
+}
+
 void fn_80196A9C(void) {
     fn_8019684C();
+}
+
+int fn_8019700C(int index) {
+    void *entry = lbl_804349C0[index];
+    if (entry == 0) return 1;
+    if (*((u8 *)entry + 0x2A4) != 0) return 1;
+    return 0;
 }
 
 void fn_80198488(void *arg0) {
