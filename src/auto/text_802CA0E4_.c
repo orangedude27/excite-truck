@@ -13,6 +13,7 @@ int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
 int fn_802DB2C0(int);
 int fn_802CA57C(int, int, int);
 int fn_802CA4E0(int, int, int, int, int);
+int fn_802CA898(int, int, int);
 void fn_802D8FB4(void);
 extern int lbl_8055D058;
 extern int lbl_8055D078;
@@ -38,11 +39,11 @@ extern float lbl_80564F40;
 extern float lbl_80564F44;
 extern float lbl_8055FCC4;
   extern unsigned short lbl_8055FCA8;
-  int fn_802CAF8C(int arg0) {
-      if (arg0 == -1)
-          return 0;
-      return *(unsigned short *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 0xC) != lbl_8055FCA8;
-  }
+int fn_802CAF8C(int arg0) {
+    if (arg0 == -1)
+        return 0;
+    return *(unsigned short *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 0xC) != lbl_8055FCA8;
+}
 void fn_802CC550(int, float, float);
 int fn_802CB274(int arg0) {
     int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
