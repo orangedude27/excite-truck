@@ -128,6 +128,12 @@ extern "C" void fn_8013D288(void) {
         *slot = (void *)lbl_8032CAC0_vt;
     }
 }
+
+extern "C" s32 fn_8013D890(s32 arg0, s32 arg1) {
+    if (arg0 != 0 && arg1 > 0) fn_80128668();
+    return arg0;
+}
+
 #pragma dont_inline off
 
 extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
