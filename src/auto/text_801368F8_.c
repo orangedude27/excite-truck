@@ -60,15 +60,23 @@ s32 fn_8013705C(f32 arg0, f32 arg1) {
 }
 
 s32 fn_80137140(s32 arg0, s32 arg1) {
-    void *first = (void *)fn_8017960C(arg0);
-    void *second = (void *)fn_8017960C(arg1);
-    void *firstInfo = (void *)fn_802C6C34(*(s32 *)((char *)first + 0x59C));
-    void *secondInfo = (void *)fn_802C6C34(*(s32 *)((char *)second + 0x59C));
+    void *p27 = (void *)fn_8017960C(arg0);
+    void *p28 = (void *)fn_8017960C(arg1);
+    void *p29 = (void *)fn_802C6C34(*(s32 *)((char *)p27 + 0x59C));
+    void *p30 = (void *)fn_802C6C34(*(s32 *)((char *)p28 + 0x59C));
     s32 result = 0;
-    if (fn_80137078((char *)first + 0x3C, (char *)second + 0x3C, *(f32 *)((char *)firstInfo + 0x40), *(f32 *)((char *)secondInfo + 0x3C))) {
-        if (fn_80137078((char *)second + 0x3C, (char *)first + 0x3C, *(f32 *)((char *)secondInfo + 0x40), *(f32 *)((char *)firstInfo + 0x3C))) result = 1;
+    if (fn_80137078((char *)p27 + 0x3C, (char *)p28 + 0x3C, *(f32 *)((char *)p29 + 0x40), *(f32 *)((char *)p30 + 0x3C))) {
+        if (fn_80137078((char *)p28 + 0x3C, (char *)p27 + 0x3C, *(f32 *)((char *)p30 + 0x40), *(f32 *)((char *)p29 + 0x3C))) result = 1;
     }
     return result;
+}
+
+void fn_8013776C(void *arg0) {
+    f32 temp_f0;
+    f32 temp_f1;
+    temp_f0 = *(f32 *)((char *)arg0 + 0x20);
+    temp_f1 = *(f32 *)((char *)arg0 + 0x1C);
+    *(f32 *)((char *)arg0 + 0x18) = temp_f1 * temp_f1 + temp_f0 * temp_f0;
 }
 
 float fn_80137850(void *arg0) {
