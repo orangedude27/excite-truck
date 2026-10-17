@@ -10,6 +10,12 @@ extern unsigned char lbl_8041DF58[];
 extern int fn_80127AA0(void);
 extern int fn_80127464(int);
 extern int fn_80127AB8(void *);
+void fn_80127A24(void) {
+    ((int (*)(void))fn_80127464)();
+    lbl_8055DF54 = 0;
+    lbl_8055DF50 = 0;
+}
+
 void fn_80127A50(int arg0) {
     fn_80127464(arg0);
     fn_80127AB8((void *)arg0);
@@ -26,15 +32,19 @@ int fn_80127AA0(void) {
 }
 
 int fn_80127AB8(void *arg0) {
-    int i;
-    int *dst = (int *)arg0;
-    int *src;
-    if (fn_80127AA0())
-        return 0;
-    src = (int *)(lbl_8041DF58 + lbl_8055DF50 * 0x14);
-    for (i = 0; i < 5; i++)
-        dst[i] = src[i];
-    lbl_8055DF50 = (lbl_8055DF50 + 1) % 16;
-    return 1;
+    int index;
+    unsigned char *src;
+    if (fn_80127AA0() == 0) {
+        index = lbl_8055DF50;
+        src = lbl_8041DF58 + index * 20;
+        *(int *)((unsigned char *)arg0 + 0) = *(int *)(src + 0);
+        *(int *)((unsigned char *)arg0 + 4) = *(int *)(src + 4);
+        *(int *)((unsigned char *)arg0 + 8) = *(int *)(src + 8);
+        *(int *)((unsigned char *)arg0 + 12) = *(int *)(src + 12);
+        *(int *)((unsigned char *)arg0 + 16) = *(int *)(src + 16);
+        lbl_8055DF50 = (index + 1) % 16;
+        return 1;
+    }
+    return 0;
 }
 
