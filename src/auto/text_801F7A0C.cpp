@@ -352,8 +352,25 @@ extern "C" void fn_801FB40C(void *arg0, s32 arg1, void *arg2) {
     fn_80204014(arg1, *(s32 *)((u8 *)arg2 + 0x34), *(s32 *)((u8 *)arg0 + 0x19C), arg0);
 }
 
+extern "C" void fn_801FBCF4(void **arg0, void *arg1) {
+    *(void **)((u8 *)arg1 + 0x44) = *arg0;
+    *arg0 = arg1;
+}
+
 extern "C" s32 fn_801FBD04(void) {
     return -0xF;
+}
+
+extern "C" s32 fn_801FBD0C(void *arg0) {
+    f32 delta[3];
+    void *camera = fn_802C86DC();
+    delta[0] = *(f32 *)((u8 *)arg0 + 0x24) - *(f32 *)((u8 *)camera + 0x24);
+    delta[1] = *(f32 *)((u8 *)arg0 + 0x28) - *(f32 *)((u8 *)camera + 0x28);
+    delta[2] = *(f32 *)((u8 *)arg0 + 0x2C) - *(f32 *)((u8 *)camera + 0x2C);
+    if (PSVECDotProduct(delta, (const f32 *)((u8 *)arg0 + 0x18)) < lbl_80562FF0) {
+        return 0x11;
+    }
+    return 0x21;
 }
 
 extern "C" f32 fn_801FC664(void) {
