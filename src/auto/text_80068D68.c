@@ -1040,6 +1040,21 @@ void BTA_HhClose(s16 arg0) {
     }
 }
 
+void BTA_HhSendData(u8 arg0, void *arg1) {
+    u8 *buf = GKI_getbuf(0x14);
+    if (buf != 0) {
+        memset(buf, 0, 0x14);
+        *(u16 *)buf = 0x1708;
+        *(u16 *)(buf + 6) = arg0;
+        buf[8] = 0xA;
+        *(u16 *)(buf + 0xC) = 0;
+        buf[9] = 2;
+        *(void **)(buf + 0x10) = arg1;
+        buf[0xA] = 0;
+        fn_80071450(buf);
+    }
+}
+
 extern void l2c_link_hci_disc_comp(u16, u8);
 void btm_acl_device_down(void)
 {
