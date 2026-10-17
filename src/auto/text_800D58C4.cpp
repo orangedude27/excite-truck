@@ -149,6 +149,10 @@ extern "C" s32 fn_800D8768(u32* arg0) {
     return ((u32)*arg0 >> 0x17U) & 1;
 }
 
+extern "C" s32 fn_800D8774(u32* arg0) {
+    return ((u32)*arg0 >> 0x18U) & 1;
+}
+
 extern "C" s32 fn_800D8780(u32 *arg0) {
     return (*arg0 >> 13U) & 3;
 }
