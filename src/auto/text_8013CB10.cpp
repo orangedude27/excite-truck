@@ -283,6 +283,12 @@ extern "C" u8 fn_80141FA0(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x19);
 }
 
+extern "C" void fn_80142104(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0xE8) = 0;
+    *(s32 *)((u8 *)arg0 + 0x104) = 0;
+    *(s32 *)((u8 *)arg0 + 0x100) = 0;
+}
+
 extern "C" void fn_80142C5C(void *arg0, u8 *arg1) {
     void *obj = fn_802C6C34(*(s32 *)(arg1 + 0x59C));
     *(f32 *)((u8 *)arg0 + 0x128) = *(f32 *)((u8 *)obj + 0x30) - *(f32 *)((u8 *)obj + 0x2C);
