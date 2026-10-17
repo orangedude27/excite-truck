@@ -103,3 +103,5 @@ int fn_802ADF34(void **arg0,char *arg1,int arg2) {
  return -1;
 }
 
+void fn_802AE0B8(int **arg0,int arg1){unsigned char *p; p=(unsigned char *)**arg0+arg1*0x74;if(p[0x69])p[0x69]=0;}
+
