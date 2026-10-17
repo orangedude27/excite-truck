@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" void fn_802192AC(void *);
 extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_8021D61C(void *);
 extern "C" u8 lbl_8033EB14[];
