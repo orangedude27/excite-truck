@@ -137,6 +137,12 @@ void GXInitLightAttnA_80181454(void *arg0, float farg0, float farg1, float farg2
     *(float *)((char *)arg0 + 0x314) = farg2;
 }
 
+void GXInitLightAttnK_80181464(void *arg0, float farg0, float farg1, float farg2) {
+    *(float *)((char *)arg0 + 0x318) = farg0;
+    *(float *)((char *)arg0 + 0x31C) = farg1;
+    *(float *)((char *)arg0 + 0x320) = farg2;
+}
+
 float fn_801815C4(void *arg0) {
     return *(float *)((char *)arg0 + 0x28);
 }
