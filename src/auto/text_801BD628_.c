@@ -60,10 +60,14 @@ void fn_801BF0C4(void *arg0, void *arg1, int arg2) {
 }
 
 void fn_801BF12C(float *arg0, float *arg1) {
-    float a = arg1[0];
-    float b = arg1[1];
-    float c = arg1[2];
-    float d = arg1[3];
+    float d;
+    float c;
+    float b;
+    float a;
+    a = arg1[0];
+    b = arg1[1];
+    c = arg1[2];
+    d = arg1[3];
     arg0[0] = a;
     arg0[1] = b;
     arg0[2] = c;
