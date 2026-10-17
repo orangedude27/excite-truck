@@ -2362,6 +2362,14 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
     return TRUE;
 }
 
+s32 btsnd_hcic_auth_request_80084478(u16 arg0) {
+    u8 *buf = (u8 *)GKI_getpoolbuf(2);
+    if (buf == 0) return 0;
+    *(u16 *)(buf + 2) = 5; *(u16 *)(buf + 4) = 0;
+    buf[8]=0x1B; buf[9]=4; buf[10]=2; buf[11]=(u8)arg0; buf[12]=(u8)(arg0>>8);
+    btu_hcif_send_cmd(buf); return 1;
+}
+
 s32 btsnd_hcic_auth_request_800844F4(u16 arg0) {
     u8 *buf = (u8 *)GKI_getpoolbuf(2);
     if (buf == 0) return 0;
