@@ -5,6 +5,33 @@ typedef int s32;
 typedef unsigned char u8;
 typedef float f32;
 extern s32 lbl_8055EB78;
+extern s32 lbl_8055EB7C;
+extern char lbl_80339E08;
+extern s32 fn_80265D7C(void);
+extern void fn_80128668(s32);
+extern void *fn_801284F8(s32, void *);
+extern s32 fn_80265D7C(void);
+extern void fn_80128668(s32);
+extern s32 lbl_8055EB7C;
+extern void *fn_801284F8(s32, void *);
+extern unsigned int memset(void *, int, unsigned int);
+extern char lbl_80339E08;
+void fn_801EA4C4(void) {
+    s32 *base;
+    lbl_8055EB7C = 1;
+    lbl_8055EB78 = (s32)fn_801284F8(0x608, &lbl_80339E08);
+    memset((void *)0, 0, 0x608);
+    base = (s32 *)*(s32 *)&lbl_8055EB78;
+    base[0x5E8 / 4] = 0;
+    base[0x5EC / 4] = 1;
+    base[0x5F0 / 4] = 2;
+    base[0x5F4 / 4] = 3;
+    base[0x5F8 / 4] = 4;
+    base[0x5FC / 4] = 5;
+    base[0x600 / 4] = 6;
+    base[0x604 / 4] = 7;
+}
+
 s32 fn_801EA994(void) {
     return *(s32 *)((u8 *)(*(s32 *)&lbl_8055EB78) + 0x5E4);
 }
@@ -22,12 +49,14 @@ s32 fn_801EA9CC(s32 arg0) {
 }
 
 void fn_801EA9DC(s32 arg0, void *arg1) {
+    s32 base;
     s32 value;
     s32 index;
     u8 *entry;
 
+    base = *(s32 *)&lbl_8055EB78;
     value = *(s32 *)((u8 *)arg1 + 4);
-    entry = (u8 *)&lbl_8055EB78 + arg0 * 0xBC;
+    entry = (u8 *)base + arg0 * 0xBC;
     *(s32 *)(entry + 0xC) = *(s32 *)arg1;
     index = value - 1;
     *(s32 *)(entry + 0x10) = value;
@@ -43,13 +72,9 @@ void fn_801EA9DC(s32 arg0, void *arg1) {
     *(f32 *)(entry + 0x38) = *(f32 *)((u8 *)arg1 + 0x2C);
     *(s32 *)(entry + 0x3C) = *(s32 *)((u8 *)arg1 + 0x30);
     *(s32 *)(entry + 0x40) = *(s32 *)((u8 *)arg1 + 0x34);
-    if (index < 0) {
-        index = *(s32 *)((u8 *)&lbl_8055EB78 + 0x5E0) - 1;
-    }
-    value = *(s32 *)((u8 *)&lbl_8055EB78 + 0x5E0) - 1;
-    if (value < index) {
-        index = value;
-    }
-    *(s32 *)((u8 *)&lbl_8055EB78 + (index << 2) + 0x5E8) = arg0;
+    if (index < 0) index = *(s32 *)((u8 *)base + 0x5E0) - 1;
+    value = *(s32 *)((u8 *)base + 0x5E0) - 1;
+    if (value < index) index = value;
+    *(s32 *)((u8 *)base + (index << 2) + 0x5E8) = arg0;
 }
 
