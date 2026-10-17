@@ -147,6 +147,15 @@ void fn_802AEA44(void) {
     fn_802AE774();
 }
 
+extern void fn_802BDC3C(void);
+extern void fn_802B59A4(int);
+extern void fn_802B0288(void);
+extern void fn_802BB674(int, int);
+extern void fn_802C10CC(int);
+extern int lbl_8055F974;
+extern int lbl_8055F978;
+void fn_802AEAA8(void) { fn_802BDC3C(); }
+
 int fn_802AFF54(void *arg0) {
     return ((int *)arg0)[1];
 }
