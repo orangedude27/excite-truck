@@ -201,6 +201,26 @@ void fn_80263BCC(void *arg0) {
     fn_80133460(value + 8, lbl_80346294, *((u8 *)arg0 + 0x28), value);
 }
 
+void fn_80263CA8(void *arg0) {
+    if (*((u8 *)arg0 + 0x2A) != 0) {
+        void *temp = *(void **)((u8 *)arg0 + 0x30);
+        *((u8 *)arg0 + 0x2A) = 0;
+        *(s32 *)((u8 *)temp + 0x14) = *(s32 *)((u8 *)arg0 + 0x2C);
+        *((u8 *)temp + 0x4F) = 1;
+        temp = *(void **)((u8 *)arg0 + 0x30);
+        *((u8 *)temp + 0x49) = 1;
+        *((u8 *)temp + 0x4B) = 0;
+        *((u8 *)temp + 0x4A) = 0;
+    }
+    if (lbl_8055F434 == *(s32 *)((u8 *)arg0 + 0x20)) {
+        *(s32 *)((u8 *)arg0 + 0x1C) = 1;
+        *((u8 *)arg0 + 0x29) = 1;
+    } else {
+        *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+        *((u8 *)arg0 + 0x29) = 0;
+    }
+}
+
 void fn_80263D10(void) {}
 
 void fn_80263D14(void) {}
