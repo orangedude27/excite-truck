@@ -48,6 +48,9 @@ typedef struct {
     void (*d14)(void *);
     void (*d15)(void *);
     void (*d16)(void *);
+    void (*d17)(void *);
+    void (*d18)(void *);
+    void (*d19)(void *);
     void (*v4C)(void *);
 } TObj4C;
 void *fn_8016B79C(void *arg0, s32 arg1) {
@@ -413,7 +416,9 @@ void fn_8016FD9C(f32 *arg0, void *arg1) {
 }
 
 #pragma scheduling off
-void fn_8016FE1C(void *arg0) { void * volatile *p = *(void * volatile **)arg0; ((void (*)(void *))p[19])(arg0); }
+void fn_8016FE1C(void *arg0) {
+    ((TObj4C *)arg0)->v4C(arg0);
+}
 #pragma scheduling on
 void fn_8016FF98(void *arg0) {
     s32 found = 0;
