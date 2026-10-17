@@ -1233,10 +1233,10 @@ extern "C" void fn_800D11E0(void* arg0) {
     *(f32*)((u8*)arg0 + 0xC) = value;
 }
 
-extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *, long);
+extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *, s32);
 extern "C" void fn_800D51F4(long, long, long, long, long, long);
 void fn_800D11F0(void *arg0) {
-    Connect__Q210homebutton9RemoteSpkFl((char *)arg0 + 0x24, *(long *)arg0);
+    Connect__Q210homebutton9RemoteSpkFl((void *)((char *)arg0 + 0x24), *(long *)arg0);
 }
 
 extern "C" void fn_800D1200(void) {
