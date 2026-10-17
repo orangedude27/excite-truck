@@ -98,6 +98,18 @@ extern "C" s32 fn_8012ABB0(s32 arg0, s32 arg1) {
     return sp8;
 }
 
+extern "C" void fn_8012AC28(s32 arg0, s32 arg1) {
+    s32 sp10;
+    s32 spC = -1;
+    s32 sp8;
+
+    fn_802E4CA8(&sp10, arg0, 0x104);
+    if (fn_802E7354(&sp10) != -1) {
+        fn_802E746C(&spC, &sp8);
+        if (arg1 != 0) *(s32 *)arg1 = sp8;
+    }
+}
+
 #pragma dont_inline reset
 
 extern "C" void fn_8012AC28(s32, s32);
@@ -118,11 +130,17 @@ extern "C" void fn_8012B328(void) {
 
 }
 
-s32 fn_8012B50C(void *arg0, void *arg1) {
+extern "C" u8 *fn_8012B4E4(u8 *arg0, u8 *arg1) {
+    s8 ch = (s8)*arg0;
+    *arg1 = ch == 0x2A;
+    if (ch == 0x2A)
+        return arg0 + 1;
+    return arg0;
+}
+
+extern "C" s32 fn_8012B50C(void *arg0, void *arg1) {
     if ((*(u32 *)((char *)arg0 + 0x34) & 0x20) &&
-        (*(u32 *)((char *)arg1 + 0x34) & 0x10)) {
-        return 1;
-    }
+        (*(u32 *)((char *)arg1 + 0x34) & 0x10)) return 1;
     return 0;
 }
 
