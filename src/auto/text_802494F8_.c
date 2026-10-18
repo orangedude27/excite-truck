@@ -53,15 +53,13 @@ void fn_80249584(void) {}
 
 void fn_80249588(void) {}
 
-#pragma push
-#pragma scheduling off
+#pragma scheduling on
 int fn_8024958C(int *arg0) {
     int result = arg0[2] == 0x180302;
     if (result) result = find_sound_entry_inline(arg0) != -1;
     if (result) result = *(unsigned char *)(*(char **)lbl_8055F28C + find_sound_entry_inline(arg0) * 0x18 + 0x14);
     return result;
 }
-#pragma pop
 int fn_80249660(void) { return 1; }
 
 int fn_80249668(int *arg0) {
@@ -131,8 +129,8 @@ long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8024A1AC(long arg0, long arg1) {
 }
 
 void *fn_8024A204(void *arg0, s32 arg1) {
-    register s32 zero = 0;
     if (arg0 != 0) {
+        s32 zero = 0;
         *(s32 *)((char *)arg0 + 0x11C) = zero;
         if ((unsigned int)arg0 + 0x10 != 0) {
             if ((unsigned int)arg0 + 0x10 != 0) {
@@ -269,18 +267,19 @@ s32 fn_8024B618(s32 arg0, s32 arg1) {
 
 void fn_8024B628(void *arg0) {
     s32 index;
-
     fn_80214CB4(*(s32 *)((char *)arg0 + 0x280));
     index = *(s32 *)((char *)arg0 + 0x1C);
+    goto loop_test;
     do {
         fn_80214A9C(index + 1);
         index++;
+    loop_test:
+        ;
     } while (index < *(s32 *)((char *)arg0 + 0x20));
-    if (*(unsigned char *)((char *)arg0 + 0x284) == 0) {
+    if (*(unsigned char *)((char *)arg0 + 0x284) == 0)
         fn_80214A9C(10);
-    } else {
+    else
         fn_80214AF0(10);
-    }
     fn_8024B260(arg0);
 }
 
@@ -321,6 +320,52 @@ done:
     *(s32 *)((char *)arg0 + 0x98) = array[index];
 }
 
+#pragma push
+#pragma scheduling on
+#pragma opt_loop_invariants off
+#pragma use_lmw_stmw off
+#pragma opt_common_subs off
+void *fn_8024B73C(void *arg0, const char *arg1, void *arg2) {
+    extern char lbl_80343B70[];
+    void fn_80236008(void *, s32, s32);
+    void fn_80236134(void *, s32, s32);
+    s32 fn_8024B178(s32);
+    char *entry;
+    s32 offset, index;
+    *(volatile s32 *)((char *)arg0 + 0x14) = 0;
+    *(void **)arg0 = lbl_80343B70;
+    *(void **)((char *)arg0 + 0x18) = (char *)arg0 + 0x24;
+    *(s32 *)((char *)arg0 + 0x20) = 10;
+    *(s32 *)((char *)arg0 + 0x1C) = 0;
+    fn_80236008((char *)arg0 + 0x4C, 10, 0);
+    index = 0;
+    offset = 0;
+    while (index < *(s32 *)((char *)arg2 + 4)) {
+        entry = *(char **)arg2 + offset;
+        if (stricmp(arg1, *(char **)(entry + 0xC)) == 0) {
+            register s32 next;
+            register void **array;
+            register s32 n;
+            n = *(s32 *)((char *)arg0 + 0x1C);
+            array = *(void ***)((char *)arg0 + 0x18);
+            next = n + 1;
+            *(s32 *)((char *)arg0 + 0x1C) = next;
+            array[n] = entry;
+            fn_80236134((char *)arg0 + 0x4C, *(s32 *)entry, fn_8024B178(*(s32 *)entry));
+        }
+        offset += 0x18;
+        index++;
+    }
+    {
+        register s32 zero = 0;
+        register s32 invalid = -1;
+        *(s32 *)((char *)arg0 + 0x98) = invalid;
+        *(char *)((char *)arg0 + 0x64) = zero;
+        *(s32 *)((char *)arg0 + 0x9C) = invalid;
+    }
+    return arg0;
+}
+#pragma pop
 void fn_8024B830(void *arg0, s32 arg1) {
     s32 offset;
     s32 index;
@@ -363,15 +408,14 @@ s32 fn_8024B8D4(s32 arg0) {
 }
 
 void fn_8024B8DC(void *arg0) {
-    register void *base = arg0;
     s32 offset;
     s32 index;
-    fn_80214CB4(*(s32 *)((char *)base + 0x9C));
+    fn_80214CB4(*(s32 *)((char *)arg0 + 0x9C));
     index = 0;
     offset = 0;
-    while (index < *(s32 *)((char *)base + 0x20)) {
-        if (index < *(s32 *)((char *)base + 0x1C)) {
-            if (*(unsigned char *)((char *)*(s32 *)((char *)*(s32 **)((char *)base + 0x18) + offset) + 0x14) == 0) {
+    while (index < *(s32 *)((char *)arg0 + 0x20)) {
+        if (index < *(s32 *)((char *)arg0 + 0x1C)) {
+            if (*(unsigned char *)((char *)*(s32 *)((char *)*(s32 **)((char *)arg0 + 0x18) + offset) + 0x14) == 0) {
                 fn_80214B44(index + 1);
             }
         } else {
@@ -404,8 +448,8 @@ void fn_8024B9AC(void *arg0) {
 
 void fn_8024B9CC(void *arg0, s32 *arg1, s32 *arg2) {
     register char *entry = (char *)arg0 + *(s32 *)((char *)arg0 + 0x10) * 0xC;
-    register s32 value1 = *(s32 *)(entry + 0x20);
     register s32 value2 = *(s32 *)(entry + 0x24);
+    register s32 value1 = *(s32 *)(entry + 0x20);
     *arg1 = value1;
     *arg2 = value2;
 }
@@ -463,12 +507,15 @@ void fn_8024BBF4(void *arg0) {
     void *result;
     char *src, *dst;
     s32 count;
-    if ((obj = *(void **)((char *)arg0 + 0x30)) != 0) {
+    int (*get_name)(void *, char *);
+    obj = *(void **)((char *)arg0 + 0x30);
+    if (obj != 0) {
         ((void (*)(void *, s32 *, s32 *))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x38))(obj, &sp8, &spC);
         result = fn_80012870(sp8, spC);
         *(s32 *)((char *)arg0 + 0x34) = *(s32 *)result;
         obj = *(void **)((char *)result + 0x20);
-        src = (char *)((char *(*)(void *, char *))*(void **)((char *)*(void **)obj + 0x14))(obj, lbl_80343E60);
+        get_name = *(int (**)(void *, char *))((char *)*(void **)obj + 0x14);
+        src = (char *)get_name(obj, lbl_80343E60);
         dst = (char *)arg0 + 0x38;
         count = 0x64;
         do {
