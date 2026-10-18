@@ -1802,6 +1802,17 @@ extern "C" void fn_80223CC4(void *arg0) {
     fn_802192AC(arg0);
 }
 
+extern "C" void* fn_80223FAC(void* arg0, s32 arg1) {
+    if (arg0 != NULL) {
+        s32 temp = *(s32*)((u8*)arg0 + 0x254);
+        *(void**)arg0 = lbl_8033E350;
+        if (temp != 0) fn_802ECFF4(temp);
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_802ED038(s32, f32, f32, f32, f32);
 extern "C" void fn_802ECFEC(void);
 extern "C" void *lbl_8033E2CC[];
