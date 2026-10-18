@@ -59,7 +59,8 @@ void fn_801F1EA8(void) {
 extern int fn_802CAC28(void *, int);
 extern void *fn_802C86DC(void);
 extern float PSVECDotProduct(float *, float *);
-extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A808, lbl_8033A660, lbl_8033A958, lbl_8033AC58;
+extern int lbl_8033A628, lbl_8033A8C8, lbl_8033A808, lbl_8033A660, lbl_8033AC58;
+__declspec(section ".data") extern int lbl_8033A958;
 extern int lbl_8055B128;
 extern float lbl_80562F40;
 #pragma push
@@ -225,6 +226,18 @@ check:
     }
 }
 
+#pragma push
+#pragma small_data off
+void *__dt__14CollisionSpaceFv_801F2E24(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = &lbl_8033A958;
+        fn_802CAC54(*(void **)((char *)arg0 + 4));
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+#pragma pop
 void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
     unsigned int d, c, b, a;
     float f, e;
