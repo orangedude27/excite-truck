@@ -142,6 +142,19 @@ s32 fn_8023DFB0(void) {
 
 extern int fn_80128668(void);
 extern void fn_8023DA64(void *, int, int);
+extern char lbl_8055BBB8[];
+extern char lbl_8055BBC0[];
+extern char lbl_8055BBD0[];
+extern char lbl_8055BC08[];
+extern char lbl_8055BC18[];
+extern char lbl_8055BC68[];
+extern char lbl_8055BC70[];
+extern char lbl_8055BC78[];
+extern char lbl_8055BC80[];
+extern void fn_80137D10(void);
+extern void fn_8013358C(int, void *, void *);
+extern void fn_802E30C8(void *);
+extern void fn_802E8664(int);
 extern void *lbl_8055F19C;
 extern void *lbl_8055F190;
 extern int lbl_8055F194;
