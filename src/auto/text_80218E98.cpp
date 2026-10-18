@@ -31,6 +31,8 @@ extern "C" s32 fn_80217C4C(s32);
 extern "C" s32 fn_80217D84(s32);
 
 
+class ObjBF { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void h(); virtual s32 i(); virtual s32 j(); };
+
 class TruckIface {
 public:
     virtual ~TruckIface();
