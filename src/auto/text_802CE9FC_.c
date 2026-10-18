@@ -95,11 +95,79 @@ void fn_802CF5FC(void) {
 void fn_802CF830(void) {
 }
 
+int fn_802CFCA0(void* alarm) {
+    int sp10;
+    int spC;
+    int sp8;
+
+    fn_802D6C68();
+    lbl_8055FE39 = 1;
+    lbl_8055FDA4 = lbl_8055FD94;
+    lbl_8055FD9C = 0;
+    lbl_804C5700[0] = 1;
+    lbl_8055FD8C = -1;
+    fn_802DA52C();
+    GXSetDrawSync();
+    GXGetVtxDesc();
+    GXGetCPUFifo(&sp10);
+    GXGetFifoPtrs(&sp10, &spC, &sp8);
+    GXEnableBreakPt(sp8);
+    GXGetVtxDesc();
+    GXInvalidateVtxCache();
+    GXMiscInit(1);
+    lbl_8055FD30 += 1;
+    if (lbl_804C97B0[0] == 0) {
+        if (__fabsf(((float *)lbl_804C97B0)[4]) != lbl_80558DC4) {
+            lbl_804C97B0[0] = 1;
+            lbl_804C97B0[0x1C] = 1;
+        }
+    }
+    return 0;
+}
+
+extern int GXGetFifoBase(void *);
+extern int GXGetFifoSize(void *);
+extern void GXGetVtxAttrFmtv(void);
+extern int GXInit(int, int);
+extern int VIConfigure(void *);
+extern void fn_802CF850(void);
+void fn_802CFD74(void) {
+    extern int lbl_8055FD6C;
+    extern void *lbl_8055FD64;
+    char sp8[0x80];
+    int temp_r31;
+    int temp_r30;
+    GXGetCPUFifo(sp8);
+    temp_r31 = GXGetFifoBase(sp8);
+    temp_r30 = GXGetFifoSize(sp8);
+    GXGetVtxAttrFmtv();
+    lbl_8055FD6C = GXInit(temp_r31, temp_r30);
+    fn_802CF850();
+    VIConfigure(lbl_8055FD64);
+}
+
 extern int fn_802CFCA0(void*);
 void fn_802CFEEC(void* alarm) {
     fn_802CFDE0(fn_802CFCA0(alarm));
 }
 
+extern unsigned long lbl_8055FD44;
+extern unsigned long lbl_8055FDAC;
+extern void fn_802D0C98(void);
+extern void fn_802D0BD8(void);
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802CFF10(void) {
+    int zero;
+    zero = 0;
+    lbl_8055FD44 = zero;
+    fn_802CF5D0();
+    fn_802D0C98();
+    fn_802D0BD8();
+    lbl_8055FDAC = zero;
+    lbl_8055FE39 = zero;
+}
+#pragma pop
 extern void *lbl_8055FD20;
 void fn_802CFF50(void) {
     lbl_8055FD20 = (void*)-1;
