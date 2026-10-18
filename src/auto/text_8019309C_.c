@@ -174,6 +174,11 @@ void fn_8019386C(void) {
     fn_80193CE0();
 }
 
+void fn_80193870(void *arg0) {
+    extern void fn_801945F8(void *);
+    ((void (*)(void *, ...))fn_801945F8)(arg0, lbl_8055A4B8);
+}
+
 void fn_80193878(void *arg0) {
     float a[3], b[3], low[3];
     void *obj;
@@ -263,9 +268,11 @@ void *fn_80193A50(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma dont_inline on
 void fn_80193CD4(void *arg0) {
     *(signed char *)((char *)arg0 + 0x2A5) = 1;
 }
+#pragma dont_inline reset
 
 void fn_80193D20(void) {
     fn_80129DC4(3, lbl_8055E584, lbl_8055E588);
@@ -289,33 +296,35 @@ extern float lbl_80562140, lbl_80562144;
           fn_8018ADB4(*(int *)((char *)arg0 + 0x294), value);
   }
 
-  void fn_801941A8(void *arg0, float arg1) {
-      float value;
-      float pos = *(float *)((char *)arg0 + 0x23C);
-      float vel = *(float *)((char *)arg0 + 0x248);
-      float limit;
+void fn_801941A8(void *arg0, float arg1) {
+    float value;
+    float pos = *(float *)((char *)arg0 + 0x23C);
+    float vel = *(float *)((char *)arg0 + 0x248);
+    float limit;
+    int other;
 
-      value = arg1 - pos;
-      if (value < lbl_805621B0) value = lbl_805621B0;
-      if (value > lbl_805621B4) value = lbl_805621B4;
-      limit = pos + value;
-      if (vel < lbl_80562174) {
-          pos = limit;
-          if ((*(int *)((char *)*(void **)((char *)arg0 + 0x294) + 0x25F0) ^ (int)limit) & 0x80000000)
-              vel += lbl_80562168;
-      }
-      *(float *)((char *)arg0 + 0x23C) = pos;
-      *(float *)((char *)arg0 + 0x248) = vel;
-      vel = *(float *)((char *)arg0 + 0x248);
-      if (vel < lbl_80562140) vel = lbl_80562140;
-      if (vel > lbl_80562144) vel = lbl_80562144;
-      pos = *(float *)((char *)arg0 + 0x23C);
-      pos *= lbl_80562140 - vel;
-      if (pos < lbl_80562140) pos = lbl_80562140;
-      if (pos > lbl_805621A4) pos = lbl_805621A4;
-      *(float *)((char *)arg0 + 0x23C) = pos;
-      fn_8018ADAC(*(void **)((char *)arg0 + 0x294), pos);
-  }
+    value = arg1 - pos;
+    if (value < lbl_805621B0) value = lbl_805621B0;
+    if (value > lbl_805621B4) value = lbl_805621B4;
+    limit = pos + value;
+    if (vel < lbl_80562174) {
+        pos = limit;
+        other = *(int *)((char *)*(void **)((char *)arg0 + 0x294) + 0x25F0);
+        if (other < 0 != limit < 0)
+            vel += lbl_80562168;
+    }
+    *(float *)((char *)arg0 + 0x23C) = pos;
+    *(float *)((char *)arg0 + 0x248) = vel;
+    vel = *(float *)((char *)arg0 + 0x248);
+    if (vel < lbl_80562140) vel = lbl_80562140;
+    if (vel > lbl_80562144) vel = lbl_80562144;
+    pos = *(float *)((char *)arg0 + 0x23C);
+    pos *= lbl_80562140 - vel;
+    if (pos < lbl_80562140) pos = lbl_80562140;
+    if (pos > lbl_805621A4) pos = lbl_805621A4;
+    *(float *)((char *)arg0 + 0x23C) = pos;
+    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), pos);
+}
 
   void fn_801942B8(void *arg0, float arg1) {
     float value;
@@ -342,23 +351,20 @@ extern char lbl_803332CC[];
 void fn_801944C0(void *arg0) {
     void *obj;
     int mode;
-
     obj = *(void **)((char *)arg0 + 0x288);
     *(u8 *)((char *)arg0 + 0x2A6) = *(u8 *)((char *)obj + 0x28);
     if (*(u8 *)((char *)arg0 + 0x2A6)) {
         if (*(float *)((char *)arg0 + 0x1EC) < lbl_80562144)
             *(float *)((char *)arg0 + 0x1EC) = *(float *)((char *)arg0 + 0x26C);
-        switch (lbl_8055E540) {
-        case 0:
-            fn_80193CD4(arg0);
-            break;
-        case 1:
+        mode = lbl_8055E540;
+        if (mode == 1) {
             if ((*(int *)((char *)arg0 + 0x2D0) & 0x200) == 0)
-                ((void (*)(void *, ...))fn_801945F8)(arg0, lbl_803332CC);
-            break;
-        case 2:
-            fn_8018AF04(*(void **)((char *)arg0 + 0x294));
-            break;
+                ((void (*)(void *, const char *))fn_801945F8)(arg0, lbl_803332CC);
+        } else if (mode >= 1) {
+            if (mode < 3)
+                fn_8018AF04(*(void **)((char *)arg0 + 0x294));
+        } else if (mode == 0) {
+            fn_80193CD4(arg0);
         }
         obj = *(void **)((char *)arg0 + 0x28C);
         ((void (*)(void *, int))(*(void ***)obj)[12])(obj, -1);
@@ -395,19 +401,20 @@ float fn_80194B60(float a, float b, float c, float d) {
     float curve;
     float distance;
     distance = (float)fn_8002EFB4(d, c);
-    if (distance > c * lbl_8056215C) distance = c - distance;
+    if (distance > c * lbl_8056215C) {
+        distance = c - distance;
+    }
     ratio = distance / (c * lbl_8056215C);
     curve = lbl_805621A4;
-    if (ratio >= curve) {
-        curve = lbl_80562140;
-        if (ratio <= curve) {
-            if (ratio > lbl_80562144) {
-                curve = ratio * (ratio * (lbl_805621D0 * ratio)) + ratio * (lbl_805621D4 * ratio);
-            } else {
-                curve = ratio * (ratio * (lbl_805621D0 * ratio)) - ratio * (lbl_805621D4 * ratio);
-            }
-        }
+    if (ratio < curve) goto done;
+    curve = lbl_80562140;
+    if (ratio > curve) goto done;
+    if (ratio > lbl_80562144) {
+        curve = ((lbl_805621D0 * ratio) * ratio) * ratio + ((lbl_805621D4 * ratio) * ratio);
+    } else {
+        curve = ((lbl_805621D0 * ratio) * ratio) * ratio - ((lbl_805621D4 * ratio) * ratio);
     }
+done:
     return a + curve * (b - a);
 }
 #pragma processor gekko
