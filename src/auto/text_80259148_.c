@@ -27,6 +27,14 @@ void fn_80259148(void) {
     ((void (*)(void *, void *, void *, int))vtable[5])(obj, (char *)base + 0x40, (char *)base + 0x50, 1);
 }
 
+void fn_802591D8(void) {
+    void *obj = lbl_8055F394;
+    if (obj != 0) {
+        ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+    }
+    lbl_8055F394 = 0;
+}
+
 int fn_8025921C(void) { return 0; }
 
 void *fn_80259680(void *arg0, int arg1) {
@@ -75,18 +83,18 @@ int fn_8025A4CC(int arg0, int arg1) {
 
 void fn_8025A83C(void *arg0) {
     float a = lbl_80563AE4;
-    float b;
-    *(float *)((char *)arg0 + 0x88) = a;
-    b = lbl_80563AE0;
-    *(float *)((char *)arg0 + 0x84) = b;
-    *(float *)((char *)arg0 + 0x8c) = a;
-    *(float *)((char *)arg0 + 0x90) = a;
-    *(float *)((char *)arg0 + 0x94) = b;
-    *(float *)((char *)arg0 + 0x98) = a;
-    *(float *)((char *)arg0 + 0x9c) = a;
-    *(float *)((char *)arg0 + 0xa0) = a;
-    *(float *)((char *)arg0 + 0xa4) = b;
-    ((void (*)(void *, void *))(*(void ***)arg0)[3])(arg0, (char *)arg0 + 4);
+    float b = lbl_80563AE0;
+    float *p = (float *)((char *)arg0 + 0x84);
+    p[1] = a;
+    p[0] = b;
+    p[2] = a;
+    p[3] = a;
+    p[4] = b;
+    p[5] = a;
+    p[6] = a;
+    p[7] = a;
+    p[8] = b;
+    ((void (*)(void *, void *))(*(volatile void ***)arg0)[3])(arg0, (char *)arg0 + 4);
 }
 
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
@@ -131,8 +139,8 @@ typedef float f32;
 extern f32 lbl_80563B1C;
 f32 fn_8025B0A8(void *arg0) {
     f32 *p = (f32 *)arg0;
-    f32 out = p[0];
     f32 d = p[1] - p[0];
+    f32 out = p[0];
     out += d * lbl_80563B1C;
     return out;
 }
@@ -171,6 +179,80 @@ void fn_8025B22C(void *arg0) {
 }
 
 void fn_8025B784(void) {
+}
+
+extern unsigned char *fn_8001EFAC(int, int);
+extern int fn_801345D8(char *, int, const char *, int);
+extern const char lbl_80344F08[];
+void fn_8025BE0C(void *arg0) {
+    void *obj;
+    int size;
+    unsigned char *src;
+    unsigned char *dst;
+    int count;
+    size = *(int *)((char *)arg0 + 0x24);
+    obj = *(void **)((char *)arg0 + 0x18);
+    *(int *)((char *)obj + 0x4C) = size;
+    src = fn_8001EFAC(*(int *)((char *)arg0 + 0x20), size);
+    if (src != 0) {
+        dst = (unsigned char *)obj + 4;
+        count = 0x32;
+        while (--count > 0) {
+        }
+        dst[-1] = 0;
+        do {
+            unsigned char c = *src++;
+            *dst++ = c;
+            if ((signed char)c == 0)
+                break;
+        } while (1);
+    } else {
+        *((unsigned char *)obj + 4) = 0;
+    }
+    if (size > 0)
+        fn_801345D8((char *)obj + 0x36, 0x14, lbl_80344F08, size);
+    else
+        *((unsigned char *)obj + 0x36) = 0;
+}
+
+void fn_8025BED0(void *arg0) {
+    void *data = *(void **)((char *)arg0 + 0x1C);
+    void *obj;
+    int size;
+    unsigned char *src;
+    unsigned char *dst;
+    int count;
+    if (*(unsigned char *)((char *)data + 0xC5) == 0)
+        return;
+    if (*(unsigned char *)((char *)data + 0x58) != 0)
+        return;
+    size = *(int *)((char *)data + 0xC8);
+    obj = *(void **)((char *)arg0 + 0x18);
+    *(int *)((char *)arg0 + 0x24) = size;
+    *(int *)((char *)data + 0x18);
+    *(int *)((char *)arg0 + 0x20) = *(int *)((char *)data + 0x18);
+    *(int *)((char *)obj + 0x4C) = size;
+    src = fn_8001EFAC(*(int *)((char *)data + 0x18), size);
+    if (src != 0) {
+        dst = (unsigned char *)obj + 4;
+        count = 0x32;
+        while (--count > 0) {}
+        dst[-1] = 0;
+        do {
+            unsigned char c = *src++;
+            *dst++ = c;
+            if ((signed char)c == 0)
+                break;
+        } while (1);
+    } else {
+        *((unsigned char *)obj + 4) = 0;
+    }
+    if (size > 0)
+        fn_801345D8((char *)obj + 0x36, 0x14, lbl_80344F08, size);
+    else
+        *((unsigned char *)obj + 0x36) = 0;
+    obj = *(void **)((char *)arg0 + 0x18);
+    *(unsigned char *)((char *)obj + 0x4A) = 1;
 }
 
 extern void *fn_80258354(void);
