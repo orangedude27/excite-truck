@@ -42,6 +42,9 @@ extern char lbl_8033BD4C;
 extern char lbl_8055B4C0[];
 extern char lbl_8055B4C8[];
 extern "C" void *fn_80206BF8(int, void*);
+extern int lbl_8055ED80;
+extern float lbl_805631F8;
+extern char lbl_8033BD90;
 extern float lbl_805631FC;
 extern float lbl_80563204;
 extern "C" int fn_8012A364(void*, void*);
@@ -207,9 +210,8 @@ extern "C" void fn_80206B10(void) {
 extern "C" void fn_80206B14(void *arg0, int arg1, int arg2) {
     unsigned char *p = (unsigned char *)arg0;
     if (p[0x4D]) {
-        float value = *(float *)(p + 8);
         p[0x4D] = 0;
-        ((Dispatch80206B14 *)*(void **)(p + 0xC))->f13(value);
+        ((Dispatch80206B14 *)*(void **)(p + 0xC))->f13(*(float *)((char *)arg0 + 8));
     }
     if (p[0x4E]) {
         void *obj = *(void **)(p + 0xC);
@@ -323,14 +325,11 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
 }
 
 extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
-    int first = arg0;
-    int second = arg1;
     void *value = arg2;
-    if (value != 0) {
-        value = fn_802072E4(value, first, second);
+    if (arg2 != 0) {
+        value = fn_802072E4(arg2, arg0, arg1);
     }
-    if (*(int *)((u8 *)value + 0xC) != 0) return value;
-    return 0;
+    return (*(int *)((u8 *)value + 0xC) != 0) ? value : 0;
 }
 
 extern "C" void fn_80207924(void *arg0) {
