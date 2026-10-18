@@ -135,6 +135,18 @@ extern "C" void fn_80297DC8(void* arg0) {
     *(unsigned char*)((char*)arg0 + 0x89) = 1;
 }
 
+extern "C" void* fn_8028E61C(void*);
+extern "C" void fn_80297DC8(void*);
+extern "C" void* fn_8028E2F8(void*, void*, void*);
+extern "C" char lbl_80349450[];
+extern void* lbl_8055CA80;
+extern "C" void fn_80297E90(void) {
+    char sp8[0x98];
+    fn_8028E61C(sp8);
+    fn_80297DC8(sp8);
+    lbl_8055F7E0 = fn_8028E2F8(sp8, lbl_80349450, lbl_8055CA80);
+}
+
 extern "C" void fn_80297ED4(void) {
 }
 
@@ -281,8 +293,7 @@ extern "C" void fn_80298B48(void* arg0) {
     int offset = 0;
     int i = 0;
     while (i < fn_80287B14()) {
-        unsigned char val = *(unsigned char*)((char*)*(void**)arg0 + offset + 0x19);
-        if (val != 0) {
+        if (*(unsigned char*)((char*)*(void**)arg0 + offset + 0x19) != 0) {
             fn_80298FBC(arg0);
         }
         offset += 0x20;
@@ -394,17 +405,16 @@ extern "C" int fn_802C8DBC(int);
 extern "C" void fn_802C8E48(void);
 extern "C" void fn_802C8D74(void);
 extern "C" void* fn_80299FA8(void*, void*);
+#pragma scheduling off
 extern "C" void* fn_802998F4(void* arg0, int arg1) {
     if (arg0 != 0) {
         void* p = arg0;
         int i = 0;
-        while (1) {
+        do {
             fn_80299FA8(arg0, p);
             p = (char*)p + 0x9c;
             i++;
-            if (i >= *(int*)((char*)arg0 + 0x138))
-                break;
-        }
+        } while (i < *(int*)((char*)arg0 + 0x138));
         *(int*)((char*)arg0 + 0x138) = 0;
         if (arg1 > 0) {
             fn_80128668(arg0);
@@ -412,7 +422,7 @@ extern "C" void* fn_802998F4(void* arg0, int arg1) {
     }
     return arg0;
 }
-
+#pragma scheduling reset
 extern "C" void fn_80299988(void) {
 }
 
