@@ -4,6 +4,7 @@
 #include <types.h>
 extern f64 lbl_805634B8;
 extern "C" int lbl_8033F998[];
+extern "C" int lbl_8033E350[];
 extern "C" s32 fn_802C5130(s32, void *);
 extern "C" s32 fn_802C51C0(s32);
 extern "C" s32 fn_802C5220(s32);
@@ -293,20 +294,19 @@ extern "C" void fn_80219358(void *arg0, f32 value) {
 }
 
 extern "C" void fn_802193C8(void *arg0, f32 value) {
-    if (value < lbl_805634B0) {
-        if (*(u8 *)((u8 *)arg0 + 0x1A) == 0) {
-            return;
-        }
-        if (*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
-            *(u8 *)((u8 *)arg0 + 0x234) = 1;
-        }
+    const f32 threshold = 0.1f;
+    s32 flag = value < threshold;
+    if (flag) {
+        u8 enabled = *(u8 *)((u8 *)arg0 + 0x1A);
+        if (enabled == 0) return;
+        if (enabled != 0) *(u8 *)((u8 *)arg0 + 0x234) = 1;
         *(u8 *)((u8 *)arg0 + 0x1A) = 0;
         return;
     }
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0) {
         if (*(f32 *)((u8 *)arg0 + 0x1C) < lbl_805634B4) {
             *(f32 *)((u8 *)arg0 + 0x1C) = lbl_805634A4;
-            *(f32 *)((u8 *)arg0 + 0x24) = lbl_805634A4 / (value > lbl_805634B0 ? value : lbl_805634B0);
+            *(f32 *)((u8 *)arg0 + 0x24) = lbl_805634A4 / (value > threshold ? value : threshold);
         }
     }
     *(f32 *)((u8 *)arg0 + 0x20) = lbl_805634A0;
@@ -1744,22 +1744,30 @@ extern "C" s32 fn_802237F0(s32 arg0, s32 arg1) {
 
 extern "C" void fn_802230A4(void);
 extern "C" void *lbl_8033E458;
-extern "C" void fn_80223800(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
+extern "C" void *fn_80223800(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
     fn_802230A4();
     *(void **)((u8 *)arg0 + 0x420) = arg4;
-    *(void **)arg0 = lbl_8033E458;
+    *(void **)arg0 = &lbl_8033E458;
     if (arg4 != 0) {
         fn_80219440(arg0, 0, arg4, 4);
     }
     fn_80219440(arg0, 1, fn_80216708(), 1);
-    return;
+    return arg0;
 }
 
 extern "C" void fn_802237DC(void *);
 extern "C" void fn_80223880(void *arg0) {
-    typedef void (*Fn)(void *, s32, s32);
-    Fn fn = (Fn)((u8 *)*(void **)arg0 + 0x74);
-    fn(arg0, 2, 0);
+    class CallIface { public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26();
+        virtual void call(s32, s32);
+    };
+    ((CallIface *)arg0)->call(2, 0);
     fn_802237DC(arg0);
     fn_8021818C(*(s32 *)((u8 *)arg0 + 0x2C));
 }
@@ -2010,7 +2018,7 @@ extern "C" void *fn_80226AD0(void *arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void *fn_80228418(void *p,void *q,s32 a){s32 r;fn_80218F80();*(s32*)((u8*)p+0x244)=0;*(void**)p=lbl_8033DE28;*(u8*)((u8*)p+0x248)=0;if(a){*(s32*)((u8*)p+0x244)=a;}else{const char *name=lbl_8033DCDC;r=fn_801284F8(0x18,name);if(r)r=fn_8023964C();*(s32*)((u8*)p+0x244)=r;*(u8*)((u8*)p+0x248)=1;}fn_80239784(*(s32*)((u8*)p+0x244),(u8*)q+0x40);return p;}
+extern "C" void *fn_80228418(void *p,void *q,s32 a){s32 r;fn_80218F80();*(s32*)((u8*)p+0x244)=0;*(void**)p=lbl_8033DE28;*(u8*)((u8*)p+0x248)=0;if(a){*(s32*)((u8*)p+0x244)=a;}else{r=fn_801284F8(0x18,lbl_8033DCDC);if(r)r=fn_8023964C();*(s32*)((u8*)p+0x244)=r;*(u8*)((u8*)p+0x248)=1;}fn_80239784(*(s32*)((u8*)p+0x244),(u8*)q+0x40);return p;}
 
 extern "C" void *fn_802284BC(void *p,s32 a){if(p){*(void**)p=lbl_8033DE28;fn_8023986C(*(s32*)((u8*)p+0x244));if(*(u8*)((u8*)p+0x248))fn_8023967C(*(s32*)((u8*)p+0x244),1);*(s32*)((u8*)p+0x244)=0;register void *q=p;fn_8021915C(q,0);if(a>0)fn_80128668(p);}return p;}
 
@@ -2077,12 +2085,12 @@ extern "C" void fn_80228A80(void) {
 
 extern "C" void fn_80228A84(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x270);
-    volatile s32 work[2];
-    fn_802C86F0((void *)work, value, *(s32 *)((u8 *)arg0 + 0x274),
+    s32 work[2];
+    fn_802C86F0(work, value, *(s32 *)((u8 *)arg0 + 0x274),
         *(s32 *)((u8 *)arg0 + 0x278), *(s32 *)((u8 *)arg0 + 0x27C));
     fn_802C88BC(2);
     ((VfObj *)*(void **)((u8 *)arg0 + 0x268))->vf5();
-    fn_802C8750((void *)work, -1);
+    fn_802C8750(work, -1);
 }
 
 extern "C" void fn_80228D90(void *arg0) {
