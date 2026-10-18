@@ -996,6 +996,13 @@ extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC(fn_800B224C(alarm));
 }
 
+extern "C" void fn_800B1EB8(s32, s32, s32, s32, s32 *);
+extern "C" s32 fn_800B75C4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 result;
+    fn_800B1EB8(arg0, arg1, arg2, arg3, &result);
+    return result;
+}
+
 extern "C" void* fn_800B1FF4(void*);
 extern "C" void fn_800B75EC(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
@@ -1879,7 +1886,7 @@ extern "C" void fn_800D1558(void) {
 
 extern "C" s32 WPADControlMotor(s32, s32);
 extern "C" void fn_800D155C(void *arg0) {
-    if (*(s32 *)arg0 >= 4) return;
+    if (*(volatile s32 *)arg0 >= 4) return;
     if (((s32 (*)(void *))fn_800D1E5C)(*(void **)((u8 *)arg0 + 0x24)) != 0) return;
     *(u8 *)((u8 *)arg0 + 0x1C) = 1;
     WPADControlMotor(*(s32 *)arg0, 1);
