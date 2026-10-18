@@ -1082,17 +1082,10 @@ void fn_801219B4(void *arg0) {
 }
 
 void fn_80121BB0(void *arg0) {
-    float *p = (float *)arg0;
-    register float a;
-    register float b;
-    register float c;
-    register float d;
-    register float e;
-    register float f;
-    register float g;
-    register float h;
-    a = p[2]; b = p[8]; c = p[3]; d = p[9];
-    e = p[6]; f = p[12]; g = p[7]; h = p[13];
+    f32 *p = (f32 *)arg0;
+    f32 a, c, e, g, b, d, f, h;
+    a = p[2]; c = p[3]; e = p[6]; g = p[7];
+    b = p[8]; d = p[9]; f = p[12]; h = p[13];
     p[2] = b; p[3] = d; p[6] = f; p[7] = h;
     p[8] = a; p[9] = c; p[12] = e; p[13] = g;
 }
