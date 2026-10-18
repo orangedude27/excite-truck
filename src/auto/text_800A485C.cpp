@@ -1682,17 +1682,18 @@ extern "C" s32 fn_800B8F20(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800B98F8(s32, s32, s32, s32, s32 *, s32);
+#pragma dont_inline on
 extern "C" s32 fn_800B8FE4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
     s32 result;
     fn_800B8004(lbl_8055DD30);
     *arg4 = 0;
     if (arg0 == 0) {
         fn_800B8048(lbl_8055DD30);
-        return -20;
+        return -0x14;
     }
     if (arg1 == 0) {
         fn_800B8048(lbl_8055DD30);
-        return -20;
+        return -0x14;
     }
     result = fn_800B98F8(arg3, arg1, arg2, 0x200, arg4, arg0);
     if (result != 0) {
@@ -1702,7 +1703,7 @@ extern "C" s32 fn_800B8FE4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     fn_800B8048(lbl_8055DD30);
     return 0;
 }
-#pragma pop
+#pragma dont_inline reset
 
 extern "C" u8 lbl_802F31F8[];
 extern "C" s32 lbl_8055DD2C;
