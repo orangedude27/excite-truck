@@ -179,12 +179,13 @@ void fn_802AB9E4(void) { fn_8028E080(); }
 
 void fn_802ABC2C(void) {
     int *p = (int *)lbl_8055F924;
-    if (p) {
+    if (p == 0) return;
+    if (p != 0) {
         fn_8028E398(p[0]);
         fn_8028E398(p[1]);
         fn_80128668(p);
-        lbl_8055F924 = 0;
     }
+    lbl_8055F924 = 0;
 }
 
 void fn_802ABE50(void) { fn_8028E240(0); }
