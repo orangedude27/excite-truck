@@ -131,10 +131,7 @@ s32 fn_8023A734(s32 arg0, s32 arg1) {
 }
 
 extern s32 fn_80128670(s32);
-#pragma push
-#pragma small_data off
-extern s32 lbl_80341108;
-#pragma pop
+__declspec(section ".data") extern s32 lbl_80341108;
 extern s32 fn_802328D4(s32);
 #pragma small_data off
 __declspec(section ".data") extern s32 lbl_8034109C;
