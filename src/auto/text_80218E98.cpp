@@ -910,6 +910,7 @@ extern "C" s32 fn_8021D8D4(void *arg0) {
             result=((s32 (*)(void *))vtable[3])(obj);
         } else {
             result=**(s32 **)((u8 *)arg0+0x258)==*(s32 *)((u8 *)arg0+0x25C);
+            result = result ? 1 : 0;
         }
         return result;
     }
@@ -1076,7 +1077,8 @@ extern "C" void fn_80220A50(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_80220AFC(void *arg0) {
-    ((void (**)(void))(*(void **)*(void **)arg0))[19]();
+    void *vt = *(void **)arg0;
+    ((void (*)(void))((void **)vt)[0x13])();
     *(u8 *)((u8 *)arg0 + 0x258) = 0;
 }
 
@@ -1122,15 +1124,18 @@ extern "C" void fn_80222178(void *arg0) {
     s32 idx;
     void *obj;
     s32 (*callback)(void *);
-    ((void (*)(void *))(*(void ***)arg0)[19])(arg0);
+    ((VfObj *)arg0)->vf17();
     idx = *(s32 *)((u8 *)arg0 + 0x24C);
     *(u8 *)((u8 *)arg0 + 0x248) = 0;
-    if (idx >= 0 && *(s32 *)((u8 *)arg0 + 0x250) >= 0) {
-        obj = fn_8022D97C(*(s32 *)(*(s32 *)((u8 *)arg0 + 0x244) + idx * 0x24));
-        callback = *(s32 (**)(void *))((u8 *)obj + 0x24);
-        if (callback != 0 && callback(*(void **)((u8 *)obj + 0x20)) != 0)
-            fn_802168BC(*(void **)((u8 *)obj + 0x20));
-    }
+    if (idx < 0)
+        goto done;
+    if (*(s32 *)((u8 *)arg0 + 0x250) < 0)
+        goto done;
+    obj = fn_8022D97C(*(s32 *)(*(s32 *)((u8 *)arg0 + 0x244) + idx * 0x24));
+    callback = *(s32 (**)(void *))((u8 *)obj + 0x24);
+    if (callback != 0 && callback(*(void **)((u8 *)obj + 0x20)) != 0)
+        fn_802168BC(*(void **)((u8 *)obj + 0x20));
+done:
     *(s32 *)((u8 *)arg0 + 0x24C) = -1;
     *(s32 *)((u8 *)arg0 + 0x250) = -1;
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
@@ -1652,7 +1657,7 @@ void *__dt__10J2DTextBoxFv(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_8022897C(void *arg0) {
- ((VfObj *)*(void **)((u8 *)arg0 + 0x268))->vf4();
+ ((VfObj *)*(void **)((u8 *)arg0 + 0x268))->vf2();
 }
 
 extern "C" void fn_80214D48(void);
