@@ -224,12 +224,57 @@ void fn_80037A8C(void) {
     fn_8003B69C(0x20000, fn_80037B54);
 }
 
+extern void fn_8003A834(void *, void *);
+extern char lbl_80376B00[];
+extern void fn_80037DBC(void);
+void fn_80037CEC(void) {
+    s32 enabled;
+    u8 *base;
+    fn_8003BCDC(0);
+    enabled = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 >= 5)
+        lbl_8055D848 = 0;
+    base = (u8 *)__ErrorInfo;
+    *(s32 *)(base + (*(volatile u32 *)&lbl_8055D848) * 0x14 + 0x1C) = 5;
+    *(s32 *)(base + (*(volatile u32 *)&lbl_8055D848) * 0x14 + 0x20) = 0;
+    *(s32 *)(base + (*(volatile u32 *)&lbl_8055D848) * 0x14 + 0x24) = 0x20;
+    *(s32 *)(base + (*(volatile u32 *)&lbl_8055D848) * 0x14 + 0x2C) = OSGetTick();
+    lbl_8055D848 = (*(volatile u32 *)&lbl_8055D848) + 1;
+    OSRestoreInterrupts(enabled);
+    fn_8003A834(lbl_80376B00, fn_80037DBC);
+}
+
 void fn_8003801C(void) {
     if (lbl_8055D880 != 0) {
         return;
     }
     lbl_8055D880 = 1;
     fn_8003BB58(fn_80037E94);
+}
+
+extern u8 lbl_8037B5B0;
+extern s32 __DVDGetNextWaitingQueue(void);
+extern __declspec(section ".data") u8 lbl_8037B5B0;
+s32 DVDGetCommandBlockStatus(void *arg0) {
+    s32 status;
+    s32 enabled;
+
+    enabled = OSDisableInterrupts();
+    if (*(s32 *)((u8 *)arg0 + 0xC) == 3) {
+        status = 1;
+    } else if (*(s32 *)((u8 *)arg0 + 0xC) == 5) {
+        status = 4;
+    } else if ((u32)executing_8055D8C8 == (u32)&lbl_8037B5B0) {
+        if (__DVDGetNextWaitingQueue() != 0) {
+            if ((u32)arg0 == (u32)__DVDGetNextWaitingQueue()) status = 1;
+            else status = *(s32 *)((u8 *)arg0 + 0xC);
+        } else if ((u32)arg0 == (u32)&lbl_8037B5B0) status = 0;
+        else status = *(s32 *)((u8 *)arg0 + 0xC);
+    } else {
+        status = *(s32 *)((u8 *)arg0 + 0xC);
+    }
+    OSRestoreInterrupts(enabled);
+    return status;
 }
 
 s32 DVDGetDriveStatus(void) {
