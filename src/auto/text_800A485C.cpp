@@ -138,7 +138,7 @@ extern "C" void fn_800D1C48(void);
 extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1);
 
   extern "C" void fn_800B7610(OSAlarm *alarm, OSContext *ctx);
-  typedef struct { char pad[8]; } VaList1;
+  typedef __va_list_struct VaList1;
 
 
 extern "C" MEMAllocator lbl_804075E0;
