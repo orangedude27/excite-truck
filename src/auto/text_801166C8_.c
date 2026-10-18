@@ -5,6 +5,7 @@
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSContext.h>
 #include <revolution/DVD/dvd.h>
+#define M2C_FIELD(base, type, offset) (*(type)((u8 *)(base) + (offset)))
 
 extern void* fn_802ECC74(void*);
 extern void *fn_8011FFC4(s32);
@@ -722,26 +723,22 @@ void fn_8011BC48(void) {
 s32 fn_8011BC4C(void *arg0, void *arg1) {
     void *var_r5;
     void *temp_r0;
-
-    if (arg0 == NULL) {
-        return 0;
-    }
+    if (arg0 == NULL) return 0;
     var_r5 = *(void **)((u8 *)arg0 + 0x30);
     if (var_r5 == arg1) {
         *(void **)((u8 *)arg0 + 0x30) = *(void **)var_r5;
         return 1;
     }
-    while (1) {
-        temp_r0 = *(void **)var_r5;
-        if (temp_r0 == arg1) {
-            *(void **)var_r5 = *(void **)arg1;
-            return 1;
-        }
-        var_r5 = temp_r0;
-        if (var_r5 == NULL) {
-            return 0;
-        }
+    temp_r0 = *(void **)var_r5;
+loop:
+    if (temp_r0 == arg1) {
+        *(void **)var_r5 = *(void **)arg1;
+        return 1;
     }
+    var_r5 = temp_r0;
+    temp_r0 = *(void **)var_r5;
+    if (temp_r0 == NULL) return 0;
+    goto loop;
 }
 
 void fn_8011BCAC(void **head, void *node) {
