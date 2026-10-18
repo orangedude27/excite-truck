@@ -514,6 +514,15 @@ void* fn_8029B9A4(void* arg0, int arg1) {
 
 extern "C" int fn_8029AF24(int); void fn_8029BA8C(int* arg0) { fn_8029AF24(*arg0); }
 
+extern "C" void* fn_8029BD54(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_801EF024((void*)fn_8029C190);
+        fn_8028E398(*(void**)arg0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_8029BEF8(void);
 extern "C" int fn_801EEFDC(void*, int);
 extern "C" int fn_8029C190(void*);
