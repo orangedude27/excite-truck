@@ -107,6 +107,18 @@ void fn_8028E1A4(void) {
     lbl_8055F73C = 1;
 }
 
+int fn_8028E2F8(int arg0, int arg1, int arg2) {
+    int result;
+    result = fn_801284F8(0xB0, &lbl_8055C8E0);
+    if (result != 0) {
+        result = ((int (*)(int, int, int))fn_8028F7AC)(result, arg0, arg2);
+    }
+    fn_8028ED8C(&lbl_804B35B4[0], result);
+    fn_8028ED8C(&lbl_804B34B0_arr[0], result);
+    fn_8028F5A0(arg1, result);
+    return result;
+}
+
 extern float fn_802C9A4C(float);
 extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
