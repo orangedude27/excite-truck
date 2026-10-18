@@ -1,5 +1,7 @@
 extern float lbl_8055FC6C;
 extern int lbl_8055CFF4;
+extern float lbl_80564F18;
+extern double lbl_80564F10;
 extern void fn_802D01E0(int, int, int);
 extern float lbl_8055FC4C;
 extern float lbl_8055FC40;
