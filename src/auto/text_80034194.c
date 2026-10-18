@@ -13,9 +13,11 @@ extern void fn_80037E94(void);
 extern void fn_8003BB58(void (*callback)(void));
 extern void fn_8003B380(s32);
 extern void fn_8003B38C(void *);
-extern void fn_80035B88(void);
-
-extern s32 lbl_80558E04;
+  extern void fn_80035B88(void);
+  extern void fn_80036624(s32);
+  extern void fn_8003AF1C(s32, s32, void *);
+  
+  extern s32 lbl_80558E04;
 extern s32 lbl_8055D84C;
 extern volatile s32 PausingFlag_8055D850;
 extern s32 FatalErrorFlag_8055D854;
