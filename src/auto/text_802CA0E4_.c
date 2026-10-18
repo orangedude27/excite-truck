@@ -3,6 +3,13 @@
 
 #include <macros.h>
 extern void fn_802E317C(const char *, ...);
+extern char lbl_8034B538[];
+extern int lbl_8055D038;
+extern int lbl_8055D040;
+extern int fn_8012850C(int, int *);
+extern void fn_802CB424(void);
+extern void fn_802E30C8(const char *, ...);
+extern int fn_802D92B8(int);
 extern int lbl_8055D03C;
 extern char lbl_8034B5F0[];
 void fn_802CAC54(int);
@@ -54,6 +61,45 @@ int fn_802CA294(int arg0) {
     return *(int *)((char *)base + offset + 0x28);
 }
 
+extern char *fn_80029004(char *, int);
+extern char lbl_8055D048;
+int fn_802CA2A8(void *arg0, int arg1, int arg2) {
+    char *dst = (char *)arg0;
+    const char *src = (const char *)arg2;
+    int remaining = arg1;
+    char *p = dst;
+    do {
+        char c = *src++;
+        *p++ = c;
+        if ((signed char)c == 0) break;
+        remaining--;
+        if (remaining <= 0) {
+            p[-1] = 0;
+            break;
+        }
+    } while (1);
+    *fn_80029004(dst, '.') = 0;
+    p = dst;
+    while ((signed char)*p != 0) {
+        remaining--;
+        p++;
+    }
+    if (remaining > 0) {
+        const char *suffix = &lbl_8055D048;
+        do {
+            char c = *suffix++;
+            *p++ = c;
+            if ((signed char)c == 0) break;
+            remaining--;
+            if (remaining <= 0) {
+                p[-1] = 0;
+                break;
+            }
+        } while (1);
+    }
+    return (int)dst;
+}
+
 int fn_802CA380(int arg0) {
     char sp10[0x20];
     int sp8;
@@ -65,6 +111,65 @@ int fn_802CA380(int arg0) {
     if (temp != 0) {
         result = fn_8012C6F0();
         fn_8012C958(temp);
+    }
+    return result;
+}
+
+int fn_802CA3F4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    unsigned char *src = (unsigned char *)arg1;
+    int *dst = (int *)arg0;
+    unsigned char c12, c7, c6, c11, c5, c4, c10;
+    unsigned short h12, h0, h2;
+    int ptr14;
+    memset(arg0, 0, 0x34);
+    c5 = src[5];
+    c12 = src[0xB];
+    c4 = src[4];
+    c7 = src[7];
+    c6 = src[6];
+    h12 = *(unsigned short *)(src + 0xC);
+    c10 = src[0xA];
+    h0 = *(unsigned short *)src;
+    h2 = *(unsigned short *)(src + 2);
+    ptr14 = *(int *)(src + 0x14);
+    dst[2] = c12 & 1;
+    dst[0] = c5 & 0x7F;
+    dst[5] = c7;
+    dst[4] = c6;
+    dst[3] = h12;
+    dst[6] = c12;
+    *(unsigned char *)((char *)arg0 + 0x1C) = c10;
+    dst[1] = arg2;
+    dst[8] = (signed char)c4;
+    dst[9] = h0;
+    dst[10] = h2;
+    dst[11] = ptr14;
+    dst[12] = arg3;
+    if (arg4 == 2)
+        dst[2] = (c12 & 1) | 1;
+    else if (arg4 == 6)
+        dst[2] = (c12 & 1) | 2;
+    else if (arg4 == 5)
+        dst[2] = (c12 & 1) | 4;
+}
+
+extern int fn_8012C370(const char *, int *, int *, signed char *, unsigned char *);
+extern char lbl_8034B634[];
+extern char lbl_8034B658[];
+int fn_802CA658(int arg0, int arg1) {
+    int sp10;
+    int spC;
+    signed char sp9 = 0;
+    unsigned char sp8 = 0;
+    int result;
+    result = fn_8012C370("TEX ", &sp10, &spC, &sp9, &sp8);
+    if (result != 0) {
+        if ((result & 0x7F) != 0)
+            fn_802E317C(lbl_8034B634, arg0, result);
+        if (sp10 != 0xF)
+            fn_802E317C(lbl_8034B658, arg0);
+        if (sp8 != 0)
+            fn_802CA57C(result, arg0, 0);
     }
     return result;
 }
@@ -273,6 +378,51 @@ void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
     fn_802CBBE8(arg1, arg2);
     *(int **)((char *)arg2 + 0x14) = *arg0;
     *arg0 = arg2;
+}
+
+void fn_802CBD7C(void **, void *);
+extern char lbl_8034BA04[];
+void fn_802CBD7C(void **arg0, void *arg1) {
+    int removed = 0;
+    for (;;) {
+        void *node = *arg0;
+        if (node == 0) {
+            if (removed)
+                return;
+            fn_802E317C(lbl_8034BA04);
+            return;
+        }
+        if (node == arg1) {
+            removed = 1;
+            *arg0 = *(void **)((char *)arg1 + 0x10);
+            *(void **)((char *)arg1 + 0x10) = 0;
+            if (*arg0 == 0) {
+                if (removed)
+                    return;
+                fn_802E317C(lbl_8034BA04);
+                return;
+            }
+        } else {
+            arg0 = (void **)((char *)node + 0x10);
+        }
+    }
+}
+
+extern char lbl_8034BA34[];
+extern char lbl_8034BA70[];
+int fn_802D9154(void);
+void fn_802CC03C(int **arg0, int *arg1, int arg2) {
+    char sp10[0x20];
+    int sp8;
+    fn_802CA2A8(sp10, 0x20, lbl_8055FCB0 + arg2 * 0x4C + 4);
+    arg1[0] = fn_8012C5B8(sp10, 0x54455820, &sp8);
+    arg1[1] = arg2;
+    arg1[3] = fn_802D9154();
+    if (arg1[0] == 0)
+        fn_802E317C(lbl_8034BA34, sp10);
+    if (sp8 != 0xF)
+        fn_802E317C(lbl_8034BA70, sp10, 0xF);
+    ((void (*)(int **, int, int *))fn_802CBB9C)(arg0, (int)arg0 + 4, arg1);
 }
 
 int fn_802CC404(void *arg0) {
