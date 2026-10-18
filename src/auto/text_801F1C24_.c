@@ -19,7 +19,7 @@ extern int lbl_8033A8F8;
 extern int lbl_8033A644, lbl_8033A868, lbl_8033A928;
 #pragma push
 #pragma small_data off
-extern int lbl_8033AA90;
+__declspec(section ".data") extern int lbl_8033AA90;
 #pragma pop
 extern int lbl_8055B124, lbl_8055B120;
 extern float lbl_80562F40, lbl_80562F44;
@@ -655,19 +655,20 @@ int fn_801F45D4(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
 #pragma small_data off
 void *fn_801F4614(void *arg0, int arg1) {
     extern int fn_80128670(int);
-    extern int lbl_8033AA90;
-    int temp;
-    if (arg0 == 0) return arg0;
-    temp = *(int *)((char *)arg0 + 4);
-    *(int *)arg0 = (int)&lbl_8033AA90;
-    if (temp != 0) fn_80128670(temp - 0x10);
-    if (arg1 > 0) ((int (*)(void *))fn_80128668)(arg0);
+    register int temp_r5;
+    if (arg0 != 0) {
+        temp_r5 = *(int *)((char *)arg0 + 4);
+        *(void **)arg0 = &lbl_8033AA90;
+        if (temp_r5 != 0) fn_80128670(temp_r5 - 0x10);
+        if (arg1 > 0) ((int (*)(void *))fn_80128668)(arg0);
+    }
     return arg0;
 }
-#pragma small_data reset
+#pragma pop
 void fn_801F49F4(void) {
 
 }
