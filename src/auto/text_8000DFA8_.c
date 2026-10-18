@@ -3,7 +3,8 @@
 
 #include <types.h>
 #include <stdarg.h>
-#include <string.h>
+extern int vsprintf(char *, const char *, va_list);
+extern unsigned int strlen(const char *);
 __declspec(section ".data") extern s32 lbl_803514A0;
 
 
