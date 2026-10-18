@@ -10,6 +10,18 @@ s32 fn_8024497C(void* arg0) {
     return 1;
 }
 
+void *fn_80244BD0(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_80342ED8;
+        fn_802328D4(*(s32 *)((char *)arg0 + 0xB0), lbl_80342ED8);
+        *(s32 *)((char *)arg0 + 0xB0) = 0;
+        fn_802C519C(*(s32 *)((char *)arg0 + 0xB4));
+        *(s32 *)((char *)arg0 + 0xB4) = 0;
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_8013C804(void);
 void fn_8013C8B8(void);
 s32 fn_802E2C20(void);
