@@ -179,6 +179,18 @@ void fn_802CFF5C(void* hi) {
     lbl_8055FD1C = hi;
 }
 
+int fn_802CFF64(int arg0) {
+    int aligned = (arg0 + 0x1F) & ~0x1F;
+    int old = lbl_8055FD94;
+    int next = old + aligned;
+    if (next <= 0x177000) {
+        lbl_8055FD94 = next;
+        return lbl_8055FDA0 + old;
+    }
+    lbl_8055FD94 = aligned;
+    return lbl_8055FDA0;
+}
+
 void fn_802CFFA4(unsigned short arg0) {
     lbl_8055FD86 = arg0;
 }
@@ -517,6 +529,34 @@ void* fn_802D3138(void) {
     return (char*)lbl_8055FD58 + 0x24;
 }
 
+extern unsigned char lbl_8055FD84;
+extern void fn_802CF5D4(void);
+extern void fn_802D2640(void);
+extern void fn_802D92B0(void);
+extern void GXSetTexCoordGen2(int, int, int, int, int, int);
+extern void GXSetTevOrder(int, int, int, int);
+extern void GXSetTevOp(int, int);
+extern void GXSetCurrentMtx(int);
+#pragma dont_inline on
+void fn_802D3360(void) {
+    int var_r31;
+    fn_802CF5D4();
+    lbl_8055FD84 = 1;
+    lbl_804C5700[0] = 1;
+    fn_802CFF50();
+    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+    var_r31 = 0;
+    do {
+        GXSetTexCoordGen2(var_r31, 1, 4, 0x3C, 0, 0x7D);
+        var_r31 += 1;
+    } while (var_r31 < 4);
+    fn_802D2640();
+    if (lbl_8055FE1C != 0) fn_802D92B0();
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevOp(0, 0);
+    GXSetCurrentMtx(0);
+}
+#pragma dont_inline reset
 void fn_802D37E4(void) {
     int i;
     unsigned char *p;
