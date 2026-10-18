@@ -1020,6 +1020,19 @@ void bta_dm_link_quality_cback(unsigned char *arg) {
     }
 }
 
+void bta_dm_keep_acl(void *arg0) {
+    extern u8 lbl_80560D48[];
+    u16 timeout = *(u16 *)((u8 *)arg0 + 6);
+    lbl_803C0C14[0x101] = timeout;
+    if ((u8)timeout != 0) {
+        L2CA_SetIdleTimeoutByBdAddr(lbl_80560D48, 0xFFFF);
+        L2CA_SetIdleTimeout(0, 0xFFFF, TRUE);
+    } else {
+        L2CA_SetIdleTimeoutByBdAddr(lbl_80560D48, 2);
+        L2CA_SetIdleTimeout(0, 2, TRUE);
+    }
+}
+
 void fn_80073A00(void) {
     ((void (**)(int, int)) (lbl_803C0C14 + 0x50))[0](1, 0);
 }
@@ -1844,6 +1857,44 @@ tBTM_INQ_INFO *BTM_InqDbFirst(void) {
 void fn_8007BC88(void) {
 
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT8 origin, UINT32 timeout, tBTM_CMPL_CB *p_cb) {
+    u8 active;
+    u8 start = 1;
+    u8 result = 1;
+    u8 status = 1;
+    if (!fn_80079514()) return 6;
+    active = lbl_803C0F78[0x16AE];
+    if (active & origin) return 2;
+    if (origin == 1) {
+        if (active != 0) {
+            if (memcmp(remote_bda, lbl_803C0F78 + 0x16A8, 6) != 0) return 2;
+            start = 0;
+        }
+        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x167C) = p_cb;
+    } else if (active != 0) {
+        return 2;
+    }
+    if (start) {
+        memcpy(lbl_803C0F78 + 0x16A8, remote_bda, 6);
+        btu_start_timer(lbl_803C0F78 + 0x1680, 0xA, timeout);
+        if (p_cur != 0) {
+            result = btsnd_hcic_rmt_name_req(remote_bda, ((u8 *)p_cur)[0xB], ((u8 *)p_cur)[0xD],
+                *(u16 *)p_cur | 0x8000);
+        } else {
+            result = btsnd_hcic_rmt_name_req(remote_bda, 1, 0, 0);
+        }
+    }
+    if (result) {
+        lbl_803C0F78[0x16AE] |= origin;
+    } else {
+        status = 3;
+    }
+    return status;
+}
+#pragma pop
 
 void fn_8007C794(void) {
     btm_process_remote_name(0, 0, 0, 0x1F);
@@ -3202,6 +3253,20 @@ void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
     }
 }
 
+extern void *l2cu_find_lcb_by_handle(u16 handle);
+s32 l2c_link_hci_qos_violation(u16 handle) {
+    void *lcb = l2cu_find_lcb_by_handle(handle);
+    void *ccb;
+    if (lcb == 0) return 0;
+    ccb = *(void **)((u8 *)lcb + 8);
+    while (ccb != 0) {
+        if (*(void **)((u8 *)*(void **)((u8 *)ccb + 0x30) + 0x20) != 0)
+            fn_80089E40(ccb, 6, 0);
+        ccb = *(void **)((u8 *)ccb + 8);
+    }
+    return 1;
+}
+
 void fn_8008C04C(s16 arg0) {
     *(s16 *)(lbl_803C4040 + 2) = arg0;
     *(s16 *)(lbl_803C4040 + 4) = arg0;
@@ -3523,17 +3588,21 @@ void *port_find_mcb_dlci_port(void *mcb, u8 dlci) {
 }
 
 void *port_find_dlci_port(unsigned int arg0) {
-    int i;
+    unsigned short i;
+    unsigned int odd = arg0 & 1;
+    unsigned int prev = arg0 - 1;
+    char *base = (char *)&lbl_803C4828;
     for (i = 0; i < 5; i++) {
-        char *port = (char *)&lbl_803C4828 + i * 0xa4 + 0x68;
+        char *entry = base + (i * 0xA4);
+        char *port = entry + 0x68;
         unsigned char dlci;
-        if (*(unsigned char *)(port + 1) == 0 && *(int *)(port + 0x6c) == 0) {
-            dlci = *(unsigned char *)(port + 0xd);
-            if (dlci == arg0) return port;
-            if ((arg0 & 1) && dlci == arg0 - 1) {
-                *(unsigned char *)(port + 0xd) = dlci + 1;
-                return port;
-            }
+        if (*(unsigned char *)(entry + 0x69) == 0) continue;
+        if (*(unsigned int *)(port + 0x6C) != 0) continue;
+        dlci = *(unsigned char *)(port + 0xD);
+        if ((unsigned int)dlci == arg0) return port;
+        if (odd != 0 && (int)dlci == (int)prev) {
+            *(unsigned char *)(port + 0xD) = dlci + 1;
+            return port;
         }
     }
     return 0;
@@ -3943,21 +4012,29 @@ void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
 void rfc_send_fcon(void *arg0, s32 arg1, void *arg2) {
     u8 *buf = GKI_getpoolbuf(2);
     if (buf != 0) {
+        s32 sign = (-arg1 | arg1) >> 31;
+        u16 field = 2;
+        u8 enabled = 1;
         *(u16 *)(buf + 4) = 0xC;
-        buf[0x14] = (u8)((((s32)(-arg1 | arg1) >> 31) & 2) | 0xA1);
-        buf[0x15] = 1;
-        *(u16 *)(buf + 2) = 2;
+        buf[0x14] = (u8)((sign & 2) | 0xA1);
+        buf[0x15] = enabled;
+        *(u16 *)(buf + 2) = field;
         rfc_send_buf_uih(arg0, 0, buf, 2);
     }
 }
 
 void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
-    u8 *buf = GKI_getpoolbuf(2);
+    u8 *buf;
+    s32 temp;
+    buf = GKI_getpoolbuf(2);
     if (buf != 0) {
+        temp = -arg1;
+        temp |= arg1;
         *(u16 *)(buf + 4) = 0xC;
-        buf[0x14] = (u8)((((s32)(-arg1 | arg1) >> 31) & 2) | 0x61);
-        buf[0x15] = 1;
+        temp >>= 31;
         *(u16 *)(buf + 2) = 2;
+        buf[0x14] = (u8)((temp & 2) | 0x61);
+        buf[0x15] = 1;
         rfc_send_buf_uih(arg0, 0, buf, 2);
     }
 }
