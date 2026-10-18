@@ -151,6 +151,7 @@ void fn_8000B3DC(unsigned char arg0) {
         (int)fn_8000B3B4 & (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31,
         lbl_8055D3EC);
 }
+#pragma dont_inline reset
 
 extern int fn_8016212C(void), fn_80265D64(void), fn_80265D6C(void), fn_80265D50(void);
 extern int fn_80265D54(int), fn_80176734(void), fn_801CB3F8(void), fn_8001EFB8(void);
