@@ -13,6 +13,21 @@ int fn_802DB378(int arg0, int arg1) { int result = 0xFF; if (arg0 == 2) { if (ar
 
 void fn_802DB394(void) { GXSetTevOp(0, 3); GXSetTevOp(1, 3); GXSetTevAlphaOp(1, 0, 0, 0, 1, 0); GXSetTevAlphaIn(1, 0, 7, 7, 7); }
 
+#pragma push
+#pragma processor 750
+void fn_802DB3FC(void) {
+    GXSetTevOp(0, 3);
+    GXSetTevOp(1, 4);
+    GXSetTevAlphaOp(1, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(1, 4, 7, 7, 7);
+    GXSetTevOp(2, 0);
+    GXSetTevAlphaOp(2, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(2, 0, 7, 7, 7);
+    GXSetTevOp(3, 4);
+    GXSetTevAlphaOp(3, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(3, 7, 0, 4, 7);
+}
+#pragma pop
 void fn_802DB4E4(void) {
     float m[12] = {0};
     m[0] = *(float *)(lbl_804DB068 + 0xc);
@@ -44,6 +59,41 @@ void fn_802DB620(void) {
     *(float *)&m[6] = lbl_8055D148;
     GXLoadTexMtxImm((float *)m, 0x1e, 1);
 }
+
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+int fn_802DB69C(void **arg0, int arg1) {
+    extern int lbl_8055FEA4;
+    extern void GXLoadTexObj(void *, int);
+    extern void GXSetTevOrder(int, int, int, int);
+    extern void GXSetNumTexGens(unsigned char);
+    void **p = arg0;
+    int stage = 0;
+    int tex = 0;
+    unsigned char *obj;
+    int i = 0;
+    while (i < lbl_8055FEA4) {
+        int base;
+        obj = *p;
+        base = tex++;
+        GXLoadTexObj(obj + 0x24, base);
+        if (obj[0xCC]) {
+            int extra = tex++;
+            GXLoadTexObj(obj + 0x78, extra);
+            GXSetTevOrder(stage++, i, extra, 0xFF);
+        }
+        {
+            int current = stage++;
+            GXSetTevOrder(current, i, base, fn_802DB378(arg1, i));
+        }
+        p++;
+        i++;
+    }
+    GXSetNumTexGens((unsigned char)lbl_8055FEA4);
+    return stage;
+}
+#pragma dont_inline reset
+#pragma use_lmw_stmw on
 
 void fn_802DBBE4(int arg0, int arg1) {
     if ((void *)lbl_8055FEA8 != (void *)arg0) {
@@ -119,6 +169,38 @@ void fn_802DBF30(void) {
     fn_802DBDD8();
     fn_802DEE1C();
 }
+
+extern void GXBegin(int, int, unsigned short);
+#pragma use_lmw_stmw off
+void fn_802DBF54(int verts, int count) {
+    volatile unsigned short *dst = (volatile unsigned short *)0xCC008000;
+    unsigned short *src = (unsigned short *)verts;
+    while (count > 0) {
+        int n = *src++;
+        GXBegin(0xA0, 0, n);
+        if (n > 0) {
+            int i = 0;
+            if (n >= 8) {
+                for (; i + 8 <= n; i += 8) {
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                }
+            }
+            for (; i < n; i++) {
+                *dst++ = *src++;
+            }
+        }
+        count -= n + 1;
+    }
+}
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802DC078(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
     fn_802DBA1C(lbl_8055FEBA);
     fn_802DB9DC(arg4);
@@ -132,7 +214,7 @@ void fn_802DC078(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5) {
         GXSetColorUpdate(1);
     }
 }
-
+#pragma pop
 extern void GXSetBlendMode(int, int, int, int);
 void fn_802DC130(void) {
     fn_802DBD88();
