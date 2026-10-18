@@ -20,6 +20,7 @@ extern f64 lbl_80561028;
 
 extern f32 lbl_8056106C;
 extern u8 lbl_80323B28[];
+extern u8 lbl_80323B94[];
 extern u8 lbl_80323BEC[];
 extern u8 lbl_80323C14[];
 extern u8 lbl_80324054[];
@@ -221,6 +222,21 @@ extern "C" f32 fn_800EB430(void* arg0) {
     if (*(s32*)arg0 == 0 && lbl_80560FF0 == *(f32*)((u8*)arg0 + 0x10))
         return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(lbl_80560FF0);
     return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(*(f32*)((u8*)arg0 + 4) / lbl_80560FF4);
+}
+
+void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
+ f32 value;
+ int valid = 0;
+ if (release >= 0 && release <= 0x7F) valid = 1;
+ if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B80,0x127,(const char*)lbl_80322C50,release,0,0x7F);
+ valid = 0;
+ if (release >= 0 && release <= 0x7F) valid = 1;
+ if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B80,0x132,(const char*)lbl_80322C50,release,0,0x7F);
+ if (release == 0x7F) value=lbl_80560FE8;
+ else if (release == 0x7E) value=lbl_80561008;
+ else if (release < 0x32) value=lbl_8056100C * (f32)((release*2)+1)/lbl_80561010;
+ else value=lbl_80561014/(f32)(0x7E - release)/lbl_80561010;
+ *(f32*)((u8*)this+0xC)=value;
 }
 
 extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
@@ -676,9 +692,9 @@ extern "C" void fn_800EE568(void* arg0) {
 }
 
 extern "C" void fn_800EE910(void* alarm) {
-    void* alarmTemp = alarm;
+    volatile void* alarmTemp = alarm;
     u32 level = OSDisableInterrupts();
-    u8* data = (u8*)OSGetAlarmUserData(alarmTemp);
+    u8* data = (u8*)OSGetAlarmUserData((void*)alarmTemp);
     Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323840, 0x224,
                                     (const char*)lbl_803238C0,
                                     *(s32*)(data + 0x2C));
