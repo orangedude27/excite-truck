@@ -23,18 +23,25 @@ void fn_802E7318(void) {
     lbl_8055FFE0 = 1;
 }
 
+void fn_802E7330(void) {
+    lbl_8055FFE0 = 0;
+    ((void (*)(int *, int, int, int, ...))fn_802E30C8)(&lbl_8034D7D8, lbl_8055FFD8, 0x100, lbl_8055FFDC);
+}
+
 void fn_802E746C(int arg0, int *arg1, int *arg2) {
     unsigned char *entry = lbl_804FC978 + arg0 * 0x90;
     *arg1 = *(int *)entry;
     *arg2 = *(int *)(entry + 8);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 int fn_802E748C(int arg0, void *arg1, int arg2, int arg3) {
-    int temp_r29;
-    int temp_r3;
-    int temp_r3_2;
-    int var_r5;
     unsigned char *temp_r31;
+    int var_r5;
+    int temp_r3_2;
+    int temp_r3;
+    int temp_r29;
     temp_r3_2 = fn_802E72C8();
     if (temp_r3_2 < 0) return -1;
     temp_r31 = lbl_804FC978 + temp_r3_2 * 0x90;
@@ -47,7 +54,7 @@ int fn_802E748C(int arg0, void *arg1, int arg2, int arg3) {
     fn_802E3930(temp_r3, arg1, var_r5);
     return temp_r3;
 }
-
+#pragma pop
 void fn_802E7544(void) { fn_802E3990(); }
 
 void fn_802E7548(int arg0) { fn_802E3734(&arg0); }
