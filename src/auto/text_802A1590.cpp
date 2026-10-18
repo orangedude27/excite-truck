@@ -40,10 +40,11 @@ public:
     virtual void v2();
     virtual void v3();
     virtual void v4();
-    virtual void v5();
-    virtual void v6();
-    virtual void update(); // 0x20
-    virtual void v8(); // 0x24
+          virtual void v5();
+      virtual void v6();
+      virtual void update(); // 0x20
+      virtual void v8(); // 0x24
+      virtual void v9(); // 0x28
 };
 
 class LocalCall {
@@ -566,6 +567,10 @@ extern "C" void fn_802A49DC(void* arg0) {
 
 extern "C" void fn_802A49F0(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v6();
+}
+
+extern "C" void fn_802A4A04(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v8();
 }
 
 extern "C" u32 fn_802A4A18(void) { return 1; }
