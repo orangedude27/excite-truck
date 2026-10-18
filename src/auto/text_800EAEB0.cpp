@@ -1,4 +1,14 @@
 #include <types.h>
+namespace nw4hbm { namespace snd { namespace detail {
+class EnvGenerator { public: void SetRelease(int); };
+}}}
+extern f32 lbl_80560FE8, lbl_80561008, lbl_8056100C, lbl_80561010, lbl_80561014;
+#pragma push
+#pragma small_data off
+extern f64 lbl_80561000;
+#pragma pop
+extern u8 lbl_80322B80[], lbl_80322C50[];
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 
 #pragma push
 #pragma small_data off
@@ -595,8 +605,8 @@ extern "C" void FreeTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm
 }
 
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, u32, u32);
-extern "C" void fn_800EE428(void* arg0) {
-    CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8*)arg0 + 8, 0, 0xD4);
+extern "C" void fn_800EE428(void* arg0, u32 arg1, u32 arg2) {
+    CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8*)arg0 + 8, arg1, 0xD4);
 }
 
 extern "C" void DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(void*);
