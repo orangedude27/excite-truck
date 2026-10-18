@@ -784,7 +784,7 @@ extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
 extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
     fn_800B3BEC(&p_ent[0x20E], p_buf[0xB]);
     if ((s8)p_ent[0x20E] == 5) {
-        p_ent[0x20E] = (u8)-0x1B;
+        ((s8 *)p_ent)[0x20E] = -0x1B;
     }
 }
 
@@ -2197,6 +2197,38 @@ extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hb
     return 0;
 }
 
+extern "C" void PSMTXConcatArray(const f32*, const f32*, f32*, u32);
+extern "C" void PSMTXMultVec(const f32*, const f32*, f32*);
+extern "C" void fn_800DB76C(f32*, void*, f32*);
+extern "C" f32 lbl_80560E28;
+extern "C" s32 contain__Q310homebutton3gui13PaneComponentFff(void *this_, f32 x, f32 y) {
+    u8 *self = (u8 *)this_;
+    void *pane = *(void **)(self + 0x28);
+    if (!pane) return 0;
+    struct Pane {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual s32 v17();
+    };
+    s32 n = ((Pane *)pane)->v17();
+    if (n == 0) return 0;
+    f32 mtx[12];
+    f32 res[4];
+    f32 vec[3];
+    s32 pad;
+    PSMTXConcatArray((f32 *)(self + 0x2C), (f32 *)(self + 0x2C), mtx, 0);
+    vec[0] = x;
+    vec[1] = y;
+    vec[2] = lbl_80560E28;
+    PSMTXMultVec(mtx, vec, vec);
+    fn_800DB76C(res, *(void **)(self + 0x2C), vec);
+    if (res[0] == vec[0] && vec[1] == res[1] && res[2] == vec[2] && vec[3] == res[3])
+        return 1;
+    return 0;
+}
+
 extern "C" s32 fn_800D0814(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x24); }
 
 extern "C" s32 fn_800D0AA8(void *pane);
@@ -2799,12 +2831,12 @@ int fn_800D5500(void *obj, const char *name) {
 extern "C" void* fn_800D55B0(void *self, s32 arg1) {
     if (self != NULL) {
         *(void **)self = lbl_8031F428;
-        Clear__Q46nw4hbm2ut6detail12LinkListImplFv((s32 *)self + 1);
+        Clear__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 4);
         if ((u8 *)self + 0x10 != NULL) {
             __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 0x10, 0);
         }
-        if ((u8 *)self + 4 != NULL) {
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u8 *)self + 4, 0);
+        if ((u32 *)self + 1 != NULL) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((u32 *)self + 1, 0);
         }
         fn_800DCE10(self, 0);
         if (arg1 > 0) {
@@ -3205,23 +3237,21 @@ extern "C" void fn_800A52A0(void *arg0, const void *arg1) {
 
 #pragma dont_inline reset
 extern "C" void fn_800A52DC(u32 arg0) {
-    u8 *ptr = (u8 *)lbl_803D2140 + 0xA0;
-    s32 i;
-    for (i = 0; i < 13; i++, ptr += 0x3F90) {
+    u8 *base = (u8 *)lbl_803D2140;
+    register u8 *ptr = base + 0xA0;
+    register s32 i = 0;
+    for (; i < 13; ++i) {
         if (*(u32 *)(ptr + 0x1FBC) == arg0) {
             u16 value = *(u16 *)(ptr + 0x1F8C);
-            if (value & 8) {
-                *(u16 *)(ptr + 0x1F8C) = value | 0x20;
-            }
+            if (value & 8) *(u16 *)(ptr + 0x1F8C) = value | 0x20;
             *(u16 *)(ptr + 0x1F8C) &= ~0xC;
         }
         if (*(u32 *)(ptr + 0x3F84) == arg0) {
             u16 value = *(u16 *)(ptr + 0x3F54);
-            if (value & 8) {
-                *(u16 *)(ptr + 0x3F54) = value | 0x20;
-            }
+            if (value & 8) *(u16 *)(ptr + 0x3F54) = value | 0x20;
             *(u16 *)(ptr + 0x3F54) &= ~0xC;
         }
+        ptr += 0x3F90;
     }
 }
 
@@ -3375,6 +3405,62 @@ extern "C" void Console_DrawDirect__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHe
         }
     }
 }
+
+extern "C" void fn_800D272C(void*, void*);
+extern "C" char lbl_804077D8[0x400];
+extern "C" const char lbl_805597E4[];
+extern "C" void* lbl_804077C0;
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(void* head, const char* fmt, ...) {
+    f64 sp_28;
+    f64 sp_30;
+    f64 sp_38;
+    f64 sp_40;
+    f64 sp_48;
+    f64 sp_50;
+    f64 sp_58;
+    f64 sp_60;
+    s32 sp_8;
+    s32 sp_C;
+    s32 sp_10;
+    s32 sp_14;
+    s32 sp_18;
+    s32 sp_1C;
+    s32 sp_20;
+    s32 sp_24;
+    s32 sp_68;
+    s32 sp_6C;
+    s32 sp_70;
+    if (lbl_80407BD8[0] != 0) {
+        sp_28 = (f64)0;
+        sp_30 = (f64)0;
+        sp_38 = (f64)0;
+        sp_40 = (f64)0;
+        sp_48 = (f64)0;
+        sp_50 = (f64)0;
+        sp_58 = (f64)0;
+        sp_60 = (f64)0;
+    }
+    sp_8 = (s32)head;
+    sp_C = (s32)fmt;
+    sp_68 = 0x02000000;
+    sp_6C = (s32)&sp_8;
+    sp_70 = (s32)&sp_8;
+    if (head == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x368, lbl_8031EA90);
+    }
+    OSLockMutex((void*)0x804077C0);
+    vsnprintf(lbl_804077D8, 0x400, fmt, (VaList1*)&sp_68);
+    if (head == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x34B, lbl_8031EA90);
+    }
+    OSReport(lbl_805597E4, lbl_804077D8);
+    fn_800D272C(head, lbl_804077D8);
+    OSUnlockMutex((void*)0x804077C0);
+}
+#pragma pop
+
 extern "C" void fn_800D2480(void) {
     if (lbl_8055DDBC == NULL) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA40, 0x1F1, lbl_8031EA4C);
