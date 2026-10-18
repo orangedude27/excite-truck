@@ -484,7 +484,7 @@ s32 fn_8011A870(void *arg0, s32 arg1) {
     return result;
 }
 #pragma dont_inline reset
-s32 fn_8011AC04(s32 arg1) {
+s32 fn_8011AC04(s32 arg0, s32 arg1) {
     return (arg1 + 0x7FFF) & 0xFFFF8000;
 }
 
