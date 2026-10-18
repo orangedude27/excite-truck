@@ -15,7 +15,7 @@ int fn_802BC334(int arg0) {
 }
 
 void *fn_802BE844(short, short, short);
-void fn_802BC39C(void);
+int fn_802BC39C();
 void fn_802BC3DC(void) {
     fn_802BC39C();
 }
@@ -238,6 +238,22 @@ void fn_802BDC3C(void* alarm) {
     fn_802C1550(fn_802BD210(alarm));
 }
 
+void fn_802BCF04(void);
+void fn_8012C4D8(void);
+void fn_802C13A4(void);
+void deleteThreads__6SystemFv_802BDCA4(void **);
+void fn_802BDC60(void) {
+    register int flag;
+    fn_802BCF04();
+    flag = lbl_8055FAB8;
+    if (flag != 0) {
+        fn_8012C4D8();
+        lbl_8055FAB8 = 0;
+    }
+    fn_802C13A4();
+    deleteThreads__6SystemFv_802BDCA4(&lbl_8055FABC);
+}
+
 extern int lbl_8034AB38, lbl_8034AC48;
 extern int lbl_8055FAA8, lbl_8055FAAC, lbl_8055FAB0;
 extern void *lbl_8055FABC;
@@ -300,7 +316,7 @@ void fn_802BDFBC(void *arg0, int arg1, float farg0) {
 
 extern float lbl_80564D14;
 extern float lbl_80564D18;
-void fn_802BDFF4(int *arg0) {
+void fn_802BDFF4(void **arg0) {
     if (arg0[-2] != 0) fn_802BAF98();
 }
 
