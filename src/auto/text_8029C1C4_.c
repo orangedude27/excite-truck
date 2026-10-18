@@ -1,3 +1,4 @@
+__declspec(section ".data") extern float lbl_80558DC4;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern void fn_8029CD14(void);
@@ -125,6 +126,31 @@ void fn_8029D550(void *arg0, float *arg1, float *arg2) {
     arg1[2] = *(float *)((char *)arg0 + 0x5C);
     *arg2 = *(float *)((char *)arg0 + 0x60);
 }
+
+extern int fn_80287B94(int, int);
+extern void fn_8029DF64(void *, int, int, float);
+extern void fn_8029DDB8(void *);
+#pragma push
+#pragma processor 750
+void fn_8029D574(int arg0) {
+    extern float lbl_80564658;
+    extern float fn_80287BC8(float, float);
+    extern void fn_8029DF64(void *, int, int, float);
+    float value;
+    int y;
+    char *p = (char *)arg0;
+    if (*(float *)(p + 0x34) >= lbl_80564658 - lbl_80558DC4) {
+        float range = *(float *)(p + 0x28);
+        value = fn_80287BC8(-range, range);
+        y = fn_80287B94(1, *(int *)(p + 0x10) - 2);
+        fn_8029DF64(p, fn_80287B94(1, *(int *)(p + 0xC) - 2), y, value);
+        *(float *)(p + 0x34) += *(float *)(p + 0x24) - lbl_80564658;
+    } else {
+        *(float *)(p + 0x34) += *(float *)(p + 0x24);
+    }
+    fn_8029DDB8(p);
+}
+#pragma pop
 
 extern float fn_801E7E24(void);
 extern void fn_8029D574(int);
