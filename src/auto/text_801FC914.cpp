@@ -485,15 +485,12 @@ void fn_801FF994(void* arg0, void* arg1) {
 }
 
 extern "C" void* fn_8002F634(void*, void*, int, int);
-void* __dt__10SHMainMenuFv(void* arg0, int arg1) {
-    if (arg0 != 0) {
-        fn_801FF364((char*)arg0 + 0xE08, -1);
-        fn_8002F634((char*)arg0 + 4, (void*)fn_801FCED8, 0x70, 0x20);
-        if (arg1 > 0) fn_80128668(arg0);
-    }
-    return arg0;
+#pragma dont_inline on
+SHMainMenu::~SHMainMenu() {
+    fn_801FF364((char*)this + 0xE08, -1);
+    fn_8002F634((char*)this + 4, (void*)fn_801FCED8, 0x70, 0x20);
 }
-
+#pragma dont_inline reset
 void* __dt__10SHMainMenuFv_801FFA68(void* arg0, int arg1) {
     if (arg0 != 0) {
         fn_801FF6B4((char*)arg0 + 0x1008, -1);
