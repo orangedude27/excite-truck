@@ -2387,6 +2387,30 @@ s32 fn_8007FEFC(u16 handle) {
     return 0;
 }
 
+tBTM_STATUS btm_sec_disconnect(UINT16 handle, UINT8 reason) {
+    tBTM_SEC_DEV_REC *p_dev_rec;
+    UINT8 old_state;
+
+    p_dev_rec = btm_find_dev_by_handle(handle);
+    if (p_dev_rec == NULL) {
+        return (tBTM_STATUS)5;
+    }
+    if (*((UINT8 *)p_dev_rec + 0x81) & 0x40) {
+        lbl_803C0F78[0x197E] = reason;
+        return (tBTM_STATUS)0;
+    }
+    old_state = *((UINT8 *)p_dev_rec + 0x7F);
+    if (old_state == 5) {
+        return (tBTM_STATUS)1;
+    }
+    *((UINT8 *)p_dev_rec + 0x7F) = 5;
+    if (btsnd_hcic_disconnect(handle, reason)) {
+        return (tBTM_STATUS)1;
+    }
+    *((UINT8 *)p_dev_rec + 0x7F) = old_state;
+    return (tBTM_STATUS)3;
+}
+
 extern u8 lbl_80317008[];
 void btm_sec_pin_code_request_timeout(void) {
     u8 *base = lbl_803C0F78;
@@ -3321,6 +3345,47 @@ void *l2cu_find_rcb_by_psm(u16 psm) {
     return 0;
 }
 
+void l2cu_process_peer_cfg_req(void *arg0, void *arg1) {
+    int var_r0, var_r3, var_r6 = 1, var_r7 = 1, var_r8 = 1;
+    int temp;
+    unsigned short temp_r0;
+    unsigned char *a = (unsigned char *)arg0;
+    unsigned char *b = (unsigned char *)arg1;
+    if (b[2]) {
+        temp_r0 = *(unsigned short *)(b + 4);
+        if (temp_r0 >= 0x30) {
+            *(unsigned short *)(a + 0x3A) = temp_r0;
+            if (temp_r0 > 0x69B) {
+                *(unsigned short *)(b + 4) = 0x69B;
+                *(unsigned short *)(a + 0x3A) = 0x69B;
+            }
+        } else { var_r6 = 0; *(unsigned short *)(b + 4) = 0x30; }
+    }
+    if (b[0x20] && !*(unsigned short *)(b + 0x22)) {
+        var_r8 = 0; *(unsigned short *)(b + 0x22) = 0xFFFF;
+    }
+    if (b[6]) {
+        if (b[9] <= 2) {
+            temp = *(int *)(b + 8); *(int *)(a + 0x40) = temp;
+            temp = *(int *)(b + 0xC); *(int *)(a + 0x44) = temp;
+            temp = *(int *)(b + 0x10); *(int *)(a + 0x48) = temp;
+            temp = *(int *)(b + 0x14); *(int *)(a + 0x4C) = temp;
+            temp = *(int *)(b + 0x18); *(int *)(a + 0x50) = temp;
+            temp = *(int *)(b + 0x1C); *(int *)(a + 0x54) = temp;
+        } else { var_r7 = 0; b[9] = 1; }
+    }
+    var_r3 = 0; var_r0 = 0;
+    if (var_r6 && var_r8 && var_r7) var_r0 = 1;
+    if (var_r0) var_r3 = 1;
+    if (!var_r3) {
+        *(short *)b = 1;
+        if (var_r6) b[2] = 0;
+        if (var_r8) b[0x20] = 0;
+        if (var_r7) b[6] = 0;
+        *(signed char *)(b + 0x24) = 0;
+    }
+}
+
 void fn_8008EE40(void *arg0, void *arg1) {
     struct Pair { u32 x; u32 y; };
     u8 *dst = (u8 *)arg0; u8 *src = (u8 *)arg1;
@@ -3864,21 +3929,14 @@ void fn_8009578C(void *arg0) {
 
 void rfc_check_send_cmd(void *arg0, void *arg1) {
     register u8 *p = (u8 *)arg0;
-
     if (arg1 != 0) {
         GKI_enqueue((BUFFER_Q *)(p + 0x18), arg1);
-        goto dequeue;
     }
-dequeue:
     for (;;) {
         arg1 = GKI_dequeue((BUFFER_Q *)(p + 0x18));
-        if (arg1 == 0) {
-            return;
-        }
+        if (arg1 == 0) return;
         L2CA_DataWrite(*(u16 *)(p + 0x68), (BT_HDR *)arg1);
-        if (p[0x73] != 0) {
-            return;
-        }
+        if (p[0x73] != 0) return;
     }
 }
 
@@ -4088,7 +4146,7 @@ void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
 static void USB_LOG(const char *fmt, ...) {
     va_list list;
     if (lbl_8055DC90) {
-        OSReport("USB: ");
+        OSReport((const char *)&lbl_805590A4);
         va_start(list, fmt);
         vprintf(fmt, list);
         va_end(list);
@@ -4278,12 +4336,10 @@ void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32
     void (*func)(void);
     if (arg8 == 3) {
         func = (void (*)(void))ptr[0x66C / 4];
-        if (func) {
-            func();
-        }
-        return;
+        if (func) func();
+    } else {
+        DBPrintf_8006CFA8(lbl_803140D0, arg8);
     }
-    DBPrintf_8006CFA8(lbl_803140D0, arg8);
 }
 
 void fn_8006CF80(void) {
