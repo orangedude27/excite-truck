@@ -45,6 +45,12 @@ public:
     virtual u8 v24(); // 0x24
 };
 
+class TObj8 {
+public:
+    virtual void d0();
+    virtual u8 *v8();
+};
+
 class TObj10 {
 public:
     virtual void d0(); virtual void d1();
@@ -76,7 +82,8 @@ extern "C" f32 fn_8013CB3C(void) {
 }
 
 extern "C" s32 fn_8013CB44(const char *arg0, TObj10 *arg1) {
-    return strcmp((const char *)arg1->v10(), arg0) == 0;
+    u8 *(*method)(TObj10 *) = (u8 *(*)(TObj10 *))(*(void ***)arg1)[2];
+    return strcmp((const char *)method(arg1), arg0) == 0;
 }
 
 extern "C" void fn_8013CB90(void *arg0) {
@@ -396,13 +403,16 @@ extern "C" s32 fn_80142BB4(void *arg0) {
 }
 
 extern "C" void *fn_80142BD8(void *arg0) {
-    s32 write = *(s32 *)((u8 *)arg0 + 8);
-    s32 count = *(s32 *)((u8 *)arg0 + 4);
-    s32 read = *(s32 *)((u8 *)arg0 + 0xC);
-    s32 next = (write + 1) % count;
-    *(s32 *)((u8 *)arg0 + 8) = next;
-    if (next == read) *(s32 *)((u8 *)arg0 + 0xC) = (read + 1) % count;
-    return *(u8 **)arg0 + write * 0xC;
+ s32 write=*(s32 *)((u8 *)arg0+8);
+ s32 count=*(s32 *)((u8 *)arg0+4);
+ s32 read=*(s32 *)((u8 *)arg0+0xC);
+ s32 next;
+ u8 *base;
+ next=(write+1)%count;
+ base=*(u8 **)arg0;
+ *(s32 *)((u8 *)arg0+8)=next;
+ if(next==read) *(s32 *)((u8 *)arg0+0xC)=(read+1)%count;
+ return base+write*12;
 }
 
 extern "C" void *fn_80142C28(void *arg0, void *arg1) {
@@ -534,12 +544,14 @@ extern "C" void fn_80143CB0(void *);
 extern "C" char lbl_8032CD54[];
 extern "C" void fn_80143C54(void *arg0) {
     s32 value;
-    if (fn_801284F8(8, lbl_8032CD54) != 0) {
-        value = fn_802ADDD8(1);
+    void **check = fn_801284F8(8, lbl_8032CD54);
+    if (check != 0) {
+        value = ((s32 (*)(void *, s32))fn_802ADDD8)(check, 1);
         *(s32 *)((u8 *)arg0 + 0x140) = value;
     }
-    fn_80143DC8((u8 *)arg0 + 0x134);
-    fn_80143CB0((u8 *)arg0 + 0x134);
+    arg0 = (u8 *)arg0 + 0x134;
+    fn_80143DC8(arg0);
+    fn_80143CB0(arg0);
 }
 
 extern "C" void fn_801442DC(void *arg0) {
