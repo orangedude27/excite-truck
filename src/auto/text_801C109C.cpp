@@ -3,7 +3,7 @@
 
 extern void fn_801C1218(void);
 extern void fn_801C1364(int);
-extern int fn_801284F8(int, int *);
+extern "C" int fn_801284F8(int, int *);
 extern int fn_801C109C(int, int, int, int);
 extern int fn_80128668(int);
 extern int lbl_8055A950;
