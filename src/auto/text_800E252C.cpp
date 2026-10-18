@@ -73,8 +73,8 @@ public:
     virtual void vf19();
     virtual void vf20();
     virtual void vf21();
-    virtual void vf22();
-    virtual VfObjF *vf23();   // vtable 0x5C
+      virtual VfObjF *vf22();   // vtable 0x5C
+  virtual VfObjF *vf23();
 };
 // Minimal shapes matching the target's use of BasicSound/SoundPlayer (0x10 player
 // field, byte field at 0x74, and Remove/Insert calls taking the raw pointers).
@@ -300,6 +300,37 @@ extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *this_, u8 paused) {
     OSRestoreInterrupts(level);
 }
 
+extern "C" void SetVeVolume__Q46nw4hbm3snd6detail7AxVoiceFff(void *self, float arg0, float arg1) {
+    float f0 = lbl_80560F3C;
+    if (arg1 < f0) {
+        float f2 = lbl_80560F38;
+        if (arg0 <= f2) {
+            if (arg0 < f0) f2 = f0;
+            else f2 = arg0;
+        }
+        if (f2 != *(float *)((char *)self + 0x1A0)) {
+            *(float *)((char *)self + 0x1A0) = f2;
+            *(unsigned char *)((char *)self + 0x123) |= 0x10;
+        }
+    } else {
+        float f3 = lbl_80560F38;
+        if (arg0 <= f3) {
+            if (arg0 < f0) f3 = f0;
+            else f3 = arg0;
+        }
+        float f1 = lbl_80560F38;
+        if (arg1 <= f1) {
+            f1 = lbl_80560F3C;
+            if (arg1 >= f1) f1 = arg1;
+        }
+        if (f1 != *(float *)((char *)self + 0x19C) || f3 != *(float *)((char *)self + 0x1A0)) {
+            *(float *)((char *)self + 0x19C) = f1;
+            *(float *)((char *)self + 0x1A0) = f3;
+            *(unsigned char *)((char *)self + 0x123) |= 0x10;
+        }
+    }
+}
+
 extern "C" void fn_800E5444(void *arg0, float farg0) {
     if (farg0 != *(float *)((char *)arg0 + 0x184)) {
         *(float *)((char *)arg0 + 0x184) = farg0;
@@ -469,6 +500,24 @@ extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7
     }
 }
 
+extern "C" int GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void* arg0, unsigned long arg1, int arg2) {
+    unsigned int base = (unsigned int)arg0;
+    int result = 0;
+    if (base != 0) base += 0x80000000;
+    switch (arg2) {
+    case 0: {
+        unsigned int q = (unsigned int)arg1 / 7;
+        unsigned int t = (((unsigned int)arg1 - q) >> 1) + q;
+        result = (int)((unsigned int)arg1 - ((t >> 3) * 0xE) + (base * 2) + ((t * 2) & 0xFFFFFFF0) + 2);
+        break;
+    }
+    case 25: result = base + arg1; break;
+    case 10: result = (base >> 1) + arg1; break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); break;
+    }
+    return result;
+}
+
 extern "C" int GetSampleByDspAddress__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *arg0, unsigned int arg1, int arg2) {
     unsigned int address = (unsigned int)arg0;
     int result = 0;
@@ -580,6 +629,25 @@ extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf(void *this_
     *(f32*)&((u8*)sound)[0x8C] = vol;
 }
 
+extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, float volume, int arg2) {
+    char *p = (char *)this_;
+    float f;
+    if (!(volume >= lbl_80560FB0)) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x225, lbl_80322830);
+    }
+    int a = *(int *)(p + 0x84);
+    int b = *(int *)(p + 0x88);
+    if (b < a) {
+        f = *(float *)(p + 0x7C) + ((float)(b ^ 0x8000) * (*(float *)(p + 0x80) - *(float *)(p + 0x7C))) / (float)(a ^ 0x8000);
+    } else {
+        f = *(float *)(p + 0x80);
+    }
+    *(float *)(p + 0x7C) = f;
+    *(float *)(p + 0x80) = volume;
+    *(int *)(p + 0x84) = arg2;
+    *(int *)(p + 0x88) = 0;
+}
+
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
     BasicSound *sound = (BasicSound *)this_;
     if (!(vol >= lbl_80560FB0)) {
@@ -626,12 +694,9 @@ extern "C" void fn_800E9B9C(void *arg0) {
 #pragma small_data off
 #pragma pop
 extern "C" void fn_800E9BA4(void *this_, int vol) {
-    int v = vol;
-
-    *(int *)((char *)this_ + 0x78) = v;
-    void *vtable = *(void **)this_;
-    (*(void (**)(void *))((char *)vtable + 0x5C))(vtable);
-    *(int *)((char *)this_ + 0x4) = v;
+    *(int *)((char *)this_ + 0x78) = vol;
+    (*(void (**)(void *))((char *)*(void **)this_ + 0x5C))(this_);
+    *(int *)((char *)this_ + 0x4) = vol;
 }
 extern int lbl_8055DE20;
 extern void fn_80128668(void);
