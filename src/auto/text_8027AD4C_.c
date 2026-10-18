@@ -130,6 +130,47 @@ void fn_8027BCC8(long arg0, long arg1, long arg2) {
     fn_8027BB4C(arg0, arg1, arg2, 1);
 }
 
+extern long fn_80012790(long);
+extern long fn_80012794(void);
+extern long fn_80012810(void);
+extern long fn_8001683C(long, long);
+extern long fn_80016A44(long);
+extern long fn_8001BBB4(long, long, void *, long, long, float);
+extern long fn_80012854(void);
+extern float lbl_805641F0;
+extern char lbl_8055C768[];
+void fn_8027BF38(void) {
+    long state;
+    long i;
+    long j;
+
+    state = fn_80012810();
+    if (state != 0x130) {
+        if (state != 0x134)
+            fn_80012794();
+        if (state != 0x134)
+            fn_80012790(0x130);
+    }
+    fn_8001683C(0, 0);
+    j = 0;
+    do {
+        i = 0;
+        do {
+            fn_8000DA10();
+            fn_8001BBB4(i, j, lbl_8055C768, 0x1F4, 0, lbl_805641F0);
+            i++;
+        } while (i < fn_80012854());
+        j++;
+    } while (j < 3);
+    fn_80016A44(0);
+    if (state != fn_80012810()) {
+        if (fn_80012810() != 0x134)
+            fn_80012794();
+        if (state != 0x134)
+            fn_80012790(state);
+    }
+}
+
 void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
     long i;
     void *p, *q;
@@ -199,6 +240,48 @@ long *fn_8027C26C(void *arg0, const char *arg1) {
     return *(long **)((char *)arg0 + 0xAF0C) + index * 0xC;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+long fn_8027C4B4(long arg0, long arg1) {
+    long offset;
+    long i;
+    if (arg0 != 0) {
+        *(long *)(arg0 + 4) = 0;
+        i = 0;
+        *(long *)(arg0 + 0xAF10) = 0;
+        offset = 0;
+        while (i < *(long *)(arg0 + 0xB00C)) {
+            fn_80131818(*(long *)(*(long *)(arg0 + 0xB008) + offset));
+            offset += 4;
+            i++;
+        }
+        if ((void *)(arg0 + 0xB008) != 0) {
+            *(long *)(arg0 + 0xB00C) = 0;
+            if ((void *)(arg0 + 0xB008) != 0) {
+                *(long *)(arg0 + 0xB008) = 0;
+                *(long *)(arg0 + 0xB00C) = 0;
+                *(long *)(arg0 + 0xB010) = 0;
+            }
+        }
+        if ((void *)(arg0 + 0xAF0C) != 0) {
+            if ((void *)(arg0 + 0xAF0C) != 0) {
+                *(long *)(arg0 + 0xAF0C) = 0;
+                *(long *)(arg0 + 0xAF10) = 0;
+                *(long *)(arg0 + 0xAF14) = 0;
+            }
+        }
+        if (arg0 != 0) {
+            if (arg0 != 0) {
+                *(long *)arg0 = 0;
+                *(long *)(arg0 + 4) = 0;
+                *(long *)(arg0 + 8) = 0;
+            }
+        }
+        if (arg1 > 0) fn_80128668((void *)arg0);
+    }
+    return arg0;
+}
+#pragma pop
 void fn_8027C59C(long arg0) {
     long value;
 
@@ -377,8 +460,7 @@ void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
     }
 }
 
-#pragma use_lmw_stmw on
-long fn_8027CE4C(long arg0) {
+  long fn_8027CE4C(long arg0) {
     long value = *fn_8027C120(lbl_8055F654, arg0);
     switch (value) {
     case 0:
@@ -390,7 +472,6 @@ long fn_8027CE4C(long arg0) {
         return 1;
     }
 }
-#pragma dont_inline off
 long fn_8027D1F4(void) {
     return *(long *)((char *)lbl_8055F654 + 0xB01C);
 }
