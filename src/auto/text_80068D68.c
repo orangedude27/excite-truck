@@ -49,7 +49,7 @@ extern void rfc_send_fcon(void *, s32, void *);
 extern void rfc_send_fcon_80093FDC(void *, s32);
 extern void PORT_FlowInd(void *, s32, s32);
 extern void PORT_LineStatusInd(void *, u8, u8);
-extern void *port_find_mcb_dlci_port(void *, u8);
+extern void *port_find_mcb_dlci_port(void *mcb, u8 dlci);
 extern void rfc_port_timer_stop(void *);
 extern void rfc_send_rls(void *, u8, s32, u8);
 extern void rfc_check_send_cmd(void *, void *);
