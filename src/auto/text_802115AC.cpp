@@ -271,8 +271,9 @@ extern "C" void fn_802149FC(s32 arg0) {
 extern "C" void fn_802192AC(void);
 extern "C" void fn_80219354(void);
 extern "C" void fn_80214A9C(s32 arg0) {
-    if (fn_802168E4() != 0) {
-        fn_802168CC(arg0, lbl_80563434);
+    s32 status = fn_802168E4();
+    if (status != 0) {
+        ((s32 (*)(s32, s32, float))fn_802168CC)(status, arg0, lbl_80563434);
     } else {
         fn_802E317C(lbl_8033D2A0);
     }
@@ -627,6 +628,14 @@ extern "C" void fn_802158C8(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
     obj->vf18();
 }
+
+class Vf4Obj {
+public:
+    virtual void vf0();
+    virtual void vf1();
+    virtual void vf2();
+    virtual void vf3();
+};
 
 extern "C" void fn_802158DC(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
