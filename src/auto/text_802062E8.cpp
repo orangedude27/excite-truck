@@ -71,7 +71,9 @@ extern "C" void fn_80206484(int arg0) {
     extern void fn_80208D70(void);
     extern void *fn_80208D4C(void);
     fn_80208D70();
-    ((void (**)(int))*(void ***)fn_80208D4C())[11](arg0);
+    void *obj = fn_80208D4C();
+    void **vtable = *(void ***)obj;
+    ((void (*)(void *, int))vtable[11])(obj, arg0);
 }
 
 void fn_802064C8(void) {
@@ -131,22 +133,25 @@ extern "C" void fn_80206750(void *arg0, int arg1, int arg2) {
 
 extern "C" void fn_80206A5C(void* arg0) {
     if (*(unsigned char*)((char*)arg0 + 0x34)) {
-        *(unsigned char*)((char*)arg0 + 0x34) = 0;
         float value = *(float*)((char*)arg0 + 0x28);
+        *(unsigned char*)((char*)arg0 + 0x34) = 0;
         void* obj = *(void**)((char*)arg0 + 0xC);
-        (*(void (**)(void*, float))(*(unsigned char**)obj + 0x44))(obj, value);
+        void** vtable = *(void***)obj;
+        ((void (*)(void*, float))vtable[0x44 / 4])(obj, value);
     }
     if (*(unsigned char*)((char*)arg0 + 0x35)) {
         void* obj = *(void**)((char*)arg0 + 0xC);
         *(unsigned char*)((char*)arg0 + 0x35) = 0;
         float value = *(float*)((char*)arg0 + 0x2C);
-        (*(void (**)(void*, float))(*(unsigned char**)obj + 0x48))(obj, value);
+        void** vtable = *(void***)obj;
+        ((void (*)(void*, float))vtable[0x48 / 4])(obj, value);
     }
     if (*(unsigned char*)((char*)arg0 + 0x36)) {
         void* obj = *(void**)((char*)arg0 + 0xC);
         *(unsigned char*)((char*)arg0 + 0x36) = 0;
         float value = *(float*)((char*)arg0 + 0x30);
-        (*(void (**)(void*, float))(*(unsigned char**)obj + 0x4C))(obj, value);
+        void** vtable = *(void***)obj;
+        ((void (*)(void*, float))vtable[0x4C / 4])(obj, value);
     }
 }
 
@@ -308,4 +313,10 @@ extern "C" void fn_802E30C8(const char *, ...);
 extern "C" void fn_80207938(int arg0) {
     fn_802E30C8(&lbl_8033BD58, ++lbl_8055ED94, arg0);
 }
-
+class Obj80206518 {
+public:
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+    virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+    virtual void f12(); virtual void f13(); virtual void f14();
+};
