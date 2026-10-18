@@ -383,9 +383,9 @@ extern "C" s32 fn_801F9450(void *node) {
     return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055B374) == 0;
 }
 
-extern "C" s32 fn_801F948C(F9Node *node) {
-    ((F9NodeFn *)node)->fn(node);
-    return stricmp((char *)node->name, (char *)lbl_8033B1EC) == 0;
+extern "C" s32 fn_801F948C(void *node) {
+    struct V { virtual const char *get(); };
+    return stricmp(((V *)node)->get(), (const char *)lbl_8033B1EC) == 0;
 }
 
 extern u8 lbl_8033B200[];
