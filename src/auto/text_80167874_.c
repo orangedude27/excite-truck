@@ -71,6 +71,40 @@ void fn_80167EE0(s32 *arg0) {
     *arg0 = 0;
 }
 
+void fn_80168328(void) {
+    extern s32 lbl_8055E354;
+    extern void fn_801678D8(void);
+    s32 *root;
+    s32 i, offset, j, count;
+    s32 *records;
+    u8 *entry;
+    root = &lbl_8055E354;
+    fn_801678D8();
+    i = 0;
+    offset = 0;
+    while (i < *(s32 *)((u8 *)root + 0x1D4D0)) {
+        entry = (u8 *)(*(s32 **)((u8 *)root + 0x1D4CC)) + offset;
+        if (entry[0x1D] == 0) {
+            entry[0x1D] = 1;
+            count = *(s32 *)(entry + 0x18);
+            j = 0;
+            while (count > 0) {
+                records = *(s32 **)root;
+                if (*(s32 *)((u8 *)records + (*(s32 *)(entry + 0x14) + j) * 0x18) == 0 ||
+                    *((u8 *)*(s32 *)((u8 *)records + (*(s32 *)(entry + 0x14) + j) * 0x18) + 0x14) != 0) {
+                    j++;
+                    count--;
+                    continue;
+                }
+                entry[0x1D] = 0;
+                break;
+            }
+        }
+        offset += 0x20;
+        i++;
+    }
+}
+
 extern s32 fn_8002B1D8(s32, s32 *, s32);
 extern char lbl_803301B8[];
 extern s32 lbl_8055E354;
@@ -183,10 +217,10 @@ s32 fn_80169978(s32 arg0) {
 }
 
 extern char lbl_8055A1B8;
-s32 fn_80169D64(s32 arg0) {
+s32 fn_80169D64(s32 arg0, s32 arg1) {
     s32 p = (s32)&lbl_8055A1B8;
     s32 len = strlen((char *)p);
-    s32 r = fn_8002B1D8(arg0, (s32 *)p, len);
+    s32 r = fn_8002B1D8(arg1, (s32 *)p, len);
     return (u32)__cntlzw(r) >> 5;
 }
 
