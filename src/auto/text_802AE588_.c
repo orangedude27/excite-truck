@@ -21,6 +21,14 @@ extern int fn_8012850C(int, void *);
 extern double fn_8002F234(float, float, float);
 extern void *lbl_8055CD78;
 extern void fn_80128668(void*);
+extern char lbl_8055F981;
+extern unsigned char lbl_8055F97C;
+extern float lbl_80564AF0;
+extern float lbl_80564B6C;
+extern float lbl_80564B84;
+extern float lbl_80564BB0;
+extern float fn_801EA0E8(float, float);
+extern unsigned int fn_802BBD38(short, short, float);
 void* fn_802AE588(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
@@ -174,8 +182,10 @@ void fn_802AEAAC(void) {
     lbl_8055F978 = *(int *)(lbl_8055F970 + 8);
     do {
         fn_802BB674(*(int *)((char *)lbl_8055F970 + offset + 0xC), i);
+        i++;
+        if (i >= 4) break;
         offset += 8;
-    } while (++i < 4);
+    } while (1);
     fn_802C10CC(*(int *)(lbl_8055F970 + 0x2C));
 }
 
