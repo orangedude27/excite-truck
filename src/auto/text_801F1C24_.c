@@ -112,8 +112,8 @@ void fn_801F2108(void) {
 #pragma push
 #pragma small_data off
 void fn_801F224C(void) {
-    void *p = fn_801284F8(8, &lbl_8033A6A0);
-    if (p != 0) {
+    void *p;
+    if ((p = fn_801284F8(8, &lbl_8033A6A0)) != 0) {
         *(void **)p = &lbl_8033A710;
         *(int *)((char *)p + 4) = 0;
     }
@@ -291,17 +291,17 @@ void fn_801F33BC(void *unused, int arg1) {
     t = p[13]; p[13] = p[14]; p[14] = t;
 }
 
+#pragma small_data off
+__declspec(section ".data") extern int lbl_8033A8F8;
 void *__dt__Q28PSSystem7SeqHeapFv_801F3460(void *arg0, int arg1) {
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033A8F8;
         fn_802C9994(-1, &lbl_8033A8F8);
-        if (arg1 > 0) {
-            fn_80128668();
-        }
+        if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-
+#pragma small_data on
 void fn_801F34C4(void *arg0, int arg1) {
     extern int *fn_801F1CE8(int);
     int *p = fn_801F1CE8(arg1);
@@ -512,9 +512,8 @@ extern int lbl_8033A7A0_arr[];
 void *fn_801F3EF8(void *arg0, int arg1) {
     extern int lbl_8033A7A0[];
     if (arg0 != 0) {
-        *(void **)arg0 = (void *)&lbl_8033A7A0[0];
-        if (arg1 <= 0) {
-        } else {
+        *(void * volatile *)arg0 = (void *)&lbl_8033A7A0[0];
+        if (arg1 > 0) {
             fn_80128668();
         }
     }
@@ -531,6 +530,36 @@ void fn_801F3F88(void) {
 
 }
 
+extern float fn_802C88D4(void *);
+extern int fn_802C9900(float);
+extern int fn_802C9904(void);
+#pragma push
+#pragma processor 750
+void fn_801F3F8C(void *arg0, void *arg1) {
+    float lower = lbl_80562F40;
+    float upper = lbl_80562F44;
+    void *node = arg1;
+    if (node != 0) {
+        do {
+            int index = *(int *)((char *)node + 0x14);
+            if (index >= 0 && index < 0x30) {
+                char *entry = *(char **)((char *)arg0 + 4) + index * 0x18;
+                float value = fn_802C88D4(entry);
+                float threshold = *(float *)(entry + 0x14);
+                if (value > threshold) {
+                    float amount = *(float *)(entry + 0x10) * (value - threshold);
+                    if (amount < upper) amount = upper;
+                    if (amount > lower) amount = lower;
+                    fn_802C9900(amount);
+                    fn_802C7040(*(int *)(entry + 0xC));
+                    fn_802C9904();
+                }
+            }
+            node = *(void **)((char *)node + 0xC);
+        } while (node != 0);
+    }
+}
+#pragma pop
 void fn_801F41CC(int unused, unsigned char *arg0) {
     unsigned char t;
     t=arg0[0x2c]; arg0[0x2c]=arg0[0x2f]; arg0[0x2f]=t;
