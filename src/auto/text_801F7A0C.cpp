@@ -535,16 +535,14 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
 
 extern "C" void fn_801F9A24(F92Node **arg0) {
     F92Node *node = *arg0;
-    for (;;) {
+    do {
         fn_801F99CC((F92Obj *)node);
         F92Node *next = node->next;
         if (node != 0) {
             ((F92VT *)((F92Obj *)node)->w108)->fn8(node, 1);
         }
         node = next;
-        if (node == 0)
-            break;
-    }
+    } while (node != 0);
     *arg0 = 0;
 }
 
@@ -781,24 +779,21 @@ extern "C" void fn_801FA7F4(void *arg0, s32 *arg1, s32 arg2) {
         fn_801F973C(obj, (u8 *)data + 4, 2);
     }
 }
-#pragma dont_inline reset
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void *fn_801FA8E0(s32 arg0, s32 arg1, s32 arg2) {
-    s32 id;
+    s32 id = lbl_8055EC78++;
     void **list;
     void *context;
-    void *node;
-    id = lbl_8055EC78;
-    lbl_8055EC78 = id + 1;
     context = fn_8013184C();
     list = lbl_8055EC74;
-    void *tag = lbl_8033B5B8;
-    node = fn_801284F8(0x4C, tag);
+    void *node = fn_801284F8(0x4C, lbl_8033B5B8);
     if (node != 0) node = fn_801A4A8C(node, id, arg2, arg0, arg1, context);
     *(void **)((u8 *)node + 0x44) = *list;
     *list = node;
     return (u8 *)node + 4;
 }
-#pragma use_lmw_stmw reset
+#pragma pop
 extern void **lbl_8055EC74;
 extern s32 lbl_8055EC78;
 extern u8 lbl_8055EC3C;
@@ -841,25 +836,16 @@ extern "C" s32 fn_801FB244(s32 arg0, s32 arg1) {
 extern "C" f32 fn_801EA0E8(f32, f32, f32, f32, f32, f32);
 extern "C" void fn_801F7D10(void);
 extern "C" void fn_801FB284(void *arg0, void *arg1) {
-    f32 temp_f1;
-    f32 temp_f1_2;
-    f32 temp_f2;
-    f32 temp_f3;
-    f32 temp_f3_2;
-    f32 temp_f4;
-    f32 temp_f5;
-    f32 temp_f6;
-    f32 temp_f6_2;
-
+    f32 temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f3_2, temp_f4, temp_f5, temp_f6, temp_f6_2;
     fn_801F7D10();
     if (*(u32 *)((u8 *)arg0 + 0x190) & 0x100) {
         temp_f3 = -*(f32 *)((u8 *)arg0 + 0x28);
         temp_f5 = *(f32 *)((u8 *)arg1 + 0x24);
         temp_f6 = *(f32 *)((u8 *)arg1 + 0x0C) * temp_f3;
         temp_f4 = *(f32 *)((u8 *)arg1 + 0x10) * temp_f3;
+        temp_f3_2 = *(f32 *)((u8 *)arg1 + 0x28);
         temp_f2 = *(f32 *)((u8 *)arg1 + 0x2C) + (*(f32 *)((u8 *)arg1 + 0x14) * temp_f3);
         temp_f1 = temp_f5 + temp_f6;
-        temp_f3_2 = *(f32 *)((u8 *)arg1 + 0x28);
         *(f32 *)((u8 *)arg1 + 0x2C) = temp_f2;
         *(f32 *)((u8 *)arg1 + 0x24) = temp_f1;
         *(f32 *)((u8 *)arg1 + 0x28) = temp_f3_2 + temp_f4;
@@ -1116,11 +1102,12 @@ extern "C" void *fn_801FC12C(void *arg0) {
 
 #pragma pop
 extern "C" void* fn_801FC228(void* arg0, s32 arg1) {
- if (arg0 != 0) {
- *(void**)((char*)arg0 + 0x108) = lbl_8033B418;
- if (arg1 > 0) fn_80128668();
- }
- return arg0;
+    if (arg0 == 0) goto done;
+    *(volatile void**)((char*)arg0 + 0x108) = lbl_8033B418;
+    if (arg1 <= 0) goto done;
+    fn_80128668();
+done:
+    return arg0;
 }
 
 extern "C" void fn_801FC4D8(void **arg0, void *arg1) {
@@ -1181,32 +1168,37 @@ extern "C" void fn_801FC720(void *arg0) {
     }
 }
 
-f32 fn_801E88F0(s32);
-f32 fn_802C88E8(void *);
-f64 fn_8002F234(void);
-void fn_802C7AE0(s32, void *, s32);
+extern "C" f32 fn_801E88F0(s32);
+extern "C" f32 fn_802C88E8(void *);
+extern "C" f64 fn_8002F234(void);
+extern "C" void fn_802C7AE0(s32, void *, s32);
 extern f32 lbl_80558DC4;
 extern f32 lbl_80563020;
 #pragma push
 #pragma processor 750
 __declspec(section ".data") extern f32 lbl_80558DC4;
+extern "C" f32 fn_801E88F0(s32);
+extern "C" f32 fn_802C88E8(void *);
+extern "C" f64 fn_8002F234(void);
+extern "C" void fn_802C7AE0(s32, void *, s32);
 extern "C" void fn_801FC774(void *arg0) {
     f32 speed = fn_801E88F0(-1);
     f32 speed2 = speed * speed;
     f32 value;
-    f32 blend;
     if (fn_802C88E8((u8 *)arg0 + 0x28) * speed2 >
         *(f32 *)((u8 *)arg0 + 0x4C) * *(f32 *)((u8 *)arg0 + 0x4C)) {
         f32 time = (f32)fn_8002F234();
         f32 current = *(f32 *)((u8 *)arg0 + 0x4C);
+        f32 start = *(f32 *)((u8 *)arg0 + 0x48);
         f32 t = ((time - current) - lbl_80562FF0) / lbl_80563020;
-        blend = lbl_80562FFC;
+        f32 blend = lbl_80562FFC;
         if (blend < t) blend = t;
         if (blend > lbl_80562FF0) blend = lbl_80562FF0;
-        value = *(f32 *)((u8 *)arg0 + 0x48) +
-                blend * (lbl_80562FF0 - *(f32 *)((u8 *)arg0 + 0x48));
-    } else value = *(f32 *)((u8 *)arg0 + 0x48);
-    if (__fabsf(value) > lbl_80558DC4)
+        value = start + blend * (lbl_80562FF0 - start);
+    } else {
+        value = *(f32 *)((u8 *)arg0 + 0x48);
+    }
+    if ((f32)__fabs((f64)value) > lbl_80558DC4)
         fn_802C7AE0(*(s32 *)((u8 *)arg0 + 0x44), (u8 *)arg0 + 4, -1);
 }
 #pragma pop
