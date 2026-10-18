@@ -5,6 +5,7 @@ extern void *lbl_8055F6C8;
 typedef signed int s32;
 typedef unsigned char u8;
 typedef unsigned char u8;
+typedef struct { void **vtable; } Fn80287A34Obj;
 typedef float f32;
 extern void fn_802885C0(void);
 extern void fn_802887EC(void);
@@ -191,11 +192,9 @@ void fn_802879E4(s32 arg0) {
 }
 
 void fn_80287A34(void) {
-    void (*volatile fn)(void);
     fn_801E12A4();
     fn_802A1548();
-    fn = (void (*)(void))(*(void***)fn_801B83A0())[18];
-    fn();
+    ((void (*)(void))(*(void ***)fn_801B83A0())[18])();
 }
 
 void fn_80287A6C(s32 arg0) {
