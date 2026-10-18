@@ -299,18 +299,22 @@ extern "C" s32 fn_800A6520(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     s32 spC;
     s32 sp8;
     s32 result;
-    s32 (*callback)(void *, s32, s32, s32, s32);
+    s32 (*convert)(void *, s32, s32, s32, s32 *, s32 *);
+    s32 (*convert_back)(void *, s32, s32, s32, s32 *, s32 *);
+    s32 (*callback)(void *, s32, s32, s32, s32 *);
 
-    result = VFipdm_disk_convert_sector_into_block((s32)arg0, arg2, arg3, &sp10, &spC);
+    convert = (s32 (*)(void *, s32, s32, s32, s32 *, s32 *))VFipdm_disk_convert_sector_into_block;
+    result = convert(arg0, arg2, arg3, arg4, &sp10, &spC);
     if (result != 0)
         return result;
     if (fn_800B8004(*(s32 *)((u8 *)arg0 + 0x14)) != 0)
         return 0x14;
-    callback = *(s32 (**)(void *, s32, s32, s32, s32))((u8 *)*(void **)((u8 *)arg0 + 4) + 0x14);
-    result = callback(arg0, arg1, sp10, spC, (s32)arg5);
+    callback = *(s32 (**)(void *, s32, s32, s32, s32 *))((u8 *)*(void **)((u8 *)arg0 + 4) + 0x14);
+    result = callback(arg0, arg1, sp10, spC, arg5);
     if (fn_800B8048(*(s32 *)((u8 *)arg0 + 0x14)) != 0)
         return 0x14;
-    VFipdm_disk_convert_block_into_sector((u32)arg0, (u32)sp10, *(u32 *)arg5, (u32 *)&sp8, (u32 *)arg5);
+    convert_back = (s32 (*)(void *, s32, s32, s32, s32 *, s32 *))VFipdm_disk_convert_block_into_sector;
+    convert_back(arg0, sp10, *arg5, arg4, &sp8, arg5);
     if (result != 0) {
         fn_800A71D0((void *)*(s32 *)((u8 *)arg0 + 0x2C), result);
         return 0x15;
