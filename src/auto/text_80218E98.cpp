@@ -65,7 +65,7 @@ public:
     virtual void vf27();
     virtual void vf28();
     virtual void vf29();
-    virtual void vf30();
+    virtual s32 vf30();
     virtual s32 vf31();    // vtable 0x84
     virtual s32 vf32();    // vtable 0x88
 };
@@ -225,15 +225,14 @@ extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
 }
 
 extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
-    void *obj = arg0;
-    void **vt = *(void ***)obj;
-    s32 size = ((s32 (*)(void *))vt[30])(obj);
-    s32 x = arg1 + size;
-    s32 end = arg2 + (*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
+    s32 temp_r0;
+    s32 temp_r3;
+    temp_r3 = arg1 + ((s32 (**)(void *))(*(void ***)arg0))[30](arg0);
     *(s32 *)((u8 *)arg0 + 4) = arg1;
-    *(s32 *)((u8 *)arg0 + 0xC) = x;
+    temp_r0 = arg2 + (*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
+    *(s32 *)((u8 *)arg0 + 0xC) = temp_r3;
     *(s32 *)((u8 *)arg0 + 8) = arg2;
-    *(s32 *)((u8 *)arg0 + 0x10) = end;
+    *(s32 *)((u8 *)arg0 + 0x10) = temp_r0;
 }
 
 extern "C" void fn_80219264(void *arg0, s32 arg1, s32 arg2) {
@@ -1578,19 +1577,16 @@ extern "C" s32 fn_802268A0(void *arg0, s32 arg1) {
 
 extern "C" u32 fn_802268E8(void *arg0) {
     s32 *p;
-    s32 value;
+    s32 eq;
     u32 result;
-    void *obj;
+    void **obj;
     p = *(s32 **)((char *)arg0 + 0x264);
     if (p == 0) return 0;
-    value = (*(s32 *)((char *)arg0 + 0x260) == *p);
-    if (*(u8 *)((char *)arg0 + 0x18) != 0) {
-        result = value + 2;
-    } else {
-        result = value;
-    }
-    obj = *(void **)((char *)arg0 + 0x244);
-    if (((s32 (*)(void *))(*(void ***)obj)[7])(obj) == 3 && result == 3) result = 1;
+    eq = (*(s32 *)((char *)arg0 + 0x260) == *p);
+    result = eq + 2;
+    if (*(u8 *)((char *)arg0 + 0x18) == 0) result -= 2;
+    obj = *(void ***)((char *)arg0 + 0x244);
+    if (((s32 (*)(void **))(*(void ***)obj)[7])(obj) == 3 && result == 3) result = 1;
     if (*(u8 *)((char *)arg0 + 0x1B) == 0) result = 4;
     return result;
 }
