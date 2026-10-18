@@ -20,17 +20,19 @@ extern "C" void fn_800FFE94(void* arg0) {
 
 extern "C" int ReadWaveParam__Q46nw4hbm3snd6detail13WsdFileReaderCFiPQ46nw4hbm3snd6detail8WaveDataPCv(void* arg0, unsigned int arg1, void* arg2, const void* arg3) {
     unsigned char sp8[8];
-    void* header = *(void**)arg0;
+    register void* header = *(void**)arg0;
     char* base;
     void* entry;
     if (*(unsigned short*)((char*)header + 6) == 0x100) {
         base = (char*)*(void**)((char*)arg0 + 8);
-        entry = (void*)(*(unsigned int*)(base + arg1 * 4 + 8) + (unsigned int)base);
+        unsigned int off = *(unsigned int*)(base + arg1 * 4 + 8);
+        entry = (void*)((unsigned int)off + (unsigned int)base);
     } else {
         base = (char*)*(void**)((char*)arg0 + 8);
         if (arg1 >= *(unsigned int*)(base + 8))
             return 0;
-        entry = (void*)(*(unsigned int*)(base + arg1 * 4 + 0xC) + (unsigned int)base);
+        unsigned int off = *(unsigned int*)(base + arg1 * 4 + 0xC);
+        entry = (void*)((unsigned int)off + (unsigned int)base);
     }
     fn_800FEC1C(sp8, entry);
     return ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(sp8, arg2, arg3);
@@ -156,6 +158,16 @@ extern "C" void fn_80100A48(void* arg0, float arg1) {
 
 extern "C" float fn_80100A88(void* arg0) { return *(float*)((char*)arg0 + 0x4C); }
 
+extern "C" void SetFxSend__Q46nw4hbm3snd6detail9WsdPlayerFQ36nw4hbm3snd6AuxBusf(void* arg0, int arg1, float arg2) {
+    extern char lbl_80327930[];
+    extern char lbl_80327994[];
+    int valid = arg1 >= 0 && arg1 < 3;
+    if (!valid) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x13F, lbl_80327994, arg1, 0, 3);
+    }
+    *(float*)((char*)arg0 + arg1 * 4 + 0x50) = arg2;
+}
+
 extern "C" void fn_80100BAC(void* arg0, int arg1) {
     int level = OSDisableInterrupts();
     *(int*)((char*)arg0 + 0x44) = arg1;
@@ -241,6 +253,41 @@ extern "C" void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi_80100FA8(vo
     OSRestoreInterrupts(level);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(void* arg0, const void* arg1, const void* arg2) {
+    extern char lbl_80327C88[];
+    extern char lbl_80327CAC[];
+    extern char lbl_8041D4C4[];
+    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void*, void*);
+    extern void* GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
+    extern void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void*, void*);
+    extern void Close__Q46nw4hbm3snd6detail8WsdTrackFv(void*);
+    int level2;
+    int level1;
+    level1 = OSDisableInterrupts();
+    if (*((unsigned char*)arg0 + 0x1D) != 0 &&
+        (unsigned int)arg1 <= *(unsigned int*)((char*)arg0 + 0x9C) &&
+        *(unsigned int*)((char*)arg0 + 0x9C) <= (unsigned int)arg2) {
+        level2 = OSDisableInterrupts();
+        if (*((unsigned char*)arg0 + 0x1F) != 0) {
+            if (arg0 == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CAC, 0x233, lbl_80327C88);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(lbl_8041D4C4, (char*)arg0 + 0x14);
+        }
+        if (*((unsigned char*)arg0 + 0x1D) != 0) {
+            void* callback = arg0;
+            if (arg0 != 0)
+                callback = (char*)arg0 + 8;
+            UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(), callback);
+        }
+        OSRestoreInterrupts(level2);
+        Close__Q46nw4hbm3snd6detail8WsdTrackFv((char*)arg0 + 0x9C);
+        *((unsigned char*)arg0 + 0x1D) = 0;
+    }
+    OSRestoreInterrupts(level1);
+}
+#pragma pop
 extern "C" char lbl_80327C58[];
 extern "C" char lbl_80327C7C[];
 extern "C" char lbl_80327AC4[];
