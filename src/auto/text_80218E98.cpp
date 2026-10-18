@@ -780,7 +780,15 @@ extern "C" void fn_8021CE8C(void *arg0) {
 }
 
 extern "C" void fn_8021CEAC(void *arg0) {
-    (*(void (**)(void *))(*(void ***)arg0 + 19))(arg0);
+    struct Dispatch {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+        virtual void d16();
+        virtual void dispatch();
+    };
+    ((Dispatch *)arg0)->dispatch();
     *(u8 *)((u8 *)arg0 + 0x244) = 0;
 }
 
@@ -887,9 +895,9 @@ extern "C" void *fn_8021D7C8(void *arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 
 }
 
 extern "C" void fn_8021D864(void *arg0) {
-    void *obj=*(void **)((u8 *)arg0+0x254);
-    void **vtable=*(void ***)((u8 *)obj+0xC);
-    return ((void (*)(void *))vtable[7])(obj);
+    void *obj = *(void **)((u8 *)arg0 + 0x254);
+    void **vtable = *(void ***)((u8 *)obj + 0xC);
+    ((void (*)(void))vtable[7])();
 }
 
 extern "C" void fn_8021D878(void *arg0) {
@@ -1083,8 +1091,7 @@ extern "C" void fn_80220AFC(void *arg0) {
 
 extern "C" void fn_80220B3C(void *arg0) {
     if (*(u8 *)((u8 *)arg0 + 0x258) != 0) {
-        void *vt = *(void **)arg0;
-        ((void (*)(void))((void **)vt)[0xF])();
+        ((void (*)(void *))((void **)*(void **)arg0)[0xF])(arg0);
     }
 }
 
