@@ -6,6 +6,7 @@
 extern s32 fn_8000DA10(void);
 extern void fn_801332D0(s32, s32, s32 *);
 extern void fn_80160CF4(void);
+extern s32 lbl_8055A0B0;
 extern s32 lbl_8055A0B4;
 extern s32 lbl_8055A0B8;
 extern u8 lbl_8055E2DC;
