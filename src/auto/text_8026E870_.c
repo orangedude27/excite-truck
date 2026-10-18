@@ -45,13 +45,18 @@ f32 fn_8026EA44(s32 arg0) {
     }
 }
 
+#pragma push
+#pragma dont_inline on
 f32 fn_8026EAEC(f32 farg0) {
-    f32 value = farg0;
-    if (fn_80178CA4() > 1)
-        value = lbl_80563E58 * (f32)atan((double)(lbl_80563E54 * (f32)fn_8002EF30(value * lbl_80563E50)));
+    f32 value;
+    if (fn_80178CA4() > 1) {
+        value = lbl_80563E58 * (f32)atan(lbl_80563E54 * (f32)fn_8002EF30(farg0 * lbl_80563E50));
+    } else {
+        value = farg0;
+    }
     return value;
 }
-
+#pragma pop
 f32 fn_8026ECE4(f32 *arg1) {
     f32 value = fn_8026EB4C();
     if (value > lbl_8055F52C) {
@@ -89,25 +94,30 @@ void fn_8027045C(void) {
 
 void fn_80270484(void) {
     f32 value = lbl_80563E78;
-    lbl_8049A218[0] = value;
-    lbl_8049A218[1] = value;
-    lbl_8049A218[3] = value;
-    lbl_8049A218[2] = value;
-    lbl_8049A218[4] = value;
-    lbl_8049A218[5] = value;
-    lbl_8049A218[7] = value;
-    lbl_8049A218[6] = value;
-    lbl_8049A218[8] = value;
-    lbl_8049A218[9] = value;
-    lbl_8049A218[11] = value;
-    lbl_8049A218[10] = value;
-    lbl_8049A218[12] = value;
-    lbl_8049A218[13] = value;
-    lbl_8049A218[15] = value;
-    lbl_8049A218[14] = value;
+    f32 *p = lbl_8049A218 - 1;
+    *++p = value;
+    p[1] = value;
+    p[3] = value;
+    p[2] = value;
+    p[4] = value;
+    p[5] = value;
+    p[7] = value;
+    p[6] = value;
+    p[8] = value;
+    p[9] = value;
+    p[11] = value;
+    p[10] = value;
+    p[12] = value;
+    p[13] = value;
+    p[15] = value;
+    p[14] = value;
 }
 
 void fn_802704D0(void) { fn_8026FCFC(); }
+
+void fn_802704D4(void *unused, void *arg1) {
+    ((void (*)(s32, void *))fn_802704D0)(*(s32 *)((u8 *)arg1 + 4), arg1);
+}
 
 void fn_802704E0(void) { fn_8026EA8C(); }
 
