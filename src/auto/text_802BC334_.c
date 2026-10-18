@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int lbl_8055FAB8;
+extern void *lbl_8055FABC;
 int fn_8012C33C(void);
 extern float lbl_80564D14;
 extern float lbl_80564D18;
@@ -59,6 +61,37 @@ float fn_802BC540(void *arg0, float farg0) {
     float z = *(float *)((char *)arg0 + 8);
     return farg0 * (float)fn_8002F234(x * x + z * z, z);
 }
+
+#pragma push
+#pragma processor 750
+#pragma scheduling 750
+#pragma use_lmw_stmw off
+void *fn_802BC9B0(void *arg0, int arg1, float scale) {
+    extern void *fn_801284F8(int, int);
+    extern float lbl_80564D1C, lbl_80564D20;
+    extern int lbl_8034AB54[], lbl_80333918[];
+    float value = lbl_80564D1C;
+    float b = *(float *)((char *)arg0 + 0x1C) * scale;
+    float a = *(float *)((char *)arg0 + 0x18) * scale;
+    char *obj = fn_801284F8(0x2C, (int)&lbl_8034AB54);
+    if (obj != 0) {
+        float initial = lbl_80564D20;
+        *(int *)(obj + 0xC) = 0;
+        *(int *)(obj + 4) = 0;
+        *(int *)(obj + 8) = 0;
+        *(int *)(obj + 0x18) = 0x54554245;
+        *(float *)(obj + 0x10) = value;
+        *(float *)(obj + 0x14) = lbl_80564D20;
+        *(int *)(obj + 0x20) = 100;
+        *(int *)(obj + 0x1C) = 0;
+        *(float *)(obj + 0x24) = b;
+        *(float *)(obj + 0x28) = a;
+        *(void **)obj = &lbl_80333918;
+    }
+    (*(void (***)(void *, int))obj)[16](obj, arg1);
+    return obj;
+}
+#pragma pop
 
 int fn_802BD0C8(void *arg0) {
     int result = 0;
@@ -123,7 +156,79 @@ void fn_802BD414(int arg0, volatile int *arg1) {
     }
 }
 
+#pragma push
+#pragma inline_depth(0)
+#pragma use_lmw_stmw off
+void fn_802BD4DC(void *arg0, int arg1) {
+    extern void fn_802BD69C(void *, int);
+    extern void fn_802BD5B0(void *, int);
+    unsigned char *p = arg0;
+    char *entry;
+    int offset;
+    unsigned int i;
+    unsigned char b5, b4, b1, b0, b3, b2, b6;
+    b4 = p[4];
+    b5 = p[5];
+    b6 = p[6];
+    p[4] = p[7];
+    b0 = p[0];
+    b3 = p[3];
+    p[7] = b4;
+    b1 = p[1];
+    b2 = p[2];
+    p[5] = b6;
+    p[6] = b5;
+    p[0] = b3;
+    p[3] = b0;
+    p[1] = b2;
+    p[2] = b1;
+    *(int *)(p + 4) = fn_802BD5A8(*(int *)(p + 4), arg1);
+    i = 0;
+    offset = 0;
+    while (i < *(unsigned int *)p) {
+        entry = *(char **)(p + 4) + offset;
+        fn_802BD69C(entry + 0x20, arg1);
+        fn_802BD5B0(entry + 0x28, arg1);
+        fn_802BD5B0(entry + 0x30, arg1);
+        offset += 0x38;
+        i++;
+    }
+}
+#pragma pop
+
 int fn_802BD5A8(int arg0, int arg1) { return arg0 + arg1; }
+
+#pragma push
+#pragma inline_depth(0)
+#pragma use_lmw_stmw off
+void fn_802BD5B0(void *arg0, int arg1) {
+    extern int fn_802BD694(int, int);
+    extern float lbl_80564D30;
+    unsigned char *p = arg0;
+    unsigned char tmp;
+    unsigned char other;
+    register unsigned char *entry;
+    int offset;
+    unsigned int i;
+    float zero;
+    unsigned char b7, b6, b2, b3, b0, b1, b4, b5;
+    b4 = p[4]; b5 = p[5];
+    b7 = p[7]; b6 = p[6]; p[4] = b7; b0 = p[0]; b3 = p[3]; p[7] = b4;
+    b1 = p[1]; b2 = p[2]; p[5] = b6; p[6] = b5;
+    p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
+    *(int *)(p + 4) = fn_802BD694(*(int *)(p + 4), arg1);
+    i = 0; zero = lbl_80564D30; offset = 0;
+    while (i < *(unsigned int *)p) {
+        entry = *(unsigned char **)(p + 4) + offset;
+        tmp = entry[4]; other = entry[5]; entry[4] = other; entry[5] = tmp;
+        tmp = entry[6]; entry[6] = entry[7]; entry[7] = tmp;
+        tmp = entry[8]; entry[8] = entry[9]; entry[9] = tmp;
+        tmp = entry[10]; entry[10] = entry[11]; entry[11] = tmp;
+        *(float *)(entry + 12) = zero;
+        offset += 0x10; i++;
+    }
+}
+#pragma pop
 
 int fn_802BD694(int arg0, int arg1) { return arg0 + arg1; }
 
@@ -150,11 +255,13 @@ void deleteThreads__6SystemFv_802BDCA4(void **arg0) {
 void fn_802C2930(void*, unsigned int);
 void fn_802BD018(void *arg0) {
     void *obj = *(void **)arg0;
-    if (obj != 0) {
-        *(int *)obj = 0;
-        ((int *)obj)[1] = 0;
-        ((int *)obj)[2] = 0;
-        fn_80128668(obj);
+    if (obj) {
+        if (obj) {
+            *(int *)obj = 0;
+            ((int *)obj)[1] = 0;
+            ((int *)obj)[2] = 0;
+            fn_80128668(obj);
+        }
         *(void **)arg0 = 0;
     }
 }
