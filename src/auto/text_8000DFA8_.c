@@ -300,8 +300,11 @@ extern f32 lbl_805602F8;
 extern f32 lbl_805602FC;
 extern s32 lbl_80558A90;
 extern s32 lbl_8055D494;
-extern UnkF22C *lbl_8055D4B0;
-void fn_8001071C(s32 arg0) {
+  extern UnkF22C *lbl_8055D4B0;
+  extern char lbl_802FC518[];
+  extern s32 lbl_80558AA4;
+  extern void fn_802337A0(f32, s32, f32, s32, f32, f32, s32, f32, const char *, ...);
+  void fn_8001071C(s32 arg0) {
     ((void (*)(s32, s32))fn_80010FDC)(arg0, 0xD);
 }
 
@@ -777,14 +780,18 @@ f32 fn_8000EDC0(s32 arg0) {
 }
 
 s32 fn_8000EE54(s32 arg0) {
-    if (arg0 == 13) return -1;
-    if (arg0 >= 11) {
-        if (arg0 == 11) return -1;
-        if (arg0 >= 12) return -0x5400;
+    switch (arg0) {
+    case 13:
+        return -1;
+    case 11:
+        return -1;
+    case 12:
+    case 14:
+        return -0x5400;
+    default:
+        fn_802E317C(lbl_802FC3DC);
+        return -1;
     }
-    if (arg0 >= 15) return -0x5400;
-    fn_802E317C(lbl_802FC3DC);
-    return -1;
 }
 
 f32 fn_8000EEC8(s32 arg0, f32 arg1) {
