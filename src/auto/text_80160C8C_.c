@@ -22,6 +22,7 @@ extern s32 lbl_8055A0E8;
 extern u8 lbl_8055E2DD;
 
 extern s32 lbl_8055E300;
+extern unsigned char lbl_8032F858[];
 void* fn_80160C8C(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
