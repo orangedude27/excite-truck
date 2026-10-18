@@ -219,6 +219,5 @@ extern s32 lbl_8055FE00;
 extern const char lbl_8034C3F4[];
 extern const char lbl_8034C428[];
 extern void fn_802D5FE4(void *);
-extern void GXCallDisplayList(void *, u32);
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80128670(s32);
