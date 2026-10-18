@@ -774,8 +774,14 @@ extern "C" void *fn_8021CAD4(void *arg0, s32 arg1) {
 }
 
 extern "C" void fn_8021CE8C(void *arg0) {
+    struct Local {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual void call();
+    };
     if (*(u8 *)((u8 *)arg0 + 0x244) != 0)
-        (*(void (**)(void *))(*(void ***)arg0 + 15))(arg0);
+        ((Local *)arg0)->call();
 }
 
 extern "C" void fn_8021CEAC(void *arg0) {
@@ -1973,11 +1979,12 @@ extern "C" void fn_80229640(void *arg0) {
     s32 (*callback)();
     ((VfObj *)arg0)->vf31();
     *(u8 *)((u8 *)arg0 + 0x254) = 0;
-    if (*(u8 *)((u8 *)arg0 + 0x18) != 0 &&
-        (u32)(*(s32 *)((u8 *)arg0 + 0x25C) + 0x20000) != (u32)-0x46A &&
-        (callback = *(s32 (**)())((u8 *)arg0 + 0x258)) != 0 &&
-        callback() != 0)
-        fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+    if (*(u8 *)((u8 *)arg0 + 0x18) == 0) return;
+    if ((u32)(*(s32 *)((u8 *)arg0 + 0x25C) + 0x20000) == 0xFB96) return;
+    callback = *(s32 (**)())((u8 *)arg0 + 0x258);
+    if (callback == 0) return;
+    if (callback() == 0) return;
+    fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
 }
 
 extern "C" s32 fn_802296C0(void *arg0) {
