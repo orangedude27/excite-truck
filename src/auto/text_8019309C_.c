@@ -33,6 +33,7 @@ extern char lbl_80333198[];
 
 #define __HI(x) *(int *)&x
 extern float lbl_80562168, lbl_80562174, lbl_805621A4, lbl_805621B0, lbl_805621B4;
+extern float lbl_8055A488, lbl_8056215C;
 
 int fn_8019309C(void *arg0, int index, signed char arg2) {
     void *entry = lbl_804349C0[index];
@@ -81,9 +82,12 @@ u8 fn_80193184(void *unused, int index) {
 }
 
 float fn_801931AC(float a, float b, float c, float d) {
-    float value = lbl_80562140 - a / d;
-    if (value > lbl_80562140) value = lbl_80562140;
-    if (value > lbl_80562144) value = lbl_80562144;
+    float quotient = a / d;
+    float value = lbl_80562140 - quotient;
+    if (value < lbl_80562140)
+        value = lbl_80562140;
+    if (value > lbl_80562144)
+        value = lbl_80562144;
     return b + value * (c - b);
 }
 
@@ -650,6 +654,8 @@ void fn_801963A0(void *arg0) {
       fn_8019684C();
   }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80196C90(void *arg0) {
     extern float lbl_80562260;
     extern float lbl_8055E548, lbl_8055E54C;
@@ -699,7 +705,7 @@ void fn_80196C90(void *arg0) {
     }
     *(float *)(obj + 0x148) = *(float *)(obj + 0x144);
 }
-
+#pragma pop
   int fn_8019700C(int index) {
       void *entry = lbl_804349C0[index];
       if (entry == 0) return 1;
