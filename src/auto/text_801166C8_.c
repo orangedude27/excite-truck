@@ -746,6 +746,7 @@ u32 fn_8011C1E0(s32 arg0, void *arg1) {
     }
     return 1;
 }
+#pragma dont_inline reset
 
 void fn_8011C274(s32 arg0, void *arg1) {
     if (arg0 == 0 || arg1 == 0 ||
