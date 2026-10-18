@@ -22,7 +22,7 @@ s32 fn_8000CCB8(void);
 void fn_80209110(s32);
 
 // Externs for fn_8000CE60
-extern void *lbl_802FC058;
+extern u8 lbl_802FC058[];
 extern s32 fn_802090D4(void*);
 extern void fn_80209190(f32);
 extern s32 fn_80145E70(void*);
@@ -58,6 +58,17 @@ s32 fn_8000CFA8(s32 arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+void fn_8000D000(s32 arg0, s32 arg1, s32 arg2) {
+    lbl_8055D408 = arg0;
+    lbl_8055D404 = 1;
+    lbl_8055D405 = 0;
+    lbl_8055D406 = 0;
+    lbl_8055D407 = 0;
+    lbl_8055D40C = arg1;
+    lbl_8055D400 = arg2;
+    lbl_8055D420 = ((s32 (*)(s32))fn_8000CCB8)(1);
 }
 
 void fn_8000D000(s32, s32, s32);
