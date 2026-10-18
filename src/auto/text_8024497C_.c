@@ -13,8 +13,6 @@ s32 fn_8024497C(void* arg0) {
 void fn_8013C804(void);
 void fn_8013C8B8(void);
 s32 fn_802E2C20(void);
-void fn_802C519C(s32);
-void fn_80128668(void *);
 extern char lbl_80342ED8[];
 void fn_80244C50(void) { fn_8013C804(); }
 
