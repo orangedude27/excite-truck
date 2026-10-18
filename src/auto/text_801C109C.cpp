@@ -56,10 +56,13 @@ int fn_801C1BA4(int arg0, int arg1, int arg2) {
     return result;
 }
 
-int fn_801C1C1C(void *arg0) {
+extern "C" int fn_801C109C(int, int, int, int);
+extern "C" int fn_801C109C(int, int, int, int, int);
+extern "C" int fn_801C1C1C(void *arg0) {
     int result = fn_801284F8(0x70, &lbl_8055A950);
     if (result != 0) {
-        fn_801C109C(*(int *)((char *)arg0 + 0x10),
+        fn_801C109C(result,
+                    *(int *)((char *)arg0 + 0x10),
                     *(int *)((char *)arg0 + 0x14),
                     *(int *)((char *)arg0 + 0x18),
                     *(int *)((char *)arg0 + 0x1C));
