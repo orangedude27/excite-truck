@@ -105,17 +105,15 @@ extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(void
 }
 
 void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char arg1) {
-    void *var_r31 = *(void **)((char *)arg0 + 0x30);
-loop_5:
-    if (var_r31 != 0) {
-        if (*(unsigned char *)((char *)var_r31 + 0x3A) != 0 &&
-            arg1 != (unsigned int)(*(unsigned char *)((char *)var_r31 + 0x39) != 0)) {
-            *(unsigned char *)((char *)var_r31 + 0x39) = arg1;
-            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(int *)((char *)var_r31 + 0xE0), arg1);
+    void *channel = *(void **)((char *)arg0 + 0x30);
+    do {
+        if (*(unsigned char *)((char *)channel + 0x3A) &&
+            arg1 != (unsigned int)(*(unsigned char *)((char *)channel + 0x39) != 0)) {
+            *(unsigned char *)((char *)channel + 0x39) = arg1;
+            Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(int *)((char *)channel + 0xE0), arg1);
         }
-        var_r31 = *(void **)((char *)var_r31 + 0xE4);
-        goto loop_5;
-    }
+        channel = *(void **)((char *)channel + 0xE4);
+    } while (channel != 0);
 }
 
 extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
@@ -205,19 +203,14 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(void *arg0) {
     int var_r8;
     int var_r9;
     temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    var_r5 = 1;
-    var_r6 = 1;
-    var_r7 = 1;
-    var_r8 = 1;
-    var_r9 = 1;
-    var_r10 = 1;
+    var_r5 = 1; var_r6 = 1; var_r7 = 1; var_r8 = 1; var_r9 = 1; var_r10 = 1;
     if (((unsigned int)(temp_r11 + 0x80000000U) != 0U) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0U)) var_r10 = 0;
     if ((var_r10 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0U)) var_r9 = 0;
     if ((var_r9 == 0) && ((unsigned int)(temp_r11 + 0x40000000U) != 0U)) var_r8 = 0;
     if ((var_r8 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0U)) var_r7 = 0;
     if ((var_r7 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0U)) var_r6 = 0;
     if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U)) var_r5 = 0;
-    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0x301, "this", arg0);
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x301, lbl_8032818C, arg0);
     return *(float *)((char *)arg0 + 0x44);
 }
 
@@ -238,14 +231,16 @@ extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *arg0, float x, floa
 }
 
 extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf(void *arg0, float farg0) {
-    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    int var_r10 = 1, var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1;
-    if ((temp_r11 + 0x80000000U) != 0U && (((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0U) var_r10 = 0;
-    if (var_r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0U) var_r9 = 0;
-    if (var_r9 == 0 && (temp_r11 + 0x40000000U) != 0U) var_r8 = 0;
-    if (var_r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0U) var_r7 = 0;
-    if (var_r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0U) var_r6 = 0;
-    if (var_r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U) var_r5 = 0;
+    unsigned int temp_r11;
+    int var_r10, var_r5, var_r6, var_r7, var_r8, var_r9;
+    temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+    var_r5 = var_r6 = var_r7 = var_r8 = var_r9 = var_r10 = 1;
+    if ((temp_r11 + 0x80000000U >= 1U) && (((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U >= 1U)) var_r10 = 0;
+    if (var_r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x70000000U >= 1U)) var_r9 = 0;
+    if (var_r9 == 0 && temp_r11 + 0x40000000U >= 1U) var_r8 = 0;
+    if (var_r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U >= 1U)) var_r7 = 0;
+    if (var_r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x30000000U >= 1U)) var_r6 = 0;
+    if (var_r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U >= 1U) ) var_r5 = 0;
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0x3C5, "this", arg0);
     *(float *)((char *)arg0 + 0x2C) = farg0;
 }
@@ -253,13 +248,13 @@ extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf(void *arg0, float farg0) 
 extern "C" void SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC(void *arg0, float farg0) {
  int var_r5=1; int var_r6=1; int var_r7=1; int var_r8=1; int var_r9=1; int var_r10=1;
  unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
- if ((temp_r11+0x80000000U)!=0U && (((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U) var_r10=0;
- if (var_r10==0 && (((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U) var_r9=0;
- if (var_r9==0 && (temp_r11+0x40000000U)!=0U) var_r8=0;
- if (var_r8==0 && (((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U) var_r7=0;
- if (var_r7==0 && (((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U) var_r6=0;
- if (var_r6==0 && (((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U) var_r5=0;
- if(var_r5==0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp",0x3D5,"this",arg0);
+ if ((temp_r11+0x80000000U)>=1U && (((unsigned int)arg0&0xFF800000U)+0x7F000000U)>=1U) var_r10=0;
+ if (var_r10==0 && (((unsigned int)arg0&0xF8000000U)+0x70000000U)>=1U) var_r9=0;
+ if (var_r9==0 && (temp_r11+0x40000000U)>=1U) var_r8=0;
+ if (var_r8==0 && (((unsigned int)arg0&0xFF800000U)+0x3F000000U)>=1U) var_r7=0;
+ if (var_r7==0 && (((unsigned int)arg0&0xF8000000U)+0x30000000U)>=1U) var_r6=0;
+ if (var_r6==0 && (((unsigned int)arg0&0xFFFFC000U)+0x20000000U)>=1U) var_r5=0;
+ if(var_r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x3D5,lbl_8032818C,arg0);
  *(float*)((char*)arg0+0x30)=farg0;
 }
 
@@ -277,17 +272,67 @@ extern "C" void MoveCursorX__Q36nw4hbm2ut10CharWriterFf(void *arg0, float dx) {
 }
 
 extern "C" void MoveCursorX__Q36nw4hbm2ut10CharWriterFf_80106524(void *arg0, float dx) {
-      unsigned int top = (unsigned int)arg0 & 0xFF000000;
-      int r10=1,r9=1,r8=1,r7=1,r6=1,r5=1;
-      if (top+0x80000000U != 0 && (((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0) r10=0;
-      if (r10==0 && (((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0) r9=0;
-      if (r9==0 && top+0x40000000U!=0) r8=0;
-      if (r8==0 && (((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0) r7=0;
-      if (r7==0 && (((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0) r6=0;
-      if (r6==0 && (((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0) r5=0;
-      if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp",0x405,"this",arg0);
-      *(float *)((char *)arg0+0x30) += dx;
-  }
+    unsigned int temp_r11;
+    int var_r10;
+    int var_r5;
+    int var_r6;
+    int var_r7;
+    int var_r8;
+    int var_r9;
+    temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+    var_r10 = 1;
+    var_r5 = 1;
+    var_r6 = 1;
+    var_r7 = 1;
+    var_r8 = 1;
+    var_r9 = 1;
+    if (((unsigned int)(temp_r11 + 0x80000000U) != 0U) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0U)) var_r10 = 0;
+    if ((var_r10 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0U)) var_r9 = 0;
+    if ((var_r9 == 0) && ((unsigned int)(temp_r11 + 0x40000000U) != 0U)) var_r8 = 0;
+    if ((var_r8 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0U)) var_r7 = 0;
+    if ((var_r7 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0U)) var_r6 = 0;
+    if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U)) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x405, lbl_8032818C, arg0);
+    *(float *)((char *)arg0 + 0x30) += dx;
+}
+
+extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106658(void *arg0) {
+    unsigned int temp_r11;
+    int var_r10;
+    int var_r5;
+    int var_r6;
+    int var_r7;
+    int var_r8;
+    int var_r9;
+    temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+    var_r5 = 1; var_r6 = 1; var_r7 = 1; var_r8 = 1; var_r9 = 1; var_r10 = 1;
+    if (((unsigned int)(temp_r11 + 0x80000000U) > 0U) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) > 0U)) var_r10 = 0;
+    if ((var_r10 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) > 0U)) var_r9 = 0;
+    if ((var_r9 == 0) && ((unsigned int)(temp_r11 + 0x40000000U) > 0U)) var_r8 = 0;
+    if ((var_r8 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) > 0U)) var_r7 = 0;
+    if ((var_r7 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) > 0U)) var_r6 = 0;
+    if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) > 0U)) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x425, lbl_8032818C, arg0);
+    return *(float *)((char *)arg0 + 0x2C);
+}
+
+extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770(int arg0) {
+ unsigned int temp_r11=(unsigned int)arg0&0xFF000000U;
+ int var_r10=1;
+ int var_r9=1;
+ int var_r8=1;
+ int var_r7=1;
+ int var_r6=1;
+ int var_r5=1;
+ if ((temp_r11+0x80000000U)!=0U && (((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U) var_r10=0;
+ if (var_r10==0 && (((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U) var_r9=0;
+ if (var_r9==0 && temp_r11+0x40000000U!=0U) var_r8=0;
+ if (var_r8==0 && (((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U) var_r7=0;
+ if (var_r7==0 && (((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U) var_r6=0;
+ if (var_r6==0 && (((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U) var_r5=0;
+ if (var_r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x435,lbl_8032818C,arg0);
+ return *(float*)((char*)arg0+0x30);
+}
 
 extern "C" void GXSetFog(int, void *, unsigned char, unsigned char, float, float, float, float);
 extern "C" void GXSetTevSwapModeTable(int, int, int, int, int);
@@ -342,4 +387,4 @@ extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5C
     GXSetVtxAttrFmt(0,9,1,4,0); GXSetVtxAttrFmt(0,0xb,1,5,0); GXSetVtxAttrFmt(0,0xd,1,2,0xf);
     GXClearVtxDesc(); GXSetVtxDesc(9,1); GXSetVtxDesc(0xb,1); GXSetVtxDesc(0xd,1);
 }
-
+namespace nw4hbm { namespace ut { struct Glyph { unsigned char pad[0x14]; unsigned short x; unsigned char pad16[2]; unsigned char y; unsigned char pad19[7]; unsigned short width; unsigned short height; unsigned char pad20[0x20]; }; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); }; }}
