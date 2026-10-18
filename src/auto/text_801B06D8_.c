@@ -591,7 +591,3 @@ u32 fn_801B3290(void) { return 1; }
 void fn_801B3298(void) {
 
 }
-extern u8 lbl_8055E674;
-extern s32 lbl_8055E67C;
-extern u8 lbl_8055E691;
-extern u8 lbl_8055E692;
