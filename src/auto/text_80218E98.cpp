@@ -27,6 +27,7 @@ extern f32 lbl_805634C4;
 extern "C" void *lbl_8033EC2C;
 extern "C" f32 fn_8023659C(void);
 extern "C" s32 fn_80228F40(s32, s32);
+extern "C" s32 fn_80216D28();
 extern "C" s32 fn_80217C4C(s32);
 extern "C" s32 fn_80217D84(s32);
 
@@ -1423,9 +1424,11 @@ extern "C" void fn_802328D4(void*);
 extern "C" s32 lbl_8033F9E0[];
 extern "C" s32 fn_80232578(s32);
 extern "C" void *fn_80222530(void *arg0, s32 arg1, s32 arg2) {
-    *(void **)arg0 = &lbl_8033F9E0;
-    *(s32 *)((u8 *)arg0 + 4) = fn_80232578(arg1);
-    *(s32 *)((u8 *)arg0 + 8) = arg2;
+    struct X80222530 { void *vptr; s32 field4; s32 field8; };
+    X80222530 *obj = (X80222530 *)arg0;
+    obj->vptr = &lbl_8033F9E0;
+    obj->field4 = fn_80232578(arg1);
+    obj->field8 = arg2;
     return arg0;
 }
 extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
@@ -1885,10 +1888,11 @@ extern "C" void *fn_80226AD0(void *arg0, s32 arg1) {
         void *p2 = *(void **)((u8 *)arg0 + 0x244);
         if (p2 != 0)
             fn_802C519C(p2);
-        *(void **)((u8 *)arg0 + 0x244) = 0;
-        fn_8021915C(arg0, 0);
+        *(volatile u32 *)((u8 *)arg0 + 0x244) = 0;
+        register void *self = arg0;
+        fn_8021915C(self, 0);
         if (arg1 > 0)
-            fn_80128668(arg0);
+            fn_80128668(self);
     }
     return arg0;
 }
