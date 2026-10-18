@@ -160,9 +160,8 @@ void *memset(void *, int, unsigned int);
 #pragma push
 #pragma small_data off
 int fn_8028E61C(void *arg0) {
-    void *p = arg0;
-    memset(p, 0, 0x8C);
-    return (int)p;
+    memset(arg0, 0, 0x8C);
+    return (int)arg0;
 }
 extern char lbl_80348CF8[];
 extern char lbl_80348D28[];
@@ -328,6 +327,57 @@ void fn_8028F8C4(int arg0) {
     *(int *)(p + 0x90) = -1;
     *(int *)(p + 0x94) = 0;
     *(float *)(p + 0x9C) = lbl_80564420;
+}
+
+extern float lbl_80558DC4;
+__declspec(section ".data") extern float lbl_80558DC4;
+void fn_8028F8E0(int arg0, float farg0) {
+    char *p = (char *)arg0;
+    float *fp9c = (float *)(p + 0x9C);
+    float threshold;
+    int index, count, count2, i, j;
+
+    if (*fp9c >= lbl_80564424 - lbl_80558DC4) {
+        *fp9c = *fp9c - lbl_80564424;
+    }
+    index = *(int *)(p + 0x90);
+    *fp9c = *fp9c + *(float *)(p + 0xC);
+    if (index < 0) return;
+
+    threshold = farg0 - *(float *)(p + 8);
+    count = *(int *)(p + 0x94);
+    i = index;
+    if (i < count) {
+        while (i < count && *(float *)(*(char **)(p + 0x8C) + i * 0x28 + 0x18) < threshold) {
+            i++;
+        }
+        if (i != count) {
+            *(int *)(p + 0x90) = i;
+            return;
+        }
+        *(int *)(p + 0x90) = -1;
+        *(int *)(p + 0x94) = 0;
+        return;
+    }
+
+    count2 = *(int *)(p + 0x98);
+    while (i < count2 && *(float *)(*(char **)(p + 0x8C) + i * 0x28 + 0x18) < threshold) {
+        i++;
+    }
+    if (i == count2) {
+        j = 0;
+        while (j < count && *(float *)(*(char **)(p + 0x8C) + j * 0x28 + 0x18) < threshold) {
+            j++;
+        }
+        if (j != count) {
+            *(int *)(p + 0x90) = j;
+            return;
+        }
+        *(int *)(p + 0x90) = -1;
+        *(int *)(p + 0x94) = 0;
+        return;
+    }
+    *(int *)(p + 0x90) = i;
 }
 
 int fn_8028FA1C(int arg0) {
