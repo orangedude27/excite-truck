@@ -285,10 +285,8 @@ void fn_8016027C(void *arg0, f32 farg0, f32 farg1) {
 }
 
 void fn_80160288(void *arg0, void *arg1) {
-    register u32 b = *(u32 *)((u8 *)arg1 + 4);
-    register u32 a = *(u32 *)((u8 *)arg1 + 0);
-    *(u32 *)((u8 *)arg0 + 0) = a;
-    *(u32 *)((u8 *)arg0 + 4) = b;
+    struct Pair { u32 first; u32 second; };
+    *(struct Pair *)arg0 = *(struct Pair *)arg1;
 }
 
 void fn_8016029C(f32 *arg0, f32 *arg1) {
