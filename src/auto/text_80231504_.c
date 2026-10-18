@@ -163,6 +163,7 @@ extern f32 lbl_80563684;
 extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
 extern void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8D74(void);
+#pragma scheduling off
 void fn_80232D3C(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     s32 sp8;
 
@@ -172,7 +173,7 @@ void fn_80232D3C(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f3
         fn_80232040(arg0, arg1, sp8, arg3, arg4, farg0, farg1, farg2, farg3, farg4, lbl_8056368C);
     }
 }
-
+#pragma scheduling reset
 extern s32 fn_8022EDC4(void);
 extern s32 fn_80230B9C(s32);
 extern void fn_8022C8B98(void);
@@ -194,7 +195,15 @@ void fn_80233600(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f
     }
 }
 
-void fn_802337A0(f64 a, s32 b, f64 c, s32 d, f64 e, f64 f, s32 g, f64 h, char *fmt, ...) {
+void fn_802336AC(s32 arg0, s32 arg1, s32 arg2, const char *fmt, f32 farg0, f32 farg1, f32 farg2, ...) {
+    char buffer[0xA8];
+    va_list args;
+    va_start(args, farg2);
+    vsprintf(buffer, fmt, args);
+    fn_80233600((u8 *)buffer, arg0, arg1, arg2, farg0, farg1, farg2);
+}
+
+void fn_802337A0(f32 a, s32 b, f32 c, s32 d, f32 e, f32 f, s32 g, f32 h, const char *fmt, ...) {
     char buffer[0x80];
     va_list args;
     va_start(args, fmt);
@@ -202,7 +211,29 @@ void fn_802337A0(f64 a, s32 b, f64 c, s32 d, f64 e, f64 f, s32 g, f64 h, char *f
     fn_80232BA4(buffer, b, d, g, a, c, f, e, h);
 }
 
-#pragma scheduling off
+#pragma push
+#pragma use_lmw_stmw off
+#pragma processor 750
+void fn_8023389C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, const char *fmt, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, ...) {
+    char buffer[0x100];
+    va_list args;
+    va_start(args, farg4);
+    vsprintf(buffer, fmt, args);
+    fn_80232D3C((u8 *)buffer, arg0, arg1, arg2, arg3, farg0, farg1, farg2, farg3, farg4);
+}
+#pragma pop
+
+extern void fn_80232DF4(u8 *, s32, s32, s32, f32, f32, f32, f32, f32);
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802339A8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, const char *fmt, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, ...) {
+    char buffer[0x100];
+    va_list args;
+    va_start(args, farg4);
+    vsprintf(buffer, fmt, args);
+    fn_80232DF4((u8 *)buffer, arg0, arg1, arg2, farg0, farg1, farg3, farg2, farg4);
+}
+#pragma pop
 void fn_80233DD8(s32 *arg0, s32 arg1) {
     s32 temp_r31 = fn_8022EDC4();
     lbl_8055F050 = fn_80230B9C(arg1);
@@ -256,27 +287,38 @@ void fn_802344C4(u8 arg0) {
 }
 
 s32 fn_80234654(void) {
-    s32 temp_r30;
-    s32 var_r28;
-    s32 var_r29;
-    char *var_r31;
-
-    var_r29 = 0;
-    var_r28 = 0;
-    var_r31 = (char *)lbl_8055F06C;
-    temp_r30 = *(s32 *)((u8 *)&lbl_8055F058 + 4);
-    while (var_r28 < temp_r30) {
-        var_r29 += strlen(var_r31);
-        var_r31 += 0x58;
-        var_r28++;
+    char *str;
+    s32 count;
+    s32 total;
+    s32 i;
+    total = 0;
+    i = 0;
+    str = (char *)lbl_8055F06C;
+    count = *(s32 *)((u8 *)&lbl_8055F058 + 4);
+    for (; i < count; i++) {
+        total += strlen(str);
+        str += 0x58;
     }
-    return var_r29;
+    return total;
 }
 
 void fn_80234AEC(void) {
     *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
 }
 
+#pragma push
+#pragma processor 750
+void fn_80234AFC(void *arg0, const char *fmt, f32 farg0, f32 farg1, ...) {
+    char buffer[0x80];
+    va_list args;
+    va_start(args, farg1);
+    vsprintf(buffer, fmt, args);
+    fn_80232BA4(buffer, *(s32 *)arg0, *(s32 *)((char *)arg0 + 4),
+                *(s32 *)((char *)arg0 + 8), farg0, farg1,
+                *(f32 *)((char *)arg0 + 0xC), lbl_80563684,
+                *(f32 *)((char *)arg0 + 0x10));
+}
+#pragma pop
 extern s32 fn_802315FC(s32);
 extern void fn_802E30C8(const char *);
 extern void fn_802E317C(const char *);
