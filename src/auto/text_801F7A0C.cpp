@@ -576,7 +576,7 @@ extern "C" s32 fn_801F9CF8(void *arg0) {
     return 8;
 }
 
-void fn_802C6CF8(s32);
+extern "C" void fn_802C6CF8(s32);
 void fn_80128668(void);
 void fn_801E6CD0(void *, s32, f32);
 void fn_801E6CC4(void *);
