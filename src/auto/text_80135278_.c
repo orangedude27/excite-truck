@@ -33,6 +33,7 @@ typedef struct {
     s32 unk_54, unk_58, unk_5c, unk_60;
 } Unk_80135278;
 
+s32 fn_80135D60(Unk_80135278 *, s32);
 void fn_80135390(Unk_80135278 *);
 void fn_801355C0(void *, s32, s32, void *, s32);
 void fn_801357A4();
@@ -123,23 +124,33 @@ s32 fn_801355B8(void *arg0, void *arg1) {
     return 0;
 }
 
+s32 fn_80135D60(Unk_80135278 *arg0, s32 arg1) {
+    if (arg1 != arg0->unk_2c) {
+        fn_80135354(arg0);
+        arg0->unk_2c = arg1;
+        if (arg1 != 0) {
+            return 1;
+        }
+        return 0;
+    }
+    return 2;
+}
+
 extern void fn_80135EA8(void *, s32, s32);
 extern void fn_80135F4C(void *);
 extern s32 lbl_8032BE6C[];
 #pragma dont_inline on
 void *fn_80135DC4(void *arg0, s32 arg1, s32 arg2) {
-    s32 v;
-    v = arg2;
     fn_801352B8(arg0);
     *(s32 *)((char *)arg0 + 0x58) = 0;
     *(s32 **)arg0 = lbl_8032BE6C;
     *(s32 *)((char *)arg0 + 0x54) = 0;
     *(s32 *)((char *)arg0 + 0x50) = 0;
-    if (v == 0) {
+    if (arg2 == 0) {
         void *obj = fn_80156A40();
-        v = ((s32 (**)(void *, s32))*(void **)obj)[2](obj, 0);
+        arg2 = ((s32 (**)(void *, s32))*(void **)obj)[2](obj, 0);
     }
-    if (((s32 (**)(void *, s32))*(void **)arg0)[3](arg0, v) != 0) {
+    if (((s32 (**)(void *, s32))*(void **)arg0)[3](arg0, arg2) != 0) {
         if (arg1 != 0) {
             void *p = *(void **)((char *)arg0 + 0x2C);
             fn_80135EA8((char *)arg0 + 0x50, *(s32 *)((char *)p + 0x18) >> 16, 2);
@@ -152,7 +163,7 @@ void *fn_80135DC4(void *arg0, s32 arg1, s32 arg2) {
     }
     return arg0;
 }
-
+#pragma dont_inline reset
 extern s32 fn_8012850C(s32, void *);
 extern s32 lbl_8032BE20[];
 void fn_80135EA8(void *arg0, s32 arg1, s32 arg2) {
@@ -163,16 +174,13 @@ void fn_80135EA8(void *arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma dont_inline off
-void fn_80135EF0(void *arg0) {
-    int zero = 0;
-    int value;
-    if (fn_80135D60() == 1) {
-        *(int *)((char *)arg0 + 0x34) = zero;
-        value = *(int *)((char *)arg0 + 0x50);
-        *(int *)((char *)arg0 + 0x5C) = zero;
+void fn_80135EF0(void *arg0, s32 arg1) {
+    s32 value = *(s32 *)((char *)arg0 + 0x50);
+    if (fn_80135D60(arg0, arg1) == 1) {
+        *(s32 *)((char *)arg0 + 0x34) = 0;
+        *(s32 *)((char *)arg0 + 0x5c) = 0;
         if (value != 0) {
-            value = *(int *)(*(char **)((char *)arg0 + 0x2C) + 0x18);
-            *(int *)((char *)arg0 + 0x54) = value >> 16;
+            *(s32 *)((char *)arg0 + 0x54) = *(s32 *)(*(char **)((char *)arg0 + 0x2c) + 0x18) >> 16;
         }
     }
 }
@@ -234,6 +242,54 @@ int fn_801363A0(void *arg0, void *arg1) {
     return temp_r31 + (unsigned int)(*(float *)((char *)arg1 + 4) * (float)(var - temp_r31));
 }
 
+extern double fn_8002EFB4(double, double);
+extern void fn_802E30C8(const char *, ...);
+extern const char lbl_8032BE30[];
+#pragma push
+#pragma use_lmw_stmw off
+void fn_80136468(Unk_80135278 *out, Unk_80135278 *self, float f) {
+    Unk_80135278 *p = (Unk_80135278 *)self->unk_2c;
+    float zero = lbl_80561320;
+    float d;
+    Unk_80135278 *q;
+    s32 limit;
+    if (p == 0) {
+        out->unk_0 = 0;
+        out->unk_c = 0x2710;
+        out->unk_8 = zero;
+        return;
+    }
+    if (f > zero) {
+        d = (float)fn_8002EFB4((double)f, (double)p->unk_8);
+    } else {
+        d = p->unk_8 - (float)fn_8002EFB4((double)-f, (double)p->unk_8);
+    }
+    q = (Unk_80135278 *)p->unk_50;
+    limit = 0x2710;
+    while (q != (Unk_80135278 *)p->unk_50) {
+        if (q->unk_4c != d) {
+            limit--;
+            q = (Unk_80135278 *)q->unk_54;
+            if (limit <= 0) {
+                fn_802E30C8(lbl_8032BE30, self->unk_c, p->unk_8);
+                d = zero;
+                q = (Unk_80135278 *)p->unk_50;
+                break;
+            }
+        } else {
+            break;
+        }
+    }
+    if (q->unk_60 != p->unk_60) {
+        d = zero;
+    } else {
+        d = (d - q->unk_4c) / q->unk_48;
+    }
+    out->unk_0 = (s32)q;
+    out->unk_8 = d;
+    out->unk_c = self->unk_c;
+}
+#pragma pop
 float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
     s32 same, offset, pos, count, i, j;
     unsigned long length;
@@ -307,17 +363,13 @@ void fn_80136768(void) {
 
 void fn_801367E8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 r;
-    void ***vtbl = (void ***)arg0;
-    r = ((s32 (*)(void))vtbl[0][3])();
-    if (r == 1) {
-        fn_801353C8((Unk_80135278 *)arg0, arg2, arg3, 0);
-    }
+    r = ((s32 (**)(void))(*(void ***)arg0))[3]();
+    if (r != 1) return;
+    fn_801353C8((Unk_80135278 *)arg0, arg2, arg3, 0);
 }
 
 void fn_80136854(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 r;
-    r = ((s32 (*)(void))(*(void **)((char *)(*(void **)arg0) + 0xc)))();
-    if (r == 1) {
+    if (((s32 (*)(void))(*(void ***)arg0)[3])() == 1) {
         fn_80135F64((int)arg0, arg2, arg3, 1, 0);
     }
 }
