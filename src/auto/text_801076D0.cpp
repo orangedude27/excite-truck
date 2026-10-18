@@ -3,6 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+namespace nw4hbm { namespace ut { struct List; } }
 
 extern "C" u8 fn_8010A33C(void);
 extern "C" void* fn_80108FFC(void*, const void*);
