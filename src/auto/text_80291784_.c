@@ -8,7 +8,7 @@ extern float fn_80291784(float, float, float, float);
 extern void fn_80291B14(float *);
 extern void fn_80291B9C(void *, float *, float);
 extern void *fn_802C86DC(void);
-extern int lbl_804B3EC0;
+__declspec(section ".data") extern int lbl_804B3EC0;
 extern unsigned char lbl_8055C920;
 extern int fn_802C2C00(int);
 extern void fn_802D3BB0(int);
@@ -88,12 +88,86 @@ void fn_80291B14(float *arg0) {
     }
 }
 
+void fn_80291B9C(void *arg0, float *arg1, float arg2) {
+    float a = arg1[0];
+    float b = arg1[1];
+    float c = arg1[2];
+    int i;
+    char *entry;
+
+    *((float *)((char *)arg0 + 0x130)) = a;
+    *((float *)((char *)arg0 + 0x134)) = b;
+    *((float *)((char *)arg0 + 0x138)) = c;
+    fn_802C8E70(arg1, (char *)arg0 + 0x13C);
+    *((float *)((char *)arg0 + 0x144)) = arg2;
+    if (fn_802C8FF4((char *)arg0 + 0x13C, *((float *)((char *)arg0 + 0x12C)))) {
+        *((unsigned char *)arg0 + 0x148) = *((int *)((char *)arg0 + 0x120)) != 0;
+        entry = (char *)arg0;
+        i = 0;
+        do {
+            *((unsigned char *)entry + 0x14) = 1;
+            entry += 0x24;
+            i++;
+        } while (i < *((int *)((char *)arg0 + 0x120)));
+    } else {
+        *((unsigned char *)arg0 + 0x148) = 0;
+        entry = (char *)arg0;
+        i = 0;
+        do {
+            *((unsigned char *)entry + 0x14) = 0;
+            entry += 0x24;
+            i++;
+        } while (i < *((int *)((char *)arg0 + 0x120)));
+    }
+}
+
 #pragma dont_inline off
 void fn_802920D0(void) {
     int *settings = (int *)&lbl_804B4010;
     fn_802C8C04(settings[3]);
     fn_80291C7C(settings, 1);
     fn_802C8D74();
+}
+
+extern void *fn_801E1F44(void);
+extern void *fn_80131810(int *);
+extern void fn_80131818(void *);
+extern int fn_802917C0(void *, void *, void *);
+extern void fn_80291A1C(void);
+extern int lbl_80349164;
+__declspec(section ".data") extern int lbl_80349164;
+void fn_80292114(void) {
+    void *state;
+    void *object;
+    int enabled;
+    unsigned char active;
+    void **vtable;
+    int (*query)(void *, int *);
+    int (*get)(void *, int *);
+    state = fn_801E1F44();
+    active = 0;
+    enabled = 0;
+    if (*((unsigned char *)state + 4) == 0 && *((int *)state) == 0)
+        enabled = 1;
+    if (enabled != 0)
+        active = 1;
+    lbl_8055F75C = active;
+    if (active != 0) {
+        object = fn_80131810(&lbl_80349164);
+        if (object != 0) {
+            vtable = *(void ***)object;
+            query = (int (*)(void *, int *))vtable[4];
+            if (query(object, &lbl_8055C948) != 0) {
+                vtable = *(void ***)object;
+                get = (int (*)(void *, int *))vtable[2];
+                fn_802917C0(&lbl_804B3EC0, (void *)get(object, &lbl_8055C948), &lbl_804B3EC0);
+            }
+            fn_80131818(object);
+        } else {
+            *((int *)((char *)&lbl_804B3EC0 + 0x120)) = 0;
+        }
+        fn_80291A1C();
+    }
 }
 
 void fn_802921F4(void) {
@@ -139,5 +213,32 @@ void fn_802923C4(int arg0) {
     if (lbl_8055F75C == 0) return;
     p = (int *)&lbl_804B4010;
     p[6] = (arg0 & 0xFFFFFF) | (p[6] & 0xFF000000);
+}
+
+extern float lbl_8056449C;
+extern double lbl_805644C8;
+__declspec(section ".data") extern int lbl_804B4010;
+__declspec(section ".data") extern int lbl_804B3EC0;
+void fn_802923EC(float arg0) {
+    float value;
+    int i;
+    int *base;
+    int *entry;
+    unsigned int packed;
+    if (lbl_8055F75C != 0) {
+        value = lbl_80564480;
+        if (value < arg0) value = arg0;
+        if (value > lbl_80564484) value = lbl_80564484;
+        base = &lbl_804B4010;
+        base[6] = (base[6] & 0xFFFFFF) | ((int)(lbl_8056449C * value) << 24);
+        entry = &lbl_804B3EC0;
+        i = 0;
+        do {
+            packed = entry[6];
+            entry[6] = ((unsigned int)(int)(value * (float)(packed >> 24)) << 24) | (packed & 0xFFFFFF);
+            entry = (int *)((char *)entry + 0x24);
+            i++;
+        } while (i < base[0x48]);
+    }
 }
 
