@@ -206,6 +206,24 @@ extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
     return result & ((-result | result) >> 31);
 }
 
+extern "C" s32 fn_800A5E00(void *arg0, void *arg1, u32 *arg2, u32 *arg3) {
+ u32 a,b,c,x,y;
+ *arg2=-1; *arg3=-1;
+ a=M2C_FIELD(arg1,u32*,0); a=(((a<<8)|(a>>24))&0x00FF0000)|(((a<<24)|(a>>8))&0x000000FF)|(((a<<24)|(a>>8))&0x00FF0000)|(((a<<8)|(a>>24))&0xFF000000);
+ if(a==0x41615252){
+ b=M2C_FIELD(arg1,u32*,0x1E4); b=(((b<<8)|(b>>24))&0x00FF0000)|(((b<<24)|(b>>8))&0x000000FF)|(((b<<24)|(b>>8))&0x00FF0000)|(((b<<8)|(b>>24))&0xFF000000);
+ if(b==0x61417272){
+ c=M2C_FIELD(arg1,u32*,0x1FC); c=(((c<<8)|(c>>24))&0x00FF0000)|(((c<<24)|(c>>8))&0x000000FF)|(((c<<24)|(c>>8))&0x00FF0000)|(((c<<8)|(c>>24))&0xFF000000);
+ if(c==0xAA550000){
+ x=M2C_FIELD(arg1,u32*,0x1E8); y=M2C_FIELD(arg1,u32*,0x1EC);
+ x=(((x<<8)|(x>>24))&0x00FF0000)|(((x<<24)|(x>>8))&0x000000FF)|(((x<<24)|(x>>8))&0x00FF0000)|(((x<<8)|(x>>24))&0xFF000000);
+ y=(((y<<8)|(y>>24))&0x00FF0000)|(((y<<24)|(y>>8))&0x000000FF)|(((y<<24)|(y>>8))&0x00FF0000)|(((y<<8)|(y>>24))&0xFF000000);
+ if(x>=2&&x<(u32)(M2C_FIELD(arg0,s32*,0x34)+2))*arg2=x;
+ if(y>=2&&y<(u32)(M2C_FIELD(arg0,s32*,0x34)+2))*arg3=y;
+ }}}
+ return 0;
+}
+
 extern "C" s32 fn_800A7688(void *, void **, void **);
 extern "C" s32 fn_800A7214(void *);
 extern "C" void fn_800A535C(u32);
@@ -420,13 +438,12 @@ extern "C" s32 fn_800A625C(void *, s32);
 extern "C" s32 fn_800A62A8(void *);
 extern "C" s32 fn_800A7214(void *arg0) {
     s32 result;
-    if (!(*(u32 *)arg0 & 4)) {
-        return 0xB;
+    if ((*(u32 *)arg0 & 4) == 0) {
+        result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+        if (result != 0) return result;
     }
-    result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-    if (result != 0) return result;
     result = fn_800A62A8(*(void **)((u8 *)arg0 + 4));
-    if (result != 0) return result;
+    if (result != 0) return 0xB;
     *(u32 *)arg0 |= 4;
     return 0;
 }
@@ -475,13 +492,18 @@ extern "C" s32 fn_800A7568(void *arg0, s32 arg1) {
 
 extern "C" s32 fn_800A7610(void *arg0) {
     s32 temp;
-    if ((*(u32 *)arg0 & 4) == 0) return 0xD;
-    temp = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
-    if (temp != 0) return temp;
+    if ((*(u32 *)arg0 & 4) != 0) {
+        temp = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+        if (temp != 0) goto done;
+    }
     temp = fn_800A6808(*(void **)((u8 *)arg0 + 4));
-    if (temp != 0) return temp;
-    *(u32 *)arg0 &= ~4U;
-    return 0;
+    if (temp != 0) temp = 0xD;
+done:
+    if (temp == 0) {
+        *(u32 *)arg0 &= ~4U;
+        return 0;
+    }
+    return temp;
 }
 
 extern "C" s32 fn_800A76A0(void *arg0) {
@@ -2396,26 +2418,28 @@ extern "C" s32 fn_800D0BD0(void) { return 0; }
 extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32, s32);
 extern "C" s32 WPADSetSamplingCallback_800603D0(void *);
 void wpadConnectCallback__Q210homebutton10ControllerFll(s32 chan, s32 status) {
-    void *entry;
-    void (*callback)(s32, s32);
-    entry = lbl_80407780[chan];
-    if (status == 0) {
-        if (!M2C_FIELD(entry, u8 *, 0x40)) {
-            M2C_FIELD(entry, void **, 0x2C) = (void *)WPADSetSamplingCallback_800603D0((void *)wpadExtensionCallback__Q210homebutton10ControllerFll);
-            M2C_FIELD(entry, u8 *, 0x40) = 1;
-        }
-        fn_80060CC0((void *)chan, 0, 0);
-    } else if (status == -1) {
-        WPADSetSamplingCallback_800603D0(M2C_FIELD(entry, void **, 0x2C));
-        M2C_FIELD(entry, u32 *, 0x2C) = 0;
-        M2C_FIELD(entry, u8 *, 0x40) = 0;
-        M2C_FIELD(entry, u8 *, 0x42) = 0;
-        M2C_FIELD(entry, u8 *, 0x43) = 0;
-    }
-    entry = lbl_80407780[chan];
-    callback = M2C_FIELD(entry, void (**)(s32, s32), 0x28);
-    if (callback)
-        callback(chan, status);
+ void *entry;
+ void (*callback)(s32,s32);
+ if(status==0) {
+  entry=lbl_80407780[chan];
+  if(*(u8*)((u8*)entry+0x40)==0) {
+   *(void**)((u8*)entry+0x2C)=(void*)WPADSetSamplingCallback_800603D0((void*)wpadExtensionCallback__Q210homebutton10ControllerFll);
+   *((u8*)entry+0x40)=1;
+  }
+  fn_80060CC0((void*)chan,0,0);
+ } else {
+  if(status<0) {
+   if(status==-1) {
+    entry=lbl_80407780[chan];
+    WPADSetSamplingCallback_800603D0(*(void**)((u8*)entry+0x2C));
+    *(s32*)((u8*)entry+0x2C)=0;
+    *((u8*)entry+0x40)=0; *((u8*)entry+0x42)=0; *((u8*)entry+0x43)=0;
+   }
+  }
+ }
+ entry=lbl_80407780[chan];
+ callback=*(void (**)(s32,s32))((u8*)entry+0x28);
+ if(callback) callback(chan,status);
 }
 
 extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext(OSAlarm *alarm, OSContext *) {
@@ -2592,27 +2616,25 @@ extern "C" void fn_800D16A8(s32 *arg0) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void *fn_800D1948(void *arg0, s32 arg1) {
     void *r26 = arg0;
-    if (r26 != NULL) {
-        *(u32 *)((u8 *)r26 + 0x1F0) = (u32)&lbl_8031E9C0;
-        lbl_8055DDB0 = (u32)r26;
-        if (arg1 != 0) {
-            BOOL result = ARCInitHandle((void *)arg1, (ARCHandle *)((u8 *)r26 + 0x1D0));
-            s32 neg = -result;
-            s32 or_result = neg | result;
-            ((u8 *)r26)[0x1EC] = (u8)(or_result >> 31);
-        } else {
-            ((u8 *)r26)[0x1EC] = 0;
-        }
+    *(u32 *)((u8 *)r26 + 0x1F0) = (u32)&lbl_8031E9C0;
+    lbl_8055DDB0 = (u32)r26;
+    if (arg1 != 0) {
+        BOOL result = ARCInitHandle((void *)arg1, (ARCHandle *)((u8 *)r26 + 0x1D0));
+        s32 neg = -result;
+        s32 or_result = neg | result;
+        ((u8 *)r26)[0x1EC] = (u8)((u32)or_result >> 31);
+    } else {
+        ((u8 *)r26)[0x1EC] = 0;
     }
-
     void *r28 = r26;
     s32 r27 = 0;
     s32 r29 = 0;
     s32 r30 = -1;
     u8 r31 = 1;
-    
     do {
         OSCreateAlarm((OSAlarm *)r28);
         *(u32 *)((u8 *)r28 + 0x50) = r29;
@@ -2622,10 +2644,9 @@ extern "C" void *fn_800D1948(void *arg0, s32 arg1) {
         ((u8 *)r28)[0x62] = r31;
         r28 = (u8 *)r28 + 0x68;
     } while (r27 < 4);
-
     return r26;
 }
-
+#pragma pop
 extern "C" void *fn_800D19F8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(u32 *)((u8 *)arg0 + 0x1F0) = (u32)&lbl_8031E9C0;
@@ -3473,13 +3494,17 @@ extern "C" s32 fn_800A5788(void *arg0, s32 arg1) {
 #pragma dont_inline reset
 extern "C" s32 fn_800A5800(void *arg0) {
     s32 result = fn_800A7338(*(void **)((u8 *)arg0 + 0x1FBC));
-    if (result != 0) {
-        if (result != 21)
-            return -1;
-        s32 value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
+    switch (result) {
+    case 0:
+        break;
+    case 21: {
+        s32 value = ((s32 (*)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
         *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
         *(s32 *)((u8 *)arg0 + 0x1F84) = value;
         return 0x1000;
+    }
+    default:
+        return -1;
     }
     return 0;
 }
