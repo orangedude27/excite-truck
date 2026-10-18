@@ -373,8 +373,11 @@ extern "C" void *fn_801F9440(F9Node *list, F9Node *node) {
 
 __declspec(section ".sdata") extern u8 lbl_8055B374[];
 extern "C" s32 fn_801F9450(void *node) {
-    void **vtable = *(void ***)node;
-    return stricmp(((char *(*)(void *))vtable[2])(node), (const char *)lbl_8055B374) == 0;
+    class NameNode {
+    public:
+        virtual char *getName();
+    };
+    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055B374) == 0;
 }
 
 extern "C" s32 fn_801F948C(F9Node *node) {
@@ -660,18 +663,18 @@ extern "C" void *lbl_8055EC50;
 extern "C" void *lbl_8055EC5C;
 extern "C" u8 lbl_8055EC40;
 extern "C" void fn_801FA550(void) {
-    void *node = lbl_8055EC50;
+    void *node;
     void *other;
+    node = lbl_8055EC50;
     while (node != 0) {
         if (*(u8 *)((u8 *)node + 0x41) == 0 &&
             *(u8 *)((u8 *)node + 0x40) != 0 &&
             fn_801F7A0C() != 0) {
             void *arg = *(void **)((u8 *)node + 0x34);
             s32 id = *(s32 *)node;
-            if (arg == 0) {
-                arg = (u8 *)node + 4;
+            if (arg != 0) {
             } else {
-                arg = *(void **)((u8 *)node + 0x34);
+                arg = (u8 *)node + 4;
             }
             fn_802C70AC(id, arg, -1, -15);
         }
