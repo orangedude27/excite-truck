@@ -528,19 +528,24 @@ void fn_801A12C4(void* arg0, s32 arg1) {
 extern "C" void fn_801A1358(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x1C) = arg1; }
 
 extern "C" void fn_801A1360(void* arg0, s32 arg1) {
+    class Dispatch {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void set(s32);
+    };
     *(s32*)((u8*)arg0 + 0x20) = arg1;
     void* p = *(void**)((u8*)arg0 + 0x17C);
-    void** vt = *(void***)p;
-    ((void (*)(void*, s32))vt[16])(p, arg1);
-    void** entries = (void**)arg0;
+    ((Dispatch*)p)->set(arg1);
+    u8* entries = (u8*)arg0;
     s32 i = 0;
-    do {
-        void* item = *(void**)((u8*)entries + 0x24);
-        void** ivt = *(void***)item;
-        ((void (*)(void*, s32))ivt[16])(item, arg1);
-        entries++;
+    while (i < *(s32*)((u8*)arg0 + 0x174)) {
+        void* item = *(void**)(entries + 0x24);
+        ((Dispatch*)item)->set(arg1);
+        entries += 4;
         i++;
-    } while (i < *(s32*)((u8*)arg0 + 0x174));
+    }
 }
 
 extern "C" void fn_801A13F4(void* arg0) {
@@ -875,10 +880,11 @@ void* fn_801A3F5C(void* arg0, s32 arg1, s32 arg2) {
 #pragma push
 #pragma small_data off
 void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
-    if (arg0) {
+    if (arg0 != 0) {
         *(void **)arg0 = &lbl_80333728;
-        ((void (*)(s32))fn_801CFF14)(*(s32 *)((u8 *)arg0 + 0x24));
-        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+        ((void (*)(void *))fn_801CFF14)(*(void **)((u8 *)arg0 + 0x24));
+        if (arg1 > 0)
+            ((void (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
@@ -1051,16 +1057,16 @@ extern s32 lbl_8055E5A0;
 extern void fn_801CFF14(void);
 extern s32 fn_801CF828(s32, s32, s32, s32, s32);
 extern "C" s32 fn_801A4E88(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32* arg4) {
-    s32 a = arg0;
-    s32 b = arg1;
-    s32 c = arg2;
-    s32 d = arg3;
-    s32* out = arg4;
-    if (lbl_8055E5A0 != 0 && fn_801CF828(lbl_8055E5A0, a, b, c, d) != 0) {
+    register s32 a0 = arg0;
+    register s32 a1 = arg1;
+    register s32 a2 = arg2;
+    register s32* out = arg4;
+    s32 result = 0;
+    if (lbl_8055E5A0 != 0 && fn_801CF828(lbl_8055E5A0, a0, a1, a2, arg3) != 0) {
         *out = 0x6E;
-        return 1;
+        result = 1;
     }
-    return 0;
+    return result;
 }
 
 extern "C" s32 fn_801A4F00(s32 arg0, s32 arg1) {
