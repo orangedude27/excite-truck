@@ -37,6 +37,47 @@ void fn_8017B164(void *arg0) {
     fn_8017B198(arg0);
 }
 
+extern float lbl_80561BA8, lbl_80561BAC, lbl_80561BB0, lbl_80561BB4;
+void fn_8017B2D0(void *arg0, float a, float b, float c, float d) {
+    float x = lbl_80561BAC * b;
+    float y = lbl_80561BAC * c;
+    float z = lbl_80561BAC * d;
+    float sx = lbl_80561BB0 * x;
+    float sy = lbl_80561BB0 * y;
+    float sz = lbl_80561BB0 * z;
+    float sa = lbl_80561BAC * a;
+    float ia = lbl_80561BB4 / sa;
+    float ix = lbl_80561BB4 / sx;
+    float iy = lbl_80561BB4 / sy;
+    float iz = lbl_80561BB4 / sz;
+    *(float *)((char *)arg0 + 0xf8) = lbl_80561BA8;
+    *(float *)((char *)arg0 + 0xfc) = lbl_80561BA8;
+    *(float *)((char *)arg0 + 0x100) = lbl_80561BA8;
+    *(float *)((char *)arg0 + 0x108) = lbl_80561BA8;
+    *(float *)((char *)arg0 + 0x10c) = lbl_80561BA8;
+    *(float *)((char *)arg0 + 0x110) = lbl_80561BA8;
+    *(float *)((char *)arg0 + 0x104) = iz;
+    *(float *)((char *)arg0 + 0x114) = iy;
+    *(float *)((char *)arg0 + 0xd4) = sa;
+    *(float *)((char *)arg0 + 0xd8) = sx;
+    *(float *)((char *)arg0 + 0xf4) = ix;
+    *(float *)((char *)arg0 + 0xdc) = sy;
+    *(float *)((char *)arg0 + 0xe0) = sz;
+    *(float *)((char *)arg0 + 0xe4) = ia;
+    *(float *)((char *)arg0 + 0xe8) = ix;
+    *(float *)((char *)arg0 + 0xec) = iz;
+    *(float *)((char *)arg0 + 0xf0) = iy;
+    *(unsigned int *)((char *)arg0 + 0x148) = *(unsigned int *)((char *)arg0 + 0xf4);
+    *(unsigned int *)((char *)arg0 + 0x14c) = *(unsigned int *)((char *)arg0 + 0xf8);
+    *(unsigned int *)((char *)arg0 + 0x150) = *(unsigned int *)((char *)arg0 + 0xfc);
+    *(unsigned int *)((char *)arg0 + 0x154) = *(unsigned int *)((char *)arg0 + 0x100);
+    *(unsigned int *)((char *)arg0 + 0x158) = *(unsigned int *)((char *)arg0 + 0x104);
+    *(unsigned int *)((char *)arg0 + 0x15c) = *(unsigned int *)((char *)arg0 + 0x108);
+    *(unsigned int *)((char *)arg0 + 0x160) = *(unsigned int *)((char *)arg0 + 0x10c);
+    *(unsigned int *)((char *)arg0 + 0x164) = *(unsigned int *)((char *)arg0 + 0x110);
+    *(unsigned int *)((char *)arg0 + 0x168) = *(unsigned int *)((char *)arg0 + 0x114);
+}
+
 void fn_8017B4AC(float *arg0, float *arg1) {
     float x = arg0[0x13C / 4] + arg1[0];
     float y = arg0[0x140 / 4] + arg1[1];
@@ -44,6 +85,45 @@ void fn_8017B4AC(float *arg0, float *arg1) {
     arg0[0x13C / 4] = x;
     arg0[0x140 / 4] = y;
     arg0[0x144 / 4] = z;
+}
+
+extern void fn_8017B4E0(void *, void *);
+void fn_8017B5D4(void *arg0, int arg1, int arg2, float *arg3, float *arg4, int arg5, float *arg6, int arg7, float arg8) {
+    int count;
+    int index;
+    void *entry;
+    if (*(int *)((char *)arg0 + 0x1E4) < 16) {
+        if (lbl_8055E488 < lbl_8055E48C) {
+            index = lbl_8055E488;
+            count = index * 0x28;
+            lbl_8055E488 = index + 1;
+            entry = (char *)lbl_8055E490 + count;
+        } else {
+            entry = 0;
+        }
+        if (entry != 0) {
+            *(int *)((char *)entry + 0) = arg1;
+            *(int *)((char *)entry + 4) = arg2;
+            *(float *)((char *)entry + 8) = arg3[0] * arg8;
+            *(float *)((char *)entry + 0xC) = arg3[1] * arg8;
+            *(float *)((char *)entry + 0x10) = arg3[2] * arg8;
+            if (arg6 != 0) {
+                *(float *)((char *)entry + 0x14) = arg6[0];
+                *(float *)((char *)entry + 0x18) = arg6[1];
+                *(float *)((char *)entry + 0x1C) = arg6[2];
+            } else {
+                *(float *)((char *)entry + 0x14) = arg4[0];
+                *(float *)((char *)entry + 0x18) = arg4[1];
+                *(float *)((char *)entry + 0x1C) = arg4[2];
+            }
+            *(int *)((char *)entry + 0x20) = arg5;
+            *(int *)((char *)entry + 0x24) = arg7;
+            count = *(int *)((char *)arg0 + 0x1E4);
+            *(void **)((char *)arg0 + 0x1A4 + count * 4) = entry;
+            *(int *)((char *)arg0 + 0x1E4) = count + 1;
+        }
+    }
+    fn_8017B4E0(arg3, arg4);
 }
 
 extern float lbl_80561BA8;
@@ -59,6 +139,32 @@ void fn_8017B6A8(void *arg0) {
     *(float *)((char *)arg0 + 0x19C) = value;
     *(float *)((char *)arg0 + 0x1A0) = value;
 }
+
+extern float PSVECDotProduct(const void *, const void *);
+extern float lbl_80558DC4;
+extern void PSVECCrossProduct(void *, void *, void *);
+void fn_8017B6D4(void *arg0, float *arg1, float *arg2) {
+    float sp8, spC, sp10;
+    sp8 = arg2[0] - *(float *)((char *)arg0 + 0x60);
+    spC = arg2[1] - *(float *)((char *)arg0 + 0x64);
+    sp10 = arg2[2] - *(float *)((char *)arg0 + 0x68);
+    PSVECCrossProduct((char *)arg0 + 0x124, &sp8, arg1);
+    arg1[0] += *(float *)((char *)arg0 + 0x118);
+    arg1[1] += *(float *)((char *)arg0 + 0x11c);
+    arg1[2] += *(float *)((char *)arg0 + 0x120);
+}
+
+void fn_8017B778(void *arg0, float *arg1, float *arg2) {
+    float sp8, spC, sp10;
+    sp8 = arg2[0] - *(float *)((char *)arg0 + 0x60);
+    spC = arg2[1] - *(float *)((char *)arg0 + 0x64);
+    sp10 = arg2[2] - *(float *)((char *)arg0 + 0x68);
+    PSVECCrossProduct((char *)arg0 + 0x178, &sp8, arg1);
+    arg1[0] += *(float *)((char *)arg0 + 0x16c);
+    arg1[1] += *(float *)((char *)arg0 + 0x170);
+    arg1[2] += *(float *)((char *)arg0 + 0x174);
+}
+
 #pragma scheduling on
 void fn_8017C7BC(void) {
 
@@ -70,6 +176,43 @@ void fn_8017C7C0(void) {
 
 void fn_8017C7C4(void) {
 
+}
+
+typedef unsigned int u32;
+typedef float f32;
+extern void fn_8017A580(u32, u32, u32, u32, u32, u32);
+void fn_8017CFFC(void* arg0, u32* arg1, f32* arg2, f32* arg3, u32 arg_sp0) {
+    u32 a0 = arg1[0];
+    u32 a1 = arg1[1];
+    u32 a2 = arg1[2];
+    u32 a3 = arg1[3];
+    u32 a4 = arg1[4];
+    u32 a5 = arg1[5];
+    u32 a6 = arg1[6];
+    u32 a7 = arg1[7];
+    u32 a8 = arg1[8];
+    u32 a9 = arg1[9];
+    u32 a10 = arg1[10];
+    u32 a11 = arg1[11];
+    *(u32*)((char*)arg0 + 0x3C) = a0;
+    *(u32*)((char*)arg0 + 0x40) = a1;
+    *(u32*)((char*)arg0 + 0x44) = a2;
+    *(u32*)((char*)arg0 + 0x48) = a3;
+    *(u32*)((char*)arg0 + 0x4C) = a4;
+    *(u32*)((char*)arg0 + 0x50) = a5;
+    *(u32*)((char*)arg0 + 0x54) = a6;
+    *(u32*)((char*)arg0 + 0x58) = a7;
+    *(u32*)((char*)arg0 + 0x5C) = a8;
+    *(u32*)((char*)arg0 + 0x60) = a9;
+    *(u32*)((char*)arg0 + 0x64) = a10;
+    *(u32*)((char*)arg0 + 0x68) = a11;
+    fn_8017A580(a5, a6, a7, a8, a9, a10);
+    *(f32*)((char*)arg0 + 0x118) = arg2[0];
+    *(f32*)((char*)arg0 + 0x11C) = arg2[1];
+    *(f32*)((char*)arg0 + 0x120) = arg2[2];
+    *(f32*)((char*)arg0 + 0x124) = arg3[0];
+    *(f32*)((char*)arg0 + 0x128) = arg3[1];
+    *(f32*)((char*)arg0 + 0x12C) = arg3[2];
 }
 
 extern unsigned int fn_801B60F4(void *, float);
