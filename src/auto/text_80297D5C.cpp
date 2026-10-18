@@ -293,9 +293,9 @@ extern "C" void fn_80298B48(void* arg0) {
     int offset = 0;
     int i = 0;
     while (i < fn_80287B14()) {
-        if (*(unsigned char*)((char*)*(void**)arg0 + offset + 0x19) != 0) {
-            fn_80298FBC(arg0);
-        }
+        char* base = (char*)*(void**)arg0;
+        unsigned char value = *(unsigned char*)(base + offset + 0x19);
+        if (value) fn_80298FBC(arg0);
         offset += 0x20;
         i++;
     }
@@ -709,4 +709,4 @@ int fn_8029C190(void* arg0) {
     fn_8029BE54(lbl_8055F7DC, arg0);
     return 0x14;
 }
-
+#include <string.h>
