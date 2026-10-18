@@ -58,7 +58,7 @@ void fn_802DA4C4(void) {
     void *p = lbl_8055FE5C;
     if (p != 0) {
         if (p != 0) {
-            *(volatile void **)p = (void *)((char *)&lbl_8034C8E8 + 0x10000);
+            *(volatile void **)p = lbl_8034C8E8;
             fn_80128670(*(int *)((char *)p + 4));
             if (p != 0)
                 *(int *)((char *)p + 4) = 0;
