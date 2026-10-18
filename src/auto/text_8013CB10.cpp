@@ -179,7 +179,8 @@ extern "C" void fn_8013E338(void) {
 }
 
 extern "C" void *fn_8013E6E4(void *arg0) {
-    fn_8001DAE0((u8 *)arg0 + 0x98, lbl_805614AC);
+    volatile f32 scale = lbl_805614AC;
+    fn_8001DAE0((u8 *)arg0 + 0x98, scale);
     fn_8001DAE0((u8 *)arg0 + 0xA0, lbl_805614FC);
     fn_8001DAE0((u8 *)arg0 + 0xA8, lbl_805614FC);
     fn_8001DAE0((u8 *)arg0 + 0xB0, lbl_805614FC);
@@ -543,20 +544,22 @@ extern "C" void fn_80143128(u8 *arg0) {
 #pragma use_lmw_stmw off
 
 extern "C" void fn_80143138(u8 *self, u8 *out) {
+    class TObj10Local { public: virtual void d0(); virtual void d1(); virtual u8 *v10(); };
+    s32 z = 0;
     *(s32 *)out = *(s32 *)(self + 0xBC);
     *(s32 *)(out + 4) = *(s32 *)(self + 0x130);
     *(u8 *)(out + 0xD) = ((TObj24 *)self)->v24();
     u8 *p = out + 0x10;
-    *(u8 *)(out + 0xC) = 0;
+    *(u8 *)(out + 0xC) = z;
     s32 off = 0;
     s32 i = 0;
     while (i < *(s32 *)(self + 0xBC)) {
-        *(u8 *)(p + 0x10) = 0;
-        u8 *q = ((TObj10 *)fn_801B2EC0(i))->v10();
+        *(u8 *)(p + 0x10) = z;
+        u8 *q = ((TObj10Local *)fn_801B2EC0(i))->v10();
         i++;
         *(s32 *)(p + 4) = *(s32 *)(q + 4);
         *(s32 *)(p + 8) = *(s32 *)(*(u8 **)(self + 0xB8) + off + 0x10C);
-        off += 0x12C;
+        off = off + 0x12C;
         p += 0x14;
     }
 }
@@ -734,12 +737,12 @@ extern "C" s32 fn_8014444C(void) { return 0; }
 extern "C" s32 fn_80144454(void) { return 0; }
 
 extern "C" s32 fn_8013D1F0(s32);
+#pragma dont_inline on
 extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
     s32 v = fn_8013D1F0(arg1) ^ 0xA;
-    s32 a = v & 0xA;
-    return (v >> 1) - a >> 0x1F;
+    return ((v >> 1) - (v & 0xA)) < 0;
 }
-
+#pragma dont_inline reset
 extern "C" s32 fn_80144494(s32 arg0, s32 arg1) { return arg1; }
 struct Fn8013FC6CDispatch {
     virtual void unused0();
@@ -752,3 +755,4 @@ struct Fn8013FC6CDispatch {
     virtual void unused7();
     virtual int test(int);
 };
+class TObj10DispatchA6C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void v10(const char *); };
