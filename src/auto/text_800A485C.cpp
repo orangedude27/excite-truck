@@ -96,7 +96,6 @@ public:
     f32 m_speed;    // 0x10
     s32 m_state;    // 0x14
     s32 m_dir;      // 0x18
-    u8 pad1c[4];
     u8 m_flag;      // 0x1C
     u8 pad1d[3];
 
