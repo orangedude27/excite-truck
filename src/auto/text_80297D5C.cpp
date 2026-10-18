@@ -222,6 +222,10 @@ extern "C" void* fn_80298868(void* arg0) {
     return 0;
 }
 
+extern "C" void fn_8029B6E4(void *);
+extern "C" void fn_8029B824(void *);
+extern "C" void fn_802C9A4C(int, float);
+extern float lbl_80564618;
 extern "C" void fn_80298A48(void) {
 }
 
