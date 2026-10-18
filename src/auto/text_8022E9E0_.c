@@ -30,18 +30,12 @@ extern void *fn_8022EC7C(void);
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_8022E9E0(void) {
-    void *addr;
-    void *p;
     if (lbl_8055EFF4 == 0) {
-        addr = (void *)&lbl_80340280;
-        p = fn_801284F8(0x20, addr);
+        void *p = fn_801284F8(0x20, (void *)&lbl_80340280);
         if (p) p = fn_8012A13C(p, lbl_80340280, 0x20, 8);
         lbl_8055EFF8 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055EFF8)) {
-        s32 tmp = lbl_8055EFF4;
-        lbl_8055EFF4 = tmp + 1;
-    }
+    if (fn_8012A2D8(lbl_8055EFF8)) ++lbl_8055EFF4;
 }
 
 void fn_8022EA58(void *arg0) {
@@ -60,10 +54,7 @@ void fn_8022EAB8(void) {
         if (p) p = fn_8012A13C(p, lbl_80340290, 0x20, 0x3C);
         lbl_8055F000 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055F000)) {
-        s32 tmp = lbl_8055EFFC;
-        lbl_8055EFFC = tmp + 1;
-    }
+    if (fn_8012A2D8(lbl_8055F000)) ++lbl_8055EFFC;
 }
 
 #pragma dont_inline on
@@ -102,8 +93,9 @@ void fn_8022EBF0(void) {
 void *fn_8022EC7C(void) {
     u32 *p = (u32 *)lbl_8055F004;
     u32 *node = (u32 *)p[0];
-    u32 tail = p[1];
+    u32 tail;
     if (!node) return 0;
+    tail = p[1];
     if ((u32)node == tail) return 0;
     while (node[1] != tail) node = (u32 *)node[1];
     return node;
