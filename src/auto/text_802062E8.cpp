@@ -96,8 +96,8 @@ extern "C" void fn_802064D0(int arg0) {
 
 extern "C" void fn_80206518(void) {
     extern void fn_80208D70(void); extern void* fn_80208D4C(void);
-    fn_80208D70(); void** obj=(void**)fn_80208D4C();
-    ((void (*)(void))(*(void***)obj)[14])();
+    fn_80208D70();
+    ((Obj80206518*)fn_80208D4C())->f12();
 }
 
 extern "C" void fn_80206550(unsigned int size) {
