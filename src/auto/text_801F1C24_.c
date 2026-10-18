@@ -659,7 +659,7 @@ int fn_801F45D4(int arg0, int arg1) {
 #pragma small_data off
 void *fn_801F4614(void *arg0, int arg1) {
     extern int fn_80128670(int);
-    register int temp_r5;
+    int temp_r5;
     if (arg0 != 0) {
         temp_r5 = *(int *)((char *)arg0 + 4);
         *(void **)arg0 = &lbl_8033AA90;
