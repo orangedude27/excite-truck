@@ -51,9 +51,10 @@ int fn_802BB928(int arg0) {
 }
 
 short fn_802BB93C(int arg0) {
-    unsigned int temp_r3 = arg0 + 0x200;
-    unsigned int sign = temp_r3 >> 31;
-    return (short)(0x1FF - (((int)(temp_r3 + sign)) >> 1));
+    unsigned int value = (unsigned int)arg0 + 0x200;
+    unsigned int sign = value >> 31;
+    int rounded = (int)sign + (int)value;
+    return (short)(0x1FF - (rounded >> 1));
 }
 
 extern int fn_802CAC54(int);
