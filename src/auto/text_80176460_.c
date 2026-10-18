@@ -48,7 +48,7 @@ extern u32 jumptable_8033182C[];
 extern const char lbl_80331810[];
 extern char lbl_8055E3D4;
 extern void fn_802E4C14(s32);
-extern void fn_80178CAC(s32, s32);
+extern void fn_80178CAC(u32, u32);
 extern void fn_80178DD4(void);
 extern void fn_8017952C(void);
 extern void fn_80179110(void);
