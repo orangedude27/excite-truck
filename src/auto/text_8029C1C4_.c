@@ -39,7 +39,8 @@ extern int fn_802C9640(void *);
 void fn_8029C1C4(void) {
     lbl_8055F7FC = 0;
     fn_8029C570(); fn_8029C73C(); fn_8029C998(); fn_8029CBA0(); fn_8029C664();
-    if (fn_802BF4F0() == 0 && lbl_8055F7F0 <= 0 && lbl_8055F7F4 > 0) fn_80287B38(fn_8029C450);
+    if (fn_802BF4F0() == 0 && lbl_8055F7F0 <= 0 && lbl_8055F7F4 <= 0) return;
+    fn_80287B38(fn_8029C450);
 }
 
 void fn_8029C22C(void) {
@@ -61,7 +62,66 @@ void fn_8029C25C(void) {
     }
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling 750
+#pragma optimization_level 4
+void fn_8029C570(void) {
+ extern float lbl_80564640, lbl_80564644;
+ extern char lbl_80349560[];
+ extern int lbl_8055CAAC;
+ extern int fn_8012C33C(void *);
+ extern int fn_802C6FC0(void *, int, int);
+ extern void **fn_802AE414(void *);
+ extern void fn_802C8230(float), fn_802C8234(float);
+ float a, b;
+ char *base, *p, *q;
+ void **obj;
+ int result;
+ a=lbl_80564640; b=lbl_80564644;
+ base=lbl_80349560; p=base+0x70; q=base+0x7C;
+ if(fn_8012C33C(q)) result=fn_802C6FC0(q,0,0); else result=-1;
+ lbl_8055CAA8=result;
+ obj=fn_802AE414(p);
+ if(obj) {
+ a=(*(float (**)(void *, void *))((char *)*obj+0x4C))(obj,&lbl_8055CAAC);
+ b=(*(float (**)(void *, void *))((char *)*obj+0x4C))(obj,base+0x18);
+ }
+ fn_802C8230(a); fn_802C8234(b);
+}
+#pragma pop
+
 void fn_8029C650(void) { register int value=lbl_8055CAA8; if(value != -1) fn_802C6CF8(); }
+
+#pragma push
+#pragma processor 750
+#pragma scheduling 750
+#pragma use_lmw_stmw off
+#pragma inline_depth(0)
+void fn_8029C664(void) {
+    extern void fn_8029D550(void *, float *, float *);
+    extern float PSQUATMultiply(float *, float *);
+    extern char lbl_803495E8[];
+    extern void fn_802E317C(const char *, ...);
+    float a[3], b[3], radiusA, radiusB;
+    float margin;
+    int *base, *p, *q;
+    int i, j;
+    margin = lbl_80564648;
+    p = lbl_804B5010;
+    base = p;
+    for (i=0; i<lbl_8055F7F0; ++p, ++i) {
+        fn_8029D550((void *)*p, a, &radiusA);
+        j=i+1;
+        q=base+j;
+        for (; j<lbl_8055F7F0; ++q, ++j) {
+            fn_8029D550((void *)*q, b, &radiusB);
+            if (PSQUATMultiply(a,b)<radiusB+(margin+radiusA))
+                fn_802E317C(lbl_803495E8);
+        }
+    }
+}
+#pragma pop
 
 void fn_8029C934(void) {
     int *p = (int *)lbl_804B5010;
@@ -132,6 +192,7 @@ extern void fn_8029DF64(void *, int, int, float);
 extern void fn_8029DDB8(void *);
 #pragma push
 #pragma processor 750
+#pragma scheduling 7400
 void fn_8029D574(int arg0) {
     extern float lbl_80564658;
     extern float fn_80287BC8(float, float);
