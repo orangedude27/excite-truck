@@ -684,42 +684,34 @@ void fn_801A1B9C(void* arg0) {
 extern void* lbl_803338C0;
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" void fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
-    u8 temp_r12;
-    u8 temp_r22;
-    u8 temp_r23;
-    u8 temp_r24;
-    u8 temp_r25;
-    u8 temp_r26;
-    u8 temp_r27;
-    u8 temp_r28;
-    u8 temp_r29;
-    u8 temp_r30;
+extern "C" void* fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
+    u8 temp_r12, temp_r22, temp_r23, temp_r24, temp_r25;
+    u8 temp_r26, temp_r27, temp_r28, temp_r29, temp_r30;
     fn_8019ECC4();
     *(void**)arg0 = &lbl_803338C0;
     if (arg2 != 0) {
         temp_r12 = *(u8*)((u8*)arg0 + 0x24);
-        temp_r22 = *(u8*)((u8*)arg0 + 0x35);
-        temp_r23 = *(u8*)((u8*)arg0 + 0x31);
-        temp_r24 = *(u8*)((u8*)arg0 + 0x2d);
-        temp_r25 = *(u8*)((u8*)arg0 + 0x29);
         temp_r26 = *(u8*)((u8*)arg0 + 0x25);
-        temp_r27 = *(u8*)((u8*)arg0 + 0x34);
-        temp_r28 = *(u8*)((u8*)arg0 + 0x30);
-        temp_r29 = *(u8*)((u8*)arg0 + 0x2c);
         temp_r30 = *(u8*)((u8*)arg0 + 0x28);
+        temp_r25 = *(u8*)((u8*)arg0 + 0x29);
+        temp_r29 = *(u8*)((u8*)arg0 + 0x2C);
+        temp_r24 = *(u8*)((u8*)arg0 + 0x2D);
+        temp_r28 = *(u8*)((u8*)arg0 + 0x30);
+        temp_r23 = *(u8*)((u8*)arg0 + 0x31);
+        temp_r27 = *(u8*)((u8*)arg0 + 0x34);
+        temp_r22 = *(u8*)((u8*)arg0 + 0x35);
         *(u8*)((u8*)arg0 + 0x24) = *(u8*)((u8*)arg0 + 0x27);
         *(u8*)((u8*)arg0 + 0x27) = temp_r12;
         *(u8*)((u8*)arg0 + 0x25) = *(u8*)((u8*)arg0 + 0x26);
         *(u8*)((u8*)arg0 + 0x26) = temp_r26;
-        *(u8*)((u8*)arg0 + 0x28) = *(u8*)((u8*)arg0 + 0x2b);
-        *(u8*)((u8*)arg0 + 0x2b) = temp_r30;
-        *(u8*)((u8*)arg0 + 0x29) = *(u8*)((u8*)arg0 + 0x2a);
-        *(u8*)((u8*)arg0 + 0x2a) = temp_r25;
-        *(u8*)((u8*)arg0 + 0x2c) = *(u8*)((u8*)arg0 + 0x2f);
-        *(u8*)((u8*)arg0 + 0x2f) = temp_r29;
-        *(u8*)((u8*)arg0 + 0x2d) = *(u8*)((u8*)arg0 + 0x2e);
-        *(u8*)((u8*)arg0 + 0x2e) = temp_r24;
+        *(u8*)((u8*)arg0 + 0x28) = *(u8*)((u8*)arg0 + 0x2B);
+        *(u8*)((u8*)arg0 + 0x2B) = temp_r30;
+        *(u8*)((u8*)arg0 + 0x29) = *(u8*)((u8*)arg0 + 0x2A);
+        *(u8*)((u8*)arg0 + 0x2A) = temp_r25;
+        *(u8*)((u8*)arg0 + 0x2C) = *(u8*)((u8*)arg0 + 0x2F);
+        *(u8*)((u8*)arg0 + 0x2F) = temp_r29;
+        *(u8*)((u8*)arg0 + 0x2D) = *(u8*)((u8*)arg0 + 0x2E);
+        *(u8*)((u8*)arg0 + 0x2E) = temp_r24;
         *(u8*)((u8*)arg0 + 0x30) = *(u8*)((u8*)arg0 + 0x33);
         *(u8*)((u8*)arg0 + 0x33) = temp_r28;
         *(u8*)((u8*)arg0 + 0x31) = *(u8*)((u8*)arg0 + 0x32);
@@ -729,8 +721,8 @@ extern "C" void fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
         *(u8*)((u8*)arg0 + 0x35) = *(u8*)((u8*)arg0 + 0x36);
         *(u8*)((u8*)arg0 + 0x36) = temp_r22;
     }
+    return arg0;
 }
-#pragma pop
 
 #pragma scheduling on
 extern "C" void fn_801A1F44(void* arg0, void* arg1) {
