@@ -60,6 +60,37 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+void __DSP_insert_task(void *arg0) {
+    extern void *lbl_8055D81C;
+    extern void *lbl_8055D820;
+    extern void *lbl_8055D824;
+    void *temp_r4;
+    void *var_r5 = lbl_8055D820;
+    if (var_r5 == 0) {
+        lbl_8055D824 = arg0; lbl_8055D81C = arg0; lbl_8055D820 = arg0;
+        *(void **)((u8 *)arg0 + 0x3C) = 0; *(void **)((u8 *)arg0 + 0x38) = 0;
+        return;
+    }
+    while (var_r5 != 0) {
+        if (*(u32 *)((u8 *)arg0 + 4) < *(u32 *)((u8 *)var_r5 + 4)) {
+            *(void **)((u8 *)arg0 + 0x3C) = *(void **)((u8 *)var_r5 + 0x3C);
+            *(void **)((u8 *)var_r5 + 0x3C) = arg0;
+            temp_r4 = *(void **)((u8 *)arg0 + 0x3C);
+            *(void **)((u8 *)arg0 + 0x38) = var_r5;
+            if (temp_r4 == 0) lbl_8055D820 = arg0;
+            else *(void **)((u8 *)temp_r4 + 0x38) = arg0;
+            break;
+        }
+        var_r5 = *(void **)((u8 *)var_r5 + 0x38);
+    }
+    if (var_r5 == 0) {
+        *(void **)((u8 *)lbl_8055D81C + 0x38) = arg0;
+        *(void **)((u8 *)arg0 + 0x38) = 0;
+        *(void **)((u8 *)arg0 + 0x3C) = lbl_8055D81C;
+        lbl_8055D81C = arg0;
+    }
+}
+
 extern void *BootInfo_8055D844;
 extern u8 *FstStringStart_8055D83C;
 extern void *lbl_8055D81C;
