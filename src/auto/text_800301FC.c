@@ -64,6 +64,23 @@ void TRKConstructEvent(void) {
     lbl_8055D6A8 = 0;
 }
 
+void TRKGetNextEvent(void *arg0) {
+    u8 context[0x2D8];
+    s32 value;
+    *(volatile u16 *)0xCC00500A = (*(volatile u16 *)0xCC00500A & ~0xA0) | 8;
+    OSClearContext(context);
+    OSSetCurrentContext(context);
+    if (lbl_8055D6E0 != 0 && lbl_8055D6AC == 0) {
+        value = lbl_8055D6DC;
+        lbl_8055D6AC = 1;
+        if (value != 0) TRKInitializeEventQueue();
+        else ((void (*)(void))lbl_8055D6E0)();
+        lbl_8055D6AC = 0;
+    }
+    OSClearContext(context);
+    OSSetCurrentContext(arg0);
+}
+
 void TRKInitializeEventQueue(void) { }
 
 void TRKMessageSend(void) {
@@ -143,25 +160,22 @@ void TRKAppendBuffer(void *arg0) {
 
 void TRKReleaseBuffer(void *arg0) {
     s32 index = *(s32 *)((u8 *)arg0 + 0xC);
-    u32 *head = (u32 *)lbl_8035BEA0;
-    u32 *tail = lbl_8035BF20;
-    u32 first = head[index];
-    u32 last = tail[index];
-
+    u32 first = ((u32 *)lbl_8035BEA0)[index];
+    u32 last = lbl_8035BF20[index];
     if (first == last) {
-        tail[index] = 0;
-        head[index] = 0;
+        lbl_8035BF20[index] = 0;
+        ((u32 *)lbl_8035BEA0)[index] = 0;
         return;
     }
     if ((u32)arg0 == first) {
         void *next = *(void **)arg0;
-        head[index] = (u32)next;
+        ((u32 *)lbl_8035BEA0)[index] = (u32)next;
         *(u32 *)((u8 *)next + 4) = 0;
         return;
     }
     if ((u32)arg0 == last) {
         void *prev = *(void **)((u8 *)arg0 + 4);
-        tail[index] = (u32)prev;
+        lbl_8035BF20[index] = (u32)prev;
         *(u32 *)prev = 0;
         return;
     }
@@ -445,6 +459,54 @@ void fn_80032000(void) {
 
 }
 
+extern u8 lbl_8035FBD0[];
+extern u8 lbl_802FFD60[];
+extern u16 lbl_80558DE0;
+extern u16 lbl_80558DE2;
+extern u16 lbl_80558DE4;
+extern void OSInitThreadQueue(void *);
+extern s32 DSPReset(void);
+extern void DSPInit(void);
+extern void DSPAssertInt(void *);
+void fn_80032004(void) {
+    struct {
+        u8 pad[4];
+        u32 unk4;
+        u8 pad8[4];
+        void *unkC;
+        u32 unk10;
+        u32 unk14;
+        void *unk18;
+        u32 unk1C;
+        u32 unk20;
+        u16 unk24;
+        u16 unk26;
+        void (*unk28)(void);
+        void (*unk2C)(void);
+        void (*unk30)(void);
+        void (*unk34)(void);
+    } *task = (void *)lbl_8035FB80;
+    task->unk4 = 0;
+    lbl_8055D770 = 0;
+    task->unkC = lbl_802FFD60;
+    task->unk10 = lbl_80558DE4;
+    task->unk14 = 0;
+    task->unk18 = lbl_8035FBD0;
+    task->unk1C = 0x2000;
+    task->unk20 = 0;
+    task->unk24 = lbl_80558DE0;
+    task->unk26 = lbl_80558DE2;
+    task->unk28 = __AXDSPInitCallback_80031F90;
+    task->unk2C = fn_80031F9C;
+    task->unk30 = __AXDSPDoneCallback;
+    task->unk34 = fn_80032000;
+    lbl_8055D76C = 0;
+    OSInitThreadQueue(&lbl_8055D760);
+    if (DSPReset() == 0) DSPInit();
+    DSPAssertInt(lbl_8035FB80);
+    while (lbl_8055D770 == 0) {}
+}
+
 void fn_800322E4(void) {
     s32 enabled = OSDisableInterrupts();
     lbl_8055D774 = 0;
@@ -475,6 +537,31 @@ s32 AXRmtGetSamplesLeft(void) {
     return result;
 }
 
+extern u8 lbl_8035EE60[];
+extern void DCInvalidateRange(void *, u32);
+s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
+    s32 count;
+    s32 index;
+    s32 i;
+    s16 *src;
+    count = lbl_8055D754 - 0x24;
+    if (count < 0) count += lbl_8055D758;
+    count = count - lbl_8055D750;
+    if (count < 0) count += lbl_8055D758;
+    if (arg2 > count) {
+        count = arg2;
+    }
+    src = (s16 *)(lbl_8035EE60 + arg0 * 0x168);
+    index = lbl_8055D750;
+    for (i = count; i > 0; i--) {
+        *arg1++ = src[index];
+        index++;
+        if (index >= lbl_8055D758) index = 0;
+    }
+    DCInvalidateRange((void *)(lbl_8035EE60 + arg0 * 0x168), lbl_8055D758 << 1);
+    return count;
+}
+
 void AXRmtAdvancePtr(s32 arg0) {
     s32 end;
     s32 next;
@@ -484,8 +571,10 @@ void AXRmtAdvancePtr(s32 arg0) {
     if (end < 0) end += lbl_8055D758;
     if (arg0 > end) arg0 = end;
     next = lbl_8055D750 + arg0;
-    lbl_8055D750 = next;
-    if (next < lbl_8055D758) return;
+    if (next < lbl_8055D758) {
+        lbl_8055D750 = next;
+        return;
+    }
     lbl_8055D750 = next - lbl_8055D758;
 }
 
