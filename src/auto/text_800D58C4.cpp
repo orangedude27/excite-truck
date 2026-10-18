@@ -65,6 +65,26 @@ extern "C" void fn_800D598C(void* arg0) {
     }
 }
 
+extern "C" s32 MEMAllocFromAllocator(s32, s32);
+extern "C" const char lbl_8031F5A8[];
+extern "C" const char lbl_8031F5B8[];
+extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *arg0, u8 arg1) {
+    if (arg1 > 8)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F5A8, 0x5D, lbl_8031F5B8);
+    if (*(u8*)arg0 < arg1) {
+        if (*(s32*)((u8*)arg0 + 4) != 0) {
+            MEMFreeToAllocator(lbl_8055DDF0);
+            *(s32*)((u8*)arg0 + 4) = 0;
+            *(u8*)arg0 = 0;
+            *((u8*)arg0 + 1) = 0;
+        }
+        s32 p = MEMAllocFromAllocator(lbl_8055DDF0, arg1 << 5);
+        *(s32*)((u8*)arg0 + 4) = p;
+        if (p != 0)
+            *(u8*)arg0 = arg1;
+    }
+}
+
 extern "C" int IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(unsigned int *color, unsigned char alpha) {
     if (alpha != 0xff) return 1;
     if (color == 0) return 0;
@@ -121,9 +141,11 @@ extern "C" s32 fn_800D67B8(s32 arg0, s32 arg1) {
 extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(void* arg0, void* arg1) {
     extern const char lbl_8031F658[];
     extern const char lbl_8031F634[];
-    void* sp8 = (u8*)arg0 + 4;
+    register void* iterator = (u8*)arg0 + 4;
+    void* slot;
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F658, 0x233, lbl_8031F634);
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(arg0, &sp8, (u8*)arg1 + 4);
+    slot = iterator;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(arg0, &slot, (u8*)arg1 + 4);
 }
 
 extern "C" void fn_800D6EEC(void* arg0) {
@@ -473,7 +495,7 @@ extern "C" s32 fn_800D9364(void *arg0) {
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
-    u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
+    register u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
     s32 y = *(s32 *)((u8 *)arg0 + 0x58);
     s32 a = (x >> 5) & 4;
     s32 b = (x >> 6) & 4;
@@ -711,22 +733,31 @@ extern "C" void fn_800DB960(void) {
 
 }
 
-extern "C" void* FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb(void* self,const char* name,bool recursive) {
-    extern s32 fn_800D58C4(void*); extern const char lbl_8031E8FC[]; extern const char lbl_8031E8D8[];
-    if (fn_800D58C4((u8*)self+0xB4)) return self;
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void* FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char* name, bool recursive) {
+    extern s32 fn_800D58C4(void*);
+    extern const char lbl_8031E8FC[];
+    extern const char lbl_8031E8D8[];
+    if (fn_800D58C4((u8*)self + 0xB4))
+        return self;
     if (recursive) {
-        void* end=(u8*)self+0x14; void* node=*(void**)((u8*)self+0x14);
+        void* end = (u8*)self + 0x14;
+        void* node;
+        node = *(void**)((u8*)self + 0x14);
         do {
-            if (!node) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC,0x23D,lbl_8031E8D8);
-            struct Obj { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11(); virtual void a12(); virtual void a13(); virtual void a14(); virtual void a15(); virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19(); virtual void a20(); virtual void a21(); virtual void a22(); virtual void a23(); virtual void a24(); virtual void a25(); virtual void a26(); virtual void a27(); virtual void a28(); virtual void a29(); virtual void a30(); virtual void a31(); virtual void a32(); virtual void a33(); virtual void a34(); virtual void a35(); virtual void a36(); virtual void a37(); virtual void a38(); virtual void a39(); virtual void a40(); virtual void a41(); virtual void a42(); virtual void a43(); virtual void a44(); virtual void a45(); virtual void a46(); virtual void a47(); virtual void a48(); virtual void a49(); virtual void a50(); virtual void a51(); virtual void a52(); virtual void a53(); virtual void a54(); virtual void a55(); virtual void a56(); virtual void a57(); virtual void a58(); virtual void a59(); virtual void a60(); virtual void a61(); virtual void a62(); virtual void* find(const char*,bool); };
-            void* found=((Obj*)((u8*)node-4))->find(name,true);
-            if(found)return found;
-            node=*(void**)node;
-        } while(node!=end);
+            if (!node)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            struct Obj { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11(); virtual void a12();  virtual void* find(const char*, bool); };
+            void* found = ((Obj*)((u8*)node - 4))->find(name, true);
+            if (found)
+                return found;
+            node = *(void**)node;
+        } while(node != end);
     }
     return 0;
 }
-
+#pragma pop
 extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self,void* info){ extern const char lbl_8031E8FC[]; extern const char lbl_8031E8D8[]; if(*((u8*)self+0xCF)&1){ struct Obj{virtual void a0();virtual void a1();virtual void a2();virtual void a3();virtual void a4();}; ((Obj*)self)->a4(); void* end=(u8*)self+0x14; void* node=*(void**)((u8*)self+0x14); do { if(!node)Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC,0x23D,lbl_8031E8D8); struct Child{virtual void a0();virtual void a1();virtual void a2();virtual void a3();virtual void Draw(void*);}; ((Child*)((u8*)node-4))->Draw(info); node=*(void**)node;}while(node!=end); } }
 
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
@@ -790,12 +821,15 @@ extern "C" void fn_800DC204(void* self, void* arg) {
 }
 
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void* self, void* link) {
-    extern const char lbl_8031FF90[]; extern const char lbl_803200F8[]; extern const char lbl_8031FF54[]; extern const char lbl_8031FF30[];
+    extern const char lbl_8031FF90[];
+    extern const char lbl_803200F8[];
+    extern const char lbl_8031FF54[];
+    extern const char lbl_8031FF30[];
     void* iterator;
-    if(!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90,0x289,lbl_803200F8);
-    iterator=(char*)self+0x20;
-    if(!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54,0x233,lbl_8031FF30);
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self+0x1c,&iterator,link);
+    if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF90, 0x289, lbl_803200F8);
+    iterator = (char*)self + 0x20;
+    if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self + 0x1c, &iterator, link);
 }
 
 extern "C" int fcmpgt(f32, f32);
