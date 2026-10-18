@@ -1,5 +1,17 @@
-#include <types.h>
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
+  #include <types.h>
+  #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
+
+  namespace homebutton {
+  namespace gui {
+  struct PaneComponent {
+      u8 pad0[0x28];
+      void *vtable;
+      u8 pad8[0x4];
+      void *pane;
+      u8 pad4[0x84];
+  };
+  }
+  }
 extern "C" void fn_800B36D4(s32 arg0);
 extern "C" void fn_800B783C(void *arg0);
 extern "C" s32 fn_800B77C0(void *arg0);
