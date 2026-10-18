@@ -10,7 +10,19 @@ extern const char lbl_8055CC88[];
 extern int fn_802E2C20(void);
 extern int sscanf(const char *, ...);
 extern void fn_802AC344(void);
-void *fn_802AC0E8(void *arg0,const char *arg1,int arg2){char *node=(char *)arg0;if(!node)return 0;while(*(int *)node){if(*(int *)node==arg2&&strcmp(*(const char **)(node+4),arg1)==0)return node;node+=0xC;}return 0;}
+void *fn_802AC0E8(void *arg0, const char *arg1, int arg2) {
+    char *node = (char *)arg0;
+    int key = arg2;
+    const char *name = arg1;
+    if (node == 0)
+        return 0;
+    while (*(int *)node != 0) {
+        if (*(int *)node == key && strcmp(*(const char **)(node + 4), name) == 0)
+            return node;
+        node += 0xC;
+    }
+    return 0;
+}
 
 int fn_802AC174(const char *arg0) {
     int sp8;
@@ -49,18 +61,13 @@ int fn_802AC1BC(const char *arg0, int arg1) {
 }
 
 int fn_802AC2B4(void **arg0, int arg1, float *arg2) {
-    void *vtable;
-    int (*check)(void *);
-    float (*value)(void *, int);
-    if (arg0 == 0) return 0;
-    vtable = *arg0;
-    check = *(int (**)(void *))((char *)vtable + 0xC);
-    if (check(vtable) == 0) return 0;
-    if (arg2 == 0) return 1;
-    vtable = *arg0;
-    value = *(float (**)(void *, int))((char *)vtable + 0x24);
-    *arg2 = value(*arg0, arg1);
-    return 1;
+    if (arg0 != 0 && ((int (*)(void *))(*(void **)((char *)*arg0 + 0xC)))(arg0) != 0) {
+        if (arg2 != 0) {
+            *arg2 = ((float (*)(void *, int))(*(void **)((char *)*arg0 + 0x24)))(arg0, arg1);
+        }
+        return 1;
+    }
+    return 0;
 }
 
 void fn_802AC454(void) { fn_802AC344(); }
@@ -86,7 +93,7 @@ extern int strcmp(const char *, const char *);
 extern float lbl_8055E3C8;
 extern int lbl_8055CD70;
 extern char lbl_80349FB0[];
-extern void fn_802E30C8(const char *, ...);
+extern void fn_802E30C8(const char *, int);
 extern void *fn_801284F8(int, void *, void *);
 extern void *fn_8012850C(int, void *);
 extern int fn_802AC4A8(const char *, int);
@@ -201,7 +208,23 @@ int fn_802ADF34(void **arg0,char *arg1,int arg2) {
 
 void fn_802ADFF4(int **arg0,int arg1){unsigned char *p=*(unsigned char **)*arg0+arg1*0x74;if(p[0x68]==0){p[0x68]=1;p[0x69]=0;*(float *)(p+0x6c)=lbl_8055E3C8;}}
 
-void fn_802AE02C(void *arg0,int arg1){unsigned char *entry;entry=(unsigned char *)*(char **)*(char **)arg0+arg1*0x74;if(!entry[0x69]){if(!entry[0x68]){fn_802E30C8(lbl_80349FB0,arg1);entry[0x68]=1;*(float *)(entry+0x6c)=*(float *)((char *)arg0+4);}entry[0x69]=1;*(float *)(entry+0x70)=*(float *)((char *)arg0+4);}}
+void fn_802AE02C(void *arg0, int arg1) {
+    char **p;
+    char *base;
+    unsigned char *entry;
+    p = *(char ***)arg0;
+    base = *p;
+    entry = (unsigned char *)base + arg1 * 0x74;
+    if (!entry[0x69]) {
+        if (!entry[0x68]) {
+            fn_802E30C8(lbl_80349FB0, arg1);
+            entry[0x68] = 1;
+            *(float *)(entry + 0x6c) = *(float *)((char *)arg0 + 4);
+        }
+        entry[0x69] = 1;
+        *(float *)(entry + 0x70) = *(float *)((char *)arg0 + 4);
+    }
+}
 
 void fn_802AE0B8(int **arg0,int arg1){unsigned char *p; p=(unsigned char *)**arg0+arg1*0x74;if(p[0x69])p[0x69]=0;}
 
@@ -209,7 +232,26 @@ void fn_802AE0E0(void **arg0){int off=0,i=0;while(i<*(int *)(*(char **)arg0+4)){
 
 void fn_802AE118(void *arg0){int i=0,off=0;char *container=*(char **)arg0;while(i<*(int *)(container+4)){unsigned char *entry=(unsigned char *)*(char **)container+off;if(entry[0x68])*(float *)(entry+0x6c)=*(float *)((char *)arg0+4)-*(float *)(*(char **)(entry+0x64)+0x2c);off+=0x74;i++;}}
 
-void fn_802AE168(void *arg0){int i=0,offset=0;unsigned char *entry;*(float *)((char *)arg0+4)=lbl_8055E3C8;while(i<*(int *)(*(char **)arg0+4)){entry=(unsigned char *)*(char **)*(char **)arg0+offset;if(entry[0x69]){*(float *)(entry+0x6c)=*(float *)(entry+0x6c)+(*(float *)((char *)arg0+4)-*(float *)(entry+0x70));*(float *)(entry+0x70)=*(float *)((char *)arg0+4);}if(entry[0x68])fn_802AD414(*(void **)(entry+0x64),*(float *)((char *)arg0+4)-*(float *)(entry+0x6c));offset+=0x74;i++;}}
-
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802AE168(void *arg0) {
+    extern float lbl_8055E3C8;
+    extern void fn_802AD414(void *, float);
+    int offset = 0;
+    int i = 0;
+    unsigned char *entry;
+    *(float *)((char *)arg0 + 4) = lbl_8055E3C8;
+    while (i < *(int *)(*(char **)arg0 + 4)) {
+        entry = (unsigned char *)*(char **)*(char **)arg0 + offset;
+        if (entry[0x69]) {
+            *(float *)(entry + 0x6c) = *(float *)(entry + 0x6c) + (*(float *)((char *)arg0 + 4) - *(float *)(entry + 0x70));
+            *(float *)(entry + 0x70) = *(float *)((char *)arg0 + 4);
+        }
+        if (entry[0x68]) fn_802AD414(*(void **)(entry + 0x64), *(float *)((char *)arg0 + 4) - *(float *)(entry + 0x6c));
+        offset += 0x74;
+        i++;
+    }
+}
+#pragma pop
 void fn_802AE220(void *arg0,int arg1){int offset=0,i=0;unsigned char *entry;while(i<*(int *)(*(char **)arg0+4)){entry=(unsigned char *)*(char **)*(char **)arg0+offset;if(entry[0x68])fn_802AD4C4(*(void **)(entry+0x64),arg1,*(float *)((char *)arg0+4)-*(float *)(entry+0x6c));offset+=0x74;i++;}}
 
