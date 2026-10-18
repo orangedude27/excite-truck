@@ -64,6 +64,35 @@ extern "C" s32 fn_8001DD2C(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_8001DD6C(void) {
+    if (lbl_8055D604 != 0) {
+        ((CleanupEntry*)lbl_8055D604)->cleanup(1);
+    }
+    lbl_8055D604 = 0;
+    if (lbl_8055D5FC != 0) {
+        ((CleanupEntry*)lbl_8055D5FC)->cleanup(1);
+    }
+    lbl_8055D5FC = 0;
+    if (lbl_8055D600 != 0) {
+        ((CleanupEntry*)lbl_8055D600)->cleanup(1);
+    }
+    lbl_8055D600 = 0;
+    if (lbl_8055D5F4 != 0) {
+        ((CleanupEntry*)lbl_8055D5F4)->cleanup(1);
+    }
+    lbl_8055D5F4 = 0;
+    if (lbl_8055D5F8 != 0) {
+        ((CleanupEntry*)lbl_8055D5F8)->cleanup(1);
+    }
+    lbl_8055D5F8 = 0;
+    for (s32 i = 0; i < 6; i++) {
+        if (lbl_80358680[i] != 0) {
+            ((CleanupEntry*)lbl_80358680[i])->cleanup(1);
+        }
+        lbl_80358680[i] = 0;
+    }
+}
+
 void fn_8001DEA8(void) {
     u32 var_r30;
     void ***var_r31;
