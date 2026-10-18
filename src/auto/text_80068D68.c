@@ -3105,10 +3105,14 @@ s32 btsnd_hcic_inq_cancel_8008576C(void) {
 
 s32 btsnd_hcic_reset_800857CC(void) {
     u8 *p = GKI_getpoolbuf(2);
-    if (!p) return 0;
-    p[2] = 3; p[3] = 0;
-    p[4] = 0; p[5] = 0;
-    p[8] = 3; p[9] = 0x10; p[10] = 0;
+    u16 three = 3;
+    u16 zero = 0;
+    if (p == NULL) return 0;
+    *(u16 *)(p + 2) = three;
+    *(u16 *)(p + 4) = zero;
+    p[8] = (u8)three;
+    p[9] = 0x10;
+    p[10] = (u8)zero;
     btu_hcif_send_cmd(0, 3);
     return 1;
 }
@@ -3137,14 +3141,17 @@ s32 btsnd_hcic_inq_cancel_80085850(void) {
     return 1;
 }
 
-s32 btsnd_hcic_auth_request_800858B0(u8 arg0) {
+s32 btsnd_hcic_auth_request_800858B0(u16 arg0) {
     u8 *p = GKI_getpoolbuf(2);
-    if (!p) return 0;
-    p[2] = 5; p[3] = 0;
-    p[4] = 0; p[5] = 0;
-    p[8] = 3; p[9] = 0x14; p[10] = 2;
-    p[11] = arg0; p[12] = 0;
-    btu_hcif_send_cmd(2, 0x14, 3);
+    if (p == 0) return 0;
+    *(s16 *)(p + 2) = 5;
+    *(s16 *)(p + 4) = 0;
+    p[8] = 3;
+    p[9] = 0x14;
+    p[10] = 2;
+    p[11] = (u8)arg0;
+    p[12] = (u8)(arg0 >> 8);
+    btu_hcif_send_cmd();
     return 1;
 }
 
