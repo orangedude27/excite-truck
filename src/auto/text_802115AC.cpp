@@ -727,9 +727,17 @@ done:
     return;
 }
 extern "C" s32 fn_80215AA4(void *arg0, s32 arg1) {
-    void *obj = *(void **)((u8 *)arg0 + 0x244);
-    s32 (**vtable)(void *) = *(s32 (***)(void *))obj;
-    if (vtable[22](obj) != 0) return 1;
+    class Callback {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+        virtual s32 call();
+    };
+    Callback *obj = *(Callback **)((u8 *)arg0 + 0x244);
+    if (obj->call() != 0) return 1;
     return fn_802192A4(arg0, arg1);
 }
 
