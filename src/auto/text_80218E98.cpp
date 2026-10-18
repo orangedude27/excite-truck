@@ -50,6 +50,15 @@ public:
 
 class Dispatch19718 { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void set(s32, s32); };
 
+class Vf78 { public:
+virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4();
+virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virtual void a9();
+virtual void a10(); virtual void a11(); virtual void a12(); virtual void a13(); virtual void a14();
+virtual void a15(); virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19();
+virtual void a20(); virtual void a21(); virtual void a22(); virtual void a23(); virtual void a24();
+virtual void a25(); virtual void a26(); virtual void a27(); virtual void a28(); virtual s32 get();
+};
+
 class VfObjCall {
 public:
     virtual void vf2(s32);
@@ -226,9 +235,9 @@ extern "C" void fn_80218F80(void) {
 
 extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     f32 b = lbl_805634A4;
+    f32 a = lbl_805634A0;
     s32 zero = 0;
     s32 one = 1;
-    f32 a = lbl_805634A0;
     *(u8 *)((u8 *)arg0 + 0x1A) = one;
     *(u8 *)((u8 *)arg0 + 0x1B) = one;
     *(f32 *)((u8 *)arg0 + 0x1C) = a;
@@ -1555,6 +1564,32 @@ extern "C" void fn_80220E08(void *arg0, s32 arg1) {
     fn_802C40B8(*(s32 *)((u8 *)arg0 + 0x244), *(s32 *)((u8 *)arg0 + 4), *(s32 *)((u8 *)arg0 + 8));
 }
 
+extern "C" void fn_802213A4(void *arg0, s32 arg1, s32 arg2) {
+    s32 value;
+    s32 limit;
+    void *state;
+
+    if (*(u8 *)((u8 *)arg0 + 0x250) == 0)
+        return;
+
+    state = *(void **)((u8 *)arg0 + 0x244);
+    if (*(s32 *)((u8 *)arg0 + 0x254) == 0) {
+        value = (s32)(((f32)*(s32 *)state /
+                       (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8))) *
+                      (f32)(arg2 + *(s32 *)((u8 *)arg0 + 0x25C)));
+    } else {
+        value = (s32)(((f32)*(s32 *)state / (f32)((VfObj *)arg0)->vf30()) *
+                      (f32)(arg1 + *(s32 *)((u8 *)arg0 + 0x258)));
+    }
+
+    *(s32 *)((u8 *)state + 8) = value;
+    limit = *(s32 *)state - *(s32 *)((u8 *)state + 4);
+    if (value > limit)
+        *(s32 *)((u8 *)state + 8) = limit;
+    if (*(s32 *)((u8 *)state + 8) < 0)
+        *(s32 *)((u8 *)state + 8) = 0;
+}
+
 extern "C" void fn_80221538(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x250) = 0;
 }
@@ -1669,11 +1704,9 @@ extern "C" void fn_802328D4(void*);
 extern "C" s32 lbl_8033F9E0[];
 extern "C" s32 fn_80232578(s32);
 extern "C" void *fn_80222530(void *arg0, s32 arg1, s32 arg2) {
-    struct X80222530 { void *vptr; s32 field4; s32 field8; };
-    X80222530 *obj = (X80222530 *)arg0;
-    obj->vptr = &lbl_8033F9E0;
-    obj->field4 = fn_80232578(arg1);
-    obj->field8 = arg2;
+    *(void **)arg0 = &lbl_8033F9E0;
+    *(s32 *)((u8 *)arg0 + 4) = fn_80232578(arg1);
+    *(s32 *)((u8 *)arg0 + 8) = arg2;
     return arg0;
 }
 extern "C" void* __dt__14CollisionSpaceFv_80222584(void* arg0, s32 arg1) {
@@ -1709,7 +1742,9 @@ extern "C" void fn_80222788(void *arg0, s32 arg1, s32 arg2, f32 arg3, s32 arg4) 
     }
 }
 
-extern "C" void *fn_80222800(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void fn_80222800(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4, s32 *arg5, s32 *arg6) {
     *arg3 = arg1;
     *arg4 = arg2;
     s32 field = *(s32 *)((u8 *)arg0 + 4);
@@ -1720,9 +1755,8 @@ extern "C" void *fn_80222800(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg
         *arg5 = arg1 + (s32)fn_80235EF0(0, 0);
         *arg6 = arg1 + (s32)fn_80235F64(field, 0);
     }
-    return arg0;
 }
-
+#pragma pop
 extern "C" void *fn_802228B0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     typedef s32 (*CreateFn)(s32);
     *(void **)arg0 = lbl_8033F998;
