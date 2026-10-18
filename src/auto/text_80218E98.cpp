@@ -470,19 +470,15 @@ extern "C" void fn_8021A8A8(void *arg0) {
 }
 
 extern "C" void fn_8021A910(void *arg0, s32 arg1) {
-    u8 *base = (u8 *)arg0;
-    s32 *p254 = *(s32 **)(base + 0x254);
-    s32 v258 = *(s32 *)(base + 0x258);
-    s32 v2c = *(s32 *)(base + 0x2C);
-    f32 f;
-    if (*p254 == v258) {
-        f = (arg1 == 2) ? lbl_805634A8 : lbl_805634E8;
-        fn_80218968(v2c, v258, f);
+    s32 temp_r6 = *(s32 *)((u8 *)arg0 + 0x258);
+    if (*(s32 *)*(s32 **)((u8 *)arg0 + 0x254) == temp_r6) {
+        fn_80218968(*(s32 *)((u8 *)arg0 + 0x2C), temp_r6,
+                    arg1 == 2 ? lbl_805634A8 : lbl_805634E8);
     } else {
-        f = (arg1 == 2) ? lbl_805634A8 : lbl_805634E8;
-        fn_8021889C(v2c, v258, f);
+        fn_8021889C(*(s32 *)((u8 *)arg0 + 0x2C), temp_r6,
+                    arg1 == 2 ? lbl_805634A8 : lbl_805634E8);
     }
-    ((VfObj *)arg0)->vf21();
+    ((VfObj *)arg0)->vf31();
 }
 
 extern "C" s32 fn_8021A9A4(void *arg0) {
