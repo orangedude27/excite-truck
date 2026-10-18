@@ -69,16 +69,16 @@ BOOL ARCChangeDir(ARCHandle* handle, const char* path) {
 
 BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
     s32 entrynum = ARCConvertPathToEntrynum(handle, path);
-    void* fst = handle->FSTStart;
-    
-    if (entrynum < 0 || !(*(u32*)((u8*)fst + entrynum * 0xC) & 0xFF000000)) {
+    volatile u8* fst = (volatile u8*)handle->FSTStart;
+
+    if (entrynum < 0 || !(*(volatile u32*)(fst + entrynum * 12) & 0xFF000000)) {
         return FALSE;
     }
-    
+
     dir->handle = handle;
     dir->entryNum = entrynum;
     dir->location = entrynum + 1;
-    dir->next = *(u32*)((u8*)fst + entrynum * 0xC + 8);
+    dir->next = *(volatile u32*)(fst + entrynum * 12 + 8);
     return TRUE;
 }
 
@@ -712,6 +712,25 @@ void fn_8011BDF0(s32 arg0) {
     }
 }
 
+void *fn_8011BE48(s32 arg0) {
+    void *ptr;
+    s32 sign;
+    s32 value;
+    ptr = fn_8011FFC4(0x40);
+    if (ptr != NULL) {
+        memset(ptr, 0, 0x40);
+        sign = arg0 >> 31;
+        *(s32 *)((u8 *)ptr + 0x00) = 0;
+        value = (sign ^ arg0) - sign;
+        *(s32 *)((u8 *)ptr + 0x04) = 1;
+        *(s32 *)((u8 *)ptr + 0x30) = 0;
+        *(s32 *)((u8 *)ptr + 0x34) = 1;
+        *(s32 *)((u8 *)ptr + 0x38) = 0;
+        *(s32 *)((u8 *)ptr + 0x3C) = value;
+    }
+    return ptr;
+}
+
 void fn_8011BEC8(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     s32 one = 1;
     s32 old;
@@ -1148,22 +1167,24 @@ void fn_80121BF4(void *arg0) {
 extern void fn_8012440C(void *, void *);
 extern void fn_80124CE8(void *, void *);
 void fn_80123DC0(s32 count, void *dst, s32 srcIndex, void *src) {
-    void *tempFirst;
-
+    void *srcBase = src;
+    void *temp_r31;
+    void *temp_r30;
     if (count == 0x80) {
-        tempFirst = (u8 *)src + ((srcIndex - 8) * 4);
-        fn_80123E98(dst, tempFirst);
-        src = (u8 *)src + ((srcIndex - 0x20) * 4);
-        fn_8012440C((u8 *)dst + 0x80, src);
-        fn_80123E98((u8 *)dst + 0x100, tempFirst);
-        fn_8012440C((u8 *)dst + 0x180, src);
+        temp_r31 = (u8 *)srcBase + ((srcIndex - 8) * 4);
+        fn_80123E98(dst, temp_r31);
+        temp_r30 = (u8 *)srcBase + ((srcIndex - 0x20) * 4);
+        fn_8012440C((u8 *)dst + 0x80, temp_r30);
+        fn_80123E98((u8 *)dst + 0x100, temp_r31);
+        fn_8012440C((u8 *)dst + 0x180, temp_r30);
         return;
+    } else {
+        void *tempElse = (u8 *)srcBase + ((srcIndex - 0x10) * 4);
+        fn_80124AD8(dst, tempElse);
+        fn_80124CE8((u8 *)dst + 0x40, tempElse);
+        fn_80124AD8((u8 *)dst + 0x80, tempElse);
+        fn_80124CE8((u8 *)dst + 0xC0, tempElse);
     }
-    src = (u8 *)src + ((srcIndex - 0x10) * 4);
-    fn_80124AD8(dst, src);
-    fn_80124CE8((u8 *)dst + 0x40, src);
-    fn_80124AD8((u8 *)dst + 0x80, src);
-    fn_80124CE8((u8 *)dst + 0xC0, src);
 }
 
 void fn_80124F90(void *arg0) {
