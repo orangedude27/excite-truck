@@ -313,10 +313,4 @@ extern "C" void fn_802E30C8(const char *, ...);
 extern "C" void fn_80207938(int arg0) {
     fn_802E30C8(&lbl_8033BD58, ++lbl_8055ED94, arg0);
 }
-class Obj80206518 {
-public:
-    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-    virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
-    virtual void f12(); virtual void f13(); virtual void f14();
-};
+
