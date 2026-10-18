@@ -28,15 +28,33 @@ extern f32 lbl_80560360, lbl_80560368, lbl_8056036C, lbl_80560370, lbl_80560374,
 extern f32 fn_801E7E24(void);
 extern f32 fn_801E7E24(void);
 extern f32 lbl_80560360, lbl_80560364, lbl_80560398;
+extern u8 lbl_802FCB98[];
+extern void fn_80130FCC(void *, s32, s32);
+extern void fn_801473F8(void *, void *, ...);
+#pragma push
+#pragma use_lmw_stmw off
+void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    char first[20];
+    char second[20];
+    u8 *base = lbl_802FCB98;
+    ((void (*)(void *, void *))(*(void ***)arg0)[3])(arg0, base);
+    fn_801476C4();
+    ((void (*)(void *, void *))(*(void ***)arg0)[3])(arg0, base + 0xC);
+    fn_801476C4();
+    fn_80130FCC(first, 20, arg1);
+    fn_801473F8(arg0, base + 0x1C, first);
+    if (arg3) {
+        fn_80130FCC(second, 20, arg2);
+        fn_801473F8(arg0, base + 0x30, second);
+    }
+}
+#pragma pop
 void fn_80013C98(f32 *arg0) {
     f32 value;
     if (fn_801E7E24() > lbl_80560360) {
-        value = *arg0 + fn_801E7E24() / lbl_80560364;
-        if (value >= lbl_80560368) {
-            value = lbl_80560368;
-        } else {
-            value = value;
-        }
+        value = fn_801E7E24() / lbl_80560364;
+        value = *arg0 + value;
+        value = value < lbl_80560368 ? value : lbl_80560368;
         *arg0 = value;
     }
 }
@@ -99,10 +117,14 @@ void fn_80013EAC(s32 arg0, s32 arg1) {
 }
 
 void fn_80014638(void *arg0) {
-    f32 zero = lbl_80560368;
-    s32 a = 0;
-    f32 one = lbl_80560398;
-    s32 six = 6;
+    f32 zero;
+    s32 a;
+    f32 one;
+    s32 six;
+    zero = lbl_80560368;
+    a = 0;
+    one = lbl_80560398;
+    six = 6;
     *(s32 *)((u8 *)arg0 + 0x14) = six;
     *(f32 *)((u8 *)arg0 + 0x1C) = one;
     *(u8 *)((u8 *)arg0 + 0x20) = a;
@@ -110,6 +132,41 @@ void fn_80014638(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x28) = zero;
     *(s32 *)((u8 *)arg0 + 0x24) = a;
 }
+
+extern u8 lbl_802FCE18[];
+extern void fn_8001A04C(void *);
+extern void fn_802CAC54(s32);
+extern void fn_80235380(void *);
+extern void fn_80128668(void *);
+#pragma push
+#pragma use_lmw_stmw off
+void *fn_80014664(void *arg0, s32 arg1) {
+    void *obj;
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_802FCE18;
+        lbl_803577E0[*(s32 *)((u8 *)arg0 + 4)] = 0;
+        obj = *(void **)((u8 *)arg0 + 0x50);
+        if (obj != 0) {
+            void **vtable = *(void ***)obj;
+            ((void (*)(void *, s32))vtable[2])(obj, 1);
+        }
+        fn_8001A04C(*(void **)((u8 *)arg0 + 0x48));
+        *(void **)((u8 *)arg0 + 0x48) = 0;
+        fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x44));
+        *(s32 *)((u8 *)arg0 + 0x44) = -2;
+        fn_80235380(*(void **)((u8 *)arg0 + 0x40));
+        *(void **)((u8 *)arg0 + 0x40) = 0;
+        fn_80235380(*(void **)((u8 *)arg0 + 0x3C));
+        *(void **)((u8 *)arg0 + 0x3C) = 0;
+        fn_80235380(*(void **)((u8 *)arg0 + 0x34));
+        *(void **)((u8 *)arg0 + 0x34) = 0;
+        fn_80235380(*(void **)((u8 *)arg0 + 0x38));
+        *(void **)((u8 *)arg0 + 0x38) = 0;
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+#pragma pop
 
 void fn_80014750(void *arg0) {
     void *manager;
@@ -167,25 +224,49 @@ s32 fn_80014AE4(void) {
 s32 fn_800151D4(void) { return 1; }
 
 s32 fn_800151DC(void *arg0) {
+    s32 result;
     void *manager = lbl_8055D350;
-    s32 result = 0;
+    void *obj;
     if ((*(u32 *)((u8 *)manager + 0x20) & 0x400) &&
         (*(u32 *)((u8 *)*(void **)((u8 *)manager + 0x2C) + 0x2C0) & 0x10)) {
-        void *obj = *(void **)((u8 *)arg0 + 0x50);
-        void **vt = *(void ***)obj;
-        ((void (*)(void *, void *))((u8 *)vt + 0xC))(obj, lbl_80558BBC);
+        obj = *(void **)((u8 *)arg0 + 0x50);
+        (*(void (**)(void *, void *))((u8 *)*(void ***)obj + 0xC))(obj, lbl_80558BBC);
         fn_801476C4();
     }
+    manager = lbl_8055D350;
+    result = 0;
     if ((*(u32 *)((u8 *)*(void **)((u8 *)manager + 0x30)) & 4) && (*(u32 *)((u8 *)manager + 0x20) & 0x200)) result = 1;
     if (result) {
-        void *obj = *(void **)((u8 *)arg0 + 0x50);
-        void **vt = *(void ***)obj;
-        ((void (*)(void *, void *))((u8 *)vt + 0xC))(obj, lbl_802FCDB4);
+        obj = *(void **)((u8 *)arg0 + 0x50);
+        (*(void (**)(void *, void *))((u8 *)*(void ***)obj + 0xC))(obj, lbl_802FCDB4);
         fn_801476C4();
     }
     return result;
 }
 
+extern f32 fn_80235EF0(void *, s32);
+extern f32 fn_80235F64(void *, s32);
+extern void fn_80010E94(void *, s32, f32, f32, f32, f32);
+#pragma push
+#pragma processor 750
+#pragma optimize_for_size on
+#pragma use_lmw_stmw off
+void fn_8001529C(void *arg0, u32 arg1, f32 a, f32 b, f32 c, f32 d, f32 e) {
+    f32 width, height, half, left, y, bottom, x;
+    s32 negative;
+    s32 positive = (arg1 >> 31) ^ 1;
+    width = fn_80235EF0(*(void **)((u8 *)arg0 + 0x38), 0);
+    height = fn_80235F64(*(void **)((u8 *)arg0 + 0x38), 0);
+    negative = positive == 0;
+    half = width * lbl_805603BC;
+    left = b - half;
+    bottom = c - e;
+    x = left + a * (((b + d) - half) - left);
+    y = c + height;
+    fn_80010E94(*(void **)((u8 *)arg0 + 0x38), negative,
+        x, positive ? y : bottom, lbl_80560360, lbl_80560360);
+}
+#pragma pop
 extern void fn_801476C4(void);
 extern u8 lbl_80558BBC[];
 extern u8 lbl_802FCDB4[];
