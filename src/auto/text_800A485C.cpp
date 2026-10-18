@@ -1264,6 +1264,14 @@ extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return fn_800BA49C(arg3, arg1, arg2, val);
 }
 
+extern "C" s32 fn_800BA688(void *, s32, s32, s32, s32 *, s32);
+extern "C" s32 fn_800BA1CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 val;
+    if (arg0 == 0 || arg1 == 0 || arg4 == 0) return 1;
+    val = *(s32 *)(lbl_80407300 + 4);
+    return fn_800BA688((void *)arg3, arg1, arg2, val, (s32 *)arg4, 0);
+}
+
 extern "C" s32 fn_800BA204(s32 arg0) {
     u32 flags;
 
@@ -2229,7 +2237,7 @@ extern "C" void* fn_800D57AC(void* arg0, const void* arg1) {
 extern "C" void* __dt__Q36nw4hbm3lyt8BoundingFv(void* arg0, int arg1) {
     if (arg0 != 0) {
         __dt__Q36nw4hbm3lyt4PaneFv(arg0, 0);
-        if (arg1 > 0) fn_80128668();
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
