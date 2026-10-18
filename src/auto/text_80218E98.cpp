@@ -799,6 +799,35 @@ extern "C" void fn_8021BF90(void *arg0) {
     }
 }
 
+extern "C" s32 fn_8021165C(s32, s32);
+extern "C" s32 fn_802C5310(s32, s32, f32, f32, f32);
+extern "C" void fn_8021BFEC(void *arg0) {
+    class Local {
+    public:
+        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
+        virtual void a4(); virtual void a5(); virtual void a6(); virtual s32 second(); virtual s32 first();
+    };
+    f32 a, b;
+    s32 flag = 0;
+    s32 *p;
+    s32 x, y;
+    ((void (*)(void *, s32))fn_80219660)(arg0, 0);
+    if (*(s32 *)((u8 *)arg0 + 0x2B0) != *(s32 *)((u8 *)arg0 + 0x2B4)) {
+        p = *(s32 **)((u8 *)arg0 + 0x2A8);
+        if (p != 0 && *(s32 *)((u8 *)arg0 + 0x2AC) == *p) flag = 1;
+        x = fn_8021165C(0, 2);
+        y = fn_8021165C(1, 2);
+        a = lbl_805634A8;
+        b = lbl_805634A8;
+        fn_80230C30(&a, &b, *(s32 *)((u8 *)arg0 + 0x2B0), *(s32 *)((u8 *)arg0 + 0x2B8));
+        if (((Local *)*(void **)((u8 *)arg0 + 0x2A4))->first())
+            fn_802C5310(x, flag, a, b, lbl_805634A8);
+        fn_80230C30(&a, &b, *(s32 *)((u8 *)arg0 + 0x2B4), *(s32 *)((u8 *)arg0 + 0x2B8));
+        if (((Local *)*(void **)((u8 *)arg0 + 0x2A4))->second())
+            fn_802C5310(y, flag, a, b, lbl_805634A8);
+    }
+}
+
 extern "C" void fn_8021C128(void) {
     fn_8021C12C();
 }
@@ -1232,10 +1261,10 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_8021E884(void *arg0, 
 }
 
 extern "C" void fn_8022B2D4(void *, s32, s32, s32, s32, s32, s32);
-extern "C" void *lbl_8033E988;
-extern "C" void fn_8021EB9C(void *arg0, s32 arg1) {
+extern "C" char lbl_8033E988[];
+extern "C" void *fn_8021EB9C(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8033E988;
+        *(void **)arg0 = (void *)(u32)&lbl_8033E988;
         fn_802C519C(*(void **)((u8 *)arg0 + 0xA5C));
         if (*(void **)((u8 *)arg0 + 0xA60) != 0)
             fn_802C519C(*(void **)((u8 *)arg0 + 0xA60));
@@ -1243,6 +1272,7 @@ extern "C" void fn_8021EB9C(void *arg0, s32 arg1) {
         if (arg1 > 0)
             fn_80128668(arg0);
     }
+    return arg0;
 }
 
 extern "C" void fn_802C2FC8(s32, s32, s32, s32, s32);
@@ -2139,6 +2169,20 @@ extern "C" void *fn_80226AD0(void *arg0, s32 arg1) {
             fn_80128668(self);
     }
     return arg0;
+}
+
+extern "C" void fn_80227244(void *arg0, s32 arg1) {
+    register void *obj = arg0;
+    if (obj == 0)
+        return;
+    *(void **)obj = &lbl_8033DFB4;
+    fn_8022EE98(*(void **)((u8 *)obj + 0x260));
+    if ((*(s32 *)((u8 *)obj + 0x254) != -2) && (*(s32 *)((u8 *)obj + 0x254) != -1))
+        fn_802CAC54();
+    *(s32 *)((u8 *)obj + 0x254) = -1;
+    fn_8021915C(obj, 0);
+    if (arg1 > 0)
+        fn_80128668(obj);
 }
 
 extern "C" void *fn_80228418(void *p,void *q,s32 a){s32 r;fn_80218F80();*(s32*)((u8*)p+0x244)=0;*(void**)p=lbl_8033DE28;*(u8*)((u8*)p+0x248)=0;if(a){*(s32*)((u8*)p+0x244)=a;}else{r=fn_801284F8(0x18,lbl_8033DCDC);if(r)r=fn_8023964C();*(s32*)((u8*)p+0x244)=r;*(u8*)((u8*)p+0x248)=1;}fn_80239784(*(s32*)((u8*)p+0x244),(u8*)q+0x40);return p;}
