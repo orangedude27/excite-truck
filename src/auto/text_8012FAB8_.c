@@ -46,7 +46,7 @@ void fn_80130518(void) {
 }
 
 void fn_801308E4(void *arg0, void *arg1, int arg2, int arg3) {
-    fn_801305C4(arg0, arg1, *(char **)0x8055E050 + 8, arg2);
+    fn_801305C4(arg0, arg1, (char *)lbl_8055E050 + 8, arg2);
 }
 
 void fn_801308F4(void) {
