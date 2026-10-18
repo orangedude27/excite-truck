@@ -166,12 +166,17 @@ u16 fn_802C5BEC(int arg0, u16 arg1) {
 extern int fn_802CAC28(void *, int);
 extern void *fn_802C5A60(int, int, u16);
 extern int lbl_8034B1F0;
+#pragma push
+#pragma small_data off
 void fn_802C5C40(int *arg0, int arg1, int arg2) {
     int temp_r30 = *arg0;
-    fn_802CAC28(&lbl_8034B1F0, 0);
-    *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(temp_r30, arg2, *(s16 *)((char *)arg2 + arg1 * 4 + 0x14 + 6) - 1);
+    int result = fn_802CAC28(&lbl_8034B1F0, 0);
+    int *entry = (int *)((char *)arg2 + arg1 * 4 + 0x14);
+    int value = *(s16 *)(*(int *)entry + 6) - 1;
+    *(int *)((char *)arg0 + arg1 * 4 + 0x14) =
+        (int)fn_802C5A60(result, temp_r30, (u16)value);
 }
-
+#pragma pop
 s32 fn_802C5EB8(void *, u32);
 
 s32 fn_802C5E7C(void *arg0) {
@@ -285,6 +290,9 @@ void fn_802C6FA8(void) { fn_802C5DF0((int *)fn_802D6C48); }
 void fn_802C5DF0(int*);
 int fn_802C90E0(void);
 int fn_802E30C8(const char*, int);
+extern const char lbl_8034B34C[];
+int fn_802C53A8();
+int fn_802C6C20(int);
 int fn_802C6B44(int);
 void fn_802C6DC4(int, int, int, int);
 extern const char lbl_8034B3DC[];
