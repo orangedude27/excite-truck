@@ -92,6 +92,8 @@ extern "C" void fn_802168BC(void *);
 extern "C" void *fn_8022D97C(s32);
 extern "C" void *lbl_8033F90C[];
 extern "C" int lbl_8033FA28[];
+extern "C" void fn_802CAC54(void);
+extern "C" void *lbl_8033DFB4;
 extern "C" void fn_8021915C(void *, u32);
 extern "C" s32 fn_80128668(void *);
 extern "C" void fn_80219440(void *, s32, void *, s32);
@@ -393,6 +395,34 @@ extern "C" void fn_80219660(void *arg0, s32 unused) {
                  *(s32 *)((u8 *)arg0 + 0x244) + b,
                  *(s32 *)((u8 *)arg0 + 0x248) + a,
                  *(s32 *)((u8 *)arg0 + 0x24C), z, c, y, x, lbl_805634A4);
+}
+
+extern "C" void fn_8022AC1C(s32, s32, s32, s32, s32 *, s32 *, s32 *, s32 *);
+extern "C" void fn_80219718(void *arg0) {
+    s32 sp14, sp10, spC, sp8;
+    s32 temp_r30;
+    s32 var_r0, var_r0_2, var_r0_3, var_r0_4;
+    fn_8022AC1C(*(s32 *)((u8 *)arg0 + 0x250), ((VfObj *)arg0)->vf32(),
+        *(s32 *)((u8 *)arg0 + 0x244) + *(s32 *)((u8 *)arg0 + 4),
+        *(s32 *)((u8 *)arg0 + 0x248) + *(s32 *)((u8 *)arg0 + 8),
+        &sp14, &sp10, &spC, &sp8);
+    var_r0 = *(s32 *)((u8 *)arg0 + 4);
+    if (sp14 < var_r0) var_r0 = sp14;
+    sp14 = var_r0;
+    temp_r30 = *(s32 *)((u8 *)arg0 + 4);
+    var_r0_2 = temp_r30 + ((VfObj *)arg0)->vf29();
+    if (spC > var_r0_2) var_r0_2 = spC;
+    spC = var_r0_2;
+    var_r0_3 = *(s32 *)((u8 *)arg0 + 8);
+    if (sp10 < var_r0_3) var_r0_3 = sp10;
+    sp10 = var_r0_3;
+    var_r0_4 = *(s32 *)((u8 *)arg0 + 0x10);
+    if (sp8 > var_r0_4) var_r0_4 = sp8;
+    sp8 = var_r0_4;
+    *(s32 *)((u8 *)arg0 + 0x244) += *(s32 *)((u8 *)arg0 + 4) - sp14;
+    *(s32 *)((u8 *)arg0 + 0x248) += *(s32 *)((u8 *)arg0 + 8) - sp10;
+    ((Dispatch19718 *)arg0)->set(sp14, sp10);
+    fn_80219284(arg0, spC - sp14, var_r0_4 - sp10);
 }
 
 extern "C" void fn_80219870(void *arg0, s32 arg1, s32 arg2, char *arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7) {
@@ -1077,9 +1107,9 @@ extern "C" s32 fn_8021E1C8(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r4_2;
     s32 temp_r4_4;
     s32 var_r5;
+    void *temp_r6;
     s32 var_r7;
     void *temp_r4_3;
-    void *temp_r6;
 
     *(s32 *)((u8 *)arg0 + 0x260) = 0;
     if (*(u8 *)((u8 *)arg0 + 0x268) != 0) {
