@@ -139,7 +139,6 @@ void fn_8000B3B4(void) {
         callback();
 }
 
-#pragma dont_inline on
 void fn_8000B3DC(unsigned char arg0) {
     extern unsigned char lbl_8055D3EC;
     extern void fn_8000B5A8(void);
