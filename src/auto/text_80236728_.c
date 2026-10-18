@@ -155,7 +155,7 @@ void *fn_80238370(void *arg0, int arg1) {
 
 float fn_802383F4(void) { return lbl_805636E0; }
 
-extern void fn_80237AA0(void);
+extern void fn_80237AA0();
 extern void fn_80236960(void);
 extern float lbl_805636E0;
 extern void fn_8002F6AC(void *, void (*)(void));
