@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 #include "revolution/GX/GXTypes.h"
+#include "revolution/GX/GXAttr.h"
 
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
@@ -79,6 +80,16 @@ extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out,v
  u8 a=s[0], b=s[1], c=s[2], v=s[3];
  d[0]=a; d[1]=b; d[2]=c; d[3]=v;
  if(alpha!=0xff) d[3]=(u8)((v*alpha)/255);
+}
+
+extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned char texCoordCount) {
+    GXClearVtxDesc();
+    GXSetVtxDesc((GXAttr)9, (GXAttrType)1);
+    if (hasColor) GXSetVtxDesc((GXAttr)0xB, (GXAttrType)1);
+    for (int i = 0; i < texCoordCount; i++) GXSetVtxDesc((GXAttr)(i + 0xD), (GXAttrType)1);
+    GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)9, (GXCompCnt)0, (GXCompType)4, (u8)0);
+    if (hasColor) GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)0xB, (GXCompCnt)1, (GXCompType)5, (u8)0);
+    for (int i = 0; i < texCoordCount; i++) GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)(i + 0xD), (GXCompCnt)1, (GXCompType)4, (u8)0);
 }
 
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
