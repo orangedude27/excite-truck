@@ -185,9 +185,14 @@ MEMiHeapHead* MEMCreateFrmHeapEx(void *start, u32 size, u16 opt) {
     u32 end = ((u32)size + (u32)start) & ~3;
     u32 base = ((u32)start + 3) & ~3;
     u32 diff;
-    if (base > end) return 0;
+    if (base > end)
+        goto fail;
     diff = end - base;
-    if (diff < 0x48U) return 0;
+    if (diff >= 0x48U)
+        goto init;
+fail:
+    return 0;
+init:
     MEMiInitHeapHead((MEMiHeapHead *)base, 0x46524D48, (void *)(base + 0x48), (void *)end, opt);
     *(u32 *)(base + 0x3C) = *(u32 *)(base + 0x18);
     *(u32 *)(base + 0x40) = *(u32 *)(base + 0x1C);
