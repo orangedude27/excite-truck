@@ -134,23 +134,22 @@ void fn_800195C0(void) {
 }
 
 s32 fn_80019534(void) {
-    s32 ret;
     void **obj;
     void **vtable;
-    void *target = (void *)0x802FD3A0;
+    void *addr;
 
     obj = (void **)lbl_8055D58C;
     if (obj != 0) {
+        addr = (void *)lbl_802FD3A0;
         vtable = (void **)obj[0];
-        ret = ((s32 (*)(void *))vtable[4])(target);
-        if (ret != 0) {
+        if (((s32 (*)(void *))vtable[4])(addr) != 0) {
             obj = (void **)lbl_8055D58C;
             vtable = (void **)obj[0];
-            ret = ((s32 (*)(void *))vtable[2])(target);
-            ret = ((s32 (*)(void *, s32))vtable[6])((void *)0x802FD3B4, 0);
+            ((void (*)(void *))vtable[2])(addr);
+            return ((s32 (*)(void *, s32))vtable[6])((void *)lbl_802FD3B4, 0);
         }
     }
-    return ret;
+    return 0;
 }
 
 s32 fn_80019098(s32 arg0) {
@@ -289,9 +288,9 @@ s32 fn_80019088(void) {
     return ((s32*)lbl_80357E0C)[1];
 }
 
+__declspec(section ".data") extern void *lbl_802FD2DC;
 void fn_80018F40(void) {
-    void *arg = (void *)0x802FD2DC;
-    lbl_8055D58C = fn_80131808(arg);
+    lbl_8055D58C = fn_80131808(&lbl_802FD2DC);
     fn_80018BA4();
     fn_80018CCC();
     lbl_8055D588 = 0;
