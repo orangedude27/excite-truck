@@ -1,4 +1,6 @@
 #include "revolution/MTX/vec.h"
+struct FnTable_801ADA9C { char pad[0x18]; void (*call)(void *, void *, void *); };
+struct Obj_801ADA9C { struct FnTable_801ADA9C *vtable; };
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #pragma opt_tail_call on
