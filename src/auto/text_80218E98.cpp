@@ -1252,6 +1252,63 @@ extern "C" void* __dt__Q34Game10MemoryCard8ResourceFv_8022003C(void* arg0, s32 a
     return arg0;
 }
 
+extern "C" s32 fn_802205AC(void *arg0, s32 arg1) {
+    s32 *p;
+    f32 *value;
+    f32 step;
+    f32 bound;
+    f32 result;
+    s32 temp;
+
+    p = *(s32 **)((u8 *)arg0 + 0x258);
+    if (p != 0 && *p != *(s32 *)((u8 *)arg0 + 0x25C))
+        return 0;
+    temp = 1;
+    switch (arg1) {
+    case 0x127:
+        value = *(f32 **)((u8 *)arg0 + 0x244);
+        if (value != 0 && *value != *(f32 *)((u8 *)arg0 + 0x24C)) {
+            *(f32 *)((u8 *)arg0 + 0x264) = fn_8023659C();
+            value = *(f32 **)((u8 *)arg0 + 0x244);
+            step = *(f32 *)((u8 *)arg0 + 0x250);
+            bound = *(f32 *)((u8 *)arg0 + 0x24C);
+            result = *value + step;
+            if (result >= bound)
+                result = bound;
+            *value = result;
+        }
+        break;
+    case 0x125:
+        value = *(f32 **)((u8 *)arg0 + 0x244);
+        if (value != 0 && *value != *(f32 *)((u8 *)arg0 + 0x248)) {
+            *(f32 *)((u8 *)arg0 + 0x260) = fn_8023659C();
+            value = *(f32 **)((u8 *)arg0 + 0x244);
+            step = *(f32 *)((u8 *)arg0 + 0x250);
+            bound = *(f32 *)((u8 *)arg0 + 0x248);
+            result = *value - step;
+            if (result <= bound)
+                result = bound;
+            *value = result;
+        }
+        break;
+    case 0x126:
+        if (*(s32 *)((u8 *)*(s32 **)((u8 *)arg0 + 0x2C) + 0x494) <= 1)
+            return 0;
+        fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
+        fn_80230E90(0);
+        break;
+    case 0x128:
+        if (*(s32 *)((u8 *)*(s32 **)((u8 *)arg0 + 0x2C) + 0x494) <= 1)
+            return 0;
+        fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
+        fn_80230E90(0);
+        break;
+    default:
+        return 0;
+    }
+    return temp;
+}
+
 extern "C" void fn_8022071C(void *arg0) {
     void *result;
     if (fn_80129BC4() != 0) {
@@ -1708,6 +1765,22 @@ extern "C" void fn_80223880(void *arg0) {
 }
 
 extern "C" u32 fn_80223AAC(void) { return 1; }
+
+extern "C" void *lbl_8033E3D4[];
+extern "C" void *fn_80223B94(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        void *ptr = *(void **)((u8 *)arg0 + 0x250);
+        *(void **)arg0 = lbl_8033E3D4;
+        if (ptr != 0)
+            fn_802C519C(ptr);
+        *(void **)((u8 *)arg0 + 0x250) = 0;
+        fn_8022EE98(*(void **)((u8 *)arg0 + 0x260));
+        fn_8021915C(arg0, 0);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
 
 extern "C" void fn_80223CC4(void *arg0) {
     void *obj = *(void **)((u8 *)arg0 + 0x264);
