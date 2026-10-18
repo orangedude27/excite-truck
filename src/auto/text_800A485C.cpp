@@ -91,13 +91,11 @@ class FrameController {
 public:
     u8 pad0[4];
     f32 m_min;      // 0x4
-    u8 pad8[4];
     f32 m_max;      // 0x8
     f32 m_value;    // 0xC
     f32 m_speed;    // 0x10
     u8 pad14[4];
     s32 m_state;    // 0x14
-    u8 pad18[4];
     s32 m_dir;      // 0x18
     u8 pad1c[4];
     u8 m_flag;      // 0x1C
@@ -2925,6 +2923,56 @@ extern "C" void fn_800CF3EC(void *arg0) {
     else
         val = *(f32 *)((u8 *)arg0 + 8);
     *(f32 *)((u8 *)arg0 + 0xC) = val;
+}
+
+void homebutton::FrameController::calc() {
+    if (m_state != 1) return;
+    switch (m_dir) {
+    case 0: {
+        f32 v = m_value + m_speed;
+        m_value = v;
+        if (v >= m_min - lbl_80560E20) {
+            m_value = m_min - lbl_80560E20;
+            m_state = 0;
+        }
+        break;
+    }
+    case 1: {
+        f32 v = m_value - m_speed;
+        m_value = v;
+        if (v <= m_max) {
+            m_value = m_max;
+            m_state = 0;
+        }
+        break;
+    }
+    case 2: {
+        f32 v = m_value + m_speed;
+        m_value = v;
+        if (v >= m_min) {
+            m_value = m_min - (m_min - m_max);
+        }
+        break;
+    }
+    case 3: {
+        if (m_flag == 0) {
+            f32 v = m_value + m_speed;
+            m_value = v;
+            if (v >= m_min - lbl_80560E20) {
+                m_value = m_min - lbl_80560E20;
+                m_flag = 1;
+            }
+        } else {
+            f32 v = m_value - m_speed;
+            m_value = v;
+            if (v <= m_max) {
+                m_value = m_max;
+                m_flag = 0;
+            }
+        }
+        break;
+    }
+    }
 }
 
 extern "C" u32 fn_800CF91C(void) { return 1; }
