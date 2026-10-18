@@ -140,6 +140,33 @@ void fn_80161618(void) {
     }
 }
 
+void fn_801617BC(void) {
+    s32 offset;
+    s32 i;
+    s32 *count;
+    void *item;
+    void (*func)(void *);
+
+    lbl_8055E2E0 = fn_80145E70(lbl_8032F588 + 0x11C);
+    lbl_8055E2E4 = (int)fn_80145E70(lbl_8032F588 + 0x12C);
+    lbl_8055E2E8 = (int)fn_802CAC28(lbl_8032F588 + 0x138, 0);
+    lbl_8055E2EC = (int)fn_802CAC28(lbl_8032F588 + 0x148, 0);
+    lbl_8055E2F0 = (int)fn_802CAC28(lbl_8032F588 + 0x158, 0);
+    lbl_8055E2F4 = (int)fn_802CAC28(lbl_8032F588 + 0x168, 0);
+    lbl_8055E2F8 = (int)fn_802CAC28(lbl_8032F588 + 0x178, 0);
+    lbl_8055E2FC = (int)fn_8023512C(lbl_8032F588 + 0x188);
+    count = (s32 *)(lbl_8042FDEC + 4);
+    i = 0;
+    offset = 0;
+    while (i < *count) {
+        item = *(void **)(*(s32 *)lbl_8042FDEC + offset);
+        func = (void (*)(void *))(*(void ***)(*(void **)item))[5];
+        func(item);
+        offset += 4;
+        i++;
+    }
+}
+
 extern s32 lbl_8055A0B0;
 extern s32 lbl_8055A0B8;
 void fn_801619A8(void) {
@@ -762,9 +789,9 @@ int fn_80165840(void) {
     return 0;
 }
 
-int fn_80165848(int arg5, int arg6, int arg7, int arg8) {
+int fn_80165848(int arg0, int arg1, int arg2, int arg3, int arg4, int *arg5) {
     if (fn_80161BB8() != 0) {
-        *(int *)arg8 |= 0x1150;
+        *arg5 |= 0x1150;
         return 1;
     }
     return 0;
