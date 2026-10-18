@@ -52,8 +52,6 @@ class Dispatch19718 { public: virtual void a(); virtual void b(); virtual void c
 
 class VfObjCall {
 public:
-    virtual void vf0();
-    virtual void vf1();
     virtual void vf2(s32);
 };
 
@@ -2222,7 +2220,7 @@ extern "C" void *__dt__10J2DTextBoxFv(void *arg0, s32 arg1) {
         *(void ***)arg0 = (void **)&lbl_8033DD20;
         if (flag != 0) {
             void *obj = *(void **)((u8 *)arg0 + 0x268);
-            if (obj != 0) ((VfObj *)obj)->vf1();
+            if (obj != 0) ((VfObjCall *)obj)->vf2(1);
             *(void **)((u8 *)arg0 + 0x268) = 0;
         }
         fn_8021915C(arg0, 0);
