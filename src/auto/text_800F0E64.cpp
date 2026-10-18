@@ -418,19 +418,20 @@ extern "C" s32 ReadWaveSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCF
 extern "C" s32 ReadSoundArchivePlayerInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPQ46nw4hbm3snd12SoundArchive22SoundArchivePlayerInfo(void *arg0, void *arg1) {
     extern const char lbl_80324D08[];
     extern char lbl_805598B0;
-    void *ref = *(void **)((char *)arg0 + 0x28);
+    register void *ref = *(void **)((char *)arg0 + 0x28);
+    register void *out = arg1;
     void *data;
     if (*((u8 *)ref + 0x29) != 0)
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598B0, 0x6f, lbl_80324D08);
     data = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*((u8 *)ref + 0x28), *(u32 *)((char *)ref + 0x2c), ref);
-    if (arg1 == 0) return 0;
-    *(u32 *)((char *)arg1 + 0x00) = *(u16 *)((char *)data + 0x00);
-    *(u32 *)((char *)arg1 + 0x04) = *(u16 *)((char *)data + 0x02);
-    *(u32 *)((char *)arg1 + 0x08) = *(u16 *)((char *)data + 0x04);
-    *(u32 *)((char *)arg1 + 0x0c) = *(u16 *)((char *)data + 0x06);
-    *(u32 *)((char *)arg1 + 0x10) = *(u16 *)((char *)data + 0x08);
-    *(u32 *)((char *)arg1 + 0x14) = *(u16 *)((char *)data + 0x0a);
-    *(u32 *)((char *)arg1 + 0x18) = *(u16 *)((char *)data + 0x0c);
+    if (out == 0) return 0;
+    *(u32 *)((char *)out + 0x00) = *(u16 *)((char *)data + 0x00);
+    *(u32 *)((char *)out + 0x04) = *(u16 *)((char *)data + 0x02);
+    *(u32 *)((char *)out + 0x08) = *(u16 *)((char *)data + 0x04);
+    *(u32 *)((char *)out + 0x0c) = *(u16 *)((char *)data + 0x06);
+    *(u32 *)((char *)out + 0x10) = *(u16 *)((char *)data + 0x08);
+    *(u32 *)((char *)out + 0x14) = *(u16 *)((char *)data + 0x0a);
+    *(u32 *)((char *)out + 0x18) = *(u16 *)((char *)data + 0x0c);
     return 1;
 }
 
@@ -1084,12 +1085,12 @@ extern "C" void fn_800FA9E8(void* arg0) {
 }
 
 extern "C" void Free__Q44nw4r3snd6detail14StrmBufferPoolFPv(void *self, void *ptr) {
-    OSDisableInterrupts();
+    u32 state = OSDisableInterrupts();
     u32 idx = ((u8 *)ptr - (u8 *)*(void **)self) / *(u32 *)((u8 *)self + 8);
     u8 *block = (u8 *)self + (idx >> 3);
-    *(u8 *)(block + 0x14) = *(u8 *)(block + 0x14) & ~(1 << (idx & 7));
-    *(s32 *)((u8 *)self + 0x10) = *(s32 *)((u8 *)self + 0x10) - 1;
-    OSRestoreInterrupts(0);
+    *(u8 *)(block + 0x14) &= ~(1 << (idx & 7));
+    *(s32 *)((u8 *)self + 0x10) -= 1;
+    OSRestoreInterrupts(state);
 }
 
 extern "C" void NWC24Data_Init(void* arg0) {
