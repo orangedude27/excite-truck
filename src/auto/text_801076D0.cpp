@@ -3,11 +3,32 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { struct List; } }
+namespace nw4hbm { namespace ut { struct List; void* List_GetNth(const List*, unsigned short); } }
 
 extern "C" u8 fn_8010A33C(void);
 extern "C" void* fn_80108FFC(void*, const void*);
 extern "C" const char lbl_803290E8[];
+extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void* arg0, void** arg1, void* arg2) {
+    extern const char lbl_80328680[];
+    extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+    const char* file = lbl_80328680;
+    void* node;
+    void* prev;
+    if (arg2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4A, file + 0x34);
+    node = *arg1;
+    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4C, file + 0xFC);
+    prev = *(void**)((char*)node + 4);
+    if (prev == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x4F, file + 0x124);
+    if (*(void**)arg2 != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x51, file + 0x150);
+    if (*(void**)((char*)arg2 + 4) != 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x52, file + 0x17C);
+    *(void**)arg2 = node;
+    *(void**)((char*)arg2 + 4) = prev;
+    *(void**)((char*)node + 4) = arg2;
+    *(void**)prev = arg2;
+    ++*(int*)arg0;
+    return arg2;
+}
+
 extern "C" void* fn_80107FE4(void* arg0, const void* arg1) {
     fn_80108FFC(arg0, arg1);
     *(const char**)arg0 = lbl_803290E8;
