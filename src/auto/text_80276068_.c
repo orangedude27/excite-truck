@@ -100,30 +100,30 @@ void fn_80277740(void) {
 }
 
 extern char lbl_8055C650;
-extern char lbl_803473B8, lbl_803473C4;
+extern char lbl_803473B8[], lbl_803473C4[];
+#pragma dont_inline on
 int fn_80277754(void *arg0) {
     char *name;
-    void (*add)(void *, int) = fn_80276ACC;
     name = (*(char * (**)(void *))((char *)*(void **)arg0 + 8))(arg0);
     if (stricmp(name, &lbl_8055C650) == 0) {
-        add(arg0, (int)&lbl_8055C638);
+        fn_80276ACC(arg0, *(int *)&lbl_8055C638);
         goto done;
     }
     name = (*(char * (**)(void *))((char *)*(void **)arg0 + 8))(arg0);
     if (stricmp(name, &lbl_8055C644) == 0) {
-        add(arg0, (int)&lbl_8055C644);
+        fn_80276ACC(arg0, (int)&lbl_8055C644);
         goto done;
     }
     name = (*(char * (**)(void *))((char *)*(void **)arg0 + 8))(arg0);
-    if (stricmp(name, &lbl_803473B8) == 0) {
-        add(arg0, (int)&lbl_803473C4);
+    if (stricmp(name, (const char *)&lbl_803473B8) == 0) {
+        fn_80276ACC(arg0, (int)&lbl_803473C4);
         goto done;
     }
     return 0;
 done:
     return 1;
 }
-
+#pragma dont_inline reset
 int fn_80277960(void *arg0, void *arg1, float *arg2) {
     unsigned char *p = (unsigned char *)fn_80276A44();
     if (p != 0) {
