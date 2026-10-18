@@ -61,7 +61,7 @@ void fn_801D1BA4(void) {
 
 void fn_801D1C10(void) {
     int count = lbl_8055E8F8;
-    fn_8012850C(count * 0x9c + 0x10, &lbl_8055ABD8);
-    lbl_8055E918 = fn_8002F37C(0, 0, 0x9c, count);
+    int result = fn_8012850C(count * 0x9c + 0x10, &lbl_8055ABD8);
+    lbl_8055E918 = ((int (*)(int, int, int, int, int))fn_8002F37C)(result, 0, 0, 0x9c, count);
 }
 
