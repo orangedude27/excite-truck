@@ -348,7 +348,7 @@ extern "C" void fn_8020769C(void) {
 	fn_802073A4();
 }
 
-extern "C" void fn_802066C8(void*, u32);
+extern "C" void *fn_802066C8(void*, u32);
 extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
     void* this_, s32 flag) {
     if (this_) {
