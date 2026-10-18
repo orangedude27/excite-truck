@@ -835,6 +835,42 @@ extern "C" s32 fn_8021D1B0(void *arg0) {
     return 4;
 }
 
+extern "C" s32 fn_8021D1F0(void *arg0, s32 arg1) {
+    s32 *temp_r6 = *(s32 **)((u8 *)arg0 + 0x2BC);
+    if (temp_r6 == 0)
+        return 0;
+    if (*(s32 *)((u8 *)arg0 + 0x2C0) != *temp_r6)
+        return 0;
+    switch (arg1) {
+    case 0x127:
+        if (*(*(s32 **)((u8 *)arg0 + 0x254)) < *(s32 *)((u8 *)arg0 + 0x258) - 1)
+            ++*(*(s32 **)((u8 *)arg0 + 0x254));
+        else
+            *(*(s32 **)((u8 *)arg0 + 0x254)) = 0;
+        return 1;
+    case 0x125:
+        if (*(*(s32 **)((u8 *)arg0 + 0x254)) > 0)
+            --*(*(s32 **)((u8 *)arg0 + 0x254));
+        else
+            *(*(s32 **)((u8 *)arg0 + 0x254)) = *(s32 *)((u8 *)arg0 + 0x258) - 1;
+        return 1;
+    case 0x126:
+        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
+            fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
+            return 1;
+        }
+        goto done;
+    case 0x128:
+        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x2C) + 0x494) > 1) {
+            fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
+            return 1;
+        }
+    done:
+    default:
+        return 0;
+    }
+}
+
 extern "C" void *fn_8021D300(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033EBA0;
