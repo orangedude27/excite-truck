@@ -31,6 +31,9 @@ extern void fn_80193D30(void *);
 extern int fn_802E30C8(const char *, ...);
 extern char lbl_80333198[];
 
+#define __HI(x) *(int *)&x
+extern float lbl_80562174, lbl_805621B0, lbl_805621B4;
+
 int fn_8019309C(void *arg0, int index, signed char arg2) {
     void *entry = lbl_804349C0[index];
     int result = 0;
@@ -96,6 +99,49 @@ float fn_801931EC(float a, float b) {
     }
     if (value > floor) return value;
     return floor;
+}
+
+#pragma processor 750
+void fn_8019321C(void *arg0, void *arg1, void *arg2) {
+    float x = *(float *)((char *)arg2 + 0x18);
+    float y = *(float *)((char *)arg2 + 0x20);
+    float length = (float)fn_8002F234(x * x + y * y);
+    float scale;
+    float dx, dy, neg;
+    float ox, oy;
+    float a = *(float *)((char *)arg2 + 0x24);
+    float b = *(float *)((char *)arg2 + 0x2C);
+    float c = *(float *)arg1;
+    float d = *(float *)((char *)arg1 + 4);
+    if (lbl_80562148 > length) length = lbl_80562148;
+    scale = lbl_80562140 / length;
+    dx = x * scale;
+    dy = y * scale;
+    neg = -dx;
+    ox = dy * c + dx * d + a;
+    oy = neg * c + dy * d + b;
+    *(float *)arg0 = ox;
+    *(float *)((char *)arg0 + 4) = oy;
+}
+#pragma processor gekko
+extern float lbl_80562140, lbl_80562148;
+void fn_8019330C(void *out, void *in, int arg2) {
+    volatile float x = *(float *)((char *)arg2 + 0x18);
+    volatile float y = *(float *)((char *)arg2 + 0x20);
+    float length = (float)fn_8002F234(x * x + y * y);
+    float scale;
+    float sx, sy, dx, dy;
+    if (lbl_80562148 > length) {
+    } else {
+        length = lbl_80562148;
+    }
+    scale = lbl_80562140 / length;
+    sx = x * scale;
+    sy = y * scale;
+    dx = *(float *)in - *(float *)((char *)arg2 + 0x24);
+    dy = *(float *)((char *)in + 4) - *(float *)((char *)arg2 + 0x2C);
+    *(float *)((char *)out + 4) = dx * sx + dy * sy;
+    *(float *)out = dx * sy + dy * -sx;
 }
 
 void fn_801933FC(void *arg0, void *arg1) {
@@ -312,6 +358,30 @@ void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
     out[2] = a[2] + t * (b[2] - a[2]);
 }
 
+extern double fn_8002EFB4(float, float);
+extern float lbl_80562140, lbl_80562144, lbl_8056215C, lbl_805621A4, lbl_805621D0, lbl_805621D4;
+#pragma processor 750
+float fn_80194B60(float a, float b, float c, float d) {
+    float ratio;
+    float curve;
+    float distance;
+    distance = (float)fn_8002EFB4(d, c);
+    if (distance > c * lbl_8056215C) distance = c - distance;
+    ratio = distance / (c * lbl_8056215C);
+    curve = lbl_805621A4;
+    if (ratio >= curve) {
+        curve = lbl_80562140;
+        if (ratio <= curve) {
+            if (ratio > lbl_80562144) {
+                curve = ratio * (ratio * (lbl_805621D0 * ratio)) + ratio * (lbl_805621D4 * ratio);
+            } else {
+                curve = ratio * (ratio * (lbl_805621D0 * ratio)) - ratio * (lbl_805621D4 * ratio);
+            }
+        }
+    }
+    return a + curve * (b - a);
+}
+#pragma processor gekko
 extern float lbl_8055A488, lbl_8056215C;
 extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
@@ -400,6 +470,42 @@ void fn_80195CA8(void *arg0) {
 
 void fn_801961F8(void) {
 
+}
+
+extern float lbl_80562140, lbl_80562144, lbl_80562168;
+extern float lbl_80562208, lbl_80562230, lbl_80562234, lbl_80562238;
+extern float __fabsf(float);
+void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, float farg2) {
+    float temp_f5;
+    float sp8;
+    float spC;
+    int var_r0;
+    temp_f5 = (lbl_80562230 + (farg0 - farg1)) / farg2;
+    if (__fabs(farg0) < lbl_80562168) {
+        *arg1 = lbl_80562140;
+        *arg0 = lbl_80562144;
+        *arg2 = 0;
+        return;
+    }
+    if (__fabs(farg1) < lbl_80562208) {
+        *arg0 = __fabs(temp_f5) / lbl_80562234;
+        *arg1 = lbl_80562144;
+    } else {
+        sp8 = farg1;
+        spC = temp_f5;
+        if ((*(unsigned int *)&spC & 0x80000000) == (*(unsigned int *)&sp8 & 0x80000000)) {
+            *arg0 = __fabs(temp_f5) / lbl_80562234;
+            *arg1 = lbl_80562144;
+        } else {
+            *arg0 = lbl_80562144;
+            *arg1 = __fabs(temp_f5) / lbl_80562238;
+        }
+    }
+    if (farg0 > lbl_80562144)
+        var_r0 = 1;
+    else
+        var_r0 = -1;
+    *arg2 = var_r0;
 }
 
 extern float fn_801671FC(int);
