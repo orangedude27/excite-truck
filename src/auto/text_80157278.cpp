@@ -1192,11 +1192,13 @@ extern "C" void fn_8015D270(void* arg0, void* arg1) {
 }
 
 extern "C" void fn_8015D318(Unk801577F0* arg0, f32 arg1, s32 unused, s32 arg2) {
-    if (arg2 == 5) {
+    if (unused == 5) {
         f32 value;
+        s32 old;
         if (arg1 < lbl_80561754) value = arg1 - lbl_80561760;
         else value = lbl_80561760 + arg1;
-        *(s32*)((u8*)arg0 + 0x26C) += (s32)value;
+        old = arg0->m26c;
+        arg0->m26c = old + (s32)value;
     }
 }
 
@@ -1286,32 +1288,17 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
 void fn_8015D554(void* arg0) {
     class Local {
     public:
-virtual void v0();
-virtual void v1();
-virtual void v2();
-virtual void v3();
-virtual void v4();
-virtual void v5();
-virtual void v6();
-virtual void v7();
-virtual void v8();
-virtual void v9();
-virtual void v10();
-virtual void v11();
-virtual void v12();
-virtual void v13();
-virtual void v14();
-virtual void v15();
-virtual void v16();
-virtual void v17();
-virtual void v18();
-virtual void v19();
-virtual void v20();
-        virtual void v21(s32);
-        virtual s32 v22();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20();
+        virtual void v21(void*);
+        virtual void* v22();
     };
     Local* obj = (Local*)arg0;
-    s32 value = obj->v22();
+    void* value = obj->v22();
     obj->v21(value);
 }
 
@@ -1369,9 +1356,10 @@ extern "C" void fn_8015D814(void* arg0) {
 
 void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
     Unk801577F0V* self = (Unk801577F0V*)this;
-    if (self->m50 != 0) {
-        self->v16();
-        self->m50 = 0;
+    Unk801577F0V* target = (Unk801577F0V*)self->m248;
+    if (target != 0) {
+        target->v7();
+        self->m248 = 0;
     }
 }
 
