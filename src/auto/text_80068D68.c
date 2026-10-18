@@ -3434,7 +3434,6 @@ void *l2cu_find_rcb_by_psm(u16 psm) {
 
 void l2cu_process_peer_cfg_req(void *arg0, void *arg1) {
     int var_r0, var_r3, var_r6 = 1, var_r7 = 1, var_r8 = 1;
-    int temp;
     unsigned short temp_r0;
     unsigned char *a = (unsigned char *)arg0;
     unsigned char *b = (unsigned char *)arg1;
@@ -3453,12 +3452,8 @@ void l2cu_process_peer_cfg_req(void *arg0, void *arg1) {
     }
     if (b[6]) {
         if (b[9] <= 2) {
-            temp = *(int *)(b + 8); *(int *)(a + 0x40) = temp;
-            temp = *(int *)(b + 0xC); *(int *)(a + 0x44) = temp;
-            temp = *(int *)(b + 0x10); *(int *)(a + 0x48) = temp;
-            temp = *(int *)(b + 0x14); *(int *)(a + 0x4C) = temp;
-            temp = *(int *)(b + 0x18); *(int *)(a + 0x50) = temp;
-            temp = *(int *)(b + 0x1C); *(int *)(a + 0x54) = temp;
+            struct Copy { unsigned int w[6]; };
+            *(struct Copy *)(a + 0x40) = *(struct Copy *)(b + 8);
         } else { var_r7 = 0; b[9] = 1; }
     }
     var_r3 = 0; var_r0 = 0;
