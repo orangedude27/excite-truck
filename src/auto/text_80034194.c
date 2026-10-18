@@ -196,12 +196,8 @@ void fn_8003773C(void) {
     case 1: case 2:
         if (__OSInIPL)
             break;
-    default:
-        MotorState_8055D8A8 = 0;
-        fn_8003B380(1);
-        fn_8003B38C(fn_800379A8);
-        break;
     case 38:
+    default:
         MotorState_8055D8A8 = 0;
         fn_8003B380(1);
         fn_8003B38C(fn_800379A8);
