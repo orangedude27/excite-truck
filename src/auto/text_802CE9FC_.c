@@ -47,6 +47,21 @@ void fn_802CEC44(void) {
     lbl_8055FD3C = 1;
 }
 
+void fn_802CECF4(unsigned int arg0) {
+    extern unsigned short lbl_8055D0F6;
+    extern int fn_802CEC50(unsigned short);
+    unsigned int value;
+    do {
+        value = lbl_8055D0F6 + 1;
+        lbl_8055D0F6 = value;
+        if ((unsigned short)value > 2) {
+            value = 1;
+            lbl_8055D0F6 = 1;
+        }
+        fn_802CEC50((unsigned short)value);
+    } while ((unsigned short)lbl_8055D0F6 != arg0);
+}
+
 void fn_802CF048(int arg0) {
     if (arg0 != 0) {
         GXSetGPMetric(0x23, 0x16);
