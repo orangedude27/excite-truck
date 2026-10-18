@@ -332,26 +332,24 @@ extern int lbl_8055A0DC;
 extern int fn_801476D8(int, int, int);
 extern void fn_80130980(void *, int, int, float);
 extern void fn_801475D0(void *, ...);
+#pragma push
+#pragma processor 750
 s32 fn_80162800(void *arg0) {
     s32 sp8;
-    s32 value;
-    f64 limit = lbl_8055E3C8;
-    void **vtable;
-    vtable = *(void ***)arg0;
-    if (limit > ((f32 (*)(void *))vtable[0x34 / 4])(arg0)) {
-        vtable = *(void ***)arg0;
-        if (((s32 (*)(void *))vtable[0x28 / 4])(arg0) == 0) {
-            value = ((s32 (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, &lbl_8032FA38);
-            fn_801476D8(value, -1, lbl_8055E2F8);
+    f32 limit = lbl_8055E3C8;
+    if (limit > ((f32 (*)(void *))(*(void ***)arg0)[0x34 / 4])(arg0)) {
+        if (((s32 (*)(void *))(*(void ***)arg0)[0x28 / 4])(arg0) == 0) {
+            ((s32 (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, &lbl_8032FA38);
+            fn_801476D8(0, -1, lbl_8055E2F8);
             ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x0C / 4])(lbl_8055E2E0, &lbl_8032FA44);
             fn_801476C4();
             fn_80130980(&sp8, 0x14, 3, *(f32 *)((char *)arg0 + 0x84) - *(f32 *)((char *)arg0 + 0x98));
-            fn_801475D0(lbl_8055E2E0, &lbl_8055A0EC, &lbl_8055A0DC, &sp8);
+            fn_801475D0(lbl_8055E2E0, lbl_8055A0EC, lbl_8055A0DC, &sp8);
         }
     }
     return 0;
 }
-
+#pragma pop
 extern int lbl_8032F698;
 extern void *lbl_8055E2E0;
 extern int fn_801476C4(void);
@@ -470,6 +468,34 @@ void fn_80164480(void *arg0) {
     }
 }
 
+extern s32 fn_802A96E8(void *, s32, s32, s32, s32);
+extern s32 fn_802C9950(s32);
+extern s32 fn_802C9994(s32);
+#pragma use_lmw_stmw off
+void fn_80164510(void *arg0, s32 arg1) {
+    s32 offset;
+    s32 temp_r30;
+    s32 temp_r29;
+    s32 i;
+    void *p;
+    temp_r30 = fn_802C9950(-0x100);
+    temp_r29 = fn_802C9994(0);
+    if (*(s32 *)((char *)arg0 + 0xA0) != -1) {
+        i = 0;
+        offset = 0;
+        while (i < *(s32 *)((char *)arg0 + 0xE4)) {
+            p = (char *)*(void **)((char *)arg0 + 0xE0) + offset;
+            if (*(u8 *)((char *)p + 0x3C) != 0 && *(s32 *)((char *)p + 0x34) != 0 && *(u8 *)((char *)arg0 + 0xD8) != 0) {
+                fn_802A96E8((char *)p + 0xC, 2, *(s32 *)((char *)arg0 + 0xD4), *(s32 *)((char *)arg0 + 0xD0), 0);
+            }
+            offset += 0x48;
+            i++;
+        }
+    }
+    fn_802C9950(temp_r30);
+    fn_802C9994(temp_r29);
+}
+#pragma use_lmw_stmw reset
 extern s32 lbl_8055A0E0;
 extern s32 lbl_8055A0E8;
 extern u8 lbl_8055E2DD;
