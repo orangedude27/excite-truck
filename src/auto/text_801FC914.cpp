@@ -129,6 +129,29 @@ extern "C" void fn_801FCFC8(void* arg0) {
     }
 }
 
+extern "C" void fn_8012F57C(float*, void*, void*);
+extern "C" void fn_8012F57C(float*, void*, void*);
+extern "C" float lbl_80563030;
+extern "C" void fn_801FD320(void* arg0) {
+    float q[4];
+    float x2, y2, z2, xx, yy, zz, xy, xz, yz, wx, wy, wz;
+    fn_8012F57C(q, (char*)arg0 + 0x44, (char*)arg0 + 0x54);
+    x2 = q[0] + q[0]; y2 = q[1] + q[1]; z2 = q[2] + q[2];
+    xx = q[0] * x2; yy = q[1] * y2; zz = q[2] * z2;
+    wx = q[3] * x2; wy = q[1] * z2;
+    *(float*)((char*)arg0 + 0xC) = lbl_80563030 - (yy + zz);
+    wz = q[3] * y2; xy = q[1] * z2; yz = q[3] * z2;
+    *(float*)((char*)arg0 + 0x1C) = lbl_80563030 - (xx + zz);
+    xz = q[0] * y2;
+    *(float*)((char*)arg0 + 0x28) = wy - wx;
+    *(float*)((char*)arg0 + 0x24) = xy + wz;
+    *(float*)((char*)arg0 + 0x18) = xz - yz;
+    *(float*)((char*)arg0 + 0x10) = xz + yz;
+    *(float*)((char*)arg0 + 0x14) = xy - wz;
+    *(float*)((char*)arg0 + 0x20) = wy + wx;
+    *(float*)((char*)arg0 + 0x2C) = lbl_80563030 - (xx + yy);
+}
+
 extern "C" void fn_801FEDA4(void*);
 extern "C" float fn_80129DC4(int, void*, float, float);
 extern "C" float fn_801E7E24(void);
@@ -141,6 +164,34 @@ void* fn_801FE188(void* arg0) {
     return arg0;
 }
 
+extern "C" void fn_801FEB58(void*);
+extern "C" float lbl_80558DC4;
+#pragma push
+#pragma processor 750
+extern "C" double __fabs(double);
+#pragma push
+#pragma processor 750
+__declspec(section ".data") extern float lbl_80558DC4;
+extern "C" void fn_801FE448(void* arg0) {
+    float delta = fn_801E7E24();
+    if ((float)__fabs((double)delta) != lbl_80558DC4) {
+        float threshold = lbl_80563034;
+        char* item = (char*)arg0 + 4;
+        int i = 0;
+        while (i < *(int*)((char*)arg0 + 0x34)) {
+            float time = *(float*)(item + 4) - delta;
+            *(float*)(item + 4) = time;
+            if (time <= threshold) {
+                fn_801FEB58(*(void**)item);
+                void* obj = *(void**)item;
+                *(float*)(item + 4) = fn_80129DC4(0, obj, *(float*)((char*)obj + 0x314), *(float*)((char*)obj + 0x318));
+            }
+            item += 8;
+            ++i;
+        }
+    }
+}
+#pragma pop
 extern "C" void fn_802C7040(int);
 float fn_80129DC4(int, void *, float, float);
 int fn_801FE88C(void *, void *);
@@ -500,3 +551,4 @@ struct Obj_801FEF90 {
     virtual void v4();
     virtual void v5(int);
 };
+class SHMainMenu { public: ~SHMainMenu(); };
