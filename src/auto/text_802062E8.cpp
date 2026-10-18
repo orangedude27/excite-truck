@@ -44,6 +44,8 @@ extern char lbl_8055B4C8[];
 extern "C" void *fn_80206BF8(int, void*);
 extern int lbl_8055ED80;
 extern float lbl_805631F8;
+extern "C" void *fn_80208994(int, int, int, float);
+extern "C" void fn_802085E8(int, void *);
 extern char lbl_8033BD90;
 extern float lbl_805631FC;
 extern float lbl_80563204;
