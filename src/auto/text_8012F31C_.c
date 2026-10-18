@@ -52,11 +52,15 @@ void fn_8012F458(void *arg0, s32 arg1) {
     ((s32 *)arg0)[1] += 4;
 }
 
-void fn_8012F4AC(void *arg0, s32 arg1, s32 arg2) {
-    void *data = **(void ***)arg0;
-    s32 offset = *(s32 *)((u8 *)arg0 + 4);
-    memcpy((u8 *)data + offset, *(void **)arg0, arg1);
-    *(s32 *)((u8 *)arg0 + 4) = offset + arg2;
+void fn_8012F4AC(void *arg0, void *src, s32 size) {
+    memcpy((u8 *)**(void ***)arg0 + *(s32 *)((u8 *)arg0 + 4), src, size);
+    *(s32 *)((u8 *)arg0 + 4) += size;
+}
+
+void fn_8012F500(void *arg0, s32 arg1) {
+    s32 *p = *(s32 **)arg0;
+    memcpy((u8 *)arg1, (u8 *)*p + ((s32 *)arg0)[1], 4);
+    ((s32 *)arg0)[1] += 4;
 }
 
 void fn_8012F550(void *arg0, s32 *arg1, s32 arg2) {
