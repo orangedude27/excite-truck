@@ -137,6 +137,8 @@ void fn_802DBCFC(int arg0, int arg1) {
     }
 }
 
+void fn_802DBD88(void) { void *value; lbl_8055FEA8 = 0; lbl_8055FEAC = 0; lbl_8055FE9E = 1; lbl_8055FEA0 = -1; value = fn_802D94DC(); lbl_8055FEA4 = 1; lbl_804DB468 = value; }
+
 void fn_802DBDD8(void) {
     lbl_8055FEA8 = 0;
     lbl_8055FEAC = 0;
@@ -232,6 +234,39 @@ void fn_802DC278(void) { fn_802DBD88(); }
 
 void fn_802DC27C(void) { fn_802DBDD8(); }
 
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802DC280(int verts, int count, unsigned short *list, int size) {
+    volatile unsigned short *dst = (volatile unsigned short *)0xCC008000;
+    unsigned short *src = list;
+    fn_802DB778(1);
+    fn_802DBC70(verts, count);
+    while (size > 0) {
+        int n = *src++;
+        GXBegin(0xA0, 0, n);
+        if (n > 0) {
+            int i = 0;
+            if (n >= 8) {
+                for (; i + 8 <= n; i += 8) {
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                    *dst++ = *src++;
+                }
+            }
+            for (; i < n; i++) {
+                *dst++ = *src++;
+            }
+        }
+        size -= n + 1;
+    }
+}
+#pragma pop
+
 extern void fn_802DFCC0(void);
 extern int GXGetTexObjMipMap(void *);
 extern unsigned short GXGetTexObjWrapS(void *);
@@ -246,6 +281,8 @@ void fn_802DC440(void) { ((void (*)(void))fn_802DBDD8)(); fn_802DFCC0(); }
 
 void fn_802DC628(void) {}
 
+#pragma push
+#pragma small_data off
 void fn_802DC62C(void) {
     volatile unsigned char *p = (volatile unsigned char *)lbl_804DB468;
     if (GXGetTexObjMipMap((void *)(p + 0x24)) != 6)
@@ -254,7 +291,7 @@ void fn_802DC62C(void) {
         fn_802E317C(lbl_8034CB24);
     lbl_8055FEBC = GXGetTexObjFmt((void *)(p + 0x24)) + 0x80000000;
 }
-
+#pragma pop
 extern int GXGetTexObjMipMap(void *);
 extern unsigned short GXGetTexObjWrapS(void *);
 extern int GXGetTexObjFmt(void *);
