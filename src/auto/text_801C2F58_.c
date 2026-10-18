@@ -8,6 +8,7 @@ extern s32 lbl_8055E820;
 extern s32 lbl_8055E824;
 extern char lbl_8055E838;
 extern u8 lbl_8055E83F;
+extern u8 lbl_8055E840;
 extern void (*lbl_8055E86C)(void);
 extern s32 lbl_8055E870;
 extern char lbl_80337474[];
@@ -457,6 +458,9 @@ extern unsigned char lbl_8055E83E;
 void fn_801C7770(void) {
     lbl_8055E83E = (lbl_8055E83E == 0);
 }
+
+void fn_801C7784(void) { lbl_8055E83F = !lbl_8055E83F; }
+
 #pragma scheduling on
 void fn_801C77C0(void) {
     lbl_8055E844 = atoi(lbl_804380F0);
