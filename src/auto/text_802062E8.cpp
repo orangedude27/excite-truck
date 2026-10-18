@@ -179,6 +179,36 @@ extern "C" float fn_80206CD0(void* arg0, float arg1) {
     return arg1 / y;
 }
 
+extern "C" void fn_802065F8(void);
+extern "C" void *fn_80208998(int, int, int, float);
+extern "C" void fn_802085EC(int, void *);
+extern float lbl_80563220;
+extern char lbl_8033BDA8;
+__declspec(section ".rodata") extern char lbl_8033BDA8;
+extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    float value;
+    void *obj;
+    fn_802065F8();
+    value = lbl_805631FC;
+    *(void **)arg0 = &lbl_8033BDA8;
+    *(float *)((char *)arg0 + 0x68) = value;
+    *(float *)((char *)arg0 + 0x6C) = lbl_80563220;
+    *(char *)((char *)arg0 + 0x64) = 1;
+    *(int *)((char *)arg0 + 0x70) = arg3;
+    *(int *)((char *)arg0 + 0x74) = arg4;
+    obj = fn_80208998(lbl_8055ED80, arg1, arg2, lbl_805631FC);
+    *(void **)((char *)arg0 + 0xC) = obj;
+    if (obj != 0)
+        fn_802085EC(lbl_8055ED80, arg0);
+    obj = *(void **)((char *)arg0 + 0xC);
+    if (obj != 0)
+        value = (*(float (**)(void))(*(void ***)obj)[0x60 / 4])();
+    else
+        value = lbl_805631FC;
+    *(float *)((char *)arg0 + 0x24) = value;
+    return arg0;
+}
+
 extern "C" f32 fn_802072DC(void) {
     return lbl_805631FC;
 }
@@ -230,7 +260,7 @@ extern "C" void fn_80207924(void *arg0) {
 
 extern int lbl_8055ED94;
 extern char lbl_8033BD58;
-extern "C" void fn_80206B14(void);
+extern "C" void fn_80206B14(void *, int, int);
 extern "C" void *fn_802072E4(void *, int, int);
 extern "C" void fn_802E30C8(const char *, ...);
 extern int lbl_8055ED94;
