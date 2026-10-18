@@ -730,6 +730,7 @@ extern "C" void fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
         *(u8*)((u8*)arg0 + 0x36) = temp_r22;
     }
 }
+#pragma pop
 
 #pragma scheduling on
 extern "C" void fn_801A1F44(void* arg0, void* arg1) {
