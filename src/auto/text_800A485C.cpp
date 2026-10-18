@@ -86,9 +86,9 @@ extern "C" s32 fn_800B76E8(s8);
   #pragma opt_tail_call on
 
 namespace homebutton {
-class EventDispatchA { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual EventDispatchA *first(); };
-class EventDispatchB { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21(); virtual void d22(); virtual void d23(); virtual void d24(); virtual void second(); };
-class HomeButtonEventHandler { public: char pad[4]; EventDispatchA *dispatch; char pad2[4]; const char *text; void onEvent(unsigned long, unsigned long, void *); };
+class EventDispatchA { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual EventDispatchA *first(); };
+class EventDispatchB { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21(); virtual void d22(); virtual void second(); };
+class HomeButtonEventHandler { public: char pad[4]; EventDispatchA *dispatch; const char *text; void onEvent(unsigned long, unsigned long, void *); };
 class HomeButton {
 public:
     s32 getPaneNo(const char *name);
@@ -2987,6 +2987,27 @@ s32 homebutton::HomeButton::getPaneNo(const char *name) {
         }
     }
     return result;
+}
+
+extern "C" void fn_800CB820(const char *, void *);
+extern "C" void fn_800CD38C(const char *);
+void startLeftEvent__Q210homebutton10HomeButtonFPCc(const char *);
+void homebutton::HomeButtonEventHandler::onEvent(unsigned long, unsigned long event, void *arg) {
+    EventDispatchA *a = dispatch;
+    EventDispatchB *b = (EventDispatchB *)a->first();
+    b->second();
+    switch (event) {
+    case 1:
+        fn_800CB820(text, arg);
+        break;
+    case 2:
+        startLeftEvent__Q210homebutton10HomeButtonFPCc(text);
+        break;
+    case 0:
+        if ((((unsigned long *)arg)[4] & 0x800) || (((unsigned long *)arg)[4] & 0x01000000))
+            fn_800CD38C(text);
+        break;
+    }
 }
 
 extern "C" s32 fn_800CEDE0(void *arg0) {
