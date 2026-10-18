@@ -69,8 +69,8 @@ public:
     u8* mData;
     s32 mCount;
     u8 m54;
-    u8 pad_55[0x240];
-    f32 m254;
+          u8 pad_55[0x240];
+      f32 m254;
     s32 m258;
     f32 m25c;
           s32 m260;
@@ -1063,12 +1063,12 @@ extern "C" void fn_8015C1B0(Unk801577F0* arg0) {
 }
 
 extern f32 lbl_80561760;
-extern "C" void fn_8015C564(void* arg0, void* arg1, s32 arg2, f32 arg3) {
+extern "C" void fn_8015C564(void* arg0, void* arg1, s32 arg2, f64 arg3) {
     if (*(s32*)((u8*)arg0 + 0x270) == *(s32*)((u8*)arg1 + 0x1ec)) {
         if (arg2 == 7 || arg2 == 9) {
-            *(f32*)((u8*)arg0 + 0x278) = arg3;
+            *(f32*)((u8*)arg0 + 0x278) = (f32)arg3;
             if (arg2 == 7) {
-                volatile f32 value = arg3;
+                f32 value = (f32)arg3;
                 f32 offset;
                 if (value < lbl_80561754) offset = value - lbl_80561760;
                 else offset = lbl_80561760 + value;
@@ -1164,6 +1164,33 @@ extern "C" void fn_8015CD0C(void) {
 
 }
 
+extern "C" f32 lbl_805617C8;
+#pragma scheduling off
+extern "C" f32 fn_8015CD10(Unk801577F0* arg0) {
+    class LocalVtable {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4();
+        virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9();
+        virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
+        virtual void v15(); virtual void v16(); virtual f32 v17(s32); virtual f32 v18(s32);
+        virtual s32 v19(); virtual s32 v20(); virtual s32 v21(); virtual void v22();
+        virtual void v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28(); virtual void v29(); virtual void v30(); virtual s32 v31(); virtual void v32();
+        virtual void v33(f32*);
+    };
+    f32 value = lbl_80561754;
+    if (*(f32*)((u8*)arg0 + 0x250) > lbl_80561754) {
+        ((LocalVtable*)arg0)->v30();
+        ((LocalVtable*)arg0)->v32();
+        s32 idx = ((LocalVtable*)arg0)->v21();
+        value = ((LocalVtable*)arg0)->v18(idx);
+        ((LocalVtable*)arg0)->v33(&value);
+        ((LocalVtable*)arg0)->v31();
+    }
+    *(f32*)((u8*)arg0 + 0x250) = lbl_805617C8;
+    return value;
+}
+#pragma scheduling reset
 extern "C" void fn_8015CDD8(void) {
 }
 
@@ -1553,13 +1580,15 @@ extern "C" void fn_801593F0(Unk801577F0* arg0) {
         *(f32*)((u8*)arg0 + 0x260) = lbl_80561754;
     }
     r3 = *(s32*)((u8*)arg0 + 0x278);
-    b = lbl_8056177C;
     a = lbl_80561754;
+    b = lbl_8056177C;
     *(f32*)((u8*)arg0 + 0x264) = a;
     *(f32*)((u8*)arg0 + 0x258) = b;
     if (r3 != 0) {
-        *(u8*)((u8*)r3 + 0x4A) = 1;
-        *(u8*)((u8*)r3 + 0x4C) = 0;
+        s32 value = 1;
+        *(u8*)((u8*)r3 + 0x4A) = value;
+        value = 0;
+        *(u8*)((u8*)r3 + 0x4C) = value;
     }
 }
 
