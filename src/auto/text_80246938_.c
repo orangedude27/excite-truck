@@ -75,6 +75,15 @@ int fn_80246AA8(int arg0, int arg1) {
     return arg0;
 }
 
+void *__dt__Q28PSSystem7SeqHeapFv_80246C48(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = lbl_80343780;
+        ((void (*)(s32, void *))fn_80235380)(*(s32 *)((char *)arg0 + 0x18), lbl_80343780);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern char lbl_803436C0[];
 extern s32 lbl_804988F0[5];
 extern void fn_80216CA8(void);
@@ -151,7 +160,7 @@ Obj_802470D4 *fn_802470D4(Obj_802470D4 *arg0, s32 arg1) {
         if (p != 0) {
             fn_802328D4(*p);
             *p = 0;
-            fn_80128668(p);
+            fn_80128668(((*p = 0), p));
         }
         if (arg1 > 0) fn_80128668(arg0);
     }
@@ -194,32 +203,29 @@ extern void *lbl_8055BEB0;
 extern s32 lbl_8055BEB8;
 extern s32 lbl_8055F26C;
 void fn_8024778C(void) {
-    s32 i;
-    s32 previous = *(volatile s32 *)&lbl_8055BEB8;
+    s32 var_r31;
+    register s32 previous = lbl_8055BEB8;
     if (previous != lbl_8055F26C) {
         lbl_8055BEB8 = lbl_8055F26C;
-        switch (lbl_8055F26C) {
+        switch ((s32)lbl_8055F26C) {
         case 2: lbl_8055BEB0 = (void*)1; break;
         case 3: lbl_8055BEB0 = (void*)2; break;
         default: lbl_8055BEB0 = 0; break;
         }
     }
     fn_80214CB4((s32)lbl_8055BEB0);
-    switch (lbl_8055F26C) {
-    case 1:
-        fn_80214B44(2);
-        fn_80214A9C(3);
-        break;
+    switch ((s32)lbl_8055F26C) {
+    case 1: fn_80214B44(2); fn_80214A9C(3); break;
     case 2:
         if (fn_8027B8C0(1) != 0) fn_80214B44(3);
         else fn_80214A9C(3);
         break;
     }
-    i = 0;
+    var_r31 = 0;
     do {
-        if (fn_8027B94C(i) == 0) fn_80214A9C(i + 0xB);
-        i++;
-    } while (i < 3);
+        if (fn_8027B94C(var_r31) == 0) fn_80214A9C(var_r31 + 0xB);
+        var_r31 += 1;
+    } while (var_r31 < 3);
 }
 
 extern void* lbl_8055BEB0;
@@ -293,19 +299,18 @@ void fn_80248398(void) {
 }
 
 void* fn_8024859C(void *arg0, s32 arg1) {
-    void* ptr = arg0;
-    if (ptr != 0) {
-        *(unsigned char*)((char*)ptr + 0x18) = 0;
-        *(unsigned char*)((char*)ptr + 0x50) = 0;
-        *(unsigned char*)((char*)ptr + 0x5C) = 0;
-        *(s32*)((char*)ptr + 0x24) = 1;
-        *(s32*)((char*)ptr + 0x20) = 0;
-        *(unsigned char*)((char*)ptr + 0x44) = 0;
-        if (arg1 > 0) {
-            fn_80128668(ptr);
-        }
+    s32 test;
+    if (arg0 != 0) {
+        *(unsigned char*)((char*)arg0 + 0x18) = 0;
+        test = arg1;
+        *(unsigned char*)((char*)arg0 + 0x50) = 0;
+        *(unsigned char*)((char*)arg0 + 0x5C) = 0;
+        *(s32*)((char*)arg0 + 0x24) = 1;
+        *(s32*)((char*)arg0 + 0x20) = 0;
+        *(unsigned char*)((char*)arg0 + 0x44) = 0;
+        if (test > 0) fn_80128668(arg0);
     }
-    return ptr;
+    return arg0;
 }
 
 s32 fn_802485FC(void) {
@@ -362,8 +367,7 @@ void fn_80248AF0(void *arg0) {
     float spC, sp8;
     float width, height;
     s32 flag;
-    s32 x = *(s32*)((char*)arg0+4);
-    fn_80230C30(&spC, &sp8, x, *(s32*)((char*)arg0+8));
+    fn_80230C30(&spC, &sp8, *(s32*)((char*)arg0+4), *(s32*)((char*)arg0+8));
     width = (float)*(s32*)((char*)arg0+0xC);
     height = (float)*(s32*)((char*)arg0+0x10);
     if (*(float*)((char*)arg0+0x1C) > width)
@@ -405,7 +409,7 @@ int fn_80248C94(void *arg0, int arg1) {
     }
 }
 
-#pragma scheduling on
+#pragma scheduling off
 s32 fn_80248FB0(void *arg0, s32 arg1) {
     s32 now, start, duration;
     now = fn_802E2C20();
@@ -416,13 +420,11 @@ s32 fn_80248FB0(void *arg0, s32 arg1) {
     if (*(s32 *)((char *)arg0 + 0x18) != 1) return 0;
     switch (arg1) {
     case 27:
-        if (*(s32 *)((char *)arg0 + 0x24) & 2)
-            *(s32 *)((char *)arg0 + 0x18) = 4;
+        if (*(s32 *)((char *)arg0 + 0x24) & 2) *(s32 *)((char *)arg0 + 0x18) = 4;
         else return 0;
         break;
     case 13:
-        if (*(s32 *)((char *)arg0 + 0x24) & 1)
-            *(s32 *)((char *)arg0 + 0x18) = 2;
+        if (*(s32 *)((char *)arg0 + 0x24) & 1) *(s32 *)((char *)arg0 + 0x18) = 2;
         else return 0;
         break;
     default: return 0;
@@ -430,6 +432,7 @@ s32 fn_80248FB0(void *arg0, s32 arg1) {
     *(s32 *)((char *)arg0 + 0x1C) = now - *(s32 *)((char *)arg0 + 0x20) + 500;
     return 1;
 }
+#pragma scheduling on
 void fn_802490AC(void *arg0) {
     unsigned char *p = (unsigned char *)arg0;
 
@@ -485,23 +488,20 @@ s32 fn_80249334(void *arg0, s32 arg1) {
     return 0;
 }
 
-void fn_802493E8(Obj_802470D4 *arg0) {
-    s32 var_r31;
-    s32 var_r30;
-    s32 var_r29;
-
-    var_r31 = 0;
-    var_r30 = 0;
-    var_r29 = (s32)arg0;
+#pragma push
+#pragma optimization_level 3
+void fn_802493E8(void *arg0) {
+    s32 var_r31 = 0;
+    s32 var_r30 = 0;
+    register s32 var_r29 = (s32)arg0;
     while (var_r30 < *(s32 *)((char *)var_r29 + 0x1C)) {
-        if (*(unsigned char *)(*(s32 *)((char *)var_r29 + 0x18) + var_r31 + 4) != 0) {
-            fn_80214AF0(*(s32 *)(*(s32 *)((char *)var_r29 + 0x18) + var_r31));
-        } else {
-            fn_80214A9C(*(s32 *)(*(s32 *)((char *)var_r29 + 0x18) + var_r31));
-        }
+        s32 *entry = (s32 *)(*(s32 *)((char *)var_r29 + 0x18) + var_r31);
+        if (*(unsigned char *)((char *)entry + 4) != 0)
+            fn_80214AF0(*entry);
+        else
+            fn_80214A9C(*entry);
         var_r31 += 8;
         var_r30 += 1;
     }
-    return;
 }
-
+#pragma pop
