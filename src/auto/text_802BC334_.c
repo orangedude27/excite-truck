@@ -7,12 +7,24 @@ int fn_8012C33C(void);
 extern float lbl_80564D14;
 extern float lbl_80564D18;
 int fn_802CAC28(int, int);
+void fn_802BD018(void *);
+int fn_802BD070(void *);
+void fn_80128668(void *);
 int fn_802BC334(int arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
     if (valid != 0) return fn_802CAC28(arg0, 0);
     return -2;
 }
+
+#pragma dont_inline on
+int stricmp(const char *, const char *);
+extern const char lbl_8055CF38[];
+int fn_802BC39C(void *arg0) {
+    char *name = (*(char *(*)(void *))(*(void ***)arg0)[2])(arg0);
+    return stricmp(lbl_8055CF38, name) == 0;
+}
+#pragma dont_inline reset
 
 void *fn_802BE844(short, short, short);
 int fn_802BC39C();
@@ -317,7 +329,8 @@ void fn_802BDFBC(void *arg0, int arg1, float farg0) {
 extern float lbl_80564D14;
 extern float lbl_80564D18;
 void fn_802BDFF4(void **arg0) {
-    if (arg0[-2] != 0) fn_802BAF98();
+    register void *value = *(void **)((char *)arg0 - 8);
+    if (value) fn_802BAF98();
 }
 
 extern int lbl_804C00D4;
