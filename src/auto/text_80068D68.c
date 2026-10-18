@@ -3470,13 +3470,14 @@ void RFCOMM_DlcEstablishReq(void *arg0, u8 arg1) {
     }
 }
 
-void RFCOMM_DlcEstablishRsp(void *arg0, s32 arg1, u16 arg3) {
+void RFCOMM_DlcEstablishRsp(void *arg0, u8 arg1, s32 arg2, u16 arg3) {
     u16 sp8 = arg3;
-    port_find_mcb_dlci_port(arg0, (u8)arg1);
+    void *port = port_find_mcb_dlci_port(arg0, arg1);
     if (*((u8 *)arg0 + 0x6C) != 5 && sp8 == 0) {
-        PORT_DlcReleaseInd(arg0, arg1); return;
+        PORT_DlcReleaseInd(arg0, arg1);
+        return;
     }
-    rfc_port_sm_execute(0xB, &sp8);
+    rfc_port_sm_execute(port, 0xB, &sp8);
 }
 
 void RFCOMM_ParNegReq(void *arg0, s32 arg1, s32 arg2) {
