@@ -2900,7 +2900,6 @@ BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
 }
 
 extern u8 lbl_803C3C38[];
-__declspec(section ".data") extern u8 *lbl_803C3C38_ptr;
 extern u8 lbl_803C3AF0[];
 extern u8 hidh_conn_reg(void);
 extern u8 hidh_conn_initiate(void);
@@ -2922,7 +2921,6 @@ u8 HID_HostRegister(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 u8 HID_HostRemoveDev(u32 dev_handle) {
-    extern u8 lbl_803C3C38[];
     extern u8 hidh_conn_disconnect(u32);
     u8 *entry;
     u32 offset;
