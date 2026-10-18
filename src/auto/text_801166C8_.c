@@ -7,6 +7,7 @@
 #include <revolution/DVD/dvd.h>
 
 extern void* fn_802ECC74(void*);
+extern void *fn_8011FFC4(s32);
 extern f32 lbl_80329D48[];
 extern f64 lbl_805611D8;
 extern void fn_8011A330(void *);
@@ -422,6 +423,26 @@ void fn_80119AB0(void *arg0, s32 arg1) {
     fn_80119288(arg0, temp);
 }
 
+extern f32 lbl_805611B0;
+extern f32 lbl_805611B4;
+extern f64 lbl_805611B8;
+extern f32 lbl_805611C0;
+void fn_80119B38(void *arg0, s32 arg1) {
+ s32 value=arg1;
+ f32 temp_f31;
+ f32 temp_f3_2;
+ f32 temp_f1;
+ f64 exponent=lbl_805611B8;
+ if(value<0)value=0;
+ if(value>0x10000)value=0x10000;
+ temp_f31=(f32)value/lbl_805611B0;
+ temp_f3_2=(f32)fn_8002EFBC(lbl_805611B4-temp_f31,exponent);
+ *(s32*)((u8*)arg0+0xa8)=(s32)(lbl_805611C0*temp_f3_2);
+ temp_f1=(f32)fn_8002EFBC(temp_f31,exponent);
+ *(s32*)((u8*)arg0+0xac)=(s32)(lbl_805611C0*temp_f1);
+ fn_80119288(arg0,temp_f1);
+}
+
 extern f64 lbl_80561198;
 extern f64 lbl_805611A8;
 extern f32 lbl_805611A0;
@@ -749,14 +770,16 @@ u32 fn_8011C1E0(s32 arg0, void *arg1) {
 #pragma dont_inline reset
 
 void fn_8011C274(s32 arg0, void *arg1) {
-    if (arg0 == 0 || arg1 == 0 ||
-        *(s32 *)((u8 *)arg1 + 0x18) == 0 ||
-        *(s32 *)((u8 *)arg1 + 0x14) == 0) {
-        return;
-    }
+    if (arg0 == 0) goto done;
+    if (arg1 == 0) goto done;
+    if (*(s32 *)((u8 *)arg1 + 0x18) == 0) goto done;
+    if (*(s32 *)((u8 *)arg1 + 0x14) == 0) goto done;
+    goto retry;
+retry:
     OSYieldThread();
-    while (fn_8011C1E0(arg0, arg1) == 0) {
-    }
+    if (fn_8011C1E0(arg0, arg1) == 0) goto retry;
+done:
+    return;
 }
 
 void fn_8011C2EC(s32 arg0, void *arg1) {
@@ -780,11 +803,12 @@ void fn_8011C364(s32 arg0) {
 }
 
 void fn_8011C3A8(s32 arg0, void *arg1, s32 arg2, u32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    s32 zero = 0;
-    s32 end;
-    *(s32 *)((u8 *)arg1) = zero;
-    *(s32 *)((u8 *)arg1 + 4) = zero;
+    register s32 zero;
+    register s32 end;
+    zero = 0;
     end = arg2 + ((arg3 >> 3) * arg5);
+    *(s32 *)((u8 *)arg1 + 0) = zero;
+    *(s32 *)((u8 *)arg1 + 4) = zero;
     *(s32 *)((u8 *)arg1 + 8) = arg4;
     *(s32 *)((u8 *)arg1 + 0x28) = 0x20 - __cntlzw((u16)(end - 1));
     if (arg6 != 0)
@@ -1071,14 +1095,16 @@ void fn_801219B4(void *arg0) {
 
 void fn_80121BB0(void *arg0) {
     float *p = (float *)arg0;
-    float a = p[2];
-    float b = p[8];
-    float c = p[3];
-    float d = p[9];
-    float e = p[6];
-    float f = p[12];
-    float g = p[7];
-    float h = p[13];
+    register float a;
+    register float b;
+    register float c;
+    register float d;
+    register float e;
+    register float f;
+    register float g;
+    register float h;
+    a = p[2]; b = p[8]; c = p[3]; d = p[9];
+    e = p[6]; f = p[12]; g = p[7]; h = p[13];
     p[2] = b; p[3] = d; p[6] = f; p[7] = h;
     p[8] = a; p[9] = c; p[12] = e; p[13] = g;
 }
@@ -1117,6 +1143,27 @@ void fn_80121BF4(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x34) = temp_14;
     *(f32 *)((u8 *)arg0 + 0x38) = temp_20;
     *(f32 *)((u8 *)arg0 + 0x3c) = temp_24;
+}
+
+extern void fn_8012440C(void *, void *);
+extern void fn_80124CE8(void *, void *);
+void fn_80123DC0(s32 count, void *dst, s32 srcIndex, void *src) {
+    void *tempFirst;
+
+    if (count == 0x80) {
+        tempFirst = (u8 *)src + ((srcIndex - 8) * 4);
+        fn_80123E98(dst, tempFirst);
+        src = (u8 *)src + ((srcIndex - 0x20) * 4);
+        fn_8012440C((u8 *)dst + 0x80, src);
+        fn_80123E98((u8 *)dst + 0x100, tempFirst);
+        fn_8012440C((u8 *)dst + 0x180, src);
+        return;
+    }
+    src = (u8 *)src + ((srcIndex - 0x10) * 4);
+    fn_80124AD8(dst, src);
+    fn_80124CE8((u8 *)dst + 0x40, src);
+    fn_80124AD8((u8 *)dst + 0x80, src);
+    fn_80124CE8((u8 *)dst + 0xC0, src);
 }
 
 void fn_80124F90(void *arg0) {
