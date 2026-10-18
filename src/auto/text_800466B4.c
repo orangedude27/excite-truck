@@ -33,3 +33,27 @@ void select_1obj_continue_head(void *arg0, void *arg1) {
         input -= 8;
     } while (output >= end);
 }
+
+static void clamp_stick_circle(Vec2* stick, s32 sx, s32 sy, s32 min, s32 max) {
+    f32 length;
+    f32 fx = (f32)sx;
+    f32 fy = (f32)sy;
+    f32 fmin = (f32)min;
+    f32 fmax = (f32)max;
+
+    length = (f32)fn_8002F234(fx * fx + fy * fy);
+
+    if (length <= fmin) {
+        stick->x = stick->y = 0.0f;
+
+    } else if (length >= fmax) {
+        stick->x = fx / length;
+        stick->y = fy / length;
+
+    } else {
+        length = (length - fmin) / (fmax - fmin) / length;
+        stick->x = fx * length;
+        stick->y = fy * length;
+    }
+}
+
