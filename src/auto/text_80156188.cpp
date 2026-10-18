@@ -99,9 +99,9 @@ extern "C" void fn_801561E0(s32 arg0) {
     fn_80155AF0(arg0 - 0xC);
 }
 
-extern "C" u8 *fn_80029004(s32);
+extern "C" u8 *fn_80029004(void *, s32);
 extern "C" void fn_801561E8(u8 *arg0) {
-    u8 *result = fn_80029004(0x2E);
+    u8 *result = fn_80029004(arg0, 0x2E);
     if (result != 0) {
         *result = 0;
     }
