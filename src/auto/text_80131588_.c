@@ -136,10 +136,11 @@ s32 fn_80131BD0(void* arg0, const char* name) {
 }
 
 s32 fn_80132098(void* arg0, s32 index, void* dst1, void* dst2) {
+    u32 (*base)[2];
     if (index >= 0 && index < *(s32*)((char*)arg0 + 0xC)) {
-        char* base = *(char**)((char*)arg0 + 0x10);
-        *(void**)dst1 = *(void**)(base + index * 8);
-        *(void**)dst2 = *(void**)(base + index * 8 + 4);
+        base = (u32 (*)[2])*(u32*)((char*)arg0 + 0x10);
+        *(u32*)dst1 = base[index][0];
+        *(u32*)dst2 = base[index][1];
         return 1;
     }
     return 0;
@@ -176,14 +177,17 @@ s32 fn_801320D8(void* arg0, const char* name) {
 }
 #pragma pop
 extern int atoi(const char*);
-s32 fn_801321BC(void* arg0) {
-    void** vtable = *(void***)(*(void**)arg0);
-    return ((s32(*)(int(*)(const char*)))vtable[5])(atoi);
+extern int atoi();
+s32 fn_801321BC(void **arg0) {
+    volatile void **vtable = (volatile void **)*arg0;
+    ((s32 (*)(void))vtable[5])();
+    return atoi();
 }
 
-f32 fn_801321EC(void* arg0) {
-    char* value = ((char* (*)(void))(*(void**)((char*)*(void**)arg0 + 0x14)))();
-    return (f32)atof(value);
+extern double atof(const char*);
+f32 fn_801321EC(void *arg0) {
+    char *(* volatile get)(void) = (char *(*)(void))(*(void **)((char *)*(void **)arg0 + 0x14));
+    return (f32) atof(get());
 }
 
 s32 fn_80132220(void* arg0) {
@@ -310,13 +314,26 @@ void fn_80132AE4(void* arg0, void* arg1, s32 arg2, void* arg3) {
     typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Value;
     Value value;
     Value* source = arg3;
-    if (((s32 (**)(void*, s32))*(void**)arg1)[3](arg1, arg2)) {
-        ((void (**)(Value*, void*, s32))*(void**)arg1)[17](&value, arg1, arg2);
+    s32 name = arg2;
+    void* obj = arg1;
+    Value* dst = arg0;
+    if (((s32 (**)(void*, s32))*(void**)obj)[3](obj, name)) {
+        ((void (**)(Value*, void*, s32))*(void**)obj)[17](&value, obj, name);
         source = &value;
     }
-    ((Value*)arg0)->matrix = source->matrix;
-    ((Value*)arg0)->vector = source->vector;
+    dst->matrix = source->matrix;
+    dst->vector = source->vector;
 }
+
+typedef float f32;
+typedef signed long s32;
+f32 fn_80132BD0(void *arg0, s32 arg1, f32 farg0) {
+    if (((s32 (*)(void *))(*(void ***)arg0)[3])(arg0) != 0) {
+        return ((f32 (*)(void *, s32))(*(void ***)arg0)[19])(arg0, arg1);
+    }
+    return farg0;
+}
+
 #pragma pop
 
 s32 fn_80132C48(void) { return 0; }
