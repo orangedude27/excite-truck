@@ -105,13 +105,15 @@ void fn_8029311C(void* arg0) {
 #pragma push
 #pragma small_data off
 #pragma pop
+__declspec(section ".data") extern float lbl_80558DC4;
 void fn_80293128(void* arg0) {
     float value = fn_801E7E24(arg0);
-    if (__fabsf(value) > lbl_80558DC4) fn_802936C4(arg0);
+    float abs = (float)__fabs((double)value);
+    if (!(abs <= lbl_80558DC4)) fn_802936C4(arg0);
 }
 
 #pragma push
-#pragma small_data off
+#pragma scheduling on
 void fn_80293530(void* arg0) {
     u8 *cursor = (u8*)arg0;
     s32 i = 0;
@@ -124,7 +126,7 @@ body:
 check:
     if (i < *(s32*)((u8*)arg0 + 0x28)) goto body;
 }
-
+#pragma pop
 void* fn_80293A00(void* arg0, void* arg1, int unused, int arg2, int arg3, int arg4) {
     *(void**)arg0 = lbl_80349278;
     fn_80293CD0(arg0, arg2, arg3, arg4);
@@ -191,5 +193,17 @@ void fn_80293CD0(void *arg0, int arg1, int arg2, int arg3) {
 
 void fn_8029433C(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x222C) = 0;
+}
+
+void fn_80294398(void *arg0) {
+    u8 *record = (u8 *)arg0 + 0x2C;
+    s32 i = 0;
+    goto check;
+body:
+    fn_802C744C(*(void **)((u8 *)arg0 + (*(u8 *)(record + 0x40) * 4) + 8), record);
+    record += 0x44;
+    i++;
+check:
+    if (i < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
 }
 
