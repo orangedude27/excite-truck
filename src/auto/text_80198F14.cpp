@@ -13,6 +13,7 @@ extern void fn_8019F03C();
 extern void fn_8019DDFC(s32, s32, s32, s32, void*, void*, f32);
 extern "C" f64 fn_8002F234(f32);
 
+extern void fn_801EA1E0(s32, s32, f32, f32);
 extern "C" void fn_8019EBC0(void);
 extern "C" void fn_8019F3D0(void);
 extern "C" void fn_801A49E8(void*);
@@ -118,6 +119,25 @@ void fn_8019CE3C(void* arg0, s32 arg1) {
 
 extern "C" f32 fn_8019DDEC(void *arg0) {
     return *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28);
+}
+
+extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
+    if (__fabsf(f1) == lbl_80558DC4) {
+        if (!(f0 < -f2) && !(f0 > f2)) return 1;
+        return 0;
+    }
+    f32 lo, hi;
+    if ((-f2 - f0) / f1 < (f2 - f0) / f1) {
+        lo = (-f2 - f0) / f1;
+        hi = (f2 - f0) / f1;
+    } else {
+        lo = (f2 - f0) / f1;
+        hi = (-f2 - f0) / f1;
+    }
+    if (*arg0 > lo) *arg0 = lo;
+    if (*arg1 < hi) *arg1 = hi;
+    if (*arg0 > *arg1) return 0;
+    return *arg1 < lbl_805622D0;
 }
 
 extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
@@ -512,6 +532,72 @@ extern "C" void** fn_801A1898(void** arg0) {
     *arg0 = &lbl_80333918;
     return arg0;
 }
+
+extern "C" void fn_8019CF60(void*);
+extern "C" void fn_8019DC04(void*);
+extern "C" void fn_8019CE3C(void*, s32);
+extern "C" void fn_802E30C8(const char*, ...);
+extern "C" const char lbl_80333650[];
+extern "C" void fn_801A1ABC(void* arg0, void* arg1) {
+    u32 value = *(u32*)((u8*)arg1 + 0x18);
+    if (value == 0x52414744) {
+        return;
+    } else if (value < 0x52414744) {
+        if (value == 0x504F4C59) {
+            return;
+        } else if (value < 0x47525550) {
+            if (value == 0x424F5820) {
+                fn_8019EA7C(arg1, (void**)arg0);
+                return;
+            }
+        } else if (value == 0x47525550) {
+            fn_8019EA7C(arg1, (void**)arg0);
+            return;
+        } else if (value < 0x464C5352) {
+        } else if (value == 0x464C5352) {
+            fn_8019CF60(arg1);
+            return;
+        }
+    } else {
+        if (value == 0x53504852) {
+            fn_8019CE3C(arg1, (s32)arg0);
+            return;
+        } else if (value < 0x53504852) {
+            if (value == 0x52494E47) {
+                return;
+            }
+        } else if (value == 0x54554245) {
+            fn_8019DC04(arg1);
+            return;
+        }
+    }
+    fn_802E30C8(lbl_80333650, value);
+}
+
+void fn_801A1B9C(void* arg0) {
+    void* mat = *(void**)((u8*)arg0 + 0xC);
+    f32 w = *(f32*)((u8*)arg0 + 0x28);
+    f32 neg_w = -w;
+    f32 sp8 = *(f32*)((u8*)mat + 0x24);
+    f32 spC = *(f32*)((u8*)mat + 0x28);
+    f32 sp10 = *(f32*)((u8*)mat + 0x2C);
+    f32 sp14 = *(f32*)((u8*)mat + 0x18);
+    f32 sp18 = *(f32*)((u8*)mat + 0x1C);
+    f32 sp1C = *(f32*)((u8*)mat + 0x20);
+    f32 sp20 = lbl_805622D0;
+    f32 sp24 = lbl_805622D0;
+    f32 sp28 = lbl_805622D0;
+    f32 sp2C = sp8 + sp14 * neg_w;
+    f32 sp30 = spC + sp18 * neg_w;
+    f32 sp34 = sp10 + sp1C * neg_w;
+    f32 sp38 = sp8 + sp14 * w;
+    f32 sp3C = spC + sp18 * w;
+    f32 sp40 = sp10 + sp1C * w;
+    f32 f = *(f32*)((u8*)arg0 + 0x24);
+    fn_8019AC44(&sp38, &sp20, f);
+    fn_8019AC44(&sp2C, &sp20, f);
+}
+
 #pragma scheduling on
 void fn_801A1F44(void* arg0, void* arg1) {
     void* result = ((void* (*)(void*))((void**)*(void**)arg1)[10])(arg1);
