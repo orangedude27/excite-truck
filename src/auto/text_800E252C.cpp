@@ -670,7 +670,7 @@ extern "C" void fn_800E9B20(void *arg0, float arg1) {
 
 extern "C" void fn_800E9B28(void *arg0, float arg1) {
     VfObjF *obj = (VfObjF *)arg0;
-    VfObjF *result = obj->vf23();
+    VfObjF *result = obj->vf22();
     result->vf15(arg1);
 }
 
