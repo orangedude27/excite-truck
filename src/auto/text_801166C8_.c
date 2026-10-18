@@ -329,12 +329,13 @@ void fn_80119218(void *arg0, s16 arg1, s16 arg2, s16 arg3) {
 extern void AXSetVoiceState(s32);
 s32 fn_8011943C(void *arg0, s32 arg1) {
     s32 temp_r0;
+    s32 temp_r3;
     temp_r0 = *(s32 *)arg0;
     if (temp_r0 != 0) {
         ((void (*)())AXSetVoiceState)(temp_r0, arg1);
     }
-    if (*(s32 *)((u8 *)arg0 + 4) != 0) {
-        ((void (*)())AXSetVoiceState)(*(s32 *)((u8 *)arg0 + 4), arg1);
+    if ((temp_r3 = *(s32 *)((u8 *)arg0 + 4)) != 0) {
+        ((void (*)())AXSetVoiceState)(temp_r3, arg1);
     }
 }
 
@@ -467,52 +468,41 @@ s32 fn_8011A7CC(DVDFileInfo *info) {
     return p[0x24 / 4];
 }
 
+#pragma dont_inline on
 s32 fn_8011A870(void *arg0, s32 arg1) {
-    s32* p = (s32*)arg0;
     s32 result;
     if (arg1 & 1) {
-        if (p[0x50/4] == 0) {
-            p[0x50/4] = 1;
-        }
+        if (*(s32 *)((char *)arg0 + 0x50) == 0) *(s32 *)((char *)arg0 + 0x50) = 1;
         if (arg1 & 0x80000000) {
-            do {
-            } while (p[0x24/4] != 0);
+            while (*(s32 *)((char *)arg0 + 0x24) != 0) {}
         }
     } else if (arg1 & 2) {
-        if ((u32)p[0x50/4] == 1U) {
-            p[0x50/4] = 0;
-        }
-        if (arg1 & 0x80000000) {
-            fn_8011A7CC(arg0);
-        }
+        if ((u32)*(s32 *)((char *)arg0 + 0x50) == 1U) *(s32 *)((char *)arg0 + 0x50) = 0;
+        if (arg1 & 0x80000000) fn_8011A7CC(arg0);
     }
-    result = p[0x50/4];
+    result = *(s32 *)((char *)arg0 + 0x50);
     return result;
 }
-
+#pragma dont_inline reset
 s32 fn_8011AC04(s32 arg1) {
     return (arg1 + 0x7FFF) & 0xFFFF8000;
 }
 
 void fn_8011AC10(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 temp_r4;
-    s32 temp_r29;
     s32* p = (s32*)arg0;
     OSDisableInterrupts();
-    temp_r4 = arg1;
-    temp_r29 = arg2 & 0xFFFF8000;
-    temp_r4 = temp_r4 + temp_r29;
-    p[0xA0/4] = temp_r29;
-    p[0x40/4] = temp_r29;
+    arg2 &= 0xFFFF8000;
+    p[0xA0/4] = arg2;
+    p[0x40/4] = arg2;
     p[0xA4/4] = arg1;
     p[0x9C/4] = arg1;
     p[0xAC/4] = arg1;
-    p[0xA8/4] = temp_r4;
+    p[0xA8/4] = arg1 + arg2;
     p[0x4C/4] = 0;
     p[0xB8/4] = arg3;
     p[0xBC/4] = arg4;
     p[0xD0/4] = (s32)arg0;
-    OSRestoreInterrupts(temp_r4);
+    OSRestoreInterrupts();
 }
 
 extern f32 lbl_80329D48[];
@@ -638,13 +628,14 @@ void fn_8011BEC8(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     *(void **)arg1 = *(void **)((u8 *)arg0 + 0x30);
     old = *(s32 *)((u8 *)arg0 + 0x38);
     *(void **)((u8 *)arg0 + 0x30) = arg1;
-    *(s32 *)((u8 *)arg0 + 0x38) = old + one;
+    *(s32 *)((u8 *)arg0 + 0x38) = old + 1;
     OSRestoreInterrupts(old);
 }
 
-s32 fn_8011BFFC(void *arg0, void *arg1, void *arg2, void *arg3, s32 arg4) {
-    s32 temp = fn_8011BF4C(arg2, arg3, arg4) * 2;
-    return temp | fn_8011BF4C(arg0, arg1, arg4);
+s32 fn_8011BFFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 temp = fn_8011BF4C(arg2, arg3, arg4) << 1;
+    s32 result = fn_8011BF4C(arg0, arg1, arg4);
+    return result | temp;
 }
 
 u32 fn_8011C06C(void *arg0) {
@@ -664,7 +655,7 @@ u32 fn_8011C06C(void *arg0) {
 }
 
 u32 fn_8011C1E0(s32 arg0, void *arg1) {
-    s32 temp_r4;
+    register s32 temp_r4;
     s32 temp_r4_2;
     if (arg0 != 0 && arg1 != 0 &&
         *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
@@ -766,9 +757,9 @@ void fn_8011CD90(s32 arg0, s32 arg1, s32 arg2) {
     u32 i;
     for (i = 0; i < 0x10; i++) {
         fn_8011C4A0(arg1, c, b, a);
+        c += 4;
         b += 4;
         a += 0x10;
-        c += 4;
     }
     fn_8011C4A0(arg1, arg0 + 0x24, arg0 + 0x20, arg0 + 0x10);
     *(s32 *)(arg2 + 0x180) = 0;
