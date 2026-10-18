@@ -3,6 +3,26 @@
 
 #include <types.h>
 
+extern s32 DVDInitialized_8055D888;
+extern s32 FirstTimeInBootrom_8055D868;
+extern s32 IDShouldBe_8055D8C4;
+extern s32 MotorState_8055D8A8;
+extern u32 __DVDLayoutFormat;
+extern char __DVDThreadQueue[4];
+extern s32 __DVDVersion;
+extern char __ErrorInfo[];
+extern void *bootInfo_8055D8C0;
+extern void OSRegisterVersion(s32);
+extern void DVDLowInit(void);
+extern void __DVDFSInit(void);
+extern void __DVDClearWaitingQueue(void);
+extern void OSInitThreadQueue(void *);
+extern void DVDLowUnmaskStatusInterrupts(void);
+extern void DVDLowMaskCoverInterrupt(void);
+extern void *memset(void *, int, u32);
+extern void *memcpy(void *, const void *, u32);
+extern void DVDSetAutoFatalMessaging(s32, u8, void *, void *);
+
 extern s32 lbl_8055D890;
 extern s32 lbl_8055D880;
 extern s32 lbl_8055D8AC;
@@ -296,6 +316,29 @@ void fn_8003801C(void) {
     fn_8003BB58(fn_80037E94);
 }
 
+extern void DCInvalidateRange(void *, u32);
+extern s32 __DVDPushWaitingQueue(s32, void *);
+s32 DVDInquiryAsync(void *block, void *addr, void *callback) {
+    s32 enabled;
+    s32 result;
+    *(u32 *)((u8 *)block + 8) = 0xE;
+    *(void **)((u8 *)block + 0x18) = addr;
+    *(u32 *)((u8 *)block + 0x14) = 0x20;
+    *(u32 *)((u8 *)block + 0x20) = 0;
+    *(void **)((u8 *)block + 0x28) = callback;
+    if (lbl_80558E04 != 0) {
+        DCInvalidateRange(*(void **)((u8 *)block + 0x18), *(u32 *)((u8 *)block + 0x14));
+    }
+    enabled = OSDisableInterrupts();
+    *(u32 *)((u8 *)block + 0xC) = 2;
+    result = __DVDPushWaitingQueue(2, block);
+    if (executing_8055D8C8 == 0 && lbl_8055D84C == 0) {
+        fn_80038040();
+    }
+    OSRestoreInterrupts(enabled);
+    return result;
+}
+
 extern u8 lbl_8037B5B0;
 extern s32 __DVDGetNextWaitingQueue(void);
 extern __declspec(section ".data") u8 lbl_8037B5B0;
@@ -361,6 +404,36 @@ void fn_800393D4(void) {
         fn_80038040();
     }
     OSRestoreInterrupts(enabled);
+}
+
+extern s32 fn_80039424(void *);
+extern void OSSleepThread(void *);
+extern void fn_80039838(void);
+s32 DVDCancel(void *block) {
+    s32 enabled;
+    s32 state;
+    u32 command;
+    register void *callback;
+
+    callback = fn_80039838;
+    if (fn_80039424(callback) == 0)
+        return -1;
+    enabled = OSDisableInterrupts();
+    for (;;) {
+        state = *(s32 *)((u8 *)block + 0xC);
+        if (state == 0 || state == -1 || state == 10)
+            break;
+        if (state == 3) {
+            command = *(u32 *)((u8 *)block + 8);
+            if (command == 4 || command == 5 || command == 0xD ||
+                command == 0x21 || command == 0x22 || command == 0xF ||
+                command == 0x25)
+                break;
+        }
+        OSSleepThread(__DVDThreadQueue);
+    }
+    OSRestoreInterrupts(enabled);
+    return 0;
 }
 
 void fn_80039838(void) {
