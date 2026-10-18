@@ -1388,9 +1388,16 @@ u16 BTM_GetHCIConnHandle(u8 *arg0) {
     var_r31 = 0;
     var_r30 = lbl_803C0F78 + 0x34;
 loop:
-    if (var_r30[0x119] != 0 && memcmp(var_r30 + 8, arg0, 6) == 0) {
-        goto found;
+    if (var_r30[0x119] == 0) {
+        goto next;
     }
+    switch (memcmp(var_r30 + 8, arg0, 6)) {
+    case 0:
+        goto found;
+    default:
+        goto next;
+    }
+next:
     var_r31++;
     var_r30 += 0x11C;
     if (var_r31 < 4) {
@@ -1730,9 +1737,8 @@ void btm_delete_stored_link_key_complete(u8 *p) {
     }
 }
 
-void fn_8007ABE8(void) {
-    u8 *base = lbl_803C0F78;
-    void (*callback)(void) = *(void (**)(void))(base + 0x568);
+void fn_8007ABE8(void *arg0) {
+    void (*callback)(void) = *(void (**)(void))(lbl_803C0F78 + 0x568);
     if (callback != NULL) callback();
 }
 
@@ -1768,15 +1774,21 @@ tBTM_STATUS BTM_SetPageScanType(UINT16 arg0) {
     return BTM_SUCCESS;
 }
 
+extern void fn_80085DF4(void *, UINT8);
+extern u8 fn_80079514(void);
 tBTM_STATUS BTM_SetInquiryMode(UINT8 arg0) {
+    void *buf;
     if (arg0 != 0 && arg0 != 1) return BTM_ILLEGAL_VALUE;
     if (!(lbl_803C0F78[0x643] & 0x40)) return BTM_MODE_UNSUPPORTED;
     if (!fn_80079514()) return BTM_WRONG_MODE;
-    if (GKI_getpoolbuf(2) != 0) {
-        fn_80085DF4(arg0);
-        return BTM_SUCCESS;
-    }
+    buf = GKI_getpoolbuf(2);
+    if (buf == 0) goto fail;
+    fn_80085DF4(buf, arg0);
+    goto done;
+fail:
     return BTM_NO_RESOURCES;
+done:
+    return BTM_SUCCESS;
 }
 
 u8 fn_8007B340(void) {
@@ -3537,32 +3549,32 @@ void fn_800937A0(void *p, u16 a1, u16 a2, u16 a3) {
 
 void RFCOMM_ControlReq(void *mcb, u8 dlci, void *ctrl) {
     void *port = port_find_mcb_dlci_port(mcb, dlci);
-    if (*(u8 *)((u8 *)port + 2) != 2)
-        goto done;
-    if (*(u8 *)((u8 *)port + 0x68) == 4)
-        goto valid;
-    goto done;
-valid:
-    *(u8 *)((u8 *)port + 0x64) |= 1;
-    *(u8 *)((u8 *)port + 0x69) |= 8;
-    rfc_send_msc(mcb, dlci, 1, ctrl);
-    rfc_port_timer_start(port, 0x3c);
-done:
-    return;
+    if (*(u8 *)((u8 *)port + 2) == 2) {
+        switch (*(u8 *)((u8 *)port + 0x68)) {
+        case 4:
+            *(u8 *)((u8 *)port + 0x64) |= 1;
+            *(u8 *)((u8 *)port + 0x69) |= 8;
+            rfc_send_msc(mcb, dlci, 1, ctrl);
+            rfc_port_timer_start(port, 0x3c);
+            break;
+        default:
+            break;
+        }
+    }
 }
 
 void RFCOMM_FlowReq(void *mcb, u8 dlci, u8 state) {
-    void *port = port_find_mcb_dlci_port(mcb, dlci);
-    if (*(u8 *)((u8 *)port + 2) != 2)
+    u8 *port = port_find_mcb_dlci_port(mcb, dlci);
+    if (port[2] != 2)
         goto done;
-    if (*(u8 *)((u8 *)port + 0x68) == 4)
-        goto valid;
-    goto done;
-valid:
-    *(u8 *)((u8 *)port + 0x5e) = state == 0;
-    *(u8 *)((u8 *)port + 0x69) |= 8;
-    rfc_send_msc(mcb, dlci, 1, (u8 *)port + 0x5a);
-    rfc_port_timer_start(port, 0x3c);
+    if (port[0x68] == 4) {
+        port[0x5e] = state == 0;
+        port[0x69] |= 8;
+        rfc_send_msc(mcb, dlci, 1, port + 0x5a);
+        rfc_port_timer_start(port, 0x3c);
+    } else {
+        goto done;
+    }
 done:
     return;
 }
