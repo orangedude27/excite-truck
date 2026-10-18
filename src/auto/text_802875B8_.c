@@ -191,10 +191,11 @@ void fn_802879E4(s32 arg0) {
 }
 
 void fn_80287A34(void) {
-    void **vtable;
-    fn_801E12A4(); fn_802A1548();
-    vtable = *(void ***)fn_801B83A0();
-    ((void (*)(void))vtable[18])();
+    void (*volatile fn)(void);
+    fn_801E12A4();
+    fn_802A1548();
+    fn = (void (*)(void))(*(void***)fn_801B83A0())[18];
+    fn();
 }
 
 void fn_80287A6C(s32 arg0) {
@@ -234,6 +235,29 @@ s32 fn_80287B94(s32 arg0, s32 arg1) {
     return arg0 + fn_80287B5C(arg1 - arg0);
 }
 
+void *fn_80287C30(void *arg0) {
+    *(s32 *)arg0 = 0;
+    memset((u8 *)arg0 + 4, 0, 0x20);
+    *(s32 *)((u8 *)arg0 + 0x24) = 0;
+    return arg0;
+}
+
+extern void fn_801346B4(void *, s32, s32);
+extern s32 fn_8012C33C(const char *);
+extern s32 fn_80131808(const char *);
+extern void fn_80287D70(void *, s32, s32);
+extern int sprintf(char *, const char *, ...);
+extern const char lbl_80348A40[];
+extern const char lbl_80348A30[];
+extern const char lbl_80348A20[];
+void fn_80287E80(void **arg0, s32 arg1) {
+    char local[0x40];
+    void *obj;
+    fn_801346B4(local, 0x40, arg1);
+    obj = *arg0;
+    ((void (*)(void *, void *))(*(void ***)obj)[2])(obj, local);
+}
+
 void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
     Obj *obj;
     obj = *arg1;
@@ -244,6 +268,22 @@ void fn_80287ED0(Obj *arg0, Obj **arg1, s32 arg2, s32 arg3) {
     obj = *arg1;
     obj = ((Obj *(*)(Obj *, s32))obj->vtable[2])(obj, arg2);
     ((void (*)(Obj *, Obj *, s32))obj->vtable[13])(arg0, obj, arg3);
+}
+
+void fn_80287F90(void *arg0, void **arg1, s32 arg2, s32 arg3, s32 *src) {
+    s32 sp8[3];
+    void *obj;
+    void *ret;
+    obj = *arg1;
+    if (obj == 0 || ((s32 (*)(void *, s32))(*(void ***)obj)[2])(obj, arg2) == 0) {
+        fn_802E317C(lbl_80348A4C, arg2);
+    }
+    sp8[0] = src[0];
+    sp8[1] = src[1];
+    sp8[2] = src[2];
+    obj = *arg1;
+    ret = ((void *(*)(void *, s32))(*(void ***)obj)[2])(obj, arg2);
+    ((void (*)(void *, void *, s32, s32 *))(*(void ***)ret)[14])(arg0, ret, arg3, sp8);
 }
 
 s32 fn_80288060(s32 arg0, s32 arg1) {
@@ -257,8 +297,37 @@ void fn_80288070(s32 arg0, s32 arg1, s32 arg2) {
         value = lbl_80488648[index];
     else
         value = 0;
-    fn_801EE0C8(value);
-    fn_801E2CCC(arg1, arg2);
+    value = fn_801EE0C8(value);
+    ((s32 (*)(s32, s32, s32))fn_801E2CCC)(value, arg1, arg2);
+}
+
+void fn_802880F4(void) {
+    extern int fn_801EA994(void);
+    extern int fn_8012850C(int, const void *, int);
+    extern int fn_8002F37C(int, void *, void *, int, int);
+    extern int fn_801EA9A0(int);
+    extern int fn_801EE0C8(int);
+    extern void fn_80287CE8(int, void *, int, int);
+    extern int lbl_80488648[];
+    extern int lbl_8055F6C4;
+    extern char lbl_80348A74[];
+    int count = fn_801EA994();
+    int *table = lbl_80488648;
+    int offset = 0;
+    int i = 0;
+    lbl_8055F6C4 = fn_8002F37C(fn_8012850C(count * 0x28 + 0x10, lbl_80348A74, count * 0x28), fn_80287C30, fn_80287C80, 0x28, count);
+    while (i < fn_801EA994()) {
+        int obj = fn_801EA9A0(i);
+        int id;
+        if ((unsigned)i < 8)
+            id = *table;
+        else
+            id = 0;
+        fn_80287CE8(lbl_8055F6C4 + offset, (void *)(obj + 0x88), fn_801EE0C8(id), *(int *)(obj + 0xB8));
+        table++;
+        offset += 0x28;
+        i++;
+    }
 }
 
 void fn_802881D4(void) {
