@@ -42,11 +42,11 @@ extern s32 fn_802328D4(s32, s32);
 void *fn_80240928(void *arg0, s32 arg1) {
     s32 zero = 0;
     if (arg0 != 0) {
-        *(s32 *)((char *)arg0 + 0x24) = 0;
+        *(s32 *)((char *)arg0 + 0x24) = zero;
         *(void **)arg0 = lbl_80342734;
-        *(s32 *)((char *)arg0 + 0x20) = 0;
-        fn_802328D4(*(s32 *)((char *)arg0 + 0x18), 0);
-        *(s32 *)((char *)arg0 + 0x18) = 0;
+        *(s32 *)((char *)arg0 + 0x20) = zero;
+        fn_802328D4(*(s32 *)((char *)arg0 + 0x18), (s32)lbl_80342734);
+        *(s32 *)((char *)arg0 + 0x18) = zero;
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
@@ -82,12 +82,14 @@ void fn_80241010(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
 void *fn_80241098(void *arg0) {
+    s32 zero = 0;
+    s32 minusOne = -1;
     *(void **)arg0 = lbl_80342734;
-    *(s32 *)((u8 *)arg0 + 0x14) = 0;
-    *(s32 *)((u8 *)arg0 + 0x1C) = -1;
-    *(s32 *)((u8 *)arg0 + 0x24) = 0;
-    *(s32 *)((u8 *)arg0 + 0x20) = 0;
-    *(s32 *)((u8 *)arg0 + 0x18) = fn_80232578(lbl_8034288C, lbl_8034288C, 0);
+    *(s32 *)((u8 *)arg0 + 0x14) = zero;
+    *(s32 *)((u8 *)arg0 + 0x1C) = minusOne;
+    *(s32 *)((u8 *)arg0 + 0x24) = zero;
+    *(s32 *)((u8 *)arg0 + 0x20) = zero;
+    *(s32 *)((u8 *)arg0 + 0x18) = ((s32 (*)(char *))fn_80232578)(lbl_8034288C);
     return arg0;
 }
 
@@ -187,15 +189,16 @@ s32 fn_80241EE8(s32 arg0) {
 s32 fn_802426C0(void *arg0) {
     s32 index = *(s32 *)((char *)arg0 + 0x28);
     void *object;
+    volatile void **vtable;
     s32 count;
-    struct Vtable { char pad[0x14]; s32 (*get_count)(void *); char pad2[4]; s32 (*get_item)(void *, s32); };
-
     if (index >= 0) {
         object = *(void **)((char *)arg0 + 0x24);
-        count = ((struct Vtable *)*(void **)object)->get_count(object);
+        vtable = *(volatile void ***)object;
+        count = (*(s32 (**)(void *))((char *)vtable + 0x14))(object);
         if (index < count) {
             object = *(void **)((char *)arg0 + 0x24);
-            return ((struct Vtable *)*(void **)object)->get_item(object, index);
+            vtable = *(volatile void ***)object;
+            return (*(s32 (**)(void *, s32))((char *)vtable + 0x1c))(object, index);
         }
     }
     return 0;
