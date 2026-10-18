@@ -71,7 +71,6 @@ void *fn_802B51E4(int arg0, int arg1) {
     *(void **)(result + 8) = result + 0xC;
     return result;
 }
-#pragma scheduling off
 void *fn_802B5240(void *arg0) {
     int spC;
     int sp8;
