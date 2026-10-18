@@ -806,6 +806,17 @@ extern "C" s32 fn_800EEEC4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *this_, const void *data, s32 size) {
+    void *seqData = *(void **)((u8 *)this_ + 0x9C);
+    if (seqData == NULL) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0xE0, (const char *)lbl_80323B94);
+    }
+    if (data != NULL) {
+        fn_800F1080(seqData, data, size);
+    }
+    *(u8 *)((u8 *)this_ + 0x16) = 1;
+}
+
 extern "C" s32 fn_800EF500(void* self) {
     void* iterator;
     if (*(u8*)((u8*)self + 0x16) == 0) return 0;
