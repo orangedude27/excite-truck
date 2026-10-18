@@ -5,7 +5,7 @@ typedef signed int s32;
 extern s32 fn_80296D28(s32);
 extern s32 fn_80128668(void *);
 extern s32 fn_8002F6AC(s32, void *);
-extern s32 fn_80297654;
+void *fn_80297654(void *, s32);
 extern char lbl_803493C0[];
 extern float lbl_80564578;
 
@@ -20,16 +20,46 @@ void *fn_802971B0(void *arg0) {
     obj = fn_801284F8(8, lbl_80349368);
     if (obj != 0) {
         *(void **)obj = &lbl_803493C0;
-        value = ((s32 (*)(void *, char *))(*(void **)(*(void ***)arg0 + 5)))(arg0, lbl_80349378);
-        *(s32 *)((u8 *)obj + 4) = fn_80296B10(value,
-            ((s32 (*)(void *, char *))(*(void **)(*(void ***)arg0 + 23)))(arg0, lbl_8055CA30));
+        value = ((s32 (*)(void *, char *))(*(void **)((char *)*(void **)arg0 + 0x14)))(arg0, lbl_80349378);
+        *(s32 *)((char *)obj + 4) = fn_80296B10(value,
+            ((s32 (*)(void *, char *))(*(void **)((char *)*(void **)arg0 + 0x5c)))(arg0, lbl_8055CA30));
     }
-    if (obj != 0 && ((s32 (*)(void *))(*(void **)(*(void ***)obj + 3)))(obj) == 0) {
+    if (obj != 0 && ((s32 (*)(void *))(*(void **)((char *)*(void **)obj + 0xc)))(obj) == 0) {
         if (obj != 0)
-            ((void (*)(void *, s32))(*(void **)(*(void ***)obj + 2)))(obj, 1);
+            ((void (*)(void *, s32))(*(void **)((char *)*(void **)obj + 8)))(obj, 1);
         obj = 0;
     }
     return obj;
+}
+
+extern void *fn_802972A4(void *);
+__declspec(section ".sdata") extern char lbl_8055CA48[];
+__declspec(section ".sdata") extern char lbl_8055CA50[];
+s32 fn_80297354(void *arg0, void *arg1) {
+    void *obj;
+    float result[3];
+    float zeroes[3];
+    obj = fn_802972A4(arg1);
+    if (obj != 0) {
+        ((float (*)(void *, char *))(*(void **)((char *)*(void **)arg1 + 0x24)))(arg1, lbl_8055CA48);
+        result[0] = lbl_80564578;
+        result[1] = lbl_80564578;
+        result[2] = lbl_80564578;
+        ((void (*)(float *, void *, char *, float *))(*(void **)((char *)*(void **)arg1 + 0x38)))(zeroes, arg1, lbl_8055CA50, result);
+        *(float *)arg0 = 0.0f;
+        *(float *)((char *)arg0 + 4) = zeroes[0];
+        *(float *)((char *)arg0 + 8) = zeroes[1];
+        *(float *)((char *)arg0 + 12) = zeroes[2];
+        *(void **)((char *)arg0 + 16) = obj;
+        *(float *)((char *)arg0 + 20) = *(float *)arg0 + ((float (*)(void *))(*(void **)((char *)*(void **)obj + 0x10)))(obj);
+    }
+    return obj != 0;
+}
+
+__declspec(section ".sdata") extern char lbl_8055CA58[];
+s32 fn_80297450(void **arg0) {
+    char *value = ((char *(*)(void))((void **) *arg0)[2])();
+    return stricmp(value, lbl_8055CA58) == 0;
 }
 
 float fn_8029748C(void *arg0) {
@@ -58,17 +88,27 @@ s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
     s32 i;
     s32 offset;
     u8 *entry;
-    float a, b, c;
+    float result[3];
+    float x;
+    float y;
+    float z;
+    void *object;
+    void (**vtable)(void *, float *, float);
 
     offset = 0;
     i = 0;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         entry = *(u8 **)arg0 + offset;
         if (arg2 >= *(float *)entry && arg2 <= *(float *)(entry + 0x14)) {
-            a = *(float *)arg1 + *(float *)(entry + 4);
-            b = *(float *)((u8 *)arg1 + 4) + *(float *)(entry + 8);
-            c = *(float *)((u8 *)arg1 + 8) + *(float *)(entry + 0xc);
-            ((void (*)(void *, float *, float))(*(void (***)(void))*(void **)(entry + 0x10))[5])(*(void **)(entry + 0x10), &a, arg2 - *(float *)entry);
+            x = *(float *)arg1;
+            y = *(float *)((u8 *)arg1 + 4);
+            z = *(float *)((u8 *)arg1 + 8);
+            result[0] = x + *(float *)(entry + 4);
+            result[1] = y + *(float *)(entry + 8);
+            result[2] = z + *(float *)(entry + 0xc);
+            object = *(void **)(entry + 0x10);
+            vtable = *(void (***)(void *, float *, float))object;
+            vtable[5](object, result, arg2 - *(float *)entry);
         }
         offset += 0x18;
         i++;
