@@ -67,6 +67,8 @@ void fn_8013472C(void) {
   
   }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80134A8C(void) {
     extern void *lbl_8042F758[];
     extern void *lbl_8055E0D4;
@@ -98,7 +100,7 @@ void fn_80134A8C(void) {
     fn_8013BC54();
     fn_80166A24();
 }
-
+#pragma pop
   
   void fn_80134B50(void) {
       extern void *lbl_8055E0D4;
@@ -107,7 +109,7 @@ void fn_80134A8C(void) {
   }
   
   float fn_80134B58(float arg0) {
-      extern s32 fn_80134B9C(float, s32);
+      extern s32 fn_80134B9C(s32, s32);
       extern double atof(void);
       if (fn_80134B9C(arg0, 0) != 0)
           arg0 = (float)atof();
@@ -234,16 +236,20 @@ void *fn_80134F48(void) {
     s32 flag = 0;
     void *result;
     u32 bits;
-    if (*((u8*)fn_801792F8() + 0xD8) & 4) { flag = 1; }
-    if (flag) { p = fn_801350C0(); }
+    if (*((u8*)fn_801792F8() + 0xD8) & 4) flag = 1;
+    if (flag) p = fn_801350C0();
     else {
         bits = *((u32*)p + 1);
-        if (bits & 0x100) { p = fn_80134E90(); }
-        else if (bits & 0x200) { p = fn_80134EC8(); }
-        else { p = fn_80134FF8(); }
+        if (bits & 0x100) p = fn_80134E90();
+        else if (bits & 0x200) p = fn_80134EC8();
+        else p = fn_80134FF8();
     }
-    result = fn_801284F8(0x2844, lbl_8032BC84);
-    if (result != 0) { result = fn_801A520C(result, p); }
+    {
+        register const void *name = lbl_8032BC84;
+        register u32 id = 0x2844;
+        result = fn_801284F8(id, name);
+    }
+    if (result != 0) result = fn_801A520C(result, p);
     return result;
 }
 #pragma dont_inline reset
@@ -335,7 +341,8 @@ extern void fn_8018ADBC(void *, f32);
 extern void fn_8018ADB4(void *, f32);
 extern void fn_8018ADA4(void *, f32);
 void fn_801351CC(void *arg0) {
-    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), lbl_80561318);
+    volatile f32 value = lbl_80561318;
+    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), value);
     fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
     fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
 }
