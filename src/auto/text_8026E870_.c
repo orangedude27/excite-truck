@@ -64,7 +64,9 @@ f32 fn_8026ECE4(f32 *arg1) {
 s32 fn_8026F408(s32 arg0) { return arg0 <= 8; }
 
 f32 fn_8026FCE0(f32 farg0, f32 farg1) {
-    return ((lbl_80563E30 - farg1) * farg0) + (farg1 * (farg0 * farg0));
+    f32 diff = lbl_80563E30 - farg1;
+    f32 square = farg0 * farg0;
+    return (diff * farg0) + (farg1 * square);
 }
 
 extern f32 lbl_80563ED8;
