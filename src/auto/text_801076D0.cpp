@@ -53,6 +53,12 @@ extern "C" void* Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkLis
     return next;
 }
 
+void* nw4hbm::ut::List_GetNext(const nw4hbm::ut::List* list, const void* item) {
+    if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328828, 0xF5, lbl_80328834);
+    if (item == 0) return *(void**)list;
+    return *(void**)((char*)item + *(unsigned short*)((char*)list + 0xA) + 4);
+}
+
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
