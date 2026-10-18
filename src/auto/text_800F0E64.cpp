@@ -666,39 +666,58 @@ extern "C" s32 fn_800F76C0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* self) {
+extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* self) {
     void* mutex = *(void**)((char*)self + 0x2c);
     OSLockMutex(mutex);
-    if (*(void**)((char*)self + 0x10) != 0)
+    if (*(int*)((char*)self + 0x10))
         Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv();
     OSUnlockMutex(mutex);
 }
 
-void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
-    void* mutex = *(void**)((u8*)self + 0x24);
-    void* sound = *(void**)((u8*)self + 0x10);
+void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void *arg0) {
+    class SoundLike {
+    public:
+        virtual void v0() {} virtual void v1() {} virtual void v2() {} virtual void v3() {} virtual void v4() {} virtual void v5() {} virtual void v6() {} virtual void v7() {} virtual void v8() {} virtual void v9() {} virtual int v10() {} virtual void v11() {} virtual void v12() {} virtual void v13() {} virtual void v14() {} virtual void v15() {} virtual void v16() {} virtual void v17() {} virtual void v18() {} virtual void v19() {} virtual void v20() {} virtual int v21() {} };
+    void *mutex = *(void **)((char *)arg0 + 0x24);
+    SoundLike *sound;
     OSLockMutex(mutex);
-    *(u32*)((u8*)self + 0x1c) = 0;
-    if (sound != 0 && ((s32 (*)(void*))(*(u32*)(*(u32*)sound + 0x54)))(sound) != 0) {
-        if (((s32 (*)(void*))(*(u32*)(*(u32*)sound + 0x28)))(sound) != 0) {
-            ((void (*)(void*, s32, s32))(*(u32*)(*(u32*)sound + 0x4c)))(sound, 0, 0);
+    sound = (SoundLike *)*(void **)((char *)arg0 + 0x10);
+    *(int *)((char *)arg0 + 0x1c) = 0;
+    if (sound != 0 && sound->v21() != 0) {
+        sound = (SoundLike *)*(void **)((char *)arg0 + 0x10);
+        if (sound->v10() != 0) {
+            sound = (SoundLike *)*(void **)((char *)arg0 + 0x10);
+            ((void (*)(SoundLike *, int, int))((void **)*(void **)sound)[19])(sound, 0, 0);
         } else {
-            ((void (*)(void*))(*(u32*)(*(u32*)sound + 0x48)))(sound);
+            sound = (SoundLike *)*(void **)((char *)arg0 + 0x10);
+            ((void (*)(SoundLike *))((void **)*(void **)sound)[18])(sound);
         }
     }
     OSUnlockMutex(mutex);
 }
 
-void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_800F7FEC(void* self) {
+extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_800F7FEC(void* self) {
+    class Sound {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual s32 m8();
+        virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12();
+        virtual void v13(); virtual void v14(); virtual void v15(); virtual void m16();
+        virtual void m17(s32, s32); virtual void v18(); virtual s32 Check();
+    };
     void* mutex = *(void**)((u8*)self + 0x3c);
-    void* sound = *(void**)((u8*)self + 0x14);
     OSLockMutex(mutex);
     *(u32*)((u8*)self + 0x10) = 0;
-    if (sound != 0 && ((s32 (*)(void*))(*(u32*)(*(u32*)sound + 0x54)))(sound) != 0) {
-        if (((s32 (*)(void*))(*(u32*)(*(u32*)sound + 0x28)))(sound) != 0) {
-            ((void (*)(void*, s32, s32))(*(u32*)(*(u32*)sound + 0x4c)))(sound, 0, 0);
+    Sound* sound = *(Sound**)((u8*)self + 0x14);
+    if (sound && sound->Check()) {
+        sound = *(Sound**)((u8*)self + 0x14);
+        if (sound->m8()) {
+            sound = *(Sound**)((u8*)self + 0x14);
+            sound->m17(0, 0);
         } else {
-            ((void (*)(void*))(*(u32*)(*(u32*)sound + 0x48)))(sound);
+            sound = *(Sound**)((u8*)self + 0x14);
+            sound->m16();
         }
     }
     OSUnlockMutex(mutex);
