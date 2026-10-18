@@ -105,7 +105,7 @@ void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u3
 
 extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, u32 index) {
     if (index >= 0x10) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1e6, lbl_803206B8);
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320570, 0x1e6, lbl_803206B8);
     }
     u32 part1 = (index >> 1) & 0x7FFFFFFC;
     u32 part2 = index & 3;
