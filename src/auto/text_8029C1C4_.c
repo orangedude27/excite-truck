@@ -62,6 +62,16 @@ void fn_8029C25C(void) {
     }
 }
 
+extern void fn_8029EF24();
+void *__dt__Q34nw4r2ef6EffectFv_8029C3F0(void *arg0, int arg1) {
+    if (arg0) {
+        *(void **)arg0 = (void *)lbl_80349780;
+        fn_8029EF24(arg0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 #pragma push
 #pragma processor 750
 #pragma scheduling 750
@@ -114,7 +124,8 @@ void fn_8029C664(void) {
     margin = lbl_80564648;
     p = lbl_804B5010;
     base = p;
-    for (i=0; i<lbl_8055F7F0; ++p, ++i) {
+    i = base == p ? 0 : 1;
+    for (; i<lbl_8055F7F0; ++p, ++i) {
         fn_8029D550((void *)*p, a, &radiusA);
         j=i+1;
         q=base+j;
