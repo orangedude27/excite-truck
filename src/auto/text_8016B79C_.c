@@ -29,7 +29,7 @@ extern s32 fn_8002F37C(void *, void *, s32, s32);
 extern void fn_8016B4FC(void *);
 extern s32 fn_802BAA68(s32, void *);
 extern void fn_8016CDE0(void *);
-extern void fn_8016C168(void);
+extern void *fn_8016C168(void *, s32);
 typedef struct {
     void *vtbl;
     void (*d0)(void *);
@@ -513,7 +513,7 @@ void fn_80170DA8(void *arg0, void *arg1, void *arg2) {
     s32 *pool;
     u8 *items;
     u8 *item;
-    volatile f32 sp8, spC, sp10, sp14, sp18, sp1C;
+    volatile f32 sp1C, sp18, sp14, sp10, spC, sp8;
     f32 x;
     f32 y;
     f32 dx;
@@ -535,7 +535,7 @@ void fn_80170DA8(void *arg0, void *arg1, void *arg2) {
         sp14 = y;
         sp8 = dx;
         spC = dy;
-        if (fn_8002F234(dx * dx + dy * dy, y, x, dx, dy) < *(f32 *)(item + 0x34)) {
+        if ((f32)fn_8002F234(dx * dx + dy * dy, y, x, dx, dy) < *(f32 *)(item + 0x34)) {
             *(u8 *)(items + index * 0x38 + 0x30) = 0;
             *(s32 *)((u8 *)arg0 + 0x10) = next;
             pool = *(s32 **)((u8 *)arg0 + 4);
