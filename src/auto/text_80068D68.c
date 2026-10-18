@@ -1586,16 +1586,18 @@ void btm_read_local_version_complete(UINT8 *p, UINT16 evt_len) {
 
 tBTM_STATUS BTM_SetLocalDeviceName(char *p_name) {
     void *buf;
+    u8 *name;
 
     if (p_name == NULL) return 5;
-    if (lbl_803C0F78[0x64E] <= 1) return 0xC;
+    name = lbl_803C0F78;
+    if (name[0x64E] <= 1) return 0xC;
     buf = GKI_getpoolbuf(2);
     if (buf != NULL) {
-        if ((void *)lbl_803C0F78 != (void *)p_name) {
-            memset(lbl_803C0F78, 0, 0x20);
-            strncpy((char *)lbl_803C0F78, p_name, 0x1F);
+        if ((void *)name != (void *)p_name) {
+            memset(name, 0, 0x20);
+            strncpy((char *)name, p_name, 0x1F);
         }
-        ((BOOLEAN (*)(void *, BD_NAME))btsnd_hcic_change_name)(buf, lbl_803C0F78);
+        ((BOOLEAN (*)(void *, BD_NAME))btsnd_hcic_change_name)(buf, name);
         return 1;
     }
     return 3;
