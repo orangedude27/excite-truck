@@ -53,8 +53,8 @@ public:
 
 class TObj10 {
 public:
-    virtual void d0(); virtual void d1();
-    virtual u8 *v10(); // 0x10
+    virtual void d0();
+    virtual u8 *v10(); // 0x8
 };
 
 class TObj18 {
