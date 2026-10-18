@@ -63,7 +63,7 @@ public:
     virtual void vf25();
     virtual void vf26();
     virtual void vf27();
-    virtual void vf28();
+    virtual s32 vf28();
     virtual void vf29();
     virtual s32 vf30();
     virtual s32 vf31();    // vtable 0x84
@@ -227,7 +227,7 @@ extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
 extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r0;
     s32 temp_r3;
-    temp_r3 = arg1 + ((s32 (**)(void *))(*(void ***)arg0))[30](arg0);
+    temp_r3 = arg1 + ((VfObj *)arg0)->vf30();
     *(s32 *)((u8 *)arg0 + 4) = arg1;
     temp_r0 = arg2 + (*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
     *(s32 *)((u8 *)arg0 + 0xC) = temp_r3;
