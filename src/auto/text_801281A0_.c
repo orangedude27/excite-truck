@@ -208,8 +208,8 @@ void fn_80128658(s32 arg0) {
 
 void fn_80128660(s32 arg0) { fn_80128584(arg0, 2); }
 
-void fn_80128668(void) {
-    fn_80128584(0, 3);
+void fn_80128668(s32 arg0) {
+    fn_80128584(arg0, 3);
 }
 
 void fn_80128670(s32 arg0) {
