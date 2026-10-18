@@ -8,6 +8,36 @@ void fn_801A47C8(void);
 void fn_801A47FC(int);
 void fn_8015F670(int *, int);
 #pragma scheduling off
+void fn_801E1F8C(void *arg0, void *arg1) {
+    void *obj;
+    void *item;
+    int j;
+    int i;
+    void **p1;
+    void **p0;
+    int count1;
+    int count0;
+    count0 = *(int *)((char *)arg0 + 0x24);
+    if (count0 == 0) return;
+    p0 = (count0 > 0) ? *(void ***)((char *)arg0 + 0x14) : 0;
+    if (*(int *)((char *)p0 + 0x20) != 0x72) return;
+    count1 = *(int *)((char *)arg1 + 0x24);
+    if (count1 == 0) return;
+    p1 = (count1 > 0) ? *(void ***)((char *)arg1 + 0x14) : 0;
+    if (*(int *)((char *)p1 + 0x20) != 0x72) return;
+    i = 0;
+    while (i < *(int *)((char *)arg1 + 0x24)) {
+        item = p1[i];
+        j = 0;
+        while (j < *(int *)((char *)arg0 + 0x24)) {
+            obj = p0[j];
+            ((void (*)(void *, void *))(*(void ***)obj)[4])(obj, item);
+            j++;
+        }
+        i++;
+    }
+}
+
 void fn_801E2084(void *arg0, void *arg1) {
     int i = 0;
     void **entry = (void **)arg1;
@@ -66,9 +96,9 @@ void fn_801E222C(void) {
 
 void fn_801E2294(void) {
     if (lbl_8055EA3C != 0)
-        fn_801A47C8();
+        ((void (*)(void *))fn_801A47C8)(lbl_8055EA3C);
     if (lbl_8055EA40 != 0)
-        fn_801A47C8();
+        ((void (*)(void *))fn_801A47C8)(lbl_8055EA40);
 }
 typedef struct VTable_801E2084 { void *unk0; void *unk4; void *unk8; void *unkC; void (*call)(void *, void *); } VTable_801E2084;
 typedef struct Obj_801E2084 { VTable_801E2084 *vtable; } Obj_801E2084;
