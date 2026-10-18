@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern f64 lbl_805634B8;
 extern "C" int lbl_8033F998[];
 extern "C" s32 fn_802C5130(s32, void *);
 extern "C" s32 fn_802C51C0(s32);
@@ -1407,6 +1408,21 @@ extern "C" void *fn_80222800(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg
     } else {
         *arg5 = arg1 + (s32)fn_80235EF0(0, 0);
         *arg6 = arg1 + (s32)fn_80235F64(field, 0);
+    }
+    return arg0;
+}
+
+extern "C" void *fn_802228B0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 handle;
+    *(void **)arg0 = lbl_8033F998;
+    handle = fn_802C5130(arg1, lbl_8033F998);
+    *(s32 *)((u8 *)arg0 + 4) = handle;
+    if (arg2 > 0 && arg3 > 0) {
+        *(f32 *)((u8 *)arg0 + 8) = (f32)arg2;
+        *(f32 *)((u8 *)arg0 + 0xC) = (f32)arg3;
+    } else {
+        *(f32 *)((u8 *)arg0 + 8) = (f32)fn_802C51C0(handle);
+        *(f32 *)((u8 *)arg0 + 0xC) = (f32)fn_802C5220(handle);
     }
     return arg0;
 }
