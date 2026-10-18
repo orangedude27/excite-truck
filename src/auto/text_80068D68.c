@@ -2921,6 +2921,7 @@ u8 HID_HostRegister(void *arg0) {
 #pragma push
 #pragma use_lmw_stmw off
 u8 HID_HostRemoveDev(u32 dev_handle) {
+    extern u8 lbl_803C3C38[];
     extern u8 hidh_conn_disconnect(u32);
     u8 *entry;
     u32 offset;
@@ -2942,8 +2943,8 @@ u8 HID_HostRemoveDev(u32 dev_handle) {
     }
     entry[0] = 0;
     entry[0x10] = 0;
-    *(u16 *)(entry + 0x14) = 0;
-    *(u16 *)(entry + 0x16) = 0;
+    entry[0x14] = 0;
+    entry[0x16] = 0;
     return 0;
 }
 #pragma pop
@@ -3747,6 +3748,46 @@ tCONN_CB *sdpu_allocate_ccb(void) {
 void fn_80099F58(void *arg0) {
     fn_80070F90((u8 *)arg0 + 8);
     *(u8 *)arg0 = 0;
+}
+
+UINT8 *sdpu_get_len_from_type (UINT8 *p, UINT8 type, UINT32 *p_len)
+{
+    UINT8   u8;
+    UINT16  u16;
+    UINT32  u32;
+
+    switch (type & 7)
+    {
+    case SIZE_ONE_BYTE:
+        *p_len = 1;
+        break;
+    case SIZE_TWO_BYTES:
+        *p_len = 2;
+        break;
+    case SIZE_FOUR_BYTES:
+        *p_len = 4;
+        break;
+    case SIZE_EIGHT_BYTES:
+        *p_len = 8;
+        break;
+    case SIZE_SIXTEEN_BYTES:
+        *p_len = 16;
+        break;
+    case SIZE_IN_NEXT_BYTE:
+        BE_STREAM_TO_UINT8 (u8, p);
+        *p_len = u8;
+        break;
+    case SIZE_IN_NEXT_WORD:
+        BE_STREAM_TO_UINT16 (u16, p);
+        *p_len = u16;
+        break;
+    case SIZE_IN_NEXT_LONG:
+        BE_STREAM_TO_UINT32 (u32, p);
+        *p_len = (UINT16) u32;
+        break;
+    }
+
+    return (p);
 }
 
 BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) {
