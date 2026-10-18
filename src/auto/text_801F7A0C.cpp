@@ -220,11 +220,13 @@ extern "C" void PSVECCrossProduct(const f32 *, f32 *);
 extern "C" f32 PSVECDotProduct(const f32 *, const f32 *);
 extern const f32 lbl_80562FF4;
 extern "C" void fn_801F7A14(void *arg0) {
- f32 cross[3];
- PSVECCrossProduct((f32 *)((u8 *)arg0 + 0xC), cross);
- if (PSVECDotProduct(cross, (f32 *)((u8 *)arg0 + 0x18)) < lbl_80562FF0) {
-  ((f32 *)arg0)[0] *= lbl_80562FF4; ((f32 *)arg0)[1] *= lbl_80562FF4; ((f32 *)arg0)[2] *= lbl_80562FF4;
- }
+    f32 cross[3];
+    ((void (*)(void *, void *, void *))PSVECCrossProduct)(arg0, (u8 *)arg0 + 0xC, cross);
+    if (PSVECDotProduct(cross, (f32 *)((u8 *)arg0 + 0x18)) < lbl_80562FF0) {
+        ((f32 *)arg0)[0] *= lbl_80562FF4;
+        ((f32 *)arg0)[1] *= lbl_80562FF4;
+        ((f32 *)arg0)[2] *= lbl_80562FF4;
+    }
 }
 
 extern u8 lbl_8033AFE8[];
@@ -517,13 +519,12 @@ extern "C" void fn_801F9928(void *list, s32 arg) {
 }
 
 extern "C" void fn_801F99CC(F92Obj *obj) {
-    F92Obj *cur = *(F92Obj **)((char *)&obj->w108 + 0x24 - 0x108);
+    F92Obj *cur = (F92Obj *)*(void **)((char *)obj + 0x24);
     F92Obj *next;
-
     while (cur != NULL) {
-        next = *(F92Obj **)((char *)&cur->w108 + 0x24 - 0x108);
+        next = (F92Obj *)*(void **)((char *)cur + 0x24);
         if (cur != NULL) {
-            (*(void (**)(F92Obj *, s32))((char *)&cur->w108 + 0x100 - 0x108))(cur, 1);
+            (*(void (**)(F92Obj *, int))((char *)*(void **)((char *)cur + 0x108) + 8))(cur, 1);
         }
         cur = next;
     }
@@ -672,10 +673,11 @@ extern "C" void fn_801FA550(void) {
             fn_801F7A0C() != 0) {
             void *arg = *(void **)((u8 *)node + 0x34);
             s32 id = *(s32 *)node;
-            if (arg != 0) {
-            } else {
-                arg = (u8 *)node + 4;
-            }
+            if (arg == 0) goto use_inline;
+            goto call_handler;
+        use_inline:
+            arg = (u8 *)node + 4;
+        call_handler:
             fn_802C70AC(id, arg, -1, -15);
         }
         node = *(void **)((u8 *)node + 0x44);
@@ -788,11 +790,7 @@ extern "C" void fn_801FA978(void) {
     lbl_8055EC3C = 0;
 }
 
-extern "C" void fn_801FB1F4(s32 arg0) {
-    volatile s32 *p = &lbl_8055B1C8;
-    arg0 = *p - arg0;
-    *p = arg0;
-}
+extern "C" void fn_801FB1F4(s32 arg0) { lbl_8055B1C8 = *(&lbl_8055B1C8) - arg0; }
 
 extern "C" s32 fn_801FB204(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
