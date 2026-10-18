@@ -3304,27 +3304,29 @@ extern "C" s32 fn_800A53F8(void *arg0) {
     return 0;
 }
 
+#pragma dont_inline on
 extern "C" s32 fn_800A54AC(void *arg0) {
     s32 result;
     s32 value;
-    if (fn_800A76A0(*(void **)((u8 *)arg0 + 0x1FBC)) != 0)
-        return -1;
+    if (fn_800A76A0(*(void **)((u8 *)arg0 + 0x1FBC)) == 0)
+        goto continue_check;
+    return -1;
+continue_check:
     result = fn_800A7610(*(void **)((u8 *)arg0 + 0x1FBC));
     if (result == 0)
         goto done;
     if (result != 21)
-        goto fail;
-    value = ((s32 (* volatile)(void *))fn_800A71D8)(*(void **)((u8 *)arg0 + 0x1FBC));
+        goto error;
+    value = fn_800A71D8(*(void **)((u8 *)arg0 + 0x1FBC));
     *(s32 *)((u8 *)lbl_803D2140 + 0x44) = value;
     *(s32 *)((u8 *)arg0 + 0x1F84) = value;
-    result = 0x1000;
-    goto done;
-fail:
-    result = -1;
+    return 0x1000;
+error:
+    return -1;
 done:
-    return result;
+    return 0;
 }
-
+#pragma dont_inline reset
 extern "C" s32 fn_800A5788(void *arg0, s32 arg1) {
     s32 result = fn_800A7568(*(void **)((u8 *)arg0 + 0x1FBC), (arg1 == 1));
     if (result != 0) {
