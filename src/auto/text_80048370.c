@@ -3,6 +3,7 @@
 #include <revolution/MEM.h>
 #include "revolution/KPAD/__KPAD.h"
 #include "revolution/OS/OSInterrupt.h"
+#include "revolution/MTX/mtx.h"
 
 static inline void KPADNotifySampling(s32 chan) {
     KPADInsideStatus *status = &inside_kpads[chan];
@@ -56,6 +57,33 @@ void WPADiSamplingCallback(s32 chan, s32 result) {
         }
     }
 }
+
+void* AllocFromHead_(MEMiHeapHead* heap, u32 size, s32 align) {
+    extern void* AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead*, MEMiExpHeapMBlock*, void*, u32, u16);
+    BOOL isFastAlloc;
+    MEMiExpHeapMBlock* it;
+    MEMiExpHeapHead* exp;
+    MEMiExpHeapMBlock* bestBlk;
+    u32 bestBlkSize;
+    void* bestBlkMemPtr;
+    exp = (MEMiExpHeapHead*)(heap + 1);
+    isFastAlloc = exp->allocMode == MEM_EXP_HEAP_ALLOC_FAST;
+    bestBlk = 0;
+    bestBlkSize = 0xFFFFFFFF;
+    bestBlkMemPtr = 0;
+    for (it = exp->freeMBlocks.head; it != 0; it = it->next) {
+        void* start = it + 1;
+        void* end = (void*)((align + (u32)start - 1) & ~(align - 1));
+        if (it->size >= size + ((u32)end - (u32)start) && bestBlkSize > it->size) {
+            bestBlk = it;
+            bestBlkSize = it->size;
+            bestBlkMemPtr = end;
+            if (isFastAlloc || bestBlkSize == size) break;
+        }
+    }
+    return bestBlk != 0 ? AllocUsedBlockFromFreeBlock_(exp, bestBlk, bestBlkMemPtr, size, 0) : 0;
+}
+
 #pragma pop
 
 void* AllocUsedBlockFromFreeBlock_(MEMiExpHeapHead*, MEMiExpHeapMBlock*, void*, u32, u16);
@@ -120,6 +148,39 @@ MEMiHeapHead* MEMDestroyExpHeap(MEMiHeapHead* heap) {
     return heap;
 }
 
+void MEMFreeToExpHeap(MEMiHeapHead* heap, void* memBlock) {
+    MEMiExpHeapMBlock* mblock;
+    MEMiExpHeapHead* exp;
+    void* region[2];
+
+    if (memBlock == NULL) {
+        return;
+    }
+
+    exp = (MEMiExpHeapHead*)(heap + 1);
+    mblock = (MEMiExpHeapMBlock*)((u8*)memBlock - sizeof(MEMiExpHeapMBlock));
+
+    LockHeap(heap);
+
+    region[0] = (void*)((u8*)mblock - mblock->align);
+    region[1] = (void*)((u8*)mblock + sizeof(MEMiExpHeapMBlock) + mblock->size);
+
+    if (mblock->prev != NULL) {
+        mblock->prev->next = mblock->next;
+    } else {
+        exp->usedMBlocks.head = mblock->next;
+    }
+    if (mblock->next != NULL) {
+        mblock->next->prev = mblock->prev;
+    } else {
+        exp->usedMBlocks.tail = mblock->prev;
+    }
+
+    RecycleRegion_(exp, region);
+
+    UnlockHeap(heap);
+}
+
 MEMiHeapHead* MEMCreateFrmHeapEx(void *start, u32 size, u16 opt) {
     u32 end = ((u32)size + (u32)start) & ~3;
     u32 base = ((u32)start + 3) & ~3;
@@ -143,13 +204,13 @@ void MEMFreeToFrmHeap(MEMiHeapHead* heap, u32 flags) {
     MEMiFrmHeapHead *frm = (MEMiFrmHeapHead *)(heap + 1);
     LockHeap(heap);
     if (flags & MEM_FRM_HEAP_FREE_TO_HEAD) {
-        frm->states = 0;
         frm->head = heap->start;
+        frm->states = 0;
     }
     if (flags & MEM_FRM_HEAP_FREE_TO_TAIL) {
         MEMiFrmHeapState *state = frm->states;
         while (state != 0) {
-            state->tail = heap->start;
+            state->tail = heap->end;
             state = state->next;
         }
         frm->tail = heap->end;
@@ -292,5 +353,19 @@ void *MEMGetNextListObject(MEMList *list, void *object) {
         return list->head;
     }
     return *(void **)((u8 *)object + list->offset + 4);
+}
+
+void PSMTXConcat(const Mtx a, const Mtx b, Mtx out) {
+    Mtx tmp;
+    int i, j;
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 3; j++) {
+            tmp[i][j] = a[i][0] * b[0][j] + a[i][1] * b[1][j] + a[i][2] * b[2][j];
+        }
+        tmp[i][3] = a[i][0] * b[0][3] + a[i][1] * b[1][3] + a[i][2] * b[2][3] + a[i][3];
+    }
+    for (i = 0; i < 3; i++) {
+        for (j = 0; j < 4; j++) out[i][j] = tmp[i][j];
+    }
 }
 
