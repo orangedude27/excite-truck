@@ -24,18 +24,23 @@ void *fn_802971B0(void *arg0) {
     obj = fn_801284F8(8, lbl_80349368);
     if (obj != 0) {
         *(void **)obj = &lbl_803493C0;
-        value = ((s32 (*)(void *, char *))(*(void **)((char *)*(void **)arg0 + 0x14)))(arg0, lbl_80349378);
+        value = ((Vtbl14 *)*(void **)arg0)->method(arg0, lbl_80349378);
         *(s32 *)((char *)obj + 4) = fn_80296B10(value,
-            ((s32 (*)(void *, char *))(*(void **)((char *)*(void **)arg0 + 0x5c)))(arg0, lbl_8055CA30));
+            ((Vtbl5C *)*(void **)arg0)->method(arg0, lbl_8055CA30));
     }
-    if (obj != 0 && ((s32 (*)(void *))(*(void **)((char *)*(void **)obj + 0xc)))(obj) == 0) {
+    if (obj != 0 && ((VtblC *)*(void **)obj)->method(obj) == 0) {
         if (obj != 0)
-            ((void (*)(void *, s32))(*(void **)((char *)*(void **)obj + 8)))(obj, 1);
+            ((Vtbl8 *)*(void **)obj)->method(obj, 1);
         obj = 0;
     }
     return obj;
 }
 
+extern char lbl_8055CA40[];
+extern char *lbl_8055CA38[];
+extern char lbl_80349384[];
+extern int stricmp(const char *, const char *);
+extern int fn_802E317C(char *, ...);
 extern void *fn_802972A4(void *);
 __declspec(section ".sdata") extern char lbl_8055CA48[];
 __declspec(section ".sdata") extern char lbl_8055CA50[];
