@@ -54,8 +54,7 @@ extern "C" void fn_800D5978(void* arg0) {
 }
 
 extern "C" void fn_800D598C(void* arg0) {
-    void* buffer = *(void**)((u8*)arg0 + 4);
-    if (buffer != 0) {
+    if (*(s32*)((u8*)arg0 + 4) != 0) {
         MEMFreeToAllocator(lbl_8055DDF0);
         *(u32*)((u8*)arg0 + 4) = 0;
         *(u8*)((u8*)arg0) = 0;
@@ -625,6 +624,24 @@ extern "C" s32 fn_800DB398(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" f32 lbl_80560EA8;
+void fn_800DB76C(f32* out, void* self, f32* arg2) {
+    f32 c = lbl_80560EA8;
+    f32* pos = (f32*)GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
+    f32 y = pos[14];
+    f32 x = pos[0];
+    f32 ny = y + arg2[1];
+    f32 nx = x + arg2[0];
+    out[0] = x;
+    out[1] = y;
+    out[2] = nx;
+    out[3] = ny;
+    if ((pos[16] - y) < c) {
+        out[1] = -y;
+        out[3] = -ny;
+    }
+}
+
 extern "C" void fn_800DB830(s32 *arg0) {
     *arg0 = -1;
 }
@@ -755,6 +772,62 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLi
     iterator=(char*)self+0x20;
     if(!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54,0x233,lbl_8031FF30);
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self+0x1c,&iterator,link);
+}
+
+extern "C" int fcmpgt(f32, f32);
+extern "C" void PSMTXConcat(const f32*, const f32*, f32*);
+extern "C" void PSMTXCopy(const f32*, f32*);
+extern "C" void GXLoadPosMtxImm(const f32*, u32);
+extern "C" void GXSetCurrentMtx(u32);
+extern "C" void LoadMtx__Q34nw4r3lyt4PaneFRCQ34nw4r3lyt8DrawInfo(void* self, void* info) {
+    f32 mtx[12];
+    u8* ip = (u8*)info;
+    u8* sp = (u8*)self;
+    if ((ip[0x50] >> 7) & 1) {
+        PSMTXConcat((f32*)(ip + 4), (f32*)(sp + 0x84), mtx);
+        if (*(f32*)(ip + 0x40) - *(f32*)(ip + 0x38) > lbl_80560EA8) {
+            mtx[3] = -mtx[3];
+            mtx[7] = -mtx[7];
+            mtx[11] = -mtx[11];
+        }
+        GXLoadPosMtxImm(mtx, 0);
+    } else {
+        if (*(f32*)(ip + 0x40) - *(f32*)(ip + 0x38) > lbl_80560EA8) {
+            PSMTXCopy((f32*)(sp + 0x84), mtx);
+            mtx[3] = -mtx[3];
+            mtx[7] = -mtx[7];
+            mtx[11] = -mtx[11];
+            GXLoadPosMtxImm(mtx, 0);
+        } else {
+            GXLoadPosMtxImm((f32*)(sp + 0x84), 0);
+        }
+    }
+    GXSetCurrentMtx(0);
+}
+
+extern "C" f32 lbl_80560EC0;
+extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
+    f32 x = lbl_80560EA8;
+    f32 y = lbl_80560EA8;
+    s32 n = *(s8*)((u8*)self + 0xCC);
+    s32 r = n % 3;
+    switch (r) {
+    case 1:
+        x = -*(f32*)((u8*)self + 0x4C) * lbl_80560EC0;
+        break;
+    case 2:
+        x = -*(f32*)((u8*)self + 0x4C);
+        break;
+    }
+    switch (n / 3) {
+    case 1:
+        y = -*(f32*)((u8*)self + 0x50) * lbl_80560EC0;
+        break;
+    case 2:
+        y = -*(f32*)((u8*)self + 0x50);
+        break;
+    }
+    return &x;
 }
 
 extern "C" s32 fn_800DC6DC(void *arg0) {
