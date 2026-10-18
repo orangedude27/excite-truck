@@ -62,10 +62,7 @@ void *__dt__Q34nw4r2ef6EffectFv_8027D434(void *arg0, int arg1) {
     if (arg0) {
         *(void **)arg0 = lbl_80347CF8;
         fn_8027AF94(arg0);
-        if (arg1 > 0) {
-            arg0 = arg0;
-            fn_80128668();
-        }
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
@@ -144,9 +141,12 @@ int fn_8027D850(void *arg0) {
     return *(int *)((char *)arg0 + 0x34);
 }
 
+typedef int (*Fn8027D858)(void *, int);
 int fn_8027D858(void *arg0) {
     if (*((unsigned char *)arg0 + 0x38) != 0) {
-        return (*(int (**)(void *, int))(*(char **)arg0 + 0x30))(arg0, *(int *)((char *)arg0 + 0x34));
+        Fn8027D858 fn = ((Fn8027D858 *)*(void **)arg0)[12];
+        int arg1 = *(int *)((char *)arg0 + 0x34);
+        return fn(arg0, arg1);
     }
     return -1;
 }
@@ -229,6 +229,29 @@ void fn_8027D9A4(int arg0, int arg1) {
         return;
     fn_802E30C8(lbl_80347DF8, arg0);
     memset((char *)&lbl_804B2FD8 + arg0 * 8, 0, 8);
+}
+
+__declspec(section ".data") extern void *lbl_804B2FD8;
+void fn_8027DA08(void) {
+ int sp14,sp10,spC,sp8;
+ int *entry;
+ int value;
+ int i1;
+ int total;
+ int weight;
+ int i2;
+ int index;
+ index=fn_8000DA10()<<3;
+ entry=(int *)((char *)&lbl_804B2FD8+index);
+ entry[0]=0;
+ i1=0;
+ do { fn_8027BCC0(i1,&sp14,&sp10); entry[0]+=sp14; i1++; } while(i1<3);
+ total=0; weight=0; i2=0;
+ do { fn_8027BCC8(i2,&spC,&sp8); i2++; total+=spC; weight+=sp8; } while(i2<3);
+ value=total*100/weight;
+ value &= (-value & ~value)>>31;
+ if(value>=100) value=100;
+ entry[1]=value;
 }
 
 extern int lbl_8055C784;
