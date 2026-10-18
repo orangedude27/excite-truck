@@ -750,7 +750,7 @@ extern "C" void fn_8021C6D0(void);
 extern "C" void *lbl_8033F180;
 extern "C" void fn_8022EE98(void *);
 extern "C" void *lbl_8033E248[];
-extern "C" void *lbl_8033E0BC;
+extern "C" u8 lbl_8033E0BC[];
 extern "C" void fn_8021C6CC(void) { fn_8021C6D0(); }
 
 extern "C" s32 fn_8021C974(void) { return 0; }
@@ -1392,18 +1392,19 @@ extern "C" void fn_80222340(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
 #pragma dont_inline on
 extern "C" void fn_802223C4(void *arg0, s32 arg1) {
     s32 value;
-    void *object;
     if (arg0 == 0)
         return;
     value = *(s32 *)((u8 *)arg0 + 0x244);
     *(void **)arg0 = lbl_8033F90C;
     if (value != 0) {
-        object = (void *)value;
-        ((void (*)(void *, s32))(*(void ***)object)[2])(object, 1);
+        struct Dispatch { virtual void call(s32); };
+        ((Dispatch *)value)->call(1);
     }
     fn_8021915C(arg0, 0);
-    if (arg1 > 0)
+    if (arg1 > 0) {
         fn_80128668(arg0);
+        return;
+    }
 }
 
 extern "C" void fn_80222450(void *arg0) {
@@ -1536,8 +1537,7 @@ extern "C" s32 fn_80222B48(void *arg0, s32 arg1, s32 arg2) {
     s32 spC;
     s32 sp8;
     s32 result;
-    void **v = (void **)arg0;
-    ((void (*)(s32 *, s32 *, s32 *, s32 *))(v[5]))(&sp8, &spC, &sp10, &sp14);
+    ((void (*)(s32 *, s32 *, s32 *, s32 *))(*(void **)((u8 *)arg0 + 0x14)))(&sp8, &spC, &sp10, &sp14);
     result = 0;
     if (arg1 >= sp8 && arg1 < sp10 && arg2 >= spC && arg2 < sp14) {
         result = 1;
