@@ -3,6 +3,7 @@
 #include <types.h>
 #include <revolution/MTX/vec.h>
 #pragma opt_tail_call on
+__declspec(section ".data") extern f32 lbl_80558DC4;
 extern f32 lbl_805622DC;
 extern f32 lbl_805622E0;
 extern f32 lbl_805622D0;
