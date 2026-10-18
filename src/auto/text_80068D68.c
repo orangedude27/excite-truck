@@ -1843,11 +1843,11 @@ void fn_8007C794(void) {
 tBTM_STATUS BTM_ReadPowerMode(BD_ADDR remote_bda, tBTM_PM_MODE *p_mode) {
     u8 i;
     u8 *p = lbl_803C0F78 + 0x34;
-    for (i = 0; i < 4; i++, p += 0x11C) {
+    for (i = 0; i < 4; i++, p += (u32)0x11C) {
         if (p[0x119] && memcmp(p + 8, remote_bda, 6) == 0) break;
     }
-    if (i == 4) return BTM_UNKNOWN_ADDR;
-    *p_mode = lbl_803C0F78[0x4EC + i * 0x22];
+    if ((s32)i == 4) return BTM_UNKNOWN_ADDR;
+    *p_mode = lbl_803C0F78[0x4EC + i * (s32)0x22];
     return BTM_SUCCESS;
 }
 
@@ -3966,9 +3966,8 @@ void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
 
 static void USB_LOG(const char *fmt, ...) {
     va_list list;
-
     if (lbl_8055DC90) {
-        OSReport((char *)0x803C469C);
+        OSReport("USB: ");
         va_start(list, fmt);
         vprintf(fmt, list);
         va_end(list);
