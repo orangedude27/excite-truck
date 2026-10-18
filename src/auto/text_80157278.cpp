@@ -796,15 +796,14 @@ extern "C" u8 fn_80159F24(void* arg0) {
 }
 
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
-    s32 r5 = arg0->m260;
-    if (r5 > 0) {
-        s32 r3 = arg0->m258;
-        if (r3 != 0) {
-            void fn_801CB6E4(void*, s32);
-            fn_801CB6E4((void*)r3, *(s32*)&arg0->m4);
-        }
-        arg0->m260 = 0;
+    if (arg0->m260 <= 0)
+        return;
+    s32 value = arg0->m258;
+    if (value != 0) {
+        void fn_801CB6E4(void*, s32);
+        fn_801CB6E4((void*)value, *(s32*)&arg0->m4);
     }
+    arg0->m260 = 0;
 }
 
 #pragma dont_inline on
@@ -1257,6 +1256,38 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     return i;
 }
 
+void fn_8015D554(void* arg0) {
+    class Local {
+    public:
+virtual void v0();
+virtual void v1();
+virtual void v2();
+virtual void v3();
+virtual void v4();
+virtual void v5();
+virtual void v6();
+virtual void v7();
+virtual void v8();
+virtual void v9();
+virtual void v10();
+virtual void v11();
+virtual void v12();
+virtual void v13();
+virtual void v14();
+virtual void v15();
+virtual void v16();
+virtual void v17();
+virtual void v18();
+virtual void v19();
+virtual void v20();
+        virtual void v21(s32);
+        virtual s32 v22();
+    };
+    Local* obj = (Local*)arg0;
+    s32 value = obj->v22();
+    obj->v21(value);
+}
+
 extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E668[arg0->GetType()]);
 }
@@ -1300,8 +1331,12 @@ extern "C" s32 fn_8015D7CC(void* arg0) {
 
 extern "C" void fn_8015D814(void* arg0) {
     if (*(s32*)((u8*)arg0 + 0x248) == 0) {
-        void* obj = *(void**)((u8*)arg0 + 0x244);
-        *(s32*)((u8*)arg0 + 0x248) = (*(s32 (**)(void*))(*(u8**)obj + 0xC))(obj);
+        struct Obj {
+            virtual s32 dummy();
+            virtual s32 get();
+        };
+        Obj* obj = *(Obj**)((u8*)arg0 + 0x244);
+        *(s32*)((u8*)arg0 + 0x248) = obj->get();
     }
 }
 
@@ -1313,6 +1348,8 @@ void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_8015DC98(Unk801577F0* arg0) {
     void (*vt)(void*) = (void (*)(void*))(*(void***)arg0)[0x19];
     vt(arg0);
@@ -1337,7 +1374,7 @@ extern "C" void fn_8015DC98(Unk801577F0* arg0) {
     }
     fn_802E30C8((const char*)lbl_8032E4E0 + 0xF60, sum0, sum4 - sum0, sumF);
 }
-
+#pragma pop
 extern "C" void fn_8015E0FC(void) {
 }
 
