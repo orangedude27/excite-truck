@@ -1417,27 +1417,17 @@ void btm_process_clk_off_comp_evt(u16 arg0, u16 arg1) {
 
     base = lbl_803C0F78;
     i = 0;
-    if (base[0x14D] != 0 && *(u16 *)(base + 0x34) == arg0) {
-        goto update;
-    }
+    if (base[0x14D] != 0 && *(u16 *)(base + 0x34) == arg0) goto update;
     i = 1;
-    if (base[0x269] != 0 && *(u16 *)(base + 0x150) == arg0) {
-        goto update;
-    }
+    if (base[0x269] != 0 && *(u16 *)(base + 0x150) == arg0) goto update;
     i = 2;
-    if (base[0x385] != 0 && *(u16 *)(base + 0x26C) == arg0) {
-        goto update;
-    }
+    if (base[0x385] != 0 && *(u16 *)(base + 0x26C) == arg0) goto update;
     i = 3;
-    if (base[0x4A1] != 0 && *(u16 *)(base + 0x388) == arg0) {
-        goto update;
-    }
+    if (base[0x4A1] != 0 && *(u16 *)(base + 0x388) == arg0) goto update;
     i = 4;
 update:
-    if (i >= 4) {
-        return;
-    }
-    *(u16 *)(base + i * 0x11C + 0x3A) = arg1;
+    if (i >= 4) return;
+    *(u16 *)(lbl_803C0F78 + i * 0x11C + 0x3A) = arg1;
 }
 
 s32 fn_80078310(s32 arg0)
@@ -3083,6 +3073,28 @@ void fn_80089248(void)
     L2CA_Deregister(0x13);
 }
 
+extern u8 lbl_80560D48[];
+BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
+    void *p;
+    u8 *entry;
+    if (memcmp(lbl_80560D48, addr, 6) != 0) {
+        p = l2cu_find_lcb_by_bd_addr(addr);
+        if (p != 0 && *(u8 *)p != 0 && *(s32 *)((u8 *)p + 4) == 4) {
+            *(u16 *)((u8 *)p + 0x58) = timeout;
+            goto done;
+        }
+        return FALSE;
+    }
+    entry = lbl_803C4040;
+    if (entry[8] != 0 && *(s32 *)(entry + 0xC) == 4) *(u16 *)(entry + 0x60) = timeout;
+    entry += 0x63;
+    if (*++entry != 0 && *(s32 *)(entry + 4) == 4) *(u16 *)(entry + 0x58) = timeout;
+    if (entry[0x5C] != 0 && *(s32 *)(entry + 0x60) == 4) *(u16 *)(entry + 0xB4) = timeout;
+    if (entry[0xB8] != 0 && *(s32 *)(entry + 0xBC) == 4) *(u16 *)(entry + 0x110) = timeout;
+done:
+    return TRUE;
+}
+
 extern void fn_80070954(u32, void *, u16);
 extern void *l2cu_find_ccb_by_cid(void *, u16);
 extern void fn_80089E40(void *, u8, void *);
@@ -3725,12 +3737,8 @@ void fn_80095518(void *arg0) {
 
 void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
     if (*((u8 *)arg0 + 1) == 0) return;
-    if (*((u8 *)arg0 + 0x68) != 2 && *((u8 *)arg0 + 0x68) != 3) {
-        goto done;
-    }
+    if (*((u8 *)arg0 + 0x68) != 2 && *((u8 *)arg0 + 0x68) != 3) return;
     rfc_port_sm_execute(arg0, 15, &arg1);
-done:
-    return;
 }
 
 void fn_8009578C(void *arg0) {
