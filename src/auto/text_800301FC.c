@@ -67,15 +67,14 @@ void TRKConstructEvent(void) {
 void TRKGetNextEvent(void *arg0, void *restoreContext) {
     u8 context[0x2D0];
     s32 value;
-    void (*callback)(void) = (void (*)(void))lbl_8055D6E0;
     *(volatile u16 *)0xCC00500A = (*(volatile u16 *)0xCC00500A & ~0xA0) | 8;
     OSClearContext(context);
     OSSetCurrentContext(context);
-    if (callback != 0 && lbl_8055D6AC == 0) {
+    if (lbl_8055D6E0 != 0 && lbl_8055D6AC == 0) {
         value = lbl_8055D6DC;
         lbl_8055D6AC = 1;
         if (value != 0) TRKInitializeEventQueue();
-        else callback();
+        else lbl_8055D6E0();
         lbl_8055D6AC = 0;
     }
     OSClearContext(context);
@@ -120,7 +119,7 @@ void TRKReadBuffer1_ui64(void) {
         if (buf->active != 0) {
             if (buf->callback != 0) buf->callback(buf);
             TRKReleaseBuffer(buf);
-            buf->next = (TRKBuf *)lbl_8035BEA0;
+            buf->next = (TRKBuf *)lbl_8035BEA0[0];
             lbl_8035BEA0[0] = (s32)buf;
             buf->active = 0;
         }
@@ -547,7 +546,6 @@ s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
     s32 count;
     s32 index;
     s32 i;
-    s16 *src;
     count = lbl_8055D754 - 0x24;
     if (count < 0) count += lbl_8055D758;
     count = count - lbl_8055D750;
@@ -555,14 +553,13 @@ s32 AXRmtGetSamples(s32 arg0, s16 *arg1, s32 arg2) {
     if (arg2 > count) {
         count = arg2;
     }
-    src = (s16 *)(lbl_8035EE60 + arg0 * 0x168);
     index = lbl_8055D750;
     for (i = count; i > 0; i--) {
-        *arg1++ = src[index];
+        *arg1++ = *(s16 *)(lbl_8035EE60 + arg0 * 0x168 + index * 2);
         index++;
         if (index >= lbl_8055D758) index = 0;
     }
-    DCInvalidateRange((void *)(lbl_8035EE60 + arg0 * 0x168), lbl_8055D758 << 1);
+    DCInvalidateRange(lbl_8035EE60 + arg0 * 0x168, lbl_8055D758 << 1);
     return count;
 }
 
