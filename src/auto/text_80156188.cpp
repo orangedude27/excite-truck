@@ -32,6 +32,12 @@ namespace title {
       virtual void update(); // 0x20
   };
 
+class TPlaneSubShort {
+public:
+    virtual void v0();
+    virtual void v1();
+};
+
 class TBlackPlane {
 public:
     TBlackPlane() {}
@@ -97,6 +103,68 @@ extern "C" s32* fn_801E87A8();
 extern "C" void* fn_8001285C(s32);
 s32 fn_8015621C(void) {
     return *(s32*)((char*)fn_8001285C(*fn_801E87A8()) + 0x20);
+}
+
+extern "C" u8 *fn_801E879C(void);
+extern "C" void fn_801561E8(u8 *);
+extern "C" s32 fn_801345D8(s32, s32, const char *, ...);
+extern "C" char lbl_8032E254[];
+extern "C" char lbl_80559FC0[];
+extern "C" char lbl_80559FC4[];
+extern "C" char lbl_80559FC8[];
+s32 fn_801562BC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    u8 buffer[0x20];
+    u8 *src = fn_801E879C();
+    u8 *dst = buffer;
+    u8 *name = (u8 *)arg2;
+    s32 count = 0x20;
+    do {
+        u8 c = *src++;
+        *dst++ = c;
+        count--;
+        if ((s8)c == 0)
+            break;
+    } while (count > 0);
+    if (count == 0)
+        dst[-1] = 0;
+    fn_801561E8(buffer);
+    if (arg3 != 0) {
+        const char *choice = (s8)*name != 0 ? lbl_80559FC4 : lbl_80559FC0;
+        fn_801345D8((s32)arg0, arg1, lbl_8032E254, name, choice, buffer);
+    } else {
+        fn_801345D8((s32)arg0, arg1, lbl_80559FC8,
+                    (s8)*name != 0 ? name : buffer);
+    }
+    return (s32)arg0;
+}
+
+extern s32 fn_801562BC(void*, s32, s32, s32);
+extern s32 fn_80156248(void*, s32);
+extern s32 fn_80138968(void*);
+extern void fn_802E30C8(const char*, void*);
+extern s32 fn_80138BA0(s32, s32);
+extern char lbl_8032E270[];
+extern char lbl_8032E2AC[];
+s32 fn_801563BC(s32 arg0, void* arg1) {
+    char buffer[0x40];
+    s32 result;
+    fn_801562BC(buffer, 0x40, arg0, 0);
+    result = fn_80138968(buffer);
+    if (result == 0) {
+        fn_802E30C8(lbl_8032E270, buffer);
+        fn_801562BC(buffer, 0x40, arg0, 1);
+        result = fn_80138968(buffer);
+    }
+    if (result == 0) {
+        fn_802E30C8(lbl_8032E2AC, buffer);
+        fn_80156248(buffer, 0x40);
+        result = fn_80138968(buffer);
+    } else {
+        void** vtable = *(void***)arg1;
+        s32 value = ((s32 (*)(void*, s32))vtable[3])(arg1, 0);
+        fn_80138BA0(result, value);
+    }
+    return result;
 }
 
 s32 fn_801568E0(s32 arg0, s32 arg1) {
@@ -238,6 +306,32 @@ void fn_80156DCC(void *arg0, s32 arg1) {
     *(u32 *)((u8 *)temp_r31 + 0xE8) = var_r29;
 }
 
+extern void* fn_80135420(void*, s32, s32);
+extern f32 lbl_80561748;
+extern f32 fn_80129DC4(s32, f32, f32);
+void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
+    f32 sp10 = ((f32*)arg2)[0];
+    f32 sp14 = ((f32*)arg2)[2];
+    f32 f31 = lbl_80561748;
+    s32 r30 = -1;
+    s32 r29 = 0;
+    s32 r31 = 0;
+    do {
+        void *p = fn_80135420(&sp10, 0, *(s32*)((u8*)*(void**)((u8*)arg0 + 4) + r31));
+        f32 f3 = sp14 - ((f32*)p)[1];
+        f32 f2 = sp10 - ((f32*)p)[0];
+        f32 x = f2*f2 + f3*f3;
+        if (x < f31) { r30 = r29; f31 = x; }
+        r31 += 8;
+        r29++;
+    } while (r29 < *(s32*)((u8*)arg0 + 8));
+    s32 value = *(s32*)((u8*)*(void**)((u8*)arg0 + 4) + r30*8);
+    f32 base = lbl_8055E3C8;
+    f32 result = fn_80129DC4(4, *(f32*)((u8*)arg0 + 0xDC), *(f32*)((u8*)arg0 + 0xE0));
+    *(f32*)((u8*)arg0 + arg1*8 + 0xE4) = base + result;
+    *(s32*)((u8*)arg0 + arg1*8 + 0xE8) = value;
+}
+
 extern "C" void* fn_801570D0(void* arg0, s32 arg1) {
     extern u8 lbl_8032E3F8[];
     struct Obj { virtual void c(s32); };
@@ -259,7 +353,8 @@ extern "C" void* fn_801570D0(void* arg0, s32 arg1) {
 }
 
 extern "C" void fn_80157170(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_b->v2();
+    void** vtable = *(void***)(((ebi::title::TBlackPlane*)arg0)->m_b);
+    ((void (*)(void*))vtable[3])(((ebi::title::TBlackPlane*)arg0)->m_b);
 }
 
 extern "C" void fn_80157184(void* arg0) {
