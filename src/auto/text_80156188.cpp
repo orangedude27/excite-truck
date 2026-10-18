@@ -99,6 +99,14 @@ extern "C" void fn_801561E0(s32 arg0) {
     fn_80155AF0(arg0 - 0xC);
 }
 
+extern "C" u8 *fn_80029004(s32);
+extern "C" void fn_801561E8(u8 *arg0) {
+    u8 *result = fn_80029004(0x2E);
+    if (result != 0) {
+        *result = 0;
+    }
+}
+
 extern "C" s32* fn_801E87A8();
 extern "C" void* fn_8001285C(s32);
 s32 fn_8015621C(void) {
@@ -207,11 +215,15 @@ void fn_80156960(void *arg0) {
 }
 
 void fn_801569FC(void) {
-    void *ptr = lbl_8055E27C;
-    if (ptr != 0) {
-        void (*fn)(s32) = (void (*)(s32))*(void**)((u8*)*(void***)ptr + 0x28);
-        fn(1);
-    }
+    struct Callback {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(int);
+    };
+    extern void **lbl_8055E27C;
+    Callback *ptr = (Callback *)lbl_8055E27C;
+    if (ptr != 0)
+        ptr->f8(1);
     lbl_8055E27C = 0;
 }
 
