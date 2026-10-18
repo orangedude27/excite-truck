@@ -537,7 +537,7 @@ extern "C" void fn_800A90F8(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_800A9104(void *arg0) {
-    s32 temp_r3 = fn_800A8AD4(*(s32 *)((u8 *)arg0 + 0x1630));
+    s32 temp_r3 = ((s32 (*)(void *, s32))fn_800A8AD4)(arg0, *(s32 *)((u8 *)arg0 + 0x1630));
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
