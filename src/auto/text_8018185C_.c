@@ -1,4 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+#define M2C_UNK s32
+#define M2C_FIELD(expr, type, offset) (*(type)((u8 *)(expr) + (offset)))
 // split_file divides it into the game's real files (file_status shows its range).
 extern signed char lbl_8055E4F8;
 extern char lbl_80434990[];
@@ -44,7 +46,7 @@ extern unsigned char lbl_8055E4F4;
 extern float lbl_80561CC4;
 extern float lbl_80561CC8;
 extern void fn_8018185C(float *, float, float, float, float, float, float);
-void fn_801819A0(float scale, void *arg1, float farg1, float farg2) {
+void fn_801819A0(int unused, void *arg1, float scale, float farg1, float farg2) {
     float sp1C;
     float sp18;
     float sp14;
@@ -57,7 +59,6 @@ void fn_801819A0(float scale, void *arg1, float farg1, float farg2) {
     float temp_f6;
     float temp_f7;
     float temp_f8;
-
     temp_f7 = *((float *)((unsigned char *)arg1 + 0x50)) * scale;
     temp_f8 = (*((float *)((unsigned char *)arg1 + 0x54)) * scale) / lbl_80561CC4;
     temp_f5 = *((float *)((unsigned char *)arg1 + 0x5c));
@@ -98,6 +99,25 @@ float fn_80181AC0(void) { if (lbl_8055E4F4) return lbl_80434950[15]; return lbl_
 
 #pragma dont_inline fn_80181AEC
 float fn_80181AEC(void) { return lbl_80434930[3]; }
+
+extern float lbl_80561D38;
+extern float lbl_80561D3C;
+extern float lbl_80561D0C;
+extern float lbl_80561CFC;
+extern float fn_80129DC4(int, float, float);
+extern float fn_802798E8(int);
+extern void fn_802799EC(int, float);
+void fn_80181EAC(int arg0) {
+    float temp_f1;
+    float temp_f30;
+    float temp_f31;
+    temp_f30 = fn_80129DC4(4, lbl_80561D38, lbl_80561D3C);
+    temp_f31 = fn_80129DC4(4, lbl_80561D0C, lbl_80561CFC);
+    temp_f1 = fn_802798E8(arg0);
+    if (temp_f1 <= temp_f30) return;
+    if (temp_f1 <= temp_f31) return;
+    fn_802799EC(arg0, temp_f1 - temp_f31);
+}
 
 void fn_80181F30(void) {
     unsigned int bits = *(unsigned int *)((unsigned char *)__AXFXGetLfoSinTable_801769CC() + 4);
@@ -163,18 +183,18 @@ int fn_801837DC(int arg0, int arg1) {
 
 void fn_8018381C(void *arg0) {
     volatile int *p = (volatile int *)arg0;
-    int a = p[0x274 / 4];
-    int b = p[0x278 / 4];
-    int c = p[0x27C / 4];
-    int d = p[0x280 / 4];
-    int e = p[0x284 / 4];
-    int f = p[0x288 / 4];
-    int g = p[0x28C / 4];
-    int h = p[0x290 / 4];
-    int i = p[0x294 / 4];
-    int j = p[0x298 / 4];
-    int k = p[0x29C / 4];
     int l = p[0x2A0 / 4];
+    int k = p[0x29C / 4];
+    int j = p[0x298 / 4];
+    int i = p[0x294 / 4];
+    int h = p[0x290 / 4];
+    int g = p[0x28C / 4];
+    int f = p[0x288 / 4];
+    int e = p[0x284 / 4];
+    int d = p[0x280 / 4];
+    int c = p[0x27C / 4];
+    int b = p[0x278 / 4];
+    int a = p[0x274 / 4];
     p[0x3C / 4] = a; p[0x40 / 4] = b; p[0x44 / 4] = c; p[0x48 / 4] = d;
     p[0x4C / 4] = e; p[0x50 / 4] = f; p[0x54 / 4] = g; p[0x58 / 4] = h;
     p[0x5C / 4] = i; p[0x60 / 4] = j; p[0x64 / 4] = k; p[0x68 / 4] = l;
@@ -216,7 +236,8 @@ int fn_801BF1B8(int, int);
 extern f32 lbl_80561CAC;
 void fn_80189C64(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x26AC) != 0) {
-        fn_801BF1B8(*(int *)((char *)arg0 + 0x1EC), (*(unsigned char *)((char *)arg0 + 0x26AC) = 0, 0));
+        *(unsigned char *)((char *)arg0 + 0x26AC) = 0;
+        fn_801BF1B8(*(int *)((char *)arg0 + 0x1EC), *(unsigned char *)((char *)arg0 + 0x26AC));
     }
     *(float *)((char *)arg0 + 0x26A8) = lbl_80561CAC;
 }
@@ -243,11 +264,11 @@ int fn_8018A100(void *arg0) {
 }
 
 void fn_8018A120(void *arg0) {
-    void *object;
+    register void *object;
     if (fn_801B2F2C(*(int *)((unsigned char *)arg0 + 0x1ec)) == 0) {
         object = *(void **)((unsigned char *)arg0 + 0x2584);
         *(float *)((unsigned char *)arg0 + 0x25bc) = lbl_8055E4E0;
-        ((void (**)(void *))(*(void ***)object))[14](object);
+        ((void (*)(void *))(*(void ***)object)[14])(object);
     }
 }
 
@@ -282,10 +303,12 @@ void fn_8018A654(void *arg0, void *arg1) {
 }
 
 void fn_8018A6F4(void *arg0) {
+    volatile int *temp2;
     int temp = *(int *)((unsigned char *)arg0 + 0x26c8);
     if (temp != 0) fn_801C1C7C(temp);
     if (*(int *)((unsigned char *)arg0 + 0x26c4) != 0) fn_801C1C7C(*(int *)((unsigned char *)arg0 + 0x26c4));
-    if (*(void **)((unsigned char *)arg0 + 0x26c0) != 0) fn_801D21B4();
+    temp2 = (volatile int *)((unsigned char *)arg0 + 0x26c0);
+    if (*temp2 != 0) fn_801D21B4();
 }
 
 void fn_8018ADA4(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25DC) = farg0; }
@@ -352,7 +375,7 @@ char *fn_8018AE5C(void) {
 
 float fn_8018AE7C(void *arg0) {
     void *table = __AXFXGetLfoSinTable_801769CC();
-    if (*(u32 *)((u8 *)table + 4) - 0x18000000U == 0x304U) {
+    if (*(u32 *)((u8 *)table + 4) - 0x00180000U == 0x304U) {
         return lbl_80561DE0;
     }
     if (!(*(float *)((u8 *)arg0 + 0x25bc) <= lbl_80558DC4)) {
@@ -395,6 +418,41 @@ void fn_8018BDEC(void *arg0) {
     sp[8]=lbl_80561CD0; sp[9]=lbl_80561CAC; sp[10]=lbl_80561CAC; sp[11]=lbl_80561CAC;
     value=*(int *)((u8 *)arg0+0x26C4);
     if(value) fn_801C2BF8(value,sp);
+}
+
+extern float __fabsf(float);
+void fn_8018BE54(void *arg0, float farg0) {
+    float temp_f10, temp_f11, temp_f1, temp_f2, temp_f3, temp_f4, temp_f5, temp_f6, temp_f7, temp_f8, temp_f9;
+    char *p = (char *)arg0;
+    float diff = *(float *)(p + 0x5E4) - farg0;
+    if (__fabsf(diff) > lbl_80558DC4) {
+        *(float *)(p + 0x5E4) = farg0;
+        fn_801A1474(*(int *)(p + 0x268), farg0);
+        temp_f11 = *(float *)(p + 0x5E4);
+        temp_f6 = temp_f11 * temp_f11;
+        temp_f7 = *(float *)(p + 0x47C) * temp_f11;
+        temp_f10 = *(float *)(p + 0x468) * temp_f6;
+        temp_f9 = *(float *)(p + 0x46C) * temp_f6;
+        temp_f8 = *(float *)(p + 0x470) * temp_f6;
+        temp_f5 = *(float *)(p + 0x478) * temp_f11;
+        temp_f4 = *(float *)(p + 0x484) * temp_f11;
+        temp_f6 = *(float *)(p + 0x474) * temp_f11;
+        temp_f3 = temp_f11 * *(float *)(p + 0x4E4);
+        temp_f2 = temp_f11 * *(float *)(p + 0x508);
+        *(float *)(p + 0x330) = temp_f10;
+        temp_f1 = temp_f11 * *(float *)(p + 0x52C);
+        *(float *)(p + 0x334) = temp_f9;
+        *(float *)(p + 0x338) = temp_f8;
+        *(float *)(p + 0x344) = temp_f7;
+        *(float *)(p + 0x33C) = temp_f6;
+        *(float *)(p + 0x340) = temp_f5;
+        *(float *)(p + 0x34C) = temp_f4;
+        *(float *)(p + 0x3AC) = temp_f3;
+        *(float *)(p + 0x3D0) = temp_f2;
+        *(float *)(p + 0x3F4) = temp_f1;
+        *(float *)(p + 0x418) = temp_f11 * *(float *)(p + 0x550);
+        fn_8018A180(arg0, temp_f1, temp_f2, temp_f3, temp_f4, temp_f5, temp_f6, temp_f7, temp_f8, temp_f9, temp_f10, temp_f11);
+    }
 }
 
 void fn_8018BF44(int *arg0) { *arg0 = 0x0FF807FF; }
