@@ -93,7 +93,7 @@ extern int strcmp(const char *, const char *);
 extern float lbl_8055E3C8;
 extern int lbl_8055CD70;
 extern char lbl_80349FB0[];
-extern void fn_802E30C8(const char *, int);
+extern void fn_802E30C8(const char *, ...);
 extern void *fn_801284F8(int, void *, void *);
 extern void *fn_8012850C(int, void *);
 extern int fn_802AC4A8(const char *, int);
