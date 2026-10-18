@@ -150,6 +150,11 @@ u8 fn_8001BD30(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x10);
 }
 
+#pragma dont_inline on
+void fn_8001BD54(Unk8001BBBC *arg0, void *arg1) {
+    fn_8001BBBC(arg0, *(s32 *)((u8 *)*(void **)((u8 *)arg1 + 0x18) + *(s32 *)((u8 *)arg1 + 0xC) * 0xC + 0xC));
+}
+#pragma dont_inline reset
 s32 fn_8001BD6C(void *arg0, void *arg1) {
     s32 r3 = ((s32 *)arg0)[6];
     s32 r4 = ((s32 *)arg0)[3];
@@ -159,6 +164,37 @@ s32 fn_8001BD6C(void *arg0, void *arg1) {
     return result >> 31;
 }
 
+extern void *lbl_80358628;
+extern void *fn_800167CC(s32, void *, s32, s32);
+extern void *fn_80016BC8(s32);
+#pragma push
+#pragma small_data off
+#pragma pop
+void fn_8001BDA8(void *arg0) {
+    s32 index;
+    void *result;
+    void *temp;
+
+    if (*(u8 *)((u8 *)arg0 + 0x20) != 0) {
+        if (*(void **)((u8 *)arg0 + 0x18) != &lbl_80358628) {
+            index = *(s32 *)((u8 *)arg0 + 0xC);
+            *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + index * 0xC + 8) =
+                *(s32 *)((u8 *)arg0 + 0x1C);
+            index = *(s32 *)((u8 *)arg0 + 0xC);
+            *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + index * 0xC + 0x10) = 1;
+            result = fn_800167CC(0, (u8 *)*(void **)((u8 *)arg0 + 0x18) +
+                                    *(s32 *)((u8 *)arg0 + 0xC) * 0xC, 1,
+                                 *(s32 *)((u8 *)arg0 + 0x1C));
+            temp = fn_80016BC8(0);
+            *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) +
+                     *(s32 *)((u8 *)arg0 + 0xC) * 0xC + 0xC) =
+                fn_8001D220(*(u32 *)result, *(u32 *)((u8 *)temp + 4),
+                            *(u8 *)((u8 *)temp + 8));
+            fn_8001D298(*(s32 *)arg0);
+        }
+    }
+    *(u8 *)((u8 *)arg0 + 0x20) = 0;
+}
 void fn_8001BE70(void *arg0) {
     s32 index = *(s32 *)((u8 *)arg0 + 0xC);
     s32 base = *(s32 *)((u8 *)arg0 + 0x18);
@@ -181,9 +217,10 @@ f32 fn_8001BEE8(s32 arg0) {
     return *(f32 *)((s32 (*)(s32))fn_8001BC20)(arg0);
 }
 
+extern void fn_8001BC28();
 void fn_8001BF0C(f32 arg0) {
     f32 temp = arg0;
-    fn_8001BC28(*(s32 *)&temp);
+    ((void (*)(f32, s32))fn_8001BC28)(arg0, *(s32 *)&temp);
 }
 
 void *fn_8001C070(void *dest, int val, size_t count) {
