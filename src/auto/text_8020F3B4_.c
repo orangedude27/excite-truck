@@ -15,6 +15,13 @@ extern struct Unk_804902C4 {
     long m_pad;
 } lbl_804902C4;
 extern long lbl_8055EEC4;
+extern long lbl_8055EED0;
+extern long lbl_8055EED4;
+extern long lbl_8055B658;
+extern float lbl_80563400;
+extern void fn_802EC1C0();
+extern void fn_802EC1E4();
+extern long fn_802EC12C();
 long fn_8020F3B4(void) { return -1; }
  
 long fn_8020F3BC(long arg0, long arg1, long arg2) {
@@ -108,6 +115,17 @@ long fn_8020F6FC(void) {
     return value;
 }
 
+void fn_8020FC6C(void) {
+    struct Unk_804900AC *state = &lbl_804900AC;
+    if (state->m_count == 0) {
+        ((long (*)(long))fn_8020F3B4)(0);
+    } else if (fn_8020FC04() != 0) {
+        fn_8020FB80();
+    } else {
+        ((long (*)(long))fn_8020F3B4)(0);
+    }
+}
+
 extern long lbl_8055EEBC;
 extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
@@ -133,8 +151,12 @@ void fn_8020FFE4(long arg0) {
 
  
 void fn_8021031C(void) {
+    long type;
+    char *buffer;
+    type = 0x546D7573;
+    buffer = lbl_80489CA0;
     memset(&lbl_80489CA0, 0, 0x6400);
-    fn_802E6BD8(0x546D7573, 0, &lbl_80489CA0, 0x6400, 0);
+    fn_802E6BD8(type, 0, buffer, 0x6400, 0);
     fn_8000DBC8(&fn_8020F6E0);
 }
  
@@ -159,13 +181,12 @@ extern long fn_80009C84(long);
 extern signed char lbl_8055EEC0, lbl_8055EEC8, lbl_8055B660;
 extern long lbl_8055EECC, lbl_8055B658;
 void fn_80210444(void) {
-    long one = 1;
-    lbl_8055B660 = one;
     lbl_8055EEC0 = 0;
+    lbl_8055B660 = 1;
     lbl_8055EEC8 = 0;
     lbl_8055EECC = 0;
-    if (fn_80009C84(one) == 0 && fn_801B85CC() == 0 &&
-        lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(one)) {
+    if (fn_80009C84(1) == 0 && fn_801B85CC() == 0 &&
+        lbl_8055B658 == ((long (*)(long))fn_8020F3B4)(1)) {
         lbl_8055B658 = ((long (*)(long))fn_8020F3B4)(0);
         fn_802EC12C();
         fn_802EC1D8();
