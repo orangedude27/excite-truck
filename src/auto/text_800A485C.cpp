@@ -1532,13 +1532,14 @@ extern "C" void fn_800C4B5C(s32 arg0, s32 arg1) {
 }
 
 extern "C" void* fn_800C4B8C(s32 arg0) {
-    void *old = lbl_8055DD94;
-    void *next = (char *)old + (arg0 & 0xFFFFFFFC) + ((s32)((arg0 & 3) ? 4 : 0));
-    if ((u32)next > (u32)old + 0x1FFFFFFF) {
+    u32 old = (u32)lbl_8055DD94;
+    u32 next = old + (arg0 & 0xFFFFFFFC) + (((u32)(-(arg0 & 3) | (arg0 & 3)) >> 29) & 4);
+    lbl_8055DD94 = (void*)next;
+    if (next > (u32)lbl_8055DD90) {
+        lbl_8055DD94 = (void*)old;
         return NULL;
     }
-    lbl_8055DD94 = next;
-    return old;
+    return (void*)old;
 }
 
 extern void *lbl_8055DD94;
