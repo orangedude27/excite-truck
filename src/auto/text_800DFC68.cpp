@@ -8,6 +8,26 @@ extern "C" const char lbl_803204F8[];
 extern "C" const char lbl_803204BC[];
 extern "C" const char lbl_80320C14[];
 extern "C" const char lbl_80320C60[];
+extern void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void*, void*);
+extern "C" void* FindAnimationLink__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
+    void* result = FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(self, anim);
+    if (result != 0) return result;
+    int offset;
+    int count;
+    count = 0;
+    offset = 0;
+    while (count < *((unsigned char*)self + 0x100)) {
+        void* pane = *(void**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
+        void** vtable = *(void***)pane;
+        void* (*fn)(void*, void*) = (void* (*)(void*, void*))vtable[8];
+        result = fn(pane, anim);
+        if (result != 0) return result;
+        offset += 8;
+        count++;
+    }
+    return 0;
+}
+
 extern "C" void GetVtxColor__Q36nw4hbm3lyt7PictureCFUl_800E0238(unsigned char* out, const void* self, unsigned long idx) {
     if (idx >= 4) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320C14, 0x168, lbl_80320C60);
     const unsigned char* p = (const unsigned char*)((unsigned long)self + idx * 4 + 0xE4);
@@ -60,10 +80,11 @@ extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTr
     int offset = 0, count = 0;
     while (count < *((unsigned char*)self + 0x100)) {
         void* pane = *(void**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
-        void** vtable = *(void***)pane;
-        void (*fn)(void*, void*) = (void (*)(void*, void*))vtable[5];
-        fn(pane, anim);
-        offset += 8; count++;
+        struct VTable { void* pad[5]; void (*call)(void*, void*); };
+        VTable* vtable = *(VTable**)pane;
+        vtable->call(pane, anim);
+        offset += 8;
+        count++;
     }
     UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(self, anim);
 }
@@ -78,9 +99,15 @@ extern "C" int GetFrameMaterial__Q36nw4hbm3lyt6WindowCFUl(void* self, unsigned i
 }
 
 extern "C" void fn_800E2508(void* self) {
-    void** vtable = *(void***)self;
-    void (*fn)(void) = (void (*)(void))vtable[23];
-    fn();
+    struct VTable23 {
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+        virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+        virtual void d20(); virtual void dispatch();
+    };
+    ((VTable23*)self)->dispatch();
 }
 
 extern "C" unsigned int* fn_800E2518(void) { extern unsigned int lbl_8055DE10; return &lbl_8055DE10; }
