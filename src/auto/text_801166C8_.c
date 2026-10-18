@@ -69,16 +69,16 @@ BOOL ARCChangeDir(ARCHandle* handle, const char* path) {
 
 BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
     s32 entrynum = ARCConvertPathToEntrynum(handle, path);
-    volatile u8* fst = (volatile u8*)handle->FSTStart;
-
-    if (entrynum < 0 || !(*(volatile u32*)(fst + entrynum * 12) & 0xFF000000)) {
+    void* fst = handle->FSTStart;
+    
+    if (entrynum < 0 || !(*(u32*)((u8*)fst + entrynum * 0xC) & 0xFF000000)) {
         return FALSE;
     }
-
+    
     dir->handle = handle;
     dir->entryNum = entrynum;
     dir->location = entrynum + 1;
-    dir->next = *(volatile u32*)(fst + entrynum * 12 + 8);
+    dir->next = *(u32*)((u8*)fst + entrynum * 0xC + 8);
     return TRUE;
 }
 
@@ -154,6 +154,7 @@ void fn_80116CC4(s32* arg0, s16 arg1, u32 arg2) {
 extern s64 OSGetTime(void);
 extern s32 lbl_8055DEC0;
 extern u32 lbl_8055DEC4;
+#pragma dont_inline on
 s32 fn_80116D30(void) {
     s64 time = OSGetTime();
     u32 time_high;
