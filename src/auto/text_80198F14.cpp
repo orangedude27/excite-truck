@@ -730,11 +730,21 @@ extern "C" void fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma scheduling on
-void fn_801A1F44(void* arg0, void* arg1) {
-    void* result = ((void* (*)(void*))((void**)*(void**)arg1)[10])(arg1);
-    *(s32*)((u8*)arg0) = *(s32*)((u8*)result + 0x24);
-    *(s32*)((u8*)arg0 + 4) = *(s32*)((u8*)result + 0x28);
-    *(s32*)((u8*)arg0 + 8) = *(s32*)((u8*)result + 0x2C);
+extern "C" void fn_801A1F44(void* arg0, void* arg1) {
+    struct V {
+        virtual void* a0() = 0; virtual void* a1() = 0; virtual void* a2() = 0; virtual void* a3() = 0;
+        virtual void* a4() = 0; virtual void* a5() = 0; virtual void* a6() = 0; virtual void* a7() = 0;
+        virtual void* a8() = 0; virtual void* a9() = 0; virtual void* a10() = 0; virtual void* a11() = 0;
+        virtual void* a12() = 0; virtual void* a13() = 0; virtual void* a14() = 0; virtual void* a15() = 0;
+        virtual void* a16() = 0; virtual void* a17() = 0; virtual void* f() = 0;
+    };
+    void* result = ((V*)arg1)->f();
+    volatile s32* src = (volatile s32*)result;
+    s32 a = src[9];
+    s32 b = src[10];
+    *(s32*)arg0 = a;
+    *((s32*)arg0 + 1) = b;
+    *((s32*)arg0 + 2) = src[11];
 }
 
 extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
@@ -869,17 +879,17 @@ void* fn_801A3F5C(void* arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
+#pragma push
+#pragma small_data off
 void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
     if (arg0) {
-        *(void**)arg0 = &lbl_80333728;
-        ((void (*)(s32))fn_801CFF14)(*(s32*)((u8*)arg0 + 0x24));
-        if (arg1 > 0) {
-            ((void (*)(void*))fn_80128668)(arg0);
-        }
+        *(void **)arg0 = &lbl_80333728;
+        ((void (*)(s32))fn_801CFF14)(*(s32 *)((u8 *)arg0 + 0x24));
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
     }
     return arg0;
 }
-
+#pragma pop
 void fn_801A442C(void *arg0, void *arg1, void *arg2) {
     *(f32 *)((u8 *)arg1 + 0) = *(f32 *)((u8 *)arg0 + 0x28);
     *(f32 *)((u8 *)arg1 + 4) = *(f32 *)((u8 *)arg0 + 0x2C);
