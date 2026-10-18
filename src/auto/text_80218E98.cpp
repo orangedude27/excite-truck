@@ -713,6 +713,15 @@ extern "C" void fn_8021C128(void) {
 }
 
 extern "C" void fn_8021C12C(void) {
+    register void *arg0;
+    void *obj;
+    void **vtable;
+    obj = *(void **)((u8 *)arg0 + 0x2A4);
+    vtable = *(void ***)obj;
+    ((void (*)(void *, s32))vtable[4])(obj, 0x50);
+    fn_80219718(arg0);
+    if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
+        *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
 
 extern "C" s32 fn_8021C318(void *arg0) {
@@ -1642,7 +1651,7 @@ extern "C" void fn_80228A38(s32 arg0) {
 
 extern "C" void fn_80228A6C(void *arg0) {
     void *obj = *(void **)((u8 *)arg0 + 0x268);
-    ((VfObj *)obj)->vf5();
+    ((VfObj *)obj)->vf4();
 }
 
 extern "C" void fn_80228A80(void) {
