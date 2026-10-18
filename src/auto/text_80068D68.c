@@ -3634,6 +3634,30 @@ void *l2cu_find_lcb_by_state(s32 state) {
     return 0;
 }
 
+extern void RFCOMM_DlcEstablishReq(void *, u8);
+extern char lbl_80319300[];
+void PORT_ParNegCnf(void *arg0, u8 arg1, u16 arg2, u8 arg3, u8 arg4) {
+    void *port;
+    u8 *mcb;
+    port = port_find_mcb_dlci_port(arg0, arg1);
+    if (lbl_803C4828[0x414] >= 4)
+        ((void (*)(u32, void *, u8, u16, u8, u8))fn_8007099C)(0x90003, lbl_80319300, arg1, arg2, arg3, arg4);
+    if (port == 0) return;
+    mcb = (u8 *)port;
+    if (*((u8 *)arg0 + 0x72) == 0) {
+        if (arg3 == 0xE0) *((u8 *)arg0 + 0x72) = 2;
+        else *((u8 *)arg0 + 0x72) = 1;
+    }
+    if (*(u16 *)(mcb + 0x12) < arg2) arg2 = *(u16 *)(mcb + 0x12);
+    *(u16 *)(mcb + 0x12) = arg2;
+    *(u16 *)(mcb + 0x14) = arg2;
+    if (*((u8 *)arg0 + 0x72) == 2) {
+        *(s16 *)(mcb + 0x98) = arg4;
+        if (arg4 == 0) mcb[0x24] = 1;
+    }
+    if (mcb[2] == 1) ((void (*)(void *, u8, u16))RFCOMM_DlcEstablishReq)(arg0, mcb[0xD], *(u16 *)(mcb + 0x12));
+}
+
 void PORT_DlcEstablishInd(s32 arg0, s32 arg1, s32 arg2) {
     extern char lbl_8031932C[];
     extern void *port_find_dlci_port(unsigned int);
@@ -4443,15 +4467,17 @@ BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) 
 void sdpu_sort_attr_list(UINT16 num_attr, tSDP_DISCOVERY_DB *p_db) {
     UINT16 i;
     UINT16 x;
+
     if (num_attr <= 1) return;
     num_attr--;
-    for (i = 0; i < num_attr; i++) {
+    for (i = 0; i < num_attr;) {
         if (p_db->attr_filters[i] > p_db->attr_filters[i + 1]) {
             x = p_db->attr_filters[i];
             p_db->attr_filters[i] = p_db->attr_filters[i + 1];
             p_db->attr_filters[i + 1] = x;
             i = (UINT16)-1;
         }
+        i++;
     }
 }
 
