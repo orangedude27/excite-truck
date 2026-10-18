@@ -18,6 +18,8 @@ public:
     virtual void apply(s32, s32);
 };
 extern s32 lbl_8055E3C4;
+extern "C" void** lbl_8055D5FC;
+extern "C" void** lbl_8055D600;
 extern "C" void** lbl_8055D604;
 extern "C" void** lbl_8055D5F4;
 extern "C" void** lbl_8055D5F8;
