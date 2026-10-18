@@ -944,6 +944,17 @@ extern "C" f32 fn_800EFA40(void* arg0) {
     return *(f32*)((u8*)arg0 + 0x44);
 }
 
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus(void* self, s32 bus) {
+    s32 valid = 0;
+    if (bus >= 0 && bus < 3) {
+        valid = 1;
+    }
+    if (valid == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x1B4, (const char*)lbl_80323C3C, bus, 0, 3);
+    }
+    return *(f32*)((u8*)self + (bus * 4) + 0x48);
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
