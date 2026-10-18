@@ -76,6 +76,7 @@ extern "C" f32 fn_801E7E24(void);
 extern "C" int fn_802BF4F0(void);
 extern "C" f32 fn_802BF590(void);
 extern "C" float __fabsf(float);
+extern "C" f32 lbl_80558DC4;
 extern "C" void fn_802A1B20(void*, s32);
 extern "C" void fn_802A1CC4(void);
 extern "C" void fn_8028E61C(void*);
