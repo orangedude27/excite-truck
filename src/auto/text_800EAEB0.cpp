@@ -594,8 +594,12 @@ extern "C" void FreeTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm
     }
 }
 
+extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, u32, u32);
+extern "C" void fn_800EE428(void* arg0) {
+    CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8*)arg0 + 8, 0, 0xD4);
+}
+
 extern "C" void DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(void*);
-extern void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, u32);
 extern "C" s32 NANDClose(void*);
 extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" void fn_800F27AC(void*);
