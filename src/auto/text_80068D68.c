@@ -2899,6 +2899,44 @@ BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
     return TRUE;
 }
 
+void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, void *p_cmd_cplt_cback) {
+    u8 *p = (u8 *)buffer;
+    u8 *pp = p + 8;
+    u16 cmd = 0xFC00 | opcode;
+    *(u16 *)(p + 2) = 3 + len;
+    *(u16 *)(p + 4) = 0;
+    *(void **)pp = p_cmd_cplt_cback;
+    pp += 4;
+    *pp = (u8)cmd;
+    pp[1] = (u8)(cmd >> 8);
+    pp[2] = len;
+    pp += 3;
+    if (len > 0) {
+        if (len > 8) {
+            if (len < 8 || len > 0x7FFFFFFE) {
+                ;
+            } else {
+                u8 blocks = (len - 8 + 7) >> 3;
+                u8 *src = p_data;
+                u8 i;
+                u8 j;
+                for (i = 0; i < blocks; i++) {
+                    *pp = *src;
+                    src++;
+                    for (j = 1; j < 8; j++) pp[j] = *src++;
+                    pp += 8;
+                }
+                for (i = 0; i * 8 < len - 8; i++) *pp++ = *src++;
+            }
+        } else {
+            u8 i;
+            u8 *src = p_data;
+            for (i = 0; i < len; i++) *pp++ = *src++;
+        }
+    }
+    btu_hcif_send_cmd(p);
+}
+
 extern u8 lbl_803C3C38[];
 extern u8 lbl_803C3AF0[];
 extern u8 hidh_conn_reg(void);
@@ -2917,6 +2955,42 @@ u8 HID_HostRegister(void *arg0) {
     lbl_803C3C38[0x400] = 1;
     return 0;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+u8 HID_HostDeregister(void) {
+    extern u8 lbl_803C3C38[];
+    extern u8 hidh_conn_disconnect(u32);
+    extern void fn_80070F90(void*);
+    extern void fn_80089248(void);
+    u8 *entry;
+    u32 offset;
+    u32 i;
+    if (lbl_803C3C38[0x400] == 0)
+        return 1;
+    for (i = 0; i <= 0x10; i++) {
+        offset = i * 0x34;
+        entry = lbl_803C3C38 + offset;
+        if (entry[0] == 0)
+            continue;
+        if (entry[0xA] == 1) {
+            entry[0xC] = 1;
+            fn_80070F90(entry + 0x1C);
+            if (entry[0xA] == 1) {
+                entry[0xC] = 1;
+                hidh_conn_disconnect(i);
+            }
+        }
+        entry[0] = 0;
+        entry[0x10] = 0;
+        *(u16 *)(entry + 0x16) = 0;
+        *(u16 *)(entry + 0x14) = 0;
+    }
+    fn_80089248();
+    lbl_803C3C38[0x400] = 0;
+    return 0;
+}
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
@@ -3733,13 +3807,13 @@ tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16 handle) {
 
 tCONN_CB *sdpu_allocate_ccb(void) {
     UINT16 xx;
-    tCONN_CB *p_ccb;
+    u8 *p_ccb;
 
-    for (xx = 0, p_ccb = &sdp_cb.ccb[0]; xx < SDP_MAX_CONNECTIONS; xx++, p_ccb++) {
-        if (p_ccb->con_state == SDP_STATE_IDLE) {
-            memset(p_ccb, 0, sizeof(tCONN_CB));
-            p_ccb->timer_entry.param = (UINT32)p_ccb;
-            return p_ccb;
+    for (xx = 0, p_ccb = lbl_803C4C40 + 0x3C; xx < SDP_MAX_CONNECTIONS; xx++, p_ccb += 0x478) {
+        if (p_ccb[0] == SDP_STATE_IDLE) {
+            memset(p_ccb, 0, 0x478);
+            *(u32 *)(p_ccb + 0x18) = (u32)p_ccb;
+            return (tCONN_CB *)p_ccb;
         }
     }
     return NULL;
