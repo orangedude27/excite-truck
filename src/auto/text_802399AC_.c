@@ -131,7 +131,10 @@ s32 fn_8023A734(s32 arg0, s32 arg1) {
 }
 
 extern s32 fn_80128670(s32);
+#pragma push
+#pragma small_data off
 extern s32 lbl_80341108;
+#pragma pop
 extern s32 fn_802328D4(s32);
 #pragma small_data off
 __declspec(section ".data") extern s32 lbl_8034109C;
@@ -158,6 +161,8 @@ void *__dt__Q28PSSystem7SeqHeapFv_8023A7D8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma small_data off
 void *fn_8023A83C(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(s32 **)arg0 = &lbl_80341108;
@@ -168,7 +173,7 @@ void *fn_8023A83C(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-
+#pragma pop
 s32 fn_8023A8B0(void) {
     register s32 *obj = (s32 *)lbl_8055F110;
     if (obj != 0 && *((unsigned char *)obj + 0x18) != 0) return 1;
@@ -370,10 +375,13 @@ void fn_8023B0BC(void *arg0) {
     fn_8022BAD0(0xC9, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, temp_r10, sp8, f);
 }
 s32 fn_8023B138(void *arg0) {
-    void *object = lbl_8055F10C;
+    register void *object = lbl_8055F10C;
     if (((s32 (*)(void *))(*(void ***)object)[24])(object) == 0) {
-        if (fn_80214D04() == 0) *(s32 *)((char *)arg0 + 0x18) = 1;
-        else *(s32 *)((char *)arg0 + 0x18) = 0;
+        if (fn_80214D04() == 0) {
+            *(s32 *)((char *)arg0 + 0x18) = 1;
+        } else {
+            *(s32 *)((char *)arg0 + 0x18) = 0;
+        }
     }
 }
 
