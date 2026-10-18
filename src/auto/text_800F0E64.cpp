@@ -828,12 +828,12 @@ extern "C" void fn_800F8520(void *arg0) {
     *(s32 *)((u8 *)arg0 + 8) = (s32)p;
 }
 
-void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void* self, int shouldDelete) {
-    if (self) {
-        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(self, 0);
-        if (shouldDelete > 0) ((void (*)(void*))fn_80128668)(self);
+extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F8540(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
     }
-    return self;
+    return arg0;
 }
 
 void Update__Q36nw4hbm3snd11SoundPlayerFv(void *self) {
@@ -1107,13 +1107,14 @@ extern "C" const char lbl_8032687C[];
 #pragma push
 #pragma small_data off
 extern "C" u8 lbl_8041506C[];
-#pragma pop
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void) {
-    void* pHead = *(void**)&lbl_8041506C[0x04];
-    void* pList = &lbl_8041506C[0x04];
+    void* base = &lbl_8041506C[0x04];
+    void* pHead = *(void**)base;
     void* p;
 
-    while (pHead != pList) {
+    while (pHead != base) {
         p = pHead;
         pHead = *(void**)pHead;
         if (p == 0) {
@@ -1123,7 +1124,7 @@ extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void)
         UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(&((u8*)p)[-0x08]);
     }
 }
-
+#pragma pop
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_800FC508(void) {
     void *node = *(void **)((u8 *)&lbl_8041506C + 4); void *end = (u8 *)&lbl_8041506C + 4;
     while (node != end) { void *player = node; node = *(void **)node; if (!player) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326B8C, 0x23D, lbl_80326B68); void **vt = *(void ***)((u8 *)player - 8); ((void (*)(void *))*(void **)((u8 *)vt + 0x10))((u8 *)player - 8); }
