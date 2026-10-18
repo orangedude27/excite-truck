@@ -138,14 +138,19 @@ action:
 done:
     return;
 }
-#pragma scheduling on
+#pragma scheduling off
 void fn_801CB648(int arg0, int arg1, f32 farg0) {
-    if (fn_80019BA8()) return;
-    if (!fn_80161C38()) {
-        fn_801CD7BC(arg0, arg1, farg0);
-    } else {
-        return;
+    if (fn_80019BA8() != 0) goto done;
+    switch (fn_80161C38()) {
+    case 0:
+        goto action;
+    default:
+        goto done;
     }
+action:
+    fn_801CD7BC(arg0, arg1, farg0);
+done:
+    return;
 }
 #pragma scheduling on
 void fn_801CB6B4(void) {
@@ -208,11 +213,12 @@ int fn_801CB900(int *arg0, int arg1) {
 }
 
 void *__dt__Q34nw4r2ef6EffectFv_801CBCA4(void *arg0, int arg1) {
-    extern void fn_801CBCA0(void);
+    extern void fn_801CBD04(void *);
     if (arg0) {
-        *(void **)arg0 = (void *)lbl_80338038;
-        fn_801CBCA0();
-        if (arg1 > 0) fn_80128668(arg0);
+        *(void **)((char *)arg0 + 4) = lbl_80338038;
+        fn_801CBD04(arg0);
+        if (arg1 > 0)
+            fn_80128668(arg0);
     }
     return arg0;
 }
@@ -292,6 +298,45 @@ void fn_801CCBB4(void) {
     *((signed char *)lbl_8055E884 + 0x10) = 0;
 }
 
+extern void fn_80235380(void);
+extern void deleteThreads__6SystemFv(void *);
+void fn_801CCCAC(void) {
+    s32 i;
+    s32 offset;
+    s32 *state;
+    void *object;
+
+    state = lbl_8055E884;
+    if (state != 0) {
+        if (state[3] != 0) fn_80235380();
+        state[3] = 0;
+        object = *(void **)((char *)state + 8);
+        if (object != 0) {
+            if (object != 0)
+                ((void (*)(void *, int))((u32 *)*(u32 *)object)[2])(object, 1);
+        }
+        deleteThreads__6SystemFv((char *)state + 0x40);
+        deleteThreads__6SystemFv((char *)state + 0x2A4);
+        i = 0;
+        offset = 0;
+        do {
+            object = *(void **)((char *)*(void **)((char *)state + 0x18) + offset);
+            if (object != 0)
+                ((void (*)(void *, int))((u32 *)*(u32 *)((char *)object + 4))[2])(object, 1);
+            offset += 4;
+            i++;
+        } while (i < *(s32 *)((char *)state + 0x1C));
+        *(s32 *)((char *)state + 0x1C) = 0;
+        if ((char *)state + 0x18 != 0) {
+            *(s32 **)((char *)state + 0x18) = 0;
+            *(s32 *)((char *)state + 0x1C) = 0;
+            *(s32 *)((char *)state + 0x20) = 0;
+        }
+        fn_80128668(state);
+    }
+    lbl_8055E884 = 0;
+}
+
 void fn_801CE670(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
     Struct_801CE670 local;
     local.field4 = arg1;
@@ -341,6 +386,23 @@ void fn_801CE6D0(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((char *)arg0 + 8) = arg2;
 }
 
+extern unsigned int fn_801CE898(void);
+extern void fn_802ADE60(int);
+void fn_801CE7A0(void) {
+    s32 *state;
+    void *ptr;
+    if (fn_801CE898() != 0) return;
+    state = lbl_8055E884;
+    ptr = (void *)state[0x2C8 / 4];
+    if (ptr != 0) { fn_802ADE60(1); state[0x2C8 / 4] = 0; }
+    ptr = (void *)state[0x2CC / 4];
+    if (ptr != 0) { if (ptr != 0) ((void (*)(void *, int))((u32 *)*(u32 *)ptr)[2])(ptr, 1); state[0x2CC / 4] = 0; }
+    ptr = (void *)state[0x2D0 / 4];
+    if (ptr != 0) { if (ptr != 0) ((void (*)(void *, int))((u32 *)*(u32 *)ptr)[2])(ptr, 1); state[0x2D0 / 4] = 0; }
+    ptr = (void *)state[0x2D4 / 4];
+    if (ptr != 0) { if (ptr != 0) ((void (*)(void *, int))((u32 *)*(u32 *)ptr)[2])(ptr, 1); state[0x2D4 / 4] = 0; }
+}
+
 unsigned int fn_801CE898(void) {
     int value = fn_800167F4();
     int temp = value ^ 1;
@@ -349,22 +411,51 @@ unsigned int fn_801CE898(void) {
     return (unsigned int)(half - temp) >> 31;
 }
 
-#pragma small_data off
+extern s32 *__AXFXGetLfoSinTable_801769CC(void);
+extern int fn_8000DA10(void);
+extern void *fn_8001BB58(s32, s32, s32);
+extern int fn_80160AB4(void);
+extern void fn_801CD730(s32 *, s32 *);
+#pragma dont_inline fn_801CE898
+int fn_801CE8CC(void) {
+    s32 spC;
+    s32 sp8;
+    s32 *temp_r30;
+    s32 *temp_r31;
+    s32 temp_r0;
+    s32 temp_r29;
+    void *temp_r3;
+    if (fn_801CE898() != 0) return 1;
+    temp_r29 = fn_80160AB4();
+    temp_r30 = __AXFXGetLfoSinTable_801769CC();
+    temp_r31 = __AXFXGetLfoSinTable_801769CC();
+    temp_r3 = (void *)fn_8000DA10();
+    temp_r3 = ((void *(*)(int, s32, s32, s32))fn_8001BB58)((int)temp_r3, *temp_r31, temp_r30[2], 0);
+    if (temp_r3 != NULL) {
+        temp_r0 = ((s32 *)temp_r3)[2];
+        if ((temp_r0 >= 0) && (temp_r0 <= temp_r29)) return 1;
+    }
+    spC = -1;
+    sp8 = 0;
+    fn_801CD730(&sp8, &spC);
+    if ((spC >= 0) && (spC <= temp_r29)) return 1;
+    return 0;
+}
 void *fn_801CE9A0(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)((char *)arg0 + 4) = (void *)&((char *)lbl_80338024)[0];
+        *(void **)((char *)arg0 + 4) = lbl_80338024;
         fn_801CEA28((char *)arg0 + 8);
         fn_801CEA28((char *)arg0 + 0xC);
-        if (arg0 != 0) {
-            *(void **)((char *)arg0 + 4) = (void *)&((char *)lbl_80338038)[0];
-            fn_801CBD04(arg0);
-        }
-        if (arg1 > 0)
-            fn_80128668(arg0);
     }
+    if (arg0 != 0) {
+        void (*cleanup)(void *) = fn_801CBD04;
+        *(void **)((char *)arg0 + 4) = lbl_80338038;
+        cleanup(arg0);
+    }
+    if (arg1 > 0)
+        fn_80128668(arg0);
     return arg0;
 }
-#pragma small_data on
 void fn_801CEA28(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
@@ -377,19 +468,23 @@ extern int fn_80128668(void *);
 extern void fn_801CBD04(void *);
 extern int fn_8001C0EC(int);
 extern int fn_8001C0E8(int, int);
+#pragma scheduling off
 int fn_801CEA6C(void *arg0, int arg1) {
-    int value = *(int *)arg0;
-    if (fn_8001C0EC(value) == 0) goto done;
+    int value;
+    value = *(int *)arg0;
+    if (fn_8001C0EC(value) == 0) goto fail;
     fn_8001C0E8(value, arg1);
     value = *(int *)((char *)arg0 + 8);
-    if (value != 0 && fn_8001C0EC(arg1) == 0) goto done;
+    if (value == 0) goto fail;
+    if (((int (*)(int, int))fn_8001C0EC)(value, arg1) == 0) goto fail;
     value = *(int *)((char *)arg0 + 0xC);
-    if (value != 0 && fn_8001C0EC(arg1) == 0) goto done;
+    if (value == 0) goto fail;
+    if (((int (*)(int, int))fn_8001C0EC)(value, arg1) == 0) goto fail;
     return 1;
-done:
+fail:
     return 0;
 }
-
+#pragma scheduling on
 void fn_801CEB94(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
