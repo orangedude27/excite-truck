@@ -8,6 +8,7 @@ extern char lbl_8055F5C8;
 extern int lbl_8055E3C4;
 extern int lbl_8055F5B4;
 extern int lbl_8055F5BC;
+extern int lbl_8055F5C0;
 extern char lbl_8055F5B8;
 extern int fn_802E30C8(const char *, ...);
 extern const char lbl_80347590[];
@@ -86,10 +87,15 @@ void *fn_802678E4(int);
 extern int lbl_8055F5BC;
 extern float lbl_805640B0;
 void fn_8027889C(float arg0) {
-    float t = arg0 / lbl_805640B8;
+    float t;
     float result;
-    if (t < lbl_805640A8) result = t - lbl_805640BC;
-    else result = lbl_805640BC + t;
+    t = arg0 / lbl_805640B8;
+    result = t - lbl_805640BC;
+    if (t < lbl_805640A8) {
+        result = t - lbl_805640BC;
+    } else {
+        result = lbl_805640BC + t;
+    }
     lbl_8055F5C0 = (int)result;
 }
 
