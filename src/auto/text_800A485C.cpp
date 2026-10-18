@@ -3431,8 +3431,20 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
 extern s32 lbl_8055DDD4;
 extern "C" f32 lbl_80560E40;
 extern "C" f32 lbl_80560E3C;
-extern "C" s32 fn_80060C7C(void*);
-extern "C" s32 lbl_8055DD30;
-extern "C" s32 fn_800B8004(s32);
-extern "C" s32 fn_800B8048(s32);
-extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
+  extern "C" s32 fn_80060C7C(void*);
+  extern "C" s32 lbl_8055DD30;
+  extern "C" s32 fn_800B8004(s32);
+  extern "C" s32 fn_800B8048(s32);
+  extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
+
+  namespace homebutton {
+  namespace gui {
+  struct PaneComponent {
+      u8 pad0[0x28];
+      void *vtable;
+      u8 pad8[0x4];
+      void *pane;
+      u8 pad4[0x84];
+  };
+  }
+  }
