@@ -4175,4 +4175,3 @@ extern u32 lbl_8055DCA4;
 extern char lbl_80315700[];
 extern void *jumptable_803159A0[];
 extern u8 lbl_80559060[];
-#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
