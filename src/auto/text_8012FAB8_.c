@@ -4,6 +4,7 @@
 extern int lbl_804230D0;
 extern int lbl_802F8E60[];
 extern int lbl_8055E04C;
+extern int lbl_8055E050;
 extern int fn_8012BF24(void *);
 extern int stricmp(const char *, const char *);
 void fn_801301E0(unsigned char *arg0) {
@@ -45,7 +46,7 @@ void fn_80130518(void) {
 }
 
 void fn_801308E4(void *arg0, void *arg1, int arg2, int arg3) {
-    fn_801305C4(*(char **)0x8055E050 + 8, arg2, arg3);
+    fn_801305C4(arg0, arg1, *(char **)0x8055E050 + 8, arg2);
 }
 
 void fn_801308F4(void) {
@@ -102,7 +103,10 @@ void fn_80130FE0(int arg0) {
         fn_80131234(lbl_8032B300);
     } else {
         remainder = arg0 % 10;
-        fn_80131234((void *)*(int *)((char *)&values[0] + (remainder * 4)));
+        {
+            int *selected = &values[remainder];
+            fn_80131234((void *)*selected);
+        }
     }
 }
 
