@@ -402,7 +402,7 @@ extern "C" void fn_801A1250(void* arg0) {
     VTab1250** entries = (VTab1250**)arg0;
     s32 i = 0;
     while (i < *(s32*)((u8*)arg0 + 0x174)) {
-        entries[9]->v10();
+        entries[9]->v08();
         entries++;
         i++;
     }
