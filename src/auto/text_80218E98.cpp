@@ -1264,7 +1264,7 @@ extern "C" void fn_8022B2D4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" char lbl_8033E988[];
 extern "C" void *fn_8021EB9C(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = (void *)(u32)&lbl_8033E988;
+        *(void **)arg0 = lbl_8033E988;
         fn_802C519C(*(void **)((u8 *)arg0 + 0xA5C));
         if (*(void **)((u8 *)arg0 + 0xA60) != 0)
             fn_802C519C(*(void **)((u8 *)arg0 + 0xA60));
