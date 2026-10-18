@@ -24,12 +24,13 @@ void fn_801301E0(unsigned char *arg0) {
     }
 }
 
+__declspec(section ".data") extern int lbl_804230D0;
 void fn_8013028C(void) {
-    int index = *(int *)0x804230D0;
-    if (index >= 0 && index < 2) {
+    int index = lbl_804230D0;
+    if (index >= 0 && (unsigned int)index < 2) {
         fn_8012BF24(*(void **)((char *)lbl_802F8E60 + index * 12));
     }
-    *(int *)0x804230D0 = -1;
+    lbl_804230D0 = -1;
 }
 
 int fn_80130390(void) {
