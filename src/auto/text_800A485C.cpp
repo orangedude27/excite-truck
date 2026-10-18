@@ -323,9 +323,12 @@ extern "C" s32 fn_800A6624(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     s32 spC;
     s32 sp8;
     s32 result;
+    s32 (*convert)(void *, s32, s32, s32, s32 *, s32 *);
+    s32 (*convert_back)(void *, s32, s32, s32, s32 *, s32 *);
     s32 (*callback)(void *, s32, s32, s32, s32 *);
 
-    result = VFipdm_disk_convert_sector_into_block(arg2, arg3, arg4, &sp10, &spC);
+    convert = (s32 (*)(void *, s32, s32, s32, s32 *, s32 *))VFipdm_disk_convert_sector_into_block;
+    result = convert(arg0, arg2, arg3, arg4, &sp10, &spC);
     if (result != 0)
         return result;
     if (fn_800B8004(*(s32 *)((u8 *)arg0 + 0x14)) != 0)
@@ -334,7 +337,8 @@ extern "C" s32 fn_800A6624(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     result = callback(arg0, arg1, sp10, spC, arg5);
     if (fn_800B8048(*(s32 *)((u8 *)arg0 + 0x14)) != 0)
         return 0x14;
-    VFipdm_disk_convert_block_into_sector((u32)sp10, *(u32 *)arg5, (u32)arg4, (u32 *)&sp8, (u32 *)arg5);
+    convert_back = (s32 (*)(void *, s32, s32, s32, s32 *, s32 *))VFipdm_disk_convert_block_into_sector;
+    convert_back(arg0, sp10, *arg5, arg4, &sp8, arg5);
     if (result != 0) {
         fn_800A71D0((void *)*(s32 *)((u8 *)arg0 + 0x2C), result);
         return 0x15;
@@ -413,20 +417,23 @@ extern "C" s32 fn_800A6728(void *, s32);
 extern "C" s32 fn_800A6B74(void *);
 extern "C" s32 fn_800A728C(void *arg0) {
     s32 result;
-    u32 *flags = (u32 *)arg0;
-    void *handle = *(void **)((u8 *)arg0 + 4);
-    if (*flags & 8) return 0xC;
-    result = fn_800A625C(handle, (s32)arg0);
-    if (result != 0) return result;
-    result = fn_800A6358(handle);
-    if (result != 0) return result;
-    result = fn_800A6B74(arg0);
-    if (result != 0) {
-        fn_800A6728(handle, 0);
-        return result;
+    if (!(*(u32 *)arg0 & 8)) {
+        result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+        if (result == 0) {
+            result = fn_800A6358(*(void **)((u8 *)arg0 + 4));
+            if (result == 0) {
+                result = fn_800A6B74(arg0);
+                if (result != 0) {
+                    fn_800A6728(*(void **)((u8 *)arg0 + 4), 0);
+                } else {
+                    *(u32 *)arg0 = (*(u32 *)arg0 & ~2) | 8;
+                }
+            }
+        }
+    } else {
+        result = 0xC;
     }
-    *flags = (*flags & ~2) | 8;
-    return 0;
+    return result;
 }
 
 #pragma dont_inline on
@@ -639,37 +646,26 @@ extern "C" s32 fn_800A9104(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
-s32 fn_800A9138(void *arg0, u32 arg1) {
-    s32 temp_r0;
-    s32 temp_r0_2;
-    s32 temp_r3;
-    s32 temp_r3_2;
-    s32 var_r5;
-    void *temp_r31;
-    void *var_r30;
-    var_r5 = 0;
+extern "C" s32 fn_800A9138(void *arg0, u32 arg1) {
+    s32 result = 0;
+    void *head;
+    void *node;
     if (*(u32 *)((u8 *)arg0 + 0x1624) & 7) {
-        temp_r31 = *(void **)((u8 *)arg0 + 0x1634);
-        temp_r0 = *(s32 *)((u8 *)temp_r31 + 0x1C);
-        if ((temp_r0 == 0) || ((u32)temp_r0 == arg1)) {
-            temp_r3_2 = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, temp_r31);
-            var_r5 = temp_r3_2;
-            if (temp_r3_2 != 0) return temp_r3_2;
+        head = *(void **)((u8 *)arg0 + 0x1634);
+        if (*(u32 *)((u8 *)head + 0x1C) != 0 && *(u32 *)((u8 *)head + 0x1C) == arg1) {
+            result = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, head);
+            if (result != 0) return result;
         }
-        var_r30 = *(void **)((u8 *)temp_r31 + 0x20);
-    loop_11:
-        if (var_r30 == temp_r31) goto block_12;
-        temp_r0_2 = *(s32 *)((u8 *)var_r30 + 0x1C);
-        if ((temp_r0_2 == 0) || ((u32)temp_r0_2 == arg1)) {
-            temp_r3 = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, var_r30);
-            var_r5 = temp_r3;
-            if (temp_r3 != 0) return temp_r3;
+        node = *(void **)((u8 *)head + 0x20);
+        while (node != head) {
+            if (*(u32 *)((u8 *)node + 0x1C) != 0 && *(u32 *)((u8 *)node + 0x1C) == arg1) {
+                result = ((s32 (*)(void *, void *))fn_800A7B34)(arg0, node);
+                if (result != 0) return result;
+            }
+            node = *(void **)((u8 *)node + 0x20);
         }
-        var_r30 = *(void **)((u8 *)var_r30 + 0x20);
-        goto loop_11;
     }
-block_12:
-    return var_r5;
+    return result;
 }
 
 struct CachePage {
@@ -870,8 +866,8 @@ extern "C" s32 fn_800AE3A8(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
     u32 sp8;
     u32 *temp_r7 = *(u32 **)((u8 *)arg0 + 8);
     void *temp_r8 = *(void **)((u8 *)arg0 + 0x34);
+    void *temp_r31 = *(void **)((u8 *)arg0 + 0x30);
     u32 temp_r4 = *(u32 *)((u8 *)temp_r8 + 0x1C);
-    void *temp_r31;
     s32 var_r3;
     if (*temp_r7 == 1) {
         if (temp_r4 <= 1) {
@@ -880,13 +876,18 @@ extern "C" s32 fn_800AE3A8(void *arg0, s32 arg1, s32 arg2, u32 *arg3) {
         }
         *temp_r7 = *(u32 *)((u8 *)temp_r8 + 0x10);
     }
-    temp_r31 = *(void **)((u8 *)arg0 + 0x30);
     *arg3 = -1;
     var_r3 = fn_800ADD84(arg0, arg1, 2, arg2, &sp8, &spC);
-    if (var_r3 == 0 && sp8 >= 2 && sp8 < *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2)
+    if (var_r3 != 0) goto sentinel;
+    if (sp8 >= 2 && sp8 < *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2) {
         *arg3 = sp8;
-    if ((*arg3 + 0x10000) == 0xFFFF)
+    }
+    var_r3 = 0;
+    if (var_r3 != 0) goto sentinel;
+    if ((*arg3 + 0x10000) == 0xFFFF) {
+sentinel:
         return 0;
+    }
     *(u32 *)((u8 *)temp_r31 + 8) = *(u32 *)arg0;
     *(s32 *)temp_r31 = arg1;
     *(u32 *)((u8 *)temp_r31 + 4) = *arg3;
@@ -1204,6 +1205,7 @@ extern "C" void fn_800A53CC(void *);
 extern "C" s32 fn_800A5788(void *, s32);
 extern "C" s32 fn_800B5988(void *);
 extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *);
+#pragma dont_inline on
 extern "C" s32 fn_800B6004(void *arg0) {
     s32 result;
     u16 flags;
@@ -1233,10 +1235,7 @@ extern "C" s32 fn_800B6004(void *arg0) {
                     fn_800A53CC(arg0);
                     result = 0;
                 }
-            } else {
-                fn_800A53CC(arg0);
-                result = 0;
-            }
+            } else { fn_800A53CC(arg0); result = 0; }
             if (result == 0) goto done;
         } else goto done;
     } else {
@@ -1264,7 +1263,7 @@ done:
     if ((flags & 8) == 0) return 9;
     return -((flags >> 1) & 1) & 0xB;
 }
-
+#pragma dont_inline reset
 extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32, u16 *);
 extern "C" s16 fn_800B7200(s32 arg0) {
     u16 spC;
@@ -1309,25 +1308,25 @@ extern "C" s32 fn_800B73E4(s32 arg0) {
     return -1;
 }
 
-extern "C" void fn_800B7408(s32* arg0, void* arg1) {
-    extern s32 fn_800B6628(void*, s32);
-    extern s32 fn_800B73BC(s32);
-    extern s32 lbl_803D2140[];
-    s32* p = arg0;
-    s32 result = 0;
-    if (arg0 == 0 || *arg0 == 0) {
-        result = 10;
-        *(s32*)((u8*)lbl_803D2140 + 0x40) = 10;
-        fn_800B73BC(result);
-        return;
-    }
-    while (*p != 0) {
-        if (arg1 != 0) result = fn_800B6628(arg1, *(s32*)((u8*)arg1 + 0x50));
-        else result = fn_800B6628(0, 0);
-        if (result != 0) { fn_800B73BC(result); return; }
-        ++p;
-    }
-    fn_800B73BC(result);
+extern "C" void fn_800B7408(volatile s32* arg0, void* arg1) {
+ extern s32 fn_800B6628(void*, void*, s32);
+ extern s32 fn_800B73BC(s32);
+ extern s32 lbl_803D2140[];
+ s32 result = 0;
+ if (arg0 != 0) {
+   if (*arg0 == 0) {
+     result = 10;
+     *(s32*)((u8*)lbl_803D2140 + 0x40) = result;
+   } else {
+     while (*arg0 != 0) {
+       if (arg1 != 0) result = fn_800B6628((void*)arg0, arg1, *(s32*)((u8*)arg1 + 0x50));
+       else result = fn_800B6628((void*)arg0, 0, 0);
+       if (result != 0) { fn_800B73BC(result); return; }
+       arg0 = arg0 + 1;
+     }
+   }
+ }
+ fn_800B73BC(result);
 }
 
 #pragma dont_inline on
@@ -1592,6 +1591,32 @@ extern "C" s32 fn_800B8F20(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     fn_800B8048(*sp);
     return 0;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_800B98F8(s32, s32, s32, s32, s32 *, s32);
+extern "C" s32 fn_800B8FE4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+    s32 result;
+    fn_800B8004(lbl_8055DD30);
+    *arg4 = 0;
+    if (arg0 == 0) {
+        fn_800B8048(lbl_8055DD30);
+        return -20;
+    }
+    if (arg1 == 0) {
+        fn_800B8048(lbl_8055DD30);
+        return -20;
+    }
+    result = fn_800B98F8(arg3, arg1, arg2, 0x200, arg4, arg0);
+    if (result != 0) {
+        fn_800B8048(lbl_8055DD30);
+        return result;
+    }
+    fn_800B8048(lbl_8055DD30);
+    return 0;
+}
+#pragma pop
+
 extern "C" u8 lbl_802F31F8[];
 extern "C" s32 lbl_8055DD2C;
 extern "C" s32 NANDInit(void);
@@ -2225,6 +2250,31 @@ void fn_800D0BA4(void *arg0, D0BA4Dispatch *arg1) {
 
 extern "C" s32 fn_800D0BD0(void) { return 0; }
 
+extern "C" void wpadExtensionCallback__Q210homebutton10ControllerFll(s32, s32);
+extern "C" s32 WPADSetSamplingCallback_800603D0(void *);
+void wpadConnectCallback__Q210homebutton10ControllerFll(s32 chan, s32 status) {
+    void *entry;
+    void (*callback)(s32, s32);
+    entry = lbl_80407780[chan];
+    if (status == 0) {
+        if (!M2C_FIELD(entry, u8 *, 0x40)) {
+            M2C_FIELD(entry, void **, 0x2C) = (void *)WPADSetSamplingCallback_800603D0((void *)wpadExtensionCallback__Q210homebutton10ControllerFll);
+            M2C_FIELD(entry, u8 *, 0x40) = 1;
+        }
+        fn_80060CC0((void *)chan, 0, 0);
+    } else if (status == -1) {
+        WPADSetSamplingCallback_800603D0(M2C_FIELD(entry, void **, 0x2C));
+        M2C_FIELD(entry, u32 *, 0x2C) = 0;
+        M2C_FIELD(entry, u8 *, 0x40) = 0;
+        M2C_FIELD(entry, u8 *, 0x42) = 0;
+        M2C_FIELD(entry, u8 *, 0x43) = 0;
+    }
+    entry = lbl_80407780[chan];
+    callback = M2C_FIELD(entry, void (**)(s32, s32), 0x28);
+    if (callback)
+        callback(chan, status);
+}
+
 extern "C" void soundOnCallback__Q210homebutton10ControllerFP7OSAlarmP9OSContext(OSAlarm *alarm, OSContext *) {
     void *entry;
     void *sound;
@@ -2648,34 +2698,26 @@ extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4)
 
 extern "C" f32 lbl_80560E48;
 extern "C" f32 lbl_80560E4C;
-extern "C" u16 fn_800D4138(const void *arg0, s32 arg1, f32 farg0) {
-    if (arg1 == 1) {
-        return *(u16 *)((const u8 *)arg0 + 4);
-    }
+extern "C" u16 fn_800D4138(const void *arg0, u32 arg1, f32 farg0) {
     const u8 *base = (const u8 *)arg0;
-    if (farg0 <= *(f32 *)base) {
-        return *(u16 *)(base + 4);
-    }
-    const u8 *end = base + arg1 * 8;
-    if (farg0 >= *(f32 *)(end - 8)) {
-        return *(u16 *)(end - 4);
-    }
-    s32 low = 0;
-    s32 high = arg1 - 1;
-    while (low != high - 1 && low != high) {
-        s32 mid = (low + high) / 2;
-        if (farg0 < *(f32 *)(base + mid * 8)) {
-            high = mid;
-        } else {
-            low = mid;
+    if (arg1 != 1) {
+        if (farg0 <= *(f32 *)base) return *(u16 *)(base + 4);
+        const u8 *end = base + arg1 * 8;
+        if (farg0 >= *(f32 *)(end - 8)) return *(u16 *)(end - 4);
+        s32 low = 0;
+        s32 high = arg1 - 1;
+        while (low != high - 1 && low != high) {
+            s32 mid = (low + high) / 2;
+            if (farg0 < *(f32 *)(base + mid * 8)) high = mid;
+            else low = mid;
         }
+        s32 idx = high;
+        f32 delta = farg0 - *(f32 *)(base + idx * 8);
+        s32 found = delta > lbl_80560E48 && delta < lbl_80560E4C;
+        if (found) return *(u16 *)(base + idx * 8 + 4);
+        return *(u16 *)(base + low * 8 + 4);
     }
-    f32 delta = farg0 - *(f32 *)(base + high * 8);
-    s32 found = delta > lbl_80560E48 && delta < lbl_80560E4C;
-    if (found) {
-        return *(u16 *)(base + high * 8 + 4);
-    }
-    return *(u16 *)(base + low * 8 + 4);
+    return *(u16 *)(base + 4);
 }
 
 extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
