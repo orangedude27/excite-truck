@@ -78,17 +78,18 @@ void fn_8000D048(void) {
 }
 
 void fn_8000CE60(void) {
-    lbl_8055D404 = 0;
+    volatile u8 *p404 = &lbl_8055D404;
+    *p404 = 0;
     lbl_8055D405 = 0;
     lbl_8055D407 = 0;
     lbl_8055D400 = 0;
     lbl_8055D408 = 0;
     lbl_8055D40C = 0;
-    lbl_8055D410 = fn_802090D4((void*)((u8*)&lbl_802FC058 + 0x140));
+    lbl_8055D410 = fn_802090D4((void*)(lbl_802FC058 + 0x140));
     fn_80209190(lbl_80560218);
-    lbl_8055D414 = (void**)fn_80145E70((void*)((u8*)&lbl_802FC058 + 0x14C));
-    lbl_8055D418 = (void**)fn_80207848((void*)((u8*)&lbl_802FC058 + 0x158), 0);
-    lbl_8055D41C = (void**)fn_80207848((void*)((u8*)&lbl_802FC058 + 0x164), 0);
+    lbl_8055D414 = (void**)fn_80145E70((void*)(lbl_802FC058 + 0x14C));
+    lbl_8055D418 = (void**)fn_80207848((void*)(lbl_802FC058 + 0x158), 0);
+    lbl_8055D41C = (void**)fn_80207848((void*)(lbl_802FC058 + 0x164), 0);
     lbl_8055D420 = -1;
 }
 
