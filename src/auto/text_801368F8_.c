@@ -59,6 +59,35 @@ s32 fn_8013705C(f32 arg0, f32 arg1) {
     return arg0 * arg1 >= lbl_80561368;
 }
 
+extern float PSVECDotProduct(const void *, const void *);
+s32 fn_80137078(void *arg0, void *arg1, f32 farg0, f32 farg1) {
+    f32 sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
+    f32 temp_f10, temp_f11, temp_f1, temp_f2, temp_f3, temp_f4, temp_f5;
+    f32 temp_f6, temp_f7, temp_f8, temp_f9;
+    temp_f10 = *(f32 *)((char *)arg0 + 0x1C) * farg0;
+    temp_f8 = *(f32 *)((char *)arg0 + 0x20) * farg0;
+    temp_f11 = *(f32 *)((char *)arg0 + 0x24) + (*(f32 *)((char *)arg0 + 0x18) * farg0);
+    temp_f6 = *(f32 *)((char *)arg1 + 0x24) + (*(f32 *)((char *)arg1 + 0x18) * farg1);
+    temp_f7 = *(f32 *)((char *)arg0 + 0x2C);
+    temp_f4 = *(f32 *)((char *)arg1 + 0x28) + (*(f32 *)((char *)arg1 + 0x1C) * farg1);
+    temp_f9 = *(f32 *)((char *)arg0 + 0x28) + temp_f10;
+    temp_f3 = *(f32 *)((char *)arg1 + 0x2C) + (*(f32 *)((char *)arg1 + 0x20) * farg1);
+    temp_f5 = temp_f7 + temp_f8;
+    sp20 = temp_f11;
+    temp_f2 = temp_f11 - temp_f6;
+    temp_f1 = temp_f9 - temp_f4;
+    sp24 = temp_f9;
+    sp28 = temp_f5;
+    sp14 = temp_f6;
+    sp18 = temp_f4;
+    sp1C = temp_f3;
+    sp8 = temp_f2;
+    spC = temp_f1;
+    sp10 = temp_f5 - temp_f3;
+    PSVECDotProduct(&sp8, (char *)arg1 + 0x18);
+    return PSVECDotProduct(&sp8, (char *)arg1 + 0x18) < lbl_80561368;
+}
+
 s32 fn_80137140(s32 arg0, s32 arg1) {
     void *p27 = (void *)fn_8017960C(arg0);
     void *p28 = (void *)fn_8017960C(arg1);
@@ -69,6 +98,43 @@ s32 fn_80137140(s32 arg0, s32 arg1) {
         if (fn_80137078((char *)p28 + 0x3C, (char *)p27 + 0x3C, *(f32 *)((char *)p30 + 0x40), *(f32 *)((char *)p29 + 0x3C))) result = 1;
     }
     return result;
+}
+
+s32 fn_8002F768(void *, s32, s32);
+void fn_801376A8(s32 arg0, s32 *arg1, s32 arg2, s32 arg3, s32 *arg4) {
+    s32 temp;
+    s32 length;
+    s32 end;
+    s32 start;
+    s32 index;
+    s32 flag;
+    s32 *item;
+
+    *(s32 *)(arg0 + 4) = arg3;
+    length = *(s32 *)arg0;
+    start = 0;
+    do {
+        index = start + 1;
+        end = length;
+        item = arg1 + index;
+        flag = 1;
+        while (index < length) {
+            if (((s32 (*)(void *, s32, s32))arg2)((void *)arg0, item[-1], item[0]) > 0) {
+                temp = item[-1];
+                end = index + 1;
+                item[-1] = item[0];
+                item[0] = temp;
+                if (flag != 0) {
+                    start = index - 2;
+                    if (start < 0) start = 0;
+                }
+                flag = 0;
+            }
+            item++;
+            index++;
+        }
+        length = end;
+    } while (flag == 0);
 }
 
 void fn_8013776C(void *arg0) {
@@ -88,8 +154,9 @@ float fn_80137850(void *arg0) {
 
 void fn_80137884(s32 arg0) {
  s32 var_r3 = fn_801284F8(0x18, &lbl_80559BF8);
- if (var_r3 != 0) var_r3 = fn_801368F8(arg0);
- lbl_8055E0D4 = var_r3; lbl_8055E0D0 = var_r3;
+ if (var_r3 != 0) var_r3 = ((s32 (*)(s32, s32))fn_801368F8)(var_r3, arg0);
+ lbl_8055E0D4 = var_r3;
+ lbl_8055E0D0 = var_r3;
 }
 
 void fn_801378D0(void) {
