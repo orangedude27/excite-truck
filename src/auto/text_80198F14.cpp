@@ -241,6 +241,56 @@ extern "C" void fn_8019ECBC(void* arg0, s32 arg1) {
     *(s32*)((u8*)arg0 + 0xC) = arg1;
 }
 
+void* fn_8019EDB8(void* arg0, void* arg1, s32 arg2) {
+    fn_8019ECC4();
+    *(void**)arg0 = &lbl_80333B48;
+    if (arg2 != 0) {
+        u8 a = *((u8*)arg0 + 0x24);
+        u8 b = *((u8*)arg0 + 0x25);
+        u8 c = *((u8*)arg0 + 0x26);
+        u8 d = *((u8*)arg0 + 0x27);
+        u8 e = *((u8*)arg0 + 0x28);
+        u8 f = *((u8*)arg0 + 0x29);
+        u8 g = *((u8*)arg0 + 0x2A);
+        u8 h = *((u8*)arg0 + 0x2B);
+        u8 i = *((u8*)arg0 + 0x2C);
+        u8 j = *((u8*)arg0 + 0x2D);
+        u8 k = *((u8*)arg0 + 0x2E);
+        u8 l = *((u8*)arg0 + 0x2F);
+        u8 m = *((u8*)arg0 + 0x30);
+        u8 n = *((u8*)arg0 + 0x31);
+        u8 o = *((u8*)arg0 + 0x32);
+        u8 p = *((u8*)arg0 + 0x33);
+        *((u8*)arg0 + 0x24) = d;
+        *((u8*)arg0 + 0x27) = a;
+        *((u8*)arg0 + 0x25) = c;
+        *((u8*)arg0 + 0x26) = b;
+        *((u8*)arg0 + 0x28) = h;
+        *((u8*)arg0 + 0x2B) = e;
+        *((u8*)arg0 + 0x29) = g;
+        *((u8*)arg0 + 0x2A) = f;
+        *((u8*)arg0 + 0x2C) = l;
+        *((u8*)arg0 + 0x2F) = i;
+        *((u8*)arg0 + 0x2D) = k;
+        *((u8*)arg0 + 0x2E) = j;
+        *((u8*)arg0 + 0x30) = p;
+        *((u8*)arg0 + 0x33) = m;
+        *((u8*)arg0 + 0x31) = o;
+        *((u8*)arg0 + 0x32) = n;
+        if (*(s32*)((u8*)arg0 + 0x20) == 0x3eb)
+            *(f32*)((u8*)arg0 + 0x24) += lbl_80562370;
+    }
+    *(s8*)((u8*)arg0 + 0x4C) = 0;
+    *(f32*)((u8*)arg0 + 0x34) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x38) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x3C) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x40) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x44) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x48) = lbl_805622D0;
+    *(f32*)((u8*)arg0 + 0x50) = lbl_805622D0;
+    return arg0;
+}
+
 void fn_8019EECC(void* arg0, Vec* arg1) {
     arg1->x += *(f32*)((u8*)arg0 + 0x30);
     arg1->y += *(f32*)((u8*)arg0 + 0x34);
@@ -1099,3 +1149,10 @@ extern f32 lbl_80562370;
 typedef void (*VFunc)(void*);
 typedef void (*VFuncArg)(void*, s32);
 extern f32 lbl_805622DC;
+class Fn801A014CDispatch {
+public:
+    virtual void Dummy0();
+    virtual void Dummy1();
+    virtual void Dummy2();
+    virtual void Call();
+};
