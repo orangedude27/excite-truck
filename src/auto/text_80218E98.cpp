@@ -1574,6 +1574,25 @@ extern "C" s32 fn_802268A0(void *arg0, s32 arg1) {
     return 1;
 }
 
+extern "C" u32 fn_802268E8(void *arg0) {
+    s32 *p;
+    s32 value;
+    u32 result;
+    void *obj;
+    p = *(s32 **)((char *)arg0 + 0x264);
+    if (p == 0) return 0;
+    value = (*(s32 *)((char *)arg0 + 0x260) == *p);
+    if (*(u8 *)((char *)arg0 + 0x18) != 0) {
+        result = value + 2;
+    } else {
+        result = value;
+    }
+    obj = *(void **)((char *)arg0 + 0x244);
+    if (((s32 (*)(void *))(*(void ***)obj)[7])(obj) == 3 && result == 3) result = 1;
+    if (*(u8 *)((char *)arg0 + 0x1B) == 0) result = 4;
+    return result;
+}
+
 extern "C" void *fn_80226AD0(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         void *ptr = *(void **)((u8 *)arg0 + 0x248);
@@ -1816,9 +1835,10 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802292D8(void *arg0, 
     return arg0;
 }
 
+extern "C" void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, unsigned int);
 extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80229330(void *arg0, int arg1) {
     if (arg0 != 0) {
-        fn_802223C4(arg0, 0);
+        __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
