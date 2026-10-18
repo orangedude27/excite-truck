@@ -15,7 +15,49 @@ extern unsigned int lbl_8055D974;
   extern void GXGetVtxDesc(void);
   extern void __GXSaveFifo(void);
 
-  typedef struct _GXLightObjImpl {
+  static void __GXGetTexTileShift_8003DB9C(unsigned int fmt, unsigned int *rowTileS, unsigned int *colTileS) {
+    switch (fmt) {
+    case 0x2:
+    case 0x8:
+    case 0x6:
+    case 0x10:
+    case 0x12:
+        *rowTileS = 3;
+        *colTileS = 3;
+        break;
+    case 0x3:
+    case 0x4:
+    case 0x9:
+    case 0x11:
+    case 0x13:
+    case 0x14:
+    case 0x15:
+    case 0x16:
+    case 0x17:
+    case 0x18:
+    case 0x19:
+        *rowTileS = 3;
+        *colTileS = 2;
+        break;
+    case 0x5:
+    case 0x7:
+    case 0xA:
+    case 0x1A:
+    case 0x1B:
+    case 0x1C:
+    case 0x1D:
+    case 0x1E:
+    case 0x1F:
+        *rowTileS = 2;
+        *colTileS = 2;
+        break;
+    default:
+        *rowTileS = *colTileS = 0;
+        break;
+    }
+}
+
+typedef struct _GXLightObjImpl {
       char UNK_0x0[0xC];
       char UNK_0xC[0x4];
       f32 aa;
@@ -389,10 +431,10 @@ void GXInitSpecularDir(unsigned int arg0, void *ctx) {
     char local[0x2D0];
     unsigned short value = __peReg[7];
     if (lbl_8055D978 != 0) {
-        OSClearContext(local + 8);
-        OSSetCurrentContext(local + 8);
+        OSClearContext(local);
+        OSSetCurrentContext(local);
         ((void (*)(unsigned short))lbl_8055D978)(value);
-        OSClearContext(local + 8);
+        OSClearContext(local);
         OSSetCurrentContext(ctx);
     }
     __peReg[5] |= 4;
@@ -707,6 +749,40 @@ void GXInitTexObjCI(void *obj, void *image, unsigned short width, unsigned short
     GXInitTexObj(obj, image, width, height, format, wrap_s, wrap_t, mipmap);
     *(int *)((char *)obj + 0x18) = tlut_name;
     *(unsigned char *)((char *)obj + 0x1F) &= ~2;
+}
+
+void GXInitTexObjLOD(void *obj, s32 min_filt, s32 mag_filt, f32 min_lod, f32 max_lod, f32 lod_bias, s32 bias_clamp, s32 do_edge_lod, s32 max_aniso) {
+    s32 *t = (s32 *)obj;
+    s32 lbias;
+    s32 lmin;
+    s32 lmax;
+
+    if (lod_bias < -4.0f) {
+        lod_bias = -4.0f;
+    } else if (lod_bias >= 4.0f) {
+        lod_bias = 3.99f;
+    }
+    lbias = 32.0f * lod_bias;
+    t[0] = (t[0] & ~0x1FE00) | ((lbias << 9) & 0x1FE00);
+    t[0] = (t[0] & ~0x10) | (((unsigned int)__cntlzw(mag_filt - 1) >> 1) & 0x10);
+    t[0] = (t[0] & ~0xE0) | ((GX2HWFiltConv[min_filt] << 5) & 0xE0);
+    t[0] = (t[0] & ~0x100) | ((__cntlzw(max_aniso) << 3) & 0x100);
+    t[0] = (t[0] & 0xFFF9FFFF) | ((max_aniso << 0x13) & 0x180000);
+    t[0] = (t[0] & ~0x200000) | ((bias_clamp << 0x15) & 0x200000);
+    if (min_lod < 0.0f) {
+        min_lod = 0.0f;
+    } else if (min_lod > 10.0f) {
+        min_lod = 10.0f;
+    }
+    lmin = 16.0f * min_lod;
+    if (max_lod < 0.0f) {
+        max_lod = 0.0f;
+    } else if (max_lod > 10.0f) {
+        max_lod = 10.0f;
+    }
+    lmax = 16.0f * max_lod;
+    t[1] = (t[1] & ~0xFF) | (lmin & 0xFF);
+    t[1] = (t[1] & ~0xFF00) | ((lmax << 8) & 0xFF00);
 }
 
 void GXInitTexObjWrapMode(int *obj, int wrap_s, int wrap_t) { *obj = (*obj & 0xFFFFFFFC) | wrap_s; *obj = (*obj & 0xFFFFFFF3) | (wrap_t << 2); }
@@ -1232,7 +1308,7 @@ void GXSetFieldMode(s32 mode, s32 field) {
 }
 
 void GXCallDisplayList(unsigned int arg0, unsigned int arg1) {
-    unsigned int *data = __GXData;
+    volatile unsigned int *data = __GXData;
     unsigned int saved0 = arg0;
     unsigned int saved1 = arg1;
     if (data[0x5FC / 4] != 0) {
