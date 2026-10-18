@@ -489,20 +489,22 @@ s32 fn_8011AC04(s32 arg0, s32 arg1) {
 }
 
 void fn_8011AC10(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 temp_r4;
     s32* p = (s32*)arg0;
     OSDisableInterrupts();
     arg2 &= 0xFFFF8000;
+    temp_r4 = arg1 + arg2;
     p[0xA0/4] = arg2;
     p[0x40/4] = arg2;
     p[0xA4/4] = arg1;
     p[0x9C/4] = arg1;
     p[0xAC/4] = arg1;
-    p[0xA8/4] = arg1 + arg2;
+    p[0xA8/4] = temp_r4;
     p[0x4C/4] = 0;
     p[0xB8/4] = arg3;
     p[0xBC/4] = arg4;
     p[0xD0/4] = (s32)arg0;
-    OSRestoreInterrupts();
+    OSRestoreInterrupts(temp_r4);
 }
 
 extern f32 lbl_80329D48[];
@@ -580,8 +582,8 @@ s32 fn_8011BC4C(void *arg0, void *arg1) {
 }
 
 void fn_8011BCAC(void **head, void *node) {
-    void *cur = *head;
     u32 key;
+    void *cur = *head;
     if (cur == 0) {
         *(void **)((u8 *)node + 4) = 0;
         *head = node;
