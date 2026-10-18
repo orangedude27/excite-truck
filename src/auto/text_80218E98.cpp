@@ -257,7 +257,6 @@ extern "C" void fn_80218968(s32, s32, f32);
 
 extern "C" void fn_80219354(void) { fn_80219044(); }
 
-extern "C" void fn_80219044();
 extern f32 lbl_805634A0;
 extern f32 lbl_805634A4;
 extern f32 lbl_805634B0;
