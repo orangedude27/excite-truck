@@ -24,6 +24,7 @@ extern u8 lbl_80323B28[];
 extern u8 lbl_80323B94[];
 extern u8 lbl_80323BEC[];
 extern u8 lbl_80323C14[];
+extern u8 lbl_80323C3C[];
 extern u8 lbl_80324054[];
 extern u8 lbl_80324030[];
 #pragma push
