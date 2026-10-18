@@ -1160,20 +1160,21 @@ extern "C" const u8 lbl_80559224[];
 extern "C" const u8 lbl_8055922C[];
 extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
     u16 sp8[2];
-    if (fn_800A4D44(arg2) == 1U) {
-        if (fn_800A4AD0(*(u8 **)arg2, (u8 *)lbl_8055922C) == 0) {
+    u16 **p = (u16 **)arg2;
+    if (fn_800A4D44(p) == 1U) {
+        if (fn_800A4AD0((u8 *)*p, (u8 *)lbl_8055922C) == 0) {
             fn_800A4AAC(arg0, (char *)lbl_80559224);
             return;
         }
-        fn_800A4AAC(arg0, *(char **)arg2);
+        fn_800A4AAC(arg0, (char *)*p);
         return;
     }
-    if (VFiPFSTR_StrCmp(arg2, (s32)lbl_8055922C) == 0) {
+    if (VFiPFSTR_StrCmp(p, (s32)lbl_8055922C) == 0) {
         sp8[0] = 0x2A;
         sp8[1] = 0;
         fn_800A4B78(arg1, sp8);
     } else {
-        fn_800A4B78(arg1, *(u16 **)arg2);
+        fn_800A4B78(arg1, *p);
     }
     if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
         fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
@@ -2786,7 +2787,7 @@ extern "C" s32 fn_800D58F0(void *);
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void *, void *);
 extern "C" void *lbl_8055DDF0;
 extern "C" f32 lbl_80560E60;
-extern "C" void *lbl_8031F168;
+extern "C" char lbl_8031F168[];
 extern "C" void fn_800D4428(void *arg0) {
     *(s32 *)((u8 *)arg0 + 4) = 0;
     *(s32 *)((u8 *)arg0 + 8) = 0;
@@ -2796,6 +2797,22 @@ extern "C" void fn_800D4428(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
     *(s32 *)((u8 *)arg0 + 0x18) = 0;
     *(s16 *)((u8 *)arg0 + 0x1C) = 0;
+}
+
+extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 deleting) {
+    if (self != 0) {
+        *(void **)self = (void *)((u32)&lbl_8031F168);
+        if (*(void **)((u8 *)self + 0x18) != 0) {
+            MEMFreeToAllocator((MEMAllocator *)lbl_8055DDF0, *(void **)((u8 *)self + 0x18));
+        }
+        if (*(void **)((u8 *)self + 0x14) != 0) {
+            MEMFreeToAllocator((MEMAllocator *)lbl_8055DDF0, *(void **)((u8 *)self + 0x14));
+        }
+        if (deleting > 0) {
+            ((void (*)(void *))fn_80128668)(self);
+        }
+    }
+    return self;
 }
 
 extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt8Material(void *arg0, void *arg1) {
@@ -2997,12 +3014,8 @@ void homebutton::HomeButtonEventHandler::onEvent(unsigned long, unsigned long ev
     EventDispatchB *b = (EventDispatchB *)a->first();
     b->second();
     switch (event) {
-    case 1:
-        fn_800CB820(text, arg);
-        break;
-    case 2:
-        startLeftEvent__Q210homebutton10HomeButtonFPCc(text);
-        break;
+    case 1: fn_800CB820(text, arg); break;
+    case 2: startLeftEvent__Q210homebutton10HomeButtonFPCc(text); break;
     case 0:
         if ((((unsigned long *)arg)[4] & 0x800) || (((unsigned long *)arg)[4] & 0x01000000))
             fn_800CD38C(text);
