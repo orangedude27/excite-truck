@@ -204,3 +204,5 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* arg0, 
     return arg0;
 }
 namespace nw4hbm { namespace ut { struct List { unsigned char data[0xA]; unsigned short stride; }; } }
+struct List_Remove_Link { List_Remove_Link *prev; List_Remove_Link *next; };
+struct List_Remove_List { void *head; void *tail; u16 count; u16 offset; };
