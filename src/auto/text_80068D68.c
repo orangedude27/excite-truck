@@ -345,16 +345,14 @@ s32 WUDSetDisableChannel(s8 arg0) {
     extern char lbl_80313550[];
     extern char lbl_80313568[];
     extern u8 lbl_80392960[];
-
-    volatile u8 *base = lbl_80392960;
+    register s32 result = 0;
+    register volatile u8 *base = lbl_80392960;
     s32 min;
     s32 max;
     s32 channel;
     s32 state;
     u8 status;
-    s32 result = 0;
-
-    DBPrintf_8006CFA8(lbl_80313550, (u32)lbl_80313550);
+    DBPrintf_8006CFA8(lbl_80313550);
     if (arg0 < 0 || arg0 > 0xD) return 0;
     state = OSDisableInterrupts();
     channel = (s8)base[0x688];
@@ -1799,14 +1797,14 @@ s32 fn_8007A3B4(s32 value) { s32 old = *(s32 *)(lbl_803C0F78 + 0x568); *(s32 *)(
 void btm_vsc_complete(UINT8 *p, UINT16 cc_opcode, UINT16 evt_len, tBTM_CMPL_CB *p_vsc_cplt_cback) {
     u8 packet[0x108];
     u8 *src = p;
+    u8 *out = packet + 4;
     tBTM_CMPL_CB *callback = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x61C);
-
     lbl_803C0F78[0x650] = 0;
     *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x61C) = NULL;
     if (callback != NULL) {
         *(u16 *)(packet + 0) = cc_opcode;
         *(u16 *)(packet + 2) = evt_len;
-        memcpy(packet + 4, src, evt_len);
+        memcpy(out, src, evt_len);
         callback(packet);
     }
 }
@@ -2645,22 +2643,47 @@ void btu_hcif_connection_request_evt(u8 *event) {
 }
 
 extern void l2c_link_role_change_failed(void);
-void btu_hcif_hdl_command_status(s32 opcode, s32 status, UINT8 *p_cmd) {
-    UINT8 bd_addr[6]; UINT16 handle; tBTM_ESCO_DATA esco_data;
-    if (opcode != 0x802) {
-        if (opcode < 0x802) {
-            if (opcode >= 0x801) { btm_pm_proc_cmd_status(status); return; }
-        } else if (opcode < 0x807) { btm_pm_proc_cmd_status(status); return; }
+void btu_hcif_hdl_command_status(s32 arg0, s32 arg1, UINT8 *arg2) {
+    tBTM_ESCO_DATA sp10;
+    UINT8 spD, spC, spB, spA, sp9, sp8;
+    UINT16 temp_r0;
+    if (arg0 != 0x802) {
+        if (arg0 < 0x802) {
+            if (arg0 < 0x801) goto block_6;
+            goto block_5;
+        }
+        if (arg0 < 0x807) {
+block_5:
+            btm_pm_proc_cmd_status(arg1);
+            return;
+        }
+        goto block_6;
     }
-    if (status != 0) switch (opcode) {
-    case 0x401: btm_process_inq_complete(status, 0); break;
-    case 0x419: btm_process_remote_name(NULL,NULL,0,status); btm_sec_rmt_name_request_complete(NULL,NULL,status); break;
-    case 0x00D: btm_qos_setup_complete(status,0,NULL); break;
-    case 0x405: if(p_cmd){ p_cmd++; STREAM_TO_BDADDR(bd_addr,p_cmd); btm_sec_connected(bd_addr,HCI_INVALID_HANDLE,status,0); l2c_link_hci_conn_comp(status,HCI_INVALID_HANDLE,bd_addr); } break;
-    case 0x80B: btm_acl_role_changed(status,NULL,BTM_ROLE_UNDEFINED); l2c_link_role_change_failed(); break;
-    case 0x428: if(p_cmd){ p_cmd++; STREAM_TO_UINT16(handle,p_cmd); if(btm_is_sco_active(handle)) btm_esco_proc_conn_chg(status,handle,0,0,0,0); else btm_sco_connected(status,NULL,handle,&esco_data); } break;
-    default: if((opcode&0xFC00)==0xFC00) btm_vsc_complete((UINT8*)&status,opcode,1,NULL); break;
-    } else if((opcode&0xFC00)==0xFC00) btm_vsc_complete((UINT8*)&status,opcode,1,NULL);
+block_6:
+    if (arg1 != 0) {
+        switch (arg0) {
+        case 0x401: btm_process_inq_complete(arg1, 0); return;
+        case 0x419: btm_process_remote_name(0, 0, 0, arg1); btm_sec_rmt_name_request_complete(0, 0, arg1); return;
+        case 0xD: btm_qos_setup_complete(arg1, 0, 0); return;
+        case 0x80B: btm_acl_role_changed(arg1, 0, 0xFF); l2c_link_role_change_failed(); return;
+        case 0x405:
+            if (arg2 != 0) {
+                spD=arg2[1]; spC=arg2[2]; spB=arg2[3]; spA=arg2[4]; sp9=arg2[5]; sp8=arg2[6];
+                btm_sec_connected(&sp8,0xFFFF,arg1,0); l2c_link_hci_conn_comp(arg1,0xFFFF,&sp8); return;
+            }
+            break;
+        case 0x428:
+            if (arg2 != 0) {
+                temp_r0=arg2[1]+(arg2[2]<<8);
+                if (btm_is_sco_active(temp_r0)!=0) { btm_esco_proc_conn_chg(arg1,temp_r0,0,0,0,0); return; }
+                btm_sco_connected(arg1,0,temp_r0,&sp10); return;
+            }
+            break;
+        default:
+            if ((u32)(arg0 & 0xFC00)==0xFFFFFC00U) btm_vsc_complete(arg2,arg0,1,0);
+            break;
+        }
+    }
 }
 
 void fn_8008251C(void) {
