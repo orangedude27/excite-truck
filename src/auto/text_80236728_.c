@@ -31,7 +31,7 @@ void fn_802368E0(void) {
 
 extern int fn_80215264(void);
 extern void fn_80236A5C(void*, int);
-extern void fn_80237AA0(void);
+extern void fn_80237AA0();
 extern void fn_80236960(void);
 extern char *lbl_8055F0C0;
 void fn_80236900(void) {
@@ -63,9 +63,11 @@ void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
 void fn_8023695C(void) { fn_80237EFC(); }
 
 void fn_802379EC(void *arg0) {
-    *(int *)((char *)arg0 + 0x20) = -1;
-    *(int *)((char *)arg0 + 0x28) = 0;
-    *(int *)((char *)arg0 + 0x24) = 0;
+    int minus = -1;
+    int zero = 0;
+    *(int *)((char *)arg0 + 0x20) = minus;
+    *(int *)((char *)arg0 + 0x28) = zero;
+    *(int *)((char *)arg0 + 0x24) = zero;
 }
 
 void fn_80237A04(void) {
@@ -90,11 +92,14 @@ extern int stricmp(const char *, const char *);
 extern char lbl_8034094C[];
 extern void *fn_801284F8(int, char *);
 char *fn_80237C40(void) {
-    char *p = fn_801284F8(0x34, lbl_8034094C);
+    void *data = lbl_8034094C;
+    char *p = fn_801284F8(0x34, data);
     int i;
-    for (i=0;i<0x21;i++) p[i]=0;
-    *(int *)(p+0x28)=0; *(int *)(p+0x2c)=0; *(int *)(p+0x24)=0;
-      return p;
+    for (i = 0; i < 0x21; i++) p[i] = 0;
+    *(int *)(p + 0x28) = 0;
+    *(int *)(p + 0x2c) = 0;
+    *(int *)(p + 0x24) = 0;
+    return p;
 }
 
 void fn_80237D00(void *arg0) {
