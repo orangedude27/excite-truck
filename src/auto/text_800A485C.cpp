@@ -605,11 +605,11 @@ extern "C" s32 fn_800A7C20(void *arg0, s32 arg1, void *arg2, s32 arg3);
 extern "C" s32 VFiPFCACHE_FlushAllCaches(void *arg0) {
     s32 temp_r3;
 
-    temp_r3 = fn_800A8AD4(*(s32 *)((u8 *)arg0 + 0x1630));
+    temp_r3 = ((s32 (*)(void *, s32))fn_800A8AD4)(arg0, *(s32 *)((u8 *)arg0 + 0x1630));
     if (temp_r3 != 0) {
         return temp_r3;
     }
-    temp_r3 = fn_800A8AD4(*(s32 *)((u8 *)arg0 + 0x1634));
+    temp_r3 = ((s32 (*)(void *, s32))fn_800A8AD4)(arg0, *(s32 *)((u8 *)arg0 + 0x1634));
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
@@ -887,10 +887,10 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
 }
 
 extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
+    u32 temp_r8;
     void *var_r9;
     void *temp_r6;
     u32 temp_r10;
-    u32 temp_r8;
     s32 temp_r7;
     s32 var_r31 = 1;
     u16 temp_r5;
@@ -900,7 +900,8 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
     else var_r9 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
     temp_r6 = M2C_FIELD(arg0, void **, 8);
     temp_r10 = M2C_FIELD(temp_r6, u32 *, 0x264);
-    temp_r8 = M2C_FIELD(arg0, u16 *, 0x28) + arg1;
+    temp_r8 = M2C_FIELD(arg0, u16 *, 0x28);
+    temp_r8 += arg1;
     temp_r7 = arg2 + (temp_r8 >> M2C_FIELD(var_r9, u8 *, 0x20));
     if ((u32)(M2C_FIELD(arg0, u32 *, 0x1C) + arg1) < temp_r10) {
         if ((M2C_FIELD(var_r9, u16 *, 0) - 1) & temp_r8) M2C_FIELD(arg0, s32 *, 0x20) = temp_r7;
@@ -2147,21 +2148,14 @@ extern "C" void fn_800D155C(void *arg0) {
 }
 
 extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void *this_ptr, void *arg1) {
-    u32 val = (u32)*(s32 *)this_ptr;
-    
-    if ((s32)val >= 4) {
+    if (*(s32 *)this_ptr >= 4) return -2;
+    if (fn_800D1E5C(*(s32 **)((u8 *)this_ptr + 0x24), *(s32 *)this_ptr) == 0) {
         return -2;
-    }
-    
-    if (fn_800D1E5C((void *)((u8 *)this_ptr + 0x24), (s32)val) != 0) {
+    } else if (*(u8 *)((u8 *)this_ptr + 0x1C) != 0) {
         return -2;
+    } else {
+        return fn_800604E8(*(s32 *)this_ptr, (s32)arg1, (void *)&fn_800D1668);
     }
-    
-    if (((u8 *)this_ptr)[0x1C] != 0) {
-        return -2;
-    }
-    
-    return fn_800604E8((s32)val, (s32)(u32)arg1, (void *)&fn_800D1668);
 }
 
 extern "C" void fn_800D1668(s32 arg0, s32 arg1) {
