@@ -59,6 +59,10 @@ void fn_801D1BA4(void) {
     }
 }
 
+void fn_801D1C00(void *arg0, int arg1) {
+    ((void (*)(int))fn_801D153C)(lbl_8055E918 + arg1 * 0x9C);
+}
+
 void fn_801D1C10(void) {
     int count = lbl_8055E8F8;
     int result = fn_8012850C(count * 0x9c + 0x10, &lbl_8055ABD8);
