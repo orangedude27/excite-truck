@@ -106,7 +106,7 @@ extern f64 lbl_80560278;
 extern f64 fn_8002EFB4(f64);
 extern void fn_801E7E18(void);
 extern char lbl_802FC3DC[];
-extern s32 fn_802E317C(void *);
+extern s32 fn_802E317C(void *, ...);
 extern char lbl_802FC420[];
 extern char lbl_802FC42C[];
 #pragma scheduling off
@@ -357,6 +357,31 @@ void fn_800109E4(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
     fn_80010B7C();
 }
 
+extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
+extern void fn_802C8DB8(void);
+extern u16 lbl_802ED748[6];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling off
+void fn_80010A50(f32 farg0, f32 farg1, f32 farg2, f32 farg3, s32 arg4, s32 arg5) {
+    f32 sp20[6];
+    f32 sp38[6];
+    f32 sp50[6];
+    f32 sp68[6];
+    s32 sp10[6];
+    fn_80231380(&sp20[0], arg4, lbl_80560280, farg0, farg1, lbl_80560264, lbl_80560280);
+    fn_80231380(&sp38[0], arg5, farg0 + farg1, farg2, lbl_80560264, lbl_80560280, lbl_80560280);
+    fn_80231380(&sp50[0], arg4, farg0, farg2 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
+    fn_80231380(&sp68[0], arg5, farg0 + farg1, farg2 - farg3, lbl_80560264, lbl_80560280, lbl_80560280);
+    sp10[0] = lbl_802ED748[0];
+    sp10[1] = lbl_802ED748[1];
+    sp10[2] = lbl_802ED748[2];
+    sp10[3] = lbl_802ED748[3];
+    sp10[4] = lbl_802ED748[4];
+    sp10[5] = lbl_802ED748[5];
+    fn_802C8DB8();
+}
+#pragma pop
 void fn_80010B74(void) {
     fn_802C8BD0(-1);
 }
@@ -379,10 +404,9 @@ void fn_80010B80(s32 arg0, f32 arg1, f32 arg2, f32 arg3, f32 arg4) {
 void *fn_80010BEC(void *arg0) {
     Unk0x18 *entry;
     s32 i;
-
     if (lbl_8055D4A8 > 0) {
         fn_80010B74();
-        entry = lbl_8034F6B0;
+        entry = &lbl_8034F6B0[0];
         i = 0;
         while (i < lbl_8055D4A8) {
             fn_80010A50(entry->unk_0x00, entry->unk_0x04, entry->unk_0x08,
@@ -753,19 +777,14 @@ f32 fn_8000EDC0(s32 arg0) {
 }
 
 s32 fn_8000EE54(s32 arg0) {
-    switch (arg0) {
-    case 13:
-        return -1;
-    default:
-        fn_802E317C(&lbl_802FC3DC);
-        break;
-    case 11:
-        return -1;
-    case 14:
-        return -0x5400;
-    case 12:
-        return -0x5400;
+    if (arg0 == 13) return -1;
+    if (arg0 >= 11) {
+        if (arg0 == 11) return -1;
+        if (arg0 >= 12) return -0x5400;
     }
+    if (arg0 >= 15) return -0x5400;
+    fn_802E317C(lbl_802FC3DC);
+    return -1;
 }
 
 f32 fn_8000EEC8(s32 arg0, f32 arg1) {
