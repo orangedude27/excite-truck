@@ -125,6 +125,7 @@ void fn_80005B70(void) {
 
 #pragma push
 #pragma opt_pointer_aliasing on
+#pragma dont_inline on
 void fn_80005B74(void) {
     extern s32 fn_80019B54(void);
     extern s32 *__AXFXGetLfoSinTable_801769CC(void);
@@ -176,6 +177,13 @@ void fn_800060B4(void) {
 }
 
 void fn_800060DC(void) {
+}
+
+void fn_800060E0(u8 arg0, u8 arg1) {
+    lbl_8055D340[0] = arg0;
+    lbl_8055D340[2] = arg1;
+    __AXDSPInitCallback_801769E0();
+    fn_8017691C();
 }
 
 s32 ARCClose(void) {
@@ -312,7 +320,6 @@ void fn_80007238(void) {
     f32 f0;
     f32 f3;
     s32 mode;
-
     ((s32 *)lbl_8034EE84)[3] = ((s32 (*)(void))fn_801E7E3C)();
     ((f32 *)lbl_8034EE84)[4] = ((f32 (*)(void))fn_801E7E18)();
     ((s32 *)lbl_8034EE84)[6] = ((s32 (*)(void))fn_801E85A4)();
@@ -321,7 +328,11 @@ void fn_80007238(void) {
     mode = ((s32 *)lbl_8034EE84)[6];
     f0 = lbl_80560194;
     f3 = lbl_80560198;
-    if (mode <= 2) f3 = f0;
+    if (mode <= 2) goto use_f0;
+    goto use_f3;
+use_f0:
+    f3 = f0;
+use_f3:
     fn_802C974C(lbl_80560130, lbl_80560124, f3);
     fn_800057D0();
     fn_80161C18();
@@ -508,10 +519,10 @@ void fn_80007898(void *arg0) {
     if ((((s32 (*)(void))((u32 **)*(u32 *)fn_801B83A0())[0x64 / 4])() != 0) &&
         (((s32 (*)(void))((u32 **)*(u32 *)fn_801B83A0())[0x68 / 4])() != 0) &&
         (((s32 (*)(void *))((u32 **)*(u32 *)arg0)[0x38 / 4])(arg0) == 0)) {
-        temp_f31 = fn_80011E44() - lbl_805601A0;
-        temp_f30 = lbl_805601A4 + fn_80011E60();
-        fn_8000FBE8(temp_f31 - lbl_805601A8, temp_f30, lbl_80560130);
-        fn_8000FF88(-1, 0x11, lbl_802FB6B4, lbl_805601AC, temp_f31, temp_f30);
+        temp_f30 = fn_80011E44() - lbl_805601A0;
+        temp_f31 = lbl_805601A4 + fn_80011E60();
+        fn_8000FBE8(temp_f30 - lbl_805601A8, temp_f31, lbl_80560130);
+        fn_8000FF88(-1, 0x11, lbl_802FB6B4, lbl_805601AC, temp_f30, temp_f31);
     }
 }
 #pragma pop
