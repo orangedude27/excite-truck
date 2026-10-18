@@ -974,8 +974,16 @@ extern "C" void fn_8021EB9C(void *arg0, s32 arg1) {
 extern "C" void fn_8021F044(void *arg0) {
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
-    void **vt = *(void ***)arg0;
-    ((void (*)(void *, s32))vt[25])(arg0, 0);
+    class Dispatch {
+    public:
+        virtual void f00(); virtual void f01(); virtual void f02(); virtual void f03(); virtual void f04();
+        virtual void f05(); virtual void f06(); virtual void f07(); virtual void f08(); virtual void f09();
+        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14();
+        virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+        virtual void f20(); virtual void f21(); virtual void f22();
+        virtual void DispatchCall(s32);
+    };
+    ((Dispatch *)arg0)->DispatchCall(0);
 }
 
 extern "C" void *lbl_8033EF68;
@@ -1973,23 +1981,16 @@ extern "C" void fn_80229640(void *arg0) {
 }
 
 extern "C" s32 fn_802296C0(void *arg0) {
-    class Obj7 {
-    public:
-        virtual s32 f0(); virtual s32 f1(); virtual s32 f2(); virtual s32 f3();
-        virtual s32 f4(); virtual s32 f5(); virtual s32 f6(); virtual s32 f7();
-    };
+    class Obj5 { public: virtual s32 f0(); virtual s32 f1(); virtual s32 f2(); virtual s32 f3(); virtual s32 f4(); virtual s32 f5(); };
     s32 result;
     void *obj;
-    if ((u32)(*(s32 *)((u8 *)arg0 + 0x25C) + 0x20000) == (u32)-0x46A) {
-        result = 1;
-    } else if (*(u8 *)((u8 *)arg0 + 0x18) != 0) {
-        result = (*(u8 *)((u8 *)arg0 + 0x254) != 0) + 2;
-    } else {
-        result = 0;
-    }
+    if ((u32)(*(u32 *)((u8 *)arg0 + 0x25C) + 0x20000U) != 0xFFFFFB96U) {
+        if (*(u8 *)((u8 *)arg0 + 0x18) != 0)
+            result = (*(u8 *)((u8 *)arg0 + 0x254) != 0) + 2;
+        else result = 0;
+    } else result = 1;
     obj = *(void **)((u8 *)arg0 + 0x244);
-    if (((Obj7 *)obj)->f7() == 3 && result == 3)
-        result = 1;
+    if (((Obj5 *)obj)->f5() == 3 && (u32)result == 3) result = 1;
     return result;
 }
 
