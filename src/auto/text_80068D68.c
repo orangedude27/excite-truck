@@ -2011,7 +2011,7 @@ void bta_dm_pin_reply(void *arg0) {
 
 void bta_dm_search_cancel(void) {
     BTM_ClearInqDb(0);
-    if ((u16)fn_8007B340() != 0) {
+    if (((u16 (*)(void))fn_8007B340)() != 0) {
         BTM_CancelInquiry();
         ((void (*)(s32, s32))*(u32 *)lbl_803C0B98)(4, 0);
         {
