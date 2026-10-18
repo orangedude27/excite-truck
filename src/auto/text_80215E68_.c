@@ -177,6 +177,7 @@ s32 fn_802161CC(s32 arg0) {
         }
     }
 }
+#pragma dont_inline reset
 
 void fn_8021662C(void) {
     s32 temp_r31;
