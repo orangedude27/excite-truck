@@ -591,15 +591,12 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800F5014(void *arg0, 
 }
 
 extern "C" s32 GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(void *self, void *archive) {
-    s32 size;
-    if (archive == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x119, lbl_80324EA4);
-    }
-    size = 0;
-    if (fn_800F2814(archive) != 0) {
-        size = *(s32 *)((u8 *)archive + 0x18);
-    }
-    return size * 0xA000;
+    s32 info[8];
+    if (archive == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x119, lbl_80324EA4);
+    s32 result = 0;
+    if (((s32 (*)(void *, void *))fn_800F2814)(archive, info) != 0)
+        result = info[4];
+    return result * 0xA000;
 }
 
 void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, unsigned long start, unsigned long end) {
