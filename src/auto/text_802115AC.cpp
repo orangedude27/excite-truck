@@ -806,17 +806,19 @@ extern "C" s32 fn_80215C28(s32 arg0, s32 arg1) {
     case 0x125:
         fn_80214CB4(0);
         fn_80230E90(0);
-        return 1;
+        goto done;
     case 0x127:
         fn_80214CB4(1);
         fn_80230E90(0);
-        return 1;
+        goto done;
     case 0x126:
     case 0x128:
-        return 1;
+        goto done;
     default:
         return 0;
     }
+done:
+    return 1;
 }
 
 extern "C" void fn_80215CA0(void) {
