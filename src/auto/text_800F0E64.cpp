@@ -241,10 +241,10 @@ void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800F21FC(vo
     OSRestoreInterrupts(token);
 }
 
-s32 GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void *self, s32 index) {
-    if (index < 0 || index > 0x10) {
-        if (0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x2EB, lbl_803245B8, index, 0, 0x10);
-    }
+extern "C" s32 GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void *self, s32 index) {
+    s32 valid = 0;
+    if (index >= 0 && index <= 0x10) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80324390, 0x2EB, (const char *)lbl_803245B8, index, 0, 0x10);
     if (index < 0x10) return (s32)((u8 *)self + 0x94 + index * 2);
     return 0;
 }
