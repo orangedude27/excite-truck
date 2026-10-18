@@ -22,6 +22,12 @@ extern "C" void fn_8019ECC4(void);
 extern void* lbl_80333B48;
 extern f32 lbl_80562370;
 
+extern "C" void fn_8019CE4C(void*, void*);
+extern "C" void fn_8019BD54(void*, void*, s32, s32);
+extern "C" void fn_8019B068(void*, void*, s32, s32);
+extern "C" void fn_8019CE3C(void*, s32);
+extern "C" void fn_802E317C(const char*, ...);
+extern "C" const char lbl_803335EC[];
 extern void fn_801EA1E0(s32, s32, f32, f32);
 extern "C" void fn_8019EBC0(void);
 extern "C" void fn_8019F3D0(void);
