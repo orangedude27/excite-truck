@@ -154,6 +154,13 @@ void* __dt__Q34nw4r2ef6EffectFv_80293A88(void* arg0, int arg1) {
 
 void fn_80293AE8(void* arg0) { *(int*)((u8*)arg0 + 0x4c2c) = 0; }
 
+extern void fn_80293F20(void*);
+void fn_80293AF4(void* arg0) {
+    float value = fn_801E7E24(arg0);
+    float abs = (float)__fabs((double)value);
+    if (!(abs <= lbl_80558DC4)) fn_80293F20(arg0);
+}
+
 void fn_80293B44(void *arg0) {
     u8 *record = (u8 *)arg0 + 0x2C;
     s32 i = 0;
