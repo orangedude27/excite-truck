@@ -94,7 +94,6 @@ public:
     f32 m_max;      // 0x8
     f32 m_value;    // 0xC
     f32 m_speed;    // 0x10
-    u8 pad14[4];
     s32 m_state;    // 0x14
     s32 m_dir;      // 0x18
     u8 pad1c[4];
