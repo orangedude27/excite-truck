@@ -92,11 +92,14 @@ extern "C" s32 fn_8013CB44(const char *arg0, TObj10 *arg1) {
 }
 
 extern "C" void fn_8013CB90(void *arg0) {
-    f32 x = *(f32 *)((u8 *)arg0 + 0x10);
-    f32 scale = lbl_80561498;
-    f32 y = *(f32 *)((u8 *)arg0 + 0x14);
-    *(f32 *)((u8 *)arg0 + 4) = *(f32 *)((u8 *)arg0 + 4) - x * scale;
-    *(f32 *)((u8 *)arg0 + 8) = *(f32 *)((u8 *)arg0 + 8) - y * scale;
+    f32 x;
+    f32 scale;
+    f32 y;
+    x = *(f32 *)((u8 *)arg0 + 0x10);
+    scale = lbl_80561498;
+    y = *(f32 *)((u8 *)arg0 + 0x14);
+    *(f32 *)((u8 *)arg0 + 4) -= x * scale;
+    *(f32 *)((u8 *)arg0 + 8) -= y * scale;
 }
 
 extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
@@ -342,22 +345,21 @@ extern "C" void *fn_80141EB0(s32 *arg0) {
 }
 
 extern "C" s32 fn_80141F28(void *arg0, s32 arg1) {
-    s32 head = *(s32 *)((char *)arg0 + 0xC);
-    s32 capacity = *(s32 *)((char *)arg0 + 4);
-    s32 count = capacity + (*(s32 *)((char *)arg0 + 8) - head);
-    s32 result;
-    if (arg1 >= count % capacity) {
-        result = *(s32 *)arg0 + ((arg1 + (capacity + head)) % capacity) * 12;
-    } else {
-        result = 0;
-    }
-    return result;
+    s32 head = ((s32 *)arg0)[3];
+    s32 capacity = ((s32 *)arg0)[1];
+    s32 count = capacity + (((s32 *)arg0)[2] - head);
+    if (arg1 >= count % capacity)
+        return 0;
+    s32 *base = (s32 *)((s32 *)arg0)[0];
+    s32 index = (arg1 + (capacity + head)) % capacity;
+    return (s32)base + index * 12;
 }
 
+#pragma small_data off
 extern "C" s32 fn_80141F7C(f32 arg0) {
     return (f32)__fabs((f64)arg0) <= *(volatile f32 *)0x80558DC4;
 }
-
+#pragma small_data on
 extern "C" u8 fn_80141FA0(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x19);
 }
@@ -715,4 +717,14 @@ extern "C" s32 fn_8014445C(s32 arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_80144494(s32 arg0, s32 arg1) { return arg1; }
-
+struct Fn8013FC6CDispatch {
+    virtual void unused0();
+    virtual void unused1();
+    virtual void unused2();
+    virtual void unused3();
+    virtual void unused4();
+    virtual void unused5();
+    virtual void unused6();
+    virtual void unused7();
+    virtual int test(int);
+};
