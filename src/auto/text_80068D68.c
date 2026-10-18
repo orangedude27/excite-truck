@@ -3278,14 +3278,11 @@ void *l2cu_find_lcb_by_bd_addr(u8 *addr) {
 }
 
 void *l2cu_find_lcb_by_handle(u16 handle) {
-    u8 *lcb = lbl_803C4040 + 8;
-    if (lcb[0] && *(u16 *)(lcb + 0x28) == handle) return lcb;
-    lcb += 0x5C;
-    if (lcb[0] && *(u16 *)(lcb + 0x28) == handle) return lcb;
-    lcb += 0x5C;
-    if (lcb[0] && *(u16 *)(lcb + 0x28) == handle) return lcb;
-    lcb += 0x5C;
-    if (lcb[0] && *(u16 *)(lcb + 0x28) == handle) return lcb;
+    u8 *p = lbl_803C4040;
+    if (*(p += 8) != 0 && *(u16 *)(p + 0x28) == handle) return p;
+    if (*(p += 0x5C) != 0 && *(u16 *)(p + 0x28) == handle) return p;
+    if (*(p += 0x5C) != 0 && *(u16 *)(p + 0x28) == handle) return p;
+    if (*(p += 0x5C) != 0 && *(u16 *)(p + 0x28) == handle) return p;
     return 0;
 }
 
