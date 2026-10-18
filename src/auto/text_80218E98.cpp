@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" int lbl_8033F998[];
 extern "C" void *lbl_8033E878[];
 extern "C" void *lbl_8033DCF8[];
 extern "C" void fn_802192AC(void *);
@@ -1877,12 +1878,12 @@ extern "C" void fn_80228A80(void) {
 }
 
 extern "C" void fn_80228A84(void *arg0) {
+    s32 value = *(s32 *)((u8 *)arg0 + 0x270);
     volatile s32 work[2];
-    fn_802C86F0((void *)work, *(s32 *)((u8 *)arg0 + 0x270),
-        *(s32 *)((u8 *)arg0 + 0x274), *(s32 *)((u8 *)arg0 + 0x278),
-        *(s32 *)((u8 *)arg0 + 0x27C));
+    fn_802C86F0((void *)work, value, *(s32 *)((u8 *)arg0 + 0x274),
+        *(s32 *)((u8 *)arg0 + 0x278), *(s32 *)((u8 *)arg0 + 0x27C));
     fn_802C88BC(2);
-    ((VfObj *)*(void **)((u8 *)arg0 + 0x268))->vf6();
+    ((VfObj *)*(void **)((u8 *)arg0 + 0x268))->vf5();
     fn_802C8750((void *)work, -1);
 }
 
