@@ -10,6 +10,18 @@ void fn_802E7578(void) {
     lbl_8055FFF0 = (void*)fn_802E769C();
 }
 
+void fn_802E759C(void) {
+    void* object;
+
+    object = lbl_8055FFF0;
+    if (object != 0) {
+        if (object != 0) {
+            ((void (*)(void*, s32))(*(void***)object)[2])(object, 1);
+        }
+        lbl_8055FFF0 = 0;
+    }
+}
+
 void fn_802E75E4(s32 arg0) {
     ((void (*)(void*, s32))(*(void***)lbl_8055FFF0)[3])(lbl_8055FFF0, arg0);
 }
@@ -20,13 +32,23 @@ void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
 
 extern s32 fn_80128668(void);
 extern s32 OSGetConsoleType(void);
-extern s32 fn_802E30C8(void*);
+extern s32 fn_802E30C8(const char*, ...);
 extern s32 fn_801284F8(s32, void*);
 extern char lbl_8034D828[];
 extern char lbl_8034D84C[];
 extern char lbl_8034D860[];
 void fn_802E7684(void* arg0) {
     ((UnkFunc)(*(void**)lbl_8055FFF0))( (s32)arg0 );
+}
+
+s32 fn_802E769C(void) {
+    s32* result;
+    OSGetConsoleType();
+    fn_802E30C8((char*)lbl_8034D828);
+    result = (s32*)fn_801284F8(4, lbl_8034D84C);
+    if (result != 0) {
+        *result = (s32)lbl_8034D860;
+    }
 }
 
 s32 fn_802E76F0(s32 arg0, s32 arg1) {
