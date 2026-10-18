@@ -14,6 +14,8 @@ extern "C" int fn_8029C190(void*);
 extern "C" void fn_80288A40(void*, float*);
 extern "C" void fn_8028E398(void*);
 extern "C" void* fn_8029A820(void*, int);
+extern "C" int fn_8029C024(int*);
+extern "C" int fn_8029C054(int*);
 extern "C" void* fn_802998F4(void*, int);
 extern "C" void* fn_802992C4(void*, int);
 extern "C" void* fn_80298A4C(void*, int);
@@ -88,51 +90,17 @@ int fn_80297D90(int* out, int value) {
 }
 
 extern "C" void fn_80297DC8(void* arg0) {
-    float f0 = lbl_805645B4;
-    float f1 = lbl_805645B0;
-    float f2 = lbl_805645AC;
-    float f3 = lbl_805645A8;
-    float f4 = lbl_805645A4;
-    float f5 = lbl_805645A0;
-    float f6 = lbl_8056459C;
-    float f7 = lbl_80564598;
-    float f8 = lbl_80564594;
-    float f9 = lbl_80564590;
-    float tmp[6];
-    float tmp2[3];
-    *(int*)((char*)arg0 + 0x4) = 0xC0;
-    *(float*)((char*)arg0 + 0x8) = f9;
-    *(float*)((char*)arg0 + 0xC) = f8;
-    *(int*)arg0 = 1;
-    tmp[0] = f7;
-    tmp[1] = f8;
-    tmp[2] = f7;
-    tmp2[0] = f9;
-    tmp2[1] = f9;
-    tmp2[2] = f9;
-    *(float*)((char*)arg0 + 0x10) = tmp[0];
-    *(float*)((char*)arg0 + 0x14) = tmp[1];
-    *(float*)((char*)arg0 + 0x18) = tmp[2];
-    *(float*)((char*)arg0 + 0x1C) = tmp2[0];
-    *(float*)((char*)arg0 + 0x20) = tmp2[1];
-    *(float*)((char*)arg0 + 0x24) = tmp2[2];
-    *(float*)((char*)arg0 + 0x28) = f6;
-    *(float*)((char*)arg0 + 0x30) = f5;
-    *(float*)((char*)arg0 + 0x50) = f9;
-    *(float*)((char*)arg0 + 0x54) = f4;
-    *(float*)((char*)arg0 + 0x58) = f3;
-    *(float*)((char*)arg0 + 0x5C) = f2;
-    *(float*)((char*)arg0 + 0x70) = f1;
-    *(float*)((char*)arg0 + 0x68) = f1;
-    *(float*)((char*)arg0 + 0x60) = f1;
-    *(float*)((char*)arg0 + 0x74) = f0;
-    *(float*)((char*)arg0 + 0x6C) = f0;
-    *(float*)((char*)arg0 + 0x64) = f0;
-    *(float*)((char*)arg0 + 0x80) = f9;
-    *(int*)((char*)arg0 + 0x84) = 0x40;
-    *(unsigned char*)((char*)arg0 + 0x88) = 1;
-    *(int*)((char*)arg0 + 0x44) = 2;
-    *(unsigned char*)((char*)arg0 + 0x89) = 1;
+ float f0=lbl_805645B4,f1=lbl_805645B0,f2=lbl_805645AC,f3=lbl_805645A8,f4=lbl_805645A4,f5=lbl_805645A0,f6=lbl_8056459C,f7=lbl_80564598,f8=lbl_80564594,f9=lbl_80564590;
+ float tmp[6];
+ *(int*)((char*)arg0+4)=0xC0; *(float*)((char*)arg0+8)=f9; *(float*)((char*)arg0+0xC)=f8; *(int*)arg0=1;
+ tmp[0]=f7; tmp[1]=f8; tmp[2]=f7; tmp[3]=f9; tmp[4]=f9; tmp[5]=f9;
+ *(float*)((char*)arg0+0x10)=tmp[0]; *(float*)((char*)arg0+0x14)=tmp[1]; *(float*)((char*)arg0+0x18)=tmp[2];
+ *(float*)((char*)arg0+0x1C)=tmp[3]; *(float*)((char*)arg0+0x20)=tmp[4]; *(float*)((char*)arg0+0x24)=tmp[5];
+ *(float*)((char*)arg0+0x28)=f6; *(float*)((char*)arg0+0x30)=f5; *(float*)((char*)arg0+0x50)=f9;
+ *(float*)((char*)arg0+0x54)=f4; *(float*)((char*)arg0+0x58)=f3; *(float*)((char*)arg0+0x5C)=f2;
+ *(float*)((char*)arg0+0x70)=f1; *(float*)((char*)arg0+0x68)=f1; *(float*)((char*)arg0+0x60)=f1;
+ *(float*)((char*)arg0+0x74)=f0; *(float*)((char*)arg0+0x6C)=f0; *(float*)((char*)arg0+0x64)=f0;
+ *(float*)((char*)arg0+0x80)=f9; *(int*)((char*)arg0+0x84)=0x40; *(unsigned char*)((char*)arg0+0x88)=1; *(int*)((char*)arg0+0x44)=2; *(unsigned char*)((char*)arg0+0x89)=1;
 }
 
 extern "C" void* fn_8028E61C(void*);
@@ -665,8 +633,9 @@ extern "C" int fn_8029C024(int *arg0) {
 #pragma dont_inline reset
 }
 
-int fn_8029C054(void* arg0) {
-    fn_8029A8A4(lbl_8055F7D4, *(void**)arg0);
+extern "C" int fn_8029C054(int* arg0) {
+    int value = *(volatile int*)arg0;
+    fn_8029A8A4(lbl_8055F7D4, (void*)value);
     return 4;
 }
 
