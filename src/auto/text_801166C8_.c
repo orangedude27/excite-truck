@@ -53,14 +53,14 @@ s32 fn_80116A38(void) {
 
 BOOL ARCChangeDir(ARCHandle* handle, const char* path) {
     s32 entrynum = ARCConvertPathToEntrynum(handle, path);
-    u32* entry;
-    if (entrynum < 0) goto fail;
-    entry = (u32*)((u32)handle->FSTStart + entrynum * 0xC);
-    if (!(*entry & 0xFF000000)) goto fail;
+    u32 entryAddr = (u32)handle->FSTStart + entrynum * 0xC;
+    
+    if (entrynum < 0 || !(*(u32*)entryAddr & 0xFF000000)) {
+        return FALSE;
+    }
+    
     handle->currDir = entrynum;
     return TRUE;
-fail:
-    return FALSE;
 }
 
 BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
@@ -423,6 +423,11 @@ s32 fn_8011943C(void *arg0, s32 arg1) {
     }
 }
 
+void fn_80119498(void *arg0) {
+    fn_8011943C(arg0, 1);
+    *(s32 *)((u8 *)arg0 + 0x38) = 0;
+}
+
 s32 fn_801194D0(void* arg0) {
  return *(u16*)((u8*)arg0+0x1be) + (*(u16*)((u8*)arg0+0x1bc)<<16);
 }
@@ -555,6 +560,24 @@ void *fn_8011A168(void *arg0) {
         lbl_8055DEE4 = src[1];
     }
     return &fn_80119DD0;
+}
+
+void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
+    s32 temp_r0, temp_r31, temp_r3, temp_r3_2, temp_r4, var_r31;
+    volatile s32 *counter = (volatile s32 *)((u8 *)arg0 + 0xC0);
+    temp_r31 = fn_80116BD4(arg1, 0x3E8, *(s32 *)((u8 *)arg0 + 0xBC));
+    temp_r3 = fn_80116D30();
+    var_r31 = temp_r3;
+    *counter = *counter + (temp_r31 - (temp_r3 - arg2));
+    goto loop;
+loop:
+    temp_r3_2 = fn_80116D30();
+    temp_r0 = *counter;
+    temp_r4 = temp_r3_2 - var_r31;
+    if (temp_r4 < temp_r0) goto loop;
+    var_r31 = temp_r3_2;
+    *counter = temp_r0 - temp_r4;
+    if (*counter > 0) goto loop;
 }
 
 void fn_8011A4F8(u32 arg0, void *arg1) {
