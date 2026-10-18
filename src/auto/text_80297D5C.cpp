@@ -553,6 +553,13 @@ void* fn_8029B9A4(void* arg0, int arg1) {
 
 extern "C" int fn_8029AF24(int); void fn_8029BA8C(int* arg0) { fn_8029AF24(*arg0); }
 
+#pragma scheduling off
+extern "C" int fn_8029BD14(int arg0) {
+    fn_8029BEF8();
+    fn_801EEFDC((void*)fn_8029C190, 9);
+    return arg0;
+}
+#pragma scheduling reset
 extern "C" void* fn_8029BD54(void* arg0, int arg1) {
     if (arg0 != 0) {
         fn_801EF024((void*)fn_8029C190);
