@@ -1110,9 +1110,14 @@ extern "C" void fn_80220AFC(void *arg0) {
 }
 
 extern "C" void fn_80220B3C(void *arg0) {
-    if (*(u8 *)((u8 *)arg0 + 0x258) != 0) {
-        ((void (*)(void *))((void **)*(void **)arg0)[0xF])(arg0);
-    }
+    struct Local {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual void call();
+    };
+    if (*(u8 *)((u8 *)arg0 + 0x258) != 0)
+        ((Local *)arg0)->call();
 }
 
 extern "C" void fn_802C40B8(s32, s32, s32);
