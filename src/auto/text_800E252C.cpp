@@ -104,6 +104,8 @@ extern const char lbl_803220C4[];
 extern const char lbl_803220A0[];
 #pragma pop
 typedef float f32;
+extern float lbl_80560F38;
+extern float lbl_80560F3C;
 #pragma push
 #pragma small_data off
 extern float lbl_80560FB0;
