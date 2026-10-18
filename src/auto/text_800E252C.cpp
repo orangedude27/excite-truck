@@ -450,6 +450,20 @@ extern "C" void fn_800E56D0(void *arg0, float arg1) {
     }
 }
 
+extern "C" void *Instance__15EmissionManagerFv(void);
+extern "C" void fn_800E3DDC(void *);
+void SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *arg0, int arg1) {
+    int valid;
+    valid = 0;
+    if (arg1 >= 0 && arg1 <= 0xFF) valid = 1;
+    if (valid == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x306, lbl_803223BC, arg1, 0, 0xFF);
+    }
+    *(int *)((char *)arg0 + 0x124) = arg1;
+    Instance__15EmissionManagerFv();
+    fn_800E3DDC(arg0);
+}
+
 extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
     unsigned int level = OSDisableInterrupts();
     void *voice = *(void **)((char *)self + 0xc);
@@ -726,3 +740,11 @@ extern const char lbl_803221A8[];
 extern const char lbl_80322438[];
 extern float lbl_80560F38;
 extern float lbl_80560F3C;
+class ShutdownA { public: virtual ~ShutdownA(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11(); virtual void a12(); virtual void a13(); virtual void a14(); virtual void a15(); virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19(); virtual void a20(); virtual void a21(); virtual void a22(); virtual void a23(); virtual ShutdownA *get(); };
+class ShutdownB { public: virtual ~ShutdownB(); virtual void b2(); virtual void b3(); virtual void b4(); virtual void b5(); virtual int check(); };
+class ShutdownC { public: virtual ~ShutdownC(); virtual void c2(); virtual void c3(); virtual void c4(); virtual void c5(); virtual void c6(); virtual void c7(); virtual void c8(); virtual void c9(); virtual void c10(float); virtual void c11(); virtual void c12(); virtual void c13(); virtual void c14(); virtual void c15(); virtual void c16(); virtual void c17(); virtual void c18(); virtual void c19(); virtual void c20(); virtual void c21(); virtual void c22(); virtual ShutdownC *get(); };
+extern void DetachSound__Q34nw4r3snd11SoundHandleFv();
+extern void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+extern void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+extern void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *, void *);
+extern void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
