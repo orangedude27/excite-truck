@@ -64,6 +64,50 @@ extern "C" s32 fn_80144F40(const char *arg0, void *arg1) {
     return result;
 }
 
+extern "C" u8 lbl_80559DCC;
+extern "C" s32 fn_80144FB0(void *arg0, s32 arg1, s32 arg2, const char *arg3) {
+    struct Entry { const char *text; u32 mask; };
+    char *dst = (char *)arg0;
+    Entry *entry = (Entry *)arg3;
+    *dst = 0;
+    while (entry->text != 0) {
+        if ((entry->mask & (u32)arg2) == entry->mask) {
+            if (*dst != 0) {
+                s32 left = arg1;
+                char *end = dst;
+                while (*end != 0) { left--; end++; }
+                if (left > 0) {
+                    const char *sep = (const char *)&lbl_80559DCC;
+                    do {
+                        char c = *sep++;
+                        *end++ = c;
+                        if (c != 0) {
+                            left--;
+                            if (left <= 0) { end[-1] = 0; break; }
+                        } else break;
+                    } while (1);
+                }
+            }
+            const char *src = entry->text;
+            s32 left2 = arg1;
+            char *end2 = dst;
+            while (*end2 != 0) { left2--; end2++; }
+            if (left2 > 0) {
+                do {
+                    char c = *src++;
+                    *end2++ = c;
+                    if (c != 0) {
+                        left2--;
+                        if (left2 <= 0) { end2[-1] = 0; break; }
+                    } else break;
+                } while (1);
+            }
+        }
+        entry++;
+    }
+    return 0;
+}
+
 extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
     f32 value = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
     s32 integer;
@@ -79,16 +123,22 @@ extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
     return clamped;
 }
 
+struct LookupBase80145140 { virtual void *get(s32); };
+struct ItemBase80145140 { virtual void *a(); virtual void *b(); virtual const char *name(); };
+
 extern "C" s32 fn_80145140(void *arg0, const char *arg1) {
     s32 count = 0;
     s32 index = 0;
     void *item;
-    while ((item = ((void *(*)(void *, s32))(*(void ***)((u8 *)arg0))[3])(arg0, index)) != 0) {
-        const char *name = ((const char *(*)(void *))(*(void ***)item)[2])(item);
-        if (stricmp(name, arg1) == 0)
-            count++;
-        index++;
-    }
+loop:
+    item = ((void *(*)(void *, s32))(*(void ***)arg0)[3])(arg0, index);
+    if (item == 0)
+        goto done;
+    if (stricmp(((const char *(*)(void *))(*(void ***)item)[2])(item), arg1) == 0)
+        count++;
+    index++;
+    goto loop;
+done:
     return count;
 }
 
@@ -120,21 +170,30 @@ extern "C" f32 fn_801452E0(void *arg0, const char *arg1) {
     return (f32)atof(text);
 }
 
+extern "C" void fn_80145368(void *arg0, void *arg1) {
+    extern char lbl_80559DD0[];
+    extern char lbl_80559DD8[];
+    extern char lbl_80559DDC[];
+    extern char lbl_8032CF18[];
+    extern u8 lbl_8055E208;
+    extern f32 fn_801452C8(f32);
+    extern f32 fn_801452D4(f32);
+    *(s32 *)arg0 = ((s32 (*)(void *, const char *))(*(void ***)arg1)[5])(arg1, lbl_80559DD0);
+    *(f32 *)((u8 *)arg0 + 4) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DD8);
+    *(f32 *)((u8 *)arg0 + 8) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DDC);
+    if (lbl_8055E208) {
+        *(f32 *)((u8 *)arg0 + 4) = fn_801452C8(*(f32 *)((u8 *)arg0 + 4));
+        *(f32 *)((u8 *)arg0 + 8) = fn_801452D4(*(f32 *)((u8 *)arg0 + 8));
+    }
+    *(s32 *)((u8 *)arg0 + 0xC) = ((s32 (*)(void *, const char *, s32))(*(void ***)arg1)[8])(arg1, lbl_8032CF18, 0);
+}
+
 extern "C" f32 lbl_805615E0;
 extern "C" void fn_80145438(void *arg0, void *arg1) {
-    struct VTable { void *f0[9]; f32 (*f24)(void *, const char *); };
-    extern char lbl_80559DE0[];
-    extern char lbl_80559DE4[];
-    extern char lbl_80559DE8[];
-    extern char lbl_80559DEC[];
-    extern char lbl_80559DF0[];
-    extern char lbl_80559DF4[];
-    extern s32 fn_80145368(void);
-    extern f32 fn_801452E0(void *, const char *);
-    fn_80145368();
-    VTable *v = *(VTable **)arg1;
-    *(f32 *)((u8 *)arg0 + 0x10) = v->f24(arg1, lbl_80559DE0);
-    *(f32 *)((u8 *)arg0 + 0x14) = v->f24(arg1, lbl_80559DE4);
+    extern char lbl_80559DE0[]; extern char lbl_80559DE4[]; extern char lbl_80559DE8[]; extern char lbl_80559DEC[]; extern char lbl_80559DF0[]; extern char lbl_80559DF4[];
+    fn_80145368(arg0, arg1);
+    *(f32 *)((u8 *)arg0 + 0x10) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DE0);
+    *(f32 *)((u8 *)arg0 + 0x14) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DE4);
     *(f32 *)((u8 *)arg0 + 0x18) = fn_801452E0(arg1, lbl_80559DE8);
     *(f32 *)((u8 *)arg0 + 0x20) = fn_801452E0(arg1, lbl_80559DEC);
     *(f32 *)((u8 *)arg0 + 0x1C) = fn_801452E0(arg1, lbl_80559DF0);
@@ -153,16 +212,14 @@ extern "C" s32 fn_801454E8(void *arg0, const char *arg1) {
 }
 
 extern "C" void fn_80145538(void *arg0, void *arg1) {
-    struct VTable { void *f0[9]; f32 (*f24)(void *, const char *); };
+    extern s32 fn_80145368();
+    extern s32 fn_801454E8(void *, const char *);
     extern char lbl_80559DE0[];
     extern char lbl_80559DE4[];
     extern char lbl_80559DFC[];
-    extern s32 fn_80145368(void);
-    extern s32 fn_801454E8(void *, const char *);
     fn_80145368();
-    VTable *v = *(VTable **)arg1;
-    *(f32 *)((u8 *)arg0 + 0x10) = v->f24(arg1, lbl_80559DE0);
-    *(f32 *)((u8 *)arg0 + 0x14) = v->f24(arg1, lbl_80559DE4);
+    *(f32 *)((u8 *)arg0 + 0x10) = (*(f32 (**)(void *, const char *))(*(u8 **)arg1 + 0x24))(arg1, lbl_80559DE0);
+    *(f32 *)((u8 *)arg0 + 0x14) = (*(f32 (**)(void *, const char *))(*(u8 **)arg1 + 0x24))(arg1, lbl_80559DE4);
     *(s32 *)((u8 *)arg0 + 0x18) = fn_801454E8(arg1, lbl_80559DFC);
 }
 
@@ -199,6 +256,55 @@ extern "C" s32 fn_80145670(void *arg0, void *arg1) {
     *(s32 *)((u8 *)arg0 + 4) = vtable->get(arg1, lbl_8032CF48);
     *(s32 *)((u8 *)arg0 + 8) = fn_8023512C();
     return 0;
+}
+
+extern "C" s32 fn_8013126C(void *, s32);
+extern "C" s32 fn_80144FB0(void *, s32, s32, const char *);
+extern "C" void fn_801456E8(void *arg0, s32 arg1, s32 arg2) {
+    struct Entry { s32 unk0; f32 unk4; f32 unk8; s32 unkC; f32 unk10; s32 unk14; s32 unk18; s32 unk1C; };
+    struct List { Entry *entries; s32 count; };
+    List *list = (List *)arg0;
+    char pad[0xF0];
+    char buffer[0x40];
+    char result[0x48];
+    s32 value;
+    s32 offset = 0;
+    s32 i = 0;
+    Entry *entry;
+    fn_802E3AD0(arg1, lbl_8032CEC8 + 0x90);
+    fn_802E3AD0(arg1, lbl_8032CEC8 + 0xA0);
+    while (i < list->count) {
+        entry = (Entry *)((u8 *)list->entries + offset);
+        value = fn_8013126C(result, entry->unk1C);
+        fn_80144FB0(buffer, 0x40, entry->unk14, lbl_8032CEC8 + 0x10);
+        fn_802E3AD0(arg1, lbl_8032CEC8 + 0xD4, entry->unkC, entry->unk18, buffer,
+                    entry->unk0, value, entry->unk4, entry->unk8, entry->unk10);
+        offset += 0x20;
+        i++;
+    }
+    fn_802E3AD0(arg1, lbl_80559E14);
+}
+
+extern "C" void fn_801457D0(void *arg0, s32 arg1, s32 arg2) {
+    char *base = lbl_8032CEC8;
+    s32 offset;
+    s32 i;
+    fn_802E3AD0(arg1, base + 0x104);
+    fn_802E3AD0(arg1, base + 0x114);
+    i = 0;
+    offset = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 4)) {
+        u8 *entry = *(u8 **)arg0 + offset;
+        fn_802E3AD0(arg1, base + 0x140,
+            *(f32 *)(entry + 4), *(f32 *)(entry + 8),
+            *(f32 *)(entry + 0x10), *(f32 *)(entry + 0x14),
+            *(f32 *)(entry + 0x18), *(f32 *)(entry + 0x1C),
+            *(f32 *)(entry + 0x20), *(f32 *)(entry + 0x24),
+            *(s32 *)(entry + 0xC), *(s32 *)entry);
+        offset += 0x28;
+        i++;
+    }
+    fn_802E3AD0(arg1, lbl_80559E14);
 }
 
 extern "C" void fn_8014589C(void *arg0, s32 arg1, s32 arg2) {
@@ -256,6 +362,8 @@ extern "C" void fn_80145B50(void *arg0, s32 arg1) {
 }
 
 #pragma dont_inline on
+#pragma push
+#pragma processor 750
 extern "C" void fn_80145B94(void *arg0, u32 arg1) {
     f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 input = *(f32 *)((u8 *)arg0 + 4);
@@ -266,6 +374,7 @@ extern "C" void fn_80145B94(void *arg0, u32 arg1) {
     s32 a = *(s32 *)((u8 *)arg0 + 0x18);
     fn_8000FF88(a, b, (s32)arg1, last, value, scale);
 }
+#pragma pop
 #pragma dont_inline reset
 
 extern "C" void fn_80145C7C(void *arg0, u32 arg1) {
@@ -306,8 +415,7 @@ extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg
     extern void fn_80235380();
     extern void fn_80128668(void *);
     if (arg0 != 0) {
-        register void *p = *(void **)((u8 *)arg0 + 8);
-        if (p != 0)
+        if (*(void **)((u8 *)arg0 + 8) != 0)
             fn_80235380();
         if (arg1 > 0)
             fn_80128668(arg0);
@@ -323,17 +431,15 @@ extern "C" void fn_8014647C(void *arg0) {
 }
 
 extern "C" void *fn_80146490(void *arg0) {
-    void *p = arg0;
-    if (p != NULL) {
-        if (((s32 *)p)[0x28 / 4] == 0) {
-            if (p != NULL) {
-                void *fn = *(void **)p;
-                ((void * (*)(void *, s32))((void **)fn)[2])(p, 1);
+    if (arg0 != NULL) {
+        if (((s32 *)arg0)[10] == 0) {
+            if (arg0) {
+                ((void * (*)(void *, s32))(*(void ***)(arg0))[2])(arg0, 1);
             }
             return NULL;
         }
     }
-    return p;
+    return arg0;
 }
 
 extern "C" void fn_80128668(void *);
@@ -474,7 +580,36 @@ extern "C" int vsprintf(char *, const char *, va_list);
 extern "C" unsigned int strlen(const char *);
 extern "C" void fn_802E317C(const char *, ...);
   extern "C" char lbl_8032D1A4[];
-extern "C" void fn_80147230(void *arg0, const char *arg1, ...) { char buffer[0x200]; if (arg0 != 0) { va_list args; va_start(args, arg1); vsprintf(buffer, arg1, args); size_t length = strlen(buffer); if (length >= 0x200) { length = strlen(buffer); fn_802E317C(lbl_8032D1A4, length, arg1); } fn_80145B94(arg0, (u32)buffer); } }
+extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
+    char buffer[0x200];
+    if (arg0 != 0) {
+        va_list args;
+        va_start(args, arg1);
+        vsprintf(buffer, arg1, args);
+        if (strlen(buffer) >= 0x200) {
+            s32 length = strlen(buffer);
+            const char *message = arg1;
+            const char *file = lbl_8032D1A4;
+            fn_802E317C(file, length, message);
+        }
+        fn_80145B94(arg0, (u32)buffer);
+    }
+}
+
+extern "C" void fn_80145C08(void *arg0, const char *arg1);
+extern "C" void fn_80147314(void *arg0, const char *format, ...) {
+    char buffer[0x200];
+    if (arg0 != 0) {
+        va_list args;
+        va_start(args, format);
+        vsprintf(buffer, format, args);
+        if (strlen(buffer) >= 0x200) {
+            s32 length = strlen(buffer);
+            fn_802E317C(lbl_8032D1A4, length, format);
+        }
+        fn_80145C08(arg0, buffer);
+    }
+}
 
 extern int vsprintf(char *, const char *, va_list);
 extern unsigned int strlen(const char *);
@@ -484,7 +619,8 @@ void fn_80145B94(void *, const char *);
 extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
     char buffer[0x200];
     va_list args;
-    void *result = ((void *(*)(void *))(*(void ***)arg0)[3])(arg0);
+    void **vtable = *(void ***)arg0;
+    void *result = ((void *(*)(void *))vtable[3])(arg0);
     if (result != 0) {
         va_start(args, format);
         vsprintf(buffer, format, args);
@@ -494,6 +630,36 @@ extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
             fn_802E317C(lbl_8032D1A4, length, format);
         }
         fn_80145B94(result, (u32)buffer);
+    }
+}
+
+extern "C" void fn_801474EC(void *arg0, const char *format, ...) {
+    char buffer[0x200];
+    if (arg0 != 0) {
+        va_list args;
+        va_start(args, format);
+        vsprintf(buffer, format, args);
+        if (strlen(buffer) >= 0x200) {
+            s32 length = strlen(buffer);
+            fn_802E317C(lbl_8032D1A4, length, format);
+        }
+        fn_80145C7C(arg0, (u32)buffer);
+    }
+}
+
+extern "C" void fn_801475D0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, const char *format, ...) {
+    char buffer[0x200];
+    va_list args;
+    void **vtable = *(void ***)arg0;
+    void *result = ((void *(*)(void *))vtable[3])(arg0);
+    if (result != 0) {
+        va_start(args, format);
+        vsprintf(buffer, format, args);
+        if (strlen(buffer) >= 0x200) {
+            s32 length = strlen(buffer);
+            fn_802E317C(lbl_8032D1A4, length, format);
+        }
+        fn_80145C7C(result, (u32)buffer);
     }
 }
 
@@ -511,11 +677,13 @@ extern "C" void fn_8014784C(void *arg0, s32 arg1, s32 arg2) {
         fn_80145CF4((void *)temp_r31, (void *)temp_r3, arg2);
 }
 
-extern "C" void fn_801478E0(void *arg0, s32 arg1, s32 arg2) {
-    if (((s32 (**)(void *))(*(void ***)arg0))[5](arg0) != 0 && arg1 != 0)
-        fn_80145CF4((void *)arg1, (void *)0, arg2);
+#pragma dont_inline on
+extern "C" void fn_801478E0(void *arg0, s32 unused, s32 arg1, s32 arg2) {
+    s32 result = ((s32 (**)(void *))(*(void ***)arg0))[5](arg0);
+    if (result != 0 && arg1 != 0)
+        fn_80145CF4((void *)result, (void *)arg1, (u32)arg2);
 }
-
+#pragma dont_inline reset
 extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 temp_r3;
     temp_r3 = ((s32 (**)(void *, s32))(*(void ***)arg0))[6](arg0, arg2);
@@ -524,7 +692,7 @@ extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 }
 
   extern "C" void fn_80147CEC(void *, s32, s32, f64);
-  extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 value, ...) {
+extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 value, ...) {
     char text[0x200];
     char buffer[0x20];
     va_list args;
@@ -534,14 +702,15 @@ extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         fn_802E317C(lbl_8032D1A4, strlen(text), format);
     fn_80147CEC(buffer, (s32)arg0, (s32)arg1, value);
     fn_80147230(buffer, (const char *)&lbl_80559E1C, text);
-  }
+}
   extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
     u32 tmp;
     fn_80147DC0(&tmp, arg0, arg1);
     fn_801476D8(&tmp, fn_80147C50(arg2, arg3, arg5), arg4);
 }
 
-#pragma dont_inline on
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
     s32 a = fn_801450A0(arg0 & 0xFF, arg1 & 0xFF, arg2);
     s32 b = fn_801450A0((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
@@ -551,6 +720,23 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
     result |= ((b & 0xFF) << 8) | (a & 0xFF);
     return result;
 }
+#pragma pop
+extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
+    struct Data { u32 w0; f32 f4; f32 f8; u32 wc; f32 f10; u32 w14; u32 w18; u32 w1c; };
+    Data *dst = (Data *)arg0;
+    Data *src = (Data *)arg1;
+    Data *other = (Data *)arg2;
+    f32 factor = (f32)arg3;
+    f32 f4 = src->f4 + factor * (other->f4 - src->f4);
+    f32 f8 = src->f8 + factor * (other->f8 - src->f8);
+    f32 f10 = src->f10 + factor * (other->f10 - src->f10);
+    *dst = *src;
+    dst->f4 = f4;
+    dst->f8 = f8;
+    dst->f10 = f10;
+    dst->w18 = fn_80147C50(src->w18, other->w18, factor);
+}
+
 #pragma dont_inline off
 extern "C" void fn_80147EE0(void *arg0, f32 scale) {
     f32 x = *(f32 *)((u8 *)arg0 + 0x10);
@@ -735,6 +921,37 @@ extern "C" void *fn_801484A4(const char *arg0, void *arg1) {
     return NULL;
 }
 
+void fn_80029004(char *, int);
+char *strcpy(char *, const char *);
+char *strchr(const char *, int);
+s32 fn_802E3D68(const char *);
+void fn_801457D0(s32, s32);
+void fn_801456E8(s32, s32);
+void fn_8014589C(s32, s32);
+void fn_8014595C(s32, s32);
+void fn_802E3734(s32 *);
+extern char lbl_80559E70[];
+extern char lbl_8032D28C[];
+extern "C" void fn_80148534(void *arg0) {
+    s32 value;
+    char *name;
+    fn_80029004((char *)arg0 + 5, '.');
+    strcpy((char *)arg0 + 5, lbl_80559E70);
+    name = (char *)arg0 + 5;
+    if (strchr(name, '/') != 0)
+        name = strchr(name, '/') + 1;
+    value = fn_802E3D68(name);
+    if (value != -1) {
+        fn_802E3AD0(0, lbl_8032D28C, 1);
+        fn_801457D0(*(s32 *)((u8 *)arg0 + 0x2C), value);
+        fn_801456E8(*(s32 *)((u8 *)arg0 + 0x30), value);
+        fn_8014589C(*(s32 *)((u8 *)arg0 + 0x34), value);
+        fn_8014595C(*(s32 *)((u8 *)arg0 + 0x3C), value);
+        fn_802E3AD0(value, lbl_80559E14);
+        fn_802E3734(&value);
+    }
+}
+
 extern "C" void fn_80148610(void *arg0) { ((u8 *)arg0)[4] = (u8)(!((u8 *)arg0)[4]); }
 
 extern "C" u8 fn_80148624(void *arg0) { return ((u8 *)arg0)[4]; }
@@ -794,7 +1011,7 @@ extern "C" void deleteThreads__6SystemFv(void *arg0) {
     ThreadObject80144F40 *p = *(ThreadObject80144F40 **)arg0;
     if (p) {
         if (p)
-            p->destroy(sizeof(*p) != 0);
+            p->destroy(1);
         *(ThreadObject80144F40 **)arg0 = 0;
     }
 }
