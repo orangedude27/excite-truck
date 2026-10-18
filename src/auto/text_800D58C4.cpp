@@ -563,6 +563,15 @@ extern "C" char* fn_800D9584(char* arg0, const char* arg1) {
     return strncpy(arg0 + 4, arg1, 0x14);
 }
 
+extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*, void*, u32);
+extern "C" void fn_800D9CBC(void* arg0, u32 arg1, void* arg2) {
+    extern const char lbl_8031F990[];
+    extern const char lbl_8031FDE8[];
+    if (arg1 >= (*(u32*)((u8*)arg0 + 0x50) >> 28))
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3f2, lbl_8031FDE8);
+    InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl((u8*)*(void**)((u8*)arg0 + 0x58) + ((arg1 & 0xff) << 5), arg2, 0);
+}
+
 extern "C" s32 GXGetTexObjLODAll(void*);
 extern "C" s32 GXGetTexObjWrap_Internal(void*);
 extern "C" void GXInitTexObjWrapMode(void*,s32,s32);
