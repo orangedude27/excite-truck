@@ -43,6 +43,7 @@ extern char *strcpy(char *, const char *);
 extern char lbl_80437FC0[304];
 extern char lbl_80336EC8[];
 extern char lbl_80336EE8[];
+extern char lbl_80336F0C[];
 extern s32 lbl_8055E7F0;
 extern s32 lbl_8055E7F8;
 extern s32 lbl_80499050[12];
@@ -68,6 +69,37 @@ extern f32 lbl_80558DC4[];
 extern double fn_8002F234(float);
 extern void fn_8012F57C(float *, float *, float *, float);
 extern f32 lbl_8056296C, lbl_80562970, lbl_80562974;
+f32 fn_801C2F58(s32 arg0, f32 arg1) {
+    f32 result = lbl_8056296C;
+    if (arg0 > 0) {
+        s32 remainder = arg0 - 8;
+        s32 count = 0;
+        if (arg0 > 8 && arg0 <= 0x7FFFFFFE) {
+            count = 1;
+        }
+        if (count != 0) {
+            s32 loops = (remainder + 7) / 8;
+            while (loops-- != 0) {
+                result *= arg1;
+                result *= arg1;
+                result *= arg1;
+                result *= arg1;
+                result *= arg1;
+                result *= arg1;
+                result *= arg1;
+                result *= arg1;
+                if (remainder <= 0)
+                    break;
+            }
+        }
+        remainder = arg0 - 8 * count;
+        while (remainder-- != 0) {
+            result *= arg1;
+        }
+    }
+    return result;
+}
+
 void fn_801C2FF4(float *out, float *a, float *b, float weight) {
     float qa[4], qb[4], q[4], trace, root, half=lbl_80562974, w, x, y, z;
     int i,j,k;
@@ -83,6 +115,17 @@ void fn_801C2FF4(float *out, float *a, float *b, float weight) {
     out[0]=1-2*(y*y+z*z); out[4]=1-2*(x*x+z*z); out[8]=1-2*(x*x+y*y);
     out[7]=2*(y*z-w*x); out[2]=2*(y*z+w*x); out[1]=2*(x*y-w*z); out[3]=2*(x*y+w*z);
     out[6]=2*(x*z-w*y); out[5]=2*(x*z+w*y);
+}
+
+f32 fn_801C3450(f32 arg0) {
+    f32 denom;
+    f32 numerator;
+    f32 offset;
+
+    denom = fn_801C2F58(2, lbl_80562978);
+    numerator = (f32)(s32)(arg0 * denom);
+    offset = *(f32 *)&lbl_80562980;
+    return (f32)((s32)numerator - (s32)offset) / denom;
 }
 
 s32 fn_801C34CC(f32 arg0, f32 arg1) {
@@ -380,7 +423,7 @@ extern s32 lbl_8055E82C;
 void fn_801C855C(void);
 extern unsigned char lbl_8055E83E;
 void fn_801C7770(void) {
-    *(volatile unsigned char *)&lbl_8055E83E = lbl_8055E83E == 0;
+    lbl_8055E83E = (lbl_8055E83E == 0);
 }
 #pragma scheduling on
 void fn_801C77C0(void) {
