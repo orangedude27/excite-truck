@@ -20,6 +20,57 @@ extern char *fn_8022D82C(void *, int, int);
 extern char *strncpy(char *, const char *, unsigned long);
 extern double fabs(double);
 extern float lbl_80558DC4;
+extern void *fn_8012850C(int, const char *);
+extern char lbl_80340108[];
+extern char lbl_80340114[];
+void *fn_8022D228(void *arg0, int arg1, int arg2, int arg3) {
+    int i;
+    int offset;
+    void *result;
+    *(int *)arg0 = arg1;
+    *(int *)((char *)arg0 + 4) = arg2;
+    result = arg0;
+    *(int *)((char *)arg0 + 8) = 0;
+    *(void **)((char *)arg0 + 0x10) = fn_8012850C(arg1 * 4, lbl_80340108);
+    i = 0;
+    offset = 0;
+    while (i < arg1) {
+        *(void **)(*(char ***)((char *)result + 0x10) + offset) = fn_8012850C(arg2 + 1, lbl_80340114);
+        i++;
+        offset += 4;
+    }
+    return result;
+}
+
+#pragma scheduling off
+void *fn_8022D2BC(void *arg0, int arg1) {
+    int offset;
+    int i;
+    if (arg0 != 0) {
+        offset = 0;
+        i = 0;
+        while (i < *(int *)arg0) {
+            fn_80128670(*(void **)(*(char ***)((char *)arg0 + 0x10) + offset));
+            offset += 4;
+            i++;
+        }
+        fn_80128670(*(void **)((char *)arg0 + 0x10));
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+#pragma scheduling reset
+void fn_8022D350(void *arg0, const char *arg1, char arg2) {
+    int index = *(int *)((char *)arg0 + 8);
+    if (index < *(int *)arg0) {
+        strncpy((*(char ***)((char *)arg0 + 0x10))[index], arg1, *(int *)((char *)arg0 + 4));
+        (*(char ***)((char *)arg0 + 0x10))[index][*(int *)((char *)arg0 + 4) - 1] = 0;
+        (*(char ***)((char *)arg0 + 0x10))[index][*(int *)((char *)arg0 + 4)] = arg2;
+        *(int *)((char *)arg0 + 8) = index + 1;
+        *(int *)((char *)arg0 + 0xC) += 1;
+    }
+}
+
 char *fn_8022D3F8(void *arg0, int arg1, int *arg2) {
     char **array;
     char *ptr;
@@ -65,7 +116,8 @@ void fn_8022D894(void *arg0, int arg1, int arg2, const char *arg3, signed char a
     len = (*(int **)((char *)arg0 + 0x18))[arg2];
     *ptr = arg4;
     strncpy(ptr + 1, arg3, len);
-    ptr[len] = 0;
+    ptr += len;
+    *ptr = 0;
     *(int *)((char *)arg0 + 0x24) += 1;
 }
 #pragma scheduling reset
@@ -200,6 +252,8 @@ int fn_8022DC68(void *arg0, int arg1) {
     return value;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void *fn_8022DCC4(void *arg0, char **arg1, int arg2, int arg3) {
     char **var_r31 = arg1;
     char *var_r30 = (char *)arg0;
@@ -214,7 +268,7 @@ void *fn_8022DCC4(void *arg0, char **arg1, int arg2, int arg3) {
     *(int *)((char *)arg0 + 0x44) = arg3;
     return arg0;
 }
-
+#pragma pop
 void *fn_8022DD38(void *arg0, int arg1) {
     if (arg0 != 0) {
         *(int *)((char *)arg0 + 0x40) = 0;
@@ -304,9 +358,14 @@ void fn_8022DF14(void *arg0) {
     temp_r6 = *(int **)((char *)arg0 + 4);
     temp_r5 = *(int *)((char *)arg0 + 0xC);
     var_r0 = *temp_r6 + 1;
-    if (temp_r5 < var_r0) var_r0 = temp_r5;
+    if (temp_r5 < var_r0) {
+        var_r0 = temp_r5;
+    }
     var_r3 = *(int *)((char *)arg0 + 8);
-    if (var_r0 > var_r3) *temp_r6 = var_r0;
+    if (var_r0 > var_r3) {
+        var_r3 = var_r0;
+    }
+    *temp_r6 = var_r3;
 }
 
 void fn_8022DF48(void *arg0) {
@@ -317,9 +376,14 @@ void fn_8022DF48(void *arg0) {
     temp_r6 = *(int **)((char *)arg0 + 4);
     temp_r5 = *(int *)((char *)arg0 + 0xC);
     var_r0 = *temp_r6 - 1;
-    if (temp_r5 < var_r0) var_r0 = temp_r5;
+    if (temp_r5 < var_r0) {
+        var_r0 = temp_r5;
+    }
     var_r3 = *(int *)((char *)arg0 + 8);
-    if (var_r0 > var_r3) *temp_r6 = var_r0;
+    if (var_r0 > var_r3) {
+        var_r3 = var_r0;
+    }
+    *temp_r6 = var_r3;
 }
 
 extern char *fn_8022D82C(void *, int, int);
