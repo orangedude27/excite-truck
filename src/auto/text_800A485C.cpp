@@ -1827,45 +1827,26 @@ extern "C" s32 fn_800D0AB4(void *arg0) {
 }
 
 extern "C" s32 is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane(void *pane);
+extern "C" s32 is_visible__Q210homebutton3guiFPQ34nw4lyt4Pane(void *);
 extern "C" s32 isVisible__Q310homebutton3gui13PaneComponentFv(void *this_) {
     void *pane = *(void **)((u8 *)this_ + 0x2C);
     void *child;
-
-    if (!(((u8 *)pane)[0xCF] & 1)) {
-        return 0;
-    }
+    if (!(((u8 *)pane)[0xCF] & 1)) return 0;
     child = *(void **)((u8 *)pane + 0xC);
-    if (!child) {
-        return 1;
-    }
-    if (!(((u8 *)child)[0xCF] & 1)) {
-        return 0;
-    }
+    if (!child) return 1;
+    if (!(((u8 *)child)[0xCF] & 1)) return 0;
     child = *(void **)((u8 *)child + 0xC);
-    if (!child) {
-        return 1;
-    }
-    if (!(((u8 *)child)[0xCF] & 1)) {
-        return 0;
-    }
+    if (!child) return 1;
+    if (!(((u8 *)child)[0xCF] & 1)) return 0;
     child = *(void **)((u8 *)child + 0xC);
-    if (!child) {
-        return 1;
-    }
-    if (!(((u8 *)child)[0xCF] & 1)) {
-        return 0;
-    }
+    if (!child) return 1;
+    if (!(((u8 *)child)[0xCF] & 1)) return 0;
     child = *(void **)((u8 *)child + 0xC);
-    if (!child) {
+    if (!child) return 1;
+    if (!fn_800D0AA8(child)) return 0;
+    if (fn_800D0AB4(child) == 0)
         return 1;
-    }
-    if (!fn_800D0AA8(child)) {
-        return 0;
-    }
-    if (fn_800D0AB4(child)) {
-        return 1;
-    }
-    return is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane((void *)fn_800D0AB4(child));
+    return is_visible__Q210homebutton3guiFPQ34nw4lyt4Pane((void *)fn_800D0AB4(child));
 }
 
 extern "C" s32 fn_800D0B90(void) { return 0; }
