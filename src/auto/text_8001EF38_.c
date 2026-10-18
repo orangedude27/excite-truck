@@ -131,18 +131,16 @@ s32 fn_8001F388(s32 arg) {
     return ((s32*)__AXFXGetSrcCoef(arg))[2];
 }
 
-s32 fn_8001F3AC(a, b) s32 a; s32 b; {
-    s32* q = *(s32**)((s32*)__AXFXGetSrcCoef(a) + 3);
-    if (q == 0) {
-        return 0;
-    }
-    if (b <= 0) {
-        return 0;
-    }
-    if (b > q[1]) {
-        return 0;
-    }
-    return ((s32*)(q[0] + ((b - 1) * 8)))[1];
+s32 fn_8001F3AC(s32 a, s32 b) {
+    s32 *q = *(s32 **)((s32 *)__AXFXGetSrcCoef(a) + 3);
+    if (q == 0) goto null_result;
+    if (b <= 0) goto bad_index;
+    if (b > q[1]) goto bad_index;
+    return ((s32 *)(q[0] + ((b - 1) * 8)))[1];
+bad_index:
+    return 0;
+null_result:
+    return 0;
 }
 
 s32 fn_8001F41C(const char* arg) {
