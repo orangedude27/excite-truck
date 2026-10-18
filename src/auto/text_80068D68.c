@@ -3243,14 +3243,13 @@ void fn_8008EE40(void *arg0, void *arg1) {
 }
 
 void fn_8008EF90(void *arg0, void *arg1) {
-    u8 *dst = (u8 *)arg0; u8 *src = (u8 *)arg1; u32 a, b;
+    struct Pair { u32 first; u32 second; };
+    u8 *dst = (u8 *)arg0;
+    u8 *src = (u8 *)arg1;
     if (src[6] != 0) {
-        b = *(u32 *)(src + 0xc); a = *(u32 *)(src + 8);
-        *(u32 *)(dst + 0x40) = a; *(u32 *)(dst + 0x44) = b;
-        b = *(u32 *)(src + 0x14); a = *(u32 *)(src + 0x10);
-        *(u32 *)(dst + 0x48) = a; *(u32 *)(dst + 0x4c) = b;
-        b = *(u32 *)(src + 0x1c); a = *(u32 *)(src + 0x18);
-        *(u32 *)(dst + 0x50) = a; *(u32 *)(dst + 0x54) = b;
+        *(struct Pair *)(dst + 0x40) = *(struct Pair *)(src + 8);
+        *(struct Pair *)(dst + 0x48) = *(struct Pair *)(src + 0x10);
+        *(struct Pair *)(dst + 0x50) = *(struct Pair *)(src + 0x18);
     }
 }
 
