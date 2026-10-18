@@ -19,6 +19,8 @@ extern char lbl_8055D100;
   extern int lbl_8055FDA4;
   extern unsigned int lbl_8055FD30;
   extern float fabsf(float);
+  extern unsigned char lbl_804C97B0[];
+  extern float lbl_80558DC4;
   extern unsigned short lbl_8055FD86;
 extern unsigned char lbl_8055FD60;
 extern float lbl_80564F94;
