@@ -76,7 +76,7 @@ extern "C" f32 fn_801E7E24(void);
 extern "C" int fn_802BF4F0(void);
 extern "C" f32 fn_802BF590(void);
 extern "C" float __fabsf(float);
-extern "C" f32 lbl_80558DC4;
+__declspec(section ".data") extern f32 lbl_80558DC4;
 extern "C" void fn_802A1B20(void*, s32);
 extern "C" void fn_802A1CC4(void);
 extern "C" void fn_8028E61C(void*);
@@ -176,6 +176,35 @@ extern "C" s32 fn_802A1864(const char* name) {
     }
     fn_802E317C(lbl_80349934, name);
     return 0;
+}
+
+extern "C" void fn_802A1B20(void* arg0, s32 count) {
+    void* p = arg0;
+    f32 threshold = __fabsf(fn_801E7E24());
+    if (threshold != lbl_80558DC4) {
+        void** table = lbl_804BCF88;
+        s32 i = 0;
+        while (i < count) {
+            if (*(u8*)((char*)p + 0xC) != 0) {
+                s32 j = 0;
+                void* base = *(void**)p;
+                do {
+                    void* obj = (char*)base + j * 0x3C;
+                    if (*(u8*)((char*)obj + 0xA0) != 0) {
+                        s32 index = *(s32*)((char*)obj + 0xA8);
+                        if (index >= 0 && index < 8 && table[index] != 0 &&
+                            (fn_802BF4F0() == 0 || *(f32*)((char*)obj + 0x80) > fn_802BF590())) {
+                            void* target = table[index];
+                            ((void (*)(void*, void*, s32))(*(void***)target)[0x1C / 4])(target, p, j);
+                        }
+                    }
+                    j++;
+                } while (j < 4);
+            }
+            p = (char*)p + 0x10;
+            i++;
+        }
+    }
 }
 
 extern "C" s32 fn_802A1C30(void* arg0) {
