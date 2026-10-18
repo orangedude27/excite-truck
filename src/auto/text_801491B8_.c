@@ -329,7 +329,7 @@ extern unsigned long lbl_80559E94;
 void fn_8014AD74(void *arg0) {
     f32 step;
     s32 state = fn_80176A1C() - 2;
-    if ((state | -state) == 0) {
+    if (((u32)__cntlzw((u32)state) >> 5) != 0) {
         step = fn_80176A2C();
     } else {
         step = lbl_8056164C;
@@ -420,14 +420,11 @@ u8 fn_8014AEE8(void *arg0) {
 
 void fn_8014AEF0(void *arg0) {
     f32 step;
-    s32 state;
     if (*((u8 *)arg0 + 4) != 0) {
-        state = fn_80176A1C() - 2;
-        if ((state | -state) == 0) {
+        if (((unsigned int)__cntlzw((unsigned int)(fn_80176A1C() - 2)) >> 5) == 0)
             step = fn_80176A2C();
-        } else {
+        else
             step = lbl_8056164C;
-        }
         *(f32 *)((u8 *)arg0 + 0xC) += lbl_80561650 * step;
     }
 }
@@ -656,20 +653,23 @@ void fn_8014D6EC(void *arg0) {
 }
 
 void fn_8014D700(void *arg0, s32 arg1) {
+    s32 index;
     s32 var_r6;
     void *temp_r5;
     void *temp_r5_2;
+    void *temp;
     void **temp_r3;
     void (*fn)(void *, void *, void *);
-
     temp_r5 = *(void **)((u8 *)arg0 + 0xC);
     *(s32 *)((u8 *)temp_r5 + 8) = 0;
     temp_r3 = *(void ***)((u8 *)arg0 + 0x10);
-    fn = (void (*)(void *, void *, void *))*(void **)((u8 *)*temp_r3 + 0x48);
-    fn(*temp_r3, *(void **)((u8 *)arg0 + 0xC), temp_r5);
+    temp = *temp_r3;
+    fn = (void (*)(void *, void *, void *))*(void **)((u8 *)temp + 0x48);
+    fn(temp, *(void **)((u8 *)arg0 + 0xC), temp_r5);
     temp_r5_2 = *(void **)((u8 *)arg0 + 0x68);
+    index = *(s32 *)arg0;
     if (*(u8 *)((u8 *)temp_r5_2 + 0x8F4) != 0) {
-        var_r6 = *(s32 *)((u8 *)temp_r5_2 + 0x8F4 + *(s32 *)arg0 * 0x1C + 8);
+        var_r6 = *(s32 *)((u8 *)temp_r5_2 + 0x8F4 + index * 0x1C + 8);
     } else {
         var_r6 = 0;
     }
@@ -856,16 +856,13 @@ extern s32 lbl_8055E23C;
 s32 fn_80153A30(void) { return 0; }
 
 s32 fn_80153A38(void *arg0) {
-    void *p;
     s32 i;
     fn_80179650();
-    p = arg0;
-    i = 0;
-    while (i < fn_801E85A4()) {
+    for (i = 0; i < fn_801E85A4(); i++) {
         if (*(u8 *)((u8 *)arg0 + fn_801E86F8(i) * 0xC0 + 0xA84) == 0 &&
-            *(s32 *)((u8 *)p + 0x454) != 2) return 0;
-        p = (u8 *)p + 0x240;
-        i++;
+            *(s32 *)((u8 *)arg0 + i * 0x240 + 0x454) != 2) {
+            return 0;
+        }
     }
     return 1;
 }
