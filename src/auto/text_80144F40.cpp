@@ -123,18 +123,18 @@ extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
     return clamped;
 }
 
-struct LookupBase80145140 { virtual void *get(s32); };
-struct ItemBase80145140 { virtual void *a(); virtual void *b(); virtual const char *name(); };
+struct LookupBase80145140 { virtual void *a(); virtual void *b(); virtual void *get(s32); };
+struct ItemBase80145140 { virtual void *a(); virtual const char *name(); };
 
 extern "C" s32 fn_80145140(void *arg0, const char *arg1) {
     s32 count = 0;
     s32 index = 0;
-    void *item;
+    LookupBase80145140 *lookup = (LookupBase80145140 *)arg0;
 loop:
-    item = ((void *(*)(void *, s32))(*(void ***)arg0)[3])(arg0, index);
+    void *item = lookup->get(index);
     if (item == 0)
         goto done;
-    if (stricmp(((const char *(*)(void *))(*(void ***)item)[2])(item), arg1) == 0)
+    if (stricmp(((ItemBase80145140 *)item)->name(), arg1) == 0)
         count++;
     index++;
     goto loop;
