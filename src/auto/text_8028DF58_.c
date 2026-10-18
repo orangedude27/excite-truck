@@ -114,7 +114,7 @@ int fn_8028E2F8(int arg0, int arg1, int arg2) {
         result = ((int (*)(int, int, int))fn_8028F7AC)(result, arg0, arg2);
     }
     fn_8028ED8C(&lbl_804B35B4[0], result);
-    fn_8028ED8C(&lbl_804B34B0_arr[0], result);
+    fn_8028ED8C(&lbl_804B34B0, result);
     fn_8028F5A0(arg1, result);
     return result;
 }
