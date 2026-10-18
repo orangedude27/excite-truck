@@ -79,6 +79,12 @@ public:
     virtual s32 v20(s32);
 };
 
+class TObjCPlus {
+public:
+    virtual void d0(); virtual void d1();
+    virtual s32 vC(s32);
+};
+
 extern "C" s32 fn_8013D1F0(s32);
 
 extern "C" s32 fn_8013CB10(void) {
@@ -106,8 +112,8 @@ extern "C" void fn_8013CB90(void *arg0) {
 }
 
 extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
-    s32 count = *(s32 *)arg0;
     s32 i = 0;
+    s32 count = *(s32 *)arg0;
     u8 *items = *(u8 **)(arg0 + 4);
     u8 *result = items + count * 0x24 - 0x24;
     while (count > 0) {
@@ -155,18 +161,26 @@ extern "C" s32 fn_8013D890(s32 arg0, s32 arg1) {
 
 #pragma dont_inline off
 
-extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
+#pragma dont_inline on
+extern "C" s32 fn_8013DDD4(void *arg0, const char *arg1) {
+    class TObjDDD4 {
+    public:
+        virtual void d0();
+        virtual void d1();
+        virtual s32 get(s32);
+    };
+    TObjDDD4 *obj = (TObjDDD4 *)arg0;
     s32 count = 0;
     s32 i = 0;
     void *item;
-    while ((item = (void *)arg0->vC(i)) != 0) {
+    while ((item = (void *)obj->get(i)) != 0) {
         if (fn_8013CB44(arg1, (TObj10 *)item))
             count++;
         i++;
     }
     return count;
 }
-
+#pragma dont_inline off
 extern "C" f64 fn_8002F234(f32);
 extern "C" f32 fn_8013E300(void *arg0) {
     f32 y = *(f32 *)((u8 *)arg0 + 4);
@@ -389,6 +403,40 @@ extern "C" u8 fn_80141FA0(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x19);
 }
 
+extern "C" u8 lbl_8055E1BC;
+extern "C" f32 lbl_8056149C;
+#pragma small_data off
+extern "C" s32 fn_80141FA8(void *arg0, f32 arg1) {
+    s32 result = 1;
+    if (lbl_8055E1BC != 0) {
+        f32 old = *(f32 *)((u8 *)arg0 + 0x94);
+        f32 v = old + arg1 / lbl_8056149C;
+        if (v < lbl_805614AC) v = lbl_805614AC;
+        if (v > lbl_805614A4) v = lbl_805614A4;
+        f32 r = v;
+        *(f32 *)((u8 *)arg0 + 0x94) = v;
+        if (old < r) {
+            *(f32 *)((u8 *)arg0 + 0xEC) = r - old;
+        } else if ((f32)__fabs((f64)r) <= (f32)lbl_80558DC4 && (f32)__fabs((f64)old) <= (f32)lbl_80558DC4) {
+            s32 n = *(s32 *)((u8 *)arg0 + 0xE4);
+            if (n > 0) {
+                *(s32 *)((u8 *)arg0 + 0xF4) = n;
+                fn_8013CB3C();
+            }
+            *(s32 *)((u8 *)arg0 + 0xE4) = 0;
+            n = *(s32 *)((u8 *)arg0 + 0x100);
+            if (n > 0) {
+                *(f32 *)((u8 *)arg0 + 0xD4) = fn_8001DAE8((u8 *)arg0 + 0xD0);
+            }
+            *(s32 *)((u8 *)arg0 + 0x100) = 0;
+            *(f32 *)((u8 *)arg0 + 0xAC) = fn_8001DAE8((u8 *)arg0 + 0xA8);
+            if (lbl_8055E1BC == 0) *(u8 *)((u8 *)arg0 + 0xF8) = 1;
+            result = 0;
+        }
+    }
+    return result;
+}
+#pragma small_data on
 extern "C" f32 lbl_80558DC4_arr[2];
 extern "C" s32 fn_801420D4(void *arg0) {
     return (f32)__fabs((f64)*(f32 *)((u8 *)arg0 + 0x2690)) <= *(volatile f32 *)0x80558DC4;
@@ -544,22 +592,20 @@ extern "C" void fn_80143128(u8 *arg0) {
 #pragma use_lmw_stmw off
 
 extern "C" void fn_80143138(u8 *self, u8 *out) {
-    class TObj10Local { public: virtual void d0(); virtual void d1(); virtual u8 *v10(); };
-    s32 z = 0;
     *(s32 *)out = *(s32 *)(self + 0xBC);
     *(s32 *)(out + 4) = *(s32 *)(self + 0x130);
     *(u8 *)(out + 0xD) = ((TObj24 *)self)->v24();
     u8 *p = out + 0x10;
-    *(u8 *)(out + 0xC) = z;
+    *(u8 *)(out + 0xC) = 0;
     s32 off = 0;
     s32 i = 0;
     while (i < *(s32 *)(self + 0xBC)) {
-        *(u8 *)(p + 0x10) = z;
-        u8 *q = ((TObj10Local *)fn_801B2EC0(i))->v10();
+        *(u8 *)(p + 0x10) = 0;
+        u8 *q = ((TObj10 *)fn_801B2EC0(i))->v10();
         i++;
         *(s32 *)(p + 4) = *(s32 *)(q + 4);
         *(s32 *)(p + 8) = *(s32 *)(*(u8 **)(self + 0xB8) + off + 0x10C);
-        off = off + 0x12C;
+        off += 0x12C;
         p += 0x14;
     }
 }
@@ -629,9 +675,9 @@ extern "C" void fn_80143C54(void *arg0) {
         value = ((s32 (*)(void *, s32))fn_802ADDD8)(check, 1);
         *(s32 *)((u8 *)arg0 + 0x140) = value;
     }
-    arg0 = (u8 *)arg0 + 0x134;
-    fn_80143DC8(arg0);
-    fn_80143CB0(arg0);
+    volatile u8 *p = (volatile u8 *)arg0;
+    fn_80143DC8((void *)(p + 0x134));
+    fn_80143CB0((void *)(p + 0x134));
 }
 
 extern "C" void fn_801442DC(void *arg0) {
