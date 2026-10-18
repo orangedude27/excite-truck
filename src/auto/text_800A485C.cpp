@@ -68,8 +68,9 @@ extern "C" s32 fn_800B76E8(s8);
   #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSTime.h>
 #include <revolution/ARC/arc.h>
-#include <string.h>
-#pragma opt_tail_call on
+  #include <string.h>
+  #include <printf.h>
+  #pragma opt_tail_call on
 
 namespace homebutton {
 class HomeButton {
@@ -1429,6 +1430,17 @@ u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     return (value & lbl_802F3F54[shift]) >> (shift - arg1);
 }
 
+void fn_800C1E88(const s32* a, const s32* b, s32* out) {
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        s64 p = (s64)a[0] * b[0] + (s64)a[1] * b[1] + (s64)a[2] * b[2]
+             + (s64)a[3] * b[3] + (s64)a[4] * b[4] + (s64)a[5] * b[5];
+        *out = (s32)p & 0xFFFFF000 | (s32)(p >> 32) << 12;
+        if (i & 1) out += 4; else out += 2;
+        b += 6;
+    }
+}
+
 extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     if (arg3 == 0) {
         fn_800C3960(lbl_802F4088, arg1, 0x3FF, arg3);
@@ -1785,10 +1797,94 @@ extern "C" s32 getPaneComponentByPane__Q310homebutton3gui11PaneManagerFPQ36nw4hb
 
 extern "C" s32 fn_800D0814(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x24); }
 
+extern "C" s32 fn_800D0AA8(void *pane);
+extern "C" s32 fn_800D0AB4(void *pane);
+extern "C" s32 is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane(void *pane) {
+    void *child;
+
+    if (!(((u8 *)pane)[0xCF] & 1)) {
+        return 0;
+    }
+    child = *(void **)((u8 *)pane + 0xC);
+    if (!child) {
+        return 1;
+    }
+    if (!(((u8 *)child)[0xCF] & 1)) {
+        return 0;
+    }
+    child = *(void **)((u8 *)child + 0xC);
+    if (!child) {
+        return 1;
+    }
+    if (!(((u8 *)child)[0xCF] & 1)) {
+        return 0;
+    }
+    child = *(void **)((u8 *)child + 0xC);
+    if (!child) {
+        return 1;
+    }
+    if (!(((u8 *)child)[0xCF] & 1)) {
+        return 0;
+    }
+    child = *(void **)((u8 *)child + 0xC);
+    if (!child) {
+        return 1;
+    }
+    if (fn_800D0AA8(child) == 0) {
+        return 0;
+    }
+    if (fn_800D0AB4(child) != 0) {
+        return 1;
+    }
+    return is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane((void *)fn_800D0AB4(child));
+}
+
 extern "C" s32 fn_800D0AA8(void *arg0) { return (*(u8 *)((u8 *)arg0 + 0xCF)) & 1; }
 
 extern "C" s32 fn_800D0AB4(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
+}
+
+extern "C" s32 is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane(void *pane);
+extern "C" s32 isVisible__Q310homebutton3gui13PaneComponentFv(void *this_) {
+    void *pane = *(void **)((u8 *)this_ + 0x2C);
+    void *child;
+
+    if (!(((u8 *)pane)[0xCF] & 1)) {
+        return 0;
+    }
+    child = *(void **)((u8 *)pane + 0xC);
+    if (!child) {
+        return 1;
+    }
+    if (!(((u8 *)child)[0xCF] & 1)) {
+        return 0;
+    }
+    child = *(void **)((u8 *)child + 0xC);
+    if (!child) {
+        return 1;
+    }
+    if (!(((u8 *)child)[0xCF] & 1)) {
+        return 0;
+    }
+    child = *(void **)((u8 *)child + 0xC);
+    if (!child) {
+        return 1;
+    }
+    if (!(((u8 *)child)[0xCF] & 1)) {
+        return 0;
+    }
+    child = *(void **)((u8 *)child + 0xC);
+    if (!child) {
+        return 1;
+    }
+    if (!fn_800D0AA8(child)) {
+        return 0;
+    }
+    if (fn_800D0AB4(child)) {
+        return 1;
+    }
+    return is_visible__Q210homebutton3guiFPQ34nw4r3lyt4Pane((void *)fn_800D0AB4(child));
 }
 
 extern "C" s32 fn_800D0B90(void) { return 0; }
@@ -2111,18 +2207,48 @@ extern "C" u8 fn_800D3838(u8 *arg0) {
 #pragma opt_tail_call on
 extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
     void *r31 = lbl_8055DDD4_ptr;
-    s32 r28 = (s32)arg0;
-    s32 r29 = (s32)arg1;
-    s32 r30 = (s32)arg2;
-    
+    s32 r28 = arg2;
+    s32 r29 = arg1;
+    s32 r30 = arg0;
     while (r31 != NULL) {
-        if (fn_800D3F94(r31, r28, r29, r30) != 0) {
-            return 1;
-        }
+        if (fn_800D3F94(r31, r28, r29, r30) != 0) return 1;
         r31 = *(void **)((u8 *)r31 + 0xC);
     }
     return 0;
 }
+
+extern "C" f32 lbl_80560E48;
+extern "C" f32 lbl_80560E4C;
+extern "C" u16 fn_800D4138(const void *arg0, s32 arg1, f32 farg0) {
+    if (arg1 == 1) {
+        return *(u16 *)((const u8 *)arg0 + 4);
+    }
+    const u8 *base = (const u8 *)arg0;
+    if (farg0 <= *(f32 *)base) {
+        return *(u16 *)(base + 4);
+    }
+    const u8 *end = base + arg1 * 8;
+    if (farg0 >= *(f32 *)(end - 8)) {
+        return *(u16 *)(end - 4);
+    }
+    s32 low = 0;
+    s32 high = arg1 - 1;
+    while (low != high - 1 && low != high) {
+        s32 mid = (low + high) / 2;
+        if (farg0 < *(f32 *)(base + mid * 8)) {
+            high = mid;
+        } else {
+            low = mid;
+        }
+    }
+    f32 delta = farg0 - *(f32 *)(base + high * 8);
+    s32 found = delta > lbl_80560E48 && delta < lbl_80560E4C;
+    if (found) {
+        return *(u16 *)(base + high * 8 + 4);
+    }
+    return *(u16 *)(base + low * 8 + 4);
+}
+
 extern "C" s32 fn_800D43DC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
