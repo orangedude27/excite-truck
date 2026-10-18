@@ -83,8 +83,9 @@ void *fn_8013530C(void *arg0, s32 arg1) {
 }
 
 void fn_80135354(Unk_80135278 *arg0) {
-    float g = lbl_80561324;
-    float f = lbl_80561320;
+    float g, f;
+    g = lbl_80561324;
+    f = lbl_80561320;
     arg0->unk_8 = f;
     arg0->unk_4 = 0;
     arg0->unk_c = 0;
@@ -105,6 +106,7 @@ void fn_80135390(Unk_80135278 *arg0) {
 }
 #pragma dont_inline off
 
+#pragma dont_inline on
 void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     float f = lbl_80561320;
     arg0->unk_8 = f;
@@ -152,11 +154,16 @@ void *fn_80135DC4(void *arg0, s32 arg1, s32 arg2) {
 }
 #pragma dont_inline off
 void fn_80135EF0(void *arg0) {
+    int zero = 0;
+    int value;
     if (fn_80135D60() == 1) {
-        *(int *)((char *)arg0 + 0x34) = 0;
-        *(int *)((char *)arg0 + 0x5C) = 0;
-        if (*(int *)((char *)arg0 + 0x50) != 0)
-            *(int *)((char *)arg0 + 0x54) = *(int *)(*(char **)((char *)arg0 + 0x2C) + 0x18) >> 16;
+        *(int *)((char *)arg0 + 0x34) = zero;
+        value = *(int *)((char *)arg0 + 0x50);
+        *(int *)((char *)arg0 + 0x5C) = zero;
+        if (value != 0) {
+            value = *(int *)(*(char **)((char *)arg0 + 0x2C) + 0x18);
+            *(int *)((char *)arg0 + 0x54) = value >> 16;
+        }
     }
 }
 
@@ -180,15 +187,28 @@ void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
   fn_8013605C((void *)arg0);
  } else fn_8013605C((void *)arg0);
  {
+ Unk_80135278 *obj=(Unk_80135278 *)arg0;
+ float a=-obj->unk_10;
  float zero=lbl_80561320;
- float x=*(float *)((char *)arg0+0x14)* *(float *)((char *)arg0+0x18)+ -*(float *)((char *)arg0+0x10)* *(float *)((char *)arg0+0x1C);
- p=*(void **)((char *)arg0+4);
- *(float *)((char *)arg0+0x44)=zero;
- *(float *)((char *)arg0+0x4C)=zero;
- *(s32 *)((char *)arg0+0x5C)=0;
- *(s32 *)((char *)arg0+0x60)=0;
- *(float *)((char *)arg0+0x48)=*(float *)((char *)p+0x1C)+*(float *)((char *)p+0x18)* *(float *)((char *)arg0+8);
- *(float *)((char *)arg0+0x40)=x;
+ Unk_80135278 *p=(Unk_80135278 *)obj->unk_4;
+ float b,c,d,e,f,g;
+ obj->unk_44=zero;
+ b=obj->unk_18;
+ obj->unk_4c=zero;
+ c=obj->unk_1c;
+ d=p->unk_18;
+ e=p->unk_1c;
+ a=a*c;
+ f=obj->unk_8;
+ g=obj->unk_14;
+ d=d*f;
+ obj->unk_5c=0;
+ c=g*b;
+ obj->unk_60=0;
+ e=e+d;
+ a=c+a;
+ obj->unk_48=e;
+ obj->unk_40=a;
  }
 }
 #pragma dont_inline off
@@ -202,6 +222,34 @@ int fn_801363A0(void *arg0, void *arg1) {
     int var = *(int *)((char *)*((void **)*(void **)arg1 + 0x14) + 0x10);
     if (var == 0) var = *(int *)((char *)*(void **)((char *)arg0 + 0x2C) + 0x18);
     return temp_r31 + (unsigned int)(*(float *)((char *)arg1 + 4) * (float)(var - temp_r31));
+}
+
+float fn_801365C4(Unk_80135278 *a, Unk_80135278 *b) {
+    s32 same, offset, pos, count, i, j;
+    unsigned long length;
+    Unk_80135278 *p;
+    void *data;
+    float value, result;
+    data = (void *)a->unk_2c;
+    if (data == 0 || b->unk_4 == 0 || a->unk_4 == 0 || b->unk_54 != a->unk_54)
+        return lbl_80561320;
+    p = (Unk_80135278 *)a->unk_4;
+    same = p == (Unk_80135278 *)b->unk_4;
+    offset = ((-same | same) >> 31) - 1;
+    pos = *(s32 *)((char *)p + 0x10);
+    if (a->unk_34 != 0) {
+        length = *(unsigned long *)((char *)data + 0x18);
+        pos = (length + (pos - a->unk_34)) % length;
+    }
+    count = a->unk_54;
+    i = ((pos >> 16) + (count + offset)) % count;
+    j = (i + 1) % count;
+    value = a->unk_8 * (b->unk_50[j] - b->unk_50[i]) + b->unk_50[i];
+    if (same)
+        result = a->unk_8 * (a->unk_50[j] - a->unk_50[i]) + a->unk_50[i];
+    else
+        result = lbl_8055E3C8;
+    return result - value;
 }
 
 s32 fn_801366C0(void *arg0, void *arg1, float farg0) {
@@ -234,8 +282,9 @@ typedef struct {
 } Unk_8013672C_vt;
 
 float fn_8013672C(void) {
-    Unk_8013672C_vt *obj = fn_80156A40();
-    return *(float *)((char *)obj->vtbl->unk_8(obj, 0) + 8);
+    void *obj = fn_80156A40();
+    void *ret = ((void *(*)(void *, s32))((void **)*(void **)obj)[2])(obj, 0);
+    return *(float *)((char *)ret + 8);
 }
 
 void fn_80136764(void) {
@@ -257,8 +306,7 @@ void fn_801367E8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
 
 void fn_80136854(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 r;
-    void ***vtbl = (void ***)arg0;
-    r = ((s32 (*)(void))vtbl[0][3])();
+    r = ((s32 (*)(void))(*(void **)((char *)(*(void **)arg0) + 0xc)))();
     if (r == 1) {
         fn_80135F64((int)arg0, arg2, arg3, 1, 0);
     }
