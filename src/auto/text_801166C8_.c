@@ -57,14 +57,14 @@ s32 fn_80116A38(void) {
 
 BOOL ARCChangeDir(ARCHandle* handle, const char* path) {
     s32 entrynum = ARCConvertPathToEntrynum(handle, path);
-    u32 entryAddr = (u32)handle->FSTStart + entrynum * 0xC;
-    
-    if (entrynum < 0 || !(*(u32*)entryAddr & 0xFF000000)) {
-        return FALSE;
-    }
-    
+    u32* entry;
+    if (entrynum < 0) goto fail;
+    entry = (u32*)((u32)handle->FSTStart + entrynum * 0xC);
+    if (!(*entry & 0xFF000000)) goto fail;
     handle->currDir = entrynum;
     return TRUE;
+fail:
+    return FALSE;
 }
 
 BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
@@ -234,26 +234,46 @@ s32 fn_80116E54(s32 (*arg0)(s32), s32 arg1) {
 }
 
 void fn_80116EE4(s8 *arg0, s16 *arg1, u32 arg2) {
-    u32 count = arg2 >> 1;
-    u32 blocks;
-    if (count == 0)
-        return;
-    blocks = count >> 3;
-    if (blocks != 0) {
-        do {
-            arg0[0]=(s8)(arg1[0]>>8); arg0[1]=(s8)(arg1[1]>>8);
-            arg0[2]=(s8)(arg1[2]>>8); arg0[3]=(s8)(arg1[3]>>8);
-            arg0[4]=(s8)(arg1[4]>>8); arg0[5]=(s8)(arg1[5]>>8);
-            arg0[6]=(s8)(arg1[6]>>8); arg0[7]=(s8)(arg1[7]>>8);
-            arg1+=8; arg0+=8;
-        } while (--blocks != 0);
-        count &= 7;
+    s16 *var_r4 = arg1;
+    s8 *var_r3 = arg0;
+    u32 var_r5 = arg2 >> 1U;
+    u32 temp_r0;
+    u32 var_ctr;
+    u32 var_ctr_2;
+    s16 temp_r0_2;
+    s16 temp_r0_3;
+    if (var_r5 != 0) {
+        temp_r0 = var_r5 >> 3U;
+        var_ctr = temp_r0;
+        if (temp_r0 != 0) {
+            do {
+                var_r3[0] = (s8)(var_r4[0] >> 8);
+                var_r3[1] = (s8)(var_r4[1] >> 8);
+                var_r3[2] = (s8)(var_r4[2] >> 8);
+                var_r3[3] = (s8)(var_r4[3] >> 8);
+                var_r3[4] = (s8)(var_r4[4] >> 8);
+                var_r3[5] = (s8)(var_r4[5] >> 8);
+                var_r3[6] = (s8)(var_r4[6] >> 8);
+                temp_r0_2 = var_r4[7];
+                var_r4 += 8;
+                var_r3[7] = (s8)(temp_r0_2 >> 8);
+                var_r3 += 8;
+                var_ctr -= 1;
+            } while (var_ctr != 0);
+            var_r5 &= 7;
+            if (var_r5 != 0) goto tail;
+        } else {
+tail:
+            var_ctr_2 = var_r5;
+            do {
+                temp_r0_3 = *var_r4;
+                var_r4 += 1;
+                *var_r3 = (s8)(temp_r0_3 >> 8);
+                var_r3 += 1;
+                var_ctr_2 -= 1;
+            } while (var_ctr_2 != 0);
+        }
     }
-    if (count == 0)
-        return;
-    do {
-        *arg0++=(s8)(*arg1++ >> 8);
-    } while (--count != 0);
 }
 
 #pragma push
@@ -314,6 +334,39 @@ void fn_801175C4(s32 arg0,s32 arg1){
  s32* p=(s32*)(arg0-off);
  if(p[0x2e8/4]) fn_80117074(p);
  p[0x33c/4]=arg1;
+}
+
+void fn_80117618(void *arg0, void *arg1) {
+    volatile s32 *out = (volatile s32 *)arg1;
+    s32 temp_r5;
+    u32 half;
+
+    out[5] = 0;
+    out[1] = (*(s32 *)((u8 *)arg0 + 0x23C) + 7) & ~7;
+    out[2] = (*(s32 *)((u8 *)arg0 + 0x240) + 7) & ~7;
+    half = (u32)(*(s32 *)((u8 *)arg0 + 0x23C) + 1);
+    out[3] = ((half >> 1) + 7) & ~7;
+    half = (u32)(*(s32 *)((u8 *)arg0 + 0x240) + 1);
+    out[6] = 1;
+    temp_r5 = ((half >> 1) + 7) & ~7;
+    out[9] = 1;
+    out[4] = temp_r5;
+    out[12] = 1;
+    temp_r5 = (*(u32 *)((u8 *)arg0 + 0x20) >> 20) & 1;
+    out[7] = 0;
+    out[15] = temp_r5;
+    out[10] = 0;
+    out[13] = 0;
+    out[16] = 0;
+    out[8] = 0;
+    out[11] = 0;
+    out[14] = 0;
+    out[17] = 0;
+    if (*(s32 *)((u8 *)arg0 + 0x380) != 0) { out[0] = 1; return; }
+    out[18] = 1; out[0] = 2;
+    out[19] = 0; out[20] = 0; out[21] = 1; out[22] = 0;
+    out[23] = 0; out[24] = 1; out[25] = 0; out[26] = 0;
+    out[27] = temp_r5; out[28] = 0; out[29] = 0;
 }
 
 void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
@@ -428,19 +481,18 @@ extern f32 lbl_805611B4;
 extern f64 lbl_805611B8;
 extern f32 lbl_805611C0;
 void fn_80119B38(void *arg0, s32 arg1) {
- s32 value=arg1;
- f32 temp_f31;
- f32 temp_f3_2;
- f32 temp_f1;
- f64 exponent=lbl_805611B8;
- if(value<0)value=0;
- if(value>0x10000)value=0x10000;
- temp_f31=(f32)value/lbl_805611B0;
- temp_f3_2=(f32)fn_8002EFBC(lbl_805611B4-temp_f31,exponent);
- *(s32*)((u8*)arg0+0xa8)=(s32)(lbl_805611C0*temp_f3_2);
- temp_f1=(f32)fn_8002EFBC(temp_f31,exponent);
- *(s32*)((u8*)arg0+0xac)=(s32)(lbl_805611C0*temp_f1);
- fn_80119288(arg0,temp_f1);
+    s32 value = arg1;
+    f32 temp_f31;
+    f32 temp_f3;
+    f32 temp_f1;
+    if (value < 0) value = 0;
+    if (value > 0x10000) value = 0x10000;
+    temp_f31 = (f32)value / lbl_805611B0;
+    temp_f3 = (f32)fn_8002EFBC(lbl_805611B4 - temp_f31, lbl_805611B8);
+    *(s32*)((u8*)arg0 + 0xa8) = (s32)(lbl_805611C0 * temp_f3);
+    temp_f1 = (f32)fn_8002EFBC(temp_f31, lbl_805611B8);
+    *(s32*)((u8*)arg0 + 0xac) = (s32)(lbl_805611C0 * temp_f1);
+    fn_80119288(arg0, temp_f1);
 }
 
 extern f64 lbl_80561198;
@@ -804,9 +856,11 @@ void fn_8011C2EC(s32 arg0, void *arg1) {
     if (arg0 != 0 && arg1 != 0 &&
         *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
         *(s32 *)((u8 *)arg1 + 0x14) != 0) {
+        s32 value;
         OSDisableInterrupts();
-        *(s32 *)((u8 *)arg1 + 0x10) = *(s32 *)((u8 *)arg1 + 0x10) - 1;
-        if (*(s32 *)((u8 *)arg1 + 0x10) == 0)
+        value = *(volatile s32 *)((u8 *)arg1 + 0x10);
+        *(volatile s32 *)((u8 *)arg1 + 0x10) = value - 1;
+        if (*(volatile s32 *)((u8 *)arg1 + 0x10) == 0)
             *(s32 *)((u8 *)arg1 + 0xC) = 1;
         OSRestoreInterrupts();
     }
