@@ -31,6 +31,16 @@ extern u8 lbl_8055E2DD;
 
 extern s32 lbl_8055E300;
 extern unsigned char lbl_8032F858[];
+extern int lbl_8055E2E4;
+extern int lbl_8055E2E8;
+extern int lbl_8055E2EC;
+extern int lbl_8055E2F0;
+extern int lbl_8055E2F4;
+extern int lbl_8055E2FC;
+extern unsigned char lbl_8032F588[];
+extern void *fn_80145E70(void *);
+extern void *fn_802CAC28(void *, int);
+extern void *fn_8023512C(void *);
 void* fn_80160C8C(void* arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
@@ -97,6 +107,36 @@ s32 fn_801615B4(s32 arg0) {
         i++;
     } while (i < arg0);
     return total;
+}
+
+void fn_80161618(void) {
+    s32 offset;
+    s32 i;
+    s32 value;
+    void *item;
+
+    value = fn_8000DA10();
+    lbl_8055A0B8 = 1;
+    fn_801332D0(value + 0xC, lbl_8055A0B0, &lbl_8055A0B8);
+    lbl_8055E2DC = 0;
+    lbl_8055A0B4 = lbl_8055A0B8;
+    lbl_8055E2DD = 0;
+    fn_80160CF4();
+    if (*(s32 *)(lbl_8042FDEC + 4) > 1) {
+        lbl_8055E304 = 0;
+        lbl_8055E300 = **(s32 **)lbl_8042FDEC;
+    } else {
+        lbl_8055E300 = 0;
+        lbl_8055E304 = -1;
+    }
+    i = 0;
+    offset = 0;
+    while (i < *(s32 *)(lbl_8042FDEC + 4)) {
+        item = *(void **)(*(s32 *)lbl_8042FDEC + offset);
+        ((void (*)(void *))(*(void ***)item)[3])(item);
+        offset += 4;
+        i++;
+    }
 }
 
 extern s32 lbl_8055A0B0;
