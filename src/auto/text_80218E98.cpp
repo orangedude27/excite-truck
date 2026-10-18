@@ -878,7 +878,7 @@ extern "C" s32 fn_8021D1F0(void *arg0, s32 arg1) {
 
 extern "C" void *fn_8021D300(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = &lbl_8033EBA0;
+        *(void **)arg0 = lbl_8033EBA0;
         fn_80128670(*(s32 *)((u8 *)arg0 + 0x2B8));
         if (arg0 != 0)
             fn_8021915C(arg0, 0);
