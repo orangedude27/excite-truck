@@ -32,7 +32,7 @@ extern int fn_802E30C8(const char *, ...);
 extern char lbl_80333198[];
 
 #define __HI(x) *(int *)&x
-extern float lbl_80562168, lbl_80562174, lbl_805621B0, lbl_805621B4;
+extern float lbl_80562168, lbl_80562174, lbl_805621A4, lbl_805621B0, lbl_805621B4;
 
 int fn_8019309C(void *arg0, int index, signed char arg2) {
     void *entry = lbl_804349C0[index];
