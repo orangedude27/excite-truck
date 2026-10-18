@@ -113,12 +113,13 @@ s32 fn_802B5DD0(s32 arg0) {
 extern double lbl_80564C68;
 extern float lbl_80564C70;
 extern s32 fn_802E2C20(void);
-#pragma small_data on
-#pragma small_data off
+#pragma push
+#pragma scheduling off
 void fn_802B5E24(s32 arg0) {
     lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
     lbl_8055FA08 = lbl_80564C5C;
 }
+#pragma pop
 u32 fn_802B5E8C(s32 arg0) {
     s32 result = fn_802B5D2C(lbl_8055CE50, arg0);
     return (u32)((-1 - result) | (result + 1)) >> 31;
@@ -178,7 +179,10 @@ extern void deleteThreads__6SystemFv(void *);
 extern s32 fn_802C6CF8(void);
 extern s32 lbl_804BFA70;
 void fn_802B61E0(void) {
-    lbl_8055FA08 = (float)fn_802E2C20() / lbl_80564C70;
+    s32 val = fn_802E2C20();
+    double magic = lbl_80564C68;
+    (void)magic;
+    lbl_8055FA08 = (float)val / lbl_80564C70;
 }
 
 s32 fn_802B6270(void) {
@@ -242,17 +246,43 @@ extern s32 lbl_8055CE80;
 extern s32 lbl_8034A808;
 extern s32 lbl_8034A814;
 s32 fn_802B6E30(void);
-#pragma dont_inline on
+#pragma push
+#pragma scheduling off
 s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
     s32 scale = fn_802B6E30();
     s32 delta = arg1 - (arg2 >> 1);
     return (s16)(arg0 + delta * scale);
 }
-#pragma dont_inline reset
+#pragma pop
 extern float lbl_80564C8C;
-extern s32 fn_802B7300(s16, s16, s32, float);
+extern s32 fn_802B7300(s16, s16, float, s32);
 void fn_802B7420(s16 arg0, s16 arg1) {
-    fn_802B7300(arg0, arg1, -1, lbl_80564C8C);
+    fn_802B7300(arg0, arg1, lbl_80564C8C, -1);
+}
+
+extern s16 lbl_8055FA50[4];
+extern s32 fn_802BE8B4(s16, s16, s16);
+void fn_802B7434(void) {
+    s16 size, x, y;
+    s16 endX, endY;
+    s32 step;
+    if (lbl_8055FA38 != 2)
+        return;
+    for (size = 4; size <= 0x40; size *= 2) {
+        step = size * 2;
+        for (x = (s16)(size - 0x200); x < 0x200; x = (s16)(x + step)) {
+            endX = x + size;
+            for (y = (s16)(size - 0x200); y < 0x200; y = (s16)(y + step)) {
+                endY = y + size;
+                if (x - size <= lbl_8055FA50[1] &&
+                    endX >= lbl_8055FA50[0] &&
+                    y - size <= lbl_8055FA50[3] &&
+                    endY >= lbl_8055FA50[2]) {
+                    fn_802BE8B4(x, y, size);
+                }
+            }
+        }
+    }
 }
 
 extern void lbl_8034A898(void);
