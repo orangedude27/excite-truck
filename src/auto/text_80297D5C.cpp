@@ -458,6 +458,18 @@ extern "C" int fn_8029A290(void *arg0, void *arg1) {
     return var_r31;
 }
 
+extern "C" void* fn_8029A820(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_801EF024((void *)fn_8029C024);
+        fn_801EF024((void *)fn_8029C054);
+        fn_8028E398(*(void **)((char *)arg0 + 0x160));
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+
 extern "C" void fn_8029A890(void *arg0, void *arg1) {
     *(float *)((char *)arg0 + (int)arg1 * 0x2C + 0x24) = lbl_80564590;
 }
