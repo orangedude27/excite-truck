@@ -225,6 +225,26 @@ extern "C" f32 fn_800EB430(void* arg0) {
     return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(*(f32*)((u8*)arg0 + 4) / lbl_80560FF4);
 }
 
+void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay) {
+    const char* file = (const char*)lbl_80322B80;
+    s32 value = decay;
+    void* self = this;
+    s32 valid = 0;
+    if (value >= 0 && value <= 0x7F) valid = 1;
+    if (valid == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x105, file + 0x94, value, 0, 0x7F);
+    valid = 0;
+    if (value >= 0 && value <= 0x7F) valid = 1;
+    if (valid == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x132, file + 0xD0, value, 0, 0x7F);
+    f32 result;
+    if (value == 0x7F) result = lbl_80560FE8;
+    else if (value == 0x7E) result = lbl_80561008;
+    else if (value < 0x32) result = (f32)(value * 2 + 1) * lbl_8056100C / lbl_80561010;
+    else result = lbl_80561014 / (f32)(0x7E - value) / lbl_80561010;
+    *(f32*)((u8*)self + 8) = result;
+}
+
 void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
  f32 value;
  int valid = 0;
@@ -703,11 +723,12 @@ extern "C" void fn_800EE910(void* alarm) {
     OSRestoreInterrupts(level);
 }
 
-extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(
-    void* alarm, void* context) {
-    void* alarmTemp = alarm;
-    u32 level = OSDisableInterrupts();
-    u8* data = (u8*)OSGetAlarmUserData(alarmTemp);
+extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(void* alarm, void* context) {
+    void* savedAlarm = alarm;
+    u32 level;
+    u8* data;
+    level = OSDisableInterrupts();
+    data = (u8*)OSGetAlarmUserData(savedAlarm);
     if (data[8] != 0) {
         OSCancelAlarm(data + 0x38);
         data[6] = 0;
@@ -1011,6 +1032,17 @@ extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_
     u32 level = OSDisableInterrupts();
     *(f32*)((u8*)self + 0x74 + bus * 4) = send;
     OSRestoreInterrupts(level);
+}
+
+extern "C" f32 GetFxSend__Q46nw4hbm3snd6detail9SeqPlayerCFQ36nw4hbm3snd6AuxBus_800EFE98(void* self, s32 bus) {
+    s32 valid = 0;
+    if (bus >= 0 && bus < 4) {
+        valid = 1;
+    }
+    if (valid == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323B28, 0x1E7, (const char*)lbl_80323C74, bus, 0, 4);
+    }
+    return *(f32*)((u8*)self + (bus * 4) + 0x74);
 }
 
 extern u8 lbl_80323CBC[];
