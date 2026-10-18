@@ -2,6 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned char lbl_8055FEC0;
+extern signed char lbl_8055FE9E;
+extern int lbl_8055FEA0, lbl_8055FEA4;
+extern void *lbl_804DB468;
 extern void *lbl_8055FEA8;
 extern void *lbl_8055FEAC;
 extern void GXLoadTexMtxImm(float *, unsigned int, unsigned char);
