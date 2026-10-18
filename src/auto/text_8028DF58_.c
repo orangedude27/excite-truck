@@ -2,6 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int lbl_8055C8E0;
+extern int lbl_804B35B4[];
+extern int fn_801284F8(int, void *);
+extern int fn_8028F7AC(int, int);
+extern void fn_8028ED8C(void *, int);
+extern void fn_8028F5A0(int, int);
 extern float lbl_80564424;
 extern void fn_8028FB98(float);
 extern float lbl_8055F738;
@@ -56,18 +61,23 @@ void fn_8028E070(float farg0) {
 
 #pragma push
 #pragma small_data off
+__declspec(section ".data") extern int lbl_804B34B0;
+#pragma push
+#pragma small_data off
 void fn_8028E080(void) {
-    int *base = &lbl_804B34B0_arr[0];
-    int *entries = base;
-    int i = 0;
+    struct Table { int entries[64]; int count; } *base = (struct Table *)&lbl_804B34B0_arr[0];
+    int *entries;
+    int i;
+    entries = base->entries;
     lbl_8055F73C = 0;
+    i = 0;
     goto test;
 body:
     fn_8028F8E0(*entries, lbl_8055F738);
     entries++;
     i++;
 test:
-    if (i < *(int *)((char *)base + 0x100)) goto body;
+    if (i < base->count) goto body;
 }
 #pragma pop
 void fn_8028E0F0(void) {
@@ -202,16 +212,21 @@ int fn_8028EE34(void *arg0, int arg1, int *arg2) {
 extern int fn_8002B1D8(int, void *, int);
 extern char *strncpy(char *, const char *, unsigned int);
 void fn_8028EEB4(void *arg0, int arg1, const char *arg2) {
-    int count = *(int *)((char *)arg0 + 0x600);
-    char *p = (char *)arg0 + count * 0x18;
-    strncpy(p, arg2, 16);
-    p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
-    p[0xF] = 0;
-    p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
-    *(int *)(p + 0x10) = arg1;
-    p = (char *)arg0 + *(int *)((char *)arg0 + 0x600) * 0x18;
-    *(int *)(p + 0x14) = 1;
-    (*(int *)((char *)arg0 + 0x600))++;
+    int count;
+    int *countp;
+    char *p;
+    char *q;
+    count = *(int *)((char *)arg0 + 0x600);
+    p = (char *)arg0 + count * 0x18;
+    strncpy(p, arg2, 0x10);
+    countp = (int *)((char *)arg0 + 0x600);
+    q = (char *)arg0 + *countp * 0x18;
+    q[0xF] = 0;
+    q = (char *)arg0 + *countp * 0x18;
+    *(int *)(q + 0x10) = arg1;
+    q = (char *)arg0 + *countp * 0x18;
+    *(int *)(q + 0x14) = 1;
+    (*countp)++;
 }
 
 int fn_8028EF44(void *arg0, unsigned int arg1) {
@@ -270,6 +285,16 @@ int fn_8028F040(int *arg0, int *arg1, int arg2) {
     return -2;
 }
 
+extern float fn_80129DC4(int, float, float);
+#pragma push
+#pragma processor 750
+void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0, float farg1) {
+    arg0[0] = arg1[0] * arg3[0] + farg1 * fn_80129DC4(0, -arg2[0], arg2[0]);
+    arg0[1] = arg1[1] * arg3[1] + farg1 * fn_80129DC4(0, -arg2[1], arg2[1]);
+    arg0[1] += farg1 * farg0;
+    arg0[2] = arg1[2] * arg3[2] + farg1 * fn_80129DC4(0, -arg2[2], arg2[2]);
+}
+#pragma pop
 void fn_8028F5A4(void) {
 }
 
@@ -291,6 +316,79 @@ void fn_8028F8C4(int arg0) {
     *(int *)(p + 0x90) = -1;
     *(int *)(p + 0x94) = 0;
     *(float *)(p + 0x9C) = lbl_80564420;
+}
+
+int fn_8028FA1C(int arg0) {
+    int index;
+    int count;
+    int count2;
+    char *entries;
+
+    index = *(int *)(arg0 + 0x90);
+    if (index < 0) goto done;
+    count = *(int *)(arg0 + 0x94);
+    if (index < count) {
+        fn_8002F768((void *)arg0, (int)(*(char **)(arg0 + 0x8c) + index * 0x28), count - index);
+        goto done;
+    }
+    count2 = *(int *)(arg0 + 0x98);
+    entries = *(char **)(arg0 + 0x8c);
+    fn_8002F768((void *)arg0, (int)(entries + index * 0x28), count2 - index);
+    fn_8002F768((void *)arg0, (int)entries, count);
+done:
+    return 0;
+}
+
+extern float lbl_80564424, lbl_80564448, lbl_8056444C, lbl_80564450, lbl_80564454, lbl_80564458;
+void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
+    float a, b, c, d, e, f, g, h, i, j, k;
+    volatile float sp8, spC, sp10;
+    a = lbl_8056444C;
+    b = *(float *)((char *)arg0 + 0xA0);
+    c = a * farg0;
+    d = farg0 * b;
+    e = lbl_80564448;
+    f = *(float *)((char *)arg0 + 0x34);
+    g = lbl_80564454;
+    h = g * f;
+    i = lbl_80564450;
+    j = e * d;
+    k = lbl_80564424;
+    a = f * d;
+    b = h * d;
+    e = *(float *)((char *)arg0 + 0x30);
+    f = j - i;
+    g = lbl_80564458;
+    h = j - k;
+    a = f * b;
+    i = *(float *)((char *)arg2 + 0x10);
+    b = h * a;
+    j = *(float *)((char *)arg2 + 0xC);
+    g = g * e;
+    e = k + a;
+    f = *(float *)((char *)arg2 + 0x14);
+    h = k + b;
+    a = *(float *)arg2;
+    b = *(float *)((char *)arg2 + 4);
+    c = c * e;
+    e = *(float *)((char *)arg2 + 8);
+    i = i * h;
+    j = j * h;
+    f = f * h;
+    g = g * c;
+    c = j * farg0;
+    sp8 = j;
+    a = a + c;
+    c = f * farg0;
+    sp10 = f;
+    g = i - g;
+    spC = g;
+    c = g * farg0;
+    b = b + c;
+    e = e + c;
+    *(float *)arg1 = a;
+    *(float *)((char *)arg1 + 8) = e;
+    *(float *)((char *)arg1 + 4) = b;
 }
 
 extern int fn_80128668(void);
