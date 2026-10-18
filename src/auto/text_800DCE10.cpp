@@ -69,7 +69,7 @@ void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 inde
 
 void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u32 index) {
     if (index >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80320B8C, 0x5f, (const char *)lbl_80320B5C);
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320B8C, 0x5f, lbl_80320B5C);
     }
     const u8 *base = (const u8 *)src + (index * 4);
     ((u8 *)this_ptr)[0] = base[0xD8];
