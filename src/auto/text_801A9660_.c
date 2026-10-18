@@ -55,10 +55,11 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801A973C(void *this_,
     return this_;
 }
 
+#pragma scheduling off
 void fn_801ABB54(void *arg0) {
     extern float lbl_80562478, lbl_8056247C, lbl_805624A4, lbl_805624AC, lbl_805624D8;
     float dot, magnitude, sign, limit;
-    float scale;
+    float unused, scale;
     double absolute;
     float z, y, x;
     char *p = arg0;
@@ -85,7 +86,7 @@ void fn_801ABB54(void *arg0) {
     *(float *)(p + 0x124) = x;
     *(float *)(p + 0x12C) = z;
 }
-
+#pragma scheduling on
 void fn_801ABFF4(void) {
     fn_8017A57C();
 }
@@ -190,6 +191,27 @@ void *fn_801AC330(void *arg0) {
     return arg0;
 }
 
+extern void fn_801C1C7C(void);
+void **fn_801AC3AC(void **arg0, int arg1) {
+    if (arg0 != 0) {
+        *arg0 = lbl_80335808;
+        lbl_8055E5EC = lbl_8055E5EC - 1;
+        if (lbl_8055E5EC == 0) {
+            int ptr = lbl_8055E5F0;
+            if (ptr != 0) {
+                ((void (*)(int))fn_801C1C7C)(ptr);
+                lbl_8055E5F0 = 0;
+            }
+        }
+        if (arg0 != 0) {
+            lbl_8055E5E4 = 0;
+            if (arg0 != 0 && arg0 != 0) fn_80179EE8(arg0, 0);
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 #pragma dont_inline on
 void fn_801AC508(void) {
     register s32 value;
@@ -209,8 +231,6 @@ void fn_801ACA48(void *arg0) {
     float x, y, z;
     float scale, zero, input;
     float copyZ, copyY, copyX;
-    float vz, vy, vx, px, factor;
-    float py, pz, input2;
     char *p = arg0;
     fn_801ABC28(arg0);
     if (*(unsigned char *)(p + 0x220)) {
@@ -228,19 +248,17 @@ void fn_801ACA48(void *arg0) {
         *(float *)(p + 0x12C) = z;
         PSVECCrossProduct((Vec *)(p + 0x48), (Vec *)(p + 0x1F8), &cross);
         if (*(float *)(p + 0x4C) < lbl_80562508) {
-            input2 = cross.x;
+            float vz, vy, vx, factor, product;
+            product = cross.x;
             factor = lbl_8056250C;
-            px = input2 * factor;
             vx = *(float *)(p + 0x124);
             vy = *(float *)(p + 0x128);
             vz = *(float *)(p + 0x12C);
-            vx += px;
+            vx += product * factor;
             *(float *)(p + 0x124) = vx;
-            py = cross.y * factor;
-            vy += py;
+            vy += cross.y * factor;
             *(float *)(p + 0x128) = vy;
-            pz = cross.z * factor;
-            vz += pz;
+            vz += cross.z * factor;
             *(float *)(p + 0x12C) = vz;
         }
         copyX = *(float *)(p + 0x210);
@@ -375,7 +393,8 @@ typedef void (*Fn801ADA9C)(void *, void *, void *);
 extern unsigned char lbl_8055A8A0;
 extern unsigned char lbl_8055A8B0;
 void fn_801ADA9C(void *arg0) {
-    (*(void (**)(void *, void *, void *))(*(char **)*(void **)((char *)arg0 + 0x240) + 0x18))(*(void **)((char *)arg0 + 0x240), &lbl_8055A8A0, &lbl_8055A8B0);
+    struct Obj_801ADA9C *obj = *(struct Obj_801ADA9C **)((char *)arg0 + 0x240);
+    obj->vtable->call(obj, &lbl_8055A8A0, &lbl_8055A8B0);
 }
 
 long fn_801ADAB8(void *arg0) {
