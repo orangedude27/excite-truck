@@ -1283,6 +1283,19 @@ done:
     if ((flags & 8) == 0) return 9;
     return -((flags >> 1) & 1) & 0xB;
 }
+
+extern "C" s32 fn_800A485C(s32);
+extern "C" void *fn_800B65A0(s8 arg0) {
+    s16 index = fn_800A485C(arg0) - 0x41;
+    fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
+    if (index < 0 || index >= 0x1A) {
+        fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+        return 0;
+    }
+    fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+    return (u8 *)lbl_803D2140 + index * 0x1FC8 + 0xA0;
+}
+
 #pragma dont_inline reset
 extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32, u16 *);
 extern "C" s16 fn_800B7200(s32 arg0) {
@@ -1826,11 +1839,15 @@ extern "C" void fn_800BBCB4(void* context) {
 
 void fn_800BEDE0(void *arg0, void *arg1) {
     u32 rate;
-    *(s32 *)arg1 = *(s32 *)((u8 *)arg0 + 4) == 0;
+    s16 mode;
+    *(s32 *)arg1 = *(u32 *)((u8 *)arg0 + 4) == 0;
     rate = 0xAC44;
-    switch (*(s16 *)((u8 *)arg0 + 0x1C)) {
-    case 1: rate = 0xBB80; break;
-    case 2: rate = 0x7D00; break;
+    mode = *(s16 *)((u8 *)arg0 + 0x1C);
+    if (mode == 0) {
+    } else if (mode == 1) {
+        rate = 0xBB80;
+    } else if (mode == 2) {
+        rate = 0x7D00;
     }
     if (*(s32 *)arg1 == 0)
         rate = (rate + (rate >> 31)) >> 1;
@@ -2181,6 +2198,11 @@ void fn_800CFAC8(void *arg0) {
 }
 
 extern "C" void fn_800CFBB8(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x28) = arg1; }
+
+extern "C" s32 fn_800CFBC0(void *arg0, s32 arg1) {
+    void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((char *)arg0 + 8, arg1 & 0xffff);
+    return *(s32 *)((char *)entry + 4);
+}
 
 extern "C" u8 fn_800CFDB4(void *arg0) { return *((u8 *)((u8 *)arg0 + 0x24)); }
 
@@ -2825,17 +2847,16 @@ extern "C" u16 fn_800D4138(const void *arg0, u32 arg1, f32 farg0) {
         if (farg0 <= *(f32 *)base) return *(u16 *)(base + 4);
         const u8 *end = base + arg1 * 8;
         if (farg0 >= *(f32 *)(end - 8)) return *(u16 *)(end - 4);
-        s32 low = 0;
-        s32 high = arg1 - 1;
+        s32 low = 0, high = arg1 - 1;
         while (low != high - 1 && low != high) {
             s32 mid = (low + high) / 2;
             if (farg0 < *(f32 *)(base + mid * 8)) high = mid;
             else low = mid;
         }
-        s32 idx = high;
-        f32 delta = farg0 - *(f32 *)(base + idx * 8);
+        s32 offset = high * 8;
+        f32 delta = farg0 - *(f32 *)(base + offset);
         s32 found = delta > lbl_80560E48 && delta < lbl_80560E4C;
-        if (found) return *(u16 *)(base + idx * 8 + 4);
+        if (found) return *(u16 *)(base + offset + 4);
         return *(u16 *)(base + low * 8 + 4);
     }
     return *(u16 *)(base + 4);
