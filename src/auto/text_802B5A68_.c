@@ -255,9 +255,9 @@ s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
 }
 #pragma pop
 extern float lbl_80564C8C;
-extern s32 fn_802B7300(s16, s16, float, s32);
-void fn_802B7420(s16 arg0, s16 arg1) {
-    fn_802B7300(arg0, arg1, lbl_80564C8C, -1);
+extern s32 fn_802B7300(s16, s16, s32, s32, float);
+void fn_802B7420(s16 arg0, s16 arg1, s32 arg2) {
+    fn_802B7300(arg0, arg1, arg2, -1, lbl_80564C8C);
 }
 
 extern s16 lbl_8055FA50[4];
