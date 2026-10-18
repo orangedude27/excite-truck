@@ -60,9 +60,18 @@ extern "C" void* __dt__Q36nw4hbm3lyt7PictureFv(void* this_, s32 arg1) {
     return this_;
 }
 extern "C" void fn_800DC918(void* this_, void* palette) {
+    struct Picture {
+        virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+        virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+        virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+        virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
+        virtual void m16(); virtual void m17(); virtual void m18(); virtual void m19();
+        virtual void m20(); virtual void m21(); virtual void m22(); virtual void m23();
+        virtual void Set(void*);
+    };
     u8 tex[0x20];
     InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(tex, palette, 0);
-    ((void (*)(void*, void*))(*(void***)this_)[0x68 / 4])(this_, tex);
+    ((Picture*)this_)->Set(tex);
 }
 
 extern "C" void GetVtxColor__Q36nw4hbm3lyt7PictureCFUl(Color* out, const void* this_, u32 idx) {
@@ -121,27 +130,27 @@ extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(s32, u8);
 extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(void*, void*, u8, s32, void*, u8);
 extern "C" void DrawSelf__Q36nw4hbm3lyt7PictureFRCQ36nw4hbm3lyt8DrawInfo(void* this_) {
-    register void* pane = this_;
-    register void* tex;
-    register s32 modulate;
-    register void* colors;
-    register s32 size;
-    register u8 color;
-    register u8 format;
-    register void* pos;
-    tex = *(void**)((u8*)pane + 0x28);
+    void* tex;
+    u8 color;
+    u8 format;
+    s32 modulate;
+    void* colors;
+    void* pos;
+    s32 size;
+
+    tex = *(void**)((u8*)this_ + 0x28);
     if (tex == 0) return;
-    ((void (*)(void*))(*(void***)pane)[0x60 / 4])(pane);
-    color = *((u8*)pane + 0xCE);
-    modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc((u8*)pane + 0xD4, color);
-    modulate = ((s32 (*)(void*, s32, u8))(*(void***)tex)[3])(tex, modulate, color);
-    format = *((u8*)pane + 0xE5);
+    ((void (*)(void*))(*(void***)this_)[0x60 / 4])(this_);
+    color = *((u8*)this_ + 0xCE);
+    modulate = IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc((u8*)this_ + 0xD4, color);
+    modulate = ((s32 (*)(void*, s32, u8))(*(void***)tex)[0x0C / 4])(tex, modulate, color);
+    format = *((u8*)this_ + 0xE5);
     SetVertexFormat__Q34nw4r3lyt6detailFbUc(modulate, format);
-    colors = modulate ? (u8*)pane + 0xD4 : 0;
-    size = *(s32*)((u8*)pane + 0xE8);
-    format = *((u8*)pane + 0xE5);
-    pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(pane);
-    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(&pos, (u8*)pane + 0x4C, format, size, colors, color);
+    colors = modulate ? (u8*)this_ + 0xD4 : 0;
+    size = *(s32*)((u8*)this_ + 0xE8);
+    format = *((u8*)this_ + 0xE5);
+    pos = GetVtxPos__Q34nw4r3lyt4PaneCFv(this_);
+    DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(&pos, (u8*)this_ + 0x4C, format, size, colors, color);
 }
 
 extern "C" u32* fn_800DCDFC(void) {
