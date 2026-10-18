@@ -339,6 +339,45 @@ void WUDSetSniffMode(BD_ADDR addr, s32 interval)
     BTM_SetPowerMode(lbl_80392960[0x68A], addr, &block);
 }
 
+s32 WUDSetDisableChannel(s8 arg0) {
+    extern void DBPrintf_8006CFA8(const char *, ...);
+    extern u8 BTM_SetAfhChannels(u8, u8);
+    extern char lbl_80313550[];
+    extern char lbl_80313568[];
+    extern u8 lbl_80392960[];
+
+    volatile u8 *base = lbl_80392960;
+    s32 min;
+    s32 max;
+    s32 channel;
+    s32 state;
+    u8 status;
+    s32 result = 0;
+
+    DBPrintf_8006CFA8(lbl_80313550, (u32)lbl_80313550);
+    if (arg0 < 0 || arg0 > 0xD) return 0;
+    state = OSDisableInterrupts();
+    channel = (s8)base[0x688];
+    OSRestoreInterrupts(state);
+    if ((u32)channel == 3) {
+        if (arg0 == 0) {
+            min = 0xFF;
+            max = 0xFF;
+        } else {
+            channel = arg0 + 1;
+            channel = channel * 5;
+            min = channel - 0xE;
+            max = channel + 0xE;
+            if (min < 0) min = 0;
+            if (max > 0x4E) max = 0x4E;
+        }
+        status = BTM_SetAfhChannels((u8)min, (u8)max);
+        DBPrintf_8006CFA8(lbl_80313568, status);
+        result = 1;
+    }
+    return result;
+}
+
 s32 fn_8006ADC4(s32 arg0)
 {
     extern void DBPrintf_8006CFA8(const char *, ...);
@@ -3022,7 +3061,7 @@ BOOL btsnd_hcic_write_pin_type_8008543C(u32 pin_type) {
     buf[9] = 0xC;
     buf[10] = 1;
     buf[11] = pin_type;
-    btu_hcif_send_cmd(0xC, 0x20, 0);
+    btu_hcif_send_cmd(buf);
     return TRUE;
 }
 
