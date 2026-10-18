@@ -155,8 +155,7 @@ done:
 #pragma scheduling on
 void fn_801CB6B4(void) {
     if (fn_80019BA8() == 0) {
-        int result = fn_80161C38();
-        (void)result;
+        if (fn_80161C38() != 0) return;
     }
 }
 
@@ -416,7 +415,7 @@ extern int fn_8000DA10(void);
 extern void *fn_8001BB58(s32, s32, s32);
 extern int fn_80160AB4(void);
 extern void fn_801CD730(s32 *, s32 *);
-#pragma dont_inline fn_801CE898
+#pragma dont_inline on
 int fn_801CE8CC(void) {
     s32 spC;
     s32 sp8;
@@ -441,6 +440,7 @@ int fn_801CE8CC(void) {
     if ((spC >= 0) && (spC <= temp_r29)) return 1;
     return 0;
 }
+#pragma dont_inline reset
 void *fn_801CE9A0(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void **)((char *)arg0 + 4) = lbl_80338024;
