@@ -7,8 +7,42 @@ struct Fn8027F834List { void **items; int count; int pad[2]; };
 extern struct Fn8027F834List lbl_804B3048;
 
 extern void *lbl_8055F680;
+#pragma dont_inline on
+void fn_8027ED2C(void) {
+    void *obj = lbl_8055F680;
+    if (obj != 0) {
+        ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+    }
+    lbl_8055F680 = 0;
+}
+#pragma dont_inline reset
+
 void* fn_8027ED70(void) {
     return lbl_8055F680;
+}
+
+extern int fn_802146BC(int *, int, int, int, int, int, int, int);
+extern int lbl_802FA848;
+extern int lbl_803480A8;
+extern int lbl_804B2FF8;
+extern int lbl_8055B860;
+extern int lbl_8055C7C8;
+__declspec(section ".data") extern int lbl_802FA848;
+__declspec(section ".data") extern int lbl_804B2FF8;
+__declspec(section ".data") extern int lbl_803480A8;
+extern int lbl_8055C7C8, lbl_8055B860;
+void fn_8027ED78(int arg0, int arg1, int arg2) {
+ volatile int sp6c,sp68,sp64,sp60,sp5c;
+ volatile int sp58=13,sp54=-2,sp50=0,sp4c=6;
+ int * volatile sp48=&lbl_8055B860;
+ volatile int sp44=0,sp40=0,sp3c=arg1,sp38=3;
+ int * volatile sp34=&lbl_803480A8;
+ volatile int sp30=0,sp2c=0,sp28=arg0,sp24=3;
+ int * volatile sp20=&lbl_8055C7C8;
+ volatile int sp18,sp14,sp10,sp0c,sp08;
+ sp5c=((int*)&lbl_804B2FF8)[0]; sp60=((int*)&lbl_804B2FF8)[1]; sp64=((int*)&lbl_804B2FF8)[2]; sp68=((int*)&lbl_804B2FF8)[3]; sp6c=((int*)&lbl_804B2FF8)[4];
+ sp08=lbl_802FA848; sp10=((int*)&lbl_802FA848)[2]; sp14=((int*)&lbl_802FA848)[3]; sp18=((int*)&lbl_802FA848)[4];
+ fn_802146BC((int*)&sp08,-999,-999,1,sp18,sp14,sp10,sp08);
 }
 
 void fn_8027EE74(int arg0) {
@@ -18,19 +52,22 @@ void fn_8027EE74(int arg0) {
     fn_80236914();
 }
 
+#pragma dont_inline on
 int fn_8027EE88(void) {
     extern unsigned char lbl_8055F684, lbl_8055F685;
     extern int lbl_80348078;
     extern void *fn_8027ED70(void);
     void *obj;
+    void (**vt)(void *, void *);
     if (lbl_8055F685 == 0 && lbl_8055F684 != 0) {
         lbl_8055F685 = 1;
         obj = fn_8027ED70();
-        ((void (*)(void *))(*(void ***)obj)[14])(&lbl_80348078);
+        vt = (void (**)(void *, void *))*(void ***)obj;
+        vt[14](obj, &lbl_80348078);
     }
     return 0;
 }
-
+#pragma dont_inline reset
 void fn_8027F204(char *src) {
     extern int lbl_8055F69C;
     extern int lbl_80348270;
@@ -63,14 +100,18 @@ void *fn_8027F834(void *arg0, int arg1) {
         var_r6 = (unsigned int *)lbl_804B3048.items;
         var_r7 = 0;
         var_ctr = lbl_804B3048.count;
-        if (var_ctr > 0) {
-            do {
-                if (*var_r6 == (unsigned int)arg0) break;
+        if (lbl_804B3048.count > 0) {
+loop_4:
+            if (*var_r6 == (unsigned int)arg0) {
+            } else {
                 var_r6 += 4;
                 var_r7 += 1;
-            } while (--var_ctr != 0);
-            if (var_ctr == 0) var_r7 = -1;
+                var_ctr -= 1;
+                if (var_ctr == 0) goto block_7;
+                goto loop_4;
+            }
         } else {
+block_7:
             var_r7 = -1;
         }
         if (var_r7 != -1 && var_r7 >= 0 && var_r7 < lbl_804B3048.count) {
@@ -107,11 +148,17 @@ int fn_802837D4(int arg0, int arg1) {
 }
 
 void *fn_80283938(void *arg0, int arg1) {
+    void *base;
+    void *next;
+    void *field;
     if (arg0 != 0) {
-        *(void **)arg0 = lbl_80348678;
-        *(void **)((char *)arg0 + 4) = lbl_80348678 + 0x50;
+        base = lbl_80348678;
+        *(void **)arg0 = base;
+        next = (char *)base + 0x50;
+        *(void **)((char *)arg0 + 4) = next;
         lbl_8055F69C = 0;
-        if (*(int *)((char *)arg0 + 0x20) != 0) fn_80128668();
+        field = *(void **)((char *)arg0 + 0x20);
+        if (field != 0) fn_80128668(field);
         if ((unsigned int)arg0 + 0x40 != 0) {
             if ((unsigned int)arg0 + 0x40 != 0) {
                 *(int *)((char *)arg0 + 0x40) = 0;
@@ -125,15 +172,19 @@ void *fn_80283938(void *arg0, int arg1) {
 }
 
 int fn_802839D0(void) {
-    int temp;
-    void **p;
+    int temp_r31;
+    void **temp_r3;
+    void **temp_r3_2;
+    int result;
     if (lbl_8055F684 != 0 && lbl_8055F698 != 0) {
-        p = *(void *** )((char *)lbl_8055F698 + 0x60);
-        temp = ((int (*)(void *))(*(void ***)*p + 0x24))(p);
-        p = *(void *** )((char *)lbl_8055F698 + 0x60);
-        ((int (*)(void *, void *))(*(void ***)*p + 0x20))(p, lbl_8055F698);
-        fn_8025C204(temp);
-    } else fn_80216D28();
+        temp_r3 = *(void *** )((char *)lbl_8055F698 + 0x60);
+        temp_r31 = ((int (**)(void *))*temp_r3)[9](temp_r3);
+        temp_r3_2 = *(void *** )((char *)lbl_8055F698 + 0x60);
+        result = ((int (**)(void *, void *))*temp_r3_2)[8](temp_r3_2, lbl_8055F698);
+        ((int (*)(int, int))fn_8025C204)(result, temp_r31);
+    } else {
+        fn_80216D28();
+    }
     return 0;
 }
 
@@ -178,50 +229,48 @@ void fn_802840F8(void) {
 
 void fn_80286724(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
-    volatile void** vtable = *(volatile void***)obj;
+    void** vtable = *(void***)obj;
     ((void (*)(void))vtable[3])();
 }
 
 void fn_80286738(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
-    volatile void** vtable = *(volatile void***)obj;
+    void** vtable = *(void***)obj;
     ((void (*)(void))vtable[4])();
 }
 
 void fn_8028674C(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 0x1c);
-    volatile void** vtable = *(volatile void***)obj;
-    ((void (*)(void))vtable[5])();
+    ((void (*)(void))(*(void***)(*(void**)((char*)arg0 + 0x1c)))[5])();
 }
 
 void fn_80286760(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
-    register void** vtable = *(void***)obj;
-    ((void (*)(void*))vtable[6])(obj);
+    (*(void (**)(void*))(*(void***)obj + 6))(obj);
 }
 
 void fn_80286774(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
-    register void** vtable = *(void***)obj;
-    ((void (*)(void*))vtable[7])(obj);
+    (*(void (**)(void*))(*(void***)obj + 7))(obj);
 }
 
 void fn_80286788(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
-    register void** vtable = *(void***)obj;
-    ((void (*)(void*))vtable[8])(obj);
+    ((void (**)(void*))(*(void***)obj))[8](obj);
 }
 
 void fn_8028679C(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 0x1c);
-    (*(void (**)(void))(*(void ***)obj + 9))();
+    void **vtable = *(void ***)obj;
+    void (*fn)(void) = (void (*)(void))vtable[9];
+    fn();
 }
 
 int fn_802867B0(void *arg0) {
-    void *p = *(void **)((char *)arg0 + 0x20);
+    extern double lbl_80564220;
+    void * volatile p = *(void **)((char *)arg0 + 0x20);
     int value;
     if (p != 0) {
-        value = (int)(*(int *)p + *(float *)((char *)p + 0x10));
+        value = (int)((float)*(int *)p + *(float *)((char *)p + 0x10));
         if (value > *(int *)((char *)p + 4))
             value = *(int *)((char *)p + 4);
         return value;
@@ -231,97 +280,122 @@ int fn_802867B0(void *arg0) {
 }
 
 void fn_80286834(void **arg0) {
-    void *obj = *arg0;
-    int result = ((int (*)(void))(*(void **)((char *)*(void **)obj + 0x28)))();
-    ((void (*)(void *, int))(*(void **)((char *)*(void **)obj + 0x30)))(obj, result);
+    int result;
+    result = ((int (*)(void))(*(void **)((char *)*arg0 + 0x28)))();
+    ((void (*)(void **, int))(*(void **)((char *)*arg0 + 0x30)))(arg0, result);
 }
 
 void fn_80286884(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
-    ((void (*)(void*))(*(void***)obj)[12])(obj);
+    ((void (*)(void*))(*(void**)((char*)obj + 0)))(obj);
 }
 
 void fn_80286898(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
-    ((void (*)(void*))(*(void***)obj)[13])(obj);
+    (*(void (**)(void*))((char*)*(void**)obj + 0x34))(obj);
 }
 
 void fn_802868AC(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
-    ((void (*)(void*))(*(void***)obj)[14])(obj);
+    struct VTable { void* pad[14]; };
+    ((void (*)(void*))((struct VTable*)*(void**)obj)->pad[14])(obj);
 }
 
 void fn_802868C0(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 0x1C);
-    ((void (*)(void))(*(void ***)obj)[15])();
+    (*(void (**)(void))((char *)*(void **)obj + 0x3C))();
 }
 
 int fn_802868D4(void *arg0) {
-    void *obj = arg0;
-    unsigned int a = ((unsigned int (*)(void *))(*(void ***)obj)[15])(obj);
-    int b = ((int (*)(void *))(*(void ***)obj)[10])(obj);
-    return (int)b <= (int)a;
+    int a = ((int (*)(void *))(*(void ***)arg0)[15])(arg0);
+    int b = ((int (*)(void *))(*(void ***)arg0)[10])(arg0);
+    return b >= a;
 }
 
 void fn_8028693C(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 0x1C);
-    ((void (*)(void))(*(void ***)obj)[17])();
+    void **vtable = *(void ***)obj;
+    void *slot = vtable[17];
+    ((void (*)(void))slot)();
 }
 
-int fn_80286950(void *arg0) {
+typedef unsigned int (*GetFn)(void *);
+typedef int (*CmpFn)(void *);
+int fn_80286950(void **arg0) {
     unsigned int a;
-    int b;
-    void **vtable;
-    vtable = *(void ***)arg0;
-    a = ((unsigned int (*)(void *))vtable[19])(arg0);
-    vtable = *(void ***)arg0;
-    b = ((int (*)(void *))vtable[10])(arg0);
-    return (int)a <= b;
+    GetFn get;
+    CmpFn cmp;
+    get = *(GetFn *)((char *)*arg0 + 0x4C);
+    a = get(arg0);
+    cmp = *(CmpFn *)((char *)*arg0 + 0x28);
+    return (int)a <= cmp(arg0);
 }
 
 void fn_802869B8(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 0x1C);
-    register void **vtable = *(void ***)obj;
+    volatile void * volatile *vtable = (volatile void * volatile *)*(void ***)obj;
     ((void (*)(void *))vtable[19])(obj);
 }
 
 int fn_802869CC(void *arg0, int arg1) {
     extern double lbl_80564220;
     void *p;
-    double d;
-    if (arg1 != 13) {
-        goto fail;
+    int d;
+    if (arg1 == 13) {
+        p = *(void **)((char *)arg0 + 0x20);
+        if (p != 0 && *(unsigned char *)((char *)arg0 + 0x29) == 0) {
+            d = *(int *)((char *)p + 4) - *(int *)p;
+            *(float *)((char *)p + 0x10) = (float)((double)d - lbl_80564220);
+            return 1;
+        }
     }
-    p = *(void **)((char *)arg0 + 0x20);
-    if (p == 0) goto fail;
-    if (*(unsigned char *)((char *)arg0 + 0x29) != 0) goto fail;
-    d = (double)(*(int *)((char *)p + 4) - *(int *)p);
-    *(float *)((char *)p + 0x10) = (float)(d - lbl_80564220);
-    return 1;
-fail:
     return 0;
 }
 
+#pragma dont_inline on
+void fn_80287238(void *arg0) {
+    extern float lbl_80564200, lbl_805641FC;
+    extern int lbl_80347FB4;
+    extern int fn_80214A9C(int);
+    extern void *fn_8027ED70(void);
+    void *temp_r4 = *(void **)((char *)arg0 + 0x20);
+    if (temp_r4 != 0) {
+        *(float *)((char *)temp_r4 + 0x10) = lbl_80564200;
+        *(unsigned char *)((char *)arg0 + 0x29) = 0;
+        *(unsigned char *)((char *)arg0 + 0x2A) = 0;
+        *(unsigned char *)((char *)arg0 + 0x28) = ((unsigned char (*)(void))(*(void ***)arg0)[16])();
+        ((void (*)(void *))(*(void ***)fn_8027ED70())[14])(&lbl_80347FB4);
+        fn_80214A9C(0x1F);
+        *(float *)((char *)arg0 + 0x178) = lbl_805641FC;
+        return;
+    }
+    *(unsigned char *)((char *)arg0 + 0x29) = 1;
+    *(unsigned char *)((char *)arg0 + 0x2A) = 0;
+    *(float *)((char *)arg0 + 0x178) = lbl_80564200;
+}
+#pragma dont_inline reset
 extern float lbl_80564200;
 extern float lbl_805641FC;
 extern int lbl_80347FB4;
 extern void* fn_8027ED70(void);
 extern int fn_80214A9C(int);
+#pragma scheduling off
 void fn_802872DC(void* arg0) {
- void* obj = *(void**)((char*)arg0 + 4);
- (*(void (**)(void*))(*(void ***)obj + 3))(obj);
+    void* obj = *(void**)((char*)arg0 + 4);
+    void** vtable = *(void***)obj;
+    ((void (*)(void*))vtable[3])(obj);
 }
-
+#pragma scheduling on
 void fn_802872F0(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    register void** vtable = *(void***)obj;
+    void** vtable = *(void***)obj;
     ((void (*)(void*))vtable[4])(obj);
 }
 
 void fn_80287304(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    volatile void** vtable = *(volatile void***)obj;
-    ((void (*)(void))vtable[5])();
+    void** vtable = *(void***)obj;
+    ((void (*)(void*))vtable[5])(obj);
 }
 
 extern unsigned char lbl_8055F685;
@@ -333,19 +407,17 @@ extern int fn_80216D28(void);
 extern int fn_802E30C8(const char *);
 void fn_80287318(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    register void** vp = *(void***)obj;
-    ((void (*)(void*))vp[6])(obj);
+    void** vtable = *(void***)obj;
+    ((void (*)(void*))vtable[6])(obj);
 }
 
 void* fn_8028732C(void* arg0, int arg1) {
     void* cached = *(void**)((char*)arg0 + 8);
     void* obj;
-    void** vtable;
     if (cached != 0 && arg1 == *(int*)((char*)arg0 + 12))
         return cached;
     obj = *(void**)((char*)arg0 + 4);
-    vtable = *(void***)obj;
-    return ((void* (*)(void))vtable[7])();
+    return (*(void* (**)(void))(*(void***)obj + 7))();
 }
 
 void fn_80287360(void) {
@@ -364,9 +436,10 @@ int fn_80287364(void* arg0) {
     return 1;
 }
 
-void fn_802873F8(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    ((void (*)(void))(*(void ***)obj)[9])();
+void fn_802873F8(void* arg0) {
+    void* obj = *(void**)((char*)arg0 + 4);
+    void** vtable = *(void***)obj;
+    ((void (*)(void))vtable[9])();
 }
 
 int fn_8028740C(void* arg0) {
@@ -384,11 +457,14 @@ int fn_8028740C(void* arg0) {
 
 void fn_802874A0(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    ((void (*)(void*))(*(void***)obj)[11])(obj);
+    register void** vtable = *(void***)obj;
+    register void (*fn)(void*) = (void (*)(void*))vtable[11];
+    fn(obj);
 }
 
 void fn_802874B4(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
-    ((void (*)(void*))(*(void***)obj)[12])(obj);
+    void* (*vtable)[13] = (void* (*)[13])*(void***)obj;
+    ((void (*)(void*))(*vtable)[12])(obj);
 }
-
+#define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
