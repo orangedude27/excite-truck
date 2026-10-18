@@ -45,6 +45,18 @@ __declspec(section ".data") extern s32 lbl_80489BE0;
 __declspec(section ".data") extern s32 lbl_80489C50;
 extern s32 *lbl_8055B5D0;
 extern s32 *lbl_8055B5D4;
+__declspec(section ".data") extern s32 lbl_80489BE0;
+__declspec(section ".data") extern s32 lbl_80489C50;
+extern s8 lbl_8055EE41;
+extern s8 lbl_8055EE42;
+extern s8 lbl_8055EE43;
+extern f32 lbl_805632DC;
+extern void fn_8012E81C(s32 *);
+extern s32 fn_8012E938(s32 *);
+extern s32 fn_80128690(void);
+extern void fn_80128684(void);
+extern void fn_80128678(void);
+extern void fn_802064D0(s32 *);
 extern s8 lbl_8055EE41;
 extern s8 lbl_8055EE42;
 extern s8 lbl_8055EE43;
@@ -53,10 +65,11 @@ void fn_8020C45C(void) {
     s32 var_r28;
     void *temp_r3;
     void *temp_r3_2;
-    s32 (**method)(s32);
-    if ((void **)lbl_8055EE38 != 0 && (void **)lbl_8055EE38 != 0) {
-        method = (s32 (**)(s32))*(s32 **)(long)lbl_8055EE38;
-        method[2](1);
+    s32 (**method)(void *, s32);
+    temp_r3 = (void *)lbl_8055EE38;
+    if (temp_r3 != 0 && temp_r3 != 0) {
+        method = (s32 (**)(void *, s32))*(s32 **)temp_r3;
+        method[2](temp_r3, 1);
     }
     lbl_8055EE38 = 0;
     fn_802103BC();
@@ -69,8 +82,8 @@ void fn_8020C45C(void) {
             *(s8 *)((u8 *)temp_r3 + 0x4C) = 0;
             temp_r3_2 = *(void **)((u8 *)var_r29 + 0x20);
             if (temp_r3_2 != 0) {
-                method = (s32 (**)(s32))*(s32 **)temp_r3_2;
-                method[2](1);
+                method = (s32 (**)(void *, s32))*(s32 **)temp_r3_2;
+                method[2](temp_r3_2, 1);
             }
             *(void **)((u8 *)var_r29 + 0x20) = 0;
         }
