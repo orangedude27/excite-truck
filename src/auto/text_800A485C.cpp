@@ -42,6 +42,7 @@ extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
 extern "C" s32 lbl_803D2140[];
 extern "C" u32 fn_80060CC0(void*, u32, u32);
 extern "C" void *lbl_80407780[];
+extern "C" f32 lbl_80560E20;
 extern "C" f32 lbl_80560E38;
 extern "C" u8 lbl_80407600[];
 extern "C" u8 lbl_8055DDA8[];
