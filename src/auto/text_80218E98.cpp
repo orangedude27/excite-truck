@@ -56,7 +56,7 @@ virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virt
 virtual void a10(); virtual void a11(); virtual void a12(); virtual void a13(); virtual void a14();
 virtual void a15(); virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19();
 virtual void a20(); virtual void a21(); virtual void a22(); virtual void a23(); virtual void a24();
-virtual void a25(); virtual void a26(); virtual void a27(); virtual void a28(); virtual s32 get();
+virtual void a25(); virtual void a26(); virtual void a27(); virtual s32 get();
 };
 
 class VfObjCall {
@@ -1568,26 +1568,22 @@ extern "C" void fn_802213A4(void *arg0, s32 arg1, s32 arg2) {
     s32 value;
     s32 limit;
     void *state;
-
-    if (*(u8 *)((u8 *)arg0 + 0x250) == 0)
-        return;
-
-    state = *(void **)((u8 *)arg0 + 0x244);
+    if (*(u8 *)((u8 *)arg0 + 0x250) == 0) return;
     if (*(s32 *)((u8 *)arg0 + 0x254) == 0) {
-        value = (s32)(((f32)*(s32 *)state /
-                       (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8))) *
-                      (f32)(arg2 + *(s32 *)((u8 *)arg0 + 0x25C)));
+        state = *(void **)((u8 *)arg0 + 0x244);
+        value = (s32)(((f32)*(s32 *)state / (f32)(*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8))) * (f32)(arg2 + *(s32 *)((u8 *)arg0 + 0x25C)));
+        *(s32 *)((u8 *)state + 8) = value;
+        limit = *(s32 *)state - *(s32 *)((u8 *)state + 4);
+        if (value > limit) *(s32 *)((u8 *)state + 8) = limit;
+        if (*(s32 *)((u8 *)state + 8) < 0) *(s32 *)((u8 *)state + 8) = 0;
     } else {
-        value = (s32)(((f32)*(s32 *)state / (f32)((VfObj *)arg0)->vf30()) *
-                      (f32)(arg1 + *(s32 *)((u8 *)arg0 + 0x258)));
+        state = *(void **)((u8 *)arg0 + 0x244);
+        value = (s32)(((f32)*(s32 *)state / (f32)((Vf78 *)arg0)->get()) * (f32)(arg1 + *(s32 *)((u8 *)arg0 + 0x258)));
+        *(s32 *)((u8 *)state + 8) = value;
+        limit = *(s32 *)state - *(s32 *)((u8 *)state + 4);
+        if (value > limit) *(s32 *)((u8 *)state + 8) = limit;
+        if (*(s32 *)((u8 *)state + 8) < 0) *(s32 *)((u8 *)state + 8) = 0;
     }
-
-    *(s32 *)((u8 *)state + 8) = value;
-    limit = *(s32 *)state - *(s32 *)((u8 *)state + 4);
-    if (value > limit)
-        *(s32 *)((u8 *)state + 8) = limit;
-    if (*(s32 *)((u8 *)state + 8) < 0)
-        *(s32 *)((u8 *)state + 8) = 0;
 }
 
 extern "C" void fn_80221538(void *arg0) {
