@@ -20,7 +20,7 @@ extern void fn_80060CC0(int, int, void (*)());
 extern void fn_802E30C8(char *, int, char *, ...);
 extern void fn_802E5248(int, int);
 extern void fn_802E51D0();
-extern char lbl_8055D1D8[];
+__declspec(section ".sdata") extern char lbl_8055D1D8[];
 extern char lbl_8034D39C[];
 extern char lbl_8034D3C0[];
 extern unsigned char lbl_804FC800[];
@@ -45,8 +45,10 @@ extern void fn_80128670(int);
 extern void fn_8012C4D8(void);
 extern void fn_8012BF24(void *);
 void fn_802E4D84(void *dst, void *src, int size) {
+    void *saved_dst = dst;
+    int saved_size = size;
     memcpy(dst, src, size);
-    DCFlushRange(dst, size);
+    DCFlushRange(saved_dst, saved_size);
 }
 
 extern float lbl_80565130;
@@ -56,16 +58,16 @@ unsigned short fn_802E5168(float arg0) {
     int converted;
     int result;
     if (value < lbl_8056512C) {
-        value = value - lbl_80565134;
+        value -= lbl_80565134;
     } else {
-        value = lbl_80565134 + value;
+        value += lbl_80565134;
     }
     converted = (int)value;
     result = converted & ((-converted & ~converted) >> 31);
-    if (result < 0x8000) {
-        return (unsigned short)result;
+    if (result >= 0x8000) {
+        result = 0x8000;
     }
-    return 0x8000;
+    return (unsigned short)result;
 }
 
 void fn_802E51D0(void) {
@@ -112,35 +114,46 @@ int fn_802E58A0(void *arg0, int arg1) {
 
 void fn_802E58B8(unsigned char *arg0) {
     int index = lbl_8055FF78;
-    unsigned char *dst;
-    unsigned char *src;
-    int count;
+    unsigned char *dst = lbl_804FC558 + (index << 5);
+    unsigned char *src = arg0;
+    int count = 0x20;
     lbl_8055FF78 = index + 1;
-    dst = lbl_804FC558 + (index << 5);
-    src = arg0;
-    count = 0x20;
-    while (count > 0) {
+    do {
         count--;
-    }
-    if (count == 0) {
-        *dst = 0;
-    }
-    while ((*src) != 0) {
-        unsigned char c = *src++;
-        *dst++ = c;
+    } while (count != 0);
+    *--dst = 0;
+    while ((signed char)*src != 0) {
+        *dst++ = *src++;
     }
     fn_8012BEF0(arg0);
     fn_8012C41C(fn_802E589C, 0, arg0);
 }
 
+void fn_802E59BC(unsigned char *arg0) {
+    int index = lbl_8055FF78;
+    unsigned char *dst = lbl_804FC558 + (index << 5);
+    unsigned char *src = arg0;
+    int count = 0x20;
+    lbl_8055FF78 = index + 1;
+    while (count > 0) {
+        count--;
+    }
+    *--dst = 0;
+    while ((signed char)*src != 0) {
+        *dst++ = *src++;
+    }
+    fn_8012BEF0(arg0);
+    fn_8012C41C((void (*)())fn_802E58A0, 0, arg0);
+}
+
 void fn_802E5A54(void) {
-    int i;
     unsigned char *ptr;
+    int i;
     for (i = 0; i < lbl_8055FFA0; i++) {
         fn_802E5D5C(lbl_8055FF9C[i]);
     }
     lbl_8055FFA0 = 0;
-    for (i = 0, ptr = lbl_804FC558; i < lbl_8055FF78; i++, ptr += 0x20) {
+    for (ptr = lbl_804FC558, i = 0; i < lbl_8055FF78; i++, ptr += 0x20) {
         fn_8012BF24(ptr);
     }
     lbl_8055FF78 = 0;
@@ -149,6 +162,40 @@ void fn_802E5A54(void) {
 float fn_802E6040(void *arg0) {
     if (arg0 != 0) return *(float *)((char *)arg0 + 0xA4);
     return lbl_8056512C;
+}
+
+extern unsigned char lbl_8055FF94[];
+extern int OSDisableInterrupts(void);
+extern int OSEnableInterrupts(int);
+__declspec(section ".sdata") extern unsigned char lbl_8055FF94[];
+void *fn_802E6058(void *arg0) {
+    unsigned char *entry;
+    int i;
+    i = 0;
+    for (;;) {
+        entry = lbl_8055FF94 + ((((i << 27) - (i >> 31)) << 5) + (i >> 31)) * 0x2C;
+        if (entry[0x20] == 0) {
+            OSDisableInterrupts();
+            entry[0x20] = 1;
+            *(void **)(entry + 0x1C) = arg0;
+            *(float *)(entry + 8) = lbl_80565128;
+            *(float *)(entry + 0xC) = lbl_8056512C;
+            *(float *)(entry + 0x14) = lbl_80565128;
+            *(int *)(entry + 0x18) = 0;
+            *(float *)(entry + 0x10) = *(float *)((char *)arg0 + 0xA8);
+            entry[0x23] = 0;
+            entry[0x25] = 0;
+            *(int *)((char *)arg0 + 0x98) += 1;
+            entry[0x21] = 1;
+            entry[0x22] = 0;
+            *(int *)(entry + 0x28) = 0;
+            OSEnableInterrupts(0);
+            ++lbl_8055FF98;
+            return entry;
+        }
+        if (++i == 0x20) break;
+    }
+    return 0;
 }
 
 void fn_802E6138(void *arg0) {
