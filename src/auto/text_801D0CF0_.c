@@ -23,12 +23,13 @@ void fn_801D0CFC(void) {
     for (i = lbl_8055E8E8 - 1; i >= 0; i--) {
         void *obj = lbl_80438818[i];
         if (obj != 0) {
-            ((void (*)(int))(*(void ***)obj)[2])(1);
+            register void **vtable = *(void ***)obj;
+            ((void (*)(void *, int))vtable[2])(obj, 1);
         }
     }
     lbl_8055E8E8 = 0;
 }
-
+#pragma scheduling on
 void *__dt__Q34nw4r2ef6EffectFv_801D0D7C(void *arg0, int arg1) {
     extern void fn_801D0DFC(void);
     extern void *lbl_803381C0[];
@@ -42,9 +43,7 @@ void *__dt__Q34nw4r2ef6EffectFv_801D0D7C(void *arg0, int arg1) {
 }
 
 void fn_801D0DDC(void *arg0) {
-    int index = lbl_8055E8E8;
-    lbl_80438818[index] = arg0;
-    lbl_8055E8E8 = index + 1;
+    lbl_80438818[lbl_8055E8E8++] = arg0;
 }
 
 void fn_801D0DFC(void) {
@@ -55,7 +54,9 @@ void fn_801D0E0C(void) {
     int i;
     for (i = 0; i < lbl_8055E8E8; i++) {
         void *obj = lbl_80438818[i];
-        ((void (*)(void *))(*(void ***)obj)[3])(obj);
+        void (*cb)(void *);
+        cb = (void (*)(void *))(*(void ***)obj)[3];
+        cb(obj);
     }
 }
 
@@ -67,6 +68,7 @@ void fn_801D0E70(void) {
     }
 }
 
+#pragma scheduling on
 void fn_801D0ED4(void) {
     int i;
     for (i = 0; i < lbl_8055E8E8; i++) {
@@ -74,13 +76,14 @@ void fn_801D0ED4(void) {
         ((void (*)(void *))(*(void ***)obj)[4])(obj);
     }
 }
-
+#pragma scheduling on
 void fn_801D0F38(void) {
     int i;
     for (i = 0; i < lbl_8055E8E8; i++) {
         void *obj = lbl_80438818[i];
-        ((void (*)(void *))(*(void ***)obj)[5])(obj);
+        register void **vtable = *(void ***)obj;
+        ((void (*)(void *))vtable[5])(obj);
     }
 }
-
+#pragma scheduling off
 
