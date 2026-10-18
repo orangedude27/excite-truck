@@ -16,9 +16,36 @@ void fn_802DEE1C(void) {
     GXSetTevSwapMode(4, 0, 0);
 }
 
+void fn_802DEE88(void) {
+    register u32 x = 1;
+    GXSetTexCoordGen2(0, x, 4, 0x3C, 0, 0x7D);
+    GXSetNumTexGens(1);
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevColorIn(0, 8, 0xF, 0xF, 0xF);
+    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(0, 5, 7, 7, 7);
+    GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+    GXSetNumTevStages(1);
+    GXSetBlendMode(1, 4, 5, 0);
+}
+
 void fn_802DEF70(void) {
     GXSetTevSwapMode(0, 0, 0);
     fn_802D3144();
+}
+
+void fn_802DF21C(void) {
+    register u32 x = 1;
+    GXSetTexCoordGen2(0, x, 1, 0x2A, 0, 0x7D);
+    GXSetNumTexGens(1);
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevColorIn(0, 0xF, 0xA, 8, 0xF);
+    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(0, 7, 7, 7, 7);
+    GXSetTevAlphaOp(0, 0, 1, 1, 1, 0);
+    GXSetNumTevStages(1);
 }
 
 void fn_802DF2F0(void) {
@@ -26,8 +53,8 @@ void fn_802DF2F0(void) {
 }
 
 void fn_802DF46C(void) {
-    GXSetTevSwapMode(0, 0, 0);
-    GXSetTevSwapMode(1, 0, 0);
+    GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
 }
 
 void fn_802DF684(void) {
@@ -51,8 +78,22 @@ void fn_802DFCC0(void) {
     fn_802D3144();
 }
 
+void fn_802E0420(void) {
+    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+    GXSetNumTexGens(1);
+    GXSetTevOrder(0, 0, 1, 0xFF);
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevKColorSel(0, 0xD);
+    GXSetTevColorIn(0, 0xF, 8, 0xE, 0xF);
+    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+    GXSetTevKAlphaSel(0, 0x1D);
+    GXSetTevAlphaIn(0, 7, 4, 6, 7);
+    GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+    GXSetNumTevStages(1);
+}
+
 #pragma dont_inline on
-void fn_802E0BA4(void) {
+void *fn_802E0BA4(void) {
 }
 #pragma dont_inline reset
 
