@@ -43,12 +43,10 @@ extern void *fn_801792F8(void);
       *((u8 *)arg0 + 4) = 1;
   }
   
-  void fn_8013472C(void) {
-      void *obj = fn_8001285C(*fn_801E87A8());
-      void *sub = *(void **)((u8 *)obj + 0x20);
-      u32 entry = *(u32 *)((u8 *)*(void **)sub + 0x5c);
-      lbl_8055E0AC = (void *)((s32 (*)(void *, u32 *))entry)(sub, &lbl_80559BD8);
-  }
+void fn_8013472C(void) {
+    void *sub = *(void **)((u8 *)fn_8001285C(*fn_801E87A8()) + 0x20);
+    lbl_8055E0AC = (void *)((s32 (*)(void *, u32 *))(*(u32 *)(*(u8 **)sub + 0x5c)))(sub, &lbl_80559BD8);
+}
   
   void __AXDSPInitCallback_80134770(void) {
       lbl_8055E0AC = 0;
@@ -68,6 +66,39 @@ extern void *fn_801792F8(void);
   void fn_80134A88(void) {
   
   }
+
+void fn_80134A8C(void) {
+    extern void *lbl_8042F758[];
+    extern void *lbl_8055E0D4;
+    extern void *lbl_8055E0B0;
+    extern void fn_80136CB8(void *, s32);
+    extern void fn_80136D20(void *, s32);
+    extern s32 fn_80134A44(s32);
+    extern void fn_801371E0(void *);
+    extern void fn_8013A204(s32);
+    extern void fn_8013BC54(void);
+    extern void fn_80166A24(void);
+    struct Entry { s32 value; u8 flag; };
+    struct Entry *entry;
+    s32 i;
+    struct Entry **entries = (struct Entry **)lbl_8042F758;
+    for (i = 0; i < *(s32 *)&lbl_8055E0B0; i++) {
+        entry = entries[i];
+        if (entry != 0) {
+            if (entry->flag != 0)
+                fn_80136CB8(lbl_8055E0D4, entry->value);
+            else
+                fn_80136D20(lbl_8055E0D4, entry->value);
+            entry->flag = 0;
+            fn_8013A204(entry->value);
+        }
+    }
+    if (fn_80134A44(-1) != 0)
+        fn_801371E0(lbl_8055E0D4);
+    fn_8013BC54();
+    fn_80166A24();
+}
+
   
   void fn_80134B50(void) {
       extern void *lbl_8055E0D4;
@@ -110,18 +141,19 @@ extern void *fn_801792F8(void);
       return (s32)arg1;
   }
   
-  s32 fn_80134CD4(s32 arg0, s32 arg1) {
-      extern s32 fn_80134C60(s32, char *);
-      s32 result;
-      if (arg0 >= 0) {
-          result = fn_80134C24(arg0);
-          fn_80134C60(result, (char *)arg1);
-      } else {
-          fn_80134C60(-0x28, (char *)arg1);
-      }
-      return arg1;
-  }
-  
+#pragma dont_inline on
+s32 fn_80134CD4(s32 arg0, s32 arg1) {
+    extern s32 fn_80134C60(s32, char *);
+    s32 result;
+    if (arg0 >= 0) {
+        result = fn_80134C24(arg0);
+        fn_80134C60(result, (char *)arg1);
+    } else {
+        fn_80134C60(-0x28, (char *)arg1);
+    }
+    return arg1;
+}
+#pragma dont_inline reset
   f32 fn_80134D20(void) {
       extern f32 lbl_8055E0A0;
       extern f32 lbl_8055E0A4;
