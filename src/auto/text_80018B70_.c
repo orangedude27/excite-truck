@@ -63,7 +63,7 @@ extern char lbl_8055D588;
 extern s32 lbl_8055DDF8;
 extern void *lbl_8055D58C;
 extern char lbl_802FD404[];
-extern void *lbl_802FD3CC;
+extern char lbl_802FD3CC[];
 extern char lbl_802FD3A0[];
 extern char lbl_802FD3B4[];
 extern char lbl_802FD434[];
@@ -127,10 +127,10 @@ s32 fn_80019664(void) {
 
 void fn_800195C0(void) {
     if (fn_80019438() != 0) {
-        fn_80131234((void *)0x802FD3CC);
+        fn_80131234(lbl_802FD3CC);
         return;
     }
-    fn_80131234((void *)0x802FD404);
+    fn_80131234(lbl_802FD404);
 }
 
 s32 fn_80019534(void) {
@@ -200,6 +200,8 @@ int fn_80019258(const char *name, int *out0, int *out1, int unused) {
 
 extern s32 fn_8001EFC0(s32, s32);
 extern void *lbl_802FD2A0;
+#pragma push
+#pragma use_lmw_stmw off
 void fn_8001931C(const char *name) {
     void **tbl = (void **)lbl_803580A4;
     s32 count = ((s32 *)tbl)[1];
@@ -233,7 +235,7 @@ void fn_8001931C(const char *name) {
     }
     fn_80131234((char *)lbl_802FD2A0 + 0xE4);
 }
-
+#pragma pop
 s32 fn_80019438(void) {
     s32 i = 0;
 
