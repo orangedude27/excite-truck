@@ -1,5 +1,7 @@
 #include "types.h"
 extern "C" void fn_8001DAE0(void *, f32);
+extern "C" f32 lbl_805614FC;
+extern "C" f32 lbl_80561500;
 extern "C" f32 lbl_80558DC4;
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
