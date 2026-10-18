@@ -361,13 +361,12 @@ extern "C" s32 fn_800F283C(void *, u32, s32, s32 *);
 extern "C" s32 fn_800F2824(void *, s32, void *);
 extern "C" s32 fn_800F282C(void *, s32, s32, void *);
 extern "C" s32 detail_GetWaveDataFileAddress__Q36nw4hbm3snd18MemorySoundArchiveCFUl_800ECD14(void *this_, u32 id) {
- struct { s32 v[13]; } local;
- s32 *p=(s32 *)&local;
- if(!fn_800F283C(this_,id,0,p+0)) return 0;
- if(!fn_800F2824(this_,p[0],p+8)) return 0;
- if(!fn_800F282C(this_,p[0],p[1],p+2)) return 0;
- if(p[9]!=0) return 0;
- return *(u32 *)((u8 *)this_+0x108)+p[12]+p[7];
+    struct { s32 v[13]; } local;
+    if (!fn_800F283C(this_, id, 0, &local.v[0])) return 0;
+    if (!fn_800F2824(this_, local.v[0], &local.v[8])) return 0;
+    if (!fn_800F282C(this_, local.v[0], local.v[1], &local.v[2])) return 0;
+    if (local.v[9] != 0) return 0;
+    return (local.v[5] + *(u32 *)((u8 *)this_ + 0x108)) + local.v[12];
 }
 
 extern "C" void *OpenStream__Q34nw4r3snd18MemorySoundArchiveCFPviUlUl(void *this_, void *stream, u32 bufferSize, s32 offset, u32 length) {
