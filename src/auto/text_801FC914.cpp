@@ -1,3 +1,4 @@
+class SHMainMenu { public: ~SHMainMenu(); };
 extern "C" {
 extern void* lbl_8055EC98;
 extern void* lbl_8055EC94;
