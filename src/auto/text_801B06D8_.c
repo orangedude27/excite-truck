@@ -118,9 +118,8 @@ s32 fn_801B0DE8(s32 arg0) { return arg0 + 4; }
 
 s32 fn_801B0DF0(s32 arg0) {
     void *base = lbl_8055E684;
-    void **obj = (void **)((u8 *)base + (arg0 << 7));
-    void **vtable = *(void ***)obj;
-    void *result = ((void *(*)(void *, void *))vtable[8])(obj, base);
+    void *obj = ((void **)base)[arg0 << 5];
+    void *result = ((void *(*)(void *, void *))*(void **)((u8 *)obj + 0x20))((u8 *)base + (arg0 << 7), base);
     return *(u32 *)((u8 *)result + 0x10) == 0x50434152;
 }
 
@@ -190,6 +189,32 @@ s32 fn_801B1130(s32 arg0) {
         if (var_r3 == 0) var_r31 = 0;
     }
     return var_r31;
+}
+
+s32 fn_801B11DC(const void *arg0, const void *arg1) {
+    extern f32 lbl_80558DC4;
+    u32 *a = *(u32 **)arg0;
+    u32 *b = *(u32 **)arg1;
+    void *base = lbl_8055E684;
+    void *obj0 = (u8 *)base + (a[0] << 7);
+    void *obj1 = (u8 *)base + (b[0] << 7);
+    void **vt0 = *(void ***)obj0;
+    void **vt1 = *(void ***)obj1;
+    s32 cmp0 = ((s32 (*)(void *, s32, void *))vt0[4])(obj0, b[0], base);
+    s32 cmp1 = ((s32 (*)(void *))vt1[4])(obj1);
+    s32 next0 = *(s32 *)((u8 *)obj0 + 0x10);
+    s32 next1 = *(s32 *)((u8 *)obj1 + 0x10);
+    if (cmp0 == 0 && cmp1 == 0) {
+        f32 f0 = *(f32 *)((u8 *)obj0 + 0x70);
+        f32 f1 = *(f32 *)((u8 *)obj1 + 0x70);
+        if (__fabsf(f0 - f1) <= lbl_80558DC4) return 0;
+        if (f0 < f1) return 1;
+        return -1;
+    }
+    if (cmp0 == 0) return -1;
+    if (cmp1 == 0) return 1;
+    if (next0 == next1) return *(s32 *)((u8 *)obj0 + 0x74) - *(s32 *)((u8 *)obj1 + 0x74);
+    return next0 - next1;
 }
 
 s32 fn_801B1310(s32 arg0) { return arg0 + 4; }
@@ -388,6 +413,41 @@ void fn_801B235C(void) {
     fn_801E89F4(3);
 }
 
+void fn_801B24B8(void) {
+    s32 *entry;
+    s32 i;
+    s32 count;
+    void *obj;
+    void **vtable;
+    if (fn_801769F8() != 0) return;
+    entry = (s32 *)&lbl_80435BE8;
+    i = 0;
+    count = *(s32 *)((u8 *)&lbl_80435BE8 + 0x40);
+    while (i < count) {
+        obj = (u8 *)lbl_8055E684 + (entry[0] << 7);
+        if (*(u8 *)((u8 *)obj + 0x78) == 0)
+            *(s32 *)((u8 *)obj + 0x74) = lbl_8055E688 - i + 9;
+        entry = (s32 *)((u8 *)entry + 8);
+        i++;
+    }
+    fn_801B1318();
+    entry = (s32 *)&lbl_80435BE8;
+    i = 0;
+    count = *(s32 *)((u8 *)&lbl_80435BE8 + 0x40);
+    while (i < count) {
+        obj = (u8 *)lbl_8055E684 + (entry[0] << 7);
+        fn_801B15A8((s32)obj, *(f32 *)((u8 *)entry + 4));
+        entry = (s32 *)((u8 *)entry + 8);
+        i++;
+    }
+    *(s32 *)((u8 *)&lbl_80435BE8 + 0x40) = 0;
+    obj = lbl_8055E68C;
+    if (obj != 0) {
+        vtable = *(void ***)obj;
+        ((void (*)(void *))vtable[8])(obj);
+    }
+}
+
 s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
     f32 var_f31;
     f32 var_f1;
@@ -475,9 +535,9 @@ f32 fn_801B3064(void) {
 extern f32 lbl_8055E3C8;
 extern f32 lbl_8055E6AC;
 f32 fn_801B306C(void) {
-    register f32 a = lbl_8055E3C8;
-    register f32 b = lbl_8055E6AC;
-    return b - a;
+    f32 a = lbl_8055E3C8;
+    f32 b = lbl_8055E6AC;
+    return (b + 0.0f) - a;
 }
 
 void* fn_801B307C(void) {
@@ -499,20 +559,21 @@ extern char lbl_80335BD8[];
 extern void fn_801B196C(s32, s32);
 extern void fn_801B18B8(s32, s32);
 void fn_801B30C0(s32 arg0) {
-    register void *base = lbl_8055E684;
-    fn_801B18B8((s32)((u8 *)base + (arg0 << 7)), (s32)base);
+    fn_801B18B8((s32)((u8 *)lbl_8055E684 + (arg0 << 7)), (s32)lbl_8055E684);
 }
 
 void fn_801B30D0(s32 arg0) {
     fn_801B196C((s32)((u8 *)lbl_8055E684 + (arg0 << 7)), (s32)lbl_8055E684);
 }
 
+#pragma push
+#pragma processor 750
 void fn_801B3208(s32 arg0, s32 arg1, f32 farg0) {
     fn_802E317C(lbl_80335BD8, arg0, arg1);
     *(s32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x6C) = arg1;
     *(f32 *)((u8 *)lbl_8055E684 + (arg0 << 7) + 0x24) = farg0;
 }
-
+#pragma pop
 s32 fn_801B327C(void) { return 0; }
 
 void fn_801B3284(void) {
@@ -526,4 +587,7 @@ u32 fn_801B3290(void) { return 1; }
 void fn_801B3298(void) {
 
 }
-
+extern u8 lbl_8055E674;
+extern s32 lbl_8055E67C;
+extern u8 lbl_8055E691;
+extern u8 lbl_8055E692;
