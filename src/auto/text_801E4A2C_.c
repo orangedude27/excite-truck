@@ -58,6 +58,25 @@ s32 fn_801E4B00(s32 *arg0) {
     return result;
 }
 
+#pragma scheduling off
+s32 fn_801E4B48(s32 *arg0) {
+    s32 spC;
+    s32 sp8;
+    if (arg0 != 0) {
+        sp8 = 0;
+        fn_802C4F2C(*arg0, &spC, &sp8);
+        return fn_802C4EFC(*arg0) - sp8;
+    }
+    return 0;
+}
+#pragma dont_inline on
+s32 fn_801E4BA8(s32 *arg0) {
+    s32 temp_r31 = fn_801E4B48(arg0);
+    s32 result = fn_801E4B00(arg0);
+    result += temp_r31;
+    return result;
+}
+#pragma dont_inline off
 extern s32 fn_801E4B00(s32 *);
 extern s32 fn_801E4B48(s32 *);
 extern s32 fn_802C4EFC(s32);
