@@ -65,14 +65,12 @@ extern void fn_802DB2BC(unsigned char);
 extern int lbl_804C139C[];
 void fn_802C5690(void *arg0) {
     void *node;
-    int value;
     if (*(int *)((char *)arg0 + 8) != 0) {
         fn_802C8B70(*(int *)arg0);
         node = *(void **)((char *)arg0 + 8);
         while (node != 0) {
             fn_802D0610(*(int *)((char *)node + 8));
-            value = *(int *)((char *)node + 12);
-            if ((unsigned int)(value + 0x10000) != 0xFFFFFFFF) {
+            if ((unsigned int)(*(int *)((char *)node + 12) + 0x10000) != 0xFFFF) {
                 fn_802DAA18();
             }
             fn_802DB2BC(*(unsigned char *)((char *)node + 4));
@@ -106,6 +104,41 @@ void fn_802C5720(int arg0) {
 }
 
 void fn_802C57B0(void) { }
+
+void fn_802C595C(char *dst, int size, const char *name, int id) {
+    int i = 0;
+    int offset = 0;
+    const char *src;
+    if (i < lbl_804C13B4[0]) {
+        do {
+            char *entry = (char *)(unsigned long)lbl_804C13B4[2] + offset;
+            if (stricmp(name, *(char **)(entry + 8)) == 0 && id == *(int *)(entry + 0x10)) {
+                src = entry + 0x14;
+                while (size > 0) {
+                    char c = *src++;
+                    *dst++ = c;
+                    if (c == 0) return;
+                    if (--size <= 0) {
+                        dst[-1] = 0;
+                        return;
+                    }
+                }
+                return;
+            }
+            offset += 0x2C;
+            i++;
+        } while (i < lbl_804C13B4[0]);
+    }
+    while (size > 0) {
+        char c = *name++;
+        *dst++ = c;
+        if (c == 0) return;
+        if (--size <= 0) {
+            dst[-1] = 0;
+            return;
+        }
+    }
+}
 
 u16 fn_802C5A50(int arg0, int arg1) {
     return (u16)((arg0 << 8) | arg1);
