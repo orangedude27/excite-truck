@@ -121,6 +121,14 @@ s32 fn_8014931C(void *arg0) {
     return sp8.v[((s32 *)arg0)[1]];
 }
 
+void fn_8014935C(void *arg0) {
+    s32 value = *(s32 *)((u8 *)arg0 + 4) + 1;
+    u32 sign = (u32)value >> 31;
+    u32 temp = (u32)value << 30;
+    temp -= sign;
+    *(s32 *)((u8 *)arg0 + 4) = (s32)((temp << 2 | temp >> 30) + sign);
+}
+
 extern s32 lbl_802F93F0[];
 s32 fn_80149380(void *arg0) {
     S4_80149234 sp8;
@@ -370,31 +378,20 @@ void fn_8014AE54(void *arg0) {
 }
 
 void fn_8014AE60(void *arg0) {
-    struct Node8014AE60 {
-        u8 pad[0x11C];
-        struct Node8014AE60 *prev;
-        struct Node8014AE60 *next;
-    };
-    struct Head8014AE60 {
-        struct Node8014AE60 *first;
-        struct Node8014AE60 *last;
-    };
-    struct Head8014AE60 *head = (struct Head8014AE60 *)*(void **)arg0;
-    struct Node8014AE60 *obj = (struct Node8014AE60 *)*((void **)arg0 + 1);
-    struct Node8014AE60 *node;
-
-    node = obj->next;
-    if (node != 0) {
-        node->prev = obj->prev;
-    } else {
-        head->first = obj->prev;
-    }
-    node = obj->prev;
-    if (node != 0) {
-        node->next = obj->next;
-    } else {
-        head->last = obj->next;
-    }
+    struct Node8014AE60 { u8 pad[0x11C]; struct Node8014AE60 *prev; struct Node8014AE60 *next; };
+    struct Head8014AE60 { struct Node8014AE60 *first; struct Node8014AE60 *last; };
+    struct Head8014AE60 *head;
+    struct Node8014AE60 *obj;
+    struct Node8014AE60 *next;
+    struct Node8014AE60 *prev;
+    head = *(struct Head8014AE60 **)arg0;
+    obj = *((struct Node8014AE60 **)arg0 + 1);
+    next = obj->next;
+    if (next != 0) next->prev = obj->prev;
+    else head->first = obj->prev;
+    prev = obj->prev;
+    if (prev != 0) prev->next = obj->next;
+    else head->last = obj->next;
     obj->next = 0;
     obj->prev = 0;
 }
@@ -792,14 +789,16 @@ void fn_80150B60(void *arg0) {
 
 s32 fn_80151604(void) { return 0; }
 
-void fn_80151654(void *a0, void *a1, s32 a2, s32 a3, s32 a4) {
+void fn_80151654(void *a0, void *a1, s32 selector) {
     s32 index;
     void *obj;
-    if (a4 != 0x3EB) return;
+    if (selector != 0x3EB) return;
     index = *(s32 *)((char *)a1 + 0x1EC);
-    obj = (char *)a0 + index * 0xC0 + 0x9E4;
+    obj = (char *)a0 + index * 0xC0;
+    obj = (char *)obj + 0x9E4;
     if (obj == 0) return;
-    (*(void (**)(void))(*(void ***)((char *)obj + 0x10))[4])();
+    obj = *(void **)((char *)obj + 0x10);
+    (*(void (**)(void))(*(char **)obj + 0x24))();
 }
 
 void fn_80151688(void) {
