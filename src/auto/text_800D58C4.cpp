@@ -653,9 +653,11 @@ extern "C" void fn_800DB084(void* arg0) {
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void* arg0, void* arg1) {
     extern const char lbl_8031FF54[];
     extern const char lbl_8031FF30[];
-    void* sp8 = (u8*)arg0 + 0x1C;
+    register void* iterator = (u8*)arg0 + 0x1C;
+    void* slot;
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8*)arg0 + 0x18, &sp8, arg1);
+    slot = iterator;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8*)arg0 + 0x18, &slot, arg1);
 }
 
 extern "C" void fn_800DB1E8(void* arg0, void* unused, s32 arg2) {
