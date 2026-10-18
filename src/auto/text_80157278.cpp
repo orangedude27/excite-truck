@@ -291,7 +291,7 @@ extern f32 lbl_805617C8;
 extern f32 lbl_80558DC4[];
 extern f32 lbl_8055E3C8;
 extern "C" void fn_802E30C8(const char *, ...);
-extern "C" void *lbl_8032E4E0;
+extern "C" __declspec(section ".data") char lbl_8032E4E0[];
 extern "C" void *lbl_8055A064;
 
 extern "C" s32 lbl_8032E540[];
@@ -1311,6 +1311,31 @@ void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
         self->v16();
         self->m50 = 0;
     }
+}
+
+extern "C" void fn_8015DC98(Unk801577F0* arg0) {
+    void (*vt)(void*) = (void (*)(void*))(*(void***)arg0)[0x19];
+    vt(arg0);
+    fn_802E30C8((const char*)lbl_8055A064);
+    fn_802E30C8((const char*)lbl_8032E4E0 + 0xEC8);
+    fn_802E30C8((const char*)lbl_8032E4E0 + 0xEFC);
+    f32 sumF = lbl_80561754;
+    s32 sum0 = 0;
+    s32 sum4 = 0;
+    s32 count = 0;
+    s32 off = 0;
+    while (count < arg0->mCount) {
+        s32* items = (s32*)arg0->mData;
+        s32* item = items + off / 4;
+        s32 a = item[0];
+        fn_802E30C8((const char*)lbl_8032E4E0 + 0xF30, count, item + 6, a, a - item[1], item[2], *(f32*)(item + 3));
+        off += 0x38;
+        count += 1;
+        sumF += *(f32*)(item + 3);
+        sum0 += item[0];
+        sum4 += item[1];
+    }
+    fn_802E30C8((const char*)lbl_8032E4E0 + 0xF60, sum0, sum4 - sum0, sumF);
 }
 
 extern "C" void fn_8015E0FC(void) {
