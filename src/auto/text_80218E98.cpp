@@ -1588,7 +1588,7 @@ extern "C" void fn_80221F94(void *arg0, s32 arg1) {
 
 extern "C" void fn_80222120(void *arg0) {
     *(u8 *)((u8 *)arg0 + 0x248) = 1;
-    ((void (**)(void *))(*(void ***)arg0))[19](arg0);
+    ((VfObj *)arg0)->vf17();
     if (*(u8 *)((u8 *)arg0 + 0x1A) != 0)
         *(u8 *)((u8 *)arg0 + 0x234) = 1;
 }
