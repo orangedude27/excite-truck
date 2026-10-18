@@ -930,28 +930,34 @@ extern "C" s32 fn_8021D8D4(void *arg0) {
 }
 
 extern "C" void fn_8021E7D4(void *arg0) {
-    s32 *obj;
-    s32 *index;
-    s32 pos;
-    s32 limit;
-    obj = *(s32 **)((u8 *)arg0 + 0x248);
-    if (!obj) return;
-    index = *(s32 **)((u8 *)arg0 + 0x25C);
-    pos = *index;
-    if (pos > obj[1] + obj[2] - 1) {
-        obj[2] = pos - obj[1] + 1;
-        limit = obj[0] - obj[1];
-        if (obj[2] > limit) obj[2] = limit;
-        if (obj[2] < 0) obj[2] = 0;
-    }
-    obj = *(s32 **)((u8 *)arg0 + 0x248);
-    index = *(s32 **)((u8 *)arg0 + 0x25C);
-    pos = *index;
-    if (pos < obj[2]) {
-        obj[2] = pos;
-        limit = obj[0] - obj[1];
-        if (pos > limit) obj[2] = limit;
-        if (obj[2] < 0) obj[2] = 0;
+    s32 temp_r0;
+    s32 temp_r0_2;
+    s32 temp_r5;
+    s32 temp_r5_2;
+    void *temp_r4;
+    s32 temp_r5_3;
+    s32 temp_r6;
+    void *temp_r7;
+
+    temp_r7 = *(void **)((u8 *)arg0 + 0x248);
+    if (temp_r7 != 0) {
+        temp_r5 = *(s32 *)((u8 *)temp_r7 + 4);
+        temp_r6 = **(s32 **)((u8 *)arg0 + 0x25C);
+        if (temp_r6 > (temp_r5 + *(s32 *)((u8 *)temp_r7 + 8)) - 1) {
+            temp_r5_2 = (temp_r6 - temp_r5) + 1;
+            *(s32 *)((u8 *)temp_r7 + 8) = temp_r5_2;
+            temp_r0 = *(s32 *)temp_r7 - *(s32 *)((u8 *)temp_r7 + 4);
+            if (temp_r5_2 > temp_r0) *(s32 *)((u8 *)temp_r7 + 8) = temp_r0;
+            if (*(s32 *)((u8 *)temp_r7 + 8) < 0) *(s32 *)((u8 *)temp_r7 + 8) = 0;
+        }
+        temp_r4 = *(void **)((u8 *)arg0 + 0x248);
+        temp_r5_3 = **(s32 **)((u8 *)arg0 + 0x25C);
+        if (temp_r5_3 < *(s32 *)((u8 *)temp_r4 + 8)) {
+            *(s32 *)((u8 *)temp_r4 + 8) = temp_r5_3;
+            temp_r0_2 = *(s32 *)temp_r4 - *(s32 *)((u8 *)temp_r4 + 4);
+            if (temp_r5_3 > temp_r0_2) *(s32 *)((u8 *)temp_r4 + 8) = temp_r0_2;
+            if (*(s32 *)((u8 *)temp_r4 + 8) < 0) *(s32 *)((u8 *)temp_r4 + 8) = 0;
+        }
     }
 }
 
