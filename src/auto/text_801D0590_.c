@@ -1,3 +1,4 @@
+#include <types.h>
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -8,26 +9,46 @@ extern DispatchList lbl_804386B4[];
 extern DispatchList lbl_8043870C[];
 #pragma push
 #pragma small_data off
+__declspec(section ".data") extern DispatchList lbl_804386B4[];
 void fn_801D0650(void *arg0) {
-    DispatchList *list = &lbl_804386B4[0];
-    int i = 0;
     int offset = 0;
-    while (i < list->count) {
-        void *obj = *(void **)((char *)list->items + offset);
+    int i = 0;
+    while (i < lbl_804386B4[0].count) {
+        void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
         ((void (*)(void *, void *))(*(void ***)obj)[2])(obj, arg0);
         offset += 4;
         i++;
     }
 }
 void fn_801D06C4(void *arg0) {
-    DispatchList *list = &lbl_804386B4[0];
-    int i = 0;
     int offset = 0;
-    while (i < list->count) {
-        void *obj = *(void **)((char *)list->items + offset);
-        ((void (*)(void *, void *))(*(void ***)obj)[3])(obj, arg0);
+    int i = 0;
+    while (i < lbl_804386B4[0].count) {
+        void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
+        (*(void (**)(void *, void *))(*(char **)obj + 0xC))(obj, arg0);
         offset += 4;
         i++;
+    }
+}
+
+void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
+    int type = *(int *)((char *)arg2 + 0x10);
+    int ok = 0;
+    if (type == 0x43415220 || type == 0x50434152 ||
+        type == 0x41434152 || type == 0x4e434152) {
+        ok = 1;
+    }
+    if (ok != 0) {
+        int count = *(int *)((char *)arg2 + 0x1ec);
+        int i = 0;
+        int offset = 0;
+        DispatchList *list = lbl_804386B4;
+        while (i < list->count) {
+            void *obj = *(void **)((char *)list->items + offset);
+            ((void (*)(void *, void *, int, void *))(*(void ***)obj)[4])(obj, arg0, count, arg3);
+            offset += 4;
+            i++;
+        }
     }
 }
 
