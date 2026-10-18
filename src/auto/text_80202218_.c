@@ -83,8 +83,10 @@ void fn_802025D4(void) {
 }
 
 void fn_8020268C(void) {
-    int saved, arg = 2;
-    if ((*(unsigned int *)((char *)fn_801E87A8() + 16) & 2) != 0) arg = 1;
+    int saved;
+    unsigned int flags = *(unsigned int *)((char *)fn_801E87A8() + 16);
+    int arg = 2;
+    if ((flags >> 1) & 1) arg = 1;
     saved = fn_802C9C58(arg);
     if (lbl_8055ECCC != -1) { fn_802C7A44(); fn_802C7040(lbl_8055ECCC); fn_802C7A50(); }
     fn_802C9C58(0);
