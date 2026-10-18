@@ -413,10 +413,11 @@ extern f32 lbl_805619A4;
 extern void fn_802AE0E0(s32);
 #pragma scheduling off
 void fn_8016E984(void *arg0) {
-    s32 temp = *(s32 *)((u8 *)arg0 + 0xC);
+    s32 temp;
     void *p;
-    *(s32 *)arg0 = 0;
     *(f32 *)((u8 *)arg0 + 4) = lbl_805619A4;
+    temp = *(s32 *)((u8 *)arg0 + 0xC);
+    *(s32 *)arg0 = 0;
     *((u8 *)arg0 + 8) = 1;
     *((u8 *)arg0 + 9) = 0;
     *((u8 *)arg0 + 0x10) = 0;
@@ -475,7 +476,8 @@ void fn_8016FD9C(f32 *arg0, void *arg1) {
 
 #pragma scheduling off
 void fn_8016FE1C(void *arg0) {
-    ((void (**)(void *))(*(void **)arg0))[19](arg0);
+    volatile void *vtable = *(void **)arg0;
+    ((void (**)(void *))vtable)[19](arg0);
 }
 #pragma scheduling on
 void fn_8016FF98(void *arg0) {
@@ -503,6 +505,45 @@ extern void fn_8014784C(void *, const char *, const char *, s32);
 extern void fn_801475D0(void *, const char *, const char *, void *);
 extern void fn_8016A438(void);
 s32 fn_8016FFE4(void) { return 0x1408; }
+
+extern f64 fn_8002F234(f32, f32, f32, f32, f32);
+void fn_80170DA8(void *arg0, void *arg1, void *arg2) {
+    s32 index;
+    s32 next;
+    s32 *pool;
+    u8 *items;
+    u8 *item;
+    volatile f32 sp8, spC, sp10, sp14, sp18, sp1C;
+    f32 x;
+    f32 y;
+    f32 dx;
+    f32 dy;
+
+    pool = *(s32 **)((u8 *)arg0 + 4);
+    index = *(s32 *)((u8 *)arg0 + 0x10);
+    next = index + 1;
+    if (next < *(s32 *)((u8 *)pool + 4)) {
+        items = (u8 *)*pool;
+        item = items + next * 0x38;
+        x = *(f32 *)((u8 *)arg1 + 0x60);
+        y = *(f32 *)((u8 *)arg1 + 0x68);
+        dx = *(f32 *)(item + 0x24) - x;
+        sp18 = *(f32 *)(item + 0x24);
+        dy = *(f32 *)(item + 0x2C) - y;
+        sp1C = *(f32 *)(item + 0x2C);
+        sp10 = x;
+        sp14 = y;
+        sp8 = dx;
+        spC = dy;
+        if (fn_8002F234(dx * dx + dy * dy, y, x, dx, dy) < *(f32 *)(item + 0x34)) {
+            *(u8 *)(items + index * 0x38 + 0x30) = 0;
+            *(s32 *)((u8 *)arg0 + 0x10) = next;
+            pool = *(s32 **)((u8 *)arg0 + 4);
+            items = (u8 *)*pool;
+            *(u8 *)(items + next * 0x38 + 0x30) = 1;
+        }
+    }
+}
 
 s32 fn_80170E78(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x1ec); }
 
