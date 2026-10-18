@@ -1463,11 +1463,13 @@ s32 fn_80078310(s32 arg0)
 }
 
 BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
-    u8 *entry;
-    s32 i;
-    entry = lbl_803C0F78 + 0x1F30;
-    for (i = 0; i < 16; i++, entry += 0x88) {
-        if ((entry[0x76] & 0x80) && memcmp(entry + 0x1C, bd_addr, 6) == 0) break;
+    s32 i = 0;
+    u8 *entry = lbl_803C0F78 + 0x1F30;
+    while (i < 16) {
+        if ((entry[0x76] & 0x80) && memcmp(entry + 0x1C, bd_addr, 6) == 0)
+            break;
+        i++;
+        entry += 0x88;
     }
     if (i == 16) return FALSE;
     entry[0x76] = 0;
@@ -2538,18 +2540,15 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
 
 u8 btsnd_hcic_inq_cancel(void) {
     u8 *p;
-    register u8 opcode;
-    register u16 zero;
+    u16 zero = 0;
     p = (u8 *)GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
     *(u16 *)(p + 2) = 3;
-    zero = 0;
     *(u16 *)(p + 4) = zero;
-    opcode = 2;
-    p[8] = opcode;
+    p[8] = 2;
     p[9] = 4;
     p[10] = zero;
-    btu_hcif_send_cmd(p, opcode);
+    btu_hcif_send_cmd(p, 2);
     return TRUE;
 }
 
@@ -2890,7 +2889,7 @@ BOOLEAN btsnd_hcic_set_host_buf_size(UINT16 acl_len, UINT8 sco_len, UINT16 acl_n
     p[5] = sco_len;
     p[6] = acl_num; p[7] = acl_num >> 8;
     p[8] = sco_num; p[9] = sco_num >> 8;
-    btu_hcif_send_cmd(0, buf);
+    btu_hcif_send_cmd(buf);
     return TRUE;
 }
 
