@@ -15,12 +15,15 @@ void fn_8026B118(void) {}
 extern int lbl_8055F4D0, lbl_8055F4CC;
 #pragma dont_inline on
 void fn_8026B11C(void **arg0, void *arg1) {
-    float value = lbl_8055C4F8;
     void *obj = fn_80207848((int)arg1, 0);
+    float value;
     *arg0 = obj;
-    if (obj != 0 && value != *(float *)((unsigned char *)obj + 8)) {
-        *((unsigned char *)obj + 0x4D) = 1;
-        *(float *)((unsigned char *)obj + 8) = value;
+    if (obj != 0) {
+        value = lbl_8055C4F8;
+        if (value != *(float *)((unsigned char *)obj + 8)) {
+            *((unsigned char *)obj + 0x4D) = 1;
+            *(float *)((unsigned char *)obj + 8) = value;
+        }
     }
 }
 void fn_8026B1D0(void *obj) {
@@ -73,6 +76,13 @@ int fn_8026B734(int arg0, float *arg1) {
     return 0;
 }
 
+int fn_8026B768(int arg0) {
+    if (lbl_8049A0E8[arg0 * 0x10] != 0) {
+        fn_8026A1F0(0xB, lbl_8049A0E8, 0);
+        return 1;
+    }
+    return 0;
+}
 
 unsigned char fn_8026B7B4(int arg0) {
     return lbl_8049A0E8[arg0 * 0x10];
