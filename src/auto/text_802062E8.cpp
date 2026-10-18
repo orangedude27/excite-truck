@@ -25,7 +25,9 @@ class ObjIface80207218 {
 public:
     virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
     virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
-    virtual void m8(); virtual void m9(); virtual void m10();
+    virtual void m8(); virtual void m9(); virtual void m10(); virtual void m11();
+    virtual void m12(); virtual void m13(); virtual void m14(); virtual void m15();
+    virtual void m16(); virtual void m17(); virtual void m18();
     virtual float get();
 };
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -260,7 +262,7 @@ extern char lbl_8033BDA8;
 __declspec(section ".rodata") extern char lbl_8033BDA8;
 extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     float value;
-    void *obj;
+    ObjIface80207218 *obj;
     fn_802065F8();
     value = lbl_805631FC;
     *(void **)arg0 = &lbl_8033BDA8;
@@ -269,13 +271,13 @@ extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4)
     *(char *)((char *)arg0 + 0x64) = 1;
     *(int *)((char *)arg0 + 0x70) = arg3;
     *(int *)((char *)arg0 + 0x74) = arg4;
-    obj = fn_80208998(lbl_8055ED80, arg1, arg2, lbl_805631FC);
-    *(void **)((char *)arg0 + 0xC) = obj;
+    obj = (ObjIface80207218 *)fn_80208998(lbl_8055ED80, arg1, arg2, lbl_805631FC);
+    *(ObjIface80207218 **)((char *)arg0 + 0xC) = obj;
     if (obj != 0)
         fn_802085EC(lbl_8055ED80, arg0);
-    obj = *(void **)((char *)arg0 + 0xC);
+    obj = *(ObjIface80207218 **)((char *)arg0 + 0xC);
     if (obj != 0)
-        value = (*(float (**)(void))(*(void ***)obj)[0x60 / 4])();
+        value = obj->get();
     else
         value = lbl_805631FC;
     *(float *)((char *)arg0 + 0x24) = value;
