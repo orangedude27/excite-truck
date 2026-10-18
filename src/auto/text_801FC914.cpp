@@ -551,4 +551,4 @@ struct Obj_801FEF90 {
     virtual void v4();
     virtual void v5(int);
 };
-class SHMainMenu { public: ~SHMainMenu(); };
+
