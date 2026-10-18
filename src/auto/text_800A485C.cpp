@@ -26,7 +26,7 @@ extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
 extern "C" void *lbl_8055DD94;
 extern "C" u32 lbl_8055DD90;
-extern "C" void fn_800C4BD8(s32, s32);
+extern "C" void fn_800C4BD8(s32 *, s32, u32);
 extern "C" void fn_800C4B5C(s32, s32);
 extern "C" void *fn_800C4B8C(s32);
 extern "C" u32 lbl_802EEF40[];
@@ -744,22 +744,21 @@ extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
 extern "C" void *fn_800A9B0C(void *arg0) {
     void *vol;
     s32 temp_r3;
-
     vol = *(void **)((u8 *)arg0 + 8);
-    fn_800B77C0((u8 *)vol + 0x1F90);
+    fn_800B77C0((void *)((u32)vol + 0x1F90));
     temp_r3 = fn_800B5E14(vol);
-    if (temp_r3 != 0) {
-        fn_800B783C((u8 *)vol + 0x1F90);
+    if (temp_r3) {
+        fn_800B783C((void *)((u32)vol + 0x1F90));
         lbl_803D2140[16] = temp_r3;
         *(s32 *)((u8 *)vol + 0x1F80) = temp_r3;
         return (void *)temp_r3;
     }
     temp_r3 = fn_800A95B4(arg0);
-    if (temp_r3 != 0) {
+    if (temp_r3) {
         lbl_803D2140[16] = temp_r3;
         *(s32 *)((u8 *)vol + 0x1F80) = temp_r3;
     }
-    fn_800B783C((u8 *)vol + 0x1F90);
+    fn_800B783C((void *)((u32)vol + 0x1F90));
     return (void *)temp_r3;
 }
 #pragma dont_inline reset
