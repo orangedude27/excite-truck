@@ -3288,21 +3288,42 @@ void *l2cu_find_lcb_by_handle(u16 handle) {
 
 u8 fn_8008D7C4(void) { return lbl_803C4040[1]; }
 
+void l2cu_send_peer_connect_req(void *arg0) {
+    void *p;
+    extern void *l2cu_build_header(u16, u8, u8, s32);
+    extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
+    extern void fn_8007093C(u32, void *);
+    extern char lbl_80319174[];
+    *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x10) + 0x31) += 1;
+    *(u8 *)((u8 *)arg0 + 0x35) = *(u8 *)((u8 *)*(void **)((u8 *)arg0 + 0x10) + 0x31);
+    p = l2cu_build_header(*(u16 *)((u8 *)*(void **)((u8 *)arg0 + 0x10) + 0x28), 4, 2, *(u8 *)((u8 *)arg0 + 0x35));
+    if (p == 0) {
+        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80319174);
+    } else {
+        *(u8 *)((u8 *)p + 0x14) = *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 0x30) + 2);
+        *(u8 *)((u8 *)p + 0x15) = *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 0x30) + 2) >> 8;
+        *(u8 *)((u8 *)p + 0x16) = *(u16 *)((u8 *)arg0 + 0x14);
+        *(u8 *)((u8 *)p + 0x17) = *(u16 *)((u8 *)arg0 + 0x14) >> 8;
+        l2c_link_check_send_pkts(*(void **)((u8 *)arg0 + 0x10), 0, p, 0);
+    }
+}
+
 extern void *l2cu_build_header(u16, u8, u8, s32);
 extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
 extern void fn_8007093C(u32, void *);
 extern char lbl_80319174[];
-void l2cu_send_peer_info_rsp(void *arg0, s32 arg1, u8 arg2) {
+void l2cu_send_peer_info_rsp(void *arg0, s32 arg1, u16 arg2) {
     void *p;
+    u8 flag = 1;
     p = l2cu_build_header(*(u16 *)((u8 *)arg0 + 0x28), 4, 0xb, arg1);
     if (p == 0) {
         if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80319174);
     } else {
         *(u8 *)((u8 *)p + 0x14) = arg2;
         *((u8 *)p + 0x15) = arg2 >> 8;
-        *((u8 *)p + 0x16) = 1;
+        *((u8 *)p + 0x16) = flag;
         *((u8 *)p + 0x17) = 0;
-        l2c_link_check_send_pkts(arg0, 0, p, 1);
+        l2c_link_check_send_pkts(arg0, 0, p, flag);
     }
 }
 
@@ -3486,6 +3507,21 @@ void Port_TimeOutCloseMux(void *arg0) {
     if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319478);
     for (i = 0, entry = lbl_803C4828 + 0x68; i < 5; i++, entry += 0xA4)
         if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed(entry, 0x12);
+}
+
+void *port_find_mcb_dlci_port(void *mcb, u8 dlci) {
+    u8 index;
+    if (mcb == 0) {
+        return 0;
+    }
+    if (dlci > 0x3D) {
+        return 0;
+    }
+    index = *((u8 *)mcb + dlci + 0x24);
+    if (index == 0) {
+        return 0;
+    }
+    return lbl_803C4828 + (index - 1) * 0xA4 + 0x68;
 }
 
 void *port_find_dlci_port(unsigned int arg0) {
