@@ -3,7 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { struct List; void* List_GetNth(const List*, unsigned short); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; } }
+namespace nw4hbm { namespace ut { struct List; void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; } }
 
 extern "C" u8 fn_8010A33C(void);
 extern "C" void* fn_80108FFC(void*, const void*);
@@ -335,6 +335,20 @@ extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_801120E8(void *arg0) {
  if (r6==0 && (u32)((p&0xFFFFC000)+0x20000000)<1U) r5=0;
  if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0x15A,lbl_80329578,arg0);
  return *(s32*)((char*)arg0+0x54);
+}
+
+void* nw4hbm::ut::CharWriter::GetFont() const {
+    const unsigned int p = (unsigned int)this;
+    unsigned int r5=1, r6=1, r7=1, r8=1, r9=1, r10=1;
+    unsigned int r11=p&0xFF000000;
+    if ((r11+0x80000000U)!=0 && ((p&0xFF800000)+0x7F000000U)!=0) r10=0;
+    if (r10==0 && ((p&0xF8000000)+0x70000000U)!=0) r9=0;
+    if (r9==0 && (r11+0x40000000U)!=0) r8=0;
+    if (r8==0 && ((p&0xFF800000)+0x3F000000U)!=0) r7=0;
+    if (r7==0 && ((p&0xF8000000)+0x30000000U)!=0) r6=0;
+    if (r6==0 && ((p&0xFFFFC000)+0x20000000U)!=0) r5=0;
+    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0x97,lbl_80329578,this);
+    return font;
 }
 
 namespace nw4hbm { namespace ut { struct List { unsigned char data[0xA]; unsigned short stride; }; } }
