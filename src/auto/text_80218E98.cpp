@@ -1945,6 +1945,27 @@ extern "C" void fn_80223880(void *arg0) {
     fn_8021818C(*(s32 *)((u8 *)arg0 + 0x2C));
 }
 
+extern "C" s32 fn_802239C8(void *arg0, s32 arg1) {
+    if (*(u8 *)fn_80216708() == 0)
+        goto fallback;
+    if (arg1 == 0x126)
+        goto fallback;
+    if (arg1 < 0x126) {
+        if (arg1 < 0x125)
+            goto fallback;
+        goto lower;
+    }
+    if (arg1 >= 0x128)
+        goto fallback;
+    ((void (*)(void *))fn_802235B4)(arg0);
+    return 1;
+lower:
+    ((void (*)(void *))fn_80223644)(arg0);
+    return 1;
+fallback:
+    return fn_802192A4(arg0, arg1);
+}
+
 extern "C" u32 fn_80223AAC(void) { return 1; }
 
 extern "C" void *lbl_8033E3D4[];
