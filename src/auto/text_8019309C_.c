@@ -92,14 +92,12 @@ float fn_801931AC(float a, float b, float c, float d) {
 }
 
 float fn_801931EC(float a, float b) {
-    float quotient;
     float value;
     float floor;
-    quotient = a / b;
     value = lbl_80562140;
     floor = lbl_8055E558;
-    if (value < value - quotient) {
-        value = value - quotient;
+    if (value < value - a / b) {
+        value = value - a / b;
     }
     if (value > floor) return value;
     return floor;
@@ -381,6 +379,20 @@ void fn_801944C0(void *arg0) {
     }
 }
 
+void fn_80194590(void *arg0) {
+    int var_r4;
+    float product;
+    if (*(int *)((char *)arg0 + 0x260) == 0) {
+        var_r4 = 1;
+        *(int *)((char *)arg0 + 0x260) = 1;
+        if (*(int *)((char *)arg0 + 0x18) == 1) {
+            var_r4 = -1;
+        }
+        product = lbl_8055A488 * lbl_8056215C;
+        *(float *)((char *)arg0 + 0x264) = (float)var_r4 * (*(float *)((char *)arg0 + 0x284) + product);
+    }
+}
+
 extern float lbl_8055A488;
 extern float lbl_8056215C;
 void fn_801945F8(void *arg0) {
@@ -636,19 +648,23 @@ void fn_801963A0(void *arg0) {
       }
   }
 
-  void fn_801967FC(void *arg0) {
-      float value;
-      int active = *(u8 *)((char *)arg0 + 0x250);
-      *(int *)((char *)arg0 + 0x300) = 0;
-      if (active != 0) {
-          *(float *)((char *)arg0 + 0x254) *= lbl_8056224C;
-          return;
-      }
-      value = *(float *)((char *)arg0 + 0x254) + lbl_80562148;
-      if (lbl_80562140 < value) {
-          *(float *)((char *)arg0 + 0x254) = value;
-      }
-  }
+void fn_801967FC(void *arg0) {
+    float temp_f0;
+    float var_f2;
+    *(int *)((char *)arg0 + 0x300) = 0;
+    if ((int)*(u8 *)((char *)arg0 + 0x250) != 0) {
+        *(float *)((char *)arg0 + 0x254) *= lbl_8056224C;
+        return;
+    }
+    var_f2 = lbl_80562140;
+    temp_f0 = lbl_80562148 + *(float *)((char *)arg0 + 0x254);
+    if (var_f2 < temp_f0) {
+        var_f2 = var_f2;
+    } else {
+        var_f2 = temp_f0;
+    }
+    *(float *)((char *)arg0 + 0x254) = var_f2;
+}
 
   void fn_80196A9C(void) {
       fn_8019684C();
