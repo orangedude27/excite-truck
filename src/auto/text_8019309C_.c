@@ -198,7 +198,7 @@ void fn_80193878(void *arg0) {
 extern void fn_801352B8(void *);
 extern float lbl_80562144, lbl_80562180;
 extern const char lbl_80333348[];
-void fn_801938F4(void *arg0) {
+void *fn_801938F4(void *arg0) {
     int minusOne = -1;
     int zero = 0;
     int limit = 0x2710;
@@ -221,6 +221,7 @@ void fn_801938F4(void *arg0) {
     (*(void (**)(void *, int))(*(char **)obj + 0xC))(obj, 0);
     *(int *)((char *)arg0 + 0x294) = zero;
     *(int *)((char *)arg0 + 0x290) = -1000;
+    return arg0;
 }
 
 extern unsigned char lbl_8055A4B8[];
@@ -649,6 +650,56 @@ void fn_801963A0(void *arg0) {
       fn_8019684C();
   }
 
+void fn_80196C90(void *arg0) {
+    extern float lbl_80562260;
+    extern float lbl_8055E548, lbl_8055E54C;
+    extern int __fpclassifyf(float);
+    extern int __cntlzw(unsigned int);
+    char *obj = (char *)arg0;
+    int flag = 0;
+    float f1;
+    float f0;
+    float f148;
+    float f144;
+    int r4;
+    int r0;
+    int r31;
+    *(float *)(obj + 0x144) = *(float *)(obj + 0x144) * *(float *)(obj + 0x14C);
+    if (*(unsigned char *)(obj + 0x9C) != 0 || *(unsigned char *)(obj + 0x74) != 0) {
+        flag = 1;
+    }
+    if (flag != 0) {
+        f1 = *(float *)(obj + 0x144);
+        f0 = *(float *)(obj + 0xCC);
+        r4 = *(int *)&f1;
+        r0 = *(int *)&f0;
+        if ((r4 & 0x80000000) == (r0 & 0x80000000)) {
+            *(float *)(obj + 0x144) = f1 * lbl_80562260;
+        }
+    }
+    f148 = __fabs(*(float *)(obj + 0x148));
+    f144 = __fabs(*(float *)(obj + 0x144));
+    if (f144 < f148) {
+        float f31 = *(float *)(obj + 0x150);
+        r31 = 0;
+        if (__fpclassifyf(f31) != 1) {
+            int r = __fpclassifyf(f31);
+            if (((u32)__cntlzw((u32)r - 1) >> 5) != 0) {
+                r31 = 1;
+            } else {
+                int x = r ^ 2;
+                if (((x & r) - (x >> 1)) >> 31) {
+                    r31 = 1;
+                }
+            }
+        }
+        if (r31 == 0) {
+            *(float *)(obj + 0x150) = *(float *)(obj + 0x26C) + fn_80129DC4(3, lbl_8055E548, lbl_8055E54C);
+        }
+    }
+    *(float *)(obj + 0x148) = *(float *)(obj + 0x144);
+}
+
   int fn_8019700C(int index) {
       void *entry = lbl_804349C0[index];
       if (entry == 0) return 1;
@@ -656,32 +707,32 @@ void fn_801963A0(void *arg0) {
       return 0;
   }
 
-  void fn_80198488(void *arg0) {
-      int a;
-      int b;
-      int zero;
-      int limit;
-      a = *((unsigned char *)arg0 + 0x9C);
-      b = *((unsigned char *)arg0 + 0x74);
-      limit = (int)*(float *)((unsigned char *)arg0 + 0x2F4);
-      if (b + a + 1 > limit) {
-          zero = (*(int *)((unsigned char *)arg0 + 0x18) == 0);
-          if (zero) {
-              if (b != 0) {
-                  if (*((unsigned char *)arg0 + 0x74) != 0)
-                      fn_80193138(*(int *)((unsigned char *)arg0 + 0x90));
-                  else
-                      fn_80193138(-1);
-              }
-          } else if (a != 0) {
-              if (*((unsigned char *)arg0 + 0x9C) != 0)
-                  fn_80193138(*(int *)((unsigned char *)arg0 + 0xB8));
-              else
-                  fn_80193138(-1);
-          }
-      }
-  }
-
+#pragma dont_inline on
+void fn_80198488(void *arg0) {
+    int temp_r0;
+    int var_r4;
+    int var_r4_2;
+    unsigned char temp_r5, temp_r6;
+    volatile unsigned char *p74 = (volatile unsigned char *)arg0 + 0x74;
+    volatile unsigned char *p9c = (volatile unsigned char *)arg0 + 0x9C;
+    temp_r6 = *p9c;
+    temp_r5 = *p74;
+    if ((int)(temp_r5 + temp_r6 + 1) > (int)*(float *)((char *)arg0 + 0x2F4)) {
+        temp_r0 = *(int *)((char *)arg0 + 0x18) == 0;
+        if ((temp_r0 != 0) && ((int)temp_r5 != 0)) {
+            if ((int)*p74 != 0) var_r4 = *(int *)((char *)arg0 + 0x90);
+            else var_r4 = -1;
+            ((void (*)(void *, int))fn_80193138)(arg0, var_r4);
+            return;
+        }
+        if ((temp_r0 == 0) && ((int)temp_r6 != 0)) {
+            if ((int)*p9c != 0) var_r4_2 = *(int *)((char *)arg0 + 0xB8);
+            else var_r4_2 = -1;
+            ((void (*)(void *, int))fn_80193138)(arg0, var_r4_2);
+        }
+    }
+}
+#pragma dont_inline reset
   void *fn_80198DD0(void *arg0, int arg1) {
       int i;
       int count;
