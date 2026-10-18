@@ -182,9 +182,11 @@ extern "C" s32 fn_802A1C30(void* arg0) {
         ebi::title::TPlaneSub* obj = (ebi::title::TPlaneSub*)lbl_804BCF88[index];
         if (obj != 0) {
             if (*(f32*)((char*)arg0 + 0x24) > lbl_80564728) {
-                obj->update();
+                void (*fn)(void*) = *(void (**)(void*))(*(void***)obj + 8);
+                fn(obj);
             } else {
-                obj->v8();
+                void (*fn)(void*) = *(void (**)(void*))(*(void***)obj + 9);
+                fn(obj);
             }
         }
     }
@@ -570,7 +572,7 @@ extern "C" void fn_802A49F0(void* arg0) {
 }
 
 extern "C" void fn_802A4A04(void* arg0) {
-    ((ebi::title::TBlackPlane*)arg0)->m_a->v8();
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v7();
 }
 
 extern "C" u32 fn_802A4A18(void) { return 1; }
