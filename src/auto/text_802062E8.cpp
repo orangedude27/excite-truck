@@ -35,6 +35,10 @@ public:
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8033BDC0;
+extern int lbl_8055ED80;
+extern "C" void fn_80208620(int, void *);
+extern "C" void fn_8020899C(int, int);
+extern "C" int fn_80128668(void *);
 extern "C" void fn_802073A4(void);
 extern int lbl_8055ED8C;
 extern void *lbl_8055ED90;
