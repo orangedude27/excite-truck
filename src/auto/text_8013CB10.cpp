@@ -1,4 +1,5 @@
 #include "types.h"
+extern "C" void fn_8001DAE0(void *, f32);
 extern "C" f32 lbl_80558DC4;
 extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805614AC;
@@ -237,11 +238,19 @@ extern "C" s32 fn_8013F438(f32 x) {
     return (s32)(lbl_8056153C + v * lbl_80561540);
 }
 
+#pragma push
+#pragma scheduling off
 extern "C" int fn_8013FC6C(void* arg0) {
+    struct V {
+        virtual int a0(int); virtual int a1(int); virtual int a2(int);
+        virtual int a3(int); virtual int a4(int); virtual int a5(int);
+        virtual int a6(int);
+    };
     int a = 0, b = 0, c = 0;
+    V* obj = (V*)arg0;
     while (c < *(int*)((char*)arg0 + 0xBC)) {
         if (*(unsigned char*)(*(char**)((char*)arg0 + 0xB8) + a + 0x118)) {
-            if (((int (*)(void*, int))(*(void***)arg0)[8])(arg0, c) == 0) {
+            if (obj->a6(c) == 0) {
                 b++;
                 if (b >= *(int*)((char*)arg0 + 0x130)) return 1;
             }
@@ -251,7 +260,7 @@ extern "C" int fn_8013FC6C(void* arg0) {
     }
     return 0;
 }
-
+#pragma pop
 extern "C" int fn_8013FD20(void* arg0, int arg1) {
     int result = 1;
     if (*(int*)(*(char**)((char*)arg0 + 0xB8) + arg1 * 0x12C + 0x11C) != 0) {
