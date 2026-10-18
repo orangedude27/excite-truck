@@ -305,22 +305,12 @@ void fn_80018F7C(void) {
 
 void *fn_80019054(s32 arg0) {
     void *result;
-    void *base;
-    s32 count;
-    
-    if (arg0 < 0) {
-        goto done;
-    }
-    base = (void *)0x80357E0C;
-    count = ((s32 *)base)[1];
-    if (arg0 >= count) {
-        goto done;
-    }
-    result = (void *)((u8 *)((s32 *)base)[0] + arg0 * 0x14);
+    if (arg0 < 0) goto done;
+    if (arg0 >= *(s32 *)(lbl_80357E0C + 4)) goto done;
+    result = (void *)((u8 *)*(void **)lbl_80357E0C + arg0 * 0x14);
     return result;
 done:
-    result = 0;
-    return result;
+    return 0;
 }
 
 s32 fn_80019088(void) {
