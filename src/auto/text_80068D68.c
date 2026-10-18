@@ -3590,6 +3590,55 @@ void rfc_mx_sm_state_connected(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
+void rfc_port_sm_disc_wait_ua(void *p_port, s32 event, void *p_data) {
+    extern u8 lbl_803C4828[];
+    extern char lbl_80319AC4[];
+    extern void fn_8007096C(u32, void *, u16, u16);
+    extern void rfc_port_closed(void *);
+    extern void GKI_freebuf(void *);
+    extern void rfc_send_dm(void *, u8, u8);
+
+    u8 *port = (u8 *)p_port;
+    u8 dlci = port[0xD];
+
+    if (event < 0xF) {
+        switch (event) {
+        case 0:
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
+        case 8:
+            break;
+        case 9:
+            break;
+        case 10:
+            break;
+        case 11:
+            break;
+        case 12:
+            break;
+        case 13:
+            break;
+        case 14:
+            break;
+        }
+    }
+    if (lbl_803C4828[0x414] > 1)
+        fn_8007096C(0x9, lbl_80319AC4, port[0x68], event);
+}
+
 void PORT_ParNegInd(void *, u8, u16, u8, u8);
 void PORT_ParNegCnf(void *, u8, u16, u8, u8);
   void rfc_send_dm(void *, u8, BOOLEAN);
@@ -4233,16 +4282,8 @@ s32 IUSB_WriteCtrlMsgAsync(s32 a,s32 b,s32 c,s32 d,s32 e,u32 length,void* data,v
 }
 #pragma use_lmw_stmw reset
 s32 AXFXReverbHiInit(void* arg0) {
-    s32 zero;
-    f32 h;
-    f32 g;
-    f32 f;
-    f32 e;
-    f32 d;
-    f32 c;
-    f32 b;
-    f32 a;
-    zero = 0;
+    s32 zero = 0;
+    f32 h, g, f, e, d, c, b, a;
     a = *(f32*)((u8*)arg0 + 0x158);
     f = lbl_80560D50;
     b = *(f32*)((u8*)arg0 + 0x150);
@@ -4349,15 +4390,15 @@ s32 fn_8009D000(void) {
 }
 
 u16 fn_8006D8D0(u32 arg0) {
-    s32 diff = (s32)arg0 - 8;
-    if (diff < 0) {
+    u32 diff;
+    u8 val;
+    diff = arg0 - 8;
+    if ((diff & 1) != 0) {
         return 0;
     }
-    {
-        u8 val = *(u8 *)((u8 *)diff + 4);
-        if (val < 9) {
-            return *(u16 *)((u8 *)&lbl_803946C0 + 0x289E8 + (val << 4));
-        }
+    val = *(u8 *)((u8 *)diff + 4);
+    if (val < 9) {
+        return *(u16 *)((u8 *)&lbl_803946C0 + 0x289E8 + (val << 4));
     }
     return 0;
 }
