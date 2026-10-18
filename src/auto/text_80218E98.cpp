@@ -895,7 +895,7 @@ extern "C" void fn_8021D568(void *arg0, s32 arg1) {
     if (p != 0 && *(s32 *)((u8 *)arg0 + 0x2C0) == *p) {
         s32 a = *(s32 *)((u8 *)arg0 + 4);
         s32 b = *(s32 *)((u8 *)arg0 + 8);
-        s32 n = ((VfObj *)arg0)->vf30();
+        s32 n = ((VfObj *)arg0)->vf29();
         fn_802C3424(a, b, a + n, *(s32 *)((u8 *)arg0 + 0x10), lbl_8055FBC0);
     }
     fn_802195DC(arg0, arg1);
