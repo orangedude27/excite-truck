@@ -561,6 +561,29 @@ extern "C" s32 VFiPFCACHE_FlushAllCaches(void *arg0) {
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
+extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *arg0, s32 arg1) {
+    s32 temp_r6 = M2C_FIELD(arg0, s32 *, 0x1C);
+    s32 temp_r6_2;
+    void *var_r7;
+    if (temp_r6 == 0) {
+        void *p = M2C_FIELD(arg0, void **, 8);
+        M2C_FIELD(p, s32 *, 0x1C) = 0;
+        M2C_FIELD(p, u32 *, 0x18) = 0;
+        return;
+    }
+    var_r7 = arg0 == 0 ? 0 : M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
+    if (!(temp_r6 & (M2C_FIELD(var_r7, u16 *, 0) - 1)) &&
+        !((temp_r6_2 = M2C_FIELD(arg0, s32 *, 0x24)) & (M2C_FIELD(var_r7, u8 *, 6) - 1))) {
+        if (temp_r6_2 == 0) return;
+        M2C_FIELD(M2C_FIELD(arg0, void **, 8), u32 *, 0x18) = (u32)(temp_r6_2 - 1) >> M2C_FIELD(var_r7, u8 *, 0x21);
+        M2C_FIELD(M2C_FIELD(arg0, void **, 8), s32 *, 0x1C) = (s32)(((u32)((arg1 - 1) - M2C_FIELD(var_r7, s32 *, 0x30)) >> M2C_FIELD(var_r7, u8 *, 0x21)) + 2);
+    } else {
+        temp_r6_2 = M2C_FIELD(arg0, s32 *, 0x24);
+        M2C_FIELD(M2C_FIELD(arg0, void **, 8), u32 *, 0x18) = (u32)temp_r6_2 >> M2C_FIELD(var_r7, u8 *, 0x21);
+        M2C_FIELD(M2C_FIELD(arg0, void **, 8), s32 *, 0x1C) = (s32)(((u32)(arg1 - M2C_FIELD(var_r7, s32 *, 0x30)) >> M2C_FIELD(var_r7, u8 *, 0x21)) + 2);
+    }
+}
+
 extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
     u16 i;
     for (i = 0; i < 3; i++) {
@@ -672,8 +695,8 @@ extern "C" void fn_800AABE0(void) {
 
 extern "C" void fn_800AAED8(void) {
     s32 sp8;
-    s32 spC;
-    fn_800AAC08(&sp8);
+    s32 a, b, c, d, e;
+    ((void (*)(s32, s32, s32, s32, s32, void *))fn_800AAC08)(a, b, c, d, e, &sp8);
 }
 
 extern "C" s32 fn_800AAEFC(s32 arg0, void *arg1) {
@@ -735,10 +758,10 @@ extern "C" void fn_800AF2B8(void *arg0) {
 
 extern "C" s32 VFiPFFAT_TraceClustersChain(void *arg0, u16 arg1, s32 *arg2) {
     s32 result;
-
+    u16 value = arg1;
     switch (*(s32 *)((u8 *)arg0 + 0x1C)) {
     case 0:
-        result = fn_800AF5A0(arg1);
+        result = fn_800AF5A0(value);
         break;
     case 1:
         result = fn_800AFE14();
@@ -1936,6 +1959,26 @@ extern "C" void fn_800D1200(void) {
 }
 
 extern "C" void fn_800D1204(void* arg0, f32 arg1) { *(f32*)((u8*)arg0 + 4) = arg1; }
+
+extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *, long, int, signed char);
+extern "C" OSTime OSGetTime(void);
+extern "C" s32 fn_80060C7C(void *);
+void fn_800D120C(void *arg0) {
+    if (((u8 *)arg0)[0x41] == 0) {
+        f32 value = *(f32 *)((u8 *)arg0 + 4);
+        Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)arg0 + 0x24),
+            *(long *)arg0, (int)(lbl_80560E40 * value), (signed char)value);
+        if (fn_80060C7C(*(void **)arg0) != 0) {
+            if (((u8 *)arg0)[0x42] == 0) {
+                OSTime time = OSGetTime();
+                *(u32 *)((u8 *)arg0 + 0x34) = (u32)time;
+                *(u32 *)((u8 *)arg0 + 0x30) = (u32)(time >> 32);
+            }
+            ((u8 *)arg0)[0x42] = 1;
+            ((u8 *)arg0)[0x43] = 0;
+        }
+    }
+}
 
 extern "C" s32 fn_800D1E78(void *, s32, s32);
 s32 isPlayingSoundId__Q210homebutton10ControllerCFi(void *arg0, s32 arg1) {
