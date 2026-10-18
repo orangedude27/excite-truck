@@ -2538,12 +2538,18 @@ BOOLEAN btsnd_hcic_inquiry(const LAP inq_lap, UINT8 duration, UINT8 response_cnt
 
 u8 btsnd_hcic_inq_cancel(void) {
     u8 *p;
+    register u8 opcode;
+    register u16 zero;
     p = (u8 *)GKI_getpoolbuf(2);
     if (p == NULL) return FALSE;
     *(u16 *)(p + 2) = 3;
-    *(u16 *)(p + 4) = 0;
-    p[8] = 2; p[9] = 4; p[10] = 0;
-    btu_hcif_send_cmd(p, 2);
+    zero = 0;
+    *(u16 *)(p + 4) = zero;
+    opcode = 2;
+    p[8] = opcode;
+    p[9] = 4;
+    p[10] = zero;
+    btu_hcif_send_cmd(p, opcode);
     return TRUE;
 }
 
@@ -3559,27 +3565,57 @@ void rfc_mx_sm_state_connected(void *arg0, s32 arg1, void *arg2) {
     extern void rfc_send_ua(void *, s32, void *);
     extern void PORT_CloseInd(void *);
 
-    if (lbl_803C4828[0x414] >= 4) fn_80070954(0x90003, lbl_803199B8, arg1);
+    if (lbl_803C4828[0x414] >= 4)
+        ((void (*)(u32, void *, s32))fn_80070954)(0x90003, lbl_803199B8, arg1);
     switch (arg1) {
     case 5:
     case 8:
         rfc_timer_start(arg0, 3);
         *(u8 *)((u8 *)arg0 + 0x6C) = 6;
-        rfc_send_disc(arg0, 0, 0);
+        ((void (*)(void *, s32))rfc_send_disc)(arg0, 0);
         return;
     case 14:
         *(u8 *)((u8 *)arg0 + 0x6C) = 0;
         PORT_CloseInd(arg0);
         return;
     case 3:
-        rfc_send_ua(arg0, 0, 0);
+        ((void (*)(void *, s32))rfc_send_ua)(arg0, 0);
         if (*(u8 *)((u8 *)arg0 + 0x6D)) L2CA_DisconnectReq(*(u16 *)((u8 *)arg0 + 0x68));
         PORT_CloseInd(arg0);
         return;
     default:
         if (lbl_803C4828[0x414] >= 4)
-            fn_8007096C(0x90003, lbl_80319868, arg1, *(u8 *)((u8 *)arg0 + 0x6C));
+            ((void (*)(u32, void *, s32, u16))fn_8007096C)(0x90003, lbl_80319868, arg1, *(u8 *)((u8 *)arg0 + 0x6C));
         return;
+    }
+}
+
+void PORT_ParNegInd(u8, u16, u8, u8);
+void PORT_ParNegCnf(void *, u8, u16, u8, u8);
+void rfc_send_dm(void *, u8, s32);
+void rfc_port_timer_stop(void *);
+void *port_find_mcb_dlci_port(void *, u8);
+extern u8 lbl_80319DB0[];
+void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
+    u8 dlci = *(u8 *)arg2;
+    void *mcb;
+
+    if (arg1 != 0) {
+        if (*(u8 *)((u8 *)arg0 + 0x6C) != 6) {
+            PORT_ParNegInd(dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
+        } else {
+            rfc_send_dm(arg0, dlci, 0);
+            if (lbl_803C4828[0x414] >= 2) {
+                fn_8007093C(0x90001, lbl_80319DB0);
+            }
+        }
+    } else {
+        mcb = port_find_mcb_dlci_port(arg0, dlci);
+        if (mcb != 0 && (*(u8 *)((u8 *)mcb + 0x69) & 1) != 0) {
+            *(u8 *)((u8 *)mcb + 0x69) &= 0xFE;
+            rfc_port_timer_stop(mcb);
+            PORT_ParNegCnf(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
+        }
     }
 }
 
@@ -4332,7 +4368,7 @@ u8 fn_8006CA6C(void) {
 }
 
 void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 arg8) {
-    u32 *ptr = (u32 *)&lbl_80392960;
+    register u32 *ptr = (u32 *)&lbl_80392960;
     void (*func)(void);
     if (arg8 == 3) {
         func = (void (*)(void))ptr[0x66C / 4];
