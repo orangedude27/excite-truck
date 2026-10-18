@@ -5,6 +5,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 namespace nw4hbm { namespace ut { struct List; void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; } }
 
+extern "C" const char lbl_80328828[];
+extern "C" const char lbl_80328834[];
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" u8 fn_8010A33C(void);
 extern "C" void* fn_80108FFC(void*, const void*);
 extern "C" const char lbl_803290E8[];
