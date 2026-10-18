@@ -253,6 +253,21 @@ void fn_8000FB44(void) {
     fn_8000F22C();
     fn_8000F4BC();
 }
+
+void fn_800103B8(s32 arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, const char *fmt, ...) {
+    extern f32 lbl_80560280;
+    extern f32 lbl_80560264;
+    extern f32 lbl_805602C8;
+    extern s32 lbl_8055D490;
+    extern int vsprintf(char *, const char *, va_list);
+    extern void fn_80233010(char *, s32, f32, f32, f32, f32, f32, f32, s32, s32, s32);
+    char buffer[0x220];
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(buffer, fmt, args);
+    fn_80233010(buffer, lbl_8055D490, farg1, farg2, farg3, lbl_805602C8 * farg0, lbl_80560280, lbl_80560264, arg0, arg1, 1);
+}
+
 #pragma dont_inline off
 extern void fn_80010FDC(s32);
 extern f32 lbl_80560280;
@@ -681,20 +696,14 @@ s32 fn_8000E2D8(s32 arg0) {
 
 s32 fn_8000E338(s32 arg0) {
     s32 var_r3;
-
     if (arg0 <= 0xF) {
-        fn_801E7E18();
-        if (fn_8002EFB4(lbl_80560278) > lbl_8056025C) {
+        if ((f32)((f64 (*)(f32, f64))fn_8002EFB4)(
+                ((f32 (*)(void))fn_801E7E18)(), lbl_80560278) > lbl_8056025C)
             return -1;
-        }
     }
-    if (arg0 <= 0x28) {
-        return 0xFFF70000;
-    }
+    if (arg0 <= 0x28) return 0xFFF70000;
     var_r3 = 0xFF278F27;
-    if (arg0 <= 0x46) {
-        var_r3 = 0xFFE5A703;
-    }
+    if (arg0 <= 0x46) var_r3 = 0xFFE5A703;
     return var_r3;
 }
 
