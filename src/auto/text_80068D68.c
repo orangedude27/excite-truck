@@ -964,6 +964,16 @@ void bta_sys_conn_open(s32 arg0, s32 arg1, s32 arg2) {
     if (callbacks[0x88 / 4] != 0) callbacks[0x88 / 4](0, arg0, arg1, arg2);
 }
 
+void bta_sys_conn_open_8007116C(s32 arg0, s32 arg1, s32 arg2) {
+    typedef void (*tConnOpenCb2)(s32, s32, s32, s32);
+    tConnOpenCb2 *callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
+    if (callbacks[0x80 / 4] != 0) callbacks[0x80 / 4](1, arg0, arg1, arg2);
+    callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
+    if (callbacks[0x84 / 4] != 0) callbacks[0x84 / 4](1, arg0, arg1, arg2);
+    callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
+    if (callbacks[0x88 / 4] != 0) callbacks[0x88 / 4](1, arg0, arg1, arg2);
+}
+
 void fn_80071230(void *arg0, void *arg1, void *arg2) {
     void (*callback)(int, void *, void *, void *) =
         *(void (**)(int, void *, void *, void *))(lbl_803C0AD8 + 0x84);
