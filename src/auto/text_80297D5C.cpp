@@ -516,6 +516,7 @@ extern "C" int fn_801284F8(int, const char*);
 extern "C" int fn_8029ADCC(void);
 extern "C" int fn_8029BA0C(void*);
 extern "C" int fn_801EF024(void*);
+extern "C" int fn_8029C190(void*);
 extern "C" void __dt__Q210JASDrumSet5TPercFv_8029AE88(void*, int);
 extern "C" int fn_8029BFF8(void*);
 extern int lbl_8055CA84;
@@ -651,6 +652,11 @@ extern "C" int fn_8029C024(int *arg0) {
     fn_8029A890(lbl_8055F7D4, (void *)value);
     return 4;
 #pragma dont_inline reset
+}
+
+int fn_8029C054(void* arg0) {
+    fn_8029A8A4(lbl_8055F7D4, *(void**)arg0);
+    return 4;
 }
 
 extern "C" void fn_80298DE0(void*, void*, int);
