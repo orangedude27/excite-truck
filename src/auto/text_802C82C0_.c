@@ -146,6 +146,7 @@ void fn_802C86E8(void* hi) {
     lbl_8055D018 = hi;
 }
 
+extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
 void fn_802C88CC(unsigned int arg0) {
     fn_802D02F8(arg0, 1);
 }
