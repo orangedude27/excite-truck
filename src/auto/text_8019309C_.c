@@ -286,10 +286,38 @@ extern float lbl_80562140, lbl_80562144;
     else value = lbl_80562140;
     if (value > lbl_80562144) value = lbl_80562144;
     *(float *)((char *)arg0 + 0x240) = value;
-    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), value);
-}
+          fn_8018ADB4(*(int *)((char *)arg0 + 0x294), value);
+  }
 
-void fn_801942B8(void *arg0, float arg1) {
+  void fn_801941A8(void *arg0, float arg1) {
+      float value;
+      float pos = *(float *)((char *)arg0 + 0x23C);
+      float vel = *(float *)((char *)arg0 + 0x248);
+      float limit;
+
+      value = arg1 - pos;
+      if (value < lbl_805621B0) value = lbl_805621B0;
+      if (value > lbl_805621B4) value = lbl_805621B4;
+      limit = pos + value;
+      if (vel < lbl_80562174) {
+          pos = limit;
+          if ((*(int *)((char *)*(void **)((char *)arg0 + 0x294) + 0x25F0) ^ (int)limit) & 0x80000000)
+              vel += lbl_80562168;
+      }
+      *(float *)((char *)arg0 + 0x23C) = pos;
+      *(float *)((char *)arg0 + 0x248) = vel;
+      vel = *(float *)((char *)arg0 + 0x248);
+      if (vel < lbl_80562140) vel = lbl_80562140;
+      if (vel > lbl_80562144) vel = lbl_80562144;
+      pos = *(float *)((char *)arg0 + 0x23C);
+      pos *= lbl_80562140 - vel;
+      if (pos < lbl_80562140) pos = lbl_80562140;
+      if (pos > lbl_805621A4) pos = lbl_805621A4;
+      *(float *)((char *)arg0 + 0x23C) = pos;
+      fn_8018ADAC(*(void **)((char *)arg0 + 0x294), pos);
+  }
+
+  void fn_801942B8(void *arg0, float arg1) {
     float value;
     if (arg1 > lbl_80562140) value = arg1;
     else value = lbl_80562140;
