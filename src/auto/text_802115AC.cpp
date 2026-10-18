@@ -638,8 +638,8 @@ public:
 };
 
 extern "C" void fn_802158DC(void *arg0) {
-    VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf19();
+    Vf4Obj *obj = *(Vf4Obj **)((char *)arg0 + 0x244);
+    obj->vf2();
 }
 
 extern "C" void fn_802158F0(void *arg0) {
