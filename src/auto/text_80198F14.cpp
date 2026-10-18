@@ -915,25 +915,16 @@ extern "C" void fn_801A44C4(void* arg0) {
 }
 
 extern "C" void fn_801A44D4(void* arg0) {
-    s32* r29;
-    s32 r30;
-    s32 r31;
-    r29 = (s32*)arg0;
-    r30 = 0;
-    r31 = 0;
+    register s32* r29 = (s32*)arg0;
+    register s32 r30 = 0;
+    register s32 r31 = 0;
     goto check;
 loop:
-    {
-        s32* arr = (s32*)r29[1];
-        fn_801A49FC(*(s32*)((u8*)arr + r30));
-        r30 += 4;
-        r31++;
-    }
+    fn_801A49FC(*(s32*)((u8*)r29[1] + r30));
+    r30 += 4;
+    r31++;
 check:
-    {
-        s32 limit = r29[0];
-        if (r31 < limit) goto loop;
-    }
+    if (r31 < r29[0]) goto loop;
 }
 
 extern "C" void fn_801A4538(void* arg0) {
