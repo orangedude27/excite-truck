@@ -38,42 +38,45 @@ int fn_80270B50(void) {
 }
 #pragma dont_inline reset
 
+#pragma push
+#pragma small_data off
 void fn_80270B74(void) {
-    *(int *)((char *)&lbl_8049F9D8 + 0x00) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x1C) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x38) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x54) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x70) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x8C) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0xA8) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0xC4) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0xE0) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0xFC) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x118) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x134) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x150) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x16C) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x188) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x1A4) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x1C0) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x1DC) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x1F8) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x214) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x230) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x24C) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x268) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x284) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x2A0) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x2BC) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x2D8) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x2F4) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x310) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x32C) = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x348) = 0;
+    int *p = &lbl_8049F9D8;
+    *p = 0;
+    *(int *)((char *)p + 0x1C) = 0;
+    *(int *)((char *)p + 0x38) = 0;
+    *(int *)((char *)p + 0x54) = 0;
+    *(int *)((char *)p + 0x70) = 0;
+    *(int *)((char *)p + 0x8C) = 0;
+    *(int *)((char *)p + 0xA8) = 0;
+    *(int *)((char *)p + 0xC4) = 0;
+    *(int *)((char *)p + 0xE0) = 0;
+    *(int *)((char *)p + 0xFC) = 0;
+    *(int *)((char *)p + 0x118) = 0;
+    *(int *)((char *)p + 0x134) = 0;
+    *(int *)((char *)p + 0x150) = 0;
+    *(int *)((char *)p + 0x16C) = 0;
+    *(int *)((char *)p + 0x188) = 0;
+    *(int *)((char *)p + 0x1A4) = 0;
+    *(int *)((char *)p + 0x1C0) = 0;
+    *(int *)((char *)p + 0x1DC) = 0;
+    *(int *)((char *)p + 0x1F8) = 0;
+    *(int *)((char *)p + 0x214) = 0;
+    *(int *)((char *)p + 0x230) = 0;
+    *(int *)((char *)p + 0x24C) = 0;
+    *(int *)((char *)p + 0x268) = 0;
+    *(int *)((char *)p + 0x284) = 0;
+    *(int *)((char *)p + 0x2A0) = 0;
+    *(int *)((char *)p + 0x2BC) = 0;
+    *(int *)((char *)p + 0x2D8) = 0;
+    *(int *)((char *)p + 0x2F4) = 0;
+    *(int *)((char *)p + 0x310) = 0;
+    *(int *)((char *)p + 0x32C) = 0;
+    *(int *)((char *)p + 0x348) = 0;
     lbl_8055F554 = 0;
-    *(int *)((char *)&lbl_8049F9D8 + 0x364) = 0;
+    *(int *)((char *)p + 0x364) = 0;
 }
-
+#pragma pop
 int fn_80270D1C(int arg0) {
     switch (arg0) {
     case 0: return 1;
@@ -85,7 +88,8 @@ int fn_80270D1C(int arg0) {
 int fn_80270D4C(void *arg0, void *arg1) {
     float *right;
     float *left;
-    if (*((unsigned char *)arg1 + 4) != 0) {
+    unsigned char flag = *((volatile unsigned char *)arg1 + 4);
+    if (flag != 0) {
         right = (float *)(*(char **)arg1 + 0xC);
     } else {
         right = (float *)(*(char **)arg1 + 4);
@@ -96,6 +100,30 @@ int fn_80270D4C(void *arg0, void *arg1) {
         left = (float *)(*(char **)arg0 + 4);
     }
     return (int)(*left - *right);
+}
+
+extern float lbl_80563F40;
+void fn_80270DB0(void *arg0, void *arg1, float farg0) {
+    float *left,*right,*left2,*left3,*left4,*right2,*right3;
+    float f2,f3,f0;
+    unsigned char flag;
+    flag=*(unsigned char *)((unsigned char *)arg0+4);
+    if(flag) left=(float *)(*(char **)arg0+0x10); else left=(float *)(*(char **)arg0+8);
+    f2=*left;
+    if(*(unsigned char *)((unsigned char *)arg1+4)) right=(float *)(*(char **)arg1+0xC); else right=(float *)(*(char **)arg1+4);
+    f3=*right;
+    if(flag) left2=(float *)(*(char **)arg0+0xC); else left2=(float *)(*(char **)arg0+4);
+    if(f2<*left2) f2+=farg0;
+    if(flag) left3=(float *)(*(char **)arg0+0xC); else left3=(float *)(*(char **)arg0+4);
+    if(f3<*left3) f3+=farg0;
+    if(flag) left4=(float *)(*(char **)arg0+0xC); else left4=(float *)(*(char **)arg0+4);
+    f0=lbl_80563F40*(f2+f3);
+    if(*left4>f0) f3=*left4; else f3=f0;
+    if (!(f3 < farg0)) f3-=farg0;
+    if(flag) right2=(float *)(*(char **)arg0+0x10); else right2=(float *)(*(char **)arg0+8);
+    *right2=f3;
+    if(*(unsigned char *)((unsigned char *)arg1+4)) right3=(float *)(*(char **)arg1+0xC); else right3=(float *)(*(char **)arg1+4);
+    *right3=f3;
 }
 
 extern char lbl_80346E90[];
@@ -122,13 +150,16 @@ void fn_80271578(void) {
 typedef float f32;
 extern f32 lbl_80563F4C;
 void fn_802715C4(void *arg0, void *arg1) {
-    f32 x = *(f32 *)((u8 *)arg1 + 0x14);
-    f32 scale = lbl_80563F4C;
-    f32 y = *(f32 *)((u8 *)arg1 + 0x10);
-    f32 z = *(f32 *)((u8 *)arg1 + 0xC);
-    *(f32 *)((u8 *)arg0 + 8) = x * scale;
-    *(f32 *)((u8 *)arg0 + 4) = y * scale;
-    *(f32 *)((u8 *)arg0 + 0) = z * scale;
+    f32 a = *(f32 *)((u8 *)arg1 + 0x14);
+    f32 b = lbl_80563F4C;
+    f32 c = *(f32 *)((u8 *)arg1 + 0x10);
+    f32 d = *(f32 *)((u8 *)arg1 + 0xC);
+    f32 x = b * a;
+    f32 y = b * c;
+    f32 z = b * d;
+    *(f32 *)((u8 *)arg0 + 8) = x;
+    *(f32 *)((u8 *)arg0 + 0) = z;
+    *(f32 *)((u8 *)arg0 + 4) = y;
 }
 
 extern f32 lbl_8055F540;
@@ -252,3 +283,8 @@ extern char *lbl_80346B54[];
 extern float lbl_80563F48;
 extern float lbl_80563F88;
 extern void *memset(void *, int, unsigned int);
+typedef struct { void **v; } Obj;
+typedef int (*Has)(Obj *, const char *);
+typedef float (*Get)(Obj *, const char *);
+typedef int (*Find)(Obj *, const char *, int);
+typedef float (*Get3)(Obj *, const char *, float,float,float,float,float,float,float);
