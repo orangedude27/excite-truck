@@ -2801,7 +2801,7 @@ extern "C" void fn_800D4428(void *arg0) {
 
 extern "C" void *__dt__Q36nw4hbm3lyt18AnimTransformBasicFv(void *self, s32 deleting) {
     if (self != 0) {
-        *(void **)self = (void *)((u32)&lbl_8031F168);
+        *(void **)self = lbl_8031F168;
         if (*(void **)((u8 *)self + 0x18) != 0) {
             MEMFreeToAllocator((MEMAllocator *)lbl_8055DDF0, *(void **)((u8 *)self + 0x18));
         }
