@@ -13,6 +13,7 @@ extern "C" int fn_8029C190(void*);
   extern "C" void fn_8028E584(void*, void*, float*, float);
 extern "C" void fn_80288A40(void*, float*);
 extern "C" void fn_8028E398(void*);
+extern "C" void* fn_8029A820(void*, int);
 extern "C" void fn_80128668(void*);
 extern "C" float fn_801E7E24(void);
   extern "C" void fn_80298B48(void*);
