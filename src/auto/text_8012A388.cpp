@@ -85,7 +85,8 @@ extern "C" s32 fn_8012A388(void *arg0) {
 }
 #pragma use_lmw_stmw reset
 extern "C" const char lbl_8032A630[];
-extern "C" void fn_8012A46C(void) {
+extern "C" void fn_8012A46C(void *, const char *);
+extern "C" void fn_8012A46C(void *, const char *) {
 
 }
 
