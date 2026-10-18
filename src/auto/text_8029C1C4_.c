@@ -91,7 +91,11 @@ void fn_8029C570(void) {
 }
 #pragma pop
 
-void fn_8029C650(void) { register int value=lbl_8055CAA8; if(value != -1) fn_802C6CF8(); }
+void fn_8029C650(void) {
+    int value = lbl_8055CAA8;
+    if (value == -1) return;
+    ((void (*)(int))fn_802C6CF8)(value);
+}
 
 #pragma push
 #pragma processor 750
@@ -335,6 +339,33 @@ int fn_8029EAE8(void *arg0) {
         var_r31 = 1;
     }
     return var_r31;
+}
+
+int fn_8029EB54(void *arg0, void *arg1) {
+    float *a = (float *)arg0;
+    float *b = (float *)arg1;
+    float lo, hi, d;
+    int result = 0;
+    int matched = 0;
+    lo = a[0];
+    if (lo > a[9]) lo = a[9];
+    hi = a[0];
+    if (hi < a[9]) hi = a[9];
+    d = b[0];
+    if (d >= lo - lbl_80558DC4 && d <= hi + lbl_80558DC4)
+        matched = 1;
+    if (matched) {
+        lo = a[2];
+        if (lo > a[11]) lo = a[11];
+        hi = a[2];
+        if (hi < a[11]) hi = a[11];
+        d = b[2];
+        if (d >= lo - lbl_80558DC4 && d <= hi + lbl_80558DC4)
+            matched = 1;
+    }
+    if (matched && b[1] < a[1] - lbl_80564634)
+        result = 1;
+    return result;
 }
 
 int fn_8029EF1C(void) {
