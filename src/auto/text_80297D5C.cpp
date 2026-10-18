@@ -37,6 +37,7 @@ extern void* lbl_8055F7C4;
 extern void* lbl_8055F7C0;
 extern void* lbl_8055F7D0;
 extern void* lbl_8055F7D8;
+extern void* lbl_8055F7D4;
 extern "C" void fn_80298BBC(void*);
 extern "C" void fn_8029BA8C(void*);
 extern "C" void fn_80299628(void);
@@ -200,7 +201,7 @@ void fn_802982C0(void *arg0) {
 extern "C" int fn_802984D0(void*, short*);
 extern "C" void fn_802994C0(void*, unsigned int);
 extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
-void fn_80298458(int arg0, int arg1, short arg2) {
+extern "C" void fn_80298458(int arg0, int arg1, short arg2) {
     short value = arg2;
     int item = arg0 + arg1 * 0x2c;
     if (fn_802984D0((void*)item, &value) != 0) {
