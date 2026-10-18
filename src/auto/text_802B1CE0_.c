@@ -48,9 +48,10 @@ int fn_802B1DA0(void *arg0) {
 extern int lbl_8055CDB8;
 int stricmp(const char *, const char *);
 int fn_802B1DE8(void **arg0) {
-    void **vtable = (void **)*arg0;
+    void **vtable = *(void ** volatile *)arg0;
     char *(*method)(void *) = (char *(*)(void *))vtable[2];
-    return stricmp((char *)&lbl_8055CDB8, method(arg0)) == 0;
+    char *result = method(arg0);
+    return stricmp((char *)&lbl_8055CDB8, result) == 0;
 }
 
 void fn_802B1F64(void) {
@@ -116,33 +117,47 @@ void fn_802B218C(void *arg0) {
     }
 }
 
+#pragma push
+#pragma opt_common_subs off
 void fn_802B21D4(void **arg0) {
-    void *ptr = *arg0;
+    int *ptr = (int *)*arg0;
     if (ptr != 0) {
         if (ptr != 0) {
-            if (((int *)ptr)[2] != -2) {
+            int value = ptr[2];
+            if (value != -2) {
                 fn_802CAC54();
-                ((int *)ptr)[2] = -2;
+                ptr[2] = -2;
             }
-            if (((int *)ptr)[0] != 0) {
-                fn_802C6C20();
-            }
+            value = ptr[0];
+            if (value != 0) fn_802C6C20();
             fn_80128668(ptr);
         }
         *arg0 = 0;
     }
 }
-
+#pragma pop
 int fn_80129D90(int, int, int);
 void fn_802B2504(int *dst, int count) {
+    int limit;
+    int offset;
     int i;
-    int limit = count - 1;
-    for (i = 0; i < limit; i++) {
+    i = 0;
+    limit = count - 1;
+    offset = 0;
+    while (i < limit) {
         int j = fn_80129D90(0, i + 1, count);
-        int tmp = *(int *)((char *)dst + i * 4);
-        *(int *)((char *)dst + i * 4) = *(int *)((char *)dst + j * 4);
-        *(int *)((char *)dst + j * 4) = tmp;
+        int tmp = dst[offset / 4];
+        dst[offset / 4] = dst[j];
+        dst[j] = tmp;
+        i++;
+        offset += 4;
     }
+}
+
+void fn_802B2C34(void (*fn)(int), int arg)
+{
+    int x = arg;
+    fn(x);
 }
 
 void fn_802B2D94(int *arg0) {
@@ -162,6 +177,41 @@ int fn_802B2E00(void *arg0) {
 
 int *fn_802B320C(int *arg0, int arg1) {
     return (int *)((char *)*arg0 + arg1 * 4);
+}
+
+extern char lbl_8034A3BC[];
+extern void fn_802E30C8(const char *, int, int, int);
+void fn_802B321C(int *param_1, int *param_2, int *param_3, int param_4)
+{
+    int i;
+    int offset;
+    int item;
+    int *entry;
+    int *value;
+    int count;
+
+    if (param_4 < 0 || param_3[1] <= param_4) {
+        fn_802E30C8(lbl_8034A3BC, param_4, 0, param_3[1]);
+        return;
+    }
+    item = *(int *)(*param_3 + param_4 * 4);
+    if (param_1 != 0) {
+        i = 0;
+        offset = 0;
+        while (i < *(int *)(item + 0x40C) && param_1[1] + 1 <= param_1[2]) {
+            i++;
+            count = param_1[1];
+            entry = *(int **)(*(int *)(item + 0x408) + offset);
+            offset += 4;
+            param_1[1] = count + 1;
+            value = (int *)((char *)param_1[0] + count * 0xC);
+            value[0] = *(int *)((char *)entry + 0x2A4);
+            value[1] = (int)entry;
+            value[2] = (int)((char *)entry + 0x298);
+        }
+    }
+    if (param_2 != 0)
+        *param_2 = item + 4;
 }
 
 int fn_802B2E00(void *);
@@ -240,9 +290,9 @@ extern int lbl_8055F9B8;
 extern void *lbl_8055F9BC;
 
 int fn_802B2C44(void *arg0) {
-    int **vt = (int **)arg0;
-    int (*fn)(void) = (int (*)(void))(*vt)[0x17];
-    return fn() != 0;
+    void **vtable = *(void ***)arg0;
+    int (*method)(void) = (int (*)(void))vtable[0x17];
+    return method() != 0;
 }
 
 int fn_802B2C98(char *arg0) {
@@ -258,16 +308,24 @@ int fn_802B2C98(char *arg0) {
 }
 
 void fn_802B2D24(void *arg0) {
-    int i, j;
-    for (i = 0; i < ((int *)arg0)[1]; i++) {
-        void *cur = ((void **)arg0)[i];
+    int i = 0;
+    int j;
+    int index = 0;
+    int innerIndex;
+    while (i < ((int *)arg0)[1]) {
+        void *cur = *(void **)((char *)*(void **)arg0 + index);
         ((int *)lbl_8055F9BC)[2] = 0;
-        for (j = 0; j < ((int *)cur)[0x103]; j++) {
-            void **arr = *(void ***)((char *)cur + 0x408);
-            void *entry = arr[j];
+        j = 0;
+        innerIndex = 0;
+        while (j < ((int *)cur)[0x103]) {
+            void *entry = *(void **)((char *)*(void **)((char *)cur + 0x408) + innerIndex);
             ((int *)entry)[5] = 0;
             ((int *)entry)[4] = 0;
+            j++;
+            innerIndex += 4;
         }
+        index += 4;
+        i++;
     }
     lbl_8055F9B8 = 0;
 }
