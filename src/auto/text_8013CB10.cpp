@@ -81,7 +81,7 @@ public:
 
 class TObjCPlus {
 public:
-    virtual void d0(); virtual void d1();
+    virtual void d0();
     virtual s32 vC(s32);
 };
 
@@ -162,20 +162,12 @@ extern "C" s32 fn_8013D890(s32 arg0, s32 arg1) {
 #pragma dont_inline off
 
 #pragma dont_inline on
-extern "C" s32 fn_8013DDD4(void *arg0, const char *arg1) {
-    class TObjDDD4 {
-    public:
-        virtual void d0();
-        virtual void d1();
-        virtual s32 get(s32);
-    };
-    TObjDDD4 *obj = (TObjDDD4 *)arg0;
+extern "C" s32 fn_8013DDD4(TObjCPlus *arg0, const char *arg1) {
     s32 count = 0;
     s32 i = 0;
     void *item;
-    while ((item = (void *)obj->get(i)) != 0) {
-        if (fn_8013CB44(arg1, (TObj10 *)item))
-            count++;
+    while ((item = (void *)arg0->vC(i)) != 0) {
+        if (fn_8013CB44(arg1, (TObj10 *)item)) count++;
         i++;
     }
     return count;
