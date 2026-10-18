@@ -89,8 +89,8 @@ s32 fn_80128314(s32 arg0) {
     return 0;
 }
 
-s32 fn_801284E8(void) {
-    fn_8012834C(NULL, NULL, 1);
+s32 fn_801284E8(void *arg0, void *arg1) {
+    fn_8012834C(arg0, arg1, 1);
 }
 
 void fn_801284F0(void *arg0, void *arg1) {
@@ -263,6 +263,22 @@ skip:
     ((s32 *)arg0)[6] = 0;
 }
 
+void fn_801287D0(void *arg0) {
+    u32 *p = (u32 *)arg0;
+    u32 *vtable;
+    s32 value;
+
+    fn_802E30C8(lbl_8032A000 + 0x140, (void *)((*(s32 *)(p + 5)) >> 10), (void *)p[7]);
+    fn_802E30C8(lbl_8032A000 + 0x178, (void *)p[6], (void *)((p[7] - p[6]) >> 10));
+    fn_802E30C8(lbl_8032A000 + 0x1AC, (void *)((*(s32 *)(p + 2) - *(s32 *)(p + 5)) >> 10), 0);
+    if (p[1] != 0) {
+        vtable = *(u32 **)arg0;
+        ((void (*)(void *, s32))vtable[14])(arg0, 1);
+        fn_802E317C(lbl_8032A000 + 0x1C8, (void *)p[1]);
+    }
+    p[3] = 0;
+}
+
 s32 fn_801288A4(void) {
     return 0;
 }
@@ -313,6 +329,30 @@ void fn_80128EF0(void *arg0, s32 arg1) {
     temp_r31 = *(s32 *)((u8 *)arg0 + 4);
     ((void (*)(void *, s32, void *, s32))(*(void **)((u8 *)*(void **)arg0 + 0x10)))(arg0, var_r6 - 0x30, &lbl_8032A05C, 3);
     *(u32 *)(temp_r31 + temp_r30) = 0x06630216;
+}
+
+extern s32 fn_801281F4(s32, s32);
+extern s32 fn_802E317C(void *, void *);
+extern char lbl_8032A470[];
+void *fn_80128F94(void *arg0, s32 arg1, void *arg2, s32 arg3) {
+    s32 size = fn_801281F4(arg1, 0x10);
+    s32 total = size + 0x20;
+    u32 used = *(u32 *)((char *)arg0 + 8);
+    if (total + used > *(u32 *)((char *)arg0 + 0xC)) {
+        ((void (*)(void *, void *, s32))fn_802E317C)(lbl_8032A470, arg2, size >> 10);
+    }
+    {
+        char *base = *(char **)((char *)arg0 + 4) + used;
+        *(u32 *)base = 0xAAAA5555;
+        *(s32 *)(base + 4) = arg3;
+        *(u32 *)(base + 0x10 + size) = 0xFEEDFACE;
+        *(s32 *)(base + 0x14 + size) = size;
+        *(u32 *)((char *)arg0 + 8) = used + total;
+        memset(base + 0x10, 0xE3, size);
+        if (*(u32 *)((char *)arg0 + 0x10) < used + total)
+            *(u32 *)((char *)arg0 + 0x10) = used + total;
+        return base + 0x10;
+    }
 }
 
 void fn_801290CC(void *arg0, void *arg1) {
