@@ -28,6 +28,17 @@ extern f32 lbl_80562E5C;
 extern u8 lbl_8055EB59;
 extern u8 lbl_8055EB60[5];
 
+void fn_801EA1FC(void) {
+    float x = lbl_80562E38;
+    x = lbl_80562E3C * x;
+    lbl_8055AF68 = x;
+}
+
+void fn_801EA2E8(void) {
+    fn_801EA1FC();
+    fn_802C974C(lbl_80562E40, lbl_80562E48, lbl_80562E4C);
+}
+
 void fn_801EA318(void) {
 
 }
