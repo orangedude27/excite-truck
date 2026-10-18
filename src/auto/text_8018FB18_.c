@@ -17,6 +17,7 @@ typedef unsigned char uchar;
 typedef signed short sshort;
 typedef unsigned short ushort;
 typedef unsigned int uint;
+typedef struct { u8 pad[7]; u8 low:5; u8 index:3; } Fn8019150CState;
 
 extern void *lbl_804349A0[];
 extern int lbl_8055E518;
@@ -430,11 +431,10 @@ void fn_801914F8(void *arg0) {
 
 void fn_8019150C(void *arg0, int arg1) {
     void *obj = *(void **)((char *)arg0 + 4);
-    void **vtable = *(void ***)obj;
-    int next = arg1 + 1;
-    ((void (*)(void))vtable[9])();
-    *(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) =
-        (unsigned char)((*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) & 0x1f) | (next << 5));
+    void *state = *(void **)((char *)arg0 + 8);
+    ((void (*)(void *))(*(void ***)obj)[9])(obj);
+    *(unsigned char *)((char *)state + 7) =
+        (*(unsigned char *)((char *)state + 7) & 0x1f) | ((arg1 + 1) << 5);
 }
 
 void fn_80191568(void *arg0) {
