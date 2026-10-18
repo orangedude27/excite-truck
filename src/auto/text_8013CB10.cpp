@@ -277,6 +277,32 @@ extern "C" void fn_8014052C(s32 arg0, u8 *arg1) {
     fn_8001DF08(arg0, v);
 }
 
+extern "C" void fn_80147ABC(void *, void *, s32, f32);
+extern "C" void *lbl_8032CA48;
+extern "C" void *lbl_8032CA58;
+extern "C" void fn_80140614(void *arg0, void *arg2) {
+    void *obj = arg0;
+    void *src = arg2;
+    s32 flag = 0;
+    {
+        f32 d1 = fn_8001DAE8((char *)src + 0xA8) - *(f32 *)((char *)src + 0xAC);
+        if (d1 > lbl_805614A4 && d1 < *(f32 *)((char *)src + 0xA8))
+            flag = 1;
+    }
+    if (flag == 0) {
+        f32 d2 = fn_8001DAE8((char *)src + 0xA0) - *(f32 *)((char *)src + 0xA4);
+        if (d2 > lbl_805614A4 && d2 < *(f32 *)((char *)src + 0xA0))
+            flag = 1;
+    }
+    if (flag != 0) {
+        void *item = *(void **)((char *)obj + 0x54);
+        void *r1 = ((void *(*)(void *, void *))(*(void ***)item)[0xC / 4])(item, (void *)0x8032CA48);
+        void *r2 = ((void *(*)(void *, void *))(*(void ***)item)[0xC / 4])(item, (void *)0x8032CA58);
+        f32 d = fn_8001DAF0((f32 *)((char *)src + 0xA0));
+        fn_80147ABC(r1, r2, *(s32 *)((char *)r1 + 0x1C), d * d);
+    }
+}
+
 extern "C" void fn_80141454(void) {
 
 }
@@ -580,9 +606,17 @@ extern "C" void fn_80143C54(void *arg0) {
 }
 
 extern "C" void fn_801442DC(void *arg0) {
-    void **vtable = *(void ***)arg0;
-    void *fn = vtable[8];
-    ((void (*)())fn)();
+    class TObj20 {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+    };
+    ((TObj20 *)arg0)->f6();
 }
 
 extern "C" s32 fn_801442EC(void) { return 0; }
