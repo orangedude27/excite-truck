@@ -109,18 +109,17 @@ extern "C" s32 fn_80144FB0(void *arg0, s32 arg1, s32 arg2, const char *arg3) {
 }
 
 extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
-    f32 value = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
-    s32 integer;
-    s32 clamped;
-    if (value < lbl_805615D4)
-        value -= lbl_805615D0;
-    else
-        value += lbl_805615D0;
-    integer = (s32)value;
-    clamped = integer & ((-integer & ~integer) >> 31);
-    if (clamped >= 0xFF)
-        return 0xFF;
-    return clamped;
+    f32 temp_f1 = (f32)arg0 + arg2 * ((f32)arg1 - (f32)arg0);
+    f32 var_f0;
+    s32 temp_r3;
+    s32 temp_r4;
+    s32 var_r0 = 0xFF;
+    if (temp_f1 < lbl_805615D4) var_f0 = temp_f1 - lbl_805615D0;
+    else var_f0 = lbl_805615D0 + temp_f1;
+    temp_r4 = (s32)var_f0;
+    temp_r3 = temp_r4 & ((s32)(-temp_r4 & ~temp_r4) >> 31);
+    if (temp_r3 < 0xFF) var_r0 = temp_r3;
+    return (u8)var_r0;
 }
 
 extern "C" s32 fn_80145140(void *arg0, const char *arg1) {
@@ -154,19 +153,22 @@ extern "C" f32 fn_801452C8(f32 arg0) {
 
 extern "C" f32 fn_801452D4(f32 arg0) { return lbl_805615F0 - arg0; }
 
+#pragma push
+#pragma dont_inline on
 extern "C" f32 fn_801452E0(void *arg0, const char *arg1) {
     extern char *strchr(const char *, int);
     extern double atof(const char *);
+    class V { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual const char *get(const char *); };
     f64 temp_f31;
-    const char *text = ((const char *(*)(void *, const char *))(*(void ***)arg0)[5])(arg0, arg1);
-    const char *slash = strchr(text, '/');
-    if (slash != 0) {
+    const char *text = ((V *)arg0)->get(arg1);
+    if (strchr(text, '/') != 0) {
         temp_f31 = atof(strchr(text, '/') + 1);
         return (f32)(atof(text) / temp_f31);
     }
     return (f32)atof(text);
 }
-
+#pragma dont_inline reset
+#pragma pop
 extern "C" void fn_80145368(void *arg0, void *arg1) {
     extern char lbl_80559DD0[];
     extern char lbl_80559DD8[];
@@ -197,13 +199,13 @@ extern "C" void fn_80145438(void *arg0, void *arg1) {
     *(f32 *)((u8 *)arg0 + 0x24) = fn_801452E0(arg1, lbl_80559DF4);
 }
 
-extern "C" s32 fn_801454E8(void *arg0, const char *arg1) {
-    struct VTable { void *f0[5]; s32 (*f14)(void *); };
+extern "C" s32 fn_801454E8(void *arg0) {
+    class V { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual const char *f5(); };
     extern char lbl_80559DF8[];
     extern int sscanf(const char *, const char *, ...);
     s32 result;
-    (*(VTable **)arg0)->f14(arg0);
-    if (sscanf(arg1, lbl_80559DF8, &result) != 1)
+    const char *text = ((V *)arg0)->f5();
+    if (sscanf(text, lbl_80559DF8, &result) != 1)
         result = -1;
     return result;
 }
@@ -339,10 +341,10 @@ extern "C" void fn_8014595C(void *arg0, const char *arg1) {
 }
 
 extern "C" f32 fn_80145A08(f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
-    f32 temp_f5 = farg4 - farg0;
-    f32 temp_f1 = farg1 - farg0;
-    f32 temp_f0 = farg3 - farg2;
-    return farg2 + (temp_f5 / temp_f1) * temp_f0;
+    f32 span = farg3 - farg2;
+    f32 den = farg1 - farg0;
+    f32 num = farg4 - farg0;
+    return farg2 + (num / den) * span;
 }
 
 extern "C" f32 lbl_80561608;
@@ -412,10 +414,8 @@ extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg
     extern void fn_80235380();
     extern void fn_80128668(void *);
     if (arg0 != 0) {
-        if (*(void **)((u8 *)arg0 + 8) != 0)
-            fn_80235380();
-        if (arg1 > 0)
-            fn_80128668(arg0);
+        if (*(s32 *)((char *)arg0 + 8)) fn_80235380();
+        if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
@@ -431,7 +431,8 @@ extern "C" void *fn_80146490(void *arg0) {
     if (arg0 != NULL) {
         if (((s32 *)arg0)[10] == 0) {
             if (arg0) {
-                ((void * (*)(void *, s32))(*(void ***)(arg0))[2])(arg0, 1);
+                volatile void **v = *(volatile void ***)arg0;
+                ((void * (*)(void *, s32))v[2])(arg0, 1);
             }
             return NULL;
         }
@@ -680,14 +681,23 @@ extern "C" void fn_801478E0(void *arg0, s32 unused, s32 arg1, s32 arg2) {
     if (result != 0 && arg1 != 0)
         fn_80145CF4((void *)result, (void *)arg1, (u32)arg2);
 }
-#pragma dont_inline reset
+#pragma push
+#pragma dont_inline on
 extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 temp_r3;
-    temp_r3 = ((s32 (**)(void *, s32))(*(void ***)arg0))[6](arg0, arg2);
-    if (arg1 != 0 && temp_r3 != 0)
-        fn_80145CF4((void *)arg1, (void *)temp_r3, arg3);
+    class V {
+    public:
+        virtual void a();
+        virtual void b();
+        virtual void c();
+        virtual void d();
+        virtual s32 f(s32);
+    };
+    s32 result = ((V *)arg0)->f(arg2);
+    if (arg1 != 0 && result != 0)
+        fn_80145CF4((void *)arg1, (void *)result, (u32)arg3);
 }
-
+#pragma dont_inline reset
+#pragma pop
   extern "C" void fn_80147CEC(void *, s32, s32, f64);
 extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 value, ...) {
     char text[0x200];
@@ -700,6 +710,19 @@ extern "C" void fn_801479A8(void *arg0, void *arg1, const char *format, f64 valu
     fn_80147CEC(buffer, (s32)arg0, (s32)arg1, value);
     fn_80147230(buffer, (const char *)&lbl_80559E1C, text);
 }
+
+extern "C" void fn_80147ABC(void *arg0, void *arg1, const char *format, f64 value, ...) {
+    char text[0x200];
+    char buffer[0x20];
+    va_list args;
+    va_start(args, value);
+    vsprintf(text, format, args);
+    if (strlen(text) >= 0x200)
+        fn_802E317C(lbl_8032D1A4, strlen(text), format);
+    fn_80147CEC(buffer, (s32)arg0, (s32)arg1, value);
+    fn_80147314(buffer, (const char *)&lbl_80559E1C, text);
+}
+
   extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
     u32 tmp;
     fn_80147DC0(&tmp, arg0, arg1);
@@ -768,11 +791,17 @@ extern "C" void fn_80148100(void *arg0) {
         lbl_805615D4, lbl_805615D4);
 }
 
-extern "C" void fn_80148134(f32 *arg0, f32 *arg1, s32 arg2, f32 farg1) {
-    if (arg0 != NULL) *arg0 = fn_801451DC(arg2);
-    if (arg1 != NULL) *arg1 = fn_801452B4(farg1);
+#pragma dont_inline on
+extern "C" void fn_80148134(f32 *arg0, f32 *arg1, s32 arg2, f32 unused, f32 value) {
+    if (arg0 == 0) goto second;
+    *arg0 = fn_801451DC(arg2);
+second:
+    if (arg1 == 0) goto done;
+    *arg1 = fn_801452B4(value);
+done:
+    return;
 }
-
+#pragma dont_inline reset
 extern "C" void fn_8014819C(void *arg0, f32 farg0, f32 farg1) {
     *(f32 *)arg0 = lbl_8055E200;
     *(f32 *)((u8 *)arg0 + 4) = lbl_8055E204;
@@ -851,6 +880,8 @@ extern "C" void fn_80148284(void *arg0, s32 arg1) {
     fn_80148294((const char *)arg1, *(void **)((u8 *)arg0 + 0x30));
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void *fn_80148294(const char *arg0, void *arg1) {
     s32 offset = 0;
     s32 i = 0;
@@ -863,7 +894,7 @@ extern "C" void *fn_80148294(const char *arg0, void *arg1) {
     }
     return NULL;
 }
-
+#pragma pop
 extern "C" void fn_80148334(s32, s32, void *);
 extern "C" void fn_80148324(void *arg0, s32 arg1) {
     fn_80148334(arg1, *(s32 *)((u8 *)arg0 + 0x2C), arg0);
