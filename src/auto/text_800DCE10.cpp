@@ -69,7 +69,7 @@ void GetVtxColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, void *arg1, u32 inde
 
 void GetTextColor__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, const void *src, u32 index) {
     if (index >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320B8C, 0x5f, lbl_80320B5C);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80320B8C, 0x5f, (const char *)lbl_80320B5C);
     }
     const u8 *base = (const u8 *)src + (index * 4);
     ((u8 *)this_ptr)[0] = base[0xD8];
@@ -114,6 +114,9 @@ extern "C" u8 GetVtxColorElement__Q36nw4hbm3lyt7TextBoxCFUl(void *this_ptr, u32 
 }
 
 extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7TextBoxFUlUc(void *this_ptr, u32 index, u8 color) {
+    extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+    extern const char lbl_80320570[];
+    extern const char lbl_803206B8[];
     if (index >= 0x10) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320570, 0x1ee, lbl_803206B8);
     }
@@ -128,14 +131,13 @@ extern "C" void AllocStringBuffer__Q36nw4hbm3lyt7TextBoxFUs(void *this_ptr, u16 
         u16 bytes = (len + 1) * 2;
         u16 current = *(u16 *)((u8 *)this_ptr + 0xF8);
         if (bytes > current) {
-            void *vtbl = *(void **)this_ptr;
-            void (*fn)(void*) = (void (*)(void*))*(void **)((u8 *)vtbl + 0x68);
+            void *volatile *vptr = *(void *volatile **)this_ptr;
+            void *volatile *slot = vptr + 0x1A;
+            void (*volatile fn)(void *) = (void (*)(void *))*slot;
             fn(this_ptr);
             void *result = MEMAllocFromAllocator(lbl_8055DDF0, bytes);
             *(void **)((u8 *)this_ptr + 0xD4) = result;
-            if (result != NULL) {
-                *(u16 *)((u8 *)this_ptr + 0xF8) = bytes;
-            }
+            if (result != NULL) *(u16 *)((u8 *)this_ptr + 0xF8) = bytes;
         }
     }
 }
