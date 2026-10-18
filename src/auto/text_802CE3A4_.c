@@ -87,9 +87,9 @@ void fn_802CE6C0(void *arg0) {
     if (*(int *)((char *)arg0 + 0x38) == 2 && *(int *)((char *)arg0 + 0x38) == 2) {
         fn_802C6FB4(*(int *)((char *)arg0 + 0x30));
         fn_802C703C(*(int *)((char *)arg0 + 0x34));
-        *(int *)((char *)arg0 + 0x34) = -1;
-        *(int *)((char *)arg0 + 0x30) = 0;
-        *(int *)((char *)arg0 + 0x38) = 3;
+        *(volatile int *)((char *)arg0 + 0x34) = -1;
+        *(volatile int *)((char *)arg0 + 0x30) = 0;
+        *(volatile int *)((char *)arg0 + 0x38) = 3;
     }
     *(unsigned char *)arg0 = 0;
 }
