@@ -1,6 +1,6 @@
 #include <types.h>
 namespace nw4hbm { namespace snd { namespace detail {
-class EnvGenerator { public: void SetRelease(int); };
+class EnvGenerator { public: void SetRelease(int); void SetDecay(int); };
 }}}
 extern f32 lbl_80560FE8, lbl_80561008, lbl_8056100C, lbl_80561010, lbl_80561014;
 #pragma push
