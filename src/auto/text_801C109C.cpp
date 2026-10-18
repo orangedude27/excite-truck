@@ -65,10 +65,10 @@ int fn_801C1C1C(void *arg0) {
     return result;
 }
 
-void fn_801C1C7C(void *arg0) {
+void fn_801C1C7C(int arg0) {
     if (arg0 != 0) {
         __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(0);
-        fn_80128668((int)arg0);
+        fn_80128668(arg0);
     }
 }
 
