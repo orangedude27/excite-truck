@@ -15,6 +15,40 @@ extern s32 atoi(void);
 extern void fn_802E317C(const char *);
 extern const char lbl_80341354[];
 extern s32 lbl_8055BB30;
+extern void fn_802054EC(s32, s32, s32);
+extern void fn_802ECC18(s32);
+extern void fn_802445FC(s32, s32, s32);
+extern void fn_8020A634(void);
+extern void fn_8027B77C(void);
+extern void fn_80211F4C(void);
+extern void fn_8023C0EC(void *, s32, s32);
+extern void fn_80018318(void *, s32);
+extern void fn_800126B4(void *, void *, s32, s32);
+extern void fn_80018440(s32 *, s32, void *);
+extern void fn_8000AB48(void *, s32 *);
+extern s32 fn_802C9A58(void);
+extern void fn_802CED50(s32, s32, s32, s32);
+extern const s32 lbl_80341308;
+void fn_8023B764(s32 arg0, s32 arg1) {
+    fn_802054EC((s32)&lbl_80341308, arg0, arg1);
+}
+
+void fn_8023B7EC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 sp8[16];
+
+    fn_802ECC18(0);
+    fn_802445FC(arg1, arg2, arg3);
+    fn_8023B77C();
+    fn_8020A634();
+    fn_8027B77C();
+    fn_80211F4C();
+    fn_8023C0EC(arg0, arg1, arg2);
+    fn_80018318((u8 *)arg0 + 0x3F8, arg1);
+    fn_800126B4(arg0, (u8 *)arg0 + 0x3F8, 0, 1);
+    fn_80018440(sp8, *(s32 *)((u8 *)arg0 + 0x3E4), (u8 *)arg0 + 0x3F8);
+    fn_8000AB48(arg0, sp8);
+}
+
 void fn_8023B8AC(s32 arg0) {
     fn_8000ABE0();
     fn_800126C0(arg0, arg0 + 0x3F8);
@@ -49,10 +83,10 @@ s32 fn_8023B9AC(s32 arg0, s32 arg1) {
 }
 
 void fn_8023BB0C(void) {
-    s32 sp10, sp8, spC;
-    s32 temp_r29;
+    s32 sp10, spC, sp8;
     s32 temp_r31 = fn_802411CC();
     s32 var_r30;
+    s32 temp_r29;
     fn_800167FC();
     for (var_r30 = 0; var_r30 < temp_r31; var_r30++) {
         temp_r29 = *(s32 *)((u8 *)fn_80016464(var_r30) + 4);
@@ -89,10 +123,12 @@ extern void fn_80137C80(int);
 extern void fn_80137C78(int);
 void fn_8023BDEC(void) {
     int i = 0;
-    do {
-        fn_80137C80(i);
-        i++;
-    } while (i < fn_80137C74());
+    goto check;
+body:
+    fn_80137C80(i);
+    i++;
+check:
+    if (i < fn_80137C74()) goto body;
     fn_80137C78(1);
 }
 
@@ -111,6 +147,11 @@ void fn_8023BE38(int ignored, int flag) {
     fn_8023BDEC();
     fn_80012794();
     fn_80012778();
+}
+
+void fn_8023BEA8(void) {
+    extern const s32 lbl_80341340;
+    fn_8023BE38((int)&lbl_80341340, 1);
 }
 
 extern void fn_8001285C(void);
