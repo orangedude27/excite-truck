@@ -137,7 +137,8 @@ extern "C" void fn_800D1C48(void);
 #include <revolution/MEM/mem_frameHeap.h>
 extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1);
 
-extern "C" void fn_800B7610(OSAlarm *alarm, OSContext *ctx);
+  extern "C" void fn_800B7610(OSAlarm *alarm, OSContext *ctx);
+  typedef struct { char pad[8]; } VaList1;
 
 
 extern "C" MEMAllocator lbl_804075E0;
