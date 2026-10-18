@@ -144,7 +144,7 @@ void fn_8017B6A8(void *arg0) {
 
 extern float PSVECDotProduct(const void *, const void *);
 extern float lbl_80558DC4;
-extern void PSVECCrossProduct(void *, void *, void *);
+extern void PSVECCrossProduct(void *, const void *, const void *);
 void fn_8017B6D4(void *arg0, float *arg1, float *arg2) {
     float sp8, spC, sp10;
     sp8 = arg2[0] - *(float *)((char *)arg0 + 0x60);
