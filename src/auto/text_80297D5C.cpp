@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern "C" int fn_8029C190(void*);
 
   extern "C" int fn_80287B14(void);
   extern "C" void fn_80299830(void*, int);
@@ -132,8 +133,8 @@ extern "C" void fn_80297ED4(void) {
 extern "C" void fn_80298124(void) {
     fn_80298BBC(lbl_8055F7C8);
     fn_8029BA8C(lbl_8055F7D8);
-    register int value = (int)lbl_8055F7C4;
-    if (value != 0) fn_80299628();
+    void *&value = lbl_8055F7C4;
+    if (value != (void *)0) fn_80299628();
 }
 
 void fn_80298160(void) {
@@ -226,15 +227,14 @@ extern "C" void fn_80298A48(void) {
 
 extern "C" void* fn_80298A4C(void* arg0, int arg1) {
     if (arg0 != 0) {
-        if (*(int*)((char*)arg0 + 8) != 0) {
+        int* p = (int*)arg0;
+        if (p[2]) {
             fn_802976DC();
-            *(int*)((char*)arg0 + 8) = 0;
+            p[2] = 0;
         }
-        fn_8028E398(*(void**)((char*)arg0 + 4));
-        if (*(int*)((char*)arg0) != 0) {
-            fn_80128670(*(int*)((char*)arg0) - 0x10);
-        }
-        *(int*)((char*)arg0) = 0;
+        fn_8028E398(*(void**)(p + 1));
+        if (p[0]) fn_80128670(p[0] - 0x10);
+        p[0] = 0;
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
@@ -417,6 +417,26 @@ extern "C" void fn_8029A114(void *arg0) {
     *(int *)((char *)arg0 + 0x40) = -1;
 }
 
+extern "C" void fn_8029A4B4(void);
+extern "C" void fn_8029840C(void);
+extern "C" void fn_8029A208(void* arg0, int arg1, int arg2) {
+    int index;
+    unsigned char* entry;
+    if (arg2 != 0 && *(int*)((char*)arg0 + 0x40) == -1) {
+        fn_8029A4B4();
+        return;
+    }
+    if (arg2 == 0 && arg1 == *(int*)((char*)arg0 + 0x3C)) {
+        register int index2 = *(int*)((char*)arg0 + 0x40);
+        if (index2 != -1) {
+            entry = (unsigned char*)lbl_8055F7C0 + index2 * 0x2C;
+            if (entry[0x28] != 0)
+                fn_8029840C();
+            *(int*)((char*)arg0 + 0x40) = -1;
+        }
+    }
+}
+
 extern "C" int fn_8029A290(void *arg0, void *arg1) {
     extern float PSVECSquareDistance(const void *, const void *);
     extern float PSVECDotProduct(const void *, const void *);
@@ -481,11 +501,13 @@ void fn_8029B1B8(void* arg0) {
     *(float*)(p+0x1F8)=lbl_80564590 / (float)*(unsigned short*)(p+0x1EC);
 }
 
-void* fn_8029B9A4(void* arg0,int arg1) {
-    if (arg0) {
+void* fn_8029B9A4(void* arg0, int arg1) {
+    if (arg0 != 0) {
         fn_801EF024((void*)fn_8029BFF8);
-        __dt__Q210JASDrumSet5TPercFv_8029AE88(*(void**)arg0,1);
-        if (arg1>0) fn_80128668(arg0);
+        __dt__Q210JASDrumSet5TPercFv_8029AE88(*(void**)arg0, 1);
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
@@ -587,6 +609,41 @@ extern "C" int fn_8029C024(int *arg0) {
     return 4;
 #pragma dont_inline reset
 }
+
+extern "C" void fn_80298DE0(void*, void*, int);
+extern "C" void fn_8029BBD4(void*, void*, int);
+extern "C" void fn_8029A208(void*, int, int);
+extern "C" void fn_8029A904(void*, void*, float, float);
+void fn_8029C084(void* arg0, int arg1) {
+    float temp_f31 = fn_801E7E24();
+    if (__fabsf(temp_f31) != lbl_80558DC4) {
+        int i = 0;
+        while (i < arg1) {
+            unsigned char flag = *(unsigned char*)((char*)arg0 + 0xC);
+            int flag2 = 0;
+            void* obj = *(void**)((char*)arg0 + 4);
+            void* data = *(void**)arg0;
+            if (flag != 0 && *(int*)((char*)data + 0x5C) == 0xB) {
+                flag2 = 1;
+            }
+            fn_80298DE0(lbl_8055F7C8, obj, flag2);
+            fn_8029BBD4(lbl_8055F7D8, obj, flag);
+            if (lbl_8055F7D0 != 0) {
+                int flag3 = 0;
+                if (flag != 0 && *(int*)((char*)data + 0x5C) == 0xC) {
+                    flag3 = 1;
+                }
+                fn_8029A208(obj, flag3, 0);
+            }
+            if (lbl_8055F7D4 != 0) {
+                fn_8029A904(obj, data, temp_f31, *(float*)((char*)arg0 + 8));
+            }
+            arg0 = (char*)arg0 + 0x10;
+            i++;
+        }
+    }
+}
+
 #pragma dont_inline reset
 int fn_8029C190(void* arg0) {
     fn_8029BE54(lbl_8055F7DC, arg0);
