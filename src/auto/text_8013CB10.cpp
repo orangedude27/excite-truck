@@ -178,6 +178,19 @@ extern "C" void fn_8013E338(void) {
 
 }
 
+extern "C" void *fn_8013E6E4(void *arg0) {
+    fn_8001DAE0((u8 *)arg0 + 0x98, lbl_805614AC);
+    fn_8001DAE0((u8 *)arg0 + 0xA0, lbl_805614FC);
+    fn_8001DAE0((u8 *)arg0 + 0xA8, lbl_805614FC);
+    fn_8001DAE0((u8 *)arg0 + 0xB0, lbl_805614FC);
+    fn_8001DAE0((u8 *)arg0 + 0xB8, lbl_80561500);
+    fn_8001DAE0((u8 *)arg0 + 0xC0, lbl_805614AC);
+    fn_8001DAE0((u8 *)arg0 + 0xC8, lbl_80561498);
+    fn_8001DAE0((u8 *)arg0 + 0xD0, lbl_80561498);
+    fn_8001DAE0((u8 *)arg0 + 0xD8, lbl_80561498);
+    return arg0;
+}
+
 extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
     u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
     if (*(u8 *)(entry + 0x118))
@@ -593,7 +606,7 @@ extern "C" s32 fn_80143218(s32 arg0, u8 *arg1) {
     return 1;
 }
 
-extern "C" void fn_80143398(void *arg0) { register void **vtable = *(void ***)arg0; ((void (*)(void))vtable[0xAC / 4])(); }
+class VTable43398 { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23(); virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27(); virtual void f28(); virtual void f29(); virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(); virtual void f34(); virtual void f35(); virtual void f36(); virtual void f37(); virtual void f38(); virtual void f39(); virtual void f40(); virtual void f41(); virtual void f42(); virtual void f43(); }; extern "C" void fn_80143398(void *arg0) { ((VTable43398 *)arg0)->f41(); }
 
 extern f32 lbl_805615B0;
 extern "C" f32 fn_80143C44(void) {
