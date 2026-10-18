@@ -144,21 +144,23 @@ extern u8 lbl_80326FC8[];
 #pragma pop
 extern "C" void AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(void *arg0, void *arg1, s32 arg2) {
     u32 level;
+    void *manager;
+    s32 priority;
+    void *task;
     void *list;
     void *it;
     s32 valid;
+    manager = arg0;
+    priority = arg2;
+    task = arg1;
     valid = 0;
-    if (arg2 >= 0 && arg2 < 3) valid = 1;
-    if (valid == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x7D, (const char *)lbl_80326ED0, arg2, 0, 3);
-    }
+    if (priority >= 0 && priority < 3) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326E08, 0x7D, (const char *)lbl_80326ED0, priority, 0, 3);
     level = OSDisableInterrupts();
-    list = (u8 *)arg0 + arg2 * 0xC + 0x20;
+    list = (u8 *)manager + priority * 0xC + 0x20;
     it = (u8 *)list + 4;
-    if (arg1 == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326FC8, 0x233, (const char *)lbl_80326FA4);
-    }
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &it, (u8 *)arg1 + 4);
+    if (task == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80326FC8, 0x233, (const char *)lbl_80326FA4);
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &it, (u8 *)task + 4);
     OSRestoreInterrupts(level);
 }
 extern "C" void *fn_800FE648(void) {
@@ -172,18 +174,19 @@ extern "C" void *fn_800FE648(void) {
 }
 
 extern "C" s32 fn_800FE814(s32);
-extern "C" s32 Create__Q46nw4hbm3snd6detail10TaskThreadFl(void *arg0, s32 arg1) {
+extern "C" s32 Create__Q46nw4hbm3snd6detail10TaskThreadFl(OSThread *arg0, s32 arg1) {
     s32 result;
-    if (*(u8 *)((u8 *)arg0 + 0x2360) != 0) return 1;
-    *(u8 *)((u8 *)arg0 + 0x2360) = 1;
-    OSInitThreadQueue((OSThreadQueue *)((u8 *)arg0 + 0x2318));
+    u8 *self = (u8 *)arg0;
+    if (self[0x2360]) return 1;
+    self[0x2360] = 1;
+    OSInitThreadQueue((OSThreadQueue *)(self + 0x2318));
     if ((s8)lbl_8055DE80 == 0) {
         lbl_8055DE80 = 1;
         lbl_8041B138[0x2360] = 0;
     }
-    result = OSCreateThread((OSThread *)arg0, (OSThreadFunc)fn_800FE814, lbl_8041B138,
-             (OSThreadQueue *)((u8 *)arg0 + 0x2318), 0x2000, arg1, 0);
-    if (result != 0) OSResumeThread((OSThread *)arg0);
+    result = OSCreateThread(arg0, (OSThreadFunc)fn_800FE814, lbl_8041B138,
+             (OSThreadQueue *)(self + 0x2318), 0x2000, arg1, 0);
+    if (result) OSResumeThread(arg0);
     return result != 0;
 }
 
@@ -264,7 +267,6 @@ extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
 #pragma pop
 extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     f32 v;
-
     if (pan > lbl_805610CC) {
         v = lbl_805610CC;
     } else if (pan < lbl_805610E8) {
@@ -272,9 +274,7 @@ extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     } else {
         v = pan;
     }
-
-    return lbl_802F6124[(s32)(lbl_805610D0 +
-                              lbl_805610E4 * (v * lbl_805610D0))];
+    return lbl_802F6124[(s32)(lbl_805610D0 + lbl_805610E4 * (v * lbl_805610D0))];
 }
 
 extern "C" s32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
