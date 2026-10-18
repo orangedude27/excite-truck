@@ -1128,6 +1128,44 @@ extern "C" s32 VFiPFPATH_transformInUnicode(s16 *dst, s32 src, s32 unused) {
     return count;
 }
 
+extern "C" s32 fn_800A4D44(void *);
+extern "C" s32 fn_800A4AD0(u8 *, u8 *);
+extern "C" void fn_800A4AAC(char *, char *);
+extern "C" void fn_800A4B78(u16 *, u16 *);
+extern "C" s32 VFiPFSTR_StrCmp(void *, s32);
+extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
+extern "C" s32 fn_800B77C0(void *);
+extern "C" void fn_800B783C(void *);
+extern "C" const u8 lbl_80559224[];
+extern "C" const u8 lbl_8055922C[];
+extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
+    u16 sp8[2];
+    if (fn_800A4D44(arg2) == 1U) {
+        if (fn_800A4AD0(*(u8 **)arg2, (u8 *)lbl_8055922C) == 0) {
+            fn_800A4AAC(arg0, (char *)lbl_80559224);
+            return;
+        }
+        fn_800A4AAC(arg0, *(char **)arg2);
+        return;
+    }
+    if (VFiPFSTR_StrCmp(arg2, (s32)lbl_8055922C) == 0) {
+        sp8[0] = 0x2A;
+        sp8[1] = 0;
+        fn_800A4B78(arg1, sp8);
+    } else {
+        fn_800A4B78(arg1, *(u16 **)arg2);
+    }
+    if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
+        fn_800B77C0((u8 *)lbl_803D2140 + 0x64);
+        lbl_803D2140[0x60 / 4] = (lbl_803D2140[0x60 / 4] & ~3) | 1;
+        VFiPFPATH_transformFromUnicodeToNormal((u16 *)arg0, arg1);
+        lbl_803D2140[0x60 / 4] = (lbl_803D2140[0x60 / 4] & ~3) | 2;
+        fn_800B783C((u8 *)lbl_803D2140 + 0x64);
+        return;
+    }
+    VFiPFPATH_transformFromUnicodeToNormal((u16 *)arg0, arg1);
+}
+
 extern "C" u8 lbl_80559230;
 extern "C" u8 lbl_80559231;
 s32 fn_800B4D00(void) {
@@ -1615,7 +1653,6 @@ extern "C" s32 fn_800BA204(s32 arg0) {
 
 extern "C" s32 fn_800BA238(s32 arg0) {
     u32 flags;
-    u32 cleared;
 
     if (arg0 == 0) {
         return 1;
@@ -1625,8 +1662,7 @@ extern "C" s32 fn_800BA238(s32 arg0) {
         *(volatile s32 *)lbl_80407300 &= 0xFFFFFFFD;
     }
     flags = *(volatile u32 *)lbl_80407300;
-    cleared = flags & ~1U;
-    *(volatile s32 *)lbl_80407300 = (s32)cleared;
+    *(volatile s32 *)lbl_80407300 = (s32)(flags & ~1U);
     *(s32 *)((u8 *)lbl_80407300 + 0xC) = 0;
     *(u8 *)((u8 *)lbl_80407300 + 0x14) = 0;
     return 0;
@@ -2338,13 +2374,10 @@ extern "C" void fn_800D155C(void *arg0) {
 
 extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void *this_ptr, void *arg1) {
     if (*(s32 *)this_ptr >= 4) return -2;
-    if (fn_800D1E5C(*(s32 **)((u8 *)this_ptr + 0x24), *(s32 *)this_ptr) == 0) {
-        return -2;
-    } else if (*(u8 *)((u8 *)this_ptr + 0x1C) != 0) {
-        return -2;
-    } else {
-        return fn_800604E8(*(s32 *)this_ptr, (s32)arg1, (void *)&fn_800D1668);
-    }
+    s32 result = fn_800D1E5C(*(s32 **)((u8 *)this_ptr + 0x24), *(s32 *)this_ptr);
+    if (result == 0) return -2;
+    if (*(u8 *)((u8 *)this_ptr + 0x1C)) return -2;
+    return fn_800604E8(*(s32 *)this_ptr, (s32)arg1, (void *)&fn_800D1668);
 }
 
 extern "C" void fn_800D1668(s32 arg0, s32 arg1) {
@@ -2435,8 +2468,8 @@ extern "C" void fn_800D1AEC(void) {
 }
 
 extern "C" void fn_800D1C18(void) {
-    void* r3 = OSGetAlarmUserData(NULL);
-    fn_80060CC0(r3, 4, (u32)&fn_800D1C48);
+    void *data = ((void *(*)())OSGetAlarmUserData)();
+    fn_80060CC0(data, 4, (u32)&fn_800D1C48);
 }
 
 extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *this_ptr, s32 arg1) {
