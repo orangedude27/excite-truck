@@ -122,7 +122,8 @@ extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
 #pragma dont_inline reset
 extern "C" void *fn_8012A570(u32, void *) {
     if (lbl_8055E004 == 0) {
-        void *p = fn_801284F8(0x20, (void *)&lbl_8032A6F8);
+        void *name = lbl_8032A6F8;
+        void *p = fn_801284F8(0x20, name);
         if (p) p = fn_8012A13C(p, lbl_8032A6F8, 0x20, 0x18);
         lbl_8055E008 = (void **)p;
     }
@@ -169,6 +170,9 @@ extern "C" void fn_8012A7FC(void) {
 }
 
 extern "C" s32 fn_8012A388(void *);
+extern "C" s32 fn_802E7544(s32);
+extern "C" void fn_802E7548(s32);
+extern "C" const char lbl_8032AC68[];
 extern "C" s32 fn_8012A470(void *, s32, void *, void *);
 extern "C" s32 fn_80132E7C(void *, s32);
 extern "C" const char lbl_8032A7E8[];
@@ -341,7 +345,7 @@ extern "C" void fn_8012BF24(void *arg0) {
 extern "C" s32 fn_8012B534(s32 *, s32);
 extern "C" s32 fn_8012C33C(void) {
     s32 sp8;
-    return fn_8012B534(&sp8, 0) != 0;
+    return ((s32 (*)(s32, s32 *, s32))fn_8012B534)(0, &sp8, 0) != 0;
 }
 
 #pragma use_lmw_stmw off
@@ -667,18 +671,21 @@ extern "C" s32 fn_8012EE78(void *arg0) {
 }
 
 extern "C" s32 fn_8012EFB0(void *arg0, void *arg1, s32 arg2) {
- s32 pos=*(s32 *)((u8 *)arg0+0x28), i; u8 *p;
- if(pos+arg2>=*(s32 *)((u8 *)arg0+0x24)) return 0;
- for(i=0,p=(u8 *)arg0;i<2;i++,p+=0x10) {
-  s32 start;
-  if(*(s32 *)(p+0xC)!=2) continue;
-  start=*(s32 *)(p+8);
-  if(pos>=start && pos<start+*(s32 *)arg0) {
-   memcpy(arg1,(u8 *)*(void **)p+(pos-start),arg2);
-   *(s32 *)((u8 *)arg0+0x28)+=arg2; return 1;
-  }
- }
- return 0;
+    s32 pos = *(s32 *)((u8 *)arg0 + 0x28);
+    s32 i;
+    if (pos + arg2 >= *(s32 *)((u8 *)arg0 + 0x24)) return 0;
+    for (i = 0; i < 2; i++) {
+        u8 *p = (u8 *)arg0 + 4 + i * 0x10;
+        s32 start;
+        if (*(s32 *)(p + 0xC) != 2) continue;
+        start = *(s32 *)(p + 8);
+        if (pos >= start && pos < start + *(s32 *)arg0) {
+            memcpy(arg1, (u8 *)*(void **)p + (pos - start), arg2);
+            *(s32 *)((u8 *)arg0 + 0x28) += arg2;
+            return 1;
+        }
+    }
+    return 0;
 }
 
 extern "C" s32 fn_8012D838(s32);
