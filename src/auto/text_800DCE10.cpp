@@ -93,7 +93,7 @@ void SetVtxColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32
 
 void SetTextColor__Q36nw4hbm3lyt7TextBoxFUlQ36nw4hbm2ut5Color(void *this_ptr, u32 index, const void *color) {
     if (index >= 2) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320BC8, 0x60, lbl_80320B98);
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(lbl_80320BC8, 0x60, lbl_80320B98);
     }
     const u8 *c = (const u8 *)color;
     u8 *base = (u8 *)this_ptr + (index * 4);
