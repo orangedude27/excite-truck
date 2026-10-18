@@ -85,22 +85,24 @@ void fn_801E02AC(void) {
 }
 
 void fn_801E02B0(void* arg0) {
-    float a = lbl_80562C40;
-    float b = lbl_80562C1C;
-    char* entry = (char*)arg0 + 4;
-    int i = 0;
-    goto body;
-body:
-    *(char*)(entry + 8) = 0;
-    i++;
-    *(float*)(entry + 4) = a;
-    *(float*)(entry + 0xC) = b;
-    *(float*)(entry + 0x10) = b;
-    *(char*)(entry + 0x14) = 0;
-    *(int*)(entry + 0x18) = -1;
-    *(float*)entry = b;
-    entry += 0x1C;
-    if (i < lbl_8055E4D0)
-        goto body;
+    float b;
+    float a;
+    char* entry;
+    int i;
+    a = lbl_80562C40;
+    b = lbl_80562C1C;
+    entry = (char*)arg0 + 4;
+    i = 0;
+    while (i < lbl_8055E4D0) {
+        *(char*)(entry + 8) = 0;
+        i++;
+        *(float*)(entry + 4) = a;
+        *(float*)(entry + 0xC) = b;
+        *(float*)(entry + 0x10) = b;
+        *(char*)(entry + 0x14) = 0;
+        *(int*)(entry + 0x18) = -1;
+        *(float*)entry = b;
+        entry += 0x1C;
+    }
 }
 
