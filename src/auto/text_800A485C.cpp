@@ -1061,11 +1061,11 @@ void fn_800B78EC(void) {
 extern "C" void fn_800B78F4(void *arg0, void *arg1) {
     OSCalendarTime time;
     OSTicksToCalendarTime(OSGetTime(), &time);
-    ((s32 *)arg0)[0] = time.mday;
+    ((s32 *)arg0)[0] = time.year;
     ((s32 *)arg0)[1] = time.month + 1;
-    ((s32 *)arg0)[2] = time.min;
+    ((s32 *)arg0)[2] = time.mday;
     ((s32 *)arg1)[0] = time.hour;
-    ((s32 *)arg1)[1] = time.sec;
+    ((s32 *)arg1)[1] = time.min;
     ((s32 *)arg1)[2] = time.sec;
 }
 
@@ -2504,6 +2504,49 @@ s32 homebutton::HomeButton::getPaneNo(const char *name) {
 
 extern "C" s32 fn_800CEDE0(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x2C);
+}
+
+extern "C" void PSMTXIdentity(void*);
+extern "C" void GXLoadPosMtxImm(const f32*, u32);
+extern "C" void GXSetCurrentMtx(u32);
+extern "C" void GXClearVtxDesc(void);
+extern "C" void GXSetVtxDesc(u32, u32);
+extern "C" void GXSetVtxAttrFmt(u32, u32, u32, u32, u32);
+extern "C" void GXSetNumChans(u32);
+extern "C" void GXSetChanCtrl(u32, u32, u32, u32, u32, u32, u32);
+extern "C" void GXSetNumTexGens(u32);
+extern "C" void GXSetNumTevStages(u32);
+extern "C" void GXSetTevOrder(u32, u32, u32, u32);
+extern "C" void GXSetTevColorIn(u32, u32, u32, u32, u32);
+extern "C" void GXSetTevColorOp(u32, u32, u32, u32, u32, u32);
+extern "C" void GXSetTevAlphaIn(u32, u32, u32, u32, u32);
+extern "C" void GXSetTevAlphaOp(u32, u32, u32, u32, u32, u32);
+extern "C" void GXSetAlphaCompare(u32, u32, u32, u32, u32);
+extern "C" void GXSetBlendMode(u32, u32, u32, u32);
+extern "C" void GXSetAlphaUpdate(u32);
+extern "C" void GXSetZMode(u32, u32, u32);
+void fn_800CEDE8(void) {
+    f32 mtx[3][4];
+    PSMTXIdentity(mtx);
+    GXLoadPosMtxImm((const f32*)mtx, 0);
+    GXSetCurrentMtx(0);
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxAttrFmt(0, 9, 0, 4, 0);
+    GXSetNumChans(1);
+    GXSetChanCtrl(4, 0, 0, 0, 0, 0, 2);
+    GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
+    GXSetNumTexGens(0);
+    GXSetNumTevStages(1);
+    GXSetTevOrder(0, 0xFF, 0xFF, 0xFF);
+    GXSetTevColorIn(0, 0xF, 0xF, 0xF, 2);
+    GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+    GXSetTevAlphaIn(0, 7, 7, 7, 1);
+    GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+    GXSetAlphaCompare(7, 0, 1, 7, 0);
+    GXSetBlendMode(1, 4, 5, 5);
+    GXSetAlphaUpdate(0);
+    GXSetZMode(0, 7, 0);
 }
 
 extern "C" s32 fn_800A4A8C(s32);
