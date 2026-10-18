@@ -122,6 +122,7 @@ extern s32 lbl_80559054;
 extern s32 lbl_8055DC78;
 extern s32 lbl_8055DC7C;
 extern void fn_80070854(void);
+extern void fn_8008251C(void);
 extern void OSCancelAlarm(OSAlarm *alarm);
 
 void DBPrintf_80068D68(const char *fmt, ...) {
