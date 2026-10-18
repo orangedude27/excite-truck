@@ -54,15 +54,14 @@ void fn_8023D70C(void) {
     } while (i < 5);
 }
 
-void fn_8023DA2C(long arg2, long arg3) {
+void fn_8023DA2C(long arg0, void *arg1, char arg2, long arg3) {
     char sp8;
-
     sp8 = arg2;
     if (arg3 != 0) {
         fn_80133460();
         return;
     }
-    fn_801333E8(0, 0, &sp8);
+    fn_801333E8(arg0, arg1, &sp8);
 }
 
 void fn_8023DB68(void) {
