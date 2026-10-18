@@ -178,6 +178,15 @@ void *fn_801AC26C(void) {
     return obj;
 }
 
+void *fn_801AC2C8(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        lbl_8055E5E4 = 0;
+        if (arg0 != 0 && arg0 != 0) fn_80179EE8(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void *fn_801AC330(void *arg0) {
     fn_801A9700(arg0);
     *(void **)arg0 = &lbl_80335808;
