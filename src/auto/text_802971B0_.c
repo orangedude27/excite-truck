@@ -11,6 +11,10 @@ extern float lbl_80564578;
 
 extern void *fn_801284F8(s32, const char *);
 extern s32 fn_80296B10(s32, s32);
+typedef struct { void *pad[5]; s32 (*method)(void *, char *); } Vtbl14;
+typedef struct { void *pad[23]; s32 (*method)(void *, char *); } Vtbl5C;
+typedef struct { void *pad[3]; s32 (*method)(void *); } VtblC;
+typedef struct { void *pad[2]; void (*method)(void *, s32); } Vtbl8;
 extern char lbl_80349368[];
 extern char lbl_80349378[];
 __declspec(section ".sdata") extern char lbl_8055CA30[];
@@ -75,6 +79,22 @@ float fn_8029748C(void *arg0) {
     return max;
 }
 
+void *fn_80297654(void *arg0, s32 arg1) {
+    void *object;
+    if (arg0 != 0) {
+        object = *(void **)((char *)arg0 + 0x10);
+        if (object != 0) {
+            if (*(void **)((char *)arg0 + 0x10) != 0) {
+                ((void (**)(void *, s32))(*(void ***)object))[2](object, 1);
+            }
+            *(void **)((char *)arg0 + 0x10) = 0;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_802976D0(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x10) = 0;
 }
@@ -84,19 +104,15 @@ void fn_802976DC(s32 *arg0) {
     fn_80128668(arg0);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
-    s32 i;
-    s32 offset;
+    register s32 offset = 0;
+    register s32 i = 0;
     u8 *entry;
     float result[3];
-    float x;
-    float y;
-    float z;
+    float x, y, z;
     void *object;
-    void (**vtable)(void *, float *, float);
-
-    offset = 0;
-    i = 0;
     while (i < *(s32 *)((u8 *)arg0 + 4)) {
         entry = *(u8 **)arg0 + offset;
         if (arg2 >= *(float *)entry && arg2 <= *(float *)(entry + 0x14)) {
@@ -107,15 +123,14 @@ s32 fn_8029771C(void *arg0, void *arg1, float arg2) {
             result[1] = y + *(float *)(entry + 8);
             result[2] = z + *(float *)(entry + 0xc);
             object = *(void **)(entry + 0x10);
-            vtable = *(void (***)(void *, float *, float))object;
-            vtable[5](object, result, arg2 - *(float *)entry);
+            ((void (*)(void *, float *, float))(*(void (***)(void))object)[5])(object, result, arg2 - *(float *)entry);
         }
         offset += 0x18;
         i++;
     }
     return arg2 < *(float *)((u8 *)arg0 + 8);
 }
-
+#pragma pop
 void *fn_80297814(void *arg0, s32 arg1) {
     s32 value;
     if (arg0 != 0) {
