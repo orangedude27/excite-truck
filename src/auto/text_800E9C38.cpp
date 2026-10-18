@@ -4,23 +4,23 @@
 typedef signed char s8;
 typedef signed int s32;
 typedef float f32;
-extern int SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(int);
+extern int SetPriority__Q46nw4hbm3snd6detail7AxVoiceFi(void *, int);
 extern int fn_800EC8B4(void *);
 extern int fn_800EB41C(void *);
 extern int Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *, const void *);
 extern int fn_800E519C(void *);
 extern void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, int);
 extern void *fn_80128668(void *);
-void *__dt__Q46nw4hbm3snd6detail14ChannelManagerFv(void *arg0, int arg1) {
+int __dt__Q46nw4hbm3snd6detail14ChannelManagerFv(int arg0, int arg1) {
     if (arg0 != 0) {
-        if ((char *)arg0 + 0xC != 0) {
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((char *)arg0 + 0xC, 0);
+        if (arg0 + 0xC != 0) {
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)(arg0 + 0xC), 0);
         }
         if (arg0 != 0) {
-            __dt__Q46nw4hbm2ut6detail12LinkListImplFv(arg0, 0);
+            __dt__Q46nw4hbm2ut6detail12LinkListImplFv((void *)arg0, 0);
         }
         if (arg1 > 0) {
-            fn_80128668(arg0);
+            fn_80128668((void *)arg0);
         }
     }
     return arg0;
@@ -31,5 +31,13 @@ void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *
 void fn_800EA880(void *arg0, int arg1) { int a=*(int *)((char *)arg0+0xAC)+arg1; int b=*(int *)((char *)arg0+0xB0); *(int *)((char *)arg0+0xAC)=a; if(a>b) *(int *)((char *)arg0+0xAC)=b; }
 
 void fn_800EA8A0(void *arg0, int arg1, signed char arg2, float farg0) { *(float *)((char *)arg0 + 0xA8)=farg0; *(int *)((char *)arg0 + 0xB0)=arg1; *(signed char *)((char *)arg0 + 0x3C)=arg2; *(int *)((char *)arg0 + 0xAC)=0; }
+
+void fn_800EAD00(void *arg0) {
+    if (arg0 != 0) {
+        *(int *)((char *)arg0 + 0xD8) = 0;
+        *(int *)((char *)arg0 + 0xDC) = 0;
+    }
+}
+
 extern void *__dt__Q46nw4hbm2ut6detail12LinkListImplFv(void *, int);
 extern void *fn_80128668(void *);
