@@ -4,6 +4,10 @@
 typedef signed int s32;
 typedef unsigned char u8;
 typedef float f32;
+typedef int M2C_UNK;
+#define M2C_FIELD(p,T,o) (*(T*)((u8*)(p)+(o)))
+#define M2C_STRUCT_COPY(d,s,n) memcpy((d),(s),(n))
+extern void *memcpy(void *, const void *, unsigned int);
 static inline void CleanupEntries(void *table) {
     extern s32 fn_802CAC54(s32);
     extern s32 fn_80128670(s32);
@@ -70,11 +74,32 @@ void fn_8024EBAC(void *arg0, s32 arg1, s32 arg2) {
 }
 
 s32 fn_8024EBE4(s32 arg0) {
-    fn_8001668C(arg0 + 0x60, 0);
+    s32 value = fn_8001668C(arg0 + 0x60, 0);
     if (lbl_80498C48[4] != 0) {
-        return *fn_80016BC8(0);
+        return ((s32 *(*)(s32, s32))fn_80016BC8)(value, 0)[0];
     }
-    return *(s32 *)((char *)fn_80016BC8(0) + 4);
+    return ((s32 *(*)(s32, s32))fn_80016BC8)(value, 0)[1];
+}
+
+s32 fn_8024EC3C(void) {
+    extern unsigned int lbl_8055F2EC;
+    extern s32 fn_80129800(s32);
+    extern void fn_802E4A10(void);
+    extern void fn_80216D28(void);
+    extern s32 fn_80214D50(s32);
+    s32 enabled = 0;
+    fn_802E4A10();
+    if (fn_80129800(5) != 0 && fn_80129800(6) != 0) enabled = 1;
+    if (enabled != 0) return 1;
+    {
+        u8 *base = (u8 *)lbl_8055F2EC;
+        void *obj = *(void **)(base + 0xD0);
+        s32 arg = *(s32 *)(base + 0x2C);
+        if (((s32 (*)(void *, s32))(*(void ***)obj)[7])(obj, arg) != 0) return 1;
+    }
+    fn_80216D28();
+    fn_80214D50(1);
+    return 0;
 }
 
 extern void fn_8024739C(void);
@@ -103,14 +128,47 @@ void *fn_8024FB64(void *arg0, s32 arg1) {
 void *fn_8024FFF8(void *arg0, s32 arg1) {
     extern char lbl_803443B0[];
     if (arg0) {
-        void *child = *(void **)((char *)arg0 + 0x188);
+        register void *child = *(void **)((char *)arg0 + 0x188);
         *(void **)arg0 = lbl_803443B0;
         if (child) {
-            if (child) ((void (*)(void *, s32))(*(void ***)child)[1])(child, 1);
+            ((void (*)(void *, s32))(*(void ***)child)[2])(child, 1);
         }
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+void fn_80250108(void *arg0) {
+    extern f32 fn_80214D48(void);
+    extern f32 lbl_80563960;
+    extern const f32 lbl_80563964, lbl_80563968, lbl_8056396C, lbl_80563970;
+    f32 limit, speed, subtract, threshold;
+    f32 dt = fn_80214D48();
+    s32 offset;
+    s32 i;
+    f32 current;
+    i = 0;
+    offset = 0;
+    limit = lbl_80563960;
+    current = *(f32 *)((u8 *)arg0 + 0x28);
+    *(f32 *)((u8 *)arg0 + 0x28) = current + lbl_80563968 * ((f32)*(s32 *)((u8 *)arg0 + 0x2C) - current);
+    speed = lbl_8056396C;
+    subtract = lbl_80563970;
+    threshold = lbl_80563964;
+    for (; i < *(s32 *)((u8 *)arg0 + 0x1C); offset += 12, i++) {
+        u8 *entry = *(u8 **)((u8 *)arg0 + 0x18) + offset;
+        if (*(s32 *)(entry + 4) != *(s32 *)entry) {
+            *(f32 *)(entry + 8) += speed * dt;
+            if (*(f32 *)(entry + 8) >= threshold) {
+                *(s32 *)entry = *(s32 *)(entry + 4);
+                *(f32 *)(entry + 8) -= subtract;
+            }
+        } else {
+            f32 value = *(f32 *)(entry + 8) + speed * dt;
+            if (limit < value) value = limit;
+            *(f32 *)(entry + 8) = value;
+        }
+    }
 }
 
 extern f32 lbl_80563960;
