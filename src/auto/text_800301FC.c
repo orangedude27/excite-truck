@@ -2,7 +2,7 @@
 extern u32 lbl_8055D6E8;
 extern s32 lbl_8055D6AC;
 extern s32 lbl_8055D6DC;
-extern void *lbl_8055D6E0;
+extern void (*lbl_8055D6E0)(void);
 extern void TRKInitializeEventQueue(void);
 extern u32 lbl_80558DD8;
 extern u32 lbl_8035BF20[];
@@ -64,21 +64,22 @@ void TRKConstructEvent(void) {
     lbl_8055D6A8 = 0;
 }
 
-void TRKGetNextEvent(void *arg0) {
-    u8 context[0x2D8];
+void TRKGetNextEvent(void *arg0, void *restoreContext) {
+    u8 context[0x2D0];
     s32 value;
+    void (*callback)(void) = (void (*)(void))lbl_8055D6E0;
     *(volatile u16 *)0xCC00500A = (*(volatile u16 *)0xCC00500A & ~0xA0) | 8;
     OSClearContext(context);
     OSSetCurrentContext(context);
-    if (lbl_8055D6E0 != 0 && lbl_8055D6AC == 0) {
+    if (callback != 0 && lbl_8055D6AC == 0) {
         value = lbl_8055D6DC;
         lbl_8055D6AC = 1;
         if (value != 0) TRKInitializeEventQueue();
-        else ((void (*)(void))lbl_8055D6E0)();
+        else callback();
         lbl_8055D6AC = 0;
     }
     OSClearContext(context);
-    OSSetCurrentContext(arg0);
+    OSSetCurrentContext(restoreContext);
 }
 
 void TRKInitializeEventQueue(void) { }
@@ -188,6 +189,8 @@ void TRKReleaseBuffer(void *arg0) {
 }
 
 extern void fn_80033148(void *);
+#pragma push
+#pragma scheduling off
 void TRKGetFreeBuffer(void *arg0) {
     s32 level = OSDisableInterrupts();
     TRKReleaseBuffer(arg0);
@@ -203,7 +206,7 @@ void TRKGetFreeBuffer(void *arg0) {
     }
     OSRestoreInterrupts(level);
 }
-
+#pragma pop
 void TRKProcessInput(void *arg0, s32 arg1) {
     s32 irq;
     s32 index;
@@ -486,21 +489,22 @@ void fn_80032004(void) {
         void (*unk30)(void);
         void (*unk34)(void);
     } *task = (void *)lbl_8035FB80;
-    task->unk4 = 0;
-    lbl_8055D770 = 0;
+    u32 zero = 0;
+    task->unk4 = zero;
+    lbl_8055D770 = zero;
     task->unkC = lbl_802FFD60;
     task->unk10 = lbl_80558DE4;
-    task->unk14 = 0;
+    task->unk14 = zero;
     task->unk18 = lbl_8035FBD0;
     task->unk1C = 0x2000;
-    task->unk20 = 0;
+    task->unk20 = zero;
     task->unk24 = lbl_80558DE0;
     task->unk26 = lbl_80558DE2;
     task->unk28 = __AXDSPInitCallback_80031F90;
     task->unk2C = fn_80031F9C;
     task->unk30 = __AXDSPDoneCallback;
     task->unk34 = fn_80032000;
-    lbl_8055D76C = 0;
+    lbl_8055D76C = zero;
     OSInitThreadQueue(&lbl_8055D760);
     if (DSPReset() == 0) DSPInit();
     DSPAssertInt(lbl_8035FB80);
