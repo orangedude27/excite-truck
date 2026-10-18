@@ -37,8 +37,9 @@ void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
 
 void fn_80292B48(void *arg0) {
     if (fn_80292FB4(lbl_804B4168, arg0) != 0 && arg0 != 0) {
-        void **vtable = *(void ***)arg0;
-        ((void (*)(void *, int))vtable[2])(arg0, 1);
+        void *vtable = *(void **)arg0;
+        void (*method)(void *, int) = *(void (**)(void *, int))((char *)vtable + 8);
+        method(arg0, 1);
     }
 }
 
@@ -198,6 +199,17 @@ void fn_80293CD0(void *arg0, int arg1, int arg2, int arg3) {
     for (; i < 8; i++) *(s32 *)((u8 *)arg0 + i * 4 + 8) = -1;
 }
 
+extern unsigned char lbl_8034925C[];
+extern void fn_80294710(void *);
+void *__dt__Q34nw4r2ef6EffectFv_802942DC(void *arg0, int arg1) {
+    if (arg0) {
+        *(void **)arg0 = lbl_8034925C;
+        fn_80294710(arg0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_8029433C(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x222C) = 0;
 }
@@ -209,6 +221,7 @@ void fn_80294348(void* arg0) {
     if (!(abs <= lbl_80558DC4)) fn_80294780(arg0);
 }
 
+#pragma scheduling off
 void fn_80294398(void *arg0) {
     u8 *record = (u8 *)arg0 + 0x2C;
     s32 i = 0;
@@ -220,4 +233,4 @@ body:
 check:
     if (i < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
 }
-
+#pragma scheduling on
