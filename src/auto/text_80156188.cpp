@@ -353,8 +353,7 @@ extern "C" void* fn_801570D0(void* arg0, s32 arg1) {
 }
 
 extern "C" void fn_80157170(void* arg0) {
-    void** vtable = *(void***)(((ebi::title::TBlackPlane*)arg0)->m_b);
-    ((void (*)(void*))vtable[3])(((ebi::title::TBlackPlane*)arg0)->m_b);
+    ((ebi::title::TPlaneSubShort*)((ebi::title::TBlackPlane*)arg0)->m_b)->v1();
 }
 
 extern "C" void fn_80157184(void* arg0) {
