@@ -577,6 +577,15 @@ extern "C" s32 fn_801F9CF8(void *arg0) {
 }
 
 extern "C" void fn_802C6CF8(s32);
+void fn_801EF024(void *);
+void fn_80204020(void);
+void fn_80128668(void);
+void fn_80128670(void);
+void fn_801FA010(void **);
+void fn_801F9A24(void *);
+void fn_801FA0B0(void **);
+void fn_801FA138(void *);
+extern "C" void clear__Q211J2DBloSaver19CTextureNameConnectFv(void **);
 void fn_80128668(void);
 void fn_801E6CD0(void *, s32, f32);
 void fn_801E6CC4(void *);
@@ -614,13 +623,18 @@ extern "C" void fn_801FA010(void **arg0) {
 
 extern "C" void fn_801FA0B0(void **arg0) {
     void *node = *arg0;
-    while (node != 0) {
+    goto check;
+loop:
+    {
         void *next = *(void **)((char *)node + 4);
-        if (*(void **)node != 0) fn_80131818(node);
+        void *value = *(void **)node;
+        if (value != 0) fn_80131818(value);
         *(s32 *)node = 0;
         ((void (*)(void *))fn_80128668)(node);
         node = next;
     }
+check:
+    if (node != 0) goto loop;
     *arg0 = 0;
 }
 
@@ -1127,6 +1141,7 @@ void fn_80128668(void *);
 extern "C" void *fn_801FC674(void *arg0, s32 arg1) {
     void **link;
     void *next;
+    volatile u8 *field;
     if (arg0 != 0) {
         *(void **)arg0 = (void *)((u8 *)&lbl_8033B588)[0];
         link = (void **)&lbl_8055EC48;
@@ -1134,7 +1149,8 @@ extern "C" void *fn_801FC674(void *arg0, s32 arg1) {
             if (next == arg0) { *link = *(void **)((u8 *)arg0 + 0x54); break; }
             link = (void **)((u8 *)next + 0x54);
         }
-        if ((u8 *)arg0 + 0x44 != 0 && *(s32 *)((u8 *)arg0 + 0x44) != -1) fn_802C6CF8();
+        field = (volatile u8 *)arg0 + 0x44;
+        if (field != 0 && *(s32 *)field != -1) fn_802C6CF8(*(s32 *)field);
         __dt__Q28PSSystem7SeqHeapFv_801EACF8(arg0, 0);
         if (arg1 > 0) fn_80128668(arg0);
     }
