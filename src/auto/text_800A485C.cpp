@@ -806,7 +806,7 @@ extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
 }
 
 extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
-    fn_800B3BEC(&p_ent[0x20E], p_buf[0xB]);
+    ((void (*)(u8 *, u8 *, u8))fn_800B3BEC)(&p_ent[0x20E], p_buf, p_buf[0xB]);
     if ((s8)p_ent[0x20E] == 5) {
         ((s8 *)p_ent)[0x20E] = -0x1B;
     }
@@ -1445,16 +1445,14 @@ extern "C" s32 fn_800B76E8(s8 arg0) {
 }
 
 extern "C" void fn_800B7710(void *arg0) {
-    extern s32 fn_800B7F28(s32 *);
-    s32 sp8;
-    s32 spC;
-    void *sp10;
+    extern s32 fn_800B7F28(void *);
+    struct Args { s32 a; s32 b; void *c; } args;
 
     if (*(s32 *)arg0 == 0) {
-        sp8 = 1;
-        spC = 1;
-        sp10 = (u8 *)arg0 + 0x10;
-        *(s32 *)((u8 *)arg0 + 8) = fn_800B7F28(&sp8);
+        args.a = 1;
+        args.b = 1;
+        args.c = (u8 *)arg0 + 0x10;
+        *(s32 *)((u8 *)arg0 + 8) = fn_800B7F28(&args);
         *(s32 *)((u8 *)arg0 + 4) = 0;
         *(s32 *)((u8 *)arg0 + 0xC) = 0;
         *(s32 *)arg0 = 1;
@@ -1590,7 +1588,7 @@ extern "C" void fn_800B7E18(u32 arg0) {
 
 extern "C" void fn_800B7E38(u8 arg0) {
     if (lbl_80405D00[1] != 0)
-        lbl_80405D00[1](arg0);
+        ((void (*)(u32))lbl_80405D00[1])((u32)arg0);
 }
 
 extern "C" s32 fn_800B7E5C(s8 arg0) {
