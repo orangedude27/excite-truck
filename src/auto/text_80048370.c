@@ -120,27 +120,24 @@ MEMiHeapHead* MEMCreateExpHeapEx(void *start, u32 size, u16 opt) {
     u32 diff;
     u32 block;
     u32 blockEnd;
-    if (base <= end) {
-        diff = end - base;
-        if (diff >= 0x64U) {
-            MEMiInitHeapHead((MEMiHeapHead *)base, 0x45585048, (void *)(base + 0x50), (void *)end, opt);
-            *(u16 *)(base + 0x4C) = 0;
-            *(u16 *)(base + 0x4E) = 0;
-            block = *(u32 *)(base + 0x18);
-            blockEnd = *(u32 *)(base + 0x1C);
-            *(u16 *)(block + 2) = 0;
-            *(u16 *)block = 0x4652;
-            *(u32 *)(block + 4) = blockEnd - (block + 0x10);
-            *(u32 *)(block + 8) = 0;
-            *(u32 *)(block + 0xC) = 0;
-            *(u32 *)(base + 0x3C) = block;
-            *(u32 *)(base + 0x40) = block;
-            *(u32 *)(base + 0x44) = 0;
-            *(u32 *)(base + 0x48) = 0;
-            return (MEMiHeapHead *)base;
-        }
-    }
-    return 0;
+    if (base > end || end - base < 0x64U)
+        return 0;
+    diff = end - base;
+    MEMiInitHeapHead((MEMiHeapHead *)base, 0x45585048, (void *)(base + 0x50), (void *)end, opt);
+    *(u16 *)(base + 0x4C) = 0;
+    *(u16 *)(base + 0x4E) = 0;
+    block = *(u32 *)(base + 0x18);
+    blockEnd = *(u32 *)(base + 0x1C);
+    *(u16 *)block = 0x4652;
+    *(u16 *)(block + 2) = 0;
+    *(u32 *)(block + 4) = blockEnd - (block + 0x10);
+    *(u32 *)(block + 8) = 0;
+    *(u32 *)(block + 0xC) = 0;
+    *(u32 *)(base + 0x3C) = block;
+    *(u32 *)(base + 0x40) = block;
+    *(u32 *)(base + 0x44) = 0;
+    *(u32 *)(base + 0x48) = 0;
+    return (MEMiHeapHead *)base;
 }
 
 MEMiHeapHead* MEMDestroyExpHeap(MEMiHeapHead* heap) {
