@@ -14,27 +14,18 @@ f32 fn_8026B844(f32 f) {
     f32 c = lbl_80563D78;
     if (f > c) {
         f32 t = (f - lbl_80563D7C) / lbl_80563D80;
-        if (c > t) {
-            c = t;
-        }
+        if (c > t) c = t;
         return c;
     }
     {
         f32 t = (lbl_80563D7C + f) / lbl_80563D84;
-        if (t > c) {
-            c = t;
-        }
+        if (c < t) c = t;
     }
     return c;
 }
 
 BOOL fn_8026BFF0(s32 x) {
-    if (x < 5) {
-        if (x >= 3) {
-            return TRUE;
-        }
-    }
-    return FALSE;
+    switch (x) { case 3: case 4: return TRUE; default: return FALSE; }
 }
 
 void* fn_8026DDD0(void) {
