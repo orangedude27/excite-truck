@@ -468,45 +468,31 @@ extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma scheduling off
 extern "C" void fn_80158558(s32 arg0) {
     s32* state = lbl_8042FD34;
+    s32 count = state[1];
     s32* items = (s32*)state[0];
-    s32* slot = items + state[1];
-    state[1] += 1;
-    *slot = arg0;
+    state[1] = count + 1;
+    *(s32*)((char*)items + (count << 2)) = arg0;
 }
 #pragma scheduling on
 extern "C" void fn_8015857C(u32 arg0) {
-    s32 *items;
-    s32 count;
+    UnkFD34* list = (UnkFD34*)lbl_8042FD34;
     s32 index;
-    items = (s32 *)lbl_8042FD34[0];
-    count = lbl_8042FD34[1];
-    index = 0;
-    if (count <= 0)
-        goto not_found;
-search:
-    if ((u32)*items != arg0) {
-        items++;
-        index++;
-        count--;
-        if (count != 0)
-            goto search;
-not_found:
-        index = -1;
-    } else {
-        goto found;
+    s32* items = list->items;
+    for (index = 0; index < list->count; index++) {
+        if ((u32)items[index] == arg0)
+            break;
     }
-found:
+    if (index == list->count)
+        index = -1;
     if (index == -1)
         return;
-    count = lbl_8042FD34[1];
-    if (index < 0 || index >= count)
+    if (index < 0 || index >= ((UnkFD34*)lbl_8042FD34)->count)
         return;
-    count--;
-    if (index != count) {
-        items = (s32 *)lbl_8042FD34[0];
-        items[index] = items[count];
+    if (index != ((UnkFD34*)lbl_8042FD34)->count - 1) {
+        items = ((UnkFD34*)lbl_8042FD34)->items;
+        items[index] = items[((UnkFD34*)lbl_8042FD34)->count - 1];
     }
-    lbl_8042FD34[1] = count;
+    ((UnkFD34*)lbl_8042FD34)->count = ((UnkFD34*)lbl_8042FD34)->count - 1;
 }
 
 extern "C" s32 fn_80158618(const char* arg0) {
@@ -1215,14 +1201,9 @@ extern "C" f32 fn_8015D4A0(Unk801577F0* arg0, s32 arg1) {
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
-        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
-        virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
-        virtual void v32(); virtual void v33(f32*); virtual void v34();
-        virtual void v35(f32*); virtual s32 v36();
+        virtual void v16(); virtual s32 v17();
     };
-    if (arg1 >= ((LocalVtable*)arg0)->v36()) {
+    if (arg1 >= ((LocalVtable*)arg0)->v17()) {
         return *(f32*)((u8*)arg0->mData + arg1 * 0x38 + 0x10);
     }
     return lbl_80561754;
@@ -1426,21 +1407,30 @@ extern "C" s32 fn_80159338(void) {
 }
 
 extern "C" void* fn_80159340(void* arg0, s32 arg1) {
-    void* r0;
-    if (arg0 == 0) return arg0;
-    r0 = *(void**)((char*)arg0 + 0x278);
-    *(void**)arg0 = &lbl_8032F0E8;
-    if (r0 != 0) {
-        void* vt = *(void**)r0;
-        void (*method)(void*, s32) = *(void (**)(void*, s32))((u8**)vt + 2);
-        method(r0, 1);
+    void* child;
+    if (arg0) {
+        child = *(void**)((char*)arg0 + 0x278);
+        *(void**)arg0 = lbl_8032F0E8;
+        if (child) {
+            if (child) {
+                ((Unk8015A368C*)child)->v1();
+            }
+        }
+        if (arg0) {
+            if (arg0) {
+                if ((u32)arg0 + 8) {
+                    if (arg0) {
+                        if (arg0) {
+                            *(u32*)((char*)arg0 + 8) = 0;
+                            *(u32*)((char*)arg0 + 0xC) = 0;
+                            *(u32*)((char*)arg0 + 0x10) = 0;
+                        }
+                    }
+                }
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
     }
-    if (arg0 != 0) {
-        *(u32*)((char*)arg0 + 8) = 0;
-        *(u32*)((char*)arg0 + 0xC) = 0;
-        *(u32*)((char*)arg0 + 0x10) = 0;
-    }
-    if (arg1 > 0) fn_80128668(arg0);
     return arg0;
 }
 
