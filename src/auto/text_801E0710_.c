@@ -4,7 +4,7 @@
 
 extern f64 fn_8002F234(f32);
 extern void *fn_801284E8(void *, s32);
-extern unsigned int lbl_8032C108[];
+extern unsigned int lbl_8032C108;
 extern f32 lbl_80562C78;
 extern f32 lbl_80562C7C;
 
@@ -93,10 +93,9 @@ float fn_801E0EE4(void *arg0, void *arg1) {
 #pragma scheduling on
 void fn_801E0F34(int arg0) {
     void *ptr;
-    int value;
-    value = arg0;
-    arg0 = (arg0 << 3) + 8;
-    ptr = fn_801284E8((void *)&lbl_8032C108, arg0);
+    int value = arg0;
+    int size = (arg0 << 3) + 8;
+    ptr = fn_801284E8((void *)lbl_8032C108, size);
     *(int *)((char *)ptr + 4) = value;
     *(int *)ptr = value;
 }
