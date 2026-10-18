@@ -140,18 +140,21 @@ extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
 extern "C" f32 fn_8010D9E4(s32 arg0) {
  extern const char lbl_80329560[]; extern const char lbl_80329578[];
  extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
- struct V { virtual u32 a0()=0; virtual u32 a1()=0; virtual u32 a2()=0; virtual u32 a3()=0; virtual u32 a4()=0; virtual u32 a5()=0; virtual u32 a6()=0; virtual u32 a7()=0; virtual u32 a8()=0; virtual u32 a9()=0; virtual u32 a10()=0; virtual u32 a11()=0; virtual u32 a12()=0; virtual u32 a13()=0; virtual u32 a14()=0; virtual u32 a15()=0; virtual u32 a16()=0; virtual u32 a17()=0; virtual u32 f()=0; };
- s32 temp_r11, var_r10, var_r5, var_r6, var_r7, var_r8, var_r9, var_r30;
- temp_r11=arg0&0xFF000000; var_r5=var_r6=var_r7=var_r8=var_r9=var_r10=1;
- if (((u32)(temp_r11+0x80000000)<1U)&&((u32)((arg0&0xFF800000)+0x7F000000)<1U)) var_r10=0;
- if ((var_r10==0)&&((u32)((arg0&0xF8000000)+0x70000000)<1U)) var_r9=0;
- if ((var_r9==0)&&((u32)(temp_r11+0x40000000)<1U)) var_r8=0;
- if ((var_r8==0)&&((u32)((arg0&0xFF800000)+0x3F000000)<1U)) var_r7=0;
- if ((var_r7==0)&&((u32)((arg0&0xF8000000)+0x30000000)<1U)) var_r6=0;
- if ((var_r6==0)&&((u32)((arg0&0xFFFFC000)+0x20000000)<1U)) var_r5=0;
- if(var_r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0xF1,lbl_80329578,arg0);
- V *p=(V*)arg0; var_r30=p?p->f():0;
+ extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
  extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32);
+ struct V { virtual u32 a0()=0; virtual u32 a1()=0; virtual u32 a2()=0; virtual u32 a3()=0; virtual u32 a4()=0; virtual u32 a5()=0; virtual u32 a6()=0; virtual u32 a7()=0; virtual u32 a8()=0; virtual u32 a9()=0; virtual u32 a10()=0; virtual u32 f()=0; };
+ s32 var_r5=1,var_r6=1,var_r7=1,var_r8=1,var_r9=1,var_r10=1;
+ s32 temp_r11=arg0&0xFF000000;
+ s32 var_r30;
+ if (((u32)(temp_r11+0x80000000)<1)&&((u32)((arg0&0xFF800000)+0x7F000000)<1)) var_r10=0;
+ if ((var_r10==0)&&((u32)((arg0&0xF8000000)+0x70000000)<1)) var_r9=0;
+ if ((var_r9==0)&&((u32)(temp_r11+0x40000000)<1)) var_r8=0;
+ if ((var_r8==0)&&((u32)((arg0&0xFF800000)+0x3F000000)<1)) var_r7=0;
+ if ((var_r7==0)&&((u32)((arg0&0xF8000000)+0x30000000)<1)) var_r6=0;
+ if ((var_r6==0)&&((u32)((arg0&0xFFFFC000)+0x20000000)<1)) var_r5=0;
+ if(var_r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560,0xF1,lbl_80329578,arg0);
+ V *p=(V*)GetFont__Q36nw4hbm2ut10CharWriterCFv(arg0);
+ var_r30=p?p->f():0;
  return *(f32*)(arg0+0x50)+(f32)var_r30*GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(arg0);
 }
 
@@ -159,14 +162,19 @@ extern "C" const char lbl_80329560[];
 extern "C" const char lbl_80329578[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv_8010DB5C(s32 arg0) {
-    s32 temp_r11 = arg0 & 0xFF000000;
-    s32 var_r5 = 1, var_r6 = 1, var_r7 = 1, var_r8 = 1, var_r9 = 1, var_r10 = 1;
-    if ((0U < (unsigned int)(temp_r11 + 0x80000000)) && (0U < (unsigned int)((arg0 & 0xFF800000) + 0x7F000000))) var_r10 = 0;
-    if ((var_r10 == 0) && (0U < (unsigned int)((arg0 & 0xF8000000) + 0x70000000))) var_r9 = 0;
-    if ((var_r9 == 0) && (0U < (unsigned int)(temp_r11 + 0x40000000))) var_r8 = 0;
-    if ((var_r8 == 0) && (0U < (unsigned int)((arg0 & 0xFF800000) + 0x3F000000))) var_r7 = 0;
-    if ((var_r7 == 0) && (0U < (unsigned int)((arg0 & 0xF8000000) + 0x30000000))) var_r6 = 0;
-    if ((var_r6 == 0) && (0U < (unsigned int)((arg0 & 0xFFFFC000) + 0x20000000))) var_r5 = 0;
+    s32 var_r5 = 1;
+    s32 var_r6 = 1;
+    s32 var_r7 = 1;
+    s32 var_r8 = 1;
+    s32 var_r9 = 1;
+    s32 var_r10 = 1;
+    u32 temp_r11 = (u32)arg0 & 0xFF000000U;
+    if ((((u32)(temp_r11 + 0x80000000U)) >= 1U) && (((u32)((arg0 & 0xFF800000) + 0x7F000000)) >= 1U)) var_r10 = 0;
+    if ((var_r10 == 0) && (((u32)((arg0 & 0xF8000000) + 0x70000000)) >= 1U)) var_r9 = 0;
+    if ((var_r9 == 0) && (((u32)(temp_r11 + 0x40000000U)) >= 1U)) var_r8 = 0;
+    if ((var_r8 == 0) && (((u32)((arg0 & 0xFF800000) + 0x3F000000)) >= 1U)) var_r7 = 0;
+    if ((var_r7 == 0) && (((u32)((arg0 & 0xF8000000) + 0x30000000)) >= 1U)) var_r6 = 0;
+    if ((var_r6 == 0) && (((u32)((arg0 & 0xFFFFC000) + 0x20000000)) >= 1U)) var_r5 = 0;
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329560, 0x15A, lbl_80329578, arg0);
     return *(s32 *)(arg0 + 0x54);
 }
@@ -195,4 +203,4 @@ extern "C" void* __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80111BB8(void* arg0, 
     }
     return arg0;
 }
-
+namespace nw4hbm { namespace ut { struct List { unsigned char data[0xA]; unsigned short stride; }; } }
