@@ -565,6 +565,47 @@ void GXInitLightAttn(void *arg0, float farg0, float farg1, float farg2, float fa
     p[5] = farg5;
 }
 
+void GXInitLightDistAttn_Internal(GXLightObjImpl* light, f32 distance, f32 brightness,
+                                  GXDistAttnFn fn) {
+    f32 a, b, c;
+
+    if (distance < 0.0f) {
+        fn = GX_DA_OFF;
+    }
+
+    if (brightness <= 0.0f || brightness >= 1.0f) {
+        fn = GX_DA_OFF;
+    }
+
+    switch (fn) {
+    case GX_DA_GENTLE:
+        a = 1.0f;
+        b = (1.0f - brightness) / (brightness * distance);
+        c = 0.0f;
+        break;
+    case GX_DA_MEDIUM:
+        a = 1.0f;
+        b = (0.5f * (1.0f - brightness)) / (brightness * distance);
+        c = (0.5f * (1.0f - brightness)) / (distance * (brightness * distance));
+        break;
+    case GX_DA_STEEP:
+        a = 1.0f;
+        b = 0.0f;
+        c = (1.0f - brightness) / (distance * (brightness * distance));
+        break;
+    case GX_DA_OFF:
+    default:
+        a = 1.0f;
+        b = 0.0f;
+        c = 0.0f;
+        break;
+    }
+
+    light->ka = a;
+    light->kb = b;
+    light->kc = c;
+}
+
 void GXInitLightPos(void *arg0, float farg0, float farg1, float farg2) {
     *(float *)((char *)arg0 + 0x28) = farg0;
     *(float *)((char *)arg0 + 0x2C) = farg1;
