@@ -21,7 +21,7 @@ extern char lbl_8055DF81;
 void fn_801287D0(void *);
 
 s32 fn_801281F4(s32, s32);
-void fn_802E30C8(void *, void *, void *);
+void fn_802E30C8(void *, void *, void *, ...);
 s32 fn_802E317C(void *, void *);
 void fn_8012834C(void *, void *, s32);
 void fn_802E3DF8(s32, void *, void *);
@@ -42,10 +42,10 @@ u32 fn_801281A0(s32 arg0) {
 }
 
 s32 fn_801281F4(s32 arg0, s32 arg1) {
-    s32 r0 = arg1 - 1;
-    s32 r3 = arg0 + arg1;
-    r3--;
-    return r3 & ~r0;
+    arg0 += arg1;
+    arg0 -= 1;
+    arg1 -= 1;
+    return arg0 & ~arg1;
 }
 
 void fn_80128208(void) {
@@ -320,8 +320,8 @@ void fn_80128ED8(void *arg0, s32 arg1, s32 arg2) {
 
 extern s32 lbl_8032A05C;
 void fn_80128EF0(void *arg0, s32 arg1) {
-    s32 temp_r30;
     s32 temp_r31;
+    s32 temp_r30;
     u32 var_r6;
     temp_r30 = *(s32 *)((u8 *)arg0 + 8);
     var_r6 = arg1 - (temp_r30 & (arg1 - 1));
