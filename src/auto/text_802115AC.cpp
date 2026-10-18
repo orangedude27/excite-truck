@@ -626,7 +626,7 @@ extern "C" s32 fn_8021583C(void *arg0, s32 arg1, s32 arg2) {
 
 extern "C" void fn_802158C8(void *arg0) {
     VfObj *obj = *(VfObj **)((char *)arg0 + 0x244);
-    obj->vf18();
+    obj->vf1();
 }
 
 class Vf4Obj {
