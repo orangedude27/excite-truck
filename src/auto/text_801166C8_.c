@@ -1034,6 +1034,12 @@ void fn_80127434(void) {
     lbl_8055DF08 = 0;
 }
 
+#pragma dont_inline on
+void fn_80127440(void* alarm) {
+    fn_80127F94(fn_802ECC74(alarm));
+}
+#pragma dont_inline reset
+
 void fn_80127464(void *alarm) {
     fn_80127440(alarm);
 }
