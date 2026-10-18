@@ -422,6 +422,23 @@ extern "C" void fn_8012D3D8(s32 arg0) {
     fn_8012D1A8(arg0);
 }
 
+s32 fn_8012D838(void *arg0) {
+    s32 temp_r0;
+
+    fn_8012D40C((long)arg0);
+    temp_r0 = *(s32 *)((u8 *)arg0 + 0xB8);
+    switch (temp_r0) {
+    case 2:
+        return 1;
+    case 3:
+        return 2;
+    case 1:
+        return 0;
+    default:
+        return 0;
+    }
+}
+
 extern "C" s32 fn_80128668(void *);
 extern "C" s32 fn_8012DCC0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
@@ -536,14 +553,17 @@ extern "C" s32 fn_8012E490(s32 *arg0) {
 
 extern "C" void fn_8012E5E4(void *arg0, void *arg1) {
     void **link = (void **)((u8 *)arg0 + 8);
+    void *node;
     s32 found = 0;
-    while (*link != 0) {
-        if (*link == arg1) {
-            *link = *(void **)arg1;
+    node = *link;
+    while (node != 0) {
+        if (node == arg1) {
+            *link = *(void **)node;
             found = 1;
             break;
         }
-        link = (void **)*link;
+        link = (void **)node;
+        node = *link;
     }
     if (found != 0) {
         *(void **)arg1 = *(void **)((u8 *)arg0 + 0xC);
