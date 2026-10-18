@@ -172,6 +172,7 @@ s32 fn_80019098(s32 arg0) {
 }
 
 __declspec(section ".data") extern void *lbl_803580A4;
+__declspec(section ".data") extern void *lbl_802FD2A0;
 int fn_80019258(const char *name, int *out0, int *out1, int unused) {
     int i = 0;
     int offset = 0;
@@ -195,6 +196,42 @@ int fn_80019258(const char *name, int *out0, int *out1, int unused) {
         }
     }
     return 0;
+}
+
+extern s32 fn_8001EFC0(s32, s32);
+extern void *lbl_802FD2A0;
+void fn_8001931C(const char *name) {
+    void **tbl = (void **)lbl_803580A4;
+    s32 count = ((s32 *)tbl)[1];
+    s32 i = 0;
+    s32 offset = 0;
+    while (1) {
+        if (stricmp(*(const char **)(*(char **)tbl + offset), name) == 0)
+            break;
+        offset += 0x10;
+        i++;
+        if (i >= count) {
+            i = -1;
+            break;
+        }
+    }
+    {
+        char *p = *(char **)tbl + i * 0x10 + 4;
+        if (i < 0) p = 0;
+        if (p != 0) {
+            s32 val0 = *(s32 *)p;
+            s32 val1 = fn_8001EFC0(0, (s32)name);
+            if (val0 <= val1) {
+                if (*(s32 *)(p + 4) != fn_8001EFC0(1, (s32)name)) {
+                    fn_80131234((char *)lbl_802FD2A0 + 0x94);
+                    return;
+                }
+                fn_80131234((char *)lbl_802FD2A0 + 0xBC);
+                return;
+            }
+        }
+    }
+    fn_80131234((char *)lbl_802FD2A0 + 0xE4);
 }
 
 s32 fn_80019438(void) {
