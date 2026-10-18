@@ -3233,14 +3233,12 @@ void *l2cu_find_rcb_by_psm(u16 psm) {
 }
 
 void fn_8008EE40(void *arg0, void *arg1) {
-    u8 *dst = (u8 *)arg0; u8 *src = (u8 *)arg1; u32 a, b;
+    struct Pair { u32 x; u32 y; };
+    u8 *dst = (u8 *)arg0; u8 *src = (u8 *)arg1;
     if (src[6] != 0) {
-        b = *(u32 *)(src + 0xc); a = *(u32 *)(src + 8);
-        *(u32 *)(dst + 0x58) = a; *(u32 *)(dst + 0x5c) = b;
-        b = *(u32 *)(src + 0x14); a = *(u32 *)(src + 0x10);
-        *(u32 *)(dst + 0x60) = a; *(u32 *)(dst + 0x64) = b;
-        b = *(u32 *)(src + 0x1c); a = *(u32 *)(src + 0x18);
-        *(u32 *)(dst + 0x68) = a; *(u32 *)(dst + 0x6c) = b;
+        *(struct Pair *)(dst + 0x58) = *(struct Pair *)(src + 8);
+        *(struct Pair *)(dst + 0x60) = *(struct Pair *)(src + 0x10);
+        *(struct Pair *)(dst + 0x68) = *(struct Pair *)(src + 0x18);
     }
 }
 
