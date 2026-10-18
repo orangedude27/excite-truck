@@ -1773,16 +1773,27 @@ result:
 
 tBTM_STATUS BTM_SetPageScanType(UINT16 arg0) {
     void *p_buf;
+    tBTM_STATUS status;
     if (arg0 != 0 && arg0 != 1) return BTM_ILLEGAL_VALUE;
     if (!(lbl_803C0F78[0x643] & 0x20)) return BTM_MODE_UNSUPPORTED;
     if (arg0 != *(u16 *)(lbl_803C0F78 + 0x16A6)) {
-        if ((u8)fn_80079514() == 0) return BTM_WRONG_MODE;
-        p_buf = GKI_getpoolbuf(2);
-        if (p_buf == 0) return BTM_NO_RESOURCES;
-        fn_80085E24(p_buf, (u8)arg0);
-        *(u16 *)(lbl_803C0F78 + 0x16A6) = arg0;
+        if ((u8)fn_80079514() != 0) {
+            p_buf = GKI_getpoolbuf(2);
+            if (p_buf != 0) {
+                fn_80085E24(p_buf, (u8)arg0);
+                *(u16 *)(lbl_803C0F78 + 0x16A6) = arg0;
+                goto done;
+            }
+            status = BTM_NO_RESOURCES;
+            goto result;
+        }
+        status = BTM_WRONG_MODE;
+        goto result;
     }
-    return BTM_SUCCESS;
+done:
+    status = BTM_SUCCESS;
+result:
+    return status;
 }
 
 extern void fn_80085DF4(void *, UINT8);
