@@ -1,5 +1,8 @@
 #include <types.h>
 
+extern u32 fn_8001D220(u32, u32, u32);
+extern void fn_8001D298(s32);
+
 extern void fn_8001C714(void);
 
 typedef struct Unk8001BBBC {
