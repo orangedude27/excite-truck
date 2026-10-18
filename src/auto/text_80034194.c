@@ -144,6 +144,90 @@ void fn_80035C78(void) {
     lbl_8055D85C = 0;
 }
 
+void fn_80035DA8(s32 arg0) {
+    s32 enabled;
+    u32 index;
+    u8 *info;
+
+    enabled = OSDisableInterrupts();
+    if (lbl_8055D848 >= 5) {
+        lbl_8055D848 = 0;
+    }
+    index = lbl_8055D848;
+    info = (u8 *)__ErrorInfo + index * 0x14;
+    *(s32 *)(info + 0x1C) = 0x10;
+    *(s32 *)(info + 0x20) = 0;
+    *(s32 *)(info + 0x24) = 0;
+    *(s32 *)(info + 0x2C) = OSGetTick();
+    lbl_8055D848 = index + 1;
+    OSRestoreInterrupts(enabled);
+    fn_8003AF1C(0, 0, fn_80036624);
+    #pragma unused(arg0)
+}
+
+extern s32 MotorState_8055D8A8;
+extern s32 lbl_8055D8BC;
+extern void __DVDClearWaitingQueue(void);
+extern void fn_80038368(void *);
+extern void fn_800379A8(void);
+extern BOOL __OSInIPL;
+void fn_8003773C(void) {
+    s32 command = lbl_8055D8BC;
+    MotorState_8055D8A8 = 1;
+    switch (command) {
+    case 4: case 5: case 13: case 15: case 18: case 33: case 34: {
+        void *block;
+        void (*callback)(s32, void *);
+        __DVDClearWaitingQueue();
+        block = (void *)executing_8055D8C8;
+        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        callback = *(void (**)(s32, void *))((char *)block + 0x28);
+        if (callback != 0)
+            callback(-4, block);
+        fn_80038040();
+        break;
+    }
+    case 32:
+        MotorState_8055D8A8 = 0;
+    case 35: case 36: case 37:
+        *(s32 *)((char *)executing_8055D8C8 + 0xC) = 1;
+        fn_80038368((void *)executing_8055D8C8);
+        break;
+    case 1: case 2:
+        if (__OSInIPL)
+            break;
+    default:
+        MotorState_8055D8A8 = 0;
+        fn_8003B380(1);
+        fn_8003B38C(fn_800379A8);
+        break;
+    case 38:
+        MotorState_8055D8A8 = 0;
+        fn_8003B380(1);
+        fn_8003B38C(fn_800379A8);
+        break;
+    }
+}
+
+extern s32 fn_8003BCDC(s32);
+extern void fn_8003B69C(u32, void*);
+extern void fn_80037B54(void);
+void fn_80037A8C(void) {
+    s32 enabled;
+    u8 *base;
+    fn_8003BCDC(0);
+    enabled = OSDisableInterrupts();
+    if (lbl_8055D848 >= 5) lbl_8055D848 = 0;
+    base = (u8*)__ErrorInfo;
+    *(s32*)(base + (*(volatile u32*)&lbl_8055D848) * 0x14 + 0x1C) = 0x25;
+    *(s32*)(base + (*(volatile u32*)&lbl_8055D848) * 0x14 + 0x20) = 0;
+    *(s32*)(base + (*(volatile u32*)&lbl_8055D848) * 0x14 + 0x24) = 0;
+    *(s32*)(base + (*(volatile u32*)&lbl_8055D848) * 0x14 + 0x2C) = OSGetTick();
+    lbl_8055D848 = (*(volatile u32*)&lbl_8055D848) + 1;
+    OSRestoreInterrupts(enabled);
+    fn_8003B69C(0x20000, fn_80037B54);
+}
+
 void fn_8003801C(void) {
     if (lbl_8055D880 != 0) {
         return;
