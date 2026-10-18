@@ -138,7 +138,7 @@ extern "C" void fn_800D1C48(void);
 #include <revolution/MEM/mem_frameHeap.h>
 extern "C" s32 fn_800D1EA8(void *arg0, s32 arg1);
 
-  extern "C" void fn_800B7610(OSAlarm *alarm, OSContext *ctx);
+  extern "C" void fn_800B7610(void *arg0, s32 arg1, s32 arg2);
   typedef __va_list_struct VaList1;
 
 
@@ -780,8 +780,8 @@ extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1);
 extern "C" s32 fn_800AAC08(void *arg0);
 extern "C" s32 fn_800AA924(void *arg0, void *arg1);
 extern "C" void fn_800B78F4(void *arg0, void *arg1);
-extern "C" void fn_800ACA44(s32 arg1) {
-    fn_800ABC60(0, arg1);
+extern "C" void fn_800ACA44(s32, s32, s32, s32, s32 arg4) {
+    fn_800ABC60(0, arg4);
 }
 
 extern "C" void fn_800ACA50(void) {
@@ -887,15 +887,15 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
 }
 
 extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
-    u32 temp_r8;
     void *var_r9;
-    void *temp_r6;
+    u32 temp_r8;
     u32 temp_r10;
     s32 temp_r7;
     s32 var_r31 = 1;
     u16 temp_r5;
     void *var_r5;
     u32 temp_r6_2;
+    void *temp_r6;
     if (arg0 == 0) var_r9 = 0;
     else var_r9 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
     temp_r6 = M2C_FIELD(arg0, void **, 8);
@@ -914,7 +914,7 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
     } else {
         var_r31 = 0;
         M2C_FIELD(arg0, s32 *, 0x20) = -1;
-        M2C_FIELD(arg0, u32 *, 0x1C) = M2C_FIELD(temp_r6, u32 *, 0x264);
+        M2C_FIELD(arg0, u32 *, 0x1C) = M2C_FIELD(M2C_FIELD(arg0, void **, 8), u32 *, 0x264);
     }
     if (arg0 == 0) var_r5 = 0;
     else var_r5 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
