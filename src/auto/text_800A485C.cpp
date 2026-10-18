@@ -808,12 +808,11 @@ extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
-extern "C" s32 VFiPFFAT_TraceClustersChain(void *arg0, u16 arg1, s32 *arg2) {
+extern "C" s32 VFiPFFAT_TraceClustersChain(void *arg0, s32 arg1, s32 *arg2) {
     s32 result;
-    u16 value = arg1;
     switch (*(s32 *)((u8 *)arg0 + 0x1C)) {
     case 0:
-        result = fn_800AF5A0(value);
+        result = ((s32 (*)(void *, u16))fn_800AF5A0)(arg0, (u16)arg1);
         break;
     case 1:
         result = fn_800AFE14();
@@ -885,6 +884,45 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
         index = (u16)(index + *(u32 *)((u8 *)arg0 + 0xC));
     }
     return result;
+}
+
+extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
+    void *var_r9;
+    void *temp_r6;
+    u32 temp_r10;
+    u32 temp_r8;
+    s32 temp_r7;
+    s32 var_r31 = 1;
+    u16 temp_r5;
+    void *var_r5;
+    u32 temp_r6_2;
+    if (arg0 == 0) var_r9 = 0;
+    else var_r9 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
+    temp_r6 = M2C_FIELD(arg0, void **, 8);
+    temp_r10 = M2C_FIELD(temp_r6, u32 *, 0x264);
+    temp_r8 = M2C_FIELD(arg0, u16 *, 0x28) + arg1;
+    temp_r7 = arg2 + (temp_r8 >> M2C_FIELD(var_r9, u8 *, 0x20));
+    if ((u32)(M2C_FIELD(arg0, u32 *, 0x1C) + arg1) < temp_r10) {
+        if ((M2C_FIELD(var_r9, u16 *, 0) - 1) & temp_r8) M2C_FIELD(arg0, s32 *, 0x20) = temp_r7;
+        else M2C_FIELD(arg0, s32 *, 0x20) = -1;
+        M2C_FIELD(arg0, u32 *, 0x1C) = M2C_FIELD(arg0, u32 *, 0x1C) + arg1;
+    } else if ((s32)temp_r10 == 0) {
+        M2C_FIELD(arg0, s32 *, 0x20) = -1;
+        M2C_FIELD(arg0, u32 *, 0x1C) = 0;
+        if (arg1 != 0) var_r31 = 0;
+    } else {
+        var_r31 = 0;
+        M2C_FIELD(arg0, s32 *, 0x20) = -1;
+        M2C_FIELD(arg0, u32 *, 0x1C) = M2C_FIELD(temp_r6, u32 *, 0x264);
+    }
+    if (arg0 == 0) var_r5 = 0;
+    else var_r5 = M2C_FIELD(M2C_FIELD(arg0, void **, 8), void **, 0x268);
+    temp_r6_2 = M2C_FIELD(arg0, u32 *, 0x1C);
+    M2C_FIELD(arg0, u32 *, 0x24) = temp_r6_2 >> M2C_FIELD(var_r5, u8 *, 0x20);
+    temp_r5 = M2C_FIELD(var_r5, u16 *, 0);
+    M2C_FIELD(arg0, u16 *, 0x28) = temp_r6_2 & (temp_r5 - 1);
+    VFiPFCLUSTER_UpdateLastAccessCluster(arg0, temp_r7);
+    return var_r31;
 }
 
 extern "C" s32 fn_800B0DEC(void *, s32, u32 *);
