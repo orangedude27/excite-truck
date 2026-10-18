@@ -15,47 +15,113 @@ extern unsigned int lbl_8055D974;
   extern void GXGetVtxDesc(void);
   extern void __GXSaveFifo(void);
 
-  static void __GXGetTexTileShift_8003DB9C(unsigned int fmt, unsigned int *rowTileS, unsigned int *colTileS) {
-    switch (fmt) {
-    case 0x2:
-    case 0x8:
-    case 0x6:
-    case 0x10:
-    case 0x12:
-        *rowTileS = 3;
-        *colTileS = 3;
-        break;
-    case 0x3:
-    case 0x4:
-    case 0x9:
-    case 0x11:
-    case 0x13:
-    case 0x14:
-    case 0x15:
-    case 0x16:
-    case 0x17:
-    case 0x18:
-    case 0x19:
-        *rowTileS = 3;
-        *colTileS = 2;
-        break;
-    case 0x5:
-    case 0x7:
-    case 0xA:
-    case 0x1A:
-    case 0x1B:
-    case 0x1C:
-    case 0x1D:
-    case 0x1E:
-    case 0x1F:
-        *rowTileS = 2;
-        *colTileS = 2;
-        break;
-    default:
-        *rowTileS = *colTileS = 0;
-        break;
-    }
-}
+      static void __GXGetTexTileShift_8003DB9C(unsigned int fmt, unsigned int *rowTileS, unsigned int *colTileS) {
+      switch (fmt) {
+      case 0x0:
+      case 0x1:
+      case 0x2:
+      case 0x3:
+      case 0x4:
+      case 0x5:
+      case 0x6:
+      case 0x7:
+      case 0x8:
+      case 0x9:
+      case 0xA:
+      case 0xB:
+      case 0xC:
+      case 0xD:
+      case 0xE:
+      case 0xF:
+      case 0x10:
+      case 0x11:
+      case 0x12:
+      case 0x13:
+      case 0x14:
+      case 0x15:
+      case 0x16:
+      case 0x17:
+      case 0x18:
+      case 0x19:
+      case 0x1A:
+      case 0x1B:
+      case 0x1C:
+      case 0x1D:
+      case 0x1E:
+      case 0x1F:
+      case 0x20:
+      case 0x21:
+      case 0x22:
+      case 0x23:
+      case 0x24:
+      case 0x25:
+      case 0x26:
+      case 0x27:
+      case 0x28:
+      case 0x29:
+      case 0x2A:
+      case 0x2B:
+      case 0x2C:
+      case 0x2D:
+      case 0x2E:
+      case 0x2F:
+      case 0x30:
+      case 0x31:
+      case 0x32:
+      case 0x33:
+      case 0x34:
+      case 0x35:
+      case 0x36:
+      case 0x37:
+      case 0x38:
+      case 0x39:
+      case 0x3A:
+      case 0x3B:
+      case 0x3C:
+      case 0x3D:
+      case 0x3E:
+      case 0x3F:
+      case 0x40:
+      case 0x41:
+      case 0x42:
+      case 0x43:
+      case 0x44:
+      case 0x45:
+      case 0x46:
+      case 0x47:
+      case 0x48:
+      case 0x49:
+      case 0x4A:
+      case 0x4B:
+      case 0x4C:
+      case 0x4D:
+      case 0x4E:
+      case 0x4F:
+      case 0x50:
+      case 0x51:
+      case 0x52:
+      case 0x53:
+      case 0x54:
+      case 0x55:
+      case 0x56:
+      case 0x57:
+      case 0x58:
+      case 0x59:
+      case 0x5A:
+      case 0x5B:
+      case 0x5C:
+      case 0x5D:
+      case 0x5E:
+      case 0x5F:
+      case 0x60:
+          *rowTileS = 3;
+          *colTileS = 3;
+          break;
+      default:
+          *rowTileS = *colTileS = 0;
+          break;
+      }
+  }
 
 typedef struct _GXLightObjImpl {
       char UNK_0x0[0xC];
@@ -719,6 +785,45 @@ void GXSetChanCtrl(s32 chan, s32 enable, s32 matColor, s32 ambColor, s32 lightMa
         data[0xC4 / 4] = value;
         data[0x5FC / 4] |= 0xA000;
     }
+}
+
+unsigned int GXGetTexBufferSize(unsigned int width, unsigned int height, unsigned int format, unsigned int mipmap, unsigned int max_lod)
+{
+    unsigned int tileShiftX;
+    unsigned int tileShiftY;
+    unsigned int tileBytes;
+    unsigned int bufferSize;
+    unsigned int nx;
+    unsigned int ny;
+    unsigned int level;
+
+    __GXGetTexTileShift_8003DB9C(format, &tileShiftX, &tileShiftY);
+    if (format == 0x8 || format == 0x14) {
+        tileBytes = 64;
+    } else {
+        tileBytes = 32;
+    }
+    if (mipmap == 1) {
+        nx = 1 << (31 - __cntlzw(width));
+        ny = 1 << (31 - __cntlzw(height));
+
+        bufferSize = 0;
+        for (level = 0; level < max_lod; level++) {
+            nx = (width + (1 << tileShiftX) - 1) >> tileShiftX;
+            ny = (height + (1 << tileShiftY) - 1) >> tileShiftY;
+            bufferSize += tileBytes * (nx * ny);
+            if (width == 1 && height == 1) {
+                break;
+            }
+            width = (width > 1) ? width >> 1 : 1;
+            height = (height > 1) ? height >> 1 : 1;
+        }
+    } else {
+        nx = (width + (1 << tileShiftX) - 1) >> tileShiftX;
+        ny = (height + (1 << tileShiftY) - 1) >> tileShiftY;
+        bufferSize = nx * ny * tileBytes;
+    }
+    return bufferSize;
 }
 
 void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_x, int *tiles_y, int *compressed) {
