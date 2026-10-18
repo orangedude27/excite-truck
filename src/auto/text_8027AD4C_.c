@@ -58,13 +58,14 @@ unsigned char fn_8027B280(void *arg0) {
 }
 
 void fn_8027B288(void *arg0) {
-    long i = 0;
-    long offset = 0;
-    do {
-        fn_8027AF94((char *)*(void **)((char *)arg0 + 0x18) + offset);
-        offset += 0x3C;
-        i++;
-    } while (i < *(long *)((char *)arg0 + 0x1C));
+    long offset = 0, i = 0;
+    goto test;
+body:
+    fn_8027AF94((char *)*(void **)((char *)arg0 + 0x18) + offset);
+    offset += 0x3C;
+    i++;
+test:
+    if (i < *(long *)((char *)arg0 + 0x1C)) goto body;
     *(long *)((char *)arg0 + 0x1C) = 0;
     *(long *)((char *)arg0 + 0x10) = 0;
 }
@@ -132,15 +133,12 @@ void fn_8027B9EC(void *arg0) {
 }
 
 long fn_8027BAB8(void *arg0) {
-    long i = 0;
-    while (1) {
+    long i;
+    for (i = 0; i < ((long (*)(void *))(*(void ***)arg0)[3])(arg0); i++) {
         void *item = ((void *(*)(void *, long))(*(void ***)arg0)[4])(arg0, i);
-        if (((long (*)(void *))(*(void ***)item)[10])(item) == 0)
-            return 0;
-        i++;
-        if (i >= ((long (*)(void *))(*(void ***)arg0)[3])(arg0))
-            return 1;
+        if (((long (*)(void *))(*(void ***)item)[10])(item) == 0) return 0;
     }
+    return 1;
 }
 
 long fn_8027BB4C(long, long, long, long);
@@ -162,7 +160,7 @@ extern long fn_80012854(void);
 extern float lbl_805641F0;
 extern char lbl_8055C768[];
 void fn_8027BF38(void) {
-    long state, i, j, now;
+    long j, i, state, now;
     state = fn_80012810();
     if (state != 0x130) {
         if (state != 0x134) {
@@ -266,6 +264,7 @@ long *fn_8027C26C(void *arg0, const char *arg1) {
 long fn_8027C4B4(long arg0, long arg1) {
     long offset;
     long i;
+    long zero;
     if (arg0 != 0) {
         *(long *)(arg0 + 4) = 0;
         i = 0;
@@ -276,26 +275,27 @@ long fn_8027C4B4(long arg0, long arg1) {
             offset += 4;
             i++;
         }
+        zero = 0;
         if ((void *)(arg0 + 0xB008) != 0) {
-            *(long *)(arg0 + 0xB00C) = 0;
+            *(long *)(arg0 + 0xB00C) = zero;
             if ((void *)(arg0 + 0xB008) != 0) {
-                *(long *)(arg0 + 0xB008) = 0;
-                *(long *)(arg0 + 0xB00C) = 0;
-                *(long *)(arg0 + 0xB010) = 0;
+                *(long *)(arg0 + 0xB008) = zero;
+                *(long *)(arg0 + 0xB00C) = zero;
+                *(long *)(arg0 + 0xB010) = zero;
             }
         }
         if ((void *)(arg0 + 0xAF0C) != 0) {
             if ((void *)(arg0 + 0xAF0C) != 0) {
-                *(long *)(arg0 + 0xAF0C) = 0;
-                *(long *)(arg0 + 0xAF10) = 0;
-                *(long *)(arg0 + 0xAF14) = 0;
+                *(long *)(arg0 + 0xAF0C) = zero;
+                *(long *)(arg0 + 0xAF10) = zero;
+                *(long *)(arg0 + 0xAF14) = zero;
             }
         }
         if (arg0 != 0) {
             if (arg0 != 0) {
-                *(long *)arg0 = 0;
-                *(long *)(arg0 + 4) = 0;
-                *(long *)(arg0 + 8) = 0;
+                *(long *)arg0 = zero;
+                *(long *)(arg0 + 4) = zero;
+                *(long *)(arg0 + 8) = zero;
             }
         }
         if (arg1 > 0) fn_80128668((void *)arg0);
@@ -522,10 +522,26 @@ void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
     }
 }
 
+long fn_8027CFB4(long arg0) {
+    long *obj = fn_8027C120(lbl_8055F654, arg0);
+    long id = fn_80205268(lbl_80347AB0, *(long *)((char *)&lbl_8055F654 + 0xB01C), -1);
+    void *manager = fn_8001285C(*(long *)((char *)obj + 4));
+    void *list = *(void **)((char *)manager + 0x20);
+    long result;
+    long i = 0;
+    fn_8001D884(&result, ((long (*)(void *, long))(*(void ***)list)[0x17])(list, id));
+    do {
+        long found = fn_8001DA48(&result, i);
+        if (found >= 0)
+            return found;
+        i++;
+    } while (i < 5);
+    return 0;
+}
+
 void fn_8027D158(long arg0, char *arg1, long arg2) {
     long *result = fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
-    register long temp_r5 = *result;
-    switch (temp_r5) {
+    switch (*result) {
     case 0:
         fn_8027C8B8((long)result, arg1, arg2);
         break;
