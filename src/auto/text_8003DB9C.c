@@ -916,36 +916,22 @@ void GXLoadTlut(void *arg0, int arg1) {
 }
 
 void GXInitTexCacheRegion(void *obj, signed char arg1, unsigned int arg2, int arg3, unsigned int arg4, int arg5) {
-    int size;
-    int tmem_even;
-    int tmem_odd;
-    unsigned int value;
-
-    if (arg3 == 0) size = 3;
-    else if (arg3 == 1) size = 4;
-    else if (arg3 == 2) size = 5;
-    else size = arg3;
-
-    value = 0;
-    value |= (arg2 >> 5) & 0x7FFF;
-    value |= (size << 15) & 0x38000;
-    value |= (size << 18) & 0x1C0000;
-    *(unsigned int *)obj = value;
-
-    if (arg5 == 0) tmem_even = 3;
-    else if (arg5 == 1) tmem_even = 4;
-    else if (arg5 == 2) tmem_even = 5;
-    else if (arg5 == 3) tmem_even = 0;
-    else tmem_even = arg5;
-
-    tmem_odd = tmem_even;
-    *(unsigned char *)((char *)obj + 0xC) = arg1;
-    *(unsigned char *)((char *)obj + 0xD) = 1;
-    value = 0;
-    value |= (arg4 >> 5) & 0x7FFF;
-    value |= (tmem_odd << 15) & 0x38000;
-    value |= (tmem_odd << 18) & 0x1C0000;
-    *(unsigned int *)((char *)obj + 4) = value;
+    union { unsigned int word; struct { unsigned int pad:11; unsigned int c:3; unsigned int b:3; unsigned int a:15; } f; } v;
+    int size = arg3;
+    switch (size) { case 0: size=3; break; case 1: size=4; break; case 2: size=5; break; }
+    v.word = 0;
+    v.f.a = arg2 >> 5;
+    v.f.b = size;
+    v.f.c = size;
+    *(unsigned int *)obj = v.word;
+    switch (arg5) { case 0: size=3; break; case 1: size=4; break; case 2: size=5; break; case 3: size=0; break; }
+    v.word = 0;
+    v.f.a = arg4 >> 5;
+    v.f.b = size;
+    v.f.c = size;
+    *(unsigned char *)((char *)obj+0xC) = arg1;
+    *((unsigned char *)obj+0xD) = 1;
+    *(unsigned int *)((char *)obj+4) = v.word;
 }
 
 void GXInitTlutRegion(unsigned int *region, int tmem_addr, int tlut_name) {
