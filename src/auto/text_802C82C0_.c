@@ -49,6 +49,13 @@ extern int lbl_8055FC70;
 extern char lbl_8055FC74;
 extern char lbl_8055FC75;
 extern char lbl_8055FC8C;
+extern char lbl_8055FC8D;
+extern float lbl_8055D024;
+extern float lbl_80564EFC;
+extern char lbl_8034B498[];
+extern int fn_80019B9C(void);
+extern int fn_802E9A0C(void);
+extern void fn_80133348(int, const char *, int);
 extern void *lbl_8055FC90;
 void fn_802C82C0(void) {
 }
@@ -231,6 +238,7 @@ float fn_802C8FEC(void) { return lbl_8055FC6C; }
 
 extern float lbl_80558DC4;
 extern float lbl_8055FC38, lbl_8055FC3C;
+#pragma scheduling off
 int fn_802C8FF4(float *arg0, float arg1) {
     float x;
     float y;
@@ -252,7 +260,7 @@ int fn_802C8FF4(float *arg0, float arg1) {
     }
     return result;
 }
-
+#pragma scheduling on
 int fn_802C90E0(void) {
     return lbl_8055FC70 == 0;
 }
