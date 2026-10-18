@@ -20,6 +20,7 @@ extern void *lbl_8055E684;
 extern f32 lbl_8055E3C8;
 extern f32 lbl_8055E6AC;
 extern s32 lbl_80435C30[];
+extern s32 lbl_80435BE8[];
 extern void *lbl_8055E694;
 extern f32 lbl_805625F0;
 extern void *lbl_8055E68C;
@@ -32,29 +33,28 @@ extern void fn_801B18B8(s32, s32);
 extern s32 fn_80139EC4(f32, f32);
 extern s32 fn_802B04D4(f32 *, f32, f32, f32);
 extern f32 lbl_805625BC, lbl_805625C0, lbl_805625C4;
+#pragma push
+#pragma processor 750
 s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
-    f32 sp[5];
-    f32 step = lbl_805625BC;
-    f32 start = step;
-    f32 increment = lbl_805625C0;
-    f32 limit = lbl_805625C4;
+    f32 sp18, sp14, sp10, spC, sp8;
+    register f32 step = lbl_805625BC;
+    register f32 increment = lbl_805625C0;
+    register f32 start = step;
+    register f32 limit = lbl_805625C4;
     while (step < limit) {
-        f32 dx = *(f32 *)((u8 *)arg1) * step;
+        f32 dx = *(f32 *)arg1 * step;
         f32 dy = *(f32 *)((u8 *)arg1 + 4) * step;
         f32 x = *(f32 *)arg0 + dx;
         f32 y = *(f32 *)((u8 *)arg0 + 4) + dy;
-        sp[1] = start;
-        sp[0] = x;
-        sp[2] = y;
-        sp[3] = x;
-        sp[4] = y;
-        if (fn_802B04D4(&sp[2], dy, x, dx)) return 1;
-        if (lbl_8055E66C && fn_80139EC4(sp[0], sp[1])) return 1;
+        sp14 = start;
+        sp8 = x; spC = y; sp10 = x; sp18 = y;
+        if (fn_802B04D4(&sp10, dy, x, dx)) return 1;
+        if (lbl_8055E66C && fn_80139EC4(sp8, spC)) return 1;
         step += increment;
     }
     return 0;
 }
-
+#pragma pop
 u32 fn_801B08E8(u32 arg0, u32 arg1, s32 arg2) {
     u32 var_r4;
     var_r4 = arg1;
@@ -208,6 +208,33 @@ void fn_801B1318(void) {
         i = next;
         *(s32 *)((u8 *)lbl_8055E684 + (value << 7) + 8) = next;
         p = p + 1;
+    }
+}
+
+extern s32 fn_801B526C(void);
+extern s32 fn_8026A344(void);
+extern void fn_8026A248(s32, s32);
+void fn_801B1390(s32 arg0, s32 arg1) {
+    s32 keep0 = arg0;
+    s32 keep1 = arg1;
+    s32 count;
+    s32 index;
+
+    count = fn_8026A344();
+    if (fn_801B526C() != 0) {
+        index = ((s32)lbl_8055E678 + keep1 + count) % (s32)lbl_8055E678;
+        fn_8026A248(index, keep0);
+    } else {
+        index = 0;
+        if (count >= 0 && count < (s32)lbl_8055E678) {
+            void **obj = (void **)((u8 *)lbl_8055E684 + (count << 7));
+            void **vtable = *(void ***)obj;
+            s32 (*method)(void *, void *) = (s32 (*)(void *, void *))vtable[4];
+            void *result = (void *)method(obj, lbl_8055E684);
+            index = *(s32 *)((u8 *)result + 4) - 1;
+        }
+        index = ((s32)lbl_8055E678 + keep1 + index) % (s32)lbl_8055E678;
+        fn_8026A248(lbl_80435C30[index], keep0);
     }
 }
 
