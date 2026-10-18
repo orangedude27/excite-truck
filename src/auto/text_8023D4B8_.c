@@ -2,6 +2,10 @@
   // split_file divides it into the game's real files (file_status shows its range).
   
   typedef signed int s32;
+extern void *lbl_8055F19C;
+extern void *lbl_8055F190;
+extern void fn_8023DA64(void *, int, int);
+extern void fn_8023E1FC(void *);
   extern void *lbl_8055F18C;
   extern s32 fn_8023DD4C(void);
   extern char lbl_802FA190[];
@@ -111,21 +115,17 @@ char *fn_8023DC38(char *arg0) {
 }
 
 char *fn_8023DCCC(char *arg0) {
-    char **var_r31;
-    s32 var_r30;
-
-    var_r31 = (char **)&lbl_802FA190;
-    var_r30 = 0;
-loop_1:
-    if (stricmp(*var_r31, arg0) == 0) {
-        return (char *)&lbl_802FA190 + (var_r30 * 8);
-    }
-    var_r30 += 1;
-    var_r31 += 2;
-    if (var_r30 >= 0x11) {
-        return 0;
-    }
-    goto loop_1;
+    char **var_r31 = (char **)&lbl_802FA190;
+    s32 var_r30 = 0;
+    do {
+        if (stricmp(*var_r31, arg0) == 0)
+            return (char *)&lbl_802FA190 + var_r30 * 8;
+        var_r30++;
+        if (var_r30 >= 0x11)
+            break;
+        var_r31 += 2;
+    } while (1);
+    return 0;
 }
 
 int fn_8023DF70(int arg0, int arg1) {
