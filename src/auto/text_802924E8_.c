@@ -195,6 +195,13 @@ void fn_8029433C(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x222C) = 0;
 }
 
+extern void fn_80294780(void*);
+void fn_80294348(void* arg0) {
+    float value = fn_801E7E24(arg0);
+    float abs = (float)__fabs((double)value);
+    if (!(abs <= lbl_80558DC4)) fn_80294780(arg0);
+}
+
 void fn_80294398(void *arg0) {
     u8 *record = (u8 *)arg0 + 0x2C;
     s32 i = 0;
