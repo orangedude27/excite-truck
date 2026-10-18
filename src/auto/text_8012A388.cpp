@@ -92,6 +92,34 @@ extern "C" void fn_8012A46C(void *, const char *) {
 }
 
 #pragma dont_inline on
+#pragma use_lmw_stmw off
+extern "C" s32 fn_8012A470(void *arg0, s32 arg1, void *arg2, void *arg3) {
+    s32 result;
+    void *buffer;
+    const char *strings;
+
+    strings = lbl_8032A630;
+    buffer = (char *)arg3 + *(s32 *)((char *)arg2 + 0x2C);
+    buffer = (char *)buffer - 8;
+    *(void **)((char *)arg2 + 0x3C) = buffer;
+    fn_8012A46C((char *)buffer + 8, strings);
+    result = fn_80132E7C((char *)buffer + 8, *(s32 *)((char *)arg2 + 0x28)) == *(s32 *)((char *)arg2 + 0x30);
+    if (result) {
+        if (*(u32 *)((char *)arg2 + 0x34) & 8) {
+            fn_802E30C8(strings + 0xC);
+            fn_802E30C8(strings + 0x34);
+            fn_802E30C8(strings + 0x5C);
+            fn_802E30C8(strings + 0xC);
+            fn_802E317C(strings + 0x88, arg0, arg1, arg2);
+        }
+        *(u32 *)((char *)arg2 + 0x34) |= 8;
+    } else {
+        fn_802E30C8(strings + 0xA8, arg0, arg1, arg2);
+    }
+    return result;
+}
+#pragma use_lmw_stmw reset
+#pragma dont_inline reset
 extern "C" void *fn_8012A570(u32, void *) {
     if (lbl_8055E004 == 0) {
         void *p = fn_801284F8(0x20, (void *)&lbl_8032A6F8);
@@ -544,7 +572,7 @@ extern "C" void fn_8012E96C(s32 arg0) {
     s32 arg = arg0;
     nw4r::ef::Effect *entry = lbl_8055E014;
     if (entry != 0) {
-        result = fn_8012B534(&sp8, 3);
+        result = ((s32 (*)(s32, s32 *, s32))fn_8012B534)(arg0, &sp8, 3);
         if (result == 0) {
             result = fn_8012E9F0((s32)entry, arg);
             if (result != 0)
