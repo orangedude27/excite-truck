@@ -71,7 +71,7 @@ void __DSP_remove_task(void *task) {
     *(void **)((u8 *)*(void **)((u8 *)task + 0x38) + 0x3c) = *(void **)((u8 *)task + 0x3c);
 }
 
-extern void DVDCancel(void);
+extern s32 DVDCancel();
 extern u32 MaxEntryNum_8055D838;
 extern void *BootInfo_8055D844;
 extern u8 *FstStringStart_8055D83C;
@@ -85,6 +85,23 @@ extern char __ErrorInfo[];
 extern s32 OSGetTick(void);
 s32 DVDClose(void) {
     DVDCancel();
+    return 1;
+}
+
+extern void OSPanic(const char *, s32, const char *);
+extern s32 DVDReadAbsAsyncPrio(void *, void *, s32, s32, void *, s32);
+extern void cbForReadAsync(void *, void *);
+extern char lbl_80302070[];
+extern char lbl_80558DF8[];
+s32 DVDReadAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *callback, s32 prio) {
+    s32 end;
+    if (offset < 0 || (u32)offset > *(u32 *)((u8 *)block + 0x34))
+        OSPanic(lbl_80558DF8, 0x325, lbl_80302070);
+    end = offset + length;
+    if (end < 0 || (u32)end >= *(u32 *)((u8 *)block + 0x34) + 0x20)
+        OSPanic(lbl_80558DF8, 0x32B, lbl_80302070);
+    *(void **)((u8 *)block + 0x38) = callback;
+    DVDReadAbsAsyncPrio(block, addr, length, *(s32 *)((u8 *)block + 0x30) + (offset >> 2), cbForReadAsync, prio);
     return 1;
 }
 
@@ -163,6 +180,33 @@ void fn_80035DA8(s32 arg0) {
     OSRestoreInterrupts(enabled);
     fn_8003AF1C(0, 0, fn_80036624);
     #pragma unused(arg0)
+}
+
+extern void fn_8003A1A0(u32, void (*)(void));
+extern void fn_8003BCC0(void);
+extern void fn_80035C64(void);
+extern void fn_80035C78(void);
+void fn_80036550(u32 arg0) {
+    register u8 *info;
+    OSDisableInterrupts();
+    if (lbl_8055D848 == 0) {
+        info = (u8 *)__ErrorInfo;
+        *(u32 *)(info + 0x78) = arg0;
+    } else {
+        info = (u8 *)__ErrorInfo;
+        *(u32 *)(info + lbl_8055D848 * 0x14 + 0x14) = arg0;
+    }
+    ((void (*)(void))OSRestoreInterrupts)();
+    if (arg0 == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+    } else if (arg0 == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+    } else if (arg0 & 2) {
+        fn_8003A1A0(0x1234567, fn_80035C64);
+    } else {
+        fn_8003BCC0();
+        ((void (*)(void (*)(void)))fn_8003A1A0)(fn_80035C64);
+    }
 }
 
 extern s32 MotorState_8055D8A8;
