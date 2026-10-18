@@ -681,6 +681,54 @@ void fn_801A1B9C(void* arg0) {
     fn_8019AC44(&sp2C, &sp20, f);
 }
 
+extern void* lbl_803338C0;
+extern "C" void fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
+    u8 temp_r12;
+    u8 temp_r22;
+    u8 temp_r23;
+    u8 temp_r24;
+    u8 temp_r25;
+    u8 temp_r26;
+    u8 temp_r27;
+    u8 temp_r28;
+    u8 temp_r29;
+    u8 temp_r30;
+    fn_8019ECC4();
+    *(void**)arg0 = &lbl_803338C0;
+    if (arg2 != 0) {
+        temp_r12 = *(u8*)((u8*)arg0 + 0x24);
+        temp_r22 = *(u8*)((u8*)arg0 + 0x35);
+        temp_r23 = *(u8*)((u8*)arg0 + 0x31);
+        temp_r24 = *(u8*)((u8*)arg0 + 0x2d);
+        temp_r25 = *(u8*)((u8*)arg0 + 0x29);
+        temp_r26 = *(u8*)((u8*)arg0 + 0x25);
+        temp_r27 = *(u8*)((u8*)arg0 + 0x34);
+        temp_r28 = *(u8*)((u8*)arg0 + 0x30);
+        temp_r29 = *(u8*)((u8*)arg0 + 0x2c);
+        temp_r30 = *(u8*)((u8*)arg0 + 0x28);
+        *(u8*)((u8*)arg0 + 0x24) = *(u8*)((u8*)arg0 + 0x27);
+        *(u8*)((u8*)arg0 + 0x27) = temp_r12;
+        *(u8*)((u8*)arg0 + 0x25) = *(u8*)((u8*)arg0 + 0x26);
+        *(u8*)((u8*)arg0 + 0x26) = temp_r26;
+        *(u8*)((u8*)arg0 + 0x28) = *(u8*)((u8*)arg0 + 0x2b);
+        *(u8*)((u8*)arg0 + 0x2b) = temp_r30;
+        *(u8*)((u8*)arg0 + 0x29) = *(u8*)((u8*)arg0 + 0x2a);
+        *(u8*)((u8*)arg0 + 0x2a) = temp_r25;
+        *(u8*)((u8*)arg0 + 0x2c) = *(u8*)((u8*)arg0 + 0x2f);
+        *(u8*)((u8*)arg0 + 0x2f) = temp_r29;
+        *(u8*)((u8*)arg0 + 0x2d) = *(u8*)((u8*)arg0 + 0x2e);
+        *(u8*)((u8*)arg0 + 0x2e) = temp_r24;
+        *(u8*)((u8*)arg0 + 0x30) = *(u8*)((u8*)arg0 + 0x33);
+        *(u8*)((u8*)arg0 + 0x33) = temp_r28;
+        *(u8*)((u8*)arg0 + 0x31) = *(u8*)((u8*)arg0 + 0x32);
+        *(u8*)((u8*)arg0 + 0x32) = temp_r23;
+        *(u8*)((u8*)arg0 + 0x34) = *(u8*)((u8*)arg0 + 0x37);
+        *(u8*)((u8*)arg0 + 0x37) = temp_r27;
+        *(u8*)((u8*)arg0 + 0x35) = *(u8*)((u8*)arg0 + 0x36);
+        *(u8*)((u8*)arg0 + 0x36) = temp_r22;
+    }
+}
+
 #pragma scheduling on
 void fn_801A1F44(void* arg0, void* arg1) {
     void* result = ((void* (*)(void*))((void**)*(void**)arg1)[10])(arg1);
@@ -732,7 +780,8 @@ extern void fn_8019ECC4();
 extern char lbl_803337C8;
 extern void fn_801E3FC8(s32, s32, s32, f32);
 extern s32 lbl_8055E598;
-void* fn_801A2CC0(void* arg0, s32 arg1, s32 arg2) {
+__declspec(section ".data") extern char lbl_803337C8;
+extern "C" void* fn_801A2CC0(void* arg0, s32 arg1, s32 arg2) {
     u8 temp_r6;
     u8 temp_r7;
     u8 temp_r8;
