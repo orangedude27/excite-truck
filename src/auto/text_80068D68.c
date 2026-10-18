@@ -3074,7 +3074,7 @@ BOOL btsnd_hcic_write_pin_type_800854B0(u32 pin_type) {
     buf[9] = 0xC;
     buf[10] = 1;
     buf[11] = pin_type;
-    btu_hcif_send_cmd(0xC, 0x22, 0);
+    btu_hcif_send_cmd(buf);
     return TRUE;
 }
 
