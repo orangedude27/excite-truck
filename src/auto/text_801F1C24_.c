@@ -709,4 +709,5 @@ int fn_801F4C98(void) { return -1; }
 void fn_801F4CA0(void) {
 
 }
-
+#define M2C_FIELD(expr, type, offset) (*(type)((char *)(expr) + (offset)))
+extern int fn_802C7040(int);
