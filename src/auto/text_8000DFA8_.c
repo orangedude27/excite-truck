@@ -108,11 +108,12 @@ extern char lbl_802FC3DC[];
 extern s32 fn_802E317C(void *);
 extern char lbl_802FC420[];
 extern char lbl_802FC42C[];
-#pragma scheduling on
+#pragma scheduling off
+#pragma peephole off
 void fn_8000F188(s32 arg0) {
-    register s32 a1 = 0;
-    lbl_80558A94 = fn_802C6FC0(arg0, 0, a1);
+    lbl_80558A94 = fn_802C6FC0(arg0, 0, 0);
 }
+#pragma peephole on
 #pragma scheduling reset
 void fn_8000F1B4(void) {
     fn_802C6CF8(lbl_80558A94);
@@ -254,6 +255,7 @@ void fn_8000FB44(void) {
 }
 #pragma dont_inline off
 extern void fn_80010FDC(s32);
+extern f32 lbl_80560280;
 extern f32 fn_8023293C(s32, f32);
 extern f32 fn_80235F64(s32, s32);
 extern f32 lbl_8056025C;
@@ -596,6 +598,35 @@ void fn_800121A4(void) {
     base[0] = n;
     if (n < 3) return;
     base[0] = 0;
+}
+
+extern void fn_801331C4(s32, void *, f32 *);
+extern void *lbl_802FC580;
+void fn_800121F0(void) {
+    f32 sp8;
+    s32 *base = (s32 *)lbl_8055D4AC;
+    s32 *p;
+    s32 i;
+    sp8 = lbl_80560264;
+    fn_801331C4(4, lbl_802FC580, &sp8);
+    for (i = 0; i < 2; i++) {
+        p = (s32 *)base[1];
+        if (p != 0 && sp8 != *(f32 *)(p + 2)) {
+            *(u8 *)(p + 0x4D) = 1;
+            *(f32 *)(p + 2) = sp8;
+        }
+        p = (s32 *)base[2];
+        if (p != 0 && sp8 != *(f32 *)(p + 2)) {
+            *(u8 *)(p + 0x4D) = 1;
+            *(f32 *)(p + 2) = sp8;
+        }
+        p = (s32 *)base[3];
+        if (p != 0 && sp8 != *(f32 *)(p + 2)) {
+            *(u8 *)(p + 0x4D) = 1;
+            *(f32 *)(p + 2) = sp8;
+        }
+        base += 3;
+    }
 }
 
 s32 fn_800122B4(s32 arg0, s32 arg1) {
