@@ -3569,6 +3569,26 @@ void fn_8009578C(void *arg0) {
     }
 }
 
+void rfc_check_send_cmd(void *arg0, void *arg1) {
+    register u8 *p = (u8 *)arg0;
+
+    if (arg1 != 0) {
+        GKI_enqueue((BUFFER_Q *)(p + 0x18), arg1);
+        goto dequeue;
+    }
+dequeue:
+    for (;;) {
+        arg1 = GKI_dequeue((BUFFER_Q *)(p + 0x18));
+        if (arg1 == 0) {
+            return;
+        }
+        L2CA_DataWrite(*(u16 *)(p + 0x68), (BT_HDR *)arg1);
+        if (p[0x73] != 0) {
+            return;
+        }
+    }
+}
+
 BOOLEAN SDP_ServiceSearchRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
     tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
     if (p_ccb == NULL) return FALSE;
@@ -3861,6 +3881,35 @@ void* TPLGet(void* tpl, u32 index) {
     u32 count = *(u32*)((u8*)tpl + 4);
     u8* entries = *(u8**)((u8*)tpl + 8);
     return entries + (index % count) * 8;
+}
+
+s32 EUARTInit(void) {
+    u8 sp8;
+    s32 temp_r31;
+    extern u32 lbl_8055DC98, lbl_8055DC9C, lbl_8055DCA0;
+    if (lbl_8055DC98 != 0) return 1;
+    if (!(OSGetConsoleType() & 0x10000000)) {
+        lbl_8055DC9C = 2;
+        return 0;
+    }
+    temp_r31 = OSDisableInterrupts();
+    sp8 = 0xF2;
+    if (EXIWriteReg(0, 1, 0xB0000000, &sp8, 1) == 0) {
+        lbl_8055DC9C = 5;
+        OSRestoreInterrupts(temp_r31);
+        return 0;
+    }
+    sp8 = 0xF3;
+    if (EXIWriteReg(0, 1, 0xB0000000, &sp8, 1) == 0) {
+        lbl_8055DC9C = 5;
+        OSRestoreInterrupts(temp_r31);
+        return 0;
+    }
+    OSRestoreInterrupts(temp_r31);
+    lbl_8055DC98 = 1;
+    lbl_8055DC9C = 0;
+    lbl_8055DCA0 = 0;
+    return 1;
 }
 
 s32 fn_8009D000(void) {
