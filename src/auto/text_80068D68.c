@@ -857,6 +857,16 @@ void fn_80070AF0(s32 arg0) {
     GKI_shutdown();
 }
 
+void fn_80070B54(void) {
+    lbl_80559050 = 1;
+    lbl_80559054 = 1;
+    lbl_8055DC78 = 0;
+    lbl_8055DC7C = 0;
+    fn_8008251C();
+    fn_80070854();
+    bta_sys_init();
+}
+
 extern unsigned char lbl_803C0A50[];
 extern unsigned char lbl_803C0AD8[];
 void fn_80070F90(void *arg0) {
