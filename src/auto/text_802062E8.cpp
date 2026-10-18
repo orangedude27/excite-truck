@@ -21,6 +21,13 @@ public:
     virtual void pad0(); virtual void pad1(); virtual void pad2(); virtual void pad3();
     virtual void f4(int, int);
 };
+class ObjIface80207218 {
+public:
+    virtual void m0(); virtual void m1(); virtual void m2(); virtual void m3();
+    virtual void m4(); virtual void m5(); virtual void m6(); virtual void m7();
+    virtual void m8(); virtual void m9(); virtual void m10();
+    virtual float get();
+};
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -195,29 +202,23 @@ extern "C" void fn_80206B10(void) {
 }
 
 extern "C" void fn_80206B14(void *arg0, int arg1, int arg2) {
-    if (*(unsigned char *)((char *)arg0 + 0x4D)) {
-        float value = *(float *)((char *)arg0 + 8);
-        *(unsigned char *)((char *)arg0 + 0x4D) = 0;
-        void *obj = *(void **)((char *)arg0 + 0xC);
-        void **vt = *(void ***)obj;
-        ((void (*)(void *, float))vt[0x34 / 4])(obj, value);
+    unsigned char *p = (unsigned char *)arg0;
+    if (p[0x4D]) {
+        float value = *(float *)(p + 8);
+        p[0x4D] = 0;
+        ((Dispatch80206B14 *)*(void **)(p + 0xC))->f13(value);
     }
-    if (*(unsigned char *)((char *)arg0 + 0x4E)) {
-        void *obj = *(void **)((char *)arg0 + 0xC);
-        *(unsigned char *)((char *)arg0 + 0x4E) = 0;
-        float value = *(float *)((char *)arg0 + 4);
-        void **vt = *(void ***)obj;
-        ((void (*)(void *, float))vt[0x30 / 4])(obj, value);
+    if (p[0x4E]) {
+        void *obj = *(void **)(p + 0xC);
+        p[0x4E] = 0;
+        ((Dispatch80206B14 *)obj)->f12(*(float *)(p + 4));
     }
-    if (*(unsigned char *)((char *)arg0 + 0x4F)) {
-        void *obj = *(void **)((char *)arg0 + 0xC);
-        *(unsigned char *)((char *)arg0 + 0x4F) = 0;
-        int value = *(int *)((char *)arg0 + 0x14);
-        void **vt = *(void ***)obj;
-        ((void (*)(void *, int))vt[0x50 / 4])(obj, value);
+    if (p[0x4F]) {
+        void *obj = *(void **)(p + 0xC);
+        p[0x4F] = 0;
+        ((Dispatch80206B14 *)obj)->f19(*(int *)(p + 0x14));
     }
-    void **vt = *(void ***)arg0;
-    ((void (*)(void *, int, int))vt[0x10 / 4])(arg0, arg1, arg2);
+    ((Dispatch4_80206B14 *)arg0)->f4(arg1, arg2);
 }
 
 extern "C" void fn_80206BF4(void) {
