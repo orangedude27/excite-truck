@@ -78,10 +78,12 @@ public:
       s32 m268;
       s32 m26c;
       s32 m270;
-      f32 m274;
+            f32 m274;
       f32 m278;
       f32 m27c;
-  };
+      virtual void v36();
+      virtual s32 v37();
+    };
 
 class Unk8015A368C {
 public:
