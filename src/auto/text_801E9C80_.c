@@ -54,17 +54,17 @@ s32 fn_801E9C84(f32 *, void *, void *, s32, s32, s32, f32);
 extern f32 lbl_80562E30;
 s32 fn_801E9F08(void *arg0, void *arg1, void *arg2, s32 arg3, s32 arg4, f32 farg0) {
     f32 sp8, spC, sp10;
-    f32 a = *(f32 *)arg1;
-    f32 b = *((f32 *)arg1 + 1);
-    f32 c = *((f32 *)arg1 + 2);
-    sp8 = a;
-    spC = b - (lbl_80562E30 + farg0);
-    sp10 = c;
-    if (fn_801E9C84(&sp8, arg0, 0, c, b, a, farg0) != 0) {
+    f32 temp0 = *(f32 *)arg1;
+    f32 temp1 = *((f32 *)arg1 + 1);
+    f32 temp2 = *((f32 *)arg1 + 2);
+    sp8 = temp0;
+    spC = temp1 - (lbl_80562E30 + farg0);
+    sp10 = temp2;
+    if (fn_801E9C84(&sp8, arg1, arg2, arg3, (s32)arg0, 0, farg0) != 0) {
         sp8 = *(f32 *)arg2;
         spC = *((f32 *)arg2 + 1);
         sp10 = *((f32 *)arg2 + 2);
-        if (fn_801E9C84(&sp8, arg1, arg2, arg3, arg4, 0, farg0) != 0)
+        if (fn_801E9C84(&sp8, arg1, arg2, arg3, (s32)arg0, arg4, farg0) != 0)
             return 1;
     }
     return 0;
@@ -138,7 +138,7 @@ void fn_801EA1DC(void) {
 }
 
 s32 fn_801DD3BC(s32);
-void fn_801EA1E0(s32 arg0, s32 arg1) { fn_801DD3BC(arg1 != 0); }
+void fn_801EA1E0(s32 arg0, s32 arg1) { ((void (*)(s32, s32))fn_801DD3BC)(arg0, arg1 != 0); }
 
 void fn_801EA1F0(void) {
     fn_801DD808();
