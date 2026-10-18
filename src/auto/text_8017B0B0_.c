@@ -15,6 +15,8 @@ extern void fn_80179D94(void);
 extern void fn_8017B2D0(void*, float, float, float, float);
 extern void fn_80179D08(void);
 extern char lbl_80331CC4[];
+extern float PSVECDotProduct(const void *, const void *);
+extern float lbl_80558DC4;
 
 void *fn_8017B0B0(void *arg0) {
     fn_80179D08();
