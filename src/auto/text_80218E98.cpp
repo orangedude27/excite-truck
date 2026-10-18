@@ -3,6 +3,9 @@
 
 #include <types.h>
 extern "C" int lbl_8033F998[];
+extern "C" s32 fn_802C5130(s32, void *);
+extern "C" s32 fn_802C51C0(s32);
+extern "C" s32 fn_802C5220(s32);
 extern "C" void *lbl_8033E878[];
 extern "C" void *lbl_8033DCF8[];
 extern "C" void fn_802192AC(void *);
