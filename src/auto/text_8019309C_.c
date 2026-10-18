@@ -670,7 +670,6 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
   extern int lbl_8055E0D0;
   extern void fn_8018ADBC(int, float);
   extern void fn_8018ADB4(int, float);
-  extern void fn_8018ADAC(void *, float);
   extern void fn_8018AE24(int, int);
   extern void fn_80136EA4(int, int);
   extern void fn_80136E8C(int, int, int);
