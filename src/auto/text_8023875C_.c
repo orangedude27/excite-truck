@@ -74,5 +74,14 @@ int fn_80238A20(void) {
     return (int)(lbl_805636F0 * (float)fn_80232B70(lbl_8055F0D4));
 }
 
-void fn_80238A74(int arg1) { fn_8023875C(arg1 - 3, 9); }
+void fn_80238A74(int arg0, int arg1, int arg2, int arg3) { ((int (*)(int, int, int, int, int))fn_8023875C)(arg0, arg1 - 3, arg2, arg3, 9); }
+
+void fn_80238A80(int arg0, int arg1, int arg2, const char *fmt, ...) {
+    char buffer[256];
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(buffer, fmt, args);
+    ((void (*)(int, int, int, int))fn_80238A74)(arg0, arg1, (int)buffer, arg2);
+}
+
 #include <stdarg.h>
