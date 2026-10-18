@@ -50,6 +50,14 @@ void fn_801E2F00(void) {
     }
     lbl_8055EA50 = p;
 }
+
+void fn_801E2F68(void) {
+    if (lbl_8055EA50 != 0) {
+        ((void (*)(void *, int))(*(void ***)lbl_8055EA50)[2])(lbl_8055EA50, 1);
+    }
+    lbl_8055EA50 = 0;
+}
+
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801E2FAC(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_8012A260((void*)arg0, 0);
@@ -67,7 +75,7 @@ void fn_801E31D8(s32 *arg0) {
 }
 
 s32 fn_801E320C(void) {
-    return fn_801E2DEC(0, 0, 0) != 0;
+    return fn_801E2DEC(0) != 0;
 }
 
 #pragma push
@@ -90,7 +98,7 @@ void fn_801E33E4(void *arg0, void *arg1) {
 }
 void fn_801E3440(void* arg0) {
     f32 sp[12];
-    fn_801E3284(sp, 0, 0);
+    ((void (*)(void*))fn_801E3284)(sp);
     *(f32*)((u8*)arg0 + 0) = sp[9];
     *(f32*)((u8*)arg0 + 4) = sp[10];
     *(f32*)((u8*)arg0 + 8) = sp[11];
@@ -117,8 +125,7 @@ void fn_801E3488(void *arg0, void *arg1) {
 
 void fn_801E34E4(s32 *arg0, s32 arg1) {
     s32 sp8[12];
-    s32 val = *arg0;
-
+    register s32 val = *arg0;
     if (val != -1) {
         fn_801E3284(&sp8[0], arg0, arg1);
         fn_802C744C(*arg0, &sp8[0]);
