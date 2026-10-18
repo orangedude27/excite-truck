@@ -682,6 +682,8 @@ void fn_801A1B9C(void* arg0) {
 }
 
 extern void* lbl_803338C0;
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
     u8 temp_r12;
     u8 temp_r22;
