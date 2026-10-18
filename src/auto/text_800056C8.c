@@ -150,6 +150,7 @@ void fn_80005B74(void) {
         }
     }
 }
+#pragma dont_inline reset
 #pragma pop
 s32 fn_80005FE0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
