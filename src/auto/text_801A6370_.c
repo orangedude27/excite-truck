@@ -8,7 +8,7 @@ extern float lbl_80562428;
 extern float *fn_80265D98(void);
 extern void fn_8012F57C(int, void *, void *, float);
 float fn_801A6370(float arg0, float arg1, float arg2, float arg3) {
-    return arg0 + arg1 * arg3 + arg3 * (lbl_80562418 * arg2 * arg3);
+    return arg0 + arg1 * arg3 + arg3 * (arg3 * (lbl_80562418 * arg2));
 }
 
 float fn_801A6390(int arg0, int arg1) {
@@ -47,7 +47,6 @@ extern void fn_80182010(void);
 extern void *fn_801A644C(void *);
 extern void *fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, int, int, int);
-extern void *memset(void *, int, unsigned int);
 extern float lbl_8056242C;
 extern float lbl_80562430;
 extern char lbl_80333CA8;
@@ -121,18 +120,24 @@ void fn_801A7444(void *arg0) {
 
 #pragma scheduling reset
 void fn_801A7530(void* arg0, void* arg1) {
+    float zero;
+    float* v;
+    int second;
+    int third;
     if (*(int*)((char*)arg0 + 0x2610) == 0 || *(unsigned char*)((char*)arg0 + 0x2741) != 0) {
-        float zero=lbl_8056242C;
-        *(float*)((char*)arg1+4)=zero;
-        *(float*)((char*)arg1+8)=zero;
-        *(float*)((char*)arg1+0xc)=zero;
-        *(float*)arg1=zero;
+        zero = lbl_8056242C;
+        *(float*)((char*)arg1 + 4) = zero;
+        *(float*)((char*)arg1 + 8) = zero;
+        *(float*)((char*)arg1 + 0xc) = zero;
+        *(float*)arg1 = zero;
     } else {
-        float* v=fn_80265D98();
-        *(float*)arg1=*v;
-        *(int*)((char*)arg1+4)=*(int*)((char*)v+4);
-        *(int*)((char*)arg1+8)=*(int*)((char*)v+8);
-        *(int*)((char*)arg1+0xc)=*(int*)((char*)v+0xc);
+        v = fn_80265D98();
+        *(float*)arg1 = *v;
+        second = *(int*)((char*)v + 8);
+        third = *(int*)((char*)v + 4);
+        *(int*)((char*)arg1 + 4) = third;
+        *(int*)((char*)arg1 + 8) = second;
+        *(int*)((char*)arg1 + 0xc) = *(int*)((char*)v + 0xc);
     }
 }
 
