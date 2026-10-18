@@ -357,18 +357,16 @@ void fn_801E8CB8(float *arg0, float *arg1) {
     arg1[0] = lbl_804881D8[3];
 }
 
+#pragma scheduling off
 void fn_801E8CE4(void) {
-    fn_80297984();
-    fn_802889F0();
+    fn_80297984(); fn_802889F0();
     if (lbl_8055EB24 != 0) ((void (*)(void))lbl_8055EB24)();
-    fn_80287914();
-    fn_801FA1D4();
-    fn_802C1A08();
+    fn_80287914(); fn_801FA1D4(); fn_802C1A08();
     memset(lbl_80487CE0, 0, 0x10);
     lbl_8055EB18 = lbl_80562DBC;
     lbl_8055EB14 = lbl_80562DBC;
 }
-
+#pragma scheduling on
 void fn_801E8D48(void) {
     struct Init { void *name; int size; float a,b,c,d,e,f,g,h; } init;
     init.name = (void *)0x57484C50;
