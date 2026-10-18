@@ -139,6 +139,7 @@ void fn_8000B3B4(void) {
         callback();
 }
 
+#pragma dont_inline on
 void fn_8000B3DC(unsigned char arg0) {
     extern unsigned char lbl_8055D3EC;
     extern void fn_8000B5A8(void);
@@ -149,6 +150,42 @@ void fn_8000B3DC(unsigned char arg0) {
     AXFXSetHooks_8020DE10(fn_8000B5A8,
         (int)fn_8000B3B4 & (-(int)lbl_8055D3EC | (int)lbl_8055D3EC) >> 31,
         lbl_8055D3EC);
+}
+
+extern int fn_8016212C(void), fn_80265D64(void), fn_80265D6C(void), fn_80265D50(void);
+extern int fn_80265D54(int), fn_80176734(void), fn_801CB3F8(void), fn_8001EFB8(void);
+extern int fn_802E30C8(void *);
+extern void fn_8000B3DC(unsigned char);
+extern void fn_8000ADE0(int);
+extern unsigned char lbl_8055D3D4, lbl_8055D3D5;
+extern int lbl_802FBF80;
+int fn_8000B42C(int arg0) {
+    int var_r31 = 1;
+    if (fn_8016212C() == 0) {
+        switch (arg0) {
+        case 0: break;
+        case 1:
+            if (fn_80265D64() == 0) fn_80176734();
+            else if (fn_80265D6C() != 0) fn_80265D54(2);
+            else fn_802E30C8(&lbl_802FBF80);
+            fn_801CB3F8();
+            fn_8001EFB8();
+            break;
+        case 3:
+            if (fn_80265D64() == 0) {
+                lbl_8055D3D4 = 0;
+                lbl_8055D3D5 = 1;
+            } else if (fn_80265D6C() != 0) lbl_8055D3D4 = 0;
+            else fn_80265D50();
+            break;
+        case 2:
+            var_r31 = 0;
+            fn_8000B3DC(1);
+            break;
+        }
+    }
+    if (var_r31 != 0) fn_8000ADE0(lbl_8055D3DC);
+    return 1;
 }
 
 void fn_8000BD98(void) {
@@ -197,16 +234,10 @@ void fn_8000C6E4(void) {
 }
 
 void fn_8000C730(void) {
-    if (lbl_8055D3DC == 19) {
-        lbl_8055D3DC = 20;
-    } else if (lbl_8055D3DC < 19) {
-        if (lbl_8055D3DC == 0) {
-            lbl_8055D3DC = 19;
-        } else {
-            lbl_8055D3DC = 0;
-        }
-    } else {
-        lbl_8055D3DC = 0;
+    switch ((int)lbl_8055D3DC) {
+    case 19: lbl_8055D3DC = 0x13; return;
+    case 0: lbl_8055D3DC = 0x14; return;
+    default: lbl_8055D3DC = 0; return;
     }
 }
 
