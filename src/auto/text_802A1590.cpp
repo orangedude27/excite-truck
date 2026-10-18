@@ -41,10 +41,8 @@ public:
     virtual void v3();
     virtual void v4();
           virtual void v5();
-      virtual void v6(); // 0x18
-      virtual void v7(); // 0x1C
-      virtual void update(); // 0x20
-      virtual void v8(); // 0x24
+              virtual void v6(); // 0x20
+        virtual void v7(); // 0x24
 };
 
 class LocalCall {
