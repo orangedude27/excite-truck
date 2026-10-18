@@ -12,10 +12,28 @@ extern unsigned short *__cpReg;
 extern unsigned short *__peReg;
 extern unsigned int lbl_8037C0E4;
 extern unsigned int lbl_8055D974;
-extern void GXGetVtxDesc(void);
-extern void __GXSaveFifo(void);
+  extern void GXGetVtxDesc(void);
+  extern void __GXSaveFifo(void);
 
-extern char lbl_8055D949;
+  typedef struct _GXLightObjImpl {
+      char UNK_0x0[0xC];
+      char UNK_0xC[0x4];
+      f32 aa;
+      f32 ab;
+      f32 ac;
+      f32 ka;
+      f32 kb;
+      f32 kc;
+  } GXLightObjImpl;
+
+  typedef enum _GXDistAttnFn {
+      GX_DA_OFF,
+      GX_DA_GENTLE,
+      GX_DA_MEDIUM,
+      GX_DA_STEEP
+  } GXDistAttnFn;
+
+  extern char lbl_8055D949;
 s32 __GXDefaultTlutRegionCallback(unsigned int region) {
     if (region >= 0x14) {
         return 0;
