@@ -615,12 +615,15 @@ void fn_801F447C(void) {
 }
 
 void fn_801F4480(int unused, void *arg1) {
-    void *p=arg1;
-    do {
-        int v=*(int *)((char *)p+4);
-        if(fn_801F1CF0((char *)p+0x2C)) fn_802C7040(v);
-        p=*(void **)((char *)p+12);
-    } while(p!=0);
+    int v;
+    void *p = arg1;
+    goto check;
+loop:
+    v = *(int *)((char *)p + 4);
+    if (fn_801F1CF0((char *)p + 0x2C)) fn_802C7040(v);
+    p = *(void **)((char *)p + 12);
+check:
+    if (p != 0) goto loop;
 }
 
 void fn_801F44DC(int a,int b,void *c,int d) {
