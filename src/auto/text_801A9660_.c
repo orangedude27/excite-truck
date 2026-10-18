@@ -383,6 +383,3 @@ long fn_801ADAB8(void *arg0) {
 void fn_801ADAC0(void *arg0, long arg1) {
     fn_801AC240((void *)arg1);
 }
-struct FnTable_801ADA9C { char pad[0x18]; void (*call)(void *, void *, void *); };
-struct Obj_801ADA9C { struct FnTable_801ADA9C *vtable; };
-extern unsigned char lbl_8055A8A0, lbl_8055A8B0;
