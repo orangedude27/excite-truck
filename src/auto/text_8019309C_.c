@@ -8,7 +8,7 @@
     extern void fn_801933FC(void *, void *);
     extern double fn_8002F234(float);
     extern float lbl_8055E584, lbl_8055E588;
-    extern void fn_80129DC4(int, float, float);
+    extern float fn_80129DC4(int, float, float);
     extern void fn_8013530C(void *, int);
     extern int lbl_8055E550;
     extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204;
@@ -251,10 +251,12 @@ void fn_80193A38(void *arg0) {
 }
 
 void *fn_80193A50(void *arg0, int arg1) {
+    int temp_r0;
+
     if (arg0 != 0) {
-        int index = *(int *)((char *)arg0 + 0x290);
-        if (index != -1000) {
-            ((int *)lbl_804349C0)[index] = 0;
+        temp_r0 = *(int *)((char *)arg0 + 0x290);
+        if (temp_r0 != -1000) {
+            ((int *)lbl_804349C0)[temp_r0] = 0;
         }
         lbl_8055E550 -= 1;
         if ((char *)arg0 + 0x168 != 0) {
@@ -377,10 +379,13 @@ void fn_801944C0(void *arg0) {
 extern float lbl_8055A488;
 extern float lbl_8056215C;
 void fn_801945F8(void *arg0) {
-    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) != 0x50 ||
-        *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24) == 3) {
-        fn_80194590(arg0);
+    int first = *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0);
+    if (first == 0x50) {
+        int second = *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24);
+        if (second != 3)
+            return;
     }
+    fn_80194590(arg0);
 }
 
 void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
@@ -407,9 +412,13 @@ float fn_80194B60(float a, float b, float c, float d) {
     }
     ratio = distance / (c * lbl_8056215C);
     curve = lbl_805621A4;
-    if (ratio < curve) goto done;
+    if (ratio < curve) {
+        goto done;
+    }
     curve = lbl_80562140;
-    if (ratio > curve) goto done;
+    if (ratio > curve) {
+        goto done;
+    }
     if (ratio > lbl_80562144) {
         curve = ((lbl_805621D0 * ratio) * ratio) * ratio + ((lbl_805621D4 * ratio) * ratio);
     } else {
@@ -552,14 +561,15 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
   extern void fn_8018AE24(int, int);
   extern void fn_80136EA4(int, int);
   extern void fn_80136E8C(int, int, int);
-  void fn_80196328(void *arg0) {
-      fn_8018ADBC(*(int *)((char *)arg0 + 0x294), lbl_80562140);
-      fn_8018ADB4(*(int *)((char *)arg0 + 0x294), lbl_80562144);
-      fn_8018ADAC(*(void **)((char *)arg0 + 0x294), lbl_80562144);
-      fn_8018AE24(*(int *)((char *)arg0 + 0x294), 0);
-      fn_80136EA4(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290));
-      fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 0);
-  }
+void fn_80196328(void *arg0) {
+    float value = lbl_80562140;
+    fn_8018ADBC(*(int *)((char *)arg0 + 0x294), value);
+    fn_8018ADB4(*(int *)((char *)arg0 + 0x294), lbl_80562144);
+    fn_8018ADAC(*(void **)((char *)arg0 + 0x294), lbl_80562144);
+    fn_8018AE24(*(int *)((char *)arg0 + 0x294), 0);
+    fn_80136EA4(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290));
+    fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 0);
+}
 
   extern int fn_801B2F24(void);
   extern void fn_801B2F40(int);
