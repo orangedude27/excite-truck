@@ -88,22 +88,44 @@ void fn_801ABFF4(void) {
     fn_8017A57C();
 }
 
+#pragma push
+#pragma processor 750
+#pragma scheduling 750
+#pragma use_lmw_stmw off
+void fn_801AC0A0(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
+ extern float lbl_805624E8;
+ extern int lbl_803357F0[];
+ extern void fn_8017D2C8(void *, void *, void *, int, int);
+ struct { void *v; float a[3], b[3]; int c,d; } event;
+ float value, scale, squared;
+ float z2,y2,x2,z,y,x;
+ if(arg3>=100 && *((unsigned char *)arg0+0x220)==0) {
+ value=*(float *)((char *)arg0+0xD4);
+ scale=lbl_805624E8 * value;
+ squared=scale*scale;
+ if(PSVECDotProduct((Vec *)arg1,(Vec *)arg1)>squared) {
+ x=arg1[0]; y=arg1[1]; z=arg1[2];
+ x2=arg2[0]; y2=arg2[1]; z2=arg2[2];
+ event.v=lbl_803357F0;
+ event.a[0]=x; event.a[1]=y; event.a[2]=z;
+ event.b[0]=x2; event.b[1]=y2; event.b[2]=z2;
+ event.c=arg3; event.d=arg4;
+ ((void (*)(void *, void *))fn_801ABFF8)(arg0,&event);
+ }
+ }
+ fn_8017D2C8(arg0,arg1,arg2,arg3,0);
+}
+#pragma pop
+
 extern void fn_8017A580(void *, int, int, int, int, int, int, int);
 extern void fn_8017B164(void *);
 void fn_801AC184(void *arg0) {
-    int t4;
-    int t5;
-    int t6;
-    int t7;
-    int t8;
-    int t9;
-    int t10;
-
+    int t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
     fn_801AC240(arg0);
-    *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg0 + 0x1EC);
-    *(int *)((char *)arg0 + 0x40) = *(int *)((char *)arg0 + 0x1F0);
-    *(int *)((char *)arg0 + 0x44) = *(int *)((char *)arg0 + 0x1F4);
-    *(int *)((char *)arg0 + 0x48) = *(int *)((char *)arg0 + 0x1F8);
+    t0 = *(int *)((char *)arg0 + 0x1EC);
+    t1 = *(int *)((char *)arg0 + 0x1F0);
+    t2 = *(int *)((char *)arg0 + 0x1F4);
+    t3 = *(int *)((char *)arg0 + 0x1F8);
     t4 = *(int *)((char *)arg0 + 0x1FC);
     t5 = *(int *)((char *)arg0 + 0x200);
     t6 = *(int *)((char *)arg0 + 0x204);
@@ -111,6 +133,11 @@ void fn_801AC184(void *arg0) {
     t8 = *(int *)((char *)arg0 + 0x20C);
     t9 = *(int *)((char *)arg0 + 0x210);
     t10 = *(int *)((char *)arg0 + 0x214);
+    t11 = *(int *)((char *)arg0 + 0x218);
+    *(int *)((char *)arg0 + 0x3C) = t0;
+    *(int *)((char *)arg0 + 0x40) = t1;
+    *(int *)((char *)arg0 + 0x44) = t2;
+    *(int *)((char *)arg0 + 0x48) = t3;
     *(int *)((char *)arg0 + 0x4C) = t4;
     *(int *)((char *)arg0 + 0x50) = t5;
     *(int *)((char *)arg0 + 0x54) = t6;
@@ -118,8 +145,7 @@ void fn_801AC184(void *arg0) {
     *(int *)((char *)arg0 + 0x5C) = t8;
     *(int *)((char *)arg0 + 0x60) = t9;
     *(int *)((char *)arg0 + 0x64) = t10;
-    *(int *)((char *)arg0 + 0x68) = *(int *)((char *)arg0 + 0x218);
-
+    *(int *)((char *)arg0 + 0x68) = t11;
     fn_8017A580(arg0, t10, t9, t8, t7, t6, t5, t4);
     fn_8017B164(arg0);
     *(unsigned char *)((char *)arg0 + 0x223) = 1;
@@ -162,6 +188,68 @@ void *fn_801AC330(void *arg0) {
     return arg0;
 }
 
+#pragma dont_inline on
+void fn_801AC508(void) {
+    register s32 value;
+    value = lbl_8055E5EC;
+    if (value > 0) {
+        lbl_8055E5F0 = fn_801C1BA4(value * 5, value * 5 - 1);
+    }
+}
+#pragma dont_inline reset
+
+#pragma push
+#pragma scheduling 750
+void fn_801ACA48(void *arg0) {
+    extern void fn_801ABC28(void *);
+    extern float lbl_8056247C, lbl_805624CC, lbl_80562508, lbl_8056250C;
+    Vec cross;
+    float x, y, z;
+    float scale, zero, input;
+    float copyZ, copyY, copyX;
+    float vz, vy, vx, px, factor;
+    float py, pz, input2;
+    char *p = arg0;
+    fn_801ABC28(arg0);
+    if (*(unsigned char *)(p + 0x220)) {
+        input = *(float *)(p + 0x124);
+        scale = lbl_805624CC;
+        x = input * scale;
+        y = *(float *)(p + 0x128) * scale;
+        z = *(float *)(p + 0x12C) * scale;
+        zero = lbl_8056247C;
+        *(float *)(p + 0x118) = zero;
+        *(float *)(p + 0x11C) = zero;
+        *(float *)(p + 0x120) = zero;
+        *(float *)(p + 0x124) = x;
+        *(float *)(p + 0x128) = y;
+        *(float *)(p + 0x12C) = z;
+        PSVECCrossProduct((Vec *)(p + 0x48), (Vec *)(p + 0x1F8), &cross);
+        if (*(float *)(p + 0x4C) < lbl_80562508) {
+            input2 = cross.x;
+            factor = lbl_8056250C;
+            px = input2 * factor;
+            vx = *(float *)(p + 0x124);
+            vy = *(float *)(p + 0x128);
+            vz = *(float *)(p + 0x12C);
+            vx += px;
+            *(float *)(p + 0x124) = vx;
+            py = cross.y * factor;
+            vy += py;
+            *(float *)(p + 0x128) = vy;
+            pz = cross.z * factor;
+            vz += pz;
+            *(float *)(p + 0x12C) = vz;
+        }
+        copyX = *(float *)(p + 0x210);
+        copyY = *(float *)(p + 0x214);
+        copyZ = *(float *)(p + 0x218);
+        *(float *)(p + 0x60) = copyX;
+        *(float *)(p + 0x64) = copyY;
+        *(float *)(p + 0x68) = copyZ;
+    }
+}
+#pragma pop
 void fn_801AD5EC(void) {
     fn_801AC508();
 }
@@ -207,7 +295,8 @@ long fn_801AD880(void) {
 }
 
 void fn_801AD888(void *arg0) {
-    ((void (**)(void *))(*(void ***)arg0))[4](arg0);
+    register void (*method)(void *) = ((void (**)(void *))(*(void ***)arg0))[4];
+    method(arg0);
     ((void (*)(void *))fn_801AC254)(arg0);
 }
 
@@ -294,4 +383,6 @@ long fn_801ADAB8(void *arg0) {
 void fn_801ADAC0(void *arg0, long arg1) {
     fn_801AC240((void *)arg1);
 }
-
+struct FnTable_801ADA9C { char pad[0x18]; void (*call)(void *, void *, void *); };
+struct Obj_801ADA9C { struct FnTable_801ADA9C *vtable; };
+extern unsigned char lbl_8055A8A0, lbl_8055A8B0;
