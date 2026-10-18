@@ -1,4 +1,12 @@
 #include "types.h"
+
+class Obj80206518 {
+public:
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+    virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+    virtual void f12(); virtual void f13(); virtual void f14();
+};
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
