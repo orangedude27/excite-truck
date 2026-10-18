@@ -641,6 +641,13 @@ extern "C" u32 fn_8014435C(void) { return 1; }
 
 extern "C" s32 fn_80144364(void) { return 0; }
 
+extern "C" s32 fn_8014436C(TObj20 *arg0, s32 arg1) {
+    s32 result = 0;
+    if (fn_801B8514() != 0 && arg0->v20(arg1) == 0)
+        result = 1;
+    return result;
+}
+
 extern "C" s32 fn_801B8514(void);
 extern "C" s32 fn_801443E0(void) { return 0; }
 
