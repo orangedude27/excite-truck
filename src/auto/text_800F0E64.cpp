@@ -671,36 +671,34 @@ extern "C" void* LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm
 extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void*, void*);
 extern "C" void* GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(void*);
 extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* arg0) {
-    s32 sp10;
-    s32 sp8;
-    void (*callback)(s32, void*, s32, void*);
-    void (*callback2)(s32, void*, s32, void*);
+    char buffer[0x230];
+    char reader[8];
+    void* callback;
     void* mutex;
-    void* mutex2;
     void* result;
     void* base;
 
-    fn_800F41D0(&sp10, *(s32*)((char*)arg0 + 0x14));
+    fn_800F41D0(buffer, *(s32*)((char*)arg0 + 0x14));
     mutex = *(void**)((char*)arg0 + 0x2c);
     OSLockMutex(mutex);
-    *(void**)((char*)arg0 + 0x10) = &sp10;
+    *(void**)((char*)arg0 + 0x10) = buffer;
     OSUnlockMutex(mutex);
-    mutex2 = *(void**)((char*)arg0 + 0x2c);
-    result = LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(&sp10, *(u32*)((char*)arg0 + 0x18), *(void**)((char*)arg0 + 0x20));
-    OSLockMutex(mutex2);
+    result = LoadFile__Q46nw4hbm3snd6detail18SoundArchiveLoaderFUlPQ36nw4hbm3snd22SoundMemoryAllocatable(buffer, *(u32*)((char*)arg0 + 0x18), *(void**)((char*)arg0 + 0x20));
+    mutex = *(void**)((char*)arg0 + 0x2c);
+    OSLockMutex(mutex);
     *(void**)((char*)arg0 + 0x10) = 0;
-    OSUnlockMutex(mutex2);
+    OSUnlockMutex(mutex);
     if (result == 0) {
-        callback = *(void (**)(s32, void*, s32, void*))((char*)arg0 + 0x24);
-        if (callback != 0) callback(0, 0, 0, *(void**)((char*)arg0 + 0x28));
-        fn_800F420C((s32)&sp10, -1);
+        callback = *(void**)((char*)arg0 + 0x24);
+        if (callback) ((void (*)(s32, void*, s32, void*))callback)(0, 0, 0, *(void**)((char*)arg0 + 0x28));
+        fn_800F420C((s32)buffer, -1);
         return;
     }
-    __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(&sp8, result);
-    base = (void*)GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(&sp8);
-    callback2 = *(void (**)(s32, void*, s32, void*))((char*)arg0 + 0x24);
-    if (callback2 != 0) callback2(1, base, *(s32*)((char*)arg0 + 0x1c), *(void**)((char*)arg0 + 0x28));
-    fn_800F420C((s32)&sp10, -1);
+    __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(reader, result);
+    base = (void*)GetBaseAddress__Q46nw4hbm3snd6detail13SeqFileReaderCFv(reader);
+    callback = *(void**)((char*)arg0 + 0x24);
+    if (callback) ((void (*)(s32, void*, s32, void*))callback)(1, base, *(s32*)((char*)arg0 + 0x1c), *(void**)((char*)arg0 + 0x28));
+    fn_800F420C((s32)buffer, -1);
 }
 
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* self) {
@@ -818,6 +816,15 @@ void DetachSound__Q34nw4r3snd11SoundHandleFv(void **arg0) {
  *arg0=0;
 }
 
+#pragma push
+#pragma small_data off
+extern "C" void* fn_800F8310(void* self) {
+    *(void**)self = &lbl_80325C40;
+    fn_800EBB88((char*)self + 0x1C);
+    OSInitMutex((char*)self + 4);
+    return self;
+}
+#pragma pop
 extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* arg0, int arg1) {
     void* this_ = arg0;
     int flag = arg1;
@@ -1057,17 +1064,19 @@ extern "C" void* __dt__10TitleSceneFv(void* this_, s32 flag) {
 
 extern "C" void fn_800FA6E8(void) {
     if ((s8)lbl_8055DE68 == 0) {
-        u32* p = (u32*)&lbl_80412CC8[0x2384];
-        p[0] = 0;
-        p[1] = 0;
-        p[2] = 0;
-        p[3] = 0;
-        p[4] = 0;
-        p[5] = (u32)p;
-        p[6] = (u32)p;
-        ((u8*)p)[0x10] = 0;
-        __register_global_object((void*)&lbl_80412CC8[0x2388], (void*)&__dt__10TitleSceneFv,
-                                 (void*)&lbl_80412CB8, (void*)&lbl_80412CC8[0x2388]);
+        volatile u32* base = (volatile u32*)lbl_80412CC8;
+        u32* self = (u32*)&lbl_80412CC8[0x2388];
+        base[0x2388 / 4] = 0;
+        u32* ptr = (u32*)&base[0x2388 / 4];
+        base[0x238c / 4] = 0;
+        base[0x2378 / 4] = 0;
+        base[0x237c / 4] = 0;
+        base[0x2384 / 4] = 0;
+        base[0x2388 / 4] = (u32)ptr;
+        base[0x238c / 4] = (u32)ptr;
+        ((volatile u8*)base)[0x2394] = 0;
+        __register_global_object(self, (void*)&__dt__10TitleSceneFv,
+                                 (void*)&lbl_80412CB8, self);
         lbl_8055DE68 = 1;
     }
     OSSendMessage((void*)&lbl_80412CC8[0x2338], (void*)1, 0);
@@ -1195,9 +1204,9 @@ extern "C" f32 fn_800FC640(void *arg0) { return *(f32 *)((u8 *)arg0 + 0x460); }
 
 extern "C" const char lbl_803268AC[];
 extern "C" void SetFxSend__Q46nw4hbm3snd6detail9SeqPlayerFQ36nw4hbm3snd6AuxBusf_800FC648(void *self, s32 bus, f32 value) {
-    if (bus < 0 || bus >= 3) {
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x309, lbl_803268AC, bus, 0, 3);
-    }
+    int valid = 0;
+    if (bus >= 0 && bus < 3) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80326768, 0x309, lbl_803268AC, bus, 0, 3);
     u32 token = OSDisableInterrupts();
     *(f32 *)((u8 *)self + 0x464 + bus * 4) = value;
     OSRestoreInterrupts(token);
