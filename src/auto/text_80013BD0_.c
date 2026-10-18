@@ -62,12 +62,9 @@ void fn_80013C98(f32 *arg0) {
 void fn_80013CFC(f32 *arg0) {
     f32 value;
     if (fn_801E7E24() > lbl_80560360) {
-        value = *arg0 - fn_801E7E24() / lbl_80560364;
-        if (value <= lbl_80560360) {
-            value = lbl_80560360;
-        } else {
-            value = value;
-        }
+        value = fn_801E7E24() / lbl_80560364;
+        value = *arg0 - value;
+        value = value > lbl_80560360 ? value : lbl_80560360;
         *arg0 = value;
     }
 }
