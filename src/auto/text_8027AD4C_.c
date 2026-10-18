@@ -16,6 +16,7 @@ long fn_8027C41C(long);
 long fn_8027C4B4(long, long);
 extern long lbl_8055F658;
 extern char lbl_80347B68[];
+extern char lbl_80347BD0[];
 
 extern char lbl_80347B78[];
 extern char lbl_80347C14[];
@@ -108,6 +109,19 @@ void fn_8027B8C0(void* alarm) {
 void fn_8027B94C(void *arg0) {
     fn_8027B8E4(arg0, fn_8000DA10());
 }
+
+#pragma dont_inline on
+long fn_8000D984(long);
+void fn_8027B984(void *arg0, long arg1) {
+    long temp_r30;
+    long temp_r31;
+
+    temp_r31 = fn_8000DA10();
+    fn_8000D984(arg1);
+    temp_r30 = fn_8027BAB8(fn_8027B878((long)arg0));
+    fn_8000D984(temp_r31);
+}
+#pragma dont_inline reset
 
 void fn_8027B9EC(void *arg0) {
     fn_8027B984(arg0, fn_8000DA10());
@@ -348,6 +362,17 @@ fetch:
         goto body;
     return 1;
 }
+
+long fn_8027C850(void *arg0) {
+    long index;
+
+    index = fn_8027C1C8((void *)lbl_8055F654, *(char **)((char *)arg0 + 4));
+    if (index == 0)
+        return 1;
+    return fn_8027C788(fn_8027C26C((void *)lbl_8055F654,
+        *(char **)((char *)fn_8027C258((void *)lbl_8055F654, index - 1) + 4)));
+}
+
 long fn_8027C8B0(void) { return 1; }
 
 long fn_8027CAB4(void *arg0) {
