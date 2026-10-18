@@ -227,7 +227,7 @@ extern "C" void fn_80218FEC(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
 extern "C" void fn_802191F0(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r0;
     s32 temp_r3;
-    temp_r3 = arg1 + ((VfObj *)arg0)->vf30();
+    temp_r3 = arg1 + ((VfObj *)arg0)->vf28();
     *(s32 *)((u8 *)arg0 + 4) = arg1;
     temp_r0 = arg2 + (*(s32 *)((u8 *)arg0 + 0x10) - *(s32 *)((u8 *)arg0 + 8));
     *(s32 *)((u8 *)arg0 + 0xC) = temp_r3;
