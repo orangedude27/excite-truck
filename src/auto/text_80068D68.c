@@ -1166,13 +1166,14 @@ void fn_80074A4C(s32 arg0) {
 }
 
 void bta_hh_api_disc_act(void *arg0, void *arg1) {
-    u8 status;
-    if (arg1 != 0)
-        status = (u8)*(u16 *)((u8 *)arg1 + 6);
-    else
-        status = *((u8 *)arg0 + 0x16);
-    if (HID_HostCloseDev() != 0)
-        (*(void (**)(int, u8 *))(lbl_803C0D48 + 0x224))(3, &status);
+    u8 handle;
+    u8 size;
+    if (arg1 != 0) handle = (u8)*(u16 *)((u8 *)arg1 + 6);
+    else handle = *((u8 *)arg0 + 0x16);
+    size = 6;
+    if ((u8)HID_HostCloseDev(handle)) {
+        (*(void (**)(int, u8 *))(lbl_803C0D48 + 0x224))(3, &size);
+    }
 }
 
 void fn_80075AA4(void *arg0) {
@@ -1450,17 +1451,14 @@ update:
 
 s32 fn_80078310(s32 arg0)
 {
-    s32 result;
     if (arg0 == 0) {
         *(s32 *)(lbl_803C0F78 + 0x4C8) = 0;
-        result = 0;
-    } else if (*(s32 *)(lbl_803C0F78 + 0x4C8) != 0) {
-        result = 2;
     } else {
+        if (*(s32 *)(lbl_803C0F78 + 0x4C8) != 0)
+            return 2;
         *(s32 *)(lbl_803C0F78 + 0x4C8) = arg0;
-        result = 0;
     }
-    return result;
+    return 0;
 }
 
 BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
