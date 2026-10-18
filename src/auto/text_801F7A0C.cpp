@@ -52,6 +52,12 @@ void fn_802C70AC(s32, void *, s32, s32);
 f32 PSVECDotProduct(const f32 *, const f32 *);
 }
 
+class F9CleanCall {
+public:
+    virtual void first();
+    virtual void next(s32);
+};
+
 class F9Resource {
 public:
     virtual void *s8(void *);
@@ -444,25 +450,21 @@ extern "C" void fn_801F96B8(void *node) {
     fn_801F95C4((void *)fn_801F948C, node);
 }
 
+#pragma dont_inline on
 extern "C" void *fn_801F96C8(void *node) {
     void *list = lbl_8055EC38;
     for (;;) {
-        if (list == NULL) {
-            break;
-        }
         if (stricmp((char *)node, (char *)list) != 0) {
             list = *(void **)((char *)list + 0x20);
-            continue;
+            if (list != NULL) continue;
         }
-        if (list != NULL) {
-            break;
-        }
+        if (list != NULL) break;
         fn_801F96A8(node);
-        list = fn_801F93FC();
+        list = ((void *(*)(void))fn_801F93FC)();
     }
     return list;
 }
-
+#pragma dont_inline reset
 extern "C" void fn_801BFD34(void *, void *, void *);
 extern "C" void fn_80015B20(void *, void *, void *);
 extern "C" void fn_80204018(void *, void *);
@@ -529,6 +531,21 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
         }
         cur = next;
     }
+}
+
+extern "C" void fn_801F9A24(F92Node **arg0) {
+    F92Node *node = *arg0;
+    for (;;) {
+        fn_801F99CC((F92Obj *)node);
+        F92Node *next = node->next;
+        if (node != 0) {
+            ((F92VT *)((F92Obj *)node)->w108)->fn8(node, 1);
+        }
+        node = next;
+        if (node == 0)
+            break;
+    }
+    *arg0 = 0;
 }
 
 #pragma dont_inline on
