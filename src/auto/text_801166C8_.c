@@ -31,13 +31,9 @@ extern u8 lbl_8041D508[];
 BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
     u32 *nodes = (u32 *)handle->FSTStart;
     s32 offset;
-    offset = entrynum * 0xC;
-    if (entrynum < 0 || (u32)entrynum >= handle->entryNum ||
-        (*(u32 *)((u8 *)nodes + offset) & 0xFF000000) != 0) {
-        return FALSE;
-    }
+    if (entrynum < 0 || (u32)entrynum >= handle->entryNum || (nodes[entrynum * 3] & 0xFF000000) != 0) return FALSE;
     info->handle = handle;
-    offset += (s32)nodes;
+    offset = (entrynum * 0xC) + (s32)nodes;
     info->startOffset = *(u32 *)(offset + 4);
     info->length = *(u32 *)(offset + 8);
     return TRUE;
