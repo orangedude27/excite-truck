@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include <stdarg.h>
+#include <string.h>
 __declspec(section ".data") extern s32 lbl_803514A0;
 
 
