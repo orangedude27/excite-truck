@@ -324,13 +324,11 @@ extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
 }
 
 extern "C" void* fn_802A3314(void* arg0, void* arg1) {
-    void* self = arg0;
-    void* receiver = arg1;
-    *(void**)self = lbl_80349B28;
-    void** vt = (void**)receiver;
-    s32 result = (*(s32 (**)(void*, void**))((char*)*vt + 0x14))(receiver, vt);
-    fn_802A3500(self, result);
-    return self;
+    *(void**)arg0 = lbl_80349B28;
+    void** vt = (void**)arg1;
+    s32 result = (*(s32 (**)(void*, void**))((char*)*vt + 0x14))(arg1, vt);
+    fn_802A3500(arg0, result);
+    return arg0;
 }
 
 extern "C" void fn_8028E398(void*);
@@ -552,6 +550,10 @@ extern "C" u8 fn_802A4998(void) {
 
 extern "C" void fn_802A49A0(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v2();
+}
+
+extern "C" void fn_802A49B4(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v3();
 }
 
 extern "C" void fn_802A49C8(void* arg0) {
