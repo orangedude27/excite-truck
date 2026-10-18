@@ -22,7 +22,7 @@ extern double fn_8002F234(float, float, float);
 extern void *lbl_8055CD78;
 extern void fn_80128668(void*);
 extern char lbl_8055F981;
-extern unsigned char lbl_8055F97C;
+extern int lbl_8055F97C;
 extern float lbl_80564AF0;
 extern float lbl_80564B6C;
 extern float lbl_80564B84;
@@ -374,6 +374,33 @@ s32 fn_802B02C8(void *arg0) {
                                            (s16)(((s32)z & ~7) + 4),
                                            4, *(float *)((char *)arg0 + 8)) + 8) & 0x01000000) == 0);
 }
+
+s32 fn_802B04D4(void *arg0) {
+    float x;
+    float z;
+    float bound;
+    int valid;
+    if ((unsigned char)lbl_8055F981 != 0)
+        return fn_801EA0E8(*(float *)arg0, *(float *)((char *)arg0 + 8)) < lbl_80564BB0;
+    if ((int)lbl_8055CD78 >= 0) {
+        valid = 0;
+        bound = (lbl_80564B84 * lbl_80564AF0) * lbl_80564B6C;
+        x = *(float *)arg0;
+        if (x > -bound && x < bound) {
+            z = *(float *)((char *)arg0 + 8);
+            if (z > -bound && z < bound)
+                valid = 1;
+        }
+        if (valid != 0) {
+            x = *(float *)arg0 / lbl_80564AF0;
+            z = *(float *)((char *)arg0 + 8) / lbl_80564AF0;
+            return (unsigned char)lbl_8055F97C < fn_802BBD38((s16)x, (s16)z, lbl_80564AF0);
+        }
+        return 1;
+    }
+    return 0;
+}
+
 extern void fn_802C10C8(void);
 void fn_802B05D8(void) { fn_802C10C8(); }
 
