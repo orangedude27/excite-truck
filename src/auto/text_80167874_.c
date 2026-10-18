@@ -203,14 +203,9 @@ s32 fn_80169928(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 
 extern s32 lbl_8055A198;
 extern s32 lbl_8055A1A0;
-s32 fn_80169978(s32 arg0) {
+s32 fn_80169978(s32 arg0, s32 arg1) {
     s32 r = 0;
-    if (fn_8002B1D8(arg0, &lbl_8055A198, 4) != 0) {
-        if (fn_8002B1D8(arg0, &lbl_8055A1A0, 4) == 0) {
-            r = 1;
-        }
-    }
-    else {
+    if (fn_8002B1D8(arg1, &lbl_8055A198, 4) == 0 || fn_8002B1D8(arg1, &lbl_8055A1A0, 4) == 0) {
         r = 1;
     }
     return r;
