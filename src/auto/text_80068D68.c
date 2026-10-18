@@ -3589,7 +3589,7 @@ void rfc_mx_sm_state_connected(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
-void PORT_ParNegInd(u8, u16, u8, u8);
+void PORT_ParNegInd(void *, u8, u16, u8, u8);
 void PORT_ParNegCnf(void *, u8, u16, u8, u8);
 void rfc_send_dm(void *, u8, s32);
 void rfc_port_timer_stop(void *);
@@ -3598,20 +3598,20 @@ extern u8 lbl_80319DB0[];
 void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
     u8 dlci = *(u8 *)arg2;
     void *mcb;
-
+    u8 flag;
     if (arg1 != 0) {
         if (*(u8 *)((u8 *)arg0 + 0x6C) != 6) {
-            PORT_ParNegInd(dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
+            PORT_ParNegInd(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
         } else {
             rfc_send_dm(arg0, dlci, 0);
-            if (lbl_803C4828[0x414] >= 2) {
-                fn_8007093C(0x90001, lbl_80319DB0);
-            }
+            if (lbl_803C4828[0x414] >= 2) fn_8007093C(0x90001, lbl_80319DB0);
         }
     } else {
         mcb = port_find_mcb_dlci_port(arg0, dlci);
-        if (mcb != 0 && (*(u8 *)((u8 *)mcb + 0x69) & 1) != 0) {
-            *(u8 *)((u8 *)mcb + 0x69) &= 0xFE;
+        if (mcb == 0) return;
+        flag = *(u8 *)((u8 *)mcb + 0x69);
+        if ((flag & 1) != 0) {
+            *(u8 *)((u8 *)mcb + 0x69) = flag & 0xFE;
             rfc_port_timer_stop(mcb);
             PORT_ParNegCnf(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
         }
