@@ -3,6 +3,13 @@
 
 #include <types.h>
 
+extern s32 fn_8000DA10(void);
+extern void fn_801332D0(s32, s32, s32 *);
+extern void fn_80160CF4(void);
+extern s32 lbl_8055A0B4;
+extern s32 lbl_8055A0B8;
+extern u8 lbl_8055E2DC;
+
 extern s32 fn_80161E40(s32);
 
 extern int lbl_8032F698;
@@ -360,6 +367,45 @@ s32 fn_801628E8(void *arg0) {
         fn_801476C4();
     }
     return 1;
+}
+
+void *fn_80162938(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = (void *)lbl_8032F858;
+        *((void **)arg0 + 0x56C / 4) = (void *)(lbl_8032F858 + 0x68);
+        if ((u32)arg0 + 0x56C != 0) {
+            if ((u32)arg0 + 0x56C != 0) {
+                fn_8015857C((char *)arg0 + 0x56C);
+            }
+        }
+        if ((u32)arg0 + 0x570 != 0) {
+            if ((u32)arg0 + 0x570 != 0) {
+                *(s32 *)((char *)arg0 + 0x570) = 0;
+                *(s32 *)((char *)arg0 + 0x574) = 0;
+                *(s32 *)((char *)arg0 + 0x578) = 0;
+            }
+        }
+        if (arg0 != 0) {
+            if ((u32)arg0 + 0xE0 != 0) {
+                if ((u32)arg0 + 0xE0 != 0) {
+                    *(s32 *)((char *)arg0 + 0xE0) = 0;
+                    *(s32 *)((char *)arg0 + 0xE4) = 0;
+                    *(s32 *)((char *)arg0 + 0xE8) = 0;
+                }
+            }
+            if (arg0 != 0) {
+                if ((u32)arg0 + 0x34 != 0) {
+                    if ((u32)arg0 + 0x34 != 0) {
+                        *(s32 *)((char *)arg0 + 0x34) = 0;
+                        *(s32 *)((char *)arg0 + 0x38) = 0;
+                        *(s32 *)((char *)arg0 + 0x3C) = 0;
+                    }
+                }
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
 }
 
 s32 fn_80162FE8(void *arg0) {
