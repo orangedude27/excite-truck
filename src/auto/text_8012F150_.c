@@ -16,6 +16,8 @@ void *fn_8012F2F0(s32 *arg0, s32 arg1, s32 arg2) {
     s32 *r5 = arg0 + arg2;
     s32 w = *(r5 + 2);
     s32 m = *(arg0 + 0x12) * arg1;
-    return (void *)((s32)arg0 + m + w + 0x4C);
+    s32 result = (s32)arg0 + m;
+    result = result + w;
+    return (void *)(result + 0x4C);
 }
 
