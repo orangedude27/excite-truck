@@ -72,7 +72,7 @@ extern "C" void *fn_802AE414(void *);
 extern "C" void fn_801345D8(void *, s32, const char *, s32);
 extern "C" s32 fn_802A194C(void);
 extern "C" void fn_80287B38(void *);
-extern "C" void fn_802A1B20(void);
+extern "C" void fn_802A1B20(void*, s32);
 extern "C" void fn_802A1CC4(void);
 extern "C" void fn_8028E61C(void*);
 extern "C" void fn_801EEFDC(void *, s32);
@@ -180,11 +180,9 @@ extern "C" s32 fn_802A1C30(void* arg0) {
         ebi::title::TPlaneSub* obj = (ebi::title::TPlaneSub*)lbl_804BCF88[index];
         if (obj != 0) {
             if (*(f32*)((char*)arg0 + 0x24) > lbl_80564728) {
-                void (*fn)(void*) = *(void (**)(void*))(*(void***)obj + 8);
-                fn(obj);
+                obj->v6();
             } else {
-                void (*fn)(void*) = *(void (**)(void*))(*(void***)obj + 9);
-                fn(obj);
+                obj->v7();
             }
         }
     }
