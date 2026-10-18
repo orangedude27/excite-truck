@@ -41,7 +41,8 @@ extern u8 lbl_8055DC80;
 extern u8 *lbl_80559038;
 extern void fn_8006E6E4(void *);
 extern void fn_80071450(void *);
-extern void fn_80070954(u32 code, void *msg, u16 param);
+  extern void fn_80070954(u32 code, void *msg, u16 param);
+  extern char lbl_80319D48[];
 extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
 extern void fn_800709CC(u32 code, void *msg, s32 param1, s32 param2, u16 param3, u16 param4, u8 param5, u16 param6);
 extern u8 lbl_803C4828[];
@@ -3608,12 +3609,13 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
         }
     } else {
         mcb = port_find_mcb_dlci_port(arg0, dlci);
-        if (mcb == 0) return;
-        flag = *(u8 *)((u8 *)mcb + 0x69);
-        if ((flag & 1) != 0) {
-            *(u8 *)((u8 *)mcb + 0x69) = flag & 0xFE;
-            rfc_port_timer_stop(mcb);
-            PORT_ParNegCnf(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
+        if (mcb != 0) {
+            flag = *(u8 *)((u8 *)mcb + 0x69);
+            if ((flag & 1) != 0) {
+                *(u8 *)((u8 *)mcb + 0x69) = flag & 0xFE;
+                rfc_port_timer_stop(mcb);
+                PORT_ParNegCnf(arg0, dlci, *(u16 *)((u8 *)arg2 + 0xE), *(u8 *)((u8 *)arg2 + 0xA), *(u8 *)((u8 *)arg2 + 0x11));
+            }
         }
     }
 }
