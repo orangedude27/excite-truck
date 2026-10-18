@@ -23,6 +23,44 @@ extern u32 lbl_804C5650[];
 void fn_802D3F30(void) {
 }
 
+void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
+    extern u8 lbl_804CA438[];
+    extern s32 lbl_8055FDF0;
+    extern s32 lbl_8055FDF4;
+    extern s32 lbl_8055FDF8;
+    extern void GXBeginDisplayList(void *, u32);
+    extern u32 GXEndDisplayList(void);
+    extern void fn_802D5DE8(u32);
+    u32 id = *(u32 *)((char *)arg0 + 0xC);
+    u8 key = *(u8 *)((char *)arg0 + 9);
+    s32 count = lbl_8055FDF0;
+    u8 *base = lbl_804CA438;
+    u8 *entry;
+    s32 i;
+    if (count > 0) {
+        for (i = 0; i < count; i++, base += 0x10) {
+            if (*(u32 *)base == id && base[4] == key) {
+                *arg1 = *(s32 *)(base + 8);
+                *arg2 = *(s32 *)(base + 0xC);
+                return;
+            }
+        }
+    }
+    count = lbl_8055FDF0;
+    entry = lbl_804CA438;
+    entry += count * 0x10;
+    *(u32 *)entry = id;
+    lbl_8055FDF0 = count + 1;
+    entry[4] = key;
+    GXBeginDisplayList((void *)lbl_8055FDF8, lbl_8055FDF4 + 0x4000 - lbl_8055FDF8);
+    fn_802D5DE8(id);
+    *(s32 *)(entry + 8) = lbl_8055FDF8;
+    *(s32 *)(entry + 0xC) = GXEndDisplayList();
+    lbl_8055FDF8 += *(s32 *)(entry + 0xC);
+    *arg1 = *(s32 *)(entry + 8);
+    *arg2 = *(s32 *)(entry + 0xC);
+}
+
 void fn_802D657C(s32 *arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
@@ -31,29 +69,32 @@ void fn_802D657C(s32 *arg0, s32 arg1) {
 }
 
 void fn_802D6594(void *arg0) {
-    u8 *bytes = (u8 *)arg0;
-    u8 *cursor = bytes + 0x38;
-    u8 temp0 = bytes[0x34];
-    u8 temp1 = bytes[0x37];
-    s32 i = 0;
+    u8 *bytes = arg0;
+    u8 t0, t1, t2, t3;
+    register u8 *p;
+    s32 i;
 
-    bytes[0x34] = temp1;
-    bytes[0x37] = temp0;
-    temp0 = bytes[0x35];
-    temp1 = bytes[0x36];
-    bytes[0x35] = temp1;
-    bytes[0x36] = temp0;
+    t0 = bytes[0x34];
+    p = bytes + 0x38;
+    t1 = bytes[0x37];
+    i = 0;
+    t2 = bytes[0x35];
+    t3 = bytes[0x36];
+    bytes[0x34] = t1;
+    bytes[0x37] = t0;
+    bytes[0x35] = t3;
+    bytes[0x36] = t2;
 
-    do {
-        temp0 = cursor[0];
-        cursor[0] = cursor[3];
-        cursor[3] = temp0;
-        temp0 = cursor[1];
-        cursor[1] = cursor[2];
-        cursor[2] = temp0;
-        cursor += 4;
-        i++;
-    } while (i < *(s32 *)(bytes + 0x34));
+    while (i < *(s32 *)(bytes + 0x34)) {
+        t0 = p[0];
+        p[0] = p[3];
+        p[3] = t0;
+        t0 = p[1];
+        p[1] = p[2];
+        p[2] = t0;
+        p += 4;
+        i += 1;
+    }
 }
 
 #pragma push
@@ -72,7 +113,6 @@ void fn_802D6810(void) {
 
 extern void fn_802D0E48(s32);
 extern void fn_802D5FE4(void *);
-extern void GXCallDisplayList(void *, u32);
 extern u32 lbl_8055FDE8;
 extern u8 lbl_8055FDEC;
 extern s32 lbl_8055FE00;
@@ -110,6 +150,34 @@ void fn_802D6B78(void *arg0) {
 
 void fn_802D6B7C(void *arg0) {
     fn_802D6170(arg0);
+}
+
+extern void fn_802D65F8(s32, s32);
+extern void fn_802E317C(const char *, ...);
+extern const char lbl_8034C440[];
+void fn_802D6B80(u8 *arg0, s32 arg1, s32 arg2) {
+    u8 a = arg0[0];
+    u8 b = arg0[3];
+    u8 c = arg0[1];
+    u8 d = arg0[2];
+    arg0[0] = b;
+    arg0[3] = a;
+    arg0[1] = d;
+    arg0[2] = c;
+    if (fn_802D62E4(arg0, c, arg2) != 0) {
+        fn_802D65F8(arg1, arg2);
+    } else {
+        s32 sp8 = *(s32 *)arg0;
+        u8 *p = (u8 *)&sp8;
+        u8 x = p[0];
+        p[0] = p[3];
+        p[3] = x;
+        x = p[1];
+        p[1] = p[2];
+        p[2] = x;
+        p[4] = 0;
+        fn_802E317C(lbl_8034C440, arg2, &sp8);
+    }
 }
 
 void fn_802D6C44(void) {
