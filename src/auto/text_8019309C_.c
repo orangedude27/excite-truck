@@ -277,9 +277,10 @@ void fn_8019416C(void) {
 
 typedef unsigned int u32;
 extern float lbl_80562140, lbl_80562144;
-extern void fn_8018ADB4(int, float);
-extern void fn_8018ADBC(int, float);
-void fn_80194170(void *arg0, float arg1) {
+  extern void fn_8018ADB4(int, float);
+  extern void fn_8018ADBC(int, float);
+  extern void fn_8018ADAC(void *, float);
+  void fn_80194170(void *arg0, float arg1) {
     float value;
     if (arg1 > lbl_80562140) value = arg1;
     else value = lbl_80562140;
