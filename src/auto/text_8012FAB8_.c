@@ -70,9 +70,7 @@ void fn_801308F8(char *dst, int count, int limit) {
     }
 }
 
-void fn_80130978(void) {
-    fn_80130980(0, 0, 3);
-}
+void fn_80130978(int arg0, int arg1) { fn_80130980(arg0, arg1, 3); }
 
 extern void fn_801345D8(void *, ...);
 extern char lbl_80559AA0[];
@@ -140,20 +138,20 @@ extern int atoi(const char *);
 extern int strlen(const char *);
 extern int fn_8002B1D8(const char *, const char *, int);
 void fn_80131368(char *arg0) {
-    int c = *arg0;
-    int signedC;
-    int invalid = 0;
+    register int c;
+    int flag = 0;
     int isNumber;
     int *p;
     unsigned int i;
 
-    signedC = (signed char)c;
-    if (signedC < 0 || signedC >= 0x100)
-        invalid = 1;
-    if (invalid)
+    c = *(unsigned char *)arg0;
+    c = (signed char)c;
+    if (c < 0 || c >= 0x100)
+        flag = 1;
+    if (flag != 0)
         isNumber = 0;
     else
-        isNumber = *(unsigned short *)(*(int *)(*(int *)((char *)&lbl_802FE850 + 0x38) + 8) + signedC * 2) & 8;
+        isNumber = *(unsigned short *)(*(int *)(*(int *)((char *)&lbl_802FE850 + 0x38) + 8) + c * 2) & 8;
 
     if (isNumber) {
         lbl_8055E04C = atoi(arg0);
