@@ -213,8 +213,8 @@ void *fn_8023AA2C(void *arg0, s32 arg1, ...) {
 void fn_8023ACCC(void) {}
 
 void fn_8023ACD0(void *arg0) {
-    s32 *index = *(s32 **)((char *)arg0 + 0x20);
     s32 count = *(s32 *)((char *)arg0 + 0x1C);
+    s32 *index = *(s32 **)((char *)arg0 + 0x20);
     *(unsigned char *)((char *)arg0 + 0x28) = 1;
     *index = (count + *index - 1) % count;
 }
@@ -430,6 +430,39 @@ void fn_8023B374(void *arg0) {
 void fn_8023B400(void) {}
 
 s32 fn_8023B404(void) { return 0; }
+
+void fn_8023B40C(void *arg0) {
+    unsigned char state;
+    void *obj;
+    void **vtable;
+    s32 (*call)(void *, s32);
+
+    state = fn_802104D0();
+    if (state == 1) {
+        fn_80214B94(3);
+    } else {
+        obj = *(void **)((char *)arg0 + 0x1C);
+        vtable = *(void ***)((char *)obj + 0xC);
+        call = (s32 (*)(void *, s32))((char *)vtable + 0x34);
+        call(obj, 0);
+        if (fn_80214D04() == 2) fn_80214CB4((void *)1);
+        fn_80214B44(3);
+    }
+    if (state == 0) {
+        *(s32 *)((char *)arg0 + 0x18) = 4;
+    } else if (fn_80214D04() == 2) {
+        *(s32 *)((char *)arg0 + 0x18) = 1;
+    } else {
+        *(s32 *)((char *)arg0 + 0x18) = 0;
+    }
+    if (*(unsigned char *)((char *)arg0 + 0x20) != state && state != 0) {
+        obj = *(void **)((char *)arg0 + 0x1C);
+        vtable = *(void ***)((char *)obj + 0xC);
+        call = (s32 (*)(void *, s32))((char *)vtable + 0x34);
+        call(obj, fn_80210570());
+        *(unsigned char *)((char *)arg0 + 0x20) = state;
+    }
+}
 
 void fn_8023B574(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x18) != 0) {
