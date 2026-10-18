@@ -17,6 +17,7 @@ typedef s32 M2C_UNK32;
 
 extern "C" s32 fn_80128668(void);
 extern "C" const char lbl_80324E88[];
+extern "C" const char lbl_803250C8[];
 extern "C" const char lbl_80324EA4[];
 extern "C" const char lbl_80325640[];
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
@@ -154,6 +155,32 @@ extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {
     OSRestoreInterrupts(token);
 }
 
+extern "C" void Stop__Q46nw4hbm3snd6detail7ChannelFv(void *);
+extern "C" void ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(void *, int);
+extern "C" void SetMute__Q46nw4hbm3snd6detail8SeqTrackFQ36nw4hbm3snd7SeqMute(void *arg0, int arg1) {
+    u32 token = OSDisableInterrupts();
+    switch (arg1) {
+    case 0:
+        *(u8 *)((u8 *)arg0 + 0x5C) = 0;
+        break;
+    case 3: {
+        u32 inner = OSDisableInterrupts();
+        void *channel = *(void **)((u8 *)arg0 + 0xB8);
+        while (channel) { fn_800EAD00(channel); Stop__Q46nw4hbm3snd6detail7ChannelFv(channel); channel = *(void **)((u8 *)channel + 0xE4); }
+        *(void **)((u8 *)arg0 + 0xB8) = 0; OSRestoreInterrupts(inner); *(u8 *)((u8 *)arg0 + 0x5C) = 1; break;
+    }
+    case 2: {
+        ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(arg0, -1);
+        u32 inner = OSDisableInterrupts();
+        u32 channel = (u32)*(void **)((u8 *)arg0 + 0xB8);
+        while (channel) { fn_800EAD00((void *)channel); channel = (u32)*(void **)(channel + 0xE4); }
+        *(void **)((u8 *)arg0 + 0xB8) = 0; OSRestoreInterrupts(inner); *(u8 *)((u8 *)arg0 + 0x5C) = 1; break;
+    }
+    case 1: *(u8 *)((u8 *)arg0 + 0x5C) = 1; break;
+    }
+    OSRestoreInterrupts(token);
+}
+
 extern "C" void fn_800F1E50(void *arg0, f32 value) {
     u32 token = OSDisableInterrupts();
     *(f32 *)((char *)arg0 + 8) = value;
@@ -161,13 +188,11 @@ extern "C" void fn_800F1E50(void *arg0, f32 value) {
 }
 
 extern "C" void SetVolume__Q46nw4hbm3snd6detail9SeqPlayerFf_800F1E90(void* arg0, f32 farg0) {
-    f32 minVolume = lbl_8056107C;
-    if (!(farg0 >= minVolume)) {
+    if (!(farg0 >= *(volatile f32*)&lbl_8056107C)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390, 0x25B, lbl_803244D4);
     }
-    void* self = arg0;
     OSDisableInterrupts();
-    *(f32*)((char*)self + 0xC) = farg0;
+    *(f32*)((char*)arg0 + 0xC) = farg0;
     ((void (*)(void))OSRestoreInterrupts)();
 }
 
@@ -821,21 +846,20 @@ extern "C" void* fn_800F8310(void* self) {
     OSInitMutex((char*)self + 4);
     return self;
 }
-#pragma pop
-extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* arg0, int arg1) {
-    void* this_ = arg0;
-    int flag = arg1;
-    if (this_ != 0) {
-        *(void**)this_ = (void*)lbl_80325C40;
-        Destroy__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)this_ + 0x1C);
-        __dt__Q46nw4hbm3snd6detail9FrameHeapFv((u8*)this_ + 0x1C, -1);
-        if (flag > 0) {
-            ((void (*)(void*))fn_80128668)(this_);
-        }
+#pragma push
+#pragma small_data off
+#pragma use_lmw_stmw off
+extern "C" void* __dt__Q36nw4hbm3snd9SoundHeapFv(void* self, int flag) {
+    if (self) {
+        *(void**)self = lbl_80325C40;
+        Destroy__Q46nw4hbm3snd6detail9FrameHeapFv((char*)self + 0x1C);
+        __dt__Q46nw4hbm3snd6detail9FrameHeapFv((char*)self + 0x1C, -1);
+        if (flag > 0)
+            fn_80128668();
     }
-    return this_;
+    return self;
 }
-
+#pragma pop
 extern "C" void fn_800F83C8(void* arg0) {
     Create__Q46nw4hbm3snd6detail9FrameHeapFPvUl((u8*)arg0 + 0x1C);
 }
@@ -1006,6 +1030,39 @@ extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11Sou
             handle->Attach(handle);
         }
     }
+}
+
+extern "C" void fn_800E2E24(void);
+extern "C" s32 SCInit(void);
+extern "C" u32 SCCheckStatus(void);
+extern "C" u8 SCGetSoundMode(void);
+extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(s32);
+extern "C" void Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv(void);
+extern "C" s32 Create__Q46nw4hbm3snd6detail10TaskThreadFl(s32);
+extern "C" s32 fn_800FA4C4(s32);
+extern "C" void InitSoundSystem__Q36nw4hbm3snd11SoundSystemFll(s32 arg0, s32 arg1) {
+    u32 status;
+    u8 mode;
+    if (lbl_8055DE60 != 0) return;
+    lbl_8055DE60 = 1;
+    Instance__15EmissionManagerFv();
+    fn_800E2E24();
+    SCInit();
+    do { status = SCCheckStatus(); } while (status == 1);
+    if (status != 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803263B8, 0x4f, (const char *)(lbl_803263B8 + 0x14));
+    mode = SCGetSoundMode();
+    switch (mode) {
+    case 0: Instance__15EmissionManagerFv(); SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(3); break;
+    case 1: Instance__15EmissionManagerFv(); SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(0); break;
+    case 2: Instance__15EmissionManagerFv(); SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(2); break;
+    default: Instance__15EmissionManagerFv(); SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(0); break;
+    }
+    GetInstance__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
+    Setup__Q46nw4hbm3snd6detail20RemoteSpeakerManagerFv();
+    fn_800FE648();
+    if (Create__Q46nw4hbm3snd6detail10TaskThreadFl(arg1) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803263B8, 0x7e, (const char *)(lbl_803263B8 + 0x48));
+    GetInstance__Q46nw4hbm3snd6detail11SoundThreadFv();
+    if (fn_800FA4C4(arg0) == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803263B8, 0x82, (const char *)(lbl_803263B8 + 0x48));
 }
 
 extern "C" void fn_800FA350(void) {
