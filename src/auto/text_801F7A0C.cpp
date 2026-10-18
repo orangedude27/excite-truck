@@ -1234,9 +1234,3 @@ struct FC048Obj {
     u8 pad[3];
     f32 f50;
 };
-class FAAManager {
-public:
- virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual const char *getString(const char *);
- virtual void f(); virtual void g(); virtual void h(); virtual void i(); virtual void j(); virtual f32 getFloat(const char *);
- virtual f32 getFloat2(const char *); virtual void m(); virtual void n(); virtual void getVec(void *, const char *); virtual char *getText(const char *, const char *);
-};
