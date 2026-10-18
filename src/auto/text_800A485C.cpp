@@ -1152,6 +1152,19 @@ extern "C" void fn_800B75EC(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC(fn_800B1FF4(alarm));
 }
 
+extern "C" s32 fn_800A4E80(void *, s32, u32);
+extern "C" s32 fn_800A9A4C(void *, s32, s32);
+extern "C" void fn_800B7610(void *arg0, s32 arg1, s32 arg2) {
+    s32 local;
+    s32 result = fn_800A4E80(&local, (s32)arg0, 1);
+    if (result == 0) {
+        fn_800A9A4C(&local, arg1, arg2);
+    } else {
+        M2C_FIELD(lbl_803D2140, s32 *, 0x40) = result;
+    }
+    ((void (*)(void))fn_800B73BC)();
+}
+
 extern "C" void* fn_800A9B0C(void*);
 extern "C" void fn_800B7684(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
