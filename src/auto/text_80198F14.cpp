@@ -419,6 +419,30 @@ extern "C" void fn_801A0444(void* arg0, void* arg1) {
     *(f32*)((u8*)arg0 + 0x16C) = *(f32*)((u8*)arg1 + 0x2C);
 }
 
+extern "C" void fn_801A0160(void*);
+extern "C" s32 fn_801A1148(void* arg0, const f32* vec, s32 arg2, f32* arg3, s32 arg4, s32 arg5) {
+    f32 sp[3];
+    sp[0] = *(f32*)((u8*)arg0 + 0x24) - vec[0];
+    sp[1] = *(f32*)((u8*)arg0 + 0x28) - vec[1];
+    sp[2] = *(f32*)((u8*)arg0 + 0x2C) - vec[2];
+    f32 dot = PSVECDotProduct((const Vec*)sp, (const Vec*)vec);
+    f32 f178 = *(f32*)((u8*)arg0 + 0x178);
+    if (dot > -f178 && dot < *arg3 + f178) {
+        fn_801A0160(arg0);
+        void* entries = arg0;
+        s32 found = 0;
+        s32 i = 0;
+        while (i < *(s32*)((u8*)arg0 + 0x174)) {
+            if (fn_8019DDFC(arg2, arg4, arg5, 0, (u8*)entries + 0x34, entries, *(f32*)((u8*)entries + 0x24)) != 0)
+                found = 1;
+            entries = (u8*)entries + 4;
+            i++;
+        }
+        return found;
+    }
+    return 0;
+}
+
 extern "C" void fn_801A1250(void* arg0) {
     VTab1250** entries = (VTab1250**)arg0;
     s32 i = 0;
