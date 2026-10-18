@@ -74,6 +74,96 @@ void *fn_802EC598(void) {
     }
 }
 
+extern void fn_800C657C(void);
+extern void fn_80128670(s32);
+extern s32 lbl_8034EB28;
+extern s32 lbl_805588D8;
+extern s32 lbl_805600E0;
+extern s32 lbl_805600E4;
+extern u8 lbl_805600EC;
+void fn_802EC7AC(void) {
+    s32 *p;
+    char *format;
+    s32 i;
+    lbl_805600EC = 0;
+    fn_800C657C();
+    p = &lbl_805588D8;
+    i = 0;
+    format = (char *)&lbl_8034EB28;
+    do {
+        if (*p != 0)
+            fn_802E317C(format, (void *)*p);
+        ++i;
+        ++p;
+    } while (i < 8);
+    p = (s32 *)&lbl_80558860;
+    fn_80128670(p[4]);
+    fn_80128670(p[0]);
+    if (p[1] != 0)
+        fn_80128670(p[1]);
+    p = (s32 *)&lbl_80558860;
+    fn_80128670(p[2]);
+    fn_80128670(p[3]);
+    if (lbl_805600E0 != 0)
+        fn_80128670(lbl_805600E0);
+    if (lbl_805600E4 != 0)
+        fn_80128670(lbl_805600E4);
+}
+
+extern void *fn_802D2D14(void);
+extern void GXClearVtxDesc(void);
+extern void GXSetVtxAttrFmt(int, int, int, int, int);
+extern void GXSetVtxDesc(int, int);
+extern void GXSetViewport(float, float, float, float, float, float);
+extern void GXSetScissor(unsigned int, unsigned int, unsigned int, unsigned int);
+extern void GXSetNumChans(int);
+extern void GXSetNumTexGens(int);
+extern void GXSetNumTevStages(int);
+extern void GXSetTevOrder(int, int, int, int);
+extern void GXSetTevOp(int, int);
+extern void GXSetBlendMode(int, int, int, int);
+extern void GXSetZMode(int, int, int);
+extern void GXSetCurrentMtx(int);
+extern void C_MTXOrtho(void *, float, float, float, float, float, float);
+extern void GXSetProjection(void *, int);
+extern void fn_800C6610(void);
+extern void fn_802D3360(void);
+extern s32 fn_802EC4BC(void);
+extern float lbl_805651E0, lbl_805651E8, lbl_805651F0, lbl_805651F4;
+extern float lbl_805651F8, lbl_805651FC, lbl_80565200, lbl_80565204, lbl_80565208;
+#pragma dont_inline on
+void fn_802ECA48(void) {
+    u8 projection[0x40];
+    u16 *dims;
+    float scale;
+    if ((u8)lbl_805600E8 != 0) {
+        GXClearVtxDesc();
+        GXSetVtxAttrFmt(4, 9, 0, 4, 0);
+        GXSetVtxAttrFmt(4, 0xB, 0, 1, 0);
+        GXSetVtxDesc(9, 1);
+        GXSetVtxDesc(0xB, 1);
+        dims = fn_802D2D14();
+        scale = lbl_805651E0;
+        GXSetViewport(scale, scale, (float)dims[2], (float)dims[3], scale, lbl_805651E8);
+        GXSetScissor(0, 0, dims[2], dims[3]);
+        GXSetNumChans(1);
+        GXSetNumTexGens(0);
+        GXSetNumTevStages(1);
+        GXSetTevOrder(0, 0xFF, 0xFF, 4);
+        GXSetTevOp(0, 4);
+        GXSetBlendMode(0, 0, 0, 0);
+        GXSetZMode(1, 3, 1);
+        GXSetCurrentMtx(3);
+        if (fn_802EC4BC() != 0)
+            C_MTXOrtho(projection, lbl_805651F0, lbl_805651F4, lbl_805651F8, lbl_805651FC, lbl_805651E0, lbl_80565200);
+        else
+            C_MTXOrtho(projection, lbl_805651F0, lbl_805651F4, lbl_80565204, lbl_80565208, lbl_805651E0, lbl_80565200);
+        GXSetProjection(projection, 1);
+        if ((u8)lbl_805600E8 != 0) fn_800C6610();
+        fn_802D3360();
+    }
+}
+#pragma dont_inline off
 void fn_802ECBF8(void) {
     if ((u8)lbl_805600E8 == 0) {
         lbl_805600EA = 1;
