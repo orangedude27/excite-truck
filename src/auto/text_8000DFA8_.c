@@ -80,6 +80,8 @@ extern s32 lbl_80351738[0x54];
 extern s32 lbl_8055D494;
 extern char lbl_802FC518[];
 extern s32 lbl_80558AA4;
+extern f32 lbl_80560280;
+extern f32 lbl_80560264;
 extern UnkF22C *lbl_8055D4B0;
 extern void fn_802C6CF8(s32);
 extern s32 lbl_80558A94;
