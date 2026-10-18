@@ -11,14 +11,14 @@ class Dispatch80206B14 {
 public:
     virtual void pad0(); virtual void pad1(); virtual void pad2(); virtual void pad3();
     virtual void pad4(); virtual void pad5(); virtual void pad6(); virtual void pad7();
-    virtual void pad8(); virtual void pad9(); virtual void pad10(); virtual void pad11();
+    virtual void pad8(); virtual void pad9();
     virtual void f12(float); virtual void f13(float);
     virtual void pad14(); virtual void pad15(); virtual void pad16(); virtual void pad17();
-    virtual void pad18(); virtual void f19(int);
+    virtual void pad18(); virtual void pad19(); virtual void f19(int);
 };
 class Dispatch4_80206B14 {
 public:
-    virtual void pad0(); virtual void pad1(); virtual void pad2(); virtual void pad3();
+    virtual void pad0(); virtual void pad1();
     virtual void f4(int, int);
 };
 class ObjIface80207218 {
@@ -323,8 +323,12 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
 }
 
 extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
+    int first = arg0;
+    int second = arg1;
     void *value = arg2;
-    if (value) value = fn_802072E4(value, arg0, arg1);
+    if (value != 0) {
+        value = fn_802072E4(value, first, second);
+    }
     if (*(int *)((u8 *)value + 0xC) != 0) return value;
     return 0;
 }
