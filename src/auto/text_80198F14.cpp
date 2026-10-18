@@ -5,8 +5,6 @@
 class Fn801A014CDispatch {
 public:
     virtual void Dummy0();
-    virtual void Dummy1();
-    virtual void Dummy2();
     virtual void Call();
 };
 
@@ -430,8 +428,8 @@ extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_801A014C(void* arg0) {
-    void* item = *(void**)((u8*)arg0 + 0x17C);
-    ((void (*)(void))((void**) *(void**)item)[3])();
+    Fn801A014CDispatch* item = (Fn801A014CDispatch*)*(void**)((u8*)arg0 + 0x17C);
+    item->Call();
 }
 
 extern s32 lbl_8055E3C4;
