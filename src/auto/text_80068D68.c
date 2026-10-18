@@ -117,6 +117,11 @@ extern void *lbl_8055DC6C;
 extern s32 lbl_8055DC74;
 extern void GKI_freebuf(void *);
 extern void GKI_shutdown(void);
+extern u8 lbl_80559050;
+extern s32 lbl_80559054;
+extern s32 lbl_8055DC78;
+extern s32 lbl_8055DC7C;
+extern void fn_80070854(void);
 extern void OSCancelAlarm(OSAlarm *alarm);
 
 void DBPrintf_80068D68(const char *fmt, ...) {
@@ -1296,7 +1301,7 @@ extern u8 lbl_803C0D48[];
 extern u8 lbl_80315A64[];
 extern void *GKI_getbuf(u16);
 extern void fn_800716F0(void *);
-s32 bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, u32 arg4, u32 arg5) {
+void bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, s32 arg4, s32 arg5) {
     if (lbl_8055DC80 >= 5) {
         fn_80070954(0x504, lbl_80315A64, arg4);
     }
@@ -1308,10 +1313,11 @@ s32 bta_hh_add_device_to_list(void *arg0, s8 arg1, s16 arg2, void *arg3, u32 arg
     if (arg3 != 0) {
         fn_800716F0((u8 *)arg0 + 4);
         if (*(u16 *)arg3 != 0) {
-            *(void **)((u8 *)arg0 + 4) = GKI_getbuf(*(u16 *)arg3);
-            if (*(void **)((u8 *)arg0 + 4) != 0) {
+            void *p = GKI_getbuf(*(u16 *)arg3);
+            *(void **)((u8 *)arg0 + 4) = p;
+            if (p != 0) {
                 *(u16 *)arg0 = *(u16 *)arg3;
-                memcpy(*(void **)((u8 *)arg0 + 4), *(void **)((u8 *)arg3 + 4), *(u16 *)arg3);
+                memcpy(p, *(void **)((u8 *)arg3 + 4), *(u16 *)arg3);
             }
         }
     }
@@ -1524,7 +1530,7 @@ void btm_db_reset(void) {
 }
 
 void BTM_DeviceReset(void (*arg0)(void *)) {
-    u32 zero = 0;
+    register u8 zero = 0;
     if (*(u32 *)(lbl_803C0F78 + 0x58C) != 0 &&
         *(u32 *)(lbl_803C0F78 + 0x58C) != (u32)arg0)
         return;
@@ -1550,7 +1556,7 @@ void BTM_SendHciReset(void (*arg0)(void)) {
     *(volatile u32 *)(lbl_803C0F78 + 0x620) = (u32)arg0;
     *(volatile u8 *)(lbl_803C0F78 + 0x64E) = zero;
     *(volatile u8 *)(lbl_803C0F78 + 0x64F) = 5;
-    btu_start_timer(lbl_803C0F78 + 0x574, 1, 4, 0);
+    btu_start_timer(lbl_803C0F78 + 0x574, 1, 4, zero);
     ((void (*)(void))btsnd_hcic_reset)();
     if (*(void (**)(void *))(lbl_803C0F78 + 0x568) != NULL)
         (*(void (**)(void *))(lbl_803C0F78 + 0x568))((void *)1);
@@ -2589,6 +2595,31 @@ BOOLEAN btsnd_hcic_set_conn_encrypt(UINT16 handle, BOOLEAN enable) {
     return TRUE;
 }
 
+u8 btsnd_hcic_rmt_name_req(u8 *bd_addr, u8 page_scan_rep_mode, u8 page_scan_mode, u16 clock_offset) {
+    BT_HDR *p;
+    u8 *pp;
+    p = (BT_HDR *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    p->len = 0xD;
+    p->offset = 0;
+    pp = (u8 *)(p + 1);
+    pp[0] = 0x19;
+    pp[1] = 4;
+    pp[2] = 0xA;
+    pp[3] = bd_addr[5];
+    pp[4] = bd_addr[4];
+    pp[5] = bd_addr[3];
+    pp[6] = bd_addr[2];
+    pp[7] = bd_addr[1];
+    pp[8] = bd_addr[0];
+    pp[9] = page_scan_rep_mode;
+    pp[10] = page_scan_mode;
+    pp[11] = clock_offset;
+    pp[12] = clock_offset >> 8;
+    btu_hcif_send_cmd(0, p);
+    return TRUE;
+}
+
 s32 btsnd_hcic_link_key_neg_reply_800843D8(u8 *arg0) {
     u8 *buf = (u8 *)GKI_getpoolbuf(2);
     if (buf == 0) return 0;
@@ -3087,8 +3118,7 @@ BOOLEAN L2CA_SetIdleTimeoutByBdAddr(BD_ADDR addr, UINT16 timeout) {
     }
     entry = lbl_803C4040;
     if (entry[8] != 0 && *(s32 *)(entry + 0xC) == 4) *(u16 *)(entry + 0x60) = timeout;
-    entry += 0x63;
-    if (*++entry != 0 && *(s32 *)(entry + 4) == 4) *(u16 *)(entry + 0x58) = timeout;
+    if ((entry += 0x64)[0] != 0 && *(s32 *)(entry + 4) == 4) *(u16 *)(entry + 0x58) = timeout;
     if (entry[0x5C] != 0 && *(s32 *)(entry + 0x60) == 4) *(u16 *)(entry + 0xB4) = timeout;
     if (entry[0xB8] != 0 && *(s32 *)(entry + 0xBC) == 4) *(u16 *)(entry + 0x110) = timeout;
 done:
@@ -3323,6 +3353,34 @@ void *l2cu_find_lcb_by_state(s32 state) {
     return 0;
 }
 
+void PORT_DlcEstablishInd(s32 arg0, s32 arg1, s32 arg2) {
+    extern char lbl_8031932C[];
+    extern void *port_find_dlci_port(unsigned int);
+    extern void rfc_timer_stop(void *);
+    extern void RFCOMM_DlcEstablishRsp(void *, u8, s32, u16);
+    void (*rsp)(s32, s32, s32, s32) = (void (*)(s32, s32, s32, s32))RFCOMM_DlcEstablishRsp;
+    void (*logfn)(s32, void *, s32, s32) = (void (*)(s32, void *, s32, s32))fn_8007096C;
+    u8 *port;
+    void *(*find_mcb)(void) = (void *(*)(void))port_find_mcb_dlci_port;
+    port = (u8 *)find_mcb();
+    if (lbl_803C4828[0x414] >= 4) logfn(0x90003, lbl_8031932C, arg1, arg2);
+    if (port == 0) {
+        port = (u8 *)port_find_dlci_port(arg1);
+        if (port == 0) {
+            rsp(arg0, arg1, 0, 1);
+            return;
+        }
+        *(u8 *)(arg0 + arg1 + 0x24) = port[0];
+    }
+    if (arg2 != 0 && (u32)arg2 < *(u16 *)(port + 0x14)) *(u16 *)(port + 0x14) = (u16)arg2;
+    rfc_timer_stop((void *)arg0);
+    rsp(arg0, arg1, *(u16 *)(port + 0x12), 0);
+    if (*(void (**)(s32,u8))(port + 0x8c) != 0 && (*(u32 *)(port + 0x88) & 0x200))
+        (*(void (**)(s32,u8))(port + 0x8c))(0x200, port[0]);
+    if (*(void (**)(s32,u8))(port + 0x90) != 0) (*(void (**)(s32,u8))(port + 0x90))(0, port[0]);
+    port[2] = 2;
+}
+
 void PORT_CloseInd(void *arg0) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319468[];
@@ -3412,6 +3470,41 @@ void fn_800916D8(void *callback, u32 cid) {
     u32 index = cid - 0x40;
     u8 *base = lbl_803C4828;
     *(void **)(base + 0x3C + index * 4) = callback;
+}
+
+void rfc_mx_sm_state_connected(void *arg0, s32 arg1, void *arg2) {
+    extern u8 lbl_803C4828[];
+    extern char lbl_80319868[];
+    extern char lbl_803199B8[];
+    extern void fn_80070954(u32, void *, u16);
+    extern void fn_8007096C(u32, void *, u16, u16);
+    extern void rfc_timer_start(void *, u16);
+    extern void rfc_send_disc(void *, s32, void *);
+    extern void rfc_send_ua(void *, s32, void *);
+    extern void PORT_CloseInd(void *);
+
+    if (lbl_803C4828[0x414] >= 4) fn_80070954(0x90003, lbl_803199B8, arg1);
+    switch (arg1) {
+    case 5:
+    case 8:
+        rfc_timer_start(arg0, 3);
+        *(u8 *)((u8 *)arg0 + 0x6C) = 6;
+        rfc_send_disc(arg0, 0, 0);
+        return;
+    case 14:
+        *(u8 *)((u8 *)arg0 + 0x6C) = 0;
+        PORT_CloseInd(arg0);
+        return;
+    case 3:
+        rfc_send_ua(arg0, 0, 0);
+        if (*(u8 *)((u8 *)arg0 + 0x6D)) L2CA_DisconnectReq(*(u16 *)((u8 *)arg0 + 0x68));
+        PORT_CloseInd(arg0);
+        return;
+    default:
+        if (lbl_803C4828[0x414] >= 4)
+            fn_8007096C(0x90003, lbl_80319868, arg1, *(u8 *)((u8 *)arg0 + 0x6C));
+        return;
+    }
 }
 
 void rfc_process_rls(void *arg0, s32 arg1, void *arg2) {
@@ -3615,13 +3708,16 @@ done:
     return;
 }
 
-void RFCOMM_LineStatusReq(void *arg0, s32 arg1, s32 arg2) {
-    void *mcb = port_find_mcb_dlci_port(arg0, (u8)arg1);
+void RFCOMM_LineStatusReq(void *arg0, u8 arg1, u8 arg2) {
+    void *mcb = port_find_mcb_dlci_port(arg0, arg1);
     if (*((u8 *)mcb + 2) != 2) return;
-    if (*((u8 *)mcb + 0x68) != 4) return;
-    *((u8 *)mcb + 0x69) |= 0x10;
-    rfc_send_rls(arg0, arg1, 1, arg2);
-    rfc_port_timer_start(mcb, 0x3C);
+    if (*((u8 *)mcb + 0x68) == 4) {
+        *((u8 *)mcb + 0x69) |= 0x10;
+        rfc_send_rls(arg0, arg1, 1, arg2);
+        rfc_port_timer_start(mcb, 0x3C);
+    } else {
+        return;
+    }
 }
 
 void fn_800939A0(void *arg0, u8 arg1) { rfc_port_sm_execute(port_find_mcb_dlci_port(arg0, arg1), 0xC, 0); }
@@ -3676,10 +3772,14 @@ void rfc_send_fcon_80093FDC(void *arg0, s32 arg1) {
 void rfc_send_rls(void *arg0, u8 arg1, s32 arg2, u8 arg3) {
     u8 *buf = GKI_getpoolbuf(2);
     if (buf != 0) {
+        s32 iVar;
+        s32 iVar2;
         *(u16 *)(buf + 4) = 0xC;
-        buf[0x14] = (u8)((((s32)(-arg2 | arg2) >> 31) & 2) | 0x51);
+        iVar = ((-arg2 | arg2) >> 31) & 2;
+        iVar2 = (arg1 << 2) | 3;
+        buf[0x14] = iVar | 0x51;
         buf[0x15] = 5;
-        buf[0x16] = (u8)((arg1 << 2) | 3);
+        buf[0x16] = iVar2;
         buf[0x17] = arg3 | 1;
         *(u16 *)(buf + 2) = 4;
         rfc_send_buf_uih(arg0, 0, buf, buf[0x17], buf[0x16]);
