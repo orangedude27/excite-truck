@@ -1118,7 +1118,7 @@ s32 bta_dm_sm_execute(BT_HDR *p_msg) {
 
 loop:
     event = p_msg->event;
-    action = table[((event & 0xFF) * 4) - (event & 0xFF) + i];
+    action = table[i + (((event & 0xFF) * 4) - (event & 0xFF))];
     if (action != 0xD) {
         ((tAction *)lbl_802EEA38)[action](p_msg);
         i++;
@@ -2900,6 +2900,7 @@ BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
 }
 
 extern u8 lbl_803C3C38[];
+__declspec(section ".data") extern u8 *lbl_803C3C38_ptr;
 extern u8 lbl_803C3AF0[];
 extern u8 hidh_conn_reg(void);
 extern u8 hidh_conn_initiate(void);
@@ -2918,6 +2919,36 @@ u8 HID_HostRegister(void *arg0) {
     return 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+u8 HID_HostRemoveDev(u32 dev_handle) {
+    extern u8 lbl_803C3C38[];
+    extern u8 hidh_conn_disconnect(u32);
+    u8 *entry;
+    u32 offset;
+    if (lbl_803C3C38[0x400] == 0)
+        return 1;
+    if (dev_handle > 0x10)
+        return 5;
+    offset = dev_handle * 0x34;
+    entry = lbl_803C3C38 + offset;
+    if (entry[0] == 0)
+        return 5;
+    if (entry[0xA] == 1) {
+        entry[0xC] = 1;
+        fn_80070F90(entry + 0x1C);
+        if (entry[0xA] == 1) {
+            entry[0xC] = 1;
+            hidh_conn_disconnect(dev_handle);
+        }
+    }
+    entry[0] = 0;
+    entry[0x10] = 0;
+    *(u16 *)(entry + 0x14) = 0;
+    *(u16 *)(entry + 0x16) = 0;
+    return 0;
+}
+#pragma pop
 u8 HID_HostOpenDev(u32 arg0) {
     u8 *entry;
     u32 offset;
