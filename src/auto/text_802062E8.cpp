@@ -19,6 +19,20 @@ extern "C" int fn_8012A2D8(void*);
 extern "C" float PSVECMag(void*);
 
 extern void *lbl_8055ED88;
+extern "C" void fn_8020A400(void);
+extern "C" void fn_80208D80(int);
+extern unsigned char lbl_8055ED84;
+extern "C" void fn_802063D8(void) {
+    extern int lbl_8055ED80;
+    struct Callback { virtual void slot0(int); };
+    fn_8020A400();
+    if (lbl_8055ED80)
+        ((Callback *)lbl_8055ED80)->slot0(1);
+    int value = lbl_8055ED84 == 0;
+    lbl_8055ED80 = 0;
+    fn_80208D80(value);
+}
+
 extern "C" int fn_80206430(void) {
     extern int lbl_8055ED80;
     int val = lbl_8055ED80;
@@ -146,6 +160,32 @@ extern "C" void fn_80206B0C(void) {
 
 extern "C" void fn_80206B10(void) {
 	return;
+}
+
+extern "C" void fn_80206B14(void *arg0, int arg1, int arg2) {
+    if (*(unsigned char *)((char *)arg0 + 0x4D)) {
+        float value = *(float *)((char *)arg0 + 8);
+        *(unsigned char *)((char *)arg0 + 0x4D) = 0;
+        void *obj = *(void **)((char *)arg0 + 0xC);
+        void **vt = *(void ***)obj;
+        ((void (*)(void *, float))vt[0x34 / 4])(obj, value);
+    }
+    if (*(unsigned char *)((char *)arg0 + 0x4E)) {
+        void *obj = *(void **)((char *)arg0 + 0xC);
+        *(unsigned char *)((char *)arg0 + 0x4E) = 0;
+        float value = *(float *)((char *)arg0 + 4);
+        void **vt = *(void ***)obj;
+        ((void (*)(void *, float))vt[0x30 / 4])(obj, value);
+    }
+    if (*(unsigned char *)((char *)arg0 + 0x4F)) {
+        void *obj = *(void **)((char *)arg0 + 0xC);
+        *(unsigned char *)((char *)arg0 + 0x4F) = 0;
+        int value = *(int *)((char *)arg0 + 0x14);
+        void **vt = *(void ***)obj;
+        ((void (*)(void *, int))vt[0x50 / 4])(obj, value);
+    }
+    void **vt = *(void ***)arg0;
+    ((void (*)(void *, int, int))vt[0x10 / 4])(arg0, arg1, arg2);
 }
 
 extern "C" void fn_80206BF4(void) {
