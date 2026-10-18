@@ -23,6 +23,10 @@ extern char lbl_80347C38[];
 extern char *fn_80131234(char *);
 long fn_8027CB28(void);
 extern long lbl_8055F654;
+long fn_8027C1C8(void *, const char *);
+void *fn_8027C258(void *, long);
+long *fn_8027C26C(void *, const char *);
+long fn_8027C788(void *);
 long *fn_8027C120(long, long);
 long fn_8027C8B0(void);
 void fn_802E317C(char *, long);
@@ -193,10 +197,11 @@ void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
 
 extern char lbl_80347B30[];
 void fn_8027C0D0(void *arg0, long arg1, void **arg2) {
+    long (*method)(void *, char **);
     *(long *)arg0 = arg1;
     *(long *)((char *)arg0 + 8) = (long)arg2;
-    *(long *)((char *)arg0 + 4) =
-        (*(long (**)(void *, char **))(*(void ***)arg2)[5])(arg2, (char **)&lbl_80347B30);
+    method = *(long (**)(void *, char **))((char *)*(void ***)arg2 + 0x14);
+    *(long *)((char *)arg0 + 4) = method(arg2, (char **)&lbl_80347B30);
 }
 
 long *fn_8027C120(long arg0, long arg1) {
