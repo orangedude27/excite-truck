@@ -174,6 +174,55 @@ s32 WUDiTerminateDevice(void) {
     return 3;
 }
 
+void fn_80069D80(void) {
+    extern s32 WUDiDeleteDevice(void);
+    extern s32 SCCheckStatus(void);
+    extern s32 SCSetBtDeviceInfoArray(void *);
+    extern void SCFlushAsync(void *);
+    extern void OSCancelAlarm(OSAlarm *);
+    extern u8 lbl_80393058[];
+    u8 *base = lbl_80392960;
+    u8 state = base[0xD];
+    base[0xC] = 0;
+    switch (state) {
+    case 1:
+        BTA_DmSetVisibility(0, 0);
+        base[0xD] = 2;
+        break;
+    case 2:
+        base[0xD] = WUDiTerminateDevice();
+        break;
+    case 3:
+        base[0xD] = WUDiDeleteDevice();
+        break;
+    case 5:
+        if (SCCheckStatus() != 0) break;
+        memset(lbl_80393058, 0, 0x461);
+        if (SCSetBtDeviceInfoArray(lbl_80393058) != 0) {
+            base[0xD] = 6;
+            SCFlushAsync(DeleteFlushCallback);
+        }
+        break;
+    case 8: {
+        BOOL enabled = OSDisableInterrupts();
+        u8 connectable = base[0x66A];
+        OSRestoreInterrupts(enabled);
+        enabled = OSDisableInterrupts();
+        base[0x66B] = 0;
+        base[0x66A] = connectable;
+        OSRestoreInterrupts(enabled);
+        BTA_DmSetVisibility(0, connectable);
+        OSCancelAlarm((OSAlarm *)(base + 0x690));
+        base[0xD] = 0;
+        if (base[8] != 0) {
+            ((void (*)(u32))base[8])(1);
+        }
+        base[0xD] = 0;
+        break;
+    }
+    }
+}
+
 void fn_80069EB4(u32 r3, u32 r4) {
     OSSwitchFiberEx(r3, r4, 0, 0, fn_80069D80, (u8*)&lbl_80393680 + 0x1000);
 }
@@ -903,6 +952,17 @@ void fn_80071078(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x80) = arg0; }
 void fn_80071088(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x88) = arg0; }
 
 void fn_80071098(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x84) = arg0; }
+
+typedef void (*tConnOpenCb)(u8, u8, u16);
+void bta_sys_conn_open(s32 arg0, s32 arg1, s32 arg2) {
+    typedef void (*tConnOpenCb2)(s32, s32, s32, s32);
+    tConnOpenCb2 *callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
+    if (callbacks[0x80 / 4] != 0) callbacks[0x80 / 4](0, arg0, arg1, arg2);
+    callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
+    if (callbacks[0x84 / 4] != 0) callbacks[0x84 / 4](0, arg0, arg1, arg2);
+    callbacks = (tConnOpenCb2 *)lbl_803C0AD8;
+    if (callbacks[0x88 / 4] != 0) callbacks[0x88 / 4](0, arg0, arg1, arg2);
+}
 
 void fn_80071230(void *arg0, void *arg1, void *arg2) {
     void (*callback)(int, void *, void *, void *) =
@@ -2520,6 +2580,25 @@ void btu_hcif_connection_request_evt(u8 *event) {
     }
 }
 
+extern void l2c_link_role_change_failed(void);
+void btu_hcif_hdl_command_status(s32 opcode, s32 status, UINT8 *p_cmd) {
+    UINT8 bd_addr[6]; UINT16 handle; tBTM_ESCO_DATA esco_data;
+    if (opcode != 0x802) {
+        if (opcode < 0x802) {
+            if (opcode >= 0x801) { btm_pm_proc_cmd_status(status); return; }
+        } else if (opcode < 0x807) { btm_pm_proc_cmd_status(status); return; }
+    }
+    if (status != 0) switch (opcode) {
+    case 0x401: btm_process_inq_complete(status, 0); break;
+    case 0x419: btm_process_remote_name(NULL,NULL,0,status); btm_sec_rmt_name_request_complete(NULL,NULL,status); break;
+    case 0x00D: btm_qos_setup_complete(status,0,NULL); break;
+    case 0x405: if(p_cmd){ p_cmd++; STREAM_TO_BDADDR(bd_addr,p_cmd); btm_sec_connected(bd_addr,HCI_INVALID_HANDLE,status,0); l2c_link_hci_conn_comp(status,HCI_INVALID_HANDLE,bd_addr); } break;
+    case 0x80B: btm_acl_role_changed(status,NULL,BTM_ROLE_UNDEFINED); l2c_link_role_change_failed(); break;
+    case 0x428: if(p_cmd){ p_cmd++; STREAM_TO_UINT16(handle,p_cmd); if(btm_is_sco_active(handle)) btm_esco_proc_conn_chg(status,handle,0,0,0,0); else btm_sco_connected(status,NULL,handle,&esco_data); } break;
+    default: if((opcode&0xFC00)==0xFC00) btm_vsc_complete((UINT8*)&status,opcode,1,NULL); break;
+    } else if((opcode&0xFC00)==0xFC00) btm_vsc_complete((UINT8*)&status,opcode,1,NULL);
+}
+
 void fn_8008251C(void) {
     btm_init();
     l2c_init();
@@ -2648,6 +2727,27 @@ BOOLEAN btsnd_hcic_link_key_neg_reply(BD_ADDR bd_addr) {
     p[11] = bd_addr[5]; p[12] = bd_addr[4]; p[13] = bd_addr[3];
     p[14] = bd_addr[2]; p[15] = bd_addr[1]; p[16] = bd_addr[0];
     btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
+BOOL btsnd_hcic_link_key_neg_reply_800840C8(void *link_key) {
+    u8 *p;
+    p = GKI_getpoolbuf(2);
+    if (p == 0) {
+        return FALSE;
+    }
+    *(u16 *)(p + 2) = 9;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 0xE;
+    p[9] = 4;
+    p[10] = 6;
+    p[11] = ((u8 *)link_key)[5];
+    p[12] = ((u8 *)link_key)[4];
+    p[13] = ((u8 *)link_key)[3];
+    p[14] = ((u8 *)link_key)[2];
+    p[15] = ((u8 *)link_key)[1];
+    p[16] = ((u8 *)link_key)[0];
+    btu_hcif_send_cmd(4, (BT_HDR *)p);
     return TRUE;
 }
 
@@ -3013,11 +3113,17 @@ void fn_80085828(void *arg0) {
 
 s32 btsnd_hcic_inq_cancel_80085850(void) {
     u8 *p = GKI_getpoolbuf(2);
-    if (!p) return 0;
-    p[2] = 3; p[3] = 0;
-    p[4] = 0; p[5] = 0;
-    p[8] = 9; p[9] = 0x10; p[10] = 0;
-    btu_hcif_send_cmd(9, 0);
+    u16 zero = 0;
+    u8 opcode = 9;
+    if (p == 0) {
+        return 0;
+    }
+    *(u16 *)(p + 2) = 3;
+    *(u16 *)(p + 4) = zero;
+    p[8] = opcode;
+    p[9] = 0x10;
+    p[10] = zero;
+    btu_hcif_send_cmd(p, opcode);
     return 1;
 }
 
