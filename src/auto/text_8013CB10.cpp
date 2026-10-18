@@ -53,7 +53,6 @@ public:
 
 class TObj10 {
 public:
-    virtual void d0();
     virtual u8 *v10(); // 0x8
 };
 
@@ -82,8 +81,7 @@ extern "C" f32 fn_8013CB3C(void) {
 }
 
 extern "C" s32 fn_8013CB44(const char *arg0, TObj10 *arg1) {
-    u8 *(*method)(TObj10 *) = (u8 *(*)(TObj10 *))(*(void ***)arg1)[2];
-    return strcmp((const char *)method(arg1), arg0) == 0;
+    return strcmp((const char *)arg1->v10(), arg0) == 0;
 }
 
 extern "C" void fn_8013CB90(void *arg0) {
