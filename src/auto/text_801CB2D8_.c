@@ -40,10 +40,15 @@ extern void fn_801CC470(void);
 extern void fn_801CC918(void);
 void fn_801CB2D8(void) {
     if (fn_80019BA8() == 0) {
-        if (fn_80161C38() != 0) return;
-        lbl_8055E880 = 1;
-        fn_801CC470();
-        fn_801CB3F8();
+        switch (fn_80161C38()) {
+        case 0:
+            lbl_8055E880 = 1;
+            fn_801CC470();
+            fn_801CB3F8();
+            break;
+        default:
+            break;
+        }
     }
 }
 
