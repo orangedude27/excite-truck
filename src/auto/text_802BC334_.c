@@ -103,6 +103,21 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
     (*(void (***)(void *, int))obj)[16](obj, arg1);
     return obj;
 }
+
+void fn_802BCFB0(int *arg0) {
+    int temp_r31;
+    temp_r31 = *arg0;
+    if (temp_r31 != 0) {
+        if (temp_r31 != 0) {
+            fn_802BD018((char *)temp_r31 + 8);
+            fn_802BD018((char *)temp_r31 + 4);
+            fn_802BD070((void *)temp_r31);
+            fn_80128668((void *)temp_r31);
+        }
+        *arg0 = 0;
+    }
+}
+
 #pragma pop
 
 int fn_802BD0C8(void *arg0) {
