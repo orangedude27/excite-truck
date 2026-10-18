@@ -3592,7 +3592,7 @@ void rfc_mx_sm_state_connected(void *arg0, s32 arg1, void *arg2) {
 
 void PORT_ParNegInd(void *, u8, u16, u8, u8);
 void PORT_ParNegCnf(void *, u8, u16, u8, u8);
-  void rfc_send_dm(void *, u8, u8);
+  void rfc_send_dm(void *, u8, BOOLEAN);
 void rfc_port_timer_stop(void *);
 void *port_find_mcb_dlci_port(void *, u8);
 extern u8 lbl_80319DB0[];
