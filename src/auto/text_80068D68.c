@@ -936,15 +936,22 @@ void fn_80070FA4(void *arg0, const void *arg1) {
 }
 
 s32 bdcmp(u8 *arg0, u8 *arg1) {
-    u8 *p0 = arg0 + 2;
-    u8 *p1 = arg1 + 2;
+    u8 *p0;
+    u8 *p1;
     if (arg0[0] != arg1[0]) return -1;
     if (arg0[1] != arg1[1]) return -1;
+    p0 = arg0;
+    p1 = arg1;
+    p0 += 2;
+    p1 += 2;
     if (p0[0] != p1[0]) return -1;
     if (p0[1] != p1[1]) return -1;
     if (p0[2] != p1[2]) return -1;
-    if (p0[3] == p1[3]) return 0;
-    return -1;
+    if (p0[3] == p1[3]) {
+        return 0;
+    } else {
+        return -1;
+    }
 }
 
 void fn_80071078(s32 arg0) { *(s32 *)(lbl_803C0AD8 + 0x80) = arg0; }
@@ -1931,37 +1938,34 @@ void fn_8007BC88(void) {
 #pragma push
 #pragma use_lmw_stmw off
 tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT8 origin, UINT32 timeout, tBTM_CMPL_CB *p_cb) {
+    u8 *base = lbl_803C0F78;
     u8 active;
     u8 start = 1;
     u8 result = 1;
     u8 status = 1;
     if (!fn_80079514()) return 6;
-    active = lbl_803C0F78[0x16AE];
+    active = base[0x16AE];
     if (active & origin) return 2;
     if (origin == 1) {
         if (active != 0) {
-            if (memcmp(remote_bda, lbl_803C0F78 + 0x16A8, 6) != 0) return 2;
+            if (memcmp(remote_bda, base + 0x16A8, 6) != 0) return 2;
             start = 0;
         }
-        *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x167C) = p_cb;
+        *(tBTM_CMPL_CB **)(base + 0x167C) = p_cb;
     } else if (active != 0) {
         return 2;
     }
     if (start) {
-        memcpy(lbl_803C0F78 + 0x16A8, remote_bda, 6);
-        btu_start_timer(lbl_803C0F78 + 0x1680, 0xA, timeout);
+        memcpy(base + 0x16A8, remote_bda, 6);
+        btu_start_timer(base + 0x1680, 0xA, timeout);
         if (p_cur != 0) {
-            result = btsnd_hcic_rmt_name_req(remote_bda, ((u8 *)p_cur)[0xB], ((u8 *)p_cur)[0xD],
-                *(u16 *)p_cur | 0x8000);
+            result = btsnd_hcic_rmt_name_req(remote_bda, ((u8 *)p_cur)[0xB], ((u8 *)p_cur)[0xD], *(u16 *)p_cur | 0x8000);
         } else {
             result = btsnd_hcic_rmt_name_req(remote_bda, 1, 0, 0);
         }
     }
-    if (result) {
-        lbl_803C0F78[0x16AE] |= origin;
-    } else {
-        status = 3;
-    }
+    if (result) base[0x16AE] |= origin;
+    else status = 3;
     return status;
 }
 #pragma pop
@@ -2483,19 +2487,30 @@ void fn_8007F5A4(void) {
 }
 
 void btm_sec_abort_access_req(BD_ADDR arg0) {
-    tBTM_SEC_DEV_REC *dev = btm_find_dev(arg0);
-    if (dev != NULL) {
-        if (lbl_803C0F78[0x1920] != 0) {
-            ((void (*)(BD_ADDR, void *, void *))*(u32 *)&lbl_803C0F78[0x1920])(arg0, (u8 *)dev + 0x22, (u8 *)dev + 0x35);
-        }
-        if (dev->sec_flags == 4 || dev->sec_flags == 1) {
-            dev->sec_flags = 0;
-            if (dev->p_callback != NULL && *(u32 *)dev->p_callback == 3) {
-                *(s32 *)((u8 *)dev->p_callback + 4) = 0;
+    tBTM_SEC_DEV_REC *dev;
+    void (*cb)(BD_ADDR, void *, void *);
+    u8 state;
+    u32 *p;
+    u32 zero;
+    dev = btm_find_dev(arg0);
+    if (dev != 0) {
+        cb = *(void (**)(BD_ADDR, void *, void *))((u8 *)lbl_803C0F78 + 0x1920);
+        if (cb != 0) cb(arg0, (u8 *)dev + 0x22, (u8 *)dev + 0x35);
+        state = *((u8 *)dev + 0x7f);
+        if (state == 4) goto done;
+        if (state != 1) goto done;
+        zero = 0;
+        *((u8 *)dev + 0x7f) = zero;
+        if (*((u8 *)dev + 0x80) != 0) {
+            p = *(u32 **)dev;
+            if (p != 0 && *p == 3) {
+                p[1] = zero;
+                *(u32 *)((u8 *)dev + 4) = zero;
             }
-            dev->p_callback = NULL;
         }
     }
+done:
+    return;
 }
 
 s32 fn_8007FEFC(u16 handle) {
@@ -3686,6 +3701,26 @@ void PORT_DlcEstablishInd(s32 arg0, s32 arg1, s32 arg2) {
     port[2] = 2;
 }
 
+void PORT_ControlCnf(void *mcb, u8 dlci, void *pars) {
+    extern char lbl_80319430[];
+    extern u32 port_rfc_send_tx_data(void *);
+    u8 *port = port_find_mcb_dlci_port(mcb, dlci);
+    s32 event = 0;
+    if (lbl_803C4828[0x414] >= 4)
+        fn_8007093C(0x90003, lbl_80319430);
+    if (port == 0)
+        return;
+    if (!(port[0x64] & 2)) {
+        port[0x64] |= 2;
+        if (port[0x64] & 4)
+            event = *(u32 *)(port + 0x88) & 0x200;
+    }
+    if (port[0x64] & 4)
+        event |= port_rfc_send_tx_data(port);
+    if (event != 0 && *(void (**)(s32, u8))(port + 0x8c) != 0)
+        (*(void (**)(s32, u8))(port + 0x8c))(event, port[0]);
+}
+
 void PORT_CloseInd(void *arg0) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319468[];
@@ -3829,6 +3864,39 @@ void rfc_mx_sm_state_connected(void *arg0, s32 arg1, void *arg2) {
         if (lbl_803C4828[0x414] >= 4)
             ((void (*)(u32, void *, s32, u16))fn_8007096C)(0x90003, lbl_80319868, arg1, *(u8 *)((u8 *)arg0 + 0x6C));
         return;
+    }
+}
+
+void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
+    extern void PORT_StartCnf(void *, u16);
+    extern void rfc_release_multiplexer_channel(void *);
+    extern void rfc_send_sabme(void *, s32, void *);
+    extern char lbl_80319A70[];
+    void (*start)(void *, u16) = PORT_StartCnf;
+    void (*disconnect)(u16) = (void (*)(u16))L2CA_DisconnectReq;
+    void (*release)(void *) = rfc_release_multiplexer_channel;
+    void (*sabme)(void *, u8) = (void (*)(void *, u8))rfc_send_sabme;
+    u8 *p = (u8 *)arg0;
+    if (lbl_803C4828[0x414] >= 4) {
+        void (*logfn)(u32, void *, void *, u16) = (void (*)(u32, void *, void *, u16))fn_8007096C;
+        logfn(0x90003, lbl_80319A70, arg1, arg1 ? *arg1 : 0);
+    }
+    if (*arg1 != 0) {
+        if (p[0x6D] != 0) {
+            start(arg0, 0);
+            disconnect(*(u16 *)(p + 0x68));
+        }
+        release(arg0);
+        return;
+    }
+    p[0x6E] = 1;
+    if (p[0x6C] == 2 && p[0x6F] != 0) {
+        if (p[0x6D] != 0) {
+            p[0x6C] = 3;
+            sabme(arg0, 0);
+        } else {
+            p[0x6C] = 4;
+        }
     }
 }
 
