@@ -1,3 +1,4 @@
+#include "revolution/MTX/vec.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #pragma opt_tail_call on
@@ -50,6 +51,37 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801A973C(void *this_,
         if (flag > 0) fn_80128668(this_);
     }
     return this_;
+}
+
+void fn_801ABB54(void *arg0) {
+    extern float lbl_80562478, lbl_8056247C, lbl_805624A4, lbl_805624AC, lbl_805624D8;
+    float dot, magnitude, sign, limit;
+    float scale;
+    double absolute;
+    float z, y, x;
+    char *p = arg0;
+    dot = PSVECDotProduct((Vec *)(p + 0x124), (Vec *)(p + 0x54));
+    limit = *(float *)(p + 0x238);
+    scale = lbl_8056247C;
+    absolute = __fabs(dot);
+    magnitude = (float)absolute;
+    if (magnitude > limit) {
+        limit = limit < magnitude ? limit : magnitude;
+        if (dot > lbl_8056247C) sign = lbl_805624AC;
+        else sign = lbl_805624A4;
+        scale = -sign * limit;
+    } else if (magnitude > lbl_805624D8) {
+        scale = -dot * lbl_80562478;
+    }
+    x = *(float *)(p + 0x54) * scale;
+    y = *(float *)(p + 0x58) * scale;
+    z = *(float *)(p + 0x5C) * scale;
+    y = *(float *)(p + 0x128) + y;
+    x = *(float *)(p + 0x124) + x;
+    z = *(float *)(p + 0x12C) + z;
+    *(float *)(p + 0x128) = y;
+    *(float *)(p + 0x124) = x;
+    *(float *)(p + 0x12C) = z;
 }
 
 void fn_801ABFF4(void) {
@@ -138,6 +170,25 @@ void fn_801AD5F0(void) {
     fn_801ACF94();
 }
 
+extern void fn_801D0A24(void *, void *);
+extern void fn_801AC0A0(void *, float *, float *, int, int);
+extern void fn_801D09A8(void *, int);
+extern void fn_801A9AB0(void);
+extern void fn_801D08C0(void *);
+extern void fn_801D0934(void *);
+void *fn_801AD6B0(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(void **)arg0 = &lbl_80335744;
+        *(void **)((char *)arg0 + 0x23C) = (char *)&lbl_80335744 + 0x54;
+        fn_801D0934((char *)arg0 + 0x23C);
+        *(int *)((char *)arg0 + 0x240) = 0;
+        lbl_8055E5E4 = 0;
+        fn_80179EE8(arg0, 0);
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 unsigned char fn_801AD860(void *arg0) {
     return ((unsigned char *)arg0)[0x220];
 }
@@ -153,6 +204,65 @@ void fn_801AD870(void *arg0, void *arg1, void *arg2, long *arg3, long *arg4) {
 
 long fn_801AD880(void) {
     return 0;
+}
+
+void fn_801AD888(void *arg0) {
+    ((void (**)(void *))(*(void ***)arg0))[4](arg0);
+    ((void (*)(void *))fn_801AC254)(arg0);
+}
+
+void fn_801AD8C8(void *arg0, int *arg1, float *arg2, float *arg3) {
+    int l, k, j, i, h, g, f, e, d, c, b, a;
+    float z1, y1, x1, z0, y0, x0;
+    a=arg1[0]; b=arg1[1]; c=arg1[2]; d=arg1[3];
+    e=arg1[4]; f=arg1[5]; g=arg1[6]; h=arg1[7];
+    i=arg1[8]; j=arg1[9]; k=arg1[10]; l=arg1[11];
+    *(int *)((char *)arg0+0x3c)=a;
+    *(int *)((char *)arg0+0x40)=b;
+    *(int *)((char *)arg0+0x44)=c;
+    *(int *)((char *)arg0+0x48)=d;
+    *(int *)((char *)arg0+0x4c)=e;
+    *(int *)((char *)arg0+0x50)=f;
+    *(int *)((char *)arg0+0x54)=g;
+    *(int *)((char *)arg0+0x58)=h;
+    *(int *)((char *)arg0+0x5c)=i;
+    *(int *)((char *)arg0+0x60)=j;
+    *(int *)((char *)arg0+0x64)=k;
+    *(int *)((char *)arg0+0x68)=l;
+    ((void (*)(void *))fn_8017A580)(arg0);
+    x0=arg2[0]; y0=arg2[1]; z0=arg2[2];
+    x1=arg3[0]; y1=arg3[1]; z1=arg3[2];
+    *(float *)((char *)arg0+0x118)=x0;
+    *(float *)((char *)arg0+0x11c)=y0;
+    *(float *)((char *)arg0+0x120)=z0;
+    *(float *)((char *)arg0+0x124)=x1;
+    *(float *)((char *)arg0+0x128)=y1;
+    *(float *)((char *)arg0+0x12c)=z1;
+    fn_801AC240(arg0);
+}
+
+void fn_801AD99C(void *arg0, float *arg1, float *arg2) {
+    float scale;
+    float sp14[3];
+    float sp8[3];
+    scale = *(float *)((char *)arg0 + 0xD4) / lbl_805624D0;
+    sp14[0] = arg1[0] * scale;
+    sp14[1] = arg1[1] * scale;
+    sp14[2] = arg1[2] * scale;
+    sp8[0] = *(float *)((char *)arg0 + 0x60) + arg2[0];
+    sp8[1] = *(float *)((char *)arg0 + 0x64) + arg2[1];
+    sp8[2] = *(float *)((char *)arg0 + 0x68) + arg2[2];
+    ((void (*)(float *, float *, int, int))(*(void ***)arg0)[18])(sp14, sp8, 100, 0);
+}
+
+void fn_801ADA38(void *arg0, int arg1) {
+    int *sp8;
+    if (arg1) {
+        sp8 = &lbl_80335940;
+        fn_801ABFF8(&sp8);
+    } else {
+        *((char *)arg0 + 0x220) = 0;
+    }
 }
 
 unsigned char fn_801ADA7C(void *arg0) {
