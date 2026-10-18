@@ -350,21 +350,22 @@ extern float lbl_805621A4;
 extern char lbl_803332CC[];
 void fn_801944C0(void *arg0) {
     void *obj;
-    int mode;
     obj = *(void **)((char *)arg0 + 0x288);
     *(u8 *)((char *)arg0 + 0x2A6) = *(u8 *)((char *)obj + 0x28);
     if (*(u8 *)((char *)arg0 + 0x2A6)) {
         if (*(float *)((char *)arg0 + 0x1EC) < lbl_80562144)
             *(float *)((char *)arg0 + 0x1EC) = *(float *)((char *)arg0 + 0x26C);
-        mode = lbl_8055E540;
-        if (mode == 1) {
+        switch (lbl_8055E540) {
+        case 1:
             if ((*(int *)((char *)arg0 + 0x2D0) & 0x200) == 0)
                 ((void (*)(void *, const char *))fn_801945F8)(arg0, lbl_803332CC);
-        } else if (mode >= 1) {
-            if (mode < 3)
-                fn_8018AF04(*(void **)((char *)arg0 + 0x294));
-        } else if (mode == 0) {
+            break;
+        case 0:
             fn_80193CD4(arg0);
+            break;
+        case 2:
+            fn_8018AF04(*(void **)((char *)arg0 + 0x294));
+            break;
         }
         obj = *(void **)((char *)arg0 + 0x28C);
         ((void (*)(void *, int))(*(void ***)obj)[12])(obj, -1);
@@ -568,19 +569,22 @@ void fn_80196250(float *arg0, float *arg1, int *arg2, float farg0, float farg1, 
       fn_80194844();
   }
 
-  void fn_801963A0(void *arg0) {
-      float value;
-      float delta;
-      fn_801961F8();
-      value = *(float *)((char *)*(void **)((char *)arg0 + 0x294) + 0x25D4);
-      delta = lbl_8056223C * value;
-      lbl_8055E57C += delta;
-      fn_80136E8C(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 1);
-      fn_801958C4(arg0);
-      fn_801959AC(arg0);
-      fn_80195CA8(arg0);
-  }
-
+#pragma dont_inline on
+void fn_801963A0(void *arg0) {
+    void *obj;
+    float value;
+    float delta;
+    ((void (*)(void *, int))fn_801961F8)(arg0, 0);
+    obj = *(void **)((char *)arg0 + 0x294);
+    value = *(float *)((char *)obj + 0x25D4);
+    delta = lbl_8056223C * value;
+    lbl_8055E57C += delta;
+    ((void (*)(int, int, int, float, float))fn_80136E8C)(lbl_8055E0D0, *(int *)((char *)arg0 + 0x290), 1, delta, value);
+    fn_801958C4(arg0);
+    fn_801959AC(arg0);
+    fn_80195CA8(arg0);
+}
+#pragma dont_inline reset
   void fn_80196414(void *arg0) {
       fn_80196DC4(arg0);
   }
