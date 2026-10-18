@@ -1155,7 +1155,7 @@ extern "C" void fn_8015CC74(Unk801577F0* arg0) {
         *(f32*)((u8*)p + offset + 0xC) = zero;
         offset += 0x38;
     }
-    arg0->v34();
+    arg0->v32();
     *(f32*)((u8*)arg0 + 0x250) = lbl_805617C8;
 }
 
@@ -1194,8 +1194,8 @@ extern "C" void fn_8015CDD8(void) {
 }
 
 extern "C" void fn_8015CDDC(Unk801577F0* arg0, void* arg1, s32 arg2, f32 farg0) {
-    if (*(s32*)((u8*)arg0 + 0x24C) == *(s32*)((u8*)arg1 + 0x1EC) && arg2 == arg0->v37()) {
-        *(f32*)((u8*)arg0 + 0x250) = farg0;
+    if (*(s32*)((u8*)arg0 + 0x24C) == *(s32*)((u8*)arg1 + 0x1EC) && arg2 == arg0->v35()) {
+        arg0->m250 = farg0;
     }
 }
 
@@ -1635,4 +1635,16 @@ extern "C" s32 fn_80159708(void* arg0) {
     f32 f0 = *(f32*)((char*)arg0 + 0x25c);
     return (s32)f0;
 }
-
+class Fn8015889C {
+public:
+ virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+ virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+ virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+ virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+ virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+ virtual f32 v20(s32); virtual void v21(); virtual void v22(); virtual s32 v23();
+ virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+ virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+ virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(f32*);
+ virtual void v36(); virtual void v37(); virtual void v38(f32);
+};
