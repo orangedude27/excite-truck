@@ -2,6 +2,14 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 #include <revolution/MTX/vec.h>
+class Fn801A014CDispatch {
+public:
+    virtual void Dummy0();
+    virtual void Dummy1();
+    virtual void Dummy2();
+    virtual void Call();
+};
+
 #pragma opt_tail_call on
 __declspec(section ".data") extern f32 lbl_80558DC4;
 extern f32 lbl_805622DC;
