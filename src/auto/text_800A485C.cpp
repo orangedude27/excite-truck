@@ -1698,18 +1698,14 @@ extern "C" s32 fn_800BA204(s32 arg0) {
 
 extern "C" s32 fn_800BA238(s32 arg0) {
     u32 flags;
-
-    if (arg0 == 0) {
-        return 1;
-    }
+    if (arg0 == 0) return 1;
     flags = *(volatile u32 *)lbl_80407300;
-    if (flags & 2) {
-        *(volatile s32 *)lbl_80407300 &= 0xFFFFFFFD;
-    }
+    if (flags & 2) *(volatile u32 *)lbl_80407300 &= 0xFFFFFFFD;
+    (void)*(volatile u32 *)lbl_80407300;
     flags = *(volatile u32 *)lbl_80407300;
-    *(volatile s32 *)lbl_80407300 = (s32)(flags & ~1U);
-    *(s32 *)((u8 *)lbl_80407300 + 0xC) = 0;
-    *(u8 *)((u8 *)lbl_80407300 + 0x14) = 0;
+    *(volatile u32 *)lbl_80407300 = flags & ~1U;
+    *(volatile u32 *)((u8 *)lbl_80407300 + 0xC) = 0;
+    *(volatile u8 *)((u8 *)lbl_80407300 + 0x14) = 0;
     return 0;
 }
 
@@ -1909,6 +1905,47 @@ extern "C" void* fn_800C4B8C(s32 arg0) {
 extern void *lbl_8055DD94;
 extern "C" void fn_800C4BD0(void* hi) {
     lbl_8055DD94 = hi;
+}
+
+extern "C" void fn_800C4BD8(s32 *p, s32 value, u32 size) {
+    u32 count = size >> 4;
+    u32 tail = (size >> 2) & 3;
+    if (count != 0) {
+        u32 blocks = count >> 3;
+        if (blocks != 0) {
+            for (; blocks != 0; --blocks) {
+                p[0]=value;p[1]=value;p[2]=value;p[3]=value;
+                p[4]=value;p[5]=value;p[6]=value;p[7]=value;
+                p[8]=value;p[9]=value;p[10]=value;p[11]=value;
+                p[12]=value;p[13]=value;p[14]=value;p[15]=value;
+                p[16]=value;p[17]=value;p[18]=value;p[19]=value;
+                p[20]=value;p[21]=value;p[22]=value;p[23]=value;
+                p[24]=value;p[25]=value;p[26]=value;p[27]=value;
+                p[28]=value;p[29]=value;p[30]=value;p[31]=value;
+                p += 32;
+            }
+            count &= 7;
+        }
+        if (count != 0) {
+            for (; count != 0; --count) {
+                p[0]=value;p[1]=value;p[2]=value;p[3]=value;
+                p += 4;
+            }
+        }
+    }
+    if (tail != 0) {
+        u32 blocks = tail >> 3;
+        if (blocks != 0) {
+            for (; blocks != 0; --blocks) {
+                p[0]=value;p[1]=value;p[2]=value;p[3]=value;
+                p[4]=value;p[5]=value;p[6]=value;p[7]=value;
+                p += 8;
+            }
+            tail &= 7;
+        }
+        if (tail != 0)
+            for (; tail != 0; --tail) *p++ = value;
+    }
 }
 
 extern "C" void* fn_800C64DC(u32 size) {
