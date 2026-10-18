@@ -435,11 +435,14 @@ extern "C" void fn_800E55B4(void *arg0, float arg1) {
 
 extern const char lbl_803223BC[];
 extern "C" void fn_800E56D0(void *arg0, float arg1) {
-    float value = lbl_80560F38;
-    float sum = arg1 + value;
-    if (sum > value) {}
-    else if (sum < lbl_80560F3C) value = lbl_80560F3C;
-    else value = sum;
+    float sum = arg1 + lbl_80560F38;
+    float value;
+    if (sum > lbl_80560F38) {
+        value = sum;
+    } else {
+        if (sum < lbl_80560F3C) value = sum;
+        else value = lbl_80560F3C;
+    }
     float *field = (float *)((char *)arg0 + 0x144);
     if (value != *field) {
         *field = value;
@@ -448,16 +451,16 @@ extern "C" void fn_800E56D0(void *arg0, float arg1) {
 }
 
 extern "C" int GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
-    OSDisableInterrupts();
+    unsigned int level = OSDisableInterrupts();
     void *voice = *(void **)((char *)self + 0xc);
     void *dsp = (char *)voice + 0x138;
     if (dsp == 0) {
-        OSRestoreInterrupts(0);
+        OSRestoreInterrupts(level);
         return 0;
     }
     int address = (*(unsigned short *)((char *)dsp + 0x84) << 16) +
                   *(unsigned short *)((char *)dsp + 0x86);
-    OSRestoreInterrupts(0);
+    OSRestoreInterrupts(level);
     return address;
 }
 
@@ -694,9 +697,18 @@ extern "C" void fn_800E9B9C(void *arg0) {
 #pragma small_data off
 #pragma pop
 extern "C" void fn_800E9BA4(void *this_, int vol) {
+    class Dispatch {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+        virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+        virtual void d20(); virtual Dispatch *call();
+    };
     *(int *)((char *)this_ + 0x78) = vol;
-    (*(void (**)(void *))((char *)*(void **)this_ + 0x5C))(this_);
-    *(int *)((char *)this_ + 0x4) = vol;
+    ((Dispatch *)this_)->call();
+    *(int *)((char *)this_ + 4) = vol;
 }
 extern int lbl_8055DE20;
 extern void fn_80128668(void);
