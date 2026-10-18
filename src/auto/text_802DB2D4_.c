@@ -11,7 +11,7 @@ extern unsigned char lbl_802FACF8[];
 extern unsigned char lbl_802FACD8[];
 int fn_802DB378(int arg0, int arg1) { int result = 0xFF; if (arg0 == 2) { if (arg1 == 0) result = 4; } return result; }
 
-void fn_802DB394(void) { GXSetTevOp(0, 3); GXSetTevOp(1, 3); GXSetTevAlphaOp(1, 0, 0, 0, 1, 0); GXSetTevAlphaIn(1, 0, 7, 7, 7); }
+void fn_802DB394(void) { volatile int mode = 3; GXSetTevOp(0, mode); GXSetTevOp(1, 3); GXSetTevAlphaOp(1, 0, 0, 0, 1, 0); GXSetTevAlphaIn(1, 0, 7, 7, 7); }
 
 #pragma push
 #pragma processor 750
@@ -155,7 +155,7 @@ extern int lbl_8055FD30, lbl_8055FEA4;
 extern signed char lbl_8055FE9E;
 extern int lbl_8055FEA0;
 extern void *lbl_8055FEA8, *lbl_8055FEAC;
-extern void fn_802D94DC(int);
+extern void *fn_802D94DC(void);
 extern void fn_802DBA1C(unsigned char);
 extern void fn_802DB9DC(int);
 extern void fn_802DBBE4(int,int);
