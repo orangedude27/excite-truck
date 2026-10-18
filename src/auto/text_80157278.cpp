@@ -290,6 +290,9 @@ extern f32 lbl_8056177C;
 extern f32 lbl_805617C8;
 extern f32 lbl_80558DC4[];
 extern f32 lbl_8055E3C8;
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" void *lbl_8032E4E0;
+extern "C" void *lbl_8055A064;
 
 extern "C" s32 lbl_8032E540[];
 extern "C" s32 fn_80157278(s32 arg0) {
@@ -715,24 +718,23 @@ extern "C" s32 fn_80158F60(Unk8015A368C* arg0) {
 }
 
 extern "C" void fn_801590A8(void* arg0) {
-    void* vtable = *(void**)arg0;
-    ((void (*)())((u8**)vtable)[0x21])();
-    f32 f0 = *(f32*)((char*)arg0 + 0x24c);
-    f32 f1 = *(f32*)((char*)arg0 + 0x260);
+    ((Unk801577F0*)arg0)->v31();
+    volatile f32* p260 = (volatile f32*)((u8*)arg0 + 0x260);
+    volatile f32* p24c = (volatile f32*)((u8*)arg0 + 0x24c);
+    f32 f1 = *p260;
+    f32 f0 = *p24c;
     f32 f2 = lbl_80561754;
-    *(f32*)((char*)arg0 + 0x25c) = f2;
+    *(f32*)((u8*)arg0 + 0x25c) = f2;
     if (f1 > f0) {
-        s32 r3 = *(s32*)((char*)arg0 + 0x268);
-        if (r3 != 0) {
-            fn_801CB750(r3, *(s32*)((char*)arg0 + 4));
-        }
-        f2 = lbl_80561754;
-        *(f32*)((char*)arg0 + 0x260) = f2;
+        s32 object = *(s32*)((u8*)arg0 + 0x268);
+        if (object != 0) fn_801CB750(object, *(s32*)((u8*)arg0 + 4));
+        f0 = lbl_80561754;
+        *p260 = f0;
     }
     f1 = lbl_80561754;
     f0 = lbl_8056177C;
-    *(f32*)((char*)arg0 + 0x264) = f1;
-    *(f32*)((char*)arg0 + 0x258) = f0;
+    *(f32*)((u8*)arg0 + 0x264) = f1;
+    *(f32*)((u8*)arg0 + 0x258) = f0;
 }
 
 extern "C" void fn_80159724(void) {
@@ -794,10 +796,11 @@ extern "C" u8 fn_80159F24(void* arg0) {
 }
 
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
-    s32 r5;
-    if ((r5 = arg0->m260) > 0) {
+    s32 r5 = arg0->m260;
+    if (r5 > 0) {
         s32 r3 = arg0->m258;
         if (r3 != 0) {
+            void fn_801CB6E4(void*, s32);
             fn_801CB6E4((void*)r3, *(s32*)&arg0->m4);
         }
         arg0->m260 = 0;
@@ -919,19 +922,29 @@ extern "C" void fn_8015B228(void* arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" void fn_8015B23C(Unk801577F0* arg0) {
- class LocalVt { public:
- virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11(); virtual void a12(); virtual void a13(); virtual void a14(); virtual void a15(); virtual void a16();
- virtual f32 a19(s32); virtual void a20(); virtual void a21(); virtual s32 a22();
- virtual void a23(); virtual void a24(); virtual void a25(); virtual void a26(); virtual void a27(); virtual void a28(); virtual s32 a29(); virtual void a30(); virtual void a31(); virtual void a32(); virtual void a33(); virtual void a34(f32*);
- };
- f32 value;
- if (arg0->m264 > 0) {
-  s32 result=((LocalVt*)arg0)->a22();
-  value=arg0->m25c*((LocalVt*)arg0)->a19(result);
-  ((LocalVt*)arg0)->a34(&value);
-  ((LocalVt*)arg0)->a32();
-  f32 zero=lbl_80561750; arg0->m264=0; arg0->m25c=zero;
- }
+    class LocalVt {
+    public:
+        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
+        virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
+        virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
+        virtual void a12(); virtual void a13(); virtual void a14(); virtual void a15();
+        virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19();
+        virtual void a20(); virtual f32 a21(s32); virtual void a22(); virtual void a23();
+        virtual s32 a24(); virtual void a25(); virtual void a26(); virtual void a27();
+        virtual void a28(); virtual void a29(); virtual void a30(); virtual void a31();
+        virtual void a32(); virtual void a33(); virtual void a34(); virtual void a35();
+        virtual void a36(f32*);
+    };
+    f32 value;
+    if (arg0->m264 > 0) {
+        s32 result = ((LocalVt*)arg0)->a24();
+        value = arg0->m25c * ((LocalVt*)arg0)->a21(result);
+        ((LocalVt*)arg0)->a36(&value);
+        ((LocalVt*)arg0)->a34();
+        f32 zero = lbl_80561750;
+        arg0->m264 = 0;
+        arg0->m25c = zero;
+    }
 }
 
 extern "C" s32 fn_8015B2E0(void* arg0) {
@@ -961,6 +974,22 @@ extern "C" void fn_8015B708(Unk801577F0* arg0) {
     value = arg0->v18(result);
     ((LocalVtable*)arg0)->v33(&value);
     ((LocalVtable*)arg0)->v31();
+}
+
+extern "C" void* fn_8017960C(s32);
+extern "C" f32 lbl_805617C0;
+extern "C" void fn_8015B788(void* arg0, s32 arg1, f32 farg0) {
+    f32 value = farg0;
+    void* obj = fn_8017960C(arg1);
+    if (obj != 0 && (f32)__fabs((f64)*(f32*)((u8*)obj + 0x2690)) <= *(volatile f32*)0x80558DC4) {
+        f32* p = (f32*)((u8*)arg0 + arg1 * 8);
+        if ((f32)__fabs((f64)p[0]) <= *(volatile f32*)0x80558DC4) {
+            p[1] = value;
+        } else if (value > p[1]) {
+            p[1] = value;
+        }
+        p[0] = lbl_805617C0;
+    }
 }
 
 extern "C" s32 fn_8015BCEC(void) { return 7; }
@@ -1272,8 +1301,7 @@ extern "C" s32 fn_8015D7CC(void* arg0) {
 extern "C" void fn_8015D814(void* arg0) {
     if (*(s32*)((u8*)arg0 + 0x248) == 0) {
         void* obj = *(void**)((u8*)arg0 + 0x244);
-        s32 (*fn)(void*) = *(s32 (**)(void*))((u8*)obj + 0xC);
-        *(s32*)((u8*)arg0 + 0x248) = fn(obj);
+        *(s32*)((u8*)arg0 + 0x248) = (*(s32 (**)(void*))(*(u8**)obj + 0xC))(obj);
     }
 }
 
@@ -1455,6 +1483,30 @@ extern "C" void fn_801593F0(Unk801577F0* arg0) {
     if (r3 != 0) {
         *(u8*)((u8*)r3 + 0x4A) = 1;
         *(u8*)((u8*)r3 + 0x4C) = 0;
+    }
+}
+
+extern "C" f32 fabs(f32);
+extern "C" f32 PSVECDotProduct(const void *, const void *);
+extern "C" f32 lbl_80561760;
+extern "C" f32 lbl_80561788;
+extern "C" f32 lbl_8056178C;
+extern "C" f32 lbl_80561790;
+extern "C" void fn_80159624(void *arg0, void *arg1) {
+    void *obj = *(void **)((u8 *)arg0 + 0x278);
+    if (obj != 0) {
+        s32 flag = 0;
+        f32 value = *(f32 *)((u8 *)arg1 + 0x25D4);
+        f32 abs_diff = fabs(*(f32 *)((u8 *)arg1 + 0x2690));
+        if (abs_diff == lbl_80558DC4[0] && value > lbl_80561788 && *(f32 *)((u8 *)arg0 + 0x270) < lbl_80561760) {
+            f32 dot = fabs(PSVECDotProduct((const void *)((u8 *)arg1 + 0x118), (const void *)((u8 *)arg1 + 0x3C)));
+            f32 scale = *(s32 *)((u8 *)arg0 + 0x274) != 0 ? lbl_8056178C : lbl_80561790;
+            if (!(dot > value * scale)) {
+                flag = 0;
+            }
+        }
+        *(u8 *)((u8 *)obj + 0x4A) = 1;
+        *(u8 *)((u8 *)obj + 0x4C) = flag;
     }
 }
 
