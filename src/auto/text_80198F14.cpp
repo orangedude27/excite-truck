@@ -1149,10 +1149,4 @@ extern f32 lbl_80562370;
 typedef void (*VFunc)(void*);
 typedef void (*VFuncArg)(void*, s32);
 extern f32 lbl_805622DC;
-class Fn801A014CDispatch {
-public:
-    virtual void Dummy0();
-    virtual void Dummy1();
-    virtual void Dummy2();
-    virtual void Call();
-};
+
