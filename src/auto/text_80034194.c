@@ -159,6 +159,37 @@ void fn_800357A8(void) {
 
 }
 
+void DVDInit(void) {
+    s32 temp_r3;
+    u8 temp_r4;
+    register u8 *rom = (u8 *)0x80000000;
+    if (DVDInitialized_8055D888 == 0) {
+        OSRegisterVersion(__DVDVersion);
+        DVDInitialized_8055D888 = 1;
+        DVDLowInit();
+        __DVDFSInit();
+        __DVDClearWaitingQueue();
+        MotorState_8055D8A8 = 0;
+        bootInfo_8055D8C0 = rom;
+        IDShouldBe_8055D8C4 = (s32)rom;
+        OSInitThreadQueue(__DVDThreadQueue);
+        DVDLowUnmaskStatusInterrupts();
+        DVDLowMaskCoverInterrupt();
+        temp_r3 = *(s32 *)((u8 *)bootInfo_8055D8C0 + 0x20);
+        if (((u32)temp_r3 + 0x1AE00000U != 0x7C22U) &&
+            ((u32)(temp_r3 - (s32)0xD1500000U) != 0xEA5EU)) {
+            FirstTimeInBootrom_8055D868 = 1;
+        }
+        memset(__ErrorInfo, 0, 0x80);
+        memcpy(__ErrorInfo, rom, 4);
+        __ErrorInfo[4] = rom[6];
+        temp_r4 = rom[7];
+        __ErrorInfo[5] = temp_r4;
+        __DVDLayoutFormat = 0;
+        DVDSetAutoFatalMessaging(1, temp_r4, __ErrorInfo, rom);
+    }
+}
+
 void fn_80035C64(void) {
     fn_8003AF1C(0, 0, fn_80035B88);
 }
@@ -233,7 +264,7 @@ extern s32 MotorState_8055D8A8;
 extern s32 lbl_8055D8BC;
 extern void __DVDClearWaitingQueue(void);
 extern void fn_80038368(void *);
-extern void fn_800379A8(void);
+extern void fn_800379A8(u32);
 extern BOOL __OSInIPL;
 void fn_8003773C(void) {
     s32 command = lbl_8055D8BC;
