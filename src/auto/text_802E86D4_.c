@@ -21,16 +21,26 @@ extern char lbl_8034DE6C[];
 
 #pragma dont_inline on
 void fn_802E86D4(void) {
-    void **object = (void **)lbl_80560024;
-    void **vtable = *(void ***)object;
-    ((void (*)(void))*(void **)((char *)vtable + 8))();
+    register void **vtable = *(void ***)lbl_80560024;
+    register void *method = vtable[2];
+    ((void (*)(void))method)();
     lbl_80560028 = 1;
 }
 void fn_802E870C(void) {
-    void **object = (void **)lbl_80560024;
-    void **vtable = *(void ***)object;
-    ((void (*)(void))*(void **)((char *)vtable + 12))();
+    ((void (*)(void *))(*(void ***)((void *)lbl_80560024))[3])(lbl_80560024);
     lbl_80560028 = 0;
+}
+
+extern int fn_80131234(int, int, int, int, int, int, int, int);
+int fn_802E8744(void *arg0) {
+    int values[14]; int i;
+    values[0]=((int*)arg0)[0]; values[1]=((int*)arg0)[1]; values[2]=((int*)arg0)[2]; values[3]=((int*)arg0)[3];
+    values[4]=((int*)arg0)[4]; values[5]=((int*)arg0)[5]; values[6]=((int*)arg0)[6]; values[7]=((int*)arg0)[7];
+    values[8]=((int*)arg0)[8]; values[9]=((int*)arg0)[9]; values[10]=((int*)arg0)[10]; values[11]=((int*)arg0)[11]; values[12]=((int*)arg0)[12]; values[13]=((int*)arg0)[13];
+    values[1]=fn_80131234(values[1],values[12],values[11],values[10],values[9],values[8],values[7],values[6]);
+    for(i=0;i<4;i++) if(((int*)arg0)[6+i*2]!=0) values[6+i*2]=fn_80131234(((int*)arg0)[6+i*2],0,0,0,0,0,0,0);
+    ((void (*)(void *,int *))((*(void ***)lbl_80560024)[2]))(lbl_80560024,values);
+    return 0;
 }
 
 void fn_802E8838(void) {
@@ -72,7 +82,15 @@ void fn_802E8918(void) {
     fn_802E2E38(1);
 }
 
-int fn_802E8AE8(void) { unsigned char sp8[0x98]; int result=0; if(NANDOpen(sp8,1)==0) { result=1; NANDClose(sp8); } return result; }
+int fn_802E8AE8(const char *arg0) {
+    unsigned char sp8[0x88];
+    int result = 0;
+    if (NANDOpen((void *)arg0, sp8, 1) == 0) {
+        result = 1;
+        NANDClose(sp8);
+    }
+    return result;
+}
 
 void fn_802E8B98(void) {
     if (lbl_80560030 != 0) {
