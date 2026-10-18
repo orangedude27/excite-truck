@@ -124,12 +124,36 @@ extern unsigned int lbl_804C1410[];
 extern void PSQUATMultiply(void *, unsigned int, void *);
 extern void fn_802C7734(unsigned int);
 extern void fn_802C8B70(void);
+#pragma scheduling off
 void fn_802C88D4(unsigned int arg0) {
-    register unsigned int *base = lbl_804C1410;
-    register void *out = (void *)((char *)base + 0x24);
-    PSQUATMultiply(out, arg0, base);
+    register unsigned int q;
+    q = arg0;
+    PSQUATMultiply((void *)&lbl_804C1410[9], q, lbl_804C1410);
 }
 
+extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
+extern double lbl_80564F10;
+extern float lbl_80564F18, lbl_80564F1C;
+void fn_802C88FC(float *arg0) {
+    float x, y, z;
+    arg0[0] = lbl_80564EF8;
+    arg0[1] = lbl_80564F00;
+    arg0[2] = lbl_80564F00;
+    arg0[3] = lbl_80564F00;
+    arg0[5] = lbl_80564F00;
+    arg0[4] = lbl_80564F1C;
+    arg0[6] = lbl_80564F00;
+    arg0[7] = lbl_80564F00;
+    arg0[8] = lbl_80564EF8;
+    x = (float)(unsigned int)lbl_8055FC64;
+    y = (lbl_80564F18 * x) / lbl_8055FC44;
+    z = lbl_80564EF8 / lbl_8055D020;
+    arg0[11] = -(y * z);
+    arg0[10] = (float)(unsigned int)lbl_8055FC60 + lbl_80564F18 * (float)(unsigned int)lbl_8055FC68;
+    arg0[9] = (float)(unsigned int)lbl_8055FC5C + lbl_80564F18 * (float)(unsigned int)lbl_8055FC64;
+}
+
+#pragma scheduling on
 void fn_802C8B08(unsigned int *arg0) {
     unsigned int *src = lbl_804C1410;
     arg0[0] = src[0]; arg0[1] = src[1];
@@ -158,24 +182,24 @@ void fn_802C8BD0(int arg0) {
 }
 #pragma dont_inline off
 
+#pragma use_lmw_stmw off
 void fn_802C8C04(int arg0) {
-    unsigned int *src = lbl_804C1410;
+    unsigned int src[12];
     unsigned int *dst = lbl_804C13E0;
-    unsigned int sp8[18];
+    unsigned int sp8[12];
     unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
-    v0 = *src++; *dst++ = v0;
-    v1 = *src++; v2 = *src++; v3 = *src++;
-    v4 = *src++; v5 = *src++; v6 = *src++;
-    v7 = *src++; v8 = *src++; v9 = *src++;
-    v10 = *src++; v11 = *src++;
-    *dst++=v1; *dst++=v2; *dst++=v3; *dst++=v4; *dst++=v5; *dst++=v6;
-    *dst++=v7; *dst++=v8; *dst++=v9; *dst++=v10; *dst++=v11;
-    lbl_8055FC35=1;
+    v0 = lbl_804C1410[0];
+    v1 = lbl_804C1410[1]; v2 = lbl_804C1410[2]; v3 = lbl_804C1410[3];
+    v4 = lbl_804C1410[4]; v5 = lbl_804C1410[5]; v6 = lbl_804C1410[6];
+    v7 = lbl_804C1410[7]; v8 = lbl_804C1410[8]; v9 = lbl_804C1410[9];
+    v10 = lbl_804C1410[10]; v11 = lbl_804C1410[11];
+    *dst++ = v0; *dst++ = v1; *dst++ = v2; *dst++ = v3; *dst++ = v4; *dst++ = v5;
+    *dst++ = v6; *dst++ = v7; *dst++ = v8; *dst++ = v9; *dst++ = v10; *dst++ = v11;
+    lbl_8055FC35 = 1;
     fn_802C89E8(sp8, v11, v10, v9, v8, v7, v6, v5);
     fn_802C8638(sp8);
     fn_802C8BD0(arg0);
 }
-
 void fn_802C8DB8(void) {
     fn_802D68C4();
 }
@@ -204,6 +228,30 @@ void fn_802C8E48(void) {
 }
 
 float fn_802C8FEC(void) { return lbl_8055FC6C; }
+
+extern float lbl_80558DC4;
+extern float lbl_8055FC38, lbl_8055FC3C;
+int fn_802C8FF4(float *arg0, float arg1) {
+    float x;
+    float y;
+    float z;
+    int result = 0;
+
+    z = arg0[2];
+    if (z > lbl_8055FC38 + lbl_80558DC4 &&
+        z < lbl_8055FC3C - lbl_80558DC4) {
+        x = arg0[0];
+        if (x >= (float)(int)lbl_8055FC5C - arg1 &&
+            x < arg1 + (float)((int)lbl_8055FC5C + (int)lbl_8055FC64)) {
+            y = arg0[1];
+            if (y >= (float)(int)lbl_8055FC60 - arg1 &&
+                y < arg1 + (float)((int)lbl_8055FC60 + (int)lbl_8055FC68)) {
+                result = 1;
+            }
+        }
+    }
+    return result;
+}
 
 int fn_802C90E0(void) {
     return lbl_8055FC70 == 0;
@@ -457,8 +505,10 @@ extern void fn_802D3304(void);
 void fn_802C9D88(int arg0) {
     fn_8012A364(lbl_8055FC9C, arg0);
     if (--lbl_8055FC98 == 0) {
-        if (lbl_8055FC9C != 0)
-            ((void (*)(void *, int))(*(void ***)lbl_8055FC9C)[2])(lbl_8055FC9C, 1);
+        if (lbl_8055FC9C != 0) {
+            void **vtable = *(void ***)lbl_8055FC9C;
+            ((void (*)(void *, int))vtable[2])(lbl_8055FC9C, 1);
+        }
         lbl_8055FC9C = 0;
     }
 }
