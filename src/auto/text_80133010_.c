@@ -19,6 +19,7 @@ extern int fn_80128668(int);
 extern int fn_80133E10(void **, int, int);
 extern int fn_8013323C(int, int, float);
 int fn_80133010(void) { int val=lbl_8055E07C; unsigned int tmp=(unsigned int)(-val)|(unsigned int)val; return tmp>>31; }
+extern const char lbl_8032B9FC[];
 
 extern int lbl_8055E078, lbl_8055E080;
 extern const char lbl_8032B880[], lbl_8032B88C[];
@@ -63,10 +64,13 @@ void fn_80133144(void) {
  int *entry=&lbl_8042F718[0];
  int i=0;
  do {
-   if(entry[1]) fn_802E317C(lbl_8032B8D0,entry[0]);
-   i++; entry+=2;
- } while(i<8);
- fn_80128668(lbl_8055E07C); lbl_8055E07C=0;
+   if (entry[1] != 0) fn_802E317C(lbl_8032B8D0, entry[0]);
+   i++;
+   if (i >= 8) break;
+   entry += 2;
+ } while (1);
+ fn_80128668(lbl_8055E07C);
+ lbl_8055E07C=0;
 }
 
 void fn_801331C4(int arg0,int arg1,float *arg2) {
