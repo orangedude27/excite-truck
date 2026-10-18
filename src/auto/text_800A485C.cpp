@@ -665,7 +665,8 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
 extern "C" void fn_800AABE0(void) {
     s32 spC;
     s32 sp8;
-    fn_800AA924(&spC, &sp8);
+    s32 a, b, c, d, e, f;
+    ((void (*)(s32, s32, s32, s32, s32, s32, void *, void *))fn_800AA924)(a, b, c, d, e, f, &spC, &sp8);
 }
 
 extern "C" void fn_800AAED8(void) {
