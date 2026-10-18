@@ -7,6 +7,20 @@ public:
     virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
     virtual void f12(); virtual void f13(); virtual void f14();
 };
+class Dispatch80206B14 {
+public:
+    virtual void pad0(); virtual void pad1(); virtual void pad2(); virtual void pad3();
+    virtual void pad4(); virtual void pad5(); virtual void pad6(); virtual void pad7();
+    virtual void pad8(); virtual void pad9(); virtual void pad10(); virtual void pad11();
+    virtual void f12(float); virtual void f13(float);
+    virtual void pad14(); virtual void pad15(); virtual void pad16(); virtual void pad17();
+    virtual void pad18(); virtual void f19(int);
+};
+class Dispatch4_80206B14 {
+public:
+    virtual void pad0(); virtual void pad1(); virtual void pad2(); virtual void pad3();
+    virtual void f4(int, int);
+};
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
