@@ -95,6 +95,7 @@ void fn_802CF5FC(void) {
 void fn_802CF830(void) {
 }
 
+extern int fn_802CFCA0(void*);
 void fn_802CFEEC(void* alarm) {
     fn_802CFDE0(fn_802CFCA0(alarm));
 }
