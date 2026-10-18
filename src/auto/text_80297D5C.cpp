@@ -536,6 +536,10 @@ void fn_8029B1B8(void* arg0) {
     *(float*)(p+0x1F8)=lbl_80564590 / (float)*(unsigned short*)(p+0x1EC);
 }
 
+extern "C" void fn_8029BEF8(void);
+extern "C" int fn_8029C190(void*);
+extern "C" int fn_801EEFDC(void*, int);
+
 void* fn_8029B9A4(void* arg0, int arg1) {
     if (arg0 != 0) {
         fn_801EF024((void*)fn_8029BFF8);
