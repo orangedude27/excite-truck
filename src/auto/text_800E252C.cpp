@@ -489,12 +489,16 @@ extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *self, in
     OSRestoreInterrupts(level);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *self, bool loop) {
     unsigned int level = OSDisableInterrupts();
     char *group = (char *)self;
-    for (int i = 0; i < *(int *)((char *)self + 0x104); i++, group += 0x10) {
+    int i;
+    for (i = 0; i < *(int *)((char *)self + 0x104); i++, group += 0x10) {
         char *entry = group;
-        for (int j = 0; j < *(int *)((char *)self + 0x108); j++, entry += 4) {
+        int j;
+        for (j = 0; j < *(int *)((char *)self + 0x108); j++, entry += 4) {
             void *voice = *(void **)(entry + 0xC);
             unsigned int inner = OSDisableInterrupts();
             *(unsigned short *)((char *)voice + 0x1B0) = loop;
@@ -505,7 +509,7 @@ extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *self, bool loo
     }
     OSRestoreInterrupts(level);
 }
-
+#pragma pop
 extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7AxVoice9VoiceType(void *self, unsigned int type) {
     char *group = (char *)self;
     for (int i = 0; i < *(int *)((char *)self + 0x104); i++, group += 0x10) {
@@ -625,15 +629,18 @@ extern "C" int fn_800E90AC(void *arg0) {
 }
 
 extern "C" void SetPlayerPriority__Q46nw4hbm3snd6detail10BasicSoundFi(void *this_, int priority) {
-    int valid = priority >= 0 && priority <= 0x7F;
+    int valid = 0;
+    if (priority >= 0) {
+        if (priority <= 0x7F) valid = 1;
+    }
     if (!valid) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x202, lbl_803227EC, priority, 0, 0x7F);
     }
-
     *(char *)((char *)this_ + 0x74) = priority;
     void *player = *(void **)((char *)this_ + 0x10);
     if (player != 0) {
         detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
+        player = *(void **)((char *)this_ + 0x10);
         detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(player, this_);
     }
 }
