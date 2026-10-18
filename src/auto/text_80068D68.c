@@ -3324,19 +3324,20 @@ void *port_find_dlci_port(unsigned int arg0) {
 }
 
 int port_flow_control_user(void *arg0) {
-    unsigned char var_r5 = 0;
     void *temp_r4;
-    if (*((unsigned char *)arg0 + 0x24) != 0) goto done;
-    temp_r4 = *(void **)((char *)arg0 + 0x6c);
-    if (temp_r4 == 0) goto done;
-    if (*((unsigned char *)temp_r4 + 0x71) == 0) goto done;
-    if (*(unsigned int *)((char *)arg0 + 0x28) > 0x1f40) goto done;
-    if (*(unsigned short *)((char *)arg0 + 0x20) > 0x10) var_r5 = 1;
-done:
+    unsigned char var_r5 = 0;
+    if (*((unsigned char *)arg0 + 0x24) == 0) {
+        temp_r4 = *(void **)((char *)arg0 + 0x6c);
+        if (temp_r4 != 0 && *((unsigned char *)temp_r4 + 0x71) != 0 &&
+            *(unsigned int *)((char *)arg0 + 0x28) <= 0x1f40 &&
+            *(unsigned short *)((char *)arg0 + 0x20) > 0x10) {
+            var_r5 = 1;
+        }
+    }
     if (*((unsigned char *)arg0 + 0x25) == var_r5) return 0;
     *((unsigned char *)arg0 + 0x25) = var_r5;
-    if (var_r5 == 0) return 0x30000;
-    return 0x10000;
+    if (var_r5 != 0) return 0x10000;
+    return 0x30000;
 }
 
 int port_get_signal_changes(void *arg0, int arg1, int arg2) {
@@ -3495,7 +3496,7 @@ void RFCOMM_ParNegReq(void *arg0, s32 arg1, s32 arg2) {
     frame = 2;
     if ((s32)value != 0)
         frame = value;
-    if (frame == 2) {
+    if ((u8)frame == 2) {
         mtu = *(u16 *)(port + 0x9C);
         max_frame = 0xF0;
         frame = 7;
