@@ -81,10 +81,14 @@ void *fn_801491B8(void *arg0, s32 arg1) {
 
 void fn_80149210(void *arg0) {
     u32 *p = (u32 *)arg0;
-    u32 x = p[1] + 1;
-    u32 t = x << 30;
-    u32 b = x >> 31;
-    p[1] = (t - b) * 4 + b;
+    u32 b;
+    u32 t;
+    u32 v;
+    p[1] = p[1] + 1;
+    b = p[1] >> 31;
+    t = p[1] << 30;
+    v = t - b;
+    p[1] = ((v << 2) | (v >> 30)) + b;
 }
 
 s32 fn_80149234(void *arg0) {
@@ -97,8 +101,7 @@ extern s32 fn_8014D918(void*, s32, s32);
 extern s32 lbl_8055E240;
 extern f32 lbl_80561714, lbl_80561718;
 s32 fn_80149274(void **arg0) {
-    s32 (*fn)(void*) = (s32 (*)(void*))*arg0;
-    return fn(arg0) & 0xFF7F7F7F;
+    return (*(s32 (**)(void *))((char *)*arg0 + 0x10))(arg0) & 0xFF7F7F7F;
 }
 
 void fn_801492AC(void *arg0, f32 *arg1, s32 arg2) {
@@ -123,6 +126,12 @@ s32 fn_80149380(void *arg0) {
     S4_80149234 sp8;
     sp8 = *(S4_80149234 *)lbl_802F93F0;
     return sp8.v[((s32 *)arg0)[1]];
+}
+
+s32 fn_801493C0(void **arg0) {
+    void ** volatile table = (void **)*arg0;
+    s32 (*volatile fn)(void) = (s32 (*)(void))table[4];
+    return fn() & 0xFF7F7F7F;
 }
 
 void fn_801493F8(void *arg0, f32 *arg1, s32 arg2) {
@@ -475,8 +484,7 @@ void fn_8014C6F0(void *arg0, void *arg1) {
 }
 
 void fn_8014C72C(void **arg0) {
-    register void *obj = *arg0;
-    register void **vtable = *(void ***)obj;
+    void * volatile *vtable = (void * volatile *)*arg0;
     ((void (*)(void))vtable[3])();
     fn_801476C4();
 }
@@ -696,10 +704,11 @@ extern void fn_80128670(s32);
 extern void *lbl_8055E268;
 extern s32 lbl_80559F40;
 s32 fn_8014E708(s32 arg0) {
-    u8 *base=(u8 *)lbl_8055E268;
-    if(base!=0) {
-        ObjE708 *obj=*(ObjE708 **)(base+arg0*0xC0+0x9F4);
-        return obj->vtable->fn7();
+    u8 *base = (u8 *)lbl_8055E268;
+    if (base != 0) {
+        volatile void *obj = *(void **)(base + arg0 * 0xC0 + 0x9F4);
+        volatile void **vt = *(volatile void ***)obj;
+        return ((s32 (*)(void))vt[14])();
     }
     return 0;
 }
@@ -737,15 +746,11 @@ extern s32 fn_80145E70(void *arg0);
 extern s32 lbl_8032DB34;
 extern s32 lbl_8032DB40;
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 next;
-    s32 value;
-    s32 index;
-    s32 *data;
-    value = *arg1;
-    index = ((s32 *)arg0)[1];
-    next = index + 1;
-    data = *(s32 **)arg0;
-    ((s32 *)arg0)[1] = next;
+    s32 value = *arg1;
+    s32 index = ((s32 *)arg0)[1];
+    s32 *data = *(s32 **)arg0;
+    s32 *next = (s32 *)((char *)arg0 + 4);
+    *next = index + 1;
     data[index] = value;
     return &data[index];
 }
@@ -894,19 +899,16 @@ s32 fn_80154618(void *arg0) {
     s32 i = 0;
     while (i < fn_801B2F24()) {
         if (*(s32 *)((u8 *)*it + 0x1F0) == 0x50) {
-            if (((VTable80154618 *)(*(s32 **)arg0))->fn(arg0, i) != 0) {
-                found = 1;
-            }
+            void * volatile *obj = (void * volatile *)arg0;
+            volatile void **vt = (volatile void **)*obj;
+            s32 (*fn)(void *, s32) = (s32 (*)(void *, s32))vt[8];
+            if (fn(arg0, i) != 0) found = 1;
         }
         it++;
         i++;
     }
     it = (s32 **)0;
-    if (found == 0) {
-        if (fn_801B8514() != 0) {
-            it = (s32 **)1;
-        }
-    }
+    if (found == 0 && fn_801B8514() != 0) it = (s32 **)1;
     return (s32)it;
 }
 
@@ -1091,11 +1093,7 @@ void fn_80156108(void) {
 
 }
 
-s32 fn_8015610C(void *arg0) {
-    s32 temp_r4 = *(s32 *)((u8 *)arg0 + 8);
-    *(s32 *)((u8 *)arg0 + 8) = temp_r4 + 1;
-    return *(s32 *)((u8 *)arg0 + 4) + temp_r4 * 0xF8;
-}
+s32 fn_8015610C(void *arg0) { s32 *base = *(s32 **)((u8 *)arg0 + 4); s32 index = *(s32 *)((u8 *)arg0 + 8); *(s32 *)((u8 *)arg0 + 8) = index + 1; return (s32)base + index * 0xF8; }
 
 s32 fn_8014F0C8(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
