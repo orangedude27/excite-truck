@@ -18,6 +18,15 @@ public:
     virtual void apply(s32, s32);
 };
 extern s32 lbl_8055E3C4;
+extern "C" void** lbl_8055D604;
+extern "C" void** lbl_8055D5F4;
+extern "C" void** lbl_8055D5F8;
+
+class CleanupEntry {
+public:
+    virtual void unk0();
+    virtual void cleanup(s32);
+};
 extern f32 lbl_80560460;
 extern f32 lbl_80560464;
 extern f64 lbl_80560468;
@@ -117,32 +126,32 @@ extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
 extern "C" f32 fn_8001DA5C(s32);
 extern f32 lbl_80560490;
 extern "C" void fn_8001E544(void* arg0) {
-    f32 b = lbl_80560474;
     f32 a = lbl_80560490;
-    ((f32*)arg0)[1] = a;
-    ((f32*)arg0)[2] = b;
-    ((f32*)arg0)[3] = b;
-    ((f32*)arg0)[4] = a;
-    ((f32*)arg0)[5] = b;
-    ((f32*)arg0)[6] = b;
-    ((f32*)arg0)[7] = a;
-    ((f32*)arg0)[8] = b;
-    ((f32*)arg0)[9] = b;
-    ((f32*)arg0)[10] = a;
-    ((f32*)arg0)[11] = b;
-    ((f32*)arg0)[12] = b;
-    ((f32*)arg0)[13] = a;
-    ((f32*)arg0)[14] = b;
-    ((f32*)arg0)[15] = b;
-    ((f32*)arg0)[16] = a;
-    ((f32*)arg0)[17] = b;
-    ((f32*)arg0)[18] = b;
-    ((f32*)arg0)[19] = a;
-    ((f32*)arg0)[20] = b;
-    ((f32*)arg0)[21] = b;
-    ((f32*)arg0)[22] = a;
-    ((f32*)arg0)[23] = b;
-    ((f32*)arg0)[24] = b;
+    f32 b = lbl_80560474;
+    ((f32*)arg0)[1] = b;
+    ((f32*)arg0)[2] = a;
+    ((f32*)arg0)[3] = a;
+    ((f32*)arg0)[4] = b;
+    ((f32*)arg0)[5] = a;
+    ((f32*)arg0)[6] = a;
+    ((f32*)arg0)[7] = b;
+    ((f32*)arg0)[8] = a;
+    ((f32*)arg0)[9] = a;
+    ((f32*)arg0)[10] = b;
+    ((f32*)arg0)[11] = a;
+    ((f32*)arg0)[12] = a;
+    ((f32*)arg0)[13] = b;
+    ((f32*)arg0)[14] = a;
+    ((f32*)arg0)[15] = a;
+    ((f32*)arg0)[16] = b;
+    ((f32*)arg0)[17] = a;
+    ((f32*)arg0)[18] = a;
+    ((f32*)arg0)[19] = b;
+    ((f32*)arg0)[20] = a;
+    ((f32*)arg0)[21] = a;
+    ((f32*)arg0)[22] = b;
+    ((f32*)arg0)[23] = a;
+    ((f32*)arg0)[24] = a;
 }
 
 extern s32 lbl_802FDC70;
