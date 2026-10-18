@@ -24,6 +24,8 @@ extern "C" void MEMFreeToAllocator(s32);
 extern "C" s32 lbl_8055DDF0;
 int strncmp(const char *, const char *, unsigned int);
 extern "C" int strncmp(const char *, const char *, unsigned int);
+struct AlphaColor { u8 r, g, b, a; };
+
 extern "C" s32 fn_800D58C4(const char* a, const char* b) { return strncmp(a, b, 0x10) == 0; }
 
 extern "C" int fn_800D58F0(const char *a, const char *b) { return strncmp(a, b, 0x14) == 0; }
@@ -238,15 +240,14 @@ extern "C" void fn_800D7F78(void *arg0) {
 }
 
 extern "C" void fn_800D86F0(void *arg0, void *arg1) {
-    s16 v0, v1, v2, v3;
-    v0 = ((s16 *)arg1)[0];
-    v1 = ((s16 *)arg1)[1];
-    v2 = ((s16 *)arg1)[2];
-    v3 = ((s16 *)arg1)[3];
-    ((s16 *)arg0)[0] = v0;
-    ((s16 *)arg0)[1] = v1;
-    ((s16 *)arg0)[2] = v2;
-    ((s16 *)arg0)[3] = v3;
+    s16 d = ((s16 *)arg1)[3];
+    s16 c = ((s16 *)arg1)[2];
+    s16 b = ((s16 *)arg1)[1];
+    s16 a = ((s16 *)arg1)[0];
+    ((s16 *)arg0)[0] = a;
+    ((s16 *)arg0)[1] = b;
+    ((s16 *)arg0)[2] = c;
+    ((s16 *)arg0)[3] = d;
 }
 
 extern "C" void GXInitLightColor_800D8714(u32 *arg0, u32 *arg1) {
@@ -326,8 +327,8 @@ extern "C" void fn_800D8834(u8 *arg0, u8 *arg1) {
 }
 
 extern "C" void fn_800D8840(void *arg0, void *arg1) {
-    s32 v4 = *(s32 *)((u8 *)arg1 + 0x10);
     s32 v3 = *(s32 *)((u8 *)arg1 + 0xC);
+    s32 v4 = *(s32 *)((u8 *)arg1 + 0x10);
     f32 v2 = *(f32 *)((u8 *)arg1 + 8);
     s32 v1 = *(s32 *)((u8 *)arg1 + 4);
     s32 v0 = *(s32 *)arg1;
@@ -446,14 +447,18 @@ extern "C" s32 fn_800D9344(void *arg0) {
     volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
     u32 x = *p;
     s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
-    return (((x >> 0x17) & 0x1E0) + y) + (((x >> 0x18) & 0xF) * 0x14);
+    u32 n = (x >> 0x18) & 0xF;
+    u32 b = (x >> 0x17) & 0x1E0;
+    return b + (y + n * 0x14);
 }
 
 extern "C" s32 fn_800D9364(void *arg0) {
-    volatile u32 *p = (volatile u32 *)((u8 *)arg0 + 0x4C);
-    u32 x = *p;
-    s32 y = *(volatile s32 *)((u8 *)arg0 + 0x58);
-    return ((x >> 0x12) & 0x3C) + ((x >> 0x17) & 0x1E0) + y + (((x >> 0x18) & 0xF) * 0x14);
+    u32 x = *(u32 *)((u8 *)arg0 + 0x4C);
+    u32 a = ((x >> 0x12) & 0x3C);
+    u32 b = ((x >> 0x17) & 0x1E0);
+    u32 c = ((x >> 0x18) & 0xF);
+    s32 y = *(s32 *)((u8 *)arg0 + 0x58);
+    return a + b + y + c * 0x14;
 }
 
 extern "C" s32 fn_800D93BC(void *arg0) {
@@ -564,15 +569,14 @@ extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void* s
 
 extern "C" void GXGetTexObjWidth(void*, int, int);
 extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8 index, const void* tex) {
-    extern const char lbl_8031F990[]; extern const char lbl_8031FDE8[];
-    u32 count=*(u32*)((char*)self+0x50)>>28;
-    if(index>=count) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990,0x425,lbl_8031FDE8);
-    u8* dst=(u8*)*(void**)((char*)self+0x58)+((u32)index<<5);
-    *(u32*)(dst+0)=((const u32*)tex)[0]; *(u32*)(dst+4)=((const u32*)tex)[1];
-    *(u32*)(dst+8)=((const u32*)tex)[2]; *(u32*)(dst+12)=((const u32*)tex)[3];
-    *(u32*)(dst+16)=((const u32*)tex)[4]; *(u32*)(dst+20)=((const u32*)tex)[5];
-    *(u32*)(dst+24)=((const u32*)tex)[6]; *(u32*)(dst+28)=((const u32*)tex)[7];
-    GXGetTexObjWidth(dst,0,0);
+    extern const char lbl_8031F990[];
+    extern const char lbl_8031FDE8[];
+    u32 count = *(u32*)((char*)self + 0x50) >> 28;
+    if (index >= count) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x425, lbl_8031FDE8);
+    void* dst = *(void**)((char*)self + 0x58);
+    dst = (char*)dst + ((u32)index << 5);
+    for (int i=0;i<8;i++) ((u32*)dst)[i] = ((const u32*)tex)[i];
+    GXGetTexObjWidth(dst, 0, 0);
 }
 
 extern "C" void fn_800DAFA8(void* arg0, void* arg1) {
@@ -658,10 +662,10 @@ extern "C" u8 GetColorElement__Q36nw4hbm3lyt4PaneCFUl(void* self, u32 index) {
     struct Obj {
         virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
         virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
-        virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
-        virtual void a12(); virtual void a13(); virtual u8 v14(u32);
+        virtual void a8(); virtual void a9(); virtual void a10();
+        virtual u8 v11(u32);
     };
-    return ((Obj*)self)->v14(index);
+    return ((Obj*)self)->v11(index);
 }
 
 extern "C" void SetColorElement__Q36nw4hbm3lyt4PaneFUlUc(void* self, u32 index, u8 color) {
