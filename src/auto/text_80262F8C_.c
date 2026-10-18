@@ -59,11 +59,12 @@ s32 fn_80263080(void) {
 }
 
 s32 fn_802630C0(void) {
-    s32 next;
-    next = lbl_8055F434 + 1;
-    lbl_8055F434 = next;
-    if (next > lbl_8055C440) {
-        lbl_8055F434 = lbl_8055C440;
+    s32 current = lbl_8055F434;
+    s32 bound = lbl_8055C440;
+    current++;
+    lbl_8055F434 = current;
+    if (current > bound) {
+        lbl_8055F434 = bound;
     }
     fn_80230E90(0);
     return 0;
@@ -199,6 +200,33 @@ extern const u8 lbl_80346294[];
 void fn_80263BCC(void *arg0) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x24);
     fn_80133460(value + 8, lbl_80346294, *((u8 *)arg0 + 0x28), value);
+}
+
+s32 fn_80263BE4(void *arg0, s32 arg1) {
+    if (*((u8 *)arg0 + 0x29) != 0 && arg1 != 0x126) {
+        if (arg1 < 0x126) {
+            if (arg1 < 0x125) {
+            } else if (*((u8 *)arg0 + 0x28) == 0) {
+                *((u8 *)arg0 + 0x28) = 1;
+                *((u8 *)arg0 + 0x2A) = 1;
+            }
+        } else if (arg1 < 0x128) {
+            if (*((u8 *)arg0 + 0x28) != 0)
+                *((u8 *)arg0 + 0x28) = 0;
+        }
+    }
+    if (*((u8 *)arg0 + 0x29) != 0 && arg1 != 0x126) {
+        if (arg1 < 0x126) {
+            if (arg1 < 0x125) {
+            } else if (*((u8 *)arg0 + 0x28) == 0) {
+                *((u8 *)arg0 + 0x28) = 1;
+            }
+        } else if (arg1 < 0x128) {
+            if (*((u8 *)arg0 + 0x28) != 0)
+                *((u8 *)arg0 + 0x28) = 0;
+        }
+    }
+    return 0;
 }
 
 void fn_80263CA8(void *arg0) {
