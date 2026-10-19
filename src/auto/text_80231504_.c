@@ -107,20 +107,19 @@ extern s32 sprintf(char *, const char *, ...);
 extern s32 fn_8012C33C(const char *);
 extern s32 fn_80232578(const char *);
 extern char lbl_8055B9A0[];
+#pragma small_data on
+#pragma small_data off
 s32 fn_80231730(s32 arg0) {
     char buffer[0x18];
     sprintf(buffer, lbl_8055B9A0, arg0);
-    if (fn_8012C33C(buffer) != 0) {
-        return fn_80232578(buffer);
-    }
+    if (fn_8012C33C(buffer) != 0) return fn_80232578(buffer);
     return 0;
 }
-
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_80231ADC(void) {
-    *(s32 *)(lbl_8049846C + 4) = 0;
+    lbl_8049846C[1] = 0;
 }
-#pragma scheduling reset
+#pragma scheduling on
 void fn_80232024(u8 **arg0) {
     u8 *p = *arg0;
     if (*p == 1) *arg0 = p + 1;
@@ -173,6 +172,59 @@ void fn_80232D3C(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 farg0, f3
         fn_80232040(arg0, arg1, sp8, arg3, arg4, farg0, farg1, farg2, farg3, farg4, lbl_8056368C);
     }
 }
+
+extern u8 fn_80232B70(void *);
+extern void fn_802344CC(s32, s32, s32, s32, f32, f32, f32);
+extern f32 fn_8023293C(s32, char *, f32);
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling off
+void fn_80233010(char *arg0, s32 font, s32 color, s32 flags, s32 mode, f32 x, f32 y, f32 width, f32 scale, f32 spacing, f32 extra) {
+    char buffer[512];
+    char *text = arg0;
+    s32 line = 0;
+    strlen(text);
+    while ((s8)*text) {
+        char *start = text;
+        s32 length;
+        char *saved;
+        s32 savedLength;
+        s32 i;
+        memset(buffer, 0, sizeof(buffer));
+        length = 0;
+        while (scale * fn_8023293C(font, buffer, extra) < width && *text && (s8)*text != '\n' && (s8)*text != '|') {
+            char *next;
+            s32 count;
+            if (((u8)*text & 0xF0) == 0xE0) next = text + 3;
+            else if (((u8)*text & 0xE0) == 0xC0) next = text + 2;
+            else next = text + 1;
+            count = next - text;
+            for (i = 0; i < count; i++) buffer[length++] = *text++;
+        }
+        saved = text;
+        savedLength = length;
+        if ((s8)*text) {
+            while ((s8)*text != ' ' && text != start && (s8)*text != '\n' && (s8)*text != '|') {
+                text--;
+                length--;
+            }
+        }
+        if (text == start) { text = saved; length = savedLength; }
+        buffer[length] = 0;
+        if ((s8)*text == ' ' || (s8)*text == '\n' || (s8)*text == '|') text++;
+        for (i = 0; i < length; i++) if ((u8)buffer[i] == '^') buffer[i] = ' ';
+        {
+            f32 ypos = y - (f32)line * (scale * (f32)(s32)fn_80232B70((void *)font));
+            line++;
+            if (mode == 0) fn_80232BA4(buffer, font, color, flags, x, ypos, scale, spacing, extra);
+            else fn_802344CC((s32)buffer, color, flags, 0, x, ypos, scale);
+        }
+    }
+}
+#pragma pop
+#pragma scheduling reset
+
 #pragma scheduling reset
 extern s32 fn_8022EDC4(void);
 extern s32 fn_80230B9C(s32);
@@ -284,6 +336,34 @@ s32 fn_802344B0(void) {
 
 void fn_802344C4(u8 arg0) {
     lbl_8055F064 = arg0;
+}
+
+extern s32 fn_80231718(s32);
+extern void fn_80232024(u8 **);
+extern void fn_8023423C(s32, s32);
+extern void fn_802346C8(void);
+extern f32 lbl_805636A8;
+void fn_802344CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2) {
+    s32 sp8 = arg0;
+    s32 spC = arg1;
+    s32 index;
+    u8 *entry;
+
+    fn_80232024((u8 **)&sp8);
+    if (lbl_8055F058 >= 0x60) fn_802346C8();
+    index = lbl_8055F058;
+    entry = (u8 *)(lbl_8055F06C + index * 0x58);
+    strncpy((char *)entry, (char *)sp8, 0x40);
+    entry[0x3F] = 0;
+    *(s32 *)(entry + 0x48) = spC;
+    *(s32 *)(entry + 0x4C) = fn_80231718(spC);
+    *(f32 *)(entry + 0x40) = farg0;
+    *(f32 *)(entry + 0x44) = farg1;
+    *(f32 *)(entry + 0x50) = farg2;
+    if (arg3 != 0) *(f32 *)(entry + 0x54) = lbl_805636A8 * farg2;
+    else *(f32 *)(entry + 0x54) = farg2;
+    fn_8023423C(index, arg2);
+    lbl_8055F058++;
 }
 
 s32 fn_80234654(void) {
