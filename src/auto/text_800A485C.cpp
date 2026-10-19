@@ -5520,14 +5520,3 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ..
 extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern void* lbl_804077C0;
-extern u8 lbl_8055DDC0;
-extern OSAlarm lbl_80407790;
-extern const char lbl_8031E9D0[];
-extern "C" const char lbl_805597DC[];
-extern u32 lbl_8055DDB8;
-extern "C" void fn_800D2480(void);
-namespace nw4hbm {
-namespace db {
-void Warning(const char* file, int line, const char* msg, ...);
-}
-}
