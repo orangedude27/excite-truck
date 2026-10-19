@@ -27,7 +27,7 @@ extern "C" int GXSetTevColorIn(u8, s32, s32, s32, s32);    /* extern */
 extern "C" int GXSetTevColorOp(u8, s32, s32, s32, s32, s32); /* extern */
 extern "C" int GXSetTevColorS10(int, u16 *, u16);      /* extern */
 extern "C" int GXSetTevDirect(u8);                         /* extern */
-extern "C" int GXSetTevIndirect(u8, u8, s32, s32, s32, s32, s32, s32); /* extern */
+extern "C" int GXSetTevIndirect(u8, u8, s32, s32, s32, s32, s32, s32, s32, s32); /* extern */
 extern "C" int GXSetTevKAlphaSel(u8, s32);                 /* extern */
 extern "C" int GXSetTevKColor(int, u8 *);              /* extern */
 extern "C" int GXSetTevKColorSel(u8, s32);                 /* extern */
@@ -739,6 +739,578 @@ extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8
     dst = (char*)dst + ((u32)index << 5);
     for (int i=0;i<8;i++) ((u32*)dst)[i] = ((const u32*)tex)[i];
     GXGetTexObjWidth(dst, 0, 0);
+}
+
+extern "C" s32 fn_800DA094(void *arg0, s32 arg1, s32 arg2) {
+    float matrix[12];
+    s32 texture[8];
+    float indirectMatrix[6];
+    u8 texMatrices[10];
+    int palette[3];
+    u16 tev1[4];
+    u16 tev2[4];
+    u16 tev3[4];
+    u8 usedIndirect[3];
+    u8 alphaColor[4];
+    u8 channelColor[4];
+    u8 constant0[4];
+    u8 constant1[4];
+    u8 constant2[4];
+    u8 constant3[4];
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    s32 sp30;                                       /* compiler-managed */
+    
+    
+    
+    s32 sp28;
+       
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    s32 spC;
+    s32 sp8;
+    f32 temp_f1;
+    f32 temp_f2;
+    f32 temp_f30;
+    f32 temp_f31;
+    s32 *var_r21_3;
+    s32 *var_r22_2;
+    s32 temp_cr0_eq;
+    s32 temp_r0;
+    s32 temp_r0_2;
+    s32 temp_r21;
+    s32 temp_r21_2;
+    s32 temp_r3_3;
+    s32 temp_r3_7;
+    s32 temp_r3_9;
+    s32 temp_r4;
+    s32 temp_r6;
+    s32 temp_r8_2;
+    s32 var_r21;
+    s32 var_r21_2;
+    s32 var_r23_3;
+    s32 var_r23_5;
+    s32 var_r24;
+    s32 var_r25;
+    s32 var_r26;
+    s32 var_r27_2;
+    s32 var_r3;
+    s32 var_r3_2;
+    s32 var_r4;
+    s32 var_r5;
+    s32 var_r7;
+    u16 temp_r5_2;
+    u16 temp_r5_3;
+    u16 temp_r5_4;
+    u32 temp_r0_10;
+    u32 temp_r0_4;
+    u32 temp_r3;
+    u32 temp_r3_4;
+    u32 temp_r3_8;
+    u32 temp_r5;
+    u32 temp_r7;
+    u32 temp_r8;
+    u32 temp_r9;
+    u32 temp_r9_3;
+    u32 temp_r9_4;
+    u32 var_r23;
+    u32 var_r23_6;
+    u32 var_r23_7;
+    u32 var_r24_2;
+    u8 *var_r23_4;
+    u8 *var_r28_3;
+    u8 temp_r0_12;
+    u8 temp_r0_3;
+    u8 temp_r0_5;
+    u8 temp_r0_6;
+    u8 temp_r0_7;
+    u8 temp_r0_8;
+    u8 temp_r0_9;
+    u8 temp_r10;
+    u8 temp_r28;
+    u8 temp_r3_2;
+    u8 temp_r3_6;
+    u8 temp_r5_5;
+    u8 temp_r5_6;
+    u8 temp_r6_3;
+    u8 temp_r6_4;
+    u8 temp_r6_5;
+    u8 temp_r9_2;
+    u8 var_r22_3;
+    u8 var_r23_2;
+    u8 var_r24_3;
+    u8 var_r24_4;
+    u8 var_r28_2;
+    u32 temp_r0_11;
+    u32 temp_r0_13;
+    u32 temp_r22;
+    u32 temp_r3_5;
+    u32 temp_r6_2;
+    u32 temp_r6_6;
+    u32 temp_r6_7;
+    u32 temp_r7_2;
+    u32 var_r21_4;
+    u32 var_r21_5;
+    u32 var_r22;
+    u32 var_r27;
+    u32 var_r28;
+
+    var_r26 = 1;
+    var_r21 = 0;
+    GXSetNumChans(1);
+    temp_r3 = M2C_FIELD(arg0, u32 *, 0x4C);
+    if ((temp_r3 >> 8U) & 1) {
+        temp_r6 = ((temp_r3 >> 0x12U) & 0x3C) + ((temp_r3 >> 0x17U) & 0x1E0);
+        temp_r0 = M2C_FIELD(arg0, u32 *, 0x58) + (((temp_r3 >> 0x18U) & 0xF) * 0x14);
+        temp_r22 = temp_r6 + temp_r0;
+        GXSetChanCtrl(0, 0, 0, *(u8 *)(temp_r6 + temp_r0), 0, 0, 2);
+        GXSetChanCtrl(2, 0, 0, M2C_FIELD(temp_r22, u8 *, 1), 0, 0, 2);
+        temp_r3_2 = M2C_FIELD(temp_r22, u8 *, 0);
+        var_r26 = 1;
+        if (((s32) temp_r3_2 != 1) && ((s32) M2C_FIELD(temp_r22, u8 *, 1) != 1)) {
+            var_r26 = 0;
+        }
+        var_r21 = 0;
+        if (((s32) temp_r3_2 == 0) || ((s32) M2C_FIELD(temp_r22, u8 *, 1) == 0)) {
+            var_r21 = 1;
+        }
+    } else {
+        GXSetChanCtrl(4, 0, 0, 1U, 0, 0, 2);
+    }
+    var_r25 = 0;
+    if (var_r26 != 0) {
+        var_r25 = 1;
+        if (arg1 == 0) {
+            var_r25 = 0;
+        }
+    }
+    if (var_r21 != 0) {
+        temp_r5 = M2C_FIELD(arg0, u32 *, 0x4C);
+        sp30 = -1;
+        if ((temp_r5 >> 7U) & 1) {
+            temp_r3_3 = ((temp_r5 >> 6U) & 4) + (((temp_r5 >> 0x18U) & 0xF) * 0x14);
+            temp_r0_2 = M2C_FIELD(arg0, u32 *, 0x58) + (((temp_r5 >> 0x12U) & 0x3C) + ((temp_r5 >> 0x17U) & 0x1E0));
+            temp_r6_2 = temp_r3_3 + temp_r0_2;
+            ((u8 *)&sp30)[0] = *(u8 *)(temp_r3_3 + temp_r0_2);
+            ((u8 *)&sp30)[1] = M2C_FIELD(temp_r6_2, u8 *, 1);
+            ((u8 *)&sp30)[2] = M2C_FIELD(temp_r6_2, u8 *, 2);
+            ((u8 *)&sp30)[3] = M2C_FIELD(temp_r6_2, u8 *, 3);
+        }
+        sp28 = (s32) sp30;
+        MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(&alphaColor[0], &sp28, arg2);
+        ((u8 *)&sp30)[0] = alphaColor[0];
+        ((u8 *)&sp30)[1] = alphaColor[1];
+        ((u8 *)&sp30)[2] = alphaColor[2];
+        ((u8 *)&sp30)[3] = alphaColor[3];
+        channelColor[0] = alphaColor[0];
+        channelColor[1] = alphaColor[1];
+        channelColor[2] = alphaColor[2];
+        channelColor[3] = alphaColor[3];
+        GXSetChanMatColor_Internal(4, &channelColor[0], alphaColor[2], alphaColor[1], alphaColor[0]);
+        temp_cr0_eq = var_r25 == 0;
+        var_r25 = 0;
+        if ((temp_cr0_eq == 0) || ((u32) ((u32) sp30 + 0x10000) != 0xFFFFU)) {
+            var_r25 = 1;
+        }
+    }
+    var_r24 = 0;
+    texMatrices[0] = 0;
+    texMatrices[1] = 0;
+    texMatrices[2] = 0;
+    texMatrices[3] = 0;
+    texMatrices[4] = 0;
+    texMatrices[5] = 0;
+    texMatrices[6] = 0;
+    texMatrices[7] = 0;
+    texMatrices[8] = 0;
+    texMatrices[9] = 0;
+    GXSetNumTexGens(((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x14U) & 0xF);
+    if (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x14U) & 0xF) {
+        temp_r3_4 = M2C_FIELD(arg0, u32 *, 0x4C);
+        var_r23 = 0U;
+        var_r27 = ((temp_r3_4 >> 0x17U) & 0x1E0) + (M2C_FIELD(arg0, u32 *, 0x58) + (((temp_r3_4 >> 0x18U) & 0xF) * 0x14));
+loop_30:
+        if (var_r23 < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x14U) & 0xF)) {
+            if ((s32) M2C_FIELD(var_r27, u8 *, 0) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x508, lbl_8031F990 + 0x4D0);
+            }
+            temp_r28 = M2C_FIELD(var_r27, u8 *, 2);
+            if ((s32) M2C_FIELD(var_r27, u8 *, 0) == 1) {
+                var_r4 = 0;
+                if ((temp_r28 == 0x3C) || ((u32) ((temp_r28 - 0x1E) / 3) < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x18U) & 0xF))) {
+                    var_r4 = 1;
+                }
+                if (var_r4 == 0) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x50E, lbl_8031F990 + 0x518);
+                }
+                if (temp_r28 != 0x3C) {
+                    var_r24 = 1;
+                    (&texMatrices[0])[(temp_r28 - 0x1E) / 3] = 1;
+                }
+            }
+            GXSetTexCoordGen2((GXTexCoordID)var_r23, (GXTexGenType)M2C_FIELD(var_r27, u8 *, 0), (GXTexGenSrc)M2C_FIELD(var_r27, u8 *, 1), temp_r28, 0, 0x7D);
+            var_r27 += 4;
+            var_r23 += 1;
+            goto loop_30;
+        }
+    }
+    if (var_r24 != 0) {
+        var_r23_2 = 0;
+        temp_r21 = M2C_FIELD(arg0, u32 *, 0x58) + (((u32) M2C_FIELD(arg0, u32 *, 0x4C) >> 0x17U) & 0x1E0);
+loop_36:
+        if (var_r23_2 < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x18U) & 0xF)) {
+            if ((s32) (&texMatrices[0])[var_r23_2] != 0) {
+                fn_800D7C54((int *)matrix, temp_r21 + (var_r23_2 * 0x14));
+                GXLoadTexMtxImm((int *)matrix, (((var_r23_2 * 4) & 0x3FC) - var_r23_2) + 0x1E, 1);
+            }
+            var_r23_2 += 1;
+            goto loop_36;
+        }
+    }
+    if (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x1CU) != 0) {
+        var_r28 = M2C_FIELD(arg0, u32 *, 0x58);
+        var_r23_3 = 0;
+        var_r24_2 = 0U;
+loop_43:
+        if (var_r24_2 < (u32) ((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x1CU)) {
+            texture[0] = M2C_FIELD(var_r28, s32 *, 0);
+            texture[1] = M2C_FIELD(var_r28, s32 *, 4);
+            texture[2] = M2C_FIELD(var_r28, s32 *, 8);
+            texture[3] = M2C_FIELD(var_r28, s32 *, 0xC);
+            texture[4] = M2C_FIELD(var_r28, s32 *, 0x10);
+            texture[5] = M2C_FIELD(var_r28, s32 *, 0x14);
+            temp_r4 = M2C_FIELD(var_r28, s32 *, 0x18);
+            texture[6] = temp_r4;
+            texture[7] = M2C_FIELD(var_r28, s32 *, 0x1C);
+            if ((u32) (GXGetTexObjMipMap(&texture[0], temp_r4) - 8) <= 1U) {
+                temp_r3_5 = (u32)GXGetTexObjHeight(&texture[0]);
+                if (temp_r3_5 != 0) {
+                    GXInitTlutObj(&palette[0], M2C_FIELD(temp_r3_5, s32 *, 8), M2C_FIELD(temp_r3_5, s32 *, 4), M2C_FIELD(temp_r3_5, u16 *, 0));
+                    GXLoadTlut(&palette[0], var_r23_3);
+                    GXInitTexObjTlut(&texture[0], var_r23_3);
+                    var_r23_3 += 1;
+                }
+            }
+            GXLoadTexObj(&texture[0], var_r24_2);
+            var_r28 += 0x20;
+            var_r24_2 += 1;
+            goto loop_43;
+        }
+    }
+    tev1[0] = M2C_FIELD(arg0, u16 *, 0x24);
+    tev1[1] = M2C_FIELD(arg0, u16 *, 0x26);
+    temp_r5_2 = M2C_FIELD(arg0, u16 *, 0x28);
+    tev1[2] = temp_r5_2;
+    tev1[3] = M2C_FIELD(arg0, u16 *, 0x2A);
+    GXSetTevColorS10(1, &tev1[0], temp_r5_2);
+    tev2[0] = M2C_FIELD(arg0, u16 *, 0x2C);
+    tev2[1] = M2C_FIELD(arg0, u16 *, 0x2E);
+    temp_r5_3 = M2C_FIELD(arg0, u16 *, 0x30);
+    tev2[2] = temp_r5_3;
+    tev2[3] = M2C_FIELD(arg0, u16 *, 0x32);
+    GXSetTevColorS10(2, &tev2[0], temp_r5_3);
+    tev3[0] = M2C_FIELD(arg0, u16 *, 0x34);
+    tev3[1] = M2C_FIELD(arg0, u16 *, 0x36);
+    temp_r5_4 = M2C_FIELD(arg0, u16 *, 0x38);
+    tev3[2] = temp_r5_4;
+    tev3[3] = M2C_FIELD(arg0, u16 *, 0x3A);
+    GXSetTevColorS10(3, &tev3[0], temp_r5_4);
+    constant0[0] = M2C_FIELD(arg0, u8 *, 0x3C);
+    constant0[1] = M2C_FIELD(arg0, u8 *, 0x3D);
+    constant0[2] = M2C_FIELD(arg0, u8 *, 0x3E);
+    constant0[3] = M2C_FIELD(arg0, u8 *, 0x3F);
+    GXSetTevKColor(0, &constant0[0]);
+    constant1[0] = M2C_FIELD(arg0, u8 *, 0x40);
+    constant1[1] = M2C_FIELD(arg0, u8 *, 0x41);
+    constant1[2] = M2C_FIELD(arg0, u8 *, 0x42);
+    constant1[3] = M2C_FIELD(arg0, u8 *, 0x43);
+    GXSetTevKColor(1, &constant1[0]);
+    constant2[0] = M2C_FIELD(arg0, u8 *, 0x44);
+    constant2[1] = M2C_FIELD(arg0, u8 *, 0x45);
+    constant2[2] = M2C_FIELD(arg0, u8 *, 0x46);
+    constant2[3] = M2C_FIELD(arg0, u8 *, 0x47);
+    GXSetTevKColor(2, &constant2[0]);
+    constant3[0] = M2C_FIELD(arg0, u8 *, 0x48);
+    constant3[1] = M2C_FIELD(arg0, u8 *, 0x49);
+    constant3[2] = M2C_FIELD(arg0, u8 *, 0x4A);
+    constant3[3] = M2C_FIELD(arg0, u8 *, 0x4B);
+    GXSetTevKColor(3, &constant3[0]);
+    temp_r8 = M2C_FIELD(arg0, u32 *, 0x4C);
+    if ((temp_r8 >> 0xEU) & 1) {
+        var_r21_2 = 0;
+        var_r23_4 = (u8 *)((((temp_r8 >> 0x18U) & 0xF) * 0x14) + (((temp_r8 >> 0x12U) & 0x3C) + ((temp_r8 >> 0x17U) & 0x1E0)) + (M2C_FIELD(arg0, u32 *, 0x58) + (((temp_r8 >> 5U) & 4) + ((temp_r8 >> 6U) & 4))));
+        do {
+            temp_r0_3 = *var_r23_4;
+            GXSetTevSwapModeTable(var_r21_2, temp_r0_3 & 3, (temp_r0_3 >> 2U) & 3, (temp_r0_3 >> 4U) & 3, (temp_r0_3 >> 6U) & 3);
+            var_r21_2 += 1;
+            var_r23_4 += 1;
+        } while (var_r21_2 < 4);
+    } else {
+        GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+        GXSetTevSwapModeTable(1, 0, 0, 0, 3);
+        GXSetTevSwapModeTable(2, 1, 1, 1, 3);
+        GXSetTevSwapModeTable(3, 2, 2, 2, 3);
+    }
+    temp_r0_4 = M2C_FIELD(arg0, u32 *, 0x50);
+    var_r23_5 = 0;
+    usedIndirect[0] = 0;
+    temp_r3_6 = (temp_r0_4 >> 9U) & 0x1F;
+    usedIndirect[1] = 0;
+    usedIndirect[2] = 0;
+    if (temp_r3_6 != 0) {
+        GXSetNumTevStages(temp_r3_6);
+        temp_r9 = M2C_FIELD(arg0, u32 *, 0x4C);
+        var_r24_3 = 0;
+        var_r22 = ((temp_r9 >> 0xDU) & 0x1C) + (((temp_r9 >> 3U) & 4) + (((temp_r9 >> 4U) & 4) + (((temp_r9 >> 5U) & 4) + ((temp_r9 >> 0xCU) & 4)))) + (M2C_FIELD(arg0, u32 *, 0x58) + (((temp_r9 >> 0x17U) & 0x1E0) + ((temp_r9 >> 0x12U) & 0x3C) + (((((temp_r9 >> 0x12U) & 3) + ((temp_r9 >> 0x18U) & 0xF)) * 0x14) + ((temp_r9 >> 6U) & 4))));
+loop_55:
+        if (var_r24_3 < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 9U) & 0x1F)) {
+            GXSetTevOrder(var_r24_3, M2C_FIELD(var_r22, u8 *, 0), (M2C_FIELD(var_r22, u8 *, 2) & ~0x100) | ((M2C_FIELD(var_r22, u8 *, 3) << 8) & 0x100), M2C_FIELD(var_r22, u8 *, 1));
+            temp_r0_5 = M2C_FIELD(var_r22, u8 *, 3);
+            GXSetTevSwapMode(var_r24_3, (temp_r0_5 >> 1U) & 3, (temp_r0_5 >> 3U) & 3);
+            temp_r0_6 = M2C_FIELD(var_r22, u8 *, 5);
+            temp_r5_5 = M2C_FIELD(var_r22, u8 *, 4);
+            GXSetTevColorIn(var_r24_3, temp_r5_5 & 0xF, (temp_r5_5 >> 4U) & 0xF, temp_r0_6 & 0xF, (temp_r0_6 >> 4U) & 0xF);
+            temp_r6_3 = M2C_FIELD(var_r22, u8 *, 6);
+            temp_r0_7 = M2C_FIELD(var_r22, u8 *, 7);
+            GXSetTevColorOp(var_r24_3, temp_r6_3 & 0xF, (temp_r6_3 >> 4U) & 3, (temp_r6_3 >> 6U) & 3, temp_r0_7 & 1, (temp_r0_7 >> 1U) & 3);
+            GXSetTevKColorSel(var_r24_3, ((u8) M2C_FIELD(var_r22, u8 *, 7) >> 3U) & 0x1F);
+            temp_r0_8 = M2C_FIELD(var_r22, u8 *, 9);
+            temp_r5_6 = M2C_FIELD(var_r22, u8 *, 8);
+            GXSetTevAlphaIn(var_r24_3, temp_r5_6 & 0xF, (temp_r5_6 >> 4U) & 0xF, temp_r0_8 & 0xF, (temp_r0_8 >> 4U) & 0xF);
+            temp_r6_4 = M2C_FIELD(var_r22, u8 *, 0xA);
+            temp_r0_9 = M2C_FIELD(var_r22, u8 *, 0xB);
+            GXSetTevAlphaOp(var_r24_3, temp_r6_4 & 0xF, (temp_r6_4 >> 4U) & 3, (temp_r6_4 >> 6U) & 3, temp_r0_9 & 1, (temp_r0_9 >> 1U) & 3);
+            GXSetTevKAlphaSel(var_r24_3, ((u8) M2C_FIELD(var_r22, u8 *, 0xB) >> 3U) & 0x1F);
+            temp_r10 = M2C_FIELD(var_r22, u8 *, 0xF);
+            temp_r6_5 = M2C_FIELD(var_r22, u8 *, 0xD);
+            temp_r9_2 = M2C_FIELD(var_r22, u8 *, 0xE);
+            temp_r21_2 = (temp_r6_5 >> 3U) & 0xF;
+            sp8 = (temp_r10 >> 3U) & 1;
+            spC = (temp_r10 >> 4U) & 3;
+            ((void (*)(u8,u8,s32,s32,s32,s32,s32,s32,s32,s32))GXSetTevIndirect)(var_r24_3, M2C_FIELD(var_r22, u8 *, 0xC), temp_r10 & 3, temp_r6_5 & 7, temp_r21_2, temp_r9_2 & 7, (temp_r9_2 >> 3U) & 7, (temp_r10 >> 2U) & 1, sp8, spC);
+            if ((temp_r21_2 >= 1) && (temp_r21_2 <= 3)) {
+                var_r23_5 = 1;
+                M2C_FIELD(&(&usedIndirect[0])[temp_r21_2], s8 *, -1) = 1;
+            }
+            var_r22 += 0x10;
+            var_r24_3 += 1;
+            goto loop_55;
+        }
+        var_r25 = 1;
+    } else {
+        temp_r0_10 = temp_r0_4 >> 0x1CU;
+        var_r24_4 = 0;
+        switch (temp_r0_10) {                       /* irregular */
+        case 0:
+            GXSetTevOrder(0U, 0xFFU, 0xFFU, 4U);
+            GXSetTevColorIn(0U, 0xF, 4, 0xA, 0xF);
+            GXSetTevAlphaIn(0U, 7, 2, 5, 7);
+            var_r25 = 1;
+            var_r24_4 = 1;
+            break;
+        case 1:
+            GXSetTevOrder(0U, 0U, 0U, 0xFFU);
+            GXSetTevColorIn(0U, 2, 4, 8, 0xF);
+            GXSetTevAlphaIn(0U, 1, 2, 4, 7);
+            var_r24_4 = 1;
+block_83:
+            if (var_r25 != 0) {
+                GXSetTevOrder(var_r24_4, 0xFFU, 0xFFU, 4U);
+                GXSetTevColorIn(var_r24_4, 0xF, 0, 0xA, 0xF);
+                GXSetTevAlphaIn(var_r24_4, 7, 0, 5, 7);
+                var_r24_4 += 1;
+            }
+            break;
+        case 2:
+            GXSetTevOrder(0U, 0U, 0U, 0xFFU);
+            GXSetTevColorIn(0U, 0xF, 0xF, 0xF, 8);
+            GXSetTevAlphaIn(0U, 7, 7, 7, 4);
+            GXSetTevOrder(1U, 1U, 1U, 0xFFU);
+            GXSetTevColorIn(1U, 8, 0, 0xE, 0xF);
+            GXSetTevAlphaIn(1U, 4, 0, 6, 7);
+            GXSetTevKColorSel(1U, M2C_FIELD(lbl_8031F990, s32 *, 0x490));
+            GXSetTevKAlphaSel(1U, M2C_FIELD(lbl_8031F990, s32 *, 0x4B0));
+            var_r24_4 = 2;
+block_70:
+            var_r5 = 0;
+            if (((s16) M2C_FIELD(arg0, u16 *, 0x24) == (s16) M2C_FIELD(&lbl_80565230, s16 *, 0)) && ((s16) M2C_FIELD(arg0, u16 *, 0x26) == (s16) M2C_FIELD(&lbl_80565230, s16 *, 2)) && ((s16) M2C_FIELD(arg0, u16 *, 0x28) == (s16) M2C_FIELD(&lbl_80565230, s16 *, 4)) && ((s16) M2C_FIELD(arg0, u16 *, 0x2A) == (s16) M2C_FIELD(&lbl_80565230, s16 *, 6))) {
+                var_r5 = 1;
+            }
+            if (var_r5 != 0) {
+                var_r3_2 = 0;
+                if (((s16) M2C_FIELD(arg0, u16 *, 0x2C) == 0xFF) && ((s16) M2C_FIELD(arg0, u16 *, 0x2E) == 0xFF) && ((s16) M2C_FIELD(arg0, u16 *, 0x30) == 0xFF) && ((s16) M2C_FIELD(arg0, u16 *, 0x32) == 0xFF)) {
+                    var_r3_2 = 1;
+                }
+                if (var_r3_2 == 0) {
+                    goto block_82;
+                }
+            } else {
+block_82:
+                GXSetTevOrder(var_r24_4, 0xFFU, 0xFFU, 0xFFU);
+                GXSetTevColorIn(var_r24_4, 2, 4, 0, 0xF);
+                GXSetTevAlphaIn(var_r24_4, 1, 2, 0, 7);
+                var_r24_4 += 1;
+            }
+            goto block_83;
+        default:
+            var_r21_3 = (s32 *)(lbl_8031F990 + 0x490);
+            var_r22_2 = (s32 *)(lbl_8031F990 + 0x4B0);
+            var_r28_2 = 0;
+loop_69:
+            if (var_r28_2 < (u32) ((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x1CU)) {
+                GXSetTevOrder(var_r24_4, var_r28_2, var_r28_2, 0xFFU);
+                var_r7 = 0;
+                if ((s32) var_r28_2 == 0) {
+                    var_r7 = 0xF;
+                }
+                var_r27_2 = 0;
+                if ((s32) var_r28_2 == 0) {
+                    var_r27_2 = 7;
+                }
+                GXSetTevColorIn(var_r24_4, 0xF, 8, 0xE, var_r7);
+                GXSetTevAlphaIn(var_r24_4, 7, 4, 6, var_r27_2);
+                GXSetTevKColorSel(var_r24_4, *var_r21_3);
+                GXSetTevKAlphaSel(var_r24_4, *var_r22_2);
+                var_r24_4 += 1;
+                var_r21_3 += 1;
+                var_r22_2 += 1;
+                var_r28_2 += 1;
+                goto loop_69;
+            }
+            goto block_70;
+        }
+        var_r22_3 = 0;
+loop_87:
+        if (var_r22_3 < var_r24_4) {
+            GXSetTevColorOp(var_r22_3, 0, 0, 0, 1, 0);
+            GXSetTevAlphaOp(var_r22_3, 0, 0, 0, 1, 0);
+            GXSetTevDirect(var_r22_3);
+            GXSetTevSwapMode(var_r22_3, 0, 0);
+            var_r22_3 += 1;
+            goto loop_87;
+        }
+        GXSetNumTevStages(var_r24_4);
+    }
+    if (var_r23_5 != 0) {
+        temp_r9_3 = M2C_FIELD(arg0, u32 *, 0x4C);
+        var_r28_3 = &usedIndirect[0];
+        var_r23_6 = 0U;
+        temp_f30 = lbl_80560E8C;
+        var_r21_4 = ((temp_r9_3 >> 0xCU) & 4) + ((temp_r9_3 >> 5U) & 4) + (((temp_r9_3 >> 4U) & 4) + ((temp_r9_3 >> 6U) & 4)) + ((((temp_r9_3 >> 0x18U) & 0xF) * 0x14) + (((temp_r9_3 >> 0x12U) & 0x3C) + ((temp_r9_3 >> 0x17U) & 0x1E0))) + (M2C_FIELD(arg0, u32 *, 0x58) + (((temp_r9_3 >> 0xDU) & 0x1C) + ((temp_r9_3 >> 3U) & 4)));
+loop_94:
+        if (var_r23_6 < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x12U) & 3)) {
+            if ((s32) *var_r28_3 != 0) {
+                temp_f31 = CosFIdx__Q24nw4r4mathFf(temp_f30 * M2C_FIELD(var_r21_4, f32 *, 8));
+                temp_f1 = SinFIdx__Q24nw4r4mathFf(temp_f30 * M2C_FIELD(var_r21_4, f32 *, 8));
+                temp_f2 = -temp_f1;
+                indirectMatrix[0] = temp_f31 * M2C_FIELD(var_r21_4, f32 *, 0xC);
+                indirectMatrix[1] = temp_f2 * M2C_FIELD(var_r21_4, f32 *, 0x10);
+                indirectMatrix[2] = M2C_FIELD(var_r21_4, f32 *, 0);
+                indirectMatrix[3] = temp_f1 * M2C_FIELD(var_r21_4, f32 *, 0xC);
+                indirectMatrix[4] = temp_f31 * M2C_FIELD(var_r21_4, f32 *, 0x10);
+                indirectMatrix[5] = M2C_FIELD(var_r21_4, f32 *, 4);
+                fn_800D7D5C((void *)(var_r23_6 + 1), &indirectMatrix[0]);
+            }
+            var_r28_3 += 1;
+            var_r21_4 += 0x14;
+            var_r23_6 += 1;
+            goto loop_94;
+        }
+    }
+    GXSetNumIndStages(((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0xFU) & 7);
+    if (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0xFU) & 7) {
+        temp_r9_4 = M2C_FIELD(arg0, u32 *, 0x4C);
+        var_r23_7 = 0U;
+        var_r21_5 = ((temp_r9_4 >> 3U) & 4) + (((temp_r9_4 >> 0xCU) & 4) + ((temp_r9_4 >> 5U) & 4) + (((temp_r9_4 >> 4U) & 4) + ((temp_r9_4 >> 6U) & 4))) + (M2C_FIELD(arg0, u32 *, 0x58) + ((((temp_r9_4 >> 0x18U) & 0xF) * 0x14) + (((temp_r9_4 >> 0x12U) & 0x3C) + ((temp_r9_4 >> 0x17U) & 0x1E0))));
+loop_98:
+        if (var_r23_7 < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0xFU) & 7)) {
+            GXSetIndTexOrder(var_r23_7, M2C_FIELD(var_r21_5, u8 *, 0), M2C_FIELD(var_r21_5, u8 *, 1));
+            GXSetIndTexCoordScale(var_r23_7, M2C_FIELD(var_r21_5, u8 *, 2), M2C_FIELD(var_r21_5, u8 *, 3));
+            var_r21_5 += 4;
+            var_r23_7 += 1;
+            goto loop_98;
+        }
+    }
+    temp_r7 = M2C_FIELD(arg0, u32 *, 0x4C);
+    if ((temp_r7 >> 6U) & 1) {
+        temp_r0_11 = M2C_FIELD(arg0, u32 *, 0x58) + (((temp_r7 >> 6U) & 4) + (((temp_r7 >> 0xCU) & 4) + ((temp_r7 >> 5U) & 4)));
+        temp_r3_7 = (((temp_r7 >> 0x18U) & 0xF) * 0x14) + (((temp_r7 >> 0x12U) & 0x3C) + ((temp_r7 >> 0x17U) & 0x1E0));
+        temp_r6_6 = temp_r3_7 + temp_r0_11;
+        temp_r0_12 = *(u8 *)(temp_r3_7 + temp_r0_11);
+        GXSetAlphaCompare(temp_r0_12 & 0xF, M2C_FIELD(temp_r6_6, u8 *, 2), M2C_FIELD(temp_r6_6, u8 *, 1), (temp_r0_12 >> 4U) & 0xF, M2C_FIELD(temp_r6_6, u8 *, 3));
+    } else {
+        GXSetAlphaCompare(7, 0U, 0U, 7, 0U);
+    }
+    temp_r3_8 = M2C_FIELD(arg0, u32 *, 0x4C);
+    if ((temp_r3_8 >> 5U) & 1) {
+        temp_r8_2 = (temp_r3_8 >> 4U) & 4;
+        temp_r7_2 = M2C_FIELD(arg0, u32 *, 0x58);
+        temp_r0_13 = temp_r7_2 + (((temp_r3_8 >> 0xCU) & 4) + ((temp_r3_8 >> 5U) & 4) + (temp_r8_2 + ((temp_r3_8 >> 6U) & 4)));
+        temp_r3_9 = (((temp_r3_8 >> 0x18U) & 0xF) * 0x14) + (((temp_r3_8 >> 0x12U) & 0x3C) + ((temp_r3_8 >> 0x17U) & 0x1E0));
+        temp_r6_7 = temp_r3_9 + temp_r0_13;
+        GXSetBlendMode(*(u8 *)(temp_r3_9 + temp_r0_13), M2C_FIELD(temp_r6_7, u8 *, 1), M2C_FIELD(temp_r6_7, u8 *, 2), M2C_FIELD(temp_r6_7, u8 *, 3), (void *)temp_r7_2, temp_r8_2);
+    } else {
+        GXSetBlendMode(1U, 4U, 5U, 0xFU, 0, 0);
+    }
+    var_r3 = 0;
+    if ((var_r25 != 0) && (var_r26 != 0)) {
+        var_r3 = 1;
+    }
+    return var_r3;
 }
 
 extern "C" void fn_800DAFA8(void* arg0, void* arg1) {
