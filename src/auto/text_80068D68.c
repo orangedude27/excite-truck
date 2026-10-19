@@ -3059,6 +3059,12 @@ void fn_80082548(void) {
 }
 
 extern u8 lbl_803C3740[];
+typedef struct {
+    u8 inq[0x3C];
+    u8 disc_comp[0x34];
+    u8 disc_succ[0x28];
+    u8 rem_name[1];
+} GapTraceStrings;
 extern void gap_connect_ind(void), gap_connect_cfm(void), gap_config_ind(void), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(void), gap_congestion_ind(void);
 void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0x84)=gap_connect_ind;
@@ -3071,6 +3077,70 @@ void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0xa0)=0;
  *(void **)(lbl_803C3740+0xa4)=gap_data_ind;
  *(void **)(lbl_803C3740+0xa8)=gap_congestion_ind;
+}
+
+extern u8 lbl_803173E0[];
+void btm_cback(u32 index, void *param) {
+    u8 *p_elem;
+    struct {
+        u16 status;
+        u8 results;
+    } inq_res;
+
+    if (index >= 2) return;
+
+    p_elem = &lbl_803C3740[(u16)index * 0x10];
+    if (p_elem[0xF] == 0) return;
+
+    switch (*(u16 *)(p_elem + 0xC)) {
+    case 2:
+        inq_res.results = ((u8 *)param)[1];
+        inq_res.status = ((u8 *)param)[0] == 0 ? 0 : 0x114;
+        param = &inq_res;
+        if (lbl_803C3740[0x28] >= 4) {
+            fn_8007096C(0xE0003, &lbl_803173E0[0], inq_res.status, inq_res.results);
+        }
+        break;
+    case 3:
+        if (*(u16 *)param != 0) {
+            if (lbl_803C3740[0x28] >= 4) {
+                fn_80070954(0xE0003, &lbl_803173E0[0x3C], *(u16 *)param);
+            }
+        } else {
+            if (lbl_803C3740[0x28] >= 4) {
+                fn_8007093C(0xE0003, &lbl_803173E0[0x70]);
+            }
+        }
+        break;
+    case 4: {
+        u16 res;
+        switch ((u8)*(u16 *)param) {
+        case 0: res = 0; break;
+        case 1: res = 0x10B; break;
+        case 2: res = 0x103; break;
+        case 4:
+        case 5: res = 0x109; break;
+        case 6: res = 0x10C; break;
+        case 7: res = 0x10D; break;
+        case 8: res = 0x115; break;
+        case 3:
+        default: res = 0x114; break;
+        }
+        *(u16 *)param = res;
+        if (lbl_803C3740[0x28] >= 4) {
+            fn_80070954(0xE0003, &lbl_803173E0[0x98], res);
+        }
+        break;
+    }
+    }
+
+    if (*(void **)(p_elem + 4) != NULL) {
+        ((void (*)(u16, void *))*(void **)(p_elem + 4))(*(u16 *)(p_elem + 0xC), param);
+    }
+    if (p_elem != NULL) {
+        *(void **)(p_elem + 4) = NULL;
+        p_elem[0xF] = 0;
+    }
 }
 
 void fn_800833E8(void *arg0) { btm_cback(0, arg0); }
