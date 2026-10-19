@@ -453,11 +453,11 @@ void *fn_802E0BA4(void) {
 }
 #pragma dont_inline reset
 
+#pragma scheduling on
 void fn_802E0BE0(void) {
     fn_802E0BA4();
     fn_80128668();
 }
-
 void fn_802E1290(void *arg0) {
     extern void fn_802E30C8(const char *, ...);
     extern void *fn_802E0BA4(void);
