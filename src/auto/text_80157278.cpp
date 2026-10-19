@@ -1534,7 +1534,7 @@ void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
     }
 }
 
-extern "C" s32 lbl_8055A058[];
+extern "C" s32 lbl_8055A058[1];
 void fn_8015D8B0(void* arg0) {
  struct Obj {
   virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
@@ -1565,6 +1565,79 @@ void fn_8015D8B0(void* arg0) {
   if(obj->v23()>=x) adaptor->v10(1);
  }
 }
+
+extern "C" f32 fn_80204CFC(const char*);
+extern "C" void* fn_8023139C(void*,s32,u32);
+extern "C" char lbl_8032F39C[];
+extern "C" f32 lbl_8042FD08[];
+#pragma push
+#pragma processor 750
+extern "C" void fn_8015D9BC(Unk801577F0* arg0, f32* arg1) {
+ struct Obj {
+ virtual void v0();
+virtual void v1();
+virtual void v2();
+virtual void v3();
+virtual void v4();
+virtual void v5();
+virtual void v6();
+virtual void v7();
+virtual void v8();
+virtual void v9();
+virtual void v10();
+virtual void v11();
+virtual void v12();
+virtual void v13();
+virtual void v14();
+virtual void v15();
+virtual void v16();
+virtual s32 v17();
+virtual void v18();
+virtual void v19();
+virtual void v20();
+virtual s32 v21();
+virtual void v22();
+virtual s32 v23();
+virtual s32 v24();
+virtual s32 v25();
+virtual s32 v26();
+virtual void v27();
+virtual void v28();
+virtual s32 v29();
+ };
+ struct Adaptor {
+ virtual void v0(); virtual void v1(s32,...); virtual void v2(s32,...);
+ virtual void v3(s32,...); virtual void v4(); virtual void v5(s32);
+ virtual void v6(s32); virtual void v7(); virtual void v8(s32);
+ };
+ char buf[16];
+ Obj* obj=(Obj*)arg0;
+ *arg1 *= fn_80204CFC(lbl_8032F39C);
+ *arg1 *= lbl_8042FD08[arg0->m4];
+ if (*(Adaptor**)((u8*)arg0+0x248) && !(__fabsf(*arg1)<=lbl_80558DC4[0])) {
+  (*(Adaptor**)((u8*)arg0+0x248))->v3((s32)lbl_8055A058, fn_8023139C(buf,16,(u32)*arg1));
+  (*(Adaptor**)((u8*)arg0+0x248))->v6(obj->v29());
+  (*(Adaptor**)((u8*)arg0+0x248))->v5((s32)*arg1);
+  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A058,obj->v23());
+  (*(Adaptor**)((u8*)arg0+0x248))->v1((s32)lbl_8055A058,obj->v24());
+  obj->v22();
+  (*(Adaptor**)((u8*)arg0+0x248))->v4();
+  s32 limit=obj->v17();
+  if(obj->v21()>=limit) (*(Adaptor**)((u8*)arg0+0x248))->v8(1);
+ }
+ f32 value=*arg1;
+ s32 offset=obj->v21()*0x38;
+ ++*(s32*)(arg0->mData+offset);
+ if (!(__fabsf(value)<=lbl_80558DC4[0])) {
+ ++*(s32*)(arg0->mData+offset+4);
+ if (__fabsf(value-*(f32*)(arg0->mData+offset+16))<=lbl_80558DC4[0])
+ ++*(s32*)(arg0->mData+offset+8);
+ }
+ *(f32*)(arg0->mData+offset+12)+=value;
+ s32 index=obj->v21();
+ ((void(*)(s32,s32,s32))fn_801584D4)(obj->v29(),arg0->m4,index);
+}
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
