@@ -2034,18 +2034,102 @@ extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
     return 0;
 }
 
+extern "C" s32 fn_800B960C(s32 a0, s32 a1, s32 a2, s32 a3, s32 *out, s32 key) {
+    NandEntry *base = (NandEntry *)lbl_80405D58;
+    NandEntry *e = 0;
+    s32 i;
+    s32 n, off, len, res;
+    u32 sp20;
+    u8 buf[0x200];
+
+    for (i = 0; i < 0x17; i++) {
+        if (base[i].key == key) {
+            e = &base[i];
+            break;
+        }
+    }
+    if (i == 0x17)
+        return -0x14;
+
+    n = a0 * a3;
+    len = e->length;
+    off = a2 * a3;
+    if (NANDGetLengthAsync(&e->nand[0], &sp20) != 0 || sp20 != (u32)off)
+        res = NANDSeek(&e->nand[0], off, 0);
+    else
+        res = 0;
+
+    if (res < 0) {
+        for (i = 0; i < 0x17; i++)
+            if (base[i].key == key) {
+                base[i].error = res;
+                break;
+            }
+        return res;
+    }
+
+    if ((u32)(off + n) > len) {
+        n = len - off;
+        off = 0;
+        while (n >= 0x200) {
+            res = NANDRead(&e->nand[0], buf, 0x200);
+            if (res < 0)
+                return -0x16;
+            VFipf_memcpy((u8 *)a1 + off, buf, res);
+            off += res;
+            n -= res;
+        }
+        if (n != 0) {
+            res = NANDRead(&e->nand[0], buf, n);
+            if (res < 0)
+                return -0x16;
+            VFipf_memcpy((u8 *)a1 + off, buf, res);
+        }
+        return -0x16;
+    } else {
+        off = 0;
+        while (n >= 0x200) {
+            res = NANDRead(&e->nand[0], buf, 0x200);
+            if (res < 0) {
+                for (i = 0; i < 0x17; i++)
+                    if (base[i].key == key) {
+                        base[i].error = res;
+                        break;
+                    }
+                return res;
+            }
+            VFipf_memcpy((u8 *)a1 + off, buf, res);
+            off += res;
+            n -= res;
+        }
+        if (n != 0) {
+            res = NANDRead(&e->nand[0], buf, n);
+            if (res < 0) {
+                for (i = 0; i < 0x17; i++)
+                    if (base[i].key == key) {
+                        base[i].error = res;
+                        break;
+                    }
+                return res;
+            }
+            VFipf_memcpy((u8 *)a1 + off, buf, res);
+        }
+        *out = a0;
+        return 0;
+    }
+}
+
 extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
-    unsigned char *entry;
     s32 status;
-    unsigned char *e;
-    u16 i;
-    u32 length;
     u32 filelen;
     u32 pos;
+    u32 length;
     u32 cur;
     s32 r;
     u32 remain;
     u32 done;
+    unsigned char *entry;
+    u16 i;
     unsigned char buf[0x200] __attribute__((aligned(32)));
 
     entry = 0;
@@ -2098,8 +2182,10 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         r = NANDWrite(entry + 0x58, buf, 0x200);
         if (r < 0) {
             for (i = 0; i < 0x17; i++) {
-                e = lbl_80405D58 + i * 0xF0;
-                if (*(u32 *)e == (u32)arg5) { *(s32 *)(e + 0xEC) = r; break; }
+                if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg5) {
+                    *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = r;
+                    break;
+                }
             }
             return r;
         }
@@ -2111,8 +2197,10 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
         r = NANDWrite(entry + 0x58, buf, length);
         if (r < 0) {
             for (i = 0; i < 0x17; i++) {
-                e = lbl_80405D58 + i * 0xF0;
-                if (*(u32 *)e == (u32)arg5) { *(s32 *)(e + 0xEC) = r; break; }
+                if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg5) {
+                    *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = r;
+                    break;
+                }
             }
             return r;
         }
@@ -2122,8 +2210,10 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
 
 fail:
     for (i = 0; i < 0x17; i++) {
-        e = lbl_80405D58 + i * 0xF0;
-        if (*(u32 *)e == (u32)arg5) { *(s32 *)(e + 0xEC) = r; break; }
+        if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg5) {
+            *(s32 *)(lbl_80405D58 + i * 0xF0 + 0xEC) = r;
+            break;
+        }
     }
     return r;
 }
@@ -4566,8 +4656,17 @@ extern "C" s32 fn_800A485C(s32 arg0) {
     return arg0;
 }
 
-s32 fn_800A4A8C(u8 *arg0) { u8 *ptr = arg0; do { ++ptr; } while ((s8)*ptr != 0); return ptr - arg0; }
-
+#pragma push
+#pragma dont_inline on
+extern "C" s32 fn_800A4A8C(s32 arg0) {
+    s8 *start = (s8 *)arg0;
+    s8 *ptr = start;
+    while (*ptr != 0) {
+        ++ptr;
+    }
+    return ptr - start;
+}
+#pragma pop
 void fn_800A4AAC(char *dst, char *src) {
     do {
         dst++;
