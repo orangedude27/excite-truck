@@ -172,6 +172,17 @@ void *fn_801F21CC(void) {
     return (void *)p;
 }
 
+#pragma scheduling invalid_target
+void *fn_801F220C(void) {
+    extern const char lbl_8033A694[], lbl_8033A6B0[];
+    void **p = (void **)fn_801284F8(4, (void *)lbl_8033A694);
+    if (p != 0) {
+        *p = (void *)lbl_8033A6B0;
+    }
+    return (void *)p;
+}
+#pragma scheduling on
+
 #pragma scheduling on
 
 #pragma push
