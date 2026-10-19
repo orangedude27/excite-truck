@@ -1,6 +1,9 @@
   #include <types.h>
   #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
 extern "C" void VFipf_memcpy(void *, const void *, u32);
+extern "C" s32 NANDGetLengthAsync(void *, u32 *);
+extern "C" s32 NANDSeek(void *, s32, s32);
+extern "C" s32 NANDWrite(void *, const void *, u32);
 
   namespace homebutton {
   namespace gui {
