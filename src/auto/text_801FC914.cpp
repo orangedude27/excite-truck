@@ -39,8 +39,10 @@ void fn_801FF3AC(void*, float);
           extern char lbl_8033B608[];
       extern const char lbl_8033B86C[];
     extern const char lbl_8033B898[];
-    extern const char lbl_8033B880[];
-    }
+      extern const char lbl_8033B880[];
+  extern const char lbl_8033B730[];
+  extern s32 lbl_8033B5E8;
+      }
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
