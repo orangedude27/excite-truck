@@ -1,5 +1,9 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
+extern void fn_802E317C(const char *, ...);
+extern s32 fn_802DAC64(void);
+extern const char lbl_8034C2F8[];
+extern const char lbl_8034C334[];
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -21,6 +25,57 @@ extern f32 lbl_80565008;
 extern u8 lbl_8055FD19;
 extern u32 lbl_804C5650[];
 void fn_802D3F30(void) {
+}
+
+void fn_802D3F34(void *arg0) {
+    void *array = *(void **)((char *)arg0 + 0x20);
+    GXSetArray(9, array, 0xC);
+    GXSetArray(0xB, *(void **)((char *)arg0 + 0x24), 2);
+    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
+    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+}
+
+void fn_802D3F98(void *arg0) {
+    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
+    GXSetArray(0xB, *(void **)((char *)arg0 + 0x24), 4);
+    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
+    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+}
+
+void fn_802D3FFC(void *arg0) {
+    void *array = *(void **)((char *)arg0 + 0x20);
+    GXSetArray(9, array, 0xC);
+    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
+    GXSetArray(0xE, *(void **)((char *)arg0 + 0x24), 4);
+    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+}
+
+void fn_802D41C8(void *arg0) {
+    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
+    GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
+    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
+    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+}
+
+void fn_802D422C(void *arg0) {
+    GXSetArray(9, *(void **)((char *)arg0 + 0x20), 0xC);
+    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
+    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+}
+
+void fn_802D4280(void *arg0) {
+    void * volatile array = *(void **)((char *)arg0 + 0x20);
+    GXSetArray(9, array, 0x10);
+    GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
+    GXSetArray(0xD, *(void **)((char *)arg0 + 0x28), 4);
+    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
+}
+
+void fn_802D5680(void *arg0) {
+    void * volatile array = *(void **)((char *)arg0 + 0x20);
+    GXSetArray(9, array, 0x10);
+    GXSetArray(0xA, *(void **)((char *)arg0 + 0x24), 3);
+    GXCallDisplayList(*(void **)((char *)arg0 + 0x30), *(u32 *)((char *)arg0 + 0x2C));
 }
 
 void fn_802D62FC(void *arg0, s32 *arg1, s32 *arg2) {
