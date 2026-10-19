@@ -68,7 +68,10 @@ void fn_800125D4(const char *arg0) {
     lbl_80351790[0] = 0;
 }
 
-
+extern void fn_800123EC(float);
+void fn_80012624(void) {
+    ((void(*)(void))fn_800123EC)();
+}
 
 #pragma push
 #pragma scheduling on
