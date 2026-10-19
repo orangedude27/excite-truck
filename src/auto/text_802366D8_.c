@@ -5,13 +5,23 @@ extern int lbl_8055F088;
 extern unsigned int lbl_80498638[];
 extern unsigned int lbl_8055F090;
 extern int fn_8000D838(int *);
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 void fn_802366D8(void) {
+    int v;
+    unsigned int *p;
     fn_8000D838(&lbl_8055F088);
+    p = lbl_80498638 + 1;
     lbl_80498638[0] = 0;
-    lbl_80498638[1] = 0x7B;
+    v = 0x7B;
+    lbl_80498638[1] = v;
     lbl_80498638[2] = 0;
     lbl_80498638[3] = 0;
     lbl_80498638[4] = 0;
     lbl_8055F090 = 0x7F000000;
 }
+#pragma opt_dead_assignments reset
+#pragma opt_propagation reset
+#pragma scheduling on
 typedef struct { unsigned int a, b, c, d, e; } S_802366D8;
