@@ -58,6 +58,8 @@ done:
     return arg0;
 }
 
+#pragma push
+#pragma dont_inline on
 float fn_801659D0(int arg0) {
     float temp_f31;
     temp_f31 = fn_8013672C(arg0);
@@ -169,6 +171,43 @@ void fn_801662FC(void) {
         }
     }
 }
+
+void fn_801663C8(int count, void *records, void *config) {
+    void *obj;
+    void *holder;
+    void *array;
+    int i;
+    float value;
+    lbl_8055E324 = fn_801659D0((int)config);
+    fn_80165FAC();
+    obj = *(void **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
+    value = (*(float (***)(void *, char *, float))obj)[10](obj, lbl_8032FCC0 + 0x270, *(float *)((char *)&lbl_8042FE38 + 0xC));
+    *(float *)((char *)&lbl_8042FE38 + 0xC) = value;
+    fn_802E30C8(lbl_8032FCC0 + 0x280, *(float *)((char *)&lbl_8042FE38 + 8), (float)value, *(float *)((char *)&lbl_8042FE38 + 4), *(float *)&lbl_8042FE38);
+    holder = fn_801284F8(16, lbl_8032FCC0 + 0x2A0);
+    if (holder) {
+        array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), fn_80166754, 0, 0x88, count);
+        *(void **)holder = array;
+        *(int *)((char *)holder + 8) = count;
+        *(int *)((char *)holder + 4) = 0;
+        *(void **)((char *)holder + 12) = array;
+    }
+    *(void **)&lbl_8055E32C = holder;
+    *(int *)((char *)holder + 4) = 0;
+    for (i = 0; i < count; i++) {
+        int type = *(int *)((char *)records + i * 0x78);
+        void *h = *(void **)&lbl_8055E32C;
+        int index = *(int *)((char *)h + 4);
+        char *p = *(char **)h + index * 0x88;
+        *(int *)((char *)h + 4) = index + 1;
+        *(int *)p = i;
+        p[4] = type == 0x50;
+    }
+    lbl_8055E32B = 0;
+    lbl_8055E32A = *(int *)((char *)config + 4) != 0x180304;
+    *(int *)&lbl_8055E334 = 0;
+}
+
 #pragma pop
 int fn_801667F0(void) {
     int result = 0;
