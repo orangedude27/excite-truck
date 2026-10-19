@@ -25,6 +25,7 @@ void fn_802C6DC4(int, int, int, int);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma dont_inline on
 void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
     int *count = lbl_804C1338;
     unsigned char *entry = 0;
@@ -109,6 +110,75 @@ void fn_802C5720(int arg0) {
 }
 
 void fn_802C57B0(void) { }
+
+void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
+    extern int lbl_8055D008;
+    extern s8 lbl_8055FC20;
+    extern void fn_802C543C(void);
+    extern void fn_802C5720(int);
+    extern void fn_802C53C4(void *, void *, int, int, signed char);
+    extern void fn_802C57B0(void);
+    extern void fn_802CC550(int, void *, float, float);
+    extern int fn_802C9638(void *, unsigned char *, float);
+
+    void *manager;
+    int *outer_info;
+    int idx_shift;
+    int i;
+    int offset;
+
+    manager = fn_802C5390();
+    outer_info = *(int **)((char *)manager + 4);
+    if (lbl_8055FC20 == 0) {
+        fn_802C543C();
+    }
+    idx_shift = *(int *)((char *)manager + 8);
+    i = 0;
+    offset = 0;
+    while (i < *outer_info) {
+        char *entry = *(char **)((char *)outer_info + 4) + offset;
+        int bit_idx = *(int *)entry;
+        if (lbl_8055D008 & (1 << bit_idx)) {
+            unsigned char local_d = arg3;
+            if (*(char **)((char *)manager + 12) == 0 ||
+                fn_802C9638(*(char **)((char *)manager + 12) + offset, &local_d, *(float *)(*(char **)((char *)manager + 12) + offset + 12)) != 0) {
+                int *inner_info = *(int **)(entry + 8);
+                int j = 0;
+                int inner_offset = 0;
+                while (j < *inner_info) {
+                    void *elem = *(void **)(*(char **)((char *)inner_info + 4) + inner_offset);
+                    unsigned int type = *(unsigned int *)elem;
+                    int ok = 0;
+                    if (type < 13) {
+                        ok = 1;
+                        switch (type) {
+                        case 4:
+                        case 6:
+                        case 9:
+                        case 11:
+                            ok = 0;
+                            break;
+                        }
+                    }
+                    if (ok) {
+                        void *node = *(void **)((char *)elem + (idx_shift << 2) + 0x14);
+                        void *r4;
+                        fn_802C53C4(entry, node, arg1, arg2, local_d);
+                        r4 = ((void *(*)(void *))fn_802C57B0)(*(void **)(entry + 12));
+                        fn_802CC550(*(int *)node, r4, arg4, *(float *)((char *)r4 + 0x18));
+                    }
+                    inner_offset += 4;
+                    j++;
+                }
+            }
+        }
+        offset += 0x10;
+        i++;
+    }
+    if (lbl_8055FC20 == 0) {
+        fn_802C5720(-1);
+    }
+}
 
 void fn_802C595C(char *dst, int size, const char *name, int id) {
     int i = 0;
