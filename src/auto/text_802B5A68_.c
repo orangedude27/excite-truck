@@ -571,8 +571,7 @@ void fn_802B8848(void) {
         switch (lbl_8055FA38) { case 0: fn_802B7D4C(); break; case 1: fn_802B69FC(); break; case 2: fn_802B7D1C(); break; case 3: fn_802B7CF0(); break; }
         state = lbl_8055FA38;
         temp_r31=fn_802B5B18(((state << 30) - (state >> 31) << 2) + (state >> 31));
-        ((void (*)(void *, void *))(*(u32 **)*lbl_8055FA48)[3])(*lbl_8055FA48,lbl_8034A6C0);
-        fn_802B6568((void *)temp_r31);
+        fn_802B6568(((void *(*)(void *, void *))(*(u32 **)*lbl_8055FA48)[3])(*lbl_8055FA48,lbl_8034A6C0), (const char *)temp_r31);
         ((void (*)(void *))(*(u32 **)*lbl_8055FA48)[7])(*lbl_8055FA48);
         fn_8001123C(0); fn_80011A2C();
     }
