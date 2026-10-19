@@ -34,8 +34,6 @@ void fn_801CF01C(void) {
 }
 
 #pragma scheduling on
-extern void fn_801AED68(void);
-extern void fn_801AED5C(void);
 int fn_801CF050(void) {
     return *(unsigned char *)&lbl_8055AB50 != 0;
 }
