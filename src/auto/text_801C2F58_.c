@@ -885,7 +885,7 @@ void fn_801C7798(void) {
 }
 
 void fn_801C77AC(void) {
-    lbl_8055E841 = lbl_8055E841 == 0;
+    *(s8*)&lbl_8055E841 = !lbl_8055E841;
 }
 
 #pragma scheduling on
