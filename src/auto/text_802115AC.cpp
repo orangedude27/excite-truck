@@ -879,7 +879,7 @@ extern "C" s32 fn_80215BC0(void) {
     return 0;
 }
 
-extern "C" s32 fn_80214CB4(s32);
+extern "C" void fn_80214CB4(s32);
 extern "C" void fn_80230E90(s32);
 extern "C" s32 fn_80215BC8(void *arg0, s32 arg1, s32 arg2) {
     s32 var_r6;
