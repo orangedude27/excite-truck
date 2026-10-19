@@ -11,6 +11,14 @@ extern void *lbl_8034AC68;
 extern void *lbl_8034AC74;
 extern void *lbl_804C06E0[];
 extern u8 lbl_8055FACC;
+
+typedef struct {
+    u32 unk0;
+    u32 unk4;
+    u32 field;
+} FanEntry;
+
+extern void *fn_8012850C(s32, void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
