@@ -606,6 +606,7 @@ extern "C" void fn_801FEFC4(void) {
 }
 
 extern "C" const char lbl_8033B730[];
+extern "C" __declspec(section ".data") int lbl_8033B5E8;
 #pragma scheduling invalid_target
 extern "C" void* fn_801FEFC8(void* arg0, int arg1) {
     if (arg0 != 0) {
