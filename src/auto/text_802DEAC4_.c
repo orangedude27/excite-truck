@@ -443,12 +443,13 @@ void fn_802E09EC(void) {
     GXSetNumTevStages(2);
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void fn_802E0B68(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
 }
-
-#pragma dont_inline on
+#pragma pop
 void *fn_802E0BA4(void) {
 }
 #pragma dont_inline reset
