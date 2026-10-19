@@ -1020,8 +1020,8 @@ extern "C" void fn_800ACA44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(arg0, arg1, arg2, arg3, 0, arg4);
 }
 
-extern "C" void fn_800ACA50(void) {
-    fn_800ABC60(1, 1);
+extern "C" void fn_800ACA50(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(arg0, arg1, arg2, arg3, 1, 1);
 }
 
 extern "C" s32 fn_800ADD84(void *, s32, s32, s32, u32 *, s32 *);
