@@ -18,9 +18,9 @@ int fn_802BC334(int arg0) {
 }
 
 #pragma dont_inline on
-int stricmp(const char *, const char *);
-extern const char lbl_8055CF38[];
-int fn_802BC39C(void *arg0) {
+  int stricmp(const char *, const char *);
+  __declspec(section ".sdata") extern const char lbl_8055CF38[];
+  int fn_802BC39C(void *arg0) {
     char *name = (*(char *(*)(void *))(*(void ***)arg0)[2])(arg0);
     return stricmp(lbl_8055CF38, name) == 0;
 }
@@ -140,15 +140,17 @@ void fn_802BD0F4(void *arg0) {
     if (*(int *)((char *)arg0 + 4) != 0 && (array = *(void **)((char *)arg0 + 0x58)) != 0) {
         entries = *(char **)array;
         count = *(int *)(entries + 4);
-        i = 0; offset = 0;
+        i = 0;
+        offset = 0;
         while (i < count) {
             array = *(void **)((char *)arg0 + 0x58);
             entries = *(char **)array;
-            entry = entries + offset;
+            entry = *(char **)entries + offset;
             pos[0] = *(float *)(entry + 0x30);
             pos[1] = *(float *)(entry + 0x38);
             *(int *)(entry + 4) = fn_802BA580(*(int *)((char *)arg0 + 4), pos, *(float *)(entry + 0x1c));
-            offset += 0x44; i++;
+            offset += 0x44;
+            i++;
         }
     }
 }
@@ -172,6 +174,18 @@ void *fn_801284F8(int, int);
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
 void fn_802BD414(int arg0, volatile int *arg1) {
+    volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
+    if (result != 0) {
+        int second = arg1[1];
+        int first = arg1[0];
+        result[0] = second;
+        result[2] = first;
+        result[1] = 0;
+        result[1] = result[1] + arg1[0];
+    }
+}
+
+void fn_802BD478(int arg0, volatile int *arg1) {
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
         int second = arg1[1];
@@ -232,22 +246,21 @@ void fn_802BD5B0(void *arg0, int arg1) {
     extern int fn_802BD694(int, int);
     extern float lbl_80564D30;
     unsigned char *p = arg0;
-    unsigned char tmp;
-    unsigned char other;
-    register unsigned char *entry;
+    unsigned char *entry;
     int offset;
     unsigned int i;
     float zero;
-    unsigned char b7, b6, b2, b3, b0, b1, b4, b5;
-    b4 = p[4]; b5 = p[5];
-    b7 = p[7]; b6 = p[6]; p[4] = b7; b0 = p[0]; b3 = p[3]; p[7] = b4;
+    unsigned char b6, b2, b3, b0, b1, b4, b5;
+    b4 = p[4]; b5 = p[5]; b6 = p[6];
+    p[4] = p[7]; b0 = p[0]; b3 = p[3]; p[7] = b4;
     b1 = p[1]; b2 = p[2]; p[5] = b6; p[6] = b5;
     p[0] = b3; p[3] = b0; p[1] = b2; p[2] = b1;
     *(int *)(p + 4) = fn_802BD694(*(int *)(p + 4), arg1);
     i = 0; zero = lbl_80564D30; offset = 0;
     while (i < *(unsigned int *)p) {
+        unsigned char tmp;
         entry = *(unsigned char **)(p + 4) + offset;
-        tmp = entry[4]; other = entry[5]; entry[4] = other; entry[5] = tmp;
+        tmp = entry[4]; entry[4] = entry[5]; entry[5] = tmp;
         tmp = entry[6]; entry[6] = entry[7]; entry[7] = tmp;
         tmp = entry[8]; entry[8] = entry[9]; entry[9] = tmp;
         tmp = entry[10]; entry[10] = entry[11]; entry[11] = tmp;
@@ -286,8 +299,8 @@ extern int lbl_8055FAA8, lbl_8055FAAC, lbl_8055FAB0;
 extern void *lbl_8055FABC;
 void deleteThreads__6SystemFv_802BDCA4(void **arg0) {
     void *obj = *arg0;
-    if (obj != 0) {
-        if (obj != 0) {
+    if (obj) {
+        if (*arg0) {
             void (**vtable)(void *, int) = *(void (***)(void *, int))((char *)obj + 4);
             vtable[4](obj, 1);
         }
@@ -346,6 +359,40 @@ extern float lbl_80564D18;
 void fn_802BDFF4(void **arg0) {
     register void *value = *(void **)((char *)arg0 - 8);
     if (value) fn_802BAF98();
+}
+
+extern void *fn_802BE008(void *);
+extern void *fn_802BE844(short, short, short);
+extern float lbl_80564D10, lbl_80564D2C;
+void fn_802BE07C(void *arg0, float (*arg1)(int, int, int, short, float, float, float)) {
+    int x = (int)(*(float *)arg0 / lbl_80564D10);
+    int z = (int)(*(float *)((char *)arg0 + 8) / lbl_80564D10);
+    short baseX = ((short)x & (short)~0x7F) + 0x40;
+    short baseZ = ((short)z & (short)~0x7F) + 0x40;
+    short row;
+    short col;
+    for (row = baseZ - 0x80; row <= baseZ; row += 0x80) {
+        for (col = baseX - 0x80; col <= baseX; col += 0x80) {
+            void *cell = fn_802BE844(row, col, 0x40);
+            void *node = *(void **)((char *)cell + 4);
+            while (node) {
+                void *obj = fn_802BE008(node);
+                void *map = *(void **)((char *)obj + 0x58);
+                if (map && *(int *)((char *)obj + 0x24) <= 10) {
+                    void *mesh = *(void **)((char *)obj + 0x18);
+                    short ix = *(short *)((char *)node + 0xA);
+                    short iz = *(short *)((char *)node + 8);
+                    float dx = *(float *)((char *)mesh + 0x30) - *(float *)((char *)mesh + 0x2C);
+                    float dz = *(float *)((char *)mesh + 0x38) - *(float *)((char *)mesh + 0x34);
+                    int (*callback)(int, int, int, short, float, float, float) = (int (*)(int,int,int,short,float,float,float))arg1;
+                    callback(*(int *)((char *)obj + 0x20),
+                        *(int *)*(void **)map + ix * 0x44 + 0x30, 0x44, iz,
+                        dx * lbl_80564D2C, dz, dx);
+                }
+                node = *(void **)node;
+            }
+        }
+    }
 }
 
 extern int lbl_804C00D4;
