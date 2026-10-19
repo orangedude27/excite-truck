@@ -91,7 +91,7 @@ double __ieee754_acos(double x) {
             else
                 return lbl_80560608; /* acos(-1) = pi */
         }
-        return lbl_80558DB0; /* acos(|x|>1) is NaN */
+        return *(float *)&lbl_80558DB0; /* acos(|x|>1) is NaN */
     }
     if (ix < 0x3fe00000) { /* |x| < 0.5 */
         if (ix <= 0x3c600000)
