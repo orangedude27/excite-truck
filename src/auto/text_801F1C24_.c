@@ -24,6 +24,8 @@ __declspec(section ".data") extern int lbl_8033AA90;
 extern int lbl_8055B124, lbl_8055B120;
 extern float lbl_80562F40, lbl_80562F44;
 extern const char lbl_8033ABA0[];
+extern const char lbl_8033AB80[];
+extern int fn_802E317C(const void *, ...);
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -429,8 +431,8 @@ void fn_801F37A4(void) {
 }
 
 #pragma scheduling invalid_target
-int fn_801F37EC(void) {
-    return fn_802E317C(lbl_8033ABA0, 0);
+void fn_801F37EC(void) {
+    fn_802E317C(lbl_8033ABA0);
 }
 int fn_801F37FC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
