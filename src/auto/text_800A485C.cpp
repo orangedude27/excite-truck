@@ -2694,7 +2694,7 @@ extern "C" s32 fn_800C3CDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     return (s32)p;
 }
 
-void fn_800C3D9C(void) {
+extern "C" void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
 
