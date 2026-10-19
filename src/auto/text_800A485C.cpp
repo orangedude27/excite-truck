@@ -3633,6 +3633,10 @@ extern "C" void fn_800CF280(void) {
 
 }
 
+void fn_800CF284(void) {
+
+}
+
 extern "C" void fn_800CF288(void) {
 
 }
