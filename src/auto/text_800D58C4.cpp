@@ -132,12 +132,15 @@ extern "C" int IsModulateVertexColor__Q34nw4r3lyt6detailFPQ34nw4r2ut5ColorUc(uns
     return 1;
 }
 
+#pragma push
+#pragma dont_inline on
 extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void* out,void* color,u8 alpha) {
  const u8* s=(const u8*)color; u8* d=(u8*)out;
  u8 a=s[0], b=s[1], c=s[2], v=s[3];
  d[0]=a; d[1]=b; d[2]=c; d[3]=v;
  if(alpha!=0xff) d[3]=(u8)((v*alpha)/255);
 }
+#pragma pop
 
 extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned char texCoordCount) {
     GXClearVtxDesc();
@@ -742,6 +745,7 @@ extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8
 }
 
 extern "C" s32 fn_800DA094(void *arg0, s32 arg1, s32 arg2) {
+    const char *data = lbl_8031F990;
     float matrix[12];
     s32 texture[8];
     float indirectMatrix[6];
@@ -986,20 +990,20 @@ extern "C" s32 fn_800DA094(void *arg0, s32 arg1, s32 arg2) {
 loop_30:
         if (var_r23 < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x14U) & 0xF)) {
             if ((s32) M2C_FIELD(var_r27, u8 *, 0) == 0) {
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x508, lbl_8031F990 + 0x4D0);
+                Panic__Q26nw4hbm2dbFPCciPCce(data, 0x508, data + 0x4D0);
             }
             temp_r28 = M2C_FIELD(var_r27, u8 *, 2);
             if ((s32) M2C_FIELD(var_r27, u8 *, 0) == 1) {
                 var_r4 = 0;
-                if ((temp_r28 == 0x3C) || ((u32) ((temp_r28 - 0x1E) / 3) < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x18U) & 0xF))) {
+                if ((temp_r28 == 0x3C) || ((u32) (((u32)temp_r28 - 0x1EU) / 3U) < (u32) (((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x18U) & 0xF))) {
                     var_r4 = 1;
                 }
                 if (var_r4 == 0) {
-                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x50E, lbl_8031F990 + 0x518);
+                    Panic__Q26nw4hbm2dbFPCciPCce(data, 0x50E, data + 0x518);
                 }
                 if (temp_r28 != 0x3C) {
                     var_r24 = 1;
-                    (&texMatrices[0])[(temp_r28 - 0x1E) / 3] = 1;
+                    (&texMatrices[0])[((u32)temp_r28 - 0x1EU) / 3U] = 1;
                 }
             }
             GXSetTexCoordGen2((GXTexCoordID)var_r23, (GXTexGenType)M2C_FIELD(var_r27, u8 *, 0), (GXTexGenSrc)M2C_FIELD(var_r27, u8 *, 1), temp_r28, 0, 0x7D);
@@ -1141,7 +1145,7 @@ loop_55:
             temp_r21_2 = (temp_r6_5 >> 3U) & 0xF;
             sp8 = (temp_r10 >> 3U) & 1;
             spC = (temp_r10 >> 4U) & 3;
-            ((void (*)(u8,u8,s32,s32,s32,s32,s32,s32,s32,s32))GXSetTevIndirect)(var_r24_3, M2C_FIELD(var_r22, u8 *, 0xC), temp_r10 & 3, temp_r6_5 & 7, temp_r21_2, temp_r9_2 & 7, (temp_r9_2 >> 3U) & 7, (temp_r10 >> 2U) & 1, sp8, spC);
+            GXSetTevIndirect(var_r24_3, M2C_FIELD(var_r22, u8 *, 0xC), temp_r10 & 3, temp_r6_5 & 7, temp_r21_2, temp_r9_2 & 7, (temp_r9_2 >> 3U) & 7, (temp_r10 >> 2U) & 1, sp8, spC);
             if ((temp_r21_2 >= 1) && (temp_r21_2 <= 3)) {
                 var_r23_5 = 1;
                 M2C_FIELD(&(&usedIndirect[0])[temp_r21_2], s8 *, -1) = 1;
@@ -1182,8 +1186,8 @@ block_83:
             GXSetTevOrder(1U, 1U, 1U, 0xFFU);
             GXSetTevColorIn(1U, 8, 0, 0xE, 0xF);
             GXSetTevAlphaIn(1U, 4, 0, 6, 7);
-            GXSetTevKColorSel(1U, M2C_FIELD(lbl_8031F990, s32 *, 0x490));
-            GXSetTevKAlphaSel(1U, M2C_FIELD(lbl_8031F990, s32 *, 0x4B0));
+            GXSetTevKColorSel(1U, M2C_FIELD(data, s32 *, 0x490));
+            GXSetTevKAlphaSel(1U, M2C_FIELD(data, s32 *, 0x4B0));
             var_r24_4 = 2;
 block_70:
             var_r5 = 0;
@@ -1207,8 +1211,8 @@ block_82:
             }
             goto block_83;
         default:
-            var_r21_3 = (s32 *)(lbl_8031F990 + 0x490);
-            var_r22_2 = (s32 *)(lbl_8031F990 + 0x4B0);
+            var_r21_3 = (s32 *)(data + 0x490);
+            var_r22_2 = (s32 *)(data + 0x4B0);
             var_r28_2 = 0;
 loop_69:
             if (var_r28_2 < (u32) ((u32) M2C_FIELD(arg0, u32 *, 0x50) >> 0x1CU)) {
