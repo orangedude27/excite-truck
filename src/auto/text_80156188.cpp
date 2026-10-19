@@ -285,8 +285,7 @@ extern "C" void fn_80156AC0(void) {
 extern "C" void fn_80156B48(void) {
 }
 
-void fn_80156B4C(void) {
-    return;
+extern "C" void fn_80156B4C(void) {
 }
 
 void fn_80156B50(void) {
