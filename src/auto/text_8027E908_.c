@@ -97,7 +97,7 @@ void fn_8027ED78(int arg0, int arg1, int arg2) {
 void fn_8027EE74(int arg0) {
     extern unsigned char lbl_8055F684;
     extern int fn_80236914(void);
-    lbl_8055F684 = (arg0 - 2) == 0 ? 1 : 0;
+    *(signed char*)&lbl_8055F684 = (arg0 == 2);
     fn_80236914();
 }
 
