@@ -172,6 +172,12 @@ extern void fn_802C8B70(void);
 void fn_802C88D4(unsigned int arg0) {
     PSQUATMultiply((void *)&lbl_804C1410[9], arg0, lbl_804C1410);
 }
+
+extern void PSVECSquareDistance(void *, unsigned int, void *);
+void fn_802C88E8(unsigned int arg0) {
+    PSVECSquareDistance((void *)&lbl_804C1410[9], arg0, lbl_804C1410);
+}
+
 #pragma scheduling reset
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
 extern double lbl_80564F10;
