@@ -52,10 +52,13 @@ extern s32 fn_8012F9E8(void*, s32, const char*);
 extern char lbl_80559B24[]; /* "%f, %f" */
 extern char lbl_8032B818[]; /* "Bad vector value \"%s\" for \"%s\" i" */
 extern char lbl_8032B840[]; /* "Bad real64 value \"%s\" for \"%s\" i" */
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_8013181C(void) {
     fn_802E30C8(lbl_8032B510);
     return 0;
 }
+#pragma pop
 void* fn_8013184C(void) {
     if (lbl_8055E060 == 0) {
         ((void* volatile*)lbl_8042F53C)[0] = lbl_8032B64C;
