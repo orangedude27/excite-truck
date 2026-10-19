@@ -1141,33 +1141,49 @@ extern "C" void fn_8015B0A4(Unk801577F0 *arg0) {
     *(s32 *)((u8 *)arg0 + 0x274) = 0;
 }
 
+extern "C" void fn_8015B15C(Unk801577F0* arg0) {
+      f32 zero = lbl_80561754;
+      s32 i = 0;
+      s32 offset = 0;
+      s32 value = 0;
+      for (; i < arg0->mCount; ++i) {
+          u8* base = (u8*)arg0->mData;
+          *(s32*)(base + offset) = value;
+          s32* p = (s32*)arg0->mData;
+          *(s32*)((u8*)p + offset + 4) = value;
+          p = (s32*)arg0->mData;
+          *(s32*)((u8*)p + offset + 8) = value;
+          p = (s32*)arg0->mData;
+          *(f32*)((u8*)p + offset + 0xC) = zero;
+          offset += 0x38;
+      }
+      f32 a = lbl_80561754;
+      f32 b = lbl_80561750;
+      *(s32*)((u8*)arg0 + 0x264) = 0;
+      *(s32*)((u8*)arg0 + 0x260) = 0;
+      *(f32*)((u8*)arg0 + 0x254) = a;
+      *(f32*)((u8*)arg0 + 0x25C) = b;
+      arg0->v31();
+      *(u8*)((u8*)arg0 + 0x26C) = 1;
+      *(f32*)((u8*)arg0 + 0x270) = lbl_80561754;
+      *(s32*)((u8*)arg0 + 0x274) = 0;
+      *(s32*)((u8*)arg0 + 0x278) = 0;
+  }
+
 extern "C" void fn_8015B228(void* arg0, s32 arg1, s32 arg2) {
     if (arg2 == 6) *(u8*)((char*)arg0 + 0x26C) = 1;
 }
 
-extern "C" void fn_8015B23C(Unk801577F0* arg0) {
-    class LocalVt {
-    public:
-        virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3();
-        virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7();
-        virtual void a8(); virtual void a9(); virtual void a10(); virtual void a11();
-        virtual void a12(); virtual void a13(); virtual void a14(); virtual void a15();
-        virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19();
-        virtual void a20(); virtual f32 a21(s32); virtual void a22(); virtual void a23();
-        virtual s32 a24(); virtual void a25(); virtual void a26(); virtual void a27();
-        virtual void a28(); virtual void a29(); virtual void a30(); virtual void a31();
-        virtual void a32(); virtual void a33(); virtual void a34(); virtual void a35();
-        virtual void a36(f32*);
-    };
-    f32 value;
-    if (arg0->m264 > 0) {
-        s32 result = ((LocalVt*)arg0)->a24();
-        value = arg0->m25c * ((LocalVt*)arg0)->a21(result);
-        ((LocalVt*)arg0)->a36(&value);
-        ((LocalVt*)arg0)->a34();
+extern "C" void fn_8015B23C(Unk8015A368C* arg0) {
+    if (*(s32*)((u8*)arg0 + 0x264) > 0) {
+        f32 value;
+        s32 result = arg0->v21();
+        value = *(f32*)((u8*)arg0 + 0x25C) * arg0->v18(result);
+        arg0->v33(&value);
+        arg0->v31();
         f32 zero = lbl_80561750;
-        arg0->m264 = 0;
-        arg0->m25c = zero;
+        *(s32*)((u8*)arg0 + 0x264) = 0;
+        *(f32*)((u8*)arg0 + 0x25C) = zero;
     }
 }
 
@@ -2166,6 +2182,37 @@ extern "C" void fn_801593F0(Unk801577F0* arg0) {
     }
 }
 
+#pragma scheduling invalid_target
+extern "C" void fn_80159488(Unk801577F0* arg0) {
+      f32 zero = lbl_80561754;
+      s32 i = 0;
+      s32 offset = 0;
+      s32 value = 0;
+      for (; i < arg0->mCount; ++i) {
+          u8* base = (u8*)arg0->mData;
+          *(s32*)(base + offset) = value;
+          s32* p = (s32*)arg0->mData;
+          *(s32*)((u8*)p + offset + 4) = value;
+          p = (s32*)arg0->mData;
+          *(s32*)((u8*)p + offset + 8) = value;
+          p = (s32*)arg0->mData;
+          *(f32*)((u8*)p + offset + 0xC) = zero;
+          offset += 0x38;
+      }
+      zero = lbl_80561754;
+      *(f32*)((u8*)arg0 + 0x25C) = zero;
+      *(f32*)((u8*)arg0 + 0x260) = zero;
+      *(f32*)((u8*)arg0 + 0x258) = zero;
+      *(f32*)((u8*)arg0 + 0x264) = zero;
+      arg0->v31();
+      void* child = *(void**)((u8*)arg0 + 0x278);
+      *(f32*)((u8*)arg0 + 0x270) = lbl_80561754;
+      *(u8*)((u8*)arg0 + 0x274) = 1;
+      if (child != 0) {
+          *(u8*)((u8*)child + 0x4A) = 1;
+          *(u8*)((u8*)child + 0x4C) = 0;
+      }
+  }
 extern "C" void fn_80159554(void *arg0, void *arg1) {
     void *sp8 = arg1;
     s32 temp_r31;
