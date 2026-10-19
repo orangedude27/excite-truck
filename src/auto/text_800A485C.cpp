@@ -1155,6 +1155,8 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
 }
 
 void fn_800B5CB4(void);
+extern "C" void fn_800B5CB4(void);
+extern "C" void fn_800B0748(void);
 void fn_800B0748(void) {
     fn_800B5CB4();
 }
