@@ -750,22 +750,19 @@ extern "C" int vsprintf(char *, const char *, va_list);
 extern "C" unsigned int strlen(const char *);
 extern "C" void fn_802E317C(const char *, ...);
   extern "C" char lbl_8032D1A4[];
+#pragma scheduling invalid_target
 extern "C" void fn_80147230(void *arg0, const char *arg1, ...) {
     char buffer[0x200];
     if (arg0 != 0) {
         va_list args;
         va_start(args, arg1);
         vsprintf(buffer, arg1, args);
-        if (strlen(buffer) >= 0x200) {
-            s32 length = strlen(buffer);
-            const char *message = arg1;
-            const char *file = lbl_8032D1A4;
-            fn_802E317C(file, length, message);
-        }
+        if (strlen(buffer) >= 0x200)
+            fn_802E317C(lbl_8032D1A4, strlen(buffer), arg1);
         fn_80145B94(arg0, (u32)buffer);
     }
 }
-
+#pragma scheduling on
 extern "C" void fn_80145C08(void *arg0, const char *arg1);
 extern "C" void fn_80147314(void *arg0, const char *format, ...) {
     char buffer[0x200];
@@ -915,9 +912,9 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
     s32 b = fn_801450A0((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
     s32 c = fn_801450A0((arg0 >> 16) & 0xFF, (arg1 >> 16) & 0xFF, arg2);
     s32 d = fn_801450A0(arg0 >> 24, arg1 >> 24, arg2);
-    s32 result = ((d & 0xFF) << 24) | ((c & 0xFF) << 16);
-    result |= ((b & 0xFF) << 8) | (a & 0xFF);
-    return result;
+    s32 hi = ((d & 0xFF) << 24) | ((c & 0xFF) << 16);
+    s32 lo = (a & 0xFF) | ((b & 0xFF) << 8);
+    return hi | lo;
 }
 #pragma pop
 extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {
