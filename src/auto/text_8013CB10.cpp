@@ -28,9 +28,9 @@ struct TVec2 { f32 x; f32 y; };
 
 extern "C" void fn_801E9DC4(s16 *);
 
-extern "C" char lbl_80559D40[];
-extern "C" char lbl_80559D58[];
-extern "C" char lbl_80559D60[];
+extern "C" char lbl_80559D40[4];
+extern "C" char lbl_80559D58[7];
+extern "C" char lbl_80559D60[7];
 
 extern "C" void fn_80140A6C(void);
 extern "C" s32 fn_801B8514(void);
@@ -224,6 +224,31 @@ extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
     }
     return count;
 }
+
+extern "C" void fn_8013E054(void *outPtr, void *objPtr, f32 angle) {
+    u8 *out = (u8 *)outPtr;
+    TVec2 center = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D58);
+    TVec2 tanv = ((TVec2 (*)(void *, const char *))(*(void ***)objPtr)[0x3C / 4])(objPtr, lbl_80559D40);
+    f32 a = center.x;
+    f32 b = center.y;
+    f32 c = tanv.x;
+    f32 d = tanv.y;
+    f32 negAngle = -angle;
+    f32 nc = -c;
+    *(f32 *)(out + 0x10) = lbl_805614A4;
+    *(f32 *)(out + 4) = lbl_805614A4;
+    *(f32 *)(out + 0xC) = a + d * angle;
+    *(f32 *)(out + 0x0) = a + d * negAngle;
+    *(f32 *)(out + 0x8) = b + nc * negAngle;
+    *(f32 *)(out + 0x14) = b + nc * angle;
+    fn_801E9DC4((s16 *)(out + 0x1C));
+    u8 flag = ((u8 (*)(void *, const char *))(*(void ***)objPtr)[0xC / 4])(objPtr, lbl_80559D60);
+    *(u8 *)(out + 0x1E) = flag;
+    if (flag) {
+        *(f32 *)(out + 0x20) = ((f32 (*)(void *, const char *))(*(void ***)objPtr)[0x24 / 4])(objPtr, lbl_80559D60);
+    }
+}
+
 #pragma dont_inline off
 extern "C" f64 fn_8002F234(f32);
 extern "C" f32 fn_8013E300(void *arg0) {
