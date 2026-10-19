@@ -3,6 +3,7 @@
 
 #include <types.h>
 #include <stdarg.h>
+extern s32 lbl_802FC2A8[];
 typedef struct UnkF4F0Style {
     s32 unk_0x00, unk_0x04, unk_0x08, unk_0x0C;
     f32 unk_0x10;
