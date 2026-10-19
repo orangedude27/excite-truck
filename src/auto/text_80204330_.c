@@ -1,6 +1,23 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+struct Text80204 {
+    int unk_0x0, unk_0x4;
+    float y;
+    int unk_0xc;
+    float unk_0x10;
+    int unk_0x14, color, unk_0x1c;
+};
+extern void fn_80230B5C(void *), fn_802C8638(void *);
+extern void fn_802C974C(float, float, float);
+extern void fn_80011A2C(void), fn_801476C4(void);
+extern int fn_801298E8(void *, int);
+extern void fn_80147230(void *, const char *, ...);
+extern void fn_801473F8(int, const char *, ...);
+extern char lbl_8055B428[], lbl_8055B430[], lbl_8055B438[], lbl_8055B440[];
+extern char lbl_8055B448[], lbl_8055B44C[], lbl_8055B454[], lbl_8055B458[];
+extern char lbl_8055B45C[], lbl_8055B460[];
+extern float lbl_80563188;
 extern void* lbl_8055ED48;
 extern int fn_802E2C20(void);
 int fn_80204354(void);
@@ -20,11 +37,17 @@ extern int fn_80145E70(void*);
 extern char lbl_8033BB18[];
 extern int lbl_8055ED3C, lbl_8055ED40, lbl_8055ED44;
 struct Obj80204 { void (*dtor)(void *, int); };
-#pragma dont_inline
+#pragma dont_inline on
 unsigned int fn_8020437C(void) {
-    int temp = fn_80204354() ^ 0xDAC;
-    return (unsigned int)(((temp & 0xDAC) * -1) + (temp >> 1)) >> 31;
+    int value;
+    int masked;
+    value = fn_80204354();
+    value ^= 0xDAC;
+    masked = value & 0xDAC;
+    value >>= 1;
+    return (unsigned int)(value - masked) >> 31;
 }
+#pragma dont_inline reset
 void fn_802043B0(int *arg0) {
  float val = lbl_80563168;
  float temp = ((float)fn_80204354() - lbl_8056316C) / lbl_80563170;
@@ -44,11 +67,57 @@ void fn_80204460(void) {
 }
 
 void fn_8020449C(void) {
-    void *obj;
     lbl_8055ED3C = 0;
-    obj = (void *)lbl_8055ED44;
-    if (obj != 0) ((void (**)(void *, int))((int)*(void **)obj + 8))[0](obj, 1);
+    if (lbl_8055ED44 != 0) {
+        (*(void (***)(void *, int))lbl_8055ED44)[2]((void *)lbl_8055ED44, 1);
+    }
     lbl_8055ED44 = 0;
+}
+
+int fn_80204870(int arg0) {
+    int index, type;
+    char *entry;
+    float *value;
+    float f;
+    if (fn_8020437C() == 0) return 0;
+    switch (arg0) {
+    case 0x126:
+        index = lbl_8055ED40 - 1;
+        lbl_8055ED40 = index & ~(index >> 31);
+        break;
+    case 0x128:
+        index = lbl_8055ED40 + 1;
+        if (index > lbl_8055ED3C - 1) index = lbl_8055ED3C - 1;
+        lbl_8055ED40 = index;
+        break;
+    case 0x125:
+    case 0x127:
+        index = lbl_8055ED40;
+        if (index >= 0 && index < lbl_8055ED3C) {
+            entry = lbl_80488BD0 + index * 0x18;
+            type = *(int *)(entry + 4);
+            if (type == 1) {
+                value = *(float **)(entry + 8);
+                if (arg0 == 0x127) {
+                    f = *value + *(float *)(entry + 0x14);
+                    if (f > *(float *)(entry + 0x10)) f = *(float *)(entry + 0x10);
+                    *value = f;
+                } else {
+                    f = *value - *(float *)(entry + 0x14);
+                    if (f < *(float *)(entry + 0xC)) f = *(float *)(entry + 0xC);
+                    *value = f;
+                }
+            } else if (type == 0) {
+                value = (float *)*(void **)(entry + 8);
+                *(unsigned char *)value = !*(unsigned char *)value;
+            }
+        }
+        break;
+    default:
+        return 0;
+    }
+    fn_80204330();
+    return 1;
 }
 
 void fn_802049DC(int a, int b, float c, float d, float e) {
