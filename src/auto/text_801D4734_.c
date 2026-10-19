@@ -2,15 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 
-typedef struct {
-    char pad[0x34];
-    void (*fnD)(void *);
-    void (*fn)(void *);
-} VTbl_801D77D8;
-
-typedef struct {
-    VTbl_801D77D8 *vtable;
-} Obj_801D77D8;
+#pragma cplusplus on
+class TObj34 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10();
+    virtual void v34();
+};
+#pragma cplusplus reset
 
 extern void fn_801D59C8(s32, s32);
 
