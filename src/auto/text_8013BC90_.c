@@ -99,6 +99,4 @@ void fn_8013BFE0(void) {
 void fn_8013BFE4(void) {
 
 }
-typedef struct { void *obj; char name[0x40]; int refs; } CacheEntry;
-extern CacheEntry lbl_8042F8C8[];
-extern int cache_count_8042F8C8;
+
