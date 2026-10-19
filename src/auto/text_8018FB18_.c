@@ -285,6 +285,9 @@ extern void *lbl_804349A0[];
 extern int lbl_8055E518;
 int fn_801B665C();
 extern float lbl_80562080, lbl_8056208C, lbl_80562090, lbl_805620AC;
+static inline float clampf(float x, float lo, float hi) {
+    return x < lo ? lo : (x > hi ? hi : x);
+}
 int fn_80190D38(float a, float b, float c) {
     float y = clampf((a - b) / (c - b), lbl_80562090, lbl_8056208C);
     return (int)(lbl_80562080 + (lbl_8056208C + (y * lbl_805620AC)));
