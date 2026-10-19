@@ -52,6 +52,10 @@ f32 fn_8001DA5C(s32 arg0) {
 
 extern "C" void fn_8001DAD8(void) { extern int fn_8001DA5C(int); fn_8001DA5C(0x40); }
 
+extern "C" void fn_8001DAE0(f32* arg0, f32 arg1) {
+    *arg0 = arg1;
+}
+
 extern "C" f32 fn_8001DAE8(void) {
     return lbl_8055E3C8;
 }
