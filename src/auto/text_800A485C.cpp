@@ -636,6 +636,32 @@ extern "C" void fn_800A8BB8(void *arg0, s32 arg1) {
     }
 }
 
+extern "C" s32 fn_800A7774(void *, void *, void *, void *, u16, void *, s32, void *);
+s32 VFiPFCACHE_InitCaches(void *arg0) {
+    u32 flags = M2C_FIELD(arg0, u32 *, 0x1624);
+    u16 count = M2C_FIELD(arg0, u16 *, 0x1628);
+    u16 extra = M2C_FIELD(arg0, u16 *, 0x162A);
+    flags = (flags & ~1) | 2;
+    flags &= ~4;
+    M2C_FIELD(arg0, u32 *, 0x1624) = flags;
+    fn_800A499C((const char *)M2C_FIELD(arg0, void **, 0x1638), 0, (count + extra) << 9);
+    s32 result = fn_800A7774(arg0, (u8 *)arg0 + 0x1630,
+                             M2C_FIELD(arg0, void **, 0x162C),
+                             M2C_FIELD(arg0, void **, 0x1638), count,
+                             M2C_FIELD(arg0, void **, 0x163C), 1, 0);
+    if (result != 0) {
+        return result;
+    }
+    count = M2C_FIELD(arg0, u16 *, 0x1628);
+    void *base = M2C_FIELD(arg0, void **, 0x162C);
+    s32 status = fn_800A7774(arg0, (u8 *)arg0 + 0x1634,
+                             (u8 *)base + count * 0x28,
+                             (u8 *)M2C_FIELD(arg0, void **, 0x1638) + (count << 9),
+                             M2C_FIELD(arg0, u16 *, 0x162A),
+                             M2C_FIELD(arg0, void **, 0x1640), 0, base);
+    return status & ((-status | status) >> 31);
+}
+
 extern "C" void VFiPFCACHE_FreeFATPage(void *arg0, void *arg1) {
     u8 *page = (u8 *)arg1;
     void *head = *(void **)((u8 *)arg0 + 0x1630);
