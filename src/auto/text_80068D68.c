@@ -35,6 +35,7 @@ extern u32 lbl_80560D28;
 
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80316570[];
+extern u8 lbl_80315CA0[];
 extern u8 lbl_80559060[];
 extern s32 btsnd_hcic_reset_800857CC(void);
 extern u8 lbl_803C0AD8[];
