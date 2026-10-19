@@ -115,18 +115,16 @@ void fn_80293128(void* arg0) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80293530(void* arg0) {
     u8 *cursor = (u8*)arg0;
     s32 i = 0;
-    goto check;
-body:
-    fn_802C6CF8(*(s32*)(cursor + 8));
-    *(s32*)(cursor + 8) = -1;
-    cursor += 4;
-    i++;
-check:
-    if (i < *(s32*)((u8*)arg0 + 0x28)) goto body;
+    while (i < *(s32*)((u8*)arg0 + 0x28)) {
+        fn_802C6CF8(*(s32*)(cursor + 8));
+        *(s32*)(cursor + 8) = -1;
+        cursor += 4;
+        i++;
+    }
 }
 #pragma pop
 void* fn_80293A00(void* arg0, void* arg1, int unused, int arg2, int arg3, int arg4) {
@@ -235,6 +233,38 @@ check:
     if (i < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
 }
 
+void fn_80294530(void *arg0, int arg1, int arg2, int arg3) {
+    char name[0x20];
+    int i;
+    *(s32 *)((u8 *)arg0 + 0x28) = 0;
+    for (i = 0; i < 8; i++) {
+        fn_801345D8(name, 0x20, lbl_80349250, arg1, i + 1);
+        if (fn_8012C33C(name) != 0) {
+            if (arg3 != 0 && *(s8 *)arg3 != 0) fn_80292CD8(name, arg2, (u8 *)arg3);
+            i = *(s32 *)((u8 *)arg0 + 0x28);
+            *(s32 *)((u8 *)arg0 + i * 4 + 8) = fn_802C6FC0(name, arg2, 0);
+            i = *(s32 *)((u8 *)arg0 + 0x28);
+            i++;
+            *(s32 *)((u8 *)arg0 + 0x28) = i;
+        }
+    }
+    i = *(s32 *)((u8 *)arg0 + 0x28);
+    for (; i < 8; i++) *(s32 *)((u8 *)arg0 + i * 4 + 8) = -1;
+}
+
+#pragma push
+#pragma scheduling on
+void fn_80294710(void* arg0) {
+    u8 *cursor = (u8*)arg0;
+    s32 i = 0;
+    while (i < *(s32*)((u8*)arg0 + 0x28)) {
+        fn_802C6CF8(*(s32*)(cursor + 8));
+        *(s32*)(cursor + 8) = -1;
+        cursor += 4;
+        i++;
+    }
+}
+#pragma pop
 extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D8;
 extern unsigned char lbl_804B4030[];
 void fn_80294780(void *arg0) {
