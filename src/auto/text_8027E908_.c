@@ -50,13 +50,20 @@ extern struct Fn8027F834List lbl_804B3048;
 
 extern void *lbl_8055F680;
 #pragma dont_inline on
-void fn_8027ED2C(void) {
-    void *obj = lbl_8055F680;
-    if (obj != 0) {
-        ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8027ED2C(void) {
+    class Obj {
+    public:
+        virtual void destroy(int);
+    };
+    if (lbl_8055F680 != 0) {
+        ((Obj*)lbl_8055F680)->destroy(1);
     }
     lbl_8055F680 = 0;
 }
+#pragma cplusplus reset
+#pragma pop
 #pragma dont_inline reset
 
 void* fn_8027ED70(void) {
@@ -174,6 +181,532 @@ block_7:
     }
     return arg0;
 }
+
+#pragma push
+#pragma inline_max_size(10000)
+#pragma inline_max_total_size(10000)
+int fn_8027F958(int *selection, void *collection) {
+    extern char lbl_80347E50[];
+    extern int lbl_8055BAB8, lbl_8055BAC0, lbl_8055C7EC;
+    extern int lbl_8055C7F0, lbl_8055C7F8, lbl_8055C800, lbl_8055C808, lbl_8055C810;
+    extern int lbl_8055F68C, lbl_8055F690;
+    extern void *lbl_8055F694;
+    extern unsigned char lbl_8055F6A0;
+    extern float lbl_805641F8, lbl_805641FC, lbl_80564200;
+    extern int fn_80131234(int);
+    extern int fn_802808D0(void), fn_80280A38(void), fn_80280C00(void), fn_80280F7C(void), fn_80281138(void);
+    extern int fn_80280DC8(void), fn_80280898(void);
+    typedef void *(*GetItem)(void *, int);
+    typedef int (*GetInt)(void *);
+    typedef unsigned char (*GetByte)(void *);
+    typedef char *(*GetString)(void *);
+    Fn8027F958Widget widgets[5];
+    Fn8027F958Menu menu;
+    int textIds[3][3];
+    struct Fn8027F834List *list;
+    void *object, *item;
+    Fn8027F958Widget *widget;
+    void **items, **storage;
+    char *constants = (char *)&lbl_802FA848;
+    char *state = (char *)&lbl_804B2FF8;
+    char *strings = lbl_80347E50;
+    float defaultScale;
+    float defaultValue;
+    void *widgetVtable;
+    char *src, *dst;
+    int mode, count, reported, i, j, index, remaining, result;
+    float *value;
+    list = (struct Fn8027F834List *)(state + 0x50);
+    object = ((GetItem)(*(void ***)collection)[4])(collection, 0);
+    mode = ((GetInt)(*(void ***)object)[5])(object);
+    defaultScale = lbl_805641F8;
+    defaultValue = lbl_805641FC;
+    widgetVtable = lbl_80348798;
+    index = list->count;
+    storage = list->items;
+    widgets[0].unk14 = 0;
+    widgets[0].unk38 = defaultScale;
+    widgets[0].unk40 = 2;
+    widgets[0].unk3C = defaultValue;
+    widgets[0].unk18 = 0;
+    widgets[0].unk50 = 0;
+    widgets[0].unk5C = 0;
+    widgets[0].unk24 = 2;
+    widgets[0].unk20 = 0;
+    widgets[0].unk44 = 0;
+    widgets[0].vtable = widgetVtable;
+    widgets[0].object = 0;
+    widgets[0].unk64 = 0;
+    widgets[0].unk70 = 0;
+    widgets[0].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &widgets[0];
+    widgets[0].unk7E = 0;
+    widgets[0].unkB0 = 0;
+    index = list->count;
+    storage = list->items;
+    widgets[1].unk14 = 0;
+    widgets[1].unk38 = defaultScale;
+    widgets[1].unk40 = 2;
+    widgets[1].unk3C = defaultValue;
+    widgets[1].unk18 = 0;
+    widgets[1].unk50 = 0;
+    widgets[1].unk5C = 0;
+    widgets[1].unk24 = 2;
+    widgets[1].unk20 = 0;
+    widgets[1].unk44 = 0;
+    widgets[1].vtable = widgetVtable;
+    widgets[1].object = 0;
+    widgets[1].unk64 = 0;
+    widgets[1].unk70 = 0;
+    widgets[1].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &widgets[1];
+    widgets[1].unk7E = 0;
+    widgets[1].unkB0 = 0;
+    index = list->count;
+    storage = list->items;
+    widgets[2].unk14 = 0;
+    widgets[2].unk38 = defaultScale;
+    widgets[2].unk40 = 2;
+    widgets[2].unk3C = defaultValue;
+    widgets[2].unk18 = 0;
+    widgets[2].unk50 = 0;
+    widgets[2].unk5C = 0;
+    widgets[2].unk24 = 2;
+    widgets[2].unk20 = 0;
+    widgets[2].unk44 = 0;
+    widgets[2].vtable = widgetVtable;
+    widgets[2].object = 0;
+    widgets[2].unk64 = 0;
+    widgets[2].unk70 = 0;
+    widgets[2].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &widgets[2];
+    widgets[2].unk7E = 0;
+    widgets[2].unkB0 = 0;
+    index = list->count;
+    storage = list->items;
+    widgets[3].unk14 = 0;
+    widgets[3].unk38 = defaultScale;
+    widgets[3].unk40 = 2;
+    widgets[3].unk3C = defaultValue;
+    widgets[3].unk18 = 0;
+    widgets[3].unk50 = 0;
+    widgets[3].unk5C = 0;
+    widgets[3].unk24 = 2;
+    widgets[3].unk20 = 0;
+    widgets[3].unk44 = 0;
+    widgets[3].vtable = widgetVtable;
+    widgets[3].object = 0;
+    widgets[3].unk64 = 0;
+    widgets[3].unk70 = 0;
+    widgets[3].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &widgets[3];
+    widgets[3].unk7E = 0;
+    widgets[3].unkB0 = 0;
+    index = list->count;
+    storage = list->items;
+    widgets[4].unk14 = 0;
+    widgets[4].unk38 = defaultScale;
+    widgets[4].unk40 = 2;
+    widgets[4].unk3C = defaultValue;
+    widgets[4].unk18 = 0;
+    widgets[4].unk50 = 0;
+    widgets[4].unk5C = 0;
+    widgets[4].unk24 = 2;
+    widgets[4].unk20 = 0;
+    widgets[4].unk44 = 0;
+    widgets[4].vtable = widgetVtable;
+    widgets[4].object = 0;
+    widgets[4].unk64 = 0;
+    widgets[4].unk70 = 0;
+    widgets[4].unk74 = 0;
+    list->count = index + 1;
+    storage[index] = &widgets[4];
+    widgets[4].unk7E = 0;
+    widgets[4].unkB0 = 0;
+    reported = ((GetInt)(*(void ***)collection)[3])(collection);
+    count = 5;
+    if (reported < 5) count = reported;
+    widget = widgets;
+    for (i = 0; i < count; ++i, ++widget) {
+        widget->object = ((GetItem)(*(void ***)collection)[4])(collection, i);
+        widget->unk64 = 0;
+        value = widget->values;
+        for (j = 0; j < ((GetInt)(*(void ***)widget->object)[6])(widget->object); ++j) {
+            item = ((GetItem)(*(void ***)widget->object)[7])(widget->object, j);
+            *value++ = ((GetInt)(*(void ***)item)[16])(item) ? lbl_805641FC : lbl_80564200;
+        }
+        widget->unkCC = ((GetByte)(*(void ***)widget->object)[10])(widget->object);
+    }
+    menu.entries[0].value = (void *)(&fn_80281138);
+    menu.entries[1].label = (void *)(strings + 0x518);
+    menu.entries[0].type = (int)(8);
+    menu.entries[0].label = (void *)(&lbl_8055BAC0);
+    menu.entries[0].flags = (int)(0);
+    menu.entries[0].id = (int)(0);
+    menu.entries[1].type = (int)(3);
+    menu.entries[1].value = (void *)(state + 0x70);
+    menu.entries[1].flags = (int)(0);
+    menu.entries[1].id = (int)(0);
+    menu.entries[2].type = (int)(5);
+    menu.entries[2].label = (void *)(&lbl_8055C7F0);
+    menu.entries[2].value = (void *)(&widgets[0].vtable);
+    menu.entries[2].flags = (int)(0);
+    menu.entries[2].id = (int)(0);
+    menu.entries[3].type = (int)(2);
+    menu.entries[3].label = (void *)(strings + 0x524);
+    menu.entries[3].value = (void *)(&widgets[0].unk70);
+    menu.entries[3].flags = (int)(0);
+    menu.entries[3].id = (int)(0);
+    object = widgets[0].object;
+    menu.entries[4].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    menu.entries[4].label = (void *)(strings + 0x530);
+    menu.entries[4].type = (int)(3);
+    menu.entries[4].flags = (int)(0);
+    menu.entries[4].id = (int)(0);
+    menu.entries[5].type = (int)(3);
+    menu.entries[5].label = (void *)(strings + 0x53C);
+    menu.entries[5].value = (void *)(&widgets[0].unk74);
+    menu.entries[5].flags = (int)(0);
+    menu.entries[5].id = (int)(0);
+    menu.entries[6].type = (int)(5);
+    menu.entries[6].label = (void *)(&lbl_8055C7F8);
+    menu.entries[6].value = (void *)(&widgets[1].vtable);
+    menu.entries[6].flags = (int)(0);
+    menu.entries[6].id = (int)(0);
+    menu.entries[7].type = (int)(2);
+    menu.entries[7].label = (void *)(strings + 0x550);
+    menu.entries[7].value = (void *)(&widgets[1].unk70);
+    menu.entries[7].flags = (int)(0);
+    menu.entries[7].id = (int)(0);
+    object = widgets[1].object;
+    menu.entries[8].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    menu.entries[8].label = (void *)(strings + 0x55C);
+    menu.entries[8].type = (int)(3);
+    menu.entries[8].flags = (int)(0);
+    menu.entries[8].id = (int)(0);
+    menu.entries[9].type = (int)(3);
+    menu.entries[9].label = (void *)(strings + 0x568);
+    menu.entries[9].value = (void *)(&widgets[1].unk74);
+    menu.entries[9].flags = (int)(0);
+    menu.entries[9].id = (int)(0);
+    menu.entries[10].type = (int)(5);
+    menu.entries[10].label = (void *)(&lbl_8055C800);
+    menu.entries[10].value = (void *)(&widgets[2].vtable);
+    menu.entries[10].flags = (int)(0);
+    menu.entries[10].id = (int)(0);
+    menu.entries[11].type = (int)(2);
+    menu.entries[11].label = (void *)(strings + 0x57C);
+    menu.entries[11].value = (void *)(&widgets[2].unk70);
+    menu.entries[11].flags = (int)(0);
+    menu.entries[11].id = (int)(0);
+    object = widgets[2].object;
+    menu.entries[12].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    menu.entries[12].label = (void *)(strings + 0x588);
+    menu.entries[12].type = (int)(3);
+    menu.entries[12].flags = (int)(0);
+    menu.entries[12].id = (int)(0);
+    menu.entries[13].type = (int)(3);
+    menu.entries[13].label = (void *)(strings + 0x594);
+    menu.entries[13].value = (void *)(&widgets[2].unk74);
+    menu.entries[13].flags = (int)(0);
+    menu.entries[13].id = (int)(0);
+    menu.entries[14].type = (int)(5);
+    menu.entries[14].label = (void *)(&lbl_8055C808);
+    menu.entries[14].value = (void *)(&widgets[3].vtable);
+    menu.entries[14].flags = (int)(0);
+    menu.entries[14].id = (int)(0);
+    menu.entries[15].type = (int)(2);
+    menu.entries[15].label = (void *)(strings + 0x5A8);
+    menu.entries[15].value = (void *)(&widgets[3].unk70);
+    menu.entries[15].flags = (int)(0);
+    menu.entries[15].id = (int)(0);
+    object = widgets[3].object;
+    menu.entries[16].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    menu.entries[16].label = (void *)(strings + 0x5B4);
+    menu.entries[16].type = (int)(3);
+    menu.entries[16].flags = (int)(0);
+    menu.entries[16].id = (int)(0);
+    menu.entries[17].type = (int)(3);
+    menu.entries[17].label = (void *)(strings + 0x5C0);
+    menu.entries[17].value = (void *)(&widgets[3].unk74);
+    menu.entries[17].flags = (int)(0);
+    menu.entries[17].id = (int)(0);
+    menu.entries[18].type = (int)(5);
+    menu.entries[18].label = (void *)(&lbl_8055C810);
+    menu.entries[18].value = (void *)(&widgets[4].vtable);
+    menu.entries[18].flags = (int)(0);
+    menu.entries[18].id = (int)(0);
+    menu.entries[19].type = (int)(2);
+    menu.entries[19].label = (void *)(strings + 0x5D4);
+    menu.entries[19].value = (void *)(&widgets[4].unk70);
+    menu.entries[19].flags = (int)(0);
+    menu.entries[19].id = (int)(0);
+    textIds[0][0] = *(int *)(constants + 0x2c);
+    textIds[0][1] = *(int *)(constants + 0x30);
+    textIds[0][2] = *(int *)(constants + 0x34);
+    textIds[1][0] = *(int *)(constants + 0x38);
+    textIds[1][1] = *(int *)(constants + 0x3c);
+    textIds[1][2] = *(int *)(constants + 0x40);
+    textIds[2][0] = *(int *)(constants + 0x44);
+    textIds[2][1] = *(int *)(constants + 0x48);
+    textIds[2][2] = *(int *)(constants + 0x4c);
+    menu.entries[20].type = (int)(3);
+    menu.entries[20].label = (void *)(strings + 0x5E0);
+    object = widgets[4].object;
+    menu.entries[20].value = object != 0 ? ((GetString)(*(void ***)object)[3])(object) : (char *)&lbl_8055C7EC;
+    menu.entries[20].flags = (int)(0);
+    menu.entries[20].id = (int)(0);
+    menu.entries[21].type = (int)(3);
+    menu.entries[21].label = (void *)(strings + 0x5EC);
+    menu.entries[21].value = (void *)(&widgets[4].unk74);
+    menu.entries[21].flags = (int)(0);
+    menu.entries[21].id = (int)(0);
+    menu.entries[22].type = (int)(3);
+    menu.entries[22].label = (void *)(strings + 0x600);
+    menu.entries[22].value = (void *)(textIds[2][mode]);
+    menu.entries[22].flags = (int)(0);
+    menu.entries[22].id = (int)(0);
+    menu.entries[23].type = (int)(3);
+    menu.entries[23].label = (void *)(strings + 0x610);
+    menu.entries[23].value = (void *)(textIds[1][mode]);
+    menu.entries[23].flags = (int)(0);
+    menu.entries[23].id = (int)(0);
+    menu.entries[24].value = (void *)(fn_80131234(textIds[0][mode]));
+    menu.entries[24].label = (void *)(strings + 0x620);
+    menu.entries[27].value = (void *)(&fn_80280C00);
+    menu.entries[24].type = (int)(3);
+    menu.entries[25].label = (void *)(&lbl_8055B860);
+    menu.entries[26].value = (void *)(&fn_80280DC8);
+    menu.entries[25].id = (int)(0x125);
+    menu.entries[25].value = (void *)(&fn_80280F7C);
+    menu.entries[31].flags = (int)(2);
+    menu.entries[26].label = (void *)(&lbl_8055B860);
+    menu.entries[27].label = (void *)(&lbl_8055B860);
+    menu.entries[28].label = (void *)(&lbl_8055B860);
+    menu.entries[29].label = (void *)(&lbl_8055B860);
+    menu.entries[30].label = (void *)(&lbl_8055B860);
+    menu.entries[29].value = (void *)(&fn_802808D0);
+    menu.entries[28].value = (void *)(&fn_80280A38);
+    menu.entries[24].flags = (int)(0);
+    menu.entries[24].id = (int)(0);
+    menu.entries[25].type = (int)(6);
+    menu.entries[25].flags = (int)(0);
+    menu.entries[26].type = (int)(6);
+    menu.entries[26].flags = (int)(0);
+    menu.entries[26].id = (int)(0x127);
+    menu.entries[27].type = (int)(6);
+    menu.entries[27].flags = (int)(0);
+    menu.entries[27].id = (int)(0x128);
+    menu.entries[28].type = (int)(6);
+    menu.entries[28].flags = (int)(0);
+    menu.entries[28].id = (int)(0x126);
+    menu.entries[29].type = (int)(6);
+    menu.entries[29].flags = (int)(-2);
+    menu.entries[29].id = (int)(0xD);
+    menu.entries[30].type = (int)(6);
+    menu.entries[30].value = (void *)(&fn_80280898);
+    menu.entries[30].flags = (int)(-1);
+    menu.entries[30].id = (int)(0x1B);
+    menu.entries[31].type = (int)(8);
+    menu.entries[31].label = (void *)(&lbl_8055BAB8);
+    menu.entries[31].value = (void *)(&fn_8027EE74);
+    menu.entries[31].id = (int)(0);
+    menu.header[0] = *(int *)(constants + 0x108);
+    menu.footer[0] = ((int *)&lbl_804B2FF8)[0];
+    menu.header[1] = *(int *)(constants + 0x10c);
+    menu.footer[1] = ((int *)&lbl_804B2FF8)[1];
+    menu.header[2] = *(int *)(constants + 0x110);
+    menu.footer[2] = ((int *)&lbl_804B2FF8)[2];
+    menu.header[3] = *(int *)(constants + 0x114);
+    menu.footer[3] = ((int *)&lbl_804B2FF8)[3];
+    menu.header[4] = *(int *)(constants + 0x118);
+    menu.footer[4] = ((int *)&lbl_804B2FF8)[4];
+    menu.header[1] = (int)menu.entries;
+    if (lbl_8055F6A0 != 0) {
+        lbl_8055F6A0 = 0;
+    *(char *)(state + 0x70) = 0;
+    index = *selection;
+    if (index >= 0 && index < list->count) {
+        object = list->items[index];
+        lbl_8055F688 = (unsigned int)object;
+        if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
+            item = ((Fn8027F958Widget *)object)->object;
+            src = ((GetString)(*(void ***)item)[12])(item);
+            dst = state + 0x70;
+            remaining = 100;
+            do {
+                char c = *src++;
+                *dst++ = c;
+                if (c == 0) break;
+                if (--remaining <= 0) { dst[-1] = 0; break; }
+            } while (1);
+        }
+    } else lbl_8055F688 = 0;
+
+        if (*selection < ((GetInt)(*(void ***)collection)[3])(collection) - 1) {
+            ++*selection;
+            lbl_8055F694 = &widgets[*selection];
+        }
+    }
+ else {
+    *(char *)(state + 0x70) = 0;
+    index = *selection;
+    if (index >= 0 && index < list->count) {
+        object = list->items[index];
+        lbl_8055F688 = (unsigned int)object;
+        if (object != 0 && ((Fn8027F958Widget *)object)->object != 0) {
+            item = ((Fn8027F958Widget *)object)->object;
+            src = ((GetString)(*(void ***)item)[12])(item);
+            dst = state + 0x70;
+            remaining = 100;
+            do {
+                char c = *src++;
+                *dst++ = c;
+                if (c == 0) break;
+                if (--remaining <= 0) { dst[-1] = 0; break; }
+            } while (1);
+        }
+    } else lbl_8055F688 = 0;
+    }
+    result = (((int (*)(int *, int, int, int))fn_802146BC)(menu.header, -999, -999, 1) + 2) == 0;
+    if (result) {
+        for (i = 0; i < list->count; ++i)
+            if ((unsigned int)list->items[i] == lbl_8055F688) break;
+        *selection = i < list->count ? i : -1;
+    }
+    lbl_8055F688 = 0;
+    list->count = 0;
+    lbl_8055F68C = 0;
+    lbl_8055F690 = 0;
+    *(char *)(state + 0x70) = 0;
+    lbl_8055F694 = 0;
+    widget = &widgets[4];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    index = 0;
+    remaining = list->count;
+    while (remaining > 0) {
+        if (*items == widget) break;
+        ++items;
+        ++index;
+        --remaining;
+    }
+    if (remaining <= 0) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    widget = &widgets[3];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    index = 0;
+    remaining = list->count;
+    while (remaining > 0) {
+        if (*items == widget) break;
+        ++items;
+        ++index;
+        --remaining;
+    }
+    if (remaining <= 0) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    widget = &widgets[2];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    index = 0;
+    remaining = list->count;
+    while (remaining > 0) {
+        if (*items == widget) break;
+        ++items;
+        ++index;
+        --remaining;
+    }
+    if (remaining <= 0) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    widget = &widgets[1];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    index = 0;
+    remaining = list->count;
+    while (remaining > 0) {
+        if (*items == widget) break;
+        ++items;
+        ++index;
+        --remaining;
+    }
+    if (remaining <= 0) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    widget = &widgets[0];
+    widget->vtable = widgetVtable;
+    if (lbl_8055F688 == (unsigned int)widget) lbl_8055F688 = 0;
+    items = list->items;
+    index = 0;
+    remaining = list->count;
+    while (remaining > 0) {
+        if (*items == widget) break;
+        ++items;
+        ++index;
+        --remaining;
+    }
+    if (remaining <= 0) index = -1;
+    if (index != -1 && index >= 0 && index < list->count) {
+        count = list->count - 1;
+        if (index != count) list->items[index] = list->items[count];
+        list->count = list->count - 1;
+    }
+    widget->unk18 = 0;
+    widget->unk50 = 0;
+    widget->unk5C = 0;
+    widget->unk24 = 1;
+    widget->unk20 = 0;
+    widget->unk44 = 0;
+    return result;
+}
+#pragma pop
 
 int fn_80280898(void) { extern unsigned int lbl_8055F688; extern int fn_80216D28(void); if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
 
