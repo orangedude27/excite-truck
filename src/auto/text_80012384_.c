@@ -42,6 +42,7 @@ void fn_800123EC(float arg0) {
     fn_802C92DC(-0x14, -0x14, lbl_8055FB9C + 0x14, lbl_8055FBA0 + 0x14, color << 24);
     fn_802C92D8();
 }
+#pragma dont_inline reset
 
 #pragma push
 #pragma scheduling on
