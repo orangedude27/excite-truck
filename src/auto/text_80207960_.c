@@ -186,6 +186,21 @@ void fn_80207E70(void* arg0) {
         } else { cur = (char*)cur + 4; src = (char*)src + 4; dst = (char*)dst + 4; i++; }
     }
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+signed long fn_8020820C(SoundMgrObj* arg0, SoundMgrObj* arg1) {
+    float rhs = arg1->field_68;
+    float lhs = arg0->field_68;
+    unsigned long greater = lhs > rhs;
+    signed long type = arg0->field_44;
+    if (type == arg1->field_44 && (unsigned long)(type - 3) <= 1) {
+        signed long id = fn_8026A344(0);
+        signed long other = id == arg1->field_10;
+        return id == arg0->field_10 || (!other && greater);
+    }
+    return greater;
+}
 #pragma pop
 void fn_80208404(void) {
 
@@ -211,17 +226,20 @@ void fn_8020899C(void* arg0, void* arg1) {
     ((Vt_8020899C*)*(void**)arg1)->f(arg1);
 }
 
-void fn_802089B0(void* self) {
-    typedef struct {
-        char pad[0x8];
-        void (*f)(void*, signed long);
-    } Vt;
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_802089B0(void* self) {
+    class Obj {
+    public:
+        virtual void f(int);
+    };
     if (self == 0) {
         return;
     }
-    ((Vt*)*(void**)self)->f(self, 1);
+    ((Obj*)self)->f(1);
 }
-
+#pragma cplusplus reset
+#pragma pop
 signed long fn_802089D0(signed long arg0, signed long arg1) {
     if ((arg0 != 0) && (arg1 > 0)) {
         fn_80128668();
