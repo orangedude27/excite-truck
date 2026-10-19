@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern "C" void* fn_8017960C(s32);
 
 class Fn8015889C {
 public:
@@ -863,6 +864,22 @@ extern "C" void fn_80159BB4(Unk801577F0* arg0) {
     arg0->v31();
 }
 
+extern f32 lbl_8056179C;
+extern "C" f32 fn_80159C34(Fn80159C34Obj* arg0, void* arg1) {
+ f32 value=arg0->m254-lbl_8056177C, result=lbl_80561754; s32 done=0;
+ if(result>value)value=result; arg0->m254=value;
+ if(*(s32*)((u8*)arg1+0x2620)==0 && ((Unk801577F0*)arg0)->v35()==0) { value=arg0->m254; if(value>lbl_8056179C)value=lbl_8056179C; arg0->m254=value; }
+ result=lbl_80561754;
+ if(arg0->v37()!=0 && arg0->v21()==*(s32*)((u8*)arg0+0xc)-1)done=1;
+ if(__fabsf(arg0->m254)<=lbl_80558DC4[0] || done) {
+  if(done || arg0->m264>0) {
+   if(arg0->m264>0){ f32 temp=arg0->m25c*arg0->v18(arg0->v21()); arg0->v33(&temp); arg0->v31(); arg0->m264=0; arg0->m25c=lbl_80561750; result=temp; }
+   if(!done && arg0->m260>0){if(arg0->m258!=0)fn_801CB6E4((void*)arg0->m258,*(s32*)((u8*)arg0+4)); arg0->m260=0;}
+  }
+ } else if(arg0->m264>0)arg0->v32();
+ return result;
+}
+
 extern "C" void fn_80159E2C(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E668[arg0->GetType()]);
 }
@@ -939,6 +956,25 @@ extern "C" void fn_8015A538(void* arg0, void* arg1) {
     if (r31 > 0 && fn_80179650() == 1 && *(s32*)((char*)arg1 + 0x1F0) == 0x50 && fn_801CF064() == 0) {
         fn_8001EF5C(4, r31);
     }
+}
+
+extern f32 lbl_8055A02C;
+extern f32 lbl_80561788;
+extern f32 lbl_805617B4;
+void fn_8015A5E0(void *arg0, void *arg1, s32 arg2, u32 arg3) {
+ if (*(f32*)((u8*)arg1+0x25d4) <= lbl_805617B4*lbl_8055A02C || arg2 != 0x3eb || *((u8*)arg0+0x2d1)) return;
+ u8 *base=(u8*)arg0+0x26c, *p=base;
+ s32 found=0;
+ for(s32 i=0;i<8;i++,p+=0xc) {
+   f32 x=*(f32*)(p+4);
+   if (__fabsf(x-lbl_8055E3C8) <= lbl_80558DC4[0]) found=1;
+   if (*(u32*)p==arg3 && lbl_8055E3C8-x >= lbl_80561788) return;
+ }
+ p=0;
+ for(s32 i=0;i<8;i++,base+=0xc) if(p==0 || *(f32*)(base+4)<*(f32*)(p+4)) p=base;
+ *(f32*)(p+4)=lbl_8055E3C8;
+ p[8]=found;
+ *(u32*)p=arg3;
 }
 
 extern "C" void fn_8015A7D8(void* arg0, void* arg1) {
