@@ -417,6 +417,32 @@ void WUDSetVisibility(u8 arg0, u8 arg1)
     BTA_DmSetVisibility(arg0, arg1);
 }
 
+void fn_8006B26C(tBTM_VSC_CMPL *arg0) {
+    extern u8 lbl_8055DC39;
+    extern u8 lbl_8055DC3A;
+    extern u8 lbl_80313600[];
+    extern void fn_8006B330(void);
+    s32 count;
+    s32 size;
+    u8 packet[0x100];
+
+    if (arg0 != 0) {
+        if (lbl_8055DC3A == lbl_8055DC39) {
+            fn_8006B330();
+            return;
+        }
+        count = lbl_8055DC3A - lbl_8055DC39;
+        if (count >= 0x13) count = 0x13;
+        packet[0] = count;
+        size = count * 0xD;
+        memcpy(packet + 1, lbl_80313600 + lbl_8055DC39 * 0xD + 1, size);
+        lbl_8055DC39 += count;
+        BTM_VendorSpecificCommand(0xFC4F, size + 1, packet, fn_8006B26C);
+        return;
+    }
+    fn_8006B330();
+}
+
 extern void *lbl_80319994;
 extern u16 lbl_80394680[];
 extern u32 lbl_80393628[];
@@ -1595,6 +1621,24 @@ void fn_80076E70(void) {
     lbl_803C0F78[0x27BF] = 0xFF;
 }
 
+void btm_acl_removed(u8 *addr) {
+    s32 i;
+    u8 *entry;
+    void (*callback)(u8 *, u32, u32, u32, u32);
+
+    entry = lbl_803C0F78 + 0x34;
+    for (i = 0; i < 4; i++, entry += 0x11C) {
+        if (entry[0x119] != 0 && memcmp(entry + 8, addr, 6) == 0)
+            break;
+    }
+    if (i < 4) {
+        entry[0x119] = 0;
+        callback = *(void (**)(u8 *, u32, u32, u32, u32))(lbl_803C0F78 + 0x4C8);
+        if (callback != 0)
+            callback(addr, 0, 0, 0, 0);
+    }
+}
+
 extern void l2c_link_hci_disc_comp(u16, u8);
 void btm_acl_device_down(void)
 {
@@ -2681,6 +2725,28 @@ BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR addr) {
     return FALSE;
 }
 
+void BTM_PINCodeReply(BD_ADDR bd_addr, UINT8 res, UINT8 pin_len, UINT8 *p_pin, UINT32 trusted_mask[]) {
+    void *p_dev;
+
+    if (*(u32 *)(lbl_803C0F78 + 0x194C)) {
+        fn_80070F90(lbl_803C0F78 + 0x193C);
+        *(u32 *)(lbl_803C0F78 + 0x194C) = 0;
+        memset(lbl_803C0F78 + 0x1954, 0xFF, 6);
+        if (res != 0) {
+            lbl_803C0F78[0x27BF] = 0xE;
+            btsnd_hcic_link_key_neg_reply_800840C8(bd_addr);
+        } else {
+            lbl_803C0F78[0x27BF] = 0;
+            btsnd_hcic_pin_code_req_reply(bd_addr, pin_len, p_pin);
+            p_dev = btm_find_dev(bd_addr);
+            if (p_dev != 0) {
+                *(u32 *)((u8 *)p_dev + 0x10) = trusted_mask[0];
+                *(u32 *)((u8 *)p_dev + 0x14) = trusted_mask[1];
+            }
+        }
+    }
+}
+
 extern u8 btm_sec_execute_procedure(void *);
 extern u8 lbl_80316A10[];
 extern u8 lbl_80316A70[];
@@ -3597,6 +3663,30 @@ BOOLEAN btsnd_hcic_read_rssi(UINT16 handle) {
     p[12] = handle >> 8;
     btu_hcif_send_cmd(p);
     return TRUE;
+}
+
+extern u8 lbl_802EEC08[];
+BOOLEAN btsnd_hcic_set_afh_channels(u8 first, u8 last) {
+    u8 map[10];
+    u8 *buf;
+    s32 i;
+
+    for (i = 0; i < 10; i++) map[i] = lbl_802EEC08[i];
+    buf = (u8 *)GKI_getpoolbuf(2);
+    if (buf == 0) return 0;
+
+    *(u16 *)(buf + 2) = 0xD;
+    *(u16 *)(buf + 4) = 0;
+    buf[8] = 0x3F;
+    buf[9] = 0xC;
+    buf[10] = 0xA;
+
+    if (first <= last && last <= 0x4E) {
+        for (i = first; i <= last; i++) map[i >> 3] &= ~(1 << (i & 7));
+    }
+    for (i = 0; i < 10; i++) buf[11 + i] = map[i];
+    btu_hcif_send_cmd(buf);
+    return 1;
 }
 
 void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, void *p_cmd_cplt_cback) {
@@ -5152,6 +5242,39 @@ void *fn_80095C64(void **head, u32 attr) {
         p = *(void **)p;
     }
     return NULL;
+}
+
+extern void *fn_80096904(void *, u32, u32);
+UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle) {
+    tSDP_RECORD *record;
+    void *attr;
+    u16 len;
+    UINT16 result = 9;
+    if (*p_handle == 0) *p_handle = *(UINT32 *)(lbl_803C4C40 + 0x121C);
+    record = sdp_db_find_record(*p_handle);
+    if (record != NULL) {
+        memset(p_device_info, 0, 0xFA);
+        result = 0;
+        attr = fn_80096904(record, 0x200, 0x200);
+        if (attr != NULL) p_device_info->spec_id = (*(u8 *)*(u8 **)((u8 *)attr + 4) << 8) + *(*(u8 **)((u8 *)attr + 4) + 1);
+        attr = fn_80096904(record, 0x201, 0x201);
+        if (attr != NULL) p_device_info->rec.vendor = (*(u8 *)*(u8 **)((u8 *)attr + 4) << 8) + *(*(u8 **)((u8 *)attr + 4) + 1);
+        attr = fn_80096904(record, 0x202, 0x202);
+        if (attr != NULL) p_device_info->rec.product = (*(u8 *)*(u8 **)((u8 *)attr + 4) << 8) + *(*(u8 **)((u8 *)attr + 4) + 1);
+        attr = fn_80096904(record, 0x203, 0x203);
+        if (attr != NULL) p_device_info->rec.version = (*(u8 *)*(u8 **)((u8 *)attr + 4) << 8) + *(*(u8 **)((u8 *)attr + 4) + 1);
+        attr = fn_80096904(record, 0x205, 0x205);
+        if (attr != NULL) p_device_info->rec.vendor_id_source = (*(u8 *)*(u8 **)((u8 *)attr + 4) << 8) + *(*(u8 **)((u8 *)attr + 4) + 1);
+        attr = fn_80096904(record, 0x204, 0x204);
+        if (attr != NULL) p_device_info->rec.primary_record = **(u8 **)((u8 *)attr + 4);
+        attr = fn_80096904(record, 0xB, 0xB);
+        if (attr != NULL) { len = *(u32 *)attr; if (len > 0x50) len = 0x50; memcpy(p_device_info->rec.client_executable_url, *(void **)((u8 *)attr + 4), len); }
+        attr = fn_80096904(record, 0x101, 0x101);
+        if (attr != NULL) { len = *(u32 *)attr; if (len > 0x50) len = 0x50; memcpy(p_device_info->rec.service_description, *(void **)((u8 *)attr + 4), len); }
+        attr = fn_80096904(record, 0xA, 0xA);
+        if (attr != NULL) { len = *(u32 *)attr; if (len > 0x50) len = 0x50; memcpy(p_device_info->rec.documentation_url, *(void **)((u8 *)attr + 4), len); }
+    } else *p_handle = 0;
+    return result;
 }
 
 u8 fn_80096670(u8 value) {
