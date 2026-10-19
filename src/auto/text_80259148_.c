@@ -30,18 +30,30 @@ void fn_80259148(void) {
 void fn_802591D8(void) {
     void *obj = lbl_8055F394;
     if (obj != 0) {
-        ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+        (*(void (**)(void *, int))((char *)*(void **)obj + 8))(obj, 1);
     }
     lbl_8055F394 = 0;
 }
 
+struct Loc_8025AA90 {
+    float v8[3];
+    float v14[3];
+    float v20[3];
+    float v2C[3];
+    float v38[3];
+    float v44[3];
+    float v50[3];
+    float rot[9];
+    unsigned char info[0x58];
+};
+
 int fn_8025921C(void) { return 0; }
 
 void *fn_80259680(void *arg0, int arg1) {
-    volatile int value;
+    int value;
     if (arg0 != 0) {
         value = *(int *)((char *)arg0 + 0x50);
-        *(int **)arg0 = &lbl_80345158;
+        *(void **)arg0 = &lbl_80345158;
         if (value != -1) {
             fn_802C6CF8(value);
             *(int *)((char *)arg0 + 0x50) = -1;
@@ -94,19 +106,16 @@ void fn_8025A83C(void *arg0) {
     p[6] = a;
     p[7] = a;
     p[8] = b;
-    ((void (*)(void *, void *))(*(volatile void ***)arg0)[3])(arg0, (char *)arg0 + 4);
+    ((void (*)(void *, void *))(*(void ***)arg0)[3])(arg0, (char *)arg0 + 4);
 }
 
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
-    float z = a[2];
-    float y = a[1];
-    float x = a[0];
-    float dz = b[2] - z;
-    float dy = b[1] - y;
-    float dx = b[0] - x;
-    float rz = z + t * dz;
-    float ry = y + t * dy;
-    float rx = x + t * dx;
+    float dz = b[2] - a[2];
+    float dy = b[1] - a[1];
+    float dx = b[0] - a[0];
+    float rz = a[2] + t * dz;
+    float ry = a[1] + t * dy;
+    float rx = a[0] + t * dx;
     out[2] = rz;
     out[1] = ry;
     out[0] = rx;
@@ -115,20 +124,13 @@ void fn_8025AD3C(float *out, float *a, float *b, float t) {
 void fn_8025AD88(void) { PSVECDotProduct(); }
 
 void fn_8025AD8C(void *unused, float *out, float *a, float *b, float t) {
-    float scale = lbl_80563B14 * t;
-    float max = lbl_80563AE0;
-    float dx, dy, dz, x, y, z;
-    if (max < scale)
-        max = scale;
-    dx = b[0] - a[0];
-    dy = b[1] - a[1];
-    dz = b[2] - a[2];
-    x = a[0] + max * dx;
-    y = a[1] + max * dy;
-    z = a[2] + max * dz;
-    out[0] = x;
-    out[1] = y;
-    out[2] = z;
+ float scale=lbl_80563B14*t;
+ float max=lbl_80563AE0;
+ float dx,dy,dz,x,y,z;
+ if (max < scale) max=scale;
+ dx=b[0]-a[0]; dy=b[1]-a[1]; dz=b[2]-a[2];
+ x=a[0]+max*dx; y=a[1]+max*dy; z=a[2]+max*dz;
+ out[0]=x; out[1]=y; out[2]=z;
 }
 
 float fn_8025ADF4(float arg0) { return (float)fn_8002F234(arg0); }
@@ -185,34 +187,31 @@ extern unsigned char *fn_8001EFAC(int, int);
 extern int fn_801345D8(char *, int, const char *, int);
 extern const char lbl_80344F08[];
 void fn_8025BE0C(void *arg0) {
-    void *obj;
+    void *arg1;
     int size;
+    void *obj;
     unsigned char *src;
     unsigned char *dst;
     int count;
+    arg1 = arg0;
     size = *(int *)((char *)arg0 + 0x24);
-    obj = *(void **)((char *)arg0 + 0x18);
+    obj = *(void **)((char *)arg1 + 0x18);
     *(int *)((char *)obj + 0x4C) = size;
     src = fn_8001EFAC(*(int *)((char *)arg0 + 0x20), size);
     if (src != 0) {
         dst = (unsigned char *)obj + 4;
         count = 0x32;
-        while (--count > 0) {
-        }
+        do { count--; } while (count > 0);
         dst[-1] = 0;
         do {
             unsigned char c = *src++;
             *dst++ = c;
-            if ((signed char)c == 0)
-                break;
+            if ((signed char)c == 0) break;
         } while (1);
-    } else {
-        *((unsigned char *)obj + 4) = 0;
-    }
+    } else *((unsigned char *)obj + 4) = 0;
     if (size > 0)
         fn_801345D8((char *)obj + 0x36, 0x14, lbl_80344F08, size);
-    else
-        *((unsigned char *)obj + 0x36) = 0;
+    else *((unsigned char *)obj + 0x36) = 0;
 }
 
 void fn_8025BED0(void *arg0) {
@@ -222,17 +221,15 @@ void fn_8025BED0(void *arg0) {
     unsigned char *src;
     unsigned char *dst;
     int count;
-    if (*(unsigned char *)((char *)data + 0xC5) == 0)
-        return;
-    if (*(unsigned char *)((char *)data + 0x58) != 0)
-        return;
+    if (*(unsigned char *)((char *)data + 0xC5) == 0) return;
+    if (*(unsigned char *)((char *)data + 0x58) != 0) return;
     size = *(int *)((char *)data + 0xC8);
     obj = *(void **)((char *)arg0 + 0x18);
     *(int *)((char *)arg0 + 0x24) = size;
     *(int *)((char *)data + 0x18);
     *(int *)((char *)arg0 + 0x20) = *(int *)((char *)data + 0x18);
     *(int *)((char *)obj + 0x4C) = size;
-    src = fn_8001EFAC(*(int *)((char *)data + 0x18), size);
+    src = fn_8001EFAC(*(int *)((char *)arg0 + 0x20), size);
     if (src != 0) {
         dst = (unsigned char *)obj + 4;
         count = 0x32;
@@ -241,8 +238,7 @@ void fn_8025BED0(void *arg0) {
         do {
             unsigned char c = *src++;
             *dst++ = c;
-            if ((signed char)c == 0)
-                break;
+            if ((signed char)c == 0) break;
         } while (1);
     } else {
         *((unsigned char *)obj + 4) = 0;
