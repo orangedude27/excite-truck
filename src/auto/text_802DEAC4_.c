@@ -444,9 +444,8 @@ void fn_802E09EC(void) {
 }
 
 void fn_802E0B68(void) {
-    volatile u32 stage = 0;
-    GXSetTevSwapMode(stage, 0, 0);
-    GXSetTevSwapMode(1, 0, 0);
+    GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
 }
 
 #pragma dont_inline on
