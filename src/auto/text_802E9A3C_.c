@@ -89,6 +89,18 @@ void *fn_802E9B54(void *arg0, long arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_802E9BCC(void *arg0) {
+    class Obj {
+    public:
+        virtual void f(int);
+    };
+    if (arg0 == 0) return;
+    ((Obj *)arg0)->f(1);
+}
+#pragma cplusplus reset
+#pragma pop
 void *fn_802E9BEC(long arg0) {
     long v = arg0 + 10;
     if ((unsigned long)v > 29) return 0;
@@ -182,9 +194,11 @@ void fn_802EA7E0(void) {
 }
 
 void fn_802EAA08(void) {
-    if (lbl_805600B8 >= lbl_805600A4) {
-        memmove((char *)&lbl_805600A0, (char *)&lbl_805600A0 + lbl_805600A4, lbl_805600B8 - lbl_805600A4);
-        lbl_805600B8 -= lbl_805600A4;
+    int offset = lbl_805600A4;
+    int end = lbl_805600B8;
+    if (end >= offset) {
+        __builtin_memcpy((char *)&lbl_805600A0, (char *)&lbl_805600A0 + offset, end - offset);
+        lbl_805600B8 = end - offset;
     }
 }
 
@@ -194,6 +208,7 @@ int fn_802EAA58(int *arg0, int arg1) {
     int channels;
     int valid;
     int result;
+    int rateOk;
     int rate;
     int size;
     if (arg1 != 0) {
@@ -208,7 +223,6 @@ int fn_802EAA58(int *arg0, int arg1) {
     channelOk = 1;
     if (channels != 1 && channels != 2) channelOk = 0;
     if (channelOk) {
-        int rateOk;
         rate = arg0[1];
         rateOk = 0;
         if (rate >= 8000 && rate <= 60000) rateOk = 1;
@@ -371,7 +385,7 @@ long fn_802EC3F0(void *arg0, long arg1, long arg2) {
 }
 
 long fn_802EC42C(void *arg0) {
-    return fn_800B7C64(((long *)arg0)[1], 0) == 0;
+    return ((long (*)(long long, long))fn_800B7C64)(((long *)arg0)[1], 0) == 0;
 }
 
 long fn_802EC45C(void *arg0) { return ((long *)arg0)[2]; }
