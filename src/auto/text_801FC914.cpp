@@ -40,9 +40,12 @@ void fn_801FF3AC(void*, float);
       extern const char lbl_8033B86C[];
     extern const char lbl_8033B898[];
       extern const char lbl_8033B880[];
-  extern const char lbl_8033B730[];
+    extern const char lbl_8033B730[];
+  #pragma push
+  #pragma small_data off
   extern s32 lbl_8033B5E8;
-      }
+  #pragma pop
+        }
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -64,17 +67,16 @@ extern "C" void fn_802C744C(void*, void*);
           *(int *)((char *)p + 4) = 0;
       }
   }
-  #pragma scheduling on
-  #pragma push
-  #pragma small_data off
-  extern "C" void fn_801FC94C(void) {
-      void *p;
-      if ((p = fn_801284F8(8, (const char *)&lbl_8033B5E8)) != 0) {
-          *(void **)p = (void *)&lbl_8033B730;
-          *(int *)((char *)p + 4) = 0;
-      }
-  }
-  #pragma pop
+#pragma push
+#pragma small_data off
+extern "C" void fn_801FC94C(void) {
+    void *p;
+    if ((p = fn_801284F8(8, (const char *)&lbl_8033B5E8)) != 0) {
+        *(void **)p = (void *)&lbl_8033B730;
+        *(int *)((char *)p + 4) = 0;
+    }
+}
+#pragma pop
 
 void* fn_801FCA14(void* arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
