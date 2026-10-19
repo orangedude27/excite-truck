@@ -3774,6 +3774,24 @@ void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, vo
     btu_hcif_send_cmd(p);
 }
 
+s32 HID_HostGetSDPRecord(void *addr, void *p_db, u32 db_len, void *sdp_cback) {
+    extern u8 lbl_803C3C38[];
+    extern void hidh_search_callback(u16);
+    tSDP_UUID uuid_list;
+
+    if (lbl_803C3C38[0x380] != 0) return 0x10;
+    *(void **)(lbl_803C3C38 + 0x388) = p_db;
+    uuid_list.len = 2;
+    uuid_list.uu.uuid16 = 0x1124;
+    SDP_InitDiscoveryDb(p_db, db_len, 1, &uuid_list, 0, NULL);
+    if (SDP_ServiceSearchRequest(addr, p_db, hidh_search_callback)) {
+        *(void **)(lbl_803C3C38 + 0x384) = sdp_cback;
+        lbl_803C3C38[0x380] = 1;
+        return 0;
+    }
+    return 3;
+}
+
 extern u8 lbl_803C3C38[];
 extern u8 lbl_803C3AF0[];
 extern u8 hidh_conn_reg(void);
