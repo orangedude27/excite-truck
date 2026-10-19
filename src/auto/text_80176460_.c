@@ -17,7 +17,7 @@ extern void fn_801AED5C(void);
 extern s32 fn_801CF050(void);
 extern void fn_80176A34(s32);
 extern void fn_80176C4C(void);
-extern s32 fn_802E2C20(void *);
+extern s32 fn_802E2C20();
 extern void fn_80176F28(void);
 extern void fn_80176DD4(void);
 extern f32 lbl_8055A2F4;
