@@ -1,5 +1,31 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+#pragma cplusplus on
+namespace ebi {
+namespace title {
+class TPlaneSub {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+};
+
+class TBlackPlane {
+public:
+    TBlackPlane() {}
+    void* m_pad;
+    TPlaneSub* m_a;
+    TPlaneSub* m_b;
+    void updateAfterCamera();
+};
+}
+}
+#pragma cplusplus reset
 typedef struct Fn8027F958Widget {
     void *vtable;
     char pad04[0x10];
@@ -1113,13 +1139,13 @@ void fn_802872DC(void* arg0) {
     void** vtable = *(void***)obj;
     ((void (*)(void*))vtable[3])(obj);
 }
-#pragma scheduling on
-void fn_802872F0(void* arg0) {
+#pragma cplusplus on
+extern "C" void fn_802872F0(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
     void** vtable = *(void***)obj;
     ((void (*)(void*))vtable[4])(obj);
 }
-
+#pragma cplusplus reset
 void fn_80287304(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
     void** vtable = *(void***)obj;
