@@ -876,7 +876,9 @@ void fn_801C7770(void) {
     *(s8*)&lbl_8055E83E = !lbl_8055E83E;
 }
 
-void fn_801C7784(void) { lbl_8055E83F = !lbl_8055E83F; }
+void fn_801C7784(void) {
+    *(s8*)&lbl_8055E83F = !lbl_8055E83F;
+}
 
 void fn_801C7798(void) {
     *(s8*)&lbl_8055E840 = !lbl_8055E840;
