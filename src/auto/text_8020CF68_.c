@@ -7,7 +7,7 @@ extern char lbl_8055EE94;
 extern float lbl_8055EE84, lbl_8055EE88, lbl_8055EE8C, lbl_8055EE90, lbl_8055EE98, lbl_8055EE9C;
 extern float lbl_8056331C, lbl_80563320;
 extern float lbl_8056332C;
-extern float lbl_80558DC4;
+__declspec(section ".data") extern float lbl_80558DC4;
 extern double lbl_80563360;
 extern int fn_802E2C20(void);
 extern void fn_80012158(void);
@@ -145,6 +145,94 @@ void fn_8020DABC(void) {
         fn_8020D0CC(-1);
 }
 
+#pragma dont_inline on
+int fn_8020DB0C(int arg0) {
+    int var_r31 = 1;
+
+    switch (arg0) {
+    case 0x126:
+        fn_8020D0CC(-1);
+        break;
+    case 0x128:
+        fn_8020D0CC(1);
+        break;
+    case 0x125:
+        switch (lbl_8055EE78) {
+        case 0:
+            if ((float)__fabs(lbl_8055EE8C) > lbl_80558DC4) {
+                lbl_8055EE98 = lbl_8056332C * (float)fn_802E2C20();
+            } else {
+                var_r31 = 0;
+            }
+            break;
+        case 1:
+            if ((float)__fabs(lbl_8055EE90) > lbl_80558DC4) {
+                lbl_8055EE98 = lbl_8056332C * (float)fn_802E2C20();
+            } else {
+                var_r31 = 0;
+            }
+            break;
+        case 4:
+            lbl_8055EE98 = lbl_8056332C * (float)fn_802E2C20();
+            break;
+        default:
+            var_r31 = 0;
+            break;
+        }
+        fn_8020CFEC(lbl_8055EE78);
+        break;
+    case 0x127:
+        switch (lbl_8055EE78) {
+        case 0:
+            if (lbl_8055EE8C < lbl_8056331C) {
+                lbl_8055EE9C = lbl_8056332C * (float)fn_802E2C20();
+            } else {
+                var_r31 = 0;
+            }
+            break;
+        case 1:
+            if (lbl_8055EE90 < lbl_8056331C) {
+                lbl_8055EE9C = lbl_8056332C * (float)fn_802E2C20();
+            } else {
+                var_r31 = 0;
+            }
+            break;
+        case 4:
+            lbl_8055EE9C = lbl_8056332C * (float)fn_802E2C20();
+            break;
+        default:
+            var_r31 = 0;
+            break;
+        }
+        fn_8020CF6C(lbl_8055EE78);
+        break;
+    case 0x58:
+    case 0xD:
+        if (lbl_8055EE7C != 0 && lbl_8055EE78 == 2) {
+            ((void (*)(int))lbl_8055EE7C)(lbl_8055EE78);
+            fn_8020D06C();
+            break;
+        }
+        return 0;
+    case 0x53:
+        if (lbl_8055EE7C != 0) {
+            ((void (*)(int))lbl_8055EE7C)(lbl_8055EE78);
+            fn_8020D06C();
+        }
+        break;
+    case 0x1B:
+    case 0x113:
+        var_r31 = 0;
+        break;
+    default:
+        return 0;
+    }
+    if (var_r31 != 0) {
+        fn_80012158();
+    }
+    return 1;
+}
+#pragma dont_inline reset
 extern void *lbl_8055EE7C;
 extern void *lbl_8055EE80;
 void AXFXSetHooks_8020DE10(void *arg0, void *arg1) {
