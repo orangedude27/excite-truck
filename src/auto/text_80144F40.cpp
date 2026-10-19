@@ -799,20 +799,21 @@ extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
     }
 }
 
-extern "C" void fn_801474EC(void *arg0, const char *format, ...) {
+#pragma scheduling invalid_target
+#pragma dont_inline on
+extern "C" void fn_801474EC(void *arg0, const char *arg1, ...) {
     char buffer[0x200];
     if (arg0 != 0) {
         va_list args;
-        va_start(args, format);
-        vsprintf(buffer, format, args);
-        if (strlen(buffer) >= 0x200) {
-            s32 length = strlen(buffer);
-            fn_802E317C(lbl_8032D1A4, length, format);
-        }
+        va_start(args, arg1);
+        vsprintf(buffer, arg1, args);
+        if (strlen(buffer) >= 0x200)
+            fn_802E317C(lbl_8032D1A4, strlen(buffer), arg1);
         fn_80145C7C(arg0, (u32)buffer);
     }
 }
-
+#pragma dont_inline reset
+#pragma scheduling on
 extern "C" void fn_801475D0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, const char *format, ...) {
     char buffer[0x200];
     va_list args;
