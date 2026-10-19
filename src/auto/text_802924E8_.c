@@ -198,6 +198,20 @@ void fn_80293CD0(void *arg0, int arg1, int arg2, int arg3) {
     for (; i < 8; i++) *(s32 *)((u8 *)arg0 + i * 4 + 8) = -1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+void fn_80293EB0(void* arg0) {
+    u8 *cursor = (u8*)arg0;
+    s32 i = 0;
+    while (i < *(s32*)((u8*)arg0 + 0x28)) {
+        fn_802C6CF8(*(s32*)(cursor + 8));
+        *(s32*)(cursor + 8) = -1;
+        cursor += 4;
+        i++;
+    }
+}
+#pragma pop
+
 extern unsigned char lbl_8034925C[];
 extern void fn_80294710(void *);
 void *__dt__Q34nw4r2ef6EffectFv_802942DC(void *arg0, int arg1) {
