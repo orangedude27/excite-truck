@@ -337,13 +337,9 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
             *(s32 *)((char *)arg0 + 0x18) = -1;
         }
     } else if (fn_802B640C(arg0, (s32)buf) != 0) {
-        register char *src;
-        register char *dst;
-        register s32 n;
-
-        src = *(char **)arg0;
-        dst = (char *)&lbl_804BFF80 + 0x34;
-        n = 32;
+        char *src = *(char **)arg0;
+        char *dst = (char *)&lbl_804BFF80 + 0x34;
+        s32 n = 32;
         while ((*dst++ = *src++) != 0) {
             if (--n <= 0) {
                 dst[-1] = 0;
@@ -529,7 +525,7 @@ void fn_802B84E4(void *arg0) {
 #pragma small_data off
 void fn_802B8624(void *arg0) {
     #pragma small_data off
-    s32 *p = &lbl_804BFF80;
+    s32 *p = (s32 *)&lbl_804BFF80;
     *p = 8;
     if (arg0 != 0) {
         *p = *(s32 *)arg0;
@@ -543,7 +539,6 @@ void fn_802B8624(void *arg0) {
     }
 }
 #pragma pop
-extern s32 lbl_804BFF80;
 extern void fn_802B83CC(void);
 extern void fn_802B84E4(void *);
 extern s32 fn_802B8510(s32);
