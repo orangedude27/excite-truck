@@ -122,6 +122,35 @@ void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
     fn_8019AA34((u8*)arg0 + 0x34, arg1, (u8*)arg1 + 0x34, arg2, arg3, arg1, *(f32*)((u8*)arg0 + 0x24), *(f32*)((u8*)arg1 + 0x24));
 }
 
+extern "C" s32 fn_8019B08C(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
+    Vec* m = *(Vec**)((u8*)arg2 + 0xC);
+    f32 x = arg1->x - *(f32*)((u8*)m + 0x24);
+    f32 y = arg1->y - *(f32*)((u8*)m + 0x28);
+    f32 z = arg1->z - *(f32*)((u8*)m + 0x2C);
+    f32 a = x * *(f32*)((u8*)m + 0x18) + y * *(f32*)((u8*)m + 0x1C) + z * *(f32*)((u8*)m + 0x20);
+    f32 b = x * *(f32*)m + y * *(f32*)((u8*)m + 4) + z * *(f32*)((u8*)m + 8);
+    f32 c = x * *(f32*)((u8*)m + 0xC) + y * *(f32*)((u8*)m + 0x10) + z * *(f32*)((u8*)m + 0x14);
+    if (a >= *(f32*)((u8*)arg2 + 0x28) || a <= -*(f32*)((u8*)arg2 + 0x28)) return 0;
+    f32 mag = (f32)fn_8002F234(b*b + c*c);
+    if (__fabsf(mag) == lbl_80558DC4) return 0;
+    f32 t = farg0 - mag + *(f32*)((u8*)arg2 + 0x24);
+    if (t <= lbl_805622D0) return 0;
+    f32 dt = (*(f32*)((u8*)arg2 + 0x24) - t) / mag;
+    Vec p, normal, out;
+    p.x = (b * dt) * *(f32*)m + (c * dt) * *(f32*)((u8*)m + 0xC) + a * *(f32*)((u8*)m + 0x18);
+    p.y = (b * dt) * *(f32*)((u8*)m + 4) + (c * dt) * *(f32*)((u8*)m + 0x10) + a * *(f32*)((u8*)m + 0x1C);
+    p.z = (b * dt) * *(f32*)((u8*)m + 8) + (c * dt) * *(f32*)((u8*)m + 0x14) + a * *(f32*)((u8*)m + 0x20);
+    p.x += *(f32*)((u8*)m + 0x24); p.y += *(f32*)((u8*)m + 0x28); p.z += *(f32*)((u8*)m + 0x2C);
+    normal.x=b; normal.y=c; normal.z=lbl_805622D0;
+    PSVECNormalize(&normal, &normal);
+    out.x=normal.x * *(f32*)m + normal.y * *(f32*)((u8*)m + 0xC) + normal.z * *(f32*)((u8*)m + 0x18);
+    out.y=normal.x * *(f32*)((u8*)m + 4) + normal.y * *(f32*)((u8*)m + 0x10) + normal.z * *(f32*)((u8*)m + 0x1C);
+    out.z=normal.x * *(f32*)((u8*)m + 8) + normal.y * *(f32*)((u8*)m + 0x14) + normal.z * *(f32*)((u8*)m + 0x20);
+    typedef void (*Call)(void*,void*,Vec*,Vec*,s32,s32,f32,f32,f32);
+    ((Call)fn_8019A788)(arg0,arg2,&p,&out,0,0,t,lbl_805622D0,lbl_805622D0);
+    return 1;
+}
+
 extern "C" s32 fn_8019BD4C(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
 }
