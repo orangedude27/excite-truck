@@ -514,13 +514,14 @@ extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 extern "C" void* fn_802A3314(void* arg0, DummyReceiver_802A3314* arg1) {
     *(void**)arg0 = lbl_80349B28;
-    s32 result = arg1->v5(&lbl_8055CBB0);
+    s32 result = arg1->v3(&lbl_8055CBB0);
     fn_802A3500(arg0, result);
     return arg0;
 }
-
+#pragma scheduling on
 extern "C" void fn_8028E398(void*);
 extern "C" int lbl_80349B28[];
 extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* arg0, s32 arg1) {
