@@ -132,8 +132,85 @@ void fn_8019CE3C(void* arg0, s32 arg1) {
     fn_8019CCCC(arg0, (u8*)arg0 + 0x34, arg1, *(f32*)((u8*)arg0 + 0x24));
 }
 
+extern "C" f32 PSVECSquareDistance(const Vec*, const Vec*);
+extern "C" f32 PSVECDotProduct(const Vec*, const Vec*);
+extern f32 lbl_8056232C;
+void fn_8019D19C(void* arg0, void* arg1) {
+    f32 sp14, sp18, sp1C;
+    f32 sp8, spC, sp10;
+    f32 scale, dot, value;
+    Vec* v0 = (Vec*)((u8*)arg0 + 0x34);
+    Vec* v1 = (Vec*)((u8*)arg1 + 0x34);
+    sp14 = v1->x - v0->x;
+    sp18 = v1->y - v0->y;
+    sp1C = v1->z - v0->z;
+    if (PSVECSquareDistance(v1, v0) > lbl_8056232C) {
+        scale = lbl_805622E0 / (f32)fn_8002F234(PSVECSquareDistance(v1, v0));
+        sp14 *= scale; sp18 *= scale; sp1C *= scale;
+        dot = PSVECDotProduct((Vec*)&sp14, (Vec*)((u8*)arg0 + 0x18));
+        value = *(f32*)((u8*)arg0 + 0x54) + __fabsf(dot) * (*(f32*)((u8*)arg0 + 0x58) - *(f32*)((u8*)arg0 + 0x54));
+    } else {
+        value = *(f32*)((u8*)arg0 + 0x54);
+        if (value <= *(f32*)((u8*)arg0 + 0x58)) value = *(f32*)((u8*)arg0 + 0x58);
+    }
+    *(f32*)((u8*)arg0 + 0x24) = value;
+    sp8 = v0->x - v1->x; spC = v0->y - v1->y; sp10 = v0->z - v1->z;
+    if (PSVECSquareDistance(v0, v1) > lbl_8056232C) {
+        scale = lbl_805622E0 / (f32)fn_8002F234(PSVECSquareDistance(v0, v1));
+        sp8 *= scale; spC *= scale; sp10 *= scale;
+        dot = PSVECDotProduct((Vec*)&sp8, (Vec*)((u8*)arg1 + 0x18));
+        value = *(f32*)((u8*)arg1 + 0x54) + __fabsf(dot) * (*(f32*)((u8*)arg1 + 0x58) - *(f32*)((u8*)arg1 + 0x54));
+    } else {
+        value = *(f32*)((u8*)arg1 + 0x54);
+        if (value <= *(f32*)((u8*)arg1 + 0x58)) value = *(f32*)((u8*)arg1 + 0x58);
+    }
+    *(f32*)((u8*)arg1 + 0x24) = value;
+    fn_8019B068(arg0, arg1, 0, 0);
+}
+
 extern "C" f32 fn_8019DDEC(void *arg0) {
     return *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28);
+}
+
+extern f32 lbl_805622E8;
+extern f32 lbl_8056234C;
+extern f32 lbl_80562350;
+extern f32 lbl_80562354;
+extern f32 lbl_80562358;
+extern "C" s32 fn_8019DDFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, void* arg4, void* arg5, f32 farg0) {
+    f32 sp8, spC, sp10;
+    f32 dot1;
+    f32 dot2;
+    f32 val;
+    f32 t;
+    f32 mag;
+    f32 scale;
+
+    sp8 = *(f32*)arg4 - *(f32*)arg5;
+    spC = ((f32*)arg4)[1] - ((f32*)arg5)[1];
+    sp10 = ((f32*)arg4)[2] - ((f32*)arg5)[2];
+    dot1 = PSVECDotProduct((const Vec*)&sp8, (const Vec*)&sp8);
+    dot2 = PSVECDotProduct((const Vec*)&sp8, (const Vec*)&farg0);
+    val = lbl_8056234C * dot1;
+    t = val * val - lbl_80562350 * (dot2 - farg0 * farg0);
+    if (t <= lbl_80562354)
+        return 0;
+    mag = (f32)fn_8002F234(t);
+    scale = lbl_805622E8 * (-val - mag);
+    if (scale != lbl_805622D0 || scale >= *(f32*)arg5)
+        return 0;
+    *(f32*)arg5 = scale;
+    ((f32*)arg4)[0] = sp8 + ((f32*)arg5)[0] * scale;
+    ((f32*)arg4)[1] = spC + ((f32*)arg5)[1] * scale;
+    ((f32*)arg4)[2] = sp10 + ((f32*)arg5)[2] * scale;
+    mag = PSVECMag((const Vec*)arg4);
+    if (lbl_80562358 > mag)
+        mag = lbl_80562358;
+    scale = lbl_805622E0 / mag;
+    ((f32*)arg4)[0] *= scale;
+    ((f32*)arg4)[1] *= scale;
+    ((f32*)arg4)[2] *= scale;
+    return 1;
 }
 
 extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
