@@ -887,6 +887,479 @@ void fn_80151B48(void *arg0) {
     fn_80167844();
     fn_8016A438();
 }
+
+extern double cos(double), sin(double), fn_8002EFB4(double,double);
+extern f32 fn_80144514(f32,f32,f32,f32,f32,f32);
+extern s32 fn_802E2C20(void);
+extern void fn_802C744C(s32,f32*), fn_802C74D8(s32,f32*,s32);
+extern s32 lbl_80559EDC, lbl_8055E254;
+extern f32 lbl_80561638,lbl_8056163C,lbl_8056164C,lbl_805616FC,lbl_80561700;
+extern f64 lbl_805616A0,lbl_80561708;
+void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
+    f32 scale[9];
+    f32 translation[3];
+    f32 a[9];
+    f32 origin[3];
+    f32 b[9];
+    f32 rotation[9];
+    f32 position[3];
+    f32 temp_f1;
+    f32 temp_f1_2;
+    f32 temp_f1_3;
+    f32 temp_f1_4;
+    f32 temp_f1_5;
+    f32 temp_f1_6;
+    f32 temp_f1_7;
+    f32 temp_f1_8;
+    f32 temp_f1_9;
+    f32 temp_f21;
+    f32 temp_f21_2;
+    f32 temp_f21_3;
+    f32 temp_f21_4;
+    f32 temp_f21_5;
+    f32 temp_f21_6;
+    f32 temp_f22;
+    f32 temp_f23;
+    f32 temp_f23_2;
+    f32 temp_f23_3;
+    f32 temp_f23_4;
+    f32 temp_f23_5;
+    f32 temp_f23_6;
+    f32 temp_f24;
+    f32 temp_f24_2;
+    f32 temp_f24_3;
+    f32 temp_f24_4;
+    f32 temp_f24_5;
+    f32 temp_f24_6;
+    f32 temp_f24_7;
+    f32 temp_f25;
+    f32 temp_f25_2;
+    f32 temp_f25_3;
+    f32 temp_f25_4;
+    f32 temp_f25_5;
+    f32 temp_f25_6;
+    f32 temp_f25_7;
+    f32 temp_f26;
+    f32 temp_f26_2;
+    f32 temp_f26_3;
+    f32 temp_f26_4;
+    f32 temp_f26_5;
+    f32 temp_f26_6;
+    f32 temp_f26_7;
+    f32 temp_f27;
+    f32 temp_f27_2;
+    f32 temp_f27_3;
+    f32 temp_f27_4;
+    f32 temp_f27_5;
+    f32 temp_f27_6;
+    f32 temp_f27_7;
+    f32 temp_f28;
+    f32 temp_f28_2;
+    f32 temp_f28_3;
+    f32 temp_f28_4;
+    f32 temp_f28_5;
+    f32 temp_f28_6;
+    f32 temp_f28_7;
+    f32 temp_f29;
+    f32 temp_f29_2;
+    f32 temp_f29_3;
+    f32 temp_f29_4;
+    f32 temp_f29_5;
+    f32 temp_f29_6;
+    f32 temp_f2;
+    f32 temp_f30;
+    f32 temp_f30_2;
+    f32 temp_f30_3;
+    f32 temp_f30_4;
+    f32 temp_f30_5;
+    f32 temp_f30_6;
+    f32 temp_f30_7;
+    f32 temp_f31;
+    f32 temp_f31_2;
+    f32 temp_f31_3;
+    f32 temp_f31_4;
+    f32 temp_f31_5;
+    f32 temp_f31_6;
+    f32 temp_f31_7;
+    f32 temp_f3;
+    f32 temp_f3_2;
+    f32 temp_f4;
+    f32 temp_f4_2;
+    f32 temp_f5;
+    f32 var_f21;
+    s32 temp_r3;
+    f32 temp_ret;
+    s32 var_r3;
+
+    position[1] = *(f32 *)((u8 *)arg0 + 4);
+    position[0] = *(f32 *)((u8 *)arg0 + 0);
+    position[2] = *(f32 *)((u8 *)arg0 + 8);
+    if (arg2 != 0) {
+        temp_r3 = fn_802E2C20();
+        var_r3 = temp_r3 ^ 0x80000000;
+        var_f21 = lbl_80561700 * (f32) temp_r3;
+    } else {
+        temp_ret = fn_801E7E18();
+        var_f21 = temp_ret;
+    }
+    temp_f3 = (f32) fn_8002EFB4(lbl_80561688 * var_f21, lbl_805616A0);
+    temp_f31 = lbl_80561638 * temp_f3;
+    temp_f29 = lbl_805616FC;
+    temp_f30 = lbl_80561638 * (f32) fn_8002EFB4(lbl_8056163C * var_f21, lbl_805616A0);
+    scale[0] = temp_f29;
+    scale[1] = lbl_80561648;
+    scale[2] = lbl_80561648;
+    scale[3] = lbl_80561648;
+    scale[4] = temp_f29;
+    scale[5] = lbl_80561648;
+    scale[6] = lbl_80561648;
+    scale[7] = lbl_80561648;
+    scale[8] = temp_f29;
+    translation[0] = position[0];
+    translation[1] = position[1];
+    translation[2] = position[2];
+    origin[0] = position[0];
+    origin[1] = position[1];
+    origin[2] = position[2];
+    temp_f21 = (f32) cos(temp_f31);
+    temp_f4 = (f32) sin(temp_f31);
+    a[0] = temp_f21;
+    temp_f2 = -temp_f4;
+    a[1] = lbl_80561648;
+    a[3] = lbl_80561648;
+    a[2] = temp_f2;
+    a[4] = lbl_8056164C;
+    a[5] = lbl_80561648;
+    a[6] = temp_f4;
+    a[7] = lbl_80561648;
+    a[8] = temp_f21;
+    temp_f21_2 = (f32) cos(temp_f30);
+    temp_f3_2 = (f32) sin(temp_f30);
+    b[0] = temp_f21_2;
+    b[1] = lbl_80561648;
+    b[3] = lbl_80561648;
+    b[2] = -temp_f3_2;
+    b[4] = lbl_8056164C;
+    b[5] = lbl_80561648;
+    b[6] = temp_f3_2;
+    b[7] = lbl_80561648;
+    b[8] = temp_f21_2;
+    if (arg1 != 0) {
+        fn_802C74D8(lbl_8055E254, &b[0], lbl_80559EDC);
+    } else {
+        fn_802C744C(lbl_8055E254, &b[0]);
+    }
+    if ((&a[0] == &a[0]) || (&a[0] == &scale[0])) {
+        temp_f21_3 = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
+        temp_f22 = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
+        temp_f28 = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
+        temp_f27 = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
+        temp_f26 = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
+        temp_f25 = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
+        temp_f24 = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
+        temp_f23 = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
+        temp_f1 = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
+        a[0] = temp_f21_3;
+        a[3] = temp_f22;
+        a[6] = temp_f28;
+        a[1] = temp_f27;
+        a[4] = temp_f26;
+        a[7] = temp_f25;
+        a[2] = temp_f24;
+        a[5] = temp_f23;
+        a[8] = temp_f1;
+    } else {
+        a[0] = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
+        a[3] = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
+        a[6] = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
+        a[1] = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
+        a[4] = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
+        a[7] = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
+        a[2] = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
+        a[5] = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
+        a[8] = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
+    }
+    if (arg1 != 0) {
+        fn_802C74D8(lbl_8055E254, &a[0], lbl_80559EDC);
+    } else {
+        fn_802C744C(lbl_8055E254, &a[0]);
+    }
+    temp_f21_4 = (f32) cos(temp_f31);
+    temp_f4_2 = (f32) sin(temp_f31);
+    a[1] = lbl_80561648;
+    a[0] = lbl_8056164C;
+    a[2] = lbl_80561648;
+    a[3] = lbl_80561648;
+    a[4] = temp_f21_4;
+    a[5] = temp_f4_2;
+    a[6] = lbl_80561648;
+    a[7] = -temp_f4_2;
+    a[8] = temp_f21_4;
+    temp_f21_5 = (f32) cos(temp_f30);
+    temp_f1_2 = (f32) sin(temp_f30);
+    temp_f29_2 = temp_f29 * lbl_805616FC;
+    b[0] = lbl_8056164C;
+    b[1] = lbl_80561648;
+    b[2] = lbl_80561648;
+    b[3] = lbl_80561648;
+    b[4] = temp_f21_5;
+    b[5] = temp_f1_2;
+    b[6] = lbl_80561648;
+    b[7] = -temp_f1_2;
+    b[8] = temp_f21_5;
+    scale[0] = temp_f29_2;
+    scale[1] = lbl_80561648;
+    scale[2] = lbl_80561648;
+    scale[3] = lbl_80561648;
+    scale[4] = temp_f29_2;
+    scale[5] = lbl_80561648;
+    scale[6] = lbl_80561648;
+    scale[7] = lbl_80561648;
+    scale[8] = temp_f29_2;
+    if ((&b[0] == &b[0]) || (&b[0] == &scale[0])) {
+        temp_f31_2 = fn_80144514(scale[0], b[0], scale[3], b[1], scale[6], b[2]);
+        temp_f30_2 = fn_80144514(scale[0], b[3], scale[3], b[4], scale[6], b[5]);
+        temp_f28_2 = fn_80144514(scale[0], b[6], scale[3], b[7], scale[6], b[8]);
+        temp_f27_2 = fn_80144514(scale[1], b[0], scale[4], b[1], scale[7], b[2]);
+        temp_f26_2 = fn_80144514(scale[1], b[3], scale[4], b[4], scale[7], b[5]);
+        temp_f25_2 = fn_80144514(scale[1], b[6], scale[4], b[7], scale[7], b[8]);
+        temp_f24_2 = fn_80144514(scale[2], b[0], scale[5], b[1], scale[8], b[2]);
+        temp_f23_2 = fn_80144514(scale[2], b[3], scale[5], b[4], scale[8], b[5]);
+        temp_f1_3 = fn_80144514(scale[2], b[6], scale[5], b[7], scale[8], b[8]);
+        b[0] = temp_f31_2;
+        b[3] = temp_f30_2;
+        b[6] = temp_f28_2;
+        b[1] = temp_f27_2;
+        b[4] = temp_f26_2;
+        b[7] = temp_f25_2;
+        b[2] = temp_f24_2;
+        b[5] = temp_f23_2;
+        b[8] = temp_f1_3;
+    } else {
+        b[0] = fn_80144514(scale[0], b[0], scale[3], b[1], scale[6], b[2]);
+        b[3] = fn_80144514(scale[0], b[3], scale[3], b[4], scale[6], b[5]);
+        b[6] = fn_80144514(scale[0], b[6], scale[3], b[7], scale[6], b[8]);
+        b[1] = fn_80144514(scale[1], b[0], scale[4], b[1], scale[7], b[2]);
+        b[4] = fn_80144514(scale[1], b[3], scale[4], b[4], scale[7], b[5]);
+        b[7] = fn_80144514(scale[1], b[6], scale[4], b[7], scale[7], b[8]);
+        b[2] = fn_80144514(scale[2], b[0], scale[5], b[1], scale[8], b[2]);
+        b[5] = fn_80144514(scale[2], b[3], scale[5], b[4], scale[8], b[5]);
+        b[8] = fn_80144514(scale[2], b[6], scale[5], b[7], scale[8], b[8]);
+    }
+    temp_f29_3 = temp_f29_2 * lbl_805616FC;
+    scale[1] = lbl_80561648;
+    scale[0] = temp_f29_3;
+    scale[2] = lbl_80561648;
+    scale[3] = lbl_80561648;
+    scale[4] = temp_f29_3;
+    scale[5] = lbl_80561648;
+    scale[6] = lbl_80561648;
+    scale[7] = lbl_80561648;
+    scale[8] = temp_f29_3;
+    if ((&a[0] == &a[0]) || (&a[0] == &scale[0])) {
+        temp_f31_3 = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
+        temp_f30_3 = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
+        temp_f28_3 = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
+        temp_f27_3 = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
+        temp_f26_3 = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
+        temp_f25_3 = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
+        temp_f24_3 = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
+        temp_f23_3 = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
+        temp_f1_4 = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
+        a[0] = temp_f31_3;
+        a[3] = temp_f30_3;
+        a[6] = temp_f28_3;
+        a[1] = temp_f27_3;
+        a[4] = temp_f26_3;
+        a[7] = temp_f25_3;
+        a[2] = temp_f24_3;
+        a[5] = temp_f23_3;
+        a[8] = temp_f1_4;
+    } else {
+        a[0] = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
+        a[3] = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
+        a[6] = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
+        a[1] = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
+        a[4] = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
+        a[7] = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
+        a[2] = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
+        a[5] = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
+        a[8] = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
+    }
+    if (arg1 != 0) {
+        fn_802C74D8(lbl_8055E254, &b[0], lbl_80559EDC);
+    } else {
+        fn_802C744C(lbl_8055E254, &b[0]);
+    }
+    if (arg1 != 0) {
+        fn_802C74D8(lbl_8055E254, &a[0], lbl_80559EDC);
+    } else {
+        fn_802C744C(lbl_8055E254, &a[0]);
+    }
+    temp_f21_6 = (f32) cos(lbl_80561708);
+    temp_f5 = (f32) sin(lbl_80561708);
+    temp_f1_5 = -temp_f5;
+    rotation[0] = temp_f21_6;
+    rotation[1] = lbl_80561648;
+    rotation[2] = temp_f1_5;
+    rotation[3] = lbl_80561648;
+    rotation[4] = lbl_8056164C;
+    rotation[5] = lbl_80561648;
+    rotation[6] = temp_f5;
+    rotation[7] = lbl_80561648;
+    rotation[8] = temp_f21_6;
+    if ((&a[0] == &a[0]) || (&a[0] == &rotation[0])) {
+        temp_f31_4 = fn_80144514(rotation[0], a[0], rotation[3], a[1], rotation[6], a[2]);
+        temp_f30_4 = fn_80144514(rotation[0], a[3], rotation[3], a[4], rotation[6], a[5]);
+        temp_f28_4 = fn_80144514(rotation[0], a[6], rotation[3], a[7], rotation[6], a[8]);
+        temp_f27_4 = fn_80144514(rotation[1], a[0], rotation[4], a[1], rotation[7], a[2]);
+        temp_f26_4 = fn_80144514(rotation[1], a[3], rotation[4], a[4], rotation[7], a[5]);
+        temp_f25_4 = fn_80144514(rotation[1], a[6], rotation[4], a[7], rotation[7], a[8]);
+        temp_f24_4 = fn_80144514(rotation[2], a[0], rotation[5], a[1], rotation[8], a[2]);
+        temp_f23_4 = fn_80144514(rotation[2], a[3], rotation[5], a[4], rotation[8], a[5]);
+        temp_f1_6 = fn_80144514(rotation[2], a[6], rotation[5], a[7], rotation[8], a[8]);
+        a[0] = temp_f31_4;
+        a[3] = temp_f30_4;
+        a[6] = temp_f28_4;
+        a[1] = temp_f27_4;
+        a[4] = temp_f26_4;
+        a[7] = temp_f25_4;
+        a[2] = temp_f24_4;
+        a[5] = temp_f23_4;
+        a[8] = temp_f1_6;
+    } else {
+        a[0] = fn_80144514(rotation[0], a[0], rotation[3], a[1], rotation[6], a[2]);
+        a[3] = fn_80144514(rotation[0], a[3], rotation[3], a[4], rotation[6], a[5]);
+        a[6] = fn_80144514(rotation[0], a[6], rotation[3], a[7], rotation[6], a[8]);
+        a[1] = fn_80144514(rotation[1], a[0], rotation[4], a[1], rotation[7], a[2]);
+        a[4] = fn_80144514(rotation[1], a[3], rotation[4], a[4], rotation[7], a[5]);
+        a[7] = fn_80144514(rotation[1], a[6], rotation[4], a[7], rotation[7], a[8]);
+        a[2] = fn_80144514(rotation[2], a[0], rotation[5], a[1], rotation[8], a[2]);
+        a[5] = fn_80144514(rotation[2], a[3], rotation[5], a[4], rotation[8], a[5]);
+        a[8] = fn_80144514(rotation[2], a[6], rotation[5], a[7], rotation[8], a[8]);
+    }
+    if ((&b[0] == &b[0]) || (&b[0] == &rotation[0])) {
+        temp_f31_5 = fn_80144514(rotation[0], b[0], rotation[3], b[1], rotation[6], b[2]);
+        temp_f30_5 = fn_80144514(rotation[0], b[3], rotation[3], b[4], rotation[6], b[5]);
+        temp_f28_5 = fn_80144514(rotation[0], b[6], rotation[3], b[7], rotation[6], b[8]);
+        temp_f27_5 = fn_80144514(rotation[1], b[0], rotation[4], b[1], rotation[7], b[2]);
+        temp_f26_5 = fn_80144514(rotation[1], b[3], rotation[4], b[4], rotation[7], b[5]);
+        temp_f25_5 = fn_80144514(rotation[1], b[6], rotation[4], b[7], rotation[7], b[8]);
+        temp_f24_5 = fn_80144514(rotation[2], b[0], rotation[5], b[1], rotation[8], b[2]);
+        temp_f23_5 = fn_80144514(rotation[2], b[3], rotation[5], b[4], rotation[8], b[5]);
+        temp_f1_7 = fn_80144514(rotation[2], b[6], rotation[5], b[7], rotation[8], b[8]);
+        b[0] = temp_f31_5;
+        b[3] = temp_f30_5;
+        b[6] = temp_f28_5;
+        b[1] = temp_f27_5;
+        b[4] = temp_f26_5;
+        b[7] = temp_f25_5;
+        b[2] = temp_f24_5;
+        b[5] = temp_f23_5;
+        b[8] = temp_f1_7;
+    } else {
+        b[0] = fn_80144514(rotation[0], b[0], rotation[3], b[1], rotation[6], b[2]);
+        b[3] = fn_80144514(rotation[0], b[3], rotation[3], b[4], rotation[6], b[5]);
+        b[6] = fn_80144514(rotation[0], b[6], rotation[3], b[7], rotation[6], b[8]);
+        b[1] = fn_80144514(rotation[1], b[0], rotation[4], b[1], rotation[7], b[2]);
+        b[4] = fn_80144514(rotation[1], b[3], rotation[4], b[4], rotation[7], b[5]);
+        b[7] = fn_80144514(rotation[1], b[6], rotation[4], b[7], rotation[7], b[8]);
+        b[2] = fn_80144514(rotation[2], b[0], rotation[5], b[1], rotation[8], b[2]);
+        b[5] = fn_80144514(rotation[2], b[3], rotation[5], b[4], rotation[8], b[5]);
+        b[8] = fn_80144514(rotation[2], b[6], rotation[5], b[7], rotation[8], b[8]);
+    }
+    temp_f29_4 = temp_f29_3 * lbl_805616FC;
+    scale[1] = lbl_80561648;
+    scale[0] = temp_f29_4;
+    scale[2] = lbl_80561648;
+    scale[3] = lbl_80561648;
+    scale[4] = temp_f29_4;
+    scale[5] = lbl_80561648;
+    scale[6] = lbl_80561648;
+    scale[7] = lbl_80561648;
+    scale[8] = temp_f29_4;
+    if ((&b[0] == &b[0]) || (&b[0] == &scale[0])) {
+        temp_f23_6 = fn_80144514(scale[0], b[0], scale[3], b[1], scale[6], b[2]);
+        temp_f31_6 = fn_80144514(scale[0], b[3], scale[3], b[4], scale[6], b[5]);
+        temp_f30_6 = fn_80144514(scale[0], b[6], scale[3], b[7], scale[6], b[8]);
+        temp_f28_6 = fn_80144514(scale[1], b[0], scale[4], b[1], scale[7], b[2]);
+        temp_f27_6 = fn_80144514(scale[1], b[3], scale[4], b[4], scale[7], b[5]);
+        temp_f26_6 = fn_80144514(scale[1], b[6], scale[4], b[7], scale[7], b[8]);
+        temp_f25_6 = fn_80144514(scale[2], b[0], scale[5], b[1], scale[8], b[2]);
+        temp_f24_6 = fn_80144514(scale[2], b[3], scale[5], b[4], scale[8], b[5]);
+        temp_f1_8 = fn_80144514(scale[2], b[6], scale[5], b[7], scale[8], b[8]);
+        b[0] = temp_f23_6;
+        b[3] = temp_f31_6;
+        b[6] = temp_f30_6;
+        b[1] = temp_f28_6;
+        b[4] = temp_f27_6;
+        b[7] = temp_f26_6;
+        b[2] = temp_f25_6;
+        b[5] = temp_f24_6;
+        b[8] = temp_f1_8;
+    } else {
+        b[0] = fn_80144514(scale[0], b[0], scale[3], b[1], scale[6], b[2]);
+        b[3] = fn_80144514(scale[0], b[3], scale[3], b[4], scale[6], b[5]);
+        b[6] = fn_80144514(scale[0], b[6], scale[3], b[7], scale[6], b[8]);
+        b[1] = fn_80144514(scale[1], b[0], scale[4], b[1], scale[7], b[2]);
+        b[4] = fn_80144514(scale[1], b[3], scale[4], b[4], scale[7], b[5]);
+        b[7] = fn_80144514(scale[1], b[6], scale[4], b[7], scale[7], b[8]);
+        b[2] = fn_80144514(scale[2], b[0], scale[5], b[1], scale[8], b[2]);
+        b[5] = fn_80144514(scale[2], b[3], scale[5], b[4], scale[8], b[5]);
+        b[8] = fn_80144514(scale[2], b[6], scale[5], b[7], scale[8], b[8]);
+    }
+    temp_f29_5 = temp_f29_4 * lbl_805616FC;
+    scale[1] = lbl_80561648;
+    scale[0] = temp_f29_5;
+    scale[2] = lbl_80561648;
+    scale[3] = lbl_80561648;
+    scale[4] = temp_f29_5;
+    scale[5] = lbl_80561648;
+    scale[6] = lbl_80561648;
+    scale[7] = lbl_80561648;
+    scale[8] = temp_f29_5;
+    if ((&a[0] == &a[0]) || (&a[0] == &scale[0])) {
+        temp_f24_7 = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
+        temp_f25_7 = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
+        temp_f26_7 = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
+        temp_f27_7 = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
+        temp_f28_7 = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
+        temp_f31_7 = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
+        temp_f30_7 = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
+        temp_f29_6 = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
+        temp_f1_9 = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
+        a[0] = temp_f24_7;
+        a[3] = temp_f25_7;
+        a[6] = temp_f26_7;
+        a[1] = temp_f27_7;
+        a[4] = temp_f28_7;
+        a[7] = temp_f31_7;
+        a[2] = temp_f30_7;
+        a[5] = temp_f29_6;
+        a[8] = temp_f1_9;
+    } else {
+        a[0] = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
+        a[3] = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
+        a[6] = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
+        a[1] = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
+        a[4] = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
+        a[7] = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
+        a[2] = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
+        a[5] = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
+        a[8] = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
+    }
+    if (arg1 != 0) {
+        fn_802C74D8(lbl_8055E254, &b[0], lbl_80559EDC);
+    } else {
+        fn_802C744C(lbl_8055E254, &b[0]);
+    }
+    if (arg1 != 0) {
+        fn_802C74D8(lbl_8055E254, &a[0], lbl_80559EDC);
+        return;
+    }
+    fn_802C744C(lbl_8055E254, &a[0]);
+}
+
 #pragma pop
 void fn_801537C8(void) {
 
@@ -1205,3 +1678,35 @@ extern s32 fn_80176A1C(void);
 extern f32 fn_80176A2C(void);
 extern f32 lbl_8056164C;
 extern f32 lbl_80561650;
+static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right) {
+ if (dst == right || dst == left) {
+ f32 t0 = fn_80144514(left[0],right[0],left[3],right[1],left[6],right[2]);
+ f32 t3 = fn_80144514(left[0],right[3],left[3],right[4],left[6],right[5]);
+ f32 t6 = fn_80144514(left[0],right[6],left[3],right[7],left[6],right[8]);
+ f32 t1 = fn_80144514(left[1],right[0],left[4],right[1],left[7],right[2]);
+ f32 t4 = fn_80144514(left[1],right[3],left[4],right[4],left[7],right[5]);
+ f32 t7 = fn_80144514(left[1],right[6],left[4],right[7],left[7],right[8]);
+ f32 t2 = fn_80144514(left[2],right[0],left[5],right[1],left[8],right[2]);
+ f32 t5 = fn_80144514(left[2],right[3],left[5],right[4],left[8],right[5]);
+ f32 t8 = fn_80144514(left[2],right[6],left[5],right[7],left[8],right[8]);
+ dst[0]=t0;
+ dst[3]=t3;
+ dst[6]=t6;
+ dst[1]=t1;
+ dst[4]=t4;
+ dst[7]=t7;
+ dst[2]=t2;
+ dst[5]=t5;
+ dst[8]=t8;
+ } else {
+ dst[0]=fn_80144514(left[0],right[0],left[3],right[1],left[6],right[2]);
+ dst[3]=fn_80144514(left[0],right[3],left[3],right[4],left[6],right[5]);
+ dst[6]=fn_80144514(left[0],right[6],left[3],right[7],left[6],right[8]);
+ dst[1]=fn_80144514(left[1],right[0],left[4],right[1],left[7],right[2]);
+ dst[4]=fn_80144514(left[1],right[3],left[4],right[4],left[7],right[5]);
+ dst[7]=fn_80144514(left[1],right[6],left[4],right[7],left[7],right[8]);
+ dst[2]=fn_80144514(left[2],right[0],left[5],right[1],left[8],right[2]);
+ dst[5]=fn_80144514(left[2],right[3],left[5],right[4],left[8],right[5]);
+ dst[8]=fn_80144514(left[2],right[6],left[5],right[7],left[8],right[8]);
+ }
+}
