@@ -26,6 +26,8 @@ struct S28_80142118 { s32 v[7]; };
 
 struct TVec2 { f32 x; f32 y; };
 
+extern "C" void fn_801E9DC4(s16 *);
+
 extern "C" char lbl_80559D40[];
 extern "C" char lbl_80559D58[];
 extern "C" char lbl_80559D60[];
