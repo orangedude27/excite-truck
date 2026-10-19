@@ -291,6 +291,9 @@ extern "C" void fn_80156B4C(void) {
 extern "C" void fn_80156B50(void) {
 }
 
+extern "C" void fn_80156B54(void) {
+}
+
 s32 fn_80156C60(void *arg0, s32 arg1) {
     if (arg1 >= ((s32 *)arg0)[2]) return 0;
     return ((s32 *)((s32 *)arg0)[1])[arg1 * 2];
