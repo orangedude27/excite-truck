@@ -1,3 +1,9 @@
+extern double lbl_80560600, lbl_80560608, lbl_80560610, lbl_80560670;
+extern double lbl_80560618, lbl_80560620, lbl_80560628, lbl_80560630, lbl_80560638, lbl_80560640;
+extern double lbl_80560648, lbl_80560650, lbl_80560658, lbl_80560660, lbl_80560668;
+extern double lbl_80560678, lbl_80560680;
+extern float lbl_80558DB0;
+
 static const double huge = 1.0e300;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
