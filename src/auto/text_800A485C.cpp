@@ -1,5 +1,6 @@
   #include <types.h>
   #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
+extern "C" void VFipf_memcpy(void *, const void *, u32);
 
   namespace homebutton {
   namespace gui {
@@ -1183,6 +1184,29 @@ extern "C" void fn_800B36D4(s32 arg0) {
     fn_800B63FC();
 }
 
+extern "C" void fn_800B3BEC(u8 *out, u8 *in, u8 flags) {
+    s32 last = -1;
+    s32 i;
+    for (i = 0; i < 8; i++) {
+        out[i] = in[i];
+        if (in[i] != ' ') last = i;
+    }
+    for (i = 8; i < 11; i++) {
+        if (in[i] != ' ') last = i;
+    }
+    out += last + 1;
+    if (last <= 7) {
+        *out = 0;
+        return;
+    }
+    if ((flags & 8) == 0) {
+        *out++ = '.';
+    }
+    i = 8;
+    while (i <= last) *out++ = in[i++];
+    *out = 0;
+}
+
 extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *arg0) {
     s32 i = 0;
     s32 length = 0;
@@ -1407,6 +1431,97 @@ extern "C" s32 VFiPFCODE_CP932_OEM2Unicode(s32 arg0, u16 *arg1) {
         return fn_800A4BE8(1, 2);
     }
     return fn_800A4BE8(2, 2);
+}
+
+extern unsigned short lbl_802EEF80[];
+extern void fn_800A4BE8(int, int);
+void VFiPFCODE_CP932_Unicode2OEM(unsigned short *param_1, char *param_2)
+{
+    short sVar1;
+    short sVar2;
+    unsigned long long uVar3;
+    unsigned short uVar4;
+    unsigned short *puVar5;
+    int iVar6;
+    int iVar7;
+    int iVar8;
+    unsigned short *puVar9;
+    long long lVar10;
+
+    uVar4 = *param_1;
+    if (((uVar4 & 0xff) < 0x80) && ((int)(unsigned int)uVar4 >> 8 == 0)) {
+        *param_2 = (char)uVar4;
+        param_2[1] = '\0';
+        fn_800A4BE8(1, 2);
+        return;
+    }
+    uVar3 = (unsigned long long)((int)(unsigned int)uVar4 >> 8) * 0x100 + (uVar4 & 0xff);
+    if ((0xff60 < uVar3) && (uVar3 < 0xffa0)) {
+        param_2[1] = '\0';
+        *param_2 = (char)uVar3 + '@';
+        fn_800A4BE8(1, 2);
+        return;
+    }
+    if (uVar3 == 0x5f) {
+        *param_2 = '_';
+        fn_800A4BE8(1, 2);
+        return;
+    }
+    iVar6 = 0;
+    puVar5 = lbl_802EEF80;
+    do {
+        lVar10 = 0x15;
+        puVar9 = puVar5;
+        iVar7 = 0;
+        do {
+            iVar8 = iVar7;
+            if ((((((*puVar9 == uVar3) || (iVar8 = iVar7 + 1, puVar9[1] == uVar3)) ||
+                (iVar8 = iVar7 + 2, puVar9[2] == uVar3)) ||
+               ((iVar8 = iVar7 + 3, puVar9[3] == uVar3 || (iVar8 = iVar7 + 4, puVar9[4] == uVar3)))) ||
+              ((iVar8 = iVar7 + 5, puVar9[5] == uVar3 ||
+               ((iVar8 = iVar7 + 6, puVar9[6] == uVar3 || (iVar8 = iVar7 + 7, puVar9[7] == uVar3)))))) ||
+             (iVar8 = iVar7 + 8, puVar9[8] == uVar3)) break;
+            iVar8 = iVar7 + 9;
+            puVar9 += 9;
+            lVar10--;
+            iVar7 = iVar8;
+        } while (lVar10 != 0);
+        if (iVar8 < 0xbd) break;
+        iVar6++;
+        puVar5 += 0xbd;
+    } while (iVar6 < 0x2d);
+    if (iVar8 == 0xbd) {
+        *param_2 = '_';
+        fn_800A4BE8(1, 2);
+        return;
+    }
+    sVar1 = (short)iVar8;
+    sVar2 = (short)iVar6;
+    if (iVar6 < 0 || 3 < iVar6) {
+        if (iVar6 < 4 || 0x1c < iVar6) {
+            if (iVar6 < 0x1d || 0x27 < iVar6) {
+                if (iVar6 < 0x28 || 0x29 < iVar6) {
+                    if (iVar6 < 0x2a || 0x2c < iVar6) {
+                        *param_2 = '_';
+                        fn_800A4BE8(1, 2);
+                        return;
+                    }
+                    uVar4 = (sVar2 + 0xd0) * 0x100 | sVar1 + 0x40U;
+                } else {
+                    uVar4 = (sVar2 + 0xc5) * 0x100 | sVar1 + 0x40U;
+                }
+            } else {
+                uVar4 = (sVar2 + 0xc3) * 0x100 | sVar1 + 0x40U;
+            }
+        } else {
+            uVar4 = (sVar2 + 0x83) * 0x100 | sVar1 + 0x40U;
+        }
+    } else {
+        uVar4 = (sVar2 + 0x81) * 0x100 | sVar1 + 0x40U;
+    }
+    param_2[1] = (char)uVar4;
+    *param_2 = (char)(uVar4 >> 8);
+    fn_800A4BE8(2, 2);
 }
 
 #pragma dont_inline reset
@@ -3770,6 +3885,88 @@ extern "C" void fn_800D2FDC(void *arg0, void *arg1, void *arg2, void *arg3, void
         }
     } else {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x287, lbl_8031EBB4);
+    }
+}
+
+extern "C" u16 lbl_80407BE8[];
+extern "C" u32 lbl_8031EC40[];
+extern "C" u8  lbl_802F4858[];
+extern "C" u8  lbl_802F4958[];
+extern "C" void fn_800D337C(s32 arg0, s32 arg1, s32 arg2) {
+    u16 *dest;
+    u16 *be;
+    u32 *pal;
+    s32 scaleX, scaleY;
+    u16 width, height;
+    s32 idx, rem, off;
+    s32 i, n;
+    s32 v;
+
+    v = arg2;
+    if (arg2 >= 100)
+        v -= 100;
+
+    rem = v % 5;
+    idx = v / 5;
+    off = rem * 6;
+
+    pal = (u32 *)(lbl_802F4958 + idx * 28);
+    if (arg2 < 100)
+        pal = (u32 *)(lbl_802F4858 + idx * 28);
+
+    width  = *(u16 *)((u8 *)lbl_80407BD8 + 8);
+    height = *(u16 *)((u8 *)lbl_80407BD8 + 0xA);
+    scaleX = width < 400 ? 1 : 2;
+    scaleY = height < 300 ? 1 : 2;
+
+    dest = (u16 *)(lbl_80407BD8[0] + scaleY * arg1 * (u16)*(u16 *)((u8 *)lbl_80407BD8 + 0xC) * 2 + arg0 * scaleX * 2);
+
+    if (arg1 >= 0) {
+        if (arg0 >= 0) {
+            if (width > scaleX * (arg0 + 6)) {
+                if (height > scaleY * (arg1 + 7)) {
+                    be = lbl_80407BE8;
+                    n = scaleX * 6;
+
+                    for (i = 0; i < 7; i++) {
+                        u32 pat = *pal++ << off;
+                        s32 cnt;
+                        if (scaleX == 1) {
+                            pat = (pat >> 1) & 0x7E000000;
+                        } else {
+                            pat = ((lbl_8031EC40[(pat >> 26) & 0xC] << 4)
+                                 | lbl_8031EC40[(pat >> 24) & 0xC]
+                                 | (lbl_8031EC40[(pat >> 28) & 0xC] << 8)) << 19;
+                        }
+                        cnt = (n + 1) >> 1;
+                        if (n > 0) {
+                            do {
+                                u32 b30 = pat & 0x40000000;
+                                u32 b31 = pat & 0x80000000;
+                                u32 b29 = pat & 0x20000000;
+                                u32 b28 = pat & 0x10000000;
+                                u16 p0 = (u16)((b30 ? be[2] : 0)
+                                       | ((b30 ? be[4] : 0x40)
+                                       + ((b29 ? be[5] : 0x20) + (b31 ? be[5] : 0x20))));
+                                u16 p1;
+                                dest[0] = p0;
+                                if (scaleY > 1)
+                                    dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC)] = p0;
+                                p1 = (u16)((b29 ? be[2] : 0)
+                                       | ((b29 ? be[7] : 0x40)
+                                       + ((b28 ? be[8] : 0x20) + (b30 ? be[8] : 0x20))));
+                                dest[1] = p1;
+                                if (scaleY > 1)
+                                    dest[*(u16 *)((u8 *)lbl_80407BD8 + 0xC) + 1] = p1;
+                                pat <<= 2;
+                                dest += 2;
+                            } while (--cnt);
+                        }
+                        dest += *(u16 *)((u8 *)lbl_80407BD8 + 0xC) * scaleY - n;
+                    }
+                }
+            }
+        }
     }
 }
 
