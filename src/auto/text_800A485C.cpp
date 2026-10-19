@@ -5290,3 +5290,20 @@ extern "C" f32 lbl_80560E3C;
   extern "C" s32 fn_800B8004(s32);
   extern "C" s32 fn_800B8048(s32);
   extern "C" s32 fn_800B960C(s32, s32, s32, s32, s32 *, s32);
+namespace homebutton {
+class GroupAnmController {
+public:
+    virtual void d0();
+    virtual void calc();
+    u8 pad8[4];
+    f32 m_value;
+    u8 pad10[4];
+    s32 m_state;
+    u8 pad18[8];
+    void *m_list;
+    void *m_pane;
+    void do_calc();
+};
+}
+extern "C" const char lbl_8031E764[];
+extern "C" const char lbl_8031E740[];
