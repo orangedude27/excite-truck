@@ -115,7 +115,7 @@ int fn_802CFCA0(void* alarm) {
     int sp10;
     int spC;
     int sp8;
-
+    int pad[24];
     fn_802D6C68();
     lbl_8055FE39 = 1;
     lbl_8055FDA4 = lbl_8055FD94;
@@ -133,7 +133,7 @@ int fn_802CFCA0(void* alarm) {
     GXMiscInit(1);
     lbl_8055FD30 += 1;
     if (lbl_804C97B0[0] == 0) {
-        if (__fabsf(((float *)lbl_804C97B0)[4]) != lbl_80558DC4) {
+        if (__fabsf(((float *)lbl_804C97B0)[4]) <= lbl_80558DC4) {
             lbl_804C97B0[0] = 1;
             lbl_804C97B0[0x1C] = 1;
         }
@@ -226,12 +226,17 @@ void fn_802D0014(float a, float b, float c) {
     lbl_804C97B0[0x1C] = 1;
 }
 
+#pragma small_data off
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     unsigned char *p = (unsigned char *)&lbl_804C97D0;
-    p[4] = a; p[5] = b; p[6] = c; p[7] = 0xFF; p[0x5C] = 1;
+    p[4] = a;
+    p[5] = b;
+    p[6] = c;
+    p[7] = 0xFF;
+    p[0x5C] = 1;
 }
-
+#pragma small_data on
 void fn_802D0188(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
     unsigned char *p = (unsigned char *)&lbl_804C97D0;
@@ -324,7 +329,7 @@ void fn_802D08CC(int arg0) {
     GXSetCullMode(mode);
 }
 
-void fn_802D0910(void) {
+void fn_802D0910(int, int, int, int, int, int) {
 }
 
 void fn_802D09E4(void) {
@@ -340,16 +345,18 @@ void fn_802D0BD8(void) {
     extern void GXSetViewport(unsigned short, float, float, float, float, float, float);
     extern void GXInvalidateVtxCache(void);
     extern void GXInvalidateTexAll(void);
-    unsigned char *p;
+    unsigned char *p = (unsigned char *)lbl_8055FD64;
     unsigned short x;
-    p = (unsigned char *)lbl_8055FD64;
+    unsigned short y;
     if (p[0x18]) {
         VIGetNextField();
         x = *(unsigned short *)(p + 4);
-        GXSetViewportJitter(x, lbl_80564F88, lbl_80564F88, (float)x, (float)*(unsigned short *)(p + 6), lbl_80564F88, lbl_80564F8C);
+        y = *(unsigned short *)(p + 6);
+        GXSetViewportJitter(x, lbl_80564F88, lbl_80564F88, (float)x, (float)y, lbl_80564F88, lbl_80564F8C);
     } else {
         x = *(unsigned short *)(p + 4);
-        GXSetViewport(x, lbl_80564F88, lbl_80564F88, (float)x, (float)*(unsigned short *)(p + 6), lbl_80564F88, lbl_80564F8C);
+        y = *(unsigned short *)(p + 6);
+        GXSetViewport(x, lbl_80564F88, lbl_80564F88, (float)x, (float)y, lbl_80564F88, lbl_80564F8C);
     }
     GXInvalidateVtxCache();
     GXInvalidateTexAll();
@@ -573,10 +580,9 @@ void fn_802D3360(void) {
 }
 #pragma dont_inline reset
 void fn_802D37E4(void) {
-    int i;
-    unsigned char *p;
-    p = lbl_804C9984;
-    for (i = 0; i < 4; i++) {
+    int i = 4;
+    unsigned char *p = (unsigned char *)lbl_804C9984;
+    do {
         p[0xC] = 0; p[0xD] = 0;
         p[0x24] = 0; p[0x25] = 0;
         p[0x3C] = 0; p[0x3D] = 0;
@@ -594,7 +600,7 @@ void fn_802D37E4(void) {
         p[0x15C] = 0; p[0x15D] = 0;
         p[0x174] = 0; p[0x175] = 0;
         p += 0x180;
-    }
+    } while (--i);
     *(int *)(lbl_804C9984 + 0x700) = 0;
 }
 
@@ -613,22 +619,19 @@ void fn_802D3894(void) {
 }
 
 void fn_802D3900(void) {
-    unsigned char *slot;
-    unsigned char *base;
-    int count;
+    unsigned char *base = lbl_804C9984;
+    unsigned char *slot = base;
+    int count = 0;
     void *light;
     unsigned long result;
-    base = lbl_804C9984;
-    slot = base;
-    count = 0;
-    do {
+    while (count < *(int *)(base + 0x700)) {
         light = *(void **)(slot + 0x600);
         GXInitLightDir(*(unsigned long *)light, *(unsigned long *)((char *)light + 4), &result);
         *(unsigned char *)((char *)light + 0xD) =
-            ((result ^ *(unsigned long *)((char *)light + 8)) != 0);
+            result > *(unsigned long *)((char *)light + 8);
         slot += 4;
         count++;
-    } while (count < *(int *)(base + 0x700));
+    }
     *(int *)(base + 0x700) = 0;
 }
 
@@ -658,6 +661,38 @@ void *fn_802D39A4(float value) {
 }
 
 void fn_802D3A50(void *arg0) { ((unsigned char *)arg0)[0xC] = 0; }
+
+extern float lbl_80564F88, lbl_80564F8C, lbl_80564FB8, lbl_80564FBC, lbl_80564FE8, lbl_80564FEC;
+int fn_802D3A5C(void *arg0, float *arg1) {
+ extern unsigned char lbl_804C9778[];
+ int x=(int)arg1[0];
+ int y=(int)(lbl_80564FB8*arg1[1]/lbl_80564FBC);
+ float target;
+ if (*((unsigned char *)arg0+0xD)) target=lbl_80564F8C;
+ else target=lbl_80564F88;
+ if(x>=0 && x<640 && y>=0 && y<448) {
+  float z, delta, nearZ, farZ, a, b;
+  *(int *)arg0=x;
+  z=-arg1[2];
+  *((int *)arg0+1)=y;
+  nearZ=*(float *)(lbl_804C9778+4);
+ farZ=*(float *)(lbl_804C9778+8);
+ delta=farZ-nearZ;
+ a=-nearZ/delta;
+ b=farZ*nearZ/delta;
+  *((unsigned int *)arg0+2)=(unsigned int)(lbl_80564FE8+lbl_80564FE8*((z*a-b)/-z));
+  if(*(int *)(lbl_804C9984+0x700)<64) {
+   *(void **)(lbl_804C9984+0x600+*(int *)(lbl_804C9984+0x700)*4)=arg0;
+   ++*(int *)(lbl_804C9984+0x700);
+  }
+ } else *((unsigned char *)arg0+0xD)=0;
+ {
+  float old=*(float *)((char *)arg0+0x14);
+  float value=old+*(float *)((char *)arg0+0x10)*(target-old);
+  *(float *)((char *)arg0+0x14)=value;
+  return value>=lbl_80564FEC;
+ }
+}
 
 void fn_802D3BB0(void) {}
 
