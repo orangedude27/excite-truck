@@ -1907,7 +1907,7 @@ extern "C" s32 fn_800B7C34(void) {
     return r;
 }
 
-void fn_800B7C60(void) {
+extern "C" void fn_800B7C60(void) {
     fn_800B75C4();
 }
 
