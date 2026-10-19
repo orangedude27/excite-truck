@@ -13,7 +13,7 @@ extern int __cntlzw(unsigned int);
 typedef struct SoundMgrObj {
     char pad0[0x10];
     signed long field_10;
-    char pad14[0x34];
+    char pad14[0x30];
     signed long field_44;
     char pad48[0x20];
     float field_68;
@@ -149,70 +149,44 @@ extern void fn_80207C80(void*);
 extern void* lbl_802F9DC8[];
 extern char lbl_8033BE20[];
 void fn_80207DE0(void* arg0) {
-    void* var_r28;
-    void* var_r30;
-    signed long var_r29;
-    signed long var_r31;
-    void* temp_vt;
-    signed long temp_arg;
-
-    var_r31 = 0;
-    var_r29 = 0;
-    var_r28 = arg0;
-    var_r30 = var_r28;
-    temp_vt = 0;
-    temp_arg = 1;
-    while (var_r29 < *(signed long*)(((signed char*)var_r28) + 0x114)) {
-        void** temp_r3 = (void**)((signed char*)var_r30 + 0x94);
+    void* var_r28; void* var_r30; signed long var_r29; signed long var_r31;
+    var_r31=0; var_r29=0; var_r28=arg0; var_r30=var_r28;
+    while (var_r29 < *(signed long*)(((signed char*)var_r28)+0x114)) {
+        void** temp_r3=(void**)((signed char*)var_r30+0x94);
         if (*temp_r3 != 0) {
-            temp_vt = *temp_r3;
-            (*(void(**)(signed long))((void**)temp_vt)[2])(temp_arg);
+            void* obj=*temp_r3;
+            void (*fn)(void*, signed long) = *(void (**)(void*, signed long))(*(void***)obj + 2);
+            fn(obj, 1);
         }
-        *temp_r3 = (void*)var_r31;
-        var_r30 = (void*)(((signed char*)var_r30) + 4);
-        var_r29 += 1;
+        *temp_r3=(void*)var_r31; var_r30=(void*)(((signed char*)var_r30)+4); var_r29+=1;
     }
-    *(signed long*)(((signed char*)var_r28) + 0x114) = 0;
+    *(signed long*)(((signed char*)var_r28)+0x114)=0;
 }
 
 extern void* memmove(void*, const void*, unsigned long);
+#pragma push
+#pragma use_lmw_stmw off
 void fn_80207E70(void* arg0) {
-    void* cur;
-    void* dst;
-    void* src;
-    signed long i;
-    void* base;
-    void* temp;
-    void* sub;
-    void* vt;
-    signed long temp_r5;
-    base = arg0;
-    cur = base;
-    src = (char*)base + 0x98;
-    dst = (char*)base + 0x94;
-    i = 0;
+    void* base = arg0;
+    void* cur = base;
+    void* src = (char*)base + 0x98;
+    void* dst = (char*)base + 0x94;
+    signed long i = 0;
+    void* temp; void* sub;
+    signed long n;
     while (i < *(signed long*)((char*)base + 0x114)) {
         temp = *(void**)((char*)cur + 0x94);
         sub = *(void**)((char*)temp + 0xC);
-        vt = *(void**)sub;
-        if (((signed long (**)(void*))((char*)vt + 0x24))[0](sub) == 3) {
+        if (((long (*)(void*))(*(void***)sub)[9])(sub) == 3) {
             temp = *(void**)((char*)cur + 0x94);
-            if (temp != 0) {
-                vt = *(void**)temp;
-                ((void (**)(void*, signed long))((char*)vt + 0x8))[0](temp, 1);
-            }
-            temp_r5 = *(signed long*)((char*)base + 0x114) - 1;
-            *(signed long*)((char*)base + 0x114) = temp_r5;
-            memmove(dst, src, (unsigned long)(temp_r5 - i) * 4);
-        } else {
-            cur = (char*)cur + 4;
-            src = (char*)src + 4;
-            dst = (char*)dst + 4;
-            i++;
-        }
+            if (temp != 0) ((void (*)(void*, signed long))(*(void***)temp)[2])(temp, 1);
+            n = *(signed long*)((char*)base + 0x114) - 1;
+            *(signed long*)((char*)base + 0x114) = n;
+            memmove(dst, src, (unsigned long)(n - i) * 4);
+        } else { cur = (char*)cur + 4; src = (char*)src + 4; dst = (char*)dst + 4; i++; }
     }
 }
-
+#pragma pop
 void fn_80208404(void) {
 
 }
@@ -233,8 +207,8 @@ void fn_8020899C(void* arg0, void* arg1) {
     typedef struct {
         char pad[0xc];
         void (*f)(void*);
-    } Vt;
-    ((Vt*)*(void**)arg1)->f(arg1);
+    } Vt_8020899C;
+    ((Vt_8020899C*)*(void**)arg1)->f(arg1);
 }
 
 void fn_802089B0(void* self) {
@@ -269,6 +243,38 @@ signed long fn_802085F0(void* arg0, signed long x) {
             return 1;
         default:
             return 0;
+    }
+}
+
+extern char lbl_8033BE80[];
+void fn_80208620(void* arg0, void* arg1) {
+    signed long index = *(signed long*)((char*)arg1 + 0x44);
+    void* entry = (char*)arg0 + index * 8;
+    void* found = 0;
+    signed long i = 0;
+    signed long offset = 0;
+    signed long count = *(signed long*)((char*)entry + 0x18);
+    while (i < count) {
+        if (*(void**)((char*)*(void**)((char*)entry + 0x14) + offset) == arg1) {
+            found = (char*)*(void**)((char*)entry + 0x14) + i * 4;
+            break;
+        }
+        offset += 4;
+        i++;
+    }
+    if (found != 0) {
+        *(signed long*)((char*)arg0 + 0x10) -= 1;
+        *(signed long*)((char*)entry + 0x18) -= 1;
+        memmove(found, (char*)found + 4, (unsigned long)(*(signed long*)((char*)arg0 + 0x10) - ((signed long)((char*)found - *(char**)((char*)arg0 + 0xC)) / 4)) * 4);
+        index += 1;
+        if (index < 9) {
+            do {
+                *(signed long*)((char*)arg0 + index * 8 + 0x14) -= 4;
+                index++;
+            } while (index < 9);
+        }
+    } else {
+        fn_802E317C(lbl_8033BE80, (char*)arg1 + 0x37);
     }
 }
 
