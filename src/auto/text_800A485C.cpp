@@ -5222,6 +5222,24 @@ extern "C" void Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPC
     fn_800D272C(head, lbl_804077D8);
     OSUnlockMutex((void*)0x804077C0);
 }
+
+s32 nw4hbm::db::Console_GetTotalLines(nw4hbm::db::detail::ConsoleHead *head) {
+    if (head == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x41A, lbl_8031EA90);
+    }
+    OSLockMutex(&lbl_804077C0);
+    if (head == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EA80, 0x70, lbl_8031EA90);
+    }
+    s32 lines = (s32)M2C_FIELD(head, u16 *, 0x0C) - (s32)M2C_FIELD(head, u16 *, 0x12);
+    if (lines < 0) lines += M2C_FIELD(head, u16 *, 0x06);
+    u16 count = (u16)lines;
+    if (M2C_FIELD(head, u16 *, 0x10) != 0) count++;
+    s32 result = M2C_FIELD(head, s32 *, 0x14) + count;
+    OSUnlockMutex(&lbl_804077C0);
+    return result;
+}
+
 #pragma pop
 
 extern "C" void fn_800D2480(void) {
