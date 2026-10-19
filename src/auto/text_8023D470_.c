@@ -20,3 +20,6 @@ void fn_8023D470(void) {
 }
 #pragma opt_propagation reset
 #pragma scheduling on
+
+DECL_SECTION(".ctors") funcptr_t D_802ED408 = fn_8023D470;
+
