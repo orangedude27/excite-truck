@@ -26,6 +26,25 @@ void fn_8026B11C(void **arg0, void *arg1) {
         }
     }
 }
+
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void deleteThreads__6SystemFv_8026B178(void *arg0) {
+    class ThreadObject {
+    public:
+        virtual void destroy(int);
+    };
+    ThreadObject *p = *(ThreadObject **)arg0;
+    if (p) {
+        if (p)
+            p->destroy(1);
+        *(ThreadObject **)arg0 = 0;
+    }
+}
+#pragma cplusplus reset
+#pragma pop
+
 void fn_8026B1D0(void *obj) {
     float a, b;
     void *dst = lbl_8049A028 + lbl_8055F4C8 * 0xC;
@@ -59,11 +78,10 @@ void fn_8026B6E4(void) {
     int i;
     if (lbl_8055F4C8 > 0) {
         i = 0;
-        for (;;) {
+        do {
             fn_8026B3D4(i);
-            ++i;
-            if (i >= fn_801B2F24()) return;
-        }
+            i++;
+        } while (i < fn_801B2F24());
     }
 }
 
