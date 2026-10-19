@@ -198,6 +198,33 @@ void fn_8019D19C(void* arg0, void* arg1) {
     fn_8019B068(arg0, arg1, 0, 0);
 }
 
+s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
+    Vec* a = *(Vec**)((u8*)arg0 + 0xC); Vec* b = *(Vec**)((u8*)arg1 + 0xC);
+    Vec cross, mid, da, db, p, q, delta, normal, center;
+    f32 h0=*(f32*)((u8*)arg0+0x28), h1=*(f32*)((u8*)arg1+0x28);
+    PSVECCrossProduct((Vec*)((u8*)a+0x18),(Vec*)((u8*)b+0x18),&cross);
+    f32 den=PSVECDotProduct(&cross,&cross), t0,t1;
+    if(den<lbl_8056232C) {
+        mid.x=(a->x+b->x)*lbl_805622E8; mid.y=(a->y+b->y)*lbl_805622E8; mid.z=(a->z+b->z)*lbl_805622E8;
+        da.x=mid.x-a->x; da.y=mid.y-a->y; da.z=mid.z-a->z;
+        t0=PSVECDotProduct((Vec*)((u8*)a+0x18),&da);
+        db.x=mid.x-b->x; db.y=mid.y-b->y; db.z=mid.z-b->z;
+        t1=PSVECDotProduct((Vec*)((u8*)b+0x18),&db);
+    } else { t0=0.0f; t1=0.0f; }
+    if(!clamp) { if(t0 < -h0 || t0>h0 || t1 < -h1 || t1>h1) return 0; }
+    else { if(t0 < -h0)t0=-h0; if(t0>h0)t0=h0; if(t1 < -h1)t1=-h1; if(t1>h1)t1=h1; }
+    p.x=a->x+((Vec*)((u8*)a+0x18))->x*t0; p.y=a->y+((Vec*)((u8*)a+0x18))->y*t0; p.z=a->z+((Vec*)((u8*)a+0x18))->z*t0;
+    q.x=b->x+((Vec*)((u8*)b+0x18))->x*t1; q.y=b->y+((Vec*)((u8*)b+0x18))->y*t1; q.z=b->z+((Vec*)((u8*)b+0x18))->z*t1;
+    delta.x=q.x-p.x; delta.y=q.y-p.y; delta.z=q.z-p.z;
+    f32 dist=PSVECMag(&delta); if(__fabsf(dist)==lbl_80558DC4)return 0;
+    f32 depth=*(f32*)((u8*)arg0+0x24)+*(f32*)((u8*)arg1+0x24)-dist; if(depth<lbl_805622D0)return 0;
+    f32 scale=lbl_805622DC/dist; normal.x=delta.x*scale; normal.y=delta.y*scale; normal.z=delta.z*scale;
+    center.x=(p.x+q.x)*lbl_805622E8; center.y=(p.y+q.y)*lbl_805622E8; center.z=(p.z+q.z)*lbl_805622E8;
+    typedef void (*Call)(void*,void*,f32,f32,Vec*,Vec*,s32,s32);
+    ((Call)fn_8019A788)(arg3?arg3:arg0,arg1,depth,lbl_805622D0,&center,&normal,0,0);
+    return 1;
+}
+
 extern "C" f32 fn_8019DDEC(void *arg0) {
     return *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28);
 }
