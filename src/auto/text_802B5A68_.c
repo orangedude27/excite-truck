@@ -178,6 +178,38 @@ void fn_802B5F24(s32 arg0) {
     fn_80128678();
 }
 
+void fn_802B5F98(void) {
+    s32 handle;
+    s32 i, j, index;
+    float height, x, z;
+    float points[3];
+    handle = fn_802E3D68(lbl_8034A598 + 0x2c);
+    if (handle == -1) return;
+    fn_802E3AD0(handle, lbl_8055CE58);
+    fn_802E3AD0(handle, lbl_8034A598 + 0x3c);
+    fn_802E3AD0(handle, lbl_8034A598 + 0x50);
+    for (i = -0x200, index = 0; i <= 0x200; i += 8) {
+        for (j = -0x200; j <= 0x200; j += 8, index++) {
+            x = (float)i * lbl_80564C58;
+            z = (float)j * lbl_80564C58;
+            height = fn_801DCF48(points, x, z);
+            fn_802E3AD0(handle, lbl_8034A598 + 0x60, x, height, z, (float)(i + 0x200));
+            fn_802E3AD0(handle, lbl_8034A598 + 0x78,
+                        (float)(i + 0x200) * lbl_80564C60,
+                        (float)(j + 0x200) * lbl_80564C60);
+            fn_802E3AD0(handle, lbl_8034A598 + 0x8c, points[0], points[1], points[2]);
+            if (i > -0x200 && j > -0x200) {
+                fn_802E3AD0(handle, lbl_8034A598 + 0xa4, index, index - 1, index - 0x81);
+                fn_802E3AD0(handle, lbl_8034A598 + 0xa4, index - 0x81, index - 1, index - 0x82);
+            }
+        }
+    }
+    fn_802E3AD0(handle, lbl_8055CE60);
+    fn_802B5F24(handle);
+    fn_802E3AD0(handle, lbl_8055CE60);
+    fn_802E3734(&handle);
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -588,3 +620,6 @@ void fn_802B8C88(void) {
 void fn_802B8C98(void) {
     lbl_8055FA31 = 0;
 }
+struct Texture802B { s32 width; s32 height; u32 *pixels; };
+struct Entry802B { char name[0x20]; s32 width; s32 height; char pixels[1]; };
+struct Entries802B { s32 pad; s32 count; struct Entry802B *entries; };
