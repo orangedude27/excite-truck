@@ -483,6 +483,12 @@ void fn_801D68D0(void *arg0) {
     }
 }
 
+extern char lbl_80338BD0[];
+void fn_801D68E8(UnkStruct_801D6618 *arg0) {
+    arg0->name = lbl_80338BD0;
+    arg0->state = 0;
+}
+
 void *fn_801D6900(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         *(s32 *)((u8 *)arg0 + 4) = 0;
