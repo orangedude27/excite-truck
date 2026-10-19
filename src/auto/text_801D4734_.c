@@ -792,10 +792,11 @@ s32 fn_801D77B8(s32 arg0);
 s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
-void fn_801D77D8(void *arg0) {
-    (*(void (**)(void *))((char *)*(void **)arg0 + 0x34))(arg0);
+#pragma cplusplus on
+extern "C" void fn_801D77D8(void *arg0) {
+    ((TObj34 *)arg0)->v34();
 }
-
+#pragma cplusplus reset
 void fn_801D77E8(void) {
 
 }
