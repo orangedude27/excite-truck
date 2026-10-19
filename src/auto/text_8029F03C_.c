@@ -72,8 +72,13 @@ void fn_8029F03C(void) {
 }
 
 void fn_8029F0D0(void) {
- int *p=(int*)lbl_8055F820; if(p) fn_80128670();
- lbl_8055F820=0; fn_801EF024(fn_802A0720); fn_801EF024(fn_802A0620); fn_8029FDDC(); fn_8029FFBC();
+    volatile int *p = (volatile int *)lbl_8055F820;
+    if (p != 0) fn_80128670();
+    lbl_8055F820 = 0;
+    fn_801EF024(fn_802A0720);
+    fn_801EF024(fn_802A0620);
+    fn_8029FDDC();
+    fn_8029FFBC();
 }
 
 void fn_8029F124(void) {
@@ -181,6 +186,13 @@ void fn_8029FD04(void) {
         fn_80131818(object);
     }
 }
+
+#pragma scheduling invalid_target
+void fn_8029FDDC(void) {
+    lbl_804B9B7C[1] = 0;
+}
+#pragma scheduling on
+
 #pragma pop
 
 int fn_8029FDF0(int *arg0, int *arg1) {
@@ -196,7 +208,8 @@ void fn_8029FE00(void) {
 #pragma dont_inline on
 int fn_8029FE1C(int arg0) {
     int sp8 = arg0;
-    if (arg0 <= 0) return 0;
+    if (arg0 <= 0)
+        return 0;
     return fn_800241DC(&sp8, lbl_804B5070, lbl_8055F81C, 0x78, fn_8029FDF0);
 }
 
@@ -242,27 +255,21 @@ void fn_8029FEF8(void) {
 void fn_8029FFBC(void) {
     unsigned char *current = lbl_804B5070;
     int i = 0;
-    void *value;
     goto check;
 loop:
-    value = *(void **)(current + 0x64);
-    if (value != 0)
-        fn_8028E528();
-    value = *(void **)(current + 0x70);
-    if (value != 0)
-        fn_80292B48();
+    if (*(int *)(current + 0x64)) fn_8028E528();
+    if (*(int *)(current + 0x70)) fn_80292B48();
     current += 0x78;
     i++;
 check:
-    if (i < lbl_8055F81C)
-        goto loop;
+    if (i < lbl_8055F81C) goto loop;
 }
 
 void fn_802A002C(void) {
     unsigned char *current = lbl_804B5070;
     int i = 0;
-    void *object;
-    void **vtable;
+    register void *object;
+    register void **vtable;
     goto check;
 loop:
     object = *(void **)(current + 0x70);
