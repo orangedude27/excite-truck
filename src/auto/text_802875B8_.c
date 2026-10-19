@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void fn_802882EC(void);
 extern void *lbl_8055F6C8;
 typedef signed int s32;
 typedef unsigned char u8;
@@ -192,9 +193,11 @@ void fn_802879E4(s32 arg0) {
 }
 
 void fn_80287A34(void) {
+    Fn80287A34Obj *obj;
     fn_801E12A4();
     fn_802A1548();
-    ((void (*)(void))(*(void ***)fn_801B83A0())[18])();
+    obj = (Fn80287A34Obj *)fn_801B83A0();
+    ((void (*)(void))obj->vtable[18])();
 }
 
 void fn_80287A6C(s32 arg0) {
@@ -234,13 +237,14 @@ s32 fn_80287B94(s32 arg0, s32 arg1) {
     return arg0 + fn_80287B5C(arg1 - arg0);
 }
 
+#pragma scheduling off
 void *fn_80287C30(void *arg0) {
     *(s32 *)arg0 = 0;
     memset((u8 *)arg0 + 4, 0, 0x20);
     *(s32 *)((u8 *)arg0 + 0x24) = 0;
     return arg0;
 }
-
+#pragma scheduling on
 extern void fn_801346B4(void *, s32, s32);
 extern s32 fn_8012C33C(const char *);
 extern s32 fn_80131808(const char *);
@@ -358,8 +362,9 @@ void fn_80288868(void* hi) {
 }
 
 void fn_80288870(void) {
-    s32 value = *(s32 *)&lbl_8055F6C8;
-    value = (value * 0x12B9B0A1 + 0x1CCE8AC1) & 0x7FFFFFFF;
-    *(s32 *)&lbl_8055F6C8 = value;
+    volatile unsigned int value = *(unsigned int *)&lbl_8055F6C8;
+    value = value * 0x12B9B0A1u + 0x1CCE8AC1u;
+    value = value & 0x7FFFFFFFu;
+    *(unsigned int *)&lbl_8055F6C8 = value;
 }
 
