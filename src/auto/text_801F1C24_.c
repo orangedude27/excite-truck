@@ -165,6 +165,15 @@ void *fn_801F2150(void) {
     }
     return p;
 }
+
+void *fn_801F21CC(void) {
+    void **p = (void **)fn_801284F8(4, (void *)&lbl_8033A684);
+    if (p != 0) {
+        *p = (void *)lbl_8033A6E0;
+    }
+    return (void *)p;
+}
+
 #pragma scheduling on
 
 #pragma push
