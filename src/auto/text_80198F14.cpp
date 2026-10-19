@@ -11,6 +11,7 @@ public:
 #pragma opt_tail_call on
 __declspec(section ".data") extern f32 lbl_80558DC4;
 extern f32 lbl_805622DC;
+extern f32 lbl_805622E8;
 extern f32 lbl_805622E0;
 extern f32 lbl_805622D0;
 extern void fn_8019AC44(f32*, f32*, f32);
