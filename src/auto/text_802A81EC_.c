@@ -1,4 +1,12 @@
 #include "types.h"
+extern f32 PSVECDotProduct(const void *, const void *);
+extern void PSVECNormalize(const void *, void *);
+extern f32 lbl_80558DC4, lbl_80564928, lbl_8056494C;
+extern void *memset(void *, int, unsigned long);
+extern void *memcpy(void *, const void *, unsigned long);
+extern f32 fn_80287BC8(f32, f32);
+extern f32 lbl_80564944, lbl_80564948, lbl_80564950;
+
 
 extern f32 lbl_8055E3C8;
 
