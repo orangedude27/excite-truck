@@ -46,6 +46,45 @@ void fn_801DDED0(s32 arg0, f32* arg1, s32 arg2, f32 farg0, f32 farg1, f32 farg2)
     *(f32*)&entry[6] = farg2;
 }
 
+extern s32 fn_8018A2C0(void **);
+extern double lbl_80562BC8;
+extern f32 lbl_80562BC0;
+extern f32 lbl_80562BC4;
+extern u32 lbl_803394A4;
+extern void *lbl_8055E9C8;
+void fn_801DDF0C(void) {
+    void *sp8;
+    u32 value;
+    s32 i;
+    u8 *entry;
+    f32 x;
+    f32 rounded;
+    f32 *ptr;
+
+    value = fn_801DDE78();
+    if (value != (u32)lbl_8055E9C8) {
+        lbl_8055E9C8 = (void *)value;
+        sp8 = &lbl_803394A4;
+        lbl_8055E9C4 = 0;
+        fn_8018A2C0(&sp8);
+        entry = (u8 *)lbl_80486F30;
+        i = 0;
+        while (i < lbl_8055E9C4) {
+            ptr = *(f32 **)(entry + 8);
+            x = *ptr / *(f32 *)(entry + 0x18);
+            if (x < lbl_80562BC4) {
+                rounded = x - lbl_80562BC0;
+            } else {
+                rounded = lbl_80562BC0 + x;
+            }
+            *ptr = *(f32 *)(entry + 0x18) * (f32)(s32)rounded;
+            *(f32 *)(entry + 0xC) = **(f32 **)(entry + 8);
+            entry += 0x1C;
+            i++;
+        }
+    }
+}
+
 void fn_801DDFE8(void* arg0) {
     f32 temp_e8, temp_e4, temp_e0, temp_dc;
     f32 temp_d8, temp_d4, temp_d0, temp_cc, temp_c8;
@@ -99,13 +138,20 @@ void fn_801DE0A4(void) {
     lbl_8055E9CC = (void*)fn_802E2C20();
 }
 
-void fn_801DE0E8(void) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801DE0E8(void) {
+    class Obj {
+    public:
+        virtual void destroy(int);
+    };
     if (lbl_8055E9C0 != 0) {
-        (*(UnkFunc*)(*(u32*)((u8*)*(u32*)((u8*)lbl_8055E9C0 + 0) + 8)))(1);
+        ((Obj*)lbl_8055E9C0)->destroy(1);
     }
     lbl_8055E9C0 = 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 void fn_801DE12C(void) {
     lbl_8055E9CC = (void*)fn_802E2C20();
 }
