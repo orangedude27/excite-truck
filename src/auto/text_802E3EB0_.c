@@ -57,7 +57,7 @@ extern unsigned int lbl_8055D1BC;
 extern char lbl_8034D180[];
 extern void DVDInit(void);
 extern int DVDClose(void *);
-extern void fn_802E30C8(const char *, void *);
+extern void fn_802E30C8(const char *, ...);
 extern void fn_802E3F38(void *);
 extern unsigned int lbl_8034D0E4;
 extern unsigned int lbl_8034D130;
@@ -77,6 +77,44 @@ void *fn_802E41C4(void *arg0, int arg1) {
     return arg0;
 }
 
+extern unsigned int lbl_8055D1B4;
+extern unsigned int lbl_8055D1B8;
+extern int strncmp(const char *, const char *, unsigned int);
+extern char *strcpy(char *, const char *);
+extern void *memset(void *, int, unsigned int);
+extern int DVDGetCurrentDir(char **, char *);
+int fn_802E4280(void *arg0, char *arg1) {
+    char cwd[0x110];
+    void *obj;
+    char *path;
+    int status;
+    path = arg1;
+    obj = ((void *(*)(int, void *))fn_802E3EBC)(0x90, &lbl_8055D1B4);
+    if (obj != 0) {
+        *(void **)obj = &lbl_8034D130;
+        *(void **)((char *)obj + 0x8C) = arg0;
+        if (strncmp(path, (char *)&lbl_8055D1B8, 2) == 0) path += 2;
+        if (*path == '\\') path++;
+        strcpy((char *)obj + 0x40, path);
+        memset((char *)obj + 4, 0, 0x3C);
+        *(int *)((char *)obj + 0x88) = 0;
+        *(int *)((char *)obj + 0x84) = 0;
+        strcpy(cwd, (char *)obj + 0x40);
+        status = DVDGetCurrentDir((char **)&cwd, (char *)obj + 4);
+        *((unsigned char *)obj + 0x80) = (status != 0);
+        if (status != 0) *(int *)((char *)obj + 0x84) = *(int *)((char *)obj + 0x38);
+    }
+    if (obj == 0 || *(unsigned char *)((char *)obj + 0x80) == 0) {
+        if (obj != 0) ((void (*)(void *, int))(*(void ***)obj)[12])(obj, 1);
+        obj = 0;
+    }
+    if (obj != 0) {
+        int val = ((int (*)(void *))(*(void ***)obj)[6])(obj);
+        ((void (*)(void *, int))(*(void ***)obj)[8])(obj, val);
+    }
+    return 0;
+}
+
 int fn_802E43D8(void *arg0, int arg1) {
     if (arg1 >= 0 && arg1 <= *(int *)((char *)arg0 + 0x84)) {
         *(int *)((char *)arg0 + 0x88) = arg1;
@@ -89,20 +127,22 @@ int fn_802E4400(void *arg0) {
     return *(int *)((char *)arg0 + 0x84);
 }
 
-void fn_802E4408(int unused, void *arg0) {
+int fn_802E4408(int unused, void *arg0) {
     if (arg0 != 0) {
-        ((void (*)(void *, int))(*(void ***)arg0)[12])(arg0, 1);
+        return ((int (*)(void *, int))(*(void ***)arg0)[12])(arg0, 1);
     }
 }
 
+#pragma scheduling off
 void fn_802E442C(void) {
     OSReport((const char *)&lbl_8055D1BC);
 }
-
+#pragma scheduling on
 int fn_802E4438(void *arg0) {
     return *(int *)((char *)arg0 + 0x8C);
 }
 
+#pragma scheduling off
 int fn_802E45AC(void *arg0, void *arg1, int arg2) {
     int result;
     result = DVDReadAsyncPrio((char *)arg0 + 4, arg1, arg2, *(int *)((char *)arg0 + 0x88), 0, 2);
@@ -112,7 +152,7 @@ int fn_802E45AC(void *arg0, void *arg1, int arg2) {
     *(int *)((char *)arg0 + 0x88) += arg2;
     return 1;
 }
-
+#pragma scheduling on
 int fn_802E461C(void *arg0) {
     return DVDGetCommandBlockStatus((char *)arg0 + 4) == 0;
 }
