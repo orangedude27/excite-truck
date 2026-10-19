@@ -10,6 +10,11 @@ extern void fn_80214A9C(int);
 extern void *fn_8023512C(void *, void *, void *);
 extern char lbl_80345694[];
 extern char lbl_8055C3E0[];
+extern double lbl_80563B68;
+extern float lbl_80563B58, lbl_80563B5C, lbl_80563B60;
+extern void fn_80230C30(float *, float *, int, int);
+extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
+extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
 void *fn_8025D96C(void *arg0, int arg1) {
     if (arg0 != 0) {
         *(int *)&lbl_8055F3C4 = 0;
