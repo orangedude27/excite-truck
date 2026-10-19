@@ -901,6 +901,10 @@ extern "C" void fn_80143C54(void *arg0) {
     fn_80143CB0((void *)(p + 0x134));
 }
 
+extern "C" void fn_801442D4(void) {
+
+}
+
 extern "C" void fn_801442DC(void *arg0) {
     class TObj20 {
     public:
