@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include "types.h"
+#include "revolution/MTX/mtxtypes.h"
 
 extern char lbl_80559B10[], lbl_80559B18[], lbl_80559B1C[];
 extern char lbl_8032B7BC[];
@@ -38,7 +39,7 @@ void fn_80131818(void) {
     fn_8012C4D8();
 }
 
-extern void fn_802E30C8();
+extern void fn_802E30C8(const char*, ...);
 extern const char lbl_8032B510[];
 extern char lbl_8032B64C[], lbl_8032B574[], lbl_8042F530[];
 extern int lbl_80559B08, lbl_80559B0C;
@@ -116,6 +117,8 @@ s32 fn_80131B50(void* arg0) {
     return h;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 s32 fn_80131BD0(void* arg0, const char* name) {
     s32 index = 0;
     char* found = NULL;
@@ -134,7 +137,7 @@ s32 fn_80131BD0(void* arg0, const char* name) {
     }
     return found != NULL;
 }
-
+#pragma pop
 s32 fn_80132098(void* arg0, s32 index, void* dst1, void* dst2) {
     u32 (*base)[2];
     if (index >= 0 && index < *(s32*)((char*)arg0 + 0xC)) {
@@ -229,6 +232,17 @@ void fn_80132410(void* arg0, void* arg1, const char* arg2) {
     }
     *(Vector*)arg0 = values;
 }
+
+Vec2 fn_801324E0(void *arg0, s32 arg1) {
+    Vec2 result;
+    char *value = ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 0x14)))(arg0);
+    if (sscanf(value, lbl_80559B24, &result.x, &result.y) != 2) {
+        fn_802E317C(lbl_8032B818, value, arg1,
+            ((char *(*)(void *))(*(void **)((char *)*(void **)arg0 + 8)))(arg0));
+    }
+    return result;
+}
+
 #pragma pop
 
 #pragma pop
@@ -314,15 +328,12 @@ void fn_80132AE4(void* arg0, void* arg1, s32 arg2, void* arg3) {
     typedef struct { Matrix matrix; struct Unk80132968Vector vector; } Value;
     Value value;
     Value* source = arg3;
-    s32 name = arg2;
-    void* obj = arg1;
-    Value* dst = arg0;
-    if (((s32 (**)(void*, s32))*(void**)obj)[3](obj, name)) {
-        ((void (**)(Value*, void*, s32))*(void**)obj)[17](&value, obj, name);
+    if (((s32 (**)(void*, s32))*(void**)arg1)[3](arg1, arg2)) {
+        ((void (**)(Value*, void*, s32))*(void**)arg1)[17](&value, arg1, arg2);
         source = &value;
     }
-    dst->matrix = source->matrix;
-    dst->vector = source->vector;
+    ((Value*)arg0)->matrix = source->matrix;
+    ((Value*)arg0)->vector = source->vector;
 }
 
 typedef float f32;
