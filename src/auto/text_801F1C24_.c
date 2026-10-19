@@ -509,6 +509,12 @@ float fn_801F3A94(void *arg0) {
     return fn_802923EC(lbl_80562F44);
 }
 
+#pragma scheduling invalid_target
+extern const char lbl_8033AB5C[];
+int fn_801F3AB0(void) {
+    return fn_802E317C(lbl_8033AB5C);
+}
+
 int fn_801F3AC0(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
