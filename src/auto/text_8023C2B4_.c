@@ -6,6 +6,8 @@
 #include <types.h>
 #include <stdarg.h>
 
+extern char lbl_803414C0[];
+
 typedef signed long s32;
 
 int fn_8027AA48(void); /* extern */
