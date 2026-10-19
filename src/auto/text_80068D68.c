@@ -5405,6 +5405,22 @@ void *add_record(void *ctx, void *data) {
     return record;
 }
 
+void sdp_connect_ind(u8 *addr, u16 cid, u16 psm, u8 status) {
+    extern void fn_80070954(u32, void *, u16);
+    extern u8 lbl_8031A200[];
+    void *ccb = sdpu_allocate_ccb();
+    if (ccb != 0) {
+        *(u8 *)ccb = 2;
+        memcpy((u8 *)ccb + 2, addr, 6);
+        *(u16 *)((u8 *)ccb + 0x22) = cid;
+        L2CA_ConnectRsp(addr, status, cid, 0, 0);
+        L2CA_ConfigReq(cid, (tL2CAP_CFG_INFO *)lbl_803C4C40);
+        if (lbl_803C4C40[0x4630] >= 4) {
+            fn_80070954(0xA0003, lbl_8031A200, *(u16 *)((u8 *)ccb + 0x22));
+        }
+    }
+}
+
 void sdp_conn_timeout(tCONN_CB *p_ccb) {
     extern char lbl_8031A4B8[];
     extern u8 lbl_803C4C40[];
