@@ -23,6 +23,7 @@ __declspec(section ".data") extern int lbl_8033AA90;
 #pragma pop
 extern int lbl_8055B124, lbl_8055B120;
 extern float lbl_80562F40, lbl_80562F44;
+extern const char lbl_8033ABA0[];
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -237,6 +238,78 @@ void *__dt__14CollisionSpaceFv_801F2E24(void *arg0, int arg1) {
     }
     return arg0;
 }
+
+#pragma push
+#pragma small_data on
+#pragma ppc_psq_save off
+void fn_801F2E88(void *arg0, void *arg1) {
+    extern float fn_801F3174(void);
+    extern void fn_801F3198(void *);
+    extern void fn_801F3158(float *,float *);
+    extern void fn_801F3124(unsigned int *,unsigned int *);
+    extern float lbl_80562F48, lbl_80562F50, lbl_80562F54, lbl_80562F58, lbl_80562F5C, lbl_80562F60, lbl_80562F64;
+    extern unsigned short lbl_802F9B20[6];
+    extern float *GXInitLightAttnA_80144B44(void *, float, float, float);
+    extern unsigned int fn_80144C68(int,int,int,int);
+    extern void fn_8001BA68(void *);
+    extern void fn_801C0E60(void *,void *,void *);
+    extern void fn_80144B54(void *,void *);
+    extern int fn_80144DAC();
+    extern void fn_801BFD34(void *,void *,void *);
+    extern void fn_802C8BD0(int);
+    extern void fn_802C8DB8(void *,int,void *,int);
+    extern void fn_802C8D74(void);
+    unsigned int vertices[4][6];
+    float matrix[12];
+    unsigned int base[6];
+    float t4[3],t3[3],t2[3],t1[3],t0[3];
+    unsigned short indices[6];
+    float vec[3];
+    void *p = arg1;
+    while (p != 0) {
+        void *camera = fn_802C86DC();
+        void *pos;
+        int frame;
+        float u,v,u1,v1;
+        fn_8001BA68(vec);
+        pos = (char *)p + 0x20;
+        fn_801C0E60(vec,pos,(char *)camera + 0x24);
+        fn_801F3198(vec);
+        frame = (int)(lbl_80562F50 * (-((float (*)(float,float))fn_801F3174)(vec[0],vec[2]) / lbl_80562F54));
+        if (frame < 0) frame += 32;
+        u = lbl_80562F58 * (float)(frame % 8);
+        v = lbl_80562F5C * (float)(frame / 8);
+        u1 = lbl_80562F58 + u;
+        v1 = lbl_80562F5C + v;
+        fn_801F3158((float *)base,GXInitLightAttnA_80144B44(t0,lbl_80562F40,lbl_80562F40,lbl_80562F40));
+        ((float *)base)[4]=u;
+        ((float *)base)[5]=v;
+        base[3]=fn_80144C68(255,255,255,255);
+        fn_801F3124(vertices[0],base);
+        fn_801F3124(vertices[1],base);
+        fn_801F3124(vertices[2],base);
+        fn_801F3124(vertices[3],base);
+        indices[0]=lbl_802F9B20[0]; indices[1]=lbl_802F9B20[1];
+        indices[2]=lbl_802F9B20[2]; indices[3]=lbl_802F9B20[3];
+        indices[4]=lbl_802F9B20[4]; indices[5]=lbl_802F9B20[5];
+        ((float *)vertices[3])[4]=u1;
+        ((float *)vertices[1])[4]=u1;
+        ((float *)vertices[3])[5]=v1;
+        ((float *)vertices[2])[5]=v1;
+        fn_80144B54(matrix,camera);
+        fn_80144DAC(matrix+9,pos);
+        fn_801BFD34(vertices[0],GXInitLightAttnA_80144B44(t1,lbl_80562F60,lbl_80562F44,lbl_80562F40),matrix);
+        fn_801BFD34(vertices[1],GXInitLightAttnA_80144B44(t2,lbl_80562F64,lbl_80562F44,lbl_80562F40),matrix);
+        fn_801BFD34(vertices[2],GXInitLightAttnA_80144B44(t3,lbl_80562F60,lbl_80562F48,lbl_80562F40),matrix);
+        fn_801BFD34(vertices[3],GXInitLightAttnA_80144B44(t4,lbl_80562F64,lbl_80562F48,lbl_80562F40),matrix);
+        fn_802C8BD0(*(int *)((char *)arg0+4));
+        fn_802C8DB8(vertices,4,indices,6);
+        fn_802C8D74();
+        p=*(void **)((char *)p+12);
+    }
+}
+#pragma pop
+
 #pragma pop
 void fn_801F3124(unsigned int *arg0, unsigned int *arg1) {
     unsigned int d, c, b, a;
