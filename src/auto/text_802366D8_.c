@@ -24,4 +24,3 @@ void fn_802366D8(void) {
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
 #pragma scheduling on
-typedef struct { unsigned int a, b, c, d, e; } S_802366D8;
