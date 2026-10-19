@@ -20,7 +20,7 @@ public:
  virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
  virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
  virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(f32*);
- virtual void v36(); virtual void v37(); virtual void v38(f32);
+ virtual void v36(); virtual s32 v37(); virtual void v38(f32);
 };
 
 
@@ -1173,8 +1173,9 @@ extern "C" void fn_8015B788(void* arg0, s32 arg1, f32 farg0) {
 extern "C" s32 fn_8015BCEC(void) { return 7; }
 
 extern "C" s32 lbl_8055A05C[];
+extern "C" s32 lbl_8055A05C[1];
 #pragma push
-#pragma processor 750
+#pragma processor 7400
 extern "C" void fn_8015BCF4(Unk801577F0* arg0, f32* arg1) {
  struct Obj {
  virtual void v0();
@@ -1206,7 +1207,7 @@ virtual s32 v25();
 virtual s32 v26();
 virtual void v27();
 virtual void v28();
-virtual void v29(); virtual void v30(); virtual s32 v31();
+virtual s32 v29(); virtual void v30(); virtual s32 v31();
  };
  struct Adaptor {
  virtual void v0(); virtual void v1(s32,...); virtual void v2(s32,...);
@@ -1219,17 +1220,17 @@ virtual void v29(); virtual void v30(); virtual s32 v31();
  *arg1 *= lbl_8042FD08[arg0->m4];
  if (*(Adaptor**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=lbl_80558DC4[0])) {
   (*(Adaptor**)((u8*)arg0+0x248))->v3((s32)lbl_8055A058, fn_8023139C(buf,16,(u32)*arg1));
-  (*(Adaptor**)((u8*)arg0+0x248))->v6(obj->v31());
+  (*(Adaptor**)((u8*)arg0+0x248))->v6(obj->v29());
   (*(Adaptor**)((u8*)arg0+0x248))->v5((s32)*arg1);
-  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A058,obj->v25());
-  (*(Adaptor**)((u8*)arg0+0x248))->v1((s32)lbl_8055A058,obj->v26());
-  obj->v24();
+  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A058,obj->v23());
+  (*(Adaptor**)((u8*)arg0+0x248))->v1((s32)lbl_8055A058,obj->v24());
+  obj->v22();
   (*(Adaptor**)((u8*)arg0+0x248))->v4();
-  s32 limit=obj->v19();
-  if(obj->v23()>=limit) (*(Adaptor**)((u8*)arg0+0x248))->v8(1);
+  s32 limit=obj->v17();
+  if(obj->v21()>=limit) (*(Adaptor**)((u8*)arg0+0x248))->v8(1);
  }
  f32 value=*arg1;
- s32 offset=obj->v23()*0x38;
+ s32 offset=obj->v21()*0x38;
  ++*(s32*)(arg0->mData+offset);
  if (!((f32)__fabs(value)<=lbl_80558DC4[0])) {
  ++*(s32*)(arg0->mData+offset+4);
@@ -1237,12 +1238,12 @@ virtual void v29(); virtual void v30(); virtual s32 v31();
  ++*(s32*)(arg0->mData+offset+8);
  }
  *(f32*)(arg0->mData+offset+12)+=value;
- s32 index=obj->v23();
- ((void(*)(s32,s32,s32))fn_801584D4)(obj->v31(),arg0->m4,index);
+ s32 index=obj->v21();
+ ((void(*)(s32,s32,s32))fn_801584D4)(obj->v29(),arg0->m4,index);
  s32 shift=*(s32*)((u8*)arg0+0x26c)*0x168;
  if (*(Adaptor**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=lbl_80558DC4[0])) {
-  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A05C,obj->v25(),shift);
-  (*(Adaptor**)((u8*)arg0+0x248))->v1((s32)lbl_8055A05C,obj->v26(),shift);
+  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A05C,obj->v23(),shift);
+  (*(Adaptor**)((u8*)arg0+0x248))->v1((s32)lbl_8055A05C,obj->v24(),shift);
  }
 }
 #pragma pop
