@@ -95,6 +95,8 @@ void fn_801C1C7C(int arg0) {
 }
 
 extern float lbl_80562930;
+extern float lbl_80562928;
+extern "C" float PSQUATMultiply(void *, void *, void *);
 void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
     float x = arg3[0] * lbl_80562930;
     float y = arg3[1] * lbl_80562930;
