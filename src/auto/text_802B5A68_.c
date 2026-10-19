@@ -86,11 +86,17 @@ void fn_802B5CC4(void) {
     fn_802B5CB4(1);
 }
 
+#pragma push
+#pragma dont_inline on
+s32 fn_802B5D94(s32 arg0) {
+    return fn_802B5D2C(lbl_8055CE40, arg0);
+}
+#pragma pop
+
 extern s32 fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_802B05DC(void);
 extern s32 fn_802B5D2C(const char *, s32);
 __declspec(section ".sdata") extern const char lbl_8055CE38[];
-__declspec(section ".sdata") extern const char lbl_8055CE40[];
 __declspec(section ".sdata") extern const char lbl_8055CE48[];
 __declspec(section ".sdata") extern const char lbl_8055CE50[];
 extern s32 lbl_804BFF80;
