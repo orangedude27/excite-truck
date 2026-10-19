@@ -7,6 +7,7 @@ extern unsigned int lbl_8034D038;
 extern unsigned int lbl_8034D054;
 extern unsigned int lbl_8055FF40;
 extern void fn_802E317C(void *, ...);
+extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034D198[];
 unsigned int *fn_802E3EB0(void) { return &lbl_8055FF38; }
 
