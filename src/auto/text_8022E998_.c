@@ -4,12 +4,17 @@
 extern int lbl_8055EFE0;
 extern int lbl_80497E10[5];
 extern void fn_8000D838(int *);
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_8022E998(void) {
-    int *p = lbl_80497E10;
+    int v;
     fn_8000D838(&lbl_8055EFE0);
-    p[0] = 0;
-    p[1] = 0x7B;
-    p[2] = 0;
-    p[3] = 0;
-    p[4] = 0;
+    lbl_80497E10[0] = 0;
+    v = 123;
+    lbl_80497E10[1] = v;
+    lbl_80497E10[2] = 0;
+    lbl_80497E10[3] = 0;
+    lbl_80497E10[4] = 0;
 }
+#pragma opt_propagation reset
+#pragma scheduling on
