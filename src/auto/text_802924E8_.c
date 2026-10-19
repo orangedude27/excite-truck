@@ -176,7 +176,7 @@ check:
 }
 
 extern int fn_8012C33C(void *);
-extern void fn_801345D8(void *, ...);
+extern void fn_801345D8(void *, int, const char *, int, int);
 extern void fn_80292CD8(void *, int, u8 *);
 extern int fn_802C6FC0(void *, int, int);
 extern char lbl_80349250[];
