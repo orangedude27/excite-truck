@@ -19,11 +19,29 @@ int fn_802B539C(int arg0) {
 
 void fn_802B5404(int *arg0) { int temp = *arg0; if (temp != -2) { fn_802CAC54(temp); *arg0 = -2; } }
 
+__declspec(section ".sdata") extern const char lbl_8055CE10[];
+int fn_802B5448(void **arg0) {
+    return stricmp(lbl_8055CE10, (*(const char *(**)(void *))(*(void ***)arg0 + 2))(arg0)) == 0;
+}
+
 int fn_802B5488(void *arg0) {
-    const char *name = (*(const char *(**)(void *))(*(void ***)arg0 + 2))(arg0);
+    void **vtable = *(void ***)arg0;
+    const char *name = ((const char *(*)(void *))vtable[2])(arg0);
     return stricmp(lbl_8034A510, name) == 0;
 }
 
+extern const char lbl_8034A524[];
+int fn_802B54CC(void *arg0) {
+    const char *(*name)(void *);
+    name = *(const char *(**)(void *))(*(void ***)arg0 + 2);
+    return stricmp(lbl_8034A524, name(arg0)) == 0;
+}
+
+#pragma scheduling invalid_target
+void fn_802B561C(void (*fn)(void *), void *arg0) {
+    fn(arg0);
+}
+#pragma scheduling reset
 void* fn_802B59CC(void) {
     return lbl_8055F9E8;
 }
