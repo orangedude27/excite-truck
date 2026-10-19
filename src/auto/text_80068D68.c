@@ -4159,6 +4159,28 @@ void *l2cu_find_lcb_by_handle(u16 handle) {
 
 u8 fn_8008D7C4(void) { return lbl_803C4040[1]; }
 
+void *l2cu_build_header(u16 arg0, u8 arg1, u8 arg2, s32 arg3) {
+    BT_HDR *buf = GKI_getpoolbuf(2);
+    u8 *p;
+    if (buf == NULL) return NULL;
+    buf->len = arg1 + 0xC;
+    buf->offset = 0;
+    p = (u8 *)(buf + 1);
+    p[0] = arg0 | 0x2000;
+    p[1] = (arg0 | 0x2000) >> 8;
+    p[2] = arg1 + 8;
+    p[3] = (arg1 + 8) >> 8;
+    p[4] = arg1 + 4;
+    p[5] = (arg1 + 4) >> 8;
+    p[6] = 1;
+    p[7] = 0;
+    p[8] = arg2;
+    p[9] = arg3;
+    p[10] = arg1;
+    p[11] = arg3 >> 8;
+    return buf;
+}
+
 void l2cu_send_peer_connect_req(void *arg0) {
     void *p;
     extern void *l2cu_build_header(u16, u8, u8, s32);
@@ -4933,6 +4955,28 @@ void rfc_send_sabme(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 
 
 void rfc_send_ua(void *arg0, s32 arg1, void *arg2) { u8 *buf; u8 *frame; s32 flag; flag=1; if (*(u8 *)((u8 *)arg0+0x6D)!=0) flag=0; buf=GKI_getpoolbuf(2); if(buf) { frame=buf+0x11; *(u16 *)(buf+4)=9; frame[0]=(flag<<1)|1|(arg1<<2); frame[1]=0x73; frame[2]=1; frame[3]=fn_8009504C(3,frame,0x73); *(u16 *)(buf+2)=4; rfc_check_send_cmd(arg0,buf); } }
 
+void rfc_send_dm(void *arg0, u8 arg1, u8 arg2) {
+    u8 *buf;
+    u8 *data;
+    s32 flag;
+
+    flag = 1;
+    if (((u8 *)arg0)[0x6D] != 0) {
+        flag = 0;
+    }
+    buf = (u8 *)GKI_getpoolbuf(2);
+    if (buf != 0) {
+        *(u16 *)(buf + 4) = 9;
+        data = buf + 0x11;
+        data[0] = (u8)(((arg1 << 2) & 0x3FC) | ((flag << 1) & 0xFE) | 1);
+        data[1] = (u8)((((-(s32)arg2 | arg2) >> 31) & 0x10) | 0xF);
+        data[2] = 1;
+        data[3] = fn_8009504C(3, data, data[0]);
+        *(u16 *)(buf + 2) = 4;
+        rfc_check_send_cmd(arg0, buf);
+    }
+}
+
 void rfc_send_disc(void *arg0, s32 arg1, void *arg2) {
     u8 *buf;
     u8 *frame;
@@ -5179,6 +5223,27 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     default:
         return 0x32;
     }
+}
+
+void rfc_check_mcb_active(void *arg0) {
+    u8 *mcb = (u8 *)arg0;
+    u16 i;
+    for (i = 0; i < 0x3D; i++) {
+        if (mcb[i + 0x24] != 0) {
+            mcb[0x74] = 0;
+            return;
+        }
+    }
+    if (mcb[0x74] != 0) {
+        mcb[0x74] = 0;
+        fn_800916F4(arg0, 8, 0);
+        return;
+    }
+    if (lbl_803C4828[0x414] >= 4) {
+        fn_80070954(0x90003, lbl_80319D48, 2);
+    }
+    *(void **)(mcb + 0x10) = arg0;
+    btu_start_timer(arg0, 0xB, 2);
 }
 
 void fn_80095518(void *arg0) {
