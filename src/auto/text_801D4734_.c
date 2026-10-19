@@ -424,11 +424,12 @@ void fn_801D6600(void *arg0) {
 
 extern char lbl_803387A8[];
 extern char lbl_803387C8[];
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_801D6618(UnkStruct_801D6618 *arg0) {
-    ((volatile UnkStruct_801D6618 *)arg0)->name = (char *)lbl_80338C40;
-    ((volatile UnkStruct_801D6618 *)arg0)->state = 0;
+    arg0->name = lbl_80338C40;
+    arg0->state = 0;
 }
+#pragma scheduling on
 void *fn_801D6630(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
         *(s32 *)((u8 *)arg0 + 4) = 0;
@@ -774,8 +775,7 @@ s32 fn_801D77C0(s32 arg0);
 void fn_80116BCC(void *);
 void fn_80127464(void *);
 void fn_801D77D8(void *arg0) {
-    register void **vtable = *(void ***)arg0;
-    ((void (*)(void *))vtable[0xD])(arg0);
+    (*(void (**)(void *))((char *)*(void **)arg0 + 0x34))(arg0);
 }
 
 void fn_801D77E8(void) {
@@ -1261,10 +1261,24 @@ void fn_801D8D00(void *arg0) {
  }
 }
 
-void fn_801D8DA0(int **param_1) {
-    register int *vtbl = *param_1;
-    register void (*fn)(void) = (void (*)(void))vtbl[13];
-    fn();
+void fn_801D8DA0(void **param_1) {
+    struct Vtbl {
+        void (*unk_0)(void);
+        void (*unk_4)(void);
+        void (*unk_8)(void);
+        void (*unk_C)(void);
+        void (*unk_10)(void);
+        void (*unk_14)(void);
+        void (*unk_18)(void);
+        void (*unk_1C)(void);
+        void (*unk_20)(void);
+        void (*unk_24)(void);
+        void (*unk_28)(void);
+        void (*unk_2C)(void);
+        void (*unk_30)(void);
+        void (*unk_34)(void);
+    } *vtbl = (struct Vtbl *)*param_1;
+    vtbl->unk_34();
 }
 
 void fn_801D8DB0(void *arg0) {
