@@ -84,6 +84,7 @@ extern int fn_802C744C(void*, void*);
 extern int fn_80128668(void*);
 extern void fn_80293530(void*);
 extern int fn_80293374(void*, void*);
+extern char lbl_80349250[];
 extern void* fn_802935A0(void*);
 extern float lbl_805644D4;
 extern char lbl_8055C988[];
@@ -233,4 +234,46 @@ body:
 check:
     if (i < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
 }
+
+extern float lbl_80564510, lbl_805644D4, lbl_80564500, lbl_805644FC, lbl_805644D8;
+extern unsigned char lbl_804B4030[];
+void fn_80294780(void *arg0) {
+    unsigned char *base = (unsigned char *)arg0, *cur = base + 0x2c, *out = cur, *src;
+    int i = 0;
+    float dt = fn_801E7E24(arg0), scale = lbl_805644D4 - lbl_80564510 * dt;
+    float x, y, z, vy;
+    goto check;
+body:
+    if (*(float *)(cur + 0x3c) >= lbl_805644D8 && !(*(float *)(cur + 0x3c) > lbl_805644FC)) {
+        x = *(float *)(cur + 0x30) * scale;
+        y = *(float *)(cur + 0x34) * scale;
+        z = *(float *)(cur + 0x38) * scale;
+        vy = y - (lbl_80564500 * dt) * *(float *)(base + 4);
+        *(float *)(out + 0x24) = *(float *)(cur + 0x24) + x * dt;
+        *(float *)(out + 0x28) = *(float *)(cur + 0x28) + vy * dt;
+        *(float *)(out + 0x2c) = *(float *)(cur + 0x2c) + z * dt;
+        src = lbl_804B4030 + *(cur + 0x41) * 0x34;
+        *(unsigned int *)(out + 0x00) = *(unsigned int *)(src + 0x10);
+        *(unsigned int *)(out + 0x04) = *(unsigned int *)(src + 0x14);
+        *(unsigned int *)(out + 0x08) = *(unsigned int *)(src + 0x18);
+        *(unsigned int *)(out + 0x0c) = *(unsigned int *)(src + 0x1c);
+        *(unsigned int *)(out + 0x10) = *(unsigned int *)(src + 0x20);
+        *(unsigned int *)(out + 0x14) = *(unsigned int *)(src + 0x24);
+        *(unsigned int *)(out + 0x18) = *(unsigned int *)(src + 0x28);
+        *(unsigned int *)(out + 0x1c) = *(unsigned int *)(src + 0x2c);
+        *(unsigned int *)(out + 0x20) = *(unsigned int *)(src + 0x30);
+        *(float *)(out + 0x30) = x;
+        *(float *)(out + 0x34) = vy;
+        *(float *)(out + 0x38) = z;
+        *(float *)(out + 0x3c) = *(float *)(cur + 0x3c) + dt;
+        out[0x40] = cur[0x40];
+        out[0x41] = cur[0x41];
+        out += 0x44;
+    }
+    i++; cur += 0x44;
+check:
+    if (i < *(int *)(base + 0x222c)) goto body;
+    *(int *)(base + 0x222c) = (out - (base + 0x2c)) / 0x44;
+}
+
 #pragma scheduling on
