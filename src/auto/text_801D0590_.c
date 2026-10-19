@@ -61,6 +61,14 @@ void fn_801D0738(void *arg0, void *arg1, void *arg2, void *arg3) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_801D0800(s32 arg0) {
+    DispatchList* list = lbl_8043870C;
+    s32* items = (s32*)list->items;
+    int count = list->count++;
+    items[count] = arg0;
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 void fn_801D09A8(void *arg0, void *arg1) { int offset = 0; int i = 0; while (i < lbl_8043870C[0].count) { void *obj = *(void **)((char *)lbl_8043870C[0].items + offset); ((void (*)(void *, void *, void *))(*(void ***)obj)[4])(obj, arg0, arg1); offset += 4; i++; } }
