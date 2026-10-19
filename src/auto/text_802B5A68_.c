@@ -1,6 +1,6 @@
 #include "types.h"
 #pragma small_data on
-extern const char lbl_8055CE40[];
+__declspec(section ".sdata") extern const char lbl_8055CE40[];
 #pragma small_data off
 typedef signed long s32;
 typedef unsigned long u32;
