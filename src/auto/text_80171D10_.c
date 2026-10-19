@@ -76,6 +76,7 @@ int fn_80171E3C(void *arg0) {
     if (lbl_8055E3A4 && fn_80139EC4(lbl_8055E3A4, *(float *)arg0, *(float *)((char *)arg0 + 4))) return 0;
     return 1;
 }
+#pragma pop
 
 int fn_80171EC0(void) {
     extern void *fn_8017960C(int);
