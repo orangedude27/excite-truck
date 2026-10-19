@@ -68,11 +68,18 @@ void *fn_802E4CE0(void *arg0, int arg1) {
     return arg0;
 }
 
-void fn_802E4D50(void *arg0) {
-    void * volatile *vtable = *(void ***)arg0;
-    ((void (*)(void))vtable[4])();
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_802E4D50(void* obj) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+    };
+    ((Dummy*)obj)->f2();
 }
-
+#pragma cplusplus reset
+#pragma pop
 int fn_802E4D60(void *arg0, int arg1) {
     return *(int *)((char *)arg0 + 4) + arg1;
 }
