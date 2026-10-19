@@ -3080,7 +3080,10 @@ void fn_800826D4(void) {
 }
 
 extern u8 lbl_803173E0[];
+#pragma push
+#pragma scheduling invalid_target
 void btm_cback(u32 index, void *param) {
+    u8 *p_trace = lbl_803173E0;
     u8 *p_elem;
     struct {
         u16 status;
@@ -3098,17 +3101,17 @@ void btm_cback(u32 index, void *param) {
         inq_res.status = ((u8 *)param)[0] == 0 ? 0 : 0x114;
         param = &inq_res;
         if (lbl_803C3740[0x28] >= 4) {
-            fn_8007096C(0xE0003, &lbl_803173E0[0], inq_res.status, inq_res.results);
+            fn_8007096C(0xE0003, p_trace, inq_res.status, inq_res.results);
         }
         break;
     case 3:
         if (*(u16 *)param != 0) {
             if (lbl_803C3740[0x28] >= 4) {
-                fn_80070954(0xE0003, &lbl_803173E0[0x3C], *(u16 *)param);
+                fn_80070954(0xE0003, p_trace + 0x3C, *(u16 *)param);
             }
         } else {
             if (lbl_803C3740[0x28] >= 4) {
-                fn_8007093C(0xE0003, &lbl_803173E0[0x70]);
+                fn_8007093C(0xE0003, p_trace + 0x70);
             }
         }
         break;
@@ -3128,7 +3131,7 @@ void btm_cback(u32 index, void *param) {
         }
         *(u16 *)param = res;
         if (lbl_803C3740[0x28] >= 4) {
-            fn_80070954(0xE0003, &lbl_803173E0[0x98], res);
+            fn_80070954(0xE0003, p_trace + 0x98, res);
         }
         break;
     }
@@ -3142,7 +3145,7 @@ void btm_cback(u32 index, void *param) {
         p_elem[0xF] = 0;
     }
 }
-
+#pragma pop
 void fn_800833E8(void *arg0) { btm_cback(0, arg0); }
 
 void fn_800833F4(void *arg0) { btm_cback(1, arg0); }
@@ -4864,6 +4867,87 @@ void rfc_port_sm_orig_wait_sec_check(void *port, u16 event, void *data) {
         return;
     }
     if (lbl_803C4828[0x414] >= 2) fn_80070954(0x90001, messages + 0x1C8, event);
+}
+
+void rfc_port_sm_opened(void *p_port, u16 event, void *p_data) {
+    extern u8 lbl_803C4828[];
+    extern char lbl_80319AC4[];
+    extern char lbl_80319CE8[];
+    extern void fn_8007096C(u32, void *, u16, u16);
+    extern void fn_80070954(u32, void *, u16);
+    extern void rfc_send_disc();
+    extern void rfc_port_closed(void *);
+    extern void fn_8009578C(void *);
+    extern void rfc_send_ua();
+    extern void Port_TimeOutCloseMux(void *);
+
+    u8 *port = (u8 *)p_port;
+
+    switch (event) {
+    case 9:
+        if (lbl_803C4828[0x414] >= 1) {
+            fn_8007096C(0x90000, lbl_80319AC4, port[0x68], event);
+        }
+        return;
+
+    case 12:
+        rfc_port_timer_start(p_port, 3);
+        ((void (*)(void *, u8))rfc_send_disc)(*(void **)(port + 0x6C), port[0xD]);
+        port[0x69] = 0;
+        port[0x68] = 5;
+        return;
+
+    case 13:
+        rfc_port_closed(p_port);
+        return;
+
+    case 14:
+        if (*(u8 *)(*(u8 **)(port + 0x6C) + 0x72) == 2
+            && *(u16 *)((u8 *)p_data + 2) < *(u16 *)(port + 0x14)
+            && port[0x3D] == 0
+            && *(u16 *)(port + 0x9C) > *(u16 *)(port + 0x9A)) {
+            *(u16 *)((u8 *)p_data + 6) = (u8)(*(u16 *)(port + 0x9C) - *(u16 *)(port + 0x9A));
+            *(u16 *)(port + 0x9A) = *(u16 *)(port + 0x9C);
+        } else {
+            *(u16 *)((u8 *)p_data + 6) = 0;
+        }
+        rfc_send_buf_uih(*(void **)(port + 0x6C), port[0xD], p_data);
+        fn_8009578C(p_port);
+        return;
+
+    case 1:
+        return;
+
+    case 0:
+        ((void (*)(void *, u8))rfc_send_ua)(*(void **)(port + 0x6C), port[0xD]);
+        return;
+
+    case 2:
+        PORT_DlcReleaseInd(*(void **)(port + 0x6C), port[0xD]);
+        rfc_port_closed(p_port);
+        return;
+
+    case 3:
+        port[0x68] = 0;
+        ((void (*)(void *, u8))rfc_send_ua)(*(void **)(port + 0x6C), port[0xD]);
+        PORT_DlcReleaseInd(*(void **)(port + 0x6C), port[0xD]);
+        return;
+
+    case 4:
+        PORT_DataInd(*(void **)(port + 0x6C), port[0xD], p_data);
+        return;
+
+    case 5:
+        Port_TimeOutCloseMux(*(void **)(port + 0x6C));
+        if (lbl_803C4828[0x414] >= 1) {
+            fn_8007096C(0x90000, lbl_80319AC4, port[0x68], event);
+        }
+        return;
+    }
+
+    if (lbl_803C4828[0x414] >= 2) {
+        fn_80070954(0x90001, lbl_80319CE8, event);
+    }
 }
 
 void rfc_port_sm_disc_wait_ua(void *p_port, s32 event, void *p_data) {
