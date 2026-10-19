@@ -464,16 +464,12 @@ void fn_80177618(int *arg0)
     fn();
 }
 
-#pragma push
-#pragma cplusplus on
 void fn_80177628(int* param_1)
 {
     int* p = (int*)*param_1;
     void (*fn)(void) = *(void (**)(void))(p + 4);
     fn();
 }
-#pragma cplusplus reset
-#pragma pop
 void fn_80177638(int *arg0) { void (**v)(void) = (void (**)(void))*(void **)arg0; (v + 5)[0](); }
 
 void fn_80177648(int *arg0) { void (**fn)(void) = *(void (***)(void))arg0 + 6; (*fn)(); }
