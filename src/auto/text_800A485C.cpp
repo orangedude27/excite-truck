@@ -4382,7 +4382,7 @@ extern "C" void fn_800D2FC8(void) {
 
 extern "C" const char lbl_8031EBA0[];
 extern "C" const char lbl_8031EBB4[];
-extern "C" void fn_800D30E8(void *, void *, void *, void *, s32);
+extern "C" void fn_800D30E8(s32, s32, const char *, s32, s32);
 extern "C" void fn_800D2FDC(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, void *arg5, void *arg6, void *arg7, f64 a, f64 b, f64 c, f64 d, f64 e, f64 f, f64 g, f64 h) {
     f64 sp_28;
     f64 sp_30;
@@ -4428,7 +4428,7 @@ extern "C" void fn_800D2FDC(void *arg0, void *arg1, void *arg2, void *arg3, void
         sp_68 = 0x04000000;
         sp_70 = (s32)&sp_78;
         if (vsnprintf(sp_78, 0x100, (const char *)arg3, (VaList1 *)&sp_68) > 0) {
-            fn_800D30E8(arg0, arg1, sp_78, arg2, 0);
+            fn_800D30E8((s32)arg0, (s32)arg1, sp_78, (s32)arg2, 0);
         }
     } else {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x287, lbl_8031EBB4);
@@ -4438,53 +4438,53 @@ extern "C" void fn_800D2FDC(void *arg0, void *arg1, void *arg2, void *arg3, void
 extern "C" const char lbl_8031EBF4[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
 extern "C" void fn_800D2E3C(s32, s32, s32, s32);
-extern "C" char *fn_800D3260(s32, s32, const char *, s32);
+extern "C" const char *fn_800D3260(s32, s32, const char *, s32);
 extern "C" char *strchr(const char *, int);
-extern "C" void fn_800D30E8(void *arg0, void *arg1, void *arg2, void *arg3, s32 arg4) {
-    s32 x = (s32)arg0;
-    s32 y = (s32)arg1;
-    const char *str = (const char *)arg2;
+extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 arg3, s32 arg4) {
     u16 width = *(u16 *)((u8 *)lbl_80407BD8 + 8);
     s32 scaleX = width < 400 ? 1 : 2;
     s32 maxCols = width / scaleX;
     s32 startX = x;
 
-    while (*str != '\0') {
+    while ((s8)*str != 0) {
         if (arg4 != 0) {
             const char *p = str;
             s32 len = 0;
             if (str == NULL) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x132, lbl_8031EBF4);
             }
-            while (*p != '\0' && *p != '\n') {
-                if (*p == '\t') {
+            for (;;) {
+                s8 c = *p++;
+                if (c == 0 || c == '\n') {
+                    break;
+                }
+                if (c == '\t') {
                     len = (len + 4) & ~3;
                 } else {
                     len++;
                 }
-                p++;
             }
             fn_800D2E3C(x - 6, y - 3, (len + 2) * 6, 13);
         }
 
-        char *next = fn_800D3260(x, y, str, (maxCols - x) / 6);
-        char c = *next;
+        const char *next = fn_800D3260(x, y, str, (maxCols - x) / 6);
+        s8 c = *next;
         str = next;
         y += 10;
         if (c == '\n') {
             x = startX;
-            str = next + 1;
-        } else if (c != '\0') {
-            str = next + 1;
+            str++;
+        } else if (c != 0) {
+            str++;
             if (arg3 != 0) {
                 x = 0;
             } else {
-                char *nextNewline = strchr(str, '\n');
-                if (nextNewline == NULL) {
+                const char *newline = strchr(str, '\n');
+                if (newline == NULL) {
                     break;
                 }
                 x = startX;
-                str = nextNewline + 1;
+                str = newline + 1;
             }
         }
     }
