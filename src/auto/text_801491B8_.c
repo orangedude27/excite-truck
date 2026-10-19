@@ -2,6 +2,40 @@
 
 #include <types.h>
 #include <stdarg.h>
+extern f32 fn_80144514(f32,f32,f32,f32,f32,f32);
+static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right) {
+ if (dst == right || dst == left) {
+ f32 t0 = fn_80144514(left[0],right[0],left[3],right[1],left[6],right[2]);
+ f32 t3 = fn_80144514(left[0],right[3],left[3],right[4],left[6],right[5]);
+ f32 t6 = fn_80144514(left[0],right[6],left[3],right[7],left[6],right[8]);
+ f32 t1 = fn_80144514(left[1],right[0],left[4],right[1],left[7],right[2]);
+ f32 t4 = fn_80144514(left[1],right[3],left[4],right[4],left[7],right[5]);
+ f32 t7 = fn_80144514(left[1],right[6],left[4],right[7],left[7],right[8]);
+ f32 t2 = fn_80144514(left[2],right[0],left[5],right[1],left[8],right[2]);
+ f32 t5 = fn_80144514(left[2],right[3],left[5],right[4],left[8],right[5]);
+ f32 t8 = fn_80144514(left[2],right[6],left[5],right[7],left[8],right[8]);
+ dst[0]=t0;
+ dst[3]=t3;
+ dst[6]=t6;
+ dst[1]=t1;
+ dst[4]=t4;
+ dst[7]=t7;
+ dst[2]=t2;
+ dst[5]=t5;
+ dst[8]=t8;
+ } else {
+ dst[0]=fn_80144514(left[0],right[0],left[3],right[1],left[6],right[2]);
+ dst[3]=fn_80144514(left[0],right[3],left[3],right[4],left[6],right[5]);
+ dst[6]=fn_80144514(left[0],right[6],left[3],right[7],left[6],right[8]);
+ dst[1]=fn_80144514(left[1],right[0],left[4],right[1],left[7],right[2]);
+ dst[4]=fn_80144514(left[1],right[3],left[4],right[4],left[7],right[5]);
+ dst[7]=fn_80144514(left[1],right[6],left[4],right[7],left[7],right[8]);
+ dst[2]=fn_80144514(left[2],right[0],left[5],right[1],left[8],right[2]);
+ dst[5]=fn_80144514(left[2],right[3],left[5],right[4],left[8],right[5]);
+ dst[8]=fn_80144514(left[2],right[6],left[5],right[7],left[8],right[8]);
+ }
+}
+
 
 typedef struct { s32 a, b, c, d; f32 e, f; s32 g; } Copy8014C6F0;
 
