@@ -33,6 +33,23 @@ void *fn_802E4CA4(int arg0) {
     return fn_802E4C1C(arg0);
 }
 
+void fn_802E4CA8(unsigned char *arg0, const signed char *arg1, int arg2) {
+    unsigned char c;
+    goto copy;
+    for (;;) {
+        if (--arg2 <= 0) {
+            arg0[-1] = 0;
+            return;
+        }
+    copy:
+        c = (unsigned char)*arg1;
+        arg1++;
+        *arg0 = c;
+        arg0++;
+        if ((signed char)c == 0) return;
+    }
+}
+
 void fn_802E4CDC(void) {
 }
 
@@ -49,6 +66,11 @@ void *fn_802E4CE0(void *arg0, int arg1) {
         }
     }
     return arg0;
+}
+
+void fn_802E4D50(void *arg0) {
+    void * volatile *vtable = *(void ***)arg0;
+    ((void (*)(void))vtable[4])();
 }
 
 int fn_802E4D60(void *arg0, int arg1) {
