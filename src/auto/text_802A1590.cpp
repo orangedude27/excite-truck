@@ -1,6 +1,8 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
+extern "C" int lbl_80349B00[];
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -532,6 +534,14 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* arg0, s32 arg1) {
             ((s32 (*)(void*))fn_80128668)(arg0);
         }
     }
+    return arg0;
+}
+
+extern "C" void fn_802A37C8(void*, s32);
+extern "C" void* fn_802A3610(void* arg0, DummyReceiver_802A3314* arg1) {
+    *(void**)arg0 = lbl_80349B00;
+    s32 result = arg1->v3(&lbl_8055CBB0);
+    fn_802A37C8(arg0, result);
     return arg0;
 }
 
