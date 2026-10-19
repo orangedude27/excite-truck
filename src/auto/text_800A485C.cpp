@@ -84,6 +84,18 @@ extern "C" s32 fn_800BA49C(s32, s32, s32, s32);
 extern "C" const char lbl_8031B190[];
 extern "C" const char lbl_8031B1C0[];
 extern "C" s32 fn_800B76E8(s8);
+
+struct NandEntry {
+    u32 key;
+    u8 pad0[0x50];
+    u32 length;
+    u8 nand[0x94];
+    s32 error;
+};
+extern "C" s32 NANDGetLengthAsync(void *, u32 *);
+extern "C" s32 NANDSeek(void *, s32, s32);
+extern "C" s32 NANDRead(void *, void *, u32);
+extern "C" void VFipf_memcpy(void *, const void *, u32);
   #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSTime.h>
 #include <revolution/ARC/arc.h>
@@ -1311,6 +1323,64 @@ s32 fn_800B51FC(u8 *arg0, s32 arg1) {
     return 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+extern "C" s32 fn_800B5324(void *arg0, u8 *arg1, u32 arg2, u32 arg3, u32 arg4, u32 *arg5, s32 arg6) {
+    void *page;
+    u32 count;
+    s32 result;
+    *arg5 = 0;
+    if (!(M2C_FIELD(arg0, u16 *, 0x1F8C) & 1) || !fn_800A53B4(arg0)) return 9;
+    if ((arg2 >= M2C_FIELD(arg0,u32 *,8) || arg3 >= M2C_FIELD(arg0,u16 *,0) || arg3 + arg4 > M2C_FIELD(arg0,u16 *,0)) && arg3 != 0) return 10;
+    if (arg3 != 0 || arg4 < M2C_FIELD(arg0,u16 *,0)) {
+        result = ((s32 (*)(void *,u32,void **,s32))fn_800A8EE0)(arg0,arg2,&page,arg6);
+        if (result) return result;
+        VFipf_memcpy(arg1,M2C_FIELD(page,u8 **,8)+arg3,arg4);
+        *arg5 = arg4;
+    } else if (arg3 == 0 && !(arg4 & (M2C_FIELD(arg0,u16 *,0)-1))) {
+        result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(arg0,arg1,arg2,arg4 >> M2C_FIELD(arg0,u8 *,0x20),(s32)&count);
+        if (result) return result;
+        *arg5 += count << M2C_FIELD(arg0,u8 *,0x20);
+        if (count != arg4 >> M2C_FIELD(arg0,u8 *,0x20)) return 17;
+    } else if (arg3 == 0) {
+        page = ((void *(*)(void *,u32))fn_800A90F8)(arg0,arg2);
+        if (page) {
+            arg3 = M2C_FIELD(page,u32 *,0x18) + M2C_FIELD(page,u32 *,0x14) - arg2;
+            if (arg3 <= arg4 >> M2C_FIELD(arg0,u8 *,0x20)) {
+                VFipf_memcpy(arg1,M2C_FIELD(page,void **,8),arg3 << M2C_FIELD(arg0,u8 *,0x20));
+                arg2 += arg3;
+                *arg5 += arg3 << M2C_FIELD(arg0,u8 *,0x20);
+                arg4 -= arg3 << M2C_FIELD(arg0,u8 *,0x20);
+            } else if (arg3 > arg4 >> M2C_FIELD(arg0,u8 *,0x20)) {
+                VFipf_memcpy(arg1,M2C_FIELD(page,void **,8),arg4);
+                *arg5 += arg4;
+                arg4 = 0;
+            }
+        }
+        if (arg4 != 0) {
+            arg4 >>= M2C_FIELD(arg0,u8 *,0x20);
+            u32 remainder = (arg2 + arg4) % M2C_FIELD(arg0,u32 *,0x1640);
+            if (arg4 > remainder) {
+                arg3 = arg4 - remainder;
+                result = VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded(arg0,arg1+*arg5,arg2,arg3,(s32)&count);
+                if (result) return result;
+                *arg5 += count << M2C_FIELD(arg0,u8 *,0x20);
+                if (count != arg3) return 17;
+                arg2 += arg3;
+                arg4 -= arg3;
+            }
+            if (arg4 != 0) {
+                result = ((s32 (*)(void *,u32,void **,s32))fn_800A8EE0)(arg0,arg2,&page,arg6);
+                if (result) return result;
+                VFipf_memcpy(arg1+*arg5,M2C_FIELD(page,void **,8),arg4 << M2C_FIELD(arg0,u8 *,0x20));
+                *arg5 += arg4 << M2C_FIELD(arg0,u8 *,0x20);
+            }
+        }
+    } else return 10;
+    return 0;
+}
+#pragma pop
 extern "C" s32 fn_800A53B4(void *);
 extern "C" s32 fn_800A53C0(void *);
 extern "C" s32 fn_800A53DC(void *);
@@ -1965,8 +2035,8 @@ extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
-    s32 status;
     unsigned char *entry;
+    s32 status;
     unsigned char *e;
     u16 i;
     u32 length;
@@ -2003,13 +2073,7 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     } else {
         r = 0;
     }
-    if (r < 0) {
-        for (i = 0; i < 0x17; i++) {
-            e = lbl_80405D58 + i * 0xF0;
-            if (*(u32 *)e == (u32)arg5) { *(s32 *)(e + 0xEC) = r; break; }
-        }
-        return r;
-    }
+    if (r < 0) goto fail;
 
     if (pos + length > filelen) {
         remain = filelen - pos;
@@ -2055,6 +2119,13 @@ extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     }
     *arg4 = arg0;
     return 0;
+
+fail:
+    for (i = 0; i < 0x17; i++) {
+        e = lbl_80405D58 + i * 0xF0;
+        if (*(u32 *)e == (u32)arg5) { *(s32 *)(e + 0xEC) = r; break; }
+    }
+    return r;
 }
 
 #pragma push
