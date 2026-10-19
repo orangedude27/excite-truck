@@ -1,6 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct { float x, y, z; } Vec80295;
+extern char lbl_80349338[], lbl_8055C998[], lbl_8055C9A0[], lbl_8055C9A4[], lbl_8055C9AC[];
+extern float lbl_8056451C, lbl_80564520, lbl_80564544;
+extern int fn_80288070(int, int, int *);
+extern int fn_80287E20(int, int);
+extern void *fn_80287E80(int, int);
 int fn_80287B14(void);
 int fn_802CAC54(int);
 extern int lbl_8055C990;
@@ -15,10 +21,7 @@ void fn_80294C68(void) {
     lbl_8055C990 = -1;
     i = 0;
     lbl_8055C994 = -1;
-    goto loop;
-loop:
-    i = i + 1;
-    if (i < fn_80287B14()) goto loop;
+    do { i++; } while (i < fn_80287B14());
 }
 #pragma scheduling on
 void fn_80294CC0(void) {}
@@ -28,19 +31,22 @@ void fn_80294CC4(void) {}
 void fn_80294ED4(void);
 void fn_80294CC8(void) { fn_80294ED4(); }
 
+#pragma scheduling off
 void fn_80295C70(void *arg0, int arg1, float *arg2, unsigned int arg3, int arg4, float farg0, float farg1) {
-    int index = *(int *)((char *)arg0 + 0x180);
-    char *entry = (char *)arg0 + (index << 5);
-    *(int *)entry = arg1;
-    *(float *)(entry + 4) = arg2[0];
-    *(float *)(entry + 8) = arg2[1];
-    *(float *)(entry + 0xC) = arg2[2];
-    *(float *)(entry + 0x10) = farg1;
-    *(float *)(entry + 0x14) = farg0;
-    entry[0x18] = (arg3 >> 16);
-    entry[0x19] = (arg3 >> 8);
-    entry[0x1A] = arg3;
-    *(int *)(entry + 0x1C) = arg4;
-    *(int *)((char *)arg0 + 0x180) = index + 1;
+    struct Entry { int value; float a,b,c,d,e; unsigned char flags[3]; int tail; };
+    struct Obj { unsigned char pad[0x180]; int count; };
+    struct Obj *obj = arg0;
+    struct Entry *entry = (struct Entry *)((char *)obj + (obj->count << 5));
+    entry->value = arg1;
+    entry->a = arg2[0];
+    entry->b = arg2[1];
+    entry->c = arg2[2];
+    entry->d = farg1;
+    entry->e = farg0;
+    entry->flags[0] = arg3 >> 16;
+    entry->flags[1] = arg3 >> 8;
+    entry->flags[2] = arg3;
+    entry->tail = arg4;
+    obj->count++;
 }
-
+#pragma scheduling on
