@@ -864,3 +864,7 @@ struct Fn8013FC6CDispatch {
 class TObj10DispatchA6C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void v10(const char *); };
 struct TObj24A { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void *v24(); };
 struct S3FAC4 { s32 a, b, c, d; f32 e, f, g, h, i, j; };
+struct S32_80140728 { s32 v[8]; f32 f[6]; };
+extern "C" f32 lbl_805614C4;
+extern "C" void *lbl_8032C530;
+extern "C" void fn_80147BD0(s32, s32, s32, s32, s32, f32);
