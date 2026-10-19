@@ -48,6 +48,11 @@ s32 fn_800179E4(void *value, s32 array, s32 count) {
     }
     return 0;
 }
+
+s32 fn_80017A14(s32 arg0, s32 arg1) {
+    return fn_800179E4((void *)arg0, arg1 + 0x28, *(s32 *)(arg1 + 0x24));
+}
+
 #pragma dont_inline off
 
 extern s32 fn_800179E4(void *, s32, s32);
@@ -62,17 +67,18 @@ void fn_80017AC8(void* arg0) {
     offset = 0;
     while (i < *(s32*)((char*)arg0 + 4)) {
         s32 left;
+        s32 right;
         s32* items;
         s32 index;
         index = fn_80129D18(1);
         items = *(s32**)arg0;
         i++;
         left = *(s32*)((char*)items + offset);
-        *(s32*)((char*)items + offset) = items[index];
+        right = items[index];
+        *(s32*)((char*)items + offset) = right;
         offset += 4;
         items[index] = left;
     }
-    *(s32*)((char*)arg0 + 4);
 }
 
 extern s32 fn_800165D4(void);
@@ -220,17 +226,17 @@ s32 fn_800183C0(void *arg0) {
 extern void *fn_8001285C(s32);
 #pragma push
 #pragma dont_inline on
-void fn_80018440(void *arg0, s32 arg1, void *arg2) {
-    s32 count, i;
+void fn_80018440(Unk18440 *arg0, s32 arg1, Unk18440 *arg2) {
+    s32 count, i, n, m;
     count = fn_800183C0(fn_8001285C(arg1));
     memset(arg0, 0, 0x48);
+    n = arg2->unk_0x00;
+    m = arg2->unk_0x24;
     for (i = 0; i < count; i++) {
-        s32 a = *(s32*)((char*)arg2 + (*(s32*)arg2 - 1 - i)*4 + 4);
-        s32 b = *(s32*)((char*)arg2 + (*(s32*)((char*)arg2+0x24) - 1 - i)*4 + 0x28);
-        *(s32*)((char*)arg0+i*4+4) = a;
-        (*(s32*)arg0)++;
-        *(s32*)((char*)arg0+i*4+0x28) = b;
-        (*(s32*)((char*)arg0+0x24))++;
+        arg0->unk_0x04[i] = arg2->unk_0x04[n - 1 - i];
+        arg0->unk_0x00++;
+        arg0->unk_0x28[i] = arg2->unk_0x28[m - 1 - i];
+        arg0->unk_0x24++;
     }
 }
 #pragma pop
