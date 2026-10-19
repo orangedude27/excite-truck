@@ -13,7 +13,7 @@ extern void fn_8012850C(int, void *);
 extern void *fn_8002F37C(void *, int, int, int);
 extern int lbl_8034A9F4;
 extern void *lbl_8055FA7C;
-extern int lbl_804BFFF4;
+extern int lbl_804BFFF4[4];
 extern int lbl_8055FA6C, lbl_8055FA70;
 extern void *lbl_8055FA74;
 int fn_802CAC28(int, int);
@@ -243,6 +243,99 @@ void fn_802BA560(void *arg0) {
     *(volatile unsigned char *)((char *)arg0 + 0xC) = 1;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+#pragma dont_inline on
+extern "C" void *fn_802BA580(void **arg0, void *arg1, float scale) {
+    class Object { public:
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual char *name(void *);
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual unsigned long long value(void *);
+    };
+    extern int fn_802E317C(const char *, ...);
+    extern int fn_802B110C(void *, char *);
+    extern int stricmp(const char *,const char *);
+    extern void fn_801602B0(void *);
+    extern void fn_8016029C(void *, void *);
+    extern void fn_80160B18(void *);
+    extern void fn_80160BA0(void *, void *, float);
+    extern void fn_80144D64(void *, void *);
+    extern void *fn_802C9A40(void);
+    extern void fn_801E0F78(void *, void *, void *, float);
+    extern void fn_8001BA68(void *);
+    extern float fn_801DCF48(void *, float, float);
+    extern float fn_801E0FA4(void *, void *);
+    extern float fn_8014C8B4(float,float,float,float,float);
+    extern void fn_802BAA50(void *);
+    extern void fn_802BA848(void *,void *,void *,void *);
+    extern float lbl_80564CDC, lbl_80564CC4, lbl_80564CD8;
+    extern float lbl_80564CE0, lbl_80564CE4, lbl_80564CE8, lbl_80564CCC;
+    extern int lbl_8055CF04, lbl_8055CEF8, lbl_8055CECC, lbl_8034AA2C;
+    float j[3], h[3];
+    union { unsigned long long bits; float v[2]; } value;
+    float g[2], f[2], e[2], d[2], c[2], b[2], a[2];
+    char *result;
+    char *name;
+    int *entry;
+    int **items;
+    int index;
+    int state;
+    int count;
+    result = *(char **)lbl_8055FA7C + (*(int *)((char *)lbl_8055FA7C+4))*0x44;
+    ++*(int *)((char *)lbl_8055FA7C+4);
+    fn_801602B0(a); fn_801602B0(b); fn_801602B0(c); fn_801602B0(d);
+    value.bits = ((Object *)arg0)->value(&lbl_8055CF04);
+    fn_80160BA0(d,&value,scale);
+    fn_80144D64(h,fn_802C9A40());
+    fn_801602B0(e);
+    fn_8016029C(e,h);
+    fn_80160B18(e);
+    fn_80160BA0(b,e,d[1]);
+    fn_80160BA0(c,e,d[0]);
+    fn_802BAA50(c);
+    fn_801E0F78(a,arg1,c,lbl_80564CDC);
+    fn_801602B0(f);
+    fn_801E0F78(f,arg1,b,lbl_80564CC4);
+    fn_8001BA68(j);
+    if (fn_801DCF48(j,f[0],f[1]) != lbl_80564CD8) {
+        fn_801602B0(g);
+        fn_8016029C(g,j);
+        fn_80160BA0(b,b,fn_8014C8B4(lbl_80564CE0,lbl_80564CE4,lbl_80564CE8,lbl_80564CCC,fn_801E0FA4(g,e)));
+    }
+    fn_802BA848(result,c,b,a);
+    *(int *)(result+8)=1;
+    name=((Object *)arg0)->name(&lbl_8055CEF8);
+    for(index=0; index < *(int *)((char *)&lbl_804BFFF4+4); index++) {
+        entry=(*(int ***)&lbl_804BFFF4)[index];
+        if (stricmp((char *)entry[0],name)==0) goto found;
+    }
+    count=*(int *)((char *)&lbl_804BFFF4+4);
+    items=*(int ***)&lbl_804BFFF4;
+    *(int *)((char *)&lbl_804BFFF4+4)=count+1;
+    entry=(int *)fn_801284F8(0x10,&lbl_8055CECC);
+    if(entry) {
+        entry[0]=(int)name;
+        if ((signed char)*name) state=fn_802B110C((void *)fn_802B8E50,name);
+        else state=-2;
+        entry[1]=state;
+        if(state==-2 && (signed char)*name) fn_802E317C((char *)&lbl_8034AA2C,name);
+        entry[3]=0;
+        entry[2]=999;
+    }
+    items[count]=entry;
+found:
+    *(int *)(result+16)=entry[3];
+    entry[3]=(int)result;
+    lbl_8055FA84=(void *)((int)lbl_8055FA84+1);
+    return result;
+}
+#pragma cplusplus reset
+#pragma pop
+
 void fn_802BAA50(void *arg0) {
     float a = *(float *)arg0;
     float b = *((float *)arg0 + 1);
@@ -306,14 +399,17 @@ void fn_802BB674(char *arg0, int arg1) {
     struct Entry { char *name; int state; };
     struct Entry *entry = ((struct Entry **)lbl_804C0088)[arg1];
     int result;
+    int first;
     if (entry != 0 && stricmp(entry->name, arg0) != 0) {
-        if (entry->state != -2) fn_802CAC54();
+        if (*(volatile int *)&entry->state != -2) fn_802CAC54();
+        first = (signed char)*arg0;
         result = -2;
         entry->state = -2;
-        if ((signed char)*arg0 != 0) result = fn_802B110C(fn_802B8E50, arg0);
+        if (first != 0) result = fn_802B110C(fn_802B8E50, arg0);
         entry->state = result;
         entry->name = arg0;
-        if (result == -2 && (signed char)*entry->name != 0) fn_802E317C((const char *)lbl_8034AA50);
+        if (result == -2 && (signed char)*(volatile char *)entry->name != 0)
+            fn_802E317C((char *)&lbl_8034AA50);
     }
 }
 
