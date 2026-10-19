@@ -5016,10 +5016,13 @@ extern "C" s32 fn_800A4A8C(s32 arg0) {
     return ptr - start;
 }
 #pragma pop
-extern "C" void fn_800A4AAC(char *dst, char *src) {
+extern "C" char *fn_800A4AAC(char *dst, char *src) {
     char *d = dst;
-    char *s = src;
-    while (*d++ = *s++) ;
+    while ((*d = *src) != 0) {
+        src++;
+        d++;
+    }
+    return dst;
 }
 
 extern "C" s32 fn_800A4AD0(u8 *arg0, u8 *arg1) {
