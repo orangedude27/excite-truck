@@ -523,6 +523,9 @@ done:
     return arg0;
 }
 
+extern "C" void fn_801584A4(void) {
+}
+
 extern "C" void fn_801584A8(void* arg0) {
     *(u32*)((u8*)arg0) = (u32)((u8*)arg0 + 0xC);
     *(u32*)((u8*)arg0 + 8) = 0x10;
