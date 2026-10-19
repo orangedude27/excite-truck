@@ -40,6 +40,11 @@ void fn_8024DAD8(void) {
     fn_8024739C();
 }
 
+#pragma opt_tail_call on
+void fn_8024DADC(void) {
+    fn_8024739C();
+}
+
 void *fn_8024E920(void *arg0, s32 arg1) {
     extern unsigned char lbl_8034453C[];
     extern s32 fn_80128670(s32);
