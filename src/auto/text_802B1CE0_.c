@@ -47,13 +47,17 @@ int fn_802B1DA0(void *arg0) {
 
 extern int lbl_8055CDB8;
 int stricmp(const char *, const char *);
-int fn_802B1DE8(void **arg0) {
-    void **vtable = *(void ** volatile *)arg0;
-    char *(*method)(void *) = (char *(*)(void *))vtable[2];
-    char *result = method(arg0);
-    return stricmp((char *)&lbl_8055CDB8, result) == 0;
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_802B1DE8(void *arg0) {
+    class Obj {
+    public:
+        virtual const char *getName();
+    };
+    return stricmp((char *)&lbl_8055CDB8, ((Obj *)arg0)->getName()) == 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 void fn_802B1F64(void) {
 }
 
