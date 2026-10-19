@@ -468,7 +468,7 @@ void fn_80037CEC(void) {
 
 extern s32 lbl_8055D874, lbl_8055D870, lbl_8055D880, lbl_8055D8BC, lbl_8055D87C, lbl_8055D85C;
 extern s32 executing_8055D8C8, MotorState_8055D8A8;
-extern u8 lbl_80376AD0;
+extern u8 lbl_80376AD0[0x30];
 extern s32 fn_8003BB48(void);
 extern void OSCancelAlarm(void *);
 extern void fn_8003773C(void);
@@ -622,6 +622,76 @@ void fn_800393D4(void) {
         fn_80038040();
     }
     OSRestoreInterrupts(enabled);
+}
+
+extern s32 lbl_8055D858, lbl_8055D86C;
+extern void (*lbl_8055D8B8)(s32, void *);
+extern s32 __DVDDequeueWaitingQueue(void *);
+s32 fn_80039424(void *block, void (*callback)(s32, void *)) {
+    s32 enabled = OSDisableInterrupts();
+    switch (*(volatile s32 *)((u8 *)block + 0xC)) {
+    case -1: case 0: case 10:
+        if (callback) callback(0, block);
+        break;
+    case 1:
+        if (lbl_8055D858) { OSRestoreInterrupts(enabled); return 0; }
+        lbl_8055D858 = 1;
+        lbl_8055D8B8 = callback;
+        if (*(u32 *)((u8 *)block + 8) == 4 || *(u32 *)((u8 *)block + 8) == 33 || *(u32 *)((u8 *)block + 8) == 34 || *(u32 *)((u8 *)block + 8) == 1)
+            lbl_8055D86C = 1;
+        break;
+    case 2:
+        __DVDDequeueWaitingQueue(block);
+        *(volatile s32 *)((u8 *)block + 0xC) = 10;
+        if (*(void (**)(s32, void *))((u8 *)block + 0x28)) (*(void (**)(s32, void *))((u8 *)block + 0x28))(-3, block);
+        if (callback) callback(0, block);
+        break;
+    case 3:
+        switch (*(u32 *)((u8 *)block + 8)) {
+        case 4: case 5: case 13: case 15: case 33: case 34: case 37:
+            if (callback) callback(0, block);
+            break;
+        case 1: case 2:
+            if (__OSInIPL) {
+                executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+                *(volatile s32 *)((u8 *)block + 0xC) = 10;
+                if (*(void (**)(s32, void *))((u8 *)block + 0x28)) (*(void (**)(s32, void *))((u8 *)block + 0x28))(-3, block);
+                if (callback) callback(0, block);
+                fn_80038040();
+                break;
+            }
+        default:
+            if (lbl_8055D858) { OSRestoreInterrupts(enabled); return 0; }
+            lbl_8055D858 = 1;
+            lbl_8055D8B8 = callback;
+            break;
+        }
+        break;
+    case 4: case 5: case 6: case 7: case 11:
+        if (!lbl_8055D874 && !lbl_8055D870) { OSRestoreInterrupts(enabled); return 0; }
+        OSCancelAlarm(&lbl_80376AD0);
+        lbl_8055D870 = 0;
+        if (*(volatile s32 *)((u8 *)block + 0xC) == 4) lbl_8055D85C = 3;
+        if (*(volatile s32 *)((u8 *)block + 0xC) == 5) lbl_8055D85C = 4;
+        if (*(volatile s32 *)((u8 *)block + 0xC) == 6) lbl_8055D85C = 1;
+        if (*(volatile s32 *)((u8 *)block + 0xC) == 11) lbl_8055D85C = 2;
+        if (*(volatile s32 *)((u8 *)block + 0xC) == 7) lbl_8055D85C = 7;
+        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        *(volatile s32 *)((u8 *)block + 0xC) = 10;
+        if (*(void (**)(s32, void *))((u8 *)block + 0x28)) (*(void (**)(s32, void *))((u8 *)block + 0x28))(-3, block);
+        if (callback) callback(0, block);
+        fn_80038040();
+        break;
+    case 12:
+        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        *(volatile s32 *)((u8 *)block + 0xC) = 10;
+        if (*(void (**)(s32, void *))((u8 *)block + 0x28)) (*(void (**)(s32, void *))((u8 *)block + 0x28))(-3, block);
+        if (callback) callback(0, block);
+        fn_80038040();
+        break;
+    }
+    OSRestoreInterrupts(enabled);
+    return 1;
 }
 
 extern s32 fn_80039424(void *, void (*)(s32, void *));
