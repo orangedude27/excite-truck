@@ -506,6 +506,14 @@ void fn_8014C72C(void **arg0) {
     fn_801476C4();
 }
 
+f32 fn_8014C75C(f32 *arg0, const f32 *arg1) {
+    f32 v0 = arg1[0];
+    f32 v1 = arg1[1];
+    arg0[0] = v0;
+    arg0[1] = v1;
+    return v0;
+}
+
 s64 fn_8014C770(f32 *arg0, f32 *arg1, f32 t) {
     union { struct { f32 x, y; } f; s64 bits; } out;
     out.f.y = arg0[1] + t * (arg1[1] - arg0[1]);
@@ -834,6 +842,8 @@ extern void fn_8014F194(void *arg0);
 extern s32 fn_80145E70(void *arg0);
 extern s32 lbl_8032DB34;
 extern s32 lbl_8032DB40;
+#pragma push
+#pragma opt_propagation off
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
     s32 value = *arg1;
     s32 index = ((s32 *)arg0)[1];
@@ -842,6 +852,7 @@ s32 *fn_801500F8(void *arg0, s32 *arg1) {
     data[index] = value;
     return &data[index];
 }
+#pragma pop
 s32 fn_80150AD8(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
