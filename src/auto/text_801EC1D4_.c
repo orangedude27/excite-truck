@@ -149,6 +149,70 @@ void fn_801ECF58(void *arg0) {
     }
 }
 
+#pragma push
+#pragma processor 750
+void fn_801ECFE0(void *arg0) {
+    extern void *fn_801E87A8(void);
+    extern void fn_801ED46C(void *);
+    extern void fn_802DAC54(void);
+    extern int fn_802C7A40(int, void *, int, int, void *, int);
+    extern void fn_802C70AC(int, void *, int, int);
+    extern float lbl_80562E94, lbl_80562E98, lbl_80558DC4;
+    extern unsigned char lbl_8055E614;
+    extern long lbl_8055EBC0;
+    char *self = arg0;
+    Unk_801ECFE0 first, second;
+    long params[2];
+    long *entry;
+    long i, j, offset, mask, handle, flag, cached;
+    char *part, *data;
+    float scale;
+    if (!(*(float *)(*(char **)(self+0x3C)+0x22C) < lbl_80562E94)) {
+        fn_801ECC70();
+        flag = (*(unsigned long *)((char *)fn_801E87A8()+0x10) >> 1) & 1;
+        entry = (long *)(self+0x154);
+        cached = lbl_8055EBC0;
+        scale = lbl_80562E98;
+        for (i=0; i<*(long *)(self+0x150); i++, entry+=3) {
+            mask = *(long *)(*(char **)(self+0x3C)+0x29C) & entry[2];
+            params[0] = *(long *)(self+0x3EC);
+            params[1] = cached;
+            if ((float)__fabs((double)*(float *)(*(char **)(self+0x3C)+0x28C)) <= lbl_80558DC4)
+                fn_802DAC54();
+            handle = fn_802C7A40(1, *(char **)(self+0x3C)+(entry[0]+1)*12+0x2E0, entry[1]-entry[0], 1, params, 2);
+            for (j=0, offset=0; j<*(long *)(*(char **)(self+0x3C)+0xA78); j++, offset+=0x34) {
+                data = *(char **)(self+0x3C)+offset;
+                part = data+0xA7C;
+                if (*(long *)(data+0xAAC) & mask) {
+                    if (flag) {
+                        first = *(Unk_801ECFE0 *)part;
+                        first.values[0] *= scale;
+                        first.values[1] *= scale;
+                        first.values[2] *= scale;
+                        fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], &first, handle, *(long *)(part+0x30));
+                    } else {
+                        fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], part, handle, *(long *)(part+0x30));
+                    }
+                    mask &= ~*(long *)(part+0x30);
+                }
+            }
+            if (!lbl_8055E614) {
+                if (flag) {
+                    second = *(Unk_801ECFE0 *)(self+0x4A0);
+                    second.values[0] *= scale;
+                    second.values[1] *= scale;
+                    second.values[2] *= scale;
+                    fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], &second, handle, mask);
+                } else {
+                    fn_802C70AC((*(int **)(self+0x16C))[*(long *)(self+0x3F8)], self+0x4A0, handle, mask);
+                }
+            }
+        }
+        fn_801ED46C(self);
+    }
+}
+#pragma pop
+
 void fn_801ED2D0(void *arg0) {
     long flag;
     long i;
@@ -192,6 +256,7 @@ void fn_801EDD68(void *arg0) {
 
 extern void fn_801EABA8(long);
 extern void fn_801F0F78(long, long, void *, float);
+extern float lbl_80558DC4_storage[];
 extern float lbl_80558DC4;
 extern float lbl_80562E90;
 extern float __fabsf(float);
