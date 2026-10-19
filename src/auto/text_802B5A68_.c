@@ -359,8 +359,7 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
         }
         *(s32 *)((char *)arg0 + 0x18) = -1;
         fn_802B62A4(arg0);
-        s = (Struct804BFF80 *)&lbl_804BFF80;
-        if (s->unk0[0] == 0) {
+        if (*(s32 *)&lbl_804BFF80 == 0) {
             fn_802B6358(arg0);
             {
                 char *src = *(char **)arg0;
@@ -373,7 +372,11 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
                     }
                 }
             }
-            *(Struct804BFF80_Entry *)s->unk54 = *(Struct804BFF80_Entry *)s->unk0;
+            *(s32 *)((char *)&lbl_804BFF80 + 0x54) = *(s32 *)&lbl_804BFF80;
+            *(s32 *)((char *)&lbl_804BFF80 + 0x58) = *(s32 *)((char *)&lbl_804BFF80 + 4);
+            *(s32 *)((char *)&lbl_804BFF80 + 0x5C) = *(s32 *)((char *)&lbl_804BFF80 + 8);
+            *(s32 *)((char *)&lbl_804BFF80 + 0x60) = *(s32 *)((char *)&lbl_804BFF80 + 0xC);
+            *(s32 *)((char *)&lbl_804BFF80 + 0x64) = *(s32 *)((char *)&lbl_804BFF80 + 0x10);
         }
     }
     fn_80147230(arg0, lbl_8055CE70, buf);
