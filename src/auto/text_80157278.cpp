@@ -11,7 +11,7 @@ extern "C" void* fn_8017960C(s32);
 
 class Fn8015889C {
 public:
- virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+ virtual void v2(); virtual void v3();
  virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
  virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
  virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
@@ -821,6 +821,55 @@ extern "C" void fn_801590A8(void* arg0) {
 }
 
 extern "C" void fn_80159724(void) {
+}
+
+extern "C" f32 fn_80159728(void* arg0, void* arg1) {
+ Fn8015889C* self = (Fn8015889C*)arg0;
+ u8* p = (u8*)arg0;
+ f32 result = lbl_80561754;
+ if ((f32)__fabs(*(f32*)((u8*)arg1+0x2690)) <= lbl_80558DC4[0] && self->v37()) {
+  if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c)) self->v32();
+  f32 step = lbl_8056177C * *(f32*)((u8*)arg1+0x25d4);
+  *(f32*)(p+0x25c) += step;
+  *(f32*)(p+0x260) += step;
+  *(f32*)(p+0x264) += step;
+  self->v34();
+  if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c) && self->v23()>0) {
+   *(f32*)(p+0x258) = lbl_80561754;
+   if (*(u8**)(p+0x26c)) *(s32*)(*(u8**)(p+0x26c)+8)=0;
+  }
+  result = lbl_80561754;
+ } else if ((f32)__fabs(*(f32*)(p+0x258)) <= lbl_80558DC4[0]) {
+  f32 value = lbl_80561754;
+  if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c) && self->v23()>0) {
+   value = *(f32*)(p+0x250) * self->v20(self->v23());
+   self->v35(&value);
+   self->v33();
+  }
+  if (!fn_80141F7C(value)) self->v38(*(f32*)(p+0x25c));
+  f32 x=*(f32*)(p+0x258), y=lbl_8056177C, z=lbl_80561754;
+  *(f32*)(p+0x25c)=z; *(f32*)(p+0x264)=z; *(f32*)(p+0x258)=x+y;
+  result=value;
+ } else {
+  self->v33();
+  *(f32*)(p+0x258) += lbl_8056177C;
+  if (*(f32*)(p+0x260) > *(f32*)(p+0x24c)) {
+   if (*(s32*)(p+0x268)) fn_801CB750(*(s32*)(p+0x268),*(s32*)(p+4));
+   *(f32*)(p+0x260)=lbl_80561754;
+  }
+ }
+ if (self->v23() == *(s32*)(p+0xc)-1) {
+  f32 value = lbl_80561754;
+  if (*(f32*)(p+0x25c) > *(f32*)(p+0x24c) && self->v23()>0) {
+   value = *(f32*)(p+0x250)*self->v20(self->v23());
+   self->v35(&value); self->v33();
+  }
+  if (!fn_80141F7C(value)) self->v38(*(f32*)(p+0x25c));
+  f32 x=*(f32*)(p+0x258), y=lbl_8056177C,z=lbl_80561754;
+  *(f32*)(p+0x25c)=z; *(f32*)(p+0x264)=z; *(f32*)(p+0x258)=x+y;
+  result=value;
+ }
+ return result;
 }
 
 extern "C" void fn_80159AB4(void* arg0) {
