@@ -401,11 +401,11 @@ void fn_80175080(void **arg0, int arg1, int arg2, char *arg3, int arg4, int arg5
 }
 
 typedef void (*Fn_80175228)(void *);
-#pragma scheduling off
-void fn_80175228(void *arg0) {
-    (*(void (**)(void *))(*(char **)arg0 + 0x4C))(arg0);
+#pragma cplusplus on
+extern "C" void fn_80175228(void *arg0) {
+    ((TObj4C *)arg0)->v4C();
 }
-#pragma scheduling on
+#pragma cplusplus reset
 extern float lbl_80561AEC;
 float fn_801757A8(void) { return lbl_80561AEC; }
 
