@@ -51,13 +51,20 @@ void fn_801E2F00(void) {
     lbl_8055EA50 = p;
 }
 
-void fn_801E2F68(void) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801E2F68(void) {
+    class Obj {
+    public:
+        virtual void destroy(int);
+    };
     if (lbl_8055EA50 != 0) {
-        ((void (*)(void *, int))(*(void ***)lbl_8055EA50)[2])(lbl_8055EA50, 1);
+        ((Obj*)lbl_8055EA50)->destroy(1);
     }
     lbl_8055EA50 = 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_801E2FAC(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_8012A260((void*)arg0, 0);
@@ -125,10 +132,10 @@ void fn_801E3488(void *arg0, void *arg1) {
 
 void fn_801E34E4(s32 *arg0, s32 arg1) {
     s32 sp8[12];
-    register s32 val = *arg0;
-    if (val != -1) {
+    volatile s32 *p = arg0;
+    if (*p != -1) {
         fn_801E3284(&sp8[0], arg0, arg1);
-        fn_802C744C(*arg0, &sp8[0]);
+        fn_802C744C(*p, &sp8[0]);
     }
 }
 
