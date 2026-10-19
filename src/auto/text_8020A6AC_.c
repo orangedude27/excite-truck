@@ -204,11 +204,18 @@ void fn_8020B344(void) {
     fn_802E5828();
 }
 
-void fn_8020B348(void *arg0) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8020B348(void *arg0) {
+    class Obj {
+    public:
+        virtual void f(int);
+    };
     if (arg0 == 0) return;
-    ((void (*)(void *, int))(*(void ***)arg0)[2])(arg0, 1);
+    ((Obj *)arg0)->f(1);
 }
-
+#pragma cplusplus reset
+#pragma pop
 extern void *fn_802E5AE8(void *);
 extern void fn_802E5D5C(void *);
 extern void *fn_8020A6AC(void *);
