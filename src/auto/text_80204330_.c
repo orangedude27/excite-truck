@@ -14,9 +14,9 @@ extern void fn_80011A2C(void), fn_801476C4(void);
 extern int fn_801298E8(void *, int);
 extern void fn_80147230(void *, const char *, ...);
 extern void fn_801473F8(int, const char *, ...);
-extern char lbl_8055B428[], lbl_8055B430[], lbl_8055B438[], lbl_8055B440[];
-extern char lbl_8055B448[], lbl_8055B44C[], lbl_8055B454[], lbl_8055B458[];
-extern char lbl_8055B45C[], lbl_8055B460[];
+extern char lbl_8055B428[8], lbl_8055B430[8], lbl_8055B438[8], lbl_8055B440[8];
+extern char lbl_8055B448[4], lbl_8055B44C[8], lbl_8055B454[4], lbl_8055B458[4];
+extern char lbl_8055B45C[4], lbl_8055B460[4];
 extern float lbl_80563188;
 extern void* lbl_8055ED48;
 extern int fn_802E2C20(void);
@@ -72,6 +72,59 @@ void fn_8020449C(void) {
         (*(void (***)(void *, int))lbl_8055ED44)[2]((void *)lbl_8055ED44, 1);
     }
     lbl_8055ED44 = 0;
+}
+
+int fn_802044E8(void) {
+ unsigned char input[0x64];
+ float matrix[12];
+ struct Text80204 value, label;
+ int normal, selected;
+ int result, count, start, end, i;
+ struct Text80204 *a, *b, *c;
+ char *area, *entry;
+ float step;
+ fn_80230B5C(matrix);
+ fn_802C8638(matrix);
+ fn_802C974C(lbl_80563168, lbl_80563170, lbl_80563188);
+ (*(void (***)(int))lbl_8055ED44)[7](lbl_8055ED44);
+ result = fn_8020437C();
+ if (result) {
+  if (lbl_8055ED40 >= 0 && lbl_8055ED40 < lbl_8055ED3C) {
+   a = (*(struct Text80204 *(***)(int,const char *))lbl_8055ED44)[3](lbl_8055ED44,lbl_8055B428);
+   b = (*(struct Text80204 *(***)(int,const char *))lbl_8055ED44)[3](lbl_8055ED44,lbl_8055B430);
+   c = (*(struct Text80204 *(***)(int,const char *))lbl_8055ED44)[3](lbl_8055ED44,lbl_8055B438);
+   area = (*(char *(***)(int,const char *))lbl_8055ED44)[5](lbl_8055ED44,lbl_8055B440);
+   if (a && b && c && area) {
+    normal = a->color; selected = b->color;
+    fn_802043B0(&normal); fn_802043B0(&selected);
+    step = b->y - a->y;
+    count = (int)(*(float *)(area+0x14)/step);
+    label = *a;
+    start = lbl_8055ED40 - lbl_8055ED40 % count;
+    value = *c;
+    entry = lbl_80488BD0 + start*0x18;
+    end = start + count;
+    for (i=start; i<end && i<lbl_8055ED3C; ++i,entry+=0x18) {
+     if (i==lbl_8055ED40) label.color=value.color=selected;
+     else label.color=value.color=normal;
+     fn_80147230(&label,lbl_8055B448,*(char **)entry);
+     switch (*(int *)(entry+4)) {
+     case 1: fn_80147230(&value,lbl_8055B44C,**(float **)(entry+8)); break;
+     case 0: fn_80147230(&value,lbl_8055B448,**(unsigned char **)(entry+8) ? lbl_8055B454 : lbl_8055B458); break;
+     }
+     label.y += step; value.y += step;
+    }
+    if (start >= count) fn_801473F8(lbl_8055ED44,lbl_8033BB18+0x10,lbl_8055B45C);
+    if (end < lbl_8055ED3C) fn_801473F8(lbl_8055ED44,lbl_8033BB18+0x1c,lbl_8055B460);
+   }
+  } else fn_801473F8(lbl_8055ED44,lbl_8055B428,lbl_8033BB18+0x28);
+ } else {
+  (*(void *(***)(int,const char *))lbl_8055ED44)[3](lbl_8055ED44,lbl_8033BB18+0x38);
+  fn_801476C4();
+  if (fn_801298E8(input,0) && input[0x25]) fn_80204330();
+ }
+ fn_80011A2C();
+ return result;
 }
 
 int fn_80204870(int arg0) {
