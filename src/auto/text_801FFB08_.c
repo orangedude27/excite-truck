@@ -6,15 +6,16 @@ extern char lbl_8033B938[];
 extern char lbl_804888A8[];
 // split_file divides it into the game's real files (file_status shows its range).
 
-char *fn_801FFB08(int arg1) {
-    int sp8;
-    if (fn_801E2CCC(&sp8) == 0) {
+#pragma scheduling invalid_target
+char *fn_801FFB08(int arg0, int arg1) {
+    char *sp8;
+    if (fn_801E2CCC(arg0, arg1, &sp8) == 0) {
         fn_802E30C8(lbl_8033B938, arg1, lbl_8055ECA8);
         return lbl_804888A8;
     }
-    return (char *)(sp8 + 0x24);
+    return sp8 + 0x24;
 }
-
+#pragma scheduling on
 void fn_801FFB6C(void) {
 
 }
