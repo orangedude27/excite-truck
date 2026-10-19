@@ -308,6 +308,7 @@ public:
 #pragma cplusplus reset
 
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_80193AEC(void *arg0, void *arg1) {
     char *table = lbl_80333158;
     int zero = 0;
@@ -325,7 +326,7 @@ extern "C" void fn_80193AEC(void *arg0, void *arg1) {
     lbl_804349C0[*(int *)((char *)arg0 + 0x290)] = arg0;
     obj = *(DummyClass_80193AEC **)((char *)*(void **)((char *)arg0 + 0x294) + 0x270);
     *(DummyClass_80193AEC **)((char *)arg0 + 0x28C) = obj;
-    *(void **)((char *)arg0 + 0x164) = obj->vfunc6();
+    *(void **)((char *)arg0 + 0x164) = obj->vfunc4();
 
     if (lbl_8055E550++ == 0) {
         lbl_8055A488 = *(float *)fn_80137C54(-1);
@@ -350,6 +351,7 @@ extern "C" void fn_80193AEC(void *arg0, void *arg1) {
     }
     fn_80193D30(arg0);
 }
+#pragma scheduling reset
 #pragma cplusplus reset
 void fn_80193CD4(void *arg0) {
     *(signed char *)((char *)arg0 + 0x2A5) = 1;
