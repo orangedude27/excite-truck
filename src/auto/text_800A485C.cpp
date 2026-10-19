@@ -5459,6 +5459,17 @@ extern "C" void Play__Q210homebutton9RemoteSpkFliSc(void *arg0, long arg1, int a
 #pragma opt_tail_call on
 #pragma opt_tail_call on
 extern "C" void fn_800D1C48(void);
+extern u8 lbl_8055DDC0;
+extern OSAlarm lbl_80407790;
+extern const char lbl_8031E9D0[];
+extern "C" const char lbl_805597DC[];
+extern u32 lbl_8055DDB8;
+extern "C" void fn_800D2480(void);
+namespace nw4hbm {
+namespace db {
+void Warning(const char* file, int line, const char* msg, ...);
+}
+}
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const char *msg, ...) {
     u32 sp_8[2];
     u32 sp_C;
