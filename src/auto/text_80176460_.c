@@ -466,16 +466,12 @@ void fn_80177618(int *arg0)
 
 #pragma push
 #pragma cplusplus on
-#pragma scheduling invalid_target
-extern "C" void fn_80177628(int* param_1) {
-    struct Obj {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-    };
-    ((Obj*)(*(int**)param_1))->f2();
+void fn_80177628(int* param_1)
+{
+    int* p = (int*)*param_1;
+    void (*fn)(void) = *(void (**)(void))(p + 4);
+    fn();
 }
-#pragma scheduling reset
 #pragma cplusplus reset
 #pragma pop
 void fn_80177638(int *arg0) { void (**v)(void) = (void (**)(void))*(void **)arg0; (v + 5)[0](); }
@@ -494,7 +490,6 @@ void fn_80177658(void *arg0) {
 extern void fn_80177658(void *);
 extern void fn_80177608(void);
 extern void fn_80177618(int *);
-extern void fn_80177628(int *); /* fwd */
 extern void fn_80177638(int *);
 void fn_80177790(void) { fn_80177658((void *)fn_80177608); }
 
