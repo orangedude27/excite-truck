@@ -113,16 +113,13 @@ void *fn_801491B8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+typedef struct { u32 pad; u32 count; } Cnt80149210;
 void fn_80149210(void *arg0) {
-    u32 *p = (u32 *)arg0;
-    u32 b;
-    u32 t;
-    u32 v;
-    p[1] = p[1] + 1;
-    b = p[1] >> 31;
-    t = p[1] << 30;
-    v = t - b;
-    p[1] = ((v << 2) | (v >> 30)) + b;
+    Cnt80149210 *c = (Cnt80149210 *)arg0;
+    u32 x = c->count + 1;
+    u32 b = x >> 31;
+    u32 v = (x << 30) - b;
+    c->count = ((v << 2) | (v >> 30)) + b;
 }
 
 s32 fn_80149234(void *arg0) {
@@ -876,6 +873,7 @@ extern void fn_8016A438(void);
 extern s32 fn_801E85B4(void);
 #pragma push
 #pragma use_lmw_stmw off
+extern f32 fn_801495D4(s32);
 void fn_80151B48(void *arg0) {
     s32 self = fn_801E85B4();
     s32 index = fn_801E866C(self);
@@ -886,16 +884,8 @@ void fn_80151B48(void *arg0) {
     void *p;
     f32 f;
 
-    if (((s32 (*)(s32, s32))((void **)self)[5])(self, index) == 0) {
-        fn_80167844();
-        fn_8016A438();
-        return;
-    }
-    if (self + index * 0xC0 + 0x9E4 == 0) {
-        fn_80167844();
-        fn_8016A438();
-        return;
-    }
+    if (((s32 (*)(s32, s32))((void **)self)[5])(self, index) == 0) goto done;
+    if (self + index * 0xC0 + 0x9E4 == 0) goto done;
     if (*(s32 *)(self + index * 0xC0 + 0x9E4 + 4) == 0) {
         flag = 0;
     } else if (*(s32 *)(self + index * 0xC0 + 0x9E4 + 4) == 1) {
@@ -909,7 +899,7 @@ void fn_80151B48(void *arg0) {
         entry = *(void **)(*(s32 *)(self + 0x14) + j);
         f = ((f32 *)entry)[0x34 / 4];
         if (fn_80141F7C(f) != 0 && flag != 0 && ((u8 *)entry)[0xCC] != 0) {
-            fn_80149650();
+            fn_801495D4(0x40);
             obj = fn_801538E4(entry);
             p = fn_801538E4(entry);
             fn_801537CC(*(s32 *)((char *)p + 4), *(s32 *)obj, f);
@@ -918,6 +908,7 @@ void fn_80151B48(void *arg0) {
         j += 4;
         i += 1;
     }
+done:
     fn_80167844();
     fn_8016A438();
 }
@@ -931,10 +922,10 @@ extern f32 lbl_80561638,lbl_8056163C,lbl_8056164C,lbl_805616FC,lbl_80561700;
 extern f64 lbl_805616A0,lbl_80561708;
 void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     f32 scale[9];
-    f32 translation[3];
-    f32 a[9];
-    f32 origin[3];
-    f32 b[9];
+    
+    f32 a[12];
+    
+    f32 b[12];
     f32 rotation[9];
     f32 position[3];
     f32 temp_f1;
@@ -1049,12 +1040,12 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     scale[6] = lbl_80561648;
     scale[7] = lbl_80561648;
     scale[8] = temp_f29;
-    translation[0] = position[0];
-    translation[1] = position[1];
-    translation[2] = position[2];
-    origin[0] = position[0];
-    origin[1] = position[1];
-    origin[2] = position[2];
+    a[9] = position[0];
+    a[10] = position[1];
+    a[11] = position[2];
+    b[9] = position[0];
+    b[10] = position[1];
+    b[11] = position[2];
     temp_f21 = (f32) cos(temp_f31);
     temp_f4 = (f32) sin(temp_f31);
     a[0] = temp_f21;
@@ -1083,36 +1074,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     } else {
         fn_802C744C(lbl_8055E254, &b[0]);
     }
-    if ((&a[0] == &a[0]) || (&a[0] == &scale[0])) {
-        temp_f21_3 = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
-        temp_f22 = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
-        temp_f28 = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
-        temp_f27 = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
-        temp_f26 = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
-        temp_f25 = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
-        temp_f24 = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
-        temp_f23 = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
-        temp_f1 = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
-        a[0] = temp_f21_3;
-        a[3] = temp_f22;
-        a[6] = temp_f28;
-        a[1] = temp_f27;
-        a[4] = temp_f26;
-        a[7] = temp_f25;
-        a[2] = temp_f24;
-        a[5] = temp_f23;
-        a[8] = temp_f1;
-    } else {
-        a[0] = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
-        a[3] = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
-        a[6] = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
-        a[1] = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
-        a[4] = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
-        a[7] = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
-        a[2] = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
-        a[5] = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
-        a[8] = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
-    }
+    MatrixMul80151E60(a, scale, a);
     if (arg1 != 0) {
         fn_802C74D8(lbl_8055E254, &a[0], lbl_80559EDC);
     } else {
@@ -1150,36 +1112,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     scale[6] = lbl_80561648;
     scale[7] = lbl_80561648;
     scale[8] = temp_f29_2;
-    if ((&b[0] == &b[0]) || (&b[0] == &scale[0])) {
-        temp_f31_2 = fn_80144514(scale[0], b[0], scale[3], b[1], scale[6], b[2]);
-        temp_f30_2 = fn_80144514(scale[0], b[3], scale[3], b[4], scale[6], b[5]);
-        temp_f28_2 = fn_80144514(scale[0], b[6], scale[3], b[7], scale[6], b[8]);
-        temp_f27_2 = fn_80144514(scale[1], b[0], scale[4], b[1], scale[7], b[2]);
-        temp_f26_2 = fn_80144514(scale[1], b[3], scale[4], b[4], scale[7], b[5]);
-        temp_f25_2 = fn_80144514(scale[1], b[6], scale[4], b[7], scale[7], b[8]);
-        temp_f24_2 = fn_80144514(scale[2], b[0], scale[5], b[1], scale[8], b[2]);
-        temp_f23_2 = fn_80144514(scale[2], b[3], scale[5], b[4], scale[8], b[5]);
-        temp_f1_3 = fn_80144514(scale[2], b[6], scale[5], b[7], scale[8], b[8]);
-        b[0] = temp_f31_2;
-        b[3] = temp_f30_2;
-        b[6] = temp_f28_2;
-        b[1] = temp_f27_2;
-        b[4] = temp_f26_2;
-        b[7] = temp_f25_2;
-        b[2] = temp_f24_2;
-        b[5] = temp_f23_2;
-        b[8] = temp_f1_3;
-    } else {
-        b[0] = fn_80144514(scale[0], b[0], scale[3], b[1], scale[6], b[2]);
-        b[3] = fn_80144514(scale[0], b[3], scale[3], b[4], scale[6], b[5]);
-        b[6] = fn_80144514(scale[0], b[6], scale[3], b[7], scale[6], b[8]);
-        b[1] = fn_80144514(scale[1], b[0], scale[4], b[1], scale[7], b[2]);
-        b[4] = fn_80144514(scale[1], b[3], scale[4], b[4], scale[7], b[5]);
-        b[7] = fn_80144514(scale[1], b[6], scale[4], b[7], scale[7], b[8]);
-        b[2] = fn_80144514(scale[2], b[0], scale[5], b[1], scale[8], b[2]);
-        b[5] = fn_80144514(scale[2], b[3], scale[5], b[4], scale[8], b[5]);
-        b[8] = fn_80144514(scale[2], b[6], scale[5], b[7], scale[8], b[8]);
-    }
+    MatrixMul80151E60(b, scale, b);
     temp_f29_3 = temp_f29_2 * lbl_805616FC;
     scale[1] = lbl_80561648;
     scale[0] = temp_f29_3;
@@ -1190,36 +1123,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     scale[6] = lbl_80561648;
     scale[7] = lbl_80561648;
     scale[8] = temp_f29_3;
-    if ((&a[0] == &a[0]) || (&a[0] == &scale[0])) {
-        temp_f31_3 = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
-        temp_f30_3 = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
-        temp_f28_3 = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
-        temp_f27_3 = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
-        temp_f26_3 = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
-        temp_f25_3 = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
-        temp_f24_3 = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
-        temp_f23_3 = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
-        temp_f1_4 = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
-        a[0] = temp_f31_3;
-        a[3] = temp_f30_3;
-        a[6] = temp_f28_3;
-        a[1] = temp_f27_3;
-        a[4] = temp_f26_3;
-        a[7] = temp_f25_3;
-        a[2] = temp_f24_3;
-        a[5] = temp_f23_3;
-        a[8] = temp_f1_4;
-    } else {
-        a[0] = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
-        a[3] = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
-        a[6] = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
-        a[1] = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
-        a[4] = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
-        a[7] = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
-        a[2] = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
-        a[5] = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
-        a[8] = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
-    }
+    MatrixMul80151E60(a, scale, a);
     if (arg1 != 0) {
         fn_802C74D8(lbl_8055E254, &b[0], lbl_80559EDC);
     } else {
@@ -1242,66 +1146,8 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     rotation[6] = temp_f5;
     rotation[7] = lbl_80561648;
     rotation[8] = temp_f21_6;
-    if ((&a[0] == &a[0]) || (&a[0] == &rotation[0])) {
-        temp_f31_4 = fn_80144514(rotation[0], a[0], rotation[3], a[1], rotation[6], a[2]);
-        temp_f30_4 = fn_80144514(rotation[0], a[3], rotation[3], a[4], rotation[6], a[5]);
-        temp_f28_4 = fn_80144514(rotation[0], a[6], rotation[3], a[7], rotation[6], a[8]);
-        temp_f27_4 = fn_80144514(rotation[1], a[0], rotation[4], a[1], rotation[7], a[2]);
-        temp_f26_4 = fn_80144514(rotation[1], a[3], rotation[4], a[4], rotation[7], a[5]);
-        temp_f25_4 = fn_80144514(rotation[1], a[6], rotation[4], a[7], rotation[7], a[8]);
-        temp_f24_4 = fn_80144514(rotation[2], a[0], rotation[5], a[1], rotation[8], a[2]);
-        temp_f23_4 = fn_80144514(rotation[2], a[3], rotation[5], a[4], rotation[8], a[5]);
-        temp_f1_6 = fn_80144514(rotation[2], a[6], rotation[5], a[7], rotation[8], a[8]);
-        a[0] = temp_f31_4;
-        a[3] = temp_f30_4;
-        a[6] = temp_f28_4;
-        a[1] = temp_f27_4;
-        a[4] = temp_f26_4;
-        a[7] = temp_f25_4;
-        a[2] = temp_f24_4;
-        a[5] = temp_f23_4;
-        a[8] = temp_f1_6;
-    } else {
-        a[0] = fn_80144514(rotation[0], a[0], rotation[3], a[1], rotation[6], a[2]);
-        a[3] = fn_80144514(rotation[0], a[3], rotation[3], a[4], rotation[6], a[5]);
-        a[6] = fn_80144514(rotation[0], a[6], rotation[3], a[7], rotation[6], a[8]);
-        a[1] = fn_80144514(rotation[1], a[0], rotation[4], a[1], rotation[7], a[2]);
-        a[4] = fn_80144514(rotation[1], a[3], rotation[4], a[4], rotation[7], a[5]);
-        a[7] = fn_80144514(rotation[1], a[6], rotation[4], a[7], rotation[7], a[8]);
-        a[2] = fn_80144514(rotation[2], a[0], rotation[5], a[1], rotation[8], a[2]);
-        a[5] = fn_80144514(rotation[2], a[3], rotation[5], a[4], rotation[8], a[5]);
-        a[8] = fn_80144514(rotation[2], a[6], rotation[5], a[7], rotation[8], a[8]);
-    }
-    if ((&b[0] == &b[0]) || (&b[0] == &rotation[0])) {
-        temp_f31_5 = fn_80144514(rotation[0], b[0], rotation[3], b[1], rotation[6], b[2]);
-        temp_f30_5 = fn_80144514(rotation[0], b[3], rotation[3], b[4], rotation[6], b[5]);
-        temp_f28_5 = fn_80144514(rotation[0], b[6], rotation[3], b[7], rotation[6], b[8]);
-        temp_f27_5 = fn_80144514(rotation[1], b[0], rotation[4], b[1], rotation[7], b[2]);
-        temp_f26_5 = fn_80144514(rotation[1], b[3], rotation[4], b[4], rotation[7], b[5]);
-        temp_f25_5 = fn_80144514(rotation[1], b[6], rotation[4], b[7], rotation[7], b[8]);
-        temp_f24_5 = fn_80144514(rotation[2], b[0], rotation[5], b[1], rotation[8], b[2]);
-        temp_f23_5 = fn_80144514(rotation[2], b[3], rotation[5], b[4], rotation[8], b[5]);
-        temp_f1_7 = fn_80144514(rotation[2], b[6], rotation[5], b[7], rotation[8], b[8]);
-        b[0] = temp_f31_5;
-        b[3] = temp_f30_5;
-        b[6] = temp_f28_5;
-        b[1] = temp_f27_5;
-        b[4] = temp_f26_5;
-        b[7] = temp_f25_5;
-        b[2] = temp_f24_5;
-        b[5] = temp_f23_5;
-        b[8] = temp_f1_7;
-    } else {
-        b[0] = fn_80144514(rotation[0], b[0], rotation[3], b[1], rotation[6], b[2]);
-        b[3] = fn_80144514(rotation[0], b[3], rotation[3], b[4], rotation[6], b[5]);
-        b[6] = fn_80144514(rotation[0], b[6], rotation[3], b[7], rotation[6], b[8]);
-        b[1] = fn_80144514(rotation[1], b[0], rotation[4], b[1], rotation[7], b[2]);
-        b[4] = fn_80144514(rotation[1], b[3], rotation[4], b[4], rotation[7], b[5]);
-        b[7] = fn_80144514(rotation[1], b[6], rotation[4], b[7], rotation[7], b[8]);
-        b[2] = fn_80144514(rotation[2], b[0], rotation[5], b[1], rotation[8], b[2]);
-        b[5] = fn_80144514(rotation[2], b[3], rotation[5], b[4], rotation[8], b[5]);
-        b[8] = fn_80144514(rotation[2], b[6], rotation[5], b[7], rotation[8], b[8]);
-    }
+    MatrixMul80151E60(a, rotation, a);
+    MatrixMul80151E60(b, rotation, b);
     temp_f29_4 = temp_f29_3 * lbl_805616FC;
     scale[1] = lbl_80561648;
     scale[0] = temp_f29_4;
@@ -1312,36 +1158,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     scale[6] = lbl_80561648;
     scale[7] = lbl_80561648;
     scale[8] = temp_f29_4;
-    if ((&b[0] == &b[0]) || (&b[0] == &scale[0])) {
-        temp_f23_6 = fn_80144514(scale[0], b[0], scale[3], b[1], scale[6], b[2]);
-        temp_f31_6 = fn_80144514(scale[0], b[3], scale[3], b[4], scale[6], b[5]);
-        temp_f30_6 = fn_80144514(scale[0], b[6], scale[3], b[7], scale[6], b[8]);
-        temp_f28_6 = fn_80144514(scale[1], b[0], scale[4], b[1], scale[7], b[2]);
-        temp_f27_6 = fn_80144514(scale[1], b[3], scale[4], b[4], scale[7], b[5]);
-        temp_f26_6 = fn_80144514(scale[1], b[6], scale[4], b[7], scale[7], b[8]);
-        temp_f25_6 = fn_80144514(scale[2], b[0], scale[5], b[1], scale[8], b[2]);
-        temp_f24_6 = fn_80144514(scale[2], b[3], scale[5], b[4], scale[8], b[5]);
-        temp_f1_8 = fn_80144514(scale[2], b[6], scale[5], b[7], scale[8], b[8]);
-        b[0] = temp_f23_6;
-        b[3] = temp_f31_6;
-        b[6] = temp_f30_6;
-        b[1] = temp_f28_6;
-        b[4] = temp_f27_6;
-        b[7] = temp_f26_6;
-        b[2] = temp_f25_6;
-        b[5] = temp_f24_6;
-        b[8] = temp_f1_8;
-    } else {
-        b[0] = fn_80144514(scale[0], b[0], scale[3], b[1], scale[6], b[2]);
-        b[3] = fn_80144514(scale[0], b[3], scale[3], b[4], scale[6], b[5]);
-        b[6] = fn_80144514(scale[0], b[6], scale[3], b[7], scale[6], b[8]);
-        b[1] = fn_80144514(scale[1], b[0], scale[4], b[1], scale[7], b[2]);
-        b[4] = fn_80144514(scale[1], b[3], scale[4], b[4], scale[7], b[5]);
-        b[7] = fn_80144514(scale[1], b[6], scale[4], b[7], scale[7], b[8]);
-        b[2] = fn_80144514(scale[2], b[0], scale[5], b[1], scale[8], b[2]);
-        b[5] = fn_80144514(scale[2], b[3], scale[5], b[4], scale[8], b[5]);
-        b[8] = fn_80144514(scale[2], b[6], scale[5], b[7], scale[8], b[8]);
-    }
+    MatrixMul80151E60(b, scale, b);
     temp_f29_5 = temp_f29_4 * lbl_805616FC;
     scale[1] = lbl_80561648;
     scale[0] = temp_f29_5;
@@ -1352,36 +1169,7 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
     scale[6] = lbl_80561648;
     scale[7] = lbl_80561648;
     scale[8] = temp_f29_5;
-    if ((&a[0] == &a[0]) || (&a[0] == &scale[0])) {
-        temp_f24_7 = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
-        temp_f25_7 = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
-        temp_f26_7 = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
-        temp_f27_7 = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
-        temp_f28_7 = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
-        temp_f31_7 = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
-        temp_f30_7 = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
-        temp_f29_6 = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
-        temp_f1_9 = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
-        a[0] = temp_f24_7;
-        a[3] = temp_f25_7;
-        a[6] = temp_f26_7;
-        a[1] = temp_f27_7;
-        a[4] = temp_f28_7;
-        a[7] = temp_f31_7;
-        a[2] = temp_f30_7;
-        a[5] = temp_f29_6;
-        a[8] = temp_f1_9;
-    } else {
-        a[0] = fn_80144514(scale[0], a[0], scale[3], a[1], scale[6], a[2]);
-        a[3] = fn_80144514(scale[0], a[3], scale[3], a[4], scale[6], a[5]);
-        a[6] = fn_80144514(scale[0], a[6], scale[3], a[7], scale[6], a[8]);
-        a[1] = fn_80144514(scale[1], a[0], scale[4], a[1], scale[7], a[2]);
-        a[4] = fn_80144514(scale[1], a[3], scale[4], a[4], scale[7], a[5]);
-        a[7] = fn_80144514(scale[1], a[6], scale[4], a[7], scale[7], a[8]);
-        a[2] = fn_80144514(scale[2], a[0], scale[5], a[1], scale[8], a[2]);
-        a[5] = fn_80144514(scale[2], a[3], scale[5], a[4], scale[8], a[5]);
-        a[8] = fn_80144514(scale[2], a[6], scale[5], a[7], scale[8], a[8]);
-    }
+    MatrixMul80151E60(a, scale, a);
     if (arg1 != 0) {
         fn_802C74D8(lbl_8055E254, &b[0], lbl_80559EDC);
     } else {
@@ -1584,6 +1372,93 @@ void fn_80155318(void *arg0) {
 void fn_80155368(void) {
 
 }
+
+extern s32 fn_80161BB8(void);
+extern s32 lbl_80559EC0;
+#pragma push
+#pragma use_lmw_stmw on
+void fn_8015536C(void *arg0, void *arg1, s32 index) {
+    s32 offset=index*0xC0;
+    u8 *p=(u8*)arg0+offset;
+    s32 state=*(s32 *)((u8 *)(p)+0x9E8);
+    s32 count,positive,id,j,i,flag;
+    u8 *entry,*flags,*owner,*node,*next,*prev,*obj;
+    if(state==0)flag=0;
+    else if(state==1)flag=1;
+    else flag=(f32)__fabs(*(f32 *)((u8 *)(p)+0xA00)-lbl_8056164C)<=lbl_80558DC4[0];
+    if(flag){
+        i=0;j=0;
+        while(i<*(s32 *)((u8 *)(arg0)+0x18)){
+            entry=*(u8**)(*(u8* *)((u8 *)(arg0)+0x14)+j);
+            id=*(s32 *)((u8 *)(entry)+0xC0);
+            if(id==((s32(*)(void*,void*))(*(void***)arg1)[9])(arg1,entry)){
+                entry=*(u8**)(*(u8* *)((u8 *)(arg0)+0x14)+j);
+                if((f32)__fabs(*(f32 *)((u8 *)(entry)+0x34))<=lbl_80558DC4[0]){
+                    if((f32)__fabs(*(f32 *)((u8 *)(lbl_804348E8[index])+0x2690))<=lbl_80558DC4[0] && fn_80161BB8()==0)
+                        entry[index+0xC4]=1;
+                }
+            }
+            j+=4;i++;
+        }
+    }
+    if(((s32(*)(void*))(*(void***)arg1)[8])(arg1)==0x73){
+        positive=*(f32 *)((u8 *)(lbl_804348E8[index])+0x25BC)>lbl_80558DC4[0];
+        p=(u8*)arg0+offset;
+        flags=p+0xA8C;
+        if(*flags){
+            obj=*(u8* *)((u8 *)(p)+0x9F4);
+            ((void(*)(void*,s32))(*(void***)obj)[15])(obj,lbl_804348E8[*(s32 *)((u8 *)(p)+0x9E4)]);
+        }
+        if(flags[1]){
+            p=(u8*)arg0+offset;
+            *(f32 *)((u8 *)(p)+0xA20)=lbl_80561648;
+            *(f32 *)((u8 *)(p)+0xA00)=lbl_8056163C**(f32 *)((u8 *)(p)+0xA00);
+            *(s32 *)((u8 *)(p)+0xA88)=0;
+            owner=*(u8* *)((u8 *)(p)+0x9EC);
+            node=*(u8* *)((u8 *)(owner)+0x124C);
+            next=node?*(u8* *)((u8 *)(node)+0x11C):0;
+            while(node){
+                if(node[4]){
+                    prev=*(u8* *)((u8 *)(node)+0x120);
+                    if(prev)*(u8* *)((u8 *)(prev)+0x11C)=*(u8* *)((u8 *)(node)+0x11C);
+                    else *(u8* *)((u8 *)(owner)+0x124C)=*(u8* *)((u8 *)(node)+0x11C);
+                    prev=*(u8* *)((u8 *)(node)+0x11C);
+                    if(prev)*(u8* *)((u8 *)(prev)+0x120)=*(u8* *)((u8 *)(node)+0x120);
+                    else *(u8* *)((u8 *)(owner)+0x1250)=*(u8* *)((u8 *)(node)+0x120);
+                    *(u8* *)((u8 *)(node)+0x120)=0;
+                    *(u8* *)((u8 *)(node)+0x11C)=0;
+                    *(u8* *)((u8 *)(node)+0x120)=*(u8* *)((u8 *)(owner)+0x1248);
+                    prev=*(u8* *)((u8 *)(owner)+0x1248);
+                    if(prev)*(u8* *)((u8 *)(prev)+0x11C)=node;
+                    *(u8* *)((u8 *)(owner)+0x1248)=node;
+                    if(!*(u8* *)((u8 *)(owner)+0x1244))*(u8* *)((u8 *)(owner)+0x1244)=node;
+                }
+                node=next;
+                next=next?*(u8* *)((u8 *)(next)+0x11C):0;
+            }
+            p=(u8*)arg0+offset;
+            *(f32 *)((u8 *)(p)+0x9F8)=*(f32 *)((u8 *)(p)+0x9F8)+lbl_80561648;
+            obj=*(u8* *)((u8 *)(p)+0x9F4);
+            ((void(*)(void*))(*(void***)obj)[4])(obj);
+            p=(u8*)arg0+offset;
+            if(*(s32 *)((u8 *)(p)+0xA18)>1)*(f32 *)((u8 *)(p)+0xA24)=lbl_80561688;
+            count=*(s32 *)((u8 *)(p)+0xA18)-1;
+            *(s32 *)((u8 *)(p)+0xA18)=count>1?count:1;
+            p=(u8*)arg0+offset;
+            *(f32 *)((u8 *)(p)+0xA34)=lbl_80561648;
+            *(f32 *)((u8 *)(p)+0xA30)=lbl_80561648;
+            *(f32 *)((u8 *)(p)+0xA2C)=lbl_80561648;
+            *(f32 *)((u8 *)(p)+0xA28)=lbl_80561648;
+        }
+        if(positive){
+            if(lbl_80559EC0==1)flags[2]=1;
+            if(lbl_80559EC0==3){flags[3]=1;flags[1]=1;}
+        }
+        obj=*(u8* *)((u8 *)((u8*)arg0+offset)+0x9F4);
+        ((void(*)(void*,s32))(*(void***)obj)[13])(obj,lbl_804348E8[*(s32 *)((u8 *)(p)+0x9E4)]);
+    }
+}
+#pragma pop
 
 void fn_801556F0(void) {
 
