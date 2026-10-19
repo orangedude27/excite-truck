@@ -1,5 +1,29 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+
+typedef struct {
+    float time;
+    float f4;
+    float f8;
+    float fc;
+    float f10;
+} TrailKey;
+
+typedef struct {
+    unsigned char pad[0x20];
+    int field20;
+    TrailKey *keys;
+    int keyCount;
+    unsigned char flag2C;
+    unsigned char active;
+    float field30;
+} TrailEntry;
+
+typedef struct {
+    unsigned char pad[4];
+    TrailEntry *entries;
+    int count;
+} TrailMgr;
 extern int stricmp(const char *, const char *);
 extern char lbl_8034094C[];
 extern void *fn_801284F8(int, char *);
@@ -88,6 +112,50 @@ extern char *fn_80237C40(void);
 void fn_80237A9C(void) {
 }
 
+extern float lbl_805636E4;
+void fn_80237AA0(arg0, arg1, arg2)
+int arg0; void *arg1; double arg2;
+{
+    double var_f31 = arg2;
+    float var_f1, var_f2;
+    unsigned char var_r4;
+    void *p;
+    if (arg0 == 0) {
+        p = *(void **)(lbl_8055F0C0 + 0x28);
+        if (p) { void **v = *(void ***)p; var_f1 = ((float (*)(void))v[3])(); }
+        else var_f1 = lbl_805636E0;
+        *(float *)arg1 = var_f1;
+        p = *(void **)(lbl_8055F0C0 + 0x2C);
+        if (p) { void **v = *(void ***)p; var_f2 = ((float (*)(void))v[3])(); }
+        else var_f2 = lbl_805636E0;
+        *(float *)((char *)arg1 + 4) = var_f2;
+        var_r4 = (unsigned char)lbl_8055F0C0[0x21];
+        if (var_r4 == 0) {
+            *(float *)((char *)arg1 + 4) = *(float *)arg1;
+            *(float *)arg1 = var_f2;
+        }
+        if ((unsigned char)lbl_8055F0C0[0x1F] != 0) *(float *)arg1 = lbl_805636E0;
+        if ((unsigned char)lbl_8055F0C0[0x20] != 0) *(float *)((char *)arg1 + 4) = lbl_805636E0;
+    } else {
+        if (arg0 == 3) {
+            var_r4 = (unsigned char)lbl_8055F0C0[0x21];
+            if (var_r4 != 0) var_f31 = (double)lbl_805636E4 - arg2;
+        } else {
+            var_r4 = (unsigned char)lbl_8055F0C0[0x21];
+            if (var_r4 == 0) var_f31 = (double)lbl_805636E4 - arg2;
+        }
+        if ((unsigned int)(arg0 == 3) == var_r4) {
+            p = *(void **)(lbl_8055F0C0 + 0x2C);
+            if (p) { void **v = *(void ***)p; ((void (*)(double))v[4])(var_f31); }
+        } else {
+            p = *(void **)(lbl_8055F0C0 + 0x28);
+            if (p) { void **v = *(void ***)p; ((void (*)(double))v[4])(var_f31); }
+        }
+        p = *(void **)(lbl_8055F0C0 + 0x30);
+        if (p) { void **v = *(void ***)p; ((void (*)(double))v[4])(var_f31); }
+    }
+}
+
 extern int stricmp(const char *, const char *);
 extern char lbl_8034094C[];
 extern void *fn_801284F8(int, char *);
@@ -102,15 +170,32 @@ char *fn_80237C40(void) {
     return p;
 }
 
+void fn_80128668(void*);
 void fn_80237D00(void *arg0) {
-    void *p;
-    unsigned int **v;
-    p=*(void **)((char *)arg0+0x28);
-    if(p){v=(unsigned int **)p;((void (*)(void *,int))v[0][2])(p,1);}
-    p=*(void **)((char *)arg0+0x2c);
-    if(p){v=(unsigned int **)p;((void (*)(void *,int))v[0][2])(p,1);}
-    p=*(void **)((char *)arg0+0x30);
-    if(p){v=(unsigned int **)p;((void (*)(void *,int))v[0][2])(p,1);}
+    void *p = *(void **)((char *)arg0 + 0x28);
+    if (p != 0) {
+        volatile void *q = p;
+        if (q != 0) {
+            void **vt = *(void ***)p;
+            ((void (*)(void *, int))vt[2])(p, 1);
+        }
+    }
+    p = *(void **)((char *)arg0 + 0x2c);
+    if (p != 0) {
+        volatile void *q = p;
+        if (q != 0) {
+            void **vt = *(void ***)p;
+            ((void (*)(void *, int))vt[2])(p, 1);
+        }
+    }
+    p = *(void **)((char *)arg0 + 0x30);
+    if (p != 0) {
+        volatile void *q = p;
+        if (q != 0) {
+            void **vt = *(void ***)p;
+            ((void (*)(void *, int))vt[2])(p, 1);
+        }
+    }
     fn_80128668(arg0);
 }
 
@@ -139,6 +224,67 @@ void *fn_80237FF8(void *arg0, int arg1) {
 }
 
 float fn_80238084(void *arg0) { return *(float *)((char *)arg0 + 0xC); }
+
+extern float lbl_805636E8;
+extern void *fn_8022EDE4(float *, float);
+extern void *fn_8022EE9C(void);
+extern void fn_8022EE98(void *);
+extern void fn_80214C54(void *, void *);
+#pragma push
+#pragma processor 750
+void fn_8023808C(void *arg0, float value) {
+    struct Pos {float x,y;};
+    struct Key { float time, scale, z; struct Pos pos; };
+    struct Track {void *object; struct Key *keys; int count;};
+    struct Anim {void *vtable; struct Track *tracks; int count; float duration;};
+    struct Anim *anim = arg0;
+    float a[12], b[12], c[12];
+    float time;
+    float zero=lbl_805636E0, one=lbl_805636E4, epsilon=lbl_805636E8;
+    int i;
+    value = lbl_805636E4 < value ? lbl_805636E4 : value;
+    value = value > lbl_805636E0 ? value : lbl_805636E0;
+    time = anim->duration * value;
+    for(i=0;i<anim->count;i++) {
+        struct Track *track=&anim->tracks[i];
+        void *result;
+        if(track->count>0) {
+            int j, index=-1;
+            for(j=0;j<track->count;j++) if(time >= track->keys[j].time) index=j;
+            if(index==-1) {
+                struct Key *key=track->keys;
+                struct Pos pos;
+                float scale=key->scale, z=key->z;
+                pos=key->pos;
+                a[9]=pos.x; a[10]=pos.y; a[11]=zero; a[0]=one; a[1]=zero; a[2]=zero; a[3]=zero; a[4]=one; a[5]=zero; a[6]=zero; a[7]=zero; a[8]=one;
+                result=fn_8022EDE4(a,scale); ((float*)result)[14]=z;
+            } else if(index==track->count-1) {
+                struct Key *key=&track->keys[track->count-1];
+                struct Pos pos;
+                float scale=key->scale, z=key->z;
+                pos=key->pos;
+                b[9]=pos.x; b[10]=pos.y; b[11]=zero; b[0]=one; b[1]=zero; b[2]=zero; b[3]=zero; b[4]=one; b[5]=zero; b[6]=zero; b[7]=zero; b[8]=one;
+                result=fn_8022EDE4(b,scale); ((float*)result)[14]=z;
+            } else {
+                struct Key *first=&track->keys[index], *next=&track->keys[index+1];
+                float delta=next->time-first->time;
+                float t,scale,z;
+                struct Pos pos;
+                delta=delta>epsilon?delta:epsilon;
+                t=(time-first->time)/delta;
+                pos.y=first->pos.y+t*(next->pos.y-first->pos.y);
+                scale=first->scale+t*(next->scale-first->scale);
+                pos.x=first->pos.x+t*(next->pos.x-first->pos.x);
+                z=first->z+t*(next->z-first->z);
+                c[9]=pos.x; c[10]=pos.y; c[11]=zero; c[0]=one; c[1]=zero; c[2]=zero; c[3]=zero; c[4]=one; c[5]=zero; c[6]=zero; c[7]=zero; c[8]=one;
+                result=fn_8022EDE4(c,scale); ((float*)result)[14]=z;
+            }
+        } else result=fn_8022EE9C();
+        fn_80214C54(track->object,result);
+        fn_8022EE98(result);
+    }
+}
+#pragma pop
 
 void *fn_80238370(void *arg0, int arg1) {
     int value;
