@@ -606,6 +606,30 @@ extern "C" void fn_8019FFD8(void* arg0, s32 arg1, s32 arg2) {
     *(s32*)((u8*)arg0 + 0x180) = -1;
 }
 
+extern "C" void* fn_801A0040(void* arg0, s32 arg1) {
+      if (arg0 != 0) {
+          *(void**)arg0 = &lbl_803339B8;
+          void* entries = arg0;
+          s32 i = 0;
+          while (i < *(s32*)((u8*)arg0 + 0x174)) {
+              void* item = *(void**)((u8*)entries + 0x24);
+              if (item != 0) {
+                  void** vt = *(void***)item;
+                  ((void (*)(void*, s32))vt[2])(item, 1);
+              }
+              entries = (u8*)entries + 4;
+              i++;
+          }
+          void* p = *(void**)((u8*)arg0 + 0x17C);
+          if (p != 0) {
+              void** vt = *(void***)p;
+              ((void (*)(void*, s32))vt[2])(p, 1);
+          }
+          if (arg1 > 0) ((void (*)(void*))fn_80128668)(arg0);
+      }
+      return arg0;
+  }
+
 extern "C" s32 fn_801A010C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
