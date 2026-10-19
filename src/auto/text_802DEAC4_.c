@@ -247,10 +247,10 @@ void fn_802DF994(void) {
 }
 
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802DFAF4(void) {
-    GXSetTevSwapMode(0, 0, 0);
-    GXSetTevSwapMode(1, 0, 0);
+    GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
+    GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
 }
 #pragma pop
 void fn_802DFB30(void) {
