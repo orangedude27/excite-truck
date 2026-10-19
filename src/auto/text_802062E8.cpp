@@ -408,6 +408,7 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
     return this_;
 }
 
+#pragma scheduling on
 extern "C" void *fn_802077A4(int arg0, int arg1, int arg2, int arg3) {
     struct Callback { virtual ~Callback(); };
     void *obj = fn_80206BF8(0x78, lbl_8055B4C0);
@@ -419,7 +420,7 @@ extern "C" void *fn_802077A4(int arg0, int arg1, int arg2, int arg3) {
     }
     return obj;
 }
-
+#pragma scheduling reset
 extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
     void *value = arg2;
     if (arg2 != 0) {
