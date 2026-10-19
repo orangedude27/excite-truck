@@ -1,4 +1,11 @@
   #include <types.h>
+namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } s32 Console_GetTotalLines(detail::ConsoleHead *); } }
+extern "C" void OSLockMutex(void*);
+extern "C" void OSUnlockMutex(void*);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
+extern "C" const char lbl_8031EA80[];
+extern "C" const char lbl_8031EA90[];
+extern void* lbl_804077C0;
 extern "C" s32 fn_800A53B4(void *);
   #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
 extern "C" void VFipf_memcpy(void *, const void *, u32);
