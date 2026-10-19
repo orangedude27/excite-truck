@@ -24,3 +24,5 @@ void fn_80218E48(void) {
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
 #pragma scheduling on
+#include <types.h>
+DECL_SECTION(".ctors") funcptr_t D_802ED3B4 = fn_80218E48;
