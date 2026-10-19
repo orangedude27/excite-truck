@@ -3,6 +3,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct UnkAA9D4 { unsigned char pad[0xDC]; unsigned char active; unsigned char padDD[3]; float amount; unsigned char padE4[0x14]; float width, depth, height; } UnkAA9D4;
 void fn_8028E240(int);
 int fn_802C2C00(int);
 int fn_802C990C(int);
