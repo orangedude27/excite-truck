@@ -2423,6 +2423,29 @@ extern "C" void fn_800BBCB4(void* context) {
     *(s32*)context = -1;
 }
 
+extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" s32 lbl_8055DD78;
+extern "C" const char lbl_8031BF54[];
+extern "C" const char lbl_8031BF74[];
+extern "C" s32 fn_800BC474(s32 *arg0, s32 arg1, s32 *arg2) {
+    s32 result;
+
+    if (lbl_80559248 < 0) {
+        result = (s32)0xC1000000;
+    } else if (arg1 == 0) {
+        result = (s32)0xC1000000;
+    } else if (arg2 == 0) {
+        result = -4;
+    } else {
+        result = fn_800BB0A8(*arg0, 0x40, 0, 0, *arg2, 0, 0, 0,
+                             0, lbl_8055DD78, arg1, (s32)arg2);
+    }
+
+    if (result != 0)
+        OSReport(lbl_8031BF74, lbl_8031BF54, result);
+    return result;
+}
+
 extern "C" s32 lbl_802F33C8[];
 extern "C" s32 lbl_802F33E8[];
 extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
