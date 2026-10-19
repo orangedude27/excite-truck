@@ -315,19 +315,19 @@ void *fn_80176A70(void) {
     now = start;
 
 loop:
-    ((void (*)(void))fn_80176610)();
-    if (((s32 (*)(void))fn_80176A1C)() == 2 || ((u8)lbl_8055E3BD) != 0 ||
+    fn_80176610();
+    if ((s32)fn_80176A1C() == 2 || (u8)lbl_8055E3BD != 0 ||
         snap != lbl_8055E3C4 || fn_802D3EBC() != 0) {
         goto done;
     }
     fn_802E2D74(0);
     if (fn_802E2C20() - startTime > 0x2710) {
         fn_802E30C8(base + 0x190, fn_8017970C());
-        ((void (*)(const char *, ...))fn_802E317C)(base + 0x1C8, 10);
+        fn_802E317C(base + 0x1C8, 10);
     }
     count++;
     if ((u16)count == 0) {
-        ((void (*)(const char *, ...))fn_802E30C8)(base + 0x204, count);
+        fn_802E30C8(base + 0x204, count);
     }
     now = fn_802E2C9C();
     goto loop;
@@ -464,12 +464,20 @@ void fn_80177618(int *arg0)
     fn();
 }
 
-void fn_80177628(int* param_1)
-{
-    struct T { int a; int b; int c; int d; void (*fn)(void); };
-    ((struct T*)*param_1)->fn();
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_80177628(int* param_1) {
+    struct Obj {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+    };
+    ((Obj*)(*(int**)param_1))->f2();
 }
-
+#pragma scheduling reset
+#pragma cplusplus reset
+#pragma pop
 void fn_80177638(int *arg0) { void (**v)(void) = (void (**)(void))*(void **)arg0; (v + 5)[0](); }
 
 void fn_80177648(int *arg0) { void (**fn)(void) = *(void (***)(void))arg0 + 6; (*fn)(); }
@@ -486,7 +494,7 @@ void fn_80177658(void *arg0) {
 extern void fn_80177658(void *);
 extern void fn_80177608(void);
 extern void fn_80177618(int *);
-extern void fn_80177628(int *);
+extern void fn_80177628(int *); /* fwd */
 extern void fn_80177638(int *);
 void fn_80177790(void) { fn_80177658((void *)fn_80177608); }
 
