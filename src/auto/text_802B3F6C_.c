@@ -27,10 +27,17 @@ void *fn_802B3F6C(void *arg0, int arg1) {
 int stricmp(const char *, const char *);
 extern char lbl_8055CDF8[];
 __declspec(section ".sdata") extern char lbl_8055CDF8[];
-int fn_802B3FC4(void *arg0) {
-    return stricmp(lbl_8055CDF8, (*(char *(**)(void *))((char *)*(void **)arg0 + 8))(arg0)) == 0;
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_802B3FC4(void *arg0) {
+    class Obj {
+    public:
+        virtual const char *getName();
+    };
+    return stricmp((char *)&lbl_8055CDF8, ((Obj *)arg0)->getName()) == 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 void fn_802B4004(void) {
     lbl_8055F9CC += 1;
 }
