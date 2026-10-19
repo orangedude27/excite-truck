@@ -78,6 +78,16 @@ extern s32 lbl_8055A2F8;
 extern char lbl_803315A0[];
 extern char lbl_803315C8[];
 extern u8 lbl_8055E3BC;
+extern u64 fn_802E2C9C(void);
+extern void fn_802E2D74(s32);
+extern void fn_8017970C(void);
+extern f32 fn_8002FD54(u32, u32);
+extern void *fn_80179824(void);
+extern s32 fn_801773E4(void);
+extern void fn_801C6AD0(s32 *);
+extern f32 lbl_8055E3D0;
+extern f32 lbl_80561B30;
+extern f32 lbl_80561B34;
 
 void fn_801765B8(void) {
     fn_801777C0();
