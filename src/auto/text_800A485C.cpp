@@ -4441,10 +4441,10 @@ extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern "C" const char *fn_800D3260(s32, s32, const char *, s32);
 extern "C" char *strchr(const char *, int);
 extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 arg3, s32 arg4) {
+    s32 startX = x;
     u16 width = *(u16 *)((u8 *)lbl_80407BD8 + 8);
     s32 scaleX = width < 400 ? 1 : 2;
     s32 maxCols = width / scaleX;
-    s32 startX = x;
 
     while ((s8)*str != 0) {
         if (arg4 != 0) {
@@ -4476,15 +4476,15 @@ extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 arg3, s32 arg4) {
             str++;
         } else if (c != 0) {
             str++;
-            if (arg3 != 0) {
-                x = 0;
-            } else {
+            if (arg3 == 0) {
                 const char *newline = strchr(str, '\n');
                 if (newline == NULL) {
                     break;
                 }
                 x = startX;
                 str = newline + 1;
+            } else {
+                x = 0;
             }
         }
     }
