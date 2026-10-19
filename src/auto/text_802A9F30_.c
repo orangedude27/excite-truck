@@ -1,3 +1,5 @@
+#include "revolution/MTX/mtxtypes.h"
+#include "math.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -81,6 +83,47 @@ void fn_802AA1D0(unsigned int arg0) {
     *(float *)((char *)p + 0x100) = sp[3] - sp[2];
     *(float *)((char *)p + 0xFC) = sp[5] - sp[4];
 }
+
+#pragma push
+#pragma processor 750
+void fn_802AA9D4(void *arg0, void *arg1, float delta) {
+ extern float lbl_805649F4, lbl_80564A08, lbl_80564A04, lbl_80564A48, lbl_80564A4C, lbl_80564A50, lbl_80558DC4;
+ extern float fn_80287BC8(float, float);
+ extern void fn_8028E590(int, Vec *, Vec *, float);
+ Vec pos, dir, callpos, calldir, side, forward;
+ float width = lbl_805649F4 * *(float *)((char *)arg0+0xF8);
+ float depth = lbl_805649F4 * *(float *)((char *)arg0+0xFC);
+ float height = lbl_805649F4 * *(float *)((char *)arg0+0x100);
+ float v, angle, scale;
+ if (*(unsigned char *)((char *)arg0+0xDC)) {
+   *(unsigned char *)((char *)arg0+0xDC)=0;
+   v=*(float *)((char *)arg0+0xE0)+lbl_80564A08*delta;
+   *(float *)((char *)arg0+0xE0)=v<lbl_805649FC?v:lbl_805649FC;
+ } else {
+   v=*(float *)((char *)arg0+0xE0)-lbl_80564A08*delta;
+   *(float *)((char *)arg0+0xE0)=v>lbl_805649F0?v:lbl_805649F0;
+ }
+ if ((float)fabs(delta)<=lbl_80558DC4) return;
+ if (fn_80287BC8(lbl_805649F0,lbl_805649FC)>=*(float *)((char *)arg0+0xE0)) return;
+ angle=fn_80287BC8(lbl_80564A48,lbl_80564A4C);
+ forward=*(Vec *)arg1;
+ side=*(Vec *)((char *)arg1+0x18);
+ pos=*(Vec *)((char *)arg1+0x24);
+ scale=width*(float)cos(angle);
+ pos.x+=forward.x*scale; pos.y+=forward.y*scale; pos.z+=forward.z*scale;
+ scale=depth*(float)sin(angle);
+ pos.x+=side.x*scale; pos.y+=side.y*scale; pos.z+=side.z*scale;
+ scale=fn_80287BC8(lbl_805649F0,lbl_80564A04*height);
+ pos.x+=*(float *)((char *)arg1+0xC)*scale;
+ pos.y+=*(float *)((char *)arg1+0x10)*scale;
+ pos.z+=*(float *)((char *)arg1+0x14)*scale;
+ dir=*(Vec *)((char *)arg1+0x34);
+ if (*(float *)((char *)arg1+0x4C)>=lbl_80564A50-lbl_80558DC4) {
+ callpos=pos; calldir=dir;
+ fn_8028E590(*(int *)lbl_8055F924,&callpos,&calldir,lbl_805649FC);
+ }
+}
+#pragma pop
 
 void fn_802AAC80(void *arg0, void *arg1, float farg0) {
     extern void fn_801E86F8(int);
@@ -168,6 +211,57 @@ void fn_802AB6D4(void) {
         fn_802AAF04(obj, data, item);
     }
 }
+
+void fn_802AB770(int arg0) {
+    extern int lbl_8055F928;
+    extern unsigned char lbl_8055F92C, lbl_8055F92D;
+    extern float lbl_80558DC4, lbl_805649F0, lbl_805649F4, lbl_805649FC;
+    extern float lbl_80564A00, lbl_80564A34, lbl_80564A68, lbl_80564A8C, lbl_80564A98, lbl_80564A9C;
+    extern float lbl_80564AA8, lbl_80564AAC;
+    extern double lbl_80564AA0;
+    extern int lbl_804BD7B0[4];
+    extern float fn_801E7E24(void);
+    extern unsigned char fn_80129D90(int, int, int);
+    extern float fn_80287BC8(float, float);
+    extern double fn_8002EFB4(float, double);
+    extern int fn_802C2C00(int);
+    extern int fn_802C990C(int);
+    extern void fn_802C2BB8(int *, int *, int *);
+    extern void fn_802C2B78(float, float, float);
+    float delta = fn_801E7E24();
+    char *state = (char *)(lbl_8055F928 + arg0 * 0x108);
+    int obj = fn_80287B24(lbl_8055F928);
+    float angle;
+    float wave;
+    int color;
+    if (delta < -lbl_80558DC4 || delta > lbl_80558DC4) {
+        int r = fn_80129D90(0, 0x8C, 0xFF);
+        int g = fn_80129D90(0, 0xFA, 0xFF);
+        int b = fn_80129D90(0, 0xF0, 0xFF);
+        *(int *)(state + 0xE8) = (b << 16) | (g << 8) | r | 0xFF000000;
+    }
+    angle = *(float *)((char *)obj + 0x4C);
+    if (lbl_8055F92C != 0) angle = lbl_80564A98;
+    if (*(float *)(state + 0xE4) > lbl_805649F4)
+        *(float *)(state + 0xE4) = fn_80287BC8(lbl_80564A8C, lbl_80564A68);
+    else
+        *(float *)(state + 0xE4) += lbl_80564A34 * delta;
+    wave = lbl_805649F0;
+    if (delta < -lbl_80558DC4 || delta > lbl_80558DC4)
+        wave = lbl_80564A9C * (float)(int)fn_80287BC8(lbl_805649F0, lbl_805649FC);
+    color = 1;
+    if (angle > lbl_80564A00 && (float)fn_8002EFB4(angle, lbl_80564AA0) <= lbl_80564A34) color = 0;
+    wave = lbl_805649F0;
+    if (color != 0) wave = lbl_80564AA8 * *(float *)(state + 0xE4) - wave;
+    {
+        int old = *(int *)(state + 0xE8);
+        lbl_8055F92D = fn_802C2C00(1);
+        lbl_804BD7B0[0] = fn_802C990C(old);
+        fn_802C2BB8(&lbl_804BD7B0[1], &lbl_804BD7B0[2], &lbl_804BD7B0[3]);
+        fn_802C2B78(wave, lbl_80564AAC + wave, lbl_805649FC);
+    }
+}
+
 #pragma pop
 void fn_802AB994(void) {
     fn_802C990C(lbl_804BD7B0[0]);
@@ -212,3 +306,4 @@ extern unsigned char lbl_8055F92C;
 unsigned char fn_80129D90(int, int, int);
 float fn_80287BC8(float, float);
 double fn_8002EFB4(float, double);
+typedef struct UnkAA9D4 { unsigned char pad[0xDC]; unsigned char active; unsigned char padDD[3]; float amount; unsigned char padE4[0x14]; float width, depth, height; } UnkAA9D4;
