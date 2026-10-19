@@ -29,14 +29,15 @@ extern "C" int fn_802B5448(void *arg0) {
     };
     return stricmp((char *)&lbl_8055CE10, ((Obj *)arg0)->getName()) == 0;
 }
-#pragma cplusplus reset
-#pragma pop
-int fn_802B5488(void *arg0) {
-    void **vtable = *(void ***)arg0;
-    const char *name = ((const char *(*)(void *))vtable[2])(arg0);
-    return stricmp(lbl_8034A510, name) == 0;
+#pragma cplusplus on
+extern "C" int fn_802B5488(void *arg0) {
+    class Obj {
+    public:
+        virtual const char *getName();
+    };
+    return stricmp(lbl_8034A510, ((Obj *)arg0)->getName()) == 0;
 }
-
+#pragma cplusplus off
 extern const char lbl_8034A524[];
 int fn_802B54CC(void *arg0) {
     const char *(*name)(void *);
