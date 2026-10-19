@@ -568,12 +568,11 @@ void fn_8016FD9C(f32 *arg0, void *arg1) {
     fn_801475D0(arg1, lbl_8055A248, lbl_8055A268, sp8);
 }
 
-#pragma scheduling off
-void fn_8016FE1C(void *arg0) {
-    volatile void *vtable = *(void **)arg0;
-    ((void (**)(void *))vtable)[19](arg0);
+#pragma cplusplus on
+extern "C" void fn_8016FE1C(void *arg0) {
+    ((TObj4C *)arg0)->v4C();
 }
-#pragma scheduling on
+#pragma cplusplus reset
 void fn_8016FF98(void *arg0) {
     s32 i = 0;
     s32 found = 0;
