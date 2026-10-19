@@ -57,8 +57,8 @@ f32 fn_8026EAEC(f32 farg0) {
     return value;
 }
 #pragma pop
-f32 fn_8026ECE4(f32 *arg1) {
-    f32 value = fn_8026EB4C();
+f32 fn_8026ECE4(void *arg0, f32 *arg1) {
+    f32 value = fn_8026EB4C(arg0);
     if (value > lbl_8055F52C) {
         f32 denom = (f32)cos((double)(lbl_8055F52C * lbl_80563E68));
         *arg1 *= (f32)cos((double)(value * lbl_80563E68)) / denom;
