@@ -31,6 +31,21 @@ extern void fn_80193D30(void *);
 extern int fn_802E30C8(const char *, ...);
 extern char lbl_80333198[];
 
+extern char lbl_80333158[];
+extern float lbl_8055A488, lbl_8055A48C;
+extern unsigned char lbl_8055E580;
+extern unsigned int lbl_8055E540;
+extern float lbl_8055E554, lbl_8055E56C, lbl_8055E568, lbl_8055E564;
+extern float lbl_8055E544, lbl_8055E548, lbl_8055E54C, lbl_8055E55C;
+extern float lbl_8055E560, lbl_8055E570;
+extern int lbl_8055E578;
+extern float lbl_80562184, lbl_80562188, lbl_8056218C, lbl_80562190;
+extern float lbl_80562194, lbl_80562198, lbl_8056219C;
+extern void *__AXFXGetLfoSinTable_801769CC(void);
+extern void *fn_80137C54(int);
+extern void fn_80134CD4(int, void *);
+extern float fn_80134B58(void *, float);
+
 #define __HI(x) *(int *)&x
 extern float lbl_80562168, lbl_80562174, lbl_805621A4, lbl_805621B0, lbl_805621B4;
 extern float lbl_8055A488, lbl_8056215C;
