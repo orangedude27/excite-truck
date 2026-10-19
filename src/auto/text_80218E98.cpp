@@ -59,6 +59,10 @@ virtual void a20(); virtual void a21(); virtual void a22(); virtual void a23(); 
 virtual void a25(); virtual void a26(); virtual void a27(); virtual s32 get();
 };
 
+class V24x { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual f32 get(); };
+class V20x { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual f32 get(); };
+class V14x { public: virtual void a(); virtual void b(); virtual void c(); virtual f32 get(); };
+
 class VfObjCall {
 public:
     virtual void vf2(s32);
