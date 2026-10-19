@@ -10,6 +10,41 @@ extern void fn_80236914(void);
 extern void fn_80264098(void *, int);
 extern void *fn_80264A54(void);
 extern void *fn_80264580(void);
+extern float lbl_80563BF0;
+extern float lbl_80563C00;
+extern float lbl_80563C08;
+extern float fn_80129DC4(int, float, float);
+extern int fn_80129D18(int, int);
+extern int fn_80235FD8(int);
+extern double cos(double);
+extern double sin(double);
+
+static inline void fn_80264A5C_emit(void *e, float x, float y) {
+    float t;
+    int i;
+    void *p;
+    float a;
+    float b;
+    t = *(float *)((char *)e + 0x5C) + *(float *)((char *)e + 0x28);
+    *(float *)((char *)e + 0x5C) = t;
+    if (t > lbl_80563C00 && *(int *)((char *)e + 0x44) + 1 <= *(int *)((char *)e + 0x48)) {
+        *(float *)((char *)e + 0x5C) = *(float *)((char *)e + 0x5C) - lbl_80563C00;
+        i = *(int *)((char *)e + 0x44);
+        p = (void *)((char *)*(void **)((char *)e + 0x40) + (i << 5));
+        *(int *)((char *)e + 0x44) = i + 1;
+        *(float *)((char *)p + 0) = x;
+        *(float *)((char *)p + 4) = y;
+        a = fn_80129DC4(6, *(float *)((char *)e + 0x04), *(float *)((char *)e + 0x08));
+        b = fn_80129DC4(6, *(float *)((char *)e + 0x0C), *(float *)((char *)e + 0x10));
+        *(float *)((char *)p + 8) = b * (float)cos((double)a);
+        *(float *)((char *)p + 0xC) = b * (float)sin((double)a);
+        *(float *)((char *)p + 0x10) = fn_80129DC4(6, lbl_80563BF0, lbl_80563C08);
+        *(float *)((char *)p + 0x14) = fn_80129DC4(6, *(float *)((char *)e + 0x1C), *(float *)((char *)e + 0x20));
+        *(float *)((char *)p + 0x18) = *(float *)((char *)e + 0x2C);
+        *(int *)((char *)p + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)e + 0x3C)));
+    }
+}
+
 #pragma dont_inline on
 void fn_80264098(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 4) = arg1;
@@ -196,6 +231,108 @@ void* fn_80264A54(void) {
     return lbl_8055F448;
 }
 
+#pragma push
+#pragma processor 750
+void fn_80264A5C(float farg0, float farg1) {
+    extern float lbl_80558DC4[];
+    extern float lbl_80563BF0;
+    extern float lbl_80563C00;
+    extern float lbl_80563C08;
+    extern float lbl_80563C0C;
+    extern float fn_80214D48(void);
+    extern void fn_80230C30(float *, float *, int, int);
+    extern float fn_80129DC4(int, float, float);
+    extern int fn_80129D18(int, int);
+    extern int fn_80235FD8(int);
+    extern double cos(double);
+    extern double sin(double);
+    volatile float sp18;
+    volatile float sp1C;
+    volatile float sp10;
+    volatile float sp14;
+    float spC;
+    float sp8;
+    float temp_f0;
+    float temp_f0_2;
+    float temp_f2;
+    float temp_f30;
+    float temp_f30_2;
+    float temp_f31;
+    float temp_f31_2;
+    float temp_f3;
+    float temp_f4;
+    int temp_r0;
+    int temp_r0_2;
+    int temp_r4;
+    int temp_r4_2;
+    int temp_r5;
+    int temp_r5_2;
+    int temp_r6;
+    int temp_r6_2;
+    void *temp_r30;
+    void *temp_r30_2;
+    void *temp_r31;
+    void *temp_r31_2;
+
+    if (!((float)__fabs((double)fn_80214D48()) <= lbl_80558DC4[0])) {
+        fn_80230C30(&spC, &sp8, (int)farg0, (int)farg1);
+        temp_f4 = spC + (farg0 - (float)(int)farg0);
+        temp_f3 = sp8 - (farg1 - (float)(int)farg1);
+        spC = temp_f4;
+        sp8 = temp_f3;
+        sp18 = temp_f4;
+        temp_r31 = lbl_8055F448;
+        temp_f0 = *(float *)((char *)temp_r31 + 0x74) + *(float *)((char *)temp_r31 + 0x40);
+        sp1C = temp_f3;
+        *(float *)((char *)temp_r31 + 0x74) = temp_f0;
+        if (temp_f0 > lbl_80563C00 && *(int *)((char *)temp_r31 + 0x5C) + 1 <= *(int *)((char *)temp_r31 + 0x60)) {
+            *(float *)((char *)temp_r31 + 0x74) = *(float *)((char *)temp_r31 + 0x74) - lbl_80563C00;
+            temp_r5 = *(int *)((char *)temp_r31 + 0x5C);
+            temp_r6 = *(int *)((char *)temp_r31 + 0x58);
+            temp_r4 = temp_r5 + 1;
+            *(int *)((char *)temp_r31 + 0x5C) = temp_r4;
+            temp_r0 = temp_r5 << 5;
+            temp_r30 = (void *)((char *)temp_r6 + temp_r0);
+            *(float *)((char *)temp_r6 + temp_r0) = temp_f4;
+            *(float *)((char *)temp_r30 + 4) = temp_f3;
+            temp_f30 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x1C), *(float *)((char *)temp_r31 + 0x20));
+            temp_f31 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x24), *(float *)((char *)temp_r31 + 0x28));
+            *(float *)((char *)temp_r30 + 8) = temp_f31 * (float)cos((double)temp_f30);
+            *(float *)((char *)temp_r30 + 0xC) = temp_f31 * (float)sin((double)temp_f30);
+            *(float *)((char *)temp_r30 + 0x10) = fn_80129DC4(6, lbl_80563BF0, lbl_80563C08);
+            *(float *)((char *)temp_r30 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x34), *(float *)((char *)temp_r31 + 0x38));
+            *(float *)((char *)temp_r30 + 0x18) = *(float *)((char *)temp_r31 + 0x44);
+            *(int *)((char *)temp_r30 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31 + 0x54)));
+        }
+        temp_r31_2 = lbl_8055F448;
+        temp_f4 = spC;
+        temp_f0_2 = *(float *)((char *)temp_r31_2 + 0xD4) + *(float *)((char *)temp_r31_2 + 0xA0);
+        temp_f2 = lbl_80563C0C + sp8;
+        sp10 = temp_f4;
+        *(float *)((char *)temp_r31_2 + 0xD4) = temp_f0_2;
+        sp14 = temp_f2;
+        if (temp_f0_2 > lbl_80563C00 && *(int *)((char *)temp_r31_2 + 0xBC) + 1 <= *(int *)((char *)temp_r31_2 + 0xC0)) {
+            *(float *)((char *)temp_r31_2 + 0xD4) = *(float *)((char *)temp_r31_2 + 0xD4) - lbl_80563C00;
+            temp_r5_2 = *(int *)((char *)temp_r31_2 + 0xBC);
+            temp_r6_2 = *(int *)((char *)temp_r31_2 + 0xB8);
+            temp_r4_2 = temp_r5_2 + 1;
+            *(int *)((char *)temp_r31_2 + 0xBC) = temp_r4_2;
+            temp_r0_2 = temp_r5_2 << 5;
+            temp_r30_2 = (void *)((char *)temp_r6_2 + temp_r0_2);
+            *(float *)((char *)temp_r6_2 + temp_r0_2) = temp_f4;
+            *(float *)((char *)temp_r30_2 + 4) = temp_f2;
+            temp_f30_2 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x7C), *(float *)((char *)temp_r31_2 + 0x80));
+            temp_f31_2 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x84), *(float *)((char *)temp_r31_2 + 0x88));
+            *(float *)((char *)temp_r30_2 + 8) = temp_f31_2 * (float)cos((double)temp_f30_2);
+            *(float *)((char *)temp_r30_2 + 0xC) = temp_f31_2 * (float)sin((double)temp_f30_2);
+            *(float *)((char *)temp_r30_2 + 0x10) = fn_80129DC4(6, lbl_80563BF0, lbl_80563C08);
+            *(float *)((char *)temp_r30_2 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x94), *(float *)((char *)temp_r31_2 + 0x98));
+            *(float *)((char *)temp_r30_2 + 0x18) = *(float *)((char *)temp_r31_2 + 0xA4);
+            *(int *)((char *)temp_r30_2 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31_2 + 0xB4)));
+        }
+    }
+}
+#pragma pop
 void fn_80264FD4(void *arg0) {
     void (*fn)(void *) = *(void (**)(void *))((char *)*(void **)arg0 + 0x1C);
     fn(arg0);
