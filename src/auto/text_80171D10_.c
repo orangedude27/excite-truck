@@ -1,6 +1,14 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void *fn_8017960C(int);
+extern double fn_8002F234(float), cos(double), sin(double);
+extern float fn_80129DC4(int,float,float);
+extern int fn_80171EF8(void *,void *);
+extern unsigned long long fn_80171FF0(void *,int,float,float);
+extern float lbl_80558DC4[];
+extern float lbl_8055E3C8,lbl_80561A38,lbl_80561A78,lbl_80561A80,lbl_80561AB4,lbl_80561ABC,lbl_80561AC8,lbl_80561AF8,lbl_80561AFC,lbl_80561B00,lbl_80561B04,lbl_80561B08,lbl_80561B0C;
+
 typedef struct {
     void *vtbl;
     void (*d0)(void *);
@@ -73,8 +81,7 @@ int fn_80171EC0(void) {
 }
 
 unsigned int fn_801720E0(unsigned int arg0) {
-    unsigned int value = (arg0 & 0x7F7F7F) | ((arg0 & 0xFF000000) >> 1);
-    return value | (arg0 & 0xFF000000);
+    return ((arg0 & 0x7F7F7F) | ((arg0 & 0xFF000000) >> 1));
 }
 
 float fn_801725C8(float arg0) {
@@ -87,10 +94,8 @@ float fn_801725C8(float arg0) {
     float f4 = lbl_8043038C[1];
     float value = (arg0 - f0) / (f2 - f0);
     float t = lbl_80561A40;
-    if (t < value)
-        t = value;
-    if (t > lbl_80561A44)
-        t = lbl_80561A44;
+    if (t < value) { t = value; } else { t = t; }
+    if (t > lbl_80561A44) { t = lbl_80561A44; } else { t = t; }
     return f3 + t * (f4 - f3);
 }
 
@@ -102,8 +107,10 @@ int fn_80172624(void *arg0, int arg1) {
     void *b = fn_8017960C(arg1);
     float dot = PSQUATMultiply((char *)a + 0x118, (char *)b + 0x118);
     float threshold = *(float *)((char *)a + 0x25D4);
-    float value = lbl_8043038C[9] * dot + lbl_8043038C[10] * threshold;
-    int result = 0;
+    float upper = lbl_8043038C[9];
+    int result;
+    float value = upper * dot + lbl_8043038C[10] * threshold;
+    result = 0;
     if (value >= lbl_8043038C[8])
         return 2;
     if (value >= lbl_8043038C[7])
@@ -170,7 +177,9 @@ int fn_80174314(void) {
     return 8;
 }
 
-void fn_80174794(void *arg0) {
+#pragma push
+#pragma use_lmw_stmw off
+void fn_80174794(void **arg0) {
     extern float fn_801B306C(void);
     extern int fn_800216D0(void);
     extern int fn_801EA994(void);
@@ -183,16 +192,81 @@ void fn_80174794(void *arg0) {
         count = fn_801EA994();
         for (i = 0; i < count; i++) {
             if (i != fn_801E866C(-1) &&
-                (*(int (***)(void *, int))arg0)[8](arg0, i)) {
+                (*(int (**)(void **, int))((char *)*arg0 + 0x20))(arg0, i) != 0) {
                 fn_8017248C(i);
             }
         }
     }
 }
+#pragma pop
+int fn_8017483C(void *arg0, void *arg1, int arg2) {
+    extern double fn_8002F234(float);
+    extern void fn_801B7C8C(void *, void *, float *);
+    extern float lbl_80561A40, lbl_80561A50, lbl_80561AD0;
+    float xy[2], length, scale;
+    void *entry;
+    int zero = 0;
+    int two = 2;
+    if (arg2 < *(int *)((char *)arg0 + 8)) {
+        entry = (char *)*(void **)((char *)arg0 + 4) + arg2 * 8;
+        xy[0] = *(float *)entry * lbl_80561A50;
+        xy[1] = *(float *)((char *)entry + 4) * lbl_80561A50;
+        length = (float)fn_8002F234(xy[0] * xy[0] + xy[1] * xy[1]);
+        if (length < lbl_80561AD0) length = lbl_80561AD0;
+        scale = lbl_80561A40 / length;
+        xy[0] = xy[0] * scale;
+        xy[1] = xy[1] * scale;
+        fn_801B7C8C(arg1, entry, xy);
+        *(int *)((char *)arg1 + 0x48) = zero;
+        *(int *)((char *)arg1 + 0x44) = two;
+        *(int *)((char *)arg1 + 0x4C) = zero;
+        return 1;
+    }
+    return 0;
+}
+
+void fn_80175080(void **arg0, int arg1, int arg2, char *arg3, int arg4, int arg5, int arg6, int arg7, double farg0, double farg1, double farg2, double farg3, double farg4, double farg5, double farg6, double farg7, void *arg_sp8) {
+    extern void *fn_80147CEC(void *, void *, void *, double);
+    extern void fn_80147230(void *, const char *, const char *);
+    extern void fn_801476C4(void *);
+    extern void fn_802E317C(const char *, unsigned int, const char *);
+    extern int vsprintf(char *, const char *, void *);
+    extern unsigned int strlen(const char *);
+    extern const char lbl_803314F8[];
+    extern const char lbl_8055A2EC[];
+    char result[0x20];
+    char text[0x80];
+    void *v;
+    void *p;
+    v = ((void *(*)(void *))((char *)*arg0 + 0xC))(arg0);
+    p = ((void *(*)(void *, int))((char *)*arg0 + 0xC))(arg0, arg2);
+    if (v != 0) {
+        fn_80147CEC(result, v, p, farg0);
+    } else {
+        *(int *)(result + 0) = *(int *)p;
+        *(int *)(result + 4) = *(int *)((char *)p + 4);
+        *(int *)(result + 8) = *(int *)((char *)p + 8);
+        *(int *)(result + 0xC) = *(int *)((char *)p + 0xC);
+        *(float *)(result + 0x10) = *(float *)((char *)p + 0x10);
+        *(int *)(result + 0x14) = *(int *)((char *)p + 0x14);
+        *(int *)(result + 0x18) = *(int *)((char *)p + 0x18);
+        *(int *)(result + 0x1C) = *(int *)((char *)p + 0x1C);
+    }
+    if (arg3 != 0) {
+        vsprintf(text, arg3, &arg_sp8);
+        if (strlen(text) >= 0x80) {
+            fn_802E317C(lbl_803314F8, strlen(text), arg3);
+        }
+        fn_80147230(result, lbl_8055A2EC, text);
+    } else {
+        fn_801476C4(result);
+    }
+}
 
 typedef void (*Fn_80175228)(void *);
 void fn_80175228(void *arg0) {
-    register void **vt = *(void ***)arg0;
+    register void **vt;
+    vt = *(void ***)arg0;
     ((void (*)(void *))vt[0x13])(arg0);
 }
 
@@ -200,6 +274,32 @@ extern float lbl_80561AEC;
 float fn_801757A8(void) { return lbl_80561AEC; }
 
 int fn_801757B0(void) { return 1; }
+
+int fn_801757B8(void *arg0, int arg1) {
+    extern float fn_8001DAE8(void *);
+    extern int fn_802AE220(int, int);
+    extern void fn_8001DFCC(void);
+    extern float lbl_80561A44;
+    float value;
+    int result = 0;
+    int field;
+    fn_801E866C(arg1);
+    value = fn_8001DAE8((char *)arg0 + 0x17C) - *(float *)((char *)arg0 + 0x180);
+    if (value >= lbl_80561A44 && value < *(float *)((char *)arg0 + 0x17C))
+        result = 1;
+    if (result != 0) {
+        ((void (*)(void *, int))((*(void ***)arg0)[19]))(arg0, arg1);
+    } else {
+        if (*(unsigned char *)((char *)arg0 + 0x1B4) != 0)
+            ((void (*)(void *, int))((*(void ***)arg0)[19]))(arg0, arg1);
+        if (*(int *)((char *)arg0 + 0x1B8) != 0)
+            fn_802AE220(*(int *)((char *)arg0 + 0x1B8), 0);
+    }
+    if (((int (*)(void *))((*(void ***)arg0)[26]))(arg0) != 0)
+        fn_8001DFCC();
+    field = *(int *)((char *)arg0 + 0x1AC);
+    return (unsigned int)((4 - field) | (field - 4)) >> 31;
+}
 
 int fn_801758B8(void *arg0) { return *(int *)((char *)arg0 + 0x1AC) == 2; }
 
