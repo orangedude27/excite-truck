@@ -80,11 +80,12 @@ void fn_8019315C(void *unused, int index) {
 
 
 u8 fn_80193184(void *unused, int index) {
-    void *entry;
-    entry = lbl_804349C0[index];
-    if (entry != 0) return *((u8 *)entry + 0x2FE);
-    return 0;
-}
+      void *entry;
+      entry = lbl_804349C0[index];
+      if (entry != 0) return *((u8 *)entry + 0x2FE);
+      return 0;
+  }
+#pragma dont_inline reset
 
 float fn_801931AC(float a, float b, float c, float d) {
     float quotient = a / d;
