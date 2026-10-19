@@ -5462,7 +5462,7 @@ extern "C" void fn_800D1C48(void);
 extern u8 lbl_8055DDC0;
 extern OSAlarm lbl_80407790;
 extern const char lbl_8031E9D0[];
-extern "C" const char lbl_805597DC[];
+extern "C" const char lbl_805597DC[2];
 extern u32 lbl_8055DDB8;
 extern "C" void fn_800D2480(void);
 namespace nw4hbm {
@@ -5499,6 +5499,52 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
     
     fn_800D2098(&sp_68);
 }
+
+void nw4hbm::db::Warning(const char* file, int line, const char* msg, ...) {
+    if (lbl_8055DDC0 == 0) {
+        OSCreateAlarm(&lbl_80407790);
+        lbl_8055DDC0 = 1;
+    }
+
+    va_list vlist;
+    va_start(vlist, msg);
+
+    void* console = lbl_8055DDBC;
+    if (console != NULL) {
+        Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(console, lbl_8031E9D0 + 0xA0, file, line);
+        Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void*)3, lbl_8055DDBC, msg, vlist);
+        Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, lbl_805597DC);
+
+        void* r29 = lbl_8055DDBC;
+        if (r29 == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E9D0 + 0x70, 0x1B2, lbl_8031E9D0 + 0x7C);
+        }
+        s32 lines = Console_GetTotalLines((detail::ConsoleHead*)r29) - *(u16*)((u8*)r29 + 0x20);
+        if (lines < 0) {
+            lines = 0;
+        }
+        if (r29 == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E9D0 + 0x70, 0x22D, lbl_8031E9D0 + 0x7C);
+        }
+        *(s32*)((u8*)r29 + 0x18) = lines;
+
+        r29 = lbl_8055DDBC;
+        if (r29 == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E9D0 + 0x70, 0x1F1, lbl_8031E9D0 + 0x7C);
+        }
+        *(u8*)((u8*)r29 + 0x22) = 1;
+    } else {
+        OSReport(lbl_8031E9D0 + 0xA0, file, line);
+        __VprintfThunk(msg, vlist);
+        OSReport(lbl_805597DC);
+    }
+
+    if (lbl_8055DDB8 != 0) {
+        OSCancelAlarm(&lbl_80407790);
+        OSSetAlarm(&lbl_80407790, (u64)lbl_8055DDB8, (OSAlarmHandler)fn_800D2480);
+    }
+}
+
 extern s32 lbl_8055DDD4;
 extern "C" f32 lbl_80560E40;
 extern "C" f32 lbl_80560E3C;
