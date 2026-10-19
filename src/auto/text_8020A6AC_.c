@@ -292,6 +292,11 @@ void fn_8020BC90(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x38) = arg1;
 }
 
+#pragma scheduling invalid_target
+void fn_8020BC98(void) {
+    fn_802E317C(lbl_8033C510);
+}
+
 float fn_8020BCA8(void *arg0) {
     return *(float *)((char *)arg0 + 0x48);
 }
