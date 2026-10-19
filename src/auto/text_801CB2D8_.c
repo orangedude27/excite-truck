@@ -422,11 +422,13 @@ s32 fn_801CD100(void) {
 #pragma pop
 
 extern char lbl_80337D00[];
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_801CD49C(void) {
-    fn_802E317C(lbl_80337D00, 0);
+    ((void (*)(char *, ...))fn_802E317C)(lbl_80337D00);
     return 0;
 }
-
+#pragma pop
 void fn_801CE670(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
     Struct_801CE670 local;
     local.field4 = arg1;
