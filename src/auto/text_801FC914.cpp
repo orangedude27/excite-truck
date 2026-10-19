@@ -1,3 +1,6 @@
+#include <revolution/MTX/vec.h>
+#include <revolution/MTX/quat.h>
+extern "C" void fn_801FEA28(void*);
 class SHMainMenu { public: ~SHMainMenu(); };
 extern "C" {
 extern void* lbl_8055EC98;
@@ -122,14 +125,18 @@ void fn_801FCF74(void* arg0) {
     else fn_801FDF18();
 }
 
+#pragma push
+#pragma paired off
 extern "C" void fn_801FCFC8(void* arg0) {
     if (*(int*)((char*)arg0 + 4) != 0) {
+        int pad = 0;
         float value = fn_802C99E8(*(float*)((char*)arg0 + 0x6C));
         fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
+        if (pad) value = pad;
         fn_802C99E8(value);
     }
 }
-
+#pragma pop
 extern "C" void fn_8012F57C(float*, void*, void*);
 extern "C" void fn_8012F57C(float*, void*, void*);
 extern "C" float lbl_80563030;
@@ -317,6 +324,15 @@ extern "C" void fn_801FF118(void) {
 
 }
 
+extern "C" const char lbl_8033B700[];
+extern "C" void* fn_801FF11C(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        *(const char**)arg0 = lbl_8033B700;
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_801FF168(void) {
 
 }
@@ -330,7 +346,10 @@ extern "C" int fn_801FF1BC(void) { return 3; }
 
 extern "C" void fn_801FF1C4(void* arg0, int arg1, int arg2) {
     char* p = (char*)arg0;
-    if (*(int*)(p + 0xE04) >= 0x20) fn_802E317C(lbl_8033B8C8);
+    if (*(int*)(p + 0xE04) >= 0x20) {
+        const char* msg = lbl_8033B8C8;
+        fn_802E317C(msg);
+    }
     fn_801FCF18(p + *(int*)(p + 0xE04) * 0x70 + 4, arg1, arg2);
     fn_801FF484(p + 0xE08, p + *(int*)(p + 0xE04) * 0x70 + 4);
     ++*(int*)(p + 0xE04);
@@ -502,6 +521,16 @@ extern "C" void* __dt__10SHMainMenuFv_801FFA68(void* arg0, int arg1) {
 #pragma dont_inline reset
 extern "C" void fn_801FEFC4(void) {
 
+}
+
+extern "C" const char lbl_8033B730[];
+extern "C" void* fn_801FEFC8(void* arg0, int arg1) {
+    if (arg0 == 0) goto done;
+    *(const char**)arg0 = lbl_8033B730;
+    if (*(volatile int*)&arg1 <= 0) goto done;
+    fn_80128668(arg0);
+done:
+    return arg0;
 }
 
 extern "C" void fn_801FF014(void* arg0, int arg1, int arg2, int arg3) {
