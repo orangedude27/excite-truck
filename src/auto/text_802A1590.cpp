@@ -19,7 +19,7 @@ public:
     virtual void v0();
     virtual void v1();
     virtual void v2();
-    virtual void v3();
+    virtual s32 v3(const void*);
     virtual void v4();
     virtual s32 v5(const void*);
 };
@@ -514,10 +514,9 @@ extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
     return arg0;
 }
 
-extern "C" void* fn_802A3314(void* arg0, void* arg1) {
+extern "C" void* fn_802A3314(void* arg0, DummyReceiver_802A3314* arg1) {
     *(void**)arg0 = lbl_80349B28;
-    void** vt = (void**)arg1;
-    s32 result = (*(s32 (**)(void*, void**))((char*)*vt + 0x14))(arg1, vt);
+    s32 result = arg1->v5(&lbl_8055CBB0);
     fn_802A3500(arg0, result);
     return arg0;
 }
