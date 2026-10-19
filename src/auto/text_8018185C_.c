@@ -395,8 +395,7 @@ int fn_8018B06C(void *arg0) {
 }
 
 int fn_8018B084(void *arg0) {
-    int index = *(int *)((unsigned char *)arg0 + 0x1ec);
-    return ((int *)lbl_8055E918)[index * 0x9c / 4 + 8];
+    return *(int *)((unsigned char *)(lbl_8055E918 + *(int *)((unsigned char *)arg0 + 0x1EC) * 0x9C) + 0x20);
 }
 
 void fn_8018B09C(void *arg0) {
