@@ -102,9 +102,11 @@ void fn_801765B8(void) {
     lbl_8055E3BC = 0;
 }
 
+#pragma dont_inline on
 void fn_80176610(void) {
     fn_80176CC8();
 }
+#pragma dont_inline reset
 
 void fn_80176614(void) {
     s32 i;
@@ -311,22 +313,20 @@ void *fn_80176A70(void) {
     now = start;
 
 loop:
-    fn_80176610();
-    if ((s32)fn_80176A1C() == 2 || lbl_8055E3BD != 0 || snap != lbl_8055E3C4 ||
-        fn_802D3EBC() != 0) {
+    ((void (*)(void))fn_80176610)();
+    if (((s32 (*)(void))fn_80176A1C)() == 2 || ((u8)lbl_8055E3BD) != 0 ||
+        snap != lbl_8055E3C4 || fn_802D3EBC() != 0) {
         goto done;
     }
     fn_802E2D74(0);
     if (fn_802E2C20() - startTime > 0x2710) {
-        fn_8017970C();
-        fn_802E30C8(base + 0x190);
-        fn_802E317C(base + 0x1C8, 10);
+        fn_802E30C8(base + 0x190, fn_8017970C());
+        ((void (*)(const char *, ...))fn_802E317C)(base + 0x1C8, 10);
     }
     count++;
-    if ((u16)count != 0) {
-        goto loop;
+    if ((u16)count == 0) {
+        ((void (*)(const char *, ...))fn_802E30C8)(base + 0x204, count);
     }
-    fn_802E30C8(base + 0x204, count);
     now = fn_802E2C9C();
     goto loop;
 
@@ -335,8 +335,8 @@ done:
     scaled = lbl_80561B30 * fn_8002FD54((u32)(elapsed >> 32), (u32)elapsed);
     lbl_8055E3D0 = scaled + lbl_80561B34 * (lbl_8055E3D0 - scaled);
     p = fn_80179824();
-    *(s32 *)((char *)p + 0xDB0) = fn_801773E4();
-    fn_801C6AD0((s32 *)((char *)p + 0xDB0));
+    ((s32 *)p)[0x36C] = fn_801773E4();
+    fn_801C6AD0(&((s32 *)p)[0x36C]);
     return p;
 }
 
