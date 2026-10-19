@@ -115,6 +115,13 @@ void fn_80134A8C(void) {
           arg0 = (float)atof();
       return arg0;
   }
+
+s32 fn_80134B9C(s32 arg0, s32 arg1) {
+    if (lbl_8055E0AC != 0 && ((s32 (*)(void *, s32))(*(u32 *)(*(u32 *)lbl_8055E0AC + 0xC)))(lbl_8055E0AC, arg0) != 0)
+        return ((s32 (*)(void *, s32))(*(u32 *)(*(u32 *)lbl_8055E0AC + 0x14)))(lbl_8055E0AC, arg0);
+    return arg1;
+}
+
   
   f32 fn_80134C1C(void) {
       return lbl_8055E0A8;
@@ -127,21 +134,21 @@ void fn_80134A8C(void) {
       return -1;
   }
   
-  s32 fn_80134C60(s32 arg0, char *arg1) {
-      extern s32 sprintf(char *, const char *, ...);
-      extern char *strcpy(char *, const char *);
-      extern u8 lbl_80559BDC;
-      extern u8 lbl_80559BE4;
-      extern u8 lbl_80559BEC;
-      if (arg0 >= 0) {
-          sprintf(arg1, (const char *)&lbl_80559BDC, arg0);
-      } else if (arg0 == -0x14) {
-          strcpy(arg1, (const char *)&lbl_80559BE4);
-      } else {
-          strcpy(arg1, (const char *)&lbl_80559BEC);
-      }
-      return (s32)arg1;
-  }
+s32 fn_80134C60(s32 arg0, char *arg1) {
+    extern s32 sprintf(char *, const char *, ...);
+    extern char *strcpy(char *, const char *);
+    extern u8 lbl_80559BDC, lbl_80559BE4, lbl_80559BEC;
+    if (arg0 < 0) {
+        if (arg0 != -0x14) {
+            strcpy(arg1, (const char *)&lbl_80559BEC);
+        } else {
+            strcpy(arg1, (const char *)&lbl_80559BE4);
+        }
+    } else {
+        sprintf(arg1, (const char *)&lbl_80559BDC, arg0);
+    }
+    return (s32)arg1;
+}
   
 #pragma dont_inline on
 s32 fn_80134CD4(s32 arg0, s32 arg1) {
@@ -252,7 +259,6 @@ void *fn_80134F48(void) {
     if (result != 0) result = fn_801A520C(result, p);
     return result;
 }
-#pragma dont_inline reset
 #pragma scheduling on
 void *fn_80134FF8(void) {
     void **p = fn_801284F8(4, lbl_8032BC94);
@@ -316,21 +322,20 @@ void fn_80135198(void) {
 
 }
 
-#pragma peephole off
-s32 fn_8013519C(s32 arg0) {
-    return fn_802E317C(lbl_8032BD98, arg0);
+#pragma scheduling invalid_target
+int fn_8013519C(void) {
+    return fn_802E317C(lbl_8032BD98);
 }
-#pragma peephole on
 extern const char lbl_8032BD98[];
 extern s32 fn_802E317C(const char *, ...);
 s32 fn_801351AC(void) {
     return 0;
 }
 
-void fn_801351B4(void *param) {
+void fn_801351B4(void *param, int a, int b, int c, int d, int e, int f, int g) {
     void **vtable = *(void ***)param;
-    void (*fn)(void) = *(void **)((u8 *)vtable + 0x10);
-    fn();
+    void (*fn)(void *, int, int, int, int, int, int, int) = *(void **)((u8 *)vtable + 0x10);
+    fn(param, a, b, c, d, e, f, g);
 }
 
 void fn_801351C4(void *arg0, s32 arg1) {
@@ -341,8 +346,8 @@ extern void fn_8018ADBC(void *, f32);
 extern void fn_8018ADB4(void *, f32);
 extern void fn_8018ADA4(void *, f32);
 void fn_801351CC(void *arg0) {
-    volatile f32 value = lbl_80561318;
-    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), value);
+    volatile f32 *value = &lbl_80561318;
+    fn_8018ADBC(*(void **)((u8 *)arg0 + 8), *value);
     fn_8018ADB4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
     fn_8018ADA4(*(void **)((u8 *)arg0 + 8), lbl_805612F4);
 }
