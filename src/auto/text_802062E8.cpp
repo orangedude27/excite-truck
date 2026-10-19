@@ -117,8 +117,7 @@ extern "C" void fn_80206484(int arg0) {
     ((void (*)(void *, int))vtable[11])(obj, arg0);
 }
 
-void fn_802064C8(void) {
-    return;
+extern "C" void fn_802064C8(void) {
 }
 
 extern "C" void fn_802064D0(int arg0) {
