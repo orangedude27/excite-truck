@@ -15,6 +15,13 @@ extern unsigned int lbl_8055D974;
   extern void GXGetVtxDesc(void);
   extern void __GXSaveFifo(void);
 
+typedef struct {
+    int attr;
+    int compCnt;
+    int compType;
+    unsigned char shift;
+} GXVtxAttrFmtList;
+
           static void __GXGetTexTileShift_8003DB9C(unsigned int fmt, unsigned int *rowTileS, unsigned int *colTileS) {
       switch (fmt) {
       case 0x0:
@@ -170,6 +177,89 @@ void *GXInitVtxDescList(void) {
     return temp;
 }
 
+void GXSetVtxDesc(unsigned int attr, unsigned int type) {
+    unsigned int *data;
+    data = __GXData;
+    switch (attr) {
+    case 0: data[5] = (data[5] & 0x7fffffff) | (type & 1) << 31; break;
+    case 1: data[5] = (data[5] & 0xbfffffff) | (type & 1) << 30; break;
+    case 2: data[5] = (data[5] & 0xdfffffff) | (type & 1) << 29; break;
+    case 3: data[5] = (data[5] & 0xefffffff) | (type & 1) << 28; break;
+    case 4: data[5] = (data[5] & 0xf7ffffff) | (type & 1) << 27; break;
+    case 5: data[5] = (data[5] & 0xfbffffff) | (type & 1) << 26; break;
+    case 6: data[5] = (data[5] & 0xfdffffff) | (type & 1) << 25; break;
+    case 7: data[5] = (data[5] & 0xfeffffff) | (type & 1) << 24; break;
+    case 8: data[5] = (data[5] & 0xff7fffff) | (type & 1) << 23; break;
+    case 9: data[5] = (data[5] & 0xff9fffff) | (type & 3) << 21; break;
+    case 10:
+        if (type) { ((unsigned char *)data)[0x524] = 1; ((unsigned char *)data)[0x525] = 0; data[0x520 / 4] = type; }
+        else ((unsigned char *)data)[0x524] = 0;
+        break;
+    case 11:
+        if (type) { ((unsigned char *)data)[0x525] = 1; ((unsigned char *)data)[0x524] = 0; data[0x520 / 4] = type; }
+        else ((unsigned char *)data)[0x525] = 0;
+        break;
+    case 12: data[5] = (data[5] & 0xfff9ffff) | (type & 3) << 17; break;
+    case 13: data[5] = (data[5] & 0xfffe7fff) | (type & 3) << 15; break;
+    case 14: data[6] = (data[6] & 0x3fffffff) | (type & 3) << 30; break;
+    case 15: data[6] = (data[6] & 0xcfffffff) | (type & 3) << 28; break;
+    case 16: data[6] = (data[6] & 0xf3ffffff) | (type & 3) << 26; break;
+    case 17: data[6] = (data[6] & 0xfcffffff) | (type & 3) << 24; break;
+    case 18: data[6] = (data[6] & 0xff3fffff) | (type & 3) << 22; break;
+    case 19: data[6] = (data[6] & 0xffcfffff) | (type & 3) << 20; break;
+    case 20: data[6] = (data[6] & 0xfff3ffff) | (type & 3) << 18; break;
+    case 21: data[6] = (data[6] & 0xfffcffff) | (type & 3) << 16; break;
+    case 22: data[6] = (data[6] & 0xfff3ffff) | (type & 3) << 14; break;
+    case 23: data[6] = (data[6] & 0xfffcffff) | (type & 3) << 12; break;
+    case 24: data[6] = (data[6] & 0xfff3ffff) | (type & 3) << 10; break;
+    case 25: data[6] = (data[6] & 0xfffcffff) | (type & 3) << 8; break;
+    }
+    if (((unsigned char *)data)[0x524] == 0 && ((unsigned char *)data)[0x525] != 0) {
+        data[5] = (data[5] & 0xfff1ffff) | (data[0x520 / 4] & 3) << 11;
+    } else if (((unsigned char *)data)[0x524] == 0) {
+        data[5] &= 0xfff1ffff;
+    }
+    data[0x5fc / 4] |= 8;
+}
+
+void GXSetVtxDescv(unsigned int *desc) {
+    unsigned int *data = __GXData;
+    unsigned int attr;
+    unsigned int type;
+    for (;;) {
+        attr = desc[0]; type = desc[1];
+        if (attr == 0xff) break;
+        switch (attr) {
+        case 0: data[5] = (data[5] & 0x7fffffff) | (type & 1) << 31; break;
+        case 1: data[5] = (data[5] & 0xbfffffff) | (type & 1) << 30; break;
+        case 2: data[5] = (data[5] & 0xdfffffff) | (type & 1) << 29; break;
+        case 3: data[5] = (data[5] & 0xefffffff) | (type & 1) << 28; break;
+        case 4: data[5] = (data[5] & 0xf7ffffff) | (type & 1) << 27; break;
+        case 5: data[5] = (data[5] & 0xfbffffff) | (type & 1) << 26; break;
+        case 6: data[5] = (data[5] & 0xfdffffff) | (type & 1) << 25; break;
+        case 7: data[5] = (data[5] & 0xfeffffff) | (type & 1) << 24; break;
+        case 8: data[5] = (data[5] & 0xff7fffff) | (type & 1) << 23; break;
+        case 9: data[5] = (data[5] & 0xff9fffff) | (type & 3) << 21; break;
+        case 10: if (type) { ((unsigned char *)data)[0x524]=1; ((unsigned char *)data)[0x525]=0; data[0x520/4]=type; } else ((unsigned char *)data)[0x524]=0; break;
+        case 11: if (type) { ((unsigned char *)data)[0x525]=1; ((unsigned char *)data)[0x524]=0; data[0x520/4]=type; } else ((unsigned char *)data)[0x525]=0; break;
+        case 12: data[5] = (data[5] & 0xfff9ffff) | (type & 3) << 17; break;
+        case 13: data[5] = (data[5] & 0xfffe7fff) | (type & 3) << 15; break;
+        case 14: data[6] = (data[6] & 0x3fffffff) | (type & 3) << 30; break;
+        case 15: data[6] = (data[6] & 0xcfffffff) | (type & 3) << 28; break;
+        case 16: data[6] = (data[6] & 0xf3ffffff) | (type & 3) << 26; break;
+        case 17: data[6] = (data[6] & 0xfcffffff) | (type & 3) << 24; break;
+        case 18: data[6] = (data[6] & 0xff3fffff) | (type & 3) << 22; break;
+        case 19: data[6] = (data[6] & 0xffcfffff) | (type & 3) << 20; break;
+        case 20: data[6] = (data[6] & 0xfff3ffff) | (type & 3) << 18; break;
+        case 21: data[6] = (data[6] & 0xfffcffff) | (type & 3) << 16; break;
+        }
+        desc += 2;
+    }
+    if (!((unsigned char *)data)[0x524] && !((unsigned char *)data)[0x525]) data[5] &= 0xffffe7ff;
+    else data[5] = (data[5] & 0xffffe7ff) | ((data[0x520/4] & 3) << 11);
+    data[0x5fc/4] |= 8;
+}
+
 void __GXSetVCD(void) {
     unsigned int *data = __GXData;
     unsigned int value;
@@ -207,6 +297,87 @@ void GXClearVtxDesc(void) {
     *((unsigned char *)data + 0x524) = zero;
     *((unsigned char *)data + 0x525) = zero;
     data[0x5FC / 4] |= 8;
+}
+
+void GXSetVtxAttrFmt(unsigned int fmt, unsigned int attr, unsigned int compCnt,
+                     unsigned int compType, unsigned int shift)
+{
+    unsigned int *base = &__GXData[fmt << 2];
+    unsigned int *vatA = &base[0x1C / 4];
+    unsigned int *vatB = &base[0x3C / 4];
+    unsigned int *vatC = &base[0x5C / 4];
+
+    if (fmt <= 0x10) {
+        switch (attr) {
+        case 0x8: // GX_VA_POS
+            *vatA = __rlwimi(*vatA, compCnt, 0, 31, 31);
+            *vatA = __rlwimi(*vatA, compType, 1, 28, 30);
+            *vatA = __rlwimi(*vatA, shift, 4, 23, 27);
+            break;
+        case 0x9: // GX_VA_NRM
+        case 0x1C: // GX_VA_NBT
+            *vatA = __rlwimi(*vatA, compType, 10, 19, 21);
+            if (compCnt == 2) {
+                *vatA = __rlwimi(*vatA, 1, 9, 22, 22);
+                *vatA = __rlwimi(*vatA, 1, 31, 0, 0);
+            } else {
+                *vatA = __rlwimi(*vatA, compCnt, 9, 22, 22);
+                *vatA = __rlwimi(*vatA, 0, 31, 0, 0);
+            }
+            break;
+        case 0xA: // GX_VA_CLR0
+            *vatA = __rlwimi(*vatA, compCnt, 13, 18, 18);
+            *vatA = __rlwimi(*vatA, compType, 14, 15, 17);
+            break;
+        case 0xB: // GX_VA_CLR1
+            *vatA = __rlwimi(*vatA, compCnt, 17, 14, 14);
+            *vatA = __rlwimi(*vatA, compType, 18, 11, 13);
+            break;
+        case 0xC: // GX_VA_TEX0
+            *vatA = __rlwimi(*vatA, compCnt, 21, 10, 10);
+            *vatA = __rlwimi(*vatA, compType, 22, 7, 9);
+            *vatA = __rlwimi(*vatA, shift, 25, 2, 6);
+            break;
+        case 0xD: // GX_VA_TEX1
+            *vatB = __rlwimi(*vatB, compCnt, 0, 31, 31);
+            *vatB = __rlwimi(*vatB, compType, 1, 28, 30);
+            *vatB = __rlwimi(*vatB, shift, 4, 23, 27);
+            break;
+        case 0xE: // GX_VA_TEX2
+            *vatB = __rlwimi(*vatB, compCnt, 9, 22, 22);
+            *vatB = __rlwimi(*vatB, compType, 10, 19, 21);
+            *vatB = __rlwimi(*vatB, shift, 13, 14, 18);
+            break;
+        case 0xF: // GX_VA_TEX3
+            *vatB = __rlwimi(*vatB, compCnt, 18, 13, 13);
+            *vatB = __rlwimi(*vatB, compType, 19, 10, 12);
+            *vatB = __rlwimi(*vatB, shift, 22, 5, 9);
+            break;
+        case 0x10: // GX_VA_TEX4
+            *vatB = __rlwimi(*vatB, compCnt, 27, 4, 4);
+            *vatB = __rlwimi(*vatB, compType, 28, 1, 3);
+            *vatC = __rlwimi(*vatC, shift, 0, 27, 31);
+            break;
+        case 0x11: // GX_VA_TEX5
+            *vatC = __rlwimi(*vatC, compCnt, 5, 26, 26);
+            *vatC = __rlwimi(*vatC, compType, 6, 23, 25);
+            *vatC = __rlwimi(*vatC, shift, 9, 18, 22);
+            break;
+        case 0x12: // GX_VA_TEX6
+            *vatC = __rlwimi(*vatC, compCnt, 14, 17, 17);
+            *vatC = __rlwimi(*vatC, compType, 15, 14, 16);
+            *vatC = __rlwimi(*vatC, shift, 18, 9, 13);
+            break;
+        case 0x13: // GX_VA_TEX7
+            *vatC = __rlwimi(*vatC, compCnt, 23, 8, 8);
+            *vatC = __rlwimi(*vatC, compType, 24, 5, 7);
+            *vatC = __rlwimi(*vatC, shift, 27, 0, 4);
+            break;
+        }
+    }
+
+    __GXData[0x5FC / 4] |= 0x10;
+    *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (fmt & 0x1F));
 }
 
 void __GXSetVAT(void) {
@@ -254,6 +425,66 @@ void GXInvalidateVtxCache(void) {
     *(volatile unsigned char *)0xCC008000 = 0x48;
 }
 
+void GXSetTexCoordGen2(unsigned int coord, int func, unsigned int line, unsigned int nrm, unsigned int normalize, int postmtx) {
+    extern unsigned int jumptable_80303884[];
+    extern unsigned int jumptable_80303868[];
+    unsigned int *data = __GXData;
+    unsigned int type = 0;
+    unsigned int source = 5;
+    unsigned int normalizeFlag = 0;
+    unsigned int value;
+    unsigned int mask;
+    unsigned int shift;
+
+    if (line <= 0x14) {
+        void (*dispatch)(void) = (void (*)(void))jumptable_80303884[line];
+        dispatch();
+        return;
+    }
+
+    if (func == 1) {
+        source = 5; normalizeFlag = 0;
+    } else if (func <= 0) {
+        if (func == 0) { source = 5; normalizeFlag = 1; }
+    } else if (func == 10) {
+        source = (line == 0x13) ? 2 : 3;
+        type = 1;
+    } else if (func < 10) {
+        source = 1;
+        normalizeFlag = 1;
+        type = (unsigned int)(func - 2);
+    }
+
+    value = source << 7;
+    value |= normalizeFlag << 2;
+    value |= (line - 0xC) << 12;
+    value |= (func - 2) << 15;
+    if (func == 1) value = 0x280;
+    else if (func == 0) value = 0x282;
+    else if (func == 10) value = (line == 0x13) ? 0x120 : 0x130;
+    *(unsigned int *)((char *)data + coord * 4 + 0xC8) = value;
+
+    mask = 0x10000 << coord;
+    data[0x5FC / 4] |= mask;
+    *(unsigned int *)((char *)data + coord * 4 + 0xE8) = ((normalize & 1) << 8) | ((postmtx - 0x40) & 0x3F);
+
+    if (coord > 6) {
+        data[0x84 / 4] = (data[0x84 / 4] & 0xFF03FFFF) | ((nrm & 0x3F) << 18);
+        data[0x5FC / 4] |= 0x4000000;
+        return;
+    }
+    value = jumptable_80303868[coord];
+    (void)value;
+    shift = coord * 6;
+    if (coord < 4) {
+        data[0x80 / 4] = (data[0x80 / 4] & ~(0x3Fu << (26 - shift))) | ((nrm & 0x3F) << (26 - shift));
+    } else {
+        shift = (coord - 4) * 6;
+        data[0x84 / 4] = (data[0x84 / 4] & ~(0x3Fu << (26 - shift))) | ((nrm & 0x3F) << (26 - shift));
+    }
+    data[0x5FC / 4] |= 0x4000000;
+}
+
 void GXSetNumTexGens(unsigned int value) {
     unsigned int *data = __GXData;
     data[0x254 / 4] = (data[0x254 / 4] & 0x0FFFFFFF) | (value & 0xF0000000);
@@ -290,7 +521,78 @@ void GXSetMisc(s32 which, unsigned short value) {
 }
 
 void GXGetVtxDesc(void) {
+    volatile unsigned int *fifo = (volatile unsigned int *)0xCC008000;
     if (__GXData[0x5FC / 4] != 0) {
+        __GXSetDirtyState();
+    }
+    fifo[0] = 0;
+    fifo[0] = 0;
+    fifo[0] = 0;
+    fifo[0] = 0;
+    fifo[0] = 0;
+    fifo[0] = 0;
+    fifo[0] = 0;
+    fifo[0] = 0;
+    PPCSync(0xCC010000);
+}
+
+void GXGetVtxDescv(void) {
+    while (PPCMfwpar() & 1) {
+    }
+    PPCMtwpar(0x0C008000);
+}
+
+extern unsigned int *__memReg;
+extern char __GXIsGPFifoReady(void);
+extern unsigned long long OSGetTime(void);
+void GXGetVtxAttrFmt(void) {
+    unsigned int old, value;
+    unsigned long long start;
+    if (*(unsigned char *)((char *)__GXData + 0x5FA) && __GXIsGPFifoReady()) {
+        do {
+            old = ((unsigned int)*(unsigned short *)((char *)__memReg + 0x4E) << 16) |
+                   *(unsigned short *)((char *)__memReg + 0x50);
+            start = OSGetTime();
+            while (OSGetTime() - start < 8) {}
+            value = ((unsigned int)*(unsigned short *)((char *)__memReg + 0x4E) << 16) |
+                    *(unsigned short *)((char *)__memReg + 0x50);
+        } while (value != old);
+    }
+    *(volatile unsigned int *)0xCC003018 = 1;
+    start = OSGetTime();
+    while (OSGetTime() - start < 50) {}
+    *(volatile unsigned int *)0xCC003018 = 0;
+    start = OSGetTime();
+    while (OSGetTime() - start < 5) {}
+}
+
+void GXGetVtxAttrFmtv(void) {
+    unsigned int old;
+    unsigned int value;
+    unsigned long long start;
+    unsigned int *data = __GXData;
+
+    if (*(unsigned char *)((char *)data + 0x5FA) && __GXIsGPFifoReady()) {
+        do {
+            old = ((unsigned int)*(unsigned short *)((char *)__memReg + 0x4E) << 16) |
+                  *(unsigned short *)((char *)__memReg + 0x50);
+            start = OSGetTime();
+            while (OSGetTime() - start < 8) {}
+            value = ((unsigned int)*(unsigned short *)((char *)__memReg + 0x4E) << 16) |
+                    *(unsigned short *)((char *)__memReg + 0x50);
+        } while (value != old);
+    }
+    *(volatile unsigned int *)0xCC003018 = 1;
+    start = OSGetTime();
+    while (OSGetTime() - start < 50) {}
+    *(volatile unsigned int *)0xCC003018 = 0;
+    start = OSGetTime();
+    while (OSGetTime() - start < 5) {}
+    if (__GXIsGPFifoReady()) {
+        __GXCleanGPFifo();
+        __GXInitRevisionBits();
+        data[0x5FC / 4] = 0;
+    } else {
         __GXSetDirtyState();
     }
     *(volatile unsigned int *)0xCC008000 = 0;
@@ -301,13 +603,7 @@ void GXGetVtxDesc(void) {
     *(volatile unsigned int *)0xCC008000 = 0;
     *(volatile unsigned int *)0xCC008000 = 0;
     *(volatile unsigned int *)0xCC008000 = 0;
-    PPCSync(0xCC010000);
-}
-
-void GXGetVtxDescv(void) {
-    while (PPCMfwpar() & 1) {
-    }
-    PPCMtwpar(0x0C008000);
+    PPCSync();
 }
 
 void __GXSetGenMode(void) {
@@ -512,7 +808,7 @@ void GXSetCullMode(unsigned int mode) {
 
 void GXSetCoPlanar(s32 enable) {
     unsigned int *data = __GXData;
-    data[0x254 / 4] = (data[0x254 / 4] & ~0x80000) | ((enable << 19) & 0x80000);
+    data[0x254 / 4] = (data[0x254 / 4] & 0xFFF7FFFF) | ((enable & 1) << 19);
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = 0xFE080000;
     *(volatile unsigned char *)0xCC008000 = 0x61;
@@ -548,8 +844,8 @@ void GXSetDispCopyDst(s32 value) {
 
 void GXSetDispCopyFrame2Field(s32 value) {
     unsigned int *data = __GXData;
-    data[0x23C / 4] = (data[0x23C / 4] & ~0x3000) | ((value << 12) & 0x3000);
-    data[0x24C / 4] = data[0x24C / 4] & 0xFFFFCFFF;
+    data[0x23C / 4] = (data[0x23C / 4] & ~(3U << 12)) | ((value & 3) << 12);
+    data[0x24C / 4] = data[0x24C / 4] & ~(3U << 12);
 }
 
 void GXSetCopyClamp(s32 value) {
@@ -688,9 +984,9 @@ void GXLoadLightObjImm(void *arg0, s32 arg1) {
     *__GXData; 
 }
 
-void GXSetNumChans(unsigned char num) {
+void GXSetNumChans(s32 num) {
     unsigned int *data = __GXData;
-    data[0x254 / 4] = (data[0x254 / 4] & 0xFFFFFF8F) | ((num << 4) & 0x70);
+    data[0x254 / 4] = (data[0x254 / 4] & ~(7 << 4)) | ((num & 7) << 4);
     data[0x5FC / 4] |= 0x01000004;
 }
 
@@ -782,6 +1078,51 @@ void __GetImageTileCount(unsigned int format, int width, int height, int *tiles_
     *tiles_x = (width + (1 << shift_x) - 1) >> shift_x;
     *tiles_y = (height + (1 << shift_y) - 1) >> shift_y;
     *compressed = (format == 6) || (format == 0x16);
+}
+
+void GXInitTexObj(void *obj, void *image, unsigned short width, unsigned short height, int format, int wrapS, int wrapT, int mipmap) {
+    unsigned int *p = (unsigned int *)obj;
+    unsigned int v;
+    unsigned int rowShift, colShift;
+    unsigned int fmt;
+    unsigned int value;
+    unsigned int level;
+    memset(obj, 0, 0x20);
+    v = p[0];
+    v = (v & 0xfffffff0) | ((unsigned int)format & 3) | (((unsigned int)wrapS & 3) << 2) | 0x10;
+    p[0] = v;
+    if (mipmap) {
+        ((unsigned char *)obj)[0x1f] |= 1;
+        v = (v & 0xffffff1f) | ((wrapT >= 8 && wrapT <= 10 ? 5 : 6) << 5);
+        p[0] = v;
+        level = width > height ? __cntlzw(width) : __cntlzw(height);
+        level = 31 - level;
+        value = (unsigned int)(31.0f * ((double)level - 4503601774854144.0));
+        p[1] = (p[1] & 0xffff00ff) | ((value & 0xff) << 8);
+    } else {
+        p[0] = (v & 0xffffff1f) | (4 << 5);
+    }
+    p[5] = wrapT;
+    p[3] = (p[3] & 0xff000000) | ((unsigned int)image >> 5 & 0xffffff);
+    p[2] = (p[2] & 0xff000000) | ((width - 1) & 0x3ff) | (((height - 1) & 0x3ff) << 10) | (((unsigned int)wrapT & 0xf) << 20);
+    fmt = (unsigned int)wrapT & 0xf;
+    if (fmt > 0xe) {
+        ((unsigned char *)obj)[0x1e] = 2;
+        ((unsigned char *)obj)[0x1f] |= 2;
+        *(unsigned short *)((char *)obj + 0x1c) = (((width + 3) >> 2) * ((height + 3) >> 2)) & 0x7fff;
+        return;
+    }
+    switch (fmt) {
+    case 0: ((unsigned char *)obj)[0x1e]=1; rowShift=3; colShift=3; break;
+    case 1: ((unsigned char *)obj)[0x1e]=2; rowShift=3; colShift=2; break;
+    case 2: ((unsigned char *)obj)[0x1e]=2; rowShift=2; colShift=2; break;
+    case 3: ((unsigned char *)obj)[0x1e]=3; rowShift=2; colShift=2; break;
+    case 4: ((unsigned char *)obj)[0x1e]=0; rowShift=3; colShift=3; break;
+    case 5: ((unsigned char *)obj)[0x1e]=2; rowShift=2; colShift=2; break;
+    default: rowShift=0; colShift=0; break;
+    }
+    ((unsigned char *)obj)[0x1f] |= 2;
+    *(unsigned short *)((char *)obj + 0x1c) = ((((width + (1 << rowShift)) - 1) >> rowShift) * (((height + (1 << colShift)) - 1) >> colShift)) & 0x7fff;
 }
 
 extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
@@ -876,7 +1217,7 @@ int GXGetTexObjAll(void *obj) {
 }
 
 void GXLoadTexObj(void *arg0, unsigned int arg1) {
-    unsigned int *data = __GXData;
+    unsigned int *data = *(unsigned int * volatile *)&__GXData;
     void *result;
     result = ((void *(*)(void *))data[0x518 / 4])(arg0);
     GXLoadTexObjPreLoaded(arg0, result, arg1);
@@ -898,21 +1239,21 @@ unsigned short GXGetTexObjTlut(void *arg0) {
 }
 
 void GXLoadTlut(void *arg0, int arg1) {
-    void *obj;
-    unsigned int value;
-    obj = ((void *(*)(int))__GXData[0x51C / 4])(arg1);
+    unsigned int *src = (unsigned int *)arg0;
+    unsigned int *dst = ((unsigned int *(*)(int))__GXData[0x51C / 4])(arg1);
+    unsigned int v;
     __GXFlushTextureState();
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *(unsigned int *)((char *)arg0 + 4);
+    *(volatile unsigned int *)0xCC008000 = src[1];
     *(volatile unsigned char *)0xCC008000 = 0x61;
-    *(volatile unsigned int *)0xCC008000 = *(unsigned int *)obj;
+    *(volatile unsigned int *)0xCC008000 = dst[0];
     __GXFlushTextureState();
-    value = *(unsigned int *)arg0;
-    value = (value & 0xFFFFFC00) | (*(unsigned int *)obj & 0x3FF);
-    *(unsigned int *)((char *)obj + 4) = value;
-    *(unsigned int *)((char *)obj + 8) = *(unsigned int *)((char *)arg0 + 4);
-    *(unsigned int *)((char *)obj + 0xC) = *(unsigned int *)((char *)arg0 + 8);
-    *(unsigned int *)arg0 = value;
+    v = dst[0];
+    v = src[0] | (v & 0x3FF);
+    dst[1] = v;
+    dst[2] = src[1];
+    dst[3] = src[2];
+    src[0] = v;
 }
 
 void GXInitTexCacheRegion(void *obj, signed char arg1, unsigned int arg2, int arg3, unsigned int arg4, int arg5) {
@@ -1232,6 +1573,46 @@ void GXSetZTexture(s32 op, s32 format, s32 bias) {
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = value;
     *(volatile unsigned short *)((char *)__GXData + 2) = 0;
+}
+
+extern unsigned int lbl_80303C80[];
+void GXSetTevOrder(unsigned int stage, int texCoord, int texMap, int color) {
+    unsigned int *data = __GXData;
+    unsigned int *bp = (unsigned int *)((char *)data + 0x150 + ((stage + (stage >> 31)) & ~1) * 4);
+    unsigned int tev;
+    int coord = texCoord;
+    unsigned int map = texMap;
+    unsigned int colorSel = color;
+    data[0x5a4 / 4 + stage] = texMap;
+    if (coord >= 8) {
+        coord = 0;
+        data[0x5e8 / 4] &= ~(1 << stage);
+    } else {
+        data[0x5e8 / 4] |= 1 << stage;
+    }
+    if (stage & 1) {
+        tev = bp[0] & ~0x7000;
+        tev |= (map & 0xFF) << 12;
+        tev = (tev & ~0x38000) | (coord << 15);
+        bp[0] = tev;
+        tev = (tev & ~0x380000) | ((colorSel == 0xFF ? 7 : lbl_80303C80[colorSel]) << 19);
+        bp[0] = tev;
+        tev = (tev & ~0x40000) | ((map != 0xFF && !(map & 0x100)) << 18);
+        bp[0] = tev;
+    } else {
+        tev = bp[0] & ~7;
+        tev |= (map & 0xFF);
+        tev = (tev & ~0x38) | (coord << 3);
+        bp[0] = tev;
+        tev = (tev & ~0x380) | ((colorSel == 0xFF ? 7 : lbl_80303C80[colorSel]) << 7);
+        bp[0] = tev;
+        tev = (tev & ~0x40) | ((map != 0xFF && !(map & 0x100)) << 6);
+        bp[0] = tev;
+    }
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = bp[0];
+    *(volatile unsigned short *)((char *)data + 2) = 0;
+    data[0x5fc / 4] |= 1;
 }
 
 void GXSetNumTevStages(s32 count) {
