@@ -5873,3 +5873,4 @@ extern char lbl_80315700[];
 extern void *jumptable_803159A0[];
 extern u8 lbl_80559060[];
 extern u8 lbl_803151D8[];
+extern char lbl_80319EC0[];
