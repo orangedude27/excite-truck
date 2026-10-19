@@ -310,7 +310,7 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv_80101300(void) 
     if (*(int*)lbl_8041D4C4 != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327930, 0x24D, lbl_80327AC4);
 }
 
-void fn_801013B0(void) {
+extern "C" void fn_801013B0(void) {
     return;
 }
 
