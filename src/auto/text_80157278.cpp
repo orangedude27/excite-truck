@@ -467,6 +467,48 @@ extern "C" void* fn_80158218(void* arg0, s32 arg1) {
  return arg0;
 }
 
+extern "C" void *fn_802076A0(void *, s32, s32, s32);
+extern "C" f32 lbl_80561778;
+void *fn_80158374(void *arg0, void *arg1, void *arg2, s32 arg3) {
+    s32 ok;
+    void *first;
+    void *second;
+    ok = fn_80157278(arg3);
+    *(void **)((u8 *)arg0 + 4) = 0;
+    *(void **)arg0 = 0;
+    if (ok == 0) {
+        first = fn_802076A0(arg1, 1, arg3, 0);
+        *(void **)arg0 = first;
+        if (first == 0)
+            goto done;
+        if (lbl_80561778 != *(f32 *)((u8 *)first + 4)) {
+            *((u8 *)first + 0x4e) = 1;
+            *(f32 *)((u8 *)first + 4) = lbl_80561778;
+        }
+        first = *(void **)arg0;
+        if (lbl_80561750 != *(f32 *)((u8 *)first + 8)) {
+            *((u8 *)first + 0x4d) = 1;
+            *(f32 *)((u8 *)first + 8) = lbl_80561750;
+        }
+        second = fn_802076A0(arg2, 1, arg3, 0);
+        *(void **)((u8 *)arg0 + 4) = second;
+        if (second == 0)
+            goto done;
+        if (lbl_80561778 != *(f32 *)((u8 *)second + 4)) {
+            *((u8 *)second + 0x4e) = 1;
+            *(f32 *)((u8 *)second + 4) = lbl_80561778;
+        }
+        second = *(void **)((u8 *)arg0 + 4);
+        if (lbl_80561750 != *(f32 *)((u8 *)second + 8)) {
+            *((u8 *)second + 0x4d) = 1;
+            *(f32 *)((u8 *)second + 8) = lbl_80561750;
+        }
+    }
+done:
+    *(s32 *)((u8 *)arg0 + 8) = 1;
+    return arg0;
+}
+
 extern "C" void fn_801584A8(void* arg0) {
     *(u32*)((u8*)arg0) = (u32)((u8*)arg0 + 0xC);
     *(u32*)((u8*)arg0 + 8) = 0x10;
@@ -607,22 +649,42 @@ extern "C" void fn_80158824(Unk801577F0* arg0) {
     s32 i = 0;
     s32 offset = 0;
     s32 value = 0;
-    for (; i < arg0->mCount; ++i) {
-        u8* base = arg0->mData;
-        *(s32*)(base + offset) = value;
-        s32* p = (s32*)arg0->mData;
-        *(s32*)((u8*)p + offset + 4) = value;
-        p = (s32*)arg0->mData;
-        *(s32*)((u8*)p + offset + 8) = value;
-        p = (s32*)arg0->mData;
-        *(f32*)((u8*)p + offset + 0xC) = zero;
+    do {
+        *(s32*)(arg0->mData + offset) = value;
+        *(s32*)(arg0->mData + offset + 4) = value;
+        *(s32*)(arg0->mData + offset + 8) = value;
+        *(f32*)(arg0->mData + offset + 0xC) = zero;
         offset += 0x38;
-    }
+        i++;
+    } while (i < arg0->mCount);
+    zero = lbl_80561754;
     *(f32*)((u8*)arg0 + 0x25C) = zero;
     *(f32*)((u8*)arg0 + 0x260) = zero;
     *(f32*)((u8*)arg0 + 0x258) = zero;
     *(f32*)((u8*)arg0 + 0x264) = zero;
     arg0->v31();
+}
+
+extern "C" f32 lbl_8056177C;
+extern "C" s32 fn_80141F7C(f32);
+void fn_8015889C(void* arg0) {
+    Fn8015889C* self = (Fn8015889C*)arg0;
+    f32 sp8;
+    if (*(f32*)((u8*)arg0 + 0x25c) > lbl_80561754) {
+        sp8 = lbl_80561754;
+        if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c)) {
+            if (self->v23() > 0) {
+                sp8 = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
+                self->v35(&sp8);
+                self->v33();
+            }
+        }
+        if (fn_80141F7C(sp8) == 0)
+            self->v38(*(f32*)((u8*)arg0 + 0x25c));
+        *(f32*)((u8*)arg0 + 0x25c) = lbl_80561754;
+        *(f32*)((u8*)arg0 + 0x264) = lbl_80561754;
+        *(f32*)((u8*)arg0 + 0x258) += lbl_8056177C;
+    }
 }
 
 #pragma dont_inline on
@@ -745,6 +807,32 @@ extern "C" void fn_801590A8(void* arg0) {
 }
 
 extern "C" void fn_80159724(void) {
+}
+
+extern "C" void fn_80159AB4(void* arg0) {
+    class V {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17();
+        virtual f32 v20(s32); virtual void v21(); virtual void v22(); virtual s32 v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31(); virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35(f32*); virtual void v36(); virtual void v37(); virtual void v38(f32);
+    };
+    V* self = (V*)arg0;
+    volatile f32 sp8 = lbl_80561754;
+    if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c)) {
+        if (self->v23() > 0) {
+            sp8 = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
+            self->v35((f32*)&sp8); self->v33();
+        }
+    }
+    if (fn_80141F7C(sp8) == 0) self->v38(*(f32*)((u8*)arg0 + 0x25c));
+    f32 x = *(f32*)((u8*)arg0 + 0x258);
+    f32 y = lbl_8056177C;
+    f32 z = lbl_80561754;
+    *(f32*)((u8*)arg0 + 0x25c) = z;
+    *(f32*)((u8*)arg0 + 0x264) = z;
+    *(f32*)((u8*)arg0 + 0x258) = y + x;
 }
 
 extern "C" void fn_80159BB4(Unk801577F0* arg0) {
@@ -1255,7 +1343,7 @@ extern "C" s32 fn_8015D374(void* arg0) {
 extern "C" u32 fn_8015D37C(void) { return 1; }
 
 extern "C" void fn_8015D384(Unk801577F0* arg0) {
-    s32 count = *(s32*)((u8*)arg0 + 0x260);
+    s32 count = arg0->m260;
     arg0->m264 = 0;
     if (count > 0) {
         if (arg0->m258 != 0) fn_801CB6E4((void*)arg0->m258, arg0->m4);
@@ -1313,13 +1401,13 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     if (count > 0) {
         while (i < count) {
             s32 value = *(s32*)((u8*)arg0->mData + offset + 0x14);
-            if (arg1 >= value) {
-                if (value < 0) break;
+            if (arg1 < value) break;
+            if (value >= 0) {
                 offset += 0x38;
                 i++;
-            } else {
-                break;
+                continue;
             }
+            break;
         }
     }
     return i;
@@ -1401,6 +1489,38 @@ void JStudio_JAudio::TAdaptor_sound::endSound_fadeOut_(u32 arg0) {
         target->v7();
         self->m248 = 0;
     }
+}
+
+extern "C" s32 lbl_8055A058[];
+void fn_8015D8B0(void* arg0) {
+ struct Obj {
+  virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
+  virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7();
+  virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11();
+  virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15();
+  virtual s32 v16(); virtual s32 v17(); virtual s32 v18(); virtual s32 v19();
+  virtual s32 v20(); virtual s32 v21(); virtual s32 v22(); virtual s32 v23();
+  virtual s32 v24(); virtual s32 v25(); virtual s32 v26(); virtual s32 v27();
+  virtual s32 v28(); virtual s32 v29(); virtual s32 v30(); virtual s32 v31();
+  u8 pad[0x244]; void* adaptor;
+ };
+ struct Adaptor {
+  virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3();
+  virtual s32 v4(s32,s32); virtual s32 v5(); virtual s32 v6();
+  virtual s32 v7(); virtual s32 v8(s32); virtual s32 v9();
+  virtual s32 v10(s32);
+ };
+ Obj* obj=(Obj*)arg0; Adaptor* adaptor=(Adaptor*)obj->adaptor;
+ if(obj->adaptor) {
+  s32 x=obj->v25();
+  adaptor->v4((s32)&lbl_8055A058[0],x);
+  adaptor->v8(obj->v31());
+  obj->v24();
+  adaptor->v6();
+  x=obj->v19();
+  obj->v23();
+  if(obj->v23()>=x) adaptor->v10(1);
+ }
 }
 
 #pragma push
@@ -1650,4 +1770,15 @@ extern "C" s32 fn_80159708(void* arg0) {
     f32 f0 = *(f32*)((char*)arg0 + 0x25c);
     return (s32)f0;
 }
-
+class Fn8015E338Item {
+public:
+ virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
+ virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+ virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+ virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+ virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+ virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+ virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+ virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+ virtual void v32(); virtual void v33(); virtual void v34(); virtual s32 v35();
+};
