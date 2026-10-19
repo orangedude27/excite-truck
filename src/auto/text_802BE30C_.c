@@ -55,6 +55,57 @@ s32 fn_802BE378(s32 arg0) {
     return temp * temp;
 }
 
+void fn_802BE38C(void) {
+    void *buf;
+    char *name;
+    u32 size;
+    u32 length;
+    u8 flag;
+    u32 i;
+    s32 j;
+    u8 *p;
+    u32 *data;
+    u32 index;
+    u32 n;
+
+    name = lbl_8034AC68;
+    fn_8012E96C((s32)name);
+    lbl_8055FACC = 0;
+    buf = (void *)fn_8012C370((s32)name, 0x46494E46, (s32)&size, (s32)&length, 0, (s32)&flag);
+    if (buf != NULL) {
+        if (size == 2) {
+            data = (u32 *)buf;
+            if (flag != 0) {
+                p = (u8 *)buf;
+                for (i = 0; i < (length >> 2); i++) {
+                    u8 a = p[0];
+                    u8 b = p[3];
+                    u8 c = p[1];
+                    u8 d = p[2];
+                    p[0] = b;
+                    p[3] = a;
+                    p[1] = d;
+                    p[2] = c;
+                    p += 4;
+                }
+            }
+            while (data[0] != 0) {
+                index = data[0];
+                n = data[1];
+                data += 2;
+                for (j = 0; j < (s32)n; j++) {
+                    FanEntry *e = (FanEntry *)lbl_804C06E0[index] + j;
+                    e->field = (e->field & 0xFF800200) | (data[j] & 0x7FFDFF);
+                }
+                data += n;
+            }
+            lbl_8055FACC = 1;
+        } else {
+            fn_802E317C(lbl_8034AC74);
+        }
+        fn_8012C4D8(buf);
+    }
+}
 extern void *fn_8012850C(s32, void *);
 extern s32 fn_802BE378(s32);
 extern void fn_802BE364(void *);
