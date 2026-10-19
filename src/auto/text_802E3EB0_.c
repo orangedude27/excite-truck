@@ -58,7 +58,6 @@ extern unsigned int lbl_8055D1BC;
 extern char lbl_8034D180[];
 extern void DVDInit(void);
 extern int DVDClose(void *);
-extern void fn_802E30C8(const char *, ...);
 extern void fn_802E3F38(void *);
 extern unsigned int lbl_8034D0E4;
 extern unsigned int lbl_8034D130;
