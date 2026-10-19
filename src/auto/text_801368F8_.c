@@ -3,6 +3,9 @@
 
 typedef signed int s32;
 typedef float f32;
+#define F(p,o) (*(f32 *)((char *)(p)+(o)))
+#define I(p,o) (*(s32 *)((char *)(p)+(o)))
+#define B(p,o) (*(unsigned char *)((char *)(p)+(o)))
 extern s32 lbl_8055E0D4;
 extern s32 lbl_8055E0D0;
 extern s32 lbl_80559BF8;
@@ -24,6 +27,25 @@ void fn_801369EC(void *arg0) {
     *(s32 *)((char *)arg0 + 0xC) = -1;
     *(signed char *)arg0 = 0;
 }
+
+#pragma dont_inline on
+void fn_80136A18(s32 arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (*(s32 *)(arg0 + 0x10) != 0) {
+            fn_80128658();
+            *(s32 *)(arg0 + 0x10) = 0;
+        }
+        if (*(s32 *)(arg0 + 8) != 0) {
+            if (*(s32 *)(arg0 + 8) != 0)
+                fn_80128670(*(s32 *)(arg0 + 8) - 0x10);
+            *(s32 *)(arg0 + 8) = 0;
+        }
+        lbl_8055E0D0 = 0;
+        if (arg1 > 0)
+            fn_80128668((void *)arg0);
+    }
+}
+#pragma dont_inline reset
 
 void fn_80136CB8(void *arg0, s32 arg1) {
     s32 base;
@@ -146,8 +168,8 @@ void fn_8013776C(void *arg0) {
 }
 
 float fn_80137850(void *arg0) {
- int index=*(int*)((char*)arg0+0x18)* *(int*)(lbl_8055E0D0+0xC);
- int base=*(int*)(lbl_8055E0D0+0x10);
+ int index = *(int*)((char*)arg0+0x18) * *(int*)(lbl_8055E0D0+0xC);
+ int base = *(int*)(lbl_8055E0D0+0x10);
  float *p=(float*)(base+index);
  return p[0]+(*(float**)arg0)[1]*p[2];
 }
