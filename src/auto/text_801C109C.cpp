@@ -69,8 +69,7 @@ extern "C" void fn_801C1B60(int arg0) {
 extern "C" void fn_801C1B9C(void) {
 }
 
-void fn_801C1BA0(void) {
-    return;
+extern "C" void fn_801C1BA0(void) {
 }
 
 int fn_801C1BA4(int arg0, int arg1, int arg2) {
