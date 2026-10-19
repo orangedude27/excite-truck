@@ -5,7 +5,6 @@ extern void *fn_8017960C(int);
 extern double fn_8002F234(float), cos(double), sin(double);
 extern float fn_80129DC4(int,float,float);
 extern int fn_80171EF8(void *,void *);
-extern unsigned long long fn_80171FF0(void *,int,float,float);
 extern float lbl_80558DC4[];
 extern float lbl_8055E3C8,lbl_80561A38,lbl_80561A78,lbl_80561A80,lbl_80561AB4,lbl_80561ABC,lbl_80561AC8,lbl_80561AF8,lbl_80561AFC,lbl_80561B00,lbl_80561B04,lbl_80561B08,lbl_80561B0C;
 
@@ -85,19 +84,20 @@ int fn_80171EC0(void) {
 
 unsigned long long fn_80171FF0(void *arg0, int arg1, float angle, float step) {
     extern float lbl_80561A44, lbl_80561A48;
-    float offset[2];
+    double zero = lbl_80561A44;
+    float off[2];
     float pos[2];
     float rad, c, s;
     while (arg1-- > 0) {
-        offset[0] = angle;
-        offset[1] = lbl_80561A44;
-        rad = fn_80129DC4(3, lbl_80561A44, lbl_80561A48);
+        off[0] = angle;
+        off[1] = zero;
+        rad = fn_80129DC4(3, zero, lbl_80561A48);
         c = (float)cos(rad);
         s = (float)sin(rad);
-        offset[0] = angle * c - offset[1] * s;
-        offset[1] = angle * s + offset[1] * c;
-        pos[0] = *(float *)arg0 + offset[0];
-        pos[1] = *((float *)arg0 + 1) + offset[1];
+        off[1] = off[0] * s + (float)zero * c;
+        off[0] = (float)angle * c - (float)zero * s;
+        pos[1] = *((float *)arg0 + 1) + off[1];
+        pos[0] = *(float *)arg0 + off[0];
         if (fn_80171E3C(pos) != 0)
             break;
         angle += step;
