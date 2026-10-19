@@ -750,7 +750,7 @@ extern "C" s32 fn_800A900C(void *arg0, s32 arg1, s32 arg2) {
 }
 
 extern "C" s32 fn_800A861C(void *, void *, s32, u32);
-extern "C" s32 VFiPFCACHE_SearchForPage(s32, s32);
+extern "C" s32 VFiPFCACHE_SearchForPage(s32, s32, s32);
 extern "C" s32 fn_800A8AD4(s32);
 extern "C" s32 VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(void *arg0, s32 arg1, u32 arg2) {
     s32 temp_r3;
@@ -770,7 +770,7 @@ extern "C" s32 VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098(void *arg0,
 }
 
 extern "C" void fn_800A90F8(void *arg0, s32 arg1) {
-    VFiPFCACHE_SearchForPage(*(s32 *)((u8 *)arg0 + 0x1634), arg1);
+    VFiPFCACHE_SearchForPage((s32)arg0, *(s32 *)((u8 *)arg0 + 0x1634), arg1);
 }
 
 extern "C" s32 fn_800A9104(void *arg0) {
