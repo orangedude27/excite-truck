@@ -12,6 +12,8 @@ extern "C" void fn_800B0748(void);
 extern "C" void fn_800B78EC(void);
 extern "C" void fn_800B78F0(void);
 extern "C" void fn_800B7EAC(void);
+extern "C" void fn_800CF27C(void);
+extern "C" void fn_800CF284(void);
   #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
 extern "C" void VFipf_memcpy(void *, const void *, u32);
 extern "C" s32 NANDGetLengthAsync(void *, u32 *);
