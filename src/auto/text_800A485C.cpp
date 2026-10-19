@@ -5501,6 +5501,8 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *file, s32 line, const c
 }
 
 void nw4hbm::db::Warning(const char* file, int line, const char* msg, ...) {
+    const char* str = lbl_8031E9D0;
+
     if (lbl_8055DDC0 == 0) {
         OSCreateAlarm(&lbl_80407790);
         lbl_8055DDC0 = 1;
@@ -5511,37 +5513,40 @@ void nw4hbm::db::Warning(const char* file, int line, const char* msg, ...) {
 
     void* console = lbl_8055DDBC;
     if (console != NULL) {
-        Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(console, lbl_8031E9D0 + 0xA0, file, line);
+        Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(console, str + 0xA0, file, line);
         Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct((void*)3, lbl_8055DDBC, msg, vlist);
         Console_Printf__Q26nw4hbm2dbFPQ46nw4hbm2db6detail11ConsoleHeadPCce(lbl_8055DDBC, lbl_805597DC);
 
-        void* r29 = lbl_8055DDBC;
-        if (r29 == NULL) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E9D0 + 0x70, 0x1B2, lbl_8031E9D0 + 0x7C);
+        msg = (const char*)lbl_8055DDBC;
+        if (msg == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce(str + 0x70, 0x1B2, str + 0x7C);
         }
-        s32 lines = Console_GetTotalLines((detail::ConsoleHead*)r29) - *(u16*)((u8*)r29 + 0x20);
+        u16 viewLines = *(u16*)((u8*)msg + 0x20);
+        s32 lines = Console_GetTotalLines((detail::ConsoleHead*)msg) - viewLines;
         if (lines < 0) {
             lines = 0;
         }
-        if (r29 == NULL) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E9D0 + 0x70, 0x22D, lbl_8031E9D0 + 0x7C);
+        if (msg == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce(str + 0x70, 0x22D, str + 0x7C);
         }
-        *(s32*)((u8*)r29 + 0x18) = lines;
+        *(s32*)((u8*)msg + 0x18) = lines;
 
-        r29 = lbl_8055DDBC;
-        if (r29 == NULL) {
-            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E9D0 + 0x70, 0x1F1, lbl_8031E9D0 + 0x7C);
+        msg = (const char*)lbl_8055DDBC;
+        if (msg == NULL) {
+            Panic__Q26nw4hbm2dbFPCciPCce(str + 0x70, 0x1F1, str + 0x7C);
         }
-        *(u8*)((u8*)r29 + 0x22) = 1;
+        *(u8*)((u8*)msg + 0x22) = 1;
+        (void)lines;
     } else {
-        OSReport(lbl_8031E9D0 + 0xA0, file, line);
+        OSReport(str + 0xA0, file, line);
         __VprintfThunk(msg, vlist);
         OSReport(lbl_805597DC);
     }
 
     if (lbl_8055DDB8 != 0) {
-        OSCancelAlarm(&lbl_80407790);
-        OSSetAlarm(&lbl_80407790, (u64)lbl_8055DDB8, (OSAlarmHandler)fn_800D2480);
+        OSAlarm* alarm = &lbl_80407790;
+        OSCancelAlarm(alarm);
+        OSSetAlarm(alarm, (u64)lbl_8055DDB8, (OSAlarmHandler)fn_800D2480);
     }
 }
 
