@@ -37,13 +37,15 @@ extern "C" int fn_802B5488(void *arg0) {
     };
     return stricmp(lbl_8034A510, ((Obj *)arg0)->getName()) == 0;
 }
-#pragma cplusplus off
 extern const char lbl_8034A524[];
-int fn_802B54CC(void *arg0) {
-    const char *(*name)(void *);
-    name = *(const char *(**)(void *))(*(void ***)arg0 + 2);
-    return stricmp(lbl_8034A524, name(arg0)) == 0;
+extern "C" int fn_802B54CC(void *arg0) {
+    class Obj {
+    public:
+        virtual const char *getName();
+    };
+    return stricmp(lbl_8034A524, ((Obj *)arg0)->getName()) == 0;
 }
+#pragma cplusplus off
 
 #pragma scheduling invalid_target
 void fn_802B561C(void (*fn)(void *), void *arg0) {
