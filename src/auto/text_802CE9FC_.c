@@ -527,12 +527,14 @@ void fn_802D3100(void) {
 }
 
 extern void fn_802D307C(void);
+#pragma dont_inline on
 void* fn_802D3104(void) {
     struct { char pad[0x24]; char m; } *p;
     fn_802D307C();
     p = lbl_8055FD5C;
     return &p->m;
 }
+#pragma dont_inline off
 
 void* fn_802D312C(void) {
     return fn_802D3104();
