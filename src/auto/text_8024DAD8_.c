@@ -103,7 +103,6 @@ s32 fn_8024EC3C(void) {
     return 0;
 }
 
-extern void fn_8024739C(void);
 typedef unsigned int u32;
 extern s32 fn_80129800(s32);
 extern void fn_802E4A10(void);
