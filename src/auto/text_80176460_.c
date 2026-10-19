@@ -272,9 +272,11 @@ void fn_80176A00(s32 arg0) {
 }
 
 extern void *lbl_8055A2F0;
+#pragma dont_inline on
 void* fn_80176A1C(void) {
     return lbl_8055A2F0;
 }
+#pragma dont_inline reset
 
 void fn_80176A24(f32 arg0) {
     lbl_8055A2F4 = arg0;
