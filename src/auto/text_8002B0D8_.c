@@ -97,14 +97,14 @@ double __ieee754_acos(double x) {
         if (ix <= 0x3c600000)
             return lbl_80560610;
         z = x * x;
-        p = z * (lbl_80560618 + z * (lbl_80560620 + z * (lbl_80560628 + z * (lbl_80560630 + z * (lbl_80560638 + z * lbl_80560640)))));
-        q = lbl_80560648 + z * (lbl_80560650 + z * (lbl_80560658 + z * (lbl_80560660 + z * lbl_80560668)));
+        p = z * (lbl_80560618 + z * (lbl_80560620 + z * (lbl_80560628 + z * (lbl_80560630 + z * (lbl_80560638 + lbl_80560640 * z)))));
+        q = lbl_80560648 + z * (lbl_80560650 + z * (lbl_80560658 + z * (lbl_80560660 + lbl_80560668 * z)));
         r = p / q;
         return lbl_80560610 - (x - (lbl_80560670 - x * r));
     } else if (hx < 0) { /* x < -0.5 */
         z = (lbl_80560648 + x) * lbl_80560678;
-        p = z * (lbl_80560618 + z * (lbl_80560620 + z * (lbl_80560628 + z * (lbl_80560630 + z * (lbl_80560638 + z * lbl_80560640)))));
-        q = lbl_80560648 + z * (lbl_80560650 + z * (lbl_80560658 + z * (lbl_80560660 + z * lbl_80560668)));
+        p = z * (lbl_80560618 + z * (lbl_80560620 + z * (lbl_80560628 + z * (lbl_80560630 + z * (lbl_80560638 + lbl_80560640 * z)))));
+        q = lbl_80560648 + z * (lbl_80560650 + z * (lbl_80560658 + z * (lbl_80560660 + lbl_80560668 * z)));
         s = fn_8002F234(z);
         r = p / q;
         w = r * s - lbl_80560670;
@@ -115,8 +115,8 @@ double __ieee754_acos(double x) {
         df = s;
         *(1 + (int *)&df) = 0;
         c = (z - df * df) / (s + df);
-        p = z * (lbl_80560618 + z * (lbl_80560620 + z * (lbl_80560628 + z * (lbl_80560630 + z * (lbl_80560638 + z * lbl_80560640)))));
-        q = lbl_80560648 + z * (lbl_80560650 + z * (lbl_80560658 + z * (lbl_80560660 + z * lbl_80560668)));
+        p = z * (lbl_80560618 + z * (lbl_80560620 + z * (lbl_80560628 + z * (lbl_80560630 + z * (lbl_80560638 + lbl_80560640 * z)))));
+        q = lbl_80560648 + z * (lbl_80560650 + z * (lbl_80560658 + z * (lbl_80560660 + lbl_80560668 * z)));
         r = p / q;
         w = r * s + c;
         return 2.0 * (df + w);
@@ -666,7 +666,6 @@ extern double lbl_80560600, lbl_80560608, lbl_80560610, lbl_80560670;
 extern double lbl_80560618, lbl_80560620, lbl_80560628, lbl_80560630, lbl_80560638, lbl_80560640;
 extern double lbl_80560648, lbl_80560650, lbl_80560658, lbl_80560660, lbl_80560668;
 extern double lbl_80560678, lbl_80560680;
-extern float lbl_80558DB0;
 extern double __ieee754_sqrt(double);
 double fn_8002F234(double x) {
     __ieee754_sqrt(x);
