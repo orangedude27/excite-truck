@@ -60,6 +60,7 @@ void fn_802043B0(int *arg0) {
  *arg0 = packed | ((int)(lbl_80563178 + val * lbl_8056317C) << 24);
 }
 
+#pragma dont_inline reset
 void fn_80204460(void) {
     lbl_8055ED3C = 0;
     lbl_8055ED40 = 0;
