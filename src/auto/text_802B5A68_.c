@@ -22,7 +22,7 @@ extern void fn_802E3734(void *);
 extern float fn_801DCF48(float *, float, float);
 extern char lbl_8034A8B0[];
 extern float lbl_80564C98;
-extern s32 fn_802B6568(void *);
+extern void fn_802B6568(void *, ...);
 extern s32 fn_802B7B08(void);
 
 extern char lbl_8055FA31;
