@@ -134,8 +134,13 @@ s32 fn_80149234(void *arg0) {
 extern s32 fn_8014D918(void*, s32, s32);
 extern s32 lbl_8055E240;
 extern f32 lbl_80561714, lbl_80561718;
+typedef struct {
+    void *pad[4];
+    s32 (*fn)(void **);
+} Vt80149274;
 s32 fn_80149274(void **arg0) {
-    return (*(s32 (**)(void *))((char *)*arg0 + 0x10))(arg0) & 0xFF7F7F7F;
+    Vt80149274 *vt = (Vt80149274 *)*arg0;
+    return vt->fn(arg0) & 0xFF7F7F7F;
 }
 
 void fn_801492AC(void *arg0, f32 *arg1, s32 arg2) {
