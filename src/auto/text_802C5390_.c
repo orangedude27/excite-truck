@@ -181,13 +181,10 @@ extern int lbl_8034B1F0;
 #pragma scheduling off
 void fn_802C5C40(int *arg0, int arg1, int arg2) {
     int temp_r30 = *arg0;
-    int result = fn_802CAC28((void *)((char *)&lbl_8034B1F0), 0);
-    int index = arg1 * 4;
-    int *entry = (int *)((char *)arg2 + index + 0x14);
-    int n = *(s16 *)(*(int *)entry + 6);
-    int value = n - 1;
-    int *dst = (int *)((char *)arg0 + index + 0x14);
-    *dst = (int)fn_802C5A60(result, temp_r30, (u16)value);
+    int result = fn_802CAC28(&lbl_8034B1F0, 0);
+    *(int *)((char *)arg0 + arg1 * 4 + 0x14) =
+        (int)fn_802C5A60(result, temp_r30,
+            (u16)(*(s16 *)(*(int *)((char *)arg2 + arg1 * 4 + 0x14) + 6) - 1));
 }
 #pragma pop
 s32 fn_802C5EB8(void *, u32);
@@ -204,7 +201,7 @@ s32 fn_802C5EB8(void *arg0, u32 arg1) {
     s32 count = *(s32 *)((char *)arg0 + 0x10);
     u32 *result = NULL;
     s32 i;
-    for (i = 0; i < count; i++) {
+    for (i = 0; count > i; i++) {
         u32 *entry = *(u32 **)(*(char **)((char *)arg0 + 0x14) + i * 4);
         if (*entry == arg1) {
             result = entry;
@@ -299,7 +296,9 @@ void fn_802C6C34(void) { fn_802C53A8(); }
 #pragma push
 #pragma small_data off
 #pragma pop
-void fn_802C6FA8(void) { fn_802C5DF0((int *)fn_802D6C48); }
+void fn_802C6FA8(void *arg0) {
+    ((void (*)(void *, void *))fn_802C5DF0)(arg0, fn_802D6C48);
+}
 
 void fn_802C6FC0(void *arg0, int arg1, int arg2) {
     if (fn_802C90E0() == 0) {
