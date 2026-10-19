@@ -57,14 +57,15 @@ extern s32 fn_801912B4(void);
 extern s32 fn_8018FD88(s32, s32);
 extern s32 fn_801A520C(s32);
 void fn_8018FB18(void) {
+    s32 value;
     u32 *table = (u32 *)__AXFXGetLfoSinTable_801769CC();
     s32 mode = ((s32 (*)(void))(*(void ***)fn_801B83A0())[0xEC / 4])();
-    s32 value = mode;
+    value = mode;
     lbl_8055E522 = (table[1] >> 8) & 1;
-    if (table[1] == 0x18000304) lbl_8055E522 = 0;
+    if ((table[1] - 0x18000000) == 0x304) lbl_8055E522 = 0;
     if (mode == 0) {
         if (table[1] & 0x100) value = fn_80134E90();
-        else if (table[1] == 0x18000201) value = fn_80134EC8();
+        else if ((table[1] - 0x18000000) == 0x201) value = fn_80134EC8();
         else value = fn_80135078();
     }
     {
@@ -138,14 +139,10 @@ int fn_8018FF84(int arg0, int arg1) {
 }
 
 void fn_80190184(void *arg0, void *arg1) {
-    void **temp_r3;
-    void **temp_r3_2;
     *(void **)((char *)arg0 + 0x20) = arg1;
     *(int *)((char *)arg0 + 0x1c) = *(int *)((char *)arg1 + 0x1ec);
-    temp_r3 = *(void ***)((char *)arg0 + 8);
-    ((void (*)(void *))(*(void ***)*temp_r3 + 4))(temp_r3);
-    temp_r3_2 = *(void ***)((char *)arg0 + 0xc);
-    ((void (*)(void *, void *))(*(void ***)*temp_r3_2 + 4))(temp_r3_2, arg1);
+    ((void (*)(void *))(*(void ***)(*(void **)((char *)arg0 + 8)))[4])(*(void **)((char *)arg0 + 8));
+    ((void (*)(void *, void *))(*(void ***)(*(void **)((char *)arg0 + 0xc)))[4])(*(void **)((char *)arg0 + 0xc), arg1);
 }
 
 int fn_801901F0(void *arg0) {
@@ -205,7 +202,7 @@ void fn_80190360(int arg0) {
 }
 
 int fn_80190368(int arg0) {
-    return (arg0 != 1) && (arg0 == 0);
+    return (arg0 == 1) || (arg0 == 0);
 }
 
 BOOL fn_80190B60(void *arg0) {
@@ -372,7 +369,7 @@ void fn_80191064(void *arg0) {
 }
 
 void fn_80191084(void *arg0, void *arg1) {
-    void *old = *(void **)((char *)arg0 + 0x10);
+    void *volatile old = *(void **)((char *)arg0 + 0x10);
     if (arg1 != old) {
         if (old != 0) {
             ((void (**)(void *))*(void **)old)[10](old);
@@ -431,10 +428,11 @@ void fn_801914F8(void *arg0) {
 
 void fn_8019150C(void *arg0, int arg1) {
     void *obj = *(void **)((char *)arg0 + 4);
-    void *state = *(void **)((char *)arg0 + 8);
-    ((void (*)(void *))(*(void ***)obj)[9])(obj);
+    void *state;
+    ((void (**)(void))(*(void ***)obj))[9]();
+    state = *(void **)((char *)arg0 + 8);
     *(unsigned char *)((char *)state + 7) =
-        (*(unsigned char *)((char *)state + 7) & 0x1f) | ((arg1 + 1) << 5);
+        (unsigned char)((*(unsigned char *)((char *)state + 7) & ~0xe0) | (((arg1 + 1) << 5) & 0xe0));
 }
 
 void fn_80191568(void *arg0) {
@@ -448,13 +446,16 @@ unsigned char fn_8019157C(void *arg0) {
     return *((unsigned char *)arg0 + 0x14);
 }
 
+extern int fn_8018AE24(void *, int);
 void fn_80191584(void *arg0) {
+    u8 *p;
     void *obj = *(void **)((char *)arg0 + 0x34);
-    *(unsigned char *)((char *)obj + 0x2680) = 0;
+    p = (u8 *)((char *)obj + 0x2680);
+    *p = 0;
     fn_8018AE24(*(void **)((char *)arg0 + 0x34), 0);
-    *(unsigned char *)((char *)*(void **)((char *)arg0 + 0x34) + 0x260e) = 0;
+    *(u8 *)((char *)*(void **)((char *)arg0 + 0x34) + 0x260e) = 0;
     ((void (**)(void *, int))(*(void **)*(void **)((char *)arg0 + 0x38)))[30](*(void **)((char *)arg0 + 0x38), 0);
-    *(unsigned char *)((char *)*(void **)((char *)arg0 + 0x34) + 0x260c) = 0;
+    *(u8 *)((char *)*(void **)((char *)arg0 + 0x34) + 0x260c) = 0;
     *(int *)((char *)arg0 + 8) = -1;
 }
 
@@ -527,6 +528,55 @@ void fn_80191860(void *arg0, void *arg1) {
     obj = *(void **)((char *)arg0 + 0x38);
     ((void (**)(void *, int))(*(void ***)obj))[9](obj, fn_8018B06C(*(void **)((char *)arg0 + 0x34)));
     ((void (**)(void *, u32 *))(*(void ***)saved1))[2](saved1, sp);
+}
+
+extern float lbl_805620C4, lbl_805620C8, lbl_805620CC;
+extern float PSVECDotProduct(void *, void *);
+void fn_80191928(void *arg0) {
+    int state = *(int *)((char *)arg0 + 0x30);
+    int result;
+    int hit;
+    float speed;
+    float dot;
+    void *obj;
+    void **vtable;
+    if (state == 0) return;
+    obj = *(void **)((char *)arg0 + 0x34);
+    if (*(float *)((char *)obj + 0x2618) > lbl_80562090) {
+        *(int *)((char *)arg0 + 0x30) = 4;
+        return;
+    }
+    obj = *(void **)((char *)arg0 + 0x38);
+    vtable = *(void ***)obj;
+    speed = ((float (*)(void *))vtable[5])(obj);
+    vtable = *(void ***)obj;
+    result = ((int (*)(void *))vtable[11])(obj);
+    hit = speed < 0.0f;
+    dot = PSVECDotProduct((char *)*(void **)((char *)arg0 + 0x34) + 0x54,
+                          (char *)*(void **)((char *)arg0 + 0x34) + 0x118);
+    state = *(int *)((char *)arg0 + 0x30);
+    if (state == 4) {
+        hit = hit && dot < lbl_805620C4;
+    } else {
+        hit = hit && dot < lbl_805620C8;
+    }
+    if (hit) {
+        if (result == 0)
+            *(int *)((char *)arg0 + 0x30) = 4;
+        return;
+    }
+    if (state == 4) {
+        *(int *)((char *)arg0 + 0x30) = 5;
+        return;
+    }
+    if (state >= 5) {
+        state++;
+        *(int *)((char *)arg0 + 0x30) = state;
+        if (state - 5 == 0x1D)
+            *(int *)((char *)arg0 + 0x30) = 3;
+        if (dot < lbl_805620CC)
+            *(int *)((char *)arg0 + 0x30) = 3;
+    }
 }
 
 s32 fn_80191A98(void *arg0) {
