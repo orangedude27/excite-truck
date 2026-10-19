@@ -630,32 +630,4 @@ void fn_802B8C98(void) {
 struct Texture802B { s32 width; s32 height; u32 *pixels; };
 struct Entry802B { char name[0x20]; s32 width; s32 height; char pixels[1]; };
 struct Entries802B { s32 pad; s32 count; struct Entry802B *entries; };
-typedef struct UIObj UIObj;
-typedef struct UIObjVtable {
-    void *m0;
-    void *m1;
-    void *m2;
-    void *(*m3)(UIObj *, const char *);
-    void *m4;
-    void *(*m5)(UIObj *, const char *);
-} UIObjVtable;
-struct UIObj {
-    UIObjVtable *vtable;
-};
-
-typedef struct UIThing {
-    void *unk0;
-    s32 unk4;
-    f32 unk8;
-    s32 unkc;
-    f32 unk10;
-    s32 unk14;
-    s32 unk18;
-    s32 unk1c;
-} UIThing;
-
-struct EntryList {
-    void *ptr;
-    s32 count;
-};
 
