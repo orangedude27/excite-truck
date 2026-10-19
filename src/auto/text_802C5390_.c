@@ -300,6 +300,11 @@ void fn_802C6FA8(void *arg0) {
     ((void (*)(void *, void *))fn_802C5DF0)(arg0, fn_802D6C48);
 }
 
+extern void fn_802D6C44(void);
+void fn_802C6FB4(void *arg0) {
+    ((void (*)(void *, void *))fn_802C5DF0)(arg0, fn_802D6C44);
+}
+
 void fn_802C6FC0(void *arg0, int arg1, int arg2) {
     if (fn_802C90E0() == 0) {
         ((int (*)(const char *, ...))fn_802E30C8)(lbl_8034B3DC, arg0);
