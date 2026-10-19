@@ -28,6 +28,13 @@ void fn_8020A5F8(f32 arg0) {
     lbl_8055EDD8 = arg0;
 }
 
+#pragma scheduling invalid_target
+void fn_8020A600(void) {
+    fn_802E30C8(lbl_8033C308);
+    lbl_8055EDDC = 1;
+}
+#pragma scheduling on
+
 s32 fn_802E2C20(void);
 extern const char lbl_8033C318[];
 extern s32 lbl_8055EDE4;
