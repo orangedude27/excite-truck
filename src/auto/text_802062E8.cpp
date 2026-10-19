@@ -102,8 +102,7 @@ extern "C" void fn_8020646C(long arg0, long arg1) {
     lbl_804891E8[arg0] = arg1;
 }
 
-void fn_80206480(void) {
-    return;
+extern "C" void fn_80206480(void) {
 }
 
 extern "C" void fn_80208D70(void);
