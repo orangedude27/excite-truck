@@ -1,6 +1,23 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern "C" {
+void GXInitLightAttnA_80144B44(void *, float, float, float);
+void fn_8001BA68(float *);
+float fn_801429D0(float, float);
+void fn_80144CD0(float *, float *, int);
+void fn_80144D64(int *, int *);
+void fn_80144DAC(void *, float *);
+float fn_8017F70C(float);
+void fn_801BFD34(int *, float *, int);
+void fn_801C0124(int, float *, float);
+float fn_801C0E44(float *);
+void fn_801C0E60(float *, float *, int *);
+void fn_801C2B9C(float *, float *, float *, float);
+extern float lbl_80562900, lbl_80562904, lbl_8056290C;
+extern float lbl_80562934, lbl_80562938, lbl_8056293C, lbl_80562940, lbl_80562944;
+}
+
 extern void fn_801C1218(void);
 extern void fn_801C1364(int);
 extern "C" int fn_801284F8(int, int *);
