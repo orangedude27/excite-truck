@@ -285,7 +285,10 @@ extern void *lbl_804349A0[];
 extern int lbl_8055E518;
 int fn_801B665C();
 extern float lbl_80562080, lbl_8056208C, lbl_80562090, lbl_805620AC;
-int fn_80190D38(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC))); }
+int fn_80190D38(float a, float b, float c) {
+    float y = clampf((a - b) / (c - b), lbl_80562090, lbl_8056208C);
+    return (int)(lbl_80562080 + (lbl_8056208C + (y * lbl_805620AC)));
+}
 
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
 
