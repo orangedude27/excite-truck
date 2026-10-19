@@ -156,7 +156,7 @@ void fn_802B2504(int *dst, int count) {
     }
 }
 #pragma pop
-int fn_802B28BC(void *, int);
+void fn_802B28BC(int *, int);
 void *memset(void *, int, unsigned int);
 void fn_802B257C(void *arg0) {
     int count, i, total, index, *items, *item, *entry;
