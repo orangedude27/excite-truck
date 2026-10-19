@@ -263,7 +263,7 @@ void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
 
 extern float fn_80287BC8(float, float);
 extern void fn_8028E590(int, float *, float *, float);
-extern int fn_8029DFE0(float *, float, float);
+extern int fn_8029DFE0();
 extern float lbl_80564628;
 extern float lbl_80564634;
 extern float lbl_80564658;
@@ -353,29 +353,25 @@ int fn_8029EAE8(void *arg0) {
 }
 
 int fn_8029EB54(void *arg0, void *arg1) {
-    float *a = (float *)arg0;
-    float *b = (float *)arg1;
-    float lo, hi, d;
-    int result = 0;
-    int matched = 0;
-    lo = a[0];
-    if (lo > a[9]) lo = a[9];
-    hi = a[0];
-    if (hi < a[9]) hi = a[9];
-    d = b[0];
-    if (d >= lo - lbl_80558DC4 && d <= hi + lbl_80558DC4)
-        matched = 1;
-    if (matched) {
-        lo = a[2];
-        if (lo > a[11]) lo = a[11];
-        hi = a[2];
-        if (hi < a[11]) hi = a[11];
-        d = b[2];
-        if (d >= lo - lbl_80558DC4 && d <= hi + lbl_80558DC4)
-            matched = 1;
+    float *a=(float *)arg0, *b=(float *)arg1;
+    float minX, maxX, minY, maxY, point;
+    int result=0;
+    int inside=0;
+    minX=a[9];
+    if (a[0]>minX) minX=a[0];
+    maxX=a[9];
+    if (a[0]<maxX) maxX=a[0];
+    point=b[0];
+    if (point>=minX-lbl_80558DC4 && point<=maxX+lbl_80558DC4) inside=1;
+    if (inside) {
+        minY=a[11];
+        if (a[2]>minY) minY=a[2];
+        maxY=a[11];
+        if (a[2]<maxY) maxY=a[2];
+        point=b[2];
+        if (point>=minY-lbl_80558DC4 && point<=maxY+lbl_80558DC4) inside=1;
     }
-    if (matched && b[1] < a[1] - lbl_80564634)
-        result = 1;
+    if (inside && b[1]<a[1]-lbl_80564634) result=1;
     return result;
 }
 
