@@ -493,6 +493,76 @@ extern "C" void *fn_80219A28(void *arg0, void *arg1, s32 arg2, s32 arg3) {
         *(s32 *)((u8 *)arg1 + 0xA4) != 0);
     return arg0;
 }
+
+extern "C" s32 fn_80232B70(s32);
+extern "C" f32 fn_8023293C(s32, s32, f32);
+extern "C" s32 fn_8023512C(s32);
+extern char lbl_8033D8B8[];
+#pragma push
+#pragma ppc_psq_save off
+extern "C" void fn_80219AB4(void *arg0, s32 type, s32 name, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    u8 *obj = (u8 *)arg0;
+    char *dst = (char *)obj + 0x25C;
+    const char *src = (const char *)name;
+    s32 count = 32;
+    *(s32 *)(obj + 0x24C) = arg4;
+    *(s32 *)(obj + 0x258) = name;
+    *(s32 *)(obj + 0x254) = arg5;
+    *(s32 *)(obj + 0x250) = arg3;
+    *(s32 *)(obj + 0x244) = type;
+    while ((*dst++ = *src++) != 0) {
+        if (--count <= 0) { dst[-1] = 0; break; }
+    }
+    *(u8 *)(obj + 0x280) = arg6;
+    *(s32 *)(obj + 0x248) = 0;
+    *(f32 *)(obj + 0x27C) = lbl_805634A4;
+    s32 resource = 0;
+    if (type != 6 && type != 3) resource = arg4;
+    switch (type) {
+    case 4:
+        if (resource) {
+            *(s32 *)(obj+0x248) = fn_80232578(resource);
+            s32 n = fn_80232B70(*(s32 *)(obj+0x248));
+            s32 m = n < 1 ? 1 : n;
+            f32 a = (f32)((VfObj *)obj)->vf28() / (f32)m;
+            f32 b = fn_8023293C(*(s32 *)(obj+0x248),name,lbl_805634A4);
+            b = b > lbl_805634A4 ? b : lbl_805634A4;
+            f32 c = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / b;
+            *(f32 *)(obj+0x27C) = a < c ? a : c;
+        }
+        break;
+    case 2:
+        if (resource) {
+            *(s32 *)(obj+0x248) = fn_80232578(resource);
+            s32 n = fn_80232B70(*(s32 *)(obj+0x248));
+            f32 a = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / (f32)(n < 1 ? 1 : n);
+            f32 b = fn_8023293C(*(s32 *)(obj+0x248),name,lbl_805634A4);
+            b = b > lbl_805634A4 ? b : lbl_805634A4;
+            f32 c = (f32)((VfObj *)obj)->vf28() / b;
+            *(f32 *)(obj+0x27C) = a < c ? a : c;
+        }
+        break;
+    case 9:
+        *(s32 *)(obj+0x248) = fn_8023512C(name);
+        break;
+    case 3: case 6: case 8:
+        *(s32 *)(obj+0x248) = fn_8023512C(name);
+        if(arg4) fn_80219440(obj,0,(void *)arg4,4);
+        break;
+    case 5:
+        if (resource) {
+            *(s32 *)(obj+0x248) = fn_80232578(resource);
+            s32 n = fn_80232B70(*(s32 *)(obj+0x248));
+            f32 a = (f32)(*(s32 *)(obj+0x10)-*(s32 *)(obj+8)) / (f32)(n < 1 ? 1 : n);
+            f32 b = fn_8023293C(*(s32 *)(obj+0x248),name,lbl_805634A4);
+            b = b > lbl_805634A4 ? b : lbl_805634A4;
+            f32 c = (f32)((VfObj *)obj)->vf28() / b;
+            *(f32 *)(obj+0x27C) = a < c ? a : c;
+        }
+        break;
+    default: fn_802E317C(lbl_8033D8B8); break;
+    }
+}
 #pragma pop
 extern "C" void fn_80219AB4(void *, s32, s32, s32, s32, s32, s32);
 extern "C" u8 lbl_8033F3B0[];
@@ -969,6 +1039,24 @@ extern "C" void fn_8021C9D8(void *arg0) {
         ((void (**)(void *))(*(void ***)((u8 *)arg0 + 0x254)))[5](*(void **)((u8 *)arg0 + 0x254));
     else
         ((void (**)(void *))(*(void ***)((u8 *)arg0 + 0x254)))[6](*(void **)((u8 *)arg0 + 0x254));
+}
+
+extern "C" int lbl_8033D924[];
+extern "C" int lbl_8033D934[];
+extern "C" void *fn_8021CA0C(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) {
+    s32 spC;
+    s32 sp8;
+    fn_80218F34(arg0, arg1 + arg3, arg2 + arg4, 0, 0, 0);
+    *(void ***)((u8 *)arg0 + 0x248) = (void **)arg5;
+    *(void ***)arg0 = (void **)lbl_8033ED44;
+    *((u8 *)arg0 + 0x244) = 0;
+    (*(void (**)(s32 *, s32 *))(*(u32 *)*(void **)arg5 + 0xC))(&spC, &sp8);
+    if (sp8 > 0) fn_80219440(arg0, 0, &spC, sp8);
+    *(s32 *)((u8 *)arg0 + 0x24C) = fn_802C5130(0, lbl_8033D924);
+    *(s32 *)((u8 *)arg0 + 0x250) = fn_802C5130(0, lbl_8033D934);
+    *(s32 *)((u8 *)arg0 + 0x254) = fn_802C51C0(0);
+    *(f32 *)((u8 *)arg0 + 0x258) = lbl_805634A0;
+    return arg0;
 }
 
 extern "C" void fn_802C519C(void *);
@@ -2873,8 +2961,9 @@ extern "C" void fn_80229640(void *arg0) {
     if (*(u8 *)((u8 *)arg0 + 0x18) == 0) return;
     if ((u32)(*(s32 *)((u8 *)arg0 + 0x25C) + 0x20000) == 0xFB96) return;
     callback = *(s32 (**)())((u8 *)arg0 + 0x258);
-    if (callback == 0) return;
-    if (callback() == 0) return;
+    if (callback != 0) {
+        if (callback() == 0) return;
+    }
     fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
 }
 
