@@ -32,6 +32,54 @@ void fn_802D7564(void) {
     }
 }
 
+int fn_802D76DC(int arg0) {
+    if (arg0 == 0x43) goto ret_one;
+    if (arg0 < 0x43) {
+        if (arg0 == 3) goto ret_one;
+        if (arg0 < 3) {
+            if (arg0 >= 2) goto ret_zero;
+            goto call_path;
+        }
+        if (arg0 < 0x42) {
+            if (arg0 >= 0x40) goto ret_one;
+            goto call_path;
+        }
+        goto ret_zero;
+    }
+    if (arg0 >= 0x4A) {
+        if (arg0 == 0x4C) goto ret_zero;
+        if (arg0 < 0x4C) goto ret_one;
+        goto call_path;
+    }
+    if (arg0 >= 0x48) goto ret_zero;
+    if (arg0 >= 0x46) goto ret_one;
+    goto ret_zero;
+ret_one:
+    return 1;
+ret_zero:
+    return 0;
+call_path:
+    fn_802E317C(lbl_8034C4B0, arg0);
+    return 1;
+}
+
+#pragma dont_inline on
+void fn_802D78D4(void *arg0, void *arg1, unsigned int arg2, unsigned int arg3) {
+    unsigned int i;
+    unsigned char *pixels = (unsigned char *)arg2;
+    unsigned short *rgb = (unsigned short *)arg0;
+    unsigned short *alpha = (unsigned short *)arg1;
+    for (i = 0; i < arg3; i++) {
+        unsigned int r = pixels[i * 4 + 0];
+        unsigned int g = pixels[i * 4 + 1];
+        unsigned int b = pixels[i * 4 + 2];
+        unsigned int a = pixels[i * 4 + 3];
+        rgb[i] = (unsigned short)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
+        alpha[i] = (unsigned short)(a << 8);
+    }
+}
+#pragma dont_inline reset
+
 void fn_802D8DA0(void) {
     fn_80128670(lbl_8055FE28);
     lbl_8055FE28 = 0;
@@ -174,7 +222,7 @@ void fn_802D9418(void) {
 extern void *lbl_8055FE28;
 extern void *lbl_8034C5B8;
 extern void *lbl_8034C4B0;
-extern void fn_8012850C(void *, void *);
+extern void *fn_8012850C(void *, void *);
 void* fn_802D94DC(void) {
     return lbl_8055FE18;
 }
