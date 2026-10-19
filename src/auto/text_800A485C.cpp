@@ -1154,6 +1154,11 @@ extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
     return result;
 }
 
+void fn_800B5CB4(void);
+void fn_800B0748(void) {
+    fn_800B5CB4();
+}
+
 extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
     void *var_r9;
     u32 temp_r8;
