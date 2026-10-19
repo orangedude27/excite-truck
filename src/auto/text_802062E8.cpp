@@ -120,6 +120,9 @@ extern "C" void fn_80206484(int arg0) {
 extern "C" void fn_802064C8(void) {
 }
 
+extern "C" void fn_802064CC(void) {
+}
+
 extern "C" void fn_802064D0(int arg0) {
     struct Callback {
         virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
