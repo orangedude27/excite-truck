@@ -271,6 +271,7 @@ void fn_802B6284(void) {
 extern s32 lbl_8034A670;
 extern s32 lbl_8034A70C;
 extern int strcmp(const char *, const char *);
+#pragma dont_inline on
 void fn_802B62A4(const char **arg) {
     s32 i = 0;
     s32 *entry = &lbl_8034A670;
@@ -325,7 +326,6 @@ extern int vsprintf(char *, const char *, va_list);
 extern int stricmp(const char *, const char *);
 extern void fn_80147230(void *, const char *, ...);
 #pragma scheduling invalid_target
-#pragma auto_inline off
 void fn_802B6568(void *arg0, const char *fmt, ...) {
     char buf[256];
     va_list args;
@@ -348,8 +348,8 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
     } else if (fn_802B640C(arg0, (s32)buf) != 0) {
         {
             char *src = *(char **)arg0;
-            char *dst = s->str2;
             s32 n = 32;
+            char *dst = s->str2;
             while ((*dst++ = *src++) != 0) {
                 if (--n <= 0) {
                     dst[-1] = 0;
@@ -359,12 +359,13 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
         }
         *(s32 *)((char *)arg0 + 0x18) = -1;
         fn_802B62A4(arg0);
+        s = (Struct804BFF80 *)&lbl_804BFF80;
         if (s->unk0[0] == 0) {
             fn_802B6358(arg0);
             {
                 char *src = *(char **)arg0;
-                char *dst = s->str1;
                 s32 n = 32;
+                char *dst = (char *)&lbl_804BFF80 + 0x14;
                 while ((*dst++ = *src++) != 0) {
                     if (--n <= 0) {
                         dst[-1] = 0;
@@ -372,11 +373,7 @@ void fn_802B6568(void *arg0, const char *fmt, ...) {
                     }
                 }
             }
-            s->unk54[0] = s->unk0[0];
-            s->unk54[1] = s->unk0[1];
-            s->unk54[2] = s->unk0[2];
-            s->unk54[3] = s->unk0[3];
-            s->unk54[4] = s->unk0[4];
+            *(Struct804BFF80_Entry *)s->unk54 = *(Struct804BFF80_Entry *)s->unk0;
         }
     }
     fn_80147230(arg0, lbl_8055CE70, buf);
