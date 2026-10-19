@@ -9,27 +9,17 @@ extern int fn_80171EF8(void *,void *);
 extern float lbl_80558DC4[];
 extern float lbl_8055E3C8,lbl_80561A38,lbl_80561A78,lbl_80561A80,lbl_80561AB4,lbl_80561ABC,lbl_80561AC8,lbl_80561AF8,lbl_80561AFC,lbl_80561B00,lbl_80561B04,lbl_80561B08,lbl_80561B0C;
 
-typedef struct {
-    void *vtbl;
-    void (*d0)(void *);
-    void (*d1)(void *);
-    void (*d2)(void *);
-    void (*d3)(void *);
-    void (*d4)(void *);
-    void (*d5)(void *);
-    void (*d6)(void *);
-    void (*d7)(void *);
-    void (*d8)(void *);
-    void (*d9)(void *);
-    void (*d10)(void *);
-    void (*d11)(void *);
-    void (*d12)(void *);
-    void (*d13)(void *);
-    void (*d14)(void *);
-    void (*d15)(void *);
-    void (*d16)(void *);
-    void (*v4C)(void *);
-} TObj4C;
+#pragma cplusplus on
+class TObj4C {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d16();
+    virtual void v4C();
+};
+#pragma cplusplus reset
 
 void fn_80171D10(int arg0) { fn_80171930(arg0 - 4); }
 
@@ -411,12 +401,11 @@ void fn_80175080(void **arg0, int arg1, int arg2, char *arg3, int arg4, int arg5
 }
 
 typedef void (*Fn_80175228)(void *);
+#pragma scheduling off
 void fn_80175228(void *arg0) {
-    register void **vt;
-    vt = *(void ***)arg0;
-    ((void (*)(void *))vt[0x13])(arg0);
+    (*(void (**)(void *))(*(char **)arg0 + 0x4C))(arg0);
 }
-
+#pragma scheduling on
 extern float lbl_80561AEC;
 float fn_801757A8(void) { return lbl_80561AEC; }
 
