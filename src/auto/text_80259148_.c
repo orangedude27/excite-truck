@@ -44,7 +44,7 @@ struct Loc_8025AA90 {
     float v44[3];
     float v50[3];
     float rot[9];
-    unsigned char info[0x58];
+    unsigned char info[0x60];
 };
 
 int fn_8025921C(void) { return 0; }
@@ -107,6 +107,82 @@ void fn_8025A83C(void *arg0) {
     p[7] = a;
     p[8] = b;
     ((void (*)(void *, void *))(*(void ***)arg0)[3])(arg0, (char *)arg0 + 4);
+}
+
+extern int fn_801298E8(void *, int);
+extern void fn_8001BA68();
+extern void fn_8025AD88(void);
+extern void fn_80144DAC(void *, void *);
+extern float fn_80144CC8(float);
+extern float fn_801429D0(float, float);
+extern void fn_8025AD8C(void *, float *, float *, float *, float);
+extern float fn_8025ADF4(float);
+extern void GXInitLightAttnA_801BFEBC(void *, float, float, float);
+extern float fn_8017F70C(float);
+extern void fn_801F3198(void *);
+extern void GXInitLightAttnA_80144B44(void *, float, float, float);
+extern void fn_801C0E4C(void *, void *, void *);
+extern float fn_8014C8B4(float, float, float, float, float);
+extern void fn_8025AD3C(float *, float *, float *, float);
+extern void fn_80015EB0(void *, float);
+extern void fn_80015B20(void *, void *, void *);
+extern void *fn_802C86DC(void);
+extern float lbl_8055F398;
+extern float lbl_80563AEC, lbl_80563B08, lbl_80563B0C, lbl_80563B10;
+extern float lbl_80498EAC[3];
+void fn_8025AA90(void *arg0, float farg0) {
+    struct Loc_8025AA90 loc;
+    unsigned int flags40, flags50;
+    float color0, color1, sum, d1;
+    if (*(int *)((char *)arg0 + 0x50) != -1) {
+        if (((unsigned char *)arg0)[0x4A] != 0) {
+            if (fn_801298E8(loc.info, 0) != 0) {
+                flags40 = *(int *)(loc.info + 0x40);
+                color0 = (flags40 & 2) ? lbl_80563AE0 : lbl_80563AE4;
+                color1 = (flags40 & 8) ? lbl_80563AEC : lbl_80563AE4;
+                sum = color1 + color0;
+                lbl_8055F398 += farg0 * (lbl_80563B08 * sum);
+                fn_8001BA68(loc.v8);
+                flags50 = *(int *)(loc.info + 0x50);
+                if (flags50 & 0x20) {
+                    fn_80144DAC(loc.v8, *(void **)(loc.info + 0x54));
+                } else {
+                    GXInitLightAttnA_801BFEBC(loc.v8,
+                        *(float *)(loc.info + 0),
+                        -fn_8025ADF4(fn_801429D0(lbl_80563AE4,
+                            (lbl_80563AE0 - fn_80144CC8(*(float *)(loc.info + 0))) + fn_80144CC8(*(float *)(loc.info + 4)))),
+                        *(float *)(loc.info + 4));
+                }
+                fn_8025AD8C((char *)arg0 + 0x84, lbl_80498EAC, lbl_80498EAC, loc.v8, farg0);
+                GXInitLightAttnA_801BFEBC((char *)arg0 + 0x90, lbl_80498EAC[0], -lbl_80498EAC[1], lbl_80498EAC[2]);
+                fn_801F3198((char *)arg0 + 0x90);
+            }
+            GXInitLightAttnA_80144B44(loc.v14, lbl_80563AE0, lbl_80563AE4, lbl_80563AE4);
+            GXInitLightAttnA_80144B44(loc.v20, lbl_80563AE4, lbl_80563AE4, lbl_80563AE0);
+            d1 = fn_8017F70C(((float (*)(void *, void *))fn_8025AD88)(loc.v14, (char *)arg0 + 0x90));
+            fn_8017F70C(((float (*)(void *, void *))fn_8025AD88)((char *)arg0 + 0x90, loc.v20));
+            if (d1 > lbl_80563B0C) {
+                fn_8001BA68(loc.v2C);
+                fn_8001BA68(loc.v38);
+                fn_8001BA68(loc.v44);
+                fn_801C0E4C(loc.v44, loc.v14, (char *)arg0 + 0x90);
+                fn_801C0E4C(loc.v2C, (char *)arg0 + 0x90, loc.v44);
+                fn_801C0E4C(loc.v38, (char *)arg0 + 0x90, loc.v20);
+                d1 = fn_8014C8B4(lbl_80563B0C, lbl_80563B10, lbl_80563AE4, lbl_80563AE0, d1);
+                fn_8025AD3C(loc.v50, loc.v2C, loc.v38, d1);
+                fn_801C0E4C((char *)arg0 + 0x9C, loc.v50, (char *)arg0 + 0x90);
+                fn_801F3198((char *)arg0 + 0x9C);
+                fn_801C0E4C((char *)arg0 + 0x84, (char *)arg0 + 0x90, (char *)arg0 + 0x9C);
+            } else {
+                fn_801C0E4C((char *)arg0 + 0x9C, loc.v14, (char *)arg0 + 0x90);
+                fn_801F3198((char *)arg0 + 0x9C);
+                fn_801C0E4C((char *)arg0 + 0x84, (char *)arg0 + 0x90, (char *)arg0 + 0x9C);
+            }
+            fn_80015EB0(loc.rot, lbl_8055F398);
+            fn_80015B20((char *)arg0 + 0x84, loc.rot, (char *)arg0 + 0x84);
+            fn_80015B20((char *)arg0 + 0x84, (char *)arg0 + 0x84, fn_802C86DC());
+        }
+    }
 }
 
 void fn_8025AD3C(float *out, float *a, float *b, float t) {
