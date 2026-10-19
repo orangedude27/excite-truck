@@ -99,10 +99,7 @@ extern s32 fn_802B5D2C(const char *, s32);
 __declspec(section ".sdata") extern const char lbl_8055CE38[];
 __declspec(section ".sdata") extern const char lbl_8055CE48[];
 __declspec(section ".sdata") extern const char lbl_8055CE50[];
-#pragma push
-#pragma small_data off
-extern s32 lbl_804BFF80;
-#pragma pop
+extern s32 lbl_804BFF80[26];
 extern void fn_802B83CC(void);
 extern s32 fn_802B8510(s32);
 extern s32 fn_80127A50(void *);
