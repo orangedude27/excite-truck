@@ -197,10 +197,10 @@ extern "C" void fn_8013D27C(void *a, void *b) {
 
 extern "C" u8 lbl_8032CAC0_vt[48];
 extern "C" void **fn_801284F8(s32, void *);
-static char lbl_80559D18[] = "zstm";
+extern "C" char lbl_80559D18[];
 #pragma dont_inline on
 extern "C" void fn_8013D288(void) {
-    void **slot = fn_801284F8(4, (void *)"zstm");
+    void **slot = fn_801284F8(4, lbl_80559D18);
     if (slot != 0) {
         *slot = (void *)lbl_8032CAC0_vt;
     }
