@@ -1222,8 +1222,8 @@ u8 bta_dm_authorize_cback(const void *bd_addr, const void *dev_class, const char
     u8 index = 1;
     u32 (*callback)(u32, void *);
 
-    fn_80070FA4(sec_event + 8, bd_addr);
-    strncpy((char *)sec_event + 0x0E, bd_name, 0x20);
+    fn_80070FA4(sec_event, bd_addr);
+    strncpy((char *)sec_event + 0x06, bd_name, 0x20);
     while (index < 0x18) {
         if (lbl_802EE9C0[index] == service_id) {
             sec_event[0xFE] = index;
@@ -1233,7 +1233,7 @@ u8 bta_dm_authorize_cback(const void *bd_addr, const void *dev_class, const char
     }
     callback = *(u32 (**)(u32, void *))(lbl_803C0C14 + 0x50);
     if (callback != 0 && index <= 0x17) {
-        callback(4, sec_event + 8);
+        callback(4, sec_event);
         return 1;
     }
     return 0xB;
