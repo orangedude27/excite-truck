@@ -542,25 +542,27 @@ extern "C" void fn_801584D4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
         entries[i]->call(arg0, arg1, arg2);
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" void fn_80158558(s32 arg0) {
     s32* state = lbl_8042FD34;
-    s32 count = state[1];
     s32* items = (s32*)state[0];
-    state[1] = count + 1;
-    *(s32*)((char*)items + (count << 2)) = arg0;
+    s32 count = state[1]++;
+    items[count] = arg0;
 }
-#pragma scheduling on
 extern "C" void fn_8015857C(u32 arg0) {
     UnkFD34* list = (UnkFD34*)lbl_8042FD34;
     s32 index;
-    s32* items = list->items;
-    for (index = 0; index < list->count; index++) {
-        if ((u32)items[index] == arg0)
-            break;
+    s32* items = (s32*)list->items;
+    s32 count = list->count;
+    if (count > 0) {
+        for (index = 0; index < count; index++) {
+            if ((u32)*items == arg0)
+                goto found;
+            items++;
+        }
     }
-    if (index == list->count)
-        index = -1;
+    index = -1;
+found:
     if (index == -1)
         return;
     if (index < 0 || index >= ((UnkFD34*)lbl_8042FD34)->count)
@@ -757,6 +759,28 @@ extern "C" void fn_80158D0C(void* arg0) {
         *(f32*)((char*)arg0 + 0x260) = lbl_80561754;
     }
 }
+
+#pragma push
+#pragma processor gekko
+#pragma dont_inline on
+extern "C" f32 fn_80158D60(void* arg0, void*) {
+    Fn8015889C* self = (Fn8015889C*)arg0;
+    f32 sp8 = lbl_80561754;
+    if (*(f32*)((u8*)arg0 + 0x25c) > *(f32*)((u8*)arg0 + 0x24c) && self->v23() > 0) {
+        sp8 = *(f32*)((u8*)arg0 + 0x250) * self->v20(self->v23());
+        self->v35(&sp8);
+        self->v33();
+    }
+    if (!((f32)__fabs(sp8) <= lbl_80558DC4[0]))
+        self->v38(*(f32*)((u8*)arg0 + 0x25c));
+    f32 x = *(f32*)((u8*)arg0 + 0x258) + lbl_8056177C;
+    f32 z = lbl_80561754;
+    *(f32*)((u8*)arg0 + 0x25c) = z;
+    *(f32*)((u8*)arg0 + 0x264) = z;
+    *(f32*)((u8*)arg0 + 0x258) = x;
+    return sp8;
+}
+#pragma pop
 
 extern "C" void fn_80158E74(void* arg0) {
     *(s32*)((u8*)arg0 + 8) = 0;
