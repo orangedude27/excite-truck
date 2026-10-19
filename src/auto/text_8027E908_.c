@@ -1155,12 +1155,11 @@ extern int lbl_80348270;
 extern void *fn_8027ED70(void);
 extern int fn_80216D28(void);
 extern int fn_802E30C8(const char *);
-void fn_80287318(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 4);
-    void** vtable = *(void***)obj;
-    ((void (*)(void*))vtable[6])(obj);
+#pragma cplusplus on
+extern "C" void fn_80287318(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v4();
 }
-
+#pragma cplusplus off
 void* fn_8028732C(void* arg0, int arg1) {
     void* cached = *(void**)((char*)arg0 + 8);
     void* obj;
