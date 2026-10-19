@@ -63,6 +63,9 @@ void fn_8029C25C(void) {
     }
 }
 
+void fn_8029C3EC(void) {
+}
+
 extern void fn_8029EF24();
 void *__dt__Q34nw4r2ef6EffectFv_8029C3F0(void *arg0, int arg1) {
     if (arg0) {
