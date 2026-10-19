@@ -14,4 +14,3 @@ void fn_801EC1A0(void) {
     lbl_8055EB90 = 0xFFFF0000;
     lbl_8055EB94 = lbl_80562E80;
 }
-#pragma cplusplus off
