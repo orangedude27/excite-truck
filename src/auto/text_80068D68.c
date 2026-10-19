@@ -5241,7 +5241,7 @@ void rfc_check_mcb_active(void *arg0) {
         return;
     }
     if (lbl_803C4828[0x414] >= 4) {
-        fn_80070954(0x90003, lbl_80319D48, 2);
+        fn_80070954(0x90003, lbl_80319EC0, 2);
     }
     *(void **)(mcb + 0x10) = arg0;
     btu_start_timer(arg0, 0xB, 2);
