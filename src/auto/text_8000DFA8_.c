@@ -263,6 +263,11 @@ void fn_8000FB44(void) {
     fn_8000F4BC();
 }
 
+extern void fn_8000F4F0(void);
+void fn_8000FBE4(void) {
+    fn_8000F4F0();
+}
+
 extern f32 lbl_805602B0;
 extern void fn_802344CC(char *, s32, s32, s32, f32, f32, f32);
 void fn_80010074(s32 arg0, s32 arg1, const char *fmt, ...) {
@@ -801,27 +806,23 @@ s32 fn_8000EE54(s32 arg0) {
     }
 }
 
+#pragma dont_inline on
 f32 fn_8000EEC8(s32 arg0, f32 arg1) {
     f32 f1;
     f32 f31;
-
     if (fn_801E85A4() == 1) {
-        if (arg0 < 0) {
-            f1 = fn_80011E54();
-        } else {
-            f1 = fn_80011DC0(arg0);
-        }
+        if (arg0 < 0) f1 = fn_80011E54();
+        else f1 = fn_80011DC0(arg0);
         return f1 - lbl_80560260;
     }
-    if (arg0 < 0) {
-        f1 = fn_80011E90();
-    } else {
+    if (arg0 < 0) f1 = fn_80011E90();
+    else {
         f31 = lbl_805602C4 * fn_80011DC0(arg0);
-        f1 = (lbl_805602C0 * fn_80011E1C(arg0)) + f31;
+        f1 = (fn_80011E1C(arg0) * lbl_805602C0) + f31;
     }
     return f1 + (lbl_8056025C * arg1);
 }
-
+#pragma dont_inline reset
 void fn_8000F0E4(void) {
     f32 f1;
 
