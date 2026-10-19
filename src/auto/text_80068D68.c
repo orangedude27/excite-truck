@@ -1214,6 +1214,31 @@ void fn_80072C38(void) {
     BTM_CancelRemoteDeviceName();
 }
 
+extern int strncpy(char *, const char *, unsigned int);
+extern u32 lbl_802EE9C0[];
+u8 bta_dm_authorize_cback(const void *bd_addr, const void *dev_class, const char *bd_name,
+                         u8 *service_name, u8 service_id, int is_originator) {
+    u8 sec_event[0x110];
+    u8 index = 1;
+    u32 (*callback)(u32, void *);
+
+    fn_80070FA4(sec_event + 8, bd_addr);
+    strncpy((char *)sec_event + 0x0E, bd_name, 0x20);
+    while (index < 0x18) {
+        if (lbl_802EE9C0[index] == service_id) {
+            sec_event[0xFE] = index;
+            break;
+        }
+        index++;
+    }
+    callback = *(u32 (**)(u32, void *))(lbl_803C0C14 + 0x50);
+    if (callback != 0 && index <= 0x17) {
+        callback(4, sec_event + 8);
+        return 1;
+    }
+    return 0xB;
+}
+
 void bta_dm_pinname_cback(u8 *arg0) {
     u8 local[0x108];
     u16 len;
@@ -1421,6 +1446,27 @@ loop:
             goto loop;
     }
     return 1;
+}
+
+BOOLEAN bta_dm_search_sm_execute(BT_HDR *p_msg) {
+    extern u8 lbl_802EEB50[];
+    extern u8 lbl_802EEA98[];
+    extern u8 lbl_803C0B98[];
+    u8 (*state_table)[3];
+    u8 action;
+    int i;
+
+    state_table = (u8 (*)[3])*(u32 *)(lbl_802EEB50 + *(u16 *)(lbl_803C0B98 + 0x18) * 4);
+    *(u16 *)(lbl_803C0B98 + 0x18) = state_table[p_msg->event & 0xFF][2];
+    for (i = 0; i < 2; i++) {
+        action = state_table[p_msg->event & 0xFF][i];
+        if (action != 0x12) {
+            ((void (*)(BT_HDR *))*(u32 *)(lbl_802EEA98 + action * 4))(p_msg);
+        } else {
+            break;
+        }
+    }
+    return TRUE;
 }
 
 void fn_800740A4(void) {
