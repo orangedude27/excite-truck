@@ -1590,6 +1590,52 @@ s32 fn_80078310(s32 arg0)
     return 0;
 }
 
+void btm_chg_all_acl_pkt_types(BOOLEAN start) {
+    u8 *cb = lbl_803C0F78;
+    u8 *p = cb + 0x34;
+    s32 i;
+    u16 mask, pkt;
+    u8 mode, sp8;
+    s8 sp14;
+    u8 spC[4];
+    if (start) {
+        for (i = 0; i < 4; i++, p += 0x11C) {
+            if (!p[0x119]) continue;
+            if (cb[0x27C0] >= 5) fn_80070954(0xD0004, lbl_80315CA0 + 0x38C, *(u16 *)p);
+            *(u16 *)(p + 4) = *(u16 *)(p + 2);
+            pkt = 0x18;
+            mode = cb[0x636];
+            if (mode >= 3) pkt |= 0x3300;
+            mask = *(u16 *)(cb + 0x654);
+            pkt &= mask;
+            pkt &= 0xCC18;
+            if (mode >= 3) pkt |= (u16)((0x18 | 0x3300 | mask) & 0x3306);
+            if (cb[0x27C0] >= 4) fn_80070954(0xD0003, lbl_80315CA0 + 0x40, pkt);
+            if (btsnd_hcic_change_conn_type(*(u16 *)p, pkt)) *(u16 *)(p + 2) = pkt;
+        }
+    } else {
+        for (i = 0; i < 4; i++, p += 0x11C) {
+            if (!p[0x119] || !*(u16 *)(p + 4) || BTM_ReadPowerMode(p + 8, &sp8)) continue;
+            if (sp8 == 2) {
+                if (cb[0x27C0] >= 5) fn_80070954(0xD0004, lbl_80315CA0 + 0x3BC, *(u16 *)p);
+                sp14 = 0;
+                BTM_SetPowerMode(0x80, p + 8, (void *)spC);
+            } else {
+                if (cb[0x27C0] >= 5) fn_8007096C(0xD0004, lbl_80315CA0 + 0x3EC, *(u16 *)p, *(u16 *)(p + 2));
+                pkt = *(u16 *)(p + 4);
+                mask = *(u16 *)(cb + 0x654);
+                mode = cb[0x636];
+                pkt &= mask;
+                pkt &= 0xCC18;
+                if (mode >= 3) pkt |= (u16)((*(u16 *)(p + 4) | mask) & 0x3306);
+                if (cb[0x27C0] >= 4) fn_80070954(0xD0003, lbl_80315CA0 + 0x40, pkt);
+                if (btsnd_hcic_change_conn_type(*(u16 *)p, pkt)) *(u16 *)(p + 2) = pkt;
+                *(u16 *)(p + 4) = 0;
+            }
+        }
+    }
+}
+
 BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
     s32 i = 0;
     u8 *entry = lbl_803C0F78 + 0x1F30;
@@ -3666,6 +3712,43 @@ void l2c_csm_term_w4_sec_comp(void *p_ccb, u16 event, BT_HDR *p_msg)
     }
 }
 
+extern char lbl_803183B0[];
+void l2c_csm_w4_l2cap_connect_rsp(void *p_ccb, u16 event, BT_HDR *p_msg)
+{
+    void *p_lcb = *(void **)((u8 *)p_ccb + 0x30);
+    void (*cb1)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_lcb + 0x18);
+    void (*cb2)(u16, u16) = *(void (**)(u16, u16))((u8 *)p_lcb + 8);
+    u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
+    if (lbl_803C4040[0] >= 4) fn_80070954(0x80003, lbl_803183B0 + 0x294, event);
+    if ((u16)(event - 3) > 0x1A) return;
+    switch (event) {
+    case 3:
+        *(u32 *)((u8 *)p_ccb + 4) = 0;
+        if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, lbl_803183B0 + 0x40, local_cid);
+        l2cu_release_ccb(p_ccb); cb1(local_cid, 0); break;
+    case 7:
+        *(u16 *)((u8 *)p_ccb + 0x16) = *(u16 *)((u8 *)p_msg + 0xE);
+        *(u32 *)((u8 *)p_ccb + 4) = 5;
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, lbl_803183B0 + 0x2BC, local_cid);
+        cb2(local_cid, 0); break;
+    case 8:
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x78);
+        if (*(u32 *)((u8 *)p_lcb + 0xC)) {
+            if (lbl_803C4040[0] >= 3) fn_8007093C(0x80002, lbl_803183B0 + 0x2F4);
+            ((void (*)(u16,u16))*(void **)((u8 *)p_lcb+0xC))(0,0);
+        } break;
+    case 9:
+        if (lbl_803C4040[0] >= 3) fn_8007096C(0x80002, lbl_803183B0 + 0x318, local_cid, *(u16 *)((u8 *)p_msg+0xA));
+        l2cu_release_ccb(p_ccb); cb1(local_cid, *(u16 *)((u8 *)p_msg+0xA)); break;
+    case 10:
+        if (lbl_803C4040[0] >= 3) fn_80070954(0x80002, lbl_803183B0 + 0x358, local_cid);
+        l2cu_release_ccb(p_ccb); cb2(local_cid, 0xEEEF); break;
+    case 17: GKI_freebuf(p_msg); break;
+    default: l2cu_release_ccb(p_ccb);
+    }
+}
+
 extern char lbl_80318B28[];
 extern char lbl_803183F0[];
 void l2c_csm_w4_l2ca_disconnect_rsp(void *p_ccb, u16 event, void *p_data)
@@ -5079,6 +5162,108 @@ UINT8 *sdpu_build_attrib_entry(UINT8 *p_out, tSDP_ATTRIBUTE *p_attr)
     }
     ARRAY_TO_BE_STREAM(p_out, p_attr->value_ptr, (int)p_attr->len);
     return p_out;
+}
+
+UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
+{
+    UINT8   *p_seq_end;
+    UINT8   descr, type, size;
+    UINT32  seq_len, uuid_len;
+
+    /* Assume none found */
+    p_seq->num_uids = 0;
+
+    /* A UID sequence is composed of a bunch of UIDs. */
+
+    BE_STREAM_TO_UINT8 (descr, p);
+    type = descr >> 3;
+    size = descr & 7;
+
+    if (type != DATA_ELE_SEQ_DESC_TYPE)
+        return (NULL);
+
+    switch (size)
+    {
+    case SIZE_TWO_BYTES:
+        seq_len = 2;
+        break;
+    case SIZE_FOUR_BYTES:
+        seq_len = 4;
+        break;
+    case SIZE_SIXTEEN_BYTES:
+        seq_len = 16;
+        break;
+    case SIZE_IN_NEXT_BYTE:
+        BE_STREAM_TO_UINT8 (seq_len, p);
+        break;
+    case SIZE_IN_NEXT_WORD:
+        BE_STREAM_TO_UINT16 (seq_len, p);
+        break;
+    case SIZE_IN_NEXT_LONG:
+        BE_STREAM_TO_UINT32 (seq_len, p);
+        break;
+    default:
+        return (NULL);
+    }
+
+    if (seq_len >= param_len)
+        return (NULL);
+
+    p_seq_end = p + seq_len;
+
+    /* Loop through, extracting the UIDs */
+    for ( ; p < p_seq_end ; )
+    {
+        BE_STREAM_TO_UINT8 (descr, p);
+        type = descr >> 3;
+        size = descr & 7;
+
+        if (type != UUID_DESC_TYPE)
+            return (NULL);
+
+        switch (size)
+        {
+        case SIZE_TWO_BYTES:
+            uuid_len = 2;
+            break;
+        case SIZE_FOUR_BYTES:
+            uuid_len = 4;
+            break;
+        case SIZE_SIXTEEN_BYTES:
+            uuid_len = 16;
+            break;
+        case SIZE_IN_NEXT_BYTE:
+            BE_STREAM_TO_UINT8 (uuid_len, p);
+            break;
+        case SIZE_IN_NEXT_WORD:
+            BE_STREAM_TO_UINT16 (uuid_len, p);
+            break;
+        case SIZE_IN_NEXT_LONG:
+            BE_STREAM_TO_UINT32 (uuid_len, p);
+            break;
+        default:
+            return (NULL);
+        }
+
+        /* If UUID length is valid, copy it across */
+        if ((uuid_len == 2) || (uuid_len == 4) || (uuid_len == 16))
+        {
+            p_seq->uuid_entry[p_seq->num_uids].len = (UINT16) uuid_len;
+            BE_STREAM_TO_ARRAY (p, p_seq->uuid_entry[p_seq->num_uids].value, (int)uuid_len);
+            p_seq->num_uids++;
+        }
+        else
+            return (NULL);
+
+        /* We can only do so many */
+        if (p_seq->num_uids >= MAX_UUIDS_PER_SEQ)
+            return (NULL);
+    }
+
+    if (p != p_seq_end)
+        return (NULL);
+
+    return (p);
 }
 
 UINT8 *sdpu_get_len_from_type (UINT8 *p, UINT8 type, UINT32 *p_len)
