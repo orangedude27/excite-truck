@@ -467,6 +467,11 @@ void fn_801F3920(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_801F393C(void) {
+    fn_802E317C(lbl_8033AB80);
+}
+
 int fn_801F394C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
