@@ -60,6 +60,46 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+extern s32 DSPCheckMailFromDSP(void);
+extern s32 DSPCheckMailToDSP(void);
+extern s32 DSPReadMailFromDSP(void);
+extern void DSPSendMailToDSP(u32);
+extern void DBPrintf_800343C8(const char *, ...);
+extern char lbl_80301E30[];
+void __DSP_boot_task(void *arg0) {
+    volatile u32 frame[5];
+    u32 *task = (u32 *)arg0;
+    const char *fmt = lbl_80301E30;
+    while (DSPCheckMailFromDSP() == 0) {}
+    frame[2] = DSPReadMailFromDSP();
+    DSPSendMailToDSP(0x80F3A001);
+    while (DSPCheckMailToDSP() != 0) {}
+    DSPSendMailToDSP(task[3]);
+    while (DSPCheckMailToDSP() != 0) {}
+    DSPSendMailToDSP(0x80F3C002);
+    while (DSPCheckMailToDSP() != 0) {}
+    DSPSendMailToDSP((u16)task[5]);
+    while (DSPCheckMailToDSP() != 0) {}
+    DSPSendMailToDSP(0x80F3A002);
+    while (DSPCheckMailToDSP() != 0) {}
+    DSPSendMailToDSP(task[4]);
+    while (DSPCheckMailToDSP() != 0) {}
+    DSPSendMailToDSP(0x80F3B002);
+    while (DSPCheckMailToDSP() != 0) {}
+    DSPSendMailToDSP(0);
+    while (DSPCheckMailToDSP() != 0) {}
+    DSPSendMailToDSP(0x80F3D001);
+    while (DSPCheckMailToDSP() != 0) {}
+    DSPSendMailToDSP(*(u16 *)((u8 *)arg0 + 0x24));
+    while (DSPCheckMailToDSP() != 0) {}
+    DBPrintf_800343C8(fmt, arg0);
+    DBPrintf_800343C8(fmt + 0x20, task[3]);
+    DBPrintf_800343C8(fmt + 0x50, task[5]);
+    DBPrintf_800343C8(fmt + 0x80, task[4]);
+    DBPrintf_800343C8(fmt + 0xB0, task[7]);
+    DBPrintf_800343C8(fmt + 0xE0, *(u16 *)((u8 *)arg0 + 0x24));
+}
+
 void __DSP_insert_task(void *arg0) {
     extern void *lbl_8055D81C;
     extern void *lbl_8055D820;
@@ -310,26 +350,15 @@ extern void fn_8003BCC0(void);
 extern void fn_80035C64(void);
 extern void fn_80035C78(void);
 void fn_80036550(u32 arg0) {
-    register u8 *info;
+    register u32 value = arg0;
     OSDisableInterrupts();
-    if (lbl_8055D848 == 0) {
-        info = (u8 *)__ErrorInfo;
-        *(u32 *)(info + 0x78) = arg0;
-    } else {
-        info = (u8 *)__ErrorInfo;
-        *(u32 *)(info + lbl_8055D848 * 0x14 + 0x14) = arg0;
-    }
+    if (*(volatile u32 *)&lbl_8055D848 == 0) *(u32 *)(__ErrorInfo + 0x78) = value;
+    else *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
     ((void (*)(void))OSRestoreInterrupts)();
-    if (arg0 == 0x10) {
-        fn_8003A1A0(0x1234568, fn_80035C78);
-    } else if (arg0 == 0x20) {
-        fn_8003A1A0(0x1234569, fn_80035C78);
-    } else if (arg0 & 2) {
-        fn_8003A1A0(0x1234567, fn_80035C64);
-    } else {
-        fn_8003BCC0();
-        ((void (*)(void (*)(void)))fn_8003A1A0)(fn_80035C64);
-    }
+    if (value == 0x10) fn_8003A1A0(0x1234568, fn_80035C78);
+    else if (value == 0x20) fn_8003A1A0(0x1234569, fn_80035C78);
+    else if (value & 2) fn_8003A1A0(0x1234567, fn_80035C64);
+    else ((void (*)(void *, void (*)(void)))fn_8003A1A0)(((void *(*)(void))fn_8003BCC0)(), fn_80035C64);
 }
 
 extern s32 MotorState_8055D8A8;
@@ -437,6 +466,62 @@ void fn_80037CEC(void) {
     fn_8003A834(lbl_80376B00, fn_80037DBC);
 }
 
+extern s32 lbl_8055D874, lbl_8055D870, lbl_8055D880, lbl_8055D8BC, lbl_8055D87C, lbl_8055D85C;
+extern s32 executing_8055D8C8, MotorState_8055D8A8;
+extern u8 lbl_80376AD0;
+extern s32 fn_8003BB48(void);
+extern void OSCancelAlarm(void *);
+extern void fn_8003773C(void);
+void fn_80037E94(void) {
+    s32 zero = 0;
+    lbl_8055D880 = zero;
+    if (lbl_8055D874 != 0) {
+        if (!(fn_8003BB48() & 1)) {
+            OSCancelAlarm(&lbl_80376AD0);
+            lbl_8055D874 = zero;
+            lbl_8055D874 = zero;
+            if ((u32)lbl_8055D8BC == 3) lbl_8055D87C = 1;
+            if ((u32)MotorState_8055D8A8 == 2) {
+                if (executing_8055D8C8 != 0) *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xC;
+            } else {
+                DVDLowMaskCoverInterrupt();
+                if (executing_8055D8C8 != 0) {
+                    *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 3;
+                    fn_8003773C();
+                    return;
+                }
+                lbl_8055D85C = 7;
+            }
+        }
+    } else {
+        if (fn_8003BB48() & 1) {
+            lbl_8055D870 = zero;
+            lbl_8055D874 = 1;
+            if ((u32)MotorState_8055D8A8 == 2) *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xC;
+            else *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 5;
+            return;
+        }
+        if (fn_8003BB48() & 4) {
+            OSCancelAlarm(&lbl_80376AD0);
+            lbl_8055D870 = zero;
+            fn_8003BCDC(zero);
+            lbl_8055D874 = zero;
+            if ((u32)lbl_8055D8BC == 3) lbl_8055D87C = 1;
+            if ((u32)MotorState_8055D8A8 == 2) {
+                if (executing_8055D8C8 != 0) *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 0xC;
+            } else {
+                DVDLowMaskCoverInterrupt();
+                if (executing_8055D8C8 != 0) {
+                    *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 3;
+                    fn_8003773C();
+                    return;
+                }
+                lbl_8055D85C = 7;
+            }
+        }
+    }
+}
+
 void fn_8003801C(void) {
     if (lbl_8055D880 != 0) {
         return;
@@ -474,20 +559,24 @@ extern __declspec(section ".data") u8 lbl_8037B5B0;
 s32 DVDGetCommandBlockStatus(void *arg0) {
     s32 status;
     s32 enabled;
+    s32 next;
 
     enabled = OSDisableInterrupts();
-    if (*(s32 *)((u8 *)arg0 + 0xC) == 3) {
+    status = *(s32 *)((u8 *)arg0 + 0xC);
+    if (status == 3) {
         status = 1;
-    } else if (*(s32 *)((u8 *)arg0 + 0xC) == 5) {
+    } else if (status == 5) {
         status = 4;
     } else if ((u32)executing_8055D8C8 == (u32)&lbl_8037B5B0) {
-        if (__DVDGetNextWaitingQueue() != 0) {
-            if ((u32)arg0 == (u32)__DVDGetNextWaitingQueue()) status = 1;
+        next = __DVDGetNextWaitingQueue();
+        if (next != 0) {
+            if ((u32)arg0 == (u32)next) status = 1;
             else status = *(s32 *)((u8 *)arg0 + 0xC);
-        } else if ((u32)arg0 == (u32)&lbl_8037B5B0) status = 0;
-        else status = *(s32 *)((u8 *)arg0 + 0xC);
-    } else {
-        status = *(s32 *)((u8 *)arg0 + 0xC);
+        } else if ((u32)arg0 == (u32)&lbl_8037B5B0) {
+            status = 0;
+        } else {
+            status = *(s32 *)((u8 *)arg0 + 0xC);
+        }
     }
     OSRestoreInterrupts(enabled);
     return status;
@@ -535,7 +624,7 @@ void fn_800393D4(void) {
     OSRestoreInterrupts(enabled);
 }
 
-extern s32 fn_80039424(void *);
+extern s32 fn_80039424(void *, void (*)(s32, void *));
 extern void OSSleepThread(void *);
 extern void fn_80039838(void);
 s32 DVDCancel(void *block) {
