@@ -267,6 +267,24 @@ int fn_80172E24(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void deleteThreads__6SystemFv_80173A2C(void *arg0) {
+    class ThreadObject80173A2C {
+    public:
+        virtual void destroy(int);
+    };
+    ThreadObject80173A2C *p = *(ThreadObject80173A2C **)arg0;
+    if (p) {
+        if (p)
+            p->destroy(1);
+        *(ThreadObject80173A2C **)arg0 = 0;
+    }
+}
+#pragma cplusplus reset
+#pragma pop
+
 int fn_80173A84(void *arg0) {
     int count = *(int *)((char *)arg0 + 0x170);
     int result = 0;
