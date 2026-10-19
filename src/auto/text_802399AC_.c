@@ -251,9 +251,13 @@ __declspec(section ".data") extern s32 lbl_803412C8;
 extern s32 fn_80232578(s32 *);
 #pragma push
 #pragma small_data off
+extern s32 lbl_803412B8;
+extern s32 lbl_803412C8;
+#pragma push
+#pragma small_data off
 void *fn_8023AB78(void *arg0, s32 arg1, s32 arg2, ...) {
  va_list ap;
- s32 offset;
+ register s32 offset;
  *(s32 *)((char *)arg0+0x14)=0;
  *(s32 **)arg0=&lbl_80341108;
  *(s32 *)((char *)arg0+0x24)=fn_80232578(&lbl_803412C8);
@@ -427,27 +431,23 @@ extern s32 lbl_80341268[];
 #pragma pop
 extern float lbl_80563730;
 extern s32 fn_8022BAD0(s32, s32, s32, s32, s32, s32, s32, s32, s32, float);
-#pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
 void fn_8023B0BC(void *arg0) {
-    s32 sp8;
     s32 temp_r28;
     s32 temp_r29;
     s32 temp_r30;
     s32 temp_r31;
     s32 temp_r3;
-    float f;
-    s32 temp_r10;
     void *p = arg0;
     temp_r28 = *(s32 *)((char *)p + 0x10);
     temp_r29 = *(s32 *)((char *)p + 0xC);
     temp_r30 = *(s32 *)((char *)p + 8);
     temp_r31 = *(s32 *)((char *)p + 4);
     temp_r3 = fn_80131234(&lbl_80341268[0]);
-    temp_r10 = *(s32 *)((char *)p + 0x18);
-    f = lbl_80563730;
-    sp8 = 0;
-    fn_8022BAD0(0xC9, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, temp_r10, sp8, f);
+    fn_8022BAD0(0xC9, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, *(s32 *)((char *)p + 0x18), 0, 1.0f);
 }
+#pragma pop
 s32 fn_8023B138(void *arg0) {
     register void *object = lbl_8055F10C;
     if (((s32 (*)(void *))(*(void ***)object)[24])(object) == 0) {
