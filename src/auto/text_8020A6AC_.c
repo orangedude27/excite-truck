@@ -69,6 +69,13 @@ void fn_8020A800(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_8020A860(UnkStruct_8020A860 *arg0) {
+    arg0->name = lbl_8033C458;
+    arg0->state = 0;
+}
+#pragma scheduling on
+
 extern void fn_802E59BC(void *);
 extern void fn_802E5950(int, int);
 extern void fn_802E6138(void);
