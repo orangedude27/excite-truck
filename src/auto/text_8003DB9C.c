@@ -299,6 +299,76 @@ void GXClearVtxDesc(void) {
     data[0x5FC / 4] |= 8;
 }
 
+static inline void SETVAT(unsigned int *vatA, unsigned int *vatB, unsigned int *vatC,
+                          int attr, int compCnt, int compType, unsigned char shift) {
+    switch (attr) {
+    case 9:
+        *vatA = __rlwimi(*vatA, compCnt, 0, 31, 31);
+        *vatA = __rlwimi(*vatA, compType, 1, 28, 30);
+        *vatA = __rlwimi(*vatA, shift, 4, 23, 27);
+        break;
+    case 10:
+    case 25:
+        *vatA = __rlwimi(*vatA, compType, 10, 19, 21);
+        if (compCnt == 2) {
+            *vatA = __rlwimi(*vatA, 1, 9, 22, 22);
+            *vatA = __rlwimi(*vatA, 1, 31, 0, 0);
+        } else {
+            *vatA = __rlwimi(*vatA, compCnt, 9, 22, 22);
+            *vatA = __rlwimi(*vatA, 0, 31, 0, 0);
+        }
+        break;
+    case 11:
+        *vatA = __rlwimi(*vatA, compCnt, 13, 18, 18);
+        *vatA = __rlwimi(*vatA, compType, 14, 15, 17);
+        break;
+    case 12:
+        *vatA = __rlwimi(*vatA, compCnt, 17, 14, 14);
+        *vatA = __rlwimi(*vatA, compType, 18, 11, 13);
+        break;
+    case 13:
+        *vatA = __rlwimi(*vatA, compCnt, 21, 10, 10);
+        *vatA = __rlwimi(*vatA, compType, 22, 7, 9);
+        *vatA = __rlwimi(*vatA, shift, 25, 2, 6);
+        break;
+    case 14:
+        *vatB = __rlwimi(*vatB, compCnt, 0, 31, 31);
+        *vatB = __rlwimi(*vatB, compType, 1, 28, 30);
+        *vatB = __rlwimi(*vatB, shift, 4, 23, 27);
+        break;
+    case 15:
+        *vatB = __rlwimi(*vatB, compCnt, 9, 22, 22);
+        *vatB = __rlwimi(*vatB, compType, 10, 19, 21);
+        *vatB = __rlwimi(*vatB, shift, 13, 14, 18);
+        break;
+    case 16:
+        *vatB = __rlwimi(*vatB, compCnt, 18, 13, 13);
+        *vatB = __rlwimi(*vatB, compType, 19, 10, 12);
+        *vatB = __rlwimi(*vatB, shift, 22, 5, 9);
+        break;
+    case 17:
+        *vatB = __rlwimi(*vatB, compCnt, 27, 4, 4);
+        *vatB = __rlwimi(*vatB, compType, 28, 1, 3);
+        *vatC = __rlwimi(*vatC, shift, 0, 27, 31);
+        break;
+    case 18:
+        *vatC = __rlwimi(*vatC, compCnt, 5, 26, 26);
+        *vatC = __rlwimi(*vatC, compType, 6, 23, 25);
+        *vatC = __rlwimi(*vatC, shift, 9, 18, 22);
+        break;
+    case 19:
+        *vatC = __rlwimi(*vatC, compCnt, 14, 17, 17);
+        *vatC = __rlwimi(*vatC, compType, 15, 14, 16);
+        *vatC = __rlwimi(*vatC, shift, 18, 9, 13);
+        break;
+    case 20:
+        *vatC = __rlwimi(*vatC, compCnt, 23, 8, 8);
+        *vatC = __rlwimi(*vatC, compType, 24, 5, 7);
+        *vatC = __rlwimi(*vatC, shift, 27, 0, 4);
+        break;
+    }
+}
+
 void GXSetVtxAttrFmt(unsigned int fmt, unsigned int attr, unsigned int compCnt,
                      unsigned int compType, unsigned int shift)
 {
@@ -378,6 +448,84 @@ void GXSetVtxAttrFmt(unsigned int fmt, unsigned int attr, unsigned int compCnt,
 
     __GXData[0x5FC / 4] |= 0x10;
     *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (fmt & 0x1F));
+}
+
+void GXSetVtxAttrFmtv(int fmt, const GXVtxAttrFmtList *list) {
+    unsigned int *vatA = (unsigned int *)((char *)__GXData + 0x1C) + fmt;
+    unsigned int *vatB = (unsigned int *)((char *)__GXData + 0x3C) + fmt;
+    unsigned int *vatC = (unsigned int *)((char *)__GXData + 0x5C) + fmt;
+
+    for (; list->attr != 0xFF; list++) {
+        switch (list->attr) {
+        case 9:
+            *vatA = __rlwimi(*vatA, list->compCnt, 0, 31, 31);
+            *vatA = __rlwimi(*vatA, list->compType, 1, 28, 30);
+            *vatA = __rlwimi(*vatA, list->shift, 4, 23, 27);
+            break;
+        case 10:
+        case 25:
+            *vatA = __rlwimi(*vatA, list->compType, 10, 19, 21);
+            if (list->compCnt == 2) {
+                *vatA = __rlwimi(*vatA, 1, 9, 22, 22);
+                *vatA = __rlwimi(*vatA, 1, 31, 0, 0);
+            } else {
+                *vatA = __rlwimi(*vatA, list->compCnt, 9, 22, 22);
+                *vatA = __rlwimi(*vatA, 0, 31, 0, 0);
+            }
+            break;
+        case 11:
+            *vatA = __rlwimi(*vatA, list->compCnt, 13, 18, 18);
+            *vatA = __rlwimi(*vatA, list->compType, 14, 15, 17);
+            break;
+        case 12:
+            *vatA = __rlwimi(*vatA, list->compCnt, 17, 14, 14);
+            *vatA = __rlwimi(*vatA, list->compType, 18, 11, 13);
+            break;
+        case 13:
+            *vatA = __rlwimi(*vatA, list->compCnt, 21, 10, 10);
+            *vatA = __rlwimi(*vatA, list->compType, 22, 7, 9);
+            *vatA = __rlwimi(*vatA, list->shift, 25, 2, 6);
+            break;
+        case 14:
+            *vatB = __rlwimi(*vatB, list->compCnt, 0, 31, 31);
+            *vatB = __rlwimi(*vatB, list->compType, 1, 28, 30);
+            *vatB = __rlwimi(*vatB, list->shift, 4, 23, 27);
+            break;
+        case 15:
+            *vatB = __rlwimi(*vatB, list->compCnt, 9, 22, 22);
+            *vatB = __rlwimi(*vatB, list->compType, 10, 19, 21);
+            *vatB = __rlwimi(*vatB, list->shift, 13, 14, 18);
+            break;
+        case 16:
+            *vatB = __rlwimi(*vatB, list->compCnt, 18, 13, 13);
+            *vatB = __rlwimi(*vatB, list->compType, 19, 10, 12);
+            *vatB = __rlwimi(*vatB, list->shift, 22, 5, 9);
+            break;
+        case 17:
+            *vatB = __rlwimi(*vatB, list->compCnt, 27, 4, 4);
+            *vatB = __rlwimi(*vatB, list->compType, 28, 1, 3);
+            *vatC = __rlwimi(*vatC, list->shift, 0, 27, 31);
+            break;
+        case 18:
+            *vatC = __rlwimi(*vatC, list->compCnt, 5, 26, 26);
+            *vatC = __rlwimi(*vatC, list->compType, 6, 23, 25);
+            *vatC = __rlwimi(*vatC, list->shift, 9, 18, 22);
+            break;
+        case 19:
+            *vatC = __rlwimi(*vatC, list->compCnt, 14, 17, 17);
+            *vatC = __rlwimi(*vatC, list->compType, 15, 14, 16);
+            *vatC = __rlwimi(*vatC, list->shift, 18, 9, 13);
+            break;
+        case 20:
+            *vatC = __rlwimi(*vatC, list->compCnt, 23, 8, 8);
+            *vatC = __rlwimi(*vatC, list->compType, 24, 5, 7);
+            *vatC = __rlwimi(*vatC, list->shift, 27, 0, 4);
+            break;
+        }
+    }
+
+    __GXData[0x5FC / 4] |= 0x10;
+    *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (unsigned char)fmt);
 }
 
 void __GXSetVAT(void) {
