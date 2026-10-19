@@ -317,11 +317,12 @@ extern "C" void fn_800D7D5C(void* arg0, f32* m) {
     if (scale <= -0x11) GXSetIndTexMtx(&a, scale);
 }
 
-extern "C" void fn_800D7F58(void *arg0, void *arg1) {
-    f32 v1 = ((f32 *)arg1)[1];
-    f32 v0 = ((f32 *)arg1)[0];
-    ((f32 *)arg0)[0] = v0;
-    ((f32 *)arg0)[1] = v1;
+extern "C" f32 fn_800D7F58(f32 *arg0, const f32 *arg1) {
+    f32 v0 = arg1[0];
+    f32 v1 = arg1[1];
+    arg0[0] = v0;
+    arg0[1] = v1;
+    return v0;
 }
 
 extern "C" void fn_800D7F6C(s32 *arg0) {
@@ -1366,6 +1367,26 @@ extern "C" void fn_800D4F98(void*);
 extern "C" s32 fn_800DB398(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
+}
+
+extern "C" const char lbl_8031FF90[];
+extern "C" const char lbl_80320250[];
+extern "C" const char lbl_8032022C[];
+extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void* arg0, void* arg1) {
+    register void* iterator = (u8*)arg0 + 0x14;
+    register const char* messages = &lbl_8031FF90[0];
+    register void* child = arg1;
+    register void* parent = arg0;
+    void* slot;
+    if (child == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&messages[0], 0xFD, messages + 0x10);
+    if (*(void**)((u8*)child + 0xC) != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(&messages[0], 0xFE, messages + 0x3C);
+    if (child == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80320250, 0x233, lbl_8032022C);
+    slot = iterator;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8*)parent + 0x10, &slot, (u8*)child + 4);
+    *(void**)((u8*)child + 0xC) = parent;
 }
 
 extern "C" f32 lbl_80560EA8;
