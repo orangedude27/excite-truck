@@ -1,6 +1,8 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
+extern "C" void fn_802A41D8(void *arg0, s32 arg1);
+
 extern "C" void fn_802A3C50(void* arg0, s32 arg1);
 
 extern "C" int lbl_80349B00[];
@@ -672,6 +674,13 @@ extern "C" void fn_802A3C50(void* arg0, s32 arg1) {
     *(f32*)((char*)&sp20 + 0x64) = lbl_80564730;
     *(f32*)((char*)&sp20 + 0x7c) = lbl_80564730;
     *(s32*)((char*)arg0 + 4) = fn_8028E2F8(&sp20, lbl_80349A80, arg1, 0x100);
+}
+
+extern "C" void* fn_802A3D3C(void* arg0, DummyReceiver_802A3314* arg1) {
+    *(void**)arg0 = lbl_80349AB0;
+    s32 result = arg1->v3(&lbl_8055CBB0);
+    fn_802A41D8(arg0, result);
+    return arg0;
 }
 
 extern "C" void* __dt__14CollisionSpaceFv_802A3D98(void* arg0, s32 arg1) {
