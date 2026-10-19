@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <types.h>
+
 extern void fn_8000D838(void *);
 extern char lbl_8055F358[4];
 extern int lbl_80498E50[5];
@@ -18,3 +20,6 @@ void fn_80257F70(void) {
 }
 #pragma opt_propagation reset
 #pragma scheduling on
+
+DECL_SECTION(".ctors") funcptr_t D_802ED454 = fn_80257F70;
+
