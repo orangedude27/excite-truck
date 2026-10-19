@@ -1,6 +1,12 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern "C" char lbl_8032F39C[];
+extern "C" f32 lbl_8042FD08[];
+extern "C" f32 lbl_80558DC4[];
+extern "C" s32 lbl_8055A058[];
+extern "C" f32 fn_80204CFC(const char*);
+extern "C" void* fn_8023139C(void*,s32,u32);
 extern "C" void* fn_8017960C(s32);
 
 class Fn8015889C {
@@ -1614,7 +1620,7 @@ virtual s32 v29();
  Obj* obj=(Obj*)arg0;
  *arg1 *= fn_80204CFC(lbl_8032F39C);
  *arg1 *= lbl_8042FD08[arg0->m4];
- if (*(Adaptor**)((u8*)arg0+0x248) && !(__fabsf(*arg1)<=lbl_80558DC4[0])) {
+ if (*(Adaptor**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=lbl_80558DC4[0])) {
   (*(Adaptor**)((u8*)arg0+0x248))->v3((s32)lbl_8055A058, fn_8023139C(buf,16,(u32)*arg1));
   (*(Adaptor**)((u8*)arg0+0x248))->v6(obj->v29());
   (*(Adaptor**)((u8*)arg0+0x248))->v5((s32)*arg1);
@@ -1628,9 +1634,9 @@ virtual s32 v29();
  f32 value=*arg1;
  s32 offset=obj->v21()*0x38;
  ++*(s32*)(arg0->mData+offset);
- if (!(__fabsf(value)<=lbl_80558DC4[0])) {
+ if (!((f32)__fabs(value)<=lbl_80558DC4[0])) {
  ++*(s32*)(arg0->mData+offset+4);
- if (__fabsf(value-*(f32*)(arg0->mData+offset+16))<=lbl_80558DC4[0])
+ if ((f32)__fabs(value-*(f32*)(arg0->mData+offset+16))<=lbl_80558DC4[0])
  ++*(s32*)(arg0->mData+offset+8);
  }
  *(f32*)(arg0->mData+offset+12)+=value;
