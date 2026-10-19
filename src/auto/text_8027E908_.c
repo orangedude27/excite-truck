@@ -1,5 +1,47 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+typedef struct Fn8027F958Widget {
+    void *vtable;
+    char pad04[0x10];
+    int unk14;
+    unsigned char unk18;
+    char pad19[7];
+    int unk20, unk24;
+    char pad28[0x10];
+    float unk38, unk3C;
+    int unk40;
+    unsigned char unk44;
+    char pad45[0xB];
+    unsigned char unk50;
+    char pad51[0xB];
+    unsigned char unk5C;
+    char pad5D[3];
+    void *object;
+    unsigned char unk64;
+    char pad65[0xB];
+    int unk70;
+    unsigned char unk74;
+    char pad75[9];
+    unsigned char unk7E;
+    char pad7F[0x31];
+    int unkB0;
+    float values[6];
+    unsigned char unkCC;
+    char padCD[3];
+} Fn8027F958Widget;
+typedef struct Fn8027F958Entry {
+    void *label;
+    int type;
+    void *value;
+    int flags;
+    int id;
+} Fn8027F958Entry;
+typedef struct Fn8027F958Menu {
+    int header[5];
+    Fn8027F958Entry entries[32];
+    int footer[5];
+} Fn8027F958Menu;
+
 extern int fn_80128668();
 extern char lbl_80348798[];
 extern unsigned int lbl_8055F688;
@@ -135,6 +177,74 @@ block_7:
 
 int fn_80280898(void) { extern unsigned int lbl_8055F688; extern int fn_80216D28(void); if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
 
+extern unsigned char lbl_804B3068[];
+typedef unsigned int (*GetKeyFn)(void *);
+typedef char *(*GetTextFn)(void *);
+int fn_80280DC8(void) {
+    int index = 0;
+    int count;
+    unsigned int *items;
+    unsigned int key;
+    unsigned int result;
+    unsigned int *entry;
+    void *obj;
+    void **vt;
+    char *text;
+    char *dst;
+    int n;
+    if (lbl_8055F688 == 0) {
+        fn_80216D28();
+        return 0;
+    }
+    key = lbl_8055F688;
+    items = (unsigned int *)lbl_804B3048.items;
+    count = lbl_804B3048.count;
+    while (index < count && items[index] != key)
+        index++;
+    if (index >= count)
+        index = -1;
+    entry = (unsigned int *)lbl_804B3048.items;
+    obj = *(void **)((char *)entry[index] + 0x60);
+    if (obj == 0)
+        return 0;
+    vt = *(void ***)obj;
+    result = ((GetKeyFn)vt[11])(obj);
+    index++;
+    while (index < lbl_804B3048.count) {
+        entry = (unsigned int *)lbl_804B3048.items;
+        obj = *(void **)((char *)entry[index] + 0x60);
+        if (obj != 0) {
+            vt = *(void ***)obj;
+            if (result == ((GetKeyFn)vt[11])(obj))
+                break;
+        }
+        index++;
+    }
+    count = lbl_804B3048.count;
+    if (index < count && index >= 0) {
+        lbl_804B3068[0] = 0;
+        if (index >= 0 && index < count) {
+            entry = (unsigned int *)lbl_804B3048.items;
+            lbl_8055F688 = entry[index];
+            if (lbl_8055F688 == 0) return 0;
+            obj = *(void **)((char *)lbl_8055F688 + 0x60);
+            if (obj == 0) return 0;
+            vt = *(void ***)obj;
+            text = ((GetTextFn)vt[12])(obj);
+            dst = (char *)&lbl_804B3068;
+            for (n = 100; n > 0; n--) {
+                char c = *text++;
+                *dst++ = c;
+                if (c == 0) break;
+            }
+            if (n == 0) dst[-1] = 0;
+        } else {
+            lbl_8055F688 = 0;
+        }
+    }
+    return 0;
+}
+
 extern int fn_80216D28();
 extern int fn_8025C204(int);
 extern unsigned char lbl_8055F684;
@@ -231,6 +341,66 @@ void fn_802840F4(void) {
 void fn_802840F8(void) {
     fn_8027ED2C();
 }
+
+#pragma push
+#pragma processor 750
+#pragma cplusplus on
+#pragma dont_inline on
+#pragma inline_depth(0)
+extern "C" void fn_802854E0(void *arg0) {
+    class Item { public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual int active();
+    };
+    class List { public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual int count(); virtual Item *get(int);
+    };
+    class Draw { public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void draw(void *, int, int, float, float);
+        virtual void blend(void *, int, int, float, float, float);
+    };
+    extern void fn_80230C30(float *, float *, int, int);
+    extern double cos(double), sin(double), fabs(double);
+    extern float lbl_80564228, lbl_80564230, lbl_80564234, lbl_80564238;
+    extern float lbl_8056423C, lbl_80564240, lbl_805641FC, lbl_80558DC4;
+    extern int lbl_80347EF0, lbl_80347F10;
+    float x, y, cx, cy, radius, step, angle;
+    float base, one, zero, half;
+    int i;
+    char *q;
+    char *p = (char *)arg0;
+    if (*(List **)(p + 0x60) != 0) {
+        if (*(unsigned char *)(p + 0xcd) == 0) return;
+        fn_80230C30(&x, &y, *(int *)(p+4), *(int *)(p+8));
+        cx = x + lbl_80564228 * (float)*(int *)(p+12);
+        cy = y - lbl_80564228 * (float)*(int *)(p+16);
+        radius = lbl_80564230 * (float)*(int *)(p+12);
+        if ((*(List **)(p+0x60))->count() == 4) step = lbl_80564234;
+        else step = lbl_80564238;
+        base=lbl_8056423C; one=lbl_80564240; zero=lbl_805641FC; half=lbl_80564228;
+        for (q=p, i=0; i<(*(List **)(p+0x60))->count(); i++, q+=4) {
+            angle = base + step * ((float)i - half * (float)((*(List **)(p+0x60))->count()-1));
+            x = cx + radius * (float)cos(angle);
+            y = cy + radius * (float)sin(angle);
+            if ((*(List **)(p+0x60))->get(i)->active()) {
+                if (!((float)fabs(*(float *)(q+0xb4)-zero) <= lbl_80558DC4)) {
+                    ((Draw *)fn_8027ED70())->draw(&lbl_80347EF0,20,-1,x,y);
+                    ((Draw *)fn_8027ED70())->blend(&lbl_80347F10,20,-1,x,y,one-*(float *)(q+0xb4));
+                } else {
+                    ((Draw *)fn_8027ED70())->draw(&lbl_80347F10,20,-1,x,y);
+                }
+            } else {
+                ((Draw *)fn_8027ED70())->draw(&lbl_80347EF0,20,-1,x,y);
+            }
+        }
+    }
+}
+#pragma cplusplus reset
+#pragma pop
 
 void fn_802857A8(void *arg0) {
     extern int fn_80221EA8(void); extern void fn_801308F4(char *, int, const char *); extern void *fn_8027ED70(void); extern void *__AXGetStackHead(void); extern int stricmp(const char *);
