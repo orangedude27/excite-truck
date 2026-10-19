@@ -77,6 +77,12 @@ void *fn_802E41C4(void *arg0, int arg1) {
     return arg0;
 }
 
+extern const char lbl_8034D104[];
+#pragma scheduling invalid_target
+int fn_802E4250(void) {
+    fn_802E30C8((const char *)lbl_8034D104);
+    return 0;
+}
 extern unsigned int lbl_8055D1B4;
 extern unsigned int lbl_8055D1B8;
 extern int strncmp(const char *, const char *, unsigned int);
