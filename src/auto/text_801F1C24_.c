@@ -105,6 +105,18 @@ void fn_801F1EEC(void) {
         *(char *)((char *)p + 4) = 0;
     }
 }
+
+__declspec(section ".data") extern int lbl_8033A638;
+__declspec(section ".data") extern int lbl_8033A898;
+void fn_801F1F38(void) {
+    void *p = fn_801284F8(12, &lbl_8033A638);
+    if (p != 0) {
+        *(void **)p = &lbl_8033A898;
+        *(int *)((char *)p + 8) = 0;
+        *(char *)((char *)p + 4) = 0;
+    }
+}
+
 void fn_801F1F84(void) {
     void *p = fn_801284F8(0xC, &lbl_8033A644);
     if (p != 0) {
