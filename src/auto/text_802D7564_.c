@@ -222,7 +222,7 @@ void fn_802D9418(void) {
 extern void *lbl_8055FE28;
 extern void *lbl_8034C5B8;
 extern void *lbl_8034C4B0;
-extern void *fn_8012850C(void *, void *);
+extern void fn_8012850C(void *, void *);
 void* fn_802D94DC(void) {
     return lbl_8055FE18;
 }
