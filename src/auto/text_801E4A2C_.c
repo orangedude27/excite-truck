@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <stdarg.h>
 typedef signed int s32;
 typedef unsigned char u8;
 typedef signed short s16;
@@ -51,23 +52,27 @@ s32 fn_801E4AB0(s32 *arg0, const u8 *arg1, s32 count) {
 s32 fn_801E4B00(s32 *arg0) {
     s32 scratch;
     s32 result;
-    if (arg0 == 0)
-        return fn_802C501C();
-    result = 0;
-    fn_802C4F2C(*arg0, &scratch, &result);
-    return result;
+    if (arg0 != 0) {
+        result = 0;
+        fn_802C4F2C(*arg0, &scratch, &result);
+        return result;
+    }
+    return fn_802C501C();
 }
 
 #pragma scheduling off
 s32 fn_801E4B48(s32 *arg0) {
     s32 spC;
     s32 sp8;
+    s32 result;
     if (arg0 != 0) {
         sp8 = 0;
         fn_802C4F2C(*arg0, &spC, &sp8);
-        return fn_802C4EFC(*arg0) - sp8;
+        result = fn_802C4EFC(*arg0) - sp8;
+    } else {
+        result = 0;
     }
-    return 0;
+    return result;
 }
 #pragma dont_inline on
 s32 fn_801E4BA8(s32 *arg0) {
