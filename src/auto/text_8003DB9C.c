@@ -105,7 +105,6 @@ void GXGetGPStatus(char *a, char *b, char *c, char *d, char *e) {
 }
 
 extern unsigned int lbl_8055D954;
-extern unsigned int *__GXData;
 extern unsigned short *__cpReg;
 extern unsigned int lbl_8055D950;
 extern unsigned char lbl_8055D948;
@@ -449,18 +448,17 @@ void GXSetVtxAttrFmt(unsigned int fmt, unsigned int attr, unsigned int compCnt,
     *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (fmt & 0x1F));
 }
 
-void GXSetVtxAttrFmtv(int fmt, const GXVtxAttrFmtList *list) {
-    unsigned char *data = (unsigned char *)__GXData;
-    unsigned int *vatA = (unsigned int *)(data + 0x1C) + fmt;
-    unsigned int *vatB = (unsigned int *)(data + 0x3C) + fmt;
-    unsigned int *vatC = (unsigned int *)(data + 0x5C) + fmt;
+void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
+    unsigned int *vatA = (unsigned int *)((char *)__GXData + 0x1C) + fmt;
+    unsigned int *vatB = (unsigned int *)((char *)__GXData + 0x3C) + fmt;
+    unsigned int *vatC = (unsigned int *)((char *)__GXData + 0x5C) + fmt;
 
     for (; list->attr != 0xFF; list++) {
         SETVAT(vatA, vatB, vatC, list->attr, list->compCnt, list->compType, list->shift);
     }
 
-    *(unsigned int *)(data + 0x5FC) |= 0x10;
-    data[0x5FB] |= (unsigned char)(1 << (unsigned char)fmt);
+    *(unsigned int *)((char *)__GXData + 0x5FC) |= 0x10;
+    *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (unsigned char)fmt);
 }
 
 void __GXSetVAT(void) {
