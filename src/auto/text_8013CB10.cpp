@@ -111,6 +111,41 @@ extern "C" void fn_8013CB90(void *arg0) {
     *(f32 *)((u8 *)arg0 + 8) -= y * scale;
 }
 
+extern "C" f32 lbl_805614B4;
+extern "C" f32 lbl_805614B8;
+extern "C" f32 PSVECDotProduct(const f32 *, const f32 *);
+extern "C" s32 fn_8013CFF0(f32 *arg0, f32 *arg1, f32 *arg2) {
+    f32 dx, dy, dz;
+    f32 vx, vy, vz;
+    f32 dot;
+    f32 sp10, spC, sp8;
+    f32 sp18, sp14, sp1C;
+    dx = arg0[5] - arg0[2];
+    dy = arg0[4] - arg0[1];
+    dz = arg0[3] - arg0[0];
+    vx = arg0[2] + lbl_80561498 * dx;
+    vy = arg0[1] + lbl_80561498 * dy;
+    vz = arg0[0] + lbl_80561498 * dz;
+    sp8 = vy - arg1[10];
+    spC = vz - arg1[9];
+    sp10 = vx - arg1[11];
+    sp18 = vy;
+    sp14 = vz;
+    sp1C = vx;
+    dot = PSVECDotProduct(&sp8, &sp18);
+    if (dot < lbl_805614B4) {
+        if (PSVECDotProduct(&sp8, arg1 + 6) < lbl_805614B8) {
+            sp8 = arg0[3] - arg1[9];
+            spC = arg0[4] - arg1[10];
+            sp10 = arg0[5] - arg1[11];
+            if (PSVECDotProduct(&sp8, arg1 + 6) > lbl_805614B8) {
+                if (arg2) *arg2 = dot;
+            }
+        }
+    }
+    return 0;
+}
+
 extern "C" u32 fn_8013D148(u8 *arg0, f32 arg1) {
     s32 i = 0;
     s32 count = *(s32 *)arg0;
@@ -162,7 +197,7 @@ extern "C" s32 fn_8013D890(s32 arg0, s32 arg1) {
 #pragma dont_inline off
 
 #pragma dont_inline on
-extern "C" s32 fn_8013DDD4(TObjCPlus *arg0, const char *arg1) {
+extern "C" s32 fn_8013DDD4(TObjC *arg0, const char *arg1) {
     s32 count = 0;
     s32 i = 0;
     void *item;
@@ -494,6 +529,39 @@ extern "C" f32 fn_801429E0(f32 arg0, f32 arg1) {
     return arg0;
 }
 
+extern "C" f32 fabs(f32);
+extern "C" void fn_801429F0(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    f32 old, value, limit;
+    *(f32 *)(p + 0xA4) = fn_8001DAE8(p + 0xA0);
+    if (*(s32 *)(p + 0xE4) > 0) {
+        *(s32 *)(p + 0xF4) = *(s32 *)(p + 0xE4);
+        *(f32 *)(p + 0xF0) = fn_8013CB3C();
+        *(s32 *)(p + 0xE4) = 0;
+    }
+    if (*(s32 *)(p + 0x100) > 0) *(f32 *)(p + 0xD4) = fn_8001DAE8(p + 0xD0);
+    *(s32 *)(p + 0x100) = 0;
+    if (lbl_8055E1BC) return;
+    old = *(f32 *)(p + 0x94);
+    value = old + lbl_8056149C / lbl_8056149C;
+    limit = lbl_805614AC;
+    if (limit < value) limit = value;
+    if (limit > lbl_805614A4) limit = lbl_805614A4;
+    *(f32 *)(p + 0x94) = limit;
+    if (old < limit) { *(f32 *)(p + 0xEC) = limit - old; return; }
+    if (fabs(value) < lbl_80558DC4 && fabs(old) < lbl_80558DC4) {
+        if (*(s32 *)(p + 0xE4) > 0) {
+            *(s32 *)(p + 0xF4) = *(s32 *)(p + 0xE4);
+            *(f32 *)(p + 0xF0) = fn_8013CB3C();
+            *(s32 *)(p + 0xE4) = 0;
+        }
+        if (*(s32 *)(p + 0x100) > 0) *(f32 *)(p + 0xD4) = fn_8001DAE8(p + 0xD0);
+        *(s32 *)(p + 0x100) = 0;
+        *(f32 *)(p + 0xAC) = fn_8001DAE8(p + 0xA8);
+        if (!lbl_8055E1BC) *(u8 *)(p + 0xF8) = 1;
+    }
+}
+
 extern "C" void fn_80142B60(void *arg0) {
     u8 *p = (u8 *)arg0;
     p[0x49] = 1;
@@ -794,3 +862,5 @@ struct Fn8013FC6CDispatch {
     virtual int test(int);
 };
 class TObj10DispatchA6C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void v10(const char *); };
+struct TObj24A { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void *v24(); };
+struct S3FAC4 { s32 a, b, c, d; f32 e, f, g, h, i, j; };
