@@ -1929,6 +1929,50 @@ extern "C" s32 fn_800B808C(s32 arg0, void *arg1, s32 arg2) {
     return result;
 }
 
+extern "C" s32 fn_800B878C(void *arg0, u8 *buf, s32 *type, s32 size) {
+    u32 n = size ? (u32)size : *(u32 *)((u8 *)arg0 + 0x54) >> 9;
+    s32 kind, aligned;
+    u32 clusters;
+    if (n < 0xFF5) { kind=0; clusters=(((n<<2)-n)>>1)+0x1FF; clusters>>=9; }
+    else if (n < 0xFFF5) { kind=1; clusters=((n<<1)+0x1FF)>>9; }
+    else { kind=2; clusters=((n<<2)+0x1FF)>>9; }
+    fn_800A499C((const char *)buf,0,0x200);
+    buf[0]=0xEB;buf[2]=0x90;buf[0x1FE]=0x55;buf[0x1FF]=0xAA;
+    if ((u32)(buf+0x18)&1) {buf[0x18]=0x3F;buf[0x19]=0;} else *(u16*)(buf+0x18)=0x3F00;
+    if ((u32)(buf+0x1A)&1) {buf[0x1A]=0xFF;buf[0x1B]=0;} else *(u16*)(buf+0x1A)=0xFF00;
+    if ((u32)(buf+0xB)&1) {buf[0xB]=0;buf[0xC]=2;} else *(u16*)(buf+0xC)=2;
+    buf[0xD]=1;
+    if ((u32)(buf+0xE)&1) {buf[0xE]=1;buf[0xF]=0;} else *(u16*)(buf+0xE)=0x100;
+    aligned=(u32)(buf+0x11)&1;buf[0x10]=2;
+    if(aligned){buf[0x11]=0x80;buf[0x12]=0;}else *(u16*)(buf+0x12)=0x8000;
+    buf[0x15]=0xF0;
+    if(n<0x10000) {
+      if((u32)(buf+0x13)&1){buf[0x13]=n;buf[0x14]=n>>8;}else *(u16*)(buf+0x14)=((n&0xFF)<<8)|(n>>8);
+      if((u32)(buf+0x20)&3){buf[0x20]=buf[0x21]=buf[0x22]=buf[0x23]=0;}else *(u32*)(buf+0x20)=0;
+    } else {
+      if((u32)(buf+0x13)&1){buf[0x13]=0;buf[0x14]=0;}else *(u16*)(buf+0x14)=0;
+      if((u32)(buf+0x20)&3){buf[0x20]=n;buf[0x21]=n>>8;buf[0x22]=n>>16;buf[0x23]=n>>24;}
+      else *(u32*)(buf+0x20)=((n&0xFF)<<24)|((n&0xFF00)<<8)|((n>>8)&0xFF00)|(n>>24);
+    }
+    if(kind==2){
+      if(aligned){buf[0x11]=buf[0x12]=0;}else *(u16*)(buf+0x12)=0;
+      if((u32)(buf+0x24)&3){buf[0x24]=clusters;buf[0x25]=clusters>>8;buf[0x26]=clusters>>16;buf[0x27]=clusters>>24;}
+      else *(u32*)(buf+0x24)=((clusters&0xFF)<<24)|((clusters&0xFF00)<<8)|((clusters>>8)&0xFF00)|(clusters>>24);
+      if((u32)(buf+0x28)&1){buf[0x28]=buf[0x29]=0;}else *(u16*)(buf+0x28)=0;
+      if((u32)(buf+0x2A)&1){buf[0x2A]=buf[0x2B]=0;}else *(u16*)(buf+0x2A)=0;
+      if((u32)(buf+0x2C)&3){buf[0x2C]=2;buf[0x2D]=buf[0x2E]=buf[0x2F]=0;}else *(u32*)(buf+0x2C)=0x02000000;
+      if((u32)(buf+0x30)&1){buf[0x30]=1;buf[0x31]=0;}else *(u16*)(buf+0x30)=0x100;
+      buf[0x41]=0;buf[0x42]=0x29;
+      if((u32)(buf+0x43)&3){buf[0x43]=0x34;buf[0x44]=0x12;buf[0x45]=buf[0x46]=0;}else *(u32*)(buf+0x4C)=0x34120000;
+    }else{
+      if(aligned){buf[0x11]=0x80;buf[0x12]=0;}else *(u16*)(buf+0x12)=0x8000;
+      if((u32)(buf+0x16)&1){buf[0x16]=clusters;buf[0x17]=clusters>>8;}else *(u16*)(buf+0x16)=((clusters&0xFF)<<8)|(clusters>>8);
+      buf[0x25]=0;buf[0x26]=0x29;
+      if((u32)(buf+0x27)&3){buf[0x27]=0x34;buf[0x28]=0x12;buf[0x29]=buf[0x2A]=0;}else *(u32*)(buf+0x30)=0x34120000;
+    }
+    *type=kind;return 0;
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
@@ -2233,8 +2277,10 @@ extern "C" s32 fn_800BA160(s32 arg0) {
 extern "C" u32 lbl_8031C2B8[];
 extern "C" u32 lbl_802F3F54[];
 extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 a4;
     s32 val;
-    if (arg0 == 0 || arg1 == 0 || arg4 == 0) {
+    a4 = arg4;
+    if (arg0 == 0 || arg1 == 0 || a4 == 0) {
         return 1;
     }
     val = *(s32 *)(lbl_80407300 + 4);
@@ -2358,6 +2404,52 @@ extern "C" void fn_800BBCB4(void* context) {
     *(s32*)context = -1;
 }
 
+extern "C" s32 lbl_802F33C8[];
+extern "C" s32 lbl_802F33E8[];
+extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
+    s32 row, i, n = arg0 * 0x12;
+    if (arg3 & 7) {
+        for (row = 0; row < arg2; ++row, arg4 = (s32 *)((u8 *)arg4 + 0x2400)) {
+            for (i = 1; i < arg0; ++i) {
+                s32 k = 0x10 * i + 2;
+                s32 *a = (s32 *)((u8 *)arg4 + 0x1b00 + k * 4);
+                s32 *b = a - 1;
+                s32 *c = lbl_802F33C8;
+                s32 *d = lbl_802F33E8;
+                s32 j;
+                for (j = 0; j < 4; ++j) {
+                    s32 x = a[0], y = b[0], co = c[0], si = d[0];
+                    b[0] = (s64)y * co >> 24 - ((s64)x * si >> 24);
+                    a[0] = ((s64)y * si >> 24) + ((s64)x * co >> 24);
+                    x = a[1]; y = b[-1]; co = c[1]; si = d[1];
+                    b[-1] = ((s64)y * co >> 24) - ((s64)x * si >> 24);
+                    a[1] = ((s64)y * si >> 24) + ((s64)x * co >> 24);
+                    a += 2; b -= 2; c += 2; d += 2;
+                }
+            }
+            if (arg1 < n)
+                for (i = arg1; i < n; ++i)
+                    *((s32 *)((u8 *)arg4 + 0x1b00) + i) = 0;
+        }
+    } else {
+        for (row = 0; row < arg2; ++row, arg4 = (s32 *)((u8 *)arg4 + 0x2400)) {
+            s32 *a = (s32 *)((u8 *)arg4 + 0x1b48);
+            s32 *b = (s32 *)((u8 *)arg4 + 0x1b44);
+            s32 *c = lbl_802F33C8, *d = lbl_802F33E8;
+            s32 j;
+            for (j = 0; j < 4; ++j) {
+                s32 x = a[0], y = b[0], co = c[0], si = d[0];
+                b[0] = ((s64)y * co >> 24) - ((s64)x * si >> 24);
+                a[0] = ((s64)x * co >> 24) + ((s64)y * si >> 24);
+                x = a[1]; y = b[-1]; co = c[1]; si = d[1];
+                b[-1] = ((s64)y * co >> 24) - ((s64)x * si >> 24);
+                a[1] = ((s64)x * co >> 24) + ((s64)y * si >> 24);
+                a += 2; b -= 2; c += 2; d += 2;
+            }
+        }
+    }
+}
+
 void fn_800BEDE0(void *arg0, void *arg1) {
     u32 rate;
     s16 mode;
@@ -2416,6 +2508,33 @@ extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
     fn_800C3960(lbl_802F4088, arg1, 0x3FF, arg3);
     fn_800C3574(lbl_802F4108, (void *)arg0, arg2 + 1, arg1 + 2, arg3);
+}
+
+extern "C" void fn_800C3960(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 *m = (s32 *)arg0;
+    u16 *out = (u16 *)arg1;
+    s32 x, y, k;
+    s32 v;
+
+    for (y = 0; y < 32; y++) {
+        v = 0;
+        for (x = 0; x < 32; x++)
+            v += m[x] * m[y + 32 + x];
+        m[y + 64] = (s16)((v << 7) | (v >> 25)) & 0x7FFF;
+    }
+    for (x = 0; x < 32; x++) {
+        v = 0;
+        for (y = 0; y < 32; y++)
+            v += m[x] * m[y + 32 + x];
+        m[x + 96] = (s16)((v << 7) | (v >> 25)) & 0x7FFF;
+    }
+    if (arg3 == 0) {
+        out[0] = m[64];
+        out[64] = m[96];
+    } else {
+        out[0] = m[64];
+        out[32] = m[96];
+    }
 }
 
 extern "C" s32 fn_800C3CDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
