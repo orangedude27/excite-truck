@@ -1,5 +1,11 @@
 typedef signed long s32;
 typedef s32 (*UnkFunc)(s32);
+typedef struct Unk18440 {
+    s32 unk_0x00;
+    s32 unk_0x04[8];
+    s32 unk_0x24;
+    s32 unk_0x28[8];
+} Unk18440;
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -210,6 +216,24 @@ s32 fn_800183C0(void *arg0) {
     }
     return fn_800167F4();
 }
+
+extern void *fn_8001285C(s32);
+#pragma push
+#pragma dont_inline on
+void fn_80018440(void *arg0, s32 arg1, void *arg2) {
+    s32 count, i;
+    count = fn_800183C0(fn_8001285C(arg1));
+    memset(arg0, 0, 0x48);
+    for (i = 0; i < count; i++) {
+        s32 a = *(s32*)((char*)arg2 + (*(s32*)arg2 - 1 - i)*4 + 4);
+        s32 b = *(s32*)((char*)arg2 + (*(s32*)((char*)arg2+0x24) - 1 - i)*4 + 0x28);
+        *(s32*)((char*)arg0+i*4+4) = a;
+        (*(s32*)arg0)++;
+        *(s32*)((char*)arg0+i*4+0x28) = b;
+        (*(s32*)((char*)arg0+0x24))++;
+    }
+}
+#pragma pop
 
 void fn_80018794(void) {
     lbl_8055D560 = (void*)atoi();
