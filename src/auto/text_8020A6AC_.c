@@ -32,6 +32,8 @@ extern void *lbl_8055EE08;
 extern unsigned char lbl_8033C520[];
 extern unsigned char lbl_80489BD0[];
 extern int fn_80128668(void);
+extern char lbl_8033C458[];
+typedef struct { char *name; int state; } UnkStruct_8020A860;
 void fn_8020A72C(void) {
     volatile char *p = lbl_8033C35C;
     int size = 0xC;
