@@ -137,6 +137,8 @@ void fn_802B21D4(void **arg0) {
 }
 #pragma pop
 int fn_80129D90(int, int, int);
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802B2504(int *dst, int count) {
     int limit;
     int offset;
@@ -152,6 +154,50 @@ void fn_802B2504(int *dst, int count) {
         i++;
         offset += 4;
     }
+}
+#pragma pop
+int fn_802B28BC(void *, int);
+void *memset(void *, int, unsigned int);
+void fn_802B257C(void *arg0) {
+    int count, i, total, index, *items, *item, *entry;
+    int remaining, share, used, rem, slot, k;
+    int *out;
+    count = *(int *)((char *)arg0 + 0x40C);
+    items = *(int **)((char *)arg0 + 0x408);
+    total = 0;
+    for (i = 0; i < count; i++) {
+        entry = (int *)((char *)items + i * 0x20);
+        total += *(int *)entry[0];
+        total += *(int *)entry[1];
+        total += *(int *)entry[2];
+        total += *(int *)entry[3];
+        total += *(int *)entry[4];
+        total += *(int *)entry[5];
+        total += *(int *)entry[6];
+        total += *(int *)entry[7];
+    }
+    index = 0;
+    while (total > 0x80) {
+        item = (int *)items[index];
+        if (*item > 0) { (*item)--; total--; }
+        index++;
+        if (index >= count) index = 0;
+    }
+    out = (int *)((char *)arg0 + 0x208);
+    memset(out, 0, 0x200);
+    remaining = 0x80 - total;
+    slot = 0;
+    for (i = 0; i < count; i++) {
+        item = (int *)((char *)items[i]);
+        share = (remaining * 2) / count;
+        if (share > remaining) share = remaining;
+        used = *item;
+        rem = used % share;
+        for (k = 0; k < rem; k++) out[slot++] = 0;
+        remaining -= rem;
+        for (k = 0; k < used; k++) out[slot++] = (int)item;
+    }
+    if (*(unsigned char *)((char *)arg0 + 4) == 0) fn_802B28BC(out, 0x80);
 }
 
 void fn_802B2C34(void (*fn)(int), int arg)
@@ -295,18 +341,21 @@ int fn_802B2C44(void *arg0) {
     return method() != 0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 int fn_802B2C98(char *arg0) {
+    Unk802B2C98 *base = &lbl_804BE1FC;
     int result = 0;
     int i;
-    for (i = 0; i < lbl_804BE1FC.m4; i++) {
-        if (stricmp(arg0, *(char **)((char *)((void **)lbl_804BE1FC.m0)[i] + 0x24)) == 0) {
-            result = (int)((void **)lbl_804BE1FC.m0)[i];
+    for (i = 0; i < base->m4; i++) {
+        if (stricmp(arg0, *(char **)((char *)((void **)base->m0)[i] + 0x24)) == 0) {
+            result = (int)((void **)base->m0)[i];
             break;
         }
     }
     return result;
 }
-
+#pragma pop
 void fn_802B2D24(void *arg0) {
     int i = 0;
     int j;
