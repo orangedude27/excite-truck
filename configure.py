@@ -1122,6 +1122,12 @@ config.libs = [
             Object(NonMatching, "auto/text_802ECCDC_.c"),
             Object(NonMatching, "auto/text_802ECCE4_.c"),
             Object(NonMatching, "auto/text_802ED048_.c"),
+            Object(NonMatching, "auto/text_80025258.c"),
+            Object(NonMatching, "auto/text_80025854.c"),
+            Object(NonMatching, "auto/text_80025A7C.c"),
+            Object(NonMatching, "auto/text_80025D1C.c"),
+            Object(NonMatching, "auto/text_8002620C.c"),
+            Object(NonMatching, "auto/text_800269DC.c"),
         ],
     },
     {

@@ -386,8 +386,36 @@ auto/text_800251C8_.c:
 MSL/misc_io.c:
 	.text       start:0x80025248 end:0x80025258
 
+auto/text_80025258.c:
+	extab       start:0x800045F8 end:0x80004600
+	extabindex  start:0x80004844 end:0x80004850
+	.text       start:0x80025258 end:0x80025854
+
+auto/text_80025854.c:
+	.text       start:0x80025854 end:0x80025A7C
+
+auto/text_80025A7C.c:
+	extab       start:0x80004600 end:0x80004608
+	extabindex  start:0x80004850 end:0x8000485C
+	.text       start:0x80025A7C end:0x80025D1C
+
+auto/text_80025D1C.c:
+	extab       start:0x80004608 end:0x80004610
+	extabindex  start:0x8000485C end:0x80004868
+	.text       start:0x80025D1C end:0x800260E4
+
 auto/text_800260E4_.c:
 	.text       start:0x800260E4 end:0x8002620C
+
+auto/text_8002620C.c:
+	extab       start:0x80004610 end:0x80004618
+	extabindex  start:0x80004868 end:0x80004874
+	.text       start:0x8002620C end:0x800269DC
+
+auto/text_800269DC.c:
+	extab       start:0x80004618 end:0x80004620
+	extabindex  start:0x80004874 end:0x80004880
+	.text       start:0x800269DC end:0x80027238
 
 auto/text_80027238_.c:
 	extab       start:0x80004620 end:0x80004628
