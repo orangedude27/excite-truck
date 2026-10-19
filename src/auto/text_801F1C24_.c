@@ -688,6 +688,11 @@ void fn_801F41CC(int unused, unsigned char *arg0) {
     t=arg0[0x3d]; arg0[0x3d]=arg0[0x3e]; arg0[0x3e]=t;
 }
 
+#pragma scheduling invalid_target
+void fn_801F4270(void) {
+    fn_802E317C(lbl_8033AAE0);
+}
+
 void fn_801F4280(void) {
 
 }
