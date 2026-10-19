@@ -6,6 +6,13 @@ extern void *lbl_8055EE7C, *lbl_8055EE80;
 extern char lbl_8055EE94;
 extern float lbl_8055EE84, lbl_8055EE88, lbl_8055EE8C, lbl_8055EE90, lbl_8055EE98, lbl_8055EE9C;
 extern float lbl_8056331C, lbl_80563320;
+extern float lbl_8056332C;
+extern float lbl_80558DC4;
+extern double lbl_80563360;
+extern int fn_802E2C20(void);
+extern void fn_80012158(void);
+extern void fn_8020CF6C(int);
+extern double fabs(double);
 extern char lbl_8033C6B0[], lbl_8033C6BC[];
 extern void fn_80209190(int, float);
 extern void fn_80206454(void);
@@ -36,6 +43,7 @@ extern int lbl_8055EE78;
 extern float lbl_8055EE8C, lbl_8055EE90, lbl_8055EE98, lbl_8055EE9C;
 extern float lbl_80563320;
 extern char lbl_8033C690[], lbl_8033C6A0[];
+extern void fn_8000C6E4(void);
 void fn_8020CFEC(int arg0) {
     float value;
     if (arg0 == 1) {
@@ -44,19 +52,15 @@ void fn_8020CFEC(int arg0) {
             value = lbl_80563320;
         lbl_8055EE8C = value;
         fn_8020C908(value);
-        return;
-    }
-    if (arg0 < 0)
-        return;
-    if (arg0 == 4) {
-        fn_8000C730();
-        return;
-    }
-    if (arg0 == 0) {
-        value = lbl_8055EE90 - lbl_80563318;
-        if (value > lbl_80563320)
-            value = lbl_80563320;
-        lbl_8055EE90 = value;
+    } else if (arg0 >= 0) {
+        if (arg0 == 0) {
+            value = lbl_8055EE90 - lbl_80563318;
+            if (value > lbl_80563320)
+                value = lbl_80563320;
+            lbl_8055EE90 = value;
+        } else if (arg0 == 4) {
+            fn_8000C730();
+        }
     }
 }
 
@@ -69,6 +73,17 @@ void fn_8020D06C(void) {
     fn_800121F0();
 }
 
+void fn_8020D0CC(int arg0) {
+    int value;
+    value = (lbl_8055EE78 + arg0 + 3) % 3;
+    lbl_8055EE78 = value;
+    if (value == 2 && ((int (*)(void))fn_8020CF68)() == 0)
+        lbl_8055EE78 = (lbl_8055EE78 + arg0 + 3) % 3;
+    fn_80230E90(1);
+    lbl_8055EE9C = lbl_80563320;
+    lbl_8055EE98 = lbl_80563320;
+}
+
 void fn_8020D178(void) {
     lbl_8055EE74 = (int)fn_802090D4(lbl_8033C6B0);
     fn_80209190(lbl_8055EE74, lbl_8056331C);
@@ -78,9 +93,16 @@ void fn_8020D178(void) {
 }
 
 void fn_8020D1C8(void) {
-    if (lbl_8055EEA0 != 0) {
-        if (lbl_8055EEA0 != 0)
-            ((void (*)(void *, int))(*((void **)*(void **)lbl_8055EEA0 + 2)))((void *)lbl_8055EEA0, 1);
+    void *obj;
+    void **vtable;
+    void (*method)(void *, int);
+    obj = (void *)lbl_8055EEA0;
+    if (obj != 0) {
+        if (obj != 0) {
+            vtable = *(void ***)obj;
+            method = (void (*)(void *, int))vtable[2];
+            method(obj, 1);
+        }
         lbl_8055EEA0 = 0;
     }
     fn_80209110(&lbl_8055EE74);
@@ -114,6 +136,15 @@ void fn_8020D29C(void) {
     fn_80206454();
     fn_801769EC();
 }
+
+void fn_8020DABC(void) {
+    fn_8020C908(lbl_8055EE8C);
+    fn_80209030(lbl_8055EE90);
+    fn_800121F0();
+    if (lbl_8055EE78 == 2 && ((int (*)(void))fn_8020CF68)() == 0)
+        fn_8020D0CC(-1);
+}
+
 extern void *lbl_8055EE7C;
 extern void *lbl_8055EE80;
 void AXFXSetHooks_8020DE10(void *arg0, void *arg1) {
