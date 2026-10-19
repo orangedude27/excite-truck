@@ -83,6 +83,86 @@ void fn_801FCAE0(void* arg0, void* arg1) {
     *(float*)((char*)arg0 + 0x38) = *(float*)((char*)arg1 + 0x18);
 }
 
+extern "C" void fn_801FCB40(void* arg0, float farg0) {
+    char* a = (char*)arg0;
+    float delta = farg0;
+    int count = *(int*)(a + 0x3C);
+    char* base = *(char**)(a + 4);
+    char* item = base + (count << 5);
+    float* q = (float*)(a + 0x30);
+    float* q0 = (float*)(item + 0x10);
+    float* q1 = (float*)(item + 0x30);
+    float dx = q1[0] - q0[0];
+    float dy = q1[1] - q0[1];
+    float dz = q1[2] - q0[2];
+    Vec dir;
+    dir.x = dx; dir.y = dy; dir.z = dz;
+    float mag = PSVECMag(&dir);
+    float inv = lbl_80563030 / mag;
+    Quaternion prod;
+    PSQUATMultiply((const Quaternion*)(a + 0x30), (const Quaternion*)(item + 0x10), &prod);
+    float s = inv * delta * (q0[3] + inv * prod.w * (q0[4] - q0[3]));
+    float nx = q[0] + dx * s;
+    float ny = q[1] + dy * s;
+    float nz = q[2] + dz * s;
+    q[0] = nx; q[1] = ny; q[2] = nz;
+    Vec d;
+    d.x = q1[0] - nx;
+    d.y = q1[1] - ny;
+    d.z = q1[2] - nz;
+    if (PSVECDotProduct(&dir, &d) <= lbl_80563034) {
+        count = *(int*)(a + 0x3C) + 1;
+        *(int*)(a + 0x3C) = count;
+        int max = *(int*)(base + 0x310);
+        if (count >= max - 1) {
+            fn_801FEA28(arg0);
+            *(int*)(a + 4) = 0;
+            return;
+        }
+        item = base + (count << 5);
+        q1 = (float*)(item + 0x30);
+        dx = q1[0] - q0[0];
+        dy = q1[1] - q0[1];
+        dz = q1[2] - q0[2];
+        dir.x = dx; dir.y = dy; dir.z = dz;
+        mag = PSVECMag(&dir);
+        inv = lbl_80563030 / mag;
+        float k = inv * PSVECMag(&d);
+        q[0] = q0[0] + dx * k;
+        q[1] = q0[1] + dy * k;
+        q[2] = q0[2] + dz * k;
+    }
+    count = *(int*)(a + 0x3C) + 2;
+    if (count < *(int*)(base + 0x310)) {
+        item = base + (count << 5);
+        float* q2 = (float*)(item + 0x10);
+        Vec v;
+        v.x = q2[0] - q1[0];
+        v.y = q2[1] - q1[1];
+        v.z = q2[2] - q1[2];
+        PSQUATMultiply((const Quaternion*)(a + 0x30), (const Quaternion*)(item + 0x10), &prod);
+        float t = inv * prod.w;
+        float* p = (float*)(a + 0xC);
+        p[0] = q0[1] + t * (q1[1] - q0[1]);
+        p[1] = q0[2] + t * (q1[2] - q0[2]);
+        p[2] = q0[3] + t * (q1[3] - q0[3]);
+        Vec n;
+        n.x = dx + t * (v.x - dx);
+        n.y = dy + t * (v.y - dy);
+        n.z = dz + t * (v.z - dz);
+        PSVECNormalize(&n, (Vec*)(a + 0x24));
+    } else {
+        float* p = (float*)(a + 0xC);
+        p[0] = q0[1];
+        p[1] = q0[2];
+        p[2] = q0[3];
+        *(float*)(a + 0x24) = dx * inv;
+        *(float*)(a + 0x28) = dy * inv;
+        *(float*)(a + 0x2C) = dz * inv;
+    }
+    PSVECCrossProduct((const Vec*)(a + 0x24), (const Vec*)(a + 0xC), (Vec*)(a + 0x18));
+}
+
 extern "C" void* fn_801FCED8(void* arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668(arg0);
@@ -524,15 +604,16 @@ extern "C" void fn_801FEFC4(void) {
 }
 
 extern "C" const char lbl_8033B730[];
+#pragma scheduling invalid_target
 extern "C" void* fn_801FEFC8(void* arg0, int arg1) {
-    if (arg0 == 0) goto done;
-    *(const char**)arg0 = lbl_8033B730;
-    if (*(volatile int*)&arg1 <= 0) goto done;
-    fn_80128668(arg0);
-done:
+    if (arg0 != 0) {
+        *(void * volatile *)arg0 = (void *)lbl_8033B730;
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
     return arg0;
 }
-
 extern "C" void fn_801FF014(void* arg0, int arg1, int arg2, int arg3) {
     void* obj = *(void**)((char*)arg0 + 4);
     if (obj == 0) {
