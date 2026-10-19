@@ -338,5 +338,5 @@ extern int fn_8012A2D8(void *);
 extern char lbl_8033C368[];
 extern char lbl_8033C35C[];
 extern char lbl_804892D0[];
-extern void fn_8020A860(void);
+extern void fn_8020A860();
 extern int fn_80208E90(int);
