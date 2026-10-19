@@ -282,8 +282,7 @@ s32 fn_80156B30(void *arg0, s32 arg1) {
 extern "C" void fn_80156AC0(void) {
 }
 
-void fn_80156B48(void) {
-
+extern "C" void fn_80156B48(void) {
 }
 
 void fn_80156B4C(void) {
