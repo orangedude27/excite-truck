@@ -147,6 +147,8 @@ void fn_802AB504(void) {
 
 void fn_802AB6D0(void) {}
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_802AB6D4(void) {
     extern int fn_80287B14(void);
     extern int fn_80287B24(int);
@@ -166,7 +168,7 @@ void fn_802AB6D4(void) {
         fn_802AAF04(obj, data, item);
     }
 }
-
+#pragma pop
 void fn_802AB994(void) {
     fn_802C990C(lbl_804BD7B0[0]);
     ((void (*)(void *, float, float, float))fn_802C2B78)((void *)lbl_804BD7B0, *(float *)&lbl_804BD7B0[1], *(float *)&lbl_804BD7B0[2], *(float *)&lbl_804BD7B0[3]);
@@ -204,3 +206,9 @@ void fn_802AC070(void) {
 }
 struct Obj802AAC80 { char pad[0xEC]; unsigned char flag; float value; };
 struct Ctrl802AAC80 { char pad[0x68]; unsigned int flags; char pad2[0xAC]; unsigned char flag; };
+extern float lbl_805649F4, lbl_80564A34, lbl_80564A68, lbl_80564A8C, lbl_80564A98, lbl_80564A9C, lbl_80564AA8;
+extern double lbl_80564AA0;
+extern unsigned char lbl_8055F92C;
+unsigned char fn_80129D90(int, int, int);
+float fn_80287BC8(float, float);
+double fn_8002EFB4(float, double);
