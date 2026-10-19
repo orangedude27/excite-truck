@@ -24,6 +24,13 @@ void *fn_802B3F6C(void *arg0, int arg1) {
     return arg0;
 }
 
+int stricmp(const char *, const char *);
+extern char lbl_8055CDF8[];
+__declspec(section ".sdata") extern char lbl_8055CDF8[];
+int fn_802B3FC4(void *arg0) {
+    return stricmp(lbl_8055CDF8, (*(char *(**)(void *))((char *)*(void **)arg0 + 8))(arg0)) == 0;
+}
+
 void fn_802B4004(void) {
     lbl_8055F9CC += 1;
 }
@@ -64,6 +71,50 @@ int fn_802B4BC0(int arg0, int arg1, int arg2) {
 }
 
 void fn_802B4BD8(void) {}
+
+extern int lbl_8055F9D0[];
+extern void fn_802B4CB4(void *);
+extern void fn_802B4DC0(void *);
+__declspec(section ".sdata") extern int lbl_8055F9D0[];
+void fn_802B4BDC(void) {
+    int i;
+    int *p;
+    i = 0;
+    p = lbl_804BE248;
+    do {
+        fn_802B4CB4(p);
+        if (++i >= 0x80)
+            break;
+        p++;
+    } while (1);
+    {
+        int count = 0;
+        int offset = 0;
+        int zero = 0;
+        void *entry;
+        for (;;) {
+            entry = *(void **)((char *)*(void **)lbl_8055F9D0 + offset);
+            if (entry != 0) {
+                if (entry != 0) {
+                    int data = *(int *)((char *)entry + 0xC);
+                    if (data != 0)
+                        fn_80128670(data - 0x10);
+                    if (entry != 0) {
+                        *(int *)entry = zero;
+                        *(int *)((char *)entry + 4) = zero;
+                        *(int *)((char *)entry + 8) = zero;
+                    }
+                }
+                fn_80128668(entry);
+            }
+            offset += 4;
+            count++;
+            if (count >= *(int *)((char *)lbl_8055F9D0 + 4))
+                break;
+        }
+    }
+    fn_802B4DC0(lbl_8055F9D0);
+}
 
 void fn_802B4CB4(void *arg0) {
     void *p = *(void **)arg0;
@@ -162,17 +213,21 @@ void fn_802B4E44(int arg0, int arg1) {
     }
 }
 
+#pragma dont_inline on
 void *fn_802B4F10(void *out, int x, int y, int a, int b) {
+    int result = 0;
     int r = fn_802B40B0(a, b);
     if (r != 0) {
         int idx = (((x & 0x1F) + ((y << 5) & 0x3E0)) << 3);
-        int p = r + idx;
-        *(int *)out = ((int *)p)[1];
-        if (((int *)p)[1] > 0) {
-            return (void *)r;
-        }
+        int *p = (int *)(r + idx);
+        *(int *)out = p[1];
+        result = p[0];
+        if (((int *)p[0])[1] > 0) return (void *)result;
+        result = 0;
     }
-    return NULL;
+    return (void *)result;
 }
+#pragma dont_inline reset
 typedef struct { int *ptr; int value; } Slot;
 typedef struct { char *data; int count; } Entry;
+typedef struct { int a, b, c, d; } EtOut;
