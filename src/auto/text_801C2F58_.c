@@ -1246,6 +1246,23 @@ void fn_801C94C0(s32 arg0, s32 arg1) {
     fn_802389E4();
 }
 
+extern void fn_801769EC(void);
+extern void fn_80176610(void);
+extern void __AXDSPInitCallback_801769E0(void);
+#pragma push
+#pragma processor 750
+void fn_801C9514(void) {
+    f32 end;
+    f32 start;
+    start = lbl_8055E3C8;
+    fn_801769EC();
+    end = lbl_805629AC + start;
+    while (lbl_8055E3C8 < end && lbl_8055E3C8 >= start) {
+        fn_80176610();
+    }
+    __AXDSPInitCallback_801769E0();
+}
+#pragma pop
 void fn_801C95EC(f32 arg0) {
     lbl_8055E81C = arg0;
     lbl_8055E820 = arg0;
