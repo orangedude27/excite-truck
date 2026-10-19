@@ -1847,6 +1847,10 @@ void fn_800B78EC(void) {
 
 }
 
+void fn_800B78F0(void) {
+    fn_800B7EAC();
+}
+
 extern "C" void fn_800B78F4(void *arg0, void *arg1) {
     OSCalendarTime time;
     OSTicksToCalendarTime(OSGetTime(), &time);
