@@ -18,8 +18,10 @@ extern float lbl_80562900, lbl_80562904, lbl_8056290C;
 extern float lbl_80562934, lbl_80562938, lbl_8056293C, lbl_80562940, lbl_80562944;
 }
 
-extern void fn_801C1218(void);
-extern void fn_801C1364(int);
+extern "C" void fn_801C1218(void);
+extern "C" void fn_801C1364(int);
+extern "C" void fn_801C1320(void*);
+extern "C" void fn_801C1B60(int);
 extern "C" int fn_801284F8(int, int *);
 extern int fn_801C109C(int, int, int, int);
 extern int fn_80128668(int);
