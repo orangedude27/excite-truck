@@ -289,8 +289,13 @@ static inline float clampf(float x, float lo, float hi) {
     return x < lo ? lo : (x > hi ? hi : x);
 }
 int fn_80190D38(float a, float b, float c) {
-    float y = clampf((a - b) / (c - b), lbl_80562090, lbl_8056208C);
-    return (int)(lbl_80562080 + (lbl_8056208C + (y * lbl_805620AC)));
+    float lower;
+    float value;
+    lower = lbl_80562090;
+    value = (a - b) / (c - b);
+    if (lower < value) { lower = value; } else { lower = lower; }
+    if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; }
+    return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC)));
 }
 
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
@@ -427,11 +432,25 @@ extern void *memset(void *, int, unsigned int);
 extern int fn_801331C4(void *, void *);
 extern char lbl_80332FC4;
 extern int fn_80128668(void);
-void fn_801914F8(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    ((void (**)(void))(*(void ***)obj))[10]();
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801914F8(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 4);
+    obj->f8();
 }
-
+#pragma pop
 void fn_8019150C(void *arg0, int arg1) {
     void *obj = *(void **)((char *)arg0 + 4);
     void *state;
