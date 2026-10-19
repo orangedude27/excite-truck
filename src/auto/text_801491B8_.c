@@ -156,12 +156,11 @@ s32 fn_8014931C(void *arg0) {
 }
 
 void fn_8014935C(void *arg0) {
-    volatile u32 value = *(u32 *)((u8 *)arg0 + 4) + 1;
-    u32 temp = value << 30;
-    u32 sign = value >> 31;
-    temp -= sign;
-    temp = (temp << 2 | temp >> 30) + sign;
-    *(u32 *)((u8 *)arg0 + 4) = temp;
+    u32 *p = (u32 *)arg0;
+    u32 x = p[1] + 1;
+    u32 b = x >> 31;
+    u32 v = (x << 30) - b;
+    p[1] = ((v << 2) | (v >> 30)) + b;
 }
 
 extern s32 lbl_802F93F0[];
@@ -172,9 +171,7 @@ s32 fn_80149380(void *arg0) {
 }
 
 s32 fn_801493C0(void **arg0) {
-    void ** volatile table = (void **)*arg0;
-    s32 (*volatile fn)(void) = (s32 (*)(void))table[4];
-    return fn() & 0xFF7F7F7F;
+    return (*(s32 (**)())((u8 *)*arg0 + 0x10))() & 0xFF7F7F7F;
 }
 
 void fn_801493F8(void *arg0, f32 *arg1, s32 arg2) {
