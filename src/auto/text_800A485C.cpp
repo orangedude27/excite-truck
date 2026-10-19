@@ -4911,7 +4911,7 @@ extern "C" s32 fn_800CEDE0(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x2C);
 }
 
-extern "C" void PSMTXIdentity(void*);
+extern "C" void PSMTXIdentity(f32 (*)[4]);
 extern "C" void GXLoadPosMtxImm(const f32*, u32);
 extern "C" void GXSetCurrentMtx(u32);
 extern "C" void GXClearVtxDesc(void);
