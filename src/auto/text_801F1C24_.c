@@ -127,6 +127,17 @@ void fn_801F1F84(void) {
     }
 }
 
+__declspec(section ".data") extern int lbl_8033A654;
+__declspec(section ".data") extern int lbl_8033A838;
+void fn_801F1FD4(void) {
+    void *p = fn_801284F8(12, &lbl_8033A654);
+    if (p != 0) {
+        *(void **)p = &lbl_8033A838;
+        *(int *)((char *)p + 8) = 0;
+        *(char *)((char *)p + 4) = 0;
+    }
+}
+
 #pragma small_data off
 void fn_801F2020(void) {
     void *p = fn_801284F8(8, &lbl_8055B128);
