@@ -1,6 +1,16 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void fn_802E61E4(float);
+extern float fn_80209028(void), fn_802091CC(void);
+extern int fn_802090CC(void), fn_802E2C20(void);
+extern void fn_802E625C(int);
+extern void fn_802E61EC(void *, float), fn_802E620C(void *, float), fn_802E6234(void *, float), fn_802E6238(void *, float), fn_802E623C(void *, float), fn_802E622C(void *, float), fn_802E6240(void *, int);
+extern float lbl_8055B590, lbl_8055B594, lbl_80558DC4, lbl_805632B8;
+extern int lbl_8055EDF8;
+extern unsigned int lbl_8055EE00;
+
+extern void fn_802E6264(void);
 extern int lbl_8055EE0C;
 extern void *lbl_8055EE10;
 extern char lbl_8033C35C[];
@@ -35,13 +45,12 @@ void *fn_8020A774(int arg0) { return lbl_804892D0 + arg0 * 0x24; }
 
 void fn_8020A788(void) {
     if (lbl_8055EE0C == 0) {
-        int result = fn_801284F8(0x20, lbl_8033C368);
-        if (result != 0)
+        if (fn_801284F8(0x20, lbl_8033C368) != 0)
             lbl_8055EE10 = fn_8012A13C(lbl_8033C368, 0x200, 0x54);
-        else lbl_8055EE10 = 0;
     }
     if (fn_8012A2D8(lbl_8055EE10) != 0) {
-        int count = lbl_8055EE0C;
+        int count;
+        count = lbl_8055EE0C;
         lbl_8055EE0C = count + 1;
     }
 }
@@ -60,18 +69,18 @@ extern void fn_802E5950(int, int);
 extern void fn_802E6138(void);
 extern void fn_802E61D8(void *);
 void fn_8020AA0C(void *arg0) {
-    int value = *(int *)((char *)arg0 + 8);
+    void *value = *(void **)((char *)arg0 + 8);
     if (value != 0) {
-        fn_802E61D8((void *)value);
-        if (*(int *)((char *)arg0 + 0xC) != 0)
+        fn_802E61D8(value);
+        if (*(void **)((char *)arg0 + 0xC) != 0)
             fn_802E61D8(*(void **)((char *)arg0 + 0xC));
-        if (*(int *)((char *)arg0 + 0xC) != 0) {
+        if (*(void **)((char *)arg0 + 0xC) != 0) {
             fn_802E6138();
-            *(int *)((char *)arg0 + 0xC) = 0;
+            *(void **)((char *)arg0 + 0xC) = 0;
         }
-        if (*(int *)((char *)arg0 + 8) != 0) {
+        if (*(void **)((char *)arg0 + 8) != 0) {
             fn_802E6138();
-            *(int *)((char *)arg0 + 8) = 0;
+            *(void **)((char *)arg0 + 8) = 0;
         }
     }
     *(int *)((char *)arg0 + 4) = 3;
@@ -130,6 +139,64 @@ void fn_8020B340(void) {
 
 void fn_8020B344(void) {
     fn_802E5828();
+}
+
+void fn_8020B348(void *arg0) {
+    if (arg0 == 0) return;
+    ((void (*)(void *, int))(*(void ***)arg0)[2])(arg0, 1);
+}
+
+extern void *fn_802E5AE8(void *);
+extern void fn_802E5D5C(void *);
+extern void *fn_8020A6AC(void *);
+extern void fn_802E30C8(const char *, ...);
+extern const char lbl_8033C4F0[];
+int fn_8020B874(void *object, void *name) {
+    int result = 0;
+    void *created = fn_802E5AE8(name);
+    if (created != 0) {
+        fn_802E5D5C(*(void **)((char *)object + 0x10));
+        *(void **)((char *)object + 0x10) = created;
+        *(void **)((char *)object + 0x18) = fn_8020A6AC(name);
+        result = 1;
+    } else {
+        fn_802E30C8(lbl_8033C4F0, name);
+    }
+    return result;
+}
+
+extern void fn_802E61E4(float);
+extern int lbl_8055EDFC;
+extern float lbl_805632B0;
+void fn_8020B908(void *arg0) {
+    void *p;
+    if (*((unsigned char *)arg0 + 0x3E) == 0 && *(int *)((char *)arg0 + 4) != 3) {
+        *((unsigned char *)arg0 + 0x3E) = 1;
+        lbl_8055EDFC++;
+        p = *(void **)((char *)arg0 + 8);
+        if (p != 0) {
+            fn_802E61D8(p);
+            p = *(void **)((char *)arg0 + 0xC);
+            if (p != 0)
+                fn_802E61D8(p);
+            p = *(void **)((char *)arg0 + 0xC);
+            if (p != 0) {
+                fn_802E6138();
+                *(void **)((char *)arg0 + 0xC) = 0;
+            }
+            p = *(void **)((char *)arg0 + 8);
+            if (p != 0) {
+                fn_802E6138();
+                *(void **)((char *)arg0 + 8) = 0;
+            }
+        }
+        p = *(void **)((char *)arg0 + 8);
+        if (p != 0)
+            fn_802E61E4(lbl_805632B0);
+        p = *(void **)((char *)arg0 + 0xC);
+        if (p != 0)
+            fn_802E61E4(lbl_805632B0);
+    }
 }
 
 void fn_8020BC50(void *arg0, float farg0) { *(float *)((char *)arg0 + 0x24) = farg0; }
