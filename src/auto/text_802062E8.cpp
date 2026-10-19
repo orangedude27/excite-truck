@@ -134,6 +134,9 @@ extern "C" void fn_802064D0(int arg0) {
     ((Callback *)fn_80208D4C())->call(arg0);
 }
 
+extern "C" void fn_80206514(void) {
+}
+
 extern "C" void fn_80206518(void) {
     extern void fn_80208D70(void); extern void* fn_80208D4C(void);
     fn_80208D70();
