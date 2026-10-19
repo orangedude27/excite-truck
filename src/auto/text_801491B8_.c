@@ -2,6 +2,11 @@
 
 #include <types.h>
 #include <stdarg.h>
+typedef struct { void *pad[3]; void *(*get)(void *, int); } IterFC;
+typedef struct { void *pad[3]; int (*has)(void *, void *); void *(*next)(void *, void *); } IterFD;
+typedef struct { void *pad[15]; int (*has)(void *, void *); void *(*value)(void *, void *); } IterFE;
+typedef struct { void *pad[14]; void *(*begin)(void *, void *, void *); } ObjFA;
+typedef struct { float x,y,z,w; u8 flag; } EntryFC;
 extern f32 fn_80144514(f32,f32,f32,f32,f32,f32);
 static inline void MatrixMul80151E60(f32 *dst, const f32 *left, const f32 *right) {
  if (dst == right || dst == left) {
@@ -115,13 +120,10 @@ void *fn_801491B8(void *arg0, s32 arg1) {
 
 void fn_80149210(void *arg0) {
     u32 *p = (u32 *)arg0;
-    u32 b;
-    u32 t;
-    u32 v;
-    p[1] = p[1] + 1;
-    b = p[1] >> 31;
-    t = p[1] << 30;
-    v = t - b;
+    u32 x = p[1] + 1;
+    u32 t = x << 30;
+    u32 b = x >> 31;
+    u32 v = t - b;
     p[1] = ((v << 2) | (v >> 30)) + b;
 }
 
@@ -208,12 +210,20 @@ unsigned long *fn_801494D8(void) { return &lbl_80559E94; }
 int fn_801494E0(void) { return 0xFF0000FF; }
 
 void fn_801494EC(void *arg0, float *arg1, float *arg2) {
-    float temp_f1 = arg1[0];
-    float temp_f3 = arg1[1];
-    arg2[1] += temp_f1;
-    arg2[4] -= temp_f1;
-    arg2[2] += temp_f3;
-    arg2[5] -= temp_f3;
+    float f2 = arg2[1];
+    float f1 = arg1[0];
+    float f0 = arg2[4];
+    float f4 = f2 + f1;
+    float f2b = arg2[2];
+    float f1b = f0 - f1;
+    float f3 = arg1[1];
+    float f0b = arg2[5];
+    float f2c = f2b + f3;
+    float f0c = f0b - f3;
+    arg2[1] = f4;
+    arg2[4] = f1b;
+    arg2[2] = f2c;
+    arg2[5] = f0c;
 }
 
 extern unsigned long lbl_80559E94;
@@ -1180,6 +1190,40 @@ void fn_80151E60(void *arg0, s32 arg1, s32 arg2) {
         return;
     }
     fn_802C744C(lbl_8055E254, &a[0]);
+}
+
+extern void fn_802C86DC(void);
+extern void fn_802C77F0(void *, f32 *);
+extern void fn_802C744C(s32, f32 *);
+extern void *fn_801E87A8(void);
+extern s32 lbl_80559ED4, lbl_80559ED8;
+extern f32 lbl_8056163C, lbl_80561648, lbl_8056164C, lbl_805616B8;
+void fn_801533E8(void *arg0, f32 *arg1) {
+    f32 values[12];
+    f32 out[3];
+    f32 mat[12];
+    f32 x, y, z, a, b, c;
+    s32 i;
+    fn_802C86DC();
+    for (i = 0; i < 12; i++) values[i] = ((f32 *)arg1)[i];
+    fn_802C77F0(*(void **)arg1, values);
+    x = values[0] + (values[1] - values[0]) * lbl_8056163C;
+    y = values[2] + (values[3] - values[2]) * lbl_8056163C;
+    z = values[4] + (values[5] - values[4]) * lbl_8056163C;
+    a = x * lbl_805616B8;
+    b = y * lbl_805616B8;
+    c = z * lbl_805616B8;
+    out[0] = a; out[1] = b; out[2] = c;
+    out[0] = a * values[8] + b * values[0] + c * values[4];
+    out[1] = a * values[9] + b * values[1] + c * values[5];
+    out[2] = a * values[10] + b * values[2] + c * values[6];
+    for (i = 0; i < 12; i++) mat[i] = values[i] * lbl_8056164C;
+    if ((*(u32 *)((u8 *)fn_801E87A8() + 0x10) & 2) != 0) {
+        values[0] = -values[0]; values[1] = -values[1]; values[2] = -values[2];
+        mat[0] = -mat[0]; mat[1] = -mat[1]; mat[2] = -mat[2];
+    }
+    fn_802C744C(lbl_80559ED8, mat);
+    fn_802C744C(lbl_80559ED4, values);
 }
 
 #pragma pop
