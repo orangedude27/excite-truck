@@ -218,13 +218,11 @@ void fn_802B28BC(int *dst, int count) {
         offset += 4;
     }
 }
-#pragma pop
-void fn_802B2C34(void (*fn)(int), int arg)
-{
-    int x = arg;
-    fn(x);
+#pragma scheduling invalid_target
+void fn_802B2C34(void (*fn)(void *), void *arg) {
+    fn(arg);
 }
-
+#pragma scheduling reset
 void fn_802B2D94(int *arg0) {
     int i;
     i = 0;
