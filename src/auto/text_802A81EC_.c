@@ -1,4 +1,5 @@
 #include "types.h"
+void fn_802A8A4C(s32, s32);
 extern f32 PSVECDotProduct(const void *, const void *);
 extern void PSVECNormalize(const void *, void *);
 extern f32 lbl_80558DC4, lbl_80564928, lbl_8056494C;
@@ -63,6 +64,75 @@ void fn_802A85C8(void) {
     }
     lbl_804BD6C4[1] = 0;
 }
+
+#pragma push
+#pragma processor 750
+void fn_802A86A4(void) {
+    struct { f32 a[4]; f32 p[3]; f32 v[3]; } sp;
+    s32 i, offset, j, suboffset;
+    u8 *entry;
+    f32 *v;
+    f32 z, y, x, scale, speed;
+    f32 *epsilon = &lbl_80558DC4;
+    f32 zero = lbl_80564928;
+    f32 one = lbl_8056494C;
+    f32 half = lbl_80564950;
+    i = 0; offset = 0;
+    while (i < lbl_804BD6C4[1]) {
+        entry = *(u8 **)((u32)lbl_804BD6C4[0] + offset);
+        memset(&sp, 0, 0);
+        x = *(f32 *)(entry + 0x60);
+        y = *(f32 *)(entry + 0x64);
+        z = *(f32 *)(entry + 0x68);
+        sp.p[0] = x; sp.p[1] = y; sp.p[2] = z;
+        sp.a[1] = *(f32 *)(entry + 0x58);
+        sp.a[0] = *(f32 *)(entry + 0x44);
+        sp.a[3] = *(f32 *)(entry + 0x4c);
+        sp.a[2] = *(f32 *)(entry + 0x4c);
+        memcpy(entry + 0x18, &sp, 0x10);
+        ((f32 *)entry)[0] = sp.p[0];
+        ((f32 *)entry)[1] = sp.p[1];
+        ((f32 *)entry)[2] = sp.p[2];
+        z = fn_80287BC8(lbl_80564944, lbl_80564948);
+        ((f32 *)entry)[3] = fn_80287BC8(lbl_80564944, lbl_80564948);
+        ((f32 *)entry)[4] = zero;
+        ((f32 *)entry)[5] = z;
+        if ((f32)__fabs(PSVECDotProduct(entry + 0xc, entry + 0xc)) <= *epsilon) ((f32 *)entry)[3] = one;
+        PSVECNormalize(entry + 0xc, entry + 0xc);
+        speed = ((f32 *)entry)[8];
+        ((f32 *)entry)[3] *= speed;
+        ((f32 *)entry)[4] *= speed;
+        ((f32 *)entry)[5] *= speed;
+        j = 0; suboffset = 0;
+        sp.a[1] = *(f32 *)(entry + 0x5c);
+        sp.a[0] = *(f32 *)(entry + 0x48);
+        sp.a[3] = *(f32 *)(entry + 0x54);
+        sp.a[2] = *(f32 *)(entry + 0x50);
+        scale = *(f32 *)(entry + 0x48) * half;
+        while (j < *(s32 *)(entry + 0x70)) {
+            v = (f32 *)(*(u32 *)(entry + 0x6c) + suboffset);
+            z = fn_80287BC8(-scale, scale);
+            y = fn_80287BC8(-scale, scale);
+            x = fn_80287BC8(-scale, scale);
+            sp.v[0] = x; sp.v[1] = y; sp.v[2] = z;
+            sp.p[0] = ((f32 *)entry)[0] + (f32)x;
+            sp.p[1] = ((f32 *)entry)[1] + (f32)y;
+            sp.p[2] = ((f32 *)entry)[2] + (f32)z;
+            memcpy(v + 6, &sp, 0x10);
+            v[0] = sp.p[0]; v[1] = sp.p[1]; v[2] = sp.p[2];
+            y = fn_80287BC8(lbl_80564944, lbl_80564948);
+            v[3] = fn_80287BC8(lbl_80564944, lbl_80564948);
+            v[4] = zero; v[5] = y;
+            if ((f32)__fabs(PSVECDotProduct(v + 3, v + 3)) <= *epsilon) v[3] = one;
+            PSVECNormalize(v + 3, v + 3);
+            speed = v[8];
+            v[3] *= speed; v[4] *= speed; v[5] *= speed;
+            suboffset += 0x28; j++;
+        }
+        offset += 4; i++;
+    }
+}
+#pragma pop
 
 void fn_802A8978(void) {
     s32* base;
