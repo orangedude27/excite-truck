@@ -3,18 +3,26 @@
 
 #include <types.h>
 
-extern int lbl_8055F138;
-extern int lbl_80498788[];
-extern int lbl_8055F140;
+extern s32 lbl_8055F138;
+extern s32 lbl_80498788[];
+extern s32 lbl_8055F140;
 extern void fn_8000D838(void *);
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 void fn_8023C9C8(void) {
-    int zero = 0;
-    int *p = lbl_80498788;
+    s32 v;
+    s32 *p;
     fn_8000D838(&lbl_8055F138);
-    *p = zero;
-    p[1] = 0x7b;
-    p[2] = zero;
-    p[3] = zero;
-    p[4] = zero;
-    lbl_8055F140 = 0x7f000000;
+    p = lbl_80498788 + 1;
+    lbl_80498788[0] = 0;
+    v = 0x7B;
+    lbl_80498788[1] = v;
+    lbl_80498788[2] = 0;
+    lbl_80498788[3] = 0;
+    lbl_80498788[4] = 0;
+    lbl_8055F140 = 0x7F000000;
 }
+#pragma opt_dead_assignments reset
+#pragma opt_propagation reset
+#pragma scheduling on
