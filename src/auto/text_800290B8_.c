@@ -505,7 +505,7 @@ long double __strtold(int max_width, int (*ReadProc)(void*, int, int), void* Rea
 
                         exponent = exponent * 10 + (c - '0');
 
-                        if (exp_value > SHRT_MAX) {
+                        if (exp_value > 32767) {
                             *overflow = 1;
                         }
 
@@ -548,14 +548,10 @@ long double __strtold(int max_width, int (*ReadProc)(void*, int, int), void* Rea
             }
         }
 
-        if (exp_value < DBL_MIN_10_EXP || exp_value > DBL_MAX_10_EXP) {
-            if (!*overflow && d.sig.text[0] == '0' && d.sig.text[1] == 0) {
-                return 0.0;
-            }
+        exp_value += exp_adjust;
+        if (exp_value < -32768 || exp_value > 32767) {
             *overflow = 1;
         }
-
-        exp_value += exp_adjust;
 
         if (*overflow) {
             if (exp_negative) {
@@ -662,20 +658,3 @@ long double __strtold(int max_width, int (*ReadProc)(void*, int, int), void* Rea
         return result;
     }
 }
-extern __Locale lbl_802FE850;
-extern struct lconv lbl_802FE6A0;
-extern float lbl_80558DB4;
-extern double lbl_80558DB8;
-extern double fn_8002F230(const char*);
-#define __lconv lbl_802FE6A0
-#define nan fn_8002F230
-#undef HUGE_VALF
-#undef HUGE_VAL
-#define HUGE_VALF lbl_80558DB4
-#define HUGE_VAL lbl_80558DB8
-#define toupper(c) (((c) < 0 || (c) >= 256) ? (c) : (*(const unsigned char**)((char*)lbl_802FE850.cmap + 12))[(c)])
-#define __ctype_test(c, mask) (((c) < 0 || (c) >= 256) ? 0 : ((*(const unsigned short**)((char*)lbl_802FE850.cmap + 8))[(c)] & (mask)))
-#define isspace(c) __ctype_test(c, 0x100)
-#define isdigit(c) __ctype_test(c, 8)
-#define isalpha(c) __ctype_test(c, 1)
-#define isxdigit(c) __ctype_test(c, 0x10)
