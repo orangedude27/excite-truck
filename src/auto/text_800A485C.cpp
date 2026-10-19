@@ -4918,6 +4918,10 @@ extern "C" void fn_800CF170(void *arg0) {
     fn_800FA350();
 }
 
+void fn_800CF27C(void) {
+
+}
+
 extern "C" s32 fn_800A4A8C(s32);
 extern "C" s32 fn_800A4B54(s32);
 extern "C" s32 fn_800A485C(s32 arg0) {
