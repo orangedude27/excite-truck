@@ -106,6 +106,18 @@ void *fn_801F2064(void) {
     return p;
 }
 
+extern const char lbl_8033A66C[];
+extern const char lbl_8033A7D0[];
+#pragma scheduling invalid_target
+void *fn_801F20C8(void) {
+    void **p = (void **)fn_801284F8(4, (void *)lbl_8033A66C);
+    if (p != 0) {
+        *p = (void *)lbl_8033A7D0;
+    }
+    return p;
+}
+#pragma scheduling on
+
 #pragma push
 #pragma small_data off
 void fn_801F2108(void) {
