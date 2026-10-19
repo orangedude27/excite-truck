@@ -48,34 +48,99 @@ void fn_80273B48(void) {
 void fn_80273B4C(void *arg0) {
     extern void fn_80015A20(void *, float *, float, float);
     extern void fn_80015B20(void *, void *, void *);
-    extern float lbl_80563FA8;
-    extern float lbl_80563FAC;
-    extern float lbl_80563FB0;
-    extern float lbl_80563FB4;
+    extern float lbl_80563FA8, lbl_80563FAC, lbl_80563FB0, lbl_80563FB4;
     void *temp_r4 = *(void **)((char *)arg0 + 0x140);
-    char out[0x14];
-    volatile char pad[0x10];
+    char out[0x24];
     float vec[3];
     float var_f1;
+    float product;
     void *temp_r3;
     if (temp_r4 != 0) {
-        if (*(unsigned char *)((char *)temp_r4 + 0x260C) != 0) {
-            var_f1 = lbl_80563FA8;
-        } else {
-            var_f1 = lbl_80563FAC;
-        }
+        if (*(unsigned char *)((char *)temp_r4 + 0x260C) != 0) var_f1 = lbl_80563FA8;
+        else var_f1 = lbl_80563FAC;
         vec[0] = lbl_80563FB0;
-        vec[1] = (lbl_80563FB0 * lbl_80563FB4) * var_f1;
+        product = lbl_80563FB0 * lbl_80563FB4;
+        vec[1] = product * var_f1;
         vec[2] = lbl_80563FB0;
         fn_80015A20(out, vec, var_f1, lbl_80563FB0);
         temp_r3 = (char *)arg0 + 0x58;
-        fn_80015B20(temp_r3, out, temp_r3);
+        fn_80015B20(temp_r3, out, (void *)((char *)arg0 + 0x58));
     }
 }
 
 void fn_8027445C(void) {
     extern void fn_80274268(void);
     fn_80274268();
+}
+
+extern float PSQUATMultiply(void *, void *);
+extern void PSVECCrossProduct(void *, void *, void *);
+extern void PSVECNormalize(void *, void *);
+extern double atan(double), fn_8002EF30(float), fabs(double);
+extern float lbl_80558DC4[];
+extern float  lbl_80563FC4, lbl_80563FD8, lbl_80563FFC, lbl_80564000, lbl_80564004, lbl_80564008, lbl_8056400C;
+extern float lbl_80558DC4[];
+extern float  lbl_80563FC4, lbl_80563FD8, lbl_80563FFC, lbl_80564000, lbl_80564004, lbl_80564008, lbl_8056400C;
+#pragma push
+#pragma processor 750
+int fn_80274730(void *arg0, float arg1, float arg2, float arg3, float arg4) {
+    float up[3], forward[3], side[3], right[3];
+    char *p=arg0;
+    float x,y,z,d,scale,dist,lower,angle,ratio,speed,v;
+    x=(*(float *)(p+0x4c))-(*(float *)(p+0x7c)); y=(*(float *)(p+0x50))-(*(float *)(p+0x80)); z=(*(float *)(p+0x54))-(*(float *)(p+0x84));
+    (*(float *)(p+0x70))=x; (*(float *)(p+0x74))=y; (*(float *)(p+0x78))=z;
+    if ((float)__fabs(x)<=lbl_80558DC4[0] && (float)__fabs(z)<=lbl_80558DC4[0]) {
+        x=(*(float *)(p+0xd8)); z=(*(float *)(p+0xe0)); (*(float *)(p+0x70))=x; (*(float *)(p+0x78))=z;
+    }
+    up[0]=lbl_80563FB0; up[1]=lbl_80563FAC; up[2]=lbl_80563FB0;
+    PSVECCrossProduct(up,p+0x70,p+0x58);
+    PSVECCrossProduct(p+0x70,p+0x58,p+0x64);
+    x=(*(float *)(p+0x58)); y=(*(float *)(p+0x5c)); z=(*(float *)(p+0x60)); right[0]=x; right[1]=y; right[2]=z;
+    x=(*(float *)(p+0x70)); y=(*(float *)(p+0x74)); z=(*(float *)(p+0x78)); forward[0]=x; forward[1]=y; forward[2]=z;
+    PSVECCrossProduct(forward,right,side);
+    PSVECNormalize(right,right); PSVECNormalize(side,side);
+    PSVECCrossProduct(right,side,forward);
+    (*(float *)(p+0x58))=right[0]; (*(float *)(p+0x5c))=right[1]; (*(float *)(p+0x60))=right[2];
+    (*(float *)(p+0x64))=side[0]; (*(float *)(p+0x68))=side[1]; (*(float *)(p+0x6c))=side[2];
+    (*(float *)(p+0x70))=forward[0]; (*(float *)(p+0x74))=forward[1]; (*(float *)(p+0x78))=forward[2];
+    d=PSQUATMultiply(p+0x7c,p+0x4c);
+    if (arg2>lbl_80563FB0) {
+        scale=(lbl_80563FAC-arg4)*(d-arg2);
+        x=(*(float *)(p+0x7c))+(*(float *)(p+0x70))*scale; y=(*(float *)(p+0x80))+(*(float *)(p+0x74))*scale; z=(*(float *)(p+0x84))+(*(float *)(p+0x78))*scale;
+        (*(float *)(p+0x7c))=x; (*(float *)(p+0x80))=y; (*(float *)(p+0x84))=z;
+    }
+    dist=PSQUATMultiply(p+0x7c,p+0x4c);
+    lower=lbl_80563FFC; angle=lbl_80564000; v=lbl_80564004;
+    if (arg3>lbl_80564008) ratio=lbl_80563FAC/arg3; else ratio=lbl_80563FAC;
+    speed=lbl_8056400C*ratio;
+    v=lbl_80563FD8*(float)atan((speed/dist)*(float)fn_8002EF30(v*lbl_80563FC4));
+    angle=angle<v?angle:v;
+    angle=angle>lower?angle:lower;
+    if(arg1>lbl_80563FB0) { (*(float *)(p+0xbc))=arg1; (*(float *)(p+0x194))=arg1; }
+    else { v=(*(float *)(p+0x194)); v=v+lbl_80563FAC*(angle-v); (*(float *)(p+0xbc))=v; (*(float *)(p+0x194))=v; }
+    (*(float *)(p+0x120))=lbl_80563FB0; (*(float *)(p+0x124))=lbl_80563FB0; (*(float *)(p+0x128))=lbl_80563FB0;
+}
+#pragma pop
+
+extern float PSVECDotProduct(float *, float *);
+extern void fn_8026E850(float *, float *, void *, float *);
+void fn_802750C4(void *arg0, float arg1, float arg2) {
+    float sp8[3];
+    float sp14[3];
+    float dot;
+    float scale;
+    sp8[0] = lbl_80563FB0;
+    sp8[1] = lbl_80563FAC;
+    sp8[2] = lbl_80563FB0;
+    fn_8026E850((float *)((char *)arg0 + 0x7C), (float *)((char *)arg0 + 0xE4), arg0, sp8);
+    sp14[0] = *(float *)((char *)arg0 + 0xE4) - *(float *)((char *)arg0 + 0x7C);
+    sp14[1] = *(float *)((char *)arg0 + 0xE8) - *(float *)((char *)arg0 + 0x80);
+    sp14[2] = *(float *)((char *)arg0 + 0xEC) - *(float *)((char *)arg0 + 0x84);
+    dot = PSVECDotProduct((float *)((char *)arg0 + 0x70), sp14);
+    scale = (dot - arg2) * arg1;
+    *(float *)((char *)arg0 + 0x7C) += *(float *)((char *)arg0 + 0x70) * scale;
+    *(float *)((char *)arg0 + 0x80) += *(float *)((char *)arg0 + 0x74) * scale;
+    *(float *)((char *)arg0 + 0x84) += *(float *)((char *)arg0 + 0x78) * scale;
 }
 
 void fn_802751AC(void *arg0, float angle) {
