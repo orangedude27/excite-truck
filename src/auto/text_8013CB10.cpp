@@ -24,6 +24,12 @@ extern "C" u8 *fn_801B2EC0(s32);
 
 struct S28_80142118 { s32 v[7]; };
 
+struct TVec2 { f32 x; f32 y; };
+
+extern "C" char lbl_80559D40[];
+extern "C" char lbl_80559D58[];
+extern "C" char lbl_80559D60[];
+
 extern "C" void fn_80140A6C(void);
 extern "C" s32 fn_801B8514(void);
 extern "C" u8 *fn_8017960C(s32);
@@ -823,17 +829,18 @@ extern "C" s32 fn_80143218(s32 arg0, u8 *arg1) {
 extern "C" void fn_801B8A68(void *, s32);
 extern "C" void fn_801432D4(TObj20b *arg0, s32 arg1) {
     u8 *obj = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
+    s32 zero = 0;
     if (obj[0x118] != 0 && arg0->v20() != 0) {
-        *(s32 *)(obj + 0x104) = 0;
+        *(s32 *)(obj + 0x104) = zero;
         if (*(s32 *)(obj + 0xE4) > 0) {
             *(s32 *)(obj + 0xF4) = *(s32 *)(obj + 0xE4);
             *(f32 *)(obj + 0xF0) = fn_8013CB3C();
-            *(s32 *)(obj + 0xE4) = 0;
+            *(s32 *)(obj + 0xE4) = zero;
         }
         if (*(s32 *)(obj + 0x100) > 0) {
             *(f32 *)(obj + 0xD4) = fn_8001DAE8(obj + 0xD0);
         }
-        *(s32 *)(obj + 0x100) = 0;
+        *(s32 *)(obj + 0x100) = zero;
     }
     fn_801B8A68(arg0, arg1);
 }
