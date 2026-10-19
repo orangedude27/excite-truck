@@ -11,21 +11,7 @@ typedef struct {
     u32 count;
     u32 *start;
 } BitReader8011;
-static inline u32 ReadBits8011(BitReader8011 *b, u32 n) {
-    u32 value;
-    if (b->count < n) {
-        u32 word = *b->next;
-        value = b->value | (word << b->count);
-        b->value = word >> (n - b->count);
-        b->count += 32 - n;
-        b->next++;
-    } else {
-        b->count -= n;
-        value = b->value;
-        b->value >>= n;
-    }
-    return value & ((1U << n) - 1);
-}
+
 #include <revolution/ARC/arc.h>
 #include <revolution/OS/OSAlarm.h>
 #include <revolution/OS/OSContext.h>
@@ -739,6 +725,97 @@ void fn_8011AED8(s32 arg0, f32 *arg1, u32 arg2, f32 farg0) {
         in += 2;
         out += 2;
     }
+}
+
+s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 output, u32 *input, u32 bands, f32 gain, s32 arg8) {
+    f32 buffer[4096];
+    f32 factors[26];
+    BitReader8011 bits;
+    s32 mode;
+    u32 i, j, index;
+    f32 *p;
+    f32 *q;
+    mode = flags & 1;
+    bits.start = input;
+    bits.next = input;
+    bits.count = 0;
+    bits.value = 0;
+    if (mode) {
+        if (bits.count < 2) {
+            bits.value = *bits.next >> (2 - bits.count);
+            bits.count += 30;
+            bits.next++;
+        } else {
+            bits.value >>= 2;
+            bits.count -= 2;
+        }
+    }
+    p = buffer;
+    for (i = 0; i < channels; i++) {
+        {
+            u32 value;
+            if (bits.count < 29) {
+                u32 word = *bits.next;
+                value = bits.value | (word << bits.count);
+                bits.value = word >> (29 - bits.count);
+                index = value & 0x1fffffff;
+                bits.count += 3;
+                bits.next++;
+            } else {
+                bits.count -= 29;
+                value = bits.value;
+                index = value & 0x1fffffff;
+                bits.value >>= 29;
+            }
+        }
+        p[0] = fn_8011AE18(index);
+        {
+            u32 value;
+            if (bits.count < 29) {
+                u32 word = *bits.next;
+                value = bits.value | (word << bits.count);
+                bits.value = word >> (29 - bits.count);
+                index = value & 0x1fffffff;
+                bits.count += 3;
+                bits.next++;
+            } else {
+                bits.count -= 29;
+                value = bits.value;
+                index = value & 0x1fffffff;
+                bits.value >>= 29;
+            }
+        }
+        p[1] = fn_8011AE18(index);
+        q = factors;
+        for (j = 0; j < bands; j++) {
+            {
+            u32 value;
+            if (bits.count < 8) {
+                u32 word = *bits.next;
+                value = bits.value | (word << bits.count);
+                bits.value = word >> (8 - bits.count);
+                index = value & 0xff;
+                bits.count += 24;
+                bits.next++;
+            } else {
+                bits.count -= 8;
+                value = bits.value;
+                index = value & 0xff;
+                bits.value >>= 8;
+            }
+        }
+            if (index > 95) index = 95;
+            *q++ = lbl_80329BC8[index];
+        }
+        fn_8011AF94(p, size, &bits, factors, arg8);
+        if (mode) fn_8012023C(size, 1, p, arg3, arg4);
+        else fn_801200BC(size, -1, p, arg3, arg4);
+        p += size;
+    }
+    if (channels == 1) fn_8011AE68(output, buffer, size, gain);
+    else fn_8011AED8(output, buffer, size, gain);
+    bits.count = 0;
+    return ((u32)bits.next - (u32)bits.start) & 0x1fffffff;
 }
 
 void fn_8011BC48(void) {
