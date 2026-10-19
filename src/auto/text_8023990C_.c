@@ -26,3 +26,5 @@ void fn_8023990C(void) {
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
 #pragma scheduling on
+
+DECL_SECTION(".ctors") funcptr_t D_802ED3EC = fn_8023990C;
