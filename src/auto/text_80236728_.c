@@ -86,6 +86,24 @@ void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
 
 void fn_8023695C(void) { fn_80237EFC(); }
 
+void fn_802369A8(char *arg0, int arg1, int arg2) {
+    extern char lbl_8055BA08[8], lbl_8055BA10[8];
+    extern int fn_801345D8(void *, int, const char *, int);
+    extern char *fn_80029004(char *, int);
+    char *dot;
+    const char *suffix;
+    ((int (*)(void *, int, const char *, ...))fn_801345D8)(arg0, arg1, lbl_8055BA08, arg2);
+    dot = fn_80029004(arg0, '.');
+    if (dot) *dot = 0;
+    suffix = lbl_8055BA10;
+    while ((signed char)*arg0) { --arg1; ++arg0; }
+    if (arg1 > 0) {
+        while ((signed char)(*arg0++ = *suffix++) != 0) {
+            if (--arg1 <= 0) { arg0[-1] = 0; break; }
+        }
+    }
+}
+
 void fn_802379EC(void *arg0) {
     int minus = -1;
     int zero = 0;
@@ -106,7 +124,6 @@ void fn_80237A84(void *arg0) {
 extern char lbl_8055BA08[];
 extern char lbl_8055BA10[];
 extern char lbl_80498664[];
-extern int fn_801345D8(void *, int, const char *, int);
 extern char *fn_80029004(char *, int);
 extern char *fn_80237C40(void);
 void fn_80237A9C(void) {
@@ -301,6 +318,90 @@ void *fn_80238370(void *arg0, int arg1) {
 
 float fn_802383F4(void) { return lbl_805636E0; }
 
+#pragma push
+#pragma processor 750
+void fn_802383FC(TrailMgr *mgr) {
+    extern float fn_8023659C(void);
+    extern void *fn_8022EDE4(float *, float);
+    extern void *fn_8022EE9C(void);
+    extern void fn_8022EE98(void *);
+    extern void fn_80214C54(void *, void *);
+    extern float lbl_805636E0, lbl_805636E4, lbl_805636E8;
+    float f29 = fn_8023659C();
+    float f30 = lbl_805636E0;
+    float f31 = lbl_805636E4;
+    float f27 = lbl_805636E8;
+    int i;
+    int off;
+    for (i = 0, off = 0; i < mgr->count; i++, off += 0x34) {
+        TrailEntry *e = (TrailEntry *)((char *)mgr->entries + off);
+        if (e->active == 0) continue;
+        {
+            float t = f29 - e->field30;
+            void *obj;
+            if (e->keyCount > 0) {
+                int idx = -1;
+                int j;
+                for (j = 0; j < e->keyCount; j++) {
+                    if (t >= e->keys[j].time) idx = j;
+                }
+                if (idx == -1) {
+                    TrailKey *k = e->keys;
+                    float mtx[12];
+                    mtx[9] = k->fc;
+                    mtx[10] = k->f10;
+                    mtx[11] = f30;
+                    mtx[0] = f31; mtx[1] = f30; mtx[2] = f30; mtx[3] = f30;
+                    mtx[4] = f31; mtx[5] = f30; mtx[6] = f30; mtx[7] = f30;
+                    mtx[8] = f31;
+                    obj = fn_8022EDE4(mtx, k->f4);
+                    *(float *)((char *)obj + 0x38) = k->f8;
+                } else if (idx == e->keyCount - 1) {
+                    TrailKey *k = &e->keys[e->keyCount - 1];
+                    float mtx[12];
+                    mtx[9] = k->fc;
+                    mtx[10] = k->f10;
+                    mtx[11] = f30;
+                    mtx[0] = f31; mtx[1] = f30; mtx[2] = f30; mtx[3] = f30;
+                    mtx[4] = f31; mtx[5] = f30; mtx[6] = f30; mtx[7] = f30;
+                    mtx[8] = f31;
+                    obj = fn_8022EDE4(mtx, k->f4);
+                    *(float *)((char *)obj + 0x38) = k->f8;
+                } else {
+                    TrailKey *c = &e->keys[idx];
+                    TrailKey *n = &e->keys[idx + 1];
+                    float denom = n->time - c->time;
+                    float tt;
+                    float mtx[12];
+                    if (denom <= f27) denom = f27;
+                    tt = (t - c->time) / denom;
+                    mtx[11] = f30;
+                    mtx[0] = f31; mtx[1] = f30; mtx[2] = f30; mtx[3] = f30;
+                    mtx[4] = f31; mtx[5] = f30; mtx[6] = f30; mtx[7] = f30;
+                    mtx[8] = f31;
+                    mtx[9] = c->fc + tt * (n->fc - c->fc);
+                    mtx[10] = c->f10 + tt * (n->f10 - c->f10);
+                    obj = fn_8022EDE4(mtx, c->f4 + tt * (n->f4 - c->f4));
+                    *(float *)((char *)obj + 0x38) = c->f8 + tt * (n->f8 - c->f8);
+                }
+            } else {
+                obj = fn_8022EE9C();
+            }
+            fn_80214C54((void *)e->field20, obj);
+            fn_8022EE98(obj);
+            if (e->flag2C != 0) {
+                float lim;
+                if (e->keyCount > 0) {
+                    lim = e->keys[e->keyCount - 1].time;
+                } else {
+                    lim = f30;
+                }
+                if (t > lim) e->active = 0;
+            }
+        }
+    }
+}
+#pragma pop
 extern void fn_80237AA0();
 extern void fn_80236960(void);
 extern float lbl_805636E0;
