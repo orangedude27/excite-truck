@@ -956,6 +956,127 @@ void fn_80070B54(void) {
     bta_sys_init();
 }
 
+#pragma push
+#pragma dont_inline on
+#pragma use_lmw_stmw off
+void btu_task_msg_handler(void) {
+    extern unsigned char lbl_803C0A50[];
+    UINT32 event;
+    TIMER_LIST_ENT *timer;
+    BT_HDR *msg;
+    UINT16 events;
+    UINT8 j;
+    UINT8 i;
+    int done = 0;
+    int handled;
+    void (*timer_callback)(TIMER_LIST_ENT *);
+    unsigned char *timer_reg;
+    int timer_handled;
+    extern void l2c_rcv_acl_data(BT_HDR *);
+    extern void l2c_link_segments_xmitted(BT_HDR *);
+    extern void btu_hcif_process_event(BT_HDR *);
+    extern int btu_hcif_send_cmd();
+    extern void l2c_process_timeout(void *);
+    extern void btu_hcif_cmd_timeout(void);
+    extern void hidh_proc_repage_timeout(TIMER_LIST_ENT *);
+    extern void bta_sys_event(BT_HDR *);
+    extern void fn_8007DEF4(void *);
+    extern void fn_8007C794(void);
+    extern void fn_8007AD38(void);
+    extern void fn_80095518(void *);
+    extern void fn_8007141C(void);
+    extern void sdp_conn_timeout(tCONN_CB *);
+    OSGetTime();
+    lbl_8055DC78++;
+    fn_8006EBAC();
+    if (lbl_80559054) {
+        lbl_80559054 = 0;
+        lbl_80559050 = 1;
+    } else {
+        lbl_80559050++;
+        fn_8006EB88();
+        return;
+    }
+    fn_8006EB88();
+    events = 5;
+    if ((UINT32)lbl_8055DC78 > (UINT32)(lbl_8055DC7C + 500)) {
+        lbl_8055DC7C = lbl_8055DC78;
+        events |= 0x30;
+    }
+    while (!done) {
+        done = 1;
+        if (events & 1) {
+            while ((msg = GKI_read_mbox(0)) != 0) {
+                done = 0;
+                event = msg->event & 0xFF00;
+                switch (event) {
+                case 0x1100: l2c_rcv_acl_data(msg); break;
+                case 0x1900: l2c_link_segments_xmitted(msg); break;
+                case 0x1200: fn_8007DEF4(msg); break;
+                case 0x1000: btu_hcif_process_event(msg); GKI_freebuf(msg); break;
+                case 0x1600: btu_hcif_send_cmd(msg); break;
+                default:
+                    for (i = 0, handled = 0; !handled && i < 6; i++) {
+                        unsigned char *reg = lbl_803C0A50 + 0x10 + i * 8;
+                        void (*callback)(BT_HDR *) = *(void (**)(BT_HDR *))(reg + 4);
+                        if (callback && event == *(UINT16 *)reg) {
+                            if (callback) {
+                                callback(msg);
+                                handled = 1;
+                            }
+                        }
+                    }
+                    if (!handled) GKI_freebuf(msg);
+                    break;
+                }
+            }
+        }
+        if (events & 0x10) {
+            GKI_update_timer_list((TIMER_LIST_Q *)(lbl_803C0A50 + 0x40), 1);
+            events &= ~0x10;
+            while ((timer = *(TIMER_LIST_ENT **)(lbl_803C0A50 + 0x40)) != 0 && timer->ticks == 0) {
+                done = 0;
+                GKI_remove_from_timer_list((TIMER_LIST_Q *)(lbl_803C0A50 + 0x40), timer);
+                switch (timer->event) {
+                case 1: btm_dev_timeout(timer); break;
+                case 9: btm_acl_timeout(timer); break;
+                case 2: case 3: case 4: l2c_process_timeout(timer); break;
+                case 5: sdp_conn_timeout((tCONN_CB *)timer->param); break;
+                case 10: fn_8007C794(); break;
+                case 8: fn_8007AD38(); break;
+                case 11: case 12: fn_80095518(timer); break;
+                case 60: btu_hcif_cmd_timeout(); break;
+                case 66: hidh_proc_repage_timeout(timer); break;
+                case 22: ((void (*)(TIMER_LIST_ENT *))timer->param)(timer); break;
+                default:
+                    for (j = 0, timer_handled = 0; !timer_handled && j < 2; j++) {
+                        timer_reg = lbl_803C0A50 + j * 8;
+                        timer_callback = *(void (**)(TIMER_LIST_ENT *))(timer_reg + 4);
+                        if (timer_callback && *(TIMER_LIST_ENT **)timer_reg == timer) {
+                            timer_callback(timer);
+                            timer_handled = 1;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+        if (events & 4) {
+            while ((msg = GKI_read_mbox(2)) != 0) {
+                done = 0;
+                bta_sys_event(msg);
+            }
+        }
+        if (events & 0x20) {
+            events &= ~0x20;
+            fn_8007141C();
+        }
+        if (events & 0x8000) break;
+    }
+    lbl_80559054 = 1;
+}
+#pragma pop
+
 extern unsigned char lbl_803C0A50[];
 extern unsigned char lbl_803C0AD8[];
 void fn_80070F90(void *arg0) {
