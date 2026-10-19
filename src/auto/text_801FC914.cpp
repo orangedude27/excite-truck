@@ -56,15 +56,25 @@ extern "C" void fn_802E317C(const char*, ...);
 extern "C" const char lbl_8033B618[];
 extern "C" float fn_802C99E8(float);
 extern "C" void fn_802C744C(void*, void*);
-#pragma scheduling invalid_target
-extern "C" void fn_801FC9CC(void) {
-    void *p = fn_801284F8(8, (const char *)&lbl_8033B608);
-    if (p != 0) {
-        *(void **)p = (void *)&lbl_8033B700[0];
-        *(int *)((char *)p + 4) = 0;
-    }
-}
-#pragma scheduling on
+  #pragma scheduling invalid_target
+  extern "C" void fn_801FC9CC(void) {
+      void *p = fn_801284F8(8, (const char *)&lbl_8033B608);
+      if (p != 0) {
+          *(void **)p = (void *)&lbl_8033B700[0];
+          *(int *)((char *)p + 4) = 0;
+      }
+  }
+  #pragma scheduling on
+  #pragma push
+  #pragma small_data off
+  extern "C" void fn_801FC94C(void) {
+      void *p;
+      if ((p = fn_801284F8(8, (const char *)&lbl_8033B5E8)) != 0) {
+          *(void **)p = (void *)&lbl_8033B730;
+          *(int *)((char *)p + 4) = 0;
+      }
+  }
+  #pragma pop
 
 void* fn_801FCA14(void* arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
