@@ -70,21 +70,21 @@ enum hex_scan_states {
 
 extern __Locale lbl_802FE850;
 extern struct lconv lbl_802FE6A0;
-extern float lbl_80558DB4;
-extern double lbl_80558DB8;
+extern unsigned long lbl_80558DB4[];
+extern unsigned long lbl_80558DB8[];
 extern double fn_8002F230(const char*);
 #define __lconv lbl_802FE6A0
 #define nan fn_8002F230
 #undef HUGE_VALF
 #undef HUGE_VAL
-#define HUGE_VALF lbl_80558DB4
-#define HUGE_VAL lbl_80558DB8
+#define HUGE_VALF (*(float*)lbl_80558DB4)
+#define HUGE_VAL (*(double*)lbl_80558DB8)
 #define toupper(c) (((c) < 0 || (c) >= 256) ? (c) : (*(const unsigned char**)((char*)lbl_802FE850.cmap + 12))[(c)])
 #define __ctype_test(c, mask) (((c) < 0 || (c) >= 256) ? 0 : ((*(const unsigned short**)((char*)lbl_802FE850.cmap + 8))[(c)] & (mask)))
 #define isspace(c) __ctype_test(c, 0x100)
 #define isdigit(c) __ctype_test(c, 8)
 #define isalpha(c) __ctype_test(c, 1)
-#define isxdigit(c) __ctype_test(c, 0x10)
+#define isxdigit(c) __ctype_test(c, 0x400)
 #define fetch() (count++, (*ReadProc)(ReadProcArg, 0, __GetAChar))
 #define unfetch(c) (*ReadProc)(ReadProcArg, c, __UngetAChar)
 
