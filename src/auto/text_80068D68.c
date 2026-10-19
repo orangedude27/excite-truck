@@ -11,6 +11,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 extern u8 lbl_803C4040[];
+extern u8 lbl_803151D8[];
 extern char lbl_8031801C[];
 extern char lbl_80318040[];
 extern char lbl_8031806C[];
