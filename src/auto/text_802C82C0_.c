@@ -147,6 +147,18 @@ void fn_802C86E8(void* hi) {
     lbl_8055D018 = hi;
 }
 
+void fn_802C87B4(int x,int y,int w,int h){
+int half;
+if((unsigned char)lbl_8055FC74==0 && (unsigned char)lbl_8055FC8D!=0){
+half=(lbl_8055CFF4+((unsigned int)lbl_8055CFF4>>31))>>1;
+h=(int)(lbl_80564F18+(float)h*lbl_8055D024);
+y=half+(int)(lbl_80564F18+(float)(y-half)*lbl_8055D024);
+}
+lbl_8055FC64=(void*)w;lbl_8055FC5C=(void*)x;lbl_8055FC60=(void*)y;lbl_8055FC68=(void*)h;
+lbl_8055FC6C=(float)w/(float)h;
+fn_802D01E0(x,y,w);fn_802CC518(w,lbl_8055FC44);
+}
+
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
 void fn_802C88CC(unsigned int arg0) {
     fn_802D02F8(arg0, 1);
@@ -156,13 +168,11 @@ extern unsigned int lbl_804C1410[];
 extern void PSQUATMultiply(void *, unsigned int, void *);
 extern void fn_802C7734(unsigned int);
 extern void fn_802C8B70(void);
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802C88D4(unsigned int arg0) {
-    register unsigned int q;
-    q = arg0;
-    PSQUATMultiply((void *)&lbl_804C1410[9], q, lbl_804C1410);
+    PSQUATMultiply((void *)&lbl_804C1410[9], arg0, lbl_804C1410);
 }
-
+#pragma scheduling reset
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
 extern double lbl_80564F10;
 extern float lbl_80564F18, lbl_80564F1C;
@@ -216,16 +226,16 @@ void fn_802C8BD0(int arg0) {
 
 #pragma use_lmw_stmw off
 void fn_802C8C04(int arg0) {
-    unsigned int src[12];
+    unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
     unsigned int *dst = lbl_804C13E0;
     unsigned int sp8[12];
-    unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
     v0 = lbl_804C1410[0];
+    *dst++ = v0;
     v1 = lbl_804C1410[1]; v2 = lbl_804C1410[2]; v3 = lbl_804C1410[3];
     v4 = lbl_804C1410[4]; v5 = lbl_804C1410[5]; v6 = lbl_804C1410[6];
     v7 = lbl_804C1410[7]; v8 = lbl_804C1410[8]; v9 = lbl_804C1410[9];
     v10 = lbl_804C1410[10]; v11 = lbl_804C1410[11];
-    *dst++ = v0; *dst++ = v1; *dst++ = v2; *dst++ = v3; *dst++ = v4; *dst++ = v5;
+    *dst++ = v1; *dst++ = v2; *dst++ = v3; *dst++ = v4; *dst++ = v5;
     *dst++ = v6; *dst++ = v7; *dst++ = v8; *dst++ = v9; *dst++ = v10; *dst++ = v11;
     lbl_8055FC35 = 1;
     fn_802C89E8(sp8, v11, v10, v9, v8, v7, v6, v5);
@@ -448,13 +458,14 @@ void fn_802C99D8(void) {
     fn_802D01B0(lbl_804C1440, lbl_8055D01C);
 }
 
+#pragma dont_inline on
 float fn_802C99E8(float arg0) {
     float previous = lbl_8055D01C;
     lbl_8055D01C = arg0;
     fn_802C99D8();
     return previous;
 }
-
+#pragma dont_inline reset
 void fn_802C9A1C(float *arg0) {
     float x = arg0[0];
     float y = arg0[1];
