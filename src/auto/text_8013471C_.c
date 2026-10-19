@@ -333,12 +333,18 @@ s32 fn_801351AC(void) {
     return 0;
 }
 
-void fn_801351B4(void *param, int a, int b, int c, int d, int e, int f, int g) {
-    void **vtable = *(void ***)param;
-    void (*fn)(void *, int, int, int, int, int, int, int) = *(void **)((u8 *)vtable + 0x10);
-    fn(param, a, b, c, d, e, f, g);
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801351B4(void* obj) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+    };
+    ((Dummy*)obj)->f2();
 }
-
+#pragma cplusplus reset
+#pragma pop
 void fn_801351C4(void *arg0, s32 arg1) {
     ((s32 *)arg0)[2] = arg1;
 }
