@@ -241,6 +241,53 @@ double __kernel_sin(int iy, double x, double y) {
     return x - ((z * (lbl_80560A08 * y - v * r) - y) - lbl_80560A00 * v);
 }
 
+extern double lbl_802EE748[];
+extern double lbl_80560A48, lbl_80560A50, lbl_80560A58, lbl_80560A60, lbl_80560A68;
+double atan(double x) {
+    union { double d; unsigned int w[2]; } u;
+    int hx, ix, id;
+    double z, w, s1, s2;
+    u.d = x;
+    hx = u.w[0];
+    ix = hx & 0x7fffffff;
+    if (ix >= 0x44100000) {
+        if (ix > 0x7ff00000 || ((ix + 0x80100000 == 0) && u.w[1] != 0))
+            return x + x;
+        return hx > 0 ? lbl_802EE748[3] + lbl_802EE748[7] :
+            -lbl_802EE748[3] - lbl_802EE748[7];
+    }
+    if (ix < 0x3fdc0000) {
+        if (ix < 0x3e200000 && lbl_80560A48 + x > lbl_80560A50)
+            return x;
+        id = -1;
+    } else {
+        z = x;
+        if (z < 0.0) z = -z;
+        if (ix < 0x3ff30000) {
+            if (ix < 0x3fe60000) {
+                id = 0;
+                z = (lbl_80560A58 * z - lbl_80560A50) / (lbl_80560A58 + z);
+            } else {
+                id = 1;
+                z = (z - lbl_80560A50) / (lbl_80560A50 + z);
+            }
+        } else if (ix < 0x40038000) {
+            id = 2;
+            z = (z - lbl_80560A60) / (lbl_80560A50 + lbl_80560A60 * z);
+        } else {
+            id = 3;
+            z = lbl_80560A68 / z;
+        }
+    }
+    w = z * z;
+    s1 = w * (lbl_802EE748[8] + w * (lbl_802EE748[10] + w * (lbl_802EE748[12] + w * (lbl_802EE748[14] + w * lbl_802EE748[16]))));
+    s2 = w * (lbl_802EE748[9] + w * (lbl_802EE748[11] + w * (lbl_802EE748[13] + w * (lbl_802EE748[15] + w * (lbl_802EE748[17] + w * lbl_802EE748[18])))));
+    if (id < 0) return z - z * (s1 + s2);
+    z = lbl_802EE748[id] - ((z * (s1 + s2) - lbl_802EE748[id + 4]) - z);
+    if (hx < 0) z = -z;
+    return z;
+}
+
 double ceil(double x) {
     int i0, i1, j0;
     unsigned i, j;
@@ -386,6 +433,43 @@ double frexp(double x, int *eptr) {
     return x;
 }
 
+extern int __fpclassifyd(double);
+extern double copysign(double, double);
+extern double lbl_80560AA0, lbl_80560AA8, lbl_80560AB0, lbl_80560AB8, lbl_80560AC0;
+double ldexp(int arg0, double x) {
+    union { double d; unsigned int w[2]; } u;
+    int exp, newexp;
+    u.d = x;
+    if (__fpclassifyd(x) <= 2 || lbl_80560AA0 == x)
+        return x;
+    exp = (u.w[0] >> 20) & 0x7FF;
+    if (exp == 0) {
+        if ((u.w[1] | (u.w[0] & 0x7FFFFFFF)) == 0)
+            return x;
+        x *= lbl_80560AA8;
+        u.d = x;
+        exp = ((u.w[0] >> 20) & 0x7FF) - 0x36;
+        if (arg0 < -0xC350)
+            return lbl_80560AB0 * x;
+    }
+    if (exp == 0x7FF)
+        return x + x;
+    newexp = exp + arg0;
+    if (newexp > 0x7FE)
+        return lbl_80560AB8 * copysign(lbl_80560AB8, x);
+    if (newexp > 0) {
+        u.w[0] = (u.w[0] & 0x800FFFFF) | (newexp << 20);
+        return u.d;
+    }
+    if (newexp <= -0x36) {
+        if (arg0 > 0xC350)
+            return lbl_80560AB8 * copysign(lbl_80560AB8, x);
+        return lbl_80560AB0 * copysign(lbl_80560AB0, x);
+    }
+    u.w[0] = (u.w[0] & 0x800FFFFF) | ((newexp + 0x36) << 20);
+    return lbl_80560AC0 * u.d;
+}
+
 __declspec(section ".sdata") extern double lbl_80560AC8;
 #pragma dont_inline __kernel_sin
 double sin(double x) {
@@ -450,7 +534,13 @@ void fn_8002F230(void) {
 
 }
 
-void fn_8002F234(void) {
-    __ieee754_sqrt();
+extern double lbl_80560600, lbl_80560608, lbl_80560610, lbl_80560670;
+extern double lbl_80560618, lbl_80560620, lbl_80560628, lbl_80560630, lbl_80560638, lbl_80560640;
+extern double lbl_80560648, lbl_80560650, lbl_80560658, lbl_80560660, lbl_80560668;
+extern double lbl_80560678, lbl_80560680;
+extern float lbl_80558DB0;
+extern double __ieee754_sqrt(double);
+double fn_8002F234(double x) {
+    __ieee754_sqrt(x);
 }
 
