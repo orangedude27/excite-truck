@@ -2,6 +2,15 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
+
+extern s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
+extern void fn_8012E96C(s32);
+extern void fn_8012C4D8(void *);
+extern void fn_802E317C(const char *, ...);
+extern void *lbl_8034AC68;
+extern void *lbl_8034AC74;
+extern void *lbl_804C06E0[];
+extern u8 lbl_8055FACC;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
