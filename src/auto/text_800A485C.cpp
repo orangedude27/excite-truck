@@ -5307,7 +5307,7 @@ public:
 }
 extern "C" const char lbl_8031E764[];
 extern "C" const char lbl_8031E740[];
-namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } } }
+namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } s32 Console_GetTotalLines(detail::ConsoleHead *); } }
 extern "C" void OSLockMutex(void*);
 extern "C" void OSUnlockMutex(void*);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
