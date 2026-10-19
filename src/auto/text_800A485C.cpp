@@ -4309,7 +4309,7 @@ extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern void fn_800D24D4(void*, s32);
 extern void* lbl_8055DDBC;
 extern "C" void fn_800D2098(void*);
-extern "C" void __VprintfThunk(void*);
+extern "C" void __VprintfThunk(const char*, va_list);
 extern "C" void Console_VFPrintf__Q26nw4hbm2dbFQ36nw4hbm2db17ConsoleOutputTypePQ46nw4hbm2db6detail11ConsoleHeadPCcP16__va_list_struct(void*, void*, const char*, void*);
 extern "C" s32 fn_80116A30(void*);
 extern "C" void fn_800D1C48(void);
