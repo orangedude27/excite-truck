@@ -574,6 +574,33 @@ void *fn_8011A168(void *arg0) {
     return &fn_80119DD0;
 }
 
+#pragma unroll on
+void fn_8011A1A0(u32 *data, u32 size) {
+    u32 count = (size + 3) >> 2;
+    u32 groups;
+    if (count) {
+        groups = count >> 3;
+        if (groups) {
+            do {
+                *data = __lwbrx(data, 0); data++;
+                *data = __lwbrx(data, 0); data++;
+                *data = __lwbrx(data, 0); data++;
+                *data = __lwbrx(data, 0); data++;
+                *data = __lwbrx(data, 0); data++;
+                *data = __lwbrx(data, 0); data++;
+                *data = __lwbrx(data, 0); data++;
+                *data = __lwbrx(data, 0); data++;
+            } while (--groups);
+            count &= 7;
+        }
+        if (count) {
+            do {
+                *data = __lwbrx(data, 0); data++;
+            } while (--count);
+        }
+    }
+}
+#pragma unroll reset
 void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r0, temp_r31, temp_r3, temp_r3_2, temp_r4, var_r31;
     volatile s32 *counter = (volatile s32 *)((u8 *)arg0 + 0xC0);
@@ -1119,7 +1146,7 @@ void fn_80120084(void *arg0) {
     else free(base);
 }
 
-extern void fn_80121C68(void *);
+extern void fn_80121C68(s32, void *, void *);
 extern void fn_80122E08(s32, void *, s32, void *);
 extern void fn_80122ED8(s32, void *, s32, void *);
 extern void fn_80122FA4(s32, void *, s32, void *);
@@ -1131,11 +1158,11 @@ extern void fn_80124AD8(void *, void *);
 extern void fn_80121BB0(void *);
 extern void fn_80124F90(void *);
 extern void fn_80125098(void *);
-void fn_80120CA4(s32 count, void *dst, s32 mode, s32 srcIndex, void *src) {
-    s32 n;
+void fn_80120CA4(register s32 count, register void *dst, register s32 mode, register s32 srcIndex, register void *src) {
+    register s32 n;
     if (count > 0x20) {
         n = count >> 2;
-        fn_80121C68((u8 *)src + (srcIndex - n) * 4);
+        ((void (*)(s32, void *, void *))fn_80121C68)(count, dst, (u8 *)src + (srcIndex - n) * 4);
         if (count > 0x200) {
             fn_80122E08(n, dst, srcIndex, src);
             fn_80122ED8(n, (u8 *)dst + n * 4, srcIndex, src);
@@ -1160,6 +1187,41 @@ void fn_80120CA4(s32 count, void *dst, s32 mode, s32 srcIndex, void *src) {
             fn_80125098(dst);
         else
             fn_80124F90(dst);
+    }
+}
+
+void fn_80121400(s32 n, s32 *map, f32 *data, s32 unused) {
+    s32 size = 1;
+    s32 i, j, k, half, span;
+    *map = 0;
+    while ((size << 3) < n) {
+        n >>= 1;
+        for (i = 0; i < size; i++) map[size + i] = n + map[i];
+        size <<= 1;
+    }
+    half = size;
+    if ((size << 3) == n) {
+        for (i = 0; i < size; i++) {
+            for (j = 0; j < i; j++) {
+                s32 a = map[i] + j * 2;
+                s32 b = map[j] + i * 2;
+                f32 t0=data[b*2], t1=data[b*2+1];
+                data[b*2]=data[a*2]; data[b*2+1]=-data[a*2+1];
+                data[a*2]=t0; data[a*2+1]=-t1;
+            }
+            data[(map[i]+i*2)*2+1] = -data[(map[i]+i*2)*2+1];
+        }
+        return;
+    }
+    data[1] = -data[1];
+    data[(half*2+1)*2] = -data[(half*2+1)*2];
+    for (i=1; i<size; i++) {
+        for (j=0; j<i; j++) {
+            s32 a=2+map[j]+i*2, b=map[i+1]+j*2;
+            f32 t0=data[b*2], t1=data[b*2+1];
+            data[b*2]=data[a*2]; data[b*2+1]=-data[a*2+1];
+            data[a*2]=t0; data[a*2+1]=-t1;
+        }
     }
 }
 
@@ -1862,6 +1924,19 @@ void fn_80122518(s32 arg0, u8 *arg1, void *arg2) {
     *(arg1 + temp_r10_5) = (temp_f2_7 * temp_f6_11) + (temp_f1_8 * temp_f10_10);
     *(arg1 + temp_r8_2) = (temp_f4_5 * temp_f9_13) + (temp_f3_9 * temp_f11_12);
     *(arg1 + temp_r3_3) = (temp_f4_5 * temp_f11_12) - (temp_f3_9 * temp_f9_13);
+}
+
+void fn_80122ED8(s32 arg0, void *arg1, s32 arg2, void *arg3) {
+    s32 n = arg0 >> 2;
+    fn_801237C4((u8 *)arg3 + (arg2 - arg0) * 4);
+    if (arg0 > 0x200) {
+        fn_80122E08(n, arg1, arg2, arg3);
+        fn_80122ED8(n, (u8 *)arg1 + n * 4, arg2, arg3);
+        fn_80122E08(n, (u8 *)arg1 + n * 8, arg2, arg3);
+        fn_80122ED8(n, (u8 *)arg1 + (n - n * 4) * 4, arg2, arg3);
+        return;
+    }
+    fn_801231B8(arg0, arg1, arg2, arg3);
 }
 
 extern void fn_8012440C(void *, void *);
