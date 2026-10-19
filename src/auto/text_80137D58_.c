@@ -80,10 +80,11 @@ void fn_80138144(void *arg0) {
     }
 }
 
+#pragma dont_inline on
 void fn_80138434(void) {
     fn_80137F2C();
 }
-
+#pragma dont_inline reset
 void *fn_80138438(void *arg0) { void *node; void *best; node=*(void **)((char *)arg0+0x14); best=arg0; while(node!=arg0) { if(*(unsigned int *)((char *)node+0x10)>*(unsigned int *)((char *)best+0x10)) best=node; node=*(void **)((char *)node+0x14); } return best; }
 
 void *fn_8013846C(void *arg0) {
@@ -167,9 +168,9 @@ float fn_801385F0(float arg0, float arg1, float arg2, float arg3) {
         float adjust = diff > lbl_805613A4 ? lbl_8056139C : lbl_805613A0;
         diff -= arg1 * adjust;
     }
-    value = lbl_8056139C - (__fabsf(diff) / arg3);
-    if (value > lbl_8056139C) value = lbl_8056139C;
-    if (value < lbl_805613A4) value = lbl_805613A4;
+    value = lbl_8056139C - __fabsf(diff) / arg3;
+    if (lbl_8056139C < value) value = lbl_8056139C;
+    if (lbl_805613A4 > value) value = lbl_805613A4;
     if (value < lbl_805613A0) return lbl_805613A0;
     if (value > lbl_8056139C) return lbl_8056139C;
     if (value > lbl_805613A4)
