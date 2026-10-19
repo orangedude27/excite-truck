@@ -202,6 +202,9 @@ extern "C" void fn_80206750(void *arg0, int arg1, int arg2) {
     }
 }
 
+extern "C" void fn_80206820(void) {
+}
+
 extern "C" void fn_80206A5C(void* arg0) {
     if (*(unsigned char*)((char*)arg0 + 0x34)) {
         float value = *(float*)((char*)arg0 + 0x28);
