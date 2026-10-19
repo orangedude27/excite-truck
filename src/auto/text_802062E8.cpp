@@ -143,6 +143,9 @@ extern "C" void fn_80206518(void) {
     ((Obj80206518*)fn_80208D4C())->f12();
 }
 
+extern "C" void fn_8020654C(void) {
+}
+
 extern "C" void fn_80206550(unsigned int size) {
     extern int lbl_8055ED80; extern void* fn_80207C74(int, unsigned int);
     fn_80207C74(lbl_8055ED80, size);
