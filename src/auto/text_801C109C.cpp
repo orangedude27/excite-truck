@@ -66,8 +66,7 @@ extern "C" void fn_801C1B60(int arg0) {
     fn_801C1320((void*)arg0);
 }
 #pragma force_active reset
-void fn_801C1B9C(void) {
-    return;
+extern "C" void fn_801C1B9C(void) {
 }
 
 void fn_801C1BA0(void) {
