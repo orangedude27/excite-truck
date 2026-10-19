@@ -405,14 +405,16 @@ extern "C" void fn_801FF118(void) {
 }
 
 extern "C" const char lbl_8033B700[];
-extern "C" void* fn_801FF11C(void* arg0, int arg1) {
+#pragma scheduling invalid_target
+extern "C" void *fn_801FF11C(void *arg0, int arg1) {
     if (arg0 != 0) {
-        *(const char**)arg0 = lbl_8033B700;
-        if (arg1 > 0) fn_80128668(arg0);
+        *(void * volatile *)arg0 = (void *)&lbl_8033B700[0];
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
-
 extern "C" void fn_801FF168(void) {
 
 }
