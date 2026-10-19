@@ -20,10 +20,17 @@ int fn_802B539C(int arg0) {
 void fn_802B5404(int *arg0) { int temp = *arg0; if (temp != -2) { fn_802CAC54(temp); *arg0 = -2; } }
 
 __declspec(section ".sdata") extern const char lbl_8055CE10[];
-int fn_802B5448(void **arg0) {
-    return stricmp(lbl_8055CE10, (*(const char *(**)(void *))(*(void ***)arg0 + 2))(arg0)) == 0;
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_802B5448(void *arg0) {
+    class Obj {
+    public:
+        virtual const char *getName();
+    };
+    return stricmp((char *)&lbl_8055CE10, ((Obj *)arg0)->getName()) == 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 int fn_802B5488(void *arg0) {
     void **vtable = *(void ***)arg0;
     const char *name = ((const char *(*)(void *))vtable[2])(arg0);
