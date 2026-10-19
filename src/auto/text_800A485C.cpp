@@ -1332,7 +1332,7 @@ extern "C" s32 VFiPFPATH_transformInUnicode(s16 *dst, s32 src, s32 unused) {
 
 extern "C" s32 fn_800A4D44(void *);
 extern "C" s32 fn_800A4AD0(u8 *, u8 *);
-extern "C" void fn_800A4AAC(char *, char *);
+extern "C" void fn_800A4AAC_stub(char *, char *);
 extern "C" void fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFSTR_StrCmp(void *, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
@@ -1345,10 +1345,10 @@ extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
     u16 **p = (u16 **)arg2;
     if (fn_800A4D44(p) == 1U) {
         if (fn_800A4AD0((u8 *)*p, (u8 *)lbl_8055922C) == 0) {
-            fn_800A4AAC(arg0, (char *)lbl_80559224);
+            fn_800A4AAC_stub(arg0, (char *)lbl_80559224);
             return;
         }
-        fn_800A4AAC(arg0, (char *)*p);
+        fn_800A4AAC_stub(arg0, (char *)*p);
         return;
     }
     if (VFiPFSTR_StrCmp(p, (s32)lbl_8055922C) == 0) {
