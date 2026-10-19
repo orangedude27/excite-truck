@@ -226,6 +226,8 @@ extern "C" f32 fn_800EB430(void* arg0) {
     return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(*(f32*)((u8*)arg0 + 4) / lbl_80560FF4);
 }
 
+#pragma push
+#pragma schedule off
 void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay) {
     const char* file = (const char*)lbl_80322B80;
     s32 value = decay;
@@ -234,10 +236,12 @@ void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay) {
     if (value >= 0 && value <= 0x7F) valid = 1;
     if (valid == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x105, file + 0x94, value, 0, 0x7F);
+
     valid = 0;
     if (value >= 0 && value <= 0x7F) valid = 1;
     if (valid == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(file, 0x132, file + 0xD0, value, 0, 0x7F);
+
     f32 result;
     if (value == 0x7F) result = lbl_80560FE8;
     else if (value == 0x7E) result = lbl_80561008;
@@ -245,7 +249,7 @@ void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay) {
     else result = lbl_80561014 / (f32)(0x7E - value) / lbl_80561010;
     *(f32*)((u8*)self + 8) = result;
 }
-
+#pragma pop
 void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
  f32 value;
  int valid = 0;
@@ -841,8 +845,9 @@ extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *this_, con
 extern "C" s32 fn_800EF500(void* self) {
     void* iterator;
     if (*(u8*)((u8*)self + 0x16) == 0) return 0;
-    iterator = lbl_80412A6C + 4;
+    iterator = (u8*)lbl_80412A6C + 4;
     if (self == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
+    *(void**)0x0 = 0;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(lbl_80412A6C, &iterator, (u8*)self + 0x100);
     *(u8*)((u8*)self + 0x14) = *((u8*)Instance__15EmissionManagerFv() + 0x6c32);
     *(u8*)((u8*)self + 0x17) = 1;
@@ -1120,27 +1125,27 @@ extern "C" void UpdateAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
     }
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
+    class PlayerVTable {
+    public:
+        virtual void Dummy0();
+        virtual void Dummy1();
+        virtual void Stop();
+    };
     void* pList = (void*)&lbl_80412A6C[0x04];
     void* pHead = *(void**)pList;
     void* pPlayer;
 
-    while (1) {
+    while (pHead != pList) {
         pPlayer = pHead;
         pHead = *(void**)pPlayer;
-
         if (pPlayer == NULL) {
             Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324024, 0x23D,
                                          (const char*)lbl_80324000);
         }
-
-        {
-            void* pThis = (u8*)pPlayer - 0x100;
-            void* pVt = *(void**)pThis;
-            ((void (*)(void*))(*(void**)((u8*)pVt + 0x10)))(pThis);
-        }
-
-        if (pHead == pList) break;
+        ((PlayerVTable*)((u8*)pPlayer - 0x100))->Stop();
     }
 
     if (*(s32*)&lbl_80412A6C[0] != 0) {
@@ -1148,7 +1153,7 @@ extern "C" void StopAllPlayers__Q46nw4hbm3snd6detail9SeqPlayerFv(void) {
                                      (const char*)lbl_80323E64);
     }
 }
-
+#pragma pop
 extern "C" void fn_800F0728(void* this_, s32 a1, s32 a2) {
     void (*fn)(void*, s32, s32);
     void* p = *(void**)((u8*)this_ + 0x94);
@@ -1156,7 +1161,7 @@ extern "C" void fn_800F0728(void* this_, s32 a1, s32 a2) {
     fn(this_, a1, a2);
 }
 
-void fn_800F0750(void) {
+extern "C" void fn_800F0750(void) {
     return;
 }
 extern u8 lbl_803231D8[];
