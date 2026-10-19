@@ -13,7 +13,7 @@ extern f32 lbl_80563E3C;
 extern f32 lbl_80563E50;
 extern f32 lbl_80563E54;
 extern f32 lbl_80563E58;
-extern f32 fn_8026EB4C();
+extern f32 fn_8026EB4C(void *);
 extern s32 fn_80178CA4(void);
 extern double cos(double);
 extern double atan(double);
