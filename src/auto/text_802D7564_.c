@@ -19,6 +19,7 @@ extern unsigned short GXGetTexObjWrapT(void *);
 extern void *memset(void *, int, unsigned int);
 extern void *memcpy(void *, const void *, unsigned int);
 extern char lbl_8055D110[];
+extern void *fn_8012850C(void *, void *);
 extern char lbl_8055D118[4];
 extern void *fn_802D7600(void *queue);
 void fn_802D7564(void) {
