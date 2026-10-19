@@ -44,7 +44,7 @@ extern int lbl_8055ED8C;
 extern void *lbl_8055ED90;
 extern char lbl_8033BD3C;
 extern char lbl_8033BD4C;
-extern char lbl_8055B4C0[];
+extern char lbl_8055B4C0[8];
 extern char lbl_8055B4C8[];
 extern "C" void *fn_80206BF8(int, void*);
 extern int lbl_8055ED80;
@@ -158,6 +158,23 @@ extern "C" void* fn_80206570(int index) {
     if(index<10) return (void*)values[index];
     return (void*)0x8033BD30;
 }
+
+#pragma dont_inline on
+extern "C" void *fn_802066C8(void *arg0, u32 arg1) {
+    if (arg0 != 0) {
+        int value = *(int *)((char *)arg0 + 0xC);
+        *(void **)arg0 = (void *)&lbl_8033BDC0;
+        if (value != 0) {
+            fn_80208620(lbl_8055ED80, arg0);
+            fn_8020899C(lbl_8055ED80, *(int *)((char *)arg0 + 0xC));
+            *(int *)((char *)arg0 + 0xC) = 0;
+        }
+        if ((int)arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+#pragma dont_inline reset
 
 extern "C" void fn_80206750(void *arg0, int arg1, int arg2) {
     int count = (int)(long)lbl_8055ED88;
@@ -338,11 +355,39 @@ extern char lbl_8033BD78;
 __declspec(section ".rodata") extern char lbl_8033BD78;
 extern "C" void *fn_80207428(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     fn_802072E4(arg0, arg1, arg2);
-    *(int *)((char *)arg0 + 0x10) = arg3;
     *(void **)arg0 = &lbl_8033BD78;
+    *(int *)((char *)arg0 + 0x10) = arg3;
     fn_80206750(arg0, arg3, arg4);
     return arg0;
 }
+
+extern "C" void fn_80207490(void *arg0, void *arg1, int arg2) {
+    int i = 0;
+    *(unsigned char *)((char *)arg0 + 0x6E) = 0;
+    if (arg2 > 0 && (unsigned)arg2 < 0x7fffffffU) {
+        if (arg2 > 8) {
+            int n = arg2 - 8;
+            int blocks = (n + 7) >> 3;
+            int *p = (int *)arg1;
+            do {
+                int key = *(int *)((char *)arg0 + 0x10);
+                unsigned int found = (key == p[0]) | (key == p[3]) | (key == p[6]) | (key == p[9]) |
+                                     (key == p[12]) | (key == p[15]) | (key == p[18]) | (key == p[21]);
+                *(unsigned char *)((char *)arg0 + 0x6E) |= found;
+                p += 24;
+                i += 8;
+            } while (--blocks);
+        }
+        for (; i < arg2; i++) {
+            int key = *(int *)((char *)arg0 + 0x10);
+            int value = *(int *)((char *)arg1 + i * 12);
+            *(unsigned char *)((char *)arg0 + 0x6E) |= key == value;
+        }
+    }
+    *(unsigned char *)((char *)arg0 + 0x18) =
+        ((*(unsigned char *)((char *)arg0 + 0x18) & *(unsigned char *)((char *)arg0 + 0x6E)) != 0);
+}
+
 #pragma dont_inline reset
 extern "C" void fn_8020769C(void) {
 	fn_802073A4();
@@ -361,6 +406,18 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_80207748(
         }
     }
     return this_;
+}
+
+extern "C" void *fn_802077A4(int arg0, int arg1, int arg2, int arg3) {
+    struct Callback { virtual ~Callback(); };
+    void *obj = fn_80206BF8(0x78, lbl_8055B4C0);
+    if (obj != 0)
+        obj = fn_80207218(obj, arg0, arg1, arg2, arg3);
+    if (obj != 0 && *(int *)((char *)obj + 0xC) == 0) {
+        delete (Callback *)obj;
+        obj = 0;
+    }
+    return obj;
 }
 
 extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
