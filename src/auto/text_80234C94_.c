@@ -47,6 +47,7 @@ void fn_80234D44(int arg0) {
             node = fn_801284F8(8, (const char *)lbl_80340670);
             lbl_8055F084 = node;
             *node = arg0;
+            node = (int *)lbl_8055F084;
             node[1] = 0;
         } else {
             while (node[1] != 0)
@@ -81,30 +82,35 @@ void fn_80234DE4(unsigned int arg0) {
 
 void *fn_80234E88(const char *arg0) {
     void *node = lbl_8055F084;
-    do {
-        node = *(void **)((char *)node + 4);
-        if (node == 0)
-            break;
-    } while (stricmp(arg0, *(const char **)node) != 0);
+    goto loop;
+loop:
+    node = *(void **)((char *)node + 4);
+    if (node != 0 && stricmp(arg0, *(const char **)node) != 0)
+        goto loop;
     if (node == 0)
         return 0;
     return *(void **)node;
 }
 
+#pragma dont_inline on
 void *fn_8023505C(void *arg0, int arg1) {
     void *node;
     int i;
-    if (arg1 == 0) return *(void **)((char *)arg0 + 0x88);
+    if (arg1 == 0)
+        return *(void **)((char *)arg0 + 0x88);
     node = *(void **)((char *)arg0 + 0x88);
     i = 0;
-    for (;;) {
-        if (i == arg1) return node;
+    do {
+        if (i == arg1)
+            return node;
         node = *(void **)((char *)node + 0x18);
-        i++;
-        if (node == 0) return node;
-        if (i > arg1) return node;
-    }
+        i += 1;
+        if (node == 0)
+            break;
+    } while (i <= arg1);
+    return node;
 }
+#pragma dont_inline reset
 
 extern const char lbl_803406FC[];
 extern const char lbl_80340724[];
@@ -147,6 +153,78 @@ void fn_80235380(void *arg0) {
     }
 }
 
+void fn_802353F4(int arg0, int arg1, float arg2, float arg3, float arg4) {
+    void *node;
+
+    if (arg1 >= 0) {
+        node = fn_8023505C((void *)arg0, arg1);
+        if (node == 0) {
+            fn_802E30C8(lbl_80340808, arg1, arg0);
+        } else {
+            fn_802354A0(arg0, arg1, -1, arg2, arg3, arg4,
+                        *(float *)((char *)node + 0x14),
+                        *(float *)((char *)node + 0x10));
+        }
+    }
+}
+
+extern void fn_80230A68(void *, int, float, float, float, float, float);
+extern int fn_80230B9C(void *);
+extern void fn_802C8C04(int);
+extern void fn_802C8DB8(void *, int, unsigned short *, int, unsigned short, unsigned short, unsigned short, unsigned short, float, double);
+extern void fn_802C8D74(void);
+extern const char lbl_802FA020[];
+void fn_80235CBC(void *arg0, int arg1, float x, float y, float z, float dx, float dy) {
+    void *node;
+    int index;
+    struct V { double a; int b, c; float d, e; } v0, v1, v2, v3;
+    unsigned short ids[6];
+    if (arg1 < 0)
+        return;
+    node = fn_8023505C(arg0, arg1);
+    if (node == 0) {
+        fn_802E30C8(lbl_80340808, arg1, arg0);
+        return;
+    }
+    fn_802C8C04(*(int *)((char *)arg0 + 0x84));
+    index = fn_80230B9C(*(void **)((char *)arg0 + 0x88));
+    fn_80230A68(&v0, index, x, y, z, *(float *)node, *((float *)node + 1));
+    fn_80230A68(&v1, index, x + dx, y, z, *((float *)node + 2), *((float *)node + 1));
+    fn_80230A68(&v2, index, x, y - dy, z, *(float *)node + 0, *((float *)node + 3));
+    fn_80230A68(&v3, index, x + dx, y - dy, z, *((float *)node + 2), *((float *)node + 3));
+    fn_802C8DB8(&v0, 4, ids, 6, *(unsigned short *)(lbl_802FA020 + 8), *(unsigned short *)(lbl_802FA020 + 6), *(unsigned short *)(lbl_802FA020 + 4), *(unsigned short *)(lbl_802FA020 + 2), *(float *)((char *)&v3 + 0x10), v3.a);
+    fn_802C8D74();
+}
+
+#pragma dont_inline on
+float fn_80235EF0(int arg0, int arg1) {
+    void *node;
+
+    if (arg0 == 0)
+        return lbl_805636B8;
+    node = fn_8023505C((void *)arg0, arg1);
+    if (node == 0) {
+        fn_802E30C8(lbl_80340834, arg0, arg1);
+        return lbl_805636B8;
+    }
+    return *(float *)((char *)node + 0x14);
+}
+#pragma dont_inline reset
+extern const char lbl_80340878[];
+#pragma dont_inline on
+float fn_80235F64(int arg0, int arg1) {
+    void *node;
+
+    if (arg0 == 0)
+        return lbl_805636B8;
+    node = fn_8023505C((void *)arg0, arg1);
+    if (node == 0) {
+        fn_802E30C8(lbl_80340878, arg0, arg1);
+        return lbl_805636B8;
+    }
+    return *(float *)((char *)node + 0x10);
+}
+#pragma dont_inline reset
 extern void fn_802354A0(int, int, int, float, float, float, float, float);
 extern const char lbl_80340808[];
 extern const char lbl_80340834[];
