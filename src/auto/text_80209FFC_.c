@@ -5,6 +5,7 @@
 
 extern char lbl_8055EDDC;
 extern const char lbl_8033C308[];
+extern void fn_802E30C8(const char*, ...);
 #pragma dont_inline on
 void fn_8020A634(void) {
     lbl_8055EDDC = 0;
