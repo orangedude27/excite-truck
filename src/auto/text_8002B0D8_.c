@@ -507,8 +507,10 @@ double fn_8002EF30(double x) {
     return __kernel_tan(1 - ((hx & 1) << 1), y[0], y[1]);
 }
 
-void fn_8002EFA8(void) {
-    __ieee754_acos();
+extern double __ieee754_acos(double);
+
+double fn_8002EFA8(double x) {
+    return __ieee754_acos(x);
 }
 
 void fn_8002EFAC(void) {
