@@ -145,6 +145,7 @@ u32 fn_802B5E8C(s32 arg0) {
 }
 
 extern void* lbl_8055FA44;
+extern s32 fn_802B5D94();
 
 void fn_802B5EC4(void) {
     lbl_8055FA44 = (void*)fn_802B5D94();
