@@ -1,4 +1,6 @@
   #include <types.h>
+#include <revolution/OS/OSAlarm.h>
+#include <stdarg.h>
 namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } s32 Console_GetTotalLines(detail::ConsoleHead *); } }
 extern "C" void OSLockMutex(void*);
 extern "C" void OSUnlockMutex(void*);
