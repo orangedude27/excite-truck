@@ -362,6 +362,14 @@ int fn_802B2C44(void *arg0) {
     return method() != 0;
 }
 
+#pragma scheduling invalid_target
+void fn_802B2C7C(void *arg0) {
+    *(int *)arg0 = (int)((char *)arg0 + 0xC);
+    *(int *)((char *)arg0 + 8) = 6;
+    *(int *)((char *)arg0 + 4) = 0;
+}
+#pragma scheduling on
+
 #pragma push
 #pragma use_lmw_stmw off
 int fn_802B2C98(char *arg0) {
