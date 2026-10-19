@@ -544,6 +544,11 @@ void fn_801F3BE4(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_801F3C04(void) {
+    fn_802E317C(lbl_8033AB3C);
+}
+
 void fn_801F3C14(int unused, unsigned char *arg0) {
     unsigned char *p = arg0 + 0x18;
     int i;
