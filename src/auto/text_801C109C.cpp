@@ -51,7 +51,14 @@ void fn_801C1320(void* arg0) {
 #pragma dont_inline on
 extern void fn_801C1B60(int);
 #pragma force_active on
-void fn_801C1B60(int arg0) {
+void fn_801C1218(void);
+void fn_801C1364(int);
+void fn_801C1320(void*);
+void fn_801C1B60(int arg0);
+extern "C" void fn_801C1218(void);
+extern "C" void fn_801C1364(int);
+extern "C" void fn_801C1320(void*);
+extern "C" void fn_801C1B60(int arg0) {
     fn_801C1218();
     fn_801C1364(arg0);
     fn_801C1320((void*)arg0);
