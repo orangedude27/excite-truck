@@ -288,8 +288,7 @@ extern "C" void fn_80156B48(void) {
 extern "C" void fn_80156B4C(void) {
 }
 
-void fn_80156B50(void) {
-    return;
+extern "C" void fn_80156B50(void) {
 }
 
 s32 fn_80156C60(void *arg0, s32 arg1) {
