@@ -38,6 +38,31 @@ s32 fn_802BE378(s32 arg0) {
     return temp * temp;
 }
 
+typedef struct {
+    u32 unk0;
+    u32 unk4;
+    u32 field;
+} FanEntry;
+
+extern void *fn_8012850C(s32, void *);
+extern s32 fn_802BE378(s32);
+extern void fn_802BE364(void *);
+extern s32 fn_802BE7C4(s32, s32, s32);
+extern void *lbl_8034AC90;
+extern void *lbl_804C06E0[];
+extern u8 lbl_8055FACC;
+void fn_802BE694(void) {
+    s32 size;
+    s32 i;
+    s32 j;
+    for (i = 4; i < 0x41; i <<= 1) {
+        size = fn_802BE378(i);
+        lbl_804C06E0[i] = fn_8012850C(size * 0xC, &lbl_8034AC90);
+        for (j = 0; j < size; j++)
+            fn_802BE364((char *)lbl_804C06E0[i] + j * 0xC);
+    }
+}
+
 void fn_802BE780(void *arg0) {
     void *buf = *(void **)arg0;
     if (buf != NULL) {
@@ -70,4 +95,30 @@ void fn_802BE7F8(void) {
 }
 
 void fn_802BE840(void) { fn_802BE72C(); }
+
+void *fn_802BE844(s32 arg0, s32 arg1, s32 arg2) {
+    if (arg0 < -0x200 || arg0 >= 0x200 || arg1 < -0x200 || arg1 >= 0x200)
+        return &lbl_804C07E4;
+    return (char *)lbl_804C06E0[arg2] + fn_802BE7C4(arg0, arg1, arg2) * 0xC;
+}
+
+void fn_802BEAB0(void) {
+    s16 x, y, size;
+    s32 step, value;
+    void *p;
+    if (lbl_8055FACC == 0) {
+        for (size = 4; size <= 0x40; size <<= 1) {
+            x = size - 0x200;
+            step = size * 2;
+            for (; x < 0x200; x += step) {
+                for (y = size - 0x200; y < 0x200; y += step) {
+                    fn_802BE844(x, y, size);
+                    p = fn_802BE844(x, y, size);
+                    value = *(s32 *)((char *)p + 8);
+                    *(s32 *)((char *)p + 8) = (((value & ~0x3F) | 2) & ~0x1C0) | 0x40;
+                }
+            }
+        }
+    }
+}
 
