@@ -1133,11 +1133,9 @@ extern float lbl_805641FC;
 extern int lbl_80347FB4;
 extern void* fn_8027ED70(void);
 extern int fn_80214A9C(int);
-#pragma scheduling off
-void fn_802872DC(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 4);
-    void** vtable = *(void***)obj;
-    ((void (*)(void*))vtable[3])(obj);
+#pragma cplusplus on
+extern "C" void fn_802872DC(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v1();
 }
 #pragma cplusplus on
 extern "C" void fn_802872F0(void* arg0) {
