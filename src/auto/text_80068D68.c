@@ -3073,9 +3073,9 @@ void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0xa8)=gap_congestion_ind;
 }
 
-void fn_800833E8(s32 arg0) { btm_cback(0, arg0); }
+void fn_800833E8(void *arg0) { btm_cback(0, arg0); }
 
-void fn_800833F4(s32 arg0) { btm_cback(1, arg0); }
+void fn_800833F4(void *arg0) { btm_cback(1, arg0); }
 
 extern u16 lbl_80317620;
 extern void gap_find_addr_name_cb(void *);
