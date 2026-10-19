@@ -33,6 +33,7 @@ s32 *fn_80016BC8(s32);
 extern unsigned char lbl_803444D8[];
 extern void *lbl_8055F2E4;
 extern s32 lbl_8055F2E8;
+extern void fn_8024739C(void);
 #pragma push
 #pragma use_lmw_stmw off
 void *fn_8024E920(void *arg0, s32 arg1) {
