@@ -25,6 +25,7 @@ extern u32 lbl_8055DCA4;
 extern void fn_80070F90(void *ptr);
 extern u8 lbl_803C4C40[];
 #include "revolution/BTE/stack/sdp/sdpint.h"
+#include "revolution/BTE/stack/include/wbt_api.h"
 extern void AXFXReverbHiExpShutdown(void*);
 extern s32 AXFXReverbHiExpInit(void*);
 extern void __FreeDelayLine(void*);
