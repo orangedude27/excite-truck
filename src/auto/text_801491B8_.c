@@ -152,12 +152,8 @@ s32 fn_8014931C(void *arg0) {
     return sp8.v[((s32 *)arg0)[1]];
 }
 
-void fn_8014935C(void *arg0) {
-    u32 *p = (u32 *)arg0;
-    u32 x = p[1] + 1;
-    u32 b = x >> 31;
-    u32 v = (x << 30) - b;
-    p[1] = ((v << 2) | (v >> 30)) + b;
+void fn_8014935C(int *p) {
+    p[1] = (p[1] + 1) % 4;
 }
 
 extern s32 lbl_802F93F0[];
