@@ -1,5 +1,6 @@
 #include <revolution/MTX/vec.h>
 #include <revolution/MTX/quat.h>
+#include <types.h>
 extern "C" void fn_801FEA28(void*);
 class SHMainMenu { public: ~SHMainMenu(); };
 extern "C" {
