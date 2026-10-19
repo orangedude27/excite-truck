@@ -25,6 +25,7 @@ extern int lbl_8055B124, lbl_8055B120;
 extern float lbl_80562F40, lbl_80562F44;
 extern const char lbl_8033ABA0[];
 extern const char lbl_8033AB3C[];
+extern const char lbl_8033AAE0[];
 extern const char lbl_8033AB80[];
 extern int fn_802E317C(const void *, ...);
 #pragma push
