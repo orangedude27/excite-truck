@@ -35,6 +35,44 @@ void fn_802B06D4(void) {
     (*(void (***)(void *, void *, int))obj)[12](obj, lbl_8034A078, 0);
 }
 
+extern void *fn_801284F8(int, void *);
+extern void *fn_8012850C(int, void *);
+extern void *fn_8002F37C(void *, void *, int, int);
+extern void fn_802B0860(void *);
+extern char lbl_8034A0A8[];
+extern char lbl_8034A27C[];
+extern char lbl_8055CD88[];
+void fn_802B0710(void) {
+    void *obj;
+    int *fields;
+    int i;
+    int offset;
+    int *entry;
+    obj = fn_801284F8(0x14, lbl_8034A0A8);
+    if (obj != 0) {
+        fn_8012850C(0x550, lbl_8055CD88);
+        fields = (int *)fn_8002F37C(fn_802B0860, fn_802B0808, 0x10, 0x54);
+        ((int **)obj)[1] = fields;
+        ((int *)obj)[3] = 0x54;
+        ((int *)obj)[2] = 0;
+        ((int **)obj)[4] = fields;
+        ((void **)obj)[0] = fn_8012850C(0x15000, lbl_8034A27C);
+        i = 0;
+        offset = 0;
+        while (i < ((int *)obj)[3]) {
+            entry = (int *)((char *)((int *)obj)[1] + ((int *)obj)[2] * 0x10);
+            ((int *)obj)[2] = ((int *)obj)[2] + 1;
+            *entry = (int)((char *)((int *)obj)[0] + offset);
+            offset += 0x400;
+            entry[2] = 0x200;
+            entry[1] = 0;
+            i++;
+        }
+        ((int *)obj)[2] = 0;
+    }
+    lbl_8055F9A0 = obj;
+}
+
 void *fn_802B0808(void *arg0, int arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
@@ -117,9 +155,12 @@ int stricmp(const char *, const char *);
 extern float lbl_80564BD0;
 void fn_802BAFF8(int, void *);
 typedef struct { float x, y, z; } Vec3_802B;
-#pragma scheduling off
-void fn_802B110C(void (*fn)(void *), void *arg) { fn(arg); }
-#pragma scheduling on
+#pragma push
+#pragma scheduling invalid_target
+void fn_802B110C(void (*fn)(void *), void *arg) {
+    fn(arg);
+}
+#pragma pop
 void fn_802B111C(void *arg0) {
     ((int *)arg0)[1] = (int)((char *)arg0 + 0x10);
     ((int *)arg0)[3] = 6;
@@ -170,16 +211,20 @@ void fn_802B11BC(void *arg0) {
 
 int fn_802B127C(void *arg0, Vec3_802B *src) {
     int *self = (int *)arg0;
-    if (self == 0) {
-        return 0;
-    }
-    if (self[0x31c / 4] + 1 <= self[0x320 / 4]) {
-        int i = self[0x31c / 4];
-        float z = src->z;
-        float y = src->y;
-        float x = src->x;
-        float *dst = (float *)((char *)self[0x318 / 4] + i * 0xc);
+    int next;
+    int i;
+    float x, y, z;
+    float *base, *dst;
+    if (self == 0) return 0;
+    next = self[0x31c / 4] + 1;
+    if (next <= self[0x320 / 4]) {
+        i = self[0x31c / 4];
+        x = src->x;
+        y = src->y;
+        z = src->z;
+        base = (float *)self[0x318 / 4];
         self[0x31c / 4] = i + 1;
+        dst = (float *)((char *)base + i * 12);
         dst[0] = x;
         dst[1] = y;
         dst[2] = z;
@@ -296,10 +341,8 @@ void *fn_802B1C1C(void *arg0, int arg1) {
 
 int fn_802B1C50(void *arg0, int arg1, int arg2) {
     if (arg1 >= 0 && arg1 < *(int *)((char *)arg0 + 0x10)) {
-        int index = arg1 << 7;
-        int subindex = arg2 << 2;
-        int *base = (int *)*(int *)((char *)arg0 + 0xC);
-        return *(int *)((char *)base + index + subindex + 0x74);
+        char *base = (char *)*(int *)((char *)arg0 + 0xC);
+        return *(int *)(base + (arg2 << 2) + (arg1 << 7) + 0x74);
     }
     return 0;
 }
