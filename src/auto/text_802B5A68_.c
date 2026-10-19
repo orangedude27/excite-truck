@@ -99,7 +99,10 @@ extern s32 fn_802B5D2C(const char *, s32);
 __declspec(section ".sdata") extern const char lbl_8055CE38[];
 __declspec(section ".sdata") extern const char lbl_8055CE48[];
 __declspec(section ".sdata") extern const char lbl_8055CE50[];
+#pragma push
+#pragma small_data off
 extern s32 lbl_804BFF80;
+#pragma pop
 extern void fn_802B83CC(void);
 extern s32 fn_802B8510(s32);
 extern s32 fn_80127A50(void *);
@@ -310,6 +313,66 @@ s32 fn_802B640C(void *arg0, s32 arg1) {
     return var_r3;
 }
 
+__declspec(section ".sdata") extern const char lbl_8055CE70[];
+extern int vsprintf(char *, const char *, va_list);
+extern int stricmp(const char *, const char *);
+extern void fn_80147230(void *, const char *, ...);
+#pragma push
+#pragma small_data off
+void fn_802B6568(void *arg0, const char *fmt, ...) {
+    char buf[256];
+    va_list args;
+    va_start(args, fmt);
+    vsprintf(buf, fmt, args);
+    va_end(args);
+
+    *(s32 *)((char *)arg0 + 0x18) = 0xFFD8D8D8;
+
+    if (*(s8 *)((char *)&lbl_804BFF80 + 0x14) != 0) {
+        if (stricmp((char *)&lbl_804BFF80 + 0x14, *(char **)arg0) == 0) {
+            *(s32 *)((char *)arg0 + 0x18) = -0x100;
+        }
+    } else if (*(s8 *)((char *)&lbl_804BFF80 + 0x34) != 0) {
+        if (stricmp((char *)&lbl_804BFF80 + 0x34, *(char **)arg0) == 0) {
+            *(s32 *)((char *)arg0 + 0x18) = -1;
+        }
+    } else if (fn_802B640C(arg0, (s32)buf) != 0) {
+        register char *src;
+        register char *dst;
+        register s32 n;
+
+        src = *(char **)arg0;
+        dst = (char *)&lbl_804BFF80 + 0x34;
+        n = 32;
+        while ((*dst++ = *src++) != 0) {
+            if (--n <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        }
+        *(s32 *)((char *)arg0 + 0x18) = -1;
+        fn_802B62A4(arg0);
+        if (*(s32 *)&lbl_804BFF80 == 0) {
+            fn_802B6358(arg0);
+            src = *(char **)arg0;
+            dst = (char *)&lbl_804BFF80 + 0x14;
+            n = 32;
+            while ((*dst++ = *src++) != 0) {
+                if (--n <= 0) {
+                    dst[-1] = 0;
+                    break;
+                }
+            }
+            *(s32 *)((char *)&lbl_804BFF80 + 0x54) = *(s32 *)((char *)&lbl_804BFF80 + 0);
+            *(s32 *)((char *)&lbl_804BFF80 + 0x58) = *(s32 *)((char *)&lbl_804BFF80 + 4);
+            *(s32 *)((char *)&lbl_804BFF80 + 0x5C) = *(s32 *)((char *)&lbl_804BFF80 + 8);
+            *(s32 *)((char *)&lbl_804BFF80 + 0x60) = *(s32 *)((char *)&lbl_804BFF80 + 0xC);
+            *(s32 *)((char *)&lbl_804BFF80 + 0x64) = *(s32 *)((char *)&lbl_804BFF80 + 0x10);
+        }
+    }
+    fn_80147230(arg0, lbl_8055CE70, buf);
+}
+#pragma pop
 extern s32 fn_80147FF0(s32);
 void fn_802B67C8(s32 arg0) {
     void *(*method)(void *, s32) = (void *(*)(void *, s32))(*(void ***)lbl_8055FA48)[5];
