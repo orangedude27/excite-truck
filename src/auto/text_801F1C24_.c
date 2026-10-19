@@ -42,6 +42,8 @@ void *fn_801F1DA4(void) {
     return (void *)p;
 }
 
+#pragma push
+#pragma small_data off
 #pragma scheduling invalid_target
 void *fn_801F1DE4(void) {
     extern int lbl_8033A61C;
@@ -52,7 +54,7 @@ void *fn_801F1DE4(void) {
     }
     return (void *)p;
 }
-
+#pragma pop
 void fn_801F1E24(void) {
     void *p = fn_801284F8(0x40, &lbl_8055B120);
     if (p != 0) {
@@ -152,6 +154,18 @@ void fn_801F2108(void) {
         *(int *)((char *)p + 8) = 0;
     }
 }
+
+extern const char lbl_8033A678[];
+extern const char lbl_8033A770[];
+#pragma scheduling invalid_target
+void *fn_801F2150(void) {
+    void **p = (void **)fn_801284F8(4, (void *)lbl_8033A678);
+    if (p != 0) {
+        *p = (void *)lbl_8033A770;
+    }
+    return p;
+}
+#pragma scheduling on
 
 #pragma push
 #pragma small_data off
