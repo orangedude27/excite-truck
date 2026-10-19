@@ -3,6 +3,13 @@
 
 #include <types.h>
 #include <stdarg.h>
+typedef struct UnkF4F0Style {
+    s32 unk_0x00, unk_0x04, unk_0x08, unk_0x0C;
+    f32 unk_0x10;
+    s32 unk_0x14;
+    u32 unk_0x18;
+    s32 unk_0x1C;
+} UnkF4F0Style;
 extern int vsprintf(char *, const char *, va_list);
 extern unsigned int strlen(const char *);
 __declspec(section ".data") extern s32 lbl_803514A0;
