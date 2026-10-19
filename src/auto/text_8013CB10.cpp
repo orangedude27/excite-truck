@@ -75,7 +75,7 @@ public:
 class TObj20b {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-    virtual void d4(); virtual void d5(); virtual void d6();
+    virtual void d4(); virtual void d5();
     virtual s32 v20();
 };
 
@@ -816,6 +816,24 @@ extern "C" s32 fn_80143218(s32 arg0, u8 *arg1) {
     *(f32 *)(arg1 + 0x38) = fz;
     fn_8013530C(obj, -1, fy, fx, lbl_805615A8);
     return 1;
+}
+
+extern "C" void fn_801B8A68(void *, s32);
+extern "C" void fn_801432D4(TObj20b *arg0, s32 arg1) {
+    u8 *obj = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
+    if (obj[0x118] != 0 && arg0->v20() != 0) {
+        *(s32 *)(obj + 0x104) = 0;
+        if (*(s32 *)(obj + 0xE4) > 0) {
+            *(s32 *)(obj + 0xF4) = *(s32 *)(obj + 0xE4);
+            *(f32 *)(obj + 0xF0) = fn_8013CB3C();
+            *(s32 *)(obj + 0xE4) = 0;
+        }
+        if (*(s32 *)(obj + 0x100) > 0) {
+            *(f32 *)(obj + 0xD4) = fn_8001DAE8(obj + 0xD0);
+        }
+        *(s32 *)(obj + 0x100) = 0;
+    }
+    fn_801B8A68(arg0, arg1);
 }
 
 class VTable43398 { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23(); virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27(); virtual void f28(); virtual void f29(); virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(); virtual void f34(); virtual void f35(); virtual void f36(); virtual void f37(); virtual void f38(); virtual void f39(); virtual void f40(); virtual void f41(); virtual void f42(); virtual void f43(); }; extern "C" void fn_80143398(void *arg0) { ((VTable43398 *)arg0)->f41(); }
