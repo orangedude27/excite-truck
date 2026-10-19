@@ -12,10 +12,7 @@ __declspec(section ".data") extern int lbl_8033A710[2];
 #pragma small_data off
 #pragma pop
 extern int lbl_8033A628, lbl_8033A8C8;
-#pragma push
-#pragma small_data off
-extern int lbl_8033A610;
-#pragma pop
+__declspec(section ".data") extern int lbl_8033A610;
 extern const char lbl_8033A988[];
 #pragma push
 #pragma small_data off
@@ -38,8 +35,6 @@ extern int fn_802E317C(const void *, ...);
 #pragma pop
 #pragma scheduling invalid_target
 void *fn_801F1DA4(void) {
-    extern int lbl_8033A610;
-    extern const char lbl_8033A988[];
     void **p = (void **)fn_801284F8(4, (void *)&lbl_8033A610);
     if (p != 0) {
         *p = (void *)lbl_8033A988;
