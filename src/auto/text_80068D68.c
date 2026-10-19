@@ -4505,6 +4505,34 @@ void PORT_ControlCnf(void *mcb, u8 dlci, void *pars) {
         (*(void (**)(s32, u8))(port + 0x8c))(event, port[0]);
 }
 
+void PORT_LineStatusInd(void *mcb, u8 dlci, u8 line_status) {
+    extern char lbl_80319440[];
+    u8 *port;
+    s32 event;
+    u32 mask;
+    u8 value;
+
+    port = (u8 *)port_find_mcb_dlci_port(mcb, dlci);
+    event = 0;
+    if (lbl_803C4828[0x414] >= 4)
+        fn_8007093C(0x90003, lbl_80319440);
+    if (port != 0) {
+        value = port[0xF];
+        port[0xF] = value | line_status;
+        if (line_status & 2)
+            event |= 0x2000;
+        if (line_status & 1)
+            event |= 0x40;
+        if (line_status & 0xFC)
+            event |= 0x80;
+        if (*(void (**)(s32, u8))(port + 0x8C) != 0) {
+            mask = *(u32 *)(port + 0x88);
+            if (mask & event)
+                (*(void (**)(s32, u8))(port + 0x8C))(mask & event, port[0]);
+        }
+    }
+}
+
 void PORT_CloseInd(void *arg0) {
     extern u8 lbl_803C4828[];
     extern char lbl_80319468[];
