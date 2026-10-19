@@ -99,9 +99,11 @@ extern "C" s32 fn_8013CB10(void) {
 }
 
 extern f32 lbl_8055E3C8;
+#pragma dont_inline on
 extern "C" f32 fn_8013CB3C(void) {
     return lbl_8055E3C8;
 }
+#pragma dont_inline off
 
 extern "C" s32 fn_8013CB44(const char *arg0, TObj10 *arg1) {
     return strcmp((const char *)arg1->v10(), arg0) == 0;
