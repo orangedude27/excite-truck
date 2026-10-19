@@ -2789,6 +2789,20 @@ extern "C" void fn_800C4BD8(s32 *p, s32 value, u32 size) {
     }
 }
 
+extern "C" void fn_800C55D8(void *arg0, void *arg1, s32 *arg2) {
+    s32 n = 4;
+    s32 scale = *arg2;
+    while (n) {
+        s32 a = *(s32 *)arg1;
+        s32 b = *(s32 *)arg0;
+        *(s32 *)arg0 = a + b;
+        *(s32 *)arg1 = (a - b) * scale;
+        arg0 = (char *)arg0 + 0x20;
+        arg1 = (char *)arg1 + 0x20;
+        n--;
+    }
+}
+
 void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
     s32 *var_r5;
     s32 *var_r5_3;
@@ -4290,7 +4304,7 @@ extern "C" const char lbl_8031EA90[];
 extern "C" const char lbl_8031EA40[];
 extern "C" const char lbl_8031EA4C[];
 extern void* lbl_804077C0;
-extern void fn_800D2E3C(s32, s32, s32, s32);
+extern "C" void fn_800D2E3C(s32, s32, s32, s32);
 extern void fn_800D24D4(void*, s32);
 extern void* lbl_8055DDBC;
 extern "C" void fn_800D2098(void*);
@@ -4418,6 +4432,61 @@ extern "C" void fn_800D2FDC(void *arg0, void *arg1, void *arg2, void *arg3, void
         }
     } else {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x287, lbl_8031EBB4);
+    }
+}
+
+extern "C" const char lbl_8031EBF4[];
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
+extern "C" void fn_800D2E3C(s32, s32, s32, s32);
+extern "C" char *fn_800D3260(s32, s32, const char *, s32);
+extern "C" char *strchr(const char *, int);
+extern "C" void fn_800D30E8(void *arg0, void *arg1, void *arg2, void *arg3, s32 arg4) {
+    s32 x = (s32)arg0;
+    s32 y = (s32)arg1;
+    const char *str = (const char *)arg2;
+    u16 width = *(u16 *)((u8 *)lbl_80407BD8 + 8);
+    s32 scaleX = width < 400 ? 1 : 2;
+    s32 maxCols = width / scaleX;
+    s32 startX = x;
+
+    while (*str != '\0') {
+        if (arg4 != 0) {
+            const char *p = str;
+            s32 len = 0;
+            if (str == NULL) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0, 0x132, lbl_8031EBF4);
+            }
+            while (*p != '\0' && *p != '\n') {
+                if (*p == '\t') {
+                    len = (len + 4) & ~3;
+                } else {
+                    len++;
+                }
+                p++;
+            }
+            fn_800D2E3C(x - 6, y - 3, (len + 2) * 6, 13);
+        }
+
+        char *next = fn_800D3260(x, y, str, (maxCols - x) / 6);
+        char c = *next;
+        str = next;
+        y += 10;
+        if (c == '\n') {
+            x = startX;
+            str = next + 1;
+        } else if (c != '\0') {
+            str = next + 1;
+            if (arg3 != 0) {
+                x = 0;
+            } else {
+                char *nextNewline = strchr(str, '\n');
+                if (nextNewline == NULL) {
+                    break;
+                }
+                x = startX;
+                str = nextNewline + 1;
+            }
+        }
     }
 }
 
