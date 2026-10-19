@@ -47,12 +47,6 @@ s32 fn_802BE378(s32 arg0) {
     return temp * temp;
 }
 
-typedef struct {
-    u32 unk0;
-    u32 unk4;
-    u32 field;
-} FanEntry;
-
 extern void *fn_8012850C(s32, void *);
 extern s32 fn_802BE378(s32);
 extern void fn_802BE364(void *);
