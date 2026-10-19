@@ -306,4 +306,4 @@ extern unsigned char lbl_8055F92C;
 unsigned char fn_80129D90(int, int, int);
 float fn_80287BC8(float, float);
 double fn_8002EFB4(float, double);
-typedef struct UnkAA9D4 { unsigned char pad[0xDC]; unsigned char active; unsigned char padDD[3]; float amount; unsigned char padE4[0x14]; float width, depth, height; } UnkAA9D4;
+
