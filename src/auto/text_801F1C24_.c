@@ -428,6 +428,10 @@ void fn_801F37A4(void) {
     fn_802C9950(0xFF909090);
 }
 
+#pragma scheduling invalid_target
+int fn_801F37EC(void) {
+    return fn_802E317C(lbl_8033ABA0, 0);
+}
 int fn_801F37FC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
@@ -688,7 +692,6 @@ void fn_801F4330(void) {
 
 }
 
-extern int fn_802E317C(void *);
 extern int fn_802C7040(int);
 extern int fn_802CD320(int, void *);
 extern unsigned char lbl_8033AAB8[];
