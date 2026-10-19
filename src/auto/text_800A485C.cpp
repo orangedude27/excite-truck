@@ -4930,10 +4930,10 @@ extern "C" void GXSetAlphaCompare(u32, u32, u32, u32, u32);
 extern "C" void GXSetBlendMode(u32, u32, u32, u32);
 extern "C" void GXSetAlphaUpdate(u32);
 extern "C" void GXSetZMode(u32, u32, u32);
-void fn_800CEDE8(void) {
+extern "C" void fn_800CEDE8(void) {
     f32 mtx[3][4];
     PSMTXIdentity(mtx);
-    GXLoadPosMtxImm((const f32*)mtx, 0);
+    GXLoadPosMtxImm((const f32 *)mtx, 0);
     GXSetCurrentMtx(0);
     GXClearVtxDesc();
     GXSetVtxDesc(9, 1);
@@ -5016,12 +5016,10 @@ extern "C" s32 fn_800A4A8C(s32 arg0) {
     return ptr - start;
 }
 #pragma pop
-void fn_800A4AAC(char *dst, char *src) {
-    do {
-        dst++;
-        src++;
-        *dst = *src;
-    } while (*dst != 0);
+extern "C" void fn_800A4AAC(char *dst, char *src) {
+    char *d = dst;
+    char *s = src;
+    while (*d++ = *s++) ;
 }
 
 extern "C" s32 fn_800A4AD0(u8 *arg0, u8 *arg1) {
@@ -5536,7 +5534,6 @@ void nw4hbm::db::Warning(const char* file, int line, const char* msg, ...) {
             Panic__Q26nw4hbm2dbFPCciPCce(str + 0x70, 0x1F1, str + 0x7C);
         }
         *(u8*)((u8*)msg + 0x22) = 1;
-        (void)lines;
     } else {
         OSReport(str + 0xA0, file, line);
         __VprintfThunk(msg, vlist);
