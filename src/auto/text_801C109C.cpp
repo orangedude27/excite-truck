@@ -119,6 +119,86 @@ void fn_801C27D8(void *arg0, float *arg1, float *arg2, float *arg3) {
     fn_801C1B60((int)arg0);
 }
 
+#pragma push
+#pragma ppc_psq_save off
+extern "C" void fn_801C28A8(void *arg0, int arg1, float *arg2, void *arg3, int arg4, int arg5, int arg6, int arg7, int arg8) {
+    float v5C[3], v50[3], v44[3], v38[3], v2C[3], v20[3], v14[3], v8[3];
+    float f22, f23, f24, f25, f26, f27, f28, f29, f30, f31;
+    int i, off, idx, limit;
+
+    limit = arg6;
+    if (arg6 < 0)
+        limit = *(int *)((char *)arg0 + 0x14);
+    GXInitLightAttnA_80144B44(v8, lbl_80562904, lbl_80562904, lbl_80562904);
+    GXInitLightAttnA_80144B44(v14, lbl_80562904, lbl_80562904, lbl_80562904);
+    f30 = lbl_80562904;
+    f31 = lbl_80562934;
+    f26 = f30;
+    f25 = lbl_80562938;
+    f27 = f30;
+    f28 = f30;
+    f29 = lbl_80562940;
+    i = arg5;
+    off = arg5 * 0xC;
+    idx = arg5 * 4;
+    for (; i < limit; i++, off += 0xC, idx += 4) {
+        if (*(int *)(*(int *)((char *)arg0 + 0x38) + idx) == 0)
+            continue;
+        {
+            float f3 = *(float *)(*(int *)((char *)arg0 + 0x30) + idx);
+            float x, y, z;
+            x = arg2[0] + f3;
+            y = arg2[1] + f3;
+            z = arg2[2] + f3;
+            f22 = f31 + x;
+            f23 = f31 + y;
+            f24 = f31 + z;
+            fn_80144D64((int *)v20, (int *)(*(int *)((char *)arg0 + 0x24) + off));
+            fn_8001BA68(v2C);
+            fn_80144CD0(v2C, v20, arg1);
+            fn_8001BA68(v38);
+            fn_8001BA68(v44);
+            fn_80144D64((int *)v50, (int *)arg3);
+            fn_801C2B9C(v44, (float *)(*(int *)((char *)arg0 + 0x28) + off), v50, lbl_80562900);
+            fn_80144CD0(v38, v44, arg1);
+            if (fn_8017F70C(v2C[0]) >= f22)
+                continue;
+            if (fn_8017F70C(v2C[1]) >= f23)
+                continue;
+            if (fn_8017F70C(v2C[2]) >= f24)
+                continue;
+            if (fn_8017F70C(v38[0]) > f25 + f22) {
+                if (v2C[0] < f26)
+                    f22 = -f22;
+                v2C[0] = f22;
+            }
+            if (fn_8017F70C(v38[1]) >= f25 + f23) {
+                if (v2C[1] > f27)
+                    v2C[1] = f23;
+                else
+                    v2C[1] = -f23;
+            }
+            if (fn_8017F70C(v38[2]) >= f25 + f24) {
+                if (v2C[2] > f28)
+                    v2C[2] = f24;
+                else
+                    v2C[2] = -f24;
+            }
+            fn_801BFD34((int *)(*(int *)((char *)arg0 + 0x24) + off), v2C, arg1);
+            fn_8001BA68(v5C);
+            fn_801C0E60(v5C, v20, (int *)(*(int *)((char *)arg0 + 0x24) + off));
+            f24 = fn_801429D0(fn_801C0E44(v5C), lbl_8056293C);
+            fn_801C2B9C(v14, v14, v5C, f29 * *(float *)(*(int *)((char *)arg0 + 0x34) + idx));
+            fn_801C2B9C(v8, v8, (float *)(*(int *)((char *)arg0 + 0x24) + off), f24);
+            f30 += f24;
+        }
+    }
+    if (arg7 != 0)
+        fn_801C0124(arg7, v8, lbl_8056290C / fn_801429D0(f30, lbl_80562944));
+    if (arg8 != 0)
+        fn_80144DAC((void *)arg8, v14);
+}
+#pragma pop
 void fn_801C2B9C(float* out, float* a, float* b, float scale) {
     out[1] = a[1] + b[1] * scale;
     out[0] = a[0] + b[0] * scale;
