@@ -294,6 +294,61 @@ void *fn_80193A50(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma cplusplus on
+class DummyClass_80193AEC {
+public:
+    virtual void unk0();
+    virtual void unk1();
+    virtual void unk2();
+    virtual void unk3();
+    virtual void unk4();
+    virtual void unk5();
+    virtual void *vfunc6();
+};
+#pragma cplusplus reset
+
+void fn_80193AEC(void *arg0, void *arg1) {
+    int id;
+    void *obj;
+    void *(*vfunc)(void *);
+
+    *(void **)((char *)arg0 + 0x294) = arg1;
+    *(int *)((char *)arg0 + 0x214) = 2;
+    *(unsigned char *)((char *)arg0 + 0x2A4) = 0;
+    id = *(int *)((char *)arg1 + 0x1EC);
+    *(int *)((char *)arg0 + 0x290) = id;
+    fn_80134CD4(id, (char *)arg0 + 0x2AC);
+    *(void **)((char *)arg0 + 0x298) = (char *)arg1 + 0x23AC;
+    lbl_804349C0[id] = arg0;
+    obj = *(void **)((char *)arg1 + 0x270);
+    *(void **)((char *)arg0 + 0x28C) = obj;
+    vfunc = *(void *(**)(void *))(*(char **)obj + 0x18);
+    *(void **)((char *)arg0 + 0x164) = vfunc(obj);
+
+    if (lbl_8055E550++ == 0) {
+        lbl_8055A488 = *(float *)fn_80137C54(-1);
+        lbl_8055A48C = *(float *)((char *)fn_80137C54(-1) + 4);
+        lbl_8055E580 = 1;
+        lbl_8055E540 = ((int *)__AXFXGetLfoSinTable_801769CC())[1] != 0x180304;
+        lbl_8055E554 = *(float *)((char *)*(void **)((char *)*(void **)((char *)arg0 + 0x164) + 0x2C) + 8);
+        lbl_8055E56C = fn_80134B58(lbl_80333158 + 0x70, lbl_80562140);
+        lbl_8055E568 = fn_80134B58(lbl_80333158 + 0x80, lbl_80562140);
+        lbl_8055E564 = fn_80134B58(lbl_80333158 + 0x94, lbl_80562140);
+        lbl_8055E558 = fn_80134B58(lbl_80333158 + 0xA4, lbl_8056215C);
+        fn_80134B58(lbl_80333158 + 0xB4, lbl_80562140);
+        lbl_8055E544 = lbl_80562140;
+        lbl_8055E548 = fn_80134B58(lbl_80333158 + 0xC4, lbl_80562184);
+        lbl_8055E54C = fn_80134B58(lbl_80333158 + 0xD4, lbl_80562188);
+        lbl_8055E55C = fn_80134B58(lbl_80333158 + 0xE4, lbl_8056218C);
+        lbl_8055E560 = fn_80134B58(lbl_80333158 + 0xF0, lbl_80562190);
+        lbl_8055E570 = fn_80134B58(lbl_80333158 + 0xFC, lbl_80562194);
+        lbl_8055E584 = fn_80134B58(lbl_80333158 + 0x10C, lbl_80562198);
+        lbl_8055E588 = fn_80134B58(lbl_80333158 + 0x11C, lbl_8056219C);
+        lbl_8055E578 = 0;
+    }
+    fn_80193D30(arg0);
+}
+
 #pragma dont_inline on
 void fn_80193CD4(void *arg0) {
     *(signed char *)((char *)arg0 + 0x2A5) = 1;
