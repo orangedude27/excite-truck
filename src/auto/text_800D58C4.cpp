@@ -3,6 +3,43 @@
 #include <types.h>
 #include "revolution/GX/GXTypes.h"
 #include "revolution/GX/GXAttr.h"
+#define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
+extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32);                   /* extern */
+extern "C" void *GXGetTexObjHeight(s32 *);                     /* extern */
+extern "C" s32 GXGetTexObjMipMap(s32 *, s32);                  /* extern */
+extern "C" int GXInitTexObjTlut(s32 *, s32);               /* extern */
+extern "C" int GXInitTlutObj(int *, s32, s32, u16);    /* extern */
+extern "C" int GXLoadTexMtxImm(int *, s32, int);   /* extern */
+extern "C" int GXLoadTexObj(s32 *, u32);                   /* extern */
+extern "C" int GXLoadTlut(int *, s32);                 /* extern */
+extern "C" int GXSetAlphaCompare(s32, u8, u8, s32, u8);    /* extern */
+extern "C" int GXSetBlendMode(u8, u8, u8, u8, void *, s32); /* extern */
+extern "C" int GXSetChanCtrl(int, int, int, u8, int, int, int); /* extern */
+extern "C" int GXSetChanMatColor_Internal(int, u8 *, u8, u8, u8); /* extern */
+extern "C" int GXSetIndTexCoordScale(u32, u8, u8);         /* extern */
+extern "C" int GXSetIndTexOrder(u32, u8, u8);              /* extern */
+extern "C" int GXSetNumChans(int);                     /* extern */
+extern "C" int GXSetNumIndStages(s32);                     /* extern */
+extern "C" int GXSetNumTevStages(u8);                      /* extern */
+extern "C" int GXSetTevAlphaIn(u8, s32, s32, s32, s32);    /* extern */
+extern "C" int GXSetTevAlphaOp(u8, s32, s32, s32, s32, s32); /* extern */
+extern "C" int GXSetTevColorIn(u8, s32, s32, s32, s32);    /* extern */
+extern "C" int GXSetTevColorOp(u8, s32, s32, s32, s32, s32); /* extern */
+extern "C" int GXSetTevColorS10(int, u16 *, u16);      /* extern */
+extern "C" int GXSetTevDirect(u8);                         /* extern */
+extern "C" int GXSetTevIndirect(u8, u8, s32, s32, s32, s32, s32, s32); /* extern */
+extern "C" int GXSetTevKAlphaSel(u8, s32);                 /* extern */
+extern "C" int GXSetTevKColor(int, u8 *);              /* extern */
+extern "C" int GXSetTevKColorSel(u8, s32);                 /* extern */
+extern "C" int GXSetTevOrder(u8, u8, u8, u8);              /* extern */
+extern "C" int GXSetTevSwapMode(u8, s32, s32);             /* extern */
+extern "C" int GXSetTevSwapModeTable(s32, s32, s32, s32, s32); /* extern */
+extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32);                   /* extern */
+extern "C" int fn_800D7C54(int *, s32);                /* extern */
+extern "C" f32 lbl_80560E8C;
+extern "C" int lbl_80565230;
+
+
 
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void*, void**, void*);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
@@ -250,6 +287,31 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
         *(f32*)&((u8*)pOut)[8] = *(f32*)&p[0x18];
         *(f32*)&((u8*)pOut)[0xC] = *(f32*)&p[0x1C];
     }
+}
+
+extern "C" void GXSetIndTexMtx(f32*, s8);
+extern "C" f32 lbl_80560E88;
+extern "C" f32 lbl_80560E94;
+extern "C" f32 lbl_80560E98;
+extern "C" void fn_800D7D5C(void* arg0, f32* m) {
+    f32 a=m[0], b=m[1], c=m[2], d=m[3], e=m[4], f=m[5];
+    f32 aa=__fabsf(a), bb=__fabsf(b), cc=__fabsf(c), dd=__fabsf(d), ee=__fabsf(e), ff=__fabsf(f);
+    s8 scale=0;
+    if (aa <= lbl_80560E94 && bb <= lbl_80560E94 && cc <= lbl_80560E94 && dd <= lbl_80560E94 && ee <= lbl_80560E94 && ff <= lbl_80560E94) {
+        while (scale < 0x2E && aa <= lbl_80560E94 && bb <= lbl_80560E94 && cc <= lbl_80560E94 && dd <= lbl_80560E94 && ee <= lbl_80560E94 && ff <= lbl_80560E94) {
+            aa *= lbl_80560E88; a *= lbl_80560E88; b *= lbl_80560E88;
+            c *= lbl_80560E88; d *= lbl_80560E88; e *= lbl_80560E88; f *= lbl_80560E88;
+            bb *= lbl_80560E88; cc *= lbl_80560E88; dd *= lbl_80560E88; ee *= lbl_80560E88; ff *= lbl_80560E88;
+            scale++;
+        }
+    } else if (aa < lbl_80560E88 && bb < lbl_80560E88 && cc < lbl_80560E88 && dd < lbl_80560E88 && ee < lbl_80560E88 && ff < lbl_80560E88) {
+        do {
+            aa *= lbl_80560E98; scale--; a *= lbl_80560E98; b *= lbl_80560E98;
+            c *= lbl_80560E98; d *= lbl_80560E98; e *= lbl_80560E98; f *= lbl_80560E98;
+            bb *= lbl_80560E98; cc *= lbl_80560E98; dd *= lbl_80560E98; ee *= lbl_80560E98; ff *= lbl_80560E98;
+        } while (aa < lbl_80560E88 && bb < lbl_80560E88 && cc < lbl_80560E88 && dd < lbl_80560E88 && ee < lbl_80560E88 && ff < lbl_80560E88 && scale > -0x11);
+    }
+    if (scale <= -0x11) GXSetIndTexMtx(&a, scale);
 }
 
 extern "C" void fn_800D7F58(void *arg0, void *arg1) {
@@ -583,6 +645,64 @@ extern "C" s32 fn_800D9524(void* arg0) {
 extern "C" char* strncpy(char*, const char*, unsigned int);
 extern "C" char* fn_800D9584(char* arg0, const char* arg1) {
     return strncpy(arg0 + 4, arg1, 0x14);
+}
+
+extern "C" const char lbl_8031F990[];
+extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void* self, unsigned char count) {
+    u32* p = (u32*)self;
+    unsigned int max = (p[0x4C / 4] >> 20) & 15;
+    if (count > max)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x39c, lbl_8031F990 + 0x38c);
+    if (count != 0) {
+        if (p[0x58 / 4] == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x39f, lbl_8031F990 + 0x360);
+        u32 raw = p[0x4c / 4];
+        u8* dst = (u8*)(p[0x58 / 4] + (((raw >> 23) & 0x1e0) + (((raw >> 24) & 15) * 20)));
+        unsigned int old = (p[0x50 / 4] >> 20) & 15;
+        if (old < count) {
+            if (count - old > 8) {
+                unsigned int limit = count - 8;
+                while (old < limit) {
+                    for (int j = 0; j < 8; j++) {
+                        dst[old * 4 + j * 4] = 1;
+                        dst[old * 4 + j * 4 + 1] = 4;
+                        dst[old * 4 + j * 4 + 2] = 0x3c;
+                        dst[old * 4 + j * 4 + 3] = 0;
+                    }
+                    old += 8;
+                }
+            }
+            while (old < count) {
+                dst[old * 4] = 1;
+                dst[old * 4 + 1] = 4;
+                dst[old * 4 + 2] = 0x3c;
+                dst[old * 4 + 3] = 0;
+                old++;
+            }
+        }
+        p[0x50 / 4] = (p[0x50 / 4] & ~0x00f00000) | ((u32)count << 20);
+    }
+}
+
+extern "C" void fn_800D9ACC(void* arg0, u32 arg1) {
+    u8* p = (u8*)arg0;
+    u32 fmt = *(u32*)(p + 0x4C);
+    u32 count = (*(u32*)(p + 0x50) >> 15) & 7;
+    if (arg1 > ((fmt >> 15) & 7))
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3BE, lbl_8031F990 + 0x3F8);
+    if (arg1 != 0) {
+        if (*(void**)(p + 0x58) == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3C1, lbl_8031F990 + 0x360);
+        u32 width = (fmt >> 24) & 15;
+        u8* base = (u8*)*(void**)(p + 0x58) + width * 0x14 + ((fmt >> 18) & 0x3C) + ((fmt >> 23) & 0x1E0);
+        base += ((fmt >> 4) & 4) + ((fmt >> 6) & 4) + ((fmt >> 12) & 4) + ((fmt >> 5) & 4) + ((fmt >> 3) & 4);
+        if (count < arg1) {
+            u32 i = count;
+            for (; i < arg1; i++)
+                *(u32*)(base + i * 4) = 0;
+        }
+        *(u32*)(p + 0x50) = (*(u32*)(p + 0x50) & ~0x38000) | ((arg1 << 15) & 0x38000);
+    }
 }
 
 extern "C" void InitGXTexObjFromTPL__Q36nw4hbm3lyt6detailFP9_GXTexObjP10TPLPaletteUl(void*, void*, u32);
