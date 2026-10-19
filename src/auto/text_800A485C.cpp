@@ -1,4 +1,5 @@
   #include <types.h>
+extern "C" s32 fn_800A53B4(void *);
   #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
 extern "C" void VFipf_memcpy(void *, const void *, u32);
 extern "C" s32 NANDGetLengthAsync(void *, u32 *);
@@ -1960,6 +1961,99 @@ extern "C" s32 fn_800B76E8(s8);
 extern "C" s32 fn_800B94D4(void *arg0, s32 arg1) {
     *(s32 *)((u8 *)arg0 + 4) = arg1;
     *(u8 **)arg0 = lbl_802F31F8;
+    return 0;
+}
+
+extern "C" s32 fn_800B98F8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s32 arg5) {
+    s32 status;
+    unsigned char *entry;
+    unsigned char *e;
+    u16 i;
+    u32 length;
+    u32 filelen;
+    u32 pos;
+    u32 cur;
+    s32 r;
+    u32 remain;
+    u32 done;
+    unsigned char buf[0x200] __attribute__((aligned(32)));
+
+    entry = 0;
+    for (i = 0; i < 0x17; i++) {
+        if (*(u32 *)(lbl_80405D58 + i * 0xF0) == (u32)arg5) {
+            entry = lbl_80405D58 + i * 0xF0;
+            break;
+        }
+    }
+    if (i == 0x17) {
+        status = -0x16;
+    } else {
+        status = 0;
+    }
+    if (status != 0) {
+        return -0x14;
+    }
+
+    length = arg0 * arg3;
+    filelen = *(u32 *)(entry + 0x54);
+    pos = arg2 * arg3;
+
+    if (NANDGetLengthAsync(entry + 0x58, &cur) != 0 || cur != pos) {
+        r = NANDSeek(entry + 0x58, pos, 0);
+    } else {
+        r = 0;
+    }
+    if (r < 0) {
+        for (i = 0; i < 0x17; i++) {
+            e = lbl_80405D58 + i * 0xF0;
+            if (*(u32 *)e == (u32)arg5) { *(s32 *)(e + 0xEC) = r; break; }
+        }
+        return r;
+    }
+
+    if (pos + length > filelen) {
+        remain = filelen - pos;
+        done = 0;
+        while (remain >= 0x200) {
+            VFipf_memcpy(buf, (u8 *)arg1 + done, 0x200);
+            r = NANDWrite(entry + 0x58, buf, 0x200);
+            if (r < 0) return -0x16;
+            remain -= r;
+            done += r;
+        }
+        if (remain != 0) {
+            VFipf_memcpy(buf, (u8 *)arg1 + done, remain);
+            NANDWrite(entry + 0x58, buf, remain);
+        }
+        return -0x16;
+    }
+
+    done = 0;
+    while (length >= 0x200) {
+        VFipf_memcpy(buf, (u8 *)arg1 + done, 0x200);
+        r = NANDWrite(entry + 0x58, buf, 0x200);
+        if (r < 0) {
+            for (i = 0; i < 0x17; i++) {
+                e = lbl_80405D58 + i * 0xF0;
+                if (*(u32 *)e == (u32)arg5) { *(s32 *)(e + 0xEC) = r; break; }
+            }
+            return r;
+        }
+        length -= r;
+        done += r;
+    }
+    if (length != 0) {
+        VFipf_memcpy(buf, (u8 *)arg1 + done, length);
+        r = NANDWrite(entry + 0x58, buf, length);
+        if (r < 0) {
+            for (i = 0; i < 0x17; i++) {
+                e = lbl_80405D58 + i * 0xF0;
+                if (*(u32 *)e == (u32)arg5) { *(s32 *)(e + 0xEC) = r; break; }
+            }
+            return r;
+        }
+    }
+    *arg4 = arg0;
     return 0;
 }
 
