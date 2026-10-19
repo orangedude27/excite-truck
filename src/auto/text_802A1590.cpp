@@ -1,6 +1,8 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
+extern "C" void fn_802A3C50(void* arg0, s32 arg1);
+
 extern "C" int lbl_80349B00[];
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -579,6 +581,13 @@ extern "C" void fn_802A36D0(void* arg0, void* arg1, s32 arg2) {
     spC = temp_f5 + *(f32*)(obj + 4) * temp_f2;
     sp10 = temp_f4 + *(f32*)(obj + 8) * temp_f2;
     fn_8028E590(*(int*)((char*)arg0 + 4), (f32*)(p + 0x7C), &sp8, lbl_805647DC);
+}
+
+extern "C" void* fn_802A38D0(void* arg0, DummyReceiver_802A3314* arg1) {
+    *(void**)arg0 = lbl_80349AD8;
+    s32 result = arg1->v3(&lbl_8055CBB0);
+    fn_802A3C50(arg0, result);
+    return arg0;
 }
 
 extern "C" int lbl_80349B50[];
