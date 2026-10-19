@@ -45,6 +45,8 @@ extern s32 lbl_80340C24;
 extern s32 lbl_8049870C[];
 void fn_80239AB8(void) { fn_80214CB4(lbl_8055BAC8); }
 
+#pragma push
+#pragma small_data off
 s32 fn_80239DE4(void) {
     s32 *p = (s32 *)lbl_8049870C;
     if (p[6] != p[7] && fn_802104D0()) {
@@ -54,25 +56,22 @@ s32 fn_80239DE4(void) {
     }
     return 1;
 }
-
+#pragma pop
 s32 fn_80239E5C(void *arg0, s32 arg1) {
     s32 *p = (s32 *)arg0;
     fn_80209030(*(float *)((char *)arg0 + 0x14));
     fn_8020A5F8(*(float *)((char *)arg0 + 0x10));
-    if (arg1 == 0) {
-        if (p[0] != p[1]) {
-            fn_802E30C8((s32)&lbl_8055BB00, p[0]);
-            fn_802C82C4(p[0]);
-        }
+    if (arg1 != 0) {
+        ((s32 (*)(s32, ...))fn_802E30C8)((s32)&lbl_8055BB00, p[0]);
+    } else if (p[0] != p[1]) {
+        ((s32 (*)(s32, ...))fn_802E30C8)((s32)&lbl_8055BB00, p[0]);
     } else {
-        fn_802E30C8((s32)&lbl_8055BB00, p[0]);
-        fn_802C82C4(p[0]);
+        goto second;
     }
-    if (arg1 == 0) {
-        if (p[2] != p[3]) fn_802090BC(p[2]);
-    } else {
-        fn_802090BC(p[2]);
-    }
+    fn_802C82C4(p[0]);
+second:
+    if (arg1 != 0) fn_802090BC(p[2]);
+    else if (p[2] != p[3]) fn_802090BC(p[2]);
 }
 
 unsigned char fn_80239F6C(void *arg0) { return *(unsigned char *)((char *)arg0 + 0x20); }
@@ -178,6 +177,40 @@ s32 fn_8023A8B0(void) {
     return 0;
 }
 
+#pragma push
+#pragma small_data off
+extern s32 lbl_80341290;
+extern void *fn_8012850C(s32,s32 *);
+#pragma push
+#pragma small_data off
+void *fn_8023A8D8(register void *arg0, register s32 arg1, register s32 arg2, ...) {
+ va_list ap;
+ s32 offset;
+ *(unsigned char *)arg0=0;
+ *(s32 *)((char *)arg0+4)=-1;
+ *(unsigned char *)((char *)arg0+8)=0;
+ *(s32 **)((char *)arg0+0xC)=&lbl_8034109C;
+ va_start(ap,arg2);
+ *(s32 *)((char *)arg0+0x14)=0;
+ do {
+  (*(s32 *)((char *)arg0+0x14))++;
+ } while(va_arg(ap,s32)!=0);
+ va_end(ap);
+ *(s32 **)((char *)arg0+0x10)=fn_8012850C(*(s32 *)((char *)arg0+0x14)*4,&lbl_80341290);
+ va_start(ap,arg2);
+ offset=0;
+ do {
+  *(s32 *)((char *)*(s32 **)((char *)arg0+0x10)+offset)=arg2;
+  offset+=4;
+  arg2=va_arg(ap,s32);
+ } while(arg2!=0);
+ va_end(ap);
+ *(s32 *)((char *)arg0+0x1C)=arg1;
+ *(s32 *)((char *)arg0+0x18)=*(s32 *)((char *)arg0+0x14);
+ return arg0;
+}
+#pragma pop
+
 extern s32 lbl_803410D8;
 extern s32 lbl_803412A4;
 extern void *fn_8012850C(s32, s32 *);
@@ -212,6 +245,37 @@ void *fn_8023AA2C(void *arg0, s32 arg1, ...) {
     *(s32 *)((char *)arg0 + 0x18) = arg1;
     return arg0;
 }
+
+__declspec(section ".data") extern s32 lbl_803412B8;
+__declspec(section ".data") extern s32 lbl_803412C8;
+extern s32 fn_80232578(s32 *);
+#pragma push
+#pragma small_data off
+void *fn_8023AB78(void *arg0, s32 arg1, s32 arg2, ...) {
+ va_list ap;
+ s32 offset;
+ *(s32 *)((char *)arg0+0x14)=0;
+ *(s32 **)arg0=&lbl_80341108;
+ *(s32 *)((char *)arg0+0x24)=fn_80232578(&lbl_803412C8);
+ *(unsigned char *)((char *)arg0+0x28)=0;
+ va_start(ap,arg2);
+ *(s32 *)((char *)arg0+0x1C)=0;
+ do { (*(s32 *)((char *)arg0+0x1C))++; } while(va_arg(ap,s32)!=0);
+ va_end(ap);
+ *(s32 **)((char *)arg0+0x18)=fn_8012850C(*(s32 *)((char *)arg0+0x1C)*4,&lbl_803412B8);
+ va_start(ap,arg2);
+ offset=0;
+ do {
+  *(s32 *)((char *)*(s32 **)((char *)arg0+0x18)+offset)=arg2;
+  offset+=4;
+  arg2=va_arg(ap,s32);
+ } while(arg2!=0);
+ va_end(ap);
+ *(s32 *)((char *)arg0+0x20)=arg1;
+ return arg0;
+}
+#pragma pop
+
 #pragma small_data on
 void fn_8023ACCC(void) {}
 
@@ -424,23 +488,19 @@ void fn_8023B368(void) {}
 s32 fn_8023B36C(void) { return 0; }
 
 void fn_8023B374(void *arg0) {
+    typedef struct { unsigned char pad[0xC]; void ** volatile dispatch; } Obj8023B374;
+    typedef s32 (*Fn8023B374)(void *, s32);
     s32 mode = fn_80210570();
     void *obj;
-    void **vtable;
-    s32 (*call)(void *, s32);
-    obj = *(void **)((char *)arg0 + 0x1C);
     if (mode == 2) {
-        vtable = *(void ***)((char *)obj + 0xC);
-        call = (s32 (*)(void *, s32))((char *)vtable + 0x30);
-        call(obj, 3);
+        obj = *(void **)((char *)arg0 + 0x1C);
+        ((Fn8023B374)((Obj8023B374 *)obj)->dispatch[12])(obj, 3);
     } else {
-        vtable = *(void ***)((char *)obj + 0xC);
-        call = (s32 (*)(void *, s32))((char *)vtable + 0x30);
-        call(obj, 2);
+        obj = *(void **)((char *)arg0 + 0x1C);
+        ((Fn8023B374)((Obj8023B374 *)obj)->dispatch[12])(obj, 2);
     }
-    vtable = *(void ***)((char *)obj + 0xC);
-    call = (s32 (*)(void *, s32))((char *)vtable + 0x34);
-    call(obj, mode);
+    obj = *(void **)((char *)arg0 + 0x1C);
+    ((Fn8023B374)((Obj8023B374 *)obj)->dispatch[13])(obj, mode);
 }
 
 void fn_8023B400(void) {}
