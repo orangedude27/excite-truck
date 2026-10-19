@@ -48,6 +48,7 @@ unsigned int fn_8020437C(void) {
     return (unsigned int)(value - masked) >> 31;
 }
 #pragma dont_inline reset
+#pragma dont_inline on
 void fn_802043B0(int *arg0) {
  float val = lbl_80563168;
  float temp = ((float)fn_80204354() - lbl_8056316C) / lbl_80563170;
@@ -99,9 +100,9 @@ int fn_802044E8(void) {
     fn_802043B0(&normal); fn_802043B0(&selected);
     step = b->y - a->y;
     count = (int)(*(float *)(area+0x14)/step);
-    label = *a;
+    label.unk_0x0=a->unk_0x0; label.unk_0x4=a->unk_0x4; label.y=a->y; label.unk_0xc=a->unk_0xc; label.unk_0x10=a->unk_0x10; label.unk_0x14=a->unk_0x14; label.color=a->color; label.unk_0x1c=a->unk_0x1c;
     start = lbl_8055ED40 - lbl_8055ED40 % count;
-    value = *c;
+    value.unk_0x0=c->unk_0x0; value.unk_0x4=c->unk_0x4; value.y=c->y; value.unk_0xc=c->unk_0xc; value.unk_0x10=c->unk_0x10; value.unk_0x14=c->unk_0x14; value.color=c->color; value.unk_0x1c=c->unk_0x1c;
     entry = lbl_80488BD0 + start*0x18;
     end = start + count;
     for (i=start; i<end && i<lbl_8055ED3C; ++i,entry+=0x18) {
