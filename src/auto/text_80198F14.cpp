@@ -820,6 +820,30 @@ void fn_801A2684(void* arg0, f32* arg1, f32* arg2) {
     arg2[2] = *(f32*)((u8*)temp_r3 + 0x2C) + temp_f1;
 }
 
+extern void fn_801C28A8(void*, void*, void*, void*, void*, s32, s32, void*);
+void fn_801A26FC(void* arg0, void* arg1) {
+    u32 type = *(u32*)((u8*)arg1 + 0x18);
+    if ((type - 0x47525500U) == 0x5550U) {
+        Vec delta;
+        f32* a = *(f32**)((u8*)arg0 + 0xC);
+        f32* b = *(f32**)((u8*)arg1 + 0xC);
+        delta.x = a[9] - b[9];
+        delta.y = a[10] - b[10];
+        delta.z = a[11] - b[11];
+        f32 d = PSVECDotProduct(&delta, &delta);
+        f32 radius = *(f32*)((u8*)arg0 + 0x24) +
+            ((f32 (*)(void*))(*(u32*)(*(u32*)arg1 + 0x3C)))(arg1);
+        if (d < radius * radius) {
+            void* x = *(void**)((u8*)arg1 + 0x17C);
+            Vec out;
+            fn_801C28A8(*(void**)((u8*)arg0 + 0x30), x, a, b, &out,
+                         *(s32*)((u8*)arg0 + 0x28), *(s32*)((u8*)arg0 + 0x2C), 0);
+        }
+    } else if ((type - 0x424F5800U) == 0x5820U) {
+    } else if ((type - 0x504F4C00U) == 0x4C59U) {
+    }
+}
+
 extern "C" void* fn_801A2C9C(void* arg0) {
     return (u8*)arg0 + 0x44;
 }
