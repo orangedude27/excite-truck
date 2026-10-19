@@ -200,6 +200,25 @@ void fn_802B257C(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 4) == 0) fn_802B28BC(out, 0x80);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+void fn_802B28BC(int *dst, int count) {
+    int limit;
+    int offset;
+    int i;
+    i = 0;
+    limit = count - 1;
+    offset = 0;
+    while (i < limit) {
+        int j = fn_80129D90(0, i + 1, count);
+        int tmp = dst[offset / 4];
+        dst[offset / 4] = dst[j];
+        dst[j] = tmp;
+        i++;
+        offset += 4;
+    }
+}
+#pragma pop
 void fn_802B2C34(void (*fn)(int), int arg)
 {
     int x = arg;
