@@ -842,7 +842,6 @@ s32 *fn_801500F8(void *arg0, s32 *arg1) {
     data[index] = value;
     return &data[index];
 }
-
 s32 fn_80150AD8(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
