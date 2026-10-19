@@ -4,7 +4,7 @@
 extern "C" char lbl_8032F39C[];
 extern "C" f32 lbl_8042FD08[];
 extern "C" f32 lbl_80558DC4[];
-extern "C" s32 lbl_8055A058[];
+extern "C" s32 lbl_8055A058[1];
 extern "C" f32 fn_80204CFC(const char*);
 extern "C" void* fn_8023139C(void*,s32,u32);
 extern "C" void* fn_8017960C(s32);
@@ -1172,6 +1172,81 @@ extern "C" void fn_8015B788(void* arg0, s32 arg1, f32 farg0) {
 
 extern "C" s32 fn_8015BCEC(void) { return 7; }
 
+extern "C" s32 lbl_8055A05C[];
+#pragma push
+#pragma processor 750
+extern "C" void fn_8015BCF4(Unk801577F0* arg0, f32* arg1) {
+ struct Obj {
+ virtual void v0();
+virtual void v1();
+virtual void v2();
+virtual void v3();
+virtual void v4();
+virtual void v5();
+virtual void v6();
+virtual void v7();
+virtual void v8();
+virtual void v9();
+virtual void v10();
+virtual void v11();
+virtual void v12();
+virtual void v13();
+virtual void v14();
+virtual void v15();
+virtual void v16();
+virtual s32 v17();
+virtual void v18();
+virtual s32 v19();
+virtual void v20();
+virtual s32 v21();
+virtual void v22();
+virtual s32 v23();
+virtual s32 v24();
+virtual s32 v25();
+virtual s32 v26();
+virtual void v27();
+virtual void v28();
+virtual void v29(); virtual void v30(); virtual s32 v31();
+ };
+ struct Adaptor {
+ virtual void v0(); virtual void v1(s32,...); virtual void v2(s32,...);
+ virtual void v3(s32,...); virtual void v4(); virtual void v5(s32);
+ virtual void v6(s32); virtual void v7(); virtual void v8(s32);
+ };
+ char buf[16];
+ Obj* obj=(Obj*)arg0;
+ *arg1 *= fn_80204CFC(lbl_8032F39C);
+ *arg1 *= lbl_8042FD08[arg0->m4];
+ if (*(Adaptor**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=lbl_80558DC4[0])) {
+  (*(Adaptor**)((u8*)arg0+0x248))->v3((s32)lbl_8055A058, fn_8023139C(buf,16,(u32)*arg1));
+  (*(Adaptor**)((u8*)arg0+0x248))->v6(obj->v31());
+  (*(Adaptor**)((u8*)arg0+0x248))->v5((s32)*arg1);
+  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A058,obj->v25());
+  (*(Adaptor**)((u8*)arg0+0x248))->v1((s32)lbl_8055A058,obj->v26());
+  obj->v24();
+  (*(Adaptor**)((u8*)arg0+0x248))->v4();
+  s32 limit=obj->v19();
+  if(obj->v23()>=limit) (*(Adaptor**)((u8*)arg0+0x248))->v8(1);
+ }
+ f32 value=*arg1;
+ s32 offset=obj->v23()*0x38;
+ ++*(s32*)(arg0->mData+offset);
+ if (!((f32)__fabs(value)<=lbl_80558DC4[0])) {
+ ++*(s32*)(arg0->mData+offset+4);
+ if ((f32)__fabs(value-*(f32*)(arg0->mData+offset+16))<=lbl_80558DC4[0])
+ ++*(s32*)(arg0->mData+offset+8);
+ }
+ *(f32*)(arg0->mData+offset+12)+=value;
+ s32 index=obj->v23();
+ ((void(*)(s32,s32,s32))fn_801584D4)(obj->v31(),arg0->m4,index);
+ s32 shift=*(s32*)((u8*)arg0+0x26c)*0x168;
+ if (*(Adaptor**)((u8*)arg0+0x248) && !((f32)__fabs(*arg1)<=lbl_80558DC4[0])) {
+  (*(Adaptor**)((u8*)arg0+0x248))->v2((s32)lbl_8055A05C,obj->v25(),shift);
+  (*(Adaptor**)((u8*)arg0+0x248))->v1((s32)lbl_8055A05C,obj->v26(),shift);
+ }
+}
+#pragma pop
+
 extern "C" s32 fn_8015C074(void) { return 0; }
 
 extern "C" void* fn_8015C07C(void* arg0, s32 arg1) {
@@ -1671,6 +1746,44 @@ extern "C" void fn_8015DC98(Unk801577F0* arg0) {
     }
     fn_802E30C8((const char*)lbl_8032E4E0 + 0xF60, sum0, sum4 - sum0, sumF);
 }
+
+extern "C" s32 lbl_8055A06C[];
+#pragma push
+#pragma use_lmw_stmw off
+#pragma processor 7400
+extern "C" void fn_8015DD9C(Unk801577F0* arg0, void* arg1) {
+ struct Obj {
+ virtual s32 v0(); virtual s32 v1(); virtual s32 v2(); virtual s32 v3(); virtual s32 v4(); virtual s32 v5(); virtual s32 v6(); virtual s32 v7(); virtual s32 v8(); virtual s32 v9(); virtual s32 v10(); virtual s32 v11(); virtual s32 v12(); virtual s32 v13(); virtual s32 v14(); virtual s32 v15(); virtual s32 v16(); virtual s32 v17(); virtual s32 v18(); virtual s32 v19(); virtual s32 v20(); virtual s32 v21(); virtual s32 v22(); virtual s32 v23(); virtual s32 v24(); virtual s32 v25(); virtual s32 v26(); virtual s32 v27(); virtual s32 v28(); virtual s32 v29();
+ };
+ struct Adaptor {
+ virtual void v0(); virtual void v1(s32,...); virtual void v2(s32,...);
+ virtual void v3(s32,...); virtual void v4(); virtual void v5(s32);
+ virtual void v6(s32); virtual void v7(); virtual void v8(s32);
+ };
+ struct Provider { virtual void v0(); virtual Adaptor* v1(); };
+ struct Item { s32 a,b,c; f32 d; u8 pad[0x28]; };
+ s32 sum=0;
+ for(s32 i=0;i<arg0->mCount;i++) sum+=((Item*)arg0->mData)[i].b;
+ Adaptor* a=((Provider*)arg1)->v1();
+ Obj* obj=(Obj*)arg0;
+ if(a) {
+ a->v1((s32)lbl_8055A058,obj->v25());
+ a->v2((s32)lbl_8055A06C,sum);
+ a->v6(obj->v29());
+ f32 total=lbl_80561754;
+ for(s32 i=0;i<arg0->mCount;i++) total+=((Item*)arg0->mData)[i].d;
+ s32 value=(s32)total;
+ char buf[16];
+ a->v3((s32)lbl_8055A058,fn_8023139C(buf,16,value));
+ a->v5(value);
+ obj->v22();
+ a->v4();
+ s32 limit=obj->v17();
+ if(obj->v21()>=limit) a->v8(1);
+ }
+}
+#pragma pop
+
 #pragma pop
 extern "C" void fn_8015E0FC(void) {
 }
