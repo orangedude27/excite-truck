@@ -23,10 +23,11 @@ extern void *fn_8012A13C(void *, int, int);
 extern int fn_8012A2D8(void *);
 extern int fn_8012A364(void *, void *);
 typedef struct { void **vtable; } Unk8012A570;
-  extern void fn_8020A860(void);
+    extern void fn_8020A860(void);
   extern int fn_80208E90(int);
   extern float lbl_805632B0, lbl_805632B4, lbl_8055B598;
-extern void *lbl_8055EE04;
+
+  extern void *lbl_8055EE04;
 extern char lbl_8033C37C[];
 extern void *lbl_8055EE08;
 extern unsigned char lbl_8033C520[];
