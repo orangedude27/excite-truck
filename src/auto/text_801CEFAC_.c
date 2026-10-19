@@ -4,6 +4,8 @@
 extern char lbl_8055AB50;
 extern char lbl_8055E8A0;
 extern char lbl_8055E8A1;
+extern void fn_801AED68(void);
+extern void fn_801AED5C(void);
 void fn_801CEFAC(void) {
     lbl_8055AB50 = 1;
     lbl_8055E8A0 = 0;
