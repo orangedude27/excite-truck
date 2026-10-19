@@ -905,6 +905,10 @@ extern "C" void fn_801442D4(void) {
 
 }
 
+extern "C" void fn_801442D8(void) {
+
+}
+
 extern "C" void fn_801442DC(void *arg0) {
     class TObj20 {
     public:
