@@ -4751,6 +4751,35 @@ void fn_80099F58(void *arg0) {
     *(u8 *)arg0 = 0;
 }
 
+UINT8 *sdpu_build_attrib_entry(UINT8 *p_out, tSDP_ATTRIBUTE *p_attr)
+{
+    UINT8_TO_BE_STREAM(p_out, (UINT_DESC_TYPE << 3) | SIZE_TWO_BYTES);
+    UINT16_TO_BE_STREAM(p_out, p_attr->id);
+    switch (p_attr->type) {
+    case TEXT_STR_DESC_TYPE:
+    case DATA_ELE_SEQ_DESC_TYPE:
+    case DATA_ELE_ALT_DESC_TYPE:
+    case URL_DESC_TYPE:
+        UINT8_TO_BE_STREAM(p_out, (p_attr->type << 3) | SIZE_IN_NEXT_BYTE);
+        UINT8_TO_BE_STREAM(p_out, p_attr->len);
+        ARRAY_TO_BE_STREAM(p_out, p_attr->value_ptr, (int)p_attr->len);
+        return p_out;
+    }
+    switch (p_attr->len) {
+    case 1: UINT8_TO_BE_STREAM(p_out, (p_attr->type << 3) | SIZE_ONE_BYTE); break;
+    case 2: UINT8_TO_BE_STREAM(p_out, (p_attr->type << 3) | SIZE_TWO_BYTES); break;
+    case 4: UINT8_TO_BE_STREAM(p_out, (p_attr->type << 3) | SIZE_FOUR_BYTES); break;
+    case 8: UINT8_TO_BE_STREAM(p_out, (p_attr->type << 3) | SIZE_EIGHT_BYTES); break;
+    case 16: UINT8_TO_BE_STREAM(p_out, (p_attr->type << 3) | SIZE_SIXTEEN_BYTES); break;
+    default:
+        UINT8_TO_BE_STREAM(p_out, (p_attr->type << 3) | SIZE_IN_NEXT_BYTE);
+        UINT8_TO_BE_STREAM(p_out, p_attr->len);
+        break;
+    }
+    ARRAY_TO_BE_STREAM(p_out, p_attr->value_ptr, (int)p_attr->len);
+    return p_out;
+}
+
 UINT8 *sdpu_get_len_from_type (UINT8 *p, UINT8 type, UINT32 *p_len)
 {
     UINT8   u8;
