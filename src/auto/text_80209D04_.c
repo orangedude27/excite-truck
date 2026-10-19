@@ -21,4 +21,4 @@ void fn_80209D04(void) {
 #pragma opt_propagation reset
 #pragma scheduling on
 
-DECL_SECTION(".ctors") funcptr_t D_802ED384 = fn_80209D04;
+DECL_SECTION(".ctors") static funcptr_t D_802ED384 = fn_80209D04;
