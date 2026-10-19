@@ -7,11 +7,7 @@ extern f32 lbl_8055EBE8;
 extern f32 lbl_80562F38;
 int fn_8000D838(void*);                     /* extern */
 void fn_8000D53C(void);
-static inline void set_val(void) {
-    lbl_8055EBE8 = lbl_80562F38;
-}
-
 void fn_801F1BF8(void) {
     fn_8000D838(&lbl_8055EBE0);
-    set_val();
+    lbl_8055EBE8 = lbl_80562F38;
 }
