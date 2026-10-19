@@ -135,6 +135,50 @@ extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32 angle) {
     return entry[1] + fraction * entry[3];
 }
 
+#pragma push
+#pragma small_data off
+extern float lbl_80560F04, lbl_80560F08, lbl_80560F0C, lbl_80560F10, lbl_80560F14, lbl_80560F18;
+extern float lbl_80321E48[];
+#pragma pop
+extern "C" float Atan2FIdx__Q24nw4r4mathFff(float y, float x) {
+    float f1 = y;
+    float f3;
+    float f4 = lbl_80560F04;
+    int mode;
+    if (x == f4 && f1 == f4) return f4;
+    if (x <= f4) {
+        if (f1 <= f4) {
+            if (x <= f1) { f3=x; mode=0; }
+            else { f3=f1; f4=lbl_80560F0C; f1=x; mode=1; }
+        } else {
+            f1 = -f1;
+            if (x <= f1) { f3=x; mode=1; }
+            else { f3=f1; f4=lbl_80560F10; f1=x; mode=0; }
+        }
+    } else {
+        if (f1 <= f4) {
+            float f0=-x;
+            if (f0 <= f1) { f3=f0; f4=lbl_80560F14; mode=1; }
+            else { f3=f1; f4=lbl_80560F0C; f1=f0; mode=0; }
+        } else {
+            float f0=-x;
+            f1=-f1;
+            if (f0 <= f1) { f3=f0; f4=lbl_80560F18; mode=0; }
+            else { f3=f1; f4=lbl_80560F10; f1=f0; mode=1; }
+        }
+    }
+    f1 = f1 / f3 * lbl_80560F08;
+    if (mode) {
+        u16 i = *(u16 *)&f1;
+        float *e = (float *)((char *)lbl_80321E48 + i * 8);
+        return f4 - (e[0] + (f1 - (float)i) * e[1]);
+    } else {
+        u16 i = *(u16 *)&f1;
+        float *e = (float *)((char *)lbl_80321E48 + i * 8);
+        return f4 + (e[0] + (f1 - (float)i) * e[1]);
+    }
+}
+
 extern "C" void fn_800E2C98(void *arg0) {
     int *p = (int *)((char *)arg0 + 4);
     *(int *)((char *)arg0 + 4) = 0;
@@ -277,6 +321,53 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
         }
     }
     return this_;
+}
+
+extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *self, int count, int arg2, void (*callback)(void *, int, void *), void *arg4) {
+    int i;
+    for (i = 0; i < count; i++) *(int *)((char *)self + 0x2C + i * 0x34) = 0;
+    *(int *)((char *)self + 0x104) = count;
+    *(int *)((char *)self + 0x108) = arg2;
+    *(void (**)(void *, int, void *))((char *)self + 0x10C) = callback;
+    *(void **)((char *)self + 0x110) = arg4;
+    *((char *)self + 0x123) = 0;
+    *((char *)self + 0x11F) = 0;
+    *((char *)self + 0x120) = 0;
+    *((char *)self + 0x11E) = 0;
+    *((char *)self + 0x121) = 1;
+    *((char *)self + 0x122) = 0;
+    *(float *)((char *)self + 0x188) = lbl_80560F38;
+    *(float *)((char *)self + 0x18C) = lbl_80560F38;
+    *(float *)((char *)self + 0x190) = lbl_80560F38;
+    *(float *)((char *)self + 0x194) = lbl_80560F38;
+    *(float *)((char *)self + 0x198) = lbl_80560F38;
+    *(float *)((char *)self + 0x19C) = lbl_80560F3C;
+    *(float *)((char *)self + 0x1A0) = lbl_80560F38;
+    *(short *)((char *)self + 0x1A4) = 0;
+    *(float *)((char *)self + 0x138) = lbl_80560F38;
+    *(float *)((char *)self + 0x128) = lbl_80560F3C;
+    *(float *)((char *)self + 0x12C) = lbl_80560F3C;
+    *(float *)((char *)self + 0x130) = lbl_80560F3C;
+    *(float *)((char *)self + 0x134) = lbl_80560F3C;
+    *(int *)((char *)self + 0x13C) = 1;
+    *(float *)((char *)self + 0x140) = lbl_80560F38;
+    *(float *)((char *)self + 0x144) = lbl_80560F38;
+    *(float *)((char *)self + 0x148) = lbl_80560F3C;
+    *(float *)((char *)self + 0x14C) = lbl_80560F3C;
+    *(float *)((char *)self + 0x150) = lbl_80560F3C;
+    *(float *)((char *)self + 0x154) = lbl_80560F38;
+    *(float *)((char *)self + 0x164) = lbl_80560F38;
+    *(float *)((char *)self + 0x174) = lbl_80560F3C;
+    *(float *)((char *)self + 0x158) = lbl_80560F38;
+    *(float *)((char *)self + 0x168) = lbl_80560F38;
+    *(float *)((char *)self + 0x178) = lbl_80560F3C;
+    *(float *)((char *)self + 0x15C) = lbl_80560F38;
+    *(float *)((char *)self + 0x16C) = lbl_80560F38;
+    *(float *)((char *)self + 0x17C) = lbl_80560F3C;
+    *(float *)((char *)self + 0x160) = lbl_80560F38;
+    *(float *)((char *)self + 0x170) = lbl_80560F38;
+    *(float *)((char *)self + 0x180) = lbl_80560F3C;
+    *(float *)((char *)self + 0x184) = lbl_80560F38;
 }
 
 extern "C" void fn_800E519C(void *arg0) {
@@ -566,7 +657,24 @@ extern "C" unsigned int GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hb
     return result;
 }
 
-void fn_800E80B4(void) {
+extern float lbl_80560F38, lbl_80560F3C, lbl_80560F54, lbl_80560F60, lbl_80560F64, lbl_80560F68, lbl_80560F6C, lbl_80560F70, lbl_80560F74, lbl_80560F78;
+void TransformDpl2Pan__Q44nw4r3snd6detail5VoiceFPfPfff(void *self, float *out0, float *out1, float a, float b) {
+    float d = b - lbl_80560F38;
+    float aa = a < 0.0f ? -a : a;
+    float ad = d < 0.0f ? -d : d;
+    if (aa == ad) {
+        if (d == lbl_80560F3C) { *out0 = a; *out1 = lbl_80560F60 + lbl_80560F64 * d; }
+        else { *out0 = lbl_80560F68 * a; *out1 = lbl_80560F60 + lbl_80560F6C * d; }
+    } else if (a == lbl_80560F3C) {
+        if (d == lbl_80560F3C) { *out0 = (lbl_80560F70 + lbl_80560F74 * (-d / a)) * aa; *out1 = lbl_80560F60 + lbl_80560F54 * d + lbl_80560F64 * a; }
+        else { *out0 = (lbl_80560F70 + lbl_80560F78 * (-d / a)) * aa; *out1 = lbl_80560F60 + lbl_80560F6C * a; }
+    } else if (d == lbl_80560F3C) {
+        *out0 = (lbl_80560F74 * (-d / a) - lbl_80560F70) * aa; *out1 = lbl_80560F60 + lbl_80560F54 * d - lbl_80560F6C * a;
+    } else { *out0 = (lbl_80560F78 * (-d / a) - lbl_80560F70) * aa; *out1 = lbl_80560F60 + lbl_80560F6C * -a; }
+    *out1 += lbl_80560F38;
+}
+
+extern "C" void fn_800E80B4(void) {
 
 }
 
@@ -673,11 +781,11 @@ extern "C" void SetVolume__Q46nw4hbm3snd6detail10BasicSoundFfi(void *this_, floa
 }
 
 extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800E9AAC(void *this_, float vol) {
-    BasicSound *sound = (BasicSound *)this_;
     if (!(vol >= lbl_80560FB0)) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322790, 0x234, lbl_80322858);
     }
-    *(f32*)&((u8*)sound)[0x98] = vol;
+
+    *(float *)((char *)this_ + 0x98) = vol;
 }
 
 #pragma push
