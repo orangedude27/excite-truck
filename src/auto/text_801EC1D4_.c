@@ -256,7 +256,6 @@ void fn_801EDD68(void *arg0) {
 
 extern void fn_801EABA8(long);
 extern void fn_801F0F78(long, long, void *, float);
-extern float lbl_80558DC4_storage[];
 extern float lbl_80558DC4;
 extern float lbl_80562E90;
 extern float __fabsf(float);
