@@ -46,6 +46,13 @@ int fn_802E4030(int arg0, int arg1) {
     return arg0;
 }
 
+extern const char lbl_8034D0C0[];
+#pragma scheduling invalid_target
+int fn_802E4070(void) {
+    fn_802E30C8(lbl_8034D0C0);
+    return 0;
+}
+
 extern unsigned int lbl_8055D1B0;
 extern unsigned int lbl_8034D074;
 extern unsigned int lbl_8034D098;
