@@ -4712,6 +4712,54 @@ void rfc_mx_conf_cnf(void *arg0, u16 *arg1) {
     }
 }
 
+void rfc_port_sm_state_closed(void *p_port, u16 event, void *p_data) {
+    extern char lbl_80319AC4[];
+    extern char lbl_80319AE4[];
+    extern void rfc_sec_check_complete(void *, void *, s8);
+    extern void rfc_port_closed(void *);
+    extern void rfc_send_dm(void *, u8, u8);
+    extern void Port_TimeOutCloseMux(void *);
+    u8 *port = (u8 *)p_port;
+    switch (event) {
+    case 9:
+        port[0x68] = 2;
+        btm_sec_mx_access_request(*(u8 **)(port + 0x6C) + 0x62, 3, 1, 3, (u32)(port[0xD] / 2),
+                                  (tBTM_SEC_CALLBACK *)rfc_sec_check_complete, p_port);
+        return;
+    case 12:
+        break;
+    case 13:
+        return;
+    case 14:
+        GKI_freebuf(p_data);
+        break;
+    case 0:
+        port[0x68] = 3;
+        btm_sec_mx_access_request(*(u8 **)(port + 0x6C) + 0x62, 3, 0, 3, (u32)(port[0xD] / 2),
+                                  (tBTM_SEC_CALLBACK *)rfc_sec_check_complete, p_port);
+        return;
+    case 1:
+        return;
+    case 2:
+        rfc_port_closed(p_port);
+        return;
+    case 4:
+        GKI_freebuf(p_data);
+        rfc_send_dm(*(void **)(port + 0x6C), port[0xD], 0);
+        return;
+    case 3:
+        rfc_send_dm(*(void **)(port + 0x6C), port[0xD], 0);
+        return;
+    case 5:
+        Port_TimeOutCloseMux(*(void **)(port + 0x6C));
+        if (lbl_803C4828[0x414] >= 1)
+            fn_8007096C(0x90000, lbl_80319AC4, port[0x68], event);
+        return;
+    }
+    if (lbl_803C4828[0x414] >= 2)
+        fn_80070954(0x90001, lbl_80319AE4, event);
+}
+
 void rfc_port_sm_orig_wait_sec_check(void *port, u16 event, void *data) {
     extern char lbl_80319AB0[];
     extern void rfc_send_sabme(void *, s32, void *);
