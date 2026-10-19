@@ -17,6 +17,15 @@ void fn_801CEFC4(void) {
     lbl_8055E8A0 = 0;
 }
 
+void fn_801CEFD4(int arg0) {
+    lbl_8055AB50 = arg0;
+    if (arg0) {
+        fn_801AED68();
+    } else {
+        fn_801AED5C();
+    }
+}
+
 extern char lbl_8033807C[];
 extern char lbl_80338060[];
 extern void fn_802E30C8(char *, ...);
