@@ -18,6 +18,11 @@ typedef struct {
     u32 field;
 } FanEntry;
 
+typedef struct {
+    u32 index;
+    u32 count;
+} FanHeader;
+
 extern void *fn_8012850C(s32, void *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -57,47 +62,45 @@ s32 fn_802BE378(s32 arg0) {
 
 void fn_802BE38C(void) {
     void *buf;
-    char *name;
+    u32 name;
     u32 size;
     u32 length;
     u8 flag;
+    u8 *p;
     u32 i;
     s32 j;
-    u8 *p;
     u32 *data;
     u32 index;
     u32 n;
 
-    name = lbl_8034AC68;
-    fn_8012E96C((s32)name);
+    name = (u32)lbl_8034AC68;
+    fn_8012E96C(name);
     lbl_8055FACC = 0;
-    buf = (void *)fn_8012C370((s32)name, 0x46494E46, (s32)&size, (s32)&length, 0, (s32)&flag);
+    buf = (void *)fn_8012C370(name, 0x46494E46, (s32)&size, (s32)&length, 0, (s32)&flag);
     if (buf != NULL) {
         if (size == 2) {
             data = (u32 *)buf;
             if (flag != 0) {
                 p = (u8 *)buf;
                 for (i = 0; i < (length >> 2); i++) {
-                    u8 a = p[0];
-                    u8 b = p[3];
-                    u8 c = p[1];
-                    u8 d = p[2];
-                    p[0] = b;
-                    p[3] = a;
-                    p[1] = d;
-                    p[2] = c;
+                    u8 t = p[0];
+                    p[0] = p[3];
+                    p[3] = t;
+                    t = p[1];
+                    p[1] = p[2];
+                    p[2] = t;
                     p += 4;
                 }
             }
             while (data[0] != 0) {
-                index = data[0];
                 n = data[1];
+                index = data[0];
                 data += 2;
                 for (j = 0; j < (s32)n; j++) {
                     FanEntry *e = (FanEntry *)lbl_804C06E0[index] + j;
-                    e->field = (e->field & 0xFF800200) | (data[j] & 0x7FFDFF);
+                    e->field = (e->field & 0xFF800200) | (*data & 0x7FFDFF);
+                    data++;
                 }
-                data += n;
             }
             lbl_8055FACC = 1;
         } else {
