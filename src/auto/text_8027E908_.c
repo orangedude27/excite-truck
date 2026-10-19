@@ -1185,12 +1185,11 @@ int fn_80287364(void* arg0) {
     return 1;
 }
 
-void fn_802873F8(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 4);
-    void** vtable = *(void***)obj;
-    ((void (*)(void))vtable[9])();
+#pragma cplusplus on
+extern "C" void fn_802873F8(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v7();
 }
-
+#pragma cplusplus off
 int fn_8028740C(void* arg0) {
     int i;
     void* item;
