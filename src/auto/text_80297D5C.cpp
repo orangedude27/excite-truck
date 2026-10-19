@@ -395,6 +395,53 @@ extern "C" void* fn_802998F4(void* arg0, int arg1) {
 extern "C" void fn_80299988(void) {
 }
 
+extern "C" double cos(double);
+extern "C" double sin(double);
+extern "C" float fn_80144514(float, float, float, float, float, float);
+extern "C" char lbl_803494F0[];
+extern float lbl_805645E4, lbl_805645E8, lbl_805645EC, lbl_805645F0, lbl_805645F4;
+void fn_80299A88(void *arg0, void *out, unsigned int unused, float scale) {
+    float init[0x100/4];
+    float rot[9];
+    float *q = rot;
+    int i, count;
+    (void)arg0;
+    fn_8028E61C(&init[0x68/4]);
+    init[0x6c/4] = 0xA0; init[0x70/4] = lbl_80564590; init[0x74/4] = lbl_80564590;
+    init[0x68/4] = 1.0f;
+    init[0x14/4] = lbl_805645E4; init[0x18/4] = lbl_805645E4; init[0x1c/4] = lbl_805645E4;
+    init[0x78/4] = lbl_805645E4; init[0x7c/4] = lbl_805645E4; init[0x80/4] = lbl_805645E4;
+    init[8/4] = lbl_80564590; init[0xc/4] = lbl_80564590; init[0x10/4] = lbl_80564590;
+    init[0x84/4] = lbl_80564590; init[0x88/4] = lbl_80564590; init[0x8c/4] = lbl_80564590;
+    init[0x90/4] = lbl_8056459C; init[0x98/4] = lbl_805645A0;
+    init[0xb8/4] = lbl_805645E8; init[0xbc/4] = lbl_805645EC;
+    init[0xc0/4] = lbl_805645A8; init[0xc4/4] = lbl_805645AC;
+    init[0xd8/4] = lbl_805645B0; init[0xd0/4] = lbl_805645B0; init[0xc8/4] = lbl_805645B0;
+    init[0xdc/4] = lbl_805645B4; init[0xd4/4] = lbl_805645B4; init[0xcc/4] = lbl_805645B4;
+    init[0xe8/4] = lbl_80564590; init[0xec/4] = 0x40; ((unsigned char*)init)[0xf0]=1;
+    init[0xac/4] = 2; ((unsigned char*)init)[0xf1]=1;
+    void *res = ((void *(*)(void*,void*,void*,int,int,float,float,float,float,float,float,float,float,float))fn_8028E2F8)
+      (&init[0x68/4], lbl_803494F0, lbl_8055CA80, 0x40, 1, lbl_805645B0,lbl_805645AC,
+       lbl_805645A8,lbl_805645EC,lbl_805645E8,lbl_805645A0,lbl_8056459C,lbl_805645E4,lbl_80564590);
+    *(void**)out = res;
+    count = (int)(lbl_805645F0 * scale);
+    if (count >= 12) count = 12;
+    if (count < 1) count = 1;
+    float c = (float)cos((double)(lbl_805645F4 / (float)count));
+    float s = (float)sin((double)(lbl_805645F4 / (float)count));
+    q[0]=c; q[1]=s; q[2]=lbl_8056459C; q[3]=-s; q[4]=c;
+    q[5]=lbl_8056459C; q[6]=lbl_8056459C; q[7]=lbl_8056459C; q[8]=lbl_80564590;
+    float *p=(float*)unused;
+    if (count > 0) for (int n=0;n<count;n++) {
+       ((float*)out)[1+n*3]=p[9]+p[3]*scale;
+       ((float*)out)[2+n*3]=p[10]+p[4]*scale;
+       ((float*)out)[3+n*3]=p[11]+p[5]*scale;
+       for(i=0;i<9;i++) p[i]=fn_80144514(p[i],q[i],p[i],q[i],p[i],q[i]);
+    }
+    *(int*)((char*)out+0x94)=count;
+    *(float*)((char*)out+0x98)=lbl_8056459C;
+}
+
 extern "C" void* fn_80299FA8(void* arg0, void* arg1) {
     fn_8028E398(*(void**)arg1);
     *(void**)arg1 = 0;
@@ -636,16 +683,13 @@ int fn_8029BFF8(void* arg0) {
 }
 
 extern void* lbl_8055F7D4;
-#pragma dont_inline on
 extern "C" int fn_8029C024(int *arg0) {
 #pragma dont_inline on
-    register int *p = arg0;
-    int value = *(volatile int *)p;
+    int value = *(volatile int *)arg0;
     fn_8029A890(lbl_8055F7D4, (void *)value);
     return 4;
 #pragma dont_inline reset
 }
-
 extern "C" int fn_8029C054(int* arg0) {
     int value = *(volatile int*)arg0;
     fn_8029A8A4(lbl_8055F7D4, (void*)value);
