@@ -243,10 +243,11 @@ extern "C" s32 fn_800A5958(void *arg0, s32 *arg1) {
     return result & ((-result | result) >> 31);
 }
 
-void fn_800A5990(void) {
-    fn_800A61D0(0);
+#pragma dont_inline on
+extern "C" s32 fn_800A5990(s32 arg0) {
+    return fn_800A61D0((void *)arg0);
 }
-
+#pragma dont_inline reset
 extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
     s32 result;
     *arg2 = 0;
