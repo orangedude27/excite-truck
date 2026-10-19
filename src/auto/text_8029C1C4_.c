@@ -5,6 +5,7 @@ extern void fn_8029CD14(void);
 extern void fn_8029CB3C(void);
 extern void fn_8029C934(void);
 extern void fn_8029C650(void);
+extern void fn_8029C3EC(void);
 extern void *fn_8029D464(void *, int);
 extern int lbl_8055F7F8;
 extern int lbl_8055F7F0;
@@ -136,6 +137,62 @@ void fn_8029C664(void) {
         }
     }
 }
+
+void fn_8029C73C(void) {
+    extern char lbl_80349560[];
+    extern int lbl_804B5010[];
+    extern int lbl_8055F7F0;
+    extern float lbl_80564628, lbl_80564630, lbl_8056464C, lbl_80564650;
+    extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;
+    extern void *fn_80131810(void *);
+    extern void fn_80131818(void *);
+    extern int fn_801284F8(int, void *, float);
+    extern int fn_8029D148(void *, float *, int);
+    extern void fn_802E317C(const char *, ...);
+    char init[0x20];
+    float vec[3], x, y;
+    void *owner, *item;
+    int i, id, result;
+    void *(*next)(void *, int);
+    int (*getid)(void *, void *);
+    void (*getvec)(void *, float *, int);
+    float (*getval)(void *, int);
+    lbl_8055F7F0 = 0;
+    owner = fn_80131810(lbl_80349560 + 0xA4);
+    if (owner != 0) {
+        __builtin_memset(init, 0, 0x20);
+        *(float *)(init + 0) = lbl_8056464C;
+        *(float *)(init + 4) = lbl_80564628;
+        *(float *)(init + 8) = lbl_80564628;
+        *(float *)(init + 12) = lbl_80564650;
+        *(float *)(init + 16) = lbl_80564630;
+        *(float *)(init + 20) = lbl_80564630;
+        *(int *)(init + 24) = -1;
+        init[28] = 0x20;
+        init[29] = (char)0xE4;
+        i = 0;
+        for (;;) {
+            next = *(void *(**)(void *, int))(*(char **)owner + 0xC);
+            item = next(owner, i);
+            if (item == 0) break;
+            if (lbl_8055F7F0 >= 8) fn_802E317C(lbl_80349560 + 0xB0, 8);
+            getid = *(int (**)(void *, void *))(*(char **)item + 0x14);
+            id = getid(item, lbl_80349560 + 0xD0);
+            getvec = *(void (**)(void *, float *, int))(*(char **)item + 0x34);
+            getvec(item, vec, lbl_8055CAB4);
+            x = vec[0]; y = vec[1];
+            getval = *(float (**)(void *, int))(*(char **)item + 0x3C);
+            x = getval(item, lbl_8055CABC);
+            y = getval(item, lbl_8055CAC4);
+            result = fn_801284F8(0x78, lbl_80349560 + 0xE0, y);
+            if (result) result = fn_8029D148(init, vec, id);
+            lbl_804B5010[lbl_8055F7F0++] = result;
+            ++i;
+        }
+        fn_80131818(owner);
+    }
+}
+
 #pragma pop
 
 void fn_8029C934(void) {
@@ -149,6 +206,70 @@ void fn_8029C934(void) {
     lbl_8055F7F0 = 0;
 }
 
+#pragma push
+#pragma cplusplus on
+void fn_8029C998(void) {
+    typedef struct { float x, y, z; } Vec;
+    typedef struct { float x, y; } Vec2;
+    typedef struct {
+        Vec pos;
+        Vec2 v1;
+        Vec2 v2;
+    } Params;
+    extern char lbl_80349560[];
+    extern int lbl_804B5030[];
+    extern int lbl_8055F7F4;
+    extern int lbl_8055CAB4, lbl_8055CABC, lbl_8055CAC4;
+    extern void *fn_80131810(void *);
+    extern void fn_80131818(void *);
+    extern int fn_801284F8(int, void *, float);
+    extern void *fn_8029E754(void *, void *, int);
+    extern void fn_802E317C(const char *, ...);
+
+    Vec2 t1;
+    Vec2 t2;
+    Vec temp;
+    Params params;
+    char *base;
+    int *dest;
+    void *owner;
+    int i;
+
+    base = lbl_80349560;
+    lbl_8055F7F4 = 0;
+    owner = fn_80131810(base + 0xEC);
+    if (owner != 0) {
+        dest = lbl_804B5030;
+        for (i = 0; (*(void *(**)(void *, int))(*(char **)owner + 0xC))(owner, i) != 0; i++) {
+            void *item;
+            int id;
+            void *res;
+
+            if (lbl_8055F7F4 >= 16) {
+                fn_802E317C(base + 0xF8, 16);
+            }
+            item = (*(void *(**)(void *, int))(*(char **)owner + 0xC))(owner, i);
+            id = (*(int (**)(void *, void *))(*(char **)item + 0x14))(item, base + 0xD0);
+            temp = (*(Vec (**)(void *, void *))(*(char **)item + 0x34))(item, &lbl_8055CAB4);
+            params.pos.x = temp.x;
+            params.pos.y = temp.y;
+            params.pos.z = temp.z;
+            t1 = (*(Vec2 (**)(void *, void *))(*(char **)item + 0x3C))(item, &lbl_8055CABC);
+            params.v1.x = t1.x;
+            params.v1.y = t1.y;
+            t2 = (*(Vec2 (**)(void *, void *))(*(char **)item + 0x3C))(item, &lbl_8055CAC4);
+            params.v2.x = t2.x;
+            params.v2.y = t2.y;
+            res = (void *)fn_801284F8(0x44, base + 0x11C, params.v2.x);
+            if (res != 0) {
+                res = fn_8029E754(res, &params, id);
+            }
+            dest[lbl_8055F7F4++] = (int)res;
+        }
+        fn_80131818(owner);
+    }
+}
+#pragma pop
 extern void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *, int);
 extern int lbl_804B5030[];
 void fn_8029CB3C(void) {
@@ -261,6 +382,84 @@ void fn_8029DF64(void *arg0, int arg1, int arg2, float arg3) {
     data[index] = out;
 }
 
+int fn_8029DFE0(void *arg0, void *arg1) {
+    extern float lbl_805646A0, lbl_8056465C, lbl_80564634;
+    float delta[2];
+    float z = *(float *)((char *)arg1 + 8) - *(float *)((char *)arg0 + 0x40);
+    float x = *(float *)arg1 - *(float *)((char *)arg0 + 0x38);
+    float u = x * *(float *)((char *)arg0 + 0x44) + z * *(float *)((char *)arg0 + 0x48);
+    float v = x * *(float *)((char *)arg0 + 0x4C) + z * *(float *)((char *)arg0 + 0x50);
+    float upper = (float)*(int *)((char *)arg0 + 0xC) - lbl_805646A0;
+    int result = 0, inside = 0, test = 0;
+    delta[0] = x; delta[1] = z;
+    if (u >= lbl_8056465C - lbl_80558DC4 && u <= upper + lbl_80558DC4) test = 1;
+    if (test) {
+        float upper2 = (float)*(int *)((char *)arg0 + 0x10) - lbl_805646A0;
+        test = 0;
+        if (v >= lbl_8056465C - lbl_80558DC4 && v <= upper2 + lbl_80558DC4) test = 1;
+        if (test) inside = 1;
+    }
+    if (inside && *(float *)((char *)arg1 + 4) < *(float *)((char *)arg0 + 0x3C) - lbl_80564634) result = 1;
+    return result;
+}
+
+#pragma push
+#pragma processor 750
+#pragma scheduling 750
+void fn_8029E130(void *arg0, float *pos, float *vel, float radius) {
+ extern double fn_8002F234(float);
+ extern float fn_80287BC8(float,float);
+ extern void fn_8028E584(int,float *,float *);
+ extern float lbl_80564628,lbl_80564634,lbl_80564640,lbl_8056464C,lbl_80564658,lbl_8056465C,lbl_8056466C,lbl_80564670,lbl_80564698,lbl_805646A4;
+ float origin[3], outpos[3], outvel[3], delta[2], direction[2], hit[2], perpendicular[2];
+ float factor, cap, lift;
+ float height, reach, length, inv, scale, x, z, spread, vertical;
+ int ix, iz, count, i;
+ char *obj = arg0;
+ height = *(float *)(obj+0x3c);
+ if (pos[1]-radius > height-lbl_80564634) return;
+ direction[0]=vel[0]; direction[1]=vel[2];
+ delta[0]=pos[0]-*(float *)(obj+0x38);
+ delta[1]=pos[2]-*(float *)(obj+0x40);
+ if ((float)__fabs(direction[0]*direction[0]+direction[1]*direction[1]) <= lbl_80558DC4) return;
+ x=pos[1]-height;
+ reach=fn_8002F234(radius*radius-x*x);
+ length=fn_8002F234(direction[0]*direction[0]+direction[1]*direction[1]);
+ inv=lbl_80564658/length;
+ scale=reach*inv;
+ hit[0]=delta[0]+direction[0]*scale;
+ hit[1]=delta[1]+direction[1]*scale;
+ x=hit[0]**(float *)(obj+0x44)+hit[1]**(float *)(obj+0x48);
+ ix=(int)(x<lbl_80564628 ? x-lbl_8056465C : lbl_8056465C+x);
+ z=hit[0]**(float *)(obj+0x4c)+hit[1]**(float *)(obj+0x50);
+ iz=(int)(z<lbl_80564628 ? z-lbl_8056465C : lbl_8056465C+z);
+ if(ix<1 || ix>=*(int *)(obj+0xc)-1 || iz<1) return;
+ if(iz>=*(int *)(obj+0x10)-1) return;
+ (*(short **)(obj+4))[ix+iz**(int *)(obj+0xc)]=-32768;
+ origin[2]=*(float *)(obj+0x40)+hit[1];
+ origin[1]=lbl_8056464C+*(float *)(obj+0x3c);
+ origin[0]=*(float *)(obj+0x38)+hit[0];
+ perpendicular[0]=direction[1]*inv;
+ perpendicular[1]=direction[0]*inv;
+ spread=lbl_80564640;
+ x=lbl_80564670*length;
+ if (!(spread<x)) spread=x;
+ count=(int)(lbl_8056464C*length)<10 ? (int)(lbl_8056464C*length):10;
+ vertical=lbl_80564634*length;
+ factor=lbl_80564698; cap=lbl_805646A4; lift=lbl_80564640;
+ for(i=0;i<count;i++) {
+   z=origin[2]+perpendicular[1]*fn_80287BC8(lbl_8056466C,lbl_8056465C);
+   x=perpendicular[0]*fn_80287BC8(lbl_8056466C,lbl_8056465C);
+   outpos[1]=origin[1]; outpos[2]=z; outpos[0]=origin[0]+x;
+   z=direction[1]+perpendicular[1]*(factor*fn_80287BC8(-spread,spread));
+   x=cap<vertical?cap:vertical;
+   x=x+lift*fn_80287BC8(lbl_80564628,spread);
+   scale=lbl_80564698*fn_80287BC8(-spread,spread);
+   outvel[1]=x; outvel[2]=z; outvel[0]=direction[0]+perpendicular[0]*scale;
+   fn_8028E584(lbl_8055F7F8,outpos,outvel);
+ }
+}
+#pragma pop
 extern float fn_80287BC8(float, float);
 extern void fn_8028E590(int, float *, float *, float);
 extern int fn_8029DFE0();
