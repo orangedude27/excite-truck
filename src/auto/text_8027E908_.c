@@ -1143,13 +1143,11 @@ void fn_802872DC(void* arg0) {
 extern "C" void fn_802872F0(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v2();
 }
-#pragma cplusplus reset
-void fn_80287304(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 4);
-    void** vtable = *(void***)obj;
-    ((void (*)(void*))vtable[5])(obj);
+#pragma cplusplus on
+extern "C" void fn_80287304(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v3();
 }
-
+#pragma cplusplus off
 extern unsigned char lbl_8055F685;
 extern int lbl_80348078;
 extern unsigned char lbl_8055F684, lbl_8055F685;
