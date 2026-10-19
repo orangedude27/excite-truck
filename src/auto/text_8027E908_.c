@@ -1141,9 +1141,7 @@ void fn_802872DC(void* arg0) {
 }
 #pragma cplusplus on
 extern "C" void fn_802872F0(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 4);
-    void** vtable = *(void***)obj;
-    ((void (*)(void*))vtable[4])(obj);
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v2();
 }
 #pragma cplusplus reset
 void fn_80287304(void* arg0) {
