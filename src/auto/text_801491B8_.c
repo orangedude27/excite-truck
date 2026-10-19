@@ -118,13 +118,8 @@ void *fn_801491B8(void *arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_80149210(void *arg0) {
-    u32 *p = (u32 *)arg0;
-    u32 x = p[1] + 1;
-    u32 t = x << 30;
-    u32 b = x >> 31;
-    u32 v = t - b;
-    p[1] = ((v << 2) | (v >> 30)) + b;
+void fn_80149210(int *p) {
+    p[1] = (p[1] + 1) % 4;
 }
 
 s32 fn_80149234(void *arg0) {
@@ -137,7 +132,7 @@ extern s32 fn_8014D918(void*, s32, s32);
 extern s32 lbl_8055E240;
 extern f32 lbl_80561714, lbl_80561718;
 s32 fn_80149274(void **arg0) {
-    return (*(s32 (**)(void *))((char *)*arg0 + 0x10))(arg0) & 0xFF7F7F7F;
+    return (*(s32 (**)(void **))((char *)*arg0 + 0x10))(arg0) & 0xFF7F7F7F;
 }
 
 void fn_801492AC(void *arg0, f32 *arg1, s32 arg2) {
@@ -757,6 +752,43 @@ void* fn_8014E3CC(void* arg0, s32 arg1) {
     return arg0;
 }
 
+extern s32 fn_801DF074(s32, s32);
+#pragma paired_single off
+void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
+    extern void *lbl_8055E268;
+    extern s32 fn_801DF074(s32, s32);
+    u8 *entry;
+    f32 value;
+    void *other;
+    void **obj;
+    void (*callback)(void *, void *, s32, f32);
+    if (lbl_8055E268 != 0) {
+        entry = (u8 *)lbl_8055E268 + arg0 * 0xC0 + 0x9E4;
+        if (entry != 0) {
+            value = arg2;
+            switch (arg1) {
+            case 8:
+                *(f32 *)(entry + 0x4C) = lbl_80561688;
+                break;
+            case 1:
+                *(f32 *)(entry + 0x44) = lbl_80561688;
+                if (*(s32 *)((u8 *)fn_8017960C(arg0) + 0x1F0) == 0x50)
+                    fn_801DF074(1, 1);
+                break;
+            case 6:
+                *(f32 *)(entry + 0x48) = lbl_80561688;
+                break;
+            case 0: case 2: case 3: case 4: case 5: case 7: case 9:
+                break;
+            }
+            other = fn_8017960C(arg0);
+            obj = *(void ***)(entry + 0x10);
+            callback = *(void (**)(void *, void *, s32, f32))((u8 *)*obj + 0x2C);
+            callback(obj, other, arg1, value);
+        }
+    }
+}
+#pragma paired_single reset
 void fn_8014E704(void) {
 
 }
@@ -810,8 +842,7 @@ s32 *fn_801500F8(void *arg0, s32 *arg1) {
     s32 value = *arg1;
     s32 index = ((s32 *)arg0)[1];
     s32 *data = *(s32 **)arg0;
-    s32 *next = (s32 *)((char *)arg0 + 4);
-    *next = index + 1;
+    ((s32 *)arg0)[1] = index + 1;
     data[index] = value;
     return &data[index];
 }
