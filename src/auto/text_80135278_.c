@@ -36,7 +36,7 @@ typedef struct {
 s32 fn_80135D60(Unk_80135278 *, s32);
 void fn_80135390(Unk_80135278 *);
 void fn_801355C0(void *, s32, s32, void *, s32);
-void fn_801357A4();
+s32 fn_801357A4();
 
 extern void *fn_80156A40(void);
 
@@ -192,41 +192,36 @@ void fn_80135F4C(void *arg0) {
 
 #pragma dont_inline on
 void fn_80135F64(int arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
- s32 offset;
- s32 i;
- void *p;
+ s32 offset, i;
  fn_801353C8((void *)arg0,arg1,arg2,arg4);
  fn_80136714((void *)arg0);
  if(arg3 != 0 && *(s32 *)((char *)arg0+0x50)!=0) {
   float a=lbl_8055E3C8;
- float f=lbl_8056133C+a;
+  float f=lbl_8056133C+a;
   for(i=0,offset=0;i<*(s32 *)((char *)arg0+0x54);i++,offset+=4)
    *(float *)(*(char **)((char *)arg0+0x50)+offset)=f;
   fn_8013605C((void *)arg0);
  } else fn_8013605C((void *)arg0);
  {
- Unk_80135278 *obj=(Unk_80135278 *)arg0;
- float a=-obj->unk_10;
- float zero=lbl_80561320;
- Unk_80135278 *p=(Unk_80135278 *)obj->unk_4;
- float b,c,d,e,f,g;
- obj->unk_44=zero;
- b=obj->unk_18;
- obj->unk_4c=zero;
- c=obj->unk_1c;
- d=p->unk_18;
- e=p->unk_1c;
- a=a*c;
- f=obj->unk_8;
- g=obj->unk_14;
- d=d*f;
- obj->unk_5c=0;
- c=g*b;
- obj->unk_60=0;
- e=e+d;
- a=c+a;
- obj->unk_48=e;
- obj->unk_40=a;
+  Unk_80135278 *obj=(Unk_80135278 *)arg0;
+  volatile float *v=(volatile float *)obj;
+  Unk_80135278 *p=(Unk_80135278 *)obj->unk_4;
+  float a,b,c,d,e,f,g,h,z;
+  a=-v[4]; z=lbl_80561320;
+  obj->unk_44=z;
+  b=v[6];
+  obj->unk_4c=z;
+  c=v[7]; d=*(volatile float *)((char *)p+0x18); e=*(volatile float *)((char *)p+0x1c);
+  a=a*c;
+  f=v[2]; g=v[5];
+  d=d*f;
+  obj->unk_5c=0;
+  h=g*b;
+  obj->unk_60=0;
+  e=e+d;
+  a=h+a;
+  obj->unk_48=e;
+  obj->unk_40=a;
  }
 }
 #pragma dont_inline off
