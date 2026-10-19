@@ -36,6 +36,10 @@ extern s32 lbl_8055F2E8;
 extern void fn_8024739C(void);
 #pragma push
 #pragma use_lmw_stmw off
+void fn_8024DAD8(void) {
+    fn_8024739C();
+}
+
 void *fn_8024E920(void *arg0, s32 arg1) {
     extern unsigned char lbl_8034453C[];
     extern s32 fn_80128670(s32);
