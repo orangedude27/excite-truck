@@ -218,7 +218,7 @@ extern "C" void fn_800B63FC(void);
 extern "C" void *fn_800B65A0(s8);
 extern "C" s32 lbl_80559208;
 
-void fn_800A5954(void) {
+extern "C" void fn_800A5954(void) {
     fn_800A6048();
 }
 
@@ -451,6 +451,32 @@ extern "C" void fn_800A68DC(s32 arg0) {
     *(u32 *)arg0 |= 4;
     fn_800A76B4((void *)arg0, 1);
 }
+
+extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
+    u16 value;
+    u32 result;
+    u32 shift;
+    fn_800A6298(*(void **)((u8 *)arg0 + 4), &value);
+    if (arg2 == value)
+        return arg1 + M2C_FIELD(arg0, u32 *, 0xC);
+    result = M2C_FIELD(arg0, u32 *, 0xC);
+    shift = (value >> 9) & 0x7F;
+    if (shift == 2)
+        result <<= 1;
+    else if (shift == 4)
+        result <<= 2;
+    else if (shift == 8)
+        result <<= 3;
+    shift = (arg2 >> 9) & 0x7F;
+    if (shift == 2)
+        result >>= 1;
+    else if (shift == 4)
+        result >>= 2;
+    else if (shift == 8)
+        result >>= 3;
+    return arg1 + result;
+}
+
 #pragma dont_inline reset
 
 extern "C" s32 fn_800A71C4(u32 *arg0) {
