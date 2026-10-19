@@ -913,6 +913,22 @@ extern "C" void* fn_801A1CE4(void *arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
+extern s32 fn_8019E2D0(s32, s32, s32, void*, f32, f32, f32);
+extern "C" s32 fn_8019E2D0(s32, s32, s32, void*, f32, f32, f32);
+extern "C" s32 fn_801A1E7C(void* arg0, s32 arg1, s32 arg2, s32 arg3, void* arg4) {
+    f32 a = *(f32*)((u8*)arg0 + 0x24);
+    f32 b = *(f32*)((u8*)arg0 + 0x28);
+    f32 c = *(f32*)((u8*)arg0 + 0x2C);
+    void* result = ((void* (*)(void*))(*(u32**)arg0)[0x50 / 4])(arg0);
+    if (fn_8019E2D0(arg1, arg2, arg3, result, a, b, c)) {
+        *(f32*)arg4 = lbl_805622D0;
+        *((f32*)arg4 + 1) = lbl_805622E0;
+        *((f32*)arg4 + 2) = lbl_805622D0;
+        return 1;
+    }
+    return 0;
+}
+
 #pragma scheduling on
 extern "C" void fn_801A1F44(void* arg0, void* arg1) {
     struct V {
