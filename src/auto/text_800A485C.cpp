@@ -1874,6 +1874,38 @@ extern "C" s32 fn_800B7CBC(void) {
     return (-result | result) >> 31;
 }
 
+extern "C" s32 fn_800B76A8(s32, s32);
+extern "C" s32 lbl_8055DD18;
+extern "C" s32 lbl_8055DD1C;
+extern "C" s32 lbl_8055DD20;
+s32 fn_800B7CE8(s32 arg0) {
+    s32 temp_r3;
+    s32 temp_r3_2;
+
+    if (lbl_8055DD1C == 1) {
+        return -1;
+    }
+    lbl_8055DD1C = 1;
+    if (lbl_8055DD20 == 0) {
+        temp_r3 = ((s32 (*)(s32, s32))fn_800A5954)(0, 0);
+        lbl_8055DD20 = temp_r3 == 0;
+        if (temp_r3 != 0) {
+            lbl_8055DD1C = 0;
+            return -1;
+        }
+    }
+    if (lbl_8055DD18 == 0) {
+        temp_r3_2 = fn_800B76A8(arg0, 0);
+        lbl_8055DD18 = temp_r3_2 == 0;
+        if (temp_r3_2 == -1) {
+            lbl_8055DD1C = 0;
+            return -1;
+        }
+    }
+    lbl_8055DD1C = 0;
+    return 0;
+}
+
 extern "C" s32 fn_800B7DB0(s32 arg0, Unk800B7E18Callback arg1, Unk800B7E18Callback arg2) {
     s32 result;
     switch (arg0) {
