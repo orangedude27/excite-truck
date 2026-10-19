@@ -20,11 +20,17 @@ int fn_802BC334(int arg0) {
 #pragma dont_inline on
   int stricmp(const char *, const char *);
   __declspec(section ".sdata") extern const char lbl_8055CF38[];
-  int fn_802BC39C(void *arg0) {
-    char *name = (*(char *(*)(void *))(*(void ***)arg0)[2])(arg0);
-    return stricmp(lbl_8055CF38, name) == 0;
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_802BC39C(void *arg0) {
+    class Obj {
+    public:
+        virtual const char *getName();
+    };
+    return stricmp((char *)&lbl_8055CF38, ((Obj *)arg0)->getName()) == 0;
 }
-#pragma dont_inline reset
+#pragma cplusplus reset
+#pragma pop
 
 void *fn_802BE844(short, short, short);
 int fn_802BC39C();
