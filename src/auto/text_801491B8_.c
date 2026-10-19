@@ -113,13 +113,16 @@ void *fn_801491B8(void *arg0, s32 arg1) {
     return arg0;
 }
 
-typedef struct { u32 pad; u32 count; } Cnt80149210;
 void fn_80149210(void *arg0) {
-    Cnt80149210 *c = (Cnt80149210 *)arg0;
-    u32 x = c->count + 1;
-    u32 b = x >> 31;
-    u32 v = (x << 30) - b;
-    c->count = ((v << 2) | (v >> 30)) + b;
+    u32 *p = (u32 *)arg0;
+    u32 b;
+    u32 t;
+    u32 v;
+    p[1] = p[1] + 1;
+    b = p[1] >> 31;
+    t = p[1] << 30;
+    v = t - b;
+    p[1] = ((v << 2) | (v >> 30)) + b;
 }
 
 s32 fn_80149234(void *arg0) {
