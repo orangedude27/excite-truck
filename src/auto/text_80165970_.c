@@ -173,19 +173,26 @@ void fn_801662FC(void) {
     }
 }
 
+#pragma push
+#pragma processor gekko
+#pragma use_lmw_stmw off
 void fn_801663C8(int count, void *records, void *config) {
+    typedef struct Entry { int id; unsigned char flag; char pad[0x83]; } Entry;
+    typedef struct Holder { Entry *entries; int used; int count; Entry *base; } Holder;
+    typedef struct Record { int type; char pad[0x74]; } Record;
+    char *strings = lbl_8032FCC0;
     void *obj;
-    void *holder;
+    Holder *holder;
     void *array;
     int i;
     float value;
     lbl_8055E324 = fn_801659D0((int)config);
     fn_80165FAC();
     obj = *(void **)((char *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
-    value = (*(float (***)(void *, char *, float))obj)[10](obj, lbl_8032FCC0 + 0x270, *(float *)((char *)&lbl_8042FE38 + 0xC));
+    value = (*(float (***)(void *, char *, float))obj)[10](obj, strings + 0x270, *(float *)((char *)&lbl_8042FE38 + 0xC));
     *(float *)((char *)&lbl_8042FE38 + 0xC) = value;
-    fn_802E30C8(lbl_8032FCC0 + 0x280, *(float *)((char *)&lbl_8042FE38 + 8), (float)value, *(float *)((char *)&lbl_8042FE38 + 4), *(float *)&lbl_8042FE38);
-    holder = fn_801284F8(16, lbl_8032FCC0 + 0x2A0);
+    fn_802E30C8(strings + 0x280, *(float *)((char *)&lbl_8042FE38 + 8), (float)(double)value, *(float *)((char *)&lbl_8042FE38 + 4), *(float *)&lbl_8042FE38);
+    holder = fn_801284F8(16, strings + 0x2A0);
     if (holder) {
         array = fn_8002F37C(fn_8012850C(count * 0x88 + 16, &lbl_8055A190), fn_80166754, 0, 0x88, count);
         *(void **)holder = array;
@@ -196,19 +203,16 @@ void fn_801663C8(int count, void *records, void *config) {
     *(void **)&lbl_8055E32C = holder;
     *(int *)((char *)holder + 4) = 0;
     for (i = 0; i < count; i++) {
-        int type = *(int *)((char *)records + i * 0x78);
-        void *h = *(void **)&lbl_8055E32C;
-        int index = *(int *)((char *)h + 4);
-        char *p = *(char **)h + index * 0x88;
-        *(int *)((char *)h + 4) = index + 1;
-        *(int *)p = i;
-        p[4] = type == 0x50;
+        int type = ((Record *)records)[i].type;
+        Holder *h = *(Holder **)&lbl_8055E32C;
+        Entry *p = &h->entries[h->used++];
+        p->id = i;
+        p->flag = type == 0x50;
     }
     lbl_8055E32B = 0;
     lbl_8055E32A = *(int *)((char *)config + 4) != 0x180304;
     *(int *)&lbl_8055E334 = 0;
 }
-
 #pragma pop
 int fn_801667F0(void) {
     int result = 0;
@@ -378,6 +382,7 @@ unsigned char fn_80167758(void) { return *((unsigned char *)&lbl_8042FE38 + 0x4E
 int fn_80167768(float arg0) { return arg0 > *(float *)((char *)&lbl_8042FE38 + 0x50); }
 #pragma pop
 extern float lbl_80561898;
+extern float lbl_805618EC;
 extern float lbl_805618D8;
 extern float lbl_805618DC;
 extern float lbl_805618E0;
