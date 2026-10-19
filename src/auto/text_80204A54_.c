@@ -5,14 +5,22 @@ extern void fn_8000D838(void *);
 extern void *lbl_8055ED30;
 extern int lbl_80488BB8[];
 extern int lbl_8055ED38;
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 void fn_80204A54(void) {
+    int v;
     int *p;
     fn_8000D838(&lbl_8055ED30);
-    p = lbl_80488BB8;
-    p[0] = 0;
-    p[1] = 0x7b;
-    p[2] = 0;
-    p[3] = 0;
-    p[4] = 0;
-    lbl_8055ED38 = 0x7f000000;
+    p = lbl_80488BB8 + 1;
+    lbl_80488BB8[0] = 0;
+    v = 0x7B;
+    lbl_80488BB8[1] = v;
+    lbl_80488BB8[2] = 0;
+    lbl_80488BB8[3] = 0;
+    lbl_80488BB8[4] = 0;
+    lbl_8055ED38 = 0x7F000000;
 }
+#pragma opt_dead_assignments reset
+#pragma opt_propagation reset
+#pragma scheduling on
