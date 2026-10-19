@@ -66,6 +66,7 @@ float fn_801659D0(int arg0) {
     return temp_f31 * (float)fn_800081F0(arg0);
 }
 
+#pragma pop
 void *fn_80166040(int arg0) {
     void *base;
     void *cur;
