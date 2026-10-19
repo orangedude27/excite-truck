@@ -505,6 +505,28 @@ void fn_8023B284(void *arg0) {
     }
 }
 
+#pragma push
+#pragma small_data off
+extern s32 lbl_80341240[];
+#pragma pop
+#pragma push
+#pragma scheduling invalid_target
+void fn_8023B2EC(void *arg0) {
+    s32 temp_r28;
+    s32 temp_r29;
+    s32 temp_r30;
+    s32 temp_r31;
+    s32 temp_r3;
+    void *p = arg0;
+    temp_r28 = *(s32 *)((char *)p + 0x10);
+    temp_r29 = *(s32 *)((char *)p + 0xC);
+    temp_r30 = *(s32 *)((char *)p + 8);
+    temp_r31 = *(s32 *)((char *)p + 4);
+    temp_r3 = fn_80131234(&lbl_80341240[0]);
+    fn_8022BAD0(0xC9, temp_r31, temp_r30, 0, temp_r29, temp_r28, temp_r3, *(s32 *)((char *)p + 0x18), 0, 1.0f);
+}
+#pragma pop
+
 void fn_8023B368(void) {}
 
 s32 fn_8023B36C(void) { return 0; }
