@@ -20,6 +20,7 @@ extern s32 lbl_803583C8;
 #pragma pop
 extern void fn_8002F634(void *, void *, s32, s32);
 extern s32 fn_8001BA10(s32, s32);
+extern s32 fn_8001D2E4(s32, s32, s32, s32);
 extern void *lbl_80358658[];
 extern s32 lbl_802ED7B8[];
 extern const char lbl_802FD85C[];
@@ -99,10 +100,10 @@ void fn_8001BB0C(s32 arg0, s32 arg1, volatile s32 arg2, volatile s32 arg3) {
     fn_8001CE34(arg0, fn_8001D25C(arg1), saved2, saved3);
 }
 
-void fn_8001BB58(s32 arg0, s32 arg1, volatile s32 arg2, volatile s32 arg3) {
-    s32 a = arg2;
-    s32 b = arg3;
-    fn_8001CE74(arg0, fn_8001D25C(arg1), a, b);
+void fn_8001BB58(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    volatile register s32 a = arg3;
+    volatile register s32 b = arg2;
+    fn_8001CE74(arg0, fn_8001D25C(arg1), b, a);
 }
 #pragma scheduling reset
 void fn_8001BBB4(void) {
@@ -249,14 +250,15 @@ s32 fn_8001C200(const char *arg0, const char *arg1) {
     return 0;
 }
 
+#pragma dont_inline on
 s32 fn_8001C27C(void *arg0, u32 arg1, const char *arg2) {
+    volatile u32 key = *(volatile u32 *)arg0;
     s32 result = 0;
-    if (*(u32 *)arg0 == arg1 && fn_8001C200(*(const char **)((u8 *)arg0 + 4), arg2) != 0) {
+    if (key == arg1 && fn_8001C200(*(const char **)((u8 *)arg0 + 4), arg2) != 0)
         result = 1;
-    }
     return result;
 }
-
+#pragma dont_inline reset
 s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
     s32 i = 0;
     s32 offset = 0;
@@ -311,6 +313,14 @@ void fn_8001C714(void) {
 }
 
 #pragma scheduling off
+void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
+    void (* volatile init)(void) = fn_8001C4D8;
+    init();
+    if (((s32 (*)(s32, s32, s32))fn_8001C2CC)(arg0, arg1, arg2) == 0) {
+        fn_8001C35C(arg0, arg1, arg2);
+    }
+}
+#pragma scheduling reset
 s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     void *ptr = (void *)fn_8001285C(arg1);
     s32 count = *(s32 *)((u8 *)arg0 + 0x6C);
@@ -364,30 +374,35 @@ s32 fn_8001D474(s32 arg0) {
     return arg0 - *lbl_8055D5D0;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void fn_8001D484(void *arg0, s32 arg1, s32 (*arg2)(s32), s32 arg3) {
-    s32 var_r28;
-    s32 var_r29;
-    void *var_r30;
     void *var_r31;
-
+    void *var_r30;
+    s32 var_r29;
+    s32 var_r28;
     var_r31 = arg0;
     var_r29 = 0;
-loop_outer:
-    if (*((u8 *)var_r31 + 0x70) != 0) {
-        *(s32 *)var_r31 = arg2(*(s32 *)var_r31);
-        var_r30 = var_r31;
-        var_r28 = 0;
-loop_inner:
-        *(s32 *)((u8 *)var_r30 + 8) = arg2(*(s32 *)((u8 *)var_r30 + 8));
-        var_r30 = (u8 *)var_r30 + 0x14;
-        var_r28 += 1;
-        if (var_r28 < *(s32 *)((u8 *)var_r31 + 0x6C)) goto loop_inner;
-    }
-    var_r31 = (u8 *)var_r31 + 0x74;
-    var_r29 += 1;
-    if (var_r29 < arg1) goto loop_outer;
+    goto outer;
+    do {
+outer:
+        if (*((u8 *)var_r31 + 0x70) != 0) {
+            *(s32 *)var_r31 = arg2(*(s32 *)var_r31);
+            var_r30 = var_r31;
+            var_r28 = 0;
+            goto inner;
+            do {
+inner:
+                *(s32 *)((u8 *)var_r30 + 8) = arg2(*(s32 *)((u8 *)var_r30 + 8));
+                var_r28 += 1;
+                var_r30 = (u8 *)var_r30 + 0x14;
+            } while (var_r28 < *(s32 *)((u8 *)var_r31 + 0x6C));
+        }
+        var_r29 += 1;
+        var_r31 = (u8 *)var_r31 + 0x74;
+    } while (var_r29 < arg1);
 }
-
+#pragma pop
 void fn_8001D528(void *arg0) {
     s32 var_r27;
     s32 var_r29;
@@ -428,6 +443,42 @@ void fn_8001D5E4(void) {
     fn_8001D528(fn_8001D474);
 }
 
+extern void fn_8001D5D8(void);
+extern void fn_8001D5E4(void);
+extern void fn_8001D7A4(void);
+extern void memset(void *, s32, u32);
+extern u8 lbl_8055D5D8;
+#pragma dont_inline on
+void fn_8001D5F0(s32 arg0) {
+    if (arg0 == 2) {
+        memset(lbl_8055D5CC, 0, 0x3E7D0);
+        ((s32 *)lbl_80358658[0])[1] = *(s32 *)(lbl_8055D5CC + 0x6E00);
+        ((s32 *)lbl_80358658[1])[1] = *(s32 *)(lbl_8055D5CC + 0x148C4);
+        ((s32 *)lbl_80358658[2])[1] = *(s32 *)(lbl_8055D5CC + 0x22388);
+        ((s32 *)lbl_80358658[3])[1] = *(s32 *)(lbl_8055D5CC + 0x2FE4C);
+        return;
+    }
+    if (arg0 < 2) {
+        if (arg0 == 0) return;
+        fn_8001D5D8();
+        ((s32 *)lbl_80358658[0])[1] = *(s32 *)(lbl_8055D5CC + 0x6E00);
+        ((s32 *)lbl_80358658[1])[1] = *(s32 *)(lbl_8055D5CC + 0x148C4);
+        ((s32 *)lbl_80358658[2])[1] = *(s32 *)(lbl_8055D5CC + 0x22388);
+        ((s32 *)lbl_80358658[3])[1] = *(s32 *)(lbl_8055D5CC + 0x2FE4C);
+        if (lbl_8055D5D8 != 0) {
+            fn_8001D7A4();
+            lbl_8055D5D8 = 0;
+        }
+        return;
+    }
+    if (arg0 >= 6) return;
+    if (arg0 < 4) {
+        fn_8001D5E4();
+        return;
+    }
+    fn_8001D5D8();
+}
+#pragma dont_inline reset
 void fn_8001D7A4(void) {
 
 }
