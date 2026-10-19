@@ -233,10 +233,12 @@ int fn_80149530(void) {
 }
 
 void fn_8014953C(void *arg0, float *arg1, float *arg2) {
-    float value = arg2[4] + lbl_8056162C * *arg1;
-    if (value < lbl_80561630) value = lbl_80561630;
-    if (value > lbl_80561634) value = lbl_80561634;
-    arg2[4] = value;
+    float f2 = lbl_8056162C;
+    float v = arg2[4] + f2 * *arg1;
+    f2 = lbl_80561630;
+    f2 = (f2 < v) ? f2 : v;
+    f2 = (f2 > lbl_80561634) ? f2 : lbl_80561634;
+    arg2[4] = f2;
 }
 
 s32 *fn_80149580(void) {
@@ -843,13 +845,11 @@ extern s32 fn_80145E70(void *arg0);
 extern s32 lbl_8032DB34;
 extern s32 lbl_8032DB40;
 #pragma push
-#pragma opt_propagation off
+#pragma opt_pointer_aliasing on
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
-    s32 value = *arg1;
     s32 index = ((s32 *)arg0)[1];
     s32 *data = *(s32 **)arg0;
-    ((s32 *)arg0)[1] = index + 1;
-    data[index] = value;
+    data[index] = *arg1 + ((((s32 *)arg0)[1] = index + 1), 0);
     return &data[index];
 }
 #pragma pop
