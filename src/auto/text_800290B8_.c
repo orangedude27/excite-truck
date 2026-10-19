@@ -164,7 +164,7 @@ long double __strtold(int max_width, int (*ReadProc)(void*, int, int), void* Rea
 
                 if ((i == 3) || (i == 8)) {
                     if (sig_negative) {
-                        result = (float)-HUGE_VALF;
+                        result = (float)-(double)HUGE_VALF;
                     } else {
                         result = HUGE_VALF;
                     }
@@ -346,7 +346,7 @@ long double __strtold(int max_width, int (*ReadProc)(void*, int, int), void* Rea
                 }
 
                 exp_value = exp_value * 10 + (c - '0');
-                if (exp_value > DBL_MAX_10_EXP) {
+                if (exp_value > 32767) {
                     *overflow = 1;
                 }
 
@@ -626,7 +626,7 @@ long double __strtold(int max_width, int (*ReadProc)(void*, int, int), void* Rea
             dbl_bits[dbl_bit >> 3] |= (unsigned char)(ui << (8 - halfbits));
         }
 
-        exponent += (TARGET_FLOAT_MAX_EXP - 1) + exp_value;
+        exponent += (TARGET_FLOAT_MAX_EXP - 1);
 
         if ((exponent & ~(TARGET_FLOAT_MAX_EXP * 2 - 1))) {
             *overflow = 1;
