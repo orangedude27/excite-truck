@@ -3,6 +3,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <types.h>
+#include <stdarg.h>
+
 typedef signed long s32;
 
 int fn_8027AA48(void); /* extern */
@@ -28,7 +31,7 @@ extern s32 lbl_8055F144, lbl_8055F148, lbl_8055F14C, lbl_8055F150, lbl_8055F154;
 extern char lbl_8055BB48[];
 __declspec(section ".sdata") extern char lbl_8055BB48[];
 s32 fn_8023C308(s32 arg0) {
-    s32 mode, cur, val, diff;
+    s32 val, cur, diff, mode;
     if (arg0) {
         mode = (u32)(fn_80214D04() - 2) == 0;
         cur = lbl_8055F154;
@@ -40,7 +43,7 @@ s32 fn_8023C308(s32 arg0) {
             if (val > 0x46) val = 0x46;
         }
         diff = val - cur;
-        lbl_8055F154 = cur + diff;
+        lbl_8055F154 += diff;
         if (diff) fn_80214BE4(7, 0);
     }
     if (lbl_8055F148 != lbl_8055F150) {
