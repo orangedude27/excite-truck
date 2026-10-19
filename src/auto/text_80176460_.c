@@ -80,7 +80,7 @@ extern char lbl_803315C8[];
 extern u8 lbl_8055E3BC;
 extern u64 fn_802E2C9C(void);
 extern void fn_802E2D74(s32);
-extern void fn_8017970C(void);
+extern f32 fn_8017970C(void);
 extern f32 fn_8002FD54(u32, u32);
 extern void *fn_80179824(void);
 extern s32 fn_801773E4(void);
@@ -290,6 +290,54 @@ void fn_80176A34(s32 arg0) {
 
 void fn_80176A6C(void) {
     fn_801771A8();
+}
+
+void *fn_80176A70(void) {
+    char *base;
+    s32 snap;
+    s32 startTime;
+    s32 count;
+    u64 start;
+    u64 now;
+    u64 elapsed;
+    f32 scaled;
+    void *p;
+
+    base = lbl_803315A0;
+    snap = lbl_8055E3C4;
+    startTime = fn_802E2C20();
+    count = 0;
+    start = fn_802E2C9C();
+    now = start;
+
+loop:
+    fn_80176610();
+    if ((s32)fn_80176A1C() == 2 || lbl_8055E3BD != 0 || snap != lbl_8055E3C4 ||
+        fn_802D3EBC() != 0) {
+        goto done;
+    }
+    fn_802E2D74(0);
+    if (fn_802E2C20() - startTime > 0x2710) {
+        fn_8017970C();
+        fn_802E30C8(base + 0x190);
+        fn_802E317C(base + 0x1C8, 10);
+    }
+    count++;
+    if ((u16)count != 0) {
+        goto loop;
+    }
+    fn_802E30C8(base + 0x204, count);
+    now = fn_802E2C9C();
+    goto loop;
+
+done:
+    elapsed = now - start;
+    scaled = lbl_80561B30 * fn_8002FD54((u32)(elapsed >> 32), (u32)elapsed);
+    lbl_8055E3D0 = scaled + lbl_80561B34 * (lbl_8055E3D0 - scaled);
+    p = fn_80179824();
+    *(s32 *)((char *)p + 0xDB0) = fn_801773E4();
+    fn_801C6AD0((s32 *)((char *)p + 0xDB0));
+    return p;
 }
 
 void fn_80176BA8(void) {
