@@ -384,6 +384,9 @@ int fn_801D8AA4(void *arg0) {
     return *(float *)((char *)arg0 + 0x30) < lbl_80562ADC;
 }
 
+void fn_801D8B50(void) {
+}
+
 void fn_801D8C0C(void *arg0) {
     *(int *)((char *)arg0 + 0x18) = -1;
 }
