@@ -127,6 +127,24 @@ void fn_8027EE74(int arg0) {
     fn_80236914();
 }
 
+#pragma cplusplus on
+struct CareerObj_8027EE88 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
+    virtual void f10();
+    virtual void f11();
+    virtual void f12(const char *);
+};
+#pragma cplusplus off
+
 #pragma dont_inline on
 int fn_8027EE88(void) {
     extern unsigned char lbl_8055F684, lbl_8055F685;
