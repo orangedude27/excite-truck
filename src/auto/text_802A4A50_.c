@@ -68,44 +68,54 @@ f32 fn_802A4AD4(void) {
 }
 
 void fn_802A4ADC(void) {
-    s32 temp = (s32)fn_801E1F44();
-    void *var_r30;
-    if (fn_800167F4() == 1) fn_802A5384(temp);
+    void *base = lbl_80349BF0;
+    s32 result = (s32)fn_801E1F44();
+    if (fn_800167F4() == 1) fn_802A5384(result);
     fn_80287B38((void *)fn_802A53B0);
     fn_802A5878();
-    lbl_8055F89C = fn_802CAC28(lbl_80349BF0 + 0x28, 0);
-    var_r30 = lbl_80349BF0 + 0x38;
+    lbl_8055F89C = fn_802CAC28((char *)base + 0x28, 0);
+    result = (s32)((char *)base + 0x38);
     {
-       void **p = fn_802AE414(&lbl_8055CBC8);
-       if (p != 0) var_r30 = ((void *(*)(void *, void *))(*(u32 *)((u8 *)*p + 0x18)))(lbl_80349BF0 + 0x48, var_r30);
+        void **p = fn_802AE414(&lbl_8055CBC8);
+        if (p != 0) result = ((s32 (*)(void *, void *, void *))(*(u32 *)((u8 *)*p + 0x18)))(p, (char *)base + 0x48, (void *)result);
     }
-    lbl_8055F898 = fn_802C6FC0(var_r30, 0, 0);
+    lbl_8055F898 = fn_802C6FC0((void *)result, 0, 0);
 }
 
 void fn_802A4B90(void) {
-    if (lbl_8055F898 != -1) { fn_802C6CF8(); lbl_8055F898 = -1; }
-    fn_802CAC54(lbl_8055F89C); fn_802A597C();
-    if (lbl_8055F894 != 0) { fn_8028E398(); lbl_8055F894 = 0; }
-    if (lbl_8055F888 != 0) { fn_802A5B8C(1); lbl_8055F888 = 0; }
-    if (lbl_8055F88C != 0) { fn_802A69D8(0, 1); lbl_8055F88C = 0; }
+    s32 value;
+    value = lbl_8055F898;
+    if (value != -1) { fn_802C6CF8(); lbl_8055F898 = -1; }
+    fn_802CAC54(lbl_8055F89C);
+    fn_802A597C();
+    value = lbl_8055F894;
+    if (value != 0) { fn_8028E398(); lbl_8055F894 = 0; }
+    value = lbl_8055F888;
+    if (value != 0) { ((void (*)(s32, s32))fn_802A5B8C)(value, 1); lbl_8055F888 = 0; }
+    value = lbl_8055F88C;
+    if (value != 0) { fn_802A69D8((void *)1, 1); lbl_8055F88C = 0; }
 }
 
 void fn_802A4C20(void) {
-    s32 flag;
-    flag = lbl_8055F88C;
-    if (flag != 0) fn_802A6A44();
-    flag = lbl_8055F888;
-    if (flag != 0) fn_802A5C1C();
+    volatile s32 *flag;
+    flag = &lbl_8055F88C;
+    if (*flag != 0) fn_802A6A44();
+    flag = &lbl_8055F888;
+    if (*flag != 0) fn_802A5C1C();
     fn_802A59E0();
 }
 
+#pragma dont_inline on
 void fn_802A4C60(void) {
+    volatile s32 *p;
     lbl_8055F8A0 = fn_802A4A50();
-    if (lbl_8055F88C != 0) fn_802A6A7C();
-    if (lbl_8055F888 != 0) fn_802A5CA4();
+    p = (volatile s32 *)&lbl_8055F88C;
+    if (*p) fn_802A6A7C();
+    p = (volatile s32 *)&lbl_8055F888;
+    if (*p) fn_802A5CA4();
     fn_802A5A38();
 }
-
+#pragma dont_inline reset
 void fn_802A4CA8(void) {
     u8 *p = (u8 *)fn_801E1F44();
     if (p[0x18] != 0) {
@@ -199,7 +209,8 @@ f32 fn_802A4AD4(void);
 f32 fn_80287BC8(f32, f32);
 extern f32 lbl_80558DC4, lbl_805648A4, lbl_805648A8;
 void fn_802A6408(void *arg0) {
-    if (__fabsf(fn_802A4AD4()) > lbl_80558DC4) {
+    f32 value = (f32)__fabs((double)fn_802A4AD4());
+    if (!(value <= lbl_80558DC4)) {
         *(f32 *)((u8 *)arg0 + 0x14) = fn_80287BC8(lbl_805648A4, lbl_805648A8);
         *(f32 *)((u8 *)arg0 + 0x18) = fn_80287BC8(lbl_805648A4, lbl_805648A8);
     }
@@ -260,6 +271,8 @@ extern int fn_801E501C(int, void *, float, int);
 extern void fn_801E5174(void *, float, float, float);
 extern void fn_801E5348(void);
 extern void fn_802C8D74(void);
+#pragma push
+#pragma scheduling off
 #pragma processor 750
 void fn_802A6D68(void *arg0) {
     float saved;
@@ -283,7 +296,48 @@ void fn_802A6D68(void *arg0) {
         fn_802C9A4C(saved);
     }
 }
-#pragma processor reset
+
+extern f32 lbl_80564850, lbl_80564858, lbl_8056485C, lbl_805648C4;
+f32 fn_802C9A50(void);
+void fn_802A70E4(void *, f32 *);
+void fn_802A71C4(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    f32 dt = *(f32 *)(p + 0x14);
+    f32 speed = dt / fn_802C9A50();
+    if (*(f32 *)(p + 0x34) <= lbl_805648C4) {
+        f32 scale = lbl_80564850;
+        f32 one = lbl_8056485C;
+        do {
+            f32 curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
+            f32 a = scale * curve;
+            f32 x = *(f32 *)(p + 0x38) * (scale - a);
+            f32 y = *(f32 *)(p + 0x3C) * (scale - a);
+            f32 ax = one - __fabsf(x);
+            f32 ay = one - __fabsf(y);
+            f32 rx = fn_80287BC8(-ax, ax);
+            f32 ry = fn_80287BC8(-ay, ay);
+            f32 oldx = *(f32 *)(p + 0x18);
+            f32 newx = oldx + curve * (*(f32 *)(p + 0x1C) - oldx);
+            f32 v[3];
+            v[0] = speed * newx * (x + rx);
+            v[1] = dt * newx * (y + ry);
+            v[2] = newx;
+            fn_802A70E4(arg0, v);
+        } while (*(s32 *)(p + 4) < *(s32 *)(p + 8));
+    } else {
+        do {
+            f32 curve = fn_80287BC8(lbl_80564858, lbl_8056485C);
+            f32 angle = *(f32 *)(p + 0x18) + (curve + -*(f32 *)(p + 0x34) * (curve * curve - curve)) * (*(f32 *)(p + 0x1C) - *(f32 *)(p + 0x18));
+            f32 v[3];
+            v[0] = speed * fn_80287BC8(-angle, angle);
+            v[1] = dt * fn_80287BC8(-angle, angle);
+            v[2] = angle;
+            fn_802A70E4(arg0, v);
+        } while (*(s32 *)(p + 4) < *(s32 *)(p + 8));
+    }
+}
+
+#pragma pop
 extern float fn_80287BC8(float, float);
 extern void fn_802A70E4(void *, float *);
 extern s32 fn_802CAC54(s32);
