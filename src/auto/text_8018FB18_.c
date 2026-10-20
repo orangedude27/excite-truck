@@ -674,13 +674,11 @@ struct DummyWrapper_80191688 {
 };
 #pragma cplusplus off
 
-void fn_80191688(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    void **vtable = *(void ***)obj;
-    void (*call)(void) = (void (*)(void))vtable[28];
-    call();
+#pragma cplusplus on
+extern "C" void fn_80191688(DummyWrapper_80191688 *arg0) {
+    arg0->inner->f26();
 }
-
+#pragma cplusplus off
 void fn_8019169C(void *arg0, void *arg1) {
     *(void **)((char *)arg0 + 0x34) = arg1;
     *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x1EC);
