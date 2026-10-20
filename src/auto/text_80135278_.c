@@ -45,23 +45,20 @@ typedef struct {
     float unk_4;
 } Diffs2_80135278;
 
-static float fn_80135278_dot(float *a, Diffs2_80135278 d) {
-    return a[0] * d.unk_0 + a[1] * d.unk_4;
+static float fn_80135278_dot(float *a, Diffs2_80135278 *d) {
+    return a[0] * d->unk_0 + a[1] * d->unk_4;
 }
 
-static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
-    Diffs2_80135278 r;
-    r.unk_0 = b[0] - c[0];
-    r.unk_4 = b[1] - c[1];
-    return r;
+static void fn_80135278_diff(Diffs2_80135278 *d, float *b, float *c) {
+    d->unk_0 = b[0] - c[0];
+    d->unk_4 = b[1] - c[1];
 }
 
 float fn_80135278(float *a, float *b, float *c) {
-    float dx = b[0] - c[0];
-    float dy = b[1] - c[1];
-    float x = a[0] * dx;
-    float y = a[1] * dy;
-    return x + y;
+    Diffs2_80135278 d;
+    d.unk_0 = b[0] - c[0];
+    d.unk_4 = b[1] - c[1];
+    return a[0] * d.unk_0 + a[1] * d.unk_4;
 }
 
 void *fn_801352B8(Unk_80135278 *arg0) {
