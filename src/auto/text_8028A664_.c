@@ -358,7 +358,6 @@ void fn_8028C8BC(void) {}
 
 extern void fn_802CAC54(s32);
 extern void fn_80128670(s32);
-extern void fn_8028BFEC(s32);
 extern s32 fn_8012850C(s32, void *, s32);
 extern s32 fn_8002F37C(void *, s32, s32, s32);
 extern s32 fn_802CAC28(void *, s32);
