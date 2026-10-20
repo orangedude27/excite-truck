@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern void fn_80271624(void);
 extern int stricmp(const char *, const char *);
 extern char *lbl_80346B54[];
 extern float lbl_80563F48;
@@ -228,6 +229,46 @@ int fn_80272C24(float farg0, float farg1, float farg2, float farg3) {
     if (!(farg0 < farg1)) return 0;
     if (!(farg0 > farg2)) return 0;
     return 1;
+}
+
+extern unsigned char lbl_8055F564;
+extern float lbl_8055F568;
+extern float lbl_80563F50;
+extern float PSQUATMultiply(void *, void *);
+extern int fn_80272C24(float, float, float, float);
+int fn_80272C74(void *arg0, void *arg1, float *arg2, int arg3) {
+    void *obj;
+    void *manager;
+    void **vtable;
+    void *(*getManager)(void *);
+    void *camera;
+    float height;
+    float value;
+    int result;
+
+    *arg2 = lbl_80563F48;
+    obj = *(void **)arg0;
+    if (*(int *)((char *)obj + 0x58) == 0) return 0;
+    if (arg3 != -1 && arg3 != *(int *)((char *)obj + 0x5C)) return 0;
+    result = 1;
+    if (lbl_8055F564 != 0) {
+        manager = *(void **)((char *)arg1 + 0x270);
+        vtable = *(void ***)manager;
+        getManager = (void *(*)(void *))vtable[6];
+        camera = *(void **)((char *)getManager(manager) + 0x2C);
+        height = *(float *)((char *)camera + 8);
+        if (fn_80272C24(lbl_8055F568, *(float *)((char *)arg0 + 4), *(float *)((char *)arg0 + 8), height) != 0 ||
+            (*(unsigned char *)((char *)arg0 + 0x14) != 0 &&
+             fn_80272C24(lbl_8055F568, *(float *)((char *)arg0 + 0xC), *(float *)((char *)arg0 + 0x10), height) != 0)) {
+            *arg2 = lbl_80563F50;
+            return 1;
+        }
+        result = 0;
+    }
+    value = PSQUATMultiply((char *)arg1 + 0x60, obj) - *(float *)((char *)obj + 0xC);
+    if (value <= lbl_80563F48) *arg2 = lbl_80563F50;
+    else *arg2 = lbl_80563F50 / (lbl_80563F50 + value);
+    return result;
 }
 
 void fn_80273354(void) {
