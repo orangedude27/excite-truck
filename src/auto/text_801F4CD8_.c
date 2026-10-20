@@ -70,6 +70,40 @@ int fn_801F4E44(const char *arg0) {
     return 0;
 }
 
+typedef struct Vec3_801F4F9C {
+    float x, y, z;
+} Vec3_801F4F9C;
+
+typedef struct Vec2_801F4F9C {
+    float x, y;
+} Vec2_801F4F9C;
+
+typedef struct Vertex_801F4F9C {
+    Vec3_801F4F9C pos;
+    unsigned int color;
+    Vec2_801F4F9C uv;
+} Vertex_801F4F9C;
+
+#pragma cplusplus on
+class DummyObj_801F4F9C {
+public:
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void d4();
+    virtual void d5();
+    virtual void d6();
+    virtual void d7();
+    virtual void d8();
+    virtual void d9();
+    virtual void d10();
+    virtual Vec3_801F4F9C d11(const char *);
+    virtual Vec3_801F4F9C d12(const char *, Vec3_801F4F9C);
+    virtual Vec2_801F4F9C d13(const char *);
+};
+#pragma cplusplus off
+
 extern char lbl_8033AD28[];
 extern char lbl_8033AD34[];
 extern char lbl_8055B168[];
