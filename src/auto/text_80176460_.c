@@ -457,6 +457,17 @@ void fn_801775EC(void) {
     *(s32 *)(p + 0xC) = 3;
 }
 
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_80177608(void* obj) {
+    struct Dummy {
+        virtual void f0();
+    };
+    ((Dummy*)obj)->f0();
+}
+#pragma cplusplus off
+#pragma pop
+
 void fn_80177618(int *arg0)
 {
     int *vtable = *(int **)arg0;
