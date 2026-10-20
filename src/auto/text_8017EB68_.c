@@ -13,6 +13,7 @@ extern f32 fn_80144C80(f32, f32, f32);
 extern f32 fn_8014C8F8(f32, f32, f32);
 extern s32 fn_80179300(void);
 extern void fn_8017F628(void *);
+float fn_8017F70C(float);
 extern void fn_8017F718(void *);
 extern void fn_801A7844(s32);
 extern f32 fn_801A7F98(void *);
