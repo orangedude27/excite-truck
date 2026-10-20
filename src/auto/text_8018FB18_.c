@@ -7,3 +7,8 @@ void fn_80193058(void) {
 unsigned char fn_8019305C(void *arg0) {
     return *((unsigned char *)arg0 + 0x11);
 }
+
+unsigned char fn_80193064(void *arg0) {
+    return *((unsigned char *)arg0 + 0x13);
+}
+
