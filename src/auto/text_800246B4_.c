@@ -7,9 +7,9 @@ typedef struct FILE {
     s32 fp;
     u32 flags;
     u32 unk8;
-    u32 pad[0x13];
+    u32 pad[0x10];
     void *mem;
-    u32 pad2[0x12];
+    u32 pad2[0x14];
     s32 (*close)(s32);
 } FILE;
 s32 fflush(void);
