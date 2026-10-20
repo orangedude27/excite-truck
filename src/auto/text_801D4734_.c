@@ -1304,26 +1304,11 @@ void fn_801D8D00(void *arg0) {
  }
 }
 
-void fn_801D8DA0(void **param_1) {
-    struct Vtbl {
-        void (*unk_0)(void);
-        void (*unk_4)(void);
-        void (*unk_8)(void);
-        void (*unk_C)(void);
-        void (*unk_10)(void);
-        void (*unk_14)(void);
-        void (*unk_18)(void);
-        void (*unk_1C)(void);
-        void (*unk_20)(void);
-        void (*unk_24)(void);
-        void (*unk_28)(void);
-        void (*unk_2C)(void);
-        void (*unk_30)(void);
-        void (*unk_34)(void);
-    } *vtbl = (struct Vtbl *)*param_1;
-    vtbl->unk_34();
+#pragma cplusplus on
+extern "C" void fn_801D8DA0(void *arg0) {
+    ((TObj34 *)arg0)->v34();
 }
-
+#pragma cplusplus reset
 void fn_801D8DB0(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
