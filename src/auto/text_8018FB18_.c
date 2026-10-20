@@ -25,6 +25,8 @@ void fn_80192F74(void *arg0) {
     *(int *)((char *)arg0 + 0xC) = lbl_8055E3C4;
 }
 
+int fn_80193010(void) { return 0x20; }
+
 void fn_8019304C(void *arg0) {
     *(float *)((char *)arg0 + 0x40) = lbl_8056208C;
 }
