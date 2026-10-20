@@ -118,8 +118,14 @@ int fn_80274730(void *arg0, float arg1, float arg2, float arg3, float arg4) {
     angle=angle>lower?angle:lower;
     if(arg1>lbl_80563FB0) { (*(float *)(p+0xbc))=arg1; (*(float *)(p+0x194))=arg1; }
     else { v=(*(float *)(p+0x194)); v=v+lbl_80563FAC*(angle-v); (*(float *)(p+0xbc))=v; (*(float *)(p+0x194))=v; }
-    (*(float *)(p+0x120))=lbl_80563FB0; (*(float *)(p+0x124))=lbl_80563FB0; (*(float *)(p+0x128))=lbl_80563FB0;
+    v=lbl_80563FB0; (*(float *)(p+0x120))=v; (*(float *)(p+0x124))=v; (*(float *)(p+0x128))=v;
 }
+
+extern float lbl_80563FA8, lbl_80563FB0;
+void fn_80274E94(void *arg0) {
+    fn_80274730(arg0, lbl_80563FA8, lbl_80563FA8, lbl_80563FA8, lbl_80563FB0);
+}
+
 #pragma pop
 
 extern float PSVECDotProduct(float *, float *);
