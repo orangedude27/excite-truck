@@ -3,6 +3,9 @@
 typedef signed int s32;
 typedef unsigned char u8;
 typedef float f32;
+typedef struct Vec {
+    f32 x, y, z;
+} Vec;
 extern f32 lbl_80563E78;
 extern f32 lbl_8049A218[];
 extern f32 lbl_8055F52C;
