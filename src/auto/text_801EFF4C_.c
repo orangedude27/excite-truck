@@ -348,7 +348,7 @@ int fn_801F15A8(void **arg0, int arg1) {
 
 extern int lbl_80488798[64];
 extern int lbl_8033A51C;
-extern int lbl_8033A544;
+extern char lbl_8033A544[];
 void fn_802E317C(const char *, ...);
 int fn_801F196C(int, int);
 #pragma push
