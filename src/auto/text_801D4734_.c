@@ -1,6 +1,8 @@
 
 
 extern int fn_80128668(void);
+extern char lbl_8033905C[];
+extern float lbl_8055E3C8;
 extern char lbl_8033890C[];
 extern int lbl_8055E3C4;
 extern void fn_801D5328(int, int);
