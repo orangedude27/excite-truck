@@ -331,6 +331,10 @@ int fn_801D8DC8(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801D8EFC(void *arg0) {
+    return ((int *)arg0)[1];
+}
+
 void fn_801D8FE0(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
