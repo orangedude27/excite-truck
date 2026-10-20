@@ -133,7 +133,7 @@ void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
     int i;
     int offset;
 
-    manager = fn_802C5390();
+    manager = fn_802C5390(arg0);
     outer_info = *(int **)((char *)manager + 4);
     if ((u8)lbl_8055FC20 == 0) {
         fn_802C543C();
