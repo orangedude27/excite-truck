@@ -68,6 +68,10 @@ int fn_801D6630(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801D67D4(void) {
+    return lbl_803387C8;
+}
+
 int fn_801D67E0(int arg0) {
     return ((int *)arg0)[1];
 }
@@ -88,7 +92,7 @@ void fn_801D68D0(int arg0) {
 }
 
 void fn_801D68E8(int arg0) {
-    ((char **)arg0)[0] = (char *)lbl_80338BD0;
+    ((int *)arg0)[0] = lbl_80338BD0;
     ((int *)arg0)[1] = 0;
 }
 
@@ -115,6 +119,13 @@ int fn_801D6D80(int arg0, int arg1) {
         if (arg1 > 0) fn_80128668();
     }
     return arg0;
+}
+
+extern char lbl_80338868[];
+extern char lbl_80338B98[];
+extern char lbl_80338878[];
+int fn_801D6ED0(void) {
+    return (int)lbl_80338878;
 }
 
 void fn_801D6FA0(int arg0) {
