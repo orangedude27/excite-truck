@@ -285,7 +285,9 @@ extern "C" f32 lbl_80561510;
 extern "C" f32 lbl_80561514;
 extern "C" void fn_802AE220(int);
 extern "C" int fn_8001DFCC(void);
-f32 fn_8013EFB0(f32 arg0) { return arg0 - lbl_80561510; }
+extern "C" f32 fn_8013EFB0(f32 arg0) {
+    return arg0 - lbl_80561510;
+}
 
 extern f32 lbl_80561514;
 extern f32 lbl_80561510;
