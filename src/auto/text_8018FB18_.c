@@ -152,64 +152,26 @@ public:
     virtual void d29(int);
     virtual void d30(int);
     virtual void d31(int);
-    virtual void d32(int);
 };
 extern "C" void *fn_8018FE8C(void *arg0, s32 arg1) {
-    class Obj {
-    public:
-        virtual void v0(int);
-        virtual void v1(int);
-        virtual void v2(int);
-        virtual void v3(int);
-        virtual void v4(int);
-        virtual void v5(int);
-        virtual void v6(int);
-        virtual void v7(int);
-        virtual void v8(int);
-        virtual void v9(int);
-        virtual void v10(int);
-        virtual void v11(int);
-        virtual void v12(int);
-        virtual void v13(int);
-        virtual void v14(int);
-        virtual void v15(int);
-        virtual void v16(int);
-        virtual void v17(int);
-        virtual void v18(int);
-        virtual void v19(int);
-        virtual void v20(int);
-        virtual void v21(int);
-        virtual void v22(int);
-        virtual void v23(int);
-        virtual void v24(int);
-        virtual void v25(int);
-        virtual void v26(int);
-        virtual void v27(int);
-        virtual void v28(int);
-        virtual void v29(int);
-        virtual void v30(int);
-        virtual void v31(int);
-        virtual void v32(int);
-    };
-    void (*fn_80128668_ptr)(void *) = (void (*)(void *))0x80128668;
     s32 temp_r0;
     void *obj;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80333018;
         if (fn_801B6668(arg0) != 0) fn_801B6654();
         obj = *(void **)((char *)arg0 + 4);
-        if (obj != 0) ((Obj *)obj)->v32(1);
+        if (obj != 0) ((DummyVtable8018FE8C *)obj)->d31(1);
         obj = *(void **)((char *)arg0 + 8);
         *(void **)((char *)arg0 + 4) = 0;
-        if (obj != 0) ((Obj *)obj)->v2(1);
+        if (obj != 0) ((DummyVtable8018FE8C *)obj)->d1(1);
         obj = *(void **)((char *)arg0 + 0xC);
         *(void **)((char *)arg0 + 8) = 0;
-        if (obj != 0) ((Obj *)obj)->v2(1);
+        if (obj != 0) ((DummyVtable8018FE8C *)obj)->d1(1);
         *(void **)((char *)arg0 + 0xC) = 0;
         temp_r0 = lbl_8055E518 - 1;
         lbl_8055E518 = temp_r0;
-        if (temp_r0 == 0) { void (*cleanup)(void) = fn_8018FCC4; cleanup(); }
-        if (arg1 > 0) fn_80128668_ptr(arg0);
+        if (temp_r0 == 0) fn_8018FCC4();
+        if (arg1 > 0) fn_80128668_void_star(arg0);
     }
     return arg0;
 }
