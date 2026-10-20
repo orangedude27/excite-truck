@@ -408,7 +408,7 @@ void fn_802C7040(int arg0) {
     unsigned char sp8;
     void* temp;
     if (arg0 != -1) {
-        temp = *(void**)((char*)fn_802C5390() + 4);
+        temp = *(void**)((char*)fn_802C5390(arg0) + 4);
         if (fn_802C94A0((char*)temp + 0x20, &sp8, &spC, *(float*)((char*)temp + 0x1C))) {
             fn_802C57B4(arg0, 0, -1, sp8, spC);
         }
@@ -426,7 +426,7 @@ void fn_802C7458(int arg0, int arg1) {
     if (arg0 != -1) {
         temp_r31 = lbl_8055D008;
         lbl_8055D008 = arg1;
-        temp = *(void **)((char *)fn_802C5390() + 4);
+        temp = *(void **)((char *)fn_802C5390(arg0) + 4);
         if (fn_802C94A0((char *)temp + 0x20, &sp8, &spC, *(float *)((char *)temp + 0x1C))) {
             fn_802C57B4(arg0, 0, -1, sp8, spC);
         }
@@ -446,7 +446,7 @@ void fn_802C7758(void) {
 }
 
 void fn_802C7760(void *arg0, f32 *arg1, f32 *arg2, f32 *arg3, f32 *arg4, f32 *arg5, f32 *arg6) {
-    void *temp_r3 = fn_802C5390();
+    void *temp_r3 = fn_802C5390((int)arg0);
     *arg1 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x2C);
     *arg2 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x30);
     *arg3 = *(f32 *)((u8 *)*(void **)((u8 *)temp_r3 + 4) + 0x34);
@@ -459,8 +459,8 @@ void fn_802C77F0(void *arg0, f32 *arg1) {
     fn_802C7760(arg0, arg1, arg1 + 1, arg1 + 2, arg1 + 3, arg1 + 4, arg1 + 5);
 }
 
-float fn_802C7808(void) {
-    return *(float *)((char *)(*(void **)((char *)fn_802C5390() + 4)) + 0x1C);
+float fn_802C7808(int arg0) {
+    return *(float *)((char *)(*(void **)((char *)fn_802C5390(arg0) + 4)) + 0x1C);
 }
 
 s32 fn_802C7830(char *arg0, s32 arg1, signed char c) {
