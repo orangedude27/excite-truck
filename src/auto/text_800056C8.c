@@ -46,7 +46,7 @@ extern void fn_80011A2C(void);
 extern void fn_802C9904(void);
 extern void fn_800066B4(void *);
 extern s32 fn_80009C84(void);
-extern u8 lbl_8055D340[];
+extern u8 lbl_8055D340[4];
 extern s32 fn_801CB844(void);
 extern s32 fn_801B8874(void);
 extern void fn_80006B18(void *);
@@ -217,6 +217,11 @@ s32 fn_80006060(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+void fn_800060A0(void *arg0) {
+    lbl_8055D340[1] = 0;
+    ((s32 *)arg0)[2] = 0;
 }
 
 void fn_800060B4(void) {
