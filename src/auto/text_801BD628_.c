@@ -76,6 +76,10 @@ void fn_801BE168(int index, float *v, float *a, float *b, float w) {
     dst[24]=b[0]; dst[25]=b[1]; dst[26]=b[2]; dst[27]=0.0f;
 }
 
+void fn_801BEB1C(int arg0, int *arg1) {
+    *arg1 = lbl_8055E798 + arg0 * 0x1F0;
+}
+
 extern float lbl_80562838;
 extern float lbl_8056283C;
 extern float lbl_805628A4;
