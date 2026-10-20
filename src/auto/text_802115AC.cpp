@@ -498,7 +498,7 @@ extern "C" s32 __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80215348(void *arg0, s3
     return (s32)arg0;
 }
 
-void fn_802153A0(void) {
+extern "C" void fn_802153A0(void) {
 }
 
 extern "C" s32 fn_802168BC(s32);
