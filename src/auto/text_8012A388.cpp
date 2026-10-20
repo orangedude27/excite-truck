@@ -167,11 +167,12 @@ extern "C" void fn_802E3734(s32 *);
 extern "C" s32 fn_802E4CA8(void *, s32, s32);
 extern "C" s32 fn_802E7354(void *);
 extern "C" s32 fn_802E746C(s32 *, s32 *);
+#pragma scheduling off
 extern "C" void fn_8012A7FC(void) {
     lbl_8055DFF9 = 1;
     fn_802E2D74(0x32);
 }
-
+#pragma scheduling reset
 extern "C" s32 fn_8012A388(void *);
 extern "C" s32 fn_802E7544(s32);
 extern "C" void fn_802E7548(s32);
@@ -311,10 +312,15 @@ extern "C" void *fn_8012B32C(const char *);
 extern "C" void fn_8012748C(s32);
 extern "C" const char lbl_8032AB2C[];
 extern "C" const char lbl_8032AB58[];
+#pragma scheduling off
+#pragma dont_inline on
+#pragma use_lmw_stmw off
 extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
-    s32 tries = 0;
-    void *p = fn_8012BD3C(*arg1, arg0);
+    void *p;
+    s32 tries;
+    p = fn_8012BD3C(*arg1, arg0);
     if (p == 0) {
+        tries = 0;
         do {
             lbl_8055DFF9 = 0;
             p = fn_8012B32C(arg0);
@@ -325,8 +331,8 @@ extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
                 fn_802E30C8(lbl_8032AB2C, arg0);
                 fn_80127464();
             }
-            if (lbl_8055DFF9 == 0 || p != 0) break;
-            ++tries;
+            if (lbl_8055DFF9 != 0 && p == 0) ++tries;
+            else break;
         } while (tries < 10);
         if (p == 0) {
             fn_802E30C8(lbl_8032AB58, arg0);
@@ -335,7 +341,9 @@ extern "C" void *fn_8012BD98(const char *arg0, void **arg1, s32 arg2) {
     } else ++*(s32 *)((char *)p + 0x9C);
     return p;
 }
-
+#pragma use_lmw_stmw reset
+#pragma dont_inline reset
+#pragma scheduling reset
 extern "C" void fn_8012DDA8(s32);
 extern "C" void fn_8012E81C(s32);
 extern "C" void fn_8012BEF0(s32 arg0) {
@@ -872,6 +880,20 @@ extern "C" void fn_8012C958(void *arg0) {
         *(s32 *)((u8 *)arg0 + 0x14) = 0;
         *(u32 *)arg0 = 0x19AFEE2A;
         fn_8012A5E8(arg0);
+    }
+}
+
+extern "C" void fn_8012C9C8(void) {
+    if (lbl_8055E00C == 0) {
+        void *p = fn_801284F8(0x20, lbl_8032AC88);
+        if (p) p = fn_8012A13C(p, lbl_8032AC88, 0x20, 0xD0);
+        lbl_8055E010 = (void **)p;
+    }
+    void *p = fn_8012A2D8(lbl_8055E010);
+    if (p) {
+        s32 count = lbl_8055E00C;
+        count++;
+        lbl_8055E00C = count;
     }
 }
 
