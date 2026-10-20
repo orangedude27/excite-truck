@@ -933,7 +933,7 @@ extern "C" void fn_8021BFEC(void *arg0) {
     s32 flag = 0;
     s32 *p;
     s32 x, y;
-    ((void (*)(void *, s32))fn_80219660)(arg0, 0);
+    fn_80219660(arg0);
     if (*(s32 *)((u8 *)arg0 + 0x2B0) != *(s32 *)((u8 *)arg0 + 0x2B4)) {
         p = *(s32 **)((u8 *)arg0 + 0x2A8);
         if (p != 0 && *(s32 *)((u8 *)arg0 + 0x2AC) == *p) flag = 1;
