@@ -139,16 +139,20 @@ extern void fn_802CAC54(s32);
 extern void fn_80235380(void *);
 extern void fn_80128668(void *);
 #pragma push
+#pragma cplusplus on
 #pragma use_lmw_stmw off
-void *fn_80014664(void *arg0, s32 arg1) {
+extern "C" void *fn_80014664(void *arg0, s32 arg1) {
+    class Obj {
+    public:
+        virtual void v0(int);
+    };
     void *obj;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_802FCE18;
         lbl_803577E0[*(s32 *)((u8 *)arg0 + 4)] = 0;
         obj = *(void **)((u8 *)arg0 + 0x50);
         if (obj != 0) {
-            void (*fn)(void *, s32) = ((void (**)(void *, s32))(*(void **)obj))[2];
-            fn(obj, 1);
+            ((Obj *)obj)->v0(1);
         }
         fn_8001A04C(*(void **)((u8 *)arg0 + 0x48));
         *(void **)((u8 *)arg0 + 0x48) = 0;
