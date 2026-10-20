@@ -236,35 +236,33 @@ check:
   extern char lbl_80349854[];
   extern int strncmp(const char *, const char *, unsigned int);
   #pragma cplusplus on
-  class Dummy_8029FEF8 {
+    class Dummy_8029FEF8 {
   public:
       virtual void d0();
-      virtual void d1();
-      virtual const char *d2();
-      virtual void *f3(int);
-      virtual void d4();
+      virtual const char *d1();
+      virtual void *f2(int);
   };
+  #pragma push
+  #pragma use_lmw_stmw off
+  #pragma cplusplus on
+  extern "C" void fn_8029FEF8(void) {
+      Dummy_8029FEF8 *object;
+      int i = 0;
+      int j;
+      Dummy_8029FEF8 *child;
+      while ((object = (Dummy_8029FEF8 *)fn_802AE4C8(i)) != 0) {
+          j = 0;
+          while (object->f2(j) != 0) {
+              child = (Dummy_8029FEF8 *)object->f2(j);
+              if (strncmp(child->d1(), lbl_80349854, 9) == 0)
+                  fn_8029F658(child);
+              j++;
+          }
+          i++;
+      }
+  }
   #pragma cplusplus off
-#pragma push
-#pragma use_lmw_stmw off
-void fn_8029FEF8(void) {
-    void **object;
-    int i = 0;
-    int j;
-    void **child;
-    register void **vtable;
-    while ((object = fn_802AE4C8(i)) != 0) {
-        j = 0;
-        while ((vtable = (void **)*object, ((void *(*)(void *, int))vtable[3])(object, j)) != 0) {
-            child = (vtable = (void **)*object, ((void *(*)(void *, int))vtable[3])(object, j));
-            if (strncmp((vtable = (void **)*child, ((const char *(*)(void *))vtable[2])(child)), lbl_80349854, 9) == 0)
-                fn_8029F658(child);
-            j++;
-        }
-        i++;
-    }
-}
-#pragma pop
+  #pragma pop
 void fn_8029FFBC(void) {
     unsigned char *current = lbl_804B5070;
     int i = 0;
