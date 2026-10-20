@@ -29,33 +29,36 @@ void *fn_801284F8(int, void *);
 int fn_8012850C(int, void *);
 void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
 void GXInitTexObjFilter(void *, int, int);
-void fn_802DD4FC(void) {
-    void *info;
-    int width;
-    int height;
-    void *obj;
-    int pixels;
-    info = fn_802D2D14();
-    width = *(unsigned short *)((char *)info + 4);
-    height = *(unsigned short *)((char *)info + 6);
-    lbl_8055FED0 = width;
-    lbl_8055FED4 = height;
-    obj = fn_801284F8(0x50, lbl_8034CB50);
-    if (obj != 0) {
-        *(unsigned char *)((char *)obj + 0x4C) = 1;
-        if (width != 0) {
-            width = (width + (width >> 31)) >> 1;
-            height = (height + (height >> 31)) >> 1;
-        }
-        *(int *)((char *)obj + 0x44) = width;
-        *(int *)((char *)obj + 0x48) = height;
-        pixels = fn_8012850C(height * (width * 2), lbl_8034CB5C);
-        *(int *)((char *)obj + 0x40) = pixels;
-        GXInitTexObj(obj, (void *)pixels, (unsigned short)width, (unsigned short)height, 4, 0, 0, 0);
-        GXInitTexObjFilter(obj, 1, 1);
-        *(unsigned char *)((char *)obj + 0x4D) = 0;
+static inline void set_size(void *obj, int w, int h, int halve) {
+    if (halve) {
+        *(int *)((char *)obj + 0x44) = w / 2;
+        *(int *)((char *)obj + 0x48) = h / 2;
+    } else {
+        *(int *)((char *)obj + 0x44) = w;
+        *(int *)((char *)obj + 0x48) = h;
     }
-    lbl_8055FED8 = obj;
+}
+void fn_802DD4FC(void) {
+    void *info = fn_802D2D14();
+    lbl_8055FED0 = *(unsigned short *)((char *)info + 4);
+    lbl_8055FED4 = *(unsigned short *)((char *)info + 6);
+    {
+        void *obj = fn_801284F8(0x50, lbl_8034CB50);
+        if (obj != 0) {
+            *(unsigned char *)((char *)obj + 0x4C) = 1;
+            *(int *)((char *)obj + 0x44) = lbl_8055FED0 / 2;
+            *(int *)((char *)obj + 0x48) = lbl_8055FED4 / 2;
+            goto skip;
+            *(int *)((char *)obj + 0x44) = lbl_8055FED0;
+            *(int *)((char *)obj + 0x48) = lbl_8055FED4;
+skip:
+            *(int *)((char *)obj + 0x40) = fn_8012850C(*(int *)((char *)obj + 0x48) * (*(int *)((char *)obj + 0x44) * 2), lbl_8034CB5C);
+            GXInitTexObj(obj, *(void **)((char *)obj + 0x40), *(int *)((char *)obj + 0x44), *(int *)((char *)obj + 0x48), 4, 0, 0, 0);
+            GXInitTexObjFilter(obj, 1, 1);
+            *(unsigned char *)((char *)obj + 0x4D) = 0;
+        }
+        lbl_8055FED8 = obj;
+    }
 }
 
 void fn_802DD5F4(void) {
