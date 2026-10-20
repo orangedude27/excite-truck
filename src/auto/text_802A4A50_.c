@@ -7,6 +7,24 @@ typedef unsigned long u32;
 typedef signed long s32;
 typedef float f32;
 typedef union { double d; struct { f32 x, z; }; } Vec2_802A775C;
+typedef struct {
+    void *points;
+    s32 count;
+    s32 unk8;
+    f32 posX;
+    f32 posY;
+    f32 posZ;
+    f32 radius;
+    f32 unk1C;
+    f32 dirX;
+    f32 dirY;
+    f32 dirZ;
+    s32 unk2C;
+    s32 unk30;
+    s32 unk34;
+    f32 unk38;
+    f32 unk3C;
+} Obj802A775C;
 void fn_802C2C00(s32);
 void *fn_801E1F44(void);
 void fn_802C2C00(s32);
@@ -388,17 +406,22 @@ extern f32 lbl_805648CC;
 extern f32 lbl_805648D0;
 extern f32 lbl_805648D4;
 #pragma push
+#pragma optimization_level 2
 #pragma processor 750
 #pragma dont_inline on
 void fn_802A775C(void *arg0) {
-    Vec2_802A775C sp8;
+    s32 offset;
+    s32 i;
     Vec2_802A775C sp10;
+    Vec2_802A775C sp8;
     f32 sp18[3];
     f32 f29;
     f32 distSq;
     f32 one;
+    void *cam;
 
-    distSq = PSVECSquareDistance((void *)((u8 *)fn_801E8718(0) + 0x24), (void *)((u8 *)arg0 + 0xC));
+    cam = (u8 *)fn_801E8718(0) + 0x24;
+    distSq = PSVECSquareDistance(cam, (u8 *)arg0 + 0xC);
 
     if (distSq > *(f32 *)((u8 *)arg0 + 0x18) * *(f32 *)((u8 *)arg0 + 0x18)) {
         f32 t = fn_802A4AD4();
@@ -413,8 +436,6 @@ void fn_802A775C(void *arg0) {
         f32 sum;
         f32 len;
         f32 inv;
-        s32 i;
-        s32 offset;
 
         sp10.x = x;
         tx = x * t;
@@ -429,22 +450,22 @@ void fn_802A775C(void *arg0) {
 
         len = (f32)fn_8002F234(sum);
         one = lbl_8056485C;
-        i = 0;
         offset = 0;
+        i = 0;
         inv = -*(f32 *)((u8 *)arg0 + 0x18) * (one / len);
         sp10.x *= inv;
         sp10.z *= inv;
 
-        sp8 = sp10;
+        sp8.d = sp10.d;
         {
-            f32 tmp = sp8.x;
+            f32 neg_x = -sp8.x;
             sp8.x = sp8.z;
-            sp8.z = -tmp;
+            sp8.z = neg_x;
         }
 
         while (i < *(s32 *)((u8 *)arg0 + 4)) {
             f32 *pt = (f32 *)(*(u8 **)arg0 + offset);
-            if (PSVECSquareDistance(pt, (void *)((u8 *)arg0 + 0xC)) < *(f32 *)((u8 *)arg0 + 0x18) * *(f32 *)((u8 *)arg0 + 0x18)) {
+            if (PSVECSquareDistance(pt, (u8 *)arg0 + 0xC) < *(f32 *)((u8 *)arg0 + 0x18) * *(f32 *)((u8 *)arg0 + 0x18)) {
                 pt[0] += sp18[0];
                 pt[1] += sp18[1];
                 pt[2] += sp18[2];
