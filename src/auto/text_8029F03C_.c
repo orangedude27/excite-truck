@@ -265,16 +265,27 @@ check:
     if (i < lbl_8055F81C) goto loop;
 }
 
-void fn_802A002C(void) {
+  #pragma cplusplus on
+  struct Dummy_802A002C {
+      virtual void f0();
+      virtual void f1();
+      virtual void f2();
+      virtual void f3();
+  };
+  #pragma cplusplus off
+  
+  void fn_802A002C(void) {
     unsigned char *current = lbl_804B5070;
     int i = 0;
     register void *object;
     register void **vtable;
+    register void **ptr;
     goto check;
 loop:
     object = *(void **)(current + 0x70);
     if (object != 0) {
-        vtable = *(void ***)object;
+        ptr = (void **)object;
+        vtable = *ptr;
         ((void (*)(void *))vtable[3])(object);
     }
     current += 0x78;
