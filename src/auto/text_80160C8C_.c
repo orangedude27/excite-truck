@@ -39,7 +39,6 @@ struct Dummy_801619A8 {
     virtual void f4();
     virtual void f5();
     virtual void f6();
-    virtual void f7();
 };
 #pragma cplusplus off
 
