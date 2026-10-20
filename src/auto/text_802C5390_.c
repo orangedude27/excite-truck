@@ -13,6 +13,9 @@ extern int lbl_8055D00C;
 extern void fn_802DB2B4(void);
 extern int lbl_804C1338[];
 extern unsigned char lbl_804C1348[];
+struct Entry16 {
+    char data[16];
+};
 extern int lbl_804C139C[];
 extern int lbl_804C13A8[];
 extern int lbl_804C13B4[];
@@ -28,6 +31,10 @@ void fn_802C6C38(int);
 // split_file divides it into the game's real files (file_status shows its range).
 
 #pragma dont_inline on
+void *fn_802C5390(int arg0) {
+    return (arg0 * 16) + *(char **)((char *)lbl_804C139C + 8);
+}
+
 void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
     int *count = lbl_804C1338;
     unsigned char *entry = 0;
