@@ -322,10 +322,10 @@ s32 fn_80161D14(void) {
 void fn_80161DE4(void) {
     s32 total = fn_801615B4(fn_80161ECC() - 1);
     fn_80161E40(fn_80161ECC() - 1);
-    total += fn_8016208C();
+    total = total + fn_8016208C();
     fn_80133348(fn_8000DA10() + 0xC, lbl_8055A0B0, total + 1);
 }
-#pragma dont_inline reset
+#pragma dont_inline off
 int fn_80161ECC(void) {
     int i = 0;
     do {
@@ -723,12 +723,24 @@ s32 fn_801631E0(void *arg0) {
 }
 #pragma pop
 
-s32 fn_801634F0(void *arg0) {
+#pragma cplusplus on
+extern "C" s32 fn_801634F0(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual s32 v7();
+    };
     s32 result = 0;
-    if (((s32 (*)(void *))(*(s32 (**)(void *))(*(char **)arg0 + 0x24)))(arg0) != 0 && *((u8 *)arg0 + 0x90) != 0) result = 1;
+    if (((Obj *)arg0)->v7() != 0 && *((u8 *)arg0 + 0x90) != 0) result = 1;
     return result;
 }
-
+#pragma cplusplus off
 void *fn_80163658(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         if (arg0 != 0) {
