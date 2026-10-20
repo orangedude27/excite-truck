@@ -223,7 +223,7 @@ void fn_8021662C(void) {
     if (lbl_8055EF88 != 0) fn_80129AFC();
     fn_802161CC(0);
     if (lbl_8055EF88 != 0) {
-        fn_80218370();
+        fn_80218370(lbl_8055EF88);
     }
     if (temp_r31 == (s32)lbl_8055EF78) {
         if ((s32)lbl_8055EF70 == 0) fn_802166B8();
