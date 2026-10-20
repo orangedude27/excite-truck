@@ -226,6 +226,21 @@ int fn_801D76CC(int arg0, int arg1) {
     return arg0;
 }
 
+void *fn_801D774C(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        if (((int)arg0 + 0x24) != 0) {
+            if (((int)arg0 + 0x24) != 0) {
+                *(int *)((char *)arg0 + 0x24) = 0;
+                *(int *)((char *)arg0 + 0x28) = 0;
+                *(int *)((char *)arg0 + 0x2C) = 0;
+            }
+        }
+        if (arg1 > 0)
+            ((void (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 char *fn_801D77AC(void) {
     return lbl_803388F0;
 }
