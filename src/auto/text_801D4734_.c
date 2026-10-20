@@ -104,6 +104,10 @@ int fn_801D6900(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801D6C34(int arg0) {
+    return ((int *)arg0)[1];
+}
+
 int fn_801D6C3C(int arg0) {
     if (((int *)arg0)[1] == 1) {
         ((int *)arg0)[4] = lbl_8055E3C4;
