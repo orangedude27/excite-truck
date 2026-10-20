@@ -2549,7 +2549,7 @@ struct IosDevice {
     u8 pad[0xC];
     s32 field10;
     u8 pad2[0x10];
-    s32 state;
+    u32 state;
 };
 
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
@@ -2566,16 +2566,15 @@ extern "C" void fn_800BBCB4(void* context) {
     *(s32*)context = -1;
 }
 
-extern "C" s32 fn_800BBEA4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
+extern "C" s32 fn_800BBEA4(IosDevice *dev, s32 arg1, s32 *arg2, s32 arg3) {
     const char *str = lbl_8031B838;
     s32 r30 = 3;
-    s32 cmd = arg1;
-    s32 field10 = *(s32 *)((u8 *)arg0 + 0x10);
+    s32 field10 = dev->field10;
     s32 res;
 
     if (lbl_80559248 < 0) {
         res = (s32)0xC1000000;
-    } else if (*(s32 *)((u8 *)arg0 + 0x24) == 0) {
+    } else if (dev->state == 0) {
         res = (s32)0xC1000000;
     } else {
         OSLockMutex(lbl_80407560);
@@ -2586,10 +2585,10 @@ extern "C" s32 fn_800BBEA4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
             lbl_8055DD6C = 1;
             OSUnlockMutex(lbl_80407560);
 
-            if (*(u32 *)((u8 *)arg0 + 0x24) == 1) {
+            if (dev->state == 1) {
                 s32 sp18[6];
-                res = fn_800BB0A8(*(s32 *)arg0, 7, 3, 2, 0, 0, 0, 0, 0, (s32)sp18, 0, 0);
-                *(s32 *)((u8 *)arg0 + 0x24) = 2;
+                res = fn_800BB0A8(dev->fd, 7, 3, 2, 0, 0, 0, 0, 0, (s32)sp18, 0, 0);
+                dev->state = 2;
                 if (res == (s32)0xC1000003) {
                     res = 0;
                 } else if (res != 0) {
@@ -2605,21 +2604,21 @@ extern "C" s32 fn_800BBEA4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
                 lbl_8055DD6C = 0;
                 res = (s32)0xC1000000;
             } else {
-                switch (cmd) {
+                switch (arg1) {
                 case 9:
                 case 10:
                     r30 = 3;
                     break;
 
                 case 0x33:
-                    res = fn_800BC2EC(arg0, arg2);
+                    res = fn_800BC2EC(dev, arg2);
                     lbl_8055DD6C = 0;
                     goto end;
 
                 case 0x29:
                     res = 0;
                     if (arg2 != 0) {
-                        res = IOS_Ioctl(*(s32 *)arg0, 0xC, 0, 0, (void *)lbl_8055DD70, 4);
+                        res = IOS_Ioctl(dev->fd, 0xC, 0, 0, (void *)lbl_8055DD70, 4);
                         if (res != 0) {
                             OSReport(str + 0x5E8, res);
                         } else {
@@ -2631,12 +2630,12 @@ extern "C" s32 fn_800BBEA4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
 
                 case 3:
                     res = 0;
-                    *arg2 = *(s32 *)((u8 *)arg0 + 0x10);
+                    *arg2 = dev->field10;
                     lbl_8055DD6C = 0;
                     goto end;
                 }
 
-                res = fn_800BB0A8(*(s32 *)arg0, cmd, 3, r30, field10, 0, 0, 0, 0, (s32)arg2, 0, 0);
+                res = fn_800BB0A8(dev->fd, arg1, 3, r30, field10, 0, 0, 0, 0, (s32)arg2, 0, 0);
                 lbl_8055DD6C = 0;
             }
         }
