@@ -204,13 +204,26 @@ s32 fn_802E39D0(s32 arg0, s32 arg1, s32 arg2) {
     return sp8 == arg2;
 }
 
-void fn_802E3A14(s32 arg0, s32 arg1) {
- s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1ab);
- s32 entry = *(s32 *)(obj + 0x24);
- register void (*fn)(s32, s32) = (void (*)(s32, s32))(*(s32 **)entry)[8];
- fn(entry, arg1);
+#pragma cplusplus on
+extern "C" void fn_802E3A14(s32 arg0, s32 arg1) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9(s32);
+    };
+    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1ab);
+    s32 entry = *(s32 *)(obj + 0x24);
+    ((Obj *)entry)->v9(arg1);
 }
-
+#pragma cplusplus off
 s32 fn_802E3A64(s32 arg0, s32 arg1, s32 arg2) {
     s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1c3);
     CallbackObject *entry = (CallbackObject *)*(s32 *)(obj + 0x24);
@@ -237,12 +250,17 @@ s32 fn_802E3D04(s32 arg0) {
     return result;
 }
 
-s32 fn_802E3D68(s32 arg0) {
-    s32 *obj;
+#pragma cplusplus on
+extern "C" s32 fn_802E3D68(s32 arg0) {
+    class V {
+    public:
+        virtual void a();
+        virtual s32 b(s32);
+    };
+    V *obj = (V *)fn_802E336C();
     s32 result;
-    obj = fn_802E336C();
     if (obj == 0) goto fail;
-    result = ((s32 (*)(s32))(*(s32 **)obj)[3])(arg0);
+    result = obj->b(arg0);
     if (result == 0) goto fail;
     result = fn_802E35C0((const char *)arg0, result);
     goto done;
@@ -251,7 +269,7 @@ fail:
 done:
     return result;
 }
-
+#pragma cplusplus off
 void fn_802E3DCC(void) {
     lbl_8055FF24 = (void*)fn_802E98C8();
 }
