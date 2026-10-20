@@ -209,6 +209,50 @@ extern "C" void fn_80298458(int arg0, int arg1, void* arg2, void* arg3, void* ar
     }
 }
 
+struct Vec3f { float x, y, z; };
+extern "C" void fn_801E9DD4(int, int);
+extern "C" void fn_801E9DD8(void);
+extern "C" int fn_801E9E30(void*, float*);
+extern "C" float PSVECDotProduct(const float*, const float*);
+extern "C" double fabs(double);
+extern int lbl_8055CA70;
+extern int lbl_8055CA7C;
+extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, void* arg4, void* ctx) {
+    float* out = (float*)arg1;
+    float* base = (float*)arg2;
+    float* d1 = (float*)arg3;
+    float* d2 = (float*)arg4;
+    float p0[3];
+    float p1[3];
+    float p2[3];
+    float e1[3];
+    float e2[3];
+    p0[0] = base[0]; p0[1] = base[1]; p0[2] = base[2];
+    p1[0] = p0[0] + d1[0]; p1[1] = p0[1] + d1[1]; p1[2] = p0[2] + d1[2];
+    p2[0] = p0[0] + d2[0]; p2[1] = p0[1] + d2[1]; p2[2] = p0[2] + d2[2];
+    fn_801E9DD4(lbl_8055CA70, lbl_8055CA7C);
+    if (fn_801E9E30(ctx, p0) == 0 || fn_801E9E30(ctx, p1) == 0 || fn_801E9E30(ctx, p2) == 0) {
+        fn_801E9DD8();
+        return 0;
+    }
+    fn_801E9DD8();
+    e1[0] = p1[0] - p0[0]; e1[1] = p1[1] - p0[1]; e1[2] = p1[2] - p0[2];
+    e2[0] = p2[0] - p0[0]; e2[1] = p2[1] - p0[1]; e2[2] = p2[2] - p0[2];
+    if ((float)fabs(PSVECDotProduct(e1, e1)) <= lbl_80558DC4 || (float)fabs(PSVECDotProduct(e2, e2)) <= lbl_80558DC4) {
+        return 0;
+    }
+    out[0] = p0[0]; out[1] = p0[1]; out[2] = p0[2];
+    float l2 = PSVECDotProduct(e2, e2);
+    if (PSVECDotProduct(e1, e1) > l2) {
+        out[3] = e1[0]; out[4] = e1[1]; out[5] = e1[2];
+        out[6] = e2[0]; out[7] = e2[1]; out[8] = e2[2];
+    } else {
+        out[3] = e2[0]; out[4] = e2[1]; out[5] = e2[2];
+        out[6] = e1[0]; out[7] = e1[1]; out[8] = e1[2];
+    }
+    return 1;
+}
+
 extern "C" void* fn_80298868(void* arg0) {
     char* p = (char*)arg0;
     int i = 0;
