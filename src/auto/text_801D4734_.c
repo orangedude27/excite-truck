@@ -26,6 +26,10 @@ void fn_801D50B0(int arg0) {
     fn_801D5328(arg0, 0);
 }
 
+int fn_801D544C(void) {
+    return 0;
+}
+
 int fn_801D6500(int arg0) {
     return ((int *)arg0)[1];
 }
