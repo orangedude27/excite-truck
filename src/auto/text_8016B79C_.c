@@ -38,7 +38,7 @@ class TObj4C {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5(); virtual void d6(); virtual int d7();
-    virtual void d8(); virtual int d9(); virtual void d10(); virtual void d11();
+          virtual int d8(); virtual int d9(); virtual void d10(); virtual void d11();
     virtual f32 d12(); virtual void d13(); virtual f32 d14(); virtual void d15();
     virtual void d16();
     virtual void v4C();
@@ -643,6 +643,7 @@ extern "C" f32 lbl_805619E0;
 extern "C" f32 lbl_80561A14;
 extern "C" f32 lbl_80561A18;
 extern "C" f32 lbl_80561A1C;
+#pragma cplusplus on
 extern "C" void fn_80170414(void *arg0) {
     u32 sp8;
     f32 temp_f0;
@@ -732,14 +733,14 @@ extern "C" void fn_80170414(void *arg0) {
         }
     }
     temp_f29 = lbl_8055E3C8;
-    if ((temp_f29 > ((TObj4C *)arg0)->d14()) && ((s32) M2C_FIELD(arg0, s32 *, 0x68) > 0)) {
+    if ((temp_f29 > ((TObj4C *)arg0)->d12()) && ((s32) M2C_FIELD(arg0, s32 *, 0x68) > 0)) {
         temp_f29_2 = lbl_80561A14;
         var_r26 = 0;
         temp_f31 = lbl_80561980;
         var_r27 = 0;
 loop_83:
         if (var_r26 < (s32) M2C_FIELD(arg0, s32 *, 8)) {
-            if (((TObj4C *)arg0)->d9() == 0) {
+            if (((TObj4C *)arg0)->d7() == 0) {
                 temp_r3_2 = *(void **)(*(u8 **)((u8 *)arg0 + 4) + var_r27);
                 if ((s32) M2C_FIELD(temp_r3_2, u8 *, 8) != 0) {
                     M2C_FIELD(temp_r3_2, f32 *, 0xC) = (f32) (M2C_FIELD(temp_r3_2, f32 *, 0xC) + temp_f29_2);
@@ -1047,13 +1048,13 @@ loop_80:
             }
         }
     }
-    if ((((TObj4C *)arg0)->d9() != 0) && !((lbl_8055E3C8 - M2C_FIELD(arg0, f32 *, 0xA0)) < lbl_80561A1C)) {
+    if ((((TObj4C *)arg0)->d7() != 0) && !((lbl_8055E3C8 - M2C_FIELD(arg0, f32 *, 0xA0)) < lbl_80561A1C)) {
         temp_r5_2 = M2C_FIELD(arg0, s32 *, 0x60);
         temp_r6_2 = (s32) M2C_FIELD(arg0, f32 *, 0x38);
         fn_8016B964((u8 *)arg0 + 0xAC, temp_r5_2 + temp_r6_2, temp_r5_2, temp_r6_2);
     }
 }
-#pragma cplusplus reset
+#pragma cplusplus off
 
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
 void fn_80170DA8(void *arg0, void *arg1) {
@@ -1133,13 +1134,14 @@ s32 fn_80170F1C(void *arg0) {
     return result;
 }
 
-s32 fn_80170F7C(void *arg0) {
-    if ((*(s32 (**)(void))(*(void ***)arg0 + 9))() != 0) {
+#pragma cplusplus on
+extern "C" s32 fn_80170F7C(void *arg0) {
+    if (((TObj4C *)arg0)->d9() != 0) {
         return *(s32 *)((u8 *)arg0 + 0xAC) == 2;
     }
     return 0;
 }
-
+#pragma cplusplus off
 u32 fn_80170FD4(void) { return 1; }
 
 extern f32 lbl_80561A1C;
