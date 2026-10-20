@@ -59,6 +59,10 @@ done:
     return arg0;
 }
 
+void fn_801659C8(int arg0) {
+    fn_80163550(arg0 - 0x56C);
+}
+
 #pragma push
 #pragma dont_inline on
 float fn_801659D0(int arg0) {
