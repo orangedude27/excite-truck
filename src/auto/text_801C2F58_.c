@@ -301,15 +301,13 @@ void fn_801C4AD0(void) {
 
 extern void fn_801C98F0(void);
 
-#pragma scheduling off
+#pragma scheduling on
 void fn_801C4B10(void) {
-    lbl_8055E804 = 0;
-    while ((s32)fn_8017960C(lbl_8055E804 += 1) != 0) {
+    for (lbl_8055E804 = 0; fn_8017960C(lbl_8055E804); lbl_8055E804++) {
     }
     lbl_8055E7F8 = fn_8012850C(0xC300, lbl_80336D84);
     fn_801C3D88(lbl_80336D90);
 }
-#pragma scheduling on
 void fn_801C4B74(void) {
     fn_801C98F0();
     if ((void *)(unsigned long)lbl_8055E7F8 != 0) {
