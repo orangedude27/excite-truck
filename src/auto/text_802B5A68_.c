@@ -576,6 +576,7 @@ public:
     virtual void f7();
     virtual void f8();
     virtual int f9();
+    virtual void f10();
 };
 #pragma cplusplus on
 extern "C" void fn_802B869C(void) {
@@ -634,8 +635,10 @@ void fn_802B87F4(void) {
         fn_802B869C();
         fn_802B59A4(lbl_8055FA3C);
         fn_802B0288();
+        if (lbl_8055FA38 == 1)
+            return;
         value = lbl_8055FA40;
-        if (lbl_8055FA38 == 1 || value == 6)
+        if (value == 6)
             return;
         fn_802B4E3C();
     }
