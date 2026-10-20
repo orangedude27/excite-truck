@@ -166,17 +166,34 @@ extern "C" void SetMute__Q46nw4hbm3snd6detail8SeqTrackFQ36nw4hbm3snd7SeqMute(voi
     case 3: {
         u32 inner = OSDisableInterrupts();
         void *channel = *(void **)((u8 *)arg0 + 0xB8);
-        while (channel) { fn_800EAD00(channel); Stop__Q46nw4hbm3snd6detail7ChannelFv(channel); channel = *(void **)((u8 *)channel + 0xE4); }
-        *(void **)((u8 *)arg0 + 0xB8) = 0; OSRestoreInterrupts(inner); *(u8 *)((u8 *)arg0 + 0x5C) = 1; break;
+        while (channel) {
+            fn_800EAD00(channel);
+            Stop__Q46nw4hbm3snd6detail7ChannelFv(channel);
+            channel = *(void **)((u8 *)channel + 0xE4);
+        }
+        *(void **)((u8 *)arg0 + 0xB8) = 0;
+        OSRestoreInterrupts(inner);
+        *(u8 *)((u8 *)arg0 + 0x5C) = 1;
+        break;
     }
     case 2: {
         ReleaseAllChannel__Q46nw4hbm3snd6detail8SeqTrackFi(arg0, -1);
-        u32 inner = OSDisableInterrupts();
-        u32 channel = (u32)*(void **)((u8 *)arg0 + 0xB8);
-        while (channel) { fn_800EAD00((void *)channel); channel = (u32)*(void **)(channel + 0xE4); }
-        *(void **)((u8 *)arg0 + 0xB8) = 0; OSRestoreInterrupts(inner); *(u8 *)((u8 *)arg0 + 0x5C) = 1; break;
+        void *channel;
+        u32 inner;
+        inner = OSDisableInterrupts();
+        channel = *(void **)((u8 *)arg0 + 0xB8);
+        while (channel) {
+            fn_800EAD00(channel);
+            channel = *(void **)((u8 *)channel + 0xE4);
+        }
+        *(void **)((u8 *)arg0 + 0xB8) = 0;
+        OSRestoreInterrupts(inner);
+        *(u8 *)((u8 *)arg0 + 0x5C) = 1;
+        break;
     }
-    case 1: *(u8 *)((u8 *)arg0 + 0x5C) = 1; break;
+    case 1:
+        *(u8 *)((u8 *)arg0 + 0x5C) = 1;
+        break;
     }
     OSRestoreInterrupts(token);
 }
@@ -804,7 +821,7 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* 
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* self) {
     void* mutex = *(void**)((char*)self + 0x2c);
     OSLockMutex(mutex);
-    if (*(int*)((char*)self + 0x10))
+    if (*(volatile int*)((char*)self + 0x10))
         Cancel__Q46nw4hbm3snd6detail18SoundArchiveLoaderFv();
     OSUnlockMutex(mutex);
 }
