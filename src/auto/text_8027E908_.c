@@ -1113,13 +1113,11 @@ int fn_802868D4(void *arg0) {
     return b >= a;
 }
 
-void fn_8028693C(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 0x1C);
-    void **vtable = *(void ***)obj;
-    void *slot = vtable[17];
-    ((void (*)(void))slot)();
+#pragma cplusplus on
+extern "C" void fn_8028693C(void* arg0) {
+    ((ebi::title::TPlaneObj*)arg0)->m_sub->v15();
 }
-
+#pragma cplusplus off
 typedef unsigned int (*GetFn)(void *);
 typedef int (*CmpFn)(void *);
 int fn_80286950(void **arg0) {
