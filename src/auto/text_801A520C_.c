@@ -186,6 +186,14 @@ struct Dummy_801A5ED8 {
     virtual void f16();
     virtual void f17();
 };
+struct Dummy_801A6088 {
+    virtual void g0();
+    virtual void g1();
+    virtual void g2();
+    virtual void g3();
+    virtual void g4();
+    virtual int g5();
+};
 #pragma cplusplus off
 
 #pragma cplusplus on
@@ -234,14 +242,11 @@ void fn_8018956C(void);
 void fn_801A6088(void *arg0, int arg1) {
     void *obj;
     int offset;
-    void **vtable;
-    int (*call)(void *);
     fn_80188E2C();
     obj = *(void **)((char *)arg0 + 0x270C);
-    vtable = *(void ***)obj;
-    call = (int (*)(void *))vtable[5];
     offset = arg1 + *(int *)((char *)arg0 + 8);
-    *(int *)((char *)offset + 0x2C0) = call(obj);
+    *(int *)((char *)offset + 0x2C0) =
+        ((int (*)(void *))(*(void ***)obj)[5])(obj);
 }
 
 extern float lbl_80562404;
