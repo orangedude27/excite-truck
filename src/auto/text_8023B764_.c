@@ -152,7 +152,7 @@ void fn_8023BE38(int ignored, int flag) {
 #pragma dont_inline reset
 
 void fn_8023BEA8(void) {
-    extern const s32 lbl_80341340;
+    extern const char lbl_80341340[];
     fn_8023BE38((int)&lbl_80341340, 1);
 }
 
@@ -161,7 +161,7 @@ extern void *fn_80012820(s32);
 extern s32 *fn_80012870(s32, s32);
 extern void fn_8023B9EC(s32, s32, s32, s32, s32);
 extern void fn_8023BE38(int, int);
-extern const s32 lbl_80341340;
+extern const char lbl_80341340[];
 void fn_8023BEB8(s32 arg0, s32 arg1, s32 arg2) {
     fn_8023B9EC(arg0, arg1, arg2, 0, 0);
 }
