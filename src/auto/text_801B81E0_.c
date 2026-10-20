@@ -65,17 +65,17 @@ struct Dummy_801B8318 {
     virtual void f58();
     virtual void f59();
 };
-  struct Dummy_801B851C {
-      virtual void d0();
-      virtual void d1();
-      virtual void d2();
-      virtual void d3();
-      virtual void d4();
-      virtual void d5();
-      virtual void d6();
-      virtual void d7();
-      virtual int d8(void *, void *);
-  };
+      struct Dummy_801B851C {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void d3();
+        virtual void d4();
+        virtual void d5();
+        virtual void d6();
+        virtual void d7();
+        virtual int d8(void *);
+    };
   #pragma cplusplus off
   int fn_801B81E0(void *arg0) {
     extern int fn_8014145C(void);
@@ -212,7 +212,6 @@ extern "C" int fn_801B851C(void* arg0) {
     if (fn_80161BB8() != 0) return 0;
     return ((Dummy_801B8318 *)lbl_8055E744)->f17(arg0);
 }
-#pragma cplusplus off
 int fn_801B8570(int arg0) {
     extern int fn_80161B94(void);
     int result = 0;
