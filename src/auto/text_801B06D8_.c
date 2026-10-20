@@ -795,9 +795,8 @@ f32 fn_801B3064(void) {
 extern f32 lbl_8055E3C8;
 extern f32 lbl_8055E6AC;
 f32 fn_801B306C(void) {
-    f32 a = lbl_8055E3C8;
-    f32 b = lbl_8055E6AC;
-    return (b + 0.0f) - a;
+    register f32 a = lbl_8055E3C8;
+    return lbl_8055E6AC - a;
 }
 
 void* fn_801B307C(void) {
