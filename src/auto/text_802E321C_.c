@@ -16,6 +16,15 @@ extern s32 lbl_8055FF1C;
 
 extern char lbl_8034CFB4[];
 extern s32 fn_802E33D8(s32, const char *, s32);
+#pragma cplusplus on
+class Dummy_802E367C {
+public:
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual s32 f3(s32, s32);
+};
+#pragma cplusplus off
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -47,16 +56,37 @@ s32 *fn_802E336C(void) {
     return (s32 *)lbl_8055FF1C;
 }
 
+#pragma dont_inline on
 void fn_802E339C(void) {
-    s32 *p = (s32 *)fn_802E333C();
-    ((void (*)(void))(*(s32 **)((char *)*p + 0x24)))();
+    s32 *p = ((s32 *(*)())fn_802E333C)(0);
+    ((void (*)(void))(*(s32 **)p)[9])();
 }
-
+#pragma dont_inline reset
 s32 fn_802E33D0(void) { return 0; }
 
 void fn_802E3498(void) {
-    memset(lbl_804DB810, 0, 0x280);
-          if ((s32)lbl_8055FF18 == 0) *(s32 *)&lbl_8055FF18 = (s32)fn_802E3F94();
+    memset((void *)((char *)lbl_804DB810 + 0), 0, 0x280);
+    if (lbl_8055FF18 == 0) {
+        lbl_8055FF18 = fn_802E3F94();
+    }
+}
+
+extern void fn_802E3550(void);
+void fn_802E34DC(void) {
+    s32 obj;
+    fn_802E3550();
+    obj = lbl_8055FF18;
+    if (obj != 0) {
+        ((void (*)(s32, s32))(*(s32 *)(*(s32 *)obj + 8)))(obj, 1);
+    }
+    lbl_8055FF18 = 0;
+    obj = lbl_8055FF1C;
+    if (obj != 0) {
+        if (obj != 0) {
+            ((void (*)(s32, s32))(*(s32 *)(*(s32 *)obj + 8)))(obj, 1);
+        }
+        lbl_8055FF1C = 0;
+    }
 }
 
 void fn_802E3550(void) {
@@ -82,20 +112,23 @@ s32 fn_802E35C0(const char *arg0, s32 arg1) {
     return -1;
 }
 
+#pragma dont_inline on
 s32 fn_802E367C(s32 arg0) {
-          s32 obj = (s32)fn_802E333C();
-      s32 value = ((s32 (*)(s32, s32))(*(s32 *)obj + 0xC))(obj, arg0);
+    s32 *obj = fn_802E333C();
+    void **vtable = *(void ***)obj;
+    s32 (*method)(s32, s32) = (s32 (*)(s32, s32))vtable[3];
+    s32 value = method((s32)obj, arg0);
     if (value != 0) return fn_802E35C0((const char *)arg0, value);
     return -1;
 }
-
+#pragma dont_inline on
 s32 fn_802E36D8(s32 arg0) {
-          s32 obj = (s32)fn_802E333C();
-      s32 value = ((s32 (*)(s32, s32))(*(s32 *)obj + 0x10))(obj, arg0);
+    CallbackObject *obj = (CallbackObject *)fn_802E333C();
+    s32 value = ((s32 (*)(CallbackObject *, s32))(*(void ***)obj)[4])(obj, arg0);
     if (value != 0) return fn_802E35C0((const char *)arg0, value);
     return -1;
 }
-
+#pragma dont_inline reset
 void fn_802E3734(s32 *arg0) {
     s32 obj = fn_802E33D8(*arg0, lbl_8034CFB4, 0xE4);
     s32 entry = *(s32 *)(obj + 0x24);
@@ -154,41 +187,49 @@ s32 fn_802E39D0(s32 arg0, s32 arg1, s32 arg2) {
 void fn_802E3A14(s32 arg0, s32 arg1) {
  s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1ab);
  s32 entry = *(s32 *)(obj + 0x24);
- ((void (*)(s32,s32))(*(s32 **)entry)[8])(entry,arg1);
+ register void (*fn)(s32, s32) = (void (*)(s32, s32))(*(s32 **)entry)[8];
+ fn(entry, arg1);
 }
 
-s32 fn_802E3A64(s32 arg0,s32 arg1,s32 arg2) {
- s32 obj=fn_802E33D8(arg0,lbl_8034CFB4,0x1c3);
- s32 entry=*(s32 *)(obj+0x24);
- s32 result=((s32 (*)(s32,s32,s32))(*(s32 **)entry)[3])(entry,arg1,arg2);
- return arg2==result;
+s32 fn_802E3A64(s32 arg0, s32 arg1, s32 arg2) {
+    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1c3);
+    CallbackObject *entry = (CallbackObject *)*(s32 *)(obj + 0x24);
+    s32 result = ((s32 (*)(CallbackObject *, s32, s32))entry->vtable[3])(entry, arg1, arg2);
+    return arg2 == result;
 }
 
 void fn_802E3D00(void) {
 }
 
 s32 fn_802E3D04(s32 arg0) {
-    s32 (*method)(s32);
-    s32 *obj;
-    s32 value;
-    obj = (s32 *)fn_802E336C();
-    if (obj == 0) return -1;
-    method = (s32 (*)(s32))(*(s32 **)obj)[4];
-    value = method(arg0);
-    if (value == 0) return -1;
-    return fn_802E35C0((const char *)arg0, value);
+    s32 *obj = fn_802E336C();
+    s32 result;
+    if (obj == 0) {
+        result = -1;
+    } else {
+        result = ((s32 (*)(s32, s32))(*(s32 **)obj)[4])((s32)obj, arg0);
+        if (result != 0) {
+            result = fn_802E35C0((const char *)arg0, result);
+        } else {
+            result = -1;
+        }
+    }
+    return result;
 }
 
 s32 fn_802E3D68(s32 arg0) {
-    s32 (*method)(s32);
     s32 *obj;
-    s32 value;
-    obj = (s32 *)fn_802E336C();
-    if (obj == 0) return -1;
-    method = (s32 (*)(s32))(*(s32 **)obj)[3];
-    value = method(arg0);
-    if (value == 0) return -1;
-    return fn_802E35C0((const char *)arg0, value);
+    s32 result;
+    obj = fn_802E336C();
+    if (obj == 0) goto fail;
+    result = ((s32 (*)(s32))(*(s32 **)obj)[3])(arg0);
+    if (result == 0) goto fail;
+    result = fn_802E35C0((const char *)arg0, result);
+    goto done;
+fail:
+    result = -1;
+done:
+    return result;
 }
 
 void fn_802E3DCC(void) {
