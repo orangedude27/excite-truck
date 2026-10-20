@@ -2672,6 +2672,9 @@ extern "C" void fn_8022897C(void *arg0) {
  ((VfObj *)*(void **)((u8 *)arg0 + 0x268))->vf2();
 }
 
+extern "C" void fn_80228990(void) {
+}
+
 extern "C" f32 fn_80214D48(void);
 extern "C" void fn_80228AEC(s32);
 extern "C" void fn_802C86F0(void *, s32, s32, s32, s32);
