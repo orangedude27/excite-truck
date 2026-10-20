@@ -9,7 +9,7 @@ typedef struct FILE {
     u32 unk8;
     u32 pad[0x13];
     void *mem;
-    u32 pad2[0x27];
+    u32 pad2[0x12];
     s32 (*close)(s32);
 } FILE;
 s32 fflush(void);
@@ -20,13 +20,15 @@ s32 fclose(void *arg0) {
     s32 temp_r31;
     s32 var_r0;
     if (arg0 == 0) return -1;
-    if (!(f->flags & 0x3800000)) return 0;
-    temp_r30 = fflush();
-    temp_r31 = f->close(f->fp);
-    f->fp = 0;
-    f->flags &= 0xFE3FFFFF;
-    if (f->unk8 & 0x10000000) free(f->mem);
-    var_r0 = 0;
-    if ((temp_r30 != 0) || (temp_r31 != 0)) var_r0 = 1;
-    return -var_r0;
+    if ((((u32)f->flags) >> 22) & 7) {
+        temp_r30 = fflush();
+        temp_r31 = f->close(f->fp);
+        f->fp = 0;
+        f->flags &= 0xFE3FFFFF;
+        if (((u32)f->unk8) >> 28) free(f->mem);
+        var_r0 = 0;
+        if ((temp_r30 != 0) || (temp_r31 != 0)) var_r0 = 1;
+        return -var_r0;
+    }
+    return 0;
 }
