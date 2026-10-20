@@ -6,6 +6,14 @@ void fn_8019169C(void *arg0, void *arg1) {
     *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x1EC);
 }
 
+void *fn_801916AC(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        *(int *)((char *)arg0 + 0x38) = 0;
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 void fn_8019304C(void *arg0) {
     *(float *)((char *)arg0 + 0x40) = lbl_8056208C;
 }
