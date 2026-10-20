@@ -290,16 +290,13 @@ void fn_8006A3BC(void)
     u8 state = base[0x11];
     switch (state) {
     case 1:
-        if (SCCheckStatus() == 0) {
-            if (SCSetBtDeviceInfoArray(lbl_80393058) != 0) {
-                SCFlushAsync(fn_80068F28);
-                state = 2;
-            } else {
-                state = 1;
-            }
-            base[0x11] = state;
-            break;
+        if (SCCheckStatus() == 0 && SCSetBtDeviceInfoArray(lbl_80393058) != 0) {
+            SCFlushAsync(fn_80068F28);
+            state = 2;
+        } else {
+            state = 1;
         }
+        base[0x11] = state;
         break;
     case 2:
         break;
