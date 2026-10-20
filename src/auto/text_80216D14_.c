@@ -96,19 +96,36 @@ void fn_8021747C(void *arg0, void *arg1, void *arg2) {
     if (callback != 0) callback(arg0, arg1, arg2);
 }
 
-void fn_80217590(void *arg0, int arg1, int arg2) {
+#pragma cplusplus on
+extern "C" void fn_80217590(void *arg0, int arg1, int arg2) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14(int, int);
+    };
     char *base = (char *)arg0;
     void *obj = *(void **)(base + 0x44C);
     int x = arg1 - *(int *)(base + 0x454);
     int y = arg2 - *(int *)(base + 0x458);
     if (obj != 0) {
-        void **vtable = *(void ***)obj;
-        void (*fn)(void *, int, int) = (void (*)(void *, int, int))vtable[16];
-        fn(obj, x, y);
+        ((Obj *)obj)->v14(x, y);
     }
     *(void **)(base + 0x44C) = 0;
 }
-
+#pragma cplusplus off
 void fn_80218198(void *, void **);
 int fn_80218214(void *, int, int);
 void fn_802175F0(void *arg0, int arg1, int arg2) {
