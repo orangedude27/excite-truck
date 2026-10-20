@@ -60,7 +60,7 @@ extern char lbl_802FE1C0[0x100];
 int fn_802E2C20(void);
 void fn_80176734(void);
 int fn_801312EC(void*, void*);
-void fn_80131318(void);
+void fn_80131318();
 int fn_80232BA4(int, int, int, int, float, float, float, float, float);
 
 #pragma dont_inline on
