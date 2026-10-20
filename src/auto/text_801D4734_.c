@@ -237,6 +237,9 @@ int fn_801D77C0(int arg0) {
     return arg0;
 }
 
+void fn_801D77E8(void) {
+}
+
 int fn_801D7924(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[10] = 0;
