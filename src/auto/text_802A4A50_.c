@@ -170,13 +170,13 @@ check:
     if (i < lbl_8055F890) goto loop;
 }
 
-s32 fn_802A775C(s32);
+void fn_802A775C(void *);
 void fn_802A5A38(void) {
     s32 *ptr = lbl_804BCFA8;
     s32 i = 0;
     goto check;
 loop:
-    fn_802A775C(*ptr);
+    fn_802A775C((void *)*ptr);
     ptr++;
     i++;
 check:
