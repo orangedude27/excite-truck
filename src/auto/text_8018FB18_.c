@@ -454,13 +454,28 @@ void fn_80190F90(void) {
     fn_80191758();
 }
 
-void fn_80190F94(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 0x10);
-    volatile void **vtable = *(volatile void ***)obj;
-    void (*fn)(void) = (void (*)(void))vtable[14];
-    fn();
+#pragma cplusplus on
+extern "C" void fn_80190F94(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 0x10);
+    obj->f12();
 }
-
+#pragma cplusplus off
 void fn_80191060(void) {
     fn_801B6664();
 }
