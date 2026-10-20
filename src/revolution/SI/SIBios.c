@@ -325,12 +325,12 @@ static void SIInterruptHandler(s16 intr, OSContext* ctx) {
             if (v == 0 || *(volatile u32*)&InputBufferVcount[chan] + x / 2 < vcount) return;
         }
         {
-            u32 v = 0;
-            u32* ptr = (void*)InputBufferVcount;
-            ptr[0] = v;
-            ptr[1] = v;
-            ptr[2] = v;
-            ptr[3] = v;
+            u32 zero = 0;
+            volatile u32* clear = (volatile u32*)(u32)InputBufferVcount;
+            clear[0] = zero;
+            clear[1] = zero;
+            clear[2] = zero;
+            clear[3] = zero;
         }
         for (chan = 0; chan < SI_MAX_CHAN; chan++) if (RDSTHandler[chan] != NULL) RDSTHandler[chan](intr, ctx);
     }
