@@ -4,6 +4,10 @@ extern float lbl_8056208C;
 extern int lbl_8055E3C4;
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
 
+void fn_80190E6C(void) {
+    fn_80190E08();
+}
+
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
 void fn_8019169C(void *arg0, void *arg1) {
