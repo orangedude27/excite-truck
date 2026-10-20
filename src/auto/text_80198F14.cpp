@@ -1186,11 +1186,11 @@ check:
     if (r31 < r29[0]) goto loop;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_801A4538(void* arg0) {
     fn_8012C4E4(arg0, &fn_801A44D4, 0);
 }
-
-#pragma opt_tail_call on
+#pragma scheduling on
 extern "C" void fn_801A4768(s32* arg0, s32 arg1) {
     s32 val = *arg0;
     if (val != 0) {
