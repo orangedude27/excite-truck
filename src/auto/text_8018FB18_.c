@@ -38,6 +38,11 @@ void fn_80191060(void) {
 
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
+void fn_801914F8(void *arg0) {
+    void *obj = *(void **)((char *)arg0 + 4);
+    ((void (**)(void))(*(void ***)obj))[10]();
+}
+
 u8 fn_8019157C(void *arg0) { return *((u8 *)arg0 + 0x14); }
 
 void fn_8019169C(void *arg0, void *arg1) {
@@ -56,6 +61,10 @@ void *fn_801916AC(void *arg0, int arg1) {
 int fn_80191A98(void *arg0) {
     int bit = (*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 1) & 1;
     return (int)((unsigned int)(-bit | bit) >> 31);
+}
+
+void fn_80192BE4(void) {
+
 }
 
 int fn_80192C68(void *arg0) {
