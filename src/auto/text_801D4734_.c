@@ -66,12 +66,26 @@ int fn_801D7034(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801D7924(int arg0, int arg1) {
+    if (arg0 != 0) {
+        ((int *)arg0)[1] = 0;
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
+}
+
 void *fn_801D7C6C(void) {
     return lbl_8033890C;
 }
 
 int fn_801D7C78(int arg0) {
     return ((int *)arg0)[1];
+}
+
+void fn_801D7E3C(int arg0) {
+    if (((int *)arg0)[1] != 0) {
+        ((int *)arg0)[1] = 1;
+    }
 }
 
 int fn_801D7F5C(int arg0, int arg1) {
@@ -91,7 +105,7 @@ void fn_801D832C(void *arg0) {
 }
 
 int fn_801D839C(void *arg0) {
-    return __cntlzw(*(unsigned char *)((char *)arg0 + 0x18)) >> 5;
+    return (unsigned int)__cntlzw(*(unsigned char *)((char *)arg0 + 0x18)) >> 5;
 }
 
 int fn_801D83DC(int arg0, int arg1) {
