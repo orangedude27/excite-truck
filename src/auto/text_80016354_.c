@@ -5,6 +5,7 @@
 extern unsigned char lbl_803577F0[];
 extern unsigned char lbl_80357960[];
 extern void *fn_80016474(void);
+extern unsigned char *lbl_8055D540;
 extern unsigned char *lbl_8055D544;
 extern int stricmp(const char *, const char *);
 extern int fn_80016510(int);
@@ -64,17 +65,24 @@ int fn_80016604(const char *arg0) {
     return count;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 void *fn_8001668C(const char *arg0, int arg1) {
-    int i, count = 0, offset = 0;
-    for (i = 0; i < (int)lbl_8055D550; i++, offset += 0xA8) {
+    int offset = 0;
+    int count = 0;
+    int index = 0;
+    while (index < (int)lbl_8055D550) {
         if (stricmp((const char *)(lbl_8055D544 + offset + 0x2C), arg0) == 0) {
-            if (count == arg1) return lbl_8055D544 + i * 0xA8;
+            if (count == arg1)
+                return lbl_8055D544 + index * 0xA8;
             count++;
         }
+        offset += 0xA8;
+        index++;
     }
     return lbl_8055D544;
 }
-
+#pragma pop
 void *fn_80016720(const char *arg0) {
     void *result = fn_8001668C(arg0, 0);
     if (*(int *)((char *)result + 0xA0) & 2) {
@@ -208,7 +216,7 @@ void fn_80016C1C(void) {
             }
             p += 0xA8;
             j++;
-        } while (--count != 0);
+        } while (j < count);
         if (!found) *(int *)(entry + 0x4C) = i % (int)lbl_8055D550;
     }
     fn_80017558();
@@ -239,7 +247,7 @@ extern int sscanf(const char *, const char *, ...);
 #pragma push
 #pragma processor gekko
 int fn_80016DD8(const char *arg0) {
-    unsigned int hex, red, green, blue;
+    unsigned int hex, blue, green, red;
     int c;
     int first = *(const unsigned char *)arg0;
     int result = 0xFF008040;
@@ -247,7 +255,8 @@ int fn_80016DD8(const char *arg0) {
         c = arg0[1];
         c = (c < 0 || c >= 256) ? c : lbl_802FE850.cmap->to_lower_table[c];
         if (c == 'x') {
-            if (sscanf(arg0 + 2, lbl_80558BE8, &hex) == 1) result = hex;
+            const char *p = arg0 + 2;
+            if (sscanf(p, lbl_80558BE8, &hex) == 1) result = hex;
             goto done;
         }
     }
@@ -258,7 +267,7 @@ int fn_80016DD8(const char *arg0) {
 done:
     return result;
 }
-#pragma pop
+#pragma scheduling off
 void fn_80017708(void *arg0, int arg1, void *arg2) {
     int temp_r0;
     int temp_r0_2;
@@ -267,18 +276,17 @@ void fn_80017708(void *arg0, int arg1, void *arg2) {
     memset(arg2, 0, 0xC);
     temp_r4 = *(int *)((char *)arg0 + 0x94);
     *(signed char *)((char *)arg2 + 8) = 0;
-    if (temp_r4 >= 0) {
-        temp_r0 = (temp_r4 + arg1) % *(int *)((char *)arg0 + 0x98);
-        *(int *)arg2 = temp_r0;
-        *(int *)((char *)arg2 + 4) = temp_r0;
+    if (temp_r4 < 0) {
+        temp_r4_2 = *(int *)((char *)arg0 + 0x98);
+        temp_r0_2 = (*(int *)((char *)arg0 + 4) + ((arg1 * temp_r4_2) / 4)) % temp_r4_2;
+        *(int *)arg2 = temp_r0_2;
+        *(int *)((char *)arg2 + 4) = temp_r0_2;
         return;
     }
-    temp_r4_2 = *(int *)((char *)arg0 + 0x98);
-    temp_r0_2 = (*(int *)((char *)arg0 + 4) + ((arg1 * temp_r4_2) / 4)) % temp_r4_2;
-    *(int *)arg2 = temp_r0_2;
-    *(int *)((char *)arg2 + 4) = temp_r0_2;
+    temp_r0 = (temp_r4 + arg1) % *(int *)((char *)arg0 + 0x98);
+    *(int *)arg2 = temp_r0;
+    *(int *)((char *)arg2 + 4) = temp_r0;
 }
-
 void fn_800177B8(void) {
     int var_r28;
     int var_r30;
