@@ -66,6 +66,14 @@ int fn_801D7034(int arg0, int arg1) {
     return arg0;
 }
 
+void *fn_801D7C6C(void) {
+    return lbl_8033890C;
+}
+
+int fn_801D7C78(int arg0) {
+    return ((int *)arg0)[1];
+}
+
 int fn_801D7F5C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
