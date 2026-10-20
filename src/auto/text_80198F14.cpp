@@ -122,9 +122,9 @@ void fn_8019A788(void* arg0, void* arg1, void* arg3, void* arg4, s32 arg5, f32 f
     fn_80199894(arg1, arg0, &sp8, arg5, arg4, farg2, farg1, 0.0f, 0.0f, 0.0f);
 }
 
-void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
-    extern void fn_8019A820(void*, s32, s32, s32, f32);
-    fn_8019A820((u8*)arg0 + 0x34, arg1, arg2, arg3, *(f32*)((u8*)arg0 + 0x24));
+extern "C" void fn_8019A820(void*, void*, s32, s32, s32, f32);
+extern "C" void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    fn_8019A820(arg0, (u8*)arg0 + 0x34, arg1, arg2, arg3, *(f32*)((u8*)arg0 + 0x24));
 }
 
 void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
