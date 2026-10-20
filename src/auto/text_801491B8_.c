@@ -147,10 +147,11 @@ s32 fn_80149234(void *arg0) {
 extern s32 fn_8014D918(void*, s32, s32);
 extern s32 lbl_8055E240;
 extern f32 lbl_80561714, lbl_80561718;
-s32 fn_80149274(void **arg0) {
-    return (*(s32 (**)(void **))((char *)*arg0 + 0x10))(arg0) & 0xFF7F7F7F;
+#pragma cplusplus on
+extern "C" s32 fn_80149274(Dummy_80149274 *arg0) {
+    return arg0->d2() & 0xFF7F7F7F;
 }
-
+#pragma cplusplus off
 void fn_801492AC(void *arg0, f32 *arg1, s32 arg2) {
     u8 *obj = (u8 *)(arg2 + ((s32 *)arg0)[1]);
     f32 f2 = lbl_80561628;
