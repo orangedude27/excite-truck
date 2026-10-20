@@ -10,7 +10,7 @@ extern char lbl_8055E9A4;
 extern int lbl_8055E998;
 extern int lbl_80339468;
 extern unsigned char lbl_80446F18[];
-extern int fn_801DC258(float *, int *, short *, float, float);
+extern int fn_801DC258(void *, void *, void *, void *, float, float);
 extern int fn_80128670(void);
 extern int fn_801D049C(void);
 extern int lbl_8055E99C;
