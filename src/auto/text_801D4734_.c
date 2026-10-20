@@ -79,6 +79,10 @@ int fn_801D544C(void) {
     return 0;
 }
 
+void fn_801D5A14(int arg0) {
+    fn_801D59C8(arg0, 2);
+}
+
 void fn_801D5A1C(int arg0) {
     fn_801D59C8(arg0, 1);
 }
