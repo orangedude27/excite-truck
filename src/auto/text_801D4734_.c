@@ -237,6 +237,10 @@ int fn_801D839C(void *arg0) {
     return (unsigned int)__cntlzw(*(unsigned char *)((char *)arg0 + 0x18)) >> 5;
 }
 
+int fn_801D83BC(void *arg0) {
+    return (unsigned int)__cntlzw(*(unsigned char *)((char *)arg0 + 0x30)) >> 5;
+}
+
 int fn_801D83DC(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[1] = 0;
