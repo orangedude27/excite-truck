@@ -19,6 +19,8 @@ extern char lbl_8032FCC0[];
 __declspec(section ".data") extern float lbl_80558DC4;
 #pragma pop
 extern void fn_80128668(void *);
+extern void fn_80128670(void *);
+extern void fn_80139E18(void);
 extern unsigned char lbl_8055E32C;
 extern float lbl_805618F0;
 extern float lbl_8055E318;
