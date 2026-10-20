@@ -153,6 +153,11 @@ void fn_802D9154(void) {
     fn_802D7600(lbl_8055D118);
 }
 
+extern void fn_802D768C(void *);
+void fn_802D915C(void *arg0) {
+    fn_802D768C(arg0);
+}
+
 extern void fn_802D6C68(void);
 extern void fn_802CFF5C(void *);
 extern void fn_802CFFA4(unsigned int);
