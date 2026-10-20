@@ -80,6 +80,10 @@ void fn_801BEB1C(int arg0, int *arg1) {
     *arg1 = lbl_8055E798 + arg0 * 0x1F0;
 }
 
+void fn_801BEB30(int arg0, int *arg1) {
+    *arg1 = lbl_8055E79C + (arg0 * 0x190);
+}
+
 extern float lbl_80562838;
 extern float lbl_8056283C;
 extern float lbl_805628A4;
