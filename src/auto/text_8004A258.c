@@ -29,6 +29,13 @@ extern void __OSDBJump(void) {
     OSExceptionVector();
 }
 
+#pragma small_data on
+void *__OSSetExceptionHandler(u8 type, void *handler) {
+    void *old = OSExceptionTable_8055D9D0[type];
+    OSExceptionTable_8055D9D0[type] = handler;
+    return old;
+}
+
 extern void **OSExceptionTable_8055D9D0;
 #pragma small_data on
 void *__OSGetExceptionHandler(s32 arg0) {
