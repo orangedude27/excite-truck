@@ -568,7 +568,7 @@ void fn_8019F414(void *arg0) {
     fn_8019EF00(arg0);
 }
 
-void fn_8019F560(void) {
+extern "C" void fn_8019F560(void) {
     fn_8019F1A4();
 }
 
