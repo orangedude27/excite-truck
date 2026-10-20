@@ -251,7 +251,60 @@ extern "C" void fn_801FCFC8(void* arg0) {
     }
 }
 #pragma pop
-extern "C" void fn_8012F57C(float*, void*, void*);
+extern "C" double cos(double);
+extern "C" double sin(double);
+extern "C" double fn_8002F234(float);
+extern "C" float fn_80144514(float, float, float, float, float, float);
+extern "C" void fn_801FD144(void*, void*, void*, void*, void*, float);
+extern "C" float lbl_80563040;
+extern "C" double lbl_80563048;
+
+static inline char* GetTrackNode(char* track, int idx) {
+    int count = *(int*)(track + 0x6D0);
+    int offset_idx;
+    if (idx >= count && idx < count * 2) {
+        offset_idx = count * 2 - idx - 1;
+    } else if (idx >= 0) {
+        offset_idx = idx % count;
+    } else {
+        offset_idx = -idx;
+    }
+    return track + 0x10 + offset_idx * 0x24;
+}
+
+static inline void MatrixMul801FD5E8(float* dst, const float* left, const float* right) {
+    if (dst == right || dst == left) {
+        float t0 = fn_80144514(left[0], right[0], left[3], right[1], left[6], right[2]);
+        float t3 = fn_80144514(left[0], right[3], left[3], right[4], left[6], right[5]);
+        float t6 = fn_80144514(left[0], right[6], left[3], right[7], left[6], right[8]);
+        float t1 = fn_80144514(left[1], right[0], left[4], right[1], left[7], right[2]);
+        float t4 = fn_80144514(left[1], right[3], left[4], right[4], left[7], right[5]);
+        float t7 = fn_80144514(left[1], right[6], left[4], right[7], left[7], right[8]);
+        float t2 = fn_80144514(left[2], right[0], left[5], right[1], left[8], right[2]);
+        float t5 = fn_80144514(left[2], right[3], left[5], right[4], left[8], right[5]);
+        float t8 = fn_80144514(left[2], right[6], left[5], right[7], left[8], right[8]);
+        dst[0] = t0;
+        dst[3] = t3;
+        dst[6] = t6;
+        dst[1] = t1;
+        dst[4] = t4;
+        dst[7] = t7;
+        dst[2] = t2;
+        dst[5] = t5;
+        dst[8] = t8;
+    } else {
+        dst[0] = fn_80144514(left[0], right[0], left[3], right[1], left[6], right[2]);
+        dst[3] = fn_80144514(left[0], right[3], left[3], right[4], left[6], right[5]);
+        dst[6] = fn_80144514(left[0], right[6], left[3], right[7], left[6], right[8]);
+        dst[1] = fn_80144514(left[1], right[0], left[4], right[1], left[7], right[2]);
+        dst[4] = fn_80144514(left[1], right[3], left[4], right[4], left[7], right[5]);
+        dst[7] = fn_80144514(left[1], right[6], left[4], right[7], left[7], right[8]);
+        dst[2] = fn_80144514(left[2], right[0], left[5], right[1], left[8], right[2]);
+        dst[5] = fn_80144514(left[2], right[3], left[5], right[4], left[8], right[5]);
+        dst[8] = fn_80144514(left[2], right[6], left[5], right[7], left[8], right[8]);
+    }
+}
+
 extern "C" void fn_8012F57C(float*, void*, void*);
 extern "C" float lbl_80563030;
 extern "C" void fn_801FD320(void* arg0) {
