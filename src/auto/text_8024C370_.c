@@ -163,10 +163,12 @@ void fn_8024CBF4(void) {
     fn_80214CB4();
 }
 
-void fn_8024CF38(void) {
-    fn_8024CC54(&fn_8024CEF0, 0, 1);
+#pragma push
+#pragma scheduling off
+int fn_8024CF38(int *arg0) {
+    fn_8024CC54(arg0, fn_8024CEF0, 1);
 }
-
+#pragma pop
 int fn_8024CF48(int *arg0) {
     fn_8024CC54(arg0, 0, 0);
 }
