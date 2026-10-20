@@ -42,16 +42,90 @@ typedef struct {
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-void __OSGetIOSRev(char *rev) {
-    u32 version = *(u32 *)0xC0003144;
-    u32 date = *(u32 *)0xC0003140;
-    rev[3] = date;
-    rev[0] = date >> 24;
-    rev[1] = date >> 16;
-    rev[2] = date >> 8;
-    rev[4] = version >> 16;
-    rev[5] = ((version >> 8) & 0xF) + (((version >> 12) & 0xF) * 10);
-    *(u16 *)(rev + 6) = (u8)version + 0x7D0;
+void __OSGetIOSRev(void *arg_rev) {
+    OSIOSRev_Report *rev = (OSIOSRev_Report *)arg_rev;
+    u32 version = *(u32 *)0xC0003140;
+    u32 builddate = *(u32 *)0xC0003144;
+
+    rev->idHi = version >> 24;
+    rev->idLo = (version >> 16) & 0xFF;
+    rev->verMajor = (version >> 8) & 0xFF;
+    rev->buildMon = (builddate >> 16) & 0xFF;
+    rev->buildDay = ((builddate >> 12) & 0xF) * 10 + ((builddate >> 8) & 0xF);
+    rev->buildYear = (builddate & 0xFF) + 2000;
+    rev->verMinor = version;
+}
+
+void ReportOSInfo_8004AA40(void) {
+    u32 type;
+    OSIOSRev_Report rev;
+    u32 category;
+    u32 tdev;
+
+    OSReport("\nRevolution OS\n");
+    OSReport("Kernel built : %s %s\n", "Sep 21 2006", "14:32:13");
+
+    OSReport("Console Type : ");
+    type = OSGetConsoleType();
+    category = type & OS_CONSOLE_MASK;
+    switch (category) {
+    case OS_CONSOLE_MASK_RVL:
+        switch (type) {
+        case OS_CONSOLE_RVL_PP_1:
+            OSReport("Pre-production board 1\n");
+            break;
+        case OS_CONSOLE_RVL_PP_2_1:
+            OSReport("Pre-production board 2-1\n");
+            break;
+        case OS_CONSOLE_RVL_PP_2_2:
+            OSReport("Pre-production board 2-2\n");
+            break;
+        default:
+            OSReport("Retail %d\n", type);
+            break;
+        }
+        break;
+    case OS_CONSOLE_MASK_EMU:
+        switch (type) {
+        case OS_CONSOLE_NDEV_2_1:
+            OSReport("NDEV 2.1\n");
+            break;
+        case OS_CONSOLE_NDEV_2_0:
+            OSReport("NDEV 2.0\n");
+            break;
+        case OS_CONSOLE_NDEV_1_2:
+            OSReport("NDEV 1.2\n");
+            break;
+        case OS_CONSOLE_NDEV_1_1:
+            OSReport("NDEV 1.1\n");
+            break;
+        case OS_CONSOLE_NDEV_1_0:
+            OSReport("NDEV 1.0\n");
+            break;
+        case OS_CONSOLE_RVL_EMU:
+            OSReport("Revolution Emulator\n");
+            break;
+        default:
+            OSReport("Emulation platform (%08x)\n", type);
+            break;
+        }
+        break;
+    case OS_CONSOLE_MASK_TDEV:
+        tdev = type & 0x0FFFFFFF;
+        OSReport("TDEV-based emulation HW%d\n", tdev - 3);
+        break;
+    default:
+        OSReport("%08x\n", type);
+        break;
+    }
+
+    __OSGetIOSRev((char *)&rev);
+    OSReport("Firmware     : %d.%d.%d ", rev.idLo, rev.verMajor, rev.verMinor);
+    OSReport("(%d/%d/%d)\n", rev.buildMon, rev.buildDay, rev.buildYear);
+
+    OSReport("Memory %d MB\n", (OSGetConsoleSimulatedMem1Size() + OSGetConsoleSimulatedMem2Size()) >> 20);
+    OSReport("MEM1 Arena : 0x%x - 0x%x\n", OSGetMEM1ArenaLo(), OSGetMEM1ArenaHi());
+    OSReport("MEM2 Arena : 0x%x - 0x%x\n", OSGetMEM2ArenaLo(), OSGetMEM2ArenaHi());
 }
 
 void __OSDBIntegrator(void) {
