@@ -56,6 +56,84 @@ f32 fn_8026EAEC(f32 farg0) {
     }
     return value;
 }
+
+extern f32 lbl_80563E5C;
+extern f32 lbl_8055F530;
+extern f32 lbl_8055F534;
+extern f32 lbl_8055F528;
+extern f32 lbl_80563E60;
+extern f32 lbl_80563E64;
+extern f32 fn_8026EAEC(f32);
+extern int fn_801769F8(void);
+extern int fn_800216D0(void);
+extern void *fn_801B2ED0(s32);
+#pragma push
+#pragma processor 750
+#pragma cplusplus on
+extern "C" f32 fn_8026EB4C(void *arg0) {
+    class Obj {
+    public:
+        virtual void dummy0();
+        virtual void dummy1();
+        virtual void *getMethod();
+    };
+
+    f32 temp_f31;
+    f32 f30;
+    f32 f1;
+    f32 f2;
+    f32 diff;
+    f32 t;
+    int c;
+    int flag;
+
+    char *sub = *(char **)((char *)arg0 + 0x140);
+    f1 = !(*(f32 *)(sub + 0x258C) > lbl_80563E5C) ? lbl_8055F534 : lbl_8055F530;
+    f30 = fn_8026EAEC(f1);
+
+    f2 = lbl_8055F528;
+    diff = lbl_8055F52C - f2;
+    t = *(f32 *)((char *)arg0 + 0x13C);
+    temp_f31 = fn_8026EAEC(f2 + t * diff);
+
+    sub = *(char **)((char *)arg0 + 0x140);
+    flag = 0;
+    c = 1;
+    int cond2 = *(f32 *)(sub + 0x258C) > lbl_80563E5C;
+    if (!cond2 && *(u8 *)(sub + 0x259C) == 0) {
+        c = 0;
+    }
+    if (c != 0) {
+        int cond3 = *(f32 *)(sub + 0x25E0) > lbl_80563E50;
+        if (cond3 != 0) {
+            flag = 1;
+        }
+    }
+
+    if (*(s32 *)((char *)arg0 + 4) != *(s32 *)((char *)arg0 + 0x10)) {
+        f30 = flag ? f30 : temp_f31;
+    } else if (fn_801769F8() != 0 || fn_800216D0() != 0 || *(s32 *)(*(char **)((char *)arg0 + 0x140) + 0x2620) < 1) {
+        f30 = *(f32 *)((char *)arg0 + 0x194);
+    } else {
+        if (flag) {
+            void *obj = fn_801B2ED0(*(s32 *)(*(char **)((char *)arg0 + 0x140) + 0x1EC));
+            void *res = ((Obj *)obj)->getMethod();
+            if (*(s32 *)((char *)res + 0x24) != 1) {
+                f2 = *(f32 *)((char *)arg0 + 0x194);
+                f30 = f2 + lbl_80563E60 * (f30 - f2);
+                goto end;
+            }
+        }
+        f2 = *(f32 *)((char *)arg0 + 0x194);
+        f30 = f2 + lbl_80563E64 * (temp_f31 - f2);
+    }
+
+end:
+    return f30;
+}
+#pragma cplusplus reset
+#pragma pop
+
 #pragma pop
 f32 fn_8026ECE4(void *arg0, f32 *arg1) {
     f32 value = fn_8026EB4C(arg0);
@@ -115,8 +193,8 @@ void fn_80270484(void) {
 
 void fn_802704D0(void) { fn_8026FCFC(); }
 
-void fn_802704D4(void *unused, void *arg1) {
-    ((void (*)(s32, void *))fn_802704D0)(*(s32 *)((u8 *)arg1 + 4), arg1);
+void fn_802704D4(void *arg0, void *arg1) {
+    ((void (*)(void *, s32, void *))fn_802704D0)(arg0, *(s32 *)((u8 *)arg1 + 4), arg1);
 }
 
 void fn_802704E0(void) { fn_8026EA8C(); }
