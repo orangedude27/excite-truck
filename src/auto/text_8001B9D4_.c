@@ -224,9 +224,10 @@ f32 fn_8001BEE8(s32 arg0) {
 }
 
 extern void fn_8001BC28();
-void fn_8001BF0C(f32 arg0) {
-    f32 temp = arg0;
-    ((void (*)(f32, s32))fn_8001BC28)(arg0, *(s32 *)&temp);
+extern void fn_8001BC28(void *arg0, s32 arg1);
+void fn_8001BF0C(s32 arg0, f32 arg1) {
+    f32 temp = arg1;
+    ((void (*)(s32, s32))fn_8001BC28)(arg0, *(s32 *)&temp);
 }
 
 void *fn_8001C070(void *dest, int val, size_t count) {
