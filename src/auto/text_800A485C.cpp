@@ -1138,6 +1138,13 @@ extern "C" s32 fn_800AF530(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     return 0;
 }
 
+#pragma dont_inline on
+extern "C" s32 fn_800AF574(void *arg0) {
+    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+    return 0;
+}
+#pragma dont_inline reset
+
 extern "C" s32 fn_800AF584(void *arg0) {
     s32 idx = *(s32 *)((char *)arg0 + 0x1C);
     return *(s32 *)((char *)lbl_802EEF40 + idx * 0x14 + 8);
