@@ -286,14 +286,11 @@ int fn_801B8804(void) { return 0; }
 extern "C" void fn_801B880C(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f31();
 }
-#pragma cplusplus off
-void fn_801B8820(void) {
-    void *obj = lbl_8055E744;
-    void *vt = *(void **)obj;
-    void (*fn)(void *) = *(void (**)(void *))((char *)vt + 0x40);
-    fn(obj);
+#pragma cplusplus on
+extern "C" void fn_801B8820(void) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f14();
 }
-
+#pragma cplusplus off
 void fn_801B8834(void) {
     (*(void (**)(void*))((char*)*(void**)lbl_8055E744 + 0x44))(lbl_8055E744);
 }
