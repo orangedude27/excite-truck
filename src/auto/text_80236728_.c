@@ -48,6 +48,10 @@ void fn_80236774(void) {
     lbl_8055F0C4 = 0;
 }
 
+void fn_802368D0(void) {
+    lbl_8055F0C0[0x21] = 1;
+}
+
 extern char lbl_8055F0C5;
 void fn_802368E0(void) {
     lbl_8055F0C5 = 1;
@@ -86,13 +90,15 @@ void fn_80236958(char *arg0, int unused) { fn_80237E7C(arg0, unused); }
 
 void fn_8023695C(void) { fn_80237EFC(); }
 
+#pragma push
+#pragma scheduling on
 void fn_802369A8(char *arg0, int arg1, int arg2) {
     extern char lbl_8055BA08[8], lbl_8055BA10[8];
-    extern int fn_801345D8(void *, int, const char *, int);
+    extern int fn_801345D8(void *, int, const char *, ...);
     extern char *fn_80029004(char *, int);
     char *dot;
     const char *suffix;
-    ((int (*)(void *, int, const char *, ...))fn_801345D8)(arg0, arg1, lbl_8055BA08, arg2);
+    fn_801345D8(arg0, arg1, lbl_8055BA08, arg2);
     dot = fn_80029004(arg0, '.');
     if (dot) *dot = 0;
     suffix = lbl_8055BA10;
@@ -103,7 +109,7 @@ void fn_802369A8(char *arg0, int arg1, int arg2) {
         }
     }
 }
-
+#pragma pop
 void fn_802379EC(void *arg0) {
     int minus = -1;
     int zero = 0;
