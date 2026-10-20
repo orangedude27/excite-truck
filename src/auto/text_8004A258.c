@@ -1,5 +1,6 @@
 #include <types.h>
 
+extern void **OSExceptionTable_8055D9D0;
 extern void OSExceptionVector(void);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
