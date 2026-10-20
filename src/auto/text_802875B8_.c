@@ -23,8 +23,8 @@ extern s32 lbl_8055F6C4;
 extern s32 lbl_80488648[];
 extern s32 fn_801EE0C8(s32);
 extern s32 fn_801E2CCC(s32, s32);
-extern s32 fn_8002F6AC(s32, void (*)(void));
-extern void fn_80287C80(void);
+extern s32 fn_8002F6AC(s32, void *(*)(void *, s32));
+extern void *fn_80287C80(void *, s32);
 extern void fn_802E317C(const char *, s32);
 extern const char lbl_80348A4C[];
 typedef struct Obj { void **vtable; } Obj;
@@ -343,6 +343,93 @@ s32 fn_80288208(s32 arg0){return lbl_8055F6C0+arg0*0x28;}
 void fn_8028829C(void) {}
 
 void fn_802882A0(void){if(*(s32*)lbl_804B3150)fn_80128670(*(s32*)lbl_804B3150-0x10);*(s32*)lbl_804B3150=0;*(s32*)(lbl_804B3150+4)=0;lbl_804B3150[8]=0;}
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+void fn_802882EC(void) {
+    extern u8 *fn_801EA9CC(s32);
+    extern f32 PSVECDotProduct(void *, void *);
+    extern double fn_8002F234(double);
+    extern f32 fn_801EE0D0(void *, s32);
+    extern f32 lbl_80564264, lbl_80564260;
+    extern f32 lbl_80558DC4[];
+    typedef struct { s32 v[9]; } Block9;
+    typedef struct { s32 v[3]; } Block3;
+    f32 zero;
+    u8 *out;
+    f32 one;
+    s32 *table;
+    s32 i;
+    zero = lbl_80564264;
+    out = *(u8 **)lbl_804B3150;
+    one = lbl_80564260;
+    lbl_804B3150[8] = 0;
+    table = lbl_80488648;
+    i = 0;
+    while (i < *(s32 *)(lbl_804B3150 + 4)) {
+        u8 *obj = fn_801EA9CC(i);
+        u8 *state = *(u8 **)(obj + 8);
+        u8 *entry;
+        s32 flags, all, j;
+        u8 *src, *dst;
+        if ((unsigned)i < 8) entry = (u8 *)*table;
+        else entry = 0;
+        *(Block9 *)out = *(Block9 *)(entry + 4);
+        *(Block3 *)(out + 0x24) = *(Block3 *)(entry + 0x28);
+        *(short *)(out + 0x30) = *(short *)(state + 0x30);
+        *(f32 *)(out + 52) = *(f32 *)(state + 112);
+        *(f32 *)(out + 56) = *(f32 *)(state + 116);
+        *(f32 *)(out + 60) = *(f32 *)(state + 120);
+        if ((f32)__fabs(PSVECDotProduct(state + 0x70, state + 0x70)) > lbl_80558DC4[0]) {
+            f32 scale = one / (f32)fn_8002F234(PSVECDotProduct(state + 0x70, state + 0x70));
+            *(f32 *)(out + 64) = *(f32 *)(state + 112) * scale;
+            *(f32 *)(out + 68) = *(f32 *)(state + 116) * scale;
+            *(f32 *)(out + 72) = *(f32 *)(state + 120) * scale;
+        } else {
+            *(f32 *)(out + 64) = zero;
+            *(f32 *)(out + 68) = zero;
+            *(f32 *)(out + 72) = zero;
+        }
+        *(f32 *)(out + 76) = *(f32 *)(state + 724);
+        *(f32 *)(out + 80) = *(f32 *)(state + 100);
+        *(f32 *)(out + 84) = *(f32 *)(state + 56);
+        *(f32 *)(out + 88) = *(f32 *)(state + 652);
+        *(s32 *)(out + 92) = *(s32 *)(state + 664);
+        *(s32 *)(out + 96) = *(s32 *)(state + 668);
+        *(s32 *)(out + 100) = *(s32 *)(state + 728);
+        *(s32 *)(out + 0x6c) = *(s32 *)(entry + 0x3ec);
+        flags = obj[0] != 0;
+        src = state; dst = out; all = 1; j = 0;
+        do {
+            *(f32 *)(dst + 112) = *(f32 *)(src + 124);
+            *(f32 *)(dst + 116) = *(f32 *)(src + 128);
+            *(f32 *)(dst + 120) = *(f32 *)(src + 132);
+            *(f32 *)(dst + 124) = *(f32 *)(src + 136);
+            *(f32 *)(dst + 128) = *(f32 *)(src + 140);
+            *(f32 *)(dst + 132) = *(f32 *)(src + 144);
+            *(f32 *)(dst + 136) = *(f32 *)(src + 148);
+            *(f32 *)(dst + 140) = *(f32 *)(src + 152);
+            *(f32 *)(dst + 144) = *(f32 *)(src + 156);
+            *(f32 *)(dst + 148) = *(f32 *)(src + 172);
+            *(f32 *)(dst + 152) = *(f32 *)(src + 180);
+            *(s32 *)(dst + 156) = *(s32 *)(src + 220);
+            *(u8 *)(dst + 160) = *(u8 *)(src + 224);
+            *(s32 *)(dst + 168) = *(s32 *)(src + 228);
+            *(f32 *)(dst + 0xa4) = fn_801EE0D0(entry, j);
+            all = all && src[0xe0];
+            j++; src += 0x6c; dst += 0x3c;
+        } while (j < 4);
+        if (all) flags |= 2;
+        { unsigned short bits = *(unsigned short *)(state + 0x6e);
+          if (bits & 0x40) flags |= 4;
+          if (bits & 0x20) flags |= 8;
+        }
+        *(s32 *)(out + 0x68) = flags;
+        out += 0x160; table++; i++;
+    }
+}
+#pragma pop
 
 void fn_802885C0(void) {}
 
