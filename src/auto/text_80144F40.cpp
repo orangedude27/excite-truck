@@ -722,12 +722,11 @@ extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
     }
 }
 
+extern "C" void *lbl_8032D214;
 extern void lbl_8032D260(void);
 extern "C" void fn_80146C1C(void **arg0) {
     *arg0 = (void *)&lbl_8032D260;
 }
-
-extern "C" void *lbl_8032D214;
 extern "C" void fn_8002F6AC(s32, void *);
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *, s32);
 extern "C" s32 fn_80147070(s32 arg0, s32 arg1) {
