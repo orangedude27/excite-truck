@@ -114,6 +114,7 @@ extern s32 fn_80128668(void);
 extern s32 lbl_80330020;
 extern char lbl_803300E0[];
 extern void fn_802E317C(const char *);
+#pragma dont_inline on
 s32 *fn_80167874(s32 arg0) {
     s32 *entry = &lbl_80330020;
     for (;;) {
@@ -127,6 +128,7 @@ s32 *fn_80167874(s32 arg0) {
         entry = (s32 *)((u8 *)entry + 0x20);
     }
 }
+#pragma dont_inline reset
 
 s32 fn_80167D58(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
