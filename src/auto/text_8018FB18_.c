@@ -1,5 +1,7 @@
 
 
+#include <types.h>
+
 extern float lbl_8056208C;
 extern int lbl_8055E3C4;
 extern int lbl_8055E524;
