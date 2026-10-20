@@ -4,7 +4,7 @@
 extern void fn_8024CC54(void *, void *, int);
 extern void fn_8024C768(void);
 extern signed char lbl_8055F2C8;
-extern int fn_8024CEF0;
+int fn_8024CEF0(void);
 extern int fn_8000D984(int);
 extern void fn_8000DA80(void);
 extern int fn_8000DC70(int);
