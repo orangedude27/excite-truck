@@ -1283,9 +1283,19 @@ extern "C" void *fn_8021D7C8(void *arg0,s32 arg1,s32 arg2,s32 arg3,s32 arg4,s32 
 }
 
 extern "C" void fn_8021D864(void *arg0) {
-    void *obj = *(void **)((u8 *)arg0 + 0x254);
-    void **vtable = *(void ***)((u8 *)obj + 0xC);
-    ((void (*)(void))vtable[7])();
+    struct BaseA {
+        int a, b, c;
+    };
+    struct ClassB : public BaseA {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+    };
+    ClassB *obj = *(ClassB **)((u8 *)arg0 + 0x254);
+    obj->v5();
 }
 
 extern "C" void fn_8021D878(void *arg0) {
@@ -1956,17 +1966,21 @@ extern "C" void fn_80222178(void *arg0) {
     s32 idx;
     void *obj;
     s32 (*callback)(void *);
+    s32 val250;
     ((VfObj *)arg0)->vf17();
     idx = *(s32 *)((u8 *)arg0 + 0x24C);
     *(u8 *)((u8 *)arg0 + 0x248) = 0;
     if (idx < 0)
         goto done;
-    if (*(s32 *)((u8 *)arg0 + 0x250) < 0)
+    val250 = *(s32 *)((u8 *)arg0 + 0x250);
+    if (val250 < 0)
         goto done;
     obj = fn_8022D97C(*(s32 *)(*(s32 *)((u8 *)arg0 + 0x244) + idx * 0x24));
     callback = *(s32 (**)(void *))((u8 *)obj + 0x24);
-    if (callback != 0 && callback(*(void **)((u8 *)obj + 0x20)) != 0)
-        fn_802168BC(*(void **)((u8 *)obj + 0x20));
+    if (callback != 0) {
+        if (callback(*(void **)((u8 *)obj + 0x20)) != 0)
+            fn_802168BC(*(void **)((u8 *)obj + 0x20));
+    }
 done:
     *(s32 *)((u8 *)arg0 + 0x24C) = -1;
     *(s32 *)((u8 *)arg0 + 0x250) = -1;
@@ -2474,28 +2488,41 @@ extern "C" s32 fn_802263CC(void *arg0, s32 arg1) {
     void *temp_r6 = *(void **)((u8 *)arg0 + 0x27C);
     if (temp_r6 != 0 && (s32)*(void **)((u8 *)arg0 + 0x280) != (s32)*(void **)temp_r6)
         return 0;
+
     switch (arg1) {
     case 0x127:
-        if (*(u8 *)(*(u8 **)((u8 *)arg0 + 0x244) + 0x18) == 0) goto default_case;
-        fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C)); return 1;
+        if (*(u8 *)(*(u8 **)((u8 *)arg0 + 0x244) + 0x18) == 0)
+            goto default_case;
+        fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C));
+        return 1;
     case 0x125:
-        if (*(u8 *)(*(u8 **)((u8 *)arg0 + 0x244) + 0x18) == 0) goto default_case;
-        fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C)); return 1;
+        if (*(u8 *)(*(u8 **)((u8 *)arg0 + 0x244) + 0x18) == 0)
+            goto default_case;
+        fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C));
+        return 1;
     case 0x128:
-        fn_8022DBFC(*(void **)((u8 *)arg0 + 0x244)); fn_80226570(arg0, -1);
-        *(s32 *)((u8 *)arg0 + 0x274) = 2; *(f32 *)((u8 *)arg0 + 0x250) = fn_8023659C(); return 1;
+        fn_8022DBFC(*(void **)((u8 *)arg0 + 0x244));
+        fn_80226570(arg0, -1);
+        *(s32 *)((u8 *)arg0 + 0x274) = 2;
+        *(f32 *)((u8 *)arg0 + 0x250) = fn_8023659C();
+        return 1;
     case 0x126:
-        fn_8022DC20(*(void **)((u8 *)arg0 + 0x244)); fn_80226570(arg0, 1);
-        *(s32 *)((u8 *)arg0 + 0x274) = 1; *(f32 *)((u8 *)arg0 + 0x250) = fn_8023659C(); return 1;
+        fn_8022DC20(*(void **)((u8 *)arg0 + 0x244));
+        fn_80226570(arg0, 1);
+        *(s32 *)((u8 *)arg0 + 0x274) = 1;
+        *(f32 *)((u8 *)arg0 + 0x250) = fn_8023659C();
+        return 1;
     case 0xD: {
         void *obj = *(void **)((u8 *)arg0 + 0x244);
         s32 (*callback)(void) = *(s32 (**)(void))((u8 *)obj + 0x14);
         s32 result = fn_8022DBE8(obj);
-        if (callback != 0 && callback() != 0) fn_802168BC((void *)result);
+        if (callback != 0 && callback() != 0)
+            fn_802168BC((void *)result);
         return 1;
     }
     default_case:
-    default: return 0;
+    default:
+        return 0;
     }
 }
 
