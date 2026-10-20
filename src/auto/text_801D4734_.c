@@ -92,7 +92,7 @@ void fn_801D68D0(int arg0) {
 }
 
 void fn_801D68E8(int arg0) {
-    ((int *)arg0)[0] = lbl_80338BD0;
+    ((int *)arg0)[0] = (int)lbl_80338BD0;
     ((int *)arg0)[1] = 0;
 }
 
