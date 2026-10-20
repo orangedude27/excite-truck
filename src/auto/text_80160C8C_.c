@@ -187,19 +187,18 @@ void fn_801617BC(void) {
 #pragma pop
 extern s32 lbl_8055A0B0;
 extern s32 lbl_8055A0B8;
-void fn_801619A8(void) {
+#pragma cplusplus on
+extern "C" void fn_801619A8(void) {
     s32 index = lbl_8055E304;
     if (index >= 0 && index < *(s32 *)(lbl_8042FDEC + 4)) {
         lbl_8055E300 = *(s32 *)(*(char **)lbl_8042FDEC + index * 4);
     }
     if (lbl_8055E300 != 0) {
-        void *obj = (void *)lbl_8055E300;
-        void (**method)(void *) = (void (**)(void *))((char *)(*(void **)obj) + 0x20);
-        (*method)(obj);
+        ((Dummy_801619A8 *)lbl_8055E300)->f7();
     }
     lbl_8055E2DD = 0;
 }
-
+#pragma cplusplus off
 void fn_80161A18(void) {
     if (lbl_8055E300 != 0) {
         void **vtable = *(void ***)lbl_8055E300;
