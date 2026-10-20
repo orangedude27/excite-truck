@@ -153,8 +153,9 @@ void fn_802BBE34(void) {
     } while (var_r28 < 0x200);
 }
 
-int fn_802BBF94(unsigned int arg0) {
-    return ((arg0 >> 4) & 0xF) | (arg0 & 0xF);
+int fn_802BBF94(unsigned char arg0) {
+    int res = (arg0 >> 4) & 0xF;
+    return __rlwimi(res, arg0, 0, 24, 27);
 }
 
 #pragma dont_inline fn_802BBF94
