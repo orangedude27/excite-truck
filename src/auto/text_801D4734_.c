@@ -15,6 +15,10 @@ extern char lbl_8033890C[];
 extern void fn_8016A240(const char *arg0);
 extern int lbl_8055E3C4;
 extern void fn_801D5328(int, int);
+void fn_801D47F8(void* alarm) {
+    fn_801D5488(fn_801D5650(alarm));
+}
+
 void fn_801D4904(void) {
     fn_801D5A24();
 }
@@ -174,8 +178,8 @@ void fn_801D6FB8(int arg0) {
 
 void fn_801D701C(int arg0) {
     extern char lbl_80338B08[];
-    ((char **)arg0)[0] = (char *)lbl_80338B08;
     ((int *)arg0)[1] = 0;
+    ((int *)arg0)[0] = (int)lbl_80338B08;
 }
 
 int fn_801D7034(int arg0, int arg1) {
