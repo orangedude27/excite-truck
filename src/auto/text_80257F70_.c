@@ -21,7 +21,5 @@ void fn_80257F70(void) {
 #pragma opt_propagation reset
 #pragma scheduling on
 
-void fn_80257BC0(void);
-DECL_SECTION(".ctors") funcptr_t D_802ED450 = fn_80257BC0;
 DECL_SECTION(".ctors") funcptr_t D_802ED454 = fn_80257F70;
 
