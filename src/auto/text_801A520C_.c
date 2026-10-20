@@ -32,6 +32,7 @@ void *fn_801A520C(void *arg0, void *arg1) {
 
 #pragma cplusplus on
 struct Dummy_801A5258 {
+    void *pad0;
     virtual void d0() {}
     virtual void d1() {}
     virtual void d2(void *, void *, void *) {}
