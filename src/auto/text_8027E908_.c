@@ -1165,8 +1165,7 @@ extern "C" void fn_80287304(void* arg0) {
 }
 #pragma cplusplus off
 extern unsigned char lbl_8055F685;
-extern int lbl_80348078;
-extern unsigned char lbl_8055F684, lbl_8055F685;
+extern unsigned char lbl_8055F684;
 extern int lbl_80348270;
 extern void *fn_8027ED70(void);
 extern int fn_80216D28(void);
