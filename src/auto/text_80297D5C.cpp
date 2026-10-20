@@ -197,13 +197,13 @@ void fn_802982C0(void *arg0) {
     } while (var_r30 < 4);
 }
 
-extern "C" int fn_802984D0(void*, short*);
+extern "C" int fn_802984D0(void*, void*, void*, void*, void*, void*);
 extern "C" void fn_802994C0(void*, unsigned int);
 extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
-extern "C" void fn_80298458(int arg0, int arg1, short arg2) {
-    short value = arg2;
+extern "C" void fn_80298458(int arg0, int arg1, void* arg2, void* arg3, void* arg4, short arg5) {
+    short value = arg5;
     int item = arg0 + arg1 * 0x2c;
-    if (fn_802984D0((void*)item, &value) != 0) {
+    if (fn_802984D0((void*)arg0, (void*)item, arg2, arg3, arg4, &value) != 0) {
         fn_802994C0(lbl_8055F7C4, arg1);
         fn_80299338(lbl_8055F7C4, arg1, (void*)item, (void*)(item + 0xc), (void*)(item + 0x18), value);
     }
