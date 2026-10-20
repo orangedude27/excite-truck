@@ -21,6 +21,7 @@ extern void fn_8028BD60(s32);
 extern void fn_8028CA70(s32);
 extern void fn_8028AB14(void);
 extern void fn_8028BD5C(s32);
+extern void fn_8028BFEC(s32);
 extern void fn_8028C938(s32);
 
 extern void fn_80288A70(void *, f32 *);
