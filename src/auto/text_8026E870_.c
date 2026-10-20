@@ -63,6 +63,8 @@ s32 fn_8026EA14(s32 arg0) {
 }
 #pragma pop
 
+#pragma push
+#pragma dont_inline on
 f32 fn_8026EA44(s32 arg0) {
     switch (arg0) {
     case 6:
@@ -76,6 +78,7 @@ f32 fn_8026EA44(s32 arg0) {
         return lbl_80563E3C;
     }
 }
+#pragma pop
 
 #pragma push
 #pragma dont_inline on
