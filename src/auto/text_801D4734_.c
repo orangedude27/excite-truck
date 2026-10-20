@@ -83,8 +83,8 @@ int fn_801D7C78(int arg0) {
 }
 
 void fn_801D7E3C(int arg0) {
-    if (((int *)arg0)[1] != 0) {
-        ((int *)arg0)[1] = 1;
+    if (((int *)arg0)[10] != 0) {
+        ((int *)arg0)[10] = 1;
     }
 }
 
