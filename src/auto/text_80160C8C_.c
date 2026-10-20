@@ -193,7 +193,7 @@ extern "C" void fn_801619A8(void) {
         lbl_8055E300 = *(s32 *)(*(char **)lbl_8042FDEC + index * 4);
     }
     if (lbl_8055E300 != 0) {
-        ((Dummy_801619A8 *)lbl_8055E300)->f7();
+        ((Dummy_801619A8 *)lbl_8055E300)->f6();
     }
     lbl_8055E2DD = 0;
 }
