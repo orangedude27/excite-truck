@@ -131,10 +131,12 @@ extern "C" void AnimateSelf__Q36nw4hbm3lyt6WindowFUl(void* self, unsigned long a
 extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
     int offset = 0, count = 0;
     while (count < *((unsigned char*)self + 0x100)) {
-        void* pane = *(void**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
-        struct VTable { void* pad[5]; void (*call)(void*, void*); };
-        VTable* vtable = *(VTable**)pane;
-        vtable->call(pane, anim);
+        struct Pane {
+            virtual void v0(); virtual void v1(); virtual void v2();
+            virtual void UnbindAnimationSelf(void* anim);
+        };
+        Pane* pane = *(Pane**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
+        pane->UnbindAnimationSelf(anim);
         offset += 8;
         count++;
     }
