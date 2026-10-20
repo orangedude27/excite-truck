@@ -15,17 +15,28 @@ extern float lbl_80563B58, lbl_80563B5C, lbl_80563B60;
 extern void fn_80230C30(float *, float *, int, int);
 extern void fn_802354A0(int, unsigned char, int, float, float, float, float, float);
 extern void fn_80231220(int, int, float, float, float, float, float, float, float, float);
-void *fn_8025D96C(void *arg0, int arg1) {
-    if (arg0 != 0) {
-        *(int *)&lbl_8055F3C4 = 0;
-        if ((char *)arg0 + 0x18 != 0 && (char *)arg0 + 0x18 != 0) {
-            *(int *)((char *)arg0 + 0x18) = 0;
-            *(int *)((char *)arg0 + 0x1c) = 0;
-            *(int *)((char *)arg0 + 0x20) = 0;
-        }
-        if (arg1 > 0) fn_80128668(arg0);
+void *fn_8025D96C(void *arg0, int arg1)
+{
+  char *new_var2;
+  unsigned int new_var;
+  if (arg0 != 0)
+  {
+    int zero = 0;
+    new_var2 = (char *) arg0;
+    lbl_8055F3C4 = 0;
+    if (((new_var2 + 0x18) != 0) && ((((char *) arg0) + 0x18) != 0))
+    {
+      new_var = 0x18;
+      *((int *) (((char *) arg0) + new_var)) = zero;
+      *((int *) (((char *) arg0) + 0x1c)) = zero;
+      *((int *) (((char *) arg0) + 0x20)) = zero;
     }
-    return arg0;
+    if (arg1 > 0)
+    {
+      fn_80128668(arg0);
+    }
+  }
+  return arg0;
 }
 
 void* __dt__Q28PSSystem7SeqHeapFv_8025DA88(void* arg0, int arg1) {
