@@ -181,7 +181,7 @@ void fn_801D72D0(int arg0) {
     fn_8016A240((char *)arg0 + 8);
     p = ((int *)arg0)[0x38 / 4];
     ((int *)arg0)[1] = 1;
-    if (p != 0 && *(char *)(p + 0x19) != 0) {
+    if (p != 0 && *(char *)(p + 0x19)) {
         *(char *)(p + 0x4A) = 1;
         *(char *)(p + 0x4C) = 0;
     }
@@ -299,6 +299,9 @@ int fn_801D873C(int arg0) {
     ((int *)arg0)[8] = 0;
     *(float *)((char *)arg0 + 0x10) = lbl_8055E3C8;
     return 0;
+}
+
+void fn_801D8C94(void) {
 }
 
 void fn_801D8DB0(int arg0) {
