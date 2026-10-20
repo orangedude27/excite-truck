@@ -3,6 +3,8 @@
 
 #include <types.h>
 #include <revolution/KPAD/KPAD.h>
+#include <revolution/WPAD/WPAD.h>
+#include <revolution/OS/OSInterrupt.h>
 
 typedef struct KPADInsideStatus {
     /* REXE01 has four records at 0x8037C808, each 0x400 bytes. */
@@ -21,14 +23,19 @@ typedef struct KPADInsideStatus {
     Vec2 sec_nrm_hori; /* 0x0B4 */
     Vec2 center_org; /* 0x0BC */
     f32 dpd2pos_scale; /* 0x0C4 */
-    u8 private_state[0x338]; /* 0x0C8..0x3FF */
+    u8 _pad0[0x324]; /* 0x0C8..0x3EB */
+    BOOL is_dpd_enabled; /* 0x3EC */
+    BOOL sampling_pending; /* 0x3F0 */
+    BOOL sampling_restart; /* 0x3F4 */
+    void (*dpd_ctrl_callback)(s32, s32); /* 0x3F8 */
+    BOOL data_format_failed; /* 0x3FC */
 } KPADInsideStatus;
 
-extern KPADInsideStatus inside_kpads[];
+extern u8 lbl_8037C808[];
+#define inside_kpads ((KPADInsideStatus*)lbl_8037C808)
 extern Vec2 lbl_8055D988;
 extern f32 lbl_8055D990;
 extern u16 lbl_80558EB0;
 extern f64 fn_8002F234(f64);
-
 
 #endif
