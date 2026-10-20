@@ -225,6 +225,14 @@ int fn_801D77B8(int arg0) {
     return ((int *)arg0)[2];
 }
 
+int fn_801D77C0(int arg0) {
+    if (((int *)arg0)[2] == 0) {
+        return arg0;
+    }
+    ((int *)arg0)[2] = 1;
+    return arg0;
+}
+
 int fn_801D7924(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[10] = 0;
