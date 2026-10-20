@@ -37,6 +37,12 @@ extern int *fn_801F1CE8(int);
 #pragma small_data off
 #pragma pop
 #pragma scheduling invalid_target
+#pragma dont_inline on
+int *fn_801F1CE8(int arg0) {
+    return (int *)(arg0 + 0x2C);
+}
+#pragma dont_inline reset
+
 void *fn_801F1DA4(void) {
     void **p = (void **)fn_801284F8(4, (void *)&lbl_8033A610);
     if (p != 0) {
