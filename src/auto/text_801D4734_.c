@@ -69,7 +69,7 @@ int fn_801D6630(int arg0, int arg1) {
 }
 
 int fn_801D67D4(void) {
-    return lbl_803387C8;
+    return (int)lbl_803387C8;
 }
 
 int fn_801D67E0(int arg0) {
