@@ -682,7 +682,6 @@ extern s32 fn_8000561C(void *, void *);
 extern void fn_80276DC8(s32);
 extern void *fn_801E87A8(void);
 extern s32 fn_801CB8FC(void);
-extern u8 lbl_8055D340[];
 void fn_800077E4(void *arg0) {
     void **base = (void **)lbl_8055D350;
     void *p = (u8 *)arg0 + ((s32 *)base)[7] * 4;
