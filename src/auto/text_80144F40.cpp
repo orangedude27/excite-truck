@@ -191,6 +191,12 @@ extern "C" void fn_80145368(void *arg0, void *arg1) {
 }
 
 extern "C" f32 lbl_805615E0;
+extern "C" char lbl_80559DE0[];
+extern "C" char lbl_80559DE4[];
+extern "C" char lbl_80559DE8[];
+extern "C" char lbl_80559DEC[];
+extern "C" char lbl_80559DF0[];
+extern "C" char lbl_80559DF4[];
 extern "C" void fn_80145438(void *arg0, void *arg1) {
     extern char lbl_80559DE0[]; extern char lbl_80559DE4[]; extern char lbl_80559DE8[]; extern char lbl_80559DEC[]; extern char lbl_80559DF0[]; extern char lbl_80559DF4[];
     fn_80145368(arg0, arg1);
@@ -585,12 +591,14 @@ extern "C" void fn_8014630C(void) {
 }
 
 extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg1) {
-    extern void fn_80235380();
-    extern void fn_80128668(void *);
-    if (arg0 != 0) {
-        arg0 = *(void **)((char *)arg0 + 8);
-        if (arg0 != 0) fn_80235380();
-        if (arg1 > 0) fn_80128668(arg0);
+    if (arg0 != NULL) {
+        s32 temp = *(s32 *)((u8 *)arg0 + 8);
+        if (temp != 0) {
+            fn_80235380();
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
     }
     return arg0;
 }
