@@ -54,7 +54,7 @@ void Init__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail9WsdPlayer(void *a
     *(int *)((char *)arg0 + 0x30) = 0;
 }
 
-void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
+extern "C" void NWC24Data_SetDataP(void *arg0, int arg1, int arg2) {
     *(int *)arg0 = arg1;
     *((int *)arg0 + 1) = arg2;
 }
