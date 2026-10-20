@@ -22,7 +22,7 @@ public:
     virtual void f0();
     virtual void f1();
     virtual void f2();
-    virtual void f3();
+    virtual s32 f3(s32);
     virtual s32 f4(s32, s32);
 };
 #pragma cplusplus off
@@ -114,14 +114,21 @@ s32 fn_802E35C0(const char *arg0, s32 arg1) {
 }
 
 #pragma dont_inline on
-s32 fn_802E367C(s32 arg0) {
-    s32 *obj = fn_802E333C();
-    s32 value = ((s32 (*)(s32, s32))(*(s32 **)obj)[3])((s32)obj, arg0);
-    if (value != 0) {
-        return fn_802E35C0((const char *)arg0, value);
-    }
+#pragma cplusplus on
+extern "C" s32 fn_802E367C(s32 arg0) {
+    class V {
+    public:
+        virtual void a();
+        virtual void b();
+        virtual void c();
+        virtual s32 f(s32, s32);
+    };
+    s32 result = ((V *)fn_802E333C())->f(arg0, arg0);
+    if (result != 0)
+        return fn_802E35C0((const char *)arg0, result);
     return -1;
 }
+#pragma cplusplus off
 s32 fn_802E36D8(s32 arg0) {
     CallbackObject *obj = (CallbackObject *)fn_802E333C();
     s32 value = ((s32 (*)(CallbackObject *, s32))(*(void ***)obj)[4])(obj, arg0);
