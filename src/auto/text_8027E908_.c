@@ -1039,12 +1039,11 @@ extern "C" void fn_8028674C(void* arg0) {
 extern "C" void fn_80286760(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v4();
 }
-#pragma cplusplus off
-void fn_80286774(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 0x1c);
-    (*(void (**)(void*))(*(void***)obj + 7))(obj);
+#pragma cplusplus on
+extern "C" void fn_80286774(void* arg0) {
+    ((ebi::title::TPlaneObj*)arg0)->m_sub->v5();
 }
-
+#pragma cplusplus off
 void fn_80286788(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
     ((void (**)(void*))(*(void***)obj))[8](obj);
