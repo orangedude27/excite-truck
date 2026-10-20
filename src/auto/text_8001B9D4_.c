@@ -127,6 +127,11 @@ s32 fn_8001BC18(s32 arg0) { return arg0 + 0x14; }
 
 s32 fn_8001BC20(s32 arg0) { return arg0 + 0x1C; }
 
+void fn_8001BC28(void *arg0, s32 arg1) {
+    *(s32 *)((char *)arg0 + 0x1C) = arg1;
+    *(s8 *)((char *)arg0 + 0x20) = 1;
+}
+
 s32 fn_8001BCF0(void *arg0) {
     s32 var_r5 = 0;
     
