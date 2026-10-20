@@ -409,6 +409,7 @@ extern "C" void fn_802195DC(void *arg0, s32 arg1) {
 
 extern "C" s32 fn_80219658(void) { return 0; }
 
+#pragma dont_inline on
 extern "C" void fn_80219660(void *arg0, s32 unused = 0) {
     void **vt = *(void ***)arg0;
     s32 a = *(s32 *)((u8 *)arg0 + 8);
@@ -422,6 +423,7 @@ extern "C" void fn_80219660(void *arg0, s32 unused = 0) {
                  *(s32 *)((u8 *)arg0 + 0x248) + a,
                  *(s32 *)((u8 *)arg0 + 0x24C), z, c, y, x, lbl_805634A4);
 }
+#pragma dont_inline reset
 
 extern "C" void fn_8022AC1C(s32, s32, s32, s32, s32 *, s32 *, s32 *, s32 *);
 extern "C" void fn_80219718(void *arg0) {
@@ -801,6 +803,18 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
         }
     }
     return this_;
+}
+
+extern "C" void fn_8021B944(void *arg0) {
+    u8 sp8[0x40];
+    if (*(void **)((u8 *)arg0 + 0x370) != 0) {
+        fn_8022EEF8(sp8, (s32)*(void **)((u8 *)arg0 + 0x370), fn_8022EDC4());
+        fn_8022ED00(sp8);
+    }
+    fn_80219660(arg0);
+    if (*(void **)((u8 *)arg0 + 0x370) != 0) {
+        fn_8022EDB8();
+    }
 }
 
 extern "C" void fn_8022A8E4(s32);
