@@ -1,5 +1,99 @@
 #include "types.h"
 #include <string.h>
+
+#pragma cplusplus on
+
+struct DummyVec2 {
+    f32 x;
+    f32 y;
+};
+
+class DummyItem {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual f32 getHit(const char *name);
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual DummyVec2 getLoc(const char *name);
+};
+
+class DummyArg1 {
+public:
+    virtual const char *getName();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
+    virtual void v14();
+    virtual void v15();
+    virtual void v16();
+    virtual void v17();
+    virtual void v18();
+    virtual void v19();
+    virtual void v20();
+    virtual void v21();
+    virtual DummyItem *getItem(s32 index);
+};
+
+struct DummyRecordObj {
+    u8 pad[0x18];
+    f32 f18;
+};
+
+struct DummyRecord {
+    DummyRecordObj *obj;
+    f32 x;
+    f32 y;
+    f32 z;
+    f32 hit;
+    u8 flag;
+    u8 pad[3];
+};
+
+struct DummyEntry {
+    s32 id;
+    u8 active;
+    u8 pad5[3];
+    f32 f8;
+    f32 fC;
+    f32 f10;
+    s32 recordStart;
+    s32 recordCount;
+    u8 byte1C;
+    u8 byte1D;
+    u8 pad1E[2];
+};
+
+struct DummyManager {
+    DummyRecord *records;
+    s32 recordCount;
+    u8 pad8[0x1D4CC - 8];
+    DummyEntry *entries;
+    s32 entryCount;
+    u8 pad1D4D4[0x1E158 - 0x1D4D4];
+    u8 flag1E158;
+};
+
+#pragma cplusplus reset
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -71,6 +165,62 @@ void fn_80167EE0(s32 *arg0) {
     *arg0 = 0;
 }
 
+void fn_80168104(void) {
+    extern void *fn_802C86DC(void);
+    extern f64 fn_8002F234(f32);
+    extern u32 fn_802C9994(u32);
+    extern u32 fn_802C9950(u32);
+    extern void fn_802C9900(f32);
+    extern void fn_802C9904(void);
+    extern void fn_802C744C(void *, void *);
+    extern s32 lbl_8055E354;
+    extern u8 lbl_8042FF60[];
+    extern f32 lbl_8056193C;
+    extern f32 lbl_80561940;
+    extern f64 lbl_80561948;
+    u8 *root = (u8 *)&lbl_8055E354;
+    u8 *data = (u8 *)fn_802C86DC();
+    f32 x = *(f32 *)(data + 0x24);
+    f32 y = *(f32 *)(data + 0x2C);
+    s32 i = 0;
+    s32 offset = 0;
+    while (i < *(s32 *)(root + 0x1D4D0)) {
+        u8 *entry = (u8 *)*(u32 *)(root + 0x1D4CC) + offset;
+        if (entry[4] != 0 && (entry[0x1C] == 0 ||
+            (f32)fn_8002F234((y - *(f32 *)(entry + 0xC)) * (y - *(f32 *)(entry + 0xC)) +
+             (x - *(f32 *)(entry + 8)) * (x - *(f32 *)(entry + 8))) -
+             *(f32 *)(entry + 0x10) < lbl_8056193C)) {
+            s32 j = 0;
+            while (j < *(s32 *)(entry + 0x18)) {
+                u8 *records = (u8 *)*(u32 *)root;
+                u8 *record = records + (*(s32 *)(entry + 0x14) + j) * 0x18;
+                void *obj = *(void **)record;
+                if (obj != 0 && *(s32 *)((u8 *)obj + 0x10) != 0 && record[0x14] == 0) {
+                    u32 token = *(u32 *)((u8 *)obj + 8);
+                    u32 a = fn_802C9994(token);
+                    u32 b = fn_802C9950(((token >> 1) & 0x7F00) | ((token >> 1) & 0x7F) |
+                        ((token >> 1) & 0x7F0000) | ((token >> 1) & 0x7F000000));
+                    fn_802C9900(((f32)(token >> 24) - (f32)lbl_80561948) / lbl_80561940);
+                    {
+                        s32 index = ((*(s32 *)record / 12) & 0xF) * 0x30;
+                        u8 *out = lbl_8042FF60 + index;
+                        *(f32 *)(out + 0x24) = *(f32 *)(record + 4);
+                        *(f32 *)(out + 0x28) = *(f32 *)(record + 8);
+                        *(f32 *)(out + 0x2C) = *(f32 *)(record + 0xC);
+                        fn_802C744C(*(void **)(*(u32 *)record + 0x10), out);
+                    }
+                    fn_802C9994(a);
+                    fn_802C9950(b);
+                    fn_802C9904();
+                }
+                j++;
+            }
+        }
+        offset += 0x20;
+        i++;
+    }
+}
+
 void fn_80168328(void) {
     extern s32 lbl_8055E354;
     extern void fn_801678D8(void);
@@ -110,14 +260,15 @@ extern char lbl_803301B8[];
 extern s32 lbl_8055E354;
 void fn_801688B4(s32 arg0) {
     s32 i = 0;
-    s32 j = 0;
-    while (i < *(s32 *)(&lbl_8055E354 + 0x1D4D0)) {
-        s32 *p = *(s32 **)(&lbl_8055E354 + 0x1D4CC) + j;
-        if (arg0 == *p) {
-            *(char *)(p + 4) = 1;
+    s32 offset = 0;
+    u8 *base = (u8 *)(u32)lbl_8055E354 + 0x20000;
+    while (i < *(s32 *)(base - 0x2B30)) {
+        s32 *record = (s32 *)(*(s32 *)(base - 0x2B34) + offset);
+        if (arg0 == *(s32 *)((u8 *)record + offset)) {
+            *((u8 *)record + 4) = 1;
         }
-        j += 0x20;
-        i += 1;
+        offset += 0x20;
+        i++;
     }
 }
 
@@ -150,31 +301,19 @@ s32 fn_80169108(s32 arg0, s32 arg1) {
 }
 
 s32 fn_801698B8(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    s32 a;
-    s32 b;
-    s32 min;
-    s32 max;
-    s32 mid;
-
-    a = arg2 - arg0;
-    if (arg0 > a) {
-        a = arg0;
-    }
-    b = arg3 - arg1;
-    if (arg1 > b) {
-        b = arg1;
-    }
-    min = a;
-    max = b;
-    if (b < a) {
-        min = b;
-        max = a;
-    }
-    mid = (min + max) >> 1;
-    if (mid >= 5) {
-        return 1;
-    }
-    if (mid >= 3) {
+    s32 temp_r0, temp_r0_2, temp_r0_3, var_r3, var_r4, var_r5;
+    var_r3 = arg0;
+    var_r4 = arg1;
+    temp_r0 = arg2 - var_r3;
+    if (var_r3 > temp_r0) var_r3 = temp_r0;
+    temp_r0_2 = arg3 - var_r4;
+    if (var_r4 > temp_r0_2) var_r4 = temp_r0_2;
+    var_r5 = var_r3;
+    if (var_r4 < var_r3) var_r5 = var_r4;
+    if (var_r4 > var_r3) var_r3 = var_r4;
+    temp_r0_3 = var_r3 + ((s32)(((u32)var_r5 >> 31) + var_r5) >> 1);
+    if (temp_r0_3 >= 3) {
+        if (temp_r0_3 >= 5) return 1;
         return 2;
     }
     return 3;
