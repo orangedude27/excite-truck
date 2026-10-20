@@ -9,6 +9,8 @@ extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
 extern "C" u8 fn_8010A33C(void);
+extern "C" s32 fn_80109040(s32, s32);
+extern "C" s32 fn_80128668(void);
 extern "C" void* fn_80108FFC(void*, const void*);
 extern "C" const char lbl_803290E8[];
 extern "C" const char lbl_803293A8[];
@@ -93,6 +95,21 @@ extern "C" void* fn_80107FE4(void* arg0, const void* arg1) {
     return arg0;
 }
 
+extern "C" void* memcpy(void*, const void*, unsigned long);
+#pragma push
+#pragma scheduling off
+extern "C" void* fn_80108FFC(void* arg0, const void* arg1) {
+    struct Struct12 {
+        u32 a, b, c;
+    };
+    *(const void* volatile*)arg0 = lbl_80329400;
+    *(Struct12*)((char*)arg0 + 4) = *(const Struct12*)(const void*)lbl_80329140;
+    *(const void**)arg0 = lbl_803293A8;
+    *(u32*)((char*)arg0 + 0x10) = 0;
+    *(u32*)((char*)arg0 + 0x14) = 0;
+    return arg0;
+}
+#pragma pop
 extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
     extern s32 fn_80128668(void);
     if (arg0 != 0 && arg1 > 0) {
