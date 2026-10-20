@@ -276,6 +276,10 @@ void fn_801D5A1C(s32 arg0) {
     fn_801D59C8(arg0, 1);
 }
 
+void fn_801D5A24(s32 arg0) {
+    fn_801D59C8(arg0, 4);
+}
+
 u8 fn_801D5A68(void *arg0) {
     void **entries = lbl_804423A4[0];
     s32 count = *(s32 *)((u8 *)lbl_804423A4 + 4);
