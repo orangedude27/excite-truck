@@ -10,7 +10,6 @@ extern void fn_80128668(void *);
 #pragma cplusplus on
 extern "C" {
 struct F801B4610 {
-    virtual void f0() = 0;
     virtual void f2(int) = 0;
 };
 }
