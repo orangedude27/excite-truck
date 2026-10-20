@@ -23,8 +23,7 @@ void fn_801D0CFC(void) {
     for (i = lbl_8055E8E8 - 1; i >= 0; i--) {
         void *obj = lbl_80438818[i];
         if (obj != 0) {
-            register void **vtable = *(void ***)obj;
-            ((void (*)(void *, int))vtable[2])(obj, 1);
+            ((void (*)(void *, int))(*(void **)((char *)*(void **)obj + 8)))(obj, 1);
         }
     }
     lbl_8055E8E8 = 0;
@@ -59,12 +58,13 @@ void fn_801D0E0C(void) {
         cb(obj);
     }
 }
-
+#pragma scheduling off
 void fn_801D0E70(void) {
     int i;
     for (i = 0; i < lbl_8055E8E8; i++) {
         void *obj = lbl_80438818[i];
-        ((void (*)(void *))(*(void ***)obj)[6])(obj);
+        register void **vtable = *(void ***)obj;
+        ((void (*)(void *))vtable[6])(obj);
     }
 }
 
@@ -77,7 +77,20 @@ void fn_801D0ED4(void) {
     }
 }
 #pragma scheduling on
-void fn_801D0F38(void) {
+#pragma cplusplus on
+class Dummy_801D0F38 {
+public:
+    void f0() {}
+    void f1() {}
+    void f2() {}
+    void f3() {}
+    void f4() {}
+    void f5() {}
+};
+#pragma cplusplus off
+
+#pragma cplusplus on
+extern "C" void fn_801D0F38(void) {
     int i;
     for (i = 0; i < lbl_8055E8E8; i++) {
         void *obj = lbl_80438818[i];
