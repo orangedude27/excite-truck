@@ -87,9 +87,9 @@ void fn_801D47F8(void* alarm) {
 #pragma cplusplus on
 extern "C" void fn_801D483C(void) {
     lbl_8055E954 = 0;
-    TObj34 *obj = *(TObj34 **)lbl_804422F0;
+    TObjD1Arg *obj = *(TObjD1Arg **)lbl_804422F0;
     if (obj != 0) {
-        obj->d2();
+        obj->d0(1);
     }
     fn_801D5730();
 }
