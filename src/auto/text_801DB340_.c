@@ -287,7 +287,6 @@ int fn_801DDA84(int *arg0, int arg1, float farg0, float farg1, float farg2) {
 
 extern float lbl_80562B70;
 extern float lbl_80562BB8;
-extern int fn_801DC258(float *, int *, short *, float, float);
 extern int fn_80128670(void);
 extern int fn_801D049C(void);
 extern int lbl_80446F08[];
