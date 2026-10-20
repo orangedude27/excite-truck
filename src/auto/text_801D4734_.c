@@ -4,6 +4,10 @@ extern int fn_80128668(void);
 extern char lbl_8033890C[];
 extern int lbl_8055E3C4;
 extern void fn_801D5328(int, int);
+void fn_801D4904(void) {
+    fn_801D5A24();
+}
+
 void fn_801D4908(void) {
     fn_801D5A2C();
 }
