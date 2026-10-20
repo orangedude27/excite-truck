@@ -5,6 +5,18 @@ extern void OSExceptionVector(void);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+void __OSGetIOSRev(char *rev) {
+    u32 version = *(u32 *)0xC0003144;
+    u32 date = *(u32 *)0xC0003140;
+    rev[3] = date;
+    rev[0] = date >> 24;
+    rev[1] = date >> 16;
+    rev[2] = date >> 8;
+    rev[4] = version >> 16;
+    rev[5] = ((version >> 8) & 0xF) + (((version >> 12) & 0xF) * 10);
+    *(u16 *)(rev + 6) = (u8)version + 0x7D0;
+}
+
 void __OSDBIntegrator(void) {
     volatile u32 *p = (volatile u32 *)0x48;
     * (volatile u32 *)0x4C = __builtin_return_address(0);
@@ -12,11 +24,11 @@ void __OSDBIntegrator(void) {
     __builtin_unreachable();
 }
 
-void __OSDBJump(void) {
-    __OSDBJUMPDEST();
+extern void __OSDBJump(void) {
+    OSExceptionVector();
 }
 
-extern void *OSExceptionTable_8055D9D0[256];
+extern void **OSExceptionTable_8055D9D0;
 #pragma small_data on
 void *__OSGetExceptionHandler(s32 arg0) {
     return OSExceptionTable_8055D9D0[(u8)arg0];
