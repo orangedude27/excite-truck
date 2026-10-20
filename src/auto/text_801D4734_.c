@@ -242,6 +242,11 @@ int fn_801D77C0(int arg0) {
     return arg0;
 }
 
+void fn_801D77D8(void *arg0) {
+    void **vtable = *(void ***)arg0;
+    ((void (*)(void *))vtable[0xD])(arg0);
+}
+
 void fn_801D77E8(void) {
 }
 
@@ -372,6 +377,11 @@ int fn_801D873C(int arg0) {
 
 void fn_801D8938(void) {
 
+}
+
+int fn_801D8AA4(void *arg0) {
+    extern float lbl_80562ADC;
+    return *(float *)((char *)arg0 + 0x30) < lbl_80562ADC;
 }
 
 void fn_801D8C0C(void *arg0) {
