@@ -1130,12 +1130,11 @@ int fn_80286950(void **arg0) {
     return (int)a <= cmp(arg0);
 }
 
-void fn_802869B8(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 0x1C);
-    volatile void * volatile *vtable = (volatile void * volatile *)*(void ***)obj;
-    ((void (*)(void *))vtable[19])(obj);
+#pragma cplusplus on
+extern "C" void fn_802869B8(void* arg0) {
+    ((ebi::title::TPlaneObj*)arg0)->m_sub->v17();
 }
-
+#pragma cplusplus off
 int fn_802869CC(void *arg0, int arg1) {
     extern double lbl_80564220;
     void *p;
