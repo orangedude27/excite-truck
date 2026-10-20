@@ -780,6 +780,10 @@ void fn_80007AC4(void *arg0) {
 
 u32 fn_80007B84(void) { return 1; }
 
+s32 fn_80007B8C(void) {
+    return fn_8000C630(0x20, -1);
+}
+
 s32 fn_80007B98(s32 arg0, s32 arg1) {
     if (arg1 != 0) return 0;
     return fn_80006580();
