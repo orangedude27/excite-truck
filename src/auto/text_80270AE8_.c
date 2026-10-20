@@ -294,6 +294,10 @@ void fn_802733C8(void) {
 void fn_802733F0(void) {
 }
 
+void fn_80273490(void) {
+    fn_80271624();
+}
+
 int fn_80273494(int arg0) {
     switch (arg0) {
     case 11: return 0;
