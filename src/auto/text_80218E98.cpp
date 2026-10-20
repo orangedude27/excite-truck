@@ -2561,17 +2561,20 @@ extern "C" s32 fn_802268A0(void *arg0, s32 arg1) {
 }
 
 extern "C" u32 fn_802268E8(void *arg0) {
+    class Obj7 { public: virtual s32 f0(); virtual s32 f1(); virtual s32 f2(); virtual s32 f3(); virtual s32 f4(); virtual s32 f5(); virtual s32 f6(); virtual s32 f7(); };
     s32 *p;
     s32 eq;
     u32 result;
-    void **obj;
+    void *obj;
     p = *(s32 **)((char *)arg0 + 0x264);
     if (p == 0) return 0;
     eq = (*(s32 *)((char *)arg0 + 0x260) == *p);
-    result = eq + 2;
-    if (*(u8 *)((char *)arg0 + 0x18) == 0) result -= 2;
-    obj = *(void ***)((char *)arg0 + 0x244);
-    if (((s32 (*)(void **))(*(void ***)obj)[7])(obj) == 3 && result == 3) result = 1;
+    if (*(u8 *)((char *)arg0 + 0x18) != 0)
+        result = (u32)(eq != 0) + 2;
+    else
+        result = (u32)(eq != 0);
+    obj = *(void **)((char *)arg0 + 0x244);
+    if (((Obj7 *)obj)->f5() == 3 && result == 3) result = 1;
     if (*(u8 *)((char *)arg0 + 0x1B) == 0) result = 4;
     return result;
 }
