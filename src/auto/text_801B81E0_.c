@@ -355,11 +355,11 @@ extern "C" void fn_801B898C(void) {
 #pragma cplusplus off
 extern int fn_80128668(void);
 extern void* lbl_8055E744;
-void fn_801B89A0(void) {
-    void **vtable = *(void ***)lbl_8055E744;
-    ((void (*)(void))vtable[29])();
+#pragma cplusplus on
+extern "C" void fn_801B89A0(void) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f27();
 }
-
+#pragma cplusplus off
 void fn_801B89B4(void) {
     void *obj = lbl_8055E744;
     void **vtable = *(void ***)obj;
