@@ -817,9 +817,11 @@ void fn_801B3084(void *arg0, void *arg1, s32 arg2, s32 arg3) {
 extern void fn_802E317C(const char *, s32, s32);
 extern char lbl_80335BD8[];
 extern void fn_801B196C(s32, s32);
-void fn_801B30C0(void) {
+#pragma dont_inline on
+void fn_801B30C0(s32 arg0, s32 arg1, s32 arg2) {
+    fn_801B18B8((void *)((u8 *)lbl_8055E684 + (arg0 << 7)), arg1, arg2);
 }
-
+#pragma dont_inline reset
 void fn_801B30D0(s32 arg0) {
     fn_801B196C((s32)((u8 *)lbl_8055E684 + (arg0 << 7)), (s32)lbl_8055E684);
 }
