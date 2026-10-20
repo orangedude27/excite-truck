@@ -71,4 +71,4 @@ unsigned char fn_8019305C(void *arg0) {
 unsigned char fn_80193064(void *arg0) {
     return *((unsigned char *)arg0 + 0x13);
 }
-#include <types.h>
+
