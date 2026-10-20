@@ -163,6 +163,7 @@ extern void fn_8000D838(u32*);
 extern u8* fn_80012820(int);
 extern u8* fn_80012870(int, int);
 extern int fn_8002B130(const char*, const char*);
+extern int fn_80004F00(int* eventIndex, int* subIndex, const char* name);
 DECL_SECTION(".sdata") extern const char lbl_80558918[];
 DECL_SECTION(".sdata") extern u32 lbl_80558920[];
 
