@@ -41,26 +41,6 @@ extern float lbl_80434908[];
 extern float lbl_80434950[];
 extern float lbl_804348E8[];
 extern unsigned char lbl_8055E4F4;
-#pragma cplusplus on
-struct Sub1_80181A48 {
-    char pad[0x1c];
-    float m_f;
-    float get() const { return m_f; }
-};
-struct Sub2_80181A48 {
-    char pad[0x34];
-    float m_f;
-    float get() const { return m_f; }
-};
-struct Big_80181A48 {
-    char pad0[0x20];
-    Sub1_80181A48 m_sub0;
-    char pad1[0x48 - 0x20 - sizeof(Sub1_80181A48)];
-    Sub1_80181A48 m_sub1;
-    char pad2[0x68 - 0x48 - sizeof(Sub1_80181A48)];
-    Sub2_80181A48 m_sub2;
-};
-#pragma cplusplus off
 extern float lbl_80561CC4;
 extern float lbl_80561CC8;
 extern void fn_8018185C(float *, float, float, float, float, float, float);
