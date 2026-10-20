@@ -89,9 +89,10 @@ extern "C" void fn_801FCAAC(void* arg0, float farg0) {
     }
 }
 
-void fn_801FCAC0(void* arg0) {
-    if (*(int*)((char*)arg0 + 4) != 0)
+extern "C" void fn_801FCAC0(void* arg0) {
+    if (*(void**)((char*)arg0 + 4) != 0) {
         fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
+    }
 }
 
 void fn_801FCAE0(void* arg0, void* arg1) {
