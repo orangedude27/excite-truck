@@ -57,6 +57,7 @@ extern s32 fn_801E866C(s32);
 extern s32 fn_8014CA48(s32, s32, s32);
 extern s32 fn_8014AFD4(void *, void *, s32);
 extern s32 fn_801CB7BC(s32);
+extern void *fn_802ADE60(void **, int);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void *fn_801B2ED0(s32);
