@@ -224,22 +224,19 @@ struct Dummy_80244440 {
     virtual void f22();
     virtual void f23();
 };
-#pragma pop
-s32 fn_80244440(void *arg0, s32 arg1) {
+#pragma cplusplus on
+extern "C" s32 fn_80244440(void *arg0, s32 arg1) {
     switch (arg1) {
     case 0x125: fn_80243764((u8 *)arg0 + 0x30, (u8 *)arg0 + 0x2C, -1, 0); goto yes;
     case 0x127: fn_80243764((u8 *)arg0 + 0x30, (u8 *)arg0 + 0x2C, 1, 0); goto yes;
     case 0x126: fn_80243764((u8 *)arg0 + 0x30, (u8 *)arg0 + 0x2C, 0, -1); goto yes;
     case 0x128: fn_80243764((u8 *)arg0 + 0x30, (u8 *)arg0 + 0x2C, 0, 1); goto yes;
-    case 0xD: {
-        register void **vtable = *(void ***)arg0;
-        ((void (*)(void *))vtable[0x18])(arg0);
+    case 0xD:
+        ((Dummy_80244440 *)arg0)->f22();
         goto yes;
-    }
     case 0x1B:
         if (fn_80244558(arg0) > 0) {
-            register void **vtable = *(void ***)arg0;
-            ((void (*)(void *))vtable[0x19])(arg0);
+            ((Dummy_80244440 *)arg0)->f23();
             goto yes;
         }
         return 0;
@@ -248,7 +245,7 @@ s32 fn_80244440(void *arg0, s32 arg1) {
 yes:
     return 1;
 }
-
+#pragma cplusplus off
 u8 fn_80244550(void *arg0) {
     return *((u8 *)arg0 + 0x28);
 }
