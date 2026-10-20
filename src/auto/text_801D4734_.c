@@ -149,6 +149,10 @@ int fn_801D6ED0(void) {
     return (int)lbl_80338878;
 }
 
+int fn_801D6EDC(int arg0) {
+    return ((int *)arg0)[1];
+}
+
 void fn_801D6FA0(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
