@@ -210,24 +210,15 @@ void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
 }
 
 extern char lbl_80347B30[];
-#pragma cplusplus on
-class Dummy_8027C0D0 {
-public:
-    virtual void d0();
-    virtual void d1();
-    virtual void d2();
-    virtual void d3();
-    virtual void d4();
-    virtual long f5(void *, char **);
-};
-#pragma cplusplus on
-extern "C" void fn_8027C0D0(void *arg0, long arg1, void **arg2) {
-    Dummy_8027C0D0 *obj = (Dummy_8027C0D0 *)arg2;
+void fn_8027C0D0(void *arg0, long arg1, void **arg2) {
+    void **vtable;
+    long (*method)(void *, char **);
     *(long *)arg0 = arg1;
     *(long *)((char *)arg0 + 8) = (long)arg2;
-    *(long *)((char *)arg0 + 4) = obj->f5(arg2, (char **)&lbl_80347B30);
+    vtable = *(void ***)arg2;
+    method = (long (*)(void *, char **))vtable[5];
+    *(long *)((char *)arg0 + 4) = method(arg2, (char **)&lbl_80347B30);
 }
-#pragma cplusplus off
 long *fn_8027C120(long arg0, long arg1) {
     long index = 0;
     long offset = 0;
