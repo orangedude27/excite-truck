@@ -170,11 +170,11 @@ void fn_8019330C(void *out, void *in, int arg2) {
 }
 #pragma dont_inline reset
 
+#pragma scheduling off
 void fn_801933FC(void *arg0, void *arg1) {
-    fn_8019330C(arg1, arg1, (int)(*(char **)((char *)arg0 + 0x294) + 0x70));
+    fn_8019330C(arg1, arg1, (arg0 = *(void **)((char *)arg0 + 0x294), (int)((char *)arg0 + 0x70)));
 }
-
-#pragma processor 750
+#pragma scheduling reset
 int fn_80193524(void *arg0, void *arg1) {
     extern float PSVECDotProduct(const void *, const void *);
     extern float lbl_8056215C;
