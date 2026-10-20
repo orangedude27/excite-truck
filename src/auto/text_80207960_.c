@@ -155,8 +155,8 @@ void fn_80207DE0(void* arg0) {
         void** temp_r3=(void**)((signed char*)var_r30+0x94);
         if (*temp_r3 != 0) {
             void* obj=*temp_r3;
-            void (*fn)(void*, signed long) = *(void (**)(void*, signed long))(*(void***)obj + 2);
-            fn(obj, 1);
+            void** vt = *(void***)obj;
+            ((void (*)(void*, signed long))vt[2])(obj, 1);
         }
         *temp_r3=(void*)var_r31; var_r30=(void*)(((signed char*)var_r30)+4); var_r29+=1;
     }
@@ -218,14 +218,17 @@ void fn_80208998(void) {
 	fn_80208858();
 }
 
-void fn_8020899C(void* arg0, void* arg1) {
-    typedef struct {
-        char pad[0xc];
-        void (*f)(void*);
-    } Vt_8020899C;
-    ((Vt_8020899C*)*(void**)arg1)->f(arg1);
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8020899C(void* arg0, void* arg1) {
+    struct Obj {
+        virtual void v0();
+        virtual void v1();
+    };
+    ((Obj*)arg1)->v1();
 }
-
+#pragma cplusplus reset
+#pragma pop
 #pragma push
 #pragma cplusplus on
 extern "C" void fn_802089B0(void* self) {
