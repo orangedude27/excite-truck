@@ -1,6 +1,18 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma cplusplus on
+class D_801A520C {
+public:
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void d4();
+    virtual int d5();
+};
+#pragma cplusplus reset
+
 void fn_8018B0D8(int *, int *);
 void fn_80189CB4(void);
 void fn_8018AF00(void);
