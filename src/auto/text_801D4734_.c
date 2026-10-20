@@ -301,6 +301,9 @@ int fn_801D873C(int arg0) {
     return 0;
 }
 
+void fn_801D8C18(void) {
+}
+
 void fn_801D8C94(void) {
 }
 
