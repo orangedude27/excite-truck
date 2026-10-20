@@ -1037,6 +1037,13 @@ extern "C" f32 fn_801A2CA4(void* arg0) {
     return *(f32*)((u8*)arg0 + 0x178);
 }
 
+extern "C" void fn_801A2CAC(void *arg0) {
+    extern s32 lbl_8055E598;
+    extern void fn_801E3FC8(s32, s32, s32, f32);
+    s32 temp_r5 = *(s32 *)((u8 *)arg0 + 0xC);
+    fn_801E3FC8(temp_r5 + 0x24, lbl_8055E598, temp_r5, *(f32 *)((u8 *)arg0 + 0x24));
+}
+
 extern void fn_8019ECC4();
 extern char lbl_803337C8;
 extern void fn_801E3FC8(s32, s32, s32, f32);
