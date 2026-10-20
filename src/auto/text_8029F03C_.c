@@ -22,8 +22,9 @@ extern int lbl_8055F81C;
 extern unsigned char lbl_804B6E70[];
 extern int fn_800241DC(int *, void *, int, int, void *);
 extern int stricmp(const char *, const char *);
-extern int fn_8029FDF0(int *, int *);
-extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
+  extern int fn_8029FDF0(int *, int *);
+  extern void fn_8028E528(void);
+  extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
 
 extern void qsort(void *, unsigned int, unsigned int, int (*)(const void *, const void *));
 extern int fn_8028E3F4(void);
