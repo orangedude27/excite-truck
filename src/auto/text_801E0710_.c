@@ -10,6 +10,20 @@ extern f32 lbl_80562C7C;
 
 extern void *lbl_8055EA10;
 
+#pragma cplusplus on
+class Dummy801E1520 {
+public:
+    void d0() {}
+    void d1() {}
+    void d2() {}
+    void d3() {}
+    void d4() {}
+    void d5() {}
+    void d6() {}
+    void d7() {}
+};
+#pragma cplusplus off
+
 extern void NWC24Data_Init_801E1028(void *);
 extern void *fn_801E07E8(void *, s32);
 extern void fn_8002F53C(void *, void *, void *, s32, s32);
@@ -93,9 +107,10 @@ float fn_801E0EE4(void *arg0, void *arg1) {
 #pragma scheduling on
 void fn_801E0F34(int arg0) {
     void *ptr;
-    int value = arg0;
-    int size = (arg0 << 3) + 8;
-    ptr = fn_801284E8((void *)lbl_8032C108, size);
+    int value;
+    value = arg0;
+    arg0 = (arg0 << 3) + 8;
+    ptr = fn_801284E8((void *)&lbl_8032C108, arg0);
     *(int *)((char *)ptr + 4) = value;
     *(int *)ptr = value;
 }
@@ -189,14 +204,10 @@ s32 fn_801E137C(void *arg0) { return ((s32 *)arg0)[1]; }
 s32 fn_801E1510(s32 *arg0, s32 arg1) { return *arg0 + arg1 * 0x1C; }
 
 void fn_801E1520(void) {
-    struct Obj { void **vtable; };
     void *obj = lbl_8055EA10;
     if (obj != 0) {
-        if (obj != 0) {
-            void (*call)(void *, s32);
-            call = (void (*)(void *, s32))((struct Obj *)obj)->vtable[7];
-            call(obj, 1);
-        }
+        if (obj != 0)
+            ((void (*)(void *, s32))(*(void ***)obj)[7])(obj, 1);
         lbl_8055EA10 = 0;
     }
 }
@@ -243,6 +254,59 @@ void fn_801E168C(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0x5C) = x;
     *(f32 *)((u8 *)arg0 + 0x60) = y;
 }
+
+extern void *fn_8017960C(void);
+extern s32 fn_801E85A4(void);
+extern f32 lbl_80562C78, lbl_80562C7C, lbl_80562C8C, lbl_80562CA0, lbl_80562CA4;
+void fn_801E1710(void *arg0, void *arg1) {
+    f32 initialA = lbl_80562C78;
+    f32 initialB = lbl_80562C7C;
+    f32 threshold = lbl_80562CA0;
+    f32 decrement = lbl_80562CA4;
+    f32 reset = lbl_80562C8C;
+    s32 i = 0;
+    u8 *base = (u8 *)arg0;
+    u8 *row = (u8 *)arg0;
+
+    while (i < fn_801E85A4()) {
+        s32 value = *(s32 *)(base + 0x6C);
+        if (value != *(s32 *)(row + 0x0C)) {
+            *(u8 *)(row + 0x10) = 0;
+            *(s32 *)(row + 0x1C) = 0;
+            *(s32 *)(row + 0x20) = 0;
+            *(f32 *)(row + 0x14) = initialA;
+            *(f32 *)(row + 0x18) = initialB;
+            *(s32 *)(row + 0x0C) = value;
+        }
+        if (*(s32 *)(row + 0x0C) != -1) {
+            void *obj = fn_8017960C();
+            f32 current = *(f32 *)((u8 *)obj + 0x258C);
+            int active = current > threshold && *(u8 *)((u8 *)obj + 0x259D) != 0;
+            f32 amount;
+            if (active && current > *(f32 *)(row + 0x14))
+                *(f32 *)(row + 0x18) = reset;
+            else {
+                amount = *(f32 *)(row + 0x18) - decrement;
+                *(f32 *)(row + 0x18) = amount;
+            }
+            *(f32 *)(row + 0x14) = current;
+            if (*(f32 *)(row + 0x18) > initialB) {
+                *(s32 *)(row + 0x20) = -1;
+                *(s32 *)(row + 0x1C) = -0x100;
+            } else if (*(u8 *)(row + 0x10)) {
+                *(s32 *)(row + 0x20) = -1;
+                *(s32 *)(row + 0x1C) = 0xFFFF0000;
+            } else {
+                *(s32 *)(row + 0x20) = 0xFF7F7F7F;
+                *(s32 *)(row + 0x1C) = 0;
+            }
+        }
+        base += 4;
+        row += 0x18;
+        i++;
+    }
+}
+
 #pragma pop
 void fn_801E1868(void) {
 
