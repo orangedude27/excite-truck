@@ -2544,6 +2544,14 @@ extern "C" s32 fn_800BB4D4(s32 a,s32 b,s32 c,s32 d) {
     return fn_800BB81C(a,b,c,d,0,0);
 }
 
+extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" s32 lbl_8055DD6C;
+extern "C" s32 *lbl_8055DD70;
+extern "C" void *lbl_80407560;
+extern "C" const char lbl_8031B838[];
+extern "C" s32 fn_800BC2EC(void *, s32 *);
+extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
+
 extern "C" void fn_800BBCB4(void* context) {
     *(s32*)((u8*)context + 0x24) = 0;
     IOS_Close(*(s32*)context);
