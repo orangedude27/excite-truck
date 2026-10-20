@@ -36,8 +36,8 @@ void fn_801D48F8(void) {
     fn_801D592C();
 }
 
-void fn_801D48FC(void) {
-    fn_801D5A14();
+void fn_801D48FC(int arg0) {
+    fn_801D5A14(arg0);
 }
 
 void fn_801D4904(void) {
