@@ -1241,13 +1241,11 @@ int fn_8028740C(void* arg0) {
     return 1;
 }
 
-void fn_802874A0(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 4);
-    register void** vtable = *(void***)obj;
-    register void (*fn)(void*) = (void (*)(void*))vtable[11];
-    fn(obj);
+#pragma cplusplus on
+extern "C" void fn_802874A0(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v9();
 }
-
+#pragma cplusplus off
 void fn_802874B4(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 4);
     void* (*vtable)[13] = (void* (*)[13])*(void***)obj;
