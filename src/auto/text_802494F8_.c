@@ -17,6 +17,10 @@ static inline int has_sound_entry(int *key) {
 }
 static inline int find_sound_entry(int id);
 typedef signed long s32;
+typedef signed char s8;
+typedef unsigned char u8;
+typedef int M2C_UNK;
+#define M2C_FIELD(p,T,o) (*(T*)((u8*)(p)+(o)))
 typedef s32 (*UnkFunc)(s32);
 extern s32 lbl_802FA4B0[];
 extern s32 fn_80257BB8(void *, s32);
@@ -145,12 +149,18 @@ void *fn_8024A204(void *arg0, s32 arg1) {
 }
 
 void *fn_8024A268(void *arg0, s32 arg1) {
+    volatile s32 *p;
+    volatile s32 test;
     if (arg0 != 0) {
-        *(s32 *)((char *)arg0 + 0x10) = 0;
-        *(s32 *)((char *)arg0 + 0x18) = -1;
-        *(s32 *)((char *)arg0 + 0x1C) = 0;
-        if (arg1 > 0) {
+        p = (volatile s32 *)arg0;
+        p[4] = 0;
+        test = arg1;
+        p[6] = -1;
+        if (test > 0) {
+            p[7] = 0;
             fn_80128668(arg0);
+        } else {
+            p[7] = 0;
         }
     }
     return arg0;
@@ -159,8 +169,9 @@ void *fn_8024A268(void *arg0, s32 arg1) {
 void fn_8024A2BC(void *arg0, s32 arg1, s32 arg2) {
     s32 count = *(s32 *)((char *)arg0 + 0x14);
     char *entry = (char *)arg0;
-    s32 index;
-    for (index = 0; index < count; index++) {
+    s32 index = 0;
+    if (count <= 0) return;
+    for (; index < count; index++) {
         if (arg1 == *(s32 *)(entry + 0x20) && arg2 == *(s32 *)(entry + 0x24)) {
             *(s32 *)((char *)arg0 + 0x10) = index;
             return;
@@ -180,14 +191,11 @@ void fn_8024A4C4(s32 arg0, s32 arg1, s32 arg2) {
 }
 
 s32 fn_8024A6A4(s32 *arg0) {
-    s32 result;
     if (fn_802411D4() == 0) {
-        *arg0 = -1;
-        result = 1;
-    } else {
-        result = 0;
+        *(volatile s32 *)arg0 = -1;
+        return 1;
     }
-    return result;
+    return 0;
 }
 
 void *fn_8024AC54(void *arg0, int arg1) {
@@ -229,8 +237,8 @@ int fn_8024B214(char *arg0, char *arg1) {
 }
 
 void fn_8024B544(void *arg0, char *arg1) {
-    s32 offset;
-    s32 index;
+    register s32 offset;
+    register s32 index;
     *(s32 *)((char *)arg0 + 0x280) = 0;
     if (arg1 != 0) {
         index = 0;
@@ -369,13 +377,12 @@ void *fn_8024B73C(void *arg0, const char *arg1, void *arg2) {
 void fn_8024B830(void *arg0, s32 arg1) {
     s32 offset;
     s32 index;
+    *(s32 *)((char *)arg0 + 0x9C) = -1;
     index = 0;
     offset = 0;
-    *(s32 *)((char *)arg0 + 0x9C) = -1;
     while (index < *(s32 *)((char *)arg0 + 0x1C)) {
-        if (arg1 == **(s32 **)((char *)*(s32 **)((char *)arg0 + 0x18) + offset)) {
+        if (arg1 == **(s32 **)((char *)*(s32 **)((char *)arg0 + 0x18) + offset))
             *(s32 *)((char *)arg0 + 0x9C) = index;
-        }
         offset += 4;
         index++;
     }
