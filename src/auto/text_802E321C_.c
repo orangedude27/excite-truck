@@ -212,16 +212,15 @@ extern "C" void fn_802E3A14(s32 arg0, s32 arg1) {
         virtual void v1();
         virtual void v2();
         virtual void v3();
-        virtual void v4();
         virtual void v5();
-        virtual void v6();
+        virtual void v4();
+        virtual void v8(s32);
         virtual void v7();
-        virtual void v8();
-        virtual void v9(s32);
+        virtual void v6();
     };
-    s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1ab);
+    register int obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1ab);
     s32 entry = *(s32 *)(obj + 0x24);
-    ((Obj *)entry)->v9(arg1);
+    ((Obj *)entry)->v8(arg1);
 }
 #pragma cplusplus off
 s32 fn_802E3A64(s32 arg0, s32 arg1, s32 arg2) {
