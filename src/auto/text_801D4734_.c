@@ -1127,8 +1127,11 @@ void fn_801D8620(void) {
 
 }
 
-void fn_801D8624(void *arg0) { void (*volatile *fn)(void *) = (void (*volatile *)(void *))(*(void ***)arg0 + 0x34/4); (*fn)(arg0); }
-
+#pragma cplusplus on
+extern "C" void fn_801D8624(void *arg0) {
+    ((TObj34 *)arg0)->v34();
+}
+#pragma cplusplus reset
 void fn_801D8710(s32 arg0) {
     if (arg0 != 0) {
         arg0 += 4;
