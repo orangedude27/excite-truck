@@ -288,14 +288,11 @@ extern "C" void fn_801B8820(void) {
 extern "C" void fn_801B8834(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f15();
 }
-#pragma cplusplus off
-void fn_801B8848(void) {
-    void *obj = lbl_8055E744;
-    void **vt = *(void ***)obj;
-    void *p = vt[13];
-    ((void (*)(void))p)();
+#pragma cplusplus on
+extern "C" void fn_801B8848(void) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f11();
 }
-
+#pragma cplusplus off
 void fn_801B885C(void *arg0) {
     register void *obj = lbl_8055E744;
     register void **vtable = *(void ***)obj;
