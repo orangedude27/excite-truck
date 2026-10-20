@@ -468,7 +468,7 @@ extern "C" void fn_80215298(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3, s32 arg4
 }
 
 #pragma dont_inline on
-void fn_802152C8(void) {
+extern "C" void fn_802152C8(void) {
 }
 #pragma dont_inline reset
 
