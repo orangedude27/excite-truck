@@ -2,6 +2,7 @@
 #pragma push
 #pragma small_data off
 extern void fn_802D6C48(void);
+extern void fn_802D6C44(void);
 #pragma pop
 void fn_802C5DF0(int*);
 extern int lbl_8055D008;
@@ -32,7 +33,8 @@ void fn_802C6C38(int);
 
 #pragma dont_inline on
 void *fn_802C5390(int arg0) {
-    return (arg0 * 16) + *(char **)((char *)lbl_804C139C + 8);
+    u32 base = *(u32 *)((char *)lbl_804C139C + 8);
+    return (void *)(base + (arg0 << 4));
 }
 
 void fn_802C53C4(void *a, void *b, int x, int y, signed char z) {
