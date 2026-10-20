@@ -100,16 +100,12 @@ void fn_8020D178(void) {
     lbl_8055EEA0 = (int)fn_80145E70(lbl_8033C6BC);
 }
 
-void fn_8020D1C8(void) {
-    void *obj;
-    void **vtable;
-    void (*method)(void *, int);
-    obj = (void *)lbl_8055EEA0;
+#pragma cplusplus on
+extern "C" void fn_8020D1C8(void) {
+    Dummy_8020D1C8 *obj = (Dummy_8020D1C8 *)lbl_8055EEA0;
     if (obj != 0) {
         if (obj != 0) {
-            vtable = *(void ***)obj;
-            method = (void (*)(void *, int))vtable[2];
-            method(obj, 1);
+            obj->d2(1);
         }
         lbl_8055EEA0 = 0;
     }
@@ -117,7 +113,7 @@ void fn_8020D1C8(void) {
     lbl_8055EE7C = 0;
     lbl_8055EE80 = 0;
 }
-
+#pragma cplusplus off
 void fn_8020D224(void) {
     float value;
     lbl_8055EE94 = 1;
