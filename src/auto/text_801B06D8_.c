@@ -32,7 +32,7 @@ extern u8 lbl_8055E690;
 extern void fn_802E317C(const char *, s32, s32);
 extern char lbl_80335BD8[];
 extern void fn_801B196C(s32, s32);
-extern void fn_801B18B8(s32, s32);
+extern void fn_801B18B8();
 extern void fn_801E89F4(s32);
 extern f32 lbl_805625B8;
 extern f32 lbl_80562618;
