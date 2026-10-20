@@ -23,22 +23,25 @@ extern int lbl_80498A48[];
 extern char lbl_8055C018[];
 void fn_8024C370(void) {}
 
+#pragma push
+#pragma use_lmw_stmw off
 void *fn_8024C374(void *arg0, int arg1) {
+    void *result = arg0;
     if (arg0 != 0) {
-        if ((char *)arg0 + 0x78 != 0) {
-            fn_802328D4(*(void **)((char *)arg0 + 0x78));
-            *(void **)((char *)arg0 + 0x78) = 0;
+        if ((int)arg0 + 0x78 != 0) {
+            fn_802328D4(((void **)arg0)[0x78 / 4]);
+            ((void **)arg0)[0x78 / 4] = 0;
         }
-        if ((char *)arg0 + 0x18 != 0 && (char *)arg0 + 0x4C != 0) {
-            fn_802328D4(*(void **)((char *)arg0 + 0x4C));
-            *(void **)((char *)arg0 + 0x4C) = 0;
+        if ((int)arg0 + 0x18 != 0 && (int)arg0 + 0x4C != 0) {
+            fn_802328D4(((void **)arg0)[0x4C / 4]);
+            ((void **)arg0)[0x4C / 4] = 0;
         }
         if (arg1 > 0)
             fn_80128668(arg0);
     }
-    return arg0;
+    return result;
 }
-
+#pragma pop
 void *fn_8024C3FC(void *arg0, int arg1) {
     if (arg0 != 0) {
         if (*(void **)((char *)arg0 + 0x34) != 0) {
@@ -112,16 +115,52 @@ int fn_8024C578(int arg0) {
     return result;
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+int fn_8027B8E4(int, int);
+int fn_8027B984(int, int);
+int fn_80214A9C(int);
+extern int fn_80214CB4();
+#pragma push
+#pragma use_lmw_stmw off
+void fn_8024C628(void) {
+    int i, j, all, player, offset, active;
+    player = fn_8000DA10();
+    offset = 0;
+    for (i = 0; i < 4; ++i) {
+        all = 1;
+        for (j = 0; j < 3; ++j) if (fn_8027B8E4(j, i) == 0) all = 0;
+        for (j = 0; j < 2; ++j) if (fn_8027B984(j, i) == 0) all = 0;
+        if (all) fn_80214A9C(i + 1); else fn_80214A9C(i + 0xB);
+        if (i == player) { active = offset + all; fn_80214CB4(active); }
+        offset += 2;
+    }
+}
+#pragma pop
+
 int fn_8024C6F4(void) {
+    int first;
     int result = 0;
-    int temp;
-    if (((int (*)())fn_8000DBAC)() != 0) {
-        temp = fn_80131234(lbl_80343F78);
-        fn_80131234(lbl_80343F68);
-        if (fn_80215214(temp, 0) != 0)
-            result = 1;
+    if (((int (*)())fn_8000DBAC)() == 0 || ((int (*)(int, int, int))fn_80215214)(fn_80131234(lbl_80343F68), (first = fn_80131234(lbl_80343F78)), 0) != 0) {
+        result = 1;
     }
     return result;
+}
+
+extern unsigned char lbl_8055F2D0;
+int fn_80214B44(int);
+int fn_80214CB4(void);
+void fn_8024CBF4(void) {
+    unsigned char *p = &lbl_8055F2D0;
+    int i = 0;
+    do {
+        if (*p == 0)
+            fn_80214B44(i + 1);
+        i++;
+        p++;
+    } while (i < 4);
+    fn_8000DA10();
+    fn_80214CB4();
 }
 
 void fn_8024CF38(void) {
@@ -143,9 +182,12 @@ void fn_8024CFB4(void) {
 }
 
 void fn_8024CFE8(void *arg0) {
-    int a = *(int *)((char *)arg0 + 0x10);
-    int b = fn_80232B70(*(int *)((char *)arg0 + 0x34));
-    *(float *)((char *)arg0 + 0x40) = (float)a / (float)b;
+    int numerator;
+    int denominator;
+    double bias = 4503601774854144.0;
+    numerator = *(int *)((char *)arg0 + 0x10);
+    denominator = fn_80232B70(*(int *)((char *)arg0 + 0x34));
+    *(float *)((char *)arg0 + 0x40) = (float)numerator / (float)denominator;
 }
 
 int fn_8024D054(void *arg0, int arg1) {
@@ -153,10 +195,9 @@ int fn_8024D054(void *arg0, int arg1) {
     switch (arg1) {
     case 0x6f:
         value = (int)strlen(*(char **)((char *)arg0 + 0x2c));
-        if (value < *(int *)((char *)arg0 + 0x30) + 1)
-            *(int *)((char *)arg0 + 0x30) = value;
-        else
-            *(int *)((char *)arg0 + 0x30) += 1;
+        if (value >= *(int *)((char *)arg0 + 0x30) + 1)
+            value = *(int *)((char *)arg0 + 0x30) + 1;
+        *(int *)((char *)arg0 + 0x30) = value;
         *(char *)((char *)arg0 + 0x48) = 1;
         return 1;
     case 0x20:
@@ -166,6 +207,45 @@ int fn_8024D054(void *arg0, int arg1) {
         return 1;
     default:
         return 0;
+    }
+}
+
+extern void fn_80230924(void *, float, float, float, float, float);
+extern void fn_80230C30(float *, float *, int, int);
+extern void fn_80234AFC(void *, const char *, int, float, float, int);
+extern float lbl_80563940, lbl_80563944, lbl_80563948, lbl_80563950, lbl_80563954;
+extern double lbl_80563938;
+extern signed char lbl_80344120[], lbl_80344148[];
+extern char lbl_8055C098[], lbl_8055C0A0[], lbl_8055C0A8[];
+void fn_8024D810(void *arg0) {
+    float x, y;
+    float dx, dy, width, height, right, bottom;
+    int row, col, base;
+    fn_80230C30(&x, &y, *(int *)((char *)arg0 + 4), *(int *)((char *)arg0 + 8));
+    dx = (float)*(int *)((char *)arg0 + 0xC) / lbl_80563948;
+    dy = (float)*(int *)((char *)arg0 + 0x10) * lbl_80563944;
+    width = (float)*(int *)((char *)arg0 + 0x64);
+    height = (float)*(int *)((char *)arg0 + 0x68);
+    x += dx * width;
+    y -= dy * height;
+    fn_80230924((void *)0xFFAF7F00, x, y, x + dx, y - lbl_80563950, lbl_80563940);
+    fn_80230924((void *)0xFFAF7F00, x, y, x + dx, lbl_80563950 + y - dy, lbl_80563940);
+    fn_80230924((void *)0xFFAF7F00, x, y, x + lbl_80563950, y - dy, lbl_80563940);
+    fn_80230924((void *)0xFFAF7F00, x + dx, y, x + dx - lbl_80563950, y - dy, lbl_80563940);
+    x += dx * lbl_80563954;
+    y -= dy * lbl_80563954;
+    for (row = 0, base = 0; row < 4; row++, base += 10, y -= dy) {
+        float cur = x;
+        for (col = 0; col < 10; col++, cur += dx) {
+            if (row == 3 && col == 9)
+                fn_80234AFC((char *)arg0 + 0x78, lbl_8055C098, 1, cur, y, 0);
+            else if (row == 3 && col == 8)
+                fn_80234AFC((char *)arg0 + 0x78, lbl_8055C0A0, 1, cur, y, 0);
+            else {
+                signed char *letters = *(unsigned char *)((char *)arg0 + 0x6C) ? lbl_80344120 : lbl_80344148;
+                fn_80234AFC((char *)arg0 + 0x78, lbl_8055C0A8, 1, cur, y, letters[base + col]);
+            }
+        }
     }
 }
 
