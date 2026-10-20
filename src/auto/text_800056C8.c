@@ -765,10 +765,20 @@ s32 fn_80007A84(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_80007AC4(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_80007AC4(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+    };
     s32 temp_r3;
     u32 temp_r0;
-    ((void (*)(void *))(*(void ***)arg0)[7])(arg0);
+    ((Obj *)arg0)->v5();
     temp_r3 = ((s32 *)fn_801E87A8())[1];
     if (((s32 *)lbl_8055D350)[5] > 1) ((s32 *)arg0)[1] = 3;
     else {
@@ -781,7 +791,7 @@ void fn_80007AC4(void *arg0) {
     if (fn_801CB8FC() == 0) ((s32 *)arg0)[4] = 1;
     lbl_8055D340[1] = 1;
 }
-
+#pragma cplusplus off
 u32 fn_80007B84(void) { return 1; }
 
 s32 fn_80007B8C(void) {
