@@ -204,70 +204,69 @@ struct Dummy_801A5ED8 {
     virtual void f16();
     virtual void f17();
 };
-struct Dummy_801A6088 {
-    virtual void g0();
-    virtual void g1();
-    virtual void g2();
-    virtual void g3();
-    virtual void g4();
-    virtual int g5();
-};
-#pragma cplusplus off
-
-#pragma cplusplus on
-extern "C" void fn_801A5ED8(void *arg0) {
-    fn_80189CB4();
-    void *obj = *(void **)((char *)arg0 + 0x270C);
-    *(unsigned char *)((char *)arg0 + 0x2704) = 1;
-    ((Dummy_801A5ED8 *)obj)->f16();
-    *(int *)((char *)arg0 + 0x2744) = 0;
-    *(int *)((char *)arg0 + 0x2768) = 0;
-    *(int *)((char *)arg0 + 0x278C) = 0;
-    *(int *)((char *)arg0 + 0x27B0) = 0;
-    *(int *)((char *)arg0 + 0x27D4) = 0;
-    *(int *)((char *)arg0 + 0x27F8) = 0;
-    *(int *)((char *)arg0 + 0x281C) = 0;
-    *(int *)((char *)arg0 + 0x2840) = 0;
-}
-#pragma cplusplus off
-
-int fn_801A5F44(void *arg0, int arg1) {
-    void *obj = *(void **)((char *)arg0 + 0x270C);
-    return ((int (*)(void *, int))(*(void ***)obj)[6])(obj, arg1 + 0x44) + 0x44;
-}
-
-void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4, float farg0) {
-    int x, y, a, b;
-    void *obj;
-    fn_8018B0D8(&x, &y);
-    obj = *(void **)((char *)arg0 + 0x270C);
-    ((void (*)(void *, int, int, int *, int *, float))(*(void ***)obj)[7])(obj, arg1 + x, arg2 + y, &a, &b, farg0);
-    *arg3 = x + a;
-    *arg4 = y + b;
-}
-
-int fn_801A6024(void *arg0, int arg1) {
-    int base;
-    void *obj;
-    base = arg1 + fn_8018BA54();
-    obj = *(void **)((char *)arg0 + 0x270C);
-    return base + ((int (*)(void *, int))(*(void ***)obj)[8])(obj, base) - arg1;
-}
-
-void fn_80188E2C(void);
-int fn_8018BA54(void);
-void fn_8018956C(void);
-#pragma cplusplus on
-extern "C" void fn_801A6088(void *arg0, int arg1) {
-    void *obj;
-    int offset;
-    fn_80188E2C();
-    obj = *(void **)((char *)arg0 + 0x270C);
-    offset = arg1 + *(int *)((char *)arg0 + 8);
-    *(int *)((char *)offset + 0x2C0) =
-        ((Dummy_801A6088 *)obj)->g5();
-}
-#pragma cplusplus off
+  struct Dummy_801A6088 {
+      virtual void g0();
+      virtual void g1();
+      virtual void g2();
+      virtual int g3();
+      virtual void g4();
+  };
+  #pragma cplusplus off
+  
+  #pragma cplusplus on
+  extern "C" void fn_801A5ED8(void *arg0) {
+      fn_80189CB4();
+      void *obj = *(void **)((char *)arg0 + 0x270C);
+      *(unsigned char *)((char *)arg0 + 0x2704) = 1;
+      ((Dummy_801A5ED8 *)obj)->f16();
+      *(int *)((char *)arg0 + 0x2744) = 0;
+      *(int *)((char *)arg0 + 0x2768) = 0;
+      *(int *)((char *)arg0 + 0x278C) = 0;
+      *(int *)((char *)arg0 + 0x27B0) = 0;
+      *(int *)((char *)arg0 + 0x27D4) = 0;
+      *(int *)((char *)arg0 + 0x27F8) = 0;
+      *(int *)((char *)arg0 + 0x281C) = 0;
+      *(int *)((char *)arg0 + 0x2840) = 0;
+  }
+  #pragma cplusplus off
+  
+  int fn_801A5F44(void *arg0, int arg1) {
+      void *obj = *(void **)((char *)arg0 + 0x270C);
+      return ((int (*)(void *, int))(*(void ***)obj)[6])(obj, arg1 + 0x44) + 0x44;
+  }
+  
+  void fn_801A5F7C(void *arg0, int arg1, int arg2, int *arg3, int *arg4, float farg0) {
+      int x, y, a, b;
+      void *obj;
+      fn_8018B0D8(&x, &y);
+      obj = *(void **)((char *)arg0 + 0x270C);
+      ((void (*)(void *, int, int, int *, int *, float))(*(void ***)obj)[7])(obj, arg1 + x, arg2 + y, &a, &b, farg0);
+      *arg3 = x + a;
+      *arg4 = y + b;
+  }
+  
+  int fn_801A6024(void *arg0, int arg1) {
+      int base;
+      void *obj;
+      base = arg1 + fn_8018BA54();
+      obj = *(void **)((char *)arg0 + 0x270C);
+      return base + ((int (*)(void *, int))(*(void ***)obj)[8])(obj, base) - arg1;
+  }
+  
+  void fn_80188E2C(void);
+  int fn_8018BA54(void);
+  void fn_8018956C(void);
+  #pragma cplusplus on
+  extern "C" void fn_801A6088(void *arg0, int arg1) {
+      void *obj;
+      int offset;
+      fn_80188E2C();
+      obj = *(void **)((char *)arg0 + 0x270C);
+      offset = arg1 + *(int *)((char *)arg0 + 8);
+      *(int *)((char *)offset + 0x2C0) =
+          ((Dummy_801A6088 *)obj)->g3();
+  }
+  #pragma cplusplus off
 extern float lbl_80562404;
 extern float lbl_80562408;
 extern float lbl_8056240C;
