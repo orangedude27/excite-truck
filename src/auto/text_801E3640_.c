@@ -117,8 +117,8 @@ void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
 extern float lbl_8055EA68, lbl_80562CF4;
 extern int fn_802C744C(int, float *);
 extern int fn_801E4040();
-void fn_801E41D8(void *arg0, void *arg1, int arg2) {
-    fn_801E4040(arg0, arg1, arg2);
+void fn_801E41D8(void *arg0, void *arg1, int arg2, float farg0) {
+    fn_801E4040(arg0, arg1, arg2, arg2, farg0);
 }
 
 extern void fn_801E370C(float *, int, float, float, float, float, float, float, float, float, float, float, float);
