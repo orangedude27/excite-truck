@@ -5,7 +5,7 @@ extern void fn_802D6C48(void);
 #pragma pop
 void fn_802C5DF0(int*);
 extern int lbl_8055D008;
-void* fn_802C5390(void);
+void* fn_802C5390();
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
 
