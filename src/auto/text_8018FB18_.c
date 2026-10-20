@@ -118,62 +118,69 @@ extern void fn_801B6654(void);
 #pragma cplusplus on
 class DummyVtable8018FE8C {
 public:
-    virtual void d0(void);
-    virtual void d1(void);
-    virtual void d2(void);
-    virtual void d3(void);
-    virtual void d4(void);
-    virtual void d5(void);
-    virtual void d6(void);
-    virtual void d7(void);
-    virtual void d8(void);
-    virtual void d9(void);
-    virtual void d10(void);
-    virtual void d11(void);
-    virtual void d12(void);
-    virtual void d13(void);
-    virtual void d14(void);
-    virtual void d15(void);
-    virtual void d16(void);
-    virtual void d17(void);
-    virtual void d18(void);
-    virtual void d19(void);
-    virtual void d20(void);
-    virtual void d21(void);
-    virtual void d22(void);
-    virtual void d23(void);
-    virtual void d24(void);
-    virtual void d25(void);
-    virtual void d26(void);
-    virtual void d27(void);
-    virtual void d28(void);
-    virtual void d29(void);
-    virtual void d30(void);
-    virtual void d31(void);
-    virtual void d32(void);
+    virtual void d0(int);
+    virtual void d1(int);
+    virtual void d2(int);
+    virtual void d3(int);
+    virtual void d4(int);
+    virtual void d5(int);
+    virtual void d6(int);
+    virtual void d7(int);
+    virtual void d8(int);
+    virtual void d9(int);
+    virtual void d10(int);
+    virtual void d11(int);
+    virtual void d12(int);
+    virtual void d13(int);
+    virtual void d14(int);
+    virtual void d15(int);
+    virtual void d16(int);
+    virtual void d17(int);
+    virtual void d18(int);
+    virtual void d19(int);
+    virtual void d20(int);
+    virtual void d21(int);
+    virtual void d22(int);
+    virtual void d23(int);
+    virtual void d24(int);
+    virtual void d25(int);
+    virtual void d26(int);
+    virtual void d27(int);
+    virtual void d28(int);
+    virtual void d29(int);
+    virtual void d30(int);
+    virtual void d31(int);
+    virtual void d32(int);
 };
-#pragma cplusplus off
-void *fn_8018FE8C(void *arg0, s32 arg1) {
+extern "C" void *fn_8018FE8C(void *arg0, s32 arg1) {
+    void * (*fn_80128668_ptr)(void *) = (void * (*)(void *))0x80128668;
     s32 temp_r0;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80333018;
         if (fn_801B6668(arg0) != 0) fn_801B6654();
-        if (*(void **)((char *)arg0 + 4) != 0)
-            ((void (*)(void *, int))(*(void ***)(*(void **)((char *)arg0 + 4)))[0x20])(*(void **)((char *)arg0 + 4), 1);
+        {
+            DummyVtable8018FE8C *obj = (DummyVtable8018FE8C *)*(void **)((char *)arg0 + 4);
+            if (obj != 0) obj->d32(1);
+        }
         *(void **)((char *)arg0 + 4) = 0;
-        if (*(void **)((char *)arg0 + 8) != 0)
-            ((void (*)(void *, int))(*(void ***)(*(void **)((char *)arg0 + 8)))[2])(*(void **)((char *)arg0 + 8), 1);
+        {
+            DummyVtable8018FE8C *obj = (DummyVtable8018FE8C *)*(void **)((char *)arg0 + 8);
+            if (obj != 0) obj->d2(1);
+        }
         *(void **)((char *)arg0 + 8) = 0;
-        if (*(void **)((char *)arg0 + 0xC) != 0)
-            ((void (*)(void *, int))(*(void ***)(*(void **)((char *)arg0 + 0xC)))[2])(*(void **)((char *)arg0 + 0xC), 1);
+        {
+            DummyVtable8018FE8C *obj = (DummyVtable8018FE8C *)*(void **)((char *)arg0 + 0xC);
+            if (obj != 0) obj->d2(1);
+        }
         *(void **)((char *)arg0 + 0xC) = 0;
         temp_r0 = lbl_8055E518 - 1;
         lbl_8055E518 = temp_r0;
         if (temp_r0 == 0) { void (*cleanup)(void) = fn_8018FCC4; cleanup(); }
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0) fn_80128668_ptr(arg0);
     }
     return arg0;
 }
+#pragma cplusplus off
 
 int fn_8018FF84(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
