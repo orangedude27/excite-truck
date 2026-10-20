@@ -13,6 +13,12 @@ public:
     virtual void v5();
     virtual void v6();
     virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11();
+    virtual void v12();
+    virtual void v13();
 };
 
 class TBlackPlane {
