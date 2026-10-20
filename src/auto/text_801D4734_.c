@@ -335,6 +335,15 @@ int fn_801D8EFC(void *arg0) {
     return ((int *)arg0)[1];
 }
 
+int fn_801D8F04(void *arg0) {
+    if (*(int *)((char *)arg0 + 4) == 1) {
+        *(int *)((char *)arg0 + 4) = 2;
+        *(float *)((char *)arg0 + 0x20) = lbl_8055E3C8;
+        return 1;
+    }
+    return 0;
+}
+
 void fn_801D8FE0(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
