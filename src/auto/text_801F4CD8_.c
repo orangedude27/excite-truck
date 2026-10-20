@@ -102,6 +102,14 @@ public:
     virtual Vec3_801F4F9C d12(const char *, Vec3_801F4F9C);
     virtual Vec2_801F4F9C d13(const char *);
 };
+#pragma cplusplus on
+extern "C" {
+__declspec(section ".sdata") extern char lbl_8055B178[];
+__declspec(section ".sdata") extern char lbl_8055B180[];
+__declspec(section ".sdata") extern char lbl_8055B184[];
+extern float lbl_80562FB0;
+extern float lbl_80562FB4;
+}
 #pragma cplusplus off
 
 extern char lbl_8033AD28[];
