@@ -30,6 +30,20 @@ extern s32 lbl_8055A0E0;
 extern s32 lbl_8055A0E8;
 extern u8 lbl_8055E2DD;
 
+#pragma cplusplus on
+struct Dummy_801619A8 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+};
+#pragma cplusplus off
+
 extern s32 lbl_8055E300;
 extern unsigned char lbl_8032F858[];
 extern int lbl_8055E2E4;
@@ -896,7 +910,7 @@ void fn_801647DC(void *arg0) {
         temp_r3 = *(void **)((char *)(*(s32 *)((char *)arg0 + 0x34)) + var_r31 + 4);
         if (temp_r3 != 0) {
             if (temp_r3 != 0) {
-                (*(void (**)(void *, s32))((char *)*(void ***)temp_r3 + 8))(temp_r3, 1);
+                ((void (*)(void *, s32))((void **) *(void **)temp_r3)[2])(temp_r3, 1);
             }
         }
         var_r31 += 8;
