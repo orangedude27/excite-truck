@@ -82,6 +82,13 @@ void fn_802B5CAC(void) {
     fn_802B5C24(1);
 }
 
+#pragma push
+#pragma dont_inline on
+void fn_802B5CB4(s32 arg0) {
+    lbl_8055FA3C += arg0;
+}
+#pragma pop
+
 void fn_802B5CC4(void) {
     fn_802B5CB4(1);
 }
