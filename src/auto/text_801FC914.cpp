@@ -50,7 +50,7 @@ extern "C" const char lbl_8033B700[];
 extern "C" float lbl_80563030;
 extern "C" float lbl_80563034;
 extern "C" void fn_801FD3F0(void);
-extern "C" void fn_801FD5E8(void);
+extern "C" void fn_801FD5E8(void* = 0, float = 0);
 extern "C" void fn_801FDF18(void);
 extern "C" void fn_802E317C(const char*, ...);
 extern "C" const char lbl_8033B618[];
