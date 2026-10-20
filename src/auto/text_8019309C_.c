@@ -23,7 +23,7 @@ void fn_801964D0(void);
 void fn_80128668(void *);
 void fn_80193138(int);
 
-extern unsigned char lbl_8055A4B8[];
+extern unsigned char lbl_8055A4B8[8];
 extern float lbl_80562178, lbl_8056217C, lbl_8055E558;
 extern float lbl_80562264, lbl_8056224C;
 extern void fn_8017B4E0(void *, float *, float *, float);
