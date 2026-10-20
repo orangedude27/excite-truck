@@ -145,7 +145,7 @@ void ReportOSInfo_8004AA40(void) {
     OSReport("MEM1 Arena : 0x%x - 0x%x\n\0\0", OSGetMEM1ArenaLo(), OSGetMEM1ArenaHi());
     OSReport("MEM2 Arena : 0x%x - 0x%x\n", OSGetMEM2ArenaLo(), OSGetMEM2ArenaHi());
 }
-#pragma scheduling reset
+
 void __OSDBIntegrator(void) {
     volatile u32 *p = (volatile u32 *)0x48;
     * (volatile u32 *)0x4C = __builtin_return_address(0);
