@@ -149,6 +149,7 @@ void fn_8019321C(void *arg0, void *arg1, void *arg2) {
 }
 #pragma processor gekko
 extern float lbl_80562140, lbl_80562148;
+#pragma dont_inline on
 void fn_8019330C(void *out, void *in, int arg2) {
     volatile float x = *(float *)((char *)arg2 + 0x18);
     volatile float y = *(float *)((char *)arg2 + 0x20);
@@ -169,7 +170,7 @@ void fn_8019330C(void *out, void *in, int arg2) {
 }
 
 void fn_801933FC(void *arg0, void *arg1) {
-    fn_8019330C(arg1, arg0, *(int *)((char *)arg0 + 0x294) + 0x70);
+    fn_8019330C(arg1, arg1, (int)(*(char **)((char *)arg0 + 0x294) + 0x70));
 }
 
 #pragma processor 750
