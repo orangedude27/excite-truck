@@ -162,6 +162,14 @@ extern "C" int fn_8027EE88(void) {
 #pragma cplusplus off
 #pragma dont_inline reset
 #pragma pop
+
+struct Fn8027F204State {
+    char pad[0x40];
+    char *buffer;
+    int count;
+    int max;
+};
+
 void fn_8027F204(char *src) {
     extern int lbl_8055F69C;
     extern int lbl_80348270;
