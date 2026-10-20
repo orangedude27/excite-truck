@@ -7,7 +7,12 @@ typedef int s32;
 extern void *lbl_8055F428;
 extern s32 lbl_8055F430;
 extern s32 lbl_80498F40[];
+typedef void (*funcptr_t)(void);
 void fn_8000D838(void *);
+void fn_80263EE0(void);
+
+#pragma section ".ctors$00"
+DECL_SECTION(".ctors$00") funcptr_t D_802ED474 = fn_80263EE0;
 
 #pragma scheduling invalid_target
 #pragma opt_propagation off
