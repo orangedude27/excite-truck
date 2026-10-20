@@ -826,7 +826,6 @@ void fn_80007C10(void *arg0) {
     ((u8 *)arg0)[5] = 0;
 }
 
-extern s32 fn_8000C630(s32, s32);
 extern s32 fn_801B8848(void);
 extern s32 fn_801B87A0(s32, s32);
 s32 fn_80007C58(void) {
