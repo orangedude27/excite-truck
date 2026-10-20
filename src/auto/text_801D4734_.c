@@ -96,6 +96,14 @@ void fn_801D8DB0(int arg0) {
     }
 }
 
+int fn_801D8DC8(int arg0, int arg1) {
+    if (arg0 != 0) {
+        ((int *)arg0)[1] = 0;
+        if (arg1 > 0) fn_80128668();
+    }
+    return arg0;
+}
+
 void fn_801D8FE0(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
