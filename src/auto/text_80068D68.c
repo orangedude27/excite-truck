@@ -42,6 +42,19 @@ extern s32 btsnd_hcic_reset_800857CC(void);
 extern u8 lbl_803C0AD8[];
 extern u8 lbl_8055DC80;
 extern u8 *lbl_80559038;
+extern void bta_hh_trace_dev_db(void);
+
+static u8 hh_get_trans_status(u32 result) {
+    switch (result) {
+    case 0:
+        return 0;
+    case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8:
+    case 9: case 10: case 11: case 12: case 13: case 14: case 15:
+        return (u8)result;
+    default:
+        return 5;
+    }
+}
 extern void fn_8006E6E4(void *);
 extern void fn_80071450(void *);
   extern void fn_80070954(u32 code, void *msg, u16 param);
