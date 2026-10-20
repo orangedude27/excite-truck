@@ -97,7 +97,7 @@ public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5(); virtual void d6(); virtual int f7(int);
 };
-#pragma cplusplus off
+#pragma cplusplus reset
 s32 fn_8024EC3C(void) {
     extern unsigned int lbl_8055F2EC;
     extern s32 fn_80129800(s32);
