@@ -579,11 +579,11 @@ found:
 
 extern "C" s32 fn_80158618(const char* arg0) {
     const char** item = (const char**)lbl_8032E540;
-    s32 i = 0;
+    u32 i = 0;
     for (;;) {
         if (stricmp(*item, arg0) == 0) return i;
-        ++i;
-        ++item;
+        item++;
+        i++;
         if (i >= 0xF) return -1;
     }
 }
