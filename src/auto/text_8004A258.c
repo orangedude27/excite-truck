@@ -3,6 +3,34 @@
 extern void **OSExceptionTable_8055D9D0;
 extern void OSExceptionVector(void);
 
+typedef enum {
+    OS_CONSOLE_MASK = 0xF0000000,
+    OS_CONSOLE_MASK_RVL = 0x00000000,
+    OS_CONSOLE_MASK_EMU = 0x10000000,
+    OS_CONSOLE_MASK_TDEV = 0x20000000,
+
+    OS_CONSOLE_RVL_PP_1 = 0x00000011,
+    OS_CONSOLE_RVL_PP_2_1 = 0x00000012,
+    OS_CONSOLE_RVL_PP_2_2 = 0x00000020,
+
+    OS_CONSOLE_RVL_EMU = 0x10000008,
+    OS_CONSOLE_NDEV_1_0 = 0x10000010,
+    OS_CONSOLE_NDEV_1_1 = 0x10000011,
+    OS_CONSOLE_NDEV_1_2 = 0x10000012,
+    OS_CONSOLE_NDEV_2_0 = 0x10000020,
+    OS_CONSOLE_NDEV_2_1 = 0x10000021
+} OSConsoleType_Report;
+
+typedef struct {
+    u8 idHi;
+    u8 idLo;
+    u8 verMajor;
+    u8 verMinor;
+    u8 buildMon;
+    u8 buildDay;
+    u16 buildYear;
+} OSIOSRev_Report;
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
