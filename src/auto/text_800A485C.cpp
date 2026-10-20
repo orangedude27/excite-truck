@@ -4818,7 +4818,7 @@ extern "C" void fn_800C7764(void *arg0, s8 arg1) {
     ((u8 *)arg0)[0x24] = (u8)arg1;
 }
 
-void fn_800C776C(void *arg0, s32 arg1) {
+extern "C" void fn_800C776C(void *arg0, s32 arg1) {
     ((u32 *)arg0)[0x24 / 4] = (u32)arg1;
 }
 
