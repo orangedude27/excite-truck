@@ -1746,9 +1746,10 @@ extern "C" s32 fn_800B73E4(s32 arg0) {
     return -1;
 }
 
+extern "C" s32 fn_800B73BC(s32);
+
 extern "C" void fn_800B7408(volatile s32* arg0, void* arg1) {
  extern s32 fn_800B6628(void*, void*, s32);
- extern s32 fn_800B73BC(s32);
  extern s32 lbl_803D2140[];
  s32 result = 0;
  if (arg0 != 0) {
@@ -1769,23 +1770,21 @@ extern "C" void fn_800B7408(volatile s32* arg0, void* arg1) {
 
 #pragma dont_inline on
 extern "C" s32 fn_800B74B8(s8 arg0) {
-    extern void fn_800B73BC(void*);
     fn_800B6928(arg0);
     return ((s32 (*)(void))fn_800B73BC)();
 }
 #pragma dont_inline reset
 
 extern "C" void* fn_800B1BDC(void*);
-extern "C" void fn_800B73BC(void*);
 extern "C" void fn_800B74E0(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
-    fn_800B73BC(fn_800B1BDC(alarm));
+    fn_800B73BC((s32)fn_800B1BDC(alarm));
 }
 
 extern "C" void* fn_800B224C(void*);
 extern "C" void fn_800B7504(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
-    fn_800B73BC(fn_800B224C(alarm));
+    fn_800B73BC((s32)fn_800B224C(alarm));
 }
 
 extern "C" void fn_800B1EB8(s32, s32, s32, s32, s32 *);
@@ -1798,7 +1797,7 @@ extern "C" s32 fn_800B75C4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern "C" void* fn_800B1FF4(void*);
 extern "C" void fn_800B75EC(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
-    fn_800B73BC(fn_800B1FF4(alarm));
+    fn_800B73BC((s32)fn_800B1FF4(alarm));
 }
 
 extern "C" s32 fn_800A4E80(void *, s32, u32);
@@ -1817,7 +1816,7 @@ extern "C" void fn_800B7610(void *arg0, s32 arg1, s32 arg2) {
 extern "C" void* fn_800A9B0C(void*);
 extern "C" void fn_800B7684(OSAlarm *alarm, OSContext *ctx) {
 #pragma unused(ctx)
-    fn_800B73BC(fn_800A9B0C(alarm));
+    fn_800B73BC((s32)fn_800A9B0C(alarm));
 }
 
 extern "C" s32 fn_800B6A8C(s8);
