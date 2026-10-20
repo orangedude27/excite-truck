@@ -72,11 +72,12 @@ void fn_8029F03C(void) {
 }
 
 void fn_8029F0D0(void) {
-    volatile int *p = (volatile int *)lbl_8055F820;
-    if (p != 0) fn_80128670();
+    if (lbl_8055F820) {
+        fn_80128670();
+    }
     lbl_8055F820 = 0;
-    fn_801EF024(fn_802A0720);
-    fn_801EF024(fn_802A0620);
+    fn_801EF024((void *)fn_802A0720);
+    fn_801EF024((void *)fn_802A0620);
     fn_8029FDDC();
     fn_8029FFBC();
 }
@@ -228,10 +229,20 @@ check:
     return -1;
 }
 
-extern void *fn_802AE4C8(int);
-extern void fn_8029F658(void *);
-extern char lbl_80349854[];
-extern int strncmp(const char *, const char *, unsigned int);
+  extern void *fn_802AE4C8(int);
+  extern void fn_8029F658(void *);
+  extern char lbl_80349854[];
+  extern int strncmp(const char *, const char *, unsigned int);
+  #pragma cplusplus on
+  class Dummy_8029FEF8 {
+  public:
+      virtual void d0();
+      virtual void d1();
+      virtual const char *d2();
+      virtual void *f3(int);
+      virtual void d4();
+  };
+  #pragma cplusplus off
 #pragma push
 #pragma use_lmw_stmw off
 void fn_8029FEF8(void) {
@@ -265,19 +276,16 @@ check:
     if (i < lbl_8055F81C) goto loop;
 }
 
-  void fn_802A002C(void) {
+void fn_802A002C(void) {
     unsigned char *current = lbl_804B5070;
     int i = 0;
-    register void *object;
-    register void **vtable;
-    register void **ptr;
     goto check;
 loop:
-    object = *(void **)(current + 0x70);
-    if (object != 0) {
-        ptr = (void **)object;
-        vtable = *ptr;
-        ((void (*)(void *))vtable[3])(object);
+    {
+        void *object = *(void **)(current + 0x70);
+        if (object != 0) {
+            ((void (*)(void *))(*(void ***)object)[3])(object);
+        }
     }
     current += 0x78;
     i++;
