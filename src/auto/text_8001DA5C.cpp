@@ -58,7 +58,7 @@ extern "C" void fn_80232930(void);
 
 extern char lbl_802FDB68[];
 extern char lbl_80558D08[];
-extern f32 lbl_80558DC4;
+__declspec(section ".data") extern f32 lbl_80558DC4;
 extern f32 lbl_8056047C;
 extern f32 lbl_80560480;
 extern f32 lbl_80560484;
@@ -179,6 +179,69 @@ extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void fn_8001E2AC(void* arg0, s32 arg1) {
+    const char* base = lbl_802FDB68;
+    void* truck = fn_8017960C(arg1);
+    f32* p = (f32*)arg0 + arg1 * 3;
+    bool active = *(f32*)((u8*)truck + 0x2588) > lbl_80560474;
+    if (active) {
+        if ((f32)fabs(p[2] - lbl_80560470) > *(f32*)&lbl_80558DC4) {
+            p[1] = lbl_8055E3C8;
+            p[2] = lbl_80560470;
+        } else {
+            p[2] -= lbl_8056047C;
+        }
+    } else {
+        p[2] = lbl_80560474;
+    }
+    p[3] = *(f32*)((u8*)truck + 0x25A0);
+
+    PaneContainer* paneMgr;
+    if (fn_801E85A4() == 2) {
+        paneMgr = (PaneContainer*)lbl_8055D5F8;
+    } else {
+        paneMgr = (PaneContainer*)lbl_8055D5F4;
+    }
+    if (paneMgr == NULL) {
+        return;
+    }
+
+    if (p[2] > lbl_80560480) {
+        s32 alpha = (s32)(lbl_80560484 * p[2]);
+        void* r28 = paneMgr->getPane(base + 0x1FC);
+        void* r29 = paneMgr->getPane(base + 0x20C);
+        if (r28 != NULL && r29 != NULL) {
+            f32 f2 = lbl_80560470;
+            f32 f0 = ((lbl_8055E3C8 - p[1]) - f2) / lbl_80560488;
+            if (f2 >= f0) {
+                f2 = f0;
+            }
+            if (f2 <= lbl_80560474) {
+                f2 = lbl_80560474;
+            }
+            PaneData buffer;
+            fn_80147CEC(&buffer, r28, r29, lbl_80560474 + f2 * lbl_80560470);
+            f32 factor1 = ((f32(*)(void))fn_8001DAD8)();
+            u32 c1 = (u32)fn_80147C50(*(u32*)((u8*)r28 + 0x18), *(u32*)((u8*)r29 + 0x18), factor1);
+            buffer.w18 = (c1 & 0x00FFFFFF) | (alpha << 24);
+            alpha <<= 24;
+            f32 factor2 = ((f32(*)(void))fn_8001DAD8)();
+            u32 c2 = (u32)fn_80147C50(*(u32*)((u8*)r29 + 0x18), *(u32*)((u8*)r28 + 0x18), factor2);
+            fn_80232928((c2 & 0x00FFFFFF) | alpha);
+            fn_80147230(&buffer, lbl_80558D08, fn_80131234(base + 0x220));
+            fn_80232930();
+        }
+    } else if (p[3] > lbl_8056048C) {
+        void* r3 = paneMgr->getPane(base + 0x238);
+        if (r3 != NULL) {
+            PaneData temp = *(PaneData*)r3;
+            f32 factor = ((f32(*)(void))fn_8001DAD8)();
+            temp.w18 = fn_80147C50(0xC0FFFFFFU, 0xFFFF2020U, factor);
+            fn_801476C4(&temp);
+        }
+    }
 }
 
 extern "C" f32 fn_8001DA5C(s32);
