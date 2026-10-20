@@ -363,15 +363,21 @@ int fn_8018A100(void *arg0) {
     return *(float *)((unsigned char *)arg0 + 0x2618) > lbl_80434930[1];
 }
 
-void fn_8018A120(void *arg0) {
-    register void *object;
-    if (fn_801B2F2C(*(int *)((unsigned char *)arg0 + 0x1ec)) == 0) {
-        object = *(void **)((unsigned char *)arg0 + 0x2584);
-        *(float *)((unsigned char *)arg0 + 0x25bc) = lbl_8055E4E0;
-        ((void (*)(void *))(*(void ***)object)[14])(object);
+#pragma cplusplus on
+extern "C" void fn_8018A120(void* arg0) {
+    if (fn_801B2F2C(*(int*)((u8*)arg0 + 0x1EC)) == 0) {
+        struct Obj {
+            virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3();
+            virtual int v4(); virtual int v5(); virtual int v6(); virtual int v7();
+            virtual int v8(); virtual int v9(); virtual int v10(); virtual int v11();
+            virtual int v12();
+        };
+        Obj* obj = *(Obj**)((u8*)arg0 + 0x2584);
+        *(float*)((u8*)arg0 + 0x25BC) = lbl_8055E4E0;
+        obj->v12();
     }
 }
-
+#pragma cplusplus off
 void fn_8018A174(void *arg0) {
     *(float *)((unsigned char *)arg0 + 0x2650) = lbl_80561D2C;
 }
