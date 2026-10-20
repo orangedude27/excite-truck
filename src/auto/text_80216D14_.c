@@ -27,7 +27,12 @@ extern void fn_802C2FC4(void *);
 extern void fn_802C519C(void *);
 extern void fn_80128668(void *);
 
-void *fn_80217270(void *arg0, int arg1) {
+#pragma cplusplus on
+extern "C" void *fn_80217270(void *arg0, int arg1) {
+    class Obj {
+    public:
+        virtual void v0(int);
+    };
     char *entry;
     int i;
     if (arg0 != 0) {
@@ -36,8 +41,7 @@ void *fn_80217270(void *arg0, int arg1) {
         while (i >= 0) {
             void *obj = *(void **)(entry + 0x30);
             if (obj != 0) {
-                void **vt = *(void ***)obj;
-                ((void (*)(void *, int))vt[2])(obj, 1);
+                ((Obj *)obj)->v0(1);
             }
             entry -= 4;
             i--;
@@ -50,7 +54,7 @@ void *fn_80217270(void *arg0, int arg1) {
     }
     return arg0;
 }
-
+#pragma cplusplus off
 void fn_8021734C(void *arg0) {
     int i;
     char *base = (char *)arg0;
