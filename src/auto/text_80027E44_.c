@@ -333,7 +333,7 @@ int __sformatter(int (*ReadProc)(void *, int, int), void * ReadProcArg, const ch
                             if (format.argument_options == wchar_argument)
                             {
                                 mbtowc(((wchar_t*)arg_ptr), (char*)(&c), 1);
-                                arg_ptr += sizeof(wchar_t);
+                                arg_ptr++;
                             }
                             else
                                 *arg_ptr++ = c;
