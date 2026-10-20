@@ -45,31 +45,29 @@ extern char *strncpy(char *, const char *, unsigned int);
   #pragma push
   #pragma use_lmw_stmw off
   #pragma cplusplus on
-  extern "C" void fn_801F004C(int unused, int arg1, void *arg2) {
-      class VTable801F004C {
-      public:
-          virtual void v0();
-          virtual void v1();
-          virtual void v2();
-          virtual int v3(int);
-          virtual void v4();
-          virtual void *v5(int);
-      };
-      int i; void *list; int offset; int zero; char temp[0x2c];
-      list = fn_802C6B44(); offset = 0; i = 0; zero = 0;
-      while (i < *(int *)list) {
-          int name = fn_802C9C24(*(int *)((char *)list + 4) + offset);
-          if (((VTable801F004C *)arg2)->v3(name)) {
-              void *object = ((VTable801F004C *)arg2)->v5(name);
-              memset(temp, 0, 0x2c);
-              strncpy(temp, (char *)name, 0x10); temp[0xf] = zero;
-              strncpy(temp + 0x14, (char *)object, 0x10); temp[0x23] = zero;
-              *(int *)(temp + 0x10) = arg1; fn_802C7888(temp, 1);
-          }
-          offset += 0x10; i++;
-      }
-      fn_802C6C20(list);
-  }
+extern "C" void fn_801F004C(int unused, int arg1, void *arg2) {
+    class VTable801F004C {
+    public:
+        virtual void v0();
+        virtual int v3(int);
+        virtual void v4();
+        virtual void *v5(int);
+    };
+    int offset; void *list; int i; int zero; char temp[0x2c];
+    list = fn_802C6B44(); zero = 0; i = 0; offset = 0;
+    while (i < *(int *)list) {
+        int name = fn_802C9C24(*(int *)((char *)list + 4) + offset);
+        if (((VTable801F004C *)arg2)->v3(name)) {
+            void *object = ((VTable801F004C *)arg2)->v5(name);
+            memset(temp, 0, 0x2c);
+            strncpy(temp, (char *)name, 0x10); temp[0xf] = zero;
+            strncpy(temp + 0x14, (char *)object, 0x10); temp[0x23] = zero;
+            *(int *)(temp + 0x10) = arg1; fn_802C7888(temp, 1);
+        }
+        offset += 0x10; i++;
+    }
+    fn_802C6C20(list);
+}
   #pragma cplusplus off
 
 extern int lbl_8055B0E0;
