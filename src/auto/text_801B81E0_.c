@@ -210,7 +210,7 @@ char fn_801B8514(void) {
 extern "C" int fn_801B851C(void* arg0) {
     extern int fn_80161BB8(void);
     if (fn_80161BB8() != 0) return 0;
-    return ((Dummy_801B8318 *)lbl_8055E744)->f17(arg0);
+    return ((Dummy_801B851C *)lbl_8055E744)->d8(arg0);
 }
 int fn_801B8570(int arg0) {
     extern int fn_80161B94(void);
