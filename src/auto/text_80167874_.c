@@ -92,6 +92,17 @@ struct DummyManager {
     u8 flag1E158;
 };
 
+extern "C" {
+extern char lbl_8055A1C0[];
+extern char lbl_8055A1C8[];
+extern char lbl_8055A1CC[];
+extern f32 lbl_80561924;
+
+int sscanf(const char *, const char *, ...);
+void fn_801E9E30(void *, f32 *);
+void fn_801EA1E0(f32 *, s32, f32, f32);
+}
+
 #pragma cplusplus reset
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
