@@ -128,6 +128,15 @@ int fn_801B47AC(int arg0) {
 int fn_801B47B4(void *arg0) {
     return fn_801B47D4(arg0, *(int *)((char *)arg0 + 0x24));
 }
+
+int fn_801B47BC(int arg0, int arg1) {
+    int next = arg1 + 1;
+    if ((unsigned int)next < *(unsigned int *)(arg0 + 0x1C)) {
+        return next;
+    }
+    return 0;
+}
+
 #pragma dont_inline off
 
 int fn_801B47D4(int arg0, int arg1) {
