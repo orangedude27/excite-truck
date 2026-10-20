@@ -8,6 +8,10 @@ extern s32 lbl_8055F350;
 extern s32 lbl_80498E38[];
 void fn_8000D838(void *);
 
+void fn_80257BC0(void);
+#pragma section ".ctors$00"
+DECL_SECTION(".ctors$00") funcptr_t D_802ED450 = fn_80257BC0;
+
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
