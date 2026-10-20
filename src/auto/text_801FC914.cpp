@@ -261,15 +261,13 @@ extern "C" double lbl_80563048;
 
 static inline char* GetTrackNode(char* track, int idx) {
     int count = *(int*)(track + 0x6D0);
-    int offset_idx;
     if (idx >= count && idx < count * 2) {
-        offset_idx = count * 2 - idx - 1;
-    } else if (idx >= 0) {
-        offset_idx = idx % count;
-    } else {
-        offset_idx = -idx;
+        return track + 0x10 + (count * 2 - idx - 1) * 0x24;
     }
-    return track + 0x10 + offset_idx * 0x24;
+    if (idx >= 0) {
+        return track + 0x10 + (idx % count) * 0x24;
+    }
+    return track + 0x10 + (-idx) * 0x24;
 }
 
 static inline void MatrixMul801FD5E8(float* dst, const float* left, const float* right) {
@@ -325,6 +323,130 @@ extern "C" void fn_801FD320(void* arg0, float t) {
     *(float*)((char*)arg0 + 0x14) = xy - wz;
     *(float*)((char*)arg0 + 0x20) = wy + wx;
     *(float*)((char*)arg0 + 0x2C) = lbl_80563030 - (xx + yy);
+}
+
+extern "C" void fn_801FD5E8(void* arg0, float farg0) {
+    char* obj = (char*)arg0;
+    char* track = *(char**)(obj + 4);
+    int idx = *(int*)(obj + 0x3C);
+    char* node = GetTrackNode(track, idx);
+
+    float speed = *(float*)(node + 0x20);
+    float t_step = *(float*)(obj + 0x40) + farg0;
+    float step = speed * t_step;
+
+    if (step < lbl_80563030) {
+        *(float*)(obj + 0x40) = t_step;
+    } else {
+        step -= lbl_80563030;
+        *(float*)(obj + 0x40) = *(float*)(obj + 0x40) + (farg0 - lbl_80563030 / speed);
+
+        int count = *(int*)(track + 0x6D0);
+        idx = (*(int*)(obj + 0x3C) + 1) % (count * 2);
+        *(int*)(obj + 0x3C) = idx;
+
+        node = GetTrackNode(track, idx);
+
+        *(float*)(obj + 0x44) = *(float*)(obj + 0x54);
+        *(float*)(obj + 0x48) = *(float*)(obj + 0x58);
+        *(float*)(obj + 0x4C) = *(float*)(obj + 0x5C);
+        *(float*)(obj + 0x50) = *(float*)(obj + 0x60);
+        *(float*)(obj + 0x64) = *(float*)(obj + 0x68);
+
+        char* next_node = GetTrackNode(track, idx + 1);
+        *(float*)(obj + 0x54) = *(float*)(next_node + 0xC);
+        *(float*)(obj + 0x58) = *(float*)(next_node + 0x10);
+        *(float*)(obj + 0x5C) = *(float*)(next_node + 0x14);
+        *(float*)(obj + 0x60) = *(float*)(next_node + 0x18);
+
+        char* next2_node = GetTrackNode(track, idx + 2);
+        *(float*)(obj + 0x68) = *(float*)(next2_node + 0x1C);
+
+        int next_idx = *(int*)(obj + 0x3C) + 1;
+        if (next_idx >= count && next_idx < count * 2) {
+            float qx = *(float*)(obj + 0x54);
+            float qy = *(float*)(obj + 0x58);
+            float qz = *(float*)(obj + 0x5C);
+            float qw = *(float*)(obj + 0x60);
+
+            float y2 = qy + qy;
+            float z2 = qz + qz;
+            float x2 = qx + qx;
+            float yy = qy * y2;
+            float xx = qx * x2;
+            float zz = qz * z2;
+            float wx = qw * x2;
+            float yz = qy * z2;
+
+            float m[9];
+            m[0] = lbl_80563030 - (yy + zz);
+            m[4] = lbl_80563030 - (xx + zz);
+            m[8] = lbl_80563030 - (xx + yy);
+
+            float wy = qw * y2;
+            float xz = qx * z2;
+            float wz = qw * z2;
+            float xy = qx * y2;
+
+            m[7] = yz - wx;
+            m[5] = yz + wx;
+            m[6] = xz + wy;
+            m[2] = xz - wy;
+            m[1] = xy + wz;
+            m[3] = xy - wz;
+
+            float rot[9];
+            float cos_val = (float)cos(lbl_80563048);
+            float sin_val = (float)sin(lbl_80563048);
+            rot[0] = cos_val;
+            rot[1] = lbl_80563034;
+            rot[2] = -sin_val;
+            rot[3] = lbl_80563034;
+            rot[4] = lbl_80563030;
+            rot[5] = lbl_80563034;
+            rot[6] = sin_val;
+            rot[7] = lbl_80563034;
+            rot[8] = cos_val;
+
+            MatrixMul801FD5E8(m, m, rot);
+
+            float trace = m[8] + (m[0] + m[4]);
+            if (trace > lbl_80563034) {
+                float root = (float)fn_8002F234(lbl_80563030 + trace);
+                float inv_root = lbl_80563040 / root;
+                *(float*)(obj + 0x60) = lbl_80563040 * root;
+                *(float*)(obj + 0x54) = inv_root * (m[5] - m[7]);
+                *(float*)(obj + 0x58) = inv_root * (m[6] - m[2]);
+                *(float*)(obj + 0x5C) = inv_root * (m[1] - m[3]);
+            } else {
+                int i = 0;
+                if (m[4] > m[0]) i = 1;
+                if (m[8] > m[i * 3 + i]) i = 2;
+                int j = (i + 1) % 3;
+                int k = (j + 1) % 3;
+                float diag_sum = m[j * 3 + j] + m[k * 3 + k];
+                float root = (float)fn_8002F234(lbl_80563030 + (m[i * 3 + i] - diag_sum));
+                float inv_root = lbl_80563040 / root;
+                float* q_out = (float*)(obj + 0x54);
+                q_out[i] = lbl_80563040 * root;
+                *(float*)(obj + 0x60) = inv_root * (m[j * 3 + k] - m[k * 3 + j]);
+                q_out[j] = inv_root * (m[i * 3 + j] + m[j * 3 + i]);
+                q_out[k] = inv_root * (m[i * 3 + k] + m[k * 3 + i]);
+            }
+        }
+    }
+
+    int count = *(int*)(track + 0x6D0);
+    int cur_idx = *(int*)(obj + 0x3C);
+    if (count - 1 != cur_idx % count) {
+        char* prev_node = GetTrackNode(track, cur_idx - 1);
+        char* next_node = GetTrackNode(track, cur_idx + 1);
+        char* next2_node = GetTrackNode(track, cur_idx + 2);
+        fn_801FD144(obj, prev_node, node, next_node, next2_node, step);
+    }
+    fn_801FD320(obj, step);
+    float f64_val = *(float*)(obj + 0x64);
+    *(float*)(obj + 0x6C) = f64_val + step * (*(float*)(obj + 0x68) - f64_val);
 }
 
 extern "C" void fn_801FEDA4(void*);
