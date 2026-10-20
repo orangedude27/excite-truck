@@ -53,8 +53,11 @@ u32 __OSGetDIConfig(void) {
     return *(volatile u32 *)0xCD006024 & 0xFF;
 }
 
+extern void OSReport(const char *, ...);
+extern const char lbl_80558F0C[];
+extern const char lbl_80558F0C[4];
 void OSRegisterVersion(const char *ver) {
-    OSReport("%s\n", ver);
+    OSReport(lbl_80558F0C, ver);
 }
 
 extern BOOL __OSInIPL;
