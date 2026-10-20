@@ -577,11 +577,6 @@ loop_76:
 }
 #pragma pop
 typedef unsigned int u32;
-extern s32 fn_80129800(s32);
-extern void fn_802E4A10(void);
-extern void fn_80216D28(void);
-extern s32 fn_80214D50(s32);
-extern u32 lbl_8055F2EC;
 extern unsigned char lbl_8034453C[];
 extern s32 fn_80128670(s32);
 extern s32 fn_80235380(s32);
