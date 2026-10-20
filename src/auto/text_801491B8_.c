@@ -1323,7 +1323,7 @@ extern "C" s32 fn_80154618(void *arg0) {
     s32 i = 0;
     while (i < fn_801B2F24()) {
         if (*(s32 *)((u8 *)*it + 0x1F0) == 0x50) {
-            if (((TObj80154618 *)arg0)->f8(i) != 0) {
+            if (((TObj80154618 *)arg0)->f6(i) != 0) {
                 found = 1;
             }
         }
