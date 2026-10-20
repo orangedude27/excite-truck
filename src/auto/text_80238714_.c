@@ -4,6 +4,8 @@
 extern int lbl_8055F0A8;
 extern int lbl_80498650[5];
 extern void fn_8000D838(int *);
+#include <types.h>
+
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_80238714(void) {
