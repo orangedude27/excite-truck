@@ -387,6 +387,10 @@ void fn_802C6FC0(void *arg0, int arg1, int arg2) {
     fn_802C6DC4((int)arg0, fn_802C6B44((int)arg0), arg1, arg2);
 }
 
+void fn_802C703C(int arg0) {
+    fn_802C6C38(arg0);
+}
+
 void fn_802C5DF0(int*);
 int fn_802C90E0(void);
 int fn_802E30C8(const char*, int);
