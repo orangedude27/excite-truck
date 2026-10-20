@@ -22,6 +22,7 @@ int fn_802C90E0(void);
 int fn_802E30C8(const char *, int);
 int fn_802C6B44(int);
 void fn_802C6DC4(int, int, int, int);
+void fn_802C6C38(int);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -111,6 +112,10 @@ void fn_802C5720(int arg0) {
 
 void fn_802C57B0(void) { }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline fn_802C53C4
 void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
     extern int lbl_8055D008;
     extern s8 lbl_8055FC20;
@@ -129,57 +134,57 @@ void fn_802C57B4(int arg0, int arg1, int arg2, unsigned char arg3, float arg4) {
 
     manager = fn_802C5390();
     outer_info = *(int **)((char *)manager + 4);
-    if (lbl_8055FC20 == 0) {
+    if ((u8)lbl_8055FC20 == 0) {
         fn_802C543C();
     }
-    idx_shift = *(int *)((char *)manager + 8);
-    i = 0;
-    offset = 0;
-    while (i < *outer_info) {
+    idx_shift = *(int *)((char *)manager + 8) << 2;
+    for (i = 0, offset = 0; i < *outer_info; i++, offset += 0x10) {
         char *entry = *(char **)((char *)outer_info + 4) + offset;
         int bit_idx = *(int *)entry;
         if (lbl_8055D008 & (1 << bit_idx)) {
             unsigned char local_d = arg3;
-            if (*(char **)((char *)manager + 12) == 0 ||
-                fn_802C9638(*(char **)((char *)manager + 12) + offset, &local_d, *(float *)(*(char **)((char *)manager + 12) + offset + 12)) != 0) {
+            char *sub = *(char **)((char *)manager + 12);
+            if (sub == 0 || fn_802C9638(sub + offset, &local_d, *(float *)(sub + offset + 12)) != 0) {
+                unsigned char d = local_d;
                 int *inner_info = *(int **)(entry + 8);
-                int j = 0;
-                int inner_offset = 0;
-                while (j < *inner_info) {
+                int j;
+                int inner_offset;
+                for (j = 0, inner_offset = 0; j < *inner_info; j++, inner_offset += 4) {
                     void *elem = *(void **)(*(char **)((char *)inner_info + 4) + inner_offset);
                     unsigned int type = *(unsigned int *)elem;
-                    int ok = 0;
+                    int valid = 0;
                     if (type < 13) {
-                        ok = 1;
+                        int skip;
+                        valid = 1;
                         switch (type) {
                         case 4:
                         case 6:
                         case 9:
                         case 11:
-                            ok = 0;
+                            skip = 1;
+                            break;
+                        default:
+                            skip = 0;
                             break;
                         }
+                        if (skip) valid = 0;
                     }
-                    if (ok) {
-                        void *node = *(void **)((char *)elem + (idx_shift << 2) + 0x14);
+                    if (valid) {
+                        void *node = *(void **)((char *)elem + idx_shift + 0x14);
                         void *r4;
-                        fn_802C53C4(entry, node, arg1, arg2, local_d);
+                        fn_802C53C4(entry, node, arg1, arg2, d);
                         r4 = ((void *(*)(void *))fn_802C57B0)(*(void **)(entry + 12));
                         fn_802CC550(*(int *)node, r4, arg4, *(float *)((char *)r4 + 0x18));
                     }
-                    inner_offset += 4;
-                    j++;
                 }
             }
         }
-        offset += 0x10;
-        i++;
     }
-    if (lbl_8055FC20 == 0) {
+    if ((u8)lbl_8055FC20 == 0) {
         fn_802C5720(-1);
     }
 }
-
+#pragma pop
 void fn_802C595C(char *dst, int size, const char *name, int id) {
     int i = 0;
     int offset = 0;
