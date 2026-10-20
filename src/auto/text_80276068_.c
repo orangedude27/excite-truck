@@ -173,6 +173,112 @@ void fn_80276D3C(int unused, int arg) {
     }
 }
 
+void fn_80276DC8(int arg0) {
+    struct TruckState *dst;
+    struct TruckState *src;
+    Vec v[4];
+    Vec v_right, v_up, v_fwd, v_pos;
+    Vec input, axis;
+    float rot[3][3];
+    float trans[3][3];
+    void *target;
+    float mag;
+
+    src = (struct TruckState *)fn_802678E4(arg0);
+    dst = (struct TruckState *)((char *)&lbl_8049FD58 + 0xF08) + arg0;
+    *dst = *src;
+    ((float *)((char *)&lbl_8049FD58 + 0x1868))[arg0] = lbl_80564048;
+
+    v[0] = *(Vec *)((char *)dst + 0x58);
+    v[1] = *(Vec *)((char *)dst + 0x64);
+    v[2] = *(Vec *)((char *)dst + 0x70);
+    v[3] = *(Vec *)((char *)dst + 0x7C);
+
+    if (fn_80276068(dst->unk_14) == 0 || *(int *)((char *)src->unk_140 + 0x24) == 0) {
+        float t;
+        float *dir, *pos;
+        dst->unk_14 = 4;
+        t = fn_802704E0(4, lbl_80564048);
+        dir = (float *)((char *)dst + 0xD8);
+        pos = (float *)((char *)dst + 0xE4);
+        v[3].x = pos[0] + dir[0] * t;
+        v[3].y = pos[1] + dir[1] * t;
+        v[3].z = pos[2] + dir[2] * t;
+        v[2] = *(Vec *)dir;
+        v[1].x = lbl_80564048;
+        v[1].y = lbl_8056404C;
+        v[1].z = lbl_80564048;
+        PSVECCrossProduct(&v[1], &v[2], &v[0]);
+        PSVECNormalize(&v[0], &v[0]);
+        PSVECCrossProduct(&v[2], &v[0], &v[1]);
+        PSVECNormalize(&v[1], &v[1]);
+    }
+
+    v_right = *(Vec *)((char *)dst + 0xC0);
+    v_up.x = lbl_80564048;
+    v_up.y = lbl_8056404C;
+    v_up.z = lbl_80564048;
+    v_fwd = *(Vec *)((char *)dst + 0xD8);
+    v_pos = *(Vec *)((char *)dst + 0xE4);
+
+    if (lbl_8056404C - ((float *)((char *)dst + 0xD8))[1] < lbl_80564064) {
+        v_fwd.x = lbl_80564048;
+        v_fwd.y = lbl_80564048;
+        v_fwd.z = lbl_8056404C;
+    }
+    PSVECCrossProduct(&v_up, &v_fwd, &v_right);
+    PSVECNormalize(&v_right, &v_right);
+    PSVECCrossProduct(&v_right, &v_up, &v_fwd);
+    PSVECNormalize(&v_fwd, &v_fwd);
+
+    fn_801E9DC4((int *)((char *)dst + 0x1EC));
+
+    input.x = lbl_80564068 * lbl_802FA818[3];
+    input.y = lbl_80564068 * lbl_802FA818[4];
+    input.z = lbl_80564068 * lbl_802FA818[5];
+
+    axis.x = lbl_802FA818[0] * *(float *)((char *)src->unk_140 + 0x5E4);
+    axis.y = lbl_802FA818[1] * *(float *)((char *)src->unk_140 + 0x5E4);
+    axis.z = lbl_802FA818[2] * *(float *)((char *)src->unk_140 + 0x5E4);
+
+    mag = PSVECMag(&input);
+    if (mag > lbl_8056406C) {
+        float inv = lbl_8056404C / mag;
+        float x = input.x * inv;
+        float y = input.y * inv;
+        float z = input.z * inv;
+        float s = (float)sin(mag);
+        float c = (float)cos(mag);
+        float t = lbl_8056404C - c;
+        rot[0][0] = c + t * x * x;
+        rot[0][1] = t * x * y + s * z;
+        rot[0][2] = t * x * z - s * y;
+        rot[1][0] = t * x * y - s * z;
+        rot[1][1] = c + t * y * y;
+        rot[1][2] = t * y * z + s * x;
+        rot[2][0] = t * x * z + s * y;
+        rot[2][1] = t * y * z - s * x;
+        rot[2][2] = c + t * z * z;
+    } else {
+        rot[0][0] = lbl_8056404C; rot[0][1] = lbl_80564048; rot[0][2] = lbl_80564048;
+        rot[1][0] = lbl_80564048; rot[1][1] = lbl_8056404C; rot[1][2] = lbl_80564048;
+        rot[2][0] = lbl_80564048; rot[2][1] = lbl_80564048; rot[2][2] = lbl_8056404C;
+    }
+
+    target = (char *)&lbl_8049FD58 + 0x17A8 + arg0 * 0x30;
+    fn_801BFD34((char *)target + 0x24, &axis, &v_right);
+    fn_80015B20(target, rot, &v_right);
+
+    trans[0][0] = v[0].x; trans[0][1] = v[0].y; trans[0][2] = v[0].z;
+    trans[1][0] = v[1].x; trans[1][1] = v[1].y; trans[1][2] = v[1].z;
+    trans[2][0] = v[2].x; trans[2][1] = v[2].y; trans[2][2] = v[2].z;
+    fn_801C7254(trans);
+    fn_80015B20(target, target, trans);
+    fn_80144CD0((char *)target + 0x24, (char *)target + 0x24, &v[0]);
+
+    fn_80276098((char *)src + 0x58, rot, src->unk_BC, lbl_80564068 * lbl_802FA818[6], lbl_80564060, arg0, 0x22);
+}
+
 float fn_80277704(int i) {
     unsigned char *p = (unsigned char *)&lbl_8049FD58 + i * 0x50;
     if (*p != 0) {
@@ -190,6 +296,11 @@ void fn_80277740(void) {
 
 extern char lbl_8055C650;
 extern char lbl_803473B8[], lbl_803473C4[];
+#pragma cplusplus on
+struct Dummy_80277754 {
+    virtual char *d0();
+};
+#pragma cplusplus off
 #pragma dont_inline on
 int fn_80277754(void *arg0) {
     char *name;
