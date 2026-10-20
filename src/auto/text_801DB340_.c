@@ -17,7 +17,7 @@ extern int lbl_8055E99C;
 extern int lbl_8055E9A0;
 extern unsigned short lbl_80442708[];
 extern float lbl_804424B0[];
-extern int fn_801DB348(int, int, float *, int *, void *);
+extern int fn_801DB348(int, int, float *, int *);
 extern float fn_801DB398(float grid[4][4], float, float);
 extern float fn_801DB514(float grid[4][4], void *, float, float);
 
@@ -33,7 +33,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
         return 0;
     }
     if (*(int *)((char *)lbl_8055E990 + 0x10) == 0) {
-        return fn_801DB348(x, y, out_h, out_type, arg4);
+        return fn_801DB348(x, y, out_h, out_type);
     }
     tileX = (x / 32) - lbl_8055E99C;
     tileZ = (y / 32) - lbl_8055E9A0;
@@ -79,6 +79,7 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
 
 void fn_801DB340(int arg0) { fn_801DB13C(arg0 - 4); }
 
+#pragma paired_single off
 int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
     float grid[4][4];
     float sp8;
@@ -106,7 +107,7 @@ int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *ar
     }
     return 1;
 }
-
+#pragma paired_single reset
 void fn_801DCA5C(void) {
     fn_8012C4D8();
 }
