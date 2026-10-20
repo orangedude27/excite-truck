@@ -176,12 +176,14 @@ s32 fn_801D5014(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 offset;
     s32 i;
     void *obj;
+    void **vtable;
 
     i = 0;
     offset = 0;
     while (i < *(s32 *)((u8 *)arg0 + 0x34)) {
         obj = *(void **)(*(u8 **)((u8 *)arg0 + 0x30) + offset);
-        if (((s32 (**)(void *, s32, s32))*(void **)obj)[8](obj, arg1, arg2) != 0) {
+        vtable = *(void ***)obj;
+        if (((s32 (*)(void *, s32, s32))vtable[8])(obj, arg1, arg2) != 0) {
             return 1;
         }
         offset += 4;
@@ -1032,16 +1034,17 @@ void fn_801D832C(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 0x40) != 0) *(s32 *)((u8 *)arg0 + 0x40) = 1;
 }
 
-void fn_801D8344(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_801D8344(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 0x40) != 0) {
-        void *p = *(void **)((u8 *)arg0 + 0x2C);
+        TObj34 *p = *(TObj34 **)((u8 *)arg0 + 0x2C);
         if (p != 0) {
-            (*(void (**)(void *))(*(u32 *)p + 0x1C))(p);
+            p->d5();
         }
         *(s32 *)((u8 *)arg0 + 0x40) = 1;
     }
 }
-
+#pragma cplusplus reset
 s32 fn_801D839C(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x18) == 0;
 }
