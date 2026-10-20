@@ -596,10 +596,11 @@ extern "C" s32 fn_8022F638(s32, s32, s32, s32, f32);
 extern "C" s32 fn_8022F8CC(s32);
 extern "C" s32 fn_8022FFE8(s32);
 extern f32 lbl_805634E4;
+#pragma dont_inline on
 extern "C" s32 fn_8021A804(void *arg0, s32 arg1) {
     return fn_802192A4(arg0, arg1);
 }
-
+#pragma dont_inline reset
 extern "C" void fn_8021D044(s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_8022A86C(void *);
 extern "C" void fn_8021818C(s32);
