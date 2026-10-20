@@ -553,7 +553,7 @@ extern "C" s32 fn_800ED0A8(s32 arg0) {
 extern "C" s32 fn_800ED0BC(void *arg0) {
     return ((u8 *)arg0)[0x16] != 0;
 }
-s32 fn_800ED0D0(s32 arg0) {
+extern "C" s32 fn_800ED0D0(void *arg0) {
     return ((u8 *)arg0)[0x15] != 0;
 }
 #pragma push
