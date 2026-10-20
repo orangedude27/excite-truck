@@ -163,6 +163,15 @@ int fn_801D720C(int arg0) {
     return ((int *)arg0)[1];
 }
 
+int fn_801D7214(int arg0) {
+    if (((int *)arg0)[1] == 1) {
+        ((int *)arg0)[1] = 2;
+        *(float *)((char *)arg0 + 0x2C) = lbl_8055E3C8;
+        return 1;
+    }
+    return 0;
+}
+
 int fn_801D7924(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[10] = 0;
