@@ -87,19 +87,14 @@ int fn_801B81E0(void *arg0) {
 extern "C" void fn_801B8318(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f59();
 }
-#pragma cplusplus off
-void fn_801B832C(void) {
+#pragma cplusplus on
+extern "C" void fn_801B832C(void) {
     extern void fn_801616FC(void);
     extern float lbl_80436D08[];
     extern float lbl_80562744;
-    void *obj;
-    void (**vt)(void *, int);
     fn_801616FC();
-    obj = lbl_8055E744;
-    if (obj != 0) {
-        vt = *(void (***)(void *, int))obj;
-        (*(*(vt + 2)))(obj, 1);
-    }
+    if (lbl_8055E744 != 0)
+        ((Dummy_801B8318 *)lbl_8055E744)->f2();
     lbl_80436D08[0] = lbl_80562744;
     lbl_8055E744 = 0;
     lbl_80436D08[1] = lbl_80562744;
@@ -110,20 +105,19 @@ void fn_801B832C(void) {
     lbl_80436D08[6] = lbl_80562744;
     lbl_80436D08[7] = lbl_80562744;
 }
-
+#pragma cplusplus off
 void* fn_801B83A0(void) {
     return lbl_8055E744;
 }
 
-void fn_801B83A8(void) {
+#pragma cplusplus on
+extern "C" void fn_801B83A8(void) {
     extern float lbl_80436D08[];
     extern char lbl_8055E748;
     extern float lbl_8055E750;
     extern float lbl_80562744;
     extern void fn_801619A8(void);
-    volatile void **obj = (volatile void **)lbl_8055E744;
-    void (**vtable)(void) = (void (**)(void))*obj;
-    vtable[4]();
+    ((Dummy_801B8318 *)lbl_8055E744)->f4();
     lbl_80436D08[0] = lbl_80562744;
     lbl_8055E748 = 0;
     lbl_80436D08[1] = lbl_80562744;
@@ -136,7 +130,7 @@ void fn_801B83A8(void) {
     fn_801619A8();
     lbl_8055E750 = lbl_80562744;
 }
-
+#pragma cplusplus off
 void fn_801B8418(void) {
 
 }
@@ -290,11 +284,11 @@ extern "C" void fn_801B880C(void) {
 extern "C" void fn_801B8820(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f14();
 }
-#pragma cplusplus off
-void fn_801B8834(void) {
-    (*(void (**)(void*))((char*)*(void**)lbl_8055E744 + 0x44))(lbl_8055E744);
+#pragma cplusplus on
+extern "C" void fn_801B8834(void) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f15();
 }
-
+#pragma cplusplus off
 void fn_801B8848(void) {
     void *obj = lbl_8055E744;
     void **vt = *(void ***)obj;
