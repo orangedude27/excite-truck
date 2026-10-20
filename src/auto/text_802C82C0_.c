@@ -159,6 +159,10 @@ lbl_8055FC6C=(float)w/(float)h;
 fn_802D01E0(x,y,w);fn_802CC518(w,lbl_8055FC44);
 }
 
+void fn_802C88BC(int arg0) {
+    fn_802D02F8(lbl_8055D018, arg0 & 1);
+}
+
 extern void *lbl_8055FC5C, *lbl_8055FC60, *lbl_8055FC64, *lbl_8055FC68;
 void fn_802C88CC(unsigned int arg0) {
     fn_802D02F8(arg0, 1);
