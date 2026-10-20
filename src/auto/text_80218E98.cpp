@@ -1899,10 +1899,11 @@ extern "C" void fn_80221E7C(void *arg0) {
         *(u8 *)((u8 *)temp + 0x234) = 1;
 }
 
-extern "C" void fn_80221EA0(void *arg0) {
-    fn_80219440(*(void **)((u8 *)arg0 + 0x14), 0, 0, 0);
+#pragma dont_inline on
+extern "C" void fn_80221EA0(void *arg0, s32 arg1, void *arg2, s32 arg3) {
+    fn_80219440(*(void **)((u8 *)arg0 + 0x14), arg1, arg2, arg3);
 }
-
+#pragma dont_inline reset
 extern "C" s32 fn_80221EA8(void *arg0) {
     extern char lbl_8033DA2C[];
     u32 value = *(u32*)((u8*)*(void**)((u8*)arg0 + 0x14) + 0x238);
