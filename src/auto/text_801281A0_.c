@@ -41,13 +41,11 @@ u32 fn_801281A0(s32 arg0) {
     return (u32)&lbl_80559968;
 }
 
+#pragma scheduling off
 s32 fn_801281F4(s32 arg0, s32 arg1) {
-    arg0 += arg1;
-    arg0 -= 1;
-    arg1 -= 1;
-    return arg0 & ~arg1;
+    return ((arg0 + arg1) - 1) & ~(arg1 - 1);
 }
-
+#pragma scheduling on
 void fn_80128208(void) {
 
 }
