@@ -1245,10 +1245,9 @@ int fn_8028740C(void* arg0) {
 extern "C" void fn_802874A0(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v9();
 }
-#pragma cplusplus off
-void fn_802874B4(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 4);
-    void* (*vtable)[13] = (void* (*)[13])*(void***)obj;
-    ((void (*)(void*))(*vtable)[12])(obj);
+#pragma cplusplus on
+extern "C" void fn_802874B4(void* arg0) {
+    ((ebi::title::TBlackPlane*)arg0)->m_a->v10();
 }
+#pragma cplusplus off
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
