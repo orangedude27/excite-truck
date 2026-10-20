@@ -331,6 +331,10 @@ int fn_801D8DC8(int arg0, int arg1) {
     return arg0;
 }
 
+char *fn_801D8EF0(void) {
+    return lbl_803389B8;
+}
+
 int fn_801D8EFC(void *arg0) {
     return ((int *)arg0)[1];
 }
