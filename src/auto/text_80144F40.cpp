@@ -784,9 +784,14 @@ extern char lbl_8032D1A4[];
 
 void fn_80145B94(void *, const char *);
 extern "C" void fn_801473F8(void *arg0, s32 arg1, const char *format, ...) {
+    class V {
+    public:
+        virtual void f0();
+        virtual void *f1();
+    };
     char buffer[0x200];
     va_list args;
-    void *result = ((void *(*)(void *))(*(void ***)arg0)[3])(arg0);
+    void *result = ((V *)arg0)->f1();
     if (result != 0) {
         va_start(args, format);
         vsprintf(buffer, format, args);
