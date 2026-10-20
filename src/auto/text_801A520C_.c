@@ -43,6 +43,17 @@ struct Dummy_801A5258_v2 {
     virtual void d8() {}
     virtual void d9() {}
 };
+struct Dummy_801A5660 {
+    virtual void d0() {}
+    virtual void d1() {}
+    virtual void d2() {}
+    virtual void d3() {}
+    virtual void d4() {}
+    virtual void d5() {}
+    virtual void d6() {}
+    virtual void d7() {}
+    virtual void d8() {}
+};
 struct Dummy_801A5258 {
     virtual void d0() {}
     virtual void d1() {}
@@ -64,8 +75,8 @@ extern "C" void fn_801A5258(void *arg0, void *arg1) {
     *(int *)((char *)arg0 + 0x2708) = 0;
     *(unsigned char *)((char *)arg0 + 0x2704) = 0;
     *(int *)((char *)arg0 + 0x2700) = 0;
-    ((Dummy_801A5258 *)*(void **)((char *)arg0 + 0x270C))->d2(arg0, arg1, 0);
-    ((Dummy_801A5258 *)*(void **)((char *)arg0 + 0x270C))->d9();
+    ((Dummy_801A5258_v2 *)*(void **)((char *)arg0 + 0x270C))->d2(arg0, arg1);
+    ((Dummy_801A5258_v2 *)*(void **)((char *)arg0 + 0x270C))->d9();
     zero = lbl_805623C8;
     *(int *)((char *)arg0 + 0x2714) = 1;
     *(int *)((char *)arg0 + 0x2720) = 0;
