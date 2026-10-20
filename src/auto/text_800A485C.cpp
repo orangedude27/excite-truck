@@ -2547,7 +2547,7 @@ extern "C" s32 fn_800BB4D4(s32 a,s32 b,s32 c,s32 d) {
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055DD6C;
 extern "C" s32 *lbl_8055DD70;
-extern "C" void *lbl_80407560;
+extern "C" u8 lbl_80407560[0x18];
 extern "C" const char lbl_8031B838[];
 extern "C" s32 fn_800BC2EC(void *, s32 *);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
@@ -2556,6 +2556,90 @@ extern "C" void fn_800BBCB4(void* context) {
     *(s32*)((u8*)context + 0x24) = 0;
     IOS_Close(*(s32*)context);
     *(s32*)context = -1;
+}
+
+extern "C" s32 fn_800BBEA4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
+    const char *str = lbl_8031B838;
+    s32 field10 = *(s32 *)((u8 *)arg0 + 0x10);
+    s32 r30 = 3;
+    s32 res;
+
+    if (lbl_80559248 < 0) {
+        res = (s32)0xC1000000;
+    } else if (*(s32 *)((u8 *)arg0 + 0x24) == 0) {
+        res = (s32)0xC1000000;
+    } else {
+        OSLockMutex(&lbl_80407560);
+        if (lbl_8055DD6C != 0) {
+            OSUnlockMutex(&lbl_80407560);
+            res = (s32)0xC1000000;
+        } else {
+            lbl_8055DD6C = 1;
+            OSUnlockMutex(&lbl_80407560);
+
+            if (*(u32 *)((u8 *)arg0 + 0x24) == 1) {
+                s32 sp18;
+                res = fn_800BB0A8(*(s32 *)arg0, 7, 3, 2, 0, 0, 0, 0, 0, (s32)&sp18, 0, 0);
+                *(s32 *)((u8 *)arg0 + 0x24) = 2;
+                if (res == (s32)0xC1000003) {
+                    res = 0;
+                } else if (res != 0) {
+                    OSReport(str + 0x5B8, res, (s32)0xC1000003);
+                }
+                lbl_8055DD6C = 0;
+                if (res != 0) {
+                    goto end;
+                }
+            }
+
+            if (arg2 == 0 || arg3 == 0) {
+                lbl_8055DD6C = 0;
+                res = (s32)0xC1000000;
+            } else {
+                switch (arg1) {
+                case 0x33:
+                    res = fn_800BC2EC(arg0, arg2);
+                    lbl_8055DD6C = 0;
+                    break;
+
+                case 0x29:
+                    res = 0;
+                    if (arg2 != 0) {
+                        res = IOS_Ioctl(*(s32 *)arg0, 0xC, 0, 0, (void *)lbl_8055DD70, 4);
+                        if (res != 0) {
+                            OSReport(str + 0x5E8, res);
+                        } else {
+                            *arg2 = *lbl_8055DD70;
+                        }
+                    }
+                    lbl_8055DD6C = 0;
+                    break;
+
+                case 3:
+                    res = 0;
+                    *arg2 = *(s32 *)((u8 *)arg0 + 0x10);
+                    lbl_8055DD6C = 0;
+                    break;
+
+                case 9:
+                case 10:
+                    r30 = 3;
+                    /* fallthrough */
+
+                default:
+                    res = fn_800BB0A8(*(s32 *)arg0, arg1, 3, r30, field10, 0, 0, 0, 0, (s32)arg2, 0, 0);
+                    lbl_8055DD6C = 0;
+                    break;
+                }
+            }
+        }
+    }
+
+end:
+    if (res != 0) {
+        OSReport(str + 0x36C, str + 0x5A0, res);
+    }
+    return res;
 }
 
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
