@@ -45,7 +45,8 @@ void *fn_801B4610(void *arg0, int arg1) {
     if (arg0 != 0) {
         obj = *(void **)arg0;
         if (obj != 0) {
-            ((void (**)(void *, int))*(void **)obj)[2](obj, 1);
+            register void **vtable = *(void ***)obj;
+            ((void (*)(void *, int))vtable[2])(obj, 1);
         }
         zero = 0;
         *(int *)((char *)arg0 + 0x00) = zero;
@@ -64,6 +65,20 @@ void *fn_801B4610(void *arg0, int arg1) {
     return arg0;
 }
 
+extern int lbl_80335DB8;
+extern int fn_8012850C(int, int *);
+extern int fn_802E4CA4(int);
+extern void fn_801B4720(int);
+#pragma push
+#pragma small_data off
+#pragma pop
+void fn_801B46BC(void *arg0, int arg1, int arg2) {
+    *(int *)((char *)arg0 + 0x1C) = arg1;
+    *(int *)((char *)arg0 + 0x18) = fn_8012850C(arg1 * 0xC, &lbl_80335DB8);
+    *(int *)((char *)arg0 + 4) = arg2;
+    *(int *)arg0 = fn_802E4CA4(arg2);
+    fn_801B4720((int)arg0);
+}
 void fn_801B4720(int arg0) {
     unsigned int i;
     int offset;
@@ -113,6 +128,50 @@ int fn_801B47F0(int arg0) {
 }
 
 int fn_801B4818(void) { return 0x100000; }
+
+void fn_801B4820(int *arg0, int *arg1, unsigned int arg2) {
+    unsigned int value;
+    unsigned int limit;
+
+    value = arg2 / ((fn_801B2F24() + 1) * 0x44 + 0xC);
+    limit = 0x7E90;
+    if ((int)value < 0x7E90) {
+        limit = value;
+    }
+    *arg0 = 0x5000;
+    *arg1 = 0x32;
+    fn_802E30C8(&lbl_80335DCC, (limit / 9) / 60, (limit / 9) % 60,
+                (0x32 * 0xC) >> 10, *arg0 / 1024, arg2 >> 10);
+}
+
+#pragma dont_inline on
+void fn_801B49C8(void *arg0) {
+    *(unsigned char *)arg0 = 1;
+}
+#pragma dont_inline reset
+
+extern int fn_801B4B44(char *);
+extern void fn_801B4C9C(int, int);
+extern void fn_801B4C58(int);
+extern void fn_801B4C60(int);
+extern float fn_801B4D10(int, int);
+int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
+    int index;
+    void *obj;
+    int (*call)(void *, int, int);
+    if (fn_801B4B44(arg0) == 0) return 0;
+    index = ((int (*)(void *, int))fn_801B4C9C)(arg0, arg4);
+    obj = ((void *(*)(void *, int))fn_801B4C58)(arg0, index);
+    call = (int (*)(void *, int, int))(*(void ***)*(void **)((char *)arg0 + 4) + 3);
+    *arg1 = (void *)call(*(void **)((char *)arg0 + 4), *(int *)((char *)obj + 8), 0x2200);
+    if (fn_801B4C1C((int)arg0, arg4)) *arg2 = *arg1;
+    else {
+        obj = ((void *(*)(void *, int))fn_801B4C60)(arg0, index);
+        *arg2 = (void *)call(*(void **)((char *)arg0 + 4), *(int *)((char *)obj + 8), 0x2200);
+    }
+    *arg3 = fn_801B4D10((int)arg0, arg4);
+    return 1;
+}
 
 int fn_801B4B44(char *arg0) {
     int result = 0;
@@ -176,6 +235,8 @@ char fn_801B526C(void) {
 
 extern int memset(void *, int, unsigned int);
 extern int lbl_8055E6D4;
+#pragma push
+#pragma small_data off
 void fn_801B5274(void) {
     memset((char *)&lbl_80435C70 + 0x208, 0, 0x40);
     *(int *)((char *)&lbl_80435C70 + 0x200) = 0;
@@ -184,7 +245,7 @@ void fn_801B5274(void) {
     lbl_8055E6D0 = 0;
     lbl_8055E6D4 = 3;
 }
-
+#pragma pop
 void fn_801B52CC(void) {
     int result;
     fn_802E30C8(&lbl_80335E10);
