@@ -230,12 +230,11 @@ int fn_801667F0(void) {
 }
 
 static inline void helper_clear(void *arg0) {
-    if (arg0 != 0) {
-        *(int *)arg0 = 0;
-        *((int *)arg0 + 1) = 0;
-        *((int *)arg0 + 2) = 0;
-        fn_80128668(arg0);
-    }
+    if (arg0 == 0) return;
+    *(int *)arg0 = 0;
+    *((int *)arg0 + 1) = 0;
+    *((int *)arg0 + 2) = 0;
+    fn_80128668(arg0);
 }
 
 void fn_80166814(void) {
@@ -250,7 +249,7 @@ void fn_80166814(void) {
             if (x != 0) {
                 fn_80128670((char *)x - 0x10);
             }
-            fn_80165970(p, 1);
+            helper_clear(p);
             *(void **)&lbl_8055E32C = 0;
         }
     }
