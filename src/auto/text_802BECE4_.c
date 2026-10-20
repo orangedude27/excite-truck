@@ -89,6 +89,7 @@ void fn_802BF350(void) {
 void fn_802BF40C(void) {
     int i;
     void **obj;
+    int handle;
     for (i = 0; i < lbl_8055FADC; i++) {
         obj = (void **)lbl_804C07F0[i];
         if (obj != 0) {
@@ -98,8 +99,9 @@ void fn_802BF40C(void) {
             lbl_804C07F0[i] = 0;
         }
     }
+    handle = lbl_8055CF6C;
     lbl_8055FADC = 0;
-    if (lbl_8055CF6C != -1) {
+    if (handle != -1) {
         fn_802C6CF8();
         lbl_8055CF6C = -1;
     }
@@ -129,6 +131,23 @@ void fn_802BF508(void) {
 
 float fn_802BF590(void) { return lbl_8055FAF4; }
 
+int fn_802BF6AC(void) {
+    extern void *fn_801284F8(int, const char *);
+    extern void *fn_802BF780(void);
+    extern const char lbl_8034AD90[];
+    void *obj;
+    obj = fn_801284F8(0x18, lbl_8034AD90);
+    if (obj == 0)
+        return 0;
+    obj = fn_802BF780();
+    if (obj == 0)
+        return 0;
+    if (((int (*)(void *))(*(void ***)obj)[5])(obj) != 0)
+        return (int)obj;
+    ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+    return 0;
+}
+
 extern void *fn_801284F8(int, const char*);
 extern void* fn_802BF780(void);
 extern const char lbl_8034AD90[];
@@ -153,51 +172,62 @@ extern void *fn_801284F8(int, const char *);
 extern void *fn_802C0138(void);
 extern char lbl_8034ADC8[];
 int fn_802C00A4(void) {
+    extern void *fn_801284F8(int, const char *);
+    extern void *fn_802C0138(void);
+    extern char lbl_8034ADC8[];
     void *obj;
-    int result;
-
     obj = fn_801284F8(0x2c60, lbl_8034ADC8);
+    if (obj == 0)
+        return 0;
+    obj = fn_802C0138();
     if (obj != 0) {
-        obj = fn_802C0138();
-    }
-    if (obj == 0) {
-        return (int)obj;
-    }
-    if (((int (*)(void *))(*(void ***)obj)[5])(obj) == 0) {
-        if (obj != 0) {
-            ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+        if (((int (*)(void *))(*(void ***)obj)[5])(obj) == 0) {
+            if (obj != 0)
+                ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+            obj = 0;
         }
-        obj = 0;
     }
-    result = (int)obj;
-    return result;
+    return (int)obj;
 }
 
-void *fn_802C0310(void *arg0, int arg1) {
+extern char lbl_8034AE08[];
+#pragma cplusplus on
+extern "C" void *fn_802C0310(void *arg0, int arg1) {
+    class Obj {
+    public:
+        virtual void v0(int);
+    };
     int id;
     void *obj;
     if (arg0 != 0) {
         id = *(int *)((char *)arg0 + 0x2c50);
-        *(char **)arg0 = (char *)0x8034ae08;
+        *(void **)arg0 = lbl_8034AE08;
         if (id != -2) fn_802CAC54(id);
         id = *(int *)((char *)arg0 + 0x2c54);
         if (id != -2) fn_802CAC54(id);
         obj = *(void **)((char *)arg0 + 0x2c58);
-        if (obj != 0) ((void (*)(void *, int))(*(void ***)obj)[2])(obj, 1);
+        if (obj != 0) {
+            if (obj != 0)
+                ((Obj *)obj)->v0(1);
+        }
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-
+#pragma cplusplus off
 void fn_802C03B4(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 0x2c58);
+    void (*fn)(void *);
     if (obj == 0) return;
     if (lbl_8055CF71 == 0) return;
-    ((void (*)(void))(*(void ***)obj)[3])();
+    fn = (void (*)(void *))(*(void ***)obj)[3];
+    fn(obj);
 }
 
 int fn_802C03E0(u32 arg0) {
-    return ((arg0 & 0xFFFF) << 8) | ((arg0 >> 24) | ((arg0 & 0xFF0000) << 8));
+    register u32 a = (arg0 & 0xFFFF) << 8;
+    register u32 b = (arg0 << 8) & 0xFF0000FF;
+    return a | b;
 }
 
 int fn_802C0C98(void *arg0) { return *(int *)((char *)arg0 + 8); }
