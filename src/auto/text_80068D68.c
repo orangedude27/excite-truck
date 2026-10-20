@@ -96,6 +96,7 @@ extern const char lbl_805590A4[];
 extern char lbl_8031A620[];
 extern u8 lbl_8055DC90;
 #include "revolution/BTE/stack/include/sdp_api.h"
+#include "revolution/BTE/stack/include/l2c_api.h"
 typedef struct hcisu_if {
     void (*init)(u32, u32, u32);
     void (*open)(void *);
@@ -1448,7 +1449,7 @@ s32 bta_dm_sm_execute(BT_HDR *p_msg) {
 
 loop:
     event = p_msg->event;
-    action = table[i + (((event & 0xFF) * 4) - (event & 0xFF))];
+    action = table[((event & 0xFF) * 4) - (event & 0xFF) + i];
     if (action != 0xD) {
         ((tAction *)lbl_802EEA38)[action](p_msg);
         i++;
@@ -4181,6 +4182,102 @@ void l2c_csm_w4_l2cap_connect_rsp(void *p_ccb, u16 event, BT_HDR *p_msg)
     }
 }
 
+extern void l2cu_process_peer_cfg_req();
+extern void l2cu_send_peer_config_rsp(void *, void *);
+extern void l2cu_send_peer_disc_req(void *);
+extern void forward_peer_data(void *, void *);
+extern void l2cu_process_our_cfg_req(void *, void *);
+extern void l2cu_send_peer_config_req(void *, void *);
+void l2c_csm_open(void *p_ccb, u16 event, void *p_data)
+{
+    char *p_str = lbl_803183B0;
+    void (*disconnect_ind)(u16, u16) = *(void (**)(u16, u16))((u8 *)*(void **)((u8 *)p_ccb + 0x30) + 0x18);
+    u16 local_cid = *(u16 *)((u8 *)p_ccb + 0x14);
+
+    if (lbl_803C4040[0] >= 4)
+        fn_80070954(0x80003, p_str + 0x628, event);
+
+    switch (event)
+    {
+    case 3:
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x40, *(u16 *)((u8 *)p_ccb + 0x14));
+        l2cu_release_ccb(p_ccb);
+        disconnect_ind(local_cid, 0);
+        break;
+
+    case 6:
+    {
+        void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
+        void (*cb)(void *) = *(void (**)(void *))((u8 *)p_rcb + 0x20);
+        if (cb != 0)
+            cb((u8 *)*(void **)((u8 *)p_ccb + 0x10) + 0x2A);
+        break;
+    }
+
+    case 14:
+    {
+        u32 tempstate = *(u32 *)((u8 *)p_ccb + 4);
+        u8 tempcfgdone = *((u8 *)p_ccb + 0x34);
+        *(u32 *)((u8 *)p_ccb + 4) = 5;
+        *((u8 *)p_ccb + 0x34) = 0;
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        if (((u8 (*)(void *, void *))l2cu_process_peer_cfg_req)(p_ccb, p_data))
+        {
+            void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
+            void (*config_ind)(u16, void *) = *(void (**)(u16, void *))((u8 *)p_rcb + 0x10);
+            config_ind(*(u16 *)((u8 *)p_ccb + 0x14), p_data);
+        }
+        else
+        {
+            fn_80070F90((void *)((u32)p_ccb + 0x18));
+            *(u32 *)((u8 *)p_ccb + 4) = tempstate;
+            *((u8 *)p_ccb + 0x34) = tempcfgdone;
+            l2cu_send_peer_config_rsp(p_ccb, p_data);
+        }
+        break;
+    }
+
+    case 17:
+    {
+        void *p_rcb;
+        *(u32 *)((u8 *)p_ccb + 4) = 8;
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        if (lbl_803C4040[0] >= 3)
+            fn_80070954(0x80002, p_str + 0x54C, *(u16 *)((u8 *)p_ccb + 0x14));
+        p_rcb = *(void **)((u8 *)p_ccb + 0x30);
+        (*(void (**)(u16, u16))((u8 *)p_rcb + 0x18))(*(u16 *)((u8 *)p_ccb + 0x14), 1);
+        break;
+    }
+
+    case 19:
+    {
+        void *p_rcb = *(void **)((u8 *)p_ccb + 0x30);
+        (*(void (**)(u16, void *))((u8 *)p_rcb + 0x24))(*(u16 *)((u8 *)p_ccb + 0x14), p_data);
+        break;
+    }
+
+    case 26:
+        l2cu_send_peer_disc_req(p_ccb);
+        *(u32 *)((u8 *)p_ccb + 4) = 7;
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        break;
+
+    case 29:
+        *(u16 *)p_data = *(u16 *)((u8 *)p_ccb + 0x14);
+        forward_peer_data(p_ccb, p_data);
+        break;
+
+    case 23:
+        l2cu_process_our_cfg_req(p_ccb, p_data);
+        l2cu_send_peer_config_req(p_ccb, p_data);
+        *(u32 *)((u8 *)p_ccb + 4) = 5;
+        *((u8 *)p_ccb + 0x34) = 0;
+        btu_start_timer((TIMER_LIST_ENT *)((u8 *)p_ccb + 0x18), 3, 0x1E);
+        break;
+    }
+}
+
 extern char lbl_80318B28[];
 extern char lbl_803183F0[];
 void l2c_csm_w4_l2ca_disconnect_rsp(void *p_ccb, u16 event, void *p_data)
@@ -4344,6 +4441,385 @@ void fn_8008C464(u8 *bd_addr) {
     void *lcb = l2cu_find_lcb_by_bd_addr(bd_addr);
     if (lcb != 0 && *(u32 *)((u8 *)lcb + 8) == 0)
         btu_start_timer((u8 *)lcb + 0x10, 2, 0x78);
+}
+
+char check_offset[offsetof(tL2CAP_CFG_INFO, flags)];
+void fn_80070984(u32, void *);
+extern char lbl_80318E58[];
+void *l2cu_find_rcb_by_psm(u16 psm);
+void l2cu_send_peer_echo_rsp(void *arg0, s32 arg1, u8 *arg2, u32 arg3);
+void l2cu_send_peer_info_rsp(void *arg0, s32 arg1, u16 arg2);
+void l2cu_reject_connection(void *, u16, u8, u16);
+void *l2cu_allocate_ccb(void *, u16);
+void l2cu_send_peer_config_rej(void *, u8 *, u16, u16);
+void l2cu_send_peer_cmd_reject(void *, u16, u8, u16, u16);
+void btu_stop_timer(void *);
+void l2cu_send_peer_info_req(void *arg0, u16 arg1);
+void l2cu_process_fixed_chnl_resp(void *arg0);
+void process_l2cap_cmd(void *p_lcb, UINT8 *p, UINT16 pkt_len)
+{
+    typedef struct {
+        UINT8 bd_addr[6];
+        UINT8 status;
+        UINT8 pad;
+        UINT16 psm;
+        UINT16 l2cap_result;
+        UINT16 l2cap_status;
+        UINT16 remote_cid;
+    } tL2C_CONN_INFO_LOCAL;
+    UINT8 *p_pkt_end, *p_next_cmd, *p_cfg_end, *p_cfg_start;
+    UINT8 cmd_code, cfg_code, cfg_len, id;
+    tL2C_CONN_INFO_LOCAL con_info;
+    tL2CAP_CFG_INFO cfg_info;
+    UINT16 rej_reason, rej_mtu, lcid, rcid, info_type;
+    u8 *p_ccb;
+    void *p_rcb;
+    BOOLEAN cfg_rej;
+    UINT16 cfg_rej_len, cmd_len;
+    UINT16 result;
+
+    p_next_cmd = p;
+    p_pkt_end = p + pkt_len;
+
+    while (TRUE)
+    {
+        if ((p = p_next_cmd) > (p_pkt_end - 4))
+            break;
+
+        STREAM_TO_UINT8 (cmd_code, p);
+        STREAM_TO_UINT8 (id, p);
+        STREAM_TO_UINT16 (cmd_len, p);
+
+        if ((p_next_cmd = p + cmd_len) > p_pkt_end)
+        {
+            if (lbl_803C4040[0] >= 2)
+                ((void (*)(u32, void *, int, int, int))fn_80070984)(0x80001, lbl_80318E58 + 0x100, pkt_len, cmd_len, cmd_code);
+            break;
+        }
+
+        switch (cmd_code)
+        {
+        case 1:
+            STREAM_TO_UINT16 (rej_reason, p);
+            if (rej_reason == 1)
+            {
+                STREAM_TO_UINT16 (rej_mtu, p);
+                if (lbl_803C4040[0] >= 2)
+                    fn_8007096C(0x80001, lbl_80318E58 + 0x134, *(u16 *)((u8 *)p_lcb + 0x28), rej_mtu);
+            }
+            if (rej_reason == 2)
+            {
+                STREAM_TO_UINT16 (rcid, p);
+                STREAM_TO_UINT16 (lcid, p);
+
+                if (lbl_803C4040[0] >= 2)
+                    fn_8007096C(0x80001, lbl_80318E58 + 0x158, lcid, rcid);
+
+                if (((p_ccb = (u8 *)l2cu_find_ccb_by_cid (p_lcb, lcid)) != NULL)
+                 && (*(u16 *)(p_ccb + 0x16) == rcid))
+                {
+                    fn_80089E40(p_ccb, 3, NULL);
+                }
+            }
+            break;
+
+        case 2:
+            STREAM_TO_UINT16 (con_info.psm, p);
+            STREAM_TO_UINT16 (rcid, p);
+            if ((p_rcb = l2cu_find_rcb_by_psm (con_info.psm)) == NULL)
+            {
+                if (lbl_803C4040[0] >= 2)
+                    fn_80070954(0x80001, lbl_80318E58 + 0x188, con_info.psm);
+                l2cu_reject_connection (p_lcb, rcid, id, 2);
+                break;
+            }
+            if ((p_ccb = (u8 *)l2cu_allocate_ccb (p_lcb, 0)) == NULL)
+            {
+                if (lbl_803C4040[0] >= 1)
+                    fn_8007093C(0x80000, lbl_80318E58 + 0x1B4);
+                l2cu_reject_connection (p_lcb, rcid, id, 4);
+                break;
+            }
+            p_ccb[0x36] = id;
+            *(void **)(p_ccb + 0x30) = p_rcb;
+            *(u16 *)(p_ccb + 0x16) = rcid;
+
+            fn_80089E40(p_ccb, 10, &con_info);
+            break;
+
+        case 3:
+            STREAM_TO_UINT16 (con_info.remote_cid, p);
+            STREAM_TO_UINT16 (lcid, p);
+            STREAM_TO_UINT16 (con_info.l2cap_result, p);
+            STREAM_TO_UINT16 (con_info.l2cap_status, p);
+
+            if ((p_ccb = (u8 *)l2cu_find_ccb_by_cid (p_lcb, lcid)) == NULL)
+            {
+                if (lbl_803C4040[0] >= 2)
+                    fn_8007096C(0x80001, lbl_80318E58 + 0x1D4, lcid, con_info.remote_cid);
+                break;
+            }
+            if (p_ccb[0x35] != id)
+            {
+                if (lbl_803C4040[0] >= 2)
+                    fn_8007096C(0x80001, lbl_80318E58 + 0x204, p_ccb[0x35], id);
+                break;
+            }
+
+            if (con_info.l2cap_result == 0)
+                fn_80089E40(p_ccb, 11, &con_info);
+            else if (con_info.l2cap_result == 1)
+                fn_80089E40(p_ccb, 12, &con_info);
+            else
+                fn_80089E40(p_ccb, 13, &con_info);
+
+            break;
+
+        case 4:
+            p_cfg_end = p + cmd_len;
+            cfg_rej = FALSE;
+            cfg_rej_len = 0;
+
+            STREAM_TO_UINT16 (lcid, p);
+            STREAM_TO_UINT16 (cfg_info.flags, p);
+
+            p_cfg_start = p;
+
+            cfg_info.flush_to_present = cfg_info.mtu_present = cfg_info.qos_present =
+                cfg_info.fcr_present = FALSE;
+
+            while (p < p_cfg_end)
+            {
+                STREAM_TO_UINT8 (cfg_code, p);
+                STREAM_TO_UINT8 (cfg_len, p);
+
+                switch (cfg_code & 0x7F)
+                {
+                case 1:
+                    cfg_info.mtu_present = TRUE;
+                    STREAM_TO_UINT16 (cfg_info.mtu, p);
+                    break;
+
+                case 2:
+                    cfg_info.flush_to_present = TRUE;
+                    STREAM_TO_UINT16 (cfg_info.flush_to, p);
+                    break;
+
+                case 3:
+                    cfg_info.qos_present = TRUE;
+                    STREAM_TO_UINT8  (cfg_info.qos.qos_flags, p);
+                    STREAM_TO_UINT8  (cfg_info.qos.service_type, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.token_rate, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.token_bucket_size, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.peak_bandwidth, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.latency, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.delay_variation, p);
+                    break;
+
+                case 4:
+                    cfg_info.fcr_present = TRUE;
+                    STREAM_TO_UINT8 (cfg_info.fcr.mode, p);
+                    STREAM_TO_UINT8 (cfg_info.fcr.tx_win_sz, p);
+                    STREAM_TO_UINT8 (cfg_info.fcr.max_transmit, p);
+                    STREAM_TO_UINT16 (cfg_info.fcr.rtrans_tout, p);
+                    STREAM_TO_UINT16 (cfg_info.fcr.mon_tout, p);
+                    STREAM_TO_UINT16 (cfg_info.fcr.mps, p);
+                    break;
+
+                default:
+                    if ((cfg_len + 2) <= cmd_len)
+                    {
+                        p += cfg_len;
+                        if ((cfg_code & 0x80) == 0)
+                        {
+                            cfg_rej_len += cfg_len + 2;
+                            cfg_rej = TRUE;
+                        }
+                    }
+                    else
+                    {
+                        p = p_cfg_end;
+                        cfg_rej = TRUE;
+                    }
+                    break;
+                }
+            }
+
+            if ((p_ccb = (u8 *)l2cu_find_ccb_by_cid (p_lcb, lcid)) != NULL)
+            {
+                p_ccb[0x36] = id;
+                if (cfg_rej)
+                {
+                    l2cu_send_peer_config_rej (p_ccb, p_cfg_start, (UINT16)(cmd_len - 4), cfg_rej_len);
+                }
+                else
+                {
+                    fn_80089E40 (p_ccb, 14, &cfg_info);
+                }
+            }
+            else
+            {
+                l2cu_send_peer_cmd_reject (p_lcb, 2, id, 0, 0);
+            }
+            break;
+
+        case 5:
+            p_cfg_end = p + cmd_len;
+            STREAM_TO_UINT16 (lcid, p);
+            STREAM_TO_UINT16 (cfg_info.flags, p);
+            STREAM_TO_UINT16 (cfg_info.result, p);
+
+            cfg_info.flush_to_present = cfg_info.mtu_present = cfg_info.qos_present =
+                cfg_info.fcr_present = FALSE;
+
+            while (p < p_cfg_end)
+            {
+                STREAM_TO_UINT8 (cfg_code, p);
+                STREAM_TO_UINT8 (cfg_len, p);
+
+                switch (cfg_code & 0x7F)
+                {
+                case 1:
+                    cfg_info.mtu_present = TRUE;
+                    STREAM_TO_UINT16 (cfg_info.mtu, p);
+                    break;
+
+                case 2:
+                    cfg_info.flush_to_present = TRUE;
+                    STREAM_TO_UINT16 (cfg_info.flush_to, p);
+                    break;
+
+                case 3:
+                    cfg_info.qos_present = TRUE;
+                    STREAM_TO_UINT8  (cfg_info.qos.qos_flags, p);
+                    STREAM_TO_UINT8  (cfg_info.qos.service_type, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.token_rate, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.token_bucket_size, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.peak_bandwidth, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.latency, p);
+                    STREAM_TO_UINT32 (cfg_info.qos.delay_variation, p);
+                    break;
+
+                case 4:
+                    cfg_info.fcr_present = TRUE;
+                    STREAM_TO_UINT8 (cfg_info.fcr.mode, p);
+                    STREAM_TO_UINT8 (cfg_info.fcr.tx_win_sz, p);
+                    STREAM_TO_UINT8 (cfg_info.fcr.max_transmit, p);
+                    STREAM_TO_UINT16 (cfg_info.fcr.rtrans_tout, p);
+                    STREAM_TO_UINT16 (cfg_info.fcr.mon_tout, p);
+                    STREAM_TO_UINT16 (cfg_info.fcr.mps, p);
+                    break;
+                }
+            }
+
+            if ((p_ccb = (u8 *)l2cu_find_ccb_by_cid (p_lcb, lcid)) != NULL)
+            {
+                if (p_ccb[0x35] != id)
+                {
+                    if (lbl_803C4040[0] >= 2)
+                        fn_8007096C (0x80001, lbl_80318E58 + 0x230, p_ccb[0x35], id);
+                    break;
+                }
+                if ((cfg_info.result == 0) || (cfg_info.result == 1))
+                    fn_80089E40 (p_ccb, 15, &cfg_info);
+                else
+                    fn_80089E40 (p_ccb, 16, &cfg_info);
+            }
+            else
+            {
+                if (lbl_803C4040[0] >= 2)
+                    fn_80070954 (0x80001, lbl_80318E58 + 0x25C, lcid);
+            }
+            break;
+
+        case 6:
+            STREAM_TO_UINT16 (lcid, p);
+            STREAM_TO_UINT16 (rcid, p);
+
+            if ((p_ccb = (u8 *)l2cu_find_ccb_by_cid (p_lcb, lcid)) != NULL)
+            {
+                if (*(u16 *)(p_ccb + 0x16) == rcid)
+                {
+                    p_ccb[0x36] = id;
+                    fn_80089E40 (p_ccb, 17, &con_info);
+                }
+            }
+            else
+                l2cu_send_peer_disc_rsp (p_lcb, id, lcid, rcid);
+
+            break;
+
+        case 7:
+            STREAM_TO_UINT16 (rcid, p);
+            STREAM_TO_UINT16 (lcid, p);
+
+            if ((p_ccb = (u8 *)l2cu_find_ccb_by_cid (p_lcb, lcid)) != NULL)
+            {
+                if ((*(u16 *)(p_ccb + 0x16) == rcid) && (p_ccb[0x35] == id))
+                {
+                    fn_80089E40 (p_ccb, 18, &con_info);
+                }
+            }
+            break;
+
+        case 8:
+            if (cmd_len < (*(u16 *)(lbl_803C0A50 + 0x7E) - 12))
+            {
+                l2cu_send_peer_echo_rsp (p_lcb, id, p, cmd_len);
+            }
+            else
+            {
+                l2cu_send_peer_echo_rsp (p_lcb, id, NULL, 0);
+            }
+            break;
+
+        case 9:
+            if (*(void **)((u8 *)p_lcb + 0x58))
+            {
+                void (*p_cb)(int) = *(void (**)(int))((u8 *)p_lcb + 0x58);
+                *(void **)((u8 *)p_lcb + 0x58) = NULL;
+                (*p_cb) (0);
+            }
+            break;
+
+        case 10:
+            STREAM_TO_UINT16 (info_type, p);
+            l2cu_send_peer_info_rsp (p_lcb, id, info_type);
+            break;
+
+        case 11:
+            if (((u8 *)p_lcb)[0x67])
+            {
+                btu_stop_timer ((u8 *)p_lcb + 0x38);
+                ((u8 *)p_lcb)[0x67] = FALSE;
+            }
+
+            STREAM_TO_UINT16 (info_type, p);
+            STREAM_TO_UINT16 (result, p);
+
+            ((u8 *)p_lcb)[0x68] |= (1 << info_type);
+
+            if ( (info_type == 2)
+              && (result == 0) )
+            {
+                STREAM_TO_UINT32( *(u32 *)((u8 *)p_lcb + 0x6C), p );
+            }
+
+            con_info.status = 0;
+            memcpy (con_info.bd_addr, (u8 *)p_lcb + 0x50, 6);
+            for (p_ccb = *(u8 **)((u8 *)p_lcb + 0x2C); p_ccb; p_ccb = *(u8 **)(p_ccb + 0x4))
+            {
+                fn_80089E40 (p_ccb, 20, &con_info);
+            }
+            break;
+
+        default:
+            if (lbl_803C4040[0] >= 2)
+                fn_80070954 (0x80001, lbl_80318E58 + 0x288, cmd_code);
+            l2cu_send_peer_cmd_reject (p_lcb, 0, id, 0, 0);
+            return;
+        }
+    }
 }
 
 void l2c_process_timeout(void *arg) {
