@@ -481,8 +481,17 @@ int fn_80005044(int* eventIndex, int* subIndex, const char* name) {
 #pragma pop
 
 #pragma push
+#pragma cplusplus on
 #pragma use_lmw_stmw off
-int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
+extern "C" int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
+    class VirtualObj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual const char* getName(const char*, u32*);
+    };
     int result = 0;
     int i;
     for (i = 0; i < fn_80012818(); i++) {
@@ -490,10 +499,8 @@ int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
         int j;
         for (j = 0; j < *(int*)(event + 0x70); j++) {
             u8* entry = fn_80012870(i, j);
-            GameVirtualObject* object = *(GameVirtualObject**)(entry + 0x20);
-            const GameVirtualTable* table = object->vtable;
-            const char* (*getName)(GameVirtualObject*, const char*, u32*) = table->getName;
-            const char* entryName = getName(object, lbl_80558918, lbl_80558920);
+            VirtualObj* object = *(VirtualObj**)(entry + 0x20);
+            const char* entryName = object->getName(lbl_80558918, lbl_80558920);
             if (stricmp(entryName, name) == 0) {
                 *eventIndex = i;
                 *subIndex = j;
@@ -507,7 +514,7 @@ int fn_80004F00(int* eventIndex, int* subIndex, const char* name) {
     }
     return result;
 }
-
+#pragma cplusplus off
 #pragma pop
 
 #pragma push
