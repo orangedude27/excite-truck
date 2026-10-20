@@ -410,7 +410,7 @@ extern "C" void fn_802195DC(void *arg0, s32 arg1) {
 extern "C" s32 fn_80219658(void) { return 0; }
 
 #pragma dont_inline on
-extern "C" void fn_80219660(void *arg0, s32 unused = 0) {
+extern "C" void fn_80219660(void *arg0) {
     void **vt = *(void ***)arg0;
     s32 a = *(s32 *)((u8 *)arg0 + 8);
     s32 b = *(s32 *)((u8 *)arg0 + 4);
