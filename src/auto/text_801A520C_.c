@@ -219,7 +219,7 @@ struct Dummy_801A5E98 {
 #pragma cplusplus on
 extern "C" void fn_801A5E98(void *arg0) {
     fn_8018AF00();
-    ((Dummy_801A5E98 *)*(void **)((char *)arg0 + 0x270C))->h10();
+    ((Dummy_801A5E98 *)*(void **)((char *)arg0 + 0x270C))->h14();
 }
 #pragma cplusplus off
 
