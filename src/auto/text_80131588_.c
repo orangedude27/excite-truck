@@ -40,11 +40,65 @@ typedef struct Unk131588 {
 } Unk131588;
 
 extern Unk131588 *fn_80131588(void *, s32);
-extern Unk131588 *fn_8012C370(u32, u32 *, s32, s32, u8 *);
+extern Unk131588 *fn_8012C370();
 extern void fn_80131960(void *, void *);
 extern char lbl_8032B4D0[], lbl_8032B4F8[], lbl_8032B558[], lbl_8032B6B8[], lbl_8032B6E4[], lbl_8032B714[];
 extern void fn_802E317C(const char*, ...);
 
+#pragma use_lmw_stmw off
+Unk131588 *fn_80131588(void *arg0, s32 arg1) {
+    u32 type;
+    u8 flag;
+    Unk131588 *r;
+    u8 *b;
+    s32 i, j;
+    u8 t;
+
+    r = fn_8012C370(0x56414C54, &type, 0, 0, &flag);
+    if (r != NULL) {
+        if (type == 0xB) {
+            if (flag != 0 && r != NULL) {
+                r->vtable = lbl_8032B558;
+                r->elems = (Unk131588Elem *)((char *)r + 0x10);
+                b = (u8 *)r;
+                t = b[4]; b[4] = b[7]; b[7] = t;
+                t = b[5]; b[5] = b[6]; b[6] = t;
+                t = b[8]; b[8] = b[0xB]; b[0xB] = t;
+                t = b[9]; b[9] = b[0xA]; b[0xA] = t;
+                for (i = 0; i < r->count; i++) {
+                    Unk131588Elem *e = &r->elems[i];
+                    if (e != NULL) fn_80131960(e, r);
+                    r->elems[i].parent = r;
+                }
+                for (i = 0; i < r->count; i++) {
+                    char *s = r->elems[i].str;
+                    if (s != NULL && *s != 0) {
+                        s32 found = 0;
+                        for (j = 0; j < r->count; j++) {
+                            if (stricmp(s, r->elems[j].name) == 0) {
+                                if (i == j) fn_802E317C(lbl_8032B714, s);
+                                if (found) {
+                                    fn_802E317C(lbl_8032B6E4, ((char *(*)(void *))r->elems[i].vtable[2])(&r->elems[i]), s);
+                                }
+                                found = 1;
+                                r->elems[i].link = &r->elems[j];
+                            }
+                        }
+                        if (!found) {
+                            fn_802E317C(lbl_8032B6B8, ((char *(*)(void *))r->elems[i].vtable[2])(&r->elems[i]), s);
+                        }
+                    }
+                }
+            }
+        } else {
+            fn_802E317C(lbl_8032B4D0, arg0);
+        }
+    } else if (arg1 == 0) {
+        fn_802E317C(lbl_8032B4F8, arg0);
+    }
+    return r;
+}
+#pragma use_lmw_stmw reset
 unsigned char* fn_801317F0(void* arg0) {
     unsigned char* p = *(unsigned char**)((char*)arg0 + 4);
     if ((int)*p == 0x24) return p + 6;
