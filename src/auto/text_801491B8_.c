@@ -87,8 +87,10 @@ typedef struct {
 #pragma cplusplus on
 class TObj80154618 {
 public:
-    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d0(); virtual void d1(); virtual void d2();
+    virtual void d3(); virtual void d4(); virtual void d5();
+    virtual int f6(int);
+    virtual void d7();
     virtual int f8(int);
 };
 #pragma cplusplus off
@@ -1315,13 +1317,13 @@ void fn_80154580(s32 arg0, void *arg1) {
 }
 
 #pragma cplusplus on
-s32 fn_80154618(void *arg0) {
+extern "C" s32 fn_80154618(void *arg0) {
     s32 **it = (s32 **)&lbl_804348E8;
     s32 found = 0;
     s32 i = 0;
     while (i < fn_801B2F24()) {
         if (*(s32 *)((u8 *)*it + 0x1F0) == 0x50) {
-            if (((VTable80154618 *)(*(s32 **)arg0))->fn(arg0, i) != 0) {
+            if (((TObj80154618 *)arg0)->f8(i) != 0) {
                 found = 1;
             }
         }
