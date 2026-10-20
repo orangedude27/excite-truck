@@ -6,7 +6,7 @@ extern u8 lbl_8055E674;
 extern s32 lbl_8055E67C;
 extern u8 lbl_8055E691;
 extern u8 lbl_8055E692;
-extern void fn_801B2EC0(void);
+extern void *fn_801B2EC0();
 extern s32 fn_80128668(void);
 extern char lbl_80335BFC[];
 extern f32 lbl_805625BC;
@@ -513,6 +513,111 @@ s32 fn_801B25B0(s32 *arg0, s32 *arg1) {
     return var_f31 > var_f1;
 }
 
+extern void *__AXFXGetLfoSinTable_801769CC(void);
+extern int fn_80019B3C(void);
+extern f32 fn_8013B650(int);
+extern void fn_801B1A5C(void *);
+extern f32 fn_801B88BC(void);
+extern u8 lbl_8055E698;
+extern s32 lbl_8055E69C;
+extern u8 lbl_8055E6B0;
+extern char lbl_80335BA8[];
+extern void *lbl_8055A8C0;
+extern f32 lbl_80562614;
+extern s32 fn_801B25B0(s32 *, s32 *);
+#pragma push
+#pragma processor 750
+void fn_801B265C(void) {
+    s32 *stack;
+    s32 i, j, k;
+    s32 count = (s32)lbl_8055E678;
+    void *base = lbl_8055E684;
+    register f32 temp_f31;
+
+    lbl_8055E6A8 = 1;
+    if ((*(s32 *)((u8 *)__AXFXGetLfoSinTable_801769CC() + 0x10) & 1) || fn_80019B3C() != 0) {
+        if (lbl_8055E6B0 == 0) {
+            lbl_8055E6B0 = 1;
+            fn_802E30C8(lbl_80335BA8, lbl_8055A8C0);
+        }
+        lbl_8055E6AC = lbl_8055E3C8 + lbl_80562614;
+    } else {
+        temp_f31 = lbl_8055E3C8;
+        lbl_8055E6AC = fn_801B88BC() + temp_f31;
+    }
+    lbl_8055E698 = 0;
+    lbl_8055E694 = 0;
+    lbl_8055E6A4 = lbl_805625BC;
+    lbl_8055E69C = 0;
+    lbl_8055E6A0 = 0;
+    memset(lbl_80435C30, -1, 0x20);
+    {
+        void *obj = fn_80156A40();
+        void **vtable = *(void ***)obj;
+        ((void (*)(void *))vtable[8])(obj);
+    }
+    i = 0;
+    j = 0;
+    while (i < count) {
+        fn_801B1A5C((u8 *)base + j);
+        j += 0x80;
+        i++;
+    }
+    i = 0;
+    j = 0;
+    while (i < count) {
+        void *obj = (u8 *)base + j;
+        f32 value = lbl_805625F0;
+        if (*(s32 *)((u8 *)obj + 0x5C + 0x1F0) == 0x51) {
+            value = fn_8013B650(*(s32 *)((u8 *)obj + 0x60));
+        }
+        if (__fabsf(*(f32 *)((u8 *)obj + 0x5C + 0x254)) > lbl_80558DC4) {
+            value = *(f32 *)((u8 *)obj + 0x5C + 0x254);
+        }
+        *(f32 *)((u8 *)obj + 0x24) = value;
+        j += 0x80;
+        i++;
+    }
+    stack = (s32 *)0;
+    k = 0;
+    if (count > 0) {
+        s32 n = count - 8;
+        if (count > 8) {
+            if ((count & 7) == 0 && count <= 0x7FFFFFFE) {
+                s32 m = (n + 7) >> 3;
+                if (n > 0) {
+                    do {
+                        stack[k] = k;
+                        stack[k + 1] = k + 1;
+                        stack[k + 2] = k + 2;
+                        stack[k + 3] = k + 3;
+                        stack[k + 4] = k + 4;
+                        stack[k + 5] = k + 5;
+                        stack[k + 6] = k + 6;
+                        stack[k + 7] = k + 7;
+                        k += 8;
+                        m--;
+                    } while (m != 0);
+                }
+            }
+        }
+        if (k < count) {
+            do {
+                stack[k] = k;
+                k++;
+            } while (k < count);
+        }
+    }
+    qsort(stack, (unsigned long)count, 4, (s32 (*)(const void *, const void *))fn_801B25B0);
+    i = 0;
+    j = 0;
+    while (j < count) {
+        *(s32 *)((u8 *)base + (stack[i] << 7) + 0x6C) = j;
+        i++;
+        j++;
+    }
+}
+#pragma pop
 void fn_801B2910(void) {
     register s32 var_r30;
     register s32 var_r31;
