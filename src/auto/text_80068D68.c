@@ -583,7 +583,7 @@ s32 fn_8006DF68(s32 *arg0) {
 u8 fn_8006DF84(void *arg0) {
     u16 val = *(u16 *)((u8 *)arg0 + 8);
     u32 tmp = __cntlzw(val);
-    return tmp >> 19;
+    return tmp >> 5;
 }
 
 void gki_timers_init(void) {
@@ -1513,23 +1513,25 @@ void bta_hh_api_disc_act(void *arg0, void *arg1) {
     }
 }
 
-void bta_hh_handsk_act(u8 *p_cb, u32 *p_data) {
+void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
     u8 hs_data[10];
     u8 conn[8];
     u8 cback_data[2];
     u8 *s = lbl_803151D8;
+    s32 result;
+    u8 status;
     typedef void (*cback_t)(u16, void *);
 
     if (lbl_8055DC80 >= 5) {
         char *name;
         switch (*(u16 *)(p_cb + 0x10)) {
-        case 2: name = (char *)s + 0x1f0; break;
         case 4: name = (char *)s + 0x16c; break;
         case 5: name = (char *)s + 0x180; break;
         case 6: name = (char *)s + 0x194; break;
         case 7: name = (char *)s + 0x1ac; break;
         case 8: name = (char *)s + 0x1c4; break;
         case 9: name = (char *)s + 0x1d8; break;
+        case 2: name = (char *)s + 0x1f0; break;
         default: name = (char *)s + 0x200; break;
         }
         ((void (*)(u32, void *, void *, u32))fn_8007096C)(0x504, (char *)s + 0x210, name, p_data[2]);
@@ -1539,20 +1541,38 @@ void bta_hh_handsk_act(u8 *p_cb, u32 *p_data) {
     case 4: case 6: case 8:
         memset(hs_data, 0, 10);
         hs_data[1] = p_cb[0x16];
-        hs_data[0] = hh_get_trans_status(p_data[2]);
+        result = p_data[2];
+        switch (result) {
+        case 0: status = 0; break;
+        case 1: case 2: case 3: case 4:
+            status = (u8)result; break;
+        case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15:
+        default: status = 5; break;
+        }
+        hs_data[0] = status;
         (*(cback_t *)(lbl_803C0D48 + 0x224))(*(u16 *)(p_cb + 0x10), hs_data);
         *(u16 *)(p_cb + 0x10) = 0;
         break;
     case 5: case 7: case 9:
         cback_data[1] = p_cb[0x16];
-        cback_data[0] = hh_get_trans_status(p_data[2]);
+        result = p_data[2];
+        switch (result) {
+        case 0: status = 0; break;
+        case 1: case 2: case 3: case 4:
+            status = (u8)result; break;
+        case 5: case 6: case 7: case 8: case 9: case 10: case 11: case 12: case 13: case 14: case 15:
+        default: status = 5; break;
+        }
+        cback_data[0] = status;
         (*(cback_t *)(lbl_803C0D48 + 0x224))(*(u16 *)(p_cb + 0x10), cback_data);
         *(u16 *)(p_cb + 0x10) = 0;
         break;
     case 2:
-        conn[6] = p_data[2] ? 8 : 0;
-        fn_80070FA4(conn, p_cb + 8);
+        status = 0;
+        if (p_data[2] != 0) status = 8;
+        conn[6] = status;
         conn[7] = p_cb[0x16];
+        fn_80070FA4(conn, p_cb + 8);
         (*(cback_t *)(lbl_803C0D48 + 0x224))(*(u16 *)(p_cb + 0x10), conn);
         bta_hh_trace_dev_db();
         *(u16 *)(p_cb + 0x10) = 0;
