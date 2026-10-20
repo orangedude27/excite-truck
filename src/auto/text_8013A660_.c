@@ -22,10 +22,10 @@ extern char lbl_8032C1A0[];
 extern char lbl_8032C1E8[];
 extern char lbl_8032C1F8[];
 typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
+typedef struct { int pad[6]; int (*m_fn)(void); } unkVtable7;
 typedef struct { int pad[9]; float (*m_float)(char *); } unkVtableFloat;
 void fn_8013A660(unkVtable **arg0, char *arg1, char *arg2) {
-    int result;
-    result = (*arg0)->m_fn();
+    int result = ((int (*)(void *))(*arg0)->m_fn)(arg0);
     if (result == 0) {
         fn_802E317C(lbl_8032C1A0, arg2, arg1);
     }
@@ -50,22 +50,24 @@ char *fn_8013A708(char *arg0, int arg1, int arg2) {
     return arg0;
 }
 
+#pragma dont_inline fn_8013A708
 int fn_8013A760(unkVtable **arg0, int arg1) {
     char buffer[0x20];
     int i = 0;
     do {
-        if (((int (*)(char *))(*arg0)->m_fn)(fn_8013A708(buffer, i, arg1)) != 0)
+        char *name = ((char *(*)(char *, int, int))fn_8013A708)(buffer, i, arg1);
+        if (((int (*)(unkVtable *, char *))(*arg0)->m_fn)(*arg0, name) != 0)
             return 1;
         i++;
     } while (i < 3);
     return 0;
 }
-
 void fn_8013A7E8(unkVtable **arg0, char *arg1, char *arg2) {
     char buffer[0x20];
     int i = 0;
     do {
-        fn_8013A660(arg0, fn_8013A708(buffer, i, (int)arg1), arg2);
+        char *name = ((char *(*)(char *, int, int))fn_8013A708)(buffer, i, (int)arg1);
+        fn_8013A660(arg0, name, arg2);
         i++;
     } while (i < 3);
 }
@@ -75,8 +77,8 @@ extern char lbl_8032C1F8[];
 int fn_8013A860(float *arg0, unkVtable **arg1) {
     int result = ((int (*)(char *))(*arg1)->m_fn)(lbl_8032C1E8);
     if (result != 0) {
-        arg0[0] = ((float (*)(char *))(*arg1)->m_fn)(lbl_8032C1F8);
-        arg0[1] = ((float (*)(char *))(*arg1)->m_fn)(lbl_8032C1E8);
+        arg0[0] = ((float (*)(char *))(*(void ***)arg1)[9])(lbl_8032C1F8);
+        arg0[1] = ((float (*)(char *))(*(void ***)arg1)[9])(lbl_8032C1E8);
     }
     return result;
 }
@@ -109,6 +111,19 @@ void *fn_8013B578(int arg0) {
     return base + offset + 8;
 }
 
+extern void **fn_801B2ED0(void);
+extern void *fn_80138B1C(int);
+extern float lbl_80561430;
+#pragma cplusplus on
+extern "C" float fn_8013B590(void) {
+    void *object = *fn_801B2ED0();
+    int value = ((int (*)(void))((void **)object)[7])();
+    void *result = fn_80138B1C(*(int *)((char *)value + 0x2C));
+    if (result != 0)
+        return *(float *)((char *)result + 0xC);
+    return lbl_80561430;
+}
+#pragma cplusplus off
 float fn_8013B650(int arg0) {
     float temp = fn_80134B58((float *)lbl_8032C364, lbl_80561434);
     return fn_8013B5DC(arg0, 3) + temp;
@@ -144,10 +159,11 @@ void fn_8013B6C0(int *arg0, float *arg1, int arg2) {
     }
 }
 
+#pragma dont_inline on
 float fn_8013B744(int arg0) {
-    if (lbl_8055E161 != 0) {
+    if ((unsigned char)lbl_8055E161 != 0) {
         return lbl_80561440 - lbl_80561460 * (float)arg0;
     }
     return *(float *)((char *)fn_8013B578(arg0) + 4) * lbl_80559C98;
 }
-
+#pragma dont_inline reset
