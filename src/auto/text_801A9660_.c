@@ -380,7 +380,7 @@ struct Dummy_801AD888 {
 };
 #pragma cplusplus on
 extern "C" void fn_801AD888(void *arg0) {
-    ((Dummy_801AD888 *)arg0)->d3();
+    ((Dummy_801AD888 *)arg0)->d2();
     ((void (*)(void *))fn_801AC254)(arg0);
 }
 #pragma cplusplus off
