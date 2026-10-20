@@ -159,6 +159,10 @@ int fn_801D7034(int arg0, int arg1) {
     return arg0;
 }
 
+void *fn_801D7200(void) {
+    return lbl_803388D4;
+}
+
 int fn_801D720C(int arg0) {
     return ((int *)arg0)[1];
 }
