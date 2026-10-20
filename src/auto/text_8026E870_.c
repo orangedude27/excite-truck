@@ -170,6 +170,8 @@ end:
 #pragma pop
 
 #pragma pop
+#pragma push
+#pragma dont_inline on
 f32 fn_8026ECE4(void *arg0, f32 *arg1) {
     f32 value = fn_8026EB4C(arg0);
     if (value > lbl_8055F52C) {
@@ -178,6 +180,7 @@ f32 fn_8026ECE4(void *arg0, f32 *arg1) {
     }
     return value;
 }
+#pragma pop
 
 s32 fn_8026F408(s32 arg0) { return arg0 <= 8; }
 
