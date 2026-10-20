@@ -10,6 +10,10 @@ public:
     virtual void d8(); virtual void d9(); virtual void d10();
     virtual void v34();
 };
+class TObjD1Arg {
+public:
+    virtual void d0(s32);
+};
 #pragma cplusplus reset
 
 extern void fn_801D59C8(s32, s32);
@@ -80,15 +84,16 @@ void fn_801D47F8(void* alarm) {
     fn_801D5488(fn_801D5650(alarm));
 }
 
-void fn_801D483C(void) {
-    void *obj;
+#pragma cplusplus on
+extern "C" void fn_801D483C(void) {
     lbl_8055E954 = 0;
-    obj = *(void **)lbl_804422F0;
-    if (obj != 0)
-        ((void (**)(void *, s32))*(void ***)obj)[2](obj, 1);
+    TObj34 *obj = *(TObj34 **)lbl_804422F0;
+    if (obj != 0) {
+        obj->d2();
+    }
     fn_801D5730();
 }
-
+#pragma cplusplus reset
 void fn_801D4888(void) {
     fn_801D5860();
 }
