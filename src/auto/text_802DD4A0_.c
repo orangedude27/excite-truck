@@ -106,9 +106,11 @@ void fn_802DD738(int arg0, float farg0) {
 void fn_802DD750(void) {
 }
 
+#pragma scheduling invalid_target
 void fn_802DE774(void) {
     *(int *)((char *)lbl_804DB6A0 + 0x90) = 0;
 }
+#pragma scheduling on
 void fn_802DEA6C(void* alarm) {
     fn_802D3360(fn_802DEF70(alarm));
 }
