@@ -532,8 +532,11 @@ void fn_802C7A94(int arg0) {
     }
 }
 
-void fn_802C7AD4(void) { fn_802C7A94(9); }
-
+#pragma dont_inline on
+void fn_802C7AD4(void) {
+    fn_802C7A94(9);
+}
+#pragma dont_inline reset
 void fn_802D754C(void);
 void fn_802C7ADC(void) { fn_802D754C(); }
 
