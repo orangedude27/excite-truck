@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int lbl_8055FAB8;
+extern int lbl_804C00D4;
 extern void *lbl_8055FABC;
 int fn_8012C33C(void);
 extern float lbl_80564D14;
