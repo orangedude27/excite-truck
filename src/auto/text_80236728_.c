@@ -57,6 +57,10 @@ void fn_802368E0(void) {
     lbl_8055F0C5 = 1;
 }
 
+int fn_802368EC(void) {
+    return (unsigned char)lbl_8055F0C0[0x21] == 0;
+}
+
 extern int fn_80215264(void);
 extern void fn_80236A5C(void*, int);
 extern void fn_80237AA0();
