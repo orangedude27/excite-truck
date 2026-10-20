@@ -100,21 +100,16 @@ float fn_80181A14(void *arg0) {
 }
 
 float fn_80181A48(void *arg0) {
-    char *p = (char *)lbl_804348E8;
-    float val;
-    if (*((unsigned char *)arg0 + 0x259D)) {
-        p += 0x48;
-        val = *(float *)(p + 0x1c);
-    } else if (lbl_8055E4F4) {
-        p += 0x68;
-        val = *(float *)(p + 0x34);
-    } else {
-        p += 0x20;
-        val = *(float *)(p + 0x1c);
-    }
-    return *((float *)((unsigned char *)arg0 + 0x2D0)) + val;
+ volatile float *p = lbl_804348E8;
+ if (*((unsigned char *)arg0 + 0x259D)) {
+   p += 18;
+ } else if (lbl_8055E4F4) {
+   p += 26;
+ } else {
+   p += 8;
+ }
+ return *((float *)((unsigned char *)arg0 + 0x2D0)) + p[7];
 }
-
 float fn_80181A94(void) { if (lbl_8055E4F4) return lbl_80434950[14]; return lbl_80434908[2]; }
 
 float fn_80181AC0(void) { if (lbl_8055E4F4) return lbl_80434950[15]; return lbl_80434908[3]; }
