@@ -187,7 +187,7 @@ extern "C" void fn_801A5ED8(void *arg0) {
     fn_80189CB4();
     void *obj = *(void **)((char *)arg0 + 0x270C);
     *(unsigned char *)((char *)arg0 + 0x2704) = 1;
-    ((Dummy_801A5ED8 *)obj)->f17();
+    ((Dummy_801A5ED8 *)obj)->f16();
     *(int *)((char *)arg0 + 0x2744) = 0;
     *(int *)((char *)arg0 + 0x2768) = 0;
     *(int *)((char *)arg0 + 0x278C) = 0;
