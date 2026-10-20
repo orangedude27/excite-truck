@@ -58,8 +58,7 @@ void __OSGetIOSRev(void *arg_rev) {
     rev->verMinor = version;
 }
 
-#pragma push
-#pragma readonly_strings off
+
 extern const char lbl_80558F04[];
 #pragma small_data on
 extern const char lbl_80558F04[6];
@@ -67,6 +66,7 @@ extern const char lbl_80558F04[6];
 
 void ReportOSInfo_8004AA40(void) {
     u32 type;
+    u32 category;
     u32 tdev;
     u32 version;
     u32 builddate;
@@ -76,7 +76,8 @@ void ReportOSInfo_8004AA40(void) {
 
     OSReport("Console Type : ");
     type = OSGetConsoleType();
-    switch (type & OS_CONSOLE_MASK) {
+    category = type & OS_CONSOLE_MASK;
+    switch (category) {
     case OS_CONSOLE_MASK_RVL:
         switch (type) {
         case OS_CONSOLE_RVL_PP_1:
