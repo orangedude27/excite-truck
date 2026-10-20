@@ -261,11 +261,11 @@ int fn_801B8728(int arg0) {
     return result == 0;
 }
 
-void fn_801B8778(void) {
-    void ** volatile vtable = *(void ***)lbl_8055E744;
-    ((void (*)(void))vtable[48])();
+#pragma cplusplus on
+extern "C" void fn_801B8778(void) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f46();
 }
-
+#pragma cplusplus off
 void fn_801B878C(void) {
     void (**vtable)(void) = *(void (***)(void))lbl_8055E744;
     void (*fn)(void) = vtable[49];
