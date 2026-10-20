@@ -11,7 +11,6 @@ extern void fn_80128668(void *);
 extern "C" {
 struct F801B4610 {
     virtual void f0() = 0;
-    virtual void f1() = 0;
     virtual void f2(int) = 0;
 };
 }
@@ -49,14 +48,14 @@ void fn_801B45E0(void *arg0) {
     *(int *)((char *)arg0 + 0x1C) = 0;
 }
 
-void *fn_801B4610(void *arg0, int arg1) {
-    void *obj;
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_801B4610(void *arg0, int arg1) {
     int zero;
     if (arg0 != 0) {
-        obj = *(void **)arg0;
+        F801B4610 *obj = *(F801B4610 **)arg0;
         if (obj != 0) {
-            register void **vtable = *(void ***)obj;
-            ((void (*)(void *, int))vtable[2])(obj, 1);
+            obj->f2(1);
         }
         zero = 0;
         *(int *)((char *)arg0 + 0x00) = zero;
@@ -74,7 +73,8 @@ void *fn_801B4610(void *arg0, int arg1) {
     }
     return arg0;
 }
-
+#pragma cplusplus off
+#pragma pop
 extern int lbl_80335DB8;
 extern int fn_8012850C(int, int *);
 extern int fn_802E4CA4(int);
