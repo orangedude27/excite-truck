@@ -30,7 +30,7 @@ typedef struct FILE {
     u8 pad2[0x24];
     s32 (*close)(s32);
 } FILE;
-s32 fflush(void);
+s32 fflush();
 void free(void *);
 s32 fclose(void *arg0) {
     FILE *f = (FILE *)arg0;
