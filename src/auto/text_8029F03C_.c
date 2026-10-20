@@ -236,11 +236,10 @@ check:
   extern char lbl_80349854[];
   extern int strncmp(const char *, const char *, unsigned int);
   #pragma cplusplus on
-    class Dummy_8029FEF8 {
+      class Dummy_8029FEF8 {
   public:
-      virtual void d0();
-      virtual const char *d1();
-      virtual void *f2(int);
+      virtual const char *d0();
+      virtual void *f1(int);
   };
   #pragma push
   #pragma use_lmw_stmw off
@@ -252,9 +251,9 @@ check:
       Dummy_8029FEF8 *child;
       while ((object = (Dummy_8029FEF8 *)fn_802AE4C8(i)) != 0) {
           j = 0;
-          while (object->f2(j) != 0) {
-              child = (Dummy_8029FEF8 *)object->f2(j);
-              if (strncmp(child->d1(), lbl_80349854, 9) == 0)
+          while (object->f1(j) != 0) {
+              child = (Dummy_8029FEF8 *)object->f1(j);
+              if (strncmp(child->d0(), lbl_80349854, 9) == 0)
                   fn_8029F658(child);
               j++;
           }
