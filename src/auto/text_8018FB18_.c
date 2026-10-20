@@ -116,6 +116,7 @@ int fn_8018FD38(void) {
   extern int fn_801B6668(void *);
   extern void fn_801B6654(void);
   #define fn_80128668_void() ((void (*)(void))fn_80128668)()
+  #define fn_80128668_void_star(p) fn_80128668(p)
 #pragma cplusplus on
 class DummyVtable8018FE8C {
 public:
