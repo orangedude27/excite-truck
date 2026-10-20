@@ -433,12 +433,16 @@ extern "C" void fn_80145B94(void *arg0, u32 arg1) {
 #pragma pop
 #pragma dont_inline reset
 
+#pragma push
+#pragma dont_inline on
 extern "C" void fn_80145C7C(void *arg0, u32 arg1) {
-    f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
-    f32 temp_f2 = ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
-    fn_8001027C(*(s32 *)((u8 *)arg0 + 0x18), *(s32 *)((u8 *)arg0 + 0x14), &lbl_80559E1C,
-        arg1, *(f32 *)((u8 *)arg0 + 0x10), temp_f2, temp_f31);
-}
+      f32 temp_f31 = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+      f32 temp_f2 = ((f32 (*)(s32, f32))fn_801451DC)(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 4));
+      fn_8001027C(*(s32 *)((u8 *)arg0 + 0x18), *(s32 *)((u8 *)arg0 + 0x14), &lbl_80559E1C,
+          arg1, *(f32 *)((u8 *)arg0 + 0x10), temp_f2, temp_f31);
+  }
+#pragma dont_inline reset
+#pragma pop
 
 extern "C" void fn_80145CF4(void *arg0, void *arg1, u32 arg2) {
     f32 temp_f30 = fn_801452A0(*(s32 *)((u8 *)arg0 + 0xC), *(f32 *)((u8 *)arg0 + 0x10));
