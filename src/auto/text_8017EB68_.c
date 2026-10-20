@@ -44,7 +44,9 @@ float fn_8017EB80(float arg0, float arg1, float arg2) {
     float magnitude = (float)__fabs(arg0);
     float value = lbl_80561C48;
     float temp = value + arg1;
-    temp = (temp + arg2) * magnitude - arg1;
+    temp = temp + arg2;
+    temp = temp * magnitude;
+    temp = temp - arg1;
     value = value < temp ? value : temp;
     value = value > lbl_80561C4C ? value : lbl_80561C4C;
     if (arg0 >= lbl_80561C4C) return value;
