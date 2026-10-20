@@ -132,6 +132,7 @@ check:
     fn_80137C78(1);
 }
 
+#pragma dont_inline on
 void fn_8023BE38(int ignored, int flag) {
     fn_80012794();
     fn_80012790(0x130);
@@ -148,6 +149,7 @@ void fn_8023BE38(int ignored, int flag) {
     fn_80012794();
     fn_80012778();
 }
+#pragma dont_inline reset
 
 void fn_8023BEA8(void) {
     extern const s32 lbl_80341340;
@@ -179,7 +181,7 @@ void fn_8023BF68(void) {
     s32 value = atoi();
     lbl_8055BB30 = value;
     if (value == 0 || (((value >> 31) ^ value) - (value >> 31)) > 4) {
-        fn_802E317C(lbl_80341354);
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80341354, value);
     }
 }
 
