@@ -4,8 +4,8 @@
 #pragma cplusplus on
 
 struct DummyVec2 {
-    f32 x;
-    f32 y;
+    u32 x;
+    u32 y;
 };
 
 class DummyItem {
@@ -372,19 +372,22 @@ s32 fn_80169D64(s32 arg0, s32 arg1) {
 }
 
 #pragma cplusplus on
+#pragma ppc_psq_save off
 extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     int sp8 = -1;
     DummyItem *item;
     s32 i;
+    f32 zero;
 
     sscanf(arg1->getName(), lbl_8055A1C0, &sp8);
 
+    zero = lbl_80561924;
     {
         DummyEntry *entry = &arg2->entries[arg2->entryCount++];
         entry->byte1C = 0;
-        entry->f8 = lbl_80561924;
-        entry->fC = lbl_80561924;
-        entry->f10 = lbl_80561924;
+        entry->f8 = zero;
+        entry->fC = zero;
+        entry->f10 = zero;
         entry->recordStart = arg2->recordCount;
         entry->recordCount = 0;
         entry->byte1D = 0;
@@ -400,7 +403,7 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
         rec->obj = 0;
         rec->obj = (DummyRecordObj *)fn_80167874(1);
         rec->x = loc.x;
-        rec->y = lbl_80561924;
+        rec->y = zero;
         rec->z = loc.y;
         rec->hit = hit;
         fn_801E9E30(0, &rec->x);
@@ -426,5 +429,6 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     arg2->flag1E158 = 0;
     return 1;
 }
+#pragma ppc_psq_save reset
 #pragma cplusplus reset
 
