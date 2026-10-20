@@ -103,13 +103,11 @@ extern "C" void fn_801D0F38(void) {
         virtual void m1();
         virtual void m2();
         virtual void m3();
-        virtual void m4();
-        virtual void m5();
     };
     int i;
     for (i = 0; i < lbl_8055E8E8; i++) {
         Dummy_801D0F38 *obj = (Dummy_801D0F38 *)lbl_80438818[i];
-        obj->m5();
+        obj->m3();
     }
 }
 #pragma cplusplus off
