@@ -127,14 +127,21 @@ extern "C" s32 fn_802E367C(s32 arg0) {
         return fn_802E35C0((const char *)arg0, result);
     return -1;
 }
-#pragma cplusplus off
-s32 fn_802E36D8(s32 arg0) {
-    CallbackObject *obj = (CallbackObject *)fn_802E333C();
-    s32 value = ((s32 (*)(CallbackObject *, s32))(*(void ***)obj)[4])(obj, arg0);
-    if (value != 0) return fn_802E35C0((const char *)arg0, value);
+#pragma cplusplus on
+extern "C" s32 fn_802E36D8(s32 arg0) {
+    class V {
+    public:
+        virtual void a();
+        virtual void b();
+        virtual s32 c(s32);
+    };
+    V *obj = (V *)fn_802E333C();
+    s32 result = obj->c(arg0);
+    if (result != 0)
+        return fn_802E35C0((const char *)arg0, result);
     return -1;
 }
-#pragma dont_inline reset
+#pragma cplusplus off
 void fn_802E3734(s32 *arg0) {
     s32 obj = fn_802E33D8(*arg0, lbl_8034CFB4, 0xE4);
     s32 entry = *(s32 *)(obj + 0x24);
