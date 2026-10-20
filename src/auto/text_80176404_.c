@@ -12,9 +12,9 @@ typedef struct {
 extern void fn_8000D838(void *);
 extern UnkStruct_80430378 lbl_80430378;
 extern u32 lbl_8055E390;
-extern volatile s32 lbl_8055E398;
-extern volatile s32 lbl_8055E39C;
-extern volatile s32 lbl_8055E3A0;
+extern s32 lbl_8055E398;
+extern s32 lbl_8055E39C;
+extern s32 lbl_8055E3A0;
 
 #pragma scheduling invalid_target
 #pragma opt_propagation off
