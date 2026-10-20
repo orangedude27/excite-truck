@@ -288,7 +288,7 @@ extern "C" void fn_80219284(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)((u8 *)arg0 + 8) + arg2;
 }
 
-void fn_802192A0(void) {
+extern "C" void fn_802192A0(void) {
 
 }
 
