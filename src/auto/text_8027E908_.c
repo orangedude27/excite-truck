@@ -69,6 +69,7 @@ typedef struct Fn8027F958Menu {
 } Fn8027F958Menu;
 
 extern int fn_80128668();
+extern void fn_8027E908(void);
 extern char lbl_80348798[];
 extern unsigned int lbl_8055F688;
 struct Fn8027F834List { void **items; int count; int pad[2]; };
@@ -175,13 +176,16 @@ struct Fn8027F204State {
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" int lbl_8055F69C;
 extern "C" const char lbl_80348270[];
-extern "C" void fn_8027F204(char *src) {
+#pragma cplusplus reset
+void fn_8027F204(char *src) {
+    char *dst;
+    int len;
     struct Fn8027F204State *state = (struct Fn8027F204State *)lbl_8055F69C;
 
     if (state == 0) return;
     if (state->count + 1 <= state->max) {
-        int len = 0x1e;
-        char *dst = state->buffer + state->count++ * 0x1e;
+        len = 0x1e;
+        dst = state->buffer + state->count++ * 0x1e;
         goto enter;
         for (;;) {
             if (--len <= 0) {
@@ -196,8 +200,6 @@ extern "C" void fn_8027F204(char *src) {
     }
     fn_802E30C8(lbl_80348270);
 }
-#pragma cplusplus off
-#pragma pop
 void *fn_8027F834(void *arg0, int arg1) {
     int temp_r0, var_ctr, var_r7;
     unsigned int *var_r6;
