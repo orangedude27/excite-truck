@@ -3,6 +3,11 @@
 extern int fn_80128668(void);
 extern char lbl_8033890C[];
 extern int lbl_8055E3C4;
+extern void fn_801D5328(int, int);
+void fn_801D50B0(int arg0) {
+    fn_801D5328(arg0, 0);
+}
+
 int fn_801D6500(int arg0) {
     return ((int *)arg0)[1];
 }
