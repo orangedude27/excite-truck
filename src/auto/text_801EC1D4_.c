@@ -10,6 +10,7 @@ void fn_802C6CF8(long);
 
 void fn_801EC9CC(void*, unsigned int);
 void fn_80128668(void*);
+void fn_801E323C(void);
 void fn_801ECCE0(long, long);
 long fn_801E866C(long);
 long fn_801E89C8(long);
@@ -38,16 +39,15 @@ void *fn_801EC204(void) {
     return &lbl_80488668[1];
 }
 
-void *__dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(void *arg0, int arg1) {
-    void *self = arg0;
+#pragma scheduling off
+long __dt__24J3DUMtxAnmCacheTableBaseFv_801EC448(long arg0, long arg1) {
     if (arg0 != 0) {
-        arg0 = *(void **)arg0;
-        if (arg0 != 0) fn_801E323C();
-        if (arg1 > 0) fn_80128668(self);
+        if (*(long *)arg0 != 0) fn_801E323C();
+        if (arg1 > 0) fn_80128668((void *)arg0);
     }
-    return self;
+    return arg0;
 }
-
+#pragma scheduling on
 void fn_801E353C(long, float);
 void fn_801E34E4(void *, long);
 #pragma push
