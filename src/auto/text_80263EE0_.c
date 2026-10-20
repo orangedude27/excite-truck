@@ -2,10 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 typedef unsigned int u32;
-extern void fn_8000D838(void *);
-extern u32 lbl_8055F428;
-extern volatile u32 lbl_80498F40[5];
-extern u32 lbl_8055F430;
+typedef int s32;
+extern void *lbl_8055F428;
+extern s32 lbl_8055F430;
+extern s32 lbl_80498F40[];
+void fn_8000D838(void *);
+
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 void fn_80263EE0(void) {
     fn_8000D838(&lbl_8055F428);
     lbl_80498F40[0] = 0;
