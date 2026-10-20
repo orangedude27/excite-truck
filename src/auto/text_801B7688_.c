@@ -89,7 +89,9 @@ void fn_801B8048(int arg0, int arg1, float farg0, float farg1) {
     fn_801B78EC(arg0, arg1, 0, farg0, farg1, lbl_80562708);
 }
 
-void fn_801B8054(void) { ((void (*)(float, float, float, int))fn_801B78EC)(0.0f, 0.0f, lbl_80562708, 1); }
+void fn_801B8054(int arg0, int arg1, float farg0, float farg1) {
+    fn_801B78EC(arg0, arg1, 1, farg0, farg1, lbl_80562708);
+}
 
 extern char lbl_80336718[];
 extern int fn_802E317C(char *, ...);
