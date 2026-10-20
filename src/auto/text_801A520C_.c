@@ -202,10 +202,23 @@ void fn_801A5E98(void *arg0) {
     void *obj;
     fn_8018AF00();
     obj = *(void **)((char *)arg0 + 0x270C);
-    (*(void (**)(void))(*(void ***)obj + 16))();
+    ((void (*)(void *))(*(void ***)obj)[10])(obj);
 }
 
 #pragma cplusplus on
+struct Dummy_801A5E98 {
+    virtual void h0() {}
+    virtual void h1() {}
+    virtual void h2() {}
+    virtual void h3() {}
+    virtual void h4() {}
+    virtual void h5() {}
+    virtual void h6() {}
+    virtual void h7() {}
+    virtual void h8() {}
+    virtual void h9() {}
+    virtual void h10() {}
+};
 struct Dummy_801A5ED8 {
     virtual void f0();
     virtual void f1();
