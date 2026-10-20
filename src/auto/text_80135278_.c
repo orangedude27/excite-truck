@@ -61,7 +61,6 @@ float fn_80135278(float *a, float *b, float *c) {
     float dy = b[1] - c[1];
     return a[0] * dx + a[1] * dy;
 }
-
 void *fn_801352B8(Unk_80135278 *arg0) {
     arg0->unk_0 = (s32)&lbl_8032BE80;
     arg0->unk_4 = 0;
