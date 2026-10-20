@@ -195,20 +195,20 @@ extern "C" void fn_80145368(void *arg0, void *arg1) {
 #pragma pop
 
 extern "C" f32 lbl_805615E0;
-extern "C" char lbl_80559DE0[];
-extern "C" char lbl_80559DE4[];
-extern "C" char lbl_80559DE8[];
-extern "C" char lbl_80559DEC[];
-extern "C" char lbl_80559DF0[];
-extern "C" char lbl_80559DF4[];
+extern "C" s32 lbl_80559DE0;
+extern "C" s32 lbl_80559DE4;
+extern "C" s32 lbl_80559DE8;
+extern "C" s32 lbl_80559DEC;
+extern "C" s32 lbl_80559DF0;
+extern "C" s32 lbl_80559DF4;
 extern "C" void fn_80145438(void *arg0, void *arg1) {
     fn_80145368(arg0, arg1);
-    *(f32 *)((u8 *)arg0 + 0x10) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DE0);
-    *(f32 *)((u8 *)arg0 + 0x14) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DE4);
-    *(f32 *)((u8 *)arg0 + 0x18) = fn_801452E0(arg1, lbl_80559DE8);
-    *(f32 *)((u8 *)arg0 + 0x20) = fn_801452E0(arg1, lbl_80559DEC);
-    *(f32 *)((u8 *)arg0 + 0x1C) = fn_801452E0(arg1, lbl_80559DF0);
-    *(f32 *)((u8 *)arg0 + 0x24) = fn_801452E0(arg1, lbl_80559DF4);
+    *(f32 *)((u8 *)arg0 + 0x10) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, (const char *)&lbl_80559DE0);
+    *(f32 *)((u8 *)arg0 + 0x14) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, (const char *)&lbl_80559DE4);
+    *(f32 *)((u8 *)arg0 + 0x18) = fn_801452E0(arg1, (const char *)&lbl_80559DE8);
+    *(f32 *)((u8 *)arg0 + 0x20) = fn_801452E0(arg1, (const char *)&lbl_80559DEC);
+    *(f32 *)((u8 *)arg0 + 0x1C) = fn_801452E0(arg1, (const char *)&lbl_80559DF0);
+    *(f32 *)((u8 *)arg0 + 0x24) = fn_801452E0(arg1, (const char *)&lbl_80559DF4);
 }
 
 extern "C" s32 fn_801454E8(void *arg0) {
