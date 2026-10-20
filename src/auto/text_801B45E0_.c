@@ -214,8 +214,8 @@ void fn_801B4C58(int arg0, int arg1) {
     fn_801B479C(arg0 + 4, arg1);
 }
 
-void fn_801B4C60(int arg0) {
-    fn_801B479C(arg0 + 4, fn_801B47BC(arg0 + 4));
+void fn_801B4C60(int arg0, int arg1) {
+    fn_801B479C(arg0 + 4, fn_801B47BC(arg0 + 4, arg1));
 }
 
 void fn_801B4C9C(int arg0, int arg1) {
