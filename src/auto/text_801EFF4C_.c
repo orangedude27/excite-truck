@@ -36,6 +36,90 @@ int fn_801F0010(int arg0, int arg1) {
     return value;
 }
 
+extern void *fn_802C6B44(void);
+extern int fn_802C6C20(void *);
+extern int fn_802C7888(void *, int);
+extern int fn_802C9C24(int);
+extern int memset(void *, int, unsigned int);
+extern char *strncpy(char *, const char *, unsigned int);
+  #pragma push
+  #pragma use_lmw_stmw off
+  #pragma cplusplus on
+  extern "C" void fn_801F004C(int unused, int arg1, void *arg2) {
+      class VTable801F004C {
+      public:
+          virtual void v0();
+          virtual void v1();
+          virtual void v2();
+          virtual int v3(int);
+          virtual void v4();
+          virtual void *v5(int);
+      };
+      int i; void *list; int offset; int zero; char temp[0x2c];
+      list = fn_802C6B44(); offset = 0; i = 0; zero = 0;
+      while (i < *(int *)list) {
+          int name = fn_802C9C24(*(int *)((char *)list + 4) + offset);
+          if (((VTable801F004C *)arg2)->v3(name)) {
+              void *object = ((VTable801F004C *)arg2)->v5(name);
+              memset(temp, 0, 0x2c);
+              strncpy(temp, (char *)name, 0x10); temp[0xf] = zero;
+              strncpy(temp + 0x14, (char *)object, 0x10); temp[0x23] = zero;
+              *(int *)(temp + 0x10) = arg1; fn_802C7888(temp, 1);
+          }
+          offset += 0x10; i++;
+      }
+      fn_802C6C20(list);
+  }
+  #pragma cplusplus off
+
+extern int lbl_8055B0E0;
+extern int lbl_8055B0E8;
+extern int lbl_80562F20;
+extern int lbl_80562F24;
+extern float lbl_80558DC4;
+extern int lbl_8033A3F0;
+extern int sprintf(char *, const char *, ...);
+extern int fn_8012C33C(char *);
+extern int fn_802C6FC0(char *, int, int);
+extern void fn_802C77F0(int, float *);
+extern double fabs(double);
+void fn_801F0488(void *arg0, void *arg1, int arg2) {
+    int count, found = 0;
+    char name[0x20];
+    float bounds[2];
+    int id = ((int (*)(void *, void *))(*(void ***)arg1)[5])(arg1, (void *)&lbl_8055B0E0);
+    (void)arg2;
+    for (count = 0; count < *(int *)((char *)arg0 + 0xE8); count++) {
+        int i;
+        int *entry = (int *)((char *)arg0 + count * 0x18);
+        for (i = 0; i < 2; i++) {
+            sprintf(name, (char *)&lbl_8033A3F0 + 0x54, id, count, i ? lbl_80562F24 : lbl_80562F20);
+            if (!fn_8012C33C(name)) {
+                sprintf(name, (char *)&lbl_8033A3F0 + 0x60, id, count);
+                if (!fn_8012C33C(name) && count == 0) {
+                    sprintf(name, (char *)&lbl_8033A3F0 + 0x6C, id, i ? lbl_80562F24 : lbl_80562F20);
+                    if (!fn_8012C33C(name)) sprintf(name, (char *)&lbl_8055B0E8, id);
+                    found = 1;
+                }
+            }
+            if (count != 1 || !found) {
+                void **vt = *(void ***)arg1;
+                void *v = ((void *(*)(void *, const char *))vt[0x17])(arg1, (char *)&lbl_8033A3F0 + 0x78);
+                if (v) fn_801F004C((int)name, *(int *)((char *)arg0 + 0x10), v);
+                v = ((void *(*)(void *, const char *))vt[0x17])(arg1, (char *)&lbl_8033A3F0 + 0x84);
+                if (v) fn_801F004C((int)name, *(int *)((char *)arg0 + 0x14), v);
+            }
+            entry[0xA + i] = fn_802C6FC0(name, *(int *)((char *)arg0 + 0x10), 0);
+            entry[0xC + i] = fn_802C6FC0(name, *(int *)((char *)arg0 + 0x14), 0);
+        }
+    }
+    if (fabs(*(float *)((char *)arg0 + 0x20)) != lbl_80558DC4) {
+        fn_802C77F0(*(int *)((char *)arg0 + 0x28), bounds);
+        *(float *)((char *)arg0 + 0x24) = *(float *)((char *)arg0 + 0x20) / (bounds[1] - bounds[0]);
+    }
+}
+
+#pragma pop
 extern float lbl_80562F10;
 extern float lbl_80562F14;
 extern float lbl_80562F18;
@@ -64,6 +148,40 @@ int fn_801F09FC(const char *arg0) {
     }
 }
 
+int fn_80128670(int);
+void fn_802C6CF8(int);
+#pragma push
+#pragma use_lmw_stmw off
+int fn_801F0CC4(int unused) {
+    int i, j, k;
+    int offset;
+    int base;
+    i = 0;
+    offset = 0;
+    while (i < lbl_8055EBF0) {
+        j = 0;
+        base = lbl_8055EBEC + offset + 0x28;
+        while (j < *(int *)(lbl_8055EBEC + offset + 0xE8)) {
+            int *entry = (int *)(base + j * 0x18);
+            for (k = 0; k < 2; k++) {
+                if (entry[k] != -1) fn_802C6CF8(entry[k]);
+                if (entry[k + 2] != -1) fn_802C6CF8(entry[k + 2]);
+            }
+            j++;
+        }
+        k = 0;
+        while (k < *(int *)(lbl_8055EBEC + offset + 0x12C)) {
+            fn_802C6CF8(*(int *)(lbl_8055EBEC + offset + 0xEC + k * 8));
+            k++;
+        }
+        offset += 0x138;
+        i++;
+    }
+    fn_80128670(lbl_8055EBEC);
+    lbl_8055EBEC = 0;
+    lbl_8055EBF0 = 0;
+}
+#pragma pop
 extern float lbl_80562F1C;
 #pragma dont_inline on
 int fn_801F0E88(int arg0, int arg1) {
@@ -99,6 +217,65 @@ int fn_801F0F18(int arg0, int arg1) {
     return arg0;
 }
 
+extern float lbl_80562F30;
+extern float lbl_80562F34;
+float fn_801F159C(void **);
+void fn_80015A20(void *, float *, float, float, float, float);
+void fn_80015B20(void *, void *, void *);
+void fn_801F0F78(void *arg0, void *arg1, void *arg2, float scale) {
+    int flags = *(int *)((char *)arg1 + 0x60);
+    float point[3];
+    float vec[3];
+    float matrix[12];
+    float sp14[3];
+    float sp8[3];
+    int mode;
+    int i;
+    if (flags & 8) {
+        *(int *)((char *)arg0 + 4) = 3;
+        return;
+    }
+    if (flags & 2) *(int *)((char *)arg0 + 4) = 2;
+    else if (flags & 4) *(int *)((char *)arg0 + 4) = 1;
+    else *(int *)((char *)arg0 + 4) = 0;
+    if (*(float *)((char *)arg1 + 0x30) > lbl_80562F30)
+        *(int *)((char *)arg0 + 4) |= 0x10;
+
+    point[0] = *(float *)arg1;
+    point[1] = *(float *)((char *)arg1 + 4);
+    point[2] = *(float *)((char *)arg1 + 8);
+    point[1] += fn_801F159C((void **)arg0);
+    *(float *)((char *)arg0 + 0x48) = *(float *)((char *)arg1 + 0x34);
+    mode = *(int *)((char *)arg0 + 0xC);
+    mode = (mode == 0 || mode == 2);
+
+    if ((char *)arg0 + 0x3C == (char *)&point[0]) {
+        /* unreachable alias case retained to mirror the source structure */
+    }
+    vec[0] = point[0] * *(float *)arg2 + point[1] * *(float *)((char *)arg2 + 0xC) + point[2] * *(float *)((char *)arg2 + 0x18);
+    vec[1] = point[0] * *(float *)((char *)arg2 + 4) + point[1] * *(float *)((char *)arg2 + 0x10) + point[2] * *(float *)((char *)arg2 + 0x1C);
+    vec[2] = point[0] * *(float *)((char *)arg2 + 8) + point[1] * *(float *)((char *)arg2 + 0x14) + point[2] * *(float *)((char *)arg2 + 0x20);
+    *(float *)((char *)arg0 + 0x3C) = vec[0];
+    *(float *)((char *)arg0 + 0x40) = vec[1];
+    *(float *)((char *)arg0 + 0x44) = vec[2];
+    for (i = 0; i < 9; i++) matrix[i] = *(float *)((char *)arg2 + i * 4);
+    *(float *)((char *)arg0 + 0x3C) += *(float *)((char *)arg2 + 0x24);
+    *(float *)((char *)arg0 + 0x40) += *(float *)((char *)arg2 + 0x28);
+    *(float *)((char *)arg0 + 0x44) += *(float *)((char *)arg2 + 0x2C);
+    for (i = 0; i < 9; i++) *(float *)((char *)arg0 + 0x18 + i * 4) = matrix[i];
+    sp14[0] = lbl_80562F1C; sp14[1] = lbl_80562F1C; sp14[2] = *(float *)((char *)arg1 + 0x2C);
+    fn_80015A20(matrix, sp14, *(float *)((char *)arg2 + 0x1C), *(float *)((char *)arg2 + 0x18), *(float *)((char *)arg2 + 0x14), *(float *)((char *)arg2 + 0x20));
+    fn_80015B20((char *)arg0 + 0x18, matrix, (char *)arg0 + 0x18);
+    sp8[0] = lbl_80562F1C;
+    sp8[1] = *(float *)((char *)arg1 + 0x28) + (mode ? lbl_80562F1C : lbl_80562F34);
+    sp8[2] = lbl_80562F1C;
+    fn_80015A20(vec, sp8, 0.0f, 0.0f, 0.0f, 0.0f);
+    fn_80015B20((char *)arg0 + 0x18, vec, (char *)arg0 + 0x18);
+    if (__builtin_fabsf(scale - lbl_80562F18) != lbl_80558DC4) {
+        for (i = 0; i < 9; i++) *(float *)((char *)arg0 + 0x18 + i * 4) *= scale;
+    }
+}
+
 void fn_801F131C(int arg0, int arg1) {
     if (*(unsigned int *)(arg0 + 4) != 3) {
         int value;
@@ -113,11 +290,19 @@ void fn_801F1378(void *arg0) {
         fn_801F163C(arg0, 0, *(float *)((char *)arg0 + 0x48));
 }
 
+#pragma push
+#pragma scheduling off
 int fn_801F1394(int *arg0, int arg1) {
     int frame = fn_801F1978(0);
-    fn_802C70AC(*(*(int **)arg0 + *(int *)(arg0 + 4)) + 0x28, arg1, 0, frame);
+    int index = *(int *)((char *)arg0 + 0x10);
+    int *base = *(int **)arg0;
+    int *element = (int *)((char *)base + index * 4);
+    int value = *(int *)((char *)element + 0x28);
+    int zero;
+    zero = value - value;
+    fn_802C70AC(value, arg1, zero, frame);
 }
-
+#pragma pop
 void fn_801F13F4(int *arg0, float arg1, float arg2) {
     int *object = arg0;
     int *base = (int *)*arg0;
@@ -176,16 +361,16 @@ int fn_801F1848(void) {
     return lbl_80488798[fn_801F196C()];
 }
 #pragma push
+#pragma use_lmw_stmw off
 #pragma small_data off
-#pragma pop
 void fn_801F1878(void *arg0) {
     int index = fn_801F196C(*(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
     if (lbl_80488798[index] != 0) {
-        fn_802E317C((const char *)&lbl_8033A544, *(int *)((char *)arg0 + 0xC), *(int *)((char *)arg0 + 8));
+        fn_802E317C((const char *)0x8033A544, *(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
     }
     lbl_80488798[index] = (int)arg0;
 }
-
+#pragma pop
 int fn_801F196C(int a, int b) { return b + a * 4; }
 
 int fn_801F1978(int arg) {
@@ -239,6 +424,54 @@ void fn_801F1AD0(void *arg0) {
     if (*(int *)((char *)arg0 + 0x80) != 0) {
         fn_801F1494(*(int *)((char *)arg0 + 0x80), (char *)arg0 + 4, fn_801EAC3C());
     }
+}
+
+void fn_801EABA8(void);
+int fn_801F1848(void);
+void fn_801F1B1C(void *arg0, void *arg1, int arg2) {
+    int v15, v14, v13, v12, v11, v10, v9, v8, v7, v6, v5, v4, v3, v2, v1;
+    short v16;
+    float v17;
+    unsigned char flag;
+    fn_801EABA8();
+    flag = *(unsigned char *)((char *)arg1 + 0x40);
+    v1 = *(int *)((char *)arg1 + 0x00);
+    v2 = *(int *)((char *)arg1 + 0x04);
+    v3 = *(int *)((char *)arg1 + 0x08);
+    v4 = *(int *)((char *)arg1 + 0x0C);
+    v5 = *(int *)((char *)arg1 + 0x10);
+    v6 = *(int *)((char *)arg1 + 0x14);
+    v7 = *(int *)((char *)arg1 + 0x18);
+    v8 = *(int *)((char *)arg1 + 0x1C);
+    v9 = *(int *)((char *)arg1 + 0x20);
+    v10 = *(int *)((char *)arg1 + 0x24);
+    v11 = *(int *)((char *)arg1 + 0x28);
+    v12 = *(int *)((char *)arg1 + 0x2C);
+    v16 = *(short *)((char *)arg1 + 0x30);
+    v13 = *(int *)((char *)arg1 + 0x34);
+    v14 = *(int *)((char *)arg1 + 0x38);
+    v17 = *(float *)((char *)arg1 + 0x3C);
+    *(int *)((char *)arg0 + 0x3C) = v1;
+    *(int *)((char *)arg0 + 0x40) = v2;
+    *(int *)((char *)arg0 + 0x44) = v3;
+    *(int *)((char *)arg0 + 0x48) = v4;
+    *(int *)((char *)arg0 + 0x4C) = v5;
+    *(int *)((char *)arg0 + 0x50) = v6;
+    *(int *)((char *)arg0 + 0x54) = v7;
+    *(int *)((char *)arg0 + 0x58) = v8;
+    *(int *)((char *)arg0 + 0x5C) = v9;
+    *(int *)((char *)arg0 + 0x60) = v10;
+    *(int *)((char *)arg0 + 0x64) = v11;
+    *(int *)((char *)arg0 + 0x68) = v12;
+    *(short *)((char *)arg0 + 0x6C) = v16;
+    *(int *)((char *)arg0 + 0x70) = v13;
+    *(int *)((char *)arg0 + 0x74) = v14;
+    *(float *)((char *)arg0 + 0x78) = v17;
+    *(unsigned char *)((char *)arg0 + 0x7C) = flag;
+    if (flag != 0)
+        *(int *)((char *)arg0 + 0x80) = fn_801F1848();
+    else
+        *(int *)((char *)arg0 + 0x80) = 0;
 }
 
 #pragma dont_inline off
