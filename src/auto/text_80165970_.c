@@ -229,10 +229,19 @@ int fn_801667F0(void) {
     return result;
 }
 
+static inline void helper_clear(void *arg0) {
+    if (arg0 != 0) {
+        *(int *)arg0 = 0;
+        *((int *)arg0 + 1) = 0;
+        *((int *)arg0 + 2) = 0;
+        fn_80128668(arg0);
+    }
+}
+
 void fn_80166814(void) {
-    if (*(int *)&lbl_8055E334 != 0) {
-        fn_80139E18();
-        *(int *)&lbl_8055E334 = 0;
+    if (*(void **)&lbl_8055E334 != 0) {
+        fn_80139E18(*(void **)&lbl_8055E334);
+        *(void **)&lbl_8055E334 = 0;
     }
     {
         void *p = *(void **)&lbl_8055E32C;
@@ -241,12 +250,7 @@ void fn_80166814(void) {
             if (x != 0) {
                 fn_80128670((char *)x - 0x10);
             }
-            if (p != 0) {
-                *(int *)((char *)p + 0) = 0;
-                *(int *)((char *)p + 4) = 0;
-                *(int *)((char *)p + 8) = 0;
-                fn_80128668(p);
-            }
+            fn_80165970(p, 1);
             *(void **)&lbl_8055E32C = 0;
         }
     }
