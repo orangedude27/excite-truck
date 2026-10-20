@@ -95,7 +95,7 @@ s32 fn_8024EBE4(s32 arg0) {
 class Dummy_8024EC3C {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-    virtual void d4(); virtual void d5(); virtual int f6(int);
+          virtual void d4(); virtual void d5(); virtual int f6(int); virtual int f7(int);
 };
 #pragma cplusplus on
 extern "C" s32 fn_8024EC3C(void) {
