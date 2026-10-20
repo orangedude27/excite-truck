@@ -539,15 +539,15 @@ void *fn_801CE9A0(void *arg0, s32 arg1) {
         *(void **)((char *)arg0 + 4) = &lbl_80338024[0];
         fn_801CEA28((char *)arg0 + 8);
         fn_801CEA28((char *)arg0 + 0xC);
+        if (arg0 != 0) {
+            void (*cleanup)(void *);
+            cleanup = fn_801CBD04;
+            *(void **)((char *)arg0 + 4) = &lbl_80338038[0];
+            cleanup(arg0);
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
     }
-    if (arg0 != 0) {
-        void (*cleanup)(void *);
-        cleanup = fn_801CBD04;
-        *(void **)((char *)arg0 + 4) = &lbl_80338038[0];
-        cleanup(arg0);
-    }
-    if (arg1 > 0)
-        fn_80128668(arg0);
     return arg0;
 }
 void fn_801CEA28(void *arg0) {
