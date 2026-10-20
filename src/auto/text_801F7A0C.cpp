@@ -375,9 +375,9 @@ extern "C" void *fn_801F93FC(void *node) {
     return n;
 }
 
-extern "C" void *fn_801F9440(F9Node *list, F9Node *node) {
-    ((F92Node *)node)->next = ((F92Node *)list)->next;
-    ((F92Node *)list)->next = (F92Node *)node;
+extern "C" void fn_801F9440(F92Node **list, F92Node *node) {
+    node->next = *list;
+    *list = node;
 }
 
 __declspec(section ".sdata") extern u8 lbl_8055B374[];
