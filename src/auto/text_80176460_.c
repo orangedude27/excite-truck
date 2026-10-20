@@ -490,7 +490,7 @@ void fn_80177658(void *arg0) {
 }
 
 extern void fn_80177658(void *);
-extern void fn_80177608(void);
+extern void fn_80177608(void *);
 extern void fn_80177618(int *);
 extern void fn_80177638(int *);
 void fn_80177790(void) { fn_80177658((void *)fn_80177608); }
