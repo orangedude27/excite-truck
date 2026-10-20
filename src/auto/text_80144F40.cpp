@@ -621,11 +621,13 @@ extern "C" void fn_8014647C(void *arg0) {
 }
 
 extern "C" void *fn_80146490(void *arg0) {
+    struct Obj {
+        virtual void *v0(s32);
+    };
     if (arg0 != NULL) {
         if (((s32 *)arg0)[10] == 0) {
             if (arg0) {
-                volatile void **v = *(volatile void ***)arg0;
-                ((void * (*)(void *, s32))v[2])(arg0, 1);
+                ((Obj *)arg0)->v0(1);
             }
             return NULL;
         }
