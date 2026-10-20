@@ -346,24 +346,23 @@ void fn_801B885C(void *arg0) {
 extern "C" int fn_801B8874(void) {
     extern int fn_80161C38(void);
     extern void fn_80161A70(void);
+    Dummy_801B8874 *obj = (Dummy_801B8874 *)lbl_8055E744;
     if (fn_80161C38() != 0) {
         fn_80161A70();
         return 1;
     }
-    return ((Dummy_801B8318 *)lbl_8055E744)->f36(lbl_8055E744, 0, 0);
+    return obj->d34(obj);
 }
-#pragma cplusplus off
-void fn_801B88BC(void) {
+#pragma cplusplus on
+extern "C" void fn_801B88BC(void) {
     extern int fn_80161C38(void);
     extern void fn_80161B70(void);
     if (fn_80161C38() != 0) {
         fn_80161B70();
         return;
     }
-    ((void (*)(void *))(*(unsigned int *)((char *)*(void **)lbl_8055E744 + 0x38)))(lbl_8055E744);
+    ((Dummy_801B8318 *)lbl_8055E744)->f12();
 }
-
-#pragma cplusplus on
 extern "C" void fn_801B8900(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f30();
 }
