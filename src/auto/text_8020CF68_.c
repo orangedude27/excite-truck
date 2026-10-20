@@ -26,6 +26,14 @@ extern void fn_80230E90(int);
 extern void *fn_802090D4(void *);
 extern void *fn_80145E70(void *);
 extern void fn_80209110(void *);
+#pragma cplusplus on
+class Dummy_8020D1C8 {
+public:
+    virtual void d0();
+    virtual void d1();
+    virtual void d2(int);
+};
+#pragma cplusplus off
 
 void fn_8020CF68(void) {
     fn_802104D0();
@@ -159,14 +167,14 @@ int fn_8020DB0C(int arg0) {
     case 0x125:
         switch (lbl_8055EE78) {
         case 0:
-            if ((float)__fabs(lbl_8055EE8C) > lbl_80558DC4) {
+            if (!(__fabsf(lbl_8055EE8C) <= lbl_80558DC4)) {
                 lbl_8055EE98 = lbl_8056332C * (float)fn_802E2C20();
             } else {
                 var_r31 = 0;
             }
             break;
         case 1:
-            if ((float)__fabs(lbl_8055EE90) > lbl_80558DC4) {
+            if (!(__fabsf(lbl_8055EE90) <= lbl_80558DC4)) {
                 lbl_8055EE98 = lbl_8056332C * (float)fn_802E2C20();
             } else {
                 var_r31 = 0;
@@ -209,14 +217,14 @@ int fn_8020DB0C(int arg0) {
     case 0x58:
     case 0xD:
         if (lbl_8055EE7C != 0 && lbl_8055EE78 == 2) {
-            ((void (*)(int))lbl_8055EE7C)(lbl_8055EE78);
+            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, arg0);
             fn_8020D06C();
             break;
         }
         return 0;
     case 0x53:
         if (lbl_8055EE7C != 0) {
-            ((void (*)(int))lbl_8055EE7C)(lbl_8055EE78);
+            ((void (*)(int, int))lbl_8055EE7C)(lbl_8055EE78, arg0);
             fn_8020D06C();
         }
         break;
