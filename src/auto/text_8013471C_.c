@@ -43,11 +43,39 @@ extern void *fn_801792F8(void);
       *((u8 *)arg0 + 4) = 1;
   }
   
-void fn_8013472C(void) {
-    void *sub = *(void **)((u8 *)fn_8001285C(*fn_801E87A8()) + 0x20);
-    lbl_8055E0AC = (void *)((s32 (*)(void *, u32 *))(*(u32 *)(*(u8 **)sub + 0x5c)))(sub, &lbl_80559BD8);
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_8013472C(void) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f2();
+        virtual void f1();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f21();
+        virtual void *f22(u32 *);
+        virtual void f20();
+    };
+    register void *sub = *(void **)((u8 *)fn_8001285C(*fn_801E87A8()) + 0x20);
+    lbl_8055E0AC = ((Dummy *)sub)->f22(&lbl_80559BD8);
 }
-  
+#pragma cplusplus reset
+#pragma pop
   void __AXDSPInitCallback_80134770(void) {
       lbl_8055E0AC = 0;
   }
