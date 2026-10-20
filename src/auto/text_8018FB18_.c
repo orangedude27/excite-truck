@@ -1015,13 +1015,16 @@ float fn_80192ED0(void *arg0) {
     return lbl_80562084 + y * lbl_805620A4;
 }
 
-int fn_80192F58(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    void * volatile *vtable = *(void * volatile **)obj;
-    int (*fn)(void) = (int (*)(void))vtable[2];
-    return fn();
+#pragma cplusplus on
+extern "C" int fn_80192F58(void *arg0) {
+    class VTable {
+    public:
+        virtual int f0();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 4);
+    return obj->f0();
 }
-
+#pragma cplusplus off
 unsigned char fn_80192F6C(void *arg0) {
     return *((unsigned char *)arg0 + 0x12);
 }
