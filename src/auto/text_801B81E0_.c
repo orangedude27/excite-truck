@@ -218,13 +218,11 @@ int fn_801B8570(int arg0) {
     return result;
 }
 
-void fn_801B85CC(void) {
-    void *obj = lbl_8055E744;
-    void (**vtable)(void) = *(void (***)(void))obj;
-    void (*method)(void) = vtable[9];
-    method();
+#pragma cplusplus on
+extern "C" void fn_801B85CC(void) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f7();
 }
-
+#pragma cplusplus off
 void fn_801B85E0(void *a, void *b, void *c, void *d) {
     (*(void (***)(void *, void *, void *, void *, void *))lbl_8055E744)[36](lbl_8055E744, a, b, c, d);
 }
