@@ -89,10 +89,6 @@ class TObj80154618 {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
-    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
-    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
-    virtual void d20(); virtual void d21(); virtual void d22(); virtual void d23();
     virtual int f8(void *, int);
 };
 #pragma cplusplus off
@@ -1339,7 +1335,7 @@ extern "C" s32 fn_80154618(void *arg0) {
     }
     return (s32)it;
 }
-#pragma cplusplus reset
+#pragma cplusplus off
 void fn_801546D4(s32 arg0) {
     switch (fn_80161C94()) {
         case 0:
