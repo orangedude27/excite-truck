@@ -396,7 +396,6 @@ int fn_802C6C20(int);
 int fn_802C6B44(int);
 void fn_802C6DC4(int, int, int, int);
 extern const char lbl_8034B3DC[];
-void fn_802C6C38(int);
 void* fn_802C5390(void);
 int fn_802C94A0(void*, unsigned char*, float*, float);
 void fn_802C57B4(int, int, int, unsigned char, float);
