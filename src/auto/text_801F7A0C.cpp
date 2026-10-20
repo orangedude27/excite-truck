@@ -817,7 +817,9 @@ extern "C" void fn_801FA978(void) {
     lbl_8055EC3C = 0;
 }
 
-extern "C" void fn_801FB1F4(s32 arg0) { lbl_8055B1C8 = *(&lbl_8055B1C8) - arg0; }
+extern "C" s32 fn_801FB1F4(s32 arg0) {
+    return lbl_8055B1C8 -= arg0;
+}
 
 extern "C" s32 fn_801FB204(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
