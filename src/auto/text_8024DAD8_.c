@@ -98,26 +98,31 @@ public:
     virtual void d4(); virtual void d5(); virtual void d6(); virtual int f7(int);
 };
 #pragma cplusplus off
-s32 fn_8024EC3C(void) {
+#pragma cplusplus on
+extern "C" s32 fn_8024EC3C(void) {
     extern unsigned int lbl_8055F2EC;
-    extern s32 fn_80129800(s32);
-    extern void fn_802E4A10(void);
+    extern u8 fn_80129800(void *, int);
+    extern s32 fn_802E4A10(void);
     extern void fn_80216D28(void);
     extern s32 fn_80214D50(s32);
     s32 enabled = 0;
     fn_802E4A10();
-    if (fn_80129800(5) != 0 && fn_80129800(6) != 0) enabled = 1;
+    if (fn_80129800(0, 5) != 0) {
+        fn_802E4A10();
+        if (fn_80129800(0, 6) != 0) enabled = 1;
+    }
     if (enabled != 0) return 1;
     {
         u8 *base = (u8 *)lbl_8055F2EC;
         void *obj = *(void **)(base + 0xD0);
         s32 arg = *(s32 *)(base + 0x2C);
-        if (((s32 (*)(void *, s32))(*(void ***)obj)[7])(obj, arg) != 0) return 1;
+        if (((Dummy_8024EC3C *)obj)->f7(arg) != 0) return 1;
     }
     fn_80216D28();
     fn_80214D50(1);
     return 0;
 }
+#pragma cplusplus off
 
 #pragma push
 #pragma processor 750
