@@ -193,6 +193,13 @@ int fn_801D8734(void) {
     return 0;
 }
 
+int fn_801D873C(int arg0) {
+    ((int *)arg0)[6] = 2;
+    ((int *)arg0)[8] = 0;
+    *(float *)((char *)arg0 + 0x10) = lbl_8055E3C8;
+    return 0;
+}
+
 void fn_801D8DB0(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
