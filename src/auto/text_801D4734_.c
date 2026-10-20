@@ -64,6 +64,11 @@ void fn_801D628C(void *arg0) {
     *(int *)((char *)arg0 + 0x14) = 0;
 }
 
+int *__AXFXGetLfoSinTable_801D64F4(void) {
+    extern char lbl_803387A8[];
+    return (int *)lbl_803387A8;
+}
+
 int fn_801D6500(int arg0) {
     return ((int *)arg0)[1];
 }
