@@ -306,7 +306,6 @@ int fn_80273494(int arg0) {
 }
 
 extern int fn_80128668(void);
-extern void fn_80271624(void);
 extern signed char lbl_8055F558;
 int fn_80273978(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
