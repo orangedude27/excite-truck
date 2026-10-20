@@ -52,7 +52,6 @@ extern "C" void fn_80298BBC(void*);
 extern "C" void fn_8029BA8C(void*);
 extern "C" void fn_80299628(void);
 extern "C" void fn_8029871C(void*, void*, float);
-extern "C" int fn_802984D0(void*, short*);
 extern "C" void fn_802994C0(void*, unsigned int);
 extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
 extern float lbl_80564590;
@@ -684,11 +683,9 @@ int fn_8029BFF8(void* arg0) {
 
 extern void* lbl_8055F7D4;
 extern "C" int fn_8029C024(int *arg0) {
-#pragma dont_inline on
     int value = *(volatile int *)arg0;
     fn_8029A890(lbl_8055F7D4, (void *)value);
     return 4;
-#pragma dont_inline reset
 }
 extern "C" int fn_8029C054(int* arg0) {
     int value = *(volatile int*)arg0;
