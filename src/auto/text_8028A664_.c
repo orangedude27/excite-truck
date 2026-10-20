@@ -328,6 +328,11 @@ void fn_8028BC88(s32 arg0) {
     *(f32 *)(arg0 + 0xd4) = zero;
     *(f32 *)(arg0 + 0xd8) = zero;
 }
+
+void fn_8028BD5C(s32 arg0) {
+    fn_8028BFEC(arg0);
+}
+
 #pragma pop
 void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
     struct Entry { f32 f[7]; } *dst;
