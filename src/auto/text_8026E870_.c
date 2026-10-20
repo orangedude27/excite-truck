@@ -6,6 +6,12 @@ typedef float f32;
 typedef struct Vec {
     f32 x, y, z;
 } Vec;
+typedef struct Mat3x3 {
+    Vec a, b, c;
+} Mat3x3;
+typedef struct Transform {
+    Vec a, b, c, d;
+} Transform;
 extern f32 lbl_80563E78;
 extern f32 lbl_8049A218[];
 extern f32 lbl_8055F52C;
@@ -186,6 +192,7 @@ s32 fn_8026F408(s32 arg0) { return arg0 <= 8; }
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
 void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
     f32 sp8;
     Vec spC;
