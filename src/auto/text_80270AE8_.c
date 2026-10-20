@@ -20,6 +20,7 @@ extern int lbl_8049F9D8;
 #pragma pop
 extern int lbl_8055F554;
 extern int lbl_8055F54C;
+extern signed char lbl_8055F558;
 extern float lbl_80563E78;
 void fn_80270AE8(void *arg0) {
     float value = lbl_80563E78;
