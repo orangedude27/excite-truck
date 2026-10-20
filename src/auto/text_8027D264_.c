@@ -136,7 +136,10 @@ void fn_8027D77C(void *arg0) {
 
 #pragma scheduling off
 void fn_8027D7B8(void *arg0) {
-    fn_80007F90(*(int *)((char *)fn_8001285C(*(int *)((char *)arg0 + 0xC)) + 8));
+    int *p = (int *)arg0;
+    int id = p[3];
+    int *q = (int *)fn_8001285C(id);
+    fn_80007F90(q[2]);
 }
 #pragma scheduling on
 void fn_8027D810(void *arg0) {

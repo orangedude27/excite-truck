@@ -73,9 +73,13 @@ void* fn_802C21B8(void) {
     return lbl_8055FB50;
 }
 
-void fn_802C21C0(void) {
-    int value = lbl_8055FB54;
-    if (value != 0) fn_802B52C0(lbl_8034AFD8);
+void fn_802C21C0(void)
+{
+  if (lbl_8055FB54 != 0)
+  {
+    fn_802B52C0(lbl_8034AFD8);
+ dummy_label_174555: ;
+  }
 }
 
 void fn_802C21DC(int x, int y, unsigned int color) {

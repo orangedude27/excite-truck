@@ -869,9 +869,11 @@ extern s32 lbl_8032DB40;
 #pragma push
 #pragma opt_pointer_aliasing on
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
+    s32 value = *arg1;
     s32 index = ((s32 *)arg0)[1];
     s32 *data = *(s32 **)arg0;
-    data[index] = *arg1 + ((((s32 *)arg0)[1] = index + 1), 0);
+    ((s32 *)arg0)[1] = index + 1;
+    data[index] = value;
     return &data[index];
 }
 #pragma pop

@@ -6,7 +6,8 @@ extern void fn_8000D838(void *);
 extern s32 lbl_8055E0B8;
 extern s32 lbl_8055E0C0;
 extern s32 lbl_8055E0C4;
-#pragma scheduling reset
+#pragma scheduling off
+#pragma opt_propagation off
 void fn_801368C4(void) {
     s32 *p = &lbl_8055E0C4;
     fn_8000D838(&lbl_8055E0B8);

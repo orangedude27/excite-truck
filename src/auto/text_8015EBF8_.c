@@ -40,10 +40,11 @@ int fn_8015ECC0(void *arg0) {
 #pragma push
 #pragma auto_inline off
 int fn_8015ED18(void **arg0) {
-    volatile void **vtable = (volatile void **)*arg0;
-    return stricmp(((char *(*)(void *))vtable[2])(arg0), lbl_8055A070) == 0;
+    int *vt = (int *)*arg0;
+    char *(*method)(void *) = (char *(*)(void *))vt[2];
+    char *name = method(arg0);
+    return stricmp(name, lbl_8055A070) == 0;
 }
-
 int fn_8015ED54(void **arg0) {
     return stricmp(((char *(*)(void *))((void **)*(void **)arg0)[2])(arg0), lbl_8055A070) == 0;
 }
