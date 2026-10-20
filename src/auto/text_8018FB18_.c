@@ -5,6 +5,12 @@ extern int lbl_8055E3C4;
 extern int lbl_8055E524;
 void fn_80191084(int, int);
 int fn_801B89E0(void);
+int fn_8018FD38(void) {
+    int result = 0;
+    if (lbl_8055E3C4 + 1 >= lbl_8055E524 || fn_801B89E0() != 0) result = 1;
+    return result;
+}
+
 int fn_8018FF84(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
