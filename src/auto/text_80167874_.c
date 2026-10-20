@@ -6,8 +6,8 @@
 #pragma cplusplus on
 
 struct DummyVec2 {
-    u32 x;
-    u32 y;
+    f32 x;
+    f32 y;
 };
 
 class DummyItem {
@@ -373,26 +373,29 @@ s32 fn_80169D64(s32 arg0, s32 arg1) {
     return (u32)__cntlzw(r) >> 5;
 }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
 #pragma cplusplus on
 extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     int sp8 = -1;
     DummyItem *item;
     s32 i;
-    f32 zero;
+    s32 id;
 
     sscanf(arg1->getName(), lbl_8055A1C0, &sp8);
+    id = sp8;
 
-    zero = lbl_80561924;
     {
         DummyEntry *entry = &arg2->entries[arg2->entryCount++];
         entry->byte1C = 0;
-        entry->f8 = zero;
-        entry->fC = zero;
-        entry->f10 = zero;
+        entry->f8 = lbl_80561924;
+        entry->fC = lbl_80561924;
+        entry->f10 = lbl_80561924;
         entry->recordStart = arg2->recordCount;
         entry->recordCount = 0;
         entry->byte1D = 0;
-        entry->id = sp8;
+        entry->id = id;
         entry->active = 1;
         arg2->flag1E158 = 1;
     }
@@ -400,11 +403,13 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     for (i = 0; (item = arg1->getItem(i)) != 0; i++) {
         f32 hit = item->getHit(lbl_8055A1C8);
         DummyVec2 loc = item->getLoc(lbl_8055A1CC);
-        DummyRecord *rec = &arg2->records[arg2->recordCount++];
+        s32 count = arg2->recordCount;
+        arg2->recordCount = count + 1;
+        DummyRecord *rec = &arg2->records[count];
         rec->obj = 0;
         rec->obj = (DummyRecordObj *)fn_80167874(1);
         rec->x = *(f32 *)&loc.x;
-        rec->y = zero;
+        rec->y = lbl_80561924;
         rec->z = *(f32 *)&loc.y;
         rec->hit = hit;
         fn_801E9E30(0, &rec->x);
@@ -430,5 +435,5 @@ extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
     arg2->flag1E158 = 0;
     return 1;
 }
-#pragma cplusplus reset
+#pragma pop
 
