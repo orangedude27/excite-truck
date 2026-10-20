@@ -55,6 +55,7 @@ struct Dummy_801A5660 {
     virtual void d8() {}
     virtual void d9() {}
     virtual void d10() {}
+    virtual void d11() {}
 };
 struct Dummy_801A5258 {
     virtual void d0() {}
@@ -179,7 +180,7 @@ void fn_801A55BC(void *arg0) {
 #pragma cplusplus on
 extern "C" void fn_801A5660(void *arg0) {
     fn_80183DF8();
-    ((Dummy_801A5660 *)*(void **)((char *)arg0 + 0x270C))->d9();
+    ((Dummy_801A5660 *)*(void **)((char *)arg0 + 0x270C))->d10();
 }
 #pragma cplusplus off
 void fn_801A5D80(void *arg0, int arg1, int arg2, int arg3, int arg4) {
