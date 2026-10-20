@@ -12,6 +12,10 @@ void fn_80190F90(void) {
     fn_80191758();
 }
 
+void fn_80191060(void) {
+    fn_801B6664();
+}
+
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
 void fn_8019169C(void *arg0, void *arg1) {
