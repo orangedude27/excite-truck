@@ -12,6 +12,7 @@ typedef struct FILE {
     u32 pad2[0x27];
     s32 (*close)(s32);
 } FILE;
+#define FILE_CLOSE_OFF 0x44
 s32 fflush(void);
 void free(void *);
 s32 fclose(void *arg0) {
