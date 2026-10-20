@@ -3,6 +3,8 @@
 
 extern float lbl_80562844;
 extern float lbl_80562848;
+extern int lbl_8055E798;
+extern int lbl_8055E79C;
 int fn_801BD628(float *arg0) {
     int result = 0;
     if (arg0[0] >= lbl_80562844 && arg0[0] <= lbl_80562848 &&
