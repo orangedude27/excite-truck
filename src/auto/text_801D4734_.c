@@ -2,6 +2,15 @@
 
 extern int fn_80128668(void);
 extern int lbl_8055E3C4;
+int fn_801D6508(int arg0) {
+    if (((int *)arg0)[1] == 1) {
+        ((int *)arg0)[7] = lbl_8055E3C4;
+        ((int *)arg0)[1] = 2;
+        return 1;
+    }
+    return 0;
+}
+
 void fn_801D6600(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
