@@ -454,7 +454,8 @@ u8 fn_8014AEE8(void *arg0) {
 void fn_8014AEF0(void *arg0) {
     f32 step;
     if (*((u8 *)arg0 + 4) != 0) {
-        if (((unsigned int)__cntlzw((unsigned int)(fn_80176A1C() - 2)) >> 5) == 0) {
+        s32 state = fn_80176A1C() - 2;
+        if (((u32)__cntlzw((u32)state) >> 5) != 0) {
             step = fn_80176A2C();
         } else {
             step = lbl_8056164C;
@@ -1314,13 +1315,13 @@ void fn_80154580(s32 arg0, void *arg1) {
 }
 
 #pragma cplusplus on
-extern "C" s32 fn_80154618(void *arg0) {
+s32 fn_80154618(void *arg0) {
     s32 **it = (s32 **)&lbl_804348E8;
     s32 found = 0;
     s32 i = 0;
     while (i < fn_801B2F24()) {
         if (*(s32 *)((u8 *)*it + 0x1F0) == 0x50) {
-            if (((TObj80154618 *)(*(s32 **)arg0))->f8(arg0, i) != 0) {
+            if (((VTable80154618 *)(*(s32 **)arg0))->fn(arg0, i) != 0) {
                 found = 1;
             }
         }
