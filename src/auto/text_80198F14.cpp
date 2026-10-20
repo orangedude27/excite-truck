@@ -981,7 +981,7 @@ extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
     return arg0;
 }
 
-void fn_801A2674(void* arg0, s32 arg1, s32 arg2, f32 arg3) {
+extern "C" void fn_801A2674(void* arg0, s32 arg1, s32 arg2, f32 arg3) {
     *(f32*)((u8*)arg0 + 0x24) = arg3;
     *(s32*)((u8*)arg0 + 0x28) = arg1;
     *(s32*)((u8*)arg0 + 0x2C) = arg2;
