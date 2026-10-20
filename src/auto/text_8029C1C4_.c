@@ -598,11 +598,10 @@ int fn_8029EF38(void *arg0) {
     return *(int *)((char *)arg0 + 0x64);
 }
 
+#pragma dont_inline on
 void fn_8029EF40(void) {
     fn_8029EF28();
 }
-
-#pragma dont_inline on
 void fn_8029EF44(void) {
     fn_8029EF2C();
 }
