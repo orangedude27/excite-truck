@@ -207,7 +207,8 @@ void *fn_8001285C(s32);
 extern f32 lbl_80562990;
 extern f32 lbl_8055E7E4;
 f32 fn_801C3B6C(void) {
-    return lbl_8055E3C8 + lbl_8055E7E4;
+    register f32 r_a = lbl_8055E3C8;
+    return lbl_8055E7E4 + r_a;
 }
 
 s32 fn_801C3B7C(const void *arg0, const void *arg1) {
