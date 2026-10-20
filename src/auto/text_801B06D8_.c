@@ -737,9 +737,11 @@ void fn_801B2C6C(void) {
 
 }
 
-void fn_801B2ED0(void) {
-    fn_801B2EC0();
+#pragma dont_inline on
+void *fn_801B2ED0(s32 arg0) {
+    return fn_801B2EC0(arg0);
 }
+#pragma dont_inline reset
 
 void* fn_801B2ED4(void) {
     return lbl_8055E680;
