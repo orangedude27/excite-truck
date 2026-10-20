@@ -87,12 +87,26 @@ void fn_801D68D0(int arg0) {
     }
 }
 
+void fn_801D68E8(int arg0) {
+    ((char **)arg0)[0] = (char *)lbl_80338BD0;
+    ((int *)arg0)[1] = 0;
+}
+
 int fn_801D6900(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[1] = 0;
         if (arg1 > 0) fn_80128668();
     }
     return arg0;
+}
+
+int fn_801D6C3C(int arg0) {
+    if (((int *)arg0)[1] == 1) {
+        ((int *)arg0)[4] = lbl_8055E3C4;
+        ((int *)arg0)[1] = 2;
+        return 1;
+    }
+    return 0;
 }
 
 int fn_801D6D80(int arg0, int arg1) {
