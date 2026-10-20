@@ -93,6 +93,12 @@ public:
     virtual void d7();
     virtual int f8(int);
 };
+class Dummy_80149274 {
+public:
+    virtual void d0();
+    virtual void d1();
+    virtual s32 d2();
+};
 #pragma cplusplus off
 extern void fn_802E30C8();
 typedef struct { s32 v[4]; } S4_80149234;
