@@ -5,7 +5,9 @@ extern char lbl_80338BD0[];
 extern int fn_80128668(void);
 extern char lbl_8033905C[];
 extern float lbl_8055E3C8;
+extern char lbl_803388D4[];
 extern char lbl_8033890C[];
+extern void fn_8016A240(const char *arg0);
 extern int lbl_8055E3C4;
 extern void fn_801D5328(int, int);
 void fn_801D4904(void) {
@@ -120,6 +122,12 @@ int fn_801D6C3C(int arg0) {
         return 1;
     }
     return 0;
+}
+
+void fn_801D6D68(int arg0) {
+    extern char lbl_80338B98[];
+    ((char **)arg0)[0] = (char *)lbl_80338B98;
+    ((int *)arg0)[1] = 0;
 }
 
 int fn_801D6D80(int arg0, int arg1) {
