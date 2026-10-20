@@ -36,10 +36,11 @@ void fn_802E1728(void *arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 unsigned int fn_802E176C(unsigned int arg0) {
     return 1U << (32 - __cntlzw(arg0));
 }
-
+#pragma scheduling reset
 void fn_802E1780(void *arg0, unsigned int arg1, int arg2) {
     int x;
     int y;
@@ -133,6 +134,46 @@ void fn_802E2A1C(void) {
 void fn_802E2A54(void) {}
 
 void fn_802E2A58(void) {}
+
+extern void OSInit(void);
+extern void LCEnable(void);
+extern void fn_8005954C(void);
+extern void fn_802E77A8(void);
+extern void fn_802E3498(void);
+extern void fn_801293B4(void);
+extern void fn_802E302C(void);
+extern void fn_802E2A54(void);
+extern void fn_8012820C(int);
+extern void fn_802E98D0(void);
+extern void fn_802E7318(void);
+extern void fn_802E46B0(void);
+extern void fn_80127C8C(void);
+extern void fn_802E8CA8(void);
+extern void fn_80127538(void);
+extern void fn_80129790(void);
+extern void fn_802E5478(void);
+extern void fn_802E7578(void);
+extern void fn_802EBE2C(void);
+extern void fn_802CF600(void);
+extern void fn_802EC614(void);
+extern void fn_802E2CFC(void *);
+extern void fn_802E27F0(void);
+extern void fn_80127C90(void *, void *);
+extern char lbl_8034CCE0[];
+int fn_802E2A5C(void) {
+    unsigned short local[12];
+    OSInit(); fn_8005954C(); LCEnable(); fn_802E77A8(); fn_802E3498();
+    fn_801293B4(); fn_802E302C(); fn_802E2A54(); fn_8012820C(0x02000000);
+    fn_802E98D0(); fn_802E7318(); fn_802E46B0(); fn_80127C8C();
+    fn_802E8CA8(); fn_80127538(); fn_80129790(); fn_802E5478();
+    fn_802E7578(); fn_802EBE2C(); fn_802CF600(); fn_802EC614();
+    fn_802E2CFC(local);
+    fn_802E30C8(lbl_8034CCE0 + 0x78, local[1], local[2], local[0], *(int *)((char *)local + 0x10));
+    fn_802E30C8(lbl_8034CCE0 + 0x8C, local[3], local[4], local[5]);
+    fn_802E27F0();
+    fn_80127C90(fn_802E2A1C, lbl_8034CCE0 + 0xA0);
+    return 1;
+}
 
 extern void DCStoreRange(void *, int);
 extern void fn_80127D58(void *);
