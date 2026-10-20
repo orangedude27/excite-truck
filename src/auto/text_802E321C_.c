@@ -172,12 +172,19 @@ void fn_802E3898(s32 arg0, const char *arg1, s32 *arg2) {
     *arg2 = result;
 }
 
-void fn_802E3930(s32 arg0, s32 arg1, s32 arg2) {
+#pragma cplusplus on
+extern "C" void fn_802E3930(s32 arg0, s32 arg1, s32 arg2) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2(int, int);
+    };
     s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x15e);
     s32 entry = *(s32 *)(obj + 0x24);
-    ((void (*)(s32, s32, s32))(*(s32 **)entry)[4])(entry, arg1, arg2);
+    ((Obj *)entry)->v2(arg1, arg2);
 }
-
+#pragma cplusplus off
 void fn_802E3990(s32 arg0) {
     s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x16c);
     s32 entry = *(s32 *)(obj + 0x24);
