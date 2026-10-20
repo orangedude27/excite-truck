@@ -747,38 +747,39 @@ void fn_8014DE4C(void) {
 
 }
 
-void* fn_8014E3CC(void* arg0, s32 arg1) {
-    void* p;
-    void (**method)(void*, s32);
+#pragma cplusplus on
+extern "C" void* fn_8014E3CC(void* arg0, s32 arg1) {
+    class VObj {
+    public:
+        virtual void d0(s32);
+    };
+    VObj* p;
     if (arg0 != NULL) {
-        p = *(void**)((char*)arg0 + 8);
+        p = *(VObj**)((char*)arg0 + 8);
         if (p != NULL) {
-            fn_802ADE60(p, 1);
-            *(void**)((char*)arg0 + 8) = NULL;
+            fn_802ADE60((void**)p, 1);
+            *(VObj**)((char*)arg0 + 8) = NULL;
         }
-        p = *(void**)((char*)arg0 + 0x10);
+        p = *(VObj**)((char*)arg0 + 0x10);
         if (p != NULL) {
-            method = (void (**)(void*, s32))(*(void***)p);
-            if (p != NULL) method[2](p, 1);
-            *(void**)((char*)arg0 + 0x10) = NULL;
+            if (p != NULL) p->d0(1);
+            *(VObj**)((char*)arg0 + 0x10) = NULL;
         }
-        p = *(void**)((char*)arg0 + 0x14);
+        p = *(VObj**)((char*)arg0 + 0x14);
         if (p != NULL) {
-            method = (void (**)(void*, s32))(*(void***)p);
-            if (p != NULL) method[2](p, 1);
-            *(void**)((char*)arg0 + 0x14) = NULL;
+            if (p != NULL) p->d0(1);
+            *(VObj**)((char*)arg0 + 0x14) = NULL;
         }
-        p = *(void**)((char*)arg0 + 0x18);
+        p = *(VObj**)((char*)arg0 + 0x18);
         if (p != NULL) {
-            method = (void (**)(void*, s32))(*(void***)p);
-            if (p != NULL) method[2](p, 1);
-            *(void**)((char*)arg0 + 0x18) = NULL;
+            if (p != NULL) p->d0(1);
+            *(VObj**)((char*)arg0 + 0x18) = NULL;
         }
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-
+#pragma cplusplus off
 extern s32 fn_801DF074(s32, s32);
 #pragma paired_single off
 void fn_8014E61C(s32 arg0, s32 arg1, f32 arg2) {
