@@ -17,6 +17,10 @@ void *fn_801916AC(void *arg0, int arg1) {
     return arg0;
 }
 
+unsigned char fn_80192F6C(void *arg0) {
+    return *((unsigned char *)arg0 + 0x12);
+}
+
 void fn_8019304C(void *arg0) {
     *(float *)((char *)arg0 + 0x40) = lbl_8056208C;
 }
