@@ -13,15 +13,18 @@ extern void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform
 extern "C" void* FindAnimationLink__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
     void* result = FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(self, anim);
     if (result != 0) return result;
+    struct DummyPane {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual void* FindAnimationLink(void* anim);
+    };
     int offset;
     int count;
     count = 0;
     offset = 0;
     while (count < *((unsigned char*)self + 0x100)) {
-        void* pane = *(void**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
-        void** vtable = *(void***)pane;
-        void* (*fn)(void*, void*) = (void* (*)(void*, void*))vtable[8];
-        result = fn(pane, anim);
+        DummyPane* pane = *(DummyPane**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
+        result = pane->FindAnimationLink(anim);
         if (result != 0) return result;
         offset += 8;
         count++;
@@ -60,17 +63,65 @@ extern "C" void SetVtxColorElement__Q36nw4hbm3lyt7PictureFUlUc_800E03BC(void* th
     p[lo + 0xE4] = color;
 }
 
+extern "C" void GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(f64* out, void* self, u8 a, u32 b);
+extern "C" void GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self);
+extern "C" void fn_800E0434(void* self) {
+    u8* bytes = (u8*)self;
+    void** vtable = *(void***)self;
+
+    void (*fn0)(void*) = (void (*)(void*))vtable[0x60 / 4];
+    fn0(self);
+
+    f64 sp18;
+    f64 sp20;
+    f64 sp28;
+    f64 sp30;
+    f64 sp10;
+    u32 spC;
+    u32 sp8;
+
+    GetFrameSize__Q36nw4hbm3lyt6WindowFUcPCQ46nw4hbm3lyt6Window5Frame(&sp18, self, bytes[0x100], *(u32*)(bytes + 0xFC));
+    sp28 = sp18;
+    sp30 = sp20;
+
+    GetVtxPos__Q34nw4r3lyt4PaneCFv(self);
+    spC = *(u32*)(bytes + 0xC);
+    sp8 = *(u32*)(bytes + 0x8);
+    sp10 = *(f64*)(bytes + 0x10);
+
+    void (*fn1)(void*, f64*, f64*, u8) = (void (*)(void*, f64*, f64*, u8))vtable[0x6C / 4];
+    fn1(self, &sp10, &sp28, bytes[0xCE]);
+
+    switch (bytes[0x100]) {
+    case 1: {
+        void (*fn2)(void*, f64*, u32, f64*, u8) = (void (*)(void*, f64*, u32, f64*, u8))vtable[0x70 / 4];
+        fn2(self, &sp10, *(u32*)(bytes + 0xFC), &sp28, bytes[0xCE]);
+        break;
+    }
+    case 4: {
+        void (*fn3)(void*, f64*, u32, f64*, u8) = (void (*)(void*, f64*, u32, f64*, u8))vtable[0x74 / 4];
+        fn3(self, &sp10, *(u32*)(bytes + 0xFC), &sp28, bytes[0xCE]);
+        break;
+    }
+    case 8: {
+        void (*fn4)(void*, f64*, u32, f64*, u8) = (void (*)(void*, f64*, u32, f64*, u8))vtable[0x78 / 4];
+        fn4(self, &sp10, *(u32*)(bytes + 0xFC), &sp28, bytes[0xCE]);
+        break;
+    }
+    }
+}
+
 extern "C" void AnimateSelf__Q36nw4hbm3lyt6WindowFUl(void* self, unsigned long arg) {
     extern void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void*, unsigned long);
     AnimateSelf__Q36nw4hbm3lyt4PaneFUl(self, arg);
-    if (!(*((unsigned char*)self + 0xCF) & 1) && (arg & 1)) {
-        int count = 0;
+    if (!(*((unsigned char*)self + 0xCF) & 1) && !(arg & 1)) {
         int offset = 0;
+        int count = 0;
         while (count < *((unsigned char*)self + 0x100)) {
             void* pane = *(void**)(*(unsigned char**)((unsigned char*)self + 0xFC) + offset + 4);
             void** vtable = *(void***)pane;
-            void (*fn)(void*, unsigned long) = (void (*)(void*, unsigned long))vtable[7];
-            fn(pane, arg);
+            void (*fn)(void*) = (void (*)(void*))vtable[7];
+            fn(pane);
             offset += 8;
             count++;
         }
