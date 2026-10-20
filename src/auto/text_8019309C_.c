@@ -168,6 +168,7 @@ void fn_8019330C(void *out, void *in, int arg2) {
     *(float *)((char *)out + 4) = dx * sx + dy * sy;
     *(float *)out = dx * sy + dy * -sx;
 }
+#pragma dont_inline reset
 
 void fn_801933FC(void *arg0, void *arg1) {
     fn_8019330C(arg1, arg1, (int)(*(char **)((char *)arg0 + 0x294) + 0x70));
