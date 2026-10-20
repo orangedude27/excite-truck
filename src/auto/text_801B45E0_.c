@@ -104,6 +104,12 @@ void fn_801B4720(int arg0) {
 }
 
 #pragma dont_inline on
+int *fn_801B479C(int arg0, int arg1) {
+    return (int *)(*(int *)(arg0 + 0x18) + arg1 * 12);
+}
+#pragma dont_inline reset
+
+#pragma dont_inline on
 int fn_801B47AC(int arg0) {
     return *(int *)(arg0 + 0x20);
 }
