@@ -44,8 +44,7 @@ float fn_8017EB80(float arg0, float arg1, float arg2) {
     float magnitude = (float)__fabs(arg0);
     float value = lbl_80561C48;
     float temp = value + arg1;
-    magnitude = (temp + arg2) * magnitude;
-    temp = magnitude - arg1;
+    temp = (temp + arg2) * magnitude - arg1;
     value = value < temp ? value : temp;
     value = value > lbl_80561C4C ? value : lbl_80561C4C;
     if (arg0 >= lbl_80561C4C) return value;
@@ -99,37 +98,42 @@ extern void fn_802E85A8(int, float, float, float);
 extern void fn_802E85AC(int, float, float, float);
 extern float lbl_8055A334;
 extern float lbl_80561C60;
+#pragma push
+#pragma use_lmw_stmw off
 void fn_8017F628(void *arg0) {
     float scale = lbl_8055A334;
     if (fn_801769F8() == 0 && fn_801B526C() == 0 && fn_801C5B60() == 0 &&
-        *(unsigned char *)((char *)arg0 + 0x5C) != 0 &&
-        *(unsigned char *)((char *)arg0 + 0x350) != 0) {
-        float x = *(float *)((char *)arg0 + 0x30C) * scale;
-        fn_802E85AC(*(int *)((char *)arg0 + 8), *(float *)((char *)arg0 + 0x314) + x,
-                    *(float *)((char *)arg0 + 0x310) * scale, x);
-        fn_802E85A8(*(int *)((char *)arg0 + 8), *(float *)((char *)arg0 + 0x318) * scale,
-                    *(float *)((char *)arg0 + 0x31C), *(float *)((char *)arg0 + 0x320) * scale);
-        fn_802E8528(*(int *)((char *)arg0 + 8),
-                    lbl_80561C60 * (float)fabs(*(float *)((char *)arg0 + 0x324) * scale),
-                    (float)fabs(*(float *)((char *)arg0 + 0x328)));
-    } else {
-        ((void (*)(int))fn_802E8518)(*(int *)((char *)arg0 + 8));
-    }
+        *(unsigned char *)((char *)arg0 + 0x5C) && *(unsigned char *)((char *)arg0 + 0x350)) {
+        float a = *(float *)((char *)arg0 + 0x30C) * scale;
+        fn_802E85AC(*(int *)((char *)arg0 + 8), *(float *)((char *)arg0 + 0x314) + a,
+                    *(float *)((char *)arg0 + 0x310) * scale, a);
+        {
+            float b = *(float *)((char *)arg0 + 0x318) * scale;
+            float c = *(float *)((char *)arg0 + 0x320) * scale;
+            float d = *(float *)((char *)arg0 + 0x31C);
+            fn_802E85A8(*(int *)((char *)arg0 + 8), b, d, c);
+        }
+        {
+            float x = *(float *)((char *)arg0 + 0x324) * scale;
+            float y = *(float *)((char *)arg0 + 0x328);
+            float z = __fabs(y);
+            float w = __fabs(x);
+            fn_802E8528(*(int *)((char *)arg0 + 8), lbl_80561C60 * w, z);
+        }
+    } else ((void (*)(int))fn_802E8518)(*(int *)((char *)arg0 + 8));
 }
-
+#pragma pop
 float fn_8017F70C(float arg0) { double temp = __fabs(arg0); return temp; }
 
 extern int fn_80128668(void);
 extern int fn_801A8EE4(void *);
 int fn_8017FEE4(void *arg0) {
     int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x340) == 0) {
-        if (fn_801A8EE4((char *)arg0 + 0x6C) == 0) {
-            if (fn_801A8EE4((char *)arg0 + 0x7C) != 0) {
-                result = 1;
-            }
-        }
-    }
+    if (*(unsigned char *)((char *)arg0 + 0x340) != 0) goto done;
+    if (fn_801A8EE4((char *)arg0 + 0x6C) != 0) goto done;
+    if (fn_801A8EE4((char *)arg0 + 0x7C) == 0) goto done;
+    result = 1;
+done:
     return result;
 }
 
@@ -244,12 +248,33 @@ void fn_801815DC(void *arg0, float arg1) {
     *(float *)((char *)arg0 + 0x20) = value;
 }
 
+extern int fn_801A8E68(void *);
+extern void fn_801797F8(int, int, int);
+void fn_8018160C(void *arg0) {
+    char *p;
+    int i;
+    if (fn_801A8E68((char *)arg0 + 0x25c)) fn_801797F8(*(int *)((char *)arg0 + 4), 2, 0);
+    if (fn_801A8E68((char *)arg0 + 0x26c)) fn_801797F8(*(int *)((char *)arg0 + 4), 1, 0);
+    if (fn_801A8E68((char *)arg0 + 0x27c)) fn_801797F8(*(int *)((char *)arg0 + 4), 3, 0);
+    if (fn_801A8E68((char *)arg0 + 0x24c)) fn_801797F8(*(int *)((char *)arg0 + 4), 0, 0);
+    p = (char *)arg0 + 0x2cc;
+    i = 0;
+    do {
+        if (fn_801A8E68(p)) {
+            fn_801797F8(*(int *)((char *)arg0 + 4), 4, i);
+            break;
+        }
+        ++i;
+        if (i >= 4) break;
+        p += 0x10;
+    } while (1);
+}
+
 void fn_80181700(void *arg0, int arg1) {
-    void *value;
     *(unsigned char *)((char *)arg0 + 0x350) = arg1;
     if (arg1 != 0) return;
-    value = *(void **)((char *)arg0 + 8);
-    if ((int)value < 0) return;
+    arg0 = *(void **)((char *)arg0 + 8);
+    if ((int)arg0 < 0) return;
     fn_802E8518();
 }
 
@@ -297,7 +322,7 @@ int fn_801817B4(void *arg0) {
 
 int fn_80181800(void *arg0) {
     int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x340) == 0 && fn_801A8EE4((char *)arg0 + 0x8C) != 0) {
+    if (*(unsigned char *)((char *)arg0 + 0x340) != 0 || fn_801A8EE4((char *)arg0 + 0x8C) != 0) {
         result = 1;
     }
     return result;
