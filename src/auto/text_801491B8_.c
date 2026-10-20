@@ -89,7 +89,10 @@ class TObj80154618 {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-    virtual void d8();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+    virtual void d20(); virtual void d21(); virtual void d22(); virtual void d23();
     virtual int f8(void *, int);
 };
 #pragma cplusplus reset
@@ -1314,25 +1317,29 @@ void fn_80154580(s32 arg0, void *arg1) {
     }
 }
 
-s32 fn_80154618(void *arg0) {
+#pragma cplusplus on
+extern "C" s32 fn_80154618(void *arg0) {
     s32 **it = (s32 **)&lbl_804348E8;
     s32 found = 0;
     s32 i = 0;
     while (i < fn_801B2F24()) {
         if (*(s32 *)((u8 *)*it + 0x1F0) == 0x50) {
-            void * volatile *obj = (void * volatile *)arg0;
-            volatile void **vt = (volatile void **)*obj;
-            s32 (*fn)(void *, s32) = (s32 (*)(void *, s32))vt[8];
-            if (fn(arg0, i) != 0) found = 1;
+            if (((TObj80154618 *)(*(s32 **)arg0))->f8(arg0, i) != 0) {
+                found = 1;
+            }
         }
         it++;
         i++;
     }
     it = (s32 **)0;
-    if (found == 0 && fn_801B8514() != 0) it = (s32 **)1;
+    if (found == 0) {
+        if (fn_801B8514() != 0) {
+            it = (s32 **)1;
+        }
+    }
     return (s32)it;
 }
-
+#pragma cplusplus reset
 void fn_801546D4(s32 arg0) {
     switch (fn_80161C94()) {
         case 0:
