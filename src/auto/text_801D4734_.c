@@ -308,6 +308,10 @@ void fn_801D8C18(void) {
 void fn_801D8C94(void) {
 }
 
+void *fn_801D8C98(void) {
+    return lbl_8033907C;
+}
+
 int fn_801D8CA4(void *arg0) {
     return ((int *)arg0)[1];
 }
