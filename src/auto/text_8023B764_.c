@@ -151,11 +151,12 @@ void fn_8023BE38(int ignored, int flag) {
 }
 #pragma dont_inline reset
 
+#pragma scheduling off
 void fn_8023BEA8(void) {
     extern const char lbl_80341340[];
-    fn_8023BE38((int)&lbl_80341340, 1);
+    fn_8023BE38((int)lbl_80341340, 1);
 }
-
+#pragma scheduling reset
 extern void fn_8001285C(void);
 extern void *fn_80012820(s32);
 extern s32 *fn_80012870(s32, s32);
