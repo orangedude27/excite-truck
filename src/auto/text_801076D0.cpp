@@ -97,6 +97,14 @@ extern "C" void* fn_80107FE4(void* arg0, const void* arg1) {
     return arg0;
 }
 
+extern "C" void* __dt__Q36nw4hbm2ut7ResFontFv(void* arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_80109040((s32)arg0, 0);
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void* memcpy(void*, const void*, unsigned long);
 #pragma push
 #pragma scheduling off
