@@ -65,12 +65,12 @@ static SIPacket Packet[SI_MAX_CHAN] = {0};
 static s64 XferTime[SI_MAX_CHAN];
 static s64 TypeTime[SI_MAX_CHAN];
 static OSAlarm Alarm[SI_MAX_CHAN];
-static SICallback TypeCallback[SI_MAX_TYPE][SI_MAX_CHAN];
-static BOOL InputBufferValid[SI_MAX_CHAN];
 static u32 InputBuffer[SI_MAX_CHAN][2];
+static BOOL InputBufferValid[SI_MAX_CHAN];
+static u32 InputBufferVcount[SI_MAX_CHAN];
 #define RDSTHandler lbl_8038F2C0
 static OSInterruptHandler RDSTHandler[SI_MAX_CHAN];
-u32 InputBufferVcount[SI_MAX_CHAN];
+static SICallback TypeCallback[SI_MAX_TYPE][SI_MAX_CHAN];
 extern OSAlarm Alarm[SI_MAX_CHAN];
 
 extern u32 __PADFixBits;
@@ -324,7 +324,14 @@ static void SIInterruptHandler(s16 intr, OSContext* ctx) {
             v = *(volatile u32*)&InputBufferVcount[chan];
             if (v == 0 || *(volatile u32*)&InputBufferVcount[chan] + x / 2 < vcount) return;
         }
-        memset(InputBufferVcount, 0, sizeof(InputBufferVcount));
+        {
+            u32 v = 0;
+            u32* ptr = (void*)InputBufferVcount;
+            ptr[0] = v;
+            ptr[1] = v;
+            ptr[2] = v;
+            ptr[3] = v;
+        }
         for (chan = 0; chan < SI_MAX_CHAN; chan++) if (RDSTHandler[chan] != NULL) RDSTHandler[chan](intr, ctx);
     }
 }
