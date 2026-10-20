@@ -4,5 +4,5 @@
 
 extern void fn_8000D838(void *);
 extern unsigned char lbl_8055E118;
-extern unsigned int lbl_8042F7A8[5];
-extern unsigned int lbl_8055E120, lbl_8055E124, lbl_8055E128;
+extern s32 lbl_8042F7A8[5];
+extern s32 lbl_8055E120, lbl_8055E124, lbl_8055E128;
