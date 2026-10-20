@@ -68,7 +68,7 @@ int fn_801D7034(int arg0, int arg1) {
 
 int fn_801D7924(int arg0, int arg1) {
     if (arg0 != 0) {
-        ((int *)arg0)[1] = 0;
+        ((int *)arg0)[10] = 0;
         if (arg1 > 0) fn_80128668();
     }
     return arg0;
