@@ -41,6 +41,15 @@ void fn_8027D264(void) {
     fn_8002F634((char *)&lbl_804A4380, fn_8027D280, 0x3B10, 4);
 }
 
+void *fn_8027D280(void *arg0, int arg1) {
+    if (arg0 != 0) {
+        fn_8002F634((char *)arg0 + 0x2370, fn_8027D304, 0xBD0, 2);
+        fn_8002F634(arg0, fn_8027D304, 0xBD0, 3);
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 void *fn_8027D304(void *arg0, int arg1) {
     void *obj = arg0;
     if (obj != 0) {
@@ -125,10 +134,11 @@ void fn_8027D77C(void *arg0) {
     (*(void (**)(void *, int))(*(void ***)obj + 5))(obj, (int)&lbl_8055C784);
 }
 
+#pragma scheduling off
 void fn_8027D7B8(void *arg0) {
     fn_80007F90(*(int *)((char *)fn_8001285C(*(int *)((char *)arg0 + 0xC)) + 8));
 }
-
+#pragma scheduling on
 void fn_8027D810(void *arg0) {
     int id = *(int *)((char *)arg0 + 0xC);
     void *res = fn_8001285C(id);
@@ -169,12 +179,28 @@ int fn_8027D8A0(void *arg0) {
     return *(int *)((char *)arg0 + 0x28);
 }
 
-void fn_8027D8A8(void *arg0) {
-    void *obj = arg0;
-    int value = (*(int (**)(void))(*(char **)obj + 0x38))();
-    ((int (*)(void *, int))fn_8001DA48)((char *)obj + 0x14, value);
+#pragma cplusplus on
+extern "C" void fn_8027D8A8(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual int v12();
+    };
+    int value = ((Obj *)arg0)->v12();
+    ((int (*)(void *, int))fn_8001DA48)((char *)arg0 + 0x14, value);
 }
-
+#pragma cplusplus off
 int fn_8027D8EC(void *arg0) { return *(int *)((char *)arg0 + 0x2C); }
 
 int fn_8027D8F4(void *arg0) {
@@ -306,4 +332,45 @@ void* fn_8027DED0(void) {
 
 void fn_8027DED8(void) {
 }
+
+extern void *fn_8027DB40(int);
+extern void *fn_8025007C(int);
+extern int fn_8024DAE0(int, int, int, void *, int);
+extern char lbl_80347E30[];
+extern char lbl_80347E40[];
+#pragma push
+#pragma use_lmw_stmw off
+int fn_8027DEDC(int arg0, int arg1, int arg2, int arg3, int arg4) {
+    int result;
+    void *obj;
+    int found;
+    void *manager;
+
+    fn_800167FC(1);
+    manager = (void *)fn_80012820(arg2);
+    found = 0;
+    if (manager != 0) {
+        obj = *(void **)((char *)manager + 0x80);
+        if (obj != 0) {
+            result = ((int (*)(void *, const char *))*(void **)((char *)*(void **)obj + 0x5C))(obj, lbl_80347E30);
+            if (((unsigned int)(-result | result) >> 31) != 0) {
+                obj = *(void **)((char *)manager + 0x80);
+                obj = (void *)((int (*)(void *, const char *))*(void **)((char *)*(void **)obj + 0x5C))(obj, lbl_80347E30);
+                found = ((int (*)(void *, const char *, int))*(void **)((char *)*(void **)obj + 0x18))(obj, lbl_80347E40, 0);
+            }
+        }
+    }
+    if (found == 0) {
+        manager = fn_8027DB40(0);
+    } else {
+        manager = fn_8025007C(1);
+        ((void (*)(void *, int, int, int))*(void **)((char *)*(void **)manager + 0xC))(manager, found, 1, 0);
+    }
+    result = fn_8024DAE0(arg0, arg1, 0, manager, arg3);
+    if (manager != 0) {
+        ((void (*)(void *, int))*(void **)((char *)*(void **)manager + 8))(manager, 1);
+    }
+    return result;
+}
+#pragma pop
 
