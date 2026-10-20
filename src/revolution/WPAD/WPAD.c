@@ -3062,49 +3062,43 @@ void fn_8005EEC4(s32 chan, s32 result) {
 }
 
 void fn_8005F0A8(s32 chan, s32 param_2) {
-    WPADCB* p = lbl_8038F4F0[chan];
-    register s32 enabled asm("r30");
-    register s32 index asm("r29");
-    register WPADCB* cb asm("r31") = p;
-    s8 front, back;
-    u32 capacity;
-    s32 diff;
-    u8 buf[0x60];
-    f64 d4, d3, d2, d1, d0, d5;
+    WPADCB* cb = lbl_8038F4F0[chan];
 
     if (param_2 != -3) {
         return;
     }
 
-    *(u32*)(buf + 0x0C) = 0x2A;
-    *(u16*)(buf + 0x08) = 0x38;
-    *(u32*)(buf + 0x10) = 0x17;
-    *(u16*)(buf + 0x2A) = 0x6;
+    {
+    u8 buf[0x60];
+    s32 enabled;
+    s32 index;
+    s8 front, back;
+    u32 capacity;
+    s32 diff;
+
+    *(u16*)(buf + 0x00) = 0x38;
+    *(u32*)(buf + 0x04) = 0x2A;
+    *(u32*)(buf + 0x08) = 0x17;
+    *(u16*)(buf + 0x28) = 0x6;
     *(void**)(buf + 0x3C) = fn_8005F0A8;
 
-    memcpy(buf + 0x14, buf + 0x0C, 4);
-    memcpy(buf + 0x18, buf + 0x08, 2);
+    memcpy(buf + 0x0C, buf + 0x04, 4);
+    memcpy(buf + 0x10, buf + 0x00, 2);
 
-    *(u16*)(buf + 0x30) = *(u16*)(buf + 0x08);
-    *(u32*)(buf + 0x34) = *(u32*)(buf + 0x0C);
-    *(u32*)(buf + 0x2C) = (u32)((u8*)cb + 0x874);
+    *(u16*)(buf + 0x30) = *(u16*)(buf + 0x00);
+    *(u32*)(buf + 0x34) = *(u32*)(buf + 0x04);
+    *(u32*)(buf + 0x24) = (u32)((u8*)cb + 0x874);
 
-    d4 = *(f64*)(buf + 0x10);
-    d3 = *(f64*)(buf + 0x18);
-    d2 = *(f64*)(buf + 0x20);
-    d1 = *(f64*)(buf + 0x28);
-    d5 = *(f64*)(buf + 0x38);
-    d0 = *(f64*)(buf + 0x30);
-
-    *(f64*)(buf + 0x00) = d4;
-    *(f64*)(buf + 0x08) = d3;
-    *(f64*)(buf + 0x10) = d2;
-    *(f64*)(buf + 0x18) = d1;
-    *(f64*)(buf + 0x20) = d0;
-    *(f64*)(buf + 0x28) = d5;
+    *(f64*)(buf + 0x38) = *(f64*)(buf + 0x08);
+    *(f64*)(buf + 0x40) = *(f64*)(buf + 0x10);
+    *(f64*)(buf + 0x48) = *(f64*)(buf + 0x18);
+    *(f64*)(buf + 0x50) = *(f64*)(buf + 0x20);
+    *(f64*)(buf + 0x58) = *(f64*)(buf + 0x28);
+    *(f64*)(buf + 0x60) = *(f64*)(buf + 0x30);
 
     enabled = OSDisableInterrupts();
     OSDisableInterrupts();
+
     back = cb->stdCmdQueue.back;
     front = cb->stdCmdQueue.front;
     diff = front - back;
@@ -3132,6 +3126,7 @@ void fn_8005F0A8(s32 chan, s32 param_2) {
     if (diff > capacity) diff = 0;
     cb->stdCmdQueue.front = diff;
     OSRestoreInterrupts(enabled);
+    }
 }
 
 void fn_8005F248(s32 chan, s32 param_2) {
@@ -3231,7 +3226,6 @@ s32 fn_8005FBCC(u8 devHandle) {
     }
     return WPAD_CHAN_INVALID;
 }
-
 void fn_8005FCCC(u8 devHandle, u8 open) {
     extern void fn_8005E8E0(s32 chan);
     extern const char lbl_803120E0[];
@@ -3382,10 +3376,92 @@ void fn_8006022C(s32 chan)
 }
 
 // fn_800604E8: set data format
-void fn_800604E8(s32 chan, s32 format) {
-    BOOL enabled = OSDisableInterrupts();
-    (*(u32*)((u8*)_wpdcb[chan] + 0x8B8)) = format;
+s32 fn_800604E8(s32 chan, s32 format, void* data) {
+    WPADCB* cb = lbl_8038F4F0[chan];
+    s32 enabled;
+    s32 status;
+    s32 handshake;
+    
+    enabled = OSDisableInterrupts();
+    status = cb->status;
+    handshake = *(s32*)((u8*)cb + 0x7FC);
     OSRestoreInterrupts(enabled);
+    
+    if (handshake == -1) {
+        return -1;
+    }
+    
+    if (status != 0) {
+        u8 front;
+        u8 back;
+        s32 diff;
+        s32 capacity;
+        u8* buffer;
+        s32 result;
+        u8 newBack;
+        
+        // Setup command structure on stack
+        // Header: type=1, length=0x15, padding=0
+        // Data: 6 double-precision values
+        struct {
+            u8 padding[0x20];
+            u8 type;
+            u8 pad2;
+            u32 length;
+            u8 pad3;
+            f64 values[6];
+        } cmd __attribute__((aligned(8)));
+        
+        cmd.type = 1;
+        cmd.length = 0x15;
+        cmd.values[0] = *(f64*)((u8*)data + 0x0);
+        cmd.values[1] = *(f64*)((u8*)data + 0x8);
+        cmd.values[2] = *(f64*)((u8*)data + 0x10);
+        cmd.values[3] = *(f64*)((u8*)data + 0x18);
+        cmd.values[4] = *(f64*)((u8*)data + 0x20);
+        cmd.values[5] = *(f64*)((u8*)data + 0x28);
+        
+        enabled = OSDisableInterrupts();
+        result = enabled;
+        enabled = OSDisableInterrupts();
+        
+        front = cb->stdCmdQueue.front;
+        back = cb->stdCmdQueue.back;
+        diff = back - front;
+        
+        if (diff < 0) {
+            capacity = cb->stdCmdQueue.capacity;
+            diff += capacity;
+        }
+        
+        OSRestoreInterrupts(enabled);
+        
+        capacity = cb->stdCmdQueue.capacity;
+        if (diff == capacity - 1) {
+            cb = lbl_8038F4F0[chan];
+            OSRestoreInterrupts(result);
+            return -1;
+        }
+        
+        // Clear the new entry
+        buffer = (u8*)cb->stdCmdQueue.buffer;
+        memset(buffer + back * 0x30, 0, 0x30);
+        
+        // Copy command data
+        memcpy(buffer + back * 0x30, &cmd, 0x30);
+        
+        // Update back index
+        newBack = back + 1;
+        if (newBack >= capacity) {
+            newBack = 0;
+        }
+        cb->stdCmdQueue.back = newBack;
+        
+        OSRestoreInterrupts(result);
+        return 1;
+    }
+    
+    return -2;
 }
 
 // fn_80060750: setter for lbl_8055DC14
@@ -3421,8 +3497,139 @@ u32 fn_80060C7C(s32 chan) {
 }
 
 // fn_80060CC0: WPAD processing (large - stub)
-void fn_80060CC0(void) { /* stub */ }
+#pragma inline_max_size(1000)
+#pragma inline_max_total_size(10000)
+s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
+    WPADCB* p;
+    BOOL enabled;
+    BOOL spkEnable;
+    BOOL handshake;
+    s32 status;
 
+    u8 config[SPK_CONFIG_SIZE] = {0x00,
+                                  0x00,
+                                  0xD0, 0x07,
+                                  WPAD_MAX_SPEAKER_VOLUME / 2 + 1,
+                                  0x0C, 0x0E
+    };
+
+    p = _wpdcb[chan];
+
+    enabled = OSDisableInterrupts();
+
+    spkEnable = p->wpInfo.speaker;
+    status = p->status;
+    handshake = p->handshakeFinished;
+
+    OSRestoreInterrupts(enabled);
+
+    if (status == WPAD_ERR_NO_CONTROLLER) {
+        goto _end;
+    }
+
+    if (!handshake) {
+        status = WPAD_ERR_COMMUNICATION_ERROR;
+        goto _end;
+    }
+
+    if (command == WPAD_SPEAKER_OFF) {
+        if (!spkEnable) {
+            status = WPAD_ERR_OK;
+        } else {
+            enabled = OSDisableInterrupts();
+
+            if (__CanPushCmdQueue(&p->stdCmdQueue, 5)) {
+                WPADiSendMuteSpeaker(&p->stdCmdQueue, TRUE, NULL);
+
+                WPADiSendWriteDataCmd(&p->stdCmdQueue, 0x01, WM_REG_SPEAKER_01,
+                                      NULL);
+                WPADiSendWriteDataCmd(&p->stdCmdQueue, 0x00, WM_REG_SPEAKER_09,
+                                      NULL);
+
+                WPADiSendEnableSpeaker(&p->stdCmdQueue, FALSE, NULL);
+
+                WPADiSendGetContStat(&p->stdCmdQueue, NULL, pCallback);
+
+                OSRestoreInterrupts(enabled);
+                return WPAD_ERR_OK;
+            }
+
+            status = WPAD_ERR_COMMUNICATION_ERROR;
+            OSRestoreInterrupts(enabled);
+        }
+    } else {
+        switch (command) {
+        case WPAD_SPEAKER_ON:
+        case WPAD_SPEAKER_5: {
+            enabled = OSDisableInterrupts();
+
+            if (__CanPushCmdQueue(&p->stdCmdQueue, 7)) {
+                WPADiSendEnableSpeaker(&p->stdCmdQueue, TRUE, NULL);
+                WPADiSendMuteSpeaker(&p->stdCmdQueue, TRUE, NULL);
+
+                WPADiSendWriteDataCmd(&p->stdCmdQueue, 0x01, WM_REG_SPEAKER_09,
+                                      NULL);
+                // Sends 0x80 instead of 0x08?
+                WPADiSendWriteDataCmd(&p->stdCmdQueue, 0x80, WM_REG_SPEAKER_01,
+                                      NULL);
+
+                config[4] = _speakerVolume;
+
+                WPADiSendWriteData(&p->stdCmdQueue, &config, SPK_CONFIG_SIZE,
+                                   WM_REG_SPEAKER_01, NULL);
+
+                WPADiSendMuteSpeaker(&p->stdCmdQueue, FALSE, NULL);
+
+                WPADiSendGetContStat(&p->stdCmdQueue, NULL, pCallback);
+
+                OSRestoreInterrupts(enabled);
+                return WPAD_ERR_OK;
+            }
+
+            status = WPAD_ERR_COMMUNICATION_ERROR;
+
+            OSRestoreInterrupts(enabled);
+            break;
+        }
+
+        case WPAD_SPEAKER_MUTE: {
+            if (!WPADiSendMuteSpeaker(&p->stdCmdQueue, TRUE, pCallback)) {
+                status = WPAD_ERR_COMMUNICATION_ERROR;
+                break;
+            }
+
+            return WPAD_ERR_OK;
+        }
+
+        case WPAD_SPEAKER_UNMUTE: {
+            if (!WPADiSendMuteSpeaker(&p->stdCmdQueue, FALSE, pCallback)) {
+                status = WPAD_ERR_COMMUNICATION_ERROR;
+                break;
+            }
+
+            return WPAD_ERR_OK;
+        }
+
+        case WPAD_SPEAKER_PLAY: {
+            if (!WPADiSendWriteDataCmd(&p->stdCmdQueue, 0x01, WM_REG_SPEAKER_08,
+                                       pCallback)) {
+
+                status = WPAD_ERR_COMMUNICATION_ERROR;
+                break;
+            }
+
+            return WPAD_ERR_OK;
+        }
+        }
+    }
+
+_end:
+    if (pCallback != NULL) {
+        pCallback(chan, status);
+    }
+
+    return status;
+}
 // fn_80062054: get data format
 u32 fn_80062054(s32 chan) {
 #pragma unused(chan)
@@ -3555,133 +3762,136 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
     return TRUE;
 }
 
-static BOOL fn_80063744(WPADCB* p, u8 idx, u32 val1, u32 val2)
-{
-    u8 data[0x30] ALIGN(8);
-    BOOL enabled;
+static BOOL fn_80063744(u8* p, u8 idx, u32 val1, u32 val2) {
+    u8 buffer[0x70] ALIGN(8);
+    s32 enabled;
     s8 diff;
-    u8* base;
-    u32 count;
-    u8 next;
+    u32 length;
+    u8 nextIdx;
 
-    data[4] = val1 >> 24;
-    data[5] = val1 >> 16;
-    data[6] = val1 >> 8;
-    data[7] = val1;
-    data[8] = 1;
-    data[9] = idx;
-    data[0x10] = 0x16;
-    data[0x1a] = 0x15;
-    data[0x1b] = 0;
-    data[0x2c] = val2 >> 24;
-    data[0x2d] = val2 >> 16;
-    data[0x2e] = val2 >> 8;
-    data[0x2f] = val2;
+    // Set up buffer at stack+0x10
+    buffer[0x10] = 0x16;
+    buffer[0x14] = (u8)(val1 >> 24);
+    buffer[0x15] = (u8)(val1 >> 16);
+    buffer[0x16] = (u8)(val1 >> 8);
+    buffer[0x17] = (u8)val1;
+    buffer[0x18] = 0x1;
+    buffer[0x19] = idx;
+    buffer[0x2A] = 0x15;
+    buffer[0x3C] = (u8)(val2 >> 24);
+    buffer[0x3D] = (u8)(val2 >> 16);
+    buffer[0x3E] = (u8)(val2 >> 8);
+    buffer[0x3F] = (u8)val2;
 
+    // Copy buffer+0x10 to buffer+0x40 (48 bytes)
+    memcpy(buffer + 0x40, buffer + 0x10, 0x30);
+
+    // OSDisableInterrupts calls
     enabled = OSDisableInterrupts();
-    enabled = OSDisableInterrupts();
-    diff = (s8)(p->wmReadDataPtr[1] - p->wmReadDataPtr[0]);
+    OSDisableInterrupts();
+    diff = p[1] - p[0];
     if (diff < 0) {
-        diff += (s8)p->wmReadLength;
+        diff += (s8)p[8];
+        OSRestoreInterrupts(enabled);
     }
-    OSRestoreInterrupts(enabled);
-
-    if ((u32)(p->wmReadLength - 1) == (u32)diff) {
+    if (p[8] - 1 == diff) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
-    base = (u8*)p->wmReadDataPtr + (s8)p->wmReadDataPtr[1] * 0x30;
-    memset(base, 0, 0x30);
-    memcpy(base, data, 0x30);
-    next = p->wmReadDataPtr[1] + 1;
-    count = p->wmReadLength;
-    p->wmReadDataPtr[1] = (u8)(next & ~((s32)(next - count) >> 31 | (s32)(count - 1 - p->wmReadDataPtr[1]) >> 31));
+
+    // memset and memcpy
+    nextIdx = p[1];
+    memset((u8*)(*(u32*)&p[4] + nextIdx * 0x30), 0, 0x30);
+    memcpy((u8*)(*(u32*)&p[4] + nextIdx * 0x30), buffer, 0x30);
+
+    // Wraparound logic
+    length = p[8];
+    nextIdx = p[1];
+    nextIdx = (u8)((nextIdx + 1) & ~(((s32)(nextIdx - length) >> 31) | ((s32)(length - 1 - nextIdx) >> 31)));
+    p[1] = nextIdx;
     OSRestoreInterrupts(enabled);
     return TRUE;
 }
 
 static BOOL fn_800638C8(u8* p, const void* src, u32 len, u32 val1, u32 val2) {
-    u8 temp[0x30] ALIGN(8);
-    u8* bytes = temp;
-    s32 diff;
-    BOOL enabled;
-    s32 index;
+    u8 buffer[0x70] ALIGN(8);
+    s32 enabled;
+    s8 diff;
+    u32 length;
+    u8 nextIdx;
+    u8 lenMask;
 
-    *(u32*)(bytes + 0x00) = 0x16;
-    *(u16*)(bytes + 0x1A) = 0x15;
-    *(u32*)(bytes + 0x2C) = val2;
-    memcpy(bytes + 4, &val1, 4);
-    bytes[8] = len & 0x1F;
-    memcpy(bytes + 9, src, len);
+    lenMask = len & 0x1F;
+    buffer[0x40] = 0x16;
+    buffer[0x44] = (u8)(val1 >> 24);
+    buffer[0x45] = (u8)(val1 >> 16);
+    buffer[0x46] = (u8)(val1 >> 8);
+    buffer[0x47] = (u8)val1;
+    buffer[0x48] = lenMask;
+    memcpy(buffer + 0x49, src, len);
+    buffer[0x5A] = 0x15;
+    buffer[0x6C] = (u8)(val2 >> 24);
+    buffer[0x6D] = (u8)(val2 >> 16);
+    buffer[0x6E] = (u8)(val2 >> 8);
+    buffer[0x6F] = (u8)val2;
+
+    memcpy(buffer + 0x10, buffer + 0x40, 0x30);
+
     enabled = OSDisableInterrupts();
     enabled = OSDisableInterrupts();
-    diff = (s8)(p[1] - p[0]);
-    if (diff < 0) diff += *(u32*)(p + 8);
+    diff = p[1] - p[0];
+    if (diff < 0) {
+        diff += (s8)p[8];
+    }
     OSRestoreInterrupts(enabled);
-    if (*(u32*)(p + 8) - 1 == diff) {
+
+    if (p[8] - 1 == diff) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
-    index = (s8)p[1];
-    memset((u8*)(*(u32*)(p + 4) + index * 0x30), 0, 0x30);
-    memcpy((u8*)(*(u32*)(p + 4) + index * 0x30), temp, 0x30);
-    index = p[1] + 1;
-    if (index >= *(u32*)(p + 8)) index = 0;
-    p[1] = index;
+
+    nextIdx = p[1];
+    memset((u8*)(*(u32*)&p[4] + nextIdx * 0x30), 0, 0x30);
+    memcpy((u8*)(*(u32*)&p[4] + nextIdx * 0x30), buffer, 0x30);
+
+    length = p[8];
+    nextIdx = p[1];
+    nextIdx = (u8)((nextIdx + 1) & ~(((s32)(nextIdx - length) >> 31) | ((s32)(length - 1 - nextIdx) >> 31)));
+    p[1] = nextIdx;
     OSRestoreInterrupts(enabled);
     return TRUE;
 }
 
-static BOOL fn_80063A50(u8* p, u32 value, u16 halfword, u32 word, u32 last)
-{
-    u8 stack[0x70] ALIGN(8);
-    BOOL enabled;
+static BOOL fn_80063A50(u8* p, u32 value, u16 halfword, u32 word, u32 last) {
+    u8 buf[0x80] ALIGN(8);
     s8 diff;
+    BOOL enabled;
+    u8 newIdx;
     u32 count;
-    s8 next;
 
-    *(u16*)&stack[0] = halfword;
-    *(u32*)&stack[4] = word;
-    *(u32*)&stack[0x38] = 0x17;
-    *(u16*)&stack[0x52] = 6;
-    *(u32*)&stack[0x64] = last;
-
-    memcpy(&stack[0x3c], &stack[4], 4);
-    memcpy(&stack[0x40], &stack[0], 2);
-    *(u32*)&stack[0x54] = value;
-    *(u16*)&stack[0x58] = halfword;
-    *(u32*)&stack[0x5c] = word;
-
-    *(double*)&stack[8] = *(double*)&stack[0x38];
-    *(double*)&stack[0x10] = *(double*)&stack[0x40];
-    *(double*)&stack[0x18] = *(double*)&stack[0x48];
-    *(double*)&stack[0x20] = *(double*)&stack[0x50];
-    *(double*)&stack[0x28] = *(double*)&stack[0x58];
-    *(double*)&stack[0x30] = *(double*)&stack[0x60];
+    *(u32*)&buf[0x40] = 0x17;
+    *(u32*)&buf[0x44] = word;
+    *(u16*)&buf[0x48] = halfword;
+    *(u16*)&buf[0x5a] = 6;
+    *(u32*)&buf[0x5c] = value;
+    *(u32*)&buf[0x6c] = last;
 
     enabled = OSDisableInterrupts();
     enabled = OSDisableInterrupts();
-
-    diff = p[1] - p[0];
+    diff = (s8)(p[1] - p[0]);
     if (diff < 0) {
-        diff += (s8)(s32)*(u32*)(p + 8);
+        diff += *(u32*)(p + 8);
     }
-
     OSRestoreInterrupts(enabled);
-
     if (*(u32*)(p + 8) - 1 != (u32)diff) {
-        memset(*(u8**)(p + 4) + (s8)p[1] * 0x30, 0, 0x30);
-        memcpy(*(u8**)(p + 4) + (s8)p[1] * 0x30, &stack[8], 0x30);
-
-        next = p[1] + 1;
+        memset(*(u32**)(p + 4) + (s8)p[1] * 0x30, 0, 0x30);
+        memcpy(*(u32**)(p + 4) + (s8)p[1] * 0x30, &buf[0x10], 0x30);
+        newIdx = p[1] + 1;
         count = *(u32*)(p + 8);
-        p[1] = next & ~(((s32)(next - count) >> 31) |
-                        ((s32)(count - 1 - p[1]) >> 31));
-
+        p[1] = newIdx & ~(((s32)(newIdx - count) >> 31) | ((s32)(count - 1 - (s8)p[1]) >> 31));
         OSRestoreInterrupts(enabled);
         return TRUE;
     }
-
     OSRestoreInterrupts(enabled);
     return FALSE;
 }
@@ -3698,20 +3908,19 @@ void WPADiClearQueue_80063BD4(WPADCommandQueue* pQueue) {
 
 void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
 {
-    register const char* messages asm("r30") = (const char*)lbl_80312338;
-    register u8* p asm("r27") = (u8*)lbl_8038F4F0[chan];
-    register u16 valueCC8 asm("r7") = lbl_80560CC8;
-    register u16 valueCCA asm("r22") = lbl_80560CCA;
-    register u16 valueCCC asm("r23") = lbl_80560CCC;
-    register u16 valueCCE asm("r31") = lbl_80560CCE;
-    register u16 valueCD0 asm("r0") = lbl_80560CD0;
-    register u16 valueCD2 asm("r29") = lbl_80560CD2;
-    register u16 valueCD4 asm("r28") = lbl_80560CD4;
-    register u16 valueCD6 asm("r12") = lbl_80560CD6;
-    register u8* config asm("r26") = *(u8**)(p + 0x8B4);
-    register u32 attempt asm("r28");
-    register s32 offset asm("r29");
-    s32 i;
+    const char* messages = (const char*)lbl_80312338;
+    u8* p = (u8*)lbl_8038F4F0[chan];
+    u16 valueCC8 = lbl_80560CC8;
+    u16 valueCCA = lbl_80560CCA;
+    u16 valueCCC = lbl_80560CCC;
+    u16 valueCCE = lbl_80560CCE;
+    u16 valueCD0 = lbl_80560CD0;
+    u16 valueCD2 = lbl_80560CD2;
+    u16 valueCD4 = lbl_80560CD4;
+    u16 valueCD6 = lbl_80560CD6;
+    u8* config = *(u8**)(p + 0x8B4);
+    u32 attempt;
+    s32 offset, i;
     u32 sum;
     u8* src;
 
@@ -3744,9 +3953,7 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
             for (attempt = 0; attempt < 2; attempt++) {
                 offset = (u8)attempt * 11;
                 sum = 0;
-                for (i = offset; i < offset + 10; i++) {
-                    sum += config[i];
-                }
+                for (i = offset; i < offset + 10; i++) sum += config[i];
                 if ((u8)(sum + 0x55) == config[offset + 10]) {
                     DBPrintf_80068D68(messages + 0x98);
                     src = data + offset;
@@ -3770,18 +3977,12 @@ void getDevConfig(s32 chan, s32 result, WPADStatus* status, u8* data)
                 }
                 DBPrintf_80068D68(messages + 0xB0);
             }
-        } else {
-            DBPrintf_80068D68(messages + 0xC8);
-        }
+        } else DBPrintf_80068D68(messages + 0xC8);
         for (attempt = 0; attempt < 2; attempt++) {
             offset = (u8)attempt * 10;
             sum = 0;
-            if (*(s32*)(p + 0x820) == 0) {
-                offset += 22;
-            }
-            for (i = offset; i < offset + 9; i++) {
-                sum += config[i];
-            }
+            if (*(s32*)(p + 0x820) == 0) offset += 22;
+            for (i = offset; i < offset + 9; i++) sum += config[i];
             src = config + offset;
             if ((u8)(sum + 0x55) == src[9]) {
                 DBPrintf_80068D68(messages + 0x10C);
@@ -3836,26 +4037,41 @@ void fn_80064740(s32 chan, s32 param_2) {
 WPADCB* getGameInfo(s32 chan, s32 param_2, s32 param_3) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* src = (u8*)cb->samplingBufSize;
-    u32 sum = 0;
+    u32 sum;
     u32 i;
     u8* p;
-    u8* dst;
 
     if (param_2 == 0) {
-        sum += src[0]; sum += src[1]; sum += src[2]; sum += src[3];
-        sum += src[4]; sum += src[5]; sum += src[6];
-        for (i = 0, p = src + 7; i < 2; ++i, p += 7) {
-            sum += p[0]; sum += p[1]; sum += p[2]; sum += p[3];
-            sum += p[4]; sum += p[5]; sum += p[6];
+        sum = 0;
+        sum += src[0];
+        sum += src[1];
+        sum += src[2];
+        sum += src[3];
+        sum += src[4];
+        sum += src[5];
+        sum += src[6];
+        
+        for (i = 0; i < 2; i++) {
+            sum += src[7 + i * 7 + 0];
+            sum += src[7 + i * 7 + 1];
+            sum += src[7 + i * 7 + 2];
+            sum += src[7 + i * 7 + 3];
+            sum += src[7 + i * 7 + 4];
+            sum += src[7 + i * 7 + 5];
+            sum += src[7 + i * 7 + 6];
         }
-        sum += p[0]; sum += p[1]; sum += p[2]; sum += p[3]; sum += p[4];
+        
+        sum += src[21];
+        sum += src[22];
+        sum += src[23];
+        sum += src[24];
+        sum += src[25];
+        
         if (src[0x2F] == (u8)(sum + 0x55)) {
             memcpy(cb, src, 0x38);
-            dst = (u8*)cb + (u8)param_3 * 4 + 0x38;
-            *(s32*)dst = 0;
+            *(s32*)((u8*)cb + (u8)param_3 * 4 + 0x38) = 0;
         } else {
-            dst = (u8*)cb + (u8)param_3 * 4 + 0x38;
-            *(s32*)dst = -4;
+            *(s32*)((u8*)cb + (u8)param_3 * 4 + 0x38) = -4;
         }
     }
     return cb;
@@ -3882,15 +4098,10 @@ s32 WPADiHIDParser(u8 port, u8* p_rpt) {
 void fn_80064A80(s32 chan, s32 param_2) {
     WPADCB* cb = lbl_8038F4F0[chan];
     if (param_2 != 0) {
-        s32 tmp;
+        s32 value;
         WPADiClearQueue_80063BD4(&cb->extCmdQueue);
-        if (param_2 == -1) {
-            tmp = 0xfd;
-        } else {
-            s32 val = *(s32*)((u8*)cb + 0x780);
-            tmp = ((-val | val) >> 31) & 0xfc;
-        }
-        ((u8*)cb)[0x801] = tmp;
+        value = param_2 == -1 ? 0xfd : (((-*(s32*)((u8*)cb + 0x780) | *(s32*)((u8*)cb + 0x780)) >> 31) & 0xfc);
+        ((u8*)cb)[0x801] = (u8)value;
         if (*(s32*)((u8*)cb + 0x7e0) != 0) {
             ((void (*)(s32))*(void**)((u8*)cb + 0x7e0))(chan);
         }
