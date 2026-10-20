@@ -93,9 +93,9 @@ struct DummyManager {
 };
 
 extern "C" {
-extern char lbl_8055A1C0[];
-extern char lbl_8055A1C8[];
-extern char lbl_8055A1CC[];
+extern char lbl_8055A1C0[8];
+extern char lbl_8055A1C8[4];
+extern char lbl_8055A1CC[4];
 extern f32 lbl_80561924;
 
 int sscanf(const char *, const char *, ...);
@@ -368,4 +368,61 @@ s32 fn_80169D64(s32 arg0, s32 arg1) {
     s32 r = fn_8002B1D8(arg1, (s32 *)p, len);
     return (u32)__cntlzw(r) >> 5;
 }
+
+#pragma cplusplus on
+extern "C" s32 fn_80169DB8(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
+    int sp8 = -1;
+    DummyItem *item;
+    s32 i;
+
+    sscanf(arg1->getName(), lbl_8055A1C0, &sp8);
+
+    {
+        DummyEntry *entry = &arg2->entries[arg2->entryCount++];
+        entry->byte1C = 0;
+        entry->f8 = lbl_80561924;
+        entry->fC = lbl_80561924;
+        entry->f10 = lbl_80561924;
+        entry->recordStart = arg2->recordCount;
+        entry->recordCount = 0;
+        entry->byte1D = 0;
+        entry->id = sp8;
+        entry->active = 1;
+        arg2->flag1E158 = 1;
+    }
+
+    for (i = 0; (item = arg1->getItem(i)) != 0; i++) {
+        f32 hit = item->getHit(lbl_8055A1C8);
+        DummyVec2 loc = item->getLoc(lbl_8055A1CC);
+        DummyRecord *rec = &arg2->records[arg2->recordCount++];
+        rec->obj = 0;
+        rec->obj = (DummyRecordObj *)fn_80167874(1);
+        rec->x = loc.x;
+        rec->y = lbl_80561924;
+        rec->z = loc.y;
+        rec->hit = hit;
+        fn_801E9E30(0, &rec->x);
+        rec->y = rec->y + rec->obj->f18 + rec->hit;
+        rec->flag = 0;
+        fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
+        *(s32 *)((u8 *)fn_80167874(1) + 0x1C) += 1;
+
+        if (arg2->flag1E158 != 0) {
+            arg2->entries[arg2->entryCount - 1].recordCount++;
+        } else {
+            if (arg2->entryCount == 0 || arg2->entries[arg2->entryCount - 1].byte1C != 0) {
+                DummyEntry *newEntry = &arg2->entries[arg2->entryCount++];
+                newEntry->byte1C = 0;
+                newEntry->recordStart = arg2->recordCount - 1;
+                newEntry->recordCount = 0;
+                newEntry->byte1D = 0;
+            }
+            arg2->entries[arg2->entryCount - 1].recordCount++;
+        }
+    }
+
+    arg2->flag1E158 = 0;
+    return 1;
+}
+#pragma cplusplus reset
 
