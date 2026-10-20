@@ -966,12 +966,10 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
         virtual void* a16() = 0; virtual void* a17() = 0; virtual void* f() = 0;
     };
     void* result = ((V*)arg1)->f();
-    volatile s32* src = (volatile s32*)result;
-    s32 a = src[9];
-    s32 b = src[10];
-    *(s32*)arg0 = a;
-    *((s32*)arg0 + 1) = b;
-    *((s32*)arg0 + 2) = src[11];
+    s32 x = *(s32*)((u8*)result + 0x28);
+    *(s32*)arg0 = *(s32*)((u8*)result + 0x24);
+    *(s32*)((u8*)arg0 + 4) = x;
+    *(s32*)((u8*)arg0 + 8) = *(s32*)((u8*)result + 0x2C);
 }
 
 extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
