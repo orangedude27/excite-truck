@@ -1,7 +1,7 @@
 
 
-extern int lbl_803387C8;
-extern int lbl_80338BD0;
+extern char lbl_803387C8[];
+extern char lbl_80338BD0[];
 extern int fn_80128668(void);
 extern char lbl_8033905C[];
 extern float lbl_8055E3C8;
