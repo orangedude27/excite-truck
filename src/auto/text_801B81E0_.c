@@ -265,13 +265,11 @@ int fn_801B8728(int arg0) {
 extern "C" void fn_801B8778(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f46();
 }
-#pragma cplusplus off
-void fn_801B878C(void) {
-    void (**vtable)(void) = *(void (***)(void))lbl_8055E744;
-    void (*fn)(void) = vtable[49];
-    fn();
+#pragma cplusplus on
+extern "C" void fn_801B878C(void) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f47();
 }
-
+#pragma cplusplus off
 int fn_801B87A0(int arg0, int arg1) {
     void **vtable;
     int (*call)(void *, int, int);
