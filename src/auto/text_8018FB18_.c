@@ -168,12 +168,45 @@ int fn_801901F0(void *arg0) {
     return result;
 }
 
-void fn_801902A0(void *arg0) {
-    void *p = *(void **)((char *)arg0 + 4);
-    volatile void **v = *(volatile void ***)p;
-    ((void (*)(void))v[30])();
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_801902A0(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void f21();
+        virtual void f22();
+        virtual void f23();
+        virtual void f24();
+        virtual void f25();
+        virtual void f26();
+        virtual void f27();
+        virtual void f28();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 4);
+    obj->f28();
 }
-
+#pragma pop
 void fn_801902B4(void *arg0) {
     unsigned int temp_r3;
     int (*callback)(void *);
