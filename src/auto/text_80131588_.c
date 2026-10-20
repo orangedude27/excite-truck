@@ -28,11 +28,32 @@ unsigned char* fn_801317F0(void* arg0) {
     return p;
 }
 
-extern int fn_80131588(int, int);
-void fn_80131808(int arg0) { fn_80131588(arg0, 0); }
+typedef struct Unk131588Elem {
+    void **vtable;
+    char *name;
+    char *str;
+    void *pad0C;
+    void *pad10;
+    void *link;
+    void *parent;
+} Unk131588Elem;
+
+typedef struct Unk131588 {
+    void *vtable;
+    s32 count;
+    s32 pad8;
+    Unk131588Elem *elems;
+} Unk131588;
+
+extern Unk131588 *fn_80131588(void *, s32);
+extern Unk131588 *fn_8012C370(u32, u32 *, s32, s32, u8 *);
+extern void fn_80131960(void *, void *);
+extern char lbl_8032B4D0[], lbl_8032B4F8[], lbl_8032B558[], lbl_8032B6B8[], lbl_8032B6E4[], lbl_8032B714[];
+extern void fn_802E317C(const char*, ...);
+void fn_80131808(int arg0) { fn_80131588((void *)arg0, 0); }
 
 void fn_80131810(s32 arg0) {
-    fn_80131588(arg0, 1);
+    fn_80131588((void *)arg0, 1);
 }
 
 void fn_80131818(void) {
