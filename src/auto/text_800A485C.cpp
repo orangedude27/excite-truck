@@ -4814,7 +4814,7 @@ extern "C" u32* fn_800D58B0(void) {
     return &lbl_8055DDE0;
 }
 
-void fn_800C7764(void *arg0, s8 arg1) {
+extern "C" void fn_800C7764(void *arg0, s8 arg1) {
     ((u8 *)arg0)[0x24] = (u8)arg1;
 }
 
