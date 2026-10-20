@@ -23,6 +23,12 @@ public:
     TPlaneSub* m_b;
     void updateAfterCamera();
 };
+
+class TPlaneObj {
+public:
+    char pad[0x1c];
+    TPlaneSub* m_sub;
+};
 }
 }
 #pragma cplusplus reset
@@ -175,8 +181,7 @@ struct Fn8027F204State {
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" int lbl_8055F69C;
 extern "C" const char lbl_80348270[];
-#pragma cplusplus reset
-void fn_8027F204(char *src) {
+extern "C" void fn_8027F204(char *src) {
     char *dst;
     int len;
     struct Fn8027F204State *state = (struct Fn8027F204State *)lbl_8055F69C;
@@ -199,6 +204,9 @@ void fn_8027F204(char *src) {
     }
     fn_802E30C8(lbl_80348270);
 }
+#pragma scheduling invalid_target
+#pragma scheduling reset
+#pragma cplusplus off
 void *fn_8027F834(void *arg0, int arg1) {
     int temp_r0, var_ctr, var_r7;
     unsigned int *var_r6;
