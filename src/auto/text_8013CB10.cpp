@@ -317,7 +317,9 @@ unsigned int fn_8013EFC8(void *arg0) {
  return result == 4;
 }
 
-int fn_8013F088(void *arg0) { return (*(s32 *)((u8 *)arg0 + 0x134) - 2) == 0; }
+extern "C" s32 fn_8013F088(void *arg0) {
+    return (*(s32 *)((u8 *)arg0 + 0x134) - 2) == 0;
+}
 
 extern "C" void fn_8013F09C(void) {
     ((void(*)())fn_80140A6C)();
