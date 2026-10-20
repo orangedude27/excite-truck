@@ -19,6 +19,9 @@ typedef unsigned short ushort;
 typedef unsigned int uint;
 typedef struct { u8 pad[7]; u8 low:5; u8 index:3; } Fn8019150CState;
 
+extern int fn_801B526C(void);
+extern int fn_801769F8(void);
+
 extern void *lbl_804349A0[];
 extern int lbl_8055E518;
 extern float lbl_80562080, lbl_8056208C, lbl_80562090, lbl_80562094, lbl_805620AC, lbl_80562138;
@@ -400,8 +403,9 @@ void fn_80190E08(void) {
     int i;
     for (i = 0; i < lbl_8055E518; i++) {
         void *obj = lbl_804349A0[i];
-        void (*fn)(void *) = ((void (**)(void *))(*(void ***)obj))[18];
-        fn(obj);
+        void **vt;
+        vt = *(void ***)obj;
+        ((void (*)(void **))vt[18])(vt);
     }
 }
 #pragma dont_inline reset
