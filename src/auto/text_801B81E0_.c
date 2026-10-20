@@ -65,17 +65,54 @@ struct Dummy_801B8318 {
     virtual void f58();
     virtual void f59();
 };
-      struct Dummy_801B851C {
-        virtual void d0();
-        virtual void d1();
-        virtual void d2();
-        virtual void d3();
-        virtual void d4();
-        virtual void d5();
-        virtual void d6();
-        virtual void d7();
-        virtual int d8(void *);
-    };
+              struct Dummy_801B851C {
+          virtual void d0();
+          virtual void d1();
+          virtual void d2();
+          virtual void d3();
+          virtual void d4();
+          virtual void d5();
+          virtual void d6();
+          virtual void d7();
+          virtual int d8(void *);
+      };
+      struct Dummy_801B8874 {
+          virtual void d0();
+          virtual void d1();
+          virtual void d2();
+          virtual void d3();
+          virtual void d4();
+          virtual void d5();
+          virtual void d6();
+          virtual void d7();
+          virtual void d8();
+          virtual void d9();
+          virtual void d10();
+          virtual void d11();
+          virtual void d12();
+          virtual void d13();
+          virtual void d14();
+          virtual void d15();
+          virtual void d16();
+          virtual void d17();
+          virtual void d18();
+          virtual void d19();
+          virtual void d20();
+          virtual void d21();
+          virtual void d22();
+          virtual void d23();
+          virtual void d24();
+          virtual void d25();
+          virtual void d26();
+          virtual void d27();
+          virtual void d28();
+          virtual void d29();
+          virtual void d30();
+          virtual void d31();
+          virtual void d32();
+          virtual void d33();
+          virtual int d34(void *);
+      };
   #pragma cplusplus off
   int fn_801B81E0(void *arg0) {
     extern int fn_8014145C(void);
@@ -305,16 +342,17 @@ void fn_801B885C(void *arg0) {
     ((void (*)(void *, void *))vtable[15])(obj, arg0);
 }
 
-int fn_801B8874(void) {
+#pragma cplusplus on
+extern "C" int fn_801B8874(void) {
     extern int fn_80161C38(void);
     extern void fn_80161A70(void);
-    if (fn_80161C38() == 0) {
-        return (*(int (**)(void *))(*(void ***)lbl_8055E744 + 34))(lbl_8055E744);
+    if (fn_80161C38() != 0) {
+        fn_80161A70();
+        return 1;
     }
-    fn_80161A70();
-    return 1;
+    return ((Dummy_801B8318 *)lbl_8055E744)->f36(lbl_8055E744, 0, 0);
 }
-
+#pragma cplusplus off
 void fn_801B88BC(void) {
     extern int fn_80161C38(void);
     extern void fn_80161B70(void);
