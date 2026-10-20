@@ -243,9 +243,8 @@ extern long fn_802090D4(void *);
 extern long fn_80209110(void *);
 #pragma cplusplus on
 struct Dummy_80210904 {
-    virtual void f0();
-    virtual void f1(long);
-};
+      virtual void f1(long);
+  };
 #pragma cplusplus off
 extern long fn_8000DA10(void);
 extern long lbl_8033C9BC[];
@@ -258,17 +257,16 @@ void fn_802108C8(void) {
     lbl_8055EEF0 = fn_802090D4(&lbl_8033C9C8[0]);
 }
  
-void fn_80210904(void) {
-    struct Fn80210904VTable { void *pad[2]; void (*call)(void *, long); };
-    struct Fn80210904Object { struct Fn80210904VTable *vtable; };
+#pragma cplusplus on
+extern "C" void fn_80210904(void) {
     fn_80209110(&lbl_8055EEF0);
-    if (lbl_8055EED4 != 0) {
-        ((struct Fn80210904Object *)lbl_8055EED4)->vtable->call(
-            (struct Fn80210904Object *)lbl_8055EED4, 1);
+    struct Dummy_80210904 *obj = (struct Dummy_80210904 *)lbl_8055EED4;
+    if (obj != 0) {
+        obj->f1(1);
     }
     lbl_8055EED4 = 0;
 }
- 
+#pragma cplusplus off
 extern void *lbl_8055EED8;
 extern void *lbl_8055EEDC;
 void AXFXSetHooks_80210950(void *arg0, void *arg1) {
