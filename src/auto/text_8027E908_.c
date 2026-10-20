@@ -166,7 +166,7 @@ extern "C" int fn_8027EE88(void) {
 struct Fn8027F204State {
     char pad[0x40];
     char *buffer;
-    int count;
+    volatile int count;
     int max;
 };
 
@@ -180,10 +180,8 @@ extern "C" void fn_8027F204(char *src) {
 
     if (state == 0) return;
     if (state->count + 1 <= state->max) {
-        int count = state->count;
         int len = 0x1e;
-        char *dst = state->buffer + count * 0x1e;
-        state->count = count + 1;
+        char *dst = state->buffer + state->count++ * 0x1e;
         goto enter;
         for (;;) {
             if (--len <= 0) {
