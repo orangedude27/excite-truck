@@ -1047,14 +1047,11 @@ extern "C" void fn_80286774(void* arg0) {
 extern "C" void fn_80286788(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v6();
 }
-#pragma cplusplus off
-void fn_8028679C(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 0x1c);
-    void **vtable = *(void ***)obj;
-    void (*fn)(void) = (void (*)(void))vtable[9];
-    fn();
+#pragma cplusplus on
+extern "C" void fn_8028679C(void *arg0) {
+    ((ebi::title::TPlaneObj*)arg0)->m_sub->v7();
 }
-
+#pragma cplusplus off
 int fn_802867B0(void *arg0) {
     extern double lbl_80564220;
     void * volatile p = *(void **)((char *)arg0 + 0x20);
