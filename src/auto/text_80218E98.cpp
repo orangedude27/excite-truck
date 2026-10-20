@@ -883,6 +883,10 @@ extern "C" void *fn_8021BD98(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
     return arg0;
 }
 
+extern "C" void fn_8021BEBC(void *arg0) {
+    fn_8021BE48(arg0);
+}
+
 extern "C" s32 fn_80129BC4(void);
 extern "C" void *fn_80217BD8(s32, s32, void *);
 extern "C" void fn_8021BE48(void *);
