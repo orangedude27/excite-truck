@@ -95,8 +95,8 @@ extern "C" void fn_800D5978(void* arg0) {
 }
 
 extern "C" void fn_800D598C(void* arg0) {
-    if (*(s32*)((u8*)arg0 + 4) != 0) {
-        MEMFreeToAllocator(lbl_8055DDF0);
+    if (*(s32*)((u8*)arg0 + 4)) {
+        MEMFreeToAllocator(lbl_8055DDF0, *(void**)((u8*)arg0 + 4));
         *(u32*)((u8*)arg0 + 4) = 0;
         *(u8*)((u8*)arg0) = 0;
         *((u8*)arg0 + 1) = 0;
