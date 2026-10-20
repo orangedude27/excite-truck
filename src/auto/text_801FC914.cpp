@@ -305,12 +305,12 @@ static inline void MatrixMul801FD5E8(float* dst, const float* left, const float*
     }
 }
 
-extern "C" void fn_8012F57C(float*, void*, void*);
+extern "C" void fn_8012F57C(float*, void*, void*, float);
 extern "C" float lbl_80563030;
-extern "C" void fn_801FD320(void* arg0) {
+extern "C" void fn_801FD320(void* arg0, float t) {
     float q[4];
     float x2, y2, z2, xx, yy, zz, xy, xz, yz, wx, wy, wz;
-    fn_8012F57C(q, (char*)arg0 + 0x44, (char*)arg0 + 0x54);
+    fn_8012F57C(q, (char*)arg0 + 0x44, (char*)arg0 + 0x54, t);
     x2 = q[0] + q[0]; y2 = q[1] + q[1]; z2 = q[2] + q[2];
     xx = q[0] * x2; yy = q[1] * y2; zz = q[2] * z2;
     wx = q[3] * x2; wy = q[1] * z2;
