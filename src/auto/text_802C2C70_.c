@@ -7,7 +7,8 @@ extern short lbl_8055FB92;
 extern short lbl_8055FB94;
 void fn_8000D838(void*);
 
-#pragma scheduling on
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_802C2C70(void) {
     short v;
     fn_8000D838(&lbl_8055FB88);
@@ -17,3 +18,4 @@ void fn_802C2C70(void) {
     *(volatile short *)&lbl_8055FB92 = v;
 }
 #pragma scheduling on
+#pragma opt_propagation on

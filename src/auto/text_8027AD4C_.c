@@ -512,12 +512,12 @@ void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
 
 #pragma scheduling invalid_target
 long fn_8027CE4C(long arg0) {
-    long value = *fn_8027C120(lbl_8055F654, arg0);
-    switch (value) {
+    long *p = fn_8027C120(lbl_8055F654, arg0);
+    switch (*p) {
     case 0:
-        return fn_8027C8B0();
+        return ((long (*)(void *))fn_8027C8B0)(p);
     case 1:
-        return fn_8027CB20();
+        return ((long (*)(void *))fn_8027CB20)(p);
     default:
         ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, arg0);
         return 1;

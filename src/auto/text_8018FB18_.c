@@ -40,7 +40,7 @@ int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
 void fn_801914F8(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 4);
-    ((void (**)(void))(*(void ***)obj))[10]();
+    ((void (*)(void *))(*(void ***)obj)[10])(obj);
 }
 
 u8 fn_8019157C(void *arg0) { return *((u8 *)arg0 + 0x14); }
