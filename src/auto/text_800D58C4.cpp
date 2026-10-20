@@ -59,7 +59,7 @@ struct Vtbl_800D7738 {
 struct Obj_800D7738 : Vtbl_800D7738 {};
 struct Ptr_800D7738 { Obj_800D7738* v; };
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
-extern "C" void MEMFreeToAllocator(s32);
+extern "C" void MEMFreeToAllocator(s32, void* = 0);
 extern "C" s32 lbl_8055DDF0;
 int strncmp(const char *, const char *, unsigned int);
 extern "C" int strncmp(const char *, const char *, unsigned int);
