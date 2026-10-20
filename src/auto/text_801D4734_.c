@@ -228,6 +228,10 @@ void fn_801D85D8(int arg0) {
     }
 }
 
+int fn_801D85F0(void *arg0) {
+    return (unsigned int)__cntlzw(*(unsigned char *)((char *)arg0 + 0x14)) >> 5;
+}
+
 void fn_801D8600(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
