@@ -81,8 +81,8 @@ void fn_801B7BA8(float *arg0, float *arg1, float *arg2) {
     arg0[6] = b[0]; arg0[7] = b[1]; arg0[8] = b[2];
 }
 
-void fn_801B8040(void) {
-    ((void (*)(int, float))fn_801B7760)(0, lbl_80562708);
+void fn_801B8040(int arg0, int arg1, float farg0) {
+    fn_801B7760(arg0, arg1, farg0, lbl_80562708);
 }
 
 void fn_801B8048(int arg0, int arg1) { ((void (*)(int, int, int, float))fn_801B78EC)(arg0, arg1, 0, lbl_80562708); }
