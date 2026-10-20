@@ -13,6 +13,7 @@ extern "C" void* fn_80108FFC(void*, const void*);
 extern "C" const char lbl_803290E8[];
 extern "C" const char lbl_803293A8[];
 extern "C" const char lbl_80329400[];
+extern "C" const char lbl_80329140[];
 extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void* arg0, void** arg1, void* arg2) {
     extern const char lbl_80328680[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
