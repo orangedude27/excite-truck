@@ -6185,7 +6185,6 @@ extern void *jumptable_803159A0[];
 extern u8 lbl_80559060[];
 extern u8 lbl_803151D8[];
 extern char lbl_80319EC0[];
-extern void bta_hh_trace_dev_db(void);
 
 static u8 hh_get_trans_status(u32 result) {
     switch (result) {
