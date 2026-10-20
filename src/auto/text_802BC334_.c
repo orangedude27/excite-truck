@@ -348,6 +348,80 @@ void fn_802BDD58(void) {
     if (fn_8020403C() != 0) fn_802BD814();
 }
 
+extern int lbl_8055FAA8;
+extern int lbl_8055FAAC;
+extern float lbl_80564D4C;
+void fn_802DBE4C(void);
+int fn_8020403C(void);
+void fn_802C28C0(void);
+void fn_802C8BD0(void);
+void fn_802DC71C(int, int);
+void fn_801F1C24(float *);
+char *fn_801E8718(int);
+float PSVECSquareDistance(void *, void *);
+void fn_802DCAE4(int, float *, float);
+void fn_802DC8B4(void);
+void fn_802C8D74(void);
+void fn_802DBECC(void);
+void fn_802BDD8C(float arg0) {
+    float mtx[9];
+    float out[12];
+    int i, j;
+    fn_802DBE4C();
+    if (fn_8020403C() != 0) {
+        float one = lbl_80564D18;
+        float lim = lbl_80564D14;
+        float half = lbl_80564D4C;
+        int *g = (int *)&lbl_804C00D4;
+        lbl_8055FAAC = 0;
+        lbl_8055FAA8 = 0;
+        for (i = 0; i < g[1]; i++) {
+            char *e = (char *)g[0] + i * 0x60;
+            int *obj = *(int **)(e + 0x58);
+            if (obj != 0) {
+                int *data = (int *)obj[1];
+                int *pts = (int *)obj[0];
+                if (*(int *)(e + 0x24) <= 10) {
+                    float sq, den;
+                    char *cam;
+                    fn_802C28C0();
+                    fn_802C8BD0();
+                    fn_802DC71C(*(int *)(e + 0x1c), *(int *)(e + 0x20));
+                    sq = arg0 * arg0;
+                    den = sq - (arg0 - half) * (arg0 - half);
+                    fn_801F1C24(mtx);
+                    cam = fn_801E8718(-1) + 0x24;
+                    for (j = 0; j < data[1]; j++) {
+                        char *r = (char *)data[0] + j * 0x10;
+                        if (*(float *)(r + 0xc) >= lim) {
+                            short idx = *(short *)(r + 0xa);
+                            int h = *(int *)(e + 0x1c);
+                            for (; idx < *(short *)(r + 0xa) + *(short *)(r + 8); idx++) {
+                                char *p = (char *)pts[0] + idx * 0x44;
+                                float d = PSVECSquareDistance(p + 0x30, cam);
+                                if (d <= sq) {
+                                    float f = (sq - d) / den;
+                                    float s = *(float *)(p + 0x1c);
+                                    int k;
+                                    if (one < f) f = one;
+                                    for (k = 0; k < 9; k++) out[k] = mtx[k] * s;
+                                    out[9] = *(float *)(p + 0x30);
+                                    out[10] = *(float *)(p + 0x34);
+                                    out[11] = *(float *)(p + 0x38);
+                                    fn_802DCAE4(h, out, f);
+                                }
+                            }
+                        }
+                    }
+                    fn_802DC8B4();
+                    fn_802C8D74();
+                }
+            }
+        }
+        fn_802DBECC();
+    }
+}
+
 void fn_802BDFBC(void *arg0, int arg1, float farg0) {
     float value;
     void *node;
@@ -363,9 +437,11 @@ void fn_802BDFBC(void *arg0, int arg1, float farg0) {
 
 extern float lbl_80564D14;
 extern float lbl_80564D18;
-void fn_802BDFF4(void **arg0) {
-    register void *value = *(void **)((char *)arg0 - 8);
-    if (value) fn_802BAF98();
+void fn_802BDFF4(void *arg0, signed char arg1) {
+    arg0 = *(void **)((char *)arg0 - 8);
+    if (arg0 != 0) {
+        fn_802BAF98(arg0, arg1);
+    }
 }
 
 extern void *fn_802BE008(void *);
