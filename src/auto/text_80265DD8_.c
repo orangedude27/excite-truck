@@ -89,7 +89,7 @@ void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
     arg1[2] = arg2[2] + arg3[2] * factor;
 }
 
-void fn_802670A0(int *arg0, int arg1) {
+void fn_802670A0(int arg0, int *arg1) {
     int count;
     int x;
     int y;
@@ -106,10 +106,55 @@ void fn_802670A0(int *arg0, int arg1) {
     div = (count + y - 1) / y;
     a = lbl_8055CFF0 / y;
     b = lbl_8055CFF4 / div;
-    arg0[16] = a;
-    arg0[17] = b;
-    arg0[14] = a * (arg1 / div);
-    arg0[15] = b * (arg1 % div);
+    arg1[16] = a;
+    arg1[17] = b;
+    arg1[14] = a * (arg0 / div);
+    arg1[15] = b * (arg0 % div);
+}
+
+void fn_80267130(void *arg0) {
+    float value;
+    float clamp;
+
+    clamp = lbl_80563C2C;
+    value = (*(float *)((char *)arg0 + 0x30) - lbl_80563C44) / lbl_80563C48;
+    if (clamp < value) clamp = value;
+    if (clamp > lbl_80563C20) clamp = lbl_80563C20;
+    *(float *)((char *)arg0 + 0x48) = lbl_80563C34 + clamp * lbl_80563C4C;
+    if (fn_80178CA4() == 1) value = lbl_80563C2C;
+    else value = lbl_80563C50;
+    *(float *)((char *)arg0 + 0x4C) = lbl_8055F484 * value;
+}
+
+extern float lbl_8055D020;
+extern double lbl_80563C38;
+extern float fn_801EA0E8(unsigned int, float, float, float);
+void fn_802671CC(void *arg0, int arg1) {
+    float corner[3];
+    float z = *(float *)((char *)arg0 + 0x48);
+    float dx = z * *(float *)((char *)arg0 + 0x34);
+    float xstep = dx / lbl_8055D020;
+    float ystep;
+    float best = lbl_80563C20;
+    int i;
+    unsigned int hi = 0x43300000;
+    double d;
+    *((unsigned int *)&d + 1) = (unsigned int)(*(int *)((char *)arg0 + 0x44) ^ 0x80000000);
+    *((unsigned int *)&d) = hi;
+    ystep = (float)((d - lbl_80563C38) * dx / lbl_8055D020);
+    for (i = 0; i < 4; i++) {
+        float x = (i & 1) ? xstep : -xstep;
+        float y = (i & 2) ? ystep : -ystep;
+        float *m = (float *)arg0;
+        corner[0] = x*m[0] + y*m[3] + z*m[6] + m[9];
+        corner[1] = x*m[1] + y*m[4] + z*m[7] + m[10];
+        corner[2] = x*m[2] + y*m[5] + z*m[8] + m[11];
+        fn_801EA0E8(0x43300000, corner[0], corner[1], corner[2]);
+        if (best > corner[1]) best = corner[1];
+    }
+    if (*(int *)((char *)arg0 + 0x58) != 0x11 && *(int *)((char *)arg0 + 0x58) != 0x15)
+        *(float *)((char *)arg0 + 0x28) += best;
+    (void)arg1;
 }
 
 extern void *fn_80267EE4(int);
@@ -120,7 +165,9 @@ extern void fn_80209110(void *);
 extern void *lbl_8055F490;
 extern int lbl_8055F494;
 extern float lbl_8055E3C8;
-void fn_802678E4(void) { fn_80267EE4(0); }
+void *fn_802678E4(int arg0) {
+    return fn_80267EE4(arg0);
+}
 
 void fn_80267E40(unsigned int arg0, float arg1, int arg2) {
     float temp_f29;
@@ -163,6 +210,7 @@ void *fn_80267EE4(int arg0) {
 
 void fn_802682B0(void *arg0) {
     char *p = (char *)arg0;
+    float *base;
     if (*(unsigned char *)(p + 0x138) != 0) {
         float b;
         float a;
@@ -177,8 +225,9 @@ void fn_802682B0(void *arg0) {
         q[8] = a;
         q[9] = b; q[10] = b; q[11] = b;
     }
-    fn_801BFD34(p + 0x7c, lbl_80499050 + 9, p + 0xc0);
-    fn_80015B20(p + 0x58, lbl_80499050, p + 0xc0);
+    base = lbl_80499050;
+    fn_801BFD34(p + 0x7c, base + 9, p + 0xc0);
+    fn_80015B20(p + 0x58, base, p + 0xc0);
     *(float *)(p + 0xbc) = lbl_8055F47C;
 }
 
@@ -194,9 +243,7 @@ extern float lbl_80563C98;
 extern int fn_80178CA4(void);
 int fn_80268BA4(int arg0) {
     register unsigned int shift = arg0 - 4;
-    if (shift > 0x13) {
-        return 0;
-    }
+    if (shift > 0x13) return 0;
     return ((1U << shift) & 0x80037) != 0;
 }
 
