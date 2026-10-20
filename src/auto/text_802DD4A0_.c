@@ -29,15 +29,6 @@ void *fn_801284F8(int, void *);
 int fn_8012850C(int, void *);
 void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
 void GXInitTexObjFilter(void *, int, int);
-static inline void set_size(void *obj, int w, int h, int halve) {
-    if (halve) {
-        *(int *)((char *)obj + 0x44) = w / 2;
-        *(int *)((char *)obj + 0x48) = h / 2;
-    } else {
-        *(int *)((char *)obj + 0x44) = w;
-        *(int *)((char *)obj + 0x48) = h;
-    }
-}
 void fn_802DD4FC(void) {
     void *info = fn_802D2D14();
     lbl_8055FED0 = *(unsigned short *)((char *)info + 4);
@@ -46,12 +37,13 @@ void fn_802DD4FC(void) {
         void *obj = fn_801284F8(0x50, lbl_8034CB50);
         if (obj != 0) {
             *(unsigned char *)((char *)obj + 0x4C) = 1;
-            *(int *)((char *)obj + 0x44) = lbl_8055FED0 / 2;
-            *(int *)((char *)obj + 0x48) = lbl_8055FED4 / 2;
-            goto skip;
-            *(int *)((char *)obj + 0x44) = lbl_8055FED0;
-            *(int *)((char *)obj + 0x48) = lbl_8055FED4;
-skip:
+            do {
+                *(int *)((char *)obj + 0x44) = lbl_8055FED0 / 2;
+                *(int *)((char *)obj + 0x48) = lbl_8055FED4 / 2;
+                break;
+                *(int *)((char *)obj + 0x44) = lbl_8055FED0;
+                *(int *)((char *)obj + 0x48) = lbl_8055FED4;
+            } while (0);
             *(int *)((char *)obj + 0x40) = fn_8012850C(*(int *)((char *)obj + 0x48) * (*(int *)((char *)obj + 0x44) * 2), lbl_8034CB5C);
             GXInitTexObj(obj, *(void **)((char *)obj + 0x40), *(int *)((char *)obj + 0x44), *(int *)((char *)obj + 0x48), 4, 0, 0, 0);
             GXInitTexObjFilter(obj, 1, 1);
