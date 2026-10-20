@@ -274,6 +274,46 @@ extern "C" s32 GetVariablePtr__Q46nw4hbm3snd6detail8SeqTrackFi(void *self, s32 i
     return 0;
 }
 
+extern "C" void *fn_800F0728(void *, s32, void *);
+extern "C" void fn_800EA8A0(void *, s32, s32, f32);
+extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
+extern "C" f32 lbl_80561080;
+extern "C" f64 lbl_805610A0;
+extern "C" extern u32 OSDisableInterrupts(void);
+extern "C" s32 lbl_802F4DB8[];
+extern "C" void fn_800F2330(void *a, s32 key, s32 vel, s32 arg3, s32 reuse) {
+ u8 *p=(u8*)a; void *c=0;
+ if(key<0||key>127) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x30a,lbl_80324390+0x268,key,0,127);
+ if(vel<0||vel>127) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x30b,lbl_80324390+0x2a0,vel,0,127);
+ if(reuse && (c=*(void**)(p+0xb8))) {
+  *(u32*)((u8*)c+0xcc)=(u8)key;
+  f32 x=((f32)vel)/lbl_80561080; *(f32*)((u8*)c+0xb4)=x*x;
+ }
+ if(!c) {
+  s32 args[9]; int i; for(i=0;i<9;i++) args[i]=lbl_802F4DB8[i];
+  args[0]=*(s32*)(p+0x64); args[1]=key; args[2]=vel; args[3]=reuse?-1:arg3;
+  args[4]=(s8)p[0x85]; args[5]=*(u8*)(*(u8**)(p+0xb4)+0x91)+p[0x88];
+  args[6]=*(s32*)(*(u8**)(p+0xb4)+0x8c); args[8]=(s32)p;
+  c=fn_800F0728(*(void**)(p+0xb4),*(s32*)(p+0x60),args); if(!c)return;
+  u32 t=OSDisableInterrupts(); *(void**)((u8*)c+0xe4)=*(void**)(p+0xb8); *(void**)(p+0xb8)=c; OSRestoreInterrupts(t);
+ }
+ if(p[0x8b]!=255) SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((u8*)c+8,p[0x8b]);
+ if(p[0x8c]!=255) SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi((u8*)c+8,p[0x8c]);
+ if(p[0x8d]!=255) SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi((u8*)c+8,p[0x8d]);
+ if(p[0x8e]!=255) SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((u8*)c+8,p[0x8e]);
+ f32 pitch=*(f32*)(p+0x7c); if(p[0x5f]) pitch+=(f32)((s32)p[0x89]-key);
+ if(!p[0x8a]) { if(!arg3) Warning__Q26nw4hbm2dbFPCciPCce(lbl_80324390,0x358,lbl_80324390+0x2e4); fn_800EA8A0(c,arg3,0,pitch); }
+ else { s32 n=p[0x8a]*p[0x8a]; f32 scale=pitch>lbl_8056107C?pitch:-pitch; fn_800EA8A0(c,(s32)((f32)n*scale)/32*5,1,pitch); }
+ p[0x89]=(u8)key;
+ u16 total=*(u16*)((u8*)c+0xc6), cur=*(u16*)((u8*)c+0xc8); u32 enabled=p[0x5d]!=0; u8 val;
+ if(cur>=total) val=*((u8*)c+0xc5); else {u8 st=*((u8*)c+0xc4); val=st+(cur*(*((u8*)c+0xc5)-st))/total;}
+ *((u8*)c+0xc4)=val; *((u8*)c+0xc5)=enabled?0:255; *(u16*)((u8*)c+0xc6)=0; *(u16*)((u8*)c+0xc8)=0;
+}
+
 extern "C" void fn_800F26D8(void *arg0) {
     extern s32 lbl_80324848;
     *(s32 *)arg0 = (s32)&lbl_80324848;
@@ -317,10 +357,9 @@ extern "C" s32 fn_800F27CC(void *arg0) {
     return GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)arg0 + 4));
 }
 
-void fn_800F27D4(void *arg0, s32 arg1) {
-    void *r3 = *(void**)((u8*)arg0 + 4);
-    s32 r4 = *(s32*)((u8*)r3 + 0x34);
-    ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(r3, (void*)r4, arg1);
+extern "C" s32 fn_800F27D4(void *arg0, s32 arg1) {
+    void *r3 = *(void **)((u8 *)arg0 + 4);
+    return ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(r3, *(void **)((u8 *)r3 + 0x34), arg1);
 }
 
 M2C_UNK GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(s32);
@@ -402,6 +441,32 @@ extern "C" void SetInfoChunk__Q46nw4hbm3snd6detail22SoundArchiveFileReaderFPCvUl
     if (data[0] != 0x494E464FU)
         Panic__Q26nw4hbm2dbFPCciPCce((const char *)(base + 0), 0x7B, base + 0x1C4);
     *(const void **)((char *)self + 0x28) = (const u8 *)data + 8;
+}
+
+extern "C" s32 GetSoundType__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUl(void *arg0, u32 arg1) {
+    u8 *reader = (u8 *)arg0;
+    register u8 *ref = *(u8 **)(reader + 0x28);
+    u8 type;
+    u8 *info;
+    u32 offset;
+    extern const char lbl_80324DE4[];
+    extern const char lbl_80324E10[];
+    extern char lbl_805598C8;
+    extern char lbl_805598D0;
+    if (ref[1] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598C8, 0x6F, lbl_80324DE4);
+    info = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(ref[0], *(u32 *)(ref + 4), ref);
+    if (!info) return 0;
+    if (arg1 >= *(u32 *)info) return 0;
+    if (*(u16 *)(reader + 6) >= 0x101) {
+        offset = arg1 * 8;
+        ref = *(u8 **)(reader + 0x28);
+        if (info[offset + 5] != 0) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598D0, 0x6F, lbl_80324E10);
+        type = info[offset + 5];
+        info = (u8 *)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(info[offset + 4], *(u32 *)(info + offset + 8), ref);
+        if (!info) return 0;
+        type = info[0x16];
+    } else { offset = arg1 * 8; type = info[offset + 5]; }
+    switch (type) { case 1: return 1; case 2: return 2; case 3: return 3; default: return 0; }
 }
 
 extern "C" s32 ReadSeqSoundInfo__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFUlPQ46nw4hbm3snd12SoundArchive12SeqSoundInfo(void *self, u32 index, void *info) {
@@ -622,6 +687,19 @@ extern "C" s32 GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ3
     if (((s32 (*)(void *, void *))fn_800F2814)(archive, info) != 0)
         result = info[4];
     return result * 0xA000;
+}
+
+extern "C" s32 GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *arg0, u32 arg1) {
+    struct SoundArchivePlayer {
+        u8 pad[0x70];
+        u32 playerCount;
+        void *players;
+    };
+    SoundArchivePlayer *self = (SoundArchivePlayer *)arg0;
+    if (arg1 >= self->playerCount) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80324E88, 0x2B2, lbl_803250C8, arg1, 0);
+    }
+    return (s32)((u8 *)self->players + arg1 * 0x48);
 }
 
 void InvalidateData__Q34nw4r3snd18SoundArchivePlayerFPCvPCv(void* self, unsigned long start, unsigned long end) {
@@ -989,45 +1067,52 @@ extern "C" void detail_SetPlayableSoundLimit__Q36nw4hbm3snd11SoundPlayerFi(
     *(u16*)&((u8*)this_)[0x26] = (u16)limit;
 }
 
-extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(
-    void* this_, void* pHeap) {
-    if (pHeap == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C50, 0x256,
-                                     (const char*)lbl_80325D6C);
+extern "C" void detail_AppendPlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10PlayerHeap(void* this_, void* pHeap) {
+    void* heap = pHeap;
+    void* self = this_;
+    if (heap == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80325C50, 0x256, (const char*)lbl_80325D6C);
     }
-    *(void**)((u8*)pHeap + 0x38) = this_;
-    if (this_ == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323834, 0x233,
-                                     (const char*)lbl_80323810);
+    *(void**)((u8*)heap + 0x38) = self;
+    void* node = (u8*)self + 0x1C;
+    if (self == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323834, 0x233, (const char*)lbl_80323810);
     }
-    s32 sp8 = (s32)((u8*)this_ + 0x1C);
-    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(
-        (void*)((u8*)this_ + 0x18), (void**)&sp8, (void*)((u8*)pHeap + 0x2C));
-    *(u8*)((u8*)this_ + 0x2D) = 1;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((void*)((u8*)self + 0x18), &node, (void*)((u8*)heap + 0x2C));
+    *(u8*)((u8*)self + 0x2D) = 1;
 }
 
-extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(
-    void* this_, void* pHandle, u32 id, void* pAmbient, void* pPlayer,
-    void* pInfo) {
-    struct SoundStartable {
-        s32 pad0;
-        s32 pad4;
-        s32 pad8;
-        void* (*StartSound)(struct SoundStartable*, void*, u32, void*, void*, void*);
-    }* self = (struct SoundStartable*)this_;
+extern "C" void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *player, void *sound) {
+    extern u8 lbl_80325D98[];
+    extern u8 lbl_80323834[];
+    extern u8 lbl_80323810[];
+    void *heap;
+    void *iterator;
+    if (sound == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80325C50, 0x280, (const char *)lbl_80325D98);
+    }
+    heap = *(void **)((char *)sound + 4);
+    if (heap != 0) {
+        iterator = (char *)player + 0x1C;
+        Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)player + 0x18, &iterator, (char *)heap + 0x2C);
+    }
+    if (heap != 0)
+        *(void **)((char *)heap + 0x34) = 0;
+    *(void **)((char *)sound + 4) = 0;
+}
 
-    void* pSound = self->StartSound(self, pHandle, id, pAmbient, pPlayer, pInfo);
-
-    if (pSound != 0) {
-        if (*(void**)((u8*)pSound) == 0) {
-            struct SoundHandle {
-                s32 pad0;
-                s32 pad4;
-                s32 pad8;
-                s32 padC;
-                void (*Attach)(struct SoundHandle*);
-            }* handle = (struct SoundHandle*)pHandle;
-            handle->Attach(handle);
+extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(void* this_, void* pHandle, u32 id, void* pAmbient, void* pPlayer, void* pInfo) {
+    struct Base {
+        virtual void d0();
+        virtual void d1();
+        virtual void d2();
+        virtual void* Start(void*, u32, void*, void*, void*);
+    };
+    struct Sound { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void Attach(); };
+    void* sound = ((Base*)this_)->Start(pHandle, id, pAmbient, pPlayer, pInfo);
+    if (sound == 0) {
+        if (*(void**)pHandle != 0) {
+            ((Sound*)sound)->Attach();
         }
     }
 }
