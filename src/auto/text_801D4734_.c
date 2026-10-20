@@ -58,6 +58,12 @@ void fn_801D5A1C(int arg0) {
     fn_801D59C8(arg0, 1);
 }
 
+void fn_801D628C(void *arg0) {
+    *(int *)((char *)arg0 + 4) = 0;
+    *(char **)((char *)arg0 + 0) = lbl_80338C78;
+    *(int *)((char *)arg0 + 0x14) = 0;
+}
+
 int fn_801D6500(int arg0) {
     return ((int *)arg0)[1];
 }
