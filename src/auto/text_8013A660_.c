@@ -22,7 +22,7 @@ extern char lbl_8032C1A0[];
 extern char lbl_8032C1E8[];
 extern char lbl_8032C1F8[];
 typedef struct { int pad[3]; int (*m_fn)(void); } unkVtable;
-typedef struct { int pad[6]; int (*m_fn)(void); } unkVtable7;
+typedef struct { int pad[7]; int (*m_fn)(void); } unkVtable7;
 typedef struct { int pad[9]; float (*m_float)(char *); } unkVtableFloat;
 void fn_8013A660(unkVtable **arg0, char *arg1, char *arg2) {
     int result = ((int (*)(void *))(*arg0)->m_fn)(arg0);
@@ -116,8 +116,8 @@ extern void *fn_80138B1C(int);
 extern float lbl_80561430;
 #pragma cplusplus on
 extern "C" float fn_8013B590(void) {
-    void *object = *fn_801B2ED0();
-    int value = ((int (*)(void))((void **)object)[7])();
+    unkVtable7 *object = (unkVtable7 *)*fn_801B2ED0();
+    int value = object->m_fn();
     void *result = fn_80138B1C(*(int *)((char *)value + 0x2C));
     if (result != 0)
         return *(float *)((char *)result + 0xC);
