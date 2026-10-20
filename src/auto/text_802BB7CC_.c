@@ -45,9 +45,7 @@ void fn_802BB8E4(int* arg0) {
 }
 
 int fn_802BB928(int arg0) {
-    unsigned int temp_r3 = arg0 + 0x200;
-    unsigned int sign = temp_r3 >> 31;
-    return (int)(temp_r3 + sign) >> 1;
+    return (arg0 + 0x200) / 2;
 }
 
 short fn_802BB93C(int arg0) {
