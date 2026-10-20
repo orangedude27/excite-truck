@@ -894,12 +894,11 @@ extern "C" void fn_80143DC8(void *);
 extern "C" void fn_80143CB0(void *);
 extern "C" char lbl_8032CD54[];
 extern "C" void fn_80143C54(void *arg0) {
-    s32 value;
-    void **check = fn_801284F8(8, lbl_8032CD54);
+    void *check = fn_801284F8(8, lbl_8032CD54);
     if (check != 0) {
-        value = ((s32 (*)(void *, s32))fn_802ADDD8)(check, 1);
-        *(s32 *)((u8 *)arg0 + 0x140) = value;
+        check = (void *)((s32 (*)(void *, s32))fn_802ADDD8)(check, 1);
     }
+    *(void **)((u8 *)arg0 + 0x140) = check;
     volatile u8 *p = (volatile u8 *)arg0;
     fn_80143DC8((void *)(p + 0x134));
     fn_80143CB0((void *)(p + 0x134));
