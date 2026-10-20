@@ -145,10 +145,15 @@ int fn_801B47D4(int arg0, int arg1) {
 }
 
 int fn_801B47F0(int arg0) {
-    unsigned int a = *(unsigned int *)(arg0 + 0x20);
-    unsigned int b = *(unsigned int *)(arg0 + 0x24);
-    if (a >= b) return b + (*(int *)(arg0 + 0x1C) - a);
-    return b - a;
+    unsigned int temp_r4;
+    unsigned int temp_r5;
+
+    temp_r5 = *(unsigned int *)(arg0 + 0x24);
+    temp_r4 = *(unsigned int *)(arg0 + 0x20);
+    if (temp_r4 < temp_r5) {
+        return temp_r5 - temp_r4;
+    }
+    return temp_r5 + (*(int *)(arg0 + 0x1C) - temp_r4);
 }
 
 int fn_801B4818(void) { return 0x100000; }
