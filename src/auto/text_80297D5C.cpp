@@ -48,6 +48,7 @@ extern void* lbl_8055F7C0;
 extern void* lbl_8055F7D0;
 extern void* lbl_8055F7D8;
 extern void* lbl_8055F7D4;
+extern "C" int fn_8029AF24(int);
 extern "C" void fn_80298BBC(void*);
 extern "C" void fn_8029BA8C(void*);
 extern "C" void fn_80299628(void);
@@ -218,37 +219,33 @@ extern "C" double fabs(double);
 extern int lbl_8055CA70;
 extern int lbl_8055CA7C;
 extern "C" int fn_802984D0(void* unused, void* arg1, void* arg2, void* arg3, void* arg4, void* ctx) {
-    float* out = (float*)arg1;
-    float* base = (float*)arg2;
-    float* d1 = (float*)arg3;
-    float* d2 = (float*)arg4;
-    float p0[3];
-    float p1[3];
-    float p2[3];
-    float e1[3];
-    float e2[3];
-    p0[0] = base[0]; p0[1] = base[1]; p0[2] = base[2];
-    p1[0] = p0[0] + d1[0]; p1[1] = p0[1] + d1[1]; p1[2] = p0[2] + d1[2];
-    p2[0] = p0[0] + d2[0]; p2[1] = p0[1] + d2[1]; p2[2] = p0[2] + d2[2];
+    Vec3f* out = (Vec3f*)arg1;
+    Vec3f* base = (Vec3f*)arg2;
+    Vec3f* d1 = (Vec3f*)arg3;
+    Vec3f* d2 = (Vec3f*)arg4;
+    Vec3f p0, p1, p2, e1, e2;
+    p0 = *base;
+    p1.x = p0.x + d1->x; p1.y = p0.y + d1->y; p1.z = p0.z + d1->z;
+    p2.x = p0.x + d2->x; p2.y = p0.y + d2->y; p2.z = p0.z + d2->z;
     fn_801E9DD4(lbl_8055CA70, lbl_8055CA7C);
-    if (fn_801E9E30(ctx, p0) == 0 || fn_801E9E30(ctx, p1) == 0 || fn_801E9E30(ctx, p2) == 0) {
+    if (fn_801E9E30(ctx, &p0.x) == 0 || fn_801E9E30(ctx, &p1.x) == 0 || fn_801E9E30(ctx, &p2.x) == 0) {
         fn_801E9DD8();
         return 0;
     }
     fn_801E9DD8();
-    e1[0] = p1[0] - p0[0]; e1[1] = p1[1] - p0[1]; e1[2] = p1[2] - p0[2];
-    e2[0] = p2[0] - p0[0]; e2[1] = p2[1] - p0[1]; e2[2] = p2[2] - p0[2];
-    if ((float)fabs(PSVECDotProduct(e1, e1)) <= lbl_80558DC4 || (float)fabs(PSVECDotProduct(e2, e2)) <= lbl_80558DC4) {
+    e1.x = p1.x - p0.x; e1.y = p1.y - p0.y; e1.z = p1.z - p0.z;
+    e2.x = p2.x - p0.x; e2.y = p2.y - p0.y; e2.z = p2.z - p0.z;
+    if ((float)fabs(PSVECDotProduct(&e1.x, &e1.x)) <= lbl_80558DC4 || (float)fabs(PSVECDotProduct(&e2.x, &e2.x)) <= lbl_80558DC4) {
         return 0;
     }
-    out[0] = p0[0]; out[1] = p0[1]; out[2] = p0[2];
-    float l2 = PSVECDotProduct(e2, e2);
-    if (PSVECDotProduct(e1, e1) > l2) {
-        out[3] = e1[0]; out[4] = e1[1]; out[5] = e1[2];
-        out[6] = e2[0]; out[7] = e2[1]; out[8] = e2[2];
+    out[0] = p0;
+    float l2 = PSVECDotProduct(&e2.x, &e2.x);
+    if (PSVECDotProduct(&e1.x, &e1.x) > l2) {
+        out[1] = e1;
+        out[2] = e2;
     } else {
-        out[3] = e2[0]; out[4] = e2[1]; out[5] = e2[2];
-        out[6] = e1[0]; out[7] = e1[1]; out[8] = e1[2];
+        out[1] = e2;
+        out[2] = e1;
     }
     return 1;
 }
