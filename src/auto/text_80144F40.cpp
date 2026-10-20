@@ -195,12 +195,12 @@ extern "C" void fn_80145368(void *arg0, void *arg1) {
 #pragma pop
 
 extern "C" f32 lbl_805615E0;
-extern "C" const char *lbl_80559DE0;
-extern "C" const char *lbl_80559DE4;
-extern "C" const char *lbl_80559DE8;
-extern "C" const char *lbl_80559DEC;
-extern "C" const char *lbl_80559DF0;
-extern "C" const char *lbl_80559DF4;
+extern "C" char lbl_80559DE0[];
+extern "C" char lbl_80559DE4[];
+extern "C" char lbl_80559DE8[];
+extern "C" char lbl_80559DEC[];
+extern "C" char lbl_80559DF0[];
+extern "C" char lbl_80559DF4[];
 extern "C" void fn_80145438(void *arg0, void *arg1) {
     fn_80145368(arg0, arg1);
     *(f32 *)((u8 *)arg0 + 0x10) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DE0);
