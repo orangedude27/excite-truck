@@ -81,6 +81,52 @@ void fn_802D78D4(void *arg0, void *arg1, unsigned int arg2, unsigned int arg3) {
         alpha[i] = (unsigned short)(a << 8);
     }
 }
+
+void fn_802D81C4(void *arg0, int arg1) {
+    int width = *(int *)((char *)arg0 + 0x24);
+    int height = *(int *)((char *)arg0 + 0x28);
+    unsigned char *s2 = *(unsigned char **)((char *)arg0 + 0x2C);
+    unsigned char *p = *(unsigned char **)(s2 + 4);
+    unsigned char *q;
+    unsigned char *d;
+    unsigned char *line;
+    unsigned char *tmp;
+    int n = (width * height) / 2;
+    int i, x, y, halfw, size;
+
+    d = p;
+    if (n > 0) {
+        for (i = 0; i < n; i++) {
+            *d = (unsigned char)((*d >> 4) | (*d << 4));
+            d++;
+        }
+    }
+    q = *(unsigned char **)s2;
+    for (i = 0; i < 0x10; i++) {
+        unsigned char t0;
+        unsigned char t1;
+        t0 = q[0];
+        q[0] = q[3];
+        q[3] = t0;
+        t1 = q[1];
+        q[1] = q[2];
+        q[2] = t1;
+        q += 4;
+    }
+    halfw = width / 2;
+    fn_801282EC(0x20);
+    size = halfw * height;
+    tmp = fn_8012850C((void *)size, lbl_8055D110);
+    memcpy(tmp, p, (unsigned int)size);
+    for (y = 0; y < height; y++) {
+        line = tmp + y * halfw;
+        for (x = 0; x < halfw; x++) {
+            p[((y / 8) * (halfw / 4) + x / 4) * 32 + (y % 8) * 4 + x % 4] = *line++;
+        }
+    }
+    fn_80128670(tmp);
+}
+
 #pragma dont_inline reset
 
 void fn_802D8DA0(void) {
@@ -190,7 +236,7 @@ float fn_802D93E0(void) {
     return lbl_80565018;
 }
 
-extern void fn_802D768C(void);
+extern void fn_802D768C(void *);
 extern void fn_802D2614(void);
 extern int lbl_8055FE24;
 void fn_802D93E8(int arg0) {
