@@ -110,15 +110,16 @@ extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *arg0, u8 arg
     if (arg1 > 8)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F5A8, 0x5D, lbl_8031F5B8);
     if (*(u8*)arg0 < arg1) {
-        if (*(s32*)((u8*)arg0 + 4) != 0) {
-            MEMFreeToAllocator(lbl_8055DDF0);
-            *(s32*)((u8*)arg0 + 4) = 0;
+        void *p = *(void**)((u8*)arg0 + 4);
+        if (p != 0) {
+            MEMFreeToAllocator(lbl_8055DDF0, p);
+            *(void**)((u8*)arg0 + 4) = 0;
             *(u8*)arg0 = 0;
             *((u8*)arg0 + 1) = 0;
         }
-        s32 p = MEMAllocFromAllocator(lbl_8055DDF0, arg1 << 5);
-        *(s32*)((u8*)arg0 + 4) = p;
-        if (p != 0)
+        s32 newp = MEMAllocFromAllocator(lbl_8055DDF0, arg1 << 5);
+        *(s32*)((u8*)arg0 + 4) = newp;
+        if (newp != 0)
             *(u8*)arg0 = arg1;
     }
 }
