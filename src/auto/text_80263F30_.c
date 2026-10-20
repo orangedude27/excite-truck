@@ -200,25 +200,116 @@ void* fn_80264A54(void) {
 #pragma processor 750
 void fn_80264A5C(float farg0, float farg1) {
     extern float lbl_80558DC4[];
+    extern float lbl_80563BF0;
+    extern float lbl_80563C00;
+    extern float lbl_80563C08;
     extern float lbl_80563C0C;
     extern float fn_80214D48(void);
     extern void fn_80230C30(float *, float *, int, int);
-    float x, y;
+    extern float fn_80129DC4(int, float, float);
+    extern int fn_80129D18(int, int);
+    extern int fn_80235FD8(int);
+    extern double cos(double);
+    extern double sin(double);
+    float sp18;
+    float sp1C;
+    float sp10;
+    float sp14;
+    float spC;
+    float sp8;
+    float temp_f0;
+    float temp_f0_2;
+    float temp_f2;
+    float temp_f30;
+    float temp_f30_2;
+    float temp_f31;
+    float temp_f31_2;
+    float temp_f3;
+    float temp_f4;
+    int temp_r0;
+    int temp_r0_2;
+    int temp_r4;
+    int temp_r4_2;
+    int temp_r5;
+    int temp_r5_2;
+    int temp_r6;
+    int temp_r6_2;
+    void *temp_r31;
+    void *temp_r31_2;
+    void *temp_r30;
+    void *temp_r30_2;
 
     if (!((float)__fabs((double)fn_80214D48()) <= lbl_80558DC4[0])) {
-        fn_80230C30(&x, &y, (int)farg0, (int)farg1);
-        x = x + (farg0 - (float)(int)farg0);
-        y = y - (farg1 - (float)(int)farg1);
-        fn_80264A5C_emit((char *)lbl_8055F448 + 0x18, x, y);
-        fn_80264A5C_emit((char *)lbl_8055F448 + 0x78, x, lbl_80563C0C + y);
+        fn_80230C30(&spC, &sp8, (int)farg0, (int)farg1);
+        temp_f4 = spC + (farg0 - (float)(int)farg0);
+        temp_f3 = sp8 - (farg1 - (float)(int)farg1);
+        spC = temp_f4;
+        sp8 = temp_f3;
+        sp18 = temp_f4;
+        temp_r31 = lbl_8055F448;
+        temp_f0 = *(float *)((char *)temp_r31 + 0x74) + *(float *)((char *)temp_r31 + 0x40);
+        sp1C = temp_f3;
+        *(float *)((char *)temp_r31 + 0x74) = temp_f0;
+        if (temp_f0 > lbl_80563C00 && *(int *)((char *)temp_r31 + 0x5C) + 1 <= *(int *)((char *)temp_r31 + 0x60)) {
+            *(float *)((char *)temp_r31 + 0x74) = *(float *)((char *)temp_r31 + 0x74) - lbl_80563C00;
+            temp_r5 = *(int *)((char *)temp_r31 + 0x5C);
+            temp_r6 = *(int *)((char *)temp_r31 + 0x58);
+            temp_r4 = temp_r5 + 1;
+            *(int *)((char *)temp_r31 + 0x5C) = temp_r4;
+            temp_r0 = temp_r5 << 5;
+            temp_r30 = (void *)((char *)temp_r6 + temp_r0);
+            *(float *)((char *)temp_r6 + temp_r0) = temp_f4;
+            *(float *)((char *)temp_r30 + 4) = temp_f3;
+            temp_f30 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x1C), *(float *)((char *)temp_r31 + 0x20));
+            temp_f31 = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x24), *(float *)((char *)temp_r31 + 0x28));
+            *(float *)((char *)temp_r30 + 8) = temp_f31 * (float)cos((double)temp_f30);
+            *(float *)((char *)temp_r30 + 0xC) = temp_f31 * (float)sin((double)temp_f30);
+            *(float *)((char *)temp_r30 + 0x10) = fn_80129DC4(6, lbl_80563BF0, lbl_80563C08);
+            *(float *)((char *)temp_r30 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31 + 0x34), *(float *)((char *)temp_r31 + 0x38));
+            *(float *)((char *)temp_r30 + 0x18) = *(float *)((char *)temp_r31 + 0x44);
+            *(int *)((char *)temp_r30 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31 + 0x54)));
+        }
+        temp_r31_2 = lbl_8055F448;
+        temp_f4 = spC;
+        temp_f0_2 = *(float *)((char *)temp_r31_2 + 0xD4) + *(float *)((char *)temp_r31_2 + 0xA0);
+        temp_f2 = lbl_80563C0C + sp8;
+        sp10 = temp_f4;
+        *(float *)((char *)temp_r31_2 + 0xD4) = temp_f0_2;
+        sp14 = temp_f2;
+        if (temp_f0_2 > lbl_80563C00 && *(int *)((char *)temp_r31_2 + 0xBC) + 1 <= *(int *)((char *)temp_r31_2 + 0xC0)) {
+            *(float *)((char *)temp_r31_2 + 0xD4) = *(float *)((char *)temp_r31_2 + 0xD4) - lbl_80563C00;
+            temp_r5_2 = *(int *)((char *)temp_r31_2 + 0xBC);
+            temp_r6_2 = *(int *)((char *)temp_r31_2 + 0xB8);
+            temp_r4_2 = temp_r5_2 + 1;
+            *(int *)((char *)temp_r31_2 + 0xBC) = temp_r4_2;
+            temp_r0_2 = temp_r5_2 << 5;
+            temp_r30_2 = (void *)((char *)temp_r6_2 + temp_r0_2);
+            *(float *)((char *)temp_r6_2 + temp_r0_2) = temp_f4;
+            *(float *)((char *)temp_r30_2 + 4) = temp_f2;
+            temp_f30_2 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x7C), *(float *)((char *)temp_r31_2 + 0x80));
+            temp_f31_2 = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x84), *(float *)((char *)temp_r31_2 + 0x88));
+            *(float *)((char *)temp_r30_2 + 8) = temp_f31_2 * (float)cos((double)temp_f30_2);
+            *(float *)((char *)temp_r30_2 + 0xC) = temp_f31_2 * (float)sin((double)temp_f30_2);
+            *(float *)((char *)temp_r30_2 + 0x10) = fn_80129DC4(6, lbl_80563BF0, lbl_80563C08);
+            *(float *)((char *)temp_r30_2 + 0x14) = fn_80129DC4(6, *(float *)((char *)temp_r31_2 + 0x94), *(float *)((char *)temp_r31_2 + 0x98));
+            *(float *)((char *)temp_r30_2 + 0x18) = *(float *)((char *)temp_r31_2 + 0xA4);
+            *(int *)((char *)temp_r30_2 + 0x1C) = fn_80129D18(6, fn_80235FD8(*(int *)((char *)temp_r31_2 + 0xB4)));
+        }
     }
 }
-#pragma pop
-void fn_80264FD4(void *arg0) {
-    void (*fn)(void *) = *(void (**)(void *))((char *)*(void **)arg0 + 0x1C);
-    fn(arg0);
+#pragma cplusplus on
+extern "C" void fn_80264FD4(void *arg0) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+    };
+    ((Dummy*)arg0)->f5();
 }
-
+#pragma cplusplus off
 void fn_8026523C(void *arg0) {
     extern char lbl_80346618[];
     extern float lbl_80563BF0;
