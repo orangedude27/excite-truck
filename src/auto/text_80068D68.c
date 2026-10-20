@@ -6186,14 +6186,3 @@ extern u8 lbl_80559060[];
 extern u8 lbl_803151D8[];
 extern char lbl_80319EC0[];
 
-static u8 hh_get_trans_status(u32 result) {
-    switch (result) {
-    case 0:
-        return 0;
-    case 1: case 2: case 3: case 4: case 5: case 6: case 7: case 8:
-    case 9: case 10: case 11: case 12: case 13: case 14: case 15:
-        return (u8)result;
-    default:
-        return 5;
-    }
-}
