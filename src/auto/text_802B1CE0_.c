@@ -356,12 +356,38 @@ extern Unk802B2C98 lbl_804BE1FC;
 extern int lbl_8055F9B8;
 extern void *lbl_8055F9BC;
 
-int fn_802B2C44(void *arg0) {
-    void **vtable = *(void ***)arg0;
-    int (*method)(void) = (int (*)(void))vtable[0x17];
-    return method() != 0;
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_802B2C44(void *arg0) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual int v21();
+    };
+    return ((Obj *)arg0)->v21() != 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 #pragma scheduling invalid_target
 void fn_802B2C7C(void *arg0) {
     *(int *)arg0 = (int)((char *)arg0 + 0xC);
