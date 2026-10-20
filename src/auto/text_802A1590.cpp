@@ -170,6 +170,9 @@ extern "C" void fn_802A1794(void) {
     } while (++index < 8 && (entry++, index < 8));
 }
 
+extern "C" void fn_802A17F8(void) {
+}
+
 extern "C" void fn_802A17FC(void) {
     void ***entry = (void ***)&lbl_804BCF88;
     s32 index = 0;
