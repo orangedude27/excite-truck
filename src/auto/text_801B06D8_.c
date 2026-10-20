@@ -37,6 +37,19 @@ extern void fn_801E89F4(s32);
 extern f32 lbl_805625B8;
 extern f32 lbl_80562618;
 
+#pragma cplusplus on
+struct Dummy_801B0DF0 {
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void d4();
+    virtual void d5();
+    virtual void d6();
+    virtual void d7();
+    virtual void *d8(void *, void *);
+};
+#pragma cplusplus off
 extern s32 fn_80139EC4(f32, f32);
 extern s32 fn_802B04D4(f32 *, f32, f32, f32);
 extern f32 lbl_805625BC, lbl_805625C0, lbl_805625C4;
@@ -126,8 +139,8 @@ s32 fn_801B0DE8(s32 arg0) { return arg0 + 4; }
 
 s32 fn_801B0DF0(s32 arg0) {
     void *base = lbl_8055E684;
-    void *obj = ((void **)base)[arg0 << 5];
-    void *result = ((void *(*)(void *, void *))*(void **)((u8 *)obj + 0x20))((u8 *)base + (arg0 << 7), base);
+    void *obj = (void **)((u8 *)base + (arg0 << 7));
+    void *result = ((void *(*)(void *, void *))(*(void ***)obj)[8])(obj, base);
     return *(u32 *)((u8 *)result + 0x10) == 0x50434152;
 }
 
