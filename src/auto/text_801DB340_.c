@@ -165,7 +165,7 @@ int fn_801DCE14(short *arg0, float *arg1, float *arg2, int arg3, int *arg4) {
         *arg0 = 0;
     }
     sp8 = 0xFF;
-    if (((int (*)(void *, void *, void *, void *, float, float))fn_801DC258)(&spC, &sp8, arg0, (void *)arg3, arg1[0], arg1[2]) != 0) {
+    if (fn_801DC258(&spC, &sp8, arg0, (void *)arg3, arg1[0], arg1[2]) != 0) {
         if (arg4 != 0) {
             *arg4 = sp8;
         }
