@@ -22,7 +22,8 @@ extern f32 lbl_805622DC;
 extern f32 lbl_805622E8;
 extern f32 lbl_805622E0;
 extern f32 lbl_805622D0;
-extern void fn_8019AC44(f32*, f32*, f32);
+extern "C" void fn_8019AC44(void*, void*, void*, f32);
+inline void fn_8019AC44(f32* a, f32* b, f32 c) {}
 extern char lbl_803339B8;
 extern void fn_8019F03C();
 extern s32 fn_8019DDFC(s32, s32, s32, s32, void*, void*, f32);
