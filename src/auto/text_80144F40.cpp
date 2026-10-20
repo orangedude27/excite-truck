@@ -126,14 +126,21 @@ extern "C" s32 fn_801450A0(u32 arg0, u32 arg1, f32 arg2) {
 }
 
 extern "C" s32 fn_80145140(void *arg0, const char *arg1) {
+    struct Container {
+        virtual void *v0(s32);
+        virtual void *v1(s32);
+    };
+    struct Item {
+        virtual const char *v0();
+    };
     s32 count = 0;
     s32 index = 0;
-    void *item;
+    Item *item;
 loop:
-    item = ((void *(*)(void *, s32))(*(void ***)arg0)[3])(arg0, index);
+    item = (Item *)((Container *)arg0)->v1(index);
     if (item == 0)
         goto done;
-    if (stricmp(((const char *(*)(void *))(*(void ***)item)[2])(item), arg1) == 0)
+    if (stricmp(item->v0(), arg1) == 0)
         count++;
     index++;
     goto loop;
