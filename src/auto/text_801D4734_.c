@@ -316,6 +316,10 @@ int fn_801D873C(int arg0) {
     return 0;
 }
 
+void fn_801D8938(void) {
+
+}
+
 void fn_801D8C0C(void *arg0) {
     *(int *)((char *)arg0 + 0x18) = -1;
 }
