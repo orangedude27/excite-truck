@@ -214,6 +214,13 @@ void fn_801D72D0(int arg0) {
     *(char *)(arg0 + 0x34) = 0;
 }
 
+int fn_801D76CC(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
 int fn_801D77B8(int arg0) {
     return ((int *)arg0)[2];
 }
