@@ -60,6 +60,57 @@ int fn_8015ED90(void **arg0) {
     return count;
 }
 
+extern int fn_8015ED54(void **);
+extern void fn_802E30C8(const char *, int, const char *);
+extern char lbl_8032F488[];
+extern char lbl_8055A080[], lbl_8055A090[], lbl_8055A08C[], lbl_8055A094[];
+void fn_8015EF84(void **arg0) {
+    int found = 0;
+    int index = 0;
+    void **obj;
+    if (arg0 != 0) {
+        while ((obj = ((void **(*)(void *, int))((void **)*arg0)[0x18])(arg0, index)) != 0) {
+            if (fn_8015ED54(obj)) {
+                double x = ((double (*)(void *, char *))((void **)*obj)[0xF])(obj, lbl_8055A080);
+                float radius = ((float (*)(void *, char *))((void **)*obj)[9])(obj, lbl_8055A090);
+                float y = (float)x;
+                float radius2 = radius * radius;
+                int i = 0;
+                int offset = 0;
+                found++;
+                while (i < *(int *)(lbl_8055E29C + 4)) {
+                    char *array = *(char **)lbl_8055E29C;
+                    char *entry = array + offset;
+                    float dy = y - *(float *)(entry + 8);
+                    float dx = (float)(x - *(float *)(entry + 4));
+                    if (dx * dx + dy * dy < radius2) {
+                        int count = *(int *)(lbl_8055E29C + 4);
+                        if (i >= 0 && i < count) {
+                            int last = count - 1;
+                            if (i != last) {
+                                char *from = array + last * 16;
+                                *(short *)(entry + 0) = *(short *)(from + 0);
+                                *(short *)(entry + 2) = *(short *)(from + 2);
+                                *(int *)(entry + 4) = *(int *)(from + 4);
+                                *(int *)(entry + 8) = *(int *)(from + 8);
+                                *(float *)(entry + 12) = *(float *)(from + 12);
+                            }
+                            *(int *)(lbl_8055E29C + 4) = count - 1;
+                        }
+                    } else {
+                        offset += 16;
+                        i++;
+                    }
+                }
+            }
+            index++;
+        }
+    }
+    if (found > 0) {
+        fn_802E30C8(lbl_8032F488, found, found == 1 ? lbl_8055A08C : lbl_8055A094);
+    }
+}
+
 #pragma push
 #pragma inline_depth 0
 int fn_8015F148(void **arg0, int arg1) {
@@ -289,11 +340,12 @@ void fn_80160288(void *arg0, void *arg1) {
     *(struct Pair *)arg0 = *(struct Pair *)arg1;
 }
 
-void fn_8016029C(f32 *arg0, f32 *arg1) {
-    register f32 b = arg1[2];
-    register f32 a = arg1[0];
+f32 fn_8016029C(f32 *arg0, f32 *arg1) {
+    f32 a = arg1[0];
+    f32 b = arg1[2];
     arg0[0] = a;
     arg0[1] = b;
+    return a;
 }
 
 void fn_801602B0(void) {
