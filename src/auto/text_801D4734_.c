@@ -79,7 +79,7 @@ void *fn_801D7C6C(void) {
 }
 
 int fn_801D7C78(int arg0) {
-    return ((int *)arg0)[1];
+    return ((int *)arg0)[10];
 }
 
 void fn_801D7E3C(int arg0) {
