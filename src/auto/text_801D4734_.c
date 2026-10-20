@@ -3,6 +3,7 @@
 extern char lbl_803387C8[];
 extern char lbl_80338BD0[];
 extern int fn_80128668(void);
+typedef struct { char *name; int state; } UnkStruct_801D701C;
 extern char lbl_80339038[];
 extern char lbl_8033905C[];
 extern char lbl_8033907C[];
@@ -173,7 +174,7 @@ void fn_801D6FB8(int arg0) {
 
 void fn_801D701C(int arg0) {
     extern char lbl_80338B08[];
-    ((int *)arg0)[0] = (int)lbl_80338B08;
+    ((char **)arg0)[0] = (char *)lbl_80338B08;
     ((int *)arg0)[1] = 0;
 }
 
