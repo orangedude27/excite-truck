@@ -465,11 +465,12 @@ extern "C" void fn_80177608(void* obj) {
     ((Dummy*)obj)->f0();
 }
 
-void fn_80177618(int *arg0)
-{
-    int *vtable = *(int **)arg0;
-    volatile void (*fn)(void) = *(volatile void (**)(void))(vtable + 3);
-    fn();
+extern "C" void fn_80177618(int* obj) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+    };
+    ((Dummy*)obj)->f1();
 }
 
 extern "C" void fn_80177628(void* obj) {
