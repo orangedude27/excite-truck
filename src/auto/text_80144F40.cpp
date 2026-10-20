@@ -7,7 +7,7 @@ extern "C" void fn_80147DC0(void *, s32, s32);
 extern "C" void fn_801476D8(void *, s32, s32);
 extern "C" s32 fn_80147C50(u32, u32, f32);
 
-extern void lbl_8032D214(void);
+extern "C" void lbl_8032D214(void);
 extern "C" void *lbl_8032D1E8;
 extern "C" void *fn_80148294(const char *, void *);
 extern "C" f32 lbl_8055E200;
