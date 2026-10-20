@@ -206,6 +206,12 @@ int fn_802CFF64(int arg0) {
     return lbl_8055FDA0;
 }
 
+#pragma dont_inline on
+int fn_802CFFA0(int arg0) {
+    return fn_802CFF64(arg0);
+}
+#pragma dont_inline reset
+
 void fn_802CFFA4(unsigned short arg0) {
     lbl_8055FD86 = arg0;
 }
