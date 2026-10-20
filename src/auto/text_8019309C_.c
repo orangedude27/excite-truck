@@ -24,6 +24,23 @@ extern int lbl_80333390;
   void fn_80128668(void *);
   void fn_80193138(int);
   void fn_80193CE0();
+
+#pragma cplusplus on
+class DummyVt_80193CE0 {
+public:
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void d4();
+    virtual void d5();
+    virtual void d6();
+    virtual void d7();
+    virtual void d8();
+    virtual void d9();
+    virtual void d10();
+};
+#pragma cplusplus reset
   
   extern unsigned char lbl_8055A4B8[8];
 extern float lbl_80562178, lbl_8056217C, lbl_8055E558;
