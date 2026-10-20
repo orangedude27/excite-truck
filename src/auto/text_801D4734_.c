@@ -104,6 +104,11 @@ int fn_801D6900(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801D6C28(void) {
+    extern char lbl_80338868[];
+    return (int)lbl_80338868;
+}
+
 int fn_801D6C34(int arg0) {
     return ((int *)arg0)[1];
 }
