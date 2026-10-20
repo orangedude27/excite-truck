@@ -523,6 +523,8 @@ static inline void SETVAT_LIST(unsigned int *vatA, unsigned int *vatB, unsigned 
     }
 }
 
+#pragma push
+#pragma opt_propagation off
 void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
     unsigned int *vatA = (unsigned int *)((char *)__GXData + 0x1C) + fmt;
     unsigned int *vatB = (unsigned int *)((char *)__GXData + 0x3C) + fmt;
@@ -535,7 +537,7 @@ void GXSetVtxAttrFmtv(s16 fmt, const GXVtxAttrFmtList *list) {
     *(unsigned int *)((char *)__GXData + 0x5FC) |= 0x10;
     *((unsigned char *)__GXData + 0x5FB) |= (unsigned char)(1 << (unsigned char)fmt);
 }
-
+#pragma pop
 void __GXSetVAT(void) {
     unsigned int *data = __GXData;
     unsigned int *ptr = data;
@@ -768,9 +770,8 @@ void __GXSetGenMode(void) {
     *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
-void GXGetCullMode(s32 arg0, s32 arg1) {
-    unsigned int value = (arg1 & 0xFF000000) | (arg0 << 8);
-    __peReg[3] = value;
+void GXGetCullMode(s32 arg0, u8 arg1) {
+    __peReg[3] = (arg0 << 8) | arg1;
 }
 
 void GXGetLineWidth(s32 arg0) {
