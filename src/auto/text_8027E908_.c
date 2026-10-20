@@ -1173,12 +1173,6 @@ extern "C" void fn_80287304(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v3();
 }
 #pragma cplusplus off
-extern unsigned char lbl_8055F685;
-extern unsigned char lbl_8055F684;
-extern int lbl_80348270;
-extern void *fn_8027ED70(void);
-extern int fn_80216D28(void);
-extern int fn_802E30C8(const char *);
 #pragma cplusplus on
 extern "C" void fn_80287318(void* arg0) {
     ((ebi::title::TBlackPlane*)arg0)->m_a->v4();
