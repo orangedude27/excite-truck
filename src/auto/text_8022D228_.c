@@ -42,15 +42,15 @@ void *fn_8022D228(void *arg0, int arg1, int arg2, int arg3) {
     return result;
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 void *fn_8022D2BC(void *arg0, int arg1) {
     int offset;
     int i;
     if (arg0 != 0) {
-        offset = 0;
         i = 0;
+        offset = 0;
         while (i < *(int *)arg0) {
-            fn_80128670(*(void **)(*(char ***)((char *)arg0 + 0x10) + offset));
+            fn_80128670(*(void **)((char *)(*(void **)((char *)arg0 + 0x10)) + offset));
             offset += 4;
             i++;
         }
@@ -59,7 +59,7 @@ void *fn_8022D2BC(void *arg0, int arg1) {
     }
     return arg0;
 }
-#pragma scheduling reset
+#pragma scheduling on
 void fn_8022D350(void *arg0, const char *arg1, char arg2) {
     int index = *(int *)((char *)arg0 + 8);
     if (index < *(int *)arg0) {
@@ -84,6 +84,32 @@ char *fn_8022D3F8(void *arg0, int arg1, int *arg2) {
     return 0;
 }
 
+extern void fn_8022D76C(void *);
+#pragma scheduling off
+void *fn_8022D458(void *arg0, int arg1, int arg2, int *arg3) {
+    char *base;
+    int i;
+    base = lbl_80340108;
+    *(int *)((char *)arg0 + 0xC) = arg1;
+    *(int *)((char *)arg0 + 8) = 0;
+    *(int *)((char *)arg0 + 4) = arg2;
+    *(void **)((char *)arg0 + 0x18) = fn_8012850C(arg2 * 4, base + 0x38);
+    *(void **)((char *)arg0 + 0x1C) = fn_8012850C(arg2 * 4, base + 0x44);
+    *(int *)((char *)arg0 + 0x10) = arg1;
+    *(int *)((char *)arg0 + 0x2C) = -1;
+    *(int *)((char *)arg0 + 0x24) = 0;
+    *(int *)((char *)arg0 + 0x28) = 0x55495442;
+    *(int *)((char *)arg0 + 0x14) = 0;
+    for (i = 0; i < arg2; i++) {
+        ((int *)(*(int *)((char *)arg0 + 0x18)))[i] = arg3[i];
+        ((int *)(*(int *)((char *)arg0 + 0x1C)))[i] = *(int *)((char *)arg0 + 0x14);
+        *(int *)((char *)arg0 + 0x14) += ((int *)(*(int *)((char *)arg0 + 0x18)))[i] + 1;
+    }
+    *(void **)arg0 = fn_8012850C(arg1 * *(int *)((char *)arg0 + 0x14), base + 0x50);
+    fn_8022D76C(arg0);
+    return arg0;
+}
+#pragma scheduling reset
 void fn_8022D76C(void *arg0) {
     memset(*(void **)arg0, 0, *(int *)((char *)arg0 + 0xC) * *(int *)((char *)arg0 + 0x14));
     *(int *)((char *)arg0 + 8) = 0;
