@@ -1023,12 +1023,11 @@ void fn_802857A8(void *arg0) {
     *(int*)(p+0x94)=(arg0==&lbl_8055F698);
 }
 
-void fn_80286724(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 0x1c);
-    void** vtable = *(void***)obj;
-    ((void (*)(void))vtable[3])();
+#pragma cplusplus on
+extern "C" void fn_80286724(void* arg0) {
+    ((ebi::title::TPlaneObj*)arg0)->m_sub->v1();
 }
-
+#pragma cplusplus off
 void fn_80286738(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
     void** vtable = *(void***)obj;
