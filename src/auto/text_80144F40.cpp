@@ -172,6 +172,8 @@ extern "C" f32 fn_801452E0(void *arg0, const char *arg1) {
 }
 #pragma dont_inline reset
 #pragma pop
+#pragma push
+#pragma dont_inline on
 extern "C" void fn_80145368(void *arg0, void *arg1) {
     extern char lbl_80559DD0[];
     extern char lbl_80559DD8[];
@@ -198,10 +200,11 @@ extern "C" char lbl_80559DEC[];
 extern "C" char lbl_80559DF0[];
 extern "C" char lbl_80559DF4[];
 extern "C" void fn_80145438(void *arg0, void *arg1) {
-    extern char lbl_80559DE0[]; extern char lbl_80559DE4[]; extern char lbl_80559DE8[]; extern char lbl_80559DEC[]; extern char lbl_80559DF0[]; extern char lbl_80559DF4[];
+    class V { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual f32 f9(const char *); };
+    V *obj = (V *)arg1;
     fn_80145368(arg0, arg1);
-    *(f32 *)((u8 *)arg0 + 0x10) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DE0);
-    *(f32 *)((u8 *)arg0 + 0x14) = ((f32 (*)(void *, const char *))(*(void ***)arg1)[9])(arg1, lbl_80559DE4);
+    *(f32 *)((u8 *)arg0 + 0x10) = obj->f9(lbl_80559DE0);
+    *(f32 *)((u8 *)arg0 + 0x14) = obj->f9(lbl_80559DE4);
     *(f32 *)((u8 *)arg0 + 0x18) = fn_801452E0(arg1, lbl_80559DE8);
     *(f32 *)((u8 *)arg0 + 0x20) = fn_801452E0(arg1, lbl_80559DEC);
     *(f32 *)((u8 *)arg0 + 0x1C) = fn_801452E0(arg1, lbl_80559DF0);
