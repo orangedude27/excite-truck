@@ -2,6 +2,7 @@
 
 extern void **OSExceptionTable_8055D9D0;
 extern void OSExceptionVector(void);
+extern void OSReport(const char *, ...);
 
 typedef enum {
     OS_CONSOLE_MASK = 0xF0000000,
