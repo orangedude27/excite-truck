@@ -74,7 +74,7 @@ int fn_801D67E0(int arg0) {
 
 int fn_801D67E8(int arg0) {
     if (((int *)arg0)[1] == 1) {
-        ((int *)arg0)[7] = lbl_8055E3C4;
+        ((int *)arg0)[4] = lbl_8055E3C4;
         ((int *)arg0)[1] = 2;
         return 1;
     }
