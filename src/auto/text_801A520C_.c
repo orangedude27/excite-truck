@@ -211,8 +211,11 @@ struct Dummy_801A5E98 {
     virtual void h8() {}
     virtual void h9() {}
     virtual void h10() {}
+    virtual void h11() {}
+    virtual void h12() {}
+    virtual void h13() {}
+    virtual void h14() {}
 };
-#pragma cplusplus off
 #pragma cplusplus on
 extern "C" void fn_801A5E98(void *arg0) {
     fn_8018AF00();
