@@ -574,15 +574,14 @@ public:
     virtual void f5();
     virtual void f6();
     virtual void f7();
-    virtual void f8();
-    virtual int f9();
+    virtual int f8();
+    virtual void f9();
     virtual void f10();
-    virtual void f11();
 };
 #pragma cplusplus on
 extern "C" void fn_802B869C(void) {
     s32 sp8[6];
-    if (((Dummy_802B869C *)lbl_8055FA48)->f9() == 0) {
+    if (((Dummy_802B869C *)lbl_8055FA48)->f8() == 0) {
         if (fn_80127A50(sp8) != 0) {
             fn_802B8624(sp8);
         } else {
