@@ -180,10 +180,11 @@ s32 fn_80149380(void *arg0) {
     return sp8.v[((s32 *)arg0)[1]];
 }
 
-s32 fn_801493C0(void **arg0) {
-    return (*(s32 (**)())((u8 *)*arg0 + 0x10))() & 0xFF7F7F7F;
+#pragma cplusplus on
+extern "C" s32 fn_801493C0(Dummy_80149274 *arg0) {
+    return arg0->d2() & 0xFF7F7F7F;
 }
-
+#pragma cplusplus off
 void fn_801493F8(void *arg0, f32 *arg1, s32 arg2) {
     u8 *obj = (u8 *)(arg2 + ((s32 *)arg0)[1]);
     f32 f2 = lbl_80561628;
