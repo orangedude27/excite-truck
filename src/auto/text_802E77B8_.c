@@ -164,6 +164,10 @@ unsigned char fn_802E8504(int index) {
     return lbl_80505978[index * 0x638];
 }
 
+void fn_802E8518(int arg0) {
+    fn_802E8528(arg0, lbl_80565164, lbl_80565164);
+}
+
 extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
 extern unsigned char lbl_80505978[];
 void fn_802E8524(void) {}
