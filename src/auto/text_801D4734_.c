@@ -1,6 +1,7 @@
 
 
-extern char lbl_803387C8[];
+  extern char lbl_803387C8[];
+  extern char lbl_80338C78[];
 extern char lbl_80338BD0[];
 extern int fn_80128668(void);
 typedef struct { char *name; int state; } UnkStruct_801D701C;
