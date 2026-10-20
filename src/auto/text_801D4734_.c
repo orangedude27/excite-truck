@@ -151,11 +151,12 @@ void fn_801D68D0(int arg0) {
     }
 }
 
-void fn_801D68E8(int arg0) {
-    ((int *)arg0)[0] = (int)lbl_80338BD0;
-    ((int *)arg0)[1] = 0;
+#pragma scheduling invalid_target
+void fn_801D68E8(UnkStruct_801D701C *arg0) {
+    arg0->name = lbl_80338BD0;
+    arg0->state = 0;
 }
-
+#pragma scheduling reset
 int fn_801D6900(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[1] = 0;
