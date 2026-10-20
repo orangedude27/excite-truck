@@ -28,6 +28,23 @@ class CleanupEntry {
 public:
     virtual void cleanup(s32);
 };
+
+class PaneContainer {
+public:
+    virtual void dummy0();
+    virtual void* getPane(const char* name);
+};
+
+struct PaneData {
+    u32 w0;
+    u32 w4;
+    u32 w8;
+    u32 wc;
+    f32 f10;
+    u32 w14;
+    u32 w18;
+    u32 w1c;
+};
 extern f32 lbl_80560460;
 extern f32 lbl_80560464;
 extern f64 lbl_80560468;
@@ -147,6 +164,7 @@ extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
 
 extern "C" f32 fn_8001DA5C(s32);
 extern f32 lbl_80560490;
+#pragma scheduling off
 extern "C" void fn_8001E544(void* arg0) {
     f32 a = lbl_80560490;
     f32 b = lbl_80560474;
@@ -175,7 +193,7 @@ extern "C" void fn_8001E544(void* arg0) {
     ((f32*)arg0)[23] = a;
     ((f32*)arg0)[24] = a;
 }
-
+#pragma scheduling on
 extern s32 lbl_802FDC70;
 extern "C" void* fn_8001E5B0(void* arg0, s32 arg1) {
     void* entry;
