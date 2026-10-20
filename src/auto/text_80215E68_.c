@@ -22,7 +22,7 @@ extern s32 fn_80211F64(void);
 extern s32 fn_802164D8(void);
 extern s32 fn_80129AFC(void);
 extern s32 fn_802161CC(s32);
-extern s32 fn_80218370();
+extern void fn_80218370(void *);
 extern s32 fn_802E97B4(void);
 extern void fn_802166B8(void);
 #pragma small_data off
