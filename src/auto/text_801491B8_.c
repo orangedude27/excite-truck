@@ -95,7 +95,7 @@ public:
     virtual void d20(); virtual void d21(); virtual void d22(); virtual void d23();
     virtual int f8(void *, int);
 };
-#pragma cplusplus reset
+#pragma cplusplus off
 extern void fn_802E30C8();
 typedef struct { s32 v[4]; } S4_80149234;
 extern s32 lbl_802F93D0[];
