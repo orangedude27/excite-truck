@@ -403,12 +403,10 @@ void fn_8018A654(void *arg0, void *arg1) {
 }
 
 void fn_8018A6F4(void *arg0) {
-    volatile int *temp2;
     int temp = *(int *)((unsigned char *)arg0 + 0x26c8);
     if (temp != 0) fn_801C1C7C(temp);
     if (*(int *)((unsigned char *)arg0 + 0x26c4) != 0) fn_801C1C7C(*(int *)((unsigned char *)arg0 + 0x26c4));
-    temp2 = (volatile int *)((unsigned char *)arg0 + 0x26c0);
-    if (*temp2 != 0) fn_801D21B4();
+    if (*(int *)((unsigned char *)arg0 + 0x26c0) != 0) fn_801D21B4(*(int *)((unsigned char *)arg0 + 0x26c0));
 }
 
 void fn_8018ADA4(void *arg0, f32 farg0) { *(f32 *)((u8 *)arg0 + 0x25DC) = farg0; }
