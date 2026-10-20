@@ -119,11 +119,10 @@ extern "C" s32 fn_802E367C(s32 arg0) {
     class V {
     public:
         virtual void a();
-        virtual void b();
-        virtual void c();
-        virtual s32 f(s32, s32);
+        virtual s32 b(s32);
     };
-    s32 result = ((V *)fn_802E333C())->f(arg0, arg0);
+    V *obj = (V *)fn_802E333C();
+    s32 result = obj->b(arg0);
     if (result != 0)
         return fn_802E35C0((const char *)arg0, result);
     return -1;
