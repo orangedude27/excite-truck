@@ -11,6 +11,7 @@ extern int fn_801284E8(void *, int);
 extern int lbl_80507258[];
 extern int lbl_8055D224;
 extern int lbl_8056000C;
+void fn_802E8528(int, float, float);
 int fn_802E77B8(void) { return 0; }
 
 void *fn_802E77C0(int x) {
