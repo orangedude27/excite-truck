@@ -79,6 +79,23 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
 
 void fn_801DB340(int arg0) { fn_801DB13C(arg0 - 4); }
 
+int fn_801DB348(int arg0, int arg1, float *arg2, int *arg3) {
+    int width, height;
+    float *data;
+
+    if (arg3 != 0) {
+        *arg3 = 0;
+    }
+    width = lbl_80446F08[0];
+    height = lbl_80446F08[1];
+    data = (float *)lbl_80446F08[2];
+
+    arg1 = (arg1 & (height - 1)) * width;
+    arg0 = (arg0 & (width - 1)) + arg1;
+    *arg2 = data[arg0];
+    return 1;
+}
+
 #pragma paired_single off
 int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
     float grid[4][4];
@@ -148,7 +165,7 @@ int fn_801DCE14(short *arg0, float *arg1, float *arg2, int arg3, int *arg4) {
         *arg0 = 0;
     }
     sp8 = 0xFF;
-    if (fn_801DC258(&spC, &sp8, arg0, arg1[0], arg1[2]) != 0) {
+    if (((int (*)(void *, void *, void *, void *, float, float))fn_801DC258)(&spC, &sp8, arg0, (void *)arg3, arg1[0], arg1[2]) != 0) {
         if (arg4 != 0) {
             *arg4 = sp8;
         }
