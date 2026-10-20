@@ -16,6 +16,9 @@ extern "C" void fn_800B78F0(void);
 extern "C" void fn_800B7EAC(void);
 extern "C" void fn_800CF27C(void);
 extern "C" void fn_800CF284(void);
+extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void);
+extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(void*, void*, u32, void*, void*, void*);
+extern "C" s32 lbl_802F4588[];
   #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
 extern "C" void VFipf_memcpy(void *, const void *, u32);
 extern "C" s32 NANDGetLengthAsync(void *, u32 *);
@@ -5546,11 +5549,10 @@ void nw4hbm::db::Warning(const char* file, int line, const char* msg, ...) {
         }
         *(s32*)((u8*)msg + 0x18) = lines;
 
-        msg = (const char*)lbl_8055DDBC;
-        if (msg == NULL) {
+        if (lbl_8055DDBC == NULL) {
             Panic__Q26nw4hbm2dbFPCciPCce(str + 0x70, 0x1F1, str + 0x7C);
         }
-        *(u8*)((u8*)msg + 0x22) = 1;
+        *(u8*)((u8*)lbl_8055DDBC + 0x22) = 1;
     } else {
         OSReport(str + 0xA0, file, line);
         __VprintfThunk(msg, vlist);
