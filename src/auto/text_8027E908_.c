@@ -171,7 +171,6 @@ struct Fn8027F204State {
     int max;
 };
 
-#pragma push
 #pragma cplusplus on
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" int lbl_8055F69C;
