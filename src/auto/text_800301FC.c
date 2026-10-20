@@ -612,9 +612,9 @@ void CircleBufferReadBytes(u32 arg0, u32 arg1, void *arg2) {
         lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
         *(u16 *)lbl_8055D744 = 0xA;
         lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)((u32)&lbl_802FEDA0 >> 16);
+        *(u16 *)lbl_8055D744 = (u16)((u32)lbl_802FEDA0 >> 16);
         lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
-        *(u16 *)lbl_8055D744 = (u16)(u32)&lbl_802FEDA0;
+        *(u16 *)lbl_8055D744 = (u16)(u32)lbl_802FEDA0;
         lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
         lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x73A);
     }
