@@ -170,29 +170,36 @@ struct Fn8027F204State {
     int max;
 };
 
-void fn_8027F204(char *src) {
-    extern int lbl_8055F69C;
-    extern int lbl_80348270;
-    extern int fn_802E30C8(const char *);
-    int index, i;
-    char *dst;
-    int *state = (int *)lbl_8055F69C;
-    if (state == 0) return;
-    if (state[0x44 / 4] + 1 <= state[0x48 / 4]) {
-        index = state[0x44 / 4];
-        state[0x44 / 4] = index + 1;
-        dst = *(char **)((char *)state + 0x40) + index * 0x1e;
-        for (i = 0; i < 0x1e; i++) {
-            char c = *src++;
-            *dst++ = c;
-            if (c == 0) return;
-        }
-        dst[-1] = 0;
-        return;
-    }
-    fn_802E30C8((const char *)&lbl_80348270);
-}
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" int lbl_8055F69C;
+extern "C" const char lbl_80348270[];
+extern "C" void fn_8027F204(char *src) {
+    struct Fn8027F204State *state = (struct Fn8027F204State *)lbl_8055F69C;
 
+    if (state == 0) return;
+    if (state->count + 1 <= state->max) {
+        int count = state->count;
+        int len = 0x1e;
+        char *dst = state->buffer + count * 0x1e;
+        state->count = count + 1;
+        goto enter;
+        for (;;) {
+            if (--len <= 0) {
+                dst[-1] = 0;
+                return;
+            }
+        enter:
+            if ((*dst++ = *src++) == 0) {
+                return;
+            }
+        }
+    }
+    fn_802E30C8(lbl_80348270);
+}
+#pragma cplusplus off
+#pragma pop
 void *fn_8027F834(void *arg0, int arg1) {
     int temp_r0, var_ctr, var_r7;
     unsigned int *var_r6;
@@ -761,7 +768,8 @@ int fn_8027F958(int *selection, void *collection) {
 }
 #pragma pop
 
-int fn_80280898(void) { extern unsigned int lbl_8055F688; extern int fn_80216D28(void); if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
+extern int fn_80216D28(void);
+int fn_80280898(void) { extern unsigned int lbl_8055F688; if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
 
 extern unsigned char lbl_804B3068[];
 typedef unsigned int (*GetKeyFn)(void *);
