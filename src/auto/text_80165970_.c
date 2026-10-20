@@ -21,6 +21,7 @@ __declspec(section ".data") extern float lbl_80558DC4;
 extern void fn_80128668(void *);
 extern void fn_80128670(void *);
 extern void fn_80139E18();
+extern void *memset(void *, int, unsigned int);
 extern unsigned char lbl_8055E32C;
 extern float lbl_805618F0;
 extern float lbl_8055E318;
