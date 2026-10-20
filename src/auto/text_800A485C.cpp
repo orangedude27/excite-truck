@@ -2647,7 +2647,6 @@ end:
     }
     return res;
 }
-#pragma pop
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055DD78;
 extern "C" const char lbl_8031BF54[];
