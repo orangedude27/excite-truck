@@ -241,27 +241,27 @@ check:
       virtual const char *d0();
       virtual void *f1(int);
   };
-  #pragma push
-  #pragma use_lmw_stmw off
-  #pragma cplusplus on
-  extern "C" void fn_8029FEF8(void) {
-      Dummy_8029FEF8 *object;
-      int i = 0;
-      int j;
-      Dummy_8029FEF8 *child;
-      while ((object = (Dummy_8029FEF8 *)fn_802AE4C8(i)) != 0) {
-          j = 0;
-          while (object->f1(j) != 0) {
-              child = (Dummy_8029FEF8 *)object->f1(j);
-              if (strncmp(child->d0(), lbl_80349854, 9) == 0)
-                  fn_8029F658(child);
-              j++;
-          }
-          i++;
-      }
-  }
-  #pragma cplusplus off
-  #pragma pop
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_8029FEF8(void) {
+    Dummy_8029FEF8 *object;
+    int i = 0;
+    int j;
+    Dummy_8029FEF8 *child;
+    while ((object = (Dummy_8029FEF8 *)fn_802AE4C8(i)) != 0) {
+        j = 0;
+        while (object->f1(j) != 0) {
+            child = (Dummy_8029FEF8 *)object->f1(j);
+            if (strncmp(child->d0(), lbl_80349854, 9) == 0)
+                fn_8029F658(child);
+            j++;
+        }
+        i++;
+    }
+}
+#pragma cplusplus off
+#pragma pop
 void fn_8029FFBC(void) {
     unsigned char *current = lbl_804B5070;
     int i = 0;
