@@ -296,11 +296,6 @@ void fn_80277740(void) {
 
 extern char lbl_8055C650;
 extern char lbl_803473B8[], lbl_803473C4[];
-#pragma cplusplus on
-struct Dummy_80277754 {
-    virtual char *d0();
-};
-#pragma cplusplus off
 #pragma dont_inline on
 int fn_80277754(void *arg0) {
     char *name;
