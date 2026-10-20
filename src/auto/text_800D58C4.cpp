@@ -1358,6 +1358,10 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13Animati
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((u8*)arg0 + 0x18, &slot, arg1);
 }
 
+extern "C" void fn_800DB1E0(char* arg0) {
+    fn_800D4F98(arg0 + 0x18);
+}
+
 extern "C" void fn_800DB1E8(void* arg0, void* unused, s32 arg2) {
     void* temp = (*(void* (**)(void*))(*(u32*)arg0 + 0x20))(arg0);
     if (temp != 0) *(u8*)((u8*)temp + 0xE) = (u8)(arg2 == 0);
