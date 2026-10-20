@@ -8,11 +8,13 @@ extern int lbl_8055E6D4;
 extern void fn_80128670(int);
 extern void fn_80128668(void *);
 #pragma cplusplus on
+extern "C" {
 struct F801B4610 {
     virtual void f0() = 0;
     virtual void f1() = 0;
     virtual void f2(int) = 0;
 };
+}
 #pragma cplusplus off
 #pragma push
 #pragma small_data off
