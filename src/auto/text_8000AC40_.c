@@ -5,7 +5,7 @@
 
 extern void fn_8000D838(void*);
 extern int lbl_8055D3A0;
-extern int lbl_8034F4C8[];
+extern s32 lbl_8034F4C8[];
 extern int lbl_8055D3A8;
 extern int lbl_8055D3AC;
 void fn_8000AC40(void) {
