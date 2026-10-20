@@ -30,7 +30,20 @@ void *fn_801A520C(void *arg0, void *arg1) {
     return arg0;
 }
 
-void fn_801A5258(void *arg0, void *arg1) {
+#pragma cplusplus on
+struct Dummy_801A5258 {
+    virtual void d0() {}
+    virtual void d1() {}
+    virtual void d2() {}
+    virtual void d3(void *, void *, void *) {}
+    virtual void d4() {}
+    virtual void d5() {}
+    virtual void d6() {}
+    virtual void d7() {}
+    virtual void d8() {}
+    virtual void d9(void *) {}
+};
+extern "C" void fn_801A5258(void *arg0, void *arg1) {
     float zero;
     fn_80182074();
     fn_80265D38(arg0, *(int *)((char *)arg0 + 0x1EC));
@@ -239,16 +252,17 @@ int fn_801A6024(void *arg0, int arg1) {
 void fn_80188E2C(void);
 int fn_8018BA54(void);
 void fn_8018956C(void);
-void fn_801A6088(void *arg0, int arg1) {
+#pragma cplusplus on
+extern "C" void fn_801A6088(void *arg0, int arg1) {
     void *obj;
     int offset;
     fn_80188E2C();
     obj = *(void **)((char *)arg0 + 0x270C);
     offset = arg1 + *(int *)((char *)arg0 + 8);
     *(int *)((char *)offset + 0x2C0) =
-        ((int (*)(void *))(*(void ***)obj)[5])(obj);
+        ((Dummy_801A6088 *)obj)->g5();
 }
-
+#pragma cplusplus off
 extern float lbl_80562404;
 extern float lbl_80562408;
 extern float lbl_8056240C;
