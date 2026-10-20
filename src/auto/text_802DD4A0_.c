@@ -20,8 +20,8 @@ void *fn_802DD4A0(void *arg0, int arg1) {
     return local;
 }
 
-extern unsigned short lbl_8055FED0;
-extern unsigned short lbl_8055FED4;
+extern int lbl_8055FED0;
+extern int lbl_8055FED4;
 extern char lbl_8034CB50[];
 extern char lbl_8034CB5C[];
 void *fn_802D2D14(void);
