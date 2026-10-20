@@ -280,6 +280,22 @@ void fn_801D5A24(s32 arg0) {
     fn_801D59C8(arg0, 4);
 }
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
+s32 fn_801D5A2C(void *arg0, s32 arg1, s32 arg2) {
+    void **entries = (void **)lbl_804423A4[0];
+    s32 count = *(s32 *)((u8 *)lbl_804423A4 + 4);
+    s32 i;
+
+    for (i = 0; i < count; i++) {
+        if (entries[i] == arg0) {
+            return ((s32 (*)(void *, s32, s32))fn_801D5014)(arg0, arg1, arg2);
+        }
+    }
+    return 0;
+}
+#pragma scheduling on
+#pragma dont_inline reset
 u8 fn_801D5A68(void *arg0) {
     void **entries = lbl_804423A4[0];
     s32 count = *(s32 *)((u8 *)lbl_804423A4 + 4);
