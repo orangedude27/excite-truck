@@ -185,6 +185,10 @@ int fn_801D872C(int arg0) {
     return ((int *)arg0)[6];
 }
 
+int fn_801D8734(void) {
+    return 0;
+}
+
 void fn_801D8DB0(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
