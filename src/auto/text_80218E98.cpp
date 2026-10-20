@@ -804,7 +804,7 @@ extern "C" void fn_8021BA64(void *, s32, s32, s32, s32, void *, s32, s32, s32, s
 extern "C" s32 fn_8022EDC4(void);
 extern "C" void fn_8022EEF8(void *, s32, s32);
 extern "C" void fn_8022ED00(void *);
-extern "C" void fn_8022EDB8(...);
+extern "C" void fn_8022EDB8(void);
 extern "C" void *fn_8021BBA0(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_8033F0FC;
