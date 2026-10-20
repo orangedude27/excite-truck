@@ -48,6 +48,7 @@ struct PaneData {
 
 extern "C" const char* fn_80131234(const char*);
 extern "C" void fn_80147230(void*, const char*, ...);
+extern "C" void fn_801476C4(...);
 extern "C" s32 fn_80147C50(u32, u32, f32);
 extern "C" void fn_80147CEC(void*, void*, void*, f32);
 extern "C" void* fn_8017960C(s32);
