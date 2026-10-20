@@ -186,7 +186,8 @@ static u32 SIGetStatus(s32 chan) {
     u32 status;
 
     enabled = OSDisableInterrupts();
-    status = SI_HW_REGS[SI_SISR] >> (((SI_MAX_CHAN - 1) - chan) * 8);
+    status = SI_HW_REGS[SI_SISR];
+    status >>= (((SI_MAX_CHAN - 1) - chan) * 8);
 
     if (status & SI_ERROR_NOREP && !(Type[chan] & SI_ERROR_BUSY)) {
         Type[chan] = SI_ERROR_NOREP;
