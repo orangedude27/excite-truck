@@ -1082,12 +1082,11 @@ void fn_80286834(void **arg0) {
 extern "C" void fn_80286884(void* arg0) {
     ((ebi::title::TPlaneObj*)arg0)->m_sub->v10();
 }
-#pragma cplusplus off
-void fn_80286898(void* arg0) {
-    void* obj = *(void**)((char*)arg0 + 0x1c);
-    (*(void (**)(void*))((char*)*(void**)obj + 0x34))(obj);
+#pragma cplusplus on
+extern "C" void fn_80286898(void* arg0) {
+    ((ebi::title::TPlaneObj*)arg0)->m_sub->v11();
 }
-
+#pragma cplusplus off
 void fn_802868AC(void* arg0) {
     void* obj = *(void**)((char*)arg0 + 0x1c);
     struct VTable { void* pad[14]; };
