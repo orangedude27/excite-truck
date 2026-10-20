@@ -214,6 +214,7 @@ extern "C" int fn_801B851C(void* arg0) {
 }
 #pragma cplusplus off
 int fn_801B8570(int arg0) {
+    extern int fn_80161B94(void);
     int result = 0;
     register void *obj = lbl_8055E744;
     register int (**vtable)(void *, int) = *(int (***)(void *, int))obj;
