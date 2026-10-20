@@ -114,6 +114,44 @@ int fn_8018FD38(void) {
 
 extern char lbl_80333018[];
 extern int fn_801B6668(void *);
+#pragma cplusplus on
+class DummyVtable8018FE8C {
+public:
+    virtual void d0(void);
+    virtual void d1(void);
+    virtual void d2(void);
+    virtual void d3(void);
+    virtual void d4(void);
+    virtual void d5(void);
+    virtual void d6(void);
+    virtual void d7(void);
+    virtual void d8(void);
+    virtual void d9(void);
+    virtual void d10(void);
+    virtual void d11(void);
+    virtual void d12(void);
+    virtual void d13(void);
+    virtual void d14(void);
+    virtual void d15(void);
+    virtual void d16(void);
+    virtual void d17(void);
+    virtual void d18(void);
+    virtual void d19(void);
+    virtual void d20(void);
+    virtual void d21(void);
+    virtual void d22(void);
+    virtual void d23(void);
+    virtual void d24(void);
+    virtual void d25(void);
+    virtual void d26(void);
+    virtual void d27(void);
+    virtual void d28(void);
+    virtual void d29(void);
+    virtual void d30(void);
+    virtual void d31(void);
+    virtual void d32(void);
+};
+#pragma cplusplus off
 void *fn_8018FE8C(void *arg0, s32 arg1) {
     s32 temp_r0;
     if (arg0 != 0) {
@@ -208,7 +246,7 @@ extern "C" void fn_801902A0(void *arg0) {
     VTable *obj = *(VTable **)((char *)arg0 + 4);
     obj->f28();
 }
-  void fn_801902B4(void *arg0) {
+void fn_801902B4(void *arg0) {
     unsigned int temp_r3;
     int (*callback)(void *);
 
