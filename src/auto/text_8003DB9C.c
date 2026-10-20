@@ -134,11 +134,14 @@ int GXGetCPUFifo(void *fifo) {
     return 1;
 }
 
-void GXGetFifoPtrs(void *arg0, int *arg1, int *arg2) {
-    int value1 = ((int *)arg0)[0x14 / 4];
-    int value2 = ((int *)arg0)[0x18 / 4];
-    *arg1 = value1;
-    *arg2 = value2;
+void GXGetFifoPtrs(const void *arg0, void **arg1, void **arg2) {
+    const struct {
+        char pad[0x14];
+        void *rdPtr;
+        void *wrPtr;
+    } *realFifo = arg0;
+    *arg1 = realFifo->rdPtr;
+    *arg2 = realFifo->wrPtr;
 }
 
 int GXGetFifoBase(int *arg0) {
