@@ -58,6 +58,14 @@ public:
     virtual void next(s32);
 };
 
+class F7A88Class {
+public:
+    virtual void v8();
+    virtual int vC();
+    virtual void v10();
+    virtual void *v14(s32);
+};
+extern "C" int fn_8012F9E8(void *, s32, void *);
 class F9Resource {
 public:
     virtual void *s8(void *);
@@ -527,7 +535,8 @@ extern "C" void fn_801F99CC(F92Obj *obj) {
     while (cur != NULL) {
         next = (F92Obj *)*(void **)((char *)cur + 0x24);
         if (cur != NULL) {
-            (*(void (**)(F92Obj *, int))((char *)*(void **)((char *)cur + 0x108) + 8))(cur, 1);
+            F92VT *vt = (F92VT *)*(void **)((char *)cur + 0x108);
+            vt->fn8(cur, 1);
         }
         cur = next;
     }
