@@ -245,6 +245,10 @@ int fn_801D83DC(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801D8510(void *arg0) {
+    return *(int *)((char *)arg0 + 0x4);
+}
+
 int fn_801D8518(int arg0) {
     if (((int *)arg0)[1] == 1) {
         ((int *)arg0)[4] = lbl_8055E3C4;
