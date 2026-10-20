@@ -378,8 +378,9 @@ struct Dummy_801AD888 {
     virtual void d3() {}
     virtual void d4() {}
 };
+#pragma cplusplus on
 extern "C" void fn_801AD888(void *arg0) {
-    ((Dummy_801AD888 *)arg0)->d4();
+    ((Dummy_801AD888 *)arg0)->d3();
     ((void (*)(void *))fn_801AC254)(arg0);
 }
 #pragma cplusplus off
