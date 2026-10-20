@@ -35,6 +35,7 @@ extern "C" s32 fn_80217D84(s32);
 extern "C" s32 fn_8022EDC4(void);
 extern "C" void fn_8022EEF8(void *, s32, s32);
 extern "C" void fn_8022ED00(void *);
+extern "C" void fn_8022EDB8(void);
 
 
 class ObjBF { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void h(); virtual s32 i(); virtual s32 j(); };
