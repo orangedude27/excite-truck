@@ -240,7 +240,7 @@ s32 fn_8001C0C4(void) {
 
 #pragma dont_inline reset
 void fn_8001C0E8(void) {
-    fn_8001BC28();
+    ((void (*)(void))fn_8001BC28)();
 }
 
 s32 fn_8001C200(const char *arg0, const char *arg1) {
@@ -312,6 +312,46 @@ void fn_8001C714(void) {
     fn_80131234(*(s32 *)((u8 *)((s32 *(*)(void))fn_8001C4E0)() + 8));
 }
 
+extern s32 *fn_8001C4E0(s32);
+extern int stricmp(const char *, const char *);
+extern char lbl_802FD6D8[];
+extern char lbl_80558CD8[];
+extern void *lbl_8055D5D4;
+extern void *lbl_8055E050;
+s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
+    s32 *archive;
+    void *node;
+    s32 index;
+    void **vtable;
+    s32 type;
+    f32 value;
+    if (name == 0) return 0;
+    archive = fn_8001C4E0(flags);
+    if (archive[1] == 0) return 0;
+    index = 0;
+    do {
+        node = ((void *(*)(void *, s32))((void **)*(void **)lbl_8055D5D4)[3])(lbl_8055D5D4, index);
+        if (node == 0) break;
+        vtable = *(void ***)node;
+        if (stricmp(((const char *(*)(void *))vtable[2])(node), lbl_802FD6D8 + 0x39C) == 0 &&
+            stricmp(((const char *(*)(void *, const char *, void *))vtable[6])(node, lbl_802FD6D8 + 0x3AC, lbl_80558CD8), name) == 0 &&
+            ((s32 (*)(void *, s32))vtable[3])(node, archive[1]) != 0) break;
+        index++;
+    } while (1);
+    if (node == 0)
+        node = ((void *(*)(void *, const char *))((void **)*(void **)lbl_8055D5D4)[2])(lbl_8055D5D4, lbl_802FD6D8 + 0x3BC);
+    if (out != 0) {
+        type = flags & 0x300;
+        if (type == 0x200) *(s32 *)out = ((s32 (*)(void *, s32))((void **)*(void **)node)[7])(node, archive[1]);
+        else if (type == 0x100) {
+            value = ((f32 (*)(void *, s32))((void **)*(void **)node)[9])(node, archive[1]);
+            if ((flags & 0x3F800) == 0x800) value /= *(f32 *)((char *)lbl_8055E050 + 0x10);
+            *(f32 *)out = value;
+        }
+    }
+    return 1;
+}
+
 #pragma scheduling off
 void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
     void (* volatile init)(void) = fn_8001C4D8;
@@ -364,6 +404,34 @@ void fn_8001D298(s32 arg0) {
     fn_8000D984(arg0);
     fn_8000DB18();
     fn_8000D984(temp_r31);
+}
+
+extern const char lbl_802FDAAC[];
+extern const char lbl_802FDAD8[];
+s32 fn_8001D2E4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    s32 *a = (s32 *)(arg0 + arg1 * 0xC);
+    s32 *b = (s32 *)(arg2 + arg3 * 0xC);
+    s32 value = *(s32 *)arg0;
+    s32 kind;
+    if (*(u8 *)((u8 *)a + 0x10) == 0) return *(u8 *)((u8 *)b + 0x10);
+    if (*(u8 *)((u8 *)b + 0x10) == 0) return -1;
+    switch (value & 0x300) {
+    case 0x100:
+        kind = value & 0x60000;
+        switch (kind) {
+        case 0x20000: return *(f32 *)((u8 *)a + 8) < *(f32 *)((u8 *)b + 8) ? -1 : 1;
+        case 0x40000: return *(f32 *)((u8 *)a + 8) > *(f32 *)((u8 *)b + 8) ? -1 : 1;
+        default: fn_802E317C(lbl_802FDAAC); return 0;
+        }
+    case 0x200:
+        kind = value & 0x60000;
+        switch (kind) {
+        case 0x20000: return *(s32 *)((u8 *)a + 8) < *(s32 *)((u8 *)b + 8) ? -1 : 1;
+        case 0x40000: return *(s32 *)((u8 *)a + 8) > *(s32 *)((u8 *)b + 8) ? -1 : 1;
+        default: fn_802E317C(lbl_802FDAAC); return 0;
+        }
+    default: fn_802E317C(lbl_802FDAD8); return 0;
+    }
 }
 
 s32 fn_8001D464(s32 arg0) {
