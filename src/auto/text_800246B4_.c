@@ -37,16 +37,23 @@ s32 fclose(void *arg0) {
     s32 temp_r30;
     s32 temp_r31;
     s32 var_r0;
-    if (arg0 == 0) return -1;
-    if ((((u32)f->flags) >> 22) & 7) {
-        temp_r30 = fflush();
-        temp_r31 = f->close(f->fp);
-        f->fp = 0;
-        f->flags &= 0xFE3FFFFF;
-        if (((u32)f->unk8) >> 28) free(f->mem);
-        var_r0 = 0;
-        if ((temp_r30 != 0) || (temp_r31 != 0)) var_r0 = 1;
-        return -var_r0;
+
+    if (arg0 == 0) {
+        return -1;
     }
-    return 0;
+    if (f->file_kind == 0) {
+        return 0;
+    }
+    temp_r30 = fflush(f);
+    temp_r31 = f->close(f->fp);
+    f->fp = 0;
+    f->file_kind = 0;
+    if (f->free_buffer != 0) {
+        free(f->mem);
+    }
+    var_r0 = 0;
+    if ((temp_r30 != 0) || (temp_r31 != 0)) {
+        var_r0 = 1;
+    }
+    return -var_r0;
 }
