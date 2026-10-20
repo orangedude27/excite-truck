@@ -31,6 +31,7 @@ extern const char lbl_8033AB3C[];
 extern const char lbl_8033AAE0[];
 extern const char lbl_8033AB80[];
 extern int fn_802E317C(const void *, ...);
+extern int *fn_801F1CE8(int);
 #pragma dont_inline fn_801F1CE8
 #pragma push
 #pragma small_data off
