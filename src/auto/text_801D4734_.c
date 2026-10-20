@@ -108,16 +108,18 @@ void fn_801D48FC(s32 arg0) {
 
 void fn_801D5A14(s32 arg0);
 void fn_801D5A1C(s32 arg0);
+void fn_801D5A24(s32 arg0);
+void fn_801D5A2C(s32 arg0);
 void fn_801D4900(s32 arg0) {
     fn_801D5A1C(arg0);
 }
 
-void fn_801D4904(void) {
-    fn_801D5A24();
+void fn_801D4904(s32 arg0) {
+    fn_801D5A24(arg0);
 }
 
-void fn_801D4908(void) {
-    fn_801D5A2C();
+void fn_801D4908(s32 arg0) {
+    fn_801D5A2C(arg0);
 }
 
 s32 fn_801D4CB8(s32 arg0, s32 arg1) {
