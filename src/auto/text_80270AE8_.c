@@ -310,6 +310,12 @@ int fn_80273494(int arg0) {
     }
 }
 
+void fn_802735F4(int arg0, signed char arg1) {
+    if (arg0 == 0) {
+        lbl_8055F558 = arg1;
+    }
+}
+
 extern int fn_80128668(void);
 int fn_80273978(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
