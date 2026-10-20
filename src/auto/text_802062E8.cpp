@@ -89,7 +89,7 @@ extern "C" void fn_80206444(void) {
 
 extern "C" void fn_80206454(void) {
     extern int lbl_8055ED80;
-    *(unsigned char*)((unsigned char*)&lbl_8055ED80 + 5) = 0;
+    ((u8 *)lbl_8055ED80)[5] = 0;
 }
 
 extern "C" void fn_80206464(void* hi) {
