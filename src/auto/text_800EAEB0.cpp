@@ -260,7 +260,7 @@ void nw4hbm::snd::detail::EnvGenerator::SetRelease(int release) {
  if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B80,0x132,(const char*)lbl_80322C50,release,0,0x7F);
  if (release == 0x7F) value=lbl_80560FE8;
  else if (release == 0x7E) value=lbl_80561008;
- else if (release < 0x32) value=lbl_8056100C * (f32)((release*2)+1)/lbl_80561010;
+ else if (release < 0x32) value=(f32)((release*2)+1)*lbl_8056100C/lbl_80561010;
  else value=lbl_80561014/(f32)(0x7E - release)/lbl_80561010;
  *(f32*)((u8*)this+0xC)=value;
 }
@@ -645,9 +645,9 @@ extern "C" void FreeTrack__Q46nw4hbm3snd6detail20MmlSeqTrackAllocatorFPQ46nw4hbm
     }
 }
 
-extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, u32, u32);
-extern "C" void fn_800EE428(void* arg0, u32 arg1, u32 arg2) {
-    CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8*)arg0 + 8, arg1, 0xD4);
+extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, void*, u32, u32);
+extern "C" void fn_800EE428(void* arg0, void* arg1, u32 arg2) {
+    CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8*)arg0 + 8, arg1, arg2, 0xD4);
 }
 
 extern "C" void DestroyImpl__Q46nw4hbm3snd6detail8PoolImplFPvUl(void*);
