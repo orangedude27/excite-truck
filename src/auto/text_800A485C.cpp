@@ -1734,6 +1734,12 @@ extern "C" s32 VFiPFCODE_CP932_Unicode2OEM(s32, u32*);
 extern "C" s32 fn_800A4BF4(s32, u16*, s16*);
 extern "C" s32 fn_800B72E4(void) { return 0; }
 
+#pragma dont_inline on
+extern "C" s32 fn_800B73BC(s32 arg0) {
+    return (-arg0 | arg0) >> 31;
+}
+#pragma dont_inline reset
+
 s32 fn_800B73CC(s32 arg0, s32 arg1) {
     if (arg0 == 0)
         return arg1;
