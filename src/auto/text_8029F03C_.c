@@ -265,15 +265,6 @@ check:
     if (i < lbl_8055F81C) goto loop;
 }
 
-  #pragma cplusplus on
-  struct Dummy_802A002C {
-      virtual void f0();
-      virtual void f1();
-      virtual void f2();
-      virtual void f3();
-  };
-  #pragma cplusplus off
-  
   void fn_802A002C(void) {
     unsigned char *current = lbl_804B5070;
     int i = 0;
