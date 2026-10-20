@@ -247,7 +247,6 @@ void *fn_801938F4(void *arg0) {
     return arg0;
 }
 
-extern unsigned char lbl_8055A4B8[];
 extern void fn_801945F8(void *);
 extern float lbl_80562140, lbl_80562144, lbl_80562178, lbl_8056217C;
 extern void fn_8017B4E0(void *, float *, float *, float);
