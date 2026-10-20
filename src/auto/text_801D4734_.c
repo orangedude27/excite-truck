@@ -1363,11 +1363,11 @@ void fn_801D8F30(void *arg0) {
     }
 }
 
-void fn_801D8FD0(int **param_1)
-{
-    ((void (*)(void))((int *)*param_1)[13])();
+#pragma cplusplus on
+extern "C" void fn_801D8FD0(void *arg0) {
+    ((TObj34 *)arg0)->v34();
 }
-
+#pragma cplusplus reset
 void fn_801D8FE0(void *arg0) {
     if (*(s32 *)((u8 *)arg0 + 4) != 0) {
         *(s32 *)((u8 *)arg0 + 4) = 1;
