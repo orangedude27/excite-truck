@@ -11,6 +11,8 @@ extern void *OSGetMEM1ArenaHi(void);
 extern void *OSGetMEM2ArenaLo(void);
 extern void *OSGetMEM2ArenaHi(void);
 
+const char *__OSVersion = "<< RVL_SDK - OS \trelease build: Sep 21 2006 14:32:13 (0x4200_60422) >>";
+
 typedef enum {
     OS_CONSOLE_MASK = 0xF0000000,
     OS_CONSOLE_MASK_RVL = 0x00000000,
@@ -58,9 +60,10 @@ void __OSGetIOSRev(void *arg_rev) {
 
 void ReportOSInfo_8004AA40(void) {
     u32 type;
-    OSIOSRev_Report rev;
     u32 category;
     u32 tdev;
+    u32 version;
+    u32 builddate;
 
     OSReport("\nRevolution OS\n");
     OSReport("Kernel built : %s %s\n", "Sep 21 2006", "14:32:13");
@@ -119,9 +122,12 @@ void ReportOSInfo_8004AA40(void) {
         break;
     }
 
-    __OSGetIOSRev((char *)&rev);
-    OSReport("Firmware     : %d.%d.%d ", rev.idLo, rev.verMajor, rev.verMinor);
-    OSReport("(%d/%d/%d)\n", rev.buildMon, rev.buildDay, rev.buildYear);
+    version = *(u32 *)0xC0003140;
+    builddate = *(u32 *)0xC0003144;
+    OSReport("Firmware     : %d.%d.%d ", (version >> 16) & 0xFF, (version >> 8) & 0xFF, version & 0xFF);
+    OSReport("(%d/%d/%d)\n", (builddate >> 16) & 0xFF,
+             ((builddate >> 12) & 0xF) * 10 + ((builddate >> 8) & 0xF),
+             (builddate & 0xFF) + 2000);
 
     OSReport("Memory %d MB\n", (OSGetConsoleSimulatedMem1Size() + OSGetConsoleSimulatedMem2Size()) >> 20);
     OSReport("MEM1 Arena : 0x%x - 0x%x\n", OSGetMEM1ArenaLo(), OSGetMEM1ArenaHi());
