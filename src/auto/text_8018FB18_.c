@@ -38,6 +38,8 @@ void fn_80191060(void) {
 
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
+u8 fn_8019157C(void *arg0) { return *((u8 *)arg0 + 0x14); }
+
 void fn_8019169C(void *arg0, void *arg1) {
     *(void **)((char *)arg0 + 0x34) = arg1;
     *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x1EC);
