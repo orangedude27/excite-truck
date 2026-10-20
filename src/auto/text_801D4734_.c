@@ -181,6 +181,10 @@ void fn_801D8600(int arg0) {
     }
 }
 
+void *fn_801D8720(void) {
+    return lbl_8033905C;
+}
+
 int fn_801D872C(int arg0) {
     return ((int *)arg0)[6];
 }
