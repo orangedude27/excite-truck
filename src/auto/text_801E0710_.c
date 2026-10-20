@@ -211,7 +211,6 @@ void fn_801E1520(void) {
         lbl_8055EA10 = 0;
     }
 }
-
 void fn_801E1684(void) {
 
 }
