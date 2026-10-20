@@ -70,6 +70,11 @@ int fn_801D7F5C(int arg0, int arg1) {
     return arg0;
 }
 
+extern char lbl_80338928[];
+int fn_801D8154(void *arg0) {
+    return *(int *)((char *)arg0 + 0x40);
+}
+
 int fn_801D83DC(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[1] = 0;
