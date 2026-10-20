@@ -182,12 +182,13 @@ int fn_801D6C3C(int arg0) {
     return 0;
 }
 
-void fn_801D6D68(int arg0) {
+#pragma scheduling invalid_target
+void fn_801D6D68(UnkStruct_801D701C *arg0) {
     extern char lbl_80338B98[];
-    ((char **)arg0)[0] = (char *)lbl_80338B98;
-    ((int *)arg0)[1] = 0;
+    arg0->name = lbl_80338B98;
+    arg0->state = 0;
 }
-
+#pragma scheduling reset
 int fn_801D6D80(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[1] = 0;
