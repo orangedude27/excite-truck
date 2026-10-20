@@ -145,22 +145,23 @@ struct CareerObj_8027EE88 {
 };
 #pragma cplusplus off
 
+#pragma push
+#pragma cplusplus on
 #pragma dont_inline on
-int fn_8027EE88(void) {
-    extern unsigned char lbl_8055F684, lbl_8055F685;
-    extern int lbl_80348078;
-    extern void *fn_8027ED70(void);
-    void *obj;
-    void (**vt)(void *, void *);
+extern "C" unsigned char lbl_8055F684, lbl_8055F685;
+extern "C" const char lbl_80348078[];
+extern "C" void *fn_8027ED70(void);
+extern "C" int fn_8027EE88(void) {
     if (lbl_8055F685 == 0 && lbl_8055F684 != 0) {
         lbl_8055F685 = 1;
-        obj = fn_8027ED70();
-        vt = (void (**)(void *, void *))*(void ***)obj;
-        vt[14](obj, &lbl_80348078);
+        CareerObj_8027EE88 *obj = (CareerObj_8027EE88 *)fn_8027ED70();
+        obj->f12(lbl_80348078);
     }
     return 0;
 }
+#pragma cplusplus off
 #pragma dont_inline reset
+#pragma pop
 void fn_8027F204(char *src) {
     extern int lbl_8055F69C;
     extern int lbl_80348270;
