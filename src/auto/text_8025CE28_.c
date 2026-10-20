@@ -10,8 +10,7 @@ void fn_8025CE28(void);
 
 #include <macros.h>
 
-#pragma section ".ctors$00"
-DECL_SECTION(".ctors$00") funcptr_t D_802ED464 = fn_8025CE28;
+DECL_SECTION(".ctors") funcptr_t D_802ED464 = fn_8025CE28;
 
 #pragma scheduling invalid_target
 #pragma opt_propagation off
