@@ -16,6 +16,7 @@ extern char lbl_8033890C[];
 extern void fn_8016A240(const char *arg0);
 extern int lbl_8055E3C4;
 extern void fn_801D5328(int, int);
+extern void fn_801D5A14(int);
 void fn_801D47F4(void) {
     fn_801D57F0();
 }
