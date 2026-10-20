@@ -1304,20 +1304,26 @@ extern "C" void fn_8021D878(void *arg0) {
 }
 
 extern "C" s32 fn_8021D8D4(void *arg0) {
-    void *obj;
-    void **vtable;
-    s32 result;
-    if (*(s32 **)((u8 *)arg0+0x258)==0) return 0;
-    if (*(u8 *)((u8 *)arg0+0x1B)!=0) {
-        obj=*(void **)((u8 *)arg0+0x254); vtable=*(void ***)((u8 *)obj+0xC);
-        if (((s32 (*)(void *))vtable[2])(obj)!=0) {
-            obj=*(void **)((u8 *)arg0+0x254); vtable=*(void ***)((u8 *)obj+0xC);
-            result=((s32 (*)(void *))vtable[3])(obj);
+    struct BaseA {
+        int a, b, c;
+    };
+    struct ClassB : public BaseA {
+        virtual s32 v0();
+        virtual s32 v1();
+    };
+
+    if (*(void **)((u8 *)arg0 + 0x258) == 0) {
+        return 0;
+    }
+    if (*(u8 *)((u8 *)arg0 + 0x1B) != 0) {
+        s32 result;
+        ClassB *obj = *(ClassB **)((u8 *)arg0 + 0x254);
+        if (obj->v0() != 0) {
+            result = (*(ClassB **)((u8 *)arg0 + 0x254))->v1();
         } else {
-            result=**(s32 **)((u8 *)arg0+0x258)==*(s32 *)((u8 *)arg0+0x25C);
-            result = result ? 1 : 0;
+            result = **(s32 **)((u8 *)arg0 + 0x258) == *(s32 *)((u8 *)arg0 + 0x25C);
         }
-        return result;
+        return result != 0;
     }
     return 4;
 }
