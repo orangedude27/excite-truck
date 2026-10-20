@@ -314,7 +314,7 @@ unsigned char fn_801817AC(void *arg0) {
 
 int fn_801817B4(void *arg0) {
     int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x340) == 0 && fn_801A8EE4((char *)arg0 + 0x9C) != 0) {
+    if (*(unsigned char *)((char *)arg0 + 0x340) != 0 || fn_801A8EE4((char *)arg0 + 0x9C) != 0) {
         result = 1;
     }
     return result;
