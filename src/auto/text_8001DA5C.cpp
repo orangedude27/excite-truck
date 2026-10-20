@@ -270,7 +270,6 @@ extern "C" s32 fn_8001ED78(s32 arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_801E85A4(void);
-extern "C" void fn_801476C4(...);
 extern "C" void* lbl_802FDE38;
 extern "C" void* lbl_802FDE48;
 extern "C" void* lbl_802FDE54;
