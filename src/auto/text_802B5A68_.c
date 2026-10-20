@@ -577,6 +577,7 @@ public:
     virtual void f8();
     virtual int f9();
     virtual void f10();
+    virtual void f11();
 };
 #pragma cplusplus on
 extern "C" void fn_802B869C(void) {
