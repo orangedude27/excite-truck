@@ -20,7 +20,7 @@ __declspec(section ".data") extern float lbl_80558DC4;
 #pragma pop
 extern void fn_80128668(void *);
 extern void fn_80128670(void *);
-extern void fn_80139E18(void);
+extern void fn_80139E18();
 extern unsigned char lbl_8055E32C;
 extern float lbl_805618F0;
 extern float lbl_8055E318;
@@ -227,6 +227,29 @@ int fn_801667F0(void) {
         if (!lbl_8055E32B) result = 1;
     }
     return result;
+}
+
+void fn_80166814(void) {
+    if (*(int *)&lbl_8055E334 != 0) {
+        fn_80139E18();
+        *(int *)&lbl_8055E334 = 0;
+    }
+    {
+        void *p = *(void **)&lbl_8055E32C;
+        if (p != 0) {
+            void *x = *(void **)((char *)p + 0xC);
+            if (x != 0) {
+                fn_80128670((char *)x - 0x10);
+            }
+            if (p != 0) {
+                *(int *)((char *)p + 0) = 0;
+                *(int *)((char *)p + 4) = 0;
+                *(int *)((char *)p + 8) = 0;
+                fn_80128668(p);
+            }
+            *(void **)&lbl_8055E32C = 0;
+        }
+    }
 }
 
 extern float lbl_805618A0, lbl_805618D0, lbl_805618E4, lbl_805618E8;
