@@ -64,9 +64,7 @@ unsigned short fn_802E5168(float arg0) {
     }
     converted = (int)value;
     result = converted & ((-converted & ~converted) >> 31);
-    if (result >= 0x8000) {
-        result = 0x8000;
-    }
+    if (result >= 0x8000) result = 0x8000;
     return (unsigned short)result;
 }
 
@@ -118,9 +116,9 @@ void fn_802E58B8(unsigned char *arg0) {
     unsigned char *src = arg0;
     int count = 0x20;
     lbl_8055FF78 = index + 1;
-    do {
+    while (count > 0) {
         count--;
-    } while (count != 0);
+    }
     *--dst = 0;
     while ((signed char)*src != 0) {
         *dst++ = *src++;
@@ -157,6 +155,15 @@ void fn_802E5A54(void) {
         fn_8012BF24(ptr);
     }
     lbl_8055FF78 = 0;
+}
+
+void fn_802E5FE4(void *arg0) {
+    if (*(int *)((char *)arg0 + 0x98) > 0) {
+        ((void (*)(char *, void *, ...))fn_802E317C)(lbl_8034D584, arg0);
+    }
+    fn_80128670(*(int *)((char *)arg0 + 0x90));
+    *(int *)((char *)arg0 + 0x90) = 0;
+    *(int *)((char *)arg0 + 0x94) = 0;
 }
 
 float fn_802E6040(void *arg0) {
@@ -282,11 +289,10 @@ int fn_802E6AD0(int arg0) {
 }
 
 void fn_802E6B04(void) {
+    void (*callback)(void) = (void (*)(void))fn_802E6AD0;
+    void *arg = &lbl_8055D1F0;
     fn_802E7770();
-    {
-        void *b = &lbl_8055D1F0;
-        fn_802E2E0C(fn_802E6AD0, b);
-    }
+    fn_802E2E0C(callback, arg);
 }
 
 void fn_802E6B34(void) {
@@ -296,5 +302,8 @@ void fn_802E6B38(void* arg0, signed char* arg1) {
     *arg1 = 0;
 }
 
-void fn_802E6B44(int arg0, int arg1) { fn_802E5264(arg0, arg1); }
-
+#pragma dont_inline on
+void fn_802E6B44(int arg0, int arg1) {
+    fn_802E5264(arg0, arg1);
+}
+#pragma dont_inline reset
