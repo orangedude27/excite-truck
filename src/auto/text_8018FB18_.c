@@ -892,12 +892,34 @@ extern "C" void fn_80192C24(void *arg0) {
     VTable *obj = *(VTable **)((char *)arg0 + 4);
     obj->f19();
 }
-#pragma cplusplus off
-void fn_80192C38(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    ((void (*)(void *))(*(void ***)obj)[20])(obj);
+#pragma cplusplus on
+extern "C" void fn_80192C38(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 4);
+    obj->f18();
 }
-
+#pragma cplusplus off
 s32 fn_80192C4C(void *arg0) {
     s32 bit = (*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 2) & 1;
     return (s32)((u32)(-bit | bit) >> 31);
