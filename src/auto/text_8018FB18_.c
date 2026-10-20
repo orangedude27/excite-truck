@@ -208,18 +208,15 @@ extern "C" void fn_801902A0(void *arg0) {
     VTable *obj = *(VTable **)((char *)arg0 + 4);
     obj->f28();
 }
-#pragma cplusplus off
-void fn_801902B4(void *arg0) {
+  void fn_801902B4(void *arg0) {
     unsigned int temp_r3;
     int (*callback)(void *);
-    volatile unsigned int *field;
 
     fn_80191084(arg0, 0);
     fn_801B6650(*(int *)((char *)arg0 + 0x20));
     callback = (int (*)(void *))fn_80191100;
-    field = (volatile unsigned int *)((char *)arg0 + 8);
     temp_r3 = callback(arg0);
-    if (temp_r3 != *field) {
+    if (temp_r3 != *(unsigned int *)((char *)arg0 + 8)) {
         fn_80191084(arg0);
     } else {
         fn_80191084(arg0, *(unsigned int *)((char *)arg0 + 0xC));
@@ -231,7 +228,7 @@ void fn_801902B4(void *arg0) {
     }
     ((void (**)(void *))(*(void ***)arg0))[12](arg0);
 }
-
+#pragma cplusplus off
 void fn_80190360(int arg0) {
     fn_80191084(arg0, 0);
 }
