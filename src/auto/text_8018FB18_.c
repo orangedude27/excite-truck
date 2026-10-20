@@ -114,6 +114,7 @@ int fn_8018FD38(void) {
 
 extern char lbl_80333018[];
 extern int fn_801B6668(void *);
+extern void fn_801B6654(void);
 #pragma cplusplus on
 class DummyVtable8018FE8C {
 public:
