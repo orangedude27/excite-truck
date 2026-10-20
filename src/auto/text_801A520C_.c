@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-typedef struct {
+typedef struct D_801A520C {
     void **vtable;
     void *pad0; void *pad1; void *pad2; void *pad3; void *pad4; void *pad5; void *pad7; void *pad8; void *pad9;
     int (*d5)(struct D_801A520C *);
