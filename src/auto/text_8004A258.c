@@ -60,82 +60,92 @@ void __OSGetIOSRev(void *arg_rev) {
 
 #pragma push
 #pragma readonly_strings off
+extern const char lbl_80558F04[];
+#pragma small_data on
+extern const char lbl_80558F04[6];
+#pragma small_data on
+
 void ReportOSInfo_8004AA40(void) {
     u32 type;
-    u32 category;
     u32 tdev;
     u32 version;
     u32 builddate;
 
     OSReport("\nRevolution OS\n");
-    OSReport("Kernel built : %s %s\n", "Sep 21 2006", "14:32:13");
+    OSReport("Kernel built : %s %s\n\0\0", "Sep 21 2006", "14:32:13\0\0\0");
 
     OSReport("Console Type : ");
     type = OSGetConsoleType();
-    category = type & OS_CONSOLE_MASK;
-    switch (category) {
+    switch (type & OS_CONSOLE_MASK) {
     case OS_CONSOLE_MASK_RVL:
         switch (type) {
         case OS_CONSOLE_RVL_PP_1:
             OSReport("Pre-production board 1\n");
             break;
         case OS_CONSOLE_RVL_PP_2_1:
-            OSReport("Pre-production board 2-1\n");
+            OSReport("Pre-production board 2-1\n\0\0");
             break;
         case OS_CONSOLE_RVL_PP_2_2:
-            OSReport("Pre-production board 2-2\n");
+            OSReport("Pre-production board 2-2\n\0\0");
             break;
         default:
-            OSReport("Retail %d\n", type);
+            OSReport("Retail %d\n\0", type);
             break;
         }
         break;
     case OS_CONSOLE_MASK_EMU:
         switch (type) {
         case OS_CONSOLE_NDEV_2_1:
-            OSReport("NDEV 2.1\n");
+            OSReport("NDEV 2.1\n\0\0");
             break;
         case OS_CONSOLE_NDEV_2_0:
-            OSReport("NDEV 2.0\n");
+            OSReport("NDEV 2.0\n\0\0");
             break;
         case OS_CONSOLE_NDEV_1_2:
-            OSReport("NDEV 1.2\n");
+            OSReport("NDEV 1.2\n\0\0");
             break;
         case OS_CONSOLE_NDEV_1_1:
-            OSReport("NDEV 1.1\n");
+            OSReport("NDEV 1.1\n\0\0");
             break;
         case OS_CONSOLE_NDEV_1_0:
-            OSReport("NDEV 1.0\n");
+            OSReport("NDEV 1.0\n\0\0");
             break;
         case OS_CONSOLE_RVL_EMU:
-            OSReport("Revolution Emulator\n");
+            OSReport("Revolution Emulator\n\0\0\0");
             break;
         default:
-            OSReport("Emulation platform (%08x)\n", type);
+            OSReport("Emulation platform (%08x)\n\0", type);
             break;
         }
         break;
     case OS_CONSOLE_MASK_TDEV:
         tdev = type & 0x0FFFFFFF;
-        OSReport("TDEV-based emulation HW%d\n", tdev - 3);
+        OSReport("TDEV-based emulation HW%d\n\0", tdev - 3);
         break;
     default:
-        OSReport("%08x\n", type);
+        OSReport(lbl_80558F04, type);
         break;
     }
 
     version = *(u32 *)0xC0003140;
     builddate = *(u32 *)0xC0003144;
-    OSReport("Firmware     : %d.%d.%d ", (version >> 16) & 0xFF, (version >> 8) & 0xFF, version & 0xFF);
-    OSReport("(%d/%d/%d)\n", (builddate >> 16) & 0xFF,
-             ((builddate >> 12) & 0xF) * 10 + ((builddate >> 8) & 0xF),
-             (builddate & 0xFF) + 2000);
+    OSReport("Firmware     : %d.%d.%d \0\0\0", (version >> 16) & 0xFF, (version >> 8) & 0xFF, version & 0xFF);
+    {
+        u32 day_hi = (builddate >> 12) & 0xF;
+        u32 year_lo = builddate & 0xFF;
+        u32 day_hi_10 = day_hi * 10;
+        u32 day_lo = (builddate >> 8) & 0xF;
+        u16 year = year_lo + 2000;
+        u8 day = day_lo + day_hi_10;
+        u8 mon = (builddate >> 16) & 0xFF;
+        OSReport("(%d/%d/%d)\n", mon, day, year);
+    }
 
-    OSReport("Memory %d MB\n", (OSGetConsoleSimulatedMem1Size() + OSGetConsoleSimulatedMem2Size()) >> 20);
-    OSReport("MEM1 Arena : 0x%x - 0x%x\n", OSGetMEM1ArenaLo(), OSGetMEM1ArenaHi());
+    OSReport("Memory %d MB\n\0\0", (OSGetConsoleSimulatedMem1Size() + OSGetConsoleSimulatedMem2Size()) >> 20);
+    OSReport("MEM1 Arena : 0x%x - 0x%x\n\0\0", OSGetMEM1ArenaLo(), OSGetMEM1ArenaHi());
     OSReport("MEM2 Arena : 0x%x - 0x%x\n", OSGetMEM2ArenaLo(), OSGetMEM2ArenaHi());
 }
-#pragma pop
+#pragma scheduling reset
 void __OSDBIntegrator(void) {
     volatile u32 *p = (volatile u32 *)0x48;
     * (volatile u32 *)0x4C = __builtin_return_address(0);
