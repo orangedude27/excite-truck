@@ -2,6 +2,9 @@
 
 extern float lbl_8056208C;
 extern int lbl_8055E3C4;
+extern int lbl_8055E524;
+void fn_80191084(int, int);
+int fn_801B89E0(void);
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
 
 void fn_80190E6C(void) {
