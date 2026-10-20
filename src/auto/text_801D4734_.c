@@ -176,6 +176,18 @@ int fn_801D7214(int arg0) {
     return 0;
 }
 
+void fn_801D72D0(int arg0) {
+    int p;
+    fn_8016A240((char *)arg0 + 8);
+    p = ((int *)arg0)[0x38 / 4];
+    ((int *)arg0)[1] = 1;
+    if (p != 0 && *(char *)(p + 0x19) != 0) {
+        *(char *)(p + 0x4A) = 1;
+        *(char *)(p + 0x4C) = 0;
+    }
+    *(char *)(arg0 + 0x34) = 0;
+}
+
 int fn_801D7924(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[10] = 0;
@@ -261,6 +273,13 @@ int fn_801D8618(void) {
 
 void fn_801D8620(void) {
 
+}
+
+void fn_801D8710(int arg0) {
+    if (arg0 != 0) {
+        arg0 += 4;
+    }
+    fn_801D05B4(arg0);
 }
 
 void *fn_801D8720(void) {
