@@ -2544,6 +2544,14 @@ extern "C" s32 fn_800BB4D4(s32 a,s32 b,s32 c,s32 d) {
     return fn_800BB81C(a,b,c,d,0,0);
 }
 
+struct IosDevice {
+    s32 fd;
+    u8 pad[0xC];
+    s32 field10;
+    u8 pad2[0x10];
+    s32 state;
+};
+
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055DD6C;
 extern "C" s32 *lbl_8055DD70;
@@ -2560,8 +2568,9 @@ extern "C" void fn_800BBCB4(void* context) {
 
 extern "C" s32 fn_800BBEA4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
     const char *str = lbl_8031B838;
-    s32 field10 = *(s32 *)((u8 *)arg0 + 0x10);
     s32 r30 = 3;
+    s32 cmd = arg1;
+    s32 field10 = *(s32 *)((u8 *)arg0 + 0x10);
     s32 res;
 
     if (lbl_80559248 < 0) {
@@ -2569,17 +2578,17 @@ extern "C" s32 fn_800BBEA4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
     } else if (*(s32 *)((u8 *)arg0 + 0x24) == 0) {
         res = (s32)0xC1000000;
     } else {
-        OSLockMutex(&lbl_80407560);
+        OSLockMutex(lbl_80407560);
         if (lbl_8055DD6C != 0) {
-            OSUnlockMutex(&lbl_80407560);
+            OSUnlockMutex(lbl_80407560);
             res = (s32)0xC1000000;
         } else {
             lbl_8055DD6C = 1;
-            OSUnlockMutex(&lbl_80407560);
+            OSUnlockMutex(lbl_80407560);
 
             if (*(u32 *)((u8 *)arg0 + 0x24) == 1) {
-                s32 sp18;
-                res = fn_800BB0A8(*(s32 *)arg0, 7, 3, 2, 0, 0, 0, 0, 0, (s32)&sp18, 0, 0);
+                s32 sp18[6];
+                res = fn_800BB0A8(*(s32 *)arg0, 7, 3, 2, 0, 0, 0, 0, 0, (s32)sp18, 0, 0);
                 *(s32 *)((u8 *)arg0 + 0x24) = 2;
                 if (res == (s32)0xC1000003) {
                     res = 0;
@@ -2596,11 +2605,16 @@ extern "C" s32 fn_800BBEA4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
                 lbl_8055DD6C = 0;
                 res = (s32)0xC1000000;
             } else {
-                switch (arg1) {
+                switch (cmd) {
+                case 9:
+                case 10:
+                    r30 = 3;
+                    break;
+
                 case 0x33:
                     res = fn_800BC2EC(arg0, arg2);
                     lbl_8055DD6C = 0;
-                    break;
+                    goto end;
 
                 case 0x29:
                     res = 0;
@@ -2613,24 +2627,17 @@ extern "C" s32 fn_800BBEA4(void *arg0, s32 arg1, s32 *arg2, s32 arg3) {
                         }
                     }
                     lbl_8055DD6C = 0;
-                    break;
+                    goto end;
 
                 case 3:
                     res = 0;
                     *arg2 = *(s32 *)((u8 *)arg0 + 0x10);
                     lbl_8055DD6C = 0;
-                    break;
-
-                case 9:
-                case 10:
-                    r30 = 3;
-                    /* fallthrough */
-
-                default:
-                    res = fn_800BB0A8(*(s32 *)arg0, arg1, 3, r30, field10, 0, 0, 0, 0, (s32)arg2, 0, 0);
-                    lbl_8055DD6C = 0;
-                    break;
+                    goto end;
                 }
+
+                res = fn_800BB0A8(*(s32 *)arg0, cmd, 3, r30, field10, 0, 0, 0, 0, (s32)arg2, 0, 0);
+                lbl_8055DD6C = 0;
             }
         }
     }
