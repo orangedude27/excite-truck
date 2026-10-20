@@ -9,9 +9,6 @@ extern s32 lbl_8034F4C8[];
 extern int lbl_8055D3A8;
 extern int lbl_8055D3AC;
 void fn_8000D838(void*);
-#pragma scheduling invalid_target
-#pragma opt_propagation off
-#pragma opt_dead_assignments off
 void fn_8000AC40(void) {
     s32 v;
     s32 *p;
