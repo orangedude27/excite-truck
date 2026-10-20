@@ -162,7 +162,7 @@ s32 fn_801C3954(s32 arg0) {
     } while (1);
     return result;
 }
-#pragma auto_inline on
+#pragma scheduling invalid_target
 s32 fn_801C3A00(u32 arg0) {
     s32 i;
     for (i = 0; i < lbl_8055E804; i++) {
@@ -171,7 +171,7 @@ s32 fn_801C3A00(u32 arg0) {
     }
     return -1;
 }
-
+#pragma scheduling on
 extern f32 cos(f32);
 extern f32 sin(f32);
 extern void fn_801B7C8C(s32, s32, f32 *);
