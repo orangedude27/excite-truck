@@ -83,6 +83,60 @@ void TRKGetNextEvent(void *arg0, void *restoreContext) {
 
 void TRKInitializeEventQueue(void) { }
 
+extern s32 lbl_8055D6B0, lbl_8055D6B4, lbl_8055D6B8, lbl_8055D6BC;
+extern s32 lbl_8055D6C0, lbl_8055D6C4, lbl_8055D6C8, lbl_8055D6CC;
+extern s32 lbl_8055D6D0, lbl_8055D6D4;
+void TRKInitializeNub(void) {
+    u64 start, now, elapsed, duration, deadline;
+    u32 control, status;
+    s32 high, low;
+    duration = 0;
+    deadline = 0;
+    for (;;) {
+        control = *(volatile u32 *)0xCD006C00;
+        control = (control & ~0x20) | 0x20;
+        *(volatile u32 *)0xCD006C00 = control;
+        control = *(volatile u32 *)0xCD006C00;
+        *(volatile u32 *)0xCD006C00 = control & ~2;
+        control = *(volatile u32 *)0xCD006C00;
+        *(volatile u32 *)0xCD006C00 = (control & ~1) | 1;
+        do {
+            status = *(volatile u32 *)0xCD006C08 & 0x7fffffff;
+            control = *(volatile u32 *)0xCD006C08 & 0x7fffffff;
+        } while (status == control);
+        start = OSGetTime();
+        control = *(volatile u32 *)0xCD006C00;
+        *(volatile u32 *)0xCD006C00 = (control & ~2) | 2;
+        control = *(volatile u32 *)0xCD006C00;
+        *(volatile u32 *)0xCD006C00 = (control & ~1) | 1;
+        do {
+            status = *(volatile u32 *)0xCD006C08 & 0x7fffffff;
+            control = *(volatile u32 *)0xCD006C08 & 0x7fffffff;
+        } while (status == control);
+        now = OSGetTime();
+        control = *(volatile u32 *)0xCD006C00;
+        *(volatile u32 *)0xCD006C00 = control & ~2;
+        control = *(volatile u32 *)0xCD006C00;
+        *(volatile u32 *)0xCD006C00 = control & ~1;
+        elapsed = now - start;
+        if (elapsed > (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4)) {
+            duration = ((u64)(u32)lbl_8055D6C0 << 32) | (u32)lbl_8055D6C4;
+            break;
+        }
+        if (elapsed <= (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4) +
+                       (((u64)(u32)lbl_8055D6D0 << 32) | (u32)lbl_8055D6D4) &&
+            elapsed > (((u64)(u32)lbl_8055D6B0 << 32) | (u32)lbl_8055D6B4) -
+                      (((u64)(u32)lbl_8055D6C8 << 32) | (u32)lbl_8055D6CC)) {
+            duration = ((u64)(u32)lbl_8055D6B8 << 32) | (u32)lbl_8055D6BC;
+            break;
+        }
+    }
+    deadline = now + duration;
+    do {
+        now = OSGetTime();
+    } while (now < deadline);
+}
+
 void TRKMessageSend(void) {
     OSRegisterVersion(lbl_80558DD8);
     TRKAppendBuffer_ui32();
@@ -128,6 +182,8 @@ void TRKReadBuffer1_ui64(void) {
     }
 }
 
+#pragma push
+#pragma scheduling invalid_target
 void TRKAppendBuffer_ui32(void) {
     u32 *a = lbl_8035BF20;
     u32 *b = (u32 *)lbl_8035BEA0;
@@ -145,7 +201,7 @@ void TRKAppendBuffer_ui32(void) {
         a += 16; b += 16;
     } while (--i);
 }
-
+#pragma pop
 void TRKReadBuffer(void *arg0) {
     u32 old = lbl_8035BEA0[0];
     *(u32 *)arg0 = old;
@@ -360,6 +416,261 @@ void *gdev_cc_initialize(void) {
     return &lbl_8035E820[old * 0x300];
 }
 
+extern void DCFlushRange(void *, u32);
+extern void *__AXFXGetLfoSinTable_8003313C(void);
+extern void *__AXGetStudio_800324C4(void);
+extern u8 lbl_802FEDA0[];
+#pragma dont_inline on
+void CircleBufferReadBytes(u32 arg0, u32 arg1, void *arg2) {
+    void *sp8;
+    void *temp_r31;
+
+    temp_r31 = lbl_8055D744;
+    lbl_8055D73C = (void *)0x1E83;
+    sp8 = __AXGetStudio_800324C4();
+    *(u16 *)lbl_8055D744 = 0;
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x1096);
+
+    switch ((s32)lbl_8055D740) {
+    case 0:
+        *(u16 *)lbl_8055D744 = 1;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)arg0;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x2DD);
+        break;
+    case 1:
+        *(u16 *)lbl_8055D744 = 2;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)arg0;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x33D);
+        break;
+    case 2:
+        *(u16 *)lbl_8055D744 = 3;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)arg0;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x39D);
+        break;
+    }
+
+    sp8 = __AXFXGetLfoSinTable_8003313C();
+    *(u16 *)lbl_8055D744 = 4;
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = 5;
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+
+    if ((u32)lbl_8055D740 == 2) {
+        TRKDispatchMessage(&sp8);
+        if (sp8 != 0) {
+            *(u16 *)lbl_8055D744 = 9;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = lbl_8055D734;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxAInputDpl2(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxAOutput(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxAOutputDpl2R(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxAOutputDpl2Ls(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxAOutputDpl2Rs(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x6D3);
+        }
+        __AXGetAuxAInput(&sp8);
+        if (sp8 != 0) {
+            *(u16 *)lbl_8055D744 = 10;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = lbl_8055D732;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxBInputDpl2(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxBOutput(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxBOutputDpl2R(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxBOutputDpl2Ls(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxBOutputDpl2Rs(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x6D3);
+        }
+    } else {
+        TRKDispatchMessage(&sp8);
+        if (sp8 != 0) {
+            *(u16 *)lbl_8055D744 = 6;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = lbl_8055D734;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxAOutput(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x4E1);
+        }
+        __AXGetAuxAInput(&sp8);
+        if (sp8 != 0) {
+            *(u16 *)lbl_8055D744 = 7;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = lbl_8055D732;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxBOutput(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x4E1);
+        }
+        __AXGetAuxBInput(&sp8);
+        if (sp8 != 0) {
+            *(u16 *)lbl_8055D744 = 8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = lbl_8055D730;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            __AXGetAuxCOutput(&sp8);
+            *(u16 *)lbl_8055D744 = (u16)((u32)sp8 >> 16);
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            *(u16 *)lbl_8055D744 = (u16)(u32)sp8;
+            lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+            lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x4E1);
+        }
+    }
+
+    if (lbl_8055D738 != 0) {
+        *(u16 *)lbl_8055D744 = 0xB;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = 0x8000;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = 0xA;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)((u32)&lbl_802FEDA0 >> 16);
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)(u32)&lbl_802FEDA0;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x73A);
+    }
+
+    *(u16 *)lbl_8055D744 = 0xE;
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)(((u32 *)arg2)[0] >> 16);
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)((u32 *)arg2)[0];
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)(((u32 *)arg2)[1] >> 16);
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)((u32 *)arg2)[1];
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)(((u32 *)arg2)[2] >> 16);
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)((u32 *)arg2)[2];
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)(((u32 *)arg2)[3] >> 16);
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    *(u16 *)lbl_8055D744 = (u16)((u32 *)arg2)[3];
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x199);
+
+    if ((u32)lbl_8055D740 == 2) {
+        *(u16 *)lbl_8055D744 = 0xD;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)arg0;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)(arg1 >> 16);
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)arg1;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x2AF);
+    } else {
+        *(u16 *)lbl_8055D744 = 0xC;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)(arg0 >> 16);
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)arg0;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)(arg1 >> 16);
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        *(u16 *)lbl_8055D744 = (u16)arg1;
+        lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+        lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x299);
+    }
+
+    *(u16 *)lbl_8055D744 = 0xF;
+    lbl_8055D744 = (u8 *)lbl_8055D744 + 2;
+    lbl_8055D73C = (void *)((u32)lbl_8055D73C + 0x1E);
+    DCFlushRange(temp_r31, 0x300);
+}
+#pragma dont_inline reset
 void CircleBufferWriteBytes(void) {
     lbl_8055D740 = 0;
     lbl_8055D748 = 0;
