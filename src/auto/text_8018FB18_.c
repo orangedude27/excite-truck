@@ -570,13 +570,41 @@ void fn_8019150C(void *arg0, int arg1) {
         (unsigned char)((*(unsigned char *)((char *)state + 7) & ~0xe0) | (((arg1 + 1) << 5) & 0xe0));
 }
 
-void fn_80191568(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    void **vt = *(void ***)obj;
-    void *slot = (char *)vt + 0x6c;
-    ((void (*)(void))*(void **)slot)();
+#pragma cplusplus on
+extern "C" void fn_80191568(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void f21();
+        virtual void f22();
+        virtual void f23();
+        virtual void f24();
+        virtual void f25();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 4);
+    obj->f25();
 }
-
+#pragma cplusplus off
 unsigned char fn_8019157C(void *arg0) {
     return *((unsigned char *)arg0 + 0x14);
 }
