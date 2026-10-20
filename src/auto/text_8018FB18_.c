@@ -112,9 +112,10 @@ int fn_8018FD38(void) {
     return result;
 }
 
-extern char lbl_80333018[];
-extern int fn_801B6668(void *);
-extern void fn_801B6654(void);
+  extern char lbl_80333018[];
+  extern int fn_801B6668(void *);
+  extern void fn_801B6654(void);
+  #define fn_80128668_void() ((void (*)(void))fn_80128668)()
 #pragma cplusplus on
 class DummyVtable8018FE8C {
 public:
@@ -285,6 +286,7 @@ extern "C" void fn_801902A0(void *arg0) {
     VTable *obj = *(VTable **)((char *)arg0 + 4);
     obj->f28();
 }
+#pragma cplusplus on
 void fn_801902B4(void *arg0) {
     unsigned int temp_r3;
     int (*callback)(void *);
