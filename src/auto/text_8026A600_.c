@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern unsigned char lbl_80499E60[];
-extern float PSVECDotProduct(void *, void *, void *);
+extern float PSVECDotProduct(const void *, const void *);
 extern void fn_80265DD8(void *);
 extern void fn_80266120(void *);
 void *fn_8026A600(void *arg0) {
