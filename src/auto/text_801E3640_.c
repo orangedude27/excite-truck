@@ -31,9 +31,92 @@ void fn_801E3C88(void) {
     fn_802C6CF8(lbl_8055EA64);
 }
 
+#pragma push
+#pragma processor 750
+void fn_801E3CB4(void *arg0, void *arg1, int arg2, float farg0) {
+    extern float lbl_80558DC4[];
+    extern float lbl_80562CF4;
+    extern float lbl_80562CF8;
+    extern float lbl_80562CFC;
+    extern float lbl_80562D0C;
+    extern float lbl_80562D10;
+    extern float PSVECMag(float *);
+    extern void fn_801E3640(void *, float *);
+    extern int fn_801E36F0(int);
+    extern unsigned short lbl_802F99E8[];
+    extern void fn_802C8BD0(int);
+    extern void fn_802C8DB8(void *, int, void *, int);
+    extern void fn_802C8D74(void);
+    extern void fn_802C9904(void);
+    float vec[9];
+    TrailPt pts[5];
+    unsigned short frame[6];
+    float scale;
+    float mag;
+    float s;
+    int i;
+    int result;
+
+    fn_801E3640(arg1, vec);
+    scale = lbl_80562D0C * farg0;
+    mag = PSVECMag(&vec[6]);
+    if (!((float)__fabs((double)mag) <= lbl_80558DC4[0])) {
+        s = -farg0 / mag;
+        vec[6] = vec[6] * s;
+        vec[7] = vec[7] * s;
+        vec[8] = vec[8] * s;
+    }
+    mag = PSVECMag(&vec[0]);
+    if (!((float)__fabs((double)mag) <= lbl_80558DC4[0])) {
+        s = (scale * lbl_80562D08) / mag;
+        vec[0] = vec[0] * s;
+        vec[1] = vec[1] * s;
+        vec[2] = vec[2] * s;
+    }
+    mag = PSVECMag(&vec[3]);
+    if (!((float)__fabs((double)mag) <= lbl_80558DC4[0])) {
+        s = (scale * lbl_80562D08) / mag;
+        vec[3] = vec[3] * s;
+        vec[4] = vec[4] * s;
+        vec[5] = vec[5] * s;
+    }
+    pts[0].x = lbl_80562CF4;
+    pts[0].y = lbl_80562CF4;
+    pts[0].z = lbl_80562CF4;
+    pts[1].x = vec[6] + vec[0] * lbl_80562CFC;
+    pts[1].y = vec[7] + vec[1] * lbl_80562CFC;
+    pts[1].z = vec[8] + vec[2] * lbl_80562CFC;
+    pts[2].x = vec[6] + vec[0] * lbl_80562CF8;
+    pts[2].y = vec[7] + vec[1] * lbl_80562CF8;
+    pts[2].z = vec[8] + vec[2] * lbl_80562CF8;
+    pts[3].x = vec[6] + vec[3] * lbl_80562CFC;
+    pts[3].y = vec[7] + vec[4] * lbl_80562CFC;
+    pts[3].z = vec[8] + vec[5] * lbl_80562CFC;
+    pts[4].x = vec[6] + vec[3] * lbl_80562CF8;
+    pts[4].y = vec[7] + vec[4] * lbl_80562CF8;
+    pts[4].z = vec[8] + vec[5] * lbl_80562CF8;
+    result = fn_801E36F0(arg2);
+    for (i = 0; i < 5; i++) {
+        pts[i].id = arg2;
+        pts[i].u = lbl_80562D10 * i;
+        pts[i].v = lbl_80562D10 * i;
+        pts[i].x = pts[i].x + *(float *)((char *)arg0 + 0x0);
+        pts[i].y = pts[i].y + *(float *)((char *)arg0 + 0x4);
+        pts[i].z = pts[i].z + *(float *)((char *)arg0 + 0x8);
+    }
+    pts[0].id = result;
+    for (i = 0; i < 6; i++) {
+        frame[i] = lbl_802F99E8[i];
+    }
+    fn_802C8BD0(lbl_8055EA6C);
+    fn_802C8DB8(pts, 5, frame, 6);
+    fn_802C8D74();
+    fn_802C9904();
+}
+#pragma pop
 extern float lbl_8055EA68, lbl_80562CF4;
 extern int fn_802C744C(int, float *);
-extern int fn_801E4040(void *, void *, int);
+extern int fn_801E4040();
 void fn_801E41D8(void *arg0, void *arg1, int arg2) {
     fn_801E4040(arg0, arg1, arg2);
 }
