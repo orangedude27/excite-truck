@@ -481,9 +481,17 @@ extern "C" void fn_80177628(void* obj) {
     };
     ((Dummy*)obj)->f2();
 }
+#pragma cplusplus on
+extern "C" void fn_80177638(int* obj) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+    };
+    ((Dummy*)obj)->f3();
+}
 #pragma cplusplus off
-void fn_80177638(int *arg0) { void (**v)(void) = (void (**)(void))*(void **)arg0; (v + 5)[0](); }
-
 void fn_80177648(int *arg0) { void (**fn)(void) = *(void (***)(void))arg0 + 6; (*fn)(); }
 
 extern s32 lbl_8055E400;
