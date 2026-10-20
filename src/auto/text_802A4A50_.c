@@ -6,6 +6,7 @@ typedef unsigned char u8;
 typedef unsigned long u32;
 typedef signed long s32;
 typedef float f32;
+typedef struct { f32 x, z; } Vec2_802A775C;
 void fn_802C2C00(s32);
 void *fn_801E1F44(void);
 void fn_802C2C00(s32);
@@ -93,7 +94,7 @@ void fn_802A4B90(void) {
     value = lbl_8055F888;
     if (value != 0) { ((void (*)(s32, s32))fn_802A5B8C)(value, 1); lbl_8055F888 = 0; }
     value = lbl_8055F88C;
-    if (value != 0) { fn_802A69D8((void *)1, 1); lbl_8055F88C = 0; }
+    if (value != 0) { fn_802A69D8((void *)value, 1); lbl_8055F88C = 0; }
 }
 
 void fn_802A4C20(void) {
