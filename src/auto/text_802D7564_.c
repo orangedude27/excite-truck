@@ -236,7 +236,6 @@ float fn_802D93E0(void) {
     return lbl_80565018;
 }
 
-extern void fn_802D768C(void *);
 extern void fn_802D2614(void);
 extern int lbl_8055FE24;
 void fn_802D93E8(int arg0) {
