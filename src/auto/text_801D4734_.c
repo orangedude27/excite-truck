@@ -64,3 +64,9 @@ void fn_801D8DB0(int arg0) {
     }
 }
 
+void fn_801D8FE0(int arg0) {
+    if (((int *)arg0)[1] != 0) {
+        ((int *)arg0)[1] = 1;
+    }
+}
+
