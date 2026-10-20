@@ -8,3 +8,23 @@ extern s32 lbl_8055F108;
 extern s32 lbl_804986F8[];
 void fn_8000D838(void *);
 void fn_8023B590(void);
+
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
+void fn_8023B590(void) {
+    s32 v;
+    s32 *p;
+    fn_8000D838(&lbl_8055F100);
+    p = lbl_804986F8 + 1;
+    lbl_804986F8[0] = 0;
+    v = 0x7B;
+    lbl_804986F8[1] = v;
+    lbl_804986F8[2] = 0;
+    lbl_804986F8[3] = 0;
+    lbl_804986F8[4] = 0;
+    lbl_8055F108 = 0x7F000000;
+}
+#pragma opt_dead_assignments reset
+#pragma opt_propagation reset
+#pragma scheduling on
