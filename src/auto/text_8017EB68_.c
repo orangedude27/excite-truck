@@ -129,11 +129,11 @@ extern int fn_80128668(void);
 extern int fn_801A8EE4(void *);
 int fn_8017FEE4(void *arg0) {
     int result = 0;
-    if (*(unsigned char *)((char *)arg0 + 0x340) != 0) goto done;
-    if (fn_801A8EE4((char *)arg0 + 0x6C) != 0) goto done;
-    if (fn_801A8EE4((char *)arg0 + 0x7C) == 0) goto done;
-    result = 1;
-done:
+    if (*(unsigned char *)((char *)arg0 + 0x340) != 0 ||
+        fn_801A8EE4((char *)arg0 + 0x6C) != 0 ||
+        fn_801A8EE4((char *)arg0 + 0x7C) != 0) {
+        result = 1;
+    }
     return result;
 }
 
