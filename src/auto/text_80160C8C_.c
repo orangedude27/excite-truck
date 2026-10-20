@@ -56,6 +56,10 @@ void* fn_80160C8C(void* arg0, s32 arg1) {
     return arg0;
 }
 
+s32 fn_80160CE4(void) {
+    return lbl_8055A0B8 - lbl_8055A0C0;
+}
+
 void *fn_801612BC(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         if ((u32)arg0 + 0xE0 != 0) {
