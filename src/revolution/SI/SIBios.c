@@ -276,7 +276,8 @@ static void SITransferNext(s32 chan) {
     for (i = 0; i < SI_MAX_CHAN; i++) {
         SIPacket* packet;
 
-        chan = (chan + 1) % SI_MAX_CHAN;
+        ++chan;
+        chan %= SI_MAX_CHAN;
         packet = &Packet[chan];
 
         if (packet->chan != SI_CHAN_NONE &&
@@ -294,63 +295,42 @@ static void SITransferNext(s32 chan) {
 
 static void SIInterruptHandler(s16 intr, OSContext* ctx) {
     u32 comcsr = SI_HW_REGS[SI_SICOMSCR];
-
-    if ((comcsr & (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) ==
-        (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) {
+    if ((comcsr & (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) == (SI_SICOMCSR_TCINT | SI_SICOMCSR_TCINTMSK)) {
         s32 chan = Si_80311630.chan;
         u32 status = CompleteTransfer();
         SICallback callback = Si_80311630.callback;
         u32 sr;
-
         Si_80311630.callback = NULL;
         SITransferNext(chan);
-
-        if (callback != NULL) {
-            ((SIContextCallback)callback)(chan, status, ctx);
-        }
-
+        if (callback != NULL) ((SIContextCallback)callback)(chan, status, ctx);
         sr = SI_HW_REGS[SI_SISR];
         sr &= 0x0F000000 >> (chan * 8);
         SI_HW_REGS[SI_SISR] = sr;
-
         if (Type[chan] == SI_ERROR_BUSY && !SIIsChanBusy(chan)) {
             static u32 cmdTypeAndStatus;
-            SITransfer(chan, &cmdTypeAndStatus, 1, &Type[chan], 3,
-                       GetTypeCallback, OS_USEC_TO_TICKS(65));
+            SITransfer(chan, &cmdTypeAndStatus, 1, &Type[chan], 3, GetTypeCallback, OS_USEC_TO_TICKS(65));
         }
     }
-
-    if ((comcsr & (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) ==
-        (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) {
+    if ((comcsr & (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) == (SI_SICOMCSR_RDSTINT | SI_SICOMCSR_RDSTINTMSK)) {
+        s32 chan;
         u32 vcount = VIGetCurrentLine() + 1;
         u32 x = (Si_80311630.poll & SI_SIPOLL_X) >> 16;
-        s32 chan;
-
+        for (chan = 0; chan < SI_MAX_CHAN; chan++) if (SIGetResponseRaw(chan)) InputBufferVcount[chan] = vcount;
         for (chan = 0; chan < SI_MAX_CHAN; chan++) {
-            if (SIGetResponseRaw(chan)) {
-                InputBufferVcount[chan] = vcount;
-            }
+            u32 mask = 0x80000000 >> (chan + 24);
+            u32 v;
+            if (!(Si_80311630.poll & mask)) continue;
+            v = *(volatile u32*)&InputBufferVcount[chan];
+            if (v == 0 || *(volatile u32*)&InputBufferVcount[chan] + x / 2 < vcount) return;
         }
-
-        for (chan = 0; chan < SI_MAX_CHAN; chan++) {
-            if (!(Si_80311630.poll & (0x80 >> chan))) {
-                continue;
-            }
-            if (InputBufferVcount[chan] == 0 ||
-                InputBufferVcount[chan] + x / 2 < vcount) {
-                return;
-            }
+        {
+            volatile u32* clear = (volatile u32*)((char*)Packet + 0x1b0);
+            clear[0] = 0;
+            clear[1] = 0;
+            clear[2] = 0;
+            clear[3] = 0;
         }
-
-        for (chan = 0; chan < SI_MAX_CHAN; chan++) {
-            InputBufferVcount[chan] = 0;
-        }
-
-        for (chan = 0; chan < SI_MAX_CHAN; chan++) {
-            if (RDSTHandler[chan] != NULL) {
-                RDSTHandler[chan](intr, ctx);
-            }
-        }
+        for (chan = 0; chan < SI_MAX_CHAN; chan++) if (RDSTHandler[chan] != NULL) RDSTHandler[chan](intr, ctx);
     }
 }
 
@@ -589,6 +569,8 @@ static void GetTypeCallback(s32 chan, u32 status) {
     BOOL fix;
     u32 id;
     s32 i;
+    SICallback* callback;
+    SICallback cb;
 
     Type[chan] &= ~SI_ERROR_BUSY;
     Type[chan] |= status;
@@ -601,29 +583,33 @@ static void GetTypeCallback(s32 chan, u32 status) {
     if ((status & 0xF) || (type & 0x18000000) != 0x08000000 ||
         !(type & 0x80000000) || (type & 0x04000000)) {
         OSSetWirelessID(chan, 0);
+        type = Type[chan];
+        callback = (SICallback*)((u8*)TypeCallback + chan * 16);
+        for (i = 0; i < SI_MAX_TYPE; i++, callback++) {
+            cb = *callback;
+            if (cb != NULL) {
+                *callback = NULL;
+                cb(chan, type);
+            }
+        }
+        return;
     } else {
         id = OSGetWirelessID(chan) << 8;
-
         if (fix && (id & 0x00100000)) {
-            cmdFixDevice[chan] =
-                (0x4E << 24) | (id & 0x00CFFF00) | 0x4E100000;
+            cmdFixDevice[chan] = (0x4E << 24) | (id & 0x00CFFF00) | 0x4E100000;
             Type[chan] = SI_ERROR_BUSY;
-            SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3,
-                       GetTypeCallback, 0);
+            SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3, GetTypeCallback, 0);
             return;
         }
-
         if (type & 0x00100000) {
             if ((id & 0x00CFFF00) != (type & 0x00CFFF00)) {
                 if (!(id & 0x00100000)) {
                     id = (type & 0x00CFFF00) | 0x00100000;
                     OSSetWirelessID(chan, (u16)(id >> 8));
                 }
-
                 cmdFixDevice[chan] = (0x4E << 24) | id;
                 Type[chan] = SI_ERROR_BUSY;
-                SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3,
-                           GetTypeCallback, 0);
+                SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3, GetTypeCallback, 0);
                 return;
             }
         } else if (type & 0x40000000) {
@@ -631,19 +617,19 @@ static void GetTypeCallback(s32 chan, u32 status) {
             OSSetWirelessID(chan, (u16)(id >> 8));
             cmdFixDevice[chan] = (0x4E << 24) | id;
             Type[chan] = SI_ERROR_BUSY;
-            SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3,
-                       GetTypeCallback, 0);
+            SITransfer(chan, &cmdFixDevice[chan], 3, &Type[chan], 3, GetTypeCallback, 0);
             return;
         } else {
             OSSetWirelessID(chan, 0);
         }
     }
-
-    for (i = 0; i < SI_MAX_TYPE; i++) {
-        SICallback callback = TypeCallback[chan][i];
-        if (callback != NULL) {
-            TypeCallback[chan][i] = NULL;
-            callback(chan, Type[chan]);
+    type = Type[chan];
+    callback = (SICallback*)((u8*)TypeCallback + chan * 16);
+    for (i = 0; i < SI_MAX_TYPE; i++, callback++) {
+        cb = *callback;
+        if (cb != NULL) {
+            *callback = NULL;
+            cb(chan, type);
         }
     }
 }
@@ -930,7 +916,11 @@ BOOL fn_800569D0(void) {
     lbl_8055DB18 = TRUE;
     if (lbl_8055DB2C) {
         s64 time = OSGetTime();
-        *(u16*)0x800030E0 = ((time & 0xFFFF) + ((time >> 16) & 0xFFFF) + ((time >> 32) & 0xFFFF) + ((time >> 48) & 0xFFFF)) & 0x3FFF;
+        u64 t0 = (u64)time & 0xFFFF;
+        u64 t1 = (u64)(time >> 16) & 0xFFFF;
+        u64 t2 = (u64)(time >> 32) & 0xFFFF;
+        u64 t3 = (u64)(time >> 48) & 0xFFFF;
+        *(u16*)0x800030E0 = (u32)(t0 + t1 + t2 + t3) & 0x3FFF;
         lbl_8055DB0C = 0xF0000000;
     }
     id = (*(u16*)0x800030E0 & 0x3FFF) << 8;
@@ -1009,6 +999,96 @@ void SPEC1_MakeStatus(s32 chan, PADStatus* status, u32 data[2]) {
     status->stickY -= 128;
     status->substickX -= 128;
     status->substickY -= 128;
+}
+
+void fn_80056D5C(s32 chan, PADStatus* status, u32 data[2]) {
+    u32 word;
+    s32 i;
+
+    status->button = (data[0] >> 2) & 0x3fff;
+    status->stickX = data[0] >> 8;
+    status->stickY = data[0];
+
+    switch (lbl_80558F7C & 0x700) {
+    case 0x000:
+    case 0x500:
+    case 0x600:
+    case 0x700:
+        word = data[1];
+        status->substickX = word >> 24;
+        status->substickY = word >> 16;
+        status->triggerLeft = word >> 8;
+        status->triggerRight = word;
+        status->analogA = word >> 4;
+        status->analogB = 0;
+        break;
+    case 0x100:
+        word = data[1];
+        status->substickX = word >> 24;
+        status->substickY = word >> 16;
+        status->triggerLeft = word >> 8;
+        status->triggerRight = word;
+        status->analogA = word >> 4;
+        status->analogB = word << 4;
+        break;
+    case 0x200:
+        word = data[1];
+        status->substickX = word >> 24;
+        status->substickY = word >> 20;
+        status->triggerLeft = word >> 16;
+        status->triggerRight = word >> 12;
+        status->analogA = word >> 8;
+        status->analogB = word;
+        break;
+    case 0x300:
+        word = data[1];
+        status->substickX = word >> 24;
+        status->substickY = word >> 16;
+        status->triggerLeft = word >> 8;
+        status->triggerRight = word;
+        status->analogA = status->analogB = 0;
+        break;
+    case 0x400:
+        word = data[1];
+        status->substickX = word >> 24;
+        status->substickY = word >> 16;
+        status->triggerLeft = word >> 8;
+        status->triggerRight = word;
+        status->analogA = status->analogB = 0;
+        break;
+    }
+
+    status->stickX -= 128;
+    status->stickY -= 128;
+    status->substickX -= 128;
+    status->substickY -= 128;
+    if ((lbl_8038F0C0[chan] & 0xffff0000) == 0x09000000 &&
+        (status->button & 0x80) != 0) {
+        lbl_8055DAFC |= 0x80000000 >> chan;
+        status->stickX = status->stickY = status->substickX = status->substickY = 0;
+        return;
+    }
+    lbl_8055DAFC &= ~(0x80000000 >> chan);
+
+    for (i = 0; i < 4; ++i) {
+        s8 *v = &status->stickX + i;
+        s8 *o = (s8*)&lbl_8038F080[chan] + 2 + i;
+        s32 delta = *v - *o;
+        if (delta > 127) *v = *o + 127;
+        else if (delta < -128) *v = *o - 128;
+        *v -= *o;
+    }
+    for (i = 0; i < 2; ++i) {
+        u8 *v = &status->triggerLeft + i;
+        u8 *o = (u8*)&lbl_8038F080[chan] + 6 + i;
+        if (*v < *o) *v = *o;
+        *v -= *o;
+    }
+    if ((status->button != lbl_8038F080[chan].button) ||
+        status->stickX * status->stickX - lbl_8038F080[chan].stickX * lbl_8038F080[chan].stickX >= 9 ||
+        status->stickY * status->stickY - lbl_8038F080[chan].stickY * lbl_8038F080[chan].stickY >= 9)
+        fn_8005B01C();
+    memcpy(&lbl_8038F080[chan], status, 0xc);
 }
 
 BOOL fn_800572DC(BOOL final) {
