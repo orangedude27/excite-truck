@@ -465,6 +465,10 @@ void fn_801D8B54(void) {
 void fn_801D8B58(void) {
 }
 
+void fn_801D8B5C(void) {
+
+}
+
 void fn_801D8C0C(void *arg0) {
     *(int *)((char *)arg0 + 0x18) = -1;
 }
