@@ -75,6 +75,12 @@ int fn_801D8154(void *arg0) {
     return *(int *)((char *)arg0 + 0x40);
 }
 
+void fn_801D832C(void *arg0) {
+    if (*(int *)((char *)arg0 + 0x40) != 0) {
+        *(int *)((char *)arg0 + 0x40) = 1;
+    }
+}
+
 int fn_801D83DC(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[1] = 0;
