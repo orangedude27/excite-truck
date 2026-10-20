@@ -225,33 +225,16 @@ void fn_80190184(void *arg0, void *arg1) {
     ((void (*)(void *, void *))(*(void ***)(*(void **)((char *)arg0 + 0xc)))[4])(*(void **)((char *)arg0 + 0xc), arg1);
 }
 
-#pragma cplusplus on
-extern "C" int fn_801901F0(void *arg0) {
-    class VT1 {
-    public:
-        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
-        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
-        virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
-        virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
-        virtual void d20(); virtual void d21(); virtual void d22(); virtual void d23();
-        virtual void d24(); virtual void d25(); virtual void d26(); virtual void d27();
-        virtual void d28(); virtual void d29(); virtual int d30(void *, int);
-    };
-    class VT2 {
-    public:
-        virtual void e0(); virtual void e1(); virtual void e2();
-        virtual void e3(); virtual void e4(); virtual int e5(void *);
-    };
+int fn_801901F0(void *arg0) {
     int result;
     if (fn_801B526C() == 0) {
         if (*(void **)((char *)arg0 + 4) != 0 && fn_801769F8() != 0) {
-            VT1 *obj = *(VT1 **)((char *)arg0 + 4);
-            obj->d30(obj, 0);
+            void *obj = *(void **)((char *)arg0 + 4);
+            (*(int (**)(void *, int))(*(char **)obj + 0x78))(obj, 0);
         }
         if (*(void **)((char *)arg0 + 0x10) != 0) {
-            VT2 *obj = *(VT2 **)((char *)arg0 + 0x10);
-            result = obj->e5(obj);
+            void *obj = *(void **)((char *)arg0 + 0x10);
+            result = (*(int (**)(void *))(*(char **)obj + 0x14))(obj);
             if (*(unsigned char *)((char *)arg0 + 0x34) == 0)
                 result |= 0x10;
             if (lbl_8055E521 != 0)
@@ -264,7 +247,6 @@ extern "C" int fn_801901F0(void *arg0) {
     }
     return result;
 }
-#pragma cplusplus off
 
 #pragma cplusplus on
 extern "C" void fn_801902A0(void *arg0) {
