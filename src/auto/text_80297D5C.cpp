@@ -619,7 +619,9 @@ void* fn_8029B9A4(void* arg0, int arg1) {
     return arg0;
 }
 
-extern "C" int fn_8029AF24(int); void fn_8029BA8C(int* arg0) { fn_8029AF24(*arg0); }
+extern "C" void fn_8029BA8C(void* arg0) {
+    fn_8029AF24(*(int*)arg0);
+}
 
 #pragma scheduling off
 extern "C" int fn_8029BD14(int arg0) {
