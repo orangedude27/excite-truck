@@ -464,6 +464,11 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_80219900(void *arg0, 
     return arg0;
 }
 
+#pragma dont_inline on
+extern "C" s32 fn_80219958(void *arg0, s32 arg1) {
+    return fn_802192A4(arg0, arg1);
+}
+#pragma dont_inline reset
 extern "C" void *fn_8021995C(void *arg0, s32 arg1, s32 arg2) {
     fn_80222340(arg0, 0, 0, arg1, 0, 0, 0);
     *(s32 *)((u8 *)arg0 + 0x254) = arg2;
