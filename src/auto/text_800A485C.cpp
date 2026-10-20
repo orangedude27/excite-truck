@@ -4126,7 +4126,7 @@ void fn_800D120C(void *arg0) {
     if (((u8 *)arg0)[0x41] == 0) {
         f32 value = *(f32 *)((u8 *)arg0 + 4);
         Play__Q210homebutton9RemoteSpkFliSc(*(void **)((u8 *)arg0 + 0x24),
-            *(long *)arg0, (int)(lbl_80560E40 * value), (signed char)value);
+            *(s32 *)arg0, (int)(lbl_80560E40 * value), (signed char)(lbl_80560E40 * value));
         if (fn_80060C7C(*(void **)arg0) != 0) {
             if (((u8 *)arg0)[0x42] == 0) {
                 OSTime time = OSGetTime();
