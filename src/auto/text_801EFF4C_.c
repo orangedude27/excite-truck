@@ -364,7 +364,7 @@ int fn_801F1848(void) {
 void fn_801F1878(void *arg0) {
     int index = fn_801F196C(*(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
     if (lbl_80488798[index] != 0) {
-        fn_802E317C((const char *)0x8033A544, *(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
+        fn_802E317C(lbl_8033A544, *(int *)((char *)arg0 + 8), *(int *)((char *)arg0 + 0xC));
     }
     lbl_80488798[index] = (int)arg0;
 }
