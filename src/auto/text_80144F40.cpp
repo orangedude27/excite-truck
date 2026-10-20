@@ -189,8 +189,10 @@ extern "C" void fn_80145368(void *arg0, void *arg1) {
         *(f32 *)((u8 *)arg0 + 4) = fn_801452C8(*(f32 *)((u8 *)arg0 + 4));
         *(f32 *)((u8 *)arg0 + 8) = fn_801452D4(*(f32 *)((u8 *)arg0 + 8));
     }
-    *(s32 *)((u8 *)arg0 + 0xC) = ((s32 (*)(void *, const char *, s32))(*(void ***)arg1)[8])(arg1, lbl_8032CF18, 0);
+        *(s32 *)((u8 *)arg0 + 0xC) = ((s32 (*)(void *, const char *, s32))(*(void ***)arg1)[8])(arg1, lbl_8032CF18, 0);
 }
+#pragma dont_inline reset
+#pragma pop
 
 extern "C" f32 lbl_805615E0;
 extern "C" char lbl_80559DE0[];
