@@ -112,6 +112,7 @@ void fn_8022ED00(void) {
     }
 }
 
+#pragma dont_inline on
 void fn_8022ED50(s32 arg0) {
     void *node;
     node = fn_8022EC7C();
@@ -124,6 +125,7 @@ void fn_8022ED50(s32 arg0) {
     }
     fn_8022EA58((void *)arg0);
 }
+#pragma dont_inline reset
 
 void fn_8022EDB8(void) {
     fn_8022ED50(((s32 *)lbl_8055F004)[1]);
