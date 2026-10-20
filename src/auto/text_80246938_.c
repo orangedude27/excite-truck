@@ -91,6 +91,7 @@ void *__dt__Q28PSSystem7SeqHeapFv_80246C48(void *arg0, s32 arg1) {
 
 #pragma dont_inline on
 void fn_80246CAC(float farg0) {
+    fn_8020A5F8(farg0 * lbl_8055F264);
 }
 #pragma dont_inline reset
 
