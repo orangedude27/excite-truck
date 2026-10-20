@@ -271,6 +271,12 @@ void fn_802C5C40(int *arg0, int arg1, int arg2) {
         (int)fn_802C5A60(result, temp_r30,
             (u16)(*(s16 *)(*(int *)((char *)arg2 + arg1 * 4 + 0x14) + 6) - 1));
 }
+
+void fn_802C5E6C(void *arg0, void *arg1) {
+    void *temp = fn_802D6C44;
+    ((void (*)(void *, void *))fn_802C5DF0)(arg1, temp);
+}
+
 #pragma pop
 s32 fn_802C5EB8(void *, u32);
 
@@ -401,7 +407,6 @@ void fn_802C703C(int arg0) {
     fn_802C6C38(arg0);
 }
 
-void fn_802C5DF0(int*);
 int fn_802C90E0(void);
 int fn_802E30C8(const char*, int);
 extern const char lbl_8034B34C[];
