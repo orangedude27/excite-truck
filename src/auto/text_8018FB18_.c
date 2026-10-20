@@ -281,7 +281,6 @@ int fn_80190C8C(void *arg0) {
     return (int)(*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) & 8);
 }
 
-#pragma push
 #pragma cplusplus on
 extern "C" void fn_80190CA8(void *arg0) {
     class VTable {
@@ -320,7 +319,7 @@ extern "C" void fn_80190CA8(void *arg0) {
     VTable *obj = *(VTable **)((char *)arg0 + 4);
     obj->f29();
 }
-#pragma pop
+#pragma cplusplus off
 void fn_80190CBC(void *arg0) {
     void *obj = *(void **)((char *)arg0 + 4);
     ((void (*)(void))(*(void ***)obj)[29])();
