@@ -563,11 +563,24 @@ extern void fn_802B83CC(void);
 extern void fn_802B84E4(void *);
 extern s32 fn_802B8510(s32);
 extern s32 fn_80127A50(void *);
-void fn_802B869C(void) {
+#pragma cplusplus on
+class Dummy_802B869C {
+public:
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual int f9();
+    virtual void f10();
+};
+extern "C" void fn_802B869C(void) {
     s32 sp8[6];
-    void **obj = lbl_8055FA48;
-    s32 (**vtable)(void) = (s32 (**)(void))*obj;
-    if (vtable[9]() == 0) {
+    if (((Dummy_802B869C *)lbl_8055FA48)->f9() == 0) {
         if (fn_80127A50(sp8) != 0) {
             fn_802B8624(sp8);
         } else {
@@ -575,6 +588,7 @@ void fn_802B869C(void) {
         }
     }
 }
+#pragma cplusplus off
 
 void fn_802B86F8(void) {
     u8 *base = (u8 *)&lbl_804BFF80;
@@ -615,15 +629,13 @@ void fn_802B87A0(void) {
 }
 #pragma pop
 void fn_802B87F4(void) {
-    s32 value;
     if (lbl_8055FA48 != 0) {
         fn_802B869C();
         fn_802B59A4(lbl_8055FA3C);
         fn_802B0288();
         if (lbl_8055FA38 == 1)
             return;
-        value = lbl_8055FA40;
-        if (value != 6)
+        if (lbl_8055FA40 != 6)
             fn_802B4E3C();
     }
 }
