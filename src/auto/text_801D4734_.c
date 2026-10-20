@@ -1157,12 +1157,11 @@ s32 fn_801D873C(void *arg0) {
     return 0;
 }
 
-void fn_801D88AC(int *param_1)
-{
-    void (*fn)(void) = *(void (**)(void))((char *)*param_1 + 0x34);
-    fn();
+#pragma cplusplus on
+extern "C" void fn_801D88AC(void *arg0) {
+    ((TObj34 *)arg0)->v34();
 }
-
+#pragma cplusplus reset
 void fn_801D88BC(void *arg0) {
     s32 i;
     *(s32 *)((u8 *)arg0 + 0x18) = 1;
