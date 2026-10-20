@@ -52,3 +52,9 @@ void fn_801D85D8(int arg0) {
     }
 }
 
+void fn_801D8600(int arg0) {
+    if (((int *)arg0)[1] != 0) {
+        ((int *)arg0)[1] = 1;
+    }
+}
+
