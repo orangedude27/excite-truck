@@ -158,12 +158,11 @@ void fn_801B8488(void) {
 
 }
 
-void fn_801B848C(void *arg0) {
-    register void *obj = lbl_8055E744;
-    register void *func = (*(void ***)obj)[5];
-    ((void (*)(void *, void *))func)(obj, arg0);
+#pragma cplusplus on
+extern "C" void fn_801B848C(void *arg0) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f3(arg0);
 }
-
+#pragma cplusplus off
 void fn_801B84A4(void *arg0) {
     register void *obj = lbl_8055E744;
     register void *func = (*(void ***)obj)[19];
