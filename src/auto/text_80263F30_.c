@@ -66,13 +66,14 @@ void fn_80264484(void *arg0) {
     *(void **)((char *)arg0 + 8) = result;
 }
 
+#pragma scheduling invalid_target
 void fn_8026451C(void *arg0) {
     extern char lbl_803466D8[];
     *(void **)arg0 = lbl_803466D8;
     *(int *)((char *)arg0 + 0x14) = 0;
     lbl_8055F444 = arg0;
 }
-
+#pragma scheduling on
 int fn_80264538(int arg0, int arg1) {
     if (arg0 != 0) {
         lbl_8055F444 = 0;
