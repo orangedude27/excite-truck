@@ -168,7 +168,6 @@ int fn_801901F0(void *arg0) {
     return result;
 }
 
-#pragma push
 #pragma cplusplus on
 extern "C" void fn_801902A0(void *arg0) {
     class VTable {
@@ -206,7 +205,7 @@ extern "C" void fn_801902A0(void *arg0) {
     VTable *obj = *(VTable **)((char *)arg0 + 4);
     obj->f28();
 }
-#pragma pop
+#pragma cplusplus off
 void fn_801902B4(void *arg0) {
     unsigned int temp_r3;
     int (*callback)(void *);
