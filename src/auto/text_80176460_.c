@@ -457,7 +457,6 @@ void fn_801775EC(void) {
     *(s32 *)(p + 0xC) = 3;
 }
 
-#pragma push
 #pragma cplusplus on
 extern "C" void fn_80177608(void* obj) {
     struct Dummy {
@@ -465,8 +464,6 @@ extern "C" void fn_80177608(void* obj) {
     };
     ((Dummy*)obj)->f0();
 }
-#pragma cplusplus off
-#pragma pop
 
 void fn_80177618(int *arg0)
 {
@@ -475,8 +472,6 @@ void fn_80177618(int *arg0)
     fn();
 }
 
-#pragma push
-#pragma cplusplus on
 extern "C" void fn_80177628(void* obj) {
     struct Dummy {
         virtual void f0();
@@ -486,7 +481,6 @@ extern "C" void fn_80177628(void* obj) {
     ((Dummy*)obj)->f2();
 }
 #pragma cplusplus off
-#pragma pop
 void fn_80177638(int *arg0) { void (**v)(void) = (void (**)(void))*(void **)arg0; (v + 5)[0](); }
 
 void fn_80177648(int *arg0) { void (**fn)(void) = *(void (***)(void))arg0 + 6; (*fn)(); }
