@@ -65,12 +65,12 @@ __declspec(section ".data") extern int lbl_804B34B0;
 #pragma push
 #pragma small_data off
 void fn_8028E080(void) {
-    struct Table { int entries[64]; int count; } *base = (struct Table *)&lbl_804B34B0_arr[0];
-    int *entries;
+    struct Table { int entries[64]; int count; } *base = (struct Table *)&lbl_804B34B0;
+    int *entries = base->entries;
     int i;
-    entries = base->entries;
-    lbl_8055F73C = 0;
-    i = 0;
+    int z = 0;
+    lbl_8055F73C = z;
+    i = z;
     goto test;
 body:
     fn_8028F8E0(*entries, lbl_8055F738);
@@ -305,8 +305,39 @@ void fn_8028F444(float *arg0, float *arg1, float *arg2, float *arg3, float farg0
     arg0[1] += farg1 * farg0;
     arg0[2] = arg1[2] * arg3[2] + farg1 * fn_80129DC4(0, -arg2[2], arg2[2]);
 }
+
+void fn_8028F5A0(int arg0, int arg1) {
+}
+
 #pragma pop
 void fn_8028F5A4(void) {
+}
+
+extern double fn_8002EFB4(double, double);
+extern float lbl_80564424, lbl_80564430, lbl_80564434, lbl_80564438;
+extern double lbl_80564428;
+void fn_8028F608(float *out0, float *out1, float *matrix, float angle) {
+    float d, x, y, d2, a, b, c, e, g, h;
+    union { float f; unsigned int u; } bits;
+    d = (float)fn_8002EFB4(angle, lbl_80564428) - lbl_80564430;
+    bits.f = d;
+    if (!(bits.u & 0x80000000)) {
+        x = lbl_80564424 - ((lbl_80564434 * d / lbl_80564430 - lbl_80564424) * (lbl_80564434 * d / lbl_80564430 - lbl_80564424));
+    } else {
+        d = -d;
+        x = -(lbl_80564424 - ((lbl_80564434 * d / lbl_80564430 - lbl_80564424) * (lbl_80564434 * d / lbl_80564430 - lbl_80564424)));
+    }
+    d2 = (float)fn_8002EFB4(lbl_80564438 + angle, lbl_80564428) - lbl_80564430;
+    bits.f = d2;
+    if (!(bits.u & 0x80000000)) {
+        y = lbl_80564424 - ((lbl_80564434 * d2 / lbl_80564430 - lbl_80564424) * (lbl_80564434 * d2 / lbl_80564430 - lbl_80564424));
+    } else {
+        d2 = -d2;
+        y = -(lbl_80564424 - ((lbl_80564434 * d2 / lbl_80564430 - lbl_80564424) * (lbl_80564434 * d2 / lbl_80564430 - lbl_80564424)));
+    }
+    a=matrix[0]; b=matrix[3]; c=matrix[1]; e=matrix[4]; g=matrix[2]; h=matrix[5];
+    out0[0]=y*a+x*b; out0[1]=y*c+x*e; out0[2]=y*g+x*h;
+    out1[0]=y*b-x*a; out1[1]=y*e-x*c; out1[2]=y*h-x*g;
 }
 
 void fn_8028F854(void) {}
