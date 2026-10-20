@@ -35,7 +35,6 @@ void fn_80294CC4(void) {}
 void fn_80294ED4(void);
 void fn_80294CC8(void) { fn_80294ED4(); }
 
-#pragma scheduling off
 void fn_80295C70(void *arg0, int arg1, float *arg2, unsigned int arg3, int arg4, float farg0, float farg1) {
     struct Entry { int value; float a,b,c,d,e; unsigned char flags[3]; int tail; };
     struct Obj { unsigned char pad[0x180]; int count; };
