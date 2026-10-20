@@ -217,14 +217,15 @@ public:
     virtual void d1();
     virtual void d2();
     virtual void d3();
-    virtual long f4(void *, char **);
+    virtual void d4();
+    virtual long f5(void *, char **);
 };
 #pragma cplusplus on
 extern "C" void fn_8027C0D0(void *arg0, long arg1, void **arg2) {
     Dummy_8027C0D0 *obj = (Dummy_8027C0D0 *)arg2;
     *(long *)arg0 = arg1;
     *(long *)((char *)arg0 + 8) = (long)arg2;
-    *(long *)((char *)arg0 + 4) = obj->f4(arg2, (char **)&lbl_80347B30);
+    *(long *)((char *)arg0 + 4) = obj->f5(arg2, (char **)&lbl_80347B30);
 }
 #pragma cplusplus off
 long *fn_8027C120(long arg0, long arg1) {
