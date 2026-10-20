@@ -199,8 +199,7 @@ void fn_8019386C(void) {
 }
 
 void fn_80193870(void *arg0) {
-    extern void fn_801945F8(void *);
-    ((void (*)(void *, ...))fn_801945F8)(arg0, lbl_8055A4B8);
+    ((void (*)(void *, void *))fn_801945F8)(arg0, lbl_8055A4B8);
 }
 
 void fn_80193878(void *arg0) {
