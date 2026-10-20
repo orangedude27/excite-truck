@@ -83,10 +83,11 @@ int fn_801B81E0(void *arg0) {
     }
 }
 
-void fn_801B8318(void) {
-    ((void (*)(void *))(*(void ***)lbl_8055E744)[61])(lbl_8055E744);
+#pragma cplusplus on
+extern "C" void fn_801B8318(void) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f59();
 }
-
+#pragma cplusplus off
 void fn_801B832C(void) {
     extern void fn_801616FC(void);
     extern float lbl_80436D08[];
