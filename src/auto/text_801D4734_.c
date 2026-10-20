@@ -1200,10 +1200,11 @@ s32 fn_801D8AA4(void *arg0) {
     return *(f32 *)((u8 *)arg0 + 0x30) < lbl_80562ADC;
 }
 
-void fn_801D8ABC(void *arg0) {
-    (*(void (**)(void *))(*(char **)arg0 + 0x34))(arg0);
+#pragma cplusplus on
+extern "C" void fn_801D8ABC(void *arg0) {
+    ((TObj34 *)arg0)->v34();
 }
-
+#pragma cplusplus reset
 extern s32 lbl_8055ACB0;
 extern s32 lbl_8055ACB8;
 extern f32 lbl_80562B14;
