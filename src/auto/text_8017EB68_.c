@@ -5,6 +5,35 @@
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 
 extern void fn_8017E930(void *);
+extern s32 __AXGetStackHead_80137CFC(s32);
+extern s32 fn_801298E8(void *, s32);
+extern f32 fn_801429D0(f32, f32);
+extern f32 fn_801429E0(f32, f32);
+extern f32 fn_80144C80(f32, f32, f32);
+extern f32 fn_8014C8F8(f32, f32, f32);
+extern s32 fn_80179300(void);
+extern void fn_8017F628(void *);
+extern void fn_8017F718(void *);
+extern void fn_801A7844(s32);
+extern f32 fn_801A7F98(void *);
+extern int fn_801A8E38(void *);
+extern int fn_801A8E68(void *);
+extern s32 fn_801A8F10(void *);
+extern void fn_802E30C8(const char *, ...);
+extern void fn_802E317C(const char *, ...);
+extern s32 fn_802E85B0(s32);
+extern const char lbl_80331E28[];
+extern const char lbl_80332280[];
+extern f32 lbl_80561C50;
+extern f32 lbl_80561C54;
+extern f32 lbl_80561C5C;
+extern f32 lbl_80561C60;
+extern f32 lbl_80561C64;
+extern f32 lbl_80561C68;
+extern f32 lbl_80561C6C;
+extern f32 lbl_80561C70;
+extern f32 lbl_80561C74;
+extern f32 lbl_80561C78;
 extern int fn_801A8EE4(void *);
 extern int fn_80128668(void);
 extern double fabs(double);
