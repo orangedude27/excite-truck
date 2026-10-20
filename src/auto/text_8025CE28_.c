@@ -6,6 +6,12 @@ extern void *lbl_8055F3A8;
 extern s32 lbl_8055F3B0;
 extern s32 lbl_80498EB8[];
 void fn_8000D838(void *);
+void fn_8025CE28(void);
+
+#include <macros.h>
+
+#pragma section ".ctors$00"
+DECL_SECTION(".ctors$00") funcptr_t D_802ED464 = fn_8025CE28;
 
 #pragma scheduling invalid_target
 #pragma opt_propagation off
