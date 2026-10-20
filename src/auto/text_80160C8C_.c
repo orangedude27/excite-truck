@@ -40,7 +40,6 @@ struct Dummy_801619A8 {
     virtual void f5();
     virtual void f6();
     virtual void f7();
-    virtual void f8();
 };
 #pragma cplusplus off
 
