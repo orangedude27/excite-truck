@@ -82,19 +82,6 @@ void fn_801D0ED4(void) {
         ((void (*)(void *))(*(void ***)obj)[4])(obj);
     }
 }
-#pragma scheduling on
-#pragma cplusplus on
-class Dummy_801D0F38 {
-public:
-    void f0() {}
-    void f1() {}
-    void f2() {}
-    void f3() {}
-    void f4() {}
-    void f5() {}
-};
-#pragma cplusplus off
-
 #pragma cplusplus on
 extern "C" void fn_801D0F38(void) {
     class Dummy_801D0F38 {
