@@ -185,6 +185,15 @@ int fn_801D83DC(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801D8518(int arg0) {
+    if (((int *)arg0)[1] == 1) {
+        ((int *)arg0)[4] = lbl_8055E3C4;
+        ((int *)arg0)[1] = 2;
+        return 1;
+    }
+    return 0;
+}
+
 void fn_801D85D8(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
