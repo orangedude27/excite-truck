@@ -169,7 +169,8 @@ void fn_801AC254(void *arg0) {
 }
 
 void *fn_801AC26C(void) {
-    void *obj = fn_801284F8(0x244, &lbl_80335718);
+    const char *name = lbl_80335718;
+    void *obj = ((void *(*)(int, const char *))fn_801284F8)(0x244, name);
     if (obj != 0) {
         fn_801A9700(obj);
         *(void **)obj = &lbl_80335744;
@@ -278,6 +279,43 @@ void fn_801ACA48(void *arg0) {
         *(float *)(p + 0x68) = copyZ;
     }
 }
+
+extern float lbl_80558DC4, lbl_8055E460, lbl_805624AC;
+void fn_801ACB30(void *arg0, int arg1) {
+    char *p = (char *)arg0;
+    char *out = (char *)(arg1 + *(int *)(p + 8));
+    float t = lbl_8055E460 - lbl_805624AC;
+    int i;
+    if (__fabsf(t) <= lbl_80558DC4) {
+        for (i = 0; i < 12; i++) *(int *)(out + i*4) = *(int *)(p + 0x70 + i*4);
+    } else {
+        for (i = 0; i < 12; i++) {
+            float a = *(float *)(p + 0x70 + i*4);
+            float b = *(float *)(p + 0xA0 + i*4);
+            *(float *)(out + i*4) = b + t * (a - b);
+        }
+    }
+    *(short *)(out + 0x30) = *(short *)(p + 0x6C);
+    if (*(void **)(p + 0x23C)) {
+        float *v = (float *)(p + 0x244);
+        float *q = (float *)(p + 0x244);
+        for (i = 0; i < 3; i++) {
+            float x = v[0] * *(float *)(p + 0x3C + i*4) +
+                      v[1] * *(float *)(p + 0x48 + i*4) +
+                      v[2] * *(float *)(p + 0x54 + i*4) +
+                      *(float *)(p + 0x60 + i*4);
+            *(float *)((char *)&t + i*4) = x;
+        }
+        for (i = 0; i < 3; i++) {
+            float x = q[0] * *(float *)((char *)*(void **)(p + 0x23C) + 0x3C + i*4) +
+                      q[1] * *(float *)((char *)*(void **)(p + 0x23C) + 0x48 + i*4) +
+                      q[2] * *(float *)((char *)*(void **)(p + 0x23C) + 0x54 + i*4) +
+                      *(float *)((char *)*(void **)(p + 0x23C) + 0x60 + i*4);
+            *(float *)(p + 0x8 + i*4) = x;
+        }
+    }
+}
+
 #pragma pop
 void fn_801AD5EC(void) {
     fn_801AC508();
@@ -306,6 +344,15 @@ void *fn_801AD6B0(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma scheduling off
+void fn_801AD7A4(void *arg0, void *arg1, void *arg2, int arg3) {
+    void *obj;
+    if (arg3 >= 8) return;
+    if (arg0 == 0) return;
+    obj = (char *)arg0 + 0x23C;
+    fn_801D0A24(obj, arg2);
+}
+#pragma scheduling on
 unsigned char fn_801AD860(void *arg0) {
     return ((unsigned char *)arg0)[0x220];
 }
@@ -323,11 +370,19 @@ long fn_801AD880(void) {
     return 0;
 }
 
-void fn_801AD888(void *arg0) {
-    register void (*method)(void *) = ((void (**)(void *))(*(void ***)arg0))[4];
-    method(arg0);
+#pragma cplusplus on
+struct Dummy_801AD888 {
+    virtual void d0() {}
+    virtual void d1() {}
+    virtual void d2() {}
+    virtual void d3() {}
+    virtual void d4() {}
+};
+extern "C" void fn_801AD888(void *arg0) {
+    ((Dummy_801AD888 *)arg0)->d4();
     ((void (*)(void *))fn_801AC254)(arg0);
 }
+#pragma cplusplus off
 
 void fn_801AD8C8(void *arg0, int *arg1, float *arg2, float *arg3) {
     int l, k, j, i, h, g, f, e, d, c, b, a;
