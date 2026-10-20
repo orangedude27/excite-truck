@@ -1163,7 +1163,10 @@ extern "C" void fn_80148534(void *arg0) {
     }
 }
 
-extern "C" void fn_80148610(void *arg0) { ((u8 *)arg0)[4] = (u8)(!((u8 *)arg0)[4]); }
+extern "C" void fn_80148610(void *arg0) {
+    bool *b = (bool *)((u8 *)arg0 + 4);
+    *b = !*b;
+}
 
 extern "C" u8 fn_80148624(void *arg0) { return ((u8 *)arg0)[4]; }
 
