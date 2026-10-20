@@ -319,13 +319,11 @@ void fn_801B88BC(void) {
     ((void (*)(void *))(*(unsigned int *)((char *)*(void **)lbl_8055E744 + 0x38)))(lbl_8055E744);
 }
 
-void fn_801B8900(void) {
-    void *obj = lbl_8055E744;
-    void **vt = *(void ***)obj;
-    void (*fn)(void *) = (void (*)(void *))vt[32];
-    fn(obj);
+#pragma cplusplus on
+extern "C" void fn_801B8900(void) {
+    ((Dummy_801B8318 *)lbl_8055E744)->f30();
 }
-
+#pragma cplusplus off
 void fn_801B8914(void) {
     (*(void (**)(void *))((char *)*(void **)lbl_8055E744 + 0x30))(lbl_8055E744);
 }
