@@ -49,6 +49,11 @@ void *fn_801916AC(void *arg0, int arg1) {
     return arg0;
 }
 
+int fn_80191A98(void *arg0) {
+    int bit = (*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 1) & 1;
+    return (int)((unsigned int)(-bit | bit) >> 31);
+}
+
 int fn_80192C68(void *arg0) {
     return (((unsigned char)*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 5) & 7) - 1;
 }
