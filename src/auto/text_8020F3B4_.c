@@ -26,7 +26,7 @@ long fn_8020F3B4(void) { return -1; }
  
 long fn_8020F3BC(long arg0, long arg1, long arg2) {
     long result = arg1;
-    ((void (*)(long, long, long *, ...))fn_801345D8)(arg1, arg2, &lbl_8055B664, arg0);
+    ((void (*)(long, long, long *, long))fn_801345D8)(arg1, arg2, &lbl_8055B664, arg0);
     return result;
 }
  
@@ -115,6 +115,23 @@ long fn_8020F6FC(void) {
     return value;
 }
 
+void fn_8020F730(void) {
+    long i;
+    long count = lbl_804900AC.m_count;
+    long *entries = lbl_804902C4.m_entries;
+    lbl_804902C4.m_count = 0;
+    for (i = 0; i < count; i++) {
+        entries[lbl_804902C4.m_count++] = i;
+    }
+    for (i = 0; i < lbl_804902C4.m_count; i++) {
+        long index = fn_80129D18(6);
+        long temp = entries[i];
+        entries[i] = entries[index];
+        entries[index] = temp;
+    }
+    lbl_8055EEC4 = 0;
+}
+
 void fn_8020FC6C(void) {
     struct Unk_804900AC *state = &lbl_804900AC;
     if (state->m_count == 0) {
@@ -177,6 +194,25 @@ void fn_802103B8(void) {
     fn_8020F5C8();
 }
 
+#pragma dont_inline on
+void fn_802103BC(void) {
+    struct VTable { void *pad[2]; void (*call)(void *, long); };
+    struct Object { struct VTable *vtable; };
+    fn_802EC1C0(lbl_80563400);
+    fn_802EC12C();
+    fn_802EC1E4();
+    if (lbl_8055EED4 != 0) {
+        ((struct Object *)lbl_8055EED4)->vtable->call((struct Object *)lbl_8055EED4, 1);
+    }
+    lbl_8055EED4 = 0;
+    lbl_8055B658 = -1;
+    fn_8020F5DC();
+    if (lbl_8055EED0 != 0) {
+        ((struct Object *)lbl_8055EED0)->vtable->call((struct Object *)lbl_8055EED0, 1);
+    }
+    lbl_8055EED0 = 0;
+}
+#pragma dont_inline reset
 extern long fn_80009C84(long);
 extern signed char lbl_8055EEC0, lbl_8055EEC8, lbl_8055B660;
 extern long lbl_8055EECC, lbl_8055B658;
@@ -191,6 +227,10 @@ void fn_80210444(void) {
         fn_802EC12C();
         fn_802EC1D8();
     }
+}
+
+long fn_802104FC(void) {
+    return (lbl_8055B658 + 1) == 0;
 }
 
  
@@ -248,9 +288,8 @@ long fn_802111E4(long arg0) {
         fn_8020FEF0(-1);
         break;
     case 0x53: {
-        long (*hook)(long) = (long (*)(long))lbl_8055EED8;
-        long value = (arg0 - 0x58) == 0;
-        hook(value);
+        long (* volatile hook)(long) = (long (*)(long))lbl_8055EED8;
+        hook((arg0 - 0x58) == 0);
         fn_802100AC();
         break;
     }
