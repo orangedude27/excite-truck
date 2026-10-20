@@ -23,7 +23,7 @@ extern int lbl_80333390;
   void fn_801964D0(void);
   void fn_80128668(void *);
   void fn_80193138(int);
-  void fn_80193CE0(void);
+  void fn_80193CE0();
   
   extern unsigned char lbl_8055A4B8[8];
 extern float lbl_80562178, lbl_8056217C, lbl_8055E558;
@@ -358,6 +358,12 @@ extern "C" void fn_80193AEC(void *arg0, void *arg1) {
 void fn_80193CD4(void *arg0) {
     *(signed char *)((char *)arg0 + 0x2A5) = 1;
 }
+
+void fn_80193CE0(void) {
+    ((void (*)(void))(*(void (**)(void))(*(void **)0)))();
+    *(unsigned char *)0x2A5 = 0;
+}
+
 #pragma dont_inline reset
 
 void fn_80193D20(void) {
