@@ -39,14 +39,16 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
     tileZ = (y / 32) - lbl_8055E9A0;
     remX = x - (x / 32) * 32;
     remZ = y - (y / 32) * 32;
-    if (tileX < 0 || tileZ < 0 || tileX >= 0x60 || tileZ >= 0x60) {
-        return 0;
+    if (tileX >= 0 && tileZ >= 0 && tileX < 0x60 && tileZ < 0x60) {
+        tile = ((unsigned short (*)[0x60])lbl_80442708)[tileX][tileZ];
+        if (tile != 0xFFFF) {
+            node = *(char **)((char *)lbl_8055E990 + 0x18) + tile * 0x894;
+        } else {
+            node = 0;
+        }
+    } else {
+        node = 0;
     }
-    tile = lbl_80442708[tileX * 0x60 + tileZ];
-    if (tile == 0xFFFF) {
-        return 0;
-    }
-    node = *(char **)((char *)lbl_8055E990 + 0x18) + tile * 0x894;
     if (node == 0) {
         return 0;
     }
@@ -76,6 +78,34 @@ static inline int sample_tile(int x, int y, float *out_h, int *out_type, void *a
 }
 
 void fn_801DB340(int arg0) { fn_801DB13C(arg0 - 4); }
+
+int fn_801DB74C(int arg0, int arg1, float *arg2, int *arg3, void *arg4, void *arg5, float farg0, float farg1) {
+    float grid[4][4];
+    float sp8;
+    int i, j;
+
+    if (!sample_tile(arg0, arg1, &sp8, arg3, arg4) &&
+        !sample_tile(arg0 + 1, arg1, &sp8, arg3, arg4) &&
+        !sample_tile(arg0, arg1 + 1, &sp8, arg3, arg4) &&
+        !sample_tile(arg0 + 1, arg1 + 1, &sp8, arg3, arg4)) {
+        return 0;
+    }
+
+    for (j = 0; j < 4; j++) {
+        for (i = 0; i < 4; i++) {
+            if (!sample_tile(arg0 - 1 + i, arg1 - 1 + j, &grid[i][j], 0, 0)) {
+                grid[i][j] = sp8;
+            }
+        }
+    }
+
+    if (arg5 != 0) {
+        *arg2 = fn_801DB514(grid, arg5, farg0, farg1);
+    } else {
+        *arg2 = fn_801DB398(grid, farg0, farg1);
+    }
+    return 1;
+}
 
 void fn_801DCA5C(void) {
     fn_8012C4D8();
