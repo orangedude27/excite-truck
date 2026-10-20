@@ -57,7 +57,7 @@ extern "C" void fn_80232928(s32);
 extern "C" void fn_80232930(void);
 
 extern char lbl_802FDB68[];
-extern char lbl_80558D08[];
+extern char lbl_80558D08[4];
 __declspec(section ".data") extern f32 lbl_80558DC4;
 extern f32 lbl_8056047C;
 extern f32 lbl_80560480;
@@ -182,16 +182,18 @@ extern "C" s32 fn_8001E26C(s32 arg0, s32 arg1) {
 }
 
 extern "C" void fn_8001E2AC(void* arg0, s32 arg1) {
+    PaneData buffer;
+    f32* p;
     const char* base = lbl_802FDB68;
     void* truck = fn_8017960C(arg1);
-    f32* p = (f32*)arg0 + arg1 * 3;
+    p = (f32*)arg0 + arg1 * 3;
     bool active = *(f32*)((u8*)truck + 0x2588) > lbl_80560474;
     if (active) {
-        if ((f32)fabs(p[2] - lbl_80560470) > *(f32*)&lbl_80558DC4) {
+        if (!((f32)fabs(p[2] - lbl_80560470) <= lbl_80558DC4)) {
             p[1] = lbl_8055E3C8;
             p[2] = lbl_80560470;
         } else {
-            p[2] -= lbl_8056047C;
+            p[2] = *(volatile f32*)&p[2] - lbl_8056047C;
         }
     } else {
         p[2] = lbl_80560474;
@@ -209,27 +211,22 @@ extern "C" void fn_8001E2AC(void* arg0, s32 arg1) {
     }
 
     if (p[2] > lbl_80560480) {
-        s32 alpha = (s32)(lbl_80560484 * p[2]);
+        arg1 = (s32)(lbl_80560484 * p[2]);
         void* r28 = paneMgr->getPane(base + 0x1FC);
         void* r29 = paneMgr->getPane(base + 0x20C);
         if (r28 != NULL && r29 != NULL) {
             f32 f2 = lbl_80560470;
             f32 f0 = ((lbl_8055E3C8 - p[1]) - f2) / lbl_80560488;
-            if (f2 >= f0) {
-                f2 = f0;
-            }
-            if (f2 <= lbl_80560474) {
-                f2 = lbl_80560474;
-            }
-            PaneData buffer;
+            f2 = (f2 < f0) ? f2 : f0;
+            f2 = (f2 > lbl_80560474) ? f2 : lbl_80560474;
             fn_80147CEC(&buffer, r28, r29, lbl_80560474 + f2 * lbl_80560470);
             f32 factor1 = ((f32(*)(void))fn_8001DAD8)();
             u32 c1 = (u32)fn_80147C50(*(u32*)((u8*)r28 + 0x18), *(u32*)((u8*)r29 + 0x18), factor1);
-            buffer.w18 = (c1 & 0x00FFFFFF) | (alpha << 24);
-            alpha <<= 24;
+            buffer.w18 = (c1 & 0x00FFFFFF) | (arg1 << 24);
+            arg1 <<= 24;
             f32 factor2 = ((f32(*)(void))fn_8001DAD8)();
             u32 c2 = (u32)fn_80147C50(*(u32*)((u8*)r29 + 0x18), *(u32*)((u8*)r28 + 0x18), factor2);
-            fn_80232928((c2 & 0x00FFFFFF) | alpha);
+            fn_80232928((c2 & 0x00FFFFFF) | arg1);
             fn_80147230(&buffer, lbl_80558D08, fn_80131234(base + 0x220));
             fn_80232930();
         }
