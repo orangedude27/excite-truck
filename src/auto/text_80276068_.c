@@ -296,20 +296,26 @@ void fn_80277740(void) {
 
 extern char lbl_8055C650;
 extern char lbl_803473B8[], lbl_803473C4[];
+#pragma push
 #pragma dont_inline on
-int fn_80277754(void *arg0) {
+#pragma cplusplus on
+extern "C" int fn_80277754(void *arg0) {
+    class NameGetter {
+    public:
+        virtual char *getName();
+    };
     char *name;
-    name = (*(char * (**)(void *))((char *)*(void **)arg0 + 8))(arg0);
+    name = ((NameGetter *)arg0)->getName();
     if (stricmp(name, &lbl_8055C650) == 0) {
         fn_80276ACC(arg0, *(int *)&lbl_8055C638);
         goto done;
     }
-    name = (*(char * (**)(void *))((char *)*(void **)arg0 + 8))(arg0);
+    name = ((NameGetter *)arg0)->getName();
     if (stricmp(name, &lbl_8055C644) == 0) {
         fn_80276ACC(arg0, (int)&lbl_8055C644);
         goto done;
     }
-    name = (*(char * (**)(void *))((char *)*(void **)arg0 + 8))(arg0);
+    name = ((NameGetter *)arg0)->getName();
     if (stricmp(name, lbl_803473B8) == 0) {
         fn_80276ACC(arg0, (int)lbl_803473C4);
         goto done;
@@ -318,7 +324,8 @@ int fn_80277754(void *arg0) {
 done:
     return 1;
 }
-#pragma dont_inline reset
+#pragma cplusplus off
+#pragma pop
 int fn_80277960(void *arg0, void *arg1, float *arg2) {
     unsigned char *p = (unsigned char *)fn_80276A44();
     if (p != 0) {
