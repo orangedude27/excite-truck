@@ -3,6 +3,13 @@
 extern void **OSExceptionTable_8055D9D0;
 extern void OSExceptionVector(void);
 extern void OSReport(const char *, ...);
+extern u32 OSGetConsoleType(void);
+extern u32 OSGetConsoleSimulatedMem1Size(void);
+extern u32 OSGetConsoleSimulatedMem2Size(void);
+extern void *OSGetMEM1ArenaLo(void);
+extern void *OSGetMEM1ArenaHi(void);
+extern void *OSGetMEM2ArenaLo(void);
+extern void *OSGetMEM2ArenaHi(void);
 
 typedef enum {
     OS_CONSOLE_MASK = 0xF0000000,
