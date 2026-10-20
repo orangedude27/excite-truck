@@ -228,7 +228,7 @@ int fn_801B84F0(void) {
 
 void fn_801B84F8(void)
 {
-  extern volatile unsigned short lbl_8055E748;
+  extern char lbl_8055E748;
   int new_var;
   (*((void (***)(void *)) lbl_8055E744))[6](lbl_8055E744);
   new_var = 1;
