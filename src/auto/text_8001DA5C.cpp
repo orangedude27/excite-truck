@@ -45,6 +45,24 @@ struct PaneData {
     u32 w18;
     u32 w1c;
 };
+
+extern "C" const char* fn_80131234(const char*);
+extern "C" void fn_80147230(void*, const char*, ...);
+extern "C" s32 fn_80147C50(u32, u32, f32);
+extern "C" void fn_80147CEC(void*, void*, void*, f32);
+extern "C" void* fn_8017960C(s32);
+extern "C" s32 fn_801E85A4(void);
+extern "C" void fn_80232928(s32);
+extern "C" void fn_80232930(void);
+
+extern char lbl_802FDB68[];
+extern char lbl_80558D08[];
+extern f32 lbl_80558DC4;
+extern f32 lbl_8056047C;
+extern f32 lbl_80560480;
+extern f32 lbl_80560484;
+extern f32 lbl_80560488;
+extern f32 lbl_8056048C;
 extern f32 lbl_80560460;
 extern f32 lbl_80560464;
 extern f64 lbl_80560468;
