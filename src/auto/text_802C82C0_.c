@@ -222,12 +222,12 @@ void fn_802C8B70(void) {
     lbl_8055FC70 = 2;
 }
 
-void fn_802C8B98(unsigned int arg0, unsigned int arg1) {
-    fn_802C7734(arg1);
-    fn_802C8B70();
-}
-
 #pragma dont_inline on
+void fn_802C8B98(int arg0, int arg1) {
+    fn_802C7734(arg1);
+    ((void (*)(int))fn_802C8B70)(arg0);
+}
+#pragma dont_inline reset
 void fn_802C8BD0(int arg0) {
     fn_802C7758(arg0);
     ((void (*)(int))fn_802C8B70)(arg0);
