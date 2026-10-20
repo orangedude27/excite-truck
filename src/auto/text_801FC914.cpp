@@ -82,6 +82,13 @@ void* fn_801FCA14(void* arg0, int arg1) {
     return arg0;
 }
 
+extern "C" void fn_801FCB40(void*, float);
+extern "C" void fn_801FCAAC(void* arg0, float farg0) {
+    if (*(void**)((char*)arg0 + 4) != 0) {
+        fn_801FCB40(arg0, farg0);
+    }
+}
+
 void fn_801FCAC0(void* arg0) {
     if (*(int*)((char*)arg0 + 4) != 0)
         fn_802C744C(*(void**)((char*)arg0 + 8), (char*)arg0 + 0xC);
