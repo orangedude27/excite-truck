@@ -160,7 +160,7 @@ void fn_801D6FA0(int arg0) {
 }
 
 void fn_801D6FB8(int arg0) {
-    if (*(char *)(arg0 + 0x34) == 0) {
+    if (*(unsigned char *)(arg0 + 0x34) == 0) {
         if (fn_8016A15C((char *)arg0 + 8) != 0) {
             int p = ((int *)arg0)[0x38 / 4];
             *(char *)(p + 0x49) = 1;
