@@ -667,8 +667,9 @@ void fn_801F3C14(int unused, unsigned char *arg0) {
     }
     {
         unsigned char t=arg0[0x14];
+        unsigned char u=arg0[0x15];
         arg0[0x14]=arg0[0x17]; arg0[0x17]=t;
-        t=arg0[0x15]; arg0[0x15]=arg0[0x16]; arg0[0x16]=t;
+        arg0[0x15]=arg0[0x16]; arg0[0x16]=u;
     }
 }
 
