@@ -241,6 +241,12 @@ void fn_80210510(void) {
 extern long fn_80145E70(void *);
 extern long fn_802090D4(void *);
 extern long fn_80209110(void *);
+#pragma cplusplus on
+struct Dummy_80210904 {
+    virtual void f0();
+    virtual void f1(long);
+};
+#pragma cplusplus off
 extern long fn_8000DA10(void);
 extern long lbl_8033C9BC[];
 extern long lbl_8033C9C8[];
