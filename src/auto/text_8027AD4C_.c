@@ -210,12 +210,22 @@ void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
 }
 
 extern char lbl_80347B30[];
+#pragma cplusplus on
+class Dummy_8027C0D0 {
+public:
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void d4();
+    virtual long f5(void *, char **);
+};
+#pragma cplusplus off
 void fn_8027C0D0(void *arg0, long arg1, void **arg2) {
-    long (*method)(void *, char **);
     *(long *)arg0 = arg1;
     *(long *)((char *)arg0 + 8) = (long)arg2;
-    method = *(long (**)(void *, char **))((char *)*(void ***)arg2 + 0x14);
-    *(long *)((char *)arg0 + 4) = method(arg2, (char **)&lbl_80347B30);
+    *(long *)((char *)arg0 + 4) =
+        (*(long (**)(void *, char **))(*(void ***)arg2 + 5))(arg2, (char **)&lbl_80347B30);
 }
 
 long *fn_8027C120(long arg0, long arg1) {
@@ -509,7 +519,8 @@ void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
     }
 }
 
-  long fn_8027CE4C(long arg0) {
+#pragma scheduling invalid_target
+long fn_8027CE4C(long arg0) {
     long value = *fn_8027C120(lbl_8055F654, arg0);
     switch (value) {
     case 0:
@@ -517,11 +528,11 @@ void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
     case 1:
         return fn_8027CB20();
     default:
-        fn_802E317C(lbl_80347C38, arg0);
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, arg0);
         return 1;
     }
 }
-
+#pragma scheduling reset
 long fn_8027CFB4(long arg0) {
     long *obj = fn_8027C120(lbl_8055F654, arg0);
     long id = fn_80205268(lbl_80347AB0, *(long *)((char *)&lbl_8055F654 + 0xB01C), -1);
