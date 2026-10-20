@@ -255,6 +255,10 @@ void fn_801D8600(int arg0) {
     }
 }
 
+int fn_801D8618(void) {
+    return 0;
+}
+
 void fn_801D8620(void) {
 
 }
