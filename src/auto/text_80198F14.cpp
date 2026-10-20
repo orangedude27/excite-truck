@@ -501,7 +501,9 @@ extern "C" void fn_8019F064(void* arg0, void* arg1) {
     fn_802E317C(lbl_803335EC, value);
 }
 
-void fn_8019F1A4(void* arg0) { fn_8019AC44((f32*)((u8*)arg0 + 0x34), (f32*)((u8*)arg0 + 0x40), *(f32*)((u8*)arg0 + 0x24)); }
+extern "C" void fn_8019F1A4(void* arg0) {
+    fn_8019AC44(arg0, (u8*)arg0 + 0x34, (u8*)arg0 + 0x40, *(f32*)((u8*)arg0 + 0x24));
+}
 
 void fn_8019F1B4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) { fn_8019DDFC(arg1,arg2,arg3,arg4,(u8*)arg0+0x34,arg0,*(f32*)((u8*)arg0+0x24)); }
 
