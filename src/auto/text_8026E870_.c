@@ -188,11 +188,14 @@ f32 fn_8026ECE4(void *arg0, f32 *arg1) {
 }
 #pragma pop
 
+#pragma scheduling off
 s32 fn_8026F408(s32 arg0) { return arg0 <= 8; }
+#pragma scheduling reset
 
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma cplusplus on
 void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
     f32 sp8;
     Vec spC;
@@ -476,6 +479,7 @@ void fn_8026F420(s32 arg0, s32 arg1, void *arg2) {
         *(f32 *)((char *)arg2 + 0xC) = f1;
     }
 }
+#pragma cplusplus reset
 #pragma pop
 f32 fn_8026FCE0(f32 farg0, f32 farg1) {
     f32 diff = lbl_80563E30 - farg1;
