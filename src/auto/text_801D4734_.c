@@ -193,10 +193,10 @@ void fn_801D6FB8(int arg0) {
     }
 }
 
-void fn_801D701C(int arg0) {
+void fn_801D701C(UnkStruct_801D701C *arg0) {
     extern char lbl_80338B08[];
-    ((int *)arg0)[1] = 0;
-    ((int *)arg0)[0] = (int)lbl_80338B08;
+    arg0->name = lbl_80338B08;
+    arg0->state = 0;
 }
 
 int fn_801D7034(int arg0, int arg1) {
@@ -237,6 +237,13 @@ void fn_801D72D0(int arg0) {
 }
 
 int fn_801D76CC(int arg0, int arg1) {
+    if (arg0 != 0 && arg1 > 0) {
+        fn_80128668();
+    }
+    return arg0;
+}
+
+int fn_801D770C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
     }
