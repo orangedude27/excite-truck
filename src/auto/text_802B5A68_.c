@@ -576,8 +576,8 @@ public:
     virtual void f7();
     virtual void f8();
     virtual int f9();
-    virtual void f10();
 };
+#pragma cplusplus on
 extern "C" void fn_802B869C(void) {
     s32 sp8[6];
     if (((Dummy_802B869C *)lbl_8055FA48)->f9() == 0) {
@@ -629,14 +629,15 @@ void fn_802B87A0(void) {
 }
 #pragma pop
 void fn_802B87F4(void) {
+    s32 value;
     if (lbl_8055FA48 != 0) {
         fn_802B869C();
         fn_802B59A4(lbl_8055FA3C);
         fn_802B0288();
-        if (lbl_8055FA38 == 1)
+        value = lbl_8055FA40;
+        if (lbl_8055FA38 == 1 || value == 6)
             return;
-        if (lbl_8055FA40 != 6)
-            fn_802B4E3C();
+        fn_802B4E3C();
     }
 }
 
