@@ -437,7 +437,8 @@ void fn_802BDFBC(void *arg0, int arg1, float farg0) {
 
 extern float lbl_80564D14;
 extern float lbl_80564D18;
-void fn_802BDFF4(void *arg0, signed char arg1) {
+void fn_802BAF98(void *, int);
+void fn_802BDFF4(void *arg0, int arg1) {
     arg0 = *(void **)((char *)arg0 - 8);
     if (arg0 != 0) {
         fn_802BAF98(arg0, arg1);
