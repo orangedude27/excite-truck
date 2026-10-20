@@ -723,7 +723,6 @@ extern "C" void fn_80146BD4(u8 *arg0, const s8 *arg1, s32 arg2) {
     }
 }
 
-extern void lbl_8032D214(void);
 extern void lbl_8032D260(void);
 extern "C" void fn_80146C1C(void **arg0) {
     *arg0 = (void *)&lbl_8032D260;
