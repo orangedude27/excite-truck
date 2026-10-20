@@ -426,6 +426,11 @@ void fn_802C98DC(float *arg0, float *arg1, float *arg2, float *arg3) {
     *arg3 = lbl_8055FC48;
 }
 
+void fn_802D007C(float);
+void fn_802C9900(float arg0) {
+    fn_802D007C(arg0);
+}
+
 #pragma dont_inline off
 extern float lbl_80564EF8;
 extern void fn_802D007C(float);
@@ -523,7 +528,7 @@ void fn_802C9A70(int arg0) {
     }
     if (((unsigned char)lbl_8055FC8C != 0 || (unsigned char)lbl_8055FC8D != 0) && arg0 != 0) {
         temp_r3 = lbl_8055CFF0 - (int)(lbl_80564F18 + ((float)lbl_8055CFF0 * lbl_8055D020));
-        temp_r31 = (int)(temp_r3 + (temp_r3 >> 31)) >> 1;
+        temp_r31 = (int)((temp_r3 >> 31) + temp_r3) >> 1;
         if (temp_r31 > 1) {
             fn_802C92D0();
             fn_802C92DC(0, 0, temp_r31, lbl_8055CFF4, 0xFF000000);
@@ -533,7 +538,7 @@ void fn_802C9A70(int arg0) {
     }
     if ((unsigned char)lbl_8055FC8D != 0) {
         temp_r3_2 = lbl_8055CFF4 - (int)(lbl_80564F18 + ((float)lbl_8055CFF4 * lbl_8055D024));
-        temp_r31_2 = (int)(temp_r3_2 + (temp_r3_2 >> 31)) >> 1;
+        temp_r31_2 = (int)((temp_r3_2 >> 31) + temp_r3_2) >> 1;
         if (temp_r31_2 > 1) {
             fn_802C92D0();
             fn_802C92DC(0, 0, lbl_8055CFF0, temp_r31_2, 0xFF000000);
