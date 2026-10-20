@@ -96,6 +96,7 @@ class Dummy_8024EC3C {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5(); virtual int f6(int); virtual int f7(int);
+    virtual void d8(); virtual void d9(); virtual int f10(int);
 };
 #pragma cplusplus on
 extern "C" s32 fn_8024EC3C(void) {
@@ -115,7 +116,7 @@ extern "C" s32 fn_8024EC3C(void) {
         u8 *base = (u8 *)lbl_8055F2EC;
         void *obj = *(void **)(base + 0xD0);
         s32 arg = *(s32 *)(base + 0x2C);
-        if (((Dummy_8024EC3C *)obj)->f6(arg) == 0) return 1;
+        if (((Dummy_8024EC3C *)obj)->f7(arg) == 0) return 1;
     }
     fn_80216D28();
     fn_80214D50(1);
