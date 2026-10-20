@@ -605,7 +605,7 @@ void fn_8029EF40(void) {
 void fn_8029EF44(void) {
     fn_8029EF2C();
 }
-#pragma dont_inline off
+#pragma dont_inline reset
 void fn_8029EF48(void *arg0) {
     *((unsigned char *)arg0 + 0x68) = 1;
 }
