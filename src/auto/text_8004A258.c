@@ -11,8 +11,7 @@ extern void *OSGetMEM1ArenaHi(void);
 extern void *OSGetMEM2ArenaLo(void);
 extern void *OSGetMEM2ArenaHi(void);
 
-static const char __OSVersion_str[] = "<< RVL_SDK - OS \trelease build: Sep 21 2006 14:32:13 (0x4200_60422) >>";
-const char *__OSVersion = __OSVersion_str;
+const char *__OSVersion = "<< RVL_SDK - OS \trelease build: Sep 21 2006 14:32:13 (0x4200_60422) >>\0";
 
 typedef enum {
     OS_CONSOLE_MASK = 0xF0000000,
