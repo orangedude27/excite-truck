@@ -11,7 +11,8 @@ extern void *OSGetMEM1ArenaHi(void);
 extern void *OSGetMEM2ArenaLo(void);
 extern void *OSGetMEM2ArenaHi(void);
 
-const char *__OSVersion = "<< RVL_SDK - OS \trelease build: Sep 21 2006 14:32:13 (0x4200_60422) >>";
+static const char __OSVersion_str[] = "<< RVL_SDK - OS \trelease build: Sep 21 2006 14:32:13 (0x4200_60422) >>";
+const char *__OSVersion = __OSVersion_str;
 
 typedef enum {
     OS_CONSOLE_MASK = 0xF0000000,
@@ -58,6 +59,8 @@ void __OSGetIOSRev(void *arg_rev) {
     rev->verMinor = version;
 }
 
+#pragma push
+#pragma readonly_strings off
 void ReportOSInfo_8004AA40(void) {
     u32 type;
     u32 category;
@@ -133,7 +136,7 @@ void ReportOSInfo_8004AA40(void) {
     OSReport("MEM1 Arena : 0x%x - 0x%x\n", OSGetMEM1ArenaLo(), OSGetMEM1ArenaHi());
     OSReport("MEM2 Arena : 0x%x - 0x%x\n", OSGetMEM2ArenaLo(), OSGetMEM2ArenaHi());
 }
-
+#pragma pop
 void __OSDBIntegrator(void) {
     volatile u32 *p = (volatile u32 *)0x48;
     * (volatile u32 *)0x4C = __builtin_return_address(0);
