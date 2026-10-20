@@ -146,11 +146,10 @@ int fn_802E4408(int unused, void *arg0) {
     }
 }
 
-#pragma scheduling off
+#pragma scheduling on
 void fn_802E442C(void) {
     OSReport((const char *)&lbl_8055D1BC);
 }
-#pragma scheduling on
 int fn_802E4438(void *arg0) {
     return *(int *)((char *)arg0 + 0x8C);
 }
