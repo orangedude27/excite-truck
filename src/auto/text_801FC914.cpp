@@ -95,21 +95,23 @@ extern "C" void fn_801FCAC0(void* arg0) {
     }
 }
 
-void fn_801FCAE0(void* arg0, void* arg1) {
+extern "C" void fn_801FCAE0(void* arg0, void* arg1) {
+    float zero = lbl_80563034;
+    float one = lbl_80563030;
     *(void**)((char*)arg0 + 4) = arg1;
     *(int*)((char*)arg0 + 0x3C) = 0;
-    *(float*)((char*)arg0 + 0xC) = lbl_80563030;
-    *(float*)((char*)arg0 + 0x10) = lbl_80563034;
-    *(float*)((char*)arg0 + 0x14) = lbl_80563034;
-    *(float*)((char*)arg0 + 0x18) = lbl_80563034;
-    *(float*)((char*)arg0 + 0x1C) = lbl_80563030;
-    *(float*)((char*)arg0 + 0x20) = lbl_80563034;
-    *(float*)((char*)arg0 + 0x24) = lbl_80563034;
-    *(float*)((char*)arg0 + 0x28) = lbl_80563034;
-    *(float*)((char*)arg0 + 0x2C) = lbl_80563030;
-    *(float*)((char*)arg0 + 0x30) = lbl_80563034;
-    *(float*)((char*)arg0 + 0x34) = lbl_80563034;
-    *(float*)((char*)arg0 + 0x38) = lbl_80563034;
+    *(float*)((char*)arg0 + 0xC) = one;
+    *(float*)((char*)arg0 + 0x10) = zero;
+    *(float*)((char*)arg0 + 0x14) = zero;
+    *(float*)((char*)arg0 + 0x18) = zero;
+    *(float*)((char*)arg0 + 0x1C) = one;
+    *(float*)((char*)arg0 + 0x20) = zero;
+    *(float*)((char*)arg0 + 0x24) = zero;
+    *(float*)((char*)arg0 + 0x28) = zero;
+    *(float*)((char*)arg0 + 0x2C) = one;
+    *(float*)((char*)arg0 + 0x30) = zero;
+    *(float*)((char*)arg0 + 0x34) = zero;
+    *(float*)((char*)arg0 + 0x38) = zero;
     *(float*)((char*)arg0 + 0x30) = *(float*)((char*)arg1 + 0x10);
     *(float*)((char*)arg0 + 0x34) = *(float*)((char*)arg1 + 0x14);
     *(float*)((char*)arg0 + 0x38) = *(float*)((char*)arg1 + 0x18);
