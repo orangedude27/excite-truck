@@ -5,12 +5,7 @@ extern int fn_802368B4(int);
 
 extern char lbl_8055EFAC;
 int fn_80216D14(int arg0) {
-    register int result;
-    register int sign;
-    result = 1;
-    sign = arg0 >> 31;
-    result = result << arg0;
-    return result & ~sign;
+    return arg0 < 0 ? 0 : 1 << arg0;
 }
 
 void fn_80216D28(void) {
