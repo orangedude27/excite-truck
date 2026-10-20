@@ -168,7 +168,7 @@ void fn_801B49C8(void *arg0) {
 extern int fn_801B4B44(char *);
 extern void fn_801B4C9C(int, int);
 extern void fn_801B4C58();
-extern void fn_801B4C60(int);
+extern void fn_801B4C60();
 extern float fn_801B4D10(int, int);
 int fn_801B49D4(void *arg0, void **arg1, void **arg2, float *arg3, int arg4) {
     int index;
