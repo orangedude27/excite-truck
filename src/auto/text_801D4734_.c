@@ -1046,10 +1046,11 @@ s32 fn_801D839C(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x18) == 0;
 }
 
-void fn_801D83AC(void *arg0) {
-    (*(void (**)(void *))((char *)*(void **)arg0 + 0x34))(arg0);
+#pragma cplusplus on
+extern "C" void fn_801D83AC(void *arg0) {
+    ((TObj34 *)arg0)->v34();
 }
-
+#pragma cplusplus reset
 s32 fn_801D83BC(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x30) == 0;
 }
