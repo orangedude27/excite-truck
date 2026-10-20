@@ -166,7 +166,6 @@ unsigned char fn_802E8504(int index) {
 
 extern float lbl_80565164, lbl_80565170, lbl_80565198, lbl_8056519C;
 extern unsigned char lbl_80505978[];
-void fn_802E8528(int, float, float);
 void fn_802E8524(void) {}
 
 void fn_802E8528(int index, float value, float unused) {
