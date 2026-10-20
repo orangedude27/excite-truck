@@ -7,3 +7,8 @@ extern void *lbl_8055F660;
 extern s32 lbl_8055F668;
 extern s32 lbl_804B2FC0[];
 void fn_8000D838(void *);
+void fn_8027E8B8(void);
+
+#include <macros.h>
+
+DECL_SECTION(".ctors") funcptr_t D_802ED6B4 = fn_8027E8B8;
