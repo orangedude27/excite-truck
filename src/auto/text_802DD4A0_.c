@@ -20,6 +20,44 @@ void *fn_802DD4A0(void *arg0, int arg1) {
     return local;
 }
 
+extern unsigned short lbl_8055FED0;
+extern unsigned short lbl_8055FED4;
+extern char lbl_8034CB50[];
+extern char lbl_8034CB5C[];
+void *fn_802D2D14(void);
+void *fn_801284F8(int, void *);
+int fn_8012850C(int, void *);
+void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, int);
+void GXInitTexObjFilter(void *, int, int);
+void fn_802DD4FC(void) {
+    void *info;
+    int width;
+    int height;
+    void *obj;
+    int pixels;
+    info = fn_802D2D14();
+    width = *(unsigned short *)((char *)info + 4);
+    height = *(unsigned short *)((char *)info + 6);
+    lbl_8055FED0 = width;
+    lbl_8055FED4 = height;
+    obj = fn_801284F8(0x50, lbl_8034CB50);
+    if (obj != 0) {
+        *(unsigned char *)((char *)obj + 0x4C) = 1;
+        if (width != 0) {
+            width = (width + (width >> 31)) >> 1;
+            height = (height + (height >> 31)) >> 1;
+        }
+        *(int *)((char *)obj + 0x44) = width;
+        *(int *)((char *)obj + 0x48) = height;
+        pixels = fn_8012850C(height * (width * 2), lbl_8034CB5C);
+        *(int *)((char *)obj + 0x40) = pixels;
+        GXInitTexObj(obj, (void *)pixels, (unsigned short)width, (unsigned short)height, 4, 0, 0, 0);
+        GXInitTexObjFilter(obj, 1, 1);
+        *(unsigned char *)((char *)obj + 0x4D) = 0;
+    }
+    lbl_8055FED8 = obj;
+}
+
 void fn_802DD5F4(void) {
     void *temp_r31 = lbl_8055FED8;
 
@@ -30,6 +68,37 @@ void fn_802DD5F4(void) {
     lbl_8055FED8 = 0;
 }
 
+extern float lbl_80565088, lbl_8056508C, lbl_80565090, lbl_80565094;
+void fn_802DD63C(int count) {
+    float f0 = lbl_80565090;
+    float f1 = lbl_8056508C;
+    float f2 = lbl_80565094;
+    float f3 = lbl_80565088;
+    int i;
+    float *entry;
+
+    *(int *)((char *)lbl_804DB6A0 + 0x90) = count;
+    entry = lbl_804DB6A0;
+    for (i = 0; i < *(int *)((char *)lbl_804DB6A0 + 0x90); entry += 9, i++) {
+        if (*(int *)((char *)lbl_804DB6A0 + 0x90) < 3) {
+            entry[0] = f3; entry[1] = f1; entry[4] = f0; entry[5] = f1;
+        } else if (i % 2 == 0) {
+            entry[0] = f3; entry[1] = f0; entry[4] = f0; entry[5] = f2;
+        } else {
+            entry[0] = f0; entry[1] = f1; entry[4] = f2; entry[5] = f1;
+        }
+        if (*(int *)((char *)lbl_804DB6A0 + 0x90) == 1) {
+            entry[2] = f1; entry[3] = f3; entry[6] = f0; entry[7] = f1;
+        } else if (i < (*(int *)((char *)lbl_804DB6A0 + 0x90) + 1) / 2) {
+            entry[2] = f1; entry[3] = f0; entry[6] = f0; entry[7] = f2;
+        } else {
+            entry[2] = f0; entry[3] = f3; entry[6] = f2; entry[7] = f1;
+        }
+        entry[8] = f0;
+    }
+    *(unsigned char *)((char *)lbl_8055FED8 + 0x4D) = 0;
+}
+
 void fn_802DD738(int arg0, float farg0) {
     *(float *)((char *)lbl_804DB6A0 + (arg0 * 0x24) + 0x20) = farg0;
 }
@@ -37,6 +106,9 @@ void fn_802DD738(int arg0, float farg0) {
 void fn_802DD750(void) {
 }
 
+void fn_802DE774(void) {
+    *(int *)((char *)lbl_804DB6A0 + 0x90) = 0;
+}
 void fn_802DEA6C(void* alarm) {
     fn_802D3360(fn_802DEF70(alarm));
 }
