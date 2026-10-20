@@ -603,7 +603,7 @@ extern void fn_8016A438(void);
 s32 fn_8016FFE4(void) { return 0x1408; }
 
 extern f64 fn_8002F234(f32, f32, f32, f32, f32);
-void fn_80170DA8(void *arg0, void *arg1, void *arg2) {
+void fn_80170DA8(void *arg0, void *arg1) {
     s32 index;
     s32 next;
     s32 *pool;
