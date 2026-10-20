@@ -30,8 +30,12 @@ extern s32 lbl_8055F700;
 extern f32 lbl_8056434C;
 
 extern s32 fn_80128668(void);
-#pragma scheduling on
-void fn_8028A784(void) {
+#pragma cplusplus on
+extern "C" void fn_8028A784(void) {
+    class Obj {
+    public:
+        virtual void v0(int);
+    };
     extern void fn_801EF024(void *);
     extern s32 fn_8028BB14(s32);
     extern s32 fn_8028BA9C(void *);
@@ -41,7 +45,7 @@ void fn_8028A784(void) {
     extern void fn_802976DC(s32);
     extern void *fn_8028C8C0(void *, s32);
     extern void fn_8028BC1C(s32, s32);
-    struct Obj8028 *p;
+    void *p;
     fn_801EF024((void *)fn_8028BB14);
     fn_801EF024((void *)fn_8028BA9C);
     fn_801EF024((void *)fn_8028BA44);
@@ -52,7 +56,7 @@ void fn_8028A784(void) {
     if (lbl_8055F700) fn_802976DC(lbl_8055F700);
     lbl_8055F700 = 0;
     p = lbl_8055F6FC;
-    if (p) ((void (*)(void *, s32))p->vtable[2])(p, 1);
+    if (p) ((Obj *)p)->v0(1);
     lbl_8055F6FC = 0;
     fn_8028C8C0((void *)lbl_8055F6F8, 1);
     lbl_8055F6F8 = 0;
@@ -61,6 +65,7 @@ void fn_8028A784(void) {
     fn_8028BC1C(lbl_8055F6F4, 1);
     lbl_8055F6F4 = 0;
 }
+#pragma cplusplus off
 s32 fn_8028A85C(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
