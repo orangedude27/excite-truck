@@ -104,6 +104,14 @@ void fn_801D6600(int arg0) {
     }
 }
 
+#pragma scheduling invalid_target
+void fn_801D6618(UnkStruct_801D701C *arg0) {
+    extern char lbl_80338C40[];
+    arg0->name = lbl_80338C40;
+    arg0->state = 0;
+}
+#pragma scheduling reset
+
 int fn_801D6630(int arg0, int arg1) {
     if (arg0 != 0) {
         ((int *)arg0)[1] = 0;
