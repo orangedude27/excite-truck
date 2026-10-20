@@ -21,7 +21,7 @@ struct Dummy_801B8318 {
     virtual void f14();
     virtual void f15();
     virtual void f16();
-    virtual void f17(void *);
+          virtual int f17(void *);
     virtual void f18(void *);
     virtual void f19(void *);
     virtual void f20();
@@ -260,17 +260,14 @@ extern "C" void fn_801B8778(void) {
 extern "C" void fn_801B878C(void) {
     ((Dummy_801B8318 *)lbl_8055E744)->f47();
 }
-#pragma cplusplus off
-int fn_801B87A0(int arg0, int arg1) {
-    void **vtable;
-    int (*call)(void *, int, int);
+#pragma cplusplus on
+extern "C" int fn_801B87A0(int arg0, int arg1) {
     extern int fn_80161B0C(void);
+    Dummy_801B8318 *obj = (Dummy_801B8318 *)lbl_8055E744;
     if (fn_80161B0C() != 0) return 1;
-    vtable = *(void ***)lbl_8055E744;
-    call = (int (*)(void *, int, int))vtable[35];
-    return call(lbl_8055E744, arg0, arg1);
+    return obj->f36(obj, arg0, arg1);
 }
-
+#pragma cplusplus off
 int fn_801B8804(void) { return 0; }
 
 #pragma cplusplus on
