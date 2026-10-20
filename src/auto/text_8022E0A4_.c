@@ -1,6 +1,10 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#include <types.h>
+
+void fn_8022E0A4(void);
+DECL_SECTION(".ctors") funcptr_t D_802ED3C4 = fn_8022E0A4;
 extern char lbl_8055EFD8[4];
 extern int lbl_80497DF8[5];
 extern int fn_8000D838(void*);
