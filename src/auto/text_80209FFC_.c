@@ -51,7 +51,7 @@ void fn_8020A648(s32 arg0) {
 #pragma scheduling on
 s32 fn_80127D58(void*);
 s32 fn_8012E498(void*);
-s32 fn_80207924(void);
+void fn_80207924();
 int sprintf(char*, const char*, ...);
 extern u8 fn_8020A100[];
 extern s8 lbl_8055EDD0;
