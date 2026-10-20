@@ -6,6 +6,7 @@ extern void *lbl_8055F3C8;
 extern s32 lbl_8055F3D0;
 extern s32 lbl_80498EE8[];
 void fn_8000D838(void *);
+void fn_8025FE3C(void);
 
 #pragma scheduling invalid_target
 #pragma opt_propagation off
