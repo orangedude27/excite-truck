@@ -299,7 +299,7 @@ void fn_801B157C(void *arg0,s32 arg1) {
 }
 
 #pragma dont_inline on
-void fn_801B18B8(s32 arg1, s32 arg2) {
+void fn_801B18B8(void *arg0, s32 arg1, s32 arg2) {
     f32 p0[4]; f32 p1[2];
     void *obj = lbl_8055E684;
     f32 scale=*(f32*)((u8*)obj+0x5BC);
