@@ -21,8 +21,10 @@ extern "C" f32 fn_801452B4(f32);
 extern "C" f32 lbl_805615D4;
 extern "C" void fn_801470B0(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" void fn_80148DFC(void *);
-extern "C" void fn_80148E6C(void *);
-extern "C" void fn_80148EDC(void *);
+  extern "C" void fn_80148E6C(void *);
+  extern "C" void fn_80148EDC(void *);
+  extern "C" void fn_80235380();
+  extern "C" void fn_80128668(void *);
 
 class ThreadObject80144F40 {
 public:
@@ -586,7 +588,8 @@ extern "C" void *__dt__24J3DUMtxAnmCacheTableBaseFv_8014641C(void *arg0, s32 arg
     extern void fn_80235380();
     extern void fn_80128668(void *);
     if (arg0 != 0) {
-        if (*(s32 *)((char *)arg0 + 8)) fn_80235380();
+        arg0 = *(void **)((char *)arg0 + 8);
+        if (arg0 != 0) fn_80235380();
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
@@ -861,14 +864,13 @@ extern "C" void fn_8014784C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         ((void (*)(void *, void *, u32))fn_80145CF4)((void *)result1, (void *)result2, (u32)arg3);
 }
 
-#pragma dont_inline on
 extern "C" void fn_801478E0(void *arg0, s32 unused, s32 arg1, s32 arg2) {
     s32 result = ((s32 (**)(void *))(*(void ***)arg0))[5](arg0);
     if (result != 0 && arg1 != 0)
         fn_80145CF4((void *)result, (void *)arg1, (u32)arg2);
 }
-#pragma push
 #pragma dont_inline on
+#pragma push
 extern "C" void fn_80147940(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     class V {
     public:
@@ -909,10 +911,12 @@ extern "C" void fn_80147ABC(void *arg0, void *arg1, const char *format, f64 valu
     fn_80147314(buffer, (const char *)&lbl_80559E1C, text);
 }
 
-  extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
-    u32 tmp;
-    fn_80147DC0(&tmp, arg0, arg1);
-    fn_801476D8(&tmp, fn_80147C50(arg2, arg3, arg5), arg4);
+extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
+    f32 pad[8];
+    s32 sp[4];
+    u32 *tmp = (u32 *)sp;
+    fn_80147DC0(tmp, arg0, arg1);
+    fn_801476D8(tmp, fn_80147C50(arg2, arg3, arg5), arg4);
 }
 
 #pragma push
