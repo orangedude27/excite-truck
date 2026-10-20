@@ -1,6 +1,7 @@
 extern int *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(int);
 extern void fn_80165FAC(void);
+extern void fn_80163550(int);
 extern void fn_80166754(void *);
 extern void *fn_801284F8(int, void *);
 extern void *fn_8012850C(int, void *);
