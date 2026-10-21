@@ -234,7 +234,7 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
         break;
     }
     *outWidths = widths;
-    *outCode = GetFontCode(first);
+    *outCode = GetFontCode(format, first);
     return next;
 }
 
