@@ -2,6 +2,17 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int lbl_804230D0;
+extern int lbl_80423054;
+extern int lbl_8042F4B8;
+extern char lbl_8055E048;
+extern void fn_8013111C(void);
+
+typedef struct {
+    int f[26];
+    char pad[12];
+    char f2;
+} MsgCopy;
+
 extern int lbl_802F8E60[];
 extern int lbl_8055E04C;
 extern int lbl_8055E050;
@@ -36,6 +47,54 @@ void fn_8013028C(void) {
 
 int fn_80130390(void) {
     return lbl_802F8E60[lbl_8055E04C * 3];
+}
+
+extern int lbl_80423054;
+extern int lbl_8042F4B8;
+extern char lbl_8055E048;
+extern void fn_8013111C(void);
+void fn_801303A8(void) {
+    int *src = (int *)(lbl_8042F4B8 + 0x58);
+    int *dst = (int *)(lbl_80423054 + 0x58);
+    char c;
+
+    lbl_8055E048 = 1;
+    lbl_804230D0 = -1;
+    fn_8013111C();
+    dst[2] = src[0];
+    dst[4] = src[1];
+    dst[5] = src[2];
+    c = *(char *)(src + 0x18);
+    dst[6] = src[3];
+    dst[7] = src[4];
+    dst[8] = src[5];
+    dst[9] = src[6];
+    dst[10] = src[7];
+    dst[11] = src[8];
+    dst[12] = src[9];
+    dst[13] = src[10];
+    dst[14] = src[11];
+    dst[15] = src[12];
+    dst[16] = src[13];
+    dst[17] = src[14];
+    dst[18] = src[15];
+    dst[19] = src[16];
+    dst[20] = src[17];
+    dst[21] = src[18];
+    dst[22] = src[19];
+    dst[23] = src[20];
+    dst[24] = src[21];
+    dst[25] = src[22];
+    dst[26] = src[23];
+    dst[27] = src[24];
+    dst[28] = src[25];
+    dst[29] = src[26];
+    *(char *)(dst + 0x78) = c;
+    if (c == 0) {
+        *(char *)lbl_80423054 = 0x2C;
+    } else {
+        *(char *)lbl_80423054 = 0x2E;
+    }
 }
 
 void fn_80130518(void) {
