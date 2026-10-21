@@ -36,6 +36,59 @@ extern u32 lbl_80560D28;
 
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80316570[];
+
+typedef struct {
+    UINT16 dl_len;
+    UINT8 *dsc_list;
+} tBTA_HH_DEV_DESCR;
+
+typedef struct {
+    UINT16 vendor_id;
+    UINT16 product_id;
+    UINT16 version;
+    UINT16 ssr_max_latency;
+    UINT16 ssr_min_tout;
+    UINT8 ctry_code;
+    tBTA_HH_DEV_DESCR descriptor;
+} tBTA_HH_DEV_DSCP_INFO;
+
+typedef struct {
+    tBTA_HH_DEV_DSCP_INFO dscp_info;
+    UINT8 addr[6];
+    UINT16 attr_mask;
+    UINT16 w4_evt;
+    UINT8 index;
+    UINT8 sub_class;
+    UINT8 sec_mask;
+    UINT8 app_id;
+    UINT8 hid_handle;
+    UINT8 vp;
+    UINT8 in_use;
+    UINT8 incoming_conn;
+    UINT8 opened;
+    UINT8 mode;
+    UINT8 state;
+} tBTA_HH_DEV_CB;
+
+typedef struct {
+    UINT8 kb_cb[0x100];
+    tBTA_HH_DEV_CB kdev[0x10];
+    tBTA_HH_DEV_CB *p_cur;
+    UINT8 cb_index[0x10];
+    void (*p_cback)(int, void *);
+    void *p_disc_db;
+    UINT8 trace_level;
+    UINT8 cnt_num;
+    UINT8 w4_disable;
+} tBTA_HH_CB;
+
+extern tBTA_HH_CB *bta_hh_cb_ptr;
+#define bta_hh_cb (*bta_hh_cb_ptr)
+
+enum { BTA_HH_OK = 0, BTA_HH_ERR = 1 };
+#define BTA_HH_DISABLE_EVT 1
+#define BTA_HH_API_CLOSE_EVT 0x1701
+extern void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data);
 extern u8 lbl_80315CA0[];
 extern u8 lbl_80559060[];
 extern s32 btsnd_hcic_reset_800857CC(void);
@@ -3329,6 +3382,22 @@ void btu_hcif_connection_request_evt(u8 *event) {
     } else {
         btm_sco_conn_req(bda, dev_class, link_type);
     }
+}
+
+void btu_hcif_qos_setup_comp_evt(void *event) {
+    register u8 *p = (u8 *)event;
+    FLOW_SPEC flow;
+    UINT8 status;
+    UINT16 handle;
+    status = p[0];
+    handle = (UINT16)((p[1] + (p[2] << 8)));
+    flow.qos_flags = p[3];
+    flow.service_type = p[4];
+    flow.token_rate = ((u32)p[8] << 24) + ((u32)p[7] << 16) + ((u32)p[6] << 8) + p[5];
+    flow.peak_bandwidth = ((u32)p[12] << 24) + ((u32)p[11] << 16) + ((u32)p[10] << 8) + p[9];
+    flow.latency = ((u32)p[16] << 24) + ((u32)p[15] << 16) + ((u32)p[14] << 8) + p[13];
+    flow.delay_variation = ((u32)p[20] << 24) + ((u32)p[19] << 16) + ((u32)p[18] << 8) + p[17];
+    btm_qos_setup_complete(status, handle, &flow);
 }
 
 void btu_hcif_esco_connection_comp_evt(u8 *p) {
