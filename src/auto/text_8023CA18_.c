@@ -54,7 +54,7 @@ extern s32 lbl_803415E8;
 typedef struct Obj8023 {
     u8 pad[0x18];
     s32 f18;
-    u8 pad1[4];
+    s32 f1c;
     s32 f20;
     s32 f24;
     char *f28;
