@@ -1,4 +1,5 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern float lbl_80558ED0;
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 #include "revolution/MTX/mtxtypes.h"
