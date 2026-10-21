@@ -18,6 +18,7 @@ extern long lbl_8055EEC4;
 extern long lbl_8055EED0;
 extern long lbl_8055EED4;
 extern long lbl_8055B658;
+extern long __AXFXGetLfoSinTable_801769CC();
 extern long lbl_8055B674;
 extern long lbl_8033C970;
 extern float lbl_80563400;
