@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_804A4380[];
+long fn_8000D984(long);
 long fn_8027B8E4(void *, long);
 void *fn_8027B834(void *);
 void fn_8027B984(void *, long);
@@ -117,7 +118,6 @@ void fn_8027B94C(void *arg0) {
 }
 
 #pragma dont_inline on
-long fn_8000D984(long);
 void fn_8027B984(void *arg0, long arg1) {
     long temp_r30;
     long temp_r31;
@@ -344,6 +344,17 @@ long fn_8027C71C(void *arg0) {
 
 long fn_8027C650(void);
 extern char lbl_80347A50[];
+#pragma cplusplus on
+class Dummy_8027C788_Item {
+public:
+    virtual const char *v2();
+    virtual long v5(const char *);
+};
+class Dummy_8027C788_Container {
+public:
+    virtual Dummy_8027C788_Item *v24(long);
+};
+#pragma cplusplus off
 #pragma dont_inline on
 long fn_8027C788(void *arg0) {
     void *item;
