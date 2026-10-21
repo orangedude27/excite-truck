@@ -4,6 +4,7 @@
 #include <types.h>
 #include <revolution/GX/GXTypes.h>
 #include <revolution/GX/GXTev.h>
+extern void *lbl_8055FEE8;
 extern void fn_802D3144(void);
 extern void GXSetNumIndStages(u8);
 extern void GXSetTevDirect(GXTevStageID);
