@@ -99,7 +99,7 @@ extern "C" s32 lbl_8055DD2C;
 extern "C" s32 NANDInit(void);
 extern "C" s32 NANDGetCurrentDir(char *);
 extern "C" s32 lbl_80405D18;
-extern "C" s32 fn_800BA49C(s32, s32, s32, s32, ...);
+extern "C" s32 fn_800BA49C(s32, s32, s32, s32, s32 *);
 extern "C" const char lbl_8031B190[];
 extern "C" const char lbl_8031B1C0[];
 extern "C" s32 fn_800B76E8(s8);
@@ -2427,7 +2427,7 @@ extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
         return 1;
     }
     val = *(s32 *)(lbl_80407300 + 4);
-    return fn_800BA49C(arg3, arg1, arg2, val);
+    return fn_800BA49C(arg3, arg1, arg2, val, (s32 *)arg4);
 }
 
 extern "C" s32 fn_800BA688(void *, s32, s32, s32, s32 *, ...);
@@ -2435,7 +2435,7 @@ extern "C" s32 fn_800BA1CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 val;
     if (arg0 == 0 || arg1 == 0 || arg4 == 0) return 1;
     val = *(s32 *)(lbl_80407300 + 4);
-    return fn_800BA688((void *)arg3, arg1, arg2, val, (s32 *)arg4, 0);
+    return fn_800BA688((void *)arg3, arg1, arg2, val, (s32 *)arg4);
 }
 
 extern "C" s32 fn_800BA204(s32 arg0) {
