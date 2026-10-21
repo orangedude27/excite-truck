@@ -53,7 +53,7 @@ extern "C" int fn_8015ED54(void **node) {
     public:
         virtual char *getName();
     };
-    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055A070) == 0;
+    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055A078) == 0;
 }
 #pragma cplusplus reset
 #pragma pop
