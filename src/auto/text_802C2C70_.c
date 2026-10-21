@@ -7,6 +7,7 @@ extern short lbl_8055FB92;
 extern short lbl_8055FB94;
 void fn_8000D838(void*);
 
+#pragma optimization_level 2
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
