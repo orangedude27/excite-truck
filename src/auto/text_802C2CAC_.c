@@ -263,6 +263,7 @@ void fn_802C3850(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     fn_802E317C(lbl_8034B094, (s32)*(s8 *)arg0, (s32)*(s8 *)arg5);
 }
 
+// Keep the target scheduling and helper calls: these reproduce the original copy loop.
 #pragma dont_inline on
 #pragma scheduling invalid_target
 void fn_802C3C68(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
