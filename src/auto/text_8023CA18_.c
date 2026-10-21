@@ -51,3 +51,20 @@ void fn_8023D1F8(void) {}
 
 extern s32 lbl_8055BB68;
 extern s32 lbl_803415E8;
+typedef struct Obj8023 {
+    u8 pad[0x18];
+    s32 f18;
+    u8 pad1[4];
+    s32 f20;
+    s32 f24;
+    char *f28;
+    s32 f2c;
+    s32 f30;
+    s32 f34;
+} Obj8023;
+typedef struct Vtbl8023 {
+    void *v0;
+    void *v1;
+    void *v2;
+    const char *(*v3)(void *);
+} Vtbl8023;
