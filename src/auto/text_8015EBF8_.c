@@ -40,12 +40,17 @@ int fn_8015ECC0(void *arg0) {
 
 #pragma push
 #pragma auto_inline off
-int fn_8015ED18(void **arg0) {
-    int *vt = (int *)*arg0;
-    char *(*method)(void *) = (char *(*)(void *))vt[2];
-    char *name = method(arg0);
-    return stricmp(name, lbl_8055A070) == 0;
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_8015ED18(void **node) {
+    class NameNode {
+    public:
+        virtual char *getName();
+    };
+    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055A070) == 0;
 }
+#pragma cplusplus reset
+#pragma pop
 #pragma push
 #pragma cplusplus on
 extern "C" int fn_8015ED54(void **node) {
