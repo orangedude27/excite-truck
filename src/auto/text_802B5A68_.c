@@ -149,8 +149,7 @@ extern s32 fn_802E2C20(void);
 #pragma processor 750
 #pragma scheduling 750
 void fn_802B5E24(s32 arg0) {
-    s32 a = arg0;
-    lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, a);
+    lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
     lbl_8055FA08 = lbl_80564C5C;
 }
 
@@ -420,7 +419,7 @@ extern s32 lbl_8034A808;
 extern s32 lbl_8034A814;
 s32 fn_802B6E30(void);
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
     s32 scale = fn_802B6E30();
     s32 delta = arg1 - (arg2 >> 1);
