@@ -191,7 +191,7 @@ int OSLoadFont(int arg0, int arg1) {
     return result;
 }
 
-extern int GetFontCode();
+extern unsigned short GetFontCode(unsigned int, unsigned short);
 extern unsigned short lbl_803049F0[];
 extern unsigned short lbl_80304B70[];
 extern int *lbl_8055DA50;
