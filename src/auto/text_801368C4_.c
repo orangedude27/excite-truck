@@ -6,10 +6,12 @@ extern void fn_8000D838(void *);
 extern s32 lbl_8055E0B8;
 extern s32 lbl_8055E0C0;
 extern s32 lbl_8055E0C4;
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma opt_dead_assignments off
 void fn_801368C4(void) {
     fn_8000D838(&lbl_8055E0B8);
-    lbl_8055E0C4 = 0x7F000000;
-    lbl_8055E0C0 = 0xFFFF0000;
+    *(u64 *)&lbl_8055E0C0 = 0xFFFF00007F000000ULL;
 }
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
