@@ -2,6 +2,12 @@
 // split_file divides it into the game's real files (file_status shows its range).
 typedef int s32;
 extern float lbl_80562B2C;
+extern float lbl_80562B28;
+extern float lbl_80562B30;
+extern int lbl_8055E960;
+extern void fn_802C7040(int);
+extern void fn_802C9900(float);
+extern void fn_802C9904(void);
 extern unsigned int lbl_8055AD90;
 extern const char lbl_803391EC[];
 extern int strcmp(const char *, const char *);
@@ -118,6 +124,43 @@ void *fn_801D9260(int count) {
         count--;
     } while (count >= 0);
     return node;
+}
+
+void fn_801D9394(void **head, void **manager, const char *name, int arg3) {
+    float value = lbl_80562B2C;
+    int index = 0;
+    int n;
+    void *item;
+    void *node;
+    const char *text;
+    char *out;
+    for (;;) {
+        item = ((void *(*)(void *, int))(*(void ***)manager)[0x60 / 4])(manager, index);
+        if (item == 0) break;
+        if (strcmp(((const char *(*)(void *))(*(void ***)item)[2])(item), name) == 0) {
+            node = fn_801284F8(0x58, name);
+            if (node != 0) {
+                *(void **)((char *)node + 0x28) = (char *)node + 0x34;
+                *(int *)((char *)node + 0x30) = 8;
+                *(int *)((char *)node + 0x2C) = 0;
+                text = ((const char *(*)(void *, unsigned int))(*(void ***)item)[0x14 / 4])(item, lbl_8055AD90);
+                out = (char *)node + 0x34;
+                n = 0x20;
+                while (*text != 0 && n > 0) {
+                    *out++ = *text++;
+                    n--;
+                }
+                if (n == 0) out[-1] = 0;
+                *(int *)((char *)node + 0x24) = 0;
+                fn_801D94DC((char *)node + 0x24, item, lbl_803391EC, arg3);
+                *(int *)((char *)node + 0x54) = 0;
+                *(float *)((char *)node + 0x20) = value;
+            }
+            *(void **)((char *)node + 0x54) = *head;
+            *head = node;
+        }
+        index++;
+    }
 }
 
 void fn_801D9828(void) {
