@@ -38,16 +38,16 @@ void fn_8022E9E0(void) {
     if (fn_8012A2D8(lbl_8055EFF8)) ++lbl_8055EFF4;
 }
 
-void fn_8022EA58(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_8022EA58(void *arg0) {
+    class Unk8022EA58 { public: virtual ~Unk8022EA58(); };
     fn_8012A364(lbl_8055EFF8, arg0);
     if (--lbl_8055EFF4 == 0) {
-        if (lbl_8055EFF8) {
-            ((void (**)(void *, int))*lbl_8055EFF8)[2](lbl_8055EFF8, 1);
-        }
+        delete (Unk8022EA58 *)lbl_8055EFF8;
         lbl_8055EFF8 = 0;
     }
 }
-
+#pragma cplusplus reset
 void fn_8022EAB8(void) {
     if (lbl_8055EFFC == 0) {
         void *p = fn_801284F8(0x20, (void *)&lbl_80340290);

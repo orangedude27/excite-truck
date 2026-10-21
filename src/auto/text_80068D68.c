@@ -699,6 +699,44 @@ UINT16 GKI_update_timer_list(TIMER_LIST_Q *p_timer_listq, INT32 num_units_since_
     return num_time_out;
 }
 
+void GKI_add_to_timer_list(TIMER_LIST_Q *p_timer_list, TIMER_LIST_ENT *p_tle) {
+    TIMER_LIST_ENT *p_entry;
+    INT32 ticks;
+
+    if (p_tle->ticks < 0) return;
+    if (p_tle->ticks >= p_timer_list->last_ticks) {
+        if (p_timer_list->p_first == NULL) {
+            p_timer_list->p_first = p_tle;
+        } else {
+            if (p_timer_list->p_last != NULL) p_timer_list->p_last->p_next = p_tle;
+            p_tle->p_prev = p_timer_list->p_last;
+        }
+        p_tle->p_next = NULL;
+        p_timer_list->p_last = p_tle;
+        ticks = p_tle->ticks;
+        p_tle->ticks = ticks - p_timer_list->last_ticks;
+        p_timer_list->last_ticks = ticks;
+    } else {
+        p_entry = p_timer_list->p_first;
+        while (p_tle->ticks > p_entry->ticks) {
+            if (p_entry->ticks > 0) p_tle->ticks -= p_entry->ticks;
+            p_entry = p_entry->p_next;
+        }
+        if (p_entry == p_timer_list->p_first) {
+            p_tle->p_next = p_timer_list->p_first;
+            p_timer_list->p_first->p_prev = p_tle;
+            p_timer_list->p_first = p_tle;
+        } else {
+            p_entry->p_prev->p_next = p_tle;
+            p_tle->p_prev = p_entry->p_prev;
+            p_entry->p_prev = p_tle;
+            p_tle->p_next = p_entry;
+        }
+        p_entry->ticks -= p_tle->ticks;
+    }
+    p_tle->in_use = 1;
+}
+
 void GKI_init(void) {
     memset(&gki_cb, 0, sizeof(gki_cb));
 
@@ -1197,6 +1235,34 @@ void fn_80071298(void *a, void *b, void *c) {
     extern u8 lbl_803C0AD8[];
     void (*callback)(s32, void *, void *, void *) = *(void (**)(s32, void *, void *, void *))(lbl_803C0AD8 + 0x84);
     if (callback != 0) callback(7, a, b, c);
+}
+
+void bta_sys_event(BT_HDR *msg) {
+    extern char lbl_80315010[];
+    extern char lbl_80315024[];
+    extern u8 lbl_803C0AD8[];
+    extern void fn_80070954(u32, void *, u16);
+    extern void fn_80073A00(void);
+    u8 id;
+    u8 freebuf = 1;
+
+    if (lbl_8055DC80 >= 4)
+        fn_80070954(0x503, lbl_80315010, msg->event);
+    id = msg->event >> 8;
+    if (lbl_803C0AD8[0x7E] != 0) {
+        if (msg->event == 0x101)
+            fn_80073A00();
+        GKI_freebuf(msg);
+        return;
+    }
+    if (id < 0x1A && *(void **)(lbl_803C0AD8 + id * 4) != 0) {
+        void *reg = *(void **)(lbl_803C0AD8 + id * 4);
+        freebuf = ((u8 (*)(BT_HDR *))*(void **)reg)(msg);
+    } else if (lbl_8055DC80 >= 2) {
+        fn_80070954(0x501, lbl_80315024, id);
+    }
+    if (freebuf)
+        GKI_freebuf(msg);
 }
 
 void fn_8007141C(void) {
@@ -3053,6 +3119,30 @@ void btu_hcif_connection_request_evt(u8 *event) {
     }
 }
 
+void btu_hcif_esco_connection_comp_evt(u8 *p) {
+    u8 status;
+    tBTM_ESCO_DATA data;
+    BD_ADDR bda;
+    u16 handle;
+
+    status = p[0];
+    handle = p[1] + (p[2] << 8);
+    bda[5] = p[3];
+    bda[4] = p[4];
+    bda[3] = p[5];
+    bda[2] = p[6];
+    bda[1] = p[7];
+    bda[0] = p[8];
+    data.link_type = p[9];
+    data.tx_interval = p[10];
+    data.retrans_window = p[11];
+    data.rx_pkt_len = p[12] + (p[13] << 8);
+    data.tx_pkt_len = p[14] + (p[15] << 8);
+    data.air_mode = p[16];
+    memcpy(data.bd_addr, bda, BD_ADDR_LEN);
+    btm_sco_connected(status, bda, handle, &data);
+}
+
 void btu_hcif_hdl_command_complete(UINT16 opcode, UINT8 *param2, UINT16 param3) {
     if (opcode == 0xC14) { btm_read_local_name_complete(param2, param3); return; }
     if (opcode < 0xC14) {
@@ -3331,6 +3421,31 @@ BOOLEAN btsnd_hcic_per_inq_mode(UINT16 max_period, UINT16 min_period, const LAP 
     p[13] = min_period; p[14] = min_period >> 8;
     p[15] = inq_lap[2]; p[16] = inq_lap[1]; p[17] = inq_lap[0];
     p[18] = duration; p[19] = response_cnt;
+    btu_hcif_send_cmd(p);
+    return TRUE;
+}
+
+BOOLEAN btsnd_hcic_create_conn(BD_ADDR dest, UINT16 packet_types, UINT8 page_scan_rep_mode, UINT8 page_scan_mode, UINT16 clock_offset, UINT8 allow_switch) {
+    u8 *p = (u8 *)GKI_getpoolbuf(2);
+    if (p == NULL) return FALSE;
+    *(u16 *)(p + 2) = 0x10;
+    *(u16 *)(p + 4) = 0;
+    p[8] = 5;
+    p[9] = 4;
+    p[10] = 0xD;
+    p[11] = dest[5];
+    p[12] = dest[4];
+    p[13] = dest[3];
+    p[14] = dest[2];
+    p[15] = dest[1];
+    p[16] = dest[0];
+    p[17] = packet_types;
+    p[18] = packet_types >> 8;
+    p[19] = page_scan_rep_mode;
+    p[20] = page_scan_mode;
+    p[21] = clock_offset;
+    p[22] = clock_offset >> 8;
+    p[23] = allow_switch;
     btu_hcif_send_cmd(p);
     return TRUE;
 }
@@ -6162,6 +6277,39 @@ void *fn_80095C64(void **head, u32 attr) {
     return NULL;
 }
 
+tSDP_DISC_REC *SDP_FindServiceInDb(tSDP_DISCOVERY_DB *p_db, UINT16 service_uuid, tSDP_DISC_REC *p_start_rec) {
+    tSDP_DISC_REC *p_rec;
+    tSDP_DISC_ATTR *p_attr;
+    tSDP_DISC_ATTR *p_sattr;
+    if (p_start_rec == NULL)
+        p_rec = p_db->p_first_rec;
+    else
+        p_rec = p_start_rec->p_next_rec;
+    while (p_rec != NULL) {
+        p_attr = p_rec->p_first_attr;
+        while (p_attr != NULL) {
+            if (p_attr->attr_id == ATTR_ID_SERVICE_CLASS_ID_LIST &&
+                SDP_DISC_ATTR_TYPE(p_attr->attr_len_type) == DATA_ELE_SEQ_DESC_TYPE) {
+                for (p_sattr = p_attr->attr_value.v.p_sub_attr; p_sattr != NULL; p_sattr = p_sattr->p_next_attr) {
+                    if (SDP_DISC_ATTR_TYPE(p_sattr->attr_len_type) == UUID_DESC_TYPE &&
+                        SDP_DISC_ATTR_LEN(p_sattr->attr_len_type) == 2 &&
+                        p_sattr->attr_value.v.u16 == service_uuid)
+                        return p_rec;
+                }
+                break;
+            } else if (p_attr->attr_id == ATTR_ID_SERVICE_ID &&
+                SDP_DISC_ATTR_TYPE(p_attr->attr_len_type) == UUID_DESC_TYPE &&
+                SDP_DISC_ATTR_LEN(p_attr->attr_len_type) == 2 &&
+                p_attr->attr_value.v.u16 == service_uuid) {
+                return p_rec;
+            }
+            p_attr = p_attr->p_next_attr;
+        }
+        p_rec = p_rec->p_next_rec;
+    }
+    return NULL;
+}
+
 extern void *fn_80096904(void *, u32, u32);
 UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle) {
     tSDP_RECORD *record;
@@ -6483,6 +6631,15 @@ UINT8 *sdpu_get_len_from_type (UINT8 *p, UINT8 type, UINT32 *p_len)
     }
 
     return (p);
+}
+
+BOOLEAN sdpu_is_base_uuid(UINT8 *uuid) {
+    extern UINT8 lbl_802EED40[];
+    u16 i;
+    for (i = 4; i < 16; i++) {
+        if (lbl_802EED40[i] != uuid[i]) return FALSE;
+    }
+    return TRUE;
 }
 
 BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) {

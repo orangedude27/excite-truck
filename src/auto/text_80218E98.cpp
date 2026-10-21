@@ -2628,6 +2628,23 @@ extern "C" void fn_80226768(void *arg0) {
     }
 }
 
+extern "C" s32 fn_802267C4(void *arg0, s32 arg1) {
+    s32 *temp_r6 = *(s32 **)((u8 *)arg0 + 0x264);
+    s32 (*temp_r12)(s32);
+    if (!temp_r6) return 0;
+    if (*(s32 *)((u8 *)arg0 + 0x260) != *temp_r6) return 0;
+    switch (arg1) {
+    case 0xD:
+        temp_r12 = *(s32 (**)(s32))((u8 *)arg0 + 0x258);
+        if (temp_r12 == 0 || temp_r12(*(s32 *)((u8 *)arg0 + 0x25C)) != 0)
+            fn_802168BC((void *)*(s32 *)((u8 *)arg0 + 0x25C));
+        return 1;
+    case 0x126: fn_80217D84(*(s32 *)((u8 *)arg0 + 0x2C)); fn_80230E90(0); return 1;
+    case 0x128: fn_80217C4C(*(s32 *)((u8 *)arg0 + 0x2C)); fn_80230E90(0); return 1;
+    default: return 0;
+    }
+}
+
 extern "C" s32 fn_802268A0(void *arg0, s32 arg1) {
     s32 *p = *(s32 **)((u8 *)arg0 + 0x264);
     if (p != 0 && *(s32 *)((u8 *)arg0 + 0x260) != *p)

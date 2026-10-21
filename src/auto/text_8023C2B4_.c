@@ -6,7 +6,7 @@
 #include <types.h>
 #include <stdarg.h>
 
-extern char lbl_803414C0[];
+__declspec(section ".data") extern s32 lbl_803414C0;
 
 typedef signed long s32;
 
@@ -84,6 +84,36 @@ void *__dt__Q28PSSystem7SeqHeapFv_8023C79C(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+
+extern void *fn_8012850C(s32, s32 *);
+#pragma push
+#pragma scheduling invalid_target
+void *fn_8023C800(register void *arg0, register s32 arg1, register s32 arg2, ...) {
+  va_list ap;
+  s32 offset;
+  *(unsigned char *)arg0=0;
+  *(s32 *)((char *)arg0+4)=-1;
+  *(unsigned char *)((char *)arg0+8)=0;
+  *(s32 **)((char *)arg0+0xC)=&lbl_80341448;
+  va_start(ap,arg2);
+  *(s32 *)((char *)arg0+0x14)=0;
+  do {
+   (*(s32 *)((char *)arg0+0x14))++;
+  } while(va_arg(ap,s32)!=0);
+  va_end(ap);
+  *(s32 **)((char *)arg0+0x10)=fn_8012850C(*(s32 *)((char *)arg0+0x14)*4,&lbl_803414C0);
+  va_start(ap,arg2);
+  offset=0;
+  do {
+   *(s32 *)((char *)*(s32 **)((char *)arg0+0x10)+offset)=arg2;
+   offset+=4;
+   arg2=va_arg(ap,s32);
+  } while(arg2!=0);
+  va_end(ap);
+  *(s32 *)((char *)arg0+0x18)=arg1;
+  return arg0;
+}
+#pragma pop
 
 void fn_8023C94C(void) {
     fn_8023C55C(lbl_80341430);

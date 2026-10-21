@@ -420,6 +420,7 @@ extern "C" void fn_80145B50(void *arg0, s32 arg1) {
 #pragma dont_inline on
 #pragma push
 #pragma processor 750
+#pragma scheduling invalid_target
 extern "C" void fn_80145B94(void *arg0, u32 arg1) {
     f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
     f32 input = *(f32 *)((u8 *)arg0 + 4);
@@ -430,6 +431,7 @@ extern "C" void fn_80145B94(void *arg0, u32 arg1) {
     s32 a = *(s32 *)((u8 *)arg0 + 0x18);
     fn_8000FF88(a, b, (s32)arg1, last, value, scale);
 }
+#pragma scheduling on
 #pragma pop
 #pragma dont_inline reset
 
@@ -955,9 +957,9 @@ extern "C" s32 fn_80147C50(u32 arg0, u32 arg1, f32 arg2) {
     s32 b = fn_801450A0((arg0 >> 8) & 0xFF, (arg1 >> 8) & 0xFF, arg2);
     s32 c = fn_801450A0((arg0 >> 16) & 0xFF, (arg1 >> 16) & 0xFF, arg2);
     s32 d = fn_801450A0(arg0 >> 24, arg1 >> 24, arg2);
-    s32 hi = ((d & 0xFF) << 24) | ((c & 0xFF) << 16);
     s32 lo = (a & 0xFF) | ((b & 0xFF) << 8);
-    return hi | lo;
+    s32 hi = ((d & 0xFF) << 24) | ((c & 0xFF) << 16);
+    return lo | hi;
 }
 #pragma pop
 extern "C" void fn_80147CEC(void *arg0, s32 arg1, s32 arg2, f64 arg3) {

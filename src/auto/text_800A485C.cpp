@@ -435,6 +435,24 @@ extern "C" s32 fn_800A6624(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s
     return 0;
 }
 
+extern "C" s32 fn_800A6728(void *arg0, s32 arg1) {
+    s16 state = *(s16 *)((u8 *)arg0 + 0xE);
+    s32 result = 0;
+    void *obj;
+    if (state == 1) {
+        if (fn_800B8004(*(s32 *)((u8 *)arg0 + 0x14)) != 0) return 0x14;
+        obj = *(void **)((u8 *)arg0 + 4);
+        result = ((s32 (*)(void *, void *))(*(u32 **)((u8 *)obj + 0xC)))(arg0, obj);
+        if (fn_800B8048(*(s32 *)((u8 *)arg0 + 0x14)) != 0) return 0x14;
+        if (result != 0) {
+            fn_800A71D0(*(void **)((u8 *)arg0 + 0x2C), result);
+            result = 0x15;
+        }
+    } else if (state == 0) return 0xE;
+    if (result == 0 || (u32)arg1 == 1) *(s16 *)((u8 *)arg0 + 0xE) -= 1;
+    return result;
+}
+
 extern "C" s32 fn_800A6808(void *arg0) {
     s16 state = *(s16 *)((u8 *)arg0 + 0xC);
     s32 result;

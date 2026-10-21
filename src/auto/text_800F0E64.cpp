@@ -142,6 +142,30 @@ extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0)
     }
 }
 
+extern "C" s32 ParseNextTick__Q46nw4hbm3snd6detail8SeqTrackFb(void *arg0, u8 arg1) {
+    class Obj { public: virtual void f0(); virtual s32 f1(u8); };
+    Obj *obj = (Obj *)arg0;
+    u8 *flag = (u8 *)arg0 + 0x5E;
+    if (*flag) {
+        if (*(void **)((u8 *)arg0 + 0xB8))
+            return 0;
+        *flag = 0;
+    }
+    s32 *ticks = (s32 *)((u8 *)arg0 + 0x58);
+    if (*ticks > 0 && --*ticks > 0)
+        return 0;
+    if (*(s32 *)((u8 *)arg0 + 0x54) == 0)
+        goto done;
+    while (*ticks == 0 && *flag == 0) {
+        if (obj->f1(arg1) == 1)
+            return -1;
+    }
+done:
+    if (*ticks == 0 && *flag != 0)
+        return 0;
+    return 0;
+}
+
 extern "C" void Pause__Q46nw4hbm3snd6detail7AxVoiceFb(void *, u8);
 extern "C" void fn_800EAD00(void *);
 extern "C" void FreeAllChannel__Q46nw4hbm3snd6detail8SeqTrackFv(void *arg0) {

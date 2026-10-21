@@ -211,41 +211,38 @@ void *fn_8023A8D8(register void *arg0, register s32 arg1, register s32 arg2, ...
 }
 #pragma pop
 
-extern s32 lbl_803410D8;
-extern s32 lbl_803412A4;
+__declspec(section ".data") extern s32 lbl_803410D8;
+__declspec(section ".data") extern s32 lbl_803412A4;
 extern void *fn_8012850C(s32, s32 *);
 #pragma small_data off
-void *fn_8023AA2C(void *arg0, s32 arg1, ...) {
-    va_list ap;
-    s32 *values;
-    s32 offset = 0;
-    s32 value;
-
-    *(unsigned char *)arg0 = 0;
-    *(s32 *)((char *)arg0 + 4) = -1;
-    *(unsigned char *)((char *)arg0 + 8) = 0;
-    *(s32 *)((char *)arg0 + 0xC) = (s32)&lbl_803410D8;
-    *(s32 *)((char *)arg0 + 0x14) = 0;
-    va_start(ap, arg1);
-    do {
-        (*(s32 *)((char *)arg0 + 0x14))++;
-        value = va_arg(ap, s32);
-    } while (value != 0);
-    va_end(ap);
-    *(s32 **)((char *)arg0 + 0x10) = (s32 *)fn_8012850C(*(s32 *)((char *)arg0 + 0x14) * 4, &lbl_803412A4);
-
-    va_start(ap, arg1);
-    values = *(s32 **)((char *)arg0 + 0x10);
-    do {
-        value = va_arg(ap, s32);
-        *(s32 *)((char *)values + offset) = value;
-        offset += 4;
-    } while (value != 0);
-    va_end(ap);
-    *(s32 *)((char *)arg0 + 0x18) = arg1;
-    return arg0;
+#pragma push
+#pragma scheduling invalid_target
+void *fn_8023AA2C(register void *arg0, register s32 arg1, register s32 arg2, ...) {
+  va_list ap;
+  s32 offset;
+  *(unsigned char *)arg0=0;
+  *(s32 *)((char *)arg0+4)=-1;
+  *(unsigned char *)((char *)arg0+8)=0;
+  *(s32 **)((char *)arg0+0xC)=&lbl_803410D8;
+  va_start(ap,arg2);
+  *(s32 *)((char *)arg0+0x14)=0;
+  do {
+   (*(s32 *)((char *)arg0+0x14))++;
+  } while(va_arg(ap,s32)!=0);
+  va_end(ap);
+  *(s32 **)((char *)arg0+0x10)=fn_8012850C(*(s32 *)((char *)arg0+0x14)*4,&lbl_803412A4);
+  va_start(ap,arg2);
+  offset=0;
+  do {
+   *(s32 *)((char *)*(s32 **)((char *)arg0+0x10)+offset)=arg2;
+   offset+=4;
+   arg2=va_arg(ap,s32);
+  } while(arg2!=0);
+  va_end(ap);
+  *(s32 *)((char *)arg0+0x18)=arg1;
+  return arg0;
 }
-
+#pragma pop
 __declspec(section ".data") extern s32 lbl_803412B8;
 __declspec(section ".data") extern s32 lbl_803412C8;
 extern s32 fn_80232578(s32 *);
