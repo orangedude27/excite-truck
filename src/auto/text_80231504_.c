@@ -279,6 +279,7 @@ void fn_8023389C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
 extern void fn_80232DF4(u8 *, s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma use_lmw_stmw off
+// Matched with the shared variadic wrapper signature and 0x80-byte formatting buffer.
 void fn_802339A8(f32 a, s32 b, f32 c, s32 d, f32 e, f32 f, s32 g, f32 h, const char *fmt, ...) {
     #pragma scheduling invalid_target
     char buffer[0x80];
