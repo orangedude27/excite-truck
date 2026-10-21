@@ -17,6 +17,18 @@ extern unsigned int lbl_80488648[];
 extern float lbl_805644EC;
 extern double lbl_805644F0;
 #pragma cplusplus on
+class VTableCall_802929F8 {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5(const char *);
+    virtual int v6(const char *);
+    virtual int v7(const char *, int);
+    virtual int v8(const char *, int);
+};
 class Dummy_80292B48 {
 public:
     virtual void f0();
@@ -32,21 +44,21 @@ extern double fn_8002F234(float);
 extern float fn_80129DC4(int, float, float);
 extern float lbl_805644D0, lbl_805644D4, lbl_805644D8, lbl_805644DC, lbl_805644E0;
 void fn_802924F4(void) {
-    float a, b, c, d, e, f, g;
+    float x, y, z, w, q;
+    float one = lbl_805644D4;
+    float offset = lbl_805644D8;
     int i;
     unsigned char *p = lbl_804B4030;
     for (i = 0; i < 6; i++, p += 0x34) {
-        a = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
-        b = fn_8002F234((lbl_805644D4 - a * a) - lbl_805644D8);
-        c = fn_8002F234((lbl_805644D4 - a * a) - lbl_805644D8);
-        d = fn_80129DC4(0, -c, b);
-        e = fn_8002F234((lbl_805644D4 - a * a) - d * d);
-        f = fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > lbl_805644D8 ? lbl_805644D4 : lbl_805644D0;
-        *(float *)(p + 0) = a;
-        *(float *)(p + 4) = d;
-        *(float *)(p + 8) = e * f;
-        g = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
-        *(float *)(p + 0xC) = g;
+        x = fn_80129DC4(0, lbl_805644D0, one);
+        y = (float)fn_8002F234((one - x * x) - offset);
+        z = (float)fn_8002F234((one - x * x) - offset);
+        w = fn_80129DC4(0, -z, y);
+        q = (float)fn_8002F234((one - x * x) - w * w);
+        *(float *)(p + 0) = x;
+        *(float *)(p + 4) = w;
+        *(float *)(p + 8) = q * (fn_80129DC4(0, lbl_805644D0, one) > offset ? one : lbl_805644D0);
+        *(float *)(p + 0xC) = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
     }
 }
 
@@ -78,6 +90,30 @@ void fn_80292B48(void *arg0) {
         void (*method)(void *, int) = *(void (**)(void *, int))((char *)vtable + 8);
         method(arg0, 1);
     }
+}
+
+extern float PSVECDotProduct(void *, void *);
+extern float lbl_805644D8, lbl_805644E8;
+extern double fabs(double);
+extern double __fabs(double);
+int fn_80292BA8(float *arg0, float *arg1, float *arg2, float *arg3) {
+    float sp8, spC, sp10;
+    float dot, scale;
+    sp8 = arg0[0] - arg2[0];
+    spC = arg0[1] - arg2[1];
+    sp10 = arg0[2] - arg2[2];
+    dot = PSVECDotProduct(&sp8, arg3);
+    if (dot >= lbl_805644D8) return 0;
+    scale = -dot;
+    dot = PSVECDotProduct(arg1, arg3);
+    arg0[0] = arg0[0] + arg3[0] * scale;
+    arg0[1] = arg0[1] + arg3[1] * scale;
+    arg0[2] = arg0[2] + arg3[2] * scale;
+    scale = lbl_805644E8 * (float)__fabs((double)dot) - dot;
+    arg1[0] = arg1[0] + arg3[0] * scale;
+    arg1[1] = arg1[1] + arg3[1] * scale;
+    arg1[2] = arg1[2] + arg3[2] * scale;
+    return 1;
 }
 
 typedef unsigned char u8;
@@ -312,6 +348,35 @@ body:
     i++;
 check:
     if (i < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
+}
+
+extern int fn_80287B5C(int, void *, float, float, float);
+void fn_80294408(void *arg0, float *arg1, float *arg2) {
+    int count = *(int *)((char *)arg0 + 0x222C);
+    if (count < 0x80 && *(int *)((char *)arg0 + 0x28) != 0) {
+        char *record = (char *)arg0 + count * 0x44;
+        int index = fn_80129D18(0, 6);
+        char *template = (char *)lbl_804B4030 + index * 0x34;
+        *(float *)(record + 0x50) = arg1[0];
+        *(float *)(record + 0x54) = arg1[1];
+        *(float *)(record + 0x58) = arg1[2];
+        *(int *)(record + 0x2C) = *(int *)(template + 0x10);
+        *(int *)(record + 0x30) = *(int *)(template + 0x14);
+        *(int *)(record + 0x34) = *(int *)(template + 0x18);
+        *(int *)(record + 0x38) = *(int *)(template + 0x1C);
+        *(int *)(record + 0x3C) = *(int *)(template + 0x20);
+        *(int *)(record + 0x40) = *(int *)(template + 0x24);
+        *(int *)(record + 0x44) = *(int *)(template + 0x28);
+        *(int *)(record + 0x48) = *(int *)(template + 0x2C);
+        *(int *)(record + 0x4C) = *(int *)(template + 0x30);
+        *(float *)(record + 0x5C) = arg2[0];
+        *(float *)(record + 0x60) = arg2[1];
+        *(float *)(record + 0x64) = arg2[2];
+        *(float *)(record + 0x68) = lbl_805644D8;
+        *(unsigned char *)(record + 0x6C) = fn_80287B5C(*(int *)((char *)arg0 + 0x28), template, arg2[2], arg2[1], arg2[0]);
+        *(unsigned char *)(record + 0x6D) = index;
+        *(int *)((char *)arg0 + 0x222C) = count + 1;
+    }
 }
 
 void fn_80294530(void *arg0, int arg1, int arg2, int arg3) {
