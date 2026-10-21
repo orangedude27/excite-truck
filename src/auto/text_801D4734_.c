@@ -79,6 +79,21 @@ int fn_801D544C(void) {
     return 0;
 }
 
+extern int lbl_804423A4[];
+extern void fn_801D50B8(int);
+#pragma scheduling invalid_target
+int fn_801D5650(void *alarm) {
+    int offset;
+    int i;
+    offset = 0;
+    i = 0;
+    while (i < lbl_804423A4[1]) {
+        fn_801D50B8(*(int *)((char *)lbl_804423A4[0] + offset));
+        offset += 4;
+        i += 1;
+    }
+}
+#pragma scheduling reset
 void fn_801D5A14(int arg0) {
     fn_801D59C8(arg0, 2);
 }
@@ -322,8 +337,7 @@ int fn_801D77C0(int arg0) {
 }
 
 void fn_801D77D8(void *arg0) {
-    void **vtable = *(void ***)arg0;
-    ((void (*)(void *))vtable[0xD])(arg0);
+    ((void (*)(void *))*(void **)(*(char **)arg0 + 0x34))(arg0);
 }
 
 void fn_801D77E8(void) {
