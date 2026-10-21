@@ -60,6 +60,10 @@ extern void fn_802C92D0(void);
 extern void fn_802C92D8(void);
 extern void fn_801E88B4(int *, int *, int *, int *, int);
 extern void fn_802C92DC(int, int, int, int, int);
+extern float lbl_805646B0;
+extern unsigned char lbl_8055F73C;
+extern char lbl_8034981C[];
+extern int fn_801769F8(void);
 void fn_8029F03C(void) {
     lbl_8055F81C = 0;
     lbl_8055F818 = 0;
