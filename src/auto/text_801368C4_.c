@@ -6,10 +6,6 @@ extern void fn_8000D838(void *);
 extern s32 lbl_8055E0B8;
 extern s32 lbl_8055E0C0;
 extern s32 lbl_8055E0C4;
-typedef struct { u32 hi; u32 lo; } Pair;
-#pragma scheduling invalid_target
-#pragma opt_propagation off
-#pragma opt_dead_assignments off
 void fn_801368C4(void) {
     fn_8000D838(&lbl_8055E0B8);
     lbl_8055E0C4 = 0x7F000000;
