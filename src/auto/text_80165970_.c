@@ -418,3 +418,15 @@ extern void fn_80128670(void *);
 extern void fn_80139E18(void);
 extern unsigned char lbl_8055E32C;
 extern unsigned char lbl_8055E334;
+#pragma push
+#pragma cplusplus on
+class Dummy8016707C {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void *get();
+};
+#pragma cplusplus off
+#pragma pop
