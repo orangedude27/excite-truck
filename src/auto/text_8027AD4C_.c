@@ -3,6 +3,7 @@
 
 extern char lbl_804A4380[];
 long fn_8027B8E4(void *, long);
+void *fn_8027B834(void *);
 void fn_8027B984(void *, long);
 long fn_8027BAB8(void *);
 void fn_8027AF94(void *);
@@ -512,8 +513,11 @@ void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
 
 #pragma scheduling invalid_target
 long fn_8027CE4C(long arg0) {
-    long *p = fn_8027C120(lbl_8055F654, arg0);
-    switch (*p) {
+    long *p;
+    long value;
+    p = fn_8027C120(lbl_8055F654, arg0);
+    value = *p;
+    switch (value) {
     case 0:
         return ((long (*)(void *))fn_8027C8B0)(p);
     case 1:
