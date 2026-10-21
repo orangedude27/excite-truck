@@ -2,14 +2,6 @@
 
 #include <types.h>
 
-typedef struct VTable {
-    void (*f[11])(void *);
-} VTable;
-
-typedef struct VTableObj {
-    VTable *vtbl;
-} VTableObj;
-
 extern float lbl_8056208C;
 extern int lbl_8055E3C4;
 extern int lbl_8055E524;
