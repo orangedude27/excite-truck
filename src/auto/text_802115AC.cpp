@@ -386,6 +386,17 @@ extern "C" void fn_80214C54(s32 arg0, s32 arg1) {
     }
 }
 
+#pragma dont_inline on
+extern "C" void fn_80214CB4(s32 arg0) {
+    s32 temp = fn_802168E4();
+    if (temp != 0) {
+        ((s32 (*)(s32, s32))fn_802180E0)(temp, arg0);
+    } else {
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D3B0);
+    }
+}
+#pragma dont_inline reset
+
 extern "C" s32 lbl_80490528[];
 extern "C" s32 fn_802168E4(void);
 extern "C" s32 fn_80218120(void);
