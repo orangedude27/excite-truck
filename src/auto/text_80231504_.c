@@ -279,12 +279,13 @@ void fn_8023389C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
 extern void fn_80232DF4(u8 *, s32, s32, s32, f32, f32, f32, f32, f32);
 #pragma push
 #pragma use_lmw_stmw off
-void fn_802339A8(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, const char *fmt, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, ...) {
-    char buffer[0x100];
+void fn_802339A8(f32 a, s32 b, f32 c, s32 d, f32 e, f32 f, s32 g, f32 h, const char *fmt, ...) {
+    #pragma scheduling invalid_target
+    char buffer[0x80];
     va_list args;
-    va_start(args, farg4);
+    va_start(args, fmt);
     vsprintf(buffer, fmt, args);
-    fn_80232DF4((u8 *)buffer, arg0, arg1, arg2, farg0, farg1, farg3, farg2, farg4);
+    fn_80232DF4((u8 *)buffer, b, d, g, a, c, f, e, h);
 }
 #pragma pop
 void fn_80233DD8(s32 *arg0, s32 arg1) {
