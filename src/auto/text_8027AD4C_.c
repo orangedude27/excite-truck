@@ -344,17 +344,6 @@ long fn_8027C71C(void *arg0) {
 
 long fn_8027C650(void);
 extern char lbl_80347A50[];
-#pragma cplusplus on
-class Dummy_8027C788_Item {
-public:
-    virtual const char *v2();
-    virtual long v5(const char *);
-};
-class Dummy_8027C788_Container {
-public:
-    virtual Dummy_8027C788_Item *v24(long);
-};
-#pragma cplusplus off
 #pragma dont_inline on
 long fn_8027C788(void *arg0) {
     void *item;
