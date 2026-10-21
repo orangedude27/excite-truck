@@ -215,7 +215,7 @@ int fn_8024D054(void *arg0, int arg1) {
 extern float lbl_80563948, lbl_80563944, lbl_8056394C;
 extern char lbl_8055C094;
 extern char lbl_80343F38[], lbl_80343F20[];
-extern float fn_8023293C(int, char *, float);
+extern float fn_8023293C();
 void fn_8024D248(void *arg0) {
     float f30;
     float f31;
