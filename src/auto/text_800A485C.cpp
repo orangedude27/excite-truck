@@ -599,6 +599,35 @@ extern "C" s32 fn_800A73A0(void *arg0, s32 arg1, u32 arg2, s32 arg3, s32 arg4, s
     }
     return 0;
 }
+
+extern "C" s32 fn_800A7484(void *arg0, s32 arg1, u32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+    s32 result;
+    u32 flags;
+    u32 size;
+    u32 end;
+    flags = *(u32 *)arg0;
+    if (((flags & 8) != 8) || ((flags & 2) == 2)) {
+        return 0xF;
+    }
+    result = fn_800A625C(*(void **)((u8 *)arg0 + 4), (s32)arg0);
+    if (result != 0) {
+        return result;
+    }
+    size = *(u32 *)((u8 *)arg0 + 0x10);
+    if (size <= arg2) {
+        return 0x12;
+    }
+    end = arg2 + arg3;
+    if (size < end) {
+        arg3 -= end - size;
+    }
+    result = fn_800A6624(*(void **)((u8 *)arg0 + 4), arg1, fn_800A6FC4(arg0, arg2, arg4), arg3, arg4, (s32 *)arg5);
+    if (result != 0) {
+        return result;
+    }
+    return 0;
+}
+
 #pragma pop
 
 #pragma dont_inline on
