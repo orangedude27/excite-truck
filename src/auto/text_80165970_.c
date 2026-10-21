@@ -1,3 +1,15 @@
+#pragma push
+#pragma cplusplus on
+class Dummy8016707C {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void *get();
+};
+#pragma cplusplus off
+#pragma pop
 extern int *__AXFXGetLfoSinTable_801769CC(void);
 extern void *fn_8001285C(int);
 extern void fn_80165FAC(void);
