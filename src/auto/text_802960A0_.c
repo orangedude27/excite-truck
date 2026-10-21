@@ -10,6 +10,7 @@ int stricmp(const char *, const char *);
 extern void *lbl_8055F788;
 int stricmp(const char *, const char *);
 __declspec(section ".sdata") extern char lbl_8055C9B8[];
+__declspec(section ".sdata") extern char lbl_8055C9C0[];
 #pragma push
 #pragma cplusplus on
 extern "C" int fn_802962CC(void *node) {
