@@ -850,14 +850,19 @@ extern "C" void fn_801474EC(void *arg0, const char *arg1, ...) {
 }
 #pragma dont_inline reset
 #pragma scheduling on
-extern "C" void fn_801475D0(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, f64 farg0, f64 farg1, f64 farg2, f64 farg3, f64 farg4, f64 farg5, f64 farg6, f64 farg7, const char *format, ...) {
+extern "C" void fn_801475D0(void *arg0, s32 arg1, const char *format, ...) {
+    class V {
+    public:
+        virtual void f0();
+        virtual void *f1();
+    };
     char buffer[0x200];
     va_list args;
-    void **vtable = *(void ***)arg0;
-    void *result = ((void *(*)(void *))vtable[3])(arg0);
+    void *result = ((V *)arg0)->f1();
     if (result != 0) {
         va_start(args, format);
         vsprintf(buffer, format, args);
+        va_end(args);
         if (strlen(buffer) >= 0x200) {
             s32 length = strlen(buffer);
             fn_802E317C(lbl_8032D1A4, length, format);
