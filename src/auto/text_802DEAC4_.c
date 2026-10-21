@@ -485,7 +485,7 @@ extern void fn_802E1728(void *);
 extern void fn_801282F4(void);
 extern void fn_8011A168(void);
 extern void fn_802E0C04(void);
-extern void fn_802E0D44(void);
+extern void fn_802E0D44(u32);
 extern char lbl_8034CBD0[];
 extern u8 lbl_8055D150, lbl_8055D158, lbl_8055D160;
 extern void *lbl_8055FEE8, *lbl_8055FEEC;
