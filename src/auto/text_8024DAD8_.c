@@ -9,6 +9,8 @@ extern unsigned char lbl_8055C0E8;
 extern unsigned int lbl_8055E044;
 extern unsigned char *fn_80019098(unsigned char *);
 extern int fn_80131318(void *);
+extern u8 *fn_80131234(void *);
+extern unsigned char lbl_8034287C[];
 extern char *strncpy(char *, const char *, unsigned int);
 #define M2C_FIELD(p,T,o) (*(T*)((u8*)(p)+(o)))
 #define M2C_STRUCT_COPY(d,s,n) memcpy((d),(s),(n))
