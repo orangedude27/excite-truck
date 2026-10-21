@@ -147,7 +147,7 @@ extern float lbl_80564C70;
 extern s32 fn_802E2C20(void);
 #pragma push
 #pragma processor 750
-#pragma scheduling 604
+#pragma scheduling 740
 void fn_802B5E24(s32 arg0) {
     lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
     lbl_8055FA08 = lbl_80564C5C;
