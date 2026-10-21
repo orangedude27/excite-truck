@@ -13,3 +13,78 @@ void calc_button_repeat(void *arg0, void *arg1, u32 arg2) {
     }
 #undef F
 }
+
+extern void reset_kpad(void *);
+extern void calc_button_repeat(void *, void *, u32);
+void calc_acc_horizon(void *p, void *input, u32 mode) {
+    u8 *pad = (u8 *)p;
+    u8 *report = (u8 *)input;
+    u32 old_buttons;
+    u32 old_horizon;
+    u32 current;
+    u32 changed;
+    u32 previous;
+    s16 count;
+    s8 status;
+
+    count = *(s16 *)(pad + 0x114);
+    if (count < 0)
+        return;
+    previous = *(u32 *)(pad + 0);
+    old_buttons = previous & 0xFFFF;
+    if (mode == 2) {
+        previous = *(u32 *)(pad + 0x60);
+        old_horizon = previous & 0xFFFF;
+    }
+    if (mode == 1) {
+        status = *(s8 *)(report + 0x29);
+        if (status != 0) {
+            if (status == -1) {
+                *(s16 *)(pad + 0x114) -= 4;
+                reset_kpad(p);
+                return;
+            }
+            goto process;
+        }
+        *(u32 *)(pad + 0) = *(u16 *)(report + 0);
+        goto process;
+    }
+    if (mode == 2) {
+        status = *(s8 *)(report + 0x29);
+        if (status != 0) {
+            if (status == -1) {
+                *(s16 *)(pad + 0x114) -= 4;
+                reset_kpad(p);
+                return;
+            }
+            goto process;
+        }
+        *(u32 *)(pad + 0) = *(u16 *)(report + 0);
+        *(u32 *)(pad + 0x60) = *(u16 *)(report + 0x2A);
+        goto process;
+    }
+    status = *(s8 *)(report + 0x29);
+    if (status != 0) {
+        if (status == -1) {
+            *(s16 *)(pad + 0x114) -= 4;
+            reset_kpad(p);
+            return;
+        }
+        goto process;
+    }
+    *(u32 *)(pad + 0) = *(u16 *)(report + 0);
+process:
+    current = *(u32 *)(pad + 0);
+    changed = current ^ old_buttons;
+    *(u32 *)(pad + 4) = changed & current;
+    *(u32 *)(pad + 8) = changed & old_buttons;
+    calc_button_repeat(p, p, 0);
+    if (mode == 2) {
+        current = *(u32 *)(pad + 0x60);
+        changed = current ^ old_horizon;
+        *(u32 *)(pad + 0x64) = changed & current;
+        *(u32 *)(pad + 0x68) = changed & old_horizon;
+        calc_button_repeat(p, p, 2);
+    }
+}
+
