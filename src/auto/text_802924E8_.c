@@ -28,7 +28,7 @@ void fn_802924E8(void) {
     fn_80292EA8(lbl_804B4168);
 }
 
-extern float fn_8002F234(float);
+extern double fn_8002F234(float);
 extern float fn_80129DC4(int, float, float);
 extern float lbl_805644D0, lbl_805644D4, lbl_805644D8, lbl_805644DC, lbl_805644E0;
 void fn_802924F4(void) {
