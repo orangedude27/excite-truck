@@ -88,6 +88,7 @@ extern tBTA_HH_CB *bta_hh_cb_ptr;
 enum { BTA_HH_OK = 0, BTA_HH_ERR = 1 };
 #define HID_SUCCESS 0
 #define BTA_HH_MAX_KNOWN 0x10
+extern u8 HID_HostDeregister(void);
 #define BTA_HH_DISABLE_EVT 1
 #define BTA_HH_API_CLOSE_EVT 0x1701
 extern void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data);
