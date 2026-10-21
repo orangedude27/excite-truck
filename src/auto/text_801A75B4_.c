@@ -4,7 +4,7 @@ extern const char *lbl_802F9588[];
 struct Entry_801A75B4 { const char *name; char pad[20]; };
 extern float fn_801A7F98(void);
 extern float lbl_80562470;
-extern char lbl_8055A850[];
+extern char lbl_8055A850;
 extern void *fn_801A9234(const char *);
 extern int lbl_80435050[];
 extern unsigned char lbl_80435370[];
