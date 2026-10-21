@@ -420,7 +420,4 @@ void fn_802A0794(void *arg0) {
     *(short *)((char *)arg0 + 0x2C) = params.unk_0x18;
 }
 #pragma pop
-extern float lbl_805646B0;
-extern unsigned char lbl_8055F73C;
-extern char lbl_8034981C[];
-extern int fn_801769F8(void);
+
