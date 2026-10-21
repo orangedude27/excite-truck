@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#include <string.h>
 
 extern void *lbl_8055DDF0;
 extern void *MEMAllocFromAllocator(void *, u32);
