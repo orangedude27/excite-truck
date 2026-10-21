@@ -148,6 +148,7 @@ void fn_8020FC6C(void) {
 extern long lbl_8055EEBC;
 extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
+extern long lbl_8055EEE8;
 extern void fn_8020FE90(void);
 void fn_8020FFE4(long arg0) {
     long old = lbl_8055EEE0;
