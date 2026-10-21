@@ -151,17 +151,20 @@ void fn_80271578(void) {
 
 typedef float f32;
 extern f32 lbl_80563F4C;
-void fn_802715C4(void *arg0, void *arg1) {
-    f32 a = *(f32 *)((u8 *)arg1 + 0x14);
-    f32 b = lbl_80563F4C;
-    f32 c = *(f32 *)((u8 *)arg1 + 0x10);
-    f32 d = *(f32 *)((u8 *)arg1 + 0xC);
-    f32 x = b * a;
-    f32 y = b * c;
-    f32 z = b * d;
-    *(f32 *)((u8 *)arg0 + 8) = x;
-    *(f32 *)((u8 *)arg0 + 0) = z;
-    *(f32 *)((u8 *)arg0 + 4) = y;
+void fn_802715C4(void *arg0, void *arg1)
+{
+  register f32 a = *((f32 *) (((u8 *) arg1) + 0x14));
+  f32 b = lbl_80563F4C;
+  register f32 c = *((f32 *) (((u8 *) arg1) + 0x10));
+  f32 d = *((f32 *) (((u8 *) arg1) + 0xC));
+  f32 x = b * a;
+  register f32 y = b * c;
+  register f32 z;
+  z = d;
+  z = b * z;
+  *((f32 *) (((u8 *) arg0) + 8)) = x;
+  *((f32 *) (((u8 *) arg0) + 0)) = z;
+  *((f32 *) (((u8 *) arg0) + 4)) = y;
 }
 
 extern f32 lbl_8055F540;
