@@ -43,6 +43,10 @@ void fn_801D48FC(int arg0) {
     fn_801D5A14(arg0);
 }
 
+void fn_801D4900(int arg0) {
+    fn_801D5A1C(arg0);
+}
+
 void fn_801D4904(void) {
     fn_801D5A24();
 }
