@@ -15,6 +15,27 @@ extern void fn_802059C0(void);
 extern int fn_801B8570(void);
 extern void fn_801E866C(int);
 #pragma dont_inline fn_80205964
+extern void fn_802C8CBC(int);
+extern void fn_802C8DBC(int);
+extern void fn_802C8E48(void);
+extern void fn_802C8D74(void);
+extern void fn_802057A8(int, int, float, float, float, float);
+extern float lbl_80563194, lbl_805631A8, lbl_805631B8, lbl_805631BC, lbl_805631C0;
+void fn_80205850(void) {
+    fn_802C8CBC(-1);
+    fn_802C8DBC(0x20);
+    fn_802057A8(-1, 0, lbl_80563194, lbl_805631A8, lbl_805631A8, lbl_805631A8);
+    fn_802057A8(-1, 0, lbl_805631B8, lbl_805631A8, lbl_805631A8, lbl_805631A8);
+    fn_802057A8(-1, 1, lbl_80563194, lbl_805631BC, lbl_805631A8, lbl_805631A8);
+    fn_802057A8(-1, 1, lbl_805631B8, lbl_805631BC, lbl_805631A8, lbl_805631A8);
+    fn_802057A8(-1, 0, lbl_80563194, lbl_805631C0, lbl_805631A8, lbl_805631A8);
+    fn_802057A8(-1, 0, lbl_805631B8, lbl_805631C0, lbl_805631A8, lbl_805631A8);
+    fn_802057A8(-1, 1, lbl_80563194, lbl_805631B8, lbl_805631A8, lbl_805631A8);
+    fn_802057A8(-1, 1, lbl_805631B8, lbl_805631B8, lbl_805631A8, lbl_805631A8);
+    fn_802C8E48();
+    fn_802C8D74();
+}
+
 int fn_80205964(void) {
     int i = 0;
     while (i < fn_801E85A4()) {
