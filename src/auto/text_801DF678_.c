@@ -43,11 +43,19 @@ void fn_801DF6D0(void* arg0) {
 void fn_801476D8(int, int);
 void fn_801DFE44(int a1, int a2) { ((void (*)(int, int, int))fn_801476D8)(a1, -1, a2); }
 
-void fn_801DFE50(void *arg0, int arg1, int arg2) {
-    void **v = *(void ***)arg0;
-    ((void (*)(void *))v[4])(arg0);
-    ((void (*)(int, int))fn_801476D8)(-1, arg2);
+#pragma cplusplus on
+struct Dummy_801DFE50 {
+    virtual void d0() {}
+    virtual void d1() {}
+    virtual void d2() {}
+    virtual void d3() {}
+    virtual void d4() {}
+};
+extern "C" void fn_801DFE50(void *arg0, int arg1, int arg2) {
+    ((Dummy_801DFE50 *)arg0)->d4();
+    fn_801476D8(-1, arg2);
 }
+#pragma cplusplus reset
 
 float fn_801DFE94(void) {
     return (float)fn_8002EFB4();
