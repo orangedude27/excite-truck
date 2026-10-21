@@ -1,3 +1,4 @@
+#include "types.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern void *lbl_8034C4B0;
 extern void fn_802E317C(const char *, ...);
@@ -137,6 +138,62 @@ void fn_802D8DA0(void) {
 extern void fn_802D81C4(void *, int);
 extern void fn_802D86BC(void *, int);
 void fn_802D8DCC(void *arg0, int arg1) { unsigned int kind; unsigned char t; unsigned char *p = *(unsigned char **)((char *)arg0 + 0x2C); t=p[0]; p[0]=p[3]; p[3]=t; t=p[1]; p[1]=p[2]; p[2]=t; if (*(int *)(p+0) != 0) *(unsigned char **)(p+0) = p + *(int *)(p+0); t=p[4]; p[4]=p[7]; p[7]=t; t=p[5]; p[5]=p[6]; p[6]=t; if (*(int *)(p+4) != 0) *(unsigned char **)(p+4) = p + *(int *)(p+4); t=p[8]; p[8]=p[11]; p[11]=t; t=p[9]; p[9]=p[10]; p[10]=t; if (*(int *)(p+8) != 0) *(unsigned char **)(p+8) = p + *(int *)(p+8); kind=*(unsigned int *)arg0; if (kind == 0x40 || kind == 0) fn_802D81C4(arg0,arg1); else if (kind == 0x41 || kind == 1) fn_802D86BC(arg0,arg1); }
+
+extern void *fn_802D7B5C(void *, void *);
+extern void *fn_802D7D98(void *, void *);
+extern void *fn_802D7FA0(void *, void *);
+extern void *fn_802D8A84(void *, void *);
+extern void *fn_802D8C00(void *, void *);
+extern void fn_802D9340(void *);
+extern char lbl_8034C5C8[];
+void *fn_802D8E9C(void *arg0, void *arg1) {
+    int kind = *(int *)arg0;
+    void *obj;
+    if (kind == 0x17) {
+        obj = fn_802D8C00(arg0, arg1);
+    } else if (kind < 0x17) {
+        if (kind == 0x10) {
+            obj = fn_802D8A84(arg0, arg1);
+        } else if (kind < 0x10) {
+            if (kind < 2) {
+                if (kind >= 0) {
+                    fn_802E317C(lbl_8034C5C8, kind);
+                    obj = 0;
+                } else {
+                    obj = fn_802D7FA0(arg0, arg1);
+                }
+            } else if (kind < 4) {
+                obj = fn_802D7D98(arg0, arg1);
+            } else {
+                obj = fn_802D7B5C(arg0, arg1);
+            }
+        } else {
+            obj = fn_802D7FA0(arg0, arg1);
+        }
+    } else if (kind == 0x44) {
+        obj = fn_802D8A84(arg0, arg1);
+    } else if (kind < 0x44) {
+        if (kind < 0x42) {
+            if (kind < 0x40) {
+                fn_802E317C(lbl_8034C5C8, kind);
+                obj = 0;
+            } else {
+                obj = fn_802D7B5C(arg0, arg1);
+            }
+        } else {
+            obj = fn_802D8C00(arg0, arg1);
+        }
+    } else if (kind == 0x47) {
+        obj = fn_802D7B5C(arg0, arg1);
+    } else if (kind < 0x4C) {
+        obj = fn_802D7FA0(arg0, arg1);
+    } else {
+        fn_802E317C(lbl_8034C5C8, kind);
+        obj = 0;
+    }
+    fn_802D9340(obj);
+    return obj;
+}
 
 int fn_802D9068(void) {
     unsigned char *p = (unsigned char *)lbl_8055FE28;
@@ -279,3 +336,74 @@ extern void *fn_8012850C(void *, void *);
 void* fn_802D94DC(void) {
     return lbl_8055FE18;
 }
+
+extern float lbl_80565028;
+void fn_802D94E4(void *arg0, void *arg1, void *arg2, float farg0) {
+    unsigned int *dst = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000);
+    unsigned int *src1 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg1 + 0x24) - 0x40000000);
+    unsigned int *src2 = (unsigned int *)((char *)GXGetTexObjFmt((char *)arg2 + 0x24) - 0x40000000);
+    unsigned int count = (GXGetTexObjWrapS((char *)arg0 + 0x24) * GXGetTexObjWrapT((char *)arg0 + 0x24) * 16) / 32;
+    unsigned int blend = (unsigned int)(lbl_80565028 * farg0), inv = 256 - blend;
+    while (count-- > 0) {
+        unsigned int a=*src1++, b=*src2++;
+        unsigned int c0=(a&255)*inv+(b&255)*blend, c1=((a>>8)&255)*inv+((b>>8)&255)*blend;
+        unsigned int c2=((a>>16)&255)*inv+((b>>16)&255)*blend, c3=((a>>24)&255)*inv+((b>>24)&255)*blend;
+        *dst++=(c0>>8)|(c1&0xFFFFFF00)|((c2<<8)&0xFFFF0000)|((c3<<16)&0xFF000000);
+    }
+}
+
+void fn_802D9628(void *arg0, s32 arg1, s32 arg2, u8 arg3) {
+    int mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
+    int fmt = (int)GXGetTexObjFmt((char *)arg0 + 0x24);
+    int wrap = GXGetTexObjWrapS((char *)arg0 + 0x24) & 0xFF;
+    GXGetTexObjWrapT((char *)arg0 + 0x24);
+    if (mip == 0) {
+        int x = (arg1 * arg2) >> 8;
+        int y = (arg1 * arg2) >> 10;
+        int row = ((arg1 / 8) + ((arg2 / 8) * (wrap / 8))) << 5;
+        int i = (x + y) * 4;
+        if (arg2 & 1) {
+            u8 *p = (u8 *)((char *)arg0 + 0x2C + i);
+            *p = (arg3 >> 4) & ~0xF0 | (*p & 0xF0);
+        }
+                  else {
+            u8 *p = (u8 *)((char *)arg0 + 0x2C + i);
+            *p = (arg3 & 0xF0) & ~0xF | (*p & 0xF);
+          }
+      }
+  }
+
+extern void DCFlushRange(void *, unsigned int);
+extern unsigned int GXGetTexBufferSize(unsigned short, unsigned short, int, int, int);
+extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, unsigned int);
+extern void GXInitTexObjLOD(void *, int, int, int, int, int, float, float, float);
+extern float lbl_80565018;
+extern float lbl_8056501C;
+
+void *fn_802D8C00(void *arg0, void *arg1) {
+    int w = *(int *)((char *)arg0 + 0x24);
+    int h = *(int *)((char *)arg0 + 0x28);
+    unsigned char *tex = *(unsigned char **)((char *)arg0 + 0x2C);
+    unsigned char *p = *(unsigned char **)(tex + 8);
+    int fmt = *(int *)((char *)arg0 + 0x20);
+    void *obj;
+    int size, align;
+    int lod;
+
+    obj = fn_802D8A84(arg0, arg1);
+    *(unsigned char *)((char *)obj + 0xCC) = 1;
+    GXGetTexBufferSize((unsigned short)w, (unsigned short)h, 0xE, 0, 1);
+    size = w * h;
+    align = (size >> 31) + size;
+    align >>= 1;
+    DCFlushRange(p, (unsigned int)align);
+    lod = ((fmt ^ 2) >> 1) - ((fmt ^ 2) & fmt);
+    lod >>= 31;
+    GXInitTexObj((char *)obj + 0x78, p, (unsigned short)w, (unsigned short)h, 0, 1, 1, (unsigned int)lod);
+    if (lod != 0) {
+        GXInitTexObjLOD((char *)obj + 0x78, 5, 1, 0, 1, 0, lbl_80565018, (float)(fmt - 1), lbl_8056501C);
+    }
+    fn_802D7780(obj, arg0);
+    return obj;
+}
+
