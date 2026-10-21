@@ -1020,18 +1020,14 @@ void fn_8011C364(s32 arg0) {
 }
 
 void fn_8011C3A8(s32 arg0, void *arg1, s32 arg2, u32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    register s32 zero;
-    register s32 end;
-    zero = 0;
-    end = arg2 + ((arg3 >> 3) * arg5);
-    *(s32 *)((u8 *)arg1 + 0) = zero;
-    *(s32 *)((u8 *)arg1 + 4) = zero;
+    *(s32 *)((u8 *)arg1 + 0x28) = 0x20 - __cntlzw((u16)(arg2 + ((arg3 >> 3) * arg5) - 1));
+    *(s32 *)((u8 *)arg1 + 0) = 0;
+    *(s32 *)((u8 *)arg1 + 4) = 0;
     *(s32 *)((u8 *)arg1 + 8) = arg4;
-    *(s32 *)((u8 *)arg1 + 0x28) = 0x20 - __cntlzw((u16)(end - 1));
-    if (arg6 != 0)
+    if (arg6)
         *(s32 *)((u8 *)arg1 + 0xC) = 1 << (arg4 - 1);
     else
-        *(s32 *)((u8 *)arg1 + 0xC) = zero;
+        *(s32 *)((u8 *)arg1 + 0xC) = 0;
     *(s32 *)((u8 *)arg1 + 0x2C) = arg0;
 }
 
