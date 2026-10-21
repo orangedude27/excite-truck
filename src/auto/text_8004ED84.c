@@ -3,9 +3,42 @@
 
 extern unsigned short lbl_80558F58;
 extern void *lbl_8055DA48;
+extern int *lbl_8055DA50;
+extern int *lbl_8055DA54;
+extern int ReadFont(int, int, int);
 extern char *ParseStringS(int, char *, int **, int *);
 extern void ParseStringW(void);
 extern int IOS_IoctlvReboot(int, int, int, int, void *, int);
+int IOS_Ioctlv(int, int, int, int, void *, int);
+int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, unsigned int size, int *outCount) {
+    struct Frame {
+        char pad0[0x20];
+        int vec[4];
+        char pad1[0x10];
+        int args[2];
+        char pad2[0x18];
+        int output;
+        char pad3[0xBC];
+    } __attribute__((aligned(32))) frame;
+    int result;
+    frame.args[0] = inputA;
+    frame.args[1] = inputB;
+    if (*fd < 0) return -0x3F9;
+    if (outCount == 0) return -0x3F9;
+    if (size & 0x1F) return -0x3F9;
+    if (size == 0) {
+        frame.vec[0] = (int)&frame.args[0]; frame.vec[1] = 8;
+        frame.vec[2] = (int)&frame.output; frame.vec[3] = 4;
+        result = IOS_Ioctlv(*fd, 0x12, 1, 1, &frame.vec[0], 0);
+        if (result == 0) *outCount = frame.output;
+        return result;
+    }
+    if (*outCount == 0) return -0x3F9;
+    frame.vec[0] = (int)&frame.args[0]; frame.vec[1] = 8;
+    frame.vec[2] = (int)&frame.output; frame.vec[3] = 4;
+    return IOS_Ioctlv(*fd, 0x13, 2, 1, &frame.vec[0], size);
+}
+
 int _ES_LaunchTitle(int *fd, int arg1, int arg2, int arg3, void *arg4, int *arg5, int arg6) {
     unsigned char work[0x140] __attribute__((aligned(32)));
     void *vec[2];
