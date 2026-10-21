@@ -9,6 +9,7 @@ extern unsigned char lbl_8055C0E8;
 extern unsigned int lbl_8055E044;
 extern unsigned char *fn_80019098(unsigned char *);
 extern int fn_80131318(void *);
+extern char *strncpy(char *, const char *, unsigned int);
 #define M2C_FIELD(p,T,o) (*(T*)((u8*)(p)+(o)))
 #define M2C_STRUCT_COPY(d,s,n) memcpy((d),(s),(n))
 extern void *memcpy(void *, const void *, unsigned int);
@@ -765,6 +766,63 @@ void *fn_802522A8(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+
+void fn_80252320(void *arg0, u8 *arg1, signed char arg2, signed char arg3) {
+    s32 index = *(s32 *)((u8 *)arg0 + 8);
+    u8 *record = *(u8 **)((u8 *)arg0 + 4) + index * 0x48;
+    u8 *src;
+    u8 *dst;
+    s32 count;
+    u8 c;
+    *(s32 *)((u8 *)arg0 + 8) = index + 1;
+    src = arg1;
+    dst = record;
+    count = 0x20;
+    goto copy_first;
+first_loop:
+    count--;
+    if (count <= 0) { dst[-1] = 0; goto first_done; }
+copy_first:
+    c = *src++;
+    *dst++ = c;
+    if ((signed char)c != 0) goto first_loop;
+first_done:
+    record[0x20] = arg2;
+    record[0x41] = arg3;
+    if (arg3 != 0) {
+        src = fn_80019098(arg1);
+        dst = record + 0x21;
+        count = 0x20;
+        goto copy_second;
+second_loop:
+        count--;
+        if (count <= 0) { dst[-1] = 0; goto second_done; }
+copy_second:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c != 0) goto second_loop;
+second_done:
+        ;
+    } else {
+        src = &lbl_8055C0E8;
+        dst = record + 0x21;
+        count = 0x20;
+        goto copy_default;
+default_loop:
+        count--;
+        if (count <= 0) { dst[-1] = 0; goto default_done; }
+copy_default:
+        c = *src++;
+        *dst++ = c;
+        if ((signed char)c != 0) goto default_loop;
+default_done:
+        ;
+    }
+    if (*(u32 *)((u8 *)arg0 + 0x1C) != lbl_8055E044)
+        fn_80131318((u8 *)arg0 + 0x14);
+    *(s32 *)(record + 0x44) = *(s32 *)((u8 *)arg0 + 0x18);
+}
+
 #pragma pop
 
 void fn_80252454(void *arg0, s32 arg1, s32 arg2) {
