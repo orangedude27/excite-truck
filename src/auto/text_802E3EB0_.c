@@ -3,6 +3,9 @@
 
 extern unsigned int lbl_8055FF38;
 extern unsigned char lbl_804FBAA0[0x10 * 0x91];
+extern unsigned int lbl_8055D1B4;
+extern unsigned int lbl_8055D1B8;
+extern unsigned int lbl_8034D130;
 extern unsigned int lbl_8034D038;
 extern unsigned int lbl_8034D054;
 extern unsigned int lbl_8055FF40;
