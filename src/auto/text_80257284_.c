@@ -4,6 +4,7 @@
 void fn_80257A8C(void);
 void *fn_8022D850(void *, int, int, int);
 void fn_8022D894(void *, int, int, void *, int);
+void fn_80257A6C(int *, int, int);
 void fn_8022D458(int, int, int *);
 void fn_8022D7C4(int, int);
 int fn_80128668(int);
