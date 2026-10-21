@@ -293,6 +293,55 @@ check:
         goto loop;
 }
 
+extern float PSVECMag(void *);
+extern float lbl_805646BC;
+extern "C" float PSVECMag(void *);
+extern "C" void fn_802A0098(void *out, void *arg0, void *arg1) {
+    float span = *(float *)((char *)arg0 + 4) * PSVECMag((char *)arg1 + 0xC);
+    float limit = lbl_805646BC;
+    float width = limit;
+    if (span > limit) width = span;
+    *(int *)out = (int)(*(float *)((char *)arg0 + 8) + *(float *)((char *)arg0 + 0xC) * width);
+    *(float *)((char *)out + 4) = *(float *)arg1 + *(float *)((char *)arg0 + 0x30);
+    *(float *)((char *)out + 8) = *(float *)((char *)arg1 + 4) + *(float *)((char *)arg0 + 0x34);
+    *(float *)((char *)out + 0xC) = *(float *)((char *)arg1 + 8) + *(float *)((char *)arg0 + 0x38);
+    {
+        float scale = *(float *)((char *)arg0 + 0x3C);
+        *(float *)((char *)out + 0x10) = *(float *)((char *)arg1 + 0xC) * scale;
+        *(float *)((char *)out + 0x14) = *(float *)((char *)arg1 + 0x10) * *(float *)((char *)arg0 + 0x40);
+        *(float *)((char *)out + 0x18) = *(float *)((char *)arg1 + 0x14) * scale;
+    }
+    *(float *)((char *)out + 0x1C) = *(float *)((char *)arg0 + 0x10) + *(float *)((char *)arg0 + 0x18) * width;
+    *(float *)((char *)out + 0x20) = *(float *)((char *)arg0 + 0x14) + *(float *)((char *)arg0 + 0x1C) * width;
+    *(float *)((char *)out + 0x24) = *(float *)((char *)arg0 + 0x20) + *(float *)((char *)arg0 + 0x28) * width;
+    *(float *)((char *)out + 0x28) = *(float *)((char *)arg0 + 0x24) + *(float *)((char *)arg0 + 0x2C) * width;
+}
+
+extern float fn_80287BC8(float, float);
+extern void fn_802A0098(void *, void *, Unk802A0794Params *);
+extern int fn_8028E584(int, float *, float *);
+extern int fn_8028E590(int, float *, float *, float);
+extern float lbl_805646C4;
+void fn_802A01C8(void *arg0, Unk802A0794Params *params) {
+    struct Result { int count; float data[12]; } out;
+    float a[3], b[3];
+    int i = 0;
+    fn_802A0098(&out, arg0, params);
+    while (i < out.count) {
+        a[2] = out.data[2] + fn_80287BC8(-out.data[6], out.data[6]);
+        a[1] = out.data[1] + fn_80287BC8(-out.data[7], out.data[7]);
+        a[0] = out.data[0] + fn_80287BC8(-out.data[6], out.data[6]);
+        b[2] = out.data[8] + fn_80287BC8(-out.data[9], out.data[9]);
+        b[1] = out.data[7] + fn_80287BC8(-out.data[10], out.data[10]);
+        b[0] = out.data[6] + fn_80287BC8(-out.data[9], out.data[9]);
+        if (*(unsigned char *)((char *)arg0 + 0x68))
+            fn_8028E590(*(int *)((char *)arg0 + 0x64), a, b, lbl_805646C4);
+        else
+            fn_8028E584(*(int *)((char *)arg0 + 0x64), a, b);
+        i++;
+    }
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 int fn_802A0620(Unk802A0794Params *arg0) {
@@ -371,3 +420,7 @@ void fn_802A0794(void *arg0) {
     *(short *)((char *)arg0 + 0x2C) = params.unk_0x18;
 }
 #pragma pop
+extern float lbl_805646B0;
+extern unsigned char lbl_8055F73C;
+extern char lbl_8034981C[];
+extern int fn_801769F8(void);
