@@ -5,6 +5,10 @@ typedef signed int s32;
 typedef unsigned char u8;
 typedef float f32;
 typedef int M2C_UNK;
+extern unsigned char lbl_8055C0E8;
+extern unsigned int lbl_8055E044;
+extern unsigned char *fn_80019098(unsigned char *);
+extern int fn_80131318(void *);
 #define M2C_FIELD(p,T,o) (*(T*)((u8*)(p)+(o)))
 #define M2C_STRUCT_COPY(d,s,n) memcpy((d),(s),(n))
 extern void *memcpy(void *, const void *, unsigned int);
@@ -45,6 +49,37 @@ void fn_8024DADC(void) {
     fn_8024739C();
 }
 
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_8024E6E4(void *arg0, s32 arg1) {
+    extern unsigned char lbl_80344410[];
+    extern unsigned char lbl_8034453C[];
+    extern s32 fn_80128670(s32);
+    extern s32 fn_80235380(s32);
+    extern s32 fn_802CAC54(s32);
+    extern s32 fn_80128668(void *);
+    class V { public: virtual void f2(int); };
+    V *object;
+    if (arg0 != 0) {
+        object = *(V **)((u8 *)arg0 + 0xD4);
+        *(void **)arg0 = lbl_80344410;
+        if (object != 0) object->f2(1);
+        if (arg0 != 0) {
+            *(void **)arg0 = lbl_803444D8;
+            fn_80128670(*(s32 *)((u8 *)arg0 + 0xCC));
+            if (--lbl_8055F2E8 == 0) { CleanupEntries(lbl_8055F2E4); lbl_8055F2E4 = 0; }
+            if (arg0 != 0) {
+                *(void **)arg0 = lbl_8034453C;
+                fn_80128670(*(s32 *)((u8 *)arg0 + 0x18));
+                fn_80235380(*(s32 *)((u8 *)arg0 + 0x24));
+                fn_802CAC54(*(s32 *)((u8 *)arg0 + 0x20));
+            }
+        }
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+#pragma pop
 void *fn_8024E818(void *arg0, s32 arg1) {
     extern unsigned int lbl_8055F2EC;
     extern unsigned char lbl_8034453C[];
