@@ -4,6 +4,8 @@ extern const char *lbl_802F9588[];
 struct Entry_801A75B4 { const char *name; char pad[20]; };
 extern float fn_801A7F98(void);
 extern float lbl_80562470;
+extern char lbl_8055A850[];
+extern void *fn_801A9234(const char *);
 extern int lbl_80435050[];
 extern unsigned char lbl_80435370[];
 extern unsigned int lbl_8055CFF0;
@@ -84,6 +86,36 @@ void fn_801A7628(void) {
     count = 0x7A;
     lbl_8055E5CC = table;
     lbl_8055E5D0 = count;
+}
+
+void fn_801A7844(int arg0) {
+    int sp10;
+    int spC;
+    unsigned int sp8;
+    int i;
+    int a;
+    int b;
+    float x;
+    float y;
+
+    if (arg0 != 0) {
+        char *entry = (char *)lbl_80435050;
+        for (i = 0; i < 4; i++) {
+            memset(entry, 0, 0x64);
+            fn_80129AE8(entry, i);
+            entry += 0x64;
+        }
+    }
+    fn_80127A84(&sp10, &spC, &sp8);
+    a = ((int)(lbl_8055CFF0 >> 31) + lbl_8055CFF0) >> 1;
+    b = ((int)(lbl_8055CFF4 >> 31) + lbl_8055CFF4) >> 1;
+    x = (float)(sp10 - a) / (float)a;
+    y = (float)(spC - b) / (float)b;
+    lbl_80435370[8] = sp8 & 1;
+    lbl_80435370[9] = (sp8 >> 1) & 1;
+    lbl_80435370[10] = (sp8 >> 2) & 1;
+    *(float *)&lbl_80435370[0] = x;
+    *(float *)&lbl_80435370[4] = y;
 }
 
 void fn_801A7F8C(void) {
