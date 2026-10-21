@@ -191,7 +191,6 @@ void fn_802BD414(int arg0, volatile int *arg1) {
         result[1] = result[1] + arg1[0];
     }
 }
-
 void fn_802BD478(int arg0, volatile int *arg1) {
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
