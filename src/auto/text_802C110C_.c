@@ -13,6 +13,8 @@ extern int fn_8012850C(int, const char *);
 extern void fn_801D0590(void *);
 extern void fn_801D0800(void *);
 extern void *memset(void *, int, unsigned int);
+void fn_802C1928(void);
+void fn_802C1A08(void);
 extern void fn_80128670(int);
 extern void fn_801D05B4(void *);
 extern void fn_801D0824(void *);
