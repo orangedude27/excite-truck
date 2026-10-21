@@ -30,6 +30,7 @@ extern f32 fn_801E7E24(void);
 extern f32 fn_801E7E24(void);
 extern f32 lbl_80560360, lbl_80560364, lbl_80560398;
 extern u8 lbl_802FCB98[];
+extern u8 lbl_802FCE18[];
 extern void fn_80130FCC(void *, s32, s32);
 extern void fn_801473F8(void *, void *, ...);
 #pragma push
