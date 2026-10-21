@@ -146,53 +146,52 @@ unsigned short OSSetFontEncode(unsigned short arg0) {
 int OSLoadFont(int arg0, int arg1) {
     unsigned short encode = lbl_80558F58;
     int result;
-    if (encode == 0xFFFF)
-        goto initialize;
-dispatch:
-    if (encode == 2) goto no_font;
-    if (encode < 2) {
-        if (encode == 0) {
-            lbl_8055DA54 = (int *)arg0;
-            result = ReadFont(arg1, 0, arg0);
-        } else {
-            lbl_8055DA50 = (int *)arg0;
-            result = ReadFont(arg1, 1, arg0);
-        }
-    } else if (encode < 6) {
-        int first;
-        int next;
-        lbl_8055DA54 = (int *)arg0;
-        first = ReadFont(arg1, 0, arg0);
-        result = first;
-        if (first != 0) {
-            next = (int)lbl_8055DA54 + first;
-            lbl_8055DA50 = (int *)next;
-            result += ReadFont(arg1, 1, next);
-        }
-    } else {
-no_font:
-        result = 0;
-    }
-    return result;
-initialize:
-    {
+    if (encode == 0xFFFF) {
         int console = *(volatile int *)0x800000CC;
         if (console == 0) {
             encode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
             lbl_80558F58 = encode;
-        } else if (console < 0) {
-            encode = 0;
-            lbl_80558F58 = 0;
         } else {
             encode = 0;
             lbl_80558F58 = 0;
         }
         lbl_8055DA48 = (void *)ParseStringS;
     }
-    goto dispatch;
+    switch (encode) {
+    case 0:
+        lbl_8055DA54 = (int *)arg0;
+        result = ReadFont(arg1, 0, arg0);
+        break;
+    case 1:
+        lbl_8055DA50 = (int *)arg0;
+        result = ReadFont(arg1, 1, arg0);
+        break;
+    case 2:
+        result = 0;
+        break;
+    case 3:
+    case 4:
+    case 5: {
+        int first;
+        lbl_8055DA54 = (int *)arg0;
+        first = ReadFont(arg1, 0, arg0);
+        result = first;
+        if (first != 0) {
+            lbl_8055DA50 = (int *)((char *)lbl_8055DA54 + first);
+            result += ReadFont(arg1, 1, (int)((char *)lbl_8055DA54 + first));
+        }
+        break;
+    }
+    default:
+        result = 0;
+        break;
+    }
+    return result;
 }
 
-extern int GetFontCode(unsigned short);
+extern int GetFontCode();
+extern unsigned short lbl_803049F0[];
+extern unsigned short lbl_80304B70[];
 extern int *lbl_8055DA50;
 extern int *lbl_8055DA54;
 char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
