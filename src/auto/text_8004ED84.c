@@ -5,6 +5,8 @@ extern unsigned short lbl_80558F58;
 extern void *lbl_8055DA48;
 extern int *lbl_8055DA50;
 extern int *lbl_8055DA54;
+extern unsigned short lbl_803049F0[];
+extern unsigned short lbl_80304B70[];
 extern int ReadFont(int, int, ...);
 extern char *ParseStringS(int, char *, int **, int *);
 extern void ParseStringW(void);
