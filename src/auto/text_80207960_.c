@@ -298,4 +298,15 @@ void fn_80208620(void* arg0, void* arg1) {
         fn_802E317C(lbl_8033BE80, (char*)arg1 + 0x37);
     }
 }
-
+#pragma cplusplus on
+struct Dummy80208858 {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void *get();
+    virtual void v5();
+    virtual void v6();
+    virtual int invoke(int, int, int);
+};
+#pragma cplusplus reset
