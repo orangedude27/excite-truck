@@ -134,14 +134,9 @@ void fn_8027D77C(void *arg0) {
     (*(void (**)(void *, int))(*(void ***)obj + 5))(obj, (int)&lbl_8055C784);
 }
 
-#pragma scheduling off
 void fn_8027D7B8(void *arg0) {
-    int *p = (int *)arg0;
-    int id = p[3];
-    int *q = (int *)fn_8001285C(id);
-    fn_80007F90(q[2]);
+    fn_80007F90(*(int *)((char *)fn_8001285C(*(int *)((char *)arg0 + 0xC)) + 8));
 }
-#pragma scheduling on
 void fn_8027D810(void *arg0) {
     int id = *(int *)((char *)arg0 + 0xC);
     void *res = fn_8001285C(id);
