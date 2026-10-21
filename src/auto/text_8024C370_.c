@@ -212,6 +212,44 @@ int fn_8024D054(void *arg0, int arg1) {
     }
 }
 
+extern float lbl_80563948, lbl_80563944, lbl_8056394C;
+extern char lbl_8055C094;
+extern char lbl_80343F38[], lbl_80343F20[];
+extern float fn_8023293C(int, char *, float);
+void fn_8024D248(void *arg0) {
+    float f30;
+    float f31;
+    char *text;
+    char *dst;
+    int count;
+    f31 = (float)*(int *)((char *)arg0 + 0xC) / lbl_80563948;
+    f30 = (float)*(int *)((char *)arg0 + 0x10) * lbl_80563944;
+    f31 = (f31 - lbl_8056394C) /
+        (*(float *)((char *)arg0 + 0x84) *
+         ((float (*)(int, const char *, float, float))fn_8023293C)(
+            *(int *)((char *)arg0 + 0x78), &lbl_8055C094,
+            *(float *)((char *)arg0 + 0x88), lbl_80563944));
+    f30 = (f30 - lbl_8056394C) /
+        (float)fn_80232B70(*(int *)((char *)arg0 + 0x78));
+    if (f30 < f31)
+        f31 = f30;
+    *(float *)((char *)arg0 + 0x84) = f31;
+    *(unsigned char *)((char *)arg0 + 0x6C) = 1;
+    text = lbl_80343F38;
+    if (*(unsigned char *)((char *)arg0 + 0x6C) != 0)
+        text = lbl_80343F20;
+    text = (char *)fn_80131234(text);
+    dst = (char *)arg0 + 0x6D;
+    count = 0xA;
+    for (;;) {
+        char c = *text++;
+        *dst++ = c;
+        if ((signed char)c == 0) break;
+        count--;
+        if (count <= 0) { dst[-1] = 0; break; }
+    }
+}
+
 extern void fn_80230924(void *, float, float, float, float, float);
 extern void fn_80230C30(float *, float *, int, int);
 extern void fn_80234AFC(void *, const char *, int, float, float, int);
