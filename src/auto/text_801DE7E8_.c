@@ -28,4 +28,6 @@ int fn_801DF060(void) {
     unsigned int tmp = (unsigned int)(-val) | (unsigned int)val;
     return (int)(tmp >> 31);
 }
-
+extern void *memcpy(void *, const void *, unsigned int);
+extern unsigned long long fn_802E2C9C(int);
+extern void fn_801331C4(int, int *, float *);
