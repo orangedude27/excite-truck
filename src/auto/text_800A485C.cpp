@@ -574,10 +574,10 @@ extern "C" s32 fn_800A728C(void *arg0) {
 #pragma dont_inline on
 extern "C" s32 fn_800A73A0(void *arg0, s32 arg1, u32 arg2, s32 arg3, s32 arg4, s32 arg5) {
     s32 result;
-    s32 flags;
+    u32 flags;
     u32 size;
     u32 end;
-    flags = *(s32 *)arg0;
+    flags = *(u32 *)arg0;
     if (((flags & 8) != 8) || ((flags & 2) == 2)) {
         return 0xF;
     }
