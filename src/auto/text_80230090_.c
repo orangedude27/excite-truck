@@ -114,6 +114,7 @@ void fn_80230C30(float *arg0, float *arg1, s32 arg2, s32 arg3) {
     *arg1 = (float)((s32)(((lbl_8055FBA0 >> 31) + lbl_8055FBA0) >> 1) - arg3);
 }
 
+/* Match note: preserve the branch-specific min/max and truncating step count; this matches the target exactly. */
 void fn_80230C9C(float *arg0, float *arg1, float farg0, float farg1, float farg2) {
     float var_f0, var_f0_2, var_f4, var_f5;
     int temp_r0, temp_r0_2;
