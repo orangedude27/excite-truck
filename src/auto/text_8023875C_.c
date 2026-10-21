@@ -12,6 +12,7 @@ extern int fn_802C8D74(void);
 extern int fn_802C92DC(int, int, int, int, int);
 extern int lbl_8055F0D4;
 extern float lbl_805636F0;
+extern float lbl_805636F4;
 extern unsigned char lbl_8055F0D8;
 extern unsigned int lbl_8055CFF0;
 extern unsigned int lbl_8055CFF4;
