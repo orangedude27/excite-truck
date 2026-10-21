@@ -27,6 +27,7 @@ extern "C" char lbl_8033D328[];
 extern "C" char lbl_8033D2A0[];
 extern "C" char lbl_8033D274[];
 
+extern "C" s32 fn_802180E0(s32, s32);
 extern "C" char lbl_8033D3B0[];
 
 extern "C" s32 fn_802168DC(s32, s32);
