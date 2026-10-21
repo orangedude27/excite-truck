@@ -368,10 +368,25 @@ int fn_801D77C0(int arg0) {
     return arg0;
 }
 
-void fn_801D77D8(void *arg0) {
-    ((void (*)(void *))*(void **)(*(char **)arg0 + 0x34))(arg0);
+#pragma cplusplus on
+extern "C" void fn_801D77D8(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+    };
+    ((Dummy *)arg0)->v11();
 }
-
+#pragma cplusplus reset
 void fn_801D77E8(void) {
 }
 
