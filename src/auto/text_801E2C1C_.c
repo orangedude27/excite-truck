@@ -13,6 +13,10 @@ extern f32 lbl_80562CEC;
 extern void fn_801E35D4(void *dst, void *src);
 extern void fn_801E3284(void *out, void *in, s32 arg2);
 extern void fn_802C744C(s32 arg0, void *out);
+extern int sscanf(const char *, const char *, ...);
+extern int stricmp(const char *, const char *);
+extern char *strcpy(char *, const char *);
+extern const char lbl_8055AEB4[];
 
 void fn_8012A260(void*, unsigned int);
 void fn_80128668(void*);
