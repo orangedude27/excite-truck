@@ -4,6 +4,14 @@ extern const char *lbl_802F9588[];
 struct Entry_801A75B4 { const char *name; char pad[20]; };
 extern float fn_801A7F98(void);
 extern float lbl_80562470;
+extern int lbl_80435050[];
+extern unsigned char lbl_80435370[];
+extern unsigned int lbl_8055CFF0;
+extern unsigned int lbl_8055CFF4;
+extern double lbl_80562450;
+extern int fn_80127A84(int *, int *, unsigned int *);
+extern int fn_80129AE8(void *, int);
+extern void *memset(void *, int, unsigned int);
 extern int fn_801A8E38(void);
 
 extern char lbl_8055E5C8;
