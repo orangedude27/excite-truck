@@ -157,7 +157,7 @@ int fn_8028967C(int arg0) {
 }
 
 extern int fn_8028E61C(int *);
-extern int fn_8028E2F8(int *, int *, int, int, float, float, float, float, float, float, float);
+extern int fn_8028E2F8(int *, int *, int, int, float, float, float, float, float, float, float, ...);
 extern int lbl_80348B34;
 extern int lbl_8055C880;
 extern float lbl_8056427C, lbl_80564284, lbl_8056428C, lbl_8056429C;
