@@ -93,6 +93,20 @@ int fn_801D5650(void *alarm) {
         i += 1;
     }
 }
+
+extern void fn_801D52A4(int);
+int fn_801D56C0(void *alarm) {
+    int offset;
+    int i;
+    offset = 0;
+    i = 0;
+    while (i < lbl_804423A4[1]) {
+        fn_801D52A4(*(int *)((char *)lbl_804423A4[0] + offset));
+        offset += 4;
+        i += 1;
+    }
+}
+
 #pragma scheduling reset
 void fn_801D5A14(int arg0) {
     fn_801D59C8(arg0, 2);
