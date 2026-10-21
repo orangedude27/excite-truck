@@ -5,7 +5,7 @@ extern unsigned short lbl_80558F58;
 extern void *lbl_8055DA48;
 extern int *lbl_8055DA50;
 extern int *lbl_8055DA54;
-extern int ReadFont(int, int, int);
+extern int ReadFont(int, int, ...);
 extern char *ParseStringS(int, char *, int **, int *);
 extern void ParseStringW(void);
 extern int IOS_IoctlvReboot(int, int, int, int, void *, int);
@@ -141,6 +141,55 @@ unsigned short OSSetFontEncode(unsigned short arg0) {
         }
     }
     return encode;
+}
+
+int OSLoadFont(int arg0, int arg1) {
+    unsigned short encode = lbl_80558F58;
+    int result;
+    if (encode == 0xFFFF)
+        goto initialize;
+dispatch:
+    if (encode == 2) goto no_font;
+    if (encode < 2) {
+        if (encode == 0) {
+            lbl_8055DA54 = (int *)arg0;
+            result = ReadFont(arg1, 0, arg0);
+        } else {
+            lbl_8055DA50 = (int *)arg0;
+            result = ReadFont(arg1, 1, arg0);
+        }
+    } else if (encode < 6) {
+        int first;
+        int next;
+        lbl_8055DA54 = (int *)arg0;
+        first = ReadFont(arg1, 0, arg0);
+        result = first;
+        if (first != 0) {
+            next = (int)lbl_8055DA54 + first;
+            lbl_8055DA50 = (int *)next;
+            result += ReadFont(arg1, 1, next);
+        }
+    } else {
+no_font:
+        result = 0;
+    }
+    return result;
+initialize:
+    {
+        int console = *(volatile int *)0x800000CC;
+        if (console == 0) {
+            encode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
+            lbl_80558F58 = encode;
+        } else if (console < 0) {
+            encode = 0;
+            lbl_80558F58 = 0;
+        } else {
+            encode = 0;
+            lbl_80558F58 = 0;
+        }
+        lbl_8055DA48 = (void *)ParseStringS;
+    }
+    goto dispatch;
 }
 
 extern int GetFontCode(unsigned short);
