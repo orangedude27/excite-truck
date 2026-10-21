@@ -263,6 +263,45 @@ void fn_802C3850(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32
     fn_802E317C(lbl_8034B094, (s32)*(s8 *)arg0, (s32)*(s8 *)arg5);
 }
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_802C3C68(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4,
+                 s32 arg5, s32 arg6, s32 arg7) {
+    s32 sp1C, sp18, sp14, sp10, spC, sp8;
+    s32 *src, *dst;
+    s32 i, widthBytes, skipSrc, skipDst;
+    sp8 = arg1;
+    spC = arg2;
+    sp10 = arg6;
+    sp14 = arg7;
+    sp1C = arg3 - arg1;
+    sp18 = arg4 - arg2;
+    if (fn_802C3170((void *)arg5, &sp10, &sp14, &sp8, &spC, &sp1C, &sp18) != 0) {
+        src = (s32 *)fn_802C3060((void *)arg0, sp8, spC);
+        dst = (s32 *)fn_802C3060((void *)arg5, sp10, sp14);
+        widthBytes = sp1C * 4;
+        skipSrc = (*(s32 *)((char *)arg0 + 0x10) - widthBytes) / 4;
+        skipDst = (*(s32 *)((char *)arg5 + 0x10) - widthBytes) / 4;
+        do {
+            i = sp1C;
+loop_3:
+            {
+                s32 t = *src;
+                i--;
+                src++;
+                *dst = t;
+                dst++;
+            }
+            if (i > 0)
+                goto loop_3;
+            src += skipSrc;
+            dst += skipDst;
+            sp18--;
+        } while (sp18 > 0);
+    }
+}
+#pragma scheduling on
+#pragma dont_inline reset
 void fn_802C4C80(void* arg0) {
     if (arg0 == NULL) {
         return;
