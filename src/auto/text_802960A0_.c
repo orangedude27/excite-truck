@@ -20,6 +20,19 @@ extern "C" int fn_802962CC(void *node) {
     };
     return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055C9B8) == 0;
 }
+
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_80296308(void *node) {
+    class NameNode {
+    public:
+        virtual char *getName();
+    };
+    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055C9C0) == 0;
+}
+#pragma cplusplus reset
+#pragma pop
+
 #pragma cplusplus reset
 #pragma pop
 void fn_80296838(void *arg0) {
