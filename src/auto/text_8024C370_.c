@@ -256,8 +256,6 @@ void fn_8024D248(void *arg0) {
     }
 }
 
-extern void fn_80230924(void *, float, float, float, float, float);
-extern void fn_80230C30(float *, float *, int, int);
 extern void fn_80234AFC(void *, const char *, int, float, float, int);
 extern float lbl_80563940, lbl_80563944, lbl_80563948, lbl_80563950, lbl_80563954;
 extern double lbl_80563938;
