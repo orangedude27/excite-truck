@@ -6263,7 +6263,7 @@ fail: return -1;
 zero: return 0;
 }
 
-extern "C" s32 fn_800A7484(void *, u16, s32);
+extern "C" s32 fn_800A7484(void *, s32, u32, s32, s32, s32);
 extern "C" s32 fn_800A58E0(void *arg0, s32 a, s32 b, s32 c, s32 d) {
     s32 result;
     s32 value;
