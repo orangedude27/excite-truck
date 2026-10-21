@@ -41,16 +41,17 @@ void fn_802E7684(void* arg0) {
     ((UnkFunc)(*(void**)lbl_8055FFF0))( (s32)arg0 );
 }
 
+#pragma scheduling invalid_target
 s32 fn_802E769C(void) {
     s32* result;
     OSGetConsoleType();
-    fn_802E30C8((char*)lbl_8034D828);
+    fn_802E30C8(lbl_8034D828);
     result = (s32*)fn_801284F8(4, lbl_8034D84C);
     if (result != 0) {
         *result = (s32)lbl_8034D860;
     }
 }
-
+#pragma scheduling on
 s32 fn_802E76F0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
