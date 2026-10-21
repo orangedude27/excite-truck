@@ -14,7 +14,7 @@ extern int lbl_804C1090[];
 extern void fn_802C2698(void);
 void fn_802C2640(void);
 
-DECL_SECTION(".ctors") funcptr_t D_802ED5D0 = fn_802C2640;
+DECL_SECTION(".ctors") funcptr_t D_802ED58C = fn_802C2640;
 
 #pragma small_data off
 #pragma scheduling invalid_target
