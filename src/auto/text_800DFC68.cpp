@@ -10,6 +10,82 @@ extern "C" const char lbl_803204BC[];
 extern "C" const char lbl_80320C14[];
 extern "C" const char lbl_80320C60[];
 extern void* FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void*, void*);
+extern "C" const char lbl_8031E8FC[];
+extern "C" const char lbl_8031E8D8[];
+extern "C" int fn_800D58F0(const char*, const char*);
+extern "C" int lbl_8055DDF0;
+extern "C" const char lbl_80320CFC[];
+extern "C" void MEMFreeToAllocator(int, void*);
+extern "C" void fn_800D598C(void*);
+extern "C" void fn_8002F634(void*, void*, int, int);
+extern "C" void fn_800D2DD4(void);
+extern "C" void __dt__Q36nw4hbm3lyt4PaneFv(void*, int);
+extern "C" void fn_80128668(void*);
+extern "C" void* __dt__Q36nw4hbm3lyt6WindowFv(void* arg0, int arg1) {
+    int count, offset;
+    int* entries;
+    void* pane;
+    void** vtable;
+    if (arg0 != 0) {
+        *(void**)arg0 = (void*)lbl_80320CFC;
+        entries = *(int**)((char*)arg0 + 0xFC);
+        if (entries != 0) {
+            count = 0;
+            offset = 0;
+            while (count < *(unsigned char*)((char*)arg0 + 0x100)) {
+                pane = *(void**)((char*)entries + offset + 4);
+                vtable = *(void***)pane;
+                ((void (*)(void*, int))vtable[2])(pane, -1);
+                MEMFreeToAllocator(lbl_8055DDF0, pane);
+                offset += 8;
+                count++;
+            }
+            MEMFreeToAllocator(lbl_8055DDF0, entries);
+        }
+        pane = *(void**)((char*)arg0 + 0x28);
+        if (pane != 0 && *((unsigned char*)pane + 0x54) == 0) {
+            vtable = *(void***)pane;
+            ((void (*)(void*, int))vtable[2])(pane, -1);
+            MEMFreeToAllocator(lbl_8055DDF0, pane);
+            *(void**)((char*)arg0 + 0x28) = 0;
+        }
+        fn_800D598C((char*)arg0 + 0xF4);
+        if ((char*)arg0 + 0xE4 != 0)
+            fn_8002F634((char*)arg0 + 0xE4, (void*)fn_800D2DD4, 4, 4);
+        __dt__Q36nw4hbm3lyt4PaneFv(arg0, 0);
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
+extern "C" void* FindMaterialByName__Q36nw4hbm3lyt6WindowFPCcb(void* self, const char* name, bool searchChildren) {
+    void* value;
+    int i;
+    char* entries;
+    if (*(void**)((char*)self + 0x28) != 0 &&
+        fn_800D58F0(*(char**)(*(char**)((char*)self + 0x28) + 4), name) != 0)
+        return *(void**)((char*)self + 0x28);
+    entries = *(char**)((char*)self + 0xFC);
+    for (i = 0; i < *(unsigned char*)((char*)self + 0x100); i++) {
+        value = *(void**)(entries + i * 8 + 4);
+        if (fn_800D58F0((char*)value + 4, name) != 0)
+            return value;
+    }
+    if (searchChildren) {
+        char* sentinel = (char*)self + 0x14;
+        char* child = *(char**)sentinel;
+        while (child != sentinel) {
+            if (child == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            value = (*(void* (**)(void*, const char*, int))(*(int*)(*(int*)(child - 4)) + 0x40))(child - 4, name, 1);
+            if (value != 0) return value;
+            child = *(char**)child;
+        }
+    }
+    return 0;
+}
+
 extern "C" void* FindAnimationLink__Q36nw4hbm3lyt6WindowFPQ36nw4hbm3lyt13AnimTransform(void* self, void* anim) {
     void* result = FindAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(self, anim);
     if (result != 0) return result;
@@ -166,3 +242,4 @@ extern "C" void fn_800E2508(void* self) {
 
 extern "C" unsigned int* fn_800E2518(void) { extern unsigned int lbl_8055DE10; return &lbl_8055DE10; }
 struct DrawContentMaterial { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(void*, int, u8); };
+struct WindowPane { virtual void v0(); virtual void v1(); virtual void Free(int); };
