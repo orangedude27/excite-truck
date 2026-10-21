@@ -45,10 +45,17 @@ int fn_8015ED18(void **arg0) {
     char *name = method(arg0);
     return stricmp(name, lbl_8055A070) == 0;
 }
-int fn_8015ED54(void **arg0) {
-    return stricmp(((char *(*)(void *))((void **)*(void **)arg0)[2])(arg0), lbl_8055A070) == 0;
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_8015ED54(void **node) {
+    class NameNode {
+    public:
+        virtual char *getName();
+    };
+    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055A070) == 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 int fn_8015ED90(void **arg0) {
     int count = 0;
     int i;
