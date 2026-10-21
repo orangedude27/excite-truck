@@ -421,9 +421,7 @@ s32 fn_802B6E30(void);
 #pragma push
 #pragma scheduling on
 s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
-    s32 scale = fn_802B6E30();
-    s32 delta = arg1 - (arg2 >> 1);
-    return (s16)(arg0 + delta * scale);
+    return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * (s16)fn_802B6E30()));
 }
 
 s16 fn_802B6ED8(s32 arg0, s32 arg1, u32 arg2) {
