@@ -6,14 +6,14 @@ extern void fn_8000D838(void *);
 extern s32 lbl_8055E0B8;
 extern s32 lbl_8055E0C0;
 extern s32 lbl_8055E0C4;
+typedef struct { u32 hi; u32 lo; } Pair;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 #pragma opt_dead_assignments off
 void fn_801368C4(void) {
-    s32 *p = &lbl_8055E0C4;
     fn_8000D838(&lbl_8055E0B8);
-    p[0] = 0x7F000000;
-    p[-1] = 0xFFFF0000;
+    lbl_8055E0C4 = 0x7F000000;
+    lbl_8055E0C0 = 0xFFFF0000;
 }
 #pragma opt_dead_assignments reset
 #pragma opt_propagation reset
