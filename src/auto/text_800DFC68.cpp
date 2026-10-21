@@ -242,4 +242,3 @@ extern "C" void fn_800E2508(void* self) {
 
 extern "C" unsigned int* fn_800E2518(void) { extern unsigned int lbl_8055DE10; return &lbl_8055DE10; }
 struct DrawContentMaterial { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(void*, int, u8); };
-struct WindowPane { virtual void v0(); virtual void v1(); virtual void Free(int); };
