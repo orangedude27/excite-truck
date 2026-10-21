@@ -52,7 +52,7 @@ struct Dummy_801DFE50 {
     virtual void d4() {}
 };
 extern "C" void fn_801DFE50(void *arg0, int arg1, int arg2) {
-    ((Dummy_801DFE50 *)arg0)->d4();
+    ((Dummy_801DFE50 *)arg0)->d3();
     fn_801476D8(-1, arg2);
 }
 #pragma cplusplus reset
