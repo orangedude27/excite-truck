@@ -198,6 +198,37 @@ void fn_8023E16C(void *arg0, int arg1) {
     } while (var_r31 > 0);
 }
 
+extern char lbl_80341BE0[];
+void fn_8023E1FC(void *arg0) {
+    int i, sp8;
+    char sp18[0x14];
+    char *p;
+    fn_8022D76C();
+    for (i = 0; i < 0x11; i++) {
+        char *entry = lbl_802FA190 + i * 8;
+        fn_8022D894(arg0, i, 0, *(char **)fn_8023DC38(*(char **)entry), 0);
+        fn_801A7974(&sp8, *(char **)entry, *(void **)((char *)*(void ***)((char *)arg0 + 0x34) + 0x70));
+        if (sp8 == 0) {
+            p = lbl_8055BBA0;
+            {
+                int n = 0x14;
+                char *q = sp18;
+                do {
+                    char c = *p++;
+                    *q++ = c;
+                    if ((signed char)c == 0) break;
+                    n--;
+                    if (n <= 0) { q[-1] = 0; break; }
+                } while (1);
+            }
+        } else {
+            fn_801A7E54(sp18, 0x14, sp8);
+        }
+        fn_8022D894(arg0, i, 1, sp18, 0);
+    }
+    fn_8022D894(arg0, 0x11, 0, lbl_80341BE0, 0);
+}
+
 void *fn_8023E440(void *arg0, void *arg1) {
     extern int fn_801A902C(void);
     extern void fn_801A9050(void *, int);
@@ -258,4 +289,11 @@ int fn_8023E3D8(int, int);
   extern char lbl_80341B9C[];
   extern s32 fn_802E317C(const char *, ...);
   extern char lbl_8055BBA0[];
-
+#pragma cplusplus on
+struct Dummy8023E1FC {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void *v14();
+};
+#pragma cplusplus reset
