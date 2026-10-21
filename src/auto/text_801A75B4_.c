@@ -118,6 +118,50 @@ void fn_801A7844(int arg0) {
     *(float *)&lbl_80435370[4] = y;
 }
 
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" void fn_801A7E54(char *dst, int len, const char *name) {
+    void *found = fn_801A9234(name);
+    char *src;
+    int remaining;
+    char ch;
+    if (found != 0) {
+        const char **entry = fn_801A75B4(*(const char **)found);
+        if (entry != 0) {
+            src = (char *)entry[1];
+            remaining = len;
+            for (;;) {
+                remaining--;
+                if (remaining <= 0) { dst[-1] = 0; break; }
+                ch = *src++; *dst++ = ch;
+                if ((signed char)ch == 0) break;
+            }
+        } else {
+            src = *(char **)((char *)found + 4);
+            if (src == 0) src = (char *)found + 0x10;
+            remaining = len;
+            for (;;) {
+                remaining--;
+                if (remaining <= 0) { dst[-1] = 0; break; }
+                ch = *src++; *dst++ = ch;
+                if ((signed char)ch == 0) break;
+            }
+        }
+    } else {
+        src = (char *)&lbl_8055A850;
+        remaining = len;
+        for (;;) {
+            remaining--;
+            if (remaining <= 0) { dst[-1] = 0; break; }
+            ch = *src++; *dst++ = ch;
+            if ((signed char)ch == 0) break;
+        }
+    }
+    dst[len - 1] = 0;
+}
+#pragma cplusplus off
+#pragma dont_inline reset
+
 void fn_801A7F8C(void) {
     lbl_8055E5C8 = 0;
 }
