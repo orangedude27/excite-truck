@@ -46,11 +46,24 @@ void fn_80191060(void) {
 
 int fn_80191100(void *arg0) { return ((int *)arg0)[3]; }
 
-void fn_801914F8(void *arg0) {
-    void *obj = *(void **)((char *)arg0 + 4);
-    ((void (*)(void *))(*(void ***)obj)[10])(obj);
+#pragma cplusplus on
+extern "C" void fn_801914F8(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 4);
+    obj->f8();
 }
-
+#pragma cplusplus off
 u8 fn_8019157C(void *arg0) { return *((u8 *)arg0 + 0x14); }
 
 void fn_8019169C(void *arg0, void *arg1) {
