@@ -3,6 +3,9 @@
 #include <types.h>
 
 extern float lbl_8056208C;
+extern float lbl_80562090;
+extern float lbl_805620AC;
+extern float lbl_80562080;
 extern int lbl_8055E3C4;
 extern int lbl_8055E524;
 void fn_80191084(int, int);
