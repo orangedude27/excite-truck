@@ -13,6 +13,9 @@ extern int fn_80292FB4(unsigned char *, void *);
 extern unsigned char lbl_804B4030[];
 extern float lbl_805644D8;
 extern int fn_80129D18(int, int);
+extern unsigned int lbl_80488648[];
+extern float lbl_805644EC;
+extern double lbl_805644F0;
 #pragma cplusplus on
 class Dummy_80292B48 {
 public:
@@ -23,6 +26,28 @@ public:
 #pragma cplusplus off
 void fn_802924E8(void) {
     fn_80292EA8(lbl_804B4168);
+}
+
+extern float fn_8002F234(float);
+extern float fn_80129DC4(int, float, float);
+extern float lbl_805644D0, lbl_805644D4, lbl_805644D8, lbl_805644DC, lbl_805644E0;
+void fn_802924F4(void) {
+    float a, b, c, d, e, f, g;
+    int i;
+    unsigned char *p = lbl_804B4030;
+    for (i = 0; i < 6; i++, p += 0x34) {
+        a = fn_80129DC4(0, lbl_805644D0, lbl_805644D4);
+        b = fn_8002F234((lbl_805644D4 - a * a) - lbl_805644D8);
+        c = fn_8002F234((lbl_805644D4 - a * a) - lbl_805644D8);
+        d = fn_80129DC4(0, -c, b);
+        e = fn_8002F234((lbl_805644D4 - a * a) - d * d);
+        f = fn_80129DC4(0, lbl_805644D0, lbl_805644D4) > lbl_805644D8 ? lbl_805644D4 : lbl_805644D0;
+        *(float *)(p + 0) = a;
+        *(float *)(p + 4) = d;
+        *(float *)(p + 8) = e * f;
+        g = fn_80129DC4(0, lbl_805644DC, lbl_805644E0);
+        *(float *)(p + 0xC) = g;
+    }
 }
 
 void fn_80292618(void) {
@@ -183,6 +208,36 @@ body:
     i++;
 check:
     if (i < *(s32 *)((u8 *)arg0 + 0x4C2C)) goto body;
+}
+
+void fn_80293BB4(void *arg0, float *arg1, float *arg2, short arg3) {
+    int count = *(int *)((char *)arg0 + 0x4C2C);
+    if (count < 0x100) {
+        char *record = (char *)arg0 + count * 0x4C;
+        int index = fn_80129D18(0, 6);
+        char *template = (char *)lbl_804B4030 + index * 0x34;
+        *(float *)(record + 0x50) = arg1[0];
+        *(float *)(record + 0x54) = arg1[1];
+        *(float *)(record + 0x58) = arg1[2];
+        *(int *)(record + 0x2C) = *(int *)(template + 0x10);
+        *(int *)(record + 0x30) = *(int *)(template + 0x14);
+        *(int *)(record + 0x34) = *(int *)(template + 0x18);
+        *(int *)(record + 0x38) = *(int *)(template + 0x1C);
+        *(int *)(record + 0x3C) = *(int *)(template + 0x20);
+        *(int *)(record + 0x40) = *(int *)(template + 0x24);
+        *(int *)(record + 0x44) = *(int *)(template + 0x28);
+        *(int *)(record + 0x48) = *(int *)(template + 0x2C);
+        *(int *)(record + 0x4C) = *(int *)(template + 0x30);
+        *(float *)(record + 0x5C) = arg2[0];
+        *(float *)(record + 0x60) = arg2[1];
+        *(float *)(record + 0x64) = arg2[2];
+        *(float *)(record + 0x68) = lbl_805644D8;
+        *(short *)(record + 0x6C) = arg3;
+        *(int *)(record + 0x70) = 2;
+        *(unsigned char *)(record + 0x74) = fn_80129D18(0, *(int *)((char *)arg0 + 0x28));
+        *(unsigned char *)(record + 0x75) = index;
+        *(int *)((char *)arg0 + 0x4C2C) = count + 1;
+    }
 }
 
 extern int fn_8012C33C(void *);
