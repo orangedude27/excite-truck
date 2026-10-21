@@ -161,6 +161,8 @@ extern int fn_8028E2F8(int *, int *, int, int, float, float, float, float, float
 extern int lbl_80348B34;
 extern int lbl_8055C880;
 extern float lbl_8056427C, lbl_80564284, lbl_8056428C, lbl_8056429C;
+extern float lbl_80564274, lbl_80564280, lbl_80564288, lbl_80564290, lbl_80564294, lbl_80564298, lbl_805642A0, lbl_805642A4, lbl_805642A8, lbl_805642AC;
+extern int lbl_80348AE8;
 extern float lbl_805642B0, lbl_805642F8, lbl_805642FC, lbl_80564300;
 int fn_802897E0(int arg0) {
     volatile float sp94, sp90, sp8C, sp88, sp84, sp80, sp7C, sp78, sp74, sp70, sp68;
