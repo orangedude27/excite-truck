@@ -2430,7 +2430,7 @@ extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     return fn_800BA49C(arg3, arg1, arg2, val, (s32 *)arg4);
 }
 
-extern "C" s32 fn_800BA688(void *, s32, s32, s32, s32 *, ...);
+extern "C" s32 fn_800BA688(void *, s32, s32, s32, s32 *);
 extern "C" s32 fn_800BA1CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     s32 val;
     if (arg0 == 0 || arg1 == 0 || arg4 == 0) return 1;
