@@ -10,6 +10,9 @@ extern unsigned char lbl_804B4168[];
 extern void fn_80292EA8(void *);
 extern void fn_80292EB4(void *);
 extern int fn_80292FB4(unsigned char *, void *);
+extern unsigned char lbl_804B4030[];
+extern float lbl_805644D8;
+extern int fn_80129D18(int, int);
 #pragma cplusplus on
 class Dummy_80292B48 {
 public:
@@ -276,7 +279,7 @@ void fn_80294530(void *arg0, int arg1, int arg2, int arg3) {
 }
 
 #pragma push
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80294710(void* arg0) {
     u8 *cursor = (u8*)arg0;
     s32 i = 0;
