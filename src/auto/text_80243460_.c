@@ -80,7 +80,7 @@ __declspec(section ".sdata") extern s32 lbl_8055BE0C;
 __declspec(section ".sdata") extern s32 lbl_8055BE10;
 extern s32 fn_80230E90(s32);
 extern s32 fn_80243528(s32, s32);
-extern s32 fn_8024360C(s32);
+extern s32 fn_8024360C(s32, s32);
 extern s32 fn_80243710(s32, s32);
 #pragma push
 #pragma use_lmw_stmw off
@@ -93,7 +93,7 @@ s32 fn_80243764(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     else if (next > 4) *(s32 *)arg1 = 0;
     if (*(s32 *)arg1 != old1) {
         fn_80243528(*(s32 *)arg0, old1);
-        value = fn_8024360C(*(s32 *)arg1);
+        value = fn_8024360C(*(s32 *)arg1, *(s32 *)arg1);
         count = fn_80243478(*(s32 *)arg1);
         if (fn_80243478(old1) != count) {
             if (fn_80243710(lbl_8055BE0C, *(s32 *)arg1) && *(s32 *)arg0 == lbl_8055BE10) {
