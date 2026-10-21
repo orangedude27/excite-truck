@@ -7,6 +7,11 @@ __pycache__
 .mypy_cache
 .cache/
 
+# Local decompdecomp state: databases, credentials, diagnostics and cached drafts
+/.decomp/
+/.decomp-wtf/
+/.decomp.wtf.json
+
 # Original files
 orig/*/*
 !orig/*/.gitkeep
