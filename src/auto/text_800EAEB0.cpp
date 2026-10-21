@@ -203,9 +203,12 @@ extern "C" void DVDClose(void*);
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32);
 extern "C" void fn_800EB3AC(void* arg0) {
     volatile u8* p = (volatile u8*)arg0;
-    f32 c = lbl_80560FEC;
-    f32 b = *(f32*)(lbl_802F4B90 + 0x1FC);
-    f32 a = lbl_80560FE8;
+    f32 c;
+    f32 b;
+    f32 a;
+    a = lbl_80560FE8;
+    c = lbl_80560FEC;
+    b = *(f32*)(lbl_802F4B90 + 0x1FC);
     *(volatile f32*)(p + 8) = a;
     *(volatile f32*)(p + 0x10) = b;
     p[0x14] = 0x7F;
