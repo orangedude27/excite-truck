@@ -9,9 +9,6 @@ extern char lbl_80340290[];
 extern void *fn_801284F8(u32, void *);
 typedef void (*VFunc)(s32);
 struct Vtbl8022E { void *pad; VFunc dtor; };
-#pragma cplusplus on
-class Unk8022EA58 { public: virtual void f0(); virtual void f1(); virtual void f2(int); };
-#pragma cplusplus off
 extern void *fn_8012A13C(void *, void *, u32, u32);
 extern void *fn_8012A2D8(void **);
 extern void fn_8012A364(void **, void *);

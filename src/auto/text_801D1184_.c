@@ -8,9 +8,8 @@ extern char lbl_80338214[];
 void fn_801D1184(void) {
     extern void *fn_801284F8(int, const char *);
     extern void fn_801D0FA4(void);
-    register int size asm("r3") = 4;
     void *object;
-    object = fn_801284F8(size, (const char *)&lbl_80338208[0]);
+    object = fn_801284F8(4, (const char *)&lbl_80338208[0]);
     if (object != 0) {
         fn_801D0FA4();
         *(void **)object = &lbl_80338214[0];

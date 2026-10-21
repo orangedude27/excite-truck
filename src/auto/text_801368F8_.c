@@ -167,13 +167,11 @@ void fn_8013776C(void *arg0) {
     *(f32 *)((char *)arg0 + 0x18) = temp_f1 * temp_f1 + temp_f0 * temp_f0;
 }
 
-float fn_80137850(void *arg0)
-{
-  float new_var;
-  int index = (*((int *) (((char *) arg0) - -0x18))) * (*((int *) (lbl_8055E0D0 + 0xC)));
-  int base;
-  float *p = (float *) ((*((int *) (lbl_8055E0D0 + 0x10))) + index);
-  return p[0] + ((new_var = (*((float **) arg0))[1]) * p[2]);
+float fn_80137850(void *arg0) {
+ int index = *(int*)((char*)arg0+0x18) * *(int*)(lbl_8055E0D0+0xC);
+ int base = *(int*)(lbl_8055E0D0+0x10);
+ float *p=(float*)(base+index);
+ return p[0]+(*(float**)arg0)[1]*p[2];
 }
 
 void fn_80137884(s32 arg0) {

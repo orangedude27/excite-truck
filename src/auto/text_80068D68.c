@@ -2218,13 +2218,9 @@ void btm_delete_stored_link_key_complete(u8 *p) {
     }
 }
 
-unsigned long fn_8007ABE8(void)
-{
-  void (*callback)(void) = *((void (**)(void)) (lbl_803C0F78 + 0x568));
-  if (callback != NULL)
-  {
-    callback();
-  }
+void fn_8007ABE8(void *arg0) {
+    void (*callback)(void) = *(void (**)(void))(lbl_803C0F78 + 0x568);
+    if (callback != NULL) callback();
 }
 
 void fn_8007AD38(void) {

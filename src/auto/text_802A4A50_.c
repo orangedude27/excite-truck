@@ -238,16 +238,16 @@ void fn_802A6408(void *arg0) {
 #pragma push
 #pragma scheduling off
 void fn_802A6758(void *arg0, f32 *arg1) {
-    f32 *dst = (f32 *)*(void **)arg0 + (*(s32 *)((u8 *)arg0 + 4) * 3);
+    u8 *dst = *(u8 **)arg0 + (*(s32 *)((u8 *)arg0 + 4) * 0xC);
     f32 z;
     f32 y;
     f32 x;
     x = arg1[0];
     y = arg1[1];
     z = arg1[2];
-    dst[0] = x;
-    dst[1] = y;
-    dst[2] = z;
+    *(f32 *)dst = x;
+    *(f32 *)(dst + 4) = y;
+    *(f32 *)(dst + 8) = z;
     *(s32 *)((u8 *)arg0 + 4) += 1;
 }
 #pragma pop

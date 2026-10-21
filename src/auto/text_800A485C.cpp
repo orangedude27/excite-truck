@@ -2422,8 +2422,10 @@ extern "C" s32 fn_800BA160(s32 arg0) {
 extern "C" u32 lbl_8031C2B8[];
 extern "C" u32 lbl_802F3F54[];
 extern "C" s32 fn_800BA194(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
+    s32 a4;
     s32 val;
-    if (arg0 == 0 || arg1 == 0 || arg4 == 0) {
+    a4 = arg4;
+    if (arg0 == 0 || arg1 == 0 || a4 == 0) {
         return 1;
     }
     val = *(s32 *)(lbl_80407300 + 4);

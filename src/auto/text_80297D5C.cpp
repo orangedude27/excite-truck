@@ -725,14 +725,11 @@ int fn_8029BFF8(void* arg0) {
 }
 
 extern void* lbl_8055F7D4;
-#pragma dont_inline on
 extern "C" int fn_8029C024(int *arg0) {
     int value = *(volatile int *)arg0;
-    int *p = arg0;
     fn_8029A890(lbl_8055F7D4, (void *)value);
     return 4;
 }
-#pragma dont_inline reset
 extern "C" int fn_8029C054(int* arg0) {
     int value = *(volatile int*)arg0;
     fn_8029A8A4(lbl_8055F7D4, (void*)value);

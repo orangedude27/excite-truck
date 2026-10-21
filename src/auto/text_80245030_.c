@@ -3,14 +3,9 @@
 #include <types.h>
 
 extern s32 lbl_80498878[];
-extern void *lbl_8055F228;
+extern s32 lbl_8055F228;
 extern s32 lbl_8055F230;
 void fn_8000D838(void *);
-void fn_80245030(void);
-
-#include <macros.h>
-
-DECL_SECTION(".ctors") funcptr_t D_802ED424 = fn_80245030;
 
 #pragma scheduling invalid_target
 #pragma opt_propagation off

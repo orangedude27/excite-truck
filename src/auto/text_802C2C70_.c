@@ -15,5 +15,5 @@ void fn_802C2C70(void) {
     *(volatile short *)&lbl_8055FB94 = 0x401;
     lbl_8055FB92 = 0x405;
 }
+#pragma opt_propagation reset
 #pragma scheduling on
-#pragma opt_propagation on

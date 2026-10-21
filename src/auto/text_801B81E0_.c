@@ -226,13 +226,16 @@ int fn_801B84F0(void) {
     return 0;
 }
 
-void fn_801B84F8(void)
-{
-  extern char lbl_8055E748;
-  int new_var;
-  (*((void (***)(void *)) lbl_8055E744))[6](lbl_8055E744);
-  new_var = 1;
-  lbl_8055E748 = new_var;
+void fn_801B84F8(void) {
+    extern char lbl_8055E748;
+    void *obj;
+    void **vt;
+    void (*fn)(void *);
+    lbl_8055E748 = 1;
+    obj = lbl_8055E744;
+    vt = *(void ***)obj;
+    fn = (void (*)(void *))vt[6];
+    fn(obj);
 }
 
 extern char lbl_8055E748;

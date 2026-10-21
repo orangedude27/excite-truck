@@ -1066,13 +1066,13 @@ s32 fn_8011C400(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, s32 arg4) {
 extern void fn_8011C4A0(s32, s32, s32, s32);
 void fn_8011CD90(s32 arg0, s32 arg1, s32 arg2) {
     s32 a = arg2;
-    register s32 b = arg2 + 0x100;
+    s32 b = arg2 + 0x100;
     s32 c = arg2 + 0x140;
-    register u32 i;
+    u32 i;
     for (i = 0; i < 0x10; i++) {
         fn_8011C4A0(arg1, c, b, a);
-        a += 0x10;
         b += 4;
+        a += 0x10;
         c += 4;
     }
     fn_8011C4A0(arg1, arg0 + 0x24, arg0 + 0x20, arg0 + 0x10);

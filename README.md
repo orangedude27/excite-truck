@@ -103,3 +103,23 @@ Once the initial build succeeds, an `objdiff.json` should exist in the project r
 Download the latest release from [encounter/objdiff](https://github.com/encounter/objdiff). Under project settings, set `Project directory`. The configuration should be loaded automatically.
 
 Select an object from the left sidebar to begin diffing. Changes to the project will rebuild automatically: changes to source files, headers, `configure.py`, `splits.txt` or `symbols.txt`.
+
+## Decompdecomp Integration
+
+This project includes helper scripts for the [decompdecomp](https://github.com/n-delic/decompdecomp) service:
+
+- **`.decomp.wtf.json`** — Project manifest that tells decompdecomp how to set up and verify this project.
+- **`tools/update_symbols.py`** — Updates `symbols.txt` from the linked ELF using `dtk dol apply`. Run after each build to pick up new symbol names.
+- **`tools/function_signatures.py`** — Generates `function_signatures.json` with function addresses, sizes, and sections for the look-alike feature.
+- **`tools/refresh_decompdecomp.sh`** — Convenience script that runs a build, updates symbols, and generates signatures in one step.
+
+```sh
+# Quick refresh after building
+./tools/refresh_decompdecomp.sh
+
+# Dry run (show what would change)
+./tools/refresh_decompdecomp.sh --dry-run
+
+# Force update of all anonymous symbols
+./tools/refresh_decompdecomp.sh --full
+```
