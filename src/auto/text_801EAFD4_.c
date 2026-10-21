@@ -7,6 +7,7 @@ typedef float f32;
 typedef unsigned char u8;
 extern s32 lbl_8033A048;
 extern s32 *lbl_80339E88;
+extern s32 *lbl_8055EBA0;
 extern f32 lbl_8055EBA4;
 extern f32 lbl_80562E6C;
 extern void *fn_8012C370(s32, u32 *, void *, void *, u8 *);
