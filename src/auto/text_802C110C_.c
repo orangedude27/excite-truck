@@ -5,6 +5,14 @@
 extern int lbl_8055FB28, lbl_8055FB2C, lbl_8055FB30, lbl_8055FB34, lbl_8055CFA0;
 extern int lbl_8055FB40;
 extern int lbl_804C0810, lbl_804C0E10;
+extern f32 lbl_8055FB38;
+extern f32 lbl_80564E50;
+extern char lbl_8034AEF8[], lbl_8034AF04[];
+extern int fn_801FB1F4(int);
+extern int fn_8012850C(int, const char *);
+extern void fn_801D0590(void *);
+extern void fn_801D0800(void *);
+extern void *memset(void *, int, unsigned int);
 extern void fn_80128670(int);
 extern void fn_801D05B4(void *);
 extern void fn_801D0824(void *);
