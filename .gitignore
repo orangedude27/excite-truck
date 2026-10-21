@@ -47,5 +47,8 @@ compile_commands.json
 
 # Tools/ is also working-only — scripts under tools/ are not tracked.
 tools/
+!tools/
+tools/*
+!tools/update_readme_progress.py
 
 *.s
