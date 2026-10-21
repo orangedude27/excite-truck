@@ -182,6 +182,7 @@ extern char lbl_8034E0BC[];
 extern int fn_802ECC10(void);
 extern int fn_802E888C(int);
 extern char lbl_8034E130[];
+extern char lbl_8034E108[];
 void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
  char *dst=(char*)arg0+0xC; int i=0x100; const char *start=arg1;
  *(int*)((char*)arg0+8)=arg2; *(int*)((char*)arg0+4)=arg3;
