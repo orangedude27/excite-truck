@@ -5,6 +5,9 @@ extern void *lbl_8055FE5C;
 extern char lbl_80346798[];
 extern void fn_802E317C(char *, ...);
 extern int memcpy(void *, const void *, unsigned int);
+extern char lbl_80346798[];
+extern void fn_802E317C(char *, ...);
+extern int memcpy(void *, const void *, unsigned int);
 extern float lbl_80565038;
 extern float lbl_8056503C;
 extern void *fn_802DA704(int, void *, int);
@@ -77,6 +80,37 @@ void fn_802DA52C(void) {
     *(volatile int *)(p + 0x20) = -1;
     p[0x24] = 1;
     p[0x25] = 0;
+}
+
+void *fn_802DA704(int owner, void *data, int count) {
+    unsigned char *state = (unsigned char *)lbl_8055FE5C;
+    unsigned char saved = state[0x25];
+    int size = count * 12 + 0x18;
+    int aligned = (size + 3) & ~3;
+    int used = *(int *)(state + 0x10);
+    int limit = *(int *)(state + 0x0C);
+    unsigned char *arena = (unsigned char *)*(unsigned int *)(state + 4);
+    unsigned char *base;
+    void *result;
+    state[0x25] = 0;
+    if (aligned + used + 8 > limit) {
+        fn_802E317C(lbl_80346798, *(int *)(state + 8), size, limit >> 10);
+        result = 0;
+    } else {
+        base = arena + used;
+        *(int *)base = 1;
+        result = base + 4;
+        *(int *)(base + aligned + 4) = aligned;
+        *(int *)(state + 0x10) = aligned + used + 8;
+    }
+    *(int *)((char *)result + 0) = 7;
+    *(int *)((char *)result + 4) = owner;
+    *(int *)((char *)result + 8) = count;
+    *(int *)((char *)result + 0x0C) = 0;
+    *(int *)((char *)result + 0x14) = 0;
+    *((unsigned char *)result + 0x10) = saved;
+    memcpy((char *)result + 0x18, data, count * 12);
+    return result;
 }
 
 extern float lbl_80565030;
