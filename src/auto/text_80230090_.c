@@ -114,6 +114,28 @@ void fn_80230C30(float *arg0, float *arg1, s32 arg2, s32 arg3) {
     *arg1 = (float)((s32)(((lbl_8055FBA0 >> 31) + lbl_8055FBA0) >> 1) - arg3);
 }
 
+void fn_80230C9C(float *arg0, float *arg1, float farg0, float farg1, float farg2) {
+    float var_f0, var_f0_2, var_f4, var_f5;
+    int temp_r0, temp_r0_2;
+    var_f4 = *arg0;
+    var_f5 = *arg1;
+    if ((var_f4 < farg0) && (var_f5 < farg0)) {
+        if (var_f4 > var_f5) var_f0 = var_f4;
+        else var_f0 = var_f5;
+        temp_r0 = (int)((farg0 - var_f0) / farg2) + 1;
+        var_f4 += (float)temp_r0 * farg2;
+        var_f5 += (float)temp_r0 * farg2;
+    } else if ((var_f4 > farg1) && (var_f5 > farg1)) {
+        if (var_f4 < var_f5) var_f0_2 = var_f4;
+        else var_f0_2 = var_f5;
+        temp_r0_2 = (int)((var_f0_2 - farg1) / farg2) + 1;
+        var_f4 -= (float)temp_r0_2 * farg2;
+        var_f5 -= (float)temp_r0_2 * farg2;
+    }
+    *arg0 = var_f4;
+    *arg1 = var_f5;
+}
+
 void fn_80230DA0(void) {}
 
 void fn_80230DA4(float a, float b) {
