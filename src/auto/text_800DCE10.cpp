@@ -18,6 +18,8 @@ extern const char lbl_80320BC8[];
 extern const char lbl_80320B98[];
 extern "C" s32 fn_80128668(void);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *);
+extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
+extern const char lbl_80320560[];
 
 extern "C" s32 fn_800DCE10(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
