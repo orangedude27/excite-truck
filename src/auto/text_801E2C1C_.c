@@ -17,6 +17,7 @@ extern int sscanf(const char *, const char *, ...);
 extern int stricmp(const char *, const char *);
 extern char *strcpy(char *, const char *);
 extern const char lbl_8055AEB4[];
+extern const char lbl_8055AEB0[];
 
 void fn_8012A260(void*, unsigned int);
 void fn_80128668(void*);
