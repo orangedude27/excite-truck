@@ -66,11 +66,17 @@ s32 fn_80297354(void *arg0, void *arg1) {
 }
 
 __declspec(section ".sdata") extern char lbl_8055CA58[];
-s32 fn_80297450(void **arg0) {
-    char *value = ((char *(*)(void))((void **) *arg0)[2])();
-    return stricmp(value, lbl_8055CA58) == 0;
+#pragma push
+#pragma cplusplus on
+extern "C" s32 fn_80297450(void *node) {
+    class NameNode {
+    public:
+        virtual char *getName();
+    };
+    return stricmp(((NameNode *)node)->getName(), (const char *)lbl_8055CA58) == 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 float fn_8029748C(void *arg0) {
     s32 count = *(s32 *)((u8 *)arg0 + 4);
     float max = lbl_80564578;
