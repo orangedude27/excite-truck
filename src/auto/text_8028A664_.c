@@ -40,7 +40,8 @@ extern "C" void fn_8028A784(void) {
     extern s32 fn_8028BB14(s32);
     extern s32 fn_8028BA9C(void *);
     extern s32 fn_8028BA44(void *);
-    extern void fn_8028B500(void), fn_8028B93C(void);
+    extern void fn_8028B500(void);
+extern s32 fn_8028B93C(f32 *);
     extern void fn_8028B4CC(void), fn_8028AD78(void);
     extern void fn_802976DC(s32);
     extern void *fn_8028C8C0(void *, s32);
