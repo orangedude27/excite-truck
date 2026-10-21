@@ -2214,7 +2214,6 @@ extern "C" s32 lbl_8055DD2C;
 extern "C" s32 NANDInit(void);
 extern "C" s32 NANDGetCurrentDir(char *);
 extern "C" s32 lbl_80405D18;
-extern "C" s32 fn_800BA49C(s32, s32, s32, s32);
 extern "C" const char lbl_8031B190[];
 extern "C" const char lbl_8031B1C0[];
 extern "C" s32 fn_800B76E8(s8);
