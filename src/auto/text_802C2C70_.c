@@ -9,6 +9,7 @@ void fn_8000D838(void*);
 
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+#pragma opt_reorder off
 void fn_802C2C70(void) {
     short v;
     fn_8000D838(&lbl_8055FB88);
