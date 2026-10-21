@@ -26,6 +26,7 @@ void fn_8024C370(void) {}
 extern void fn_80232BA4(char *, int, int, int, float, float, float, float, float);
 extern char lbl_8055C08C[];
 extern float lbl_80563930, lbl_80563940;
+extern float fn_8023293C();
 
 #pragma push
 #pragma use_lmw_stmw off
