@@ -168,12 +168,18 @@ void fn_801CB6B4(void) {
     }
 }
 
-void fn_801CB6E4(s32 arg0, s32 arg1, s32 arg2) {
-    if (fn_80019BA8() == 0) {
-        if (fn_80161C38() == 0) {
-            fn_801CCDAC(arg0, arg1, arg2);
-        }
+void fn_801CB6E4(int arg0, int arg1, int arg2) {
+    if (fn_80019BA8() != 0) goto done;
+    switch (fn_80161C38()) {
+    case 0:
+        goto action;
+    default:
+        goto done;
     }
+action:
+    fn_801CCDAC(arg0, arg1, arg2);
+done:
+    return;
 }
 
 void fn_801CB750(s32 arg0, s32 arg1, f32 farg0) {
