@@ -2908,6 +2908,31 @@ tBTM_SEC_DEV_REC *btm_find_dev(BD_ADDR bd_addr) {
     return 0;
 }
 
+tBTM_SEC_DEV_REC *btm_find_oldest_dev(void) {
+    tBTM_SEC_DEV_REC *p_dev_rec = (tBTM_SEC_DEV_REC *)(lbl_803C0F78 + 0x1F30);
+    tBTM_SEC_DEV_REC *p_oldest = p_dev_rec;
+    UINT32 ot = 0xFFFFFFFF;
+    int i;
+    for (i = 0; i < 16; i++, p_dev_rec++) {
+        if (((p_dev_rec->sec_flags & 0x80) == 0) || ((p_dev_rec->sec_flags & 0x10) != 0))
+            continue;
+        if (p_dev_rec->timestamp < ot) {
+            p_oldest = p_dev_rec;
+            ot = p_dev_rec->timestamp;
+        }
+    }
+    if (ot != 0xFFFFFFFF) return p_oldest;
+    p_dev_rec = (tBTM_SEC_DEV_REC *)(lbl_803C0F78 + 0x1F30);
+    for (i = 0; i < 16; i++, p_dev_rec++) {
+        if ((p_dev_rec->sec_flags & 0x80) == 0) continue;
+        if (p_dev_rec->timestamp < ot) {
+            p_oldest = p_dev_rec;
+            ot = p_dev_rec->timestamp;
+        }
+    }
+    return p_oldest;
+}
+
 void btm_db_reset(void) {
     u8 param = 12;
     btm_inq_db_reset();
@@ -3358,6 +3383,52 @@ tBTM_INQ_INFO *BTM_InqDbNext(tBTM_INQ_INFO *p_cur) {
         entry += 0xA8;
     } while (--count != 0);
     return 0;
+}
+
+void btm_inq_db_reset(void) {
+    tBTM_REMOTE_DEV_NAME rem_name;
+    tBTM_INQUIRY_VAR_ST *p_inq = &btm_cb.btm_inq_vars;
+    UINT8 num_responses;
+    UINT8 temp_inq_active;
+    tBTM_STATUS status;
+    btu_stop_timer(&p_inq->inq_timer_ent);
+    if (p_inq->inq_active != BTM_INQUIRY_INACTIVE) {
+        temp_inq_active = p_inq->inq_active;
+        p_inq->inq_active = BTM_INQUIRY_INACTIVE;
+        if (temp_inq_active == BTM_LIMITED_INQUIRY_ACTIVE || temp_inq_active == BTM_GENERAL_INQUIRY_ACTIVE) {
+            if (p_inq->p_inq_cmpl_cb) {
+                num_responses = 0;
+                (*p_inq->p_inq_cmpl_cb)(&num_responses);
+            }
+        }
+    }
+    if (p_inq->remname_active) {
+        btu_stop_timer(&p_inq->rmt_name_timer_ent);
+        p_inq->remname_active = FALSE;
+        memset(p_inq->remname_bda, 0, BD_ADDR_LEN);
+        if (p_inq->p_remname_cmpl_cb) {
+            rem_name.status = BTM_DEV_RESET;
+            (*p_inq->p_remname_cmpl_cb)(&rem_name);
+            p_inq->p_remname_cmpl_cb = NULL;
+        }
+    }
+    if (p_inq->inqfilt_active) {
+        p_inq->inqfilt_active = FALSE;
+        if (p_inq->p_inqfilter_cmpl_cb) {
+            status = BTM_DEV_RESET;
+            (*p_inq->p_inqfilter_cmpl_cb)(&status);
+        }
+    }
+    p_inq->state = BTM_INQ_INACTIVE_STATE;
+    p_inq->pending_filt_complete_event = 0;
+    p_inq->p_inq_results_cb = NULL;
+    btm_clr_inq_db(NULL);
+    btm_clr_inq_result_flt();
+    p_inq->discoverable_mode = BTM_NON_DISCOVERABLE;
+    p_inq->connectable_mode = BTM_NON_CONNECTABLE;
+    p_inq->page_scan_type = BTM_SCAN_TYPE_STANDARD;
+    p_inq->inq_scan_type = BTM_SCAN_TYPE_STANDARD;
+    return;
 }
 
 void fn_8007BC88(void) {
@@ -4804,7 +4875,7 @@ typedef struct {
     u8 disc_succ[0x28];
     u8 rem_name[1];
 } GapTraceStrings;
-extern void gap_connect_ind(void), gap_connect_cfm(void), gap_config_ind(u16, void *), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
+extern void gap_connect_ind(BD_ADDR, UINT16, UINT16, UINT8), gap_connect_cfm(void), gap_config_ind(u16, void *), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
 void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0x84)=gap_connect_ind;
  *(void **)(lbl_803C3740+0x88)=gap_connect_cfm;
