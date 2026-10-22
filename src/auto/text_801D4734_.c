@@ -1135,16 +1135,3 @@ void fn_801D8FE0(int arg0) {
 }
 extern char lbl_803385D0[];
 extern char lbl_803385D0[];
-#pragma cplusplus on
-struct D5BBC {
- virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
- virtual void v4(); virtual void v5(); virtual int read(void *);
- virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10();
- virtual void v11(); virtual void v12(); virtual void v13();
- virtual void *item(void *);
- virtual void v15(); virtual void v16(); virtual float value(void *, float);
- virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21();
- virtual void v22(); virtual void v23(); virtual void v24();
- virtual void vector(void *, const char *, float *);
-};
-#pragma cplusplus reset
