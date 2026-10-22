@@ -161,6 +161,7 @@ extern void fn_8006E6E4(void *);
 extern void fn_80071450(void *);
   extern void fn_80070954(u32 code, void *msg, u16 param);
   extern char lbl_803196B8[];
+extern char lbl_803164F4[];
 extern char lbl_80319D48[];
 extern char lbl_80319EC0[];
 extern void fn_8007096C(u32 code, void *msg, u16 param1, u16 param2);
@@ -3243,6 +3244,31 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
     return BTM_NO_RESOURCES;
 }
 
+extern u8 lbl_80316834[];
+void btm_esco_proc_conn_chg(UINT8 status, UINT16 handle, UINT8 tx_interval, UINT8 retrans_window, UINT16 rx_pkt_len, UINT16 tx_pkt_len) {
+    u8 *p = lbl_803C0F78 + 0x1854;
+    u8 data[8];
+    UINT16 i;
+    if (lbl_803C0F78[0x27C0] >= 4) fn_8007096C(0xD0003, lbl_80316834, handle, status);
+    for (i = 0; i < 3; i++, p += 0x34) {
+        if (*(UINT16 *)(p + 8) == 4 && handle == *(UINT16 *)(p + 0xA)) {
+            if (*(u32 *)(p + 0x10) != 0) {
+                memcpy(data, p + 0x28, 6);
+                *(UINT16 *)(p + 0x24) = rx_pkt_len;
+                *(UINT16 *)(p + 0x26) = tx_pkt_len;
+                p[0x2F] = tx_interval;
+                p[0x30] = retrans_window;
+                data[0] = status;
+                *(UINT16 *)(data + 2) = i;
+                *(UINT16 *)(data + 4) = rx_pkt_len;
+                *(UINT16 *)(data + 6) = tx_pkt_len;
+                ((void (*)(u32, void *))*(u32 *)(p + 0x10))(1, data);
+            }
+            return;
+        }
+    }
+}
+
 BOOLEAN btm_is_sco_active(UINT16 handle) {
     u8 *base;
     base = lbl_803C0F78;
@@ -5915,6 +5941,36 @@ int port_get_signal_changes(void *arg0, int arg1, int arg2) {
         if (arg2 & 8) signals |= 0x1000;
     }
     return *((int *)((char *)arg0 + 0x88)) & signals;
+}
+
+void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
+    s32 index = (s32)arg0 - 0x40;
+    void *port;
+    s16 status;
+
+    status = arg1;
+    if (index >= 10) {
+        if (lbl_803C4828[0x414] >= 1) {
+            fn_80070954(0x90000, lbl_803196B8, arg0);
+        }
+        port = NULL;
+    } else {
+        port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
+        if (port != NULL && *(u16 *)((u8 *)port + 0x68) != arg0) {
+            if (lbl_803C4828[0x414] >= 2) {
+                fn_8007096C(0x90001, lbl_803196B8 + 0x1C, arg0, 0);
+            }
+            port = NULL;
+        }
+    }
+    if (port == NULL) {
+        if (lbl_803C4828[0x414] >= 1) {
+            fn_80070954(0x90000, lbl_803196B8 + 0x54, arg0);
+        }
+    } else {
+        *(u16 *)((u8 *)port + 0x68) = arg0;
+        fn_800916F4(port, 9, &status);
+    }
 }
 
 void fn_800911DC(void) {
