@@ -111,6 +111,46 @@ void *fn_802BC9B0(void *arg0, int arg1, float scale) {
     return obj;
 }
 
+extern void fn_802BC588(void *, void *, void *, void *, void *);
+extern int fn_802C1500(void *, int);
+extern void *fn_801FA8E0(void *, int);
+extern int lbl_8055FAB0;
+extern float lbl_80564D14, lbl_80564D24, lbl_80564D28;
+void fn_802BCA8C(void *arg0, void *arg1, void *arg2) {
+    char pad[0x20];
+    int sp28;
+    int sp8, spC, sp10, sp14, sp18, sp1C;
+    float sp20, sp24;
+    int value;
+    void *curve, *result;
+    fn_802BC588((char *)arg0 + 0xC, &sp28, arg0, arg1, arg2);
+    value = fn_802C1500((char *)arg0 + 0xC, *(int *)((char *)arg2 + 0x28));
+    if (*(unsigned char *)&lbl_8055FAB0 != 0) {
+        curve = fn_802BC9B0((char *)arg2 + 0x34, *(int *)((char *)arg2 + 0x2C), *(float *)((char *)arg1 + 0x10));
+        result = ((void *(*)(void *, void *, int))fn_801FA8E0)(curve, &sp28, value);
+        *(void **)((char *)arg0 + 0x3C) = result;
+        *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg0 + 0x34) - *(float *)((char *)result + 0x28);
+        if (*(unsigned char *)((char *)arg2 + 0x30) != 0 && *(int *)((char *)arg2 + 0x2C) != 0x74) {
+            float f3 = *(float *)((char *)arg2 + 0x4C);
+            float f2 = *(float *)((char *)arg2 + 0x50) + lbl_80564D24;
+            sp8 = *(int *)((char *)arg2 + 0x34);
+            spC = *(int *)((char *)arg2 + 0x38);
+            sp10 = *(int *)((char *)arg2 + 0x3C);
+            sp14 = *(int *)((char *)arg2 + 0x40);
+            sp18 = *(int *)((char *)arg2 + 0x44);
+            sp1C = *(int *)((char *)arg2 + 0x48);
+            sp20 = f3 + lbl_80564D28;
+            sp24 = f2;
+            curve = ((void *(*)(void *, int, float, int, int, int, int, int, int, float, float, float))fn_802BC9B0)(&sp8, 0x3EB, *(float *)((char *)arg1 + 0x10), sp18, sp14, sp10, spC, sp8, sp1C, f2, f3 + lbl_80564D28, f3);
+            ((void *(*)(void *, void *, int))fn_801FA8E0)(curve, &sp28, value);
+        }
+    } else {
+        *(void **)((char *)arg0 + 0x3C) = 0;
+        *(float *)((char *)arg0 + 0x40) = lbl_80564D14;
+    }
+    *(int *)((char *)arg0 + 4) = 0;
+}
+
 void fn_802BCFB0(int *arg0) {
     int temp_r31;
     temp_r31 = *arg0;
@@ -180,17 +220,32 @@ void *fn_802BD194(void *arg0, const char *arg1) {
 void *fn_801284F8(int, int);
 int strcmp(const char *, const char *);
 int fn_802BA580(int, float *, float);
-void fn_802BD414(int arg0, volatile int *arg1) {
-    volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
-    if (result != 0) {
-        int second = arg1[1];
-        int first = arg1[0];
-        result[0] = second;
-        result[2] = first;
-        result[1] = 0;
-        result[1] = result[1] + arg1[0];
+#pragma push
+#pragma scheduling off
+void fn_802BD414(int arg0, volatile int *arg1)
+{
+  volatile int *result = (volatile int *) fn_801284F8(0xC, arg0);
+  if (result != 0)
+  {
+    int second;
+    int first = arg1[0];
+    if (arg1)
+    {
+      result[0] = arg1[1];
+      result[2] = first;
+      result[1] = 0;
+      result[1] = result[1] + arg1[0];
     }
+    else
+    {
+      result[0] = arg1[1];
+      result[2] = first;
+      result[1] = 0;
+      result[1] = result[1] + arg1[0];
+    }
+  }
 }
+#pragma pop
 void fn_802BD478(int arg0, volatile int *arg1) {
     volatile int *result = (volatile int *)fn_801284F8(0xC, arg0);
     if (result != 0) {
@@ -278,6 +333,39 @@ void fn_802BD5B0(void *arg0, int arg1) {
 
 int fn_802BD694(int arg0, int arg1) { return arg0 + arg1; }
 
+void fn_802BD69C(void *arg0, int arg1) {
+    unsigned char *p = arg0;
+    unsigned char *entry;
+    unsigned int i;
+    int offset;
+    unsigned char a, b, c, d, e, f, g, h;
+    a=p[4]; b=p[7]; c=p[5]; d=p[6];
+    p[4]=b; e=p[0]; f=p[3]; p[7]=a;
+    g=p[1]; h=p[2]; p[5]=d; p[6]=c;
+    p[0]=f; p[3]=e; p[1]=h; p[2]=g;
+    *(int *)(p+4)=fn_802BD80C(*(int *)(p+4),arg1);
+    i=0; offset=0;
+    while (i < *(unsigned int *)p) {
+        int j;
+        entry=*(unsigned char **)(p+4)+offset+0xC;
+        for (j=0;j<2;j++,entry+=0x18) {
+            a=entry[0]; b=entry[3]; entry[0]=b; entry[3]=a;
+            a=entry[1]; b=entry[2]; entry[1]=b; entry[2]=a;
+            a=entry[4]; b=entry[7]; entry[4]=b; entry[7]=a;
+            a=entry[5]; b=entry[6]; entry[5]=b; entry[6]=a;
+            a=entry[8]; b=entry[11]; entry[8]=b; entry[11]=a;
+            a=entry[9]; b=entry[10]; entry[9]=b; entry[10]=a;
+            a=entry[12]; b=entry[15]; entry[12]=b; entry[15]=a;
+            a=entry[13]; b=entry[14]; entry[13]=b; entry[14]=a;
+            a=entry[16]; b=entry[19]; entry[16]=b; entry[19]=a;
+            a=entry[17]; b=entry[18]; entry[17]=b; entry[18]=a;
+            a=entry[20]; b=entry[23]; entry[20]=b; entry[23]=a;
+            a=entry[21]; b=entry[22]; entry[21]=b; entry[22]=a;
+        }
+        offset+=0x44; i++;
+    }
+}
+
 int fn_802BD80C(int arg0, int arg1) { return arg0 + arg1; }
 
 void fn_802BDC3C(void* alarm) {
@@ -315,6 +403,8 @@ void deleteThreads__6SystemFv_802BDCA4(void **arg0) {
 }
 
 void fn_802C2930(void*, unsigned int);
+#pragma push
+#pragma scheduling invalid_target
 void fn_802BD018(void *arg0) {
     void *obj = *(void **)arg0;
     if (obj) {
@@ -327,6 +417,7 @@ void fn_802BD018(void *arg0) {
         *(void **)arg0 = 0;
     }
 }
+#pragma pop
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
     if (arg0 != 0) {
         fn_802C2930((void*)arg0, 0);
