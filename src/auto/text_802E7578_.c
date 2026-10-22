@@ -13,18 +13,14 @@ void fn_802E7578(void) {
     lbl_8055FFF0 = (void*)fn_802E769C();
 }
 
-void fn_802E759C(void) {
-    void* object;
-
-    object = lbl_8055FFF0;
-    if (object != 0) {
-        if (object != 0) {
-            ((void (*)(void*, s32))(*(void***)object)[2])(object, 1);
-        }
+#pragma cplusplus on
+extern "C" void fn_802E759C(void) {
+    if (lbl_8055FFF0) {
+        delete (Dummy*)lbl_8055FFF0;
         lbl_8055FFF0 = 0;
     }
 }
-
+#pragma cplusplus reset
 void fn_802E75E4(s32 arg0) {
     ((void (*)(void*, s32))(*(void***)lbl_8055FFF0)[3])(lbl_8055FFF0, arg0);
 }
