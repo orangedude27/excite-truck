@@ -8,13 +8,12 @@ void fn_8000D838(void*);
 #pragma scheduling invalid_target
 #pragma opt_propagation off
 void fn_802C2C70(void) {
-    int v;
-    unsigned short *p = (unsigned short *)&lbl_8055FB90;
+    short v;
     fn_8000D838(&lbl_8055FB88);
-    p[0] = 0x100;
-    p[2] = 0x401;
+    *(volatile short *)&lbl_8055FB90[0] = 0x100;
+    *(volatile short *)&lbl_8055FB90[2] = 0x401;
     v = 0x405;
-    p[1] = v;
+    *(volatile short *)&lbl_8055FB90[1] = v;
 }
 #pragma opt_propagation reset
 #pragma scheduling on
