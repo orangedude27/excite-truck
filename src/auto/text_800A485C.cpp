@@ -3279,6 +3279,27 @@ void fn_800C1E88(const s32* a, const s32* b, s32* out) {
     }
 }
 
+extern "C" void fn_800C1F6C(volatile u32 *dst, const volatile u32 *a, const volatile u32 *b) {
+    dst[0] = a[0] + b[0];
+    dst[0x40] = a[1] + b[1];
+    dst[0x80] = a[2] + b[2];
+    dst[0xC0] = a[3] + b[3];
+    dst[0x100] = a[4] + b[4];
+    dst[0x140] = a[5] + b[5];
+    dst[0x180] = a[6] + b[6];
+    dst[0x1C0] = a[7] + b[7];
+    dst[0x200] = a[8] + b[8];
+    dst[0x240] = a[9] + b[9];
+    dst[0x280] = a[10] + b[10];
+    dst[0x2C0] = a[11] + b[11];
+    dst[0x300] = a[12] + b[12];
+    dst[0x340] = a[13] + b[13];
+    dst[0x380] = a[14] + b[14];
+    dst[0x3C0] = a[15] + b[15];
+    dst[0x400] = a[16] + b[16];
+    dst[0x440] = a[17] + b[17];
+}
+
 extern "C" s32 lbl_8031D778[];
 void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
     out[0] = in[0]; negOut[0] = 0;
