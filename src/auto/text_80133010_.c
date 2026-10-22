@@ -24,7 +24,7 @@ extern const char lbl_8032B9FC[];
 extern int lbl_8055E078, lbl_8055E080;
 extern const char lbl_8032B880[], lbl_8032B88C[];
 extern void* fn_801284F8(int, const char*);
-extern void fn_80133FCC(void);
+extern void fn_80133FCC();
 extern void fn_801341B4(int, int);
 extern void fn_802E6BD8(int, int, int, int, void (*)(void));
 extern void fn_8000DBC8(void (*)(int, int));
@@ -246,6 +246,39 @@ int fn_80133AD8(int arg0) {
     for (i = 0; i < 16; i++) values[i] = *p++;
     values[16] = *p;
     return values[arg0];
+}
+
+int fn_80133E10(void **arg0, int arg1, int arg2) {
+    int count = 0;
+    int offset = 0;
+    int base = lbl_8055E07C;
+    while (count < *(int *)(base + 4)) {
+        void *entry = (char *)base + offset;
+        if (*(int *)((char *)entry + 0xC) == arg1 &&
+            fn_8002B1D8((void *)arg2, (char *)entry + 0x2C, 0x13) == 0) {
+            *arg0 = (char *)base + count * 0x38 + 8;
+            return 1;
+        }
+        offset += 0x38;
+        count++;
+    }
+    if (count < 0x1F4) {
+        void *entry = (char *)base + count * 0x38;
+        *(int *)(base + 4) = count + 1;
+        *(int *)((char *)entry + 0xC) = arg1;
+        strncpy((char *)entry + 0x2C, (char *)arg2, 0x14);
+        *((char *)entry + 0x37) = 0;
+        if (strlen((char *)arg2) >= 0x14)
+            fn_802E30C8(lbl_8032B8F8, (char *)arg2, (char *)entry + 0x2C);
+        *((char *)entry + 0x1C) = 0;
+        *((char *)entry + 0x10) = 0;
+        *(int *)((char *)entry + 0x14) = 0;
+        *(float *)((char *)entry + 0x18) = lbl_805612D0;
+        *arg0 = (char *)entry + 8;
+    } else {
+        *arg0 = (char *)base + 8;
+    }
+    return 0;
 }
 
 extern const char lbl_8032BAE8[];
