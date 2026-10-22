@@ -116,6 +116,32 @@ void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char 
     } while (channel != 0);
 }
 
+extern "C" const char lbl_80327CB8[];
+void ChannelCallbackFunc__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl(void *arg0, int arg1, unsigned long arg2) {
+ void *track;
+ void *channel;
+ void *next;
+ if(arg0==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8,0x1cf,lbl_80327CB8+0x88);
+ if(arg2==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8,0x1d0,lbl_80327CB8+0xb8);
+ if(arg1==2) fn_800EAD00(arg0);
+ track=(void *)arg2;
+ channel=*(void **)((char *)track+0x30);
+ if(channel==arg0){
+  *(void **)((char *)track+0x30)=*(void **)((char *)arg0+0xe4);
+  return;
+ }
+ if(channel==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8,0x1dd,lbl_80327CB8+0xe0);
+ for(;;){
+  next=*(void **)((char *)channel+0xe4);
+  if(next==arg0){
+   *(void **)((char *)channel+0xe4)=*(void **)((char *)arg0+0xe4);
+   return;
+  }
+  channel=next;
+  if(channel==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8,0x1e7,lbl_80327CB8+0x10c);
+ }
+}
+
 extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -377,7 +403,7 @@ extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5C
     GXSetBlendMode(1,4,5,0xf); GXSetNumTevStages(2); GXSetTevDirect(0); GXSetTevDirect(1);
     GXSetTevSwapMode(0,0,0); GXSetTevSwapMode(1,0,0); GXSetTevOrder(0,0,0,0xff);
     r=((unsigned char *)&arg0)[0]; g=((unsigned char *)&arg0)[1]; b=((unsigned char *)&arg0)[2];
-    sp10[0]=r; sp10[1]=g; sp10[2]=b; sp10[3]=((unsigned char *)&arg0)[3]; GXSetTevColor(1,sp10,b,g,r);
+    sp10[0]=r; sp10[1]=g; sp10[2]=b; sp10[3]=((unsigned char *)&arg0)[3]; GXSetTevColor(1,sp10,b,g,(s32)r);
     r=((unsigned char *)&arg1)[0]; g=((unsigned char *)&arg1)[1]; b=((unsigned char *)&arg1)[2];
     spc[0]=r; spc[1]=g; spc[2]=b; spc[3]=((unsigned char *)&arg1)[3]; GXSetTevColor(2,spc,b,g,r);
     GXSetTevColorIn(0,2,4,8,0xf); GXSetTevAlphaIn(0,1,2,4,7);
@@ -388,3 +414,7 @@ extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5C
     GXClearVtxDesc(); GXSetVtxDesc(9,1); GXSetVtxDesc(0xb,1); GXSetVtxDesc(0xd,1);
 }
 namespace nw4hbm { namespace ut { struct Glyph { unsigned char pad[0x14]; unsigned short x; unsigned char pad16[2]; unsigned char y; unsigned char pad19[7]; unsigned short width; unsigned short height; unsigned char pad20[0x20]; }; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); }; }}
+namespace nw4hbm { namespace snd { namespace detail {
+class Channel { public: enum ChannelCallbackStatus { Status }; };
+class WsdTrack { public: static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); };
+}}}
