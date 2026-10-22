@@ -257,6 +257,34 @@ int fn_80172E24(int arg0, int arg1) {
     return arg0;
 }
 
+extern void fn_802ADE60(int, int);
+extern void deleteThreads__6SystemFv_80173A2C(void *);
+#pragma cplusplus on
+extern "C" void fn_801738D4(void *arg0) {
+    class VObj { public: virtual void destroy(int); };
+    VObj *p;
+    int value;
+    value = *(int *)((char *)arg0 + 0x1B8);
+    if (value != 0) {
+        fn_802ADE60(value, 1);
+        *(int *)((char *)arg0 + 0x1B8) = 0;
+    }
+    p = *(VObj **)((char *)arg0 + 0x1C0);
+    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((char *)arg0 + 0x1C0) = 0; }
+    p = *(VObj **)((char *)arg0 + 0x1C4);
+    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((char *)arg0 + 0x1C4) = 0; }
+    p = *(VObj **)((char *)arg0 + 0x1C8);
+    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((char *)arg0 + 0x1C8) = 0; }
+    p = *(VObj **)((char *)arg0 + 0x1D0);
+    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((char *)arg0 + 0x1D0) = 0; }
+    p = *(VObj **)((char *)arg0 + 0x1D4);
+    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((char *)arg0 + 0x1D4) = 0; }
+    p = *(VObj **)((char *)arg0 + 0x1D8);
+    if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)((char *)arg0 + 0x1D8) = 0; }
+    deleteThreads__6SystemFv_80173A2C((char *)arg0 + 0x1A8);
+}
+#pragma cplusplus reset
+
 #pragma push
 #pragma cplusplus on
 #pragma scheduling invalid_target
