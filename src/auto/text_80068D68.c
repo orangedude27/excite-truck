@@ -4554,6 +4554,7 @@ void btm_sec_disconnected(UINT16 handle, UINT8 reason) {
     *(u32 *)((u8 *)p_dev_rec + 4) = 0;
 }
 
+/* Match note: initialize the callback table at its base, then walk two entries by four bytes. */
 void btm_sec_link_key_notification(u8 *bd_addr, u8 *link_key, u8 key_type) {
     extern u8 lbl_80316F58[];
     extern u8 lbl_80316F9C[];
