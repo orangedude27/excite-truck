@@ -1420,4 +1420,5 @@ extern void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hb
 #pragma small_data off
 extern const char lbl_80322034[];
 extern const char lbl_80322010[];
+extern const char lbl_80322470[];
 #pragma pop
