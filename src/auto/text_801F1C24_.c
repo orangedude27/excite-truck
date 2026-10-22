@@ -55,8 +55,6 @@ void fn_801F1D68(void) {
     }
 }
 
-#pragma dont_inline reset
-
 void *fn_801F1DA4(void) {
     void **p = (void **)fn_801284F8(4, (void *)&lbl_8033A610);
     if (p != 0) {
