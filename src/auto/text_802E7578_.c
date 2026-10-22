@@ -8,6 +8,8 @@ extern void* lbl_8055FFF0;
 #pragma cplusplus on
 struct Dummy { virtual ~Dummy(); };
 #pragma cplusplus reset
+
+// fn_802E759C matches via C++ virtual-delete lowering in a C++ pragma block.
 s32 fn_802E769C(void);
 void fn_802E7578(void) {
     lbl_8055FFF0 = (void*)fn_802E769C();
