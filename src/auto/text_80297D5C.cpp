@@ -51,7 +51,8 @@ extern void* lbl_8055F7D0;
 extern void* lbl_8055F7D8;
 extern void* lbl_8055F7D4;
 extern "C" int fn_8029AF24(int);
-extern "C" void fn_80298BBC(void*);
+  extern "C" int fn_8029771C(void*, float*, void*, float);
+  extern "C" void fn_80298BBC(void*);
 extern "C" void fn_8029BA8C(void*);
 extern "C" void fn_80299628(void);
 extern "C" void fn_8029871C(void*, void*, float);
@@ -638,6 +639,17 @@ extern "C" int fn_8029A290(void *arg0, void *arg1) {
     return var_r31;
 }
 
+extern "C" void fn_8029A318(float *a, float *b, float *c, int x, int y, int z, int w) {
+ if ((unsigned char *)b==(unsigned char *)a+0x30) {
+ b[0]=a[14]*a[3]+a[12]*a[0]+a[14]*a[6]; b[1]=a[14]*a[4]+a[12]*a[1]+a[14]*a[7]; b[2]=a[14]*a[5]+a[12]*a[2]+a[14]*a[8];
+ } else {
+ b[0]=a[12]*a[3]+a[12]*a[0]+a[14]*a[6]; b[1]=a[12]*a[4]+a[12]*a[1]+a[14]*a[7]; b[2]=a[12]*a[5]+a[12]*a[2]+a[14]*a[8];
+ }
+ b[0]+=a[9];b[1]+=a[10];b[2]+=a[11];
+ c[0]=a[0]*lbl_805645C8;c[1]=a[1]*lbl_805645C8;c[2]=a[2]*lbl_805645C8;
+ ((float *)w)[0]=a[6]*lbl_805645E8;((float *)w)[1]=a[7]*lbl_805645E8;((float *)w)[2]=a[8]*lbl_805645E8;
+}
+
 extern "C" void fn_8029A318(float*, float*, float*, int, int, int, int);
 extern "C" void fn_8029A60C(void* arg0, void* arg1) {
     float a[3], b[3], c[3];
@@ -912,13 +924,11 @@ int fn_8029BFF8(void* arg0) {
 
 extern void* lbl_8055F7D4;
 #pragma dont_inline on
-#pragma scheduling off
 extern "C" int fn_8029C024(int *arg0) {
-    int *value = arg0;
-    fn_8029A890(lbl_8055F7D4, (void *)*value);
+    int value = *(volatile int *)arg0;
+    fn_8029A890(lbl_8055F7D4, (void *)value);
     return 4;
 }
-#pragma scheduling reset
 #pragma dont_inline reset
 extern "C" int fn_8029C054(int* arg0) {
     int value = *(volatile int*)arg0;
