@@ -181,6 +181,7 @@ s32 DVDClose(void) {
 
 extern void OSPanic(const char *, s32, const char *);
 extern s32 DVDReadAbsAsyncPrio(void *, void *, s32, s32, void *, s32);
+extern void cbForCancelSync(void);
 extern void cbForReadAsync(void *, void *);
 extern char lbl_80302070[];
 extern char lbl_803020A4[];
