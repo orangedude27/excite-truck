@@ -3754,7 +3754,42 @@ void fn_8007D4C4(void) {
     dst[0x1909] = 2;
 }
 
-void btm_sco_conn_req(BD_ADDR bda, BD_ADDR remote, UINT8 role) { }
+void btm_sco_conn_req(BD_ADDR bda, DEV_CLASS dev_class, UINT8 link_type)
+{
+    tSCO_CB *p_sco = &btm_cb.sco_cb;
+    tSCO_CONN *p = &p_sco->sco_db[0];
+    UINT16 xx;
+    tBTM_ESCO_CONN_REQ_EVT_DATA evt_data;
+    for (xx = 0; xx < BTM_MAX_SCO_LINKS; xx++, p++) {
+        if (((p->state == 1 && p->rem_bd_known) || p->state == 3) && !memcmp(p->esco.data.bd_addr, bda, BD_ADDR_LEN)) {
+            p->rem_bd_known = TRUE; p->esco.data.link_type = link_type; p->state = 2;
+            memcpy(p->esco.data.bd_addr, bda, BD_ADDR_LEN);
+            if (!p->esco.p_esco_cback) {
+                if ((link_type == BTM_LINK_TYPE_ESCO && !(p_sco->def_esco_parms.packet_types & BTM_ESCO_LINK_ONLY_MASK) &&
+                     ((p_sco->def_esco_parms.packet_types & BTM_SCO_EXCEPTION_PKTS_MASK) == BTM_SCO_EXCEPTION_PKTS_MASK)) ||
+                    (link_type == BTM_LINK_TYPE_SCO && !(p_sco->def_esco_parms.packet_types & BTM_SCO_LINK_ONLY_MASK)))
+                    btm_esco_conn_rsp(xx, HCI_ERR_HOST_REJECT_RESOURCES, bda, NULL);
+                else btm_esco_conn_rsp(xx, HCI_SUCCESS, bda, NULL);
+            } else {
+                memcpy(evt_data.bd_addr, bda, BD_ADDR_LEN); memcpy(evt_data.dev_class, dev_class, DEV_CLASS_LEN);
+                evt_data.link_type = link_type; evt_data.sco_inx = xx;
+                p->esco.p_esco_cback(BTM_ESCO_CONN_REQ_EVT, (tBTM_ESCO_EVT_DATA *)&evt_data);
+            }
+            return;
+        }
+    }
+    if (p_sco->app_sco_ind_cb) {
+        for (xx = 0, p = &p_sco->sco_db[0]; xx < BTM_MAX_SCO_LINKS; xx++, p++) {
+            if (p->state == 0) {
+                p->is_orig = FALSE; p->state = 1; p->esco.data.link_type = link_type;
+                memcpy(p->esco.data.bd_addr, bda, BD_ADDR_LEN); p->rem_bd_known = TRUE; break;
+            }
+        }
+        if (xx < BTM_MAX_SCO_LINKS) { p_sco->app_sco_ind_cb(xx); return; }
+    }
+    if (lbl_803C0F78[0x27c0] >= 2) fn_8007093C(0xD0001, lbl_8031669C);
+    btm_esco_conn_rsp(BTM_MAX_SCO_LINKS, HCI_ERR_HOST_REJECT_RESOURCES, bda, NULL);
+}
 
 void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) {
     u8 *cb=lbl_803C0F78+0x1854;
@@ -5044,7 +5079,7 @@ typedef struct {
     u8 disc_succ[0x28];
     u8 rem_name[1];
 } GapTraceStrings;
-extern void gap_connect_ind(BD_ADDR, UINT16, UINT16, UINT8), gap_connect_cfm(u32, s32), gap_config_ind(u16, void *), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
+extern void gap_connect_ind(BD_ADDR, UINT16, UINT16, UINT8), gap_connect_cfm(u32, s32), gap_config_ind(u16, void *), gap_config_cfm(u32, u16 *), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
 void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0x84)=gap_connect_ind;
  *(void **)(lbl_803C3740+0x88)=gap_connect_cfm;
