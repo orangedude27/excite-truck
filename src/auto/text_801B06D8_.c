@@ -85,6 +85,38 @@ s32 fn_801B06D8(void *arg0, void *arg1, s32 arg2) {
     }
     return 0;
 }
+
+extern s32 fn_801784DC(f32 *, f32 *, s32, s32, s32, f32);
+extern void fn_801B8040(void *, void *, f32);
+extern f32 lbl_805625BC, lbl_805625C8, lbl_805625CC, lbl_805625D0, lbl_805625D4, lbl_805625D8;
+void fn_801B07B4(void *arg0, void *arg1) {
+    void *sp18 = *(void **)arg1;
+    s32 first = (s32)sp18;
+    f32 sp1C = *(f32 *)((u8 *)arg1 + 4);
+    s32 sp20 = *(s32 *)((u8 *)arg1 + 8);
+    f32 sp14, sp10, spC, sp8;
+    while (fn_801B06D8(sp18, (u8 *)sp18 + 8, first))
+        sp18 = *(void **)((u8 *)sp18 + 0x14);
+    fn_801B8040(arg0, &sp18, lbl_805625BC);
+    *(s32 *)((u8 *)arg0 + 0x3C) = 0;
+    {
+        f32 scale = lbl_805625C8;
+        *(f32 *)((u8 *)arg0 + 0x30) = *(f32 *)((u8 *)arg0 + 0x18) * scale;
+        *(f32 *)((u8 *)arg0 + 0x34) = *(f32 *)((u8 *)arg0 + 0x1C) * scale;
+        *(f32 *)((u8 *)arg0 + 0x38) = *(f32 *)((u8 *)arg0 + 0x20) * scale;
+    }
+    spC = *(f32 *)((u8 *)arg0 + 0x24);
+    sp10 = *(f32 *)((u8 *)arg0 + 0x28);
+    sp14 = *(f32 *)((u8 *)arg0 + 0x2C);
+    if (lbl_8055E670 && fn_80139EC4(spC, sp14)) {
+        sp10 += lbl_805625CC;
+        if (fn_801784DC(&spC, &sp8, 0, 0, 0, sp10))
+            *(f32 *)((u8 *)arg0 + 0x28) = lbl_805625D0 + sp8;
+    }
+    *(f32 *)((u8 *)arg0 + 0x34) = lbl_805625D8;
+    *(f32 *)((u8 *)arg0 + 0x28) += lbl_805625D4;
+}
+
 #pragma pop
 u32 fn_801B08E8(u32 arg0, u32 arg1, s32 arg2) {
     u32 var_r4;
@@ -140,6 +172,57 @@ void fn_801B0BB0(void *arg0, void *arg1) {
         if (var_r0 != 0) *(void **)arg0 = var_r0;
     }
 }
+
+extern void fn_801B30D0(s32);
+extern void fn_801B30E0(s32);
+extern s32 fn_801B8928(s32, void *, s32);
+extern void fn_801B0BB0(void *, void *);
+extern void fn_801B07B4(void *, void *);
+extern void fn_801B08FC(void *, void *);
+void fn_801B0C78(s32 arg0) {
+    s16 sp60;
+    u8 sp20[0x20];
+    s32 sp14;
+    f32 sp18;
+    s32 sp1C;
+    u32 sp8[3];
+    void *base = lbl_8055E684;
+    void *obj = (u8 *)base + (arg0 << 7);
+    void *result;
+    s32 isResource;
+
+    sp60 = -1;
+    result = ((void *(*)(void *, void *))(*(void ***)obj)[8])(obj, base);
+    isResource = *(u32 *)((u8 *)result + 0x10) == 0x50434152;
+    if (isResource) {
+        fn_801B30D0(arg0);
+        fn_801B30E0(arg0);
+    }
+    if (fn_801B8928(arg0, sp20, 0) != 0) goto done;
+    if (lbl_8055E68C != 0 &&
+        ((s32 (*)(void *, s32, s32, s32))(*(void ***)lbl_8055E68C)[10])
+            (sp20, arg0, *(s32 *)((u8 *)base + 0x7C), 0) != 0) goto done;
+    sp14 = 0;
+    sp1C = 0x2710;
+    sp18 = lbl_805625BC;
+    if (isResource) {
+        void *payload = ((void *(*)(void *))(*(void ***)obj)[7])(obj);
+        fn_801B0BB0(sp8, payload);
+        sp14 = sp8[0];
+        sp18 = *(f32 *)&sp8[1];
+        sp1C = sp8[2];
+    } else {
+        sp14 = *(s32 *)((u8 *)obj + 0x4C);
+        sp18 = *(f32 *)((u8 *)obj + 0x50);
+        sp1C = *(s32 *)((u8 *)obj + 0x54);
+    }
+    fn_801B07B4(sp20, &sp14);
+    fn_801B08FC(obj, sp20);
+    return;
+done:
+    fn_801B08FC(obj, sp20);
+}
+
 #pragma pop
 s32 fn_801B0DE0(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x3C);
@@ -905,4 +988,6 @@ u32 fn_801B3290(void) { return 1; }
 void fn_801B3298(void) {
 
 }
-
+#pragma cplusplus on
+struct D801B0C78 { virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual void *h(); virtual void *i(); };
+#pragma cplusplus off
