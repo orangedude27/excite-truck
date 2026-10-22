@@ -152,13 +152,39 @@ void fn_8001FFD0(int arg0, int arg1, void* arg2, int arg3) {
     fn_801345D8(arg2, arg3, &lbl_802FE138[0xd4], arg0 + 1);
 }
 
+extern void PSVECCrossProduct();
+extern void PSVECNormalize(float *, float *);
+typedef void (*Cross3)(float *, float *, float *);
+typedef void (*Cross4)(float *, float *, float *, float);
+typedef void (*Cross5)(float *, float *, float *, float, float);
+void fn_80020070(float *arg0) {
+    extern float lbl_805604B4, lbl_805604B8;
+    float sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
+    float temp_f1, temp_f2;
+    sp2C = lbl_805604B4;
+    sp30 = lbl_805604B8;
+    sp34 = lbl_805604B4;
+    ((Cross4)PSVECCrossProduct)(&sp2C, arg0 + 6, arg0, lbl_805604B4);
+    ((Cross3)PSVECCrossProduct)(arg0 + 6, arg0, arg0 + 3);
+    sp8 = arg0[0]; spC = arg0[1]; sp10 = arg0[2];
+    temp_f2 = arg0[8]; temp_f1 = arg0[7];
+    sp20 = arg0[6]; sp24 = temp_f1; sp28 = temp_f2;
+    ((Cross5)PSVECCrossProduct)(&sp20, &sp8, &sp14, temp_f1, temp_f2);
+    PSVECNormalize(&sp8, &sp8);
+    PSVECNormalize(&sp14, &sp14);
+    ((Cross3)PSVECCrossProduct)(&sp8, &sp14, &sp20);
+    arg0[0] = sp8; arg0[1] = spC; arg0[2] = sp10;
+    arg0[3] = sp14; arg0[4] = sp18; arg0[5] = sp1C;
+    arg0[6] = sp20; arg0[7] = sp24; arg0[8] = sp28;
+}
+
 void fn_8002017C(void) {
     fn_8000B3DC(0);
 }
 
 int fn_80020184(void) {
     s32 temp_r3;
-    u32 temp_r3_2;
+    s32 temp_r3_2;
 
     temp_r3_2 = (((fn_802E2C20() - lbl_8055D63C) - 0x12C) << 8) / 1000;
     temp_r3 = temp_r3_2 & ((s32) (-(s32) temp_r3_2 & ~temp_r3_2) >> 0x1F);
@@ -209,6 +235,33 @@ void fn_80020860(int arg0) {
                  (f32) lbl_8055CFF4);
 }
 
+extern int fn_80020184(void);
+extern int fn_801E8838(void);
+extern int fn_8020DE1C(void);
+extern int lbl_8035BAFC, lbl_8035BB08, lbl_802FE374, lbl_802FE398;
+extern unsigned char lbl_8055D672, lbl_8055D673;
+extern float lbl_80560554, lbl_80560500, lbl_80560558, lbl_8056055C;
+#pragma dont_inline on
+int fn_80021258(void) {
+ int count;
+ float rate;
+ if (!lbl_8055D644) return 0;
+ count=fn_80020184();
+ if(count>0) fn_80020860(count);
+ if(count>0) rate=lbl_805604B4;
+ else rate=((float)fn_801E8838()-lbl_805604E8)/lbl_80560554;
+ fn_800209A0(255,rate);
+ if(fn_8020DE1C()==0) {
+ if((signed char)lbl_8055D672==0) { fn_801312EC(&lbl_8035BAFC,&lbl_802FE374); lbl_8055D672=1; }
+ if((signed char)lbl_8055D673==0) { fn_801312EC(&lbl_8035BB08,&lbl_802FE398); lbl_8055D673=1; }
+ if(*(unsigned int *)((char *)&lbl_8035BB08+8)!=(unsigned int)lbl_8055E044) fn_80131318();
+ fn_80232BA4(*(int *)((char *)&lbl_8035BB08+4),lbl_8055D64C,-1,20,lbl_80560500,lbl_80560558,lbl_805604B0,lbl_805604B4,lbl_805604B8);
+ if(*(unsigned int *)((char *)&lbl_8035BAFC+8)!=(unsigned int)lbl_8055E044) fn_80131318();
+ fn_80232BA4(*(int *)((char *)&lbl_8035BAFC+4),lbl_8055D64C,-1,20,lbl_8056055C,lbl_80560558,lbl_805604B0,lbl_805604B4,lbl_805604B8);
+ }
+ return 1;
+}
+#pragma dont_inline reset
 int fn_800213DC(int arg0) {
     if (!lbl_8055D644) return 0;
     if (lbl_8055D645) return 1;
@@ -353,3 +406,16 @@ void fn_8001FF34(int arg0) {
     }
     fn_80232BA4(lbl_8035BAE4.unk_4, lbl_8055D64C, arg0, 0x12, lbl_805604A8, lbl_805604AC, lbl_805604B0, lbl_805604B4, lbl_805604B8);
 }
+#pragma cplusplus on
+struct VtableDummy201F0 {
+    virtual void slot0(); virtual void slot1(); virtual int slot2(void *);
+    virtual void slot3(); virtual int slot4(void *); virtual int slot5(void *);
+    virtual void slot6(); virtual void slot7(); virtual void slot8();
+    virtual float slot9(void *); virtual void slot10(); virtual void slot11();
+    virtual int slot12(void *, int); virtual void slot13(); virtual void slot14();
+    virtual void slot15(); virtual void slot16(); virtual void slot17();
+    virtual void slot18(); virtual void slot19(); virtual void slot20();
+    virtual void slot21(); virtual void slot22(); virtual void slot23();
+    virtual VtableDummy201F0 *slot24(int);
+};
+#pragma cplusplus off
