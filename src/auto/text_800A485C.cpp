@@ -1664,7 +1664,7 @@ extern "C" s32 VFiPFENT_AdjustSFN(void *arg0, s8 *arg1) {
 
 extern s32 fn_800AB378(void *, s32, s32, s32);
 extern s32 fn_800B5324(void *, void *, u32, u32, u32 *, u32);
-s32 fn_800AC1B4(void *arg0, s32 arg1) {
+extern "C" s32 fn_800AC1B4(void *arg0, s32 arg1) {
     u32 sp8;
     s32 temp_r30;
     s32 temp_r3;
