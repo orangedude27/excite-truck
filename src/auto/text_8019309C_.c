@@ -67,6 +67,7 @@ extern float fn_80134B58(void *, float);
 
 #define __HI(x) *(int *)&x
 extern float lbl_80562168, lbl_80562174, lbl_805621A4, lbl_805621B0, lbl_805621B4;
+extern float lbl_80333308[];
 extern float lbl_8055A488, lbl_8056215C;
 
 int fn_8019309C(void *arg0, int index, signed char arg2) {
@@ -1003,6 +1004,75 @@ int fn_8019703C(void *arg0, void *arg1) {
     else
         ++*(int *)((char *)arg0 + 0x98);
     return 0;
+}
+
+int fn_8019799C(void *arg0, void *arg1) {
+    int result = 0;
+    int id;
+    int valid;
+    int allow;
+    float angle;
+    float bound;
+    float distance;
+    extern float lbl_80562160, lbl_80562170, lbl_80562184;
+    extern float fn_80137850(void *);
+    extern void fn_80197AB8(void *, int, float, float, float);
+    extern float __fabsf(float);
+
+    if (*(int *)((char *)arg0 + 0x2D0) & 2) return 0;
+    allow = 1;
+    angle = -*(float *)((char *)arg1 + 0x10);
+    id = *(int *)((char *)arg1 + 0x18);
+    if (!(angle > lbl_80562160)) {
+        valid = 0;
+        if (id == *(int *)((char *)arg0 + 0x114) && angle > lbl_80562170)
+            valid = 1;
+        if (!valid) allow = 0;
+    }
+    if (allow && id != *(int *)((char *)arg0 + 0x2C4)) {
+        angle = fn_80137850(arg1);
+        distance = __fabsf(angle);
+        bound = *(float *)((char *)arg0 + 0x278) + *(float *)((char *)arg1 + 4);
+        if (distance >= bound) distance = bound;
+        if (distance < lbl_80562184 + *(float *)((char *)arg0 + 0x274)) {
+            fn_80197AB8(arg0, id, *(float *)((char *)(*(void **)arg1) + 4), angle,
+                *(float *)((char *)arg1 + 0x10));
+            result = 1;
+        }
+    }
+    return result;
+}
+
+typedef struct Obj Obj;
+extern void *fn_8017960C(int);
+extern Obj *fn_801B2ED0(int);
+extern float lbl_80562194;
+void fn_80197AB8(void *arg0, int arg1, float farg0, float farg1, float farg2) {
+    unsigned char *p = (unsigned char *)arg0;
+    float vals[2];
+    int update;
+    void *obj;
+    void *result;
+    *(int *)(p + 0x100) += 1;
+    update = 1;
+    if (p[0xFC] != 0)
+        update = *(float *)(p + 0xEC) > farg0;
+    if (update) {
+        *(float *)(p + 0xEC) = farg0;
+        obj = fn_8017960C(arg1);
+        vals[0] = *(float *)((char *)obj + 0x88);
+        vals[1] = *(float *)((char *)obj + 0x90);
+        obj = fn_801B2ED0(arg1);
+        result = (*(void *(*)(void *))(*(void ***)obj)[6])(obj);
+        if (result) {
+            p[0xFC] = 1;
+            *(float *)(p + 0xF8) = farg1;
+            *(int *)(p + 0x114) = arg1;
+            *(float *)(p + 0x108) = *(float *)(p + 0x278) + *(float *)(p + 0x27C) * farg0;
+            *(float *)(p + 0x110) = farg2;
+            *(float *)(p + 0x104) = lbl_80562194 * (*(float *)((char *)result + 0x38) * vals[0] + *(float *)((char *)result + 0x3C) * vals[1]);
+        }
+    }
 }
 
 extern float lbl_8055A48C, lbl_80562194, lbl_8056227C, lbl_80562280, lbl_80562140, lbl_80562144, lbl_805621A4, lbl_8056215C, lbl_80562284, lbl_80562288, lbl_80562268, lbl_80562274, lbl_8056228C;
