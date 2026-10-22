@@ -1372,7 +1372,7 @@ extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 in
  fn_800A4C14(dst+1,0xA); fn_800A4C14(dst+0xE,0xC); fn_800A4C14(dst+0x1C,4);
 }
 
-extern s32 fn_800AC1B4(void *, s32);
+extern "C" s32 fn_800AC1B4(void *, s32);
 extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *);
 extern s32 VFiPFENT_ITER_Advance(void *, s32);
 extern "C" s32 fn_800A9DC0(void *, void *, s32, s32, s32, s32 *);
