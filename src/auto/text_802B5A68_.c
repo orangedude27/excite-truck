@@ -274,6 +274,9 @@ extern s32 lbl_804BFA70;
 #pragma processor 750
 #pragma scheduling 750
 __declspec(section ".sdata") extern double lbl_80564C68;
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 void fn_802B61E0(void) {
     s32 val = fn_802E2C20();
     lbl_8055FA08 = (float)val / lbl_80564C70;
@@ -816,6 +819,57 @@ s32 fn_802B8998(s32 arg0) {
     return 1;
 }
 
+#pragma small_data off
+void fn_802B8AE0(const char *arg0, s32 arg1) {
+    struct Local { char name[32]; volatile s32 savedArg; volatile s32 zero; } local;
+    s32 i, count;
+    char *base,*dst;
+    if(fn_802B05E4()!=0) return;
+    local.name[31]=0;
+    dst=local.name;
+    do { char c=*arg0++; *dst++=c; } while((signed char)dst[-1]!=0);
+    count=*(s32*)((u8*)&lbl_804BFA70+4);
+    base=*(char**)&lbl_804BFA70;
+    *(s32*)((u8*)&lbl_804BFA70+4)=count+1;
+    dst=base+count*0x28;
+    dst[0]=local.name[0];
+    dst[1]=local.name[1];
+    dst[2]=local.name[2];
+    dst[3]=local.name[3];
+    dst[4]=local.name[4];
+    dst[5]=local.name[5];
+    dst[6]=local.name[6];
+    dst[7]=local.name[7];
+    dst[8]=local.name[8];
+    dst[9]=local.name[9];
+    dst[10]=local.name[10];
+    dst[11]=local.name[11];
+    dst[12]=local.name[12];
+    dst[13]=local.name[13];
+    dst[14]=local.name[14];
+    dst[15]=local.name[15];
+    dst[16]=local.name[16];
+    dst[17]=local.name[17];
+    dst[18]=local.name[18];
+    dst[19]=local.name[19];
+    dst[20]=local.name[20];
+    dst[21]=local.name[21];
+    dst[22]=local.name[22];
+    dst[23]=local.name[23];
+    dst[24]=local.name[24];
+    dst[25]=local.name[25];
+    dst[26]=local.name[26];
+    dst[27]=local.name[27];
+    dst[28]=local.name[28];
+    dst[29]=local.name[29];
+    dst[30]=local.name[30];
+    dst[31]=local.name[31];
+    *(s32*)(dst+0x20)=arg1;
+    local.savedArg=arg1;
+    local.zero=0;
+    *(s32*)(dst+0x24)=0;
+}
+#pragma small_data on
 extern s32 lbl_8055CEA0;
 void fn_802B8C88(void) {
     lbl_8055FA31 = 1;
