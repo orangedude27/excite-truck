@@ -3729,6 +3729,7 @@ void btm_pm_sm_alloc(u8 index) {
 }
 
 extern u8 lbl_802EEBE8[];
+/* Match fix: the p_md1 == NULL path copies p_md2 verbatim and returns it; only forced modes clear BTM_PM_MD_FORCE. */
 tBTM_PM_PWR_MD *btm_pm_compare_modes(tBTM_PM_PWR_MD *p_md1, tBTM_PM_PWR_MD *p_md2, tBTM_PM_PWR_MD *p_res) {
     u8 res;
     if (p_md1 == NULL) {
