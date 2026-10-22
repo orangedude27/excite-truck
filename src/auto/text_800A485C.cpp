@@ -7964,6 +7964,21 @@ extern "C" void *fn_800C64DC(u32);
 extern "C" void fn_800C64E8(u32);
 extern "C" void fn_8009BFBC(void);
 extern "C" f32 lbl_80560DC8, lbl_80560DCC, lbl_80560DF0, lbl_80560DF4;
+extern "C" void GXSetCullMode(s32);
+extern "C" void GetLayoutRect__Q34nw4lyt6LayoutCFv(f32 *, void *);
+extern "C" void *GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *, u32);
+extern "C" void SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(void *, f32);
+extern "C" void Start__Q210homebutton9RemoteSpkFv(void *);
+extern "C" void fn_800C81F0(void *, s32);
+extern "C" void fn_800D0F78(void *);
+extern "C" void fn_800D11CC(void *);
+extern "C" void fn_800D11E0(void *);
+extern "C" void fn_800D1200(void);
+extern "C" void fn_800D1300(void *);
+extern "C" void fn_800D16A8(s32 *);
+extern "C" f32 lbl_80560DD8;
+extern "C" u8 lbl_8031D840[];
+
 extern "C" void fn_800C7E6C(void *arg0) {
     u8 *self = (u8 *)arg0;
     void *object;
