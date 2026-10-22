@@ -8,6 +8,10 @@ extern int fn_800EAD00(void *);
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
 typedef int s32;
+namespace nw4hbm { namespace snd { namespace detail {
+class Channel { public: enum ChannelCallbackStatus { Status }; };
+class WsdTrack { public: static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); };
+}}}
 extern int fn_801013B0(int);
 extern int InvalidateData__Q46nw4hbm3snd6detail9WsdPlayerFPCvPCv(int);
 extern int fn_800FFA6C(int);
@@ -163,15 +167,27 @@ extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
 }
 
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2) {
-    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
-    if (temp_r11 + 0x80000000U != 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0) r10 = 0;
-    if (r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0) r9 = 0;
-    if (r9 == 0 && temp_r11 + 0x40000000U != 0) r8 = 0;
-    if (r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0) r7 = 0;
-    if (r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0) r6 = 0;
-    if (r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0xEB, "this", arg0);
+    unsigned int temp_r11;
+    int var_r10;
+    int var_r5;
+    int var_r6;
+    int var_r7;
+    int var_r8;
+    int var_r9;
+    temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+    var_r6 = 1;
+    var_r7 = 1;
+    var_r5 = 1;
+    var_r8 = 1;
+    var_r9 = 1;
+    var_r10 = 1;
+    if (((unsigned int)(temp_r11 + 0x80000000U) != 0U) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0U)) var_r10 = 0;
+    if ((var_r10 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0U)) var_r9 = 0;
+    if ((var_r9 == 0) && ((unsigned int)(temp_r11 + 0x40000000U) != 0U)) var_r8 = 0;
+    if ((var_r8 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0U)) var_r7 = 0;
+    if ((var_r7 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0U)) var_r6 = 0;
+    if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U)) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0xEB, "this", arg0);
     *(unsigned char *)((char *)arg0 + 0) = *(unsigned char *)((char *)arg1 + 0);
     *(unsigned char *)((char *)arg0 + 1) = *(unsigned char *)((char *)arg1 + 1);
     *(unsigned char *)((char *)arg0 + 2) = *(unsigned char *)((char *)arg1 + 2);
