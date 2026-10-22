@@ -551,6 +551,35 @@ void fn_801FE7E8(void* arg0) {
     }
 }
 
+extern const char lbl_8055B3C8[];
+extern const char lbl_8055B3D0[];
+extern const char lbl_8055B3D8[];
+void* fn_802AE414(int);
+char* strncpy(char*, const char*, unsigned long);
+#pragma cplusplus on
+extern "C" int fn_801FE88C(void* unused, void* out) {
+    struct Obj {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual const char* f5(const char*);
+        virtual void f6(); virtual void f7(); virtual void f8(); virtual float f9(const char*);
+        virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13();
+        virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17();
+        virtual void f18(); virtual void f19(); virtual void f20(); virtual unsigned short f21(const char*, void*);
+    };
+    Obj* obj = (Obj*)fn_802AE414(*(int*)out);
+    if (obj == 0) fn_802E317C(lbl_8033B5D8 + 0xC8);
+    strncpy((char*)out + 4, obj->f5(lbl_8055B3C8), 0x10);
+    *((char*)out + 0x13) = 0;
+    *(unsigned short*)((char*)out + 0x14) = obj->f21(lbl_8055B3D0, (void*)(lbl_8033B5D8 + 0xA0));
+    *(unsigned short*)((char*)out + 0x16) = obj->f21(lbl_8055B3D8, (void*)(lbl_8033B5D8 + 0xB0));
+    if (*(unsigned short*)((char*)out + 0x14) == 1) {
+       *(float*)((char*)out + 0x18) = obj->f9(lbl_8033B5D8 + 0x104);
+       *(float*)((char*)out + 0x1C) = obj->f9(lbl_8033B5D8 + 0x114);
+       *(float*)((char*)out + 0x20) = lbl_80563034;
+    }
+}
+#pragma cplusplus reset
+
 extern "C" void* fn_801FE9A8(void* arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668(arg0);
@@ -563,6 +592,37 @@ extern "C" void* fn_801FE9E8(void* arg0, int arg1) {
         fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern const char lbl_8033B84C[];
+int stricmp(const char*, const char*);
+int fn_80129D18(int);
+void fn_801FCAE0(void*, void*);
+void fn_801FD024(void*, void*);
+extern "C" void fn_801FEB58(void* value) {
+    char* name = (char*)value;
+    char* base = (char*)lbl_8055EC94;
+    char* entry = base;
+    int i = 0;
+    for (;;) {
+        if (i >= *(int*)(base + 0x4C0)) entry = 0;
+        else if (stricmp(name, entry) == 0) entry = base + i * 0x98;
+        else { entry += 0x98; i++; continue; }
+        break;
+    }
+    if (entry == 0) fn_802E317C(lbl_8033B84C, name);
+    if (*(int*)(entry + 0x90) > 0) {
+        int index = fn_80129D18(0);
+        int selected = *(int*)(entry + 0x10 + index * 4);
+        int j = index + 1;
+        int* p = (int*)(entry + j * 4);
+        for (; j < *(int*)(entry + 0x90); j++, p++) p[3] = p[4];
+        *(int*)(entry + 0x90) = j - 1;
+        fn_801FCAE0((void*)selected, name);
+        int count = *(int*)(entry + 0x94);
+        *(int*)(entry + 0x50 + count * 4) = selected;
+        *(int*)(entry + 0x94) = count + 1;
+    }
 }
 
 extern "C" void fn_801FEEC0(void* arg0, int arg1, int arg2, int arg3) {
@@ -764,6 +824,34 @@ body:
         p += 0x98;
         i++;
     } while (i < *(int*)((char*)arg0 + 0x4C0));
+}
+
+extern "C" int stricmp(const char *, const char *);
+void fn_801FF7D4(void *arg0, void *arg1) {
+ char *entry=(char *)arg0;
+ int i=0;
+ do {
+  if(stricmp(*(const char **)arg1,entry)==0){
+   entry=(char *)arg0+i*0x98;
+   break;
+  }
+  entry+=0x98;
+  i++;
+ } while(i<*(int *)((char *)arg0+0x4c0));
+ if(i>=*(int *)((char *)arg0+0x4c0)) entry=0;
+ if(entry==0){
+  int count=*(int *)((char *)arg0+0x4c0);
+  if(count>=8) fn_802E317C(lbl_8033B8EC,8);
+  entry=(char *)arg0+count*0x98;
+  fn_801FF8DC(arg0,entry,*(int *)arg1);
+  *(int *)((char *)arg0+0x4c0)=count+1;
+ }
+ {
+  int count=*(int *)(entry+0x90);
+  if(count+1>0x10) fn_802E317C(lbl_8033B90C,0x10);
+  *(void **)(entry+0x10+count*4)=arg1;
+  *(int *)(entry+0x90)=count+1;
+ }
 }
 
 void fn_801FF8DC(void *arg0, char *dest, const char *src) {
