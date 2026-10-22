@@ -3,7 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; }; } } }
+namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; }; } } }
 
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
@@ -326,6 +326,29 @@ u16 nw4hbm::ut::detail::ResFontBase::GetTextureFormat() const {
     if (h==0 && (u32)((v&0xFFFFC000U)+0x20000000U)!=0U) g=0;
     if (g==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x118,file+0x128);
     return *(u16*)(*(u32*)((char*)v+8)+0xA);
+}
+
+s8 nw4hbm::ut::detail::ResFontBase::GetLineFeed() const {
+    const char* file = lbl_80329140;
+    u32 value = (u32)this;
+    int a=1,b=1,c=1,d=1,e=1,f=1;
+    if ((u32)((value & 0xFF000000U)+0x80000000U)!=0U && (u32)((value & 0xFF800000U)+0x7F000000U)!=0U) f=0;
+    if (f==0 && (u32)((value&0xF8000000U)+0x70000000U)!=0U)e=0;
+    if (e==0 && (u32)((value&0xFF000000U)+0x40000000U)!=0U)d=0;
+    if (d==0 && (u32)((value&0xFF800000U)+0x3F000000U)!=0U)c=0;
+    if (c==0 && (u32)((value&0xF8000000U)+0x30000000U)!=0U)b=0;
+    if (b==0 && (u32)((value&0xFFFFC000U)+0x20000000U)!=0U)a=0;
+    if (a==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x128,file+0xF0,this);
+    u32 v=*(u32*)((char*)this+0x14);
+    int g=1,h=1,i=1,j=1,k=1,l=1;
+    if ((u32)((v&0xFF000000U)+0x80000000U)!=0U && (u32)((v&0xFF800000U)+0x7F000000U)!=0U) l=0;
+    if (l==0 && (u32)((v&0xF8000000U)+0x70000000U)!=0U) k=0;
+    if (k==0 && (u32)((v&0xFF000000U)+0x40000000U)!=0U) j=0;
+    if (j==0 && (u32)((v&0xFF800000U)+0x3F000000U)!=0U) i=0;
+    if (i==0 && (u32)((v&0xF8000000U)+0x30000000U)!=0U) h=0;
+    if (h==0 && (u32)((v&0xFFFFC000U)+0x20000000U)!=0U) g=0;
+    if (g==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x129,file+0x128);
+    return *(s8*)(*(u32*)((char*)v+8)+1);
 }
 
 extern "C" s8 fn_8010B2BC(void *arg0) {
