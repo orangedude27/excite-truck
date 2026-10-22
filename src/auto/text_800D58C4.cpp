@@ -38,6 +38,9 @@ extern "C" f32 SinFIdx__Q24nw4r4mathFf(f32);                   /* extern */
 extern "C" int fn_800D7C54(int *, s32);                /* extern */
 extern "C" void fn_800D4F98(void *);
 extern "C" f32 lbl_80560E8C;
+extern "C" f32 lbl_80560E88;
+extern "C" f32 lbl_80560E90;
+extern "C" f32 lbl_80560E94;
 extern "C" int lbl_80565230;
 
 
@@ -1678,6 +1681,24 @@ extern "C" void Animate__Q36nw4hbm3lyt4PaneFUl(void* self, u32 flags) {
             node = *(void**)node;
         }
     }
+}
+
+extern "C" void AnimateSelf__Q36nw4hbm3lyt4PaneFUl(void* self, unsigned long flags) {
+    PaneAnimLink* head = (PaneAnimLink*)((char*)self + 0x20);
+    PaneAnimLink* link = *(PaneAnimLink**)((char*)self + 0x20);
+    while (link != head) {
+        if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+        if (!link->disabled) {
+            if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            PaneAnimObject* anim = link->animation;
+            if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            anim->v3();
+        }
+        link = link->next;
+    }
+    if ((*(u8*)((char*)self + 0xCF) & 1) == 0 && (flags & 1)) return;
+    PaneAnimObject* obj = *(PaneAnimObject**)((char*)self + 0x28);
+    if (obj) obj->v3();
 }
 
 extern "C" void BindAnimation__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformb(void* self, void* transform, bool flag) {
