@@ -3154,6 +3154,7 @@ void btm_delete_stored_link_key_complete(u8 *p) {
     }
 }
 
+/* Reverses each returned address and link key in place before invoking the callback. */
 void btm_return_link_keys_evt(tBTM_RETURN_LINK_KEYS_EVT *result) {
     tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570);
     UINT8 i, *p, *p1;
