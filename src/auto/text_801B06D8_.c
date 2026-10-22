@@ -316,6 +316,38 @@ void fn_801B157C(void *arg0,s32 arg1) {
     if(lbl_8055E690)fn_801CB6B4(*(s32*)((u8*)arg0+0x60),arg1,2);
 }
 
+void fn_801B179C(void *arg0, s32 arg1, s32 arg2) {
+    void *obj;
+    void *first;
+    void *second;
+    void *value;
+    void **vtable;
+    s32 size = arg1 + 1;
+    *(s32*)((u8*)arg0 + 0x60) = arg1;
+    *(s32*)((u8*)arg0 + 0x5C) = arg2;
+    *(s32*)((u8*)arg0 + 0x6C) = arg1;
+    *(s32*)((u8*)arg0 + 8) = size;
+    obj = fn_80156A40();
+    first = fn_801284F8(0x68, lbl_80335B28);
+    if (first != 0) {
+        vtable = *(void***)obj;
+        value = ((void* (*)(void*, s32))vtable[4])(obj, arg1);
+        first = fn_80135DC4(first, 1, value);
+    }
+    *(void**)((u8*)arg0 + 0x58) = first;
+    second = fn_801284F8(0x34, lbl_80335B3C);
+    if (second != 0) second = fn_801352B8();
+    *(void**)((u8*)arg0 + 0x3C) = second;
+    *(void**)((u8*)second + 0x30) = first;
+    vtable = *(void***)obj;
+    value = ((void* (*)(void*, s32))vtable[5])(obj, arg1);
+    vtable = *(void***)second;
+    ((void (*)(void*, void*))vtable[3])(second, value);
+    if ((u32)(*(u32*)((u8*)arg2 + 0x10) + 0xAFBD0000U) == 0x4152U) {
+        lbl_8055E67C += 1;
+    }
+}
+
 #pragma dont_inline on
 void fn_801B18B8(void *arg0, s32 arg1, s32 arg2) {
     f32 p0[4]; f32 p1[2];
@@ -868,3 +900,10 @@ u32 fn_801B3290(void) { return 1; }
 void fn_801B3298(void) {
 
 }
+#pragma cplusplus on
+struct Dummy_801B30E0 {
+    virtual void d0(); virtual void d1(); virtual void d2();
+    virtual void d3(); virtual void d4(); virtual void d5();
+    virtual void d6(); virtual void *d7(); virtual void *d8();
+};
+#pragma cplusplus off
