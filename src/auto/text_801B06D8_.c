@@ -326,6 +326,10 @@ void fn_801B18B8(void *arg0, s32 arg1, s32 arg2) {
 #pragma dont_inline reset
 
 extern void *fn_80156A40(void);
+extern void *fn_801284F8(s32, const char *);
+extern void *fn_80135DC4(void *, s32, void *);
+extern void *fn_801352B8(void);
+extern char lbl_80335B28[], lbl_80335B3C[];
 extern void fn_80135F4C(void *);
 void fn_801B1A5C(void *arg0) {
     void *obj;
