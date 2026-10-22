@@ -4,7 +4,7 @@ class PaneDrawDispatch { public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
     virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
     virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
-    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d12(); virtual void d13(); virtual void d14();
     virtual s32 isVisible();
 };
 extern "C" f32 lbl_80560E28, lbl_80560E30;
@@ -5434,6 +5434,25 @@ extern "C" s32 contain__Q310homebutton3gui13PaneComponentFff(void *this_, f32 x,
 }
 
 extern "C" s32 fn_800D0814(void *arg0) { return *(s32 *)((u8 *)arg0 + 0x24); }
+
+#pragma cplusplus on
+extern "C" void draw__Q310homebutton3gui13PaneComponentFv(void *arg0) {
+    f32 sp10, sp14, f31, f30;
+    u8 color[4];
+    void *pane = *(void **)((u8 *)arg0 + 0x2C);
+    PaneDrawDispatch *dispatch = (PaneDrawDispatch *)*(void **)((u8 *)arg0 + 0x28);
+    if (dispatch->isVisible() != 0) {
+        color[0]=lbl_80560E2C; color[1]=lbl_80560E2D; color[2]=lbl_80560E2E; color[3]=lbl_80560E2F;
+        sp10=*(f32 *)((u8 *)pane+0x4C); sp14=*(f32 *)((u8 *)pane+0x50);
+        f31=*(f32 *)((u8 *)pane+0x90); f30=*(f32 *)((u8 *)pane+0xA0);
+        if (*(u8 *)((u8 *)arg0+4)) { color[0]=0; color[2]=0xFF; }
+        fn_800CF554(8,color,f31-sp10*lbl_80560E30,f30-sp14*lbl_80560E30,f31+sp10*lbl_80560E30,f30-sp14*lbl_80560E30,lbl_80560E28);
+        fn_800CF554(8,color,f31+sp10*lbl_80560E30,f30-sp14*lbl_80560E30,f31+sp10*lbl_80560E30,f30+sp14*lbl_80560E30,lbl_80560E28);
+        fn_800CF554(8,color,f31+sp10*lbl_80560E30,f30+sp14*lbl_80560E30,f31-sp10*lbl_80560E30,f30+sp14*lbl_80560E30,lbl_80560E28);
+        fn_800CF554(8,color,f31-sp10*lbl_80560E30,f30+sp14*lbl_80560E30,f31-sp10*lbl_80560E30,f30-sp14*lbl_80560E30,lbl_80560E28);
+    }
+}
+#pragma cplusplus reset
 
 extern "C" s32 fn_800D0AA8(void *pane);
 extern "C" s32 fn_800D0AB4(void *pane);
