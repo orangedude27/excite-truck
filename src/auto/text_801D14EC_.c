@@ -1,6 +1,21 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma scheduling invalid_target
+extern char lbl_80338238[];
+extern char lbl_80338244[];
+void fn_801D14EC(void) {
+    extern void *fn_801284F8(int, const char *);
+    extern void fn_801D0FA4(void);
+    void *object;
+    object = fn_801284F8(4, (const char *)&lbl_80338238[0]);
+    if (object != 0) {
+        fn_801D0FA4();
+        *(void **)object = &lbl_80338244[0];
+    }
+}
+#pragma scheduling on
+
 void fn_801D153C(void) {
     fn_801D1540();
 }
