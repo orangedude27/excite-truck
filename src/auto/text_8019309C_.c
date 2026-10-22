@@ -1,8 +1,9 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
     // split_file divides it into the game's real files (file_status shows its range).
 
-    extern void fn_801958D8(void);
-    extern void fn_801945F8(void *);
+          extern void fn_801958D8(void);
+      extern void fn_801945F8(void *);
+      extern void fn_80196DC4(void *);
     extern void fn_80195F6C(void *, void *);
     extern void fn_80194624(void *);
     extern void fn_80195654(void *);
@@ -604,6 +605,22 @@ extern float lbl_80562140;
 extern float lbl_80562148;
 extern float lbl_80562204;
 void fn_801958C4(void *arg0) { *(float *)((unsigned char *)arg0+0x248) *= lbl_80562204; }
+
+void fn_80195B28(void *arg0, float arg1) {
+ float *p=(float*)arg0, *table; float value, scale; int index;
+ if (p[0x234/4]>=p[0x26C/4] && lbl_80562144==arg1) {
+  table=(float*)__AXFXGetLfoSinTable_801769CC();
+  if (*(int*)((char*)table+4)!=0x180201) {
+   index=*(int*)((char*)arg0+0x268); table=lbl_80333308; if(index==1)table+=3;
+   p[0x22C/4]=p[0x26C/4]; p[0x234/4]=fn_80129DC4(3,table[0],table[1]);
+   if(index!=1)p[0x234/4]*=lbl_8055E56C;
+   p[0x228/4]=p[0x220/4]; p[0x234/4]+=p[0x26C/4]; p[0x230/4]=table[2];
+   if(index==1)p[0x224/4]=fn_80129DC4(3,lbl_8056220C,lbl_8056215C);
+   else p[0x224/4]=fn_80129DC4(3,lbl_805621A4,lbl_80562140);
+   if(lbl_80562144!=arg1){ value=fabsf(p[0x224/4]); if(arg1>lbl_80562144)scale=lbl_80562140;else scale=lbl_805621A4;p[0x224/4]=scale*value;}
+  } else { p[0x234/4]=p[0x26C/4];p[0x228/4]=lbl_80562144;p[0x224/4]=lbl_80562144;p[0x22C/4]=p[0x26C/4];p[0x230/4]=p[0x26C/4]; }
+ }
+}
 
 extern void fn_80194324(void);
 extern void fn_801944C0(void *);
