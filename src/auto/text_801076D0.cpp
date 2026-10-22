@@ -3,7 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; }; } } }
+namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; }; } } }
 
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
@@ -253,6 +253,30 @@ extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+s32 nw4hbm::ut::detail::ResFontBase::GetDescent() const {
+    const u32 value = (u32)this;
+    const u32 data = *(const u32*)(value + 0x14);
+    if (((value & 0xFF000000) + 0x80000000 != 0) &&
+        ((value & 0xFF800000) + 0x7F000000 != 0) &&
+        ((value & 0xF8000000) + 0x70000000 != 0) &&
+        ((value & 0xFF000000) + 0x40000000 != 0) &&
+        ((value & 0xFF800000) + 0x3F000000 != 0) &&
+        ((value & 0xF8000000) + 0x30000000 != 0) &&
+        ((value & 0xFFFFC000) + 0x20000000 != 0)) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140 + 0xC, 0xB3, lbl_80329140 + 0xF0, this);
+    }
+    if (((data & 0xFF000000) + 0x80000000 != 0) &&
+        ((data & 0xFF800000) + 0x7F000000 != 0) &&
+        ((data & 0xF8000000) + 0x70000000 != 0) &&
+        ((data & 0xFF000000) + 0x40000000 != 0) &&
+        ((data & 0xFF800000) + 0x3F000000 != 0) &&
+        ((data & 0xF8000000) + 0x30000000 != 0) &&
+        ((data & 0xFFFFC000) + 0x20000000 != 0)) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140 + 0xC, 0xB4, lbl_80329140 + 0x128);
+    }
+    return ((u8*)data)[0x14] - ((u8*)data)[0x16];
 }
 
 extern "C" u8 GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv_80109F24(void* self) {
