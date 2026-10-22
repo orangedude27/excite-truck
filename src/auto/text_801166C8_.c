@@ -331,6 +331,38 @@ void fn_80117330(void* arg0) {
  }
 }
 
+void fn_80117380(void *arg0, s32 arg1) {
+    s32 var_r31;
+    s32 temp_r3;
+    s32 temp_r5;
+    var_r31 = arg1;
+    if (arg1 != 0) var_r31 = arg1 - 1;
+    *(s32 *)((u8 *)arg0 + 0x2F8) = 0;
+    if (*(s32 *)((u8 *)arg0 + 0x2E8) != 0) fn_80117074(arg0);
+    *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)((u8 *)arg0 + 0xC);
+    if (var_r31 == 0) {
+        temp_r3 = fn_80116D30();
+        if (*(s32 *)((u8 *)arg0 + 0x2D8) == 0) *(s32 *)((u8 *)arg0 + 0x2D8) = temp_r3;
+        if ((u32)(temp_r3 - *(u32 *)((u8 *)arg0 + 0x2D8)) > 0x493E0U) {
+            *(s32 *)((u8 *)arg0 + 0x2D8) = temp_r3;
+            *(s32 *)((u8 *)arg0 + 0x2DC) = 1;
+        }
+    }
+    temp_r5 = *(s32 *)((u8 *)arg0 + 0xE8);
+    if (temp_r5 != 0) {
+        s32 *p = *(s32 **)((u8 *)arg0 + 0xEC);
+        *(s32 *)((u8 *)arg0 + 0xE4) = temp_r5 + ((p[var_r31] & ~1) - (p[0] & ~1));
+    } else {
+        s32 *p = *(s32 **)((u8 *)arg0 + 0xEC);
+        s32 a = p[var_r31] & ~1;
+        s32 b = p[var_r31 + 1] & ~1;
+        s32 (*fn)(void *, s32, s32, s32, s32) = *(s32 (**)(void *, s32, s32, s32, s32))((u8 *)arg0 + 0xF4);
+        fn((u8 *)arg0 + 0xF0, var_r31, a, *(s32 *)((u8 *)arg0 + 0xE4), b - a);
+    }
+    if (*(s32 *)((u8 *)arg0 + 0x2E8) != 0) fn_80117074(arg0);
+    *(s32 *)((u8 *)arg0 + 0xC) = var_r31 + 1;
+}
+
 u32 fn_80116BD4(s32, s32, s32);
 u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag) {
     s32 i;
@@ -510,6 +542,45 @@ extern s32 fn_801199A4(void *, s32);
 s32 fn_80119994(void) { return 0; }
 
 s32 fn_8011999C(void) { return 0; }
+
+s32 fn_801199A4(void* arg0, s32 arg1) {
+    extern void fn_8003381C(void*, s16*);
+    s16 rect[8];
+    u32 width = *(u32*)((u8*)arg0 + 0x10);
+    u32 x0 = width >> 1;
+    u32 x1 = ((width + *(u32*)((u8*)arg0 + 0x1C)) >> 1) - 1;
+    u32 limit;
+    rect[0] = 1;
+    rect[1] = 10;
+    if (arg1 != 0)
+        limit = x0;
+    else
+        limit = *(u32*)(*(u32*)arg0 + 0x1BC);
+    rect[2] = x0 >> 16;
+    rect[3] = x0;
+    rect[4] = x1 >> 16;
+    rect[5] = x1;
+    rect[6] = limit >> 16;
+    rect[7] = limit;
+    fn_8003381C(*(void**)arg0, rect);
+    if (*(void**)((u8*)arg0 + 4) != 0) {
+        u32 height = *(u32*)((u8*)arg0 + 0x14);
+        u32 y0 = height >> 1;
+        u32 y1 = ((height + *(u32*)((u8*)arg0 + 0x1C)) >> 1) - 1;
+        if (arg1 != 0)
+            limit = y0;
+        else
+            limit = *(u32*)(*(u32*)((u8*)arg0 + 4) + 0x1BC);
+        rect[2] = y0 >> 16;
+        rect[3] = y0;
+        rect[4] = y1 >> 16;
+        rect[5] = y1;
+        rect[6] = limit >> 16;
+        rect[7] = limit;
+        fn_8003381C(*(void**)((u8*)arg0 + 4), rect);
+    }
+    return 0;
+}
 
 void fn_80119AB0(void *arg0, s32 arg1) {
     s32 value = arg1;
@@ -708,6 +779,48 @@ void fn_8011A4F8(u32 arg0, void *arg1) {
         if (FIELD(temp_r31, 0x50) == 0) fn_8011A6A0(temp_r31);
     }
 #undef FIELD
+}
+
+void fn_8011A6A0(void* arg0) {
+    s32 status = DVDGetDriveStatus();
+    s32 remaining = *(s32*)((u8*)arg0 + 0xB8) - *(s32*)((u8*)arg0 + 0x90);
+    if (status != 10) {
+        if (status < 10) {
+            if (status == -1 || status >= 3)
+                goto set_flag;
+            goto check_read;
+        }
+        if (status < 12)
+            goto set_flag;
+        goto done;
+    }
+check_read:
+    if (*(s32*)((u8*)arg0 + 0xC4) != 0)
+        goto done;
+    if (status != 0 && status != 10)
+        goto done;
+    if (*(u32*)((u8*)arg0 + 0xA0) >= 0x8000 && remaining != 0) {
+        *(s32*)((u8*)arg0 + 0xC8) = *(s32*)((u8*)arg0 + 0x2C);
+        *(s32*)((u8*)arg0 + 0xCC) = fn_80116D30();
+        *(s32*)((u8*)arg0 + 0x24) = 1;
+        if ((u32)remaining > 0x8000)
+            remaining = 0x8000;
+        else if (remaining & 0x1F) {
+            s32 pad = (-remaining) & 0x1F;
+            *(s32*)((u8*)arg0 + 0x94) = pad;
+            remaining += pad;
+        }
+        DVDReadAsyncPrio((u8*)arg0 + 0x54, *(s32*)((u8*)arg0 + 0xAC), remaining,
+            *(s32*)((u8*)arg0 + 0xB4) + (*(s32*)((u8*)arg0 + 0x90) - *(s32*)((u8*)arg0 + 0x94)),
+            fn_8011A4F8, 0);
+        goto done;
+    }
+    *(s32*)((u8*)arg0 + 0x48) = *(s32*)((u8*)arg0 + 0x4C);
+    goto done;
+set_flag:
+    *(s32*)((u8*)arg0 + 0x20) = 1;
+done:
+    return;
 }
 
 s32 fn_8011A7CC(DVDFileInfo *info) {
@@ -1209,6 +1322,32 @@ void fn_80120084(void *arg0) {
     base = ptr - ptr[-1];
     if (ptr[-2] == 3) ((void (*)(void *))*(void **)(ptr - 8))(base);
     else free(base);
+}
+
+extern f64 cos(f64);
+extern f64 sin(f64);
+extern f32 lbl_80561210;
+extern f32 lbl_80561214;
+extern f64 lbl_80561228;
+void fn_80120B6C(s32 arg0, s32 *arg1, f32 *arg2) {
+    s32 i;
+    s32 half;
+    f32 scale;
+    f32 angle;
+    f32 result;
+
+    arg1[1] = arg0;
+    if (arg0 <= 1) return;
+    half = arg0 >> 1;
+    angle = lbl_80561214 / (f32)half;
+    result = (f32)cos((f64)(angle * (f32)half));
+    scale = lbl_80561210;
+    arg2[0] = result;
+    arg2[half] = scale * result;
+    for (i = 1; i < half; i++) {
+        arg2[i] = scale * (f32)cos((f64)(angle * (f32)i));
+        arg2[arg0 - i] = scale * (f32)sin((f64)(angle * (f32)i));
+    }
 }
 
 extern void fn_80121C68(s32, void *, void *);
