@@ -24,6 +24,7 @@ extern u8 lbl_803C0D48[];
 extern u8 lbl_803C3C38[];
 extern void *l2cu_find_ccb_by_cid(void *, u16);
 extern u8 lbl_803C0B98[];
+extern char lbl_80316E08[];
 extern u32 lbl_8055DCA4;
 extern void fn_80070F90(void *ptr);
 extern u8 lbl_803C4C40[];
@@ -4066,6 +4067,38 @@ block_6:
             break;
         }
     }
+}
+
+void btu_hcif_command_status_evt(UINT8 *p, UINT16 len) {
+    UINT8 status;
+    UINT16 opcode;
+    UINT16 queued_opcode;
+    void *buf;
+    UINT8 *cmd;
+    status = p[0];
+    *(UINT16 *)(lbl_803C0A50 + 0x80) = p[1];
+    opcode = (UINT16)(p[2] + (p[3] << 8));
+    buf = 0;
+    cmd = 0;
+    if (opcode != 0xC03 && opcode != 0xC35 && opcode != 0) {
+        buf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
+        if (buf != 0) {
+            cmd = (UINT8 *)buf + *(UINT16 *)((UINT8 *)buf + 4);
+            queued_opcode = (UINT16)(cmd[8] + (cmd[9] << 8));
+            if (queued_opcode != opcode) {
+                fn_8007096C(0x70001, &lbl_80317298, opcode, 0);
+                cmd = 0;
+            }
+        }
+        if (fn_8006DF84(lbl_803C0A50 + 0x70) == 0)
+            btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0A50 + 0x4C), 0x3C, 8);
+        else
+            fn_80070F90(lbl_803C0A50 + 0x4C);
+    }
+    btu_hcif_hdl_command_status(opcode, status, cmd);
+    if (buf != 0)
+        GKI_freebuf(buf);
+    btu_hcif_send_cmd(0);
 }
 
 void btu_hcif_link_key_notification_evt(u8 *p, u16 evt_len) {
