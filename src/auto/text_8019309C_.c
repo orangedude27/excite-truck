@@ -68,6 +68,7 @@ extern float fn_80134B58(void *, float);
 #define __HI(x) *(int *)&x
 extern float lbl_80562168, lbl_80562174, lbl_805621A4, lbl_805621B0, lbl_805621B4;
 extern float lbl_80333308[];
+extern float lbl_8056220C;
 extern float lbl_8055A488, lbl_8056215C;
 
 int fn_8019309C(void *arg0, int index, signed char arg2) {
