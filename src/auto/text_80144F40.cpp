@@ -32,7 +32,9 @@ extern "C" void fn_801476D8(void *, s32, s32);
 extern "C" s32 fn_80147C50(u32, u32, f32);
 
 extern "C" void lbl_8032D214(void);
-extern "C" void *lbl_8032D1E8;
+extern "C" {
+__declspec(section ".data") extern void *lbl_8032D1E8;
+}
 extern "C" void *fn_80148294(const char *, void *);
 extern "C" char lbl_8032D0EC[];
 extern "C" char lbl_8032D0FC[];
@@ -496,12 +498,15 @@ extern "C" void fn_80145D8C(void *arg0) {
     fn_802E30C8(lbl_8032D0D0);
 }
 
+#pragma dont_inline on
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+#pragma small_data off
 extern "C" void fn_80145E70(s32 arg0) {
     struct Config {
-        virtual void a0();
-        virtual void a1();
         virtual void *getObject(const char *);
-        virtual void a3();
+        virtual void a1();
         virtual s32 has(const char *);
     };
     struct Properties {
@@ -511,14 +516,9 @@ extern "C" void fn_80145E70(s32 arg0) {
         virtual void a3();
         virtual void a4();
         virtual void a5();
-        virtual void a6();
-        virtual void a7();
         virtual s32 set(const char *, s32);
     };
     u8 *object;
-    void *config;
-    s32 result;
-
     object = (u8 *)fn_801284F8(0x50, &lbl_8032D0EC);
     if (object == 0)
         return;
@@ -526,32 +526,41 @@ extern "C" void fn_80145E70(s32 arg0) {
     *(void **)object = &lbl_8032D1E8;
     fn_80146C08(object + 0x40, (s32)object);
     *(s32 *)(object + 0x2C) = 0;
-    *(s32 *)(object + 0x30) = 0;
-    *(s32 *)(object + 0x34) = 0;
-    *(s32 *)(object + 0x3C) = 0;
-    *(s32 *)(object + 0x48) = 0;
-    *(s32 *)(object + 0x4C) = 0;
-    object[4] = 0;
-    ((void (*)(u8 *, const s8 *, s32, s32))fn_80146BD4)(object + 5, (const s8 *)arg0, 0x20, 0);
-    config = fn_80131810(arg0);
-    *(void **)(object + 0x28) = config;
-    if (config != 0) {
+    {
+        u8 *dst = object + 5;
+        const s8 *src = (const s8 *)arg0;
+        *(s32 *)(object + 0x30) = 0;
+        *(s32 *)(object + 0x34) = 0;
+        *(s32 *)(object + 0x3C) = 0;
+        *(s32 *)(object + 0x48) = 0;
+        *(s32 *)(object + 0x4C) = 0;
+        object[4] = 0;
+        ((void (*)(u8 *, const s8 *, s32, s32))fn_80146BD4)(dst, src, 0x20, 0);
+    }
+    *(void **)(object + 0x28) = fn_80131810(arg0);
+    if (*(void **)(object + 0x28) != 0) {
         lbl_8055E208 = 1;
-        if (((Config *)config)->has(lbl_80559E20) != 0) {
-            void *properties = ((Config *)config)->getObject(lbl_80559E20);
-            result = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
-            lbl_8055E208 = (s8)((u32)((result >> 1) - (result & 1)) >> 31);
+        if (((Config *)*(void **)(object + 0x28))->has(lbl_80559E20) != 0) {
+            void *properties = ((Config *)*(void **)(object + 0x28))->getObject(lbl_80559E20);
+            s32 value = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
+            s32 shifted = value >> 1;
+            s32 bit = value & 1;
+            value = shifted - bit;
+            lbl_8055E208 = (s8)((u32)value >> 31);
         }
-        *(s32 *)(object + 0x2C) = (s32)((void *(*)(void *, const char *))fn_80145FEC)(config, lbl_80559E30);
-        *(s32 *)(object + 0x30) = (s32)((void *(*)(void *, const char *))fn_801460F8)(config, lbl_80559E34);
-        *(s32 *)(object + 0x34) = (s32)((void *(*)(void *, const char *))fn_80146204)(config, lbl_80559E3C);
-        *(s32 *)(object + 0x3C) = (s32)((void *(*)(void *, const char *))fn_80146310)(config, lbl_8032D0FC);
+        *(s32 *)(object + 0x2C) = (s32)((void *(*)(void *, const char *))fn_80145FEC)(*(void **)(object + 0x28), lbl_80559E30);
+        *(s32 *)(object + 0x30) = (s32)((void *(*)(void *, const char *))fn_801460F8)(*(void **)(object + 0x28), lbl_80559E34);
+        *(s32 *)(object + 0x34) = (s32)((void *(*)(void *, const char *))fn_80146204)(*(void **)(object + 0x28), lbl_80559E3C);
+        *(s32 *)(object + 0x3C) = (s32)((void *(*)(void *, const char *))fn_80146310)(*(void **)(object + 0x28), lbl_8032D0FC);
         fn_80146824(object);
     }
     fn_80145D8C(object);
     fn_80146490(object);
 }
-
+#pragma small_data on
+#pragma scheduling on
+#pragma pop
+#pragma dont_inline reset
 extern "C" void *fn_801284F8(u32, void *);
 extern "C" void *fn_8012850C(u32, void *);
 extern "C" void *fn_8002F37C(void *, s32, s32, s32);
