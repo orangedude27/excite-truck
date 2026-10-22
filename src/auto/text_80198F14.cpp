@@ -43,6 +43,7 @@ extern "C" f64 fn_8002F234(f32);
 extern "C" void fn_8019ECC4(void);
 extern void* lbl_80333B48;
 extern f32 lbl_80562370;
+extern f32 lbl_8056232C;
 
 extern "C" void fn_8019CE4C(void*, void*);
 extern "C" void fn_8019BD54(void*, void*, s32, s32);
@@ -222,6 +223,27 @@ void fn_8019D19C(void* arg0, void* arg1) {
     }
     *(f32*)((u8*)arg1 + 0x24) = value;
     fn_8019B068(arg0, arg1, 0, 0);
+}
+
+extern "C" void fn_8019D378(void *arg0, void *arg1) {
+    f32 dx, dy, dz, scale, dot, value, distance;
+    f32 *p = (f32 *)*(void **)((u8 *)arg1 + 0xC);
+    Vec *a = (Vec *)((u8 *)arg0 + 0x34);
+    dx = p[9] - a->x;
+    dy = p[10] - a->y;
+    dz = p[11] - a->z;
+    distance = PSVECSquareDistance((Vec *)(p + 9), a);
+    if (distance > lbl_8056232C) {
+        scale = lbl_805622E0 / (f32)fn_8002F234(distance);
+        dx *= scale; dy *= scale; dz *= scale;
+        dot = PSVECDotProduct((Vec *)&dx, (Vec *)((u8 *)arg0 + 0x18));
+        value = *(f32 *)((u8 *)arg0 + 0x54) + __fabsf(dot) * (*(f32 *)((u8 *)arg0 + 0x58) - *(f32 *)((u8 *)arg0 + 0x54));
+    } else {
+        value = *(f32 *)((u8 *)arg0 + 0x54);
+        if (value <= *(f32 *)((u8 *)arg0 + 0x58)) value = *(f32 *)((u8 *)arg0 + 0x58);
+    }
+    *(f32 *)((u8 *)arg0 + 0x24) = value;
+    fn_8019C854(arg0, arg1);
 }
 
 s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
