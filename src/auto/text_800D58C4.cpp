@@ -89,6 +89,7 @@ struct PaneAnimVTable {
 struct PaneAnimObject : PaneAnimVTable {};
 struct StateObject_800D6CA0 { virtual void v0(); virtual void v1(); virtual void* v2(); };
 struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
+extern "C" s32 lbl_8055DE08;
 struct PaneAnimLink {
     PaneAnimLink* next;
     void* unk4;
