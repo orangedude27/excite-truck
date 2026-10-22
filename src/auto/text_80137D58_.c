@@ -26,12 +26,46 @@ void fn_80137F74(void *arg0) {
     ((unsigned char *)arg0)[0xa] = a9;
 }
 
-void fn_80137FF0(void) {
-    unsigned char *p = (unsigned char *)0;
-    unsigned char a, b, c, d, e, f;
-    unsigned char *q;
-    int i = 0;
-    p = (unsigned char *)__builtin_frame_address(0);
+void fn_80137FF0(void *arg0) {
+    unsigned char *base = (unsigned char *)arg0;
+    unsigned char a = base[8];
+    unsigned char b = base[9];
+    unsigned char c = base[0xc];
+    unsigned char d = base[0xd];
+    unsigned char e = base[0x10];
+    unsigned char f = base[0x11];
+    unsigned char *p;
+    int i;
+    base[8] = base[0xb];
+    base[0xb] = a;
+    base[9] = base[0xa];
+    base[0xa] = b;
+    base[0xc] = base[0xf];
+    base[0xf] = c;
+    base[0xd] = base[0xe];
+    base[0xe] = d;
+    base[0x10] = base[0x13];
+    base[0x13] = e;
+    base[0x11] = base[0x12];
+    base[0x12] = f;
+    p = base + 0x14;
+    for (i = 0; i < *(int *)(base + 8); i++) {
+        a = p[0];
+        b = p[1];
+        c = p[2];
+        d = p[3];
+        p[0] = p[3];
+        p[3] = a;
+        p[1] = p[2];
+        p[2] = b;
+        a = p[4];
+        b = p[5];
+        p[4] = p[7];
+        p[7] = a;
+        p[5] = p[6];
+        p[6] = b;
+        p += 8;
+    }
 }
 
 void fn_801380DC(void *arg0) {
@@ -58,9 +92,9 @@ void fn_801380DC(void *arg0) {
     }
 }
 
-void fn_80137F30(void);
+void fn_80137F30(void *);
 void fn_80137F74(void *);
-void fn_80137FF0(void);
+void fn_80137FF0(void *);
 void fn_801380DC(void *);
 extern char lbl_8032BF00[];
 void fn_802E317C(char *, ...);
@@ -72,8 +106,8 @@ void fn_80138144(void *arg0) {
     *((unsigned char *)arg0 + 1) = *((unsigned char *)arg0 + 2);
     *((unsigned char *)arg0 + 2) = b;
     switch (*(int *)arg0) {
-    case 2: fn_80137FF0(); break;
-    case 0: fn_80137F30(); break;
+    case 2: fn_80137FF0(arg0); break;
+    case 0: fn_80137F30(arg0); break;
     case 1: fn_80137F74((char *)arg0 + 8); break;
     case 3: fn_801380DC(arg0); break;
     default: fn_802E317C(lbl_8032BF00); break;
@@ -182,6 +216,57 @@ extern float lbl_805613A4;
 int fn_801388F4(void *arg0) { float spC,sp8,temp_f2,temp_f4; double temp_f3; void *p; p=*(void **)((char*)arg0+0x14); sp8=*(float*)((char*)arg0+8); spC=*(float*)((char*)arg0+0xC); temp_f3=-sp8; temp_f4=(float)temp_f3; temp_f2=spC**(float*)((char*)p+8); sp8=spC; spC=(float)temp_f3; if(temp_f2+temp_f4**(float*)((char*)p+0xC)<lbl_805613A4)return 1;return 0; }
 
 void fn_80138958(void *arg0, float *arg1) { fn_801386D0(arg1[0], arg1[1], arg1[2]); }
+
+extern void *fn_8012C370(int, unsigned int *, int *, void **, unsigned char *);
+extern void fn_8012C4D8(void *);
+extern void fn_801381B4(void *);
+extern void fn_80138594(void *);
+extern int fn_8013BFE8(int);
+extern void fn_802E30C8(char *, ...);
+extern char lbl_8032BF20[];
+extern char lbl_8032BF70[];
+void *fn_80138968(int arg0) {
+    unsigned int size;
+    int valid;
+    void *data;
+    unsigned char swap;
+    int ok = 0;
+    void *obj = fn_8012C370(0x494C494E, &size, &valid, &data, &swap);
+    if (obj != 0) {
+        if (valid != 0) {
+            if (size == 0x1E) {
+                unsigned int *words = (unsigned int *)obj;
+                unsigned int a = words[0], b = words[1];
+                if (swap) {
+                    unsigned char *p = (unsigned char *)&a;
+                    unsigned char *q = (unsigned char *)&b;
+                    unsigned char t;
+                    t=p[0]; p[0]=p[3]; p[3]=t;
+                    t=p[1]; p[1]=p[2]; p[2]=t;
+                    t=q[0]; q[0]=q[3]; q[3]=t;
+                    t=q[1]; q[1]=q[2]; q[2]=t;
+                }
+                if (a == 0x3C && b == 0x30) {
+                    if (swap) {
+                        fn_801381B4(obj);
+                        fn_80138594(obj);
+                    }
+                    *(int *)((char *)obj + 0x28) = fn_8013BFE8(arg0);
+                    ok = 1;
+                } else {
+                    fn_802E30C8(lbl_8032BF20, 0x3C, b, 0x30, swap);
+                }
+            } else {
+                fn_802E30C8(lbl_8032BF70, 0x1E);
+            }
+        }
+        if (!ok) {
+            fn_8012C4D8(obj);
+            obj = 0;
+        }
+    }
+    return obj;
+}
 
 void fn_80138AD8(void **arg0) { void *p=*arg0; fn_8013C428(*(int*)((char*)p+0x28),p); fn_8012C4D8(*arg0); *arg0=0; }
 
