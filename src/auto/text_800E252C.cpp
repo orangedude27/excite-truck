@@ -3,6 +3,9 @@
 
 extern "C" void fn_800E6A44(void);
 extern "C" void AIRegisterDMACallback(void *);
+extern "C" void AXRegisterAuxACallback(int, int);
+extern "C" void AXRegisterAuxBCallback(int, int);
+extern "C" void AXRegisterAuxCCallback(int, int);
 extern "C" void fn_800E4364(void *, int);
 extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
 extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
@@ -854,6 +857,36 @@ extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *self, in
     unsigned int level = OSDisableInterrupts();
     *(const void **)((char *)self + index * 0x34 + 0x2C) = address;
     OSRestoreInterrupts(level);
+}
+
+extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *self) {
+    unsigned int irq = OSDisableInterrupts();
+    unsigned int start, end, address, buffer;
+    int format;
+    if (*(int *)((char *)self + 0x2c) == 0) { OSRestoreInterrupts(irq); return 0; }
+    OSDisableInterrupts();
+    address = *(unsigned int *)((char *)self + 0xc) + 0x138;
+    if (address == 0) { OSRestoreInterrupts(irq); start = 0; }
+    else { start = (*(unsigned short *)(address + 0x84) << 16) | *(unsigned short *)(address + 0x86); OSRestoreInterrupts(irq); }
+    Instance__15EmissionManagerFv();
+    buffer = (unsigned int)GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(0);
+    if (buffer != 0) buffer += 0x80000000;
+    format = *(int *)((char *)self + 0x118);
+    switch (format) {
+    case 0: end = buffer * 2 + 2; break;
+    case 10: end = buffer >> 1; break;
+    case 25: end = buffer; break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); end = 0; break;
+    }
+    switch (format) {
+    case 0: address = end + 0x200; break;
+    case 10: address = end + 0x80; break;
+    case 25: address = end + 0x100; break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x362, lbl_80322438); address = end; break;
+    }
+    if (end <= start && start < address) { OSRestoreInterrupts(irq); return 1; }
+    OSRestoreInterrupts(irq);
+    return 0;
 }
 
 extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
