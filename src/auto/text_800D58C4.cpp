@@ -93,6 +93,9 @@ struct PaneAnimLink {
 extern "C" const char lbl_8031E8FC[];
 extern "C" const char lbl_8031E8D8[];
 
+extern "C" void *lbl_8031F628;
+extern "C" const char lbl_8031F6C4[];
+extern "C" const char lbl_8031F6E8[];
 extern "C" s32 fn_800D58C4(const char* a, const char* b) { return strncmp(a, b, 0x10) == 0; }
 
 extern "C" int fn_800D58F0(const char *a, const char *b) { return strncmp(a, b, 0x14) == 0; }
@@ -1533,6 +1536,46 @@ extern "C" void fn_800D4F98(void*);
 extern "C" s32 fn_800DB398(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
+}
+
+void *__ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void *dst, const void *src) {
+    u8 *d = (u8 *)dst;
+    const u8 *s = (const u8 *)src;
+    *(u32 *)(d + 0x14) = 0;
+    *(u32 *)(d + 0x18) = 0;
+    *(u32 *)(d + 0x20) = 0;
+    *(u32 *)(d + 0x24) = 0;
+    *(u32 *)(d + 4) = 0;
+    *(u32 *)(d + 8) = 0;
+    *(void **)d = lbl_8032012C;
+    *(u32 *)(d + 0x10) = 0;
+    *(void **)(d + 0x14) = d + 0x14;
+    *(void **)(d + 0x18) = d + 0x14;
+    *(u32 *)(d + 0x1C) = 0;
+    *(void **)(d + 0x20) = d + 0x20;
+    *(void **)(d + 0x24) = d + 0x20;
+    *(f32 *)(d + 0x4C) = lbl_80560EA8;
+    *(f32 *)(d + 0x50) = lbl_80560EA8;
+    *(u32 *)(d + 0xC) = 0;
+    *(u32 *)(d + 0x28) = 0;
+    d[0xD0] = 0;
+    d[0xCC] = s[9];
+    strncpy((char *)d + 0xB4, (const char *)s + 0xC, 0x10);
+    strncpy((char *)d + 0xC4, (const char *)s + 0x1C, 8);
+    d[0xCD] = s[0xA];
+    d[0xCE] = s[0xA];
+    *(f32 *)(d + 0x2C) = *(const f32 *)(s + 0x24);
+    *(f32 *)(d + 0x30) = *(const f32 *)(s + 0x28);
+    *(f32 *)(d + 0x34) = *(const f32 *)(s + 0x2C);
+    *(f32 *)(d + 0x38) = *(const f32 *)(s + 0x30);
+    *(f32 *)(d + 0x3C) = *(const f32 *)(s + 0x34);
+    *(f32 *)(d + 0x40) = *(const f32 *)(s + 0x38);
+    *(f32 *)(d + 0x44) = *(const f32 *)(s + 0x3C);
+    *(f32 *)(d + 0x48) = *(const f32 *)(s + 0x40);
+    *(f32 *)(d + 0x4C) = *(const f32 *)(s + 0x44);
+    *(f32 *)(d + 0x50) = *(const f32 *)(s + 0x48);
+    d[0xCF] = s[8];
+    return dst;
 }
 
 extern "C" const char lbl_8031FF90[];
