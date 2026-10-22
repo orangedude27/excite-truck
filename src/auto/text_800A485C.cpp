@@ -1579,7 +1579,6 @@ s32 fn_800AC4AC(void *arg0, s32 arg1) {
 
 extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1);
 extern "C" s32 fn_800AAC08(void *arg0);
-extern "C" s32 fn_800AA924(void *arg0, void *arg1);
 extern "C" void fn_800B78F4(void *arg0, void *arg1);
 extern "C" s32 fn_800ABC60(s32, s32);
 extern "C" void fn_800ACA44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
@@ -6568,6 +6567,92 @@ extern "C" void fn_800D16A8(s32 *arg0) {
     if (*arg0 < 4) {
         lbl_8055DDA8[*arg0] = 0;
     }
+}
+
+extern "C" void fn_800D16C4() {
+    if (lbl_8055DDB0 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0x3F, lbl_8031E974);
+    }
+    u8* p = (u8*)lbl_8055DDB0;
+    s32 i = 0;
+    do {
+        if (*(u32*)(p + 0x50) != 0 && fn_80060C7C((void*)i) != 0) {
+            s32 lr = OSDisableInterrupts();
+            if (WPADCanSendStreamData(i) != 0) {
+                u16 buf[0x28];
+                u32 enc;
+                s32 count = 0x28;
+                u32 avail = *(u32*)(p + 0x54) >> 1;
+                const s16* src = (const s16*)*(u32*)(p + 0x50);
+                s8 scale = (s8)p[0x5d];
+                u16* dst = buf;
+                if (avail <= 0x28) {
+                    count = (s32)avail;
+                }
+                if (count > 0) {
+                    s32 q = count >> 2;
+                    if (q != 0) {
+                        do {
+                            dst[0] = (u16)((src[0] * scale) / 10);
+                            dst[1] = (u16)((src[1] * scale) / 10);
+                            dst[2] = (u16)((src[2] * scale) / 10);
+                            dst[3] = (u16)((src[3] * scale) / 10);
+                            src += 4;
+                            dst += 4;
+                        } while (--q != 0);
+                        s32 rem = count & 3;
+                        if (rem != 0) {
+                            do {
+                                *dst = (u16)((*src * scale) / 10);
+                                src += 1;
+                                dst += 1;
+                            } while (--rem != 0);
+                        }
+                    }
+                }
+                if (avail <= 0x28) {
+                    s32 pad = 0x28 - (s32)avail;
+                    if (pad > 0) {
+                        s32 q = pad >> 3;
+                        if (q != 0) {
+                            do {
+                                dst[0] = 0; dst[1] = 0; dst[2] = 0; dst[3] = 0;
+                                dst[4] = 0; dst[5] = 0; dst[6] = 0; dst[7] = 0;
+                                dst += 8;
+                            } while (--q != 0);
+                            s32 rem = pad & 7;
+                            if (rem != 0) {
+                                do {
+                                    *dst = 0;
+                                    dst += 1;
+                                } while (--rem != 0);
+                            }
+                        }
+                    }
+                }
+                WENCGetEncodeData(p + 0x30, p[0x5c] == 0, (const s16*)buf, 0x28, &enc);
+                fn_80062278(i, &enc, 0x14);
+                p[0x5c] = 0;
+                p[0x5e] = 0;
+                *(u32*)(p + 0x50) += 0x50;
+                s32 v = (s32)*(u32*)(p + 0x54) - 0x50;
+                *(u32*)(p + 0x54) = v;
+                if (v <= 0) {
+                    *(s32*)(p + 0x58) = -1;
+                    *(u32*)(p + 0x50) = 0;
+                }
+            } else {
+                s32 c = (s32)p[0x5e] + 1;
+                p[0x5e] = (u8)c;
+                if ((s8)(c & 0xff) > 0x12c) {
+                    *(u32*)(p + 0x50) = 0;
+                }
+            }
+            OSRestoreInterrupts(lr);
+        }
+        i += 1;
+        p += 0x68;
+    } while (i < 4);
 }
 
 #pragma push
