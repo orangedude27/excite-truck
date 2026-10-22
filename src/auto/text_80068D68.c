@@ -65,6 +65,7 @@ extern u32 lbl_8055DCA4;
 extern void fn_80070F90(void *ptr);
 extern u8 lbl_803C4C40[];
 extern u8 lbl_80317298[];
+extern UINT8 lbl_802EED40[];
 extern void fn_80099F58(void *);
 #include "revolution/BTE/stack/sdp/sdpint.h"
 #include "revolution/BTE/stack/include/wbt_api.h"
@@ -6612,6 +6613,48 @@ void hidh_sec_check_complete_orig(BD_ADDR bd_addr, void *p_ref_data, UINT8 res) 
     }
 }
 
+extern char lbl_80317B28[];
+extern char lbl_80317B58[];
+void hidh_l2cif_disconnect_cfm(u32 handle) {
+    u8 index = 0;
+    u8 *entry;
+    u8 *dev = 0;
+    u32 i;
+
+    for (i = 0; i < 4; i++) {
+        entry = lbl_803C3C38 + index * 0x34;
+        if (entry[0] != 0 && entry[0x10] != 0 &&
+            (handle == *(u16 *)(entry + 0x14) ||
+             handle == *(u16 *)(entry + 0x16))) {
+            dev = entry + 0x10;
+            break;
+        }
+        index++;
+    }
+    if (dev == 0 && index != 4) {
+        entry = lbl_803C3C38 + index * 0x34;
+        dev = entry + 0x10;
+    }
+    if (dev == 0) {
+        if (lbl_803C3C38[0x401] >= 2)
+            fn_80070954(0x1E0001, lbl_80317B28, (u16)handle);
+    } else {
+        if (lbl_803C3C38[0x401] >= 4)
+            fn_80070954(0x1E0003, lbl_80317B58, (u16)handle);
+        if (handle == *(u16 *)(dev + 4))
+            *(u16 *)(dev + 4) = 0;
+        else
+            *(u16 *)(dev + 6) = 0;
+        if (*(u16 *)(dev + 4) == 0 && *(u16 *)(dev + 6) == 0) {
+            entry[0xA] = 0;
+            dev[0] = 0;
+            ((void (*)(u8, u32, u32, u32, u32, u32))
+                (*(void **)(lbl_803C3C38 + 0x340)))(index, 1, *(u16 *)(dev + 0xA), 0,
+                                                    (u32)lbl_803C3C38, 0);
+        }
+    }
+}
+
 extern u8 lbl_80317B80[];
 extern u8 lbl_80317BB8[];
 void hidh_l2cif_cong_ind(u32 arg0, s32 arg1) {
@@ -10191,6 +10234,49 @@ UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
         return (NULL);
 
     return (p);
+}
+
+UINT8 *sdpu_extract_attr_seq(UINT8 *p, UINT16 param_len, tSDP_ATTR_SEQ *p_seq)
+{
+    UINT8 *end;
+    UINT32 len, type, size;
+    UINT16 i;
+    p_seq->num_attr = 0;
+    type = *p++;
+    if ((type >> 3) != 6) return p;
+    switch (type & 7) {
+    case 5: len = *p++; break;
+    case 6: len = (p[0] << 8) | p[1]; p += 2; break;
+    case 7: len = (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]; p += 4; break;
+    default: return p;
+    }
+    if (len > param_len) return p;
+    end = p + len;
+    while (p < end) {
+        type = *p++;
+        if ((type >> 3) != 1) return p;
+        switch (type & 7) {
+        case 1: size = 2; break;
+        case 2: size = 4; break;
+        case 5: size = *p++; break;
+        case 6: size = (p[0] << 8) | p[1]; p += 2; break;
+        case 7: size = (p[0] << 24) | (p[1] << 16) | (p[2] << 8) | p[3]; p += 4; break;
+        default: return NULL;
+        }
+        if (size == 2) {
+            p_seq->attr_entry[p_seq->num_attr].start = (p[0] << 8) | p[1];
+            p_seq->attr_entry[p_seq->num_attr].end = p_seq->attr_entry[p_seq->num_attr].start;
+            p += 2;
+        } else if (size == 4) {
+            p_seq->attr_entry[p_seq->num_attr].start = (p[0] << 8) | p[1];
+            p_seq->attr_entry[p_seq->num_attr].end = (p[2] << 8) | p[3];
+            p += 4;
+        } else return NULL;
+        i = p_seq->num_attr + 1;
+        p_seq->num_attr = i;
+        if (i >= 16) return NULL;
+    }
+    return p;
 }
 
 UINT8 *sdpu_get_len_from_type (UINT8 *p, UINT8 type, UINT32 *p_len)
