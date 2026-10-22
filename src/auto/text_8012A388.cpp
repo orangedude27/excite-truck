@@ -35,6 +35,7 @@ extern "C" void *fn_8012850C(u32, void *);
 extern "C" void *memset(void *, s32, u32);
 extern "C" u8 lbl_805599C8[];
 extern "C" u8 lbl_805599D0[];
+extern "C" u8 lbl_805599E0[];
 
 extern void fn_8012E498(void);
 extern void fn_8012CC24(void);
@@ -156,6 +157,31 @@ extern "C" void fn_8012A67C(void) {
     lbl_8055E008 = 0;
 }
 
+s32 fn_8012A6C8(void *arg0, const char *arg1, u32 arg2) {
+    u8 buffer[5];
+    u32 value;
+    fn_80132E7C(arg0, 0x30);
+    if (*(u32 *)arg0 != 0x52535430) {
+        fn_802E30C8(lbl_8032A630 + 0xDC, arg1, "0TSR");
+        return 0;
+    }
+    value = *(u32 *)((char *)arg0 + 8);
+    if (value != 8) {
+        fn_802E30C8(lbl_8032A630 + 0x114, arg1, 8);
+        return 0;
+    }
+    value = *(u32 *)((char *)arg0 + 4);
+    if (value != 0x34) {
+        fn_802E30C8(lbl_8032A630 + 0x148, arg1, 0x34);
+        return 0;
+    }
+    if (*(u32 *)((char *)arg0 + 0x10) != arg2 && arg2 != 0) {
+        fn_802E30C8(lbl_8032A630 + 0x180, arg1, arg2);
+        return 0;
+    }
+    return 1;
+}
+
 extern "C" s32 fn_802E2D74(s32);
 extern "C" s32 fn_802E39D0(s32, s32);
 extern "C" void fn_8012A80C(s32);
@@ -172,6 +198,25 @@ extern "C" void fn_8012A7FC(void) {
     lbl_8055DFF9 = 1;
     fn_802E2D74(0x32);
 }
+
+extern "C" void fn_8012A80C(s32 arg0) {
+    u8 *p=(u8 *)arg0;
+    u8 a0=p[0],a1=p[1],a2=p[2],a3=p[3],a4=p[4],a5=p[5],a6=p[6],a7=p[7];
+    u8 a8=p[8],a9=p[9],a10=p[10],a11=p[11],a12=p[12],a13=p[13],a14=p[14],a15=p[15];
+    u8 a16=p[16],a17=p[17],a18=p[18],a19=p[19],a20=p[20],a21=p[21],a22=p[22],a23=p[23];
+    u8 a24=p[24],a25=p[25],a26=p[26],a27=p[27],a28=p[28],a29=p[29],a30=p[30],a31=p[31];
+    u8 a32=p[32],a33=p[33],a34=p[34],a35=p[35],a36=p[36],a37=p[37],a38=p[38],a39=p[39];
+    u8 a40=p[40],a41=p[41],a42=p[42],a43=p[43],a44=p[44],a45=p[45],a46=p[46],a47=p[47];
+    u8 a48=p[48],a49=p[49],a50=p[50],a51=p[51];
+    p[0]=a3;p[1]=a2;p[2]=a1;p[3]=a0;p[4]=a7;p[5]=a6;p[6]=a5;p[7]=a4;
+    p[8]=a11;p[9]=a10;p[10]=a9;p[11]=a8;p[12]=a15;p[13]=a14;p[14]=a13;p[15]=a12;
+    p[16]=a19;p[17]=a18;p[18]=a17;p[19]=a16;p[20]=a23;p[21]=a22;p[22]=a21;p[23]=a20;
+    p[24]=a27;p[25]=a26;p[26]=a25;p[27]=a24;p[28]=a31;p[29]=a30;p[30]=a29;p[31]=a28;
+    p[32]=a35;p[33]=a34;p[34]=a33;p[35]=a32;p[36]=a39;p[37]=a38;p[38]=a37;p[39]=a36;
+    p[40]=a43;p[41]=a42;p[42]=a41;p[43]=a40;p[44]=a47;p[45]=a46;p[46]=a45;p[47]=a44;
+    p[48]=a51;p[49]=a50;p[50]=a49;p[51]=a48;
+}
+
 #pragma scheduling reset
 extern "C" s32 fn_8012A388(void *);
 extern "C" s32 fn_802E7544(s32);
@@ -249,6 +294,42 @@ extern "C" void fn_8012B328(void) {
 
 }
 
+extern char *fn_80029004(char *, int);
+void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *arg4) {
+    char *src;
+    char *dst;
+    char *slash;
+    int n;
+    src = arg4;
+    dst = arg0;
+    while (arg1-- > 0) {
+        *dst++ = *src;
+        if (*src++ == 0)
+            break;
+    }
+    if (arg1 <= 0)
+        dst[-1] = 0;
+    slash = fn_80029004(arg0, 0x2F);
+    dst = arg2;
+    n = arg3;
+    if (slash != 0) {
+        *slash = 0;
+        src = slash + 1;
+    } else {
+        *arg0 = 0;
+        src = arg4;
+    }
+    while (1) {
+        *dst++ = *src;
+        if (*src++ == 0)
+            return;
+        if (--n <= 0) {
+            dst[-1] = 0;
+            return;
+        }
+    }
+}
+
 extern "C" u8 *fn_8012B4E4(u8 *arg0, u8 *arg1) {
     s8 ch = (s8)*arg0;
     *arg1 = ch == 0x2A;
@@ -299,11 +380,13 @@ extern "C" void fn_8012BC24(void **arg0, void *arg1) {
 
 extern "C" void *fn_8012BD3C(void *arg0, const char *arg1) {
     void *entry = arg0;
-    goto loop;
-loop:
-    if (stricmp(arg1, (const char *)entry) == 0) goto done;
-    entry = *(void **)((char *)entry + 0xA8);
-    if (entry != 0) goto loop;
+    goto check;
+check:
+    {
+        if (stricmp(arg1, (const char *)entry) == 0) goto done;
+        entry = *(void **)((char *)entry + 0xA8);
+        if (entry != 0) goto check;
+    }
 done:
     return entry;
 }
@@ -502,6 +585,50 @@ extern "C" void *__dt__Q34nw4r2ef6EffectFv(void *arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void fn_8012DFE8(void *, const char *, s32);
+extern "C" void fn_8012DEE4(void *);
+extern "C" void fn_8012DFCC(Unk8012DFCCList *, Unk8012DFCCNode *);
+extern "C" void *fn_8012E060(void *, const char *);
+extern "C" void fn_8012E2CC(void *);
+extern "C" void *fn_8012E460(void *);
+extern "C" s32 fn_8012E490(s32 *);
+extern "C" const char lbl_8032ACE0[];
+extern "C" void fn_8012DDA8(s32 arg0) {
+    const char *name = (const char *)arg0;
+    nw4r::ef::Effect *obj = lbl_8055E014;
+    void *node;
+    s32 found = 0;
+    s32 len;
+    if (fn_8012BD3C(lbl_8055E000, name) != 0) goto done;
+    if (obj == 0) goto done;
+    node = (void *)fn_8012E490((s32 *)((char *)obj + 0xA18));
+    while (node != 0) {
+        if (stricmp((const char *)((char *)node + 0xC), name) == 0) {
+            found = 1;
+            *(s32 *)((char *)node + 8) += 1;
+            break;
+        }
+        node = *(void **)((char *)node + 4);
+    }
+    if (found == 0) {
+        fn_802E30C8(lbl_8032ACE0, name);
+        node = fn_8012E460((char *)obj + 8);
+        if (node == 0) {
+            fn_8012E2CC(obj);
+            node = fn_8012E460((char *)obj + 8);
+        }
+        if (node != 0) {
+            len = (s32)fn_8012E060((char *)obj + 4, name);
+            fn_8012DFE8(node, name, len);
+            fn_8012DFCC((Unk8012DFCCList *)((char *)obj + 0xA18), (Unk8012DFCCNode *)node);
+            fn_8012DEE4(obj);
+            found = 1;
+        }
+    }
+done:
+    if (found == 0) fn_8012BD98(name, &lbl_8055E000, 0);
+}
+
 extern "C" void fn_8012DFCC(Unk8012DFCCList *arg0, Unk8012DFCCNode *arg1) {
     *arg0->tail = arg1;
     arg0->tail = &arg1->next;
@@ -687,6 +814,54 @@ extern "C" s32 fn_8012EE78(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
 }
 
+extern int fn_8012C7FC(void *, int);
+extern void fn_8012C720(void *, int);
+void fn_8012EE80(void *arg0, int unused) {
+    char *base = (char *)arg0;
+    char *entry;
+    int i;
+    int end = *(int *)(base + 0x28);
+    int status;
+    int start;
+    int len;
+    int pos;
+    int limit;
+    entry = base + 4;
+    for (i = 0; i < 2; i++, entry += 0x10) {
+        status = *(int *)(entry + 0xC);
+        if (status != 0) {
+            if (status == 1 && fn_8012C7FC(*(void **)(entry + 4), 0))
+                *(int *)(entry + 0xC) = 2;
+            pos = *(int *)(entry + 8) + *(int *)base;
+            if (pos > end)
+                end = pos;
+        }
+    }
+    entry = base + 4;
+    for (i = 0; i < 2; i++, entry += 0x10) {
+        status = *(int *)(entry + 0xC);
+        start = *(int *)(entry + 4);
+        if (status == 0 && start != 0) {
+            /* handled below */
+        } else if (status != 2 || *(int *)(entry + 8) + *(int *)base >= *(int *)(base + 0x28)) {
+            continue;
+        }
+        *(int *)(entry + 8) = end;
+        len = *(int *)base;
+        limit = *(int *)(base + 0x24);
+        pos = end + len;
+        end += len;
+        if (pos > limit)
+            len = limit - end + len;
+        if (len > 0) {
+            fn_8012C720(*(void **)(entry + 4), *(int *)entry);
+            *(int *)(entry + 0xC) = 1;
+        } else {
+            *(int *)(entry + 0xC) = 0;
+        }
+    }
+}
+
 extern "C" s32 fn_8012EFB0(void *arg0, void *arg1, s32 arg2) {
     s32 pos = *(s32 *)((u8 *)arg0 + 0x28);
     s32 i;
@@ -788,6 +963,39 @@ extern "C" void *fn_8012C58C(void *arg0) {
         var_r5 = *(void **)((u8 *)arg0 - 8);
     }
     return var_r5;
+}
+
+extern "C" const char lbl_8032ABF8[];
+extern "C" const char lbl_8032AC08[];
+void *fn_8012C5B8(u32 arg0, s32 *arg1, s32 arg2) {
+    s32 index;
+    s32 result;
+    s32 *manager;
+    s32 *entry;
+    void *allocation;
+    manager = (s32 *)((s32 (*)(u32, s32 *, s32))fn_8012B534)(arg0, &index, 1);
+    result = 0;
+    if (manager != 0) {
+        entry = (s32 *)((char *)*(void **)((char *)manager + 0x60) + index * 0x44);
+        if ((u32)entry[8] == arg0) {
+            *arg1 = entry[9];
+            allocation = fn_8012A570(0x18, (void *)lbl_8032ABF8);
+            if (allocation != 0) {
+                *(s32 *)((char *)allocation + 0xC) = -1;
+                *(s32 *)((char *)allocation + 0x10) = 0;
+                *(s32 *)((char *)allocation + 4) = 0;
+                *(s32 *)((char *)allocation + 8) = 0;
+                *(s32 *)((char *)allocation + 0x14) = 0;
+                *(s32 *)allocation = 0x19AFEE2A;
+                *(s32 **)((char *)allocation + 4) = entry;
+                result = (s32)allocation;
+                *(void **)((char *)allocation + 8) = manager;
+            }
+        } else {
+            fn_802E30C8(lbl_8032AC08, arg0, entry[8]);
+        }
+    }
+    return (void *)result;
 }
 
 extern "C" s32 fn_8012C6F0(void *arg0) {
