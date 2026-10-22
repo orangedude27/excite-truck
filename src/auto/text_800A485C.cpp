@@ -109,6 +109,8 @@ extern "C" s32 fn_800BA49C(s32, s32, s32, s32, s32 *);
 extern "C" const char lbl_8031B190[];
 extern "C" const char lbl_8031B1C0[];
 extern "C" s32 fn_800B76E8(s8);
+extern "C" s32 fn_800A4B9C(u16 *, u16 *, s32);
+extern "C" s32 fn_800A4BF4(s32, u16 *, s16 *);
 
 struct NandEntry {
     u32 key;
@@ -6085,6 +6087,30 @@ extern "C" void *fn_800D4F98(void *arg0, u32 arg1, u32 arg2) {
         node = M2C_FIELD(node, void **, 0);
     }
     return 0;
+}
+
+extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
+    ARCDir dir;
+    ARCDirEntry entry;
+    s32 result = -1;
+    if (!ARCOpenDir(handle, lbl_805597F8, &dir))
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x30, lbl_8031F2E4);
+    while (ARCReadDir(&dir, &entry)) {
+        if (entry.isDir) {
+            if (!ARCChangeDir(handle, entry.name))
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x39, lbl_8031F2E4);
+            result = fn_800D50A8(handle, name);
+            if (!ARCChangeDir(handle, lbl_805597FC))
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x3C, lbl_8031F2E4);
+            if (result != -1) break;
+        } else if (stricmp(name, entry.name) == 0) {
+            result = entry.entryNum;
+            break;
+        }
+    }
+    if (!fn_80116BCC(&dir))
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x4D, lbl_8031F2E4);
+    return result;
 }
 
 extern "C" const char lbl_8031F2C8[];
