@@ -10,6 +10,9 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern char lbl_803152B0[];
+extern char lbl_803152D0[];
+extern u8 lbl_80559058[];
 extern char lbl_80319278[];
 extern char lbl_80319290[];
 extern void RFCOMM_ParNegReq(void *, s32, s32);
@@ -2144,6 +2147,53 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
 
 void fn_80075AA4(void *arg0) {
     (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, arg0);
+}
+
+void bta_hh_maint_dev_act(void *arg0, void *arg1) {
+    extern unsigned char lbl_803C0D48[];
+    extern char lbl_80315530[];
+    extern u8 lbl_8055DC80;
+    extern void bta_hh_add_device_to_list(void *, s8, s16, void *, s32, s32);
+    extern u8 HID_HostRemoveDev(u32);
+    u8 sp17 = 0xFF;
+    s8 sp16 = 6;
+    u32 sp10;
+    u8 sp8;
+    u16 event = *(u16 *)((u8 *)arg1 + 0x10);
+    u8 result;
+    void (*callback)(u16, void *, void *);
+    if (event == 12) goto remove;
+    if (event < 12) {
+        if (event == 11) goto add;
+        goto default_case;
+    }
+    goto default_case;
+add:
+    fn_80070FA4(&sp10, (u8 *)arg1 + 8);
+    result = *(u8 *)((u8 *)arg0 + 0x16);
+    if (result == 0xFF) {
+        if (HID_HostAddDev((u8 *)arg1 + 8, *(u16 *)((u8 *)arg1 + 0xE), &sp8) == 0) {
+            sp16 = 0;
+            sp17 = sp8;
+            bta_hh_add_device_to_list(arg0, (s8)sp8, *(s16 *)((u8 *)arg1 + 0xE), 0, *(u8 *)((u8 *)arg1 + 0x12), *(u8 *)((u8 *)arg1 + 0x13));
+            lbl_803C0D48[sp8 + 0x214] = *(u8 *)((u8 *)arg0 + 0x12);
+        }
+    } else { sp17 = result; sp16 = 0; }
+    bta_hh_trace_dev_db();
+    goto finish;
+remove:
+    sp17 = *(u8 *)((u8 *)arg1 + 6);
+    fn_80070FA4(&sp10, (u8 *)arg0 + 8);
+    if (*(u8 *)((u8 *)arg0 + 0x1C) != 3 && HID_HostRemoveDev(sp17) == 0) {
+        sp16 = 0;
+        bta_hh_clean_up_kdev(arg0);
+    }
+    goto finish;
+default_case:
+    if (lbl_8055DC80 >= 5) fn_8007093C(0x504, lbl_80315530);
+finish:
+    callback = *(void (**)(u16, void *, void *))(lbl_803C0D48 + 0x224);
+    callback(event, &sp10, lbl_803C0D48);
 }
 
 void bta_hh_get_acl_q_info(void) {
@@ -6904,6 +6954,35 @@ u8 l2cu_lcb_disconnecting(void) {
         entry += 0xB8;
     }
     return 0;
+}
+
+void PORT_StartCnf(void *mux_id, u16 status) {
+    s32 i;
+    s32 found = 1;
+    u8 *mcb = lbl_803C4828;
+    u8 *port = mcb + 0x68;
+    void (*callback)(s32, u8);
+
+    if (mcb[0x414] >= 4) fn_80070954(0x90003, lbl_80319278, status);
+    for (i = 0; i < 5; i++, port += 0xA4) {
+        if (*(void **)(port + 0x6C) != mux_id) continue;
+        found = 0;
+        if (status == 0) {
+            RFCOMM_ParNegReq(mux_id, port[0xD], *(u16 *)(port + 0x12));
+            continue;
+        }
+        if (mcb[0x414] >= 2) fn_80070954(0x90001, lbl_80319290, status);
+        port[0xE] = status == 4 ? 0x18 : 0xC;
+        rfc_release_multiplexer_channel(mux_id);
+        *(u32 *)(port + 0x6C) = 0;
+        callback = *(void (**)(s32, u8))(port + 0x8C);
+        if (callback != 0 && (*(u32 *)(port + 0x88) & 0x8000))
+            callback(0x8000, port[0]);
+        callback = *(void (**)(s32, u8))(port + 0x90);
+        if (callback != 0) callback(0xC, port[0]);
+        port_release_port(port);
+    }
+    if (found) rfc_check_mcb_active(mux_id);
 }
 
 extern void RFCOMM_DlcEstablishReq(void *, u8);
