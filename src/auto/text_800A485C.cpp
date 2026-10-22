@@ -230,7 +230,7 @@ void __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void*, s32);
 void fn_800DCE10(void*, s32);
 extern "C" u32 fn_80060CC0(void*, u32, u32);
 extern "C" void fn_800D1B1C(void);
-extern "C" void fn_800D16C4(OSAlarm *, void *);
+extern "C" void fn_800D16C4();
 
 extern u32 lbl_8055DDB0;
 extern "C" const char lbl_8031E9C0[];
@@ -4448,9 +4448,8 @@ extern "C" s32 fn_800BDEB4(const u8 *, s32, u32 *);
 extern "C" void fn_800C0B68(Fn800C0B68Context *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
     s16 var_r0, var_r3, var_r4, var_r5;
     s32 temp_r3;
-    register s32 clearZero = 0;
     u32 temp_r5, temp_r8, temp_r8_2, temp_r8_3, temp_r8_4;
-    u32 temp_r0, var_ctr, var_ctr_2;
+    u32 temp_r0, var_ctr, var_ctr_2, var_r3_2;
     s32 shift;
     s16 *var_r5_2, *var_r31 = arg3 + arg4;
     goto block_25;
@@ -4466,22 +4465,25 @@ loop_25:
     var_r31[0] = var_r0; var_r31[1] = var_r3; var_r31[2] = var_r4; var_r31[3] = var_r5;
     if ((s32)arg0->bitIndex > arg0->limit) {
         if (arg5 == 1 && *arg6 == 0) *arg6 = (s16)arg4;
-        temp_r3 = arg1 + 3; var_r5_2 = arg3 + arg4; temp_r3 -= arg4;
-        temp_r3 = (s32)((u32)temp_r3 >> 2U);
+        temp_r3 = (s32)(arg1 + 3);
+        var_r5_2 = arg3 + arg4;
+        var_r4 = 0;
+        temp_r3 -= arg4;
+        var_r3_2 = (u32)temp_r3 >> 2;
         if (arg4 < arg1) {
-            temp_r0 = (u32)temp_r3 >> 3U; var_ctr = temp_r0;
+            temp_r0 = var_r3_2 >> 3U; var_ctr = temp_r0;
             if (temp_r0 != 0) {
                 do {
-                    var_r5_2[0] = clearZero; var_r5_2[1] = clearZero; var_r5_2[2] = clearZero; var_r5_2[3] = clearZero; var_r5_2[4] = clearZero; var_r5_2[5] = clearZero; var_r5_2[6] = clearZero; var_r5_2[7] = clearZero; var_r5_2[8] = clearZero; var_r5_2[9] = clearZero; var_r5_2[10] = clearZero; var_r5_2[11] = clearZero; var_r5_2[12] = clearZero; var_r5_2[13] = clearZero; var_r5_2[14] = clearZero; var_r5_2[15] = clearZero; var_r5_2[16] = clearZero; var_r5_2[17] = clearZero; var_r5_2[18] = clearZero; var_r5_2[19] = clearZero; var_r5_2[20] = clearZero; var_r5_2[21] = clearZero; var_r5_2[22] = clearZero; var_r5_2[23] = clearZero; var_r5_2[24] = clearZero; var_r5_2[25] = clearZero; var_r5_2[26] = clearZero; var_r5_2[27] = clearZero; var_r5_2[28] = clearZero; var_r5_2[29] = clearZero; var_r5_2[30] = clearZero; var_r5_2[31] = clearZero;
+                    var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4; var_r5_2[4] = var_r4; var_r5_2[5] = var_r4; var_r5_2[6] = var_r4; var_r5_2[7] = var_r4; var_r5_2[8] = var_r4; var_r5_2[9] = var_r4; var_r5_2[10] = var_r4; var_r5_2[11] = var_r4; var_r5_2[12] = var_r4; var_r5_2[13] = var_r4; var_r5_2[14] = var_r4; var_r5_2[15] = var_r4; var_r5_2[16] = var_r4; var_r5_2[17] = var_r4; var_r5_2[18] = var_r4; var_r5_2[19] = var_r4; var_r5_2[20] = var_r4; var_r5_2[21] = var_r4; var_r5_2[22] = var_r4; var_r5_2[23] = var_r4; var_r5_2[24] = var_r4; var_r5_2[25] = var_r4; var_r5_2[26] = var_r4; var_r5_2[27] = var_r4; var_r5_2[28] = var_r4; var_r5_2[29] = var_r4; var_r5_2[30] = var_r4; var_r5_2[31] = var_r4;
                     var_r5_2 += 32; var_ctr -= 1;
                 } while (var_ctr != 0);
-                temp_r3 &= 7;
-                if (temp_r3 != 0) goto block_21;
+                var_r3_2 &= 7;
+                if (var_r3_2 != 0) goto block_21;
             } else {
 block_21:
-                var_ctr_2 = (u32)temp_r3;
+                var_ctr_2 = var_r3_2;
                 do {
-                    var_r5_2[0] = clearZero; var_r5_2[1] = clearZero; var_r5_2[2] = clearZero; var_r5_2[3] = clearZero;
+                    var_r5_2[0] = var_r4; var_r5_2[1] = var_r4; var_r5_2[2] = var_r4; var_r5_2[3] = var_r4;
                     var_r5_2 += 4; var_ctr_2 -= 1;
                 } while (var_ctr_2 != 0);
             }
