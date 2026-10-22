@@ -56,14 +56,14 @@ static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
     return r;
 }
 
+#pragma scheduling invalid_target
 float fn_80135278(float *a, float *b, float *c) {
-    float dx = b[0] - c[0];
-    float dy = b[1] - c[1];
-    float x = a[0] * dx;
-    float y = a[1] * dy;
-    return x + y;
+    float d[2];
+    d[0] = b[0] - c[0];
+    d[1] = b[1] - c[1];
+    return a[0] * d[0] + a[1] * d[1];
 }
-
+#pragma scheduling on
 void *fn_801352B8(Unk_80135278 *arg0) {
     arg0->unk_0 = (s32)&lbl_8032BE80;
     arg0->unk_4 = 0;
