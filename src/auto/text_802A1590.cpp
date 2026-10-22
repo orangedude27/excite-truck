@@ -18,6 +18,8 @@ extern "C" int fn_801EF024(void*);
 extern "C" s32 fn_802A1C30(void*);
 extern "C" void fn_802A1DC0(void);
 extern "C" f32 lbl_80564728;
+extern "C" const char lbl_80349A28[];
+extern "C" f32 lbl_80564798, lbl_8056479C, lbl_805647A8, lbl_805647B4, lbl_805647B8, lbl_805647BC;
 extern "C" int lbl_80349B50[];
 extern "C" int lbl_80349AD8[];
 class DummyReceiver_802A3314 {
