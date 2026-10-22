@@ -296,6 +296,42 @@ extern "C" void fn_80212340(void *arg0) {
     }
 }
 
+extern "C" s32 fn_802ECEEC(void);
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" s32 fn_802146BC(void *, s32, s32, s32, s32, s32, s32, s32);
+extern "C" u8 lbl_8033CAE8[];
+extern "C" s32 lbl_80490510[];
+extern "C" s32 lbl_802F9EA4[];
+extern "C" u8 lbl_8055B860;
+extern "C" s32 fn_8021481C(void *arg0) {
+    s32 args[19];
+    if (fn_802ECEEC() == 0) {
+        fn_802E30C8((const char *)(lbl_8033CAE8 + 0x72C), arg0);
+        args[0] = lbl_802F9EA4[0];
+        args[1] = 0;
+        args[2] = lbl_802F9EA4[2];
+        args[3] = lbl_802F9EA4[3];
+        args[4] = lbl_802F9EA4[4];
+        args[5] = (s32)(lbl_8033CAE8 + 0x750);
+        args[6] = 3;
+        args[7] = 0;
+        args[8] = 0;
+        args[9] = (s32)&lbl_8055B860;
+        args[10] = 6;
+        args[11] = 0;
+        args[12] = -2;
+        args[13] = 0xD;
+        args[14] = lbl_80490510[0];
+        args[15] = lbl_80490510[1];
+        args[16] = lbl_80490510[2];
+        args[17] = lbl_80490510[3];
+        args[18] = lbl_80490510[4];
+        fn_802146BC(args, -0x3E7, -0x3E7, 1, lbl_802F9EA4[4], lbl_802F9EA4[3], lbl_802F9EA4[2], lbl_802F9EA4[0]);
+        fn_802E30C8((const char *)(lbl_8033CAE8 + 0x760), arg0);
+    }
+    return 0;
+}
+
 extern "C" s32 fn_80214934(const void *arg0, s32 arg1, void *arg2, s32 arg3) {
     s32 end = fn_80029004((const char *)arg1, 0x2e);
     if (end == 0) {
@@ -337,15 +373,16 @@ extern "C" s32 fn_80214A38(s32 arg0) {
 
 extern "C" void fn_802192AC(void);
 extern "C" void fn_80219354(void);
+#pragma scheduling invalid_target
 extern "C" void fn_80214A9C(s32 arg0) {
-    s32 status = fn_802168E4();
-    if (status != 0) {
-        ((s32 (*)(s32, s32, float))fn_802168CC)(status, arg0, lbl_80563434);
+    s32 temp = fn_802168E4();
+    if (temp != 0) {
+        ((s32 (*)(s32, s32, float))fn_802168CC)(temp, arg0, lbl_80563434);
     } else {
-        fn_802E317C(lbl_8033D2A0);
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D2A0);
     }
 }
-
+#pragma scheduling on
 extern "C" s32 fn_802168D0(s32, s32, float);
 extern "C" char lbl_8033D2C0[];
 extern "C" void fn_80214AF0(s32 arg0) {
