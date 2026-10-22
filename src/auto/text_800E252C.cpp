@@ -31,6 +31,10 @@ extern const char lbl_80322734[];
 extern "C" unsigned int GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void *);
 extern const char lbl_80559820[];
 extern const char lbl_80559828[];
+extern float lbl_80560F38;
+extern float lbl_80560F3C;
+extern float lbl_80560F40;
+extern float lbl_80560F58;
 extern const char lbl_803227EC[];
 extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
@@ -231,6 +235,39 @@ extern "C" void *fn_800E2D74(void *arg0, int arg1) {
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern const char lbl_80322124[];
+extern const char lbl_80322100[];
+extern const char lbl_803220F4[];
+extern const char lbl_803220D0[];
+extern "C" void fn_800E2F84(void *self) {
+    if (*((u8 *)self + 0x6C30) != 0) {
+        AIRegisterDMACallback(*(void **)((char *)self + 0x6C2C));
+        fn_800E4364(self, 0); fn_800E4364(self, 1); fn_800E4364(self, 2);
+        AXRegisterAuxACallback(*(int *)((char *)self + 0x6CF0), *(int *)((char *)self + 0x6CFC));
+        AXRegisterAuxBCallback(*(int *)((char *)self + 0x6CF4), *(int *)((char *)self + 0x6D00));
+        AXRegisterAuxCCallback(*(int *)((char *)self + 0x6CF8), *(int *)((char *)self + 0x6D04));
+        *(int *)((char *)self + 0x6CF0) = 0; *(int *)((char *)self + 0x6CFC) = 0;
+        *(int *)((char *)self + 0x6CF4) = 0; *(int *)((char *)self + 0x6D00) = 0;
+        *(int *)((char *)self + 0x6CF8) = 0; *(int *)((char *)self + 0x6D04) = 0;
+        *(int *)((char *)self + 4) = 0;
+        while (*(int *)((char *)self + 0x14) != 0) {
+            void *node = *(void **)((char *)self + 0x18);
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322124, 0x1F1, lbl_80322100);
+            void *voice = (char *)node - 0x1A8;
+            if (voice == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+            Stop__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
+            Free__Q46nw4hbm3snd6detail7AxVoiceFv(voice);
+            void (*callback)(void *, int, void *) = *(void (**)(void *, int, void *))((char *)voice + 0x10C);
+            if (callback != 0) callback(voice, 2, *(void **)((char *)voice + 0x110));
+        }
+        while (*(int *)((char *)self + 0x20) != 0) {
+            void *it = *(void **)((char *)self + 0x24);
+            Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((char *)self + 0x20, &it);
+        }
+        *(u8 *)((char *)self + 0x6C30) = 0;
+    }
 }
 
 #pragma push
@@ -1204,6 +1241,34 @@ extern "C" void fn_800E80B4(void) {
 }
 
 extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+
+extern const char lbl_803224F0[];
+extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank) {
+    register const char *messages = lbl_803224F0;
+    *(void **)self = 0;
+    *(void **)((char *)self + 4) = 0;
+    *(void **)((char *)self + 8) = 0;
+    if (bank == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
+    unsigned int magic = *(unsigned int *)bank;
+    if (magic != 0x52424E4B) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x36, messages + 0x14);
+    magic = *(unsigned int *)bank;
+    if (magic != 0x52424E4B) return self;
+    unsigned short version = *(unsigned short *)((char *)bank + 6);
+    if (version < 0x100) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x3E, messages + 0x60);
+    version = *(unsigned short *)((char *)bank + 6);
+    if (version < 0x100) return self;
+    if (version > 0x101) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x44, messages + 0x60);
+    version = *(unsigned short *)((char *)bank + 6);
+    if (version < 0x100 || version > 0x101) return self;
+    *(const void **)self = bank;
+    const char *data = (const char *)bank + *(unsigned int *)((char *)bank + 0x10);
+    *(const char **)((char *)self + 4) = data;
+    if (*(unsigned int *)data != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x61, messages + 0xE4);
+    const char *wave = (const char *)bank + *(unsigned int *)((char *)bank + 0x18);
+    *(const char **)((char *)self + 8) = wave;
+    if (*(unsigned int *)wave != 0x57415645) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x65, messages + 0x13C);
+    return self;
+}
 
 extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
     unsigned char type = *((unsigned char *)arg1 + 1);
