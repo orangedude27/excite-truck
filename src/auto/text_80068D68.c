@@ -2035,6 +2035,37 @@ void bta_hh_api_disable(void) {
     }
 }
 
+void bta_hh_sdp_cmpl(void *arg0, u8 *status) {
+    u8 info[8];
+    u8 result;
+    u8 *manager = lbl_803C0D48;
+    if (lbl_8055DC80 >= 5)
+        fn_80070954(0x504, lbl_803152B0, status[0]);
+    memset(info, 0, 8);
+    info[7] = *((u8 *)arg0 + 0x16);
+    fn_80070FA4(info, (u8 *)arg0 + 8);
+    result = status[0];
+    if (result == 0) {
+        if (*((u8 *)arg0 + 0x19) == 0) {
+            HID_HostSetSecurityLevel(&lbl_80559058, *((u8 *)arg0 + 0x14));
+            result = HID_HostOpenDev(*((u8 *)arg0 + 0x16));
+            if (result != 0) {
+                if (lbl_8055DC80 >= 5)
+                    fn_80070954(0x504, lbl_803152D0, result);
+                HID_HostRemoveDev(*((u8 *)arg0 + 0x16));
+            }
+        } else bta_hh_sm_execute(arg0, 0x170B, 0);
+    }
+    if (result == 0) return;
+    if (status[0] == 0xFF) info[6] = 0xA;
+    else info[6] = 7;
+    ((void (*)(u32, void *))(*(void **)(manager + 0x224)))(2, info);
+    bta_hh_sm_execute(arg0, 0x1701, 0);
+    if (*((u8 *)arg0 + 0x15) == 0 && *((u8 *)arg0 + 0x19) == 0)
+        bta_hh_clean_up_kdev(arg0);
+    bta_hh_trace_dev_db();
+}
+
 void bta_hh_api_disc_act(void *arg0, void *arg1) {
     u8 handle;
     u8 size;
@@ -3650,6 +3681,56 @@ void bta_dm_search_cancel(void) {
     } else if (*(s32 *)(lbl_803C0B98 + 8) == 0) {
         BTM_CancelRemoteDeviceName();
     }
+}
+
+void bta_dm_rmt_name(s32 arg0) {
+    extern unsigned char lbl_803C0B98[];
+    extern unsigned char lbl_803C0F78[];
+    extern void bta_dm_remname_cback(u8 *);
+    unsigned char sp8[8];
+    s8 spE;
+    s32 sp108;
+    s32 retry = 1;
+    void *entry;
+    void *buf;
+    void (*callback)(s32, void *);
+    do {
+        entry = BTM_InqDbNext(*(void **)(lbl_803C0B98 + 4));
+        *(void **)(lbl_803C0B98 + 4) = entry;
+        if (entry == 0) break;
+        if (*((u8 *)entry + 0x10) != 0) {
+            fn_80070FA4(sp8, (u8 *)entry + 2);
+            spE = 0; sp108 = 0;
+            callback = *(void (**)(s32, void *))lbl_803C0B98;
+            callback(2, sp8);
+            continue;
+        }
+        break;
+    } while (1);
+    if (*(u16 *)(lbl_803C0F78 + 0x64C) < 0x7530)
+        fn_8007146C((s32)(lbl_803C0B98 + 0x58), 0x205, *(u16 *)(lbl_803C0F78 + 0x64C) + 0x64);
+    if (BTM_ReadRemoteDeviceName((u8 *)*(void **)(lbl_803C0B98 + 4) + 2, (tBTM_CMPL_CB *)bta_dm_remname_cback) == 1) {
+        retry = 0;
+    } else {
+        fn_8007148C((s32)(lbl_803C0B98 + 0x58));
+        buf = GKI_getbuf(0x110);
+        if (buf != 0) {
+            fn_80070FA4((u8 *)buf + 8, (u8 *)*(void **)(lbl_803C0B98 + 4) + 2);
+            *((u8 *)buf + 0xE) = 0;
+            *(u16 *)buf = 0x204;
+            fn_80071450(buf);
+        }
+        retry = 0;
+    }
+    if (retry != 0) {
+        buf = GKI_getbuf(0x110);
+        if (buf != 0) {
+            *(u16 *)buf = 0x207;
+            fn_80071450(buf);
+        }
+    }
+    callback = *(void (**)(s32, void *))lbl_803C0B98;
+    callback(2, (void *)(arg0 + 8));
 }
 
 void bta_dm_disc_rmt_name(void *arg0) {
@@ -7652,6 +7733,40 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
+void rfc_process_msc(void *mcb, s32 is_command, void *message) {
+    u8 flags = *((u8 *)message + 9);
+    u8 *port = port_find_mcb_dlci_port(mcb, *(u8 *)message);
+    u8 data[5];
+    u8 flow;
+
+    if (port == 0) return;
+    data[0] = 0;
+    if (flags & 0x04) data[0] |= 1;
+    if (flags & 0x08) data[0] |= 2;
+    if (flags & 0x40) data[0] |= 4;
+    if (flags & 0x80) data[0] |= 8;
+    flow = (flags >> 1) & 1;
+    data[4] = flow;
+    data[1] = *((u8 *)message + 0xA) ? *((u8 *)message + 0xB) : 0;
+    data[2] = 0;
+    data[3] = 1;
+    if (is_command != 0) {
+        rfc_send_msc(mcb, *(u8 *)message, 0, data);
+        if (*((u8 *)*(void **)(port + 0x6C) + 0x72) != 2) {
+            port[0x63] = flow;
+            if (flow != port[0x24])
+                PORT_FlowInd(mcb, *(u8 *)message, (u8)(flow == 0));
+        }
+        PORT_ControlInd(mcb, *(u8 *)message, data);
+        return;
+    }
+    if (port[0x69] & 8) {
+        port[0x69] &= ~8;
+        rfc_port_timer_stop(port);
+        PORT_ControlCnf(*(void **)(port + 0x6C), port[0xD], data);
+    }
+}
+
 void rfc_process_rls(void *arg0, s32 arg1, void *arg2) {
     void *mcb;
 
@@ -8947,10 +9062,10 @@ s32 _intBlkCtrlCb(s32 arg0, void *arg1) {
     extern s32 lbl_805590A0;
     register char *base = lbl_8031A620;
     unsigned char *block = arg1;
-    register s32 i;
-    register void *entry;
-    register unsigned char *entry_ptr;
-    s32 result;
+    long result;
+    void *entry;
+    unsigned char *entry_ptr;
+    s32 i;
     void (*complete)(s32, void *);
     USB_LOG(base + 0x88, arg0);
     USB_LOG(base + 0xA8, *(u32 *)(block + 0x2C));
@@ -8962,7 +9077,7 @@ s32 _intBlkCtrlCb(s32 arg0, void *arg1) {
         while (i < *(u32 *)(block + 0x2C)) {
             USB_LOG(base + 0xF0, i, *(void **)(entry_ptr + 0xC));
             entry = *(void **)(entry_ptr + 0xC);
-            if (entry != 0) {
+            if (entry) {
                 result = iosFree(lbl_805590A0, entry);
                 if (result < 0) USB_ERR(base + 0x108, lbl_805590A0, entry, result);
             }
@@ -8972,7 +9087,7 @@ s32 _intBlkCtrlCb(s32 arg0, void *arg1) {
     }
     USB_LOG(base + 0x128, *(void **)block, *(void **)(block + 4));
     complete = *(void (**)(s32, void *))block;
-    if (complete != 0) complete(arg0, *(void **)(block + 4));
+    if (complete) complete(arg0, *(void **)(block + 4));
     if (arg1 != 0) {
         result = iosFree(lbl_805590A0, arg1);
         if (result < 0) USB_ERR(base + 0x108, lbl_805590A0, arg1, result);
