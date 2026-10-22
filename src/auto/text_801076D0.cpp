@@ -3,7 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; }; } } }
+namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; }; } } }
 
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
@@ -305,9 +305,9 @@ extern "C" u8 fn_8010A33C(void) {
     return 2;
 }
 
-u16 GetTextureFormat__Q46nw4hbm2ut6detail11ResFontBaseCFv(s32 self) {
+u16 nw4hbm::ut::detail::ResFontBase::GetTextureFormat() const {
     const char* file = lbl_80329140;
-    u32 value = (u32)self;
+    u32 value = (u32)this;
     int a=1,b=1,c=1,d=1,e=1,f=1;
     if ((u32)((value & 0xFF000000U) + 0x80000000U) != 0U && (u32)((value & 0xFF800000U) + 0x7F000000U) != 0U) f=0;
     if (f==0 && (u32)((value & 0xF8000000U) + 0x70000000U) != 0U) e=0;
@@ -315,8 +315,8 @@ u16 GetTextureFormat__Q46nw4hbm2ut6detail11ResFontBaseCFv(s32 self) {
     if (d==0 && (u32)((value & 0xFF800000U) + 0x3F000000U) != 0U) c=0;
     if (c==0 && (u32)((value & 0xF8000000U) + 0x30000000U) != 0U) b=0;
     if (b==0 && (u32)((value & 0xFFFFC000U) + 0x20000000U) != 0U) a=0;
-    if (a==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x117,file+0xF0,self);
-    u32 v=*(u32*)((char*)self+0x14);
+    if (a==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x117,file+0xF0,this);
+    u32 v=*(u32*)((char*)this+0x14);
     int g=1,h=1,i=1,j=1,k=1,l=1;
     if ((u32)((v&0xFF000000U)+0x80000000U)!=0U && (u32)((v&0xFF800000U)+0x7F000000U)!=0U) l=0;
     if (l==0 && (u32)((v&0xF8000000U)+0x70000000U)!=0U) k=0;
