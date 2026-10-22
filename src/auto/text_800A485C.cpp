@@ -6460,6 +6460,75 @@ extern "C" s32 fn_800A4BF4(s32 arg0, u16 *arg1, s16 *arg2) {
 
 extern "C" u32 fn_800A4C04(u8 *arg0) { return (arg0[1] << 8) | arg0[0]; }
 
+void fn_800A4C14(u8 *arg0, s32 arg1) {
+    s32 var_r0;
+    u32 temp_r6;
+    u32 temp_r7;
+    u32 var_ctr;
+    u32 var_ctr_2;
+    u32 var_r5;
+    u8 *var_r6_2;
+    u8 temp_r7_3;
+    u8 temp_r8;
+    u8 *temp_r4;
+    u8 *temp_r7_2;
+    u8 *var_r6;
+
+    var_r5 = 0U;
+    if (arg1 != 0) {
+        temp_r6 = arg1 + 1;
+        temp_r7 = arg1 - 0x10;
+        if ((u32) (temp_r6 >> 1U) > 8U) {
+            var_r0 = 0;
+            if ((temp_r6 >= 1U) && ((u32) arg1 <= temp_r6)) {
+                var_r0 = 1;
+            }
+            if (var_r0 != 0) {
+                var_r6 = arg0;
+                var_ctr = (u32) (temp_r7 + 0xF) >> 4U;
+                if (temp_r7 > 0U) {
+                    do {
+                        temp_r7_2 = arg0 + var_r5;
+                        arg0[var_r5] = temp_r7_2[1];
+                        var_r5 += 0x10;
+                        temp_r7_2[1] = var_r6[0];
+                        temp_r7_2[2] = temp_r7_2[3];
+                        temp_r7_2[3] = var_r6[2];
+                        temp_r7_2[4] = temp_r7_2[5];
+                        temp_r7_2[5] = var_r6[4];
+                        temp_r7_2[6] = temp_r7_2[7];
+                        temp_r7_2[7] = var_r6[6];
+                        temp_r7_2[8] = temp_r7_2[9];
+                        temp_r7_2[9] = var_r6[8];
+                        temp_r7_2[0xA] = temp_r7_2[0xB];
+                        temp_r7_2[0xB] = var_r6[0xA];
+                        temp_r7_2[0xC] = temp_r7_2[0xD];
+                        temp_r7_2[0xD] = var_r6[0xC];
+                        temp_r8 = var_r6[0xE];
+                        var_r6 += 0x10;
+                        temp_r7_2[0xE] = temp_r7_2[0xF];
+                        temp_r7_2[0xF] = temp_r8;
+                        var_ctr -= 1;
+                    } while (var_ctr != 0);
+                }
+            }
+        }
+        var_r6_2 = arg0 + var_r5;
+        var_ctr_2 = (u32) ((arg1 + 1) - var_r5) >> 1U;
+        if (var_r5 < (u32) arg1) {
+            do {
+                temp_r4 = arg0 + var_r5;
+                temp_r7_3 = *var_r6_2;
+                var_r6_2 += 2;
+                arg0[var_r5] = temp_r4[1];
+                var_r5 += 2;
+                temp_r4[1] = temp_r7_3;
+                var_ctr_2 -= 1;
+            } while (var_ctr_2 != 0);
+        }
+    }
+}
+
 extern "C" void NANDSetUserData(void* arg0, s32 arg1) {
     *(s32*)((u8*)arg0 + 0xC) = arg1;
 }
@@ -7006,3 +7075,4 @@ extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ..
 extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern void* lbl_804077C0;
+extern "C" void fn_800A71D0(void *, s32);
