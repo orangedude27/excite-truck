@@ -73,7 +73,7 @@ class Vf78x { public:
  virtual void a10(); virtual void a11(); virtual void a12(); virtual void a13(); virtual void a14();
  virtual void a15(); virtual void a16(); virtual void a17(); virtual void a18(); virtual void a19();
  virtual void a20(); virtual void a21(); virtual void a22(); virtual void a23(); virtual void a24();
- virtual void a25(); virtual void a26(); virtual void a27(); virtual void a28(); virtual void a29(); virtual s32 get(); };
+ virtual void a25(); virtual void a26(); virtual void a27(); virtual s32 get(); };
 
 class V24x { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual void e(); virtual void f(); virtual void g(); virtual f32 get(); };
 class V20x { public: virtual void a(); virtual void b(); virtual void c(); virtual void d(); virtual f32 get(); };
@@ -2644,6 +2644,29 @@ extern "C" void fn_80224864(void *arg0) {
     }
     *(f32 *)((u8 *)arg0 + 0x24C) = fn_8023659C();
     *(f32 *)((u8 *)arg0 + 0x26C) = *(f32 *)((u8 *)arg0 + 0x268);
+}
+
+extern "C" void fn_802248FC(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    if (*(s32 *)(p + 0x280) == 0) return;
+    if (p[0x1B] == 0) {
+        *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = lbl_805634C4;
+    } else if (p[0x260] != 0) {
+        *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = *(f32 *)(p + 0x268);
+    } else {
+        *(f32 *)(*(u8 **)(p + 0x284) + 0x30) =
+            (*(s32 *)(p + 0x248) == 1) ? lbl_805634A4 : lbl_805634A8;
+    }
+    fn_8022EEF8(*(void **)(p + 0x288), fn_8022EDC4(), (s32)*(u32 *)(p + 0x284));
+    fn_8022ED00(*(void **)(p + 0x288));
+    s32 delta = *(s32 *)(p + 0x10) - *(s32 *)(p + 8);
+    s32 divisor = fn_802C51AC(*(s32 *)(p + 0x280));
+    s32 val = *(s32 *)(p + 0x244);
+    s32 rem = val % divisor;
+    s32 got = ((Vf78x *)arg0)->get();
+    fn_802C5320(*(s32 *)(p + 0x280), rem, *(f32 *)(p + 0x270),
+        *(f32 *)(p + 0x274), lbl_805634A8, (f32)got, (f32)delta);
+    fn_8022EDB8();
 }
 
 extern "C" s32 fn_80224A38(void *arg0, s32 arg1) {
