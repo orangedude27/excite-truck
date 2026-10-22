@@ -77,6 +77,7 @@ extern f32 lbl_80560D54;
 extern u32 lbl_80560D28;
 
 extern u8 lbl_803C0F78[];
+extern char lbl_80316870[];
 extern char lbl_80315D00[];
 extern char lbl_8031669C[];
 extern tBTM_SEC_DEV_REC *btm_find_oldest_dev(void);
@@ -6468,6 +6469,57 @@ void hidh_proc_repage_timeout(TIMER_LIST_ENT *p_tle) {
     dev = lbl_803C3C38 + handle * 0x34;
     dev[0xC]++;
     (*callback)(handle, 2, dev[0xC], 0);
+}
+
+void hidh_sec_check_complete_orig(BD_ADDR bd_addr, void *p_ref_data, UINT8 res) {
+    u8 *p_dev = (u8 *)p_ref_data;
+    char *strings = lbl_80317838;
+    u8 dhandle = (u8)((p_dev - lbl_803C3C38) / 0x34);
+    u8 *record_success;
+    u8 *record_failure;
+    u16 cid;
+
+    if (res == 0 && p_dev[0x10] == 6) {
+        if (lbl_803C3C38[0x401] >= 4)
+            fn_8007093C(0x1E0003, strings + 0x180);
+        *(u16 *)(p_dev + 0x1A) = 0;
+        record_success = lbl_803C3C38 + dhandle * 0x34;
+        cid = L2CA_ConnectReq(0x13, record_success + 1);
+        *(u16 *)(p_dev + 0x16) = cid;
+        if (cid == 0) {
+            if (lbl_803C3C38[0x401] >= 2)
+                fn_8007093C(0x1E0001, strings + 0x1A0);
+            if (lbl_803C3C38[0x401] >= 4)
+                fn_8007093C(0x1E0003, strings + 0x44);
+            if (*(u16 *)(record_success + 0x14) != 0 || *(u16 *)(record_success + 0x16) != 0) {
+                record_success[0x10] = 5;
+                if (*(u16 *)(record_success + 0x16) != 0)
+                    L2CA_DisconnectReq(*(u16 *)(record_success + 0x16));
+                if (*(u16 *)(record_success + 0x14) != 0)
+                    L2CA_DisconnectReq(*(u16 *)(record_success + 0x14));
+            } else {
+                record_success[0x10] = 0;
+            }
+            ((void (*)(u8, u32, u32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(dhandle, 1, 0x200, 0);
+            return;
+        }
+        p_dev[0x10] = 2;
+    }
+    if (res != 0 && p_dev[0x10] == 6) {
+        *(u16 *)(p_dev + 0x1A) = 0xF;
+        record_failure = lbl_803C3C38 + dhandle * 0x34;
+        if (lbl_803C3C38[0x401] >= 4)
+            fn_8007093C(0x1E0003, strings + 0x44);
+        if (*(u16 *)(record_failure + 0x14) != 0 || *(u16 *)(record_failure + 0x16) != 0) {
+            record_failure[0x10] = 5;
+            if (*(u16 *)(record_failure + 0x16) != 0)
+                L2CA_DisconnectReq(*(u16 *)(record_failure + 0x16));
+            if (*(u16 *)(record_failure + 0x14) != 0)
+                L2CA_DisconnectReq(*(u16 *)(record_failure + 0x14));
+        } else {
+            record_failure[0x10] = 0;
+        }
+    }
 }
 
 extern u8 lbl_80317B80[];
