@@ -28,6 +28,8 @@ int fn_802E30C8(const char *, int);
 int fn_802C6B44(int);
 void fn_802C6DC4(int, int, int, int);
 void fn_802C6C38(int);
+extern float *fn_802C9A40(float, float, float, float);
+extern float lbl_80564EF4;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -272,6 +274,49 @@ void fn_802C5C40(int *arg0, int arg1, int arg2) {
             (u16)(*(s16 *)(*(int *)((char *)arg2 + arg1 * 4 + 0x14) + 6) - 1));
 }
 
+extern int fn_8012C33C(char *);
+extern void fn_801345D8(char *, int, const char *, int, char *);
+extern int fn_802CAC44(char *, int);
+extern int fn_802CAF8C(void);
+extern int fn_802CAFF0(void);
+extern void fn_802CAFC8(int);
+extern const char lbl_8055D010[];
+void fn_802C5CC4(void *arg0, int arg1, int arg2, int arg3, int arg4) {
+    char name[0x100];
+    char temp[0x100];
+    int value;
+    int index;
+    u16 result;
+
+    fn_802C595C(name, 0x100, (const char *)((char *)arg0 + 4), arg1);
+    if (arg3 != 0) {
+        fn_801345D8(temp, 0x100, lbl_8055D010, arg3, name);
+        if (fn_8012C33C(temp) != 0) {
+            int count;
+            char *src = temp;
+            char *dst = name;
+            for (count = 0x100; count > 0; count--) {
+                char c = *src++;
+                *dst++ = c;
+                if (c == 0)
+                    break;
+            }
+            if (count == 0)
+                dst[-1] = 0;
+        }
+    }
+    value = *(int *)arg0;
+    index = fn_802CAC44(name, value);
+    if (arg2 != 0) {
+        result = fn_802C5BEC(value, fn_802CAF8C());
+    } else {
+        int other = fn_802CAFF0();
+        fn_802CAFC8(index);
+        result = fn_802C5A50(other, 0);
+    }
+    *(int *)((char *)arg0 + arg1 * 4 + 0x14) = (int)fn_802C5A60(index, value, result);
+}
+
 void fn_802C5E6C(void *arg0, void *arg1) {
     void *temp = fn_802D6C44;
     ((void (*)(void *, void *))fn_802C5DF0)(arg1, temp);
@@ -322,6 +367,52 @@ void fn_802C6068(void *arg0) {
 
 void fn_802C6074(s32 *arg0) {
     *arg0 = 0;
+}
+
+extern void fn_80128670(void *);
+extern void fn_802C7A10(void *);
+extern const char lbl_8034B258[];
+extern const char lbl_8034B294[];
+extern int (*fn_802E30C8_varargs)(const char *, ...);
+void fn_802C6080(void) {
+    int i;
+    int offset;
+    void *ptr;
+    char *base = (char *)lbl_804C1338;
+    int *list = *(int **)(base + 0x64 + 8);
+
+    for (i = 0, offset = 0; i < *(int *)(base + 0x64); i++, offset += 0x10) {
+        if (*(int *)((char *)list + offset) > 0) {
+            fn_802E30C8(lbl_8034B258, i);
+            fn_802E30C8(lbl_8034B294, ((int (*)(int))fn_802C7A10)(i));
+        }
+    }
+
+    fn_80128670(*(void **)(base + 0x7C + 8));
+    ptr = *(void **)(base + 0x70 + 8);
+    *(int *)(base + 0x7C + 8) = 0;
+    *(int *)(base + 0x7C + 4) = 0;
+    *(int *)(base + 0x7C) = 0;
+    if (ptr != 0) fn_80128670((char *)ptr - 0x10);
+
+    fn_80128670(*(void **)(base + 0x58 + 8));
+    *(int *)(base + 0x70) = 0;
+    *(int *)(base + 0x70 + 8) = 0;
+    *(int *)(base + 0x70 + 4) = 0;
+    *(int *)(base + 0x58 + 8) = 0;
+    *(int *)(base + 0x58 + 4) = 0;
+    *(int *)(base + 0x58) = 0;
+
+    fn_80128670(*(void **)(base + 8));
+    *(int *)(base + 8) = 0;
+    *(int *)(base + 4) = 0;
+    *(int *)base = 0;
+
+    ptr = *(void **)(base + 0x64 + 8);
+    if (ptr != 0) fn_80128670((char *)ptr - 0x10);
+    *(int *)(base + 0x64) = 0;
+    *(int *)(base + 0x64 + 8) = 0;
+    *(int *)(base + 0x64 + 4) = 0;
 }
 
 void fn_802C6A84(s32 *arg0, s32 arg1) {
@@ -497,6 +588,43 @@ s32 fn_802C7830(char *arg0, s32 arg1, signed char c) {
         c = *arg0;
     } while (c != 0);
     return value;
+}
+
+void fn_802C7888(void *src, s32 count) {
+    s32 i;
+    if (count <= 0) return;
+    for (i = 0; i < count; i++) {
+        u8 *source = (u8 *)src;
+        u8 *dest;
+        s32 index;
+        if (*(s32 *)(source + 0x28) != 0) *(s32 *)(source + 0x28) = -1;
+        index = lbl_804C13B4[0];
+        if (index < lbl_804C13B4[1]) {
+            dest = (u8 *)lbl_804C13B4[2] + index * 0x2C;
+            lbl_804C13B4[0] = index + 1;
+        } else dest = 0;
+        dest[0] = source[0];
+        dest[1] = source[1]; dest[2] = source[2];
+        dest[3] = source[3]; dest[4] = source[4];
+        dest[5] = source[5]; dest[6] = source[6];
+        dest[7] = source[7]; dest[8] = source[8];
+        dest[9] = source[9]; dest[10] = source[10];
+        dest[11] = source[11]; dest[12] = source[12];
+        dest[13] = source[13]; dest[14] = source[14];
+        dest[15] = source[15];
+        *(s32 *)(dest + 0x10) = *(s32 *)(source + 0x10);
+        dest[0x14] = source[0x14]; dest[0x15] = source[0x15];
+        dest[0x16] = source[0x16]; dest[0x17] = source[0x17];
+        dest[0x18] = source[0x18]; dest[0x19] = source[0x19];
+        dest[0x1A] = source[0x1A]; dest[0x1B] = source[0x1B];
+        dest[0x1C] = source[0x1C]; dest[0x1D] = source[0x1D];
+        dest[0x1E] = source[0x1E]; dest[0x1F] = source[0x1F];
+        dest[0x20] = source[0x20]; dest[0x21] = source[0x21];
+        dest[0x22] = source[0x22]; dest[0x23] = source[0x23];
+        *(s32 *)(dest + 0x24) = *(s32 *)(source + 0x24);
+        *(s32 *)(dest + 0x28) = *(s32 *)(source + 0x28);
+        src = source + 0x2C;
+    }
 }
 
 extern int lbl_804C13B4[];
