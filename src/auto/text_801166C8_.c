@@ -119,7 +119,7 @@ BOOL ARCChangeDir(ARCHandle* handle, const char* path) {
 }
 
 BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
-    s32 entrynum = ARCConvertPathToEntrynum(handle, path);
+    register s32 entrynum = ARCConvertPathToEntrynum(handle, path);
     void* fst = handle->FSTStart;
     
     if (entrynum < 0 || !(*(u32*)((u8*)fst + entrynum * 0xC) & 0xFF000000)) {
@@ -127,9 +127,9 @@ BOOL ARCOpenDir(ARCHandle* handle, const char* path, ARCDir* dir) {
     }
     
     dir->handle = handle;
-    dir->entryNum = entrynum;
     dir->location = entrynum + 1;
-    dir->next = *(u32*)((u8*)fst + entrynum * 0xC + 8);
+    dir->entryNum = entrynum;
+    dir->next = *(u32*)((u8*)fst + entrynum * (unsigned)0xC + 8);
     return TRUE;
 }
 
