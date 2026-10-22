@@ -71,6 +71,7 @@ extern "C" s32 lbl_8055DDF0;
 int strncmp(const char *, const char *, unsigned int);
 extern "C" int strncmp(const char *, const char *, unsigned int);
 struct AlphaColor { u8 r, g, b, a; };
+struct ResBlockSetTmp { u32 a, b, c, d; };
 struct AnimEnableVTable {
     virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8();
@@ -893,6 +894,61 @@ extern "C" void SetTexture__Q36nw4hbm3lyt8MaterialFUcRC9_GXTexObj(void* self, u8
     dst = (char*)dst + ((u32)index << 5);
     for (int i=0;i<8;i++) ((u32*)dst)[i] = ((const u32*)tex)[i];
     GXGetTexObjWidth(dst, 0, 0);
+}
+
+extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *arg0, s32 arg1, s16 arg2) {
+    u32 flags;
+    u32 info;
+    u32 component;
+    u32 index;
+    u8 *base;
+    if (arg1 < 0x10) {
+        if (arg1 >= 4) {
+            arg1 -= 4;
+            component = arg1 & 3;
+            index = (u32)arg1 >> 2;
+            switch (component) {
+            case 0: *(s16 *)((u8 *)arg0 + index * 8 + 0x24) = arg2; return;
+            case 1: *(s16 *)((u8 *)arg0 + index * 8 + 0x26) = arg2; return;
+            case 2: *(s16 *)((u8 *)arg0 + index * 8 + 0x28) = arg2; return;
+            case 3: *(s16 *)((u8 *)arg0 + index * 8 + 0x2A) = arg2; return;
+            }
+        }
+        if (arg1 < 0) return;
+        flags = *(u32 *)((u8 *)arg0 + 0x50);
+        if (((flags >> 7) & 1) < 1) return;
+        info = *(u32 *)((u8 *)arg0 + 0x4C);
+        base = (u8 *)*(s32 *)((u8 *)arg0 + 0x58)
+            + ((info >> 6) & 4) + ((info >> 24) & 0xF) * 0x14
+            + ((info >> 18) & 0x3C) + ((info >> 23) & 0x1E0);
+        {
+            s32 value = arg2 & ~(arg2 >> 31);
+            s32 byte = 0xFF;
+            if (value <= 0xFF) byte = value;
+            byte &= 0xFF;
+            switch (arg1 & 3) {
+            case 0: base[0] = byte; return;
+            case 1: base[1] = byte; return;
+            case 2: base[2] = byte; return;
+            case 3: base[3] = byte; return;
+            }
+        }
+        return;
+    }
+    if (arg1 >= 0x20) return;
+    {
+        s32 value = arg2 & ~(arg2 >> 31);
+        s32 byte = 0xFF;
+        if (value <= 0xFF) byte = value;
+        index = (arg1 - 0x10) >> 2;
+        component = (arg1 - 0x10) & 3;
+        switch (component) {
+        case 0: *((u8 *)arg0 + index * 4 + 0x3C) = byte; return;
+        case 1: *((u8 *)arg0 + index * 4 + 0x3D) = byte; return;
+        case 2: *((u8 *)arg0 + index * 4 + 0x3E) = byte; return;
+        case 3: *((u8 *)arg0 + index * 4 + 0x3F) = byte; return;
+        }
+    }
 }
 
 extern "C" s32 fn_800DA094(void *arg0, s32 arg1, s32 arg2) {
