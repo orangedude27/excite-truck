@@ -1422,3 +1422,42 @@ extern const char lbl_80322034[];
 extern const char lbl_80322010[];
 extern const char lbl_80322470[];
 #pragma pop
+
+extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv(void *arg0) {
+    char *self = (char *)arg0;
+    unsigned int level = OSDisableInterrupts();
+    char *voice = (char *)*(void **)(self + 0x14);
+    if (voice == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x51F, lbl_80322470);
+    }
+    void (*callback)(void *, void *, int) = (void (*)(void *, void *, int))(*(void ***)(voice + 0x10C));
+    if (callback != 0) {
+        callback(voice, (void *)(*(int *)(voice + 0x110)), 3);
+    }
+    char *row = voice;
+    int rowIndex = 0;
+    int zero = 0;
+    while (rowIndex < *(int *)(row + 0x104)) {
+        char *entry = row;
+        int column = 0;
+        while (column < *(int *)(row + 0x108)) {
+            int buffer = *(int *)(entry + 0xC);
+            if (buffer != 0 && buffer != (int)self) {
+                TRKGetFreeBuffer((void *)buffer);
+            }
+            entry += 4;
+            column++;
+        }
+        row += 0x10;
+        rowIndex++;
+    }
+    GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+    UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(0, voice);
+    Instance__15EmissionManagerFv();
+    FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(0, voice);
+    *(unsigned char *)(voice + 0x11F) = zero;
+    *(unsigned char *)(voice + 0x11D) = zero;
+    *(int *)(voice + 0x104) = zero;
+    *(unsigned char *)(voice + 0x11C) = zero;
+    OSRestoreInterrupts(level);
+}
