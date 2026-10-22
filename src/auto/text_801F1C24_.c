@@ -43,6 +43,16 @@ extern int lbl_8055B118;
 int *fn_801F1CE8(int arg0) {
     return (int *)(arg0 + 0x2C);
 }
+
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_801F1D68(void) {
+    void **slot = (void **)fn_801284F8(4, (void *)&lbl_8055B118);
+    if (slot != 0) {
+        *slot = (void *)&lbl_8033A9E8;
+    }
+}
+
 #pragma dont_inline reset
 
 void *fn_801F1DA4(void) {
