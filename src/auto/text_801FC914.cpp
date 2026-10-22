@@ -8,6 +8,8 @@ extern void* lbl_8055EC98;
 extern void* lbl_8055EC94;
 extern const char lbl_8033B5D8[];
 extern const char lbl_8033B8C8[];
+extern const char lbl_8033B8EC[];
+extern const char lbl_8033B90C[];
 void fn_80128668(void*);
 void fn_801FEDA4(void*);
 float fn_80129DC4(int, void*, float, float);
