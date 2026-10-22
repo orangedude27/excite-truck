@@ -1968,6 +1968,29 @@ s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
     return 0;
 }
 
+extern "C" void *fn_800B0F1C(void *arg0, void *arg1, s32 arg2) {
+    u8 *base=(u8*)arg0,*entry=base,*chosen=0; s32 chosenIndex=0,i;
+    for(i=0;i<5;i++){
+        u32 flags=*(u32*)(entry+0x40);
+        if((flags&1)==0 || (flags&0x40000000)==0){if(!chosen){chosen=entry+0x40;chosenIndex=i;}}
+        else if(*(u32*)((u8*)arg1+0x22C)==*(u32*)(entry+0x2A8)&&*(u32*)((u8*)arg1+0x238)==*(u32*)(entry+0x2B4)&&*(u16*)((u8*)arg1+0x23C)==*(u16*)(entry+0x2B8)) return base+i*0x29C+0x40;
+        entry+=0x29C;
+    }
+    if(!chosen)return 0;
+    *(u32*)chosen=3; *(u16*)(chosen+0x298)=0;
+    {u32 *src=(u32*)((u8*)arg1-4),*dst=(u32*)(chosen+0x38); for(i=0;i<0x48;i++){*++dst=*++src;}}
+    *(u16*)(chosen+0x27C)=0; *(u16*)(chosen+0x27E)=0; *(u32*)(chosen+0x280)=0; *(u32*)(chosen+0x284)=0; *(u32*)(chosen+0x288)=0;
+    fn_800AF530(chosen+4,0,*(u32*)((u8*)arg1+0x22C),(s32)(chosen+0x270));
+    if(*(u16*)(base+0x1FB0)&1){
+        u32 count=*(u32*)(base+0x1FB8);
+        *(u32*)(chosen+0x20)=*(u32*)(base+0x1FB4)+chosenIndex*count*4;
+        fn_800A499C((const char*)*(u32*)(chosen+0x20),0,(s32)(count*4));
+        *(u32*)(chosen+0x2C)=count; *(u16*)(chosen+0x24)=*(u16*)(base+0x1FB2); *(u16*)(chosen+0x26)=0; *(u32*)(chosen+0x28)=0; *(u32*)(chosen+0x30)=0;
+        if(*(u32*)((u8*)arg1+0x228)!=0&&*(u32*)(chosen+0x2C)!=0){**(u32**)(chosen+0x20)=*(u32*)((u8*)arg1+0x234); (*(u32*)(chosen+0x28))++;}
+    }
+    return chosen;
+}
+
 extern "C" s32 fn_800B0DEC(void *, s32, u32 *);
 extern "C" s32 VFiPFFILE_p_fread(void *, void *, u32 arg2, u32 arg3, void *arg4, u32 *arg5) {
     u32 bytesRead = 0;
@@ -3094,6 +3117,37 @@ extern "C" s32 fn_800B808C(s32 arg0, void *arg1, s32 arg2) {
         if (result == 0) *(s32 *)arg1 = arg0;
     }
     return result;
+}
+
+extern "C" s32 fn_800B814C(void *arg0) {
+    extern s32 NANDClose(void *); extern s32 NANDDelete(void *);
+    extern s32 fn_800B8318(void); extern s32 fn_800B878C(void *,u8*,s32*,s32);
+    extern s32 fn_800B8520(void *,u32 *); extern void fn_800B865C(void *);
+    u8 buf2[0x200] __attribute__((aligned(32))), buf0[0x200] __attribute__((aligned(32))), buf1[0x200] __attribute__((aligned(32)));
+    s32 type,r; u32 zero,remain;
+    if((r=fn_800B8318())!=0)return r;
+    fn_800A499C((const char*)buf0,0,0x200); zero=0;
+    fn_800B878C(arg0,buf0,&type,0);
+    if(type!=fn_800B8520(buf0,&zero))fn_800B878C(arg0,buf0,&type,zero);
+    r=NANDWrite((u8*)arg0+0x58,buf0,0x200);
+    if(r<0){NANDClose((u8*)arg0+0x58);NANDDelete((u8*)arg0+4);return r;}
+    remain=*(u32*)((u8*)arg0+0x54)-0x200;
+    if(type==2){
+        fn_800B865C(buf1); r=NANDWrite((u8*)arg0+0x58,buf1,0x200);
+        if(r<0){NANDClose((u8*)arg0+0x58);NANDDelete((u8*)arg0+4);return r;}
+        remain-=0x200;
+    }
+    fn_800A499C((const char*)buf2,0,0x200);
+    while(remain>=0x200){
+        r=NANDWrite((u8*)arg0+0x58,buf2,0x200);
+        if(r<0){NANDClose((u8*)arg0+0x58);NANDDelete((u8*)arg0+4);return r;}
+        remain-=0x200;
+    }
+    if(remain!=0){
+        r=NANDWrite((u8*)arg0+0x58,buf2,remain);
+        if(r<0){NANDClose((u8*)arg0+0x58);NANDDelete((u8*)arg0+4);return r;}
+    }
+    return 0;
 }
 
 s32 fn_800B8520(void *arg0, u32 *arg1) {
@@ -5543,6 +5597,41 @@ extern "C" void fn_800CFBB8(void *arg0, s32 arg1) { *(s32 *)((u8 *)arg0 + 0x28) 
 extern "C" s32 fn_800CFBC0(void *arg0, s32 arg1) {
     void *entry = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((char *)arg0 + 8, arg1 & 0xffff);
     return *(s32 *)((char *)entry + 4);
+}
+
+s32 homebutton::gui::Manager::update(s32 arg1, f32 farg0, f32 farg1, unsigned long arg2, unsigned long arg3, unsigned long arg4, void *arg5) {
+    u32 sp14, sp8;
+    s32 result = 0;
+    void *last = 0;
+    u16 index = 0;
+    while (index < *(u16 *)((u8 *)this + 0x10)) {
+        void *item = List_GetNth__Q26nw4hbm2utFPCQ36nw4hbm2ut4ListUs((u8 *)this + 8, index);
+        void *obj = *(void **)((u8 *)item + 4);
+        typedef s32 (*UpdateFn)(void *, s32, f32, f32, unsigned long, unsigned long, unsigned long, void *);
+        typedef s32 (*CheckFn)(void *);
+        if (((UpdateFn)(*(void ***)obj)[9])(obj, arg1, farg0, farg1, arg2, arg3, arg4, arg5)) {
+            if (((CheckFn)(*(void ***)obj)[10])(obj)) last = obj;
+            result = 1;
+        }
+        index++;
+    }
+    if (last) {
+        if (arg3) {
+            typedef void (*PrepareFn)(void *, unsigned long, u32 *);
+            typedef s32 (*GetFn)(void *);
+            typedef void (*ApplyFn)(void *, s32, s32, unsigned long);
+            ((PrepareFn)(*(void ***)last)[7])(last, arg3, &sp14);
+            ((ApplyFn)(*(void ***)this)[12])(this, ((GetFn)(*(void ***)last)[8])(last), 0, arg4);
+        }
+        if (arg5) {
+            typedef void (*PrepareFn)(void *, void *, u32 *);
+            typedef s32 (*GetFn)(void *);
+            typedef void (*ApplyFn)(void *, s32, s32, unsigned long);
+            ((PrepareFn)(*(void ***)last)[7])(last, arg5, &sp8);
+            ((ApplyFn)(*(void ***)this)[12])(this, ((GetFn)(*(void ***)last)[8])(last), 5, arg4);
+        }
+    }
+    return result;
 }
 
 extern "C" u8 fn_800CFDB4(void *arg0) { return *((u8 *)((u8 *)arg0 + 0x24)); }
