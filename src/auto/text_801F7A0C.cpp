@@ -8,6 +8,9 @@ __declspec(section ".sdata") extern const char lbl_8055B3C0[];
 extern const char lbl_8033B578[];
 extern const char lbl_80488898[];
 extern u8 lbl_8055EC6C;
+extern u8 lbl_8055EC40;
+extern s32 lbl_8055EC70;
+void fn_801FC644(void **, void *);
 void *fn_802077A4(s32, s32, void *, void *);
 }
 extern "C" void fn_801EF024(void *);
