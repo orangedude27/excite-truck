@@ -1683,6 +1683,67 @@ extern "C" void fn_800AF2B8(void *arg0) {
     ((s32 *)arg0)[2] = 0;
 }
 
+s32 fn_800AF2CC(void *arg0, u32 arg1, s32 arg2, s32 *arg3, u32 *arg4, s32 arg5) {
+    s32 end;
+    s32 one = 1;
+    s32 result;
+    s32 type;
+    s32 pageCount;
+    s32 pageSize;
+    s32 count;
+    s32 page;
+    s32 i;
+    s32 pos;
+    u32 savedPos = (u32)arg1;
+    void *context;
+
+    *arg3 = 0;
+    *arg4 = 0;
+    if (*(u32 *)*(u32 **)((u8 *)arg0 + 8) < 2)
+        return 0;
+    if (arg1 < 2)
+        return 0;
+    if (arg2 == 0)
+        return 0;
+    context = *(void **)((u8 *)arg0 + 0x34);
+    type = *(s32 *)((u8 *)context + 0x1C);
+    if (arg2 == -1 && *(s32 *)((u8 *)arg0 + 0xC) != 0) {
+        *arg3 = *(s32 *)((u8 *)arg0 + 0xC);
+        *arg4 = *(u32 *)((u8 *)lbl_802EEF40 + type * 0x14 + 8);
+        return 0;
+    }
+    pageSize = *(u16 *)context * *(u8 *)((u8 *)context + 6);
+    count = arg2 / pageSize;
+    if (arg2 % pageSize != 0)
+        count++;
+    if (*(u32 *)*(u32 **)((u8 *)arg0 + 8) == arg1) {
+        page = 1;
+    } else {
+        page = **(s32 **)((u8 *)arg0 + 0x30) + 1;
+    }
+    end = -1;
+    i = 0;
+    while (i < count) {
+        result = fn_800AD24C(arg0, arg1, page, &end, &one);
+        if (result != 0)
+            return result;
+        savedPos = arg1;
+        if ((u32)end == *(u32 *)((u8 *)lbl_802EEF40 + type * 0x14 + 8)) {
+            *(u32 *)((u8 *)arg0 + 0xC) = arg1;
+            *(s32 *)((u8 *)arg0 + 0x10) = page - 1;
+            goto done;
+        }
+        arg1 = (u32)end;
+        page++;
+        i++;
+    }
+done:
+    **(s32 **)((u8 *)arg0 + 0x30) = page - 1;
+    *arg3 = savedPos;
+    *arg4 = (u32)end;
+    return 0;
+}
+
 extern "C" s32 VFiPFFAT_TraceClustersChain(void *arg0, s32 arg1, s32 *arg2) {
     s32 result;
     switch (*(s32 *)((u8 *)arg0 + 0x1C)) {
@@ -2375,6 +2436,38 @@ done:
     flags = *(u16 *)((u8 *)arg0 + 0x1F8C);
     if ((flags & 8) == 0) return 9;
     return -((flags >> 1) & 1) & 0xB;
+}
+
+extern "C" s32 fn_800B63FC(void) {
+    s32 key, result = 0, found = 0, i;
+    s32 *base = lbl_803D2140;
+    fn_800B77C0((u8 *)base + 0x64);
+    ((void (*)(s32 *))fn_800B78F0)(&key);
+    for (i = 1; i < 4; i++) {
+        s32 *entry = (s32 *)((u8 *)base + 0xC + (i - 1) * 0xC);
+        if ((entry[0] & 1) && entry[1] == key) { result = entry[2]; found = 1; break; }
+    }
+    if (!found) {
+        s32 *e = (s32 *)((u8 *)base + 0x88);
+        s32 flag = e[0] & 1; e[0] = flag;
+        if (flag && e[1] == key) found = 1;
+        else {
+            e = (s32 *)((u8 *)base + 0x90); flag = e[0] & 1; e[0] = flag;
+            if (flag && e[1] == key) found = 1;
+            else {
+                e = (s32 *)((u8 *)base + 0x98); flag = e[0] & 1; e[0] = flag;
+                if (flag && e[1] == key) found = 1;
+            }
+        }
+        if (found) {
+            for (i = 1; i < 4; i++) {
+                s32 *entry = (s32 *)((u8 *)base + i * 0xC);
+                if (!(entry[0] & 1)) { entry[0] |= 1; entry[1] = key; result = entry[2]; break; }
+            }
+        } else result = base[2];
+    }
+    fn_800B783C((u8 *)base + 0x64);
+    return result;
 }
 
 extern "C" s32 fn_800A485C(s32);
@@ -4002,6 +4095,22 @@ void fn_800C2A88(s32 *a, s32 *b, s32 *c, s32 *d) {
     t=a[8];
     c[0x800/4]=b[8]+(t*lbl_8031D700[4]>>20);
     d[-0x800/4]=b[0x24/4]+(t*lbl_8031D700[5]>>20);
+}
+
+extern "C" s32 lbl_8031D718[];
+extern "C" void fn_800C2C18(s32 *a, s32 *b, s32 *o1, s32 *o2) {
+    o1[0]=b[0]; o2[0]= -(-a[0]+b[17]);
+    o1[64]=-b[1]; o2[-64]= -a[1]+b[16];
+    o1[128]=b[2]; o2[-128]= -(-a[2]+b[15]);
+    o1[192]=-b[3]; o2[-192]= -a[3]+b[14];
+    o1[256]=b[4]; o2[-256]= -(-a[4]+b[13]);
+    o1[320]=-b[5]; o2[-320]= -a[5]+b[12];
+    o1[384]=(s32)(((s64)a[6]*lbl_8031D718[0])>>12)+b[6];
+    o2[-384]= -((s32)(((s64)a[6]*lbl_8031D718[1])>>12)+b[11]);
+    o1[448]= -((s32)(((s64)a[7]*lbl_8031D718[3])>>12)+b[7]);
+    o2[-448]= -((s32)(((s64)a[7]*lbl_8031D718[2])>>12)+b[10]);
+    o1[512]=(s32)(((s64)a[8]*lbl_8031D718[4])>>12)+b[8];
+    o2[-512]= -((s32)(((s64)a[8]*lbl_8031D718[5])>>12)+b[9]);
 }
 
 extern "C" s32 lbl_8031D778[];
@@ -5689,7 +5798,7 @@ extern "C" void fn_800D11E0(void* arg0) {
 }
 
 extern "C" void Connect__Q210homebutton9RemoteSpkFl(void *, s32);
-extern "C" void fn_800D51F4(long, long, long, long, long, long);
+extern "C" s32 fn_800D51F4(long, long, long, long, long, long);
 #pragma opt_tail_call on
 extern "C" void fn_800D11F0(void *arg0) {
     Connect__Q210homebutton9RemoteSpkFl(*(void **)((char *)arg0 + 0x24), *(s32 *)arg0);
