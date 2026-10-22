@@ -5238,27 +5238,21 @@ BOOLEAN btsnd_hcic_add_SCO_conn(UINT16 handle, UINT16 packet_types) {
     return TRUE;
 }
 
-BOOLEAN btsnd_hcic_link_key_req_reply(BD_ADDR bd_addr, LINK_KEY link_key)
-{
+BOOLEAN btsnd_hcic_link_key_req_reply(BD_ADDR bd_addr, LINK_KEY link_key) {
     BT_HDR *p;
     UINT8 *pp;
 
-    if ((p = HCI_GET_CMD_BUF(HCIC_PARAM_SIZE_LINK_KEY_REQ_REPLY)) == NULL)
-        return (FALSE);
-
+    if ((p = (BT_HDR *)GKI_getpoolbuf(2)) == NULL)
+        return FALSE;
     pp = (UINT8 *)(p + 1);
-
-    p->len = HCIC_PREAMBLE_SIZE + HCIC_PARAM_SIZE_LINK_KEY_REQ_REPLY;
+    p->len = 0x19;
     p->offset = 0;
-
     UINT16_TO_STREAM(pp, HCI_LINK_KEY_REQUEST_REPLY);
     UINT8_TO_STREAM(pp, HCIC_PARAM_SIZE_LINK_KEY_REQ_REPLY);
-
     BDADDR_TO_STREAM(pp, bd_addr);
     ARRAY16_TO_STREAM(pp, link_key);
-
-    btu_hcif_send_cmd(LOCAL_BR_EDR_CONTROLLER_ID, p);
-    return (TRUE);
+    btu_hcif_send_cmd(p);
+    return TRUE;
 }
 
 BOOLEAN btsnd_hcic_link_key_neg_reply(BD_ADDR bd_addr) {
