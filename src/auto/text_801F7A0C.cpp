@@ -45,9 +45,9 @@ void fn_802C7AD4(void);
 extern "C" {
 extern char lbl_8033AF80[];
 extern char lbl_8033B440[];
-extern char lbl_8055B300[];
-extern char lbl_8055B308[];
-extern char lbl_8055B310[];
+__declspec(section ".sdata") extern char lbl_8055B300[];
+__declspec(section ".sdata") extern char lbl_8055B308[];
+__declspec(section ".sdata") extern char lbl_8055B310[];
 extern s32 lbl_8055B388;
 extern void **lbl_8055EC54;
 extern s32 lbl_8055EC58;
@@ -396,6 +396,28 @@ extern u8 lbl_8033B3F0[];
 extern "C" void *fn_801F861C(void) {
  F92Obj *obj=(F92Obj*)fn_801284F8(0x10C,lbl_8055B2F8);
  if(obj){obj->w108=lbl_8033B468;obj->w78=0;obj->f7c=lbl_80562FF0;obj->f80=lbl_80562FF0;obj->w104=0;obj->f24=0;obj->f20=0;obj->f28=lbl_80563000;obj->b60=1;memset(obj,0x20,0x61);memset((u8*)obj+0x61,0x61,0x10);obj->w74=-1;obj->w108=lbl_8033B3F0;}return obj;
+}
+
+extern "C" void *fn_801F86C8(void *arg0) {
+class NodeVTable { public: virtual void v0();virtual void v1();virtual void v2();virtual void *getString(const char *);virtual void v6();virtual void v7();virtual int query20(const char *,int);virtual void v9();virtual void v10();virtual void v11();virtual int query30(const char *,int);virtual void v13();virtual void v14();virtual void v15();virtual void v16();virtual void v17();virtual void v18();virtual void v19();virtual void v20();virtual void v21();virtual void v22();virtual void v23();virtual void *query5C(const char *);};
+const char *base=lbl_8033AF80;void *saved=arg0;void *object;
+object=fn_801284F8(0x1A0,(void *)(base+0xF4));
+if(object){
+fn_801F92AC((F92Obj *)object);*(void **)((char *)object+0x108)=lbl_8033B440;
+((void (*)(void *))fn_801F92A8)((char *)object+0x10C);
+*(int *)((char *)object+0x190)=0;*(volatile int *)((char *)object+0x10C)=0;
+fn_801F8988((char *)object+0x10C,saved);
+if(fn_801F88F4(saved)==0)*(int *)((char *)object+0x190)|=4;
+if(((NodeVTable *)saved)->query30(base+0x100,0))*(int *)((char *)object+0x190)|=1;
+if(((NodeVTable *)saved)->query30(base+0x110,0))*(int *)((char *)object+0x190)|=0x100;
+if(((NodeVTable *)saved)->query30(base+0x120,0))*(int *)((char *)object+0x190)|=0x20;
+if(((NodeVTable *)saved)->query30(lbl_8055B300,0)){*(int *)((char *)object+0x190)|=0x40;*(void **)((char *)object+0x194)=((NodeVTable *)saved)->getString(lbl_8055B308);}
+else *(void **)((char *)object+0x194)=lbl_8055B310;
+if(((NodeVTable *)saved)->query30(base+0x130,0))*(int *)((char *)object+0x190)|=0x80;
+if(((NodeVTable *)saved)->query30(base+0x13C,0))*(int *)((char *)object+0x190)|=0x200;
+*(int *)((char *)object+0x198)=((NodeVTable *)saved)->query20(base+0x148,-1);
+*(void **)((char *)object+0x19C)=((NodeVTable *)saved)->query5C(base+0x154);}
+return object;
 }
 
 extern u32 lbl_802F9B30[];
