@@ -3909,6 +3909,31 @@ extern "C" void fn_800C18A0(void *arg0, void *arg1) {
     out[26] = -temp[0];
 }
 
+extern "C" void fn_800C1C1C(void *, s32 *);
+extern "C" void fn_800C1A80(void *arg0, void *arg1, s32 *out) {
+    s32 v[19]; s32 d;
+    fn_800C1C1C(arg0, &v[9]); fn_800C1C1C(arg1, &v[0]);
+    *out = v[9];
+    d = v[0] - *out; out[1] = d;
+    d = v[10] - d; out[2] = d;
+    v[1] -= v[0]; d = v[1] - out[2]; out[3] = d;
+    d = v[11] - d; out[4] = d;
+    v[2] -= v[1]; d = v[2] - out[4]; out[5] = d;
+    d = v[12] - d; out[6] = d;
+    v[3] -= v[2]; d = v[3] - out[6]; out[7] = d;
+    d = v[13] - d; out[8] = d;
+    v[4] -= v[3]; d = v[4] - out[8]; out[9] = d;
+    d = v[14] - d; out[10] = d;
+    v[5] -= v[4]; d = v[5] - out[10]; out[11] = d;
+    d = v[15] - d; out[12] = d;
+    v[6] -= v[5]; d = v[6] - out[12]; out[13] = d;
+    d = v[16] - d; out[14] = d;
+    v[7] -= v[6]; d = v[7] - out[14]; out[15] = d;
+    out[16] = v[17] - d;
+    v[8] -= v[7];
+    out[17] = v[8] - out[16];
+}
+
 void fn_800C1E88(const s32* a, const s32* b, s32* out) {
     s32 i;
     for (i = 0; i < 4; i++) {
@@ -3960,6 +3985,23 @@ extern "C" void fn_800C2090(volatile s32 *dst, const volatile s32 *a, const vola
     dst[0x3C0] = -(a[15] + b[15]);
     dst[0x400] = a[16] + b[16];
     dst[0x440] = -(a[17] + b[17]);
+}
+
+void fn_800C2A88(s32 *a, s32 *b, s32 *c, s32 *d) {
+    s32 i, t;
+    for (i=0;i<6;i++) {
+        c[i*0x100/4]=b[i];
+        d[-i*0x100/4]=b[0x44/4-i];
+    }
+    t=a[6];
+    c[0x600/4]=b[6]+(t*lbl_8031D700[0]>>20);
+    d[-0x600/4]=b[0x2C/4]+(t*lbl_8031D700[1]>>20);
+    t=a[7];
+    c[0x700/4]=b[7]+(t*lbl_8031D700[2]>>20);
+    d[-0x700/4]=b[0x28/4]+(t*lbl_8031D700[3]>>20);
+    t=a[8];
+    c[0x800/4]=b[8]+(t*lbl_8031D700[4]>>20);
+    d[-0x800/4]=b[0x24/4]+(t*lbl_8031D700[5]>>20);
 }
 
 extern "C" s32 lbl_8031D778[];
@@ -4155,6 +4197,17 @@ void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
         arg1 += 1;
         arg2 += 1;
     } while (--i);
+}
+
+void fn_800C5298(s32* arg0, s32* arg1, s32* arg2) {
+    s32 i;
+    for (i = 0; i < 16; i++) {
+        s32 a = arg0[i];
+        s32 b = arg1[i];
+        s32 c = arg2[i];
+        arg0[i] = a + b;
+        arg1[i] = (s32)(((s64)(a - b) * c) >> 24);
+    }
 }
 
 void fn_800C5430(s32 *a, s32 *b, s32 *coeff) {
