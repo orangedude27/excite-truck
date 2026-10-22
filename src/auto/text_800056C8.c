@@ -68,6 +68,8 @@ void fn_800056C8(s32 arg0, s32 arg1) {
     *(p + 4) = arg1;
 }
 
+#pragma push
+#pragma dont_inline on
 void fn_800056E0(s32 arg0) {
     s32 r29 = arg0;
     s32 r30 = 0;
@@ -103,6 +105,25 @@ void fn_800057BC(void) {
         return;
     }
     fn_80230DA0();
+}
+
+s32 fn_800057D0(void) {
+    s32 i, count;
+    void *object;
+    void (*set_all)(s32) = fn_800056E0;
+    if (fn_801769A8() & 0x4000) { set_all(lbl_8034EEB8[0]); return; }
+    object = (void *)lbl_8034EEB8[1];
+    if (object != 0 && ((s32 (*)(void))(*(void ***)object)[14])() == 0) { set_all((s32)object); return; }
+    if (fn_80005694() != 0) { set_all(lbl_8034EEB8[3]); return; }
+    if (fn_80005678() != 0) {
+        object = (void *)lbl_8034EEB8[2];
+        if (object != 0 && ((s32 (*)(void))(*(void ***)object)[14])() == 0) { set_all((s32)object); return; }
+        set_all(lbl_8034EEB8[23]);
+        return;
+    }
+    count = ((s32 *)lbl_8055D350)[5];
+    for (i = 0; i < count; i++)
+        fn_800056C8(i, fn_80005580(i) ? *(s32 *)((char *)lbl_8034EEB8 + 0x58) : *(s32 *)((char *)lbl_8034EEB8 + i * 0x10 + 0x1C));
 }
 
 #pragma push
