@@ -11,6 +11,7 @@ extern "C" void SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *, const void *, int);
 extern float lbl_80560F88, lbl_80560F8C, lbl_80560F90;
 extern double lbl_80560F98, lbl_80560FA0;
+extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
 extern "C" void fn_800E6A44(void);
 extern "C" void AIRegisterDMACallback(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
@@ -1465,6 +1466,63 @@ extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void* self) {
 void fn_800E8ADC(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x65) == 0)
         *(unsigned char *)((char *)arg0 + 0x64) = 1;
+}
+
+extern "C" void Stop__Q44nw4r3snd6detail10BasicSoundFi(void *self, int target) {
+    struct SoundObj {
+        virtual ~SoundObj();
+        virtual void a(); virtual void b(); virtual void c(); virtual void d();
+        virtual void stop();
+        virtual void f(); virtual void g(); virtual void h(); virtual void i();
+        virtual void j(); virtual void k(); virtual void l(); virtual void m();
+        virtual void n(); virtual void o(); virtual void p(); virtual void q();
+        virtual SoundObj *get();
+        virtual void more1(); virtual void more2(); virtual void more3();
+        virtual void more4(); virtual void more5(); virtual void more6();
+        virtual void more7(); virtual void more8(); virtual void more9();
+        virtual void more10(); virtual void more11(); virtual void more12();
+        virtual void clear(int);
+    };
+    struct VoiceObj {
+        virtual ~VoiceObj();
+        virtual int valid();
+        virtual void a();
+        virtual int isPlaying();
+        virtual int isReady();
+    };
+    struct Fields {
+        unsigned char pad[0x44];
+        float start;
+        float end;
+        int total;
+        int elapsed;
+        unsigned char pad2[0x12];
+        unsigned char flags[4];
+    };
+    SoundObj *sound = (SoundObj *)self;
+    SoundObj *voice = sound->get();
+    Fields *fields = (Fields *)self;
+    if (target == 0 || ((VoiceObj *)voice)->valid() == 0 ||
+        ((VoiceObj *)voice)->isPlaying() == 0 || ((VoiceObj *)voice)->isReady() != 0) {
+        sound->stop();
+        return;
+    }
+    int total = fields->total;
+    int elapsed = fields->elapsed;
+    float start = fields->start;
+    float end = fields->end;
+    float current;
+    if (elapsed >= total) current = end;
+    else current = start + (float)elapsed * (end - start) / (float)total;
+    fields->start = current;
+    fields->end = lbl_80560FB0;
+    fields->total = (int)((float)target * current);
+    fields->elapsed = 0;
+    sound->clear(0);
+    fields->flags[0] = 0;
+    fields->flags[1] = 0;
+    fields->flags[2] = 0;
+    fields->flags[3] = 1;
 }
 
 extern "C" void fn_800E8F54(void *arg0, int arg1) {
