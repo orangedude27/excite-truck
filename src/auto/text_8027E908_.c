@@ -797,6 +797,8 @@ int fn_8027F958(int *selection, void *collection) {
 extern int fn_80216D28(void);
 int fn_80280898(void) { extern unsigned int lbl_8055F688; if (lbl_8055F688 == 0) { fn_80216D28(); return 0; } return 1; }
 
+int fn_80280A38(void) { return 0; }
+
 extern unsigned char lbl_804B3068[];
 typedef unsigned int (*GetKeyFn)(void *);
 typedef char *(*GetTextFn)(void *);
@@ -864,6 +866,55 @@ int fn_80280DC8(void) {
     }
     return 0;
 }
+
+#pragma push
+#pragma cplusplus on
+extern "C" int fn_80216D28(void);
+extern "C" int fn_80280F7C(void) {
+    class Obj { public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10();
+        virtual void* f11(); virtual const char* f12();
+    };
+    if (lbl_8055F688 != 0) {
+        int i = 0;
+        while (i < lbl_804B3048.count && lbl_804B3048.items[i] != (void*)lbl_8055F688) i++;
+        if (i == lbl_804B3048.count) i = -1;
+        Obj* obj = *(Obj**)((char*)lbl_804B3048.items[i] + 0x60);
+        if (obj != 0) {
+            int j = i - 1;
+            void* identity = obj->f11();
+            while (j >= 0) {
+                Obj* prev = *(Obj**)((char*)lbl_804B3048.items[j] + 0x60);
+                if (prev != 0 && prev->f11() == identity) break;
+                j--;
+            }
+            if (j >= 0) {
+                ((char*)lbl_804B3068)[0] = 0;
+                if (j < lbl_804B3048.count) {
+                    void* item = lbl_804B3048.items[j];
+                    lbl_8055F688 = (unsigned int)item;
+                    Obj* selected = *(Obj**)((char*)item + 0x60);
+                    if (item != 0 && selected != 0) {
+                        const char* src = selected->f12();
+                        char* dst = (char*)lbl_804B3068;
+                        int n = 100;
+                        do {
+                            char c = *src++;
+                            *dst++ = c;
+                            if ((signed char)c == 0) break;
+                            n--;
+                        } while (n > 0);
+                        if (n == 0) dst[-1] = 0;
+                    }
+                } else lbl_8055F688 = 0;
+            }
+        }
+    } else fn_80216D28();
+    return 0;
+}
+#pragma pop
 
 extern int fn_80216D28();
 extern int fn_8025C204(int);
@@ -1273,3 +1324,11 @@ struct Fn80280A38Obj {
     virtual void v8(); virtual void v9(); virtual int ready(); virtual char *getName();
 };
 #pragma cplusplus reset
+#pragma cplusplus on
+struct V80280A38 {
+    virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3();
+    virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7();
+    virtual int f8(); virtual int f9(); virtual int f10(); virtual int test();
+    virtual const char *name();
+};
+#pragma cplusplus off
