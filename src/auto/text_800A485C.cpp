@@ -180,10 +180,40 @@ public:
 class EventDispatchA { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual EventDispatchA *first(); };
 class EventDispatchB { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21(); virtual void d22(); virtual void second(); };
 class HomeButtonEventHandler { public: char pad[4]; EventDispatchA *dispatch; const char *text; void onEvent(unsigned long, unsigned long, void *); };
-class HomeButton {
-public:
-    s32 getPaneNo(const char *name);
-};
+  class TriggerLookup {
+  public:
+      virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+      virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+      virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+      virtual void d12(); virtual void d13(); virtual void d14();
+      virtual void *findPane(const char *, s32);
+  };
+  class PaneSearch {
+  public:
+      virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+      virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+      virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+      virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+      virtual void *getPane(void *);
+  };
+  class TriggerPane {
+  public:
+      virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+      virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+      virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+      virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+      virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19();
+      virtual void setTrigger(s32);
+  };
+  struct HomeButtonPaneAccessor {
+      u8 pad[0x10];
+      TriggerLookup *lookup;
+  };
+  class HomeButton {
+  public:
+      s32 getPaneNo(const char *name);
+      void updateTrigPane();
+  };
 }
 extern "C" const char *lbl_8031D990[];
 extern "C" const char *lbl_8031E218[];
@@ -4511,35 +4541,36 @@ struct Fn800C08A8Context { u8 pad[0xC]; u32 bitIndex; s32 limit; };
 extern "C" u8 lbl_8031C2E0[];
 #pragma push
 #pragma use_lmw_stmw on
-extern "C" void fn_800C08A8(void *arg0, s32 arg1, const u8 *arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
-    s16 var_r0, var_r29, var_r30, var_r31, var_r4;
-    s32 temp_r26_2, temp_r27, shift;
-    u32 temp_r26, temp_r28, temp_r0, var_ctr, var_ctr_2, var_r3;
-    u8 temp_r27_2;
-    s32 var_r7;
-    s16 *var_r12, *var_r5;
+extern "C" void fn_800C08A8(void *arg0, s32 arg1, s32 arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
+    register s16 var_r0, var_r29, var_r30, var_r31;
+    register s32 temp_r26_2, temp_r27, shift;
+    s32 temp_r3;
+    register u32 temp_r26, temp_r28, temp_r0, var_ctr, var_ctr_2, var_r3_2;
+    register u32 temp_r27_2;
+    register s32 var_r7;
+    register s16 *var_r12, *var_r5;
 
     var_r7 = arg4;
     var_r12 = arg3 + var_r7;
     var_ctr = (u32)((arg1 + 3) - var_r7) >> 2U;
-    if (var_r7 < arg1) {
-        do {
-            temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
+    
+        for (; var_ctr != 0; --var_ctr) {
+            if (var_r7 >= arg1) break;            temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
             temp_r28 = temp_r26 + 6;
             temp_r27 = 0x10 - (temp_r26 & 7);
             M2C_FIELD(arg0, u32 *, 0xC) = temp_r28;
             temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
-            temp_r26 = arg2[temp_r26_2];
+            temp_r26 = ((const u8 *)arg2)[temp_r26_2];
             temp_r26_2 = (temp_r26_2 + 1) & 0x1FFF;
-            temp_r27_2 = arg2[temp_r26_2];
+            temp_r27_2 = ((const u8 *)arg2)[temp_r26_2];
             temp_r26 = ((temp_r26 << 8) | temp_r27_2) & lbl_802F3F54[temp_r27];
             temp_r0 = (temp_r26 >> (temp_r27 - 6)) & 0xFFFF;
             temp_r27_2 = lbl_8031C2E0[temp_r0];
             var_r0 = (temp_r27_2 >> 3U) & 1;
+            temp_r26 = temp_r28 - (temp_r27_2 >> 4);
             var_r31 = (temp_r27_2 >> 2U) & 1;
             var_r30 = (temp_r27_2 >> 1U) & 1;
             var_r29 = temp_r27_2 & 1;
-            temp_r26 = temp_r28 - (temp_r27_2 >> 4);
             M2C_FIELD(arg0, u32 *, 0xC) = temp_r26;
             if (var_r0 != 0) {
                 temp_r28 = temp_r26 + 1;
@@ -4547,7 +4578,7 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, const u8 *arg2, s16 *arg3, s32
                 shift = 8 - (temp_r26 & 7);
                 shift -= 1;
                 temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
-                if (((s32)arg2[temp_r26_2] >> shift) & 1) var_r0 = -var_r0;
+                if (((s32)((const u8 *)arg2)[temp_r26_2] >> shift) & 1) var_r0 = -var_r0;
             }
             if (var_r31 != 0) {
                 temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
@@ -4556,7 +4587,7 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, const u8 *arg2, s16 *arg3, s32
                 shift = 8 - (temp_r26 & 7);
                 shift -= 1;
                 temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
-                if (((s32)arg2[temp_r26_2] >> shift) & 1) var_r31 = -var_r31;
+                if (((s32)((const u8 *)arg2)[temp_r26_2] >> shift) & 1) var_r31 = -var_r31;
             }
             if (var_r30 != 0) {
                 temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
@@ -4565,7 +4596,7 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, const u8 *arg2, s16 *arg3, s32
                 shift = 8 - (temp_r26 & 7);
                 shift -= 1;
                 temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
-                if (((s32)arg2[temp_r26_2] >> shift) & 1) var_r30 = -var_r30;
+                if (((s32)((const u8 *)arg2)[temp_r26_2] >> shift) & 1) var_r30 = -var_r30;
             }
             if (var_r29 != 0) {
                 temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
@@ -4574,39 +4605,39 @@ extern "C" void fn_800C08A8(void *arg0, s32 arg1, const u8 *arg2, s16 *arg3, s32
                 shift = 8 - (temp_r26 & 7);
                 shift -= 1;
                 temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
-                if (((s32)arg2[temp_r26_2] >> shift) & 1) var_r29 = -var_r29;
+                if (((s32)((const u8 *)arg2)[temp_r26_2] >> shift) & 1) var_r29 = -var_r29;
             }
             var_r12[0] = var_r0; var_r12[1] = var_r31;
             var_r12[2] = var_r30; var_r12[3] = var_r29;
             if ((s32)M2C_FIELD(arg0, u32 *, 0xC) > M2C_FIELD(arg0, s32 *, 0x10)) {
                 if (arg5 == 1 && *arg6 == 0) *arg6 = (s16)var_r7;
-                temp_r26_2 = (s32)(arg1 + 3);
+                temp_r3 = (s32)(arg1 + 3);
                 var_r5 = arg3 + var_r7;
-                var_r4 = 0;
-                temp_r26_2 -= var_r7;
-                var_r3 = (u32)temp_r26_2 >> 2;
+                temp_r3 -= var_r7;
+                var_r3_2 = (u32)temp_r3 >> 2;
                 if (var_r7 < arg1) {
-                    temp_r0 = var_r3 >> 3U;
+                arg1 = 0;
+                    temp_r0 = var_r3_2 >> 3U;
                     var_ctr_2 = temp_r0;
                     if (temp_r0 != 0) {
                         do {
-                            var_r5[0]=var_r4; var_r5[1]=var_r4; var_r5[2]=var_r4; var_r5[3]=var_r4;
-                            var_r5[4]=var_r4; var_r5[5]=var_r4; var_r5[6]=var_r4; var_r5[7]=var_r4;
-                            var_r5[8]=var_r4; var_r5[9]=var_r4; var_r5[10]=var_r4; var_r5[11]=var_r4;
-                            var_r5[12]=var_r4; var_r5[13]=var_r4; var_r5[14]=var_r4; var_r5[15]=var_r4;
-                            var_r5[16]=var_r4; var_r5[17]=var_r4; var_r5[18]=var_r4; var_r5[19]=var_r4;
-                            var_r5[20]=var_r4; var_r5[21]=var_r4; var_r5[22]=var_r4; var_r5[23]=var_r4;
-                            var_r5[24]=var_r4; var_r5[25]=var_r4; var_r5[26]=var_r4; var_r5[27]=var_r4;
-                            var_r5[28]=var_r4; var_r5[29]=var_r4; var_r5[30]=var_r4; var_r5[31]=var_r4;
+                            var_r5[0]=arg1; var_r5[1]=arg1; var_r5[2]=arg1; var_r5[3]=arg1;
+                            var_r5[4]=arg1; var_r5[5]=arg1; var_r5[6]=arg1; var_r5[7]=arg1;
+                            var_r5[8]=arg1; var_r5[9]=arg1; var_r5[10]=arg1; var_r5[11]=arg1;
+                            var_r5[12]=arg1; var_r5[13]=arg1; var_r5[14]=arg1; var_r5[15]=arg1;
+                            var_r5[16]=arg1; var_r5[17]=arg1; var_r5[18]=arg1; var_r5[19]=arg1;
+                            var_r5[20]=arg1; var_r5[21]=arg1; var_r5[22]=arg1; var_r5[23]=arg1;
+                            var_r5[24]=arg1; var_r5[25]=arg1; var_r5[26]=arg1; var_r5[27]=arg1;
+                            var_r5[28]=arg1; var_r5[29]=arg1; var_r5[30]=arg1; var_r5[31]=arg1;
                             var_r5 += 32; var_ctr_2 -= 1;
                         } while (var_ctr_2 != 0);
-                        var_r3 &= 7;
-                        if (var_r3 != 0) goto block_21;
+                        var_r3_2 &= 7;
+                        if (var_r3_2 != 0) goto block_21;
                     } else {
 block_21:
-                        var_ctr_2 = var_r3;
+                        var_ctr_2 = var_r3_2;
                         do {
-                            var_r5[0]=var_r4; var_r5[1]=var_r4; var_r5[2]=var_r4; var_r5[3]=var_r4;
+                            var_r5[0]=arg1; var_r5[1]=arg1; var_r5[2]=arg1; var_r5[3]=arg1;
                             var_r5 += 4; var_ctr_2 -= 1;
                         } while (var_ctr_2 != 0);
                     }
@@ -4615,8 +4646,7 @@ block_21:
             }
             var_r12 += 4;
             var_r7 += 4;
-        } while (--var_ctr != 0);
-    }
+        }
 }
 #pragma pop
 
