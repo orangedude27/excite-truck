@@ -330,6 +330,37 @@ void fn_80117330(void* arg0) {
  }
 }
 
+u32 fn_80116BD4(s32, s32, s32);
+u32 fn_801174B0(s32 count, u32 *values, s32 offset, s32 *outIndex, s32 *outFlag) {
+    s32 i;
+    u32 maxDiff;
+    s32 maxIndex;
+    s32 allOdd;
+
+    maxDiff = 0;
+    maxIndex = 0;
+    for (i = 0; i < count - offset; i++) {
+        u32 diff = values[offset + i] - values[i];
+        if (diff > maxDiff) {
+            maxDiff = diff;
+            maxIndex = i;
+        }
+    }
+    if (maxDiff == 0) {
+        maxDiff = fn_80116BD4(values[count] - values[0], offset, count);
+    }
+    allOdd = 1;
+    for (i = 0; i < count; i++) {
+        if ((values[i] & 1) == 0) {
+            allOdd = 0;
+            break;
+        }
+    }
+    *outFlag = allOdd;
+    *outIndex = maxIndex;
+    return maxDiff;
+}
+
 s32 fn_80117598(s32 arg0,s32 arg1){
  s32 off=((arg0+0x340)-arg0);
  s32* p=(s32*)(arg0-off);
@@ -600,6 +631,30 @@ void fn_8011A1A0(u32 *data, u32 size) {
         }
     }
 }
+
+u32 fn_8011A388(void* arg0, s32 arg1, s32 arg2, u32 arg3) {
+    extern u32 fn_8011A240(void*, u32, s32, u32);
+    extern void fn_8011A330(void*);
+    u32 result, current, remaining;
+    if (arg1 == -1 || *(u32*)((u8*)arg0 + 0x90) == (u32)arg1) return arg3;
+    *(u32*)((u8*)arg0 + 0x90) = (u32)arg1;
+    result = fn_8011A240((u8*)arg0 + 0x54,
+                         *(u32*)((u8*)arg0 + 0x90) + *(u32*)((u8*)arg0 + 0xB4),
+                         arg2, arg3);
+    if (result != arg3) {
+        *(s32*)((u8*)arg0 + 0x20) = 1;
+        fn_8011A330(arg0);
+    }
+    *(u32*)((u8*)arg0 + 0x90) += result;
+    current = *(u32*)((u8*)arg0 + 0x90);
+    *(u32*)((u8*)arg0 + 0x98) = current;
+    remaining = *(u32*)((u8*)arg0 + 0xB8) - current;
+    if (remaining >= *(u32*)((u8*)arg0 + 0x40))
+        *(u32*)((u8*)arg0 + 0x48) = *(u32*)((u8*)arg0 + 0x40);
+    fn_8011A1A0((u32*)arg2, result);
+    return result;
+}
+
 #pragma unroll reset
 void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
     s32 temp_r0, temp_r31, temp_r3, temp_r3_2, temp_r4, var_r31;
@@ -1088,6 +1143,19 @@ s32 fn_8011DF68(s32 arg0, u32 arg1, u32 arg2, u32 arg3) {
     return (((u32)(arg0 * var_r5) >> 3) + ((temp * (arg1 >> 3)) >> 3) + 3) & 0xFFFFFFFC;
 }
 
+void fn_8011DFAC(void* arg0, u32 arg1) {
+    s32* out = (s32*)arg0;
+    out[0] = fn_8011DF68(0x200, arg1, 4, 1);
+    out[1] = fn_8011DF68(0x200, arg1 >> 1, 4, 1);
+    out[2] = fn_8011DF68(0x200, arg1, 8, 0x40);
+    out[3] = fn_8011DF68(0x200, arg1, 8, 8);
+    out[4] = fn_8011DF68(0x200, arg1, 5, 1);
+    out[5] = fn_8011DF68(0x200, arg1, 5, 1);
+    out[6] = fn_8011DF68(0x200, arg1, 0xB, 1);
+    out[7] = fn_8011DF68(0x200, arg1, 0xB, 1);
+    out[8] = fn_8011DF68(0x200, arg1, 4, 0x30);
+}
+
 extern void *lbl_8055DEF0;
 void* fn_8011FF24(void) {
     return lbl_8055DEF0;
@@ -1158,12 +1226,12 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
     register s32 n;
     if (count > 0x20) {
         n = count >> 2;
-        ((void (*)(s32, void *, void *))fn_80121C68)(count, dst, (u8 *)src + (srcIndex - n) * 4);
+        fn_80121C68(count, dst, (u8 *)src + (srcIndex - n) * 4);
         if (count > 0x200) {
             fn_80122E08(n, dst, srcIndex, src);
             fn_80122ED8(n, (u8 *)dst + n * 4, srcIndex, src);
             fn_80122E08(n, (u8 *)dst + n * 8, srcIndex, src);
-            fn_80122E08(n, (u8 *)dst + ((n * 4 - n) * 4), srcIndex, src);
+            fn_80122E08(n, (u8 *)dst + ((n * 3) << 2), srcIndex, src);
         } else if (n > 0x20) {
             fn_80122FA4(count, dst, srcIndex, src);
         } else {
@@ -1178,11 +1246,9 @@ void fn_80120CA4(register s32 count, register void *dst, register s32 mode, regi
             fn_80124AD8(dst, src);
             fn_80121BB0(dst);
         }
-    } else if (count != 8) {
-        if (count == 4)
-            fn_80125098(dst);
-        else
-            fn_80124F90(dst);
+    } else {
+        fn_80124F90(dst);
+        if (count == 4) fn_80125098(dst);
     }
 }
 
