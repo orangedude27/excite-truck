@@ -1,5 +1,15 @@
 #include <types.h>
 #include <stdarg.h>
+extern "C" void *fn_801284F8(u32, void *);
+extern "C" void *fn_80131810(s32);
+extern "C" void fn_80146BD4(u8 *, const s8 *, s32);
+extern "C" void fn_80146C08(void *, s32);
+extern "C" void fn_80146C1C(void **);
+extern "C" void fn_80146824(void *);
+extern "C" void *fn_80145FEC(void *, const char *, s32);
+extern "C" void *fn_801460F8(void *, const char *, s32);
+extern "C" void *fn_80146204(void *, const char *, s32);
+extern "C" s32 fn_80146310(void *, const char *, s32);
 extern "C" u8 lbl_8055E208;
 
 extern "C" void *fn_801284F8(u32, void *);
@@ -482,6 +492,62 @@ extern "C" void fn_80145D8C(void *arg0) {
         return;
     }
     fn_802E30C8(lbl_8032D0D0);
+}
+
+extern "C" void fn_80145E70(s32 arg0) {
+    struct Config {
+        virtual void a0();
+        virtual void a1();
+        virtual void *getObject(const char *);
+        virtual void a3();
+        virtual s32 has(const char *);
+    };
+    struct Properties {
+        virtual void a0();
+        virtual void a1();
+        virtual void a2();
+        virtual void a3();
+        virtual void a4();
+        virtual void a5();
+        virtual void a6();
+        virtual void a7();
+        virtual s32 set(const char *, s32);
+    };
+    u8 *object;
+    void *config;
+    s32 result;
+
+    object = (u8 *)fn_801284F8(0x50, &lbl_8032D0EC);
+    if (object == 0)
+        return;
+    fn_80146C1C((void **)object);
+    *(void **)object = &lbl_8032D1E8;
+    fn_80146C08(object + 0x40, (s32)object);
+    *(s32 *)(object + 0x2C) = 0;
+    *(s32 *)(object + 0x30) = 0;
+    *(s32 *)(object + 0x34) = 0;
+    *(s32 *)(object + 0x3C) = 0;
+    *(s32 *)(object + 0x48) = 0;
+    *(s32 *)(object + 0x4C) = 0;
+    object[4] = 0;
+    ((void (*)(u8 *, const s8 *, s32, s32))fn_80146BD4)(object + 5, (const s8 *)arg0, 0x20, 0);
+    config = fn_80131810(arg0);
+    *(void **)(object + 0x28) = config;
+    if (config != 0) {
+        lbl_8055E208 = 1;
+        if (((Config *)config)->has(lbl_80559E20) != 0) {
+            void *properties = ((Config *)config)->getObject(lbl_80559E20);
+            result = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
+            lbl_8055E208 = (s8)((u32)((result >> 1) - (result & 1)) >> 31);
+        }
+        *(s32 *)(object + 0x2C) = (s32)((void *(*)(void *, const char *))fn_80145FEC)(config, lbl_80559E30);
+        *(s32 *)(object + 0x30) = (s32)((void *(*)(void *, const char *))fn_801460F8)(config, lbl_80559E34);
+        *(s32 *)(object + 0x34) = (s32)((void *(*)(void *, const char *))fn_80146204)(config, lbl_80559E3C);
+        *(s32 *)(object + 0x3C) = (s32)((void *(*)(void *, const char *))fn_80146310)(config, lbl_8032D0FC);
+        fn_80146824(object);
+    }
+    fn_80145D8C(object);
+    fn_80146490(object);
 }
 
 extern "C" void *fn_801284F8(u32, void *);
