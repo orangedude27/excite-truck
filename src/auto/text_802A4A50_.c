@@ -502,3 +502,11 @@ extern void fn_802C9124(s32, s32, f32, f32, u32, f32, f32, f32, f32);
 extern void fn_802D3D50(void);
 extern void fn_802A5FE4(void);
 extern void *fn_801E7E34(void);
+#pragma cplusplus on
+struct Obj802A5878 {
+    virtual void *v0();
+    virtual void *v1();
+    virtual const char *name();
+    virtual Obj802A5878 *child(s32);
+};
+#pragma cplusplus reset
