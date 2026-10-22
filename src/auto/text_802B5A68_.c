@@ -440,6 +440,12 @@ s16 fn_802B6ED8(s32 arg0, s32 arg1, u32 arg2) {
 
 #pragma pop
 extern float lbl_80564C8C;
+extern float lbl_80564C80;
+extern float lbl_80564C90;
+extern float lbl_80564C94;
+extern s32 fn_802BC09C(s32, s32, float);
+extern void fn_80204044();
+extern s32 fn_802C21DC();
 extern s32 fn_802B7300(s16, s16, s32, s32, float);
 void fn_802B7420(s16 arg0, s16 arg1, s32 arg2) {
     fn_802B7300(arg0, arg1, arg2, -1, lbl_80564C8C);
@@ -542,6 +548,34 @@ s32 fn_802B8310(s32 arg0) {
         }
     }
     return changed;
+}
+
+void fn_802B83CC(void) {
+    Struct804BFF80 *state = (Struct804BFF80 *)&lbl_804BFF80;
+    s32 difference;
+    u32 i;
+
+    if (state->str1[0] == 0)
+        return;
+    difference = state->unk0[1] - state->unk54[1];
+    if (difference == 0)
+        return;
+
+    for (i = 0; i < 3; i++) {
+        Fn802B83CCEntry *entry = &lbl_8034A95C[i];
+        if (entry->name != 0 && strcmp(entry->name, state->str1) == 0)
+            return;
+        if (entry->predicate != 0 && entry->predicate(state->str1) != 0) {
+            if (entry->action(difference, state->str1) != 0) {
+                state->unk54[0] = state->unk0[0];
+                state->unk54[1] = state->unk0[1];
+                state->unk54[2] = state->unk0[2];
+                state->unk54[3] = state->unk0[3];
+                state->unk54[4] = state->unk0[4];
+            }
+            return;
+        }
+    }
 }
 
 #pragma dont_inline on
