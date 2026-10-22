@@ -836,3 +836,8 @@ extern "C" u32 fn_802A4A30(void) { return 4; }
 extern "C" u32 fn_802A4A38(void) { return 5; }
 
 extern "C" u32 fn_802A4A40(void) { return 6; }
+extern "C" {
+extern f32 lbl_80564730, lbl_80564734, lbl_80564738, lbl_8056479C, lbl_805647A0, lbl_805647B8, lbl_805647C4, lbl_805647F0;
+extern f32 lbl_80564820, lbl_80564824, lbl_80564828;
+extern int lbl_80349A74[];
+}
