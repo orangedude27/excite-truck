@@ -5238,6 +5238,7 @@ BOOLEAN btsnd_hcic_add_SCO_conn(UINT16 handle, UINT16 packet_types) {
     return TRUE;
 }
 
+/* Match note: allocate pool 2 directly and send the completed packet with the one-argument helper call. */
 BOOLEAN btsnd_hcic_link_key_req_reply(BD_ADDR bd_addr, LINK_KEY link_key) {
     BT_HDR *p;
     UINT8 *pp;
