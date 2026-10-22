@@ -10,6 +10,13 @@ extern "C" s32 fn_80147C50(u32, u32, f32);
 extern "C" void lbl_8032D214(void);
 extern "C" void *lbl_8032D1E8;
 extern "C" void *fn_80148294(const char *, void *);
+extern "C" char lbl_8032D0EC[];
+extern "C" char lbl_8032D0FC[];
+extern "C" char lbl_80559E20[];
+extern "C" char lbl_80559E28[];
+extern "C" char lbl_80559E30[];
+extern "C" char lbl_80559E34[];
+extern "C" char lbl_80559E3C[];
 extern "C" f32 lbl_8055E200;
 extern "C" f32 lbl_8055E204;
 extern "C" int stricmp(const char *, const char *);
@@ -913,8 +920,7 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
     extern void fn_802C8E48(void);
     extern void fn_802C8D74(void);
     extern f32 fn_801452A0(s32, f32);
-    f32 (*convert)(s32, f32) = (f32 (*)(s32, f32))fn_801451DC;
-    f32 x, y, angle, left;
+    f32 x, y, angle, tx;
     s32 mode;
     if (arg0 != 0) {
         x = *(f32 *)((u8 *)arg0 + 4);
@@ -923,21 +929,19 @@ void fn_801476D8(void *arg0, s32 arg1, s32 arg2) {
         fn_802C8BD0(arg2);
         if (fn_802C8DBC(4) != 0) {
             angle = fn_801452B4(y);
-            left = convert(mode, x);
-            fn_802C8E00(arg1, 0, left, angle, lbl_805615D4,
-                        *(f32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x1C));
+            tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4, *(f32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x1C));
             angle = fn_801452B4(y);
-            left = fn_801452A0(mode, *(f32 *)((u8 *)arg0 + 0x10));
-            fn_802C8E00(arg1, 0, convert(mode, x) + left, angle, lbl_805615D4,
-                        *(f32 *)((u8 *)arg0 + 0x20), *(f32 *)((u8 *)arg0 + 0x1C));
+            tx = fn_801452A0(mode, *(f32 *)((u8 *)arg0 + 0x10));
+            tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            fn_802C8E00(arg1, 0, tx, angle, lbl_805615D4, *(f32 *)((u8 *)arg0 + 0x20), *(f32 *)((u8 *)arg0 + 0x1C));
             angle = fn_801452B4(y + *(f32 *)((u8 *)arg0 + 0x14));
-            left = convert(mode, x);
-            fn_802C8E00(arg1, 1, left, angle, lbl_805615D4,
-                        *(f32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x24));
+            tx = ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4, *(f32 *)((u8 *)arg0 + 0x18), *(f32 *)((u8 *)arg0 + 0x24));
             angle = fn_801452B4(y + *(f32 *)((u8 *)arg0 + 0x14));
-            left = fn_801452A0(mode, *(f32 *)((u8 *)arg0 + 0x10));
-            fn_802C8E00(arg1, 1, convert(mode, x) + left, angle, lbl_805615D4,
-                        *(f32 *)((u8 *)arg0 + 0x20), *(f32 *)((u8 *)arg0 + 0x24));
+            tx = fn_801452A0(mode, *(f32 *)((u8 *)arg0 + 0x10));
+            tx += ((f32 (*)(s32, f32))fn_801451DC)(mode, x);
+            fn_802C8E00(arg1, 1, tx, angle, lbl_805615D4, *(f32 *)((u8 *)arg0 + 0x20), *(f32 *)((u8 *)arg0 + 0x24));
             fn_802C8E48();
         }
         fn_802C8D74();
