@@ -10,6 +10,7 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern u8 lbl_803C3AF0[];
 extern u8 lbl_803C4040[];
 extern void fn_80089E40(void *, u8, void *);
 extern u8 lbl_803151D8[];
@@ -5442,6 +5443,36 @@ u8 HID_HostOpenDev(u32 arg0) {
     return hidh_conn_initiate();
 }
 
+u8 hidh_conn_reg(void) {
+    extern unsigned char lbl_803C3C38[];
+    extern unsigned char lbl_802EEC18[];
+    extern char lbl_80317838[];
+    extern char lbl_80317858[];
+    unsigned char *cb = lbl_803C3C38;
+    UINT16 (*reg)(UINT16, void *, ...) = (UINT16 (*)(UINT16, void *, ...))L2CA_Register;
+
+    cb[0x346] = 1;
+    *(UINT16 *)(cb + 0x348) = 0x280;
+    cb[0x364] = 1;
+    *(UINT16 *)(cb + 0x366) = 0xFFFF;
+    if (reg(0x11, lbl_802EEC18, 0x280, 1) == 0) {
+        if (cb[0x401] >= 1) fn_8007093C(0x1E0000, lbl_80317838);
+        return 0xE;
+    }
+    if (reg(0x13, lbl_802EEC18) == 0) {
+        L2CA_Deregister(0x11);
+        if (cb[0x401] >= 1) fn_8007093C(0x1E0000, lbl_80317858);
+        return 0xE;
+    }
+    cb[0] = cb[0x10] = cb[0x34] = cb[0x44] = cb[0x68] = cb[0x78] = 0;
+    cb[0x9C] = cb[0xAC] = cb[0xD0] = cb[0xE0] = cb[0x104] = cb[0x114] = 0;
+    cb[0x138] = cb[0x148] = cb[0x16C] = cb[0x17C] = cb[0x1A0] = cb[0x1B0] = 0;
+    cb[0x1D4] = cb[0x1E4] = cb[0x208] = cb[0x218] = cb[0x23C] = cb[0x24C] = 0;
+    cb[0x270] = cb[0x280] = cb[0x2A4] = cb[0x2B4] = cb[0x2D8] = cb[0x2E8] = 0;
+    cb[0x30C] = cb[0x31C] = 0;
+    return 0;
+}
+
 extern u8 lbl_8031787C[];
 void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
     u8 *cb = lbl_803C3C38;
@@ -7872,6 +7903,36 @@ s32 rfc_parse_data(void *arg0, void *arg1, u8 *arg2) {
     }
 }
 
+extern char lbl_80319EB0[];
+void *rfc_alloc_multiplexer_channel(u8 *addr, s8 arg1) {
+    s32 index = 0;
+    u8 *base = lbl_803C4828;
+    u8 *channel;
+
+    if (base[0x408] != 0 && memcmp(base + 0x3FE, addr, 6) == 0) {
+        if (base[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0);
+        channel = base + index * 0x78 + 0x39C;
+        fn_80070F90(channel);
+        return channel;
+    }
+
+    index = base[0x65] + 1;
+    if (index >= 1) index = 0;
+    channel = base + index * 0x78 + 0x39C;
+    if (channel[0x6C] == 0) {
+        memset(channel, 0, 0x78);
+        memcpy(channel + 0x62, addr, 6);
+        fn_8006D4C4(channel + 0x18);
+        channel[0x6D] = arg1;
+        if (base[0x414] >= 4) fn_80070954(0x90003, lbl_80319EC0, 0x3C);
+        *(void **)(channel + 0x10) = channel;
+        btu_start_timer(channel, 0xB, 0x3C);
+        base[0x65] = index;
+        return channel;
+    }
+    return 0;
+}
+
 void rfc_check_mcb_active(void *arg0) {
     u8 *mcb = (u8 *)arg0;
     u16 i;
@@ -7903,6 +7964,41 @@ void rfc_sec_check_complete(void *unused, void *arg0, s8 arg1) {
     if (*((u8 *)arg0 + 1) == 0) return;
     if (*((u8 *)arg0 + 0x68) != 2 && *((u8 *)arg0 + 0x68) != 3) return;
     rfc_port_sm_execute(arg0, 15, &arg1);
+}
+
+void rfc_port_closed(void *arg0) {
+    extern unsigned char lbl_803C4828[];
+    extern char lbl_80319EB0[];
+    extern void port_rfc_closed(void *, s32);
+    unsigned char *port = arg0;
+    unsigned char *mcb = *(unsigned char **)(port + 0x6C);
+    u16 i;
+    if (lbl_803C4828[0x414] >= 5) fn_8007093C(0x90004, lbl_80319EB0 + 0x68);
+    if (lbl_803C4828[0x414] >= 4) fn_8007093C(0x90003, lbl_80319EB0 + 0x54);
+    fn_80070F90(port + 0x70);
+    port[0x68] = 0;
+    if (mcb != 0) {
+        mcb[port[0xD] + 0x24] = 0;
+        port[0xD] = 0;
+        for (i = 0; i < 0x3D; i++) {
+            if (mcb[i + 0x24] != 0) {
+                mcb[0x74] = 0;
+                break;
+            }
+        }
+        if (i == 0x3D) {
+            if (mcb[0x74] != 0) {
+                mcb[0x74] = 0;
+                fn_800916F4(mcb, 8, 0);
+            } else {
+                if (lbl_803C4828[0x414] >= 4)
+                    fn_80070954(0x90003, lbl_80319EB0 + 0x10, 2);
+                *(void **)(mcb + 0x10) = mcb;
+                btu_start_timer(mcb, 0xB, 2);
+            }
+        }
+    }
+    port_rfc_closed(arg0, 0x13);
 }
 
 void fn_8009578C(void *arg0) {
