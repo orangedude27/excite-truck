@@ -9,6 +9,11 @@ extern "C" void SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *, const void *, int);
+#pragma push
+#pragma small_data off
+extern float lbl_80560F88, lbl_80560F8C, lbl_80560F90;
+extern double lbl_80560F98, lbl_80560FA0;
+#pragma pop
 extern "C" void fn_800E6A44(void);
 extern "C" void AIRegisterDMACallback(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
