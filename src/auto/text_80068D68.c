@@ -21,6 +21,7 @@ extern void l2cu_create_conn_after_switch(void *p_lcb);
 extern u8 lbl_80392960[];
 extern u8 lbl_803C0D48[];
 extern u8 lbl_803C3C38[];
+extern void *l2cu_find_ccb_by_cid(void *, u16);
 extern u8 lbl_803C0B98[];
 extern u32 lbl_8055DCA4;
 extern void fn_80070F90(void *ptr);
