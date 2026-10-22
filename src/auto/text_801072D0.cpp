@@ -12,6 +12,7 @@ extern "C" char lbl_80328614[];
 
 namespace nw4hbm {
 namespace ut {
+class Font { public: void InitReaderFunc(int); };
 class IOStream {
 public:
     virtual void vf0();
