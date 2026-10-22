@@ -493,7 +493,7 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detai
     *(float *)((char *)self + 0x184) = lbl_80560F38;
 }
 
-extern "C" void GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
+extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
 extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
 extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *, void *);
 #pragma dont_inline on
