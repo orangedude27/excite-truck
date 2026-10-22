@@ -117,6 +117,10 @@ public:
 };
 #pragma cplusplus off
 extern void fn_802E30C8();
+extern void *fn_80131808(void *, s32, s32);
+extern void fn_80131818(void *);
+extern void *fn_8012850C(s32, void *);
+extern s32 fn_801345D8(char *, s32, char *, s32);
 typedef struct { s32 v[4]; } S4_80149234;
 extern s32 lbl_802F93D0[];
 extern f32 lbl_805615D4;
@@ -803,6 +807,12 @@ void fn_8014DB94(void *arg0) {
 void fn_8014DE4C(void) {
 
 }
+
+#pragma cplusplus on
+extern "C" void *fn_8014E1D0(Iter_8014E1D0 *arg0, s32 arg1) {
+    return arg0;
+}
+#pragma cplusplus off
 
 #pragma cplusplus on
 extern "C" void* fn_8014E3CC(void* arg0, s32 arg1) {
