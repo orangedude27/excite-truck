@@ -133,7 +133,7 @@ void fn_801CB55C(int arg0, int arg1) {
 extern void fn_801CC918(void);
 extern void fn_801CC470(void);
 extern void fn_801CD5B4(int, int, int);
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_801CB5DC(int arg0, int arg1, int arg2) {
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
@@ -147,7 +147,7 @@ action:
 done:
     return;
 }
-#pragma scheduling off
+#pragma scheduling on
 void fn_801CB648(int arg0, int arg1, f32 farg0) {
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
@@ -317,6 +317,37 @@ void **fn_801CC784(void *arg0) {
     int index = *(int *)((char *)arg0 + 4);
     *(int *)((char *)arg0 + 4) = index + 1;
     return (void **)((char *)base + (index << 2));
+}
+
+extern void *memset(void *, int, unsigned long);
+void *fn_801CC7A0(void *arg0) {
+    unsigned char *end;
+    unsigned char *p;
+    long zero;
+    unsigned char *base;
+    base = (unsigned char *)arg0;
+    end = base + 0x14C;
+    zero = 0;
+    p = base + 0x20;
+    *(long *)(base + 8) = zero;
+    *(long *)(base + 0xC) = zero;
+    *(long *)(base + 0x10) = zero;
+    *(long *)(base + 0x14) = zero;
+    do {
+        memset(p, 0x7A, 3); p[3] = zero;
+        memset(p + 0x14, 0x7A, 3); p[0x17] = zero;
+        memset(p + 0x28, 0x7A, 3); p[0x2B] = zero;
+        p += 0x3C;
+    } while (p < end);
+    memset(end, 0x7A, 3); base[0x14F] = 0;
+    memset(base + 0x160, 0x7A, 3); base[0x163] = 0;
+    memset(base + 0x174, 0x7A, 3); base[0x177] = 0;
+    memset(base + 0x188, 0x7A, 3); base[0x18B] = 0;
+    memset(base + 0x19C, 0x7A, 3); base[0x19F] = 0;
+    memset(base + 0x200, 0x7A, 3); base[0x203] = 0;
+    memset(base + 0x264, 0x7A, 3); base[0x267] = 0;
+    memset(base + 0x276, 0x7A, 3); base[0x279] = 0;
+    return arg0;
 }
 
 void fn_801CC8EC(void *arg0) {
@@ -579,6 +610,24 @@ int fn_801CEA6C(void *arg0, int arg1) {
 fail:
     return 0;
 }
+
+void *fn_801CEB0C(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        *(void **)((char *)arg0 + 4) = &lbl_80338010[0];
+        fn_801CEB94((char *)arg0 + 8);
+        fn_801CEB94((char *)arg0 + 0xC);
+        if (arg0 != 0) {
+            void (*cleanup)(void *);
+            cleanup = fn_801CBD04;
+            *(void **)((char *)arg0 + 4) = &lbl_80338038[0];
+            cleanup(arg0);
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 #pragma scheduling on
 void fn_801CEB94(void *arg0) {
     void *buf = *(void **)arg0;
