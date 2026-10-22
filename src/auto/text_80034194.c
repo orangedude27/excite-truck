@@ -3,6 +3,11 @@
 
 #include <types.h>
 
+extern void fn_80035C78(void);
+extern void fn_80035E6C(void);
+extern void fn_8003A1A0(u32, void (*)(void));
+extern void fn_8003B218(void (*)(void));
+
 extern s32 DVDInitialized_8055D888;
 extern s32 FirstTimeInBootrom_8055D868;
 extern s32 IDShouldBe_8055D8C4;
@@ -778,6 +783,49 @@ void fn_80039A5C(void (*callback)(s32, void *)) {
 
 void cbForPrepareReset(void) {
     lbl_8055D890 = 1;
+}
+
+void __DVDPrepareReset(void) {
+    s32 tempInterrupts;
+    s32 savedInterrupts;
+    s32 oldInterrupts;
+    s32 one = 1;
+
+    OSDisableInterrupts();
+    lbl_8055D890 = 0;
+    oldInterrupts = OSDisableInterrupts();
+    __DVDClearWaitingQueue();
+    if (lbl_8055D858 != 0) {
+        lbl_8055D8B8 = (void (*)(s32, void *))cbForPrepareReset;
+    } else {
+        if (executing_8055D8C8 != 0)
+            *(s32 *)(executing_8055D8C8 + 0x28) = 0;
+        tempInterrupts = OSDisableInterrupts();
+        savedInterrupts = OSDisableInterrupts();
+        *(volatile s32 *)&lbl_8055D84C = one;
+        if (executing_8055D8C8 == 0)
+            PausingFlag_8055D850 = one;
+        OSRestoreInterrupts(savedInterrupts);
+        do {
+            fn_80039424(0, 0);
+        } while (__DVDPopWaitingQueue() != 0);
+        if (executing_8055D8C8 != 0)
+            fn_80039424((void *)executing_8055D8C8, (void (*)(s32, void *))cbForPrepareReset);
+        else if ((void *)cbForPrepareReset != 0)
+            lbl_8055D890 = one;
+        savedInterrupts = OSDisableInterrupts();
+        *(volatile s32 *)&lbl_8055D84C = 0;
+        if (PausingFlag_8055D850 != 0) {
+            PausingFlag_8055D850 = 0;
+            fn_80038040();
+        }
+        OSRestoreInterrupts(savedInterrupts);
+        OSRestoreInterrupts(tempInterrupts);
+    }
+    OSRestoreInterrupts(oldInterrupts);
+    OSEnableInterrupts();
+    while (lbl_8055D890 != 1) {
+    }
 }
 
 s32 __DVDTestAlarm(void *alarm) {
