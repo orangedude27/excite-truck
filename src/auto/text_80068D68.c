@@ -3384,6 +3384,47 @@ tBTM_STATUS BTM_CancelInquiry(void) {
     return result;
 }
 
+tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS *params, tBTM_INQ_RESULTS_CB *results_cb, tBTM_CMPL_CB *complete_cb) {
+    extern u8 lbl_803163EC[];
+    u8 *state = lbl_803C0F78;
+    u8 *p = (u8 *)params;
+    u8 a, b, c, d, e, f;
+    s32 mode;
+    u8 status;
+
+    if (state[0x27C0] >= 3)
+        ((void (*)(u32, void *, u8, u8, u8, u8))fn_8007099C)(0xD0002, lbl_803163EC, p[0], p[1], p[2], p[3]);
+    if (state[0x1848] != 0 || state[0x1844] != 0)
+        return 2;
+    if (p[0] != 0 && p[0] != 1)
+        return 5;
+    if (fn_80079514() == 0)
+        return 6;
+    a = p[0]; b = p[1]; state[0x1834] = a; state[0x1835] = b;
+    c = p[2]; d = p[3]; state[0x1836] = c; state[0x1837] = d;
+    e = p[4]; f = p[5]; state[0x1838] = e; state[0x1839] = f;
+    a = p[6]; b = p[7]; state[0x183A] = a; state[0x183B] = b;
+    a = p[8]; b = p[9]; state[0x183C] = a; state[0x183D] = b;
+    state[0x1847] = 3;
+    *(void **)(state + 0x16B0) = complete_cb;
+    *(void **)(state + 0x16B4) = results_cb;
+    state[0x183F] = 0;
+    mode = p[0];
+    state[0x1848] = ((s32)~((mode - 1) | (1 - mode)) >> 31) + 2;
+    if (p[3] == 0) {
+        state[0x1847] = 2;
+    } else if (p[3] > 0 && p[3] < 3) {
+        state[0x1847] = 1;
+        p[3] = 0;
+    } else {
+        return 5;
+    }
+    status = btm_set_inq_event_filter(p[3], p + 4);
+    if (status != 1)
+        state[0x1847] = 0;
+    return status;
+}
+
 tBTM_INQ_INFO *BTM_InqDbFirst(void) {
     u8 *entry = lbl_803C0F78 + 0x16E4;
     s32 i;
@@ -3711,6 +3752,8 @@ void fn_8007D4C4(void) {
     *(u32 *)(dst + 0x1904) = src[3];
     dst[0x1909] = 2;
 }
+
+void btm_sco_conn_req(BD_ADDR bda, BD_ADDR remote, UINT8 role) { }
 
 void btm_sco_connected(u8 status, u8 *addr, u16 handle, tBTM_ESCO_DATA *params) {
     u8 *cb=lbl_803C0F78+0x1854;
@@ -5000,7 +5043,7 @@ typedef struct {
     u8 disc_succ[0x28];
     u8 rem_name[1];
 } GapTraceStrings;
-extern void gap_connect_ind(BD_ADDR, UINT16, UINT16, UINT8), gap_connect_cfm(void), gap_config_ind(u16, void *), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
+extern void gap_connect_ind(BD_ADDR, UINT16, UINT16, UINT8), gap_connect_cfm(u32, s32), gap_config_ind(u16, void *), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
 void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0x84)=gap_connect_ind;
  *(void **)(lbl_803C3740+0x88)=gap_connect_cfm;
@@ -5936,6 +5979,42 @@ void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, vo
         }
     }
     btu_hcif_send_cmd(p);
+}
+
+void hidd_pm_set_now(void *arg0) {
+    u8 status = 0;
+    u32 spC = 0;
+    u32 sp10 = 0;
+    u16 sp14 = 0;
+    u8 mode;
+    u8 *cb = lbl_803C3AF0;
+
+    if (cb[0x6E] != 0) return;
+    mode = ((u8 *)arg0)[8];
+    if (mode == cb[0x6A] && (mode == 0 || (cb[0x6C] >= *(u16 *)((u8 *)arg0 + 2) && cb[0x6C] <= *(u16 *)arg0))) {
+        cb[0x78] = 0xFF;
+        return;
+    }
+    switch (mode) {
+    case 0:
+        if (cb[0x6A] == 2 || cb[0x6A] == 3) {
+            status = BTM_SetPowerMode(0x80, cb, (void *)&spC);
+            cb[0x6E] = 1;
+        }
+        break;
+    case 2:
+        if (cb[0x6A] != 0) hidd_pm_set_now(&spC);
+        else { status = BTM_SetPowerMode(0x80, cb, arg0); cb[0x6E] = 1; }
+        break;
+    case 3:
+        if (cb[0x6A] != 0) hidd_pm_set_now(&spC);
+        else { status = BTM_SetPowerMode(0x80, cb, arg0); cb[0x6E] = 1; }
+        break;
+    }
+    if (status > 1) {
+        status += 0x37;
+        if (*(void **)(cb + 0xC4) != 0) ((void (*)(int,u8,u8 *))*(void **)(cb + 0xC4))(4,cb[0x6F],&status);
+    }
 }
 
 typedef void (*hidd_pm_callback)(u32, u8, void *);
@@ -7680,6 +7759,34 @@ void PORT_StartCnf(void *mux_id, u16 status) {
         port_release_port(port);
     }
     if (found) rfc_check_mcb_active(mux_id);
+}
+
+void PORT_ParNegInd(void *mcb, u8 dlci, u16 mtu, u8 mode, u8 param) {
+    u8 *port=(u8*)port_find_mcb_dlci_port(mcb,dlci);
+    u16 value; u8 state,limit;
+    void (*send)(void*,u16,u16,u16,u16)=(void(*)(void*,u16,u16,u16,u16))fn_800936BC;
+    if(lbl_803C4828[0x414]>=4) fn_8007096C(0x90003,lbl_803192C0,dlci,mtu);
+    if(port==0) {
+        port=(u8*)port_find_dlci_port(dlci);
+        if(port==0) {
+            rfc_send_dm(mcb,dlci,0); rfc_check_mcb_active(mcb);
+            if(lbl_803C4828[0x414]>=4) fn_8007093C(0x90003,lbl_803192E0);
+            return;
+        }
+        *((u8*)mcb+dlci+0x24)=port[0];
+    }
+    memcpy(port+6,(u8*)mcb+0x62,6); port_select_mtu(port); *(void**)(port+0x6C)=mcb;
+    value=*(u16*)(port+0x12); if(value<mtu)mtu=value;
+    *(u16*)(port+0x12)=mtu; *(u16*)(port+0x14)=mtu;
+    state=((u8*)mcb)[0x72];
+    if(state==0){state=mode?2:1;((u8*)mcb)[0x72]=state;}
+    if(mode==0){send(mcb,dlci,mtu,0,0);return;}
+    if(state==2) {
+        *(s16*)(port+0x98)=param;
+        if(param==0)port[0x24]=1;
+        value=*(u16*)(port+0x9C); limit=7; if(value<7)limit=value;
+        *(u16*)(port+0x9A)=limit; send(mcb,dlci,mtu,0xE0,limit);
+    } else send(mcb,dlci,mtu,0,0);
 }
 
 extern void RFCOMM_DlcEstablishReq(void *, u8);
@@ -9524,6 +9631,79 @@ tCONN_CB *sdpu_allocate_ccb(void) {
 void fn_80099F58(void *arg0) {
     fn_80070F90((u8 *)arg0 + 8);
     *(u8 *)arg0 = 0;
+}
+
+UINT8 *sdpu_build_attrib_seq(UINT8 *out, UINT16 *attribs, UINT16 count) {
+    UINT16 i;
+    UINT16 length;
+
+    if (attribs != NULL) {
+        length = count * 3;
+    } else {
+        length = 5;
+    }
+
+    if (length > 0xFF) {
+        out[0] = 0x36;
+        out[1] = length >> 8;
+        out[2] = length;
+        out += 3;
+    } else {
+        out[0] = 0x35;
+        out[1] = length;
+        out += 2;
+    }
+
+    if (attribs == NULL) {
+        out[0] = 0x0A;
+        out[1] = 0;
+        out[2] = 0;
+        out[3] = 0xFF;
+        out[4] = 0xFF;
+        out += 5;
+    } else {
+        i = 0;
+        if (count != 0) {
+            while (count - i > 8) {
+                out[0] = 9;
+                out[1] = attribs[0] >> 8;
+                out[2] = attribs[0];
+                out[3] = 9;
+                out[4] = attribs[1] >> 8;
+                out[5] = attribs[1];
+                out[6] = 9;
+                out[7] = attribs[2] >> 8;
+                out[8] = attribs[2];
+                out[9] = 9;
+                out[10] = attribs[3] >> 8;
+                out[11] = attribs[3];
+                out[12] = 9;
+                out[13] = attribs[4] >> 8;
+                out[14] = attribs[4];
+                out[15] = 9;
+                out[16] = attribs[5] >> 8;
+                out[17] = attribs[5];
+                out[18] = 9;
+                out[19] = attribs[6] >> 8;
+                out[20] = attribs[6];
+                out[21] = 9;
+                out[22] = attribs[7] >> 8;
+                out[23] = attribs[7];
+                attribs += 8;
+                out += 24;
+                i += 8;
+            }
+            while (i < count) {
+                out[0] = 9;
+                out[1] = attribs[0] >> 8;
+                out[2] = attribs[0];
+                attribs++;
+                out += 3;
+                i++;
+            }
+        }
+    }
+    return out;
 }
 
 UINT8 *sdpu_build_attrib_entry(UINT8 *p_out, tSDP_ATTRIBUTE *p_attr)
