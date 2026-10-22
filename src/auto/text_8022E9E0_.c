@@ -30,12 +30,13 @@ extern void *fn_8022EC7C(void);
 // split_file divides it into the game's real files (file_status shows its range).
 
 void fn_8022E9E0(void) {
+    s32 size = 0x20;
     if (lbl_8055EFF4 == 0) {
-        void *p = fn_801284F8(0x20, (void *)&lbl_80340280);
-        if (p) p = fn_8012A13C(p, lbl_80340280, 0x20, 8);
+        void *p = fn_801284F8(size, (void *)&lbl_80340280);
+        if (p) p = fn_8012A13C(p, lbl_80340280, size, 8);
         lbl_8055EFF8 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055EFF8)) ++lbl_8055EFF4;
+    if (fn_8012A2D8(lbl_8055EFF8)) lbl_8055EFF4 += 1;
 }
 
 #pragma cplusplus on
@@ -50,11 +51,15 @@ extern "C" void fn_8022EA58(void *arg0) {
 #pragma cplusplus reset
 void fn_8022EAB8(void) {
     if (lbl_8055EFFC == 0) {
-        void *p = fn_801284F8(0x20, (void *)&lbl_80340290);
+        void *p = (void *)fn_801284F8(0x20, (void *)&lbl_80340290);
         if (p) p = fn_8012A13C(p, lbl_80340290, 0x20, 0x3C);
         lbl_8055F000 = (void **)p;
     }
-    if (fn_8012A2D8(lbl_8055F000)) ++lbl_8055EFFC;
+    if (fn_8012A2D8(lbl_8055F000) != 0) {
+        s32 count;
+        count = lbl_8055EFFC;
+        lbl_8055EFFC = count + 1;
+    }
 }
 
 #pragma dont_inline on
@@ -81,7 +86,7 @@ void fn_8022EBF0(void) {
     s32 *p = (s32 *)lbl_8055F004;
     if (p[1]) {
         fn_802E30C8(lbl_80340308);
-        while (fn_8022EC7C()) fn_802ED50(p[1]);
+        while (fn_8022EC7C()) fn_8022ED50(p[1]);
         fn_8022EA58((void *)p[1]);
         p[1] = 0;
         p[0] = 0;
