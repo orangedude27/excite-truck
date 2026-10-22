@@ -9,7 +9,7 @@ extern unsigned short lbl_803049F0[];
 extern unsigned short lbl_80304B70[];
 extern int ReadFont(int, int, ...);
 extern char *ParseStringS(int, char *, int **, int *);
-extern void ParseStringW(void);
+extern void *ParseStringW(int, void *, int *, int *, int);
 extern int IOS_IoctlvReboot(int, int, int, int, void *, int);
 int IOS_Ioctlv(int, int, int, int, void *, int);
 int _ES_GetTicketViews(int *fd, int unused, int inputA, int inputB, unsigned int size, int *outCount) {
@@ -74,6 +74,53 @@ void ConfigureVideo(short arg0, short arg1) {
     }
     VIConfigure(&config);
     VIConfigurePan(0,0,0x280,0x1E0);
+}
+
+unsigned short GetFontCode(unsigned int mode, unsigned short code) {
+    unsigned int lead;
+    unsigned int trail;
+    unsigned int base;
+    unsigned int valid;
+    if (mode == 1) {
+        if (code >= 0x20 && code <= 0xDF)
+            return lbl_803049F0[code - 0x20];
+        if (code > 0x889E && code <= 0x9872) {
+            lead = (code >> 8) - 0x88;
+            base = lead * 0xBC;
+            trail = code & 0xFF;
+            valid = 0;
+            if (trail >= 0x40) {
+                if (trail <= 0xFC) {
+                    if (trail != 0x7F)
+                        valid = 1;
+                }
+            }
+            if (valid == 0) return 0;
+            trail -= 0x40;
+            if (trail >= 0x40) trail -= 1;
+            return base + trail + 0x2BE;
+        }
+        if (code >= 0x8140 && code < 0x879E) {
+            lead = (code >> 8) - 0x81;
+            base = lead * 0xBC;
+            trail = code & 0xFF;
+            valid = 0;
+            if (trail >= 0x40) {
+                if (trail <= 0xFC) {
+                    if (trail != 0x7F)
+                        valid = 1;
+                }
+            }
+            if (valid == 0) return 0;
+            trail -= 0x40;
+            if (trail >= 0x40) trail -= 1;
+            return lbl_80304B70[base + trail];
+        }
+        return 0;
+    }
+    if (code > 0x20 && code <= 0xFF)
+        return code - 0x20;
+    return 0;
 }
 
 void Decode(unsigned char *src, unsigned char *dst) {
@@ -236,6 +283,53 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
     *outWidths = widths;
     *outCode = GetFontCode(format, first);
     return next;
+}
+
+void OSGetFontTexture(int arg0, void **arg1, int *arg2, int *arg3, int *arg4) {
+    unsigned short encode;
+    int console;
+    void *texture;
+    int index;
+    int tile;
+    int remainder;
+    int column;
+    int row;
+    char *(*parse)(int, char *, int **, int *);
+    encode = lbl_80558F58;
+    if (encode == 0xFFFF)
+        goto initialize;
+    goto ready;
+initialize:
+    console = *(volatile int *)0x800000CC;
+    if (console != 0) {
+        if (console < 0)
+            goto zero;
+        goto zero;
+    }
+    encode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
+    lbl_80558F58 = encode;
+    goto store_parser;
+zero:
+    encode = 0;
+    lbl_80558F58 = encode;
+store_parser:
+    lbl_8055DA48 = (void *)ParseStringS;
+ready:
+    parse = (char *(*)(int, char *, int **, int *))lbl_8055DA48;
+    parse(encode, (char *)arg0, (int **)&texture, &index);
+    tile = index / (*(volatile unsigned short *)((char *)texture + 0x1A) *
+                    *(volatile unsigned short *)((char *)texture + 0x1C));
+    *arg1 = (char *)texture + *(int *)((char *)texture + 0x24) +
+        *(int *)((char *)texture + 0x14) * tile;
+    remainder = index - tile *
+        *(volatile unsigned short *)((char *)texture + 0x1A) *
+        *(volatile unsigned short *)((char *)texture + 0x1C);
+    column = remainder / *(volatile unsigned short *)((char *)texture + 0x1A);
+    row = remainder - column * *(volatile unsigned short *)((char *)texture + 0x1A);
+    *arg2 = row * *(volatile unsigned short *)((char *)texture + 0x10);
+    *arg3 = column * *(volatile unsigned short *)((char *)texture + 0x12);
+    if (arg4 != 0)
+        *arg4 = *(unsigned char *)(index + (char *)texture + *(volatile unsigned short *)((char *)texture + 0x22));
 }
 
 void OSGetFontWidth(int ch,int *out) {
