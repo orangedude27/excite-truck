@@ -10,6 +10,7 @@ class PaneDrawDispatch { public:
 extern "C" f32 lbl_80560E28, lbl_80560E30;
 extern "C" u8 lbl_80560E2C, lbl_80560E2D, lbl_80560E2E, lbl_80560E2F;
 extern "C" void fn_800CF554(s32, u8 *, f32, f32, f32, f32, f32);
+extern "C" s32 lbl_8031D700[];
 #include <revolution/OS/OSAlarm.h>
 #include <stdarg.h>
 namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } s32 Console_GetTotalLines(detail::ConsoleHead *); } }
