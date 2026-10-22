@@ -59,7 +59,6 @@ extern "C" void OSRestoreInterrupts(s32);
 extern "C" s32 WPADCanSendStreamData(s32);
 extern "C" s32 WENCGetEncodeData(void *, u32, const s16 *, s32, void *);
 extern "C" void fn_80062278(s32, void *, s32);
-static inline s32 mw_mulhw(s32 a, s32 b) { return (s32)(((long long)a * (long long)b) >> 16); }
 
   namespace homebutton {
   namespace gui {
@@ -1351,13 +1350,13 @@ extern "C" u32 fn_800B5070(s32, s32 *);
 #pragma use_lmw_stmw off
 #pragma opt_common_subs off
 extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 *arg6, s32 *arg7) {
+    struct Copy14 { s32 word[14]; };
     s32 outValue;
     s32 name = arg2;
     u8 iter[0x70];
-    s32 *src = (s32 *)arg0;
-    s32 *dst = (s32 *)(iter + 8);
-    s32 copy0, copy1;
-    register u32 mode = 0;
+    struct Copy14 *src = (struct Copy14 *)arg0;
+    struct Copy14 *dst = (struct Copy14 *)(iter + 8);
+    u32 mode;
     u32 flags;
     s32 result;
     u8 state;
@@ -1370,13 +1369,7 @@ extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4,
     outValue = 0;
     mode = 0;
     if ((flags & 2) == 2) mode = fn_800B5070(arg3, &name);
-    copy1 = src[0]; copy0 = src[1]; dst[0] = copy1; dst[1] = copy0;
-    copy0 = src[2]; copy1 = src[3]; dst[2] = copy0; dst[3] = copy1;
-    copy0 = src[4]; copy1 = src[5]; dst[4] = copy0; dst[5] = copy1;
-    copy0 = src[6]; copy1 = src[7]; dst[6] = copy0; dst[7] = copy1;
-    copy0 = src[8]; copy1 = src[9]; dst[8] = copy0; dst[9] = copy1;
-    copy1 = src[10]; copy0 = src[11]; dst[10] = copy1; dst[11] = copy0;
-    copy1 = src[12]; copy0 = src[13]; dst[12] = copy1; dst[13] = copy0;
+    *dst = *src;
     if (mode == 1) {
         result = fn_800AC1B4(iter, name - 1);
         if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
@@ -1392,11 +1385,9 @@ extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4,
                 return 0;
             }
         }
-        *arg6 = 0xF423F; *arg7 = 0xF423F; return 3;
     }
     result = fn_800AC1B4(iter, name);
 loop:
-    if (VFiPFENT_ITER_IsAtLogicalEnd(iter) != 0) goto fail_main;
     if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
     state = iter[0x4C];
     if (state == 0) goto fail_main;
@@ -1412,6 +1403,7 @@ loop:
         }
     }
     result = VFiPFENT_ITER_Advance(iter, 0);
+    if (VFiPFENT_ITER_IsAtLogicalEnd(iter) != 0) goto fail_main;
     goto loop;
 fail_main:
     *arg6 = 0xF423F; *arg7 = 0xF423F;
