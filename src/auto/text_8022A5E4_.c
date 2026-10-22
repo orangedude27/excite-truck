@@ -413,7 +413,6 @@ int fn_8022CC8C(const char *arg0) {
 __declspec(section ".sdata") extern char lbl_8055B928[];
 extern char lbl_80340070[];
 extern int sscanf(const char *, const char *, ...);
-#pragma dont_inline fn_8022CD0C
 int fn_8022CD0C(char *arg0) {
     int sp18;
     int sp14;
@@ -468,9 +467,6 @@ void fn_8022CDE4(int *d, void *o) {
   else d[4]=fn_8022CD0C(s);
  }
  v=*(void ***)o;
- if (((int(*)(void*,const char*))v[3])(o,lbl_8055B948)) {
-  s=((char*(*)(void*,const char*))v[5])(o,lbl_8055B948);
-  sscanf(s,lbl_8055B950,&d[5],&d[6]);
- }
+ if (((int(*)(void*,const char*))v[3])(o,lbl_8055B948)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8055B948); sscanf(s,lbl_8055B950,&d[5],&d[6]); }
 }
 #pragma dont_inline reset
