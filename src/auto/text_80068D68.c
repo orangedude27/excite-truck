@@ -11,6 +11,8 @@
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 extern char lbl_8031A188[];
+extern unsigned char lbl_803C0A50[];
+extern void UUSB_Write(u8, u8 *, u16, BT_HDR *);
 extern void sdp_connect_ind(u8 *, u16, u16, u8);
 extern void sdp_connect_cfm(u16, u16);
 extern void sdp_config_ind(u16, void *);
@@ -6508,60 +6510,65 @@ void l2c_csm_w4_l2ca_disconnect_rsp(void *p_ccb, u16 event, void *p_data)
 void forward_peer_data(void *arg0, void *arg1) {
     extern u8 lbl_80318BC0[];
     extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
-    u8 *context = arg0;
-    BUFFER_Q *queue = (BUFFER_Q *)(context + 0x70);
+    u8 *ctx = arg0;
     u8 *data = arg1;
     u8 *frame;
     u8 *out;
-    u16 len;
+    u16 length;
+    u16 offset;
     u16 count;
-    u16 max_len;
-    u16 value;
+    u16 maximum;
+    u16 flags;
+    void *lcb;
 
     if (data != 0) {
-        if (*(u16 *)(context + 0x78) != 0) {
-            GKI_enqueue(queue, data);
-            data = GKI_dequeue(queue);
+        if (*(u16 *)(ctx + 0x78) != 0) {
+            GKI_enqueue((BUFFER_Q *)(ctx + 0x70), data);
+            data = GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
         }
     } else {
-        data = GKI_dequeue(queue);
+        data = GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
     }
     while (data != 0) {
-        len = *(u16 *)(data + 4);
-        if (len < 9) {
+        length = *(u16 *)(data + 4);
+        if (length < 9) {
             if (lbl_803C4040[0] >= 1)
-                fn_80070954(0x80000, lbl_80318BC0, len);
+                fn_80070954(0x80000, lbl_80318BC0, length);
             GKI_freebuf(data);
-            data = GKI_dequeue(queue);
+            data = GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
             continue;
         }
-        *(u16 *)(data + 4) = len - 8;
-        frame = data + len - 8;
+        offset = length - 8;
+        *(u16 *)(data + 4) = offset;
+        frame = data + (u16)offset;
         count = *(u16 *)(data + 2);
         out = frame + 0xA;
         *(u16 *)(data + 2) = count + 4;
-        value = *(u16 *)(*(u8 **)(context + 0x10) + 0x28) | 0x2000;
-        frame[8] = value;
-        frame[9] = value >> 8;
-        max_len = *(u16 *)(lbl_803C0A50 + 0x7C);
+        lcb = *(void **)(ctx + 0x10);
+        flags = *(u16 *)((u8 *)lcb + 0x28) | 0x2000;
+        frame[8] = flags;
+        lcb = *(void **)(ctx + 0x10);
+        flags = *(u16 *)((u8 *)lcb + 0x28) | 0x2000;
+        frame[9] = flags >> 8;
+        maximum = *(u16 *)(lbl_803C0A50 + 0x7C);
         count = *(u16 *)(data + 2);
-        if (count > max_len) {
-            *out = max_len;
-            out[1] = max_len >> 8;
+        if (count > maximum) {
+            out[0] = maximum;
+            out[1] = maximum >> 8;
             out += 2;
         } else {
-            *out = count;
+            out[0] = count;
             out[1] = count >> 8;
             out += 2;
         }
-        len = *(u16 *)(data + 2);
-        *out++ = len - 4;
-        *out++ = (len - 4) >> 8;
-        *out++ = *(u16 *)(context + 0x16);
-        *out++ = *(u16 *)(context + 0x16) >> 8;
-        *(u16 *)(data + 2) += 4;
-        l2c_link_check_send_pkts(*(void **)(context + 0x10), 0, data, *(u8 *)(data + 2));
-        data = GKI_dequeue(queue);
+        count = *(u16 *)(data + 2);
+        out[0] = count - 4;
+        out[1] = (count - 4) >> 8;
+        out[2] = *(u16 *)(ctx + 0x16);
+        out[3] = *(u16 *)(ctx + 0x16) >> 8;
+        *(u16 *)(data + 2) = count + 4;
+        l2c_link_check_send_pkts(*(void **)(ctx + 0x10), 0, data, count + 4);
+        data = GKI_dequeue((BUFFER_Q *)(ctx + 0x70));
     }
 }
 
