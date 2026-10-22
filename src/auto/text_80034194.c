@@ -7,6 +7,14 @@ extern void fn_80035C78(void);
 extern void fn_80035E6C(void);
 extern void fn_8003A1A0(u32, void (*)(void));
 extern void fn_8003B218(void (*)(void));
+extern u32 lbl_8055D848;
+extern s32 lbl_8055D860;
+extern char __ErrorInfo[];
+extern s32 executing_8055D8C8;
+extern char DummyCommandBlock_80376AA0[];
+extern void __DVDFSInit(void);
+extern void fn_80038040(void);
+extern s32 OSGetTick(void);
 
 extern s32 DVDInitialized_8055D888;
 extern s32 FirstTimeInBootrom_8055D868;
