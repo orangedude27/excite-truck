@@ -38,11 +38,41 @@ extern void fn_802D2ED8(int, int);
 extern unsigned char lbl_804C5700[12];
 extern int fn_802E317C(const char *, ...);
 extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
+extern float lbl_80564FAC, lbl_80564FA8, lbl_80564F88;
+extern char lbl_804C97D0;
+extern void GXSetTevColor(int, int *, void *, signed char);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055FD3C;
+void fn_802CEAC4(void) {
+    extern int VIGetTvFormat(void), fn_802E9A1C(void), fn_8005AD9C(void);
+    extern void fn_802E30C8(const char *, ...);
+    extern void GXDrawCylinder(void *, void *, int, int);
+    extern char lbl_8034BD18[], lbl_803038D8[], lbl_80303914[], lbl_80303950[], lbl_8030398C[], lbl_803039C8[];
+    extern void *lbl_8055FD64;
+    extern unsigned char lbl_804C9724[];
+    char *base = lbl_8034BD18;
+    int format = VIGetTvFormat();
+    switch (format) {
+    case 0:
+        if (fn_802E9A1C() == 0 || fn_8005AD9C() == 0) {
+            fn_802E30C8(base + 0xA0); lbl_8055FD64 = lbl_803038D8;
+        } else {
+            fn_802E30C8(base + 0xB0); lbl_8055FD64 = lbl_80303914;
+        } break;
+    case 1: fn_802E30C8(base + 0xC0); lbl_8055FD64 = lbl_8030398C; break;
+    case 5: fn_802E30C8(base + 0xCC); lbl_8055FD64 = lbl_803039C8; break;
+    case 2: fn_802E30C8(base + 0xE0); lbl_8055FD64 = lbl_80303950; break;
+    default: fn_802E317C(base + 0xF0); break;
+    }
+    GXDrawCylinder(lbl_8055FD64, lbl_804C9724, 0, 0x10);
+    lbl_8055FD64 = lbl_804C9724;
+    *(unsigned short *)(lbl_804C9724 + 0xE) += 0xA;
+    *(unsigned short *)(lbl_804C9724 + 0xA) -= 5;
+}
+
 void fn_802CEC44(void) {
     lbl_8055FD3C = 1;
 }
@@ -232,6 +262,28 @@ void fn_802D0014(float a, float b, float c) {
     lbl_804C97B0[0x1C] = 1;
 }
 
+void fn_802D007C(float arg0) {
+    float scaled;
+    int truncated;
+    float value;
+    int secondValue;
+    signed char channel;
+    int color;
+    scaled = lbl_80564FAC * arg0;
+    truncated = (int)scaled;
+    value = (float)truncated;
+    if (value < lbl_80564FA8) value = lbl_80564FA8;
+    secondValue = (int)value;
+    value = (float)secondValue;
+    if (value > lbl_80564F88) value = lbl_80564F88;
+    channel = (signed char)value;
+    color = -1;
+    *((unsigned char *)&lbl_804C97D0 + 8) = channel;
+    *((unsigned char *)&lbl_804C97D0 + 0x5C) = 1;
+    GXSetTevColor(1, &color, &lbl_804C97D0, channel);
+    lbl_804C5700[0] = 1;
+}
+
 #pragma small_data off
 void fn_802D0160(unsigned char a, unsigned char b, unsigned char c) {
     extern char lbl_804C97D0;
@@ -298,6 +350,69 @@ extern void* fn_802D30F0(void);
 extern void fn_802D307C(void);
 void fn_802D050C(void* hi) {
     lbl_8055FD54 = hi;
+}
+
+int fn_802D0514(void *source) {
+    extern unsigned long lbl_8055FDAC;
+    extern void *lbl_8055FDB0;
+    extern char lbl_804C97D0;
+    int index;
+    int next;
+    int *src;
+    int *dst;
+    unsigned char *aux;
+    index = lbl_8055FDAC;
+    if (index < 0x800) return 0;
+    next = index + 1;
+    src = (int *)source;
+    dst = (int *)((unsigned char *)lbl_8055FDB0 + index * 0x4C);
+    lbl_8055FDAC = next;
+    dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = src[3];
+    dst[4] = src[4]; dst[5] = src[5]; dst[6] = src[6]; dst[7] = src[7];
+    dst[8] = src[8]; dst[9] = src[9]; dst[10] = src[10]; dst[11] = src[11];
+    aux = (unsigned char *)&lbl_804C97D0;
+    ((unsigned char *)dst)[0x30] = aux[0]; ((unsigned char *)dst)[0x31] = aux[1];
+    ((unsigned char *)dst)[0x32] = aux[2]; ((unsigned char *)dst)[0x33] = aux[3];
+    ((unsigned char *)dst)[0x34] = aux[4]; ((unsigned char *)dst)[0x35] = aux[5];
+    ((unsigned char *)dst)[0x36] = aux[6]; ((unsigned char *)dst)[0x37] = aux[7];
+    ((unsigned char *)dst)[0x38] = aux[8];
+    dst[15] = aux[3]; dst[16] = aux[4]; dst[17] = aux[5];
+    *(float *)((unsigned char *)dst + 0x48) = *(float *)(aux + 0x18);
+    return next;
+}
+
+void fn_802D07E4(unsigned char* arg0, int arg1) {
+    extern unsigned long lbl_8055D0B8;
+    extern int lbl_8055D0BC, lbl_8055D0C0;
+    extern signed char lbl_8055FD90;
+    extern unsigned char lbl_804C9830[];
+    extern int lbl_804C9760[];
+    extern char lbl_8034C0EC[], lbl_8034C108[];
+    extern void fn_802E30C8(const char*, ...);
+    unsigned char* out;
+    unsigned char* in;
+    unsigned char c;
+    int n;
+    if ((int)lbl_8055D0B8 >= 0) {
+        fn_802E30C8(lbl_8034C0EC);
+        lbl_8055D0B8 = lbl_8055D0BC * lbl_8055D0C0;
+        return;
+    }
+    lbl_8055FD90 = 1;
+    out = lbl_804C9830;
+    n = 0x100;
+    do { n--; } while (n > 0);
+    out[-1] = 0;
+    in = arg0;
+    do {
+        c = *in++;
+        *out++ = c;
+        if ((signed char)c == 0) break;
+    } while (1);
+    if (arg1 != 0) {
+        fn_802E30C8(lbl_8034C108, lbl_8055D0BC * lbl_804C9760[2], lbl_8055D0C0 * lbl_804C9760[3], lbl_804C9760, lbl_8055D0BC);
+        lbl_8055D0B8 = 0;
+    }
 }
 
 extern unsigned char lbl_8055FD78;
@@ -420,6 +535,40 @@ int fn_802D0EC8(int arg0) {
         return 3;
     default:
         return arg0;
+    }
+}
+
+extern void GXInitLightColor(void *, unsigned char *);
+extern void GXGetLightDir_Internal(void *, float, float, float, float, float, float);
+extern void GXInitLightAttn(void *, float, float, float, float, float, float);
+extern float PSVECMag(float *);
+extern float lbl_80564F80, lbl_80564F88, lbl_80564F8C, lbl_80564F90, lbl_80564F94;
+void fn_802D17BC(void *light, float *a, float *b, unsigned char *color, float scale) {
+    unsigned char c0, c1, c2, c3;
+    unsigned char rgba[4];
+    float x, y, z, mag, k;
+    c0=color[0]; c2=color[2]; c3=color[3]; c1=color[1];
+    rgba[1]=c1; rgba[0]=c0; rgba[2]=c2; rgba[3]=c3;
+    GXInitLightColor(light, rgba);
+    x=a[0]+b[0];
+    y=a[1]+b[1];
+    z=a[2]+b[2];
+    {
+        float vec[3];
+        vec[0]=x; vec[1]=y; vec[2]=z;
+        mag=PSVECMag(vec);
+        if (mag > lbl_80564F80) {
+        } else {
+            mag=lbl_80564F80;
+        }
+        k=lbl_80564F90/mag;
+        x=vec[0]*k; y=vec[1]*k; z=vec[2]*k;
+        vec[0]=x; vec[1]=y; vec[2]=z;
+    }
+    GXGetLightDir_Internal(light,b[0],b[1],-b[2],x,y,-z);
+    {
+        float v=scale*lbl_80564F94;
+        GXInitLightAttn(light,lbl_80564F88,lbl_80564F88,lbl_80564F8C,v,lbl_80564F88,lbl_80564F8C-v);
     }
 }
 
