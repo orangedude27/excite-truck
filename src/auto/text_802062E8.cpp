@@ -432,7 +432,7 @@ extern "C" void *fn_802077A4(int arg0, int arg1, int arg2, int arg3) {
     }
     return obj;
 }
-#pragma scheduling reset
+#pragma scheduling invalid_target
 extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
     void *value = arg2;
     if (arg2 != 0) {
@@ -440,7 +440,7 @@ extern "C" void *fn_802078CC(int arg0, int arg1, void *arg2) {
     }
     return (*(int *)((u8 *)value + 0xC) != 0) ? value : 0;
 }
-
+#pragma scheduling on
 extern "C" void fn_80207924(void *arg0) {
     struct Obj { virtual void v0(int); };
     ((Obj *)arg0)->v0(-1);
