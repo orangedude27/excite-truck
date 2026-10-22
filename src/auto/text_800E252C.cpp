@@ -35,6 +35,8 @@ extern float lbl_80560F38;
 extern float lbl_80560F3C;
 extern float lbl_80560F40;
 extern float lbl_80560F58;
+extern "C" void fn_800339B0(void *, short *);
+extern "C" void fn_80033A34(void *, float);
 extern const char lbl_803227EC[];
 extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
@@ -1244,30 +1246,32 @@ extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_8
 
 extern const char lbl_803224F0[];
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank) {
+    register void *result = self;
+    register const unsigned char *input = (const unsigned char *)bank;
     register const char *messages = lbl_803224F0;
-    *(void **)self = 0;
-    *(void **)((char *)self + 4) = 0;
-    *(void **)((char *)self + 8) = 0;
-    if (bank == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
-    unsigned int magic = *(unsigned int *)bank;
+    *(void **)result = 0;
+    *(void **)((char *)result + 4) = 0;
+    *(void **)((char *)result + 8) = 0;
+    if (input == 0) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x58, messages + 0xB8);
+    unsigned int magic = *(unsigned int *)input;
     if (magic != 0x52424E4B) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x36, messages + 0x14);
-    magic = *(unsigned int *)bank;
-    if (magic != 0x52424E4B) return self;
-    unsigned short version = *(unsigned short *)((char *)bank + 6);
+    magic = *(unsigned int *)input;
+    if (magic != 0x52424E4B) return result;
+    unsigned short version = *(unsigned short *)(input + 6);
     if (version < 0x100) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x3E, messages + 0x60);
-    version = *(unsigned short *)((char *)bank + 6);
-    if (version < 0x100) return self;
+    version = *(unsigned short *)(input + 6);
+    if (version < 0x100) return result;
     if (version > 0x101) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x44, messages + 0x60);
-    version = *(unsigned short *)((char *)bank + 6);
-    if (version < 0x100 || version > 0x101) return self;
-    *(const void **)self = bank;
-    const char *data = (const char *)bank + *(unsigned int *)((char *)bank + 0x10);
-    *(const char **)((char *)self + 4) = data;
+    unsigned short check = *(unsigned short *)(input + 6);
+    if (check < 0x100 || check > 0x101) return result;
+    *(const void **)result = input;
+    const char *data = (const char *)input + *(unsigned int *)(input + 0x10);
+    *(const char **)((char *)result + 4) = data;
     if (*(unsigned int *)data != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x61, messages + 0xE4);
-    const char *wave = (const char *)bank + *(unsigned int *)((char *)bank + 0x18);
-    *(const char **)((char *)self + 8) = wave;
+    const char *wave = (const char *)input + *(unsigned int *)(input + 0x18);
+    *(const char **)((char *)result + 8) = wave;
     if (*(unsigned int *)wave != 0x57415645) Panic__Q26nw4hbm2dbFPCciPCce(messages, 0x65, messages + 0x13C);
-    return self;
+    return result;
 }
 
 extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
