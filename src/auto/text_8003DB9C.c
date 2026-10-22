@@ -86,6 +86,7 @@ typedef struct _GXLightObjImpl {
   } GXDistAttnFn;
 
   extern char lbl_8055D949;
+  extern char lbl_8055D960;
 void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
     int mipmap = GXGetTexObjMipMap(obj);
     int isMipMap = GXGetTexObjAll(obj);
@@ -1259,6 +1260,24 @@ void GXSetCopyClamp(s32 value) {
     b = (b & ~1) | (value & 1);
     b = (b & ~2) | (value & 2);
     data[0x24C / 4] = b;
+}
+
+f32 GXGetYScaleFactor(u32 arg0, u32 arg1) {
+ f32 ratio, previous, c0, c1;
+ u32 numerator, height, scale, factor;
+ ratio=(f32)arg1/(f32)arg0; height=arg1;
+ factor=(u32)(lbl_80560B40/ratio)&0x1FF;
+ numerator=(arg0-1)<<8; scale=numerator/factor+1;
+ if(factor>0x80&&factor<0x100){while(!(factor&1))factor>>=1;if(arg0%factor==0)scale++;}
+ if(scale>0x400)scale=0x400;
+ while(scale>arg1){height--;ratio=(f32)height/(f32)arg0;factor=(u32)(lbl_80560B40/ratio)&0x1FF;scale=numerator/factor+1;
+ if(factor>0x80&&factor<0x100){while(!(factor&1))factor>>=1;if(arg0%factor==0)scale++;}
+ if(scale>0x400)scale=0x400;}
+ previous=ratio;
+ while(scale<arg1){height++;previous=ratio;ratio=(f32)height/(f32)arg0;factor=(u32)(lbl_80560B40/ratio)&0x1FF;scale=numerator/factor+1;
+ if(factor>0x80&&factor<0x100){while(!(factor&1))factor>>=1;if(arg0%factor==0)scale++;}
+ if(scale>0x400)scale=0x400;}
+ return previous;
 }
 
 extern f32 lbl_80560B40;
