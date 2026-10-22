@@ -2777,6 +2777,45 @@ void btm_chg_all_acl_pkt_types(BOOLEAN start) {
     }
 }
 
+BOOLEAN BTM_SecAddDevice(BD_ADDR bd_addr, DEV_CLASS dev_class, BD_NAME bd_name, BD_FEATURES features, UINT32 trusted_mask[], LINK_KEY link_key, UINT8 key_type, tBTM_IO_CAP io_cap) {
+    s32 i = 0;
+    u8 *entry = lbl_803C0F78 + 0x1F30;
+loop:
+    if ((entry[0x76] & 0x80) == 0) goto next;
+    if (memcmp(entry + 0x1C, bd_addr, 6) != 0) goto next;
+    goto found;
+next:
+    i++;
+    entry += 0x88;
+    if (i < 16) goto loop;
+    entry = 0;
+found:
+    if (entry == 0) {
+        entry = (u8 *)btm_sec_alloc_dev(bd_addr);
+        if (entry == 0) return FALSE;
+    }
+    {
+        u32 id = *(u32 *)(lbl_803C0F78 + 0x1974);
+        *(u32 *)(entry + 0xC) = id;
+        *(u32 *)(lbl_803C0F78 + 0x1974) = id + 1;
+    }
+    if (dev_class != 0) memcpy(entry + 0x22, dev_class, 3);
+    memset(entry + 0x35, 0, 0x41);
+    if (bd_name != 0 && bd_name[0] != 0) {
+        entry[0x76] |= 8;
+        strncpy((char *)entry + 0x35, (char *)bd_name, 0x40);
+    }
+    if (features != 0) memcpy(entry + 0x77, features, 8);
+    else memset(entry + 0x77, 0, 8);
+    *(u32 *)(entry + 0x10) = trusted_mask[0];
+    *(u32 *)(entry + 0x14) = trusted_mask[1];
+    if (link_key != 0) {
+        entry[0x76] |= 0x10;
+        memcpy(entry + 0x25, link_key, 0x10);
+    }
+    return TRUE;
+}
+
 BOOLEAN BTM_SecDeleteDevice(BD_ADDR bd_addr) {
     s32 i = 0;
     u8 *entry = lbl_803C0F78 + 0x1F30;
@@ -3115,6 +3154,24 @@ void btm_delete_stored_link_key_complete(u8 *p) {
     }
 }
 
+void btm_return_link_keys_evt(tBTM_RETURN_LINK_KEYS_EVT *result) {
+    tBTM_CMPL_CB *p_cb = *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x570);
+    UINT8 i, *p, *p1;
+    UINT8 bd_addr[BD_ADDR_LEN];
+    UINT8 link_key[LINK_KEY_LEN];
+    if (p_cb) {
+        p = (UINT8 *)(result + 1);
+        for (i = 0; i < result->num_keys; i++) {
+            p1 = p;
+            REVERSE_STREAM_TO_ARRAY(bd_addr, p1, BD_ADDR_LEN);
+            REVERSE_STREAM_TO_ARRAY(link_key, p1, LINK_KEY_LEN);
+            ARRAY_TO_STREAM(p, bd_addr, BD_ADDR_LEN);
+            ARRAY_TO_STREAM(p, link_key, LINK_KEY_LEN);
+        }
+        (*p_cb)(result);
+    }
+}
+
 void fn_8007ABE8(void *arg0) {
     void (*callback)(void) = *(void (**)(void))(lbl_803C0F78 + 0x568);
     if (callback != NULL) callback();
@@ -3189,6 +3246,40 @@ fail:
     return BTM_NO_RESOURCES;
 done:
     return BTM_SUCCESS;
+}
+
+extern u8 lbl_8031637C[];
+extern void fn_80085384(u8 *, u8);
+extern void fn_800853B4(u8 *, u16, u16);
+tBTM_STATUS BTM_SetConnectability(UINT16 page_mode, UINT16 window, UINT16 interval) {
+    s32 var_r28 = window;
+    s32 var_r29 = interval;
+    u8 flags = 0;
+    if (page_mode != 0 && page_mode != 1) return 5;
+    if (lbl_803C0F78[0x64E] < 3) return 0xC;
+    if (window == 0) var_r28 = 0x12;
+    if (interval == 0) var_r29 = 0x800;
+    if (lbl_803C0F78[0x27C0] >= 3)
+        ((void (*)(u32, void *, u16, u16, u16))fn_80070984)(0xD0002, lbl_8031637C, page_mode, var_r28, var_r29);
+    if (page_mode == 1) {
+        if (var_r28 < 0x12 || var_r28 > 0x1000 || var_r29 < 0x12 || var_r29 > 0x1000 || var_r28 > var_r29) return 5;
+        flags |= 2;
+    }
+    if (var_r28 != *(u16 *)(lbl_803C0F78 + 0x169C) || var_r29 != *(u16 *)(lbl_803C0F78 + 0x169E)) {
+        u8 *buf = GKI_getpoolbuf(2);
+        if (!buf) return 3;
+        *(u16 *)(lbl_803C0F78 + 0x169C) = var_r28;
+        *(u16 *)(lbl_803C0F78 + 0x169E) = var_r29;
+        fn_800853B4(buf, var_r29, var_r28);
+    }
+    {
+        u8 *buf = GKI_getpoolbuf(2);
+        if (!buf) return 3;
+        if (*(u16 *)(lbl_803C0F78 + 0x1698) != 0) flags |= 1;
+        *(u16 *)(lbl_803C0F78 + 0x169A) = page_mode;
+        fn_80085384(buf, flags);
+    }
+    return 0;
 }
 
 u8 fn_8007B340(void) {
@@ -7314,6 +7405,41 @@ void PORT_FlowInd(void *p_mcb, s32 dlci, s32 enable_data) {
         callback = *(void (**)(u32, u8))(p_port + 0x8C);
         if (callback != 0 && events != 0) callback(events, p_port[0]);
         if (dlci != 0) break;
+    }
+}
+
+extern char lbl_80319570[];
+void port_select_mtu(void *arg0) {
+    register char *messages = lbl_80319570;
+    register u8 *port = (u8 *)arg0;
+    register u16 packet_size;
+    register u16 mtu = *(u16 *)(port + 0x12);
+    register u16 rate1, rate2, rate3;
+    if (mtu == 0) {
+        packet_size = btm_get_max_packet_size(port + 6);
+        if (packet_size == 0) {
+            if (lbl_803C4828[0x414] >= 2) fn_8007093C(0x90001, messages);
+            *(u16 *)(port + 0x12) = 0x7F;
+        } else if (packet_size <= 0x69F) {
+            mtu = ((0x69F / packet_size) * packet_size) - 0xA;
+            *(u16 *)(port + 0x12) = mtu;
+            if (lbl_803C4828[0x414] >= 5) fn_80070954(0x90004, messages + 0x20, mtu);
+        } else {
+            *(u16 *)(port + 0x12) = 0x695;
+            if (lbl_803C4828[0x414] >= 5) fn_80070954(0x90004, messages + 0x58, 0x695);
+        }
+    } else if (lbl_803C4828[0x414] >= 5) {
+        ((void (*)(u32, void *))fn_80070954)(0x90004, messages + 0x90);
+    }
+    mtu = *(u16 *)(port + 0x12);
+    rate1 = 0x1F40 / mtu;
+    rate2 = 0x1388 / mtu;
+    rate3 = 0x2EE0 / mtu;
+    *(u16 *)(port + 0x9C) = rate1;
+    *(u16 *)(port + 0x9E) = rate2;
+    *(u16 *)(port + 0xA0) = rate3;
+    if (lbl_803C4828[0x414] >= 5) {
+        ((void (*)(u32, void *, int, int, int))fn_80070984)(0x90004, messages + 0xB8, rate1, rate2, rate3);
     }
 }
 
