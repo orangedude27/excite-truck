@@ -2504,6 +2504,48 @@ void btm_acl_device_down(void)
     }
 }
 
+void btm_acl_encrypt_change(u16 handle, u8 status, u8 enable) {
+    u8 *base = lbl_803C0F78;
+    u8 *dev;
+    u32 index = 0;
+
+    if (base[0x14D] != 0 && *(u16 *)(base + 0x34) == handle)
+        goto selected;
+    index = 1;
+    if (base[0x269] != 0 && *(u16 *)(base + 0x150) == handle)
+        goto selected;
+    index = 2;
+    if (base[0x385] != 0 && *(u16 *)(base + 0x26C) == handle)
+        goto selected;
+    index = 3;
+    if (base[0x4A1] != 0 && *(u16 *)(base + 0x388) == handle)
+        goto selected;
+    index = 4;
+selected:
+    if (index >= 4)
+        return;
+    dev = base + index * 0x11C;
+    if (dev[0x14F] == 2) {
+        if (enable != 0)
+            dev[0x14F] = 0;
+        else
+            dev[0x14F] = 3;
+        if (btsnd_hcic_switch_role(dev + 0x3C, (u8)(dev[0x14E] == 0)) == 0) {
+            dev[0x14F] = 0;
+            if (*(void (**)(void *))(base + 0x62C) != 0) {
+                (*(void (**)(void *))(base + 0x62C))(base + 0x624);
+                *(void (**)(void *))(base + 0x62C) = 0;
+            }
+        }
+    } else if (dev[0x14F] == 4) {
+        dev[0x14F] = 0;
+        if (*(void (**)(void *))(base + 0x62C) != 0) {
+            (*(void (**)(void *))(base + 0x62C))(base + 0x624);
+            *(void (**)(void *))(base + 0x62C) = 0;
+        }
+    }
+}
+
 void fn_800778C8(s16 arg0) {
     *(s16 *)(lbl_803C0F78 + 0x4C4) = arg0;
 }
@@ -6152,6 +6194,53 @@ s32 l2c_link_hci_qos_violation(u16 handle) {
         ccb = *(void **)((u8 *)ccb + 8);
     }
     return 1;
+}
+
+void l2c_link_timeout(void *arg0) {
+    extern char lbl_80318CB4[];
+    extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
+    u8 *lcb = arg0;
+    void *p;
+    int state = *(s32 *)(lcb + 4);
+    if (state == 2 || state == 3 || state == 1 || state == 5) {
+        p = *(void **)(lcb + 8);
+        while (p != 0) {
+            void *next = *(void **)((u8 *)p + 8);
+            fn_80089E40(p, 3, 0);
+            p = next;
+        }
+        l2cu_release_lcb(arg0);
+    }
+    if (*(s32 *)(lcb + 4) == 4) {
+        void (*cb)(int) = *(void (**)(int))(lcb + 0x54);
+        if (cb != 0) {
+            *(void (**)(int))(lcb + 0x54) = 0;
+            cb(2);
+            if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, &lbl_80318CB4);
+            p = *(void **)(lcb + 8);
+            while (p != 0) {
+                void *next = *(void **)((u8 *)p + 8);
+                fn_80089E40(p, 3, 0);
+                p = next;
+            }
+        }
+        if (*(void **)(lcb + 8) == 0) {
+            u8 result = btm_sec_disconnect(*(u16 *)(lcb + 0x28), 0x13);
+            u16 timeout;
+            if (result == 1) {
+                timeout = 0x1e;
+                *(s32 *)(lcb + 4) = 5;
+            } else if (result == 0) {
+                *(s32 *)(lcb + 4) = 5;
+                timeout = 0xffff;
+            } else {
+                timeout = 1;
+            }
+            if (timeout != 0xffff) btu_start_timer(lcb + 0x10, 2, timeout);
+        } else {
+            ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(lcb, 0, 0);
+        }
+    }
 }
 
 s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
