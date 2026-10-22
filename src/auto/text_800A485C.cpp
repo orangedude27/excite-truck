@@ -4433,6 +4433,7 @@ s32 fn_800BEE64(void *arg0, s32 arg1) {
     return 0;
 }
 
+struct Fn800C0B68Context { u8 pad[0xC]; u32 bitIndex; s32 limit; };
 extern "C" s32 fn_800BDEB4(const u8 *, s32, u32 *);
 #pragma push
 #pragma opt_common_subs off
