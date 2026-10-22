@@ -998,6 +998,46 @@ extern "C" void *fn_800A9B0C(void *arg0) {
     fn_800B783C((u8 *)vol + 0x1F90);
     return (void *)temp_r3;
 }
+
+extern "C" s32 fn_800AF530(void *, void *, s32, s32);
+extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *, u32, void *, s32 *);
+extern "C" s32 VFiPFENT_findEmptyTailSFN(void *arg0, void *name, u32 *out) {
+    u32 sp18[1];
+    u32 sp8[1];
+    u8 *volume = *(u8 **)((u8 *)arg0 + 0x22C);
+    u32 candidate = 1;
+    *out = 1;
+    fn_800AF530(sp18, sp8, (s32)volume, (s32)((u8 *)arg0 + 0x234));
+    for (;;) {
+        u32 i;
+        u32 *entries;
+        u32 blocks;
+        if (candidate > 0xF423F) return 0;
+        if (VFiPFENT_searchEmptyTailSFN(sp18, candidate, name, (s32 *)(volume + 0x1F7C))) return 1;
+        entries = *(u32 **)(volume + 0x1F7C);
+        blocks = *(u32 *)(volume + 0x1F74);
+        i = 0;
+        while (i < blocks) {
+            u32 value = entries[i];
+            if (value + 0x10000 != 0xFFFFFFFF) {
+                u32 j = i;
+                do {
+                    value = entries[j];
+                    if (!(value & 1)) break;
+                    entries[j] = value >> 1;
+                    *out += 1;
+                    j++;
+                } while (1);
+                candidate = 0xF4240;
+                break;
+            }
+            i++;
+            *out += 0x20;
+        }
+        candidate += blocks << 5;
+    }
+}
+
 #pragma dont_inline reset
 
 extern "C" void fn_800B3A70(u8 *buf, u8 *short_name, u32 flags);
@@ -1515,6 +1555,33 @@ extern "C" s32 VFiPFFILE_p_fread(void *, void *, u32 arg2, u32 arg3, void *arg4,
     s32 ret = result & ((-result | result) >> 31);
     *arg5 = bytesRead / arg2;
     return ret;
+}
+
+extern "C" s32 fn_800A9470(void *,void *);
+extern "C" s32 VFiPFFILE_p_finfo(void *arg0, void *arg1) {
+    s32 temp_r3, temp_r5;
+    u32 size;
+    void *file;
+    *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x34) = (u8 *)arg0 + 0xC;
+    if (arg0 == 0) file = 0;
+    else file = *(void **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+    *(s32 *)arg1 = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x264);
+    *(s32 *)((u8 *)arg1 + 4) = *(s32 *)((u8 *)arg0 + 0x1C);
+    size = *(u16 *)file << *((u8 *)file + 0x21);
+    if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x270) != 0) {
+        temp_r3 = fn_800A9470(arg0, (u8 *)arg1 + 0xC);
+        if (temp_r3 != 0) return temp_r3;
+        temp_r5 = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x264) % size;
+        *(s32 *)((u8 *)arg1 + 8) = *(s32 *)((u8 *)arg1 + 0xC) + ((size - temp_r5) & ((-temp_r5 | temp_r5) >> 31));
+    } else {
+        *(s32 *)((u8 *)arg1 + 0xC) = 0;
+        *(s32 *)((u8 *)arg1 + 8) = 0;
+    }
+    *(s32 *)((u8 *)arg1 + 0x10) = *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x27C) & 3;
+    *(s32 *)((u8 *)arg1 + 0x14) = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x284);
+    *(s32 *)((u8 *)arg1 + 0x18) = *(u16 *)((u8 *)arg0 + 0x2C);
+    *(s32 *)((u8 *)arg1 + 0x1C) = *(u16 *)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x27E);
+    return 0;
 }
 
 extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *arg0) {
@@ -5206,6 +5273,26 @@ extern "C" void fn_800D30E8(s32 x, s32 y, const char *str, s32 arg3, s32 arg4) {
     }
 }
 
+extern "C" u8 lbl_802F47D8[];
+extern "C" void fn_800D337C(s32,s32,s32);
+extern "C" const char *fn_800D3260(s32 arg0, s32 arg1, const char *arg2, s32 arg3) {
+    s32 var_r26=arg0, var_r27=arg1, var_r29=arg3, var_r30=0, temp;
+    const char *var_r28=arg2;
+    u8 ch, cls;
+    if (!var_r28) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0,0x2E9,lbl_8031EBA0+0x54);
+    if (var_r29<=0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EBA0,0x2EA,lbl_8031EBA0+0x7C);
+    do {
+        ch=*var_r28;
+        if(ch==10 || ch==0) return var_r28;
+        cls=lbl_802F47D8[ch&0x7F];
+        if(cls==0xFD) { temp=4-(var_r30&3); var_r30+=temp; var_r26+=temp*6; }
+        else { if(cls!=0xFF) fn_800D337C(var_r26,var_r27,0); var_r26+=6; var_r30++; }
+        if(var_r30>=var_r29) { if((u8)var_r28[1]==10) var_r28++; return var_r28; }
+        var_r28++;
+    } while((s8)*var_r28!=0);
+    return var_r28;
+}
+
 extern "C" u16 lbl_80407BE8[];
 extern "C" u32 lbl_8031EC40[];
 extern "C" u8  lbl_802F4858[];
@@ -5720,6 +5807,57 @@ void fn_800C790C(void *arg0) {
 
 extern "C" u32* fn_800C7C68(void) {
     return &lbl_8055DDF8;
+}
+
+extern "C" s16 fn_80031C74(void);
+extern "C" s16 fn_80031C7C(void);
+extern "C" s16 fn_80031C84(void);
+extern "C" void fn_80031C8C(u16);
+extern "C" void fn_80031C94(u32);
+extern "C" void fn_80031C9C(u32);
+extern "C" void AXGetAuxACallback_8009CDBC(void *, void *);
+extern "C" void AXGetAuxACallback(void *, void *);
+extern "C" void AXFXSetHooks_8009CDB0(void *, void *);
+extern "C" void AXFXReverbHiInit(void *);
+extern "C" void AXRegisterAuxACallback(void *, void *);
+extern "C" void *fn_800C64DC(u32);
+extern "C" void fn_800C64E8(u32);
+extern "C" void fn_8009BFBC(void);
+extern "C" f32 lbl_80560DC8, lbl_80560DCC, lbl_80560DF0, lbl_80560DF4;
+extern "C" void fn_800C7E6C(void *arg0) {
+    u8 *self = (u8 *)arg0;
+    void *object;
+    void (*callback)(s32, s32);
+    f32 f3, f2, f1, f0;
+    if (*(s32 *)(self + 0xAC) == 3) return;
+    object = *(void **)(self + 4);
+    callback = *(void (**)(s32, s32))((u8 *)object + 0x14);
+    if (callback != 0) callback(0, 0);
+    *(s16 *)(self + 0x5D8) = fn_80031C74();
+    *(s16 *)(self + 0x5DA) = fn_80031C7C();
+    *(s16 *)(self + 0x5DC) = fn_80031C84();
+    AXGetAuxACallback_8009CDBC(self + 0x5E0, self + 0x5E4);
+    AXGetAuxACallback(self + 0x748, self + 0x74C);
+    AXFXSetHooks_8009CDB0((void *)fn_800C64DC, (void *)fn_800C64E8);
+    f0 = lbl_80560DC8;
+    f1 = lbl_80560DF0;
+    f2 = lbl_80560DF4;
+    f3 = lbl_80560DCC;
+    *(f32 *)(self + 0x740) = f0;
+    *(f32 *)(self + 0x738) = f1;
+    *(f32 *)(self + 0x730) = f2;
+    *(f32 *)(self + 0x73C) = f0;
+    *(f32 *)(self + 0x744) = f0;
+    *(f32 *)(self + 0x734) = f3;
+    AXFXReverbHiInit(self + 0x5E8);
+    AXRegisterAuxACallback((void *)fn_8009BFBC, self + 0x5E8);
+    fn_80031C8C(0x8000);
+    fn_80031C94(0);
+    fn_80031C9C(0);
+    object = *(void **)(self + 4);
+    callback = *(void (**)(s32, s32))((u8 *)object + 0x14);
+    if (callback != 0) callback(1, 0);
+    self[0x8E] = 1;
 }
 
 extern "C" void fn_800D15B4(void*);
@@ -6403,6 +6541,31 @@ extern "C" s32 VFiPFSTR_StrCmp(void *arg0, s32 arg1) {
         break;
     }
     return *(u16 *)(var_r30 - 2) - converted;
+}
+
+extern "C" s32 VFiPFSTR_StrNCmp(s32 arg0_, const void *arg1_, s32 arg2_, s32 arg3, s32 arg4_) {
+    void *arg0 = (void *)arg0_;
+    u8 *arg1 = (u8 *)arg1_;
+    u32 arg2 = (u32)arg2_;
+    u16 count = (u16)arg4_;
+    u16 sp8;
+    u16 *p;
+    u8 *base;
+    s32 result;
+    if (*(u32 *)((u8 *)arg0 + 0xC) == 1 || arg2 == 3) {
+        if (arg2 == 1) base = *(u8 **)arg0 + arg3;
+        else if (arg2 == 2) base = *(u8 **)((u8 *)arg0 + 4) + arg3;
+        else base = *(u8 **)((u8 *)arg0 + 8) + arg3;
+        return fn_800A4B08(base, arg1, count);
+    }
+    if (arg2 == 1) p = (u16 *)(*(u8 **)arg0 + arg3 * 2);
+    else p = (u16 *)(*(u8 **)((u8 *)arg0 + 4) + arg3 * 2);
+    do {
+        ((void (*)(u8 *, u16 *))(*(u32 *)((u8 *)lbl_803D2140 + 0x48)))(arg1, &sp8);
+        result = *p;
+        arg1++; count--; p++;
+    } while (result == sp8 && (u16)count != 0 && p[-1] != 0 && sp8 != 0);
+    return (s32)p[-1] - (s32)sp8;
 }
 
 extern "C" void VFipf_memcpy(void *, const void *, u32);
