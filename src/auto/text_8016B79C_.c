@@ -16,6 +16,7 @@ extern void fn_8016A438(void);
 extern char lbl_8033072C[];
 extern char lbl_803308A0[];
 extern f32 lbl_80561980;
+extern f32 lbl_80561998;
 extern f32 lbl_805619A0;
 extern char lbl_80330AEC[];
 extern char lbl_803306D0[];
@@ -248,6 +249,40 @@ void *fn_8016CEC0(void *arg0, s32 arg1) {
 
 void fn_8016CEFC(void *arg0) {
     ((s32 *)arg0)[1] = 0;
+}
+
+void *fn_8016CF08(void *arg0) {
+    register s32 size = 0x30;
+    register s32 count = 3;
+    s32 zero = 0;
+    *(s32 *)((u8 *)arg0 + 0xC) = zero;
+    *(s32 *)((u8 *)arg0 + 0x14) = zero;
+    *(s32 *)((u8 *)arg0 + 0x18) = zero;
+    *(s32 *)((u8 *)arg0 + 0x1C) = zero;
+    *(s32 *)((u8 *)arg0 + 0x24) = zero;
+    *(s32 *)((u8 *)arg0 + 0x28) = zero;
+    *(s32 *)((u8 *)arg0 + 0x2C) = zero;
+    memset((u8 *)arg0 + 0x30, size, count);
+    *((u8 *)arg0 + 0x33) = 0;
+    memset((u8 *)arg0 + 0x44, size, count);
+    *((u8 *)arg0 + 0x47) = 0;
+    memset((u8 *)arg0 + 0x58, size, count);
+    *((u8 *)arg0 + 0x5B) = 0;
+    memset((u8 *)arg0 + 0x6C, size, count);
+    *((u8 *)arg0 + 0x6F) = 0;
+    memset((u8 *)arg0 + 0x80, size, count);
+    *((u8 *)arg0 + 0x83) = 0;
+    memset((u8 *)arg0 + 0x8A, size, count);
+    *((u8 *)arg0 + 0x8D) = 0;
+    memset((u8 *)arg0 + 0x9E, size, count);
+    *((u8 *)arg0 + 0xA1) = 0;
+    memset((u8 *)arg0 + 0xB2, size, count);
+    *((u8 *)arg0 + 0xB5) = 0;
+    memset((u8 *)arg0 + 0xC6, size, count);
+    *((u8 *)arg0 + 0xC9) = 0;
+    memset((u8 *)arg0 + 0xDA, size, count);
+    *((u8 *)arg0 + 0xDD) = 0;
+    return arg0;
 }
 
 extern char lbl_80330A90[];
@@ -522,18 +557,18 @@ void fn_8016E984(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x104) = 0;
     if (temp != 0) fn_802AE0E0(temp);
     p = *(void **)((u8 *)arg0 + 0x14);
-    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
     p = *(void **)((u8 *)arg0 + 0x18);
-    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
     p = *(void **)((u8 *)arg0 + 0x1C);
-    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
     p = *(void **)((u8 *)arg0 + 0x24);
     *((u8 *)arg0 + 0x20) = 0;
-    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
     p = *(void **)((u8 *)arg0 + 0x28);
-    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
     p = *(void **)((u8 *)arg0 + 0x2C);
-    if (p) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
+    if (p != 0) { *((u8 *)p + 0x4A) = 1; *((u8 *)p + 0x4C) = 0; }
 }
 #pragma scheduling on
 extern f32 fn_8016FD58(void);
