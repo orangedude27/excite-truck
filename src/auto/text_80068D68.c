@@ -6565,8 +6565,8 @@ void hidh_sec_check_complete_orig(BD_ADDR bd_addr, void *p_ref_data, UINT8 res) 
     u8 *p_dev = (u8 *)p_ref_data;
     char *strings = lbl_80317838;
     u8 dhandle = (u8)((p_dev - lbl_803C3C38) / 0x34);
-    u8 *record_success;
     u8 *record_failure;
+    u8 *record_success;
     u16 cid;
 
     if (res == 0 && p_dev[0x10] == 6) {
