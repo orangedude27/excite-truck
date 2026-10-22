@@ -437,6 +437,7 @@ void fn_80176DE0(void) {
 }
 
 #pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_80176E4C(void) {
     fn_80179308();
     fn_801769EC();
@@ -447,6 +448,7 @@ void fn_80176E4C(void) {
     *(s32 *)(lbl_80430558 + 8) = 0;
     *(u8 *)(lbl_80430558 + 0x14) = 0;
 }
+#pragma scheduling on
 void fn_80176F24(void) {
     fn_80176EC0();
 }
