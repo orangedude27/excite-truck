@@ -1910,3 +1910,6 @@ public:
     virtual void *values();
 };
 #pragma cplusplus off
+#pragma cplusplus on
+class Dummy_DC08 { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); };
+#pragma cplusplus off
