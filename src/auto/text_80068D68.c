@@ -10,6 +10,8 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern char lbl_80319278[];
+extern char lbl_80319290[];
 extern u8 lbl_803C3AF0[];
 extern void hidd_pm_set_now(void *);
 extern void fn_80086468(void *);
@@ -828,6 +830,41 @@ u8 fn_8006DF84(void *arg0) {
     u16 val = *(u16 *)((u8 *)arg0 + 8);
     u32 tmp = __cntlzw(val);
     return tmp >> 5;
+}
+
+extern void fn_8006EBF0();
+extern void fn_8006EC20();
+extern char lbl_80314240[];
+void GKI_delete_pool(u8 pool_id) {
+    u8 *global = (u8 *)lbl_803946C0;
+    u8 *pools = global + 0x30000;
+    u8 *pool;
+    s32 index;
+    if (pool_id >= 9) return;
+    if (*(u32 *)(pools + pool_id * 4 - 0x75E4) == 0) return;
+    fn_8006EBAC();
+    pool = pools + pool_id * 0x10 - 0x7668;
+    if (*(u16 *)pool != 0) {
+        ((void (*)(s32, const char *))fn_8006EBF0)(-8, lbl_80314240);
+        fn_8006EB88();
+        return;
+    }
+    *(u16 *)(pool - 4) = 0;
+    *(u16 *)(pool - 2) = 0;
+    *(u16 *)pool = 0;
+    *(u16 *)(pool + 2) = 0;
+    *(u32 *)(pool - 12) = 0;
+    *(u32 *)(pool - 8) = 0;
+    ((void (*)(s32))fn_8006EC20)(*(s32 *)(pools + pool_id * 4 - 0x75E4));
+    *(u32 *)(pools + pool_id * 4 - 0x75E4) = 0;
+    *(u32 *)(pools + pool_id * 4 - 0x75C0) = 0;
+    *(u16 *)(pools + pool_id * 2 - 0x759C) = 0;
+    index = 0;
+    while (index < global[0x28A87] && global[0x28A7E + index] != pool_id) index++;
+    for (; index < global[0x28A87] - 1; index++)
+        global[0x28A7E + index] = global[0x28A7F + index];
+    global[0x28A87]--;
+    fn_8006EB88();
 }
 
 void gki_timers_init(void) {
@@ -3198,7 +3235,8 @@ tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT
 
 void btm_process_remote_name(u8 *arg0, u8 *arg1, u16 arg2, u8 arg3) {
     extern unsigned char lbl_803C0F78[];
-    u8 buffer[0x100];
+    u8 buffer[0xF8];
+    u16 spA;
     s16 sp8;
     s32 (*callback)(s16 *);
     u16 len;
@@ -3215,7 +3253,7 @@ void btm_process_remote_name(u8 *arg0, u8 *arg1, u16 arg2, u8 arg3) {
         dst = buffer;
         len = arg2;
         if (len >= 0xF8) len = 0xF8;
-        *(u16 *)(buffer - 2) = len;
+        spA = len;
         sp8 = 0;
         if (len != 0) {
             blocks = len >> 3;
@@ -3228,7 +3266,7 @@ void btm_process_remote_name(u8 *arg0, u8 *arg1, u16 arg2, u8 arg3) {
             if (len != 0) do { *dst++ = *src++; } while (--len != 0);
         }
     } else {
-        *(u16 *)(buffer - 2) = 0;
+        spA = 0;
         sp8 = 9;
         buffer[0] = arg3;
     }
@@ -3262,6 +3300,50 @@ void btm_pm_sm_alloc(u8 index) {
     entry = lbl_803C0F78 + 0x4cc + index * 0x22;
     memset(entry, 0, 0x22);
     entry[0x20] = 0;
+}
+
+u8 btm_pm_get_set_mode(u32 arg0, void *arg1, void *arg2, void *arg3) {
+    extern unsigned char lbl_803C0F78[];
+    void *previous = 0;
+    void *entry = arg1;
+    s32 i = 0;
+    u16 a, b;
+
+    if (arg2 != 0 && (*(u8 *)((u8 *)arg2 + 8) & 0x10)) {
+        a = *(u16 *)((u8 *)arg2 + 0);
+        b = *(u16 *)((u8 *)arg2 + 2);
+        *(u16 *)((u8 *)arg3 + 0) = a;
+        *(u16 *)((u8 *)arg3 + 2) = b;
+        a = *(u16 *)((u8 *)arg2 + 4);
+        b = *(u16 *)((u8 *)arg2 + 6);
+        *(u16 *)((u8 *)arg3 + 4) = a;
+        *(u16 *)((u8 *)arg3 + 6) = b;
+        *(u16 *)((u8 *)arg3 + 8) = *(u16 *)((u8 *)arg2 + 8);
+        *(u8 *)((u8 *)arg3 + 8) &= ~0x10;
+        return *(u8 *)((u8 *)arg3 + 8);
+    }
+    while (i < 2) {
+        if (lbl_803C0F78[0x558 + i * 8] & 1) {
+            if (*(u8 *)((u8 *)entry + 8) == 0) return 0;
+            if (btm_pm_compare_modes(previous, entry, arg3) == 0) return 0;
+            previous = arg3;
+        }
+        i++;
+        entry = (u8 *)entry + 0xA;
+    }
+    if (previous == 0) {
+        if (arg2 == 0) return 0;
+        a = *(u16 *)((u8 *)arg2 + 0);
+        b = *(u16 *)((u8 *)arg2 + 2);
+        *(u16 *)((u8 *)arg3 + 0) = a;
+        *(u16 *)((u8 *)arg3 + 2) = b;
+        a = *(u16 *)((u8 *)arg2 + 4);
+        b = *(u16 *)((u8 *)arg2 + 6);
+        *(u16 *)((u8 *)arg3 + 4) = a;
+        *(u16 *)((u8 *)arg3 + 6) = b;
+        *(u16 *)((u8 *)arg3 + 8) = *(u16 *)((u8 *)arg2 + 8);
+    } else if (arg0 == 0x80 && btm_pm_compare_modes(arg2, previous, arg3) == 0) return 0;
+    return *(u8 *)((u8 *)arg3 + 8);
 }
 
 void btm_pm_proc_cmd_status(UINT8 status) {
@@ -5368,6 +5450,42 @@ void btsnd_hcic_vendor_spec_cmd(void *buffer, u16 opcode, u8 len, u8 *p_data, vo
         }
     }
     btu_hcif_send_cmd(p);
+}
+
+typedef void (*hidd_pm_callback)(u32, u8, void *);
+void hidd_pm_proc_mode_change(u8 arg0, u8 arg1, u16 arg2) {
+    u8 sp8;
+    u16 spA;
+    hidd_pm_callback callback;
+    sp8 = arg0;
+    spA = arg2;
+    if (lbl_803C3AF0[0x140] == 0) return;
+    lbl_803C3AF0[0x6E] = 0;
+    if (arg0 != 0) {
+        callback = *(hidd_pm_callback *)(lbl_803C3AF0 + 0xC4);
+        if (callback != 0) callback(4, lbl_803C3AF0[0x6F], &sp8);
+        return;
+    }
+    lbl_803C3AF0[0x6A] = arg1;
+    *(u16 *)(lbl_803C3AF0 + 0x6C) = arg2;
+    if (lbl_803C3AF0[0x78] != 0xFF) {
+        if (lbl_803C3AF0[0x78] != arg1 ||
+            (lbl_803C3AF0[0x78] != 0 &&
+             (arg2 < *(u16 *)(lbl_803C3AF0 + 0x72) ||
+              arg2 > *(u16 *)(lbl_803C3AF0 + 0x70)))) {
+            hidd_pm_set_now(lbl_803C3AF0 + 0x70);
+        } else {
+            lbl_803C3AF0[0x78] = 0xFF;
+        }
+    } else if (arg1 == 0) {
+        memcpy(lbl_803C3AF0 + 0x70, lbl_803C3AF0 + 0x4C, 0xA);
+        hidd_pm_set_now(lbl_803C3AF0 + 0x4C);
+        lbl_803C3AF0[0x6F] = 0;
+        *(void (**)(void *))(lbl_803C3AF0 + 0x44) = fn_80086468;
+        btu_start_timer(lbl_803C3AF0 + 0x34, 0x16, 0x3C);
+    }
+    callback = *(hidd_pm_callback *)(lbl_803C3AF0 + 0xC4);
+    if (callback != 0) callback(3, arg1, &spA);
 }
 
 s32 HID_HostGetSDPRecord(void *addr, void *p_db, u32 db_len, void *sdp_cback) {
@@ -8746,6 +8864,44 @@ static void USB_ERR(const char *fmt, ...) {
 
 u32 fn_8009B0E0(void) {
     return 0;
+}
+
+s32 _intBlkCtrlCb(s32 arg0, void *arg1) {
+    extern s32 iosFree(s32, void *);
+    extern s32 lbl_805590A0;
+    register char *base = lbl_8031A620;
+    unsigned char *block = arg1;
+    register s32 i;
+    register void *entry;
+    register unsigned char *entry_ptr;
+    s32 result;
+    void (*complete)(s32, void *);
+    USB_LOG(base + 0x88, arg0);
+    USB_LOG(base + 0xA8, *(u32 *)(block + 0x2C));
+    if (*(u32 *)(block + 0x2C) != 7 && *(u32 *)(block + 0x2C) != 3 && *(u32 *)(block + 0x2C) != 0) {
+        USB_ERR(base + 0xC8);
+    } else {
+        entry_ptr = block;
+        i = 0;
+        while (i < *(u32 *)(block + 0x2C)) {
+            USB_LOG(base + 0xF0, i, *(void **)(entry_ptr + 0xC));
+            entry = *(void **)(entry_ptr + 0xC);
+            if (entry != 0) {
+                result = iosFree(lbl_805590A0, entry);
+                if (result < 0) USB_ERR(base + 0x108, lbl_805590A0, entry, result);
+            }
+            entry_ptr += 4;
+            i++;
+        }
+    }
+    USB_LOG(base + 0x128, *(void **)block, *(void **)(block + 4));
+    complete = *(void (**)(s32, void *))block;
+    if (complete != 0) complete(arg0, *(void **)(block + 4));
+    if (arg1 != 0) {
+        result = iosFree(lbl_805590A0, arg1);
+        if (result < 0) USB_ERR(base + 0x108, lbl_805590A0, arg1, result);
+    }
+    return arg0;
 }
 
 extern s32 lbl_805590A0;
