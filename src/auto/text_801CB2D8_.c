@@ -182,13 +182,15 @@ done:
     return;
 }
 
-void fn_801CB750(s32 arg0, s32 arg1, f32 farg0) {
-    if (fn_80019BA8() != 0)
+void fn_801CB750(int arg0, int arg1, f32 farg0) {
+    if (fn_80019BA8() != 0) goto done;
+    switch (fn_80161C38()) {
+    case 0:
+        goto action;
+    default:
         goto done;
-    if (fn_80161C38() == 0)
-        goto call;
-    goto done;
-call:
+    }
+action:
     fn_801CD130(arg0, arg1, farg0);
 done:
     return;
