@@ -785,6 +785,30 @@ extern "C" void* fn_8014E3CC(void* arg0, s32 arg1) {
     }
     return arg0;
 }
+
+extern void *memset(void *, s32, s32);
+void *fn_8014E4BC(void *arg0) {
+    u8 *base = (u8*)arg0;
+    u8 *p;
+    u8 *end;
+    *(u32*)(base + 8) = 0; *(u32*)(base + 0x10) = 0;
+    *(u32*)(base + 0x14) = 0; *(u32*)(base + 0x18) = 0;
+    memset(base + 0x2C, 0x7A, 3); base[0x2F] = 0;
+    memset(base + 0x40, 0x7A, 3); base[0x43] = 0;
+    memset(base + 0x45, 0x7A, 3); base[0x48] = 0;
+    memset(base + 0x59, 0x7A, 3); base[0x5C] = 0;
+    memset(base + 0x6D, 0x7A, 3); base[0x70] = 0;
+    memset(base + 0x81, 0x7A, 3); base[0x84] = 0;
+    memset(base + 0x8B, 0x7A, 3); base[0x8E] = 0;
+    p = base + 0x95; end = base + 0x149;
+    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
+    p = end; end = base + 0x1FD;
+    do { memset(p, 0x7A, 3); p[3] = 0; p += 0x14; } while (p < end);
+    memset(end, 0x7A, 3); base[0x200] = 0;
+    memset(base + 0x225, 0x7A, 3); base[0x228] = 0;
+    return arg0;
+}
+
 #pragma cplusplus off
 extern s32 fn_801DF074(s32, s32);
 #pragma paired_single off
@@ -1271,6 +1295,18 @@ void fn_801537C8(void) {
 
 }
 
+s32 fn_801537CC(s32 arg0, s32 arg1, f32 t) {
+    u8 *a = (u8 *)&arg0;
+    u8 *b = (u8 *)&arg1;
+    s8 out0 = (s8)(a[0] + t * ((f32)b[0] - (f32)a[0]));
+    s8 out1 = (s8)(a[1] + t * ((f32)b[1] - (f32)a[1]));
+    s8 out2 = (s8)(a[2] + t * ((f32)b[2] - (f32)a[2]));
+    s8 out3 = (s8)(a[3] + t * ((f32)b[3] - (f32)a[3]));
+    u8 *dst = (u8 *)&arg0;
+    dst[0] = out0; dst[1] = out1; dst[2] = out2; dst[3] = out3;
+    return arg0;
+}
+
 void *fn_801538E4(void *arg0) {
     return (void *)((u8 *)arg0 + ((*(s32 *)((u8 *)arg0 + 0x38) + *(s32 *)((u8 *)arg0 + 0x14)) * 0x14) + 0x3C);
 }
@@ -1719,9 +1755,56 @@ void fn_8014F108(void *arg0) {
     } while (i < 2);
     *(s32 *)((u8 *)base + 0x9D8) = fn_80145E70(&lbl_8032DB40);
 }
+
+#pragma cplusplus on
+extern "C" void fn_8014FB7C(void *arg0) {
+    class VObj { public: virtual void d0(s32); };
+    VObj *p;
+    u8 *base = (u8 *)arg0;
+    p = *(VObj **)(base + 0x9D8);
+    if (p != 0) {
+        if (p != 0) p->d0(1);
+        *(VObj **)(base + 0x9D8) = 0;
+    }
+    s32 i;
+    u8 *obj;
+    i = 1;
+    obj = base + 0x240;
+    do {
+        if (*(void **)(obj + 0x45C) != 0) {
+            fn_802ADE60((void **)(obj + 0x45C), 1);
+            *(s32 *)(obj + 0x45C) = 0;
+        }
+        p = *(VObj **)(obj + 0x464);
+        if (p != 0) { if (p != 0) p->d0(1); *(VObj **)(obj + 0x464) = 0; }
+        p = *(VObj **)(obj + 0x468);
+        if (p != 0) { if (p != 0) p->d0(1); *(VObj **)(obj + 0x468) = 0; }
+        p = *(VObj **)(obj + 0x46C);
+        if (p != 0) { if (p != 0) p->d0(1); *(VObj **)(obj + 0x46C) = 0; }
+        i--;
+        obj -= 0x240;
+    } while (i >= 0);
+}
+#pragma cplusplus reset
+
 extern unsigned long lbl_80559E94;
 extern unsigned long lbl_80559E9C;
 extern s32 fn_80176A1C(void);
 extern f32 fn_80176A2C(void);
 extern f32 lbl_8056164C;
 extern f32 lbl_80561650;
+extern u8 lbl_8032D358[];
+extern u8 lbl_8032E1E4[];
+extern u8 lbl_8032E1D8[];
+extern u8 lbl_8032E1CC[];
+extern u8 lbl_80559FB8[];
+#pragma cplusplus on
+class Obj80155AF0 {
+public:
+    virtual void d0();
+    virtual void *get();
+    virtual void d2();
+    virtual int check(const void *);
+    virtual void *values();
+};
+#pragma cplusplus off
