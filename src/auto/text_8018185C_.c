@@ -32,6 +32,18 @@ extern int lbl_80332478;
 extern int lbl_8055A3AC;
 extern int fn_801B2F2C(int);
 extern float lbl_8055E4E0;
+extern void fn_80279B28(int, void *);
+extern void fn_8018F2C0(void *, void *);
+extern int fn_8018AF04(void *);
+extern void fn_8017A57C(void *);
+extern void fn_8017B2D0(void *, float, float, float, float);
+extern void fn_801BDA74(int, void *, float);
+extern void fn_801D11D8(void *);
+extern void fn_801D1540(void *);
+extern void fn_802E30C8(const char *, ...);
+extern int lbl_8055E908, lbl_8055E918;
+extern float lbl_80561CD0, lbl_80561D54, lbl_80561D58;
+extern char lbl_803325E8[];
 
 void fn_8018C510(void);
 void __AXDSPInitCallback_801AFC38(void);
