@@ -62,7 +62,7 @@ void fn_8020A788(void) {
 
 #pragma push
 #pragma cplusplus on
-void fn_8020A800(void *arg0) {
+extern "C" void fn_8020A800(void *arg0) {
     class Obj {
     public:
         virtual void f(int);
