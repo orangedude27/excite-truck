@@ -19,6 +19,7 @@ void* memset(void*, int, unsigned long);
 void fn_801FF5D4(void*, void*, float);
 void fn_801FCA54(void*, int, int);
 void fn_801FF7D4(void*, void*);
+void fn_801FF8DC(void*, void*, int);
 void fn_802E317C(const char*, ...);
 void fn_801FCF18(void*, int, int);
 void fn_801FF484(void*, void*);
