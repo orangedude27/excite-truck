@@ -152,6 +152,7 @@ extern "C" void VFipf_memcpy(void *, const void *, u32);
   #pragma opt_tail_call on
 
 namespace homebutton {
+class Controller { public: void updateSound(); };
 class FrameController {
 public:
     u8 pad0[4];
