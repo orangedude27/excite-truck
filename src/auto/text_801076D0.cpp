@@ -3,7 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; } }
+namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; } }
 
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
@@ -18,6 +18,33 @@ extern "C" const char lbl_803290E8[];
 extern "C" const char lbl_803293A8[];
 extern "C" const char lbl_80329400[];
 extern "C" const char lbl_80329140[];
+extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *self) {
+    extern const char lbl_80328680[];
+    void *head = (char *)self + 4;
+    void *node = *(void **)((char *)self + 4);
+    while (node != head) {
+        void *next = *(void **)node;
+        if (*(s32 *)self == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x60, lbl_80328680 + 0x10);
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x61, lbl_80328680 + 0x34);
+        if (node == head)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x62, lbl_80328680 + 0x58);
+        void *prev = *(void **)((char *)node + 4);
+        void *nextNode = *(void **)node;
+        if (nextNode == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x65, lbl_80328680 + 0x80);
+        *(void **)((char *)nextNode + 4) = prev;
+        if (prev == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x67, lbl_80328680 + 0xA8);
+        *(void **)prev = nextNode;
+        --*(s32 *)self;
+        *(void **)node = 0;
+        *(void **)((char *)node + 4) = 0;
+        node = next;
+    }
+}
+
 extern "C" void* Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void* arg0, void** arg1, void* arg2) {
     extern const char lbl_80328680[];
     extern void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
@@ -365,14 +392,14 @@ extern "C" s32 fn_8010D4B0(void *self, void *arg0, s32 arg1, void *arg2) {
 extern "C" f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32);
 extern "C" s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
 extern "C" f32 fn_8010D9E4(s32 arg0) {
- extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32);
  extern const char lbl_80329560[]; extern const char lbl_80329578[];
  extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
  extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
+ extern f32 GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(s32);
  struct V { virtual u32 a0()=0; virtual u32 a1()=0; virtual u32 a2()=0; virtual u32 a3()=0; virtual u32 a4()=0; virtual u32 a5()=0; virtual u32 a6()=0; virtual u32 a7()=0; virtual u32 a8()=0; virtual u32 a9()=0; virtual u32 a10()=0; virtual u32 f()=0; };
- register int var_r5=1,var_r6=1,var_r7=1,var_r8=1,var_r9=1,var_r10=1;
- u32 temp_r11=arg0&0xFF000000;
- register long var_r30;
+ s32 var_r5=1,var_r6=1,var_r7=1,var_r8=1,var_r9=1,var_r10=1;
+ s32 temp_r11=arg0&0xFF000000;
+ s32 var_r30;
  if (((u32)(temp_r11+0x80000000)<1U)&&((u32)((arg0&0xFF800000)+0x7F000000)<1U)) var_r10=0;
  if ((var_r10==0)&&((u32)((arg0&0xF8000000)+0x70000000)<1U)) var_r9=0;
  if ((var_r9==0)&&((u32)(temp_r11+0x40000000)<1U)) var_r8=0;
