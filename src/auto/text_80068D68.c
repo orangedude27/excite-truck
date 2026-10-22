@@ -89,6 +89,51 @@ enum { BTA_HH_OK = 0, BTA_HH_ERR = 1 };
 #define HID_SUCCESS 0
 #define BTA_HH_MAX_KNOWN 0x10
 extern u8 HID_HostDeregister(void);
+
+/* BTM (btm_int.h / btm_api.h / bt_types.h) types for btm_read_link_policy_complete */
+typedef struct {
+    UINT16 hci_handle;
+    UINT16 pkt_types_mask;
+    UINT16 restore_pkt_types;
+    UINT16 clock_offset;
+    UINT8 remote_addr[6];
+    UINT8 remote_dc[3];
+    char remote_name[24];
+    UINT16 manufacturer;
+    UINT16 lmp_subversion;
+    UINT16 link_super_tout;
+    UINT8 features[8];
+    UINT8 lmp_version;
+    UINT8 in_use;
+    UINT8 link_role;
+    UINT8 link_up_issued;
+    UINT8 switch_role_state;
+    UINT8 change_key_state;
+    UINT8 encrypt_state;
+    UINT8 mode;
+} tACL_CONN_LKP;
+
+typedef struct {
+    UINT16 dummy;
+    void *p_rlinkp_cmpl_cb;
+    void *rlinkp_timer;
+} tBTM_DEVCB_LKP;
+
+typedef struct {
+    tACL_CONN_LKP acl_db[7];
+    tBTM_DEVCB_LKP devcb;
+} tBTM_CB_LKP;
+
+extern tBTM_CB_LKP *btm_cb_ptr_lkp;
+#define btm_cb_lkp (*btm_cb_ptr_lkp)
+
+typedef void (*tBTM_CMPL_CB_LKP)(void *p1);
+typedef struct {
+    UINT8 status;
+    UINT8 hci_status;
+    UINT8 rem_bda[6];
+    UINT16 settings;
+} tBTM_LNK_POLICY_RESULTS_LKP;
 #define BTA_HH_DISABLE_EVT 1
 #define BTA_HH_API_CLOSE_EVT 0x1701
 extern void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data);
@@ -1684,6 +1729,44 @@ void bta_dm_pm_timer_cback(void *arg) {
 
 void fn_80074A4C(s32 arg0) {
     bta_dm_pm_set_mode((u8 *)arg0 + 8, 1);
+}
+
+void bta_hh_api_disable(void) {
+    UINT8 xx;
+    int status;
+
+    /* service is not enabled */
+    if (bta_hh_cb.p_cback == NULL)
+        return;
+
+    /* no live connection, signal DISC_CMPL_EVT directly */
+    if (!bta_hh_cb.cnt_num) {
+        status = BTA_HH_OK;
+
+        /* Deregister with lower layer */
+        if (HID_HostDeregister() != HID_SUCCESS)
+            status = BTA_HH_ERR;
+
+        /* free buffer in CB holding report descriptors */
+        for (xx = 0; xx < BTA_HH_MAX_KNOWN; xx++) {
+            utl_freebuf((void **)&bta_hh_cb.kdev[xx].dscp_info.descriptor.dsc_list);
+        }
+        utl_freebuf((void **)&bta_hh_cb.p_disc_db);
+
+        (*bta_hh_cb.p_cback)(BTA_HH_DISABLE_EVT, (void *)&status);
+        /* all connections are down, no waiting for diconnect */
+        memset(&bta_hh_cb, 0, 0x230);
+    } else /* otherwise, disconnect all live connections */ {
+        bta_hh_cb.w4_disable = 1;
+
+        for (xx = 0; xx < BTA_HH_MAX_KNOWN; xx++) {
+            /* send API_CLOSE event to every connected device */
+            if (bta_hh_cb.kdev[xx].state == 3) {
+                /* disconnect all connected devices */
+                bta_hh_sm_execute(&bta_hh_cb.kdev[xx], BTA_HH_API_CLOSE_EVT, NULL);
+            }
+        }
+    }
 }
 
 void bta_hh_api_disc_act(void *arg0, void *arg1) {
