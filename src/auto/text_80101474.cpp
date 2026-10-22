@@ -162,6 +162,26 @@ extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     return *(int *)((char *)arg0 + 0x48);
 }
 
+extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2) {
+    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    if (temp_r11 + 0x80000000U != 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0) r10 = 0;
+    if (r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0) r9 = 0;
+    if (r9 == 0 && temp_r11 + 0x40000000U != 0) r8 = 0;
+    if (r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0) r7 = 0;
+    if (r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0) r6 = 0;
+    if (r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0xEB, "this", arg0);
+    *(unsigned char *)((char *)arg0 + 0) = *(unsigned char *)((char *)arg1 + 0);
+    *(unsigned char *)((char *)arg0 + 1) = *(unsigned char *)((char *)arg1 + 1);
+    *(unsigned char *)((char *)arg0 + 2) = *(unsigned char *)((char *)arg1 + 2);
+    *(unsigned char *)((char *)arg0 + 3) = *(unsigned char *)((char *)arg1 + 3);
+    *(unsigned char *)((char *)arg0 + 4) = *(unsigned char *)((char *)arg2 + 0);
+    *(unsigned char *)((char *)arg0 + 5) = *(unsigned char *)((char *)arg2 + 1);
+    *(unsigned char *)((char *)arg0 + 6) = *(unsigned char *)((char *)arg2 + 2);
+    *(unsigned char *)((char *)arg0 + 7) = *(unsigned char *)((char *)arg2 + 3);
+}
+
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     unsigned int temp_r11;
     int var_r10;
@@ -414,7 +434,3 @@ extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5C
     GXClearVtxDesc(); GXSetVtxDesc(9,1); GXSetVtxDesc(0xb,1); GXSetVtxDesc(0xd,1);
 }
 namespace nw4hbm { namespace ut { struct Glyph { unsigned char pad[0x14]; unsigned short x; unsigned char pad16[2]; unsigned char y; unsigned char pad19[7]; unsigned short width; unsigned short height; unsigned char pad20[0x20]; }; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); }; }}
-namespace nw4hbm { namespace snd { namespace detail {
-class Channel { public: enum ChannelCallbackStatus { Status }; };
-class WsdTrack { public: static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); };
-}}}
