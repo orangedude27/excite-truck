@@ -60,14 +60,22 @@ void fn_8020A788(void) {
     }
 }
 
+#pragma push
+#pragma cplusplus on
 void fn_8020A800(void *arg0) {
+    class Obj {
+    public:
+        virtual void f(int);
+    };
     fn_8012A364(lbl_8055EE10, arg0);
     if (--lbl_8055EE0C == 0) {
         if (lbl_8055EE10 != 0)
-            ((void (*)(void *, int))((void **)*(void **)lbl_8055EE10)[2])(lbl_8055EE10, 1);
+            ((Obj *)lbl_8055EE10)->f(1);
         lbl_8055EE10 = 0;
     }
 }
+#pragma cplusplus reset
+#pragma pop
 
 #pragma scheduling invalid_target
 void fn_8020A860(UnkStruct_8020A860 *arg0) {
@@ -100,6 +108,65 @@ void fn_8020AA0C(void *arg0) {
 }
 
 int fn_8020AA98(void *arg0) { volatile int *p = (volatile int *)((char *)arg0 + 4); if (*p == 1 && *((unsigned char *)arg0 + 0x3E) != 0) return 2; return *p; }
+
+extern const char lbl_8033C3B4[];
+extern const char lbl_8033C3C0[];
+extern const char lbl_8055B5A0[];
+extern const char lbl_8055B5A8[];
+extern const char lbl_8055B5B0[];
+extern float lbl_805632B4;
+extern void *fn_80131808(const char *);
+extern void fn_80131818(void *);
+extern void fn_802E58B8(int);
+extern int strcmp(const char *, const char *);
+void fn_8020AAC0(int unused, int arg1) {
+    typedef void *(*GetAt)(void *, int);
+    typedef const char *(*GetName)(void *);
+    typedef const char *(*GetString)(void *, const char *, int);
+    typedef float (*GetValue)(void *, const char *, float);
+    void *list = fn_80131808(lbl_8033C3B4);
+    if (list != 0) {
+        int index = 0;
+        void *item;
+        do {
+            item = ((GetAt)(*(void ***)list)[3])(list, index);
+            if (item != 0) {
+                const char *name = ((GetName)(*(void ***)item)[2])(item);
+                if (strcmp(name, lbl_8055B5A0) == 0) {
+                    int n = (int)lbl_8055EE08;
+                    char *dest = lbl_804892D0 + n * 0x24;
+                    const char *s;
+                    lbl_8055EE08 = (void *)(n + 1);
+                    s = ((GetString)(*(void ***)item)[5])(item, lbl_8055B5A8, n);
+                    {
+                        int left = 0x20;
+                        goto copy_check;
+copy_loop:
+                        if (--left > 0)
+                            goto copy_check;
+                        dest[-1] = 0;
+                        goto copy_done;
+copy_check:
+                        {
+                            char c = *s++;
+                            *dest++ = c;
+                            if ((signed char)c != 0)
+                                goto copy_loop;
+                        }
+copy_done:
+                        ;
+                    }
+                    ((GetValue)(*(void ***)item)[10])(item, lbl_8055B5B0, lbl_805632B4);
+                }
+                ++index;
+            }
+        } while (item != 0);
+        fn_80131818(list);
+    } else {
+        fn_802E317C(lbl_8033C3C0);
+    }
+    fn_802E58B8(arg1);
+}
 
 extern void fn_802E5950(int, int); void fn_8020AC0C(int arg0, int arg1, int arg2) { fn_802E5950(arg1, arg2); }
 
