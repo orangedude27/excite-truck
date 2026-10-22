@@ -4434,95 +4434,108 @@ s32 fn_800BEE64(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_800BDEB4(const u8 *, s32, u32 *);
-extern "C" void fn_800C0B68(void *arg0, s32 arg1, const u8 *arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
-    s32 index = arg4;
-    s16 *out = arg3 + arg4;
-    u32 *bitIndex = (u32 *)((u8 *)arg0 + 0xC);
+#pragma push
+#pragma opt_common_subs off
+extern "C" void fn_800C0B68(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s16 *arg6) {
+    s32 var_r28 = arg4;
+    s16 var_r0, var_r3, var_r4, var_r5;
+    s32 temp_r3;
+    u32 temp_r5;
+    u32 temp_r8, temp_r8_2, temp_r8_3, temp_r8_4;
+    u32 temp_r0;
+    u32 var_ctr, var_ctr_2;
+    u32 var_r3_2;
+    s32 shift;
+    s16 *var_r5_2;
+    s16 *var_r31 = (s16 *)arg3 + arg4;
 
-    do {
-        index += 4;
-        out += 4;
-        if (index < arg1) {
-            u16 bits = fn_800BDEB4(arg2, 4, bitIndex);
-            s32 v0 = (s16)((~bits >> 3) & 1);
-            s32 v1 = (s16)((~bits >> 2) & 1);
-            s32 v2 = (s16)((~bits >> 1) & 1);
-            s32 v3 = (s16)(~bits & 1);
-            s32 cursor;
-            s32 byteIndex;
-            s32 bit;
-            s32 count;
-            s32 i;
-
-            if (v0 != 0) {
-                cursor = *bitIndex;
-                *bitIndex = cursor + 1;
-                byteIndex = (cursor >> 3) & 0x1FFF;
-                bit = 7 - (cursor & 7);
-                if (((s32)arg2[byteIndex] >> bit) & 1)
-                    v0 = -v0;
+    goto block_25;
+loop_25:
+    temp_r3 = fn_800BDEB4((const u8 *)arg2, 4, (u32 *)((u8 *)arg0 + 0xC));
+    temp_r5 = ~(temp_r3 | temp_r3);
+    var_r0 = (s16)((temp_r5 >> 3U) & 1);
+    var_r3 = (s16)((temp_r5 >> 2U) & 1);
+    var_r4 = (s16)((temp_r5 >> 1U) & 1);
+    var_r5 = (s16)(temp_r5 & 1);
+    if (var_r0 != 0) {
+        temp_r8 = M2C_FIELD(arg0, u32 *, 0xC);
+        M2C_FIELD(arg0, u32 *, 0xC) = temp_r8 + 1;
+        shift = 8 - (temp_r8 & 7);
+        shift -= 1;
+        if (((s32)*((const u8 *)arg2 + ((temp_r8 >> 3U) & 0x1FFF)) >> shift) & 1)
+            var_r0 = -var_r0;
+    }
+    if (var_r3 != 0) {
+        temp_r8_2 = M2C_FIELD(arg0, u32 *, 0xC);
+        M2C_FIELD(arg0, u32 *, 0xC) = temp_r8_2 + 1;
+        shift = 8 - (temp_r8_2 & 7);
+        shift -= 1;
+        if (((s32)*((const u8 *)arg2 + ((temp_r8_2 >> 3U) & 0x1FFF)) >> shift) & 1)
+            var_r3 = -var_r3;
+    }
+    if (var_r4 != 0) {
+        temp_r8_3 = M2C_FIELD(arg0, u32 *, 0xC);
+        M2C_FIELD(arg0, u32 *, 0xC) = temp_r8_3 + 1;
+        shift = 8 - (temp_r8_3 & 7);
+        shift -= 1;
+        if (((s32)*((const u8 *)arg2 + ((temp_r8_3 >> 3U) & 0x1FFF)) >> shift) & 1)
+            var_r4 = -var_r4;
+    }
+    if (var_r5 != 0) {
+        temp_r8_4 = M2C_FIELD(arg0, u32 *, 0xC);
+        M2C_FIELD(arg0, u32 *, 0xC) = temp_r8_4 + 1;
+        shift = 8 - (temp_r8_4 & 7);
+        shift -= 1;
+        if (((s32)*((const u8 *)arg2 + ((temp_r8_4 >> 3U) & 0x1FFF)) >> shift) & 1)
+            var_r5 = -var_r5;
+    }
+    var_r31[0] = var_r0;
+    var_r31[1] = var_r3;
+    var_r31[2] = var_r4;
+    var_r31[3] = var_r5;
+    if ((s32)M2C_FIELD(arg0, u32 *, 0xC) > M2C_FIELD(arg0, s32 *, 0x10)) {
+        if (arg5 == 1 && *arg6 == 0)
+            *arg6 = var_r28;
+        var_r5_2 = (s16 *)arg3 + var_r28;
+        var_r3_2 = (u32)((arg1 + 3) - var_r28) >> 2U;
+        if (var_r28 < arg1) {
+            temp_r0 = var_r3_2 >> 3U;
+            var_ctr = temp_r0;
+            if (temp_r0 != 0) {
+                do {
+                    var_r5_2[0] = 0; var_r5_2[1] = 0; var_r5_2[2] = 0; var_r5_2[3] = 0;
+                    var_r5_2[4] = 0; var_r5_2[5] = 0; var_r5_2[6] = 0; var_r5_2[7] = 0;
+                    var_r5_2[8] = 0; var_r5_2[9] = 0; var_r5_2[10] = 0; var_r5_2[11] = 0;
+                    var_r5_2[12] = 0; var_r5_2[13] = 0; var_r5_2[14] = 0; var_r5_2[15] = 0;
+                    var_r5_2[16] = 0; var_r5_2[17] = 0; var_r5_2[18] = 0; var_r5_2[19] = 0;
+                    var_r5_2[20] = 0; var_r5_2[21] = 0; var_r5_2[22] = 0; var_r5_2[23] = 0;
+                    var_r5_2[24] = 0; var_r5_2[25] = 0; var_r5_2[26] = 0; var_r5_2[27] = 0;
+                    var_r5_2[28] = 0; var_r5_2[29] = 0; var_r5_2[30] = 0; var_r5_2[31] = 0;
+                    var_r5_2 += 32;
+                    var_ctr -= 1;
+                } while (var_ctr != 0);
+                var_r3_2 &= 7;
+                if (var_r3_2 != 0)
+                    goto block_21;
+            } else {
+block_21:
+                var_ctr_2 = var_r3_2;
+                do {
+                    var_r5_2[0] = 0; var_r5_2[1] = 0; var_r5_2[2] = 0; var_r5_2[3] = 0;
+                    var_r5_2 += 4;
+                    var_ctr_2 -= 1;
+                } while (var_ctr_2 != 0);
             }
-            if (v1 != 0) {
-                cursor = *bitIndex;
-                *bitIndex = cursor + 1;
-                byteIndex = (cursor >> 3) & 0x1FFF;
-                bit = 7 - (cursor & 7);
-                if (((s32)arg2[byteIndex] >> bit) & 1)
-                    v1 = -v1;
-            }
-            if (v2 != 0) {
-                cursor = *bitIndex;
-                *bitIndex = cursor + 1;
-                byteIndex = (cursor >> 3) & 0x1FFF;
-                bit = 7 - (cursor & 7);
-                if (((s32)arg2[byteIndex] >> bit) & 1)
-                    v2 = -v2;
-            }
-            if (v3 != 0) {
-                cursor = *bitIndex;
-                *bitIndex = cursor + 1;
-                byteIndex = (cursor >> 3) & 0x1FFF;
-                bit = 7 - (cursor & 7);
-                if (((s32)arg2[byteIndex] >> bit) & 1)
-                    v3 = -v3;
-            }
-            out[0] = (s16)v0;
-            out[1] = (s16)v1;
-            out[2] = (s16)v2;
-            out[3] = (s16)v3;
-
-            if ((s32)*bitIndex > M2C_FIELD(arg0, s32 *, 0x10)) {
-                if (arg5 == 1 && *arg6 == 0)
-                    *arg6 = (s16)index;
-
-                if (index < arg1) {
-                    count = (arg1 + 3 - index) >> 2;
-                    out = arg3 + index;
-                    for (i = 0; i < (count >> 3); i++) {
-                        out[0] = 0; out[1] = 0; out[2] = 0; out[3] = 0;
-                        out[4] = 0; out[5] = 0; out[6] = 0; out[7] = 0;
-                        out[8] = 0; out[9] = 0; out[10] = 0; out[11] = 0;
-                        out[12] = 0; out[13] = 0; out[14] = 0; out[15] = 0;
-                        out[16] = 0; out[17] = 0; out[18] = 0; out[19] = 0;
-                        out[20] = 0; out[21] = 0; out[22] = 0; out[23] = 0;
-                        out[24] = 0; out[25] = 0; out[26] = 0; out[27] = 0;
-                        out[28] = 0; out[29] = 0; out[30] = 0; out[31] = 0;
-                        out += 32;
-                    }
-                    count &= 7;
-                    for (i = 0; i < count; i++) {
-                        out[0] = 0; out[1] = 0; out[2] = 0; out[3] = 0;
-                        out += 4;
-                    }
-                }
-                break;
-            }
-        } else {
-            break;
         }
-    } while (1);
+        return;
+    }
+block_25:
+    var_r31 += 4;
+    var_r28 += 4;
+    if (var_r28 < arg1)
+        goto loop_25;
 }
-
+#pragma pop
 u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     u32 bits = *arg2;
     u32 index = (bits >> 3) & 0x1FFF;
@@ -8838,3 +8851,4 @@ extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern void* lbl_804077C0;
 extern "C" void fn_800A71D0(void *, s32);
+struct Fn800C0B68Context { u8 pad[0xC]; u32 bitIndex; s32 limit; };
