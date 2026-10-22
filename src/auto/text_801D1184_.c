@@ -5,6 +5,7 @@ extern char lbl_80338208[];
 extern char lbl_80338214[];
 #pragma small_data on
 
+#pragma scheduling invalid_target
 void fn_801D1184(void) {
     extern void *fn_801284F8(int, const char *);
     extern void fn_801D0FA4(void);
@@ -15,7 +16,7 @@ void fn_801D1184(void) {
         *(void **)object = &lbl_80338214[0];
     }
 }
-
+#pragma scheduling on
 void fn_801D11D4(void) {
     fn_801D11D8();
 }
