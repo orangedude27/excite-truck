@@ -78,6 +78,49 @@ void fn_80270B74(void) {
     lbl_8055F554 = 0;
     *(int *)((char *)p + 0x364) = 0;
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+void fn_80270C04(void *arg0, unsigned int arg1) {
+    extern char lbl_80346B00[];
+    extern char lbl_8049EDC8[];
+    extern int lbl_8055F550;
+    extern unsigned char lbl_8055F564;
+    extern void fn_80272738(void *, void *);
+    register unsigned int bits = arg1;
+    char *name = lbl_80346B00;
+    int count;
+    int i;
+    unsigned char flag;
+    char *record;
+
+    flag = (bits >> 8) & 1;
+    fn_80270B74();
+    if (lbl_8055F550 == 0)
+        return;
+    lbl_8055F564 = flag;
+    DBPrintf_80270B00(name + 0x1E0);
+    record = lbl_8049EDC8;
+    i = 0;
+    while (i < lbl_8055F550) {
+        DBPrintf_80270B00(name + 0x1F8, i);
+        DBPrintf_80270B00(name + 0x208);
+        count = lbl_8055F554;
+        *(char **)((unsigned char *)&lbl_8049F9D8 + count * 0x1C) = record;
+        if (flag != 0)
+            fn_80272738((unsigned char *)&lbl_8049F9D8 + count * 0x1C, arg0);
+        record += 0x60;
+        i++;
+        lbl_8055F554++;
+    }
+    if (lbl_8055F554 == 0) {
+        DBPrintf_80270B00(name + 0x224);
+        lbl_8049F9D8 = (int)lbl_8049EDC8;
+        if (flag != 0)
+            fn_80272738(&lbl_8049F9D8, arg0);
+        lbl_8055F554 = 1;
+    }
+}
 #pragma pop
 int fn_80270D1C(int arg0) {
     switch (arg0) {
@@ -215,6 +258,47 @@ void fn_80272354(void *arg0) {
     *(int *)((char *)arg0 + 0x5C) = 2;
 }
 
+extern float lbl_8055F560, lbl_80563F40, lbl_80563F48;
+extern void fn_80136468(void **, void *, float);
+float fn_80272428(void *arg0, void *arg1, float a, float b, float radius) {
+    float period = *(float *)((char *)*(void **)((char *)arg0 + 0x2C) + 8);
+    void *p;
+    float t, x, y, dx, dy, d0, d1, mid;
+    if (a > b) {
+        float d = b - (a - period);
+        if (d * d < lbl_8055F560) return a;
+    } else {
+        float d = b - a;
+        if (d * d < lbl_8055F560) return a;
+    }
+    fn_80136468(&p, arg0, a);
+    t = *(float *)((char *)&p + 4);
+    {
+        void *v = *(void **)((char *)p + 0x14);
+        x = *(float *)p + t * (*(float *)v - *(float *)p);
+        y = *(float *)((char *)p + 4) + t * (*(float *)((char *)v + 4) - *(float *)((char *)p + 4));
+    }
+    dx=x-*(float *)arg1; dy=y-*(float *)((char *)arg1+4);
+    d0=(float)__fabsf(radius-(dx*dx+dy*dy));
+    if (d0 < lbl_8055F560) return a;
+    fn_80136468(&p, arg0, b);
+    t = *(float *)((char *)&p + 4);
+    {
+        void *v = *(void **)((char *)p + 0x14);
+        x = *(float *)p + t * (*(float *)v - *(float *)p);
+        y = *(float *)((char *)p + 4) + t * (*(float *)((char *)v + 4) - *(float *)((char *)p + 4));
+    }
+    dx=x-*(float *)arg1; dy=y-*(float *)((char *)arg1+4);
+    d1=(float)__fabsf(radius-(dx*dx+dy*dy));
+    if (d1 < lbl_8055F560) return b;
+    if (a > b) {
+        mid=(b+(a-period))*lbl_80563F40;
+        if (mid < lbl_80563F48) mid+=period;
+    } else mid=(a+b)*lbl_80563F40;
+    if (d0 < d1) return fn_80272428(arg0,arg1,a,radius,0);
+    return fn_80272428(arg0,arg1,mid,b,radius);
+}
+
 extern int fn_802726AC(void);
 int fn_802726EC(float farg0, float farg1, float farg2) {
     int result = 0;
@@ -313,6 +397,54 @@ int fn_80273494(int arg0) {
     }
 }
 
+#pragma push
+#pragma small_data off
+#pragma dont_inline on
+int fn_802734F0(int arg0) {
+    extern unsigned char lbl_8055F480;
+    extern unsigned char lbl_80346BA0[];
+    int status = fn_80273494(arg0);
+    int flags = 0;
+    unsigned char *entry;
+    unsigned char *state;
+    int test;
+
+    if (lbl_8055F480 != 0) {
+        flags |= 8;
+    } else if (status != 6 && status != 0) {
+        entry = (unsigned char *)&lbl_8049A258 + status * 0x14;
+        state = lbl_80346BA0 + (*(int *)(entry + 0xC) + *(int *)(entry + 4)) * 0x28;
+        if (state[0x24] == 0)
+            flags |= 1;
+        else if (*(int *)state == 2)
+            flags |= 2;
+        else if (*(int *)state == 0)
+            flags |= 8;
+        if (state[0x25] == 0)
+            flags |= 4;
+    } else {
+        test = (arg0 == 1);
+        if (test == 0) {
+            if (test == 0) {
+                if (arg0 < 1) {
+                    if (arg0 < 0)
+                        goto fallback;
+                    flags |= 8;
+                } else if (arg0 < 3) {
+                    flags |= 6;
+                } else {
+                    goto fallback;
+                }
+            } else {
+fallback:
+                flags |= 5;
+            }
+        }
+    }
+    return flags;
+}
+#pragma dont_inline reset
+#pragma pop
 void fn_802735F4(int arg0, signed char arg1) {
     if (arg0 == 0) {
         lbl_8055F558 = arg1;
@@ -341,3 +473,6 @@ typedef int (*Has)(Obj *, const char *);
 typedef float (*Get)(Obj *, const char *);
 typedef int (*Find)(Obj *, const char *, int);
 typedef float (*Get3)(Obj *, const char *, float,float,float,float,float,float,float);
+extern int lbl_8055F548;
+extern int lbl_8055F550;
+extern unsigned char lbl_8055F55B;
