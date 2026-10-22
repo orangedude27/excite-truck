@@ -69,7 +69,7 @@ void fn_80273B4C(void *arg0) {
 }
 
 void fn_8027445C(void) {
-    extern void fn_80274268(void);
+    extern void fn_80274268();
     fn_80274268();
 }
 
@@ -124,6 +124,65 @@ int fn_80274730(void *arg0, float arg1, float arg2, float arg3, float arg4) {
 extern float lbl_80563FA8, lbl_80563FB0;
 void fn_80274E94(void *arg0) {
     fn_80274730(arg0, lbl_80563FA8, lbl_80563FA8, lbl_80563FA8, lbl_80563FB0);
+}
+
+void fn_80274F74(void *arg0, void *arg1, float angle) {
+    float magnitude;
+    float sine;
+    float cosine;
+    float oneMinusCos;
+    float scale;
+    float x;
+    float y;
+    float z;
+    float xx;
+    float yy;
+    float zz;
+    float xy;
+    float xz;
+    float yz;
+    float sx;
+    float sy;
+    float sz;
+    magnitude = PSVECMag(arg1);
+    if (magnitude > lbl_80564020) {
+        scale = lbl_80563FAC / magnitude;
+        x = scale * *(float *)arg1;
+        y = scale * *(float *)((char *)arg1 + 4);
+        z = scale * *(float *)((char *)arg1 + 8);
+        sine = (float)sin(magnitude);
+        cosine = (float)cos(magnitude);
+        oneMinusCos = lbl_80563FAC - cosine;
+        xx = oneMinusCos * x * x;
+        yy = oneMinusCos * y * y;
+        zz = oneMinusCos * z * z;
+        xy = oneMinusCos * x * y;
+        xz = oneMinusCos * x * z;
+        yz = oneMinusCos * y * z;
+        sx = sine * x;
+        sy = sine * y;
+        sz = sine * z;
+        *(float *)((char *)arg0 + 0x58) = cosine + xx;
+        *(float *)((char *)arg0 + 0x5C) = xy + sz;
+        *(float *)((char *)arg0 + 0x60) = xz - sy;
+        *(float *)((char *)arg0 + 0x64) = xy - sz;
+        *(float *)((char *)arg0 + 0x68) = cosine + yy;
+        *(float *)((char *)arg0 + 0x6C) = yz + sx;
+        *(float *)((char *)arg0 + 0x70) = xz + sy;
+        *(float *)((char *)arg0 + 0x74) = yz - sx;
+        *(float *)((char *)arg0 + 0x78) = cosine + zz;
+    } else {
+        *(float *)((char *)arg0 + 0x5C) = lbl_80563FB0;
+        *(float *)((char *)arg0 + 0x58) = lbl_80563FAC;
+        *(float *)((char *)arg0 + 0x60) = lbl_80563FB0;
+        *(float *)((char *)arg0 + 0x64) = lbl_80563FB0;
+        *(float *)((char *)arg0 + 0x68) = lbl_80563FAC;
+        *(float *)((char *)arg0 + 0x6C) = lbl_80563FB0;
+        *(float *)((char *)arg0 + 0x70) = lbl_80563FB0;
+        *(float *)((char *)arg0 + 0x74) = lbl_80563FB0;
+        *(float *)((char *)arg0 + 0x78) = lbl_80563FAC;
+    }
+    *(float *)((char *)arg0 + 0xBC) = angle;
 }
 
 #pragma pop
@@ -182,6 +241,27 @@ void fn_802751AC(void *arg0, float angle) {
     fn_801BFD34((char *)arg0 + 0x7C, axis, (char *)arg0 + 0xC0);
     fn_80015B20((char *)arg0 + 0x58, matrix, (char *)arg0 + 0xC0);
     *(float *)((char *)arg0 + 0xBC) = lbl_80564024 * angle;
+}
+
+extern float lbl_8055E3C8, lbl_8055F588, lbl_80563FC4, lbl_80563FD8, lbl_80564040;
+extern double lbl_80564038;
+extern double fn_8002EFB4(float, double);
+extern int fn_801E9E30(void *, float *);
+void fn_80275B9C(void *arg0, float farg0, float farg1, float farg2) {
+ char *p=(char*)arg0; float v[14], angle, sine, cosine, a,b,c;
+ angle=(float)fn_8002EFB4(farg2*lbl_8055E3C8,lbl_80564038); *(float*)(p+0x15C)=angle;
+ sine=farg0*(float)sin(angle); cosine=(float)cos(*(float*)(p+0x15C));
+ v[9]=lbl_80563FB0; v[10]=sine; v[8]=farg0*cosine;
+ v[11]=*(float*)(p+0xE4)+v[8]; v[12]=*(float*)(p+0xE8)+lbl_80563FB0; v[13]=*(float*)(p+0xEC)+sine;
+ if(fn_801E9E30(p+0x1EC,&v[11])==0) {
+ a=v[13]; b=lbl_80563FD8+lbl_8055F588; c=v[11]; v[12]=b;
+ v[5]=a+lbl_80563FC4*(*(float*)(p+0xEC)-a);
+ v[3]=c+lbl_80563FC4*(*(float*)(p+0xE4)-c);
+ v[4]=b+lbl_80563FC4*(*(float*)(p+0xE8)-b);
+ v[11]=v[3]; v[12]=v[4]; v[13]=v[5];
+ } else lbl_8055F588=v[12];
+ angle=v[12]+farg1; v[2]=lbl_80563FB0; v[12]=angle; v[3]=lbl_80563FAC; v[4]=lbl_80563FB0;
+ fn_8026E850(&v[11],(float*)(p+0xE4),arg0,&v[2]); *(float*)(p+0xBC)=lbl_80564040;
 }
 
 void fn_80275FC0(void *arg0) {
