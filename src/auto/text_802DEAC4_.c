@@ -2,6 +2,9 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern char lbl_8034BAEC[], lbl_8034BB1C[], lbl_8034BB5C[], lbl_8034BB68[];
+extern char lbl_8034BB7C[], lbl_8034BB88[], lbl_8034BB9C[], lbl_8034BBA8[];
+extern char lbl_8055D098[];
 #include <revolution/GX/GXTypes.h>
 #include <revolution/GX/GXTev.h>
 extern void *lbl_8055FEE8;
@@ -460,6 +463,50 @@ void *fn_802E0BA4(void) {
 void fn_802E0BE0(void) {
     fn_802E0BA4();
     fn_80128668();
+}
+
+extern void fn_802E317C(char *, ...);
+extern char lbl_8034BB28[];
+void *fn_802E0C04(u32 size) {
+    u8 *head = (u8 *)lbl_8055FEE8;
+    u32 align = *(u32 *)(head + 4);
+    u8 **link = (u8 **)(head + 8);
+    u32 needed = (size + align) & ~align;
+    u32 best = 0x7FFFFFFF;
+    u8 **bestLink = 0;
+    u8 *node;
+    u8 *result = 0;
+    while ((node = *link) != 0) {
+        u32 freeSize = *(u32 *)(node + 4);
+        if (freeSize >= needed && best > freeSize) {
+            bestLink = link;
+            best = freeSize;
+        }
+        link = (u8 **)(node + 8);
+    }
+    if (bestLink != 0) {
+        u8 *freeNode = *bestLink;
+        u8 *next = *(u8 **)(freeNode + 8);
+        u32 left = *(u32 *)(freeNode + 4) - needed;
+        u8 *split = 0;
+        if (left > (((align + 0x10) & ~align) + 0x20)) {
+            split = freeNode + align + needed;
+            *(u32 *)(split + 1) = 0xABCFEED0;
+            *(u32 *)(split + 9) = 0;
+            *(u32 *)(split + 5) = left - ((align + 0x10) & ~align);
+            *(u8 **)(split + 0xD) = head;
+            *(u32 *)(freeNode + 4) = needed;
+        }
+        if (split != 0) {
+            *(u8 **)(split + 8) = next;
+            *bestLink = split;
+        } else *bestLink = next;
+        *(u8 **)(freeNode + 8) = *(u8 **)(head + 0xC);
+        *(u8 **)(head + 0xC) = freeNode;
+        result = freeNode + align + 1;
+    }
+    if (result == 0 && head[0] != 0) fn_802E317C(lbl_8034BB28);
+    return result;
 }
 
 void fn_802E0D44(u32 size) {
