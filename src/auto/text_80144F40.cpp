@@ -1,6 +1,19 @@
 #include <types.h>
 #include <stdarg.h>
 
+extern "C" void *fn_801284F8(u32, void *);
+extern "C" void *fn_80131810(s32);
+extern "C" void fn_80146BD4(u8 *, const s8 *, s32);
+extern "C" void fn_80146C08(void *, s32);
+extern "C" void fn_80146C1C(void **);
+extern "C" void fn_80146824(void *);
+extern "C" void *fn_80145FEC(void *, const char *, s32);
+extern "C" void *fn_801460F8(void *, const char *, s32);
+extern "C" void *fn_80146204(void *, const char *, s32);
+extern "C" s32 fn_80146310(void *, const char *, s32);
+extern "C" void *fn_80146490(void *);
+extern "C" void fn_80145D8C(void *);
+
 extern "C" f32 lbl_805615D0;
 extern "C" s32 fn_801450A0(u32, u32, f32);
 extern "C" void fn_80147DC0(void *, s32, s32);
