@@ -37,6 +37,7 @@ extern f32 lbl_80560D54;
 extern u32 lbl_80560D28;
 
 extern u8 lbl_803C0F78[];
+extern tBTM_SEC_DEV_REC *btm_find_oldest_dev(void);
 extern u8 lbl_80316570[];
 extern u8 lbl_80315FBC[];
 
@@ -1835,6 +1836,38 @@ void bta_dm_pm_timer_cback(void *arg) {
     }
 }
 
+void bta_dm_pm_btm_status(void *arg0) {
+    u8 *p = (u8 *)arg0;
+    u8 *base = lbl_803C0C14;
+    s32 i;
+    u8 *entry;
+    u8 mask;
+    for (i = 0; i < 3; i++) {
+        entry = base + i * 0x20;
+        if (entry[0xB6] != 0 && bdcmp(entry + 0xB0, p + 8) == 0) {
+            fn_8007148C((s32)(entry + 0x98));
+            entry[0xB6] = 0;
+            break;
+        }
+    }
+    if (p[0xE] != 0)
+        return;
+    if (p[0x12] == 0) {
+        bta_dm_pm_set_mode(p + 8, 0);
+        return;
+    }
+    for (i = 0, entry = base; i < base[0x4D]; i++, entry += 0xB) {
+        if (bdcmp(entry, p + 8) == 0) {
+            mask = entry[9] & 3;
+            if (mask != 0) {
+                entry[0xA] |= mask;
+                bta_dm_pm_set_mode(p + 8, 0);
+            }
+            break;
+        }
+    }
+}
+
 void fn_80074A4C(s32 arg0) {
     bta_dm_pm_set_mode((u8 *)arg0 + 8, 1);
 }
@@ -1962,6 +1995,33 @@ void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
 
 void fn_80075AA4(void *arg0) {
     (*(void (**)(int, void *))(lbl_803C0D48 + 0x224))(10, arg0);
+}
+
+void bta_hh_get_acl_q_info(void) {
+    u8 info[0x1E];
+    u8 count = 0;
+    u8 i;
+    u8 *entry;
+    u8 *ccb;
+    u8 *p;
+    memset(info, 0, sizeof(info));
+    for (i = 0; i < 0x10; i++) {
+        entry = lbl_803C0D48 + i * 0x20;
+        if (entry[0x28] != 0 && entry[0x2C] == 3) {
+            info[count * 6 + 6] = entry[0x26];
+            ccb = (u8 *)l2cu_find_ccb_by_cid(0, *(u16 *)(lbl_803C3C38 + entry[0x26] * 0x34 + 0x16));
+            if (ccb != 0 && (p = *(u8 **)(ccb + 0x10)) != 0 && p[0] != 0) {
+                *(u16 *)(info + count * 6 + 8) = *(u16 *)(p + 0x4C);
+                *(u16 *)(info + count * 6 + 10) = *(u16 *)(p + 0x38);
+                count++;
+            }
+        }
+    }
+    *(u16 *)(info + 0) = *(u16 *)(lbl_803C4040 + 4);
+    *(u16 *)(info + 2) = *(u16 *)(lbl_803C4040 + 2);
+    *(u16 *)(info + 4) = count;
+    ((void (*)(u32, void *, u16, u16))*(void **)(lbl_803C0D48 + 0x224))(0xF, info,
+        *(u16 *)(lbl_803C4040 + 2), *(u16 *)(lbl_803C4040 + 4));
 }
 
 void BTA_HhEnable(u8 arg0, void *arg1) {
