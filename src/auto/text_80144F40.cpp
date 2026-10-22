@@ -1,5 +1,6 @@
 #include <types.h>
 #include <stdarg.h>
+extern "C" u8 lbl_8055E208;
 
 extern "C" void *fn_801284F8(u32, void *);
 extern "C" void *fn_80131810(s32);
