@@ -5,6 +5,9 @@ typedef s32 (*UnkFunc)(s32);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void* lbl_8055FFF0;
+#pragma cplusplus on
+struct Dummy { virtual ~Dummy(); };
+#pragma cplusplus reset
 s32 fn_802E769C(void);
 void fn_802E7578(void) {
     lbl_8055FFF0 = (void*)fn_802E769C();
