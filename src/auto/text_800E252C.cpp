@@ -2,6 +2,11 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern "C" void fn_800E6A44(void);
+extern "C" void AIRegisterDMACallback(void *);
+extern "C" void fn_800E4364(void *, int);
+extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
+extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *);
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void *, void **);
 extern int lbl_8055DE20;
 extern void fn_80128668(void);
 
@@ -1166,6 +1171,35 @@ extern "C" void fn_800E80B4(void) {
 }
 
 extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+
+extern "C" void *fn_800E8690(void *arg0, void *arg1, int arg2) {
+    unsigned char type = *((unsigned char *)arg1 + 1);
+    unsigned char *data;
+    unsigned int base, address;
+    int i;
+    if (type == 1) return arg1;
+    if (type == 0) return 0;
+    if (type == 2) {
+        base = *(unsigned int *)((char *)arg0 + 4) + 8;
+        if (type != 2) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559820, 0x71, lbl_80322708);
+        address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
+        data = (unsigned char *)address;
+        if (!data) return 0;
+        for (i = 0; i < data[0]; i++)
+            if (arg2 <= data[i + 1]) return (void *)((((unsigned int)data[0] + 4) & ~3) + (unsigned int)(data + i * 8));
+        return 0;
+    }
+    if (type == 3) {
+        base = *(unsigned int *)((char *)arg0 + 4) + 8;
+        if (type != 3) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80559828, 0x72, lbl_80322734);
+        address = GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(*(unsigned char *)arg1, *(unsigned int *)((char *)arg1 + 4), (const void *)base);
+        data = (unsigned char *)address;
+        if (!data) return 0;
+        if (arg2 < data[0] || arg2 > data[1]) return 0;
+        return data + (arg2 - data[0]) * 8 + 4;
+    }
+    return 0;
+}
 
 extern "C" unsigned int GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void *);
 extern "C" void fn_800FEC1C(void *, void *);
