@@ -57,6 +57,7 @@ void fn_8013A0B0(void **, void *, void *);
 void fn_8013A198(void **, s32);
 void *fn_8000AC38(void);
 void fn_801F9AA4(void *, s32);
+void fn_801F8988(void *, void *);
 }
 
 extern "C" {
