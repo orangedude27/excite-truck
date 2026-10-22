@@ -12,6 +12,10 @@
 #include <revolution/OS.h>
 extern char lbl_80319278[];
 extern char lbl_80319290[];
+extern void RFCOMM_ParNegReq(void *, s32, s32);
+extern void rfc_release_multiplexer_channel(void *);
+extern void port_release_port(void *);
+extern void rfc_check_mcb_active(void *);
 extern u8 lbl_803C3AF0[];
 extern void hidd_pm_set_now(void *);
 extern void fn_80086468(void *);
@@ -3307,17 +3311,12 @@ u8 btm_pm_get_set_mode(u32 arg0, void *arg1, void *arg2, void *arg3) {
     void *previous = 0;
     void *entry = arg1;
     s32 i = 0;
-    u16 a, b;
-
+    u16 t0, t1;
     if (arg2 != 0 && (*(u8 *)((u8 *)arg2 + 8) & 0x10)) {
-        a = *(u16 *)((u8 *)arg2 + 0);
-        b = *(u16 *)((u8 *)arg2 + 2);
-        *(u16 *)((u8 *)arg3 + 0) = a;
-        *(u16 *)((u8 *)arg3 + 2) = b;
-        a = *(u16 *)((u8 *)arg2 + 4);
-        b = *(u16 *)((u8 *)arg2 + 6);
-        *(u16 *)((u8 *)arg3 + 4) = a;
-        *(u16 *)((u8 *)arg3 + 6) = b;
+        t1 = *(u16 *)((u8 *)arg2 + 0); t0 = *(u16 *)((u8 *)arg2 + 2);
+        *(u16 *)((u8 *)arg3 + 0) = t1; *(u16 *)((u8 *)arg3 + 2) = t0;
+        t1 = *(u16 *)((u8 *)arg2 + 4); t0 = *(u16 *)((u8 *)arg2 + 6);
+        *(u16 *)((u8 *)arg3 + 4) = t1; *(u16 *)((u8 *)arg3 + 6) = t0;
         *(u16 *)((u8 *)arg3 + 8) = *(u16 *)((u8 *)arg2 + 8);
         *(u8 *)((u8 *)arg3 + 8) &= ~0x10;
         return *(u8 *)((u8 *)arg3 + 8);
@@ -3328,19 +3327,14 @@ u8 btm_pm_get_set_mode(u32 arg0, void *arg1, void *arg2, void *arg3) {
             if (btm_pm_compare_modes(previous, entry, arg3) == 0) return 0;
             previous = arg3;
         }
-        i++;
-        entry = (u8 *)entry + 0xA;
+        i++; entry = (u8 *)entry + 0xA;
     }
     if (previous == 0) {
         if (arg2 == 0) return 0;
-        a = *(u16 *)((u8 *)arg2 + 0);
-        b = *(u16 *)((u8 *)arg2 + 2);
-        *(u16 *)((u8 *)arg3 + 0) = a;
-        *(u16 *)((u8 *)arg3 + 2) = b;
-        a = *(u16 *)((u8 *)arg2 + 4);
-        b = *(u16 *)((u8 *)arg2 + 6);
-        *(u16 *)((u8 *)arg3 + 4) = a;
-        *(u16 *)((u8 *)arg3 + 6) = b;
+        t1 = *(u16 *)((u8 *)arg2 + 0); t0 = *(u16 *)((u8 *)arg2 + 2);
+        *(u16 *)((u8 *)arg3 + 0) = t1; *(u16 *)((u8 *)arg3 + 2) = t0;
+        t1 = *(u16 *)((u8 *)arg2 + 4); t0 = *(u16 *)((u8 *)arg2 + 6);
+        *(u16 *)((u8 *)arg3 + 4) = t1; *(u16 *)((u8 *)arg3 + 6) = t0;
         *(u16 *)((u8 *)arg3 + 8) = *(u16 *)((u8 *)arg2 + 8);
     } else if (arg0 == 0x80 && btm_pm_compare_modes(arg2, previous, arg3) == 0) return 0;
     return *(u8 *)((u8 *)arg3 + 8);
