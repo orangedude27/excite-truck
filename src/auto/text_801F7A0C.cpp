@@ -44,6 +44,10 @@ void fn_802C7AD4(void);
 
 extern "C" {
 extern char lbl_8033AF80[];
+extern char lbl_8033B440[];
+extern char lbl_8055B300[];
+extern char lbl_8055B308[];
+extern char lbl_8055B310[];
 extern s32 lbl_8055B388;
 extern void **lbl_8055EC54;
 extern s32 lbl_8055EC58;
@@ -255,6 +259,38 @@ extern "C" void fn_801F7A14(void *arg0) {
     }
 }
 
+void fn_801F7A14(void *);
+s32 fn_801F7A88(void *, s32, void *, s32);
+extern const char lbl_8055B280[];
+extern const char lbl_8055B288[];
+extern const char lbl_8055B290[];
+extern const char lbl_8055B298[];
+s32 fn_801F7B10(void *arg0, void *arg1, s32 arg2) {
+    u8 *dst=(u8 *)arg0; s32 i;
+    if (fn_801F7A88(arg1,arg2,arg0,0x30)) {
+        for(i=0;i<2;i++) {
+            u8 *p=dst+i*0x18; u8 t;
+            t=p[0];p[0]=p[3];p[3]=t;t=p[1];p[1]=p[2];p[2]=t;
+            t=p[4];p[4]=p[7];p[7]=t;t=p[5];p[5]=p[6];p[6]=t;
+            t=p[8];p[8]=p[0xB];p[0xB]=t;t=p[9];p[9]=p[0xA];p[0xA]=t;
+            t=p[0xC];p[0xC]=p[0xF];p[0xF]=t;t=p[0xD];p[0xD]=p[0xE];p[0xE]=t;
+            t=p[0x10];p[0x10]=p[0x13];p[0x13]=t;t=p[0x11];p[0x11]=p[0x12];p[0x12]=t;
+            t=p[0x14];p[0x14]=p[0x17];p[0x17]=t;t=p[0x15];p[0x15]=p[0x16];p[0x16]=t;
+        }
+    } else {
+        f32 a[3],b[3],c[3],d[3]; void **v=*(void ***)arg1;
+        ((void (*)(void *,void *,const char *))v[13])(a,arg1,lbl_8055B280);
+        ((void (*)(void *,void *,const char *))v[13])(b,arg1,lbl_8055B288);
+        ((void (*)(void *,void *,const char *))v[13])(c,arg1,lbl_8055B290);
+        ((void (*)(void *,void *,const char *))v[13])(d,arg1,lbl_8055B298);
+        ((f32 *)arg0)[0]=a[0];((f32 *)arg0)[1]=a[1];((f32 *)arg0)[2]=a[2];
+        ((f32 *)arg0)[3]=b[0];((f32 *)arg0)[4]=b[1];((f32 *)arg0)[5]=b[2];
+        ((f32 *)arg0)[6]=c[0];((f32 *)arg0)[7]=c[1];((f32 *)arg0)[8]=c[2];
+        ((f32 *)arg0)[9]=d[0];((f32 *)arg0)[10]=d[1];((f32 *)arg0)[11]=d[2];
+    }
+    fn_801F7A14(arg0);
+}
+
 extern u8 lbl_8033AFE8[];
 extern s32 lbl_8055B2A0;
 extern f32 lbl_80562FFC;
@@ -312,6 +348,38 @@ extern "C" s32 fn_801F812C(const char *arg) {
 #pragma pop
 extern "C" const f32 lbl_80562FF0;
 extern "C" s32 fn_801F815C(const char *arg) { return stricmp(arg, lbl_8055B2C4) == 0; }
+
+extern const char lbl_8055B2A8[], lbl_8055B2E4[], lbl_8055B2EC[];
+int sprintf(char *, const char *, ...);
+void *fn_801F83E4(void **arg0) {
+    u8 *obj = (u8 *)fn_801284F8(0x168, (void *)lbl_8055B2E4);
+    char name[0x20]; s32 i; void **vt;
+    if (obj != 0) {
+        vt = (void **)*arg0;
+        *(void **)(obj+0x108)=lbl_8033B468; *(s32 *)(obj+0x78)=0;
+        *(f32 *)(obj+0x7c)=lbl_80562FF0; *(f32 *)(obj+0x80)=lbl_80562FF0;
+        *(s32 *)(obj+0x104)=0; *(s32 *)(obj+0x24)=0; *(s32 *)(obj+0x20)=0;
+        *(f32 *)(obj+0x28)=lbl_80563000; obj[0x60]=1;
+        memset(obj,0x61,0x20); memset(obj+0x61,0x61,0x10);
+        *(s32 *)(obj+0x74)=-1; *(void **)(obj+0x108)=lbl_8033B418;
+        *(void **)(obj+0x13c)=((void *(*)(void *, const char *))vt[5])(arg0,lbl_8055B2A8);
+        *(void **)(obj+0x13c)=((void *(*)(void *, const char *, void *))vt[6])(arg0,lbl_8033AF80+0xc0,*(void **)(obj+0x13c));
+        *(void **)(obj+0x140)=((void *(*)(void *, const char *))vt[5])(arg0,lbl_8033AF80+0xcc);
+        *(s32 *)(obj+0x160)=1; i=1;
+        while(i<8) {
+            sprintf(name,lbl_8033AF80+0xd8,i+1);
+            if(((s32(*)(void *,const char *))vt[3])(arg0,name)!=0) {
+                *(void **)(obj+0x140+i*4)=((void *(*)(void *,const char *))vt[5])(arg0,name);
+                i++; *(s32 *)(obj+0x160)=i;
+            } else break;
+        }
+        obj[0x164]=((u8(*)(void *,const char *,s32))vt[12])(arg0,lbl_8055B2EC,1);
+        obj[0x165]=((u8(*)(void *,const char *,s32))vt[12])(arg0,lbl_8033AF80+0xe8,1);
+        ((void *(*)(void *,const char *))vt[5])(arg0,(const char *)lbl_8055B2DC);
+    }
+    return obj;
+}
+
 extern "C" s32 fn_801F85DC(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -1236,6 +1304,49 @@ extern "C" void fn_801FC4D8(void **arg0, void *arg1) {
     *arg0 = arg1;
 }
 
+#pragma dont_inline on
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
+extern "C" void fn_801FC4E8(void *self, void *arg1) {
+    struct ManagerLookup { virtual void a0(); virtual void a1(); virtual void a2(); virtual s32 lookup(const char *, s32); };
+    struct ManagerFinish { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void finish(const char *); };
+    struct ResourceGet { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual s32 get(const char *, s32); };
+    struct ResourceValue { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual f32 value(const char *); };
+    struct ResourceUpdate { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual void a6(); virtual void a7(); virtual f32 update(const char *, void *, f32); };
+    struct Data { s32 a; s32 b; s32 c; u8 d; u8 pad[3]; void *item; };
+    Data *data = (Data *)fn_801284F8(0x18, (void *)lbl_8055B3B8);
+    if (data != 0) {
+        u8 *input = (u8 *)arg1;
+        s32 a = *(s32 *)(input + 0x24);
+        const char *name = lbl_8055B2C4;
+        s32 b = *(s32 *)(input + 0x28);
+        data->a = a;
+        s32 c = *(s32 *)(input + 0x2C);
+        data->b = b;
+        ResourceGet *resource = *(ResourceGet **)(input + 0x34);
+        data->c = c;
+        s32 first = ((ManagerLookup *)lbl_8055EC70)->lookup(name, data->b);
+        s32 key = resource->get(name, first);
+        ((ManagerFinish *)lbl_8055EC70)->finish(lbl_8055B3C0);
+        f32 value = ((ResourceValue *)resource)->value(lbl_8055B3C0);
+        data->item = fn_802077A4(key, 8, (void *)lbl_80488898, data);
+        if (data->item != 0) {
+            void *item = data->item;
+            if (value != *(f32 *)((u8 *)item + 8)) {
+                *((u8 *)item + 0x4D) = 1;
+                *(f32 *)((u8 *)item + 8) = value;
+            }
+            *(f32 *)((u8 *)data->item + 0x6C) =
+                ((ResourceUpdate *)resource)->update(lbl_8033B578, data->item, *(f32 *)((u8 *)data->item + 0x6C));
+        }
+        data->d = lbl_8055EC40;
+    }
+    fn_801FC644((void **)&lbl_8055EC6C, data);
+}
+#pragma scheduling on
+#pragma pop
+#pragma dont_inline reset
 extern "C" void fn_801FC644(void **arg0, void *arg1) {
     *(void **)((u8 *)arg1 + 0x14) = *arg0;
     *arg0 = arg1;
