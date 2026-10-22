@@ -5,6 +5,8 @@ extern "C" void fn_802A41D8(void *arg0, s32 arg1);
 extern "C" void fn_8028E590(int, f32 *, f32 *, f32);
 extern "C" f32 fn_80129DC4(s32, f32, f32);
 extern "C" f32 lbl_80564750, lbl_8056476C, lbl_805647C4, lbl_805647DC, lbl_80564804;
+extern "C" f32 lbl_805647D4, lbl_805647F4, lbl_80564798, lbl_8056479C, lbl_80564760, lbl_805647BC, lbl_805647EC, lbl_805647AC, lbl_805647F8, lbl_805647FC, lbl_80564800, lbl_805647B4;
+extern "C" int lbl_80349A54;
 extern "C" s32 fn_8028E2F8(void *, void *, s32, s32);
 
 extern "C" void fn_802A3C50(void* arg0, s32 arg1);
@@ -682,6 +684,20 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" void fn_802A33D4(void *arg0, void *arg1, s32 arg2) {
+    unsigned char *base = *(unsigned char **)arg1;
+    unsigned char *item = base + arg2 * 0x3C;
+    f32 p[3]; s32 a[3]; f32 angle;
+    if (*(f32 *)((char *)arg1 + 8) > lbl_8056476C) return;
+    if (*(f32 *)(item + 0x98) < lbl_805647DC) return;
+    a[0]=*(s32 *)(item+0x7C); a[1]=*(s32 *)(item+0x80); a[2]=*(s32 *)(item+0x84);
+    p[0]=*(f32 *)(base+0xC)*lbl_80564804; p[1]=*(f32 *)(base+0x10)*lbl_80564804; p[2]=*(f32 *)(base+0x14)*lbl_80564804;
+    p[0]+=*(f32 *)(base+0x34)*lbl_805647C4; p[1]+=*(f32 *)(base+0x38)*lbl_805647C4; p[2]+=*(f32 *)(base+0x3C)*lbl_805647C4;
+    angle=lbl_80564750* *(f32 *)(base+0x50);
+    p[0]+=fn_80129DC4(0,angle,-angle); p[2]+=fn_80129DC4(0,-angle,angle);
+    fn_8028E590(*(s32 *)((char *)arg0+4),(f32 *)(item+0x7C),p,lbl_805647DC);
 }
 
 void fn_802A3500(void *arg0, s32 arg1) {
