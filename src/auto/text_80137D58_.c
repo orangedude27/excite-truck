@@ -114,6 +114,10 @@ void fn_80137FF0(void *);
 void fn_801380DC(void *);
 extern char lbl_8032BF00[];
 void fn_802E317C(char *, ...);
+#pragma dont_inline fn_80137F30
+#pragma dont_inline fn_80137F74
+#pragma dont_inline fn_80137FF0
+#pragma dont_inline fn_801380DC
 void fn_80138144(void *arg0) {
     unsigned char a = *((unsigned char *)arg0);
     unsigned char b = *((unsigned char *)arg0 + 1);
