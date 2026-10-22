@@ -1,4 +1,6 @@
 #include <types.h>
+extern int lbl_8055E450;
+extern int lbl_8055E8F8;
 #include <revolution/MTX/vec.h>
 extern int lbl_8055E43C;
 
@@ -119,6 +121,41 @@ void fn_80177A54(void) {
         break;
     }
     lbl_8055E3C0 = 0;
+}
+
+void fn_80177CEC(void) {
+    int index = lbl_8055E43C;
+    void *object;
+    Vec right;
+    Vec up;
+    Vec forward;
+    float a, b, c, d, e, f;
+    if (index >= lbl_8055E438) { index = 0; lbl_8055E43C = 0; }
+    object = lbl_8055E434[index];
+    if (object != 0 && ((int (*)(void *))(*(void ***)object)[0x40 / 4])(object) != 0) {
+        a = *(float *)((char *)object + 0x44);
+        b = *(float *)((char *)object + 0x40);
+        c = *(float *)((char *)object + 0x3C);
+        forward.x = c; forward.y = b; forward.z = a;
+        d = *(float *)((char *)object + 0x5C);
+        e = *(float *)((char *)object + 0x58);
+        f = *(float *)((char *)object + 0x54);
+        right.x = f; right.y = e; right.z = d;
+        PSVECCrossProduct(&right, &forward, &up);
+        PSVECNormalize(&forward, &forward);
+        PSVECNormalize(&up, &up);
+        PSVECCrossProduct(&forward, &up, &right);
+        *(float *)((char *)object + 0x3C) = forward.x;
+        *(float *)((char *)object + 0x40) = forward.y;
+        *(float *)((char *)object + 0x44) = forward.z;
+        *(float *)((char *)object + 0x48) = up.x;
+        *(float *)((char *)object + 0x4C) = up.y;
+        *(float *)((char *)object + 0x50) = up.z;
+        *(float *)((char *)object + 0x54) = right.x;
+        *(float *)((char *)object + 0x58) = right.y;
+        *(float *)((char *)object + 0x5C) = right.z;
+    }
+    lbl_8055E43C++;
 }
 
 void fn_80177EE4(void) {
