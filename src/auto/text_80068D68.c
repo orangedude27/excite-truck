@@ -3747,6 +3747,31 @@ void BTM_DeviceAuthorized(u8 *bd_addr, u8 res, u32 *trusted_mask) {
     }
 }
 
+void btm_sec_conn_req(u8 *bd_addr, u8 *dev_class) {
+    u8 *dev;
+    void *buf;
+    u8 *base;
+    u8 (*callback)(u8 *, u8 *);
+    if (lbl_803C0F78[0x197A] != 0 &&
+        ((dev = (u8 *)btm_find_dev(bd_addr)) == 0 || (dev[0x76] & 0x10) == 0)) {
+        if (lbl_803C0F78[0x27C0] >= 4)
+            fn_8007093C(0xD0003, lbl_80316E08);
+        buf = GKI_getpoolbuf(2);
+        if (buf != 0) ((void (*)(void *, u8 *, u8))btsnd_hcic_reject_conn)(buf, bd_addr, 0xF);
+        return;
+    }
+    callback = *(u8 (**)(u8 *, u8 *))(lbl_803C0F78 + 0x1934);
+    if (callback != 0 && callback(bd_addr, dev_class) == 0) {
+        buf = GKI_getpoolbuf(2);
+        if (buf != 0) ((void (*)(void *, u8 *, u8))btsnd_hcic_reject_conn)(buf, bd_addr, 0xF);
+        return;
+    }
+    base = lbl_803C0F78;
+    memcpy(base + 0x27B4, bd_addr, 6);
+    memcpy(base + 0x27BA, dev_class, 3);
+    l2c_link_hci_conn_req(bd_addr);
+}
+
 void fn_8007F588(s8 arg0) {
     lbl_803C0F78[0x1978] = arg0;
     memset(&lbl_803C0F78[0x1954], 0xFF, 6);
