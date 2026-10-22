@@ -46,6 +46,7 @@ extern u32 lbl_8055DCA4;
 extern void fn_80070F90(void *ptr);
 extern u8 lbl_803C4C40[];
 extern u8 lbl_80317298[];
+extern void fn_80099F58(void *);
 #include "revolution/BTE/stack/sdp/sdpint.h"
 #include "revolution/BTE/stack/include/wbt_api.h"
 extern void AXFXReverbHiExpShutdown(void*);
@@ -4887,6 +4888,16 @@ void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0xa0)=0;
  *(void **)(lbl_803C3740+0xa4)=gap_data_ind;
  *(void **)(lbl_803C3740+0xa8)=gap_congestion_ind;
+}
+
+extern u8 lbl_80559078[],lbl_80317310[],lbl_80317354[];
+void gap_connect_ind(BD_ADDR addr, UINT16 cid, UINT16 psm, UINT8 status) {
+ u8 *entry=lbl_803C3740+0xAC; u8 i=0;
+ while(i<8){if(entry[0]==1&&*(u16 *)(entry+0x10)==psm&&(entry[8]==0||memcmp(addr,entry+9,6)==0))break;i++;entry+=0x60;}
+ if(i==8){if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80317310);if(lbl_803C3740[0x28]>=2)fn_8007093C(0xE0001,lbl_80559078);L2CA_DisconnectReq(cid);return;}
+ entry[0]=3;memcpy(entry+9,addr,6);*(u16 *)(entry+6)=cid;L2CA_ConnectRsp(addr,status,cid,0,0);
+ if(lbl_803C3740[0x28]>=4)fn_80070954(0xE0003,lbl_80317354,*(u16 *)(entry+6));
+ L2CA_ConfigReq(cid,(tL2CAP_CFG_INFO *)(entry+0x24));
 }
 
 void gap_config_ind(u16 cid, void *p_cfg) {
