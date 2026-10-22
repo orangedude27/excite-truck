@@ -6438,6 +6438,41 @@ u8 HID_HostOpenDev(u32 arg0) {
     return hidh_conn_initiate();
 }
 
+s32 HID_HostSetSecurityLevel(void *p_name, u8 sec_level) {
+    char *messages = lbl_80317720;
+    if (!BTM_SetSecurityLevel(0, p_name, 0x20, sec_level, 0x11, 6, 1)) {
+        if (lbl_803C3C38[0x401] >= 1)
+            fn_8007093C(0x1E0000, messages + 0x54);
+        return 3;
+    }
+    if (!BTM_SetSecurityLevel(1, p_name, 0x20, sec_level, 0x11, 6, 1)) {
+        if (lbl_803C3C38[0x401] >= 1)
+            fn_8007093C(0x1E0000, messages + 0x74);
+        return 3;
+    }
+    if (!BTM_SetSecurityLevel(0, p_name, 0x21, 0, 0x11, 6, 2)) {
+        if (lbl_803C3C38[0x401] >= 1)
+            fn_8007093C(0x1E0000, messages + 0x94);
+        return 3;
+    }
+    if (!BTM_SetSecurityLevel(1, p_name, 0x21, 0, 0x11, 6, 2)) {
+        if (lbl_803C3C38[0x401] >= 1)
+            fn_8007093C(0x1E0000, messages + 0xB4);
+        return 3;
+    }
+    if (!BTM_SetSecurityLevel(1, p_name, 0x22, 0, 0x13, 6, 0)) {
+        if (lbl_803C3C38[0x401] >= 1)
+            fn_8007093C(0x1E0000, messages + 0xD4);
+        return 3;
+    }
+    if (!BTM_SetSecurityLevel(0, p_name, 0x22, 0, 0x13, 6, 0)) {
+        if (lbl_803C3C38[0x401] >= 1)
+            fn_8007093C(0x1E0000, messages + 0xF4);
+        return 3;
+    }
+    return 0;
+}
+
 u8 hidh_conn_reg(void) {
     extern unsigned char lbl_803C3C38[];
     extern unsigned char lbl_802EEC18[];
