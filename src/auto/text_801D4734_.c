@@ -1,6 +1,7 @@
 
 
-  extern char lbl_803387C8[];
+  extern char lbl_803385D0[];
+    extern char lbl_803387C8[];
   extern char lbl_80338C78[];
 extern char lbl_80338BD0[];
 extern int fn_80128668(void);
@@ -55,6 +56,66 @@ void fn_801D4908(void) {
     fn_801D5A2C();
 }
 
+extern void fn_8000FF88(int, int, void *, char *, float, float, float);
+extern char lbl_80442310[];
+extern char lbl_8055AD58[], lbl_8055AD5C[];
+extern float lbl_8055E3C8, lbl_80562AD8, lbl_80562ADC, lbl_80562AE0, lbl_80562AE4, lbl_80562AE8, lbl_80562AEC, lbl_80562AF0, lbl_80562AF4, lbl_80562AF8, lbl_80562AFC;
+extern char *strchr(char *, int);
+void fn_801D490C(void) {
+ float x, width, right, alpha, t, edge, y, dy; int color,n; char text[0x40], *src,*dst,*part,*caret;
+ x=*(float *)lbl_80442310; width=*(float *)(lbl_80442310+4); right=x+width; alpha=lbl_80562AE0; y=lbl_80562AD8; dy=lbl_80562AFC; src=lbl_80442310+8; dst=text; n=0x40;
+ if(lbl_8055E3C8>=right)return;
+ if(width>lbl_80562AE4) {
+  t=lbl_8055E3C8-x;
+  if(t<lbl_80562AE8) {
+   t=t/((lbl_80562AE8+x)-x); if(alpha<t)alpha=t; if(alpha>lbl_80562ADC)alpha=lbl_80562ADC; alpha=lbl_80562ADC+alpha*lbl_80562AE0;
+  } else {
+   edge=right-lbl_80562AE8;
+   if(lbl_8055E3C8>edge) { t=(lbl_8055E3C8-edge)/(right-edge); if(alpha<t)alpha=t; if(alpha>lbl_80562ADC)alpha=lbl_80562ADC; alpha=lbl_80562AE0+alpha*lbl_80562AEC; }
+  }
+ }
+ color=((int)(lbl_80562AF0*alpha)<<24)|0x00ffffff;
+ fn_8000FF88(color,0xC,lbl_8055AD5C,lbl_80442310+0x48,lbl_80562AF4,lbl_80562ADC,lbl_80562AF8);
+ while(n>0) { char c=*src++; *dst++=c; if((signed char)c==0)break; n--; }
+ if(n<=0)dst[-1]=0;
+ part=text;
+ do { caret=strchr(part,0x5e); if(caret)*caret=0; fn_8000FF88(color,0xC,lbl_8055AD58,part,lbl_80562AE0,lbl_80562ADC,y); if(caret)part=caret+1;else part=0; y-=dy; } while(part&&(signed char)*part);
+}
+
+#pragma cplusplus on
+extern "C" void *fn_801D4B60(void *arg0, int arg1) {
+ extern char lbl_80338D80[], lbl_80338490[];
+ struct Ref { virtual void release(int); };
+ char *src; int i; char *dst; int count, offset; void **items; Ref *entry;
+ if(arg0) {
+  *(void **)arg0=lbl_80338D80;
+  if(*(int *)((char *)arg0+4)) {
+   count=*(int *)((char *)arg0+0x34); *(int *)((char *)arg0+4)=0; offset=count*4;
+loop:
+   items=*(void ***)((char *)arg0+0x30); entry=(Ref *)items[count];
+   if(count>=0 && count<*(int *)((char *)arg0+0x34)) {
+    if(count!=*(int *)((char *)arg0+0x34)-1) items[count]=items[*(int *)((char *)arg0+0x34)-1];
+    *(int *)((char *)arg0+0x34)=*(int *)((char *)arg0+0x34)-1;
+   }
+   if(entry) entry->release(1);
+   if(count>0) { offset-=4; count--; goto loop; }
+  }
+  src=lbl_80338490; dst=(char *)arg0+8; i=0x14; goto copy;
+copy:
+  i--; if(i<=0) { dst[-1]=0; goto copied; }
+  *dst++=*src++;
+  if((signed char)dst[-1]!=0) goto copy;
+copied:
+  if((char *)arg0+0x30) {
+   if((char *)arg0+0x30) {
+    *(volatile int *)((char *)arg0+0x30)=0; *(int *)((char *)arg0+0x34)=0; *(int *)((char *)arg0+0x38)=0;
+   }
+  }
+  if(arg1>0) ((void (*)(void *))fn_80128668)(arg0);
+ }
+ return arg0;
+}
+#pragma cplusplus reset
 int fn_801D4CB8(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -80,9 +141,62 @@ void fn_801D50B0(int arg0) {
     fn_801D5328(arg0, 0);
 }
 
+#pragma cplusplus on
+void fn_801D5328(int arg0, int arg1) {
+ struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual int state(); virtual void v6(); virtual int apply(int); };
+ int mode, changed, count, offset;
+ Dummy *item;
+ if (*(int *)(arg0+4)!=1) return;
+ *(unsigned char *)(arg0+0x2c)=arg1;
+ mode=((unsigned char)arg1==0); changed=0; count=0; offset=0;
+ goto test1;
+loop1:
+ item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
+ if(item->state()==0 && item->apply(mode)!=0) changed=1;
+ offset+=4; count++;
+test1:
+ if(count<*(int *)(arg0+0x34)) goto loop1;
+ if(changed==0) goto done;
+ count=0; offset=0;
+ goto test2;
+loop2:
+ item=*(Dummy **)(*(int *)(arg0+0x30)+offset);
+ if(item->state()!=0) item->apply(mode);
+ offset+=4; count++;
+test2:
+ if(count<*(int *)(arg0+0x34)) goto loop2;
+done:
+ *(int *)(arg0+4)=2;
+}
+#pragma cplusplus reset
+
 int fn_801D544C(void) {
     return 0;
 }
+
+#pragma cplusplus on
+extern "C" void fn_801D5520(char *arg0) {
+ struct Manager { virtual void v0(); virtual void *get(int); };
+ struct Node { virtual const char *name(); };
+ extern void *fn_80131810(void); extern void fn_80131818(void *); extern void *fn_801D4B34(void); extern int fn_801D4CF8(void *,void *); extern void *fn_801284F8(int,void *); extern void fn_802E30C8(const char *,const char *); extern int stricmp(const char *,const char *); extern char lbl_80338460; extern int lbl_804423A4[];
+ Manager *manager=(Manager *)fn_80131810(); int i=0;
+ if(!manager) { fn_802E30C8((char *)&lbl_80338460+0x120,arg0); return; }
+ for(;;) {
+  void *node=manager->get(i); if(!node) break;
+  const char *name=((Node *)node)->name();
+  if(stricmp(name,(char *)&lbl_80338460+0x150)==0) {
+   void *obj=fn_801284F8(0x13c,(char *)&lbl_80338460+0x160);
+   if(obj) obj=fn_801D4B34();
+   if(fn_801D4CF8(obj,node)) {
+    int n=lbl_804423A4[1]++;
+    ((void **)lbl_804423A4[0])[n]=obj;
+   } else if(obj) ((void (*)(void *,int))(*(void ***)obj)[2])(obj,1);
+  }
+  i++;
+ }
+ fn_80131818(manager);
+}
+#pragma cplusplus reset
 
 extern int lbl_804423A4[];
 extern void fn_801D50B8(int);
@@ -134,10 +248,83 @@ void fn_801D5A1C(int arg0) {
     fn_801D59C8(arg0, 1);
 }
 
+#pragma cplusplus on
+extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
+    struct Dummy {
+        virtual void *get();
+        virtual void v1();
+        virtual void v2();
+        virtual void *transform(float, float, float);
+        virtual short index();
+        virtual void v5();
+        virtual int find(char *, int);
+    };
+    extern float PSVECDotProduct(float *, float *);
+    extern void fn_801796CC(int, void *, int);
+    Dummy *obj = (Dummy *)arg1;
+    float input[3], output[3], dot;
+    int count, offset, id, value;
+    void *found, *vec;
+    if (*(int *)((char *)arg0 + 0x14) <= 0) return;
+    found = obj->get();
+    id = *(int *)((char *)arg0 + 0xC);
+    if (id < 0 || found == 0) return;
+    if (((Dummy *)found)->find(lbl_803385D0, -1) != id) return;
+    input[0] = *(float *)arg2;
+    input[1] = *((float *)arg2 + 1);
+    input[2] = *((float *)arg2 + 2);
+    vec = obj->transform(input[0], input[1], input[2]);
+    output[0] = *(float *)vec;
+    output[1] = *((float *)vec + 1);
+    output[2] = *((float *)vec + 2);
+    obj->index();
+    dot = PSVECDotProduct(output, output);
+    count = 0;
+    offset = 0;
+    goto test;
+loop:
+    {
+        char *entry = (char *)*(int *)((char *)arg0 + 0x10) + offset;
+        if (dot >= *(float *)(entry + 4)) {
+            value = *(int *)entry;
+            fn_801796CC(10, input, 32);
+        }
+    }
+    offset += 8;
+    count += 1;
+test:
+    if (count < *(int *)((char *)arg0 + 0x14)) goto loop;
+}
+#pragma cplusplus reset
+
 void fn_801D628C(void *arg0) {
     *(int *)((char *)arg0 + 4) = 0;
     *(char **)((char *)arg0 + 0) = lbl_80338C78;
     *(int *)((char *)arg0 + 0x14) = 0;
+}
+
+int fn_801D6320(void *out, void *object) {
+    extern char lbl_80338460;
+    extern char lbl_8055ACB0, lbl_8055ACB8, lbl_8055ACC0, lbl_8055ACC8;
+    extern float lbl_80562ADC, lbl_80562AE4, lbl_80562B0C;
+    extern int fn_801399FC(void);
+    extern void fn_802E30C8(const char *, const char *);
+    char *messages = &lbl_80338460;
+    float a, b;
+    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0xC)))(object, &lbl_8055ACB0) == 0) { fn_802E30C8(messages + 0x210, 0); return 0; }
+    a = ((float (*)(void *, const char *))(*(void **)(*(void ***)object + 0x24)))(object, &lbl_8055ACB0);
+    if (a < lbl_80562ADC) { fn_802E30C8(messages + 0x254, 0); return 0; }
+    *(int *)((char *)out + 0xC) = (int)(lbl_80562B0C * a);
+    *(int *)((char *)out + 8) = (int)(lbl_80562B0C * ((float (*)(void *, const char *, float))(*(void **)(*(void ***)object + 0x28)))(object, &lbl_8055ACB8, lbl_80562ADC));
+    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0xC)))(object, &lbl_8055ACC0) == 0) { fn_802E30C8(messages + 0x2A4, 0); return 0; }
+    b = ((float (*)(void *, const char *, float))(*(void **)(*(void ***)object + 0x28)))(object, &lbl_8055ACC0, lbl_80562AE4);
+    *(float *)((char *)out + 0x10) = b;
+    if (b < lbl_80562ADC) { fn_802E30C8(messages + 0x2E8, 0); return 0; }
+    *(int *)((char *)out + 0x14) = 0;
+    if (((int (*)(void *, const char *))(*(void **)(*(void ***)object + 0x5C)))(object, &lbl_8055ACC8)) *(int *)((char *)out + 0x14) = fn_801399FC();
+    *(signed char *)((char *)out + 0x18) = ((signed char (*)(void *, const char *, int))(*(void **)(*(void ***)object + 0x30)))(object, messages + 0x338, 0);
+    *(int *)((char *)out + 4) = 1;
+    return 1;
 }
 
 int *__AXFXGetLfoSinTable_801D64F4(void) {
@@ -156,6 +343,29 @@ int fn_801D6508(int arg0) {
         return 1;
     }
     return 0;
+}
+
+void fn_801D6534(void *self) {
+    extern int fn_80139B5C(int);
+    extern int fn_8017960C(int);
+    extern void fn_80267E40(int, float);
+    int object;
+    int index;
+    int filter;
+    if (*(int *)((char *)self + 4) != 2) return;
+    if (lbl_8055E3C4 - *(int *)((char *)self + 0x1C) < *(int *)((char *)self + 8)) return;
+    index = 0;
+    goto fetch;
+process:
+    filter = *(int *)((char *)self + 0x14);
+    if (filter == 0 || fn_80139B5C(object) != 0)
+        fn_80267E40(object, *(float *)((char *)self + 0x10));
+    index++;
+fetch:
+    object = fn_8017960C(index);
+    if (object != 0) goto process;
+    if (lbl_8055E3C4 - *(int *)((char *)self + 0x1C) >= *(int *)((char *)self + 8) + *(int *)((char *)self + 0xC))
+        *(int *)((char *)self + 4) = 3;
 }
 
 void fn_801D6600(int arg0) {
@@ -250,6 +460,24 @@ int fn_801D6D80(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma cplusplus on
+extern "C" int fn_801D6DC8(void *arg0, void *arg1) {
+ struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual char *get(char *, char *); virtual void v7(); virtual void v8(); virtual void v9(); virtual float value(char *, float); };
+ extern char lbl_8055ACB0;
+ extern char lbl_8055ACE8;
+ extern char lbl_8055ACF0;
+ extern char lbl_8055ACF4;
+ extern float lbl_80562B14;
+ Dummy *obj=(Dummy *)arg1; char *src; char *dst; int i;
+ *(float *)((char *)arg0+8)=obj->value(&lbl_8055ACB0,lbl_80562B14);
+ src=obj->get(&lbl_8055ACE8,&lbl_8055ACF0); dst=(char *)arg0+0xC;
+ for(i=0;i<0x40 && (*dst++=*src++)!=0;i++) {} if(i==0x40) dst[-1]=0;
+ src=obj->get(&lbl_8055ACF4,&lbl_8055ACF0); dst=(char *)arg0+0x4C;
+ for(i=0;i<0x40 && (*dst++=*src++)!=0;i++) {} if(i==0x40) dst[-1]=0;
+ *(int *)((char *)arg0+4)=1; return 1;
+}
+#pragma cplusplus reset
+
 extern char lbl_80338868[];
 extern char lbl_80338B98[];
 extern char lbl_80338878[];
@@ -293,6 +521,35 @@ int fn_801D7034(int arg0, int arg1) {
     }
     return arg0;
 }
+
+#pragma cplusplus on
+extern "C" int fn_801D707C(void *arg0, void *arg1) {
+ struct Dummy { virtual void v0(); virtual void v1(); virtual void v2(); virtual char *check(char *); virtual void v4(); virtual char *get(char *); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual float value(char *, float); };
+ extern char lbl_80338888[];
+ extern char lbl_803388C8[];
+ extern char lbl_8055AC80;
+ extern char lbl_8055ACB0;
+ extern char lbl_8055ACB8;
+ extern float lbl_80562ADC;
+ extern float lbl_80562AEC;
+ extern int fn_80207848(char *, int);
+ extern void fn_802E30C8(char *);
+ Dummy *obj=(Dummy *)arg1;
+ char *src; char *dst; int i; float temp;
+ if (obj->check(&lbl_8055AC80)==0) { fn_802E30C8(lbl_80338888); return 0; }
+ src=obj->get(&lbl_8055AC80); dst=(char *)arg0+8;
+ for(i=0;i<30 && (*dst++=*src++)!=0;i++) {}
+ if(i==30) dst[-1]=0;
+ *(float *)((char *)arg0+0x28)=obj->value(&lbl_8055ACB8,lbl_80562ADC);
+ temp=obj->value(&lbl_8055ACB0,lbl_80562AEC);
+ *(int *)((char *)arg0+4)=1;
+ *(float *)((char *)arg0+0x30)=temp;
+ *(float *)((char *)arg0+0x2C)=lbl_80562ADC;
+ *((char *)arg0+0x34)=0;
+ *(int *)((char *)arg0+0x38)=fn_80207848(lbl_803388C8,1);
+ return 1;
+}
+#pragma cplusplus reset
 
 void *fn_801D7200(void) {
     return lbl_803388D4;
@@ -417,6 +674,31 @@ int fn_801D7F5C(int arg0, int arg1) {
     return arg0;
 }
 
+int fn_801D7F9C(void *arg0, void **arg1) {
+    extern void fn_802E30C8(char *); extern int fn_801399FC(void);
+    extern char lbl_80338460, lbl_8055AD20, lbl_8055AD28, lbl_8055AD30, lbl_8055ACB8;
+    extern float lbl_80562ADC, lbl_80562B0C;
+    void **vt; int ok,n,i; unsigned char *src,*dst,c; float v;
+    vt=*(void ***)arg1;
+    ok=((int (*)(void *,char *))vt[3])(arg1,&lbl_8055AD20);
+    if(!ok){fn_802E30C8(&lbl_80338460+0xB24);return 0;}
+    src=((unsigned char *(*)(void *,char *))vt[5])(arg1,&lbl_8055AD20);
+    dst=(unsigned char *)arg0+0x18; n=0x14;
+    while(n>0){c=*src++;*dst++=c;if((signed char)c==0)break;n--;}
+    if(n==0)dst[-1]=0;
+    src=((unsigned char *(*)(void *,char *,char *))vt[6])(arg1,&lbl_8055AD28,&lbl_8055AD30);
+    dst=(unsigned char *)arg0+4;n=0x14;
+    while(n>0){c=*src++;*dst++=c;if((signed char)c==0)break;n--;}
+    if(n==0)dst[-1]=0;
+    if(((int (*)(void *,char *))vt[23])(arg1,&lbl_80338460+0xB64)==0)
+        *(int *)((char *)arg0+0x3c)=0;
+    else *(int *)((char *)arg0+0x3c)=fn_801399FC();
+    v=((float (*)(void *,char *,float))vt[10])(arg1,&lbl_8055ACB8,lbl_80562ADC);
+    *(int *)((char *)arg0+0x38)=0; *(int *)((char *)arg0+0x2c)=0;
+    *(int *)((char *)arg0+0x40)=1; *(int *)((char *)arg0+0x30)=(int)(lbl_80562B0C*v);
+    fn_802E30C8(&lbl_80338460+0xB70); return 1;
+}
+
 extern char lbl_80338928[];
 void *fn_801D8148(void) {
     return lbl_80338928;
@@ -436,9 +718,49 @@ int fn_801D839C(void *arg0) {
     return (unsigned int)__cntlzw(*(unsigned char *)((char *)arg0 + 0x18)) >> 5;
 }
 
+#pragma cplusplus on
+extern "C" void fn_801D83AC(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+    };
+    ((Dummy *)arg0)->v11();
+}
+#pragma cplusplus reset
+
 int fn_801D83BC(void *arg0) {
     return (unsigned int)__cntlzw(*(unsigned char *)((char *)arg0 + 0x30)) >> 5;
 }
+
+#pragma cplusplus on
+extern "C" void fn_801D83CC(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+    };
+    ((Dummy *)arg0)->v11();
+}
+#pragma cplusplus reset
 
 int fn_801D83DC(int arg0, int arg1) {
     if (arg0 != 0) {
@@ -465,6 +787,26 @@ int fn_801D8518(int arg0) {
     return 0;
 }
 
+#pragma cplusplus on
+extern "C" void fn_801D85C8(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+    };
+    ((Dummy *)arg0)->v11();
+}
+#pragma cplusplus reset
+
 void fn_801D85D8(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
@@ -488,6 +830,58 @@ int fn_801D8618(void) {
 void fn_801D8620(void) {
 
 }
+
+#pragma cplusplus on
+extern "C" void fn_801D8624(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+    };
+    ((Dummy *)arg0)->v11();
+}
+
+extern "C" int fn_801D8634(void *out, void *obj) {
+    extern float lbl_80562ADC;
+    extern char lbl_8055ACB8;
+    extern char lbl_8055ACB0;
+    extern char lbl_803385D0[];
+    extern char lbl_80339050[];
+    extern int fn_801D04D0(void);
+    extern void fn_801D0590(void *);
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3(void *);
+        virtual void v4();
+        virtual int v5(void *);
+        virtual void v6();
+        virtual float v7(void *);
+        virtual float v8(void *, float);
+    };
+    Dummy *thing = (Dummy *)obj;
+    *(float *)((char *)out + 0xC) = thing->v8(&lbl_8055ACB8, lbl_80562ADC);
+    *(float *)((char *)out + 0x14) = thing->v7(&lbl_8055ACB0);
+    *(int *)((char *)out + 8) = thing->v5(lbl_803385D0);
+    thing->v3(lbl_80339050);
+    *(int *)((char *)out + 0x1C) = fn_801D04D0();
+    if (out != 0) fn_801D0590((char *)out + 4);
+    *(int *)((char *)out + 0x18) = 1;
+    *(float *)((char *)out + 0x10) = lbl_80562ADC;
+    return 1;
+}
+
+#pragma cplusplus reset
 
 void fn_801D8710(int arg0) {
     if (arg0 != 0) {
@@ -515,14 +909,122 @@ int fn_801D873C(int arg0) {
     return 0;
 }
 
+#pragma cplusplus on
+extern "C" void fn_801D875C(void *arg0) {
+    struct Dummy {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void first(int); virtual void v6(); virtual void second_pad();
+        virtual void second(int);
+    };
+    int count, offset;
+    float time;
+    Dummy *item;
+    char *entry;
+    if (*(int *)((char *)arg0 + 0x18) != 2) return;
+    time = lbl_8055E3C8;
+    if (*(int *)((char *)arg0 + 0x20) == 0) {
+        if (!(time - *(float *)((char *)arg0 + 0x10) > *(float *)((char *)arg0 + 0xC))) return;
+        count = 0; offset = 0;
+        goto first_test;
+first_loop:
+        entry = (char *)*(int *)((char *)arg0 + 0x24) + offset;
+        item = *(Dummy **)entry;
+        item->first(*(int *)((char *)arg0 + 0x1C));
+        item = *(Dummy **)entry;
+        item->second(*(int *)(entry + 8));
+        offset += 0xC; count += 1;
+first_test:
+        if (count < *(int *)((char *)arg0 + 0x28)) goto first_loop;
+        *(int *)((char *)arg0 + 0x20) = 1;
+    } else {
+        if (!(time - *(float *)((char *)arg0 + 0x10) - *(float *)((char *)arg0 + 0xC) > *(float *)((char *)arg0 + 0x14))) return;
+        count = 0; offset = 0;
+        goto second_test;
+second_loop:
+        entry = (char *)*(int *)((char *)arg0 + 0x24) + offset;
+        item = *(Dummy **)entry;
+        item->first(*(int *)(entry + 4));
+        item = *(Dummy **)entry;
+        item->second(-1);
+        offset += 0xC; count += 1;
+second_test:
+        if (count < *(int *)((char *)arg0 + 0x28)) goto second_loop;
+        *(int *)((char *)arg0 + 0x18) = 1;
+    }
+}
+#pragma cplusplus reset
+
+#pragma cplusplus on
+extern "C" void fn_801D88AC(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+    };
+    ((Dummy *)arg0)->v11();
+}
+#pragma cplusplus reset
+
 void fn_801D8938(void) {
 
+}
+
+void fn_801D89C0(void *arg0, void *arg1) {
+    void *object;
+    int first;
+    int second;
+    int count;
+    int records;
+    int record;
+
+    object = ((void *(*)(void *))(*(void ***)arg1)[1])(arg1);
+    if (object == 0) return;
+    if (((int (*)(void *, char *, int))(*(void ***)object)[8])(object, lbl_803385D0, -1) != *(int *)((char *)arg0 + 8)) return;
+    first = ((int (*)(void *))(*(void ***)arg1)[8])(arg1);
+    second = ((int (*)(void *))(*(void ***)arg1)[9])(arg1);
+    count = *(int *)((char *)arg0 + 0x28);
+    records = *(int *)((char *)arg0 + 0x24);
+    record = records + count * 12;
+    *(int *)((char *)arg0 + 0x28) = count + 1;
+    *(void **)record = arg1;
+    *(int *)(record + 4) = first;
+    *(int *)(record + 8) = second;
+    ((void (*)(void *, int, int, int, int))(*(void ***)arg1)[10])(arg1, -1, record, count + 1, records);
 }
 
 int fn_801D8AA4(void *arg0) {
     extern float lbl_80562ADC;
     return *(float *)((char *)arg0 + 0x30) < lbl_80562ADC;
 }
+
+#pragma cplusplus on
+extern "C" void fn_801D8ABC(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+    };
+    ((Dummy *)arg0)->v11();
+}
+#pragma cplusplus reset
 
 void fn_801D8B50(void) {
 }
@@ -555,6 +1057,26 @@ int fn_801D8CA4(void *arg0) {
     return ((int *)arg0)[1];
 }
 
+#pragma cplusplus on
+extern "C" void fn_801D8DA0(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+    };
+    ((Dummy *)arg0)->v11();
+}
+#pragma cplusplus reset
+
 void fn_801D8DB0(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
@@ -586,9 +1108,43 @@ int fn_801D8F04(void *arg0) {
     return 0;
 }
 
+#pragma cplusplus on
+extern "C" void fn_801D8FD0(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+    };
+    ((Dummy *)arg0)->v11();
+}
+#pragma cplusplus reset
+
 void fn_801D8FE0(int arg0) {
     if (((int *)arg0)[1] != 0) {
         ((int *)arg0)[1] = 1;
     }
 }
-
+extern char lbl_803385D0[];
+extern char lbl_803385D0[];
+#pragma cplusplus on
+struct D5BBC {
+ virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+ virtual void v4(); virtual void v5(); virtual int read(void *);
+ virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10();
+ virtual void v11(); virtual void v12(); virtual void v13();
+ virtual void *item(void *);
+ virtual void v15(); virtual void v16(); virtual float value(void *, float);
+ virtual void v18(); virtual void v19(); virtual void v20(); virtual void v21();
+ virtual void v22(); virtual void v23(); virtual void v24();
+ virtual void vector(void *, const char *, float *);
+};
+#pragma cplusplus reset
