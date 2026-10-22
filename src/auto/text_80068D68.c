@@ -134,6 +134,7 @@ typedef struct {
     UINT8 rem_bda[6];
     UINT16 settings;
 } tBTM_LNK_POLICY_RESULTS_LKP;
+void btu_stop_timer(void *);
 #define BTA_HH_DISABLE_EVT 1
 #define BTA_HH_API_CLOSE_EVT 0x1701
 extern void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data);
