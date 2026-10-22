@@ -8,6 +8,9 @@ extern int fn_800EAD00(void *);
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
 typedef int s32;
+#pragma cplusplus on
+struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); };
+#pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
 class WsdTrack { public: static void ChannelCallbackFunc(Channel *, Channel::ChannelCallbackStatus, unsigned long); };
@@ -121,29 +124,50 @@ void PauseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFb(void *arg0, unsigned char 
 }
 
 extern "C" const char lbl_80327CB8[];
-void ChannelCallbackFunc__Q46nw4hbm3snd6detail8WsdTrackFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl(void *arg0, int arg1, unsigned long arg2) {
- void *track;
+void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Channel *arg0, nw4hbm::snd::detail::Channel::ChannelCallbackStatus arg1, unsigned long arg2) {
+ const char *base=lbl_80327CB8;
+ void *track=(void *)arg2;
  void *channel;
  void *next;
- if(arg0==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8,0x1cf,lbl_80327CB8+0x88);
- if(arg2==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8,0x1d0,lbl_80327CB8+0xb8);
- if(arg1==2) fn_800EAD00(arg0);
- track=(void *)arg2;
+ if(arg0==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x1cf,base+0x88);
+ if(track==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x1d0,base+0xb8);
+ if((int)arg1==2) fn_800EAD00(arg0);
  channel=*(void **)((char *)track+0x30);
- if(channel==arg0){
-  *(void **)((char *)track+0x30)=*(void **)((char *)arg0+0xe4);
-  return;
- }
- if(channel==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8,0x1dd,lbl_80327CB8+0xe0);
- for(;;){
+ if(channel==arg0){*(void **)((char *)track+0x30)=*(void **)((char *)arg0+0xe4);return;}
+ if(channel==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x1dd,base+0xe0);
+ while(channel!=arg0){
   next=*(void **)((char *)channel+0xe4);
-  if(next==arg0){
-   *(void **)((char *)channel+0xe4)=*(void **)((char *)arg0+0xe4);
-   return;
-  }
+  if(next==arg0){*(void **)((char *)channel+0xe4)=*(void **)((char *)arg0+0xe4);return;}
   channel=next;
-  if(channel==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80327CB8,0x1e7,lbl_80327CB8+0x10c);
+  if(channel==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x1e7,base+0x10c);
  }
+}
+
+extern "C" const char lbl_80328030[];
+extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
+    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    if ((unsigned int)(top + 0x80000000U) != 0U && (unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0U) r10 = 0;
+    if (r10 == 0 && (unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0U) r9 = 0;
+    if (r9 == 0 && (unsigned int)(top + 0x40000000U) != 0U) r8 = 0;
+    if (r8 == 0 && (unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0U) r7 = 0;
+    if (r7 == 0 && (unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0U) r6 = 0;
+    if (r6 == 0 && (unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328030, 0x9B, lbl_80328030 + 0x18, arg0);
+    unsigned int value = *(unsigned int *)arg0;
+    top = value & 0xFF000000U;
+    int r4 = 1; r5 = 1; r6 = 1; r7 = 1; r8 = 1; r9 = 1;
+    if ((unsigned int)(top + 0x80000000U) != 0U && (unsigned int)((value & 0xFF800000U) + 0x7F000000U) != 0U) r9 = 0;
+    if (r9 == 0 && (unsigned int)((value & 0xF8000000U) + 0x70000000U) != 0U) r8 = 0;
+    if (r8 == 0 && (unsigned int)(top + 0x40000000U) != 0U) r7 = 0;
+    if (r7 == 0 && (unsigned int)((value & 0xFF800000U) + 0x3F000000U) != 0U) r6 = 0;
+    if (r6 == 0 && (unsigned int)((value & 0xF8000000U) + 0x30000000U) != 0U) r5 = 0;
+    if (r5 == 0 && (unsigned int)((value & 0xFFFFC000U) + 0x20000000U) != 0U) r4 = 0;
+    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328030, 0x9C, lbl_80328030 + 0x50);
+    unsigned char *ptr = *(unsigned char **)arg0;
+    unsigned char result = *ptr;
+    *(unsigned int *)arg0 = value + 1;
+    return result;
 }
 
 extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
@@ -151,6 +175,28 @@ extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void SetFont__Q36nw4hbm2ut10CharWriterFRCQ36nw4hbm2ut4Font(void *arg0, void *arg1) {
+    unsigned int top = (unsigned int)arg0 & 0xFF000000U;
+    int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
+    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U) r10=0;
+    if (r10==0 && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U) r9=0;
+    if (r9==0 && (unsigned int)(top+0x40000000U)!=0U) r8=0;
+    if (r8==0 && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U) r7=0;
+    if (r7==0 && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U) r6=0;
+    if (r6==0 && (unsigned int)(((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U) r5=0;
+    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x85,lbl_80328178+0x14,arg0);
+    top=(unsigned int)arg1&0xFF000000U;
+    int r4=1; r5=1; r6=1; r7=1; r8=1; r9=1;
+    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)arg1&0xFF800000U)+0x7F000000U)!=0U) r9=0;
+    if (r9==0 && (unsigned int)(((unsigned int)arg1&0xF8000000U)+0x70000000U)!=0U) r8=0;
+    if (r8==0 && (unsigned int)(top+0x40000000U)!=0U) r7=0;
+    if (r7==0 && (unsigned int)(((unsigned int)arg1&0xFF800000U)+0x3F000000U)!=0U) r6=0;
+    if (r6==0 && (unsigned int)(((unsigned int)arg1&0xF8000000U)+0x30000000U)!=0U) r5=0;
+    if (r5==0 && (unsigned int)(((unsigned int)arg1&0xFFFFC000U)+0x20000000U)!=0U) r4=0;
+    if (r4==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x86,lbl_80328178+0x4C,arg1);
+    *(void **)((char *)arg0+0x48)=arg1;
 }
 
 extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
@@ -167,27 +213,15 @@ extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
 }
 
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2) {
-    unsigned int temp_r11;
-    int var_r10;
-    int var_r5;
-    int var_r6;
-    int var_r7;
-    int var_r8;
-    int var_r9;
-    temp_r11 = (unsigned int)arg0 & 0xFF000000U;
-    var_r6 = 1;
-    var_r7 = 1;
-    var_r5 = 1;
-    var_r8 = 1;
-    var_r9 = 1;
-    var_r10 = 1;
-    if (((unsigned int)(temp_r11 + 0x80000000U) != 0U) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0U)) var_r10 = 0;
-    if ((var_r10 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0U)) var_r9 = 0;
-    if ((var_r9 == 0) && ((unsigned int)(temp_r11 + 0x40000000U) != 0U)) var_r8 = 0;
-    if ((var_r8 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0U)) var_r7 = 0;
-    if ((var_r7 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0U)) var_r6 = 0;
-    if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U)) var_r5 = 0;
-    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0xEB, "this", arg0);
+    unsigned int temp_r11 = (unsigned int)arg0 & 0xFF000000U;
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    if (temp_r11 + 0x80000000U != 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x7F000000U) != 0) r10 = 0;
+    if (r10 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x70000000U) != 0) r9 = 0;
+    if (r9 == 0 && temp_r11 + 0x40000000U != 0) r8 = 0;
+    if (r8 == 0 && (((unsigned int)arg0 & 0xFF800000U) + 0x3F000000U) != 0) r7 = 0;
+    if (r7 == 0 && (((unsigned int)arg0 & 0xF8000000U) + 0x30000000U) != 0) r6 = 0;
+    if (r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0xEB, "this", arg0);
     *(unsigned char *)((char *)arg0 + 0) = *(unsigned char *)((char *)arg1 + 0);
     *(unsigned char *)((char *)arg0 + 1) = *(unsigned char *)((char *)arg1 + 1);
     *(unsigned char *)((char *)arg0 + 2) = *(unsigned char *)((char *)arg1 + 2);
