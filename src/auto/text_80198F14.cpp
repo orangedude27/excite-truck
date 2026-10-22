@@ -117,6 +117,27 @@ void fn_8019F1A4(void) __attribute__((noreturn));
 
 extern "C" s32 fn_80128668(void);
 void fn_801A5C4C(void);
+extern "C" void fn_8017B6D4(s32, Vec*, s32);
+extern f32 lbl_805622D0, lbl_805622E4, lbl_805622E8;
+extern "C" f32 PSVECMag(const Vec*);
+extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* arg4, f32 farg0) {
+    Vec a, b, d, p;
+    f32 dot, mag, limit;
+    if (*(s32*)((u8*)arg3+4)) fn_8017B6D4(*(s32*)((u8*)arg3+4), &a, arg1);
+    else a.x=a.y=a.z=lbl_805622D0;
+    if (*(s32*)((u8*)arg4+4)) fn_8017B6D4(*(s32*)((u8*)arg4+4), &b, arg1);
+    else b.x=b.y=b.z=lbl_805622D0;
+    d.x=a.x-b.x; d.y=a.y-b.y; d.z=a.z-b.z;
+    dot=PSVECDotProduct(arg2,&d);
+    p.x=(d.x-arg2->x*dot)*lbl_805622E4;
+    p.y=(d.y-arg2->y*dot)*lbl_805622E4;
+    p.z=(d.z-arg2->z*dot)*lbl_805622E4;
+    mag=PSVECMag(&p);
+    limit=lbl_805622E8*farg0*(*(f32*)((u8*)arg3+0x14)+*(f32*)((u8*)arg4+0x14));
+    if (mag>limit) { f32 s=limit/mag; p.x*=s; p.y*=s; p.z*=s; }
+    *arg0=p;
+}
+
 void fn_80199870(void* arg0) {
     u32 value = *(u32*)((u8*)arg0 + 0x10);
     if ((u32)(value - 0x50430000) == 0x4152 ||
@@ -265,6 +286,30 @@ extern "C" void fn_8019D378(void *arg0, void *arg1) {
     }
     *(f32 *)((u8 *)arg0 + 0x24) = value;
     fn_8019C854(arg0, arg1);
+}
+
+extern "C" void PSVECCrossProduct(const Vec *, const Vec *, Vec *);
+extern "C" f32 fn_8019D484(const Vec *p0, const Vec *v0, const Vec *p1, const Vec *v1, f32 *out0, f32 *out1) {
+    extern f32 lbl_80562348;
+    Vec delta, normal;
+    f32 den, a, b;
+    delta.x = p1->x - p0->x;
+    delta.y = p1->y - p0->y;
+    delta.z = p1->z - p0->z;
+    PSVECCrossProduct(v0, v1, &normal);
+    den = PSVECDotProduct(&normal, &normal);
+    if (den > lbl_80562348) {
+        a = (delta.y * v1->z - delta.z * v1->y) * normal.x
+          + (delta.z * v1->x - delta.x * v1->z) * normal.y
+          + (delta.x * v1->y - delta.y * v1->x) * normal.z;
+        b = (delta.y * v0->z - delta.z * v0->y) * normal.x
+          + (delta.z * v0->x - delta.x * v0->z) * normal.y
+          + (delta.x * v0->y - delta.y * v0->x) * normal.z;
+        *out0 = a / den;
+        *out1 = b / den;
+        return 1;
+    }
+    return 0;
 }
 
 s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
@@ -682,6 +727,27 @@ extern "C" void fn_8019F560(void) {
     fn_8019F1A4();
 }
 
+extern "C" void *fn_8019F564(void *arg0,s32 arg1,void *arg2,s32 arg3,f32 a,f32 b,f32 c,f32 d,f32 e,f32 f) {
+ extern void* lbl_80333A58;
+ f32 z=lbl_805622D0,m=f; if(e>m)m=e;if(d>m)m=d;
+ *(s32*)((u8*)arg0+0xC)=arg1;*(s32*)((u8*)arg0+4)=arg3;*(s32*)((u8*)arg0+8)=0;
+ *(s32*)((u8*)arg0+0x18)=0x53504852;*(f32*)((u8*)arg0+0x10)=a;*(f32*)((u8*)arg0+0x14)=b;
+ *(s32*)((u8*)arg0+0x20)=100;*(s32*)((u8*)arg0+0x1C)=0;*(void**)arg0=&lbl_80333B48;
+ *(f32*)((u8*)arg0+0x24)=lbl_805622E8*m;
+ *(f32*)((u8*)arg0+0x34)=z;*(f32*)((u8*)arg0+0x38)=z;*(f32*)((u8*)arg0+0x3C)=z;*(f32*)((u8*)arg0+0x40)=z;
+ *(f32*)((u8*)arg0+0x44)=z;*(f32*)((u8*)arg0+0x48)=z;*(u8*)((u8*)arg0+0x4C)=0;*(f32*)((u8*)arg0+0x50)=z;
+ *(f32*)((u8*)arg0+0x28)=*(f32*)arg2;*(f32*)((u8*)arg0+0x2C)=*(f32*)((u8*)arg2+4);*(f32*)((u8*)arg0+0x30)=*(f32*)((u8*)arg2+8);
+ if(arg3)fn_8019EECC((void*)arg3,(Vec*)((u8*)arg0+0x28));
+ *(void**)arg0=&lbl_80333A58;*(f32*)((u8*)arg0+0x54)=c;
+ *(f32*)((u8*)arg0+0x58)=lbl_805622E8*d;*(f32*)((u8*)arg0+0x5C)=lbl_805622E8*e;*(f32*)((u8*)arg0+0x60)=lbl_805622E8*f;
+ *(f32*)((u8*)arg0+0x64)=z;*(f32*)((u8*)arg0+0x68)=z;*(f32*)((u8*)arg0+0x6C)=z;*(f32*)((u8*)arg0+0x70)=z;
+ *(f32*)((u8*)arg0+0x74)=z;*(f32*)((u8*)arg0+0x78)=z;*(f32*)((u8*)arg0+0x7C)=z;*(f32*)((u8*)arg0+0x80)=z;
+ *(f32*)((u8*)arg0+0x84)=z;*(f32*)((u8*)arg0+0x88)=z;*(f32*)((u8*)arg0+0x8C)=z;*(f32*)((u8*)arg0+0x90)=z;
+ *(f32*)((u8*)arg0+0x94)=z;*(f32*)((u8*)arg0+0x98)=z;*(f32*)((u8*)arg0+0x9C)=z;*(f32*)((u8*)arg0+0xA0)=z;
+ *(f32*)((u8*)arg0+0xA4)=z;*(f32*)((u8*)arg0+0xA8)=z;*(f32*)((u8*)arg0+0xAC)=z;*(f32*)((u8*)arg0+0xB0)=z;
+ *(f32*)((u8*)arg0+0xB4)=z;*(f32*)((u8*)arg0+0xB8)=z;*(f32*)((u8*)arg0+0xBC)=z;*(f32*)((u8*)arg0+0xC0)=z;return arg0;
+}
+
 void fn_8019F6F0(void *arg0) { fn_8019F03C(arg0); *(f32*)((u8*)arg0+0x64)=lbl_805622D0; *(f32*)((u8*)arg0+0x68)=lbl_805622D0; *(f32*)((u8*)arg0+0x6C)=lbl_805622D0; *(f32*)((u8*)arg0+0x70)=lbl_805622D0; *(f32*)((u8*)arg0+0x74)=lbl_805622D0; *(f32*)((u8*)arg0+0x78)=lbl_805622D0; *(f32*)((u8*)arg0+0x7C)=lbl_805622D0; *(f32*)((u8*)arg0+0x80)=lbl_805622D0; *(f32*)((u8*)arg0+0x84)=lbl_805622D0; *(f32*)((u8*)arg0+0x88)=lbl_805622D0; *(f32*)((u8*)arg0+0x8C)=lbl_805622D0; *(f32*)((u8*)arg0+0x90)=lbl_805622D0; *(f32*)((u8*)arg0+0x94)=lbl_805622D0; *(f32*)((u8*)arg0+0x98)=lbl_805622D0; *(f32*)((u8*)arg0+0x9C)=lbl_805622D0; *(f32*)((u8*)arg0+0xA0)=lbl_805622D0; *(f32*)((u8*)arg0+0xA4)=lbl_805622D0; *(f32*)((u8*)arg0+0xA8)=lbl_805622D0; *(f32*)((u8*)arg0+0xAC)=lbl_805622D0; *(f32*)((u8*)arg0+0xB0)=lbl_805622D0; *(f32*)((u8*)arg0+0xB4)=lbl_805622D0; *(f32*)((u8*)arg0+0xB8)=lbl_805622D0; *(f32*)((u8*)arg0+0xBC)=lbl_805622D0; *(f32*)((u8*)arg0+0xC0)=lbl_805622D0; }
 
 extern "C" void fn_8019FF88(void) {
@@ -990,6 +1056,39 @@ extern "C" void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
     return arg0;
 }
 
+extern f32 lbl_805622D0, lbl_805622D4, lbl_805622E0;
+extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg4) {
+    f32 t0 = lbl_805622D0;
+    f32 t1 = lbl_805622D0;
+    Vec* mat = *(Vec**)((u8*)arg0 + 0xC);
+    Vec* axis = (Vec*)((u8*)mat + 0x18);
+    Vec* center = (Vec*)((u8*)mat + 0x24);
+    if (fn_8019D484(arg1, arg2, center, axis, &t0, &t1) == lbl_805622D0) return 0;
+    f32 extent = *(f32*)((u8*)arg0 + 0x28);
+    if (extent < t1) extent = t1;
+    if (extent > -*(f32*)((u8*)arg0 + 0x28)) extent = -*(f32*)((u8*)arg0 + 0x28);
+    t1 = extent;
+    if (t0 <= lbl_805622D0 || t0 >= *arg3) return 0;
+    Vec p, q;
+    p.x = arg1->x + arg2->x * t0;
+    p.y = arg1->y + arg2->y * t0;
+    p.z = arg1->z + arg2->z * t0;
+    f32 t = (f32)extent;
+    q.x = center->x + axis->x * t;
+    q.y = center->y + axis->y * t;
+    q.z = center->z + axis->z * t;
+    if (PSVECSquareDistance(&p, &q) >= (*(f32*)((u8*)arg0 + 0x24) * *(f32*)((u8*)arg0 + 0x24))) return 0;
+    arg4->x = p.x - q.x;
+    arg4->y = p.y - q.y;
+    arg4->z = p.z - q.z;
+    f32 mag = PSVECMag(arg4);
+    if (lbl_805622D4 > mag) mag = lbl_805622D4;
+    f32 scale = lbl_805622E0 / mag;
+    arg4->x *= scale; arg4->y *= scale; arg4->z *= scale;
+    *arg3 = t0;
+    return 1;
+}
+
 extern "C" void fn_801A17B8(void* arg0) {
     extern f32 lbl_8056234C;
     extern void fn_801E41D8(f32*, f32*, s32, f32, f32, void*, void*, f32, f32, f32, f32, f32, f32, f32, f32, f32);
@@ -1019,6 +1118,28 @@ extern "C" void** fn_801A1898(void** arg0) {
     ((void* (*)(void*))fn_801A1520)(arg0);
     *arg0 = &lbl_80333918;
     return arg0;
+}
+
+void fn_801A18D4(void* arg0, f32* arg1, f32* arg2) {
+    f32 a, b, c, d, e, f, g, h, i, j, k, l;
+    f32 x = *(f32*)((u8*)arg0+0x24);
+    void* m = *(void**)((u8*)arg0+0xC);
+    a=*(f32*)((u8*)m+0x20); b=*(f32*)((u8*)m+0x2C);
+    c=*(f32*)((u8*)m+0x18); d=*(f32*)((u8*)m+0x1C);
+    e=*(f32*)((u8*)m+0x24); f=*(f32*)((u8*)m+0x28);
+    g=b+a*x; h=b-a*x; i=e+c*x; j=e-c*x; k=f+d*x; l=f-d*x;
+    f32 lo0=g-x, lo1=h-x, lo2=i-x, lo3=j-x, lo4=k-x, lo5=l-x;
+    f32 minx=lo0, miny=lo4, minz=lo2;
+    if (minx>=lo1) minx=lo1;
+    if (miny>=lo5) miny=lo5;
+    if (minz>=lo3) minz=lo3;
+    arg1[0]=minz; arg1[1]=miny; arg1[2]=minx;
+    f32 hi0=j+x, hi1=l+x, hi2=h+x, hi3=g+x, hi4=k+x, hi5=i+x;
+    f32 maxx=hi0, maxy=hi1, maxz=hi2;
+    if (maxx<=hi3) maxx=hi3;
+    if (maxy<=hi4) maxy=hi4;
+    if (maxz<=hi5) maxz=hi5;
+    arg2[0]=maxz; arg2[1]=maxy; arg2[2]=maxx;
 }
 
 extern "C" void fn_8019CF60(void*);
@@ -1194,6 +1315,36 @@ extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void fn_801A2474(void *self) {
+    float *matrix = *(float **)((char *)self + 0xC);
+    volatile float *dst = (float *)((char *)self + 0x68);
+    volatile float *src = (float *)((char *)self + 0x38);
+    float x, y, z, a, b, c;
+    *(float *)((char *)self + 0x44) = matrix[0];
+    *(float *)((char *)self + 0x48) = matrix[1];
+    *(float *)((char *)self + 0x4C) = matrix[2];
+    *(float *)((char *)self + 0x50) = matrix[3];
+    *(float *)((char *)self + 0x54) = matrix[4];
+    *(float *)((char *)self + 0x58) = matrix[5];
+    *(float *)((char *)self + 0x5C) = matrix[6];
+    *(float *)((char *)self + 0x60) = matrix[7];
+    *(float *)((char *)self + 0x64) = matrix[8];
+    if (dst == src) {
+        x = *(float *)((char *)self + 0x38); y = *(float *)((char *)self + 0x3C); z = *(float *)((char *)self + 0x40);
+        *(float *)((char *)self + 0x68) = (x * matrix[0] + y * matrix[3]) + z * matrix[6];
+        *(float *)((char *)self + 0x6C) = (x * matrix[1] + y * matrix[4]) + z * matrix[7];
+        *(float *)((char *)self + 0x70) = (x * matrix[2] + y * matrix[5]) + z * matrix[8];
+    } else {
+        a = *(float *)((char *)self + 0x38); b = *(float *)((char *)self + 0x3C); c = *(float *)((char *)self + 0x40);
+        *(float *)((char *)self + 0x68) = (a * matrix[0] + b * matrix[3]) + c * matrix[6];
+        *(float *)((char *)self + 0x6C) = (a * matrix[1] + b * matrix[4]) + c * matrix[7];
+        *(float *)((char *)self + 0x70) = (a * matrix[2] + b * matrix[5]) + c * matrix[8];
+        *(float *)((char *)self + 0x68) += matrix[9];
+        *(float *)((char *)self + 0x6C) += matrix[10];
+        *(float *)((char *)self + 0x70) += matrix[11];
+    }
 }
 
 extern "C" void fn_801A2674(void* arg0, s32 arg1, s32 arg2, f32 arg3) {
@@ -1379,6 +1530,53 @@ f32 fn_801A3880(void* arg0) {
         first = second;
     }
     return (f32)fn_8002F234(first);
+}
+
+extern f32 lbl_80562314;
+extern "C" void fn_801E41D8(void*, void*, s32, f32);
+void fn_801A3BE0(void* arg0, void* arg1) {
+    f32 pos[3];
+    f32 out[3];
+    f32* entry = (f32*)((u8*)arg0 + 0x3C);
+    void* matrix = *(void**)((u8*)arg0 + 0xC);
+    s32 count = *(s32*)((u8*)arg0 + 0xBC);
+    s32 i;
+    pos[0] = *(f32*)((u8*)matrix + 0x24);
+    pos[1] = *(f32*)((u8*)matrix + 0x28);
+    pos[2] = *(f32*)((u8*)matrix + 0x2C);
+    for (i = 0; i < count; i++, entry += 4) {
+        f32 w = entry[3];
+        f32 x = entry[0] * w;
+        f32 y = entry[1] * w;
+        f32 z = entry[2] * w;
+        out[0] = x * *(f32*)matrix + y * *(f32*)((u8*)matrix + 0xC) + z * *(f32*)((u8*)matrix + 0x18);
+        out[1] = x * *(f32*)((u8*)matrix + 4) + y * *(f32*)((u8*)matrix + 0x10) + z * *(f32*)((u8*)matrix + 0x1C);
+        out[2] = x * *(f32*)((u8*)matrix + 8) + y * *(f32*)((u8*)matrix + 0x14) + z * *(f32*)((u8*)matrix + 0x20);
+        out[0] += *(f32*)((u8*)matrix + 0x24);
+        out[1] += *(f32*)((u8*)matrix + 0x28);
+        out[2] += *(f32*)((u8*)matrix + 0x2C);
+        fn_801E41D8(pos, out, lbl_8055E598, lbl_80562314);
+    }
+}
+
+extern "C" void *fn_801A3DAC(void *arg0,s32 arg1,s32 arg2,s32 arg3) {
+ extern s32 lbl_80333728;
+ struct Vec{f32 x,y,z;}; s32 i=1,off=0xC; f32 x,y,z;
+ *(s32*)((u8*)arg0+0xC)=arg1;*(s32*)((u8*)arg0+4)=arg3;*(s32*)((u8*)arg0+8)=0;
+ *(s32*)((u8*)arg0+0x18)=0x504D5348;*(f32*)((u8*)arg0+0x10)=lbl_805622E0;*(f32*)((u8*)arg0+0x14)=lbl_805622E0;
+ *(s32*)((u8*)arg0+0x20)=100;*(s32*)((u8*)arg0+0x1C)=0;*(void**)arg0=&lbl_80333728;
+ void *obj=(void*)fn_801CFEAC((void*)arg2);*(void**)((u8*)arg0+0x24)=obj;
+ Vec *v=(Vec*)*(void**)((u8*)obj+8);x=v->x;y=v->y;z=v->z;
+ *(f32*)((u8*)arg0+0x34)=x;*(f32*)((u8*)arg0+0x38)=y;*(f32*)((u8*)arg0+0x3C)=z;
+ *(f32*)((u8*)arg0+0x28)=x;*(f32*)((u8*)arg0+0x2C)=y;*(f32*)((u8*)arg0+0x30)=z;
+ for(;i<*(s32*)((u8*)obj+0xC);i++,off+=0xC){Vec*p=(Vec*)((u8*)v+off+0xC);
+ if(*(f32*)((u8*)arg0+0x30)<p->z)*(f32*)((u8*)arg0+0x30)=p->z;
+ if(*(f32*)((u8*)arg0+0x2C)<p->y)*(f32*)((u8*)arg0+0x2C)=p->y;
+ if(*(f32*)((u8*)arg0+0x28)<p->x)*(f32*)((u8*)arg0+0x28)=p->x;
+ if(*(f32*)((u8*)arg0+0x3C)>p->z)*(f32*)((u8*)arg0+0x3C)=p->z;
+ if(*(f32*)((u8*)arg0+0x38)>p->y)*(f32*)((u8*)arg0+0x38)=p->y;
+ if(*(f32*)((u8*)arg0+0x34)>p->x)*(f32*)((u8*)arg0+0x34)=p->x;
+ }return arg0;
 }
 
 extern "C" void fn_8019ECC4(void);
@@ -1775,3 +1973,11 @@ extern f32 lbl_80562370;
 typedef void (*VFunc)(void*);
 typedef void (*VFuncArg)(void*, s32);
 extern f32 lbl_805622DC;
+class Fn8019E874Dispatch {
+public:
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
+    virtual void v05(); virtual void v06(); virtual void v07(); virtual void v08(); virtual void v09();
+    virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
+    virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+    virtual Vec* GetVector();
+};
