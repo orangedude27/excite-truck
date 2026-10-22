@@ -20,6 +20,7 @@ extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
 extern void l2cu_create_conn_after_switch(void *p_lcb);
 extern u8 lbl_80392960[];
 extern u8 lbl_803C0D48[];
+extern u8 lbl_803C3C38[];
 extern u8 lbl_803C0B98[];
 extern u32 lbl_8055DCA4;
 extern void fn_80070F90(void *ptr);
@@ -2326,6 +2327,46 @@ s32 fn_80078310(s32 arg0)
     return 0;
 }
 
+void btm_read_rssi_complete(u8 *arg0) {
+    u8 spB[6];
+    u8 spA;
+    u8 sp9;
+    s8 sp8;
+    void (*callback)(s8 *);
+    s32 i;
+    u16 handle;
+    u8 value;
+    u8 status;
+    u8 *entry;
+
+    entry = lbl_803C0F78 + 0x34;
+    callback = *(void (**)(s8 *))(lbl_803C0F78 + 0x5E0);
+    fn_80070F90(lbl_803C0F78 + 0x5C8);
+    *(void (**)(s8 *))(lbl_803C0F78 + 0x5E0) = 0;
+    if (callback != 0) {
+        status = arg0[0];
+        sp9 = status;
+        if (status == 0) {
+            sp8 = 0;
+            value = arg0[3];
+            spA = value;
+            handle = (u16)(arg0[1] + (arg0[2] << 8));
+            if (lbl_803C0F78[0x27C0] >= 4) {
+                fn_8007096C(0xD0003, lbl_80315FBC, (u16)(s8)value, 0);
+            }
+            for (i = 0; i < 4; i++, entry += 0x11C) {
+                if (entry[0x119] != 0 && handle == *(u16 *)entry) {
+                    memcpy(&spB, entry + 8, 6);
+                    break;
+                }
+            }
+        } else {
+            sp8 = 0xA;
+        }
+        callback(&sp8);
+    }
+}
+
 void btm_chg_all_acl_pkt_types(BOOLEAN start) {
     u8 *cb = lbl_803C0F78;
     u8 *p = cb + 0x34;
@@ -3678,6 +3719,36 @@ void btm_sec_update_clock_offset(UINT16 handle, UINT16 clock_offset) {
             *(UINT16 *)inq = clock_offset;
         }
     }
+}
+
+u8 btm_sec_start_authorization(u8 *p) {
+    u8 *peer;
+    u8 *remote = 0;
+    u8 status;
+    u8 flag = 0;
+    u8 result;
+    if ((p[0x76] & 8) == 0 && *(u16 *)(p + 0x18) == 0xFFFF) {
+        if (*(u32 *)(lbl_803C0F78 + 0x190C) == 0)
+            return 4;
+        peer = *(u8 **)p;
+        if (peer != 0) {
+            remote = p[0x80] ? peer + 0x10 : peer + 0x26;
+            flag = peer[0xF];
+        }
+        p[0x7F] = 4;
+        result = (*(u8 (**)(void *, void *, void *, void *, u8, u8))(lbl_803C0F78 + 0x190C))(p + 0x1C, p + 0x22, p + 0x35, remote, flag, p[0x80]);
+        if (result == 0) {
+            status = p[0x76];
+            p[0x7F] = 0;
+            p[0x76] = status | 1;
+        }
+        return result;
+    }
+    status = p[0x7F];
+    p[0x7F] = 3;
+    if (btm_initiate_rem_name(p + 0x1C, 0, 2, 0x1E, 0) != 1)
+        p[0x7F] = status;
+    return 1;
 }
 
 void btm_sec_collision_timeout(void) {
