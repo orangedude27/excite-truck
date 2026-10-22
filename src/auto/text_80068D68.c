@@ -1926,10 +1926,10 @@ void bta_hh_api_disc_act(void *arg0, void *arg1) {
 extern void fn_8006CF80();
 void bta_hh_open_cmpl_act(void *arg0, void *arg1) {
     u8 local[8];
-    u8 handle;
-    u8 status;
     u8 *dev = arg0;
     u8 *cb;
+    u8 handle;
+    u8 status;
     if (arg1 != 0) handle = (u8)*(u16 *)((u8 *)arg1 + 6);
     else handle = dev[0x16];
     memset(local, 0, 8);
@@ -1945,9 +1945,7 @@ void bta_hh_open_cmpl_act(void *arg0, void *arg1) {
         if ((u8)status != 0) {
             local[6] = 8;
             (*(void (**)(u32, void *))(cb + 0x224))(2, local);
-        } else {
-            *(u16 *)(dev + 0x10) = 2;
-        }
+        } else *(u16 *)(dev + 0x10) = 2;
     } else {
         dev[0x1A] = 1;
         (*(void (**)(u32, void *))(cb + 0x224))(2, local);
