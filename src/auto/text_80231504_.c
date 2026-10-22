@@ -288,7 +288,70 @@ void fn_802339A8(f32 a, s32 b, f32 c, s32 d, f32 e, f32 f, s32 g, f32 h, const c
     vsprintf(buffer, fmt, args);
     fn_80232DF4((u8 *)buffer, b, d, g, a, c, f, e, h);
 }
-#pragma pop
+
+extern void fn_80231380(void *, s32, f32, f32, f32, f32, f32);
+extern void fn_802C8DB8(void *, s32, u16 *, s32, s32, s32, s32, s32);
+extern u16 lbl_802F9FF0[];
+void fn_80233AA4(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
+    u8 *entry;
+    u16 values[6];
+
+    if (arg1 != 0x20) {
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + arg1 * 0x1C;
+        fn_80231380(&values[0], lbl_8055F050, farg0, farg1, farg4,
+                    *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + arg1 * 0x1C;
+        fn_80231380(&values[2], lbl_8055F050, farg2, farg3, farg4,
+                    *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + arg1 * 0x1C;
+        fn_80231380(&values[4], lbl_8055F050, farg0, farg3, farg4,
+                    *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
+        entry = *(u8 **)((u8 *)arg0 + 0x10) + arg1 * 0x1C;
+        fn_80231380(&values[6], lbl_8055F050, farg2, farg3, farg4,
+                    *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
+        values[0] = lbl_802F9FF0[0];
+        values[1] = lbl_802F9FF0[1];
+        values[2] = lbl_802F9FF0[2];
+        values[3] = lbl_802F9FF0[3];
+        values[4] = lbl_802F9FF0[4];
+        values[5] = lbl_802F9FF0[5];
+        fn_802C8DB8(&values[0], 4, &values[0], 6,
+                    lbl_802F9FF0[1], lbl_802F9FF0[2], lbl_802F9FF0[3], lbl_802F9FF0[4]);
+    }
+}
+
+extern f32 lbl_80563688;
+extern f64 lbl_80563698;
+#pragma scheduling invalid_target
+void fn_80233BF0(u8 *arg0, u8 *arg1, f32 *arg2, f32 *arg3, s32 arg4, f32 farg0, f32 farg1) {
+    u32 code;
+    f32 value;
+
+    if (arg4 & 1) {
+        u8 first = arg0[0];
+        if ((first & 0xF0) == 0xE0) {
+            code = ((first & 0x0F) << 12) | ((arg0[1] & 0x3F) << 6) | (arg0[2] & 0x3F);
+        } else if ((first & 0xE0) == 0xC0) {
+            code = ((first & 0x1F) << 6) | (arg0[1] & 0x3F);
+        } else {
+            code = first & 0x7F;
+        }
+        *arg2 -= *(f32 *)(*(u8 **)(arg1 + 0x10) + (code & 0xFFFF) * 0x1C);
+    } else if (arg4 & 2) {
+        *arg2 -= farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1);
+    } else if (arg4 & 4) {
+        *arg2 -= farg0 * fn_8023293C((s32)arg1, (char *)arg0, farg1) * lbl_80563688;
+    }
+    value = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
+    if (arg4 & 8) {
+        *arg3 -= value * ((f32)arg1[4] * farg0);
+    } else if (arg4 & 0x20) {
+        *arg3 -= value * ((f32)arg1[6] * farg0);
+    } else if (arg4 & 0x10) {
+        *arg3 -= value * ((f32)arg1[4] * farg0) * lbl_80563688;
+    }
+}
+#pragma scheduling on
 void fn_80233DD8(s32 *arg0, s32 arg1) {
     s32 temp_r31 = fn_8022EDC4();
     lbl_8055F050 = fn_80230B9C(arg1);
@@ -308,6 +371,30 @@ void fn_80233E80(s32 *arg0, s32 arg1) {
 
 void fn_80233EBC(void) {
     fn_802C8D74();
+}
+
+extern u16 lbl_802F9FFC[];
+void fn_80233EC0(void *arg0, s32 arg1, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4, f32 farg5) {
+    register void *object = arg0;
+    register s32 font = lbl_8055F050;
+    u8 out3[0x18], out2[0x18], out1[0x18], out0[0x18];
+    u16 values[6];
+    u8 *entry;
+
+    if (arg1 != 0x20) {
+        entry = *(u8 **)((u8 *)object + 0x10) + arg1 * 0x1C;
+        fn_80231380(out0, font, farg0, farg1, farg2, *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x18));
+        entry = *(u8 **)((u8 *)object + 0x10) + arg1 * 0x1C;
+        fn_80231380(out1, font, farg3, farg1, farg2, *(f32 *)(entry + 0xC), *(f32 *)(entry + 0x10));
+        entry = *(u8 **)((u8 *)object + 0x10) + arg1 * 0x1C;
+        fn_80231380(out2, font, farg0, farg4, farg5, *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x18));
+        entry = *(u8 **)((u8 *)object + 0x10) + arg1 * 0x1C;
+        fn_80231380(out3, font, farg3, farg4, farg5, *(f32 *)(entry + 0x14), *(f32 *)(entry + 0x10));
+        values[0] = lbl_802F9FFC[0]; values[1] = lbl_802F9FFC[1];
+        values[2] = lbl_802F9FFC[2]; values[3] = lbl_802F9FFC[3];
+        values[4] = lbl_802F9FFC[4]; values[5] = lbl_802F9FFC[5];
+        fn_802C8DB8(out0, 4, values, 6, lbl_802F9FFC[1], lbl_802F9FFC[2], lbl_802F9FFC[3], lbl_802F9FFC[4]);
+    }
 }
 
 void fn_8023441C(const char *arg0) {
@@ -409,3 +496,5 @@ extern void *fn_801284F8(s32, const char *);
 extern char lbl_8034044C[];
 extern char lbl_80340488[];
 extern char lbl_803404C0[];
+typedef struct { const char *name; f32 scale; u8 pad[4]; s32 font; s32 glyph; f32 offset; } GlyphCommand;
+typedef struct { u8 pad[0x10]; GlyphCommand *glyphs; } DrawContext;
