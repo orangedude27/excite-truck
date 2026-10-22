@@ -1621,6 +1621,8 @@ extern "C" void* FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char*
 extern "C" int fn_800D58F0(const char*, const char*);
 extern "C" const char lbl_8031E8FC[];
 extern "C" const char lbl_8031E8D8[];
+extern "C" const char lbl_8031F1D8[];
+extern "C" const char lbl_8031F1FC[];
 extern "C" int FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char* name, bool recursive) {
     struct V { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual int find(const char*, bool); };
     void* data = *(void**)((char*)self + 0x28);
