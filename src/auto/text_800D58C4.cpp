@@ -87,6 +87,7 @@ struct PaneAnimVTable {
     virtual void v3();
 };
 struct PaneAnimObject : PaneAnimVTable {};
+struct PaneAnimRet { virtual void f0(); virtual void f1(); virtual void f2(); virtual void* f3(); };
 struct StateObject_800D6CA0 { virtual void v0(); virtual void v1(); virtual void* v2(); };
 struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
 extern "C" s32 lbl_8055DE08;
@@ -344,6 +345,46 @@ extern "C" void fn_800D6EEC(void* arg0) {
     *(volatile u8*)(p + 0x20) = 0;
 }
 
+#pragma dont_inline on
+extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor(void *self, const void *resource, void *accessor) {
+    const char *msg=lbl_8031F728;
+    int id=0x70616931;
+    void *result=0;
+    if (lbl_8055DDF0==0) Panic__Q26nw4hbm2dbFPCciPCce(msg,0x127,msg+0x10);
+    if (resource==0) Panic__Q26nw4hbm2dbFPCciPCce(msg,0x128,msg+0xDC);
+    if (fn_800D591C((void *)resource)==0) return 0;
+    unsigned short count=*(unsigned short *)((char *)resource+6);
+    if (count!=8) Panic__Q26nw4hbm2dbFPCciPCce(msg,0x137,msg+0x6C,count>>8,count&0xFF,0,8);
+    char *block=(char *)resource+*(unsigned short *)((char *)resource+0xC);
+    int i=0;
+    do {
+        if (*(int *)block==id) {
+            int tag=*(int *)resource;
+            switch(tag) {
+            case 0x524C5450: case 0x524C4D43: case 0x524C414E: case 0x524C5041:
+            case 0x524C5643: case 0x524C5453: case 0x524C5649: {
+                void *obj=(void *)MEMAllocFromAllocator(lbl_8055DDF0,0x20);
+                if (obj) obj=(void *)fn_800D4428();
+                else { Warning__Q26nw4hbm2dbFPCciPCce(msg,0x2F,msg+0xC8); obj=0; }
+                if (obj) {
+                    ((void (*)(void *,void *,void *))(*(void ***)obj)[3])(obj,block,accessor);
+                    result=obj;
+                }
+                break;
+            }
+            }
+            if (result) {
+                void *it=(char *)self+8;
+                Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self+4,(void **)&it,(char *)result+4);
+            }
+        }
+        int size=*(int *)(block+4);
+        block+=size;
+        i++;
+    } while(i<*(unsigned short *)((char *)resource+0xE));
+    return result;
+}
+#pragma dont_inline reset
 extern "C" void fn_800D7698(void *arg0, int arg1) {
     struct Obj {
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
