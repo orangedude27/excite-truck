@@ -8150,12 +8150,14 @@ void homebutton::HomeButton::updateTrigPane() {
     case 0: {
         s32 i = 0;
         do {
-            HomeButtonPaneAccessor *access = *(HomeButtonPaneAccessor **)((u8 *)this + 0x1E0);
-            PaneSearch *search = *(PaneSearch **)((u8 *)this + 0x1F8);
             if (i < 2 || i == 9) {
-                search->getPane(access->lookup->findPane(lbl_8031E218[i], 1))->setTrigger(1);
+                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
+                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+                )->setTrigger(1);
             } else {
-                search->getPane(access->lookup->findPane(lbl_8031E218[i], 1))->setTrigger(0);
+                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
+                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+                )->setTrigger(0);
             }
             ++i;
         } while (i < 10);
@@ -8164,12 +8166,14 @@ void homebutton::HomeButton::updateTrigPane() {
     case 1: {
         s32 i = 0;
         do {
-            HomeButtonPaneAccessor *access = *(HomeButtonPaneAccessor **)((u8 *)this + 0x1E0);
-            PaneSearch *search = *(PaneSearch **)((u8 *)this + 0x1F8);
             if ((i > 0 && i < 7) || i == 9) {
-                search->getPane(access->lookup->findPane(lbl_8031E218[i], 1))->setTrigger(1);
+                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
+                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+                )->setTrigger(1);
             } else {
-                search->getPane(access->lookup->findPane(lbl_8031E218[i], 1))->setTrigger(0);
+                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
+                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+                )->setTrigger(0);
             }
             ++i;
         } while (i < 10);
@@ -8178,12 +8182,14 @@ void homebutton::HomeButton::updateTrigPane() {
     case 2: {
         s32 i = 0;
         do {
-            HomeButtonPaneAccessor *access = *(HomeButtonPaneAccessor **)((u8 *)this + 0x1E0);
-            PaneSearch *search = *(PaneSearch **)((u8 *)this + 0x1F8);
             if (i < 7 || i == 9) {
-                search->getPane(access->lookup->findPane(lbl_8031E218[i], 1))->setTrigger(0);
+                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
+                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+                )->setTrigger(0);
             } else {
-                search->getPane(access->lookup->findPane(lbl_8031E218[i], 1))->setTrigger(1);
+                (*(PaneSearch **)((u8 *)this + 0x1F8))->getPane(
+                    ((HomeButtonPaneAccessor *)(*(void **)((u8 *)this + 0x1E0)))->lookup->findPane(lbl_8031E218[i], 1)
+                )->setTrigger(1);
             }
             ++i;
         } while (i < 10);
