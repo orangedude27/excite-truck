@@ -9016,6 +9016,7 @@ void sdp_connect_ind(u8 *addr, u16 cid, u16 psm, u8 status) {
     }
 }
 
+/* Match note: preserve status, log base, and handle locals to reproduce target registers. */
 void sdp_connect_cfm(u16 cid, u16 result) {
     extern tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16);
     extern char lbl_8031A188[];
