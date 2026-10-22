@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern "C" char lbl_80333640[];
+extern "C" void* fn_801284F8(s32, const char*);
 extern "C" void fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
 class VTab1A1E7C {
