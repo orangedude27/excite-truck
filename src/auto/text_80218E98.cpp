@@ -168,6 +168,7 @@ extern f32 lbl_805634A4;
 extern "C" f32 lbl_805634A8;
 extern "C" void fn_802C5280(void *, s32, s32, s32, s32, void *);
 extern char lbl_8033D878[];
+extern "C" void *lbl_8033E770[];
 extern char lbl_8033F768[];
 extern "C" u32 *fn_80216708(void);
 extern "C" s32 fn_80218F34(void *, s32, s32, s32, s32, s32);
@@ -2649,23 +2650,21 @@ extern "C" void fn_80224864(void *arg0) {
 extern "C" void fn_802248FC(void *arg0) {
     u8 *p = (u8 *)arg0;
     if (*(s32 *)(p + 0x280) == 0) return;
-    if (p[0x1B] == 0) {
+    if (p[0x1B] == 0)
         *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = lbl_805634C4;
-    } else if (p[0x260] != 0) {
+    else if (p[0x260] != 0)
         *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = *(f32 *)(p + 0x268);
-    } else {
-        *(f32 *)(*(u8 **)(p + 0x284) + 0x30) =
-            (*(s32 *)(p + 0x248) == 1) ? lbl_805634A4 : lbl_805634A8;
-    }
+    else
+        *(f32 *)(*(u8 **)(p + 0x284) + 0x30) = (*(s32 *)(p + 0x248) == 1) ? lbl_805634A4 : lbl_805634A8;
     fn_8022EEF8(*(void **)(p + 0x288), fn_8022EDC4(), (s32)*(u32 *)(p + 0x284));
     fn_8022ED00(*(void **)(p + 0x288));
-    s32 delta = *(s32 *)(p + 0x10) - *(s32 *)(p + 8);
+    s32 rem = *(s32 *)(p + 0x10) - *(s32 *)(p + 8);
     s32 divisor = fn_802C51AC(*(s32 *)(p + 0x280));
-    s32 val = *(s32 *)(p + 0x244);
-    s32 rem = val % divisor;
+    s32 value = *(s32 *)(p + 0x244);
+    s32 delta = value % divisor;
     s32 got = ((Vf78x *)arg0)->get();
-    fn_802C5320(*(s32 *)(p + 0x280), rem, *(f32 *)(p + 0x270),
-        *(f32 *)(p + 0x274), lbl_805634A8, (f32)got, (f32)delta);
+    fn_802C5320(*(s32 *)(p + 0x280), delta, *(f32 *)(p + 0x270),
+        *(f32 *)(p + 0x274), lbl_805634A8, (f32)got, (f32)rem);
     fn_8022EDB8();
 }
 
