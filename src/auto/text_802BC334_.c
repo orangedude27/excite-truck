@@ -417,6 +417,20 @@ void fn_802BD018(void *arg0) {
         *(void **)arg0 = 0;
     }
 }
+
+int fn_802BD070(void *arg0) {
+    void *obj = *(void **)arg0;
+    if (obj) {
+        if (obj) {
+            *(int *)obj = 0;
+            ((int *)obj)[1] = 0;
+            ((int *)obj)[2] = 0;
+            fn_80128668(obj);
+        }
+        *(void **)arg0 = 0;
+    }
+}
+
 #pragma pop
 long __dt__Q36nw4hbm3snd18MemorySoundArchiveFv_802BDCFC(long arg0, long arg1) {
     if (arg0 != 0) {
