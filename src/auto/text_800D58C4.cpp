@@ -84,6 +84,8 @@ struct PaneAnimVTable {
     virtual void v3();
 };
 struct PaneAnimObject : PaneAnimVTable {};
+struct StateObject_800D6CA0 { virtual void v0(); virtual void v1(); virtual void* v2(); };
+struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
 struct PaneAnimLink {
     PaneAnimLink* next;
     void* unk4;
@@ -421,6 +423,47 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
         *(f32*)&((u8*)pOut)[4] = z;
         *(f32*)&((u8*)pOut)[8] = *(f32*)&p[0x18];
         *(f32*)&((u8*)pOut)[0xC] = *(f32*)&p[0x1C];
+    }
+}
+
+extern "C" void* __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void*, const void*);
+extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
+extern "C" void* __ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
+extern "C" void* __ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
+extern "C" void* fn_800D57AC(void*, const void*, const void*);
+extern "C" const char lbl_8031F728[];
+extern "C" const char lbl_8031F854[];
+extern "C" void* BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32 kind, const void* pane, const ResBlockSetTmp* set) {
+    void* obj;
+    ResBlockSetTmp tmp;
+    switch (kind) {
+    case 0x70616E31:
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
+        if (!obj) return 0;
+        return __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(obj, pane);
+    case 0x70696331:
+        tmp = *set;
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xEC);
+        if (!obj) return 0;
+        return __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4hbm3lyt11ResBlockSet(obj, pane, &tmp);
+    case 0x74787431:
+        tmp = *set;
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x100);
+        if (!obj) return 0;
+        return __ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4hbm3lyt11ResBlockSet(obj, pane, &tmp);
+    case 0x776E6431:
+        tmp = *set;
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0x104);
+        if (!obj) return 0;
+        return __ct__Q36nw4hbm3lyt6WindowFPCQ46nw4hbm3lyt3res6WindowRCQ36nw4hbm3lyt11ResBlockSet(obj, pane, &tmp);
+    case 0x626E6431:
+        tmp = *set;
+        obj = (void*)MEMAllocFromAllocator(lbl_8055DDF0, 0xD4);
+        if (!obj) return 0;
+        return fn_800D57AC(obj, pane, &tmp);
+    default:
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F728, 0x1F7, lbl_8031F854);
+        return 0;
     }
 }
 
