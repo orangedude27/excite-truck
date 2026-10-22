@@ -2016,6 +2016,17 @@ extern "C" void fn_8015CF00(void* self) {
     }
 }
 
+extern "C" f32 fn_8015CFFC(void *a,s32 b){u8*p=(u8*)a;int changed=0,i=0;f32 result;
+if(*(void**)(p+0x278)){int v=*(s32*)(p+0x270)+*(s32*)(p+0x26c);*(s32*)(p+0x270)=v;if(v>0){int n=*(s32*)(p+0x264),ix=n&((-n&~n)>>31);if(ix>=4)ix=4;u8*q=(u8*)*(void**)(p+0x278);f32 x=lbl_802F9478[ix];if(x!=*(f32*)(q+4)){q[0x4e]=1;*(f32*)(q+4)=x;}changed=1;}}
+result=lbl_80561750;
+while(i<*(s32*)(p+0x26c)){++(*(s32*)(p+0x264));++(*(s32*)(p+0x260));*(f32*)(p+0x254)=*(f32*)(p+0x250);*(f32*)(p+0x25c)=result;((void(*)(void*))(*(void***)p)[32])(p);if(*(s32*)(p+0x248)&&*(void**)(p+0x268))*(s32*)(*(u8**)(p+0x268)+8)=0;i++;}
+*(s32*)(p+0x26c)=0;if(changed&&*((u8*)*(void**)(p+0x278)+0x19)==0){(*(s32*)(p+0x270))--;u8*q=(u8*)*(void**)(p+0x278);q[0x49]=1;q[0x4b]=q[0x4a]=0;}
+result=lbl_80561754;
+*(f32*)(p+0x254)=fn_801429D0(result,*(f32*)(p+0x254)-lbl_8056177C);
+if(((s32(*)(void*))fn_8015A404)((void*)(long)b)==0&&((int(*)(void*))(*(void***)p)[37])(p)==0)*(f32*)(p+0x254)=fn_801429D0(*(f32*)(p+0x254),lbl_8056179C);
+int end=0;if(((int(*)(void*))(*(void***)p)[39])(p)){int n=fn_80158D04(a)-1;if(((int(*)(void*))(*(void***)p)[23])(p)==n)end=1;}
+if(fn_80141F7C(*(f32*)(p+0x254))||end){if(*(s32*)(p+0x264)>0)result=((f32(*)(void*,int))fn_8015A368)(a,b);if(!end)fn_8015A318((Unk8015A368C*)a);}else if(*(s32*)(p+0x264)>0)((void(*)(void*))(*(void***)p)[34])(p);return result;}
+
 extern "C" void fn_8015D270(void* arg0, void* arg1) {
     void* sp8;
     s32 temp;
@@ -2717,3 +2728,21 @@ public:
  virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
  virtual void v32(); virtual void v33(); virtual void v34(); virtual s32 v35();
 };
+extern "C" {
+void* fn_80131810(void*); void* fn_80131808(void*); void fn_80131818(void*);
+void fn_801345D8(void*, s32, const char*, s32, void*);
+extern char lbl_8032EAD4[],lbl_8032EAE0[],lbl_8055A030[],lbl_8055A038[],lbl_8055A040[],lbl_8055A044[],lbl_8055A048[],lbl_8055A050[],lbl_8055A054[];
+extern f32 lbl_80561754;
+}
+struct V80157560 {
+ virtual void z0(); virtual void z1(); virtual void z2(); virtual void z3();
+ virtual void z4(); virtual void z5(); virtual void z6(); virtual void z7();
+ virtual void z8(); virtual void z9(); virtual void z10(); virtual void z11();
+ virtual void z12(); virtual void z13(); virtual void z14(); virtual void z15();
+ virtual void z16(); virtual void z17(); virtual void z18(); virtual void z19();
+ virtual void z20(); virtual void z21(); virtual void z22(); virtual void z23();
+ virtual void z24(); virtual void z25(); virtual void z26(); virtual void z27();
+ virtual V80157560* get(s32); virtual s32 test(void*); virtual V80157560* find(void*);
+ virtual s32 num(void*); virtual s32 val(void*); virtual s32 index(void*); virtual f32 flt(const char*);
+};
+struct Arg80157560 { void** v; void* data; s32 count; };
