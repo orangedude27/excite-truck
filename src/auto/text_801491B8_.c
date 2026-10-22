@@ -106,6 +106,15 @@ public:
     virtual void d1();
     virtual s32 d2();
 };
+class Iter_8014E1D0 {
+public:
+    virtual void d0();
+    virtual void *open(char *);
+    virtual int has(char *);
+    virtual void d3();
+    virtual void *next(char *);
+    virtual s32 get(char *, s32);
+};
 #pragma cplusplus off
 extern void fn_802E30C8();
 typedef struct { s32 v[4]; } S4_80149234;
@@ -315,6 +324,48 @@ void fn_80149CEC(void *arg0, void *arg1) {
     *(s32 *)((u8 *)arg0 + 4) = val;
     *(s32 *)((u8 *)arg0 + 0x10) = val - 1;
     fn_80149D64(arg0, arg1, val);
+}
+
+extern f32 fn_80149F00(void *, void *);
+extern s32 fn_801609C4(s32);
+void fn_80149D64(void *arg0, void *arg1, s32 arg2) {
+    int index;
+    f32 rate;
+    int value;
+    int count;
+    void *object;
+    f32 end;
+    if (*(u8 *)((char*)arg0+0x34) != 0) index = 0;
+    else {
+        f32 frame = *(f32*)((char*)arg1+0x14);
+        index = (int)(frame < lbl_80561648 ? frame-lbl_8056163C : lbl_8056163C+frame);
+    }
+    *(int*)arg0 = index;
+    if (fn_80179650() > 1) {
+        rate = fn_80149F00(arg0,arg1);
+        value = *(int*)((char*)arg0+0x10) == 0
+            ? *(int*)((char*)arg0+0x14) + (int)((f32)*(int*)((char*)arg0+0x18) * rate)
+            : 0;
+        if (value != *(int*)((char*)arg0+0x20)) {
+            object = *(void**)((char*)arg1+8);
+            if (object != 0 && *(void**)((char*)object+0x1258) != 0) {
+                char *p = *(char**)((char*)object+0x1258);
+                p[0x49]=1; p[0x4b]=0; p[0x4a]=0;
+            }
+        }
+        *(int*)((char*)arg0+0x20)=value;
+    } else {
+        count = *(int*)((char*)arg0+0x10);
+        value = count >= 0 && count < *(int*)((char*)arg0+0xc)
+            ? *(int*)(*(char**)((char*)arg0+8)+count*4) : 0;
+        *(int*)((char*)arg0+0x20)=value;
+    }
+    object=*(void**)((char*)arg1+0x68);
+    end=*(f32*)((char*)object+0x8dc)-*(f32*)((char*)object+0x8d4);
+    if (end < lbl_80561648) end=lbl_80561648;
+    *(int*)((char*)arg0+0x24)=*(int*)arg0+*(int*)((char*)arg0+0x20);
+    *(int*)((char*)arg0+0x1c)=(int)end;
+    *(int*)((char*)arg0+0x30)=fn_801609C4(*(int*)((char*)arg0+0x24));
 }
 
 f32 fn_80149F00(void *arg0, void *arg1) {
