@@ -5,6 +5,22 @@ void fn_80137F2C(void) {
 
 }
 
+void fn_80137F30(void *arg0) {
+    unsigned char *base = (unsigned char *)arg0;
+    unsigned char a = base[8];
+    unsigned char b = base[9];
+    unsigned char c = base[0xc];
+    unsigned char d = base[0xd];
+    base[8] = base[0xb];
+    base[0xb] = a;
+    base[9] = base[0xa];
+    base[0xa] = b;
+    base[0xc] = base[0xf];
+    base[0xf] = c;
+    base[0xd] = base[0xe];
+    base[0xe] = d;
+}
+
 void fn_80137F74(void *arg0) {
     unsigned char a0 = ((unsigned char *)arg0)[0];
     unsigned char a1 = ((unsigned char *)arg0)[1];
