@@ -20,6 +20,8 @@ extern char lbl_80318090[];
 extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
 extern void l2cu_create_conn_after_switch(void *p_lcb);
 extern u8 lbl_80392960[];
+extern u8 lbl_80393058[];
+extern char lbl_80313238[];
 extern u8 lbl_803C0D48[];
 extern u8 lbl_803C3C38[];
 extern void *l2cu_find_ccb_by_cid(void *, u16);
@@ -874,6 +876,44 @@ void gki_timers_init(void) {
 s32 fn_8006E4F8(void) {
     u8 *base = (u8 *)&lbl_803946C0 + 0x30000;
     return *(s32 *)(base - 0x77D8);
+}
+
+void GKI_start_timer(UINT8 tnum, INT32 ticks, BOOLEAN is_continuous) {
+    UINT8 task_id;
+    INT32 repeat;
+    INT32 total;
+    INT32 start;
+    INT32 end;
+    u8 *base;
+
+    task_id = GKI_get_taskid();
+    if (ticks <= 0)
+        ticks = 1;
+    repeat = ticks & ((-(INT32)is_continuous | (INT32)is_continuous) >> 31);
+    GKI_disable();
+
+    base = (u8 *)&lbl_803946C0 + 0x30000;
+    start = *(INT32 *)(base - 0x77C8);
+    end = *(INT32 *)(base - 0x77C4);
+    total = end - start;
+    if ((INT32)(0x7fffffff - total) > ticks)
+        total += ticks;
+    else
+        total = 0x7fffffff;
+
+    if (tnum == 0) {
+        *(INT32 *)(base - 0x7780 + ((task_id & 0xff) << 2)) = repeat;
+        *(INT32 *)(base - 0x77A0 + ((task_id & 0xff) << 2)) = total;
+    } else if (tnum == 1) {
+        *(INT32 *)(base - 0x7740 + ((task_id & 0xff) << 2)) = repeat;
+        *(INT32 *)(base - 0x7760 + ((task_id & 0xff) << 2)) = total;
+    }
+
+    if (tnum > 1 && ticks > 0 && (end == 0 || (ticks < start && start > 0))) {
+        *(INT32 *)(base - 0x77C4) = ticks + (end - start);
+        *(INT32 *)(base - 0x77C8) = ticks;
+    }
+    GKI_enable();
 }
 
 void GKI_stop_timer(UINT8 tnum) {
@@ -3415,6 +3455,10 @@ void bta_dm_auth_reply(void *arg0) {
     }
 }
 
+void bta_dm_search_start(void *arg0) {
+    BTM_ClearInqDb(0);
+}
+
 void bta_dm_search_cancel(void) {
     BTM_ClearInqDb(0);
     if (((u16 (*)(void))fn_8007B340)() != 0) {
@@ -5371,6 +5415,37 @@ void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
             record[0x10] = 0;
         }
     }
+}
+
+extern char lbl_8031799C[];
+void hidh_proc_repage_timeout(TIMER_LIST_ENT *p_tle) {
+    UINT32 handle = p_tle->param;
+    UINT8 index = (UINT8)handle;
+    UINT8 *dev = lbl_803C3C38 + index * 0x34;
+    UINT16 cid;
+    UINT32 dhandle;
+    void (**callback)(UINT8, UINT32, UINT8, void *) =
+        (void (**)(UINT8, UINT32, UINT8, void *))(lbl_803C3C38 + 0x340);
+    if (dev[0x10] == 0) {
+        *(UINT16 *)(dev + 0x14) = 0;
+        *(UINT16 *)(dev + 0x16) = 0;
+        *(UINT16 *)(dev + 0x1A) = 0x100;
+        dev[0x11] = 1;
+        cid = L2CA_ConnectReq(0x11, dev + 1);
+        *(UINT16 *)(dev + 0x14) = cid;
+        if (cid == 0) {
+            if (lbl_803C3C38[0x401] >= 2)
+                fn_8007093C(0x1E0001, lbl_8031799C);
+            dhandle = (dev - lbl_803C3C38) / 0x34;
+            (*callback)(dhandle, 1, 0xE, 0);
+        } else {
+            dev[0x10] = 1;
+        }
+    }
+    handle = p_tle->param;
+    dev = lbl_803C3C38 + handle * 0x34;
+    dev[0xC]++;
+    (*callback)(handle, 2, dev[0xC], 0);
 }
 
 extern char lbl_80317CC8[];
