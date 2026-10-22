@@ -625,6 +625,38 @@ void *WUDiGetDevInfo(u8 *addr) {
     return result;
 }
 
+void WUDiMoveTopSmpDevInfoPtr(void *arg0, void *arg1) {
+    u8 *base = lbl_80392960;
+    u8 *node;
+    u8 *entry;
+    s32 i;
+    BOOL enabled = OSDisableInterrupts();
+
+    for (i = 0, node = base; i < 6; i++, node += 0xC) {
+        if (memcmp(*(u8 **)(node + 0x1C) + 0x40, (u8 *)arg0 + 0x40, 6) == 0) {
+            entry = base + i * 0xC;
+            if (memcmp(*(u8 **)(*(void **)(base + 0x14)) + 0x40,
+                       *(u8 **)(entry + 0x1C) + 0x40, 6) != 0) {
+                u8 *next = *(u8 **)(entry + 0x24);
+                u8 *prev = *(u8 **)(entry + 0x20);
+                *(u8 **)(prev + 8) = next;
+                if (memcmp(*(u8 **)(*(void **)(base + 0x18)) + 0x40,
+                           *(u8 **)(entry + 0x1C) + 0x40, 6) == 0) {
+                    *(u8 **)(base + 0x18) = prev;
+                } else {
+                    *(u8 **)(next + 4) = prev;
+                }
+                *(u8 **)(entry + 0x24) = *(u8 **)(base + 0x14);
+                *(u8 **)(*(u8 **)(base + 0x14) + 4) = entry + 0x1C;
+                *(u8 **)(base + 0x14) = entry + 0x1C;
+                *(u8 **)(entry + 0x20) = 0;
+            }
+            break;
+        }
+    }
+    OSRestoreInterrupts(enabled);
+}
+
 extern void *lbl_80319994;
 extern u16 lbl_80394680[];
 extern u32 lbl_80393628[];
@@ -3767,6 +3799,31 @@ void btu_hcif_hdl_command_complete(UINT16 opcode, UINT8 *param2, UINT16 param3) 
         }
     }
     if ((opcode & 0xFC00) == 0xFC00) btm_vsc_complete(param2, opcode, param3, (tBTM_CMPL_CB *)opcode);
+}
+
+void btu_hcif_command_complete_evt(UINT8 *p, UINT16 len) {
+    UINT16 opcode;
+    UINT16 queued_opcode;
+    void *buf;
+    *(UINT16 *)(lbl_803C0A50 + 0x80) = p[0];
+    opcode = (UINT16)(p[1] + (p[2] << 8));
+    if (opcode != 0xC03 && opcode != 0xC35 && opcode != 0) {
+        buf = GKI_dequeue((BUFFER_Q *)(lbl_803C0A50 + 0x70));
+        if (buf != 0) {
+            queued_opcode = (UINT16)(((UINT8 *)buf)[8] + (((UINT8 *)buf)[9] << 8));
+            if (opcode == 0xFC4C && queued_opcode != opcode) {
+                GKI_enqueue_head((BUFFER_Q *)(lbl_803C0A50 + 0x70), buf);
+                return;
+            }
+            GKI_freebuf(buf);
+        }
+        if (fn_8006DF84(lbl_803C0A50 + 0x70) == 0)
+            btu_start_timer((TIMER_LIST_ENT *)(lbl_803C0A50 + 0x4C), 0x3C, 8);
+        else
+            fn_80070F90(lbl_803C0A50 + 0x4C);
+    }
+    btu_hcif_hdl_command_complete(opcode, p + 3, len - 3);
+    btu_hcif_send_cmd(0);
 }
 
 extern void l2c_link_role_change_failed(void);
