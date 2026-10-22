@@ -8851,4 +8851,3 @@ extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern void* lbl_804077C0;
 extern "C" void fn_800A71D0(void *, s32);
-struct Fn800C0B68Context { u8 pad[0xC]; u32 bitIndex; s32 limit; };
