@@ -79,7 +79,7 @@ extern "C" s32 fn_800A98B8(void *arg0, s32 arg1, s32 arg2, void *arg3);
 extern "C" s32 fn_800A95B4(void *arg0);
 extern "C" s32 fn_800AF574(void *arg0);
 extern "C" s32 fn_800AAC08(void *arg0);
-extern "C" s32 fn_800AA924(void *arg0, void *arg1);
+extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 *arg6, s32 *arg7);
 extern "C" s32 fn_800A7090(void);
 extern "C" s32 fn_800A7610(void *);
 extern "C" s32 fn_800A76A0(void *);
