@@ -4433,6 +4433,96 @@ s32 fn_800BEE64(void *arg0, s32 arg1) {
     return 0;
 }
 
+extern "C" s32 fn_800BDEB4(const u8 *, s32, u32 *);
+extern "C" void fn_800C0B68(void *arg0, s32 arg1, const u8 *arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
+    s32 index = arg4;
+    s16 *out = arg3 + arg4;
+    u32 *bitIndex = (u32 *)((u8 *)arg0 + 0xC);
+
+    do {
+        index += 4;
+        out += 4;
+        if (index < arg1) {
+            u16 bits = fn_800BDEB4(arg2, 4, bitIndex);
+            s32 v0 = (s16)((~bits >> 3) & 1);
+            s32 v1 = (s16)((~bits >> 2) & 1);
+            s32 v2 = (s16)((~bits >> 1) & 1);
+            s32 v3 = (s16)(~bits & 1);
+            s32 cursor;
+            s32 byteIndex;
+            s32 bit;
+            s32 count;
+            s32 i;
+
+            if (v0 != 0) {
+                cursor = *bitIndex;
+                *bitIndex = cursor + 1;
+                byteIndex = (cursor >> 3) & 0x1FFF;
+                bit = 7 - (cursor & 7);
+                if (((s32)arg2[byteIndex] >> bit) & 1)
+                    v0 = -v0;
+            }
+            if (v1 != 0) {
+                cursor = *bitIndex;
+                *bitIndex = cursor + 1;
+                byteIndex = (cursor >> 3) & 0x1FFF;
+                bit = 7 - (cursor & 7);
+                if (((s32)arg2[byteIndex] >> bit) & 1)
+                    v1 = -v1;
+            }
+            if (v2 != 0) {
+                cursor = *bitIndex;
+                *bitIndex = cursor + 1;
+                byteIndex = (cursor >> 3) & 0x1FFF;
+                bit = 7 - (cursor & 7);
+                if (((s32)arg2[byteIndex] >> bit) & 1)
+                    v2 = -v2;
+            }
+            if (v3 != 0) {
+                cursor = *bitIndex;
+                *bitIndex = cursor + 1;
+                byteIndex = (cursor >> 3) & 0x1FFF;
+                bit = 7 - (cursor & 7);
+                if (((s32)arg2[byteIndex] >> bit) & 1)
+                    v3 = -v3;
+            }
+            out[0] = (s16)v0;
+            out[1] = (s16)v1;
+            out[2] = (s16)v2;
+            out[3] = (s16)v3;
+
+            if ((s32)*bitIndex > M2C_FIELD(arg0, s32 *, 0x10)) {
+                if (arg5 == 1 && *arg6 == 0)
+                    *arg6 = (s16)index;
+
+                if (index < arg1) {
+                    count = (arg1 + 3 - index) >> 2;
+                    out = arg3 + index;
+                    for (i = 0; i < (count >> 3); i++) {
+                        out[0] = 0; out[1] = 0; out[2] = 0; out[3] = 0;
+                        out[4] = 0; out[5] = 0; out[6] = 0; out[7] = 0;
+                        out[8] = 0; out[9] = 0; out[10] = 0; out[11] = 0;
+                        out[12] = 0; out[13] = 0; out[14] = 0; out[15] = 0;
+                        out[16] = 0; out[17] = 0; out[18] = 0; out[19] = 0;
+                        out[20] = 0; out[21] = 0; out[22] = 0; out[23] = 0;
+                        out[24] = 0; out[25] = 0; out[26] = 0; out[27] = 0;
+                        out[28] = 0; out[29] = 0; out[30] = 0; out[31] = 0;
+                        out += 32;
+                    }
+                    count &= 7;
+                    for (i = 0; i < count; i++) {
+                        out[0] = 0; out[1] = 0; out[2] = 0; out[3] = 0;
+                        out += 4;
+                    }
+                }
+                break;
+            }
+        } else {
+            break;
+        }
+    } while (1);
+}
+
 u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     u32 bits = *arg2;
     u32 index = (bits >> 3) & 0x1FFF;
@@ -4553,6 +4643,28 @@ extern "C" void fn_800C2090(volatile s32 *dst, const volatile s32 *a, const vola
     dst[0x3C0] = -(a[15] + b[15]);
     dst[0x400] = a[16] + b[16];
     dst[0x440] = -(a[17] + b[17]);
+}
+
+extern "C" s32 lbl_8031D670[];
+extern "C" void fn_800C2590(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
+    arg2[0] = arg1[0] + (s32)(((s64)arg0[0] * (s64)lbl_8031D670[0]) >> 20);
+    *(s32 *)((u8 *)arg3 - 0) = *(s32 *)((u8 *)arg1 + 68) + (s32)(((s64)arg0[0] * (s64)lbl_8031D670[1]) >> 20);
+    arg2[64] = arg1[1] + (s32)(((s64)arg0[1] * (s64)lbl_8031D670[2]) >> 20);
+    *(s32 *)((u8 *)arg3 - 256) = *(s32 *)((u8 *)arg1 + 64) + (s32)(((s64)arg0[1] * (s64)lbl_8031D670[3]) >> 20);
+    arg2[128] = arg1[2] + (s32)(((s64)arg0[2] * (s64)lbl_8031D670[4]) >> 20);
+    *(s32 *)((u8 *)arg3 - 512) = *(s32 *)((u8 *)arg1 + 60) + (s32)(((s64)arg0[2] * (s64)lbl_8031D670[5]) >> 20);
+    arg2[192] = arg1[3] + (s32)(((s64)arg0[3] * (s64)lbl_8031D670[6]) >> 20);
+    *(s32 *)((u8 *)arg3 - 768) = *(s32 *)((u8 *)arg1 + 56) + (s32)(((s64)arg0[3] * (s64)lbl_8031D670[7]) >> 20);
+    arg2[256] = arg1[4] + (s32)(((s64)arg0[4] * (s64)lbl_8031D670[8]) >> 20);
+    *(s32 *)((u8 *)arg3 - 1024) = *(s32 *)((u8 *)arg1 + 52) + (s32)(((s64)arg0[4] * (s64)lbl_8031D670[9]) >> 20);
+    arg2[320] = arg1[5] + (s32)(((s64)arg0[5] * (s64)lbl_8031D670[10]) >> 20);
+    *(s32 *)((u8 *)arg3 - 1280) = *(s32 *)((u8 *)arg1 + 48) + (s32)(((s64)arg0[5] * (s64)lbl_8031D670[11]) >> 20);
+    arg2[384] = arg1[6] + (s32)(((s64)arg0[6] * (s64)lbl_8031D670[12]) >> 20);
+    *(s32 *)((u8 *)arg3 - 1536) = *(s32 *)((u8 *)arg1 + 44) + (s32)(((s64)arg0[6] * (s64)lbl_8031D670[13]) >> 20);
+    arg2[448] = arg1[7] + (s32)(((s64)arg0[7] * (s64)lbl_8031D670[14]) >> 20);
+    *(s32 *)((u8 *)arg3 - 1792) = *(s32 *)((u8 *)arg1 + 40) + (s32)(((s64)arg0[7] * (s64)lbl_8031D670[15]) >> 20);
+    arg2[512] = arg1[8] + (s32)(((s64)arg0[8] * (s64)lbl_8031D670[16]) >> 20);
+    *(s32 *)((u8 *)arg3 - 2048) = *(s32 *)((u8 *)arg1 + 36) + (s32)(((s64)arg0[8] * (s64)lbl_8031D670[17]) >> 20);
 }
 
 void fn_800C2A88(s32 *a, s32 *b, s32 *c, s32 *d) {
