@@ -10,7 +10,7 @@ extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
 typedef int s32;
 #pragma cplusplus on
-struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); };
+struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
@@ -142,6 +142,31 @@ void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Cha
   channel=next;
   if(channel==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x1e7,base+0x10c);
  }
+}
+
+extern "C" unsigned short ReadNextCharUTF16__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
+    void *reader=arg0;
+    const char *base=lbl_80328030;
+    int temp_r11,temp_r6,var_r10,var_r10_2,var_r4,var_r5,var_r5_2,var_r6,var_r7,var_r7_2,var_r8,var_r8_2,var_r9,var_r9_2;
+    unsigned short value;
+    temp_r11=(unsigned int)reader&0xFF000000U;var_r5=1;var_r6=1;var_r7=1;var_r8=1;var_r9=1;var_r10=1;
+    if((unsigned int)(temp_r11+0x80000000U)!=0U&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x7F000000U)!=0U)var_r10=0;
+    if(var_r10==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x70000000U)!=0U)var_r9=0;
+    if(var_r9==0&&(unsigned int)(temp_r11+0x40000000U)!=0U)var_r8=0;
+    if(var_r8==0&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x3F000000U)!=0U)var_r7=0;
+    if(var_r7==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x30000000U)!=0U)var_r6=0;
+    if(var_r6==0&&(unsigned int)(((unsigned int)reader&0xFFFFC000U)+0x20000000U)!=0U)var_r5=0;
+    if(var_r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x81,base+0x18,reader);
+    temp_r6=*(int *)reader;var_r4=1;var_r5_2=1;var_r7_2=1;temp_r11=temp_r6&0xFF000000;var_r8_2=1;var_r9_2=1;var_r10_2=1;
+    if((unsigned int)(temp_r11+0x80000000)!=0U&&(unsigned int)((temp_r6&0xFF800000)+0x7F000000)!=0U)var_r10_2=0;
+    if(var_r10_2==0&&(unsigned int)((temp_r6&0xF8000000)+0x70000000)!=0U)var_r9_2=0;
+    if(var_r9_2==0&&(unsigned int)(temp_r11+0x40000000)!=0U)var_r8_2=0;
+    if(var_r8_2==0&&(unsigned int)((temp_r6&0xFF800000)+0x3F000000)!=0U)var_r7_2=0;
+    if(var_r7_2==0&&(unsigned int)((temp_r6&0xF8000000)+0x30000000)!=0U)var_r5_2=0;
+    if(var_r5_2==0&&(unsigned int)((temp_r6&0xFFFFC000)+0x20000000)!=0U)var_r4=0;
+    if(var_r4==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x82,base+0x50);
+    if(*(int *)reader&1)Panic__Q26nw4hbm2dbFPCciPCce(base,0x83,base+0xFC);
+    value=**(unsigned short **)reader;*(int *)reader=*(int *)reader+2;return value;
 }
 
 extern "C" const char lbl_80328030[];
@@ -276,6 +301,31 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(void *arg0) {
     if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U)) var_r5 = 0;
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0x21A, "this", arg0);
     return *(float *)((char *)arg0 + 0x28);
+}
+
+extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
+    unsigned int top=(unsigned int)arg0 & 0xFF000000U;
+    unsigned int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
+    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U) r10=0;
+    if (r10==0U && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U) r9=0;
+    if (r9==0U && (unsigned int)(top+0x40000000U)!=0U) r8=0;
+    if (r8==0U && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U) r7=0;
+    if (r7==0U && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U) r6=0;
+    if (r6==0U && (unsigned int)(((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U) r5=0;
+    if (r5==0U) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x259,lbl_80328178+0x14,arg0);
+    unsigned int value=*(unsigned int *)((char *)arg0+0x48);
+    top=value&0xFF000000U;
+    unsigned int r4=1; r5=1; r6=1; r7=1; r8=1; r9=1;
+    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)((value&0xFF800000U)+0x7F000000U)!=0U) r9=0;
+    if (r9==0U && (unsigned int)((value&0xF8000000U)+0x70000000U)!=0U) r8=0;
+    if (r8==0U && (unsigned int)(top+0x40000000U)!=0U) r7=0;
+    if (r7==0U && (unsigned int)((value&0xFF800000U)+0x3F000000U)!=0U) r6=0;
+    if (r6==0U && (unsigned int)((value&0xF8000000U)+0x30000000U)!=0U) r5=0;
+    if (r5==0U && (unsigned int)((value&0xFFFFC000U)+0x20000000U)!=0U) r4=0;
+    if (r4==0U) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x25A,lbl_80328178+0xF4);
+    FontForWidth *font=(FontForWidth *)value;
+    int width=font->v2();
+    return *(float *)((char *)arg0+0x24) * (float)width;
 }
 
 extern "C" unsigned char IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
