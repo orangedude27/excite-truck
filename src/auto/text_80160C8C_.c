@@ -1092,9 +1092,4 @@ typedef struct VtblA18 { void *pad[7]; void (*f)(void); } VtblA18;
 typedef struct ObjA18 { VtblA18 *vtable; } ObjA18;
 struct Vtbl_80163D34 { void *v[4]; void (*method)(void *, const char *); };
 struct Obj_80163D34 { struct Vtbl_80163D34 *vt; };
-#pragma cplusplus on
-struct Dummy_80163550 {
-    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual s32 f8();
-};
-#pragma cplusplus off
+
