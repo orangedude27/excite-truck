@@ -5129,6 +5129,36 @@ found:
     }
 }
 
+void gap_config_cfm(u32 cid, u16 *p_cfg) {
+    u8 *ccb = (u8 *)&lbl_803C3740 + 0xAC;
+    s32 i;
+    u16 psm;
+    for (i = 0; i < 4; i++) {
+        if (ccb[0] && *(u16 *)(ccb + 6) == cid) break;
+        ccb += 0x60;
+    }
+    if (i == 4) return;
+    if (*p_cfg == 0) {
+        ccb[1] |= 4;
+        if (ccb[1] & 2) {
+            ccb[0] = 4;
+            ((void (*)(u16, u16))*(u32 *)(ccb + 0x20))(*(u16 *)(ccb + 4), 0x100);
+        }
+    } else {
+        ((void (*)(u16, u16))*(u32 *)(ccb + 0x20))(*(u16 *)(ccb + 4), 0x101);
+        psm = *(u16 *)(ccb + 0x10);
+        while (*(u32 *)(ccb + 0x14) != 0)
+            GKI_freebuf(GKI_dequeue((BUFFER_Q *)(ccb + 0x14)));
+        ccb[0] = 0;
+        {
+            u8 *p = (u8 *)&lbl_803C3740 + 0xAC;
+            for (i = 0; i < 4; i++, p += 0x60)
+                if (p[0] && *(u16 *)(p + 0x10) == psm) return;
+        }
+        L2CA_Deregister(psm);
+    }
+}
+
 void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
     s32 i;
@@ -6349,6 +6379,36 @@ void hidh_proc_repage_timeout(TIMER_LIST_ENT *p_tle) {
     dev = lbl_803C3C38 + handle * 0x34;
     dev[0xC]++;
     (*callback)(handle, 2, dev[0xC], 0);
+}
+
+extern u8 lbl_80317B80[];
+extern u8 lbl_80317BB8[];
+void hidh_l2cif_cong_ind(u32 arg0, s32 arg1) {
+    u32 i;
+    u8 *entry;
+    u8 *found;
+
+    found = 0;
+    for (i = 0; i < 16; i++) {
+        entry = (u8 *)lbl_803C3C38 + i * 0x34;
+        if (entry[0] != 0 && entry[0x10] != 0 &&
+            (arg0 == *(u16 *)(entry + 0x14) ||
+             arg0 == *(u16 *)(entry + 0x16))) {
+            found = entry + 0x10;
+            break;
+        }
+    }
+    if (found == 0) {
+        if (*((u8 *)lbl_803C3C38 + 0x401) >= 2)
+            ((void (*)(u32, void *, u32, u32))fn_80070954)(0x1E0001, lbl_80317B80, arg0, 0x1E0000);
+    } else {
+        if (*((u8 *)lbl_803C3C38 + 0x401) >= 4)
+            ((void (*)(u32, void *, u32, s32, u32))fn_8007096C)(0x1E0003, lbl_80317BB8, arg0, arg1, 0x1E0000);
+        if (arg1 != 0)
+            found[1] |= 0x20;
+        else
+            found[1] &= ~0x20;
+    }
 }
 
 extern char lbl_80317CC8[];
@@ -10329,3 +10389,7 @@ extern u8 lbl_80559060[];
 extern u8 lbl_803151D8[];
 extern char lbl_80319EC0[];
 extern char lbl_8031669C[];
+extern char lbl_803142C8[];
+extern char lbl_80558FF8[];
+extern char lbl_80559000[];
+extern u8 lbl_803BD240[];
