@@ -1,5 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern "C" const char lbl_80328030[];
+extern "C" const char lbl_80327EE0[];
+extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int fn_80128668(void);
@@ -326,6 +328,61 @@ extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     FontForWidth *font=(FontForWidth *)value;
     int width=font->v2();
     return *(float *)((char *)arg0+0x24) * (float)width;
+}
+
+extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801056A4(void *arg0) {
+    const char *base = lbl_80328178;
+    int top, r4, r5, r6, r7, r8, r9, r10;
+    void *font;
+    top = (unsigned int)arg0 & 0xFF000000U;
+    r5=1; r6=1; r7=1; r8=1; r9=1; r10=1;
+    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U) r10=0;
+    if (r10==0 && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U) r9=0;
+    if (r9==0 && (unsigned int)(top+0x40000000U)!=0U) r8=0;
+    if (r8==0 && (unsigned int)(((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U) r7=0;
+    if (r7==0 && (unsigned int)(((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U) r6=0;
+    if (r6==0 && (unsigned int)(((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U) r5=0;
+    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x26A,base+0x14,arg0);
+    font=*(void **)((char *)arg0+0x48);
+    top=(unsigned int)font&0xFF000000U; r4=1; r5=1; r7=1; r8=1; r9=1; r10=1;
+    if ((unsigned int)(top+0x80000000U)!=0U && (unsigned int)(((unsigned int)font&0xFF800000U)+0x7F000000U)!=0U) r10=0;
+    if (r10==0 && (unsigned int)(((unsigned int)font&0xF8000000U)+0x70000000U)!=0U) r9=0;
+    if (r9==0 && (unsigned int)(top+0x40000000U)!=0U) r8=0;
+    if (r8==0 && (unsigned int)(((unsigned int)font&0xFF800000U)+0x3F000000U)!=0U) r7=0;
+    if (r7==0 && (unsigned int)(((unsigned int)font&0xF8000000U)+0x30000000U)!=0U) r5=0;
+    if (r5==0 && (unsigned int)(((unsigned int)font&0xFFFFC000U)+0x20000000U)!=0U) r4=0;
+    if (r4==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x26B,base+0xF4);
+    #pragma cplusplus on
+    int width = ((FontForWidth *)font)->v3();
+    #pragma cplusplus reset
+    return *(float *)((char *)arg0+0x28) * (float)width;
+}
+
+extern "C" float GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(void *arg0) {
+    struct FontVTable { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual int GetWidth(); };
+    void *self=arg0;
+    const char *base=lbl_80328178;
+    unsigned int top=(unsigned int)self&0xFF000000U;
+    int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
+    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)self&0xFF800000U)+0x7F000000U)!=0U)r10=0;
+    if(r10==0&&(unsigned int)(((unsigned int)self&0xF8000000U)+0x70000000U)!=0U)r9=0;
+    if(r9==0&&(unsigned int)(top+0x40000000U)!=0U)r8=0;
+    if(r8==0&&(unsigned int)(((unsigned int)self&0xFF800000U)+0x3F000000U)!=0U)r7=0;
+    if(r7==0&&(unsigned int)(((unsigned int)self&0xF8000000U)+0x30000000U)!=0U)r6=0;
+    if(r6==0&&(unsigned int)(((unsigned int)self&0xFFFFC000U)+0x20000000U)!=0U)r5=0;
+    if(r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x27B,base+0x14,self);
+    void *font=*(void **)((char *)self+0x48);
+    top=(unsigned int)font&0xFF000000U;
+    int r4=1;r5=1;r6=1;r7=1;r8=1;r9=1;
+    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)font&0xFF800000U)+0x7F000000U)!=0U)r9=0;
+    if(r9==0&&(unsigned int)(((unsigned int)font&0xF8000000U)+0x70000000U)!=0U)r8=0;
+    if(r8==0&&(unsigned int)(top+0x40000000U)!=0U)r7=0;
+    if(r7==0&&(unsigned int)(((unsigned int)font&0xFF800000U)+0x3F000000U)!=0U)r6=0;
+    if(r6==0&&(unsigned int)(((unsigned int)font&0xF8000000U)+0x30000000U)!=0U)r5=0;
+    if(r5==0&&(unsigned int)(((unsigned int)font&0xFFFFC000U)+0x20000000U)!=0U)r4=0;
+    if(r4==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x27C,base+0xF4);
+    int width=((FontVTable *)font)->GetWidth();
+    return *(float *)((char *)self+0x28)*(float)width;
 }
 
 extern "C" unsigned char IsWidthFixed__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
