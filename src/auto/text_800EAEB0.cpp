@@ -1,5 +1,9 @@
 #include <types.h>
 namespace nw4hbm { namespace snd { namespace detail {
+class FrameHeap {
+public:
+    void *Alloc(unsigned long, void (*)(void *, unsigned long, void *), void *);
+};
 class EnvGenerator { public: void SetRelease(int); void SetDecay(int); };
 }}}
 extern f32 lbl_80560FE8, lbl_80561008, lbl_8056100C, lbl_80561010, lbl_80561014;
@@ -194,6 +198,100 @@ extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallback
     OSRestoreInterrupts(level);
 }
 
+extern "C" void Dispose__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv(void* object, u32 size, void* user) {
+    extern u8 lbl_80322B44[];
+    extern u8 lbl_80322B20[];
+    void* end = (u8*)object + size;
+    u32 outerLevel = OSDisableInterrupts();
+    u32 level = OSDisableInterrupts();
+    if ((s8)lbl_8055DE30 == 0) {
+        void* sentinel = lbl_8041279C + 4;
+        *(u32*)(lbl_8041279C + 4) = 0;
+        *(u32*)(lbl_8041279C + 8) = 0;
+        *(u32*)lbl_8041279C = 0;
+        *(void**)(lbl_8041279C + 4) = sentinel;
+        *(void**)(lbl_8041279C + 8) = sentinel;
+        __register_global_object(lbl_8041279C,
+            (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
+            lbl_80412790);
+        lbl_8055DE30 = 1;
+    }
+    OSRestoreInterrupts(level);
+    void* node = *(void**)(lbl_8041279C + 4);
+    void* head = lbl_8041279C + 4;
+    while (node != head) {
+        void* current = node;
+        node = *(void**)node;
+        if (current == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
+        void** vtable = *(void***)current;
+        ((void (*)(void*, void*, u32, void*))vtable[3])(current, object, (u32)end, user);
+        level = OSDisableInterrupts();
+        if ((s8)lbl_8055DE30 == 0) {
+            void* sentinel = lbl_8041279C + 4;
+            *(u32*)(lbl_8041279C + 4) = 0;
+            void* value = lbl_8041279C;
+            *(u32*)(lbl_8041279C + 8) = 0;
+            *(u32*)lbl_8041279C = 0;
+            *(void**)(lbl_8041279C + 4) = sentinel;
+            *(void**)(lbl_8041279C + 8) = sentinel;
+            __register_global_object(value,
+                (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
+                lbl_80412790);
+            lbl_8055DE30 = 1;
+        }
+        OSRestoreInterrupts(level);
+    }
+    OSRestoreInterrupts(outerLevel);
+}
+
+extern "C" void DisposeWave__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPvUlPv_800EB214(void* object, u32 size, void* user) {
+    extern u8 lbl_80322B44[];
+    extern u8 lbl_80322B20[];
+    void* end = (u8*)object + size;
+    u32 outerLevel = OSDisableInterrupts();
+    u32 level = OSDisableInterrupts();
+    if ((s8)lbl_8055DE30 == 0) {
+        void* sentinel = lbl_8041279C + 4;
+        *(u32*)(lbl_8041279C + 4) = 0;
+        *(u32*)(lbl_8041279C + 8) = 0;
+        *(u32*)lbl_8041279C = 0;
+        *(void**)(lbl_8041279C + 4) = sentinel;
+        *(void**)(lbl_8041279C + 8) = sentinel;
+        __register_global_object(lbl_8041279C,
+            (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
+            lbl_80412790);
+        lbl_8055DE30 = 1;
+    }
+    OSRestoreInterrupts(level);
+    void* node = *(void**)(lbl_8041279C + 4);
+    void* head = lbl_8041279C + 4;
+    while (node != head) {
+        void* current = node;
+        node = *(void**)node;
+        if (current == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80322B44, 0x23D, (const char*)lbl_80322B20);
+        void** vtable = *(void***)( (u8*)current + 8);
+        ((void (*)(void*, void*, u32))vtable[4])(current, object, (u32)end);
+        level = OSDisableInterrupts();
+        if ((s8)lbl_8055DE30 == 0) {
+            void* sentinel = lbl_8041279C + 4;
+            *(u32*)(lbl_8041279C + 4) = 0;
+            void* value = lbl_8041279C;
+            *(u32*)(lbl_8041279C + 8) = 0;
+            *(u32*)lbl_8041279C = 0;
+            *(void**)(lbl_8041279C + 4) = sentinel;
+            *(void**)(lbl_8041279C + 8) = sentinel;
+            __register_global_object(value,
+                (void*)__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_800EAF54,
+                lbl_80412790);
+            lbl_8055DE30 = 1;
+        }
+        OSRestoreInterrupts(level);
+    }
+    OSRestoreInterrupts(outerLevel);
+}
+
 extern f32 lbl_80560FE8;
 extern f32 lbl_80560FEC;
 extern f32 lbl_80560FF0;
@@ -316,6 +414,34 @@ void fn_800EBB88(void* arg0) {
     u32* q = (u32*)((u8*)arg0 + 8);
     p[2] = 0; p[3] = 0; p[0] = 0; p[1] = 0;
     p[2] = (u32)q; p[3] = (u32)q;
+}
+
+extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
+    extern u8 lbl_80323058[], lbl_80323070[];
+    void** head = (void**)headArg;
+    u32 addr = (u32)buffer;
+    u32 start;
+    u32 stride;
+    u32 count;
+    u32 i;
+    u32 irq;
+    u32 previous;
+    if (buffer == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80323058, 0x26, (const char*)lbl_80323070);
+    irq = OSDisableInterrupts();
+    start = (addr + 3) & ~3;
+    stride = (blockSize + 3) & ~3;
+    count = (size - (start - addr)) / stride;
+    if (count != 0) {
+        u32 node = start;
+        previous = (u32)*head;
+        for (i = 0; i < count; i++) {
+            *(u32*)node = previous;
+            *head = (void*)node;
+            previous = node;
+            node += stride;
+        }
+    }
+    OSRestoreInterrupts(irq);
 }
 
 extern "C" void fn_800EC848(void** head, void* node) {
@@ -818,6 +944,78 @@ extern "C" void fn_800EEB64(u8 *arg0) {
     }
 }
 
+extern "C" s32 AXRmtGetSamplesLeft(void);
+extern "C" s32 AXRmtGetSamples(s32, void*, s32);
+extern "C" void AXRmtAdvancePtr(s32);
+extern "C" void* fn_800EE5E8(void*, void*);
+extern "C" void fn_800EEBA8(void* arg0, u64 unused1, u64 unused2) {
+    extern u8 lbl_803238F8[];
+    u8 sampleBuffer[0x28];
+    u8* state;
+    u8* channel;
+    u8* end;
+    s32 i;
+
+    if ((s8)lbl_8055DE40 == 0) {
+        lbl_804127A8[0] = 0;
+        channel = lbl_804127A8 + 0x38;
+        end = lbl_804127A8 + 0x2B8;
+        do { fn_800EE4F0(channel); channel += 0xA0; } while (channel < end);
+        *(s32*)(lbl_804127A8 + 0x64) = 0;
+        *(s32*)(lbl_804127A8 + 0x104) = 1;
+        *(s32*)(lbl_804127A8 + 0x1A4) = 2;
+        *(s32*)(lbl_804127A8 + 0x244) = 3;
+        lbl_8055DE40 = 1;
+    }
+    state = lbl_804127A8;
+    if (state + 8 != (u8*)arg0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803238F8, 0x8D, (const char*)lbl_803238F8 + 0x6C);
+    if (AXRmtGetSamplesLeft() >= 0x28) {
+        channel = state + 0x38;
+        i = 0;
+        do {
+            if (state[0x39] != 0) {
+                if (AXRmtGetSamples(i, sampleBuffer, 0x28) != 0x28)
+                    Warning__Q26nw4hbm2dbFPCciPCce((const char*)lbl_803238F8, 0x9D, (const char*)lbl_803238F8 + 0xAC);
+                fn_800EE5E8(channel, sampleBuffer);
+            }
+            ++i;
+            channel += 0xA0;
+            state += 0xA0;
+        } while (i < 4);
+        AXRmtAdvancePtr(0x28);
+    }
+}
+
+extern "C" void* __ct__Q46nw4hbm3snd6detail13SeqFileReaderFPCv(void* self, const void* data) {
+    const u8* bytes = (const u8*)data;
+    const u8* file = (const u8*)lbl_803239C0;
+    volatile const u16* sizeField;
+    u32 magic;
+    u16 size;
+    u32 valid;
+    *(void**)self = 0;
+    *(void**)((u8*)self + 4) = 0;
+    if (data == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x47, (const char*)(file + 0xB4));
+    magic = *(const u32*)bytes;
+    if (magic != 0x52534551) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x26, (const char*)(file + 0x10));
+    magic = *(const u32*)bytes;
+    if (magic != 0x52534551) return self;
+    sizeField = (volatile const u16*)(bytes + 6);
+    size = *sizeField;
+    if (size < 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x2E, (const char*)(file + 0x5C));
+    size = *sizeField;
+    if (size < 0x100) return self;
+    if (size > 0x100) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x34, (const char*)(file + 0x5C));
+    size = *sizeField;
+    valid = (u32)((0x100 | ~size) - ((0x100 - size) >> 1)) >> 31;
+    if (valid == 0) return self;
+    *(void**)self = (void*)data;
+    *(void**)((u8*)self + 4) = (u8*)data + *(const u32*)(bytes + 0x10);
+    if (*(const u32*)*(void**)((u8*)self + 4) != 0x44415441) Panic__Q26nw4hbm2dbFPCciPCce((const char*)file, 0x50, (const char*)(file + 0xE0));
+    return self;
+}
+
 void *nw4hbm::snd::detail::SeqFileReader::GetBaseAddress() const {
     const u8 *self = (const u8 *)this;
     if (*(u32 *)self == 0) {
@@ -848,6 +1046,51 @@ extern "C" s32 fn_800EEEC4(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern f32 lbl_80561068;
+extern "C" void InitParam__Q46nw4hbm3snd6detail9SeqPlayerFiPQ46nw4hbm3snd6detail14NoteOnCallback(void* self, s32 arg, void* callback) {
+    register f32 zeroValue = lbl_8056106C;
+    register f32 baseValue = lbl_80561068;
+    *(u8*)((u8*)self + 0x16) = 0; *(u8*)((u8*)self + 0x17) = 0;
+    *(u8*)((u8*)self + 0x18) = 0; *(u8*)((u8*)self + 0x19) = 0;
+    *(u8*)((u8*)self + 0x14) = 0;
+    *(f32*)((u8*)self + 0x84) = baseValue;
+    *(u16*)((u8*)self + 0x88) = 0x1A0;
+    *(f32*)((u8*)self + 0x1C) = baseValue; *(f32*)((u8*)self + 0x34) = baseValue;
+    *(f32*)((u8*)self + 0x20) = zeroValue; *(f32*)((u8*)self + 0x24) = zeroValue;
+    *(f32*)((u8*)self + 0x2C) = zeroValue; *(f32*)((u8*)self + 0x30) = zeroValue;
+    *(f32*)((u8*)self + 0x28) = baseValue;
+    *(f32*)((u8*)self + 0x38) = zeroValue; *(u32*)((u8*)self + 0x3C) = 1;
+    *(f32*)((u8*)self + 0x44) = zeroValue; *(f32*)((u8*)self + 0x40) = baseValue;
+    *(f32*)((u8*)self + 0x48) = zeroValue; *(f32*)((u8*)self + 0x4C) = zeroValue;
+    *(f32*)((u8*)self + 0x50) = zeroValue; *(f32*)((u8*)self + 0x64) = zeroValue;
+    *(f32*)((u8*)self + 0x74) = zeroValue; *(f32*)((u8*)self + 0x68) = zeroValue;
+    *(f32*)((u8*)self + 0x78) = zeroValue; *(f32*)((u8*)self + 0x6C) = zeroValue;
+    *(f32*)((u8*)self + 0x7C) = zeroValue; *(f32*)((u8*)self + 0x70) = zeroValue;
+    *(f32*)((u8*)self + 0x80) = zeroValue;
+    *(u32*)((u8*)self + 0xFC) = 0;
+    *(s32*)((u8*)self + 0x8C) = arg;
+    *(u16*)((u8*)self + 0x92) = 0x78;
+    *(u8*)((u8*)self + 0x90) = 0x7F; *(u8*)((u8*)self + 0x91) = 0x40;
+    *(void**)((u8*)self + 0x94) = callback;
+    *(s16*)((u8*)self + 0xDC) = -1; *(s16*)((u8*)self + 0xDE) = -1;
+    *(s16*)((u8*)self + 0xE0) = -1; *(s16*)((u8*)self + 0xE2) = -1;
+    *(s16*)((u8*)self + 0xE4) = -1; *(s16*)((u8*)self + 0xE6) = -1;
+    *(s16*)((u8*)self + 0xE8) = -1; *(s16*)((u8*)self + 0xEA) = -1;
+    *(s16*)((u8*)self + 0xEC) = -1; *(s16*)((u8*)self + 0xEE) = -1;
+    *(s16*)((u8*)self + 0xF0) = -1; *(s16*)((u8*)self + 0xF2) = -1;
+    *(s16*)((u8*)self + 0xF4) = -1; *(s16*)((u8*)self + 0xF6) = -1;
+    *(s16*)((u8*)self + 0xF8) = -1; *(s16*)((u8*)self + 0xFA) = -1;
+    u32 zeroWords = 0;
+    *(u32*)((u8*)self + 0x9C) = zeroWords; *(u32*)((u8*)self + 0xA0) = zeroWords;
+    *(u32*)((u8*)self + 0xA4) = zeroWords; *(u32*)((u8*)self + 0xA8) = zeroWords;
+    *(u32*)((u8*)self + 0xAC) = zeroWords; *(u32*)((u8*)self + 0xB0) = zeroWords;
+    *(u32*)((u8*)self + 0xB4) = zeroWords; *(u32*)((u8*)self + 0xB8) = zeroWords;
+    *(u32*)((u8*)self + 0xBC) = zeroWords; *(u32*)((u8*)self + 0xC0) = zeroWords;
+    *(u32*)((u8*)self + 0xC4) = zeroWords; *(u32*)((u8*)self + 0xC8) = zeroWords;
+    *(u32*)((u8*)self + 0xCC) = zeroWords; *(u32*)((u8*)self + 0xD0) = zeroWords;
+    *(u32*)((u8*)self + 0xD4) = zeroWords; *(u32*)((u8*)self + 0xD8) = zeroWords;
+}
+
 extern "C" void SetSeqData__Q46nw4hbm3snd6detail9SeqPlayerFPCvl(void *this_, const void *data, s32 size) {
     void *seqData = *(void **)((u8 *)this_ + 0x9C);
     if (seqData == NULL) {
@@ -869,6 +1112,36 @@ extern "C" s32 fn_800EF500(void* self) {
     *(u8*)((u8*)self + 0x14) = *((u8*)Instance__15EmissionManagerFv() + 0x6c32);
     *(u8*)((u8*)self + 0x17) = 1;
     return 1;
+}
+
+extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void*);
+extern "C" void Stop__Q46nw4hbm3snd6detail9SeqPlayerFv(void* self) {
+    u8* p = (u8*)self;
+    u32 level;
+    s32 i;
+    u8* track;
+    if (p[0x15] == 0) return;
+    level = OSDisableInterrupts();
+    if (p[0x17] != 0) {
+        if (self == 0) Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80324054, 0x233, (const char*)lbl_80324030);
+        Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((void*)lbl_80412A6C, p + 0x100);
+    }
+    if (p[0x15] != 0) {
+        void* manager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+        UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(manager, p + 8);
+    }
+    OSRestoreInterrupts(level);
+    track = p;
+    for (i = 0; i < 0x10; i++, track += 4) {
+        void* seq = *(void**)(track + 0x9C);
+        if (seq != 0) {
+            void* player = *(void**)(p + 0x98);
+            Close__Q46nw4hbm3snd6detail8SeqTrackFv(seq);
+            (*(void (**)(void*, void*))(*(u32*)*(void**)player + 0x10))(player, seq);
+            *(void**)(track + 0x9C) = 0;
+        }
+    }
+    p[0x15] = 0;
 }
 
 extern u8 lbl_80323B28[], lbl_80323C14[], lbl_80323BEC[];
@@ -1091,6 +1364,36 @@ void SetChannelPriority__Q46nw4hbm3snd6detail9SeqPlayerFi(void* self, int priori
 s32 fn_800F016C(s32 array, s32 index) {
     if (index > 0xf) return 0;
     return *(s32*)(array + index * 4 + 0x9c);
+}
+
+extern "C" void UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
+extern "C" bool ParseNextTick__Q46nw4hbm3snd6detail8SeqTrackFb(void *, bool);
+extern "C" void Close__Q46nw4hbm3snd6detail8SeqTrackFv(void *);
+extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+extern "C" bool ParseNextTick__Q46nw4hbm3snd6detail9SeqPlayerFb(void *self, bool arg) {
+    extern u8 lbl_80323B28[], lbl_80323B3C[];
+    bool result = true;
+    for (int i = 0; i < 16; ++i) {
+        void *track = *(void **)((char *)self + 0x9C + i * 4);
+        if (track != 0) {
+            UpdateChannelLength__Q46nw4hbm3snd6detail8SeqTrackFv(track);
+            if (!ParseNextTick__Q46nw4hbm3snd6detail8SeqTrackFb(track, arg))
+                result = false;
+            else {
+                if (i < 0 || i >= 16)
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80323B28, 0x2FD, (const char *)lbl_80323B3C, i, 0, 16);
+                track = *(void **)((char *)self + 0x9C + i * 4);
+                if (track != 0) {
+                    Close__Q46nw4hbm3snd6detail8SeqTrackFv(track);
+                    void *manager = *(void **)((char *)self + 0x98);
+                    void **vtable = *(void ***)manager;
+                    ((void (*)(void *, void *))vtable[4])(manager, track);
+                    *(void **)((char *)self + 0x9C + i * 4) = 0;
+                }
+            }
+        }
+    }
+    return result;
 }
 
 extern "C" u8 lbl_80323DDC[];
