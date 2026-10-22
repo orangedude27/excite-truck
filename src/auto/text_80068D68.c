@@ -30,7 +30,7 @@ extern u8 lbl_80317C20[];
 extern u8 HID_HostOpenDev(u32);
 extern u8 HID_HostRemoveDev(u32);
 extern u8 HID_HostAddDev(u8 *, u16, u8 *);
-extern void HID_HostSetSecurityLevel(void *, u8);
+extern s32 HID_HostSetSecurityLevel(void *, u8);
 extern char lbl_803152B0[];
 extern char lbl_803152D0[];
 extern u8 lbl_80559058[];
@@ -4528,6 +4528,60 @@ BOOLEAN btm_is_sco_active_by_bdaddr(BD_ADDR addr) {
         link += 0x34;
     } while ((unsigned)i < 3);
     return FALSE;
+}
+
+BOOLEAN BTM_SetSecurityLevel(BOOLEAN is_originator, char *p_name, UINT8 service_id, UINT16 sec_level, UINT16 psm, UINT32 mx_proto_id, UINT32 mx_chan_id) {
+    char *trace = lbl_80316870;
+    u8 *entry = lbl_803C0F78 + 0x1990;
+    u16 index = 0;
+    u16 first_free = 0xFFFF;
+    BOOLEAN found = FALSE;
+
+    for (; index < 0x18; index++, entry += 0x3C) {
+        if (entry[0xE] & 0x80) {
+            if (*(u16 *)(entry + 0xC) == psm &&
+                *(u32 *)(entry + 0x0) == mx_proto_id &&
+                entry[0xF] == service_id &&
+                (strncmp(p_name, (char *)(entry + 0x10), 0x15) == 0 ||
+                 strncmp(p_name, (char *)(entry + 0x26), 0x15) == 0)) {
+                found = TRUE;
+                break;
+            }
+        } else if (!found) {
+            found = TRUE;
+            first_free = index;
+        }
+    }
+    if (found) {
+        if (index >= 0x18) {
+            index = first_free;
+            entry = lbl_803C0F78 + 0x1990 + index * 0x3C;
+        }
+        *(u16 *)(entry + 0xC) = psm;
+        entry[0xF] = service_id;
+        *(u32 *)(entry + 0x0) = mx_proto_id;
+        if (is_originator) {
+            *(u32 *)(entry + 0x4) = mx_chan_id;
+            entry[0xE] &= 0xC7;
+            strncpy((char *)(entry + 0x10), p_name, 0x15);
+        } else {
+            *(u32 *)(entry + 0x8) = mx_chan_id;
+            entry[0xE] &= 0xF8;
+            strncpy((char *)(entry + 0x26), p_name, 0x15);
+        }
+        entry[0xE] |= sec_level | 0x80;
+        if (lbl_803C0F78[0x27C0] >= 3) {
+            ((void (*)(u32, void *, s32, u32, u32, u32, u32, u32))fn_800709CC)(
+                0xD0002, trace + 0xE0, index, service_id, is_originator, psm, mx_proto_id, mx_chan_id);
+        }
+        if (lbl_803C0F78[0x27C0] >= 3) {
+            ((void (*)(u32, void *, u8, char *, u32))fn_80070984)(
+                0xD0002, trace + 0x128, entry[0xE], p_name, 0x15);
+        }
+    } else if (lbl_803C0F78[0x27C0] >= 2) {
+        fn_80070954(0xD0001, trace + 0x170, 0x18);
+    }
+    return found;
 }
 
 void BTM_PINCodeReply(BD_ADDR bd_addr, UINT8 res, UINT8 pin_len, UINT8 *p_pin, UINT32 trusted_mask[]) {
