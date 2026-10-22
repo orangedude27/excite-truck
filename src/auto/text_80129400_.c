@@ -110,6 +110,40 @@ s32 fn_80129890(void) {
     return count;
 }
 
+void *fn_801298E8(void *dst, int index) {
+    s32 found; u8 *src; u8 *out; u8 a, b;
+    found = fn_802E8504(index);
+    if (found) {
+        src = lbl_80422180 + (index << 7); out = dst;
+        *(f32 *)(out+0x00)=*(f32 *)(src+0x1C); *(f32 *)(out+0x04)=*(f32 *)(src+0x20);
+        *(f32 *)(out+0x08)=*(f32 *)(src+0x24); *(f32 *)(out+0x0C)=*(f32 *)(src+0x28);
+        *(f32 *)(out+0x10)=*(f32 *)(src+0x2C); *(f32 *)(out+0x14)=*(f32 *)(src+0x30);
+        *(f32 *)(out+0x18)=*(f32 *)(src+0x34); *(f32 *)(out+0x1C)=*(f32 *)(src+0x38);
+        b=src[0x3C]; a=src[0x3D]; out[0x20]=b; out[0x21]=a;
+        b=src[0x3E]; a=src[0x3F]; out[0x22]=b; out[0x23]=a;
+        b=src[0x40]; a=src[0x41]; out[0x24]=b; out[0x25]=a;
+        b=src[0x42]; a=src[0x43]; out[0x26]=b; out[0x27]=a;
+        b=src[0x44]; a=src[0x45]; out[0x28]=b; out[0x29]=a;
+        b=src[0x46]; a=src[0x47]; out[0x2A]=b; out[0x2B]=a;
+        b=src[0x48]; a=src[0x49]; out[0x2C]=b; out[0x2D]=a;
+        b=src[0x4A]; a=src[0x4B]; out[0x2E]=b; out[0x2F]=a;
+        b=src[0x4C]; a=src[0x4D]; out[0x30]=b; out[0x31]=a;
+        b=src[0x4E]; a=src[0x4F]; out[0x32]=b; out[0x33]=a;
+        b=src[0x50]; a=src[0x51]; out[0x34]=b; out[0x35]=a;
+        b=src[0x52]; a=src[0x53]; out[0x36]=b; out[0x37]=a;
+        b=src[0x54]; a=src[0x55]; out[0x38]=b; out[0x39]=a;
+        b=src[0x56]; a=src[0x57]; out[0x3A]=b; out[0x3B]=a;
+        b=src[0x58]; a=src[0x59]; out[0x3C]=b; out[0x3D]=a;
+        b=src[0x5A]; a=src[0x5B]; out[0x3E]=b; out[0x3F]=a;
+        *(u32 *)(out+0x40)=*(u32 *)(src+0x5C); *(u32 *)(out+0x44)=*(u32 *)(src+0x60);
+        *(u32 *)(out+0x48)=*(u32 *)(src+0x64); *(u32 *)(out+0x4C)=*(u32 *)(src+0x68);
+        *(u32 *)(out+0x50)=*(u32 *)(src+0x6C); *(u32 *)(out+0x54)=*(u32 *)(src+0x70);
+        *(u32 *)(out+0x58)=*(u32 *)(src+0x74); *(u32 *)(out+0x5C)=*(u32 *)(src+0x78);
+        out[0x60]=src[0x7C];
+    } else memset(dst, 0, 0x64);
+    return (void *)found;
+}
+
 void *fn_80129AE8(void *arg0, int arg1) {
     return fn_801298E8(arg0, arg1);
 }
@@ -137,9 +171,3 @@ void fn_80129AFC(void) {
 s32 fn_80129BC4(void) {
     return 1;
 }
-typedef struct {
-    float f[8];
-    unsigned char b[32];
-    unsigned int w[8];
-    unsigned char last;
-} Record;
