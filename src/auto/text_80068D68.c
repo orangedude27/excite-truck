@@ -4194,7 +4194,7 @@ typedef struct {
     u8 disc_succ[0x28];
     u8 rem_name[1];
 } GapTraceStrings;
-extern void gap_connect_ind(void), gap_connect_cfm(void), gap_config_ind(void), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(void);
+extern void gap_connect_ind(void), gap_connect_cfm(void), gap_config_ind(void), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(u16, u16);
 void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0x84)=gap_connect_ind;
  *(void **)(lbl_803C3740+0x88)=gap_connect_cfm;
