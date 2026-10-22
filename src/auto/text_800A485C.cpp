@@ -6321,6 +6321,40 @@ extern "C" s32 fn_800A485C(s32 arg0) {
     return arg0;
 }
 
+void VFipf_memcpy(void* dst, const void* src, u32 size) {
+    u32 words, blocks, left;
+    u32* d32;
+    const u32* s32;
+    u8* d = (u8*)dst;
+    const u8* s = (const u8*)src;
+    if ((((u32)d & 3) == 0) && (((u32)s & 3) == 0)) {
+        words = size >> 2;
+        if (size > 3) {
+            blocks = words >> 3;
+            if (blocks != 0) {
+                d32 = (u32*)d; s32 = (const u32*)s;
+                do {
+                    d32[0]=s32[0]; d32[1]=s32[1]; d32[2]=s32[2]; d32[3]=s32[3];
+                    d32[4]=s32[4]; d32[5]=s32[5]; d32[6]=s32[6]; d32[7]=s32[7];
+                    d32+=8; s32+=8;
+                } while (--blocks);
+                d=(u8*)d32; s=(const u8*)s32;
+                words &= 7;
+            }
+            while (words--) { *(u32*)d=*(const u32*)s; d+=4; s+=4; }
+            size -= (size >> 2) << 2;
+        }
+    }
+    left = size >> 3;
+    while (left--) {
+        d[0]=s[0]; d[1]=s[1]; d[2]=s[2]; d[3]=s[3];
+        d[4]=s[4]; d[5]=s[5]; d[6]=s[6]; d[7]=s[7];
+        d+=8; s+=8;
+    }
+    left = size & 7;
+    while (left--) *d++=*s++;
+}
+
 void fn_800A499C(u8* dst, s8 value, u32 size) {
     u32 words;
     u32 pattern;
@@ -7076,3 +7110,4 @@ extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern void* lbl_804077C0;
 extern "C" void fn_800A71D0(void *, s32);
+class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
