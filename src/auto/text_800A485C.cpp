@@ -1719,7 +1719,7 @@ extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void* arg0) {
     return temp != 0;
 }
 
-s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
+extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
     u32 index = M2C_FIELD(arg0, u32 *, 0);
     u32 next = index + 1;
     s32 result;
