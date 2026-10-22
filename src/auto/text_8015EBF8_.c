@@ -1,4 +1,5 @@
 #include "math.h"
+struct Hit { float x; s32 y; };
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -188,6 +189,41 @@ int fn_8015F3EC(unsigned short *arg0, unsigned short *arg1) {
     return *arg0 - *arg1;
 }
 
+extern void *fn_801284F8(int, const char *);
+extern void *fn_8012850C(int, int);
+extern void fn_80265DCC(void *, int, int, void *);
+extern int fn_8015F3EC(unsigned short *, unsigned short *);
+extern char lbl_8032F4A0[];
+extern int lbl_8055A098, lbl_8055E29C, lbl_8055E2A0;
+void fn_8015F3FC(void *arg0) {
+    int i, j, index, max;
+    unsigned int count;
+    int *src, *dst, *array, *out;
+    if (*(int *)(lbl_8055E29C + 4) <= 0) return;
+    fn_80265DCC(*(void **)lbl_8055E29C, *(int *)(lbl_8055E29C + 4), 0x10, fn_8015F3EC);
+    count = *(unsigned int *)(*(int *)((char *)arg0 + 0x2c) + 0x18) >> 16;
+    dst = (int *)fn_801284F8(0x10, lbl_8032F4A0);
+    if (!dst) return;
+    array = (int *)fn_8012850C(count * 4, (int)&lbl_8055A098);
+    dst[0] = (int)array; dst[2] = count; dst[1] = 0; dst[3] = (int)array;
+    *(int *)&lbl_8055E2A0 = (int)dst;
+    if ((int)count <= 0) return;
+    src = (int *)*(int *)lbl_8055E29C;
+    max = *(int *)(lbl_8055E29C + 4) - 1;
+    for (i = 0; i < count; i++) {
+        index = 0; j = 0;
+        while (index < max && *(unsigned short *)((char *)src + j) < i) { j += 0x10; index++; }
+        out = *(int **)&lbl_8055E2A0;
+        if (index == max && *(unsigned short *)((char *)src + j) < i) {
+            out[1]++;
+            *(int *)(out[0] + 4 * (out[1] - 1)) = (int)src;
+        } else {
+            out[1]++;
+            *(int *)(out[0] + 4 * (out[1] - 1)) = (int)((char *)src + j);
+        }
+    }
+}
+
 #pragma pop
 void fn_8015F554(void) {
 }
@@ -267,6 +303,25 @@ s32 fn_8015F848(f32 *arg0, f32 farg0) {
         var_r5 = (f32 *)((char *)var_r5 + 8);
     } while (var_r8 < 0x40);
     return ((u32)var_r9 >> 31) ^ 1;
+}
+
+extern long lbl_8055E2A8;
+extern float lbl_8056180C;
+void fn_8015F92C(float *arg0, float farg0) {
+    long count = (long)((lbl_8055E2A8 + (lbl_8055E2A8 >> 31)) >> 1) + 1;
+    long i;
+    float value = farg0;
+    float temp;
+    for (i = 0; i < count; i++) {
+        temp = *(float *)((char *)arg0 + 0x100 + i * 8);
+        if (value >= temp) value = temp;
+        temp = *(float *)((char *)arg0 + (0x20 - i) * 8);
+        if (value >= temp) value = temp;
+    }
+    for (i = 0; i < 8; i++) {
+        temp = arg0[i * 2];
+        arg0[i * 2] = temp + lbl_8056180C * (temp - value);
+    }
 }
 
 s32 fn_8015FA44(void *arg0, s32 arg1, f32 arg2) {
