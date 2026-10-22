@@ -53,6 +53,7 @@ extern "C" void fn_801483D4(s32, s32, void *);
 extern "C" void *lbl_8032D1D8;
 extern "C" f32 fn_801451DC(s32);
 extern "C" f32 fn_801452B4(f32);
+extern "C" void fn_800104B0(s32, s32, s32, f32, f32, f32);
 extern "C" f32 lbl_805615D4;
 extern "C" void fn_801470B0(s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
 extern "C" void fn_80148DFC(void *);
@@ -464,7 +465,7 @@ extern "C" void fn_80145B94(void *arg0, u32 arg1) {
     f32 last = *(f32 *)((u8 *)arg0 + 0x10);
     s32 b = *(s32 *)((u8 *)arg0 + 0x14);
     s32 a = *(s32 *)((u8 *)arg0 + 0x18);
-    fn_8000FF88(a, b, (s32)arg1, last, value, scale);
+    ((void (*)(s32, s32, s32, ...))fn_8000FF88)(a, b, (s32)arg1, last, value, scale);
 }
 #pragma scheduling on
 #pragma pop
@@ -504,24 +505,10 @@ extern "C" void fn_80145D8C(void *arg0) {
 #pragma scheduling invalid_target
 #pragma small_data off
 extern "C" void fn_80145E70(s32 arg0) {
-    struct Config {
-        virtual void *getObject(const char *);
-        virtual void a1();
-        virtual s32 has(const char *);
-    };
-    struct Properties {
-        virtual void a0();
-        virtual void a1();
-        virtual void a2();
-        virtual void a3();
-        virtual void a4();
-        virtual void a5();
-        virtual s32 set(const char *, s32);
-    };
-    u8 *object;
-    object = (u8 *)fn_801284F8(0x50, &lbl_8032D0EC);
-    if (object == 0)
-        return;
+    struct Config { virtual void *getObject(const char *); virtual void a1(); virtual s32 has(const char *); };
+    struct Properties { virtual void a0(); virtual void a1(); virtual void a2(); virtual void a3(); virtual void a4(); virtual void a5(); virtual s32 set(const char *, s32); };
+    u8 *object = (u8 *)fn_801284F8(0x50, &lbl_8032D0EC);
+    if (object == 0) return;
     fn_80146C1C((void **)object);
     *(void **)object = &lbl_8032D1E8;
     fn_80146C08(object + 0x40, (s32)object);
@@ -542,11 +529,11 @@ extern "C" void fn_80145E70(s32 arg0) {
         lbl_8055E208 = 1;
         if (((Config *)*(void **)(object + 0x28))->has(lbl_80559E20) != 0) {
             void *properties = ((Config *)*(void **)(object + 0x28))->getObject(lbl_80559E20);
-            s32 value = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
-            s32 shifted = value >> 1;
-            s32 bit = value & 1;
-            value = shifted - bit;
-            lbl_8055E208 = (s8)((u32)value >> 31);
+            register s32 transformed = ((Properties *)properties)->set(lbl_80559E28, 1) ^ 1;
+            register s32 shifted = transformed >> 1;
+            register s32 low = transformed & 1;
+            transformed = shifted - low;
+            lbl_8055E208 = (s8)((u32)transformed >> 31);
         }
         *(s32 *)(object + 0x2C) = (s32)((void *(*)(void *, const char *))fn_80145FEC)(*(void **)(object + 0x28), lbl_80559E30);
         *(s32 *)(object + 0x30) = (s32)((void *(*)(void *, const char *))fn_801460F8)(*(void **)(object + 0x28), lbl_80559E34);
