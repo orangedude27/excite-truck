@@ -57,14 +57,10 @@ static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
 }
 
 float fn_80135278(float *a, float *b, float *c) {
-    float d0;
-    float d1;
-    float f;
-    d0 = b[0] - c[0];
-    d1 = b[1] - c[1];
-    f = a[0] * d0;
-    f += a[1] * d1;
-    return f;
+    float d[2];
+    d[0] = b[0] - c[0];
+    d[1] = b[1] - c[1];
+    return a[0] * d[0] + a[1] * d[1];
 }
 void *fn_801352B8(Unk_80135278 *arg0) {
     arg0->unk_0 = (s32)&lbl_8032BE80;
