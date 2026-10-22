@@ -20,6 +20,7 @@ extern const char lbl_80322830[];
 extern const char lbl_80322858[];
 extern const char lbl_80322708[];
 extern const char lbl_80322734[];
+extern "C" unsigned int GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void *);
 extern const char lbl_80559820[];
 extern const char lbl_80559828[];
 extern const char lbl_803227EC[];
