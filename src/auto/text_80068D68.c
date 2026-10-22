@@ -11,6 +11,8 @@
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 extern u8 lbl_803C3AF0[];
+extern void hidd_pm_set_now(void *);
+extern void fn_80086468(void *);
 extern u8 lbl_803C4040[];
 extern void fn_80089E40(void *, u8, void *);
 extern u8 lbl_803151D8[];
@@ -3193,6 +3195,50 @@ tBTM_STATUS btm_initiate_rem_name(BD_ADDR remote_bda, tBTM_INQ_INFO *p_cur, UINT
     else status = 3;
     return status;
 }
+
+void btm_process_remote_name(u8 *arg0, u8 *arg1, u16 arg2, u8 arg3) {
+    extern unsigned char lbl_803C0F78[];
+    u8 buffer[0x100];
+    s16 sp8;
+    s32 (*callback)(s16 *);
+    u16 len;
+    u8 *src;
+    u8 *dst;
+    u32 blocks;
+    u8 saved;
+    src = arg1;
+    callback = *(s32 (**)(s16 *))(lbl_803C0F78 + 0x167C);
+    saved = lbl_803C0F78[0x16AE];
+    fn_80070F90(lbl_803C0F78 + 0x1680);
+    lbl_803C0F78[0x16AE] = 0;
+    if (arg3 == 0) {
+        dst = buffer;
+        len = arg2;
+        if (len >= 0xF8) len = 0xF8;
+        *(u16 *)(buffer - 2) = len;
+        sp8 = 0;
+        if (len != 0) {
+            blocks = len >> 3;
+            if (blocks != 0) do {
+                dst[0] = src[0]; dst[1] = src[1]; dst[2] = src[2]; dst[3] = src[3];
+                dst[4] = src[4]; dst[5] = src[5]; dst[6] = src[6]; dst[7] = src[7];
+                src += 8; dst += 8;
+            } while (--blocks != 0);
+            len &= 7;
+            if (len != 0) do { *dst++ = *src++; } while (--len != 0);
+        }
+    } else {
+        *(u16 *)(buffer - 2) = 0;
+        sp8 = 9;
+        buffer[0] = arg3;
+    }
+    memset(lbl_803C0F78 + 0x16A8, 0, 6);
+    if (saved & 1) {
+        *(void **)(lbl_803C0F78 + 0x167C) = 0;
+        if (callback != 0) callback(&sp8);
+    }
+}
+
 #pragma pop
 
 void fn_8007C794(void) {
