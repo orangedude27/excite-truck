@@ -18,7 +18,7 @@ extern "C" void* lbl_804BCF88[];
 extern "C" int fn_801EF024(void*);
 extern "C" s32 fn_802A1C30(void*);
 extern "C" void fn_802A1DC0(void);
-extern "C" f32 lbl_80564728;
+extern "C" f32 lbl_80564728; extern "C" f32 lbl_8056472C, lbl_80564750, lbl_80564788, lbl_805647E8, lbl_805647EC, lbl_805647F0, lbl_805647C4; extern "C" int lbl_80349A40[]; 
 extern "C" const char lbl_80349A28[];
 extern "C" const char lbl_80349A68[];
 extern "C" f32 lbl_80564808, lbl_8056480C, lbl_80564810, lbl_80564814;
@@ -662,6 +662,43 @@ extern "C" void* __dt__14CollisionSpaceFv_802A3370(void* arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+void fn_802A3500(void *arg0, s32 arg1) {
+ char stack[0x98];
+ fn_8028E61C(&stack[0x08]);
+ *(s32 *)(stack+0x0c)=0x12c;
+ *(f32 *)(stack+0x10)=lbl_805647C4;
+ *(f32 *)(stack+0x14)=lbl_80564734;
+ *(s32 *)(stack+0x08)=2;
+ *(f32 *)(stack+0x50)=lbl_8056479C;
+ *(s32 *)(stack+0x4c)=4;
+ *(f32 *)(stack-0x04)=lbl_805647A4;
+ *(f32 *)(stack+0x00)=lbl_80564808;
+ *(f32 *)(stack+0x04)=lbl_805647A4;
+ *(f32 *)(stack+0x18)=lbl_805647A4;
+ *(f32 *)(stack+0x1c)=lbl_80564808;
+ *(f32 *)(stack+0x20)=lbl_805647A4;
+ *(f32 *)(stack-0x10)=lbl_80564730;
+ *(f32 *)(stack-0x0c)=lbl_805647B4;
+ *(f32 *)(stack-0x08)=lbl_80564730;
+ *(f32 *)(stack+0x24)=lbl_80564730;
+ *(f32 *)(stack+0x28)=lbl_805647B4;
+ *(f32 *)(stack+0x2c)=lbl_80564730;
+ *(f32 *)(stack+0x30)=lbl_80564730;
+ *(f32 *)(stack+0x34)=lbl_8056480C;
+ *(f32 *)(stack+0x38)=lbl_80564810;
+ *(f32 *)(stack+0x3c)=lbl_80564730;
+ *(f32 *)(stack+0x7c)=lbl_80564730;
+ *(f32 *)(stack+0x74)=lbl_80564730;
+ *(f32 *)(stack+0x6c)=lbl_80564730;
+ *(f32 *)(stack+0x60)=lbl_80564814;
+ *(f32 *)(stack+0x64)=lbl_805647D8;
+ *(f32 *)(stack+0x58)=lbl_8056479C;
+ *(f32 *)(stack+0x5c)=lbl_80564760;
+ *(f32 *)(stack+0x80)=lbl_80564744;
+ *(f32 *)(stack+0x84)=lbl_80564730;
+ *(s32 *)((char *)arg0+4)=((s32 (*)(void *, void *, s32, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32, f32))fn_8028E2F8)(&stack[0x08],(void *)lbl_80349A68,arg1,2,0x12c,lbl_80564760,lbl_805647D8,lbl_80564814,lbl_80564810,lbl_8056480C,lbl_805647B4,lbl_80564730,lbl_80564808,lbl_805647A4,lbl_8056479C,lbl_80564734,lbl_805647C4);
 }
 
 extern "C" { extern f32 lbl_80564730, lbl_80564734, lbl_80564738, lbl_8056479C, lbl_805647A0, lbl_805647B8, lbl_805647C4, lbl_805647F0; extern f32 lbl_80564820, lbl_80564824, lbl_80564828; extern int lbl_80349A74[]; void fn_802A37C8(void*, s32); }
