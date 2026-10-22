@@ -59,8 +59,7 @@ extern "C" float lbl_8056303C;
 extern "C" float lbl_80563040;
 extern "C" float lbl_80563044;
 extern "C" void fn_801FD3F0(void);
-extern "C" void fn_801FD144(void*, void*, void*, void*, void*, float);
-extern "C" void fn_801FD320(void*, float);
+
 extern "C" void fn_801FD5E8(void* = 0, float = 0);
 extern "C" void fn_801FDF18(void);
 extern "C" void fn_802E317C(const char*, ...);
