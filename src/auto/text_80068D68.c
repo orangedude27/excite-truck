@@ -10,6 +10,9 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern u8 HID_HostOpenDev(u32);
+extern u8 HID_HostRemoveDev(u32);
+extern void HID_HostSetSecurityLevel(void *, u8);
 extern char lbl_803152B0[];
 extern char lbl_803152D0[];
 extern u8 lbl_80559058[];
