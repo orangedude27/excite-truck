@@ -6505,6 +6505,66 @@ void l2c_csm_w4_l2ca_disconnect_rsp(void *p_ccb, u16 event, void *p_data)
     }
 }
 
+void forward_peer_data(void *arg0, void *arg1) {
+    extern u8 lbl_80318BC0[];
+    extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
+    u8 *context = arg0;
+    BUFFER_Q *queue = (BUFFER_Q *)(context + 0x70);
+    u8 *data = arg1;
+    u8 *frame;
+    u8 *out;
+    u16 len;
+    u16 count;
+    u16 max_len;
+    u16 value;
+
+    if (data != 0) {
+        if (*(u16 *)(context + 0x78) != 0) {
+            GKI_enqueue(queue, data);
+            data = GKI_dequeue(queue);
+        }
+    } else {
+        data = GKI_dequeue(queue);
+    }
+    while (data != 0) {
+        len = *(u16 *)(data + 4);
+        if (len < 9) {
+            if (lbl_803C4040[0] >= 1)
+                fn_80070954(0x80000, lbl_80318BC0, len);
+            GKI_freebuf(data);
+            data = GKI_dequeue(queue);
+            continue;
+        }
+        *(u16 *)(data + 4) = len - 8;
+        frame = data + len - 8;
+        count = *(u16 *)(data + 2);
+        out = frame + 0xA;
+        *(u16 *)(data + 2) = count + 4;
+        value = *(u16 *)(*(u8 **)(context + 0x10) + 0x28) | 0x2000;
+        frame[8] = value;
+        frame[9] = value >> 8;
+        max_len = *(u16 *)(lbl_803C0A50 + 0x7C);
+        count = *(u16 *)(data + 2);
+        if (count > max_len) {
+            *out = max_len;
+            out[1] = max_len >> 8;
+            out += 2;
+        } else {
+            *out = count;
+            out[1] = count >> 8;
+            out += 2;
+        }
+        len = *(u16 *)(data + 2);
+        *out++ = len - 4;
+        *out++ = (len - 4) >> 8;
+        *out++ = *(u16 *)(context + 0x16);
+        *out++ = *(u16 *)(context + 0x16) >> 8;
+        *(u16 *)(data + 2) += 4;
+        l2c_link_check_send_pkts(*(void **)(context + 0x10), 0, data, *(u8 *)(data + 2));
+        data = GKI_dequeue(queue);
+    }
+}
+
 void l2c_link_sec_comp(BD_ADDR bd_addr, void *ref_data, UINT8 status)
 {
     u8 addr[6];
@@ -7272,6 +7332,41 @@ void *l2cu_allocate_ccb(void *arg0, u16 arg1) {
     ccb[0x34] = 0; *(u32 *)(ccb + 4) = 0; ccb[0x37] = 1;
     *(u8 **)(ccb + 0x28) = ccb;
     return ccb;
+}
+
+void l2cu_release_ccb(void *arg0) {
+    u8 *ccb=arg0; u8 *conn=*(u8**)(ccb+0x10); u32 zero=0;
+    if(ccb[0]==0)return;
+    ccb[0]=0; fn_80070F90(ccb+0x18);
+    while(*(void**)(ccb+0x70)!=0) GKI_freebuf(GKI_dequeue((BUFFER_Q*)(ccb+0x70)));
+    *(u32*)(ccb+0x10)=0;
+    if(*(u8**)(conn+8)==ccb) {
+        *(void**)(conn+8)=*(void**)(ccb+8);
+        if(*(void**)(conn+8)) *(void**)(*(u8**)(conn+8)+0xC)=0;
+    } else if(*(u8**)(conn+0xC)==ccb) {
+        *(void**)(conn+0xC)=*(void**)(ccb+0xC);
+        *(void**)(*(u8**)(conn+0xC)+8)=0;
+    } else {
+        *(void**)(*(u8**)(ccb+0xC)+8)=*(void**)(ccb+8);
+        *(void**)(*(u8**)(ccb+8)+0xC)=*(void**)(ccb+0xC);
+    }
+    if(*(void**)(lbl_803C4040+0x7B0)==0) {
+        *(void**)(lbl_803C4040+0x7B0)=ccb; *(void**)(lbl_803C4040+0x7B4)=ccb;
+        *(u32*)(ccb+8)=zero; *(u32*)(ccb+0xC)=zero;
+    } else {
+        *(u32*)(ccb+8)=zero; *(void**)(ccb+0xC)=*(void**)(lbl_803C4040+0x7B4);
+        *(void**)(*(u8**)(lbl_803C4040+0x7B4)+8)=ccb; *(void**)(lbl_803C4040+0x7B4)=ccb;
+    }
+    if(conn[0]&&(s32)*(u32*)(conn+4)==4&&*(u32*)(conn+8)==0) {
+        u16 timer=*(u16*)(conn+0x58);
+        if(timer==0) {
+            u8 result=btm_sec_disconnect(*(u16*)(conn+0x28),0x13);
+            if(result==1){timer=0x1E;*(u32*)(conn+4)=5;}
+            else if(result==0){*(u32*)(conn+4)=5;timer=0xFFFF;}
+            else timer=1;
+        }
+        if(timer!=0xFFFF)btu_start_timer(conn+0x10,2,timer);
+    }
 }
 
 void *l2cu_find_ccb_by_cid(void *p_lcb, u16 cid) {
@@ -9191,6 +9286,38 @@ void *add_record(void *ctx, void *data) {
         *(void **)((u8 *)node + 4) = record;
     }
     return record;
+}
+
+void sdp_init(void) {
+    u8 *cb;
+    char *log=lbl_8031A188;
+    u32 zero=0;
+    memset(lbl_803C4C40,0,0x4634);
+    cb=lbl_803C4C40;
+    *(u16*)(cb+4)=0x100; cb[2]=1; cb[0x20]=1;
+    *(u16*)(cb+0x22)=0xFFFF;
+    *(u16*)(cb+0x462C)=0xF0; *(u16*)(cb+0x462E)=0x15;
+    if(!BTM_SetSecurityLevel(0,log,0,0,1,0,0)) {
+        if(cb[0x4630]>=1) fn_8007093C(0xA0000,log+0x14);
+        return;
+    }
+    if(!BTM_SetSecurityLevel(1,log,0,0,1,0,0)) {
+        if(cb[0x4630]>=1) fn_8007093C(0xA0000,log+0x38);
+        return;
+    }
+    cb[0x4630]=0;
+    *(u32*)(cb+0x4604)=(u32)sdp_connect_ind;
+    *(u32*)(cb+0x4608)=(u32)sdp_connect_cfm;
+    *(u32*)(cb+0x460C)=zero;
+    *(u32*)(cb+0x4610)=(u32)sdp_config_ind;
+    *(u32*)(cb+0x4614)=(u32)sdp_config_cfm;
+    *(u32*)(cb+0x4618)=(u32)sdp_disconnect_ind;
+    *(u32*)(cb+0x461C)=(u32)sdp_disconnect_cfm;
+    *(u32*)(cb+0x4620)=zero;
+    *(u32*)(cb+0x4624)=(u32)sdp_data_ind;
+    *(u32*)(cb+0x4628)=zero;
+    if(!L2CA_Register(1,(tL2CAP_APPL_INFO*)(cb+0x4604)) && cb[0x4630]>=1)
+        fn_8007093C(0xA0000,log+0x60);
 }
 
 void sdp_connect_ind(u8 *addr, u16 cid, u16 psm, u8 status) {
