@@ -183,6 +183,7 @@ extern void OSPanic(const char *, s32, const char *);
 extern s32 DVDReadAbsAsyncPrio(void *, void *, s32, s32, void *, s32);
 extern void cbForReadAsync(void *, void *);
 extern char lbl_80302070[];
+extern char lbl_803020A4[];
 extern char lbl_80558DF8[];
 s32 DVDReadAsyncPrio(void *block, void *addr, s32 length, s32 offset, void *callback, s32 prio) {
     s32 end;
@@ -734,6 +735,44 @@ void cbForCancel(void) {
 extern void *lbl_8055D88C;
 void fn_8003998C(void* hi) {
     lbl_8055D88C = hi;
+}
+
+void fn_80039A5C(void (*callback)(s32, void *)) {
+    s32 enabled;
+    s32 temp;
+    s32 saved;
+
+    enabled = OSDisableInterrupts();
+    __DVDClearWaitingQueue();
+    if (lbl_8055D858 != 0) {
+        lbl_8055D8B8 = callback;
+    } else {
+        if (executing_8055D8C8 != 0)
+            *(s32 *)((u8 *)executing_8055D8C8 + 0x28) = 0;
+        temp = OSDisableInterrupts();
+        OSDisableInterrupts();
+        lbl_8055D84C = 1;
+        if (executing_8055D8C8 == 0)
+            PausingFlag_8055D850 = 1;
+        OSRestoreInterrupts(0);
+        do {
+            fn_80039424(0, 0);
+        } while (__DVDPopWaitingQueue() != 0);
+        if (executing_8055D8C8 != 0) {
+            fn_80039424((void *)executing_8055D8C8, callback);
+        } else if (callback != 0) {
+            callback(0, 0);
+        }
+        saved = OSDisableInterrupts();
+        *(volatile s32 *)&lbl_8055D84C = 0;
+        if (PausingFlag_8055D850 != 0) {
+            PausingFlag_8055D850 = 0;
+            fn_80038040();
+        }
+        OSRestoreInterrupts(saved);
+        OSRestoreInterrupts(temp);
+    }
+    OSRestoreInterrupts(enabled);
 }
 
 void cbForPrepareReset(void) {
