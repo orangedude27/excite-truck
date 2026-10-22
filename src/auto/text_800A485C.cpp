@@ -1356,18 +1356,17 @@ extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4,
     u8 iter[0x70];
     struct Copy14 *src = (struct Copy14 *)arg0;
     struct Copy14 *dst = (struct Copy14 *)(iter + 8);
-    u32 mode;
+    u32 mode = 0;
     u32 flags;
     s32 result;
     u8 state;
-    *arg6 = 0; *arg7 = 0;
-    *(u8 *)((u8 *)arg1 + 0x20A) = 0;
-    *(u8 *)((u8 *)arg1 + 0x20B) = 0;
-    *(u8 *)((u8 *)arg1 + 0x20C) = 0;
-    *(s16 *)arg1 = 0;
+    *arg6 = mode; *arg7 = mode;
+    *(u8 *)((u8 *)arg1 + 0x20A) = (u8)mode;
+    *(u8 *)((u8 *)arg1 + 0x20B) = (u8)mode;
+    *(u8 *)((u8 *)arg1 + 0x20C) = (u8)mode;
+    *(s16 *)arg1 = (s16)mode;
     flags = lbl_803D2140[0x60 / 4];
-    outValue = 0;
-    mode = 0;
+    outValue = mode;
     if ((flags & 2) == 2) mode = fn_800B5070(arg3, &name);
     *dst = *src;
     if (mode == 1) {
@@ -1375,17 +1374,16 @@ extern "C" s32 fn_800AA924(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4,
         if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
         result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
         if (result == 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return 3; }
-        if ((iter[0x4C] & 0x40) != 0) {
-            result = fn_800AC1B4(iter, name);
-            if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
-            result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
-            if (result == 0) {
-                *(s32 *)((u8 *)arg1 + 0x22C) = *(s32 *)((u8 *)arg0 + 0x34);
-                *arg6 = outValue; *arg7 = *(s32 *)iter;
-                return 0;
-            }
-        }
+        if ((iter[0x4C] & 0x40) == 0) goto regular;
+        result = fn_800AC1B4(iter, name);
+        if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
+        result = fn_800A9DC0(arg1, iter, arg3, arg4, arg5, &outValue);
+        if (result != 0) goto regular;
+        *(s32 *)((u8 *)arg1 + 0x22C) = *(s32 *)((u8 *)arg0 + 0x34);
+        *arg6 = outValue; *arg7 = *(s32 *)iter;
+        return 0;
     }
+regular:
     result = fn_800AC1B4(iter, name);
 loop:
     if (result != 0) { *arg6 = 0xF423F; *arg7 = 0xF423F; return result; }
@@ -4509,6 +4507,119 @@ s32 fn_800BEE64(void *arg0, s32 arg1) {
     return 0;
 }
 
+struct Fn800C08A8Context { u8 pad[0xC]; u32 bitIndex; s32 limit; };
+extern "C" u8 lbl_8031C2E0[];
+#pragma push
+#pragma use_lmw_stmw on
+extern "C" void fn_800C08A8(void *arg0, s32 arg1, const u8 *arg2, s16 *arg3, s32 arg4, s32 arg5, s16 *arg6) {
+    s16 var_r0, var_r29, var_r30, var_r31, var_r4;
+    s32 temp_r26_2, temp_r27, shift;
+    u32 temp_r26, temp_r28, temp_r0, var_ctr, var_ctr_2, var_r3;
+    u8 temp_r27_2;
+    s32 var_r7;
+    s16 *var_r12, *var_r5;
+
+    var_r7 = arg4;
+    var_r12 = arg3 + var_r7;
+    var_ctr = (u32)((arg1 + 3) - var_r7) >> 2U;
+    if (var_r7 < arg1) {
+        do {
+            temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
+            temp_r28 = temp_r26 + 6;
+            temp_r27 = 0x10 - (temp_r26 & 7);
+            M2C_FIELD(arg0, u32 *, 0xC) = temp_r28;
+            temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
+            temp_r26 = arg2[temp_r26_2];
+            temp_r26_2 = (temp_r26_2 + 1) & 0x1FFF;
+            temp_r27_2 = arg2[temp_r26_2];
+            temp_r26 = ((temp_r26 << 8) | temp_r27_2) & lbl_802F3F54[temp_r27];
+            temp_r0 = (temp_r26 >> (temp_r27 - 6)) & 0xFFFF;
+            temp_r27_2 = lbl_8031C2E0[temp_r0];
+            var_r0 = (temp_r27_2 >> 3U) & 1;
+            var_r31 = (temp_r27_2 >> 2U) & 1;
+            var_r30 = (temp_r27_2 >> 1U) & 1;
+            var_r29 = temp_r27_2 & 1;
+            temp_r26 = temp_r28 - (temp_r27_2 >> 4);
+            M2C_FIELD(arg0, u32 *, 0xC) = temp_r26;
+            if (var_r0 != 0) {
+                temp_r28 = temp_r26 + 1;
+                M2C_FIELD(arg0, u32 *, 0xC) = temp_r28;
+                shift = 8 - (temp_r26 & 7);
+                shift -= 1;
+                temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
+                if (((s32)arg2[temp_r26_2] >> shift) & 1) var_r0 = -var_r0;
+            }
+            if (var_r31 != 0) {
+                temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
+                temp_r28 = temp_r26 + 1;
+                M2C_FIELD(arg0, u32 *, 0xC) = temp_r28;
+                shift = 8 - (temp_r26 & 7);
+                shift -= 1;
+                temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
+                if (((s32)arg2[temp_r26_2] >> shift) & 1) var_r31 = -var_r31;
+            }
+            if (var_r30 != 0) {
+                temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
+                temp_r28 = temp_r26 + 1;
+                M2C_FIELD(arg0, u32 *, 0xC) = temp_r28;
+                shift = 8 - (temp_r26 & 7);
+                shift -= 1;
+                temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
+                if (((s32)arg2[temp_r26_2] >> shift) & 1) var_r30 = -var_r30;
+            }
+            if (var_r29 != 0) {
+                temp_r26 = M2C_FIELD(arg0, u32 *, 0xC);
+                temp_r28 = temp_r26 + 1;
+                M2C_FIELD(arg0, u32 *, 0xC) = temp_r28;
+                shift = 8 - (temp_r26 & 7);
+                shift -= 1;
+                temp_r26_2 = (temp_r26 >> 3U) & 0x1FFF;
+                if (((s32)arg2[temp_r26_2] >> shift) & 1) var_r29 = -var_r29;
+            }
+            var_r12[0] = var_r0; var_r12[1] = var_r31;
+            var_r12[2] = var_r30; var_r12[3] = var_r29;
+            if ((s32)M2C_FIELD(arg0, u32 *, 0xC) > M2C_FIELD(arg0, s32 *, 0x10)) {
+                if (arg5 == 1 && *arg6 == 0) *arg6 = (s16)var_r7;
+                temp_r26_2 = (s32)(arg1 + 3);
+                var_r5 = arg3 + var_r7;
+                var_r4 = 0;
+                temp_r26_2 -= var_r7;
+                var_r3 = (u32)temp_r26_2 >> 2;
+                if (var_r7 < arg1) {
+                    temp_r0 = var_r3 >> 3U;
+                    var_ctr_2 = temp_r0;
+                    if (temp_r0 != 0) {
+                        do {
+                            var_r5[0]=var_r4; var_r5[1]=var_r4; var_r5[2]=var_r4; var_r5[3]=var_r4;
+                            var_r5[4]=var_r4; var_r5[5]=var_r4; var_r5[6]=var_r4; var_r5[7]=var_r4;
+                            var_r5[8]=var_r4; var_r5[9]=var_r4; var_r5[10]=var_r4; var_r5[11]=var_r4;
+                            var_r5[12]=var_r4; var_r5[13]=var_r4; var_r5[14]=var_r4; var_r5[15]=var_r4;
+                            var_r5[16]=var_r4; var_r5[17]=var_r4; var_r5[18]=var_r4; var_r5[19]=var_r4;
+                            var_r5[20]=var_r4; var_r5[21]=var_r4; var_r5[22]=var_r4; var_r5[23]=var_r4;
+                            var_r5[24]=var_r4; var_r5[25]=var_r4; var_r5[26]=var_r4; var_r5[27]=var_r4;
+                            var_r5[28]=var_r4; var_r5[29]=var_r4; var_r5[30]=var_r4; var_r5[31]=var_r4;
+                            var_r5 += 32; var_ctr_2 -= 1;
+                        } while (var_ctr_2 != 0);
+                        var_r3 &= 7;
+                        if (var_r3 != 0) goto block_21;
+                    } else {
+block_21:
+                        var_ctr_2 = var_r3;
+                        do {
+                            var_r5[0]=var_r4; var_r5[1]=var_r4; var_r5[2]=var_r4; var_r5[3]=var_r4;
+                            var_r5 += 4; var_ctr_2 -= 1;
+                        } while (var_ctr_2 != 0);
+                    }
+                }
+                return;
+            }
+            var_r12 += 4;
+            var_r7 += 4;
+        } while (--var_ctr != 0);
+    }
+}
+#pragma pop
+
 struct Fn800C0B68Context { u8 pad[0xC]; u32 bitIndex; s32 limit; };
 extern "C" s32 fn_800BDEB4(const u8 *, s32, u32 *);
 #pragma push
@@ -6642,6 +6753,9 @@ extern "C" void fn_800D16C4() {
     if (lbl_8055DDB0 == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E960, 0x3F, lbl_8031E974);
     }
+    s32 neg1 = -1;
+    s32 magic = 0x6666;
+    s32 zero = 0;
     u8* p = (u8*)lbl_8055DDB0;
     s32 i = 0;
     do {
@@ -6662,17 +6776,22 @@ extern "C" void fn_800D16C4() {
                     s32 q = count >> 2;
                     if (q != 0) {
                         do {
-                            dst[0] = (s16)((src[0] * scale) / 10);
-                            dst[1] = (s16)((src[1] * scale) / 10);
-                            dst[2] = (s16)((src[2] * scale) / 10);
-                            dst[3] = (s16)((src[3] * scale) / 10);
+                            s32 v;
+                            v = (src[0] * scale) / 10;
+                            dst[0] = (u16)v;
+                            v = (src[1] * scale) / 10;
+                            dst[1] = (u16)v;
+                            v = (src[2] * scale) / 10;
+                            dst[2] = (u16)v;
+                            v = (src[3] * scale) / 10;
+                            dst[3] = (u16)v;
                             src += 4;
                             dst += 4;
                         } while (--q != 0);
                         s32 rem = count & 3;
                         if (rem != 0) {
                             do {
-                                *dst = (s16)((*src * scale) / 10);
+                                *dst = (u16)((*src * scale) / 10);
                                 src += 1;
                                 dst += 1;
                             } while (--rem != 0);
@@ -6685,14 +6804,14 @@ extern "C" void fn_800D16C4() {
                         s32 q = pad >> 3;
                         if (q != 0) {
                             do {
-                                dst[0] = 0; dst[1] = 0; dst[2] = 0; dst[3] = 0;
-                                dst[4] = 0; dst[5] = 0; dst[6] = 0; dst[7] = 0;
+                                dst[0] = zero; dst[1] = zero; dst[2] = zero; dst[3] = zero;
+                                dst[4] = zero; dst[5] = zero; dst[6] = zero; dst[7] = zero;
                                 dst += 8;
                             } while (--q != 0);
                             s32 rem = pad & 7;
                             if (rem != 0) {
                                 do {
-                                    *dst = 0;
+                                    *dst = zero;
                                     dst += 1;
                                 } while (--rem != 0);
                             }
@@ -6707,14 +6826,14 @@ extern "C" void fn_800D16C4() {
                 s32 v = (s32)*(u32*)(p + 0x54) - 0x50;
                 *(u32*)(p + 0x54) = v;
                 if (v <= 0) {
-                    *(s32*)(p + 0x58) = -1;
-                    *(u32*)(p + 0x50) = 0;
+                    *(s32*)(p + 0x58) = neg1;
+                    *(u32*)(p + 0x50) = zero;
                 }
             } else {
                 s32 c = (s32)p[0x5e] + 1;
                 p[0x5e] = (u8)c;
                 if ((s8)(c & 0xff) > 0x12c) {
-                    *(u32*)(p + 0x50) = 0;
+                    *(u32*)(p + 0x50) = zero;
                 }
             }
             OSRestoreInterrupts(lr);
