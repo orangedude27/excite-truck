@@ -13,6 +13,7 @@
 extern char lbl_8031A188[];
 extern char lbl_803192C0[];
 extern char lbl_803192E0[];
+extern void *port_find_dlci_port(unsigned int);
 extern unsigned char lbl_803C0A50[];
 extern void UUSB_Write(u8, u8 *, u16, BT_HDR *);
 extern void sdp_connect_ind(u8 *, u16, u16, u8);
