@@ -2,6 +2,7 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 extern "C" void fn_802A41D8(void *arg0, s32 arg1);
+extern "C" s32 fn_8028E2F8(void *, void *, s32, s32);
 
 extern "C" void fn_802A3C50(void* arg0, s32 arg1);
 
