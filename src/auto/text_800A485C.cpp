@@ -16,6 +16,7 @@ class PaneDrawDispatch { public:
 };
 extern "C" f32 lbl_80560E28, lbl_80560E30;
 extern "C" u8 lbl_80560E2C, lbl_80560E2D, lbl_80560E2E, lbl_80560E2F;
+extern "C" void updateTrigPane__Q210homebutton10HomeButtonFv(void *);
 extern "C" void GXSetCullMode(s32);
 extern "C" void GetLayoutRect__Q34nw4lyt6LayoutCFv(f32 *, void *);
 extern "C" void *GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *, u32);
