@@ -1446,7 +1446,6 @@ extern "C" void fn_800AABE0(void) {
     ((void (*)(s32, s32, s32, s32, s32, s32, void *, void *))fn_800AA924)(a, b, c, d, e, f, &spC, &sp8);
 }
 
-extern s32 fn_800B4D00(void);
 extern "C" s32 fn_800AE620(s32, s32, s32, s32);
 extern "C" s32 fn_800B4D00(void);
 #pragma push
