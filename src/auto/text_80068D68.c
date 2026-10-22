@@ -9016,6 +9016,40 @@ void sdp_connect_ind(u8 *addr, u16 cid, u16 psm, u8 status) {
     }
 }
 
+void sdp_connect_cfm(u16 cid, u16 result) {
+    extern tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16);
+    extern char lbl_8031A188[];
+    u16 status = result;
+    char *log = lbl_8031A188;
+    u16 handle = cid;
+    tCONN_CB *p_ccb;
+    u16 (*p_callback)(u16);
+
+    p_ccb = l2cu_find_lcb_by_handle_80099E54(handle);
+    if (p_ccb == NULL) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_80070954(0xA0001, log + 0xB0, handle);
+    } else if (status == 0 && p_ccb->con_state == 1) {
+        p_ccb->con_state = 2;
+        L2CA_ConfigReq(handle, (tL2CAP_CFG_INFO *)lbl_803C4C40);
+        if (lbl_803C4C40[0x4630] >= 4)
+            fn_80070954(0xA0003, log + 0xDC, p_ccb->connection_id);
+    } else {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_8007096C(0xA0001, log + 0x108, status, p_ccb->connection_id);
+        p_callback = *(u16 (**)(u16))((u8 *)p_ccb + 0x414);
+        if (p_callback != NULL) {
+            if (status == 14 || status == 5 || status == 24 || status == 41 || status == 6)
+                p_callback(0xFFF6);
+            else if (status == 15)
+                p_callback(0xFFF7);
+            else
+                p_callback(0xFFF1);
+        }
+        fn_80099F58(p_ccb);
+    }
+}
+
 extern tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16);
 void sdp_config_ind(u16 cid, void *p_cfg) {
     tCONN_CB *lcb = l2cu_find_lcb_by_handle_80099E54(cid);
