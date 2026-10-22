@@ -7,3 +7,10 @@ int fn_801392F8(void *arg0) {
     }
     return 0;
 }
+extern void *lbl_8032BFA0;
+extern void *lbl_8032BFAC;
+extern float lbl_805613E4;
+extern float lbl_805613E8;
+extern float lbl_805613EC;
+extern void fn_80148134(float *, float *, int, float, float);
+extern void fn_802C8E00(int, int, float, float, float, float, float);
