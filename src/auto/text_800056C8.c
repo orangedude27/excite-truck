@@ -1,4 +1,8 @@
 #include <types.h>
+extern s32 fn_801769A8(void);
+extern s32 fn_80005580(s32);
+extern s32 fn_80005678(void);
+extern s32 fn_80005694(void);
 
 extern u8 lbl_802FB5F0[];
 extern u8 lbl_802FB5D8[];
@@ -483,6 +487,26 @@ void fn_800070D4(void) {
 }
 
 void fn_800070D8(void) {
+}
+
+void fn_800070DC(void) {
+    s32 *base = lbl_8034EEB8;
+    s32 i;
+    fn_80209190(lbl_8055D354, lbl_80560130);
+    ((void (*)(void))(*(void ***)*(void **)(base + 3))[7])();
+    ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 0x5C))[7])();
+    ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 0x58))[7])();
+    if (*(void **)((u8 *)base + 0x50)) ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 0x50))[7])();
+    if (*(void **)((u8 *)base + 8)) ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 8))[7])();
+    if (*(void **)((u8 *)base + 4)) ((void (*)(void))(*(void ***)*(void **)((u8 *)base + 4))[7])();
+    for (i = 0; i < ((s32 *)lbl_8055D350)[5]; i++) {
+        void *obj = *(void **)((u8 *)base + i * 0x10 + 0x18);
+        ((void (*)(void))(*(void ***)obj)[7])();
+        *(s32 *)((u8 *)base + i * 0x10 + 0x20) = 0;
+    }
+    fn_8001DEA8();
+    fn_80011A50();
+    fn_80005464();
 }
 
 void fn_80007210(void) {
