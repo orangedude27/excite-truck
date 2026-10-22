@@ -1,6 +1,14 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern "C" int ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(void *, void *, int, int, int);
+extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(void *, void *, int, const void *);
+extern "C" void *AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(int, int, int, int, int);
+extern "C" void SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
+extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *, const void *, int);
 extern "C" void fn_800E6A44(void);
 extern "C" void AIRegisterDMACallback(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
@@ -1049,6 +1057,41 @@ extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7
             void *voice = *(void **)(entry + 0xC);
             if (voice != 0) fn_80033538((unsigned short)type);
         }
+    }
+}
+
+extern "C" void UpdateAxSrc__Q46nw4hbm3snd6detail7AxVoiceFb(void *arg0, int arg1) {
+    unsigned char *self = (unsigned char *)arg0;
+    float scale = (float)(*(unsigned int *)(self + 0x114));
+    float ratio = (*(float *)(self + 0x184) * scale) / lbl_80560F40;
+    float max = lbl_80560F38;
+    float min = lbl_80560F3C;
+    float gain = lbl_80560F58;
+    int i = 0, offset = 0, j;
+    unsigned char *src = self;
+    short values[6];
+    while (i < *(int *)(self + 0x108)) {
+        float volume = *(float *)(src + 0x98);
+        if (volume > max) volume = max;
+        else if (volume < min) volume = min;
+        if (arg1) {
+            unsigned int sample = (unsigned int)(gain * ratio * volume);
+            values[0] = (short)(sample >> 16);
+            values[1] = (short)sample;
+            values[2] = values[3] = values[4] = values[5] = 0;
+            unsigned char *channel = self + offset;
+            for (j = 0; j < *(int *)(self + 0x104); j++) {
+                fn_800339B0(*(void **)(channel + 0xc), values);
+                channel += 0x10;
+            }
+        } else {
+            unsigned char *channel = self + offset;
+            for (j = 0; j < *(int *)(self + 0x104); j++) {
+                fn_80033A34(*(void **)(channel + 0xc), ratio * volume);
+                channel += 0x10;
+            }
+        }
+        src += 0x1c; offset += 4; i++;
     }
 }
 
