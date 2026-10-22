@@ -188,6 +188,7 @@ class HomeButtonEventHandler { public: char pad[4]; EventDispatchA *dispatch; co
       virtual void d12(); virtual void d13(); virtual void d14();
       virtual void *findPane(const char *, s32);
   };
+  class TriggerPane;
   class PaneSearch {
   public:
       virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
