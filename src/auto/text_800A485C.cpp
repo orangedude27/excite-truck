@@ -51,6 +51,14 @@ extern "C" s32 NANDClose(void *);
 extern "C" s32 NANDOpen(void *, void *, s32);
 extern "C" u8 lbl_80405D58[];
 extern "C" s32 NANDWrite(void *, const void *, u32);
+extern "C" u32 lbl_8055DDB0;
+extern "C" const char lbl_8031E960[];
+extern "C" const char lbl_8031E974[];
+extern "C" s32 OSDisableInterrupts(void);
+extern "C" void OSRestoreInterrupts(s32);
+extern "C" s32 WPADCanSendStreamData(s32);
+extern "C" s32 WENCGetEncodeData(void *, u32, const s16 *, s32, void *);
+extern "C" void fn_80062278(s32, void *, s32);
 
   namespace homebutton {
   namespace gui {
@@ -4437,71 +4445,51 @@ struct Fn800C0B68Context { u8 pad[0xC]; u32 bitIndex; s32 limit; };
 extern "C" s32 fn_800BDEB4(const u8 *, s32, u32 *);
 #pragma push
 #pragma opt_common_subs off
-extern "C" void fn_800C0B68(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s16 *arg6) {
-    s32 var_r28 = arg4;
+extern "C" void fn_800C0B68(Fn800C0B68Context *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s16 *arg6) {
     s16 var_r0, var_r3, var_r4, var_r5;
     s32 temp_r3;
     u32 temp_r5;
     u32 temp_r8, temp_r8_2, temp_r8_3, temp_r8_4;
-    u32 temp_r0;
-    u32 var_ctr, var_ctr_2;
-    u32 var_r3_2;
+    u32 temp_r0, var_ctr, var_ctr_2, var_r3_2;
     s32 shift;
     s16 *var_r5_2;
     s16 *var_r31 = (s16 *)arg3 + arg4;
 
     goto block_25;
 loop_25:
-    temp_r3 = fn_800BDEB4((const u8 *)arg2, 4, (u32 *)((u8 *)arg0 + 0xC));
+    temp_r3 = fn_800BDEB4((const u8 *)arg2, 4, &arg0->bitIndex);
     temp_r5 = ~(temp_r3 | temp_r3);
     var_r0 = (s16)((temp_r5 >> 3U) & 1);
     var_r3 = (s16)((temp_r5 >> 2U) & 1);
     var_r4 = (s16)((temp_r5 >> 1U) & 1);
     var_r5 = (s16)(temp_r5 & 1);
     if (var_r0 != 0) {
-        temp_r8 = M2C_FIELD(arg0, u32 *, 0xC);
-        M2C_FIELD(arg0, u32 *, 0xC) = temp_r8 + 1;
-        shift = 8 - (temp_r8 & 7);
-        shift -= 1;
-        if (((s32)*((const u8 *)arg2 + ((temp_r8 >> 3U) & 0x1FFF)) >> shift) & 1)
-            var_r0 = -var_r0;
+        temp_r8 = arg0->bitIndex; arg0->bitIndex = temp_r8 + 1;
+        shift = 8 - (temp_r8 & 7); shift -= 1;
+        if (((s32)*((const u8 *)arg2 + ((temp_r8 >> 3U) & 0x1FFF)) >> shift) & 1) var_r0 = -var_r0;
     }
     if (var_r3 != 0) {
-        temp_r8_2 = M2C_FIELD(arg0, u32 *, 0xC);
-        M2C_FIELD(arg0, u32 *, 0xC) = temp_r8_2 + 1;
-        shift = 8 - (temp_r8_2 & 7);
-        shift -= 1;
-        if (((s32)*((const u8 *)arg2 + ((temp_r8_2 >> 3U) & 0x1FFF)) >> shift) & 1)
-            var_r3 = -var_r3;
+        temp_r8_2 = arg0->bitIndex; arg0->bitIndex = temp_r8_2 + 1;
+        shift = 8 - (temp_r8_2 & 7); shift -= 1;
+        if (((s32)*((const u8 *)arg2 + ((temp_r8_2 >> 3U) & 0x1FFF)) >> shift) & 1) var_r3 = -var_r3;
     }
     if (var_r4 != 0) {
-        temp_r8_3 = M2C_FIELD(arg0, u32 *, 0xC);
-        M2C_FIELD(arg0, u32 *, 0xC) = temp_r8_3 + 1;
-        shift = 8 - (temp_r8_3 & 7);
-        shift -= 1;
-        if (((s32)*((const u8 *)arg2 + ((temp_r8_3 >> 3U) & 0x1FFF)) >> shift) & 1)
-            var_r4 = -var_r4;
+        temp_r8_3 = arg0->bitIndex; arg0->bitIndex = temp_r8_3 + 1;
+        shift = 8 - (temp_r8_3 & 7); shift -= 1;
+        if (((s32)*((const u8 *)arg2 + ((temp_r8_3 >> 3U) & 0x1FFF)) >> shift) & 1) var_r4 = -var_r4;
     }
     if (var_r5 != 0) {
-        temp_r8_4 = M2C_FIELD(arg0, u32 *, 0xC);
-        M2C_FIELD(arg0, u32 *, 0xC) = temp_r8_4 + 1;
-        shift = 8 - (temp_r8_4 & 7);
-        shift -= 1;
-        if (((s32)*((const u8 *)arg2 + ((temp_r8_4 >> 3U) & 0x1FFF)) >> shift) & 1)
-            var_r5 = -var_r5;
+        temp_r8_4 = arg0->bitIndex; arg0->bitIndex = temp_r8_4 + 1;
+        shift = 8 - (temp_r8_4 & 7); shift -= 1;
+        if (((s32)*((const u8 *)arg2 + ((temp_r8_4 >> 3U) & 0x1FFF)) >> shift) & 1) var_r5 = -var_r5;
     }
-    var_r31[0] = var_r0;
-    var_r31[1] = var_r3;
-    var_r31[2] = var_r4;
-    var_r31[3] = var_r5;
-    if ((s32)M2C_FIELD(arg0, u32 *, 0xC) > M2C_FIELD(arg0, s32 *, 0x10)) {
-        if (arg5 == 1 && *arg6 == 0)
-            *arg6 = var_r28;
-        var_r5_2 = (s16 *)arg3 + var_r28;
-        var_r3_2 = (u32)((arg1 + 3) - var_r28) >> 2U;
-        if (var_r28 < arg1) {
-            temp_r0 = var_r3_2 >> 3U;
-            var_ctr = temp_r0;
+    var_r31[0] = var_r0; var_r31[1] = var_r3; var_r31[2] = var_r4; var_r31[3] = var_r5;
+    if ((s32)arg0->bitIndex > arg0->limit) {
+        if (arg5 == 1 && *arg6 == 0) *arg6 = (s16)arg4;
+        var_r5_2 = (s16 *)arg3 + arg4;
+        var_r3_2 = (u32)((arg1 + 3) - arg4) >> 2U;
+        if (arg4 < arg1) {
+            temp_r0 = var_r3_2 >> 3U; var_ctr = temp_r0;
             if (temp_r0 != 0) {
                 do {
                     var_r5_2[0] = 0; var_r5_2[1] = 0; var_r5_2[2] = 0; var_r5_2[3] = 0;
@@ -4512,19 +4500,16 @@ loop_25:
                     var_r5_2[20] = 0; var_r5_2[21] = 0; var_r5_2[22] = 0; var_r5_2[23] = 0;
                     var_r5_2[24] = 0; var_r5_2[25] = 0; var_r5_2[26] = 0; var_r5_2[27] = 0;
                     var_r5_2[28] = 0; var_r5_2[29] = 0; var_r5_2[30] = 0; var_r5_2[31] = 0;
-                    var_r5_2 += 32;
-                    var_ctr -= 1;
+                    var_r5_2 += 32; var_ctr -= 1;
                 } while (var_ctr != 0);
                 var_r3_2 &= 7;
-                if (var_r3_2 != 0)
-                    goto block_21;
+                if (var_r3_2 != 0) goto block_21;
             } else {
 block_21:
                 var_ctr_2 = var_r3_2;
                 do {
                     var_r5_2[0] = 0; var_r5_2[1] = 0; var_r5_2[2] = 0; var_r5_2[3] = 0;
-                    var_r5_2 += 4;
-                    var_ctr_2 -= 1;
+                    var_r5_2 += 4; var_ctr_2 -= 1;
                 } while (var_ctr_2 != 0);
             }
         }
@@ -4532,9 +4517,8 @@ block_21:
     }
 block_25:
     var_r31 += 4;
-    var_r28 += 4;
-    if (var_r28 < arg1)
-        goto loop_25;
+    arg4 += 4;
+    if (arg4 < arg1) goto loop_25;
 }
 #pragma pop
 u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
