@@ -1374,7 +1374,7 @@ extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 in
 
 extern "C" s32 fn_800AC1B4(void *, s32);
 extern "C" s32 VFiPFENT_ITER_IsAtLogicalEnd(void *);
-extern s32 VFiPFENT_ITER_Advance(void *, s32);
+extern "C" s32 VFiPFENT_ITER_Advance(void *, s32);
 extern "C" s32 fn_800A9DC0(void *, void *, s32, s32, s32, s32 *);
 extern "C" u32 fn_800B5070(s32, s32 *);
 #pragma push
