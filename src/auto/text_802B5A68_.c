@@ -440,7 +440,7 @@ s16 fn_802B6ED8(s32 arg0, s32 arg1, u32 arg2) {
 
 #pragma pop
 extern float lbl_80564C8C;
-extern float lbl_80564C80;
+extern double lbl_80564C80;
 extern float lbl_80564C90;
 extern float lbl_80564C94;
 extern s32 fn_802BC09C(s32, s32, float);
@@ -473,6 +473,47 @@ void fn_802B7434(void) {
                 }
             }
         }
+    }
+}
+
+void fn_802B7518(s16 arg0, s16 arg1, s32 arg2) {
+    s16 x;
+    s16 y;
+    s16 value;
+
+    x = arg0;
+    y = arg1;
+    switch (lbl_8055FA38) {
+    case 2:
+        if (arg2 != 0) {
+            if (fn_802BC09C(lbl_8055FA28, 0xFF, (float)(u32)arg2 / lbl_80564C90)) {
+                value = lbl_8055FA50[0];
+                if (value < x)
+                    value = x;
+                lbl_8055FA50[0] = value;
+                value = lbl_8055FA50[1];
+                if (value > x)
+                    x = value;
+                lbl_8055FA50[1] = x;
+                value = lbl_8055FA50[2];
+                if (value < y)
+                    value = y;
+                lbl_8055FA50[2] = value;
+                value = lbl_8055FA50[3];
+                if (value > y)
+                    y = value;
+                lbl_8055FA50[3] = y;
+            } else {
+                fn_802B7300(x, y, arg2, (s32)0xFFFF0000, lbl_80564C94);
+            }
+        }
+        break;
+    case 3:
+        fn_802C21DC();
+        break;
+    case 5:
+        fn_80204044(arg2, (float)arg0 * lbl_80564C58, (float)arg1 * lbl_80564C58);
+        break;
     }
 }
 
