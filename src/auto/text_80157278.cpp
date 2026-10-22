@@ -2728,21 +2728,3 @@ public:
  virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
  virtual void v32(); virtual void v33(); virtual void v34(); virtual s32 v35();
 };
-extern "C" {
-void* fn_80131810(void*); void* fn_80131808(void*); void fn_80131818(void*);
-void fn_801345D8(void*, s32, const char*, s32, void*);
-extern char lbl_8032EAD4[],lbl_8032EAE0[],lbl_8055A030[],lbl_8055A038[],lbl_8055A040[],lbl_8055A044[],lbl_8055A048[],lbl_8055A050[],lbl_8055A054[];
-extern f32 lbl_80561754;
-}
-struct V80157560 {
- virtual void z0(); virtual void z1(); virtual void z2(); virtual void z3();
- virtual void z4(); virtual void z5(); virtual void z6(); virtual void z7();
- virtual void z8(); virtual void z9(); virtual void z10(); virtual void z11();
- virtual void z12(); virtual void z13(); virtual void z14(); virtual void z15();
- virtual void z16(); virtual void z17(); virtual void z18(); virtual void z19();
- virtual void z20(); virtual void z21(); virtual void z22(); virtual void z23();
- virtual void z24(); virtual void z25(); virtual void z26(); virtual void z27();
- virtual V80157560* get(s32); virtual s32 test(void*); virtual V80157560* find(void*);
- virtual s32 num(void*); virtual s32 val(void*); virtual s32 index(void*); virtual f32 flt(const char*);
-};
-struct Arg80157560 { void** v; void* data; s32 count; };
