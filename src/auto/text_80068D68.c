@@ -2684,6 +2684,32 @@ u8 fn_8007B340(void) {
     return lbl_803C0F78[0x1848];
 }
 
+extern u8 lbl_803163D0[];
+tBTM_STATUS BTM_CancelInquiry(void) {
+    tBTM_STATUS result = 0;
+    u8 *cb = lbl_803C0F78;
+    if (cb[0x27C0] >= 3) fn_8007093C(0xD0002, lbl_803163D0);
+    if (fn_80079514() == 0) return 6;
+    if (cb[0x1848] != 0 && !(cb[0x1848] & 4)) {
+        cb[0x1848] = 0;
+        cb[0x1847] = 0;
+        *(u32 *)(cb + 0x16B4) = 0;
+        *(u32 *)(cb + 0x16B0) = 0;
+        if (cb[0x1844] != 0) {
+            cb[0x1844] = 0;
+            cb[0x1845]++;
+        } else if (btsnd_hcic_inq_cancel() == 0) result = 3;
+        *(u32 *)(cb + 0x16C0) += 1;
+        if (*(void **)(cb + 0x16DC) != NULL) {
+            GKI_freebuf(*(void **)(cb + 0x16DC));
+            *(u32 *)(cb + 0x16DC) = 0;
+        }
+        *(u16 *)(cb + 0x16E0) = 0;
+        *(u16 *)(cb + 0x16E2) = 0;
+    }
+    return result;
+}
+
 tBTM_INQ_INFO *BTM_InqDbFirst(void) {
     u8 *entry = lbl_803C0F78 + 0x16E4;
     s32 i;
@@ -3756,7 +3782,7 @@ typedef struct {
     u8 disc_succ[0x28];
     u8 rem_name[1];
 } GapTraceStrings;
-extern void gap_connect_ind(void), gap_connect_cfm(void), gap_config_ind(void), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(void), gap_congestion_ind(void);
+extern void gap_connect_ind(void), gap_connect_cfm(void), gap_config_ind(void), gap_config_cfm(void), gap_disconnect_ind(void), gap_data_ind(u16, void *), gap_congestion_ind(void);
 void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0x84)=gap_connect_ind;
  *(void **)(lbl_803C3740+0x88)=gap_connect_cfm;
@@ -5668,6 +5694,44 @@ void l2cu_send_peer_info_rsp(void *arg0, s32 arg1, u16 arg2) {
         *((u8 *)p + 0x17) = 0;
         l2c_link_check_send_pkts(arg0, 0, p, flag);
     }
+}
+
+void *l2cu_allocate_ccb(void *arg0, u16 arg1) {
+    u8 *ccb = *(u8 **)(lbl_803C4040 + 0x7B0);
+    u32 index;
+    u32 magic;
+    u8 *next;
+    if (ccb == NULL) return NULL;
+    next = *(u8 **)(ccb + 8);
+    *(u8 **)(lbl_803C4040 + 0x7B0) = next;
+    ccb[0] = 1;
+    index = (u32)(ccb - (lbl_803C4040 + 0x178));
+    magic = (u32)(((s32)0x84210843 * (s32)index + (s32)index) >> 6);
+    *(u16 *)(ccb + 0x14) = (u16)(magic + ((u32)magic >> 31) + 0x40);
+    *(void **)(ccb + 0x10) = arg0;
+    if (*(void **)((u8 *)arg0 + 8) == NULL) {
+        *(u8 **)((u8 *)arg0 + 0xC) = ccb;
+        *(u8 **)((u8 *)arg0 + 8) = ccb;
+        *(u32 *)(ccb + 8) = 0;
+        *(u32 *)(ccb + 0xC) = 0;
+    } else {
+        *(u32 *)(ccb + 8) = 0;
+        *(u8 **)(ccb + 0xC) = *(u8 **)((u8 *)arg0 + 0xC);
+        *(u8 **)(*(u8 **)((u8 *)arg0 + 0xC) + 8) = ccb;
+        *(u8 **)((u8 *)arg0 + 0xC) = ccb;
+    }
+    *(u16 *)(ccb + 0x3C) = 0xFFFF;
+    *(u16 *)(ccb + 0x3A) = 0x2A0;
+    *(u16 *)(ccb + 0x38) = 0x2A0;
+    ccb[0x59] = 1; ccb[0x41] = 1;
+    *(u32 *)(ccb + 0x5C) = 0; *(u32 *)(ccb + 0x44) = 0;
+    *(u32 *)(ccb + 0x60) = 0; *(u32 *)(ccb + 0x48) = 0;
+    *(u32 *)(ccb + 0x64) = 0; *(u32 *)(ccb + 0x4C) = 0;
+    *(u32 *)(ccb + 0x68) = -1; *(u32 *)(ccb + 0x50) = -1;
+    *(u32 *)(ccb + 0x6C) = -1; *(u32 *)(ccb + 0x54) = -1;
+    ccb[0x34] = 0; *(u32 *)(ccb + 4) = 0; ccb[0x37] = 1;
+    *(u8 **)(ccb + 0x28) = ccb;
+    return ccb;
 }
 
 void *l2cu_find_ccb_by_cid(void *p_lcb, u16 cid) {
