@@ -9,11 +9,8 @@ extern "C" void SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *, int);
 extern "C" void Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(void *, const void *, int);
-#pragma push
-#pragma small_data off
 extern float lbl_80560F88, lbl_80560F8C, lbl_80560F90;
 extern double lbl_80560F98, lbl_80560FA0;
-#pragma pop
 extern "C" void fn_800E6A44(void);
 extern "C" void AIRegisterDMACallback(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
@@ -1291,6 +1288,37 @@ extern "C" void fn_800E80B4(void) {
 }
 
 extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+
+extern "C" void *NoteOn__Q46nw4hbm3snd6detail4BankCFRCQ46nw4hbm3snd6detail10NoteOnInfo(void *self, const void *info) {
+    unsigned char inst[0x10];
+    unsigned char wave[0xA0];
+    if (!ReadInstInfo__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8InstInfoiii(self, inst,
+        *(int *)info, *(int *)((const char *)info + 4), *(int *)((const char *)info + 8))) return 0;
+    if (!ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(self, wave,
+        *(int *)(inst + 8), *(void **)((char *)self + 0xC))) return 0;
+    int voices = wave[2] <= 2 ? wave[2] : 2;
+    void *channel = AllocChannel__Q46nw4hbm3snd6detail7ChannelFiiiPFPQ46nw4hbm3snd6detail7ChannelQ56nw4hbm3snd6detail7Channel21ChannelCallbackStatusUl_vUl(
+        voices, *(int *)((char *)info + 0x18), *(int *)((char *)info + 0x14),
+        *(int *)((char *)info + 0x1C), *(int *)((char *)info + 0x20));
+    if (channel == 0) return 0;
+    *(int *)((char *)channel + 0xCC) = *(int *)((char *)info + 4);
+    *(int *)((char *)channel + 0xD0) = *(int *)(wave + 0x10);
+    *(float *)((char *)channel + 0xB4) =
+        ((float)*(int *)((char *)info + 8) / lbl_80560F88) *
+        ((float)*(int *)((char *)info + 8) / lbl_80560F88) *
+        ((float)*(int *)(wave + 0x12) / lbl_80560F88);
+    *(float *)((char *)channel + 0xC0) = *(float *)(wave + 0x14);
+    SetAttack__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, wave[0x0C]);
+    SetDecay__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, wave[0x0D]);
+    SetSustain__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, wave[0x0E]);
+    SetRelease__Q46nw4hbm3snd6detail12EnvGeneratorFi((char *)channel + 8, wave[0x0F]);
+    *(float *)((char *)channel + 0xB8) =
+        ((float)((int)wave[0x11] - 0x40) / lbl_80560F8C) +
+        ((float)*(int *)((char *)info + 0x10) / lbl_80560F8C);
+    *(float *)((char *)channel + 0xBC) = lbl_80560F90;
+    Start__Q46nw4hbm3snd6detail7ChannelFRCQ46nw4hbm3snd6detail8WaveDatal(channel, wave, *(int *)((char *)info + 0xC));
+    return channel;
+}
 
 extern const char lbl_803224F0[];
 extern "C" void *__ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *self, const void *bank) {
