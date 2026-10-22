@@ -3,7 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; } }
+namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; }; } } }
 
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
@@ -18,6 +18,75 @@ extern "C" const char lbl_803290E8[];
 extern "C" const char lbl_803293A8[];
 extern "C" const char lbl_80329400[];
 extern "C" const char lbl_80329140[];
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void* __dt__Q46nw4hbm2ut6detail12LinkListImplFv(void* self, int doFree) {
+    extern const char lbl_80328680[];
+    const char* file = lbl_80328680;
+    if (self != 0) {
+        void* head = (char*)self + 4;
+        void* node = *(void**)((char*)self + 4);
+        while (node != head) {
+            void* next = *(void**)node;
+            if (*(s32*)self == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x60, file + 0x10);
+            if (node == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x61, file + 0x34);
+            if (node == head)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x62, file + 0x58);
+            void* prevNode = *(void**)((char*)node + 4);
+            void* nextNode = *(void**)node;
+            if (nextNode == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x65, file + 0x80);
+            *(void**)((char*)nextNode + 4) = prevNode;
+            if (prevNode == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328680, 0x67, file + 0xA8);
+            *(void**)prevNode = nextNode;
+            --*(s32*)self;
+            *(void**)node = 0;
+            *(void**)((char*)node + 4) = 0;
+            node = next;
+        }
+        if (doFree > 0)
+            ((s32 (*)(s32))fn_80128668)((s32)self);
+    }
+    return self;
+}
+
+extern "C" void* Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void* self, void** iterator) {
+    extern const char lbl_80328680[];
+    const char* file = lbl_80328680;
+    void* head = (char*)self + 4;
+    void* first = *iterator;
+    if (first == head)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1F, file + 0xD0);
+    void* node = *iterator;
+    void* stop = *(void**)node;
+    while (node != stop) {
+        void* next = *(void**)node;
+        if (*(s32*)self == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x60, file + 0x10);
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x61, file + 0x34);
+        if (node == head)
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x62, file + 0x58);
+        void* nextNode = *(void**)node;
+        void* prevNode = *(void**)((char*)node + 4);
+        if (nextNode == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x65, file + 0x80);
+        *(void**)((char*)nextNode + 4) = prevNode;
+        if (prevNode == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x67, file + 0xA8);
+        *(void**)prevNode = nextNode;
+        --*(s32*)self;
+        *(void**)node = 0;
+        *(void**)((char*)node + 4) = 0;
+        node = next;
+    }
+    return stop;
+}
+
+#pragma pop
 extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *self) {
     extern const char lbl_80328680[];
     void *head = (char *)self + 4;
@@ -96,6 +165,37 @@ void nw4hbm::ut::List_Init(nw4hbm::ut::List *list, unsigned short size) {
     *(unsigned short *)((char *)list + 8) = 0;
 }
 
+void nw4hbm::ut::List_Append(nw4hbm::ut::List* list, void* item) {
+    register nw4hbm::ut::List* savedList = list;
+    register void* savedItem = item;
+    const char* file = lbl_80328828;
+    if (savedList == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x59, file + 0xC);
+    if (savedItem == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x5A, file + 0x34);
+    if (*(void**)savedList == 0) {
+        if (savedList == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x40, file + 0xC);
+        if (savedItem == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x41, file + 0x34);
+        *(void**)((char*)savedItem + *(u16*)((char*)savedList + 0xA) + 4) = 0;
+        *(void**)savedItem = 0;
+        u16 count = *(u16*)((char*)savedList + 8);
+        *(void**)savedList = savedItem;
+        *(void**)((char*)savedList + 4) = savedItem;
+        *(u16*)((char*)savedList + 8) = count + 1;
+    } else {
+        u16 stride = *(u16*)((char*)savedList + 0xA);
+        void* tail = *(void**)((char*)savedList + 4);
+        *(void**)((char*)savedItem + stride) = tail;
+        *(void**)((char*)savedItem + stride + 4) = 0;
+        *(void**)((char*)tail + stride + 4) = savedItem;
+        u16 count = *(u16*)((char*)savedList + 8);
+        *(void**)((char*)savedList + 4) = savedItem;
+        *(u16*)((char*)savedList + 8) = count + 1;
+    }
+}
+
 void* nw4hbm::ut::List_GetNext(const nw4hbm::ut::List* list, const void* item) {
     if (list == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328828, 0xF5, lbl_80328834);
     if (item == 0) return *(void**)list;
@@ -155,8 +255,77 @@ extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" u8 GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv_80109F24(void* self) {
+    const char* file = lbl_80329140;
+    u32 value = (u32)self;
+    int a=1,b=1,c=1,d=1,e=1,f=1;
+    if ((u32)((value & 0xFF000000U) + 0x80000000U) != 0U && (u32)((value & 0xFF800000U) + 0x7F000000U) != 0U) f=0;
+    if (f==0 && (u32)((value & 0xF8000000U) + 0x70000000U) != 0U) e=0;
+    if (e==0 && (u32)((value & 0xFF000000U) + 0x40000000U) != 0U) d=0;
+    if (d==0 && (u32)((value & 0xFF800000U) + 0x3F000000U) != 0U) c=0;
+    if (c==0 && (u32)((value & 0xF8000000U) + 0x30000000U) != 0U) b=0;
+    if (b==0 && (u32)((value & 0xFFFFC000U) + 0x20000000U) != 0U) a=0;
+    if (a==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xE6,file+0xF0,self);
+    u32 v=*(u32*)((char*)self+0x14);
+    int g=1,h=1,i=1,j=1,k=1,l=1;
+    if ((u32)((v&0xFF000000U)+0x80000000U)!=0U && (u32)((v&0xFF800000U)+0x7F000000U)!=0U) l=0;
+    if (l==0 && (u32)((v&0xF8000000U)+0x70000000U)!=0U) k=0;
+    if (k==0 && (u32)((v&0xFF000000U)+0x40000000U)!=0U) j=0;
+    if (j==0 && (u32)((v&0xFF800000U)+0x3F000000U)!=0U) i=0;
+    if (i==0 && (u32)((v&0xF8000000U)+0x30000000U)!=0U) h=0;
+    if (h==0 && (u32)((v&0xFFFFC000U)+0x20000000U)!=0U) g=0;
+    if (g==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xE7,file+0x128);
+    return *(u8*)*(u32*)((char*)v+8);
+}
+
+extern "C" u8 GetCellHeight__Q46nw4hbm2ut6detail11ResFontBaseCFv_8010A130(void* self) {
+    const char* file = lbl_80329140;
+    u32 value = (u32)self;
+    int a=1,b=1,c=1,d=1,e=1,f=1;
+    if ((u32)((value & 0xFF000000U) + 0x80000000U) != 0U && (u32)((value & 0xFF800000U) + 0x7F000000U) != 0U) f=0;
+    if (f==0 && (u32)((value & 0xF8000000U) + 0x70000000U) != 0U) e=0;
+    if (e==0 && (u32)((value & 0xFF000000U) + 0x40000000U) != 0U) d=0;
+    if (d==0 && (u32)((value & 0xFF800000U) + 0x3F000000U) != 0U) c=0;
+    if (c==0 && (u32)((value & 0xF8000000U) + 0x30000000U) != 0U) b=0;
+    if (b==0 && (u32)((value & 0xFFFFC000U) + 0x20000000U) != 0U) a=0;
+    if (a==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xF7,file+0xF0,self);
+    u32 v=*(u32*)((char*)self+0x14);
+    int g=1,h=1,i=1,j=1,k=1,l=1;
+    if ((u32)((v&0xFF000000U)+0x80000000U)!=0U && (u32)((v&0xFF800000U)+0x7F000000U)!=0U) l=0;
+    if (l==0 && (u32)((v&0xF8000000U)+0x70000000U)!=0U) k=0;
+    if (k==0 && (u32)((v&0xFF000000U)+0x40000000U)!=0U) j=0;
+    if (j==0 && (u32)((v&0xFF800000U)+0x3F000000U)!=0U) i=0;
+    if (i==0 && (u32)((v&0xF8000000U)+0x30000000U)!=0U) h=0;
+    if (h==0 && (u32)((v&0xFFFFC000U)+0x20000000U)!=0U) g=0;
+    if (g==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0xF8,file+0x128);
+    return *(u8*)(*(u32*)((char*)v+8)+3);
+}
+
 extern "C" u8 fn_8010A33C(void) {
     return 2;
+}
+
+u16 GetTextureFormat__Q46nw4hbm2ut6detail11ResFontBaseCFv(s32 self) {
+    const char* file = lbl_80329140;
+    u32 value = (u32)self;
+    int a=1,b=1,c=1,d=1,e=1,f=1;
+    if ((u32)((value & 0xFF000000U) + 0x80000000U) != 0U && (u32)((value & 0xFF800000U) + 0x7F000000U) != 0U) f=0;
+    if (f==0 && (u32)((value & 0xF8000000U) + 0x70000000U) != 0U) e=0;
+    if (e==0 && (u32)((value & 0xFF000000U) + 0x40000000U) != 0U) d=0;
+    if (d==0 && (u32)((value & 0xFF800000U) + 0x3F000000U) != 0U) c=0;
+    if (c==0 && (u32)((value & 0xF8000000U) + 0x30000000U) != 0U) b=0;
+    if (b==0 && (u32)((value & 0xFFFFC000U) + 0x20000000U) != 0U) a=0;
+    if (a==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x117,file+0xF0,self);
+    u32 v=*(u32*)((char*)self+0x14);
+    int g=1,h=1,i=1,j=1,k=1,l=1;
+    if ((u32)((v&0xFF000000U)+0x80000000U)!=0U && (u32)((v&0xFF800000U)+0x7F000000U)!=0U) l=0;
+    if (l==0 && (u32)((v&0xF8000000U)+0x70000000U)!=0U) k=0;
+    if (k==0 && (u32)((v&0xFF000000U)+0x40000000U)!=0U) j=0;
+    if (j==0 && (u32)((v&0xFF800000U)+0x3F000000U)!=0U) i=0;
+    if (i==0 && (u32)((v&0xF8000000U)+0x30000000U)!=0U) h=0;
+    if (h==0 && (u32)((v&0xFFFFC000U)+0x20000000U)!=0U) g=0;
+    if (g==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x118,file+0x128);
+    return *(u16*)(*(u32*)((char*)v+8)+0xA);
 }
 
 extern "C" s8 fn_8010B2BC(void *arg0) {
