@@ -1,4 +1,9 @@
   #include <types.h>
+extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
+extern "C" s32 fn_800ACA5C(void *, void *, u16);
+extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
+extern "C" s32 fn_800B00E8(void *, u16, u32 *);
+extern "C" s32 fn_800B05C8(void *, u16, u32 *);
 class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
 class PaneDrawDispatch { public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
@@ -1170,6 +1175,29 @@ extern "C" void *fn_800A9B0C(void *arg0) {
     }
     fn_800B783C((u8 *)vol + 0x1F90);
     return (void *)temp_r3;
+}
+
+extern "C" s32 fn_800A9BB4(void *arg0, void *arg1, s32 arg2, s32 arg3, u32 arg4, s32 arg5, s32 *arg6, s32 arg_sp0) {
+ extern s32 VFiPFPATH_cmpName(void*,s32,s32); extern s32 fn_800B317C(void*,s32); extern s32 fn_800B3A70(void*,void*,s32); extern void fn_800B3BEC(void*,u8); extern s32 lbl_803D2140[];
+ s32 sp8; s32 mask=arg3; s32 ret=1, valid=1, i; u8 sum=0;
+ if((mask&15)==15)return 1;
+ if(mask==0)mask=0x40;
+ if(arg4&0x80){s32 a=arg4&0x7f,b=arg5&0x7f;if((a&&(a!=(a&mask)))||(b&&(b==(b&mask))))valid=0;}
+ else if(arg4!=0x7f&&(u32)mask!=arg4&&(!(mask&arg4)||(mask&arg5)))valid=0;
+ if(!valid)return ret;
+ if(mask&8){*(u8*)((u8*)arg0+0x20a)=0;*(u16*)arg0=0;}
+ fn_800B3BEC((u8*)arg0+0x20e,*(u8*)((u8*)arg1+0xb));
+ if(*(u8*)((u8*)arg0+0x20e)==5)*(u8*)((u8*)arg0+0x20e)=0xe5;
+ if(*(u8*)((u8*)arg0+0x20a)&&*(u8*)((u8*)arg0+0x20b)==1){
+  fn_800B3A70(&sp8,(u8*)arg0+0x20e,0);
+  for(i=0;i<11;i++){u8 x=((u8*)&sp8)[i];sum=(sum<<7|sum>>1)+x;}
+  if(*(u8*)((u8*)arg0+0x20c)!=sum)return ret;
+  ret=fn_800B317C(arg0,arg2)!=0;
+ }
+ if(ret){if(((lbl_803D2140[0x60/4]&2)==2)&&!(mask&8)){if(!VFiPFPATH_cmpName((u8*)arg0+0x20e,arg2,0))ret=0;}
+ else if(!VFiPFPATH_cmpName((u8*)arg0+0x20e,arg2,1))ret=0;}
+ if(ret)(*arg6)++;
+ return ret;
 }
 
 extern "C" s32 fn_800AF530(void *, void *, s32, s32);
@@ -3279,6 +3307,29 @@ extern "C" s32 fn_800B814C(void *arg0) {
     return 0;
 }
 
+extern "C" s32 fn_800B8318(void *arg0, s32 arg1) {
+ extern s32 NANDCreate(void*,s32,s32); extern s32 NANDGetType(void*); extern s32 NANDOpen(void*,void*,s32); extern s32 NANDPrivateCreateDir(void*,s32,s32); extern s32 fn_800A499C(void*,s32,s32); extern s32 fn_800A4AD0(void*,void*); extern s32 lbl_80559244, lbl_80559240, lbl_80405D18;
+ u8 path[0x10]; u16 part=0,total=0; s32 result; u8 *src=(u8*)arg0+4,*dst;
+ if(*(u32*)((u8*)arg0+0xE4)&4)return 0;
+ fn_800A499C(path,0,0x10); dst=path;
+loop:
+ switch((s8)*src){
+ case '/':
+  if(part==0){if(total==0){result=NANDGetType(&lbl_80559240);if(result)return result;}src++;goto copy;}
+  if((s8)src[1]==0){if(part>0xC)return -20;result=NANDCreate(path,0x30,0);if(result==0||result==-6){NANDOpen(path,(u8*)arg0+0x58,3);return NANDGetType(&lbl_80405D18);}return result;}
+  if(part>0xB)return -20;
+  result=fn_800A4AD0(path,&lbl_80559244);if(result)result=NANDPrivateCreateDir(path,0x30,0);else result=0;
+  if(result!=0&&result!=-6&&result!=-1)return result;
+  result=NANDGetType(path);if(result)return result;
+  src++;fn_800A499C(path,0,0x10);dst=path;part=0;goto copy;
+ case 0:
+  if(part>0xC)return -20;result=NANDCreate(path,0x30,0);
+  if(result==0||result==-6){NANDOpen(path,(u8*)arg0+0x58,3);return NANDGetType(&lbl_80405D18);}return result;
+ default: break;
+ }
+copy: *dst++=*src++;part++;total++;goto loop;
+}
+
 s32 fn_800B8520(void *arg0, u32 *arg1) {
     u32 countA = 0;
     u32 countB = 0;
@@ -3522,6 +3573,56 @@ extern "C" s32 fn_800B8FE4(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 *arg4, s3
     }
     fn_800B8048(lbl_8055DD30);
     return 0;
+}
+
+extern "C" s32 fn_800B90A8(s32 arg0) {
+    s32 result;
+    u32 length;
+    u32 i;
+    u8 *entry;
+    entry = 0;
+    fn_800B8004(lbl_8055DD30);
+    if (arg0 == 0) {
+        fn_800B8048(lbl_8055DD30);
+        return -20;
+    }
+    for (i = 0; i < 0x17; i++) {
+        u8 *cur = lbl_80405D58 + i * 0xF0;
+        if (*(u32 *)cur == (u32)arg0) {
+            *(s32 *)(cur + 0xEC) = 0;
+            break;
+        }
+    }
+    result = (i == 0x17) ? 0 : -0x16;
+    if (result == 0) {
+        for (i = 0; i < 0x17; i++) {
+            u8 *cur = lbl_80405D58 + i * 0xF0;
+            if (*(u32 *)cur == (u32)arg0) { entry = cur; break; }
+        }
+        if (i == 0x17) { fn_800B8048(lbl_8055DD30); return -20; }
+        *(u32 *)(entry + 0xE4) &= ~2;
+        result = NANDGetLengthAsync(entry + 0x58, &length);
+        if (result == 0) {
+            result = NANDClose(entry + 0x58);
+            if (result >= 0) {
+                result = NANDOpen(entry + 4, entry + 0x58, 3);
+                if (result >= 0) {
+                    result = NANDSeek(entry + 0x58, length, 0);
+                    result &= result >> 31;
+                }
+            }
+        }
+        if (result < 0) {
+            for (i = 0; i < 0x17; i++) {
+                u8 *cur = lbl_80405D58 + i * 0xF0;
+                if (*(u32 *)cur == (u32)arg0) { *(s32 *)(cur + 0xEC) = result; break; }
+            }
+            fn_800B8048(lbl_8055DD30);
+            return result;
+        }
+    }
+    fn_800B8048(lbl_8055DD30);
+    return result;
 }
 
 extern "C" s32 NANDClose(void *);
