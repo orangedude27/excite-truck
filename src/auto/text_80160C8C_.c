@@ -3,6 +3,13 @@
 
 #include <types.h>
 
+#pragma cplusplus on
+struct Dummy_80163550 {
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual s32 f8();
+};
+#pragma cplusplus off
+
 extern s32 fn_8000DA10(void);
 extern void fn_801332D0(s32, s32, s32 *);
 extern void fn_80160CF4(void);
