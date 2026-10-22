@@ -963,6 +963,7 @@ void fn_8006EC24(s32 arg0, s32 arg1) {
         if (arg0 == 0) {
             return;
         }
+        return;
     }
     fn_80070B24((s8)arg1);
 }
@@ -2078,6 +2079,44 @@ void btm_acl_device_down(void)
 
 void fn_800778C8(s16 arg0) {
     *(s16 *)(lbl_803C0F78 + 0x4C4) = arg0;
+}
+
+void btm_read_link_policy_complete(UINT8 *p) {
+    tBTM_CMPL_CB_LKP *p_cb = btm_cb_lkp.devcb.p_rlinkp_cmpl_cb;
+    tBTM_LNK_POLICY_RESULTS_LKP lnkpol;
+    UINT16 handle;
+    tACL_CONN_LKP *p_acl_cb = &btm_cb_lkp.acl_db[0];
+    UINT16 index;
+    btu_stop_timer(btm_cb_lkp.devcb.rlinkp_timer);
+
+    /* If there was a callback address for read local version, call it */
+    btm_cb_lkp.devcb.p_rlinkp_cmpl_cb = NULL;
+
+    if (p_cb) {
+        lnkpol.hci_status = *p;
+        p++;
+
+        if (lnkpol.hci_status == 0) {
+            lnkpol.status = 0;
+
+            handle = (UINT16)(*(p) + (((UINT16)(*((p) + 1))) << 8));
+            p += 2;
+
+            lnkpol.settings = (UINT16)(*(p) + (((UINT16)(*((p) + 1))) << 8));
+            p += 2;
+
+            /* Search through the list of active channels for the correct BD Addr */
+            for (index = 0; index < 7; index++, p_acl_cb++) {
+                if ((p_acl_cb->in_use) && (handle == p_acl_cb->hci_handle)) {
+                    memcpy(lnkpol.rem_bda, p_acl_cb->remote_addr, 6);
+                    break;
+                }
+            }
+        } else
+            lnkpol.status = 10;
+
+        (*p_cb)(&lnkpol);
+    }
 }
 
 void btm_read_remote_version_complete(u8 *arg0) {
