@@ -388,9 +388,9 @@ extern "C" char lbl_8033D2C0[];
 extern "C" void fn_80214AF0(s32 arg0) {
     s32 temp = fn_802168E4();
     if (temp != 0) {
-        fn_802168D0(temp, arg0, lbl_80563434);
+        ((s32 (*)(s32, s32, float))fn_802168D0)(temp, arg0, lbl_80563434);
     } else {
-        fn_802E317C(lbl_8033D2C0);
+        ((s32 (*)(const char *, ...))fn_802E317C)(lbl_8033D2C0);
     }
 }
 
