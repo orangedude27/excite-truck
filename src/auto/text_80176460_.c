@@ -438,6 +438,7 @@ void fn_80176DE0(void) {
 
 #pragma dont_inline on
 #pragma scheduling invalid_target
+// fn_80176E4C matches with invalid_target scheduling for the address setup order.
 void fn_80176E4C(void) {
     fn_80179308();
     fn_801769EC();
