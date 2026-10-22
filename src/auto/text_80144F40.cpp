@@ -36,11 +36,13 @@ extern "C" void *lbl_8032D1E8;
 extern "C" void *fn_80148294(const char *, void *);
 extern "C" char lbl_8032D0EC[];
 extern "C" char lbl_8032D0FC[];
-extern "C" char lbl_80559E20[];
-extern "C" char lbl_80559E28[];
-extern "C" char lbl_80559E30[];
-extern "C" char lbl_80559E34[];
-extern "C" char lbl_80559E3C[];
+extern "C" {
+__declspec(section ".sdata") extern char lbl_80559E20[];
+__declspec(section ".sdata") extern char lbl_80559E28[];
+__declspec(section ".sdata") extern char lbl_80559E30[];
+__declspec(section ".sdata") extern char lbl_80559E34[];
+__declspec(section ".sdata") extern char lbl_80559E3C[];
+}
 extern "C" f32 lbl_8055E200;
 extern "C" f32 lbl_8055E204;
 extern "C" int stricmp(const char *, const char *);
