@@ -16,7 +16,7 @@ extern void fn_8028F8E0(int, float);
 extern void fn_8028F5A4(void);
 extern void fn_8028EE28(void *);
 extern void fn_8028ED80(void *);
-extern void fn_8028F2EC(void);
+extern void fn_8028F2EC();
 extern int lbl_8055F740;
 extern unsigned char lbl_8055F744;
 extern int lbl_804B34B0_arr[];
