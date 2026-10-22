@@ -1446,6 +1446,130 @@ extern "C" void fn_800AABE0(void) {
     ((void (*)(s32, s32, s32, s32, s32, s32, void *, void *))fn_800AA924)(a, b, c, d, e, f, &spC, &sp8);
 }
 
+extern s32 fn_800B4D00(void);
+extern "C" s32 fn_800AE620(s32, s32, s32, s32);
+extern "C" s32 fn_800AAC08(void *arg0, u32 arg1, void *arg2, void *arg3, s32 arg4, s32 *arg5) {
+    struct Copy14 { u32 word[14]; };
+    u8 iter[0x70];
+    u8 converted[0x240];
+    u32 outValue;
+    u32 nextValue;
+    s32 result;
+    u32 index;
+    u32 var_r23;
+    u32 count;
+    u32 found;
+    u32 var_r26;
+    u32 var_r27;
+    u32 var_r28;
+    u32 var_r30;
+    u16 var_r29;
+    u16 *temp_r31;
+    u8 state;
+    s32 temp_r3;
+    s32 temp_r0;
+    u32 i;
+
+    if (((lbl_803D2140[0x60 / 4] & 2) == 2) &&
+        (((s32 (*)(s32))fn_800B4D00)(arg4) == 1)) {
+        return 1;
+    }
+
+    temp_r31 = *(u16 **)((u8 *)arg2 + 0x34);
+    var_r30 = -1;
+    count = 0;
+    *(u32 *)((u8 *)arg3 + 4) = -1;
+    var_r23 = 0;
+    var_r29 = 0;
+    var_r28 = -1;
+    *(u32 *)arg3 = -1;
+    var_r26 = -1;
+    var_r27 = -1;
+    found = 0;
+    *(u32 *)(iter + 0x44) = 0;
+    *(u32 *)iter = 0;
+    *(struct Copy14 *)(iter + 8) = *(struct Copy14 *)arg2;
+
+    result = fn_800AC1B4(iter, 0);
+loop:
+    if (result != 0) {
+        return result;
+    }
+    index = *(u32 *)(iter + 0x44);
+    if (index == 0xFFFF0000) {
+        goto done;
+    }
+
+    if (found == 0 && count == 0) {
+        var_r29 = *(u16 *)(iter + 0x48);
+        var_r30 = index;
+        var_r28 = index;
+    }
+    if (found == 0) {
+        state = iter[0x4C];
+        if (state == 0 || state == 0xE5) {
+            if (var_r28 != index) {
+                temp_r0 = (var_r27 + 1) == 0;
+                if (temp_r0 != 0) {
+                    var_r27 = index;
+                }
+                if (temp_r0 == 0) {
+                    var_r26 = index;
+                }
+                var_r28 = index;
+            }
+            count++;
+        } else {
+            count = 0;
+            var_r27 = -1;
+            var_r26 = -1;
+        }
+    }
+
+    if (count >= arg1) {
+        if (found == 0) {
+            var_r23 = *(u32 *)iter;
+            found = 1;
+        }
+    }
+
+    state = iter[0x4C];
+    if (state != 0 && state != 0xE5) {
+        temp_r3 = fn_800A9DC0(converted, iter, arg4, 0x7F, 0, (s32 *)&outValue);
+        if (temp_r3 == 0) {
+            for (i = 0; i < 0x48; i++) {
+                ((u32 *)arg0)[i] = ((u32 *)converted)[i];
+            }
+            *(u32 *)((u8 *)arg0 + 0x22C) = *(u32 *)((u8 *)arg2 + 0x34);
+            return 8;
+        }
+    }
+
+    if (*(u16 *)(iter + 0x48) == *temp_r31) {
+        temp_r3 = fn_800AE620((s32)arg2, (s32)(*(u32 *)(iter + 0x40) + 1), 0, (s32)&nextValue);
+        if (temp_r3 != 0) {
+            return temp_r3;
+        }
+        if (nextValue == 0xFFFF0000 && found == 1) {
+            goto done;
+        }
+    }
+
+    result = VFiPFENT_ITER_Advance(iter, 1);
+    goto loop;
+
+done:
+    if (found == 0) {
+        return 5;
+    }
+    *(u32 *)arg3 = var_r27;
+    *(u32 *)((u8 *)arg3 + 4) = var_r26;
+    *(u32 *)((u8 *)arg0 + 0x238) = var_r30;
+    *(u16 *)((u8 *)arg0 + 0x23C) = var_r29;
+    *arg5 = var_r23;
+    return 0;
+}
+
 extern "C" void fn_800AAED8(void) {
     s32 sp8;
     s32 a, b, c, d, e;
@@ -2604,7 +2728,7 @@ extern "C" void fn_800B4BD8(char *arg0, u16 *arg1, void *arg2) {
 
 extern "C" u8 lbl_80559230;
 extern "C" u8 lbl_80559231;
-s32 fn_800B4D00(void) {
+extern "C" s32 fn_800B4D00(void) {
     u8 data[2];
     data[0] = lbl_80559230;
     data[1] = lbl_80559231;
