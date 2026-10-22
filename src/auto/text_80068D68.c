@@ -10328,6 +10328,29 @@ BOOLEAN sdpu_is_base_uuid(UINT8 *uuid) {
     return TRUE;
 }
 
+BOOLEAN sdpu_compare_uuid_arrays(UINT8 *p_uuid1, UINT32 len1, UINT8 *p_uuid2, UINT16 len2)
+{
+    UINT8 nu1[MAX_UUID_SIZE];
+    UINT8 nu2[MAX_UUID_SIZE];
+    if (len1 == len2) {
+        if (len1 == 2) return p_uuid1[0] == p_uuid2[0] && p_uuid1[1] == p_uuid2[1];
+        if (len1 == 4) return p_uuid1[0] == p_uuid2[0] && p_uuid1[1] == p_uuid2[1] && p_uuid1[2] == p_uuid2[2] && p_uuid1[3] == p_uuid2[3];
+        return memcmp(p_uuid1, p_uuid2, len1) == 0;
+    } else if (len1 > len2) {
+        if (len1 == 4) return p_uuid1[0] == 0 && p_uuid1[1] == 0 && p_uuid1[2] == p_uuid2[0] && p_uuid1[3] == p_uuid2[1];
+        memcpy(nu1, p_uuid1, MAX_UUID_SIZE);
+        memcpy(nu2, lbl_802EED40, MAX_UUID_SIZE);
+        if (len2 == 4) memcpy(nu2, p_uuid2, len2); else memcpy(nu2 + 2, p_uuid2, len2);
+        return memcmp(nu1, nu2, MAX_UUID_SIZE) == 0;
+    } else {
+        if (len2 == 4) return p_uuid2[0] == 0 && p_uuid2[1] == 0 && p_uuid2[2] == p_uuid1[0] && p_uuid2[3] == p_uuid1[1];
+        memcpy(nu2, p_uuid2, MAX_UUID_SIZE);
+        memcpy(nu1, lbl_802EED40, MAX_UUID_SIZE);
+        if (len1 == 4) memcpy(nu1, p_uuid1, len1); else memcpy(nu1 + 2, p_uuid1, len1);
+        return memcmp(nu1, nu2, MAX_UUID_SIZE) == 0;
+    }
+}
+
 BOOLEAN sdpu_compare_uuid_with_attr(tBT_UUID *p_btuuid, tSDP_DISC_ATTR *p_attr) {
     UINT16 attr_len = SDP_DISC_ATTR_LEN(p_attr->attr_len_type);
 
