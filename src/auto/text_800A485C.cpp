@@ -1,4 +1,6 @@
   #include <types.h>
+class Freeable800C6A1C { public: virtual void d0(); virtual void d1(); virtual void free(s32); };
+class Freeable28_800C6A1C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void free(s32); };
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800ACA5C(void *, void *, u16);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
@@ -1510,6 +1512,61 @@ s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
     }
     result &= (s32)(-(u32)result | (u32)result) >> 31;
     return result;
+}
+
+s32 fn_800AB378(void *, s32);
+s32 fn_800AEBA0(void *, u32, u32 *);
+s32 fn_800B5324(void *, void *, u16, s32, u32 *, s32);
+s32 fn_800AC4AC(void *arg0, s32 arg1) {
+    u32 spC, sp8;
+    s32 temp_r29, temp_r3, temp_r3_2, temp_r3_3, var_r30, var_r4;
+    u32 temp_r0, temp_r10, temp_r4, temp_r6, temp_r9;
+    u8 temp_r8;
+    void *temp_r6_2, *temp_r6_3;
+    temp_r29 = *(s32 *)((u8 *)arg0);
+    if (temp_r29 == 0) return 0;
+    temp_r6 = temp_r29 - 1;
+    if (*(u32 *)((u8 *)arg0 + 0x40) != (temp_r6 >> *(u8 *)((u8 *)arg0 + 0x6C))) {
+        temp_r6_2 = *(void **)((u8 *)arg0 + 4);
+        temp_r9 = *(u32 *)((u8 *)arg0 + 0x44);
+        temp_r8 = *(u8 *)((u8 *)temp_r6_2 + 6);
+        temp_r10 = *(u32 *)((u8 *)temp_r6_2 + 0x30);
+        temp_r4 = ((temp_r9 - temp_r10) >> *(u8 *)((u8 *)temp_r6_2 + 0x21)) + 2;
+        if ((*(u32 *)((u8 *)arg0 + 0x40) % temp_r8) == 0 || temp_r8 == 1) {
+            if (*(s32 *)((u8 *)temp_r6_2 + 0x1C) == 2 || (*(u32 *)*(u32 **)((u8 *)arg0 + 0x10) > 1 && temp_r10 <= temp_r9)) {
+                temp_r3 = fn_800AEBA0(temp_r6_2, temp_r4, &spC);
+                if (temp_r3 != 0) return temp_r3;
+                if (spC == 0xFFFFFFFF) return 0xE;
+            } else spC = *(u32 *)*(u32 **)((u8 *)arg0 + 0x10);
+        } else spC = temp_r4;
+        temp_r6_3 = *(void **)((u8 *)arg0 + 4);
+        *(s32 *)((u8 *)arg0) -= 1;
+        *(u32 *)((u8 *)arg0 + 0x40) -= 1;
+        if (*(s32 *)((u8 *)temp_r6_3 + 0x1C) == 2 || (*(u32 *)*(u32 **)((u8 *)arg0 + 0x10) > 1 && *(u32 *)((u8 *)temp_r6_3 + 0x30) <= *(u32 *)((u8 *)arg0 + 0x44))) {
+            *(u32 *)((u8 *)arg0 + 0x44) = ((*(u32 *)((u8 *)arg0 + 0x40) & (*(u8 *)((u8 *)temp_r6_3 + 6) - 1)) + (*(u32 *)((u8 *)temp_r6_3 + 0x30) + ((spC - 2) << *(u8 *)((u8 *)temp_r6_3 + 0x21))));
+        } else *(u32 *)((u8 *)arg0 + 0x44) -= 1;
+        *(u16 *)((u8 *)arg0 + 0x48) = (*(u32 *)((u8 *)arg0) & *(u16 *)((u8 *)arg0 + 0x4A)) << 5 & 0xFFE0;
+        return 0;
+    }
+    if ((u32)temp_r29 != temp_r6 || *(u32 *)((u8 *)arg0 + 0x44) != 0xFFFFFFFF || arg1 == 0) {
+        *(s32 *)((u8 *)arg0) = temp_r6;
+        temp_r3_2 = fn_800AB378(arg0, 0);
+        var_r30 = temp_r3_2;
+        if (temp_r3_2 != 0) {
+            *(s32 *)((u8 *)arg0) = temp_r29;
+            fn_800AB378(arg0, 0);
+        } else {
+            if (*(u32 *)((u8 *)arg0 + 0x44) == 0xFFFFFFFF) var_r4 = 0x10;
+            else {
+                temp_r3_3 = fn_800B5324(*(void **)((u8 *)arg0 + 4), (u8 *)arg0 + 0x4C, *(u16 *)((u8 *)arg0 + 0x48), 0x20, &sp8, 0);
+                var_r4 = 0x11;
+                if (sp8 == 0x20) var_r4 = temp_r3_3;
+            }
+            var_r30 = var_r4 & ((-var_r4 | var_r4) >> 31);
+        }
+        if (var_r30 == 0) var_r30 = 0;
+    } else var_r30 = 0;
+    return var_r30;
 }
 
 extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1);
