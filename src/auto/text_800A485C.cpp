@@ -1,5 +1,15 @@
   #include <types.h>
 class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
+class PaneDrawDispatch { public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+    virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual s32 isVisible();
+};
+extern "C" f32 lbl_80560E28, lbl_80560E30;
+extern "C" u8 lbl_80560E2C, lbl_80560E2D, lbl_80560E2E, lbl_80560E2F;
+extern "C" void fn_800CF554(s32, u8 *, f32, f32, f32, f32, f32);
 #include <revolution/OS/OSAlarm.h>
 #include <stdarg.h>
 namespace nw4hbm { namespace db { namespace detail { struct ConsoleHead; } s32 Console_GetTotalLines(detail::ConsoleHead *); } }
@@ -1262,6 +1272,15 @@ extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
     p_ent[0x237] = (u8)(tmp & 0xFF);
 }
 
+extern "C" void fn_800A4C14(void *, s32);
+extern "C" void VFiPFENT_storeLFNEntryFieldsToBuf(void *out, u8 *entries, s32 index, s32 type, s32 flag) {
+ u8 *dst=(u8*)out; u8 *entry=entries+(index-1)*0x1A;
+ dst[0]=flag?(index|0x40):index; dst[0xB]=0xF; dst[0xD]=type; dst[0xC]=0; *(u16*)(dst+0x1A)=0;
+ if(flag){u16 *end=(u16*)(entry+0x1A), *p=(u16*)entry; while(p<end&&*p==0)++p; while(p<end)*p++=0xFFFF;}
+ VFipf_memcpy(dst+1,entry,0xA); VFipf_memcpy(dst+0xE,entry+0xA,0xC); VFipf_memcpy(dst+0x1C,entry+0x16,4);
+ fn_800A4C14(dst+1,0xA); fn_800A4C14(dst+0xE,0xC); fn_800A4C14(dst+0x1C,4);
+}
+
 extern "C" void fn_800AABE0(void) {
     s32 spC;
     s32 sp8;
@@ -1608,6 +1627,52 @@ extern "C" s32 fn_800AE620(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 sign = (-arg2 | arg2) >> 31;
     s32 result = fn_800AE4C0(arg2 & sign, 0, arg3);
     return (result != 0) ? result : 0;
+}
+
+extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
+extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
+extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
+extern "C" s32 fn_800B00E8(void *, u16, u32 *);
+extern "C" s32 fn_800B05C8(void *, u16, u32 *);
+extern "C" s32 fn_800AEBA0(void *arg0, u16 arg1, u32 arg2, u32 *arg3, s32 arg_sp0) {
+    void *page;
+    s32 pageIndex;
+    s32 type;
+    s32 result;
+    u32 value;
+    u32 maxValue;
+
+    type = *(s32 *)((u8 *)arg0 + 0x1C);
+    maxValue = *(u32 *)((u8 *)lbl_802EEF40 + type * 0x14 + 4);
+    *arg3 = -1;
+    result = fn_800A8D08(-1, &page, &pageIndex, type, (s32 *)lbl_802EEF40);
+    if (result != 0) return result;
+    *(u16 *)((u8 *)page + 2) = 0;
+    for (;;) {
+        if (arg1 >= maxValue) {
+            VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
+            return 0xD;
+        }
+        type = *(s32 *)((u8 *)arg0 + 0x1C);
+        if (type == 0) result = fn_800AFBA8(arg0, arg1, &value);
+        else if (type == 1) result = fn_800B00E8(arg0, arg1, &value);
+        else if (type == 2) result = fn_800B05C8(arg0, arg1, &value);
+        else result = 0xF;
+        if (result != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(arg0, page);
+            return result;
+        }
+        if (arg2 == value) {
+            *arg3 = arg1;
+            return 0;
+        }
+        arg1--;
+        if (arg1 >= 2 && arg1 < *(u32 *)((u8 *)arg0 + 0x34) + 2) continue;
+        if (arg1 < maxValue) {
+            *arg3 = arg2;
+            return 0;
+        }
+    }
 }
 
 extern "C" void fn_800AF2B8(void *);
@@ -1974,6 +2039,44 @@ extern "C" void fn_800B36D4(s32 arg0) {
     fn_800B63FC();
 }
 
+s32 fn_800B3A70(char *dst, const char *src, s32 flags) {
+    s32 len = 0;
+    while (len < 8) {
+        char c = *src++;
+        *dst++ = c;
+        len++;
+        if (len >= 8 || c == 0 || c == '.') break;
+    }
+    if (len == 0) {
+        len = 0;
+        do {
+            char c = *src++;
+            *dst++ = c;
+            len++;
+            if (len >= 2 || c == 0) break;
+        } while (1);
+    }
+    if (!(flags & 8)) {
+        if (len < 8) {
+            s32 n = 8 - len;
+            do { *dst++ = ' '; } while (--n);
+            len += 8 - len;
+        }
+    }
+    if (*src != 0) {
+        if (!(flags & 8)) src++;
+        while (*src != 0) {
+            *dst++ = *src++;
+            len++;
+        }
+    }
+    if (len < 11) {
+        s32 n = 11 - len;
+        do { *dst++ = ' '; } while (--n);
+    }
+    return 0;
+}
+
 extern "C" void fn_800B3BEC(u8 *out, u8 *in, u8 flags) {
     s32 last = -1;
     s32 i;
@@ -2019,12 +2122,13 @@ extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *arg0, u16 *arg1) {
     if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
         while (*src != 0) {
             if (fn_800A4B9C(src, (u16 *)&dot, 1) == 0) {
-                *out++ = 0x2E;
+                *out = 0x2E;
             } else if (fn_800A4B9C(src, (u16 *)&space, 1) == 0) {
-                *out++ = 0x20;
+                *out = 0x20;
             } else {
-                *out++ = 0x5F;
+                *out = 0x5F;
             }
+            out++;
             src += 2;
         }
     } else {
@@ -2282,6 +2386,51 @@ extern "C" void *fn_800B65A0(s8 arg0) {
     }
     fn_800B783C((u8 *)lbl_803D2140 + 0x64);
     return (u8 *)lbl_803D2140 + index * 0x1FC8 + 0xA0;
+}
+
+s32 fn_800B6928(s8 arg0) {
+    s16 index = fn_800A485C(arg0) - 0x41;
+    u8 *base = (u8 *)lbl_803D2140;
+    void *entry;
+    u16 flags;
+    s32 result;
+
+    fn_800B77C0(base + 0x64);
+    if (index < 0 || index >= 0x1A) {
+        fn_800B783C(base + 0x64);
+        entry = 0;
+    } else {
+        fn_800B783C(base + 0x64);
+        entry = base + index * 0x1FC8 + 0xA0;
+    }
+    flags = *(u16 *)((u8 *)entry + 0x1F8C);
+    if (flags & 8) {
+        *(s32 *)(base + 0x40) = 10;
+        *(s32 *)((u8 *)entry + 0x1F80) = 10;
+        return 10;
+    }
+    if (!(flags & 1)) {
+        *(s32 *)(base + 0x40) = 10;
+        *(s32 *)((u8 *)entry + 0x1F80) = 10;
+        return 10;
+    }
+    fn_800B77C0(base + 0x64);
+    result = fn_800A54AC(entry);
+    if (!result) {
+        fn_800B777C((u8 *)entry + 0x1F90);
+        result = 0;
+    }
+    if (result) {
+        fn_800B783C(base + 0x64);
+        *(s32 *)(base + 0x40) = result;
+        *(s32 *)((u8 *)entry + 0x1F80) = result;
+        return result;
+    }
+    *(u16 *)((u8 *)entry + 0x1F8C) &= 0xFFFE;
+    result = *(s32 *)(base + 0x30);
+    *(s32 *)(base + 0x30) = result - 1;
+    fn_800B783C(base + 0x64);
+    return 0;
 }
 
 extern "C" s32 fn_800A4BE8(s32, s32);
