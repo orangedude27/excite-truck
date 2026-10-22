@@ -236,16 +236,16 @@ void fn_802C8BD0(int arg0) {
 
 #pragma use_lmw_stmw off
 void fn_802C8C04(int arg0) {
-    unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
+    unsigned int src[12];
     unsigned int *dst = lbl_804C13E0;
     unsigned int sp8[12];
+    unsigned int v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11;
     v0 = lbl_804C1410[0];
-    *dst++ = v0;
     v1 = lbl_804C1410[1]; v2 = lbl_804C1410[2]; v3 = lbl_804C1410[3];
     v4 = lbl_804C1410[4]; v5 = lbl_804C1410[5]; v6 = lbl_804C1410[6];
     v7 = lbl_804C1410[7]; v8 = lbl_804C1410[8]; v9 = lbl_804C1410[9];
     v10 = lbl_804C1410[10]; v11 = lbl_804C1410[11];
-    *dst++ = v1; *dst++ = v2; *dst++ = v3; *dst++ = v4; *dst++ = v5;
+    *dst++ = v0; *dst++ = v1; *dst++ = v2; *dst++ = v3; *dst++ = v4; *dst++ = v5;
     *dst++ = v6; *dst++ = v7; *dst++ = v8; *dst++ = v9; *dst++ = v10; *dst++ = v11;
     lbl_8055FC35 = 1;
     fn_802C89E8(sp8, v11, v10, v9, v8, v7, v6, v5);
@@ -288,6 +288,23 @@ extern void fn_801E4FF4(void);
 void fn_802C8E48(void) {
     fn_801E4FF4();
     lbl_8055FC70 = 2;
+}
+
+void fn_802C8E70(float *arg0, float *arg1) {
+    float *m = (float *)lbl_804C1410;
+    float x, y, z, rx, ry, rz, limit, scale;
+    x = arg0[0] - m[9]; arg1[0] = x;
+    y = arg0[1] - m[10]; arg1[1] = y;
+    z = arg0[2] - m[11]; arg1[2] = z;
+    rx = x * m[0]; ry = y * m[1]; rx = rx + ry; rz = z * m[2]; rx = rx + rz;
+    ry = x * m[3]; rz = y * m[4]; ry = ry + rz; rz = z * m[5]; ry = ry + rz;
+    rz = x * m[6]; scale = y * m[7]; rz = rz + scale; scale = z * m[8]; rz = rz + scale;
+    arg1[0] = rx; arg1[1] = ry; arg1[2] = rz;
+    limit = lbl_8055FC38;
+    if (!(limit > rz)) limit = rz;
+    scale = lbl_80564EF8 / (lbl_8055FC44 * limit);
+    arg1[0] = (float)(int)lbl_8055FC5C + lbl_80564F18 * (float)(int)lbl_8055FC64 * (lbl_80564EF8 + scale * arg1[0]);
+    arg1[1] = (float)(int)lbl_8055FC60 + lbl_80564F18 * (float)(int)lbl_8055FC68 * (lbl_80564EF8 + lbl_8055FC6C * (scale * -arg1[1]));
 }
 
 float fn_802C8FEC(void) { return lbl_8055FC6C; }
@@ -352,9 +369,30 @@ void fn_802C92D8(void) {
     fn_802C8D74();
 }
 
+void fn_802C92DC(int x0, int y0, int x1, int y1, int screen) {
+    float zero = lbl_80564F00;
+    if (((int (*)(int))fn_801E4F20)(4) != 0) {
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x1, (float)y0, zero, zero, zero);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x0, (float)y0, zero, zero, zero);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x1, (float)y1, zero, zero, zero);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x0, (float)y1, zero, zero, zero);
+        fn_801E4FF4();
+    }
+}
+
 void fn_802C9118(void) {
     lbl_8055FC70 = 2;
     fn_802C8D74();
+}
+
+void fn_802C9124(float farg0, float farg1, float farg2, float farg3, int x0, int y0, int x1, int y1, int screen) {
+    if (((int (*)(int))fn_801E4F20)(4) != 0) {
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x1, (float)y0, lbl_80564F00, farg2, farg1);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 0, (float)x0, (float)y0, lbl_80564F00, farg0, farg1);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x1, (float)y1, lbl_80564F00, farg2, farg3);
+        ((int (*)(int, int, float, float, float, float, float))fn_801E4F3C)(screen, 1, (float)x0, (float)y1, lbl_80564F00, farg0, farg3);
+        fn_801E4FF4();
+    }
 }
 
 void fn_802C942C(int arg0) {
@@ -609,16 +647,22 @@ extern int fn_8012A2D8(void *);
 extern void fn_802D362C(int);
 extern void fn_802D3304(void);
 #pragma dont_inline on
-void fn_802C9D88(int arg0) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_802C9D88(int arg0) {
+    class Obj {
+    public:
+        virtual void f(int);
+    };
     fn_8012A364(lbl_8055FC9C, arg0);
     if (--lbl_8055FC98 == 0) {
-        if (lbl_8055FC9C != 0) {
-            void **vtable = *(void ***)lbl_8055FC9C;
-            ((void (*)(void *, int))vtable[2])(lbl_8055FC9C, 1);
-        }
+        if (lbl_8055FC9C != 0)
+            ((Obj *)lbl_8055FC9C)->f(1);
         lbl_8055FC9C = 0;
     }
 }
+#pragma cplusplus reset
+#pragma pop
 
 void *fn_802C9DE8(void *arg0, int arg1) {
     *(void **)arg0 = fn_801E7840(arg1);
