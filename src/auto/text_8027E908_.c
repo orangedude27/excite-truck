@@ -226,22 +226,23 @@ extern "C" void fn_8027F204(char *src) {
 #pragma scheduling reset
 #pragma cplusplus off
 void *fn_8027F834(void *arg0, int arg1) {
-    int temp_r0, var_ctr, var_r7;
+    int temp_r0, var_r7;
     unsigned int *var_r6;
+    int count;
     if (arg0 != 0) {
         *(void **)arg0 = lbl_80348798;
         if (lbl_8055F688 == (unsigned int)arg0) lbl_8055F688 = 0;
         var_r6 = (unsigned int *)lbl_804B3048.items;
+        count = lbl_804B3048.count;
         var_r7 = 0;
-        var_ctr = lbl_804B3048.count;
-        if (lbl_804B3048.count > 0) {
+        if (count > 0) {
 loop_4:
             if (*var_r6 == (unsigned int)arg0) {
             } else {
                 var_r6 += 4;
                 var_r7 += 1;
-                var_ctr -= 1;
-                if (var_ctr == 0) goto block_7;
+                count -= 1;
+                if (count == 0) goto block_7;
                 goto loop_4;
             }
         } else {
@@ -1248,3 +1249,11 @@ extern "C" void fn_802874B4(void* arg0) {
 }
 #pragma cplusplus off
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
+#pragma cplusplus on
+struct Fn80280F7CObj {
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+    virtual void f8(); virtual void f9(); virtual void f10(); virtual void *f11();
+    virtual char *f12();
+};
+#pragma cplusplus reset
