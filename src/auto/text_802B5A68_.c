@@ -1,4 +1,6 @@
 #include "types.h"
+extern float lbl_8055FA10;
+
 #pragma small_data on
 __declspec(section ".sdata") extern const char lbl_8055CE40[];
 #pragma small_data off
@@ -281,6 +283,12 @@ void fn_802B61E0(void) {
     s32 val = fn_802E2C20();
     lbl_8055FA08 = (float)val / lbl_80564C70;
 }
+
+void fn_802B6228(void) {
+    s32 val = fn_802E2C20();
+    lbl_8055FA10 = (float)val / lbl_80564C70;
+}
+
 #pragma pop
 s32 fn_802B6270(void) {
     return lbl_8055FA40 == 7;
