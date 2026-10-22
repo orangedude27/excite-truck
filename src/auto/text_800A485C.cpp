@@ -197,6 +197,8 @@ class BoundingPane { public:
 extern "C" Vec2 GetVtxPos__Q34nw4r3lyt4PaneCFv(BoundingPane*, unsigned int);
 extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(const Vec2*, const Size*, unsigned int);
 
+namespace homebutton { namespace gui { class Manager { public: s32 update(s32, f32, f32, unsigned long, unsigned long, unsigned long, void *); }; } }
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -2162,6 +2164,40 @@ extern "C" void fn_800B3BEC(u8 *out, u8 *in, u8 flags) {
     *out = 0;
 }
 
+extern "C" void VFiPFPATH_getLongNameformShortName(void *arg0, void *arg1, s32 flags) {
+    u8 *src=(u8 *)arg0, *dst=(u8 *)arg1;
+    s32 lower=flags&8, i=0;
+    s32 n=2;
+    while(n--) {
+        s8 c=(s8)src[0];
+        if(c==0||c=='.') goto extension;
+        if(lower&&c>='A'&&c<='Z') dst[0]=c+0x20; else dst[0]=c;
+        c=(s8)src[1]; i++;
+        if(c==0||c=='.') goto extension;
+        if(lower&&c>='A'&&c<='Z') dst[1]=c+0x20; else dst[1]=c;
+        c=(s8)src[2]; i++;
+        if(c==0||c=='.') goto extension;
+        if(lower&&c>='A'&&c<='Z') dst[2]=c+0x20; else dst[2]=c;
+        c=(s8)src[3]; i++;
+        if(c==0||c=='.') goto extension;
+        if(lower&&c>='A'&&c<='Z') dst[3]=c+0x20; else dst[3]=c;
+        i++; src+=4; dst+=4;
+    }
+extension:
+    if((s8)((u8 *)arg0)[i]=='.') { ((u8 *)arg1)[i]='.'; i++; }
+    {
+        s32 end=i+3;
+        u8 *p=(u8 *)arg0+i, *q=(u8 *)arg1+i;
+        s32 lowerExt=flags&0x10;
+        for(;i<end;i++,p++,q++) {
+            s8 c=(s8)*p;
+            if(c==0) break;
+            if(lowerExt&&c>='A'&&c<='Z') *q=c+0x20; else *q=c;
+        }
+    }
+    ((u8 *)arg1)[i]=0;
+}
+
 extern "C" s32 VFiPFPATH_GetLengthFromShortname(s8 *arg0) {
     s32 i = 0;
     s32 length = 0;
@@ -3869,6 +3905,39 @@ end:
     }
     return res;
 }
+
+typedef s32 (*FnBB0A8)(s32,s32,s32,s32,s32,s32,s32,s32);
+extern "C" s32 fn_800BABD0(void *, s32, s32 *, s32);
+extern "C" s32 fn_800BACC4(void *, s32, s32 *, s32);
+extern "C" s32 fn_800BC134(void *arg0, s32 arg1, s32 arg2) {
+    s32 sp8 = 0, sp10 = 0, sp14 = 0, sp18;
+    s32 sp20;
+    s32 flag = (arg1 == 4) ? 2 : 0;
+    FnBB0A8 call = (FnBB0A8)fn_800BB0A8;
+    s32 result = call(*(s32 *)arg0, 0x37, 3, 1, *(s32 *)((u8 *)arg0 + 0x10), 0, 0, 0);
+    if (result) {
+        OSReport(lbl_8031B838 + 0x618);
+        OSReport(lbl_8031B838 + 0x624, lbl_8031B838 + 0x608, result);
+        return result;
+    }
+    result = call(*(s32 *)arg0, 6, 3, 1, flag, 0, 0, 0);
+    if (result) {
+        OSReport(lbl_8031B838 + 0x638);
+        OSReport(lbl_8031B838 + 0x624, lbl_8031B838 + 0x608, result);
+        return result;
+    }
+    result = fn_800BABD0(arg0, 0x28, &sp18, 1);
+    if (result) {
+        OSReport(lbl_8031B838 + 0x648, lbl_8031B838 + 0x608, 0x28);
+        return result;
+    }
+    if (flag) sp18 |= 2;
+    else sp18 &= ~2;
+    result = fn_800BACC4(arg0, 0x28, &sp18, 1);
+    if (result) OSReport(lbl_8031B838 + 0x668, lbl_8031B838 + 0x608, 0x28);
+    return result;
+}
+
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 lbl_8055DD78;
 extern "C" const char lbl_8031BF54[];
@@ -6594,6 +6663,29 @@ extern "C" s32 fn_800D50A8(ARCHandle *handle, const char *name) {
     }
     if (!fn_80116BCC(&dir))
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8, 0x4D, lbl_8031F2E4);
+    return result;
+}
+
+extern "C" s32 fn_800D51F4(long a0, long a1, long a2, long a3, long a4, long a5) {
+    ARCHandle *arc=(ARCHandle *)a0; const char *path=(const char *)a1; u32 selector=(u32)a2; const char *name=(const char *)a3; u32 *size=(u32 *)a4;
+    u8 p[5]; ARCFileInfo info; s32 entry=-1, result=0;
+    if (ARCConvertPathToEntrynum(arc,path)!=-1 && ARCChangeDir(arc,path)!=0) {
+        if(!selector) entry=fn_800D50A8(arc,name);
+        else {
+            p[0]=selector>>24; p[1]=selector>>16; p[2]=selector>>8; p[3]=selector; p[4]=0;
+            if(ARCConvertPathToEntrynum(arc,(char*)p)!=-1 && ARCChangeDir(arc,(char*)p)!=0) {
+                entry=ARCConvertPathToEntrynum(arc,name);
+                if(ARCChangeDir(arc,lbl_805597FC)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x75,lbl_8031F2E4);
+            }
+        }
+        if(ARCChangeDir(arc,lbl_805597FC)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x7B,lbl_8031F2E4);
+    }
+    if(entry!=-1) {
+        if(ARCFastOpen(arc,entry,&info)==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2C8,0x83,lbl_8031F2E4);
+        result=(s32)ARCGetStartAddrInMem(&info);
+        if(size) *size=fn_80116A30(&info);
+        fn_80116A38(&info);
+    }
     return result;
 }
 
