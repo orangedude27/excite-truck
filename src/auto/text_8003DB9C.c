@@ -2572,5 +2572,4 @@ void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     cp=__cpReg; first=cp[0x4E/2]; second=first;
     do { low=cp[0x4C/2]; second=cp[0x4E/2]; } while (second != first);
     *arg1=(second<<16)|low;
-}
-typedef struct { unsigned int unk[9]; unsigned char unk24[3]; } GXSetCPUFifoObj;
+}typedef struct { unsigned int unk[9]; unsigned char unk24[3]; } GXSetCPUFifoObj;
