@@ -27,6 +27,7 @@ extern u8 lbl_803C0B98[];
 extern u32 lbl_8055DCA4;
 extern void fn_80070F90(void *ptr);
 extern u8 lbl_803C4C40[];
+extern u8 lbl_80317298[];
 #include "revolution/BTE/stack/sdp/sdpint.h"
 #include "revolution/BTE/stack/include/wbt_api.h"
 extern void AXFXReverbHiExpShutdown(void*);
@@ -1920,6 +1921,38 @@ void bta_hh_api_disc_act(void *arg0, void *arg1) {
     if ((u8)HID_HostCloseDev(handle)) {
         (*(void (**)(int, u8 *))(lbl_803C0D48 + 0x224))(3, &size);
     }
+}
+
+extern void fn_8006CF80();
+void bta_hh_open_cmpl_act(void *arg0, void *arg1) {
+    u8 local[8];
+    u8 handle;
+    u8 status;
+    u8 *dev = arg0;
+    u8 *cb;
+    if (arg1 != 0) handle = (u8)*(u16 *)((u8 *)arg1 + 6);
+    else handle = dev[0x16];
+    memset(local, 0, 8);
+    local[7] = handle;
+    fn_80070FA4(local, dev + 8);
+    cb = lbl_803C0D48;
+    cb[0x22D]++;
+    fn_8006CF80(dev[0x16], dev[0x13], *(u16 *)(dev + 0xE), dev[0x15]);
+    bta_sys_conn_open(0x17, dev[0x15], (s32)(u32)(dev + 8));
+    if (dev[0x1B] != 0) {
+        status = HID_HostWriteDev(handle, 7, dev[0x1B], 0, 0, 0);
+        local[6] = status;
+        if ((u8)status != 0) {
+            local[6] = 8;
+            (*(void (**)(u32, void *))(cb + 0x224))(2, local);
+        } else {
+            *(u16 *)(dev + 0x10) = 2;
+        }
+    } else {
+        dev[0x1A] = 1;
+        (*(void (**)(u32, void *))(cb + 0x224))(2, local);
+    }
+    dev[0x19] = 0;
 }
 
 void bta_hh_handsk_act(u8 *p_cb, s32 *p_data) {
@@ -5062,6 +5095,29 @@ void fn_80089248(void)
 {
     L2CA_Deregister(0x11);
     L2CA_Deregister(0x13);
+}
+
+extern u8 lbl_80317C20[];
+UINT8 L2CA_DataWrite(UINT16 lcid, BT_HDR *p_buf) {
+    u8 *trace = lbl_80317C20;
+    void *ccb;
+    if (lbl_803C4040[0] >= 3)
+        fn_8007096C(0x80002, trace + 0x49C, lcid, p_buf->len);
+    ccb = l2cu_find_ccb_by_cid(0, lcid);
+    if (ccb == 0) {
+        if (lbl_803C4040[0] >= 2)
+            fn_80070954(0x80001, trace + 0x4C4, lcid);
+        GKI_freebuf(p_buf);
+        return 0;
+    }
+    if (p_buf->len <= *(u16 *)((u8 *)ccb + 0x3A)) {
+        fn_80089E40(ccb, 0x1D, p_buf);
+        return (u8)(1 + !!(*(u8 *)(*(u8 **)((u8 *)ccb + 0x10) + 0x41)));
+    }
+    if (lbl_803C4040[0] >= 2)
+        fn_8007093C(0x80001, trace + 0x4F0);
+    GKI_freebuf(p_buf);
+    return 0;
 }
 
 extern u8 lbl_80560D48[];
