@@ -11,6 +11,9 @@ extern unsigned short *__cpReg;
 extern unsigned short *__peReg;
 extern unsigned int lbl_8037C0E4;
 extern unsigned int lbl_8055D974;
+extern f32 lbl_80560B40;
+extern f64 lbl_80560B48;
+extern u32 __cvt_fp2unsigned(f32);
   extern void GXGetVtxDesc(void);
   extern void __GXSaveFifo(void);
 
@@ -1307,6 +1310,42 @@ void GXSetCopyClear(unsigned char *color, s32 depth) {
     third |= 0x51000000;
     *fifo = third;
     *(unsigned short *)((char *)__GXData + 2) = 0;
+}
+
+void GXSetCopyFilter(s32 arg0, u8 *arg1, s32 arg2, u8 *arg3) {
+    u32 a, b, c, d;
+    u32 e, f;
+    volatile u8 *bp = (volatile u8 *)0xCC008000;
+    volatile u32 *wp = (volatile u32 *)0xCC008000;
+
+    if (arg0) {
+        a = ((u32)(arg1[0] & 15) | ((u32)(arg1[1] & 15) << 4) | ((u32)(arg1[2] & 15) << 8) |
+             ((u32)(arg1[3] & 15) << 12) | ((u32)(arg1[4] & 15) << 16) | ((u32)(arg1[5] & 15) << 20) | 0x01000000);
+        b = ((u32)(arg1[6] & 15) | ((u32)(arg1[7] & 15) << 4) | ((u32)(arg1[8] & 15) << 8) |
+             ((u32)(arg1[9] & 15) << 12) | ((u32)(arg1[10] & 15) << 16) | ((u32)(arg1[11] & 15) << 20) | 0x02000000);
+        c = ((u32)(arg1[12] & 15) | ((u32)(arg1[13] & 15) << 4) | ((u32)(arg1[14] & 15) << 8) |
+             ((u32)(arg1[15] & 15) << 12) | ((u32)(arg1[16] & 15) << 16) | ((u32)(arg1[17] & 15) << 20) | 0x03000000);
+        d = ((u32)(arg1[18] & 15) | ((u32)(arg1[19] & 15) << 4) | ((u32)(arg1[20] & 15) << 8) |
+             ((u32)(arg1[21] & 15) << 12) | ((u32)(arg1[22] & 15) << 16) | ((u32)(arg1[23] & 15) << 20) | 0x04000000);
+    } else {
+        a = 0x01666666; b = 0x02666666; c = 0x03666666; d = 0x04666666;
+    }
+    *bp = 0x61; *wp = a;
+    e = 0x53000000;
+    *bp = 0x61;
+    f = 0x54000000;
+    *wp = b; *bp = 0x61; *wp = c; *bp = 0x61; *wp = d;
+
+    if (arg2) {
+        e |= (arg3[0] & 63) | ((u32)(arg3[1] & 63) << 6) | ((u32)(arg3[2] & 63) << 12) | ((u32)(arg3[3] & 63) << 18);
+        f |= (arg3[4] & 63) | ((u32)(arg3[5] & 63) << 6) | ((u32)(arg3[6] & 63) << 12);
+    } else {
+        e |= 0x00595000;
+        f = (f & 0xFFFC003F) | 0x15;
+    }
+    *bp = 0x61; *wp = e; *bp = 0x61; *wp = f;
+    __GXData[0] = (__GXData[0] & 0xFFFF0000) | (__GXData[0] & 0xFFFF);
+    *(volatile u16 *)((u8 *)__GXData + 2) = 0;
 }
 
 void GXSetDispCopyGamma(s32 arg0) {
