@@ -64,6 +64,28 @@ extern "C" s32 lbl_8055DDF0;
 int strncmp(const char *, const char *, unsigned int);
 extern "C" int strncmp(const char *, const char *, unsigned int);
 struct AlphaColor { u8 r, g, b, a; };
+struct AnimEnableVTable {
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8();
+};
+struct AnimEnableObject : AnimEnableVTable {};
+struct PaneAnimVTable {
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+};
+struct PaneAnimObject : PaneAnimVTable {};
+struct PaneAnimLink {
+    PaneAnimLink* next;
+    void* unk4;
+    PaneAnimObject* animation;
+    u16 index;
+    u8 pad[2];
+    u8 disabled;
+};
+extern "C" const char lbl_8031E8FC[];
+extern "C" const char lbl_8031E8D8[];
 
 extern "C" s32 fn_800D58C4(const char* a, const char* b) { return strncmp(a, b, 0x10) == 0; }
 
@@ -106,6 +128,7 @@ extern "C" void fn_800D598C(void* arg0) {
 extern "C" s32 MEMAllocFromAllocator(s32, s32);
 extern "C" const char lbl_8031F5A8[];
 extern "C" const char lbl_8031F5B8[];
+extern "C" const char lbl_8031F5E8[];
 extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *arg0, u8 arg1) {
     if (arg1 > 8)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F5A8, 0x5D, lbl_8031F5B8);
@@ -121,6 +144,62 @@ extern "C" void Reserve__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void *arg0, u8 arg
         *(s32*)((u8*)arg0 + 4) = newp;
         if (newp != 0)
             *(u8*)arg0 = arg1;
+    }
+}
+
+extern f32 lbl_80560E68;
+extern f32 lbl_80560E6C;
+extern signed char lbl_8055DDE8;
+extern f32 lbl_80407E40[8];
+void SetSize__Q46nw4hbm3lyt6detail11TexCoordAryFUc(void* self, u8 size) {
+    void* data = *(void**)((char*)self + 4);
+    u8 max = *(u8*)self;
+    if (!data) return;
+    if (size > max) return;
+    if (!lbl_8055DDE8) {
+        lbl_80407E40[0]=lbl_80560E68; lbl_80407E40[1]=lbl_80560E68;
+        lbl_80407E40[2]=lbl_80560E6C; lbl_80407E40[3]=lbl_80560E68;
+        lbl_80407E40[4]=lbl_80560E68; lbl_80407E40[5]=lbl_80560E6C;
+        lbl_80407E40[6]=lbl_80560E6C; lbl_80407E40[7]=lbl_80560E6C;
+        lbl_8055DDE8=1;
+    }
+    u8 i=*((u8*)self+1);
+    if (i < size) {
+        do {
+            f32* p=(f32*)((char*)data + (i << 5));
+            p[0]=lbl_80407E40[0]; p[1]=lbl_80407E40[1]; p[2]=lbl_80407E40[2]; p[3]=lbl_80407E40[3];
+            p[4]=lbl_80407E40[4]; p[5]=lbl_80407E40[5]; p[6]=lbl_80407E40[6]; p[7]=lbl_80407E40[7];
+            ++i;
+        } while (i < size);
+    }
+    *((u8*)self+1)=size;
+}
+
+extern "C" void Copy__Q46nw4hbm3lyt6detail11TexCoordAryFPCvUc(void* self, const void* src, u8 count) {
+    u8* p = (u8*)self;
+    if (count > p[0])
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F5A8, 0xA1, lbl_8031F5E8);
+    if (p[1] < count)
+        p[1] = count;
+    s32 offset = 0;
+    if ((s32)count > 0) {
+        do {
+            f32* dst = (f32*)(*(u8**)(p + 4) + offset);
+            const f32* in = (const f32*)((const u8*)src + offset);
+            dst[0] = in[0];
+            dst[1] = in[1];
+            f32 f3 = in[4];
+            f32 f2 = in[5];
+            dst[2] = in[2];
+            f32 f1 = in[6];
+            dst[3] = in[3];
+            f32 f0 = in[7];
+            dst[4] = f3;
+            dst[5] = f2;
+            offset += 0x20;
+            dst[6] = f1;
+            dst[7] = f0;
+        } while (--count != 0);
     }
 }
 
@@ -152,6 +231,22 @@ extern "C" void SetVertexFormat__Q34nw4r3lyt6detailFbUc(bool hasColor, unsigned 
     GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)9, (GXCompCnt)0, (GXCompType)4, (u8)0);
     if (hasColor) GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)0xB, (GXCompCnt)1, (GXCompType)5, (u8)0);
     for (int i = 0; i < texCoordCount; i++) GXSetVtxAttrFmt((GXVtxFmt)0, (GXAttr)(i + 0xD), (GXCompCnt)1, (GXCompType)4, (u8)0);
+}
+
+extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void*, const void*, u8, const void*, const void*, u8);
+extern "C" void MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(void*, void*, u8);
+extern "C" void DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(const void* pos, const void* size, u8 count, const void* texCoords, const void* colors, u8 alpha) {
+    u32 white[4] = { 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff };
+    if (colors != 0) {
+        u8 adjusted[16];
+        const u8* src = (const u8*)colors;
+        for (int i = 0; i < 4; ++i) {
+            MultipleAlpha__Q34nw4r3lyt6detailFQ34nw4r2ut5ColorUc(adjusted + i * 4, (void*)(src + i * 4), alpha);
+        }
+        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, count, texCoords, adjusted, 0);
+    } else {
+        DrawQuad__Q34nw4r3lyt6detailFRCQ34nw4r4math4VEC2RCQ34nw4r3lyt4SizeUcPA4_CQ34nw4r4math4VEC2PCQ34nw4r2ut5ColorUc(pos, size, count, texCoords, white, 0);
+    }
 }
 
 extern "C" void* __ct__Q34nw4r3lyt8DrawInfoFv(void* arg0) {
@@ -188,6 +283,29 @@ extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(
     if (arg1 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F658, 0x233, lbl_8031F634);
     slot = iterator;
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(arg0, &slot, (u8*)arg1 + 4);
+}
+
+extern "C" void* FindGroupByName__Q36nw4hbm3lyt14GroupContainerFPCc(void* arg0, const char* arg1) {
+    extern const char lbl_8031F6B8[];
+    extern const char lbl_8031F694[];
+    extern const char lbl_8031F688[];
+    extern const char lbl_8031F664[];
+    void* node = *(void**)((u8*)arg0 + 4);
+    void* sentinel = (u8*)arg0 + 4;
+    while (node != sentinel) {
+        if (node == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
+        if (fn_800D58C4((const char*)node + 0x14, arg1)) {
+            if (node == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F6B8, 0x23D, lbl_8031F694);
+            void* group = (u8*)node - 4;
+            if (group == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F688, 0x193, lbl_8031F664);
+            return group;
+        }
+        node = *(void**)node;
+    }
+    return 0;
 }
 
 extern "C" void fn_800D6EEC(void* arg0) {
@@ -1349,6 +1467,23 @@ extern "C" void fn_800DB084(void* arg0) {
     ((Obj*)arg0)->v3(0);
 }
 
+extern "C" void fn_800DB098(void* arg0, void* arg1) {
+    extern const char lbl_8031F1FC[];
+    extern const char lbl_8031F1D8[];
+    void* end = (u8*)arg0 + 0x1C;
+    void* node = *(void**)((u8*)arg0 + 0x1C);
+    do {
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+        if (*(u8*)((u8*)node + 0xE) == 0) {
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            void* obj = *(void**)((u8*)node + 8);
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23D, lbl_8031F1D8);
+            ((void (*)(void*, u16, void*))(*(void***)obj)[7])(obj, *(u16*)((u8*)node + 0xC), arg0);
+        }
+        node = *(void**)node;
+    } while (node != end);
+}
+
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(void* arg0, void* arg1) {
     extern const char lbl_8031FF54[];
     extern const char lbl_8031FF30[];
@@ -1482,6 +1617,30 @@ extern "C" void* FindPaneByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char*
     }
     return 0;
 }
+
+extern "C" int fn_800D58F0(const char*, const char*);
+extern "C" const char lbl_8031E8FC[];
+extern "C" const char lbl_8031E8D8[];
+extern "C" int FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const char* name, bool recursive) {
+    struct V { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual int find(const char*, bool); };
+    void* data = *(void**)((char*)self + 0x28);
+    if (data != 0 && ((int (*)(const char*, const char*))fn_800D58F0)((const char*)data + 4, name))
+        return (int)data;
+    if (recursive) {
+        register void** node = (void**)*(void**)((char*)self + 0x14);
+        register void** end = (void**)((char*)self + 0x14);
+        while (node != end) {
+            if (node == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            V* object = (V*)((char*)node - 4);
+            int result = object->find(name, true);
+            if (result != 0) return result;
+            node = (void**)*node;
+        }
+    }
+    return 0;
+}
+
 #pragma pop
 extern "C" void Draw__Q36nw4hbm3lyt4PaneFRCQ36nw4hbm3lyt8DrawInfo(void* self,void* info){ extern const char lbl_8031E8FC[]; extern const char lbl_8031E8D8[]; if(*((u8*)self+0xCF)&1){ struct Obj{virtual void a0();virtual void a1();virtual void a2();virtual void a3();virtual void a4();}; ((Obj*)self)->a4(); void* end=(u8*)self+0x14; void* node=*(void**)((u8*)self+0x14); do { if(!node)Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC,0x23D,lbl_8031E8D8); struct Child{virtual void a0();virtual void a1();virtual void a2();virtual void a3();virtual void Draw(void*);}; ((Child*)((u8*)node-4))->Draw(info); node=*(void**)node;}while(node!=end); } }
 
@@ -1545,6 +1704,37 @@ extern "C" void fn_800DC204(void* self, void* arg) {
     ((Obj*)self)->v16(0, arg);
 }
 
+extern "C" void UnbindAnimationSelf__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransform(void* pane, void* anim) {
+    extern const char lbl_8031F1FC[];
+    extern const char lbl_8031F1D8[];
+    extern void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void*, void**);
+    void* node;
+    void* end;
+    void* current;
+    void* animation = *(void**)((char*)pane + 0x28);
+    if (animation != 0) {
+        struct V { virtual void a(); virtual void b(); virtual void c(); virtual void d(); };
+        ((V*)animation)->d();
+    }
+    node = *(void**)((char*)pane + 0x20);
+    end = (char*)pane + 0x20;
+    while (node != end) {
+        current = node;
+        node = *(void**)node;
+        if (anim != 0) {
+            if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23d, lbl_8031F1D8);
+            if (*(void**)((char*)current + 8) != anim) continue;
+        }
+        {
+          void* slot = current;
+          Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator((char*)pane + 0x1c, &slot);
+        }
+        if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F1FC, 0x23d, lbl_8031F1D8);
+        *(void**)((char*)current + 8) = 0;
+        *(u16*)((char*)current + 0xc) = 0;
+    }
+}
+
 extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLink(void* self, void* link) {
     extern const char lbl_8031FF90[];
     extern const char lbl_803200F8[];
@@ -1555,6 +1745,23 @@ extern "C" void AddAnimationLink__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimationLi
     iterator = (char*)self + 0x20;
     if (!link) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031FF54, 0x233, lbl_8031FF30);
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char*)self + 0x1c, &iterator, link);
+}
+
+extern "C" void SetAnimationEnable__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt13AnimTransformbb(void* self, void* anim, bool enable, bool recursive) {
+    void* p = ((void*(*)(void*))fn_800D4F98)((char*)self + 0x1c);
+    if (p != 0) *(u8*)((char*)p + 0xe) = !enable;
+    void* obj = *(void**)((char*)self + 0x28);
+    if (obj != 0) ((AnimEnableObject*)obj)->v8();
+    if (recursive) {
+        void* end = (char*)self + 0x14;
+        void* node = *(void**)end;
+        do {
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23d, lbl_8031E8D8);
+            void* item = (char*)node - 4;
+            ((AnimEnableObject*)item)->v0();
+            node = *(void**)node;
+        } while (node != end);
+    }
 }
 
 extern "C" int fcmpgt(f32, f32);
