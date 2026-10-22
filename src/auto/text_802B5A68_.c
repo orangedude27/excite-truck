@@ -156,6 +156,7 @@ extern s32 fn_802E2C20(void);
 #pragma push
 #pragma processor 750
 #pragma scheduling 750
+#pragma scheduling off
 void fn_802B5E24(s32 arg0) {
     lbl_8055FA28 = fn_802B5D2C(lbl_8055CE48, arg0);
     lbl_8055FA08 = lbl_80564C5C;
@@ -436,6 +437,27 @@ s16 fn_802B6E7C(s32 arg0, s32 arg1, u32 arg2) {
 
 s16 fn_802B6ED8(s32 arg0, s32 arg1, u32 arg2) {
     return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * (s16)fn_802B6E30()));
+}
+
+s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
+    extern float lbl_80564C78;
+    extern float lbl_80564C88;
+    extern void fn_801E41D8(void *, void *, s32, f32);
+    f32 sp[6];
+    f32 x1 = lbl_80564C88 + (f32)x * lbl_80564C58;
+    f32 y1 = lbl_80564C88 + (f32)y * lbl_80564C58;
+    f32 height = lbl_80564C78 + fn_801DCF48(sp, x1, y1);
+    sp[0] = x1;
+    sp[1] = height;
+    sp[2] = y1;
+    sp[3] = height;
+    sp[4] = height + farg0;
+    if (arg2 == 0) {
+        arg3 = 0xFF000000;
+        arg2 = 0x20;
+    }
+    fn_801E41D8(&sp[0], &sp[3], (arg2 << 24) | (arg3 & 0xFFFFFF), lbl_80564C88 * (f32)fn_802B6E30());
+    return 0;
 }
 
 #pragma pop
