@@ -13,6 +13,7 @@
 extern u8 lbl_80317C20[];
 extern u8 HID_HostOpenDev(u32);
 extern u8 HID_HostRemoveDev(u32);
+extern u8 HID_HostAddDev(u8 *, u16, u8 *);
 extern void HID_HostSetSecurityLevel(void *, u8);
 extern char lbl_803152B0[];
 extern char lbl_803152D0[];
@@ -6049,6 +6050,20 @@ void fn_80089248(void)
     L2CA_Deregister(0x13);
 }
 
+BOOLEAN L2CA_ConnectRsp(BD_ADDR addr, UINT8 id, UINT16 lcid, UINT16 result, UINT16 status) {
+ void *lcb,*ccb; s16 info[2];
+ if(lbl_803C4040[0]>=3)fn_80070984(0x80002,lbl_80317C20+0x26C);
+ if(lbl_803C4040[0]>=3)fn_800709CC(0x80002,lbl_80317C20+0x2A4,addr[0],addr[1],addr[2],addr[3],addr[4],addr[5]);
+ lcb=l2cu_find_lcb_by_bd_addr(addr);
+ if(!lcb){if(lbl_803C4040[0]>=2)fn_8007093C(0x80001,lbl_80317C20+0x2DC);return 0;}
+ ccb=l2cu_find_ccb_by_cid(lcb,lcid);
+ if(!ccb){if(lbl_803C4040[0]>=2)fn_8007093C(0x80001,lbl_80317C20+0x300);return 0;}
+ if(*(u8 *)((u8 *)ccb+0x36)!=id){if(lbl_803C4040[0]>=2)fn_8007096C(0x80001,lbl_80317C20+0x324,0,id);return 0;}
+ if(result==0)fn_80089E40(ccb,0x15,NULL);
+ else{info[0]=result;info[1]=status;if(result==1)fn_80089E40(ccb,0x15,info);else fn_80089E40(ccb,0x16,info);}
+ return 1;
+}
+
 extern u8 lbl_80317C20[];
 UINT8 L2CA_DataWrite(UINT16 lcid, BT_HDR *p_buf) {
     u8 *trace = lbl_80317C20;
@@ -7490,6 +7505,17 @@ void PORT_FlowInd(void *p_mcb, s32 dlci, s32 enable_data) {
         if (callback != 0 && events != 0) callback(events, p_port[0]);
         if (dlci != 0) break;
     }
+}
+
+extern u8 lbl_80319514[],lbl_80319540[];
+void port_rfc_closed(void *arg0,s32 arg1){
+ u8 state=*((u8 *)arg0+2);void *mcb=*(void **)((u8 *)arg0+0x6C);s32 signals=0;
+ if(state==1&&*((u8 *)arg0+0xC)){if(lbl_803C4828[0x414]>=4)fn_8007093C(0x90003,lbl_80319514);rfc_port_timer_stop(arg0);*((u8 *)arg0+0x68)=0;if(mcb){*((u8 *)mcb+*((u8 *)arg0+0xD)+0x24)=0;rfc_check_mcb_active(mcb);*(void **)((u8 *)arg0+0x6C)=0;}*((u8 *)arg0+0xD)&=0xFE;return;}
+ if(state!=3&&state!=0){*((u8 *)arg0+0xF)|=0x10;*((u8 *)arg0+0x5F)&=0xF4;signals=port_get_signal_changes(arg0);if(*(u32 *)((u8 *)arg0+0x88)&0x8000)signals|=0x8000;}
+ if(lbl_803C4828[0x414]>=4)fn_8007096C(0x90003,lbl_80319540,state,signals);
+ if(*(void **)((u8 *)arg0+0x8C)&&signals)((void (*)(s32,u8))*(void **)((u8 *)arg0+0x8C))(signals,*((u8 *)arg0));
+ if(*(void **)((u8 *)arg0+0x90))((void (*)(s32,u8))*(void **)((u8 *)arg0+0x90))(arg1,*((u8 *)arg0));
+ *((u8 *)arg0+0x68)=0;port_release_port(arg0);
 }
 
 extern char lbl_80319570[];
