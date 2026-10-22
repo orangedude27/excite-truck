@@ -63,6 +63,8 @@ extern f32 lbl_80560134;
 extern f32 lbl_80560190;
 extern u8 lbl_802FB0C8[];
 extern s32 lbl_8055D354;
+#pragma push
+#pragma dont_inline on
 void fn_800056C8(s32 arg0, s32 arg1) {
     s32 *p = (s32 *)((u8 *)&lbl_8034EEB8 + (arg0 << 4));
     *(p + 4) = arg1;
@@ -111,15 +113,14 @@ void fn_800057BC(void) {
 s32 fn_800057D0(void) {
     s32 i, count;
     void *object;
-    void (*set_all)(s32) = fn_800056E0;
-    if (fn_801769A8() & 0x4000) { set_all(lbl_8034EEB8[0]); return; }
+    if (fn_801769A8() & 0x4000) { fn_800056E0(lbl_8034EEB8[0]); return; }
     object = (void *)lbl_8034EEB8[1];
-    if (object != 0 && ((s32 (*)(void))(*(void ***)object)[14])() == 0) { set_all((s32)object); return; }
-    if (fn_80005694() != 0) { set_all(lbl_8034EEB8[3]); return; }
+    if (object != 0 && ((s32 (*)(void))(*(void ***)object)[14])() == 0) { fn_800056E0((s32)object); return; }
+    if (fn_80005694() != 0) { fn_800056E0(lbl_8034EEB8[3]); return; }
     if (fn_80005678() != 0) {
         object = (void *)lbl_8034EEB8[2];
-        if (object != 0 && ((s32 (*)(void))(*(void ***)object)[14])() == 0) { set_all((s32)object); return; }
-        set_all(lbl_8034EEB8[23]);
+        if (object != 0 && ((s32 (*)(void))(*(void ***)object)[14])() == 0) { fn_800056E0((s32)object); return; }
+        fn_800056E0(lbl_8034EEB8[23]);
         return;
     }
     count = ((s32 *)lbl_8055D350)[5];
