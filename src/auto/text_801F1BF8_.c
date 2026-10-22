@@ -7,7 +7,11 @@ extern f32 lbl_8055EBE8;
 extern f32 lbl_80562F38;
 int fn_8000D838(void*);                     /* extern */
 void fn_8000D53C(void);
+#pragma scheduling invalid_target
+#pragma opt_propagation off
 void fn_801F1BF8(void) {
     fn_8000D838(&lbl_8055EBE0);
     lbl_8055EBE8 = lbl_80562F38;
 }
+#pragma opt_propagation reset
+#pragma scheduling on
