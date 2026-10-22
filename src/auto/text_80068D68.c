@@ -349,6 +349,46 @@ void fn_80069EB4(u32 r3, u32 r4) {
     OSSwitchFiberEx(r3, r4, 0, 0, fn_80069D80, (u8*)&lbl_80393680 + 0x1000);
 }
 
+extern void WUDStoredLinkKeyCallback(void *);
+extern void *WUDiGetDevInfo(u8 *);
+u8 WUDiClearUnregisteredDevice(void) {
+    s32 index;
+    s32 offset;
+    u8 *entry;
+
+    if (lbl_80392960[0xE] != 0)
+        return 2;
+    index = 0;
+    offset = 0;
+    while (index < 0x10) {
+        s32 interrupt = OSDisableInterrupts();
+        if (index < 10)
+            entry = lbl_80392960 + offset + 0x64;
+        else
+            entry = lbl_80392960 + (index - 10) * 0x60 + 0x424;
+        OSRestoreInterrupts(interrupt);
+        if (entry[0x59] != 0) {
+            if (entry[0x5C] == 1) {
+                lbl_80392960[0xE] = 3;
+                BTM_DeleteStoredLinkKey(entry + 0x40, WUDStoredLinkKeyCallback);
+                entry[0x5C] = 0;
+                return 2;
+            }
+            if (entry[0x5C] != 3) {
+                void *info = WUDiGetDevInfo(entry + 0x40);
+                if (info != NULL) {
+                    interrupt = OSDisableInterrupts();
+                    memset(info, 0, 0x60);
+                    OSRestoreInterrupts(interrupt);
+                }
+            }
+        }
+        index++;
+        offset += 0x60;
+    }
+    return 3;
+}
+
 extern u8 lbl_80392960[];
 extern u8 lbl_80393058[];
 extern void fn_80069FE8(void);
@@ -2908,6 +2948,33 @@ void btm_remove_sco_links(BD_ADDR addr) {
     }
 }
 
+void btm_sco_removed(u16 handle, u8 packet_types) {
+    u8 count = 0;
+    u8 *p;
+    s32 i;
+    u16 state;
+    *(u16 *)(lbl_803C0F78 + 0x18F6) = packet_types;
+    state = *(u16 *)(lbl_803C0F78 + 0x185C);
+    if ((s16)state < 7) { if ((s16)state >= 2) count = 1; }
+    state = *(u16 *)(lbl_803C0F78 + 0x1890);
+    if ((s16)state < 7) { if ((s16)state >= 2) count++; }
+    state = *(u16 *)(lbl_803C0F78 + 0x18C4);
+    if ((s16)state < 7) { if ((s16)state >= 2) count++; }
+    if (count <= 1) btm_chg_all_acl_pkt_types(FALSE);
+    p = lbl_803C0F78 + 0x1854;
+    for (i = 0; i < 3; i++, p += 0x34) {
+        state = *(u16 *)(p + 8);
+        if (state && state != 1 && *(u16 *)(p + 0xA) == handle) {
+            *(u16 *)(p + 8) = 0;
+            *(u16 *)(p + 0xA) = 0xFFFF;
+            p[0xD] = 0;
+            *(u32 *)(p + 0x10) = 0;
+            ((void (*)(u16))*(u32 *)(p + 4))(i);
+            break;
+        }
+    }
+}
+
 extern u8 lbl_8031A3B0[];
 void btm_sco_acl_removed(BD_ADDR addr) {
     u8 *entry;
@@ -3794,6 +3861,30 @@ void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0xa0)=0;
  *(void **)(lbl_803C3740+0xa4)=gap_data_ind;
  *(void **)(lbl_803C3740+0xa8)=gap_congestion_ind;
+}
+
+void gap_data_ind(u16 cid, void *p_buf) {
+    u8 *conn = lbl_803C3740 + 0xAC;
+    s32 i;
+
+    for (i = 0; i < 2; i++) {
+        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid)
+            goto found;
+        conn += 0x60;
+        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid)
+            goto found;
+        conn += 0x60;
+    }
+    conn = NULL;
+found:
+    if (conn == NULL) {
+        GKI_freebuf(p_buf);
+    } else if (conn[0] == 4) {
+        GKI_enqueue((BUFFER_Q *)(conn + 0x14), p_buf);
+        ((void (*)(u16, u16))*(void **)(conn + 0x20))(*(u16 *)(conn + 4), 0x102);
+    } else {
+        GKI_freebuf(p_buf);
+    }
 }
 
 extern u8 lbl_803173E0[];
@@ -5822,6 +5913,53 @@ void fn_8008EE40(void *arg0, void *arg1) {
     }
 }
 
+void l2cu_process_our_cfg_req(void *p_ccb, void *p_cfg) {
+    u8 *ccb = p_ccb;
+    u8 *cfg = p_cfg;
+    u16 mtu;
+    u16 size;
+    void *buf;
+
+    if (cfg[2] != 0) {
+        u16 requested = *(u16 *)(cfg + 4);
+        *(u16 *)(ccb + 0x38) = requested;
+        if (requested > 0x69B) {
+            *(u16 *)(cfg + 4) = 0x69B;
+            *(u16 *)(ccb + 0x38) = 0x69B;
+        }
+    }
+    if (cfg[6] != 0) {
+        u32 first = *(u32 *)(cfg + 8);
+        u32 second = *(u32 *)(cfg + 0xC);
+        *(u32 *)(ccb + 0x58) = first;
+        *(u32 *)(ccb + 0x5C) = second;
+        first = *(u32 *)(cfg + 0x10);
+        second = *(u32 *)(cfg + 0x14);
+        *(u32 *)(ccb + 0x60) = first;
+        *(u32 *)(ccb + 0x64) = second;
+        first = *(u32 *)(cfg + 0x18);
+        second = *(u32 *)(cfg + 0x1C);
+        *(u32 *)(ccb + 0x68) = first;
+        *(u32 *)(ccb + 0x6C) = second;
+    }
+    if (cfg[0x20] != 0) {
+        mtu = *(u16 *)(cfg + 0x22);
+        if (mtu != 0) {
+            *(u16 *)(ccb + 0x3C) = mtu;
+            ccb = *(u8 **)(ccb + 0x10);
+            if (mtu < *(u16 *)(ccb + 0x32)) {
+                *(u16 *)(ccb + 0x32) = mtu;
+                if (mtu <= 0x4FF) {
+                    size = (mtu * 8 + 3) / 5;
+                    buf = GKI_getpoolbuf(2);
+                    if (buf != NULL)
+                        fn_80085568(buf, *(u16 *)(ccb + 0x28), size);
+                }
+            }
+        }
+    }
+}
+
 void fn_8008EF90(void *arg0, void *arg1) {
     struct Pair { u32 first; u32 second; };
     u8 *dst = (u8 *)arg0;
@@ -7591,6 +7729,35 @@ static void USB_ERR(const char *fmt, ...) {
 
 u32 fn_8009B0E0(void) {
     return 0;
+}
+
+extern s32 lbl_805590A0;
+extern s32 _intBlkCtrlCb(s32, void *);
+extern void *iosAllocAligned(s32, u32, u32);
+extern s32 iosFree(s32, void *);
+extern s32 IOS_CloseAsync(s32, s32 (*)(s32, void *), void *);
+s32 IUSB_CloseDeviceAsync(s32 device, void (*callback)(void), void *callbackArg) {
+    char *base = lbl_8031A620;
+    void *block;
+    s32 result;
+    USB_LOG(base + 0x1FC);
+    block = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
+    if (block == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, block);
+    if (block == 0) {
+        USB_ERR(base + 0x228);
+        result = -0x16;
+    } else {
+        *(void **)block = (void *)callback;
+        *(void **)((u8 *)block + 4) = callbackArg;
+        *(s32 *)((u8 *)block + 0x2C) = 0;
+        result = IOS_CloseAsync(device, _intBlkCtrlCb, block);
+        USB_LOG(base + 0x20C, result);
+        if (result < 0 && block != 0) {
+            s32 freeResult = iosFree(lbl_805590A0, block);
+            if (freeResult < 0) USB_ERR(base + 0x108, lbl_805590A0, block, freeResult);
+        }
+    }
+    return result;
 }
 
 s32 IUSB_ReadIntrMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
