@@ -294,6 +294,31 @@ s32 fn_8019D618(void* arg0, void* arg1, s32 clamp, void* arg3) {
     return 1;
 }
 
+s32 fn_8019DAB0(void *arg0, void *arg1) {
+    void *shape = *(void **)((u8 *)arg0 + 0xC);
+    f32 radius = *(f32 *)((u8 *)arg0 + 0x28);
+    f32 half = -radius;
+    f32 width = *(f32 *)((u8 *)arg0 + 0x24);
+    Vec center, a, b;
+    f32 x = *(f32 *)((u8 *)shape + 0x18);
+    f32 y = *(f32 *)((u8 *)shape + 0x1C);
+    f32 z = *(f32 *)((u8 *)shape + 0x20);
+    f32 ax = *(f32 *)((u8 *)shape + 0x24);
+    f32 ay = *(f32 *)((u8 *)shape + 0x28);
+    f32 az = *(f32 *)((u8 *)shape + 0x2C);
+    if (fn_8019D618(arg0, 0, 0, 0))
+        return 1;
+    center.x = ax + x * radius;
+    center.y = ay + y * radius;
+    center.z = az + z * radius;
+    a.x = ax + x * half;
+    a.y = ay + y * half;
+    a.z = az + z * half;
+    if (fn_8019B08C(arg0, &center, arg1, width))
+        return 1;
+    return fn_8019B08C(arg0, &a, arg1, width) != 0;
+}
+
 extern "C" f32 fn_8019DDEC(void *arg0) {
     return *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28);
 }
@@ -511,6 +536,22 @@ void fn_8019EECC(void* arg0, Vec* arg1) {
     arg1->x += *(f32*)((u8*)arg0 + 0x30);
     arg1->y += *(f32*)((u8*)arg0 + 0x34);
     arg1->z += *(f32*)((u8*)arg0 + 0x38);
+}
+
+extern "C" void fn_8019EF00(void* arg0) {
+    f32* v = (f32*)((u8*)arg0 + 0x28);
+    f32* dst = (f32*)((u8*)arg0 + 0x34);
+    f32* m = (f32*)*(void**)((u8*)arg0 + 0xC);
+    f32 x = v[0], y = v[1], z = v[2];
+    f32 a = x*m[0] + y*m[3] + z*m[6];
+    f32 b = x*m[1] + y*m[4] + z*m[7];
+    f32 c = x*m[2] + y*m[5] + z*m[8];
+    dst[0] = a;
+    dst[1] = b;
+    dst[2] = c;
+    dst[0] += m[9];
+    dst[1] += m[10];
+    dst[2] += m[11];
 }
 
 void fn_8019F03C(void* arg0) {
@@ -743,6 +784,37 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     *(f32*)arg2 = temp_f7 + temp_f0;
     *(f32*)((u8*)arg2 + 4) = temp_f6 + temp_f0;
     *(f32*)((u8*)arg2 + 8) = temp_f5 + temp_f0;
+}
+
+extern "C" void fn_801A0258(void *arg0, void *arg1, f32 farg0, f32 farg1, f32 farg2) {
+    struct Object {
+        void *vtable; s32 field4; s32 field8; s32 fieldC; f32 field10; f32 field14;
+        s32 field18; s32 field1C; s32 field20; f32 field24; f32 field28; f32 field2C;
+        f32 field30; f32 field34; f32 field38; f32 field3C; f32 field40; f32 field44;
+        f32 field48; u8 field4C; u8 pad4D[3]; f32 field50;
+    };
+    Object *object = (Object *)fn_801284F8(0x54, lbl_80333640);
+    s32 type;
+    f32 zero = lbl_805622D0;
+    if (object != 0) {
+        type = *(s32 *)((u8 *)arg0 + 4);
+        object->fieldC = *(s32 *)((u8 *)arg0 + 0xC);
+        object->field4 = type; object->field8 = 0;
+        object->field18 = 0x53504852;
+        object->field10 = farg1; object->field14 = farg2;
+        object->field20 = 100; object->field1C = 0;
+        object->vtable = &lbl_80333B48;
+        object->field24 = farg0;
+        object->field34 = zero; object->field38 = zero;
+        object->field3C = zero; object->field40 = zero;
+        object->field44 = zero; object->field48 = zero;
+        object->field4C = 0; object->field50 = zero;
+        object->field28 = *(f32 *)arg1;
+        object->field2C = *(f32 *)((u8 *)arg1 + 4);
+        object->field30 = *(f32 *)((u8 *)arg1 + 8);
+        if (type != 0) fn_8019EECC((void *)type, (Vec *)((u8 *)object + 0x28));
+    }
+    fn_801A0378(arg0, object);
 }
 
 extern "C" void fn_801A0378(void* arg0, void* arg1) {
@@ -1656,4 +1728,9 @@ extern f32 lbl_80562370;
 typedef void (*VFunc)(void*);
 typedef void (*VFuncArg)(void*, s32);
 extern f32 lbl_805622DC;
-
+class Dispatch8019F26C {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void Call(s32);
+};
