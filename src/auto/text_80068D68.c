@@ -57,6 +57,7 @@ extern u8 lbl_80393058[];
 extern char lbl_80313238[];
 extern u8 lbl_803C0D48[];
 extern u8 lbl_803C3C38[];
+extern char lbl_80317838[];
 extern void *l2cu_find_ccb_by_cid(void *, u16);
 extern u8 lbl_803C0B98[];
 extern char lbl_80316E08[];
