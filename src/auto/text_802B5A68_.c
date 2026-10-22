@@ -126,6 +126,14 @@ extern float lbl_80564C5C;
 extern s32 fn_802B32E0(s32);
 extern s32 fn_802B4E44(s32);
 extern s32 sscanf(const char *, const char *, ...);
+typedef s32 (*Fn802B83CCPredicate)(const char *);
+typedef s32 (*Fn802B83CCAction)(s32, const char *);
+typedef struct {
+    const char *name;
+    Fn802B83CCPredicate predicate;
+    Fn802B83CCAction action;
+} Fn802B83CCEntry;
+extern Fn802B83CCEntry lbl_8034A95C[];
 s32 fn_802B5DD0(s32 arg0) {
     s32 temp_r31;
     s32 temp_r3;
@@ -261,13 +269,15 @@ extern s32 fn_8026E214(void *, void *);
 extern void deleteThreads__6SystemFv(void *);
 extern s32 fn_802C6CF8(void);
 extern s32 lbl_804BFA70;
+#pragma push
+#pragma processor 750
+#pragma scheduling 750
+__declspec(section ".sdata") extern double lbl_80564C68;
 void fn_802B61E0(void) {
     s32 val = fn_802E2C20();
-    double magic = lbl_80564C68;
-    (void)magic;
     lbl_8055FA08 = (float)val / lbl_80564C70;
 }
-
+#pragma pop
 s32 fn_802B6270(void) {
     return lbl_8055FA40 == 7;
 }
