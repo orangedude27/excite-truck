@@ -76,6 +76,7 @@ extern f32 lbl_80560D54;
 extern u32 lbl_80560D28;
 
 extern u8 lbl_803C0F78[];
+extern char lbl_8031669C[];
 extern tBTM_SEC_DEV_REC *btm_find_oldest_dev(void);
 extern u8 lbl_80316570[];
 extern u8 lbl_80315FBC[];
