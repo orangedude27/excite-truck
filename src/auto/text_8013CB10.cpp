@@ -199,12 +199,15 @@ extern "C" u8 lbl_8032CAC0_vt[48];
 extern "C" void **fn_801284F8(s32, void *);
 extern "C" char lbl_80559D18[5];
 #pragma dont_inline on
+#pragma scheduling invalid_target
 extern "C" void fn_8013D288(void) {
-    void **slot = fn_801284F8(4, (void *)"zstm");
+    void **slot = fn_801284F8(4, (void *)lbl_80559D18);
     if (slot != 0) {
         *slot = (void *)lbl_8032CAC0_vt;
     }
 }
+#pragma scheduling on
+#pragma dont_inline off
 
 extern "C" s32 fn_8013D890(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
