@@ -5,6 +5,7 @@ typedef long s32;
 typedef unsigned long u32;
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...) __attribute__((noreturn));
 extern "C" void* lbl_8055DEA8;
+extern "C" char lbl_80328540[];
 extern "C" char lbl_803285B8[];
 extern "C" char lbl_803285C8[];
 extern "C" char lbl_803285EC[];
