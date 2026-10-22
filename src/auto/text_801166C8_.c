@@ -39,6 +39,7 @@ extern void fn_802E300C(s32);
 extern void* lbl_8041D728[];
 extern u8 lbl_802F6A40[];
 extern u8 lbl_8041D508[];
+extern u32 lbl_80559950;
 
 BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
     u32 *nodes = (u32 *)handle->FSTStart;
