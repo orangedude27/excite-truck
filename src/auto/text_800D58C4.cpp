@@ -96,6 +96,7 @@ extern "C" const char lbl_8031E8D8[];
 extern "C" void *lbl_8031F628;
 extern "C" const char lbl_8031F6C4[];
 extern "C" const char lbl_8031F6E8[];
+extern "C" void *memcpy(void *, const void *, unsigned int);
 extern "C" s32 fn_800D58C4(const char* a, const char* b) { return strncmp(a, b, 0x10) == 0; }
 
 extern "C" int fn_800D58F0(const char *a, const char *b) { return strncmp(a, b, 0x14) == 0; }
