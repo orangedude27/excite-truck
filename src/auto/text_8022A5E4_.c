@@ -18,6 +18,30 @@ extern char *strncpy(char *, const char *, unsigned int);
 extern void fn_8023293C(void *, char *, float);
 extern int fn_800241CC(int);
 extern void fn_8022B390(const char *, const char *, int, int *, int *);
+void fn_8022A5E4(void) {
+    extern char lbl_80490968[];
+    extern unsigned char lbl_80497D68[];
+    extern void *memset(void *, int, unsigned int);
+    extern void fn_8022C520(void);
+    unsigned int i;
+    unsigned char *src = lbl_80497D68;
+    unsigned char *dst = (unsigned char *)lbl_80490968;
+    /* Fix note: initialize the default record, then repeat its fields in the slot table. */
+    memset(src, 0, 0x74);
+    *(unsigned int *)(src + 0x38) = 9;
+    for (i = 0; i < 0x80; i++) {
+        unsigned char *out = dst + i * 0xE8;
+        unsigned int j;
+        for (j = 0; j < 0x74; j++) {
+            out[j] = src[j];
+            out[j + 0x74] = src[j];
+        }
+        *(unsigned int *)(out + 0x38) = 9;
+        *(unsigned int *)(out + 0xAC) = 9;
+    }
+    fn_8022C520();
+}
+
 void fn_8022A7D0(void) {
     fn_8022C9D0();
 }
@@ -52,6 +76,50 @@ int fn_8022A86C(int arg0) {
         }
     }
     return -1;
+}
+
+void fn_8022A8E4(int arg0) {
+    extern unsigned char lbl_80497D68[];
+    register int offset = arg0 * 0x74;
+    unsigned char *entry = (unsigned char *)lbl_80490968 + offset;
+
+    if (*(int *)(entry + 4) != 0) fn_801E4A2C();
+    if (*(int *)(entry + 8) != 0) fn_802328D4();
+    if (*(int *)(entry + 0x64) != 0) fn_802C4C80();
+    if (*(int *)(entry + 0x68) != 0) fn_802C519C();
+    if (*(int *)(entry + 0x6C) != 0) fn_80235380();
+    if (*(int *)(entry + 0x70) != 0) fn_80235380();
+
+    entry[0] = lbl_80497D68[0];
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x04) = *(unsigned int *)(lbl_80497D68 + 0x04);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x08) = *(unsigned int *)(lbl_80497D68 + 0x08);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x0C) = *(unsigned int *)(lbl_80497D68 + 0x0C);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x10) = *(unsigned int *)(lbl_80497D68 + 0x10);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x14) = *(unsigned int *)(lbl_80497D68 + 0x14);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x18) = *(unsigned int *)(lbl_80497D68 + 0x18);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x1C) = *(unsigned int *)(lbl_80497D68 + 0x1C);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x20) = *(unsigned int *)(lbl_80497D68 + 0x20);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x24) = *(unsigned int *)(lbl_80497D68 + 0x24);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x28) = *(unsigned int *)(lbl_80497D68 + 0x28);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x2C) = *(unsigned int *)(lbl_80497D68 + 0x2C);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x30) = *(unsigned int *)(lbl_80497D68 + 0x30);
+    *(float *)((unsigned char *)lbl_80490968 + offset + 0x34) = *(float *)(lbl_80497D68 + 0x34);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x38) = *(unsigned int *)(lbl_80497D68 + 0x38);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x3C) = *(unsigned int *)(lbl_80497D68 + 0x3C);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x40) = *(unsigned int *)(lbl_80497D68 + 0x40);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x44) = *(unsigned int *)(lbl_80497D68 + 0x44);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x48) = *(unsigned int *)(lbl_80497D68 + 0x48);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x4C) = *(unsigned int *)(lbl_80497D68 + 0x4C);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x50) = *(unsigned int *)(lbl_80497D68 + 0x50);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x54) = *(unsigned int *)(lbl_80497D68 + 0x54);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x58) = *(unsigned int *)(lbl_80497D68 + 0x58);
+    *(float *)((unsigned char *)lbl_80490968 + offset + 0x5C) = *(float *)(lbl_80497D68 + 0x5C);
+    *(float *)((unsigned char *)lbl_80490968 + offset + 0x60) = *(float *)(lbl_80497D68 + 0x60);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x64) = *(unsigned int *)(lbl_80497D68 + 0x64);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x68) = *(unsigned int *)(lbl_80497D68 + 0x68);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x6C) = *(unsigned int *)(lbl_80497D68 + 0x6C);
+    *(unsigned int *)((unsigned char *)lbl_80490968 + offset + 0x70) = *(unsigned int *)(lbl_80497D68 + 0x70);
+    entry[0] = 0;
 }
 
 extern void *fn_8022CA2C(void);
@@ -136,7 +204,145 @@ check:
     if ((signed char)arg1[i - 1] != 0) goto body;
     return bestIndex;
 }
-#pragma pop
+
+extern int fn_801E4A6C(int *, const char *);
+extern int fn_801E4BA8(int *);
+void fn_8022B390(const char *arg0, const char *arg1, int arg2, int *arg3, int *arg4) {
+    void *p = fn_8022CA2C();
+    char sp8 = 0;
+    int i = 0;
+    int x = *(int *)((char *)p + 0x44);
+    int y = *(int *)((char *)p + 0x48);
+    while (*arg1 != 0 && i < arg2) {
+        if (*arg1 != 10) {
+            sp8 = *arg1;
+            if (*(int *)((char *)p + 8) != 0) {
+                x += (int)((float (*)(void *, char *, float))fn_8023293C)(*(void **)((char *)p + 8), &sp8, lbl_80563588);
+            } else if (*(int *)((char *)p + 4) != 0) {
+                x += fn_801E4A6C(*(int **)((char *)p + 4), &sp8);
+            }
+        } else {
+            if (*(int *)((char *)p + 8) != 0) {
+                y += fn_80232B70(*(int *)((char *)p + 8));
+            } else if (*(int *)((char *)p + 4) != 0) {
+                y += fn_801E4BA8(*(int **)((char *)p + 4));
+            }
+            x = *(int *)((char *)p + 0x44);
+        }
+        i++;
+        arg1++;
+    }
+    *arg3 = x;
+    *arg4 = y;
+}
+
+int fn_8022B498(int unused, const char *arg1) {
+    void *p = fn_8022CA2C();
+    int value = *(int *)((char *)p + 0x64);
+    int max;
+    int width = 0;
+    int height = 0;
+    int result = 0;
+    int flags;
+    float scale;
+
+    if (value != 0) {
+        max = fn_802C4EE4(value);
+    } else if (*(int *)((char *)p + 0x68) != 0) {
+        max = fn_802C51C0();
+    } else {
+        max = 0;
+    }
+    if (arg1 != 0) {
+        if (*(int *)((char *)p + 4) != 0) {
+            result = fn_801E4A6C(*(int **)((char *)p + 4), arg1);
+        }
+        if (*(int *)((char *)p + 8) != 0) {
+            scale = lbl_80563588;
+            if (*(float *)((char *)p + 0x34) >= scale) {
+                scale = *(float *)((char *)p + 0x34) / (float)fn_80232B70(*(int *)((char *)p + 8));
+            }
+            result = (int)(scale * ((float (*)(void *, char *, float))fn_8023293C)(
+                                  *(void **)((char *)p + 8), (char *)arg1, lbl_80563588));
+        }
+        flags = *(int *)((char *)p + 0x38);
+        if (flags & 2) {
+            width = -result;
+        } else if (flags & 4) {
+            width = (-result + ((unsigned int)-result >> 31)) >> 1;
+        }
+        if (flags & 1) {
+            height = result;
+        } else if (flags & 4) {
+            height = (result + ((unsigned int)result >> 31)) >> 1;
+        }
+        value = *(int *)((char *)p + 0x4C);
+        if (*(int *)((char *)p + 0x44) > value) value = *(int *)((char *)p + 0x44);
+        value = height + value - width;
+        if (max > value) return max;
+    } else {
+        value = max;
+    }
+    return value;
+}
+
+#pragma dont_inline on
+#pragma scheduling invalid_target
+void fn_8022B91C(void *unused, int x, int y, char *text, unsigned int flagsArg) {
+    extern int fn_802C4F14(int);
+    extern int fn_802C4C90(int, int, int, int, int);
+    extern int fn_802C51AC(void);
+    extern int fn_802E317C(const char *, ...);
+    extern void fn_801E4DBC(int, int, int, int, int, const char *, unsigned long);
+    extern char *strchr(const char *, int);
+    extern unsigned long strlen(const char *);
+    extern const char lbl_8033FC08[];
+    void *ctx;
+    int width, mode, lines, row, lineLen, xoff, yoff;
+    char *nl;
+
+    ctx = fn_8022CA2C();
+    mode = flagsArg & 1;
+    if (*(int *)((char *)ctx + 0x64) != 0) {
+        fn_802C4C90(*(int *)((char *)ctx + 0x64), x, y,
+                    flagsArg % fn_802C4F14(*(int *)((char *)ctx + 0x64)), 0);
+    } else if (*(int *)((char *)ctx + 0x68) != 0) {
+        fn_802C51AC();
+    }
+    if (text == 0) return;
+    if (*(int *)((char *)ctx + 8) != 0) return;
+    fn_802E317C(lbl_8033FC08);
+    width = fn_801E4BA8(*(int **)((char *)ctx + 4));
+    lines = fn_8022AB94(text, 10) + 1;
+    if (*(int *)((char *)ctx + 0x38) & 0x10) {
+        y -= (int)(((lines - 1) * width) +
+                   ((unsigned int)((lines - 1) * width) >> 31)) >> 1;
+    } else if (*(int *)((char *)ctx + 0x38) & 0x40) {
+        y -= (lines - 1) * width;
+    }
+    row = 0;
+    if (lines <= 0) return;
+    goto check;
+body:
+    nl = strchr(text, 10);
+    if (nl != 0) lineLen = nl - text;
+    else lineLen = strlen(text);
+    if (mode != 0) yoff = *(int *)((char *)ctx + 0x50);
+    else yoff = *(int *)((char *)ctx + 0x48);
+    if (mode != 0) xoff = *(int *)((char *)ctx + 0x4C);
+    else xoff = *(int *)((char *)ctx + 0x44);
+    fn_801E4DBC(*(int *)((char *)ctx + 4), 0, *(int *)((char *)ctx + 0x38),
+                x + xoff, y + yoff, text, lineLen);
+    y += width;
+    nl = strchr(text, 10);
+    text = nl;
+    if (nl != 0) text = nl + 1;
+    row++;
+check:
+    if (row < lines) goto body;
+}
+#pragma scheduling reset
+#pragma dont_inline off
 void fn_8022BAD0(int arg0, int arg1, int arg2, int arg3, int arg4, int arg5, int arg6, double arg7, int arg8) {
     int a = arg0 ^ 0x8000;
     int b = arg1 ^ 0x8000;
@@ -154,6 +360,23 @@ void fn_8022BB60(float *arg0, float *arg1, float farg0, float farg1) {
     fn_80230C30(iarg0, iarg1);
     *arg0 += farg0 - (float)iarg0;
     *arg1 -= farg1 - (float)iarg1;
+}
+
+extern double lbl_805635A0;
+unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
+    double a = (double)(unsigned char)(arg0 >> 24);
+    double b = (double)(unsigned char)(arg0 >> 16);
+    double c = (double)(unsigned char)(arg0 >> 8);
+    double d = (double)(unsigned char)arg0;
+    double e = (double)(unsigned char)(arg1 >> 24);
+    double f = (double)(unsigned char)(arg1 >> 16);
+    double g = (double)(unsigned char)(arg1 >> 8);
+    double h = (double)(unsigned char)arg1;
+    unsigned int r0 = (unsigned int)(a + farg0 * (e - a));
+    unsigned int r1 = (unsigned int)(b + farg0 * (f - b));
+    unsigned int r2 = (unsigned int)(c + farg0 * (g - c));
+    unsigned int r3 = (unsigned int)(d + farg0 * (h - d));
+    return (r0 << 24) | (r1 << 16) | (r2 << 8) | r3;
 }
 
 void fn_8022C9D0(void) {
@@ -190,6 +413,7 @@ int fn_8022CC8C(const char *arg0) {
 __declspec(section ".sdata") extern char lbl_8055B928[];
 extern char lbl_80340070[];
 extern int sscanf(const char *, const char *, ...);
+#pragma dont_inline fn_8022CD0C
 int fn_8022CD0C(char *arg0) {
     int sp18;
     int sp14;
@@ -213,3 +437,40 @@ int fn_8022CD0C(char *arg0) {
     return 0xFFFF00FF;
 }
 
+extern char lbl_8033FBE8[];
+extern char lbl_8055B930[];
+extern char lbl_8055B938[];
+extern char lbl_8055B940[];
+extern char lbl_8055B948[];
+extern char lbl_8055B950[];
+extern char lbl_8033FBE8[], lbl_8055B930[], lbl_8055B938[], lbl_8055B940[], lbl_8055B948[], lbl_8055B950[];
+#pragma dont_inline(fn_8022CD0C)
+void fn_8022CDE4(int *d, void *o) {
+ char *s; void **v;
+ if (!o) return;
+ v=*(void ***)o;
+ if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x498)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x498); d[0]=fn_8022CD0C(s); }
+ v=*(void ***)o;
+ if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x4A4)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x4A4); d[1]=fn_8022CD0C(s); }
+ v=*(void ***)o;
+ if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x4BC)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x4BC); d[2]=fn_8022CD0C(s); }
+ v=*(void ***)o;
+ if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x4C8)) { s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x4C8); d[3]=fn_8022CD0C(s); }
+ v=*(void ***)o;
+ if (((int(*)(void*,const char*))v[3])(o,lbl_8033FBE8+0x4E0)) {
+  s=((char*(*)(void*,const char*))v[5])(o,lbl_8033FBE8+0x4E0);
+  if (!stricmp(s,lbl_8055B930)) d[4]=0;
+  else if (!stricmp(s,lbl_8055B938)) d[4]=4;
+  else if (!stricmp(s,lbl_8055B940)) d[4]=2;
+  else if (!stricmp(s,lbl_8033FBE8+0x4EC)) d[4]=1;
+  else if (!stricmp(s,lbl_8033FBE8+0x4F8)) d[4]=5;
+  else if (!stricmp(s,lbl_8033FBE8+0x504)) d[4]=6;
+  else d[4]=fn_8022CD0C(s);
+ }
+ v=*(void ***)o;
+ if (((int(*)(void*,const char*))v[3])(o,lbl_8055B948)) {
+  s=((char*(*)(void*,const char*))v[5])(o,lbl_8055B948);
+  sscanf(s,lbl_8055B950,&d[5],&d[6]);
+ }
+}
+#pragma dont_inline reset
