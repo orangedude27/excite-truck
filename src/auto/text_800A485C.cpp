@@ -485,35 +485,40 @@ extern "C" void fn_800A68DC(s32 arg0) {
     fn_800A76B4((void *)arg0, 1);
 }
 
-s32 fn_800A6A40(u8 *arg0) {
-    s32 valid = 1;
-    u8 first = arg0[0];
-    u16 size;
+s32 fn_800A6A40(void *arg0) {
+    s32 var_r5;
+    u16 temp_r0;
+    u16 var_r4;
+    u8 temp_r0_2;
+    u8 temp_r0_3;
+    u8 temp_r4;
 
-    if ((first != 0xEB || arg0[2] != 0x90) && first != 0xE9) {
-        valid = 0;
+    temp_r4 = *(u8 *)((u8 *)arg0);
+    var_r5 = 1;
+    if (((temp_r4 != 0xEB) || ((u8)*((u8 *)arg0 + 2) != 0x90)) && (temp_r4 != 0xE9)) {
+        var_r5 = 0;
     }
-    if (arg0[0x1FE] != 0x55 || arg0[0x1FF] != 0xAA) {
-        valid = 0;
+    if (((u8)*((u8 *)arg0 + 0x1FE) != 0x55) || ((u8)*((u8 *)arg0 + 0x1FF) != 0xAA)) {
+        var_r5 = 0;
     }
-    if (((u32)(arg0 + 0xB) & 1) != 0) {
-        size = (arg0[0xB] << 8) | arg0[0xC];
+    if ((s32)(((u8 *)arg0 + 0xB)) & 1) {
+        var_r4 = (*((u8 *)arg0 + 0xB) & ~0xFF00) | ((*((u8 *)arg0 + 0xC) << 8) & 0xFF00);
     } else {
-        size = (arg0[0xC] << 8) | arg0[0xD];
+        temp_r0 = (u16)*((u8 *)arg0 + 0xC);
+        var_r4 = ((temp_r0 << 8) & 0xFF00 & ~0xFF) | ((temp_r0 >> 8U) & 0xFF);
     }
-    if (size != 0x200 && size != 0x400 && size != 0x800 && size != 0x1000) {
-        valid = 0;
+    if ((var_r4 != 0x200) && (var_r4 != 0x400) && (var_r4 != 0x800) && (var_r4 != 0x1000)) {
+        var_r5 = 0;
     }
-    if (arg0[0xD] != 1 && arg0[0xD] != 2 && arg0[0xD] != 4 && arg0[0xD] != 8 &&
-        arg0[0xD] != 0x10 && arg0[0xD] != 0x20 && arg0[0xD] != 0x40 && arg0[0xD] != 0x80) {
-        valid = 0;
+    temp_r0_2 = *((u8 *)arg0 + 0xD);
+    if ((temp_r0_2 != 1) && (temp_r0_2 != 2) && (temp_r0_2 != 4) && (temp_r0_2 != 8) && (temp_r0_2 != 0x10) && (temp_r0_2 != 0x20) && (temp_r0_2 != 0x40) && (temp_r0_2 != 0x80)) {
+        var_r5 = 0;
     }
-    if (arg0[0x15] != 0xF0 && arg0[0x15] != 0xF8 && arg0[0x15] != 0xF9 &&
-        arg0[0x15] != 0xFA && arg0[0x15] != 0xFB && arg0[0x15] != 0xFC &&
-        arg0[0x15] != 0xFD && arg0[0x15] != 0xFE && arg0[0x15] != 0xFF) {
-        valid = 0;
+    temp_r0_3 = *((u8 *)arg0 + 0x15);
+    if ((temp_r0_3 != 0xF0) && (temp_r0_3 != 0xF8) && (temp_r0_3 != 0xF9) && (temp_r0_3 != 0xFA) && (temp_r0_3 != 0xFB) && (temp_r0_3 != 0xFC) && (temp_r0_3 != 0xFD) && (temp_r0_3 != 0xFE) && (temp_r0_3 != 0xFF)) {
+        var_r5 = 0;
     }
-    return valid;
+    return var_r5;
 }
 
 extern "C" s32 fn_800A6FC4(void *arg0, s32 arg1, u32 arg2) {
@@ -970,6 +975,69 @@ extern "C" s32 VFiPFCACHE_FlushAllCaches(void *arg0) {
     }
     temp_r3 = ((s32 (*)(void *, s32))fn_800A8AD4)(arg0, *(s32 *)((u8 *)arg0 + 0x1634));
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
+}
+
+void VFiPFCACHE_FreeAllCaches(void *arg0) {
+    void *node;
+    void *head;
+    void *next;
+    void *prev;
+    u16 flags;
+
+loopA:
+    node = *(void **)((u8 *)arg0 + 0x1630);
+    if (node == 0) goto loopB;
+    flags = *(u16 *)node;
+    if ((flags & 1) == 0) goto loopB;
+    *(u16 *)node = flags & 0xFFFC;
+    *(s32 *)((u8 *)node + 0xC) = 0;
+    *(s32 *)((u8 *)node + 0x10) = 0;
+    *(s32 *)((u8 *)node + 0x18) = -1;
+    *(s32 *)((u8 *)node + 0x1C) = 0;
+    head = *(void **)((u8 *)arg0 + 0x1630);
+    if (node == head) {
+        *(void **)((u8 *)arg0 + 0x1630) = *(void **)((u8 *)node + 0x20);
+        goto loopA;
+    }
+    if (node == *(void **)((u8 *)head + 0x24)) goto loopA;
+    next = *(void **)((u8 *)node + 0x20);
+    prev = *(void **)((u8 *)node + 0x24);
+    *(void **)((u8 *)prev + 0x20) = next;
+    *(void **)((u8 *)next + 0x24) = prev;
+    head = *(void **)((u8 *)arg0 + 0x1630);
+    *(void **)((u8 *)node + 0x20) = head;
+    *(void **)((u8 *)node + 0x24) = *(void **)((u8 *)head + 0x24);
+    *(void **)((u8 *)head + 0x24) = node;
+    *(void **)((u8 *)*(void **)((u8 *)node + 0x24) + 0x20) = node;
+    goto loopA;
+
+loopB:
+    for (;;) {
+        node = *(void **)((u8 *)arg0 + 0x1634);
+        if (node == 0) return;
+        flags = *(u16 *)node;
+        if ((flags & 1) == 0) return;
+        *(u16 *)node = flags & 0xFFFC;
+        *(s32 *)((u8 *)node + 0xC) = 0;
+        *(s32 *)((u8 *)node + 0x10) = 0;
+        *(s32 *)((u8 *)node + 0x18) = -1;
+        *(s32 *)((u8 *)node + 0x1C) = 0;
+        head = *(void **)((u8 *)arg0 + 0x1634);
+        if (node == head) {
+            *(void **)((u8 *)arg0 + 0x1634) = *(void **)((u8 *)node + 0x20);
+            continue;
+        }
+        if (node == *(void **)((u8 *)head + 0x24)) continue;
+        next = *(void **)((u8 *)node + 0x20);
+        prev = *(void **)((u8 *)node + 0x24);
+        *(void **)((u8 *)prev + 0x20) = next;
+        *(void **)((u8 *)next + 0x24) = prev;
+        head = *(void **)((u8 *)arg0 + 0x1634);
+        *(void **)((u8 *)node + 0x20) = head;
+        *(void **)((u8 *)node + 0x24) = *(void **)((u8 *)head + 0x24);
+        *(void **)((u8 *)head + 0x24) = node;
+        *(void **)((u8 *)*(void **)((u8 *)node + 0x24) + 0x20) = node;
+    }
 }
 
 extern "C" void VFiPFCLUSTER_UpdateLastAccessCluster(void *arg0, s32 arg1) {
@@ -1562,6 +1630,35 @@ s32 fn_800AFFE0(void *arg0, s32 arg1, u8 arg2, void *arg3, s32 arg4) {
     return oldResult;
 }
 
+extern "C" s32 fn_800B5260(void *, s32, u16, s32, u16);
+extern "C" s32 fn_800B0488(void *arg0, s32 arg1, u32 arg2, void *arg3, s32 arg4) {
+    u8 *obj = (u8 *)arg0, *ctx = (u8 *)arg3;
+    u32 bytes = (u32)arg1 << 2;
+    u32 value = *(u32 *)(obj + 0x28) + (bytes >> obj[0x20]);
+    u16 block = (u16)value;
+    u32 offset = bytes & (*(u16 *)obj - 1);
+    s32 result = 0, saved = 0;
+    if (*(u32 *)(ctx + 0x18) != block) {
+        u16 i;
+        for (i = 0; i < obj[0x22]; i++) {
+            s32 r = fn_800B5618(arg0, *(s32 *)(ctx + 8),
+                *(s32 *)(ctx + 0x18) + i * *(u32 *)(obj + 0xC),
+                0, *(u16 *)obj);
+            if (r && !saved) saved = r;
+        }
+        result = fn_800B5260(arg0, *(s32 *)(ctx + 8), block, 0, *(u16 *)obj);
+        if (result) return result;
+        *(u32 *)(ctx + 0x18) = block;
+    }
+    u8 *buffer = (u8 *)*(u32 *)(ctx + 8);
+    u32 data = *(u32 *)(buffer + offset);
+    u32 swapped = (data << 8 & 0x00FF0000) | (data << 24) | (data >> 8 & 0x0000FF00) | (data >> 24);
+    swapped = (swapped & 0xF0000000) | (arg2 & 0x0FFFFFFF);
+    *(u32 *)(buffer + offset) = (swapped << 8 & 0x00FF0000) | (swapped << 24) | (swapped >> 8 & 0x0000FF00) | (swapped >> 24);
+    if (result) saved = result;
+    return saved;
+}
+
 void fn_800B5CB4(void);
 extern "C" void fn_800B5CB4(void);
 extern "C" void fn_800B0748(void);
@@ -1699,6 +1796,48 @@ extern "C" void VFiPFFILE_FinalizeAllFiles(u8 *arg0) {
     *(u32 *)(arg0 + 0xDDC) &= ~1U;
     *(u32 *)(arg0 + 0xE0C) &= ~1U;
     *(s32 *)(arg0 + 0x161C) = 0;
+}
+
+s32 fn_800B1EB8(void *arg0, void *arg1, u32 arg2, u32 arg3, void *arg4, u32 *arg5) {
+    u32 bytesRead;
+    s32 result;
+    s32 temp;
+    void *file;
+    void *fs;
+    s32 flags;
+
+    *arg5 = 0;
+    file = arg4 == 0 ? 0 : *(void **)((u8 *)*(void **)((u8 *)arg4 + 8) + 0x268);
+    fn_800B77C0((u8 *)file + 0x1F90);
+    result = fn_800B5E14(file);
+    if (result != 0) {
+        fn_800B783C((u8 *)file + 0x1F90);
+        lbl_803D2140[16] = result;
+        *(s32 *)((u8 *)file + 0x1F80) = result;
+        return result;
+    }
+    fs = *(void **)((u8 *)arg4 + 8);
+    flags = *(s32 *)fs;
+    if ((flags & 1) != 0 && (flags & 2) != 0) {
+        fn_800B783C((u8 *)file + 0x1F90);
+        lbl_803D2140[16] = 0x26;
+        *(s32 *)((u8 *)file + 0x1F80) = 0x26;
+        return 0x26;
+    }
+    *(void **)((u8 *)file + 0x1644) = arg4;
+    result = VFiPFFILE_p_fread(file, arg0, arg2, arg3, arg4, &bytesRead);
+    temp = result;
+    *arg5 = bytesRead;
+    *(s32 *)((u8 *)file + 0x1644) = 0;
+    if (result != 0) {
+        lbl_803D2140[16] = result;
+        fs = *(void **)((u8 *)arg4 + 8);
+        fs = *(void **)((u8 *)fs + 0x38);
+        *(s32 *)((u8 *)fs + 0x1F80) = result;
+        *(s32 *)((u8 *)arg4 + 0x18) = result;
+    }
+    fn_800B783C((u8 *)file + 0x1F90);
+    return temp;
 }
 
 extern "C" s32 fn_800B6928(s8);
@@ -2548,6 +2687,65 @@ extern "C" s32 fn_800B808C(s32 arg0, void *arg1, s32 arg2) {
     return result;
 }
 
+s32 fn_800B8520(void *arg0, u32 *arg1) {
+    u32 countA = 0;
+    u32 countB = 0;
+    u32 temp = 0x200;
+    u32 temp2 = 1;
+    u32 value;
+    u32 total;
+    u32 result;
+    u16 a;
+    u16 b;
+    u32 word;
+    u32 start;
+    u32 end;
+
+    do {
+        temp = (temp >> 1) & 0x7FFF;
+        if (temp != 0) countA++;
+    } while (temp != 0);
+    do {
+        temp2 = (temp2 >> 1) & 0x7FFF;
+        if (temp2 != 0) countB++;
+    } while (temp2 != 0);
+
+    if (((u32)((u8 *)arg0 + 0x11) & 1) != 0) {
+        value = *((u8 *)arg0 + 0x11) | (*((u8 *)arg0 + 0x12) << 8);
+    } else {
+        a = *(u16 *)((u8 *)arg0 + 0x12);
+        value = ((a >> 8) | (a << 8)) << 5;
+    }
+    total = value;
+    if (((u32)((u8 *)arg0 + 0x16) & 1) != 0) {
+        b = *((u8 *)arg0 + 0x16) | (*((u8 *)arg0 + 0x17) << 8);
+    } else {
+        b = *(u16 *)((u8 *)arg0 + 0x16);
+        b = (b >> 8) | (b << 8);
+    }
+    start = b;
+    if (start == 0) {
+        word = *(u32 *)((u8 *)arg0 + 0x24);
+        start = ((word >> 24) | ((word >> 8) & 0xFF00) | ((word << 8) & 0xFF0000) | (word << 24));
+    }
+    if (((u32)((u8 *)arg0 + 0x13) & 1) != 0) {
+        b = *((u8 *)arg0 + 0x13) | (*((u8 *)arg0 + 0x14) << 8);
+    } else {
+        b = *(u16 *)((u8 *)arg0 + 0x14);
+        b = (b >> 8) | (b << 8);
+    }
+    end = b;
+    if (end == 0) {
+        word = *(u32 *)((u8 *)arg0 + 0x20);
+        end = ((word >> 24) | ((word >> 8) & 0xFF00) | ((word << 8) & 0xFF0000) | (word << 24));
+    }
+    result = end - (start * 2 + ((value + 0x1FF) >> countA) + 1);
+    *arg1 = result;
+    if ((result >> countB) < 0xFF5) return 0;
+    if ((result >> countB) < 0xFFF5) return 1;
+    return 2;
+}
+
 extern "C" s32 fn_800B865C(u8 *arg0) {
     fn_800A499C((const char *)arg0, 0, 0x200);
     if ((u32)arg0 & 3) {
@@ -2762,6 +2960,48 @@ extern "C" s32 fn_800B92A8(s32 arg0) {
     if (var_r30 != 0)
         return -0x14;
     return var_r29 == 0x17 ? -0x16 : 0;
+}
+
+extern "C" u8 lbl_80405D58[];
+s32 fn_800B9394(s32 arg0, void *arg1) {
+    s32 i;
+    u32 size;
+    u32 q;
+    u32 q2;
+    u32 temp;
+    u32 divisor;
+    u32 remainder;
+    void *entry = 0;
+
+    fn_800B8004(lbl_8055DD30);
+    if (arg0 == 0 || arg1 == 0) {
+        fn_800B8048(lbl_8055DD30);
+        return -0x14;
+    }
+    for (i = 0; i < 0x17; i++) {
+        entry = lbl_80405D58 + i * 0xF0;
+        if (*(s32 *)entry == arg0) break;
+        entry = 0;
+    }
+    if (entry == 0) {
+        fn_800B8048(lbl_8055DD30);
+        return -0x14;
+    }
+    size = *(u32 *)((u8 *)entry + 0x54);
+    q = size >> 9;
+    *(u8 *)((u8 *)arg1 + 7) = 0x3F;
+    *(u8 *)((u8 *)arg1 + 6) = 0xFF;
+    *(u32 *)((u8 *)arg1 + 0xC) = 0;
+    divisor = (u32)(((u64)size * 0x80808081ULL) >> 39);
+    *(u32 *)((u8 *)arg1 + 0x10) = 0;
+    q2 = (u32)(((u64)divisor * 0x4104105ULL) >> 32);
+    *(u32 *)arg1 = q;
+    *(u16 *)((u8 *)arg1 + 8) = 0x200;
+    temp = (q2 - q) >> 1;
+    remainder = (temp + q2) >> 14;
+    *(u16 *)((u8 *)arg1 + 4) = remainder;
+    fn_800B8048(lbl_8055DD30);
+    return 0;
 }
 
 #pragma dont_inline reset
@@ -3419,6 +3659,27 @@ extern "C" void fn_800C1F6C(volatile u32 *dst, const volatile u32 *a, const vola
     dst[0x3C0] = a[15] + b[15];
     dst[0x400] = a[16] + b[16];
     dst[0x440] = a[17] + b[17];
+}
+
+extern "C" void fn_800C2090(volatile s32 *dst, const volatile s32 *a, const volatile s32 *b) {
+    dst[0x000] = a[0] + b[0];
+    dst[0x040] = -(a[1] + b[1]);
+    dst[0x080] = a[2] + b[2];
+    dst[0x0C0] = -(a[3] + b[3]);
+    dst[0x100] = a[4] + b[4];
+    dst[0x140] = -(a[5] + b[5]);
+    dst[0x180] = a[6] + b[6];
+    dst[0x1C0] = -(a[7] + b[7]);
+    dst[0x200] = a[8] + b[8];
+    dst[0x240] = -(a[9] + b[9]);
+    dst[0x280] = a[10] + b[10];
+    dst[0x2C0] = -(a[11] + b[11]);
+    dst[0x300] = a[12] + b[12];
+    dst[0x340] = -(a[13] + b[13]);
+    dst[0x380] = a[14] + b[14];
+    dst[0x3C0] = -(a[15] + b[15]);
+    dst[0x400] = a[16] + b[16];
+    dst[0x440] = -(a[17] + b[17]);
 }
 
 extern "C" s32 lbl_8031D778[];
@@ -6357,6 +6618,53 @@ s32 homebutton::HomeButton::getPaneNo(const char *name) {
         }
     }
     return result;
+}
+
+extern "C" f32 lbl_80560DCC;
+extern "C" void GXSetCullMode(s32);
+extern "C" void fn_800CEBE0(void *arg0, s32 arg1) {
+    s32 bits = -arg1; bits |= arg1;
+    u32 active = (u32)bits >> 31;
+    u8 state = *(u8 *)((u8 *)arg0 + 0x250);
+    state = (state & 0xDF) | ((bits << 6) & 0x20);
+    *(u8 *)((u8 *)arg0 + 0x87) = (u8)active;
+    *(u8 *)((u8 *)arg0 + 0x250) = state;
+    volatile f32 sp[6];
+    void *obj;
+    if (active) {
+        void *src = *(void **)((u8 *)arg0 + 4);
+        f32 y = *(f32 *)((u8 *)src + 0x2C);
+        f32 x = *(f32 *)((u8 *)src + 0x30);
+        obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E0) + 0x10);
+        sp[2] = y; sp[3] = x; sp[4] = y; sp[5] = x;
+        *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
+        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x20) == 0) {
+            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E4) + 0x10);
+            *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
+            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E8) + 0x10);
+            *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
+            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1EC) + 0x10);
+            *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
+            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1F0) + 0x10);
+            *(f32 *)((u8 *)obj + 0x44) = y; *(f32 *)((u8 *)obj + 0x48) = x;
+        }
+    } else {
+        f32 zero = lbl_80560DCC;
+        obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E0) + 0x10);
+        sp[0] = zero; sp[1] = zero; sp[4] = zero; sp[5] = zero;
+        *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
+        if (*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 4) + 0x20) == 0) {
+            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E4) + 0x10);
+            *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
+            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1E8) + 0x10);
+            *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
+            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1EC) + 0x10);
+            *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
+            obj = *(void **)((u8 *)*(void **)((u8 *)arg0 + 0x1F0) + 0x10);
+            *(f32 *)((u8 *)obj + 0x44) = zero; *(f32 *)((u8 *)obj + 0x48) = zero;
+        }
+    }
+    GXSetCullMode(0);
 }
 
 extern "C" void fn_800CB820(const char *, void *);
