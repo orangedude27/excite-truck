@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern "C" f64 lbl_80561780;
 extern "C" char lbl_8032F39C[];
 extern "C" f32 lbl_8042FD08[];
 extern "C" f32 lbl_80558DC4[];
@@ -118,7 +119,7 @@ public:
 class Unk8015A368C {
 public:
     virtual void v0();
-    virtual void v1();
+    virtual void v1(s32 arg = 0);
     virtual void v2();
     virtual void v3();
     virtual void v4();
@@ -315,6 +316,15 @@ extern "C" void fn_80131234(void*);
 extern "C" void fn_801CB6E4(void*, s32);
 extern void* lbl_8032E668[];
 extern void* lbl_8032EFA8;
+extern "C" void *fn_802076A0(void *, s32, s32, s32);
+extern "C" void *lbl_8032EAFC;
+extern "C" f32 lbl_80561768;
+#pragma push
+#pragma small_data off
+extern void* lbl_8032F2BC;
+extern "C" void* lbl_8032EAFC;
+extern void* lbl_8032EFA8;
+#pragma pop
 extern char lbl_8032F0E8[];
 extern f32 lbl_80561750;
 extern f32 lbl_80561754;
@@ -343,6 +353,24 @@ extern "C" s32 fn_801577F0(Unk801577F0* arg0) {
 
 extern "C" s32 fn_8015782C(s32* arg0, s32 arg1) {
     return *arg0 + arg1 * 4;
+}
+
+extern "C" void* fn_8015783C(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    extern f32 lbl_80561758; extern void* lbl_8032EB58; extern void* lbl_8032EAF0;
+    extern void* fn_802076A0(void*, s32, s32, s32);
+    u8* ptr = (u8*)arg0 + 0x14;
+    *(void**)((u8*)arg0 + 8) = ptr;
+    *(void**)arg0 = &lbl_8032F2BC;
+    *(s32*)((u8*)arg0 + 0x10) = 10; *(s32*)((u8*)arg0 + 0xC) = 0;
+    do { memset(ptr, 0, 4); ptr += 0x38; } while (ptr < (u8*)arg0 + 0x244);
+    *(s32*)((u8*)arg0 + 4) = arg2; *(s32*)((u8*)arg0 + 0xC) = 0;
+    *(s32*)((u8*)arg0 + 0x244) = arg1; *(s32*)((u8*)arg0 + 0x258) = 0;
+    *(f32*)((u8*)arg0 + 0x250) = lbl_80561758;
+    *(s32*)((u8*)arg0 + 0x268) = 0; *(s32*)((u8*)arg0 + 0x248) = 0;
+    *(void**)arg0 = &lbl_8032EB58; *(s32*)((u8*)arg0 + 0x274) = arg2;
+    if (fn_80157278(arg2) == 0) *(s32*)((u8*)arg0 + 0x278) = (s32)fn_802076A0(&lbl_8032EAF0, 1, arg2, 2);
+    else *(s32*)((u8*)arg0 + 0x278) = 0;
+    return arg0;
 }
 
 extern "C" void* fn_80157928(void* arg0, s32 arg1) {
@@ -465,6 +493,52 @@ extern "C" void fn_80157F98(Unk801577F0* self, s32 arg1, s32 arg2) {
     *(f32*)((u8*)self + 0x27c) = lbl_80561754;
 }
 
+extern "C" void *fn_80158054(void *arg0, s32 arg1, s32 arg2) {
+    u8 *entry;
+    u8 *end;
+    s32 zero = 0;
+
+    entry = (u8 *)arg0 + 0x14;
+    *(void **)((u8 *)arg0 + 8) = entry;
+    *(void **)arg0 = lbl_8032F2BC;
+    *(s32 *)((u8 *)arg0 + 0x10) = 10;
+    *(s32 *)((u8 *)arg0 + 0x0C) = 0;
+    end = (u8 *)arg0 + 0x244;
+    do {
+        memset(entry, 0, 4);
+        entry += 0x38;
+    } while (entry < end);
+    *(s32 *)((u8 *)arg0 + 4) = arg2;
+    *(s32 *)((u8 *)arg0 + 0x0C) = 0;
+    *(s32 *)((u8 *)arg0 + 0x244) = arg1;
+    *(s32 *)((u8 *)arg0 + 0x258) = 0x41206;
+    *(f32 *)((u8 *)arg0 + 0x250) = lbl_80561768;
+    *(s32 *)((u8 *)arg0 + 0x268) = 0;
+    *(s32 *)((u8 *)arg0 + 0x248) = 0;
+    *(void **)arg0 = lbl_8032EFA8;
+    *(void **)((u8 *)arg0 + 0x2D8) = fn_802076A0(lbl_8032EAFC, 1, arg2, 0);
+    *(s32 *)((u8 *)arg0 + 0x2CC) = 0;
+    return arg0;
+}
+
+extern "C" f32 lbl_8056176C;
+extern "C" void* fn_8015812C(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
+    extern f32 lbl_80561770;
+    u8* ptr = (u8*)arg0 + 0x14;
+    *(void**)((u8*)arg0 + 8) = ptr; *(void**)arg0 = &lbl_8032F2BC;
+    *(s32*)((u8*)arg0 + 0x10) = 10; *(s32*)((u8*)arg0 + 0xC) = 0;
+    do { memset(ptr, 0, 4); ptr += 0x38; } while (ptr < (u8*)arg0 + 0x244);
+    *(s32*)((u8*)arg0 + 0x248) = 0; *(s32*)((u8*)arg0 + 0xC) = 0;
+    *(s32*)((u8*)arg0 + 4) = arg2; *(s32*)((u8*)arg0 + 0x244) = arg1;
+    *(s32*)((u8*)arg0 + 0x268) = 0x40902;
+    *(f32*)((u8*)arg0 + 0x24C) = lbl_8056176C;
+    *(f32*)((u8*)arg0 + 0x250) = lbl_80561750; *(f32*)((u8*)arg0 + 0x254) = lbl_80561770;
+    *(s32*)((u8*)arg0 + 0x248) = 0; *(s32*)((u8*)arg0 + 0x26C) = 0;
+    *(void**)arg0 = &lbl_8032F0E8;
+    *(s32*)((u8*)arg0 + 0x278) = 0; *(s32*)((u8*)arg0 + 0x26C) = 0;
+    return arg0;
+}
+
 extern "C" void* fn_80158218(void* arg0, s32 arg1) {
  if (arg0 != 0) {
  if (arg0 != 0) {
@@ -479,6 +553,34 @@ extern "C" void* fn_80158218(void* arg0, s32 arg1) {
  if (arg1 > 0) fn_80128668(arg0);
  }
  return arg0;
+}
+
+extern "C" void* lbl_8032F184;
+extern "C" f32 lbl_80561774;
+extern "C" f32 lbl_80561770;
+extern "C" void* fn_801582A4(void* self, void* arg1, void* arg2) {
+    u8* p = (u8*)self + 0x14;
+    *(void**)self = &lbl_8032F2BC;
+    *(void**)((u8*)self + 8) = p;
+    *(s32*)((u8*)self + 0x10) = 10;
+    *(s32*)((u8*)self + 0xC) = 0;
+    while (p < (u8*)self + 0x244) {
+        memset(p, 0, 4);
+        p += 0x38;
+    }
+    *(s32*)((u8*)self + 0x248) = 0;
+    *(s32*)((u8*)self + 0xC) = 0;
+    *(void**)((u8*)self + 4) = arg2;
+    *(void**)((u8*)self + 0x244) = arg1;
+    *(s32*)((u8*)self + 0x268) = 0x40901;
+    *(f32*)((u8*)self + 0x24C) = lbl_80561774;
+    *(f32*)((u8*)self + 0x250) = lbl_80561750;
+    *(f32*)((u8*)self + 0x254) = lbl_80561770;
+    *(s32*)((u8*)self + 0x248) = 0;
+    *(s32*)((u8*)self + 0x26C) = 0;
+    *(void**)self = &lbl_8032F184;
+    *(void**)((u8*)self + 0x278) = arg2;
+    return self;
 }
 
 extern "C" void *fn_802076A0(void *, s32, s32, s32);
@@ -557,13 +659,15 @@ extern "C" void fn_8015857C(u32 arg0) {
     s32 index;
     s32* items = (s32*)list->items;
     s32 count = list->count;
-    if (count > 0) {
-        for (index = 0; index < count; index++) {
-            if ((u32)*items == arg0)
-                goto found;
-            items++;
-        }
-    }
+    if (count <= 0)
+        goto notfound;
+    do {
+        if ((u32)*items == arg0)
+            goto found;
+        items++;
+        index++;
+    } while (--count > 0);
+notfound:
     index = -1;
 found:
     if (index == -1)
@@ -829,6 +933,33 @@ void fn_80158F34b(void* arg0, void* arg1) {
 
 extern "C" s32 fn_80158F60(Unk8015A368C* arg0) {
     return arg0->v21() > 0;
+}
+
+extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
+    struct Dummy {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26();
+        virtual s32 getA(); virtual s32 getB();
+    };
+    extern f32 lbl_80561750;
+    extern f32 lbl_80561754;
+    Dummy *obj = (Dummy *)arg0;
+    f32 current, end, start, ratio;
+    if (*(u8 *)((u8 *)arg0 + 0x273) == 0) return 0;
+    if (arg1 == 0) return 0;
+    end = *(f32 *)((u8 *)arg0 + 0x274);
+    current = (f32)obj->getB();
+    start = (f32)obj->getA();
+    ratio = (end - start) / (current - start);
+    if (ratio < lbl_80561750) ratio = lbl_80561750;
+    if (ratio > lbl_80561754) ratio = lbl_80561754;
+    *arg1 = lbl_80561754 + ratio * lbl_80561750;
+    return 1;
 }
 
 extern "C" void fn_801590A8(void* arg0) {
@@ -1099,6 +1230,34 @@ extern "C" void fn_8015A81C(Unk801577F0 *arg0) {
     arg0->m254 = lbl_80561754;
     arg0->m25c = lbl_80561750;
     arg0->v31();
+}
+
+extern "C" void fn_8015ACB0(void *arg0, void *arg1, s32 arg2, f32 arg3) {
+    volatile f32 saved = arg3;
+    if (arg2 != 3) return;
+    u8 *obj = (u8 *)arg0;
+    s32 index = 0;
+    *(u8 *)(obj + 0x2F0) = 1;
+    *(u32 *)(obj + 0x26C) = *(volatile u32 *)&saved;
+    for (s32 outer = 0; outer < 2; outer++) {
+#define SET_SLOT(off) \
+        if (index == *(s32 *)((u8 *)arg1 + 0x1EC)) { \
+            *(s32 *)(obj + (off) + 8) = -1; \
+            *(s32 *)(obj + (off)) = 0; \
+            *(s32 *)(obj + (off) + 4) = 0; \
+        } else { \
+            *(s32 *)(obj + (off) + 8) = index; \
+            *(s32 *)(obj + (off)) = 1; \
+            *(s32 *)(obj + (off) + 4) = 1; \
+        } \
+        index++;
+        SET_SLOT(0x270)
+        SET_SLOT(0x280)
+        SET_SLOT(0x290)
+        SET_SLOT(0x2A0)
+        obj += 0x40;
+    }
+#undef SET_SLOT
 }
 
 extern "C" s32 fn_8015ADA4(void) {
@@ -1463,13 +1622,14 @@ extern "C" void fn_8015C5D0(void* arg0) {
 }
 
 extern "C" void fn_8015C5E4(void* arg0) {
+    register f32 value = *(f32*)((u8*)arg0 + 0x278);
     f32 offset;
-    if (*(f32*)((u8*)arg0 + 0x278) < lbl_80561754) {
-        offset = *(f32*)((u8*)arg0 + 0x278) - lbl_80561760;
+    if (lbl_80561754 > value) {
+        offset = value - lbl_80561760;
     } else {
-        offset = lbl_80561760 + *(f32*)((u8*)arg0 + 0x278);
+        offset = lbl_80561760 + value;
     }
-    *(s32*)((u8*)arg0 + 0x26c) = (s32)offset;
+    *(s32*)((u8*)arg0 + 0x26c) = offset;
     ((Unk801577F0*)arg0)->v13();
     if (*(s32*)((u8*)arg0 + 0x26c) > 0) {
         if (*(s32*)((u8*)arg0 + 0x26c) > 0) {
@@ -1656,6 +1816,37 @@ extern "C" void fn_8015CDDC(Unk801577F0* arg0, void* arg1, s32 arg2, f32 farg0) 
 
 extern "C" s32 fn_8015CE48(void) {
     return 0xE;
+}
+
+extern "C" void fn_8015CF00(void* self) {
+    extern s32 fn_80009C84();
+    extern void fn_80206750(s32, s32);
+    s32 i = 0, offset = 0;
+    u8* entries = *(u8**)((u8*)self + 8);
+    s32 count = *(s32*)((u8*)self + 0xC);
+    while (i < count) {
+        ++i;
+        s32* entry = (s32*)(entries + offset);
+        entry[0] = 0; entry[1] = 0; entry[2] = 0;
+        *(f32*)((u8*)entry + 0xC) = lbl_80561754;
+        offset += 0x38;
+    }
+    *(s32*)((u8*)self + 0x264) = 0;
+    *(s32*)((u8*)self + 0x260) = 0;
+    *(f32*)((u8*)self + 0x254) = lbl_80561754;
+    *(f32*)((u8*)self + 0x25C) = lbl_80561750;
+    ((Unk801577F0*)self)->v31();
+    void* target = *(void**)((u8*)self + 0x278);
+    *(s32*)((u8*)self + 0x26C) = 0;
+    *(s32*)((u8*)self + 0x270) = 0;
+    if (target != 0) {
+        *((u8*)target + 0x4A) = 1;
+        *((u8*)target + 0x4C) = 0;
+        s32 mode = 2;
+        if (fn_80009C84() != 0) mode = 0;
+        if (*(void**)((u8*)self + 0x278) != 0)
+            fn_80206750(*(s32*)((u8*)self + 0x274), mode);
+    }
 }
 
 extern "C" void fn_8015D270(void* arg0, void* arg1) {
@@ -2077,6 +2268,32 @@ extern "C" void fn_8015E5F4(Unk801577F0V* arg0, s32 arg1) {
     }
 }
 
+extern "C" void fn_8015E674(void *arg0, int arg1) {
+ struct A { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void call(int); };
+ int i=0, offset=0; void **array; void *obj,*state;
+ goto check;
+loop:
+ array=*(void ***)((char *)arg0+4);
+ ((A *)array[offset/4])->call(arg1);
+ offset+=4; i++;
+check:
+ if(i<*(int *)((char *)arg0+8)) goto loop;
+ state=*(void **)((char *)arg0+0x50); obj=*(void **)state;
+ if(!obj) goto done;
+ if(*(int *)((char *)state+8)==0) {
+  *(char *)((char *)obj+0x4a)=0; *(char *)((char *)obj+0x4b)=1; *(char *)((char *)obj+0x49)=1;
+ } else {
+  obj=*(void **)((char *)state+4);
+  if(obj && *(int *)((char *)state+0xc)==0) {
+   *(char *)((char *)obj+0x49)=1; *(char *)((char *)obj+0x4b)=0; *(char *)((char *)obj+0x4a)=0;
+  }
+  obj=*(void **)state; *(char *)((char *)obj+0x4a)=1; *(char *)((char *)obj+0x4c)=0;
+ }
+ *(int *)((char *)state+0xc)=*(int *)((char *)state+8);
+ *(int *)((char *)state+8)=1;
+done:;
+}
+
 extern "C" void fn_8015E778(Unk801577F0V* arg0, s32 arg1, s32 arg2, f32 farg0) {
     if (arg0->m54 != 0) {
         UnkVt34** entries = *(UnkVt34***)((u8*)arg0 + 4);
@@ -2141,12 +2358,12 @@ extern "C" void* fn_80159340(void* arg0, s32 arg1) {
         *(void**)arg0 = lbl_8032F0E8;
         if (child) {
             if (child) {
-                ((Unk8015A368C*)child)->v1();
+                ((Unk8015A368C*)child)->v1(1);
             }
         }
         if (arg0) {
             if (arg0) {
-                if ((u32)arg0 + 8) {
+                if (arg0) {
                     if (arg0) {
                         if (arg0) {
                             *(u32*)((char*)arg0 + 8) = 0;
