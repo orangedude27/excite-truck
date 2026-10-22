@@ -150,6 +150,7 @@ struct F92Obj {
     void *w104; // 0x104
     void *w108; // 0x108
 };
+extern "C" void *fn_801F92AC(F92Obj *);
 
 struct F92Node {
     u8 pad0[0x20];
