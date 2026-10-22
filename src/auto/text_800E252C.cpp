@@ -7,6 +7,7 @@ extern void fn_80128668(void);
 
 extern "C" unsigned int OSDisableInterrupts(void);
 extern "C" void OSRestoreInterrupts(unsigned int);
+extern "C" void AXSetVoiceState(void *, unsigned int);
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
 extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode(void *, void *);
 extern "C" void Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(void *, void **, void *);
@@ -21,6 +22,7 @@ extern const char lbl_803227EC[];
 extern "C" void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 extern "C" void detail_InsertPriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 extern const char lbl_803221A8[];
+extern const char lbl_803222F0[];
 extern const char lbl_80322438[];
 // Vtable dispatcher class for indirect virtual calls (MWCC ABI: 2 leading dtor slots).
 class VfObj {
@@ -218,6 +220,33 @@ extern "C" void *fn_800E2D74(void *arg0, int arg1) {
     return arg0;
 }
 
+#pragma push
+#pragma small_data off
+extern double lbl_80560F28;
+#pragma pop
+extern "C" f32 fn_800E310C(void *arg0) {
+    int a = *(int *)((char *)arg0 + 0x6C50);
+    int b = *(int *)((char *)arg0 + 0x6C4C);
+    float x;
+    if (a >= b) x = *(float *)((char *)arg0 + 0x6C48);
+    else x = *(float *)((char *)arg0 + 0x6C44) +
+        (float)a * (*(float *)((char *)arg0 + 0x6C48) - *(float *)((char *)arg0 + 0x6C44)) / (float)b;
+
+    int c = *(int *)((char *)arg0 + 0x6C60);
+    int d = *(int *)((char *)arg0 + 0x6C5C);
+    float y;
+    if (c >= d) y = *(float *)((char *)arg0 + 0x6C58);
+    else y = *(float *)((char *)arg0 + 0x6C54) +
+        (float)c * (*(float *)((char *)arg0 + 0x6C58) - *(float *)((char *)arg0 + 0x6C54)) / (float)d;
+
+    int e = *(int *)((char *)arg0 + 0x6C40);
+    int f = *(int *)((char *)arg0 + 0x6C3C);
+    float z;
+    if (e >= f) z = *(float *)((char *)arg0 + 0x6C38);
+    else z = *(float *)((char *)arg0 + 0x6C34) +
+        (float)e * (*(float *)((char *)arg0 + 0x6C38) - *(float *)((char *)arg0 + 0x6C34)) / (float)f;
+    return x * y * z;
+}
 extern "C" void *GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(void *self) {
     if (*(void **)((char *)self + 4) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x172, lbl_80321FAC);
@@ -248,12 +277,62 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
     OSRestoreInterrupts(level);
 }
 
+extern "C" void fn_80031C6C(int);
+extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10OutputMode(void *self, int mode) {
+    if (*(int *)self == mode) return;
+    *(int *)self = mode;
+    switch (mode) {
+    case 0: fn_80031C6C(0); break;
+    case 1: fn_80031C6C(1); break;
+    case 2: fn_80031C6C(2); break;
+    case 3: fn_80031C6C(0); break;
+    }
+    unsigned int interrupts = OSDisableInterrupts();
+    void *end = (char *)self + 0x18;
+    void *node = *(void **)((char *)self + 0x18);
+    while (node != end) {
+        void *next = *(void **)node;
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+        if (*((unsigned char *)node - 0x8c) != 0) {
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+            *((unsigned char *)node - 0x85) |= 0x20;
+        }
+        node = next;
+    }
+    OSRestoreInterrupts(interrupts);
+}
+
 extern "C" int fn_800E394C(int *arg0) { return *arg0; }
 
 extern "C" void fn_800E402C(void *arg0) {
     OSDisableInterrupts();
     *(u8 *)((char *)arg0 + 0x6C31) = 0;
     ((void (*)(void))OSRestoreInterrupts)();
+}
+
+extern "C" void TRKProcessInput(void *, unsigned int);
+extern "C" void fn_800E4064(void *arg0, void *arg1) {
+    unsigned int interrupts = OSDisableInterrupts();
+    void *node = *(void **)((char *)arg0 + 0x18);
+    *(unsigned char *)((char *)arg0 + 0x6c31) = 1;
+    void *sentinel = (char *)arg0 + 0x18;
+    while (node != sentinel) {
+        if (!node) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+        if (*(unsigned int *)((char *)node - 0x84) != 0xff) {
+            if (!node) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23d, lbl_803220A0);
+            char *base = (char *)node - 0x1a8;
+            for (int i = 0; i < *(int *)(base + 0x104); i++) {
+                char *entry = base + i * 0x10;
+                for (int j = 0; j < *(int *)(base + 0x108); j++) {
+                    void *input = *(void **)(entry + 0xc);
+                    if (input) TRKProcessInput(input, 0x10);
+                    entry += 4;
+                }
+            }
+        }
+        node = *(void **)node;
+    }
+    OSRestoreInterrupts(interrupts);
 }
 
 extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
@@ -271,6 +350,50 @@ extern "C" void UpdateAllVoices__Q46nw4hbm3snd6detail9AxManagerFv(void *this_) {
     OSRestoreInterrupts(level);
 }
 
+extern "C" void Clear__Q46nw4hbm2ut6detail12LinkListImplFv(void *);
+extern "C" void AXRegisterAuxACallback(int, int);
+extern "C" void AXRegisterAuxBCallback(int, int);
+extern "C" void AXRegisterAuxCCallback(int, int);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void fn_800E4364(void *arg0, int arg1) {
+    extern const char lbl_80322198[];
+    extern const char lbl_80322160[];
+    extern const char lbl_80322064[];
+    extern const char lbl_80322040[];
+    unsigned int interrupt;
+    int valid;
+    void *base;
+    void *list;
+    void *node;
+    void *sentinel;
+
+    interrupt = OSDisableInterrupts();
+    valid = 0;
+    if (arg1 >= 0 && arg1 < 3) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322198, 0xBD, lbl_80322160, arg1, 0, 3);
+    base = (char *)arg0 + arg1 * 0xC;
+    if (*(int *)((char *)base + 0x6CCC) == 0) {
+        OSRestoreInterrupts(interrupt);
+        return;
+    }
+    list = (char *)base + 0x6CCC;
+    node = *(void **)((char *)list + 4);
+    sentinel = (char *)list + 4;
+    while (node != sentinel) {
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322064, 0x23D, lbl_80322040);
+        (*(void (**)(void *))((char *)(*(void **)((char *)node - 4)) + 0x10))((char *)node - 4);
+        node = *(void **)node;
+    }
+    Clear__Q46nw4hbm2ut6detail12LinkListImplFv(list);
+    switch (arg1) {
+    case 0: AXRegisterAuxACallback(0, 0); break;
+    case 1: AXRegisterAuxBCallback(0, 0); break;
+    case 2: AXRegisterAuxCCallback(0, 0); break;
+    }
+    OSRestoreInterrupts(interrupt);
+}
+#pragma pop
 extern "C" void __ct__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_) {
     ((unsigned long *)this_)[0x00 / 4] = 0;
     ((unsigned long *)this_)[0x04 / 4] = 0;
@@ -370,12 +493,93 @@ extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detai
     *(float *)((char *)self + 0x184) = lbl_80560F38;
 }
 
+extern "C" void GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
+extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
+extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *, void *);
+#pragma dont_inline on
+#pragma dont_inline reset
+extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
+    int interruptState = OSDisableInterrupts();
+    if (*((unsigned char *)self + 0x11C) == 0) {
+        OSRestoreInterrupts(interruptState);
+        return;
+    }
+    char *row = (char *)self;
+    int rowIndex = 0;
+    int zero = 0;
+    while (rowIndex < *((int *)((char *)self + 0x104))) {
+        char *entry = row;
+        int column = 0;
+        while (column < *((int *)((char *)self + 0x108))) {
+            if (*((int *)(entry + 0xC)) != 0) {
+                TRKGetFreeBuffer(*((void **)(entry + 0xC)));
+                *((int *)(entry + 0xC)) = zero;
+            }
+            entry += 4;
+            column++;
+        }
+        row += 0x10;
+        rowIndex++;
+    }
+    *((int *)((char *)self + 0x104)) = zero;
+    GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+    UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(0, self);
+    Instance__15EmissionManagerFv();
+    FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(0, self);
+    *((unsigned char *)self + 0x11C) = zero;
+    OSRestoreInterrupts(interruptState);
+}
 extern "C" void fn_800E519C(void *arg0) {
     unsigned int level = OSDisableInterrupts();
     u8 *p = (u8 *)arg0;
     p[0x11D] = 1;
     p[0x11F] = 0;
     p[0x123] |= 1;
+    OSRestoreInterrupts(level);
+}
+
+extern "C" void Stop__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
+    unsigned int level;
+    unsigned int innerLevel;
+    void *item;
+    int active;
+    int innerIndex;
+    int outer;
+    unsigned char *row;
+    unsigned char *voice;
+
+    level = OSDisableInterrupts();
+    if (*((unsigned char *)self + 0x11E) != 0) {
+        innerLevel = OSDisableInterrupts();
+        item = *(void **)((unsigned char *)self + 0xC);
+        if (item == 0) {
+            OSRestoreInterrupts(innerLevel);
+            active = 0;
+        } else {
+            active = (*(unsigned short *)((unsigned char *)item + 0x148) == 1);
+            OSRestoreInterrupts(innerLevel);
+        }
+        if (active != 0) {
+            row = (unsigned char *)self;
+            outer = 0;
+            while (outer < *(int *)((unsigned char *)self + 0x104)) {
+                voice = row;
+                innerIndex = 0;
+                while (innerIndex < *(int *)((unsigned char *)self + 0x108)) {
+                    item = *(void **)(voice + 0xC);
+                    if (item != 0) AXSetVoiceState(item, 0);
+                    voice += 4;
+                    innerIndex++;
+                }
+                row += 0x10;
+                outer++;
+            }
+        }
+        *((unsigned char *)self + 0x11E) = 0;
+    }
+    *((unsigned char *)self + 0x120) = 0;
+    *((unsigned char *)self + 0x11F) = 0;
+    *((unsigned char *)self + 0x11D) = 0;
     OSRestoreInterrupts(level);
 }
 
@@ -524,6 +728,19 @@ extern "C" void fn_800E55B4(void *arg0, float arg1) {
     }
 }
 
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(void *self, int index, f32 value) {
+    int valid = 0;
+    if (index >= 0 && index < 4) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2C2, lbl_803222F0, index, 0, 4);
+    if (value > lbl_80560F38) value = lbl_80560F38;
+    else if (value < lbl_80560F3C) value = lbl_80560F3C;
+    f32 *slot = (f32 *)((char *)self + 0x154 + index * 4);
+    if (value != *slot) {
+        *slot = value;
+        *((u8 *)self + 0x123) |= 0x20;
+    }
+}
+
 extern const char lbl_803223BC[];
 extern "C" void fn_800E56D0(void *arg0, float arg1) {
     float sum = arg1 + lbl_80560F38;
@@ -538,6 +755,55 @@ extern "C" void fn_800E56D0(void *arg0, float arg1) {
     if (value != *field) {
         *field = value;
         *((unsigned char *)arg0 + 0x123) |= 0x20;
+    }
+}
+
+extern const char lbl_80322338[];
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(void *self, int channel, float volume) {
+    int valid = 0;
+    if (channel >= 0 && channel < 3) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2D9, lbl_80322338, channel, 0, 3);
+    if (volume > lbl_80560F38) volume = lbl_80560F38;
+    else if (volume < lbl_80560F3C) volume = lbl_80560F3C;
+    float *slot = (float *)((unsigned char *)self + 0x148 + channel * 4);
+    if (volume != *slot) {
+        *slot = volume;
+        *((unsigned char *)self + 0x123) |= 0x20;
+    }
+}
+
+extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(void *self, int index, float value) {
+    int valid = 0;
+    if (index >= 0 && index < 4) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2E5, lbl_803222F0, index, 0, 4);
+
+    float adjusted = value + lbl_80560F38;
+    if (adjusted <= lbl_80560F38) {
+        if (adjusted < lbl_80560F3C) adjusted = lbl_80560F3C;
+    }
+    float *send = (float *)((unsigned char *)self + 0x164 + index * 4);
+    if (adjusted != *send) {
+        *send = adjusted;
+        *((unsigned char *)self + 0x123) |= 0x20;
+    }
+}
+
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(void *self, int channel, float volume) {
+    int valid = 0;
+    if (channel >= 0 && channel < 4) valid = 1;
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x2F1, lbl_803222F0, channel, 0, 4);
+    float value;
+    if (volume > lbl_80560F38) {
+    } else {
+        if (volume < lbl_80560F3C) {
+        } else {
+            value = volume;
+        }
+    }
+    float *slot = (float *)((unsigned char *)self + 0x174 + channel * 4);
+    if (value != *slot) {
+        *slot = value;
+        *((unsigned char *)self + 0x123) |= 0x20;
     }
 }
 
@@ -580,6 +846,98 @@ extern "C" void SetBaseAddress__Q46nw4hbm3snd6detail7AxVoiceFiPCv(void *self, in
     OSRestoreInterrupts(level);
 }
 
+extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *arg0, int arg1, const void *arg2, unsigned long arg3) {
+    int format;
+    unsigned int interrupt;
+    unsigned int value;
+    unsigned int temp;
+    int offset;
+    int i;
+    unsigned int *voice;
+    unsigned int start;
+    unsigned int end;
+
+    interrupt = OSDisableInterrupts();
+    format = *(int *)((char *)arg0 + 0x118);
+    value = (unsigned int)arg2;
+    if (arg2 != 0) value += 0x80000000;
+    start = 0;
+    switch (format) {
+    case 0:
+        temp = arg3 / 7;
+        offset = (arg3 - temp) >> 1;
+        temp = offset + temp;
+        start = (arg3 - ((temp >> 3) * 0xE)) + (value * 2) + ((temp * 2) & 0xFFFFFFF0) + 2;
+        break;
+    case 25:
+        start = value + arg3;
+        break;
+    case 10:
+        start = (value >> 1) + arg3;
+        break;
+    default:
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438);
+        break;
+    }
+    offset = arg1 * 0x10;
+    value = start >> 16;
+    end = start & 0xFFFF;
+    voice = (unsigned int *)((char *)arg0 + offset);
+    i = 0;
+    while (i < *(int *)((char *)arg0 + 0x108)) {
+        unsigned int *channel = (unsigned int *)((char *)voice[i] + 0xC);
+        OSDisableInterrupts();
+        *(unsigned short *)((char *)channel + 0x1B4) = value;
+        *(unsigned short *)((char *)channel + 0x1B6) = end;
+        temp = *(unsigned int *)((char *)channel + 0x1C);
+        if (!(temp & 0x800)) *(unsigned int *)((char *)channel + 0x1C) = temp | 0x2000;
+        OSRestoreInterrupts(0);
+        i++;
+    }
+    OSRestoreInterrupts(interrupt);
+}
+
+extern "C" void SetLoopEnd__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *self, int index, const void *address, unsigned long length) {
+    extern unsigned int OSDisableInterrupts(void);
+    extern void OSRestoreInterrupts(unsigned int);
+    extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+    extern const char lbl_803221A8[], lbl_80322438[];
+    unsigned int irq = OSDisableInterrupts();
+    unsigned int start = (unsigned int)address;
+    unsigned int end = (unsigned int)length;
+    unsigned int mode = *(unsigned int *)((char *)self + 0x118);
+    unsigned int loopEnd = 0;
+    unsigned int count;
+    unsigned int i;
+    void *voice;
+    if (start != 0) start += 0x80000000;
+    switch (mode) {
+    case 0: {
+        unsigned int n = end - 1;
+        unsigned int q = n / 7;
+        unsigned int x = ((n - q) >> 1) + q;
+        loopEnd = n - ((x >> 3) * 14) + start * 2 + ((x * 2) & 0xFFFFFFF0) + 2;
+        break;
+    }
+    case 25: loopEnd = start + end - 1; break;
+    case 10: loopEnd = end + (start >> 1) - 1; break;
+    default: Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x561, lbl_80322438); break;
+    }
+    voice = (char *)self + index * 0x10;
+    count = *(unsigned int *)((char *)self + 0x108);
+    for (i = 0; i < count; i++) {
+        void *obj = *(void **)((char *)voice + 0xC);
+        OSDisableInterrupts();
+        *(unsigned short *)((char *)obj + 0x1B8) = (unsigned short)(loopEnd >> 16);
+        *(unsigned short *)((char *)obj + 0x1BA) = (unsigned short)loopEnd;
+        if ((*(unsigned int *)((char *)obj + 0x1C) & 0x800) == 0)
+            *(unsigned int *)((char *)obj + 0x1C) |= 0x4000;
+        OSRestoreInterrupts(0);
+        voice = (char *)voice + 4;
+    }
+    OSRestoreInterrupts(irq);
+}
+
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *self, bool loop) {
@@ -609,6 +967,78 @@ extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7
             void *voice = *(void **)(entry + 0xC);
             if (voice != 0) fn_80033538((unsigned short)type);
         }
+    }
+}
+
+extern "C" void *memcpy(void *, const void *, unsigned int);
+extern "C" void *memset(void *, int, unsigned int);
+extern "C" void fn_80033918(void *, void *);
+extern "C" void fn_800E68EC(void *arg0, int arg1, int arg2, void *arg3, int arg4) {
+    unsigned char sp8[0x28];
+    int i;
+    void **entry;
+    if (arg1 >= 2)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x434, lbl_803221A8 + 0x258);
+    switch (arg2) {
+    case 0:
+        if (arg3 == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x439, lbl_803221A8 + 0x2A0);
+        memcpy(sp8, arg3, 0x20);
+        *(u16 *)(sp8 + 0x20) = *(u16 *)((char *)arg3 + 0x20);
+        *(u16 *)(sp8 + 0x22) = *(u16 *)((char *)arg3 + 0x22);
+        *(u16 *)(sp8 + 0x24) = *(u16 *)((char *)arg3 + 0x24);
+        *(u16 *)(sp8 + 0x26) = *(u16 *)((char *)arg3 + 0x26);
+        break;
+    case 10:
+        memset(sp8, 0, 0x20);
+        *(u16 *)(sp8 + 0x20) = 0x800;
+        *(u16 *)(sp8 + 0x22) = 0;
+        *(u16 *)(sp8 + 0x24) = 0;
+        *(u16 *)(sp8 + 0x26) = 0;
+        break;
+    case 25:
+        memset(sp8, 0, 0x20);
+        *(u16 *)(sp8 + 0x20) = 0x100;
+        *(u16 *)(sp8 + 0x22) = 0;
+        *(u16 *)(sp8 + 0x24) = 0;
+        *(u16 *)(sp8 + 0x26) = 0;
+        break;
+    }
+    entry = (void **)((char *)arg0 + (arg1 << 4));
+    for (i = 0; i < *(int *)((char *)arg0 + 0x108); i++) {
+        fn_80033918(entry[3], sp8);
+        entry = (void **)((char *)entry + 4);
+    }
+}
+
+extern "C" void CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(void *, int, int, void *);
+extern "C" void CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(void *, int, int, void *);
+extern "C" void fn_80033584(void *, void *);
+extern "C" void fn_80033C8C(void *, int);
+extern "C" void fn_80033CD8(void *, void *);
+extern "C" void UpdateAxMix__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
+    char mix[0x20];
+    char rmt[0x20];
+    int outer = 0;
+    char *row = (char *)self;
+    while (outer < *((int *)((char *)self + 0x104))) {
+        char *entry = row;
+        int inner = 0;
+        while (inner < *((int *)((char *)self + 0x108))) {
+            CalcAXPBMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP8_AXPBMIX(self, outer, inner, mix);
+            fn_80033584(*((void **)(entry + 0xC)), mix);
+            if (*((unsigned int *)((char *)self + 0x13C)) <= 1) {
+                fn_80033C8C(*((void **)(entry + 0xC)), 0);
+            } else {
+                CalcAXPBRMTMIX__Q46nw4hbm3snd6detail7AxVoiceFiiP11_AXPBRMTMIX(self, outer, inner, rmt);
+                fn_80033C8C(*((void **)(entry + 0xC)), 1);
+                fn_80033CD8(*((void **)(entry + 0xC)), rmt);
+            }
+            entry += 4;
+            inner++;
+        }
+        row += 0x10;
+        outer++;
     }
 }
 
@@ -674,11 +1104,94 @@ void TransformDpl2Pan__Q44nw4r3snd6detail5VoiceFPfPfff(void *self, float *out0, 
     *out1 += lbl_80560F38;
 }
 
+void InvalidateWaveData__Q46nw4hbm3snd6detail7AxVoiceFPCvPCv(void *self, const void *start, const void *end) {
+    unsigned int irq = OSDisableInterrupts();
+    if (*((u8 *)self + 0x11C)) {
+        int count = *(int *)((char *)self + 0x104);
+        char *voice = (char *)self;
+        int found = 0;
+        int i;
+        for (i = count; i > 0; --i) {
+            void *address = *(void **)(voice + 0x2C);
+            if (start <= address && address <= end) found = 1;
+            voice += 0x34;
+        }
+        if (found) {
+            unsigned int lock = OSDisableInterrupts();
+            if (*((u8 *)self + 0x11E)) {
+                unsigned int nested = OSDisableInterrupts();
+                void *manager = *(void **)((char *)self + 0xC);
+                int last = 0;
+                if (manager == 0) {
+                    OSRestoreInterrupts(nested);
+                } else {
+                    unsigned short voices = *(unsigned short *)((char *)manager + 0x148);
+                    last = (voices == 1);
+                    OSRestoreInterrupts(nested);
+                }
+                if (last) {
+                    char *row = (char *)self;
+                    int rowIndex;
+                    for (rowIndex = 0; rowIndex < *(int *)((char *)self + 0x104); rowIndex++) {
+                        char *slot = row;
+                        int slotIndex;
+                        for (slotIndex = 0; slotIndex < *(int *)((char *)self + 0x108); slotIndex++) {
+                            void *voiceState = *(void **)(slot + 0xC);
+                            if (voiceState) AXSetVoiceState(voiceState, 0);
+                            slot += 4;
+                        }
+                        row += 0x10;
+                    }
+                }
+                *((u8 *)self + 0x11E) = 0;
+            }
+            *((u8 *)self + 0x120) = 0;
+            *((u8 *)self + 0x11F) = 0;
+            *((u8 *)self + 0x11D) = 0;
+            OSRestoreInterrupts(lock);
+            void (*callback)(void *, int, int) = *(void (**)(void *, int, int))((char *)self + 0x10C);
+            if (callback) callback(self, 1, *(int *)((char *)self + 0x110));
+        }
+    }
+    OSRestoreInterrupts(irq);
+}
+
 extern "C" void fn_800E80B4(void) {
 
 }
 
 extern "C" int fn_800E80F0(int arg0, int arg1) { if (arg0 != 0 && arg1 > 0) fn_80128668(); return arg0; }
+
+extern "C" unsigned int GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(unsigned char, unsigned int, const void *);
+extern "C" void fn_800FEC1C(void *, void *);
+extern "C" void ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(void *, void *, const void *);
+extern "C" const char lbl_803224F0[], lbl_803226B0[], lbl_803226DC[];
+extern "C" char lbl_80559818;
+extern "C" void *ReadWaveParam__Q46nw4hbm3snd6detail14BankFileReaderCFPQ46nw4hbm3snd6detail8WaveDataiPCv(void *self, void *wave, int index, const void *src) {
+    unsigned int count;
+    void *bank;
+    void *entry;
+    void *base;
+    unsigned int data;
+    unsigned char type;
+    unsigned char pad[0x18];
+    if (*(void **)self == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224F0, 0x107, lbl_803226B0);
+    if (*(void **)self == 0) return 0;
+    bank = *(void **)((char *)self + 8);
+    if (bank == 0) return 0;
+    count = *(unsigned int *)((char *)bank + 8);
+    base = (char *)bank + 8;
+    if ((unsigned int)index >= count) return 0;
+    entry = (char *)bank + (index << 3);
+    if (*((unsigned char *)entry + 0xd)) Panic__Q26nw4hbm2dbFPCciPCce(&lbl_80559818, 0x6f, lbl_803226DC);
+    type = *((unsigned char *)entry + 0xc);
+    data = *(unsigned int *)((char *)entry + 0x10);
+    bank = (void *)(unsigned int)GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(type, data, base);
+    if (bank == 0) return 0;
+    fn_800FEC1C(pad, bank);
+    ReadWaveParam__Q46nw4hbm3snd6detail14WaveFileReaderCFPQ46nw4hbm3snd6detail8WaveDataPCv(pad, wave, src);
+    return 0;
+}
 
 extern void __ct__Q46nw4hbm3snd6detail14BankFileReaderFPCv(void *);
 extern void *lbl_80322880;
@@ -716,6 +1229,22 @@ void __ct__Q44nw4r3snd6detail10BasicSoundFv(void *arg0) {
     *(int *)((char *)arg0 + 0xD4) = 0;
 }
 
+extern "C" void InitParam__Q44nw4r3snd6detail10BasicSoundFv(void* self) {
+    extern float lbl_80560FB4;
+    int current = 0, total = 0;
+    float base = lbl_80560FB0, target = lbl_80560FB4;
+    *((unsigned char*)self+0x67)=0; *((unsigned char*)self+0x68)=0; *((unsigned char*)self+0x64)=0; *((unsigned char*)self+0x65)=0; *((unsigned char*)self+0x66)=0; *((unsigned char*)self+0x69)=0;
+    *(int*)((char*)self+0x6c)=0; *(int*)((char*)self+0x70)=0;
+    *(float*)((char*)self+0x44)=base; *(float*)((char*)self+0x48)=base; *(int*)((char*)self+0x4c)=0; *(int*)((char*)self+0x50)=0;
+    *(float*)((char*)self+0x54)=target; *(float*)((char*)self+0x58)=target; *(int*)((char*)self+0x5c)=0; *(int*)((char*)self+0x60)=0;
+    if (current < total) base += (float)current * (base-base)/(float)total;
+    *(float*)((char*)self+0x44)=base; *(float*)((char*)self+0x48)=target; *(int*)((char*)self+0x4c)=1; *(int*)((char*)self+0x50)=0;
+    *(float*)((char*)self+0x8c)=target; *(float*)((char*)self+0x98)=target; *(float*)((char*)self+0x90)=lbl_80560FB0; *(float*)((char*)self+0x94)=lbl_80560FB0;
+    *(float*)((char*)self+0x7c)=target; *(float*)((char*)self+0x80)=target; *(int*)((char*)self+0x84)=0; *(int*)((char*)self+0x88)=0; *(int*)((char*)self+0xa0)=1; *((unsigned char*)self+0x9c)=0;
+    *(float*)((char*)self+0xa4)=target; *(float*)((char*)self+0xa8)=target; *(float*)((char*)self+0xac)=target; *(float*)((char*)self+0xb0)=target; *(float*)((char*)self+0xb4)=target;
+    *(float*)((char*)self+0x28)=target; *(float*)((char*)self+0x2c)=target; *(float*)((char*)self+0x30)=lbl_80560FB0; *(float*)((char*)self+0x34)=lbl_80560FB0; *(float*)((char*)self+0x38)=lbl_80560FB0; *(float*)((char*)self+0x3c)=lbl_80560FB0; *(int*)((char*)self+0x40)=0;
+}
+
 void fn_800E8ADC(void *arg0) {
     if (*(unsigned char *)((char *)arg0 + 0x65) == 0)
         *(unsigned char *)((char *)arg0 + 0x64) = 1;
@@ -724,6 +1253,30 @@ void fn_800E8ADC(void *arg0) {
 extern "C" void fn_800E8F54(void *arg0, int arg1) {
     *(int *)((char *)arg0 + 0x6C) = arg1;
     *(unsigned char *)((char *)arg0 + 0x66) = (unsigned int)((-arg1) & ~arg1) >> 31;
+}
+
+extern "C" float lbl_80560FB4;
+extern "C" void FadeIn__Q44nw4r3snd6detail10BasicSoundFi(void* self, int duration) {
+    if (*((unsigned char*)self + 0x69) == 0) {
+        int total = *(int*)((unsigned char*)self + 0x4C);
+        int current = *(int*)((unsigned char*)self + 0x50);
+        float volume;
+        if (current < total)
+            volume = *(float*)((unsigned char*)self + 0x44) +
+                     (float)current * (*(float*)((unsigned char*)self + 0x48) - *(float*)((unsigned char*)self + 0x44)) / (float)total;
+        else
+            volume = *(float*)((unsigned char*)self + 0x48);
+        int newDuration = (int)((float)duration * (lbl_80560FB4 - volume));
+        if (current < total)
+            volume = *(float*)((unsigned char*)self + 0x44) +
+                     (float)current * (*(float*)((unsigned char*)self + 0x48) - *(float*)((unsigned char*)self + 0x44)) / (float)total;
+        else
+            volume = *(float*)((unsigned char*)self + 0x48);
+        *(float*)((unsigned char*)self + 0x44) = volume;
+        *(float*)((unsigned char*)self + 0x48) = lbl_80560FB4;
+        *(int*)((unsigned char*)self + 0x4C) = newDuration;
+        *(int*)((unsigned char*)self + 0x50) = 0;
+    }
 }
 
 typedef void (*vfn0_t)(void*);
@@ -863,3 +1416,8 @@ extern void detail_FreePlayerHeap__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6det
 extern void detail_RemovePriorityList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
 extern void detail_RemoveSoundList__Q36nw4hbm3snd11SoundPlayerFPQ46nw4hbm3snd6detail10BasicSound_800F8880(void *, void *);
 extern void RemoveSoundList__Q46nw4hbm3snd6detail19ExternalSoundPlayerFPQ46nw4hbm3snd6detail10BasicSound(void *, void *);
+#pragma push
+#pragma small_data off
+extern const char lbl_80322034[];
+extern const char lbl_80322010[];
+#pragma pop
