@@ -82,6 +82,45 @@ void fn_802E5264(int arg0, int arg1) {
     if (arg1 >= 0) fn_80060CC0(arg0, 1, (void (*)())fn_802E5248);
 }
 
+extern int OSRestoreInterrupts(int);
+extern int WPADCanSendStreamData(int);
+extern unsigned char fn_802E86B4(int);
+extern int AXRmtGetSamples(int, short *, int);
+extern void WENCGetEncodeData(void *, int, short *, int, void *);
+extern void fn_80062278(int, void *, int);
+extern void AXRmtAdvancePtr(int);
+extern unsigned char lbl_804FC6C0[];
+extern int lbl_8055FFA8;
+void fn_802E52EC(void) {
+    unsigned char *entry = lbl_804FC800;
+    short *samples = (short *)lbl_804FC6C0;
+    int any = 0;
+    int i = 0;
+    int zero = 0;
+    int one = 1;
+    do {
+        int state = OSDisableInterrupts();
+        if (WPADCanSendStreamData(i) && fn_802E86B4(i) > 0x55 &&
+            AXRmtGetSamples(i, samples, 0x28) == 0x28) {
+            any = 1;
+            if (entry[0] && (lbl_8055FFA8 & (one << i))) {
+                int active = *(int *)(entry + 0x24);
+                int encode = active == 0;
+                if (active) *(int *)(entry + 0x24) = zero;
+                WENCGetEncodeData(entry + 1, encode, samples, 0x28, &zero);
+                fn_80062278(i, &zero, 0x14);
+            } else {
+                *(int *)(entry + 0x24) = one;
+            }
+        }
+        OSRestoreInterrupts(state);
+        i++;
+        entry += 0x2C;
+        samples += 0x28;
+    } while (i < 4);
+    if (any) AXRmtAdvancePtr(0x28);
+}
+
 int fn_802E540C(int arg0) {
     if (arg0 == 1) TRKReadBuffer_ui32();
     return 0;
@@ -116,9 +155,9 @@ void fn_802E58B8(unsigned char *arg0) {
     unsigned char *src = arg0;
     int count = 0x20;
     lbl_8055FF78 = index + 1;
-    while (count > 0) {
+    do {
         count--;
-    }
+    } while (count != 0);
     *--dst = 0;
     while ((signed char)*src != 0) {
         *dst++ = *src++;
@@ -288,13 +327,12 @@ int fn_802E6AD0(int arg0) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 void fn_802E6B04(void) {
-    void (*callback)(void) = (void (*)(void))fn_802E6AD0;
-    void *arg = &lbl_8055D1F0;
     fn_802E7770();
-    fn_802E2E0C(callback, arg);
+    fn_802E2E0C(fn_802E6AD0, &lbl_8055D1F0);
 }
-
+#pragma scheduling on
 void fn_802E6B34(void) {
 }
 
