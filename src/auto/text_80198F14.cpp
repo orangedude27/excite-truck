@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern "C" void fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
 class VTab1A1E7C {
 public:
@@ -9,6 +10,17 @@ public:
  virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
  virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
  virtual void Call();
+};
+class Fn801A401CDispatch {
+public:
+    virtual void v0(); virtual void v1();
+    virtual void Call(void*);
+};
+class Fn801A4A8CVTable {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+    virtual void v8(); virtual void v9(); virtual void Call(void *, s32, s32);
 };
 class Fn801A014CDispatch {
 public:
@@ -52,6 +64,11 @@ extern "C" s32 fn_801CF828(s32, s32, s32, s32, s32);
 extern s32 lbl_8055E5A0;
 extern "C" s32 fn_801CFEAC(void*);
 extern s32 lbl_803336EC[];
+extern void fn_801A48E4(void*);
+#pragma push
+#pragma small_data off
+extern char lbl_803336F8[];
+#pragma pop
 
 class VTab19 {
 public:
@@ -240,6 +257,7 @@ extern "C" f32 fn_8019DDEC(void *arg0) {
 
 extern f32 lbl_805622E8;
 extern f32 lbl_8056234C;
+extern "C" s32 fn_801CF080(s32, void*, void*, s32*, s32, f32);
 extern f32 lbl_80562350;
 extern f32 lbl_80562354;
 extern f32 lbl_80562358;
@@ -684,6 +702,33 @@ extern "C" void fn_801A01E0(void* arg0, void* arg1, void* arg2) {
     *(f32*)((u8*)arg2 + 8) = temp_f5 + temp_f0;
 }
 
+extern "C" void fn_801A0378(void* arg0, void* arg1) {
+    extern f32 PSVECMag(const Vec*);
+    extern f32 lbl_805622E8;
+    class Dispatch {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13();
+        virtual void Call(s32, void*);
+    };
+    *(void**)((u8*)arg0 + (*(s32*)((u8*)arg0 + 0x174) << 2) + 0x24) = arg1;
+    u8* record = (u8*)arg0 + (*(s32*)((u8*)arg0 + 0x174) << 4);
+    *(f32*)(record + 0x64) = *(f32*)((u8*)arg1 + 0x28);
+    *(f32*)(record + 0x68) = *(f32*)((u8*)arg1 + 0x2C);
+    *(f32*)(record + 0x6C) = *(f32*)((u8*)arg1 + 0x30);
+    *(f32*)(record + 0x70) = *(f32*)((u8*)arg1 + 0x24);
+    ((Dispatch*)*(void**)((u8*)arg0 + (*(s32*)((u8*)arg0 + 0x174) << 2) + 0x24))->Call(*(s32*)((u8*)arg0 + 0x20), record);
+    f32 value = PSVECMag((Vec*)((u8*)arg1 + 0x28)) + *(f32*)((u8*)arg1 + 0x24);
+    value = lbl_805622E8 + value;
+    if (value > *(f32*)((u8*)arg0 + 0x178)) {
+        *(f32*)((u8*)arg0 + 0x178) = value;
+        *(f32*)((u8*)arg0 + 0x170) = value;
+    }
+    *(s32*)((u8*)arg0 + 0x174) = *(s32*)((u8*)arg0 + 0x174) + 1;
+}
+
 extern "C" void fn_801A0444(void* arg0, void* arg1) {
     *(void**)((u8*)arg0 + 0x17C) = arg1;
     *(f32*)((u8*)arg0 + 0x164) = *(f32*)((u8*)arg1 + 0x24);
@@ -823,6 +868,28 @@ extern "C" void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
             *(f32*)((u8*)arg0 + 0x24) += lbl_80562370;
     }
     return arg0;
+}
+
+extern "C" void fn_801A17B8(void* arg0) {
+    extern f32 lbl_8056234C;
+    extern void fn_801E41D8(f32*, f32*, s32, f32, f32, void*, void*, f32, f32, f32, f32, f32, f32, f32, f32, f32);
+    void* matrix = *(void**)((u8*)arg0 + 0xC);
+    f32 width = *(f32*)((u8*)arg0 + 0x28);
+    f32 a = *(f32*)((u8*)matrix + 0x18);
+    f32 b = *(f32*)((u8*)matrix + 0x1C);
+    f32 c = *(f32*)((u8*)matrix + 0x20);
+    f32 d = *(f32*)((u8*)matrix + 0x24);
+    f32 e = *(f32*)((u8*)matrix + 0x28);
+    f32 f = *(f32*)((u8*)matrix + 0x2C);
+    f32 highX = d + a * width;
+    f32 highY = e + b * width;
+    f32 highZ = f + c * width;
+    f32 lowX = d + a * -width;
+    f32 lowY = e + b * -width;
+    f32 lowZ = f + c * -width;
+    fn_801E41D8((f32*)((u8*)arg0 + 0x14), (f32*)((u8*)arg0 + 8), 0x40FFFF00,
+                e, d, matrix, arg0, lbl_8056234C * *(f32*)((u8*)arg0 + 0x24),
+                lowY, lowX, f, c, e, b, d, a);
 }
 
 extern int lbl_80333918[64];
@@ -970,6 +1037,36 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
     *(s32*)arg0 = *(s32*)((u8*)result + 0x24);
     *(s32*)((u8*)arg0 + 4) = x;
     *(s32*)((u8*)arg0 + 8) = *(s32*)((u8*)result + 0x2C);
+}
+
+extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
+    extern f32 lbl_80562300;
+    extern void* lbl_803338C0;
+    extern void* lbl_80333868;
+    f32 x = farg3 - lbl_80562300;
+    f32 y = farg2 - lbl_80562300;
+    f32 z = farg4 - lbl_80562300;
+    *(f32*)((u8*)arg0 + 0x10) = farg0;
+    *(s32*)((u8*)arg0 + 0xC) = arg1;
+    *(s32*)((u8*)arg0 + 4) = arg3;
+    *(s32*)((u8*)arg0 + 8) = 0;
+    *(u32*)((u8*)arg0 + 0x18) = 0x424F5820;
+    *(f32*)((u8*)arg0 + 0x14) = farg1;
+    *(s32*)((u8*)arg0 + 0x20) = 100;
+    *(s32*)((u8*)arg0 + 0x1C) = 0;
+    *(void**)arg0 = &lbl_803338C0;
+    *(f32*)((u8*)arg0 + 0x24) = y;
+    *(f32*)((u8*)arg0 + 0x28) = x;
+    *(f32*)((u8*)arg0 + 0x2C) = z;
+    *(s32*)((u8*)arg0 + 0x34) = 0;
+    f32 dist = x*x + y*y + z*z;
+    f32 radius = lbl_80562300 + (f32)fn_8002F234(dist);
+    *(f32*)((u8*)arg0 + 0x38) = *(f32*)arg2;
+    *(f32*)((u8*)arg0 + 0x30) = radius;
+    *(void**)arg0 = &lbl_80333868;
+    *(f32*)((u8*)arg0 + 0x3C) = *(f32*)((u8*)arg2 + 4);
+    *(f32*)((u8*)arg0 + 0x40) = *(f32*)((u8*)arg2 + 8);
+    return arg0;
 }
 
 extern "C" s32 fn_801A2434(s32 arg0, s32 arg1) {
@@ -1146,6 +1243,26 @@ void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
     }
     return arg0;
 }
+
+extern "C" void fn_801A401C(void *arg0, void *arg1) {
+    s32 tag = *(s32 *)((u8 *)arg1 + 0x18);
+    if ((u32)(tag + 0xB8AE0000) == 0x5550U) {
+        ((Fn801A401CDispatch *)arg1)->Call(arg0);
+    } else if ((u32)(tag + 0xACB00000) == 0x4852U) {
+        u8 buffer[0x300];
+        s32 count = 0x40;
+        s32 i = 0;
+        f32 factor = lbl_8056234C;
+        f32 scale = *(f32 *)((u8 *)arg1 + 0x24);
+        fn_801CF080(*(s32 *)((u8 *)arg0 + 0x24), (u8 *)arg1 + 0x34, buffer, &count,
+                    *(s32 *)((u8 *)arg0 + 0x0C), factor * scale);
+        do {
+            fn_8019AA18(arg1, (s32)&buffer[i * 12], 0x6E, (s32)arg0);
+            i++;
+        } while (i < count);
+    }
+}
+
 #pragma pop
 void fn_801A442C(void *arg0, void *arg1, void *arg2) {
     *(f32 *)((u8 *)arg1 + 0) = *(f32 *)((u8 *)arg0 + 0x28);
@@ -1295,6 +1412,40 @@ void fn_801A49FC(void* arg0) {
     if (*(s32*)((u8*)arg0 + 0x48) != 0) {
         fn_801D06C4();
     }
+}
+
+extern "C" void fn_801A4A8C(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 *arg4, s32 arg5, s32 arg6) {
+    s32 t0 = arg4[0];
+    s32 t1 = arg4[1];
+    s32 t2 = arg4[2];
+    s32 t3 = arg4[3];
+    s32 t4 = arg4[4];
+    s32 t5 = arg4[5];
+    s32 t6 = arg4[6];
+    s32 t7 = arg4[7];
+    s32 t8 = arg4[8];
+    s32 t9 = arg4[9];
+    s32 t10 = arg4[10];
+    s32 t11 = arg4[11];
+    *(void **)arg0 = lbl_803336F8;
+    *(s32 *)((u8 *)arg0 + 4) = t0;
+    *(s32 *)((u8 *)arg0 + 8) = t1;
+    *(s32 *)((u8 *)arg0 + 0xC) = t2;
+    *(s32 *)((u8 *)arg0 + 0x10) = t3;
+    *(s32 *)((u8 *)arg0 + 0x14) = t4;
+    *(s32 *)((u8 *)arg0 + 0x18) = t5;
+    *(s32 *)((u8 *)arg0 + 0x1C) = t6;
+    *(s32 *)((u8 *)arg0 + 0x20) = t7;
+    *(s32 *)((u8 *)arg0 + 0x24) = t8;
+    *(s32 *)((u8 *)arg0 + 0x28) = t9;
+    *(s32 *)((u8 *)arg0 + 0x2C) = t10;
+    *(s32 *)((u8 *)arg0 + 0x30) = t11;
+    *(s32 *)((u8 *)arg0 + 0x34) = arg2;
+    *(s32 *)((u8 *)arg0 + 0x38) = arg1;
+    *(void **)((u8 *)arg0 + 0x3C) = arg3;
+    *(s32 *)((u8 *)arg0 + 0x48) = arg5;
+    ((Fn801A4A8CVTable *)arg3)->Call(arg0, t9, t10);
+    fn_801A48E4(arg0);
 }
 
 #pragma push
