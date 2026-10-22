@@ -109,9 +109,12 @@ public:
 class Iter_8014E1D0 {
 public:
     virtual void d0();
+    virtual void d1();
     virtual void *open(char *);
     virtual int has(char *);
-    virtual void d3();
+    virtual void d4();
+    virtual void d5();
+    virtual void d6();
     virtual void *next(char *);
     virtual s32 get(char *, s32);
 };
@@ -810,7 +813,44 @@ void fn_8014DE4C(void) {
 }
 
 #pragma cplusplus on
-extern "C" void *fn_8014E1D0(Iter_8014E1D0 *arg0, s32 arg1) {
+extern "C" void *fn_8014E1D0(void *arg0, s32 arg1) {
+    void *table;
+    Iter_8014E1D0 *iter;
+    char name[0x64];
+    s32 count;
+    s32 i;
+    void **items;
+    *(void **)((u8 *)arg0 + 0x74) = 0;
+    *(s32 *)((u8 *)arg0 + 0x78) = 0;
+    *(s32 *)((u8 *)arg0 + 0x7c) = -1;
+    *(s32 *)((u8 *)arg0 + 0x80) = 1;
+    *(s32 *)((u8 *)arg0 + 0x84) = 1;
+    table = fn_80131808(lbl_8032D358 + 0x4c8, -1, 0);
+    if (table != 0) {
+        iter = (Iter_8014E1D0 *)((Iter_8014E1D0 *)table)->open((char *)(lbl_8032D358 + 0x4d8));
+        if (iter != 0) {
+            *(s32 *)((u8 *)arg0 + 0x78) = 1;
+            do { fn_801345D8(name, 0x64, (char *)(lbl_8032D358 + 0x4e4), *(s32 *)((u8 *)arg0 + 0x78)); }
+            while (iter->has(name) != 0 && ++*(s32 *)((u8 *)arg0 + 0x78));
+            count = *(s32 *)((u8 *)arg0 + 0x78);
+            items = (void **)fn_8012850C((count + 1) * 4, lbl_8032D358 + 0x4f0);
+            *(void ***)((u8 *)arg0 + 0x74) = items;
+            for (i = 0; i < count - 1; i++) {
+                fn_801345D8(name, 0x64, (char *)(lbl_8032D358 + 0x4e4), i + 1);
+                items[i] = iter->next(name);
+            }
+            items[count - 1] = 0;
+            *(s32 *)((u8 *)arg0 + 0x80) = iter->get((char *)(lbl_8032D358 + 0x500), *(s32 *)((u8 *)arg0 + 0x80));
+            *(s32 *)((u8 *)arg0 + 0x84) = iter->get((char *)(lbl_8032D358 + 0x50c), *(s32 *)((u8 *)arg0 + 0x84));
+        }
+        fn_80131818(table);
+    }
+    if (*(void **)((u8 *)arg0 + 0x74) == 0) {
+        fn_802E30C8();
+        items = (void **)fn_8012850C(4, lbl_8032D358 + 0x4f0);
+        *(void ***)((u8 *)arg0 + 0x74) = items; *items = 0;
+        *(s32 *)((u8 *)arg0 + 0x78) = 1;
+    }
     return arg0;
 }
 #pragma cplusplus off
