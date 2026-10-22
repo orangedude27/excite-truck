@@ -123,7 +123,15 @@ public:
     virtual s32 vf29();
     virtual s32 vf30();
     virtual s32 vf31();    // vtable 0x84
-    virtual s32 vf32();    // vtable 0x88
+          virtual s32 vf32();    // vtable 0x88
+  };
+
+class Vf14Apply {
+public:
+    virtual void a();
+    virtual void b();
+    virtual void c();
+    virtual void apply(s32, s32, s32, f32);
 };
 
 extern "C" void fn_8023976C(s32);
