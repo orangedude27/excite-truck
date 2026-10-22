@@ -190,6 +190,8 @@ extern u8 lbl_803C0C14[];
 extern void bta_dm_signal_strength_timer_cback(void *);
 extern s32 fn_8008128C(void *);
 extern char lbl_803140E8[];
+extern char lbl_8031A2C0[];
+extern char lbl_8031A2EC[];
 extern char lbl_803BF240[2000];
 extern char lbl_803BFA20[0x5000];
 extern char lbl_80559040[4]; /* "%s\n" */
@@ -4300,6 +4302,32 @@ void fn_800826D4(void) {
  *(void **)(lbl_803C3740+0xa8)=gap_congestion_ind;
 }
 
+void gap_config_ind(u16 cid, void *p_cfg) {
+    u8 *conn = lbl_803C3740 + 0xAC;
+    s32 i;
+    for (i = 0; i < 4; i++) {
+        if (conn[0] != 0 && *(u16 *)(conn + 6) == cid) goto found;
+        conn += 0x60;
+    }
+    conn = 0;
+found:
+    if (conn == 0) return;
+    if (((u8 *)p_cfg)[2] != 0) {
+        u16 value = *(u16 *)((u8 *)p_cfg + 4);
+        if (value > 0x69B) value = 0x69B;
+        *(u16 *)(conn + 0x12) = value;
+    }
+    ((u8 *)p_cfg)[0x20] = 0;
+    ((u8 *)p_cfg)[2] = 0;
+    *(u16 *)p_cfg = 0;
+    L2CA_ConfigRsp(cid, p_cfg);
+    conn[1] |= 2;
+    if (conn[1] & 4) {
+        conn[0] = 4;
+        ((void (*)(u16, u16))*(void **)(conn + 0x20))(*(u16 *)(conn + 4), 0x100);
+    }
+}
+
 void gap_data_ind(u16 cid, void *p_buf) {
     u8 *conn = lbl_803C3740 + 0xAC;
     s32 i;
@@ -7874,6 +7902,43 @@ u8 fn_80096670(u8 value) {
     return lbl_803C4C40[0x4630];
 }
 
+extern BOOLEAN find_uuid_in_seq(UINT8 *p, UINT32 seq_len, UINT8 *p_uuid, UINT16 uuid_len, int nest_level);
+tSDP_RECORD *sdp_db_service_search(tSDP_RECORD *p_rec, tSDP_UUID_SEQ *p_seq) {
+    UINT16 xx, yy;
+    UINT8 *p_attr;
+    UINT8 *p_end = lbl_803C4C40 + 0x1224 +
+        (*(UINT16 *)(lbl_803C4C40 + 0x1222) * 0x298);
+    UINT8 *base;
+
+    if (p_rec == NULL)
+        base = lbl_803C4C40 + 0x1224;
+    else
+        base = (UINT8 *)p_rec + 0x298;
+
+    for (; base < p_end; base += 0x298) {
+        for (yy = 0; yy < p_seq->num_uids; yy++) {
+            p_attr = base + 0xC;
+            for (xx = 0; xx < *(UINT16 *)(base + 8); xx++, p_attr += 0xC) {
+                UINT8 type = p_attr[0xA];
+                if (type == 3) {
+                    if (sdpu_compare_uuid_arrays(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
+                            &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len))
+                        break;
+                } else if (type == 6) {
+                    if (find_uuid_in_seq(*(UINT8 **)(p_attr + 4), *(UINT32 *)p_attr,
+                            &p_seq->uuid_entry[yy].value[0], p_seq->uuid_entry[yy].len, 0))
+                        break;
+                }
+            }
+            if (xx == *(UINT16 *)(base + 8))
+                break;
+        }
+        if (yy == p_seq->num_uids)
+            return (tSDP_RECORD *)base;
+    }
+    return NULL;
+}
+
 tSDP_RECORD *sdp_db_find_record(UINT32 handle) {
     u8 *start = &lbl_803C4C40[0x1224];
     u8 *end = start + (u32)(*(u16 *)&lbl_803C4C40[0x1222]) * 0x298;
@@ -8078,6 +8143,35 @@ UINT8 *sdpu_build_attrib_entry(UINT8 *p_out, tSDP_ATTRIBUTE *p_attr)
     }
     ARRAY_TO_BE_STREAM(p_out, p_attr->value_ptr, (int)p_attr->len);
     return p_out;
+}
+
+extern char lbl_8031A56C[];
+extern char lbl_8031A5A4[];
+void sdpu_build_n_send_error(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 error_code, char *p_error_text) {
+    UINT8 *p_rsp, *p_rsp_start, *p_rsp_param_len;
+    UINT16 rsp_param_len;
+    BT_HDR *p_buf;
+    if (lbl_803C4C40[0x4630] >= 2)
+        fn_8007096C(0xA0001, lbl_8031A56C, 0, p_ccb->connection_id);
+    p_buf = (BT_HDR *)GKI_getpoolbuf(SDP_POOL_ID);
+    if (p_buf == NULL) {
+        if (lbl_803C4C40[0x4630] >= 1)
+            fn_8007093C(0xA0000, lbl_8031A5A4);
+        return;
+    }
+    p_buf->offset = L2CAP_MIN_OFFSET;
+    p_rsp = p_rsp_start = (UINT8 *)(p_buf + 1) + L2CAP_MIN_OFFSET;
+    UINT8_TO_BE_STREAM(p_rsp, SDP_PDU_ERROR_RESPONSE);
+    UINT16_TO_BE_STREAM(p_rsp, trans_num);
+    p_rsp_param_len = p_rsp;
+    p_rsp += 2;
+    UINT16_TO_BE_STREAM(p_rsp, error_code);
+    if (p_error_text)
+        ARRAY_TO_BE_STREAM(p_rsp, p_error_text, (int)strlen(p_error_text));
+    rsp_param_len = p_rsp - p_rsp_param_len - 2;
+    UINT16_TO_BE_STREAM(p_rsp_param_len, rsp_param_len);
+    p_buf->len = p_rsp - p_rsp_start;
+    L2CA_DataWrite(p_ccb->connection_id, p_buf);
 }
 
 UINT8 *sdpu_extract_uid_seq (UINT8 *p, UINT16 param_len, tSDP_UUID_SEQ *p_seq)
