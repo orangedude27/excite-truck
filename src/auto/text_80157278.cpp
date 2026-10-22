@@ -446,6 +446,24 @@ extern "C" void* fn_80157A98(void* arg0, s32 arg1) {
  return arg0;
 }
 
+extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
+    extern void* lbl_8032EDD4;
+    u8* ptr=(u8*)arg0+0x14;
+    *(void**)((u8*)arg0+8)=ptr; *(void**)arg0=&lbl_8032F2BC;
+    *(s32*)((u8*)arg0+0x10)=10; *(s32*)((u8*)arg0+0xC)=0;
+    do { memset(ptr,0,4); ptr+=0x38; } while(ptr<(u8*)arg0+0x244);
+    *(s32*)((u8*)arg0+4)=arg2; *(s32*)((u8*)arg0+0xC)=0;
+    *(s32*)((u8*)arg0+0x244)=arg1; *(s32*)((u8*)arg0+0x248)=0;
+    *(void**)arg0=&lbl_8032EDD4;
+    *(f32*)((u8*)arg0+0x24C)=lbl_80561754;
+    f32* p=(f32*)((u8*)arg0+0x254); f32* end=(f32*)((u8*)arg0+0x28C);
+    while(p<end){*p=0.0f;p+=2;}
+    *(f32*)((u8*)arg0+0x28C)=0.0f; *(f32*)((u8*)arg0+0x290)=0.0f;
+    *(u8*)((u8*)arg0+0x294)=0; *(s32*)((u8*)arg0+0x298)=arg2;
+    *(f32*)((u8*)arg0+0x24C)=lbl_80561754;
+    return arg0;
+}
+
 extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
@@ -944,14 +962,16 @@ extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
         virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
         virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
         virtual void v24(); virtual void v25(); virtual void v26();
-        virtual s32 getA(); virtual s32 getB();
+        virtual s32 getA();
+        virtual s32 getB();
     };
     extern f32 lbl_80561750;
     extern f32 lbl_80561754;
+    extern f64 lbl_80561780;
     Dummy *obj = (Dummy *)arg0;
     f32 current, end, start, ratio;
     if (*(u8 *)((u8 *)arg0 + 0x273) == 0) return 0;
-    if (arg1 == 0) return 0;
+    if (arg1 == 0) return 1;
     end = *(f32 *)((u8 *)arg0 + 0x274);
     current = (f32)obj->getB();
     start = (f32)obj->getA();
@@ -1163,6 +1183,37 @@ extern "C" f32 fn_8015A368(void* arg0) {
 
 extern "C" s32 fn_8015A404(void* arg0) {
     return *(s32*)((u8*)arg0 + 0x2620);
+}
+
+extern "C" void fn_8015A40C(void *arg0) {
+ extern f32 lbl_80561750, lbl_80561754, lbl_805617AC, lbl_805617B0;
+ struct V { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual f32 v18(s32); virtual f32 v19(s32); virtual void v20(); virtual s32 v21(); virtual void v22(); virtual s32 v23(); virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27(); virtual void v28(); virtual s32 v29(); virtual void v30(); virtual s32 v31(); };
+ int count=0, offset=0, zero=0; f32 z=lbl_80561754;
+ goto check;
+loop:
+ count++;
+ *(int *)(*(volatile char **)((char *)arg0+8)+offset)=zero;
+ *(int *)(*(volatile char **)((char *)arg0+8)+offset+4)=zero;
+ *(int *)(*(volatile char **)((char *)arg0+8)+offset+8)=zero;
+ *(f32 *)(*(volatile char **)((char *)arg0+8)+offset+0xc)=z;
+ offset+=0x38;
+check:
+ if(count<*(int *)((char *)arg0+0xc)) goto loop;
+ f32 one=lbl_80561754, val=lbl_80561750;
+ *(int *)((char *)arg0+0x264)=zero; *(int *)((char *)arg0+0x260)=zero;
+ *(f32 *)((char *)arg0+0x254)=one; *(f32 *)((char *)arg0+0x25c)=val;
+ ((V *)arg0)->v31();
+ f32 init=lbl_805617AC, end=lbl_805617B0;
+ *(int *)((char *)arg0+0x26c)=zero;
+ *(f32 *)((char *)arg0+0x270)=init; *(char *)((char *)arg0+0x274)=1;
+ *(int *)((char *)arg0+0x278)=zero; *(f32 *)((char *)arg0+0x27c)=init; *(char *)((char *)arg0+0x280)=1;
+ *(int *)((char *)arg0+0x284)=zero; *(f32 *)((char *)arg0+0x288)=init; *(char *)((char *)arg0+0x28c)=1;
+ *(int *)((char *)arg0+0x290)=zero; *(f32 *)((char *)arg0+0x294)=init; *(char *)((char *)arg0+0x298)=1;
+ *(int *)((char *)arg0+0x29c)=zero; *(f32 *)((char *)arg0+0x2a0)=init; *(char *)((char *)arg0+0x2a4)=1;
+ *(int *)((char *)arg0+0x2a8)=zero; *(f32 *)((char *)arg0+0x2ac)=init; *(char *)((char *)arg0+0x2b0)=1;
+ *(int *)((char *)arg0+0x2b4)=zero; *(f32 *)((char *)arg0+0x2b8)=init; *(char *)((char *)arg0+0x2bc)=1;
+ *(int *)((char *)arg0+0x2c0)=zero; *(f32 *)((char *)arg0+0x2c4)=init; *(char *)((char *)arg0+0x2c8)=1;
+ *(int *)((char *)arg0+0x2cc)=zero; *(char *)((char *)arg0+0x2d1)=0; *(f32 *)((char *)arg0+0x2d4)=end;
 }
 
 extern "C" void fn_8015A538(void* arg0, void* arg1) {
@@ -1458,6 +1509,49 @@ extern "C" void fn_8015B788(void* arg0, s32 arg1, f32 farg0) {
     }
 }
 
+extern "C" void fn_8015B864(void *arg0) {
+    struct Obj {
+        virtual void p0(); virtual void p1(); virtual void p2(); virtual void p3(); virtual void p4();
+        virtual void p5(); virtual void p6(); virtual void p7(); virtual void p8(); virtual void p9();
+        virtual void p10(); virtual void p11(); virtual void p12(); virtual void p13(); virtual void p14();
+        virtual void p15(); virtual void p16(); virtual s32 lower();
+        virtual void p18(); virtual void p19(); virtual void p20(); virtual s32 upper();
+        virtual void noop(); virtual s32 progress();
+        virtual void p24(); virtual void p25(); virtual void p26(); virtual void p27(); virtual void p28();
+        virtual s32 type();
+    };
+    struct Adaptor {
+        virtual void a0(); virtual void a1();
+        virtual void format(const char *, ...);
+        virtual void a3();
+        virtual void clear();
+        virtual void a5();
+        virtual void setProgress(s32);
+        virtual void a7();
+        virtual void setState(s32);
+    };
+    Obj *obj = (Obj *)arg0;
+    Adaptor *adaptor;
+    s32 value, current;
+    adaptor = *(Adaptor **)((char *)arg0 + 0x248);
+    if (adaptor != 0) {
+        adaptor->format((const char *)lbl_8055A058, obj->progress());
+        adaptor = *(Adaptor **)((char *)arg0 + 0x248);
+        adaptor->setProgress(obj->type());
+        obj->noop();
+        adaptor = *(Adaptor **)((char *)arg0 + 0x248);
+        adaptor->clear();
+        value = obj->lower();
+        current = obj->upper();
+        if (current >= value) {
+            adaptor = *(Adaptor **)((char *)arg0 + 0x248);
+            adaptor->setState(1);
+        }
+    }
+    adaptor = *(Adaptor **)((char *)arg0 + 0x248);
+    if (adaptor != 0) adaptor->format((const char *)lbl_8055A058, obj->progress());
+}
+
 extern "C" s32 fn_8015BCEC(void) { return 7; }
 
 extern "C" s32 lbl_8055A05C[];
@@ -1645,6 +1739,41 @@ extern "C" s32 fn_8015C684(void) {
 }
 
 extern "C" s32 fn_8015C68C(void) { return 0xD; }
+
+#pragma cplusplus on
+extern "C" void fn_8015C694(void *arg0) {
+    struct Obj {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual int v17(); virtual void v18(); virtual int v19();
+        virtual void v20(); virtual int v21(); virtual void v22(); virtual int v23();
+        virtual int v24(); virtual int v25(); virtual int v26(); virtual void v27();
+        virtual void v28(); virtual int v29(); virtual void v30(); virtual int v31();
+    };
+    struct Adaptor {
+        virtual void v0(); virtual void v1(int, ...); virtual void v2(int, ...);
+        virtual void v3(int, ...); virtual void v4(); virtual void v5(int);
+        virtual void v6(int); virtual void v7(); virtual void v8(int); virtual void v9();
+    };
+    Obj *obj = (Obj *)arg0;
+    int limit, current;
+    if (*(void **)((char *)arg0 + 0x248) != 0) {
+        (*(Adaptor **)((char *)arg0 + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
+        (*(Adaptor **)((char *)arg0 + 0x248))->v6(obj->v29());
+        obj->v22();
+        (*(Adaptor **)((char *)arg0 + 0x248))->v4();
+        limit = obj->v17();
+        current = obj->v21();
+        if (current >= limit) (*(Adaptor **)((char *)arg0 + 0x248))->v8(1);
+    }
+    if (*(void **)((char *)arg0 + 0x248) != 0)
+        (*(Adaptor **)((char *)arg0 + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
+    if (*(void **)((char *)arg0 + 0x248) != 0)
+        (*(Adaptor **)((char *)arg0 + 0x248))->v2((int)&lbl_8055A058[0], obj->v23());
+}
+#pragma cplusplus reset
 
 #pragma push
 #pragma processor 750
@@ -1973,6 +2102,22 @@ void fn_8015D554(void* arg0) {
     obj->v21(value);
 }
 
+extern "C" f32 fn_8015D5A4(void *arg0) {
+ struct V { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual int cur(); virtual int index(); };
+ V *self=(V *)arg0;
+ register f32 fraction=lbl_80561754;
+ int idx=self->index(), previous=0;
+ if(idx<*(int *)((char *)self+0xc)-1) {
+  if(idx>0) previous=*(int *)(*(char **)((char *)self+8)+(idx-1)*0x38+0x14);
+  int now=self->cur();
+  int current=*(int *)(*(char **)((char *)self+8)+idx*0x38+0x14);
+  f32 den=(f32)(current-previous);
+  f32 num=(f32)(now-previous);
+  if(den>lbl_80561754) fraction=num/den;
+ }
+ return (f32)idx+fraction;
+}
+
 extern "C" void fn_8015D6BC(Unk8015A368C* arg0) {
     fn_80131234(lbl_8032E668[arg0->GetType()]);
 }
@@ -2213,6 +2358,47 @@ extern "C" s32 fn_8015E100(void) {
 
 extern "C" s32 fn_8015E108(void) {
     return 0;
+}
+
+extern "C" void *fn_8015E110(void *arg0, s32 arg1) {
+    struct Item { virtual void destroy(s32); };
+    extern char lbl_8032EB0C[];
+    void *obj = arg0;
+    int offset, count;
+    if (obj != 0) {
+        *(void **)obj = lbl_8032EB0C;
+        count = 0; offset = 0;
+        goto loop_test;
+loop_body:
+        {
+            Item **list = *(Item ***)((char *)obj + 4);
+            Item *item = *(Item **)((char *)list + offset);
+            if (item != 0) item->destroy(1);
+        }
+        offset += 4; count += 1;
+loop_test:
+        if (count < *(int *)((char *)obj + 8)) goto loop_body;
+        offset = *(int *)((char *)obj + 0x50);
+        if (offset != 0) {
+            Item *owner = (Item *)offset;
+            Item *second = *(Item **)((char *)owner + 4);
+            if (second != 0) { if (second != 0) second->destroy(1); }
+            {
+                Item *first = *(Item **)owner;
+                if (first != 0) { if (first != 0) first->destroy(1); }
+            }
+            fn_80128668(owner);
+        }
+        if ((u32)obj + 4 != 0) {
+            if ((u32)obj + 4 != 0) {
+                *(u32 *)((char *)obj + 4) = 0;
+                *(u32 *)((char *)obj + 8) = 0;
+                *(u32 *)((char *)obj + 0xC) = 0;
+            }
+        }
+        if (arg1 > 0) fn_80128668(obj);
+    }
+    return obj;
 }
 
 extern "C" void fn_8015E238(Unk801577F0V* arg0) {
