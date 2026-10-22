@@ -87,6 +87,8 @@ typedef struct _GXLightObjImpl {
 
   extern char lbl_8055D949;
   extern char lbl_8055D960;
+  extern int OSDisableInterrupts(void);
+  extern void OSRestoreInterrupts(void);
 void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
     int mipmap = GXGetTexObjMipMap(obj);
     int isMipMap = GXGetTexObjAll(obj);
