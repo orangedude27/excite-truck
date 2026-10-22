@@ -13,7 +13,7 @@ extern int fn_8000D838(void *);
 void fn_801EC1A0(void) {
     fn_8000D838(&lbl_8055EB88);
     *(volatile u32 *)&lbl_8055EB90 = 0xFFFF0000;
-    lbl_8055EB94 = *(volatile f32 *)&lbl_80562E80;
+    lbl_8055EB94 = *(f32 *)&lbl_80562E80;
 }
 #pragma opt_propagation reset
 #pragma scheduling on
