@@ -51,3 +51,4 @@ void fn_8025DF80(void *arg0) {
     }
 }
 #pragma pop
+extern void *fn_8000DA10(void); extern int fn_80012854(void); extern void *fn_8001285C(int); extern int fn_80012820(void *); extern void *fn_80016510(void); extern int fn_8001BA6C(void *); extern void fn_8001BC38(void *, void *, void *, int, int); extern int fn_8001BCF0(void *); extern int fn_8001BD6C(void *, void *); extern void fn_8001BD38(void *, void *, int); extern void fn_8001BD54(void *, void *); extern char *fn_80008188(void *); extern char *fn_801345D8(char *, int, const char *, char *, char *); extern int stricmp(const char *, const char *); extern char lbl_8055C3E4[], lbl_8055C3E8[], lbl_8055C3EC[], lbl_8055C3F8[]; extern char lbl_803456A4[];
