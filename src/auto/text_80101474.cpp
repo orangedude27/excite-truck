@@ -1,4 +1,5 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
+extern "C" const char lbl_80328030[];
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern int fn_80128668(void);
