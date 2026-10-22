@@ -70,6 +70,7 @@ void fn_80273B4C(void *arg0) {
 
 void fn_8027445C(void) {
     extern void fn_80274268();
+extern void fn_80274460(void);
     fn_80274268();
 }
 
