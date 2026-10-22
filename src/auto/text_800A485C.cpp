@@ -1,6 +1,6 @@
   #include <types.h>
-class Freeable800C6A1C { public: virtual void d0(); virtual void d1(); virtual void free(s32); };
-class Freeable28_800C6A1C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void free(s32); };
+class Freeable800C6A1C { public: virtual void free(s32); };
+class Freeable28_800C6A1C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void free(s32); };
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
 extern "C" s32 fn_800ACA5C(void *, void *, u16);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
@@ -5817,6 +5817,57 @@ extern "C" void *fn_800C6914(void *arg0, void *arg1) {
     M2C_FIELD(self, u32 *, 0x5D0) = 0;
     M2C_FIELD(self, u32 *, 0x5D4) = 0;
     return arg0;
+}
+
+extern "C" void fn_800D0F1C(void *, s32);
+extern "C" s32 fn_800D67B8(s32, s32);
+extern "C" void fn_800C6A1C(void *arg0, s32 arg1) {
+    u8 *self = (u8 *)arg0;
+    s32 i;
+    if (arg0 != 0) {
+        ((Freeable800C6A1C *)*(void **)(self + 0x1F4))->free(-1);
+        MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1F4));
+        ((Freeable800C6A1C *)*(void **)(self + 0x1E0))->free(-1);
+        MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1E0));
+        if (*(s32 *)((u8 *)*(void **)(self + 4) + 0x20) == 0) {
+            for (i = 0; i < 4; i++) {
+                void *p = *(void **)(self + 0x1E4 + i * 4);
+                ((Freeable800C6A1C *)p)->free(-1);
+                MEMFreeToAllocator(lbl_80559708, p);
+            }
+        }
+        for (i = 0; i < *(s32 *)(self + 0xC); i++) {
+            void *p = *(void **)(self + 0x268 + i * 4);
+            ((Freeable800C6A1C *)p)->free(-1);
+            MEMFreeToAllocator(lbl_80559708, p);
+        }
+        for (i = 0; i < 0xF; i++) {
+            void *p = *(void **)(self + 0x3C0 + i * 4);
+            ((Freeable800C6A1C *)p)->free(-1);
+            MEMFreeToAllocator(lbl_80559708, p);
+        }
+        for (i = 0; i < 0x4A; i++) {
+            void *p = *(void **)(self + 0x298 + i * 4);
+            ((Freeable800C6A1C *)p)->free(-1);
+            MEMFreeToAllocator(lbl_80559708, p);
+        }
+        MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1FC));
+        ((Freeable28_800C6A1C *)*(void **)(self + 0x1F8))->free(-1);
+        MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x1F8));
+        for (i = 0; i < 4; i++) {
+            void *p = *(void **)(self + 0x254 + i * 4);
+            fn_800D0F1C(p, -1);
+            MEMFreeToAllocator(lbl_80559708, p);
+        }
+        ((Freeable800C6A1C *)((u8 *)*(void **)(self + 0x264) + 0x1F0))->free(-1);
+        MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0x264));
+        *(void **)(self + 0x264) = 0;
+        MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0xA4));
+        MEMFreeToAllocator(lbl_80559708, *(void **)(self + 0xA8));
+        fn_800D67B8((s32)(self + 0x200), -1);
+        if (arg1 > 0)
+            ((void (*)(void *))fn_80128668)(arg0);
+    }
 }
 
 extern "C" void __dt__Q36nw4hbm3lyt19ArcResourceAccessorFv(void* this_ptr, s32 arg1) {
