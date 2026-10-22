@@ -207,6 +207,15 @@ void *fn_801F2150(void) {
     return p;
 }
 
+void fn_801F2190(void) {
+    void **slot = (void **)fn_801284F8(4, (void *)&lbl_8055B138);
+    if (slot != 0) {
+        *slot = (void *)&lbl_8033A740;
+    }
+}
+#pragma scheduling on
+#pragma dont_inline off
+
 void *fn_801F21CC(void) {
     void **p = (void **)fn_801284F8(4, (void *)&lbl_8033A684);
     if (p != 0) {
