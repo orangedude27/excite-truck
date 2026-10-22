@@ -192,6 +192,7 @@ extern s32 fn_8008128C(void *);
 extern char lbl_803140E8[];
 extern char lbl_8031A2C0[];
 extern char lbl_8031A2EC[];
+extern char lbl_803157DC[];
 extern char lbl_803BF240[2000];
 extern char lbl_803BFA20[0x5000];
 extern char lbl_80559040[4]; /* "%s\n" */
@@ -743,6 +744,34 @@ void *GKI_read_mbox(UINT8 mbox) {
     GKI_enable();
 
     return p_buf;
+}
+
+void GKI_enqueue_head(BUFFER_Q *p_q, void *p_buf) {
+    BUFFER_HDR_T *p_hdr;
+#if (GKI_ENABLE_BUF_CORRUPTION_CHECK == TRUE)
+    if (gki_chk_buf_damage(p_buf)) {
+        GKI_exception(GKI_ERROR_BUF_CORRUPTED, "Enqueue - Buffer corrupted");
+        return;
+    }
+#endif
+    p_hdr = (BUFFER_HDR_T *)((UINT8 *)p_buf - BUFFER_HDR_SIZE);
+    if (p_hdr->status != BUF_STATUS_UNLINKED) {
+        GKI_exception(GKI_ERROR_ENQUEUE_BUF_LINKED, "Eneueue head - buf already linked");
+        return;
+    }
+    GKI_disable();
+    if (p_q->p_first) {
+        p_hdr->p_next = (BUFFER_HDR_T *)((UINT8 *)p_q->p_first - BUFFER_HDR_SIZE);
+        p_q->p_first = p_buf;
+    } else {
+        p_q->p_first = p_buf;
+        p_q->p_last = p_buf;
+        p_hdr->p_next = NULL;
+    }
+    p_q->count++;
+    p_hdr->status = BUF_STATUS_QUEUED;
+    GKI_enable();
+    return;
 }
 
 void *GKI_dequeue(BUFFER_Q *p_q) {
@@ -8037,6 +8066,42 @@ void fn_8009757C(u8 *p_ccb) {
     }
 }
 
+extern char lbl_8031A050[];
+void process_service_search_rsp(void *p_ccb, UINT8 *p_reply, UINT16 len) {
+    UINT8 *p = p_reply + 8;
+    UINT16 orig = *(UINT16 *)((UINT8 *)p_ccb + 0x46C);
+    UINT16 cur = (p_reply[6] << 8) + p_reply[7];
+    UINT16 total;
+    UINT8 cont_len;
+    UINT16 i;
+    *(UINT16 *)((UINT8 *)p_ccb + 0x46C) = orig + cur;
+    if (*(UINT16 *)((UINT8 *)p_ccb + 0x46C) == 0) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_8007093C(0xA0001, lbl_8031A050);
+        sdp_disconnect(p_ccb, 0xFFF0);
+        return;
+    }
+    total = *(UINT16 *)((UINT8 *)p_ccb + 0x46C);
+    if (total > *(UINT16 *)(lbl_803C4C40 + 0x462E))
+        *(UINT16 *)((UINT8 *)p_ccb + 0x46C) = *(UINT16 *)(lbl_803C4C40 + 0x462E);
+    for (i = orig; i < *(UINT16 *)((UINT8 *)p_ccb + 0x46C); i++) {
+        *(UINT32 *)((UINT8 *)p_ccb + 0x418 + i * 4) =
+            ((UINT32)p[0] << 24) | ((UINT32)p[1] << 16) | ((UINT32)p[2] << 8) | p[3];
+        p += 4;
+    }
+    cont_len = *p;
+    if (cont_len != 0) {
+        if (cont_len > 0x10) {
+            sdp_disconnect(p_ccb, 5);
+            return;
+        }
+        sdp_snd_service_search_req(p_ccb, cont_len, p + 1);
+    } else {
+        *(UINT8 *)((UINT8 *)p_ccb + 0x474) = 2;
+        process_service_attr_rsp(p_ccb, 0, 0);
+    }
+}
+
 void *add_record(void *ctx, void *data) {
     u32 size = *(u32 *)((u8 *)ctx + 4);
     void *record;
@@ -8072,6 +8137,36 @@ void sdp_connect_ind(u8 *addr, u16 cid, u16 psm, u8 status) {
         if (lbl_803C4C40[0x4630] >= 4) {
             fn_80070954(0xA0003, lbl_8031A200, *(u16 *)((u8 *)ccb + 0x22));
         }
+    }
+}
+
+extern tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16);
+void sdp_config_ind(u16 cid, void *p_cfg) {
+    tCONN_CB *lcb = l2cu_find_lcb_by_handle_80099E54(cid);
+    u16 value;
+    volatile u16 *out;
+    if (lcb == NULL) {
+        if (lbl_803C4C40[0x4630] >= 2) fn_80070954(0xA0001, lbl_8031A2C0, cid);
+        return;
+    }
+    out = (volatile u16 *)((u8 *)lcb + 0x20);
+    if (((u8 *)p_cfg)[2] == 0) {
+        *out = 0x100;
+    } else {
+        value = *(u16 *)((u8 *)p_cfg + 4);
+        if (value > 0x100) value = 0x100;
+        *out = value;
+    }
+    ((u8 *)p_cfg)[0x20] = 0;
+    ((u8 *)p_cfg)[2] = 0;
+    *(u16 *)p_cfg = 0;
+    L2CA_ConfigRsp(cid, p_cfg);
+    if (lbl_803C4C40[0x4630] >= 4) fn_80070954(0xA0003, lbl_8031A2EC, cid);
+    ((u8 *)lcb)[1] |= 2;
+    if (((u8 *)lcb)[1] & 4) {
+        ((u8 *)lcb)[0] = 3;
+        if (((u8 *)lcb)[1] & 1) fn_8009757C((u8 *)lcb);
+        else btu_start_timer((u8 *)lcb + 8, 5, 0x1E);
     }
 }
 
