@@ -2552,6 +2552,50 @@ void btm_acl_device_down(void)
     }
 }
 
+tBTM_STATUS BTM_SwitchRole(BD_ADDR remote_bd_addr, UINT8 new_role, tBTM_CMPL_CB *p_cb) {
+    u32 i; u8 *entry; u8 power_mode; u8 status; tBTM_PM_PWR_MD spC;
+    if ((lbl_803C0F78[0x640] & 0x20) == 0) return 4;
+    entry = lbl_803C0F78 + 0x34; i = 0;
+loop:
+    if (entry[0x119] == 0) goto next;
+    if (memcmp(entry + 8, remote_bd_addr, 6) != 0) goto next;
+    goto found;
+next:
+    i++; entry += 0x11C;
+    if (i < 4) goto loop;
+    entry = 0;
+found:
+    if (entry == 0) return 7;
+    if (entry[0x11A] == new_role) return 0;
+    status = btm_is_sco_active_by_bdaddr(remote_bd_addr);
+    if (status == 1) return 3;
+    if (entry[0x11B] != 0) {
+        if (lbl_803C0F78[0x27C0] >= 5) fn_8007093C(0xD0004, lbl_80315D00);
+        return 2;
+    }
+    memset(lbl_803C0F78 + 0x624, 0, 8);
+    status = BTM_ReadPowerMode(entry + 8, &power_mode);
+    if (status != 0) return status;
+    if ((u8)(power_mode + 0xFE) <= 1) {
+        spC.mode = 0;
+        if (BTM_SetPowerMode(0x80, entry + 8, &spC) != 1) return 6;
+        entry[0x11B] = 1;
+    } else {
+        tBTM_SEC_DEV_REC *dev = btm_find_dev(remote_bd_addr);
+        if (dev != NULL && (*(u8 *)((u8 *)dev + 0x76) & 4)) {
+            if (btsnd_hcic_set_conn_encrypt(*(u16 *)entry, 0) == 0) return 3;
+            entry[0x11B] = 2;
+        } else {
+            if (btsnd_hcic_switch_role(remote_bd_addr, new_role) == 0) return 3;
+            entry[0x11B] = 5;
+        }
+    }
+    memcpy(lbl_803C0F78 + 0x626, remote_bd_addr, 6);
+    lbl_803C0F78[0x625] = new_role;
+    *(tBTM_CMPL_CB **)(lbl_803C0F78 + 0x62C) = p_cb;
+    return 1;
+}
+
 void btm_acl_encrypt_change(u16 handle, u8 status, u8 enable) {
     u8 *base = lbl_803C0F78;
     u8 *dev;
@@ -3682,6 +3726,48 @@ void btm_pm_sm_alloc(u8 index) {
     entry = lbl_803C0F78 + 0x4cc + index * 0x22;
     memset(entry, 0, 0x22);
     entry[0x20] = 0;
+}
+
+extern u8 lbl_802EEBE8[];
+tBTM_PM_PWR_MD *btm_pm_compare_modes(tBTM_PM_PWR_MD *p_md1, tBTM_PM_PWR_MD *p_md2, tBTM_PM_PWR_MD *p_res) {
+    u8 res;
+    if (p_md1 == NULL) {
+        *p_res = *p_md2;
+        return p_md2;
+    }
+    if (p_md2->mode == BTM_PM_MD_ACTIVE || p_md1->mode == BTM_PM_MD_ACTIVE) return NULL;
+    if (p_md1->mode & BTM_PM_MD_FORCE) {
+        *p_res = *p_md1;
+        p_res->mode &= ~BTM_PM_MD_FORCE;
+        return p_res;
+    }
+    if (p_md2->mode & BTM_PM_MD_FORCE) {
+        *p_res = *p_md2;
+        p_res->mode &= ~BTM_PM_MD_FORCE;
+        return p_res;
+    }
+    res = (p_md1->mode - 1) * 3 + (p_md2->mode - 1);
+    res = lbl_802EEBE8[res];
+    switch (res) {
+    case 1:
+        *p_res = *p_md1;
+        return p_md1;
+    case 2:
+        *p_res = *p_md2;
+        return p_md2;
+    case 3:
+        p_res->mode = p_md1->mode;
+        p_res->max = p_md1->max < p_md2->max ? p_md1->max : p_md2->max;
+        p_res->min = p_md1->min > p_md2->min ? p_md1->min : p_md2->min;
+        if (p_res->max < p_res->min) return NULL;
+        if (p_res->mode == BTM_PM_MD_SNIFF) {
+            p_res->attempt = p_md1->attempt > p_md2->attempt ? p_md1->attempt : p_md2->attempt;
+            p_res->timeout = p_md1->timeout > p_md2->timeout ? p_md1->timeout : p_md2->timeout;
+        }
+        return p_res;
+    default:
+        return NULL;
+    }
 }
 
 u8 btm_pm_get_set_mode(u32 arg0, void *arg1, void *arg2, void *arg3) {
