@@ -134,6 +134,7 @@ extern void fn_801CC918(void);
 extern void fn_801CC470(void);
 extern void fn_801CD5B4(int, int, int);
 #pragma scheduling invalid_target
+// fn_801CB5DC matches with invalid_target scheduling to preserve argument-copy order.
 void fn_801CB5DC(int arg0, int arg1, int arg2) {
     if (fn_80019BA8() != 0) goto done;
     switch (fn_80161C38()) {
