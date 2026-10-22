@@ -36,6 +36,7 @@ extern u32 lbl_80560D28;
 
 extern u8 lbl_803C0F78[];
 extern u8 lbl_80316570[];
+extern u8 lbl_80315FBC[];
 
 typedef struct {
     UINT16 dl_len;
