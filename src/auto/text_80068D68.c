@@ -6548,6 +6548,37 @@ void Port_TimeOutCloseMux(void *arg0) {
         if (*(void **)(entry + 0x6C) == arg0) port_rfc_closed(entry, 0x12);
 }
 
+extern char lbl_803194E8[];
+void PORT_FlowInd(void *p_mcb, s32 dlci, s32 enable_data) {
+    u8 *port;
+    u8 *p_port = 0;
+    u32 events;
+    void (*callback)(u32, u8);
+    s32 i;
+    if (lbl_803C4828[0x414] >= 4)
+        ((void (*)(u32, void *, s32))fn_80070954)(0x90003, lbl_803194E8, enable_data);
+    if (dlci == 0) {
+        *(u8 *)((u8 *)p_mcb + 0x71) = enable_data;
+    } else {
+        p_port = ((u8 *(*)(void *, s32))port_find_mcb_dlci_port)(p_mcb, dlci);
+        if (p_port == 0) return;
+        p_port[0x24] = (u8)(enable_data == 0);
+    }
+    for (i = 0, port = lbl_803C4828 + 0x68; i < 5; i++, port += 0xA4) {
+        if (dlci == 0) {
+            p_port = port;
+            if (port[1] == 0 || *(void **)(port + 0x6C) != p_mcb || port[0x68] != 4)
+                continue;
+        }
+        events = port_flow_control_user(p_port);
+        events |= port_rfc_send_tx_data(p_port);
+        events &= *(u32 *)(p_port + 0x88);
+        callback = *(void (**)(u32, u8))(p_port + 0x8C);
+        if (callback != 0 && events != 0) callback(events, p_port[0]);
+        if (dlci != 0) break;
+    }
+}
+
 void port_release_port(void *arg0) {
     u8 *port = arg0;
     void *buf;
