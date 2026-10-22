@@ -83,11 +83,110 @@ typedef struct _GXLightObjImpl {
   } GXDistAttnFn;
 
   extern char lbl_8055D949;
+void *__GXDefaultTexRegionCallback(void *obj, unsigned int region) {
+    int mipmap = GXGetTexObjMipMap(obj);
+    int isMipMap = GXGetTexObjAll(obj);
+    unsigned int carry = region >> 31;
+    unsigned int index = ((region << 29) - carry);
+    index = (index << 3) | (index >> 29);
+    index += carry;
+
+    if (mipmap == 7) {
+        if (isMipMap != 0) {
+            return (char *)__GXData + index * 0x10 + 0x2D8;
+        }
+        return (char *)__GXData + index * 0x10 + 0x258;
+    }
+    if (mipmap < 7) {
+        if (mipmap < 6) {
+            if (isMipMap != 0) {
+                return (char *)__GXData + index * 0x10 + 0x2D8;
+            }
+            return (char *)__GXData + index * 0x10 + 0x258;
+        }
+        if (isMipMap != 0) {
+            return (char *)__GXData + index * 0x10 + 0x358;
+        }
+        return (char *)__GXData + index * 0x10 + 0x2D8;
+    }
+    if (mipmap < 0xB) {
+        return (char *)__GXData + index * 0x10 + 0x258;
+    }
+    if (isMipMap != 0) {
+        return (char *)__GXData + index * 0x10 + 0x2D8;
+    }
+    return (char *)__GXData + index * 0x10 + 0x258;
+}
+
 s32 __GXDefaultTlutRegionCallback(unsigned int region) {
     if (region >= 0x14) {
         return 0;
     }
     return (s32)((char *)__GXData + region * 0x10 + 0x3D8);
+}
+
+void __GXInitRevisionBits(void) {
+    unsigned int *p = __GXData;
+    volatile unsigned char *b = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *w = (volatile unsigned int *)0xCC008000;
+    unsigned int v;
+    *p = *p;
+    v = p[7] | 0x40000000; p[7] = v;
+    v = p[15] | 0x80000000; p[15] = v; *b = 8; *b = 0x80; *w = v;
+    v = p[8] | 0x40000000; p[8] = v;
+    v = p[16] | 0x80000000; p[16] = v; *b = 8; *b = 0x81; *w = v;
+    v = p[9] | 0x40000000; p[9] = v;
+    v = p[17] | 0x80000000; p[17] = v; *b = 8; *b = 0x82; *w = v;
+    v = p[10] | 0x40000000; p[10] = v;
+    v = p[18] | 0x80000000; p[18] = v; *b = 8; *b = 0x83;
+    *w = v;
+    *b = 0x10; *w = 0x1000; *w = 0x3F;
+    *b = 0x10; *w = 0x1012; *w = 1; *b = 0x61; *w = 0x5800000F;
+}
+
+extern unsigned int lbl_8037C0C0;
+extern void OSReport(void *, ...);
+extern unsigned int lbl_803036E0;
+extern unsigned int lbl_803036F8;
+int CPGPLinkCheck(void) {
+    unsigned int first;
+    unsigned int second;
+    int diff1;
+    int diff2;
+    int error;
+
+    if (lbl_8055D948 == 0 || lbl_8055D949 == 0) {
+        return 0;
+    }
+    error = 0;
+    first = lbl_8037C0E4;
+    second = lbl_8037C0C0;
+    if (first == second) {
+        error = 1;
+    }
+    first = *((unsigned int *)&lbl_8037C0E4 + 1);
+    second = *((unsigned int *)&lbl_8037C0C0 + 1);
+    if (first == second) {
+        error++;
+    }
+    if (error == 2) {
+        return 1;
+    }
+    diff1 = (int)second - (int)lbl_8037C0C0;
+    diff2 = (int)*((unsigned int *)&lbl_8037C0C0 + 1) - (int)lbl_8037C0E4;
+    error = 0;
+    if (diff1 > 0) {
+        if (diff2 > 0) {
+            error = 1;
+        }
+    } else if (diff1 < 0 && diff2 < 0) {
+        error = 1;
+    }
+    if (error != 0) {
+        OSReport(&lbl_803036E0);
+        OSReport(&lbl_803036F8, lbl_8037C0C0, *((unsigned int *)&lbl_8037C0C0 + 1));
+    }
+    return 0;
 }
 
 char __GXIsGPFifoReady(void) {
@@ -287,6 +386,38 @@ void __GXSetVCD(void) {
     *(volatile unsigned int *)0xCC008000 = 0x1008;
     *(volatile unsigned int *)0xCC008000 = value;
     *(unsigned short *)((char *)data + 2) = 1;
+}
+
+extern unsigned char lbl_80558E38[];
+extern unsigned char lbl_80558E3C[];
+extern unsigned char lbl_80558E40[];
+void __GXCalculateVLim(void) {
+    unsigned int *gx = __GXData;
+    unsigned int flags;
+    unsigned int vtx;
+    int sum;
+    int weight;
+
+    if (*(unsigned short *)((char *)gx + 4) == 0) return;
+    flags = gx[0x14 / 4];
+    vtx = gx[0x18 / 4];
+    sum = (flags & 1) + ((flags >> 1) & 1) + ((flags >> 2) & 1) +
+          ((flags >> 3) & 1) + ((flags >> 4) & 1) + ((flags >> 5) & 1) +
+          ((flags >> 6) & 1) + ((flags >> 7) & 1) + ((flags >> 8) & 1);
+    sum += lbl_80558E40[(flags >> 9) & 3];
+    weight = (((gx[0x1C / 4] >> 9) & 1) == 1) ? 3 : 1;
+    sum += lbl_80558E40[(flags >> 11) & 3] * weight;
+    sum += lbl_80558E38[(flags >> 13) & 3];
+    sum += lbl_80558E38[(flags >> 15) & 3];
+    sum += lbl_80558E3C[(vtx >> 0) & 3];
+    sum += lbl_80558E3C[(vtx >> 2) & 3];
+    sum += lbl_80558E3C[(vtx >> 4) & 3];
+    sum += lbl_80558E3C[(vtx >> 6) & 3];
+    sum += lbl_80558E3C[(vtx >> 8) & 3];
+    sum += lbl_80558E3C[(vtx >> 10) & 3];
+    sum += lbl_80558E3C[(vtx >> 12) & 3];
+    sum += lbl_80558E3C[(vtx >> 14) & 3];
+    *(unsigned short *)((char *)gx + 6) = sum;
 }
 
 void GXClearVtxDesc(void) {
@@ -931,6 +1062,51 @@ void __GXPEInit(void) {
     __peReg[5] |= 0xF;
 }
 
+void GXBegin(unsigned char prim, unsigned char vtxfmt, unsigned short nverts) {
+    unsigned int *data = __GXData;
+    unsigned int count;
+    unsigned int remaining;
+    unsigned int written = 0;
+    unsigned int blocks;
+    unsigned int i;
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned short *fifo16 = (volatile unsigned short *)0xCC008000;
+    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
+
+    if (data[0x5FC / 4] != 0)
+        __GXSetDirtyState();
+    if (data[0] == 0) {
+        *fifo8 = 0x98;
+        count = (unsigned int)*(unsigned short *)((char *)data + 4) *
+                *(unsigned short *)((char *)data + 6);
+        *fifo16 = *(unsigned short *)((char *)data + 4);
+        if (count != 0) {
+            remaining = count - 0x20;
+            if (((count + 3) >> 2) > 8) {
+                if ((count + 3) >= 3 && count <= count + 3) {
+                    blocks = (remaining + 0x1F) >> 5;
+                    if (remaining > 0) {
+                        do {
+                            *fifo32 = 0; *fifo32 = 0; *fifo32 = 0; *fifo32 = 0;
+                            *fifo32 = 0; *fifo32 = 0; *fifo32 = 0; *fifo32 = 0;
+                            written += 0x20;
+                        } while (--blocks != 0);
+                    }
+                }
+            }
+            blocks = ((count + 3) - written) >> 2;
+            if (written < count) {
+                do {
+                    *fifo32 = 0;
+                } while (--blocks != 0);
+            }
+        }
+        *(unsigned short *)((char *)data + 2) = 1;
+    }
+    *fifo8 = prim | vtxfmt;
+    *fifo16 = nverts;
+}
+
 void GXSetLineWidth(s32 width, s32 format) {
     unsigned int *data = __GXData;
     data[0x7C / 4] = (data[0x7C / 4] & ~0x700FF) | (width & 0xFF) | ((format << 16) & 0x70000);
@@ -975,6 +1151,46 @@ void GXSetCoPlanar(s32 enable) {
     *(volatile unsigned int *)0xCC008000 = data[0x254 / 4];
 }
 
+void GXDrawCylinder(void *src, void *dst, int x, int y) {
+    unsigned int dx = (x << 1) & 0xFFFE;
+    unsigned int dy = (y << 1) & 0xFFFE;
+    unsigned int a, b, mode;
+    unsigned short radius;
+    if (src != dst) {
+        b = *(unsigned int *)((char *)src + 0x00); a = *(unsigned int *)((char *)src + 0x04);
+        *(unsigned int *)((char *)dst + 0x00) = b; *(unsigned int *)((char *)dst + 0x04) = a;
+        b = *(unsigned int *)((char *)src + 0x08); a = *(unsigned int *)((char *)src + 0x0C);
+        *(unsigned int *)((char *)dst + 0x08) = b; *(unsigned int *)((char *)dst + 0x0C) = a;
+        b = *(unsigned int *)((char *)src + 0x10); a = *(unsigned int *)((char *)src + 0x14);
+        *(unsigned int *)((char *)dst + 0x10) = b; *(unsigned int *)((char *)dst + 0x14) = a;
+        b = *(unsigned int *)((char *)src + 0x18); a = *(unsigned int *)((char *)src + 0x1C);
+        *(unsigned int *)((char *)dst + 0x18) = b; *(unsigned int *)((char *)dst + 0x1C) = a;
+        b = *(unsigned int *)((char *)src + 0x20); a = *(unsigned int *)((char *)src + 0x24);
+        *(unsigned int *)((char *)dst + 0x20) = b; *(unsigned int *)((char *)dst + 0x24) = a;
+        b = *(unsigned int *)((char *)src + 0x28); a = *(unsigned int *)((char *)src + 0x2C);
+        *(unsigned int *)((char *)dst + 0x28) = b; *(unsigned int *)((char *)dst + 0x2C) = a;
+        b = *(unsigned int *)((char *)src + 0x30); a = *(unsigned int *)((char *)src + 0x34);
+        *(unsigned int *)((char *)dst + 0x30) = b; *(unsigned int *)((char *)dst + 0x34) = a;
+        a = *(unsigned int *)((char *)src + 0x38);
+        *(unsigned int *)((char *)dst + 0x38) = a;
+    }
+    *(unsigned short *)((char *)dst + 4) = *(unsigned short *)((char *)src + 4) - dx;
+    mode = *(volatile unsigned int *)src & 3;
+    radius = *(unsigned short *)((char *)src + 6);
+    *(unsigned short *)((char *)dst + 6) = radius - ((dy * radius) / *(unsigned short *)((char *)src + 8));
+    if (*(int *)((char *)src + 0x14) == 0 && mode == 0)
+        *(unsigned short *)((char *)dst + 8) = *(unsigned short *)((char *)src + 8) - ((dy >> 1) & 0x7FFF);
+    else
+        *(unsigned short *)((char *)dst + 8) = *(unsigned short *)((char *)src + 8) - dy;
+    *(unsigned short *)((char *)dst + 0xE) = *(unsigned short *)((char *)src + 0xE) - dx;
+    if (mode == 1)
+        *(unsigned short *)((char *)dst + 0x10) = *(unsigned short *)((char *)src + 0x10) - ((dy << 1) & 0x1FFFE);
+    else
+        *(unsigned short *)((char *)dst + 0x10) = *(unsigned short *)((char *)src + 0x10) - dy;
+    *(unsigned short *)((char *)dst + 0xA) = *(unsigned short *)((char *)src + 0xA) + x;
+    *(unsigned short *)((char *)dst + 0xC) = *(unsigned short *)((char *)src + 0xC) + y;
+}
+
 void GXSetDispCopySrc(s32 left, s32 top, s32 width, s32 height) {
     unsigned int *data = __GXData;
     unsigned int src = 0;
@@ -1002,6 +1218,27 @@ void GXSetDispCopyDst(s32 value) {
     __GXData[0x238 / 4] = result | 0x4D000000;
 }
 
+void __GetImageTileCount(unsigned int, int, int, int *, int *, int *);
+void GXSetTexCopyDst(int width, int height, unsigned int format, int depth) {
+    int tilesX, tilesY, compressed;
+    unsigned int *reg;
+    unsigned int fmt = format & 0xF;
+    __GXData[0x250 / 4] = 0;
+    if (format == 0x13) fmt = 0xB;
+    if (format == 0x26 || (format < 4 && format >= 0))
+        __GXData[0x24C / 4] = (__GXData[0x24C / 4] & ~0x18000) | 0x18000;
+    else
+        __GXData[0x24C / 4] = (__GXData[0x24C / 4] & ~0x18000) | 0x10000;
+    reg = &__GXData[0x24C / 4];
+    __GXData[0x250 / 4] = (format >> 4) & 1;
+    *reg = (*reg & ~8) | (fmt & 8);
+    __GetImageTileCount(format, width, height, &tilesX, &tilesY, &compressed);
+    __GXData[0x248 / 4] = 0;
+    __GXData[0x248 / 4] = (tilesX * tilesY & 0x3FF) | 0x4D000000;
+    *reg = ((*reg & ~0x200) | ((depth << 9) & 0x200));
+    *reg = (*reg & ~0x70) | ((fmt << 4) & 0x70);
+}
+
 void GXSetDispCopyFrame2Field(s32 value) {
     unsigned int *data = __GXData;
     data[0x23C / 4] = (data[0x23C / 4] & ~(3U << 12)) | ((value & 3) << 12);
@@ -1019,6 +1256,35 @@ void GXSetCopyClamp(s32 value) {
     b = (b & ~1) | (value & 1);
     b = (b & ~2) | (value & 2);
     data[0x24C / 4] = b;
+}
+
+extern f32 lbl_80560B40;
+unsigned int GXSetDispCopyYScale(f32 yScale) {
+    unsigned int scale = (unsigned int)(lbl_80560B40 / yScale);
+    unsigned int height = scale & 0x1FF;
+    unsigned int width;
+    unsigned int result;
+    unsigned int value;
+    unsigned int tmp;
+
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = 0x4E000000 | (scale & 0x1FF);
+    ((volatile unsigned short *)__GXData)[1] = 0;
+    tmp = (0x100 - height) | (height - 0x100);
+    __GXData[0x23C / 4] = (__GXData[0x23C / 4] & ~0x400) | ((tmp >> 10) & 0x400);
+    width = (__GXData[0x234 / 4] >> 12) & 0x3FF;
+    value = width + 1;
+    result = (((value - 1) << 8) / height) + 1;
+    if (height <= 0x80 || height >= 0x100) {
+        goto done;
+    }
+loop:
+    height >>= 1;
+    if ((height & 1) == 0) goto loop;
+    if (value % height == 0) result++;
+done:
+    if (result > 0x400) result = 0x400;
+    return result;
 }
 
 void GXSetCopyClear(unsigned char *color, s32 depth) {
@@ -1046,6 +1312,95 @@ void GXSetCopyClear(unsigned char *color, s32 depth) {
 void GXSetDispCopyGamma(s32 arg0) {
     unsigned int *data = __GXData;
     data[0x23C/4] = (data[0x23C/4] & 0xFFFFFE7F) | (arg0 << 7);
+}
+
+void GXCopyDisp(unsigned int source, int clear) {
+    unsigned int *gx = __GXData;
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC010000;
+    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC010000;
+    unsigned int *reg = gx + 0x22C / 4;
+    unsigned int val;
+    int changed = 0;
+
+    if (clear != 0) {
+        *fifo8 = 0x61; *fifo32 = gx[0x228 / 4] | 0xF;
+        *fifo8 = 0x61; *fifo32 = gx[0x220 / 4] & ~3u;
+    }
+    if (clear == 0 && ((*reg & 7) == 3) && ((*reg & 0x40) != 0)) {
+        *fifo8 = 0x61;
+        val = *reg & ~0x40u;
+        *fifo32 = val;
+        changed = 1;
+    }
+    *fifo8 = 0x61; *fifo32 = gx[0x230 / 4];
+    *fifo8 = 0x61; *fifo32 = gx[0x234 / 4];
+    *fifo8 = 0x61; *fifo32 = gx[0x238 / 4];
+    *fifo8 = 0x61; *fifo32 = ((source << 3) & 0xFFFFFF00) | 0x4B;
+    val = gx[0x23C / 4];
+    val = (val & ~0x800u) | ((clear << 11) & 0x800) | 0x4000 | 0x52000000;
+    gx[0x23C / 4] = val;
+    *fifo8 = 0x61; *fifo32 = val;
+    if (clear != 0) {
+        *fifo8 = 0x61; *fifo32 = gx[0x228 / 4];
+        *fifo8 = 0x61; *fifo32 = gx[0x220 / 4];
+    }
+    if (changed) {
+        *fifo8 = 0x61; *fifo32 = *reg;
+    }
+    *(unsigned short *)((char *)gx + 2) = 0;
+}
+
+void GXCopyTex(u32 width, s32 clear) {
+    s32 changed;
+    u32 value;
+    if (clear != 0) {
+        value = __GXData[0x228 / 4];
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = value | 0xF;
+        value = __GXData[0x220 / 4];
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = value & 0xFFFFFFFC;
+    }
+    changed = 0;
+    value = __GXData[0x22C / 4];
+    if (*((unsigned char *)__GXData + 0x250) != 0 && (value & 7) != 3) {
+        changed = 1;
+        value = (value & ~7) | 3;
+    }
+    if (clear == 0 && (value & 7) == 3 && ((value >> 6) & 1) == 1) {
+        changed = 1;
+        value &= 0xFFFFFFBF;
+    }
+    if (changed != 0) {
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = value;
+    }
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = __GXData[0x240 / 4];
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = __GXData[0x244 / 4];
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = __GXData[0x248 / 4];
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = (width << 27) | 0x4B000000;
+    value = __GXData[0x24C / 4];
+    value |= (clear << 11) & 0x800;
+    value &= 0xFFFFBFFF;
+    value |= 0x52000000;
+    __GXData[0x24C / 4] = value;
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = value;
+    if (clear != 0) {
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = __GXData[0x228 / 4];
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = __GXData[0x220 / 4];
+    }
+    if (changed != 0) {
+        *(volatile unsigned char *)0xCC008000 = 0x61;
+        *(volatile unsigned int *)0xCC008000 = __GXData[0x22C / 4];
+    }
+    *(unsigned short *)((char *)__GXData + 2) = 0;
 }
 
 void GXClearBoundingBox(void) {
@@ -1142,6 +1497,90 @@ void GXLoadLightObjImm(void *arg0, s32 arg1) {
     fifo32[0] = 0;
     for (i = 0; i < 6; i++) fifo32[0] = ((unsigned int *)src)[i * 2];
     *__GXData; 
+}
+
+void GXSetChanAmbColor_Internal(s32 type, void *color) {
+    unsigned int value;
+    unsigned int which;
+    unsigned int *data;
+
+    switch (type) {
+    case 0:
+        data = __GXData;
+        which = 0;
+        value = (data[0xA8 / 4] & 0xFF) | (*(unsigned int *)color & 0xFFFFFF00);
+        break;
+    case 1:
+        data = __GXData;
+        which = 1;
+        value = (data[0xAC / 4] & 0xFF) | (*(unsigned int *)color & 0xFFFFFF00);
+        break;
+    case 2:
+        data = __GXData;
+        which = 0;
+        value = (data[0xA8 / 4] & 0xFFFFFF00) | ((unsigned char *)color)[3];
+        break;
+    case 3:
+        data = __GXData;
+        which = 1;
+        value = (data[0xAC / 4] & 0xFFFFFF00) | ((unsigned char *)color)[3];
+        break;
+    case 4:
+        which = 0;
+        value = *(unsigned int *)color;
+        break;
+    case 5:
+        which = 1;
+        value = *(unsigned int *)color;
+        break;
+    default:
+        return;
+    }
+    data = __GXData;
+    data[0x5FC / 4] |= 0x100 << which;
+    data[0xA8 / 4 + which] = value;
+}
+
+void GXSetChanMatColor_Internal(s32 type, void *color) {
+    unsigned int value;
+    unsigned int which;
+    unsigned int *data;
+
+    switch (type) {
+    case 0:
+        data = __GXData;
+        which = 0;
+        value = (data[0xB0 / 4] & 0xFF) | (*(unsigned int *)color & 0xFFFFFF00);
+        break;
+    case 1:
+        data = __GXData;
+        which = 1;
+        value = (data[0xB4 / 4] & 0xFF) | (*(unsigned int *)color & 0xFFFFFF00);
+        break;
+    case 2:
+        data = __GXData;
+        which = 0;
+        value = (data[0xB0 / 4] & 0xFFFFFF00) | ((unsigned char *)color)[3];
+        break;
+    case 3:
+        data = __GXData;
+        which = 1;
+        value = (data[0xB4 / 4] & 0xFFFFFF00) | ((unsigned char *)color)[3];
+        break;
+    case 4:
+        which = 0;
+        value = *(unsigned int *)color;
+        break;
+    case 5:
+        which = 1;
+        value = *(unsigned int *)color;
+        break;
+    default:
+        return;
+    }
+    data = __GXData;
+    data[0x5FC / 4] |= 0x400 << which;
+    data[0xB0 / 4 + which] = value;
 }
 
 void GXSetNumChans(s32 num) {
@@ -1376,6 +1815,44 @@ int GXGetTexObjAll(void *obj) {
     return (*(unsigned char *)((char *)obj + 0x1F)) & 1;
 }
 
+extern unsigned char lbl_80558E48[], lbl_80558E50[], lbl_80558E58[];
+extern unsigned char lbl_80558E60[], lbl_80558E68[], lbl_80558E70[], lbl_80558E78[];
+void GXLoadTexObjPreLoaded(void *obj, void *region, int map) {
+    unsigned int v0, v1, v2, v3, v4, v5;
+    unsigned int *a = (unsigned int *)obj;
+    unsigned int *b = (unsigned int *)region;
+    unsigned int *data;
+    unsigned int *dst;
+    unsigned char opcode = 0x61;
+
+    v0 = (a[0] & 0x00FFFFFF) | ((unsigned int)lbl_80558E48[map] << 24);
+    v1 = (a[1] & 0x00FFFFFF) | ((unsigned int)lbl_80558E50[map] << 24);
+    v2 = (a[2] & 0x00FFFFFF) | ((unsigned int)lbl_80558E58[map] << 24);
+    v3 = (b[0] & 0x00FFFFFF) | ((unsigned int)lbl_80558E60[map] << 24);
+    v4 = (b[1] & 0x00FFFFFF) | ((unsigned int)lbl_80558E68[map] << 24);
+    v5 = (a[3] & 0x00FFFFFF) | ((unsigned int)lbl_80558E70[map] << 24);
+    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v0;
+    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v1;
+    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v2;
+    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v3;
+    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v4;
+    *(volatile unsigned char *)0xCC008000 = opcode; *(volatile unsigned int *)0xCC008000 = v5;
+    a[0]=v0; a[1]=v1; a[2]=v2; b[0]=v3; b[1]=v4; a[3]=v5;
+    if ((*(unsigned char *)((char *)obj + 0x1F) & 2) == 0) {
+        data = __GXData;
+        dst = ((unsigned int *(*)(unsigned int))data[0x51C / 4])(*(unsigned int *)((char *)obj + 0x18));
+        dst[1] = (dst[1] & 0x00FFFFFF) | ((unsigned int)lbl_80558E78[map] << 24);
+        *(volatile unsigned char *)0xCC008000 = opcode;
+        *(volatile unsigned int *)0xCC008000 = dst[1];
+    }
+    data = __GXData;
+    dst = (unsigned int *)((char *)data + map * 4);
+    dst[0x564 / 4] = a[2];
+    dst[0x584 / 4] = a[0];
+    data[0x5FC / 4] |= 1;
+    *(unsigned short *)((char *)data + 2) = 0;
+}
+
 void GXLoadTexObj(void *arg0, unsigned int arg1) {
     unsigned int *data = *(unsigned int * volatile *)&__GXData;
     void *result;
@@ -1487,6 +1964,92 @@ void __SetSURegs(s32 arg0, s32 arg1) {
     *(volatile unsigned char *)0xCC008000 = 0x61;
     *(volatile unsigned int *)0xCC008000 = su[0x128 / 4];
     *((unsigned short *)((char *)data + 2)) = 0;
+}
+
+void __GXSetSUTexRegs(void) {
+    u32 *gx = (u32 *)(void *)__GXData;
+    u32 mode = gx[0x5E4 / 4];
+    u32 cfg, count, limit, i, word, texmap, coord;
+    if (mode == 0xFF) return;
+    cfg = gx[0x254 / 4];
+    count = (cfg >> 16) & 7;
+    limit = ((cfg >> 10) & 0xF) + 1;
+    for (i = 0; i < count; i++) {
+        word = gx[0x170 / 4];
+        switch (i) {
+        case 0: texmap = word & 7; coord = (word >> 3) & 7; break;
+        case 1: texmap = (word >> 6) & 7; coord = (word >> 9) & 7; break;
+        case 2: texmap = (word >> 12) & 7; coord = (word >> 15) & 7; break;
+        default: texmap = (word >> 18) & 7; coord = (word >> 21) & 7; break;
+        }
+        if ((mode & (1 << coord)) == 0) __SetSURegs(texmap, coord);
+    }
+    for (i = 0; i < limit; i++) {
+        u32 mapreg = gx[(0x5A4 / 4) + i];
+        u32 field = (mapreg & 0xFF000000) >> 24;
+        u32 tex;
+        if (i & 1) tex = (gx[(0x150 / 4) + i] >> 15) & 7;
+        else tex = (gx[(0x150 / 4) + i] >> 3) & 7;
+        if (field != 0xFF && (mode & (1 << tex)) == 0 && (gx[0x5E8 / 4] & (1 << i)) != 0)
+            __SetSURegs(field, tex);
+    }
+}
+
+void GXSetIndTexCoordScale(unsigned int stage, unsigned int scaleS, unsigned int scaleT) {
+    unsigned int *data = __GXData;
+    unsigned int *reg = data + (0x178 / 4);
+    unsigned int opcode = 0x25 + (stage >> 1);
+    unsigned int word;
+    if (stage == 2) goto stage2;
+    if (stage >= 4) goto done;
+    if (stage == 0) goto stage0;
+    if (stage >= 2) goto stage1;
+    goto done;
+stage0:
+    word = *reg;
+    word = (word & 0xFFF0FFF0) | (scaleS & 0xF) | ((scaleT << 4) & 0xF0);
+    *reg = word | (opcode << 24);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = *reg;
+    goto done;
+stage1:
+    word = *reg;
+    word = (word & 0xFFF0FFF0) | ((scaleS << 8) & 0xF00) | ((scaleT << 12) & 0xF000);
+    *reg = word | (opcode << 24);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = *reg;
+    goto done;
+stage2:
+    word = reg[1];
+    word = (word & 0xFFF0FFF0) | (scaleS & 0xF) | ((scaleT << 4) & 0xF0);
+    reg[1] = word | (opcode << 24);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = reg[1];
+    goto done;
+    word = reg[1];
+    word = (word & 0xFFF0FFF0) | ((scaleS << 8) & 0xF00) | ((scaleT << 12) & 0xF000);
+    reg[1] = word | (opcode << 24);
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = reg[1];
+done:
+    *(volatile unsigned short *)((char *)data + 2) = 0;
+}
+
+void GXSetIndTexOrder(s32 arg0, s32 arg1, s32 arg2) {
+    s32 r4 = arg1, r5 = arg2;
+    unsigned int *data = __GXData;
+    if (r5 == 0xff) r5 = 0;
+    if (r4 == 0xff) r4 = 0;
+    switch (arg0) {
+    case 0: data[0x170/4] = (data[0x170/4] & ~7) | (r5 & 7) | ((r4 << 3) & 0x38); break;
+    case 1: data[0x170/4] = (data[0x170/4] & ~0x1c0) | ((r5 << 6) & 0x1c0) | ((r4 << 9) & 0xe00); break;
+    case 2: data[0x170/4] = (data[0x170/4] & ~0x7000) | ((r5 << 12) & 0x7000) | ((r4 << 15) & 0x38000); break;
+    case 3: data[0x170/4] = (data[0x170/4] & ~0x1c0000) | ((r5 << 18) & 0x1c0000) | ((r4 << 21) & 0xe00000); break;
+    }
+    *(volatile unsigned char *)0xCC008000 = 0x61;
+    *(volatile unsigned int *)0xCC008000 = data[0x170/4];
+    data[0x5fc/4] |= 3;
+    *(volatile unsigned short *)((char *)data + 2) = 0;
 }
 
 void GXSetNumIndStages(unsigned int value) {
@@ -1781,6 +2344,27 @@ void GXSetNumTevStages(s32 count) {
     data[0x5FC / 4] |= 4;
 }
 
+void GXSetFogRangeAdj(int enable, int center, unsigned short *table) {
+    volatile unsigned char *fifo8 = (volatile unsigned char *)0xCC008000;
+    volatile unsigned int *fifo32 = (volatile unsigned int *)0xCC008000;
+    unsigned int a, b, c;
+    if (enable != 0) {
+        *fifo8 = 0x61;
+        a = 0; a |= table[0] & 0xFFF; b = a; b |= table[1] << 12; c = b; c |= 0xE9 << 24; *fifo32 = c;
+        *fifo8 = 0x61;
+        a = 0; a |= table[2] & 0xFFF; b = a; b |= table[3] << 12; c = b; c |= 0xEA << 24; *fifo32 = c;
+        *fifo8 = 0x61;
+        a = 0; a |= table[4] & 0xFFF; b = a; b |= table[5] << 12; c = b; c |= 0xEB << 24; *fifo32 = c;
+        *fifo8 = 0x61;
+        a = 0; a |= table[6] & 0xFFF; b = a; b |= table[7] << 12; c = b; c |= 0xEC << 24; *fifo32 = c;
+        *fifo8 = 0x61;
+        a = 0; a |= table[8] & 0xFFF; b = a; b |= table[9] << 12; c = b; c |= 0xED << 24; *fifo32 = c;
+    }
+    *fifo8 = 0x61;
+    a = 0; a |= (center + 0x156) & 0x3FF; b = a; b |= (enable << 10) & 0x400; c = b; c |= 0xE8 << 24; *fifo32 = c;
+    *(unsigned short *)((char *)__GXData + 2) = 0;
+}
+
 void GXSetBlendMode(s32 type, s32 src, s32 dst, s32 op) {
     unsigned int *data = __GXData;
     unsigned int value;
@@ -1989,4 +2573,4 @@ void KPADSetBtnRepeat(s32 *arg0, s32 *arg1, s32 *arg2, s32 *arg3) {
     do { low=cp[0x4C/2]; second=cp[0x4E/2]; } while (second != first);
     *arg1=(second<<16)|low;
 }
-
+typedef struct { unsigned int unk[9]; unsigned char unk24[3]; } GXSetCPUFifoObj;
