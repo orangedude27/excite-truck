@@ -11,6 +11,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 extern u8 lbl_803C4040[];
+extern void fn_80089E40(void *, u8, void *);
 extern u8 lbl_803151D8[];
 extern char lbl_8031801C[];
 extern char lbl_80318040[];
@@ -2505,6 +2506,39 @@ char *BTM_SecReadDevName(BD_ADDR bd_addr) {
         entry += 0x88;
     } while (i < 16);
     return name;
+}
+
+tBTM_SEC_DEV_REC *btm_sec_alloc_dev(BD_ADDR arg0) {
+    u8 *base;
+    u8 *dev;
+    u8 *inq;
+    s32 i;
+    s32 count;
+    base = lbl_803C0F78;
+    dev = 0;
+    i = 0;
+    count = 0x10;
+loop:
+    if ((base[0x1FA6] & 0x80) == 0) {
+        dev = base + i * 0x88 + 0x1F30;
+    } else {
+        base += 0x88;
+        i++;
+        count--;
+        if (count != 0) goto loop;
+    }
+    if (dev == 0) dev = (u8 *)btm_find_oldest_dev();
+    memset(dev, 0, 0x88);
+    dev[0x76] = 0x80;
+    dev[0x85] = 0;
+    inq = (u8 *)BTM_InqDbRead(arg0);
+    if (inq != 0) memcpy(dev + 0x22, inq + 8, 3);
+    else memcpy(dev + 0x22, lbl_803C0F78 + 0x27BA, 3);
+    memcpy(dev + 0x1C, arg0, 6);
+    *(u16 *)(dev + 0x18) = BTM_GetHCIConnHandle(arg0);
+    *(u32 *)(dev + 0xC) = *(u32 *)(lbl_803C0F78 + 0x1974);
+    ++*(u32 *)(lbl_803C0F78 + 0x1974);
+    return (tBTM_SEC_DEV_REC *)dev;
 }
 
 tBTM_SEC_DEV_REC *btm_find_dev_by_handle(UINT16 handle) {
@@ -6509,6 +6543,26 @@ void fn_800911DC(void) {
 
 }
 
+void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
+    s32 temp_r0 = arg0 - 0x40;
+    void *var_r30;
+    if (temp_r0 >= 0xA) {
+        if (*(u8 *)((u8 *)&lbl_803C4828 + 0x414) >= 1) fn_80070954(0x90000, &lbl_803196B8, arg0);
+        var_r30 = 0;
+    } else {
+        var_r30 = *(void **)((u8 *)&lbl_803C4828 + temp_r0 * 4 + 0x3C);
+        if (var_r30 && *(u16 *)((u8 *)var_r30 + 0x68) != arg0) {
+            if (*(u8 *)((u8 *)&lbl_803C4828 + 0x414) >= 2)
+                fn_8007096C(0x90001, (u8 *)&lbl_803196B8 + 0x1C, arg0, *(u16 *)((u8 *)var_r30 + 0x68));
+            var_r30 = 0;
+        }
+    }
+    if (arg1) L2CA_DisconnectRsp(arg0);
+    if (!var_r30) {
+        if (*(u8 *)((u8 *)&lbl_803C4828 + 0x414) >= 2) fn_80070954(0x90001, (u8 *)&lbl_803196B8 + 0xA8, arg0);
+    } else fn_800916F4(var_r30, 0xE, 0);
+}
+
 void fn_800916D8(void *callback, u32 cid) {
     u32 index = cid - 0x40;
     u8 *base = lbl_803C4828;
@@ -8019,6 +8073,34 @@ void AXFXReverbHiExpShutdown(void* arg0) {
     *(u32*)((u8*)arg0 + 0x10C) |= 1;
     __FreeDelayLine(arg0);
     OSRestoreInterrupts(enabled);
+}
+
+void __BzeroDelayLines(void *arg0) {
+    u8 *base = (u8 *)arg0;
+    u8 *entry = base, *entry2 = base, *entry3 = base;
+    u32 i = 0;
+    do {
+        if (*(void **)entry) memset(*(void **)entry, 0, *(u32 *)(base + 0x1C) * 4);
+        if (*(void **)(entry + 0x2C)) memset(*(void **)(entry + 0x2C), 0, *(u32 *)(base + 0x40) * 4);
+        {
+            u8 *p = entry2, *q = base;
+            u32 j = 0;
+            do {
+                if (*(void **)(p + 0x44)) memset(*(void **)(p + 0x44), 0, *(u32 *)(q + 0x80) * 4);
+                j++; q += 4; p += 4;
+            } while (j < 3);
+        }
+        {
+            u8 *p = entry3, *q = base;
+            u32 j = 0;
+            do {
+                if (*(void **)(p + 0x98)) memset(*(void **)(p + 0x98), 0, *(u32 *)(q + 0xC0) * 4);
+                j++; q += 4; p += 4;
+            } while (j < 2);
+        }
+        if (*(void **)(entry + 0xC8)) memset(*(void **)(entry + 0xC8), 0, *(u32 *)(entry + 0xEC) * 4);
+        i++; entry2 += 0xC; entry3 += 8; entry += 4;
+    } while (i < 3);
 }
 
 void* __AXFXAllocFunction(u32 size) {
