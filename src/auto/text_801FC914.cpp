@@ -59,6 +59,8 @@ extern "C" float lbl_8056303C;
 extern "C" float lbl_80563040;
 extern "C" float lbl_80563044;
 extern "C" void fn_801FD3F0(void);
+extern "C" void fn_801FD144(void*, void*, void*, void*, void*, float);
+extern "C" void fn_801FD320(void*, float);
 extern "C" void fn_801FD5E8(void* = 0, float = 0);
 extern "C" void fn_801FDF18(void);
 extern "C" void fn_802E317C(const char*, ...);
@@ -308,6 +310,34 @@ extern "C" void fn_801FD024(void* arg0, void* arg1) {
     *(float*)(dst + 0x2C) = lbl_80563030 - (a + b);
 }
 
+extern "C" void fn_801FD144(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, float farg0) {
+    volatile float sp28, sp24, sp20, sp1C, sp18, sp14;
+    if (arg1) {
+        sp20 = *(float *)((char *)arg3); sp24 = *(float *)((char *)arg3+4); sp28 = *(float *)((char *)arg3+8);
+        sp20 -= *(float *)arg1; sp24 -= *(float *)((char *)arg1+4); sp28 -= *(float *)((char *)arg1+8);
+    } else {
+        sp20 = *(float *)((char *)arg3); sp24 = *(float *)((char *)arg3+4); sp28 = *(float *)((char *)arg3+8);
+        sp20 -= *(float *)arg2; sp24 -= *(float *)((char *)arg2+4); sp28 -= *(float *)((char *)arg2+8);
+    }
+    if (arg4) {
+        sp14 = *(float *)arg4; sp18 = *(float *)((char *)arg4+4); sp1C = *(float *)((char *)arg4+8);
+        sp14 -= *(float *)arg2; sp18 -= *(float *)((char *)arg2+4); sp1C -= *(float *)((char *)arg2+8);
+    } else {
+        sp14 = *(float *)((char *)arg3); sp18 = *(float *)((char *)arg3+4); sp1C = *(float *)((char *)arg3+8);
+        sp14 -= *(float *)arg2; sp18 -= *(float *)((char *)arg2+4); sp1C -= *(float *)((char *)arg2+8);
+    }
+    float f6=farg0*farg0, f10=farg0*f6, f30=lbl_8056303C*f6;
+    float f31=lbl_80563030+(lbl_80563038*f10-f30);
+    float f8=lbl_80563040*(farg0+(f10-lbl_80563038*f6));
+    float f7=lbl_80563040*(f10-f6), f3=lbl_80563044*f10+f30;
+    float x=(*(float*)arg2*f31)+sp20*f8+sp14*f7;
+    float y=(*(float*)((char*)arg2+4)*f31)+sp24*f8+sp18*f7;
+    float z=(*(float*)((char*)arg2+8)*f31)+sp28*f8+sp1C*f7;
+    *(float*)((char*)arg0+0x30)=x+(*(float*)arg3*f3);
+    *(float*)((char*)arg0+0x34)=y+(*(float*)((char*)arg3+4)*f3);
+    *(float*)((char*)arg0+0x38)=z+(*(float*)((char*)arg3+8)*f3);
+}
+
 #pragma pop
 extern "C" double cos(double);
 extern "C" double sin(double);
@@ -522,17 +552,13 @@ void* fn_801FE188(void* arg0) {
 extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
     register unsigned char a=p[0x2C], b=p[0x2D], c=p[0x2E], d=p[0x2F];
     register unsigned char e=p[0x30], f=p[0x31], g=p[0x32], h=p[0x33];
-    p[0x2C]=p[0x3B]; p[0x3B]=a;
-    p[0x2D]=p[0x3A]; p[0x3A]=b;
-    p[0x2E]=p[0x39]; p[0x39]=c;
-    p[0x2F]=p[0x38]; p[0x38]=d;
-    p[0x30]=p[0x37]; p[0x37]=e;
-    p[0x31]=p[0x36]; p[0x36]=f;
-    p[0x32]=p[0x35]; p[0x35]=g;
-    p[0x33]=p[0x34]; p[0x34]=h;
+    p[0x2C]=p[0x3B]; p[0x3B]=a; p[0x2D]=p[0x3A]; p[0x3A]=b;
+    p[0x2E]=p[0x39]; p[0x39]=c; p[0x2F]=p[0x38]; p[0x38]=d;
+    p[0x30]=p[0x37]; p[0x37]=e; p[0x31]=p[0x36]; p[0x36]=f;
+    p[0x32]=p[0x35]; p[0x35]=g; p[0x33]=p[0x34]; p[0x34]=h;
+    register unsigned char* q=p+0x3C;
     int i;
-    for (i=0;i<32;i++) {
-      unsigned char* q=p+0x3C+i*0x18;
+    for (i=0; i<32; i++, q+=0x18) {
       unsigned char x;
       x=q[0];q[0]=q[3];q[3]=x; x=q[1];q[1]=q[2];q[2]=x;
       x=q[4];q[4]=q[7];q[7]=x; x=q[5];q[5]=q[6];q[6]=x;
@@ -542,12 +568,9 @@ extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
       x=q[20];q[20]=q[23];q[23]=x; x=q[21];q[21]=q[22];q[22]=x;
     }
     register unsigned char i0=p[0x33C],i1=p[0x33D],i2=p[0x340],i3=p[0x341],i4=p[0x344],i5=p[0x345];
-    p[0x33C]=p[0x33F];p[0x33F]=i0;
-    p[0x33D]=p[0x33E];p[0x33E]=i1;
-    p[0x340]=p[0x343];p[0x343]=i2;
-    p[0x341]=p[0x342];p[0x342]=i3;
-    p[0x344]=p[0x347];p[0x347]=i4;
-    p[0x345]=p[0x346];p[0x346]=i5;
+    p[0x33C]=p[0x33F];p[0x33F]=i0; p[0x33D]=p[0x33E];p[0x33E]=i1;
+    p[0x340]=p[0x343];p[0x343]=i2; p[0x341]=p[0x342];p[0x342]=i3;
+    p[0x344]=p[0x347];p[0x347]=i4; p[0x345]=p[0x346];p[0x346]=i5;
 }
 
 extern "C" void fn_801FEB58(void*);
