@@ -539,19 +539,24 @@ void fn_8019EECC(void* arg0, Vec* arg1) {
 }
 
 extern "C" void fn_8019EF00(void* arg0) {
-    f32* v = (f32*)((u8*)arg0 + 0x28);
-    f32* dst = (f32*)((u8*)arg0 + 0x34);
-    f32* m = (f32*)*(void**)((u8*)arg0 + 0xC);
-    f32 x = v[0], y = v[1], z = v[2];
-    f32 a = x*m[0] + y*m[3] + z*m[6];
-    f32 b = x*m[1] + y*m[4] + z*m[7];
-    f32 c = x*m[2] + y*m[5] + z*m[8];
-    dst[0] = a;
-    dst[1] = b;
-    dst[2] = c;
-    dst[0] += m[9];
-    dst[1] += m[10];
-    dst[2] += m[11];
+    void* mat = *(void**)((u8*)arg0 + 0xC);
+    f32 x = *(f32*)((u8*)arg0 + 0x28);
+    f32 y = *(f32*)((u8*)arg0 + 0x2C);
+    f32 z = *(f32*)((u8*)arg0 + 0x30);
+    f32* out = (f32*)((u8*)arg0 + 0x34);
+    f32* m = (f32*)mat;
+    if (out == (f32*)((u8*)arg0 + 0x28)) {
+        out[0] = x * m[0] + y * m[3] + z * m[6];
+        out[1] = x * m[1] + y * m[4] + z * m[7];
+        out[2] = x * m[2] + y * m[5] + z * m[8];
+    } else {
+        out[0] = x * m[0] + y * m[3] + z * m[6];
+        out[1] = x * m[1] + y * m[4] + z * m[7];
+        out[2] = x * m[2] + y * m[5] + z * m[8];
+    }
+    out[0] += m[9];
+    out[1] += m[10];
+    out[2] += m[11];
 }
 
 void fn_8019F03C(void* arg0) {
@@ -1283,6 +1288,48 @@ extern "C" void* fn_801A2CC0(void* arg0, s32 arg1, s32 arg2) {
     return arg0;
 }
 
+extern "C" void fn_801A2D50(s32 arg0, void* arg1) {
+    extern u8 lbl_8055E5A4;
+    extern u8 lbl_8055E5A5;
+    extern char lbl_80333448[];
+    extern const char* lbl_8055A4C4;
+    s32 kind = *(s32*)((u8*)arg1 + 0x18);
+    switch (kind) {
+    case 0x504F4C59:
+    case 0x53504852:
+        fn_8019C854(arg1, (void*)arg0);
+        break;
+    case 0x47525550: {
+        u8* entry = (u8*)arg1;
+        s32 i = 0;
+        do {
+            fn_8019C854(*(void**)(entry + 0x24), (void*)arg0);
+            entry += 4;
+            i++;
+        } while (i < *(s32*)((u8*)arg1 + 0x174));
+        break;
+    }
+    case 0x424F5820:
+        if (!lbl_8055E5A4) {
+            lbl_8055E5A4 = 1;
+            fn_802E30C8(lbl_8055A4C4, lbl_80333448 + 0x22C);
+        }
+        break;
+    case 0x52414744:
+        if (!lbl_8055E5A5) {
+            lbl_8055E5A5 = 1;
+            fn_802E30C8(lbl_8055A4C4, lbl_80333448 + 0x254);
+        }
+        break;
+    case 0x464C5352:
+        fn_8019D378(arg1, (void*)arg0);
+        break;
+    default:
+        fn_802E317C(lbl_80333448 + 0x280, kind);
+        break;
+    }
+}
+
 extern "C" void fn_801A2EC8(void) {
 
 }
@@ -1728,9 +1775,3 @@ extern f32 lbl_80562370;
 typedef void (*VFunc)(void*);
 typedef void (*VFuncArg)(void*, s32);
 extern f32 lbl_805622DC;
-class Dispatch8019F26C {
-public:
-    virtual void v0();
-    virtual void v1();
-    virtual void Call(s32);
-};
