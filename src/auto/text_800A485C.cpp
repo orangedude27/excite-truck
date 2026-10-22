@@ -1676,7 +1676,6 @@ s32 fn_800AC4AC(void *arg0, s32 arg1) {
 }
 
 extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1);
-extern "C" s32 fn_800AAC08(void *arg0);
 extern "C" void fn_800B78F4(void *arg0, void *arg1);
 extern "C" s32 fn_800ABC60(s32, s32);
 extern "C" void fn_800ACA44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
