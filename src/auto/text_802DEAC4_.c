@@ -461,6 +461,47 @@ void fn_802E0BE0(void) {
     fn_802E0BA4();
     fn_80128668();
 }
+
+void fn_802E0D44(u32 size) {
+    u8 *head = (u8 *)lbl_8055FEE8;
+    u8 **link = (u8 **)(head + 0xC);
+    u8 *block = (u8 *)(size - (*(u32 *)(head + 4) + 1));
+    u8 *node;
+    u8 **a;
+    u8 **b;
+    u32 align = *(u32 *)(head + 4);
+    u32 merged = 0;
+    while ((node = *link) != 0) {
+        if (node == block) { *link = *(u8 **)(block + 8); break; }
+        link = (u8 **)(node + 8);
+    }
+    *(u8 **)(block + 8) = *(u8 **)(head + 8);
+    *(u8 **)(head + 8) = block;
+    a = (u8 **)(head + 8);
+    do {
+        b = (u8 **)(head + 8);
+        merged = 0;
+        while (*b != 0) {
+            u8 *x = *a;
+            u8 *y = *b;
+            u32 sx = *(u32 *)(x + 4);
+            u32 sy = *(u32 *)(y + 4);
+            if (x + sx + align + 1 == y || y + sy + align + 1 == x) {
+                u8 **first = a;
+                u8 **second = b;
+                if (y + sy + align + 1 == x) { first = b; second = a; }
+                *(u32 *)(*first + 4) = (*(u32 *)(*first + 4) + *(u32 *)(*second + 4) + ((align + 0x10) & ~align));
+                *second = *(u8 **)(*second + 8);
+                a = first;
+                merged = 1;
+                break;
+            }
+            b = (u8 **)(y + 8);
+        }
+        if (!merged) break;
+    } while (1);
+}
+
 #pragma dont_inline reset
 void fn_802E1290(void *arg0) {
     extern void fn_802E30C8(const char *, ...);
@@ -485,7 +526,7 @@ extern void fn_80118DC0(void *);
 extern void fn_802E1728(void *);
 extern void fn_801282F4(void);
 extern void fn_8011A168(void);
-extern void fn_802E0C04(void);
+extern void *fn_802E0C04(u32);
 extern void fn_802E0D44(u32);
 extern char lbl_8034CBD0[];
 extern u8 lbl_8055D150, lbl_8055D158, lbl_8055D160;
