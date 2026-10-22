@@ -3,6 +3,7 @@
 #include <types.h>
 extern "C" char lbl_80333640[];
 extern "C" void* fn_801284F8(s32, const char*);
+extern "C" void fn_801A0378(void*, void*);
 extern "C" void fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
 class VTab1A1E7C {
@@ -189,6 +190,24 @@ extern void fn_8019CCCC(void*, f32, s32);
 extern void fn_8019CCCC(void*, void*, s32, f32);
 void fn_8019CE3C(void* arg0, s32 arg1) {
     fn_8019CCCC(arg0, (u8*)arg0 + 0x34, arg1, *(f32*)((u8*)arg0 + 0x24));
+}
+
+extern "C" void fn_8019CE4C(void* arg0, void* arg1) {
+    f32 sp8, spC, sp10;
+    Vec* a = (Vec*)((u8*)arg0 + 0x34);
+    Vec* b = (Vec*)((u8*)arg1 + 0x34);
+    sp8 = a->x - b->x; spC = a->y - b->y; sp10 = a->z - b->z;
+    if (PSVECSquareDistance(a, b) > lbl_8056232C) {
+        f32 scale = lbl_805622E0 / (f32)fn_8002F234(PSVECSquareDistance(a, b));
+        sp8 *= scale; spC *= scale; sp10 *= scale;
+        f32 dot = PSVECDotProduct((Vec*)&sp8, (Vec*)((u8*)*(void**)((u8*)arg1 + 0xC) + 0xC));
+        *(f32*)((u8*)arg1 + 0x24) = *(f32*)((u8*)arg1 + 0x54) + __fabsf(dot) * (*(f32*)((u8*)arg1 + 0x58) - *(f32*)((u8*)arg1 + 0x54));
+    } else {
+        f32 value = *(f32*)((u8*)arg1 + 0x54);
+        if (value <= *(f32*)((u8*)arg1 + 0x58)) value = *(f32*)((u8*)arg1 + 0x58);
+        *(f32*)((u8*)arg1 + 0x24) = value;
+    }
+    fn_8019B068(arg0, arg1, 0, 0);
 }
 
 extern "C" f32 PSVECSquareDistance(const Vec*, const Vec*);
