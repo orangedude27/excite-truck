@@ -19,3 +19,5 @@ void fn_80018B24(void) {
     lbl_8055D57C = 0;
     fn_80131818(lbl_8055D574);
 }
+typedef struct { void **vtable; } Obj;
+typedef struct { void **vtable; } List;
