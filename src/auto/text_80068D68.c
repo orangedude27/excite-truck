@@ -3846,6 +3846,37 @@ tBTM_STATUS btm_sec_disconnect(UINT16 handle, UINT8 reason) {
     return (tBTM_STATUS)3;
 }
 
+extern char lbl_80316FC8[];
+void btm_sec_link_key_request(u8 *bd_addr) {
+    tBTM_SEC_DEV_REC *p_dev;
+    u8 key[16];
+    u8 (*p_callback)(u8 *, u8 *);
+
+    p_dev = btm_find_dev(bd_addr);
+    if (lbl_803C0F78[0x27C0] >= 4)
+        fn_800709CC(0xD0003, lbl_80316FC8, bd_addr[0], bd_addr[1], bd_addr[2], bd_addr[3], bd_addr[4], bd_addr[5]);
+    if (p_dev != 0 && (((u8 *)p_dev)[0x76] & 0x10)) {
+        btsnd_hcic_link_key_req_reply(bd_addr, (u8 *)p_dev + 0x25);
+        return;
+    }
+    if (p_dev == 0) p_dev = btm_sec_alloc_dev(bd_addr);
+    if ((((u8 *)p_dev)[0x81] & 0x40) == 0) {
+        p_callback = *(u8 (**)(u8 *, u8 *))(lbl_803C0F78 + 0x1918);
+        if (p_callback != 0) {
+            if (p_dev != 0) {
+                if (p_callback(bd_addr, (u8 *)p_dev + 0x25) == 0) {
+                    btsnd_hcic_link_key_req_reply(bd_addr, (u8 *)p_dev + 0x25);
+                    return;
+                }
+            } else if (p_callback(bd_addr, key) == 0) {
+                btsnd_hcic_link_key_req_reply(bd_addr, key);
+                return;
+            }
+        }
+    }
+    btsnd_hcic_link_key_neg_reply(bd_addr);
+}
+
 extern u8 lbl_80317008[];
 void btm_sec_pin_code_request_timeout(void) {
     u8 *base = lbl_803C0F78;
@@ -5142,6 +5173,33 @@ u8 HID_HostOpenDev(u32 arg0) {
         return 10;
     entry[0xC] = 1;
     return hidh_conn_initiate();
+}
+
+extern u8 lbl_8031787C[];
+void hidh_sec_check_complete_term(u8 *bd_addr, void *p_ref_data, u8 res) {
+    u8 *cb = lbl_803C3C38;
+    u8 *conn = p_ref_data;
+    u8 index = (u8)(((u8 *)p_ref_data - cb) / 0x34);
+    u8 *record;
+    if (res == 0 && conn[0x10] == 6) {
+        *(u16 *)(conn + 0x1A) = 0;
+        conn[0x10] = 2;
+        L2CA_ConnectRsp(conn + 1, conn[0x12], *(u16 *)(conn + 0x14), 0, 0);
+        L2CA_ConfigReq(*(u16 *)(conn + 0x14), (void *)(cb + 0x344));
+        return;
+    }
+    if (res != 0) {
+        *(u16 *)(conn + 0x1A) = 0xF;
+        record = lbl_803C3C38 + index * 0x34;
+        if (lbl_803C3C38[0x401] >= 4) fn_8007093C(0x1E0003, lbl_8031787C);
+        if (*(u16 *)(record + 0x14) != 0 || *(u16 *)(record + 0x16) != 0) {
+            record[0x10] = 5;
+            if (*(u16 *)(record + 0x16) != 0) L2CA_DisconnectReq(*(u16 *)(record + 0x16));
+            if (*(u16 *)(record + 0x14) != 0) L2CA_DisconnectReq(*(u16 *)(record + 0x14));
+        } else {
+            record[0x10] = 0;
+        }
+    }
 }
 
 extern char lbl_80317CC8[];
