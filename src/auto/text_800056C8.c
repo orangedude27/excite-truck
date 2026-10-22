@@ -81,6 +81,7 @@ void fn_800056E0(s32 arg0) {
     }
 }
 
+#pragma pop
 void fn_80005740(s32 arg0) {
     u32 *base;
     void *temp;
