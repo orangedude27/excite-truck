@@ -7,6 +7,10 @@ extern void *fn_801E87A8(void);
 extern s32 fn_8026E20C(void);
 extern void fn_8026E204(s32);
 extern s32 lbl_8034F3D0;
+extern s32 fn_800167F4(void);
+extern s32 lbl_802ED6D8[];
+extern s32 lbl_8055D370;
+extern s32 lbl_805601B0;
 void fn_80008618(s32 arg0) {
     s32 value = fn_8026E20C();
     s32 result = value | arg0;
@@ -17,6 +21,79 @@ void fn_80008618(s32 arg0) {
 
 s32 fn_8000865C(void) {
     return (*(u32 *)((char *)fn_801E87A8() + 0x10) >> 1) & 1;
+}
+
+typedef unsigned char u8;
+typedef float f32;
+extern s32 fn_8000865C(void);
+extern s32 fn_801298E8(void *, s32);
+extern s32 fn_802ECC10(void);
+extern s32 lbl_805589EC;
+extern u8 lbl_8055D37A;
+extern f32 lbl_8055D394;
+extern f32 lbl_805601B8;
+extern f32 lbl_805601BC;
+extern f32 lbl_805601D0;
+s32 fn_80008C5C(void) {
+    unsigned char sp[0x68];
+    s32 old = lbl_805589EC;
+    u32 input;
+    u32 bit;
+    s32 allowed;
+    if (lbl_8055D37A == 0 && fn_802ECC10() == 0 && fn_801298E8(sp + 8, 0) != 0) {
+        input = *(u32 *)(sp + 0x48);
+        if (input == 8) {
+            lbl_805589EC = fn_8000865C() ? 0xD : 0xC;
+        } else if (input == 2) {
+            lbl_805589EC = fn_8000865C() ? 0xC : 0xD;
+        } else if (input == 4) {
+            lbl_805589EC = 7;
+        } else if (input == 1) {
+            lbl_805589EC = 0xE;
+        }
+        allowed = 0;
+        bit = input - 1;
+        if (bit <= 7 && ((1 << bit) & 0x8B))
+            allowed = 1;
+        if (allowed == 0 && lbl_8055D394 > lbl_805601B8 && lbl_805589EC != 4)
+            lbl_805589EC = 4;
+        if (lbl_805589EC != old) {
+            if (lbl_8055D394 <= lbl_805601B8 && old == 4)
+                lbl_8055D394 = lbl_805601BC;
+            else if (lbl_8055D394 <= lbl_805601B8)
+                lbl_805589EC = old;
+        }
+        lbl_8055D394 += lbl_805601D0;
+    }
+    return lbl_805589EC;
+}
+
+int fn_80008DBC(int arg0) {
+    switch (arg0) {
+    case 0x113: return 0x15;
+    case 0x2C: return 0;
+    case 0x1B: return 0x12;
+    case 0xD: return 0x13;
+    case 0x20: return 0xF;
+    case 0x2B: return 0x1B;
+    case 0x32: return 0x18;
+    case 0x30: return 0x19;
+    case 0x2E: return 0;
+    case 0x2D: return 0x1A;
+    case 0x6F: return 0xE;
+    case 0x170: return 0;
+    case 0x125: return 2;
+    case 0x122: return 0x15;
+    case 0x121: return 0x14;
+    case 0x128: return 5;
+    case 0x127: return 3;
+    case 0x174: return 0;
+    case 0x172: return 0;
+    case 0x176: return 0;
+    case 0x126: return 4;
+    case 0x31: return 0x17;
+    default: return 0;
+    }
 }
 
 void fn_80009C80(void) {
