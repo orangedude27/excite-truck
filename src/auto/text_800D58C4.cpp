@@ -53,6 +53,7 @@ extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12Li
 extern "C" void DrawLine__Q36nw4hbm3lyt6detailFRCQ36nw4hbm4math4VEC2RCQ36nw4hbm3lyt4SizeQ36nw4hbm2ut5Color(void*, void*, void*);
 extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void*);
 
+struct GroupNodeV { virtual ~GroupNodeV(); virtual void f(); };
 struct Obj_800D7738;
 struct Vtbl_800D7738 {
     virtual void v0();
