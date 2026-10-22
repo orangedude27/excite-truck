@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern f32 lbl_802F9478[];
 extern "C" f64 lbl_80561780;
 extern "C" char lbl_8032F39C[];
 extern "C" f32 lbl_8042FD08[];
@@ -446,6 +447,8 @@ extern "C" void* fn_80157A98(void* arg0, s32 arg1) {
  return arg0;
 }
 
+#pragma push
+#pragma small_data off
 extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
     extern void* lbl_8032EDD4;
     u8* ptr=(u8*)arg0+0x14;
@@ -454,16 +457,14 @@ extern "C" void* fn_80157B00(void* arg0, s32 arg1, s32 arg2) {
     do { memset(ptr,0,4); ptr+=0x38; } while(ptr<(u8*)arg0+0x244);
     *(s32*)((u8*)arg0+4)=arg2; *(s32*)((u8*)arg0+0xC)=0;
     *(s32*)((u8*)arg0+0x244)=arg1; *(s32*)((u8*)arg0+0x248)=0;
-    *(void**)arg0=&lbl_8032EDD4;
-    *(f32*)((u8*)arg0+0x24C)=lbl_80561754;
+    *(void**)arg0=&lbl_8032EDD4; *(f32*)((u8*)arg0+0x24C)=lbl_80561754;
     f32* p=(f32*)((u8*)arg0+0x254); f32* end=(f32*)((u8*)arg0+0x28C);
     while(p<end){*p=0.0f;p+=2;}
     *(f32*)((u8*)arg0+0x28C)=0.0f; *(f32*)((u8*)arg0+0x290)=0.0f;
     *(u8*)((u8*)arg0+0x294)=0; *(s32*)((u8*)arg0+0x298)=arg2;
-    *(f32*)((u8*)arg0+0x24C)=lbl_80561754;
-    return arg0;
+    *(f32*)((u8*)arg0+0x24C)=lbl_80561754; return arg0;
 }
-
+#pragma pop
 extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     u8* ptr = (u8*)arg0 + 0x14;
     *(void**)((u8*)arg0 + 8) = ptr;
@@ -483,6 +484,42 @@ extern "C" void* fn_80157CF0(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     *(s32*)((u8*)arg0 + 0x248) = 0;
     *(void**)arg0 = &lbl_8032EE68;
     return arg0;
+}
+
+extern "C" void *fn_80157DA0(void *self, void *arg1, void *arg2) {
+    extern void *lbl_8032EF08;
+    extern float lbl_80561760;
+    unsigned char *p;
+    *(void **)((char *)self + 8) = (char *)self + 0x14;
+    *(void **)self = &lbl_8032F2BC;
+    *(int *)((char *)self + 0x10) = 10;
+    *(int *)((char *)self + 0xC) = 0;
+    p = (unsigned char *)self + 0x14;
+    while (p < (unsigned char *)self + 0x244) {
+        memset(p, 0, 4);
+        p += 0x38;
+    }
+    *(void **)((char *)self + 4) = arg2;
+    *(int *)((char *)self + 0xC) = 0;
+    *(void **)((char *)self + 0x244) = arg1;
+    *(int *)((char *)self + 0x258) = 0;
+    *(float *)((char *)self + 0x250) = lbl_80561760;
+    *(int *)((char *)self + 0x268) = 0;
+    *(int *)((char *)self + 0x248) = 0;
+    *(void **)self = &lbl_8032EF08;
+    *(int *)((char *)self + 0x270) = 0;
+    *(int *)((char *)self + 0x274) = 0;
+    p = (unsigned char *)self + 0x280;
+    while (p < (unsigned char *)self + 0x2F0) {
+        *(int *)p = 0;
+        *(int *)(p + 4) = 0;
+        p += 0x10;
+    }
+    *(int *)((char *)self + 0x2F0) = 0;
+    *(int *)((char *)self + 0x2F4) = 0;
+    *(int *)((char *)self + 0x26C) = 0;
+    *(unsigned char *)((char *)self + 0x2F0) = 0;
+    return self;
 }
 
 extern "C" f32 lbl_80561750;
