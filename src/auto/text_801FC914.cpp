@@ -54,6 +54,10 @@ void fn_801FF3AC(void*, float);
 extern "C" const char lbl_8033B700[];
 extern "C" float lbl_80563030;
 extern "C" float lbl_80563034;
+extern "C" float lbl_80563038;
+extern "C" float lbl_8056303C;
+extern "C" float lbl_80563040;
+extern "C" float lbl_80563044;
 extern "C" void fn_801FD3F0(void);
 extern "C" void fn_801FD5E8(void* = 0, float = 0);
 extern "C" void fn_801FDF18(void);
@@ -515,6 +519,37 @@ void* fn_801FE188(void* arg0) {
     return arg0;
 }
 
+extern "C" void fn_801FE1D8(void* arg0, unsigned char* p) {
+    register unsigned char a=p[0x2C], b=p[0x2D], c=p[0x2E], d=p[0x2F];
+    register unsigned char e=p[0x30], f=p[0x31], g=p[0x32], h=p[0x33];
+    p[0x2C]=p[0x3B]; p[0x3B]=a;
+    p[0x2D]=p[0x3A]; p[0x3A]=b;
+    p[0x2E]=p[0x39]; p[0x39]=c;
+    p[0x2F]=p[0x38]; p[0x38]=d;
+    p[0x30]=p[0x37]; p[0x37]=e;
+    p[0x31]=p[0x36]; p[0x36]=f;
+    p[0x32]=p[0x35]; p[0x35]=g;
+    p[0x33]=p[0x34]; p[0x34]=h;
+    int i;
+    for (i=0;i<32;i++) {
+      unsigned char* q=p+0x3C+i*0x18;
+      unsigned char x;
+      x=q[0];q[0]=q[3];q[3]=x; x=q[1];q[1]=q[2];q[2]=x;
+      x=q[4];q[4]=q[7];q[7]=x; x=q[5];q[5]=q[6];q[6]=x;
+      x=q[8];q[8]=q[11];q[11]=x; x=q[9];q[9]=q[10];q[10]=x;
+      x=q[12];q[12]=q[15];q[15]=x; x=q[13];q[13]=q[14];q[14]=x;
+      x=q[16];q[16]=q[19];q[19]=x; x=q[17];q[17]=q[18];q[18]=x;
+      x=q[20];q[20]=q[23];q[23]=x; x=q[21];q[21]=q[22];q[22]=x;
+    }
+    register unsigned char i0=p[0x33C],i1=p[0x33D],i2=p[0x340],i3=p[0x341],i4=p[0x344],i5=p[0x345];
+    p[0x33C]=p[0x33F];p[0x33F]=i0;
+    p[0x33D]=p[0x33E];p[0x33E]=i1;
+    p[0x340]=p[0x343];p[0x343]=i2;
+    p[0x341]=p[0x342];p[0x342]=i3;
+    p[0x344]=p[0x347];p[0x347]=i4;
+    p[0x345]=p[0x346];p[0x346]=i5;
+}
+
 extern "C" void fn_801FEB58(void*);
 extern "C" float lbl_80558DC4;
 #pragma push
@@ -560,6 +595,29 @@ extern "C" void fn_801FE510(void *arg0, void *arg1) {
 void fn_801FE550(void *arg0) {
     *(int **)arg0 = &lbl_8033B760;
     *(int *)((char *)arg0 + 0x94) = 0;
+}
+
+void fn_801FE568(void* arg0, unsigned char* p) {
+ unsigned char t; int i;
+ t=p[0x2c]; p[0x2c]=p[0x3b]; p[0x3b]=t;
+ t=p[0x2d]; p[0x2d]=p[0x3a]; p[0x3a]=t;
+ t=p[0x2e]; p[0x2e]=p[0x39]; p[0x39]=t;
+ t=p[0x2f]; p[0x2f]=p[0x38]; p[0x38]=t;
+ t=p[0x30]; p[0x30]=p[0x37]; p[0x37]=t;
+ t=p[0x31]; p[0x31]=p[0x36]; p[0x36]=t;
+ t=p[0x32]; p[0x32]=p[0x35]; p[0x35]=t;
+ t=p[0x33]; p[0x33]=p[0x34]; p[0x34]=t;
+ p += 0x3c;
+ for(i=0;i<0x48;i++,p+=0x18) {
+  t=p[0]; p[0]=p[3]; p[3]=t; t=p[1]; p[1]=p[2]; p[2]=t;
+  t=p[4]; p[4]=p[7]; p[7]=t; t=p[5]; p[5]=p[6]; p[6]=t;
+  t=p[8]; p[8]=p[0xb]; p[0xb]=t; t=p[9]; p[9]=p[0xa]; p[0xa]=t;
+  t=p[0xc]; p[0xc]=p[0xf]; p[0xf]=t; t=p[0xd]; p[0xd]=p[0xe]; p[0xe]=t;
+  t=p[0x10]; p[0x10]=p[0x13]; p[0x13]=t; t=p[0x11]; p[0x11]=p[0x12]; p[0x12]=t;
+  t=p[0x14]; p[0x14]=p[0x17]; p[0x17]=t; t=p[0x15]; p[0x15]=p[0x16]; p[0x16]=t;
+ }
+ t=p[0x6fc-0x6fc]; p[0x6fc-0x6fc]=p[0x6ff-0x6fc]; p[0x6ff-0x6fc]=t;
+ t=p[1]; p[1]=p[2]; p[2]=t;
 }
 
 void fn_801FE708(void *arg0, void *arg1) {
@@ -674,6 +732,42 @@ extern "C" void fn_801FEB58(void* value) {
         *(int*)(entry + 0x50 + count * 4) = selected;
         *(int*)(entry + 0x94) = count + 1;
     }
+}
+
+extern "C" void fn_801FEC74(void* arg) {
+    char* name = *(char**)arg;
+    char* table = (char*)lbl_8055EC98;
+    char* item = table;
+    int i = 0;
+    char* result;
+    for (;;) {
+        if (stricmp(name, item) == 0) {
+            result = table + i * 0x58;
+            break;
+        }
+        item += 0x58;
+        i++;
+        if (i >= *(int*)(table + 0x2C0)) { result = 0; break; }
+    }
+    if (result == 0) fn_802E317C(lbl_8033B7F0, *(char**)arg);
+    int count = *(int*)(result + 0x54);
+    int index = 0;
+    void* p = result;
+    if (count > 0) {
+        do {
+            if (*(void**)((char*)p + 0x30) == arg) break;
+            p = (char*)p + 4;
+            index++;
+        } while (--count != 0);
+    }
+    if (index >= *(int*)(result + 0x54)) fn_802E317C(lbl_8033B820, *(int*)(result + 0x50));
+    int j = index + 1;
+    int* q = (int*)(result + j * 4);
+    for (; j < *(int*)(result + 0x54); ++j, ++q) q[11] = q[12];
+    *(int*)(result + 0x54) = j - 1;
+    int n = *(int*)(result + 0x50);
+    *(void**)(result + 0x10 + n * 4) = arg;
+    *(int*)(result + 0x50) = n + 1;
 }
 
 extern int stricmp(const char *, const char *);
