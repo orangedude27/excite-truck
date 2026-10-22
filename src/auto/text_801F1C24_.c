@@ -34,6 +34,8 @@ extern int fn_802E317C(const void *, ...);
 extern int *fn_801F1CE8(int);
 extern const char lbl_8033A9E8[];
 extern int lbl_8055B118;
+extern const char lbl_8033A740[];
+extern int lbl_8055B138;
 #pragma dont_inline fn_801F1CE8
 #pragma push
 #pragma small_data off
