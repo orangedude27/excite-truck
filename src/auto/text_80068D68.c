@@ -10477,7 +10477,4 @@ extern u8 lbl_80559060[];
 extern u8 lbl_803151D8[];
 extern char lbl_80319EC0[];
 extern char lbl_8031669C[];
-extern char lbl_803142C8[];
-extern char lbl_80558FF8[];
-extern char lbl_80559000[];
-extern u8 lbl_803BD240[];
+
