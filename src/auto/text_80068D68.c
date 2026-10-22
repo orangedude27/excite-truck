@@ -3247,21 +3247,23 @@ tBTM_STATUS BTM_ChangeEScoLinkParms(u16 sco_inx, tBTM_CHG_ESCO_PARAMS *p_parms) 
 extern u8 lbl_80316834[];
 void btm_esco_proc_conn_chg(UINT8 status, UINT16 handle, UINT8 tx_interval, UINT8 retrans_window, UINT16 rx_pkt_len, UINT16 tx_pkt_len) {
     u8 *p = lbl_803C0F78 + 0x1854;
-    u8 data[8];
+    u8 data[16];
     UINT16 i;
     if (lbl_803C0F78[0x27C0] >= 4) fn_8007096C(0xD0003, lbl_80316834, handle, status);
     for (i = 0; i < 3; i++, p += 0x34) {
         if (*(UINT16 *)(p + 8) == 4 && handle == *(UINT16 *)(p + 0xA)) {
             if (*(u32 *)(p + 0x10) != 0) {
-                memcpy(data, p + 0x28, 6);
+                memcpy(data + 6, p + 0x28, 6);
                 *(UINT16 *)(p + 0x24) = rx_pkt_len;
                 *(UINT16 *)(p + 0x26) = tx_pkt_len;
                 p[0x2F] = tx_interval;
                 p[0x30] = retrans_window;
-                data[0] = status;
-                *(UINT16 *)(data + 2) = i;
-                *(UINT16 *)(data + 4) = rx_pkt_len;
-                *(UINT16 *)(data + 6) = tx_pkt_len;
+                data[12] = status;
+                *(UINT16 *)(data) = i;
+                *(UINT16 *)(data + 2) = rx_pkt_len;
+                *(UINT16 *)(data + 4) = tx_pkt_len;
+                data[13] = tx_interval;
+                data[14] = retrans_window;
                 ((void (*)(u32, void *))*(u32 *)(p + 0x10))(1, data);
             }
             return;
