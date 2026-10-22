@@ -406,16 +406,3 @@ void fn_8001FF34(int arg0) {
     }
     fn_80232BA4(lbl_8035BAE4.unk_4, lbl_8055D64C, arg0, 0x12, lbl_805604A8, lbl_805604AC, lbl_805604B0, lbl_805604B4, lbl_805604B8);
 }
-#pragma cplusplus on
-struct VtableDummy201F0 {
-    virtual void slot0(); virtual void slot1(); virtual int slot2(void *);
-    virtual void slot3(); virtual int slot4(void *); virtual int slot5(void *);
-    virtual void slot6(); virtual void slot7(); virtual void slot8();
-    virtual float slot9(void *); virtual void slot10(); virtual void slot11();
-    virtual int slot12(void *, int); virtual void slot13(); virtual void slot14();
-    virtual void slot15(); virtual void slot16(); virtual void slot17();
-    virtual void slot18(); virtual void slot19(); virtual void slot20();
-    virtual void slot21(); virtual void slot22(); virtual void slot23();
-    virtual VtableDummy201F0 *slot24(int);
-};
-#pragma cplusplus off
