@@ -94,6 +94,12 @@ public:
     virtual void d7();
     virtual int f8(int);
 };
+class Dummy_8015180C {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual void call(s32, f32);
+};
 class Dummy_80149274 {
 public:
     virtual void d0();
@@ -869,9 +875,11 @@ extern s32 lbl_8032DB40;
 #pragma push
 #pragma opt_pointer_aliasing on
 s32 *fn_801500F8(void *arg0, s32 *arg1) {
+    s32 value = *arg1;
     s32 index = ((s32 *)arg0)[1];
     s32 *data = *(s32 **)arg0;
-    data[index] = *arg1 + ((((s32 *)arg0)[1] = index + 1), 0);
+    ((s32 *)arg0)[1] = index + 1;
+    data[index] = value;
     return &data[index];
 }
 #pragma pop
@@ -1573,6 +1581,56 @@ void fn_80155E58(void *arg0) {
 }
 
 void fn_80155E64(void *arg0, signed char arg1) { *((signed char *)arg0 + 5) = arg1; }
+
+void *fn_80155E6C(void *arg0) {
+    void *node;
+    void *next;
+    void *prev;
+    void *tail;
+    s32 zero = 0;
+    s32 one = 1;
+
+    node = *(void **)((u8 *)arg0 + 0x1244);
+    if (node == 0) {
+        return 0;
+    }
+    next = *(void **)((u8 *)node + 0x120);
+    if (next != 0) {
+        *(void **)((u8 *)next + 0x11C) = *(void **)((u8 *)node + 0x11C);
+    } else {
+        *(void **)((u8 *)arg0 + 0x1244) = *(void **)((u8 *)node + 0x11C);
+    }
+    prev = *(void **)((u8 *)node + 0x11C);
+    if (prev != 0) {
+        *(void **)((u8 *)prev + 0x120) = *(void **)((u8 *)node + 0x120);
+    } else {
+        *(void **)((u8 *)arg0 + 0x1248) = *(void **)((u8 *)node + 0x120);
+    }
+    *(void **)((u8 *)node + 0x120) = 0;
+    *(void **)((u8 *)node + 0x11C) = 0;
+    *(void **)((u8 *)node + 0x120) = *(void **)((u8 *)arg0 + 0x1250);
+    tail = *(void **)((u8 *)arg0 + 0x1250);
+    if (tail != 0) {
+        *(void **)((u8 *)tail + 0x11C) = node;
+    }
+    *(void **)((u8 *)arg0 + 0x1250) = node;
+    if (*(void **)((u8 *)arg0 + 0x124C) == 0) {
+        *(void **)((u8 *)arg0 + 0x124C) = node;
+    }
+    *((u8 *)node + 4) = 1;
+    *(f32 *)((u8 *)node + 0x10) = lbl_8055E3C8;
+    *(f32 *)((u8 *)node + 0xC) = lbl_80561648;
+    *(f32 *)((u8 *)node + 8) = lbl_80561648;
+    *((u8 *)node + 0x14) = 0;
+    *((u8 *)node + 0x64) = 0;
+    *((u8 *)node + 0xB4) = 0;
+    *((u8 *)node + 5) = 0;
+    *(s32 *)((u8 *)node + 0x10C) = -1;
+    *(f32 *)((u8 *)node + 0x104) = lbl_80561648;
+    *(s32 *)((u8 *)node + 0x108) = zero;
+    *(s32 *)((u8 *)node + 0x114) = one;
+    return node;
+}
 
 void fn_80155F44(char *dst, const char *fmt, ...) {
     va_list args;
