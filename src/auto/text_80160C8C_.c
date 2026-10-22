@@ -611,13 +611,15 @@ extern void fn_801475D0(void *, ...);
 #pragma use_lmw_stmw off
 s32 fn_80162800(void *arg0) {
     s32 sp8;
-    s32 pad[2];
-    f32 limit = lbl_8055E3C8;
-    if (limit > ((f32 (*)(void *))(*(void ***)arg0)[0x34 / 4])(arg0)) {
-        if (((s32 (*)(void *))(*(void ***)arg0)[0x28 / 4])(arg0) == 0) {
-            ((s32 (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, (void *)&lbl_8032FA38);
-            ((void (*)(void *, s32, s32))fn_801476D8)(0, -1, lbl_8055E2F8);
-            ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x0C / 4])(lbl_8055E2E0, (void *)&lbl_8032FA44);
+    f64 limit = (f64)lbl_8055E3C8;
+    void **vtable;
+    vtable = *(void ***)arg0;
+    if ((f32)limit > ((f32 (*)(void *))vtable[0x34 / 4])(arg0)) {
+        vtable = *(void ***)arg0;
+        if (((s32 (*)(void *))vtable[0x28 / 4])(arg0) == 0) {
+            ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x10 / 4])(lbl_8055E2E0, &lbl_8032FA38);
+            fn_801476D8(0, -1, lbl_8055E2F8);
+            ((void (*)(void *, void *))(*(void ***)lbl_8055E2E0)[0x0C / 4])(lbl_8055E2E0, &lbl_8032FA44);
             fn_801476C4();
             fn_80130980(&sp8, 0x14, 3, *(f32 *)((char *)arg0 + 0x84) - *(f32 *)((char *)arg0 + 0x98));
             ((void (*)(void *, s32, s32, void *))fn_801475D0)(lbl_8055E2E0, lbl_8055A0EC, lbl_8055A0DC, &sp8);
@@ -1090,3 +1092,9 @@ typedef struct VtblA18 { void *pad[7]; void (*f)(void); } VtblA18;
 typedef struct ObjA18 { VtblA18 *vtable; } ObjA18;
 struct Vtbl_80163D34 { void *v[4]; void (*method)(void *, const char *); };
 struct Obj_80163D34 { struct Vtbl_80163D34 *vt; };
+#pragma cplusplus on
+struct Dummy_80163550 {
+    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual s32 f8();
+};
+#pragma cplusplus off
