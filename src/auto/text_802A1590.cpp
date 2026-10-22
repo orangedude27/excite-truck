@@ -102,6 +102,8 @@ public:
 extern "C" u8 fn_802A4A20(void);
 extern "C" void *memset(void *, int, unsigned long);
 extern "C" char lbl_80349928[];
+extern "C" char lbl_80349BA0[];
+extern "C" char lbl_8055CBA4[];
 extern "C" char lbl_8055CB70;
 extern "C" void *fn_802AE414(void *);
 extern "C" void fn_801345D8(void *, s32, const char *, s32);
@@ -1073,6 +1075,36 @@ extern "C" void fn_802A4658(s32 arg0) {
     *(s32 *)((char *)obj+4)=(dst-base)/0x20;
     if(t>lbl_80564730-lbl_80558DC4) *(f32 *)((char *)obj+0x18)=t-lbl_80564730;
     *(f32 *)((char *)obj+0x18)=*(f32 *)((char *)obj+0x18)+*(f32 *)((char *)obj+0x14);
+}
+
+extern "C" s32 fn_802A47A8(void *arg0) {
+    char *obj=(char*)arg0;
+    s32 i, alphaInt, alpha;
+    f32 saved, now, limit, v, t, low, high;
+    if (*(s32*)(obj+4)>=1) {
+        saved=fn_802C9A4C(*(f32*)(obj+0x64));
+        fn_802C8BD0((void*)*(s32*)(obj+0x60));
+        if (fn_802CE860((void*)*(s32*)(obj+4))) {
+            now=((f32 (*)())fn_801E7E18)();
+            limit=lbl_80564744; v=lbl_8056483C;
+            i=0;
+            do {
+                char *p=*(char**)obj+i*0x20;
+                t=*(f32*)(obj+0x10)*(now-*(f32*)(p+0x18));
+                high=t-*(f32*)(obj+0x5C); if(limit>high) high=limit;
+                low=*(f32*)(obj+0x5C); if(low>=t) low=t;
+                alphaInt=(s32)(v*(*(f32*)(p+0x1C)*(*(f32*)(obj+0x50)+*(f32*)(obj+0x54)*low+*(f32*)(obj+0x58)*high)));
+                alpha=alphaInt & ((-alphaInt & ~alphaInt)>>31);
+                if(alpha<0xFF) alphaInt=alpha; else alphaInt=0xFF;
+                high=t-*(f32*)(obj+0x4C); if(limit>high) high=limit;
+                low=*(f32*)(obj+0x4C); if(low>=t) low=t;
+                fn_802CE86C((alphaInt<<24)|0xFFFFFF,0,*(f32*)(obj+0x40)+*(f32*)(obj+0x44)*low+*(f32*)(obj+0x48)*high,*(f32*)p,*(f32*)(p+4),*(f32*)(p+8));
+                i++;
+            } while(i<*(s32*)(obj+4));
+            fn_802CE868();
+        }
+        fn_802C8D74(); fn_802C9A4C(saved);
+    }
 }
 
 #pragma scheduling on
