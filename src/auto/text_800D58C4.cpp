@@ -1914,4 +1914,4 @@ extern "C" void* GetVtxPos__Q34nw4r3lyt4PaneCFv(void* self) {
 extern "C" s32 fn_800DC6DC(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
 }
-
+struct GetTextureSizeMaterial { u8 pad[0x50]; u32 textureCount; u8 pad54[4]; void* textureObjects; };
