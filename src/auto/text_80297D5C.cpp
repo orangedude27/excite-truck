@@ -347,6 +347,57 @@ extern "C" void* fn_802992C4(void* arg0, int arg1) {
     return arg0;
 }
 
+extern float fn_801E7E18(int);
+extern void fn_801E9DD4(int, int, float, float, float, float, float, float, float, float, float, float, float, float, float);
+extern void fn_801E9DD8(void);
+extern void fn_801E9E30(short *, float *);
+extern int fn_802996B0(int *);
+extern int lbl_8055CA70, lbl_8055CA7C;
+extern float lbl_8056459C, lbl_805645D8, lbl_805645DC;
+void fn_80299338(void *arg0, int arg1, float *arg2, float *arg3, float *arg4, short arg5) {
+    float sp[12];
+    int index;
+    short angle = arg5;
+    float *dst;
+    float x0, x1, x2, y0, y1, y2, z0, z1, z2;
+    float t0, t1, t2, t3, t4, t5, t6, t7, t8;
+    float step;
+    int i;
+    if (fn_802996B0(&index) != 0) {
+        dst = (float *)((char *)arg0 + (index << 6));
+        *(int *)dst = arg1;
+        *(int *)((char *)dst + 0x34) = 1;
+        *(float *)((char *)dst + 0x38) = fn_801E7E18(index << 6);
+        *(float *)((char *)dst + 0x3C) = lbl_8056459C;
+        x0 = arg2[0] + arg3[0] + arg4[0];
+        y0 = arg2[1] + arg3[1] + arg4[1];
+        z0 = arg2[2] + arg3[2] + arg4[2];
+        x1 = x0 + arg4[0] * lbl_805645D8;
+        y1 = y0 + arg3[1] * lbl_805645D8;
+        z1 = z0 + arg4[2] * lbl_805645D8;
+        t0 = y0 + arg3[1] * lbl_805645D8;
+        t1 = x0 + arg3[0] * lbl_805645D8;
+        t2 = x1 + arg3[0] * lbl_805645D8;
+        t3 = y1 + arg4[1] * lbl_805645D8;
+        t4 = z0 + arg3[2] * lbl_805645D8;
+        t5 = z1 + arg4[2] * lbl_805645D8;
+        sp[0]=x0; sp[1]=y0; sp[2]=z0; sp[3]=t1; sp[4]=t0; sp[5]=t4;
+        sp[6]=x1; sp[7]=y1; sp[8]=z1; sp[9]=t2; sp[10]=t3; sp[11]=t5;
+        fn_801E9DD4(lbl_8055CA70,lbl_8055CA7C,t0,t1,t2,t3,t4,t5,x0,x1,y0,y1,z0,z1,0.0f);
+        step = lbl_805645DC;
+        for (i=0;i<4;i++) {
+            float out[3];
+            fn_801E9E30(&angle, &sp[i*3]);
+            sp[i*3+1] += step;
+            ((float *)((char *)dst+4))[i*3] = sp[i*3];
+            ((float *)((char *)dst+4))[i*3+1] = sp[i*3+1];
+            out[2] = sp[i*3+2];
+            ((float *)((char *)dst+4))[i*3+2] = out[2];
+        }
+        fn_801E9DD8();
+    }
+}
+
   extern "C" float fn_801E7E18(void);
 void fn_802994C0(void* arg0) {
     *(int*)arg0 = -1;
@@ -386,18 +437,18 @@ void fn_80299628(void* arg0) {
 }
 
 extern "C" int fn_802996B0(void *arg0, int *out) {
- int state, best=-1, found=0;
+ register int state, best=-1, found=0, output=0;
  state=*(int*)((char*)arg0+0x34);
- if(state==0){*out=0;return 1;}
+ if(state==0){*out=output;return 1;}
  if(state==2 && (!found || *(float*)((char*)arg0+0x38)<*(float*)((char*)arg0-8))){best=0;found=1;}
- state=*(int*)((char*)arg0+0x74);
- if(state==0){*out=1;return 1;}
+ output=1; state=*(int*)((char*)arg0+0x74);
+ if(state==0){*out=output;return 1;}
  if(state==2 && (!found || *(float*)((char*)arg0+0x78)<*(float*)((char*)arg0+(best<<6)+0x38))){best=1;found=1;}
- state=*(int*)((char*)arg0+0xB4);
- if(state==0){*out=2;return 1;}
+ output=2; state=*(int*)((char*)arg0+0xB4);
+ if(state==0){*out=output;return 1;}
  if(state==2 && (!found || *(float*)((char*)arg0+0xB8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=2;found=1;}
- state=*(int*)((char*)arg0+0xF4);
- if(state==0){*out=3;return 1;}
+ output=3; state=*(int*)((char*)arg0+0xF4);
+ if(state==0){*out=output;return 1;}
  if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=3;found=1;}
  if(found)*out=best;
  return found;
@@ -858,11 +909,15 @@ int fn_8029BFF8(void* arg0) {
 }
 
 extern void* lbl_8055F7D4;
+#pragma dont_inline on
+#pragma scheduling off
 extern "C" int fn_8029C024(int *arg0) {
-    int value = *(volatile int *)arg0;
-    fn_8029A890(lbl_8055F7D4, (void *)value);
+    int *value = arg0;
+    fn_8029A890(lbl_8055F7D4, (void *)*value);
     return 4;
 }
+#pragma scheduling reset
+#pragma dont_inline reset
 extern "C" int fn_8029C054(int* arg0) {
     int value = *(volatile int*)arg0;
     fn_8029A8A4(lbl_8055F7D4, (void*)value);
@@ -909,3 +964,5 @@ int fn_8029C190(void* arg0) {
     return 0x14;
 }
 #include <string.h>
+extern "C" float lbl_805645C8;
+extern "C" float lbl_805645E8;
