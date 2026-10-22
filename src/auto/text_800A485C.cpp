@@ -1299,6 +1299,41 @@ extern "C" void fn_800ACA50(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     ((s32 (*)(s32, s32, s32, s32, s32, s32))fn_800ABC60)(arg0, arg1, arg2, arg3, 1, 1);
 }
 
+extern s32 fn_800A8D08(s32, void **, s32 *);
+extern s32 fn_800B5324(void *, s32, s32, s32, u16, u32 *, s32);
+extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
+extern s32 fn_800A499C(s32, s32);
+extern s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
+s32 fn_800ACDF8(void *arg0, s32 arg1) {
+    void *sp10;
+    s32 spC;
+    u32 sp8;
+    s32 temp_r30;
+    s32 temp_r31;
+    s32 temp_r3;
+    u32 var_r29;
+
+    temp_r3 = fn_800A8D08(-1, &sp10, &spC);
+    if (temp_r3 != 0) {
+        return temp_r3;
+    }
+    var_r29 = 0U;
+    temp_r30 = *(s32 *)((u8 *)arg0 + 0x30) + ((arg1 - 2) << *((u8 *)arg0 + 0x21));
+loop_8:
+    if (var_r29 < *((u8 *)arg0 + 6)) {
+        temp_r31 = temp_r30 + var_r29;
+        if ((fn_800B5324(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31, 0, *(u16 *)arg0, &sp8, 1) == 0) && (sp8 == *(u16 *)arg0)) {
+            fn_800A499C(*(s32 *)((u8 *)sp10 + 8), 0);
+            if ((fn_800B5700(arg0, *(s32 *)((u8 *)sp10 + 8), temp_r31, 0, *(u16 *)arg0, &sp8, 1) == 0) && (sp8 == *(u16 *)arg0)) {
+                var_r29 += 1;
+                goto loop_8;
+            }
+        }
+    }
+    VFiPFCACHE_FreeFATPage_800A8E10(arg0, sp10);
+    return 0;
+}
+
 extern "C" s32 fn_800AD24C(void *, s32, s32, s32 *, s32 *);
 extern "C" s32 fn_800AE108(void *arg0, s32 arg1, s32 arg2, u32 arg3, s32 *arg4, s32 arg5) {
     s32 end = -1;
@@ -1540,6 +1575,49 @@ extern "C" s32 VFiPFFILE_Cursor_AdvanceToRead(void *arg0, s32 arg1, s32 arg2) {
     M2C_FIELD(arg0, u16 *, 0x28) = temp_r6_2 & (temp_r5 - 1);
     VFiPFCLUSTER_UpdateLastAccessCluster(arg0, temp_r7);
     return var_r31;
+}
+
+extern s32 fn_800B0868(void *, s32, u32, u32 *);
+extern s32 fn_800B0A60(void *, s32, u32, u32 *);
+extern s32 fn_800B0C10(void *, s32, u32, u32 *);
+s32 fn_800B0DEC(void *arg0, s32 arg1, u32 arg2, s32 *arg3, s32 arg4) {
+    u32 sp8;
+    u16 *var_r27;
+    u32 var_r30;
+    void *temp_r7;
+
+    temp_r7 = *(void **)((u8 *)arg0 + 8);
+    *(void **)((u8 *)temp_r7 + 0x34) = (u8 *)arg0 + 0xC;
+    *arg3 = 0;
+    if (fn_800B0868(arg0, arg1, arg2, &sp8) != 0) {
+        *arg3 += sp8;
+        return 1;
+    }
+    *arg3 += sp8;
+    if (sp8 >= arg2) {
+        return 0;
+    }
+    var_r30 = arg2 - sp8;
+    if (arg0 == 0) {
+        var_r27 = 0;
+    } else {
+        var_r27 = *(u16 **)((u8 *)*(void **)((u8 *)arg0 + 8) + 0x268);
+    }
+    while (var_r30 >= *var_r27) {
+        if (fn_800B0A60(arg0, arg1 + *arg3, var_r30, &sp8) != 0) {
+            *arg3 += sp8;
+            return 1;
+        }
+        *arg3 += sp8;
+        if (sp8 == 0) break;
+        var_r30 -= sp8;
+    }
+    if (fn_800B0C10(arg0, arg1 + *arg3, var_r30, &sp8) != 0) {
+        *arg3 += sp8;
+        return 1;
+    }
+    *arg3 += sp8;
+    return 0;
 }
 
 extern "C" s32 fn_800B0DEC(void *, s32, u32 *);
@@ -7110,4 +7188,3 @@ extern "C" const char lbl_8031EA80[];
 extern "C" const char lbl_8031EA90[];
 extern void* lbl_804077C0;
 extern "C" void fn_800A71D0(void *, s32);
-class Fn800C6610Dispatch { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7(); virtual void d8(); virtual void d9(); virtual void d10(void *); };
