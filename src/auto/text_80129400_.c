@@ -128,6 +128,8 @@ void fn_80129AFC(void) {
     do {
         fn_80129690(p, i, lbl_804223A0);
         i++;
+        if (i >= 4) break;
+        p += 0x80;
     } while (i < 4);
     p += 0x80 * i;
 }
@@ -135,4 +137,9 @@ void fn_80129AFC(void) {
 s32 fn_80129BC4(void) {
     return 1;
 }
-
+typedef struct {
+    float f[8];
+    unsigned char b[32];
+    unsigned int w[8];
+    unsigned char last;
+} Record;
