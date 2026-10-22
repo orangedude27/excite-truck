@@ -97,8 +97,8 @@ public:
 class Dummy_8015180C {
 public:
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-    virtual void d4(); virtual void d5(); virtual void d6();
-    virtual void call(s32, f32);
+      virtual void d4(); virtual void d5();
+      virtual void call(s32, f32);
 };
 class Dummy_80149274 {
 public:
@@ -943,7 +943,7 @@ extern "C" void fn_8015180C(void *ctx, void *a, void *b, void *unused, void *vec
     s32 first = 1;
     s32 second = 1;
     if (*(s32 *)((u8 *)a + 0x1F0) == 0x50 && *(s32 *)((u8 *)b + 0x1F0) == 0x50) {
-        first = *(f32 *)((u8 *)b + 0x25D4) < *(f32 *)((u8 *)a + 0x25D4);
+        first = *(f32 *)((u8 *)a + 0x25D4) > *(f32 *)((u8 *)b + 0x25D4);
         second = !first;
     }
     if (first) {
