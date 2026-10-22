@@ -4578,20 +4578,22 @@ void btm_sec_link_key_notification(u8 *bd_addr, u8 *link_key, u8 key_type) {
         dev[0x83] = key_type;
     dev[0x76] |= 0x10;
     memcpy(dev + 0x25, link_key, 0x10);
-    if ((dev[0x76] & 8) == 0 ||
-        ((dev[0x81] & 0x40) != 0 && dev[0x85] == 0)) {
+    if ((dev[0x76] & 8) == 0 || ((dev[0x81] & 0x40) != 0 && dev[0x85] == 0)) {
         dev[0x82] = 1;
         return;
     }
     auth_cb = *(u32 (**)(void *, void *, void *, void *, u8))(lbl_803C0F78 + 0x1914);
     if (auth_cb != NULL)
         auth_cb(bd_addr, dev + 0x22, dev + 0x35, link_key, dev[0x83]);
-    callbacks = lbl_803C0F78 + 0x1924;
-    for (i = 0; i < 2; i++, callbacks += 4) {
-        key_cb = *(u32 (**)(void *, void *, void *, void *, u8))callbacks;
+    callbacks = lbl_803C0F78;
+    i = 0;
+    do {
+        key_cb = *(u32 (**)(void *, void *, void *, void *, u8))(callbacks + 0x1924);
         if (key_cb != NULL)
             key_cb(bd_addr, dev + 0x22, dev + 0x35, link_key, dev[0x83]);
-    }
+        i++;
+        callbacks += 4;
+    } while (i < 2);
 }
 
 extern char lbl_80316FC8[];
