@@ -443,7 +443,7 @@ extern float lbl_80564C8C;
 extern double lbl_80564C80;
 extern float lbl_80564C90;
 extern float lbl_80564C94;
-extern s32 fn_802BC09C(s32, s32, float);
+extern s32 fn_802BC09C();
 extern void fn_80204044();
 extern s32 fn_802C21DC();
 extern s32 fn_802B7300(s16, s16, s32, s32, float);
