@@ -11,6 +11,8 @@
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
 extern char lbl_8031A188[];
+extern char lbl_803192C0[];
+extern char lbl_803192E0[];
 extern unsigned char lbl_803C0A50[];
 extern void UUSB_Write(u8, u8 *, u16, BT_HDR *);
 extern void sdp_connect_ind(u8 *, u16, u16, u8);
@@ -1182,6 +1184,33 @@ void fn_8006EC24(s32 arg0, s32 arg1) {
         return;
     }
     fn_80070B24((s8)arg1);
+}
+
+void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
+    BT_HDR *msg=(BT_HDR*)arg1;
+    u8 *data=(u8*)msg+*(u16*)((u8*)msg+4)+8;
+    u16 opcode=*(u16*)msg, max_len;
+    u8 channel;
+    if(opcode==0x2100) channel=2; else if(opcode==0x2200) channel=3; else if(opcode==0x2000) channel=0;
+    if(opcode==0x2100 && *(u16*)((u8*)msg+2)>*(u16*)(lbl_803C0A50+0x7E)) {
+        u16 header=(u16)((data[0]|(data[1]<<8))&0xCFFF)|0x1000; data+=2;
+        for(;;) {
+            max_len=*(u16*)(lbl_803C0A50+0x7E); if(*(u16*)((u8*)msg+2)<=max_len)break;
+            UUSB_Write(channel,data,*(u16*)((u8*)msg+2),msg);
+            *(u16*)((u8*)msg+4)+=*(u16*)(lbl_803C0A50+0x7C);
+            data=(u8*)msg+*(u16*)((u8*)msg+4);
+            *(u16*)((u8*)msg+2)-=*(u16*)(lbl_803C0A50+0x7C);
+            *(u16*)(data+8)=header; data+=0xA;
+            if(*(u16*)((u8*)msg+2)>*(u16*)(lbl_803C0A50+0x7E)) { max_len=*(u16*)(lbl_803C0A50+0x7C); data[0]=max_len; data[1]=max_len>>8; }
+            else { max_len=*(u16*)((u8*)msg+2)-4; data[0]=max_len; data[1]=max_len>>8; }
+            data+=2;
+            if(*(u16*)((u8*)msg+6)!=0 && --(*(u16*)((u8*)msg+6))==0) {
+                *(u16*)msg=0x1900; GKI_send_msg(((u8*)&lbl_803BD1A0)[0x1F],0,msg); return;
+            }
+        }
+    }
+    UUSB_Write(channel,data,*(u16*)((u8*)msg+2),msg);
+    GKI_freebuf(msg);
 }
 
 void fn_8006F18C(u8 arg0, u8 arg1, u16 arg2) {
@@ -4523,6 +4552,46 @@ void btm_sec_disconnected(UINT16 handle, UINT8 reason) {
     *(u8 *)((u8 *)p_dev_rec + 0x76) &= 0xF8;
     *(u8 *)((u8 *)p_dev_rec + 0x81) &= 0x80;
     *(u32 *)((u8 *)p_dev_rec + 4) = 0;
+}
+
+void btm_sec_link_key_notification(u8 *bd_addr, u8 *link_key, u8 key_type) {
+    extern u8 lbl_80316F58[];
+    extern u8 lbl_80316F9C[];
+    u8 *dev = (u8 *)btm_find_dev(bd_addr);
+    u32 (*auth_cb)(void *, void *, void *, void *, u8);
+    u32 (*key_cb)(void *, void *, void *, void *, u8);
+    u8 *callbacks;
+    s32 i;
+
+    if (dev == NULL) {
+        dev = (u8 *)btm_sec_alloc_dev(bd_addr);
+        if (dev == NULL)
+            return;
+    }
+    if (lbl_803C0F78[0x27C0] >= 4)
+        fn_800709CC(0xD0003, lbl_80316F58, bd_addr[0], bd_addr[1], bd_addr[2], bd_addr[3], bd_addr[4], bd_addr[5]);
+    if (lbl_803C0F78[0x27C0] >= 4)
+        fn_80070954(0xD0003, lbl_80316F9C, key_type);
+    if (lbl_803C0F78[0x636] < 1)
+        dev[0x83] = 0xFF;
+    else
+        dev[0x83] = key_type;
+    dev[0x76] |= 0x10;
+    memcpy(dev + 0x25, link_key, 0x10);
+    if ((dev[0x76] & 8) == 0 ||
+        ((dev[0x81] & 0x40) != 0 && dev[0x85] == 0)) {
+        dev[0x82] = 1;
+        return;
+    }
+    auth_cb = *(u32 (**)(void *, void *, void *, void *, u8))(lbl_803C0F78 + 0x1914);
+    if (auth_cb != NULL)
+        auth_cb(bd_addr, dev + 0x22, dev + 0x35, link_key, dev[0x83]);
+    callbacks = lbl_803C0F78 + 0x1924;
+    for (i = 0; i < 2; i++, callbacks += 4) {
+        key_cb = *(u32 (**)(void *, void *, void *, void *, u8))callbacks;
+        if (key_cb != NULL)
+            key_cb(bd_addr, dev + 0x22, dev + 0x35, link_key, dev[0x83]);
+    }
 }
 
 extern char lbl_80316FC8[];
