@@ -56,6 +56,8 @@ extern "C" void fn_8029871C(void*, void*, float);
 extern "C" void fn_802994C0(void*, unsigned int);
 extern "C" void fn_80299338(void*, unsigned int, void*, void*, void*, short);
 extern float lbl_80564590;
+extern float lbl_805645B8;
+extern float lbl_805645BC;
 extern float lbl_8056459C;
 extern float lbl_80564594;
 extern float lbl_80564598;
@@ -381,6 +383,24 @@ void fn_80299628(void* arg0) {
         fn_802C8E48();
     }
     fn_802C8D74();
+}
+
+extern "C" int fn_802996B0(void *arg0, int *out) {
+ int state, best=-1, found=0;
+ state=*(int*)((char*)arg0+0x34);
+ if(state==0){*out=0;return 1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0x38)<*(float*)((char*)arg0-8))){best=0;found=1;}
+ state=*(int*)((char*)arg0+0x74);
+ if(state==0){*out=1;return 1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0x78)<*(float*)((char*)arg0+(best<<6)+0x38))){best=1;found=1;}
+ state=*(int*)((char*)arg0+0xB4);
+ if(state==0){*out=2;return 1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0xB8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=2;found=1;}
+ state=*(int*)((char*)arg0+0xF4);
+ if(state==0){*out=3;return 1;}
+ if(state==2 && (!found || *(float*)((char*)arg0+0xF8)<*(float*)((char*)arg0+(best<<6)+0x38))){best=3;found=1;}
+ if(found)*out=best;
+ return found;
 }
 
 extern "C" void* fn_802997F4(void* arg0, int arg1) {
