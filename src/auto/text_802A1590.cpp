@@ -2,6 +2,9 @@
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 extern "C" void fn_802A41D8(void *arg0, s32 arg1);
+extern "C" void fn_8028E590(int, f32 *, f32 *, f32);
+extern "C" f32 fn_80129DC4(s32, f32, f32);
+extern "C" f32 lbl_80564750, lbl_8056476C, lbl_805647C4, lbl_805647DC, lbl_80564804;
 extern "C" s32 fn_8028E2F8(void *, void *, s32, s32);
 
 extern "C" void fn_802A3C50(void* arg0, s32 arg1);
@@ -641,6 +644,23 @@ extern "C" void* __dt__8JUTVideoFv(void* arg0, s32 arg1) {
         }
     }
     return arg0;
+}
+
+extern "C" void fn_802A30BC(void *arg0, s32 arg1) {
+struct P { s32 a,b; f32 f[30]; } p;
+fn_8028E61C(&p);
+p.a=2; p.b=0x80;
+p.f[0]=lbl_80564730; p.f[1]=lbl_80564734;
+p.f[2]=lbl_80564798; p.f[3]=lbl_80564760; p.f[4]=lbl_80564798;
+p.f[5]=lbl_80564798; p.f[6]=lbl_80564760; p.f[7]=lbl_80564798;
+p.f[8]=lbl_8056479C; p.f[9]=lbl_8056479C; p.f[10]=lbl_8056479C;
+p.f[11]=lbl_8056479C; p.f[12]=lbl_8056479C; p.f[13]=lbl_8056479C;
+p.f[14]=lbl_8056472C; p.f[15]=lbl_805647E8; p.f[16]=lbl_805647EC; p.f[17]=lbl_805647AC;
+p.f[18]=lbl_80564750; p.f[19]=lbl_80564750; p.f[20]=lbl_80564750;
+p.f[21]=lbl_80564798; p.f[22]=lbl_80564798; p.f[23]=lbl_80564798;
+p.f[24]=lbl_805647F0; p.f[25]=lbl_805647C4; p.f[26]=lbl_805647A4; p.f[27]=lbl_80564734;
+p.f[28]=lbl_80564788; p.f[29]=lbl_80564730;
+((s32 (*)(void*,void*,s32,s32,s32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32,f32))fn_8028E2F8)(&p,(void*)lbl_80349A40,arg1,2,0x80,lbl_805647A4,lbl_805647C4,lbl_805647F0,lbl_80564750,lbl_805647AC,lbl_805647EC,lbl_805647E8,lbl_8056472C,lbl_8056479C,lbl_80564760,lbl_80564798,lbl_80564734,lbl_80564730);
 }
 
 #pragma scheduling invalid_target
