@@ -18,6 +18,7 @@ extern char lbl_80338038[];
 extern int fn_8001BF34(f32);
 extern void fn_8001BF0C(f32, f32);
 extern int fn_80161C38(void);
+extern void fn_801CD7BC(int, int, f32);
 extern s32 *lbl_8055E884;
 extern unsigned char *fn_801EA9A0(void);
 extern int fn_801EA994(void);
