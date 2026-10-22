@@ -4,6 +4,9 @@
 #include "revolution/GX/GXTypes.h"
 #include "revolution/GX/GXAttr.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
+extern "C" f32 lbl_80560EA8;
+extern "C" void *lbl_8032012C;
+extern "C" char *strncpy(char *, const char *, unsigned int);
 extern "C" f32 CosFIdx__Q24nw4r4mathFf(f32);                   /* extern */
 extern "C" void *GXGetTexObjHeight(s32 *);                     /* extern */
 extern "C" s32 GXGetTexObjMipMap(s32 *, s32);                  /* extern */
@@ -413,6 +416,25 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
         *(f32*)&((u8*)pOut)[8] = *(f32*)&p[0x18];
         *(f32*)&((u8*)pOut)[0xC] = *(f32*)&p[0x1C];
     }
+}
+
+extern "C" int fn_800D7C54(int *arg0, s32 arg1) {
+    f32 *out = (f32 *)arg0;
+    f32 *in = (f32 *)arg1;
+    f32 zero = lbl_80560E88;
+    f32 angle = in[2] * lbl_80560E8C;
+    f32 c = CosFIdx__Q24nw4r4mathFf(angle);
+    angle = in[2] * lbl_80560E8C;
+    f32 s = SinFIdx__Q24nw4r4mathFf(angle);
+    f32 x = in[3], z = in[4];
+    f32 a = c * x, b = s * x, neg = -zero;
+    out[0] = c * x; out[1] = -s * z; out[2] = lbl_80560E90;
+    out[4] = s * x; out[5] = c * z; out[6] = lbl_80560E90;
+    out[3] = in[0] + zero + (a * neg + b * neg);
+    out[7] = in[1] + zero + (b * neg + (c * z) * neg);
+    out[8] = lbl_80560E90; out[9] = lbl_80560E90;
+    out[10] = lbl_80560E94; out[11] = lbl_80560E90;
+    return 0;
 }
 
 extern "C" void GXSetIndTexMtx(f32*, s8);
