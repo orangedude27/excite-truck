@@ -1536,6 +1536,35 @@ s32 bta_dm_l2cap_server_compress_cback(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s
     return result;
 }
 
+extern u8 lbl_80559010[];
+void bta_dm_rm_cback(s32 status, u8 addr_type, u8 addr, u8 *bd_addr, u32 unused) {
+    u8 *entry;
+    u8 i;
+    u8 j;
+    u8 *peer;
+    u8 *count;
+    if (status != 0) return;
+    entry = lbl_803C0C14;
+    for (i = 0; i < entry[0x4D]; i++, entry += 0xB) {
+        if (bdcmp(entry, bd_addr) == 0) {
+            entry[6] = 1;
+            j = 1;
+            count = lbl_80559010;
+            while (j <= count[1]) {
+                peer = count + ((j * 4) - j);
+                if (addr == peer[1] || peer[1] == 0xFF) {
+                    if (addr_type == peer[0]) {
+                        if (peer[2] > entry[7]) entry[7] = peer[2];
+                        break;
+                    }
+                }
+                j++;
+            }
+            return;
+        }
+    }
+}
+
 void bta_dm_keep_acl(void *arg0) {
     extern u8 lbl_80560D48[];
     u16 timeout = *(u16 *)((u8 *)arg0 + 6);
@@ -2691,6 +2720,43 @@ BOOLEAN btm_inq_find_bdaddr(BD_ADDR addr) {
         *(u16 *)(lbl_803C0F78 + 0x16E0) = count + 1;
     }
     return FALSE;
+}
+
+void btm_process_inq_complete(UINT8 status, UINT8 unused) {
+    void (*callback)(void *);
+    u8 result;
+    u8 *base;
+    void *buffer;
+    u32 zero;
+
+    base = lbl_803C0F78;
+    callback = *(void (**)(void *))(base + 0x16B0);
+    if (base[0x1848] != 0) {
+        result = 10;
+        *(u32 *)(base + 0x16C0) += 1;
+        if (status == 0)
+            result = 0;
+        base[0x183E] = result;
+        if ((base[0x1848] & 4) == 0) {
+            u8 *cleanup_base = lbl_803C0F78;
+            zero = 0;
+            buffer = *(void **)(cleanup_base + 0x16DC);
+            *(u32 *)(base + 0x16B4) = zero;
+            base[0x1848] = zero;
+            base[0x1847] = zero;
+            *(void (**)(void *))(base + 0x16B0) = NULL;
+            if (buffer != NULL) {
+                GKI_freebuf(buffer);
+                *(void **)(cleanup_base + 0x16DC) = NULL;
+            }
+            *(u16 *)(cleanup_base + 0x16E0) = zero;
+            *(u16 *)(cleanup_base + 0x16E2) = zero;
+            if (cleanup_base[0x27C0] >= 5)
+                fn_8007096C(0xD0004, lbl_803164F4, base[0x183E], base[0x183F]);
+            if (callback != NULL)
+                callback(base + 0x183E);
+        }
+    }
 }
 
 #pragma push
@@ -4956,6 +5022,42 @@ s32 l2c_link_hci_qos_violation(u16 handle) {
     return 1;
 }
 
+s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
+    u16 len = *(u16 *)((u8 *)p_buf + 2);
+    u16 max_len = *(u16 *)(lbl_803C0A50 + 0x7E);
+
+    if (len <= max_len) {
+        --*(u16 *)((u8 *)p_lcb + 0x36);
+        ++*(u16 *)((u8 *)p_lcb + 0x38);
+        --*(u16 *)(lbl_803C4040 + 4);
+        fn_8007079C(p_buf, 0x2100);
+    } else {
+        u16 mtu = *(u16 *)(lbl_803C0A50 + 0x7C);
+        u16 *pool_available = (u16 *)(lbl_803C4040 + 4);
+        u16 total = len + mtu;
+        u16 packets = (total - 5) / mtu;
+        u16 available = *pool_available;
+        u16 credits;
+
+        if (packets > available) {
+            *(u16 *)((u8 *)p_buf + 6) = available;
+            packets = available;
+            *((u8 *)p_lcb + 0x40) = 1;
+        }
+        credits = *(u16 *)((u8 *)p_lcb + 0x36);
+        if (packets > credits) {
+            *(u16 *)((u8 *)p_buf + 6) = credits;
+            packets = credits;
+            *((u8 *)p_lcb + 0x40) = 1;
+        }
+        *pool_available -= packets;
+        *(u16 *)((u8 *)p_lcb + 0x36) -= packets;
+        *(u16 *)((u8 *)p_lcb + 0x38) += packets;
+        fn_8007079C(p_buf, 0x2100);
+    }
+    return 1;
+}
+
 extern char lbl_80318D98[];
 void l2c_link_adjust_allocation(void) {
     u8 *base = lbl_803C4040;
@@ -5975,6 +6077,42 @@ void RFCOMM_ConnectCnf(u16 arg0, s16 arg1) {
     }
 }
 
+void RFCOMM_ConfigInd(u32 arg0, u8 *arg1) {
+    s32 index = arg0 - 0x40;
+    void *port;
+    if (index >= 10) {
+        if (lbl_803C4828[0x414] >= 1) fn_80070954(0x90000, lbl_803196B8, arg0);
+        port = NULL;
+    } else {
+        port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
+        if (port != NULL && *(u16 *)((u8 *)port + 0x68) != arg0) {
+            if (lbl_803C4828[0x414] >= 2) ((void (*)(u32, void *, u32))fn_8007096C)(0x90001, lbl_803196B8 + 0x1C, arg0);
+            port = NULL;
+        }
+    }
+    if (port == NULL) {
+        if (lbl_803C4828[0x414] >= 1) fn_80070954(0x90000, lbl_803196B8 + 0x70, arg0);
+    } else ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xC, arg1);
+}
+
+void RFCOMM_ConfigCnf_800910D4(u32 arg0, u8 *arg1) {
+    s32 index = arg0 - 0x40;
+    void *port;
+    if (index >= 10) {
+        if (lbl_803C4828[0x414] >= 1) fn_80070954(0x90000, lbl_803196B8, arg0);
+        port = NULL;
+    } else {
+        port = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
+        if (port != NULL && *(u16 *)((u8 *)port + 0x68) != arg0) {
+            if (lbl_803C4828[0x414] >= 2) ((void (*)(u32, void *, u32))fn_8007096C)(0x90001, lbl_803196B8 + 0x1C, arg0);
+            port = NULL;
+        }
+    }
+    if (port == NULL) {
+        if (lbl_803C4828[0x414] >= 1) fn_80070954(0x90000, lbl_803196B8 + 0x8C, arg0);
+    } else ((void (*)(void *, u32, u8 *))fn_800916F4)(port, 0xB, arg1);
+}
+
 void fn_800911DC(void) {
 
 }
@@ -6899,6 +7037,37 @@ tSDP_DISC_REC *SDP_FindServiceInDb(tSDP_DISCOVERY_DB *p_db, UINT16 service_uuid,
                 p_attr->attr_value.v.u16 == service_uuid) {
                 return p_rec;
             }
+            p_attr = p_attr->p_next_attr;
+        }
+        p_rec = p_rec->p_next_rec;
+    }
+    return NULL;
+}
+
+tSDP_DISC_REC *SDP_FindServiceUUIDInDb(tSDP_DISCOVERY_DB *p_db, tBT_UUID *p_uuid, tSDP_DISC_REC *p_start_rec) {
+    tSDP_DISC_REC *p_rec;
+    tSDP_DISC_ATTR *p_attr;
+    tSDP_DISC_ATTR *p_sub_attr;
+
+    p_rec = (p_start_rec == NULL) ? p_db->p_first_rec : p_start_rec->p_next_rec;
+    while (p_rec != NULL) {
+        p_attr = p_rec->p_first_attr;
+        while (p_attr != NULL) {
+            if (p_attr->attr_id == ATTR_ID_SERVICE_CLASS_ID_LIST &&
+                SDP_DISC_ATTR_TYPE(p_attr->attr_len_type) == DATA_ELE_SEQ_DESC_TYPE) {
+                p_sub_attr = p_attr->attr_value.v.p_sub_attr;
+                while (p_sub_attr != NULL) {
+                    if (SDP_DISC_ATTR_TYPE(p_sub_attr->attr_len_type) == UUID_DESC_TYPE &&
+                        sdpu_compare_uuid_with_attr(p_uuid, p_sub_attr))
+                        return p_rec;
+                    p_sub_attr = p_sub_attr->p_next_attr;
+                }
+                break;
+            }
+            if (p_attr->attr_id == ATTR_ID_SERVICE_ID &&
+                SDP_DISC_ATTR_TYPE(p_attr->attr_len_type) == UUID_DESC_TYPE &&
+                sdpu_compare_uuid_with_attr(p_uuid, p_attr))
+                return p_rec;
             p_attr = p_attr->p_next_attr;
         }
         p_rec = p_rec->p_next_rec;
