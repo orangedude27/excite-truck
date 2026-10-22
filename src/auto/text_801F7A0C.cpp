@@ -152,6 +152,7 @@ struct F92Obj {
 };
 extern "C" void *fn_801F92AC(F92Obj *);
 extern "C" void fn_801F92A8(void);
+extern "C" int fn_801F88F4(void *);
 
 struct F92Node {
     u8 pad0[0x20];
