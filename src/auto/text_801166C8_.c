@@ -712,7 +712,109 @@ s32 fn_80119CB0(void *arg0, s32 arg1) {
     return *var_r3;
 }
 
-extern s32 lbl_8055DEE0[];
+extern s32 TRKInitializeMessageBuffers(s32, s32, s32);
+extern void fn_80033408(s32, s32);
+extern void fn_800339B0(s32, void *);
+extern void fn_80033A34(s32, f32);
+extern void fn_80033918(s32, void *);
+extern f64 lbl_805611C8;
+extern f64 lbl_805611D0;
+s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) {
+    extern s32 lbl_8055DEE0;
+    extern s32 lbl_8055DEE8;
+    extern void TRKGetFreeBuffer(void *);
+    extern void fn_80119824();
+    extern void fn_80119D40();
+    u8 *ctx = (u8 *)arg0;
+    u32 count, rate, frames, i;
+    u32 *buffer;
+    u8 work[0x28];
+    union { struct { u32 hi, lo; } parts; f64 value; } converted;
+
+    if (lbl_8055DEE0 == 0) return 0;
+    memset(arg0, 0, 0x17C);
+    *(u32 *)(ctx + 0x5C) = 0;
+    *(u32 *)(ctx + 0x70) = arg1;
+    *(u32 *)(ctx + 0x74) = 0x10;
+    *(u32 *)(ctx + 0x78) = arg3;
+    *(u32 *)(ctx + 0x7C) = TRKInitializeMessageBuffers(0x1F, 0, 0);
+    if (*(u32 *)(ctx + 0x7C) == 0) return 0;
+    if (*(u32 *)(ctx + 0x78) != 1) {
+        *(u32 *)(ctx + 0x80) = TRKInitializeMessageBuffers(0x1F, 0, 0);
+        if (*(u32 *)(ctx + 0x80) == 0) {
+            TRKGetFreeBuffer((void *)*(u32 *)(ctx + 0x7C));
+            return 0;
+        }
+    }
+    *(u32 *)(ctx + 0xD0) = 0x21C;
+    count = *(u32 *)(ctx + 0x78) * (*(u32 *)(ctx + 0x70) * 2);
+    *(u32 *)(ctx + 0xA0) = arg1;
+    *(u32 *)(ctx + 0x68) = 0;
+    frames = ((count * 0x258) / 1000 + 0x3FF) & ~0x3FF;
+    *(u32 *)(ctx + 0x94) = frames;
+    *(u32 *)(ctx + 0x9C) = ((count * 0x32) / 1000 + 0xFF) & ~0xFF;
+    *(u32 *)(ctx + 0xC8) = (frames * 0x5A) / 100;
+    if (*(u32 *)((u8 *)arg5 + 0x14) != 0 && *(u32 *)((u8 *)arg5 + 0x18) != 0) {
+        u32 divisor = count * *(u32 *)((u8 *)arg5 + 0x18);
+        u64 numerator = (u64)divisor * *(u32 *)((u8 *)arg5 + 8);
+        rate = (u32)(numerator / divisor);
+    } else {
+        rate = *(u32 *)(ctx + 0x9C);
+    }
+    if (arg3 != 1) *(u32 *)(ctx + 0x98) = *(u32 *)(ctx + 0x94) >> 1;
+    else *(u32 *)(ctx + 0x98) = *(u32 *)(ctx + 0x94);
+    buffer = (u32 *)(ctx + 0x98);
+    *(u32 *)(ctx + 0x84) = ((u32 (*)(u32))lbl_8055DEE0)(*(u32 *)(ctx + 0x94));
+    *(u32 *)(ctx + 0x88) = *(u32 *)(ctx + 0x84) + *buffer;
+    *(u32 *)(ctx + 0x8C) = *(u32 *)(ctx + 0x84) + 0x80000000;
+    *(u32 *)(ctx + 0x90) = *(u32 *)(ctx + 0x8C) + *buffer;
+    *(u32 *)(ctx + 0x54) = rate;
+    *(u32 *)(ctx + 0xA4) = 0x7FFF;
+    *(u32 *)(ctx + 0xA8) = 0x67F8;
+    *(u32 *)(ctx + 0xAC) = 0x67F8;
+    ((void (*)(void *))fn_80119288)(arg0);
+    fn_801199A4(ctx + 0x7C, 1);
+    converted.parts.hi = 0x43300000;
+    converted.parts.lo = arg1;
+    buffer = (u32 *)(ctx + 0x7C);
+    for (i = 0; i < *(u32 *)(ctx + 0x78); i++) {
+        memset(work, 0, 0x28);
+        *(u16 *)(work + 0x20) = 0x800;
+        *(u16 *)(work + 8) = 1;
+        *(u16 *)(work + 0xA) = 0;
+        *(u16 *)(work + 0xC) = 0;
+        *(u16 *)(work + 0xE) = 0;
+        *(u16 *)(work + 0x10) = 0;
+        *(u16 *)(work + 0x12) = 0;
+        *(u16 *)(work + 0x14) = 0;
+        fn_80033408(*buffer, 1);
+        fn_800339B0(*buffer, work + 8);
+        fn_80033A34(*buffer, (f32)((converted.value - lbl_805611D0) / lbl_805611C8));
+        fn_80033918(*buffer, work);
+        buffer++;
+    }
+    fn_80119300(ctx + 0x7C, 0, *(u32 *)(ctx + 0x94));
+    *(u32 *)(ctx + 0xB8) = 0;
+    *(u32 *)(ctx + 0xB0) = 0;
+    frames = *(u32 *)(ctx + 0x94);
+    if (rate < frames) frames = rate;
+    *(u32 *)(ctx + 0xC0) = frames;
+    *(u32 *)(ctx + 0xBC) = frames;
+    *(u32 *)(ctx + 0xB4) = 0;
+    *(u32 *)(ctx + 0x64) = 1;
+    *(void **)(ctx + 0x00) = fn_80119824;
+    *(void **)(ctx + 0x04) = fn_80119994;
+    *(void **)(ctx + 0x08) = fn_8011999C;
+    *(void **)(ctx + 0x0C) = fn_80119AB0;
+    *(void **)(ctx + 0x10) = fn_80119B38;
+    *(void **)(ctx + 0x14) = fn_80119CB0;
+    *(void **)(ctx + 0x18) = fn_80119C0C;
+    *(void **)(ctx + 0x1C) = fn_80119D40;
+    lbl_8055DEE8++;
+    return 1;
+}
+
+extern s32 lbl_8055DEE0;
 extern s32 lbl_8055DEE4;
 extern s32 lbl_8055DEE8;
 extern s32 fn_80119DD0(void *, u32, s32, s32, s32, void *);
@@ -721,10 +823,10 @@ extern void TRKGetFreeBuffer(void *);
 void *fn_8011A168(void *arg0) {
     s32 *src = (s32 *)arg0;
     if (arg0 == NULL) {
-        lbl_8055DEE0[0] = 0;
-        lbl_8055DEE0[1] = 0;
+        lbl_8055DEE0 = 0;
+        *((s32 *)&lbl_8055DEE0 + 1) = 0;
     } else {
-        lbl_8055DEE0[0] = src[0];
+        lbl_8055DEE0 = src[0];
         lbl_8055DEE4 = src[1];
     }
     return &fn_80119DD0;
