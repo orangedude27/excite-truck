@@ -22,7 +22,7 @@ extern "C" f32 lbl_80560E64;
 class Freeable800C6A1C { public: virtual void free(s32); };
 class Freeable28_800C6A1C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void free(s32); };
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
-extern "C" s32 fn_800ACA5C(void *, void *, u16);
+extern "C" s32 fn_800ACA5C(void *, void *, u32);
 extern "C" s32 fn_800AFBA8(void *, u16, u32 *);
 extern "C" s32 fn_800B00E8(void *, u16, u32 *);
 extern "C" s32 fn_800B05C8(void *, u16, u32 *);
@@ -2953,16 +2953,16 @@ extern "C" s32 fn_800B51FC(void *, s32);
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800B10E0(void *arg0, void *arg1, void *arg2, s32 arg3) {
     VFiPFEntryLocalFrame frame;
-    register s32 charCount;
+    s32 charCount;
     s32 result;
     s32 parsed;
     s32 quotient;
     s32 remainder;
-    register u8 initialCount;
-    register u8 loopCount;
-    register u8 checksum;
-    register u8 *nextCluster;
-    register s32 cluster;
+    u8 initialCount;
+    u8 loopCount;
+    u8 checksum;
+    u8 *nextCluster;
+    s32 cluster;
     u16 next;
     u32 *flags;
 
@@ -2996,9 +2996,9 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, void *arg2, s32 arg3) {
         *(u16 *)arg1 = 0;
     }
     if (*(s32 *)((u8 *)arg0 + 0x1C) == 2) {
-        *(u32 *)((u8 *)arg1 + 0x234) = 1;
+        ((VFiPFEntryFlag234 *)arg1)->flag = 1;
     } else {
-        *(u32 *)((u8 *)arg1 + 0x234) = 0;
+        ((VFiPFEntryFlag234 *)arg1)->flag = 0;
     }
     *(s32 *)((u8 *)arg1 + 0x228) = 0;
     *(void **)((u8 *)arg1 + 0x22C) = arg0;
@@ -3056,8 +3056,8 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, void *arg2, s32 arg3) {
             return result;
         }
     }
-    if (*(u32 *)((u8 *)arg1 + 0x234) == 1) {
-        *(u32 *)((u8 *)arg1 + 0x234) = 0;
+    if (((VFiPFEntryFlag234 *)arg1)->flag == 1) {
+        ((VFiPFEntryFlag234 *)arg1)->flag = 0;
     }
     return fn_800AB0C0((u8 *)arg1, 1);
 }
