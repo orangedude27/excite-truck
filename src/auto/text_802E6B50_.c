@@ -171,5 +171,5 @@ second_check:
 void fn_802E7128(void) { fn_802E6FBC(); }
 
 void fn_802E712C(void) {}
-#pragma scheduling invalid_target
+#pragma scheduling off
 
