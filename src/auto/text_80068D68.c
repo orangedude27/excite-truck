@@ -79,6 +79,7 @@ extern char lbl_80316E08[];
 extern u32 lbl_8055DCA4;
 extern void fn_80070F90(void *ptr);
 extern u8 lbl_803C4C40[];
+extern char lbl_8031A50C[];
 extern u8 lbl_80317298[];
 extern UINT8 lbl_802EED40[];
 extern void fn_80099F58(void *);
