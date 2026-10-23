@@ -4,6 +4,11 @@ extern float lbl_80558ED0;
 #include <types.h>
 #include "revolution/MTX/mtxtypes.h"
 
+extern u8 lbl_8037C808[];
+extern f32 lbl_80558EB8;
+extern f32 lbl_80560BE4;
+extern f64 lbl_80560C28;
+
 #define FIELD(p, off) (*(f32 *)((u8 *)(p) + (off)))
 #define VFIELD(p, off) (*(u8 *)((u8 *)(p) + (off)))
 
@@ -203,6 +208,68 @@ s32 select_1obj_first(void *arg0) {
     return 0;
 }
 
+int select_1obj_continue(void *obj) {
+    unsigned char *candidate;
+    unsigned char *other;
+    unsigned char *bestCandidate = 0;
+    unsigned char *bestOther = 0;
+    unsigned char *outerEnd = (unsigned char *)obj + 0x110;
+    unsigned char *innerEnd = (unsigned char *)obj + 0xF8;
+    float limit = lbl_80558ED0 * lbl_80558ED0;
+    float distance;
+    float dx;
+    float dy;
+    float qx;
+    float qy;
+    float rx;
+    float ry;
+    float scale;
+    for (candidate = (unsigned char *)obj + 0xF8; candidate < outerEnd; candidate += 0xC) {
+        if ((signed char)candidate[8] == 0 && (signed char)candidate[9] == 0) {
+            for (other = (unsigned char *)obj + 0xC8; other < innerEnd; other += 0xC) {
+                if ((signed char)other[8] == 0) {
+                    dx = *(float *)(candidate + 0) - *(float *)(other + 0);
+                    dy = *(float *)(candidate + 4) - *(float *)(other + 4);
+                    distance = dx * dx + dy * dy;
+                    if (distance < limit) {
+                        limit = distance;
+                        bestCandidate = candidate;
+                        bestOther = other;
+                    }
+                }
+            }
+        }
+    }
+    if (limit == lbl_80558ED0 * lbl_80558ED0) return 0;
+    *(u32 *)(bestCandidate + 0) = *(u32 *)(bestOther + 0);
+    *(u32 *)(bestCandidate + 4) = *(u32 *)(bestOther + 4);
+    *(u32 *)(bestCandidate + 8) = *(u32 *)(bestOther + 8);
+    qx = *(float *)((char *)obj + 0xB4);
+    qy = *(float *)((char *)obj + 0xB8);
+    rx = *(float *)((char *)obj + 0x3C8);
+    ry = *(float *)((char *)obj + 0x3CC);
+    scale = *(float *)((char *)obj + 0x3A0);
+    dx = qx * rx + qy * ry;
+    dy = qy * rx - qx * ry;
+    *(float *)((char *)obj + 0x3A4) = dx;
+    *(float *)((char *)obj + 0x3A8) = dy;
+    rx = scale * dx;
+    ry = scale * dy;
+    if (bestCandidate == (unsigned char *)obj + 0xF8) {
+        *(float *)((char *)obj + 0x104) = *(float *)bestCandidate + rx;
+        *(float *)((char *)obj + 0x108) = *(float *)(bestCandidate + 4) + ry;
+        *((unsigned char *)obj + 0x10C) = 0;
+        *((unsigned char *)obj + 0x10D) = -1;
+    } else {
+        *(float *)((char *)obj + 0xF8) = *(float *)bestCandidate - rx;
+        *(float *)((char *)obj + 0xFC) = *(float *)(bestCandidate + 4) - ry;
+        *((unsigned char *)obj + 0x100) = 0;
+        *((unsigned char *)obj + 0x101) = -1;
+    }
+    if ((signed char)*((unsigned char *)obj + 0x84) < 0) return -1;
+    return 1;
+}
+
 static void clamp_stick_circle(Vec2* stick, s32 sx, s32 sy, s32 min, s32 max) {
     f32 length;
     f32 fx = (f32)sx;
@@ -224,5 +291,170 @@ static void clamp_stick_circle(Vec2* stick, s32 sx, s32 sy, s32 min, s32 max) {
         stick->x = fx * length;
         stick->y = fy * length;
     }
+}
+
+extern s32 WPADProbe(s32, s32 *);
+extern void reset_kpad(void *);
+extern s32 lbl_80558ED4, lbl_80558ED8, lbl_80558EDC, lbl_80558EE0;
+extern s32 lbl_80558EE4, lbl_80558EE8;
+extern f64 lbl_80560C10;
+extern f32 lbl_80560BD8, lbl_80560BE4;
+static void clamp_stick_circle(Vec2*, s32, s32, s32, s32);
+void clamp_stick_cross(void *arg0, void *arg1) {
+    u8 *obj = (u8 *)arg0;
+    u8 *input = (u8 *)arg1;
+    s16 chan = *(s16 *)(obj + 0x114);
+    s32 devType;
+    s32 ret;
+    s32 low, high, value;
+    double bias = lbl_80560C10;
+    if (chan < 0) return;
+    ret = WPADProbe(chan, &devType);
+    if (*(u32 *)(obj + 0x5C) == 1) {
+        if (ret != 0 && ret == -1) {
+            *(s16 *)(obj + 0x114) -= 4;
+            reset_kpad(obj);
+            return;
+        }
+        clamp_stick_circle((Vec2 *)(obj + 0x60), (s8)input[0x30], (s8)input[0x31], lbl_80558ED4, lbl_80558ED8);
+        return;
+    }
+    if (*(u32 *)(obj + 0x5C) != 2) return;
+    if (ret != 0 && ret == -1) {
+        *(s16 *)(obj + 0x114) -= 4;
+        reset_kpad(obj);
+        return;
+    }
+    clamp_stick_circle((Vec2 *)(obj + 0x6C), *(s16 *)(input + 0x2C), *(s16 *)(input + 0x2E), lbl_80558EDC, lbl_80558EE0);
+    clamp_stick_circle((Vec2 *)(obj + 0x74), *(s16 *)(input + 0x30), *(s16 *)(input + 0x32), lbl_80558EDC, lbl_80558EE0);
+    low = lbl_80558EE4;
+    high = lbl_80558EE8;
+    value = input[0x34];
+    if (value <= low) *(f32 *)(obj + 0x7C) = lbl_80560BD8;
+    else if (value >= high) *(f32 *)(obj + 0x7C) = lbl_80560BE4;
+    else *(f32 *)(obj + 0x7C) = (f32)(value - low) / (f32)(high - low);
+    value = input[0x35];
+    if (value <= low) *(f32 *)(obj + 0x80) = lbl_80560BD8;
+    else if (value >= high) *(f32 *)(obj + 0x80) = lbl_80560BE4;
+    else *(f32 *)(obj + 0x80) = (f32)(value - low) / (f32)(high - low);
+}
+
+void read_kpad_stick(s32 chan, void *arg1) {
+    u32 probe;
+    s32 ret;
+    s32 irq;
+    u8 *obj = (u8 *)arg1;
+    u8 *state;
+    extern s32 WPADProbe(s32, s32 *);
+    extern void WPADSetAutoSamplingBuf(s32, void *, u32);
+    extern s32 OSDisableInterrupts(void);
+    extern void OSRestoreInterrupts(s32);
+    extern void reset_kpad(void *);
+    extern s32 fn_80062460(s32);
+    extern void KPADiControlDpdCallback(s32, u32);
+    extern void KPADiSamplingCallback(s32, u32);
+    extern u8 lbl_8037C808[];
+    ret = WPADProbe(chan, (s32 *)&probe);
+    if (ret == -1) {
+        if (*(s16 *)(obj + 0x114) < 0) return;
+        WPADSetAutoSamplingBuf(chan, 0, 0);
+        *(s16 *)(obj + 0x114) = chan - 4;
+        *(u32 *)(obj + 0x5C) = 0xFD;
+        state = lbl_8037C808 + (chan << 10);
+        irq = OSDisableInterrupts();
+        if (*(u32 *)(state + 0x3F0) != 0) {
+            *(u32 *)(state + 0x3F0) = 0;
+            if (*(u32 *)(state + 0x3F8) != 0) ((void (*)(s32, s32))(*(u32 *)(state + 0x3F8)))(chan, 1);
+        }
+        OSRestoreInterrupts(irq);
+        return;
+    }
+    if (ret != 0) return;
+    if (probe == *(u32 *)(obj + 0x5C)) {
+        if (*(u32 *)(obj + 0x3F4) != 0) { reset_kpad(obj); return; }
+        ret = fn_80062460(chan);
+        if (*(u32 *)(obj + 0x3EC) != 0 && ret == 0) { KPADiControlDpdCallback(chan, probe); reset_kpad(obj); return; }
+        if (*(u32 *)(obj + 0x3EC) == 0 && ret != 0) { KPADiSamplingCallback(chan, probe); reset_kpad(obj); return; }
+        if (*(u32 *)(obj + 0x3FC) != 0) {
+            if (*(u32 *)(obj + 0x3EC) != 0) KPADiControlDpdCallback(chan, probe);
+            else KPADiSamplingCallback(chan, probe);
+            reset_kpad(obj); return;
+        }
+        return;
+    }
+    if (probe != 0xFD) {
+        if (*(u32 *)(obj + 0x3EC) != 0) KPADiControlDpdCallback(chan, probe);
+        else KPADiSamplingCallback(chan, probe);
+        *(s16 *)(obj + 0x114) = chan;
+        *(u32 *)(obj + 0x5C) = probe;
+        reset_kpad(obj); return;
+    }
+    *(s16 *)(obj + 0x114) = chan - 4;
+}
+
+extern void fn_8005EB44(void);
+extern s32 fn_8005EE7C(void);
+extern void read_kpad_stick(s32, void *);
+extern void KPADSetSensorHeight(void *, s32);
+extern u8 fn_80062458(void);
+extern void OSRegisterVersion(const char *);
+extern f32 lbl_80558E8C;
+extern u32 lbl_80558E90, lbl_80558E94, lbl_80558E98, lbl_80558E9C;
+extern s32 lbl_8055D980, lbl_8055D984;
+extern f32 lbl_80558EA0, lbl_80558EA8, lbl_80558EB4, lbl_80558EB8, lbl_80558EBC;
+extern f32 lbl_8055D990, lbl_8055D994, lbl_8055D998, lbl_8055D99C, lbl_8055D9B0;
+extern f32 lbl_80560BD8, lbl_80560BE0, lbl_80560BE4, lbl_80560BE8, lbl_80560BEC, lbl_80560C30;
+extern const char *lbl_80558E88;
+extern f64 lbl_80560C28;
+extern u8 lbl_8037C808[];
+void KPADInit(void) {
+    f32 f29 = lbl_80560BD8;
+    f32 f30 = lbl_80560BE4;
+    s32 i;
+    u8 *p;
+    fn_8005EB44();
+    while (fn_8005EE7C() != 3) {}
+    for (i = 0, p = lbl_8037C808; i < 4; i++, p += 0x400) {
+        *(s32 *)(p + 0x3EC) = 1;
+        *(s32 *)(p + 0x3FC) = 0;
+        *(s32 *)(p + 0x3F0) = 0;
+        *(s32 *)(p + 0x3F4) = 0;
+        *(s32 *)(p + 0x3F8) = 0;
+        *(s32 *)(p + 0x5C) = 0xFD;
+        *(s16 *)(p + 0x114) = i - 4;
+        read_kpad_stick(i, p);
+        *(f32 *)(p + 0xA8) = lbl_80558E8C;
+        *(u32 *)(p + 0xAC) = lbl_80558E90;
+        *(u32 *)(p + 0xB0) = lbl_80558E94;
+        *(u32 *)(p + 0xB4) = lbl_80558E98;
+        *(u32 *)(p + 0xB8) = lbl_80558E9C;
+        *(s32 *)(p + 0xBC) = lbl_8055D980;
+        *(s32 *)(p + 0xC0) = lbl_8055D984;
+        KPADSetSensorHeight(p, lbl_8055D980);
+        *(f32 *)(p + 0xA0) = f29;
+        *(f32 *)(p + 0x98) = f29;
+        *(f32 *)(p + 0x90) = f29;
+        *(f32 *)(p + 0x88) = f29;
+        *(f32 *)(p + 0xA4) = f30;
+        *(f32 *)(p + 0x9C) = f30;
+        *(f32 *)(p + 0x94) = f30;
+        *(f32 *)(p + 0x8C) = f30;
+        *(s16 *)(p + 0x3E0) = -0x63C0;
+        *(s16 *)(p + 0x3E2) = 0;
+        *(s16 *)(p + 0x3E8) = -0x63C0;
+        *(s16 *)(p + 0x3EA) = 0;
+        lbl_80558EB8 = f30 + (f32)fn_80062458();
+    }
+    lbl_8055D99C = f30 / lbl_80558EBC;
+    lbl_8055D9B0 = lbl_80558EA0 / lbl_80560BE0;
+    lbl_8055D990 = lbl_80558EA0 / lbl_80560BE0;
+    lbl_8055D998 = lbl_80560BEC / lbl_80558EBC;
+    lbl_8055D9A8[0] = lbl_80560BEC + lbl_80558EB4;
+    lbl_8055D9A0[0] = f30 - lbl_80558EB4;
+    lbl_8055D9A8[1] = lbl_80560C30 + lbl_80558EB4;
+    lbl_8055D9A0[1] = lbl_80560BE8 - lbl_80558EB4;
+    lbl_8055D994 = lbl_80558EA8 * lbl_80558EA8;
+    for (i = 3; i >= 0; i--) reset_kpad(lbl_8037C808 + i * 0x400);
+    OSRegisterVersion(lbl_80558E88);
 }
 
