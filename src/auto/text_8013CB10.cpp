@@ -1,7 +1,7 @@
 #include "types.h"
 extern "C" s32 fn_801E9E30(void *, f32 *);
 extern "C" s32 fn_80136594(void **, s32, f32 *, f32);
-extern "C" s32 fn_80178C9C(...);
+extern "C" s32 fn_80178C9C(void);
 extern "C" void qsort(void *, u32, u32, int (*)(const void *, const void *));
 extern "C" void *memset(void *, s32, u32);
 extern "C" void fn_802AE0E0(int);
@@ -1202,12 +1202,16 @@ extern "C" void fn_80142D4C(void *arg0) {
                 f32 z = z0 + spread * (z1 - z0);
                 f32 y = y0 + spread * (y1 - y0);
                 f32 x = x0 + spread * (x1 - x0);
+                volatile f32 coords[3];
                 struct Out { void *ptr; f32 weight; } out;
                 f32 pair[2];
-                s32 handle = fn_80178C9C(y, z, z0, x1, x0, y0);
-                pair[0] = x;
-                pair[1] = z;
-                fn_80136594((void **)&out, handle, pair, z);
+                coords[2] = z;
+                coords[1] = y;
+                coords[0] = x;
+                s32 handle = fn_80178C9C();
+                pair[0] = coords[0];
+                pair[1] = coords[2];
+                fn_80136594((void **)&out, handle, pair, coords[2]);
                 *(f32 *)(item + 0x18) =
                     *(f32 *)((u8 *)out.ptr + 0x1C) +
                     *(f32 *)((u8 *)out.ptr + 0x18) * out.weight;
