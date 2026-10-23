@@ -306,18 +306,24 @@ extern "C" void* fn_801EA9A0(s32);
 extern "C" f32 fn_801E7E18(void);
 extern "C" void* fn_801E7E3C(void);
 extern "C" void fn_801345D8(char*, s32, const char*, ...);
-extern "C" s32 fn_80147ABC(s32, s32, const char*, char*, ...);
+extern "C" s32 fn_80147ABC(s32, s32, const char*, ...);
 extern "C" u32 lbl_802ED840[];
 extern "C" char lbl_80558D14[];
 extern "C" char lbl_80558D1C[];
 extern "C" char lbl_80558D24[];
+__declspec(section ".sdata") extern char lbl_80558D14[];
+__declspec(section ".sdata") extern char lbl_80558D1C[];
+__declspec(section ".sdata") extern char lbl_80558D24[];
 extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
-    s32* record = (s32*)(arg0 + arg1 * 8);
+    char* base = lbl_802FDB68;
+    s32* record;
     void* object = fn_801EA9A0(arg1);
     f32 now = fn_801E7E18();
+    record = (s32*)((u8*)arg0 + (arg1 << 3));
     s32 rank = *(s32*)((u8*)object + 0x1C);
     f32 delta;
-    f32 thresholds[4];
+    u32 bits[4];
+    u32* src = lbl_802ED840;
     void* widget;
     s32 idsA[4];
     s32 idsB[4];
@@ -330,64 +336,76 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
         record[1] = rank;
     }
     delta = now - *(f32*)((u8*)record + 8);
-    thresholds[0] = *(f32*)((u8*)&lbl_802ED840[0]);
-    thresholds[1] = *(f32*)((u8*)&lbl_802ED840[1]);
-    thresholds[2] = *(f32*)((u8*)&lbl_802ED840[2]);
-    thresholds[3] = *(f32*)((u8*)&lbl_802ED840[3]);
+    bits[0] = *src++;
+    bits[1] = *src++;
+    bits[2] = *src++;
+    bits[3] = *src++;
     widget = lbl_8055D604;
-    if (widget != 0 && delta < thresholds[3]) {
-        for (s32 row = 0; row < 2; row++) {
-            s32* out = row == 0 ? idsB : idsA;
-            for (s32 col = 0; col < 4; col++) {
+    if (widget != 0 && delta < *(f32*)&bits[3]) {
+        s32 row = 0;
+        do {
+            s32* out = &idsA[0];
+            if (row == 0) out = &idsB[0];
+            s32 col = 0;
+            do {
                 char text[32];
-                fn_801345D8(text, 0x20, lbl_80558D14,
-                            row == 0 ? lbl_80558D1C : lbl_80558D24, col);
-                out[col] = ((s32 (**)(void*, char*))(*(void***)widget))[3](widget, text);
-            }
-        }
+                const char* suffix = lbl_80558D24;
+                if (row == 0) suffix = lbl_80558D1C;
+                fn_801345D8(text, 0x20, lbl_80558D14, suffix, col);
+                *out = ((s32 (**)(void*, char*))(*(void***)widget))[3](widget, text);
+                col++;
+                out++;
+            } while (col < 4);
+            row++;
+        } while (row < 2);
         void* menu = fn_801E7E3C();
         s32 current = *(s32*)((u8*)record + 4);
         s32 count = *(s32*)((u8*)menu + 8);
         if (current != 1 && current <= 3) {
             if (current < count) {
-                const char* text = fn_80131234(lbl_802FDB68 + 0x278);
-                for (s32 i = 0; i < 32; i++) {
-                    nameA[i] = text[i];
-                    if ((s8)text[i] == 0) break;
-                }
-                fn_801345D8(temp, 0x1E, lbl_802FDB68 + 0x28C, current);
+                const char* text = fn_80131234(base + 0x278);
+                char* dst = nameA;
+                s32 left = 0x20;
+            copy_a:
+                { char c = *text++; *dst++ = c;
+                  if ((s8)c != 0) { left--; if (left > 0) goto copy_a; * (dst - 1) = 0; } }
+                fn_801345D8(temp, 0x1E, base + 0x28C, current);
                 text = fn_80131234(temp);
-                for (s32 i = 0; i < 32; i++) {
-                    nameB[i] = text[i];
-                    if ((s8)text[i] == 0) break;
-                }
+                dst = nameB;
+                left = 0x20;
+            copy_b:
+                { char c = *text++; *dst++ = c;
+                  if ((s8)c != 0) { left--; if (left > 0) goto copy_b; * (dst - 1) = 0; } }
             } else if (current == count) {
-                const char* text = fn_80131234(lbl_802FDB68 + 0x2A4);
-                for (s32 i = 0; i < 32; i++) {
-                    nameA[i] = text[i];
-                    if ((s8)text[i] == 0) break;
-                }
-                text = fn_80131234(lbl_802FDB68 + 0x2B8);
-                for (s32 i = 0; i < 32; i++) {
-                    nameB[i] = text[i];
-                    if ((s8)text[i] == 0) break;
-                }
+                const char* text = fn_80131234(base + 0x2A4);
+                char* dst = nameA;
+                s32 left = 0x20;
+            copy_c:
+                { char c = *text++; *dst++ = c;
+                  if ((s8)c != 0) { left--; if (left > 0) goto copy_c; * (dst - 1) = 0; } }
+                text = fn_80131234(base + 0x2B8);
+                dst = nameB;
+                left = 0x20;
+            copy_d:
+                { char c = *text++; *dst++ = c;
+                  if ((s8)c != 0) { left--; if (left > 0) goto copy_d; * (dst - 1) = 0; } }
             } else {
                 return;
             }
             s32 index = 0;
-            if (delta < thresholds[1]) {
+            if (delta < *(f32*)&bits[1]) {
                 index = 0;
-            } else if (delta < thresholds[2]) {
+            } else if (delta < *(f32*)&bits[2]) {
                 index = 1;
-            } else if (delta < thresholds[3]) {
+            } else if (delta < *(f32*)&bits[3]) {
                 index = 2;
             }
-            f32 t = (delta - thresholds[index]) /
-                    (thresholds[index + 1] - thresholds[index]);
-            if (t < lbl_80560470) t = lbl_80560470;
-            if (t > lbl_80560474) t = lbl_80560474;
-            f32 value = lbl_80560474 + t * lbl_80560470;
+            f32 lower = lbl_80560470;
+            f32 t = (delta - *(f32*)&bits[index]) /
+                    (*(f32*)&bits[index + 1] - *(f32*)&bits[index]);
+            if (lower < t) lower = t;
+            if (lower > lbl_80560474) lower = lbl_80560474;
+            f32 value = lbl_80560474 + lower * lbl_80560470;
             fn_80232928(-1);
             fn_80147ABC(idsB[index], idsB[index + 1], lbl_80558D08, nameA, value);
             fn_80147ABC(idsA[index], idsA[index + 1], lbl_80558D08, nameB, value);
