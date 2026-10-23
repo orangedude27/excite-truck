@@ -10,6 +10,15 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern char lbl_80313464[];
+extern char lbl_8031347C[];
+extern u32 lbl_8055DC30;
+extern u8 lbl_8055DC34;
+extern void fn_800709FC(void);
+extern void fn_80071508(u8);
+extern u8 fn_80089E20(u8);
+extern u8 fn_80096670(u8);
+extern void SCInit(void);
 extern char lbl_80315700[];
 extern u8 lbl_802EEB60[];
 extern u8 lbl_802EEBD8[];
