@@ -9,21 +9,6 @@ extern "C" void fn_801A0378(void*, void*);
 extern "C" void fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
 
-static inline void fn801A40F8Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
-    f32 x = src[0];
-    f32 y = src[1];
-    f32 z = src[2];
-    if (dst == src) {
-        dst[0] = (x * matrix[0] + y * matrix[1]) + z * matrix[2];
-        dst[1] = (x * matrix[3] + y * matrix[4]) + z * matrix[5];
-        dst[2] = (x * matrix[6] + y * matrix[7]) + z * matrix[8];
-    } else {
-        dst[0] = (y * matrix[1] + x * matrix[0]) + z * matrix[2];
-        dst[1] = (y * matrix[4] + x * matrix[3]) + z * matrix[5];
-        dst[2] = (y * matrix[7] + x * matrix[6]) + z * matrix[8];
-    }
-}
-
 static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
     f32 x = src[0];
     f32 y = src[1];
@@ -1840,7 +1825,7 @@ extern "C" void fn_801A401C(void *arg0, void *arg1) {
 #pragma scheduling invalid_target
 extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4) {
     f32 stack[9];
-    volatile f32 *input = (volatile f32 *)arg1;
+    const f32 *input = arg1;
     register f32 dx = input[0];
     register f32 dy = input[1];
     f32 *matrix = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
@@ -1851,9 +1836,9 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4
     stack[7] = dy;
     dz -= matrix[11];
     stack[8] = dz;
-    f32 vx = dz * matrix[2] + (dx * matrix[0] + dy * matrix[1]);
-    f32 vy = dz * matrix[5] + (dx * matrix[3] + dy * matrix[4]);
-    f32 vz = dz * matrix[8] + (dx * matrix[6] + dy * matrix[7]);
+    f32 vx = dx * matrix[0] + (dy * matrix[1] + dz * matrix[2]);
+    f32 vy = dx * matrix[3] + (dy * matrix[4] + dz * matrix[5]);
+    f32 vz = dx * matrix[6] + (dy * matrix[7] + dz * matrix[8]);
     stack[6] = vx;
     stack[7] = vy;
     stack[8] = vz;
@@ -1865,13 +1850,13 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4
         register f32 a = arg2[0];
         register f32 b = arg2[1];
         register f32 c = arg2[2];
-        ax = c * matrix2[2] + (a * matrix2[0] + b * matrix2[1]);
-        ay = c * matrix2[5] + (a * matrix2[3] + b * matrix2[4]);
-        az = c * matrix2[8] + (a * matrix2[6] + b * matrix2[7]);
+        ax = a * matrix2[0] + (b * matrix2[1] + c * matrix2[2]);
+        ay = a * matrix2[3] + (b * matrix2[4] + c * matrix2[5]);
+        az = a * matrix2[6] + (b * matrix2[7] + c * matrix2[8]);
     } else {
-        ax = arg2[2] * matrix2[2] + (arg2[0] * matrix2[0] + arg2[1] * matrix2[1]);
-        ay = arg2[2] * matrix2[5] + (arg2[0] * matrix2[3] + arg2[1] * matrix2[4]);
-        az = arg2[2] * matrix2[8] + (arg2[0] * matrix2[6] + arg2[1] * matrix2[7]);
+        ax = arg2[0] * matrix2[0] + (arg2[1] * matrix2[1] + arg2[2] * matrix2[2]);
+        ay = arg2[0] * matrix2[3] + (arg2[1] * matrix2[4] + arg2[2] * matrix2[5]);
+        az = arg2[0] * matrix2[6] + (arg2[1] * matrix2[7] + arg2[2] * matrix2[8]);
     }
     stack[3] = ax;
     stack[4] = ay;
@@ -1883,16 +1868,16 @@ extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4
             register f32 a = stack[0];
             register f32 b = stack[1];
             register f32 c = stack[2];
-            vx = a * outMatrix[0] + b * outMatrix[3] + c * outMatrix[6];
-            vy = a * outMatrix[1] + b * outMatrix[4] + c * outMatrix[7];
-            vz = a * outMatrix[2] + b * outMatrix[5] + c * outMatrix[8];
+            vx = a * outMatrix[0] + (b * outMatrix[3] + c * outMatrix[6]);
+            vy = a * outMatrix[1] + (b * outMatrix[4] + c * outMatrix[7]);
+            vz = a * outMatrix[2] + (b * outMatrix[5] + c * outMatrix[8]);
             arg4[0] = vx;
             arg4[1] = vy;
             arg4[2] = vz;
         } else {
-            arg4[0] = stack[0] * outMatrix[0] + stack[1] * outMatrix[3] + stack[2] * outMatrix[6];
-            arg4[1] = stack[0] * outMatrix[1] + stack[1] * outMatrix[4] + stack[2] * outMatrix[7];
-            arg4[2] = stack[0] * outMatrix[2] + stack[1] * outMatrix[5] + stack[2] * outMatrix[8];
+            arg4[0] = stack[0] * outMatrix[0] + (stack[1] * outMatrix[3] + stack[2] * outMatrix[6]);
+            arg4[1] = stack[0] * outMatrix[1] + (stack[1] * outMatrix[4] + stack[2] * outMatrix[7]);
+            arg4[2] = stack[0] * outMatrix[2] + (stack[1] * outMatrix[5] + stack[2] * outMatrix[8]);
         }
         return 1;
     }
