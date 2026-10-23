@@ -1779,15 +1779,15 @@ extern "C" void fn_8021F044(void *arg0) {
 extern "C" s32 strlen(const char *);
 extern "C" s32 fn_802E4A1C(s32);
 extern "C" s32 fn_8021F06C(void *arg0, s32 arg1) {
-    s32 capacity;
+    s32 insertCursor;
     char *text;
+    s32 capacity;
     void *object;
     s32 key;
 
-    object = arg0;
     key = arg1;
+    object = arg0;
     text = *(char **)((u8 *)object + 0xA54);
-
     if (*(s32 *)((u8 *)object + 0x250) > strlen(text))
         *(s32 *)((u8 *)object + 0x250) = strlen(text);
     capacity = *(s32 *)((u8 *)object + 0x248) * *(s32 *)((u8 *)object + 0x24C);
@@ -1795,7 +1795,7 @@ extern "C" s32 fn_8021F06C(void *arg0, s32 arg1) {
         return 0;
     if (*(u8 *)((u8 *)object + 0x1A) != 0)
         *(u8 *)((u8 *)object + 0x234) = 1;
-    if (key >= 0x160 && key <= 0x169)
+    if ((u32)key >= 0x160 && (u32)key <= 0x169)
         key = (key + 0xFED0) & 0xFFFF;
 
     switch (key) {
@@ -1805,7 +1805,7 @@ extern "C" s32 fn_8021F06C(void *arg0, s32 arg1) {
             *(u8 *)((u8 *)object + 0x234) = 1;
         goto handled;
     case 0x123:
-        *(s32 *)((u8 *)object + 0x250) = strlen(text);
+        *(s32 *)((u8 *)object + 0x250) = strlen(*(char **)((u8 *)object + 0xA54));
         if (*(u8 *)((u8 *)object + 0x1A) != 0)
             *(u8 *)((u8 *)object + 0x234) = 1;
         goto handled;
@@ -1820,8 +1820,9 @@ extern "C" s32 fn_8021F06C(void *arg0, s32 arg1) {
         goto handled;
     }
     case 0x127: {
+        s32 length = strlen(*(char **)((u8 *)object + 0xA54));
         s32 cursor = *(s32 *)((u8 *)object + 0x250);
-        if ((u32)cursor < (u32)strlen(text)) {
+        if ((u32)cursor < (u32)length) {
             cursor++;
             *(s32 *)((u8 *)object + 0x250) = cursor;
             if (*(u8 *)((u8 *)object + 0x1A) != 0)
@@ -1831,14 +1832,23 @@ extern "C" s32 fn_8021F06C(void *arg0, s32 arg1) {
     }
     case 0x12E: {
         s32 index;
-        if (strlen(text) != 0) {
+        char *base;
+        char *current;
+        char next;
+        char *deleteText = *(char **)((u8 *)object + 0xA54);
+        if (strlen(deleteText) != 0) {
             index = *(s32 *)((u8 *)object + 0x250);
-            if ((u32)index < (u32)strlen(text)) {
-                do {
-                    char *current = *(char **)((u8 *)object + 0xA54) + index;
-                    *current = current[1];
-                    index++;
-                } while ((*(char **)((u8 *)object + 0xA54))[index] != 0);
+            if ((u32)index < (u32)strlen(deleteText)) {
+                goto delete_check;
+delete_copy:
+                next = current[1];
+                index++;
+                *current = next;
+delete_check:
+                base = *(char **)((u8 *)object + 0xA54);
+                current = base + index;
+                if ((s8)base[index] != 0)
+                    goto delete_copy;
             }
         }
         if (*(u8 *)((u8 *)object + 0x1A) != 0)
@@ -1847,16 +1857,24 @@ extern "C" s32 fn_8021F06C(void *arg0, s32 arg1) {
     }
     case 0x8: {
         s32 index;
-        if (strlen(text) != 0) {
+        char *base;
+        char *current;
+        char next;
+        if (strlen(*(char **)((u8 *)object + 0xA54)) != 0) {
             index = *(s32 *)((u8 *)object + 0x250);
             if (index > 0) {
                 index--;
                 *(s32 *)((u8 *)object + 0x250) = index;
-                do {
-                    char *current = *(char **)((u8 *)object + 0xA54) + index;
-                    *current = current[1];
-                    index++;
-                } while ((*(char **)((u8 *)object + 0xA54))[index] != 0);
+                goto backspace_check;
+backspace_copy:
+                next = current[1];
+                index++;
+                *current = next;
+backspace_check:
+                base = *(char **)((u8 *)object + 0xA54);
+                current = base + index;
+                if ((s8)base[index] != 0)
+                    goto backspace_copy;
             }
         }
         if (*(u8 *)((u8 *)object + 0x1A) != 0)
@@ -1870,18 +1888,24 @@ extern "C" s32 fn_8021F06C(void *arg0, s32 arg1) {
             fn_80219508(object);
         goto handled;
     default:
-        if ((key & 0x100) == 0 && key > 0x1F) {
+        if (((u32)key & 0x100) == 0 && (u32)key > 0x1F) {
+            text = *(char **)((u8 *)object + 0xA54);
             if ((u32)strlen(text) < (u32)(capacity - 1)) {
-                s32 index = strlen(text) + 1;
-                s32 cursor = *(s32 *)((u8 *)object + 0x250);
-                while (index > cursor) {
-                    char *current = *(char **)((u8 *)object + 0xA54) + index;
-                    *current = current[-1];
-                    index--;
-                }
-                (*(char **)((u8 *)object + 0xA54))[cursor] = (s8)key;
-                cursor++;
-                *(s32 *)((u8 *)object + 0x250) = cursor;
+                s32 insertIndex = strlen(text) + 1;
+                char previous;
+                goto insert_check;
+insert_copy:
+                previous = (*(char **)((u8 *)object + 0xA54))[insertIndex - 1];
+                insertIndex--;
+                (*(char **)((u8 *)object + 0xA54))[insertIndex + 1] = previous;
+insert_check:
+                insertCursor = *(s32 *)((u8 *)object + 0x250);
+                if (insertIndex > insertCursor)
+                    goto insert_copy;
+                text = *(char **)((u8 *)object + 0xA54);
+                text[insertCursor] = key;
+                insertCursor++;
+                *(s32 *)((u8 *)object + 0x250) = insertCursor;
             }
             if (*(u8 *)((u8 *)object + 0x1A) != 0)
                 *(u8 *)((u8 *)object + 0x234) = 1;
@@ -2660,6 +2684,12 @@ extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80222C8C(void *arg0, s32 
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
+
+extern "C" void fn_80223280(void *arg0, s32 arg1) {
+    ((u8 (*)(void *))fn_80232B70)((void *)*(s32 *)((u8 *)arg0 + 0x3FC));
 }
 
 extern "C" void fn_8022375C(void);
