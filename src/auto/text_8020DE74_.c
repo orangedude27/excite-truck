@@ -81,6 +81,7 @@ extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
     if (arg1 > 0) fn_80128668(arg0);
     return arg0;
 }
+#pragma scheduling on
 #pragma scheduling off
 #pragma cplusplus reset
 
