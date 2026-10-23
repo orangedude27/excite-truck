@@ -154,6 +154,8 @@ s32 fn_80231730(s32 arg0) {
 }
 #pragma dont_inline off
 
+#pragma push
+#pragma processor 750
 void fn_80231780(void *arg0) {
     f32 f25;
     f32 f26;
@@ -233,6 +235,7 @@ loop_test:
     if (i < lbl_8049846C[1]) goto loop_body;
     lbl_8049846C[1] = 0;
 }
+#pragma pop
 
 #pragma scheduling invalid_target
 void fn_80231ADC(void) {
