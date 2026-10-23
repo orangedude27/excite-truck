@@ -63,6 +63,7 @@ __declspec(section ".sdata") extern char lbl_8055C130[];
 __declspec(section ".sdata") extern char lbl_8055C138[];
 }
 extern "C" float lbl_80563A10, lbl_80563A14, lbl_80563A18;
+#pragma paired_single reset
 extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
     struct Stack {
         float sp8;
@@ -140,8 +141,11 @@ loop_3:
     var_r28 = 0;
     do {
         var_r0 = 0;
-        if (var_r28 == 0) var_r0 = 1;
-          if (var_r28 == 1) var_r0 = 1;
+        if (var_r28 == 0) goto first_true;
+        if (var_r28 != 1) goto first_done;
+      first_true:
+        var_r0 = 1;
+      first_done:
         if (var_r0 != 0) var_f1 = fn_801F159C(*(int *)((unsigned char *)arg0 + 0x18));
         else var_f1 = fn_801F159C(*(int *)((unsigned char *)arg0 + 0x1C));
         var_r28 += 1;
@@ -167,11 +171,15 @@ loop_3:
     var_r5_2 = arg0;
     for (var_r6_2 = 0; var_r6_2 < 4; var_r6_2++) {
         var_r3 = 1;
-        if (var_r6_2 != 0) var_r3 = 0;
-          if (var_r6_2 == 2) var_r3 = 1;
+        if (var_r6_2 == 0) goto axis_true;
+        if (var_r6_2 != 2) var_r3 = 0;
+      axis_true:
         var_r0_2 = 0;
-        if (var_r6_2 == 0) var_r0_2 = 1;
-          if (var_r6_2 == 1) var_r0_2 = 1;
+        if (var_r6_2 == 0) goto side_true;
+        if (var_r6_2 != 1) goto side_done;
+      side_true:
+        var_r0_2 = 1;
+      side_done:
         if (var_r0_2 != 0) var_f4 = temp_f30;
         else var_f4 = temp_f31;
         if (var_r3 != 0) var_f0 = lbl_80563A10;
@@ -194,6 +202,7 @@ loop_3:
     fn_80253890(arg0, stack.sp38);
     *(signed char *)arg0 = 1;
 }
+#pragma paired_single reset
 #pragma cplusplus reset
 
 void fn_80253C48(void *arg0) {
@@ -526,6 +535,125 @@ void fn_80256548(void *arg0) {
     fn_802C86E8(0);
     fn_802C87B4(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802C88BC(-1);
+}
+
+void fn_802566A4(void *arg0) {
+    extern void *fn_802C86DC(void);
+    extern void PSVECCrossProduct(float *, float *, float *);
+    extern void PSVECNormalize(float *, float *);
+    extern void fn_802C9A1C(float *);
+    extern int fn_802C9C8C(int);
+    extern void fn_802C9CE0(void);
+    extern unsigned int lbl_802FA5B8[9];
+    extern float lbl_80563A04;
+    extern float lbl_80563A14;
+    struct Frame {
+        float u[3];
+        float v[3];
+        float w[3];
+        float fallback[3];
+        float output[3];
+        unsigned int pad;
+        union {
+            unsigned int word[12];
+            float value[12];
+        } basis;
+        unsigned int config[9];
+    } frame;
+    register int i = 0;
+    register float zero = lbl_80563A04;
+    register float one = lbl_80563A14;
+    unsigned int *config = lbl_802FA5B8;
+    float *out = frame.output;
+
+    frame.config[0] = *config++;
+    frame.config[1] = *config++;
+    frame.config[2] = *config++;
+    frame.config[3] = *config++;
+    frame.config[4] = *config++;
+    frame.config[5] = *config++;
+    frame.config[6] = *config++;
+    frame.config[7] = *config++;
+    frame.config[8] = *config++;
+
+    do {
+        unsigned int *matrix = (unsigned int *)fn_802C86DC();
+        frame.basis.word[0] = matrix[0];
+        frame.basis.word[2] = matrix[2];
+        frame.basis.word[6] = matrix[6];
+        frame.basis.word[8] = matrix[8];
+        frame.basis.word[1] = matrix[1];
+        frame.basis.word[4] = matrix[4];
+        frame.basis.word[7] = matrix[7];
+        frame.basis.word[3] = matrix[3];
+        frame.basis.word[5] = matrix[5];
+        frame.basis.word[9] = matrix[9];
+        frame.basis.word[10] = matrix[10];
+        frame.basis.word[11] = matrix[11];
+
+        frame.u[0] = frame.basis.value[0];
+        frame.u[1] = zero;
+        frame.u[2] = frame.basis.value[2];
+        frame.w[0] = frame.basis.value[6];
+        frame.w[1] = zero;
+        frame.w[2] = frame.basis.value[8];
+        PSVECCrossProduct(frame.w, frame.u, frame.v);
+        PSVECNormalize(frame.u, frame.u);
+        PSVECNormalize(frame.v, frame.v);
+        PSVECCrossProduct(frame.u, frame.v, frame.w);
+        frame.basis.value[0] = frame.u[0];
+        frame.basis.value[1] = frame.u[1];
+        frame.basis.value[2] = frame.u[2];
+        frame.basis.value[3] = frame.v[0];
+        frame.basis.value[4] = frame.v[1];
+        frame.basis.value[5] = frame.v[2];
+        frame.basis.value[6] = frame.w[0];
+        frame.basis.value[7] = frame.w[1];
+        frame.basis.value[8] = frame.w[2];
+
+        {
+            float *input;
+            if (i > 0) {
+                input = (float *)frame.config + (i - 1) * 3;
+            } else {
+                frame.fallback[0] = zero;
+                frame.fallback[1] = one;
+                frame.fallback[2] = zero;
+                input = frame.fallback;
+            }
+            if (out == input) {
+                float x = input[0];
+                float y = input[1];
+                float z = input[2];
+                out[0] = (x * frame.basis.value[0] + y * frame.basis.value[3]) +
+                         z * frame.basis.value[6];
+                out[1] = (x * frame.basis.value[1] + y * frame.basis.value[4]) +
+                         z * frame.basis.value[7];
+                out[2] = (x * frame.basis.value[2] + y * frame.basis.value[5]) +
+                         z * frame.basis.value[8];
+            } else {
+                out[0] = (input[0] * frame.basis.value[0] +
+                          input[1] * frame.basis.value[3]) +
+                          input[2] * frame.basis.value[6];
+                out[1] = (input[0] * frame.basis.value[1] +
+                          input[1] * frame.basis.value[4]) +
+                          input[2] * frame.basis.value[7];
+                out[2] = (input[0] * frame.basis.value[2] +
+                          input[1] * frame.basis.value[5]) +
+                          input[2] * frame.basis.value[8];
+            }
+        }
+
+        fn_802C9A1C(out);
+        if (fn_802C9C8C(0x14000000) != 0) {
+            unsigned char *flag = *(unsigned char **)((char *)arg0 + 8);
+            if (*flag != 0) {
+                fn_80254354(flag);
+            }
+            fn_802C9CE0();
+        }
+        i++;
+    } while (i < 4);
 }
 
 s32 fn_802571F0(void) { return 0; }
