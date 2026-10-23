@@ -884,7 +884,7 @@ void fn_8003801C(void) {
 
 extern s32 __DVDCheckWaitingQueue(void);
 extern void *__DVDPopWaitingQueue(void);
-extern void OSSetPeriodicAlarm(void *, u32, u32, s32, u32, u32, void (*)(void));
+
 extern s32 lbl_8055D8B4, lbl_8055D878;
 void fn_80038040(void) {
     void (*callback)(s32);
