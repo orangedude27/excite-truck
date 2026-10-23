@@ -26,42 +26,31 @@ extern void fn_802C8D74(void);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
+    f32 outX;
+    f32 outY;
+    f32 outZ;
+
     if (src == dst) {
-        f32 m3 = matrix[3];
-        f32 ty = y;
-        f32 m4 = matrix[4];
-        f32 py0 = ty * m3;
-        f32 m5 = matrix[5];
-        f32 m0 = matrix[0];
-        f32 py1 = ty * m4;
-        f32 tx = x;
-        f32 m1 = matrix[1];
-        f32 px0 = tx * m0;
-        f32 m2 = matrix[2];
-        f32 px1 = tx * m1;
-        f32 m6 = matrix[6];
-        f32 px2 = tx * m2;
-        f32 py2 = ty * m5;
-        f32 tz = z;
-        f32 m7 = matrix[7];
-        f32 sum0 = px0 + py0;
-        f32 pz0 = tz * m6;
-        f32 m8 = matrix[8];
-        f32 sum1 = px1 + py1;
-        f32 pz1 = tz * m7;
-        f32 sum2 = px2 + py2;
-        f32 pz2 = tz * m8;
-        dst[0] = pz0 + sum0 + matrix[9];
-        dst[1] = pz1 + sum1 + matrix[10];
-        dst[2] = pz2 + sum2 + matrix[11];
+        f32 xy3 = y * matrix[3];
+        f32 xx0 = x * matrix[0];
+        f32 xx1 = x * matrix[1];
+        f32 yy4 = y * matrix[4];
+        f32 xx2 = x * matrix[2];
+        f32 yy5 = y * matrix[5];
+        outX = (xx0 + xy3) + z * matrix[6];
+        outY = (xx1 + yy4) + z * matrix[7];
+        outZ = (xx2 + yy5) + z * matrix[8];
     } else {
         x = src[0];
         y = src[1];
         z = src[2];
-        dst[0] = x * matrix[0] + y * matrix[3] + z * matrix[6] + matrix[9];
-        dst[1] = x * matrix[1] + y * matrix[4] + z * matrix[7] + matrix[10];
-        dst[2] = x * matrix[2] + y * matrix[5] + z * matrix[8] + matrix[11];
+        outX = x * matrix[0] + y * matrix[3] + z * matrix[6];
+        outY = x * matrix[1] + y * matrix[4] + z * matrix[7];
+        outZ = x * matrix[2] + y * matrix[5] + z * matrix[8];
     }
+    dst[0] = outX + matrix[9];
+    dst[1] = outY + matrix[10];
+    dst[2] = outZ + matrix[11];
 }
 #define transform_vec(matrix, src, dst) transform_vec_values(matrix, src, dst, (src)[0], (src)[1], (src)[2])
 extern s32 fn_802315FC(s32);
