@@ -621,10 +621,11 @@ void fn_8016E1B4(void *arg0, s32 arg1) {
     }
 }
 
-#pragma dont_inline fn_8016E314
+#pragma dont_inline on
 void fn_8016E314(void *arg0) {
     *(f32 *)((u8 *)arg0 + 0) = *(f32 *)((u8 *)arg0 + 4);
 }
+#pragma dont_inline reset
 
 u8 fn_8016E320(void *arg0) {
     return *(u8 *)((u8 *)arg0 + 0x9c);
