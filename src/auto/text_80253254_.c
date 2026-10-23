@@ -51,7 +51,7 @@ void *__dt__Q210JASDrumSet5TPercFv_802534B0(void *arg0, s32 arg1) {
 extern "C" void fn_801345D8(void *, int, const char *, ...);
 extern "C" int fn_802C6FC0(void *, int, int);
 extern "C" void *fn_80131808(void *);
-extern "C" int fn_801F0010(int, ...);
+extern "C" int fn_801F0010(int, int = 0);
 extern "C" float fn_801F159C(int);
 extern "C" void fn_80131818(void *, float, float, float);
 extern "C" void fn_8027A714(void *, void *);
