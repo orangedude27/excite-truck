@@ -12155,13 +12155,12 @@ u32 SDP_CreateRecord(void) {
 extern char lbl_80319F90[];
 BOOLEAN SDP_AddAttribute(UINT32 handle, UINT16 attr_id, UINT8 attr_type,
                           UINT32 attr_len, UINT8 *p_val) {
+    UINT16 attr_index;
     tSDP_RECORD *p_rec;
     tSDP_ATTRIBUTE *p_attr;
     UINT16 record_index;
-    UINT16 attr_index;
     UINT16 num_attr;
     UINT16 move_index;
-    UINT32 free_pad;
 
     p_rec = (tSDP_RECORD *)(lbl_803C4C40 + 0x1224);
     for (record_index = 0; record_index < *(UINT16 *)(lbl_803C4C40 + 0x1222);
@@ -12171,12 +12170,12 @@ BOOLEAN SDP_AddAttribute(UINT32 handle, UINT16 attr_id, UINT8 attr_type,
         }
 
         p_attr = p_rec->attribute;
-        for (attr_index = 0; attr_index < p_rec->num_attributes; attr_index++) {
-            if (p_attr[attr_index].id == attr_id) {
+        for (attr_index = 0; attr_index < p_rec->num_attributes;
+             attr_index++, p_attr++) {
+            if (p_attr->id == attr_id) {
                 SDP_DeleteAttribute(handle, attr_id);
                 break;
-            }
-            if (p_attr[attr_index].id > attr_id) {
+            } else if (p_attr->id > attr_id) {
                 break;
             }
         }
@@ -12186,29 +12185,34 @@ BOOLEAN SDP_AddAttribute(UINT32 handle, UINT16 attr_id, UINT8 attr_type,
             return FALSE;
         }
 
-        for (move_index = num_attr; move_index > attr_index; move_index--) {
-            p_attr[move_index] = p_attr[move_index - 1];
+        if (attr_index == num_attr) {
+            p_attr = &p_rec->attribute[num_attr];
+        } else {
+            for (move_index = num_attr; move_index > attr_index; move_index--) {
+                p_rec->attribute[move_index] = p_rec->attribute[move_index - 1];
+            }
         }
 
         p_rec->num_attributes++;
-        p_attr[attr_index].id = attr_id;
-        p_attr[attr_index].len = attr_len;
-        p_attr[attr_index].type = attr_type;
+        p_attr->id = attr_id;
+        p_attr->len = attr_len;
+        p_attr->type = attr_type;
 
-        free_pad = p_rec->free_pad_ptr;
-        if (free_pad + attr_len >= 0x15E) {
+        if (p_rec->free_pad_ptr + attr_len >= 0x15E) {
             if (lbl_803C4C40[0x4630] >= 2) {
-                fn_8007096C(0xA0001, lbl_80319F90, attr_len,
-                            (UINT16)(0x15E - free_pad));
+                ((void (*)(u32, void *, u32, u32))fn_8007096C)(
+                    0xA0001, lbl_80319F90, attr_len,
+                    0x15E - p_rec->free_pad_ptr);
             }
-            attr_len = 0x15E - free_pad;
+            attr_len = 0x15E - p_rec->free_pad_ptr;
             p_val[attr_len] = 0;
-            p_val[0x15F - free_pad] = 0;
+            p_val[0x15F - p_rec->free_pad_ptr] = 0;
         }
 
         if (attr_len != 0 && p_val != NULL) {
-            p_attr[attr_index].value_ptr = (UINT8 *)p_rec + free_pad + 0x138;
-            memcpy(p_attr[attr_index].value_ptr, p_val, attr_len);
+            memcpy((UINT8 *)p_rec + p_rec->free_pad_ptr + 0x138,
+                   p_val, attr_len);
+            p_attr->value_ptr = (UINT8 *)p_rec + p_rec->free_pad_ptr + 0x138;
             p_rec->free_pad_ptr += attr_len;
         }
 
