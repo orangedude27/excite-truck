@@ -53,9 +53,9 @@ struct DummyStrmLoadStream {
     virtual s32 f20();
 };
 struct DummyStrmLoadCallback {
+    virtual void *f2();
     virtual void f0();
     virtual void f1();
-    virtual void *f2();
 };
 struct DummyStrmLoadTaskCallback {
     virtual void f0();
