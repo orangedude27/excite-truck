@@ -2089,9 +2089,10 @@ extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 
     s32 status;
     register s32 result;
     register s32 zero;
+    s32 callResult;
     u32 sp8;
     u8 spC[13];
-    s32 flags;
+    u8 flags;
 
     status = 0;
     *arg3 = status;
@@ -2178,15 +2179,16 @@ advance:
         if (result != 0) {
             *(u32 *)arg0 = old;
             fn_800AB378(arg0, 0);
-        } else if (*(u32 *)((u8 *)arg0 + 0x44) == 0xFFFF0000) {
+        } else if (*(u32 *)((u8 *)arg0 + 0x44) + 0x10000 == 0xFFFF) {
             result = 0x10;
         } else {
-            result = fn_800B5324(*(void **)((u8 *)arg0 + 4),
-                                 (u8 *)arg0 + 0x4C,
-                                 *(u32 *)((u8 *)arg0 + 0x44),
-                                 *(u16 *)((u8 *)arg0 + 0x48),
-                                 0x20, &sp8, 0);
+            callResult = fn_800B5324(*(void **)((u8 *)arg0 + 4),
+                                     (u8 *)arg0 + 0x4C,
+                                     *(u32 *)((u8 *)arg0 + 0x44),
+                                     *(u16 *)((u8 *)arg0 + 0x48),
+                                     0x20, &sp8, 0);
             if (sp8 != 0x20) result = 0x11;
+            else result = callResult;
         }
         status = result & (s32)(-(u32)result | (u32)result) >> 31;
         status &= (s32)(-(u32)status | (u32)status) >> 31;
@@ -3027,12 +3029,12 @@ s32 fn_800B1EB8(void *arg0, void *arg1, u32 arg2, u32 arg3, void *arg4, u32 *arg
 
 extern "C" s32 fn_800B6928(s8);
 extern "C" s32 fn_800AE4C0(s32, s32, s32);
-extern "C" s32 fn_800B3754(void *, s32 *, s32);
+extern "C" s32 fn_800B3754(s32, s32 *, s32);
 extern "C" s32 fn_800AF574(void *);
 extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
 extern "C" s32 fn_800B317C(s32 arg0, s32 arg1) {
-extern s32 fn_800B3754(void *, s32 *, s32);
-return fn_800B3754((void *)arg0, (s32 *)arg1, 1) == 0;
+extern s32 fn_800B3754(s32, s32 *, s32);
+return fn_800B3754(arg0, (s32 *)arg1, 1) == 0;
 }
 
 extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
@@ -3062,10 +3064,10 @@ fn_800B63FC();
 
 extern "C" u8 lbl_80559230, lbl_80559231;
 extern "C" u8 lbl_80559210, lbl_80559214;
-extern "C" s32 fn_800B3754(void *arg0, s32 *arg1, s32 arg2) {
+extern "C" s32 fn_800B3754(s32 arg0, s32 *arg1, s32 arg2) {
 struct {
 s32 sp10[4];
-volatile void *sp20;
+volatile s32 sp20;
 volatile s32 sp24;
 volatile s32 sp28;
 volatile u16 sp2C;
