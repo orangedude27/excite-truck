@@ -4697,7 +4697,7 @@ void BTM_DeviceAuthorized(u8 *bd_addr, u8 res, u32 *trusted_mask) {
 
 extern u8 lbl_80316DC8[];
 
-static tBTM_SEC_SERV_REC *btm_sec_find_mx_serv(BOOLEAN is_originator, UINT16 psm,
+static inline tBTM_SEC_SERV_REC *btm_sec_find_mx_serv(BOOLEAN is_originator, UINT16 psm,
                                                UINT32 mx_proto_id, UINT32 mx_chan_id)
 {
     tBTM_SEC_SERV_REC *p = (tBTM_SEC_SERV_REC *)(lbl_803C0F78 + 0x1990);
@@ -10514,7 +10514,7 @@ static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UIN
     }
     p = sdpu_get_len_from_type(p, type, &seq_len);
     list_end = *(UINT16 *)((UINT8 *)p_ccb + 0x24);
-    list_end += (UINT32)p_ccb;
+    list_end = (UINT32)p_ccb + list_end;
     p_end = (UINT8 *)list_end + 0x26;
     if (p + seq_len != p_end) {
         sdp_disconnect(p_ccb, 5);
