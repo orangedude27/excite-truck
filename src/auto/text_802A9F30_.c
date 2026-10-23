@@ -6,6 +6,12 @@
 typedef struct UnkAA9D4 { unsigned char pad[0xDC]; unsigned char active; unsigned char padDD[3]; float amount; unsigned char padE4[0x14]; float width, depth, height; } UnkAA9D4;
 typedef union UnkAAF04Value { unsigned int u; float f; } UnkAAF04Value;
 typedef union UnkAAF04Conversion { unsigned int words[2]; double value; } UnkAAF04Conversion;
+typedef struct UnkAAF04Frame {
+    float points[6];
+    unsigned int words[12];
+    UnkAAF04Conversion conversion;
+    double sp58, sp60, sp68, sp70, sp78, sp80, sp88, sp90, sp98;
+} UnkAAF04Frame;
 void fn_8028E240(int);
 int fn_802C2C00(int);
 int fn_802C990C(int);
@@ -217,6 +223,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
     extern double lbl_80564A40;
     char *obj = (char *)arg1;
     char *data = (char *)arg2;
+    UnkAAF04Conversion conv;
     float sp8[6];
     unsigned int words[12];
     double sp98, sp90, sp88, sp80, sp78, sp70, sp68, sp60, sp58;
@@ -225,7 +232,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
     float temp_f21, temp_f21_2, temp_f22, temp_f23, temp_f24, temp_f25;
     float temp_f29, temp_f2, temp_f30, temp_f31, temp_f4, temp_f6;
     float var_f0, var_f1, var_f1_2, var_f21, var_f4;
-    int var_r28, var_r27, var_r26;
+    int var_r26, var_r27, var_r28;
 
     words[0] = *(unsigned int *)(data + 0);
     words[1] = *(unsigned int *)(data + 4);
@@ -241,7 +248,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
     words[11] = *(unsigned int *)(data + 0x2C);
     if (*(float *)(obj + 0xF0) > lbl_80564A58) {
         fn_802C8BD0(lbl_8055CC64);
-        var_r26 = 0;
+        var_r28 = 0;
         sp58 = (double)(*(float *)&words[9]);
         temp_f20 = (*(float *)&words[0]);
         temp_f24 = lbl_805649F4;
@@ -268,8 +275,10 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
             fn_802C8DBC(0xA);
             var_r27 = 0;
         loop_3:
-            temp_f14 = (float)var_r27;
-            if (var_r26 != 0) {
+            conv.words[0] = 0x43300000;
+            conv.words[1] = ((unsigned int)var_r27) ^ 0x80000000;
+            temp_f14 = (float)(conv.value - lbl_80564A40);
+            if (var_r28 != 0) {
                 var_f1 = lbl_80564A4C;
             } else {
                 var_f1 = lbl_805649F0;
@@ -281,7 +290,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
             temp_f2 = (float)cos(var_f21);
             temp_f21 = *(float *)(obj + 0xFC) * temp_f2 * temp_f24;
             var_r29 = sp8;
-            var_r28 = 0;
+            var_r26 = 0;
             temp_f6 = *(float *)(obj + 0xFC) * (float)sin(var_f21) * temp_f24;
             temp_f21_2 = (float)sp58 + (temp_f20 * temp_f21) + ((float)sp80 * temp_f6);
             temp_f22 = (float)sp68 + ((float)sp60 * temp_f21) + ((float)sp88 * temp_f6);
@@ -290,7 +299,7 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
             var_r29[0] = temp_f21_2;
             var_r29[1] = temp_f22;
             var_r29[2] = temp_f23;
-            if (var_r28 != 0) {
+            if (var_r26 != 0) {
                 var_f1_2 = (*(float *)(obj + 0x100) * temp_f24) - temp_f25;
             } else {
                 var_f1_2 = temp_f25 + (*(float *)(obj + 0x100) * temp_f24);
@@ -304,15 +313,15 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
             } else {
                 var_f0 = temp_f24 + temp_f4;
             }
-            if (var_r28 != 0) {
+            if (var_r26 != 0) {
                 var_f4 = lbl_805649FC;
             } else {
                 var_f4 = lbl_805649F0;
             }
             fn_802C8E00(((int)var_f0 << 0x18) | 0xFF0000 | 0xFFFF, 1, var_r29[0], var_r29[1], var_r29[2], var_f4, temp_f31 - (temp_f14 * (float)sp98));
-            var_r28 += 1;
+            var_r26 += 1;
             var_r29 += 3;
-            if (var_r28 < 2) {
+            if (var_r26 < 2) {
                 goto loop_9;
             }
             var_r27 += 1;
@@ -320,8 +329,8 @@ void fn_802AAF04(int arg0, int arg1, int arg2) {
                 goto loop_3;
             }
             fn_802C8E48();
-            var_r26 += 1;
-        } while (var_r26 < 2);
+            var_r28 += 1;
+        } while (var_r28 < 2);
         fn_802C8D74();
     }
 }
