@@ -1,4 +1,5 @@
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
+extern "C" void TRKProcessInput(void *, unsigned int);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -681,6 +682,138 @@ extern "C" void Free__Q46nw4hbm3snd6detail7AxVoiceFv(void *self) {
     FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(0, self);
     *((unsigned char *)self + 0x11C) = zero;
     OSRestoreInterrupts(interruptState);
+}
+
+extern float lbl_80560F44;
+extern const char lbl_803222A0[];
+extern "C" void fn_800E5E74(void *, int, int, int, int, int, int);
+extern "C" void fn_800E68EC(void *, int, int, void *, int);
+extern "C" void fn_80033408(void *, int);
+extern double lbl_80560F48;
+#pragma fp_contract on
+#pragma peephole on
+extern "C" void Setup__Q46nw4hbm3snd6detail7AxVoiceFRCQ46nw4hbm3snd6detail8WaveData(void *arg0, const void *arg1) {
+    unsigned char *self = (unsigned char *)arg0;
+    unsigned char *entry;
+    const unsigned char *inst;
+    unsigned char *output;
+    unsigned char *env;
+    unsigned char *mix;
+    int i;
+    const unsigned char *wave = (const unsigned char *)arg1;
+    int format;
+    if (wave[0] == 1) {
+        format = 10;
+    } else {
+        format = 0;
+        if (wave[0] == 0) format = 25;
+    }
+    *(int *)(self + 0x118) = format;
+    *(int *)(self + 0x114) = *(int *)(wave + 4);
+    entry = self;
+    inst = wave;
+    output = self;
+    env = self + 0x30;
+    mix = self + 0x58;
+    i = 0;
+    while (i < *(int *)(self + 0x104)) {
+        if (*(int *)(entry + 0xC) != 0) {
+            if (*(int *)(inst + 0x10) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x1BC, lbl_803222A0);
+            *(int *)(output + 0x2C) = *(int *)(inst + 0x10);
+            *(unsigned short *)(output + 0x30) = *(unsigned short *)(inst + 0x24);
+            *(unsigned short *)(output + 0x32) = *(unsigned short *)(inst + 0x26);
+            *(unsigned short *)(output + 0x34) = *(unsigned short *)(inst + 0x28);
+            *(unsigned short *)(output + 0x36) = *(unsigned short *)(inst + 0x2A);
+            *(unsigned short *)(output + 0x38) = *(unsigned short *)(inst + 0x2C);
+            *(unsigned short *)(output + 0x3A) = *(unsigned short *)(inst + 0x2E);
+            *(unsigned short *)(output + 0x3C) = *(unsigned short *)(inst + 0x30);
+            *(unsigned short *)(output + 0x3E) = *(unsigned short *)(inst + 0x32);
+            *(unsigned short *)(output + 0x40) = *(unsigned short *)(inst + 0x34);
+            *(unsigned short *)(output + 0x42) = *(unsigned short *)(inst + 0x36);
+            *(unsigned short *)(output + 0x44) = *(unsigned short *)(inst + 0x38);
+            *(unsigned short *)(output + 0x46) = *(unsigned short *)(inst + 0x3A);
+            *(unsigned short *)(output + 0x48) = *(unsigned short *)(inst + 0x3C);
+            *(unsigned short *)(output + 0x4A) = *(unsigned short *)(inst + 0x3E);
+            *(unsigned short *)(output + 0x4C) = *(unsigned short *)(inst + 0x40);
+            *(unsigned short *)(output + 0x4E) = *(unsigned short *)(inst + 0x42);
+            *(unsigned short *)(output + 0x50) = *(unsigned short *)(inst + 0x44);
+            *(unsigned short *)(output + 0x52) = *(unsigned short *)(inst + 0x46);
+            *(unsigned short *)(output + 0x54) = *(unsigned short *)(inst + 0x48);
+            *(unsigned short *)(output + 0x56) = *(unsigned short *)(inst + 0x4A);
+            *(unsigned short *)(output + 0x58) = *(unsigned short *)(inst + 0x4C);
+            *(unsigned short *)(output + 0x5A) = *(unsigned short *)(inst + 0x4E);
+            *(unsigned short *)(output + 0x5C) = *(unsigned short *)(inst + 0x50);
+            *(unsigned short *)(output + 0x5E) = *(unsigned short *)(inst + 0x52);
+            fn_800E5E74(arg0, i, wave[1] != 0, *(int *)(self + 0x118), *(int *)(inst + 0x10), *(int *)(wave + 8), *(int *)(wave + 0xC));
+            if (*(int *)(self + 0x118) == 0) {
+                ((void (*)(void *, int, int, void *))fn_800E68EC)(arg0, i, *(int *)(self + 0x118), env);
+                ((void (*)(void *, int, int, void *))fn_800E6A44)(arg0, i, *(int *)(self + 0x118), mix);
+            }
+        }
+        entry += 0x10; inst += 0x44; output += 0x34; env += 0x34; mix += 0x34; i++;
+    }
+    float zero0;
+    float zero1;
+    zero1 = lbl_80560F38;
+    zero0 = lbl_80560F3C;
+    unsigned char *param = self;
+    int j = 0;
+    while (j < *(int *)(self + 0x108)) {
+        *(float *)(param + 0x94) = zero1;
+        j++;
+        *(float *)(param + 0x98) = zero1;
+        *(float *)(param + 0x9C) = zero0;
+        *(float *)(param + 0xA0) = zero0;
+        *(float *)(param + 0xA4) = zero0;
+        *(float *)(param + 0xA8) = zero0;
+        *(int *)(param + 0xAC) = 0;
+        param += 0x1C;
+    }
+    {
+        int k;
+        int n;
+        unsigned char *base;
+        unsigned char *slot;
+        base = self; k = 0;
+        while (k < *(int *)(self + 0x104)) {
+            slot = base; n = 0;
+            while (n < *(int *)(self + 0x108)) {
+                void *voice = *(void **)(slot + 0xC);
+                if (voice != 0) ((void (*)(void *, int))fn_80033538)(voice, 0);
+                slot += 4; n++;
+            }
+            base += 0x10; k++;
+        }
+    }
+    {
+        int mixMode;
+        int k;
+        int n;
+        unsigned char *base;
+        unsigned char *slot;
+        register unsigned int rateInt = *(unsigned int *)(self + 0x114);
+        union { double value; unsigned int words[2]; } conversion;
+        conversion.words[1] = rateInt;
+        conversion.words[0] = 0x43300000;
+        conversion.words[1] ^= 0x80000000;
+        register double converted = conversion.value;
+        register double bias = lbl_80560F48;
+        if ((*(float *)(self + 0x184) * (float)(converted - bias) / lbl_80560F40) > lbl_80560F44) mixMode = 2;
+        else if ((*(float *)(self + 0x184) * (float)(converted - bias) / lbl_80560F40) > lbl_80560F38) mixMode = 3;
+        else mixMode = 4;
+        base = self; k = 0;
+        while (k < *(int *)(self + 0x104)) {
+            slot = base; n = 0;
+            while (n < *(int *)(self + 0x108)) {
+                void *voice = *(void **)(slot + 0xC);
+                if (voice != 0) fn_80033408(voice, mixMode);
+                slot += 4; n++;
+            }
+            base += 0x10; k++;
+        }
+    }
+    self[0x11F] = 0; self[0x120] = 0; self[0x11D] = 0; self[0x11E] = 0;
+    self[0x123] |= 0x70;
 }
 extern "C" void fn_800E519C(void *arg0) {
     unsigned int level = OSDisableInterrupts();
