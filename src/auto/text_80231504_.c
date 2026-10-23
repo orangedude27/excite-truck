@@ -157,6 +157,8 @@ s32 fn_80231730(s32 arg0) {
 
 #pragma push
 #pragma processor 750
+#pragma use_lmw_stmw off
+#pragma small_data off
 void fn_80231780(void *arg0) {
     f32 f25;
     f32 f26;
