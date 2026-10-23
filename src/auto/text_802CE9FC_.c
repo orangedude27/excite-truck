@@ -396,10 +396,12 @@ void fn_802CFF10(void) {
 }
 #pragma pop
 extern void *lbl_8055FD20;
-#pragma dont_inline fn_802CFF50
+#pragma push
+#pragma dont_inline on
 void fn_802CFF50(void) {
     lbl_8055FD20 = (void*)-1;
 }
+#pragma pop
 
 extern void *lbl_8055FD1C;
 void fn_802CFF5C(void* hi) {
@@ -828,17 +830,11 @@ void fn_802D2218(void) {
     float sp90[12];
     float sp60[12];
     float sp20[16];
-    float sp18;
-    float sp14;
-    float sp10;
-    unsigned char spF;
-    unsigned char spE;
-    unsigned char spD;
-    unsigned char spC;
-    unsigned char spB;
-    unsigned char spA;
-    unsigned char sp9;
-    unsigned char sp8;
+    volatile float sp18;
+    volatile float sp14;
+    volatile float sp10;
+    unsigned char fogColor[4];
+    unsigned char tevColor[4];
     float temp_f1;
     float temp_f1_2;
     float temp_f30;
@@ -855,7 +851,7 @@ void fn_802D2218(void) {
     unsigned char temp_r6;
     unsigned char temp_r6_2;
     unsigned char temp_r7_2;
-    unsigned char *temp_r30;
+    register unsigned char *temp_r30;
     unsigned char *temp_r3;
     unsigned char *temp_r3_2;
     unsigned char *temp_r3_3;
@@ -880,9 +876,9 @@ void fn_802D2218(void) {
         fn_802D0DD4(sp60, sp90);
         GXLoadPosMtxImm(sp60, 0);
         temp_r30 = (unsigned char *)lbl_804C5650 + 0x4128;
-        temp_f31 = lbl_80564F94 * (float)*(int *)(temp_r30 + 0x24);
-        temp_f30 = lbl_80564F94 * (float)*(int *)(temp_r30 + 0x28);
-        C_MTXOrtho(sp20, temp_f30, -temp_f30, -temp_f31, temp_f31, lbl_80564F8C, lbl_80564FCC);
+        temp_f31 = lbl_80564F94 * (float)*(int *)(temp_r30 + 0x28);
+        temp_f30 = lbl_80564F94 * (float)*(int *)(temp_r30 + 0x24);
+        C_MTXOrtho(sp20, temp_f31, -temp_f31, -temp_f30, temp_f30, lbl_80564F8C, lbl_80564FCC);
         GXSetProjection(sp20, 1);
         GXSetDstAlpha(0, 0);
         GXSetBlendMode(0, 1, 0, 5);
@@ -892,21 +888,21 @@ void fn_802D2218(void) {
         temp_r7 = (unsigned char *)lbl_804C5650 + 0x4160;
         temp_r6 = temp_r7[2];
         temp_r5 = temp_r7[3];
-        spC = temp_r7[1];
-        spD = temp_r6;
-        spE = temp_r5;
-        spF = temp_r7[4];
-        GXSetFog(0, &spC, temp_r5, temp_r6, temp_r7, lbl_80564F88, lbl_80564F88, lbl_80564F88, lbl_80564F88);
+        fogColor[0] = temp_r7[1];
+        fogColor[1] = temp_r6;
+        fogColor[2] = temp_r5;
+        fogColor[3] = temp_r7[4];
+        GXSetFog(0, fogColor, temp_r5, temp_r6, temp_r7, lbl_80564F88, lbl_80564F88, lbl_80564F88, lbl_80564F88);
         GXSetNumTevStages(1);
         GXSetNumTexGens(0);
         temp_r7_2 = temp_r30[0x2E];
         temp_r6_2 = temp_r30[0x2F];
         temp_r5_2 = temp_r30[0x30];
-        sp8 = temp_r7_2;
-        sp9 = temp_r6_2;
-        spA = temp_r5_2;
-        spB = temp_r30[0x31];
-        GXSetTevColor(1, &sp8, temp_r5_2, temp_r6_2, temp_r7_2);
+        tevColor[0] = temp_r7_2;
+        tevColor[1] = temp_r6_2;
+        tevColor[2] = temp_r5_2;
+        tevColor[3] = temp_r30[0x31];
+        ((void (*)(int, unsigned char *, unsigned char, unsigned char, unsigned char))GXSetTevColor)(1, tevColor, temp_r5_2, temp_r6_2, temp_r7_2);
         GXSetTevOrder(0, 0xFF, 0xFF, 0xFF);
         GXSetTevColorIn(0, 0xF, 0xF, 0xF, 2);
         GXSetTevColorOp(0, 0, 0, 0, 0, 0);
@@ -925,7 +921,7 @@ void fn_802D2218(void) {
                 var_r0 = -1;
             }
             var_r0_2 = 1;
-            sp10 = temp_f31 * (float)var_r0;
+            sp10 = temp_f30 * (float)var_r0;
             if (var_r4 & 2) {
                 var_r0_2 = -1;
             }
@@ -933,7 +929,7 @@ void fn_802D2218(void) {
             var_r0_3 = 1;
             *(volatile float *)0xCC008000 = sp10;
             sp18 = lbl_80564FDC;
-            temp_f1 = temp_f30 * (float)var_r0_2;
+            temp_f1 = temp_f31 * (float)var_r0_2;
             *(volatile float *)0xCC008000 = temp_f1;
             sp14 = temp_f1;
             *(volatile float *)0xCC008000 = lbl_80564FDC;
@@ -941,14 +937,14 @@ void fn_802D2218(void) {
                 var_r0_3 = -1;
             }
             var_r0_4 = 1;
-            sp10 = temp_f31 * (float)var_r0_3;
+            sp10 = temp_f30 * (float)var_r0_3;
             if (temp_r4 & 2) {
                 var_r0_4 = -1;
             }
             var_r4 = temp_r4 + 1;
             *(volatile float *)0xCC008000 = sp10;
             sp18 = lbl_80564FDC;
-            temp_f1_2 = temp_f30 * (float)var_r0_4;
+            temp_f1_2 = temp_f31 * (float)var_r0_4;
             *(volatile float *)0xCC008000 = temp_f1_2;
             sp14 = temp_f1_2;
             *(volatile float *)0xCC008000 = lbl_80564FDC;
