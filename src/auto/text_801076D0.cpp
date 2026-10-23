@@ -3,7 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); struct Font; class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; void SetFont(const Font&); }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; s32 GetDefaultCharWidths() const; void SetLineFeed(int); }; } } }
+namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); struct Font; struct CharWidths; class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; void SetFont(const Font&); }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; s32 GetDefaultCharWidths() const; void SetLineFeed(int); void SetDefaultCharWidths(const CharWidths&); }; } } }
 
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
@@ -255,6 +255,51 @@ extern "C" s32 fn_80109040(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation(void* self, void* resource, void* info) {
+    const char* file = lbl_80329140;
+    u32 address = (u32)resource;
+    u32 infoAddress = (u32)info;
+    u32 valid = 1;
+    if ((address & 0xFF000000) != 0x80000000 &&
+        (address & 0xFF800000) != 0x81000000)
+        valid = 0;
+    if (valid == 0 && (address & 0xF8000000) != 0x78000000)
+        valid = 1;
+    if (valid == 0 && (address & 0xFF000000) != 0x40000000)
+        valid = 1;
+    if (valid == 0 && (address & 0xFF800000) != 0xC1000000)
+        valid = 1;
+    if (valid == 0 && (address & 0xF8000000) != 0xD0000000)
+        valid = 1;
+    if (valid == 0 && (address & 0xFFFFC000) != 0xE0000000)
+        valid = 1;
+    if (valid == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x4F, file + 0x20, resource);
+
+    valid = 1;
+    if ((infoAddress & 0xFF000000) != 0x80000000 &&
+        (infoAddress & 0xFF800000) != 0x81000000)
+        valid = 0;
+    if (valid == 0 && (infoAddress & 0xF8000000) != 0x78000000)
+        valid = 1;
+    if (valid == 0 && (infoAddress & 0xFF000000) != 0x40000000)
+        valid = 1;
+    if (valid == 0 && (infoAddress & 0xFF800000) != 0xC1000000)
+        valid = 1;
+    if (valid == 0 && (infoAddress & 0xF8000000) != 0xD0000000)
+        valid = 1;
+    if (valid == 0 && (infoAddress & 0xFFFFC000) != 0xE0000000)
+        valid = 1;
+    if (valid == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x50, file + 0x5C, info);
+    if (*(void**)((char*)self + 0x10) != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x51, file + 0x98);
+    if (*(void**)((char*)self + 0x14) != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x52, file + 0xC4);
+    *(void**)((char*)self + 0x10) = resource;
+    *(void**)((char*)self + 0x14) = info;
+}
+
 s32 nw4hbm::ut::detail::ResFontBase::GetDescent() const {
     const u32 value = (u32)this;
     const u32 data = *(const u32*)(value + 0x14);
@@ -422,6 +467,31 @@ s32 nw4hbm::ut::detail::ResFontBase::GetDefaultCharWidths() const {
     return (*(u16*)((char*)v+4)<<16) | (*(u8*)((char*)v+6)<<8);
 }
 
+void nw4hbm::ut::detail::ResFontBase::SetLineFeed(int lineFeed) {
+    u32 p = (u32)this;
+    int a = 1, b = 1, c = 1, d = 1, e = 1, f = 1;
+    if ((u32)((p & 0xFF000000) + 0x80000000) != 0 && (u32)((p & 0xFF800000) + 0x7F000000) != 0) a = 0;
+    if (a == 0 && (u32)((p & 0xF8000000) + 0x70000000) != 0) b = 0;
+    if (b == 0 && (u32)((p & 0xFF000000) + 0x40000000) != 0) c = 0;
+    if (c == 0 && (u32)((p & 0xFF800000) + 0x3F000000) != 0) d = 0;
+    if (d == 0 && (u32)((p & 0xF8000000) + 0x30000000) != 0) e = 0;
+    if (e == 0 && (u32)((p & 0xFFFFC000) + 0x20000000) != 0) f = 0;
+    if (f == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140 + 0xC, 0x177, lbl_80329140 + 0xF0, this);
+    s32* field = (s32*)((char*)this + 0x14);
+    p = (u32)*field;
+    a = b = c = d = e = f = 1;
+    if ((u32)((p & 0xFF000000) + 0x80000000) != 0 && (u32)((p & 0xFF800000) + 0x7F000000) != 0) a = 0;
+    if (a == 0 && (u32)((p & 0xF8000000) + 0x70000000) != 0) b = 0;
+    if (b == 0 && (u32)((p & 0xFF000000) + 0x40000000) != 0) c = 0;
+    if (c == 0 && (u32)((p & 0xFF800000) + 0x3F000000) != 0) d = 0;
+    if (d == 0 && (u32)((p & 0xF8000000) + 0x30000000) != 0) e = 0;
+    if (e == 0 && (u32)((p & 0xFFFFC000) + 0x20000000) != 0) f = 0;
+    if (f == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140 + 0xC, 0x178, lbl_80329140 + 0x128);
+    if (lineFeed < -128 || lineFeed > 127)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80329140 + 0xC, 0x179, lbl_80329140 + 0x1A0, lineFeed, -128, 127);
+    *(s8*)((char*)*field + 1) = lineFeed;
+}
+
 extern "C" s8 fn_8010B2BC(void *arg0) {
     struct V { virtual u32 a0()=0; virtual u32 a1()=0; virtual u32 a2()=0; virtual u32 a3()=0; virtual u32 a4()=0; virtual u32 a5()=0; virtual u32 a6()=0; virtual u32 a7()=0; virtual u32 a8()=0; virtual u32 a9()=0; virtual u32 a10()=0; virtual u32 a11()=0; virtual u32 a12()=0; virtual u32 a13()=0; virtual u32 a14()=0; virtual u32 a15()=0; virtual u32 a16()=0; virtual u32 a17()=0; virtual u32 f()=0; };
     u32 value = ((V *)arg0)->f();
@@ -450,6 +520,47 @@ u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u16 code) {
     if(width) entry=width+8+5*(glyph-*(u16*)width);
     else entry=info+4;
     return ((u32)*(u16*)(entry+4)<<16) | ((u32)entry[6]<<8);
+}
+
+u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void *self, const void *mapArg, u16 code) {
+    const u16 *map=(const u16 *)mapArg;
+    const char *base=lbl_80329140;
+    unsigned int top=(unsigned int)self&0xFF000000U;
+    int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
+    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)self&0xFF800000U)+0x7F000000U)!=0U)r10=0;
+    if(r10==0&&(unsigned int)(((unsigned int)self&0xF8000000U)+0x70000000U)!=0U)r9=0;
+    if(r9==0&&(unsigned int)(top+0x40000000U)!=0U)r8=0;
+    if(r8==0&&(unsigned int)(((unsigned int)self&0xFF800000U)+0x3F000000U)!=0U)r7=0;
+    if(r7==0&&(unsigned int)(((unsigned int)self&0xF8000000U)+0x30000000U)!=0U)r6=0;
+    if(r6==0&&(unsigned int)(((unsigned int)self&0xFFFFC000U)+0x20000000U)!=0U)r5=0;
+    if(r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x21B,base+0xF0,self);
+    top=(unsigned int)map&0xFF000000U;
+    int r4=1;r5=1;r6=1;r7=1;r8=1;r9=1;
+    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)map&0xFF800000U)+0x7F000000U)!=0U)r9=0;
+    if(r9==0&&(unsigned int)(((unsigned int)map&0xF8000000U)+0x70000000U)!=0U)r8=0;
+    if(r8==0&&(unsigned int)(top+0x40000000U)!=0U)r7=0;
+    if(r7==0&&(unsigned int)(((unsigned int)map&0xFF800000U)+0x3F000000U)!=0U)r6=0;
+    if(r6==0&&(unsigned int)(((unsigned int)map&0xF8000000U)+0x30000000U)!=0U)r5=0;
+    if(r5==0&&(unsigned int)(((unsigned int)map&0xFFFFC000U)+0x20000000U)!=0U)r4=0;
+    if(r4==0)Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x21C,base+0x21C,map);
+    u16 result=0xFFFF;
+    switch(map[2]) {
+    case 0: result=(u16)(map[6]+(u16)(code-map[0])); break;
+    case 1: result=map[6+(u16)(code-map[0])]; break;
+    case 2: {
+        const u16 *low=map+7;
+        const u16 *high=map+6+map[6]*2;
+        while(low<=high) {
+            const u16 *mid=low+(((high-low)/4+(((high-low)/4)>>31))&~1);
+            if(mid[0]<code) low=mid+2;
+            else if(code<mid[0]) high=mid-2;
+            else {result=mid[1];break;}
+        }
+        break;
+    }
+    default: Panic__Q26nw4hbm2dbFPCciPCce(base+0xC,0x255,base+0x254); break;
+    }
+    return result;
 }
 
 #pragma push
