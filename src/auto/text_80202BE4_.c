@@ -44,6 +44,7 @@ extern void fn_802D3050(s32);
 extern void fn_802D306C(s32);
 typedef struct { u8 pad[0x24]; f32 x; f32 y; f32 z; } unk_80203A88_dest;
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1);
+extern s32 fn_802C8DBC(s32, ...);
 extern void fn_80202D50(void *, ...);
 extern void fn_802C8B98(s32, s32);
 extern f32 PSVECMag(const void *);
