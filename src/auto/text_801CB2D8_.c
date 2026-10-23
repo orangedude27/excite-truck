@@ -1,4 +1,5 @@
 #include "revolution/BTE/stack/include/btm_api.h"
+extern unsigned int fn_801CE898(void);
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
