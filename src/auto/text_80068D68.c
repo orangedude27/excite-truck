@@ -911,6 +911,61 @@ u8 fn_8006DF84(void *arg0) {
     return tmp >> 5;
 }
 
+extern s32 fn_8006EBF4(void);
+#pragma use_lmw_stmw off
+UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_pool)
+{
+    UINT8 xx;
+    UINT32 mem_needed;
+    INT32 tempsize = size;
+    INT32 i;
+    INT32 j;
+    tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
+
+    if (size > MAX_USER_BUF_SIZE)
+        return GKI_INVALID_POOL;
+
+    for (xx = 0; xx < GKI_NUM_TOTAL_BUF_POOLS; xx++) {
+        if (!p_cb->pool_start[xx])
+            break;
+    }
+
+    if (xx == GKI_NUM_TOTAL_BUF_POOLS)
+        return GKI_INVALID_POOL;
+
+    tempsize = (INT32)ALIGN_POOL(size);
+    mem_needed = (tempsize + BUFFER_PADDING_SIZE) * count;
+
+    if (!p_mem_pool)
+        p_mem_pool = ((void *(*)(UINT32))fn_8006EBF4)(mem_needed);
+
+    if (p_mem_pool) {
+        gki_init_free_queue(xx, size, count, p_mem_pool);
+
+        for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
+            if (p_cb->freeq[xx].size <= p_cb->freeq[p_cb->pool_list[i]].size)
+                break;
+        }
+
+        for (j = p_cb->curr_total_no_of_pools; j > i; j--)
+            p_cb->pool_list[j] = p_cb->pool_list[j - 1];
+
+        p_cb->pool_list[i] = xx;
+
+        if (xx < GKI_NUM_TOTAL_BUF_POOLS) {
+            if (permission == 1)
+                p_cb->pool_access_mask |= 1 << xx;
+            else
+                p_cb->pool_access_mask &= ~(1 << xx);
+        }
+
+        p_cb->curr_total_no_of_pools++;
+        return xx;
+    }
+
+    return GKI_INVALID_POOL;
+}
+#pragma use_lmw_stmw reset
 extern void fn_8006EBF0();
 extern void fn_8006EC20();
 extern char lbl_80314240[];
@@ -7045,6 +7100,72 @@ void hidh_sec_check_complete_orig(BD_ADDR bd_addr, void *p_ref_data, UINT8 res) 
     }
 }
 
+static void hidh_l2cif_connect_cfm(u32 l2cap_cid, s32 result) {
+    char *strings = lbl_80317838;
+    UINT8 dhandle;
+    UINT8 *p_hcon = NULL;
+    UINT8 *p_dev = NULL;
+    UINT8 *entry;
+
+    for (dhandle = 0; dhandle < 0x10; dhandle++) {
+        entry = lbl_803C3C38 + dhandle * 0x34;
+        if (entry[0] != 0 && entry[0x10] != 0 &&
+            (l2cap_cid == *(UINT16 *)(entry + 0x14) ||
+             l2cap_cid == *(UINT16 *)(entry + 0x16))) break;
+    }
+    if (dhandle != 0x10) {
+        p_dev = lbl_803C3C38 + dhandle * 0x34;
+        p_hcon = p_dev + 0x10;
+    }
+    if (p_hcon == NULL || (p_hcon[1] & 1) == 0 ||
+        (l2cap_cid == *(UINT16 *)(p_hcon + 4) && p_hcon[0] != 1) ||
+        (l2cap_cid == *(UINT16 *)(p_hcon + 6) && p_hcon[0] != 2)) {
+        if (lbl_803C3C38[0x401] >= 2)
+            ((void (*)(u32, void *, u32))fn_80070954)(
+                0x1E0001, strings + 0x1BC, l2cap_cid);
+        return;
+    }
+    if (result != 0) {
+        if (l2cap_cid == *(UINT16 *)(p_hcon + 4))
+            *(UINT16 *)(p_hcon + 4) = 0;
+        else
+            *(UINT16 *)(p_hcon + 6) = 0;
+        p_dev = lbl_803C3C38 + dhandle * 0x34;
+        if (lbl_803C3C38[0x401] >= 4)
+            fn_8007093C(0x1E0003, strings + 0x44);
+        if (*(UINT16 *)(p_dev + 0x14) != 0 || *(UINT16 *)(p_dev + 0x16) != 0) {
+            p_dev[0x10] = 5;
+            if (*(UINT16 *)(p_dev + 0x16) != 0)
+                L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x16));
+            if (*(UINT16 *)(p_dev + 0x14) != 0)
+                L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x14));
+        } else {
+            p_dev[0x10] = 0;
+        }
+        ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
+            dhandle, 1, result | 0x100, 0);
+        return;
+    }
+    if (l2cap_cid == *(UINT16 *)(p_hcon + 4)) {
+        p_hcon[0] = 6;
+        *(UINT16 *)(p_hcon + 0xA) = 0x100;
+        {
+            u16 attr = *(UINT16 *)(p_dev + 8);
+            s32 secLevel = (attr & 0x8000) ? 1 : 2;
+            btm_sec_mx_access_request(
+                p_dev + 1, 0x11, 1, 6, secLevel,
+                &hidh_sec_check_complete_orig, p_dev);
+        }
+    } else {
+        p_hcon[0] = 3;
+    }
+    ((void (*)(u32, void *))L2CA_ConfigReq)(
+        l2cap_cid, (void *)(lbl_803C3C38 + 0x344));
+    if (lbl_803C3C38[0x401] >= 4)
+        ((void (*)(u32, void *, u32))fn_80070954)(
+            0x1E0003, strings + 0x1E8, l2cap_cid);
+}
+
 static void hidh_l2cif_config_ind(UINT16 l2cap_cid, tL2CAP_CFG_INFO *p_cfg)
 {
     UINT8 dhandle;
@@ -11934,13 +12055,13 @@ s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void *buffer, s32 ioctl, v
         *(s32 *)(blk + 4) = 1;
         *(void **)(blk + 8) = b;
         *(s32 *)(blk + 0xC) = 2;
-        *(s32 *)(blk + 0x10) = ioctl;
+        *(s32 *)(blk + 0x10) = (s32)buffer;
         *(s32 *)(blk + 0x14) = length;
         DCFlushRange(a, 0x20);
         DCFlushRange(b, 0x20);
         DCFlushRange(blk, 0x60);
         if (async == 0) {
-            ret = IOS_Ioctlv(fd, (s32)buffer, 2, 1, blk);
+            ret = IOS_Ioctlv(fd, ioctl, 2, 1, blk);
             USB_LOG(base + 0x2B8, ret);
         } else {
             msg = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
@@ -11949,16 +12070,16 @@ s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void *buffer, s32 ioctl, v
                 USB_ERR(base + 0x2D8);
                 ret = -0x16;
             } else {
-                *(s32 *)(msg + 0) = (s32)callbackArg;
-                *(s32 *)(msg + 4) = (s32)callback;
-                USB_LOG(base + 0x304, (s32)callbackArg, (s32)callback);
+                *(s32 *)(msg + 0) = (s32)callback;
+                *(s32 *)(msg + 4) = (s32)callbackArg;
+                USB_LOG(base + 0x304, (s32)callback, (s32)callbackArg);
                 *(s32 *)(msg + 0x2C) = 3;
                 *(void **)(msg + 0xC) = a;
                 *(void **)(msg + 0x10) = b;
                 *(void **)(msg + 0x14) = blk;
-                *(s32 *)(msg + 0x40) = ioctl;
+                *(s32 *)(msg + 0x40) = (s32)buffer;
                 *(u16 *)(msg + 0x44) = length;
-                ret = IOS_IoctlvAsync(fd, (s32)buffer, 2, 1, blk, _intBlkCtrlCb, msg);
+                ret = IOS_IoctlvAsync(fd, ioctl, 2, 1, blk, _intBlkCtrlCb, msg);
                 if (ret < 0) {
                     if (msg != 0) {
                         fr = iosFree(lbl_805590A0, msg);
@@ -12418,11 +12539,11 @@ void fn_8006BAA4(u32 arg0) {
 extern s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks);
 #pragma push
 #pragma scheduling on
-void WUDVendorSpecificCallback(u8 len, u8 *pData) {
+void WUDVendorSpecificCallback(u8 len, register u8 *pData) {
     typedef void (*WUDSyncCallback)(s32, s32);
     typedef void (*WUDClearCallback)(s32);
-    u8 *state = lbl_80392960;
-    u8 *strings = lbl_803130C8;
+    register u8 *state = lbl_80392960;
+    register u8 *strings = lbl_803130C8;
     u8 event = pData[0];
     u32 enabled, busyEnabled;
     s32 busy, result, started, libStatus;
@@ -12462,7 +12583,7 @@ void WUDVendorSpecificCallback(u8 len, u8 *pData) {
         break;
 
     case 9: {
-        u8 *clearState = lbl_80392960;
+        register u8 *clearState = lbl_80392960;
         DBPrintf_8006CFA8((const char *)strings + 0xA70);
         DBPrintf_8006CFA8((const char *)strings + 0x5BC);
         enabled = OSDisableInterrupts();
