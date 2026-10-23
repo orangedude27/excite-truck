@@ -18,7 +18,7 @@ extern s32 fn_801E2CCC(void *, f32 **);
 extern void fn_801EB2D4(s32, s32 *);
 extern void fn_801EB6A8(s32);
 extern void fn_802CDDC8(s32);
-extern void fn_802E317C(const char *, s32, ...);
+extern void fn_802E317C(const char *, ...);
 extern void fn_802AE7F4(void);
 extern s32 fn_802C6FC0(void *, s32, s32);
 extern s32 lbl_802F9A08[];
@@ -52,6 +52,36 @@ s32 fn_801EB110(void *arg0) {
 void fn_801EB128(void) {
     lbl_8055EB98[0] = lbl_80562E68;
     lbl_8055EB98[1] = lbl_80562E68;
+}
+
+extern void fn_802C61BC(void *, void *, u8, u8, u8, u8, u8, u8);
+extern char lbl_80339F6C[];
+void fn_801EB13C(void *arg0, s32 arg1) {
+    u8 *p = (u8 *)arg0;
+    u8 a, b, c, d;
+    a = p[8]; b = p[9]; c = p[10]; d = p[11];
+    p[8] = d; p[9] = c; p[10] = b; p[11] = a;
+    a = p[4]; b = p[5]; c = p[6]; d = p[7];
+    p[4] = d; p[5] = c; p[6] = b; p[7] = a;
+    a = p[12]; b = p[13]; c = p[14]; d = p[15];
+    p[12] = d; p[13] = c; p[14] = b; p[15] = a;
+    fn_802C61BC((void *)(p + *(u32 *)(p + 8)), lbl_80339F6C, p[14], p[15], p[6], p[7], p[4], p[12]);
+    if (*(s32 *)p == 1) {
+        a = p[0x10]; b = p[0x11]; c = p[0x12]; d = p[0x13];
+        p[0x10] = d; p[0x11] = c; p[0x12] = b; p[0x13] = a;
+        a = p[0x14]; b = p[0x15]; c = p[0x16]; d = p[0x17];
+        p[0x14] = d; p[0x15] = c; p[0x16] = b; p[0x17] = a;
+        a = p[0x18]; b = p[0x19]; c = p[0x1A]; d = p[0x1B];
+        p[0x18] = d; p[0x19] = c; p[0x1A] = b; p[0x1B] = a;
+        a = p[0x1C]; b = p[0x1D]; c = p[0x1E]; d = p[0x1F];
+        p[0x1C] = d; p[0x1D] = c; p[0x1E] = b; p[0x1F] = a;
+        a = p[0x20]; b = p[0x21]; c = p[0x22]; d = p[0x23];
+        p[0x20] = d; p[0x21] = c; p[0x22] = b; p[0x23] = a;
+        a = p[0x24]; b = p[0x25]; c = p[0x26]; d = p[0x27];
+        p[0x24] = d; p[0x25] = c; p[0x26] = b; p[0x27] = a;
+        a = p[0x28]; b = p[0x29]; c = p[0x2A]; d = p[0x2B];
+        p[0x28] = d; p[0x29] = c; p[0x2A] = b; p[0x2B] = a;
+    }
 }
 
 void fn_801EB634(void *arg0, s32 arg1) {
@@ -149,15 +179,23 @@ s32 fn_801EB96C(s32 *out, s32 callback) {
     return *ptr;
 }
 
-void fn_801EB9A4(s32 *arg0) {
-    s32 temp_r0 = *arg0;
-    if (temp_r0 && temp_r0) {
-        s32 (*fn)(void *, s32) = (s32 (*)(void *, s32))(*((s32 **)temp_r0))[2];
-        fn((void *)temp_r0, 1);
+#pragma push
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801EB9A4(s32 *arg0) {
+    class ThreadObject {
+    public:
+        virtual void destroy(int);
+    };
+    ThreadObject *p = *(ThreadObject **)arg0;
+    if (p) {
+        if (p)
+            p->destroy(1);
+        *(ThreadObject **)arg0 = 0;
     }
-    *arg0 = 0;
 }
-
+#pragma cplusplus reset
+#pragma pop
 extern void fn_801EBB7C(void *, s32);
 void fn_801EBB7C(void *arg0, s32 arg1) {
     u8 a, b, c, d;
