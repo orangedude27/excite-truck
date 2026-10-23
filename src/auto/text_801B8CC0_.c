@@ -3,6 +3,12 @@ extern float lbl_80562754;
 extern float lbl_80562758;
 extern float lbl_8056275C;
 extern float lbl_80562760;
+extern float PSVECDotProduct(const float *, const float *);
+extern void fn_8018381C(void *);
+extern void fn_80189C64(void *, void **);
+extern void fn_8018A08C(void *);
+extern void fn_801AD148(void *, float *, void *, float, float, float);
+extern void fn_801AD28C(void *, float *, void *, void *, float, float, float);
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void* __AXFXGetLfoSinTable_801769CC(void);
