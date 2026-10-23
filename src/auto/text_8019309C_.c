@@ -15,7 +15,8 @@
     extern int lbl_8055E550;
     extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204;
 
-    typedef unsigned char u8;
+    extern void fn_80194FD0(void);
+typedef unsigned char u8;
 extern void *lbl_804349C0[];
 extern float lbl_8056223C, lbl_8055E57C;
 extern int lbl_804348E8[];
@@ -215,6 +216,48 @@ void fn_801935EC(void *arg0) {
     *(float *)((unsigned char *)arg0 + 0x224) = value;
     *(float *)((unsigned char *)arg0 + 0x228) = value;
     *(float *)((unsigned char *)arg0 + 0x22C) = lbl_8055E3C8;
+}
+
+void fn_80193604(void *arg0, void *arg1, int arg2, void *arg3) {
+    extern float PSVECDotProduct(const void *, const void *);
+    extern float PSVECMag(const void *);
+    extern float lbl_80562140, lbl_80562144, lbl_80562148, lbl_8056215C;
+    extern float lbl_80562160, lbl_80562164, lbl_80562168, lbl_8056216C;
+    extern float lbl_80562170, lbl_80562174;
+    char *obj = (char *)arg0, *vec = (char *)arg1, *other = (char *)arg3;
+    float value, scale, x, y, z;
+    if (other != 0) {
+        if (*(unsigned int *)(other + 0x10) == 0x50434152) {
+            char *vehicle = *(char **)(obj + 0x294);
+            x = *(float *)(other + 0x60) - *(float *)(vehicle + 0x60);
+            y = *(float *)(other + 0x64) - *(float *)(vehicle + 0x64);
+            z = *(float *)(other + 0x68) - *(float *)(vehicle + 0x68);
+            if (PSVECDotProduct(&x, vehicle + 0x54) > lbl_80562144) {
+                value = PSVECDotProduct(other + 0x118, other + 0x54);
+                if (value > lbl_80562160 && __fabsf(PSVECDotProduct(other + 0x118, other + 0x3C) / value) > lbl_80562164)
+                    *(float *)(obj + 0x2A8) += lbl_80562168;
+            }
+        }
+        if ((*(unsigned int *)(other + 0x10) == 0x41434152 || *(unsigned int *)(other + 0x10) == 0x50434152) &&
+            fn_80193524(*(void **)(obj + 0x294), other))
+            *(float *)(obj + 0x2A8) += lbl_80562168;
+    }
+    if (arg2 < 0x3E8 && PSVECDotProduct(vec, *(char **)(obj + 0x294) + 0x88) < lbl_80562144) {
+        x = *(float *)(vec + 0); y = *(float *)(vec + 4); z = *(float *)(vec + 8);
+        value = PSVECMag(&x);
+        scale = lbl_80562148;
+        if (scale <= value) scale = value;
+        scale = lbl_80562140 / scale;
+        x *= scale; y *= scale; z *= scale;
+        if (__fabsf(PSVECDotProduct(&x, *(char **)(obj + 0x294) + 0x88)) > lbl_8056215C) {
+            value = *(float *)(obj + 0x270);
+            if (value < lbl_8056216C && (arg2 != 0x6D || value < lbl_80562170) &&
+                (*(int *)(obj + 0x268) != 1 || arg2 != 0x6D))
+                *(float *)(obj + 0x2A0) += lbl_80562174;
+        }
+    }
+    if (arg2 == 0x3EA) *(float *)(obj + 0x2A0) += lbl_80562174;
+    if (arg2 == 0x6D) *(u8 *)(obj + 0x2FE) = 0;
 }
 
 void fn_8019386C(void) {
