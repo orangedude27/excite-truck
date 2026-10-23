@@ -717,8 +717,8 @@ extern void fn_80033408(s32, s32);
 extern void fn_800339B0(s32, void *);
 extern void fn_80033A34(s32, f32);
 extern void fn_80033918(s32, void *);
-extern f64 lbl_805611C8;
-extern f64 lbl_805611D0;
+extern const f64 lbl_805611C8;
+extern const f64 lbl_805611D0;
 s32 fn_80119DD0(void *arg0, u32 arg1, s32 arg2, s32 arg3, s32 arg4, void *arg5) {
     extern s32 lbl_8055DEE0;
     extern s32 lbl_8055DEE8;
