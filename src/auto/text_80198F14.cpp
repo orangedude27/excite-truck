@@ -9,6 +9,21 @@ extern "C" void fn_801A0378(void*, void*);
 extern "C" void fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
 
+static inline void fn801A40F8Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
+    f32 x = src[0];
+    f32 y = src[1];
+    f32 z = src[2];
+    if (dst == src) {
+        dst[0] = (x * matrix[0] + y * matrix[1]) + z * matrix[2];
+        dst[1] = (x * matrix[3] + y * matrix[4]) + z * matrix[5];
+        dst[2] = (x * matrix[6] + y * matrix[7]) + z * matrix[8];
+    } else {
+        dst[0] = (y * matrix[1] + x * matrix[0]) + z * matrix[2];
+        dst[1] = (y * matrix[4] + x * matrix[3]) + z * matrix[5];
+        dst[2] = (y * matrix[7] + x * matrix[6]) + z * matrix[8];
+    }
+}
+
 static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
     f32 x = src[0];
     f32 y = src[1];
@@ -463,7 +478,7 @@ extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
 extern "C" u8 lbl_80435020[];
 extern f32 lbl_8056236C;
 #pragma scheduling invalid_target
-extern "C" s32 fn_8019E500(s32 arg0, void* arg1) {
+extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
     u32 copied[12];
     f32 rows[3][4];
     f32 output[12];
@@ -522,7 +537,7 @@ extern "C" s32 fn_8019E500(s32 arg0, void* arg1) {
                     *(f32*)(lbl_80435020+0x28)=current[3];
                     *(void**)(lbl_80435020+0x0)=lbl_80333918;
                 }
-                result=(result | fn_8019D618(lbl_80435020,(void*)arg0,1,arg1)) != 0;
+                result=(result | fn_8019D618(lbl_80435020,arg0,1,arg1)) != 0;
             }
         }
     }
