@@ -2146,17 +2146,4 @@ public:
     virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
     virtual Vec* GetVector();
 };
-static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
-    f32 x = src[0];
-    f32 y = src[1];
-    f32 z = src[2];
-    if (dst == src) {
-        dst[0] = (x * matrix[0] + y * matrix[3]) + z * matrix[6];
-        dst[1] = (x * matrix[1] + y * matrix[4]) + z * matrix[7];
-        dst[2] = (x * matrix[2] + y * matrix[5]) + z * matrix[8];
-    } else {
-        dst[0] = (y * matrix[3] + x * matrix[0]) + z * matrix[6];
-        dst[1] = (y * matrix[4] + x * matrix[1]) + z * matrix[7];
-        dst[2] = (y * matrix[5] + x * matrix[2]) + z * matrix[8];
-    }
-}
+
