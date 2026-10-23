@@ -9,7 +9,7 @@ extern float lbl_805633F4;
 extern float lbl_805633F8;
 extern float lbl_805633FC;
 
-#pragma scheduling on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern void *lbl_8033C8C4[];
 extern void fn_80128668(void *);
@@ -29,7 +29,6 @@ extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
         if (child != 0) {
             if (child != 0) ((Dummy *)child)->release(1);
         }
-
         p = (u8 *)arg0;
         i = 0;
         do {
@@ -38,73 +37,45 @@ extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
                 if (child != 0) ((Dummy *)child)->release(1);
             }
             i++;
-            p += 4;
-        } while (i < 2);
+            {
+                BOOL again = i < 2;
+                p += 4;
+                if (!again) break;
+            }
+        } while (1);
 
         child = *(void **)((u8 *)arg0 + 0x18);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x28);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x30);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x1C);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x20);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x24);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x2C);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x48);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x4C);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x50);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x44);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x34);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x38);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x3C);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x40);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x54);
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
     }
 
     if (arg1 > 0) fn_80128668(arg0);
