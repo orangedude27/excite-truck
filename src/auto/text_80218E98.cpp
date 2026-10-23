@@ -396,9 +396,11 @@ extern "C" void fn_802194FC(void* arg0) {
 }
 
 extern void fn_80217AC0(s32);
+#pragma dont_inline on
 extern "C" void fn_80219508(void* arg0) {
     fn_80217AC0(*(s32*)((u8*)arg0 + 0x2C));
 }
+#pragma dont_inline reset
 
 extern "C" void fn_80219510(void *arg0, s32 arg1, s32 arg2) {
     arg2 = -arg1;
