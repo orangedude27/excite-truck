@@ -2,6 +2,7 @@
 #include <macros.h>
 #define fn_800B4D5C_CALL fn_800B4D5##C
 extern "C" s32 fn_800A4D44(void *);
+extern "C" s32 fn_800A4D74(void *, u32);
 extern "C" s16 fn_800B4D5C(void *, u32, u32);
 extern "C" u8 lbl_80559210, lbl_80559214, lbl_80559230, lbl_80559231;
 extern "C" u16 fn_800B25CC(void *, s32);
@@ -10947,14 +10948,15 @@ extern void* lbl_804077C0;
 extern "C" void fn_800A71D0(void *, s32);
 
 extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6, s32 arg7, s32 arg8, s32 arg9, s32 arg10, s32 arg11) {
+    const char *str = lbl_8031B838;
     s32 r30, r29, res;
     s32 *buf, *m;
     if (arg8 != 0) { r30 = 2; r29 = 1; }
     else { r30 = 1; r29 = 2; }
     buf = (s32 *)iosAlloc(lbl_80559248, 0x40);
-    res = -0x16;
     if (buf == 0) {
-        OSReport(lbl_8031B838 + 0x15c, 0x40);
+        OSReport(str + 0x15c, 0x40);
+        res = -0x16;
         goto done;
     }
     buf[0] = arg1;
@@ -10974,7 +10976,8 @@ extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
     if (arg10 != 0) {
         s32 *cb1c = (s32 *)iosAlloc(lbl_80559248, 0x1c);
         if (cb1c == 0) {
-            OSReport(lbl_8031B838 + 0x188);
+            OSReport(str + 0x188);
+            res = -0x16;
             goto done;
         }
         cb1c[0] = arg10;
@@ -10983,10 +10986,10 @@ extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
         cb1c[5] = arg9;
         cb1c[6] = (s32)buf;
         res = IOS_IoctlvAsync(arg0, 7, r30, r29, lbl_8055DD80, (void *)fn_800BAA8C, cb1c);
-        if (res != 0) OSReport(lbl_8031B838 + 0x19c, res);
+        if (res != 0) OSReport(str + 0x19c, res);
     } else {
         res = IOS_Ioctlv(arg0, 7, r30, r29, lbl_8055DD80);
-        if (res != 0) OSReport(lbl_8031B838 + 0x19c, res);
+        if (res != 0) OSReport(str + 0x19c, res);
         else if (arg9 != 0) *(s32 *)arg9 = *(s32 *)lbl_8055DD74;
     }
 done:
