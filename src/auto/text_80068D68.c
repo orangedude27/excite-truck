@@ -8286,6 +8286,94 @@ void l2cu_send_peer_connect_req(void *arg0) {
     }
 }
 
+void l2cu_send_peer_config_req(void *arg0, void *arg1)
+{
+    extern char lbl_80319174[];
+    extern void fn_8007093C(u32, void *);
+    u8 *ccb = (u8 *)arg0;
+    u8 *cfg = (u8 *)arg1;
+    u8 *link;
+    u8 *packet;
+    u8 *dst;
+    u16 length;
+
+    length = 0;
+    link = *(u8 **)(ccb + 0x10);
+    link[0x31] += 1;
+    ccb[0x35] = link[0x31];
+    if (cfg[2] != 0) length = 4;
+    if (cfg[0x20] != 0) length += 4;
+    if (cfg[6] != 0) length += 0x18;
+    if (cfg[0x24] != 0) length += 0xB;
+    packet = ((void *(*)(u16, u16, u8, u8))l2cu_build_header)(
+        *(u16 *)(*(u8 **)(ccb + 0x10) + 0x28), length + 4, 4, ccb[0x35]);
+    if (packet == NULL) {
+        if (lbl_803C4040[0] >= 2) fn_8007093C(0x80001, lbl_80319174);
+    } else {
+        *(u8 *)(packet + 0x14) = *(u16 *)(ccb + 0x16);
+        *(u8 *)(packet + 0x15) = ((s32)*(u16 *)(ccb + 0x16)) >> 8;
+        packet[0x16] = 0;
+        packet[0x17] = 0;
+        dst = packet + 0x18;
+        if (cfg[2] != 0) {
+            dst[0] = 1;
+            dst[1] = 2;
+            dst[2] = *(u16 *)(cfg + 4);
+            dst[3] = ((s32)*(u16 *)(cfg + 4)) >> 8;
+            dst += 4;
+        }
+        if (cfg[0x20] != 0) {
+            dst[0] = 2;
+            dst[1] = 2;
+            dst[2] = *(u16 *)(cfg + 0x22);
+            dst[3] = ((s32)*(u16 *)(cfg + 0x22)) >> 8;
+            dst += 4;
+        }
+        if (cfg[6] != 0) {
+            dst[0] = 3;
+            dst[1] = 0x16;
+            dst[2] = cfg[8];
+            dst[3] = cfg[9];
+            dst[4] = *(u32 *)(cfg + 0xC);
+            dst[5] = *(u32 *)(cfg + 0xC) >> 8;
+            dst[6] = *(u32 *)(cfg + 0xC) >> 16;
+            dst[7] = *(u32 *)(cfg + 0xC) >> 24;
+            dst[8] = *(u32 *)(cfg + 0x10);
+            dst[9] = *(u32 *)(cfg + 0x10) >> 8;
+            dst[10] = *(u32 *)(cfg + 0x10) >> 16;
+            dst[11] = *(u32 *)(cfg + 0x10) >> 24;
+            dst[12] = *(u32 *)(cfg + 0x14);
+            dst[13] = *(u32 *)(cfg + 0x14) >> 8;
+            dst[14] = *(u32 *)(cfg + 0x14) >> 16;
+            dst[15] = *(u32 *)(cfg + 0x14) >> 24;
+            dst[16] = *(u32 *)(cfg + 0x18);
+            dst[17] = *(u32 *)(cfg + 0x18) >> 8;
+            dst[18] = *(u32 *)(cfg + 0x18) >> 16;
+            dst[19] = *(u32 *)(cfg + 0x18) >> 24;
+            dst[20] = *(u32 *)(cfg + 0x1C);
+            dst[21] = *(u32 *)(cfg + 0x1C) >> 8;
+            dst[22] = *(u32 *)(cfg + 0x1C) >> 16;
+            dst[23] = *(u32 *)(cfg + 0x1C) >> 24;
+            dst += 0x18;
+        }
+        if (cfg[0x24] != 0) {
+            dst[0] = 4;
+            dst[1] = 9;
+            dst[2] = cfg[0x26];
+            dst[3] = cfg[0x27];
+            dst[4] = cfg[0x28];
+            dst[5] = *(u16 *)(cfg + 0x2A);
+            dst[6] = ((s32)*(u16 *)(cfg + 0x2A)) >> 8;
+            dst[7] = *(u16 *)(cfg + 0x2C);
+            dst[8] = ((s32)*(u16 *)(cfg + 0x2C)) >> 8;
+            dst[9] = *(u16 *)(cfg + 0x2E);
+            dst[10] = ((s32)*(u16 *)(cfg + 0x2E)) >> 8;
+        }
+        ((void (*)(void *, u8, void *))l2c_link_check_send_pkts)(
+            *(void **)(ccb + 0x10), 0, packet);
+    }
+}
+
 void l2cu_send_peer_echo_rsp(void *arg0, s32 arg1, u8 *arg2, u32 arg3) {
     extern void *l2cu_build_header(u16, u8, u8, s32);
     extern void l2c_link_check_send_pkts(void *, u8, void *, u8);
