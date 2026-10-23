@@ -24,7 +24,7 @@ extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
   extern void fn_802CEC04(void);
   extern void fn_802E2E0C(void (*)(void), void *);
-  extern void fn_802D6C68(void);
+  extern void fn_802D6C68();
   extern void fn_802DA52C(void);
   extern void GXSetDrawSync(void);
   extern void GXGetVtxDesc(void);
@@ -827,6 +827,11 @@ void fn_802D1B58(void) {
 
 extern float lbl_80564FCC;
 extern float lbl_80564FDC;
+#pragma push
+#pragma paired off
+#pragma paired_single off
+#pragma scheduling invalid_target
+#pragma dont_inline fn_802CFF50
 void fn_802D2218(void) {
     float sp90[12];
     float sp60[12];
@@ -838,9 +843,13 @@ void fn_802D2218(void) {
     unsigned char tevColor[4];
     float temp_f1;
     float temp_f1_2;
+    float vertexZ;
+    register volatile float *fifo;
     float temp_f30;
     float temp_f31;
     int temp_r4;
+    int screenWidth;
+    int screenHeight;
     int var_ctr;
     int var_r0;
     int var_r0_2;
@@ -862,8 +871,8 @@ void fn_802D2218(void) {
     temp_r3 = (unsigned char *)lbl_804C5650 + 0x4128;
     if ((temp_r3[0x2D] != 0) || (temp_r3[0x2C] != 0)) {
         fn_802D1678();
-        sp90[1] = lbl_80564F88;
         sp90[0] = lbl_80564F8C;
+        sp90[1] = lbl_80564F88;
         sp90[2] = lbl_80564F88;
         sp90[3] = lbl_80564F88;
         sp90[4] = lbl_80564F8C;
@@ -877,16 +886,18 @@ void fn_802D2218(void) {
         fn_802D0DD4(sp60, sp90);
         GXLoadPosMtxImm(sp60, 0);
         temp_r30 = (unsigned char *)lbl_804C5650 + 0x4128;
-        temp_f31 = lbl_80564F94 * (float)*(int *)(temp_r30 + 0x28);
-        temp_f30 = lbl_80564F94 * (float)*(int *)(temp_r30 + 0x24);
-        C_MTXOrtho(sp20, temp_f31, -temp_f31, -temp_f30, temp_f30, lbl_80564F8C, lbl_80564FCC);
+        screenWidth = *(int *)(temp_r30 + 0x24);
+        screenHeight = *(int *)(temp_r30 + 0x28);
+        temp_f31 = lbl_80564F94 * (float)screenWidth;
+        temp_f30 = lbl_80564F94 * (float)screenHeight;
+        C_MTXOrtho(sp20, temp_f30, -temp_f30, -temp_f31, temp_f31, lbl_80564F8C, lbl_80564FCC);
         GXSetProjection(sp20, 1);
         GXSetDstAlpha(0, 0);
         GXSetBlendMode(0, 1, 0, 5);
         GXSetColorUpdate(temp_r30[0x2D]);
         GXSetAlphaUpdate(temp_r30[0x2D]);
         GXSetZMode(1, 7, temp_r30[0x2C]);
-        temp_r7 = (unsigned char *)lbl_804C5650 + 0x4160;
+        temp_r7 = temp_r30 + 0x38;
         temp_r6 = temp_r7[2];
         temp_r5 = temp_r7[3];
         fogColor[0] = temp_r7[1];
@@ -914,63 +925,66 @@ void fn_802D2218(void) {
         GXSetVtxDesc(9, 1);
         GXSetVtxAttrFmt(0, 9, 1, 4, 0);
         GXBegin(0x98, 0, 4);
-        var_ctr = 2;
+        vertexZ = lbl_80564FDC;
+        fifo = (volatile float *)0xCC010000;
         var_r4 = 0;
-        do {
+        for (var_ctr = 0; var_ctr != 2; var_ctr++) {
             var_r0 = 1;
             if (var_r4 & 1) {
                 var_r0 = -1;
             }
             var_r0_2 = 1;
-            sp10 = temp_f30 * (float)var_r0;
+            sp10 = temp_f31 * (float)var_r0;
             if (var_r4 & 2) {
                 var_r0_2 = -1;
             }
-            temp_r4 = var_r4 + 1;
-            var_r0_3 = 1;
-            *(volatile float *)0xCC008000 = sp10;
-            sp18 = lbl_80564FDC;
-            temp_f1 = temp_f31 * (float)var_r0_2;
-            *(volatile float *)0xCC008000 = temp_f1;
+            fifo[-0x2000] = sp10;
+            sp18 = vertexZ;
+            temp_f1 = temp_f30 * (float)var_r0_2;
+            fifo[-0x2000] = temp_f1;
             sp14 = temp_f1;
-            *(volatile float *)0xCC008000 = lbl_80564FDC;
-            if (temp_r4 & 1) {
+            fifo[-0x2000] = vertexZ;
+            var_r4++;
+            var_r0_3 = 1;
+            if (var_r4 & 1) {
                 var_r0_3 = -1;
             }
             var_r0_4 = 1;
-            sp10 = temp_f30 * (float)var_r0_3;
-            if (temp_r4 & 2) {
+            sp10 = temp_f31 * (float)var_r0_3;
+            if (var_r4 & 2) {
                 var_r0_4 = -1;
             }
-            var_r4 = temp_r4 + 1;
-            *(volatile float *)0xCC008000 = sp10;
-            sp18 = lbl_80564FDC;
-            temp_f1_2 = temp_f31 * (float)var_r0_4;
-            *(volatile float *)0xCC008000 = temp_f1_2;
+            fifo[-0x2000] = sp10;
+            sp18 = vertexZ;
+            temp_f1_2 = temp_f30 * (float)var_r0_4;
+            fifo[-0x2000] = temp_f1_2;
             sp14 = temp_f1_2;
-            *(volatile float *)0xCC008000 = lbl_80564FDC;
-            var_ctr -= 1;
-        } while (var_ctr != 0);
+            fifo[-0x2000] = vertexZ;
+            var_r4++;
+        }
         GXSetNumTexGens(1);
         GXSetTevOrder(0, 0, 0, 4);
         GXSetTevOp(0, 0);
         GXSetDstAlpha(1, lbl_8055FD60);
-        temp_r3_2 = (unsigned char *)lbl_804C5650 + 0x4128;
+        temp_r3_2 = temp_r30;
         temp_r3_2[0x2C] = 0;
         temp_r3_2[0x2D] = 0;
         fn_802CFF50();
         temp_r3_2[0] = 1;
         fn_802D14D8();
-        temp_r4_2 = (unsigned char *)lbl_804C5650 + 0x4180;
+        temp_r4_2 = temp_r30 + 0x58;
         ((unsigned char *)lbl_804C5650)[0xB0] = 1;
-        temp_r3_3 = (unsigned char *)lbl_804C5650 + 0x4160;
+        temp_r3_3 = temp_r30 + 0x38;
         lbl_8055FD70 = 1;
         temp_r4_2[0x5C] = 1;
         temp_r3_3[0x1C] = 1;
         fn_802D6C68();
     }
 }
-
+#pragma scheduling on
+#pragma paired_single reset
+#pragma paired reset
+#pragma pop
 void fn_802D2614(void) {
     fn_802D14D8();
     fn_802D1678();
