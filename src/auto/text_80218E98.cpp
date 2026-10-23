@@ -2,6 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+extern "C" void *fn_8022EDE4(f32);
+extern "C" s32 strlen(const char *);
+extern "C" f32 lbl_805634D8;
+extern "C" f32 lbl_80563528;
+extern "C" char lbl_8055B8A8[];
+extern "C" void fn_80015A20(void *, f32 *, s32, f32, f32, f32);
+extern "C" void fn_80015B20(void *, void *, void *);
+extern "C" s32 fn_8022D3F8(s32, s32, s32 *, s32, s32);
+extern "C" void fn_80232BA4(char *, s32, s32, s32, f32, f32, f32, f32, f32);
 extern "C" s32 fn_802ECF08(s32, s32);
 extern "C" s32 fn_802ED040(void);
 extern "C" s32 fn_802ECF90(s32);
@@ -4476,11 +4485,11 @@ extern "C" f32 lbl_80563584;
 
 
 extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
-    register s32 width = arg3; register void *obj = arg0; s32 height = arg4;
+    register s32 width = arg3; register void *obj = arg0; register s32 height = arg4;
     f32 scratch[20];
     register f32 temp_f31, var_f30, var_f2, temp_f0, temp_f0_2, temp_f11, temp_f12;
-    register f32 axisValue, axisZero, deltaZ, deltaY, deltaX;
-    
+    register f32 axisValue, axisZero, deltaY, deltaX, deltaZ;
+    register u8 *dst;
     u32 *source; u32 second, first; s32 matrixValue;
     if (*(s32 *)((u8 *)obj + 4) == -1) return;
     *(f32 *)((u8 *)obj + 0x38) += *(f32 *)((u8 *)obj + 0x3C) * arg5;
@@ -4503,7 +4512,8 @@ extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, 
     scratch[4] = axisZero; scratch[5] = axisValue; scratch[6] = axisZero;
     ((void (*)(void *, f32 *, s32, f32))fn_80015A20)(&scratch[16], &scratch[4], matrixValue, scratch[5]);
 #pragma scheduling invalid_target
-    ((void (*)(void *, f32 *, volatile void *))fn_80015B20)((u8 *)obj + 8, &scratch[16], (volatile u8 *)obj + 8);
+    dst = (u8 *)obj + 8;
+    fn_80015B20(dst, &scratch[16], dst);
 #pragma scheduling on
     fn_802C77F0(*(s32 *)((u8 *)obj + 4), &scratch[10]);
     deltaY = scratch[13] - scratch[12];
