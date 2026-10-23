@@ -15,7 +15,6 @@ extern f32 lbl_80562E6C;
 extern void *fn_8012C370(s32, u32 *, void *, void *, u8 *);
 extern s32 fn_8012C33C(void *);
 extern s32 fn_801E2CCC(void *, f32 **);
-extern void fn_801EB2D4(s32, s32 *);
 extern void fn_801EB6A8(s32);
 extern s32 fn_801EB000(s32 *);
 extern void fn_802CDDC8(s32);
@@ -98,31 +97,25 @@ extern "C" void fn_802E30C8(const char *, s32);
 extern "C" char lbl_80339F7C[];
 extern "C" char lbl_80339FA0[];
 extern "C" void fn_801EB2D4(s32, s32 *);
-#pragma dont_inline on
-extern "C" void fn_801EB2D4(s32 arg0, s32 *arg1) {
-    struct Dummy {
-        virtual void f0();
-        virtual void f1();
-        virtual void f2();
-        virtual void f3(void *);
-    };
-    u8 *var_r28 = (u8 *)arg0;
-    u8 *var_r29;
-    u8 *var_r30;
+#pragma cplusplus reset
+void fn_801EB2D4(s32 arg0, s32 *arg1) {
     u8 *var_r31;
+    u8 *var_r30;
+    u8 *var_r29;
+    u8 *var_r28 = (u8 *)arg0;
     s32 var_r27;
     s32 var_r22 = 0;
-    s32 var_r24 = 8;
     const char *var_r23 = lbl_80339F7C;
+    s32 var_r24 = 8;
     const char *var_r25 = lbl_80339FA0;
-    s32 temp_r4;
+    register s32 temp_r4;
     u8 temp_r5;
     u8 *temp_r3_11;
     u8 *temp_r27;
-    Dummy *temp_obj;
+    void *temp_obj;
+    void **vtable;
 
-loop_25:
-    if (var_r28 != 0) {
+    do {
         temp_r5 = var_r28[0];
         var_r28[0] = var_r28[3];
         var_r28[3] = temp_r5;
@@ -133,9 +126,11 @@ loop_25:
         temp_r4 = *(s32 *)var_r28;
         if (temp_r4 != 4) {
             if (temp_r4 < 4) {
-                if (temp_r4 != 0) {
-                    goto block_23;
+                if (temp_r4 == 0) {
+                    goto block_0;
                 }
+                goto block_23;
+block_0:
                 temp_r5 = var_r28[8];
                 var_r28[8] = var_r28[0xB];
                 var_r28[0xB] = temp_r5;
@@ -246,8 +241,9 @@ block_23:
             temp_r27 = (u8 *)*(u32 *)(var_r28 + 8);
             if (temp_r27 != 0 && *(s32 *)temp_r27 == 1) {
                 if (fn_801EB0F0(*(s32 *)(temp_r27 + 0x10)) != 0) {
-                    temp_obj = (Dummy *)fn_801EB110(temp_r27);
-                    temp_obj->f3(temp_r27);
+                    temp_obj = (void *)fn_801EB110(temp_r27);
+                    vtable = *(void ***)temp_obj;
+                    ((void (*)(void *, void *))vtable[3])(temp_obj, temp_r27);
                 } else {
                     fn_802E30C8(var_r23, *(s32 *)(temp_r27 + 0x10));
                     *(s32 *)(temp_r27 + 0x10) = var_r24;
@@ -255,12 +251,8 @@ block_23:
             }
         }
         var_r28 = (u8 *)*(u32 *)(var_r28 + 4);
-        goto loop_25;
-    }
+    } while (var_r28 != 0);
 }
-#pragma dont_inline off
-#pragma cplusplus reset
-
 void fn_801EB634(void *arg0, s32 arg1) {
     u8 a, b, c, d;
     a = ((u8 *)arg0)[0];
