@@ -2,7 +2,11 @@
 #include <revolution/OS/OSHardware.h>
 
 extern BOOL __OSInIPL;
+#pragma push
+#pragma small_data on
 extern const char lbl_80558F0C[4];
+extern const char lbl_80558F10[];
+#pragma pop
 
 extern void **OSExceptionTable_8055D9D0;
 extern void OSExceptionVector(void);
@@ -310,7 +314,7 @@ extern void OSSetMEM2ArenaLo(void*);
 extern void OSSetMEM2ArenaHi(void*);
 extern void OSPanic(const char*, s32, const char*, ...);
 void OSInit(void) {
-    u32* bi2;
+    OSBI2* bi2;
     u8* rebootParams = (u8*)__OSRebootParams;
     void* mem1lo;
     void* mem1hi;
@@ -331,25 +335,25 @@ void OSInit(void) {
         PPCMthid4(0x83900000);
         PPCDisableSpeculation();
         PPCSetFpNonIEEEMode();
-        BootInfo_8055D9F8 = (void*)0x80000000;
+        BootInfo_8055D9F8 = (OSBootInfo*)0x80000000;
         BI2DebugFlag_8055D9F4 = NULL;
         __DVDLongFileNameFlag = 0;
-        bi2 = *(u32**)0x800000F4;
+        bi2 = *(OSBI2**)OSPhysicalToCached(OS_PHYS_DVD_BI2);
         if (bi2 != NULL) {
-            BI2DebugFlag_8055D9F4 = bi2 + 3;
-            __PADSpec = bi2[9];
-            *(u8*)0x800030E8 = bi2[3];
-            *(u8*)0x800030E9 = __PADSpec;
-        } else if (*(void**)((u8*)BootInfo_8055D9F8 + 0x34) != NULL) {
+            BI2DebugFlag_8055D9F4 = &bi2->debugFlag;
+            __PADSpec = bi2->padSpec;
+            *(u8*)OSPhysicalToCached(OS_PHYS_BI2_DEBUG_FLAG) = *BI2DebugFlag_8055D9F4;
+            *(u8*)OSPhysicalToCached(OS_PHYS_PAD_SPEC) = __PADSpec;
+        } else if (((OSBootInfo*)BootInfo_8055D9F8)->arenaHi != NULL) {
             BI2DebugFlagHolder_8055D9F0 = *(u8*)0x800030E8;
             BI2DebugFlag_8055D9F4 = &BI2DebugFlagHolder_8055D9F0;
             __PADSpec = *(u8*)0x800030E9;
         }
         __DVDLongFileNameFlag = 1;
-        mem1lo = *(void**)0x8000310C;
+        mem1lo = *(void**)OSPhysicalToCached(OS_PHYS_USABLE_MEM1_START);
         if (mem1lo == NULL) {
             if (((u32)__ArenaLo & 0x30000000) == 0) {
-                mem1lo = *(void**)((u8*)BootInfo_8055D9F8 + 0x30) == NULL
+                mem1lo = ((OSBootInfo*)BootInfo_8055D9F8)->arenaLo == NULL
                             ? __ArenaLo
                             : *(void**)((u8*)BootInfo_8055D9F8 + 0x30);
                 if (*(void**)((u8*)BootInfo_8055D9F8 + 0x30) == NULL &&
@@ -361,9 +365,9 @@ void OSInit(void) {
             }
         }
         OSSetMEM1ArenaLo(mem1lo);
-        mem1hi = *(void**)0x80003110;
+        mem1hi = *(void**)OSPhysicalToCached(OS_PHYS_USABLE_MEM1_END);
         if (mem1hi == NULL) {
-            mem1hi = *(void**)((u8*)BootInfo_8055D9F8 + 0x34);
+            mem1hi = ((OSBootInfo*)BootInfo_8055D9F8)->arenaHi;
             if (mem1hi == NULL) {
                 mem1hi = __ArenaHi;
             }
@@ -420,9 +424,11 @@ void OSInit(void) {
         if (__OSInIPL == 0) {
             switch (*(u8*)0x8000315C) {
             case 0x81:
+                #line 1099 "src/revolution/OS/OS.c"
+                // clang-format off
                 OSReport("OS ERROR: boot program is not for RVL target. Please use "
-                         "correct boot program.\\n");
-                OSPanic("src/revolution/OS/OS.c", 1102, "Failed to run app");
+                         "correct boot program.\n");
+                OSPanic(__FILE__, __LINE__, "Failed to run app");
                 break;
             case 0x80:
             default:
@@ -430,9 +436,11 @@ void OSInit(void) {
             }
             switch (*(u8*)0x8000315D) {
             case 0x81:
+                #line 1117 "src/revolution/OS/OS.c"
+                // clang-format off
                 OSReport("OS ERROR: apploader[D].img is not for RVL target. Please use "
-                         "correct apploader[D].img.\\n");
-                OSPanic("src/revolution/OS/OS.c", 1120, "Failed to run app");
+                         "correct apploader[D].img.\n");
+                OSPanic(__FILE__, __LINE__, "Failed to run app");
                 break;
             case 0x80:
             default:
