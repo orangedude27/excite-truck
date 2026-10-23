@@ -2572,6 +2572,131 @@ void fn_80076E70(void) {
     lbl_803C0F78[0x27BF] = 0xFF;
 }
 
+extern u8 lbl_80315CE0[];
+s32 btsnd_hcic_auth_request_80084478(u16);
+s32 btsnd_hcic_auth_request_800844F4(u16);
+s32 btsnd_hcic_auth_request_80084570(u16);
+s32 btsnd_hcic_write_policy_set_80085668(u16, u16);
+void btm_acl_created(BD_ADDR bda, DEV_CLASS dev_class, BD_NAME dev_name,
+                     UINT16 hci_handle, UINT8 link_role, UINT8 is_le_link) {
+    u8 *temp_r3;
+    u16 temp_r4;
+    s32 var_ctr;
+    s32 var_ctr_2;
+    u16 temp_r28;
+    u16 var_r30;
+    u32 var_r29_2;
+    u32 var_r31;
+    u8 var_r4;
+    u8 var_r6;
+    u8 *var_r29;
+    u8 *var_r30_2;
+    u8 *var_r31_2;
+
+    var_r29 = lbl_803C0F78 + 0x34;
+    var_r31 = 0;
+loop_1:
+    if (var_r29[0x119] == 0) {
+        goto loop_1_next;
+    }
+    if (memcmp(var_r29 + 8, bda, 6) != 0) {
+        goto loop_1_next;
+    }
+    goto loop_1_done;
+loop_1_next:
+    var_r31 += 1;
+    var_r29 += 0x11C;
+    if (var_r31 < 4) {
+        goto loop_1;
+    }
+    var_r29 = NULL;
+loop_1_done:
+    if (var_r29 != NULL) {
+        *(u16 *)var_r29 = hci_handle;
+        var_r29[0x11A] = link_role;
+        if (lbl_803C0F78[0x27C0] >= 4) {
+            fn_800709CC(0xD0003, lbl_80315CA0, bda[0], bda[1], bda[2],
+                        bda[3], bda[4], bda[5]);
+        }
+    } else {
+        for (var_r4 = 0, var_r31_2 = lbl_803C0F78 + 0x34; var_r4 < 4;
+             var_r4++, var_r31_2 += 0x11C) {
+            if (var_r31_2[0x119] != 0) {
+                continue;
+            }
+            var_r31_2[0x119] = 1;
+            *(u16 *)var_r31_2 = hci_handle;
+            var_r31_2[0x11A] = link_role;
+            *(u16 *)(var_r31_2 + 4) = 0;
+            btm_pm_sm_alloc(var_r4);
+            memcpy(var_r31_2 + 8, bda, 6);
+            if (dev_class != NULL) {
+                memcpy(var_r31_2 + 0xE, dev_class, 3);
+            }
+            if (dev_name != NULL) {
+                memcpy(var_r31_2 + 0x11, dev_name, 0xF8);
+            }
+            btsnd_hcic_auth_request_80084570(*(u16 *)var_r31_2);
+            btsnd_hcic_auth_request_800844F4(*(u16 *)var_r31_2);
+            temp_r3 = (u8 *)btm_find_dev_by_handle(hci_handle);
+            if (temp_r3 != NULL) {
+                for (var_r6 = 0; var_r6 < 8; var_r6++) {
+                    if (temp_r3[0x77 + var_r6] != 0) {
+                        memcpy(var_r31_2 + 0x110, temp_r3 + 0x77, 8);
+                        temp_r4 = *(u16 *)(lbl_803C0F78 + 0x654) & 0xCC18;
+                        var_r30 = temp_r4 & ~0x3306;
+                        if (lbl_803C0F78[0x636] >= 3) {
+                            var_r30 = temp_r4 | (*(u16 *)(lbl_803C0F78 + 0x654) & 0x3306);
+                        }
+                        if (lbl_803C0F78[0x27C0] >= 4) {
+                            fn_80070954(0xD0003, lbl_80315CE0, var_r30);
+                        }
+                        if (btsnd_hcic_change_conn_type(*(u16 *)var_r31_2, var_r30) != 0) {
+                            *(u16 *)(var_r31_2 + 2) = var_r30;
+                        }
+                        if (*(u16 *)(lbl_803C0F78 + 0x4C4) != 0) {
+                            BTM_SetLinkPolicy(var_r31_2 + 8, (u16 *)(lbl_803C0F78 + 0x4C4));
+                        }
+                        var_r29_2 = 0;
+                        temp_r28 = *(u16 *)(lbl_803C0F78 + 0x4C6);
+                        var_r30_2 = lbl_803C0F78 + 0x34;
+loop_27:
+                        if (var_r30_2[0x119] == 0) {
+                            goto loop_27_next;
+                        }
+                        if (memcmp(var_r30_2 + 8, var_r31_2 + 8, 6) != 0) {
+                            goto loop_27_next;
+                        }
+                        goto loop_27_done;
+loop_27_next:
+                        var_r29_2 += 1;
+                        var_r30_2 += 0x11C;
+                        if (var_r29_2 < 4) {
+                            goto loop_27;
+                        }
+                        var_r30_2 = NULL;
+loop_27_done:
+                        if (var_r30_2 != NULL) {
+                            *(u16 *)(var_r30_2 + 0x10E) = temp_r28;
+                            if (var_r30_2[0x11A] == 0) {
+                                btsnd_hcic_write_policy_set_80085668(*(u16 *)var_r30_2, temp_r28);
+                            }
+                        }
+                        if (*(void (**)(void *, void *, void *, void *, u32))(lbl_803C0F78 + 0x4C8) != NULL) {
+                            (*(void (**)(void *, void *, void *, void *, u32))(lbl_803C0F78 + 0x4C8))(
+                                var_r31_2 + 8, var_r31_2 + 0xE, var_r31_2 + 0x11, var_r31_2 + 0x110, 1);
+                        }
+                        goto block_done;
+                    }
+                }
+            }
+            btsnd_hcic_auth_request_80084478(*(u16 *)var_r31_2);
+block_done:
+            return;
+        }
+    }
+}
+
 void btm_acl_removed(u8 *addr) {
     s32 i;
     u8 *entry;
@@ -4915,6 +5040,110 @@ void btm_sec_rmt_name_request_complete(UINT8 *p_bd_addr, UINT8 *p_bd_name, UINT8
                 complete_cb = (void (*)(void *, void *, UINT8))*(void **)(p_dev_rec + 4);
                 complete_cb(p_dev_rec + 0x1C, *(void **)(p_dev_rec + 8), result);
                 *(void **)(p_dev_rec + 4) = NULL;
+            }
+        }
+    }
+}
+
+void btm_sec_auth_complete(register UINT16 handle, register UINT8 status) {
+    extern char lbl_80316E7C[];
+    extern char lbl_80316B6C[];
+    extern BOOLEAN btsnd_hcic_disconnect(UINT16, UINT8);
+    extern BOOLEAN btsnd_hcic_write_pin_type(UINT8);
+    extern BOOL btsnd_hcic_write_pin_type_8008543C(u32);
+    extern u8 btm_sec_execute_procedure(void *);
+    register u8 *dev = (u8 *)btm_find_dev_by_handle(handle);
+    register u8 *dev2;
+    void (*auth_cb)(u8 *, u8 *, u8 *, u8);
+    register void *request;
+    register u8 old_state;
+    register u8 reason;
+    register u8 flags;
+    u32 pin;
+
+    if (lbl_803C0F78[0x27C0] >= 4) {
+        fn_8007096C(0xD0003, lbl_80316E7C, status, dev ? dev[0x7F] : 0);
+    }
+
+    if (lbl_803C0F78[0x197B] != 0) {
+        lbl_803C0F78[0x197B] = 0;
+        if (lbl_803C0F78[0x27C0] >= 5) {
+            pin = (lbl_803C0F78[0x1978] == 3);
+            ((void (*)(u32, void *, u32))fn_80070954)(0xD0004, lbl_80316B6C, pin);
+        }
+        btsnd_hcic_write_pin_type_8008543C((u8)(lbl_803C0F78[0x1978] == 3));
+    }
+
+    if (lbl_803C0F78[0x197C] != 0) {
+        lbl_803C0F78[0x197C] = 0;
+        btsnd_hcic_write_pin_type(lbl_803C0F78[0x20]);
+    }
+
+    if (dev != 0) {
+        flags = dev[0x81];
+        if ((flags & 0x40) != 0 && lbl_803C0F78[0x197D] == 0) {
+            dev[0x81] = flags & ~0x50;
+            reason = lbl_803C0F78[0x197E];
+            if (reason != 0) {
+                dev2 = (u8 *)btm_find_dev_by_handle(handle);
+                if (dev2 != 0) {
+                    if ((dev2[0x81] & 0x40) != 0) {
+                        lbl_803C0F78[0x197E] = reason;
+                    } else {
+                        old_state = dev2[0x7F];
+                        if (old_state != 5) {
+                            dev2[0x7F] = 5;
+                            if (!btsnd_hcic_disconnect(handle, reason))
+                                dev2[0x7F] = old_state;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    if (dev != 0) {
+        if (dev[0x7F] != 1) {
+            auth_cb = *(void (**)(u8 *, u8 *, u8 *, u8))(lbl_803C0F78 + 0x191C);
+            if (auth_cb != 0 && status != 0)
+                auth_cb(dev + 0x1C, dev + 0x22, dev + 0x35, status);
+        } else {
+            if (status == 0x0C && (dev[0x76] & 6) == 6)
+                status = 0;
+            auth_cb = *(void (**)(u8 *, u8 *, u8 *, u8))(lbl_803C0F78 + 0x191C);
+            if (auth_cb != 0)
+                auth_cb(dev + 0x1C, dev + 0x22, dev + 0x35, status);
+            handle = 0;
+            dev[0x7F] = (u8)handle;
+            flags = dev[0x81];
+            if ((flags & 0x40) != 0) {
+                dev[0x81] = flags & ~0x50;
+                btsnd_hcic_disconnect(*(UINT16 *)(dev + 0x18), 0x13);
+            } else if (status != 0) {
+                if (*(void **)(dev + 4) != 0) {
+                    if (dev[0x80] != 0) {
+                        request = *(void **)dev;
+                        if (request != 0 && *(u32 *)request == 3)
+                            *(u32 *)((u8 *)request + 4) = handle;
+                    }
+                    ((void (*)(u8 *, u32, u8))*(void **)(dev + 4))(
+                        dev + 0x1C, *(u32 *)(dev + 8), 0xA);
+                    *(void **)(dev + 4) = 0;
+                }
+                btsnd_hcic_disconnect(*(UINT16 *)(dev + 0x18), 5);
+            } else {
+                dev[0x76] |= 2;
+                status = btm_sec_execute_procedure(dev);
+                if (status != 1 && *(void **)(dev + 4) != 0) {
+                    if (dev[0x80] != 0) {
+                        request = *(void **)dev;
+                        if (request != 0 && *(u32 *)request == 3)
+                            *(u32 *)((u8 *)request + 4) = handle;
+                    }
+                    ((void (*)(u8 *, u32, u8))*(void **)(dev + 4))(
+                        dev + 0x1C, *(u32 *)(dev + 8), status);
+                    *(void **)(dev + 4) = 0;
+                }
             }
         }
     }
@@ -7865,6 +8094,112 @@ void fn_8008C464(u8 *bd_addr) {
         btu_start_timer((u8 *)lcb + 0x10, 2, 0x78);
 }
 
+void l2c_rcv_acl_data(register BT_HDR *arg0) {
+    extern char lbl_80318E58[];
+    extern void process_l2cap_cmd(void *, UINT8 *, UINT16);
+    u8 *data;
+    register char *trace;
+    register u32 temp_r26;
+    s32 temp_r3;
+    s32 temp_r3_2;
+    s32 var_r28;
+    register u32 temp_r0_3;
+    s32 temp_r0_4;
+    register u16 temp_r25;
+    s32 temp_r24;
+    s32 temp_r4;
+    u32 temp_r0;
+    u8 temp_r28;
+
+    var_r28 = 0;
+    data = (u8 *)arg0 + arg0->offset;
+    trace = lbl_80318E58;
+    temp_r0 = data[8] + ((u32)data[9] << 8);
+    temp_r26 = temp_r0 & 0xFFF;
+    if (((temp_r0 >> 12) & 3) != 2) {
+        if (lbl_803C4040[0] >= 2)
+            fn_80070954(0x80001, trace, (u16)((temp_r0 >> 12) & 3));
+        GKI_freebuf(arg0);
+        return;
+    }
+    temp_r3 = (s32)l2cu_find_lcb_by_handle((u16)temp_r26);
+    if (temp_r3 == 0) {
+        temp_r25 = (u16)(data[14] + (data[15] << 8));
+        temp_r28 = data[16];
+        if (arg0->layer_specific == 0 && temp_r25 == 1 &&
+            (temp_r28 == 10 || temp_r28 == 2) && (u8)fn_8007FEFC(temp_r26) == 0) {
+            if (lbl_803C4040[0] >= 2) {
+                ((void (*)(u32, void *, u16, u16, u16, u8, u16))fn_800709B4)(
+                    0x80001, trace + 0x24, temp_r26,
+                    arg0->layer_specific, temp_r25, temp_r28,
+                    *(u16 *)(lbl_803C4040 + 0x7C8));
+            }
+            arg0->layer_specific = 2;
+            {
+                register u8 *gki_cb = lbl_803C4040;
+                GKI_enqueue((BUFFER_Q *)(gki_cb + 0x7C0), arg0);
+                if (*(u16 *)(gki_cb + 0x7C8) == 1)
+                    btu_start_timer((TIMER_LIST_ENT *)(gki_cb + 0x7CC), 4, 1);
+            }
+        } else {
+            GKI_freebuf(arg0);
+        }
+        return;
+    }
+
+    temp_r4 = arg0->offset;
+    temp_r0_3 = (u16)(data[10] + (data[11] << 8));
+    arg0->offset = (u16)(temp_r4 + 4);
+    temp_r24 = (u16)(data[14] + (data[15] << 8));
+    temp_r25 = (u16)(data[12] + (data[13] << 8));
+    if ((u32)temp_r24 > 2) {
+        temp_r3_2 = (s32)l2cu_find_ccb_by_cid((void *)temp_r3, temp_r24);
+        var_r28 = temp_r3_2;
+        if (temp_r3_2 == 0) {
+            if (lbl_803C4040[0] >= 2)
+                fn_80070954(0x80001, trace + 0x78, temp_r24);
+            GKI_freebuf(arg0);
+            return;
+        }
+    }
+    if (temp_r0_3 >= 4) {
+        temp_r4 = temp_r0_3 - 4;
+        arg0->len = temp_r4;
+        temp_r0_4 = arg0->offset + 4;
+        arg0->offset = (u16)temp_r0_4;
+    } else {
+        if (lbl_803C4040[0] >= 2)
+            fn_8007093C(0x80001, trace + 0x90);
+        GKI_freebuf(arg0);
+        return;
+    }
+    if (temp_r25 != (u16)temp_r4) {
+        if (lbl_803C4040[0] >= 2)
+            fn_8007096C(0x80001, trace + 0xB4, temp_r25, (u16)temp_r4);
+        GKI_freebuf(arg0);
+        return;
+    }
+    if ((u32)temp_r24 == 1) {
+        process_l2cap_cmd((void *)temp_r3, data + 16, temp_r25);
+        GKI_freebuf(arg0);
+        return;
+    }
+    if ((u32)temp_r24 == 2) {
+        arg0->offset = (u16)(temp_r0_4 + 2);
+        arg0->len = temp_r4 - 2;
+        if (lbl_803C4040[0] >= 5)
+            fn_80070954(0x80004, trace + 0xE0,
+                (u16)(((u32)data[17] << 8) + data[16]));
+        GKI_freebuf(arg0);
+        return;
+    }
+    if (var_r28 == 0) {
+        GKI_freebuf(arg0);
+        return;
+    }
+    fn_80089E40((void *)var_r28, 0x13, arg0);
+}
+
 char check_offset[offsetof(tL2CAP_CFG_INFO, flags)];
 void fn_80070984(u32, void *);
 extern char lbl_80318E58[];
@@ -9699,6 +10034,86 @@ void rfc_process_pn(void *arg0, s32 arg1, void *arg2) {
     }
 }
 
+void rfc_set_port_state(void *, void *);
+void rfc_process_rpn(void *mcb, s32 a1, void *a2, void *rpn) {
+    u8 state[9];
+    u8 *port;
+    u8 *p2;
+    u8 ctrl;
+    u16 bits;
+    u8 t0, t1;
+
+    port = (u8 *)port_find_mcb_dlci_port(mcb, *(u8 *)rpn);
+    if (port == NULL) {
+        if (a1 == 0) return;
+        memset(state, 0, 9);
+        rfc_set_port_state(state, rpn);
+        PORT_PortNegInd(mcb, *(u8 *)rpn, state, *(u16 *)((u8 *)rpn + 0x12));
+        return;
+    }
+    if (a1 != 0 && a2 != 0) {
+        t1 = port[0x52]; t0 = port[0x51]; state[0] = t0; state[1] = t1;
+        t1 = port[0x54]; t0 = port[0x53]; state[2] = t0; state[3] = t1;
+        t1 = port[0x56]; t0 = port[0x55]; state[4] = t0; state[5] = t1;
+        t1 = port[0x58]; t0 = port[0x57]; state[6] = t0; state[7] = t1;
+        state[8] = port[0x59];
+        rfc_send_rpn(mcb, *(u8 *)rpn, 0, port + 0x51, 0);
+        return;
+    }
+    t1 = port[0x52]; t0 = port[0x51]; state[0] = t0; state[1] = t1;
+    t1 = port[0x54]; t0 = port[0x53]; state[2] = t0; state[3] = t1;
+    t1 = port[0x56]; t0 = port[0x55]; state[4] = t0; state[5] = t1;
+    t1 = port[0x58]; t0 = port[0x57]; state[6] = t0; state[7] = t1;
+    state[8] = port[0x59];
+    rfc_set_port_state(state, rpn);
+    if (a1 != 0) {
+        PORT_PortNegInd(mcb, *(u8 *)rpn, state, *(u16 *)((u8 *)rpn + 0x12));
+        return;
+    }
+    p2 = (u8 *)port_find_mcb_dlci_port(mcb, *(u8 *)rpn);
+    if (p2 == NULL) return;
+    if (p2[0x69] & 6) {
+        rfc_port_timer_stop(p2);
+        ctrl = p2[0x69];
+        if (ctrl & 2) {
+            p2[0x69] = ctrl & ~2;
+            t1 = state[1]; t0 = state[0]; p2[0x51] = t0; p2[0x52] = t1;
+            t1 = state[3]; t0 = state[2]; p2[0x53] = t0; p2[0x54] = t1;
+            t1 = state[5]; t0 = state[4]; p2[0x55] = t0; p2[0x56] = t1;
+            t1 = state[7]; t0 = state[6]; p2[0x57] = t0; p2[0x58] = t1;
+            p2[0x59] = state[8];
+            if (state[5] == 0xC || state[5] == 0x30) {
+                *(u16 *)((u8 *)rpn + 0x12) = 0x3F7F;
+            } else {
+                p2[0x56] = 0xC;
+                p2[0x69] |= 4;
+                rfc_send_rpn(mcb, *(u8 *)rpn, 1, p2 + 0x51, 0xC00);
+                rfc_port_timer_start(p2, 0x3C);
+                return;
+            }
+        } else {
+            p2[0x69] = ctrl & ~4;
+        }
+        bits = *(u16 *)((u8 *)rpn + 0x12);
+        if ((bits & 0xC00) == 0xC00 || (bits & 0x3000) == 0x3000) {
+            PORT_PortNegCnf(mcb, p2[0xD], state, 0);
+            return;
+        }
+        ctrl = p2[0x56];
+        if (ctrl == 0xC) {
+            p2[0x56] = 0x30;
+            p2[0x69] |= 4;
+            rfc_send_rpn(mcb, *(u8 *)rpn, 1, p2 + 0x51, 0x3000);
+            rfc_port_timer_start(p2, 0x3C);
+            return;
+        }
+        if (ctrl == 0x30) {
+            p2[0x56] = 0;
+            PORT_PortNegCnf(mcb, p2[0xD], state, 0);
+        }
+    }
+}
+
 void rfc_process_msc(void *mcb, s32 is_command, void *message) {
     u8 flags = *((u8 *)message + 9);
     u8 *port = port_find_mcb_dlci_port(mcb, *(u8 *)message);
@@ -11491,6 +11906,87 @@ s32 IUSB_CloseDeviceAsync(s32 device, void (*callback)(void), void *callbackArg)
     return result;
 }
 
+extern s32 IOS_Ioctlv(s32, s32, s32, s32, void *);
+extern s32 IOS_IoctlvAsync(s32, s32, s32, s32, void *, void *, void *);
+s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void *buffer, s32 ioctl, void (*callback)(void), void *callbackArg, s32 async) {
+    register char *base = lbl_8031A620;
+    char *blk;
+    char *a;
+    char *b;
+    char *msg;
+    s32 ret;
+    s32 fr;
+
+    blk = iosAllocAligned(lbl_805590A0, 0x60, 0x20);
+    if (blk == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x60, blk);
+    a = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
+    if (a == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, a);
+    b = iosAllocAligned(lbl_805590A0, 0x20, 0x20);
+    if (b == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x20, b);
+
+    if (blk == 0 || a == 0 || b == 0) {
+        USB_ERR(base + 0x294);
+        ret = -0x16;
+    } else {
+        *(u8 *)a = endpoint;
+        *(u16 *)b = length;
+        *(void **)(blk + 0) = a;
+        *(s32 *)(blk + 4) = 1;
+        *(void **)(blk + 8) = b;
+        *(s32 *)(blk + 0xC) = 2;
+        *(s32 *)(blk + 0x10) = ioctl;
+        *(s32 *)(blk + 0x14) = length;
+        DCFlushRange(a, 0x20);
+        DCFlushRange(b, 0x20);
+        DCFlushRange(blk, 0x60);
+        if (async == 0) {
+            ret = IOS_Ioctlv(fd, (s32)buffer, 2, 1, blk);
+            USB_LOG(base + 0x2B8, ret);
+        } else {
+            msg = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
+            if (msg == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, msg);
+            if (msg == 0) {
+                USB_ERR(base + 0x2D8);
+                ret = -0x16;
+            } else {
+                *(s32 *)(msg + 0) = (s32)callbackArg;
+                *(s32 *)(msg + 4) = (s32)callback;
+                USB_LOG(base + 0x304, (s32)callbackArg, (s32)callback);
+                *(s32 *)(msg + 0x2C) = 3;
+                *(void **)(msg + 0xC) = a;
+                *(void **)(msg + 0x10) = b;
+                *(void **)(msg + 0x14) = blk;
+                *(s32 *)(msg + 0x40) = ioctl;
+                *(u16 *)(msg + 0x44) = length;
+                ret = IOS_IoctlvAsync(fd, (s32)buffer, 2, 1, blk, _intBlkCtrlCb, msg);
+                if (ret < 0) {
+                    if (msg != 0) {
+                        fr = iosFree(lbl_805590A0, msg);
+                        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, msg, fr);
+                    }
+                    goto free_all;
+                }
+                goto done;
+            }
+        free_all:
+            if (a != 0) {
+                fr = iosFree(lbl_805590A0, a);
+                if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, a, fr);
+            }
+            if (b != 0) {
+                fr = iosFree(lbl_805590A0, b);
+                if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, b, fr);
+            }
+            if (blk != 0) {
+                fr = iosFree(lbl_805590A0, blk);
+                if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, blk, fr);
+            }
+        }
+    }
+done:
+    return ret;
+}
+
 s32 IUSB_ReadIntrMsgAsync(s32 fd, u32 endpoint, u32 length, void* buffer,
                            void (*callback)(void), void* callbackArg) {
     DCInvalidateRange(buffer, length);
@@ -11588,6 +12084,108 @@ void __BzeroDelayLines(void *arg0) {
         if (*(void **)(entry + 0xC8)) memset(*(void **)(entry + 0xC8), 0, *(u32 *)(entry + 0xEC) * 4);
         i++; entry2 += 0xC; entry3 += 8; entry += 4;
     } while (i < 3);
+}
+
+f64 fn_8002EFBC(f64, f32);
+u32 __cvt_fp2unsigned(f32);
+extern u8 lbl_8031ABD8[];
+extern f32 lbl_80560D58;
+extern f32 lbl_80560D5C;
+extern f32 lbl_80560D60;
+extern f32 lbl_80560D64;
+extern f32 lbl_80560D78;
+extern f64 lbl_80560D80;
+extern f32 lbl_80560D88;
+extern f64 lbl_80560D90;
+s32 __InitParams(void *arg0) {
+    f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f0_5, temp_f0_6;
+    f32 temp_f1, temp_f2, temp_f29, temp_f30, temp_f31, temp_f3, temp_f4;
+    s32 temp_r6, temp_r8, var_r25, var_r27;
+    u32 temp_r0, temp_r4, var_r24;
+    u8 *base;
+    u8 *cfg;
+    void *temp_r3, *temp_r4_2, *temp_r5, *temp_r7, *var_r26, *var_r28;
+
+    temp_r4 = *(u32 *)((u8 *)arg0 + 0x110);
+    base = lbl_8031ABD8;
+    cfg = arg0;
+    if (temp_r4 >= 8U) return 0;
+    temp_f4 = *(f32 *)(cfg + 0x118);
+    if (temp_f4 < lbl_80560D5C || temp_f4 > *(f32 *)(cfg + 0x114)) return 0;
+    if (*(u32 *)(cfg + 0x11C) >= 6U) return 0;
+    if (*(f32 *)(cfg + 0x120) < lbl_80560D5C) return 0;
+    temp_f0 = *(f32 *)(cfg + 0x124);
+    if (temp_f0 < lbl_80560D5C || temp_f0 > lbl_80560D60) return 0;
+    temp_f0_2 = *(f32 *)(cfg + 0x128);
+    if (temp_f0_2 < lbl_80560D5C || temp_f0_2 > lbl_80560D60) return 0;
+    temp_f0_3 = *(f32 *)(cfg + 0x12C);
+    if (temp_f0_3 < lbl_80560D5C || temp_f0_3 > lbl_80560D60) return 0;
+    temp_f3 = *(f32 *)(cfg + 0x130);
+    if (temp_f3 < lbl_80560D5C || temp_f3 > lbl_80560D60) return 0;
+    temp_f0_4 = *(f32 *)(cfg + 0x134);
+    if (temp_f0_4 < lbl_80560D5C || temp_f0_4 > lbl_80560D60) return 0;
+    temp_f0_5 = *(f32 *)(cfg + 0x140);
+    if (temp_f0_5 < lbl_80560D5C || temp_f0_5 > lbl_80560D60) return 0;
+    temp_f0_6 = *(f32 *)(cfg + 0x144);
+    if (temp_f0_6 < lbl_80560D5C || temp_f0_6 > lbl_80560D60) return 0;
+
+    temp_f0 = lbl_80560D58;
+    temp_f2 = lbl_80560D64;
+    var_r27 = 0;
+    temp_f1 = temp_f0 * temp_f4;
+    temp_r8 = temp_r4 * 0xC;
+    temp_r5 = base + 0x60;
+    temp_r7 = base + temp_r8;
+    temp_r6 = *(s32 *)((u8 *)temp_r7 + 8);
+    temp_r4_2 = (u8 *)temp_r5 + temp_r8;
+    *(s32 *)(cfg + 0x18) = temp_r6;
+    *(s32 *)(cfg + 0xC) = temp_r6 - *(s32 *)(base + temp_r8);
+    *(f32 *)(cfg + 0x20) = temp_f3 * *(f32 *)((u8 *)temp_r5 + temp_r8) * temp_f2;
+    *(s32 *)(cfg + 0x10) = temp_r6 - *(s32 *)((u8 *)temp_r7 + 4);
+    *(f32 *)(cfg + 0x24) = temp_f3 * *(f32 *)((u8 *)temp_r4_2 + 4) * temp_f2;
+    *(s32 *)(cfg + 0x14) = temp_r6 - *(s32 *)((u8 *)temp_r7 + 8);
+    *(s32 *)(cfg + 0x38) = var_r27;
+    *(f32 *)(cfg + 0x28) = temp_f3 * *(f32 *)((u8 *)temp_r4_2 + 8) * temp_f2;
+    *(u32 *)(cfg + 0x3C) = __cvt_fp2unsigned(temp_f1);
+
+    var_r26 = cfg;
+    temp_f29 = lbl_80560D90;
+    var_r28 = base + 0xC0;
+    temp_f30 = lbl_80560D78;
+    var_r24 = 0;
+    temp_f31 = lbl_80560D58;
+    var_r25 = 0;
+    do {
+        *(s32 *)((u8 *)var_r26 + 0x68) = var_r27;
+        temp_r0 = *(u32 *)((u8 *)var_r28 + (*(u32 *)(cfg + 0x11C) << 5) + var_r25);
+        *(u32 *)((u8 *)var_r26 + 0x74) = temp_r0;
+        var_r24 += 1;
+        var_r25 += 4;
+        temp_f0 = *(f32 *)(cfg + 0x120);
+        *(f32 *)((u8 *)var_r26 + 0x8C) = (f32)fn_8002EFBC(lbl_80560D80,
+            (temp_f30 * (f32)temp_r0) / (temp_f31 * temp_f0));
+        var_r26 = (u8 *)var_r26 + 4;
+    } while (var_r24 < 3U);
+
+    *(s32 *)(cfg + 0xB0) = 0;
+    temp_r3 = (u8 *)var_r28 + (*(u32 *)(cfg + 0x11C) << 5);
+    temp_f1 = lbl_80560D60 - *(f32 *)(cfg + 0x128);
+    *(s32 *)(cfg + 0xB8) = *(s32 *)((u8 *)temp_r3 + 0xC);
+    *(s32 *)(cfg + 0xB4) = 0;
+    *(s32 *)(cfg + 0xBC) = *(s32 *)((u8 *)temp_r3 + 0x10);
+    *(s32 *)(cfg + 0xD4) = 0;
+    *(s32 *)(cfg + 0xE0) = *(s32 *)((u8 *)temp_r3 + 0x14);
+    *(s32 *)(cfg + 0xD8) = 0;
+    *(s32 *)(cfg + 0xE4) = *(s32 *)((u8 *)temp_r3 + 0x18);
+    *(s32 *)(cfg + 0xDC) = 0;
+    *(s32 *)(cfg + 0xE8) = *(s32 *)((u8 *)temp_r3 + 0x1C);
+    *(f32 *)(cfg + 0xF8) = *(f32 *)(cfg + 0x124);
+    *(f32 *)(cfg + 0x108) = temp_f1;
+    if (temp_f1 > lbl_80560D88) *(f32 *)(cfg + 0x108) = lbl_80560D88;
+    *(f32 *)(cfg + 0xFC) = lbl_80560D5C;
+    *(f32 *)(cfg + 0x100) = lbl_80560D5C;
+    *(f32 *)(cfg + 0x104) = lbl_80560D5C;
+    return 1;
 }
 
 void* __AXFXAllocFunction(u32 size) {
@@ -11816,6 +12414,109 @@ void fn_8006BAA4(u32 arg0) {
     }
     DBPrintf_8006CFA8(lbl_80313794);
 }
+
+extern s32 StartSyncDevice(u8 syncType, s8 syncLoopNum, BOOL syncSkipChecks);
+#pragma push
+#pragma scheduling on
+void WUDVendorSpecificCallback(u8 len, u8 *pData) {
+    typedef void (*WUDSyncCallback)(s32, s32);
+    typedef void (*WUDClearCallback)(s32);
+    u8 *state = lbl_80392960;
+    u8 *strings = lbl_803130C8;
+    u8 event = pData[0];
+    u32 enabled, busyEnabled;
+    s32 busy, result, started, libStatus;
+    WUDSyncCallback syncCallback;
+    WUDClearCallback clearCallback;
+
+    (void)len;
+    switch (event) {
+    case 8:
+        DBPrintf_8006CFA8((const char *)strings + 0xA58);
+        DBPrintf_8006CFA8((const char *)strings + 0x598);
+        enabled = OSDisableInterrupts();
+        syncCallback = *(WUDSyncCallback *)lbl_80392960;
+        busyEnabled = OSDisableInterrupts();
+        if (state[0xC] == 0 && state[0xD] == 0 &&
+            state[0xF] == 4 && state[0x10] == 4) {
+            OSRestoreInterrupts(busyEnabled);
+            busy = 0;
+        } else {
+            OSRestoreInterrupts(busyEnabled);
+            busy = 1;
+        }
+        result = busy ? -1 : 0;
+        OSRestoreInterrupts(enabled);
+        if (syncCallback != NULL) {
+            syncCallback(result, 0);
+            break;
+        }
+        DBPrintf_8006CFA8((const char *)strings + 0x410);
+        started = StartSyncDevice(0, 3, 0);
+        enabled = OSDisableInterrupts();
+        syncCallback = *(WUDSyncCallback *)lbl_80392960;
+        OSRestoreInterrupts(enabled);
+        if (started == 0 && syncCallback != NULL) {
+            syncCallback(-1, 0);
+        }
+        break;
+
+    case 9: {
+        u8 *clearState = lbl_80392960;
+        DBPrintf_8006CFA8((const char *)strings + 0xA70);
+        DBPrintf_8006CFA8((const char *)strings + 0x5BC);
+        enabled = OSDisableInterrupts();
+        clearCallback = *(WUDClearCallback *)(state + 8);
+        busyEnabled = OSDisableInterrupts();
+        if (state[0xC] == 0 && state[0xD] == 0 &&
+            state[0xF] == 4 && state[0x10] == 4) {
+            OSRestoreInterrupts(busyEnabled);
+            busy = 0;
+        } else {
+            OSRestoreInterrupts(busyEnabled);
+            busy = 1;
+        }
+        result = busy ? -1 : 0;
+        OSRestoreInterrupts(enabled);
+        if (clearCallback != NULL) {
+            clearCallback(result);
+            break;
+        }
+        DBPrintf_8006CFA8((const char *)strings + 0x470);
+        enabled = OSDisableInterrupts();
+        libStatus = (s8)clearState[0x688];
+        OSRestoreInterrupts(enabled);
+        if ((u32)libStatus != 3U) break;
+        busyEnabled = OSDisableInterrupts();
+        if (clearState[0xC] == 0 && clearState[0xD] == 0 &&
+            clearState[0xF] == 4 && clearState[0x10] == 4) {
+            OSRestoreInterrupts(busyEnabled);
+            busy = 0;
+        } else {
+            OSRestoreInterrupts(busyEnabled);
+            busy = 1;
+        }
+        if (busy != 0) break;
+        enabled = OSDisableInterrupts();
+        clearState[0xD] = 1;
+        OSCreateAlarm((OSAlarm *)(clearState + 0x690));
+        OSSetPeriodicAlarm((OSAlarm *)(clearState + 0x690), __OSGetSystemTime(),
+                           OS_MSEC_TO_TICKS(20), (OSAlarmHandler)fn_80069EB4);
+        OSRestoreInterrupts(enabled);
+        break;
+    }
+
+    case 10:
+        DBPrintf_8006CFA8((const char *)strings + 0xA88, pData[1]);
+        state[0x689] = pData[1];
+        break;
+    case 16:
+        DBPrintf_8006CFA8((const char *)strings + 0xAAC, pData[1]);
+        OSPanic(&lbl_80558FE8, 0xD9C, (const char *)strings + 0xAD4);
+        break;
+    }
+}
+#pragma pop
 extern u32 lbl_8055DCA4;
 extern char lbl_80315700[];
 extern void *jumptable_803159A0[];
