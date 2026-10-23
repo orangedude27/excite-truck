@@ -3,6 +3,9 @@ extern unsigned int fn_801CE898(void);
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
+#pragma cplusplus on
+struct Dummy_801CCDAC { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(int); };
+#pragma cplusplus reset
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -453,8 +456,176 @@ void fn_801CCCAC(void) {
     lbl_8055E884 = 0;
 }
 
+extern char lbl_80337CA0[];
+extern f32 lbl_805629F0;
+extern f32 lbl_80562A0C;
 #pragma push
-#pragma scheduling invalid_target
+#pragma dont_inline on
+#pragma scheduling on
+void fn_801CCDAC(int arg0, int arg1, int arg2) {
+s32 *temp_r31;
+register s32 var_r29;
+register s32 var_r30;
+s32 var_r0;
+s32 var_r0_2;
+register s32 var_ctr;
+register s32 var_r3;
+s32 temp_r3_2, temp_r3_3, temp_r3_4, temp_r3_5, temp_r3_6;
+void *temp_r30;
+void *temp_r3;
+void *temp_r3_7;
+void *temp_r0;
+void *temp_r4;
+unsigned char *temp_r7;
+unsigned char *temp_r7_2, *temp_r7_3, *temp_r7_4, *temp_r7_5;
+register unsigned char *var_r4;
+register unsigned char *var_r5;
+register unsigned char *var_r6;
+register unsigned char *var_r7;
+
+if ((fn_801CE898() == 0) &&
+(temp_r31 = lbl_8055E884, (*(unsigned char *)((unsigned char *)temp_r31 + 0x10) == 0))) {
+temp_r3 = ((void *(*)(s32))fn_801EA9A0)(arg1);
+if (*(unsigned char *)temp_r3 != 0)
+var_r0 = *(unsigned char *)((unsigned char *)temp_r3 + 0xB4) & 3;
+else
+var_r0 = -1;
+if (var_r0 >= 0)
+var_r0_2 = *(unsigned char *)((unsigned char *)temp_r31 + var_r0 + 0x11);
+else
+var_r0_2 = 1;
+if (var_r0_2 == 0) {
+var_r30 = 0;
+var_r29 = 0;
+loop_13:
+if (fn_801CB900(*(int **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r29 / 4), arg0) == 0) {
+var_r29 += 4;
+var_r30 += 1;
+if (var_r30 < *(s32 *)((unsigned char *)temp_r31 + 0x1C))
+goto loop_13;
+var_r30 = -1;
+}
+if (var_r30 < 0)
+((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, arg0);
+temp_r30 = *(void **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r30);
+if (temp_r30 != 0) {
+if (((s32 (*)(void *, s32))((u32 *)*(u32 **)((unsigned char *)temp_r30 + 4))[3])(temp_r30, arg2) != 0) {
+var_ctr = 5;
+var_r6 = (unsigned char *)temp_r31;
+var_r7 = (unsigned char *)temp_r31 + 0x44;
+var_r4 = 0;
+var_r5 = 0;
+var_r3 = 0;
+loop_20:
+if (*(unsigned char *)(var_r6 + 0x44) == 0) {
+var_r5 = var_r7;
+goto block_24;
+}
+if (*(void **)(var_r6 + 0x4C) == temp_r30) {
+var_r4 = (unsigned char *)temp_r31 + var_r3 * 0x14 + 0x44;
+} else {
+block_24:
+temp_r7 = var_r7 + 0x14;
+temp_r3_2 = var_r3 + 1;
+if (*(unsigned char *)(var_r6 + 0x58) == 0) {
+var_r5 = temp_r7;
+goto block_28;
+}
+if (*(void **)(var_r6 + 0x60) == temp_r30) {
+var_r4 = (unsigned char *)temp_r31 + temp_r3_2 * 0x14 + 0x44;
+} else {
+block_28:
+temp_r7_2 = temp_r7 + 0x14;
+temp_r3_3 = temp_r3_2 + 1;
+if (*(unsigned char *)(var_r6 + 0x6C) == 0) {
+var_r5 = temp_r7_2;
+goto block_32;
+}
+if (*(void **)(var_r6 + 0x74) == temp_r30) {
+var_r4 = (unsigned char *)temp_r31 + temp_r3_3 * 0x14 + 0x44;
+} else {
+block_32:
+temp_r7_3 = temp_r7_2 + 0x14;
+temp_r3_4 = temp_r3_3 + 1;
+if (*(unsigned char *)(var_r6 + 0x80) == 0) {
+var_r5 = temp_r7_3;
+goto block_36;
+}
+if (*(void **)(var_r6 + 0x88) == temp_r30) {
+var_r4 = (unsigned char *)temp_r31 + temp_r3_4 * 0x14 + 0x44;
+} else {
+block_36:
+temp_r7_4 = temp_r7_3 + 0x14;
+temp_r3_5 = temp_r3_4 + 1;
+if (*(unsigned char *)(var_r6 + 0x94) == 0) {
+var_r5 = temp_r7_4;
+goto block_40;
+}
+if (*(void **)(var_r6 + 0x9C) == temp_r30) {
+var_r4 = (unsigned char *)temp_r31 + temp_r3_5 * 0x14 + 0x44;
+} else {
+block_40:
+temp_r7_5 = temp_r7_4 + 0x14;
+temp_r3_6 = temp_r3_5 + 1;
+if (*(unsigned char *)(var_r6 + 0xA8) == 0) {
+var_r5 = temp_r7_5;
+goto block_44;
+}
+if (*(void **)(var_r6 + 0xB0) == temp_r30) {
+var_r4 = (unsigned char *)temp_r31 + temp_r3_6 * 0x14 + 0x44;
+} else {
+block_44:
+var_r6 += 0x78;
+var_r7 = temp_r7_5 + 0x14;
+var_r3 = temp_r3_6 + 1;
+var_ctr--;
+if (var_ctr != 0)
+goto loop_20;
+}
+}
+}
+}
+}
+}
+if (var_r4 != 0) {
+*(f32 *)(var_r4 + 4) = lbl_805629F0;
+if (var_r4[1] != 0)
+*(f32 *)(var_r4 + 4) = *(f32 *)(var_r4 + 4) - lbl_80562A0C;
+} else {
+if (var_r5 == 0) {
+temp_r3_7 = *(void **)((unsigned char *)temp_r31 + 0x29C);
+var_r5 = 0;
+if (temp_r3_7 != 0) {
+temp_r0 = *(void **)((unsigned char *)temp_r3_7 + 0x10);
+var_r5 = temp_r3_7;
+*(void **)((unsigned char *)temp_r31 + 0x29C) = temp_r0;
+if (temp_r0 == 0)
+*(void ***)((unsigned char *)temp_r31 + 0x2A0) =
+(void **)((unsigned char *)temp_r31 + 0x29C);
+*(void **)((unsigned char *)temp_r3_7 + 0x10) = 0;
+}
+}
+*var_r5 = 1;
+var_r5[1] = 0;
+*(f32 *)(var_r5 + 4) = lbl_805629F0;
+*(void **)(var_r5 + 8) = temp_r30;
+temp_r4 = *(void **)((unsigned char *)temp_r31 + 8);
+if (temp_r4 != 0) {
+*((unsigned char *)temp_r4 + 0x49) = 1;
+*((unsigned char *)temp_r4 + 0x4B) = 0;
+*((unsigned char *)temp_r4 + 0x4A) = 0;
+}
+*(void **)(*(void ***)((unsigned char *)temp_r31 + 0x2A0)) = var_r5;
+*(void ***)((unsigned char *)temp_r31 + 0x2A0) =
+(void **)(var_r5 + 0x10);
+*(s32 *)(var_r5 + 0x10) = 0;
+}
+}
+}
+}
+}
+}
+#pragma pop
 extern char lbl_80337CCC[];
 #pragma push
 #pragma scheduling invalid_target
