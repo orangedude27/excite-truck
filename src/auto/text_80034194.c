@@ -30,7 +30,9 @@ static inline BOOL DVDPathSame(const char *lhs, const char *rhs) {
         if (DVDPathLower(*lhs++) != DVDPathLower(*rhs++))
             return FALSE;
     }
-    return *lhs == '/' || *lhs == '\0';
+    if (*lhs == '/' || *lhs == '\0')
+        return TRUE;
+    return FALSE;
 }
 
 extern void fn_80035C78(void);
