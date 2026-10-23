@@ -177,7 +177,7 @@ void fn_80231780(void *arg0) {
     u8 *record;
     u8 *object;
     s32 index;
-    s32 color;
+    register s32 color;
 
     f31 = lbl_80563680;
     f30 = lbl_80563684;
@@ -237,6 +237,7 @@ loop_test:
     if (i < lbl_8049846C[1]) goto loop_body;
     lbl_8049846C[1] = 0;
 }
+#pragma scheduling on
 #pragma pop
 
 #pragma scheduling invalid_target
@@ -267,10 +268,11 @@ s32 fn_80232578(const char *arg0) {
     s32 offset;
     u8 *data;
     u8 *record;
-    register u8 temp2;
-    register u8 *record2;
+    u8 *record2;
+    s32 tempWide;
+    u8 temp2;
     s32 unused;
-    u32 size;
+    volatile u32 size;
     u8 valid;
     u8 swap;
     void *parsed;
@@ -293,7 +295,7 @@ s32 fn_80232578(const char *arg0) {
     valid = 0;
     swap = 0;
     unused = 0;
-    parsed = fn_8012C370(arg0, 0x47544558, &size, &unused, &valid, &swap);
+    parsed = fn_8012C370(arg0, 0x47544558, (u32 *)&size, &unused, &valid, &swap);
     data = (u8 *)parsed;
     if (parsed != 0) {
         if (size != 8) {
@@ -332,7 +334,7 @@ s32 fn_80232578(const char *arg0) {
             temp = record[0x19]; record[0x19] = record[0x1A]; record[0x1A] = temp;
 
             record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
-            temp2 = record2[0]; record2[0] = record2[3]; record2[3] = temp2;
+            tempWide = record2[0]; record2[0] = record2[3]; record2[3] = (u8)tempWide;
             temp2 = record2[1]; record2[1] = record2[2]; record2[2] = temp2;
 
             record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
