@@ -456,6 +456,19 @@ extern "C" void fn_80140614(void *arg0, void *arg2) {
     }
 }
 
+extern "C" void fn_8013EB30(void);
+extern "C" void fn_80140B98(void *, void *, s32);
+extern "C" void fn_80141558(void *, s32, s32, s32);
+extern "C" void fn_80140D1C(void *arg0, void *arg1, void *arg2) {
+ f32 buffer[16]; f32 *dst=buffer; s32 count=*(s32 *)((u8 *)arg1+4)-1, idx=0, i, cap, head, end; u8 *item;
+ fn_8013EB30();
+ while(count>=0){ item=*(u8 **)(*(u8 **)arg1+count*8);
+ if(item[0x1E]){ if(idx>0){fn_80141558((u8 *)arg0+0x280,(s32)dst,idx,*(s32 *)((u8 *)arg0+0x288));idx=0;} fn_80140B98(arg0,*(void **)(*(u8 **)arg1+count*8),2);}
+ else {dst[idx*3]=*(f32 *)item;dst[idx*3+1]=*(f32 *)(item+4);dst[idx*3+2]=*(f32 *)(item+8);idx++;dst[idx*3]=*(f32 *)(item+0xC);dst[idx*3+1]=*(f32 *)(item+0x10);dst[idx*3+2]=*(f32 *)(item+0x14);idx++;} count--;}
+ if(idx>0){fn_80141558((u8 *)arg0+0x280,(s32)dst,idx,*(s32 *)((u8 *)arg0+0x288));idx=0;}
+ i=0; do {cap=*(s32 *)((u8 *)arg0+0xC4);head=*(s32 *)((u8 *)arg0+0xCC);end=(cap+(*(s32 *)((u8 *)arg0+0xC8)-head))%cap;if(i>=end)break;item=*(u8 **)((u8 *)arg0+0xC0);fn_80140B98(arg0,*(void **)(item+((i+cap+head)%cap)*12+8),4);i++;}while(1);
+}
+
 extern "C" void fn_80141454(void) {
 
 }
@@ -1179,3 +1192,26 @@ struct S32_80140728 { s32 v[8]; f32 f[6]; };
 extern "C" f32 lbl_805614C4;
 extern "C" u8 lbl_8032C530[0x500];
 extern "C" void fn_80147BD0(s32, s32, s32, s32, s32, f32);
+class TDispatchStringInt20 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5();
+    virtual s32 v20(const char *, s32);
+};
+
+class TDispatchStringFloat28 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual f32 v28(const char *, f32);
+};
+
+extern "C" f32 lbl_805614E0;
+extern "C" f32 lbl_805614E4;
+extern "C" f32 lbl_805614E8;
+extern "C" f32 lbl_805614EC;
+extern "C" f32 lbl_805614F0;
+extern "C" f32 lbl_805614F4;
+extern "C" f32 lbl_805614F8;
+extern "C" f64 lbl_805614D8;
+extern "C" f32 fn_80204CFC(const char *);
