@@ -248,6 +248,196 @@ void ReportOSInfo_8004AA40(void) {
     OSReport("MEM2 Arena : 0x%x - 0x%x\n", OSGetMEM2ArenaLo(), OSGetMEM2ArenaHi());
 }
 
+#pragma push
+#pragma small_data on
+extern BOOL AreWeInitialized_8055D9CC;
+extern u32 BI2DebugFlagHolder_8055D9F0;
+extern u32* BI2DebugFlag_8055D9F4;
+extern void* BootInfo_8055D9F8;
+extern u32 __PADSpec;
+extern u64 __OSStartTime;
+extern u64 __OSGetSystemTime(void);
+extern u8 __ArenaLo[];
+extern u8 __ArenaHi[];
+extern u8 _stack_addr[];
+extern BOOL __OSInNandBoot;
+extern BOOL __OSIsGcam;
+extern BOOL __OSInReboot;
+extern BOOL __DVDLongFileNameFlag;
+extern void OSExceptionInit(void);
+extern void ClearMEM2Arena(void);
+extern void __OSInitIPCBuffer(void);
+extern void __OSInitSystemCall(void);
+extern void __OSInitAlarm(void);
+extern void __OSModuleInit(void);
+extern void __OSInterruptInit(void);
+extern void __OSContextInit(void);
+extern void __OSCacheInit(void);
+extern void EXIInit(void);
+extern void SIInit(void);
+extern void __OSInitSram(void);
+extern void __OSThreadInit(void);
+extern void __OSInitAudioSystem(void);
+extern void PPCMtmmcr0(u32);
+extern void PPCMtmmcr1(u32);
+extern void PPCMtpmc1(u32);
+extern void PPCMtpmc2(u32);
+extern void PPCMtpmc3(u32);
+extern void PPCMtpmc4(u32);
+extern void PPCMthid4(u32);
+extern void PPCDisableSpeculation(void);
+extern u32 PPCMfhid2(void);
+extern void PPCMthid2(u32);
+extern void PPCSetFpNonIEEEMode(void);
+extern void __OSInitMemoryProtection(void);
+extern void EnableMetroTRKInterrupts(void);
+extern void OSEnableInterrupts(void);
+extern void IPCCltInit(void);
+extern void __OSInitSTM(void);
+extern void SCInit(void);
+extern u32 SCCheckStatus(void);
+extern void DVDInit(void);
+extern void DCInvalidateRange(void*, u32);
+extern void DVDInquiryAsync(void*, void*, void*);
+extern void InquiryCallback(void);
+extern void __OSStartPlayRecord(void);
+extern void OSSetMEM1ArenaLo(void*);
+extern void OSSetMEM1ArenaHi(void*);
+extern void OSSetMEM2ArenaLo(void*);
+extern void OSSetMEM2ArenaHi(void*);
+extern void OSPanic(const char*, s32, const char*);
+void OSInit(void) {
+    u8* bi2;
+    void* mem1lo;
+    void* mem1hi;
+    void* mem2lo;
+    void* mem2hi;
+
+    if (AreWeInitialized_8055D9CC == 0) {
+        AreWeInitialized_8055D9CC = 1;
+        __OSStartTime = __OSGetSystemTime();
+        OSDisableInterrupts();
+        __OSGetExecParams(__OSRebootParams);
+        PPCMtmmcr0(0);
+        PPCMtmmcr1(0);
+        PPCMtpmc1(0);
+        PPCMtpmc2(0);
+        PPCMtpmc3(0);
+        PPCMtpmc4(0);
+        PPCMthid4(0x83900000);
+        PPCDisableSpeculation();
+        PPCSetFpNonIEEEMode();
+        BootInfo_8055D9F8 = (void*)0x80000000;
+        BI2DebugFlag_8055D9F4 = NULL;
+        __DVDLongFileNameFlag = 0;
+        bi2 = *(u8**)0x800000F4;
+        if (bi2 != NULL) {
+            BI2DebugFlag_8055D9F4 = (u32*)(bi2 + 0xC);
+            __PADSpec = *(u32*)(bi2 + 0x24);
+            *(u8*)0x800030E8 = *(u8*)(bi2 + 0xC);
+            *(u8*)0x800030E9 = __PADSpec;
+        } else if (*(void**)((u8*)BootInfo_8055D9F8 + 0x34) != NULL) {
+            BI2DebugFlagHolder_8055D9F0 = *(u8*)0x800030E8;
+            BI2DebugFlag_8055D9F4 = &BI2DebugFlagHolder_8055D9F0;
+            __PADSpec = *(u8*)0x800030E9;
+        }
+        __DVDLongFileNameFlag = 1;
+        mem1lo = *(void**)0x8000310C;
+        if (mem1lo == NULL) {
+            if (((u32)__ArenaLo & 0x30000000) == 0) {
+                mem1lo = *(void**)((u8*)BootInfo_8055D9F8 + 0x30);
+                if (mem1lo == NULL) {
+                    mem1lo = __ArenaLo;
+                }
+                if (*(void**)((u8*)BootInfo_8055D9F8 + 0x30) == NULL &&
+                    BI2DebugFlag_8055D9F4 != NULL && *BI2DebugFlag_8055D9F4 < 2) {
+                    mem1lo = (void*)(((u32)_stack_addr + 0x1F) & 0xFFFFFFE0);
+                }
+            } else {
+                mem1lo = (void*)0x80004000;
+            }
+        }
+        OSSetMEM1ArenaLo(mem1lo);
+        mem1hi = *(void**)0x80003110;
+        if (mem1hi == NULL) {
+            mem1hi = *(void**)((u8*)BootInfo_8055D9F8 + 0x34);
+            if (mem1hi == NULL) {
+                mem1hi = __ArenaHi;
+            }
+        }
+        OSSetMEM1ArenaHi(mem1hi);
+        mem2lo = *(void**)0x80003124;
+        if (mem2lo != NULL) {
+            if (((u32)__ArenaLo & 0x30000000) == 0x10000000) {
+                mem2lo = __ArenaLo;
+                if (BI2DebugFlag_8055D9F4 != NULL && *BI2DebugFlag_8055D9F4 < 2) {
+                    mem2lo = (void*)(((u32)_stack_addr + 0x1F) & 0xFFFFFFE0);
+                }
+            } else if ((u32)mem2lo >= 0x90000000 && (u32)mem2lo < 0x90000800) {
+                mem2lo = (void*)0x90000800;
+            }
+            OSSetMEM2ArenaLo(mem2lo);
+        }
+        mem2hi = *(void**)0x80003128;
+        if (mem2hi != NULL) {
+            OSSetMEM2ArenaHi(mem2hi);
+        }
+        __OSInitIPCBuffer();
+        OSExceptionInit();
+        __OSInitSystemCall();
+        __OSInitAlarm();
+        __OSModuleInit();
+        __OSInterruptInit();
+        __OSContextInit();
+        __OSCacheInit();
+        EXIInit();
+        SIInit();
+        __OSInitSram();
+        __OSThreadInit();
+        __OSInitAudioSystem();
+        PPCMthid2(PPCMfhid2() & 0xBFFFFFFF);
+        if (__OSInIPL == 0) {
+            __OSInitMemoryProtection();
+        }
+        ReportOSInfo_8004AA40();
+        OSReport(lbl_80558F0C, __OSVersion);
+        if (BI2DebugFlag_8055D9F4 != NULL && *BI2DebugFlag_8055D9F4 >= 2) {
+            EnableMetroTRKInterrupts();
+        }
+        ClearArena();
+        ClearMEM2Arena();
+        OSEnableInterrupts();
+        IPCCltInit();
+        if (__OSInNandBoot == 0 && __OSInReboot == 0) {
+            __OSInitSTM();
+            SCInit();
+            while (SCCheckStatus() == 1) {
+            }
+        }
+        if (__OSInIPL == 0) {
+            if (*(u8*)0x8000315C == 0x81) {
+                OSReport("OS ERROR: boot program is not for RVL target. Please use correct boot program.\n");
+                OSPanic("src/revolution/OS/OS.c", 1102, "Failed to run app");
+            }
+            if (*(u8*)0x8000315D == 0x81) {
+                OSReport("OS ERROR: apploader[D].img is not for RVL target. Please use correct apploader[D].img.\n");
+                OSPanic("src/revolution/OS/OS.c", 1120, "Failed to run app");
+            }
+            DVDInit();
+            if (__OSIsGcam != 0) {
+                *(volatile u16*)0x800030E6 = 0x9000;
+            } else if (*(volatile u16*)0x800030E6 == 0) {
+                DCInvalidateRange((u8*)__OSRebootParams + 0x20, 0x20);
+                DVDInquiryAsync((u8*)__OSRebootParams + 0x20, (u8*)__OSRebootParams + 0x40, InquiryCallback);
+            }
+        }
+        if (__OSInIPL == 0 && __OSInNandBoot == 0 && __OSInReboot == 0) {
+            __OSStartPlayRecord();
+        }
+    }
+}
+#pragma pop
+
 void __OSDBIntegrator(void) {
     volatile u32 *p = (volatile u32 *)0x48;
     * (volatile u32 *)0x4C = __builtin_return_address(0);
