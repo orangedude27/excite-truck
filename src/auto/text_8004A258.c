@@ -2,11 +2,7 @@
 #include <revolution/OS/OSHardware.h>
 
 extern BOOL __OSInIPL;
-#pragma push
-#pragma small_data on
 extern const char lbl_80558F0C[4];
-extern const char lbl_80558F10[];
-#pragma pop
 
 extern void **OSExceptionTable_8055D9D0;
 extern void OSExceptionVector(void);
