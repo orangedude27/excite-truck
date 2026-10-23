@@ -591,6 +591,102 @@ s16 fn_802B6ED8(s32 arg0, s32 arg1, u32 arg2) {
     return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * (s16)fn_802B6E30()));
 }
 
+extern void fn_80204048();
+extern void fn_8020404C(void);
+#pragma push
+#pragma processor 750
+void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
+    f32 sp[4];
+    f32 x, y, adjusted;
+    s32 rounded;
+    s16 xBase, yBase;
+    u32 scale, width, height;
+    register u32 row, column;
+
+    if (*(s32 *)((u8 *)arg1 + 0x20) != 0) {
+        x = *(f32 *)arg0 / lbl_80564C58;
+        if (x < lbl_80564C74)
+            adjusted = x - lbl_80564C78;
+        else
+            adjusted = lbl_80564C78 + x;
+        rounded = (s32)adjusted;
+        scale = fn_802B6E30();
+        xBase = (s16)rounded & ~(scale - 1);
+
+        y = *(f32 *)((u8 *)arg0 + 8) / lbl_80564C58;
+        if (y < lbl_80564C74)
+            adjusted = y - lbl_80564C78;
+        else
+            adjusted = lbl_80564C78 + y;
+        rounded = (s32)adjusted;
+        scale = fn_802B6E30();
+        width = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x20);
+        height = lbl_8055CEA0 * *(u32 *)((u8 *)arg1 + 0x24);
+        yBase = (s16)rounded & ~(scale - 1);
+        if (lbl_8055FA38 == 5) {
+            f32 temp = lbl_80564C58 * (f32)fn_802B6ED8(yBase, 0, height);
+            sp[2] = lbl_80564C58 * (f32)fn_802B6E7C(xBase, 0, width);
+            sp[3] = temp;
+            temp = lbl_80564C58 * (f32)fn_802B6ED8(yBase, height - 1, height);
+            sp[0] = lbl_80564C58 * (f32)fn_802B6E7C(xBase, width - 1, width);
+            sp[1] = temp;
+            fn_80204048(&sp[2], &sp[0]);
+        }
+
+        for (row = 0; row < width; row++) {
+            for (column = 0; column < height; column++) {
+                s16 xCoord = fn_802B6E7C(xBase, row, width);
+                s16 yCoord = fn_802B6E7C(yBase, column, height);
+                if (fn_802B6E00(xCoord, yCoord) == 0) {
+                    register u32 scale = lbl_8055CEA0;
+                    u32 blockX = row / scale;
+                    u32 blockY = column / scale;
+                    u32 remX = row - blockX * scale;
+                    u32 remY = column - blockY * scale;
+                    u8 pixel;
+
+                    if ((remX != 0) || (remY != 0)) {
+                        u32 imageWidth = *(u32 *)((u8 *)arg1 + 0x20);
+                        u32 nextX = imageWidth - 1;
+                        u32 x1 = blockX + 1;
+                        u32 nextY;
+                        u32 y1;
+                        u32 rowOffset;
+                        u32 nextRowOffset;
+
+                        if (x1 < nextX)
+                            nextX = x1;
+                        nextY = *(u32 *)((u8 *)arg1 + 0x24) - 1;
+                        y1 = blockY + 1;
+                        if (y1 < nextY)
+                            nextY = y1;
+                        rowOffset = blockY * imageWidth;
+                        nextRowOffset = nextY * imageWidth;
+
+                        {
+                            f32 fx = (f32)remX / (f32)scale;
+                            f32 c00 = (f32)*((u8 *)arg1 + 0x28 + blockX + rowOffset);
+                            f32 c10 = (f32)*((u8 *)arg1 + 0x28 + nextX + rowOffset);
+                            f32 c01 = (f32)*((u8 *)arg1 + 0x28 + blockX + nextRowOffset);
+                            f32 c11 = (f32)*((u8 *)arg1 + 0x28 + nextX + nextRowOffset);
+                            f32 top = c00 + fx * (c10 - c00);
+                            f32 bottom = c01 + fx * (c11 - c01);
+                            pixel = (u8)(s32)(top + ((f32)remY / (f32)scale) * (bottom - top));
+                        }
+                    } else {
+                        u32 imageWidth = *(u32 *)((u8 *)arg1 + 0x20);
+                        pixel = *((u8 *)arg1 + 0x28 + blockX + blockY * imageWidth);
+                    }
+                    arg2(xCoord, yCoord, pixel);
+                }
+            }
+        }
+
+        if (lbl_8055FA38 == 5)
+            fn_8020404C();
+    }
+}
+#pragma pop
 s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
     extern float lbl_80564C78;
     extern float lbl_80564C88;
