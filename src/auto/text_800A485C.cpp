@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+struct Fn800C0440Context { u8 pad[0xC]; volatile u32 bitIndex; volatile s32 limit; };
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_80559270[]; }
 extern "C" s32 fn_800A485C(s32);
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055920C[]; }
@@ -6588,8 +6589,6 @@ void* arg0, s32 arg1, void* arg2,
 s32 arg3, s32 arg4, s32 arg5, s32 arg6, s16 arg7,
 s32 arg8, s16* arg9, s16* arg10
 ) {
-u32* bitIndex = (u32*)((u8*)arg0 + 0xC);
-s32 limit = *(s32*)((u8*)arg0 + 0x10);
 s32 sp14 = arg4 & 1;
 s16 spC = arg7;
 void* sp8 = arg2;
@@ -6597,23 +6596,23 @@ s32 sp1C = 0x80320000 - 0x3D68;
 s32 sp20 = 0x80320000 - 0x2A80;
 s16 sp10;
 s16 spE;
-s32 maxOutput;
-s32 sp18;
-s32 i = 0;
-s32 outputIndex = 0;
-s16* output = (s16*)sp8;
-s16* inputCursor = arg9;
-s8 status;
-s32 type;
-s32 maxForPass;
-s32 sign;
-u32 bits;
-u32 byteIndex;
-s32 shift;
-u32 raw;
-s16 decoded;
-s16 x;
-s16 y;
+register s32 maxOutput;
+register s32 sp18;
+register s32 i = 0;
+register s32 outputIndex = 0;
+register s16* output = (s16*)sp8;
+register s16* inputCursor = arg9;
+register s8 status;
+register s32 type;
+register s32 maxForPass;
+register s32 sign;
+register u32 bits;
+register u32 byteIndex;
+register s32 shift;
+register u32 raw;
+register s16 decoded;
+register s16 x;
+register s16 y;
 
 if (sp14 != 0) {
 s32 tile = *(s32*)((u8*)arg0 + 4);
@@ -6656,49 +6655,53 @@ maxForPass = maxOutput;
 }
 
 while (outputIndex < maxForPass) {
-raw = (u32)fn_800C0DF8((u8*)arg1, 0x10, bitIndex) << 16;
+raw = (u32)fn_800C0DF8((u8*)arg1, 0x10, (u32*)((u8*)arg0 + 0xC)) << 16;
 if (type == 0xD || type == 0x10) {
-bits = *bitIndex;
-*bitIndex = bits + 4;
+bits = *(volatile u32*)((u8*)arg0 + 0xC);
+*(volatile u32*)((u8*)arg0 + 0xC) = bits + 4;
 byteIndex = (bits >> 3) & 0x1FFF;
 shift = 0x10 - (bits & 7);
-*bitIndex = shift - 0x14;
+*(volatile u32*)((u8*)arg0 + 0xC) = shift - 0x14;
 sign = ((u32)((u8*)arg1)[(byteIndex + 1) & 0x1FFF] << 8) | ((u8*)arg1)[byteIndex];
 sign &= *(u32*)((u8*)lbl_802F3D60 + 0x1F4 + shift * 4);
 sign >>= shift - 4;
 raw |= ((sign & 0xF) << 12);
 } else {
-*bitIndex -= 0x10;
+*(volatile u32*)((u8*)arg0 + 0xC) -= 0x10;
 }
 
 decoded = (s16)fn_800C083C(raw, *(s16*)((u8*)lbl_802F3D60 + 0x1D0 + type * 2), (s32*)(sp20 + type * 4));
 x = (s16)((decoded & 0xF0) >> 4);
 y = (s16)(decoded & 0xF);
-*bitIndex += (s16)decoded >> 8;
+*(volatile u32*)((u8*)arg0 + 0xC) += (s16)decoded >> 8;
 
 if (x == 0xF && status != 0) {
-x = (s16)(x + (u16)fn_800BDEB4((const u8*)arg1, status, bitIndex));
+x = (s16)(x + (u16)fn_800BDEB4((const u8*)arg1, status, (u32*)((u8*)arg0 + 0xC)));
 }
 if (x != 0) {
-bits = *bitIndex;
-*bitIndex = bits + 1;
+bits = *(volatile u32*)((u8*)arg0 + 0xC);
+*(volatile u32*)((u8*)arg0 + 0xC) = bits + 1;
 byteIndex = (bits >> 3) & 0x1FFF;
-shift = 8 - (bits & 7) - 1;
-sign = ((s32)((u8*)arg1)[byteIndex] >> shift) & 1;
+shift = 8 - (bits & 7);
+sign = (s32)((u8*)arg1)[byteIndex];
+shift -= 1;
+sign = (sign >> shift) & 1;
 if (sign != 0) {
 x = -x;
 }
 }
 
 if (y == 0xF && status != 0) {
-y = (s16)(y + (u16)fn_800BDEB4((const u8*)arg1, status, bitIndex));
+y = (s16)(y + (u16)fn_800BDEB4((const u8*)arg1, status, (u32*)((u8*)arg0 + 0xC)));
 }
 if (y != 0) {
-bits = *bitIndex;
-*bitIndex = bits + 1;
+bits = *(volatile u32*)((u8*)arg0 + 0xC);
+*(volatile u32*)((u8*)arg0 + 0xC) = bits + 1;
 byteIndex = (bits >> 3) & 0x1FFF;
-shift = 8 - (bits & 7) - 1;
-sign = ((s32)((u8*)arg1)[byteIndex] >> shift) & 1;
+shift = 8 - (bits & 7);
+sign = (s32)((u8*)arg1)[byteIndex];
+shift -= 1;
+sign = (sign >> shift) & 1;
 if (sign != 0) {
 y = -y;
 }
@@ -6706,7 +6709,7 @@ y = -y;
 
 output[0] = x;
 output[1] = y;
-if ((s32)*bitIndex > limit) {
+if ((s32)*(volatile u32*)((u8*)arg0 + 0xC) > *(volatile s32*)((u8*)arg0 + 0x10)) {
 if (arg8 == 1 && *arg10 == 0) {
 *arg10 = (s16)outputIndex;
 }
