@@ -16,6 +16,35 @@
     extern float lbl_8055E3C8, lbl_80562144, lbl_80562140, lbl_80562148, lbl_80562204;
 
     extern void fn_80194FD0(void);
+#pragma cplusplus on
+class Vt_80194C4C {
+public:
+    virtual void *v0();
+    virtual void *v1();
+    virtual void *v2();
+    virtual void *v3();
+    virtual void *v4();
+    virtual void *v5();
+    virtual void *v6();
+    virtual void *v7();
+    virtual void *v8();
+};
+class Vt_80194C4CController {
+public:
+    virtual void v0();
+    virtual void v1();
+    virtual void v2();
+    virtual void v3();
+    virtual void v4();
+    virtual void v5();
+    virtual void v6();
+    virtual void v7();
+    virtual void v8();
+    virtual void v9();
+    virtual void v10();
+    virtual void v11(float *, float *, int *);
+};
+#pragma cplusplus reset
 typedef unsigned char u8;
 extern void *lbl_804349C0[];
 extern float lbl_8056223C, lbl_8055E57C;
@@ -594,7 +623,112 @@ float fn_80194B60(float a, float b, float c, float d) {
 done:
     return a + curve * (b - a);
 }
-#pragma processor gekko
+
+extern float fn_80134C1C(void);
+extern int fn_801769A8(void);
+extern float fn_801B3064(void);
+extern void *fn_801B2EC0(int);
+extern float fn_80139048(void);
+extern float PSQUATMultiply(void *, void *);
+extern void fn_80194F70(void *, float *, float *);
+extern float lbl_8055A48C, lbl_80562140, lbl_80562144, lbl_80562160;
+extern float lbl_80562174, lbl_80562184, lbl_805621D8, lbl_805621DC;
+extern double lbl_805621C8;
+extern float lbl_805621E0, lbl_805621E4, lbl_805621E8, lbl_805621EC;
+#pragma dont_inline on
+void fn_80194C4C(void *arg0, float *arg1) {
+    void *work;
+    float value;
+    int i;
+
+    fn_80194FD0();
+    work = *(void **)((char *)arg0 + 0x288);
+    value = *(float *)((char *)work + 0x34);
+    arg1[0] += *(float *)((char *)arg0 + 0x58) * value;
+    arg1[1] += *(float *)((char *)arg0 + 0x5C) * value;
+    value = fn_80134C1C();
+
+    if (fn_801769A8() & 0x400) {
+        float endValue = lbl_8055E3C8;
+        float elapsed = fn_801B3064();
+        float amount = (endValue - elapsed - lbl_80562144) / lbl_805621D8;
+        if (amount < lbl_80562140)
+            amount = lbl_80562140;
+        if (amount > lbl_80562144)
+            amount = lbl_80562144;
+        value = lbl_80562144 + amount * (value - lbl_80562144);
+    }
+
+    if (*(int *)((char *)work + 0x30) == 0) {
+        arg1[2] = value;
+        i = 0;
+        while (i < fn_801B2F24()) {
+            void *other = fn_801B2EC0(i);
+            if (i != *(int *)((char *)arg0 + 0x290)) {
+                void *state = ((void *(*)(void *))(*(void ***)other)[4])(other);
+                if (*(int *)((char *)state + 0x30) == 0) {
+                    void *track =
+                        ((void *(*)(void *))(*(void ***)other)[8])(other);
+                    float (*distance)(void *, float *, float *) =
+                        (float (*)(void *, float *, float *))fn_80194F70;
+                    arg1[2] += distance(
+                        (char *)*(void **)((char *)arg0 + 0x294) + 0x54,
+                        (float *)((char *)track + 0x60),
+                        (float *)((char *)*(void **)((char *)arg0 + 0x294) + 0x60));
+                    break;
+                }
+            }
+            ++i;
+        }
+    } else {
+        float threshold = lbl_805621DC + (lbl_8055A48C + fn_80139048());
+        float dot = PSQUATMultiply(
+            (char *)*(void **)((char *)work + 0x30) + 0x60,
+            (char *)*(void **)((char *)arg0 + 0x294) + 0x60);
+        if (dot > threshold) {
+            float amount = (dot - threshold) /
+                           (lbl_80562174 * threshold - threshold);
+            if (amount < lbl_80562140)
+                amount = lbl_80562140;
+            if (amount > lbl_80562144)
+                amount = lbl_80562144;
+            arg1[2] = value + amount * ((lbl_80562160 + value) - value);
+        } else {
+            float base = value - lbl_80562160;
+            float amount;
+            if (base < lbl_80562144)
+                base = lbl_80562144;
+            amount = (dot - (lbl_805621DC + lbl_8055A48C)) /
+                     (threshold - (lbl_805621DC + lbl_8055A48C));
+            if (amount < lbl_80562140)
+                amount = lbl_80562140;
+            if (amount > lbl_80562144)
+                amount = lbl_80562144;
+            arg1[2] = base + amount * (value - base);
+        }
+    }
+
+    {
+        int index = *(int *)((char *)arg0 + 0x290);
+        float frame = arg1[2] + fn_80194B60(
+            lbl_805621E0, lbl_805621E4, lbl_80562184,
+            *(float *)((char *)arg0 + 0x26C) +
+                lbl_805621E8 * (float)index);
+        arg1[3] = lbl_805621EC;
+        arg1[2] = frame;
+    }
+    if (*(int *)((char *)*(void **)((char *)arg0 + 0x294) + 0x2610) == 0) {
+        arg1[2] = lbl_80562144;
+        *(int *)((char *)arg0 + 0x2D0) |= 0x10;
+    }
+    {
+        void *controller = *(void **)((char *)arg0 + 0x28C);
+        ((void (*)(void *, float *, float *, int *))(*(void ***)controller)[11])(
+            controller, arg1, arg1 + 2, (int *)((char *)arg0 + 0x2D0));
+    }
+    *(int *)((char *)arg0 + 0x2D0) |= 0x826;
+}
+#pragma dont_inline reset
 extern float lbl_8055A488, lbl_8056215C;
 extern float PSVECDotProduct(const void *, const void *);
 extern void fn_8013B744(int);
