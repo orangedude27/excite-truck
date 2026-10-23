@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#include <ctype.h>
 
 extern void fn_80035C78(void);
 extern void fn_80035E6C(void);
@@ -192,6 +193,60 @@ s32 DVDClose(void) {
     return 1;
 }
 
+u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
+    u8 *fst = (u8 *)FstStart_8055D840;
+    u8 *strings = (u8 *)FstStringStart_8055D83C;
+    u32 pos;
+    u32 child;
+    u32 sibling;
+    u32 grandchild;
+    u32 n;
+    u32 left;
+    char *name;
+    char *parent;
+    char *ancestor;
+    if (entry == 0) return 0;
+    child = *(u32 *)(fst + entry * 12 + 4);
+    name = (char *)(strings + (*(u32 *)(fst + entry * 12) & 0xFFFFFF));
+    pos = 0;
+    if (child != 0) {
+        sibling = *(u32 *)(fst + child * 12 + 4);
+        parent = (char *)(strings + (*(u32 *)(fst + child * 12) & 0xFFFFFF));
+        if (sibling != 0) {
+            grandchild = *(u32 *)(fst + sibling * 12 + 4);
+            ancestor = (char *)(strings + (*(u32 *)(fst + sibling * 12) & 0xFFFFFF));
+            n = DVDConvertEntrynumToPath(grandchild, path, max);
+            pos = n;
+            if (n != max) {
+                left = max - n - 1;
+                path[n] = '/';
+                while (left != 0 && *ancestor != 0) {
+                    path[n + 1 + (max - n - 1 - left)] = *ancestor++;
+                    --left;
+                }
+                pos = n + 1 + (max - n - 1 - left);
+            }
+        }
+        if (pos != max) {
+            left = max - pos - 1;
+            path[pos] = '/';
+            while (left != 0 && *parent != 0) {
+                path[pos + 1 + (max - pos - 1 - left)] = *parent++;
+                --left;
+            }
+            pos = pos + 1 + (max - pos - 1 - left);
+        }
+    }
+    if (pos == max) return pos;
+    left = max - pos - 1;
+    path[pos] = '/';
+    while (left != 0 && *name != 0) {
+        path[pos + 1 + (max - pos - 1 - left)] = *name++;
+        --left;
+    }
+    return pos + 1 + (max - pos - 1 - left);
+}
+
 extern void OSPanic(const char *, s32, const char *);
 extern s32 DVDReadAbsAsyncPrio(void *, void *, s32, s32, void *, s32);
 extern void cbForCancelSync(void);
@@ -273,6 +328,51 @@ void DVDInit(void) {
         __DVDLayoutFormat = 0;
         DVDSetAutoFatalMessaging(1, temp_r4, __ErrorInfo, (void *)0x80000000);
     }
+}
+
+void fn_80035A04(u32 arg0) {
+    s32 state;
+    s32 *block;
+    void (*callback)(s32);
+
+    OSDisableInterrupts();
+    if (lbl_8055D848 == 0)
+        *(u32 *)(__ErrorInfo + 0x78) = arg0;
+    else
+        *(u32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x14) = arg0;
+    ((void (*)(void))OSRestoreInterrupts)();
+
+    if (arg0 == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+        return;
+    }
+    if (arg0 == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+        return;
+    }
+    if (arg0 & 1) {
+        lbl_8055D860 = 0;
+        __DVDFSInit();
+        block = (s32 *)executing_8055D8C8;
+        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        block[3] = 0;
+        callback = *(void (**)(s32))((u8 *)block + 0x28);
+        if (callback != 0)
+            callback(0);
+        fn_80038040();
+        return;
+    }
+
+    state = OSDisableInterrupts();
+    if ((u32)lbl_8055D848 >= 5)
+        lbl_8055D848 = 0;
+    *(s32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x1C) = 0x27;
+    *(s32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x20) = 0;
+    *(s32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x24) = 0;
+    *(s32 *)(__ErrorInfo + lbl_8055D848 * 0x14 + 0x2C) = OSGetTick();
+    lbl_8055D848++;
+    OSRestoreInterrupts(state);
+    fn_8003B218(fn_80035E6C);
 }
 
 void fn_80035C64(void) {
