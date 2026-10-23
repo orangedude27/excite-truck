@@ -1,6 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern int lbl_80333918[64];
 extern "C" char lbl_80333640[];
 extern "C" void* fn_801284F8(s32, const char*);
 extern "C" void fn_801A0378(void*, void*);
@@ -1310,51 +1311,39 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
 }
 
 extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
-    struct Work {
-        volatile f32 point[3];
-        f32 gap;
-        volatile f32 corners[24];
-    } workArea;
-    f32 z = *(f32 *)((char *)arg0 + 0x2C);
-    VTab1A1E7C *shape = (VTab1A1E7C *)arg0;
-    f32 y = *(f32 *)((char *)arg0 + 0x28);
-    f32 x = *(f32 *)((char *)arg0 + 0x24);
-    f32 ny = -y;
-    f32 nx = -x;
-    f32 nz = -z;
-    workArea.corners[0]=x; workArea.corners[1]=y; workArea.corners[2]=z;
-    workArea.corners[3]=nx; workArea.corners[4]=y; workArea.corners[5]=z;
-    workArea.corners[6]=x; workArea.corners[7]=ny; workArea.corners[8]=z;
-    workArea.corners[9]=nx; workArea.corners[10]=ny; workArea.corners[11]=z;
-    workArea.corners[12]=x; workArea.corners[13]=y; workArea.corners[14]=nz;
-    workArea.corners[15]=nx; workArea.corners[16]=y; workArea.corners[17]=nz;
-    workArea.corners[18]=x; workArea.corners[19]=ny; workArea.corners[20]=nz;
-    workArea.corners[21]=nx; workArea.corners[22]=ny; workArea.corners[23]=nz;
-    volatile f32 *corner = workArea.corners;
-    volatile f32 *sameCorner = workArea.corners;
-    volatile f32 *point = workArea.point;
-    f32 *matrix = (f32 *)shape->Call();
-    min[0] = matrix[9];
-    min[1] = matrix[10];
-    min[2] = matrix[11];
-    matrix = (f32 *)shape->Call();
-    max[0] = matrix[9];
-    max[1] = matrix[10];
-    max[2] = matrix[11];
-    for (int i = 0; i < 8; i++) {
-        matrix = (f32 *)shape->Call();
-        fn801A1F98Transform(point, corner, matrix);
-        point[0] += matrix[9];
-        point[1] += matrix[10];
-        point[2] += matrix[11];
-        if (min[0] < point[0]) min[0] = point[0];
-        if (min[1] < point[1]) min[1] = point[1];
-        if (min[2] < point[2]) min[2] = point[2];
-        if (max[0] > point[0]) max[0] = point[0];
-        if (max[1] > point[1]) max[1] = point[1];
-        if (max[2] > point[2]) max[2] = point[2];
-        corner += 3;
-        sameCorner += 3;
+    struct Output { volatile f32 point[3]; f32 gap; } output;
+    volatile f32 corners[24];
+    f32 z=*(f32 *)((char *)arg0+0x2C);
+    VTab1A1E7C *shape=(VTab1A1E7C *)arg0;
+    f32 y=*(f32 *)((char *)arg0+0x28);
+    f32 x=*(f32 *)((char *)arg0+0x24);
+    f32 ny=-y, nx=-x, nz=-z;
+    corners[0]=x; corners[1]=y; corners[2]=z;
+    corners[3]=nx; corners[4]=y; corners[5]=z;
+    corners[6]=x; corners[7]=ny; corners[8]=z;
+    corners[9]=nx; corners[10]=ny; corners[11]=z;
+    corners[12]=x; corners[13]=y; corners[14]=nz;
+    corners[15]=nx; corners[16]=y; corners[17]=nz;
+    corners[18]=x; corners[19]=ny; corners[20]=nz;
+    corners[21]=nx; corners[22]=ny; corners[23]=nz;
+    volatile f32 *corner=corners;
+    volatile f32 * volatile sameCorner=corners;
+    volatile f32 *point=output.point;
+    f32 *matrix=(f32 *)shape->Call();
+    min[0]=matrix[9]; min[1]=matrix[10]; min[2]=matrix[11];
+    matrix=(f32 *)shape->Call();
+    max[0]=matrix[9]; max[1]=matrix[10]; max[2]=matrix[11];
+    for (int i=0;i<8;i++) {
+        matrix=(f32 *)shape->Call();
+        fn801A1F98Transform(point,sameCorner,corner,matrix);
+        point[0]+=matrix[9]; point[1]+=matrix[10]; point[2]+=matrix[11];
+        if (min[0]<point[0]) min[0]=point[0];
+        if (min[1]<point[1]) min[1]=point[1];
+        if (min[2]<point[2]) min[2]=point[2];
+        if (max[0]>point[0]) max[0]=point[0];
+        if (max[1]>point[1]) max[1]=point[1];
+        if (max[2]>point[2]) max[2]=point[2];
+        corner+=3; sameCorner+=3;
     }
 }
 
