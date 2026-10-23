@@ -3005,7 +3005,7 @@ frame.sp10[0] += 2;
 (arg2 == 0) &&
 (VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559210, 1, 0, 1) != 0) &&
 (VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559214, 1, 0, 2) != 0) &&
-(fn_800B4D5C(var_r29, 1, 0) == 0)) {
+(fn_800B4D5C_CALL(var_r29, 1, 0) == 0)) {
 var_r31 = 0;
 }
 if (var_r31 == 1) {
