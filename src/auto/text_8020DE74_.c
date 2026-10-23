@@ -13,6 +13,135 @@ extern float lbl_805633FC;
 #pragma cplusplus on
 extern void *lbl_8033C8C4[];
 extern "C" void fn_80128668(void *);
+extern "C" void *fn_801284F8(int, const char *);
+extern "C" void *fn_802077A4(const char *, int, void *, void *);
+extern "C" void *fn_802076A0(const char *, int, void *, int);
+extern "C" int fn_801345D8(char *, int, const char *, int);
+extern "C" void *fn_80016544(s32);
+extern "C" void *memset(void *, int, unsigned int);
+extern const char lbl_8033C7A0[];
+extern const char lbl_8055B648[];
+extern float lbl_8056336C;
+extern "C" void *fn_8020DE74(void *arg0) {
+    char name[0x20];
+    void *obj;
+    void *group;
+    void *left;
+    void *right;
+    void *child;
+    u8 *base;
+    const char *labels;
+    float initial;
+    u32 is_race;
+    u32 i;
+    u32 bit;
+
+    obj = fn_801284F8(0x74, lbl_8055B648);
+    if (obj == 0) return obj;
+
+    *(void **)obj = lbl_8033C8C4;
+    *(void **)((u8 *)obj + 4) = arg0;
+    labels = lbl_8033C7A0;
+    base = (u8 *)arg0;
+    group = *(void **)(base + 0x1ec);
+    is_race = *(u32 *)(base + 0x10) == 0x50434152;
+    left = base + 0x118;
+    right = base + 0x60;
+
+    if (is_race != 0) {
+        *(void **)((u8 *)obj + 0x28) = fn_802077A4(labels, 5, left, right);
+        *(void **)((u8 *)obj + 0x30) = fn_802077A4(labels + 0x10, 8, left, right);
+    } else {
+        *(void **)((u8 *)obj + 0x28) = 0;
+        *(void **)((u8 *)obj + 0x30) = 0;
+    }
+    *(void **)((u8 *)obj + 8) = fn_802077A4(labels + 0x1c, 5, left, right);
+    *(u32 *)((u8 *)obj + 0x5c) = 0;
+    memset((u8 *)obj + 0x10, 0, 8);
+    *(void **)((u8 *)obj + 0x0c) = 0;
+
+    initial = lbl_80563368;
+    for (i = 0; i < 2; ) {
+        fn_801345D8(name, 0x20, labels + 0x2c, i + 1);
+        child = fn_802077A4(name, 5, left, right);
+        *(void **)((u8 *)obj + 0x10 + i * 4) = child;
+        if (child == 0) break;
+        *(void **)((u8 *)child + 0x10) = group;
+        if (initial != *(float *)((u8 *)child + 4)) {
+            *(u8 *)((u8 *)child + 0x4e) = 1;
+            *(float *)((u8 *)child + 4) = initial;
+        }
+        *(void **)((u8 *)obj + 0x0c) = child;
+        *(u32 *)((u8 *)obj + 0x5c) += 1;
+        i++;
+    }
+
+    if (is_race != 0) *(void **)((u8 *)obj + 0x18) = fn_802077A4(labels + 0x38, 5, left, right);
+    else *(void **)((u8 *)obj + 0x18) = 0;
+    child = *(void **)((u8 *)obj + 8);
+    if (child != 0) {
+        *(void **)((u8 *)child + 0x10) = group;
+        if (lbl_8056336C != *(float *)((u8 *)child + 4)) {
+            *(u8 *)((u8 *)child + 0x4e) = 1;
+            *(float *)((u8 *)child + 4) = lbl_8056336C;
+        }
+    }
+    child = *(void **)((u8 *)obj + 0x28);
+    if (child != 0) *(void **)((u8 *)child + 0x10) = group;
+    child = *(void **)((u8 *)obj + 0x30);
+    if (child != 0) *(void **)((u8 *)child + 0x10) = group;
+
+    if (is_race != 0) *(void **)((u8 *)obj + 0x1c) = fn_802077A4(labels + 0x4c, 5, left, right);
+    else *(void **)((u8 *)obj + 0x1c) = 0;
+    *(void **)((u8 *)obj + 0x20) = fn_802077A4(labels + 0x5c, 5, left, right);
+    *(void **)((u8 *)obj + 0x34) = fn_802077A4(labels + 0x68, 5, left, right);
+    if (is_race != 0) {
+        *(void **)((u8 *)obj + 0x38) = fn_802077A4(labels + 0x78, 5, left, right);
+        *(void **)((u8 *)obj + 0x3c) = fn_802077A4(labels + 0x88, 5, left, right);
+    } else {
+        *(void **)((u8 *)obj + 0x38) = 0;
+        *(void **)((u8 *)obj + 0x3c) = 0;
+    }
+    child = *(void **)((u8 *)obj + 0x34);
+    if (child != 0) *(void **)((u8 *)child + 0x10) = group;
+    child = *(void **)((u8 *)obj + 0x38);
+    if (child != 0) *(void **)((u8 *)child + 0x10) = group;
+    child = *(void **)((u8 *)obj + 0x3c);
+    if (child != 0) *(void **)((u8 *)child + 0x10) = group;
+    child = fn_802077A4(labels + 0x98, 5, left, right);
+    *(void **)((u8 *)obj + 0x40) = child;
+    if (child != 0) *(void **)((u8 *)child + 0x10) = group;
+
+    if (is_race != 0) {
+        *(void **)((u8 *)obj + 0x24) = fn_802077A4(labels + 0xa8, 5, left, right);
+        *(void **)((u8 *)obj + 0x2c) = fn_802077A4(labels + 0xb8, 5, left, right);
+        *(void **)((u8 *)obj + 0x48) = fn_802076A0(labels + 0xcc, 1, group, 2);
+        *(void **)((u8 *)obj + 0x4c) = fn_802076A0(labels + 0xdc, 1, group, 2);
+        *(void **)((u8 *)obj + 0x50) = fn_802076A0(labels + 0xec, 1, group, 2);
+        *(void **)((u8 *)obj + 0x44) = fn_802076A0(labels + 0x100, 1, group, 0);
+        *(void **)((u8 *)obj + 0x54) = fn_802076A0(labels + 0x110, 1, group, 0);
+    } else {
+        *(void **)((u8 *)obj + 0x24) = 0;
+        *(void **)((u8 *)obj + 0x2c) = 0;
+        *(void **)((u8 *)obj + 0x48) = 0;
+        *(void **)((u8 *)obj + 0x4c) = 0;
+        *(void **)((u8 *)obj + 0x50) = 0;
+        *(void **)((u8 *)obj + 0x44) = 0;
+        *(void **)((u8 *)obj + 0x54) = 0;
+    }
+    *(float *)((u8 *)obj + 0x60) = lbl_80563370;
+    *(u8 *)((u8 *)obj + 0x70) = 0;
+    *(float *)((u8 *)obj + 0x64) = lbl_80563370;
+    *(float *)((u8 *)obj + 0x68) = lbl_80563370;
+    *(float *)((u8 *)obj + 0x6c) = lbl_80563370;
+    *(u8 *)((u8 *)obj + 0x58) = 0;
+    *(u8 *)((u8 *)obj + 0x72) = 0;
+    child = fn_80016544(*(s32 *)(base + 0x25c));
+    bit = (*(u32 *)((u8 *)child + 0xa0) >> 2) & 1;
+    *(u8 *)((u8 *)obj + 0x71) = bit;
+    return obj;
+}
+
 extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
     struct Dummy { virtual void release(s32); virtual void v1(); virtual void v2(); };
     void *child;
