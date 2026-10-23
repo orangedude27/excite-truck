@@ -21,22 +21,16 @@ static inline void transform_vec(float *out, const float *m, volatile float *in)
         float x = in[0];
         float y = in[1];
         float z = in[2];
-        float a = y * m[3];
-        float b = y * m[4];
-        float c = y * m[5];
-        float d = x * m[0];
-        float e = x * m[1];
-        float f = x * m[2];
-        float g = z * m[6];
-        float h = z * m[7];
-        float i = z * m[8];
-        out[0] = d + a + g;
-        out[1] = e + b + h;
-        out[2] = f + c + i;
+        float x0 = x * m[0] + y * m[3] + z * m[6];
+        float x1 = x * m[1] + y * m[4] + z * m[7];
+        float x2 = x * m[2] + y * m[5] + z * m[8];
+        out[0] = x0;
+        out[1] = x1;
+        out[2] = x2;
     } else {
-        out[0] = in[0] * m[0] + in[1] * m[3] + in[2] * m[6];
-        out[1] = in[0] * m[1] + in[1] * m[4] + in[2] * m[7];
-        out[2] = in[0] * m[2] + in[1] * m[5] + in[2] * m[8];
+        out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
+        out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
+        out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
     }
 }
 void fn_801B8E28(int arg0) {
