@@ -356,6 +356,59 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
     *(unsigned char *)((char *)arg0 + 7) = *(unsigned char *)((char *)arg2 + 3);
 }
 
+void nw4hbm::ut::CharWriter::SetGradationMode(GradationMode mode) {
+    unsigned int address=(unsigned int)this;
+    register unsigned int top;
+    int r5=1,r6=1,r7=1,r8=1,r9=1,r10;
+    unsigned char *self=(unsigned char *)this;
+    unsigned char *source1,*source2,*source3;
+    int product_17,product_13,product_f,product_b;
+    int alpha;
+    register int valid;
+    int temp_r4,temp_r3;
+    const char *base=lbl_80328178;
+    int v=0;
+    int m=(int)mode;
+    top=address&0xFF000000U;
+    r10=1;
+    if ((unsigned int)(top+0x80000000U)>=1U &&
+        (unsigned int)((address&0xFF800000U)+0x7F000000U)>=1U) r10=0;
+    if (r10==0 && (unsigned int)((address&0xF8000000U)+0x70000000U)>=1U) r9=0;
+    if (r9==0 && (unsigned int)(top+0x40000000U)>=1U) r8=0;
+    if (r8==0 && (unsigned int)((address&0xFF800000U)+0x3F000000U)>=1U) r7=0;
+    if (r7==0 && (unsigned int)((address&0xF8000000U)+0x30000000U)>=1U) r6=0;
+    if (r6==0 && (unsigned int)((address&0xFFFFC000U)+0x20000000U)>=1U) r5=0;
+    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x163,base+0x14,this);
+
+    if (m>=0 && m<=2) v=1;
+    if (v==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x164,base+0xb8,m,0,2);
+    *(int *)(self+0x20)=m;
+
+    valid=0;
+    if ((unsigned int)(top+0x80000000U)==0U ||
+        (temp_r4=address&0xFF800000U,(unsigned int)(temp_r4+0x7F000000U)==0U) ||
+        (temp_r3=address&0xF8000000U,(unsigned int)(temp_r3+0x70000000U)==0U) ||
+        (unsigned int)(top+0x40000000U)==0U ||
+        (unsigned int)((address&0xFF800000U)+0x3F000000U)==0U ||
+        (unsigned int)((address&0xF8000000U)+0x30000000U)==0U ||
+        (unsigned int)((address&0xFFFFC000U)+0x20000000U)==0U) valid=1;
+    if (valid==0) Panic__Q26nw4hbm2dbFPCciPCce(base,0x4DA,base+0x14,this);
+
+    self[8]=self[0x18]; self[9]=self[0x19]; self[0xA]=self[0x1A]; self[0xB]=self[0x1B];
+    if (*(int *)(self+0x20)!=1) source1=self+0x18; else source1=self+0x1C;
+    self[0xC]=source1[0]; self[0xD]=source1[1]; self[0xE]=source1[2]; self[0xF]=source1[3];
+    if (*(int *)(self+0x20)!=2) source2=self+0x18; else source2=self+0x1C;
+    self[0x10]=source2[0]; self[0x11]=source2[1]; self[0x12]=source2[2]; self[0x13]=source2[3];
+    if (*(int *)(self+0x20)==0) source3=self+0x18; else source3=self+0x1C;
+    self[0x14]=source3[0]; self[0x15]=source3[1]; self[0x16]=source3[2];
+
+    alpha=*(volatile unsigned char *)(self+0x42);
+    product_b=self[0xB]*alpha; product_f=self[0xF]*alpha;
+    product_13=self[0x13]*alpha; product_17=source3[3]*alpha;
+    self[0xB]=product_b/255; self[0xF]=product_f/255;
+    self[0x13]=product_13/255; self[0x17]=product_17/255;
+}
+
 void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color, nw4hbm::ut::Color color2) {
     unsigned int address=(unsigned int)this;
     unsigned int top;
