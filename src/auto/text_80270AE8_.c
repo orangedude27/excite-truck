@@ -1,5 +1,20 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 
+#pragma cplusplus on
+struct Parser {
+    virtual void slot0();
+    virtual void slot1();
+    virtual void slot2();
+    virtual int has(const char *);
+    virtual int enumerate(int, char **, int *);
+    virtual void slot5();
+    virtual void slot6();
+    virtual int getCount(const char *);
+    virtual int getOption(const char *, int);
+    virtual float getFloat(const char *);
+};
+#pragma cplusplus reset
+
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_80271624(void);
