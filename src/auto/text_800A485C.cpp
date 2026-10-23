@@ -2274,6 +2274,15 @@ extern s32 fn_800B5618(void *, s32, s32, s32, u16);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800ACDF8(void *);
+extern s32 fn_800A8D08(void *, s32, void **, s32 *);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_800ACDF8(void *);
+extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
+extern "C" s32 fn_800ACBB0(void *, s32, s32, s32, u32 *, u32 *);
+extern "C" s32 VFiPFFAT_WriteClusterPage(void *, u32, u32, u32, s32, void *);
+extern "C" s32 fn_800AF144(void *);
+extern s32 fn_800B5618(void *, s32, s32, s32, u16);
 #pragma push
 #pragma use_lmw_stmw off
 #pragma pop
@@ -2285,6 +2294,7 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     void *page;
     u32 maxCluster;
     u32 cluster;
+    register u32 index;
     s32 result;
     s32 savedResult;
     void *buffer;
@@ -2355,7 +2365,7 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     buffer = page;
     bufferData = *(u8 **)((u8 *)buffer + 0x18);
     savedResult = 0;
-    for (cluster = 0; (s32)(u16)cluster < (s32)*((u8 *)context + 0x22); cluster++) {
+    for (index = 0; (s32)(u16)index < (s32)*((u8 *)context + 0x22); index++) {
         result = fn_800B5618(context, *(s32 *)((u8 *)buffer + 8),
                              (s32)bufferData, 0, *(u16 *)context);
         if (result != 0 && savedResult == 0) savedResult = result;
@@ -3369,6 +3379,80 @@ block_27:
         }
     }
     return (*(u16 *)(work + 4));
+}
+
+extern "C" s32 VFiPFPATH_cmpNameImpl(u8 *arg0, u8 *arg1, s32 *arg2) {
+    u16 spA, sp8;
+    s32 temp_r23, temp_r3, temp_r3_2, temp_r3_3, temp_r3_4;
+    s32 var_r31;
+    u16 var_r29, var_r30, var_r3, var_r3_2, var_r3_7, var_r3_8, var_r3_9;
+    u32 var_r3_3, var_r3_4, var_r3_5, var_r3_6;
+    u8 *var_r27 = arg1;
+    u8 *var_r26 = arg0;
+    u8 *table = (u8 *)lbl_803D2140;
+    s32 *var_r28 = arg2;
+    s32 one = 1;
+loop_64:
+    if ((s8)*var_r27 == 0) return (s8)*var_r26 != 0;
+    temp_r23 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
+    var_r31 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26);
+    if (temp_r23 == 1) var_r3 = fn_800A485C((s8)*var_r27); else var_r3 = fn_800A4C04(var_r27);
+    var_r30 = var_r3;
+    if (var_r31 == 1) var_r3_2 = fn_800A485C((s8)*var_r26); else var_r3_2 = fn_800A4C04(var_r26);
+    var_r29 = var_r3_2;
+    if (temp_r23 == 2) {
+        M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r27, &spA);
+        if (spA >= 0xFF41U && spA <= 0xFF5AU) { var_r3_3 = 1U; spA -= 0x20; } else var_r3_3 = 0U;
+        if (var_r3_3 == 1U) { M2C_FIELD(table, s32 (**)(u16 *, u16 *), 0x4C)(&spA, &spA); var_r3_4 = 1U; } else var_r3_4 = 0U;
+        if (var_r3_4 == 1U) var_r30 = spA;
+    }
+    if (var_r31 == 2) {
+        M2C_FIELD(table, s32 (**)(u8 *, u16 *), 0x48)(var_r26, &sp8);
+        if (sp8 >= 0xFF41U && sp8 <= 0xFF5AU) { var_r3_5 = 1U; sp8 -= 0x20; } else var_r3_5 = 0U;
+        if (var_r3_5 == 1U) { M2C_FIELD(table, s32 (**)(u16 *, u16 *), 0x4C)(&sp8, &sp8); var_r3_6 = 1U; } else var_r3_6 = 0U;
+        if (var_r3_6 == 1U) var_r29 = sp8;
+    }
+    var_r27 = &var_r27[temp_r23];
+    switch ((s32)var_r30) {
+    case 0x3F:
+        if ((s32)var_r29 == 0) return 1;
+block_63:
+        var_r26 = &var_r26[var_r31]; goto loop_64;
+    case 0x2A:
+loop_33:
+        temp_r3_2 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r27);
+        if (temp_r3_2 != 1) var_r3_7 = fn_800A4C04(var_r27); else var_r3_7 = fn_800A485C((s8)*var_r27);
+        var_r30 = var_r3_7; var_r27 = &var_r27[temp_r3_2];
+        if (var_r30 == 0x3F) {
+            if ((s32)var_r29 == 0) return 1;
+            var_r26 = &var_r26[var_r31];
+            temp_r3_3 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26); var_r31 = temp_r3_3;
+            if (temp_r3_3 == 1) var_r3_8 = fn_800A485C((s8)*var_r26); else var_r3_8 = fn_800A4C04(var_r26);
+            var_r29 = var_r3_8; goto block_43;
+        }
+block_43:
+        if (var_r30 != 0x3F && var_r30 != 0x2A) {
+            if ((s32)var_r30 == 0) return 0;
+loop_57:
+            if ((s32)var_r29 == 0) {
+                if ((s8)*var_r26 == 0 || (s8)*var_r27 == 0) *var_r28 = one;
+            default:
+                if (var_r29 != var_r30) return 1;
+                goto block_63;
+            }
+        }
+        var_r26 = &var_r26[var_r31];
+        if (var_r29 == var_r30) {
+            temp_r3 = VFiPFPATH_cmpNameImpl(var_r26, var_r27, var_r28);
+            if (temp_r3 == 0) return 0;
+            if ((s32)*var_r28 != 0) return temp_r3;
+            goto block_53;
+        }
+block_53:
+        temp_r3_4 = M2C_FIELD(table, s32 (**)(u8 *), 0x50)(var_r26); var_r31 = temp_r3_4;
+        if (temp_r3_4 == 1) var_r3_9 = fn_800A485C((s8)*var_r26); else var_r3_9 = fn_800A4C04(var_r26);
+        var_r29 = var_r3_9; goto loop_57;
+    }
 }
 
 extern "C" s32 fn_800B6928(s8);
@@ -11310,10 +11394,7 @@ extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
         else if (arg9 != 0) *(s32 *)arg9 = *(s32 *)lbl_8055DD74;
     }
 done:
-    if (arg10 != 0) {
-        if (res != 0 && buf != 0) {
-            iosFree(lbl_80559248, buf);
-        }
-    }
+    if (arg10 != 0 && res != 0 && buf != 0) iosFree(lbl_80559248, buf);
     return res;
 }
+extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *, u32, void *, s32 *) { return 0; }
