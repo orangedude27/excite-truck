@@ -306,7 +306,7 @@ extern "C" void* fn_801EA9A0(s32);
 extern "C" f32 fn_801E7E18(void);
 extern "C" void* fn_801E7E3C(void);
 extern "C" void fn_801345D8(char*, s32, const char*, ...);
-extern "C" s32 fn_80147ABC(s32, s32, const char*, ...);
+extern "C" s32 fn_80147ABC(s32, s32, const char*, f64, ...);
 extern "C" u32 lbl_802ED840[];
 extern "C" char lbl_80558D14[];
 extern "C" char lbl_80558D1C[];
