@@ -348,12 +348,12 @@ void fn_80254568(void *arg0, s32 arg1, s32 arg2) {
 }
 
 #pragma dont_inline on
-void fn_802545C4(register void *arg0, register s32 arg1, register s32 arg2) {
+#pragma scheduling invalid_target
+void fn_802545C4(void *arg0, s32 arg1, s32 arg2) {
     extern void *memset(void *, int, unsigned long);
     extern void PSVECCrossProduct(float *, float *, float *);
     extern void PSVECNormalize(float *, float *);
     extern float fn_801F159C(s32);
-    extern char lbl_8055C178[], lbl_8055C180[], lbl_8055C188[];
     extern float lbl_80498E18[3];
     extern float lbl_80563A04, lbl_80563A14, lbl_80563A18;
     extern float lbl_80563A30, lbl_80563A34, lbl_80563A38, lbl_80563A3C;
@@ -386,9 +386,9 @@ void fn_802545C4(register void *arg0, register s32 arg1, register s32 arg2) {
     }
 
     if (arg1 != -1) {
-        fn_80254568(stack.sp2c, arg1, (s32)lbl_8055C178);
-        fn_80254568(stack.sp20, arg1, (s32)lbl_8055C180);
-        fn_80254568(stack.sp14, arg1, (s32)lbl_8055C188);
+        ((void (*)(void *, s32, const char *))fn_80254568)(stack.sp2c, arg1, lbl_8055C178);
+        ((void (*)(void *, s32, const char *))fn_80254568)(stack.sp20, arg1, lbl_8055C180);
+        ((void (*)(void *, s32, const char *))fn_80254568)(stack.sp14, arg1, lbl_8055C188);
 
         stack.sp8[0] = stack.sp20[0] +
             lbl_80563A18 * (stack.sp2c[0] - stack.sp20[0]);
@@ -462,6 +462,7 @@ void fn_802545C4(register void *arg0, register s32 arg1, register s32 arg2) {
         *(float *)((char *)arg0 + 0x2C) = lbl_80563A04;
     }
 }
+#pragma scheduling on
 #pragma dont_inline reset
 void fn_80255200(void *arg0, s32 arg1) {
     extern float lbl_80563A04,lbl_80563A14,lbl_80563A58,lbl_80563A5C;
