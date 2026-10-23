@@ -36,11 +36,11 @@ extern void fn_802E30C8(void*, s32, void*);
 extern s32 fn_8016A8F8(void*);
 extern void fn_8016AC18(u8*);
 extern void* fn_8016AC24(void*, s32);
-extern s32 lbl_80330460;
-extern s32 lbl_80330528;
-extern s32 lbl_80330688;
-extern s32 lbl_803306A0;
-extern s32 lbl_803306B4;
+extern char lbl_80330460[];
+extern char lbl_80330528[];
+extern char lbl_80330688[];
+extern char lbl_803306A0[];
+extern char lbl_803306B4[];
 
 void fn_8016A0AC(void) {
 }
@@ -147,6 +147,69 @@ s32 fn_8016A878(const char* arg0) {
     }
     return count;
 }
+
+s32 fn_8016A8F8(void* alarm) {
+    Ctr804302F0* c = (Ctr804302F0*)&lbl_804302F0;
+    void* obj;
+    void** vtable;
+    Entry28* entry;
+    s32 cur;
+    s32 i;
+    s32 var24 = 1;
+
+    obj = *(void**)((char*)fn_8000AC38() + 0x20);
+    vtable = *(void**)obj;
+    lbl_8055E364 = ((s32(*)(void*, void*, s32))vtable[0xC])(obj, &lbl_80330460, 0);
+
+    if (c->ptr10 != 0) {
+        fn_8002F6AC(c->ptr10, fn_8016AC24);
+        c->ptr10 = 0;
+        c->cap = 0;
+        c->data = 0;
+        c->count = 0;
+        c->limit = 0;
+    }
+    c->cap = 5;
+    c->ptr10 = (Entry28*)fn_8002F37C((void*)fn_8012850C(5 * 0x28 + 0x10, &lbl_80330528), fn_8016AC18, fn_8016AC24, 0x28, 5);
+    c->data = c->ptr10;
+    c->limit = c->cap;
+    c->count = 0;
+
+    while (c->count + 1 <= c->limit && var24 < 0x64) {
+        cur = c->count;
+        entry = &c->data[cur];
+        c->count = cur + 1;
+        if (entry->flag != 0) {
+            fn_802C6CF8((void*)entry->handle);
+            entry->flag = 0;
+        }
+        if (lbl_8055E364 != 0) {
+            fn_801345D8(entry->name, 0x1e, &lbl_803306B4, var24);
+        } else {
+            fn_801345D8(entry->name, 0x1e, &lbl_803306A0, var24);
+        }
+        if (fn_8012C33C(entry->name) != 0) {
+            entry->handle = fn_802C6FC0(entry->name, 0, 0);
+            entry->id = var24;
+            entry->flag = 1;
+            fn_802E30C8(&lbl_80330688, var24, entry->name);
+        }
+        if (entry->flag == 0) {
+            i = c->count - 1;
+            if (i >= 0) {
+                if (i < c->count) {
+                    if (i != c->count - 1) {
+                        c->data[i] = c->data[c->count - 1];
+                    }
+                    c->count = c->count - 1;
+                }
+            }
+        }
+        var24++;
+    }
+    return 0;
+}
+
 #pragma use_lmw_stmw on
 void fn_8016AC18(u8* arg0) { *arg0 = 0; }
 
