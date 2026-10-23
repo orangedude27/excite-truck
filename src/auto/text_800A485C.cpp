@@ -2240,7 +2240,7 @@ extern s32 fn_800A8D08(s32, void **, s32 *);
 extern s32 fn_800B5324(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800B5700(void *, s32, s32, s32, u16, u32 *, s32);
 extern s32 fn_800A499C(s32, s32);
-extern s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
+extern "C" s32 VFiPFCACHE_FreeFATPage_800A8E10(void *, void *);
 s32 fn_800ACDF8(void *arg0, s32 arg1) {
     void *sp10;
     s32 spC;
@@ -3484,17 +3484,16 @@ extern "C" const u8 lbl_80559220[];
 extern "C" const u8 lbl_80559224[];
 extern "C" const u8 lbl_80559228[];
 extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
-    u8 *pos;
+    s32 var_r27;
     s32 mode;
-    s32 found;
 
+    var_r27 = 0;
     *(u8 **)arg0 = *(u8 **)((u8 *)arg0 + 4);
     if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 1, 0, 1) == 0) {
         *(u8 **)((u8 *)arg0 + 4) = 0;
         *(u8 **)arg0 = 0;
         return 0;
     }
-
     if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
         VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
         ((void (*)(void *, s16))VFiPFSTR_MoveStrPos)(arg0, 1);
@@ -3506,64 +3505,64 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
 
     mode = fn_800A4D44(arg0);
     *(u8 **)((u8 *)arg0 + 4) = *(u8 **)arg0;
-    found = 0;
     if ((lbl_803D2140[0x60 / 4] & 2) == 2) {
-        found = fn_800B4D5C(arg0, 2, arg1);
-        if (found != 0) {
+        var_r27 = fn_800B4D5C(arg0, 2, arg1);
+        if (var_r27 != 0) {
             if (mode == 1)
-                *(u8 **)((u8 *)arg0 + 4) += found;
+                *(u8 **)((u8 *)arg0 + 4) += var_r27;
             else
-                *(u8 **)((u8 *)arg0 + 4) += found * 2;
+                *(u8 **)((u8 *)arg0 + 4) += var_r27 * 2;
         }
     }
 
-    if (found == 0) {
-        for (;;) {
-            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 2, 0, 1) == 0)
-                return 0;
+    if (var_r27 == 0) {
+    loop:
+        if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 2, 0, 1) == 0)
+            return 0;
 
-            pos = *(u8 **)((u8 *)arg0 + 4);
-            if (mode == 1 &&
-                ((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)pos[0], 1) != 0) {
-                *(u8 **)((u8 *)arg0 + 4) = pos + 1;
-                if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)pos[1], 2) == 0 ||
-                    pos[1] == 0)
-                    return 2;
-            }
-
-            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 2, 0, 1) == 0 ||
-                VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 2, 0, 1) == 0)
-                return 0;
-
-            if ((lbl_803D2140[0x38 / 4] & 0x10000) == 0) {
-                s32 invalid = 0;
-                if (mode == 1) {
-                    u8 c = *(*(u8 **)((u8 *)arg0 + 4));
-                    if (c < 0x80 && (c < 0x20 || (lbl_802EEEE0[c - 0x20] & 1) == 0))
-                        invalid = 1;
-                } else if (mode == 2) {
-                    u16 c;
-                    pos = *(u8 **)((u8 *)arg0 + 4);
-                    c = ((u16)pos[0] << 8) | pos[1];
-                    if (c < 0x80 &&
-                        (c < 0x20 || (c & 0xFF00) != 0 ||
-                         (lbl_802EEEE0[(u8)c - 0x20] & 1) == 0))
-                        invalid = 1;
-                }
-                if (invalid) {
-                    if (arg1 == 0 ||
-                        (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, 2, 0, 1) != 0 &&
-                         VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, 2, 0, 1) != 0))
-                        return 2;
-                }
-            }
-
-            pos = *(u8 **)((u8 *)arg0 + 4);
-            if (mode == 1)
-                *(u8 **)((u8 *)arg0 + 4) = pos + 1;
-            else
-                *(u8 **)((u8 *)arg0 + 4) = pos + 2;
+        if (mode == 1 &&
+            ((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]
+                ((s8)**(u8 **)((u8 *)arg0 + 4), 1) != 0) {
+            *(u8 **)((u8 *)arg0 + 4) += 1;
+            if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]
+                    ((s8)**(u8 **)((u8 *)arg0 + 4), 2) == 0 ||
+                **(u8 **)((u8 *)arg0 + 4) == 0)
+                return 2;
         }
+
+        if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 2, 0, 1) == 0 ||
+            VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 2, 0, 1) == 0)
+            return 0;
+
+        if ((lbl_803D2140[0x38 / 4] & 0x10000) == 0) {
+            if (mode == 1) {
+                u32 c = **(u8 **)((u8 *)arg0 + 4);
+                if (c < 0x80) {
+                    if (c < 0x20 || (lbl_802EEEE0[(u8)(c - 0x20)] & 1) == 0)
+                        goto invalid;
+                }
+            } else if (mode == 2) {
+                u8 *p = *(u8 **)((u8 *)arg0 + 4);
+                u16 c = (p[0] << 8) + p[1];
+                if (c < 0x80) {
+                    if (c < 0x20 || (c & 0xFF00) != 0 ||
+                        (lbl_802EEEE0[(u8)(c - 0x20)] & 1) == 0)
+                        goto invalid;
+                }
+            }
+        }
+        goto advance;
+    invalid:
+        if (arg1 == 0 ||
+            (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, 2, 0, 1) != 0 &&
+             VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, 2, 0, 1) != 0))
+            return 2;
+    advance:
+        if (mode == 1)
+            *(u8 **)((u8 *)arg0 + 4) += 1;
+        else
+            *(u8 **)((u8 *)arg0 + 4) += 2;
+        goto loop;
     }
     return 0;
 }
