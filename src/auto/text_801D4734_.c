@@ -580,6 +580,106 @@ void fn_801D72D0(int arg0) {
     *(char *)(arg0 + 0x34) = 0;
 }
 
+extern void *fn_801284F8(int, void *);
+extern void fn_801D5AA8(void *);
+extern int stricmp(const char *, const char *);
+extern char lbl_80338A40[];
+extern char lbl_80338A78[];
+extern char lbl_80338B40[];
+extern char lbl_80338C08[];
+extern char lbl_80338CB0[];
+extern char lbl_80338CE8[];
+extern char lbl_8055ACFC[];
+extern char lbl_8055AD08[];
+#pragma cplusplus on
+extern "C" void *fn_801D7334(void *arg0) {
+    extern char lbl_80338460;
+    extern char lbl_8055ACF4;
+    struct Request {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual const char *getName(const char *);
+    };
+    struct Product {
+        virtual void f0();
+        virtual void f1();
+        virtual void destroy(int);
+        virtual int accept(void *);
+    };
+    Request *request = (Request *)arg0;
+    Product *product = 0;
+    const char *name = request->getName((const char *)&lbl_8055ACFC);
+
+    if (stricmp(name, (char *)&lbl_80338460 + 0x484) == 0) {
+        product = (Product *)fn_801284F8(0x17C, (char *)&lbl_80338460 + 0x490);
+        if (product != 0) fn_801D5AA8(product);
+    } else if (stricmp(name, (char *)&lbl_80338460 + 0x4A0) == 0) {
+        product = (Product *)fn_801284F8(0x2C, (char *)&lbl_80338460 + 0x4AC);
+        if (product != 0) {
+            *(void **)product = lbl_80338CE8;
+            *(int *)((char *)product + 0x28) = 0;
+        }
+    } else if (stricmp(name, (char *)&lbl_80338460 + 0x4BC) == 0) {
+        product = (Product *)fn_801284F8(0x44, (char *)&lbl_80338460 + 0x4C8);
+        if (product != 0) {
+            *(void **)product = lbl_80338CB0;
+            *(int *)((char *)product + 0x40) = 0;
+        }
+    } else if (stricmp(name, (char *)&lbl_80338460 + 0x4D8) == 0) {
+        product = (Product *)fn_801284F8(0x20, (char *)&lbl_80338460 + 0x348);
+        if (product != 0) fn_801D628C(product);
+    } else if (stricmp(name, (char *)&lbl_80338460 + 0x4E8) == 0) {
+        product = (Product *)fn_801284F8(0x34, (char *)&lbl_80338460 + 0x368);
+        if (product != 0) fn_801D6618((UnkStruct_801D701C *)product);
+    } else if (stricmp(name, (char *)&lbl_80338460 + 0x4F8) == 0) {
+        product = (Product *)fn_801284F8(0x34, (char *)&lbl_80338460 + 0x408);
+        if (product != 0) fn_801D68E8((UnkStruct_801D701C *)product);
+    } else if (stricmp(name, &lbl_8055ACF4) == 0) {
+        product = (Product *)fn_801284F8(0x8C, (char *)&lbl_80338460 + 0x418);
+        if (product != 0) fn_801D6D68((UnkStruct_801D701C *)product);
+    } else if (stricmp(name, (char *)&lbl_80338460 + 0x508) == 0) {
+        product = (Product *)fn_801284F8(0x1B0, (char *)&lbl_80338460 + 0x514);
+        if (product != 0) {
+            *(void **)product = lbl_80338B40;
+            *(void **)((char *)product + 4) = (char *)lbl_80338B40 + 0x38;
+            *(void **)((char *)product + 0x24) = (char *)product + 0x30;
+            *(int *)((char *)product + 0x2C) = 0x20;
+            *(int *)((char *)product + 0x28) = 0;
+        }
+    } else if (stricmp(name, (char *)&lbl_80338460 + 0x528) == 0) {
+        product = (Product *)fn_801284F8(0x18, (char *)&lbl_80338460 + 0x538);
+        if (product != 0) {
+            *(void **)product = lbl_80338C08;
+            *(int *)((char *)product + 4) = 0;
+        }
+    } else if (stricmp(name, (char *)&lbl_80338460 + 0x54C) == 0) {
+        product = (Product *)fn_801284F8(0x3C, (char *)&lbl_80338460 + 0x474);
+        if (product != 0) fn_801D701C((UnkStruct_801D701C *)product);
+    } else if (stricmp(name, lbl_8055AD08) == 0) {
+        product = (Product *)fn_801284F8(0x24, (char *)&lbl_80338460 + 0x558);
+        if (product != 0) {
+            *(void **)product = lbl_80338A40;
+            *(int *)((char *)product + 4) = 0;
+        }
+    } else if (stricmp(name, (char *)&lbl_80338460 + 0x564) == 0) {
+        product = (Product *)fn_801284F8(0x1C, (char *)&lbl_80338460 + 0x570);
+        if (product != 0) {
+            *(int *)((char *)product + 4) = 0;
+            *(void **)product = lbl_80338A78;
+        }
+    }
+
+    if (product != 0) {
+        if (product->accept(arg0) != 0) return product;
+        product->destroy(1);
+    }
+    return 0;
+}
+#pragma cplusplus reset
+
 int fn_801D76CC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
