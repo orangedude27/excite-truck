@@ -1,5 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+extern void fn_802DAA18(void);
 
 extern void *lbl_8055F9A0;
 void fn_802B087C(void **arg0);
