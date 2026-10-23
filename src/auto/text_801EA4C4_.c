@@ -4,6 +4,7 @@
 typedef int s32;
 typedef unsigned char u8;
 typedef float f32;
+typedef struct { u8 bytes[0x78]; } Fn801EA59CData;
 extern s32 lbl_8055EB78;
 extern s32 lbl_8055EB7C;
 extern char lbl_80339E08;
