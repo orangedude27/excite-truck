@@ -1,4 +1,5 @@
   #include <types.h>
+namespace nw4hbm { namespace lyt { class Pane; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); }; } }
 extern "C" const char lbl_8031EE58[];
 extern "C" const char lbl_805597F0[];
 extern "C" const char lbl_8031F208[];
@@ -2143,6 +2144,7 @@ extern "C" s32 fn_800AF584(void *arg0) {
 extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
     extern s32 fn_800B5260(void *, void *, u32, u32, s32);
     extern s32 fn_800B5618(void *, void *, u32, u32, s32);
+    u8 *ctx = (u8 *)arg3;
     s32 r9 = (arg1 + (arg1 >> 1)) & 0xFFFF;
     u32 value = (*(u32 *)((char *)arg0 + 0x28) + (r9 >> *(u8 *)((char *)arg0 + 0x20))) & 0xFFFF;
     u16 index = r9 & (*(u16 *)arg0 - 1);
@@ -2150,54 +2152,54 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
     s32 oldResult = 0;
     u16 i;
 
-    if (*(u32 *)((char *)arg3 + 0x18) != value) {
+    if (*(u32 *)(ctx + 0x18) != value) {
         for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
-            s32 r = fn_800B5618(arg0, *(void **)((char *)arg3 + 8),
-                *(u32 *)((char *)arg3 + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
+            s32 r = fn_800B5618(arg0, *(void **)(ctx + 8),
+                *(u32 *)(ctx + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
                 0, *(u16 *)arg0);
             if (r != 0 && oldResult == 0) oldResult = r;
         }
-        result = fn_800B5260(arg0, *(void **)((char *)arg3 + 8), value, 0, *(u16 *)arg0);
+        result = fn_800B5260(arg0, *(void **)(ctx + 8), value, 0, *(u16 *)arg0);
         if (result != 0) return result;
-        *(u32 *)((char *)arg3 + 0x18) = value;
+        *(u32 *)(ctx + 0x18) = value;
     }
     if (arg1 & 1) {
-        *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) =
-            (*(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) & 0xF) | ((arg2 & 0xF) << 4);
+        *(u8 *)((u8 *)*(s32 *)(ctx + 8) + index) =
+            (*(u8 *)((u8 *)*(s32 *)(ctx + 8) + index) & 0xF) | ((arg2 & 0xF) << 4);
         if ((u32)index == (u32)*(u16 *)arg0 - 1) {
             for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
-                s32 r = fn_800B5618(arg0, *(void **)((char *)arg3 + 8),
-                    *(u32 *)((char *)arg3 + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
+                s32 r = fn_800B5618(arg0, *(void **)(ctx + 8),
+                    *(u32 *)(ctx + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
                     0, *(u16 *)arg0);
                 if (r != 0 && oldResult == 0) oldResult = r;
             }
             u32 nv = value + 1;
-            result = fn_800B5260(arg0, *(void **)((char *)arg3 + 8), nv, 0, *(u16 *)arg0);
+            result = fn_800B5260(arg0, *(void **)(ctx + 8), nv, 0, *(u16 *)arg0);
             if (result != 0) return result;
-            *(u32 *)((char *)arg3 + 0x18) = nv;
-            *(u8 *)*(s32 *)((char *)arg3 + 8) = (u8)(arg2 >> 4);
+            *(u32 *)(ctx + 0x18) = nv;
+            *(u8 *)*(s32 *)(ctx + 8) = (u8)(arg2 >> 4);
         } else {
-            *(u8 *)(index + (u8 *)*(s32 *)((char *)arg3 + 8) + 1) = (u8)(arg2 >> 4);
+            *(u8 *)((u8 *)*(s32 *)(ctx + 8) + index + 1) = (u8)(arg2 >> 4);
         }
     } else {
-        *(u32 *)((char *)arg3 + 0x18) = index;
-        *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) = (u8)arg2;
+        *(u32 *)(ctx + 0x18) = index;
+        *(u8 *)((u8 *)*(s32 *)(ctx + 8) + index) = (u8)arg2;
         if ((u32)index == (u32)*(u16 *)arg0 - 1) {
             for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
-                s32 r = fn_800B5618(arg0, *(void **)((char *)arg3 + 8),
-                    *(u32 *)((char *)arg3 + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
+                s32 r = fn_800B5618(arg0, *(void **)(ctx + 8),
+                    *(u32 *)(ctx + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
                     0, *(u16 *)arg0);
                 if (r != 0 && oldResult == 0) oldResult = r;
             }
             u32 nv = value + 1;
-            result = fn_800B5260(arg0, *(void **)((char *)arg3 + 8), nv, 0, *(u16 *)arg0);
+            result = fn_800B5260(arg0, *(void **)(ctx + 8), nv, 0, *(u16 *)arg0);
             if (result != 0) return result;
-            *(u32 *)((char *)arg3 + 0x18) = nv;
-            *(u8 *)*(s32 *)((char *)arg3 + 8) =
-                (*(u8 *)*(s32 *)((char *)arg3 + 8) & 0xF0) | (u8)(arg2 >> 8);
+            *(u32 *)(ctx + 0x18) = nv;
+            *(u8 *)*(s32 *)(ctx + 8) =
+                (*(u8 *)*(s32 *)(ctx + 8) & 0xF0) | (u8)(arg2 >> 8);
         } else {
-            *(u8 *)(index + (u8 *)*(s32 *)((char *)arg3 + 8) + 1) =
-                (*(u8 *)(index + (u8 *)*(s32 *)((char *)arg3 + 8) + 1) & 0xF0) | (u8)(arg2 >> 8);
+            *(u8 *)((u8 *)*(s32 *)(ctx + 8) + index + 1) =
+                (*(u8 *)((u8 *)*(s32 *)(ctx + 8) + index + 1) & 0xF0) | (u8)(arg2 >> 8);
         }
     }
     if (result != 0) oldResult = result;
@@ -7934,6 +7936,108 @@ extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt8Material(
             AddAnimationLink__Q36nw4hbm3lyt8MaterialFPQ36nw4hbm3lyt13AnimationLink(arg1, link);
         }
         i++;
+    }
+}
+
+extern "C" void Animate__Q36nw4hbm3lyt18AnimTransformBasicFUlPQ36nw4hbm3lyt4Pane(void *arg0, u32 arg1, void *arg2) {
+    struct PaneAnimationDispatch {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void setVertexColor(u8, u8);
+    };
+
+    u8 *entries = (u8 *)*(void **)((u8 *)arg0 + 0xC);
+    u8 *animation = entries + *(s32 *)(entries + 0x10);
+    u8 *block = animation + *(s32 *)(animation + arg1 * 4);
+    u8 *blockOffsets = block + 0x18;
+    s32 blockIndex = 0;
+    f32 half = lbl_80560E64;
+
+    while (blockIndex < block[0x14]) {
+        u8 *record = block + *(s32 *)(blockOffsets + blockIndex * 4);
+        s32 type = *(s32 *)record;
+        u8 *itemOffsets = record + 8;
+
+        switch (type) {
+        case 0x524C5041:
+        {
+            f32 frame = *(f32 *)((u8 *)arg0 + 0x10);
+            s32 itemIndex = 0;
+            while (itemIndex < record[4]) {
+                u8 *item = record + *(s32 *)itemOffsets;
+                if (item[1] >= 0xA) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0xC5, lbl_8031EE58 + 0x6C);
+                }
+                if (item[2] != 2) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0xC6, lbl_8031EE58 + 0xB0);
+                }
+                f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                u8 index = item[1];
+                if (index >= 0xA) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597F0, 0xFA, lbl_8031F208);
+                }
+                *(f32 *)((u8 *)arg2 + index * 4 + 0x2C) = value;
+                itemOffsets += 4;
+                itemIndex++;
+            }
+            break;
+        }
+        case 0x524C5649:
+        {
+            f32 frame = *(f32 *)((u8 *)arg0 + 0x10);
+            s32 itemIndex = 0;
+            while (itemIndex < record[4]) {
+                u8 *item = record + *(s32 *)itemOffsets;
+                if (item[1] >= 0xA) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0xD9, lbl_8031EE58 + 0x6C);
+                }
+                if (item[2] != 1) {
+                    Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0xDA, lbl_8031EE58 + 0xF4);
+                }
+                u16 found = fn_800D4138(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                itemOffsets += 4;
+                itemIndex++;
+                u8 flags = *((u8 *)arg2 + 0xCF);
+                *((u8 *)arg2 + 0xCF) = (flags & 0xFE) |
+                    ((u32)(-(s32)found | found) >> 0x1F);
+            }
+            break;
+        }
+        case 0x524C5643:
+        {
+            s32 itemIndex = 0;
+            u8 itemCount = record[4];
+            f32 frame = *(f32 *)((u8 *)arg0 + 0x10);
+            if (itemCount > 0) {
+                do {
+                    u8 *item = record + *(s32 *)itemOffsets;
+                    if (item[1] >= 0x11) {
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0xED, lbl_8031EE58 + 0x138);
+                    }
+                    if (item[2] != 2) {
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031EE58, 0xEE, lbl_8031EE58 + 0xB0);
+                    }
+                    u8 value = (u8)(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
+                    ((PaneAnimationDispatch *)arg2)->setVertexColor(item[1], value);
+                    itemOffsets += 4;
+                    itemIndex++;
+                } while (itemIndex < itemCount);
+            }
+            break;
+        }
+        }
+        blockOffsets += 4;
+        blockIndex++;
     }
 }
 
