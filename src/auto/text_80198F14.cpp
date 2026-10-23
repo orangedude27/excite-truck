@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 extern int lbl_80333918[64];
+extern "C" s32 fn_8019D618(void*, void*, s32, void*);
 class Fn8019E500Matrix {
 public:
     virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
@@ -471,44 +472,47 @@ extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
 extern "C" u8 lbl_80435020[];
 extern f32 lbl_8056236C;
 extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
-    f32* (*getMatrix)(void*);
-    f32 rows[3][4];
+    u32 copied[12];
+    f32 rows[12];
     f32 output[12];
-    s32 result = 0;
-    s32 i, row;
-    getMatrix = (f32* (*)(void*))(*(void***)arg1)[20];
-    f32* source = getMatrix(arg1);
-    rows[0][0]=source[0]; rows[0][1]=source[1]; rows[0][2]=source[2];
-    rows[1][0]=source[3]; rows[1][1]=source[4]; rows[1][2]=source[5];
-    rows[2][0]=source[6]; rows[2][1]=source[7]; rows[2][2]=source[8];
-    rows[0][3]=*(f32*)((u8*)arg1+0x24);
-    rows[1][3]=*(f32*)((u8*)arg1+0x28);
-    rows[2][3]=*(f32*)((u8*)arg1+0x2c);
-    f32 base0=source[9], base1=source[10], base2=source[11];
-    for (row=0; row<3; row++) {
-        if (row != 1) {
-            s32 next=(row+1)%3;
-            s32 prev=(row+2)%3;
-            output[0]=rows[next][0];
-            output[1]=rows[next][1];
-            output[2]=rows[next][2];
-            output[3]=rows[prev][0];
-            output[4]=rows[prev][1];
-            output[5]=rows[prev][2];
-            output[6]=rows[row][0];
-            output[7]=rows[row][1];
-            output[8]=rows[row][2];
-            output[9]=base0;
-            output[10]=base1;
-            output[11]=base2;
-            for (i=0;i<4;i++) {
+    f32* source = (f32*)((VTab1A1E7C*)arg1)->Call();
+    copied[0]=((u32*)source)[0]; copied[1]=((u32*)source)[1];
+    copied[2]=((u32*)source)[2]; copied[3]=((u32*)source)[3];
+    copied[4]=((u32*)source)[4]; copied[5]=((u32*)source)[5];
+    copied[6]=((u32*)source)[6]; copied[7]=((u32*)source)[7];
+    copied[8]=((u32*)source)[8]; copied[9]=((u32*)source)[9];
+    copied[10]=((u32*)source)[10]; copied[11]=((u32*)source)[11];
+    *(f64*)&rows[0]=*(f64*)&copied[0];
+    *(u32*)&rows[2]=copied[2];
+    rows[3]=*(f32*)((u8*)arg1+0x24);
+    *(f64*)&rows[4]=*(f64*)&copied[3];
+    *(u32*)&rows[6]=copied[5];
+    rows[7]=*(f32*)((u8*)arg1+0x28);
+    *(f64*)&rows[8]=*(f64*)&copied[6];
+    *(u32*)&rows[10]=copied[8];
+    rows[11]=*(f32*)((u8*)arg1+0x2c);
+    s32 result=0;
+    for (s32 row=0; row<3; row++) {
+        if (row!=1) {
+            s32 next=(row+1)%3, prev=(row+2)%3;
+            f32* current=&rows[row*4];
+            f32* arow=&rows[next*4];
+            f32* brow=&rows[prev*4];
+            output[0]=arow[0]; output[1]=arow[1]; output[2]=arow[2];
+            output[3]=brow[0]; output[4]=brow[1]; output[5]=brow[2];
+            output[6]=current[0]; output[7]=current[1]; output[8]=current[2];
+            output[9]=*(f32*)&copied[9];
+            output[10]=*(f32*)&copied[10];
+            output[11]=*(f32*)&copied[11];
+            f32 d0=arow[3]-lbl_8056236C;
+            f32 d1=brow[3]-lbl_8056236C;
+            for (s32 i=0;i<4;i++) {
                 f32 a=(i&1) ? lbl_805622DC : lbl_805622E0;
                 f32 b=(i&2) ? lbl_805622DC : lbl_805622E0;
-                f32 d0=rows[next][3]-lbl_8056236C;
-                f32 d1=rows[prev][3]-lbl_8056236C;
-                output[9]+=rows[next][0]*d0*a + rows[prev][0]*d1*b;
-                output[10]+=rows[next][1]*d0*a + rows[prev][1]*d1*b;
-                output[11]+=rows[next][2]*d0*a + rows[prev][2]*d1*b;
+                f32 scale0=d0*a, scale1=d1*b;
+                output[9]+=arow[0]*scale0 + brow[0]*scale1;
+                output[10]+=arow[1]*scale0 + brow[1]*scale1;
+                output[11]+=arow[2]*scale0 + brow[2]*scale1;
                 if (lbl_80435020 != 0) {
                     *(void**)(lbl_80435020+0x0)=lbl_80333918;
                     *(void**)(lbl_80435020+0x4)=*(void**)((u8*)arg1+4);
@@ -520,13 +524,13 @@ extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
                     *(s32*)(lbl_80435020+0x1c)=0;
                     *(s32*)(lbl_80435020+0x20)=0x64;
                     *(f32*)(lbl_80435020+0x24)=lbl_8056236C;
-                    *(f32*)(lbl_80435020+0x28)=rows[row][3];
+                    *(f32*)(lbl_80435020+0x28)=current[3];
                 }
-                result |= fn_8019D618(lbl_80435020, arg0, 1, arg1);
+                result=(result | fn_8019D618(lbl_80435020,arg0,1,arg1)) != 0;
             }
         }
     }
-    return result != 0;
+    return result;
 }
 
 extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
@@ -1381,24 +1385,25 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
 }
 
 extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
-    struct Output { volatile f32 point[3]; f32 gap; } output;
-    volatile f32 corners[24];
-    f32 z=*(f32 *)((char *)arg0+0x2C);
+    struct Work { volatile f32 point[3]; f32 gap; volatile f32 corners[24]; } workArea;
+    register f32 x, y, z;
+    z=*(f32 *)((char *)arg0+0x2C);
     VTab1A1E7C *shape=(VTab1A1E7C *)arg0;
-    f32 y=*(f32 *)((char *)arg0+0x28);
-    f32 x=*(f32 *)((char *)arg0+0x24);
-    f32 ny=-y, nx=-x, nz=-z;
-    corners[0]=x; corners[1]=y; corners[2]=z;
-    corners[3]=nx; corners[4]=y; corners[5]=z;
-    corners[6]=x; corners[7]=ny; corners[8]=z;
-    corners[9]=nx; corners[10]=ny; corners[11]=z;
-    corners[12]=x; corners[13]=y; corners[14]=nz;
-    corners[15]=nx; corners[16]=y; corners[17]=nz;
-    corners[18]=x; corners[19]=ny; corners[20]=nz;
-    corners[21]=nx; corners[22]=ny; corners[23]=nz;
-    volatile f32 *corner=corners;
-    volatile f32 * volatile sameCorner=corners;
-    volatile f32 *point=output.point;
+    y=*(f32 *)((char *)arg0+0x28);
+    x=*(f32 *)((char *)arg0+0x24);
+    register f32 nx, ny, nz;
+    ny=-y; nx=-x; nz=-z;
+    workArea.corners[0]=x; workArea.corners[1]=y; workArea.corners[2]=z;
+    workArea.corners[3]=nx; workArea.corners[4]=y; workArea.corners[5]=z;
+    workArea.corners[6]=x; workArea.corners[7]=ny; workArea.corners[8]=z;
+    workArea.corners[9]=nx; workArea.corners[10]=ny; workArea.corners[11]=z;
+    workArea.corners[12]=x; workArea.corners[13]=y; workArea.corners[14]=nz;
+    workArea.corners[15]=nx; workArea.corners[16]=y; workArea.corners[17]=nz;
+    workArea.corners[18]=x; workArea.corners[19]=ny; workArea.corners[20]=nz;
+    workArea.corners[21]=nx; workArea.corners[22]=ny; workArea.corners[23]=nz;
+    volatile f32 *corner=workArea.corners;
+    volatile f32 * volatile sameCorner=workArea.corners;
+    volatile f32 *point=workArea.point;
     f32 *matrix=(f32 *)shape->Call();
     min[0]=matrix[9]; min[1]=matrix[10]; min[2]=matrix[11];
     matrix=(f32 *)shape->Call();
