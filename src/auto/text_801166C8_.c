@@ -1,6 +1,15 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
+extern f64 cos(f64);
+extern f64 sin(f64);
+extern f32 lbl_80561210;
+extern f32 lbl_80561214;
+extern f32 lbl_80561218;
+extern f32 lbl_8056121C;
+extern f32 lbl_80561220;
+extern f32 lbl_80561224;
+extern f64 lbl_80561228;
 extern f32 lbl_80329BC8[];
 extern void fn_8011AF94(f32 *, s32, void *, f32 *, s32);
 extern void fn_801200BC(s32, s32, f32 *, s32, s32);
@@ -896,6 +905,152 @@ s32 fn_8011A870(void *arg0, s32 arg1) {
     }
     return *(s32 *)((char *)arg0 + 0x50);
 }
+
+extern u32 fn_8011A240(void *, u32, s32, u32);
+extern void fn_8011A45C(void *, s32, s32);
+extern void fn_8011A1A0(u32 *, u32);
+u32 fn_8011A8FC(void *arg0, s32 arg1, s32 arg2, void *arg3, u32 arg4) {
+              register s32 var_r29 = arg2;
+              register u32 var_r26 = arg4;
+              s32 var_r25 = (s32)arg3;
+              register u32 var_r28 = 0;
+              s32 temp_r27 = var_r25;
+                register s32 var_r31;
+              register volatile u32 *var_r30;
+              u32 temp_r0;
+       u32 temp_r3;
+        u32 temp_r6;
+              u32 temp_r4;
+              u32 temp_r5;
+              register u32 temp_r23;
+          
+              if (*(s32 *)((u8 *)arg0 + 0x20) != 0)
+                  return 0;
+              var_r31 = fn_80116D30();
+              if (var_r29 != -1) {
+                  temp_r4 = *(u32 *)((u8 *)arg0 + 0x98);
+                  if (temp_r4 != (u32)var_r29) {
+                      if ((u32)var_r29 > temp_r4) {
+                          if ((u32)var_r29 <= *(u32 *)((u8 *)arg0 + 0x90)) {
+                              BOOL interrupts = OSDisableInterrupts();
+                              temp_r6 = (u32)var_r29 - *(u32 *)((u8 *)arg0 + 0x98);
+                              *(u32 *)((u8 *)arg0 + 0xA0) += temp_r6;
+                              temp_r4 = *(u32 *)((u8 *)arg0 + 0x9C) + temp_r6;
+                              *(u32 *)((u8 *)arg0 + 0x98) = (u32)var_r29;
+                              *(u32 *)((u8 *)arg0 + 0x4C) -= temp_r6;
+                              *(u32 *)((u8 *)arg0 + 0x9C) = temp_r4;
+                              if (temp_r4 > *(u32 *)((u8 *)arg0 + 0xA8))
+                                  *(u32 *)((u8 *)arg0 + 0x9C) =
+                                      temp_r4 - *(u32 *)((u8 *)arg0 + 0x40);
+                              OSRestoreInterrupts(interrupts);
+                          } else {
+                              goto reset_seek;
+                          }
+                      } else {
+                          goto reset_seek;
+                      }
+                  }
+              }
+              goto seek_done;
+          reset_seek:
+              fn_8011A330(arg0);
+              {
+                  BOOL interrupts = OSDisableInterrupts();
+               temp_r0 = *(u32 *)((u8 *)arg0 + 0xA4);
+               temp_r4 = 0;
+               *(u32 *)((u8 *)arg0 + 0x90) = (u32)var_r29;
+               temp_r5 = *(u32 *)((u8 *)arg0 + 0x40);
+               *(u32 *)((u8 *)arg0 + 0x98) = (u32)var_r29;
+               *(u32 *)((u8 *)arg0 + 0xA0) = temp_r5;
+               *(u32 *)((u8 *)arg0 + 0x4C) = temp_r4;
+               *(u32 *)((u8 *)arg0 + 0x9C) = temp_r0;
+               *(u32 *)((u8 *)arg0 + 0xAC) = temp_r0;
+                  OSRestoreInterrupts(interrupts);
+              }
+          seek_done:
+              if (*(u32 *)((u8 *)arg0 + 0xA4) == 0) {
+                  var_r29 = fn_80116D30();
+                  var_r28 = fn_8011A240((u8 *)arg0 + 0x54,
+                                        *(u32 *)((u8 *)arg0 + 0x90),
+                                        (s32)var_r25, var_r26);
+                  if (var_r28 < var_r26) {
+                      *(s32 *)((u8 *)arg0 + 0x20) = 1;
+                      fn_8011A330(arg0);
+                  }
+                  var_r30 = (u32 *)((u8 *)arg0 + 0x98);
+                  *(u32 *)((u8 *)arg0 + 0x90) += var_r28;
+                  *var_r30 += var_r28;
+                  *(u32 *)((u8 *)arg0 + 0x28) += var_r28;
+                  if (*(s32 *)((u8 *)arg0 + 0xBC) != 0)
+                      fn_8011A45C(arg0, var_r28, var_r29);
+                  temp_r3 = fn_80116D30();
+          temp_r5 = *(u32 *)((u8 *)arg0 + 0x30);
+          temp_r4 = temp_r3 - var_r29;
+          temp_r0 = temp_r3 - var_r31;
+          temp_r3 = temp_r5 + temp_r4;
+          *(u32 *)((u8 *)arg0 + 0x30) = temp_r3;
+          temp_r3 = *(u32 *)((u8 *)arg0 + 0x34);
+          temp_r0 = temp_r3 + temp_r0;
+          *(u32 *)((u8 *)arg0 + 0x34) = temp_r0;
+              } else {
+                  var_r30 = (u32 *)((u8 *)arg0 + 0x98);
+                  goto loop_check;
+              loop_body:
+                  fn_8011A6A0(arg0);
+                  var_r29 = *(s32 *)((u8 *)arg0 + 0x4C);
+                  if (var_r29 != 0) {
+                      if ((u32)var_r29 > var_r26)
+                          var_r29 = (s32)var_r26;
+                      var_r26 -= var_r29;
+                      var_r28 += var_r29;
+                      temp_r4 = *(u32 *)((u8 *)arg0 + 0x9C);
+                      temp_r23 = *(u32 *)((u8 *)arg0 + 0xA8) - temp_r4;
+                      *var_r30 += var_r29;
+                      if (temp_r23 <= (u32)var_r29) {
+                          memcpy((void *)var_r25, (void *)temp_r4, temp_r23);
+                          var_r25 += temp_r23;
+                          var_r29 -= temp_r23;
+                          *(u32 *)((u8 *)arg0 + 0x9C) = *(u32 *)((u8 *)arg0 + 0xA4);
+                          {
+                              BOOL interrupts = OSDisableInterrupts();
+                              *(u32 *)((u8 *)arg0 + 0x4C) -= temp_r23;
+                              *(u32 *)((u8 *)arg0 + 0xA0) += temp_r23;
+                              OSRestoreInterrupts(interrupts);
+                          }
+                      }
+                      if (var_r29 != 0) {
+                          memcpy(var_r25, (void *)*(u32 *)((u8 *)arg0 + 0x9C), var_r29);
+                          var_r25 += var_r29;
+                          * (u32 *)((u8 *)arg0 + 0x9C) += var_r29;
+                          {
+                              BOOL interrupts = OSDisableInterrupts();
+                              *(u32 *)((u8 *)arg0 + 0x4C) -= var_r29;
+                              *(u32 *)((u8 *)arg0 + 0xA0) += var_r29;
+                              OSRestoreInterrupts(interrupts);
+                          }
+                      }
+                  }
+              loop_check:
+                  if (var_r26 != 0 && *(s32 *)((u8 *)arg0 + 0x20) == 0)
+                      goto loop_body;
+                  *(s32 *)((u8 *)arg0 + 0x34) += fn_80116D30() - var_r31;
+              }
+          
+              temp_r4 = *(u32 *)((u8 *)arg0 + 0xB8) - *var_r30;
+             if (temp_r4 < *(u32 *)((u8 *)arg0 + 0x40)) {
+                 *(u32 *)((u8 *)arg0 + 0x48) = temp_r4;
+             } else {
+                 *(u32 *)((u8 *)arg0 + 0x48) =
+                     *(u32 *)((u8 *)arg0 + 0x40);
+             }
+              if (*(volatile u32 *)((u8 *)arg0 + 0x4C) + 0x8000 >
+                   *(volatile u32 *)((u8 *)arg0 + 0x48))
+                   *(u32 *)((u8 *)arg0 + 0x48) =
+                       *(volatile u32 *)((u8 *)arg0 + 0x4C);
+              fn_8011A1A0((u32 *)temp_r27, var_r28);
+              return var_r28;
+         }
+
 #pragma dont_inline reset
 s32 fn_8011AC04(s32 arg0, s32 arg1) {
     return (arg1 + 0x7FFF) & 0xFFFF8000;
@@ -1005,6 +1160,189 @@ void fn_8011AED8(s32 arg0, f32 *arg1, u32 arg2, f32 farg0) {
         in += 2;
         out += 2;
     }
+}
+
+extern u8 lbl_80329B50[];
+extern f32 lbl_805611E0;
+void fn_8011AF94(f32 *arg0, s32 arg1, void *arg2, f32 *arg3, s32 arg4) {
+    u32 var_r29;
+    s32 var_r28;
+    f32 *var_r27;
+    u32 *var_r26;
+    u32 var_r25;
+    u32 var_r24;
+    f32 *var_r4;
+    f32 *var_r4_2;
+    f32 *var_r8;
+    f32 temp_f31;
+    f32 var_f1;
+    f32 var_f29;
+    f32 var_f28;
+    u32 *var_r5;
+    u32 *var_r5_2;
+    u32 *var_r7;
+    s32 temp_r0;
+    register s32 temp_r18;
+    s32 temp_r4;
+    s32 temp_r4_2;
+    register s32 temp_r5_3;
+    register s32 temp_r6;
+    register s32 temp_r6_2;
+    s32 var_ctr;
+    register s32 var_r0_2;
+    register s32 var_r0_3;
+    register s32 var_r5_3;
+    u32 temp_r10;
+    u32 temp_r5;
+    u32 temp_r5_2;
+    u32 temp_r9;
+    u32 var_r0;
+    u32 var_r24_2;
+    u32 var_r3;
+    u32 var_r4_3;
+
+    var_f28 = lbl_805611E0;
+    var_f29 = var_f28;
+    var_r26 = ((BitReader8011 *)arg2)->next;
+    var_r25 = ((BitReader8011 *)arg2)->value;
+    var_r24 = ((BitReader8011 *)arg2)->count;
+    var_r4 = arg3;
+    var_r5 = (u32 *)arg4;
+    var_r28 = 0;
+    goto init_test;
+init_body:
+    var_f29 = *var_r4;
+    var_r4++;
+    var_r5++;
+    var_r28++;
+    var_f28 = -var_f29;
+init_test:
+    var_r0 = (u32)*var_r5 << 1;
+    if (var_r0 < 2U) goto init_body;
+
+    temp_f31 = lbl_805611E0;
+    var_r27 = (f32 *)((u8 *)arg0 + 8);
+    var_r3 = 2U;
+    goto outer_test;
+
+decode:
+    if (var_r24 == 0) {
+        var_r0 = *var_r26;
+        var_r24 = 0x1F;
+        var_r26++;
+        var_r25 = var_r0 >> 1U;
+    } else {
+        var_r0 = var_r25;
+        var_r25 = var_r25 >> 1U;
+        var_r24--;
+    }
+    if (var_r0 & 1) {
+        if (var_r24 < 4U) {
+            temp_r5 = *var_r26;
+            temp_r0 = 4 - var_r24;
+            var_r26++;
+            temp_r4 = temp_r5 << var_r24;
+            var_r24 += 0x1C;
+            temp_r4_2 = var_r25 | temp_r4;
+            var_r25 = temp_r5 >> temp_r0;
+            var_r0_2 = temp_r4_2 & 0xF;
+        } else {
+            var_r0_2 = var_r25 & 0xF;
+            var_r25 = var_r25 >> 4U;
+            var_r24 -= 4;
+        }
+        var_r29 = var_r3 + (lbl_80329B50[var_r0_2] * 8U);
+    } else {
+        var_r29 = var_r3 + 8U;
+    }
+    if (var_r29 > (u32)arg1) var_r29 = arg1;
+
+    if (var_r24 < 4U) {
+        temp_r5_2 = *var_r26;
+        temp_r0 = 4 - var_r24;
+        var_r26++;
+        temp_r4 = temp_r5_2 << var_r24;
+        var_r24 += 0x1C;
+        temp_r4_2 = var_r25 | temp_r4;
+        var_r25 = temp_r5_2 >> temp_r0;
+        var_r0_3 = temp_r4_2 & 0xF;
+    } else {
+        var_r0_3 = var_r25 & 0xF;
+        var_r25 = var_r25 >> 4U;
+        var_r24 -= 4;
+    }
+
+    if (var_r0_3 == 0) {
+        temp_r18 = var_r29 - var_r3;
+        memset(var_r27, 0, temp_r18 * 4);
+        var_r4_2 = arg3 + var_r28;
+        var_r3 = var_r29;
+        var_r27 += temp_r18;
+        var_r5_2 = (u32 *)arg4 + var_r28;
+        while (var_r29 > (u32)(*var_r5_2 * 2)) {
+            var_f29 = *var_r4_2;
+            var_r4_2++;
+            var_r5_2++;
+            var_r28++;
+            var_f28 = -var_f29;
+        }
+    } else {
+        temp_r6 = var_r28 * 4;
+        var_r7 = (u32 *)arg4 + var_r28;
+        var_r8 = arg3 + var_r28;
+        temp_r9 = -1U >> (0x20 - var_r0_3);
+        temp_r18 = var_r29 - var_r3;
+        if (var_r3 < var_r29) {
+            for (var_ctr = 0; var_ctr < temp_r18; var_ctr++) {
+                if (var_r3 == (u32)(*var_r7 * 2)) {
+                    var_f29 = *var_r8;
+                    var_r7++;
+                    var_r8++;
+                    var_r28++;
+                    var_f28 = -var_f29;
+                }
+                if ((u32)var_r24 < var_r0_3) {
+                    temp_r10 = *var_r26;
+                    var_r26++;
+                    temp_r6_2 = var_r25 | (temp_r10 << var_r24);
+                    var_r25 = temp_r10 >> (var_r0_3 - var_r24);
+                    var_r5_3 = temp_r9 & temp_r6_2;
+                    var_r24 = var_r24 + 0x20 - var_r0_3;
+                } else {
+                    var_r5_3 = var_r25 & temp_r9;
+                    var_r25 = var_r25 >> var_r0_3;
+                    var_r24 -= var_r0_3;
+                }
+                if (var_r5_3 != 0) {
+                    if (var_r24 == 0) {
+                        var_r4_3 = *var_r26;
+                        var_r24 = 0x1F;
+                        var_r26++;
+                        var_r25 = var_r4_3 >> 1U;
+                    } else {
+                        var_r4_3 = var_r25;
+                        var_r25 = var_r25 >> 1U;
+                        var_r24--;
+                    }
+                    if (var_r4_3 & 1) var_f1 = var_f28;
+                    else var_f1 = var_f29;
+                    *var_r27 = (f32)var_r5_3 * var_f1;
+                    var_r27++;
+                } else {
+                    *var_r27 = temp_f31;
+                    var_r27++;
+                }
+                var_r3++;
+            }
+        }
+    }
+    goto outer_test;
+
+outer_test:
+    if (var_r3 < (u32)arg1) goto decode;
+    ((BitReader8011 *)arg2)->next = var_r26;
+    ((BitReader8011 *)arg2)->value = var_r25;
+    ((BitReader8011 *)arg2)->count = var_r24;
 }
 
 s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 output, u32 *input, u32 bands, f32 gain, s32 arg8) {
