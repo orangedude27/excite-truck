@@ -359,8 +359,6 @@ extern "C" s32 fn_800A5994(void *arg0, s32 p1, s32 *arg2) {
     return result & ((-result | result) >> 31);
 }
 
-s32 fn_800A59FC(void *);
-s32 fn_800A6A40(void *);
 extern "C" s32 fn_800A59FC(void *);
 extern "C" s32 fn_800A6A40(void *);
 extern "C" s32 fn_800A5AE4(void *arg0, void *arg1) {
@@ -3196,29 +3194,24 @@ extern "C" s16 fn_800B4D5C(void *arg0, u32 arg1, s32 arg2) {
         while (index < 8) {
             special = 0;
             if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, (s32)arg1, index, 1) == 0 ||
-                VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, index, 1) == 0) {
+                VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, index, 1) == 0)
                 special = 1;
-            }
             if (special != 0 ||
                 VFiPFSTR_StrNCmp((s32)arg0, lbl_80559234, (s32)arg1, index, 1) == 0 ||
-                VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, index, 1) == 0) {
+                VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, index, 1) == 0)
                 break;
-            }
-            if (fn_800A4D44(arg0) == 1) {
+            if (fn_800A4D44(arg0) == 1)
                 value = (s16)((s8)((u8 *)(u32)fn_800A4D74(arg0, arg1))[index] - 0x30);
-            } else {
+            else
                 value = (s16)(((u16 *)(u32)fn_800A4D74(arg0, arg1))[offset / 2] - 0x30);
-            }
             if (value < 0 || value > 9) {
                 if (arg2 == 0 ||
                     (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, index, 1) != 0 &&
-                     VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, index, 1) != 0)) {
+                     VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, index, 1) != 0))
                     break;
-                }
                 if (arg2 == 1 &&
-                    VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, index, 1) == 0) {
+                    VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, index, 1) == 0)
                     found = 1;
-                }
             }
             offset += 2;
             index += 1;
@@ -3227,16 +3220,12 @@ extern "C" s16 fn_800B4D5C(void *arg0, u32 arg1, s32 arg2) {
             if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559234, (s32)arg1, index, 1) != 0) {
                 special = 0;
                 if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, (s32)arg1, index, 1) == 0 ||
-                    VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, index, 1) == 0) {
+                    VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, index, 1) == 0)
                     special = 1;
-                }
                 if (special == 0 ||
-                    VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, index, 1) == 0) {
+                    VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, index, 1) == 0)
                     result = index;
-                }
-            } else {
-                result = index;
-            }
+            } else result = index;
         }
     }
     return result;
