@@ -1,4 +1,5 @@
 #include "types.h"
+extern "C" void fn_802ADE60(int, int);
 extern "C" void fn_8001DAE0(void *, f32);
 extern "C" f32 lbl_805614FC;
 extern "C" f32 lbl_80561500;
@@ -306,6 +307,76 @@ extern "C" void fn_8013E338(void) {
 
 }
 
+#pragma scheduling invalid_target
+extern "C" void fn_8013E3A8(void *arg0, void *arg1) {
+    u8 *dst = (u8 *)arg0;
+    u8 *base = lbl_8032C530;
+    s32 value;
+    f32 fvalue;
+    f32 scale;
+
+    if (arg1) value = ((TDispatchStringInt20 *)arg1)->v20((const char *)(base + 0x210), 0x19);
+    else value = 0x19;
+    *(s32 *)(dst + 0xC) = value;
+
+    if (arg1) value = ((TDispatchStringInt20 *)arg1)->v20((const char *)(base + 0x220), 0xA);
+    else value = 0xA;
+    *(s32 *)(dst + 4) = value;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x230), lbl_805614E0);
+    else fvalue = lbl_805614E0;
+    *(f32 *)(dst + 0) = fvalue;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x248), lbl_805614E4);
+    else fvalue = lbl_805614E4;
+    *(f32 *)(dst + 8) = fvalue;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x258), lbl_805614E8);
+    else fvalue = lbl_805614E8;
+    *(f32 *)(dst + 0x10) = fvalue;
+
+    if (arg1) value = ((TDispatchStringInt20 *)arg1)->v20((const char *)(base + 0x270), 0xA);
+    else value = 0xA;
+    *(s32 *)(dst + 0x14) = value;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x280), lbl_805614EC);
+    else fvalue = lbl_805614EC;
+    *(f32 *)(dst + 0x18) = fvalue;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x290), lbl_805614AC);
+    else fvalue = lbl_805614AC;
+    *(f32 *)(dst + 0x1C) = fvalue;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x29C), lbl_805614F0);
+    else fvalue = lbl_805614F0;
+    *(f32 *)(dst + 0x24) = fvalue;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x2B0), lbl_805614AC);
+    else fvalue = lbl_805614AC;
+    *(f32 *)(dst + 0x20) = fvalue;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x2C0), lbl_805614F4);
+    else fvalue = lbl_805614F4;
+    *(f32 *)(dst + 0x28) = fvalue;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x2D4), lbl_805614E8);
+    else fvalue = lbl_805614E8;
+    *(f32 *)(dst + 0x30) = fvalue;
+
+    if (arg1) value = ((TDispatchStringInt20 *)arg1)->v20((const char *)(base + 0x2E8), 0x186A0);
+    else value = 0x186A0;
+    *(s32 *)(dst + 0x2C) = value;
+
+    if (arg1) fvalue = ((TDispatchStringFloat28 *)arg1)->v28((const char *)(base + 0x300), lbl_805614AC);
+    else fvalue = lbl_805614AC;
+    *(f32 *)(dst + 0x38) = fvalue;
+
+    *(f32 *)(dst + 0x34) = fn_80204CFC((const char *)(base + 0x310));
+    scale = fn_80204CFC((const char *)(base + 0x200));
+    *(f32 *)(dst + 0x24) = lbl_805614F8;
+    *(s32 *)(dst + 0x2C) = (s32)((f32)*(s32 *)(dst + 0x2C) * scale);
+}
+#pragma scheduling on
 extern "C" void *fn_8013E6E4(void *arg0) {
     volatile f32 scale = lbl_805614AC;
     fn_8001DAE0((u8 *)arg0 + 0x98, scale);
