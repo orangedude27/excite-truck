@@ -1896,10 +1896,15 @@ void fn_8011D9E4(void *arg0, void *arg1) {
 }
 
 void fn_8011DC5C(void *arg0, void *arg1) {
+    s32 n;
+    u32 count;
     u32 *bits;
-    u32 value, bitCount, width, mask, count, code, order, tmp, tmp2;
-    s32 val, n;
+    u32 value;
+    u32 bitCount;
     s16 *dst;
+    s32 val;
+    u32 width, mask, code, order, tmp, tmp2;
+    s32 run;
 
     if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
     bitCount = *(u32 *)((u8 *)arg1 + 8);
@@ -1951,8 +1956,8 @@ void fn_8011DC5C(void *arg0, void *arg1) {
         *dst = val;
         *(s16 **)arg0 = *(s16 **)((u8 *)arg0 + 0x2C);
         *(s16 **)((u8 *)arg0 + 4) = *(s16 **)((u8 *)arg0 + 0x2C) + count;
-        dst++;
         count--;
+        dst++;
         while (count != 0) {
             n = 8;
             if (count <= 8) n = (s32)count;
@@ -1968,7 +1973,9 @@ void fn_8011DC5C(void *arg0, void *arg1) {
             }
             if (order != 0) {
                 mask = 0xFFFFFFFFU >> (32 - order);
-                for (tmp = 0; (s32)tmp < n; tmp++) {
+                run = n;
+                while (run != 0) {
+                    run--;
                     if (bitCount < order) {
                         u32 next = *bits++;
                         code = (value | (next << bitCount)) & mask;
@@ -1989,8 +1996,8 @@ void fn_8011DC5C(void *arg0, void *arg1) {
                     dst++;
                 }
             } else {
-                fn_80116CC4((s32 *)dst, val & 0xFFFF, n * 2);
-                dst += n;
+                fn_80116CC4((s32 *)dst, (u16)val, (n + n));
+                dst = (s16 *)((u8 *)dst + (n << 1));
             }
             count -= n;
         }
