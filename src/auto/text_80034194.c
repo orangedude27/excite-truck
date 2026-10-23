@@ -25,6 +25,14 @@ static inline int DVDPathLower(int c) {
            (int)lbl_802FE850.cmap->to_lower_table[c];
 }
 
+static inline BOOL DVDPathSame(const char *lhs, const char *rhs) {
+    while (*rhs != '\0') {
+        if (DVDPathLower(*lhs++) != DVDPathLower(*rhs++))
+            return FALSE;
+    }
+    return *lhs == '/' || *lhs == '\0';
+}
+
 extern void fn_80035C78(void);
 extern void fn_80035E6C(void);
 extern void fn_8003A1A0(u32, void (*)(void));
@@ -199,6 +207,7 @@ void __DSP_remove_task(void *task) {
 
 #pragma use_lmw_stmw off
 s32 DVDConvertPathToEntrynum(const char *path) {
+    const DVDNode *new_var;
     const char *name_end;
     u32 it;
     u32 anchor;
@@ -215,30 +224,20 @@ s32 DVDConvertPathToEntrynum(const char *path) {
     backup_path = path;
     it = lbl_8055D828;
     for (;;) {
-        if (*path == '\0')
-            return it;
-        if (*path == '/') {
-            it = 0;
-            path++;
-            continue;
-        }
+        if (*path == '\0') return it;
+        if (*path == '/') { it = 0; path++; continue; }
         if (path[0] == '.') {
             if (path[1] == '.') {
                 if (path[2] == '/') {
-                    it = ((u32 *)FstStart_8055D840)[it * 3 + 1];
-                    path += 3;
-                    continue;
+                    it = ((DVDNode *)FstStart_8055D840)[it].parent_or_offset;
+                    path += 3; continue;
                 }
                 if (path[2] == '\0')
-                    return ((u32 *)FstStart_8055D840)[it * 3 + 1];
+                    return ((DVDNode *)FstStart_8055D840)[it].parent_or_offset;
                 goto check_format;
             }
-            if (path[1] == '/') {
-                path += 2;
-                continue;
-            }
-            if (path[1] == '\0')
-                return it;
+            if (path[1] == '/') { path += 2; continue; }
+            if (path[1] == '\0') return it;
         }
 check_format:
         if (!__DVDLongFileNameFlag) {
@@ -247,64 +246,62 @@ check_format:
             name_end = path;
             while (*name_end != '\0' && *name_end != '/') {
                 if (*name_end == '.') {
-                    if (name_end - path > 8 || has_extension) {
+                    if (name_end - path > 8 || has_extension == TRUE) {
                         illegal_format = TRUE;
                         goto validate_format;
                     }
                     has_extension = TRUE;
                     extension_start = name_end + 1;
-                } else if (*name_end == ' ') {
-                    illegal_format = TRUE;
-                }
+                } else if (*name_end == ' ') illegal_format = TRUE;
                 name_end++;
             }
 validate_format:
-            if (has_extension && name_end - extension_start > 3)
+            if (has_extension == TRUE && name_end - extension_start > 3)
                 illegal_format = TRUE;
-            if (illegal_format)
+            if (illegal_format == TRUE)
                 ((void (*)(const char *, s32, const char *, ...))OSPanic)(
                     lbl_80558DF8, 0x1B9, lbl_80301F70, backup_path);
         } else {
             name_end = path;
-            while (*name_end != '\0' && *name_end != '/')
-                name_end++;
+            while (*name_end != '\0' && *name_end != '/') name_end++;
         }
-
         name_delimited_by_slash = (*name_end == '\0') ? FALSE : TRUE;
         name_length = name_end - path;
         anchor = it + 1;
-        while (anchor < ((u32 *)FstStart_8055D840)[it * 3 + 2]) {
-            if ((((u32 *)FstStart_8055D840)[anchor * 3] & 0xFF000000) ||
-                name_delimited_by_slash != TRUE) {
-                item_name = (const char *)FstStringStart_8055D83C +
-                            (((u32 *)FstStart_8055D840)[anchor * 3] & 0xFFFFFF);
-                lhs = path;
-                rhs = item_name;
-                while (*rhs != '\0') {
-                    int c1 = *lhs++;
-                    int c2 = *rhs++;
-                    c1 = (c1 < 0 || c1 >= 256) ? c1 :
-                         lbl_802FE850.cmap->to_lower_table[c1];
-                    c2 = (c2 < 0 || c2 >= 256) ? c2 :
-                         lbl_802FE850.cmap->to_lower_table[c2];
-                    if (c1 != c2)
-                        goto next_item;
+        new_var = (const DVDNode *)FstStart_8055D840;
+        while (anchor < new_var[it].sibling_or_size) {
+            while (TRUE) {
+                if ((new_var[anchor].packed_type_name & 0xFF000000) ||
+                    name_delimited_by_slash != TRUE) {
+                    item_name = (const char *)FstStringStart_8055D83C +
+                                (new_var[anchor].packed_type_name & 0xFFFFFF);
+                    lhs = path;
+                    rhs = item_name;
+                    while (*rhs != '\0') {
+                        if (DVDPathLower(*lhs++) != DVDPathLower(*rhs++))
+                            goto next_item;
+                    }
+                    if (*lhs == '/' || *lhs == '\0') goto descend;
                 }
-                if (*lhs == '/' || *lhs == '\0')
-                    goto descend;
-            }
-next_item:
-            if (((u32 *)FstStart_8055D840)[anchor * 3] & 0xFF000000)
-                anchor = ((u32 *)FstStart_8055D840)[anchor * 3 + 2];
-            else
+                if (new_var[anchor].packed_type_name & 0xFF000000) {
+                    anchor = new_var[anchor].sibling_or_size;
+                    break;
+                }
                 anchor++;
+                break;
+            }
         }
         return -1;
 descend:
-        if (!name_delimited_by_slash)
-            return anchor;
+        if (!name_delimited_by_slash) return anchor;
         it = anchor;
         path += name_length + 1;
+        continue;
+next_item:
+        if (new_var[anchor].packed_type_name & 0xFF000000)
+            anchor = new_var[anchor].sibling_or_size;
+        else
+            anchor++;
     }
 }
 #pragma use_lmw_stmw reset
@@ -783,8 +780,7 @@ extern void OSSetPeriodicAlarm(void *, u32, u32, s32, u32, u32, void (*)(void));
 extern s32 lbl_8055D8B4, lbl_8055D878;
 void fn_80038040(void) {
     void (*callback)(s32);
-    void *temp_r3;
-    register void *temp_r4;
+    void *temp_r3, *temp_r4;
     if (__DVDCheckWaitingQueue() == 0) {
         executing_8055D8C8 = 0;
         return;
@@ -797,9 +793,11 @@ void fn_80038040(void) {
     temp_r3 = __DVDPopWaitingQueue();
     executing_8055D8C8 = (s32)temp_r3;
     if (FatalErrorFlag_8055D854 != 0) {
+        void *dummy_command;
         *(s32 *)((u8 *)temp_r3 + 0xC) = -1;
         temp_r4 = (void *)executing_8055D8C8;
-        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        dummy_command = (void *)DummyCommandBlock_80376AA0;
+        executing_8055D8C8 = (s32)dummy_command;
         callback = *(void (**)(s32))((u8 *)temp_r4 + 0x28);
         if (callback != 0) callback(-1);
         fn_80038040();
