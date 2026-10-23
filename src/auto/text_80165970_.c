@@ -21,15 +21,15 @@ extern "C" {
 }
 class Dummy80165B78 {
 public:
-    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4();
+    virtual void d0(); virtual void d1(); virtual void d2();
     virtual char *getString(const char *);
-    virtual void d6(); virtual void d7(); virtual void d8();
+    virtual void d4(); virtual void d5(); virtual void d6();
     virtual float getFloat(const char *);
     virtual float getFloatDefault(const char *, float);
-    virtual void d11();
+    virtual void d9();
     virtual unsigned char getFlag(const char *, int);
-    virtual void d13(); virtual void d14(); virtual void d15(); virtual void d16(); virtual void d17();
-    virtual void d18(); virtual void d19(); virtual void d20(); virtual void d21(); virtual void d22();
+    virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19(); virtual void d20();
     virtual Dummy80165B78 *getObject(const char *);
 };
 #pragma cplusplus off
@@ -170,77 +170,76 @@ extern float lbl_805618CC;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-void fn_80165B78(void **arg0) {
-    extern char lbl_8055A170;
-    extern char lbl_8055A178;
-    extern char lbl_8055A180;
-    extern char lbl_8055A188;
-    float temp_f31;
-    float var_f1;
-    char *temp_r30;
-    void **temp_r3;
-    void **temp_r3_2;
+#pragma cplusplus on
+extern "C" void fn_80165B78(void **arg0) {
+    char *strings = lbl_8032FCC0;
+    Dummy80165B78 *obj;
+    Dummy80165B78 *obj2;
+    char *text;
     char *match;
+    float scale;
+    float value;
 
-    temp_r3 = ((void **(*)(void **, const char *))(*(void ***)arg0)[23])(arg0, &lbl_8055A170);
-    var_f1 = ((float (*)(void **, const char *))(*(void ***)temp_r3)[9])(temp_r3, lbl_8032FCC0);
-    *(float *)((char *)&lbl_8042FE38 + 0x28) = var_f1;
-    var_f1 = ((float (*)(void **, const char *))(*(void ***)temp_r3)[9])(temp_r3, lbl_8032FCC0 + 0x10);
-    *(float *)((char *)&lbl_8042FE38 + 0x2c) = var_f1;
-    var_f1 = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, lbl_8032FCC0 + 0x20, lbl_805618A4);
-    *(float *)((char *)&lbl_8042FE38 + 0x3c) = var_f1;
-    var_f1 = ((float (*)(void **, const char *))(*(void ***)temp_r3)[9])(temp_r3, lbl_8032FCC0 + 0x30);
-    *(float *)((char *)&lbl_8042FE38 + 0x34) = var_f1;
-    var_f1 = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, lbl_8032FCC0 + 0x3C, lbl_805618A8);
-    *(float *)((char *)&lbl_8042FE38 + 0x38) = var_f1;
-    var_f1 = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, lbl_8032FCC0 + 0x50, *(float *)((char *)&lbl_8042FE38 + 0x2c));
-    *(float *)((char *)&lbl_8042FE38 + 0x30) = var_f1;
-    var_f1 = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, lbl_8032FCC0 + 0x60, lbl_805618AC);
-    *(float *)((char *)&lbl_8042FE38 + 0x44) = var_f1;
-    var_f1 = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, lbl_8032FCC0 + 0x70, lbl_805618AC);
-    *(float *)((char *)&lbl_8042FE38 + 0x40) = var_f1;
-    var_f1 = ((float (*)(void **, const char *))(*(void ***)temp_r3)[9])(temp_r3, lbl_8032FCC0 + 0x84);
-    *(float *)((char *)&lbl_8042FE38 + 0x48) = var_f1;
-    var_f1 = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, lbl_8032FCC0 + 0x98, lbl_805618B0);
-    *(float *)((char *)&lbl_8042FE38 + 0x64) = var_f1;
-    var_f1 = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, &lbl_8055A178, lbl_805618B0);
-    *(float *)((char *)&lbl_8042FE38 + 0x68) = var_f1;
-    var_f1 = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, lbl_8032FCC0 + 0xA8, lbl_805618B4);
-    *(float *)((char *)&lbl_8042FE38 + 0x50) = var_f1;
+    obj = ((Dummy80165B78 *)arg0)->getObject(&lbl_8055A170);
+    value = obj->getFloat(strings);
+    *(float *)((char *)&lbl_8042FE38 + 0x28) = value;
+    value = obj->getFloat(strings + 0x10);
+    *(float *)((char *)&lbl_8042FE38 + 0x2c) = value;
+    value = obj->getFloatDefault(strings + 0x20, lbl_805618A4);
+    *(float *)((char *)&lbl_8042FE38 + 0x3c) = value;
+    value = obj->getFloat(strings + 0x30);
+    *(float *)((char *)&lbl_8042FE38 + 0x34) = value;
+    value = obj->getFloatDefault(strings + 0x3C, lbl_805618A8);
+    *(float *)((char *)&lbl_8042FE38 + 0x38) = value;
+    value = obj->getFloatDefault(strings + 0x50, *(float *)((char *)&lbl_8042FE38 + 0x2c));
+    *(float *)((char *)&lbl_8042FE38 + 0x30) = value;
+    value = obj->getFloatDefault(strings + 0x60, lbl_805618AC);
+    *(float *)((char *)&lbl_8042FE38 + 0x44) = value;
+    value = obj->getFloatDefault(strings + 0x70, lbl_805618AC);
+    *(float *)((char *)&lbl_8042FE38 + 0x40) = value;
+    value = obj->getFloat(strings + 0x84);
+    *(float *)((char *)&lbl_8042FE38 + 0x48) = value;
+    value = obj->getFloatDefault(strings + 0x98, lbl_805618B0);
+    *(float *)((char *)&lbl_8042FE38 + 0x64) = value;
+    value = obj->getFloatDefault(&lbl_8055A178, lbl_805618B0);
+    *(float *)((char *)&lbl_8042FE38 + 0x68) = value;
+    value = obj->getFloatDefault(strings + 0xA8, lbl_805618B4);
+    *(float *)((char *)&lbl_8042FE38 + 0x50) = value;
 
-    temp_r30 = ((char *(*)(void **, const char *))(*(void ***)temp_r3)[5])(temp_r3, lbl_8032FCC0 + 0x84);
-    match = strchr(temp_r30, 0x4C);
+    text = obj->getString(strings + 0x84);
+    match = strchr(text, 0x4C);
     if (match != 0) {
-        temp_f31 = fn_8013672C((int)match);
-        var_f1 = (float)atof(temp_r30) * temp_f31;
+        scale = fn_8013672C((int)match);
+        value = (float)atof(text) * scale;
     } else {
-        var_f1 = (float)atof(temp_r30);
+        value = (float)atof(text);
     }
-    *(float *)((char *)&lbl_8042FE38 + 0x48) = lbl_8055E324 - var_f1;
+    *(float *)((char *)&lbl_8042FE38 + 0x48) = lbl_8055E324 - value;
 
     *((unsigned char *)&lbl_8042FE38 + 0x4C) =
-        ((unsigned char (*)(void **, const char *, int))(*(void ***)temp_r3)[12])(temp_r3, lbl_8032FCC0 + 0xC0, 1);
+        obj->getFlag(strings + 0xC0, 1);
     *((unsigned char *)&lbl_8042FE38 + 0x4D) =
-        ((unsigned char (*)(void **, const char *, int))(*(void ***)temp_r3)[12])(temp_r3, lbl_8032FCC0 + 0xD8, 1);
+        obj->getFlag(strings + 0xD8, 1);
     *((unsigned char *)&lbl_8042FE38 + 0x4E) =
-        ((unsigned char (*)(void **, const char *, int))(*(void ***)temp_r3)[12])(temp_r3, lbl_8032FCC0 + 0xEC, 0);
+        obj->getFlag(strings + 0xEC, 0);
 
-    temp_r3_2 = ((void **(*)(void **, const char *))(*(void ***)temp_r3)[23])(temp_r3, lbl_8032FCC0 + 0x100);
-    *(float *)((char *)&lbl_8042FE38 + 0x0) = ((float (*)(void **, const char *))(*(void ***)temp_r3_2)[9])(temp_r3_2, lbl_8055A168);
-    *(float *)((char *)&lbl_8042FE38 + 0x8) = ((float (*)(void **, const char *))(*(void ***)temp_r3_2)[9])(temp_r3_2, &lbl_8055A180);
-    *(float *)((char *)&lbl_8042FE38 + 0x4) = ((float (*)(void **, const char *))(*(void ***)temp_r3_2)[9])(temp_r3_2, lbl_8055A160);
-    *(float *)((char *)&lbl_8042FE38 + 0xc) = ((float (*)(void **, const char *))(*(void ***)temp_r3_2)[9])(temp_r3_2, &lbl_8055A188);
-    *(float *)((char *)&lbl_8042FE38 + 0x10) = ((float (*)(void **, const char *))(*(void ***)temp_r3_2)[9])(temp_r3_2, lbl_8032FCC0 + 0x10C);
-    *(float *)((char *)&lbl_8042FE38 + 0x14) = ((float (*)(void **, const char *))(*(void ***)temp_r3_2)[9])(temp_r3_2, lbl_8032FCC0 + 0x118);
-    *(float *)((char *)&lbl_8042FE38 + 0x18) = ((float (*)(void **, const char *, float))(*(void ***)temp_r3_2)[10])(temp_r3_2, lbl_8032FCC0 + 0x124, lbl_805618A8);
-    *(float *)((char *)&lbl_8042FE38 + 0x1c) = ((float (*)(void **, const char *, float))(*(void ***)temp_r3_2)[10])(temp_r3_2, lbl_8032FCC0 + 0x134, lbl_805618B8);
-    *(float *)((char *)&lbl_8042FE38 + 0x20) = ((float (*)(void **, const char *, float))(*(void ***)temp_r3_2)[10])(temp_r3_2, lbl_8032FCC0 + 0x144, lbl_805618BC);
-    *(float *)((char *)&lbl_8042FE38 + 0x24) = ((float (*)(void **, const char *, float))(*(void ***)temp_r3_2)[10])(temp_r3_2, lbl_8032FCC0 + 0x154, lbl_805618C0);
-    *(float *)((char *)&lbl_8042FE38 + 0x54) = fn_80204CFC(lbl_8032FCC0 + 0x164);
-    *(float *)((char *)&lbl_8042FE38 + 0x58) = fn_80204CFC(lbl_8032FCC0 + 0x178);
-    *(float *)((char *)&lbl_8042FE38 + 0x5c) = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, lbl_8032FCC0 + 0x194, lbl_805618C4);
-    *(float *)((char *)&lbl_8042FE38 + 0x60) = ((float (*)(void **, const char *, float))(*(void ***)temp_r3)[10])(temp_r3, lbl_8032FCC0 + 0x1A8, lbl_805618C8) * lbl_805618CC;
+    obj2 = obj->getObject(strings + 0x100);
+    *(float *)((char *)&lbl_8042FE38 + 0x0) = obj2->getFloat(lbl_8055A168);
+    *(float *)((char *)&lbl_8042FE38 + 0x8) = obj2->getFloat(&lbl_8055A180);
+    *(float *)((char *)&lbl_8042FE38 + 0x4) = obj2->getFloat(lbl_8055A160);
+    *(float *)((char *)&lbl_8042FE38 + 0xc) = obj2->getFloat(&lbl_8055A188);
+    *(float *)((char *)&lbl_8042FE38 + 0x10) = obj2->getFloat(strings + 0x10C);
+    *(float *)((char *)&lbl_8042FE38 + 0x14) = obj2->getFloat(strings + 0x118);
+    *(float *)((char *)&lbl_8042FE38 + 0x18) = obj2->getFloatDefault(strings + 0x124, lbl_805618A8);
+    *(float *)((char *)&lbl_8042FE38 + 0x1c) = obj2->getFloatDefault(strings + 0x134, lbl_805618B8);
+    *(float *)((char *)&lbl_8042FE38 + 0x20) = obj2->getFloatDefault(strings + 0x144, lbl_805618BC);
+    *(float *)((char *)&lbl_8042FE38 + 0x24) = obj2->getFloatDefault(strings + 0x154, lbl_805618C0);
+    *(float *)((char *)&lbl_8042FE38 + 0x54) = fn_80204CFC(strings + 0x164);
+    *(float *)((char *)&lbl_8042FE38 + 0x58) = fn_80204CFC(strings + 0x178);
+    *(float *)((char *)&lbl_8042FE38 + 0x5c) = obj->getFloatDefault(strings + 0x194, lbl_805618C4);
+    *(float *)((char *)&lbl_8042FE38 + 0x60) = obj->getFloatDefault(strings + 0x1A8, lbl_805618C8) * lbl_805618CC;
 }
+#pragma cplusplus off
 #pragma pop
 void *fn_80166040(int arg0) {
     void *base;
