@@ -93,6 +93,13 @@ extern "C" void OSRestoreInterrupts(s32);
 extern "C" s32 WPADCanSendStreamData(s32);
 extern "C" s32 WENCGetEncodeData(void *, u32, const s16 *, s32, void *);
 extern "C" void fn_80062278(s32, void *, s32);
+extern "C" void *iosAlloc(s32, s32);
+extern "C" s32 iosFree(s32, void *);
+extern "C" s32 IOS_Ioctlv(s32, s32, s32, s32, void *);
+extern "C" s32 IOS_IoctlvAsync(s32, s32, s32, s32, void *, void *, void *);
+extern "C" void *lbl_8055DD74;
+extern "C" void *lbl_8055DD80;
+extern "C" void fn_800BAA8C(void);
 
   namespace homebutton {
   namespace gui {
@@ -3923,32 +3930,32 @@ s32 fn_800B6928(s8 arg0) {
 
 extern "C" s32 fn_800B5B94(void *, s32);
 extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
+    u8 *var_r31;
+    s32 var_r30;
     s16 temp_r28;
-    s32 temp_r3;
     s32 var_r28;
-    register s32 var_r30;
     s32 var_r3;
-    register void *var_r31;
+    s32 temp_r3;
     var_r30 = 0;
     temp_r28 = fn_800A485C((s32)arg0) - 0x41;
     var_r31 = (u8 *)lbl_803D2140;
-    fn_800B77C0((u8 *)var_r31 + 0x64);
+    fn_800B77C0(var_r31 + 0x64);
     if ((temp_r28 < 0) || (temp_r28 >= 0x1A)) {
         fn_800B783C((u8 *)lbl_803D2140 + 0x64);
         var_r31 = 0;
     } else {
-        fn_800B783C((u8 *)var_r31 + 0x64);
-        var_r31 = (u8 *)var_r31 + (temp_r28 * 0x1FC8) + 0xA0;
+        fn_800B783C(var_r31 + 0x64);
+        var_r31 = var_r31 + (temp_r28 * 0x1FC8) + 0xA0;
     }
     if (!(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 1)) {
         M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x40) = 0xA;
         return 0xA;
     }
-    fn_800B77C0((u8 *)var_r31 + 0x1F90);
+    fn_800B77C0(var_r31 + 0x1F90);
     if (fn_800A53B4(var_r31) != 0) {
         if ((fn_800A53DC(var_r31) != 0) && !(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8)) {
-            VFiPFFILE_FinalizeAllFiles((u8 *)var_r31);
-            VFiPFDIR_FinalizeAllDirs((u8 *)var_r31);
+            VFiPFFILE_FinalizeAllFiles(var_r31);
+            VFiPFDIR_FinalizeAllDirs(var_r31);
             if (fn_800A5788(var_r31, 1) == 0) {
                 if (M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8) {
                     M2C_FIELD(var_r31, s32 *, 0x1654) = 0;
@@ -3990,8 +3997,8 @@ extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
         }
     } else {
         if ((fn_800A53DC(var_r31) != 0) && !(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8)) {
-            VFiPFFILE_FinalizeAllFiles((u8 *)var_r31);
-            VFiPFDIR_FinalizeAllDirs((u8 *)var_r31);
+            VFiPFFILE_FinalizeAllFiles(var_r31);
+            VFiPFDIR_FinalizeAllDirs(var_r31);
             if (fn_800A5788(var_r31, 1) == 0) {
                 if (M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8) {
                     M2C_FIELD(var_r31, s32 *, 0x1654) = 0;
@@ -4010,13 +4017,13 @@ block_31:
         var_r28 = 0;
     }
     if (var_r28 != 0) {
-        fn_800B783C((u8 *)var_r31 + 0x1F90);
+        fn_800B783C(var_r31 + 0x1F90);
         M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x40) = var_r28;
         M2C_FIELD(var_r31, s32 *, 0x1F80) = var_r28;
         return var_r28;
     }
     if (!(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8)) {
-        fn_800B783C((u8 *)var_r31 + 0x1F90);
+        fn_800B783C(var_r31 + 0x1F90);
         return 0;
     }
     if ((M2C_FIELD(var_r31, s32 *, 0x161C) != 0) || (M2C_FIELD(var_r31, s32 *, 0x1620) != 0)) {
@@ -4024,7 +4031,7 @@ block_31:
         M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x40) = 0x13;
         M2C_FIELD(var_r31, s32 *, 0x1F80) = 0x13;
         if (!(arg1 & 1)) {
-            fn_800B783C((u8 *)var_r31 + 0x1F90);
+            fn_800B783C(var_r31 + 0x1F90);
             return 0x13;
         }
     }
@@ -4036,7 +4043,7 @@ block_31:
         if (!(arg1 & 1))
             var_r30 = temp_r3;
     }
-    fn_800B783C((u8 *)var_r31 + 0x1F90);
+    fn_800B783C(var_r31 + 0x1F90);
     return var_r30;
 }
 
