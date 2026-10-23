@@ -78,6 +78,7 @@ extern "C" void DetachSound__Q34nw4r3snd11SoundHandleFv(void);
 extern "C" void detail_StartSound__Q34nw4r3snd14SoundStartableFPQ34nw4r3snd11SoundHandleUlPQ54nw4r3snd6detail10BasicSound14AmbientArgInfoPQ44nw4r3snd6detail19ExternalSoundPlayerPCQ44nw4r3snd14SoundStartable9StartInfo(void*, void*, u32, void*, void*, void*);
 extern "C" s32 lbl_802F4588[];
   #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
+struct VFiPFEntryCopy240 { u32 word[0x90]; };
 extern "C" void VFipf_memcpy(void *, const void *, u32);
 extern "C" s32 NANDGetLengthAsync(void *, u32 *);
 extern "C" s32 NANDSeek(void *, s32, s32);
@@ -8790,7 +8791,7 @@ extern "C" u32 fn_800D3B40(const char *str, char *buffer, s32 count, u32 delim) 
 }
 
 extern "C" s32 fn_800D3C44(register char *var_r24, void *arg1, register u32 var_r25, register char *var_r26, register s32 var_r27) {
-    const char *base = lbl_8031EC50;
+    register const char *base = lbl_8031EC50;
     void *var_r30 = 0;
     s32 var_r29;
     s32 var_r23;
