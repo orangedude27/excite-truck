@@ -12,6 +12,34 @@ typedef struct {
 } Unk8016A0AC;
 extern Unk8016A0AC lbl_80430340;
 
+typedef struct {
+    u8 flag;
+    char name[31];
+    s32 handle;
+    s32 id;
+} Entry28;
+typedef struct {
+    Entry28* data;
+    s32 count;
+    s32 limit;
+    s32 pad0c;
+    Entry28* ptr10;
+    s32 cap;
+} Ctr804302F0;
+extern void* fn_8000AC38(void);
+extern s32 fn_8002F37C(void*, void*, void*, s32, s32);
+extern s32 fn_8012850C(s32, void*);
+extern s32 fn_8012C33C(void*);
+extern void fn_801345D8(void*, s32, void*, s32);
+extern s32 fn_802C6FC0(void*, s32, s32);
+extern void fn_802E30C8(void*, s32, void*);
+extern s32 fn_8016A8F8(void*);
+extern s32 lbl_80330460;
+extern s32 lbl_80330528;
+extern s32 lbl_80330688;
+extern s32 lbl_803306A0;
+extern s32 lbl_803306B4;
+
 void fn_8016A0AC(void) {
 }
 
@@ -57,6 +85,21 @@ void fn_8016A240(const char *arg0) {
         offset += 0x2c;
         i++;
     }
+}
+
+extern f32 PSVECSquareDistance(void *, void *);
+extern s32 fn_8017960C(void);
+extern u8 lbl_8055E364;
+extern f64 lbl_80561968;
+extern f32 lbl_80561960;
+s32 fn_8016A30C(void) {
+ f32 a,b; s32 c,d,e,f,g,h; void *p;
+ c=fn_8017960C(); if(c) { a=lbl_80561960; f=0;e=0;g=0;
+ loop: if(e < *(s32 *)((u8 *)&lbl_80430318+4)) { d=0;h=0;p=(void *)(*(s32 *)&lbl_80430318+g);
+ if(*(u8 *)((u8 *)p+0x3c) && !*(u8 *)((u8 *)p+0x3d)) h=1;
+ if(h) { b=(f32)*(s32 *)((u8 *)p+4); if(lbl_8055E364)b+=a;
+ if(PSVECSquareDistance((void *)(c+0x60),(u8 *)p+0x30)<b*b) {*(u8 *)((u8 *)p+0x3d)=1;d=1;*(f32 *)((u8 *)p+0x40)=lbl_8055E3C8;} }
+ if(d)f++; g+=0x48;e++;goto loop;} return f;} return 0;
 }
 
 void fn_8016A68C(void* arg0) {
