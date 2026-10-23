@@ -16,7 +16,7 @@ extern "C" void fn_80128668(void *);
 extern "C" void *fn_801284F8(int, const char *);
 extern "C" void *fn_802077A4(const char *, int, void *, void *);
 extern "C" void *fn_802076A0(const char *, int, void *, int);
-extern "C" int fn_801345D8(char *, int, const char *, int);
+extern "C" int fn_801345D8(char *, int, const char *, ...);
 extern "C" void *fn_80016544(s32);
 extern "C" void *memset(void *, int, unsigned int);
 extern const char lbl_8033C7A0[];
