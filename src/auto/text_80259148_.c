@@ -5,6 +5,8 @@ extern int lbl_80344EA0[];
 extern char lbl_80344FE0[];
 extern char lbl_80345098[];
 extern float lbl_80498EAC[3];
+extern float lbl_8055F398;
+extern float lbl_80563AEC;
 extern float lbl_80563AF0;
 extern double lbl_80563B00;
 extern float lbl_80558DC4;
