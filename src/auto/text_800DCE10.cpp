@@ -95,7 +95,7 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     volatile f32 sp8;
     volatile f32 spc;
     u16 count;
-    u8 q;
+    s8 quotient;
     u8 rem;
     s32 value;
     void *resource;
@@ -115,12 +115,12 @@ extern "C" void *__ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4
     }
     if (count != 0) {
         count = (u16)(count - 1);
-        q = self[0xFC] / 3;
+        quotient = self[0xFC] / 3;
         *(u32 *)(self + 0xD4) = 0;
         *(u16 *)(self + 0xF8) = 0;
         *(u16 *)(self + 0xFA) = 0;
         *(u32 *)(self + 0xE0) = 0;
-        value = q * 3 + 1;
+        value = quotient * 3 + 1;
         rem = value % 3;
         {
             f32 zero = lbl_80560ED0;
@@ -380,6 +380,91 @@ extern "C" s32 fn_800DF1C8(s32 arg0, s32 arg1) {
         fn_80128668();
     }
     return arg0;
+}
+
+extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
+extern "C" s32 fn_800DDDF4(f32 *, void *, const u16 *, s32, u8 *, f32);
+extern "C" const u16 lbl_80559800[];
+extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f32 arg4) {
+    f32 out[4];
+    u8 sp8;
+    f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f31;
+    f32 var_f1, var_f1_2, var_f1_3, var_f1_4;
+    s32 temp_r31, var_r30 = arg3;
+    u32 var_r29 = (u32)arg2;
+    const char *msg = lbl_80320560;
+
+    {
+        u32 temp_r11 = (u32)arg1 & 0xFF000000;
+        s32 a0 = 1, a1 = 1, a2 = 1, a3 = 1, a4 = 1, a5 = 1;
+        if (((u32)(temp_r11 + 0x80000000) > 0U) && ((u32)(((u32)arg1 & 0xFF800000) + 0x7F000000) > 0U)) a5 = 0;
+        if ((a5 == 0) && ((u32)(((u32)arg1 & 0xF8000000) + 0x70000000) > 0U)) a4 = 0;
+        if ((a4 == 0) && ((u32)(temp_r11 + 0x40000000) > 0U)) a3 = 0;
+        if ((a3 == 0) && ((u32)(((u32)arg1 & 0xFF800000) + 0x3F000000) > 0U)) a2 = 0;
+        if ((a2 == 0) && ((u32)(((u32)arg1 & 0xF8000000) + 0x30000000) > 0U)) a1 = 0;
+        if ((a1 == 0) && ((u32)(((u32)arg1 & 0xFFFFC000) + 0x20000000) > 0U)) a0 = 0;
+        if (a0 == 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDA, msg + 0x194, arg1);
+    }
+{
+        u32 temp_r10 = (u32)arg0 & 0xFF000000;
+        s32 b0 = 1, b1 = 1, b2 = 1, b3 = 1, b4 = 1, b5 = 1;
+        if (((u32)(temp_r10 + 0x80000000) > 0U) && ((u32)(((u32)arg0 & 0xFF800000) + 0x7F000000) > 0U)) b5 = 0;
+        if ((b5 == 0) && ((u32)(((u32)arg0 & 0xF8000000) + 0x70000000) > 0U)) b4 = 0;
+        if ((b4 == 0) && ((u32)(temp_r10 + 0x40000000) > 0U)) b3 = 0;
+        if ((b3 == 0) && ((u32)(((u32)arg0 & 0xFF800000) + 0x3F000000) > 0U)) b2 = 0;
+        if ((b2 == 0) && ((u32)(((u32)arg0 & 0xF8000000) + 0x30000000) > 0U)) b1 = 0;
+        if ((b1 == 0) && ((u32)(((u32)arg0 & 0xFFFFC000) + 0x20000000) > 0U)) b0 = 0;
+        if (b0 == 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDB, msg + 0x240, arg0);
+    }
+{
+        u32 temp_r10_2 = (u32)arg2 & 0xFF000000;
+        s32 c0 = 1, c1 = 1, c2 = 1, c3 = 1, c4 = 1, c5 = 1;
+        if (((u32)(temp_r10_2 + 0x80000000) > 0U) && ((u32)(((u32)arg2 & 0xFF800000) + 0x7F000000) > 0U)) c5 = 0;
+        if ((c5 == 0) && ((u32)(((u32)arg2 & 0xF8000000) + 0x70000000) > 0U)) c4 = 0;
+        if ((c4 == 0) && ((u32)(temp_r10_2 + 0x40000000) > 0U)) c3 = 0;
+        if ((c3 == 0) && ((u32)(((u32)arg2 & 0xFF800000) + 0x3F000000) > 0U)) c2 = 0;
+        if ((c2 == 0) && ((u32)(((u32)arg2 & 0xF8000000) + 0x30000000) > 0U)) c1 = 0;
+        if ((c1 == 0) && ((u32)(((u32)arg2 & 0xFFFFC000) + 0x20000000) > 0U)) c0 = 0;
+        if (c0 == 0) ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDC, msg + 0x1D0, arg2);
+    }
+
+    if (var_r30 < 0) {
+        ((void (*)(const char *, s32, const char *, ...))Panic__Q26nw4hbm2dbFPCciPCce)(msg + 0x10, 0xDD, msg + 0x208, var_r30, 0);
+    }
+    arg0[0] = lbl_80560ED0;
+    arg0[2] = lbl_80560ED0;
+    arg0[1] = lbl_80560ED0;
+    arg0[3] = lbl_80560ED0;
+    SetCursor__Q36nw4hbm2ut10CharWriterFff(arg1, lbl_80560ED0, lbl_80560ED0);
+    temp_f31 = lbl_80560ED0;
+    do {
+        out[0] = temp_f31;
+        out[1] = temp_f31;
+        out[2] = temp_f31;
+        out[3] = temp_f31;
+        temp_r31 = fn_800DDDF4(&out[0], arg1, (const u16 *)var_r29, var_r30, &sp8, arg4);
+        if (sp8 != 0) {
+            fn_800DDDF4(&out[0], arg1, (const u16 *)&lbl_80559800, 1, &sp8, arg4);
+        }
+        var_f1 = out[0];
+        temp_f0 = arg0[0];
+        var_r29 += temp_r31 * 2;
+        var_r30 -= temp_r31;
+        var_f1 = temp_f0 > var_f1 ? var_f1 : temp_f0;
+        arg0[0] = var_f1;
+        temp_f0_2 = arg0[1];
+        var_f1_2 = out[1];
+        var_f1_2 = temp_f0_2 > var_f1_2 ? var_f1_2 : temp_f0_2;
+        arg0[1] = var_f1_2;
+        temp_f0_3 = arg0[2];
+        var_f1_3 = out[2];
+        var_f1_3 = temp_f0_3 < var_f1_3 ? var_f1_3 : temp_f0_3;
+        arg0[2] = var_f1_3;
+        temp_f0_4 = arg0[3];
+        var_f1_4 = out[3];
+        var_f1_4 = temp_f0_4 < var_f1_4 ? var_f1_4 : temp_f0_4;
+        arg0[3] = var_f1_4;
+    } while (var_r30 > 0);
 }
 
 extern "C" unsigned int* fn_800DFC54(void) {
