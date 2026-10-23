@@ -17,7 +17,7 @@ extern void GXClearVtxDesc(void);
 extern void GXSetVtxDesc(int, int);
 extern void GXSetVtxAttrFmt(int, int, int, int, int);
 extern void GXBegin(int, int, int);
-extern void fn_802D1678(void);
+extern void fn_802D1678();
 extern void fn_802D14D8(void);
 extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
@@ -843,7 +843,7 @@ void fn_802D2218(void) {
     unsigned char tevColor[4];
     float temp_f1;
     float temp_f1_2;
-    float vertexZ;
+    register float vertexZ;
     register volatile float *fifo;
     register float temp_f30;
     register float temp_f31;
@@ -886,8 +886,8 @@ void fn_802D2218(void) {
         fn_802D0DD4(sp60, sp90);
         GXLoadPosMtxImm(sp60, 0);
         temp_r30 = (unsigned char *)lbl_804C5650 + 0x4128;
-        screenWidth = *(int *)(temp_r30 + 0x24);
-        screenHeight = *(int *)(temp_r30 + 0x28);
+        screenWidth = *(int *)((unsigned char *)temp_r30 + 0x24);
+        screenHeight = *(int *)((unsigned char *)temp_r30 + 0x28);
         temp_f31 = lbl_80564F94 * (float)screenWidth;
         temp_f30 = lbl_80564F94 * (float)screenHeight;
         C_MTXOrtho(sp20, temp_f30, -temp_f30, -temp_f31, temp_f31, lbl_80564F8C, lbl_80564FCC);
@@ -897,7 +897,7 @@ void fn_802D2218(void) {
         GXSetColorUpdate(temp_r30[0x2D]);
         GXSetAlphaUpdate(temp_r30[0x2D]);
         GXSetZMode(1, 7, temp_r30[0x2C]);
-        temp_r7 = temp_r30 + 0x38;
+        temp_r7 = (unsigned char *)temp_r30 + 0x38;
         fogColor[0] = temp_r7[1];
         temp_r6 = temp_r7[2];
         fogColor[1] = temp_r6;
@@ -925,9 +925,9 @@ void fn_802D2218(void) {
         GXSetVtxDesc(9, 1);
         GXSetVtxAttrFmt(0, 9, 1, 4, 0);
         GXBegin(0x98, 0, 4);
-        vertexZ = lbl_80564FDC;
         fifo = (volatile float *)0xCC010000;
         var_r4 = 0;
+        vertexZ = lbl_80564FDC;
         for (var_ctr = 0; var_ctr != 2; var_ctr++) {
             var_r0 = 1;
             if (var_r4 & 1) {
@@ -966,15 +966,15 @@ void fn_802D2218(void) {
         GXSetTevOrder(0, 0, 0, 4);
         GXSetTevOp(0, 0);
         GXSetDstAlpha(1, lbl_8055FD60);
-        temp_r3_2 = temp_r30;
+        temp_r3_2 = (unsigned char *)temp_r30;
         temp_r3_2[0x2C] = 0;
         temp_r3_2[0x2D] = 0;
         fn_802CFF50();
         temp_r3_2[0] = 1;
         fn_802D14D8();
-        temp_r4_2 = temp_r30 + 0x58;
+        temp_r4_2 = (unsigned char *)temp_r30 + 0x58;
         ((unsigned char *)lbl_804C5650)[0xB0] = 1;
-        temp_r3_3 = temp_r30 + 0x38;
+        temp_r3_3 = (unsigned char *)temp_r30 + 0x38;
         lbl_8055FD70 = 1;
         temp_r4_2[0x5C] = 1;
         temp_r3_3[0x1C] = 1;
