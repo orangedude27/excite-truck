@@ -14,7 +14,7 @@ extern "C" double lbl_80561158;
 typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
-struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); virtual int v4(); };
+struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
 namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); void SetFontSize(float, float); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
@@ -515,7 +515,7 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80104F90(void *arg0) {
 }
 
 void nw4hbm::ut::CharWriter::SetFontSize(float farg0, float farg1) {
-    register const char *base = lbl_80328178;
+    const char *base = lbl_80328178;
     register unsigned int top = (unsigned int)this & 0xFF000000U;
     register int r6, r7, r8, r9, r10, r5;
     register unsigned int fontAddress;
