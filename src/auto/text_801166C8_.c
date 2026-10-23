@@ -931,7 +931,7 @@ void fn_8011AC84(void *arg0) {
 }
 
 extern u32 fn_8011A388(void*, s32, s32, u32);
-extern void fn_8011A8FC();
+extern u32 fn_8011A8FC(void *, s32, s32, void *, u32);
 extern s32 fn_8011AC04(s32, s32);
 extern void fn_8011AC10(void*, s32, s32, s32, s32);
 extern s32 fn_8011A7CC(DVDFileInfo*);
@@ -1352,7 +1352,8 @@ void fn_8011CD90(s32 arg0, s32 arg1, s32 arg2) {
 extern u8 lbl_80561208[];
 void fn_8011CE18(void *arg0, void *arg1) {
     u32 *bits;
-    u32 value, bitCount, available, mask, count, code, len, s, w, fill;
+    u32 value, bitCount, available, mask, count, code, len, s, w;
+    u8 fill;
     u8 *dst, *table, *lookup;
     u32 sym, runlen, j;
     if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
