@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+#define fn_800B4D5C_CALL fn_800B4D5##C
 extern "C" s32 fn_800A4D44(void *);
 extern "C" s16 fn_800B4D5C(void *, u32, u32);
 extern "C" u8 lbl_80559210, lbl_80559214, lbl_80559230, lbl_80559231;
@@ -2942,6 +2943,122 @@ extern "C" void fn_800B36D4(s32 arg0) {
         return;
     }
     fn_800B63FC();
+}
+
+extern "C" u8 lbl_80559230, lbl_80559231;
+extern "C" u8 lbl_80559210, lbl_80559214;
+extern "C" s32 fn_800B3754(s32 arg0, s32 arg1, s32 arg2) {
+struct {
+    s32 sp10[4];
+    volatile s32 sp20;
+    volatile s32 sp24;
+    volatile s32 sp28;
+    volatile u16 sp2C;
+} frame;
+u32 var_r31 = 1;
+s32 *arg1_ptr = (s32 *)arg1;
+frame.sp20 = arg0;
+frame.sp24 = 0;
+frame.sp28 = arg2;
+frame.sp2C = 0;
+u8 spC[2];
+u8 sp8[2];
+s32 *var_r29 = arg1_ptr;
+s32 temp_r5;
+s32 var_r0;
+s32 var_r3_2;
+s8 var_r29_2;
+u16 temp_r4;
+u16 temp_r6;
+u16 var_r31_2;
+u16 var_r3_3;
+u16 var_r4;
+u32 var_r3;
+
+frame.sp10[0] = arg1_ptr[0];
+frame.sp10[1] = arg1_ptr[1];
+temp_r5 = arg1_ptr[2];
+frame.sp10[2] = temp_r5;
+frame.sp10[3] = arg1_ptr[3];
+if (fn_800A4D44(var_r29) == 1U) {
+if ((arg2 == 0) && ((M2C_FIELD(lbl_803D2140, u32 *, 0x60) & 2) == 2)) {
+spC[0] = lbl_80559230;
+var_r29 = 0;
+spC[1] = lbl_80559231;
+if (VFiPFSTR_StrNCmp((s32)frame.sp10, spC, 1, 0, 2) == 0) {
+var_r29 = (s32 *)1;
+}
+if (var_r29 == (s32 *)1) {
+sp8[0] = lbl_80559230;
+var_r31 = 0;
+sp8[1] = lbl_80559231;
+if (VFiPFSTR_StrNCmp((s32)frame.sp10, sp8, 1, 0, 2) == 0) {
+var_r31 = 1;
+}
+if (var_r31 == 1) {
+frame.sp2C += 2;
+frame.sp10[0] += 2;
+}
+}
+}
+} else if (((M2C_FIELD(lbl_803D2140, u32 *, 0x60) & 2) == 2) &&
+(arg2 == 0) &&
+(VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559210, 1, 0, 1) != 0) &&
+(VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559214, 1, 0, 2) != 0) &&
+(fn_800B4D5C(var_r29, 1, 0) == 0)) {
+var_r31 = 0;
+}
+if (var_r31 == 1) {
+if (frame.sp28 != 0) {
+if (frame.sp2C > 0x20A) {
+var_r31_2 = 0;
+} else {
+var_r0 = 0;
+var_r4 = *(u16 *)((u8 *)frame.sp20 + frame.sp2C);
+frame.sp2C += 2;
+if ((var_r4 >= 0x61) && (var_r4 <= 0x7A)) {
+var_r0 = 1;
+}
+if (var_r0 != 0) {
+var_r4 -= 0x20;
+}
+var_r31_2 = var_r4;
+if ((var_r31_2 >= 0xFF41) && (var_r31_2 <= 0xFF5A)) {
+var_r3 = 1;
+var_r29 = (s32 *)(u16)(var_r31_2 - 0x20);
+} else {
+var_r3 = 0;
+}
+if (var_r3 == 1) {
+var_r31_2 = (u16)var_r29;
+}
+}
+} else {
+temp_r6 = frame.sp2C;
+if (temp_r6 >= 0xC) {
+var_r31_2 = 0;
+} else {
+frame.sp2C = temp_r6 + 1;
+var_r29_2 = (s8)*((u8 *)frame.sp20 + temp_r6);
+if (M2C_FIELD(lbl_803D2140, s32 (**)(s8, s32, void *), 0x54)(var_r29_2, 1, (void *)frame.sp20) != 0) {
+temp_r4 = frame.sp2C;
+frame.sp2C = temp_r4 + 1;
+var_r29_2 = (s8)(u16)(((var_r29_2 << 8) & 0xFF00) + *((u8 *)frame.sp20 + temp_r4));
+}
+var_r3_2 = 0;
+if (((u16)var_r29_2 >= 0x61) && ((u16)var_r29_2 <= 0x7A)) {
+var_r3_2 = 1;
+}
+var_r3_3 = (u16)var_r29_2;
+if (var_r3_2 != 0) {
+var_r3_3 -= 0x20;
+}
+var_r31_2 = var_r3_3;
+}
+}
+var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, fn_800B25CC(frame.sp10, arg2), frame.sp10, arg2);
+}
+return var_r31;
 }
 
 s32 fn_800B3A70(char *dst, const char *src, s32 flags) {
