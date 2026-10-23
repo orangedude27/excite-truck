@@ -49,6 +49,7 @@ extern void fn_80202D50(void *, ...);
 extern void fn_802C8B98(s32, s32);
 extern f32 PSVECMag(const void *);
 extern float __fabsf(float);
+extern double __fabs(double);
 extern double fn_8002F234(f32, f32);
 extern double fn_8002EFB0(f32, f32);
 extern void *fn_802C9A40(void);
@@ -99,9 +100,9 @@ void fn_80202F58(void *arg0, void *arg1, void *arg2) {
     f32 sp58;
     f32 sp54;
     f32 sp48, sp4C, sp50;
-    f32 sp44;
-    f32 sp40;
-    f32 sp3C;
+    volatile f32 sp44;
+    volatile f32 sp40;
+    volatile f32 sp3C;
     f32 sp38;
     f32 sp34;
     f32 sp30;
@@ -156,7 +157,7 @@ void fn_80202F58(void *arg0, void *arg1, void *arg2) {
     f64 temp_f29;
     void *temp_r3;
 
-    if ((f32) fabs((*(f32 *)((u8 *)arg1 + 0x1C))) < lbl_805630F0) {
+    if (__fabsf((*(f32 *)((u8 *)arg1 + 0x1C))) < lbl_805630F0) {
         temp_f6 = (*(f32 *)((u8 *)arg0 + 0)) - (*(f32 *)((u8 *)arg1 + 0x24));
         temp_f5 = (*(f32 *)((u8 *)arg0 + 4));
         temp_f3 = (*(f32 *)((u8 *)arg0 + 8)) - (*(f32 *)((u8 *)arg1 + 0x2C));
