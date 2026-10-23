@@ -1,6 +1,16 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+extern int lbl_80344EA0[];
+extern char lbl_80344FE0[];
+extern char lbl_80345098[];
+extern float lbl_80498EAC[3];
+extern float lbl_80563AF0;
+extern double lbl_80563B00;
+extern float lbl_80558DC4;
+extern unsigned char lbl_8055C380[];
+extern unsigned char lbl_8055F67C;
+
 extern void *fn_80258354(void);
 extern int lbl_80344DE0[];
 extern void *lbl_8055F394;
@@ -133,6 +143,39 @@ void fn_8025A87C(void *arg0) {
     ((char *)arg0)[0x36] = zero;
 }
 
+extern char lbl_80345208[], lbl_8055C384[];
+extern int fn_8012C33C(char *);
+extern int fn_802C6FC0(char *, int, int);
+extern char *fn_80029004(char *, int);
+extern int strlen(char *);
+void fn_8025A8B8(void *arg0, char *arg1) {
+    char name[0x40], *src, *dst, *input;
+    int id;
+    input = arg1;
+    id = *(int *)((char *)arg0 + 0x50);
+    if (id != -1) { fn_802C6CF8(id); *(int *)((char *)arg0 + 0x50) = -1; }
+    if (*(signed char *)input && strlen(input)) {
+        src = lbl_80345208; dst = name;
+        while ((*dst++ = *src++) != 0) {}
+        dst = name; while (*dst) dst++;
+        while ((*dst++ = *input++) != 0) {}
+        if (fn_80029004(name, '.') != 0) *fn_80029004(name, '.') = 0;
+        dst = name; while (*dst) dst++;
+        src = lbl_8055C384;
+        while ((*dst++ = *src++) != 0) {}
+        if (fn_8012C33C(name)) *(int *)((char *)arg0 + 0x50) = fn_802C6FC0(name, 0, 0);
+    }
+    *(float *)((char *)arg0 + 0x88) = lbl_80563AE4;
+    *(float *)((char *)arg0 + 0x84) = lbl_80563AE0;
+    *(float *)((char *)arg0 + 0x8C) = lbl_80563AE4;
+    *(float *)((char *)arg0 + 0x90) = lbl_80563AE4;
+    *(float *)((char *)arg0 + 0x94) = lbl_80563AE0;
+    *(float *)((char *)arg0 + 0x98) = lbl_80563AE4;
+    *(float *)((char *)arg0 + 0x9C) = lbl_80563AE4;
+    *(float *)((char *)arg0 + 0xA0) = lbl_80563AE4;
+    *(float *)((char *)arg0 + 0xA4) = lbl_80563AE0;
+}
+
 extern int fn_801298E8(void *, int);
 extern void fn_8001BA68();
 extern void fn_8025AD88(void);
@@ -234,13 +277,21 @@ void fn_8025AD3C(float *out, float *a, float *b, float t) {
 void fn_8025AD88(void) { PSVECDotProduct(); }
 
 void fn_8025AD8C(void *unused, float *out, float *a, float *b, float t) {
- float scale=lbl_80563B14*t;
- float max=lbl_80563AE0;
- float dx,dy,dz,x,y,z;
- if (max < scale) max=scale;
- dx=b[0]-a[0]; dy=b[1]-a[1]; dz=b[2]-a[2];
- x=a[0]+max*dx; y=a[1]+max*dy; z=a[2]+max*dz;
- out[0]=x; out[1]=y; out[2]=z;
+    float scale = lbl_80563B14 * t;
+    float max = lbl_80563AE0;
+    float dx, dy, dz, x, y, z;
+    if (max < scale) {
+        max = scale;
+    }
+    dx = b[0] - a[0];
+    dy = b[1] - a[1];
+    dz = b[2] - a[2];
+    x = a[0] + max * dx;
+    y = a[1] + max * dy;
+    z = a[2] + max * dz;
+    out[0] = x;
+    out[1] = y;
+    out[2] = z;
 }
 
 float fn_8025ADF4(float arg0) { return (float)fn_8002F234(arg0); }
