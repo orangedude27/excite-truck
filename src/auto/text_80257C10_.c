@@ -1,8 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-typedef union { int i; float f; } IntFloat;
-
 extern void fn_802146BC(int *, int, int, int, int, int, int, int, float);
 extern int fn_8027A798(void);
 extern int lbl_802FA5F8[5];
@@ -30,6 +28,7 @@ __declspec(section ".sdata") extern char lbl_8055C220[];
 __declspec(section ".sdata") extern char lbl_8055C228[];
 __declspec(section ".sdata") extern char lbl_8055C230[];
 #pragma scheduling invalid_target
+#pragma optimization_level 3
 void fn_80257C10(int arg0) {
     int work[0x85];
     int base = fn_8027A798();
@@ -166,4 +165,5 @@ void fn_80257C10(int arg0) {
     fn_802146BC(&work[19], -0x3E7, -0x3E7, 1, lbl_802FA5F8[4], 0,
         lbl_802FA5F8[3], lbl_802FA5F8[2], lbl_80563AC4);
 }
+#pragma optimization_level reset
 #pragma scheduling on
