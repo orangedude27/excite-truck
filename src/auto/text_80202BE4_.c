@@ -44,6 +44,20 @@ extern void fn_802D3050(s32);
 extern void fn_802D306C(s32);
 typedef struct { u8 pad[0x24]; f32 x; f32 y; f32 z; } unk_80203A88_dest;
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1);
+extern void fn_80202D50(void *, ...);
+extern void fn_802C8B98(s32, s32);
+extern f32 PSVECMag(const void *);
+extern double fn_8002F234(f32, f32);
+extern double fn_8002EFB0(f32, f32);
+extern void *fn_802C9A40(void);
+extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
+extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
+extern void fn_802C8E48(void);
+extern double cos(double);
+extern double sin(double);
+extern f32 lbl_805630D8, lbl_805630F0, lbl_805630F4, lbl_805630FC;
+extern f32 lbl_80563100, lbl_80563104, lbl_80563110;
+extern f64 lbl_80563108, lbl_80563118;
 
 u32 fn_80202BE4(void) {
     return (u32)((2 - lbl_8055ED14) | (lbl_8055ED14 - 2)) >> 0x1FU;
