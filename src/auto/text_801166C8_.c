@@ -3506,7 +3506,7 @@ done:
     arg1[half] *= *arg3;
 }
 
-void fn_80125960(void *arg0, void *arg1, void *arg2, void *arg3) {
+void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
     s32 sp8[64];
     s32 *var_r12;
     s32 *var_r4;
@@ -3534,8 +3534,8 @@ void fn_80125960(void *arg0, void *arg1, void *arg2, void *arg3) {
     var_r3 = (u8 *)arg0;
     var_r5 = (s16 *)arg2;
     var_r6 = (s32 *)arg3;
-    var_r31 = var_r3 + (s32)arg1;
-    temp_r30 = (s32)arg1 * 2;
+    var_r31 = var_r3 + arg1;
+    temp_r30 = arg1 * 2;
     var_r12 = sp8;
     for (var_ctr = 0; var_ctr < 8; var_ctr++) {
         temp_r7 = var_r5[8];
@@ -3673,9 +3673,9 @@ void fn_80125CA0(void *arg0, void *arg1, void *arg2, s32 arg3) {
     fn_80125664(arg0, arg1, arg2, (u8 *)&lbl_802F6A40 + (arg3 << 8));
 }
 
-extern void fn_80125960(void *p0, void *p1, void *p2, void *p3);
+extern void fn_80125960(void *p0, s32 p1, void *p2, void *p3);
 void fn_80125CB4(void *arg0, void *arg1, void *arg2, s32 arg3) {
-    fn_80125960(arg0, arg1, arg2, (u8 *)&lbl_802F6A40 + (arg3 << 8));
+    fn_80125960(arg0, (s32)arg1, arg2, (u8 *)&lbl_802F6A40 + (arg3 << 8));
 }
 
 extern char lbl_8055DF08;
