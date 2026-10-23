@@ -389,8 +389,11 @@ extern void fn_802DC3C0(int);
 extern void fn_802DC440(void);
 extern void fn_802DC464();
 extern float fn_801DCF48(int, float, float);
+#pragma push
+#pragma ppc_psq_save on
 void fn_802B1758(void *arg0) {
-    float setup[3];
+    float setupA[3];
+    float setupB[3];
     void *node;
     void *cache;
     int cacheCount;
@@ -399,6 +402,7 @@ void fn_802B1758(void *arg0) {
     int offset;
     int sign;
     float radius;
+    float *point;
     float x;
     float y;
     float z;
@@ -407,10 +411,10 @@ void fn_802B1758(void *arg0) {
     node = *(void **)((char *)arg0 + 0x934);
     if (node != 0 && *(int *)((char *)arg0 + 4) != -2) {
         state = *(int *)((char *)arg0 + 4);
-        setup[2] = lbl_80564BD0;
-        setup[0] = lbl_80564BD0 / (lbl_80564BD4 * lbl_80564BB8);
-        setup[1] = lbl_80564BD8;
-        fn_802DA704(1, setup, 1);
+        setupA[2] = lbl_80564BD0;
+        setupA[0] = lbl_80564BD0 / (lbl_80564BD4 * lbl_80564BB8);
+        setupA[1] = lbl_80564BD8;
+        fn_802DA704(1, setupA, 1);
         fn_802DAA18();
         fn_802C28C0();
         fn_802C8BD0();
@@ -427,8 +431,8 @@ void fn_802B1758(void *arg0) {
         offset = 0;
         while (i < *(int *)((char *)arg0 + 0x328)) {
             char *entry = (char *)*(void **)((char *)arg0 + 0x324) + offset;
-            setup[2] = *(float *)(entry + 4);
-            fn_802DA704(1, setup, 1);
+            setupA[2] = *(float *)(entry + 4);
+            fn_802DA704(1, setupA, 1);
             fn_802DAA18();
             node = *(void **)entry;
             fn_802DC464(cache, cacheCount, node, *(unsigned short *)node + 1);
@@ -443,12 +447,12 @@ void fn_802B1758(void *arg0) {
         state = *(int *)((char *)arg0 + 8);
         if (state != -2) {
             if (state == *(int *)((char *)arg0 + 4))
-                setup[0] = lbl_80564BD0 / (lbl_80564BD4 * lbl_80564BB8);
+                setupB[0] = lbl_80564BD0 / (lbl_80564BD4 * lbl_80564BB8);
             else
-                setup[0] = lbl_80564BDC / (lbl_80564BD4 * lbl_80564BB8);
-            setup[1] = lbl_80564BD8;
-            setup[2] = lbl_80564BD0;
-            fn_802DA704(1, setup, 1);
+                setupB[0] = lbl_80564BDC / (lbl_80564BD4 * lbl_80564BB8);
+            setupB[1] = lbl_80564BD8;
+            setupB[2] = lbl_80564BD0;
+            fn_802DA704(1, setupB, 1);
             fn_802DAA18();
             fn_802C28C0();
             fn_802C8BD0();
@@ -456,15 +460,17 @@ void fn_802B1758(void *arg0) {
 
             radius = lbl_80564BD4 * lbl_80564BB8 * lbl_80564BE4;
             radius = lbl_80564BE0 + radius;
+            point = lbl_804BE190;
             for (i = 0; i < 4; i++) {
                 sign = (i & 1) ? -1 : 1;
                 x = (float)sign * radius;
                 sign = (i & 2) ? -1 : 1;
                 z = (float)sign * radius;
                 y = fn_801DCF48(0, x, z);
-                lbl_804BE190[i * 3] = x;
-                lbl_804BE190[i * 3 + 1] = y;
-                lbl_804BE190[i * 3 + 2] = z;
+                point[0] = x;
+                point[1] = y;
+                point[2] = z;
+                point += 3;
             }
 
             radius = lbl_80564BE8 * lbl_80564BB8;
@@ -474,9 +480,10 @@ void fn_802B1758(void *arg0) {
                 sign = (i & 2) ? -1 : 1;
                 z = radius * (float)sign;
                 y = fn_801DCF48(0, x, z);
-                lbl_804BE190[i * 3] = x;
-                lbl_804BE190[i * 3 + 1] = y;
-                lbl_804BE190[i * 3 + 2] = z;
+                point[0] = x;
+                point[1] = y;
+                point[2] = z;
+                point += 3;
             }
 
             for (i = 0; i < 14; i++) values[i] = lbl_802FAAB0[i];
@@ -489,7 +496,7 @@ void fn_802B1758(void *arg0) {
     }
     *(int *)((char *)arg0 + 0x328) = 0;
 }
-
+#pragma pop
 int fn_802B1AF0(void *arg0) {
     return ((int *)arg0)[1];
 }
