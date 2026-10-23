@@ -204,6 +204,8 @@ void fn_801679F0(void) {
         char **sp40[5];
     } local;
     u8 *base;
+    s32 zero;
+    s32 i;
     u8 *entry;
     void *object;
     void *manager;
@@ -211,7 +213,6 @@ void fn_801679F0(void) {
     void *item;
     void *child;
     char ***slot;
-    s32 i;
     s32 value;
     s32 result;
     f32 f2;
@@ -230,24 +231,25 @@ void fn_801679F0(void) {
     local.sp40[1] = &local.sp14;
     local.sp40[2] = &local.sp10;
     local.sp40[3] = &local.spC;
-    local.sp40[4] = 0;
+    zero = 0;
+    local.sp40[4] = (char **)zero;
 
     manager = fn_801284F8(0x1E15C, base + 0x1D8, &local.sp10, &local.sp14);
     if (manager != 0) {
         *(void **)manager = (u8 *)manager + 0xC;
         *(s32 *)((u8 *)manager + 8) = 0x1388;
-        *(s32 *)((u8 *)manager + 4) = 0;
+        *(s32 *)((u8 *)manager + 4) = zero;
         fn_8002F53C((u8 *)manager + 0xC, fn_80167EE0, fn_80167E98, 0x18, 0x1388);
         scale = lbl_80561938;
         *(u8 **)((u8 *)manager + 0x1D4CC) = (u8 *)manager + 0x1D4D8;
         *(s32 *)((u8 *)manager + 0x1D4D4) = 0x64;
-        *(s32 *)((u8 *)manager + 0x1D4D0) = 0;
+        *(s32 *)((u8 *)manager + 0x1D4D0) = zero;
         entry = base + 0x20;
-        i = 0;
+        i = zero;
         do {
-            value = fn_802C6FC0(*(s32 *)(entry + 4), 0, 0);
+            value = fn_802C6FC0(*(s32 *)(entry + 4), zero, zero);
             *(s32 *)(entry + 0x10) = value;
-            *(s32 *)(entry + 0x1C) = 0;
+            *(s32 *)(entry + 0x1C) = zero;
             if (value != -1) {
                 fn_802C77F0((void *)value, local.sp28);
                 f2 = local.sp28[5] - local.sp28[4];
@@ -263,7 +265,7 @@ void fn_801679F0(void) {
             i += 1;
             entry += 0x20;
         } while (i < 5);
-        *((u8 *)manager + 0x1E158) = 0;
+        *((u8 *)manager + 0x1E158) = zero;
     }
     lbl_8055E354 = (s32)manager;
     if (((s32 (*)(void *, void *))(*(void ***)object)[3])(object, base + 0x1E8) != 0) {
@@ -542,6 +544,110 @@ s32 fn_80169978(s32 arg0, s32 arg1) {
     }
     return r;
 }
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" s32 *fn_801399FC(DummyArg1 *);
+extern "C" s32 fn_80128658(s32 *);
+extern "C" void fn_802E30C8(const char *, ...);
+extern "C" char lbl_8055A1A8, lbl_8055A1B0;
+extern "C" char lbl_803303EC[], lbl_80330420[];
+extern "C" s32 fn_801699E4(void *arg0, DummyArg1 *arg1, DummyManager *arg2) {
+    class DummyCheck {
+    public:
+        virtual void v0();
+        virtual s32 checkName(const char *name);
+    };
+
+    s32 type;
+    s32 parsed;
+    s32 i;
+    s32 *values;
+    s32 *cursor;
+    s32 id;
+    f32 zero;
+
+    if (((DummyCheck *)arg0)->checkName(arg1->getName()) == 0) {
+        fn_802E30C8(lbl_803303EC, arg1->getName());
+        return 0;
+    }
+
+    if (fn_8002B1D8((s32)&lbl_8055A198, (s32 *)arg1->getName(), 4) == 0) {
+        type = 4;
+    } else if (fn_8002B1D8((s32)&lbl_8055A1A0, (s32 *)arg1->getName(), 4) == 0) {
+        type = 1;
+    } else {
+        fn_802E30C8(lbl_80330420, arg1->getName());
+        return 0;
+    }
+
+    parsed = -1;
+    if (type == 1) {
+        sscanf(arg1->getName(), (const char *)&lbl_8055A1A8, &parsed);
+    } else if (type == 4) {
+        sscanf(arg1->getName(), (const char *)&lbl_8055A1B0, &parsed);
+    }
+
+    values = fn_801399FC(arg1);
+    id = parsed;
+    zero = lbl_80561924;
+    {
+        DummyEntry *entry = &arg2->entries[arg2->entryCount++];
+        entry->byte1C = 0;
+        entry->f8 = zero;
+        entry->fC = zero;
+        entry->f10 = zero;
+        entry->recordStart = arg2->recordCount;
+        entry->recordCount = 0;
+        entry->byte1D = 0;
+        entry->id = id;
+        entry->active = 1;
+        arg2->flag1E158 = 1;
+    }
+
+    i = 0;
+    cursor = values;
+    for (; i < *values; i++) {
+        s32 count = arg2->recordCount;
+        DummyRecord *rec = &arg2->records[count];
+
+        arg2->recordCount = count + 1;
+        rec->obj = 0;
+        rec->obj = (DummyRecordObj *)fn_80167874(type);
+        rec->x = *(f32 *)((u8 *)cursor + 8);
+        rec->y = zero;
+        rec->z = *(f32 *)((u8 *)cursor + 0xC);
+        rec->hit = zero;
+        fn_801E9E30(0, &rec->x);
+        rec->y = rec->y + rec->obj->f18 + rec->hit;
+        rec->flag = 0;
+        fn_801EA1E0(&rec->y, 1, rec->x, rec->z);
+        (*(s32 *)((u8 *)fn_80167874(type) + 0x1C))++;
+
+        if (arg2->flag1E158 != 0) {
+            arg2->entries[arg2->entryCount - 1].recordCount++;
+        } else {
+            if (arg2->entryCount == 0 || arg2->entries[arg2->entryCount - 1].byte1C != 0) {
+                DummyEntry *newEntry = &arg2->entries[arg2->entryCount++];
+                newEntry->byte1C = 0;
+                newEntry->recordStart = arg2->recordCount - 1;
+                newEntry->recordCount = 0;
+                newEntry->byte1D = 0;
+            }
+            arg2->entries[arg2->entryCount - 1].recordCount++;
+        }
+
+        cursor += 2;
+    }
+
+    arg2->flag1E158 = 0;
+    fn_80128658(values);
+    return 1;
+}
+#pragma cplusplus reset
+#pragma pop
 
 extern char lbl_8055A1B8;
 s32 fn_80169D64(s32 arg0, s32 arg1) {
