@@ -3931,6 +3931,7 @@ s32 fn_800B6928(s8 arg0) {
 extern "C" s32 fn_800B5B94(void *, s32);
 extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
     u8 *var_r31;
+    u32 base_address;
     s32 var_r30;
     s16 temp_r28;
     s32 var_r28;
@@ -3945,7 +3946,8 @@ extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
         var_r31 = 0;
     } else {
         fn_800B783C(var_r31 + 0x64);
-        var_r31 = var_r31 + (temp_r28 * 0x1FC8) + 0xA0;
+        base_address = (u32)var_r31 + (temp_r28 * 0x1FC8);
+        var_r31 = (u8 *)(base_address + 0xA0);
     }
     if (!(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 1)) {
         M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x40) = 0xA;
@@ -3971,27 +3973,25 @@ extern "C" s32 fn_800B6A8C(s8 arg0, s32 arg1) {
         if (fn_800A53C0(var_r31) != 0) {
             if (!(M2C_FIELD(var_r31, u16 *, 0x1F8C) & 8)) {
                 var_r3 = fn_800B5988(var_r31);
-                if (var_r3 != 0) {
-                    var_r28 = var_r3;
-                } else {
+                switch (var_r3) {
+                case 0:
                     M2C_FIELD(var_r31, u16 *, 0x1FAC) &= ~7;
                     fn_800A53E8(var_r31);
                     M2C_FIELD((u8 *)lbl_803D2140, s32 *, 0x34)++;
-                    fn_800A53CC(var_r31);
-                    var_r3 = 0;
-                    if (var_r3 != 0)
-                        var_r28 = var_r3;
-                    else
-                        goto block_31;
+                    goto block_19;
+                default:
+                    goto block_result;
                 }
             } else {
+block_19:
                 fn_800A53CC(var_r31);
                 var_r3 = 0;
-                if (var_r3 != 0)
-                    var_r28 = var_r3;
-                else
-                    goto block_31;
             }
+block_result:
+            if (var_r3 != 0)
+                var_r28 = var_r3;
+            else
+                goto block_31;
         } else {
             goto block_31;
         }
@@ -8690,6 +8690,149 @@ extern "C" u32 fn_800D3B40(const char *str, char *buffer, s32 count, u32 delim) 
             return copied;
         }
     }
+}
+
+extern "C" s32 fn_800D3C44(char *arg0, void *arg1, u32 arg2, char *arg3, s32 arg4) {
+    const char *base = lbl_8031EC50;
+    char *var_r24 = arg0;
+    void *var_r30 = 0;
+    s32 var_r29;
+    s32 var_r23;
+    s32 var_r23_2;
+    s32 var_r23_3;
+    u32 var_r28;
+    u32 temp_r0;
+    char *temp_r23;
+    char *temp_r3_4;
+    char *temp_r3_5;
+    u8 temp_r3;
+    u8 temp_r3_2;
+    u8 temp_r3_3;
+
+    if (arg3 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x25A, base + 0x1B4);
+    }
+    if (arg4 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x25B, base + 0x1E0);
+    }
+    if (arg1 != 0) {
+        var_r30 = *(void **)((u8 *)arg1 + 0x10);
+        var_r29 = *(s32 *)((u8 *)arg1 + 0xC);
+    }
+
+loop_6:
+    var_r28 = 0;
+    if (lbl_8055DDD8 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x18D, base + 0x134);
+    }
+
+loop_8:
+    var_r23 = 1;
+    if (lbl_8055DDD8 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x169, base + 0x134);
+    }
+    if (var_r24 == 0) {
+        var_r24 = 0;
+    } else {
+loop_17:
+        temp_r3 = lbl_8055DDD8(var_r24);
+        if (temp_r3 == 0) {
+            var_r24 = 0;
+        } else if (((s32)temp_r3 == 0xA) && ((var_r23 -= 1) <= 0)) {
+            var_r24++;
+        } else {
+            var_r24++;
+            goto loop_17;
+        }
+    }
+    if (var_r24 == 0) {
+        var_r24 = 0;
+    } else if ((s32)lbl_8055DDD8(var_r24) != 0x2E) {
+        goto loop_8;
+    }
+
+    var_r23_2 = 3;
+    if (lbl_8055DDD8 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x169, base + 0x134);
+    }
+    if (var_r24 == 0) {
+        var_r24 = 0;
+    } else {
+loop_31:
+        temp_r3_2 = lbl_8055DDD8(var_r24);
+        if (temp_r3_2 == 0) {
+            var_r24 = 0;
+        } else if (((s32)temp_r3_2 == 0xA) && ((var_r23_2 -= 1) <= 0)) {
+            var_r24++;
+        } else {
+            var_r24++;
+            goto loop_31;
+        }
+    }
+
+    if ((var_r30 == 0) ||
+        ((var_r28 = *(u32 *)var_r30, arg2 >= var_r28) &&
+         (arg2 < var_r28 + *(u32 *)((u8 *)var_r30 + 4)))) {
+loop_36:
+        var_r23_3 = 1;
+        if (lbl_8055DDD8 == 0) {
+            Panic__Q26nw4hbm2dbFPCciPCce(&base[0], 0x169, base + 0x134);
+        }
+        if (var_r24 == 0) {
+            var_r24 = 0;
+        } else {
+loop_45:
+            temp_r3_3 = lbl_8055DDD8(var_r24);
+            if (temp_r3_3 == 0) {
+                var_r24 = 0;
+            } else if (((s32)temp_r3_3 == 0xA) && ((var_r23_3 -= 1) <= 0)) {
+                var_r24++;
+            } else {
+                var_r24++;
+                goto loop_45;
+            }
+        }
+        if (var_r24 == 0) {
+            return 0;
+        }
+
+        temp_r23 = fn_800D3944(var_r24, 1, 0x20);
+        if (temp_r23 != 0) {
+            var_r23 = ((u32 (*)(void))fn_800D3A30)();
+            temp_r3_4 = fn_800D3944(var_r24, 2, 0x20);
+            if (temp_r3_4 != 0) {
+                temp_r0 = ((u32 (*)(void))fn_800D3A30)();
+                if (temp_r0 != 0) {
+                    temp_r0 += var_r28;
+                    if ((arg2 >= temp_r0) && (arg2 < temp_r0 + (u32)var_r23)) {
+                        temp_r3_5 = fn_800D3944(var_r24, 5, 0x20);
+                        if (temp_r3_5 == 0) {
+                            *arg3 = 0;
+                            return 1;
+                        }
+                        if (((u8 (*)(void))lbl_8055DDD8)() != 0x2E) {
+                            fn_800D3B40(temp_r3_5, arg3, arg4, 0x20);
+                            return 1;
+                        }
+                        goto loop_36;
+                    }
+                }
+                goto loop_36;
+            }
+        }
+        goto block_58;
+    }
+
+block_58:
+    if (var_r30 != 0) {
+        var_r29 -= 1;
+        if (var_r29 == 0) {
+            return 0;
+        }
+        var_r30 = (void *)((u8 *)var_r30 + 8);
+        goto loop_6;
+    }
+    goto loop_6;
 }
 
 #pragma opt_tail_call on
