@@ -4,7 +4,7 @@ extern unsigned int fn_801CE898(void);
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
 #pragma cplusplus on
-struct Dummy_801CCDAC { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(int); };
+struct Dummy_801CCDAC { virtual int v0(); virtual int v1(int); virtual int v2(); virtual int v3(int); };
 #pragma cplusplus reset
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -462,7 +462,8 @@ extern f32 lbl_80562A0C;
 #pragma push
 #pragma dont_inline on
 #pragma scheduling on
-void fn_801CCDAC(int arg0, int arg1, int arg2) {
+#pragma cplusplus on
+extern "C" void fn_801CCDAC(int arg0, int arg1, int arg2) {
 s32 *temp_r31;
 register s32 var_r29;
 register s32 var_r30;
@@ -471,11 +472,11 @@ s32 var_r0_2;
 register s32 var_ctr;
 register s32 var_r3;
 s32 temp_r3_2, temp_r3_3, temp_r3_4, temp_r3_5, temp_r3_6;
-void *temp_r30;
+unsigned char *temp_r30;
 void *temp_r3;
-void *temp_r3_7;
-void *temp_r0;
-void *temp_r4;
+unsigned char *temp_r3_7;
+unsigned char *temp_r0;
+unsigned char *temp_r4;
 unsigned char *temp_r7;
 unsigned char *temp_r7_2, *temp_r7_3, *temp_r7_4, *temp_r7_5;
 register unsigned char *var_r4;
@@ -507,9 +508,9 @@ var_r30 = -1;
 }
 if (var_r30 < 0)
 ((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, arg0);
-temp_r30 = *(void **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r30);
+temp_r30 = (unsigned char *)*(void **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r30);
 if (temp_r30 != 0) {
-if (((s32 (*)(void *, s32))((u32 *)*(u32 **)((unsigned char *)temp_r30 + 4))[3])(temp_r30, arg2) != 0) {
+if (((Dummy_801CCDAC *)temp_r30)->v3(arg2) != 0) {
 var_ctr = 5;
 var_r6 = (unsigned char *)temp_r31;
 var_r7 = (unsigned char *)temp_r31 + 0x44;
@@ -593,10 +594,10 @@ if (var_r4[1] != 0)
 *(f32 *)(var_r4 + 4) = *(f32 *)(var_r4 + 4) - lbl_80562A0C;
 } else {
 if (var_r5 == 0) {
-temp_r3_7 = *(void **)((unsigned char *)temp_r31 + 0x29C);
+temp_r3_7 = (unsigned char *)*(void **)((unsigned char *)temp_r31 + 0x29C);
 var_r5 = 0;
 if (temp_r3_7 != 0) {
-temp_r0 = *(void **)((unsigned char *)temp_r3_7 + 0x10);
+temp_r0 = (unsigned char *)*(void **)(temp_r3_7 + 0x10);
 var_r5 = temp_r3_7;
 *(void **)((unsigned char *)temp_r31 + 0x29C) = temp_r0;
 if (temp_r0 == 0)
@@ -609,7 +610,7 @@ if (temp_r0 == 0)
 var_r5[1] = 0;
 *(f32 *)(var_r5 + 4) = lbl_805629F0;
 *(void **)(var_r5 + 8) = temp_r30;
-temp_r4 = *(void **)((unsigned char *)temp_r31 + 8);
+temp_r4 = (unsigned char *)*(void **)((unsigned char *)temp_r31 + 8);
 if (temp_r4 != 0) {
 *((unsigned char *)temp_r4 + 0x49) = 1;
 *((unsigned char *)temp_r4 + 0x4B) = 0;
@@ -625,6 +626,7 @@ if (temp_r4 != 0) {
 }
 }
 }
+#pragma cplusplus reset
 #pragma pop
 extern char lbl_80337CCC[];
 #pragma push
