@@ -439,53 +439,49 @@ __declspec(section ".sdata") extern const char lbl_8055CE98[];
 void fn_802B6AC0(void) {
     struct Texture { s32 width; s32 height; u32 *pixels; };
     struct Entry { char name[0x20]; s32 width; s32 height; u8 pixels[1]; };
-    char path[0x20];
-    char formatBuffer[0x40];
-    char imageBuffer[0x40];
-    u32 result;
+    struct Scratch { char path[0x20]; char formatBuffer[0x40]; char imageBuffer[0x40]; } scratch;
+    s32 *state;
+    s32 zero;
+    register s32 result;
     s32 mode;
     s32 index;
-    s32 outer;
-    s32 inner;
+    s32 row;
+    s32 column;
     s32 height;
     s32 width;
     u32 color;
     u32 component;
     u32 pixel;
-    u8 exists;
+    s32 exists;
     char *entryName;
-    struct Entry *entry;
+    register struct Entry *entry;
     struct Texture *texture;
     float seconds;
-    u32 now;
-    union U64 { double value; u32 words[2]; } conversion;
+    s32 val;
 
-    now = (u32)fn_802E2C20();
-    conversion.words[1] = now ^ 0x80000000U;
-    conversion.words[0] = 0x43300000;
-    seconds = (float)(conversion.value - lbl_80564C68) / lbl_80564C70;
+    val = fn_802E2C20();
+    seconds = (float)val / lbl_80564C70;
     if (seconds - *(float *)((u8 *)&lbl_8055FA18 + 4) < lbl_8055FA18)
         return;
-
-    now = (u32)fn_802E2C20();
-    conversion.words[1] = now ^ 0x80000000U;
-    conversion.words[0] = 0x43300000;
-    seconds = (float)(conversion.value - lbl_80564C68) / lbl_80564C70;
+    val = fn_802E2C20();
+    state = (s32 *)&lbl_804BE7D8;
+    zero = 0;
+    state[1] = zero;
+    seconds = (float)val / lbl_80564C70;
     *(float *)((u8 *)&lbl_8055FA18) = seconds;
-    *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = 0;
     mode = fn_802B6A70(lbl_8055FA38);
-    ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(imageBuffer, 0x40, lbl_8055CE88, mode);
-    result = fn_802E3BB4(imageBuffer, path, 0x20);
-    if (result + 0x10000U != 0xFFFFU) {
-        char *suffix = (char *)lbl_8055CE98;
+    ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(scratch.imageBuffer, 0x40, lbl_8055CE88, mode);
+    result = fn_802E3BB4(scratch.imageBuffer, scratch.path, 0x20);
+    if ((u32)result + 0x10000U != 0xFFFFU) {
+        register char *suffix = (char *)lbl_8055CE98;
         do {
-            index = *(s32 *)((u8 *)&lbl_804BE7D8 + 4);
+            index = state[1];
             entry = (struct Entry *)(*(u32 *)&lbl_804BE7D8 + index * 0x128);
-            *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = index + 1;
+            state[1] = index + 1;
             {
                 s32 remaining = 0x20;
                 char *dst = entry->name;
-                char *src = path;
+                char *src = scratch.path;
                 do {
                     char c = *src++;
                     *dst++ = c;
@@ -499,29 +495,29 @@ void fn_802B6AC0(void) {
             }
             if (strchr(entry->name, '.') != 0)
                 *strchr(entry->name, '.') = 0;
-            entry->height = 0;
-            entry->width = 0;
-            exists = (u8)fn_80128690();
-            if (exists == 0) fn_80128684();
-            ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(formatBuffer, 0x40, lbl_8055CE90, mode, path);
-            texture = (struct Texture *)fn_802B5240(formatBuffer);
+            entry->height = zero;
+            entry->width = zero;
+            exists = fn_80128690();
+            if ((u8)exists == 0) fn_80128684();
+            ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(scratch.formatBuffer, 0x40, lbl_8055CE90, mode, scratch.path);
+            texture = (struct Texture *)fn_802B5240(scratch.formatBuffer);
             if (texture != 0) {
                 width = texture->width;
                 entry->width = width;
                 height = texture->height;
                 entry->height = height;
                 if ((u32)(width * height) > 0x100U) {
-                    if ((u32)width > 0x10U) width = 0x10;
+                    width = (u32)width > 0x10U ? 0x10 : width;
                     entry->width = width;
-                    if ((u32)height > 0x10U) height = 0x10;
+                    height = (u32)height > 0x10U ? 0x10 : height;
                     entry->height = height;
                 }
                 {
-                    u8 *sourcePixels = (u8 *)texture->pixels;
-                    for (outer = 0; outer < entry->width; outer++, sourcePixels += 4) {
-                        u8 *destination = entry->pixels + outer;
-                        for (inner = 0; inner < entry->height; inner++) {
-                            pixel = *(u32 *)(sourcePixels + ((texture->height - 1 - inner) * texture->width * 4));
+                    s32 byteOffset = 0;
+                    for (row = 0; row < entry->width; row++, byteOffset += 4) {
+                        for (column = 0; column < entry->height; column++) {
+                            pixel = *(u32 *)((u8 *)texture->pixels + byteOffset +
+                                ((texture->height - 1 - column) * texture->width * 4));
                             color = (pixel >> 8) & 0xFF;
                             component = pixel & 0xFF;
                             if (component > color) color = component;
@@ -529,13 +525,13 @@ void fn_802B6AC0(void) {
                             if (component > color) color = component;
                             component = pixel >> 24;
                             if (component > color) color = component;
-                            destination[inner * entry->width] = (u8)color;
+                            entry->pixels[row + column * entry->width] = (u8)color;
                         }
                     }
                 }
                 fn_802B52B4();
             }
-            if (exists == 0) fn_80128678();
+            if ((u8)exists == 0) fn_80128678();
             if (entry->width == 0) {
                 s32 remaining = 0x20;
                 entryName = entry->name;
@@ -556,8 +552,8 @@ void fn_802B6AC0(void) {
                     } while (1);
                 }
             }
-        } while ((*(s32 *)((u8 *)&lbl_804BE7D8 + 4) + 1 <= *(s32 *)((u8 *)&lbl_804BE7D8 + 8)) &&
-                 fn_802E3C24(result, path, 0x20) != 0);
+        } while ((state[1] + 1 <= state[2]) &&
+                 fn_802E3C24(result, scratch.path, 0x20) != 0);
         fn_802E3CA4(result);
     }
 }
@@ -620,6 +616,7 @@ extern float lbl_80564C8C;
 extern double lbl_80564C80;
 extern float lbl_80564C90;
 extern float lbl_80564C94;
+__declspec(section ".sdata") extern s32 lbl_8055CEA0;
 extern s32 fn_802BC09C();
 extern void fn_80204044();
 extern s32 fn_802C21DC();
