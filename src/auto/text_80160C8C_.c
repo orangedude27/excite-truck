@@ -79,7 +79,7 @@ struct Dummy_801638A0 {
     virtual void f19();
     virtual void f20();
     virtual void f21();
-    virtual void f22();
+    virtual void f22(s32);
     virtual void f23();
     virtual void f24(s32);
     virtual void f25();
