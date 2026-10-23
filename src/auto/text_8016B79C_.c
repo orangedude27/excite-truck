@@ -799,7 +799,7 @@ void fn_8016EA9C(void *arg0) {
     stack[37].p = &lbl_8055A250;
     stack[38].i = temp_r10;
     stack[52].i = 3;
-    stack[53].p = lbl_8055A250;
+    stack[53].p = &lbl_8055A250;
     stack[54].i = temp_r10;
     stack[33].i = 3;
     stack[34].p = temp_r26;
