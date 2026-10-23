@@ -11100,6 +11100,40 @@ void rfc_check_send_cmd(void *arg0, void *arg1) {
     }
 }
 
+extern char lbl_80319F40[];
+BOOLEAN SDP_InitDiscoveryDb(tSDP_DISCOVERY_DB *p_db, UINT32 len, UINT16 num_uuid,
+                             tSDP_UUID *p_uuid_list, UINT16 num_attr,
+                             UINT16 *p_attr_list) {
+    UINT16 xx;
+
+    if (p_db == NULL || len < 0x6C || num_attr > 0xC || num_uuid > 3) {
+        if (lbl_803C4C40[0x4630] >= 1) {
+            ((void (*)(u32, void *, void *, u32, u16, u16))fn_8007099C)(
+                0xA0000, lbl_80319F40, p_db, len, num_uuid, num_attr);
+        }
+        return FALSE;
+    }
+
+    memset(p_db, 0, len);
+    p_db->mem_size = len - 0x6C;
+    p_db->mem_free = p_db->mem_size;
+    p_db->p_first_rec = NULL;
+    *(UINT8 **)((UINT8 *)p_db + 0x68) = (UINT8 *)p_db + 0x6C;
+
+    for (xx = 0; xx < num_uuid; xx++) {
+        p_db->uuid_filters[xx] = *p_uuid_list++;
+    }
+    p_db->num_uuid_filters = num_uuid;
+
+    for (xx = 0; xx < num_attr; xx++) {
+        p_db->attr_filters[xx] = *p_attr_list++;
+    }
+
+    sdpu_sort_attr_list(num_attr, p_db);
+    p_db->num_attr_filters = num_attr;
+    return TRUE;
+}
+
 BOOLEAN SDP_ServiceSearchRequest(UINT8 *p_bd_addr, tSDP_DISCOVERY_DB *p_db, tSDP_DISC_CMPL_CB *p_cb) {
     tCONN_CB *p_ccb = sdp_conn_originate(p_bd_addr);
     if (p_ccb == NULL) return FALSE;
