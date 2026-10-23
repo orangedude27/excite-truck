@@ -2082,62 +2082,67 @@ s32 fn_800AC4AC(void *arg0, s32 arg1) {
 }
 
 extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
-extern "C" s32 fn_800AC708(void *arg0, u8 *arg1, u32 arg2, s32 *arg3) {
-    s32 status = 0;
+extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 arg2, register s32 *arg3) {
+    s32 status;
+    register s32 result;
+    register s32 zero;
     u32 sp8;
-    u8 spC[0x20];
+    u8 spC[13];
     u8 flags;
 
-    *arg3 = 0;
-    arg1[0x20A] = 0;
-    arg1[0x20B] = 0;
-    arg1[0x20C] = 0;
-    flags = arg1[0x21C];
-    if ((flags & 0x10) && (*(u32 *)(arg1 + 0x234) == 1)) {
+    status = 0;
+    *arg3 = status;
+    arg1[0x20A] = (u8)status;
+    arg1[0x20B] = (u8)status;
+    arg1[0x20C] = (u8)status;
+    if ((arg1[0x21C] & 0x10) && (*(u32 *)(arg1 + 0x234) == 1)) {
         return 2;
     }
+    zero = 0;
+    goto check_end;
 
-loop:
-    if (VFiPFENT_ITER_IsAtLogicalEnd(arg0) != 0) {
-        return 0;
-    }
+status_check:
     if (status != 0) {
         return status;
     }
+process:
     if (*(u8 *)((u8 *)arg0 + 0x4C) == 0xE5) {
-        arg1[0x20A] = 0;
-        *(u16 *)arg1 = 0;
+        arg1[0x20A] = (u8)zero;
+        *(u16 *)arg1 = (u16)zero;
         goto advance;
     }
     flags = *(u8 *)((u8 *)arg0 + 0x57);
     if ((flags & 0xF) == 0xF) {
         if (VFiPFENT_LoadLFNEntryFieldsFromBuf(arg1, (u8 *)arg0 + 0x4C) != 0) {
-            arg1[0x20A] = 0;
-            *(u16 *)arg1 = 0;
+            arg1[0x20A] = (u8)zero;
+            *(u16 *)arg1 = (u16)zero;
         }
         goto advance;
     }
     if (flags & 8) {
-        arg1[0x20A] = 0;
-        *(u16 *)arg1 = 0;
+        arg1[0x20A] = (u8)zero;
+        *(u16 *)arg1 = (u16)zero;
         goto advance;
     }
     if (!(flags & 0x10)) {
-        arg1[0x20A] = 0;
-        *(u16 *)arg1 = 0;
+        arg1[0x20A] = (u8)zero;
+        *(u16 *)arg1 = (u16)zero;
         goto advance;
     }
-    fn_800AA4EC(arg1, (u8 *)arg0 + 0x4C);
+    ((void (*)(u8 *, u8 *))fn_800AA4EC)(arg1, (u8 *)arg0 + 0x4C);
     if (arg1[0x20A] != 0 && arg1[0x20B] == 1 &&
-        arg1[0x20C] == VFiPFENT_CalcCheckSum(arg1)) {
+        arg1[0x20C] == ((u8 (*)(u8 *))VFiPFENT_CalcCheckSum)(arg1)) {
         VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, (u8 *)arg0 + 0x4C);
         *(u32 *)(arg1 + 0x238) = *(u32 *)((u8 *)arg0 + 0x44);
         *(u16 *)(arg1 + 0x23C) = *(u16 *)((u8 *)arg0 + 0x48);
         *(u32 *)(arg1 + 0x22C) = *(u32 *)((u8 *)arg0 + 0x3C);
         flags = arg1[0x21C] & 0x10;
         if (flags && *(u32 *)(arg1 + 0x234) != arg2) {
-            arg1[0x20A] = 0;
-            *(u16 *)arg1 = 0;
+            arg1[0x20A] = (u8)zero;
+            *(u16 *)arg1 = (u16)zero;
             goto advance;
         }
         if (flags && *(u32 *)(arg1 + 0x234) == 0) {
@@ -2148,10 +2153,11 @@ loop:
 
     flags = *(u8 *)((u8 *)arg0 + 0x58);
     if (flags & 0x18) {
+        s32 length;
         VFiPFPATH_getLongNameformShortName(arg1 + 0x20E, spC, flags);
-        status = VFiPFPATH_transformInUnicode((s16 *)arg1, (s32)spC, flags);
-        arg1[0x20A] = (u8)(status / 13 + (status % 13 != 0));
-        arg1[0x20C] = VFiPFENT_CalcCheckSum(arg1);
+        length = VFiPFPATH_transformInUnicode((s16 *)arg1, (s32)spC, flags);
+        arg1[0x20A] = (u8)(length / 13 + (length % 13 != 0));
+        arg1[0x20C] = ((u8 (*)(u8 *))VFiPFENT_CalcCheckSum)(arg1);
         arg1[0x20B] = 1;
     }
     VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, (u8 *)arg0 + 0x4C);
@@ -2160,9 +2166,9 @@ loop:
     *(u16 *)(arg1 + 0x23C) = *(u16 *)((u8 *)arg0 + 0x48);
     *(u32 *)(arg1 + 0x22C) = *(u32 *)((u8 *)arg0 + 0x3C);
     if (flags && *(u32 *)(arg1 + 0x234) != arg2) {
-        arg1[0x20A] = 0;
-        *(u16 *)arg1 = 0;
-        *arg3 = 0;
+        arg1[0x20A] = (u8)zero;
+        *(u16 *)arg1 = (u16)zero;
+        *arg3 = zero;
         goto advance;
     }
     if (flags && *(u32 *)(arg1 + 0x234) == 0) {
@@ -2175,27 +2181,32 @@ advance:
     {
         u32 old = *(u32 *)arg0;
         *(u32 *)arg0 = old + 1;
-        status = fn_800AB378(arg0, 0);
-        if (status != 0) {
+        result = fn_800AB378(arg0, 0);
+        if (result != 0) {
             *(u32 *)arg0 = old;
             fn_800AB378(arg0, 0);
         } else if (*(u32 *)((u8 *)arg0 + 0x44) == 0xFFFF0000) {
-            status = 0x10;
+            result = 0x10;
         } else {
-            status = fn_800B5324(*(void **)((u8 *)arg0 + 4),
+            result = fn_800B5324(*(void **)((u8 *)arg0 + 4),
                                  (u8 *)arg0 + 0x4C,
+                                 *(u32 *)((u8 *)arg0 + 0x44),
                                  *(u16 *)((u8 *)arg0 + 0x48),
                                  0x20, &sp8, 0);
             if (sp8 != 0x20) {
-                status = 0x11;
+                result = 0x11;
             }
         }
-        status &= (s32)(-(u32)status | (u32)status) >> 31;
+        status = result & (s32)(-(u32)result | (u32)result) >> 31;
         status &= (s32)(-(u32)status | (u32)status) >> 31;
     }
-    goto loop;
+check_end:
+    if (VFiPFENT_ITER_IsAtLogicalEnd(arg0) == 0) {
+        goto status_check;
+    }
+    return 0;
 }
-
+#pragma pop
 extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1);
 extern "C" void fn_800B78F4(void *arg0, void *arg1);
 extern "C" s32 fn_800ABC60(s32, s32);
@@ -3027,42 +3038,42 @@ s32 fn_800B1EB8(void *arg0, void *arg1, u32 arg2, u32 arg3, void *arg4, u32 *arg
 
 extern "C" s32 fn_800B6928(s8);
 extern "C" s32 fn_800AE4C0(s32, s32, s32);
-extern "C" s32 fn_800B3754(s32, s32, s32);
+extern "C" s32 fn_800B3754(s32, s32 *, s32);
 extern "C" s32 fn_800AF574(void *);
 extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
 extern "C" s32 fn_800B317C(s32 arg0, s32 arg1) {
-    extern s32 fn_800B3754(s32, s32, s32);
-    return fn_800B3754(arg0, arg1, 1) == 0;
+extern s32 fn_800B3754(s32, s32 *, s32);
+return fn_800B3754(arg0, (s32 *)arg1, 1) == 0;
 }
 
 extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
-    (*(s32 *)((u8 *)arg0 + 0)) = arg1;
-    (*(s32 *)((u8 *)arg0 + 4)) = arg1;
-    (*(s32 *)((u8 *)arg0 + 0xC)) = arg2;
+(*(s32 *)((u8 *)arg0 + 0)) = arg1;
+(*(s32 *)((u8 *)arg0 + 4)) = arg1;
+(*(s32 *)((u8 *)arg0 + 0xC)) = arg2;
 }
 
 extern "C" void fn_800B36C4(s32 arg0, s32 arg1, s32 arg2) {
-    fn_800B23F8(arg0, arg1, arg2, 0);
+fn_800B23F8(arg0, arg1, arg2, 0);
 }
 
 extern "C" void fn_800B36CC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
-    fn_800B23F8(arg0, arg1, arg2, 1);
+fn_800B23F8(arg0, arg1, arg2, 1);
 }
 
 extern "C" void fn_800B36D4(s32 arg0) {
-    u8 sp8;
+u8 sp8;
 
-    if ((VFiPFSTR_StrNumChar(arg0, 1) >= 2U) && (VFiPFSTR_StrNCmp(arg0, &lbl_80559208, 1, 1, 1) == 0)) {
-        VFiPFSTR_ToUpperNStr(arg0, 1, &sp8);
-        fn_800B65A0((s8)sp8);
-        return;
-    }
-    fn_800B63FC();
+if ((VFiPFSTR_StrNumChar(arg0, 1) >= 2U) && (VFiPFSTR_StrNCmp(arg0, &lbl_80559208, 1, 1, 1) == 0)) {
+VFiPFSTR_ToUpperNStr(arg0, 1, &sp8);
+fn_800B65A0((s8)sp8);
+return;
+}
+fn_800B63FC();
 }
 
 extern "C" u8 lbl_80559230, lbl_80559231;
 extern "C" u8 lbl_80559210, lbl_80559214;
-extern "C" s32 fn_800B3754(s32 arg0, s32 arg1, s32 arg2) {
+extern "C" s32 fn_800B3754(s32 arg0, s32 *arg1, s32 arg2) {
 struct {
 s32 sp10[4];
 volatile s32 sp20;
@@ -3071,7 +3082,7 @@ volatile s32 sp28;
 volatile u16 sp2C;
 } frame;
 u32 var_r31 = 1;
-s32 *arg1_ptr = (s32 *)arg1;
+s32 *arg1_ptr = arg1;
 s32 *var_r29 = arg1_ptr;
 frame.sp20 = arg0;
 frame.sp24 = 0;
@@ -3093,11 +3104,11 @@ u32 var_r3;
 var_r0 = arg1_ptr[0];
 temp_r5 = arg1_ptr[1];
 frame.sp10[0] = var_r0;
-var_r0 = arg1_ptr[2];
 frame.sp10[1] = temp_r5;
-temp_r5 = arg1_ptr[3];
-frame.sp10[2] = var_r0;
-frame.sp10[3] = temp_r5;
+temp_r5 = arg1_ptr[2];
+var_r0 = arg1_ptr[3];
+frame.sp10[2] = temp_r5;
+frame.sp10[3] = var_r0;
 if (fn_800A4D44(var_r29) == 1U) {
 if ((arg2 == 0) && ((M2C_FIELD(lbl_803D2140, u32 *, 0x60) & 2) == 2)) {
 spC[0] = lbl_80559230;
@@ -3128,12 +3139,13 @@ var_r31 = 0;
 }
 if (var_r31 == 1) {
 if (frame.sp28 != 0) {
-if (frame.sp2C > 0x20A) {
+temp_r6 = frame.sp2C;
+if (temp_r6 > 0x20A) {
 var_r31_2 = 0;
 } else {
 var_r0 = 0;
-var_r4 = *(u16 *)((u8 *)frame.sp20 + frame.sp2C);
-frame.sp2C += 2;
+var_r4 = *(u16 *)((u8 *)frame.sp20 + temp_r6);
+frame.sp2C = temp_r6 + 2;
 if ((var_r4 >= 0x61) && (var_r4 <= 0x7A)) {
 var_r0 = 1;
 }
