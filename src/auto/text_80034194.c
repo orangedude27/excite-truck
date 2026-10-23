@@ -8,6 +8,7 @@ extern u8 *FstStart_8055D840;
 extern u8 *FstStringStart_8055D83C;
 extern s32 lbl_8055D828;
 extern BOOL __DVDLongFileNameFlag;
+extern void OSPanic(const char *, s32, const char *);
 extern char lbl_80558DF8[];
 extern char lbl_80301F70[];
 
@@ -679,12 +680,12 @@ void fn_80038040(void) {
         fn_80038040();
         return;
     }
-    lbl_8055D8BC = *(u32 *)((u8 *)temp_r3 + 8);
+    *(volatile u32 *)&lbl_8055D8BC = *(u32 *)((u8 *)temp_r3 + 8);
     if (((u32)*(volatile s32 *)&lbl_8055D8BC == 0x20U) ||
         ((u32)*(volatile s32 *)&lbl_8055D8BC == 0xEU) ||
         ((u32)*(volatile s32 *)&lbl_8055D8BC == 0x23U)) lbl_8055D85C = 0;
-    if (lbl_8055D85C != 0) {
-        switch (lbl_8055D85C) {
+    if (*(volatile s32 *)&lbl_8055D85C != 0) {
+        switch (*(volatile s32 *)&lbl_8055D85C) {
         case 2:
             *(s32 *)((u8 *)temp_r3 + 0xC) = 0xB;
             MotorState_8055D8A8 = 1;
@@ -692,7 +693,7 @@ void fn_80038040(void) {
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
                 OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
-                    (*(volatile u32 *)0x800000F8 / 4000) * 0x64, fn_8003801C);
+                    (((*(volatile u32 *)0x800000F8 >> 2) * 0x10624DD3U) >> 6) * 0x64, fn_8003801C);
             }
             break;
         case 3:
@@ -702,7 +703,7 @@ void fn_80038040(void) {
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
                 OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
-                    (*(volatile u32 *)0x800000F8 / 4000) * 0x64, fn_8003801C);
+                    (((*(volatile u32 *)0x800000F8 >> 2) * 0x10624DD3U) >> 6) * 0x64, fn_8003801C);
             }
             break;
         case 4:
@@ -712,7 +713,7 @@ void fn_80038040(void) {
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
                 OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
-                    (*(volatile u32 *)0x800000F8 / 4000) * 0x64, fn_8003801C);
+                    (((*(volatile u32 *)0x800000F8 >> 2) * 0x10624DD3U) >> 6) * 0x64, fn_8003801C);
             }
             break;
         case 1:
