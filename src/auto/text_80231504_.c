@@ -25,7 +25,7 @@ extern void fn_802C8DBC(s32);
 extern void fn_802C8D74(void);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
-static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
+static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 z, f32 y, f32 x) {
     f32 outX;
     f32 outY;
     f32 outZ;
