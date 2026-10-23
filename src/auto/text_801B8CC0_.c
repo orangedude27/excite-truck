@@ -53,39 +53,40 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
     }
 }
 static inline void transform_vec_scheduled(float *out, const volatile float *m, volatile float *in) {
-    if (out == in) {
-        register float m3 = m[3];
-        register float y = in[1];
-        register float m4 = m[4];
-        register float py0 = y * m3;
-        register float m5 = m[5];
-        register float m0 = m[0];
-        register float py1 = y * m4;
-        register float x = in[0];
-        register float m1 = m[1];
-        register float px0 = x * m0;
-        register float m2 = m[2];
-        register float px1 = x * m1;
-        register float m6 = m[6];
-        register float px2 = x * m2;
-        register float py2 = y * m5;
-        register float z = in[2];
-        register float m7 = m[7];
-        register float sum0 = px0 + py0;
-        register float pz0 = z * m6;
-        register float m8 = m[8];
-        register float sum1 = px1 + py1;
-        register float pz1 = z * m7;
-        register float sum2 = px2 + py2;
-        register float pz2 = z * m8;
-        out[0] = pz0 + sum0;
-        out[1] = pz1 + sum1;
-        out[2] = pz2 + sum2;
-    } else {
-        out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
-        out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
-        out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
-    }
+if (out == in) {
+float m3 = m[3];
+float y = in[1];
+float m4 = m[4];
+float py0 = y * m3;
+float m5 = m[5];
+float m0 = m[0];
+float py1 = y * m4;
+float x = in[0];
+float m1 = m[1];
+float px0 = x * m0;
+float m2 = m[2];
+float px1 = x * m1;
+float m6 = m[6];
+float px2 = x * m2;
+float py2 = y * m5;
+float z = in[2];
+float m7 = m[7];
+float sum0 = px0 + py0;
+float pz0 = z * m6;
+float m8 = m[8];
+float sum1 = px1 + py1;
+float pz1 = z * m7;
+float sum2 = px2 + py2;
+float pz2 = z * m8;
+out[0] = pz0 + sum0;
+out[1] = pz1 + sum1;
+out[2] = pz2 + sum2;
+} else {
+out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
+out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
+out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
+}
+
 }
 #pragma cplusplus on
 extern "C" void fn_801B8E28(int arg0) {
