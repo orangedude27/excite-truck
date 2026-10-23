@@ -1545,7 +1545,7 @@ s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 outpu
 }
 
 extern void fn_8011FE20(u32 **, u32);
-extern u32 lbl_80329B60;
+extern u32 lbl_80329B60[25];
 extern f64 lbl_805611E8;
 extern f64 lbl_805611F0;
 extern f32 lbl_805611F8;
