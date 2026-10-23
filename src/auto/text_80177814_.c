@@ -1,5 +1,7 @@
 #include <types.h>
 extern void *lbl_8055E430;
+extern char lbl_8055E45D;
+extern char lbl_8055E45F;
 extern int lbl_8055E450;
 extern int lbl_8055E8F8;
 #include <revolution/MTX/vec.h>
