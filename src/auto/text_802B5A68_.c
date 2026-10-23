@@ -264,10 +264,7 @@ void fn_802B61B8(void) {
 }
 
 extern char lbl_8034A980[];
-#pragma push
-#pragma small_data off
-extern s32 lbl_804BE7D8;
-#pragma pop
+__declspec(section ".data") extern s32 lbl_804BE7D8;
 extern s32 lbl_8055FA00;
 extern s32 lbl_8055FA34;
 extern s32 fn_80145E70(char *);
@@ -440,17 +437,16 @@ __declspec(section ".sdata") extern const char lbl_8055CE98[];
 #pragma scheduling invalid_target
 #pragma small_data off
 void fn_802B6AC0(void) {
-    union U64 { double value; u32 words[2]; };
     struct Texture { s32 width; s32 height; u32 *pixels; };
     struct Entry { char name[0x20]; s32 width; s32 height; u8 pixels[1]; };
     char path[0x20];
-    char imageBuffer[0x40];
     char formatBuffer[0x40];
-    s32 result;
+    char imageBuffer[0x40];
+    u32 result;
     s32 mode;
     s32 index;
-    s32 column;
-    s32 row;
+    s32 outer;
+    s32 inner;
     s32 height;
     s32 width;
     u32 color;
@@ -460,27 +456,27 @@ void fn_802B6AC0(void) {
     char *entryName;
     struct Entry *entry;
     struct Texture *texture;
-    union U64 conversion;
-    u32 now;
     float seconds;
+    u32 now;
+    union U64 { double value; u32 words[2]; } conversion;
 
     now = (u32)fn_802E2C20();
-    conversion.words[0] = 0x43300000;
     conversion.words[1] = now ^ 0x80000000U;
+    conversion.words[0] = 0x43300000;
     seconds = (float)(conversion.value - lbl_80564C68) / lbl_80564C70;
     if (seconds - *(float *)((u8 *)&lbl_8055FA18 + 4) < lbl_8055FA18)
         return;
 
     now = (u32)fn_802E2C20();
-    conversion.words[0] = 0x43300000;
     conversion.words[1] = now ^ 0x80000000U;
+    conversion.words[0] = 0x43300000;
     seconds = (float)(conversion.value - lbl_80564C68) / lbl_80564C70;
     *(float *)((u8 *)&lbl_8055FA18) = seconds;
     *(s32 *)((u8 *)&lbl_804BE7D8 + 4) = 0;
     mode = fn_802B6A70(lbl_8055FA38);
     ((s32 (*)(char *, s32, const char *, ...))fn_801345D8)(imageBuffer, 0x40, lbl_8055CE88, mode);
     result = fn_802E3BB4(imageBuffer, path, 0x20);
-    if ((u32)result + 0x10000U != 0xFFFFU) {
+    if (result + 0x10000U != 0xFFFFU) {
         char *suffix = (char *)lbl_8055CE98;
         do {
             index = *(s32 *)((u8 *)&lbl_804BE7D8 + 4);
@@ -522,11 +518,10 @@ void fn_802B6AC0(void) {
                 }
                 {
                     u8 *sourcePixels = (u8 *)texture->pixels;
-                    s32 outer;
                     for (outer = 0; outer < entry->width; outer++, sourcePixels += 4) {
                         u8 *destination = entry->pixels + outer;
-                        for (row = 0; row < entry->height; row++) {
-                            pixel = *(u32 *)(sourcePixels + ((texture->height - 1 - row) * texture->width * 4));
+                        for (inner = 0; inner < entry->height; inner++) {
+                            pixel = *(u32 *)(sourcePixels + ((texture->height - 1 - inner) * texture->width * 4));
                             color = (pixel >> 8) & 0xFF;
                             component = pixel & 0xFF;
                             if (component > color) color = component;
@@ -534,7 +529,7 @@ void fn_802B6AC0(void) {
                             if (component > color) color = component;
                             component = pixel >> 24;
                             if (component > color) color = component;
-                            destination[row * entry->width] = (u8)color;
+                            destination[inner * entry->width] = (u8)color;
                         }
                     }
                 }
