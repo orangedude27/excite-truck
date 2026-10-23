@@ -576,7 +576,6 @@ void fn_8016E918(void *arg0) {
 }
 
 extern f32 lbl_805619A4;
-extern void fn_802AE0E0(s32);
 #pragma scheduling off
 void fn_8016E984(void *arg0) {
     s32 temp = *(s32 *)((u8 *)arg0 + 0xC);
