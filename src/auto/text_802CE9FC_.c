@@ -1,3 +1,5 @@
+extern int lbl_804C5650[];
+extern char lbl_8055FD70;
 extern unsigned char lbl_8055FD91;
 extern unsigned char lbl_8055D0FF;
 extern char lbl_8055D100;
