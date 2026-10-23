@@ -12,7 +12,7 @@ extern float lbl_805633FC;
 #pragma scheduling invalid_target
 #pragma cplusplus on
 extern void *lbl_8033C8C4[];
-extern void fn_80128668(void *);
+extern "C" void fn_80128668(void *);
 extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
     struct Dummy { virtual void release(s32); virtual void v1(); virtual void v2(); };
     void *child;
