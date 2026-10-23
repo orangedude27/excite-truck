@@ -72,6 +72,126 @@ test:
     *(long *)((char *)arg0 + 0x10) = 0;
 }
 
+extern long fn_80131810(long *);
+extern long fn_8027AFA0(void *, void *, void *);
+extern int strcmp(const char *, const char *);
+extern int lbl_8055C760;
+void fn_8027B2F8(long arg0, long *arg1, signed char arg2) {
+    register char *self = (char *)arg0;
+    long i;
+    void *item;
+
+    self[0xBCC] = arg2;
+    *(void **)(self + 4) = (void *)fn_80131810(arg1);
+    if (*(void **)(self + 4) == 0)
+        return;
+    i = 0;
+    goto next_item;
+
+process_item:
+    if (strcmp(((char *(*)(void *))(*(void ***)item)[2])(item),
+               (char *)&lbl_8055C760) == 0) {
+        long count = *(volatile long *)(self + 0xC);
+        char *base = *(char **)(self + 8);
+        char *record = base + count * 0x1F4;
+        *(volatile long *)(self + 0xC) = count + 1;
+        if (fn_8027AFA0(record, item, base) == 0) {
+            long index = *(volatile long *)(self + 0xC) - 1;
+            if (index >= 0) {
+                long count2 = *(volatile long *)(self + 0xC);
+                if (index < count2) {
+                    long last = *(volatile long *)(self + 0xC) - 1;
+                    if (index != last) {
+                        char *base2 = *(char **)(self + 8);
+                        char *dst = base2 + index * 0x1F4;
+                        char *src = base2 + last * 0x1F4;
+                        long j;
+                        dst[4] = src[4];
+                        *(long *)(dst + 8) = *(long *)(src + 8);
+                        *(long *)(dst + 0xC) = *(long *)(src + 0xC);
+                        *(long *)(dst + 0x10) = *(long *)(src + 0x10);
+                        *(long *)(dst + 0x14) = *(long *)(src + 0x14);
+                        if (dst + 0x18 != src + 0x18) {
+                            long len = *(long *)(src + 0x1C);
+                            long cap = *(long *)(dst + 0x20);
+                            if (cap < len) {
+                                *(long *)(dst + 0x1C) = cap;
+                                j = 0;
+                                do {
+                                    char *d = *(char **)(dst + 0x18) + j * 0x3C;
+                                    char *s = *(char **)(src + 0x18) + j * 0x3C;
+                                    d[4] = s[4];
+                                    *(long *)(d + 8) = *(long *)(s + 8);
+                                    *(long *)(d + 0xC) = *(long *)(s + 0xC);
+                                    d[0x10] = s[0x10]; d[0x11] = s[0x11]; d[0x12] = s[0x12];
+                                    *(long *)(d + 0x14) = *(long *)(s + 0x14);
+                                    *(long *)(d + 0x18) = *(long *)(s + 0x18);
+                                    *(long *)(d + 0x1C) = *(long *)(s + 0x1C);
+                                    *(long *)(d + 0x20) = *(long *)(s + 0x20);
+                                    *(long *)(d + 0x24) = *(long *)(s + 0x24);
+                                    *(long *)(d + 0x28) = *(long *)(s + 0x28);
+                                    *(long *)(d + 0x2C) = *(long *)(s + 0x2C);
+                                    *(long *)(d + 0x30) = *(long *)(s + 0x30);
+                                    *(long *)(d + 0x34) = *(long *)(s + 0x34);
+                                    d[0x38] = s[0x38];
+                                    j++;
+                                } while (j < cap);
+                            }
+                        }
+                        {
+                            char *d = dst + 0x24;
+                            char *s = src + 0x24;
+                            char *end = dst + 0x18C;
+                            do {
+                                d[4] = s[4];
+                                *(long *)(d + 8) = *(long *)(s + 8);
+                                *(long *)(d + 0xC) = *(long *)(s + 0xC);
+                                d[0x10] = s[0x10]; d[0x11] = s[0x11]; d[0x12] = s[0x12];
+                                *(long *)(d + 0x14) = *(long *)(s + 0x14);
+                                *(long *)(d + 0x18) = *(long *)(s + 0x18);
+                                *(long *)(d + 0x1C) = *(long *)(s + 0x1C);
+                                *(long *)(d + 0x20) = *(long *)(s + 0x20);
+                                *(long *)(d + 0x24) = *(long *)(s + 0x24);
+                                *(long *)(d + 0x28) = *(long *)(s + 0x28);
+                                *(long *)(d + 0x2C) = *(long *)(s + 0x2C);
+                                *(long *)(d + 0x30) = *(long *)(s + 0x30);
+                                *(long *)(d + 0x34) = *(long *)(s + 0x34);
+                                d[0x38] = s[0x38];
+                                d += 0x3C;
+                                s += 0x3C;
+                            } while (d < end);
+                        }
+                        {
+                            char *d = dst + 0x18B;
+                            char *s = src + 0x18B;
+                            for (j = 0; j < 0x32; j++) {
+                                d[1] = s[1];
+                                d[2] = s[2];
+                                d += 2;
+                                s += 2;
+                            }
+                        }
+                        dst[0x1F0] = src[0x1F0]; dst[0x1F1] = src[0x1F1];
+                        dst[0x1F2] = src[0x1F2]; dst[0x1F3] = src[0x1F3];
+                    }
+                    *(volatile long *)(self + 0xC) = *(volatile long *)(self + 0xC) - 1;
+                }
+            }
+        }
+    }
+advance_item:
+    i++;
+next_item:
+    item = ((void *(*)(void *, long))(*(void ***)*(void **)(self + 4))[3])
+           (*(void **)(self + 4), i);
+    if (item != 0)
+        goto process_item;
+    if (*(volatile long *)(self + 0xC) > 0)
+        return;
+    fn_80131818(*(long *)(self + 4));
+    *(void **)(self + 4) = 0;
+}
+
 void fn_8027B60C(void *arg0) {
     long i, offset;
     if (*(long *)((char *)arg0 + 4) != 0) {
@@ -149,6 +269,51 @@ void fn_8027BCC0(long arg0, long arg1, long arg2) {
 
 void fn_8027BCC8(long arg0, long arg1, long arg2) {
     fn_8027BB4C(arg0, arg1, arg2, 1);
+}
+
+void fn_8027BCD0(void *arg0, long arg1) {
+    long outer, inner, item, i, j, k, n, found;
+    void *group, *entry, *object, *base, *record;
+    outer = 0;
+    do {
+        group = fn_8027B834((void *)outer);
+        for (inner = 0; inner < ((long (*)(void *))(*(void ***)group)[3])(group); inner++) {
+            entry = ((void *(*)(void *, long))(*(void ***)group)[4])(group, inner);
+            for (item = 0; item < ((long (*)(void *))(*(void ***)entry)[6])(entry); item++) {
+                object = ((void *(*)(void *, long))(*(void ***)entry)[7])(entry, item);
+                n = ((long (*)(void *))(*(void ***)object)[8])(object);
+                found = -1;
+                for (i = 0; i < *(long *)((char *)arg0 + 4); i++) {
+                    if (*(long *)((char *)*(void **)arg0 + i * 0x18) == n) {
+                        found = i;
+                        break;
+                    }
+                }
+                if (found == -1) {
+                    base = *(void **)arg0;
+                    i = *(long *)((char *)arg0 + 4);
+                    *(long *)((char *)arg0 + 4) = i + 1;
+                    record = (char *)base + i * 0x18;
+                    *(long *)((char *)record + 0) = ((long (*)(void *, long, long))(*(void ***)object)[8])(object, i, (long)base);
+                    *(long *)((char *)record + 4) = ((long (*)(void *))(*(void ***)entry)[3])(entry);
+                    *(long *)((char *)record + 8) = inner;
+                    *(long *)((char *)record + 0xC) = ((long (*)(void *))(*(void ***)object)[3])(object);
+                    *(long *)((char *)record + 0x10) = ((long (*)(void *))(*(void ***)object)[7])(object);
+                    *(unsigned char *)((char *)record + 0x14) =
+                        ((long (*)(void *))(*(void ***)entry)[9])(entry) &&
+                        ((long (*)(void *))(*(void ***)object)[17])(object);
+                    *(unsigned char *)((char *)record + 0x15) = ((long (*)(void *))(*(void ***)entry)[11])(entry);
+                } else {
+                    record = (char *)*(void **)arg0 + found * 0x18;
+                    *(unsigned char *)((char *)record + 0x14) =
+                        *(unsigned char *)((char *)record + 0x14) ||
+                        (((long (*)(void *))(*(void ***)entry)[9])(entry) &&
+                         ((long (*)(void *))(*(void ***)object)[17])(object));
+                }
+            }
+        }
+        outer++;
+    } while (outer < 3);
 }
 
 extern long fn_80012790(long);
@@ -513,15 +678,12 @@ void fn_8027CD80(long arg0, long arg1, long arg2, long arg3) {
 
 #pragma scheduling invalid_target
 long fn_8027CE4C(long arg0) {
-    long *p;
-    long value;
-    p = fn_8027C120(lbl_8055F654, arg0);
-    value = *p;
+    int value = *fn_8027C120(lbl_8055F654, arg0);
     switch (value) {
     case 0:
-        return ((long (*)(void *))fn_8027C8B0)(p);
+        return fn_8027C8B0();
     case 1:
-        return ((long (*)(void *))fn_8027CB20)(p);
+        return fn_8027CB20();
     default:
         ((void (*)(const char *, ...))fn_802E317C)(lbl_80347C38, arg0);
         return 1;
