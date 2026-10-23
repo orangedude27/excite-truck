@@ -118,8 +118,8 @@ extern char lbl_8055A150[];
 extern char lbl_8055A158[];
 #pragma push
 #pragma small_data on
-extern char lbl_8055A160[];
-extern char lbl_8055A168[];
+__declspec(section ".sdata") extern char lbl_8055A160[];
+__declspec(section ".sdata") extern char lbl_8055A168[];
 #pragma pop
 void fn_80165A30(void *arg0, int arg1) {
     int i;
