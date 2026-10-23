@@ -1,5 +1,7 @@
 #include <types.h>
 
+extern BOOL __OSInIPL;
+
 extern void **OSExceptionTable_8055D9D0;
 extern void OSExceptionVector(void);
 extern void OSReport(const char *, ...);
@@ -58,6 +60,104 @@ void __OSGetIOSRev(void *arg_rev) {
     rev->verMinor = version;
 }
 
+u32 OSGetConsoleType(void) {
+    extern void *BootInfo_8055D9F8;
+    u32 *boot=(u32*)BootInfo_8055D9F8;
+    u32 mem; u32 console; u16 rev;
+    if (boot==0 || boot[11]==0) return 0x10000002;
+    console=*(u32*)0x80003138;
+    rev=*(u16*)0x800030E6;
+    if (rev&0x8000) {
+        rev&=0x7FFF;
+        if (rev<0x201 && rev<4 && rev>=2 || rev==0x203) {
+            if(console==0) return 0x10;
+            if(console==2) return 0x12;
+            if(console==16) return 0x20;
+            if(console==17) return 0x21;
+            if(console==1) return 0x11;
+            return 0x21;
+        }
+        if (rev>=0x201 && rev!=0x203 || rev>=4 || rev<2) {
+            if(console==0) return 0x10000010;
+            if(console==1) return 0x10000011;
+            if(console==2) return 0x10000012;
+            if(console==16) return 0x10000020;
+            if(console==17) return 0x10000021;
+            if(console<=0x11) return 0x10000021;
+            return 0x10000021;
+        }
+    }
+    mem=OSGetPhysicalMem2Size();
+    if(console==0) return mem==0x40000000 ? 0x10 : 0x10000010;
+    if(console==1) return mem==0x40000000 ? 0x11 : 0x10000011;
+    if(console==2) return mem==0x40000000 ? 0x12 : 0x10000012;
+    if(console==16) return mem==0x40000000 ? 0x20 : 0x10000020;
+    if(console==17) return mem==0x40000000 ? 0x21 : 0x10000021;
+    if(console<=0x11) return mem==0x40000000 ? 0x21 : 0x10000021;
+    return 0x10000002;
+}
+
+extern unsigned int OSGetResetCode(void);
+extern unsigned int OSGetArenaHi(void);
+extern unsigned int OSGetArenaLo(void);
+extern void DCZeroRange(unsigned int);
+extern void DCFlushRange(unsigned int, unsigned int);
+extern unsigned int __OSRebootParams[];
+void ClearArena(void) {
+    unsigned int reset = OSGetResetCode();
+    unsigned int start, size, end;
+    if ((reset >> 31) == 0) {
+        start = OSGetArenaLo();
+        size = OSGetArenaHi() - start;
+        end = start + size;
+        if (size > 0x40000)
+            end -= 0x40000;
+        DCZeroRange(size);
+        DCFlushRange(end, 0x40000);
+        return;
+    }
+    if (__OSRebootParams[3] == 0 || (__OSRebootParams[3] & 0x30000000) != 0) {
+        start = OSGetArenaLo();
+        size = OSGetArenaHi() - start;
+        end = start + size;
+        if (size > 0x40000)
+            end -= 0x40000;
+        DCZeroRange(size);
+        DCFlushRange(end, 0x40000);
+        return;
+    }
+    start = OSGetArenaLo();
+    if (start < __OSRebootParams[3]) {
+        end = OSGetArenaHi();
+        if (end <= __OSRebootParams[3]) {
+            start = OSGetArenaLo();
+            size = OSGetArenaHi() - start;
+            end = start + size;
+            if (size > 0x40000)
+                end -= 0x40000;
+            DCZeroRange(size);
+            DCFlushRange(end, 0x40000);
+            return;
+        }
+        size = __OSRebootParams[3] - OSGetArenaLo();
+        start = OSGetArenaLo();
+        end = start + size;
+        if (size > 0x40000)
+            end -= 0x40000;
+        DCZeroRange(size);
+        DCFlushRange(end, 0x40000);
+        start = __OSRebootParams[4];
+        end = OSGetArenaHi();
+        if (end > start) {
+            size = end - start;
+            end = start + size;
+            if (size > 0x40000)
+                end -= 0x40000;
+            DCZeroRange(size);
+            DCFlushRange(end, 0x40000);
+        }
+    }
+}
 
 extern const char lbl_80558F04[];
 #pragma small_data on
