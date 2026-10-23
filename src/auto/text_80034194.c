@@ -15,9 +15,27 @@ extern char lbl_80558DF8[];
 extern char lbl_80301F70[];
 
 typedef struct DVDNode {
-    u32 packed_type_name;
-    u32 parent_or_offset;
-    u32 sibling_or_size;
+    union {
+        struct {
+            u32 is_folder : 8;
+            u32 name : 24;
+        };
+        u32 packed_type_name;
+    };
+    union {
+        struct {
+            u32 parent_or_offset;
+            u32 sibling_or_size;
+        };
+        struct {
+            u32 offset;
+            u32 size;
+        };
+        struct {
+            u32 parent;
+            u32 sibling_next;
+        } folder;
+    };
 } DVDNode;
 
 static inline int DVDPathLower(int c) {
