@@ -527,6 +527,138 @@ void fn_8006A440(u32 r3, u32 r4)
 	OSSwitchFiberEx(r3, r4, 0, 0, fn_8006A3BC, (u8*)&lbl_80393680 + 0x1000);
 }
 
+s32 fn_8006A460(s32 arg0) {
+    register u8 *var_r6;
+    register u32 temp_r10;
+    s32 temp_r26;
+    s32 temp_r3;
+    s32 var_ctr;
+    register u32 var_r10;
+    u64 temp_ret;
+    void *temp_r7;
+    void *temp_r8;
+    void *temp_r9;
+    void *var_r0;
+    void *var_r0_2;
+    void *var_r0_3;
+    void *var_r0_4;
+    u32 ready;
+    u8 *base;
+    u8 *setup;
+    u32 *words;
+    u16 *shorts1;
+    u16 *shorts2;
+    s32 init_zero = 0;
+    register s32 old_state;
+    register s32 lock_state;
+    s32 i;
+    register s32 n;
+    register u32 zero = 0;
+    register u32 one = 1;
+    OSTime now;
+    u32 scale;
+
+    if ((ready = lbl_8055DC30, base = lbl_80392960, setup = base, ready != 0)) {
+        return 0;
+    }
+    old_state = OSDisableInterrupts();
+    words = (u32 *)(base + 0xCC8);
+    shorts1 = (u16 *)(base + 0x1D20);
+    shorts2 = (u16 *)(base + 0x1D40);
+    for (i = 0; i < 16; i++) {
+        words[i] = init_zero;
+        shorts1[i] = init_zero;
+        shorts2[i] = init_zero;
+    }
+
+    *(u8 **)(setup + 0x18) = setup + 0x58;
+    *(u8 **)(setup + 0x14) = setup + 0x1C;
+    var_r6 = setup;
+    for (i = 0, var_r10 = 0; i < 3; i++) {
+        *(u8 **)(var_r6 + 0x1C) = setup + (5 - var_r10) * 0x60 + 0x424;
+        if (var_r10 == 0) {
+            var_r0 = 0;
+        } else {
+            var_r0 = setup + (var_r10 - 1) * 0xC + 0x1C;
+        }
+        *(u8 **)(var_r6 + 0x20) = var_r0;
+        if (var_r10 == 5) {
+            var_r0_2 = 0;
+        } else {
+            var_r0_2 = setup + (var_r10 + 1) * 0xC + 0x1C;
+        }
+        temp_r10 = var_r10 + 1;
+        *(u8 **)(var_r6 + 0x24) = var_r0_2;
+        *(u8 **)(var_r6 + 0x28) = setup + (5 - temp_r10) * 0x60 + 0x424;
+        if (temp_r10 == 0) {
+            var_r0_3 = 0;
+        } else {
+            var_r0_3 = setup + (temp_r10 - 1) * 0xC + 0x1C;
+        }
+        *(u8 **)(var_r6 + 0x2C) = var_r0_3;
+        if (temp_r10 == 5) {
+            var_r0_4 = 0;
+        } else {
+            var_r0_4 = setup + (temp_r10 + 1) * 0xC + 0x1C;
+        }
+        *(u8 **)(var_r6 + 0x30) = var_r0_4;
+        var_r6 += 0x18;
+        var_r10 = temp_r10 + 1;
+    }
+
+    *(u32 *)(setup + 0) = zero;
+    *(u32 *)(setup + 4) = zero;
+    *(u32 *)(setup + 8) = zero;
+    *(u32 *)(setup + 0x670) = zero;
+    *(u32 *)(setup + 0x66C) = zero;
+    *(u8 *)(setup + 0xC) = zero;
+    *(u8 *)(setup + 0xE) = zero;
+    *(u8 *)(setup + 0xD) = zero;
+    *(u8 *)(setup + 0xF) = zero;
+    *(u8 *)(setup + 0x10) = zero;
+    *(u8 *)(setup + 0x11) = zero;
+    *(u8 *)(setup + 0x667) = zero;
+    *(u8 *)(setup + 0x669) = zero;
+    *(u8 *)(setup + 0x668) = one;
+    *(u8 *)(setup + 0x66A) = zero;
+    *(u8 *)(setup + 0x66B) = zero;
+    *(u8 *)(setup + 0x688) = zero;
+    *(u8 *)(setup + 0x68A) = zero;
+    *(s8 *)(setup + 0x68B) = -0x41;
+    memset(setup + 0x682, 0, 6);
+    memset(setup + 0x67C, 0, 6);
+    *(u16 *)(setup + 0x6C4) = zero;
+    *(u16 *)(setup + 0x6C6) = 0xA;
+
+    lock_state = OSDisableInterrupts();
+    memset(base + 0x64, 0, 0x3C0);
+    memset(base + 0x424, 0, 0x240);
+    *(u8 *)(base + 0x12) = 0;
+    *(u8 *)(base + 0x13) = 0;
+    *(u8 *)(base + 0x664) = 0;
+    *(u8 *)(base + 0x665) = 0;
+    *(u8 *)(base + 0x666) = 0;
+    OSRestoreInterrupts(lock_state);
+    *(u8 *)(setup + 0x10) = one;
+    OSRestoreInterrupts(old_state);
+
+    DBPrintf_8006CFA8(lbl_80313464);
+    fn_800709FC();
+    fn_80071508(lbl_8055DC34);
+    fn_80089E20(lbl_8055DC34);
+    fn_80096670(lbl_8055DC34);
+    DBPrintf_8006CFA8(lbl_8031347C);
+    SCInit();
+
+    OSCreateAlarm((OSAlarm *)(setup + 0x690));
+    now = __OSGetSystemTime();
+    scale = ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 10;
+    ((void (*)(void *, u64, u32, u32, void (*)(u32, u32)))OSSetPeriodicAlarm)(
+        setup + 0x690, now, 0, scale, (void (*)(u32, u32))fn_8006A39C);
+    lbl_8055DC30 = 1;
+    return 1;
+}
+
 extern void fn_8006B598(void *);
 void fn_8006A7D0(s32 arg0, s32 arg1) {
     s32 saved = OSDisableInterrupts();
@@ -1330,6 +1462,157 @@ void fn_8006EC24(s32 arg0, s32 arg1) {
     fn_80070B24((s8)arg1);
 }
 
+__declspec(section ".sdata") extern u8 lbl_80560CF8[];
+__declspec(section ".sdata") extern u8 lbl_80560D00[];
+#pragma push
+#pragma use_lmw_stmw off
+s32 hcisu_h2_receive_msg(u16 arg0, u8 *arg1) {
+    extern s32 fn_8007011C(void);
+    extern void fn_8007093C(u32, void *);
+    extern u16 fn_8006D8D0(u32);
+    extern BT_HDR *l2cap_link_chk_pkt_start(BT_HDR *);
+    extern BOOL l2cap_link_chk_pkt_end(void);
+    extern char lbl_80314258[];
+    extern char lbl_80314294[];
+    u8 sp8;
+    register u8 *var_r15 = arg1;
+    register s32 var_r19 = 0;
+    register u16 var_r16;
+    register u8 *var_r22;
+    register u32 var_r23;
+    register u8 *var_r21;
+    register u8 var_r17;
+    register u8 var_r18;
+    register u8 *buf;
+    register u16 offset;
+    register u16 remaining;
+    register u16 len;
+    register u16 got;
+
+    if (var_r15[0x1E] != 2) return 0;
+    var_r16 = (u16)(arg0 + 1);
+    var_r22 = arg1 + arg0;
+    var_r23 = ((u32)arg0 << 2) & 0x3FFFC;
+    var_r21 = arg1 + (((u32)arg0 << 1) & 0x1FFFE);
+for (;;) {
+    if ((u16)((u16 (*)(u8, u8 *, u16))fn_8007011C)((u8)var_r16, &sp8, 1) == 0)
+        break;
+    var_r17 = 0;
+    var_r19 += 1;
+    switch (var_r22[0x1A]) {
+    case 0:
+        if (var_r16 == 1) {
+            *(void **)(var_r15 + var_r23) = GKI_getpoolbuf(2);
+            var_r22[0x14] = 4;
+        } else if (var_r16 == 2) {
+            *(void **)(var_r15 + var_r23) = GKI_getpoolbuf(3);
+            var_r22[0x14] = 2;
+        } else if (var_r16 == 3) {
+            *(void **)(var_r15 + var_r23) = GKI_getpoolbuf(1);
+            var_r22[0x14] = 3;
+        }
+        buf = *(u8 **)(var_r15 + var_r23);
+        if (buf != 0) {
+            *(u16 *)(buf + 2) = 0;
+            *(u16 *)buf = *(u16 *)(lbl_80560D00 + (var_r22[0x14] * 2) - 2);
+            *(u16 *)(buf + 4) = 0;
+            var_r22[0x1A] = 1;
+        } else {
+            fn_8007093C(0x70000, lbl_80314258);
+            var_r22[0x1A] = 2;
+        }
+        *(u16 *)(var_r21 + 0xC) = lbl_80560CF8[var_r22[0x14] - 1];
+        /* fall through */
+    case 1:
+        buf = *(u8 **)(var_r15 + var_r23);
+        offset = *(u16 *)(buf + 2);
+        buf[offset + 8] = sp8;
+        *(u16 *)(buf + 2) = offset + 1;
+        remaining = *(u16 *)(var_r21 + 0xC) - 1;
+        *(u16 *)(var_r21 + 0xC) = remaining;
+        if (remaining == 0) {
+            var_r18 = sp8;
+            if (var_r22[0x14] == 2) {
+                var_r18 = (u8)(((u16)sp8 << 8) + var_r22[0x17]);
+                buf = (u8 *)l2cap_link_chk_pkt_start((BT_HDR *)buf);
+                *(u8 **)(var_r15 + var_r23) = buf;
+                if (buf == 0) {
+                    *(u16 *)(var_r21 + 0xC) = var_r18;
+                    if (var_r18 == 0) var_r22[0x1A] = 0;
+                    else var_r22[0x1A] = 4;
+                    break;
+                }
+            }
+            *(u16 *)(var_r21 + 0xC) = var_r18;
+            if ((u32)var_r18 + lbl_80560CF8[var_r22[0x14] - 1] + 8 >
+                fn_8006D8D0((u32)buf)) {
+                GKI_freebuf(buf);
+                *(u8 **)(var_r15 + var_r23) = 0;
+                var_r22[0x1A] = 4;
+                fn_8007093C(0x70000, lbl_80314294);
+            } else if (var_r18 != 0) {
+                var_r22[0x1A] = 3;
+            } else {
+                var_r22[0x1A] = 0;
+                var_r17 = 1;
+            }
+        } else {
+            var_r22[0x17] = sp8;
+        }
+        break;
+    case 2:
+        remaining = *(u16 *)(var_r21 + 0xC) - 1;
+        *(u16 *)(var_r21 + 0xC) = remaining;
+        if (remaining == 0) {
+            var_r18 = sp8;
+            if (var_r22[0x14] == 2)
+                var_r18 = (u8)(((u16)sp8 << 8) + var_r22[0x17]);
+            *(u16 *)(var_r21 + 0xC) = var_r18;
+            var_r22[0x1A] = 4;
+        } else {
+            var_r22[0x17] = sp8;
+        }
+        break;
+    case 3:
+        buf = *(u8 **)(var_r15 + var_r23);
+        offset = *(u16 *)(buf + 2);
+        buf[offset + 8] = sp8;
+        *(u16 *)(buf + 2) = offset + 1;
+        remaining = *(u16 *)(var_r21 + 0xC) - 1;
+        *(u16 *)(var_r21 + 0xC) = remaining;
+        got = ((u16 (*)(u8, u8 *, u16, u8, BT_HDR *))fn_8007011C)(
+            (u8)var_r16, buf + *(u16 *)(buf + 2) + 8, remaining, sp8, (BT_HDR *)buf);
+        var_r19 += got;
+        buf = *(u8 **)(var_r15 + var_r23);
+        *(u16 *)(buf + 2) = *(u16 *)(buf + 2) + got;
+        remaining = *(u16 *)(var_r21 + 0xC) - got;
+        *(u16 *)(var_r21 + 0xC) = remaining;
+        if (remaining == 0) {
+            if (var_r22[0x14] == 2 && (u8)l2cap_link_chk_pkt_end() == 0) {
+                var_r22[0x1A] = 0;
+            } else {
+                var_r22[0x1A] = 0;
+                var_r17 = 1;
+            }
+        }
+        break;
+    case 4:
+        remaining = *(u16 *)(var_r21 + 0xC) - 1;
+        *(u16 *)(var_r21 + 0xC) = remaining;
+        if (remaining == 0) var_r22[0x1A] = 0;
+        break;
+    default:
+        var_r22[0x1A] = 0;
+        break;
+    }
+    if (var_r17 != 0) {
+        GKI_send_msg(((u8 *)&lbl_803BD1A0)[0x1F], 0, *(void **)(var_r15 + var_r23));
+        *(void **)(var_r15 + var_r23) = 0;
+    }
+    }
+    return var_r19;
+}
+#pragma pop
 void hcisu_h2_send_msg_now(u8 *queue, s32 arg1) {
     BT_HDR *msg=(BT_HDR*)arg1;
     u8 *data=(u8*)msg+*(u16*)((u8*)msg+4)+8;
@@ -2149,11 +2432,8 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     for (i = 1; i <= cfg[1]; i++) {
         offset = ((i * 4) & 0x3FC) - i;
         entry = cfg + offset;
-        if (id != entry[0])
-            continue;
-        if (entry[1] != 0xFF && app_id != entry[1])
-            continue;
-        break;
+        if (entry[0] == id && (entry[1] == 0xFF || entry[1] == app_id))
+            break;
     }
     if (i > cfg[1])
         return;
@@ -2170,17 +2450,17 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
 
     offset = ((i * 4) & 0x3FC) - i;
     spec_idx = *(u8 *)(lbl_80559018 + offset + 2);
+    if (*(u8 *)(lbl_8055901C + spec_idx * 0x4A + status * 8 + 2) == 0)
+        return;
+
     list = lbl_803C0D18;
     for (j = 0; j < list[0]; j++) {
         entry = list + j * 9;
-        if (id != entry[7])
-            continue;
-        if (app_id != entry[8])
-            continue;
-        if (bdcmp(entry + 1, peer_addr) == 0)
+        if (entry[7] == id && entry[8] == app_id && bdcmp(entry + 1, peer_addr) == 0)
             break;
     }
 
+    spec_idx = *(u8 *)(lbl_80559018 + offset + 2);
     if (*(u8 *)(lbl_8055901C + spec_idx * 0x4A + status * 8 + 2) == 0x10) {
         if (j < list[0]) {
             for (; j < list[0]; j++)
@@ -2212,6 +2492,122 @@ void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
     entry = list + j * 9;
     entry[9] = status;
     bta_dm_pm_set_mode(peer_addr, 0);
+}
+
+extern tBTM_PM_PWR_MD *lbl_80559020;
+extern u8 lbl_803151B4[];
+extern void bta_dm_pm_timer_cback(void *);
+void bta_dm_pm_set_mode(u8 *peer_addr, u8 timed_out) {
+    u8 *cfg;
+    u8 *spec;
+    u8 *act_base;
+    u8 *entry;
+    u8 *p_peer_device;
+    u8 pm_action;
+    u16 timeout;
+    u8 failed_pm;
+    u8 allowed_modes;
+    u8 pref_modes;
+    u8 mode;
+    u8 i;
+    u8 j;
+    u32 off;
+    tBTM_PM_MODE read_mode;
+    tBTM_PM_PWR_MD pwr_md;
+
+    pm_action = 0;
+    timeout = 0;
+    failed_pm = 0;
+    p_peer_device = 0;
+    allowed_modes = 0;
+    pref_modes = 0;
+    if (lbl_803C0C14[0x4D] == 0)
+        return;
+    for (i = 0; i < lbl_803C0C14[0x4D]; i++) {
+        off = i * 0xB;
+        if (bdcmp(lbl_803C0C14 + off, peer_addr) != 0)
+            continue;
+        p_peer_device = lbl_803C0C14 + off;
+        failed_pm = p_peer_device[0xA];
+        break;
+    }
+    if (p_peer_device == 0)
+        return;
+
+    for (j = 0; j < lbl_803C0D18[0]; j++) {
+        off = j * 9;
+        if (bdcmp(lbl_803C0D18 + off + 1, peer_addr) != 0)
+            continue;
+        entry = lbl_803C0D18 + off;
+        cfg = lbl_80559018;
+        for (i = 1; i <= cfg[1]; i++) {
+            if (cfg[i * 3] == entry[7] &&
+                (cfg[i * 3 + 1] == 0xFF || cfg[i * 3 + 1] == entry[8]))
+                break;
+        }
+        spec = lbl_8055901C;
+        act_base = spec + cfg[i * 3 + 2] * 0x4A;
+        allowed_modes |= act_base[0];
+        act_base += entry[9] * 8;
+        mode = act_base[2];
+        if (!(failed_pm & mode)) {
+            pref_modes |= mode;
+            if (mode > pm_action) {
+                pm_action = mode;
+                timeout = *(u16 *)(act_base + 4);
+            }
+        } else {
+            mode = act_base[6];
+            if (!(failed_pm & mode)) {
+                pref_modes |= mode;
+                if (mode > pm_action) {
+                    pm_action = mode;
+                    timeout = *(u16 *)(act_base + 8);
+                }
+            }
+        }
+    }
+
+    if (pm_action & 3) {
+        if (!(allowed_modes & pm_action)) {
+            pm_action = (allowed_modes & pref_modes) & 3;
+            if (pm_action == 0)
+                timeout = 0;
+        }
+    }
+
+    if (!timed_out && timeout) {
+        for (i = 0; i < 3; i++) {
+            if (lbl_803C0C14[i * 0x20 + 0xB6] == 0) {
+                lbl_803C0C14[i * 0x20 + 0xB6] = 1;
+                fn_80070FA4(lbl_803C0C14 + i * 0x20 + 0xB0, peer_addr);
+                *(void (**)(void *))(lbl_803C0C14 + i * 0x20 + 0xA0) = bta_dm_pm_timer_cback;
+                fn_8007146C((s32)(lbl_803C0C14 + i * 0x20 + 0x98), 0, timeout);
+                return;
+            }
+        }
+        if (i == 3) {
+            if (lbl_8055DC80 >= 2)
+                fn_8007093C(0x501, lbl_803151B4);
+            return;
+        }
+    }
+
+    if (pm_action == 0) {
+    } else if (pm_action == 1) {
+        p_peer_device[9] = 1;
+        BTM_ReadPowerMode(peer_addr, &read_mode);
+        if (read_mode != 3)
+            BTM_SetPowerMode(lbl_803C0C14[0x95], peer_addr, lbl_80559020 + 1);
+    } else if (pm_action == 2) {
+        p_peer_device[9] = 2;
+        BTM_ReadPowerMode(peer_addr, &read_mode);
+        if (read_mode != 2)
+            BTM_SetPowerMode(lbl_803C0C14[0x95], peer_addr, lbl_80559020);
+    } else if (pm_action == 4) {
+        pwr_md.mode = 0;
+        BTM_SetPowerMode(lbl_803C0C14[0x95], peer_addr, &pwr_md);
+    }
 }
 
 void bta_dm_pm_btm_cback(void *arg0, s8 arg1, s16 arg2, s8 arg3) {
@@ -5102,6 +5498,128 @@ void BTM_DeviceAuthorized(u8 *bd_addr, u8 res, u32 *trusted_mask) {
             }
         }
     }
+}
+
+tBTM_STATUS BTM_SecBond(BD_ADDR bd_addr, UINT8 pin_len, UINT8 *p_pin, UINT32 trusted_mask[]) {
+    tBTM_SEC_DEV_REC *p_dev_rec;
+    tBTM_INQ_INFO *p_inq_info;
+    UINT8 pin_type;
+    UINT8 allow_switch;
+    register char *message_table = lbl_80316870;
+    register UINT8 *dev;
+    register UINT8 *p_pin_copy = p_pin;
+    register UINT32 *trusted_mask_copy = trusted_mask;
+
+    if (lbl_803C0F78[0x27C0] >= 3) {
+        fn_800709CC(0xD0002, message_table + 0x230,
+                    bd_addr[0], bd_addr[1], bd_addr[2],
+                    bd_addr[3], bd_addr[4], bd_addr[5]);
+    }
+
+    if (pin_len > 0x10) {
+        if (lbl_803C0F78[0x27C0] >= 1) {
+            fn_80070954(0xD0000, message_table + 0x260, pin_len);
+        }
+        return BTM_ILLEGAL_VALUE;
+    }
+
+    p_dev_rec = btm_find_dev(bd_addr);
+    dev = (UINT8 *)p_dev_rec;
+    if (dev == NULL) {
+        p_dev_rec = btm_sec_alloc_dev(bd_addr);
+        dev = (UINT8 *)p_dev_rec;
+        if (dev == NULL) {
+            if (lbl_803C0F78[0x27C0] >= 1) {
+                fn_8007093C(0xD0000, message_table + 0x280);
+            }
+            return BTM_NO_RESOURCES;
+        }
+    }
+
+    if (*(UINT16 *)(dev + 0x18) != 0xFFFF && (dev[0x76] & 2)) {
+        if (lbl_803C0F78[0x27C0] >= 2) {
+            fn_8007093C(0xD0001, message_table + 0x2A0);
+        }
+        return BTM_SUCCESS;
+    }
+
+    if (BTM_DeleteStoredLinkKey(bd_addr, NULL) != BTM_SUCCESS) {
+        return BTM_NO_RESOURCES;
+    }
+
+    dev[0x81] = 0x50;
+    dev[0x80] = 1;
+    *(UINT32 *)(dev + 0x10) = trusted_mask_copy[0];
+    *(UINT32 *)(dev + 0x14) = trusted_mask_copy[1];
+    lbl_803C0F78[0x197F] = pin_len;
+    if (pin_len != 0) {
+        memcpy(lbl_803C0F78 + 0x1980, p_pin_copy, pin_len);
+    }
+
+    dev[0x76] &= ~0x16;
+    if ((dev[0x23] & 0x1F) == 5 &&
+        (dev[0x24] & 0x40) &&
+        lbl_803C0F78[0x20] != 1) {
+        lbl_803C0F78[0x197C] = 1;
+        btsnd_hcic_write_pin_type(1);
+    }
+
+    lbl_803C0F78[0x197E] = 0;
+    if (*(UINT16 *)(dev + 0x18) != 0xFFFF) {
+        dev[0x76] &= ~0x10;
+        dev[0x7F] = 1;
+        if (!btsnd_hcic_auth_request(*(UINT16 *)(dev + 0x18))) {
+            return BTM_NO_RESOURCES;
+        }
+        lbl_803C0F78[0x197D] = 0;
+        return BTM_CMD_STARTED;
+    }
+
+    if (lbl_803C0F78[0x1978] != 3) {
+        if (lbl_803C0F78[0x27C0] >= 5) {
+            fn_8007093C(0xD0004, message_table + 0x2C0);
+        }
+        if ((UINT8)btsnd_hcic_write_pin_type_8008543C(1) == 0) {
+            if (lbl_803C0F78[0x27C0] >= 1) {
+                fn_8007093C(0xD0000, message_table + 0x2E4);
+            }
+            return BTM_NO_RESOURCES;
+        }
+        lbl_803C0F78[0x197B] = 1;
+    }
+
+    lbl_803C0F78[0x197D] = 1;
+    pin_type = *(UINT8 *)fn_8007A3A4();
+    dev[0x85] = 0;
+    allow_switch = (pin_type >> 5) & 1;
+    p_inq_info = BTM_InqDbRead(bd_addr);
+    if (p_inq_info != NULL) {
+        pin_type = btsnd_hcic_create_conn(
+            bd_addr, 0x18, p_inq_info->results.page_scan_rep_mode,
+            p_inq_info->results.page_scan_mode,
+            p_inq_info->results.clock_offset | 0x8000, allow_switch);
+    } else {
+        pin_type = btsnd_hcic_create_conn(
+            bd_addr, 0x18, 1, 0, *(UINT16 *)(dev + 0x1A), allow_switch);
+    }
+    if (pin_type != 0) {
+        return BTM_CMD_STARTED;
+    }
+
+    if (lbl_803C0F78[0x27C0] >= 1) {
+        fn_8007093C(0xD0000, message_table + 0x2E4);
+    }
+    if (lbl_803C0F78[0x197B] != 0) {
+        lbl_803C0F78[0x197B] = 0;
+        if (lbl_803C0F78[0x27C0] >= 5) {
+            ((void (*)(u32, void *, u32))fn_80070954)(
+                0xD0004, message_table + 0x2FC,
+                ((lbl_803C0F78[0x1978] - 3) == 0));
+        }
+        btsnd_hcic_write_pin_type_8008543C(
+            (UINT8)((lbl_803C0F78[0x1978] - 3) == 0));
+    }
+    return BTM_NO_RESOURCES;
 }
 
 extern u8 lbl_80316DC8[];
