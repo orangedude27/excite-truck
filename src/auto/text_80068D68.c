@@ -10095,13 +10095,13 @@ static void process_service_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UINT16 len
         p_param_len = p;
         p += 2;
 
-        *p++ = *(UINT32 *)((UINT8 *)p_ccb + 0x418 + *(UINT16 *)((UINT8 *)p_ccb + 0x46E) * 4) >> 24;
-        *p++ = *(UINT32 *)((UINT8 *)p_ccb + 0x418 + *(UINT16 *)((UINT8 *)p_ccb + 0x46E) * 4) >> 16;
-        *p++ = *(UINT32 *)((UINT8 *)p_ccb + 0x418 + *(UINT16 *)((UINT8 *)p_ccb + 0x46E) * 4) >> 8;
-        *p++ = *(UINT32 *)((UINT8 *)p_ccb + 0x418 + *(UINT16 *)((UINT8 *)p_ccb + 0x46E) * 4);
+        *p++ = ((tSDP_CCB_HANDLE_VIEW *)p_ccb)->handles[*(UINT16 *)((UINT8 *)p_ccb + 0x46E)] >> 24;
+        *p++ = ((tSDP_CCB_HANDLE_VIEW *)p_ccb)->handles[*(UINT16 *)((UINT8 *)p_ccb + 0x46E)] >> 16;
+        *p++ = ((tSDP_CCB_HANDLE_VIEW *)p_ccb)->handles[*(UINT16 *)((UINT8 *)p_ccb + 0x46E)] >> 8;
+        *p++ = ((tSDP_CCB_HANDLE_VIEW *)p_ccb)->handles[*(UINT16 *)((UINT8 *)p_ccb + 0x46E)];
 
-        *p++ = lbl_803C4C40[0x462D];
-        *p++ = lbl_803C4C40[0x462C];
+        *p++ = *(UINT16 *)(lbl_803C4C40 + 0x462C) >> 8;
+        *p++ = *(UINT16 *)(lbl_803C4C40 + 0x462C);
 
         if (*(UINT16 *)(*(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x4C))
             p = sdpu_build_attrib_seq(
