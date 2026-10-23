@@ -14,7 +14,7 @@ typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
 struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
-namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); }; }}
+namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
@@ -356,53 +356,53 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
     *(unsigned char *)((char *)arg0 + 7) = *(unsigned char *)((char *)arg2 + 3);
 }
 
-void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color) {
-    unsigned int address = (unsigned int)this;
+void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color, nw4hbm::ut::Color color2) {
+    unsigned int address=(unsigned int)this;
     unsigned int top;
-    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10;
-    unsigned char *self = (unsigned char *)this;
-    unsigned char *source1, *source2, *source3;
-    int product_17, product_13, product_f, product_b;
+    int r5=1,r6=1,r7=1,r8=1,r9=1,r10;
+    unsigned char *self=(unsigned char *)this;
+    unsigned char *source1,*source2,*source3;
+    int product_17,product_13,product_f,product_b;
     int alpha;
     register int valid;
-    int temp_r4, temp_r3;
+    int temp_r4,temp_r3;
+    top=address&0xFF000000U;
+    r10=1;
+    if ((unsigned int)(top+0x80000000U)>=1U &&
+        (unsigned int)((address&0xFF800000U)+0x7F000000U)>=1U) r10=0;
+    if (r10==0 && (unsigned int)((address&0xF8000000U)+0x70000000U)>=1U) r9=0;
+    if (r9==0 && (unsigned int)(top+0x40000000U)>=1U) r8=0;
+    if (r8==0 && (unsigned int)((address&0xFF800000U)+0x3F000000U)>=1U) r7=0;
+    if (r7==0 && (unsigned int)((address&0xF8000000U)+0x30000000U)>=1U) r6=0;
+    if (r6==0 && (unsigned int)((address&0xFFFFC000U)+0x20000000U)>=1U) r5=0;
+    if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x19A,lbl_8032818C,this);
 
-    top = address & 0xFF000000U;
-    r10 = 1;
-    if ((unsigned int)(top + 0x80000000U) >= 1U && (unsigned int)((address & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
-    if (r10 == 0 && (unsigned int)((address & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
-    if (r9 == 0 && (unsigned int)(top + 0x40000000U) >= 1U) r8 = 0;
-    if (r8 == 0 && (unsigned int)((address & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
-    if (r7 == 0 && (unsigned int)((address & 0xF8000000U) + 0x30000000U) >= 1U) r6 = 0;
-    if (r6 == 0 && (unsigned int)((address & 0xFFFFC000U) + 0x20000000U) >= 1U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x185, lbl_8032818C, this);
+    self[0x18]=color.r; self[0x19]=color.g; self[0x1A]=color.b; self[0x1B]=color.a;
+    self[0x1C]=color2.r; self[0x1D]=color2.g; self[0x1E]=color2.b; self[0x1F]=color2.a;
 
-    self[0x18] = color.r; self[0x19] = color.g; self[0x1A] = color.b; self[0x1B] = color.a;
+    valid=0;
+    if ((unsigned int)(top+0x80000000U)==0U ||
+        (temp_r4=address&0xFF800000U,(unsigned int)(temp_r4+0x7F000000U)==0U) ||
+        (temp_r3=address&0xF8000000U,(unsigned int)(temp_r3+0x70000000U)==0U) ||
+        (unsigned int)(top+0x40000000U)==0U ||
+        (unsigned int)((address&0xFF800000U)+0x3F000000U)==0U ||
+        (unsigned int)((address&0xF8000000U)+0x30000000U)==0U ||
+        (unsigned int)((address&0xFFFFC000U)+0x20000000U)==0U) valid=1;
+    if (valid==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x4DA,lbl_8032818C,this);
 
-    valid = 0;
-    if ((unsigned int)(top + 0x80000000U) == 0U ||
-        (temp_r4 = address & 0xFF800000U, (unsigned int)(temp_r4 + 0x7F000000U) == 0U) ||
-        (temp_r3 = address & 0xF8000000U, (unsigned int)(temp_r3 + 0x70000000U) == 0U) ||
-        (unsigned int)(top + 0x40000000U) == 0U ||
-        (unsigned int)((address & 0xFF800000U) + 0x3F000000U) == 0U ||
-        (unsigned int)((address & 0xF8000000U) + 0x30000000U) == 0U ||
-        (unsigned int)((address & 0xFFFFC000U) + 0x20000000U) == 0U)
-        valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x4DA, lbl_8032818C, this);
+    self[8]=self[0x18]; self[9]=self[0x19]; self[0xA]=self[0x1A]; self[0xB]=self[0x1B];
+    if (*(int *)(self+0x20)!=1) source1=self+0x18; else source1=self+0x1C;
+    self[0xC]=source1[0]; self[0xD]=source1[1]; self[0xE]=source1[2]; self[0xF]=source1[3];
+    if (*(int *)(self+0x20)!=2) source2=self+0x18; else source2=self+0x1C;
+    self[0x10]=source2[0]; self[0x11]=source2[1]; self[0x12]=source2[2]; self[0x13]=source2[3];
+    if (*(int *)(self+0x20)==0) source3=self+0x18; else source3=self+0x1C;
+    self[0x14]=source3[0]; self[0x15]=source3[1]; self[0x16]=source3[2];
 
-    self[8] = self[0x18]; self[9] = self[0x19]; self[0xA] = self[0x1A]; self[0xB] = self[0x1B];
-    if (*(int *)(self + 0x20) != 1) source1 = self + 0x18; else source1 = self + 0x1C;
-    self[0xC] = source1[0]; self[0xD] = source1[1]; self[0xE] = source1[2]; self[0xF] = source1[3];
-    if (*(int *)(self + 0x20) != 2) source2 = self + 0x18; else source2 = self + 0x1C;
-    self[0x10] = source2[0]; self[0x11] = source2[1]; self[0x12] = source2[2]; self[0x13] = source2[3];
-    if (*(int *)(self + 0x20) == 0) source3 = self + 0x18; else source3 = self + 0x1C;
-    self[0x14] = source3[0]; self[0x15] = source3[1]; self[0x16] = source3[2];
-
-    alpha = *(volatile unsigned char *)(self + 0x42);
-    product_b = self[0xB] * alpha; product_f = self[0xF] * alpha;
-    product_13 = self[0x13] * alpha; product_17 = source3[3] * alpha;
-    self[0xB] = product_b / 255; self[0xF] = product_f / 255;
-    self[0x13] = product_13 / 255; self[0x17] = product_17 / 255;
+    alpha=*(volatile unsigned char *)(self+0x42);
+    product_b=self[0xB]*alpha; product_f=self[0xF]*alpha;
+    product_13=self[0x13]*alpha; product_17=source3[3]*alpha;
+    self[0xB]=product_b/255; self[0xF]=product_f/255;
+    self[0x13]=product_13/255; self[0x17]=product_17/255;
 }
 
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
@@ -565,55 +565,55 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(void *arg0) {
 
 extern "C" double lbl_80561158;
 extern "C" float lbl_80561160;
-float nw4hbm::ut::CharWriter::Print(unsigned short character) {
-    const char *base = lbl_80328178;
-    unsigned int address = (unsigned int)this;
-    unsigned int top = address & 0xFF000000U;
-    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
-    unsigned int fontAddress;
-    unsigned char glyph[0x18];
-    float advance;
-    float xOffset;
-
-    if ((unsigned int)(top + 0x80000000U) >= 1U && (unsigned int)((address & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
-    if (r10 == 0 && (unsigned int)((address & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
-    if (r9 == 0 && (unsigned int)(top + 0x40000000U) >= 1U) r8 = 0;
-    if (r8 == 0 && (unsigned int)((address & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
-    if (r7 == 0 && (unsigned int)((address & 0xF8000000U) + 0x30000000U) >= 1U) r6 = 0;
-    if (r6 == 0 && (unsigned int)((address & 0xFFFFC000U) + 0x20000000U) >= 1U) r5 = 0;
-    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x328, base + 0x14, this);
-
-    fontAddress = *(unsigned int *)((unsigned char *)this + 0x48);
-    top = fontAddress & 0xFF000000U;
-    int r4 = 1;
-    r5 = 1; r6 = 1; r7 = 1; r8 = 1; r9 = 1; r10 = 1;
-    if ((unsigned int)(top + 0x80000000U) >= 1U && (unsigned int)((fontAddress & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
-    if (r10 == 0 && (unsigned int)((fontAddress & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
-    if (r9 == 0 && (unsigned int)(top + 0x40000000U) >= 1U) r8 = 0;
-    if (r8 == 0 && (unsigned int)((fontAddress & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
-    if (r7 == 0 && (unsigned int)((fontAddress & 0xF8000000U) + 0x30000000U) >= 1U) r5 = 0;
-    if (r5 == 0 && (unsigned int)((fontAddress & 0xFFFFC000U) + 0x20000000U) >= 1U) r4 = 0;
-    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x329, base + 0xF4);
-    if (character == 0xFFFF) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x32A, base + 0x1D0);
-
-    ((PrintFont *)*(void **)((unsigned char *)this + 0x48))->GetGlyph(glyph, character);
-    if (*(unsigned char *)((unsigned char *)this + 0x43) != 0) {
-        float scale = *(float *)((unsigned char *)this + 0x24);
-        advance = *(float *)((unsigned char *)this + 0x44);
-        xOffset = ((advance - (float)(signed char)glyph[6] * scale) * lbl_80561160) +
-                  (float)(signed char)glyph[4] * scale;
-    } else {
-        float scale = *(float *)((unsigned char *)this + 0x24);
-        advance = (float)(signed char)glyph[6] * scale;
-        xOffset = (float)(signed char)glyph[4] * scale;
-    }
-    PrintGlyph(*(float *)((unsigned char *)this + 0x2C) + xOffset,
-               *(float *)((unsigned char *)this + 0x30),
-               *(float *)((unsigned char *)this + 0x34),
-               *(const Glyph *)glyph);
-    *(float *)((unsigned char *)this + 0x2C) += advance;
-    return advance;
-}
+ float nw4hbm::ut::CharWriter::Print(unsigned short character) {
+     const char *base = lbl_80328178;
+     register unsigned int top = (unsigned int)this & 0xFF000000U;
+     register int r6, r7, r8, r9, r10, r5;
+     register unsigned int fontAddress;
+     unsigned char glyph[0x18];
+     float advance;
+     float xOffset;
+ 
+     r6 = 1; r7 = 1; r8 = 1; r9 = 1; r10 = 1; r5 = 1;
+     if ((unsigned int)(top + 0x80000000U) >= 1U && (unsigned int)(((unsigned int)this & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
+     if (r10 == 0 && (unsigned int)(((unsigned int)this & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
+     if (r9 == 0 && (unsigned int)(top + 0x40000000U) >= 1U) r8 = 0;
+     if (r8 == 0 && (unsigned int)(((unsigned int)this & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
+     if (r7 == 0 && (unsigned int)(((unsigned int)this & 0xF8000000U) + 0x30000000U) >= 1U) r6 = 0;
+     if (r6 == 0 && (unsigned int)(((unsigned int)this & 0xFFFFC000U) + 0x20000000U) >= 1U) r5 = 0;
+     if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x328, base + 0x14, this);
+ 
+     fontAddress = *(unsigned int *)((unsigned char *)this + 0x48);
+     top = fontAddress & 0xFF000000U;
+     register int r4, r5b, r7b, r8b, r9b, r10b;
+     r4 = 1; r5b = 1; r7b = 1; r8b = 1; r9b = 1; r10b = 1;
+     if ((unsigned int)(top + 0x80000000U) >= 1U && (fontAddress & 0xFF800000U) + 0x7F000000U >= 1U) r10b = 0;
+     if (r10b == 0 && (fontAddress & 0xF8000000U) + 0x70000000U >= 1U) r9b = 0;
+     if (r9b == 0 && (unsigned int)(top + 0x40000000U) >= 1U) r8b = 0;
+     if (r8b == 0 && (fontAddress & 0xFF800000U) + 0x3F000000U >= 1U) r7b = 0;
+     if (r7b == 0 && (fontAddress & 0xF8000000U) + 0x30000000U >= 1U) r5b = 0;
+     if (r5b == 0 && (fontAddress & 0xFFFFC000U) + 0x20000000U >= 1U) r4 = 0;
+     if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x329, base + 0xF4);
+     if (character == 0xFFFF) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x32A, base + 0x1D0);
+ 
+     ((PrintFont *)*(void **)((unsigned char *)this + 0x48))->GetGlyph(glyph, character);
+     if (*(unsigned char *)((unsigned char *)this + 0x43) != 0) {
+         float scale = *(float *)((unsigned char *)this + 0x24);
+         advance = *(float *)((unsigned char *)this + 0x44);
+         xOffset = ((advance - (float)(signed char)glyph[6] * scale) * lbl_80561160) +
+                   (float)(signed char)glyph[4] * scale;
+     } else {
+         float scale = *(float *)((unsigned char *)this + 0x24);
+         advance = (float)(signed char)glyph[6] * scale;
+         xOffset = (float)(signed char)glyph[4] * scale;
+     }
+     PrintGlyph(*(float *)((unsigned char *)this + 0x2C) + xOffset,
+                *(float *)((unsigned char *)this + 0x30),
+                *(float *)((unsigned char *)this + 0x34),
+                *(const Glyph *)glyph);
+     *(float *)((unsigned char *)this + 0x2C) += advance;
+     return advance;
+ }
 
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
