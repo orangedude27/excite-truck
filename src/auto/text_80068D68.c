@@ -928,6 +928,21 @@ static void gki_add_to_pool_list(UINT8 pool_id)
     p_cb->pool_list[i] = pool_id;
 }
 
+static UINT8 gki_set_pool_permission_local(UINT8 pool_id, UINT8 permission)
+{
+    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
+
+    if (pool_id < GKI_NUM_TOTAL_BUF_POOLS) {
+        if (permission == GKI_RESTRICTED_POOL)
+            p_cb->pool_access_mask = (UINT16)(p_cb->pool_access_mask | (1 << pool_id));
+        else
+            p_cb->pool_access_mask = (UINT16)(p_cb->pool_access_mask & ~(1 << pool_id));
+        return GKI_SUCCESS;
+    }
+
+    return GKI_INVALID_POOL;
+}
+
 extern s32 fn_8006EBF4(void);
 #pragma use_lmw_stmw off
 UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_pool)
@@ -935,8 +950,6 @@ UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_p
     UINT8 xx;
     UINT32 mem_needed;
     INT32 tempsize = size;
-    INT32 i;
-    INT32 j;
     tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
 
     if (size > MAX_USER_BUF_SIZE)
@@ -958,16 +971,7 @@ UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_p
 
     if (p_mem_pool) {
         gki_init_free_queue(xx, size, count, p_mem_pool);
-
-        for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
-            if (p_cb->freeq[xx].size <= p_cb->freeq[p_cb->pool_list[i]].size)
-                break;
-        }
-
-        for (j = p_cb->curr_total_no_of_pools; j > i; j--)
-            p_cb->pool_list[j] = p_cb->pool_list[j - 1];
-
-        p_cb->pool_list[i] = xx;
+        gki_add_to_pool_list(xx);
 
         if (xx < GKI_NUM_TOTAL_BUF_POOLS) {
             if (permission == 1)
