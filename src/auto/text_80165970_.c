@@ -473,7 +473,6 @@ unsigned char fn_801675E4(int arg0) { void *base; if (!((int (*)(void))fn_801667
 unsigned char fn_80167634(int arg0) { void *base; if (!((int (*)(void))fn_801667F0)()) return 0; base = *(void **)&lbl_8055E32C; return *((unsigned char *)((char *)*(void **)base + arg0 * 0x88 + 0x60)); }
 
 extern float lbl_8055E324;
-extern float fn_801660C0(void);
 
 extern char lbl_8032FF8C[];
 extern char lbl_8032FFC4[];
