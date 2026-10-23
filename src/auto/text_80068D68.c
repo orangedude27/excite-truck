@@ -2533,6 +2533,99 @@ void BTA_HhGetAclQueueInfo(void) {
     }
 }
 
+void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
+    u8 callback_data[0x20];
+    char *strings = lbl_80315700;
+    UINT16 callback_event = 0;
+    u32 state;
+    u32 new_state;
+    char *state_name;
+    char *new_state_name;
+    u8 *table;
+    u8 action;
+    memset(callback_data, 0, 0x20);
+    if (p_cb == NULL) {
+        if (*(u32 *)(lbl_803C0D48 + 0x224) != 0) {
+            switch (event) {
+            case 0x1700:
+                callback_event = 2;
+                fn_80070FA4(callback_data, (u8 *)p_data + 8);
+                callback_data[6] = 9;
+                callback_data[7] = 0xFF;
+                break;
+            case 0x170A:
+                callback_event = *(u16 *)((u8 *)p_data + 0x10);
+                if (callback_event == 0xB) {
+                    fn_80070FA4(callback_data, (u8 *)p_data + 8);
+                    callback_data[6] = 9;
+                    callback_data[7] = 0xFF;
+                } else {
+                    callback_data[6] = 0xD;
+                    callback_data[7] = (u8)*(u16 *)((u8 *)p_data + 6);
+                }
+                break;
+            case 0x1708:
+                callback_event = ((u8 *)p_data)[8];
+                if (callback_event == 7 || callback_event == 5 || callback_event == 9) {
+                    callback_data[0] = 0xD;
+                    callback_data[1] = (u8)*(u16 *)((u8 *)p_data + 6);
+                } else if (callback_event != 0xA && callback_event != 1) {
+                    callback_data[1] = (u8)*(u16 *)((u8 *)p_data + 6);
+                    callback_data[0] = 0xD;
+                }
+                break;
+            case 0x1701:
+                callback_event = 3;
+                callback_data[0] = 0xD;
+                callback_data[1] = (u8)*(u16 *)((u8 *)p_data + 6);
+                break;
+            default:
+                if (lbl_8055DC80 >= 1)
+                    fn_80070954(0x500, strings, *(u16 *)((u8 *)p_data + 6));
+                break;
+            }
+            if (callback_event != 0)
+                ((void (*)(UINT16, void *, void *))*(u32 *)(lbl_803C0D48 + 0x224))(callback_event, callback_data, lbl_803C0D48);
+        }
+    } else {
+        state = *((u8 *)p_cb + 0x1C);
+        if (lbl_8055DC80 >= 4) {
+            switch (state) {
+            case 0: state_name = strings + 0x1C; break;
+            case 1: state_name = strings + 0x2C; break;
+            case 2: state_name = strings + 0x3C; break;
+            case 3: state_name = strings + 0x50; break;
+            default: state_name = strings + 0x60; break;
+            }
+            ((void (*)(u32, void *, u32, char *, char *))fn_80070984)(0x503, strings + 0x78, state, state_name, bta_hh_evt_code(event));
+        }
+        table = *(u8 **)(lbl_802EEBD8 + ((*(volatile u8 *)((u8 *)p_cb + 0x1C) - 1) * 4));
+        event = (u8)event;
+        *((u8 *)p_cb + 0x1C) = table[event * 2 + 1];
+        action = table[event * 2];
+        if (action != 0xC)
+            ((void (*)(tBTA_HH_DEV_CB *, void *))*(u32 *)(lbl_802EEB60 + action * 4))(p_cb, p_data);
+        new_state = *((u8 *)p_cb + 0x1C);
+        if (state != new_state && lbl_8055DC80 >= 5) {
+            switch (state) {
+            case 0: state_name = strings + 0x1C; break;
+            case 1: state_name = strings + 0x2C; break;
+            case 2: state_name = strings + 0x3C; break;
+            case 3: state_name = strings + 0x50; break;
+            default: state_name = strings + 0x60; break;
+            }
+            switch (new_state) {
+            case 0: new_state_name = strings + 0x1C; break;
+            case 1: new_state_name = strings + 0x2C; break;
+            case 2: new_state_name = strings + 0x3C; break;
+            case 3: new_state_name = strings + 0x50; break;
+            default: new_state_name = strings + 0x60; break;
+            }
+            ((void (*)(u32, void *, u32, char *, char *))fn_80070984)(0x504, strings + 0xAC, state, new_state_name, bta_hh_evt_code((u8)event));
+        }
+    }
+}
+
 extern char lbl_80315700[];
 extern void *jumptable_803159A0[];
 char *bta_hh_evt_code(u32 event) {
@@ -5379,6 +5472,107 @@ void btm_sec_pin_code_request_timeout(void) {
     *(u32 *)(base + 0x194C) = 0;
     memset(lbl_803C0F78 + 0x1954, 0xFF, 6);
     btsnd_hcic_link_key_neg_reply_800840C8(base + 0x27B4);
+}
+
+void btm_sec_pin_code_request(UINT8 *p_bda) {
+    u8 *trace = (u8 *)lbl_80316870;
+    s32 count;
+    u8 *cb = lbl_803C0F78;
+    tBTM_SEC_DEV_REC *p_dev_rec;
+    u8 *dev;
+    u8 *entry;
+    void (*p_pin_callback)(u8 *, u8 *, u8 *);
+    BOOL do_reject;
+    s32 i;
+
+    do_reject = FALSE;
+    count = 0;
+
+    if (cb[0x27C0] >= 4) {
+        fn_800709CC(0xD0003, trace + 0x7BC, p_bda[0], p_bda[1],
+                    p_bda[2], p_bda[3], p_bda[4], p_bda[5]);
+    }
+
+    if (cb[0x1979] == 0 && cb[0x20] == 1) {
+        if (btm_find_dev(p_bda) == NULL) {
+            entry = lbl_803C0F78 + 0x1F30;
+            for (i = 0; i < 2; i++, entry += 0x440) {
+                if (!(entry[0x76] & 0x80)) goto count_done;
+                count++;
+                if (!(entry[0xFE] & 0x80)) goto count_done;
+                count++;
+                if (!(entry[0x186] & 0x80)) goto count_done;
+                count++;
+                if (!(entry[0x20E] & 0x80)) goto count_done;
+                count++;
+                if (!(entry[0x296] & 0x80)) goto count_done;
+                count++;
+                if (!(entry[0x31E] & 0x80)) goto count_done;
+                count++;
+                if (!(entry[0x3A6] & 0x80)) goto count_done;
+                count++;
+                if (!(entry[0x42E] & 0x80)) goto count_done;
+                count++;
+            }
+        }
+count_done:
+        if (count >= 0x10) {
+            btsnd_hcic_link_key_neg_reply_800840C8(p_bda);
+            return;
+        }
+        btsnd_hcic_pin_code_req_reply(p_bda, cb[0x21], cb + 0x22);
+        return;
+    }
+
+    p_dev_rec = btm_find_dev(p_bda);
+    if (p_dev_rec == NULL) {
+        p_dev_rec = btm_sec_alloc_dev(p_bda);
+    }
+    memcpy(lbl_803C0F78 + 0x1954, p_bda, 6);
+    dev = (u8 *)p_dev_rec;
+    if (dev != NULL) {
+        if (memcmp(p_bda, cb + 0x27B4, 6) == 0) {
+            memcpy(dev + 0x22, cb + 0x27BA, 3);
+        }
+        if (dev[0x81] & 0x40) {
+            if (lbl_803C0F78[0x27C0] >= 4) {
+                fn_8007093C(0xD0003, trace + 0x7FC);
+            }
+            btsnd_hcic_pin_code_req_reply(p_bda, cb[0x197F], cb + 0x1980);
+            if (lbl_803C0F78[0x197B] != 0) {
+                lbl_803C0F78[0x197B] = 0;
+                if (lbl_803C0F78[0x27C0] >= 5) {
+                    ((void (*)(u32, void *, u32))fn_80070954)(
+                        0xD0004, trace + 0x82C,
+                        (u32)((lbl_803C0F78[0x1978] - 3) == 0));
+                }
+                btsnd_hcic_write_pin_type_8008543C(
+                    (u8)((lbl_803C0F78[0x1978] - 3) == 0));
+            }
+        } else if (cb[0x1979] != 0 || *(void **)(cb + 0x1910) == NULL ||
+                   (dev[0x80] == 0 && (dev[0x23] & 0x1F) == 5 &&
+                    (dev[0x24] & 0x40))) {
+            do_reject = TRUE;
+        } else {
+            memcpy(cb + 0x27B4, p_bda, 6);
+            memcpy(cb + 0x27BA, dev + 0x22, 3);
+            *(void **)(cb + 0x194C) = btm_sec_pin_code_request_timeout;
+            btu_start_timer((TIMER_LIST_ENT *)(cb + 0x193C), 0x16, 0x3C);
+            p_pin_callback = *(void (**)(u8 *, u8 *, u8 *))(cb + 0x1910);
+            p_pin_callback(p_bda, dev + 0x22, dev + 0x35);
+        }
+    } else {
+        do_reject = TRUE;
+    }
+
+    if (do_reject) {
+        if (lbl_803C0F78[0x27C0] >= 2) {
+            ((void (*)(u32, void *, u8, void *, void *))fn_80070984)(
+                0xD0001, trace + 0x85C, cb[0x1979],
+                *(void **)(cb + 0x1910), p_dev_rec);
+        }
+        btsnd_hcic_link_key_neg_reply_800840C8(p_bda);
+    }
 }
 
 void btm_sec_update_clock_offset(UINT16 handle, UINT16 clock_offset) {
