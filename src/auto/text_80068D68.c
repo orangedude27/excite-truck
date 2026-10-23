@@ -10,6 +10,9 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern char lbl_80315700[];
+extern u8 lbl_802EEB60[];
+extern u8 lbl_802EEBD8[];
 extern char lbl_8031A188[];
 extern char lbl_803192C0[];
 extern char lbl_803192E0[];
@@ -12052,9 +12055,9 @@ extern s32 IOS_Ioctlv(s32, s32, s32, s32, void *);
 extern s32 IOS_IoctlvAsync(s32, s32, s32, s32, void *, void *, void *);
 s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void *buffer, s32 ioctl, void (*callback)(void), void *callbackArg, s32 async) {
     register char *base = lbl_8031A620;
-    char *blk;
-    char *a;
-    char *b;
+    register char *blk;
+    register char *a;
+    register char *b;
     char *msg;
     s32 ret;
     s32 fr;
