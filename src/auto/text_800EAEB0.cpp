@@ -949,6 +949,107 @@ extern "C" void fn_800EE568(void* arg0) {
     p[6] = 0; p[7] = 0; p[8] = 0; p[5] = 0;
 }
 
+extern "C" s32 WPADCanSendStreamData(s32);
+extern "C" s32 WENCGetEncodeData(void*, u32, const s16*, s32, void*);
+extern "C" s32 fn_80062278(s32, void*, s32);
+extern "C" void OSSetAlarm(void*, u32, u32, u32, void (*)(void));
+extern "C" void fn_800EE910(void*);
+extern "C" void IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext(void*, void*);
+extern "C" void* fn_800EE5E8(void* arg0, void* arg1) {
+    u8* state = (u8*)arg0;
+    u8* pcm = (u8*)arg1;
+    u32 outerLevel;
+    s32 active = 1, startAlarm = 0, repeatAlarm = 0, mode, encoded;
+    u32 i;
+    u8 encodedBuffer[0x18];
+    const char* file = (const char*)lbl_80323840;
+    if (state[1] == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x101,
+                                     file + 0x38);
+    if (state[1] != 0) {
+        outerLevel = OSDisableInterrupts();
+        if (WPADCanSendStreamData(*(s32*)(state + 0x2C)) == 0) {
+            OSRestoreInterrupts(outerLevel);
+        } else {
+            {
+                s32 allZero;
+                if (state[3] != 0) {
+                    u32* words = (u32*)pcm;
+                    allZero = 1;
+                    for (i = 0; i < 10; i += 9) {
+                        if (words[0] != 0) { allZero = 0; goto scanDone; }
+                        if (words[1] != 0) { allZero = 0; goto scanDone; }
+                        if (words[2] != 0) { allZero = 0; goto scanDone; }
+                        if (words[3] != 0) { allZero = 0; goto scanDone; }
+                        if (words[4] != 0) { allZero = 0; goto scanDone; }
+                        if (words[5] != 0) { allZero = 0; goto scanDone; }
+                        if (words[6] != 0) { allZero = 0; goto scanDone; }
+                        if (words[7] != 0) { allZero = 0; goto scanDone; }
+                        if (words[8] != 0) { allZero = 0; goto scanDone; }
+                        if (words[9] != 0) { allZero = 0; goto scanDone; }
+                        words += 10;
+                    }
+                } else {
+                    allZero = 1;
+                }
+scanDone:
+                if (allZero == 0) {
+                    if (state[6] != 0) active = 0;
+                } else {
+                    active = 0;
+                }
+            }
+            if (state[2] != 0) {
+                mode = 1;
+                if (active == 0) repeatAlarm = 1;
+            } else if (active != 0) {
+                startAlarm = 1;
+                mode = state[5] == 0 ? 1 : 0;
+                state[5] = 0;
+            } else mode = -1;
+            if (mode != -1) {
+                WENCGetEncodeData(state + 9, (u32)mode, (const s16*)pcm,
+                                  mode == 2 ? 0x20 : 0x28, encodedBuffer);
+                encoded = ((s32 (*)(s32, void*, s32))fn_80062278)(
+                    *(s32*)(state + 0x2C), encodedBuffer, 0x14);
+                if (encoded != 0)
+                    Warning__Q26nw4hbm2dbFPCciPCce(
+                        file, 0x154,
+                        file + 0x60, encoded);
+            }
+            if (startAlarm != 0) {
+                u32 level = OSDisableInterrupts();
+                if (state[7] == 0) {
+                    u32 ticks = *(volatile u32*)0x800000F8 >> 2;
+                    u64 scaled = (u64)ticks * 0x1E0;
+                    OSSetAlarm(state + 0x38, (u32)0, (u32)(scaled >> 32),
+                               (u32)scaled, (void (*)(void))fn_800EE910);
+                    {
+                        u64 time = OSGetTime();
+                        *(u32*)(state + 0x9C) = (u32)time;
+                        *(u32*)(state + 0x98) = (u32)(time >> 32);
+                    }
+                    state[7] = 1;
+                }
+                OSCancelAlarm(state + 0x68);
+                state[8] = 0;
+                OSRestoreInterrupts(level);
+            }
+            if (repeatAlarm != 0) {
+                u32 level = OSDisableInterrupts();
+                state[8] = 1;
+                OSCancelAlarm(state + 0x68);
+                OSSetAlarm(state + 0x68, (u32)0, (u32)0,
+                           *(volatile u32*)0x800000F8 >> 2,
+                           (void (*)(void))IntervalAlarmHandler__Q34nw4r3snd13RemoteSpeakerFP7OSAlarmP9OSContext);
+                OSRestoreInterrupts(level);
+            }
+            state[2] = (u8)active;
+            OSRestoreInterrupts(outerLevel);
+        }
+    }
+}
+
 extern "C" void fn_800EE910(void* alarm) {
     volatile void* alarmTemp = alarm;
     u32 level = OSDisableInterrupts();
