@@ -44,6 +44,7 @@ extern "C" void* Instance__15EmissionManagerFv(void);
 extern u8 lbl_80323840[];
 extern u8 lbl_803238C0[];
 #pragma pop
+extern "C" u64 OSGetTime(void);
 extern "C" void OSCancelAlarm(void *);
 extern "C" void* OSGetAlarmUserData(void*);
 extern "C" void* fn_800EE4F0(void*);
@@ -343,6 +344,39 @@ extern "C" f32 fn_800EB430(void* arg0) {
     return CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(*(f32*)((u8*)arg0 + 4) / lbl_80560FF4);
 }
 
+extern const f32 lbl_80560FF8;
+extern const s16 lbl_802F4A90[];
+extern u8 lbl_80322B98[];
+extern "C" void Update__Q46nw4hbm3snd6detail12EnvGeneratorFi(void *arg0, s32 arg1) {
+    s32 step=arg1, state=*(s32 *)arg0, valid, idx;
+    f32 value, target, reset=lbl_80560FF0, threshold=lbl_80560FF8;
+    switch(state) {
+    case 0:
+        if(step>0) {
+            do {
+                value=*(f32 *)((u8 *)arg0+4)*(*(f32 *)((u8 *)arg0+0x10));
+                *(f32 *)((u8 *)arg0+4)=value;
+                if(value>threshold) { *(f32 *)((u8 *)arg0+4)=reset; *(s32 *)arg0=1; }
+            } while(--step != 0);
+            step=arg1-1;
+        }
+        if(*(s32 *)arg0!=1) return;
+    case 1:
+        idx=(s32)*((u8 *)arg0+0x14); valid=0;
+        if(idx>=0 && idx<=0x7f) valid=1;
+        if(valid==0) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322B80,0x141,(const char *)lbl_80322B98,idx,0,0x7f);
+        value=*(f32 *)((u8 *)arg0+4)-(*(f32 *)((u8 *)arg0+8)*(f32)step);
+        target=(f32)lbl_802F4A90[idx];
+        *(f32 *)((u8 *)arg0+4)=value;
+        if(!(value>target)) { *(f32 *)((u8 *)arg0+4)=target; *(s32 *)arg0=2; return; }
+        break;
+    case 2: return;
+    case 3:
+        value=*(f32 *)((u8 *)arg0+4)-(*(f32 *)((u8 *)arg0+0xc)*(f32)arg1);
+        *(f32 *)((u8 *)arg0+4)=value; break;
+    }
+}
+
 #pragma push
 #pragma schedule off
 void nw4hbm::snd::detail::EnvGenerator::SetDecay(int decay) {
@@ -416,6 +450,43 @@ void fn_800EBB88(void* arg0) {
     p[2] = (u32)q; p[3] = (u32)q;
 }
 
+#pragma push
+#pragma small_data off
+extern u8 lbl_80322D60[], lbl_8032301C[], lbl_80322FF8[], lbl_80322FBC[], lbl_80322F98[], lbl_80322FEC[], lbl_80322FC8[], lbl_8032304C[], lbl_80323028[];
+#pragma pop
+extern "C" void *MEMAllocFromFrmHeapEx(void *, u32, s32);
+void *nw4hbm::snd::detail::FrameHeap::Alloc(unsigned long size, void (*callback)(void *, unsigned long, void *), void *user) {
+    void *block;
+    void *list;
+    void *iter;
+    void *link;
+    if (*(void **)this == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0xA2, (const char *)(lbl_80322D60 + 0x44));
+    block = MEMAllocFromFrmHeapEx(*(void **)this, ((size + 0x1f) & ~31UL) + 0x20, 0x20);
+    if (block == 0)
+        return 0;
+    *(u32 *)block = 0;
+    *((u32 *)block + 1) = 0;
+    *((u32 *)block + 2) = size;
+    *((void **)block + 3) = (void *)callback;
+    *((void **)block + 4) = user;
+    if (*(void **)((u8 *)this + 4) == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032301C, 0x1fb, (const char *)lbl_80322FF8);
+    list = *(void **)((u8 *)this + 0xC);
+    if (list == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FBC, 0x23d, (const char *)lbl_80322F98);
+    if (list == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322FEC, 0x193, (const char *)lbl_80322FC8);
+    if (block == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_8032304C, 0x233, (const char *)lbl_80323028);
+    link = (u8 *)list + 0xC;
+    iter = (u8 *)list + 8;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(iter, &link, block);
+    if (((u32)((u8 *)block + 0x20) & 0x1f) != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80322D60, 0xae, (const char *)(lbl_80322D60 + 0x94));
+    return (u8 *)block + 0x20;
+}
+
 extern "C" void CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void* headArg, void* buffer, u32 size, u32 blockSize) {
     extern u8 lbl_80323058[], lbl_80323070[];
     void** head = (void**)headArg;
@@ -468,6 +539,25 @@ extern "C" void Update__Q44nw4r3snd6detail3LfoFi(void* arg0, s32 arg1) {
     temp_f1 = *(f32*)((u8*)arg0 + 0x14) + ((*(f32*)((u8*)arg0 + 4) * (f32)var_r4) / lbl_80561020);
     *(f32*)((u8*)arg0 + 0x14) = temp_f1;
     *(f32*)((u8*)arg0 + 0x14) = (f32)(temp_f1 - (f32)(s32)temp_f1);
+}
+
+extern const s8 lbl_802F4D90[];
+extern const char lbl_803230A0[], lbl_803230AC[];
+extern const f32 lbl_80561030, lbl_80561034, lbl_80561038;
+extern void Panic__Q26nw4hbm2dbFPCciPCce(const char *, s32, const char *, ...);
+extern "C" f32 GetValue__Q46nw4hbm3snd6detail3LfoCFv(void *arg0) {
+    s32 index; s32 valid=0; s8 value; f32 angle;
+    if(lbl_80561018==*(f32 *)arg0) return lbl_80561018;
+    if(*(u32 *)((u8 *)arg0+0x10)<*(u32 *)((u8 *)arg0+8)) return lbl_80561018;
+    angle=lbl_80561030*(lbl_80561034**(f32 *)((u8 *)arg0+0x14));
+    index=(s32)angle;
+    if(index>=0 && index<0x80) valid=1;
+    if(valid==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803230A0,0x7b,lbl_803230AC,index,0,0x80);
+    if(index<0x20) value=lbl_802F4D90[index];
+    else if(index<0x40) { s32 off=index-0x20; value=lbl_802F4D90[0x20-off]; }
+    else if(index<0x60) value=-lbl_802F4D90[index-0x40];
+    else { s32 off=index-0x60; value=-lbl_802F4D90[0x20-off]; }
+    return ((f32)value/lbl_80561038)**(f32 *)arg0*(f32)*(u8 *)((u8 *)arg0+0xc);
 }
 
 extern "C" void *fn_800ECAEC(void *arg0) {
