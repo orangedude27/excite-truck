@@ -31,6 +31,39 @@ typedef s16 M2C_UNK16;
 typedef s32 M2C_UNK32;
 #pragma cplusplus on
 struct DummyStrmUpdate { virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15(); virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19(); virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23(); virtual void f24(); virtual void f25(); virtual void f26(); virtual void f27(); virtual void f28(); virtual void f29(); virtual void f30(); virtual void f31(); virtual void f32(); virtual void f33(s32); virtual void f34(); virtual void f35(s32); };
+struct DummyStrmLoadStream {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual s32 f5(void *, u32);
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
+    virtual void f10();
+    virtual s32 f11();
+    virtual void f12();
+    virtual void f13();
+    virtual void f14();
+    virtual void f15();
+    virtual void f16();
+    virtual void f17(s32, s32);
+    virtual void f18();
+    virtual void f19();
+    virtual s32 f20();
+};
+struct DummyStrmLoadCallback {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+};
+struct DummyStrmLoadTaskCallback {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2(s32);
+};
 #pragma cplusplus reset
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
@@ -1418,6 +1451,138 @@ extern "C" void *__ct__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFPvUll
     return self;
 }
 
+extern "C" void DCInvalidateRange(s32, u32);
+extern "C" void DCFlushRange(s32, s32);
+extern "C" void *memcpy(void *, const void *, u32);
+extern "C" int fn_800FD810(void *, int);
+extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(void *, int, u16 *);
+extern "C" u8 lbl_8055DE98;
+extern "C" const char lbl_80325624[];
+#pragma cplusplus on
+extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(void *arg0) {
+    s16 sp8;
+    u8 padding[6];
+    u8 sp10[0x200];
+    void **var_r3;
+    s16 *var_r31;
+    s32 temp_r25;
+    s32 temp_r26;
+    s32 temp_r27;
+    register s32 temp_r29;
+    register s32 temp_r29_2;
+    s32 temp_r30;
+    s32 temp_r30_2;
+    s32 temp_r5;
+    s32 temp_r6;
+    s32 var_r0;
+    s32 var_r29_2;
+    void **temp_r3;
+    void **temp_r3_10;
+    void **temp_r3_2;
+    void **temp_r3_3;
+    void **temp_r3_4;
+    void **temp_r3_5;
+    void **temp_r3_6;
+    void **temp_r3_7;
+    void **temp_r3_8;
+    void **temp_r3_9;
+    void **var_r29;
+
+    DCInvalidateRange(M2C_FIELD(arg0, s32 *, 0x20), M2C_FIELD(arg0, u32 *, 0x24));
+    temp_r29 = M2C_FIELD(arg0, s32 *, 0x3C);
+    OSLockMutex((void *)temp_r29);
+    M2C_FIELD(arg0, void ***, 0x14) = (void **)detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi((void *)M2C_FIELD(arg0, s32 *, 0x18), (unsigned long)M2C_FIELD(arg0, s32 *, 0x1C), &sp10, 0x200);
+    OSUnlockMutex((void *)temp_r29);
+    temp_r3 = M2C_FIELD(arg0, void ***, 0x14);
+    if (temp_r3 == 0) {
+        temp_r3_2 = M2C_FIELD(arg0, void ***, 0x10);
+        if (temp_r3_2 != 0) {
+            ((void (*)(void *, s32))(*(void ***)temp_r3_2)[2])(temp_r3_2, 0);
+        }
+    } else if ((((s32 (*)(void *))(*(void ***)temp_r3)[0x50 / 4])(temp_r3) == 0) || (temp_r3_3 = M2C_FIELD(arg0, void ***, 0x14), ((((s32 (*)(void *))(*(void ***)temp_r3_3)[0x2C / 4])(temp_r3_3) == 0) != 0))) {
+        temp_r3_4 = M2C_FIELD(arg0, void ***, 0x14);
+        ((void (*)(void *))(*(void ***)temp_r3_4)[0x10 / 4])(temp_r3_4);
+        temp_r3_5 = M2C_FIELD(arg0, void ***, 0x10);
+        M2C_FIELD(arg0, void ***, 0x14) = 0;
+        if (temp_r3_5 != 0) {
+            ((void (*)(void *, s32))(*(void ***)temp_r3_5)[2])(temp_r3_5, 0);
+        }
+    } else {
+        var_r29 = M2C_FIELD(arg0, void ***, 0x14);
+        var_r3 = M2C_FIELD(*var_r29, void **(**)(void **), 8)(var_r29);
+loop_11:
+        if (var_r3 == 0) {
+            var_r0 = 0;
+        } else if (var_r3 == (void **)&lbl_8055DE98) {
+            var_r0 = 1;
+        } else {
+            var_r3 = (void **)*var_r3;
+            goto loop_11;
+        }
+        if (var_r0 != 0) {
+
+        } else {
+            var_r29 = 0;
+        }
+        if (var_r29 != 0) {
+            M2C_FIELD(var_r29, s32 *, 0x68) = 1;
+        }
+        temp_r3_6 = M2C_FIELD(arg0, void ***, 0x14);
+        ((void (*)(void *, s32, s32))(*(void ***)temp_r3_6)[0x44 / 4])(temp_r3_6, M2C_FIELD(arg0, s32 *, 0x28), 0);
+        temp_r3_7 = M2C_FIELD(arg0, void ***, 0x14);
+        temp_r30 = M2C_FIELD(arg0, s32 *, 0x3C);
+        temp_r29_2 = ((s32 (*)(void *, void *, u32))(*(void ***)temp_r3_7)[0x14 / 4])(temp_r3_7, M2C_FIELD(arg0, void **, 0x20), M2C_FIELD(arg0, u32 *, 0x24));
+        OSLockMutex((void *)temp_r30);
+        temp_r3_8 = M2C_FIELD(arg0, void ***, 0x14);
+        ((void (*)(void *))(*(void ***)temp_r3_8)[0x10 / 4])(temp_r3_8);
+        M2C_FIELD(arg0, void ***, 0x14) = 0;
+        OSUnlockMutex((void *)temp_r30);
+        if (temp_r29_2 != -3) {
+            if ((u32) temp_r29_2 != (u32) M2C_FIELD(arg0, u32 *, 0x24)) {
+                if (temp_r29_2 == 0) {
+                    Warning__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80324E88, 0x79C, (const char *)&lbl_80325624);
+                }
+                temp_r3 = (void **)((void *(*)(void))fn_800FDE60)();
+                ((void (*)(void *, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(temp_r3, M2C_FIELD(arg0, u32 *, 0xC));
+                temp_r3_9 = M2C_FIELD(arg0, void ***, 0x10);
+                if (temp_r3_9 != 0) {
+                    ((void (*)(void *, s32))(*(void ***)temp_r3_9)[2])(temp_r3_9, 0);
+                }
+            } else {
+                temp_r30_2 = M2C_FIELD(arg0, s32 *, 0x20);
+                var_r31 = &sp8;
+                var_r29_2 = 0;
+loop_30:
+                if (var_r29_2 < (s32) M2C_FIELD(arg0, s32 *, 0x2C)) {
+                    if ((s32) M2C_FIELD(arg0, u8 *, 0x38) != 0) {
+                        *var_r31 = *(u8 *)(var_r29_2 * ((M2C_FIELD(arg0, s32 *, 0x30) + 0x1F) & 0xFFFFFFE0) + (temp_r30_2 + M2C_FIELD(arg0, s32 *, 0x34)));
+                    }
+                    if ((void **) M2C_FIELD(arg0, void ***, 0x10) != 0) {
+                        temp_r6 = M2C_FIELD(arg0, s32 *, 0x20);
+                        temp_r26 = (M2C_FIELD(arg0, s32 *, 0x30) + 0x1F) & 0xFFFFFFE0;
+                        temp_r5 = var_r29_2 * temp_r26;
+                        temp_r27 = temp_r5 + (temp_r6 + M2C_FIELD(arg0, s32 *, 0x34));
+                        temp_r25 = fn_800FD810(M2C_FIELD(arg0, void **, 0x10), var_r29_2);
+                        memcpy((void *)temp_r25, (void *)temp_r27, temp_r26);
+                        DCFlushRange(temp_r25, temp_r26);
+                    }
+                    var_r31 += 2;
+                    var_r29_2 += 1;
+                    goto loop_30;
+                }
+                if (((s32) M2C_FIELD(arg0, u8 *, 0x38) != 0) && ((void **) M2C_FIELD(arg0, void ***, 0x10) != 0)) {
+                    SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(M2C_FIELD(arg0, void **, 0x10), M2C_FIELD(arg0, s32 *, 0x2C), (u16 *)&sp8);
+                }
+                temp_r3_10 = M2C_FIELD(arg0, void ***, 0x10);
+                if (temp_r3_10 != 0) {
+                    ((void (*)(void *, s32))(*(void ***)temp_r3_10)[2])(temp_r3_10, 1);
+                }
+            }
+        }
+    }
+}
+#pragma cplusplus reset
+
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_800F7FEC(void* self) {
     class Sound {
     public:
@@ -2083,6 +2248,131 @@ extern "C" s32 fn_800FACC0(void *arg0, u16 *arg1, s32 arg2, s32 arg3) {
     return 1;
 }
 
+extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
+    struct DummyStream {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual u32 f5(void *, u32);
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17(s32, s32, s32);
+    };
+    s32 sp27;
+    s32 *temp_r3_5;
+    s32 *temp_r3_6;
+    s32 temp_r30;
+    s32 temp_r6;
+    u16 temp_r0;
+    u16 temp_r0_2;
+    u16 temp_r4;
+    u16 temp_r4_2;
+    u32 temp_r29;
+    u32 var_r0;
+    u32 var_r0_2;
+    u8 *temp_r27;
+    const char *file = lbl_80326518;
+    DummyStream *stream;
+
+    stream = (DummyStream *)M2C_FIELD(arg0, void **, 0);
+    stream->f17(0, 0, arg3);
+    temp_r30 = (s32)&sp27 & 0xFFFFFFE0;
+    if (stream->f5((void *)temp_r30, 0x40) != 0x40U) {
+        return 0;
+    }
+    if (temp_r30 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x2B, file + 0x14);
+    }
+    if ((u32)(M2C_FIELD(temp_r30, s32 *, 0) + 0xADAD0000) != 0x544DU) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x31, file + 0x40);
+    }
+    if ((u32)(M2C_FIELD(temp_r30, s32 *, 0) + 0xADAD0000) != 0x544DU) {
+        var_r0 = 0;
+    } else {
+        if ((u16)M2C_FIELD(temp_r30, u16 *, 6) < 0x100U) {
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x39, file + 0x8C);
+        }
+        temp_r0 = M2C_FIELD(temp_r30, u16 *, 6);
+        if (temp_r0 < 0x100U) {
+            var_r0 = 0;
+        } else {
+            if (temp_r0 > 0x100U) {
+                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3F, file + 0x8C);
+            }
+            temp_r4 = M2C_FIELD(temp_r30, u16 *, 6);
+            var_r0 = (u32)((0x100 | ~temp_r4) - ((u32)(0x100 - temp_r4) >> 1U)) >> 0x1FU;
+        }
+    }
+    if ((s32)var_r0 == 0) {
+        return 0;
+    }
+    if ((u32)M2C_FIELD(temp_r30, u32 *, 0x18) > arg2) {
+        return 0;
+    }
+
+    temp_r6 = M2C_FIELD(temp_r30, s32 *, 0x10);
+    temp_r29 = temp_r6 + M2C_FIELD(temp_r30, s32 *, 0x14);
+    stream->f17(0, 0, temp_r6);
+    if (stream->f5(arg1, temp_r29) != temp_r29) {
+        return 0;
+    }
+    if (arg1 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x5F, file + 0x14);
+    }
+    if (arg1 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x2B, file + 0x14);
+    }
+    if ((u32)(M2C_FIELD(arg1, s32 *, 0) + 0xADAD0000) != 0x544DU) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x31, file + 0x40);
+    }
+    if ((u32)(M2C_FIELD(arg1, s32 *, 0) + 0xADAD0000) != 0x544DU) {
+        var_r0_2 = 0;
+    } else {
+        if ((u16)M2C_FIELD(arg1, u16 *, 6) < 0x100U) {
+            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x39, file + 0x8C);
+        }
+        temp_r0_2 = M2C_FIELD(arg1, u16 *, 6);
+        if (temp_r0_2 < 0x100U) {
+            var_r0_2 = 0;
+        } else {
+            if (temp_r0_2 > 0x100U) {
+                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x3F, file + 0x8C);
+            }
+            temp_r4_2 = M2C_FIELD(arg1, u16 *, 6);
+            var_r0_2 = (u32)((0x100 | ~temp_r4_2) - ((u32)(0x100 - temp_r4_2) >> 1U)) >> 0x1FU;
+        }
+    }
+    if ((s32)var_r0_2 == 0) {
+        return 1;
+    }
+    M2C_FIELD(arg0, void **, 4) = arg1;
+    temp_r3_5 = (s32 *)((u8 *)arg1 + M2C_FIELD(arg1, s32 *, 0x10));
+    M2C_FIELD(arg0, s32 **, 8) = temp_r3_5;
+    if ((u32)(M2C_FIELD(temp_r3_5, s32 *, 0) + 0xB7BB0000) != 0x4144U) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x68, file + 0xE4);
+    }
+    temp_r3_6 = M2C_FIELD(arg0, s32 **, 8);
+    temp_r27 = (u8 *)temp_r3_6 + 8;
+    if ((s32)M2C_FIELD(temp_r3_6, u8 *, 9) != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598F8, 0x6F, lbl_80326738);
+    }
+    if ((M2C_FIELD(GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(M2C_FIELD(temp_r27, u8 *, 0), M2C_FIELD(temp_r27, u32 *, 4), temp_r27), u32 *, 0x18) & 0x1F) != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x6C, file + 0x13C);
+    }
+    return 1;
+}
+
 extern "C" void fn_800FB358(void *arg0) {
     extern char lbl_80326AC0[];
     *(s32 *)((u8 *)arg0 + 0x14) = 0;
@@ -2132,6 +2422,116 @@ extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" void fn_800FB620(void *self) {
     if (*(u8 *)((u8 *)self + 0x48) != 0) {
         ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
+    }
+}
+
+extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
+    const u8 *label = (const u8 *)lbl_80326768;
+    s32 temp_r29;
+    s32 temp_r29_2;
+    s32 temp_r29_3;
+    s32 temp_r29_4;
+    s32 temp_r3;
+
+    u8 var_r28;
+    u8 var_r28_2;
+    u8 var_r28_3;
+    u8 var_r28_4;
+
+    if (((s32) M2C_FIELD(arg0, u8 *, 0x49) != 0) && ((s32) M2C_FIELD(arg0, s32 *, 0x438) != 0)) {
+        temp_r3 = DVDGetDriveStatus();
+        if (temp_r3 == 0) {
+            M2C_FIELD(arg0, s8 *, 0x4C) = 0;
+            temp_r29 = OSDisableInterrupts();
+            var_r28 = 0;
+            if ((s32) M2C_FIELD(arg0, u8 *, 0x4B) != 0) {
+                var_r28 = 1;
+            }
+            if ((s32) M2C_FIELD(arg0, u8 *, 0x4E) != 0) {
+                var_r28 = 1;
+            }
+            if (var_r28 != (u8) M2C_FIELD(arg0, u8 *, 0x4D)) {
+                if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, (const char *)(label + 0x44));
+                }
+                Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void * volatile *)((u8 *)arg0 + 0x438), var_r28);
+                M2C_FIELD(arg0, u8 *, 0x4D) = var_r28;
+            }
+            OSRestoreInterrupts(temp_r29);
+        } else if (temp_r3 != 1) {
+            M2C_FIELD(arg0, s8 *, 0x4C) = 1;
+            M2C_FIELD(arg0, u8 *, 0x4E) = 1U;
+            temp_r29_2 = OSDisableInterrupts();
+            var_r28_2 = 0;
+            if ((s32) M2C_FIELD(arg0, u8 *, 0x4B) != 0) {
+                var_r28_2 = 1;
+            }
+            if ((s32) M2C_FIELD(arg0, u8 *, 0x4E) != 0) {
+                var_r28_2 = 1;
+            }
+            if (var_r28_2 != (u8) M2C_FIELD(arg0, u8 *, 0x4D)) {
+                if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, (const char *)(label + 0x44));
+                }
+                Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void * volatile *)((u8 *)arg0 + 0x438), var_r28_2);
+                M2C_FIELD(arg0, u8 *, 0x4D) = var_r28_2;
+            }
+            OSRestoreInterrupts(temp_r29_2);
+        }
+        if ((s32) M2C_FIELD(arg0, u8 *, 0x4E) == 0) {
+            if ((u32) M2C_FIELD(arg0, u32 *, 0xA0) >= (u32) (M2C_FIELD(arg0, s32 *, 0x68) - 1)) {
+                Warning__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xFD, (const char *)(label + 0x70));
+                M2C_FIELD(arg0, u8 *, 0x4E) = 1U;
+                temp_r29_3 = OSDisableInterrupts();
+                var_r28_3 = 0;
+                if ((s32) M2C_FIELD(arg0, u8 *, 0x4B) != 0) {
+                    var_r28_3 = 1;
+                }
+                if ((s32) M2C_FIELD(arg0, u8 *, 0x4E) != 0) {
+                    var_r28_3 = 1;
+                }
+                if (var_r28_3 != (u8) M2C_FIELD(arg0, u8 *, 0x4D)) {
+                    if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
+                        Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, (const char *)(label + 0x44));
+                    }
+                    Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void * volatile *)((u8 *)arg0 + 0x438), var_r28_3);
+                    M2C_FIELD(arg0, u8 *, 0x4D) = var_r28_3;
+                }
+                OSRestoreInterrupts(temp_r29_3);
+            }
+        } else if ((s32) M2C_FIELD(arg0, u32 *, 0xA0) == 0) {
+            M2C_FIELD(arg0, u8 *, 0x4E) = 0U;
+            temp_r29_4 = OSDisableInterrupts();
+            var_r28_4 = 0;
+            if ((s32) M2C_FIELD(arg0, u8 *, 0x4B) != 0) {
+                var_r28_4 = 1;
+            }
+            if ((s32) M2C_FIELD(arg0, u8 *, 0x4E) != 0) {
+                var_r28_4 = 1;
+            }
+            if (var_r28_4 != (u8) M2C_FIELD(arg0, u8 *, 0x4D)) {
+                if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
+                    Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0xD1, (const char *)(label + 0x44));
+                }
+                Pause__Q46nw4hbm3snd6detail7AxVoiceFb(*(void * volatile *)((u8 *)arg0 + 0x438), var_r28_4);
+                M2C_FIELD(arg0, u8 *, 0x4D) = var_r28_4;
+            }
+            OSRestoreInterrupts(temp_r29_4);
+        }
+        if (((s32) M2C_FIELD(arg0, u8 *, 0x52) == 0) && ((s32) M2C_FIELD(arg0, u8 *, 0x4F) == 0)) {
+            if (*(void * volatile *)((u8 *)arg0 + 0x438) == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80326768, 0x114, (const char *)(label + 0x44));
+            }
+            s32 temp_r28 = GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(M2C_FIELD(arg0, s32 *, 0x438)) / (u32) M2C_FIELD(arg0, u32 *, 0x30);
+            goto loop_check;
+loop_body:
+            UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(arg0);
+            UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(arg0, 1);
+loop_check:
+            if (M2C_FIELD(arg0, s32 *, 0x7C) != temp_r28) {
+                goto loop_body;
+            }
+        }
     }
 }
 
