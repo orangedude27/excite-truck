@@ -3,15 +3,6 @@
 #include <types.h>
 extern int lbl_80333918[64];
 extern "C" s32 fn_8019D618(void*, void*, s32, void*);
-class Fn8019E500Matrix {
-public:
-    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
-    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
-    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
-    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-    virtual f32* GetMatrix();
-};
 extern "C" char lbl_80333640[];
 extern "C" void* fn_801284F8(s32, const char*);
 extern "C" void fn_801A0378(void*, void*);
@@ -471,33 +462,34 @@ extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
 
 extern "C" u8 lbl_80435020[];
 extern f32 lbl_8056236C;
-extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
+#pragma scheduling invalid_target
+extern "C" s32 fn_8019E500(s32 arg0, void* arg1) {
     u32 copied[12];
-    f32 rows[12];
+    f32 rows[3][4];
     f32 output[12];
-    f32* source = (f32*)((VTab1A1E7C*)arg1)->Call();
-    copied[0]=((u32*)source)[0]; copied[1]=((u32*)source)[1];
-    copied[2]=((u32*)source)[2]; copied[3]=((u32*)source)[3];
-    copied[4]=((u32*)source)[4]; copied[5]=((u32*)source)[5];
-    copied[6]=((u32*)source)[6]; copied[7]=((u32*)source)[7];
-    copied[8]=((u32*)source)[8]; copied[9]=((u32*)source)[9];
-    copied[10]=((u32*)source)[10]; copied[11]=((u32*)source)[11];
-    *(f64*)&rows[0]=*(f64*)&copied[0];
-    *(u32*)&rows[2]=copied[2];
-    rows[3]=*(f32*)((u8*)arg1+0x24);
-    *(f64*)&rows[4]=*(f64*)&copied[3];
-    *(u32*)&rows[6]=copied[5];
-    rows[7]=*(f32*)((u8*)arg1+0x28);
-    *(f64*)&rows[8]=*(f64*)&copied[6];
-    *(u32*)&rows[10]=copied[8];
-    rows[11]=*(f32*)((u8*)arg1+0x2c);
+    f32* matrix = (f32*)((VTab1A1E7C*)arg1)->Call();
+    copied[0]=((u32*)matrix)[0]; copied[1]=((u32*)matrix)[1];
+    copied[2]=((u32*)matrix)[2]; copied[3]=((u32*)matrix)[3];
+    copied[4]=((u32*)matrix)[4]; copied[5]=((u32*)matrix)[5];
+    copied[6]=((u32*)matrix)[6]; copied[7]=((u32*)matrix)[7];
+    copied[8]=((u32*)matrix)[8]; copied[9]=((u32*)matrix)[9];
+    copied[10]=((u32*)matrix)[10]; copied[11]=((u32*)matrix)[11];
+    *(f64*)&rows[0][0]=*(f64*)&copied[0];
+    *(u32*)&rows[0][2]=copied[2];
+    rows[0][3]=*(f32*)((u8*)arg1+0x24);
+    *(f64*)&rows[1][0]=*(f64*)&copied[3];
+    *(u32*)&rows[1][2]=copied[5];
+    rows[1][3]=*(f32*)((u8*)arg1+0x28);
+    *(f64*)&rows[2][0]=*(f64*)&copied[6];
+    *(u32*)&rows[2][2]=copied[8];
+    rows[2][3]=*(f32*)((u8*)arg1+0x2c);
     s32 result=0;
     for (s32 row=0; row<3; row++) {
         if (row!=1) {
             s32 next=(row+1)%3, prev=(row+2)%3;
-            f32* current=&rows[row*4];
-            f32* arow=&rows[next*4];
-            f32* brow=&rows[prev*4];
+            f32* current=rows[row];
+            f32* arow=rows[next];
+            f32* brow=rows[prev];
             output[0]=arow[0]; output[1]=arow[1]; output[2]=arow[2];
             output[3]=brow[0]; output[4]=brow[1]; output[5]=brow[2];
             output[6]=current[0]; output[7]=current[1]; output[8]=current[2];
@@ -508,31 +500,35 @@ extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
             f32 d1=brow[3]-lbl_8056236C;
             for (s32 i=0;i<4;i++) {
                 f32 a=(i&1) ? lbl_805622DC : lbl_805622E0;
+                f32 s0=d0*a;
+                output[9]+=arow[0]*s0;
+                output[10]+=arow[1]*s0;
+                output[11]+=arow[2]*s0;
                 f32 b=(i&2) ? lbl_805622DC : lbl_805622E0;
-                f32 scale0=d0*a, scale1=d1*b;
-                output[9]+=arow[0]*scale0 + brow[0]*scale1;
-                output[10]+=arow[1]*scale0 + brow[1]*scale1;
-                output[11]+=arow[2]*scale0 + brow[2]*scale1;
+                f32 s1=d1*b;
+                output[9]+=brow[0]*s1;
+                output[10]+=brow[1]*s1;
+                output[11]+=brow[2]*s1;
                 if (lbl_80435020 != 0) {
-                    *(void**)(lbl_80435020+0x0)=lbl_80333918;
+                    *(void**)(lbl_80435020+0xc)=output;
                     *(void**)(lbl_80435020+0x4)=*(void**)((u8*)arg1+4);
                     *(s32*)(lbl_80435020+0x8)=0;
-                    *(void**)(lbl_80435020+0xc)=output;
+                    *(u32*)(lbl_80435020+0x18)=0x54554245;
                     *(f32*)(lbl_80435020+0x10)=*(f32*)((u8*)arg1+0x10);
                     *(f32*)(lbl_80435020+0x14)=*(f32*)((u8*)arg1+0x14);
-                    *(u32*)(lbl_80435020+0x18)=0x54554245;
-                    *(s32*)(lbl_80435020+0x1c)=0;
                     *(s32*)(lbl_80435020+0x20)=0x64;
+                    *(s32*)(lbl_80435020+0x1c)=0;
                     *(f32*)(lbl_80435020+0x24)=lbl_8056236C;
                     *(f32*)(lbl_80435020+0x28)=current[3];
+                    *(void**)(lbl_80435020+0x0)=lbl_80333918;
                 }
-                result=(result | fn_8019D618(lbl_80435020,arg0,1,arg1)) != 0;
+                result=(result | fn_8019D618(lbl_80435020,(void*)arg0,1,arg1)) != 0;
             }
         }
     }
     return result;
 }
-
+#pragma scheduling on
 extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -1384,6 +1380,7 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
     *(s32*)((u8*)arg0 + 8) = *(s32*)((u8*)result + 0x2C);
 }
 
+#pragma scheduling on
 extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
     struct Work { volatile f32 point[3]; f32 gap; volatile f32 corners[24]; } workArea;
     register f32 x, y, z;
@@ -1421,7 +1418,7 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
         corner+=3; sameCorner+=3;
     }
 }
-
+#pragma scheduling on
 extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
     extern f32 lbl_80562300;
     extern void* lbl_803338C0;
@@ -1825,7 +1822,68 @@ extern "C" void fn_801A401C(void *arg0, void *arg1) {
     }
 }
 
-#pragma pop
+#pragma scheduling invalid_target
+extern "C" s32 fn_801A40F8(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, f32 *arg4) {
+    f32 stack[9];
+    volatile f32 *input = (volatile f32 *)arg1;
+    register f32 dx = input[0];
+    register f32 dy = input[1];
+    f32 *matrix = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
+    dx -= matrix[9];
+    register f32 dz = input[2];
+    stack[6] = dx;
+    dy -= matrix[10];
+    stack[7] = dy;
+    dz -= matrix[11];
+    stack[8] = dz;
+    f32 vx = dz * matrix[2] + (dx * matrix[0] + dy * matrix[1]);
+    f32 vy = dz * matrix[5] + (dx * matrix[3] + dy * matrix[4]);
+    f32 vz = dz * matrix[8] + (dx * matrix[6] + dy * matrix[7]);
+    stack[6] = vx;
+    stack[7] = vy;
+    stack[8] = vz;
+    f32 *matrix2 = (f32 *)*(void * volatile *)((u8 *)arg0 + 0xC);
+    f32 ax;
+    f32 ay;
+    f32 az;
+    if (&stack[3] == arg2) {
+        register f32 a = arg2[0];
+        register f32 b = arg2[1];
+        register f32 c = arg2[2];
+        ax = c * matrix2[2] + (a * matrix2[0] + b * matrix2[1]);
+        ay = c * matrix2[5] + (a * matrix2[3] + b * matrix2[4]);
+        az = c * matrix2[8] + (a * matrix2[6] + b * matrix2[7]);
+    } else {
+        ax = arg2[2] * matrix2[2] + (arg2[0] * matrix2[0] + arg2[1] * matrix2[1]);
+        ay = arg2[2] * matrix2[5] + (arg2[0] * matrix2[3] + arg2[1] * matrix2[4]);
+        az = arg2[2] * matrix2[8] + (arg2[0] * matrix2[6] + arg2[1] * matrix2[7]);
+    }
+    stack[3] = ax;
+    stack[4] = ay;
+    stack[5] = az;
+    typedef s32 (*Call)(s32, f32 *, f32 *, s32, f32 *);
+    if (((Call)fn_801CF828)(*(s32 *)((u8 *)arg0 + 0x24), &stack[6], &stack[3], arg3, &stack[0]) != 0) {
+        f32 *outMatrix = (f32 *)*(void **)((u8 *)arg0 + 0xC);
+        if (arg4 == &stack[0]) {
+            register f32 a = stack[0];
+            register f32 b = stack[1];
+            register f32 c = stack[2];
+            vx = a * outMatrix[0] + b * outMatrix[3] + c * outMatrix[6];
+            vy = a * outMatrix[1] + b * outMatrix[4] + c * outMatrix[7];
+            vz = a * outMatrix[2] + b * outMatrix[5] + c * outMatrix[8];
+            arg4[0] = vx;
+            arg4[1] = vy;
+            arg4[2] = vz;
+        } else {
+            arg4[0] = stack[0] * outMatrix[0] + stack[1] * outMatrix[3] + stack[2] * outMatrix[6];
+            arg4[1] = stack[0] * outMatrix[1] + stack[1] * outMatrix[4] + stack[2] * outMatrix[7];
+            arg4[2] = stack[0] * outMatrix[2] + stack[1] * outMatrix[5] + stack[2] * outMatrix[8];
+        }
+        return 1;
+    }
+    return 0;
+}
+#pragma scheduling on
 void fn_801A442C(void *arg0, void *arg1, void *arg2) {
     *(f32 *)((u8 *)arg1 + 0) = *(f32 *)((u8 *)arg0 + 0x28);
     *(f32 *)((u8 *)arg1 + 4) = *(f32 *)((u8 *)arg0 + 0x2C);
