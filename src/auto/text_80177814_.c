@@ -1,4 +1,5 @@
 #include <types.h>
+extern void *lbl_8055E430;
 extern int lbl_8055E450;
 extern int lbl_8055E8F8;
 #include <revolution/MTX/vec.h>
@@ -345,6 +346,37 @@ void fn_801791A4(void) {
 
 }
 
+void fn_801791A8(void) {
+    int offset;
+    register int i;
+    void *object;
+    fn_80177A18();
+    fn_801B537C(fn_80178C4C);
+    fn_801E1D9C(); fn_8026785C(); fn_8017D334();
+    fn_80128658(lbl_8055E450);
+    lbl_8055E450 = 0;
+    offset = 0;
+    i = 0;
+    while (i < lbl_8055E438) {
+        object = *(void **)((char *)lbl_8055E434 + offset);
+        if (object != 0) ((void (*)(void *, int))(*(void ***)object)[3])(object, 1);
+        offset += 4;
+        i++;
+    }
+    fn_80128670(lbl_8055E434);
+    lbl_8055E434 = 0;
+    fn_801AE50C(); fn_801E222C(); fn_801E1520(); fn_801DEE3C(); fn_801CB518();
+    fn_801D483C(); fn_801D9828(); fn_801D32DC(); fn_801D2210(); fn_801C1BA0();
+    fn_8026B69C(); fn_801B228C(); fn_801AFBE8(); fn_801B06CC(); fn_801C4B74();
+    fn_8020C45C(); fn_801DE0E8(); fn_80181FC4(); fn_801CECB4(); fn_801B8BBC();
+    fn_801A4E54(); fn_801B3B28(); fn_801B60A8(); fn_801B531C();
+    if (lbl_8055E414 != 0) ((void (*)(void *, int))(*(void ***)lbl_8055E414)[2])(lbl_8055E414, 1);
+    lbl_8055E414 = 0;
+    fn_801CEFC4(); fn_80206550(1); fn_801D0E70();
+    lbl_8055E8F8 = 0;
+    fn_801D0CFC();
+}
+
 void fn_801792F4(void) {
     fn_801E21B4();
 }
@@ -446,6 +478,11 @@ void fn_801797F8(int arg0, int arg1, unsigned short arg2) {
     int *p = &lbl_804305A0[arg0 * 2];
     p[0] = (arg1 << 16) | arg2;
     p[1] += 1;
+}
+
+void *fn_80179824(void) {
+    /* initialize the scene state and copy configuration tables */
+    return 0;
 }
 
 int fn_80179CB0(void) {
