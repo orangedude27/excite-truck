@@ -37,7 +37,139 @@ void *fn_802E6B98(int arg0) {
 
 void fn_802E6CA4(void) {}
 
+int fn_802E6CA8(void) {
+    unsigned char *allocation;
+    char *messages = lbl_8034D678;
+    int size;
+    int payloadSize;
+    unsigned char flags[10];
+    int success;
+    int readError;
+    int i;
+    int result;
+    int temp;
+    unsigned char *desc;
+    unsigned char *descIt;
+    unsigned char *dataIt;
+    unsigned char *slot;
+    unsigned char *flagIt;
+    void (*callback)(int);
+
+    size = fn_802E7130();
+    payloadSize = size - 0x20D0;
+    allocation = (unsigned char *)fn_801284E8(messages + 0x40, size);
+    memset(allocation, 0, 0x20D0);
+    memset(allocation + 0x20D0, 0, payloadSize);
+    flags[0] = 0; flags[1] = 0; flags[2] = 0; flags[3] = 0; flags[4] = 0;
+    flags[5] = 0; flags[6] = 0; flags[7] = 0; flags[8] = 0; flags[9] = 0;
+    success = 0;
+    readError = 0;
+
+    if (fn_802E8D8C((void *)lbl_8055D200, allocation, size) == 0) {
+        fn_802E30C8(messages + 0x50);
+        readError = 1;
+    } else {
+        temp = *(int *)(allocation + 0x204C);
+        if (temp != payloadSize) {
+            fn_802E30C8(messages + 0x68, payloadSize);
+        } else if (*(unsigned int *)(allocation + 0x2040) != 0x4D435348 ||
+                   *(unsigned int *)(allocation + 0x2044) != 4 ||
+                   *(unsigned int *)(allocation + 0x2048) != 0x20D0 ||
+                   (unsigned int)temp != (unsigned int)payloadSize) {
+            fn_802E30C8(messages + 0x88);
+            fn_802E30C8(messages + 0xB0,
+                        *(unsigned int *)(allocation + 0x2040),
+                        *(unsigned int *)(allocation + 0x2044),
+                        *(unsigned int *)(allocation + 0x2048),
+                        *(unsigned int *)(allocation + 0x204C));
+            fn_802E30C8(messages + 0xC4, payloadSize);
+        } else {
+            result = fn_80132E7C(allocation + 0x20D0);
+            if (result != *(unsigned int *)(allocation + 0x2050)) {
+                fn_802E30C8(messages + 0xD4, result);
+            } else {
+                desc = allocation + 0x2058;
+                descIt = desc;
+                dataIt = allocation + 0x20D0;
+                success = 1;
+                i = 0;
+                goto first_check;
+first_body:
+                if (fn_802E721C(*(unsigned int *)(descIt + 0),
+                                *(unsigned int *)(descIt + 4),
+                                *(int *)(descIt + 8)) < 0) success = 0;
+                descIt += 0xC;
+                i++;
+first_check:
+                if (i < *(int *)(allocation + 0x2054)) goto first_body;
+
+                if (success != 0) {
+                    descIt = desc;
+                    i = 0;
+                    goto second_check;
+second_body:
+                    result = fn_802E721C(*(unsigned int *)(descIt + 0),
+                                         *(unsigned int *)(descIt + 4),
+                                         *(int *)(descIt + 8));
+                    if (result >= 0) {
+                        (&flags[0])[result] = 1;
+                        slot = lbl_804FC8B0 + result * 0x14;
+                        callback = *(void (**)(int))(slot + 0x10);
+                        if (callback != 0) callback(0);
+                        memcpy(*(void **)(slot + 8), dataIt,
+                               *(unsigned int *)(slot + 0xC));
+                        callback = *(void (**)(int))(slot + 0x10);
+                        if (callback != 0) callback(1);
+                    } else {
+                        success = 0;
+                    }
+                    {
+                        unsigned int amount = *(unsigned int *)(descIt + 8);
+                        descIt += 0xC;
+                        i++;
+                        dataIt += amount;
+                    }
+second_check:
+                    if (i < *(int *)(allocation + 0x2054)) goto second_body;
+                }
+            }
+        }
+    }
+
+    fn_80128658(allocation);
+    if (success == 0) {
+        int anyMissing = 0;
+        unsigned char *p = flags;
+        {
+            unsigned int remaining = (unsigned int)lbl_8055FFC0;
+            if (remaining > 0) {
+                do {
+                    if (*p == 0) anyMissing = 1;
+                    p++;
+                } while (--remaining != 0);
+            }
+        }
+        if (anyMissing != 0) {
+            slot = lbl_804FC8B0;
+            i = 0;
+            while (i < lbl_8055FFC0) {
+                callback = *(void (**)(int))(slot + 0x10);
+                if (callback != 0) callback(2);
+                slot += 0x14;
+                i++;
+            }
+        }
+        if (readError == 0) {
+            fn_802E30C8(messages + 0xF8);
+        } else {
+            fn_802E6FBC();
+        }
+    }
+    return 0;
+}
+
 void fn_802E7128(void) { fn_802E6FBC(); }
 
 void fn_802E712C(void) {}
+#pragma scheduling invalid_target
 
