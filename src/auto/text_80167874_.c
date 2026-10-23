@@ -13,16 +13,16 @@ struct DummyVec2 {
 class DummyItem {
 public:
     virtual void v0();
-    virtual void v1();
+    virtual s32 v1(const char *name);
     virtual void v2();
-    virtual s32 v3(const char *name);
+    virtual void v3(const char *name);
     virtual void v4();
-    virtual void v5(const char *name);
+    virtual void v5();
     virtual void v6();
     virtual f32 getHit(const char *name);
-    virtual void v8();
+    virtual f32 v8(const char *name, f32 value);
     virtual void v9();
-    virtual f32 v10(const char *name, f32 value);
+    virtual void v10();
     virtual void v11();
     virtual void v12();
     virtual DummyVec2 getLoc(const char *name);
@@ -33,9 +33,7 @@ public:
     virtual void v18();
     virtual void v19();
     virtual void v20();
-    virtual void v21();
-    virtual void v22();
-    virtual void *getObject(const char *name, ...);
+    virtual void *getObject(const char *name, s32 x, s32 y, void *arg);
 };
 
 class DummyArg1 {
