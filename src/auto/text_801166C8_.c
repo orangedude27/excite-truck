@@ -2012,7 +2012,6 @@ void fn_80120084(void *arg0) {
     else free(base);
 }
 
-extern f64 lbl_80561228;
 void fn_80120834(s32 n, s32 *info, f32 *table) {
     register s32 i;
     register s32 stage;
@@ -2020,9 +2019,9 @@ void fn_80120834(s32 n, s32 *info, f32 *table) {
     s32 j;
     f32 endpoint;
     f32 angle;
+    f32 angle2;
     f32 stage_scale;
     f32 stage_zero;
-    f32 angle2;
 
     info[0] = n;
     info[1] = 1;
