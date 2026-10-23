@@ -391,6 +391,7 @@ extern void fn_802DC464();
 extern float fn_801DCF48(int, float, float);
 #pragma push
   #pragma ppc_psq_save off
+  #pragma scheduling invalid_target
   void fn_802B1758(void *arg0) {
     float setupA[3];
     float setupB[3];
@@ -400,7 +401,6 @@ extern float fn_801DCF48(int, float, float);
     int state;
     int i;
     int offset;
-    char *entry;
     float radius;
     float *point;
     float z;
@@ -472,6 +472,7 @@ extern float fn_801DCF48(int, float, float);
             }
 
             radius = lbl_80564BE8 * lbl_80564BB8;
+            point = lbl_804BE190 + 12;
             for (i = 4; i < 8; i++) {
                 x = radius * (float)((i & 1) ? -1 : 1);
                 z = radius * (float)((i & 2) ? -1 : 1);
