@@ -52,6 +52,41 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
         out->z = in->y * m[5] + in->x * m[2] + in->z * m[8];
     }
 }
+static inline void transform_vec_scheduled(float *out, const volatile float *m, volatile float *in) {
+    if (out == in) {
+        register float m3 = m[3];
+        register float y = in[1];
+        register float m4 = m[4];
+        register float py0 = y * m3;
+        register float m5 = m[5];
+        register float m0 = m[0];
+        register float py1 = y * m4;
+        register float x = in[0];
+        register float m1 = m[1];
+        register float px0 = x * m0;
+        register float m2 = m[2];
+        register float px1 = x * m1;
+        register float m6 = m[6];
+        register float px2 = x * m2;
+        register float py2 = y * m5;
+        register float z = in[2];
+        register float m7 = m[7];
+        register float sum0 = px0 + py0;
+        register float pz0 = z * m6;
+        register float m8 = m[8];
+        register float sum1 = px1 + py1;
+        register float pz1 = z * m7;
+        register float sum2 = px2 + py2;
+        register float pz2 = z * m8;
+        out[0] = sum0 + pz0;
+        out[1] = sum1 + pz1;
+        out[2] = sum2 + pz2;
+    } else {
+        out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
+        out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
+        out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
+    }
+}
 #pragma cplusplus on
 extern "C" void fn_801B8E28(int arg0) {
     struct Dummy {
@@ -69,7 +104,7 @@ extern "C" void fn_801B8E28(int arg0) {
         float sp20[3];
         unsigned int copy[9];
         float output[3];
-        float fx, fy, fz;
+        volatile float fx, fy, fz;
         volatile int zero;
         volatile short h;
     } w;
@@ -109,8 +144,11 @@ extern "C" void fn_801B8E28(int arg0) {
     w.zero = 0;
     w.fy = ((float *)w.copy)[7] * dot;
     w.fz = ((float *)w.copy)[8] * dot;
-    w.h = *(short *)((char *)*(void **)((char *)obj + 0x2754) + 0x6c);
-    ((struct Dummy *)obj)->v19(w.copy, *(void **)((char *)obj + 0x2754));
+    {
+        void *matrix = *(void **)((char *)obj + 0x2754);
+        w.h = *(short *)((char *)matrix + 0x6c);
+        ((struct Dummy *)obj)->v19(w.copy, matrix);
+    }
     *(void **)((char *)obj + 0x2738) = obj;
     if (*(unsigned char *)((char *)obj + 0x275d) == 0) {
         w.sp14[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
