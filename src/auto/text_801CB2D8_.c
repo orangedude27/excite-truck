@@ -4,7 +4,8 @@ extern unsigned int fn_801CE898(void);
 #include "revolution/BTE/stack/include/hcimsgs.h"
 #include "revolution/BTE/gki/platform/gki_int.h"
 #pragma cplusplus on
-struct Dummy_801CCDAC { virtual int v0(); virtual int v1(int); virtual int v2(); virtual int v3(int); };
+struct DummyBase_801CCDAC { int pad; };
+struct Dummy_801CCDAC : DummyBase_801CCDAC { virtual int v0(); virtual int v1(int); };
 #pragma cplusplus reset
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
