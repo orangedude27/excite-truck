@@ -558,6 +558,7 @@ void fn_802B6AC0(void) {
     }
 }
 #pragma pop
+__declspec(section ".sdata") extern s32 lbl_8055CEA0;
 s32 fn_802B6E00(s32 arg0, s32 arg1) {
     s32 var_r0 = 0;
     if ((arg0 < -0x200) || (arg0 > 0x200) || (arg1 < -0x200) || (arg1 > 0x200))
