@@ -109,6 +109,7 @@ extern "C" void fn_801561E8(u8 *arg0) {
 
 extern "C" s32* fn_801E87A8();
 extern "C" void* fn_8001285C(s32);
+#pragma dont_inline fn_8015621C
 s32 fn_8015621C(void) {
     return *(s32*)((char*)fn_8001285C(*fn_801E87A8()) + 0x20);
 }
@@ -175,6 +176,178 @@ s32 fn_801563BC(s32 arg0, void* arg1) {
     return result;
 }
 
+extern "C" void *fn_801284F8(s32, const char *);
+extern "C" void fn_8012E81C(void *);
+extern "C" void fn_802E317C(const char *, ...);
+extern "C" void *fn_801399FC(void);
+extern "C" u8 lbl_8032E238[];
+extern "C" u8 lbl_8032E424[];
+extern "C" u8 lbl_8032E3F8[];
+extern "C" char lbl_80559FD0[];
+extern "C" char lbl_80559FD4[];
+extern "C" char lbl_80559FD8[];
+extern "C" char lbl_80559FE0[];
+extern "C" char lbl_80559FE8[];
+extern "C" char lbl_80559FF0[];
+extern "C" f32 lbl_80561738;
+extern "C" f32 lbl_8056173C;
+#pragma dont_inline fn_8015621C
+extern "C" void fn_801564B0(void) {
+    struct Entry { s32 id; s32 kind; };
+    struct Config {
+        void *vtable; Entry *entries; s32 count; s32 capacity;
+        u8 pad10[0x80]; void **objects; s32 objectCount; s32 objectCapacity;
+        u8 pad9c[0x40]; f32 value0; f32 value1;
+    };
+    struct Helper { void *vtable; s32 id; };
+    struct Reader {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual char *read(char *, const char *);
+        virtual void v7(); virtual void v8(); virtual void v9();
+        virtual f32 value(const char *, f32);
+        virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
+        virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18();
+        virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22();
+        virtual Reader *open(const char *);
+    };
+    struct IndexReader {
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual s32 valid(s32);
+    };
+    struct TextManager {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual char *get(const char *, const char *);
+    };
+    struct ConfigVtable {
+        virtual void v0(); virtual void v1(); virtual void v2();
+        virtual void v3(); virtual void v4(); virtual void dispose();
+    };
+
+    extern char lbl_80559FC0[];
+    u8 path[0x40];
+    char input[0x10], text[0x20];
+    void *helper;
+    void *resource;
+    void *wrapper;
+    Reader *reader;
+    Config *config;
+
+    fn_8012E81C(lbl_8032E238 + 0xAC);
+    helper = fn_801284F8(8, lbl_80559FD0);
+    if (helper != 0) {
+        *(void **)helper = lbl_8032E46C;
+        fn_80156248(path, 0x40);
+        s32 helperId = fn_80138968(path);
+        *(s32 *)((u8 *)helper + 4) = helperId;
+        if (helperId == 0)
+            fn_802E317C((const char *)lbl_8032E238 + 0xBC, path);
+    }
+
+    reader = ((Reader *)(long)fn_8015621C())->open((const char *)lbl_8032E238 + 0xD8);
+    if (reader != 0) {
+        config = (Config *)fn_801284F8(0x124, lbl_80559FD4);
+        resource = config;
+        if (config != 0) {
+            config->vtable = lbl_8032E424;
+            config->entries = (Entry *)((u8 *)config + 0x10);
+            config->capacity = 0x10;
+            config->count = 0;
+            config->objects = (void **)((u8 *)config + 0x9C);
+            config->objectCapacity = 0x10;
+            config->objectCount = 0;
+            for (s32 line = 1;; ++line) {
+                fn_801345D8((s32)input, 0x10, lbl_80559FE0, lbl_80559FD8, line);
+                char *result = reader->read(input, 0);
+                if (result == 0)
+                    break;
+                s32 oldCount = config->count;
+                if (oldCount + 1 > config->capacity)
+                    break;
+                config->count = oldCount + 1;
+                Entry *entry = &config->entries[oldCount];
+                entry->id = fn_801563BC((s32)result, helper);
+
+                char *src = input;
+                char *dst = text;
+                s32 remaining = 0x20;
+                do {
+                    u8 c = *src++;
+                    *dst++ = c;
+                    remaining--;
+                    if ((s8)c == 0) break;
+                } while (remaining > 0);
+                if (remaining == 0) dst[-1] = 0;
+
+                dst = text;
+                remaining = 0x20;
+                while ((s8)*dst != 0) { remaining--; dst++; }
+                if (remaining > 0) {
+                    src = lbl_80559FE8;
+                    do {
+                        u8 c = *src++;
+                        *dst++ = c;
+                        if ((s8)c == 0) break;
+                        remaining--;
+                        if (remaining <= 0) { dst[-1] = 0; break; }
+                    } while (1);
+                }
+
+                s8 kindChar = (s8)*reader->read(text, lbl_80559FC0);
+                switch (kindChar) {
+                case 0x72: entry->kind = 1; break;
+                case 0x6C: entry->kind = 0; break;
+                default: entry->kind = 2; break;
+                }
+            }
+            if (config->count == 0)
+                fn_802E317C((const char *)lbl_8032E238 + 0xE8);
+
+            IndexReader *list = (IndexReader *)reader->open((const char *)lbl_8032E238 + 0x128);
+            if (list != 0) {
+                s32 index = 0;
+                do {
+                    config->objects[config->objectCount++] = fn_801399FC();
+                    index++;
+                    if (list->valid(index) == 0) break;
+                } while (config->objectCount + 1 <= config->objectCapacity);
+            }
+
+            config->value0 = reader->value((const char *)lbl_8032E238 + 0x144, lbl_80561738);
+            config->value1 = reader->value((const char *)lbl_8032E238 + 0x154, lbl_8056173C);
+            ((void (*)(const char *, s32, const char *, s32, const char *, f32, f32))fn_802E30C8)(
+                (const char *)lbl_8032E238 + 0x168,
+                config->count, config->count == 1 ? lbl_80559FC0 : lbl_80559FF0,
+                config->objectCount, config->objectCount == 1 ? lbl_80559FC0 : lbl_80559FF0,
+                config->value0, config->value1);
+            ((ConfigVtable *)config)->dispose();
+        }
+    } else {
+        Helper *fallback = (Helper *)fn_801284F8(8, lbl_80559FD4);
+        resource = fallback;
+        if (fallback != 0) {
+            fallback->vtable = lbl_8032E448;
+            TextManager *textManager = (TextManager *)fn_8015621C();
+            char *value = textManager->get((const char *)lbl_8032E238, lbl_80559FC0);
+            value = textManager->get((const char *)lbl_8032E238 + 0x1A0, value);
+            fallback->id = fn_801563BC((s32)value, helper);
+        }
+    }
+
+    wrapper = fn_801284F8(0xC, (const char *)lbl_8032E238 + 0x1B4);
+    if (wrapper != 0) {
+        *(void **)wrapper = lbl_8032E3F8;
+        *(void **)((u8 *)wrapper + 8) = helper;
+        *(void **)((u8 *)wrapper + 4) = resource;
+    }
+    lbl_8055E27C = (void **)wrapper;
+}
 s32 fn_801568E0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -294,6 +467,46 @@ extern "C" void fn_80156B50(void) {
 extern "C" void fn_80156B54(void) {
 }
 
+extern "C" void fn_80128658(void*);
+extern u8 lbl_8032E424[];
+extern "C" void* fn_80156B58(void* arg0, s32 arg1) {
+    s32 i;
+    s32 offset;
+    s32 zero = 0;
+    if (arg0 != 0) {
+        *(void**)arg0 = lbl_8032E424;
+        i = 0;
+        offset = 0;
+        while (i < *(s32*)((char*)arg0 + 8)) {
+            ((void(*)(void*))fn_80138AD8)((char*)*(void**)((char*)arg0 + 4) + offset);
+            offset += 8;
+            i++;
+        }
+        *(s32*)((char*)arg0 + 8) = 0;
+        i = 0;
+        offset = 0;
+        while (i < *(s32*)((char*)arg0 + 0x94)) {
+            fn_80128658(*(void**)((char*)*(void**)((char*)arg0 + 0x90) + offset));
+            offset += 4;
+            i++;
+        }
+        if ((char*)arg0 + 0x90 != 0) {
+            *(s32*)((char*)arg0 + 0x94) = zero;
+            *(s32*)((char*)arg0 + 0x90) = zero;
+            *(s32*)((char*)arg0 + 0x94) = zero;
+            *(s32*)((char*)arg0 + 0x98) = zero;
+        }
+        if ((char*)arg0 + 4 != 0) {
+            *(s32*)((char*)arg0 + 4) = zero;
+            *(s32*)((char*)arg0 + 8) = zero;
+            *(s32*)((char*)arg0 + 0xC) = zero;
+        }
+        if (arg1 > 0)
+            fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 s32 fn_80156C60(void *arg0, s32 arg1) {
     if (arg1 >= ((s32 *)arg0)[2]) return 0;
     return ((s32 *)((s32 *)arg0)[1])[arg1 * 2];
@@ -394,6 +607,45 @@ void fn_80156E74(void *arg0, s32 arg1, void *arg2) {
     f32 result = fn_80129DC4(4, *(f32*)((u8*)arg0 + 0xDC), *(f32*)((u8*)arg0 + 0xE0));
     *(f32*)((u8*)arg0 + arg1*8 + 0xE4) = base + result;
     *(s32*)((u8*)arg0 + arg1*8 + 0xE8) = value;
+}
+
+extern "C" s32 fn_801B2F24(void);
+extern "C" void *fn_801B2ED0(s32);
+extern "C" f32 lbl_8055E3C8;
+extern "C" void fn_80156F6C(void *arg0) {
+    // Fix note: builds the category list on the stack, then assigns a randomized matching entry.
+    u8 *base = (u8 *)arg0;
+    s32 total = fn_801B2F24();
+    f32 threshold = lbl_80561744;
+    s32 i;
+    u32 entries[8];
+    s32 count;
+    s32 j;
+    s32 offset;
+    s32 category;
+    s32 n;
+    u32 *selected;
+    u8 *out = base;
+    for (i = 0; i < total; i++) {
+        count = 0;
+        category = 0;
+        void *obj = fn_801B2ED0(i);
+        f32 value = ((f32 (*)(void *))(*(void ***)obj)[4])(obj);
+        if (value > threshold)
+            category = 1;
+        for (j = 0, offset = 0; j < *(s32 *)(base + 8) && count < 8; j++, offset += 8) {
+            u8 *entry = *(u8 **)(base + 4) + offset;
+            if (category == *(s32 *)(entry + 4))
+                entries[count++] = *(u32 *)entry;
+        }
+        if (count > 0) {
+            selected = &entries[(i / count) * count == i ? 0 : i - (i / count) * count];
+            f32 result = fn_80129DC4(4, 0, 0, *(f32 *)(base + 0xDC), *(f32 *)(base + 0xE0));
+            *(f32 *)(out + 0xE4) = result;
+            *(u32 *)(out + 0xE8) = *selected;
+        }
+        out += 8;
+    }
 }
 
 extern "C" void* fn_801570D0(void* arg0, s32 arg1) {
