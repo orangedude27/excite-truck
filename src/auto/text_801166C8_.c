@@ -166,7 +166,7 @@ u32 fn_80116BCC(void) {
     return 1;
 }
 
-void fn_80116CC4(s32* arg0, s16 arg1, u32 arg2) {
+void fn_80116CC4(s32* arg0, u16 arg1, u32 arg2) {
     s32* r3;
     u32 r6;
     s32 r7;
@@ -1895,6 +1895,115 @@ void fn_8011D9E4(void *arg0, void *arg1) {
     *(u32 *)arg1 = value; *(u32 *)((u8 *)arg1 + 8) = bitCount;
 }
 
+void fn_8011DC5C(void *arg0, void *arg1) {
+    u32 *bits;
+    u32 value, bitCount, width, mask, count, code, order, tmp, tmp2;
+    s32 val, n;
+    s16 *dst;
+
+    if (*(u32 *)arg0 != *(u32 *)((u8 *)arg0 + 4)) return;
+    bitCount = *(u32 *)((u8 *)arg1 + 8);
+    width = *(u32 *)((u8 *)arg0 + 0x28);
+    bits = *(u32 **)((u8 *)arg1 + 4);
+    value = *(u32 *)arg1;
+    if (bitCount < width) {
+        u32 next = *bits++;
+        count = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
+        value = next >> (width - bitCount);
+        bitCount = bitCount + 32 - width;
+    } else {
+        count = value & (0xFFFFFFFFU >> (32 - width));
+        value >>= width;
+        bitCount -= width;
+    }
+    if (count != 0) {
+        dst = *(s16 **)((u8 *)arg0 + 0x2C);
+        if (*(s32 *)((u8 *)arg0 + 0xC) != 0) {
+            width = *(u32 *)((u8 *)arg0 + 8) - 1;
+            if (bitCount < width) {
+                u32 next = *bits++;
+                val = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
+                value = next >> (width - bitCount);
+                bitCount = bitCount + 32 - width;
+            } else {
+                val = value & (0xFFFFFFFFU >> (32 - width));
+                value >>= width;
+                bitCount -= width;
+            }
+            if (val != 0) {
+                if (bitCount == 0) { tmp = *bits++; bitCount = 31; value = tmp >> 1; }
+                else { tmp = value; value >>= 1; bitCount--; }
+                if (tmp & 1) val = -val;
+            }
+        } else {
+            width = *(u32 *)((u8 *)arg0 + 8);
+            if (bitCount < width) {
+                u32 next = *bits++;
+                val = (value | (next << bitCount)) & (0xFFFFFFFFU >> (32 - width));
+                value = next >> (width - bitCount);
+                bitCount = bitCount + 32 - width;
+            } else {
+                val = value & (0xFFFFFFFFU >> (32 - width));
+                value >>= width;
+                bitCount -= width;
+            }
+        }
+        *dst = val;
+        *(s16 **)arg0 = *(s16 **)((u8 *)arg0 + 0x2C);
+        *(s16 **)((u8 *)arg0 + 4) = *(s16 **)((u8 *)arg0 + 0x2C) + count;
+        dst++;
+        count--;
+        while (count != 0) {
+            n = 8;
+            if (count <= 8) n = (s32)count;
+            if (bitCount < 4) {
+                u32 next = *bits++;
+                order = (value | (next << bitCount)) & 15;
+                value = next >> (4 - bitCount);
+                bitCount = bitCount + 32 - 4;
+            } else {
+                order = value & 15;
+                value >>= 4;
+                bitCount -= 4;
+            }
+            if (order != 0) {
+                mask = 0xFFFFFFFFU >> (32 - order);
+                for (tmp = 0; (s32)tmp < n; tmp++) {
+                    if (bitCount < order) {
+                        u32 next = *bits++;
+                        code = (value | (next << bitCount)) & mask;
+                        value = next >> (order - bitCount);
+                        bitCount = bitCount + 32 - order;
+                    } else {
+                        code = value & mask;
+                        value >>= order;
+                        bitCount -= order;
+                    }
+                    if (code != 0) {
+                        if (bitCount == 0) { u32 w = *bits++; bitCount = 31; value = w >> 1; tmp2 = w; }
+                        else { tmp2 = value; value >>= 1; bitCount--; }
+                        if (tmp2 & 1) code = -code;
+                    }
+                    val += code;
+                    *dst = val;
+                    dst++;
+                }
+            } else {
+                fn_80116CC4((s32 *)dst, val & 0xFFFF, n * 2);
+                dst += n;
+            }
+            count -= n;
+        }
+    } else {
+        dst = *(s16 **)((u8 *)arg0 + 0x2C);
+        *(s16 **)((u8 *)arg0 + 4) = dst;
+        *(s16 **)((u8 *)arg0) = dst + 2;
+    }
+    *(u32 **)((u8 *)arg1 + 4) = bits;
+    *(u32 *)arg1 = value;
+    *(u32 *)((u8 *)arg1 + 8) = bitCount;
+}
+
 s32 fn_8011DF68(s32 arg0, u32 arg1, u32 arg2, u32 arg3) {
     u32 var_r5 = arg2;
     u32 temp;
@@ -3509,7 +3618,8 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
     s32 sp8[64];
     register s32 *var_r12;
     register s32 *var_r4;
-    s16 temp_r0, temp_r10, temp_r23, temp_r25, temp_r4, temp_r4_2, temp_r7, temp_r8, temp_r9;
+    s16 temp_r0, temp_r10, temp_r25, temp_r4, temp_r4_2, temp_r7, temp_r8, temp_r9;
+    register s16 temp_r23;
     s32 temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5, temp_r0_6, temp_r0_7;
     s32 temp_r10_2, temp_r10_3, temp_r10_4, temp_r10_5, temp_r10_6;
     register s32 temp_r11;
@@ -3536,7 +3646,7 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
     var_r31 = var_r3 + arg1;
     temp_r30 = arg1 * 2;
     var_r12 = sp8;
-    for (var_ctr = 0; var_ctr < 8; var_ctr++) {
+    for (var_ctr = 8; var_ctr != 0; var_ctr--) {
         temp_r7 = var_r5[8];
         temp_r8 = var_r5[24];
         temp_r23 = var_r5[16];
@@ -3615,7 +3725,7 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
         }
     }
     var_r4 = sp8;
-    for (var_ctr_2 = 0; var_ctr_2 < 8; var_ctr_2++) {
+    for (var_ctr_2 = 8; var_ctr_2 != 0; var_ctr_2--) {
         temp_r9_5 = M2C_FIELD(var_r4, s32 *, 0x18);
         temp_r11_4 = M2C_FIELD(var_r4, s32 *, 8);
         temp_r5 = M2C_FIELD(var_r4, s32 *, 0xC);
@@ -3675,6 +3785,212 @@ void fn_80125CA0(void *arg0, void *arg1, void *arg2, s32 arg3) {
 extern void fn_80125960(void *p0, s32 p1, void *p2, void *p3);
 void fn_80125CB4(void *arg0, void *arg1, void *arg2, s32 arg3) {
     fn_80125960(arg0, (s32)arg1, arg2, (u8 *)&lbl_802F6A40 + (arg3 << 8));
+}
+
+extern u8 lbl_802F7A40[];
+void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg5) {
+    s32 sp8[64];
+    register u8 *var_r6;
+    register u8 *var_r6_2;
+    s16 temp_r0;
+    s16 temp_r10;
+    s16 temp_r10_2;
+    s16 temp_r11;
+    s16 temp_r12;
+    s16 temp_r22;
+    s16 temp_r26;
+    s16 temp_r30;
+    s16 temp_r31;
+    s32 temp_r0_10;
+    s32 temp_r0_2;
+    s32 temp_r0_3;
+    s32 temp_r0_4;
+    s32 temp_r0_5;
+    s32 temp_r0_6;
+    s32 temp_r0_7;
+    s32 temp_r0_8;
+    s32 temp_r0_9;
+    s32 temp_r10_10;
+    s32 temp_r10_3;
+    s32 temp_r10_4;
+    s32 temp_r10_5;
+    s32 temp_r10_6;
+    s32 temp_r10_7;
+    s32 temp_r10_8;
+    s32 temp_r10_9;
+    s32 temp_r11_2;
+    s32 temp_r11_3;
+    s32 temp_r11_4;
+    s32 temp_r12_2;
+    s32 temp_r12_3;
+    s32 temp_r20;
+    s32 temp_r20_2;
+    s32 temp_r20_3;
+    s32 temp_r20_4;
+    s32 temp_r20_5;
+    s32 temp_r20_6;
+    s32 temp_r21;
+    s32 temp_r21_2;
+    s32 temp_r22_2;
+    s32 temp_r22_3;
+    s32 temp_r23;
+    s32 temp_r23_2;
+    s32 temp_r23_3;
+    s32 temp_r24;
+    s32 temp_r24_2;
+    s32 temp_r24_3;
+    s32 temp_r25;
+    s32 temp_r25_2;
+    s32 temp_r25_3;
+    s32 temp_r25_4;
+    s32 temp_r26_2;
+    s32 temp_r26_3;
+    s32 temp_r26_4;
+    s32 temp_r26_5;
+    s32 temp_r27;
+    s32 temp_r27_2;
+    s32 temp_r28;
+    s32 temp_r28_2;
+    s32 temp_r28_3;
+    s32 temp_r29;
+    s32 temp_r29_2;
+    s32 temp_r29_3;
+    s32 temp_r30_2;
+    s32 temp_r30_3;
+    s32 temp_r31_2;
+    s32 temp_r31_3;
+    s32 temp_r31_4;
+    s32 temp_r5;
+    s32 temp_r5_2;
+    s32 temp_r9;
+    s32 temp_r9_2;
+    s32 var_ctr;
+    s32 var_ctr_2;
+    u8 temp_r5_3;
+    register u8 *var_r3;
+    register u8 *var_r5;
+    register u8 *var_r7;
+    register u8 *var_r9;
+
+    var_r3 = arg0;
+    var_r5 = arg2;
+    var_r7 = arg4;
+    var_r9 = lbl_802F7A40 + (arg3 << 8);
+    var_r6 = (u8 *)&sp8;
+    for (var_ctr = 0; var_ctr < 8; var_ctr++) {
+        temp_r31 = M2C_FIELD(var_r5, s16 *, 0x60);
+        temp_r12 = M2C_FIELD(var_r5, s16 *, 0x50);
+        temp_r11 = M2C_FIELD(var_r5, s16 *, 0x40);
+        temp_r10 = M2C_FIELD(var_r5, s16 *, 0x30);
+        temp_r30 = M2C_FIELD(var_r5, s16 *, 0x70);
+        temp_r0 = M2C_FIELD(var_r5, s16 *, 0x10);
+        temp_r26 = M2C_FIELD(var_r5, s16 *, 0x20);
+        if ((temp_r30 | (temp_r31 | temp_r12) | (temp_r11 | temp_r10 | (temp_r0 | temp_r26))) == 0) {
+            temp_r10_2 = M2C_FIELD(var_r5, s16 *, 0);
+            var_r5 += 2;
+            temp_r0_2 = M2C_FIELD(var_r9, s32 *, 0);
+            var_r9 += 4;
+            temp_r0_3 = (s32) (temp_r10_2 * temp_r0_2) >> 0xB;
+            M2C_FIELD(var_r6, s32 *, 0) = temp_r0_3;
+            M2C_FIELD(var_r6, s32 *, 0x20) = temp_r0_3;
+            M2C_FIELD(var_r6, s32 *, 0x40) = temp_r0_3;
+            M2C_FIELD(var_r6, s32 *, 0x60) = temp_r0_3;
+            M2C_FIELD(var_r6, s32 *, 0x80) = temp_r0_3;
+            M2C_FIELD(var_r6, s32 *, 0xA0) = temp_r0_3;
+            M2C_FIELD(var_r6, s32 *, 0xC0) = temp_r0_3;
+            M2C_FIELD(var_r6, s32 *, 0xE0) = temp_r0_3;
+            var_r6 += 4;
+        } else {
+            temp_r22 = M2C_FIELD(var_r5, s16 *, 0);
+            var_r5 += 2;
+            temp_r25 = M2C_FIELD(var_r9, s32 *, 0x80);
+            temp_r24 = M2C_FIELD(var_r9, s32 *, 0xC0);
+            temp_r20 = M2C_FIELD(var_r9, s32 *, 0x20);
+            temp_r23 = M2C_FIELD(var_r9, s32 *, 0x60);
+            temp_r22_2 = M2C_FIELD(var_r9, s32 *, 0xA0);
+            temp_r26_2 = temp_r26 * M2C_FIELD(var_r9, s32 *, 0x40);
+            temp_r29 = (s32) (temp_r22 * M2C_FIELD(var_r9, s32 *, 0)) >> 0xB;
+            temp_r21 = M2C_FIELD(var_r9, s32 *, 0xE0);
+            var_r9 += 4;
+            temp_r11_2 = temp_r26_2 >> 0xB;
+            temp_r28 = (s32) (temp_r11 * temp_r25) >> 0xB;
+            temp_r27 = temp_r29 + temp_r28;
+            temp_r26_3 = temp_r29 - temp_r28;
+            temp_r31_2 = (s32) (temp_r31 * temp_r24) >> 0xB;
+            temp_r24_2 = temp_r11_2 + temp_r31_2;
+            temp_r29_2 = temp_r27 + temp_r24_2;
+            temp_r31_3 = temp_r27 - temp_r24_2;
+            temp_r25_2 = ((s32) ((temp_r11_2 - temp_r31_2) * 0xB50) >> 0xB) - temp_r24_2;
+            temp_r11_3 = temp_r26_3 + temp_r25_2;
+            temp_r28_2 = temp_r26_3 - temp_r25_2;
+            temp_r0_4 = (s32) (temp_r0 * temp_r20) >> 0xB;
+            temp_r10_3 = (s32) (temp_r10 * temp_r23) >> 0xB;
+            temp_r20_2 = (s32) (temp_r12 * temp_r22_2) >> 0xB;
+            temp_r12_2 = temp_r20_2 - temp_r10_3;
+            temp_r23_2 = temp_r20_2 + temp_r10_3;
+            temp_r10_4 = (s32) (temp_r30 * temp_r21) >> 0xB;
+            temp_r30_2 = temp_r0_4 - temp_r10_4;
+            temp_r0_5 = temp_r0_4 + temp_r10_4;
+            temp_r10_5 = temp_r0_5 + temp_r23_2;
+            M2C_FIELD(var_r6, s32 *, 0) = (s32) (temp_r29_2 + temp_r10_5);
+            M2C_FIELD(var_r6, s32 *, 0xE0) = (s32) (temp_r29_2 - temp_r10_5);
+            temp_r20_3 = (s32) ((temp_r12_2 + temp_r30_2) * 0xEC8) >> 0xB;
+            temp_r20_4 = (temp_r20_3 + ((s32) (temp_r12_2 * -0x14E8) >> 0xB)) - temp_r10_5;
+            temp_r10_6 = ((s32) ((temp_r0_5 - temp_r23_2) * 0xB50) >> 0xB) - temp_r20_4;
+            M2C_FIELD(var_r6, s32 *, 0x20) = (s32) (temp_r11_3 + temp_r20_4);
+            M2C_FIELD(var_r6, s32 *, 0xC0) = (s32) (temp_r11_3 - temp_r20_4);
+            temp_r0_6 = (((s32) (temp_r30_2 * 0x8A9) >> 0xB) - temp_r20_3) + temp_r10_6;
+            M2C_FIELD(var_r6, s32 *, 0x40) = (s32) (temp_r28_2 + temp_r10_6);
+            M2C_FIELD(var_r6, s32 *, 0xA0) = (s32) (temp_r28_2 - temp_r10_6);
+            M2C_FIELD(var_r6, s32 *, 0x80) = (s32) (temp_r31_3 + temp_r0_6);
+            M2C_FIELD(var_r6, s32 *, 0x60) = (s32) (temp_r31_3 - temp_r0_6);
+            var_r6 += 4;
+        }
+    }
+    var_r6_2 = (u8 *)&sp8;
+    for (var_ctr_2 = 0; var_ctr_2 < 8; var_ctr_2++) {
+        temp_r22_3 = M2C_FIELD(var_r6_2, s32 *, 8);
+        temp_r21_2 = M2C_FIELD(var_r6_2, s32 *, 0x18);
+        temp_r10_7 = M2C_FIELD(var_r6_2, s32 *, 0x14);
+        temp_r0_7 = M2C_FIELD(var_r6_2, s32 *, 0xC);
+        temp_r9 = M2C_FIELD(var_r6_2, s32 *, 4);
+        temp_r5 = M2C_FIELD(var_r6_2, s32 *, 0x1C);
+        temp_r12_3 = temp_r10_7 - temp_r0_7;
+        temp_r23_3 = temp_r10_7 + temp_r0_7;
+        temp_r25_3 = M2C_FIELD(var_r6_2, s32 *, 0);
+        temp_r10_8 = M2C_FIELD(var_r6_2, s32 *, 0x10);
+        temp_r30_3 = temp_r9 - temp_r5;
+        temp_r0_8 = temp_r9 + temp_r5;
+        temp_r24_3 = temp_r22_3 + temp_r21_2;
+        temp_r27_2 = temp_r25_3 + temp_r10_8;
+        temp_r26_4 = temp_r25_3 - temp_r10_8;
+        temp_r25_4 = ((s32) ((temp_r22_3 - temp_r21_2) * 0xB50) >> 0xB) - temp_r24_3;
+        temp_r10_9 = temp_r0_8 + temp_r23_3;
+        temp_r29_3 = temp_r27_2 + temp_r24_3;
+        temp_r11_4 = temp_r26_4 + temp_r25_4;
+        temp_r28_3 = temp_r26_4 - temp_r25_4;
+        temp_r0_9 = (temp_r29_3 - temp_r10_9) + 0x7F;
+        temp_r26_5 = (s32) ((temp_r0_8 - temp_r23_3) * 0xB50) >> 0xB;
+        temp_r31_4 = temp_r27_2 - temp_r24_3;
+        temp_r5_2 = temp_r30_3 * 0x8A9;
+        temp_r20_5 = (s32) ((temp_r12_3 + temp_r30_3) * 0xEC8) >> 0xB;
+        temp_r9_2 = temp_r29_3 + temp_r10_9 + 0x7F;
+        var_r6_2 += 0x20;
+        M2C_FIELD(var_r3, s8 *, 0) = (s8) (M2C_FIELD(var_r7, u8 *, 0) + (temp_r9_2 >> 8));
+        temp_r20_6 = (temp_r20_5 + ((s32) (temp_r12_3 * -0x14E8) >> 0xB)) - temp_r10_9;
+        temp_r10_10 = temp_r26_5 - temp_r20_6;
+        M2C_FIELD(var_r3, s8 *, 7) = (s8) (M2C_FIELD(var_r7, u8 *, 7) + (temp_r0_9 >> 8));
+        temp_r0_10 = ((temp_r5_2 >> 0xB) - temp_r20_5) + temp_r10_10;
+        M2C_FIELD(var_r3, s8 *, 1) = (s8) (M2C_FIELD(var_r7, u8 *, 1) + ((s32) (temp_r11_4 + temp_r20_6 + 0x7F) >> 8));
+        M2C_FIELD(var_r3, s8 *, 6) = (s8) (M2C_FIELD(var_r7, u8 *, 6) + ((s32) ((temp_r11_4 - temp_r20_6) + 0x7F) >> 8));
+        M2C_FIELD(var_r3, s8 *, 2) = (s8) (M2C_FIELD(var_r7, u8 *, 2) + ((s32) (temp_r28_3 + temp_r10_10 + 0x7F) >> 8));
+        M2C_FIELD(var_r3, s8 *, 5) = (s8) (M2C_FIELD(var_r7, u8 *, 5) + ((s32) ((temp_r28_3 - temp_r10_10) + 0x7F) >> 8));
+        M2C_FIELD(var_r3, s8 *, 3) = (s8) (M2C_FIELD(var_r7, u8 *, 3) + ((s32) ((temp_r31_4 - temp_r0_10) + 0x7F) >> 8));
+        temp_r5_3 = M2C_FIELD(var_r7, u8 *, 4);
+        var_r7 += arg5;
+        M2C_FIELD(var_r3, s8 *, 4) = (s8) (temp_r5_3 + ((s32) (temp_r31_4 + temp_r0_10 + 0x7F) >> 8));
+        var_r3 += arg1;
+    }
 }
 
 extern char lbl_8055DF08;
