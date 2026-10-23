@@ -6,7 +6,10 @@ extern "C" void *fn_8022EDE4(f32);
 extern "C" s32 strlen(const char *);
 extern "C" f32 lbl_805634D8;
 extern "C" f32 lbl_80563528;
+#pragma push
+#pragma small_data on
 extern "C" char lbl_8055B8A8[];
+#pragma pop
 extern "C" void fn_80015A20(void *, f32 *, s32, f32, f32, f32);
 extern "C" void fn_80015B20(void *, void *, void *);
 extern "C" s32 fn_8022D3F8(s32, s32, s32 *, s32, s32);
@@ -2607,6 +2610,167 @@ extern "C" void * __dt__Q34Game10MemoryCard8ResourceFv_80222C8C(void *arg0, s32 
     return arg0;
 }
 
+#pragma push
+#pragma scheduling invalid_target
+#pragma small_data on
+extern "C" void fn_80222CFC(void *arg0, s32 arg1) {
+    struct Matrix { f32 m[12]; };
+    Matrix sp38;
+    struct TransformArgs { s32 x, y; f32 z; } sp20;
+    f32 sp34, sp30, sp2C;
+    s32 sp24;
+    f32 sp1C, sp18, sp14, sp10, spC;
+    char sp8[4];
+    register f32 temp_f31;
+    register f32 temp_f30;
+    register f32 temp_f29;
+    register f32 temp_f28;
+    register f32 temp_f1;
+    register f32 temp_f1_2;
+    register f32 temp_f2;
+    register f32 temp_f3;
+    register s32 temp_r31;
+    register s32 var_r21;
+    register s32 var_r26;
+    register s32 var_r30;
+    register void *temp_r25;
+    register void *temp_r29;
+    register void *temp_r28;
+    register void *temp_r27;
+    register char *temp_r24;
+    register void *temp_r3;
+    u32 *copyDst;
+    u32 *copySrc;
+    f32 *var_r22 = &sp14;
+    f32 *var_r23 = &sp2C;
+
+    (void)arg1;
+    temp_r25 = arg0;
+    temp_r3 = *(void **)((u8 *)arg0 + 0x244);
+    temp_r31 = *(s32 *)((u8 *)temp_r3 + 8);
+    temp_f1 = ((f32 (*)(void *))fn_8023659C)(arg0);
+    temp_f31 = -*(f32 *)((u8 *)arg0 + 0x254);
+    temp_f31 *= temp_f1;
+    if (temp_r31 <= 0) return;
+
+    temp_f28 = lbl_805634A8;
+    var_r21 = 0;
+    goto loop3_test;
+loop3_body:
+    temp_r3 = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
+        *(s32 *)((u8 *)temp_r25 + 0x244), var_r21, 0);
+    temp_f28 += fn_8023293C(*(s32 *)((u8 *)temp_r25 + 0x248),
+        (s32)temp_r3, lbl_805634A4);
+    var_r21++;
+loop3_test:
+    if (var_r21 < temp_r31) goto loop3_body;
+
+    temp_f3 = lbl_805634D8 * *(f32 *)((u8 *)temp_r25 + 0x250);
+    temp_f3 -= temp_f28;
+    temp_f30 = temp_f3 / (f32)temp_r31;
+    temp_f1 = temp_f30 * (f32)temp_r31;
+    temp_f1 += temp_f28;
+    temp_f29 = lbl_80563528 / temp_f1;
+    ((void (*)(f32 *, f32 *, s32, s32, f32, f32))fn_80230C30)(
+        &sp10, &spC, *(s32 *)((u8 *)temp_r25 + 4),
+        *(s32 *)((u8 *)temp_r25 + 8), temp_f1, temp_f3);
+    temp_r29 = (void *)fn_8022EDC4();
+    temp_r28 = fn_8022EDE4(*(f32 *)((u8 *)temp_r29 + 0x30));
+
+    temp_f28 = lbl_805634A8;
+    var_r30 = 0;
+    var_r21 = 0;
+    goto outer_test;
+outer_body:
+    temp_r3 = ((char *(*)(s32, s32, s32))fn_8022D3F8)(
+        *(s32 *)((u8 *)temp_r25 + 0x244), var_r30, 0);
+    temp_r27 = temp_r3;
+    temp_r24 = (char *)temp_r3;
+    var_r26 = 0;
+    goto inner_test;
+inner_body:
+    sprintf(sp8, lbl_8055B8A8, (s32)(s8)*temp_r24);
+    copyDst = (u32 *)temp_r28;
+    copySrc = (u32 *)temp_r29;
+    copyDst[0] = copySrc[0];
+    copyDst[1] = copySrc[1];
+    copyDst[2] = copySrc[2];
+    copyDst[3] = copySrc[3];
+    copyDst[4] = copySrc[4];
+    copyDst[5] = copySrc[5];
+    copyDst[6] = copySrc[6];
+    copyDst[7] = copySrc[7];
+    copyDst[8] = copySrc[8];
+    copyDst[9] = copySrc[9];
+    copyDst[10] = copySrc[10];
+    copyDst[11] = copySrc[11];
+    *(volatile u32 *)&sp2C = 0;
+    *(volatile u32 *)&sp30 = 0;
+    *(volatile u32 *)&sp34 = 0;
+    *(volatile f32 *)&sp2C = sp10;
+    *(volatile f32 *)&sp30 = spC;
+
+    if (var_r22 == var_r23) {
+        sp14 = (*(volatile f32 *)&sp34) * ((Matrix *)temp_r28)->m[6] +
+            (sp10 * ((Matrix *)temp_r28)->m[0] +
+             spC * ((Matrix *)temp_r28)->m[3]);
+        sp18 = sp34 * ((Matrix *)temp_r28)->m[7] +
+            (sp10 * ((Matrix *)temp_r28)->m[1] +
+             spC * ((Matrix *)temp_r28)->m[4]);
+        sp1C = sp34 * ((Matrix *)temp_r28)->m[8] +
+            (sp10 * ((Matrix *)temp_r28)->m[2] +
+             spC * ((Matrix *)temp_r28)->m[5]);
+    } else {
+        sp14 = sp34 * ((Matrix *)temp_r28)->m[6] +
+            (sp10 * ((Matrix *)temp_r28)->m[0] +
+             spC * ((Matrix *)temp_r28)->m[3]) +
+            ((Matrix *)temp_r28)->m[9];
+        sp18 = sp34 * ((Matrix *)temp_r28)->m[7] +
+            (sp10 * ((Matrix *)temp_r28)->m[1] +
+             spC * ((Matrix *)temp_r28)->m[4]) +
+            ((Matrix *)temp_r28)->m[10];
+        sp1C = sp34 * ((Matrix *)temp_r28)->m[8] +
+            (sp10 * ((Matrix *)temp_r28)->m[2] +
+             spC * ((Matrix *)temp_r28)->m[5]) +
+            ((Matrix *)temp_r28)->m[11];
+    }
+
+    ((Matrix *)temp_r28)->m[9] += sp14;
+    ((Matrix *)temp_r28)->m[10] += sp18;
+    temp_f2 = ((Matrix *)temp_r28)->m[11];
+    temp_f1_2 = temp_f2 + sp1C;
+    ((Matrix *)temp_r28)->m[11] = temp_f1_2;
+
+    sp20.z = 0.0f;
+    sp20.x = 0;
+    sp20.y = 0;
+    sp20.z = temp_f29 * temp_f28 + temp_f31;
+    ((void (*)(void *, void *, f32, f32))fn_80015A20)(
+        &sp38, &sp20, temp_f1_2, temp_f2);
+    fn_80015B20(temp_r28, &sp38, temp_r28);
+    fn_8022ED00(temp_r28);
+
+    fn_80232BA4(sp8, *(s32 *)((u8 *)temp_r25 + 0x248),
+        *(s32 *)((u8 *)temp_r25 + 0x24C), 9,
+        lbl_805634A8, *(f32 *)((u8 *)temp_r25 + 0x250),
+        lbl_805634A4, lbl_805634A8, lbl_805634A4);
+    fn_8022EDB8();
+    temp_f28 += fn_8023293C(*(s32 *)((u8 *)temp_r25 + 0x248),
+        (s32)sp8, lbl_805634A4);
+    var_r26++;
+    temp_r24++;
+inner_test:
+    if (var_r26 < strlen((char *)temp_r27)) goto inner_body;
+
+    temp_f28 += temp_f30;
+    var_r30++;
+outer_test:
+    if (var_r30 < temp_r31) goto outer_body;
+    fn_8022EE98(temp_r28);
+}
+#pragma scheduling on
+#pragma small_data off
+#pragma pop
 extern "C" void fn_80230924(s32, s32, f32, f32, f32, f32, f32);
 
 extern "C" s32 fn_802236C8(void *, s32);
