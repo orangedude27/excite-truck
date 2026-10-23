@@ -176,9 +176,12 @@ void fn_80231780(void *arg0) {
     f32 f29;
     f32 f30;
     f32 f31;
-    f32 sp8;
-    f32 spC;
-    f32 sp10;
+    volatile f32 sp8;
+    volatile f32 spC;
+    volatile f32 sp10;
+    f32 x;
+    f32 y;
+    f32 z;
     s32 i;
     s32 offset;
     u8 *record;
@@ -204,10 +207,16 @@ loop_body:
         color = fn_80230B9C((*(s32 *)(record + 0x18) & 0xFF000000) | 0x00FFFFFF);
 
     if (*(s32 *)(object + 0x0C) != 0) {
-        sp8 = *(f32 *)(record + 4);
-        spC = *(f32 *)(record + 8);
-        sp10 = *(f32 *)(record + 0x0C);
-        if (arg0 != 0) transform_vec((f32 *)arg0, &sp8, &sp8);
+        z = *(f32 *)(record + 0x0C);
+        y = *(f32 *)(record + 8);
+        x = *(f32 *)(record + 4);
+        spC = y;
+        sp10 = z;
+        if (arg0 != 0) {
+            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, x, y, z);
+        } else {
+            sp8 = x;
+        }
         {
             f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
             f32 ratio;
@@ -279,7 +288,7 @@ s32 fn_80232578(const char *arg0) {
     s32 tempWide;
     u8 temp2;
     s32 unused;
-    volatile u32 size;
+    u32 size;
     u8 valid;
     u8 swap;
     void *parsed;
@@ -302,11 +311,11 @@ s32 fn_80232578(const char *arg0) {
     valid = 0;
     swap = 0;
     unused = 0;
-    parsed = fn_8012C370(arg0, 0x47544558, (u32 *)&size, &unused, &valid, &swap);
+    parsed = fn_8012C370(arg0, 0x47544558, &size, &unused, &valid, &swap);
     data = (u8 *)parsed;
     if (parsed != 0) {
         if (size != 8) {
-            ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0xE4, arg0);
+            ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0xE4, arg0, size);
         }
         if (valid == 0) {
             ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0x108, arg0);
