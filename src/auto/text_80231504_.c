@@ -353,7 +353,7 @@ s32 fn_80232578(const char *arg0) {
 
     strncpy(nameBuffer.name, arg0, 0xB);
     nameBuffer.name[0xB] = 0;
-    fn_80028E00(nameBuffer.name, lbl_8055B9D4);
+    fn_80028E00(nameBuffer.name, (const char *)&lbl_8055B9D4);
     if (strlen(nameBuffer.name) > 0x10) {
         ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0x15C, nameBuffer.name, 0x10, strlen(nameBuffer.name));
     }
