@@ -78,9 +78,9 @@ static inline void transform_vec_scheduled(float *out, const volatile float *m, 
         register float pz1 = z * m7;
         register float sum2 = px2 + py2;
         register float pz2 = z * m8;
-        out[0] = sum0 + pz0;
-        out[1] = sum1 + pz1;
-        out[2] = sum2 + pz2;
+        out[0] = pz0 + sum0;
+        out[1] = pz1 + sum1;
+        out[2] = pz2 + sum2;
     } else {
         out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
         out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
@@ -97,7 +97,11 @@ extern "C" void fn_801B8E28(int arg0) {
         virtual void v16(); virtual void v17(); virtual void v18();
         virtual void v19(unsigned int *, void *);
     };
-    register void *obj = lbl_80436D28[arg0];
+    struct ObjectLayout {
+        char pad[0x2748];
+        Vec position;
+    };
+    void *obj = lbl_80436D28[arg0];
     struct Work {
         volatile float input[3];
         float sp14[3];
@@ -128,7 +132,7 @@ extern "C" void fn_801B8E28(int arg0) {
     }
     {
         char *matrix = *(char **)((char *)obj + 0x2754);
-        transform_vec(w.output, (float *)(matrix + 0x70), w.input);
+        transform_vec_scheduled(w.output, (volatile float *)(matrix + 0x70), w.input);
         w.output[0] += *(float *)(matrix + 0x94);
         w.output[1] += *(float *)(matrix + 0x98);
         w.output[2] += *(float *)(matrix + 0x9c);
@@ -161,7 +165,7 @@ extern "C" void fn_801B8E28(int arg0) {
         w.sp20[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
         temp_f3 = *(float *)((char *)obj + 0x2744);
         w.sp20[2] = temp_f3 + *(float *)((char *)obj + 0x38);
-        fn_801AD28C((char *)obj + 0x2704, w.sp20, *(void **)((char *)obj + 0x2754), (char *)obj + 0x2748, lbl_80562758, lbl_80562760, temp_f3);
+        fn_801AD28C((char *)obj + 0x2704, w.sp20, *(void **)((char *)obj + 0x2754), &((struct ObjectLayout *)obj)->position, lbl_80562758, lbl_80562760, temp_f3);
     }
     fn_8018A08C(obj);
 }
