@@ -25,7 +25,7 @@ extern void fn_802C8DBC(s32);
 extern void fn_802C8D74(void);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
-static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 z, f32 y, f32 x) {
+static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
     f32 outX;
     f32 outY;
     f32 outZ;
@@ -210,24 +210,21 @@ loop_body:
         z = *(f32 *)(record + 0x0C);
         y = *(f32 *)(record + 8);
         x = *(f32 *)(record + 4);
+        sp8 = x;
         spC = y;
         sp10 = z;
         if (arg0 != 0) {
-            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, x, y, z);
-        } else {
-            sp8 = x;
+            transform_vec_values((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8, z, y, x);
         }
         {
             f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
             f32 ratio;
-            f32 width = *(f32 *)(record + 0x14);
-            f32 height = *(f32 *)(record + 0x10);
             if (rate <= f31) rate = f31;
             ratio = f30 / rate;
             fn_802354A0(*(s32 *)(object + 0x0C), *(s32 *)(object + 0x10), color,
-                        sp8 - f29 * (ratio * width - width),
-                        spC + f29 * (ratio * height - height),
-                        sp10, ratio * width, ratio * height);
+                        sp8 - f29 * (ratio * *(f32 *)(record + 0x14) - *(f32 *)(record + 0x14)),
+                        spC + f29 * (ratio * *(f32 *)(record + 0x10) - *(f32 *)(record + 0x10)),
+                        sp10, ratio * *(f32 *)(record + 0x14), ratio * *(f32 *)(record + 0x10));
         }
     } else {
         if (arg0 != 0)
