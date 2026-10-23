@@ -83,6 +83,27 @@ short fn_802B9954(void* arg0) {
 void fn_802B9960(void) {
 }
 
+void fn_802B9964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+ s32 *cell, *list, *node, *slot=0; s32 i,j,k; s16 size=*(s16*)arg0;
+ cell=(s32*)(*(char**)((char*)arg0+4)+((((arg2-size+0x200)/(size*2))+((arg3-size+0x200)/(size*2))*(0x400/(size*2)))*8));
+ list=*(s32**)((char*)arg0+0xC);
+ node=*(s32**)((char*)cell+4);
+ if (node==0 || node[1]+1>node[2]) {
+   if (*(s32*)((char*)list+8)+1 <= *(s32*)((char*)list+0xC)) {
+    i=*(s32*)((char*)list+8); *(s32*)((char*)list+8)=i+1;
+    node=(s32*)((char*)*(s32**)((char*)list+4)+i*4);
+    node[1]=0; node[3]=0;
+   } else node=0;
+   if(node) {
+    if(*(s32**)cell==0) *(s32**)cell=node;
+    if(*(s32**)((char*)cell+4)) *(s32**)((char*)*(s32**)((char*)cell+4)+0xC)=node;
+    *(s32**)((char*)cell+4)=node; node[3]=0;
+    node=*(s32**)((char*)cell+4); i=node[1]; node[1]=i+1; slot=(s32*)node[0]+i;
+   }
+ } else { i=node[1]; node[1]=i+1; slot=(s32*)node[0]+i; }
+ if(slot) *slot=arg1;
+}
+
 extern double ceil(double);
 float fn_802B9A80(float arg0) {
     return ceil(arg0);
@@ -333,6 +354,25 @@ found:
     lbl_8055FA84=(void *)((int)lbl_8055FA84+1);
     return result;
 }
+
+extern f32 lbl_80564CCC, lbl_80564CD8, lbl_80564CEC;
+void fn_802BA848(f32 *out, f32 *a, f32 *b, f32 *c) {
+    f32 x0=b[0], x1=b[1], y0=a[0], y1=a[1], z0=c[0], z1=c[1];
+    f32 d=y0*x1-x0*y1;
+    f32 hi=x0+(z0+y0), lo=z0+x0;
+    f32 u=y0/d, v=-x0/d, w=-y1/d, q=x1/d;
+    out[10]=lbl_80564CD8; out[11]=v;
+    out[14]=lbl_80564CD8*lbl_80564CEC;
+    out[9]=q; out[13]=w*lbl_80564CEC; out[15]=u*lbl_80564CEC;
+    out[12]=-(z0*q+z1*v);
+    out[16]=(-((z1*u+z0*w))*lbl_80564CEC)+lbl_80564CCC;
+    if(lo<hi) lo=hi;
+    hi=z0+y0; if(hi<lo) hi=lo; lo=z0; if(lo<hi) lo=hi; out[5]=lo;
+    lo=z1+x1; hi=x1+(z1+y1); if(lo<hi) lo=hi; hi=z1+y1; if(hi<lo) hi=lo; z1=c[1]; if(z1<hi) z1=hi; out[6]=z1;
+    z0=c[0]; x0=b[0]; lo=z0+x0; hi=x0+(z0+a[0]); if(lo>hi) lo=hi; hi=z0+a[0]; if(hi>lo) hi=lo; z0=c[0]; if(z0>hi) z0=hi; out[7]=z0;
+    z1=c[1]; x1=b[1]; lo=z1+x1; hi=x1+(z1+a[1]); if(lo>hi) lo=hi; hi=z1+a[1]; if(hi>lo) hi=lo; z1=c[1]; if(z1>hi) z1=hi; out[8]=z1;
+}
+
 #pragma cplusplus reset
 #pragma pop
 
@@ -368,6 +408,37 @@ void fn_802BAE30(void *arg0) {
     *(volatile unsigned char *)((char *)arg0 + 0xC) = 1;
 }
 
+extern int lbl_8034AA00, lbl_8034AA10, lbl_8034A064, lbl_8055CEF0;
+extern void *lbl_8055FA80;
+extern int fn_802E2C20(void *);
+extern void fn_802B9108(short);
+extern void fn_801286A0(void *, int);
+extern void fn_80265DCC(void *, void *, int, int (**)(int **, int **));
+extern void fn_802E30C8(void *, ...);
+void fn_802BAE50(void) {
+    int start, total = 0, n;
+    short size = 4;
+    void *table;
+    start = fn_802E2C20(&lbl_8034AA00);
+    do { int dim = 0x400 / (size * 2); total += dim * dim * 5; size *= 2; } while (size <= 0x40);
+    table = fn_801284F8(0x10, &lbl_8034AA10);
+    if (table) {
+        void *items = ((void *(*)(int, void *))fn_8012850C)(total * 4, &lbl_8055CEF0);
+        ((void **)table)[0] = items; ((int *)table)[2] = total;
+        ((int *)table)[1] = 0; ((void **)table)[3] = items;
+    }
+    lbl_8055FA80 = table;
+    for (size = 4; size <= 0x40; size *= 2) fn_802B9108(size);
+    table = lbl_8055FA80;
+    if (((int *)table)[1] < ((int *)table)[2]) {
+        n = ((int *)table)[2] - ((int *)table)[1];
+        fn_801286A0(((void **)table)[3], n * 4);
+        ((int *)table)[2] = ((int *)table)[1];
+    }
+    fn_80265DCC(*(void **)lbl_804BFFF4, *((void **)lbl_804BFFF4 + 1), 4, (int (**)(int **, int **))fn_802B9B50);
+    if (fn_802E2C20(0) - start > 0x1F4) fn_802E30C8(&lbl_8034A064, &lbl_8034AA00);
+}
+
 typedef signed char s8;
 void fn_802BAF98(void* arg0, s8 arg1) {
     ((s8*)arg0)[0xC] = arg1;
@@ -387,6 +458,40 @@ void fn_802BAFA0(void) {
     }
     *(int *)((char *)lbl_8055FA74 + 8) = 0;
 }
+
+void fn_802BAFF8(void ***arg0, int *arg1) {
+    void **p = *arg0;
+    while (*p != 0) {
+        void *entry = *p, *queue = *(void **)((char *)entry + 4);
+        int *slot = 0;
+        if (queue == 0 || *(int *)((char *)queue + 4) + 1 > *(int *)((char *)queue + 8)) {
+            int count = *(int *)((char *)lbl_8055FA74 + 8);
+            if (count + 1 <= *(int *)((char *)lbl_8055FA74 + 0xC)) {
+                void *node = (char *)*(void **)((char *)lbl_8055FA74 + 4) + count * 0x10;
+                *(int *)((char *)lbl_8055FA74 + 8) = count + 1;
+                *(int *)((char *)node + 4) = 0;
+                *(int *)((char *)node + 0xC) = 0;
+                if (*(void **)entry == 0) *(void **)entry = node;
+                queue = *(void **)((char *)entry + 4);
+                if (queue != 0) *(void **)((char *)queue + 0xC) = node;
+                *(void **)((char *)entry + 4) = node;
+                *(void **)((char *)node + 0xC) = 0;
+                queue = *(void **)((char *)entry + 4);
+                count = *(int *)((char *)queue + 4);
+                *(int *)((char *)queue + 4) = count + 1;
+                slot = (int *)(*(int *)queue + count * 4);
+            }
+        } else {
+            int count = *(int *)((char *)queue + 4);
+            *(int *)((char *)queue + 4) = count + 1;
+            slot = (int *)(*(int *)queue + count * 4);
+        }
+        if (slot) { *slot = *arg1; lbl_8055FA70++; }
+        p++;
+    }
+}
+
+extern void fn_802C21B8(void); extern void fn_802C28C0(void); extern void fn_802C8BD0(void); extern void fn_802C8D74(void); extern void fn_802CADD0(int,int); extern void fn_802D3D94(int,void*,...); extern void fn_802DC130(void); extern void fn_802DC134(void); extern void fn_802DC138(int,int,void*,int); extern void fn_802DC278(void); extern void fn_802DC27C(void); extern void fn_802DC280(int,int,void*,int); extern int lbl_802FAB40[]; void fn_802BB3B8(int a,int b,int c){ int i,j; void *item,*list,*node; for(i=0;i<((int*)lbl_804BFFF4)[1];i++){ item=((void**)((int*)lbl_804BFFF4)[0])[i]; if(*(int*)((char*)item+8)==999)continue; list=*(void**)((char*)item+12); if(!list)continue; if(*(int*)((char*)item+4)==-2){while(list){*(int*)((char*)list+4)=0;*(int*)list=0;list=*(void**)((char*)list+16);}continue;} j=*(int*)((char*)list+8); if(j==2){fn_802C28C0();fn_802C8BD0();fn_802DC278();fn_802CADD0(*(int*)((char*)item+4),1);fn_802C21B8();fn_802CADD0(2,0);fn_802D3D94(2,lbl_802FAB40);list=*(void**)((char*)item+12);while(list){node=*(void**)list;if(node){fn_802D3D94(0,(char*)list+52);while(node){int n=*(int*)((char*)node+4);for(j=0;j<n;j++){void*p=((void**)*(void**)node)[j];fn_802DC280(a,b,p,*(unsigned short*)p+1);lbl_8055FA6C+=(*(unsigned short*)p)-1>0?(*(unsigned short*)p)-1:0;}node=*(void**)((char*)node+12);}*(int*)((char*)list+4)=0;*(void**)list=0;}list=*(void**)((char*)list+16);}fn_802CADD0(-1,1);fn_802CADD0(-1,2);fn_802DC27C();fn_802C8D74();}else if(j>=0){fn_802C8BD0();fn_802DC130();while(list){node=*(void**)list;if(node&&*(unsigned char*)((char*)list+12)){fn_802D3D94(0,(char*)list+36);while(node){int n=*(int*)((char*)node+4);for(j=0;j<n;j++){void*p=((void**)*(void**)node)[j];fn_802DC138(a,b,p,*(unsigned short*)p+1);lbl_8055FA6C+=(*(unsigned short*)p)-1>0?(*(unsigned short*)p)-1:0;}node=*(void**)((char*)node+12);}*(int*)((char*)list+4)=0;*(void**)list=0;}list=*(void**)((char*)list+16);}fn_802DC134();fn_802C8D74();}}}
 
 extern int lbl_804C0088[];
 extern int lbl_8034AA50;
