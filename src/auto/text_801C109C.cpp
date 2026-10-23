@@ -36,6 +36,50 @@ int *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int *arg0, int ar
     return arg0;
 }
 
+extern float lbl_80562910, lbl_80562914;
+void fn_801C1218(void *arg0) {
+    char *base = (char *)arg0;
+    int i = 0;
+    int count = 0;
+    char *p0, *p1, *p2;
+    float sp8, spC, sp10;
+    float f4, f5, f6, f4b, f5b, f6b;
+    float f9, f9b;
+    goto check;
+loop:
+    count += 1;
+    p0 = *(char **)(base + 0x24) + i;
+    p1 = *(char **)(base + 0x28) + i;
+    p2 = *(char **)(base + 0x2C) + i;
+    sp8 = *(float *)(p0 + 0);
+    f6 = *(float *)(p0 + 0) * lbl_80562910;
+    spC = *(float *)(p0 + 4);
+    i += 0xC;
+    *(float *)(p0 + 0) = f6;
+    f5 = *(float *)(p0 + 4) * lbl_80562910;
+    sp10 = *(float *)(p0 + 8);
+    *(float *)(p0 + 4) = f5;
+    f4 = *(float *)(p0 + 8) * lbl_80562910;
+    *(float *)(p0 + 8) = f4;
+    f6b = f6 + *(float *)(p1 + 0) * lbl_80562914;
+    *(float *)(p0 + 0) = f6b;
+    f5b = f5 + *(float *)(p1 + 4) * lbl_80562914;
+    *(float *)(p0 + 4) = f5b;
+    f4b = f4 + *(float *)(p1 + 8) * lbl_80562914;
+    *(float *)(p0 + 8) = f4b;
+    f9 = *(float *)(base + 0x54);
+    f9b = f9 * f9;
+    *(float *)(p0 + 0) = f6b + *(float *)(p2 + 0) * f9b;
+    *(float *)(p0 + 4) = f5b + *(float *)(p2 + 4) * f9b;
+    *(float *)(p0 + 8) = f4b + *(float *)(p2 + 8) * f9b;
+    *(float *)(p1 + 0) = sp8;
+    *(float *)(p1 + 4) = spC;
+    *(float *)(p1 + 8) = sp10;
+check:
+    if (count < *(int *)(base + 0x14))
+        goto loop;
+}
+
 void fn_801C1320(void* arg0) {
     int i = 0;
     int offset = 0;
@@ -98,6 +142,94 @@ extern "C" void fn_801C1C7C(int arg0) {
     if (arg0 != 0) {
         __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(0);
         fn_80128668(arg0);
+    }
+}
+
+extern float lbl_8056292C;
+extern void PSVECCrossProduct(const float *, const float *, float *);
+extern "C" void PSVECCrossProduct(const float *, const float *, float *);
+extern "C" void fn_801C256C(void *arg0, float *arg1, float *arg2, float *arg3) {
+    char *base = (char *)arg0;
+    float cross[3];
+    float delta[3];
+    int index = 0;
+    int offset = 0;
+    float scale = lbl_8056292C;
+    goto check;
+loop:
+    {
+        float *src = (float *)(*(char **)(base + 0x24) + offset);
+        float *dst = (float *)(*(char **)(base + 0x28) + offset);
+        delta[0] = src[0] - arg2[0];
+        delta[1] = src[1] - arg2[1];
+        delta[2] = src[2] - arg2[2];
+        PSVECCrossProduct(arg3, delta, cross);
+        index++;
+        cross[0] += arg1[0];
+        cross[1] += arg1[1];
+        cross[2] += arg1[2];
+        dst[0] = src[0] + cross[0] * scale;
+        offset += 0xC;
+        dst[1] = src[1] + cross[1] * scale;
+        dst[2] = src[2] + cross[2] * scale;
+    }
+check:
+    if (index < *(int *)(base + 0x14))
+        goto loop;
+}
+
+extern "C" void fn_801C2694(void *arg0, float *arg1, int *arg2, float *arg3, float *arg4, float *arg5) {
+    extern float lbl_80562930;
+    float sp8, spC, sp10;
+    float f5 = arg5[0] * lbl_80562930;
+    float f4 = arg5[1] * lbl_80562930;
+    float f0 = arg5[2] * lbl_80562930;
+    int i = 0;
+    int off = 0;
+    float *dst = arg1;
+    *(float *)((char *)arg0 + 0x58) = arg3[0];
+    *(float *)((char *)arg0 + 0x5C) = arg3[1];
+    *(float *)((char *)arg0 + 0x60) = arg3[2];
+    *(float *)((char *)arg0 + 0x64) = arg4[0];
+    *(float *)((char *)arg0 + 0x68) = arg4[1];
+    *(float *)((char *)arg0 + 0x6C) = arg4[2];
+    sp8 = f5;
+    spC = f4;
+    sp10 = f0;
+    goto check1;
+loop1:
+    {
+        float *p = (float *)(*(char **)((char *)arg0 + 0x2C) + off);
+        ++i;
+        p[0] += f5;
+        off += 0xC;
+        p[1] += f4;
+        p[2] += f0;
+    }
+check1:
+    if (i < *(int *)((char *)arg0 + 0x14))
+        goto loop1;
+    fn_801C1B60((int)arg0);
+    {
+        int count = *(int *)((char *)arg0 + 0x14);
+        float *src = *(float **)((char *)arg0 + 0x24);
+        i = 0;
+        off = 0;
+        goto check2;
+loop2:
+        {
+            float *p = (float *)((char *)src + off);
+            ++i;
+            off += 0xC;
+            dst[0] = p[0];
+            dst[1] = p[1];
+            dst[2] = p[2];
+            dst += 3;
+        }
+check2:
+        if (i < count)
+            goto loop2;
+        *arg2 = count;
     }
 }
 
@@ -220,3 +352,58 @@ void fn_801C2BDC(void *arg0, unsigned int *arg1, unsigned int *arg2, unsigned in
     *arg3 = *(unsigned int *)((unsigned char *)arg0 + 0x28);
 }
 
+extern "C" int lbl_8055E7C8;
+extern "C" float lbl_80562948;
+extern "C" void fn_801E41D8(float *, float *, int, float);
+extern "C" void fn_801C2BF8(void *arg0, float *arg1) {
+    char *base = (char *)arg0;
+    float *matrix = arg1;
+    int count = *(int *)(base + 0x18);
+    int i = 0;
+    int offset = 0;
+    int color;
+    float sp2C, sp30, sp34, sp20, sp24, sp28;
+    float sp14, sp18, sp1C, sp8, spC, sp10;
+    float x, y, z;
+    if (count <= 0) return;
+    color = lbl_8055E7C8;
+    goto check;
+loop:
+    {
+        int *indices = *(int **)(base + 0x48);
+        int *points = *(int **)(base + 0x24);
+        int first = *(int *)((char *)indices + offset);
+        int second = *(int *)((char *)indices + offset + 4);
+        float *a = (float *)((char *)points + first * 12);
+        float *b = (float *)((char *)points + second * 12);
+        sp2C = a[0]; sp30 = a[1]; sp34 = a[2];
+        sp20 = b[0]; sp24 = b[1]; sp28 = b[2];
+        if (&sp14 == &sp2C) {
+            sp14 = sp34 * matrix[6] + (sp2C * matrix[0] + sp30 * matrix[3]);
+            sp18 = sp34 * matrix[7] + (sp2C * matrix[1] + sp30 * matrix[4]);
+            sp1C = sp34 * matrix[8] + (sp2C * matrix[2] + sp30 * matrix[5]);
+        } else {
+            sp14 = sp34 * matrix[6] + (sp2C * matrix[0] + sp30 * matrix[3]);
+            sp18 = sp34 * matrix[7] + (sp2C * matrix[1] + sp30 * matrix[4]);
+            sp1C = sp34 * matrix[8] + (sp2C * matrix[2] + sp30 * matrix[5]);
+        }
+        sp14 += matrix[9]; sp18 += matrix[10]; sp1C += matrix[11];
+        if (&sp8 == &sp20) {
+            sp8 = sp28 * matrix[6] + (sp20 * matrix[0] + sp24 * matrix[3]);
+            spC = sp28 * matrix[7] + (sp20 * matrix[1] + sp24 * matrix[4]);
+            sp10 = sp28 * matrix[8] + (sp20 * matrix[2] + sp24 * matrix[5]);
+        } else {
+            sp8 = sp28 * matrix[6] + (sp20 * matrix[0] + sp24 * matrix[3]);
+            spC = sp28 * matrix[7] + (sp20 * matrix[1] + sp24 * matrix[4]);
+            sp10 = sp28 * matrix[8] + (sp20 * matrix[2] + sp24 * matrix[5]);
+        }
+        x = sp8 + matrix[9];
+        y = spC + matrix[10];
+        z = sp10 + matrix[11];
+        fn_801E41D8(&sp14, &sp8, color, lbl_80562948);
+        offset += 0x14;
+        i++;
+    }
+check:
+    if (i < count) goto loop;
+}
