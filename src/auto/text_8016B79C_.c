@@ -831,7 +831,7 @@ void fn_8016EA9C(void *arg0) {
     stack[68].p = temp_r26;
     stack[69].i = temp_r0_2;
     stack[18].i = 1;
-    stack[19].p = lbl_8055A250;
+    stack[19].p = &lbl_8055A250;
     stack[20].i = temp_r8;
     stack[70].i = 1;
     var_r4_2 = (unsigned char *)arg0 + 0x8A;
