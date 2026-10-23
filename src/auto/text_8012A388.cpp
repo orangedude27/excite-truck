@@ -2,7 +2,7 @@
 extern "C" s32 lbl_8055DFFC;
 extern "C" const char lbl_8032AE60[];
 extern "C" void fn_8002B0D8(char *);
-extern char *fn_80029004(char *, int);
+extern "C" char *fn_80029004(char *, int);
 extern "C" s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
 class Unk8012A570 { public: virtual ~Unk8012A570(); };
 
@@ -284,6 +284,119 @@ extern "C" void fn_8012AC28(s32 arg0, s32 arg1) {
 extern "C" void fn_8012AC28(s32, s32);
 extern "C" void fn_8012AC98(s32 arg0) {
     fn_8012AC28(arg0, 0);
+}
+
+extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
+    char sp10[128];
+    s32 spC;
+    u8 sp8;
+    s32 var_r25;
+    s32 var_r5;
+    s32 var_r5_2;
+    u32 var_r24;
+    u32 var_r26;
+    char *var_r4;
+    char *var_r4_2;
+    char *var_r6;
+    char *var_r6_2;
+    u8 temp_r3;
+    u8 temp_r3_2;
+    u8 temp_r4;
+    u8 temp_r4_2;
+    u8 temp_r4_3;
+    u8 temp_r4_4;
+    u8 temp_r4_5;
+    u8 temp_r4_6;
+    u8 temp_r4_7;
+    u8 temp_r4_8;
+    u8 temp_r4_9;
+    u8 temp_r4_10;
+    u8 *temp_r3_3;
+    u8 *temp_r26;
+    u8 *var_r25_2;
+    u8 *var_r31;
+
+    if (lbl_8055DFFC == 0) fn_802E317C(lbl_8032A630 + 0x1D0, arg0);
+    var_r4 = (char *)arg0;
+    var_r6 = sp10;
+    var_r5 = 0x80;
+loop_5:
+    temp_r3 = *var_r4++;
+    *var_r6++ = temp_r3;
+    if ((s8)temp_r3 != 0) {
+        var_r5 -= 1;
+        if (var_r5 <= 0) var_r6[-1] = 0;
+        else goto loop_5;
+    }
+    if ((s8)*fn_80029004(sp10, 0x2E) != 0) *fn_80029004(sp10, 0x2E) = 0;
+    var_r6_2 = sp10;
+    var_r5_2 = 0x80;
+loop_10:
+    if ((s8)*var_r6_2 != 0) {
+        var_r5_2 -= 1;
+        var_r6_2 += 1;
+        goto loop_10;
+    }
+    if (var_r5_2 > 0) {
+        var_r4_2 = (char *)lbl_805599E0;
+loop_15:
+        temp_r3_2 = *var_r4_2++;
+        *var_r6_2++ = temp_r3_2;
+        if ((s8)temp_r3_2 != 0) {
+            var_r5_2 -= 1;
+            if (var_r5_2 <= 0) var_r6_2[-1] = 0;
+            else goto loop_15;
+        }
+    }
+    fn_8002B0D8(sp10);
+    temp_r3_3 = (u8 *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
+    if (temp_r3_3 != 0 && sp8 != 0) {
+        temp_r4 = temp_r3_3[0]; temp_r3_3[0] = temp_r3_3[3]; temp_r3_3[3] = temp_r4;
+        temp_r4_2 = temp_r3_3[1]; temp_r3_3[1] = temp_r3_3[2]; temp_r3_3[2] = temp_r4_2;
+        temp_r4_3 = temp_r3_3[4]; temp_r3_3[4] = temp_r3_3[7]; temp_r3_3[7] = temp_r4_3;
+        temp_r4_4 = temp_r3_3[5]; temp_r3_3[5] = temp_r3_3[6]; temp_r3_3[6] = temp_r4_4;
+        temp_r4_5 = temp_r3_3[8]; temp_r3_3[8] = temp_r3_3[0xB]; temp_r3_3[0xB] = temp_r4_5;
+        temp_r4_6 = temp_r3_3[9]; temp_r3_3[9] = temp_r3_3[0xA]; temp_r3_3[0xA] = temp_r4_6;
+        temp_r4_7 = temp_r3_3[0xC]; temp_r3_3[0xC] = temp_r3_3[0xF]; temp_r3_3[0xF] = temp_r4_7;
+        temp_r4_8 = temp_r3_3[0xD]; temp_r3_3[0xD] = temp_r3_3[0xE]; temp_r3_3[0xE] = temp_r4_8;
+        temp_r4_9 = temp_r3_3[0x10]; temp_r3_3[0x10] = temp_r3_3[0x13]; temp_r3_3[0x13] = temp_r4_9;
+        temp_r4_10 = temp_r3_3[0x11]; temp_r3_3[0x11] = temp_r3_3[0x12]; temp_r3_3[0x12] = temp_r4_10;
+        if (*(u32 *)temp_r3_3 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14)
+            fn_802E317C(lbl_8032AE60, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
+        var_r25_2 = temp_r3_3 + 0x14;
+        var_r26 = 0;
+loop_23:
+        if (var_r26 < *(u32 *)(temp_r3_3 + 0xC)) {
+            fn_8012A388(var_r25_2);
+            var_r25_2 += 0x44;
+            var_r26 += 1;
+            goto loop_23;
+        }
+    }
+    if (temp_r3_3 == 0) fn_802E317C(lbl_8032A630 + 0x200, arg0);
+    if (*(u32 *)((u8 *)arg0 + 0x7C) != *(u32 *)(temp_r3_3 + 8))
+        fn_802E317C(lbl_8032A630 + 0x228, arg0);
+    if (*(u32 *)((u8 *)arg0 + 0x88) != *(u32 *)(temp_r3_3 + 0xC))
+        fn_802E317C(lbl_8032A630 + 0x258, arg0);
+    if (*(u32 *)((u8 *)arg0 + 0x8C) != *(u32 *)(temp_r3_3 + 0x10))
+        fn_802E317C(lbl_8032A630 + 0x288, arg0);
+    temp_r26 = temp_r3_3 + 0x14;
+    var_r31 = temp_r26;
+    var_r25 = 1;
+    var_r24 = 0;
+loop_37:
+    if (var_r24 < *(u32 *)(temp_r3_3 + 0xC)) {
+        if (*(s32 *)(var_r31 + 0x2C) + *(s32 *)(var_r31 + 0x28) <= arg2 &&
+            fn_8012A470(arg0, var_r24, var_r31, arg1) == 0) var_r25 = 0;
+        else {
+            var_r31 += 0x44;
+            var_r24 += 1;
+            goto loop_37;
+        }
+    }
+    *(void **)((u8 *)arg0 + 0x60) = temp_r26;
+    *(void **)((u8 *)arg0 + 0x64) = temp_r3_3;
+    return var_r25;
 }
 
 extern "C" s32 fn_8012B2C4(s32, s32, s32);
