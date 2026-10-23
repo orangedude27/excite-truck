@@ -391,6 +391,90 @@ extern "C" void *fn_8013E6E4(void *arg0) {
     return arg0;
 }
 
+extern "C" void fn_802C6CF8(s32);
+extern "C" void fn_802CAC54(s32);
+extern "C" void fn_8002F6AC(s32, void *);
+extern "C" void fn_8013E33C(void);
+extern "C" void *__dt__Q210JASDrumSet5TPercFv(void *, s32);
+extern "C" u8 lbl_8032CAF0[];
+extern "C" s32 lbl_8055E1C0;
+extern "C" void *fn_8013E77C(void *arg0, s32 arg1) {
+    class VObj { public: virtual void destroy(int); };
+    u8 *self=(u8 *)arg0;
+    VObj *p;
+    VObj *child;
+    s32 i,offset;
+    if (self != 0) {
+        child=*(VObj **)(self+0x254);
+        *(void **)self=&lbl_8032CAF0;
+        if (child != 0) { if (child != 0) child->destroy(1); }
+        fn_802C6CF8(*(s32 *)(self+0xB4));
+        i=0; offset=0;
+        while (i<*(s32 *)(self+0xC)) {
+            p=*(VObj **)(*(u8 **)(self+8)+offset);
+            if (p != 0) p->destroy(1);
+            offset+=4; i++;
+        }
+        fn_802CAC54(*(s32 *)(self+0xA0));
+        fn_802CAC54(*(s32 *)(self+0xA4));
+        fn_802CAC54(*(s32 *)(self+0xA8));
+        fn_802CAC54(*(s32 *)(self+0xAC));
+        fn_802CAC54(*(s32 *)(self+0xB0));
+        p=*(VObj **)(self+0x64);
+        if (p != 0) {
+            fn_8002F6AC(*(s32 *)((u8 *)p+4),(void *)fn_8013E33C);
+            *(s32 *)((u8 *)p+4)=0;
+            ((void (*)(void *))fn_80128668)(p);
+        }
+        p=*(VObj **)(self+0x27C);
+        *(VObj **)(self+0x64)=0;
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p=*(VObj **)(self+0x278);
+        *(VObj **)(self+0x27C)=0;
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p=*(VObj **)(self+0x270);
+        *(VObj **)(self+0x278)=0;
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p=*(VObj **)(self+0x274);
+        *(VObj **)(self+0x270)=0;
+        if (p != 0) { if (p != 0) p->destroy(1); }
+        p=*(VObj **)(self+0x60);
+        *(VObj **)(self+0x274)=0;
+        if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x60)=0; }
+        p=*(VObj **)(self+0xB8);
+        if (p != 0) fn_80128670((s32)p-0x10);
+        *(VObj **)(self+0xB8)=0;
+        lbl_8055E1C0=0;
+        __dt__Q210JASDrumSet5TPercFv(self+0x280,-1);
+        if ((u32)self+0x134 != 0) {
+            p=*(VObj **)(self+0x140);
+            if (p != 0) { fn_802ADE60((s32)p,1); *(VObj **)(self+0x140)=0; }
+            p=*(VObj **)(self+0x148);
+            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x148)=0; }
+            p=*(VObj **)(self+0x14C);
+            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x14C)=0; }
+            p=*(VObj **)(self+0x150);
+            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x150)=0; }
+            p=*(VObj **)(self+0x158);
+            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x158)=0; }
+            p=*(VObj **)(self+0x15C);
+            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x15C)=0; }
+            p=*(VObj **)(self+0x160);
+            if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x160)=0; }
+        }
+        if ((u32)self+0xC0 != 0) *(s32 *)(self+0xC0)=0;
+        if ((u32)self+8 != 0) {
+            if ((u32)self+8 != 0) {
+                if ((u32)self+8 != 0) {
+                    *(s32 *)(self+8)=0; *(s32 *)(self+0xC)=0; *(s32 *)(self+0x10)=0;
+                }
+            }
+        }
+        if (arg1>0) ((void (*)(void *))fn_80128668)(arg0);
+    }
+    return arg0;
+}
+
 extern "C" void fn_8013EB0C(void *arg0, s32 arg1) {
     u8 *entry = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
     if (*(u8 *)(entry + 0x118))
