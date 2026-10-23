@@ -305,7 +305,7 @@ extern void OSSetMEM1ArenaLo(void*);
 extern void OSSetMEM1ArenaHi(void*);
 extern void OSSetMEM2ArenaLo(void*);
 extern void OSSetMEM2ArenaHi(void*);
-extern void OSPanic(const char*, s32, const char*);
+extern void OSPanic(const char*, s32, const char*, ...);
 void OSInit(void) {
     u8* bi2;
     void* mem1lo;
