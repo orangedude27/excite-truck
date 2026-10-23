@@ -21,7 +21,7 @@ class Vt_80194C4C {
 public:
     virtual void *v0();
     virtual void *v1();
-    virtual void *v2();
+    virtual void v2();
     virtual void *v3();
     virtual void *v4();
     virtual void *v5();
@@ -651,9 +651,10 @@ void fn_80194C4C(void *arg0, float *arg1) {
     if (fn_801769A8() & 0x400) {
         float endValue = lbl_8055E3C8;
         float elapsed = fn_801B3064();
-        float amount = (endValue - elapsed - lbl_80562144) / lbl_805621D8;
-        if (amount < lbl_80562140)
-            amount = lbl_80562140;
+        float ratio = (endValue - elapsed - lbl_80562144) / lbl_805621D8;
+        float amount = lbl_80562140;
+        if (amount < ratio)
+            amount = ratio;
         if (amount > lbl_80562144)
             amount = lbl_80562144;
         value = lbl_80562144 + amount * (value - lbl_80562144);
@@ -667,14 +668,16 @@ void fn_80194C4C(void *arg0, float *arg1) {
             if (i != *(int *)((char *)arg0 + 0x290)) {
                 void *state = ((void *(*)(void *))(*(void ***)other)[4])(other);
                 if (*(int *)((char *)state + 0x30) == 0) {
+                    void *owner = *(void **)((char *)arg0 + 0x294);
                     void *track =
                         ((void *(*)(void *))(*(void ***)other)[8])(other);
+                    void *ownerAgain =
+                        *(void * volatile *)((char *)arg0 + 0x294);
                     float (*distance)(void *, float *, float *) =
                         (float (*)(void *, float *, float *))fn_80194F70;
-                    arg1[2] += distance(
-                        (char *)*(void **)((char *)arg0 + 0x294) + 0x54,
-                        (float *)((char *)track + 0x60),
-                        (float *)((char *)*(void **)((char *)arg0 + 0x294) + 0x60));
+                    arg1[2] += distance((char *)ownerAgain + 0x54,
+                                        (float *)((char *)track + 0x60),
+                                        (float *)((char *)owner + 0x60));
                     break;
                 }
             }
@@ -686,22 +689,24 @@ void fn_80194C4C(void *arg0, float *arg1) {
             (char *)*(void **)((char *)work + 0x30) + 0x60,
             (char *)*(void **)((char *)arg0 + 0x294) + 0x60);
         if (dot > threshold) {
-            float amount = (dot - threshold) /
-                           (lbl_80562174 * threshold - threshold);
-            if (amount < lbl_80562140)
-                amount = lbl_80562140;
+            float ratio = (dot - threshold) /
+                          (lbl_80562174 * threshold - threshold);
+            float amount = lbl_80562140;
+            if (amount < ratio)
+                amount = ratio;
             if (amount > lbl_80562144)
                 amount = lbl_80562144;
             arg1[2] = value + amount * ((lbl_80562160 + value) - value);
         } else {
             float base = value - lbl_80562160;
-            float amount;
-            if (base < lbl_80562144)
+            float ratio;
+            float amount = lbl_80562140;
+            if (base > lbl_80562144)
                 base = lbl_80562144;
-            amount = (dot - (lbl_805621DC + lbl_8055A48C)) /
-                     (threshold - (lbl_805621DC + lbl_8055A48C));
-            if (amount < lbl_80562140)
-                amount = lbl_80562140;
+            ratio = (dot - (lbl_805621DC + lbl_8055A48C)) /
+                    (threshold - (lbl_805621DC + lbl_8055A48C));
+            if (amount < ratio)
+                amount = ratio;
             if (amount > lbl_80562144)
                 amount = lbl_80562144;
             arg1[2] = base + amount * (value - base);
