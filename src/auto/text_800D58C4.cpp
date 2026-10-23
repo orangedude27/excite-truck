@@ -4,6 +4,13 @@
 #include "revolution/GX/GXTypes.h"
 #include "revolution/GX/GXAttr.h"
 #define M2C_FIELD(expr, T, offset) (*(T)((char *)(expr) + (offset)))
+namespace nw4hbm { namespace lyt {
+class ResourceAccessor;
+class Layout {
+public:
+    s32 Build(const void *, ResourceAccessor *);
+};
+}}
 extern "C" f32 lbl_80560EA8;
 extern "C" void *lbl_8032012C;
 extern "C" char *strncpy(char *, const char *, unsigned int);
@@ -1942,72 +1949,103 @@ extern "C" int FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const cha
 }
 
 void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
+    struct Local {
+        f32 mtx10[12];
+        f32 mtx40[12];
+        f32 mtx70[12];
+    } frame;
     u8 *pane = (u8 *)this;
-    const u8 *info = (const u8 *)&arg1;
-    f32 sx;
-    f32 sy;
-    f32 mtx10[12];
-    f32 mtx40[12];
-    f32 mtx70[12];
-    u8 flags;
+    u8 *info = (u8 *)&arg1;
+    volatile const u8 *flagInfo = (volatile const u8 *)info;
+    u32 scaleX;
+    u32 scaleY;
+    f32 *sx = (f32 *)&scaleX;
+    f32 *sy = (f32 *)&scaleY;
+    register s32 flags = pane[0xCF];
+    u32 scaleFlag;
+    u32 bitsX;
+    u32 bitsY;
+    u8 scaleByte;
+    union { struct { u32 hi, lo; } words; f64 number; } alphaBits;
     f32 opacity;
     s32 saveBit;
     s32 changeOpacity;
-    u8 *node;
-    flags = pane[0xCF];
-    if ((flags & 1) != 0 || (info[0x50] & 0x10) == 0) return;
-    sx = *(f32 *)(pane + 0x44);
-    sy = *(f32 *)(pane + 0x48);
-    if ((info[0x50] & 0x20) != 0 && (flags & 4) != 0) {
-        sx *= *(const f32 *)(info + 0x44);
-        sy *= *(const f32 *)(info + 0x48);
-    }
-    PSMTXScale(mtx40, sx, sy, lbl_80560EAC);
-    PSMTXInverse(mtx10, 0x78, lbl_80560EB0 * *(f32 *)(pane + 0x38));
-    PSMTXConcat(mtx10, mtx40, mtx70);
-    PSMTXInverse(mtx10, 0x79, lbl_80560EB0 * *(f32 *)(pane + 0x3C));
-    PSMTXConcat(mtx10, mtx70, mtx40);
-    PSMTXInverse(mtx10, 0x7A, lbl_80560EB0 * *(f32 *)(pane + 0x40));
-    PSMTXConcat(mtx10, mtx40, mtx70);
-    PSMTXRotTrig(mtx70, pane + 0x54, *(f32 *)(pane + 0x2C), *(f32 *)(pane + 0x30), *(f32 *)(pane + 0x34));
-    if (*(u8 **)(pane + 0xC) != 0) {
-        PSMTXConcat((f32 *)(*(u8 **)(pane + 0xC) + 0x84), (f32 *)(pane + 0x54), (f32 *)(pane + 0x84));
-    } else if ((info[0x50] & 0x80) != 0) {
-        *(u32 *)(pane + 0x84) = *(u32 *)(pane + 0x54);
-        *(u32 *)(pane + 0x88) = *(u32 *)(pane + 0x58);
-        *(u32 *)(pane + 0x8C) = *(u32 *)(pane + 0x5C);
-        *(u32 *)(pane + 0x90) = *(u32 *)(pane + 0x60);
-        *(u32 *)(pane + 0x94) = *(u32 *)(pane + 0x64);
-        *(u32 *)(pane + 0x98) = *(u32 *)(pane + 0x68);
-        *(u32 *)(pane + 0x9C) = *(u32 *)(pane + 0x6C);
-        *(u32 *)(pane + 0xA0) = *(u32 *)(pane + 0x70);
-        *(u32 *)(pane + 0xA4) = *(u32 *)(pane + 0x74);
-        *(u32 *)(pane + 0xA8) = *(u32 *)(pane + 0x78);
-        *(u32 *)(pane + 0xAC) = *(u32 *)(pane + 0x7C);
-        *(u32 *)(pane + 0xB0) = *(u32 *)(pane + 0x80);
-    } else {
-        PSMTXConcat((f32 *)(info + 4), (f32 *)(pane + 0x54), (f32 *)(pane + 0x84));
-    }
-    if ((info[0x50] & 0x40) != 0 && *(u8 **)(pane + 0xC) != 0)
-        pane[0xCE] = (u8)((f32)pane[0xCD] * *(const f32 *)(info + 0x4C));
-    else pane[0xCE] = pane[0xCD];
-    changeOpacity = 0;
-    opacity = *(const f32 *)(info + 0x4C);
-    saveBit = (info[0x50] >> 6) & 1;
-    if ((pane[0xCF] & 2) != 0 && pane[0xCD] != 0xFF) changeOpacity = 1;
-    if (changeOpacity != 0) {
-        ((u8 *)info)[0x50] |= 0x40;
-        *(f32 *)((u8 *)info + 0x4C) = lbl_80560EB4 * (opacity * (f32)pane[0xCD]);
-    }
-    node = *(u8 **)(pane + 0x14);
-    while (node != pane + 0x14) {
-        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
-        ((nw4hbm::lyt::PaneMtxDispatch *)(node - 4))->Apply(arg1);
-        node = *(u8 **)node;
-    }
-    if (changeOpacity != 0) {
-        *(f32 *)((u8 *)info + 0x4C) = opacity;
-        ((u8 *)info)[0x50] = (u8)((((u8 *)info)[0x50] & ~0x40) | ((saveBit << 6) & 0x40));
+    register u8 *node;
+
+    if ((flags & 1) == 0 && ((flagInfo[0x50] >> 4) & 1) != 0) {
+        scaleByte = flagInfo[0x50];
+        bitsX = *(volatile u32 *)(pane + 0x44);
+        scaleFlag = (scaleByte >> 5) & 1;
+        bitsY = *(volatile u32 *)(pane + 0x48);
+        scaleX = bitsX;
+        scaleY = bitsY;
+        if (scaleFlag != 0) {
+            if ((flags & 4) != 0) {
+                *sx *= *(const f32 *)(info + 0x44);
+                *sy *= *(const f32 *)(info + 0x48);
+            }
+        }
+        PSMTXScale(frame.mtx40, *sx, *sy, lbl_80560EAC);
+        PSMTXInverse(frame.mtx10, 0x78, lbl_80560EB0 * *(f32 *)(pane + 0x38));
+        PSMTXConcat(frame.mtx10, frame.mtx40, frame.mtx70);
+        PSMTXInverse(frame.mtx10, 0x79, lbl_80560EB0 * *(f32 *)(pane + 0x3C));
+        PSMTXConcat(frame.mtx10, frame.mtx70, frame.mtx40);
+        PSMTXInverse(frame.mtx10, 0x7A, lbl_80560EB0 * *(f32 *)(pane + 0x40));
+        PSMTXConcat(frame.mtx10, frame.mtx40, frame.mtx70);
+        PSMTXRotTrig(frame.mtx70, pane + 0x54, *(f32 *)(pane + 0x2C), *(f32 *)(pane + 0x30), *(f32 *)(pane + 0x34));
+
+        if (*(u8 **)(pane + 0xC) != 0) {
+            PSMTXConcat((f32 *)(*(u8 **)(pane + 0xC) + 0x84), (f32 *)(pane + 0x54), (f32 *)(pane + 0x84));
+        } else if (((flagInfo[0x50] >> 7) & 1) != 0) {
+            *(u32 *)(pane + 0x84) = *(u32 *)(pane + 0x54);
+            *(u32 *)(pane + 0x88) = *(u32 *)(pane + 0x58);
+            *(u32 *)(pane + 0x8C) = *(u32 *)(pane + 0x5C);
+            *(u32 *)(pane + 0x90) = *(u32 *)(pane + 0x60);
+            *(u32 *)(pane + 0x94) = *(u32 *)(pane + 0x64);
+            *(u32 *)(pane + 0x98) = *(u32 *)(pane + 0x68);
+            *(u32 *)(pane + 0x9C) = *(u32 *)(pane + 0x6C);
+            *(u32 *)(pane + 0xA0) = *(u32 *)(pane + 0x70);
+            *(u32 *)(pane + 0xA4) = *(u32 *)(pane + 0x74);
+            *(u32 *)(pane + 0xA8) = *(u32 *)(pane + 0x78);
+            *(u32 *)(pane + 0xAC) = *(u32 *)(pane + 0x7C);
+            *(u32 *)(pane + 0xB0) = *(u32 *)(pane + 0x80);
+        } else {
+            PSMTXConcat((f32 *)(info + 4), (f32 *)(pane + 0x54), (f32 *)(pane + 0x84));
+        }
+
+        if (((flagInfo[0x50] >> 6) & 1) != 0 && *(u8 **)(pane + 0xC) != 0) {
+            alphaBits.words.hi = 0x43300000;
+            alphaBits.words.lo = pane[0xCD];
+            pane[0xCE] = (u8)((f32)(alphaBits.number - lbl_80560EB8) * *(const f32 *)(info + 0x4C));
+        } else {
+            pane[0xCE] = pane[0xCD];
+        }
+
+        changeOpacity = 0;
+        opacity = *(const f32 *)(info + 0x4C);
+        {
+            u32 bit = (flagInfo[0x50] >> 6) & 1;
+            saveBit = (bit | -bit) >> 31;
+        }
+        if ((pane[0xCF] & 2) != 0 && pane[0xCD] != 0xFF)
+            changeOpacity = 1;
+        if (changeOpacity != 0) {
+            info[0x50] |= 0x40;
+            alphaBits.words.hi = 0x43300000;
+            alphaBits.words.lo = pane[0xCD];
+            *(f32 *)(info + 0x4C) = lbl_80560EB4 * (opacity * (f32)(alphaBits.number - lbl_80560EB8));
+        }
+        node = *(u8 **)(pane + 0x14);
+        while (node != pane + 0x14) {
+            if (node == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            ((nw4hbm::lyt::PaneMtxDispatch *)(node - 4))->Apply(arg1);
+            node = *(u8 **)node;
+        }
+        if (changeOpacity != 0) {
+            *(f32 *)(info + 0x4C) = opacity;
+            info[0x50] = (u8)((info[0x50] & ~0x40) | ((saveBit << 6) & 0x40));
+        }
     }
 }
 
