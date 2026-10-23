@@ -145,6 +145,7 @@ extern "C" s32 fn_8013CB44(const char *arg0, TObj10 *arg1) {
     return strcmp((const char *)arg1->v10(), arg0) == 0;
 }
 
+#pragma dont_inline on
 extern "C" void fn_8013CB90(void *arg0) {
     f32 x;
     f32 scale;
@@ -525,6 +526,74 @@ extern "C" s32 fn_8013F088(void *arg0) {
 
 extern "C" void fn_8013F09C(void) {
     ((void(*)())fn_80140A6C)();
+}
+
+extern "C" f32 lbl_80561520;
+extern "C" f32 lbl_80561524;
+extern "C" f32 lbl_80561528;
+extern "C" f32 lbl_8056152C;
+extern "C" f32 lbl_80561534;
+extern "C" void fn_80147F30(unsigned long, s32, s32, f32, f32, f32, f32, f32, f32, f32, f32);
+extern "C" void *fn_80147C50(u32, s32, f32);
+extern "C" void fn_801476D8(void *, void *, s32);
+extern "C" void fn_80147EE0(void *, f32);
+extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
+    struct VStringFloat { virtual void d0(); virtual void d1(); virtual void *v10(const char *, f32); };
+    struct RenderData { u32 f0; f32 f4; f32 f8; u32 fC; f32 f10; f32 f14; f32 f18; f32 f1C; f32 f20; f32 f24; };
+    f32 delta, scale, normalized, factor, x, y, z;
+    s32 drawCount;
+    void *result;
+    RenderData data;
+    if (*(s32 *)((u8 *)arg2 + 0x104) != 0) {
+        delta = fn_8001DAE8((u8 *)arg2 + 0xC8) - *(f32 *)((u8 *)arg2 + 0xCC);
+        scale = lbl_805614A4;
+        if (delta >= scale) drawCount = 0;
+        else if (delta >= *(f32 *)((u8 *)arg2 + 0xC8)) drawCount = 0;
+        else drawCount = 1;
+        if (drawCount != 0) {
+            factor = (fn_8001DAF0((f32 *)((u8 *)arg2 + 0xC8)) - lbl_80561498) / lbl_80561498;
+            if (factor < lbl_805614AC) factor = lbl_805614AC;
+            if (factor > lbl_805614A4) factor = lbl_805614A4;
+            scale = lbl_805614A4 + factor * lbl_805614AC;
+        } else scale = lbl_805614AC;
+        normalized = fn_8013CB3C() - *(f32 *)((u8 *)arg2 + 0x84);
+        normalized -= *(f32 *)(lbl_8042FB3C + 0x24);
+        normalized -= lbl_805614A4;
+        normalized /= *(f32 *)(lbl_8042FB3C + 0x20) - lbl_805614A4;
+        if (normalized < lbl_805614AC) normalized = lbl_805614AC;
+        if (normalized > lbl_805614A4) normalized = lbl_805614A4;
+        result = ((VStringFloat *)*(void **)((u8 *)arg0 + 0x54))->v10((char *)lbl_8032C530 + 0x394, normalized * lbl_805614BC);
+        x = *(f32 *)((u8 *)result + 4);
+        y = *(f32 *)((u8 *)result + 8);
+        z = *(f32 *)((u8 *)result + 0x10) * scale;
+        normalized = lbl_805614AC + normalized * lbl_805614BC;
+        drawCount = (s32)(lbl_80561520 * normalized);
+        if (drawCount > 0) {
+            fn_80147F30((unsigned long)0xFF00FF00, drawCount, *(s32 *)((u8 *)arg0 + 0xB0), x, y, z, lbl_805614A4, lbl_80561524, lbl_80561528, lbl_805614A4, lbl_805614A4);
+            fn_80147F30((unsigned long)0xFF000000, 1, *(s32 *)((u8 *)arg0 + 0xB0), x, y, z, lbl_805614A4, lbl_80561524, lbl_8056152C, lbl_805614A4, lbl_805614A4);
+            fn_80147F30((unsigned long)0xFF000000, 1, *(s32 *)((u8 *)arg0 + 0xB0), x, y, z, lbl_805614A4, lbl_80561524 + lbl_80561528 * (f32)drawCount, lbl_8056152C, lbl_805614A4, lbl_805614A4);
+        }
+        ((VStringFloat *)*(void **)((u8 *)arg0 + 0x54))->v10((char *)lbl_8032C530 + 0x3A0, 0.0f);
+        result = ((VStringFloat *)*(void **)((u8 *)arg0 + 0x54))->v10((char *)lbl_8032C530 + 0x3B0, 0.0f);
+        data.f0 = *(u32 *)((u8 *)result + 0);
+        data.f4 = *(f32 *)((u8 *)result + 4);
+        data.f8 = *(f32 *)((u8 *)result + 8);
+        data.fC = *(u32 *)((u8 *)result + 0xC);
+        data.f10 = *(f32 *)((u8 *)result + 0x10);
+        data.f14 = *(f32 *)((u8 *)result + 0x14);
+        data.f18 = *(f32 *)((u8 *)result + 0x18);
+        data.f1C = *(f32 *)((u8 *)result + 0x1C);
+        data.f20 = *(f32 *)((u8 *)result + 0x20);
+        data.f24 = *(f32 *)((u8 *)result + 0x24);
+        data.f4 = x;
+        data.f8 = y;
+        fn_8013CB90(&data);
+        fn_80147EE0(&data, scale);
+        factor = (normalized - lbl_80561530) / lbl_80561534;
+        if (factor < lbl_805614AC) factor = lbl_805614AC;
+        if (factor > lbl_805614A4) factor = lbl_805614A4;
+        fn_801476D8(&data, fn_80147C50(0xFFFFFF, -1, lbl_805614AC + factor * lbl_805614BC), *(s32 *)((u8 *)arg0 + 0xAC));
+    }
 }
 
 extern "C" void fn_8013F434(void) {
