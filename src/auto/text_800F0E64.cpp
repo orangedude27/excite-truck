@@ -57,7 +57,7 @@ struct DummyStrmLoadStream {
 struct DummyStrmLoadCallback {
     virtual void f0();
     virtual void f1();
-    virtual void f2();
+    virtual void *f2();
 };
 struct DummyStrmLoadTaskCallback {
     virtual void f0();
@@ -2253,9 +2253,9 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
         virtual void f0();
         virtual void f1();
         virtual void f2();
-        virtual void f3();
+        virtual u32 f3(void *, u32);
         virtual void f4();
-        virtual u32 f5(void *, u32);
+        virtual void f5();
         virtual void f6();
         virtual void f7();
         virtual void f8();
@@ -2265,9 +2265,7 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
         virtual void f12();
         virtual void f13();
         virtual void f14();
-        virtual void f15();
-        virtual void f16();
-        virtual void f17(s32, s32, s32);
+        virtual void f15(s32, s32, s32);
     };
     s32 sp27;
     s32 *temp_r3_5;
@@ -2286,9 +2284,9 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
     DummyStream *stream;
 
     stream = (DummyStream *)M2C_FIELD(arg0, void **, 0);
-    stream->f17(0, 0, arg3);
+    stream->f15(0, 0, arg3);
     temp_r30 = (s32)&sp27 & 0xFFFFFFE0;
-    if (stream->f5((void *)temp_r30, 0x40) != 0x40U) {
+    if (stream->f3((void *)temp_r30, 0x40) != 0x40U) {
         return 0;
     }
     if (temp_r30 == 0) {
@@ -2323,8 +2321,8 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
 
     temp_r6 = M2C_FIELD(temp_r30, s32 *, 0x10);
     temp_r29 = temp_r6 + M2C_FIELD(temp_r30, s32 *, 0x14);
-    stream->f17(0, 0, temp_r6);
-    if (stream->f5(arg1, temp_r29) != temp_r29) {
+    stream->f15(0, 0, temp_r6);
+    if (stream->f3(arg1, temp_r29) != temp_r29) {
         return 0;
     }
     if (arg1 == 0) {
@@ -2354,7 +2352,7 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
         }
     }
     if ((s32)var_r0_2 == 0) {
-        return 1;
+        return 0;
     }
     M2C_FIELD(arg0, void **, 4) = arg1;
     temp_r3_5 = (s32 *)((u8 *)arg1 + M2C_FIELD(arg1, s32 *, 0x10));
@@ -2367,9 +2365,10 @@ extern "C" s32 fn_800FAF10(void *arg0, void *arg1, u32 arg2, s32 arg3) {
     if ((s32)M2C_FIELD(temp_r3_6, u8 *, 9) != 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(&lbl_805598F8, 0x6F, lbl_80326738);
     }
-    if ((M2C_FIELD(GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(M2C_FIELD(temp_r27, u8 *, 0), M2C_FIELD(temp_r27, u32 *, 4), temp_r27), u32 *, 0x18) & 0x1F) != 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x6C, file + 0x13C);
+    if ((M2C_FIELD(GetDataRefAddressImpl__Q46nw4hbm3snd6detail4UtilFQ56nw4hbm3snd6detail4Util7RefTypeUlPCv(M2C_FIELD(temp_r27, u8 *, 0), M2C_FIELD(temp_r27, u32 *, 4), temp_r27), u32 *, 0x18) & 0x1F) == 0) {
+        return 0;
     }
+    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x6C, file + 0x13C);
     return 1;
 }
 
