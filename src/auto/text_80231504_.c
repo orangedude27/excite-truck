@@ -15,7 +15,7 @@ extern s32 lbl_8049846C[];
 extern s32 fn_8022EDC4(void);
 extern s32 fn_80230B9C(s32);
 extern void fn_802C8B98(s32, s32);
-extern u8 *lbl_80497F14;
+extern u8 lbl_80497F14[];
 extern f32 lbl_80563680;
 extern f32 lbl_80563684;
 extern f32 lbl_80563688;
@@ -168,9 +168,9 @@ void fn_80231780(void *arg0) {
     f32 f29;
     f32 f30;
     f32 f31;
-    f32 sp8;
-    f32 spC;
-    f32 sp10;
+    volatile f32 sp8;
+    volatile f32 spC;
+    volatile f32 sp10;
     s32 i;
     s32 offset;
     u8 *record;
@@ -188,7 +188,7 @@ void fn_80231780(void *arg0) {
 loop_body:
     record = *(u8 **)&lbl_8049846C[0] + offset;
     index = *(s32 *)record;
-    object = lbl_80497F14 + index * 0x1C;
+    object = *(u8 **)&lbl_80497F14 + index * 0x1C;
 
     if (object[0x14] != 0)
         color = *(s32 *)(record + 0x18);
@@ -199,7 +199,7 @@ loop_body:
         sp8 = *(f32 *)(record + 4);
         spC = *(f32 *)(record + 8);
         sp10 = *(f32 *)(record + 0x0C);
-        if (arg0 != 0) transform_vec((f32 *)arg0, &sp8, &sp8);
+        if (arg0 != 0) transform_vec((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8);
         {
             f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
             f32 ratio;
@@ -217,9 +217,9 @@ loop_body:
         }
     } else {
         if (arg0 != 0)
-            fn_802C8B98(*(s32 *)(lbl_80497F14 + index * 0x1C + 8), (s32)arg0);
+            fn_802C8B98(*(s32 *)(*(u8 **)&lbl_80497F14 + index * 0x1C + 8), (s32)arg0);
         else
-            fn_802C8B98(*(s32 *)(lbl_80497F14 + index * 0x1C + 8), fn_8022EDC4());
+            fn_802C8B98(*(s32 *)(*(u8 **)&lbl_80497F14 + index * 0x1C + 8), fn_8022EDC4());
         fn_802C8DBC(4);
         f27 = *(f32 *)(record + 4);
         f26 = *(f32 *)(record + 8);
@@ -276,6 +276,7 @@ s32 fn_80232578(const char *arg0) {
     s32 i;
     u8 temp;
     u32 value;
+    register char *stringBase = lbl_80340440;
 
     index = fn_8023150C(arg0);
     if (index >= 0) {
@@ -284,7 +285,7 @@ s32 fn_80232578(const char *arg0) {
         value = *(u32 *)(entry + 8);
         *(u32 *)(entry + 8) = value + 1;
         value = (u32)fn_80231730((s32)arg0);
-        *(u32 *)(*(u32 **)entry + 8) = value;
+        *(u32 *)((u8 *)*(u32 *)entry + 8) = value;
         return *(s32 *)entry;
     }
 
@@ -293,15 +294,15 @@ s32 fn_80232578(const char *arg0) {
     unused = 0;
     parsed = fn_8012C370(arg0, 0x47544558, &size, &unused, &valid, &swap);
     if (parsed == 0) {
-        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80340440 + 0x144, arg0);
+        ((void (*)(const char *, ...))fn_802E30C8)(stringBase + 0x144, arg0);
         return 0;
     }
 
     if (size != 8) {
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340440 + 0xE4, arg0);
+        ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0xE4, arg0);
     }
     if (valid == 0) {
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340440 + 0x108, arg0);
+        ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0x108, arg0);
     }
 
     data = (u8 *)parsed;
@@ -341,11 +342,11 @@ s32 fn_80232578(const char *arg0) {
     name[0xB] = 0;
     fn_80028E00(name, lbl_8055B9D4);
     if (strlen(name) > 0x10) {
-        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340440 + 0x15C, name, 0x10, strlen(name));
+        ((void (*)(const char *, ...))fn_802E317C)(stringBase + 0x15C, name, 0x10, strlen(name));
     }
     index = fn_802CAC34(name, *(s32 *)(data + 0x18));
     if (index == -1) {
-        fn_802E30C8(lbl_80340440 + 0x190);
+        fn_802E30C8(stringBase + 0x190);
         return 0;
     }
     *(s32 *)data = index;
