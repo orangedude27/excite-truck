@@ -2012,17 +2012,17 @@ void fn_80120084(void *arg0) {
     else free(base);
 }
 
+extern f64 lbl_80561228;
 void fn_80120834(s32 n, s32 *info, f32 *table) {
     register s32 i;
-    register u32 index;
     register s32 stage;
     s32 half;
     s32 j;
     f32 endpoint;
     f32 angle;
-    f32 angle2;
     f32 stage_scale;
     f32 stage_zero;
+    f32 angle2;
 
     info[0] = n;
     info[1] = 1;
@@ -2052,22 +2052,22 @@ void fn_80120834(s32 n, s32 *info, f32 *table) {
 
     stage_scale = lbl_80561210;
     stage_zero = lbl_80561218;
-    index = 0;
+    i = 0;
     while (half > 2) {
         f32 *stagep;
-        stage = (s32)(index + half);
+        stage = i + half;
         half >>= 1;
         stagep = table + stage;
         stagep[0] = stage_zero;
         stagep[1] = endpoint;
         if (half >= 4) {
-            f32 source_a = table[index + 4];
-            f32 source_b = table[index + 6];
+            f32 source_a = table[i + 4];
+            f32 source_b = table[i + 6];
             stagep[2] = stage_scale / source_a;
             stagep[3] = stage_scale / source_b;
         }
         if (half > 4) {
-            u8 *src = (u8 *)(table + index);
+            u8 *src = (u8 *)(table + i);
             u8 *dst = (u8 *)(stagep + 4);
             s32 offset = 0x20;
             for (j = 0; j < ((half - 1) >> 2); j++) {
@@ -2083,7 +2083,7 @@ void fn_80120834(s32 n, s32 *info, f32 *table) {
                 dst += 0x10;
             }
         }
-        index = (u32)stage;
+        i = stage;
     }
 }
 
@@ -3508,8 +3508,8 @@ done:
 
 void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
     s32 sp8[64];
-    s32 *var_r12;
-    s32 *var_r4;
+    register s32 *var_r12;
+    register s32 *var_r4;
     s16 temp_r0, temp_r10, temp_r23, temp_r25, temp_r4, temp_r4_2, temp_r7, temp_r8, temp_r9;
     s32 temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5, temp_r0_6, temp_r0_7;
     s32 temp_r10_2, temp_r10_3, temp_r10_4, temp_r10_5, temp_r10_6;
@@ -3520,17 +3520,17 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
     register s32 temp_r24;
     s32 temp_r24_2, temp_r24_3, temp_r24_4, temp_r24_5, temp_r24_6, temp_r24_7, temp_r24_8;
     s32 temp_r25_2, temp_r25_3, temp_r25_4, temp_r25_5, temp_r25_6;
-    s32 temp_r26, temp_r26_2, temp_r26_3, temp_r27, temp_r28, temp_r29, temp_r30;
+    s32 temp_r26, temp_r26_2, temp_r26_3, temp_r27, temp_r28, temp_r29; register s32 temp_r30;
     s32 temp_r4_3, temp_r4_4, temp_r5, temp_r5_2, temp_r6;
     s32 temp_r7_2, temp_r7_3, temp_r7_4, temp_r7_5;
     s32 temp_r8_2, temp_r8_3, temp_r8_4, temp_r8_5;
     s32 temp_r9_2, temp_r9_3, temp_r9_4, temp_r9_5, temp_r9_6, temp_r9_7, temp_r9_8;
     s32 var_ctr, var_ctr_2;
     u32 temp_r11_6;
-    u8 *var_r31;
-    u8 *var_r3;
-    s16 *var_r5;
-    s32 *var_r6;
+    register u8 *var_r31;
+    register u8 *var_r3;
+    register s16 *var_r5;
+    register s32 *var_r6;
     var_r3 = (u8 *)arg0;
     var_r5 = (s16 *)arg2;
     var_r6 = (s32 *)arg3;
@@ -3643,7 +3643,7 @@ void fn_80125960(void *arg0, s32 arg1, void *arg2, void *arg3) {
         temp_r7_5 = (temp_r12_2 - temp_r26_2) * 0xB50;
         temp_r23_9 = temp_r23_8 - temp_r24_7;
         temp_r9_6 = temp_r6 + (temp_r0_6 * -0x14E8 >> 11);
-        var_r4 += 0x20;
+        var_r4 += 8;
         temp_r10_4 = temp_r9_6 - temp_r26_3;
         temp_r24_8 = (temp_r7_5 >> 11) - temp_r10_4;
         temp_r8_5 = ((temp_r5_2 * 0x8A9 >> 11) - temp_r6) + temp_r24_8;
