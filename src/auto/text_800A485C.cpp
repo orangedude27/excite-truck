@@ -2086,6 +2086,7 @@ extern "C" s32 fn_800B5324(void *, u8 *, u32, u32, u32, u32 *, s32);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 arg2, register s32 *arg3) {
+    register u8 *iter;
     s32 status;
     register s32 result;
     register s32 zero;
@@ -2100,19 +2101,20 @@ extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 
     arg1[0x20B] = (u8)status;
     arg1[0x20C] = (u8)status;
     if ((arg1[0x21C] & 0x10) && (*(u32 *)(arg1 + 0x234) == 1)) return 2;
+    iter = (u8 *)arg0;
     zero = 0;
     goto check_end;
 status_check:
     if (status != 0) return status;
 process:
-    if (*(u8 *)((u8 *)arg0 + 0x4C) == 0xE5) {
+    if (iter[0x4C] == 0xE5) {
         arg1[0x20A] = (u8)zero;
         *(u16 *)arg1 = (u16)zero;
         goto advance;
     }
-    flags = *(u8 *)((u8 *)arg0 + 0x57);
+    flags = iter[0x57];
     if ((flags & 0xF) == 0xF) {
-        if (VFiPFENT_LoadLFNEntryFieldsFromBuf(arg1, (u8 *)arg0 + 0x4C) != 0) {
+        if (VFiPFENT_LoadLFNEntryFieldsFromBuf(arg1, iter + 0x4C) != 0) {
             arg1[0x20A] = (u8)zero;
             *(u16 *)arg1 = (u16)zero;
         }
@@ -2128,13 +2130,13 @@ process:
         *(u16 *)arg1 = (u16)zero;
         goto advance;
     }
-    ((void (*)(u8 *, u8 *))fn_800AA4EC)(arg1, (u8 *)arg0 + 0x4C);
+    ((void (*)(u8 *, u8 *))fn_800AA4EC)(arg1, iter + 0x4C);
     if (arg1[0x20A] != 0 && arg1[0x20B] == 1 &&
         arg1[0x20C] == ((u8 (*)(u8 *))VFiPFENT_CalcCheckSum)(arg1)) {
-        VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, (u8 *)arg0 + 0x4C);
-        *(u32 *)(arg1 + 0x238) = *(u32 *)((u8 *)arg0 + 0x44);
-        *(u16 *)(arg1 + 0x23C) = *(u16 *)((u8 *)arg0 + 0x48);
-        *(u32 *)(arg1 + 0x22C) = *(u32 *)((u8 *)arg0 + 0x3C);
+        VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, iter + 0x4C);
+        *(u32 *)(arg1 + 0x238) = *(u32 *)(iter + 0x44);
+        *(u16 *)(arg1 + 0x23C) = *(u16 *)(iter + 0x48);
+        *(u32 *)(arg1 + 0x22C) = *(u32 *)(iter + 0x3C);
         flags = arg1[0x21C] & 0x10;
         if (flags && *(u32 *)(arg1 + 0x234) != arg2) {
             arg1[0x20A] = (u8)zero;
@@ -2146,7 +2148,7 @@ process:
             *arg3 = 1;
         }
     }
-    flags = *(u8 *)((u8 *)arg0 + 0x58);
+    flags = iter[0x58];
     if (flags & 0x18) {
         s32 length;
         VFiPFPATH_getLongNameformShortName(arg1 + 0x20E, spC, flags);
@@ -2155,11 +2157,11 @@ process:
         arg1[0x20C] = ((u8 (*)(u8 *))VFiPFENT_CalcCheckSum)(arg1);
         arg1[0x20B] = 1;
     }
-    VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, (u8 *)arg0 + 0x4C);
-    *(u32 *)(arg1 + 0x238) = *(u32 *)((u8 *)arg0 + 0x44);
+    VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, iter + 0x4C);
+    *(u32 *)(arg1 + 0x238) = *(u32 *)(iter + 0x44);
     flags = arg1[0x21C] & 0x10;
-    *(u16 *)(arg1 + 0x23C) = *(u16 *)((u8 *)arg0 + 0x48);
-    *(u32 *)(arg1 + 0x22C) = *(u32 *)((u8 *)arg0 + 0x3C);
+    *(u16 *)(arg1 + 0x23C) = *(u16 *)(iter + 0x48);
+    *(u32 *)(arg1 + 0x22C) = *(u32 *)(iter + 0x3C);
     if (flags && *(u32 *)(arg1 + 0x234) != arg2) {
         arg1[0x20A] = (u8)zero;
         *(u16 *)arg1 = (u16)zero;
@@ -2173,28 +2175,28 @@ process:
     return 0;
 advance:
     {
-        u32 old = *(u32 *)arg0;
-        *(u32 *)arg0 = old + 1;
-        result = fn_800AB378(arg0, 0);
+        u32 old = *(u32 *)iter;
+        *(u32 *)iter = old + 1;
+        result = fn_800AB378((void *)iter, 0);
         if (result != 0) {
-            *(u32 *)arg0 = old;
-            fn_800AB378(arg0, 0);
-        } else if (*(u32 *)((u8 *)arg0 + 0x44) + 0x10000 == 0xFFFF) {
+            *(u32 *)iter = old;
+            fn_800AB378((void *)iter, 0);
+        } else if (*(u32 *)(iter + 0x44) + 0x10000 == 0xFFFF) {
             result = 0x10;
         } else {
-            callResult = fn_800B5324(*(void **)((u8 *)arg0 + 4),
-                                     (u8 *)arg0 + 0x4C,
-                                     *(u32 *)((u8 *)arg0 + 0x44),
-                                     *(u16 *)((u8 *)arg0 + 0x48),
+            callResult = fn_800B5324(*(void **)(iter + 4),
+                                     iter + 0x4C,
+                                     *(u32 *)(iter + 0x44),
+                                     *(u16 *)(iter + 0x48),
                                      0x20, &sp8, 0);
             if (sp8 != 0x20) result = 0x11;
             else result = callResult;
         }
+        result = result & (s32)(-(u32)result | (u32)result) >> 31;
         status = result & (s32)(-(u32)result | (u32)result) >> 31;
-        status &= (s32)(-(u32)status | (u32)status) >> 31;
     }
 check_end:
-    if (VFiPFENT_ITER_IsAtLogicalEnd(arg0) == 0) goto status_check;
+    if (VFiPFENT_ITER_IsAtLogicalEnd((void *)iter) == 0) goto status_check;
     return 0;
 }
 #pragma pop
@@ -3085,14 +3087,15 @@ u8 sp8[2];
 s32 temp_r5;
 s32 var_r0;
 s32 var_r3_2;
-s8 var_r29_2;
-u16 temp_r4;
+s32 var_r29_2;
+u32 temp_r4;
 u16 temp_r29;
-u16 temp_r6;
 u16 var_r31_2;
 u16 var_r3_3;
 u32 var_r4;
 u32 var_r3;
+u32 result_r0;
+u32 temp_r6;
 
 var_r0 = copy[0];
 temp_r5 = copy[1];
@@ -3163,11 +3166,13 @@ if (temp_r6 >= 0xC) {
 var_r31_2 = 0;
 } else {
 frame.sp2C = temp_r6 + 1;
-var_r29_2 = (s8)*((u8 *)frame.sp20 + temp_r6);
-if (M2C_FIELD(lbl_803D2140, s32 (**)(s8, s32, void *), 0x54)(var_r29_2, 1, (void *)frame.sp20) != 0) {
+u8 *path_ptr = (u8 *)frame.sp20;
+var_r29_2 = (s8)*(path_ptr + temp_r6);
+if (M2C_FIELD(lbl_803D2140, s32 (**)(s8, s32, void *), 0x54)(var_r29_2, 1, (void *)path_ptr) != 0) {
 temp_r4 = frame.sp2C;
+u8 *base_ptr = (u8 *)frame.sp20;
 frame.sp2C = temp_r4 + 1;
-var_r29_2 = (s8)(u16)(((var_r29_2 << 8) & 0xFF00) + *((u8 *)frame.sp20 + temp_r4));
+var_r29_2 = (u16)(((var_r29_2 << 8) & 0xFF00) + *(base_ptr + temp_r4));
 }
 var_r3_2 = 0;
 if (((u16)var_r29_2 >= 0x61) && ((u16)var_r29_2 <= 0x7A)) {
@@ -3180,7 +3185,8 @@ var_r3_3 -= 0x20;
 var_r31_2 = var_r3_3;
 }
 }
-var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, fn_800B25CC(frame.sp10, arg2), frame.sp10, arg2);
+result_r0 = fn_800B25CC(frame.sp10, arg2);
+var_r31 = VFiPFPATH_DoMatchFileNameWithPattern(var_r31_2, (s32 *)&frame.sp20, (u16)result_r0, frame.sp10, arg2);
 }
 return var_r31;
 }
@@ -5274,6 +5280,14 @@ extern "C" s32 fn_800BB4B0(s32 a,s32 b,s32 c,s32 d) {
     return fn_800BB4E0(a,b,c,d,0,0);
 }
 
+extern "C" s32 lbl_8055DD6C;
+extern "C" s32 *lbl_8055DD70;
+extern "C" s32 lbl_8055DD78;
+extern "C" u8 lbl_80407560[0x18];
+extern "C" const char lbl_8031B838[];
+extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" s32 fn_800BC134(void *, s32, s32);
+extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
 extern "C" s32 fn_800BB81C(s32,s32,s32,s32,s32,s32);
 extern "C" s32 fn_800BB4BC(s32 a,s32 b,s32 c,s32 d) {
     return fn_800BB81C(a,b,c,d,0,0);
