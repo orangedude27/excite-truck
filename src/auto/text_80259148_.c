@@ -43,6 +43,7 @@ void fn_80259148(void) {
 #pragma pop
 
 #pragma push
+#pragma dont_inline on
 #pragma cplusplus on
 extern "C" void fn_802591D8(void) {
     class Obj {
@@ -127,10 +128,10 @@ extern void fn_802E317C(const char *, int);
 void fn_8025A50C(void) {
     extern unsigned char *fn_8001EFAC(int, int);
     struct State {
-        char *text; char pad0[0x10]; int state; int object; int selected; int next;
+        char * volatile text; char pad0[0x10]; volatile int state; volatile int object; volatile int selected; volatile int next;
         int index; float number; char shortText[0x14]; char spareText[0x14];
-        float fade; unsigned char flag; char pad1[7]; char title[0x32];
-        char pad2[0x32]; unsigned char dialog; unsigned char difference;
+        float fade; volatile unsigned char flag; char pad1[7]; char title[0x32];
+        char pad2[0x32]; volatile unsigned char dialog; volatile unsigned char difference;
         char pad3[2]; int saved; float value;
     } state;
     float base;
@@ -151,7 +152,7 @@ void fn_8025A50C(void) {
         state.index = index;
         state.fade = base;
         state.value = base;
-        fn_8001EFB0(&state.object);
+        fn_8001EFB0((void *)&state.object);
         if (lbl_8055F67C != 0) {
             state.next = state.selected + 0x32;
             current = fn_8001EFA0(state.object, state.next);
