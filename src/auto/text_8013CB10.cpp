@@ -1,4 +1,13 @@
 #include "types.h"
+extern "C" s32 fn_801E9E30(void *, f32 *);
+extern "C" s32 fn_80136594(void **, s32, f32 *, f32);
+extern "C" s32 fn_80178C9C(f32, f32, f32, f32, f32, f32);
+extern "C" void qsort(void *, u32, u32, int (*)(const void *, const void *));
+extern "C" void *memset(void *, s32, u32);
+extern "C" void fn_802AE0E0(int);
+extern "C" f32 lbl_80561594;
+extern "C" f32 lbl_80561598;
+extern "C" f32 lbl_8056159C;
 extern "C" f32 fn_8001DAF0(f32 *);
 extern "C" u8 lbl_8042FB3C[];
 extern "C" void fn_802ADE60(int, int);
@@ -537,65 +546,69 @@ extern "C" void fn_80147F30(unsigned long, s32, s32, f32, f32, f32, f32, f32, f3
 extern "C" void *fn_80147C50(u32, s32, f32);
 extern "C" void fn_801476D8(void *, void *, s32);
 extern "C" void fn_80147EE0(void *, f32);
+#pragma scheduling invalid_target
 extern "C" void fn_8013F0A0(void *arg0, void *arg1, void *arg2) {
-    struct VStringFloat { virtual void d0(); virtual void d1(); virtual void *v10(const char *, f32); };
+    struct VStringFloat { virtual void d0(); virtual void d1(); virtual u8 *v10(const char *, f32); };
     struct RenderData { u32 f0; f32 f4; f32 f8; u32 fC; f32 f10; f32 f14; f32 f18; f32 f1C; f32 f20; f32 f24; };
-    f32 delta, scale, normalized, factor, x, y, z;
-    s32 drawCount;
+    f32 delta, progress, normalized, scale, factor, f27, f29, f28;
+    register u8 *dataObj;
+    register char *labels;
+    s32 drawCount, active = 0;
+    s32 enabled;
     void *result;
+    void *firstResult;
     RenderData data;
-    if (*(s32 *)((u8 *)arg2 + 0x104) != 0) {
-        delta = fn_8001DAE8((u8 *)arg2 + 0xC8) - *(f32 *)((u8 *)arg2 + 0xCC);
+    enabled = *(s32 *)((u8 *)arg2 + 0x104);
+    dataObj = (u8 *)arg2;
+    labels = (char *)lbl_8032C530;
+    if (enabled != 0) {
+        delta = fn_8001DAE8(dataObj + 0xC8) - *(f32 *)(dataObj + 0xCC);
         scale = lbl_805614A4;
-        if (delta >= scale) drawCount = 0;
-        else if (delta >= *(f32 *)((u8 *)arg2 + 0xC8)) drawCount = 0;
-        else drawCount = 1;
-        if (drawCount != 0) {
-            factor = (fn_8001DAF0((f32 *)((u8 *)arg2 + 0xC8)) - lbl_80561498) / lbl_80561498;
-            if (factor < lbl_805614AC) factor = lbl_805614AC;
+        active = 0;
+        if (delta >= scale) {
+            if (delta < *(f32 *)(dataObj + 0xC8)) active = 1;
+        }
+        if (active != 0) {
+            delta = (fn_8001DAF0((f32 *)(dataObj + 0xC8)) - lbl_80561498) / lbl_80561498;
+            factor = lbl_805614AC;
+            if (factor < delta) factor = delta;
             if (factor > lbl_805614A4) factor = lbl_805614A4;
             scale = lbl_805614A4 + factor * lbl_805614AC;
         } else scale = lbl_805614AC;
-        normalized = fn_8013CB3C() - *(f32 *)((u8 *)arg2 + 0x84);
-        normalized -= *(f32 *)(lbl_8042FB3C + 0x24);
-        normalized -= lbl_805614A4;
-        normalized /= *(f32 *)(lbl_8042FB3C + 0x20) - lbl_805614A4;
-        if (normalized < lbl_805614AC) normalized = lbl_805614AC;
+        delta = fn_8013CB3C() - *(f32 *)(dataObj + 0x84);
+        delta -= *(f32 *)(lbl_8042FB3C + 0x24);
+        delta -= lbl_805614A4;
+        delta /= *(f32 *)(lbl_8042FB3C + 0x20) - lbl_805614A4;
+        normalized = lbl_805614AC;
+        if (normalized < delta) normalized = delta;
         if (normalized > lbl_805614A4) normalized = lbl_805614A4;
-        result = ((VStringFloat *)*(void **)((u8 *)arg0 + 0x54))->v10((char *)lbl_8032C530 + 0x394, normalized * lbl_805614BC);
-        x = *(f32 *)((u8 *)result + 4);
-        y = *(f32 *)((u8 *)result + 8);
-        z = *(f32 *)((u8 *)result + 0x10) * scale;
-        normalized = lbl_805614AC + normalized * lbl_805614BC;
-        drawCount = (s32)(lbl_80561520 * normalized);
+        factor = normalized * lbl_805614BC;
+        progress = lbl_805614AC + factor;
+        firstResult = ((VStringFloat *)*(void **)((u8 *)arg0 + 0x54))->v10(labels + 0x394, factor);
+        f28 = *(f32 *)((u8 *)firstResult + 0x10) * scale;
+        f27 = *(f32 *)((u8 *)firstResult + 4);
+        f29 = *(f32 *)((u8 *)firstResult + 8);
+        drawCount = (s32)(lbl_80561520 * progress);
         if (drawCount > 0) {
-            fn_80147F30((unsigned long)0xFF00FF00, drawCount, *(s32 *)((u8 *)arg0 + 0xB0), x, y, z, lbl_805614A4, lbl_80561524, lbl_80561528, lbl_805614A4, lbl_805614A4);
-            fn_80147F30((unsigned long)0xFF000000, 1, *(s32 *)((u8 *)arg0 + 0xB0), x, y, z, lbl_805614A4, lbl_80561524, lbl_8056152C, lbl_805614A4, lbl_805614A4);
-            fn_80147F30((unsigned long)0xFF000000, 1, *(s32 *)((u8 *)arg0 + 0xB0), x, y, z, lbl_805614A4, lbl_80561524 + lbl_80561528 * (f32)drawCount, lbl_8056152C, lbl_805614A4, lbl_805614A4);
+            fn_80147F30((unsigned long)0xFF00FF00, drawCount, *(s32 *)((u8 *)arg0 + 0xB0), f27, f29, f28, lbl_805614A4, lbl_80561524, lbl_80561528, lbl_805614A4, lbl_805614A4);
+            fn_80147F30((unsigned long)0xFF000000, 1, *(s32 *)((u8 *)arg0 + 0xB0), f27, f29, f28, lbl_805614A4, lbl_80561524, lbl_8056152C, lbl_805614A4, lbl_805614A4);
+            fn_80147F30((unsigned long)0xFF000000, 1, *(s32 *)((u8 *)arg0 + 0xB0), f27, f29, f28, lbl_805614A4, lbl_80561524 + lbl_80561528 * (f32)drawCount, lbl_8056152C, lbl_805614A4, lbl_805614A4);
         }
-        ((VStringFloat *)*(void **)((u8 *)arg0 + 0x54))->v10((char *)lbl_8032C530 + 0x3A0, 0.0f);
-        result = ((VStringFloat *)*(void **)((u8 *)arg0 + 0x54))->v10((char *)lbl_8032C530 + 0x3B0, 0.0f);
-        data.f0 = *(u32 *)((u8 *)result + 0);
-        data.f4 = *(f32 *)((u8 *)result + 4);
-        data.f8 = *(f32 *)((u8 *)result + 8);
-        data.fC = *(u32 *)((u8 *)result + 0xC);
-        data.f10 = *(f32 *)((u8 *)result + 0x10);
-        data.f14 = *(f32 *)((u8 *)result + 0x14);
-        data.f18 = *(f32 *)((u8 *)result + 0x18);
-        data.f1C = *(f32 *)((u8 *)result + 0x1C);
-        data.f20 = *(f32 *)((u8 *)result + 0x20);
-        data.f24 = *(f32 *)((u8 *)result + 0x24);
-        data.f4 = x;
-        data.f8 = y;
+        ((VStringFloat *)*(void **)((u8 *)arg0 + 0x54))->v10(labels + 0x3A0, 0.0f);
+        result = ((VStringFloat *)*(void **)((u8 *)arg0 + 0x54))->v10(labels + 0x3B0, 0.0f);
+        data = *(RenderData *)result;
+        data.f4 = *(f32 *)((u8 *)firstResult + 4);
+        data.f8 = *(f32 *)((u8 *)firstResult + 8);
         fn_8013CB90(&data);
         fn_80147EE0(&data, scale);
-        factor = (normalized - lbl_80561530) / lbl_80561534;
-        if (factor < lbl_805614AC) factor = lbl_805614AC;
+        delta = (progress - lbl_80561530) / lbl_80561534;
+        factor = lbl_805614AC;
+        if (factor < delta) factor = delta;
         if (factor > lbl_805614A4) factor = lbl_805614A4;
         fn_801476D8(&data, fn_80147C50(0xFFFFFF, -1, lbl_805614AC + factor * lbl_805614BC), *(s32 *)((u8 *)arg0 + 0xAC));
     }
 }
-
+#pragma scheduling on
 extern "C" void fn_8013F434(void) {
 
 }
@@ -1286,6 +1299,271 @@ extern "C" void fn_80143CB0(void *arg0) {
  item=*(void**)((char*)arg0+0x2C);
  if(item!=0){*((u8*)item+0x4A)=1;*((u8*)item+0x4C)=0;}
 }
+
+extern "C" void fn_80130980(void *, s32, s32, f32);
+extern "C" s32 fn_80204CF0(void);
+extern "C" s32 fn_80207848(void *, s32);
+extern "C" s32 fn_802ADF34(void *, char *, s32 *);
+extern "C" s32 lbl_802FAA40[3];
+extern "C" u8 lbl_80559D8C, lbl_80559D94, lbl_80559D98, lbl_80559D9C;
+extern "C" f32 lbl_805615B4;
+#pragma push
+#pragma optimize_for_size on
+#pragma scheduling invalid_target
+extern "C" void fn_80143DC8(void *arg0) {
+    union Word { s32 i; void *p; } stack[95];
+    register char *base;
+    volatile s32 *var_r4;
+    s32 zero;
+    s32 temp_r0;
+    s32 temp_r0_2;
+    s32 temp_r10;
+    s32 temp_r10_2;
+    s32 temp_r11;
+    s32 temp_r11_2;
+    s32 temp_r12_2;
+    s32 temp_r4;
+    s32 temp_r5;
+    s32 temp_r6;
+    s32 temp_r7;
+    s32 temp_r7_2;
+    s32 temp_r8;
+    s32 temp_r9;
+    register u32 var_ctr;
+    s32 var_r20;
+    s32 var_r6;
+    s32 var_r6_2;
+    u8 *var_r24;
+    u8 *var_r4_2;
+    u8 *var_r5;
+    u8 *var_r5_2;
+    u8 *var_r7;
+    u8 *var_r7_2;
+    u8 temp_r4_2;
+    u8 temp_r4_3;
+    u8 temp_r5_2;
+    s32 one;
+    s32 three;
+    s32 sp188;
+    s32 sp18c;
+    s32 sp190;
+    void *temp_r12;
+    void *temp_r21;
+    void *temp_r22;
+    void *temp_r23;
+    void *temp_r24;
+    void *temp_r25;
+    void *temp_r25_2;
+    void *temp_r26;
+    void *temp_r26_2;
+    void *temp_r27;
+    void *temp_r29;
+
+    base = (char *)lbl_8032C530;
+    var_r4 = (volatile s32 *)&stack[47].i;
+    zero = 0;
+    for (var_ctr = 0; var_ctr < 0x19; var_ctr++) {
+        var_r4[1] = zero;
+        var_r4 += 2;
+        var_r4[0] = zero;
+    }
+    var_r4[1] = zero;
+
+    one = 1;
+    temp_r0 = (s32)((u8 *)arg0 + 0x10C);
+    stack[47].i = temp_r0;
+    temp_r12 = base + 0x290;
+    temp_r26 = base + 0x840;
+    stack[50].i = temp_r0;
+    temp_r27 = base + 0x834;
+    temp_r10 = (s32)((u8 *)arg0 + 0x110);
+    three = 3;
+    stack[45].i = three;
+    temp_r9 = (s32)((u8 *)arg0 + 0x114);
+    temp_r7 = (s32)((u8 *)arg0 + 0x118);
+    stack[48].i = three;
+    temp_r29 = base + 0x84C;
+    temp_r6 = (s32)((u8 *)arg0 + 0x30);
+    stack[46].p = temp_r27;
+    temp_r5 = (s32)((u8 *)arg0 + 0x44);
+    temp_r25 = base + 0x858;
+    stack[49].p = temp_r27;
+    temp_r4 = (s32)((u8 *)arg0 + 0x58);
+    temp_r24 = base + 0x870;
+    stack[42].i = three;
+    temp_r0_2 = (s32)((u8 *)arg0 + 0x6C);
+    stack[43].p = temp_r12;
+    stack[44].i = temp_r10;
+    stack[51].i = three;
+    stack[52].p = temp_r12;
+    stack[53].i = temp_r10;
+    stack[39].i = three;
+    stack[40].p = &lbl_80559D8C;
+    stack[41].i = temp_r9;
+    stack[54].i = three;
+    stack[55].p = &lbl_80559D8C;
+    stack[56].i = temp_r9;
+    stack[36].i = three;
+    stack[37].p = temp_r26;
+    stack[38].i = temp_r7;
+    stack[57].i = three;
+    stack[58].p = temp_r26;
+    stack[59].i = temp_r7;
+    stack[33].i = one;
+    stack[34].p = temp_r29;
+    stack[35].i = temp_r6;
+    stack[60].i = one;
+    stack[61].p = temp_r29;
+    stack[62].i = temp_r6;
+    stack[30].i = one;
+    stack[31].p = temp_r12;
+    stack[32].i = temp_r5;
+    stack[63].i = one;
+    stack[64].p = temp_r12;
+    stack[65].i = temp_r5;
+    stack[27].i = one;
+    stack[28].p = temp_r25;
+    stack[29].i = temp_r4;
+    stack[66].i = one;
+    stack[67].p = temp_r25;
+    stack[68].i = temp_r4;
+    stack[24].i = one;
+    stack[25].p = temp_r24;
+    stack[26].i = temp_r0_2;
+    stack[69].i = one;
+    stack[70].p = temp_r24;
+    stack[71].i = temp_r0_2;
+    stack[21].i = one;
+
+    sp188 = lbl_802FAA40[0];
+    temp_r8 = (s32)((u8 *)arg0 + 0x80);
+    sp18c = lbl_802FAA40[1];
+    temp_r4 = (s32)((u8 *)arg0 + 0x9E);
+    sp190 = lbl_802FAA40[2];
+    temp_r29 = (u8 *)arg0 + 0x94;
+    stack[72].i = one;
+    temp_r26_2 = base + 0x840;
+    temp_r12_2 = (s32)((u8 *)arg0 + 0xB2);
+    stack[23].i = temp_r8;
+    temp_r25_2 = base + 0x87C;
+    temp_r11_2 = (s32)((u8 *)arg0 + 0xC6);
+    stack[73].p = temp_r26_2;
+    temp_r23 = base + 0x898;
+    temp_r10_2 = (s32)((u8 *)arg0 + 0xDA);
+    stack[74].i = temp_r8;
+    temp_r22 = base + 0x8B0;
+    stack[18].i = one;
+    temp_r9 = (s32)((u8 *)arg0 + 0xEE);
+    temp_r21 = base + 0x8DC;
+    stack[20].i = (s32)temp_r29;
+    temp_r7_2 = (s32)((u8 *)arg0 + 0x104);
+    stack[75].i = one;
+    var_r24 = &lbl_80559D8C;
+    temp_r8 = 2;
+    stack[19].p = var_r24;
+    var_r20 = 0x14;
+    stack[76].p = var_r24;
+    var_r24 = &lbl_80559D94;
+    stack[77].i = (s32)temp_r29;
+    stack[15].i = one;
+    stack[16].p = temp_r25_2;
+    stack[17].i = temp_r4;
+    stack[78].i = one;
+    stack[79].p = temp_r25_2;
+    stack[80].i = temp_r4;
+    stack[12].i = one;
+    stack[13].p = temp_r27;
+    stack[14].i = temp_r12_2;
+    stack[81].i = one;
+    stack[82].p = temp_r27;
+    stack[83].i = temp_r12_2;
+    stack[9].i = one;
+    stack[10].p = temp_r23;
+    stack[11].i = temp_r11_2;
+    stack[84].i = one;
+    stack[85].p = temp_r23;
+    stack[86].i = temp_r11_2;
+    stack[6].i = one;
+    stack[7].p = temp_r22;
+    stack[8].i = temp_r10_2;
+    stack[87].i = one;
+    stack[88].p = temp_r22;
+    stack[89].i = temp_r10_2;
+    stack[3].i = one;
+    stack[4].p = temp_r21;
+    stack[5].i = temp_r9;
+    stack[90].i = one;
+    stack[91].p = temp_r21;
+    stack[92].i = temp_r9;
+    stack[0].i = 2;
+    stack[1].p = temp_r21;
+    stack[2].i = temp_r7_2;
+    stack[93].i = 2;
+    stack[94].p = temp_r21;
+    stack[95].i = temp_r7_2;
+    stack[96].i = sp188;
+    stack[97].i = sp18c;
+    stack[98].i = sp190;
+
+    var_r4_2 = (u8 *)arg0 + 0x9E;
+loop_5:
+    temp_r5_2 = *var_r24;
+    var_r24 += 1;
+    *var_r4_2 = temp_r5_2;
+    var_r4_2 += 1;
+    if ((signed char)temp_r5_2 != 0) {
+        var_r20 -= 1;
+        if (var_r20 <= 0) {
+            *(signed char *)(var_r4_2 - 1) = 0;
+        } else {
+            goto loop_5;
+        }
+    }
+    var_r7 = (u8 *)arg0 + 0x44;
+    var_r5 = &lbl_80559D98;
+    var_r6 = 0x14;
+loop_9:
+    temp_r4_2 = *var_r5;
+    var_r5 += 1;
+    *var_r7 = temp_r4_2;
+    var_r7 += 1;
+    if ((signed char)temp_r4_2 != 0) {
+        var_r6 -= 1;
+        if (var_r6 <= 0) {
+            *(signed char *)(var_r7 - 1) = 0;
+        } else {
+            goto loop_9;
+        }
+    }
+    var_r7_2 = (u8 *)arg0 + 0x80;
+    var_r5_2 = &lbl_80559D9C;
+    var_r6_2 = 0x14;
+loop_13:
+    temp_r4_3 = *var_r5_2;
+    var_r5_2 += 1;
+    *var_r7_2 = temp_r4_3;
+    var_r7_2 += 1;
+    if ((signed char)temp_r4_3 != 0) {
+        var_r6_2 -= 1;
+        if (var_r6_2 <= 0) {
+            *(signed char *)(var_r7_2 - 1) = 0;
+        } else {
+            goto loop_13;
+        }
+    }
+    fn_80130980((u8 *)arg0 + 0xB2, 0x14, 2, lbl_805615B4);
+    *(s32 *)((u8 *)arg0 + 0x104) = fn_80204CF0() + 1;
+    *(s32 *)((u8 *)arg0 + 0x108) = fn_802ADF34(*(void **)((u8 *)arg0 + 0xC), base + 0x8F0, &stack[48].i);
+    *(s32 *)((u8 *)arg0 + 0x14) = fn_80207848(base + 0x904, 1);
+    *(s32 *)((u8 *)arg0 + 0x18) = fn_80207848(base + 0x918, 1);
+    *(s32 *)((u8 *)arg0 + 0x1C) = fn_80207848(base + 0x934, 1);
+    *(s32 *)((u8 *)arg0 + 0x24) = fn_80207848(base + 0x948, 1);
+    *(s32 *)((u8 *)arg0 + 0x28) = fn_80207848(base + 0x15C, 1);
+    *(s32 *)((u8 *)arg0 + 0x2C) = fn_80207848(base + 0x95C, 1);
+}
+#pragma scheduling on
+#pragma optimize_for_size reset
+#pragma pop
 
 extern "C" void fn_802ADE60(int, int);
 extern "C" void fn_80144184(void *arg0) {
