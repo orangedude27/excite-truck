@@ -65,13 +65,7 @@ struct DummyStrmLoadTaskCallback {
 #pragma cplusplus reset
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
 
-namespace nw4hbm { namespace snd {
-class SoundArchive;
-class SoundArchivePlayer {
-public:
-    s32 SetupMram(const SoundArchive *, void *, unsigned long);
-};
-}}
+
 
 extern "C" s32 fn_80128668(void);
 extern "C" const char lbl_80324E88[];
@@ -1270,11 +1264,14 @@ extern "C" const char lbl_80325A1C[];
 extern "C" const char lbl_803259F0[];
 extern "C" const char lbl_80325A60[];
 extern "C" const char lbl_80325A34[];
+#pragma push
+#pragma scheduling reset
 extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUl(void *self, const void *archive, void *buffer, u32 size) {
     struct SoundInfo { u32 a; u32 b; u32 c; u32 d; u32 e; u32 f; };
+    struct GroupList { u32 count; u32 items[1]; };
     const char *base = lbl_80324E88;
     u32 end;
-    struct Local { u32 ptr; SoundInfo info; } local;
+    struct Local { void *ptr; SoundInfo info; } local;
     u32 i;
     u32 count;
     u32 bytes;
@@ -1296,21 +1293,19 @@ extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12Sou
     }
 
     end = (u32)buffer + size;
-    local.ptr = (u32)buffer;
-    if (SetupSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePPvPv(self, (void *)archive, (void **)&local.ptr, (void *)end) == 0) {
+    local.ptr = buffer;
+    if (SetupSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePPvPv(self, (void *)archive, &local.ptr, (void *)end) == 0) {
         return 0;
     }
 
     count = fn_800F27CC((void *)archive);
-    bytes = count * 8;
-    bytes += 4;
-    required = bytes + (u32)local.ptr;
+    required = (u32)(((struct GroupList *)local.ptr)->items + count * 2);
     aligned = (required + 3) & ~3U;
     if (aligned > end) {
         result = 0;
     } else {
-        *(void **)((u8 *)self + 0x14) = (void *)local.ptr;
-        local.ptr = aligned;
+        *(void **)((u8 *)self + 0x14) = local.ptr;
+        local.ptr = (void *)aligned;
         *(u32 *)*(void **)((u8 *)self + 0x14) = fn_800F27CC((void *)archive);
         i = 0;
         u32 offset = 0;
@@ -1337,10 +1332,10 @@ extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12Sou
             if (local.ptr == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325AA4, 0x3B, lbl_80325A78);
             }
-            if (CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8 *)self + 0x78, (void *)local.ptr, bytes, 0x1F4) != count) {
+            if (CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8 *)self + 0x78, local.ptr, bytes, 0x1F4) != count) {
                 Panic__Q26nw4hbm2dbFPCciPCce(base, 0x20C, base + 0x174);
             }
-            local.ptr = aligned;
+            local.ptr = (void *)aligned;
             result = 1;
         }
         if (result == 0) {
@@ -1357,10 +1352,10 @@ extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12Sou
             if (local.ptr == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325A1C, 0x3B, lbl_803259F0);
             }
-            if (CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8 *)self + 0x88, (void *)local.ptr, bytes, 0x614) != count) {
+            if (CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8 *)self + 0x88, local.ptr, bytes, 0x614) != count) {
                 Panic__Q26nw4hbm2dbFPCciPCce(base, 0x24C, base + 0x174);
             }
-            local.ptr = aligned;
+            local.ptr = (void *)aligned;
             result = 1;
         }
         if (result == 0) {
@@ -1377,10 +1372,10 @@ extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12Sou
             if (local.ptr == 0) {
                 Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325A60, 0x3B, lbl_80325A34);
             }
-            if (CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8 *)self + 0x98, (void *)local.ptr, bytes, 0x1B4) != count) {
+            if (CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8 *)self + 0x98, local.ptr, bytes, 0x1B4) != count) {
                 Panic__Q26nw4hbm2dbFPCciPCce(base, 0x22C, base + 0x174);
             }
-            local.ptr = aligned;
+            local.ptr = (void *)aligned;
             result = 1;
         }
         if (result == 0) {
@@ -1394,10 +1389,10 @@ extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12Sou
         if (aligned > end) {
             result = 0;
         } else {
-            if (fn_800EE428((u8 *)self + 0xC4, (void *)local.ptr, bytes) != count) {
+            if (fn_800EE428((u8 *)self + 0xC4, local.ptr, bytes) != count) {
                 Panic__Q26nw4hbm2dbFPCciPCce(base, 0x26C, base + 0x1A4);
             }
-            local.ptr = aligned;
+            local.ptr = (void *)aligned;
             result = 1;
         }
         if (result == 0) {
@@ -1413,7 +1408,7 @@ extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12Sou
     *(u32 *)((u8 *)self + 0xD4) = size;
     return 1;
 }
-
+#pragma pop
 extern "C" s32 GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *arg0, u32 arg1) {
     struct SoundArchivePlayer {
         u8 pad[0x70];
