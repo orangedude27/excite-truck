@@ -34,6 +34,8 @@ extern void fn_801345D8(void*, s32, void*, s32);
 extern s32 fn_802C6FC0(void*, s32, s32);
 extern void fn_802E30C8(void*, s32, void*);
 extern s32 fn_8016A8F8(void*);
+extern void fn_8016AC18(u8*);
+extern void* fn_8016AC24(void*, s32);
 extern s32 lbl_80330460;
 extern s32 lbl_80330528;
 extern s32 lbl_80330688;
