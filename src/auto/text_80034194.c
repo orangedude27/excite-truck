@@ -254,7 +254,7 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     return pos + 1 + (max - pos - 1 - left);
 }
 
-extern void OSPanic(const char *, s32, const char *, ...);
+extern void OSPanic(const char *, s32, const char *);
 extern s32 DVDReadAbsAsyncPrio(void *, void *, s32, s32, void *, s32);
 extern void cbForCancelSync(void);
 extern void cbForReadAsync(void *, void *);
