@@ -715,7 +715,7 @@ s32 fn_80119CB0(void *arg0, s32 arg1) {
 extern s32 lbl_8055DEE0[];
 extern s32 lbl_8055DEE4;
 extern s32 lbl_8055DEE8;
-extern void fn_80119DD0(void);
+extern s32 fn_80119DD0(void *, u32, s32, s32, s32, void *);
 extern void fn_8011A6A0(void *);
 extern void TRKGetFreeBuffer(void *);
 void *fn_8011A168(void *arg0) {
