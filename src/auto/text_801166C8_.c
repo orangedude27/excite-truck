@@ -244,7 +244,7 @@ s32 fn_80116D30(void) {
 }
 
 extern void* fn_8011FF24(void);
-extern void fn_8011FF2C(s32);
+extern void *fn_8011FF2C(s32);
 void fn_80116DDC(void* arg0, s32 arg1) {
     void* result = fn_8011FF24();
     s32* ptr = (s32*)arg0;
