@@ -13,7 +13,7 @@ extern "C" const char lbl_8032818C[];
 typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
-struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
+struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); virtual int v4(); };
 namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
@@ -432,7 +432,6 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color, nw4hbm::ut::C
     top=address&0xFF000000U;
     r10=1;
     if ((unsigned int)(top+0x80000000U)>=1U &&
-
         (unsigned int)((address&0xFF800000U)+0x7F000000U)>=1U) r10=0;
     if (r10==0 && (unsigned int)((address&0xF8000000U)+0x70000000U)>=1U) r9=0;
     if (r9==0 && (unsigned int)(top+0x40000000U)>=1U) r8=0;
@@ -440,6 +439,7 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color, nw4hbm::ut::C
     if (r7==0 && (unsigned int)((address&0xF8000000U)+0x30000000U)>=1U) r6=0;
     if (r6==0 && (unsigned int)((address&0xFFFFC000U)+0x20000000U)>=1U) r5=0;
     if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178,0x19A,lbl_8032818C,this);
+
     self[0x18]=color.r; self[0x19]=color.g; self[0x1A]=color.b; self[0x1B]=color.a;
     self[0x1C]=color2.r; self[0x1D]=color2.g; self[0x1E]=color2.b; self[0x1F]=color2.a;
 
