@@ -286,7 +286,7 @@ extern "C" int fn_80272028(void *arg0, Parser *arg1, int arg_sp0) {
         char buffer[0x30];
     } stack;
     register char *name = lbl_80346B00;
-    register ParserLocal *parser = (ParserLocal *)arg1;
+    register Parser *parser = arg1;
     register void *output = arg0;
     int index;
     int count;
