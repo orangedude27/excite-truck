@@ -432,6 +432,7 @@ void nw4hbm::ut::CharWriter::SetTextColor(nw4hbm::ut::Color color, nw4hbm::ut::C
     top=address&0xFF000000U;
     r10=1;
     if ((unsigned int)(top+0x80000000U)>=1U &&
+
         (unsigned int)((address&0xFF800000U)+0x7F000000U)>=1U) r10=0;
     if (r10==0 && (unsigned int)((address&0xF8000000U)+0x70000000U)>=1U) r9=0;
     if (r9==0 && (unsigned int)(top+0x40000000U)>=1U) r8=0;
