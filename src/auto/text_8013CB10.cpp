@@ -406,7 +406,7 @@ extern "C" void *fn_8013E77C(void *arg0, s32 arg1) {
     s32 i,offset;
     if (self != 0) {
         child=*(VObj **)(self+0x254);
-        *(void **)self=&lbl_8032CAF0;
+        *(void **)self=lbl_8032CAF0;
         if (child != 0) { if (child != 0) child->destroy(1); }
         fn_802C6CF8(*(s32 *)(self+0xB4));
         i=0; offset=0;
@@ -428,16 +428,16 @@ extern "C" void *fn_8013E77C(void *arg0, s32 arg1) {
         }
         p=*(VObj **)(self+0x27C);
         *(VObj **)(self+0x64)=0;
-        if (p != 0) { if (p != 0) p->destroy(1); }
+        if (p != 0) p->destroy(1);
         p=*(VObj **)(self+0x278);
         *(VObj **)(self+0x27C)=0;
-        if (p != 0) { if (p != 0) p->destroy(1); }
+        if (p != 0) p->destroy(1);
         p=*(VObj **)(self+0x270);
         *(VObj **)(self+0x278)=0;
-        if (p != 0) { if (p != 0) p->destroy(1); }
+        if (p != 0) p->destroy(1);
         p=*(VObj **)(self+0x274);
         *(VObj **)(self+0x270)=0;
-        if (p != 0) { if (p != 0) p->destroy(1); }
+        if (p != 0) p->destroy(1);
         p=*(VObj **)(self+0x60);
         *(VObj **)(self+0x274)=0;
         if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x60)=0; }
@@ -462,7 +462,7 @@ extern "C" void *fn_8013E77C(void *arg0, s32 arg1) {
             p=*(VObj **)(self+0x160);
             if (p != 0) { if (p != 0) p->destroy(1); *(VObj **)(self+0x160)=0; }
         }
-        if ((u32)self+0xC0 != 0) *(s32 *)(self+0xC0)=0;
+        if ((u32)self+0xC0 != 0) { if ((u32)self+0xC0 != 0) *(s32 *)(self+0xC0)=0; }
         if ((u32)self+8 != 0) {
             if ((u32)self+8 != 0) {
                 if ((u32)self+8 != 0) {
