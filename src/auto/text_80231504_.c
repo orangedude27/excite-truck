@@ -261,10 +261,7 @@ void fn_802321D8(void) {
 extern void *fn_8012C370(const char *, s32, u32 *, s32 *, u8 *, u8 *);
 extern void fn_80028E00(char *, const char *);
 extern s32 fn_802CAC34(char *, s32);
-#pragma small_data on
-extern char lbl_8055B9D4[];
-#pragma small_data on
-#pragma small_data off
+extern u32 lbl_8055B9D4;
 #pragma push
 #pragma small_data on
 s32 fn_80232578(const char *arg0) {
