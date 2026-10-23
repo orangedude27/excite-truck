@@ -359,7 +359,7 @@ void fn_80166898(void) {
 
 extern char lbl_8032FF6C[];
 extern float lbl_8055E3C8;
-extern void fn_801429D0(float, float);
+extern float fn_801429D0(float, float);
 extern float fn_8014C8B4(float, float, float, float, float);
 extern float fn_8014C8F8(float, float);
 extern void *fn_80156A40(void);
@@ -371,10 +371,14 @@ extern void fn_80166F3C(float *);
 extern int fn_80166F78(float *);
 extern float fn_80166F90(float *);
 extern void fn_8016707C(void *, void **);
-void fn_80166A24(void) {
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_80166A24(void) {
     int wasActive;
-    int i;
     int offset;
+    int i;
     int zero = 0;
     float time;
     float previous;
@@ -399,10 +403,10 @@ void fn_80166A24(void) {
             fn_802E30C8(lbl_8032FF6C);
         }
         for (i = 0, offset = 0;
-             i < *(int *)(*(unsigned char **)&lbl_8055E32C + 4);
+             i < *(int *)((unsigned char *)(*(unsigned char * volatile *)&lbl_8055E32C) + 4);
              i++, offset += 0x88) {
             unsigned char *record =
-                *(unsigned char **)(*(unsigned char **)&lbl_8055E32C) + offset;
+                *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + offset;
             void *object = (void *)((int (*)(int))fn_801B2EC0)(*(int *)record);
             time = fn_8016618C(object);
             record[0x2C] = 1;
@@ -414,10 +418,10 @@ void fn_80166A24(void) {
     previous = lbl_80561898;
     emptyValue = lbl_805618D0;
     for (i = 0, offset = 0;
-         i < *(int *)(*(unsigned char **)&lbl_8055E32C + 4);
+         i < *(int *)((unsigned char *)(*(unsigned char * volatile *)&lbl_8055E32C) + 4);
          i++, offset += 0x88) {
         unsigned char *record =
-            *(unsigned char **)(*(unsigned char **)&lbl_8055E32C) + offset;
+            *(unsigned char * volatile *)(*(unsigned char * volatile *)&lbl_8055E32C) + offset;
         void *object = (void *)((int (*)(int))fn_801B2EC0)(*(int *)record);
         fn_8016707C(record, (void **)object);
         if (*(void **)(record + 0x58) != 0) {
@@ -463,11 +467,10 @@ void fn_80166A24(void) {
             active = delta > *(float *)((unsigned char *)&lbl_8042FE38 + 0x2C);
             if (delta > *(float *)((unsigned char *)&lbl_8042FE38 + 0x28) &&
                 fn_80166F78((float *)(record + 0x20))) {
-                void *vobj = fn_80156A40();
                 if (active) {
-                    ((void (*)(void *, int, int))(*(void ***)vobj)[7])(vobj, *(int *)record, 1);
+                    ((Dummy8016707C *)fn_80156A40())->run(*(int *)record, 1);
                 } else {
-                    ((void (*)(void *, int, int))(*(void ***)vobj)[7])(vobj, *(int *)record, 0);
+                    ((Dummy8016707C *)fn_80156A40())->run(*(int *)record, 0);
                 }
                 fn_80166F3C((float *)(record + 0x20));
             }
@@ -494,7 +497,9 @@ void fn_80166A24(void) {
         }
     }
 }
-
+#pragma cplusplus off
+#pragma scheduling on
+#pragma pop
 float fn_80166DD4(void *arg0) {
     float y0, y1, t, x0, x1;
     y1 = *(float *)((char *)arg0 + 0xC);
