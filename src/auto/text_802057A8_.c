@@ -51,12 +51,13 @@ extern void *fn_801E7E3C(void);
 extern void *fn_801EA9A0(int);
 extern float lbl_80563194,lbl_805631A8,lbl_805631B8,lbl_805631C4,lbl_805631C8,lbl_805631CC,lbl_805631D0,lbl_805631D4,lbl_805631D8,lbl_805631DC,lbl_805631E0,lbl_805631E4,lbl_805631E8;
 extern double lbl_805631B0;
+#pragma ppc_psq_save off
 #pragma scheduling invalid_target
 void fn_802059C0(void) {
-    double sp20,sp18;
-    register float temp_f14,temp_f14_2,temp_f15,temp_f16,temp_f17,temp_f19,temp_f21,temp_f23,temp_f24,temp_f25,temp_f26,temp_f27,temp_f28,temp_f29,temp_f30,temp_f31;
-    register float var_f0,var_f18,var_f1,var_f1_2,var_f1_3,var_f20,var_f20_2,var_f2;
-    int temp_r23,temp_r24,temp_r26,temp_r26_2,temp_r27,temp_r29,temp_r4,var_r0,var_r25,var_r4;
+    double sp18,sp20;
+    float temp_f14,temp_f14_2,temp_f15,temp_f16,temp_f17,temp_f19,temp_f21,temp_f23,temp_f24,temp_f25,temp_f26,temp_f27,temp_f28,temp_f29,temp_f30,temp_f31;
+    float var_f0,var_f18,var_f1,var_f1_2,var_f1_3,var_f20,var_f20_2,var_f2;
+    int var_r25,temp_r29,temp_r26,temp_r26_2,temp_r27,temp_r24,temp_r23,temp_r4,var_r0,var_r4;
     void *temp_r3;
     temp_f21=fn_8013672C();
     temp_f19=temp_f21*(float)*(int*)((char*)fn_801E7E3C()+8);
@@ -64,8 +65,8 @@ void fn_802059C0(void) {
     sp18=(double)lbl_805631E8; temp_f23=lbl_805631B8; temp_f25=lbl_805631C4; temp_f26=lbl_805631C8;
     temp_f17=lbl_805631CC; temp_f27=lbl_805631D4; temp_f28=lbl_805631D0; temp_f29=lbl_805631D8;
     temp_f30=lbl_805631DC; temp_f31=lbl_805631E0; sp20=(double)lbl_805631E4;
-loop_35:
-    if(var_r25<temp_r29) {
+    goto loop_condition;
+loop_body:
         temp_r26=((int(*)(int))fn_801E866C)(var_r25);
         if(fn_801B8570()!=0) {
             temp_r3=fn_801EA9A0(temp_r26);
@@ -112,8 +113,9 @@ loop_35:
                 fn_802C8E48(); fn_802C8D74();
             }
         }
-        var_r25++; goto loop_35;
-    }
+        var_r25++;
+loop_condition:
+    if(var_r25<temp_r29) goto loop_body;
 }
 #pragma scheduling on
 extern float lbl_80563198, lbl_805631A0, lbl_805631CC, lbl_805631E4, lbl_805631F0, lbl_805631F4;
