@@ -714,10 +714,10 @@ extern void fn_80130980(void *, s32, s32, f32);
 extern s32 fn_80207848(void *, s32);
 extern s32 fn_802ADF34(void *, char *, s32 *);
 extern s32 lbl_802FAA40[3];
-extern char lbl_8055A250[];
-extern char lbl_8055A258[];
-extern char lbl_8055A25C[];
-extern char lbl_8055A260[];
+extern u8 lbl_8055A250;
+extern u8 lbl_8055A258;
+extern u8 lbl_8055A25C;
+extern u8 lbl_8055A260;
 extern f32 lbl_805619C4;
 void fn_8016EA9C(void *arg0) {
     union Word { s32 i; void *p; } stack[94];
