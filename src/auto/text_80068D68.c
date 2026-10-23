@@ -917,7 +917,7 @@ u8 fn_8006DF84(void *arg0) {
 
 static UINT8 gki_set_pool_permission_local(UINT8 pool_id, UINT8 permission)
 {
-    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
+    tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
 
     if (pool_id < GKI_NUM_TOTAL_BUF_POOLS) {
         if (permission == GKI_RESTRICTED_POOL)
