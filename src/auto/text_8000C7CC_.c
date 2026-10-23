@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern void fn_80012158(void);
+
 extern void fn_8000C964(void);
 extern void fn_8000CD24(void);
 extern u32 fn_8000C7F4(s32);
@@ -172,6 +174,137 @@ void fn_8000D19C(void) {
     }
 }
 
+#pragma cplusplus on
+__declspec(section ".sdata") extern const char lbl_80558A70[];
+__declspec(section ".sdata") extern const char lbl_80558A74[];
+__declspec(section ".sdata") extern char lbl_80558A7C[];
+extern "C" void fn_8000D1DC(void) {
+    struct Dummy {
+        virtual void *v0();
+        virtual void *v1();
+        virtual void *v2();
+        virtual s32 *v3(char *);
+        virtual void *v4();
+        virtual s32 *v5(char *);
+    };
+    struct Info {
+        u32 a, b, c, d;
+        f32 e;
+        u32 f, g, h;
+    };
+    struct Update {
+        u32 value;
+        f32 x, y;
+        u32 flags;
+        f32 z, w;
+        u32 color;
+    };
+    f32 matrix[12];
+    char name0[0x20], name1[0x20];
+    struct Info info;
+    struct Update update;
+    u8 alpha;
+    f32 selectedVal;
+    f32 baseVal, scale, factor;
+    f32 temp_f0, temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, temp_f7;
+    s32 temp_r8;
+    register u8 *base = lbl_802FC058;
+    register s32 i, selected;
+    register u32 *entry;
+    register s32 *obj;
+
+    if (lbl_8055D405 != 0) {
+        fn_8000C964();
+        goto done;
+    }
+    if (lbl_8055D40C != 0) {
+        ((void (*)(void))(u32)lbl_8055D40C)();
+    }
+    fn_80230B5C(matrix);
+    fn_802C8638(matrix);
+    fn_802C974C(lbl_80560218, lbl_8056021C, lbl_80560220);
+    fn_800109E4(0x7F000000, lbl_80560224, lbl_80560228, lbl_8056022C, lbl_80560230);
+    if (lbl_8055D407 != 0) {
+        fn_8000CD24();
+        goto done;
+    }
+    if (lbl_8055D414 != 0) {
+        fn_801473F8(lbl_8055D414, lbl_80558A7C, lbl_80558A70,
+                    fn_80131234((s32)(base + 0x198)));
+        factor = lbl_80560234;
+        entry = (u32 *)(base + 0x40);
+        scale = lbl_80560238;
+        i = 0;
+        baseVal = lbl_80560218;
+        do {
+            if (fn_8000C7F4(i) != 0) {
+                fn_801345D8(name0, 0x20, (const char *)base + 0x94, i);
+                fn_801345D8(name1, 0x20, lbl_80558A74, i);
+                selected = i == lbl_8055D400;
+                obj = ((Dummy *)lbl_8055D414)->v3(name1);
+                info.a = (u32)obj[0];
+                info.b = (u32)obj[1];
+                info.c = (u32)obj[2];
+                info.d = (u32)obj[3];
+                info.e = ((f32 *)obj)[4];
+                info.f = (u32)obj[5];
+                info.g = (u32)obj[6];
+                info.h = (u32)obj[7];
+                alpha = 0xFF;
+                selectedVal = factor;
+                if (selected != 0) fn_80230F78(&alpha, &selectedVal, &info.g, 1);
+                if (((s32 (*)(s32))fn_8000C840)(i) == 0)
+                    info.g = (info.g & 0xFFFFFF) | 0x80000000;
+                obj = ((Dummy *)lbl_8055D414)->v5(name0);
+                if (obj != 0) {
+                    if (((s32 (*)(s32))fn_8000C840)(i) == 0)
+                        obj[6] = (obj[6] & 0xFFFFFF) | 0x80000000;
+                    ((void (*)(void *, void *, const char *, s32))fn_80147940)(
+                        lbl_8055D414, obj, (const char *)base + 0xA4,
+                        ((-selected | selected) >> 31) + 2);
+                    if (selected != 0) {
+                        update.value = (u32)obj[0];
+                        temp_f0 = baseVal + selectedVal;
+                        update.x = ((f32 *)obj)[1];
+                        update.y = ((f32 *)obj)[2];
+                        temp_f2 = update.y;
+                        update.flags = (u32)obj[3];
+                        temp_f1 = ((f32 *)obj)[4];
+                        update.z = temp_f1;
+                        temp_f7 = ((f32 *)obj)[5];
+                        temp_f5 = scale * temp_f1 * selectedVal;
+                        update.w = temp_f7;
+                        temp_r8 = obj[6];
+                        temp_f4 = update.x - temp_f5;
+                        temp_f3 = scale * temp_f7 * selectedVal;
+                        update.z = temp_f1 * temp_f0;
+                        temp_f1_2 = temp_f2 - temp_f3;
+                        update.x = temp_f4;
+                        update.y = temp_f1_2;
+                        update.w = temp_f7 * temp_f0;
+                        update.color = (temp_r8 & 0x00FF0000) | ((u32)alpha << 24) | (temp_r8 & 0xFFFF);
+                        ((void (*)(void *, void *, const char *, s32, u8, s32,
+                                   f32, f32, f32, f32, f32, f32, f32))fn_80147940)(
+                            lbl_8055D414, &update, (const char *)base + 0xA4,
+                            1, alpha, temp_r8, temp_f1_2, temp_f2, temp_f3,
+                            temp_f4, temp_f5, selectedVal, temp_f7);
+                    }
+                }
+                fn_80147230(&info, lbl_80558A70, fn_80131234((s32)*entry));
+            }
+            ++i;
+            ++entry;
+        } while (i < 4);
+        ((Dummy *)lbl_8055D414)->v3((char *)base + 0xB0);
+        fn_801476C4();
+        ((Dummy *)lbl_8055D414)->v3((char *)base + 0xC0);
+        fn_801476C4();
+    }
+done:
+    fn_80011A2C();
+    fn_802C9904();
+}
+#pragma cplusplus reset
 u8 fn_8000D75C(void) {
     return lbl_8055D404;
 }
@@ -244,30 +377,35 @@ extern const char lbl_80558A74[];
 extern s32 lbl_80560210, lbl_80560214;
 extern f32 lbl_8056021C, lbl_80560220, lbl_80560224, lbl_80560228;
 extern f32 lbl_8056022C, lbl_80560230, lbl_80560234, lbl_80560238;
-void fn_8000C964(void) {
+#pragma scheduling invalid_target
+#pragma opt_propagation off
+#pragma cplusplus on
+extern "C" void fn_8000C964(void) {
+    class Dummy { public: virtual void *f2(); virtual s32 *get3(const char *); virtual void *f4(); virtual s32 *get5(const char *); };
+    struct Info { u32 a, b, c, d; f32 e; u32 f, g, h; };
+    struct Update { u32 value, x, y, flags; f32 z, w; u32 color; };
     f32 matrix[12];
     char name0[0x20], name1[0x20];
-    u32 item[8], out[7];
+    struct Info item;
+    struct Update out;
     s32 labels[2];
     u8 alpha;
     f32 selectedVal, factor, scale, baseVal;
     f32 temp_f0, temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, temp_f7;
-    register u8 *base;
+    s32 temp_r8, drawMode;
+    register u8 *base = lbl_802FC058;
     register s32 *labelp;
     register s32 i, selected;
-    s32 temp_r8;
     register s32 *obj;
-
     fn_80230B5C(matrix);
     fn_802C8638(matrix);
     fn_802C974C(lbl_80560218, lbl_8056021C, lbl_80560220);
     fn_800109E4(0x7F000000, lbl_80560224, lbl_80560228, lbl_8056022C, lbl_80560230);
     if (lbl_8055D414 != 0) {
-        base = lbl_802FC058;
         labels[0] = lbl_80560210;
         labels[1] = lbl_80560214;
         fn_801473F8(lbl_8055D414, (const char *)base + 0x68, lbl_80558A70,
-                    fn_80131234(*(s32 *)(base + 0x40 + lbl_8055D400 * 4)));
+                    fn_80131234(((s32 *)(base + 0x40))[lbl_8055D400]));
         fn_801473F8(lbl_8055D414, (const char *)base + 0x78, lbl_80558A70,
                     fn_80131234((s32)(base + 0x84)));
         factor = lbl_80560234;
@@ -278,56 +416,55 @@ void fn_8000C964(void) {
         do {
             fn_801345D8(name0, 0x20, (const char *)base + 0x94, i + 1);
             fn_801345D8(name1, 0x20, lbl_80558A74, i + 1);
-            obj = ((s32 *(*)(void *, void *))(*(void ***)lbl_8055D414)[3])(lbl_8055D414, name1);
+            obj = ((Dummy *)lbl_8055D414)->get3(name1);
             selected = 0;
-            item[0] = obj[0]; item[1] = obj[1]; item[2] = obj[2]; item[3] = obj[3];
-            ((f32 *)item)[4] = ((f32 *)obj)[4];
-            item[5] = obj[5]; item[6] = obj[6]; item[7] = obj[7];
+            item.a = obj[0]; item.b = obj[1]; item.c = obj[2]; item.d = obj[3];
+            item.e = ((f32 *)obj)[4];
+            item.f = obj[5]; item.g = obj[6]; item.h = obj[7];
             alpha = 0xFF;
             selectedVal = factor;
             if ((i == 0 && lbl_8055D406 != 0) || (i == 1 && lbl_8055D406 == 0)) selected = 1;
-            if (selected != 0) fn_80230F78(&alpha, &selectedVal, &item[6], 1);
-            obj = ((s32 *(*)(void *, void *))(*(void ***)lbl_8055D414)[5])(lbl_8055D414, name0);
+            if (selected != 0) fn_80230F78(&alpha, &selectedVal, &item.g, 1);
+            obj = ((Dummy *)lbl_8055D414)->get5(name0);
             if (obj != 0) {
-                if (((s32 (*)(s32))fn_8000C840)(i) == 0)
-                    obj[6] = (obj[6] & 0xFFFFFF) | 0x80000000;
-                ((void (*)(void *, void *, const char *, s32))fn_80147940)(
-                    lbl_8055D414, obj, (const char *)base + 0xA4, ((-selected | selected) >> 31) + 2);
+                if (((s32 (*)(s32))fn_8000C840)(i) == 0) obj[6] = (obj[6] & 0xFFFFFF) | 0x80000000;
+                drawMode = ((-selected | selected) >> 31) + 2;
+                ((void (*)(void *, void *, const char *, s32))fn_80147940)(lbl_8055D414, obj, (const char *)base + 0xA4, drawMode);
                 if (selected != 0) {
-                    out[0] = obj[0]; out[1] = obj[1]; out[2] = obj[2]; out[3] = obj[3];
-                    ((f32 *)out)[4] = ((f32 *)obj)[4];
-                    out[5] = obj[5]; out[6] = obj[6];
+                    out.value = obj[0]; out.x = obj[1]; out.y = obj[2]; out.flags = obj[3]; out.z = ((f32 *)obj)[4];
                     temp_f0 = baseVal + selectedVal;
-                    temp_f2 = ((f32 *)out)[2];
-                    temp_f1 = ((f32 *)obj)[4];
+                    temp_f2 = *(f32 *)&out.y;
+                    temp_f1 = out.z;
                     temp_f7 = ((f32 *)obj)[5];
                     temp_f5 = scale * temp_f1 * selectedVal;
                     temp_r8 = obj[6];
-                    temp_f4 = ((f32 *)out)[1] - temp_f5;
+                    temp_f4 = *(f32 *)&out.x - temp_f5;
                     temp_f3 = scale * temp_f7 * selectedVal;
-                    ((f32 *)out)[4] = temp_f1 * temp_f0;
+                    out.z = temp_f1 * temp_f0;
                     temp_f1_2 = temp_f2 - temp_f3;
-                    ((f32 *)out)[1] = temp_f4;
-                    ((f32 *)out)[2] = temp_f1_2;
-                    ((f32 *)out)[5] = temp_f7 * temp_f0;
-                    out[6] = (temp_r8 & 0x00FF0000) | ((u32)alpha << 24) | (temp_r8 & 0xFFFF);
+                    *(f32 *)&out.x = temp_f4;
+                    *(f32 *)&out.y = temp_f1_2;
+                    out.w = temp_f7 * temp_f0;
+                    out.color = (temp_r8 & 0x00FF0000) | ((u32)alpha << 24) | (temp_r8 & 0xFFFF);
                     ((void (*)(void *, void *, const char *, s32, u8, s32, f32, f32, f32, f32, f32, f32, f32))fn_80147940)(
-                        lbl_8055D414, out, (const char *)base + 0xA4, 1, alpha, temp_r8,
+                        lbl_8055D414, &out, (const char *)base + 0xA4, 1, alpha, temp_r8,
                         temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, selectedVal, temp_f7);
                 }
             }
-            fn_80147230(item, lbl_80558A70, (const char *)fn_80131234(*labelp));
+            fn_80147230(&item, lbl_80558A70, (const char *)fn_80131234(*labelp));
             ++i; ++labelp;
         } while (i < 2);
-        ((void (*)(void *, void *))(*(void ***)lbl_8055D414)[3])(lbl_8055D414, (char *)base + 0xB0);
+        ((Dummy *)lbl_8055D414)->get3((const char *)base + 0xB0);
         fn_801476C4();
-        ((void (*)(void *, void *))(*(void ***)lbl_8055D414)[3])(lbl_8055D414, (char *)base + 0xC0);
+        ((Dummy *)lbl_8055D414)->get3((const char *)base + 0xC0);
         fn_801476C4();
     }
     fn_80011A2C();
     fn_802C9904();
 }
-
+#pragma cplusplus reset
+#pragma opt_propagation reset
+#pragma scheduling on
 s32 fn_8000CCB8(void) {
     s32 i = 0;
     goto compare;
