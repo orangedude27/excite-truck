@@ -10,6 +10,7 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+extern void DBPrintf_8006CFA8(const char *, ...);
 extern char lbl_80313464[];
 extern char lbl_8031347C[];
 extern u32 lbl_8055DC30;
