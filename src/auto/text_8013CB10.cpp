@@ -1,4 +1,5 @@
 #include "types.h"
+extern "C" f32 fn_8001DAF0(f32 *);
 extern "C" void fn_802ADE60(int, int);
 extern "C" void fn_8001DAE0(void *, f32);
 extern "C" f32 lbl_805614FC;
