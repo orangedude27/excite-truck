@@ -4695,6 +4695,90 @@ void BTM_DeviceAuthorized(u8 *bd_addr, u8 res, u32 *trusted_mask) {
     }
 }
 
+extern u8 lbl_80316DC8[];
+
+static tBTM_SEC_SERV_REC *btm_sec_find_mx_serv(BOOLEAN is_originator, UINT16 psm,
+                                               UINT32 mx_proto_id, UINT32 mx_chan_id)
+{
+    tBTM_SEC_SERV_REC *p = (tBTM_SEC_SERV_REC *)(lbl_803C0F78 + 0x1990);
+    u32 i;
+
+    for (i = 0; i < 0x18; i++, (u8 *)p += 0x3C) {
+        if ((((u8 *)p)[0xE] & 0x80) &&
+            *(u16 *)((u8 *)p + 0xC) == psm &&
+            *(u32 *)((u8 *)p + 0x0) == mx_proto_id &&
+            ((is_originator && *(u32 *)((u8 *)p + 0x4) == mx_chan_id) ||
+             (!is_originator && *(u32 *)((u8 *)p + 0x8) == mx_chan_id))) {
+            return p;
+        }
+    }
+    return 0;
+}
+
+tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_originator,
+                               UINT32 mx_proto_id, UINT32 mx_chan_id,
+                               tBTM_SEC_CALLBACK *p_callback, void *p_ref_data)
+{
+    tBTM_SEC_DEV_REC *p_dev_rec;
+    u8 *p_serv_rec;
+    u8 *dev;
+    u32 index;
+    u8 rc;
+
+    p_dev_rec = btm_find_dev(bd_addr);
+    if (p_dev_rec == 0) {
+        p_dev_rec = btm_sec_alloc_dev(bd_addr);
+        if (p_dev_rec == 0) {
+            if (p_callback != 0)
+                (*p_callback)(bd_addr, p_ref_data, 3);
+            return;
+        }
+    }
+
+    index = 0;
+    p_serv_rec = lbl_803C0F78 + 0x1990;
+    for (; index < 0x18; index++, p_serv_rec += 0x3C) {
+        if ((p_serv_rec[0xE] & 0x80) &&
+            *(u16 *)(p_serv_rec + 0xC) == psm &&
+            *(u32 *)(p_serv_rec + 0x0) == mx_proto_id &&
+            ((is_originator && *(u32 *)(p_serv_rec + 0x4) == mx_chan_id) ||
+             (!is_originator && *(u32 *)(p_serv_rec + 0x8) == mx_chan_id))) {
+            goto found;
+        }
+    }
+    p_serv_rec = 0;
+
+found:
+    if (p_serv_rec == 0) {
+        if (p_callback != 0)
+            (*p_callback)(bd_addr, p_ref_data, 4);
+        if (lbl_803C0F78[0x27C0] >= 1)
+            ((void (*)(u32, void *, u32, u32, u32))fn_80070984)(0xD0000, lbl_80316DC8, psm, mx_proto_id, mx_chan_id);
+        return;
+    }
+
+    dev = (u8 *)p_dev_rec;
+    *(u8 **)dev = p_serv_rec;
+    dev[0x81] = p_serv_rec[0xE];
+    dev[0x80] = is_originator;
+    *(tBTM_SEC_CALLBACK **)(dev + 4) = p_callback;
+    *(void **)(dev + 8) = p_ref_data;
+    dev[0x76] &= ~0x01;
+
+    rc = btm_sec_execute_procedure(p_dev_rec);
+    if (rc != 1) {
+        if (p_callback != 0) {
+            if (dev[0x80] != 0) {
+                u8 *p = *(u8 **)dev;
+                if (p != 0 && *(u32 *)p == 3)
+                    *(u32 *)(p + 4) = 0;
+            }
+            (*p_callback)(bd_addr, p_ref_data, rc);
+            *(u32 *)(dev + 4) = 0;
+        }
+    }
+}
+
 void btm_sec_conn_req(u8 *bd_addr, u8 *dev_class) {
     u8 *dev;
     void *buf;
@@ -7484,6 +7568,82 @@ s32 l2c_link_send_to_lower(void *p_lcb, void *p_buf) {
     return 1;
 }
 
+extern char lbl_80318BE8[];
+void l2c_link_check_send_pkts(void *arg0, u8 arg1, void *arg2, u8 arg3) {
+    u8 *p_lcb = (u8 *)arg0;
+    u8 *p_buf;
+    register char *p_trace = lbl_80318BE8;
+    register u8 *p_ccb;
+    u8 mode;
+    tBTM_PM_PWR_MD pm;
+
+    if (arg2 != 0) {
+        if (*(u16 *)(p_lcb + 0x4C) >= *(u16 *)(p_lcb + 0x3A) && p_lcb[0x41] == 0) {
+            p_ccb = *(u8 **)(p_lcb + 8);
+            while (p_ccb != 0) {
+                if (lbl_803C4040[0] >= 2)
+                    fn_80070954(0x80001, p_trace + 0xE4, *(u16 *)(p_ccb + 0x14));
+                if (*(void **)(*(u8 **)(p_ccb + 0x30) + 0x28) != 0) {
+                    if (lbl_803C4040[0] >= 3)
+                        fn_80070954(0x80002, p_trace + 0x110, *(u16 *)(p_ccb + 0x14));
+                    ((void (*)(u16, u16, void *))(*(void **)(*(u8 **)(p_ccb + 0x30) + 0x28)))(*(u16 *)(p_ccb + 0x14), 1, *(void **)(p_ccb + 0x30));
+                }
+                p_ccb = *(u8 **)(p_ccb + 8);
+            }
+            p_lcb[0x41] = 1;
+        }
+        if (*(u16 *)(p_lcb + 0x4C) <= *(u16 *)(p_lcb + 0x3E)) {
+            *(u16 *)((u8 *)arg2 + 6) = 0;
+            GKI_enqueue((BUFFER_Q *)(p_lcb + 0x44), arg2);
+        } else {
+            GKI_freebuf(arg2);
+            if (lbl_803C4040[0] >= 2)
+                fn_8007093C(0x80001, p_trace + 0x150);
+        }
+    }
+
+    if (p_lcb[0x40] != 0)
+        return;
+    if (BTM_ReadPowerMode(p_lcb + 0x2A, &mode) == 0 && mode == 3 && *(u16 *)(p_lcb + 0x4C) != 0) {
+        pm.mode = 0;
+        BTM_SetPowerMode(0x80, p_lcb + 0x2A, &pm);
+        btu_start_timer(p_lcb + 0x10, 2, 1);
+        return;
+    }
+
+    {
+        u8 *global = lbl_803C4040;
+        for (;;) {
+            u8 *head = *(u8 **)(p_lcb + 0x44);
+            if (head == 0 || *(u16 *)(head + 6) != 0 || p_lcb[0x40] != 0)
+                break;
+            p_buf = (u8 *)GKI_dequeue((BUFFER_Q *)(p_lcb + 0x44));
+            if (p_buf == 0 || (u8)l2c_link_send_to_lower(arg0, p_buf) == 0)
+                break;
+            if (*(u16 *)(global + 4) == 0 || *(u16 *)(p_lcb + 0x36) == 0)
+                break;
+        }
+    }
+    if (p_lcb[0x40] != 0)
+        return;
+    if (*(u16 *)(p_lcb + 0x4C) != 0 && *(u16 *)(p_lcb + 0x36) != 0)
+        btu_start_timer(p_lcb + 0x10, 2, 2);
+    if (p_lcb[0x41] != 0 && *(u16 *)(p_lcb + 0x4C) <= *(u16 *)(p_lcb + 0x3C)) {
+        p_ccb = *(u8 **)(p_lcb + 8);
+        p_lcb[0x41] = 0;
+        while (p_ccb != 0) {
+            if (*(void **)(*(u8 **)(p_ccb + 0x30) + 0x28) != 0) {
+                if (lbl_803C4040[0] >= 3)
+                    fn_80070954(0x80002, p_trace + 0x170, *(u16 *)(p_ccb + 0x14));
+                ((void (*)(u16, u16, void *))(*(void **)(*(u8 **)(p_ccb + 0x30) + 0x28)))(*(u16 *)(p_ccb + 0x14), 0, *(void **)(p_ccb + 0x30));
+                if (p_lcb[0x41] != 0)
+                    break;
+            }
+            p_ccb = *(u8 **)(p_ccb + 8);
+        }
+    }
+}
+
 extern char lbl_80318D98[];
 void l2c_link_adjust_allocation(void) {
     u8 *base = lbl_803C4040;
@@ -10270,6 +10430,106 @@ static void process_service_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UINT16 len
         sdp_disconnect(p_ccb, 0);
         return;
     }
+}
+
+extern char lbl_8031A078[];
+static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UINT16 len)
+{
+    UINT8 *p, *p_start, *p_end, *p_param_len;
+    UINT8 type;
+    UINT32 seq_len;
+    UINT16 param_len, lists_byte_count = 0;
+    register UINT32 list_end;
+    BOOLEAN cont_request_needed = FALSE;
+    #pragma unused(len)
+    if (p_reply) {
+        p_reply += 4;
+        lists_byte_count = (p_reply[0] << 8) + p_reply[1];
+        p_reply += 2;
+        if (*(UINT16 *)((UINT8 *)p_ccb + 0x24) + lists_byte_count > 0x3E8) {
+            sdp_disconnect(p_ccb, 4);
+            return;
+        }
+        memcpy((UINT8 *)p_ccb + *(UINT16 *)((UINT8 *)p_ccb + 0x24) + 0x26,
+               p_reply, lists_byte_count);
+        *(UINT16 *)((UINT8 *)p_ccb + 0x24) =
+            *(UINT16 *)((UINT8 *)p_ccb + 0x24) + lists_byte_count;
+        p_reply += lists_byte_count;
+        if (*p_reply) {
+            if (*p_reply > 0x10) {
+                sdp_disconnect(p_ccb, 5);
+                return;
+            }
+            cont_request_needed = TRUE;
+        }
+    }
+    if (cont_request_needed || !p_reply) {
+        BT_HDR *p_msg = (BT_HDR *)GKI_getpoolbuf(2);
+        UINT8 *p;
+        if (!p_msg) {
+            sdp_disconnect(p_ccb, 6);
+            return;
+        }
+        p_msg->offset = 9;
+        p = p_start = (UINT8 *)p_msg + 0x11;
+        *p++ = 6;
+        *p++ = *(UINT16 *)((UINT8 *)p_ccb + 0x470) >> 8;
+        *p++ = *(UINT16 *)((UINT8 *)p_ccb + 0x470);
+        *(UINT16 *)((UINT8 *)p_ccb + 0x470) += 1;
+        p_param_len = p;
+        p += 2;
+        p = sdpu_build_uuid_seq(
+            p,
+            *(UINT16 *)(*(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x0C),
+            *(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x10);
+        *p++ = *(UINT16 *)(lbl_803C4C40 + 0x462C) >> 8;
+        *p++ = *(UINT16 *)(lbl_803C4C40 + 0x462C);
+        if (*(UINT16 *)(*(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x4C))
+            p = sdpu_build_attrib_seq(
+                p,
+                (UINT16 *)(*(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x4E),
+                *(UINT16 *)(*(UINT8 **)((UINT8 *)p_ccb + 0x410) + 0x4C));
+        else
+            p = sdpu_build_attrib_seq(p, NULL, 0);
+        if (p_reply) {
+            memcpy(p, p_reply, *p_reply + 1);
+            p += *p_reply + 1;
+        } else {
+            *p++ = 0;
+        }
+        param_len = p - p_param_len - 2;
+        p_param_len[0] = param_len >> 8;
+        p_param_len[1] = param_len;
+        p_msg->len = p - p_start;
+        L2CA_DataWrite(*(UINT16 *)((UINT8 *)p_ccb + 0x22), p_msg);
+        btu_start_timer(&p_ccb->timer_entry, 5, 0x1E);
+        return;
+    }
+    p = (UINT8 *)p_ccb + 0x26;
+    type = *p++;
+    if ((type >> 3) != 6) {
+        if (lbl_803C4C40[0x4630] >= 2)
+            fn_80070954(0xA0001, lbl_8031A078, type);
+        return;
+    }
+    p = sdpu_get_len_from_type(p, type, &seq_len);
+    list_end = *(UINT16 *)((UINT8 *)p_ccb + 0x24);
+    list_end += (UINT32)p_ccb;
+    p_end = (UINT8 *)list_end + 0x26;
+    if (p + seq_len != p_end) {
+        sdp_disconnect(p_ccb, 5);
+        return;
+    }
+    while (p < p_end) {
+        p = (UINT8 *)save_attr_seq(
+            p_ccb, p,
+            (UINT8 *)p_ccb + *(UINT16 *)((UINT8 *)p_ccb + 0x24) + 0x26);
+        if (!p) {
+            sdp_disconnect(p_ccb, 0xFFF4);
+            return;
+        }
+    }
+    sdp_disconnect(p_ccb, 0);
 }
 
 void *add_record(void *ctx, void *data) {
