@@ -911,6 +911,23 @@ u8 fn_8006DF84(void *arg0) {
     return tmp >> 5;
 }
 
+static void gki_add_to_pool_list(UINT8 pool_id)
+{
+    INT32 i;
+    INT32 j;
+    tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
+
+    for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
+        if (p_cb->freeq[pool_id].size <= p_cb->freeq[p_cb->pool_list[i]].size)
+            break;
+    }
+
+    for (j = p_cb->curr_total_no_of_pools; j > i; j--)
+        p_cb->pool_list[j] = p_cb->pool_list[j - 1];
+
+    p_cb->pool_list[i] = pool_id;
+}
+
 extern s32 fn_8006EBF4(void);
 #pragma use_lmw_stmw off
 UINT8 GKI_create_pool(UINT16 size, UINT16 count, UINT8 permission, void *p_mem_pool)
