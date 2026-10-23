@@ -3169,11 +3169,11 @@ extern "C" s32 fn_800B4D00(void) {
 }
 
 extern "C" s32 fn_800A4D74(void *, u32);
-extern "C" const u8 lbl_8055920C[];
-extern "C" const u8 lbl_8055921C[];
-extern "C" const u8 lbl_80559220[];
-extern "C" const u8 lbl_80559228[];
-extern "C" const u8 lbl_80559234[];
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055920C[]; }
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055921C[]; }
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559220[]; }
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559228[]; }
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559234[]; }
 extern "C" const u8 lbl_80560D98;
 extern "C" const u8 lbl_80560D99;
 extern "C" s16 fn_800B4D5C(void *arg0, u32 arg1, s32 arg2) {
