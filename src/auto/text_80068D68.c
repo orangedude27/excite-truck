@@ -10440,7 +10440,7 @@ static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UIN
     UINT8 type;
     UINT32 seq_len;
     UINT16 param_len, lists_byte_count = 0;
-    register UINT32 list_end;
+    register UINT8 *list_end;
     BOOLEAN cont_request_needed = FALSE;
     #pragma unused(len)
     if (p_reply) {
@@ -10514,9 +10514,9 @@ static void process_service_search_attr_rsp(tCONN_CB *p_ccb, UINT8 *p_reply, UIN
         return;
     }
     p = sdpu_get_len_from_type(p, type, &seq_len);
-    list_end = *(UINT16 *)((UINT8 *)p_ccb + 0x24);
-    list_end = (UINT32)p_ccb + list_end;
-    p_end = (UINT8 *)list_end + 0x26;
+    list_end = (UINT8 *)(u32)*(UINT16 *)((UINT8 *)p_ccb + 0x24);
+    list_end = (UINT8 *)p_ccb + (u32)list_end;
+    p_end = list_end + 0x26;
     if (p + seq_len != p_end) {
         sdp_disconnect(p_ccb, 5);
         return;
