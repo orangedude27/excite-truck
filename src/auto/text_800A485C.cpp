@@ -81,6 +81,7 @@ extern "C" s32 lbl_802F4588[];
   #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((u8 *)(expr) + (offset)))
 struct VFiPFEntryCopy240 { u32 word[0x90]; };
 struct VFiPFEntryLocalFrame { u8 prefix[0x78]; VFiPFEntryCopy240 copied; };
+struct VFiPFEntryFlag234 { u8 pad[0x234]; u32 flag; };
 extern "C" void VFipf_memcpy(void *, const void *, u32);
 extern "C" s32 NANDGetLengthAsync(void *, u32 *);
 extern "C" s32 NANDSeek(void *, s32, s32);
@@ -2256,6 +2257,115 @@ loop_8:
     return 0;
 }
 
+extern s32 fn_800A8D08(void *, s32, void **, s32 *);
+extern "C" s32 fn_800ACBB0(void *, s32, s32, s32, u32 *, u32 *);
+extern "C" s32 VFiPFFAT_WriteClusterPage(void *, u32, u32, u32, s32, void *);
+extern "C" s32 fn_800AF144(void *);
+extern s32 fn_800B5618(void *, s32, s32, s32, u16);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 fn_800ACDF8(void *);
+extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4, s32 arg5, s32 arg6) {
+    void *context = *(void **)((u8 *)arg0 + 0x34);
+    u32 first;
+    u32 end;
+    s32 pageIndex;
+    void *page;
+    u32 maxCluster;
+    u32 cluster;
+    u32 count;
+    s32 result;
+    s32 savedResult;
+    u32 i;
+    void *buffer;
+    u8 *bufferData;
+
+    maxCluster = lbl_802EEF40[*(s32 *)((u8 *)context + 0x1C) * 5 + 2];
+    count = arg2;
+    *arg3 = -1;
+    *arg4 = -1;
+    end = -1;
+    result = fn_800ACBB0(context, *(s32 *)((u8 *)context + 0x3C), -1, arg1, &first, &end);
+    if (result != 0) return result;
+    if (first == -1) return 0;
+    if (arg5 != 0) {
+        result = fn_800ACDF8(context);
+        if (result != 0) return result;
+    }
+    result = fn_800A8D08(context, -1, &page, &pageIndex);
+    if (result != 0) return result;
+    result = fn_800ACA5C(context, page, first);
+    if (result != 0) {
+        VFiPFCACHE_FreeFATPage_800A8E10(context, page);
+        return result;
+    }
+    *(u16 *)((u8 *)page + 2) = 0;
+    cluster = first;
+    while (cluster < end) {
+        result = VFiPFFAT_WriteClusterPage(arg0, cluster, count, cluster + 1, 1, page);
+        if (result != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(context, page);
+            return result;
+        }
+        if ((*(u16 *)((u8 *)context + 0x1FAC) & 4) != 0) {
+            u32 cached = *(u32 *)((u8 *)context + 0x38);
+            if (cached != -1 && cached != 0 &&
+                (*(s32 *)((u8 *)context + 0x1C) != 2 ||
+                 end != *(u32 *)((u8 *)context + 0x10))) {
+                *(u32 *)((u8 *)context + 0x38) = cached - 1;
+            }
+        }
+        if (*arg3 == -1) *arg3 = cluster;
+        *arg4 = cluster;
+        count++;
+        cluster++;
+    }
+    if (end != -1) {
+        result = VFiPFFAT_WriteClusterPage(arg0, end, count, maxCluster, 1, page);
+        if (result != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(context, page);
+            return result;
+        }
+    }
+    if (*arg3 == -1) {
+        *arg3 = cluster;
+        *arg4 = cluster;
+    }
+    {
+        u32 cached = *(u32 *)((u8 *)context + 0x38);
+        if (cached != -1 && cached != 0 &&
+            (*(s32 *)((u8 *)context + 0x1C) != 2 ||
+             end != *(u32 *)((u8 *)context + 0x10))) {
+            *(u32 *)((u8 *)context + 0x38) = cached - 1;
+        }
+    }
+    *(u32 *)((u8 *)context + 0x3C) = end + 1;
+    *(u32 *)((u8 *)arg0 + 0xC) = end;
+    *(u32 *)((u8 *)arg0 + 0x10) = count;
+    *arg4 = end;
+    buffer = *(void **)((u8 *)page + 8);
+    bufferData = *(u8 **)((u8 *)buffer + 0x18);
+    savedResult = 0;
+    for (i = 0; i < *((u8 *)context + 0x22); i++) {
+        result = fn_800B5618(context, *(s32 *)((u8 *)buffer + 8),
+                             (s32)bufferData, 0, *(u16 *)context);
+        if (result != 0 && savedResult == 0) savedResult = result;
+        bufferData += *(s32 *)((u8 *)context + 0xC);
+    }
+    if (savedResult != 0) {
+        VFiPFCACHE_FreeFATPage_800A8E10(context, page);
+        return savedResult;
+    }
+    VFiPFCACHE_FreeFATPage_800A8E10(context, page);
+    if (*(s32 *)((u8 *)context + 0x1C) == 2 &&
+        (*(u16 *)((u8 *)context + 0x1FAC) & 2) != 0 &&
+        fn_800AF144(context) != 0) {
+        *(u32 *)((u8 *)context + 0x38) = -1;
+        *(u16 *)((u8 *)context + 0x1FAC) &= (u16)~4;
+    }
+    return 0;
+}
+#pragma pop
 extern "C" s32 fn_800AD24C(void *, s32, s32, s32 *, s32 *);
 extern "C" s32 fn_800AE108(void *arg0, s32 arg1, s32 arg2, u32 arg3, s32 *arg4, s32 arg5) {
     s32 end = -1;
@@ -2841,50 +2951,55 @@ extern "C" s8 fn_800AB2F4(void *, void *, s32);
 extern "C" s32 fn_800B51FC(void *, s32);
 #pragma push
 #pragma use_lmw_stmw off
-extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    u8 frame[0x2B8];
-    u16 charCount;
+extern "C" s32 fn_800B10E0(void *arg0, void *arg1, void *arg2, s32 arg3) {
+    VFiPFEntryLocalFrame frame;
+    register s32 charCount;
     s32 result;
     s32 parsed;
     s32 quotient;
     s32 remainder;
-    u8 lfnCount;
-    u8 checksum;
-    u8 *nextCluster;
-    s32 cluster;
+    register u8 initialCount;
+    register u8 loopCount;
+    register u8 checksum;
+    register u8 *nextCluster;
+    register s32 cluster;
     u16 next;
     u32 *flags;
 
-    *(VFiPFEntryCopy240 *)(frame + 0x78) = *(VFiPFEntryCopy240 *)arg1;
-    charCount = VFiPFSTR_StrNumChar(arg2, 1);
-    if ((u32)charCount + *(u32 *)(frame + 0x2A8) > 0x103U) {
+    frame.copied = *(VFiPFEntryCopy240 *)arg1;
+    charCount = (u16)VFiPFSTR_StrNumChar((s32)arg2, 1);
+    if ((u32)charCount + *(u32 *)((u8 *)&frame.copied + 0x230) > 0x103U) {
         return 1;
     }
-    if (charCount > 0xFFU) {
+    if ((s32)charCount > 0xFF) {
         return 1;
     }
-    fn_800AF530(frame + 0x40, frame + 0x10, *(s32 *)(frame + 0x2A4), (s32)(frame + 0x2AC));
+    ((s32 (*)(void *, void *, s32, s32))fn_800AF530)(frame.prefix + 0x40, frame.prefix + 0x10, *(s32 *)((u8 *)&frame.copied + 0x22C), (s32)((u8 *)&frame.copied + 0x234));
     if (*(s32 *)((u8 *)arg0 + 0x161C) >= 5) {
         return 0x15;
     }
-    parsed = VFiPFPATH_parseShortName((u8 *)arg1 + 0x20E, (void *)arg2);
+    parsed = VFiPFPATH_parseShortName((u8 *)arg1 + 0x20E, arg2);
+    if (parsed != 0 && (s8)*((u8 *)arg1 + 0x20E) == 0) {
+        return 1;
+    }
     if (parsed != 0) {
-        if ((s8)*((u8 *)arg1 + 0x20E) == 0) {
-            return 1;
-        }
-        result = VFiPFENT_AdjustSFN(frame + 0x78, (s8 *)((u8 *)arg1 + 0x20E));
+        result = VFiPFENT_AdjustSFN(&frame.copied, (s8 *)((u8 *)arg1 + 0x20E));
         if (result != 0) {
             return result;
         }
-        if (fn_800A4D44((void *)arg2) == 1) {
-            ((s32 (*)(void *, s32))VFiPFPATH_transformInUnicode)(arg1, fn_800A4D74((void *)arg2, 1));
+        if ((u32)fn_800A4D44(arg2) == 1U) {
+            ((s32 (*)(void *, s32))VFiPFPATH_transformInUnicode)(arg1, fn_800A4D74(arg2, 1));
         } else {
             ((void (*)(void *, void *))fn_800A4B78)(arg1, (void *)(u32)fn_800A4D74((void *)arg2, 1));
         }
     } else {
         *(u16 *)arg1 = 0;
     }
-    *(u32 *)((u8 *)arg1 + 0x234) = (*(s32 *)((u8 *)arg0 + 0x1C) == 2);
+    if (*(s32 *)((u8 *)arg0 + 0x1C) == 2) {
+        *(u32 *)((u8 *)arg1 + 0x234) = 1;
+    } else {
+        *(u32 *)((u8 *)arg1 + 0x234) = 0;
+    }
     *(s32 *)((u8 *)arg1 + 0x228) = 0;
     *(void **)((u8 *)arg1 + 0x22C) = arg0;
     *((u8 *)arg1 + 0x21B) = 0;
@@ -2897,30 +3012,31 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     if (*(u16 *)arg1 != 0 && (*((u8 *)arg1 + 0x21B) & 0x18) == 0) {
         quotient = (s32)charCount / 13;
         remainder = (s32)charCount % 13;
-        lfnCount = (u8)(quotient + (remainder != 0));
+        initialCount = (u8)(quotient + (remainder != 0));
         result = ((s32 (*)(void *, u8, void *, s32 *, s32, s32 *, u32, u32))fn_800AAC08)(
-            arg1, (u8)(lfnCount + 1), frame + 0x40, (s32 *)(frame + 8), arg2,
-            (s32 *)frame, quotient, (u32)quotient >> 31);
+            arg1, (u8)(initialCount + 1), frame.prefix + 0x40, (s32 *)(frame.prefix + 8), (s32)arg2,
+            (s32 *)frame.prefix, quotient, (u32)quotient >> 31);
         if (result != 0) {
             return result;
         }
         flags = (u32 *)lbl_803D2140;
         if ((flags[0x60 / 4] & 2) == 2) {
-            fn_800B51FC((u8 *)arg1 + 0x20E, *(s32 *)frame);
+            fn_800B51FC((u8 *)arg1 + 0x20E, *(s32 *)frame.prefix);
         }
-        *((u8 *)arg1 + 0x20A) = lfnCount;
+        *((u8 *)arg1 + 0x20A) = initialCount;
         cluster = *(s32 *)((u8 *)arg1 + 0x238);
-        checksum = VFiPFENT_CalcCheckSum((u8 *)arg1);
-        nextCluster = frame + 8;
-        while (lfnCount >= 1) {
-            VFiPFENT_storeLFNEntryFieldsToBuf(frame + 0x20, (u8 *)arg1, lfnCount, checksum, lfnCount == (u8)(quotient + (remainder != 0)));
+        checksum = ((u8 (*)(u8 *))VFiPFENT_CalcCheckSum)((u8 *)arg1);
+        nextCluster = frame.prefix + 8;
+        loopCount = initialCount;
+        while (loopCount >= 1) {
+            VFiPFENT_storeLFNEntryFieldsToBuf(frame.prefix + 0x20, (u8 *)arg1, loopCount, checksum, loopCount == initialCount);
             result = ((s32 (*)(s32, void *, s32, u16, u32, u32 *, u32))fn_800B5700)(
-                (s32)arg0, frame + 0x20, cluster, *(u16 *)((u8 *)arg1 + 0x23C), 0x20,
-                (u32 *)(frame + 4), 0);
+                (s32)arg0, frame.prefix + 0x20, cluster, *(u16 *)((u8 *)arg1 + 0x23C), 0x20,
+                (u32 *)(frame.prefix + 4), 0);
             if (result != 0) {
                 return result;
             }
-            if (*(u32 *)(frame + 4) != 0x20U) {
+            if (*(u32 *)(frame.prefix + 4) != 0x20U) {
                 return 0x11;
             }
             next = *(u16 *)((u8 *)arg1 + 0x23C) + 0x20;
@@ -2930,12 +3046,12 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, s32 arg2, s32 arg3) {
                 cluster = *(s32 *)nextCluster;
                 nextCluster += 4;
             }
-            lfnCount--;
+            loopCount--;
         }
         *(s32 *)((u8 *)arg1 + 0x238) = cluster;
     } else {
         result = ((s32 (*)(void *, u32, void *, s32 *, s32))fn_800AAED8)(
-            arg1, 1, frame + 0x40, (s32 *)(frame + 8), arg2);
+            arg1, 1, frame.prefix + 0x40, (s32 *)(frame.prefix + 8), (s32)arg2);
         if (result != 0) {
             return result;
         }
@@ -11105,6 +11221,10 @@ extern "C" s32 fn_800BAE98(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
         else if (arg9 != 0) *(s32 *)arg9 = *(s32 *)lbl_8055DD74;
     }
 done:
-    if (arg10 != 0 && res != 0 && buf != 0) iosFree(lbl_80559248, buf);
+    if (arg10 != 0) {
+        if (res != 0 && buf != 0) {
+            iosFree(lbl_80559248, buf);
+        }
+    }
     return res;
 }
