@@ -7,6 +7,9 @@ public:
     virtual void v2();
     virtual void v3();
     virtual void *get();
+    virtual void v5();
+    virtual void v6();
+    virtual void run(int, int);
 };
 #pragma cplusplus off
 #pragma pop
@@ -350,6 +353,144 @@ void fn_80166898(void) {
             *(float *)(p + 0xC) = lbl_8055E318 - ((float (*)(int, float, float))fn_80129DC4)(3, lbl_8056189C, scale * *(float *)(p + 8));
             offset += 0x14;
             j++;
+        }
+    }
+}
+
+extern char lbl_8032FF6C[];
+extern float lbl_8055E3C8;
+extern void fn_801429D0(float, float);
+extern float fn_8014C8B4(float, float, float, float, float);
+extern float fn_8014C8F8(float, float);
+extern void *fn_80156A40(void);
+extern void fn_801662FC(void);
+extern float fn_80166DD4(void *);
+extern void fn_80166E54(void *);
+extern void fn_80166E68(float *, float);
+extern void fn_80166F3C(float *);
+extern int fn_80166F78(float *);
+extern float fn_80166F90(float *);
+extern void fn_8016707C(void *, void **);
+void fn_80166A24(void) {
+    int wasActive;
+    int i;
+    int offset;
+    int zero = 0;
+    float time;
+    float previous;
+    float delta;
+    float amount;
+    float stateValue;
+    float emptyValue;
+    int active;
+
+    if (!((int (*)(void))fn_801667F0)()) return;
+
+    wasActive = ((int (*)(void))fn_8016616C)();
+    lbl_8055E318 = lbl_8055E3C8;
+    lbl_8055E31C = lbl_805618D0;
+    if (*((unsigned char *)&lbl_8042FE38 + 0x4D) != 0) {
+        lbl_8055E31C *= fn_80166274();
+    }
+    lbl_8055E320 = fn_801660C0();
+
+    if (((int (*)(void))fn_8016616C)() && !wasActive) {
+        if (lbl_8055E328 != 0) {
+            fn_802E30C8(lbl_8032FF6C);
+        }
+        for (i = 0, offset = 0;
+             i < *(int *)(*(unsigned char **)&lbl_8055E32C + 4);
+             i++, offset += 0x88) {
+            unsigned char *record =
+                *(unsigned char **)(*(unsigned char **)&lbl_8055E32C) + offset;
+            void *object = (void *)((int (*)(int))fn_801B2EC0)(*(int *)record);
+            time = fn_8016618C(object);
+            record[0x2C] = 1;
+            *(float *)(record + 0x30) = time;
+        }
+    }
+
+    ((void (*)(void))fn_801662FC)();
+    previous = lbl_80561898;
+    emptyValue = lbl_805618D0;
+    for (i = 0, offset = 0;
+         i < *(int *)(*(unsigned char **)&lbl_8055E32C + 4);
+         i++, offset += 0x88) {
+        unsigned char *record =
+            *(unsigned char **)(*(unsigned char **)&lbl_8055E32C) + offset;
+        void *object = (void *)((int (*)(int))fn_801B2EC0)(*(int *)record);
+        fn_8016707C(record, (void **)object);
+        if (*(void **)(record + 0x58) != 0) {
+            time = fn_8016618C(object);
+            *(float *)(record + 0x28) = time;
+            stateValue = fn_80166F90((float *)(record + 0x58));
+            if (record[0x2C] != 0) {
+                delta = time - *(float *)(record + 0x30);
+            } else {
+                delta = time - stateValue;
+            }
+
+            if (fn_80166F78((float *)(record + 0x1C))) {
+                fn_801429D0(lbl_8056189C,
+                            *(float *)((unsigned char *)&lbl_8042FE38 + 0x10) - previous);
+                fn_80166F3C((float *)(record + 0x1C));
+                amount = fn_8014C8B4(*(float *)&lbl_8042FE38,
+                                     *(float *)((unsigned char *)&lbl_8042FE38 + 4),
+                                     *(float *)((unsigned char *)&lbl_8042FE38 + 0xC),
+                                     *(float *)((unsigned char *)&lbl_8042FE38 + 8), delta);
+                active = time > *(float *)((unsigned char *)&lbl_8042FE38 + 0x18) &&
+                         time < *(float *)((unsigned char *)&lbl_8042FE38 + 0x1C);
+                record[5] = active;
+                if (active) {
+                    amount = fn_8014C8F8(*(float *)((unsigned char *)&lbl_8042FE38 + 0x20),
+                                         *(float *)((unsigned char *)&lbl_8042FE38 + 0x24));
+                }
+                fn_80166E68((float *)(record + 8),
+                            *(float *)((unsigned char *)&lbl_8042FE38 + 0x54) +
+                            amount * lbl_8055E31C);
+            }
+
+            active = 0;
+            if (*((unsigned char *)&lbl_8042FE38 + 0x4C) != 0 &&
+                (delta < *(float *)&lbl_8042FE38 ||
+                 delta > *(float *)((unsigned char *)&lbl_8042FE38 + 4))) {
+                active = 1;
+            }
+            if (active) {
+                fn_80166E54(*(void **)(record + 0x58));
+            }
+
+            active = delta > *(float *)((unsigned char *)&lbl_8042FE38 + 0x2C);
+            if (delta > *(float *)((unsigned char *)&lbl_8042FE38 + 0x28) &&
+                fn_80166F78((float *)(record + 0x20))) {
+                void *vobj = fn_80156A40();
+                if (active) {
+                    ((void (*)(void *, int, int))(*(void ***)vobj)[7])(vobj, *(int *)record, 1);
+                } else {
+                    ((void (*)(void *, int, int))(*(void ***)vobj)[7])(vobj, *(int *)record, 0);
+                }
+                fn_80166F3C((float *)(record + 0x20));
+            }
+
+            if (active) {
+                fn_80166E68((float *)(record + 0x34), lbl_805618D0);
+            } else {
+                fn_80166E68((float *)(record + 0x34), lbl_8056189C);
+            }
+            *(float *)(record + 0x24) = fn_80166DD4(record + 8);
+            record[0x5D] = delta > *(float *)((unsigned char *)&lbl_8042FE38 + 0x34);
+            record[0x5C] = delta > *(float *)((unsigned char *)&lbl_8042FE38 + 0x30);
+            record[0x5E] = delta < *(float *)((unsigned char *)&lbl_8042FE38 + 0x38);
+            record[0x5F] = delta < *(float *)((unsigned char *)&lbl_8042FE38 + 0x40);
+            record[0x60] = delta < *(float *)((unsigned char *)&lbl_8042FE38 + 0x44);
+        } else {
+            record[0x5C] = zero;
+            record[0x5E] = zero;
+            record[0x5D] = zero;
+            record[0x5F] = zero;
+            record[0x60] = zero;
+            *(float *)(record + 0x24) = emptyValue;
+            memset(record + 0x64, zero, 0x24);
         }
     }
 }
