@@ -70,6 +70,8 @@ extern void fn_80099F58(void *);
 #include "revolution/BTE/stack/sdp/sdpint.h"
 static void process_service_attr_rsp(tCONN_CB *, UINT8 *, UINT16);
 typedef struct { UINT8 pad[0x418]; UINT32 handles[0x15]; } tSDP_CCB_HANDLE_VIEW;
+extern char lbl_80317A54[];
+extern char lbl_80317A80[];
 #include "revolution/BTE/stack/include/wbt_api.h"
 extern void AXFXReverbHiExpShutdown(void*);
 extern s32 AXFXReverbHiExpInit(void*);
