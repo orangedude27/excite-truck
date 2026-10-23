@@ -1,6 +1,11 @@
   #include <types.h>
 #include <macros.h>
 extern "C" s32 fn_800A485C(s32);
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055920C[]; }
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_8055921C[]; }
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559220[]; }
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559224[]; }
+extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559228[]; }
 extern "C" u32 fn_800A4C04(u8 *);
 #define fn_800B4D5C_CALL fn_800B4D5##C
 extern "C" s32 fn_800A4D44(void *);
@@ -3469,6 +3474,98 @@ extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
 (*(s32 *)((u8 *)arg0 + 0)) = arg1;
 (*(s32 *)((u8 *)arg0 + 4)) = arg1;
 (*(s32 *)((u8 *)arg0 + 0xC)) = arg2;
+}
+
+extern "C" s32 VFiPFSTR_StrNCmp(s32, const void *, s32, s32, s32);
+extern "C" void VFiPFSTR_MoveStrPos(void *, s16, s32);
+extern "C" const u8 lbl_8055920C[];
+extern "C" const u8 lbl_8055921C[];
+extern "C" const u8 lbl_80559220[];
+extern "C" const u8 lbl_80559224[];
+extern "C" const u8 lbl_80559228[];
+extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
+    u8 *pos;
+    s32 mode;
+    s32 found;
+
+    *(u8 **)arg0 = *(u8 **)((u8 *)arg0 + 4);
+    if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 1, 0, 1) == 0) {
+        *(u8 **)((u8 *)arg0 + 4) = 0;
+        *(u8 **)arg0 = 0;
+        return 0;
+    }
+
+    if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
+        VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
+        ((void (*)(void *, s16))VFiPFSTR_MoveStrPos)(arg0, 1);
+    }
+    if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 1, 0, 1) == 0 ||
+        VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 1, 0, 1) == 0) {
+        return 2;
+    }
+
+    mode = fn_800A4D44(arg0);
+    *(u8 **)((u8 *)arg0 + 4) = *(u8 **)arg0;
+    found = 0;
+    if ((lbl_803D2140[0x60 / 4] & 2) == 2) {
+        found = fn_800B4D5C(arg0, 2, arg1);
+        if (found != 0) {
+            if (mode == 1)
+                *(u8 **)((u8 *)arg0 + 4) += found;
+            else
+                *(u8 **)((u8 *)arg0 + 4) += found * 2;
+        }
+    }
+
+    if (found == 0) {
+        for (;;) {
+            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 2, 0, 1) == 0)
+                return 0;
+
+            pos = *(u8 **)((u8 *)arg0 + 4);
+            if (mode == 1 &&
+                ((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)pos[0], 1) != 0) {
+                *(u8 **)((u8 *)arg0 + 4) = pos + 1;
+                if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]((s8)pos[1], 2) == 0 ||
+                    pos[1] == 0)
+                    return 2;
+            }
+
+            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 2, 0, 1) == 0 ||
+                VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 2, 0, 1) == 0)
+                return 0;
+
+            if ((lbl_803D2140[0x38 / 4] & 0x10000) == 0) {
+                s32 invalid = 0;
+                if (mode == 1) {
+                    u8 c = *(*(u8 **)((u8 *)arg0 + 4));
+                    if (c < 0x80 && (c < 0x20 || (lbl_802EEEE0[c - 0x20] & 1) == 0))
+                        invalid = 1;
+                } else if (mode == 2) {
+                    u16 c;
+                    pos = *(u8 **)((u8 *)arg0 + 4);
+                    c = ((u16)pos[0] << 8) | pos[1];
+                    if (c < 0x80 &&
+                        (c < 0x20 || (c & 0xFF00) != 0 ||
+                         (lbl_802EEEE0[(u8)c - 0x20] & 1) == 0))
+                        invalid = 1;
+                }
+                if (invalid) {
+                    if (arg1 == 0 ||
+                        (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, 2, 0, 1) != 0 &&
+                         VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, 2, 0, 1) != 0))
+                        return 2;
+                }
+            }
+
+            pos = *(u8 **)((u8 *)arg0 + 4);
+            if (mode == 1)
+                *(u8 **)((u8 *)arg0 + 4) = pos + 1;
+            else
+                *(u8 **)((u8 *)arg0 + 4) = pos + 2;
+        }
+    }
+    return 0;
 }
 
 extern "C" void fn_800B36C4(s32 arg0, s32 arg1, s32 arg2) {
@@ -11397,4 +11494,65 @@ done:
     if (arg10 != 0 && res != 0 && buf != 0) iosFree(lbl_80559248, buf);
     return res;
 }
-extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *, u32, void *, s32 *) { return 0; }
+extern "C" s32 fn_800B3304(void *, void *);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 VFiPFENT_searchEmptyTailSFN(void *arg0, u32 firstIndex, void *templateArg, s32 *bitmap) {
+    u8 local[0x90];
+    register void *context = *(void **)((u8 *)arg0 + 0x34);
+    register void *state = arg0;
+    register u32 first = firstIndex;
+    register s32 *bits = bitmap;
+    register void *templateName = templateArg;
+    register u32 mask;
+    register u8 *shortName;
+    u32 *dst = (u32 *)(local + 0x28);
+    u32 a, b, tilde, end, digits, i, index;
+    s8 ch, terminal;
+    fn_800A499C((const char *)bits, 0, *(u32 *)((u8 *)context + 0x1F74) * 4);
+    b = ((u32 *)state)[0]; a = ((u32 *)state)[1]; dst[0] = b; dst[1] = a;
+    a = ((u32 *)state)[2]; b = ((u32 *)state)[3]; dst[2] = a; dst[3] = b;
+    a = ((u32 *)state)[4]; b = ((u32 *)state)[5]; dst[4] = a; dst[5] = b;
+    a = ((u32 *)state)[6]; b = ((u32 *)state)[7]; dst[6] = a; dst[7] = b;
+    a = ((u32 *)state)[8]; b = ((u32 *)state)[9]; dst[8] = a; dst[9] = b;
+    a = ((volatile u32 *)state)[10]; b = ((volatile u32 *)state)[11]; dst[10] = a; dst[11] = b;
+    a = ((volatile u32 *)state)[12]; b = ((volatile u32 *)state)[13]; dst[12] = a; dst[13] = b;
+    state = (void *)fn_800AC1B4(local + 0x20, 0);
+    shortName = local + 0x10;
+    mask = 1;
+    do {
+        if ((s32)state != 0) return (s32)state;
+        if (local[0x6C] != 0 && local[0x6C] != 0xE5 &&
+            (local[0x77] & 0x0F) != 0x0F && (local[0x77] & 8) == 0) {
+            fn_800B3BEC(local + 0x10, local + 0x6C, (u8)0);
+            tilde = 1;
+            while ((s8)shortName[tilde] != '~' && (s8)shortName[tilde] != 0 && tilde < 7)
+                tilde++;
+            if (tilde < 7 && *(volatile s8 *)(shortName + tilde) == '~') {
+                end = tilde + 1;
+                while ((ch = (s8)shortName[end]) >= '0' && ch <= '9') end++;
+                terminal = *(volatile s8 *)(shortName + end);
+                if (terminal == '.' || terminal == 0) {
+                    digits = end - tilde - 1;
+                    state = (void *)0;
+                    i = digits;
+                    while (i != 0) {
+                        state = (void *)((s32)(s8)shortName[end - i] + (s32)(u32)state * 10 - 0x30);
+                        i--;
+                    }
+                    fn_800A4AAC((char *)local, (char *)templateName);
+                    VFiPFPATH_parseShortNameNumeric((char *)local, (u32)state);
+                    if (fn_800B3304(local + 0x10, local) == 0 &&
+                        (u32)state >= first &&
+                        (u32)state < first + *(u32 *)((u8 *)context + 0x1F74) * 32) {
+                        index = (u32)state - first;
+                        bits[index >> 5] |= mask << index;
+                    }
+                }
+            }
+        }
+        state = (void *)VFiPFENT_ITER_Advance(local + 0x20, 0);
+    } while (VFiPFENT_ITER_IsAtLogicalEnd(local + 0x20) == 0);
+    return 0;
+}
+#pragma pop
