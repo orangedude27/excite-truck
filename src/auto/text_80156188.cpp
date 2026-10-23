@@ -138,7 +138,7 @@ s32 fn_801562BC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
         dst[-1] = 0;
     fn_801561E8(buffer);
     if (arg3 != 0) {
-        const char *choice = (s8)*name != 0 ? lbl_80559FC4 : lbl_80559FC0;
+        const char *choice = (s8)*name != 0 ? lbl_80559FC4 : (const char *)&lbl_80559FC0;
         fn_801345D8((s32)arg0, arg1, lbl_8032E254, name, choice, buffer);
     } else {
         fn_801345D8((s32)arg0, arg1, lbl_80559FC8,
@@ -192,6 +192,7 @@ extern "C" char lbl_80559FF0;
 extern "C" f32 lbl_80561738;
 extern "C" f32 lbl_8056173C;
 #pragma dont_inline on
+#pragma scheduling invalid_target
 extern "C" void fn_801564B0(void) {
     struct Entry { s32 id; s32 kind; };
     struct Config {
@@ -235,8 +236,9 @@ extern "C" void fn_801564B0(void) {
     void *wrapper;
     Reader *reader;
     Config *config;
+    u8 *base = lbl_8032E238;
 
-    fn_8012E81C(lbl_8032E238 + 0xAC);
+    fn_8012E81C(base + 0xAC);
     helper = fn_801284F8(8, (const char *)&lbl_80559FD0);
     if (helper != 0) {
         *(void **)helper = lbl_8032E46C;
@@ -244,10 +246,10 @@ extern "C" void fn_801564B0(void) {
         s32 helperId = fn_80138968(path);
         *(s32 *)((u8 *)helper + 4) = helperId;
         if (helperId == 0)
-            fn_802E317C((const char *)lbl_8032E238 + 0xBC, path);
+            fn_802E317C((const char *)base + 0xBC, path);
     }
 
-    reader = ((Reader *)(long)fn_8015621C())->open((const char *)lbl_8032E238 + 0xD8);
+    reader = ((Reader *)(long)fn_8015621C())->open((const char *)base + 0xD8);
     if (reader != 0) {
         config = (Config *)fn_801284F8(0x124, (const char *)&lbl_80559FD4);
         resource = config;
@@ -306,9 +308,9 @@ extern "C" void fn_801564B0(void) {
                 entry->kind = category;
             }
             if (config->count == 0)
-                fn_802E317C((const char *)lbl_8032E238 + 0xE8);
+                fn_802E317C((const char *)base + 0xE8);
 
-            IndexReader *list = (IndexReader *)reader->open((const char *)lbl_8032E238 + 0x128);
+            IndexReader *list = (IndexReader *)reader->open((const char *)base + 0x128);
             if (list != 0) {
                 s32 index = 0;
                 do {
@@ -318,10 +320,10 @@ extern "C" void fn_801564B0(void) {
                 } while (config->objectCount + 1 <= config->objectCapacity);
             }
 
-            config->value0 = reader->value((const char *)lbl_8032E238 + 0x144, lbl_80561738);
-            config->value1 = reader->value((const char *)lbl_8032E238 + 0x154, lbl_8056173C);
+            config->value0 = reader->value((const char *)base + 0x144, lbl_80561738);
+            config->value1 = reader->value((const char *)base + 0x154, lbl_8056173C);
             ((void (*)(const char *, s32, const char *, s32, const char *, f32, f32))fn_802E30C8)(
-                (const char *)lbl_8032E238 + 0x168,
+                (const char *)base + 0x168,
                 config->count, config->count == 1 ? lbl_80559FC0 : (const char *)&lbl_80559FF0,
                 config->objectCount, config->objectCount == 1 ? lbl_80559FC0 : (const char *)&lbl_80559FF0,
                 config->value0, config->value1);
@@ -334,12 +336,12 @@ extern "C" void fn_801564B0(void) {
             fallback->vtable = lbl_8032E448;
             TextManager *textManager = (TextManager *)fn_8015621C();
             char *value = textManager->get((const char *)lbl_8032E238, lbl_80559FC0);
-            value = textManager->get((const char *)lbl_8032E238 + 0x1A0, value);
+            value = textManager->get((const char *)base + 0x1A0, value);
             fallback->id = fn_801563BC((s32)value, helper);
         }
     }
 
-    wrapper = fn_801284F8(0xC, (const char *)lbl_8032E238 + 0x1B4);
+    wrapper = fn_801284F8(0xC, (const char *)base + 0x1B4);
     if (wrapper != 0) {
         *(void **)wrapper = lbl_8032E3F8;
         *(void **)((u8 *)wrapper + 8) = helper;
@@ -347,6 +349,7 @@ extern "C" void fn_801564B0(void) {
     }
     lbl_8055E27C = (void **)wrapper;
 }
+#pragma scheduling on
 #pragma dont_inline reset
 s32 fn_801568E0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
