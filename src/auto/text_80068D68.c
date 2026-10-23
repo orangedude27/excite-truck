@@ -2115,6 +2115,105 @@ void fn_800740A4(void) {
     BTM_PmRegister(4, lbl_803C0C14 + 0x95, 0);
 }
 
+extern u8 *lbl_80559018;
+extern u8 *lbl_8055901C;
+extern u8 lbl_802EE8F0[];
+extern u8 lbl_80315188[];
+extern u8 lbl_803C0D18[];
+extern tBTM_STATUS fn_8007A2C8(u16 *);
+extern void bta_dm_pm_set_mode(u8 *, u8);
+void bta_dm_pm_cback(u8 status, u8 id, u8 app_id, u8 *peer_addr) {
+    u8 version[10];
+    u16 policy;
+    u8 *cfg;
+    u8 *entry;
+    u8 *list;
+    u8 *conn;
+    u8 i;
+    u8 j;
+    u32 k;
+    u32 offset;
+    u8 spec_idx;
+
+    if (fn_8007A2C8((u16 *)version) == 0 && *(u16 *)(version + 6) == 0xF && version[0] < 3) {
+        if (status == 4) {
+            policy = *(u16 *)(lbl_802EE8F0 + 4) & 0xB;
+            BTM_SetLinkPolicy(peer_addr, &policy);
+        } else if (status == 5) {
+            policy = *(u16 *)(lbl_802EE8F0 + 4);
+            BTM_SetLinkPolicy(peer_addr, &policy);
+        }
+    }
+
+    cfg = lbl_80559018;
+    for (i = 1; i <= cfg[1]; i++) {
+        offset = ((i * 4) & 0x3FC) - i;
+        entry = cfg + offset;
+        if (id != entry[0])
+            continue;
+        if (entry[1] != 0xFF && app_id != entry[1])
+            continue;
+        break;
+    }
+    if (i > cfg[1])
+        return;
+
+    conn = lbl_803C0C14;
+    for (k = 0; k < 3; k++) {
+        entry = conn + ((k << 5) & 0x1FE0);
+        if (entry[0xB6] != 0 && bdcmp(entry + 0xB0, peer_addr) == 0) {
+            fn_8007148C((s32)(entry + 0x98));
+            entry[0xB6] = 0;
+            break;
+        }
+    }
+
+    offset = ((i * 4) & 0x3FC) - i;
+    spec_idx = *(u8 *)(lbl_80559018 + offset + 2);
+    list = lbl_803C0D18;
+    for (j = 0; j < list[0]; j++) {
+        entry = list + j * 9;
+        if (id != entry[7])
+            continue;
+        if (app_id != entry[8])
+            continue;
+        if (bdcmp(entry + 1, peer_addr) == 0)
+            break;
+    }
+
+    if (*(u8 *)(lbl_8055901C + spec_idx * 0x4A + status * 8 + 2) == 0x10) {
+        if (j < list[0]) {
+            for (; j < list[0]; j++)
+                memcpy(list + j * 9 + 1, list + (j + 1) * 9 + 1, 9);
+            list[0]--;
+        }
+    } else if (j == list[0]) {
+        if (list[0] == 5) {
+            if (lbl_8055DC80 >= 2)
+                fn_8007093C(0x501, lbl_80315188);
+            return;
+        }
+        entry = list + j * 9;
+        entry[7] = id;
+        entry[8] = app_id;
+        fn_80070FA4(entry + 1, peer_addr);
+        list[0]++;
+    }
+
+    conn = lbl_803C0C14;
+    for (i = 0; i < conn[0x4D]; i++) {
+        if (bdcmp(conn + i * 0xB, peer_addr) == 0) {
+            conn[i * 0xB + 9] = 0;
+            conn[i * 0xB + 0xA] = 0;
+            break;
+        }
+    }
+
+    entry = list + j * 9;
+    entry[9] = status;
+    bta_dm_pm_set_mode(peer_addr, 0);
+}
+
 void bta_dm_pm_btm_cback(void *arg0, s8 arg1, s16 arg2, s8 arg3) {
     u8 *buf = GKI_getbuf(0x14);
     if (buf != 0) {
@@ -12377,8 +12476,9 @@ extern s32 IOS_Ioctlv(s32, s32, s32, s32, void *);
 extern s32 IOS_IoctlvAsync(s32, s32, s32, s32, void *, void *, void *);
 s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void *buffer, s32 ioctl, void (*callback)(void), void *callbackArg, s32 async) {
     register char *base = lbl_8031A620;
-    s32 ret;
     char *msg;
+    s32 ret;
+    s32 fr;
     char *blk;
     char *a;
     char *b;
@@ -12393,62 +12493,63 @@ s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void *buffer, s32 ioctl, v
     if (blk == 0 || a == 0 || b == 0) {
         USB_ERR(base + 0x294);
         ret = -0x16;
-    } else {
-        s32 fr;
-        *(u8 *)a = endpoint;
-        *(u16 *)b = length;
-        *(void **)(blk + 0) = a;
-        *(s32 *)(blk + 4) = 1;
-        *(void **)(blk + 8) = b;
-        *(s32 *)(blk + 0xC) = 2;
-        *(s32 *)(blk + 0x10) = (s32)buffer;
-        *(s32 *)(blk + 0x14) = length;
-        DCFlushRange(a, 0x20);
-        DCFlushRange(b, 0x20);
-        DCFlushRange(blk, 0x60);
-        if (async == 0) {
-            ret = IOS_Ioctlv(fd, ioctl, 2, 1, blk);
-            USB_LOG(base + 0x2B8, ret);
-        } else {
-            msg = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
-            if (msg == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, msg);
-            if (msg == 0) {
-                USB_ERR(base + 0x2D8);
-                ret = -0x16;
-            } else {
-                *(s32 *)(msg + 0) = (s32)callback;
-                *(s32 *)(msg + 4) = (s32)callbackArg;
-                USB_LOG(base + 0x304, (s32)callback, (s32)callbackArg);
-                *(s32 *)(msg + 0x2C) = 3;
-                *(void **)(msg + 0xC) = a;
-                *(void **)(msg + 0x10) = b;
-                *(void **)(msg + 0x14) = blk;
-                *(s32 *)(msg + 0x40) = (s32)buffer;
-                *(u16 *)(msg + 0x44) = length;
-                ret = IOS_IoctlvAsync(fd, ioctl, 2, 1, blk, _intBlkCtrlCb, msg);
-                if (ret < 0) {
-                    if (msg != 0) {
-                        fr = iosFree(lbl_805590A0, msg);
-                        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, msg, fr);
-                    }
-                    goto free_all;
-                }
-                goto done;
-            }
-        free_all:
-            if (a != 0) {
-                fr = iosFree(lbl_805590A0, a);
-                if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, a, fr);
-            }
-            if (b != 0) {
-                fr = iosFree(lbl_805590A0, b);
-                if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, b, fr);
-            }
-            if (blk != 0) {
-                fr = iosFree(lbl_805590A0, blk);
-                if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, blk, fr);
-            }
-        }
+        goto free_all;
+    }
+
+    *(u8 *)a = endpoint;
+    *(u16 *)b = length;
+    *(void **)(blk + 0) = a;
+    *(s32 *)(blk + 4) = 1;
+    *(void **)(blk + 8) = b;
+    *(s32 *)(blk + 0xC) = 2;
+    *(s32 *)(blk + 0x10) = (s32)buffer;
+    *(s32 *)(blk + 0x14) = length;
+    DCFlushRange(a, 0x20);
+    DCFlushRange(b, 0x20);
+    DCFlushRange(blk, 0x60);
+
+    if (async == 0) {
+        ret = IOS_Ioctlv(fd, ioctl, 2, 1, blk);
+        USB_LOG(base + 0x2B8, ret);
+        goto free_all;
+    }
+
+    msg = iosAllocAligned(lbl_805590A0, 0x80, 0x20);
+    if (msg == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x80, msg);
+    if (msg == 0) {
+        USB_ERR(base + 0x2D8);
+        ret = -0x16;
+        goto free_all;
+    }
+
+    *(s32 *)(msg + 0) = (s32)callback;
+    *(s32 *)(msg + 4) = (s32)callbackArg;
+    USB_LOG(base + 0x304, (s32)callback, (s32)callbackArg);
+    *(s32 *)(msg + 0x2C) = 3;
+    *(void **)(msg + 0xC) = a;
+    *(void **)(msg + 0x10) = b;
+    *(void **)(msg + 0x14) = blk;
+    *(s32 *)(msg + 0x40) = (s32)buffer;
+    *(u16 *)(msg + 0x44) = length;
+    ret = IOS_IoctlvAsync(fd, ioctl, 2, 1, blk, _intBlkCtrlCb, msg);
+    if (ret >= 0) goto done;
+    if (msg != 0) {
+        fr = iosFree(lbl_805590A0, msg);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, msg, fr);
+    }
+
+free_all:
+    if (a != 0) {
+        fr = iosFree(lbl_805590A0, a);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, a, fr);
+    }
+    if (b != 0) {
+        fr = iosFree(lbl_805590A0, b);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, b, fr);
+    }
+    if (blk != 0) {
+        fr = iosFree(lbl_805590A0, blk);
+        if (fr < 0) USB_ERR(base + 0x108, lbl_805590A0, blk, fr);
     }
 done:
     return ret;
