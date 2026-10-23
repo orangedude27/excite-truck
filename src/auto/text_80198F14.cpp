@@ -11,7 +11,7 @@ class VTab1A1E7C {
  virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
  virtual void v05(); virtual void v06(); virtual void v07(); virtual void v08(); virtual void v09();
  virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
- virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+ virtual void v15(); virtual void v16(); virtual void v17();
  virtual void *Call();
 };
 class Fn801A401CDispatch {
@@ -1278,6 +1278,66 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
     *(s32*)arg0 = *(s32*)((u8*)result + 0x24);
     *(s32*)((u8*)arg0 + 4) = x;
     *(s32*)((u8*)arg0 + 8) = *(s32*)((u8*)result + 0x2C);
+}
+
+extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
+    f32 x = *(f32 *)((char *)arg0 + 0x24);
+    f32 y = *(f32 *)((char *)arg0 + 0x28);
+    f32 z = *(f32 *)((char *)arg0 + 0x2C);
+    f32 nx = -x;
+    f32 ny = -y;
+    f32 nz = -z;
+    f32 corners[24] = {
+        x, y, z, nx, y, z,
+        x, ny, z, nx, ny, z,
+        x, y, nz, nx, y, nz,
+        x, ny, nz, nx, ny, nz
+    };
+    f32 point[3];
+    f32 *corner = corners;
+    f32 *sameCorner = corners;
+    f32 *work = point;
+    VTab1A1E7C *shape = (VTab1A1E7C *)arg0;
+    f32 *matrix = (f32 *)shape->Call();
+    min[0] = matrix[9];
+    min[1] = matrix[10];
+    min[2] = matrix[11];
+    matrix = (f32 *)shape->Call();
+    max[0] = matrix[9];
+    max[1] = matrix[10];
+    max[2] = matrix[11];
+    for (int i = 0; i < 8; i++) {
+        matrix = (f32 *)shape->Call();
+        f32 cx = corner[0];
+        f32 cy = corner[1];
+        f32 cz = corner[2];
+        f32 px;
+        f32 py;
+        f32 pz;
+        if (work == sameCorner) {
+            px = (cx * matrix[0] + cy * matrix[3]) + cz * matrix[6];
+            py = (cx * matrix[1] + cy * matrix[4]) + cz * matrix[7];
+            pz = (cx * matrix[2] + cy * matrix[5]) + cz * matrix[8];
+        } else {
+            px = (cy * matrix[3] + cx * matrix[0]) + cz * matrix[6];
+            py = (cy * matrix[4] + cx * matrix[1]) + cz * matrix[7];
+            pz = (cy * matrix[5] + cx * matrix[2]) + cz * matrix[8];
+        }
+        px += matrix[9];
+        py += matrix[10];
+        pz += matrix[11];
+        work[0] = px;
+        work[1] = py;
+        work[2] = pz;
+        if (min[0] < px) min[0] = px;
+        if (min[1] < py) min[1] = py;
+        if (min[2] < pz) min[2] = pz;
+        if (max[0] > px) max[0] = px;
+        if (max[1] > py) max[1] = py;
+        if (max[2] > pz) max[2] = pz;
+        corner += 3;
+        sameCorner += 3;
+    }
 }
 
 extern "C" void* fn_801A2354(void* arg0, s32 arg1, void* arg2, s32 arg3, f32 farg0, f32 farg1, f32 farg2, f32 farg3, f32 farg4) {
