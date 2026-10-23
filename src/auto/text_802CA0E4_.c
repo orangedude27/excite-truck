@@ -174,12 +174,151 @@ int fn_802CA658(int arg0, int arg1) {
     return result;
 }
 
+#pragma dont_inline fn_802CA7D4
 char fn_802CA7D4(void) { return 1; }
 
+#pragma dont_inline fn_802CA7DC
 char fn_802CA7DC(const char *arg0) { return (signed char)*arg0 == 0x2A; }
 
+#pragma dont_inline fn_802CA7F4
 int fn_802CA7F4(const char *arg0) { return strchr(arg0, 0x2F) != 0; }
 
+extern int fn_802CA824(int);
+extern int fn_802CA57C(int, int, int);
+extern int fn_802CA4E0(int, int, int, int, int);
+extern int stricmp(const char *, const char *);
+extern unsigned int strlen(const char *);
+#pragma dont_inline fn_802CA7D4
+#pragma dont_inline fn_802CA7DC
+#pragma dont_inline fn_802CA7F4
+int fn_802CA898(int arg0, int arg1, int arg2, int arg3) {
+    char *path = (char *)arg0;
+    char *strings = lbl_8034B538;
+    int flag;
+    int index;
+    int offset;
+    int best;
+    int resource;
+    int *table = (int *)lbl_8055FCB0;
+    int *entry;
+    int size;
+    char *src;
+    char *dst;
+    int count;
+    int c;
+
+    if (strlen(path) >= 0x10 &&
+        fn_802CA7DC(path) == 0 &&
+        fn_802CA7F4(path) == 0) {
+        fn_802E317C(strings + 0x2B8, path, strlen(path), 0x10);
+    }
+    if (strlen(path) >= 0x20)
+        fn_802E317C(strings + 0x2E0, path, strlen(path), 0x20);
+    if ((signed char)*path == 0 && arg3 == 1)
+        path = strings + 0x30C;
+
+    flag = arg2 != 0;
+    c = (signed char)*path;
+    if (c == 0 || c == '.' || c == '#')
+        return -1;
+
+    best = -1;
+    index = 0;
+    offset = 0;
+    do {
+        entry = (int *)((char *)table + offset);
+        if (entry[0] > 0) {
+            if (stricmp((char *)entry + 4, (char *)fn_802CA824((int)path)) == 0 &&
+                entry[0x24 / 4] == arg1 &&
+                flag == 0) {
+                offset = index * 0x4C;
+                entry = (int *)((char *)table + offset);
+                if (((int (*)(int, int, int))fn_802CA7D4)((int)path, arg3, entry[0x34 / 4]) == 0) {
+                    fn_802E30C8(strings + 0x318, path);
+                    entry[0x3C / 4] = 0;
+                    entry[0x34 / 4] = 0xE;
+                }
+                entry[0]++;
+                return index;
+            }
+        } else if (best < 0) {
+            best = index;
+        }
+        index++;
+        offset += 0x4C;
+    } while (index < 0x200);
+
+    if (best < 0)
+        fn_802E317C(strings + 0x33C, path);
+
+    if (flag == 0) {
+        resource = fn_802CA658((int)path, arg3);
+        if (resource == 0) {
+            fn_802E30C8(strings + 0x354, path);
+            resource = fn_802CA658((int)(strings + 0x370), 0xE);
+        }
+    } else {
+        resource = arg2;
+        ((int (*)(int, int, int, int))fn_802CA57C)(resource, (int)path, 0, arg3);
+    }
+    if (resource == 0)
+        return -1;
+
+    entry = (int *)((char *)table + best * 0x4C);
+    *(signed char *)((char *)entry + 0x30) = flag;
+    entry[0] = 1;
+    entry[0x48 / 4] = 0;
+    entry[0x24 / 4] = arg1;
+
+    if (fn_802CA7DC(path) == 0) {
+        src = path;
+        dst = (char *)entry + 4;
+        count = 0x20;
+        do {
+            c = (signed char)*src;
+            *dst++ = *src++;
+            if (c == 0)
+                break;
+            count--;
+            if (count <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        } while (1);
+        if (flag != 0)
+            size = 0;
+        else
+            size = fn_802CA380((int)path);
+        entry[0x3C / 4] = size;
+        if (size < 0x3E80)
+            entry[0x3C / 4] = 0;
+    } else {
+        fn_802E30C8(strings + 0x380, path);
+        src = (char *)fn_802CA824((int)path);
+        dst = (char *)entry + 4;
+        count = 0x20;
+        do {
+            c = (signed char)*src;
+            *dst++ = *src++;
+            if (c == 0)
+                break;
+            count--;
+            if (count <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+        } while (1);
+        entry[0x3C / 4] = 0;
+    }
+
+    entry[0x40 / 4] = 0;
+    entry[0x44 / 4] = 0;
+    entry[0x2C / 4] = resource;
+    entry[0x34 / 4] = arg3;
+    entry[0x28 / 4] = fn_802CA4E0(resource, (int)path, 0, 0, arg3);
+    lbl_8055FCB8 = -2;
+    return best;
+}
 void fn_802CAC28(int arg0, int arg1) {
     fn_802CA898(arg0, arg1, 0, 0xE);
 }
@@ -366,6 +505,36 @@ char fn_802CAFF0(int arg0) {
     return *(char *)(*(int *)(lbl_8055FCB0 + arg0 * 0x4C + 0x2C) + 9);
 }
 
+extern char lbl_8034B940[];
+int fn_802CB018(void) {
+    int result = -1;
+    int index = 1;
+    int group;
+    unsigned char *base = (unsigned char *)lbl_8055FCB0 + 0x4C;
+
+    for (group = 0; group < 0x49; group++) {
+        if (*(int *)(base + 0x00) == 0) { result = index; goto found; }
+        index++;
+        if (*(int *)(base + 0x4C) == 0) { result = index; goto found; }
+        index++;
+        if (*(int *)(base + 0x98) == 0) { result = index; goto found; }
+        index++;
+        if (*(int *)(base + 0xE4) == 0) { result = index; goto found; }
+        index++;
+        if (*(int *)(base + 0x130) == 0) { result = index; goto found; }
+        index++;
+        if (*(int *)(base + 0x17C) == 0) { result = index; goto found; }
+        index++;
+        if (*(int *)(base + 0x1C8) == 0) { result = index; goto found; }
+        index++;
+        base += 0x214;
+    }
+found:
+    if (result < 0)
+        fn_802E317C(lbl_8034B940);
+    return (int)((unsigned char *)lbl_8055FCB0 + result * 0x4C);
+}
+
 unsigned short fn_802CB3FC(int arg0) {
     int *p = (int *)(lbl_8055FCB0 + arg0 * 0x4C);
     unsigned short *q = (unsigned short *)p[0x2C / 4];
@@ -374,6 +543,219 @@ unsigned short fn_802CB3FC(int arg0) {
     return q[0];
 }
 
+extern char lbl_8034BAEC[];
+extern char lbl_8034BB1C[];
+extern char lbl_8034BB5C[];
+extern char lbl_8034BB68[];
+extern char lbl_8034BB7C[];
+extern char lbl_8034BB88[];
+extern char lbl_8034BB9C[];
+extern char lbl_8034BBA8[];
+extern char lbl_8055D098;
+void fn_802CB6B4(void) {
+    void *root = *(void **)lbl_8055FCBC;
+    void *record;
+    void *manager;
+    unsigned int total;
+    unsigned int secondTotal;
+
+    if (root != 0) {
+        if (root != 0) {
+            fn_80128670(*(int *)((char *)root + 8));
+            fn_80128670(*(int *)((char *)root + 0x14));
+            *(int *)((char *)root + 0x38) = 0;
+            manager = *(void **)((char *)root + 0x24);
+            if (manager != 0) {
+                record = *(void **)((char *)manager + 0xC);
+                if (record != 0) {
+                    fn_802E30C8(lbl_8034BBA8, lbl_8034BB1C);
+                    fn_802E30C8(lbl_8034BB9C);
+                    total = 0;
+                    do {
+                        fn_802E30C8(lbl_8034BB88, (char *)record + 0x10, *(int *)((char *)record + 4));
+                        total += *(unsigned int *)((char *)record + 4);
+                        record = *(void **)((char *)record + 8);
+                    } while (record != 0);
+                    fn_802E30C8(lbl_8034BB7C, total >> 10);
+                    secondTotal = 0;
+                    fn_802E30C8(&lbl_8055D098);
+                    record = *(void **)((char *)manager + 8);
+                    do {
+                        fn_802E30C8(lbl_8034BB68, (char *)record + 0x10, *(int *)((char *)record + 4));
+                        secondTotal += *(unsigned int *)((char *)record + 4);
+                        record = *(void **)((char *)record + 8);
+                    } while (record != 0);
+                    fn_802E30C8(lbl_8034BB5C, secondTotal >> 10);
+                    fn_802E317C(lbl_8034BAEC);
+                }
+                fn_80128668(manager);
+            }
+            fn_80128670(*(int *)((char *)root + 0x20));
+            *(int *)((char *)root + 0x20) = 0;
+            *(void **)((char *)root + 0x24) = 0;
+            *(int *)((char *)root + 0x28) = 0;
+        }
+        fn_80128668(root);
+    }
+    *(void **)lbl_8055FCBC = 0;
+}
+
+extern void fn_8012C90C(int);
+extern void fn_802D915C(void *);
+extern void fn_802CBB9C(int **, int, int *);
+extern char lbl_8034B9F4;
+#pragma push
+#pragma small_data on
+DECL_SECTION(".sdata") extern char lbl_8055FCBC[];
+#pragma push
+#pragma small_data on
+#pragma push
+#pragma small_data on
+#pragma small_data off
+#pragma pop
+void fn_802CB82C(int arg0) {
+    char *temp_r30;
+    char *temp_r31;
+    char *temp_r29;
+    int temp_r0;
+    char *pool, *node, *other, *joined;
+    char **link, **mergeLink, **scanLink;
+    int pageSize, merged, mergeCandidate;
+
+    temp_r29 = *(char **)lbl_8055FCBC;
+    temp_r31 = temp_r29 + arg0 * 0x14;
+    temp_r0 = *(int *)(temp_r31 + 0x40);
+
+    if (temp_r0 == 2) {
+        temp_r30 = (char *)lbl_8055FCB0 + arg0 * 0x4C;
+        ((void (*)(int))fn_802CB3F4)(*(int *)(temp_r30 + 0x40));
+        *(int *)(temp_r30 + 0x40) = 0;
+        pool = *(char **)(*(char **)(temp_r29 + 0x38) + 4);
+        link = (char **)(pool + 0xC);
+        node = (char *)(*(int *)(temp_r30 + 0x44) - (*(int *)(pool + 4) + 1));
+        other = *link;
+        if (other != 0) {
+            do {
+                if (other == node) {
+                    *link = *(char **)(node + 8);
+                    break;
+                }
+                link = (char **)(other + 8);
+                other = *link;
+            } while (other != 0);
+        }
+        mergeLink = (char **)(pool + 8);
+        *(char **)(node + 8) = *mergeLink;
+        *mergeLink = node;
+        do {
+            scanLink = (char **)(pool + 8);
+            merged = 0;
+        merge2:
+            other = *scanLink;
+            if (other != 0) {
+                joined = *mergeLink;
+                pageSize = *(int *)(pool + 4);
+                mergeCandidate = 1;
+                if (((char *)joined + pageSize + *(int *)(joined + 4) + 1 != other) &&
+                    ((char *)other + pageSize + *(int *)(other + 4) + 1 != joined))
+                    mergeCandidate = 0;
+                if (mergeCandidate != 0) {
+                    link = mergeLink;
+                    if ((char *)other + pageSize + *(int *)(other + 4) + 1 == joined) {
+                        link = scanLink;
+                        scanLink = mergeLink;
+                    }
+                    joined = *link;
+                    mergeLink = link;
+                    merged = 1;
+                    *(int *)(joined + 4) = (((pageSize + 0x10) & ~pageSize) +
+                        (*(int *)(joined + 4) + *(int *)(*scanLink + 4)));
+                    *scanLink = *(char **)(*scanLink + 8);
+                } else {
+                    scanLink = (char **)(other + 8);
+                    goto merge2;
+                }
+            }
+        } while (merged != 0);
+        *(int *)(temp_r30 + 0x44) = 0;
+        ((void (*)(void *, void *))fn_802CB3F8)(temp_r30 + 4, &lbl_8034B9F4);
+    } else if (temp_r0 == 1) {
+        temp_r30 = *(char **)temp_r29;
+    find:
+        if (temp_r30 != 0) {
+            if (*(int *)(temp_r30 + 4) == arg0) {
+                other = *(char **)(temp_r29 + 0xC);
+            remove1:
+                if (other != 0) {
+                    if (*(char **)(other + 0xC) == temp_r30)
+                        *(char **)(other + 0xC) = 0;
+                    other = *(char **)(other + 0x10);
+                    goto remove1;
+                }
+                if (*(int *)(temp_r30 + 0x10) == -1)
+                    fn_8012C90C(*(int *)temp_r30);
+                fn_8012C958(*(int *)temp_r30);
+                *(int *)temp_r30 = 0;
+                fn_802D915C(*(void **)(temp_r30 + 0xC));
+                *(int *)(temp_r30 + 0xC) = 0;
+
+                pool = *(char **)(*(char **)(temp_r29 + 0x38) + 4);
+                link = (char **)(pool + 0xC);
+                node = (char *)(*(int *)(temp_r30 + 8) - (*(int *)(pool + 4) + 1));
+                other = *link;
+                if (other != 0) {
+                    do {
+                        if (other == node) {
+                            *link = *(char **)(node + 8);
+                            break;
+                        }
+                        link = (char **)(other + 8);
+                        other = *link;
+                    } while (other != 0);
+                }
+                mergeLink = (char **)(pool + 8);
+                *(char **)(node + 8) = *mergeLink;
+                *mergeLink = node;
+                do {
+                    scanLink = (char **)(pool + 8);
+                    merged = 0;
+                merge1:
+                    other = *scanLink;
+                    if (other != 0) {
+                        joined = *mergeLink;
+                        pageSize = *(int *)(pool + 4);
+                        mergeCandidate = 1;
+                        if (((char *)joined + pageSize + *(int *)(joined + 4) + 1 != other) &&
+                            ((char *)other + pageSize + *(int *)(other + 4) + 1 != joined))
+                            mergeCandidate = 0;
+                        if (mergeCandidate != 0) {
+                            link = mergeLink;
+                            if ((char *)other + pageSize + *(int *)(other + 4) + 1 == joined) {
+                                link = scanLink;
+                                scanLink = mergeLink;
+                            }
+                            joined = *link;
+                            mergeLink = link;
+                            merged = 1;
+                            *(int *)(joined + 4) = (((pageSize + 0x10) & ~pageSize) +
+                                (*(int *)(joined + 4) + *(int *)(*scanLink + 4)));
+                            *scanLink = *(char **)(*scanLink + 8);
+                        } else {
+                            scanLink = (char **)(other + 8);
+                            goto merge1;
+                        }
+                    }
+                } while (merged != 0);
+                *(int *)(temp_r30 + 8) = 0;
+                fn_802CBB9C((int **)(temp_r29 + 4), (int)temp_r29, (int *)temp_r30);
+            } else {
+                temp_r30 = *(char **)(temp_r30 + 0x14);
+                goto find;
+            }
+        }
+    }
+    *(int *)(temp_r31 + 0x40) = 0;
+}
 void fn_802CBB9C(int **arg0, int arg1, int *arg2) {
     fn_802CBBE8(arg1, arg2);
     *(int **)((char *)arg2 + 0x14) = *arg0;
@@ -423,6 +805,51 @@ void fn_802CC03C(int **arg0, int *arg1, int arg2) {
     if (sp8 != 0xF)
         fn_802E317C(lbl_8034BA70, sp10, 0xF);
     ((void (*)(int **, int, int *))fn_802CBB9C)(arg0, (int)arg0 + 4, arg1);
+}
+
+extern char lbl_8034BB28[];
+void *fn_802CC2C8(void *arg0, int arg1) {
+    int size = *(int *)((char *)arg0 + 4);
+    int mask = ~size;
+    int aligned = (arg1 + size) & mask;
+    char **link = (char **)((char *)arg0 + 8);
+    int best = 0x7FFFFFFF;
+    char **choice = 0;
+    char *node;
+    void *result = 0;
+    while ((node = *link) != 0) {
+        int start = *(int *)(node + 4);
+        if (start >= aligned && best > start) {
+            choice = link;
+            best = start;
+        }
+        link = (char **)(node + 8);
+    }
+    if (choice != 0) {
+        char *block = *choice;
+        char *next = *(char **)(block + 8);
+        char *split = 0;
+        int remaining = *(int *)(block + 4) - aligned;
+        if (remaining > (((size + 0x10) & mask) + 0x20)) {
+            char *p = block + size + aligned;
+            *(int *)(p + 1) = 0xABCFEED0;
+            split = p + 1;
+            *(int *)(p + 9) = 0;
+            *(int *)(p + 5) = remaining - ((size + 0x10) & ~size);
+            *(void **)(p + 0xD) = arg0;
+            *(int *)(block + 4) = aligned;
+        }
+        if (split != 0) {
+            *(char **)(split + 8) = next;
+            *choice = split;
+        } else *choice = next;
+        *(char **)(block + 8) = *(char **)((char *)arg0 + 0xC);
+        *(char **)((char *)arg0 + 0xC) = block;
+        result = block + *(int *)((char *)arg0 + 4) + 1;
+    }
+    if (result == 0 && *(unsigned char *)arg0 != 0)
+        fn_802E317C(lbl_8034BB28);
+    return result;
 }
 
 int fn_802CC404(void *arg0) {
