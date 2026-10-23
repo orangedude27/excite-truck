@@ -68,6 +68,7 @@ extern u8 lbl_80317298[];
 extern UINT8 lbl_802EED40[];
 extern void fn_80099F58(void *);
 #include "revolution/BTE/stack/sdp/sdpint.h"
+static void process_service_attr_rsp(tCONN_CB *, UINT8 *, UINT16);
 #include "revolution/BTE/stack/include/wbt_api.h"
 extern void AXFXReverbHiExpShutdown(void*);
 extern s32 AXFXReverbHiExpInit(void*);
@@ -6685,6 +6686,131 @@ void hidh_l2cif_cong_ind(u32 arg0, s32 arg1) {
     }
 }
 
+extern UINT8 L2CA_DataWrite(UINT16, BT_HDR *);
+UINT8 hidh_conn_snd_data(UINT8 dhandle, s32 trans_type, UINT8 param,
+                         UINT16 data, UINT8 rpt_id, BT_HDR *buf) {
+    register s32 var_r17;
+    register s32 var_r20;
+    register s32 var_r4;
+    register u16 temp_r24;
+    register u16 var_r23;
+    register u16 var_r24;
+    register u16 var_r25;
+    register u32 var_r21;
+    register s32 var_r22;
+    u8 *temp_r27;
+    void *temp_r3;
+    void *temp_r3_2;
+    u8 *temp_r3_3;
+    u8 *temp_r3_4;
+    BT_HDR *var_r26;
+    register u8 var_r30;
+    register u8 var_r29;
+    register u8 var_r28;
+    register u8 var_r31;
+
+    var_r17 = (s32)trans_type;
+    temp_r27 = lbl_803C3C38 + (dhandle * 0x34);
+    var_r21 = 0;
+    var_r20 = 0;
+    if (temp_r27[0x11] & 0x20) {
+        if (buf != NULL) GKI_freebuf(buf);
+        return 8;
+    }
+    if (trans_type < 4) {
+        if (trans_type != 1) goto block_11;
+        goto block_9;
+    }
+    if (trans_type != 0xA) {
+        if (trans_type < 0xA) goto block_9;
+        goto block_11;
+    }
+    goto block_10;
+block_9:
+    var_r23 = *(u16 *)(temp_r27 + 0x14);
+    var_r22 = 2;
+    goto block_12;
+block_10:
+    var_r23 = *(u16 *)(temp_r27 + 0x16);
+    var_r22 = 2;
+    goto block_12;
+block_11:
+    return 5;
+block_12:
+    if ((u32)trans_type == 9U) {
+        var_r21 = 1;
+    } else if ((u32)trans_type == 4U && (param & 8)) {
+        var_r21 = 2;
+    }
+    var_r30 = param & 0xF;
+    var_r29 = (u8)data;
+    var_r28 = (u8)(data >> 8);
+    var_r31 = 9;
+loop_18:
+    if (buf == NULL || var_r20 != 0) {
+allocate_new:
+        temp_r3 = GKI_getpoolbuf(var_r22);
+        var_r26 = (BT_HDR *)temp_r3;
+        if (temp_r3 == NULL) return 3;
+        var_r26->offset = var_r31;
+        var_r4 = 0;
+        var_r24 = 0;
+        var_r25 = 0;
+        var_r20 = 0;
+        goto block_28;
+    }
+use_existing:
+    var_r24 = buf->len;
+    if ((s32)var_r24 > (s32)(*(u16 *)(temp_r27 + 0x18) - 1)) {
+        temp_r3_2 = GKI_getpoolbuf(var_r22);
+        var_r26 = (BT_HDR *)temp_r3_2;
+        if (temp_r3_2 == NULL) return 3;
+        var_r26->offset = var_r31;
+        var_r4 = 1;
+        var_r24 = buf->len;
+        var_r25 = *(u16 *)(temp_r27 + 0x18) - 1;
+        goto block_28;
+    }
+    var_r26 = buf;
+    var_r25 = var_r24;
+    var_r4 = 0;
+    buf->offset--;
+block_28:
+    temp_r3_3 = (u8 *)var_r26 + var_r26->offset;
+    temp_r3_3[8] = (u8)(((var_r17 * 0x10) & 0xFF0) | var_r30);
+    temp_r3_4 = temp_r3_3 + 9;
+    if (var_r17 == 4 && rpt_id != 0) {
+        temp_r3_4[0] = rpt_id;
+        var_r25 = 1;
+        var_r24 = 1;
+    }
+    if (var_r4 != 0) {
+        memcpy(temp_r3_4, (u8 *)buf + buf->offset + 8, var_r25);
+        buf->offset += var_r25;
+        buf->len -= var_r25;
+    } else if (var_r21 == 1) {
+        temp_r3_4[var_r25] = var_r29;
+    } else if (var_r21 == 2) {
+        u8 *write_ptr = temp_r3_4 + var_r25;
+        *write_ptr++ = var_r29;
+        *write_ptr = var_r28;
+    }
+    temp_r24 = var_r24 - var_r25;
+    var_r26->len = var_r25 + var_r21 + 1;
+    if ((temp_r27[0x11] & 0x20) || L2CA_DataWrite(var_r23, var_r26) == 0) return 8;
+    if (temp_r24 != 0) {
+        var_r17 = 0xB;
+        goto loop_18;
+    }
+    if ((s32)var_r25 == (s32)(*(u16 *)(temp_r27 + 0x18) - 1)) {
+        var_r17 = 0xB;
+        var_r20 = 1;
+        goto loop_18;
+    }
+    if (var_r20 != 0) goto loop_18;
+    return 0;
+}
+
 extern char lbl_80317CC8[];
 extern char lbl_80317CFC[];
 extern char lbl_80318C8C[];
@@ -8559,6 +8685,88 @@ void RFCOMM_DisconnectInd(u16 arg0, s32 arg1) {
     if (!var_r30) {
         if (*(u8 *)((u8 *)&lbl_803C4828 + 0x414) >= 2) fn_80070954(0x90001, (u8 *)&lbl_803196B8 + 0xA8, arg0);
     } else fn_800916F4(var_r30, 0xE, 0);
+}
+
+extern s32 rfc_parse_data(void *, void *, u8 *);
+void RFCOMM_BufDataInd(u32 cid, BT_HDR *p_buf) {
+    s32 index = (s32)cid - 0x40;
+    char *messages = lbl_803196B8;
+    void *p_mcb;
+    void *p_port;
+    u16 connection_id;
+    s32 result;
+
+    if (index >= 10) {
+        if (lbl_803C4828[0x414] >= 1)
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90000, messages, cid);
+        p_mcb = NULL;
+    } else {
+        p_mcb = *(void **)(lbl_803C4828 + index * 4 + 0x3C);
+        if (p_mcb != NULL) {
+            connection_id = *(u16 *)((u8 *)p_mcb + 0x68);
+            if ((u32)connection_id != cid) {
+                if (lbl_803C4828[0x414] >= 2)
+                    ((void (*)(u32, void *, u32, u32))fn_8007096C)(0x90001, messages + 0x1C, cid, connection_id);
+                p_mcb = NULL;
+            }
+        }
+    }
+
+    if (p_mcb == NULL) {
+        if (lbl_803C4828[0x414] >= 2)
+            ((void (*)(u32, void *, u32))fn_80070954)(0x90001, messages + 0xC8, cid);
+        GKI_freebuf(p_buf);
+        return;
+    }
+
+    result = rfc_parse_data(p_mcb, lbl_803C4828, (u8 *)p_buf);
+    if ((u8)result == 0x32) {
+        GKI_freebuf(p_buf);
+        return;
+    }
+
+    if (lbl_803C4828[0] == 0) {
+        if ((u8)result == 4) {
+            rfc_process_mx_message(p_mcb, p_buf);
+            return;
+        }
+        fn_800916F4(p_mcb, (u8)result, NULL);
+        GKI_freebuf(p_buf);
+        return;
+    }
+
+    p_port = port_find_mcb_dlci_port(p_mcb, lbl_803C4828[0]);
+    if (p_port == NULL || *(s32 *)((u8 *)p_port + 0x6C) == 0) {
+        if ((u8)result != 0) {
+            u8 mcb_flag = *(u8 *)((u8 *)p_mcb + 0x6D);
+            if (((mcb_flag != 0) && (lbl_803C4828[2] == 0)) ||
+                ((mcb_flag == 0) && (lbl_803C4828[2] != 0)))
+                rfc_send_dm(p_mcb, lbl_803C4828[0], lbl_803C4828[4]);
+            GKI_freebuf(p_buf);
+            return;
+        }
+
+        p_port = port_find_dlci_port(lbl_803C4828[0]);
+        if (p_port == NULL) {
+            rfc_send_dm(p_mcb, lbl_803C4828[0], 1);
+            GKI_freebuf(p_buf);
+            return;
+        }
+        *((u8 *)p_mcb + lbl_803C4828[0] + 0x24) = *(u8 *)p_port;
+        *(void **)((u8 *)p_port + 0x6C) = p_mcb;
+    }
+
+    if ((u8)result == 4) {
+        if (p_buf->len != 0)
+            rfc_port_sm_execute(p_port, (u8)result, p_buf);
+        else
+            GKI_freebuf(p_buf);
+        if (lbl_803C4828[5] != 0)
+            rfc_inc_credit(p_port, lbl_803C4828[5]);
+    } else {
+        rfc_port_sm_execute(p_port, (u8)result, NULL);
+        GKI_freebuf(p_buf);
+    }
 }
 
 void fn_800916D8(void *callback, u32 cid) {
