@@ -600,9 +600,11 @@ extern "C" s32 fn_800F27C4(void *arg0) {
 }
 
 M2C_UNK GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
+#pragma dont_inline on
 extern "C" s32 fn_800F27CC(void *arg0) {
     return GetGroupCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(*(s32*)((u8*)arg0 + 4));
 }
+#pragma dont_inline off
 
 extern "C" s32 fn_800F27D4(void *arg0, s32 arg1) {
     void *r3 = *(void **)((u8 *)arg0 + 4);
@@ -1250,6 +1252,155 @@ extern "C" s32 GetRequiredStrmBufferSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ3
     return result * 0xA000;
 }
 
+extern "C" u32 CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl(void*, void*, u32, u32);
+extern "C" u32 fn_800EE428(void*, void*, u32);
+extern "C" s32 fn_800F2814(void*);
+extern "C" s32 SetupSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePPvPv(void*, void*, void**, void*);
+extern "C" const char lbl_80325AA4[];
+extern "C" const char lbl_80325A78[];
+extern "C" const char lbl_80325A1C[];
+extern "C" const char lbl_803259F0[];
+extern "C" const char lbl_80325A60[];
+extern "C" const char lbl_80325A34[];
+extern "C" s32 SetupMram__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePvUl(void *self, const void *archive, void *buffer, u32 size) {
+    struct SoundInfo { u32 a; u32 b; u32 c; u32 d; u32 e; u32 f; };
+    const char *base = lbl_80324E88;
+    u32 end;
+    void *cursor;
+    SoundInfo info;
+    u32 i;
+    u32 count;
+    u32 bytes;
+    u32 required;
+    u32 aligned;
+    u32 result;
+
+    if (archive == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x139, base + 0x1C);
+    }
+    if (buffer == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x13A, base + 0x44);
+    }
+    if (((u32)buffer & 3) != 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x13B, base + 0xEC, buffer);
+    }
+    if (size < (u32)GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(self, (void *)archive)) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x13C, base + 0x138);
+    }
+
+    end = (u32)buffer + size;
+    cursor = buffer;
+    if (SetupSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchivePPvPv(self, (void *)archive, &cursor, (void *)end) == 0) {
+        return 0;
+    }
+
+    count = fn_800F27CC((void *)archive);
+    required = count * 8 + 4 + (u32)cursor;
+    aligned = (required + 3) & ~3U;
+    if (aligned > end) {
+        result = 0;
+    } else {
+        *(void **)((u8 *)self + 0x14) = cursor;
+        *(u32 *)cursor = count;
+        for (i = 0; i < count; i++) {
+            ((u32 *)cursor)[i * 2 + 1] = 0;
+            ((u32 *)cursor)[i * 2 + 2] = 0;
+        }
+        cursor = (void *)aligned;
+        result = 1;
+    }
+    if (result == 0) {
+        return 0;
+    }
+
+    if (((s32 (*)(void *, void *))fn_800F2814)((void *)archive, &info) != 0) {
+        count = info.a;
+        bytes = count * 0x1F4;
+        required = bytes + (u32)cursor + 3;
+        aligned = required & ~3U;
+        if (aligned > end) {
+            result = 0;
+        } else {
+            if (cursor == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325AA4, 0x3B, lbl_80325A78);
+            }
+            if (CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8 *)self + 0x78, cursor, bytes, 0x1F4) != count) {
+                Panic__Q26nw4hbm2dbFPCciPCce(base, 0x20C, base + 0x174);
+            }
+            cursor = (void *)aligned;
+            result = 1;
+        }
+        if (result == 0) {
+            return 0;
+        }
+
+        count = info.c;
+        bytes = count * 0x614;
+        required = bytes + (u32)cursor + 3;
+        aligned = required & ~3U;
+        if (aligned > end) {
+            result = 0;
+        } else {
+            if (cursor == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325A1C, 0x3B, lbl_803259F0);
+            }
+            if (CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8 *)self + 0x88, cursor, bytes, 0x614) != count) {
+                Panic__Q26nw4hbm2dbFPCciPCce(base, 0x24C, base + 0x174);
+            }
+            cursor = (void *)aligned;
+            result = 1;
+        }
+        if (result == 0) {
+            return 0;
+        }
+
+        count = info.f;
+        bytes = count * 0x1B4;
+        required = bytes + (u32)cursor + 3;
+        aligned = required & ~3U;
+        if (aligned > end) {
+            result = 0;
+        } else {
+            if (cursor == 0) {
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80325A60, 0x3B, lbl_80325A34);
+            }
+            if (CreateImpl__Q46nw4hbm3snd6detail8PoolImplFPvUlUl((u8 *)self + 0x98, cursor, bytes, 0x1B4) != count) {
+                Panic__Q26nw4hbm2dbFPCciPCce(base, 0x22C, base + 0x174);
+            }
+            cursor = (void *)aligned;
+            result = 1;
+        }
+        if (result == 0) {
+            return 0;
+        }
+
+        count = info.b;
+        bytes = count * 0xD4;
+        required = bytes + (u32)cursor + 3;
+        aligned = required & ~3U;
+        if (aligned > end) {
+            result = 0;
+        } else {
+            if (fn_800EE428((u8 *)self + 0xC4, cursor, bytes) != count) {
+                Panic__Q26nw4hbm2dbFPCciPCce(base, 0x26C, base + 0x1A4);
+            }
+            cursor = (void *)aligned;
+            result = 1;
+        }
+        if (result == 0) {
+            return 0;
+        }
+    }
+
+    if ((u32)cursor - (u32)buffer != (u32)GetRequiredMemSize__Q36nw4hbm3snd18SoundArchivePlayerFPCQ36nw4hbm3snd12SoundArchive(self, (void *)archive)) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x163, base + 0x1D4);
+    }
+    *(void **)((u8 *)self + 0x10) = (void *)archive;
+    *(void **)((u8 *)self + 0xD0) = buffer;
+    *(u32 *)((u8 *)self + 0xD4) = size;
+    return 1;
+}
+
 extern "C" s32 GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(void *arg0, u32 arg1) {
     struct SoundArchivePlayer {
         u8 pad[0x70];
@@ -1457,6 +1608,8 @@ extern "C" void SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadComma
 extern "C" u8 lbl_8055DE98;
 extern "C" const char lbl_80325624[];
 #pragma cplusplus on
+#pragma use_lmw_stmw off
+#pragma scheduling on
 extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(void *arg0) {
     s16 sp8;
     u8 padding[6];
@@ -1464,13 +1617,11 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(v
     s16 *var_r31;
     s32 temp_r25;
     s32 temp_r26;
-    s32 temp_r27;
-    register s32 temp_r29;
+    register s32 temp_r27;
     register s32 temp_r29_2;
-    s32 temp_r30;
-    s32 temp_r30_2;
-    s32 temp_r5;
-    s32 temp_r6;
+    register s32 temp_r30_2;
+    register s32 temp_r5;
+    u8 *temp_r6;
     s32 var_r0;
     s32 var_r29_2;
     void **temp_r3;
@@ -1483,11 +1634,12 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(v
     void **temp_r3_7;
     void **temp_r3_8;
     void **temp_r3_9;
-    void **var_r29;
     void **var_r3;
+    register u32 temp_r29;
+    register void *temp_r30;
 
     DCInvalidateRange(M2C_FIELD(arg0, s32 *, 0x20), M2C_FIELD(arg0, u32 *, 0x24));
-    temp_r29 = M2C_FIELD(arg0, s32 *, 0x3C);
+    temp_r29 = (u32)M2C_FIELD(arg0, void **, 0x3C);
     OSLockMutex((void *)temp_r29);
     M2C_FIELD(arg0, void ***, 0x14) = (void **)detail_OpenFileStream__Q36nw4hbm3snd12SoundArchiveCFUlPvi((void *)M2C_FIELD(arg0, s32 *, 0x18), (unsigned long)M2C_FIELD(arg0, s32 *, 0x1C), &sp10, 0x200);
     OSUnlockMutex((void *)temp_r29);
@@ -1506,35 +1658,44 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(v
             ((DummyStrmLoadTaskCallback *)temp_r3_5)->f2(0);
         }
     } else {
-        var_r29 = M2C_FIELD(arg0, void ***, 0x14);
-        var_r3 = (void **)((DummyStrmLoadCallback *)var_r29)->f2();
-loop_11:
-        if (var_r3 == 0) {
-            var_r0 = 0;
-        } else if (var_r3 == (void **)&lbl_8055DE98) {
+        temp_r29 = (u32)M2C_FIELD(arg0, void ***, 0x14);
+        temp_r30 = (void *)&lbl_8055DE98;
+        var_r3 = (void **)((DummyStrmLoadCallback *)(void *)temp_r29)->f2();
+        goto loop_11_check;
+loop_11_check:
+        if (var_r3 == (void **)temp_r30) {
             var_r0 = 1;
-        } else {
-            var_r3 = (void **)*var_r3;
-            goto loop_11;
+            goto loop_11_result;
         }
-        if (var_r0 != 0) {
-
-        } else {
-            var_r29 = 0;
+loop_11_body:
+        var_r3 = (void **)*var_r3;
+        if (var_r3 != 0) {
+            goto loop_11_check;
         }
-        if (var_r29 != 0) {
-            M2C_FIELD(var_r29, s32 *, 0x68) = 1;
+        var_r0 = 0;
+loop_11_result:
+        if (var_r0 == 0) {
+            goto loop_11_no_clear;
+        }
+        goto loop_11_clear;
+loop_11_no_clear:
+        goto loop_11_done;
+loop_11_clear:
+        temp_r29 = 0;
+loop_11_done:
+        if (temp_r29 != 0) {
+            M2C_FIELD((void *)temp_r29, s32 *, 0x68) = 1;
         }
         temp_r3_6 = M2C_FIELD(arg0, void ***, 0x14);
         ((DummyStrmLoadStream *)temp_r3_6)->f17(M2C_FIELD(arg0, s32 *, 0x28), 0);
         temp_r3_7 = M2C_FIELD(arg0, void ***, 0x14);
-        temp_r30 = M2C_FIELD(arg0, s32 *, 0x3C);
         temp_r29_2 = ((DummyStrmLoadStream *)temp_r3_7)->f5((void *)M2C_FIELD(arg0, void **, 0x20), M2C_FIELD(arg0, u32 *, 0x24));
-        OSLockMutex((void *)temp_r30);
+        temp_r30 = (void *)M2C_FIELD(arg0, void **, 0x3C);
+        OSLockMutex(temp_r30);
         temp_r3_8 = M2C_FIELD(arg0, void ***, 0x14);
         ((DummyStrmLoadStream *)temp_r3_8)->f4();
         M2C_FIELD(arg0, void ***, 0x14) = 0;
-        OSUnlockMutex((void *)temp_r30);
+        OSUnlockMutex(temp_r30);
         if (temp_r29_2 != -3) {
             if ((u32)temp_r29_2 != (u32)M2C_FIELD(arg0, u32 *, 0x24)) {
                 if (temp_r29_2 == 0) {
@@ -1549,24 +1710,22 @@ loop_11:
             } else {
                 temp_r30_2 = M2C_FIELD(arg0, s32 *, 0x20);
                 var_r31 = &sp8;
-                var_r29_2 = 0;
-loop_30:
-                if (var_r29_2 < (s32)M2C_FIELD(arg0, s32 *, 0x2C)) {
+                for (var_r29_2 = 0; var_r29_2 < (s32)M2C_FIELD(arg0, s32 *, 0x2C); var_r29_2++) {
                     if ((s32)M2C_FIELD(arg0, u8 *, 0x38) != 0) {
                         *var_r31 = *(u8 *)(var_r29_2 * ((M2C_FIELD(arg0, s32 *, 0x30) + 0x1F) & 0xFFFFFFE0) + (temp_r30_2 + M2C_FIELD(arg0, s32 *, 0x34)));
                     }
                     if ((void **)M2C_FIELD(arg0, void ***, 0x10) != 0) {
-                        temp_r6 = M2C_FIELD(arg0, s32 *, 0x20);
-                        temp_r26 = (M2C_FIELD(arg0, s32 *, 0x30) + 0x1F) & 0xFFFFFFE0;
+                        temp_r5 = M2C_FIELD(arg0, s32 *, 0x30) + 0x1F;
+                        temp_r26 = temp_r5 & 0xFFFFFFE0;
+                        temp_r6 = (u8 *)M2C_FIELD(arg0, void **, 0x20);
+                        var_r0 = M2C_FIELD(arg0, s32 *, 0x34);
                         temp_r5 = var_r29_2 * temp_r26;
-                        temp_r27 = temp_r5 + (temp_r6 + M2C_FIELD(arg0, s32 *, 0x34));
-                        temp_r25 = fn_800FD810(M2C_FIELD(arg0, void **, 0x10), var_r29_2);
-                        memcpy((void *)temp_r25, (void *)temp_r27, temp_r26);
-                        DCFlushRange(temp_r25, temp_r26);
+                        temp_r25 = (s32)(temp_r6 + var_r0 + temp_r5);
+                        temp_r27 = fn_800FD810(M2C_FIELD(arg0, void **, 0x10), var_r29_2);
+                        memcpy((void *)temp_r27, (void *)temp_r25, temp_r26);
+                        DCFlushRange(temp_r27, temp_r26);
                     }
-                    var_r31 += 2;
-                    var_r29_2 += 1;
-                    goto loop_30;
+                    var_r31 += 1;
                 }
                 if (((s32)M2C_FIELD(arg0, u8 *, 0x38) != 0) && ((void **)M2C_FIELD(arg0, void ***, 0x10) != 0)) {
                     SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(M2C_FIELD(arg0, void **, 0x10), M2C_FIELD(arg0, s32 *, 0x2C), (u16 *)&sp8);
@@ -1579,6 +1738,8 @@ loop_30:
         }
     }
 }
+#pragma scheduling on
+#pragma use_lmw_stmw on
 #pragma cplusplus reset
 
 extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv_800F7FEC(void* self) {
