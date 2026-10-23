@@ -56,12 +56,11 @@ static Diffs2_80135278 fn_80135278_diff(float *b, float *c) {
     return r;
 }
 
+#pragma scheduling invalid_target
 float fn_80135278(float *a, float *b, float *c) {
-    float d[2];
-    d[0] = b[0] - c[0];
-    d[1] = b[1] - c[1];
-    return a[0] * d[0] + a[1] * d[1];
+    return a[1] * (b[1] - c[1]) + a[0] * (b[0] - c[0]);
 }
+#pragma scheduling reset
 void *fn_801352B8(Unk_80135278 *arg0) {
     arg0->unk_0 = (s32)&lbl_8032BE80;
     arg0->unk_4 = 0;
@@ -114,12 +113,131 @@ void fn_801353C8(Unk_80135278 *arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_801357A4(arg0, arg1);
 }
 
-void fn_801353C4(void) {
-    fn_801357A4();
+void *fn_80135420(float *point, void *unused, void *list) {
+    extern double __fabs(double);
+    extern void fn_802E30C8(const char *, ...);
+    extern const char lbl_8032BDB8[], lbl_8032BDE4[];
+    extern float lbl_80561328, lbl_8056132C;
+    float bestDistance = lbl_80561328;
+    void *best = 0;
+    void *node = *(void **)((char *)list + 0x1C);
+    do {
+        if (fn_80135278((float *)((char *)node + 8), point, node) > lbl_80561320) {
+            void *next = *(void **)((char *)node + 0x14);
+            if (fn_80135278((float *)((char *)next + 8), point, next) < lbl_80561320) {
+                float dx = point[0] - *(float *)node;
+                float dy = point[1] - *(float *)((char *)node + 4);
+                float dist = (float)__fabs((double)(*(float *)((char *)node + 0xC) * dx +
+                                                     -*(float *)((char *)node + 8) * dy));
+                if (dist < bestDistance) {
+                    best = node;
+                    bestDistance = dist;
+                }
+            }
+        }
+        node = *(void **)((char *)node + 0x14);
+    } while (node != *(void **)((char *)list + 0x1C));
+    if (best == 0) {
+        node = *(void **)((char *)list + 0x1C);
+        bestDistance = lbl_8056132C;
+        do {
+            float dx = point[0] - *(float *)node;
+            float dy = point[1] - *(float *)((char *)node + 4);
+            float nx = *(float *)((char *)node + 0xC);
+            float ny = -*(float *)((char *)node + 8);
+            float dot = nx * dx + ny * dy;
+            float along = fn_80135278((float *)((char *)node + 8), point, node);
+            float dist = along * along + dot * dot;
+            if (dist < bestDistance) {
+                best = node;
+                bestDistance = dist;
+            }
+            node = *(void **)((char *)node + 0x14);
+        } while (node != *(void **)((char *)list + 0x1C));
+    }
+    if (best == 0) {
+        fn_802E30C8(lbl_8032BDB8, point[0], point[1]);
+        fn_802E30C8(lbl_8032BDE4);
+    }
+    return best;
+}
+
+s32 fn_801353C4(void) {
+    return fn_801357A4();
 }
 
 s32 fn_801355B8(void *arg0, void *arg1) {
     return 0;
+}
+
+void fn_80135B9C(void *arg0, void *arg1, void *arg2, float *arg3, void *arg4, float amount) {
+    extern double fn_8002F234(float);
+    float step;
+    float fraction;
+    float remaining;
+    float length;
+    float dx;
+    float dy;
+    float scale;
+    float temp;
+    int id;
+    char *node;
+
+    node = *(char **)((char *)arg0 + 4);
+    if (node == 0) {
+        if (arg2 != 0) {
+            *(float *)arg2 = lbl_80561320;
+            *((float *)arg2 + 1) = lbl_80561324;
+        }
+        if (arg1 != 0) {
+            *(float *)arg1 = lbl_80561320;
+            *((float *)arg1 + 1) = lbl_80561320;
+        }
+        return;
+    }
+    step = *(float *)(node + 0x18);
+    fraction = *(float *)((char *)arg0 + 8);
+    remaining = amount / step;
+    if (fraction + remaining > lbl_80561324) {
+        temp = lbl_80561324 - fraction;
+        node = *(char **)(node + 0x14);
+        remaining = amount - temp * step;
+        while (remaining > *(float *)(node + 0x18)) {
+            step = *(float *)(node + 0x18);
+            node = *(char **)(node + 0x14);
+            remaining -= step;
+        }
+        fraction = remaining / *(float *)(node + 0x18);
+    } else {
+        fraction += remaining;
+    }
+    if (arg1 != 0) {
+        dx = *(float *)(*(volatile char **)(node + 0x14)) - *(float *)node;
+        *(float *)arg1 = *(float *)node + fraction * dx;
+        dy = *(float *)(*(volatile char **)(node + 0x14) + 4) - *(float *)(node + 4);
+        *((float *)arg1 + 1) = *(float *)(node + 4) + fraction * dy;
+    }
+    if (arg2 != 0) {
+        dx = *(float *)(*(volatile char **)(node + 0x14) + 8) - *(float *)(node + 8);
+        *(float *)arg2 = *(float *)(node + 8) + fraction * dx;
+        dy = *(float *)(*(volatile char **)(node + 0x14) + 0xC) - *(float *)(node + 0xC);
+        *((float *)arg2 + 1) = *(float *)(node + 0xC) + fraction * dy;
+        length = (*((float *)arg2) * *((float *)arg2)) +
+                 (*((float *)arg2 + 1) * *((float *)arg2 + 1));
+        scale = lbl_80561324 / (float)fn_8002F234(length);
+        *(float *)arg2 *= scale;
+        *((float *)arg2 + 1) *= scale;
+    }
+    if (arg4 != 0) {
+        id = *(int *)((char *)arg0 + 0xC);
+        *(char **)arg4 = node;
+        *((float *)arg4 + 1) = fraction;
+        *(int *)((char *)arg4 + 8) = id;
+    }
+    if (arg3 != 0) {
+        *(float *)arg3 = *(float *)(node + 0x20) +
+                         fraction * (*(float *)(*(volatile char **)(node + 0x14) + 0x20) - *(float *)(node + 0x20));
+    }
 }
 
 s32 fn_80135D60(Unk_80135278 *arg0, s32 arg1) {
