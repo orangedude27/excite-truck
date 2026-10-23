@@ -4,6 +4,9 @@
 typedef signed char s8;
 typedef unsigned char u8;
 typedef signed int s32;
+__declspec(section ".sdata") extern char lbl_8055C178[];
+__declspec(section ".sdata") extern char lbl_8055C180[];
+__declspec(section ".sdata") extern char lbl_8055C188[];
 extern void fn_80253824(void *);
 extern s32 fn_80128668(void);
 extern char lbl_80344B98[];
@@ -63,7 +66,7 @@ __declspec(section ".sdata") extern char lbl_8055C130[];
 __declspec(section ".sdata") extern char lbl_8055C138[];
 }
 extern "C" float lbl_80563A10, lbl_80563A14, lbl_80563A18;
-#pragma paired_single reset
+#pragma scheduling invalid_target
 extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
     struct Stack {
         float sp8;
@@ -79,10 +82,12 @@ extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
                 virtual void v4();
         virtual int load(const char *);
     };
-    unsigned char *var_r4;
-    unsigned char *var_r6;
+    register unsigned char temp_r3;
+    register unsigned char *var_r4;
     register int var_r5;
-    unsigned char temp_r3;
+    register unsigned char *var_r6;
+    register char *labels;
+    register char *format;
     register void *manager;
     register void *resource;
     register void *var_r30;
@@ -94,46 +99,51 @@ extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
     register void *var_r5_2;
     register int var_r6_2;
     register int var_ctr;
-    register float temp_f1;
-    register float temp_f1_2;
-    register float temp_f2;
-    register float temp_f3;
-    register float temp_f29;
-    register float temp_f30;
-    register float temp_f31;
-    register float var_f0;
-    register float var_f0_2;
-    register float var_f1;
-    register float var_f4;
-    register float var_f2;
+    float temp_f1;
+    float temp_f1_2;
+    float temp_f2;
+    float var_f2;
+    float temp_f3;
+    float var_f4;
+    float temp_f29;
+    float temp_f30;
+    float temp_f31;
+    float var_f0;
+    float var_f0_2;
+    float var_f1;
 
-    fn_801345D8(stack.sp38, 0x100, lbl_8055C128, arg1);
+    labels = lbl_803447C0;
+    format = lbl_8055C128;
+    fn_801345D8(stack.sp38, 0x100, format, arg1);
     var_r4 = arg1;
     var_r6 = (unsigned char *)arg0 + 0x400;
     var_r5 = 0x20;
-loop_3:
+    goto copy_body;
+copy_limit:
+    var_r5 -= 1;
+    if (var_r5 > 0) goto copy_body;
+    var_r6[-1] = 0;
+    goto copy_done;
+copy_body:
     temp_r3 = *var_r4;
     var_r4 += 1;
     *var_r6 = temp_r3;
     var_r6 += 1;
-    if ((signed char)temp_r3 != 0) {
-        var_r5 -= 1;
-        if (var_r5 <= 0) var_r6[-1] = 0;
-        else goto loop_3;
-    }
-    fn_801345D8(stack.sp18, 0x20, lbl_803447C0 + 0x18, stack.sp38);
+    if ((signed char)temp_r3 != 0) goto copy_limit;
+copy_done:
+    fn_801345D8(stack.sp18, 0x20, labels + 0x18, stack.sp38);
     *(int *)((unsigned char *)arg0 + 0x10) = fn_802C6FC0(stack.sp18, 0, (int)stack.sp38);
-    fn_801345D8(stack.sp18, 0x20, lbl_803447C0 + 0x24, stack.sp38);
+    fn_801345D8(stack.sp18, 0x20, labels + 0x24, stack.sp38);
     *(int *)((unsigned char *)arg0 + 0x14) = fn_802C6FC0(stack.sp18, 0, (int)stack.sp38);
-    fn_801345D8(stack.sp18, 0x20, lbl_803447C0 + 0x34, stack.sp38);
+    fn_801345D8(stack.sp18, 0x20, labels + 0x34, stack.sp38);
     manager = fn_80131808(stack.sp18);
     resource = ((Dummy *)manager)->lookup(lbl_8055C130);
     *(int *)((unsigned char *)arg0 + 0x18) =
-        fn_801F0010(((Dummy *)resource)->load(lbl_803447C0 + 0x44),
+        fn_801F0010(((Dummy *)resource)->load(labels + 0x44),
                     *(int *)((unsigned char *)arg0 + 0x20));
     resource = ((Dummy *)manager)->lookup(lbl_8055C138);
     *(int *)((unsigned char *)arg0 + 0x1C) =
-        fn_801F0010(((Dummy *)resource)->load(lbl_803447C0 + 0x44),
+        fn_801F0010(((Dummy *)resource)->load(labels + 0x44),
                     *(int *)((unsigned char *)arg0 + 0x24));
     fn_8027A714((unsigned char *)arg0 + 0x45C, arg1);
 
@@ -202,7 +212,7 @@ loop_3:
     fn_80253890(arg0, stack.sp38);
     *(signed char *)arg0 = 1;
 }
-#pragma paired_single reset
+#pragma scheduling on
 #pragma cplusplus reset
 
 void fn_80253C48(void *arg0) {
@@ -337,6 +347,122 @@ void fn_80254568(void *arg0, s32 arg1, s32 arg2) {
     *(s32 *)((u8 *)arg0 + 8) = *(s32 *)((u8 *)sp8 + 0x2C);
 }
 
+#pragma dont_inline on
+void fn_802545C4(register void *arg0, register s32 arg1, register s32 arg2) {
+    extern void *memset(void *, int, unsigned long);
+    extern void PSVECCrossProduct(float *, float *, float *);
+    extern void PSVECNormalize(float *, float *);
+    extern float fn_801F159C(s32);
+    extern char lbl_8055C178[], lbl_8055C180[], lbl_8055C188[];
+    extern float lbl_80498E18[3];
+    extern float lbl_80563A04, lbl_80563A14, lbl_80563A18;
+    extern float lbl_80563A30, lbl_80563A34, lbl_80563A38, lbl_80563A3C;
+    struct Stack {
+        float sp8[3];
+        float sp14[3];
+        float sp20[3];
+        float sp2c[3];
+    } stack;
+
+    memset(arg0, 0, 0x78);
+    *(u8 *)((char *)arg0 + 0x30) = 1;
+    if (*(u8 *)(char *)arg2 != 0) {
+        *(float *)((char *)arg0 + 0x40) = *(float *)((char *)arg2 + 0x58C);
+        if (arg1 != -1)
+            *(float *)((char *)arg0 + 0x40) =
+                *(float *)((char *)arg0 + 0x40) - lbl_80563A30;
+        *(float *)((char *)arg0 + 0x44) = *(float *)((char *)arg2 + 0x58C);
+        if (arg1 != -1)
+            *(float *)((char *)arg0 + 0x44) =
+                *(float *)((char *)arg0 + 0x44) - lbl_80563A30;
+        *(float *)((char *)arg0 + 0x48) = *(float *)((char *)arg2 + 0x58C);
+        if (arg1 != -1)
+            *(float *)((char *)arg0 + 0x48) =
+                *(float *)((char *)arg0 + 0x48) - lbl_80563A30;
+        *(float *)((char *)arg0 + 0x4C) = *(float *)((char *)arg2 + 0x58C);
+        if (arg1 != -1)
+            *(float *)((char *)arg0 + 0x4C) =
+                *(float *)((char *)arg0 + 0x4C) - lbl_80563A30;
+    }
+
+    if (arg1 != -1) {
+        fn_80254568(stack.sp2c, arg1, (s32)lbl_8055C178);
+        fn_80254568(stack.sp20, arg1, (s32)lbl_8055C180);
+        fn_80254568(stack.sp14, arg1, (s32)lbl_8055C188);
+
+        stack.sp8[0] = stack.sp20[0] +
+            lbl_80563A18 * (stack.sp2c[0] - stack.sp20[0]);
+        stack.sp8[1] = stack.sp20[1] +
+            lbl_80563A18 * (stack.sp2c[1] - stack.sp20[1]);
+        stack.sp8[2] = stack.sp20[2] +
+            lbl_80563A18 * (stack.sp2c[2] - stack.sp20[2]);
+
+        *(float *)((char *)arg0 + 0x18) = stack.sp8[0] - stack.sp14[0];
+        *(float *)((char *)arg0 + 0x1C) = stack.sp8[1] - stack.sp14[1];
+        *(float *)((char *)arg0 + 0x20) = stack.sp8[2] - stack.sp14[2];
+        *(float *)arg0 = stack.sp2c[0] - stack.sp20[0];
+        *(float *)((char *)arg0 + 4) = stack.sp2c[1] - stack.sp20[1];
+        *(float *)((char *)arg0 + 8) = stack.sp2c[2] - stack.sp20[2];
+
+        PSVECCrossProduct((float *)((char *)arg0 + 0x18), (float *)arg0,
+                          (float *)((char *)arg0 + 0xC));
+        PSVECCrossProduct((float *)((char *)arg0 + 0xC),
+                          (float *)((char *)arg0 + 0x18), (float *)arg0);
+        PSVECNormalize((float *)arg0, (float *)arg0);
+        PSVECNormalize((float *)((char *)arg0 + 0xC),
+                       (float *)((char *)arg0 + 0xC));
+        PSVECNormalize((float *)((char *)arg0 + 0x18),
+                       (float *)((char *)arg0 + 0x18));
+
+        lbl_80498E18[0] =
+            stack.sp8[0] + *(float *)((char *)arg0 + 0x18) * lbl_80563A34;
+        lbl_80498E18[1] =
+            stack.sp8[1] + *(float *)((char *)arg0 + 0x1C) * lbl_80563A34;
+        lbl_80498E18[2] =
+            stack.sp8[2] + *(float *)((char *)arg0 + 0x20) * lbl_80563A34;
+        lbl_80498E18[0] += *(float *)((char *)arg0 + 0xC) * lbl_80563A38;
+        lbl_80498E18[1] += *(float *)((char *)arg0 + 0x10) * lbl_80563A38;
+        lbl_80498E18[2] += *(float *)((char *)arg0 + 0x14) * lbl_80563A38;
+
+        if (*(u8 *)(char *)arg2 != 0) {
+            float distance = fn_801F159C(*(s32 *)((char *)arg2 + 0x18));
+            float scale = -(lbl_80563A3C + *(float *)((char *)arg2 + 0x440));
+            float lateral = lbl_80563A04 +
+                (-*(float *)((char *)arg0 + 0x44) +
+                 (-*(float *)((char *)arg2 + 0x43C) + distance));
+            *(float *)((char *)arg0 + 0x24) =
+                stack.sp8[0] + *(float *)((char *)arg0 + 0x18) * scale;
+            *(float *)((char *)arg0 + 0x28) =
+                stack.sp8[1] + *(float *)((char *)arg0 + 0x1C) * scale;
+            *(float *)((char *)arg0 + 0x2C) =
+                stack.sp8[2] + *(float *)((char *)arg0 + 0x20) * scale;
+            *(float *)((char *)arg0 + 0x24) +=
+                *(float *)((char *)arg0 + 0xC) * lateral;
+            *(float *)((char *)arg0 + 0x28) +=
+                *(float *)((char *)arg0 + 0x10) * lateral;
+            *(float *)((char *)arg0 + 0x2C) +=
+                *(float *)((char *)arg0 + 0x14) * lateral;
+        } else {
+            *(float *)((char *)arg0 + 0x24) = lbl_80498E18[0];
+            *(float *)((char *)arg0 + 0x28) = lbl_80498E18[1];
+            *(float *)((char *)arg0 + 0x2C) = lbl_80498E18[2];
+        }
+    } else {
+        *(float *)((char *)arg0 + 4) = lbl_80563A04;
+        *(float *)arg0 = lbl_80563A14;
+        *(float *)((char *)arg0 + 8) = lbl_80563A04;
+        *(float *)((char *)arg0 + 0xC) = lbl_80563A04;
+        *(float *)((char *)arg0 + 0x10) = lbl_80563A14;
+        *(float *)((char *)arg0 + 0x14) = lbl_80563A04;
+        *(float *)((char *)arg0 + 0x18) = lbl_80563A04;
+        *(float *)((char *)arg0 + 0x1C) = lbl_80563A04;
+        *(float *)((char *)arg0 + 0x20) = lbl_80563A14;
+        *(float *)((char *)arg0 + 0x24) = lbl_80563A04;
+        *(float *)((char *)arg0 + 0x28) = lbl_80563A04;
+        *(float *)((char *)arg0 + 0x2C) = lbl_80563A04;
+    }
+}
+#pragma dont_inline reset
 void fn_80255200(void *arg0, s32 arg1) {
     extern float lbl_80563A04,lbl_80563A14,lbl_80563A58,lbl_80563A5C;
     extern char lbl_803447C0[]; extern void *lbl_80498E08[];
@@ -537,6 +663,7 @@ void fn_80256548(void *arg0) {
     fn_802C88BC(-1);
 }
 
+#pragma scheduling invalid_target
 void fn_802566A4(void *arg0) {
     extern void *fn_802C86DC(void);
     extern void PSVECCrossProduct(float *, float *, float *);
@@ -560,9 +687,9 @@ void fn_802566A4(void *arg0) {
         } basis;
         unsigned int config[9];
     } frame;
-    register int i = 0;
-    register float zero = lbl_80563A04;
-    register float one = lbl_80563A14;
+    int i = 0;
+    float zero = lbl_80563A04;
+    float one = lbl_80563A14;
     unsigned int *config = lbl_802FA5B8;
     float *out = frame.output;
 
@@ -578,18 +705,31 @@ void fn_802566A4(void *arg0) {
 
     do {
         unsigned int *matrix = (unsigned int *)fn_802C86DC();
-        frame.basis.word[0] = matrix[0];
-        frame.basis.word[2] = matrix[2];
-        frame.basis.word[6] = matrix[6];
-        frame.basis.word[8] = matrix[8];
-        frame.basis.word[1] = matrix[1];
-        frame.basis.word[4] = matrix[4];
-        frame.basis.word[7] = matrix[7];
-        frame.basis.word[3] = matrix[3];
-        frame.basis.word[5] = matrix[5];
-        frame.basis.word[9] = matrix[9];
-        frame.basis.word[10] = matrix[10];
-        frame.basis.word[11] = matrix[11];
+        unsigned int m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11;
+        m0 = matrix[0];
+        m2 = matrix[2];
+        frame.basis.word[0] = m0;
+        m6 = matrix[6];
+        frame.basis.word[2] = m2;
+        m8 = matrix[8];
+        frame.basis.word[6] = m6;
+        m1 = matrix[1];
+        frame.basis.word[8] = m8;
+        m4 = matrix[4];
+        frame.basis.word[1] = m1;
+        m7 = matrix[7];
+        frame.basis.word[4] = m4;
+        m3 = matrix[3];
+        frame.basis.word[7] = m7;
+        m5 = matrix[5];
+        frame.basis.word[3] = m3;
+        m9 = matrix[9];
+        m10 = matrix[10];
+        m11 = matrix[11];
+        frame.basis.word[5] = m5;
+        frame.basis.word[9] = m9;
+        frame.basis.word[10] = m10;
+        frame.basis.word[11] = m11;
 
         frame.u[0] = frame.basis.value[0];
         frame.u[1] = zero;
@@ -612,7 +752,7 @@ void fn_802566A4(void *arg0) {
         frame.basis.value[8] = frame.w[2];
 
         {
-            float *input;
+            register float *input;
             if (i > 0) {
                 input = (float *)frame.config + (i - 1) * 3;
             } else {
@@ -655,7 +795,7 @@ void fn_802566A4(void *arg0) {
         i++;
     } while (i < 4);
 }
-
+#pragma scheduling on
 s32 fn_802571F0(void) { return 0; }
 
 void fn_802571F8(void *arg0) { *(u8 *)((u8 *)arg0 + 0x18) = 1; }
