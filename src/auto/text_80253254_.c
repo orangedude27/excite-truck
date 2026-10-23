@@ -51,7 +51,7 @@ void *__dt__Q210JASDrumSet5TPercFv_802534B0(void *arg0, s32 arg1) {
 extern "C" void fn_801345D8(void *, int, const char *, ...);
 extern "C" int fn_802C6FC0(void *, int, int);
 extern "C" void *fn_80131808(void *);
-extern "C" int fn_801F0010(int);
+extern "C" int fn_801F0010(int, ...);
 extern "C" float fn_801F159C(int);
 extern "C" void fn_80131818(void *, float, float, float);
 extern "C" void fn_8027A714(void *, void *);
@@ -73,11 +73,9 @@ extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
         unsigned char sp38[0x100];
     } stack;
     struct Dummy {
-        virtual void v0();
-        virtual void v1();
-        virtual Dummy *lookup(const char *);
+                virtual Dummy *lookup(const char *);
         virtual void v3();
-        virtual void v4();
+                virtual void v4();
         virtual void load(const char *);
     };
     unsigned char *var_r4;
@@ -91,10 +89,10 @@ extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
     register int var_r0;
     register int var_r0_2;
     register int var_r3;
+    register void *var_r4_2;
+    register void *var_r5_2;
     register int var_r6_2;
     register int var_ctr;
-    void *var_r4_2;
-    void *var_r5_2;
     register float temp_f1;
     register float temp_f1_2;
     register float temp_f2;
@@ -106,6 +104,7 @@ extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
     register float var_f0_2;
     register float var_f1;
     register float var_f4;
+    register float var_f2;
 
     fn_801345D8(stack.sp38, 0x100, lbl_8055C128, arg1);
     var_r4 = arg1;
@@ -141,7 +140,8 @@ loop_3:
     var_r28 = 0;
     do {
         var_r0 = 0;
-        if ((var_r28 == 0) || (var_r28 == 1)) var_r0 = 1;
+        if (var_r28 == 0) var_r0 = 1;
+          if (var_r28 == 1) var_r0 = 1;
         if (var_r0 != 0) var_f1 = fn_801F159C(*(int *)((unsigned char *)arg0 + 0x18));
         else var_f1 = fn_801F159C(*(int *)((unsigned char *)arg0 + 0x1C));
         var_r28 += 1;
@@ -161,21 +161,26 @@ loop_3:
     *(float *)((unsigned char *)arg0 + 0x594) = *(float *)((unsigned char *)arg0 + 0x548);
     fn_80131818(manager, temp_f1, temp_f2, temp_f3);
     temp_f3 = lbl_80563A18;
+    temp_f3 = lbl_80563A18;
 
     var_r4_2 = arg0;
     var_r5_2 = arg0;
     for (var_r6_2 = 0; var_r6_2 < 4; var_r6_2++) {
         var_r3 = 1;
-        if ((var_r6_2 != 0) && (var_r6_2 != 2)) var_r3 = 0;
+        if (var_r6_2 != 0) var_r3 = 0;
+          if (var_r6_2 == 2) var_r3 = 1;
         var_r0_2 = 0;
-        if ((var_r6_2 == 0) || (var_r6_2 == 1)) var_r0_2 = 1;
+        if (var_r6_2 == 0) var_r0_2 = 1;
+          if (var_r6_2 == 1) var_r0_2 = 1;
         if (var_r0_2 != 0) var_f4 = temp_f30;
         else var_f4 = temp_f31;
         if (var_r3 != 0) var_f0 = lbl_80563A10;
         else var_f0 = lbl_80563A14;
-        stack.sp8 = temp_f3 * var_f0 * var_f4;
+        var_f2 = temp_f3 * var_f0;
         stack.spC = *(float *)((unsigned char *)var_r4_2 + 0x4F4) -
                     *(float *)((unsigned char *)var_r4_2 + 0x4DC);
+        var_f2 = var_f2 * var_f4;
+        stack.sp8 = var_f2;
         if (var_r0_2 != 0) var_f0_2 = lbl_80563A14;
         else var_f0_2 = lbl_80563A10;
         var_r4_2 = (unsigned char *)var_r4_2 + 0x24;
