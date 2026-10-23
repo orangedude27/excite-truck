@@ -124,10 +124,12 @@ void* fn_80160C8C(void* arg0, s32 arg1) {
     return arg0;
 }
 
-#pragma dont_inline fn_80160CE4
+#pragma push
+#pragma dont_inline on
 s32 fn_80160CE4(void) {
     return lbl_8055A0B8 - lbl_8055A0C0;
 }
+#pragma pop
 
 void *fn_801612BC(void *arg0, s32 arg1) {
     if (arg0 != 0) {
@@ -878,11 +880,11 @@ extern "C" void fn_801638A0(void *arg0) {
         self[0x56D]=1;
     if (fn_801C5B60() == 0) fn_801DF074(8,0);
     if (((Dummy_801638A0 *)self)->f7() == 0) {
-        threshold=lbl_80561854; one=lbl_80561840; epsilon=lbl_80561850;
-        for (i=0,cars=lbl_804348E8; i<fn_801B2F24(); i++,cars++) {
+        one=lbl_80561840; threshold=lbl_80561854; epsilon=lbl_80561850;
+        for (i=0,cars=lbl_804348E8; i<fn_801B2F24(); cars++,i++) {
             car=(u8 *)*cars;
             if (*(u32 *)(car+0x10) != 0x50434152) continue;
-            for (j=0,offset=0; j<*(s32 *)(self+0xE4); j++,offset+=0x48) {
+            for (j=0,offset=0; j<*(s32 *)(self+0xE4); offset+=0x48,j++) {
                 entry=*(u8 **)(self+0xE0)+offset;
                 if (!entry[0x3C]) continue;
                 if (*(s32 *)(entry+0x34)) {
