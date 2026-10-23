@@ -152,6 +152,7 @@ s32 fn_80231730(s32 arg0) {
     if (fn_8012C33C(buffer) != 0) return fn_80232578(buffer);
     return 0;
 }
+#pragma dont_inline off
 
 void fn_80231780(void *arg0) {
     f32 f25;
