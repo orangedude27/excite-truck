@@ -115,9 +115,11 @@ void fn_802CF048(int arg0) {
     *(volatile unsigned int *)0xCC008000 = 0;
 }
 
+#pragma dont_inline on
 void fn_802CF104(void) {
     fn_802CF048(1);
 }
+#pragma dont_inline reset
 
 void fn_802CF5A8(void) {
     if (lbl_8055D0FF == 0) return;
@@ -139,6 +141,163 @@ void fn_802CF5FC(void) {
 }
 
 void fn_802CF830(void) {
+}
+
+extern void GXSetCopyClear(unsigned char *, int);
+extern void GXSetScissor(unsigned int, unsigned int, unsigned int, unsigned int);
+extern void GXSetPixelFmt(int, int);
+extern void GXSetDispCopyGamma(int);
+extern void GXSetDither(int);
+extern void GXSetNumChans(int);
+extern void GXSetNumTexGens(int);
+extern void GXSetBlendMode(int, int, int, int);
+extern void GXSetTevColorIn(int, int, int, int, int);
+extern void GXSetTevColorOp(int, int, int, int, int, int);
+extern void GXSetZCompLoc(int);
+extern void fn_802D01E0(int, int, int, int);
+extern void fn_802D03F4(float *, float);
+extern void fn_802D0610(int);
+extern void fn_802D9230(void);
+extern void fn_802D92B8(void);
+extern unsigned int lbl_8055CFF0;
+extern unsigned int lbl_8055CFF4;
+extern unsigned short lbl_8055FD0A;
+extern char lbl_8055FD25;
+extern unsigned char lbl_8055FD85;
+extern char lbl_8055FDB4;
+extern int lbl_8055FE20;
+extern float lbl_80564F90;
+extern float lbl_80564F98;
+extern float lbl_80564F9C;
+void fn_802CF850(void) {
+    extern int lbl_804C5650[];
+    extern void *lbl_8055FD64;
+    extern void GXSetViewport(unsigned short, float, float, float, float, float, float);
+    extern void GXSetScissor(unsigned int, unsigned int, unsigned int, unsigned int);
+    extern void GXSetPixelFmt(int, int);
+    extern void GXSetDispCopyGamma(int);
+    extern void GXSetDither(int);
+    extern void GXSetNumChans(int);
+    extern void GXSetNumTexGens(int);
+    extern void GXSetBlendMode(int, int, int, int);
+    extern void GXSetTevOrder(int, int, int, int);
+    extern void GXSetTevOp(int, int);
+    extern void GXSetTevColorIn(int, int, int, int, int);
+    extern void GXSetTevColorOp(int, int, int, int, int, int);
+    extern void GXSetZCompLoc(int);
+    extern void GXSetCopyClear(unsigned char *, int);
+    extern unsigned long fn_802CE9FC(unsigned long);
+    extern void fn_802D0188(unsigned char, unsigned char, unsigned char);
+    extern void fn_802D0160(unsigned char, unsigned char, unsigned char);
+    extern void fn_802D007C(float);
+    extern void fn_802D01B0(float *, float);
+    extern void fn_802D01E0(int, int, int, int);
+    extern void fn_802D0368(float, float, float, float);
+    extern void fn_802D03F4(float *, float);
+    extern void fn_802D0610(int);
+    extern void fn_802CFF5C(void *);
+    extern void fn_802CFF50(void);
+    extern void fn_802CFFA4(unsigned short);
+    extern void fn_802D9230(void);
+    extern void fn_802D92B8(void);
+    extern int VISetNextFrameBuffer(void *);
+    extern int VIFlush(void);
+    extern int VIWaitForRetrace(void);
+    extern unsigned int lbl_8055CFF0;
+    extern unsigned int lbl_8055CFF4;
+    extern unsigned short lbl_8055FD0A;
+    extern char lbl_8055FD25;
+    extern char lbl_8055FD70;
+    extern unsigned char lbl_8055FD84;
+    extern unsigned char lbl_8055FD85;
+    extern char lbl_8055FDB4;
+    extern int lbl_8055FE20;
+    extern float lbl_80564F8C;
+    extern float lbl_80564F90;
+    extern float lbl_80564F98;
+    extern float lbl_80564F9C;
+    float sp44, sp40, sp3C, sp38, sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18;
+    float sp14, sp10, spC;
+    unsigned char clear[4];
+    unsigned int clearWord;
+    unsigned short width, height;
+    unsigned char *base;
+    float *m70, *m40, *mA0;
+
+    fn_802CF104();
+    base = (unsigned char *)lbl_804C5650;
+    width = *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4);
+    height = *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6);
+    ((void (*)(float, float, float, float, float, float))GXSetViewport)(
+        0.0f, 0.0f, (float)width, (float)height, 0.0f, 1.0f);
+    GXSetScissor(0, 0, width, height);
+    GXSetPixelFmt(1, 0);
+    GXSetDispCopyGamma(0);
+    clearWord = ((unsigned int (*)(unsigned int, unsigned int, unsigned int, unsigned int))fn_802CE9FC)(0, 0, 0, 0);
+    clear[3] = (unsigned char)clearWord;
+    clear[0] = (unsigned char)(clearWord >> 24);
+    clear[1] = (unsigned char)(clearWord >> 16);
+    clear[2] = (unsigned char)(clearWord >> 8);
+    GXSetCopyClear(clear, 0xFFFFFF);
+    GXSetDither(1);
+    VIWaitForRetrace();
+    VISetNextFrameBuffer(*(void **)(base + 0x4110));
+    *(void **)(base + 0x4114) = *(void **)(base + 0x4110);
+    VIFlush();
+
+    if ((*(unsigned int *)lbl_8055FD64 & 1) != 0) {
+        VIWaitForRetrace();
+    }
+    GXSetNumChans(1);
+    GXSetNumTexGens(1);
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevOp(0, 0);
+    GXSetBlendMode(1, 4, 5, 5);
+    GXSetTevOrder(1, 0, 1, 4);
+    GXSetTevOp(1, 2);
+    GXSetTevColorIn(1, 0, 0, 0xF, 0xF);
+    GXSetTevColorOp(1, 0, 0, 0, 1, 0);
+    fn_802CF5D4();
+    GXSetZCompLoc(0);
+
+    m70 = (float *)(base + 0x70);
+    m40 = (float *)(base + 0x40);
+    mA0 = (float *)(base + 0xA0);
+    m70[0] = lbl_80564F8C; m70[1] = lbl_80564F88; m70[2] = lbl_80564F88; m70[3] = lbl_80564F88;
+    m70[4] = lbl_80564F8C; m70[5] = lbl_80564F88; m70[6] = lbl_80564F88; m70[7] = lbl_80564F88;
+    m70[8] = lbl_80564F8C; m70[9] = lbl_80564F88; m70[10] = lbl_80564F88; m70[11] = lbl_80564F88;
+    m40[0] = lbl_80564F8C; m40[1] = lbl_80564F88; m40[2] = lbl_80564F88; m40[3] = lbl_80564F88;
+    m40[4] = lbl_80564F8C; m40[5] = lbl_80564F88; m40[6] = lbl_80564F88; m40[7] = lbl_80564F88;
+    m40[8] = lbl_80564F8C; m40[9] = lbl_80564F88; m40[10] = lbl_80564F88; m40[11] = lbl_80564F88;
+    mA0[0] = lbl_80564F8C; mA0[1] = lbl_80564F88; mA0[2] = lbl_80564F88;
+    lbl_8055FD70 = 1;
+    base[0xB0] = 1;
+    ((void (*)(unsigned char, unsigned char, unsigned char, void *, void *, void *, float))fn_802D0188)(
+        0xFF, 0xFF, 0xFF, mA0, m70, m40, lbl_80564F8C);
+
+    fn_802D0160(0x20, 0x20, 0x20);
+    fn_802D007C(lbl_80564F8C);
+    spC = lbl_80564F88;
+    sp10 = lbl_80564F90;
+    sp14 = lbl_80564F88;
+    fn_802D01B0(&spC, lbl_80564F8C);
+    fn_802D01E0(0, 0, lbl_8055CFF0, lbl_8055CFF4);
+    fn_802D0368(lbl_80564F94, lbl_80564F98, lbl_80564F9C, lbl_80564F8C);
+
+    sp18 = lbl_80564F8C; sp1C = lbl_80564F88; sp20 = lbl_80564F88; sp24 = lbl_80564F88;
+    sp28 = lbl_80564F8C; sp2C = lbl_80564F88; sp30 = lbl_80564F88; sp34 = lbl_80564F88;
+    sp38 = lbl_80564F8C; sp3C = lbl_80564F88; sp40 = lbl_80564F88; sp44 = lbl_80564F88;
+    fn_802D03F4(&sp18, lbl_80564F8C);
+    fn_802D0610(0);
+    lbl_8055FD85 = 1;
+    lbl_8055FD25 = 0;
+    lbl_8055FD84 = 1;
+    fn_802CFF5C((void *)0x17);
+    fn_802CFF50();
+    fn_802CFFA4(lbl_8055FD0A);
+    if (lbl_8055FE1C != 0) fn_802D9230();
+    if (lbl_8055FE20 != 0) fn_802D92B8();
+    lbl_8055FDB4 = 0;
 }
 
 int fn_802CFCA0(void* alarm) {
@@ -481,6 +640,51 @@ void fn_802D0BD8(void) {
     }
     GXInvalidateVtxCache();
     GXInvalidateTexAll();
+}
+
+extern void GXSetColorUpdate(unsigned char);
+extern float GXGetYScaleFactor(unsigned short, unsigned short);
+extern unsigned int GXSetDispCopyYScale(float);
+extern void GXSetDispCopySrc(unsigned short, unsigned short, unsigned short, unsigned short);
+extern void GXSetDispCopyDst(unsigned short, unsigned short);
+extern void GXSetCopyFilter(unsigned char, unsigned char *, unsigned char, unsigned char *);
+extern void GXCopyDisp(void *, int);
+extern void fn_802D09E8(void);
+extern void fn_802CFF50(void);
+void fn_802D0C98(void) {
+    extern int lbl_8055FD48, lbl_8055FD4C;
+    extern unsigned int lbl_8055FD74;
+    extern unsigned char lbl_8055D0C4;
+    extern void *lbl_8055FD64;
+    extern int lbl_804C9760[];
+    unsigned short temp_r31;
+    int temp_r30;
+
+    temp_r30 = 0;
+    lbl_8055FD4C = temp_r30;
+    GXSetZMode(1, 3, 1);
+    GXSetColorUpdate(1);
+    fn_802D09E8();
+    GXSetColorUpdate(lbl_8055D0C4);
+    lbl_8055FD74 |= 1;
+    GXSetZMode(1, 7, 1);
+    lbl_8055FD74 = (lbl_8055FD74 | 2) & ~4U;
+    temp_r31 = GXSetDispCopyYScale(GXGetYScaleFactor(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 6), *(unsigned short *)((unsigned char *)lbl_8055FD64 + 8)));
+    GXSetDispCopySrc(0, 0, *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6));
+    GXSetDispCopyDst(*(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), temp_r31);
+    GXSetCopyFilter(*((unsigned char *)lbl_8055FD64 + 0x19), (unsigned char *)lbl_8055FD64 + 0x1A, 1, (unsigned char *)lbl_8055FD64 + 0x32);
+    GXCopyDisp(&lbl_804C9760[1], 1);
+    VISetNextFrameBuffer(&lbl_804C9760[1]);
+    if (lbl_8055FD48 > 0) {
+        lbl_8055FD48 -= 1;
+        VISetBlack(1);
+    } else {
+        lbl_8055FD48 = temp_r30;
+        VISetBlack(0);
+    }
+    VIFlush();
+    lbl_804C9760[1] = lbl_804C9760[0];
+    fn_802CFF50();
 }
 
 int fn_802D0DD4(void *dst, void *src) {
@@ -852,6 +1056,29 @@ int fn_802D3A5C(void *arg0, float *arg1) {
 }
 
 void fn_802D3BB0(void) {}
+
+extern float lbl_80564F88, lbl_80564F8C;
+extern unsigned short lbl_802FACC8[];
+extern void fn_802D68C4(float *, int, unsigned short *, int, unsigned short, unsigned short, unsigned short, unsigned short *, float, float, float, float, float, float, float, float, float, float, float, float, float);
+void fn_802D3BB4(float *arg0, float *arg1, float *arg2, float *arg3, unsigned int arg4, float scale, unsigned int arg_sp0) {
+    float result[24];
+    unsigned short colors[6];
+    float neg = -scale;
+    float a0=arg2[0],a1=arg2[1],a2=arg2[2],b0=arg3[0],b1=arg3[1],b2=arg3[2];
+    float p0=arg1[0],p1=arg1[1],p2=arg1[2];
+    unsigned int alpha = (unsigned int)(arg0[5] * (float)(arg4 >> 24)) << 24 | (arg4 & 0xFFFFFF);
+    colors[0]=lbl_802FACC8[0]; colors[1]=lbl_802FACC8[2]; colors[2]=lbl_802FACC8[4];
+    colors[3]=lbl_802FACC8[6]; colors[4]=lbl_802FACC8[8]; colors[5]=lbl_802FACC8[5];
+    result[0]=p0+a0*scale; result[1]=p1+a1*scale; result[2]=p2+b2*scale;
+    result[3]=p0+b0*scale; result[4]=p1+b1*scale; result[5]=p2+b2*scale;
+    result[6]=p0+b0*neg; result[7]=p1+b1*neg; result[8]=p2+b2*neg;
+    result[9]=p0+a0*neg; result[10]=p1+a1*neg; result[11]=p2+a2*neg;
+    result[12]=p0+b0*neg; result[13]=p1+b1*neg; result[14]=p2+b2*neg;
+    result[15]=p0+a0*scale; result[16]=p1+a1*scale; result[17]=p2+b2*scale;
+    result[18]=p0+a0*neg; result[19]=p1+a1*neg; result[20]=p2+a2*neg;
+    result[21]=p0+b0*scale; result[22]=p1+b1*scale; result[23]=p2+b2*scale;
+    fn_802D68C4(result,4,colors,6,colors[5],colors[4],colors[0],lbl_802FACC8,result[20],lbl_80564F88,result[13],result[18],result[14],result[10],result[6],result[8],result[2],result[4],result[3],result[0],p2);
+}
 
 extern void OSReport(const char *, ...);
 extern void GXInitVtxDescList(int);
