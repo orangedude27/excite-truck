@@ -64,8 +64,8 @@ struct Dummy_801638A0 {
     virtual void f4();
     virtual void f5();
     virtual void f6();
-    virtual void f7();
-    virtual void f8();
+    virtual s32 f7();
+    virtual s32 f8();
     virtual s32 f9();
     virtual s32 f10();
     virtual void f11();
