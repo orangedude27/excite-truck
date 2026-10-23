@@ -4,6 +4,13 @@
 #include <types.h>
 #include <ctype.h>
 
+extern u8 *FstStart_8055D840;
+extern u8 *FstStringStart_8055D83C;
+extern s32 lbl_8055D828;
+extern BOOL __DVDLongFileNameFlag;
+extern char lbl_80558DF8[];
+extern char lbl_80301F70[];
+
 extern void fn_80035C78(void);
 extern void fn_80035E6C(void);
 extern void fn_8003A1A0(u32, void (*)(void));
@@ -673,8 +680,9 @@ void fn_80038040(void) {
         return;
     }
     lbl_8055D8BC = *(u32 *)((u8 *)temp_r3 + 8);
-    if ((lbl_8055D8BC == 0x20) || (lbl_8055D8BC == 0xE) ||
-        (lbl_8055D8BC == 0x23)) lbl_8055D85C = 0;
+    if (((u32)*(volatile s32 *)&lbl_8055D8BC == 0x20U) ||
+        ((u32)*(volatile s32 *)&lbl_8055D8BC == 0xEU) ||
+        ((u32)*(volatile s32 *)&lbl_8055D8BC == 0x23U)) lbl_8055D85C = 0;
     if (lbl_8055D85C != 0) {
         switch (lbl_8055D85C) {
         case 2:
@@ -707,12 +715,16 @@ void fn_80038040(void) {
                     (*(volatile u32 *)0x800000F8 / 4000) * 0x64, fn_8003801C);
             }
             break;
-        case 5:
+        case 1:
+        case 6:
+        case 7:
             fn_8003A1A0(lbl_8055D8B4, fn_80035C64);
             break;
-        default:
+        case 5:
             *(s32 *)((u8 *)temp_r3 + 0xC) = 3;
             fn_8003773C();
+            break;
+        default:
             break;
         }
         lbl_8055D85C = 0;
