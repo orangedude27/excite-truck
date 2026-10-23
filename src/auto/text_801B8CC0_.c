@@ -21,82 +21,90 @@ static inline void transform_vec(float *out, const float *m, volatile float *in)
         float x = in[0];
         float y = in[1];
         float z = in[2];
-        float x0 = x * m[0] + y * m[3] + z * m[6];
-        float x1 = x * m[1] + y * m[4] + z * m[7];
-        float x2 = x * m[2] + y * m[5] + z * m[8];
-        out[0] = x0;
-        out[1] = x1;
-        out[2] = x2;
+        float a = y * m[3];
+        float b = y * m[4];
+        float c = y * m[5];
+        float d = x * m[0];
+        float e = x * m[1];
+        float f = x * m[2];
+        float g = z * m[6];
+        float h = z * m[7];
+        float i = z * m[8];
+        out[0] = d + a + g;
+        out[1] = e + b + h;
+        out[2] = f + c + i;
     } else {
-        out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
-        out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
-        out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
+        out[0] = in[0] * m[0] + in[1] * m[3] + in[2] * m[6];
+        out[1] = in[0] * m[1] + in[1] * m[4] + in[2] * m[7];
+        out[2] = in[0] * m[2] + in[1] * m[5] + in[2] * m[8];
     }
 }
 void fn_801B8E28(int arg0) {
+    struct Work {
+        volatile float input[3];
+        float sp14[3];
+        float sp20[3];
+        unsigned int copy[9];
+        float output[3];
+        float fx, fy, fz;
+        volatile int zero;
+        volatile short h;
+    } w;
     register void *obj = lbl_80436D28[arg0];
-    short sp6c;
-    int sp68;
-    float sp64, sp60, sp5c;
-    unsigned int sp2c[9];
-    float sp8[3], sp50[3], sp14[3], sp20[3];
-    float temp_f1, temp_f1_2, temp_f1_3, temp_f2, temp_f2_2, temp_f3, temp_f3_3, temp_f3_4;
-    void *matrix;
-    float dot, factorX, factorY, factorZ;
+    float temp_f3, temp_f2, temp_f1, temp_f1_2, dot;
 
     fn_80189C64(obj, lbl_80436D28);
     temp_f3 = *(float *)((char *)obj + 0x2748) - *(float *)((char *)obj + 0x273c);
-    sp8[0] = temp_f3;
+    w.input[0] = temp_f3;
     temp_f2 = *(float *)((char *)obj + 0x274c) - *(float *)((char *)obj + 0x2740);
-    sp8[1] = temp_f2;
+    w.input[1] = temp_f2;
     temp_f1 = *(float *)((char *)obj + 0x2750) - *(float *)((char *)obj + 0x2744);
-    sp8[2] = temp_f1;
-    sp8[0] = temp_f3 - *(float *)((char *)obj + 0x30);
-    sp8[1] = temp_f2 - *(float *)((char *)obj + 0x34);
+    w.input[2] = temp_f1;
+    w.input[0] = temp_f3 - *(float *)((char *)obj + 0x30);
+    w.input[1] = temp_f2 - *(float *)((char *)obj + 0x34);
     temp_f1_2 = temp_f1 - *(float *)((char *)obj + 0x38);
-    sp8[2] = temp_f1_2;
+    w.input[2] = temp_f1_2;
     if (*(unsigned char *)((char *)obj + 0x275d) != 0) {
-        sp8[2] = temp_f1_2 - lbl_80562754;
-        sp6c = -1;
+        w.input[2] = temp_f1_2 - lbl_80562754;
+        w.h = -1;
     }
-    matrix = *(void **)((char *)obj + 0x2754);
-    transform_vec(sp50, (float *)((char *)matrix + 0x70), sp8);
-    temp_f2_2 = sp50[1];
-    temp_f1_3 = sp50[2];
-    sp50[0] += ((float *)matrix)[0x94/4];
-    sp50[1] = temp_f2_2 + ((float *)matrix)[0x98/4];
-    sp50[2] = temp_f1_3 + ((float *)matrix)[0x9c/4];
-    matrix = *(void **)((char *)obj + 0x2754);
-    sp2c[0] = ((unsigned int *)matrix)[0x70/4]; sp2c[1] = ((unsigned int *)matrix)[0x74/4]; sp2c[2] = ((unsigned int *)matrix)[0x78/4];
-    sp2c[3] = ((unsigned int *)matrix)[0x7c/4]; sp2c[4] = ((unsigned int *)matrix)[0x80/4]; sp2c[5] = ((unsigned int *)matrix)[0x84/4];
-    sp2c[6] = ((unsigned int *)matrix)[0x88/4]; sp2c[7] = ((unsigned int *)matrix)[0x8c/4]; sp2c[8] = ((unsigned int *)matrix)[0x90/4];
-    dot = PSVECDotProduct((float *)((char *)matrix + 0x118), (float *)((char *)obj + 0x54));
-    factorX = ((float *)matrix)[0x88/4] * dot;
-    sp5c = factorX;
-    sp68 = 0;
-    factorY = ((float *)matrix)[0x8c/4] * dot;
-    sp60 = factorY;
-    factorZ = ((float *)matrix)[0x90/4] * dot;
-    sp64 = factorZ;
-    sp6c = *(short *)((char *)matrix + 0x6c);
     {
-        typedef void (*VFunc)(void *, float *, void *, float, float);
+        char *matrix = *(char **)((char *)obj + 0x2754);
+        transform_vec(w.output, (float *)(matrix + 0x70), w.input);
+        w.output[0] += *(float *)(matrix + 0x94);
+        w.output[1] += *(float *)(matrix + 0x98);
+        w.output[2] += *(float *)(matrix + 0x9c);
+    }
+    {
+        unsigned int *matrix = (unsigned int *)*(void **)((char *)obj + 0x2754);
+        w.copy[0] = matrix[0x70/4]; w.copy[1] = matrix[0x74/4]; w.copy[2] = matrix[0x78/4];
+        w.copy[3] = matrix[0x7c/4]; w.copy[4] = matrix[0x80/4]; w.copy[5] = matrix[0x84/4];
+        w.copy[6] = matrix[0x88/4]; w.copy[7] = matrix[0x8c/4]; w.copy[8] = matrix[0x90/4];
+    }
+    dot = PSVECDotProduct((float *)((char *)*(void **)((char *)obj + 0x2754) + 0x118), (float *)((char *)obj + 0x54));
+    w.fx = ((float *)w.copy)[6] * dot;
+    w.zero = 0;
+    w.fy = ((float *)w.copy)[7] * dot;
+    w.fz = ((float *)w.copy)[8] * dot;
+    w.h = *(short *)((char *)*(void **)((char *)obj + 0x2754) + 0x6c);
+    {
+        typedef void (*VFunc)(void *, unsigned int *, void *);
         VFunc method = (VFunc)(*(void **)((char *)*(void **)obj + 0x54));
-        method(obj, (float *)sp2c, matrix, factorY, factorX);
+        method(obj, w.copy, *(void **)((char *)obj + 0x2754));
     }
     *(void **)((char *)obj + 0x2738) = obj;
     if (*(unsigned char *)((char *)obj + 0x275d) == 0) {
-        sp14[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
-        sp14[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
-        temp_f3_3 = *(float *)((char *)obj + 0x2744);
-        sp14[2] = temp_f3_3 + *(float *)((char *)obj + 0x38);
-        fn_801AD148((char *)obj + 0x2704, sp14, *(void **)((char *)obj + 0x2754), lbl_80562758, lbl_8056275C, temp_f3_3);
+        w.sp14[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
+        w.sp14[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
+        temp_f3 = *(float *)((char *)obj + 0x2744);
+        w.sp14[2] = temp_f3 + *(float *)((char *)obj + 0x38);
+        fn_801AD148((char *)obj + 0x2704, w.sp14, *(void **)((char *)obj + 0x2754), lbl_80562758, lbl_8056275C, temp_f3);
     } else {
-        sp20[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
-        sp20[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
-        temp_f3_4 = *(float *)((char *)obj + 0x2744);
-        sp20[2] = temp_f3_4 + *(float *)((char *)obj + 0x38);
-        fn_801AD28C((char *)obj + 0x2704, sp20, *(void **)((char *)obj + 0x2754), (char *)obj + 0x2748, lbl_80562758, lbl_80562760, temp_f3_4);
+        w.sp20[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
+        w.sp20[1] = *(float *)((char *)obj + 0x2740) + *(float *)((char *)obj + 0x34);
+        temp_f3 = *(float *)((char *)obj + 0x2744);
+        w.sp20[2] = temp_f3 + *(float *)((char *)obj + 0x38);
+        fn_801AD28C((char *)obj + 0x2704, w.sp20, *(void **)((char *)obj + 0x2754), (char *)obj + 0x2748, lbl_80562758, lbl_80562760, temp_f3);
     }
     fn_8018A08C(obj);
 }
