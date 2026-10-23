@@ -13,6 +13,7 @@
 extern char lbl_80315700[];
 extern u8 lbl_802EEB60[];
 extern u8 lbl_802EEBD8[];
+extern char *bta_hh_evt_code(u32);
 extern char lbl_8031A188[];
 extern char lbl_803192C0[];
 extern char lbl_803192E0[];
