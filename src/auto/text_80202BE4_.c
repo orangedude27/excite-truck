@@ -49,6 +49,123 @@ u32 fn_80202BE4(void) {
     return (u32)((2 - lbl_8055ED14) | (lbl_8055ED14 - 2)) >> 0x1FU;
 }
 
+extern s32 lbl_805630B8, lbl_805630C0, lbl_805630C4;
+extern f32 lbl_805630C8, lbl_805630CC, lbl_805630D0, lbl_805630D4;
+extern u16 lbl_802F9D48[];
+extern void fn_802C8C04(s32);
+extern void fn_802C8DB8(f32*, s32, u16*, s32, u16, u16, u16, u16);
+void fn_80202BFC(s32 arg0) {
+    f32 sp84, sp80, sp78, sp74, sp70, sp6C, sp68, sp60, sp5C, sp58, sp54, sp50, sp48, sp44, sp40, sp3C, sp38, sp30, sp2C, sp28;
+    s32 sp7C, sp64, sp4C, sp34, sp14, sp10, spC, sp8;
+    u16 sp22, sp20, sp1E, sp1C, sp1A, sp18;
+    f32 f28 = lbl_805630C8, f29 = lbl_805630CC, f30 = lbl_805630D0, f31 = lbl_805630D4;
+    s32 *p1 = &sp10, *p2 = &sp8;
+    s32 i = 0;
+    sp10=lbl_805630B8; sp8=lbl_805630C0; spC=lbl_805630C4; sp14=arg0;
+    do {
+        fn_802C8C04(*p1);
+        sp18=lbl_802F9D48[0]; sp1A=lbl_802F9D48[1]; sp1C=lbl_802F9D48[2]; sp1E=lbl_802F9D48[3]; sp20=lbl_802F9D48[4]; sp22=lbl_802F9D48[5];
+        sp28=f28; sp2C=f28; sp30=f29; sp40=f30; sp44=f28; sp48=f29; sp58=f28; sp5C=f30; sp60=f29; sp70=f30; sp74=f30; sp78=f29; sp68=f29; sp38=f29; sp80=f31; sp50=f31; sp54=f29; sp3C=f29; sp84=f31; sp6C=f31;
+        sp7C=*p2; sp64=*p2; sp4C=*p2; sp34=*p2;
+        fn_802C8DB8(&sp28,4,&sp18,6,lbl_802F9D48[4],lbl_802F9D48[3],lbl_802F9D48[2],lbl_802F9D48[1]);
+        fn_802C8D74(); i++; p1++; p2++;
+    } while(i<2);
+}
+
+extern void fn_802C8DBC(s32, s32, s32, s32);
+extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
+extern void fn_802C8E48(void);
+extern double fn_801DCF48(s32, f32, f32);
+extern f32 PSVECMag(const void *);
+extern double cos(double);
+extern double sin(double);
+extern u32 lbl_802F9D58[4];
+extern f32 lbl_805630CC;
+extern f32 lbl_805630D4;
+extern f32 lbl_805630E0;
+extern double lbl_805630E8;
+extern f32 lbl_805630F8;
+extern f32 lbl_80563120;
+extern f32 lbl_80563124;
+extern f32 lbl_80563128;
+extern f32 lbl_805630CC, lbl_805630D4, lbl_805630E0, lbl_805630F8;
+extern f32 lbl_80563120, lbl_80563124, lbl_80563128;
+void fn_80203380(void *argp) {
+    f32 *arg0 = (f32 *)argp;
+    union { u32 words[4]; f32 values[4]; } heights;
+    f32 *height;
+    f32 minMag, one, angleScale, angleDivisor, radius, colorScale, secondY;
+    u32 row;
+    s32 count, angle;
+
+    fn_802C8BD0(-1);
+    heights.words[0] = lbl_802F9D58[0];
+    heights.words[1] = lbl_802F9D58[1];
+    heights.words[2] = lbl_802F9D58[2];
+    heights.words[3] = lbl_802F9D58[3];
+    fn_802C8DBC(0xA0, lbl_802F9D58[2], lbl_802F9D58[1], lbl_802F9D58[0]);
+
+    minMag = lbl_805630F8;
+    height = heights.values;
+    one = lbl_805630D4;
+    angleScale = lbl_805630E0;
+    angleDivisor = lbl_80563120;
+    radius = lbl_805630CC;
+    colorScale = lbl_80563124;
+    secondY = lbl_80563128;
+
+    for (row = 0; row < 4; row++, height++) {
+        for (count = 0, angle = 0; count < 0x14; count++, angle += 2) {
+            f32 theta = angleScale * (f32)angle / angleDivisor;
+            f32 c = (f32)cos((double)theta);
+            f32 s = (f32)sin((double)theta);
+            f32 x = (radius * c - *height * s) + arg0[9];
+            f32 z = (radius * s + *height * c) + arg0[11];
+            f32 y = fn_801DCF48(0, x, z);
+            f32 dx = x - arg0[9];
+            f32 dy = y - arg0[10];
+            f32 dz = z - arg0[11];
+            f32 vec[3];
+            f32 mag, scale, denom;
+
+            vec[0] = (dx * arg0[0] + dy * arg0[1]) + dz * arg0[2];
+            vec[1] = (dx * arg0[3] + dy * arg0[4]) + dz * arg0[5];
+            vec[2] = (dx * arg0[6] + dy * arg0[7]) + dz * arg0[8];
+            mag = PSVECMag(vec);
+            if (minMag > mag) {
+                scale = one / minMag;
+                vec[0] *= scale;
+                vec[1] *= scale;
+                vec[2] *= scale;
+                denom = one + vec[1];
+                fn_802C8E00((s32)0xFF000000, 1,
+                    (colorScale * vec[0]) / denom, radius,
+                    (colorScale * vec[2]) / denom, radius, radius);
+            }
+
+            dx = x - arg0[9];
+            dy = secondY - arg0[10];
+            dz = z - arg0[11];
+            vec[0] = (dx * arg0[0] + dy * arg0[1]) + dz * arg0[2];
+            vec[1] = (dx * arg0[3] + dy * arg0[4]) + dz * arg0[5];
+            vec[2] = (dx * arg0[6] + dy * arg0[7]) + dz * arg0[8];
+            mag = PSVECMag(vec);
+            if (minMag > mag) {
+                scale = one / minMag;
+                vec[0] *= scale;
+                vec[1] *= scale;
+                vec[2] *= scale;
+                denom = one + vec[1];
+                fn_802C8E00((s32)0xFF000000, 1,
+                    (colorScale * vec[0]) / denom, radius,
+                    (colorScale * vec[2]) / denom, radius, radius);
+            }
+        }
+    }
+    fn_802C8E48();
+    fn_802C8D74();
+}
+
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     struct lbl_80488B88_t* var_r28;
     s32 temp_r0;
@@ -113,6 +230,43 @@ void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
         fn_80203380(arg2);
         fn_802D306C(0);
     }
+}
+
+extern s32 fn_8012C33C(char *);
+extern void fn_801345D8(char *, s32, const char *, s32);
+extern s32 fn_802CAC28(const char *, s32);
+extern s32 fn_802CAE98(s32, const char *);
+extern s32 fn_802CAF1C(s32, s32, s32);
+extern s32 fn_802CB128(s32, s32, s32, s32);
+extern const char lbl_8033BA88[];
+extern u8 lbl_8055ED08;
+void fn_80203C50(s32 arg0) {
+    char name[0x20];
+    const char *base;
+    s32 i, count, resource;
+    lbl_8055ED14 = arg0;
+    lbl_8055ED18 = 1;
+    base = lbl_8033BA88;
+    if (arg0 == 1) base += 0xC;
+    lbl_8055ED00 = fn_802CAC28(base, 0);
+    lbl_8055ED04 = fn_802CAC28(lbl_8033BA88 + 0x18, 0);
+    lbl_8055ED0C = fn_802CAC28(lbl_8033BA88 + 0x24, 0);
+    for (i = 0; i < 0x5A; i++) {
+        fn_801345D8(name, 0x20, lbl_8033BA88 + 0x30, i);
+        if (fn_8012C33C(name) != 0) {
+            resource = fn_802CAC28(name, 0);
+            count = lbl_8048897C.count;
+            lbl_8048897C.count = count + 1;
+            lbl_8048897C.ptr[count].w0 = resource;
+            lbl_8048897C.ptr[count].w1 = i;
+        }
+    }
+    lbl_8055ECFC = fn_802CB128(0x100, 0x100, 0, 1);
+    fn_802CAE98(0, lbl_8033BA88);
+    fn_802CAE98(lbl_8055ED00, lbl_8033BA88 + 0x3C);
+    fn_802CAF1C(lbl_8055ECFC, 6, 0x50);
+    fn_80202BE4();
+    lbl_8055ED08 = 1;
 }
 
 void fn_80203D84(s32* arg0) {
