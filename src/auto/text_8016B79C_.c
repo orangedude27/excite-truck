@@ -838,7 +838,7 @@ void fn_8016EA9C(void *arg0) {
     temp_r24_2 = lbl_803306D0 + 0x560;
     temp_r12 = (s32)((unsigned char *)arg0 + 0x9E);
     temp_r25_2 = lbl_803306D0 + 0x57C;
-    stack[71].p = lbl_8055A250;
+    stack[71].p = &lbl_8055A250;
     temp_r11_2 = (s32)((unsigned char *)arg0 + 0xB2);
     temp_r23 = lbl_803306D0 + 0x594;
     stack[72].i = temp_r8;
