@@ -655,7 +655,7 @@ void fn_80010F20(void) {
 }
 
 #pragma scheduling on
-extern void fn_80011280(s32, s32, f32, f64, f32, f32);
+extern void fn_80011280(s32, s32, f64, f64, f32, f32);
 extern void fn_8000E3B4(s32);
 extern void fn_8000E874(s32);
 extern void fn_8000EF74(s32);
@@ -700,6 +700,82 @@ void fn_8001123C(s32 arg0) {
 
 void fn_80011278(s32 arg0) {
     ((void (*)(s32, s32))fn_80011280)(arg0, lbl_8055D4D4);
+}
+
+extern f32 fn_80235EF0(s32, s32);
+void fn_80011280(s32 arg0, s32 arg1, f64 farg0, f64 farg1, f32 farg2, f32 farg3) {
+    f32 spC;
+    f32 sp8;
+    f32 temp_f0;
+    f32 temp_f0_2;
+    f32 temp_f1;
+    f32 temp_f1_10;
+    f32 temp_f1_11;
+    f32 temp_f1_2;
+    f32 temp_f1_3;
+    f32 temp_f1_4;
+    f32 temp_f1_5;
+    f32 temp_f1_6;
+    f32 temp_f1_7;
+    f32 temp_f1_8;
+    f32 temp_f1_9;
+    f32 temp_f26;
+    f32 temp_f26_2;
+    f32 temp_f26_3;
+    f32 temp_f26_4;
+    f32 temp_f26_5;
+    f32 temp_f27;
+    f32 temp_f2;
+    f32 temp_f5;
+
+    temp_f26 = fn_80235EF0(arg1, 0);
+    temp_f5 = fn_80235F64(arg1, 0);
+    sp8 = farg0;
+    spC = (f32)farg1;
+    fn_802354A0(arg1, 0, arg0, (f32)farg0, (f32)farg1, lbl_80560280, temp_f26, temp_f5);
+    temp_f1 = fn_80235EF0(arg1, 1);
+    spC = (f32)farg1;
+    sp8 = (farg0 + farg2) - temp_f1;
+    fn_802354A0(arg1, 1, arg0, sp8, (f32)farg1, lbl_80560280, temp_f1, fn_80235F64(arg1, 1));
+    temp_f26_2 = fn_80235EF0(arg1, 2);
+    temp_f1_2 = fn_80235F64(arg1, 2);
+    sp8 = farg0;
+    spC = temp_f1_2 + ((f32)farg1 - farg3);
+    fn_802354A0(arg1, 2, arg0, (f32)farg0, spC, lbl_80560280, temp_f26_2, fn_80235F64(arg1, 2));
+    temp_f1_3 = fn_80235EF0(arg1, 3);
+    sp8 = (farg0 + farg2) - temp_f1_3;
+    spC = fn_80235F64(arg1, 3) + ((f32)farg1 - farg3);
+    fn_802354A0(arg1, 3, arg0, sp8, spC, lbl_80560280, temp_f1_3, fn_80235F64(arg1, 3));
+    temp_f1_4 = fn_80235EF0(arg1, 0);
+    temp_f0 = farg0 + temp_f1_4;
+    spC = (f32)farg1;
+    sp8 = temp_f0;
+    temp_f26_3 = farg2 - (temp_f1_4 + fn_80235EF0(arg1, 1));
+    fn_802354A0(arg1, 4, arg0, sp8, (f32)farg1, lbl_80560280, temp_f26_3, fn_80235F64(arg1, 0));
+    temp_f1_5 = fn_80235EF0(arg1, 2);
+    sp8 = farg0 + temp_f1_5;
+    temp_f26_4 = farg2 - (temp_f1_5 + fn_80235EF0(arg1, 3));
+    temp_f1_6 = fn_80235F64(arg1, 2);
+    temp_f2 = temp_f1_6 + ((f32)farg1 - farg3);
+    spC = temp_f2;
+    fn_802354A0(arg1, 5, arg0, sp8, temp_f2, lbl_80560280, temp_f26_4, temp_f1_6);
+    temp_f26_5 = fn_80235EF0(arg1, 0);
+    temp_f1_7 = fn_80235F64(arg1, 0);
+    temp_f0_2 = (f32)farg1 - temp_f1_7;
+    sp8 = farg0;
+    spC = temp_f0_2;
+    fn_802354A0(arg1, 6, arg0, (f32)farg0, spC, lbl_80560280, temp_f26_5, farg3 - (temp_f1_7 + fn_80235F64(arg1, 2)));
+    temp_f1_8 = fn_80235EF0(arg1, 1);
+    sp8 = (farg0 + farg2) - temp_f1_8;
+    temp_f1_9 = fn_80235F64(arg1, 1);
+    spC = (f32)farg1 - temp_f1_9;
+    fn_802354A0(arg1, 7, arg0, sp8, spC, lbl_80560280, temp_f1_8, farg3 - (temp_f1_9 + fn_80235F64(arg1, 3)));
+    temp_f1_10 = fn_80235EF0(arg1, 0);
+    sp8 = farg0 + temp_f1_10;
+    temp_f27 = (farg2 - temp_f1_10) - fn_80235EF0(arg1, 1);
+    temp_f1_11 = fn_80235F64(arg1, 0);
+    spC = (f32)farg1 - temp_f1_11;
+    fn_802354A0(arg1, 8, arg0, sp8, spC, lbl_80560280, temp_f27, (farg3 - temp_f1_11) - fn_80235F64(arg1, 2));
 }
 
 void fn_80011A2C(void *arg0) {
