@@ -6580,7 +6580,7 @@ extern "C" s32 fn_800C083C(s32, s32, s32*);
 extern "C" s32 fn_800BDEB4(const u8*, s32, u32*);
 extern "C" void fn_800C08A8(void*, s32, s32, s16*, s32, s32, s16*);
 extern "C" void fn_800C0B68(struct Fn800C0B68Context*, s32, s32, s16*, s32, s32, s16*);
-u16 fn_800C0DF8(u8*, s32, u32*);
+extern "C" u16 fn_800C0DF8(u8*, s32, u32*);
 #pragma push
 #pragma use_lmw_stmw on
 extern "C" s32 fn_800C0440(
@@ -6895,7 +6895,7 @@ block_25:
     if (arg4 < arg1) goto loop_25;
 }
 #pragma pop
-u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
+extern "C" u16 fn_800C0DF8(u8 *arg0, s32 arg1, u32 *arg2) {
     u32 bits = *arg2;
     u32 index = (bits >> 3) & 0x1FFF;
     s32 shift = 0x18 - (bits & 7);
