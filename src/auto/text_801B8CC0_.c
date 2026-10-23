@@ -83,8 +83,11 @@ out[1] = pz1 + sum1;
 out[2] = pz2 + sum2;
 } else {
 out[0] = in[1] * m[3] + in[0] * m[0] + in[2] * m[6];
+out[0] += m[9];
 out[1] = in[1] * m[4] + in[0] * m[1] + in[2] * m[7];
+out[1] += m[10];
 out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
+out[2] += m[11];
 }
 
 }
