@@ -60,6 +60,7 @@ extern void fn_8003B218(void (*)(void));
 extern u32 lbl_8055D848;
 extern s32 lbl_8055D860;
 extern char __ErrorInfo[];
+extern void (*lbl_8055D8B8)(s32, void *);
 extern s32 executing_8055D8C8;
 extern char DummyCommandBlock_80376AA0[];
 extern void __DVDFSInit(void);
@@ -615,6 +616,101 @@ void fn_80036550(u32 arg0) {
     else if (value == 0x20) fn_8003A1A0(0x1234569, fn_80035C78);
     else if (value & 2) fn_8003A1A0(0x1234567, fn_80035C64);
     else ((void (*)(void *, void (*)(void)))fn_8003A1A0)(((void *(*)(void))fn_8003BCC0)(), fn_80035C64);
+}
+
+extern u8 lbl_80376A80[];
+extern s32 lbl_8055D87C, lbl_8055D8BC;
+extern s32 IDShouldBe_8055D8C4, executing_8055D8C8, lbl_8055D860;
+extern BOOL DVDCompareDiskID(void *, void *);
+extern s32 fn_8003AD88(void *, s32, s32, u32);
+extern void fn_80036B84(void);
+extern void fn_800373E0(void);
+extern int memcmp(const void *, const void *, u32);
+void fn_8003684C(void) {
+    register s32 zero = 0;
+    register u8 *idBase = lbl_80376A80;
+    register s32 enabled;
+    switch (lbl_8055D8BC) {
+    case 3:
+        lbl_8055D87C = zero;
+        if (DVDCompareDiskID(idBase + 0x80,
+                *(void **)(executing_8055D8C8 + 0x24)) != 0) {
+            memcpy((void *)IDShouldBe_8055D8C4, idBase + 0x80, 0x20);
+            *(s32 *)(executing_8055D8C8 + 0xC) = 1;
+            DCInvalidateRange((void *)&lbl_80376A80, 0x20);
+            lbl_8055D860 = zero;
+            fn_8003BCDC(0);
+            {
+        u32 tick, offset, next;
+        enabled = OSDisableInterrupts();
+        if ((u32)lbl_8055D848 >= 5U) lbl_8055D848 = zero;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x21;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x10000;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
+        tick = OSGetTick();
+        offset = *(volatile u32 *)&lbl_8055D848 * 0x14;
+        next = *(volatile u32 *)&lbl_8055D848 + 1;
+        lbl_8055D848 = next;
+        *(s32 *)(__ErrorInfo + offset + 0x2C) = tick;
+        OSRestoreInterrupts(enabled);
+        fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)fn_80036B84);
+    }
+        } else {
+            {
+        u32 tick, offset, next;
+        enabled = OSDisableInterrupts();
+        if ((u32)lbl_8055D848 >= 5U) lbl_8055D848 = zero;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+        tick = OSGetTick();
+        offset = *(volatile u32 *)&lbl_8055D848 * 0x14;
+        next = *(volatile u32 *)&lbl_8055D848 + 1;
+        lbl_8055D848 = next;
+        *(s32 *)(__ErrorInfo + offset + 0x2C) = tick;
+        OSRestoreInterrupts(enabled);
+        fn_8003AF1C(0, 0, fn_800373E0);
+    }
+        }
+        break;
+    default:
+        if (memcmp(idBase + 0x80, (void *)IDShouldBe_8055D8C4, 0x20) != 0) {
+            {
+        u32 tick, offset, next;
+        enabled = OSDisableInterrupts();
+        if ((u32)lbl_8055D848 >= 5U) lbl_8055D848 = zero;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x10;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0;
+        tick = OSGetTick();
+        offset = *(volatile u32 *)&lbl_8055D848 * 0x14;
+        next = *(volatile u32 *)&lbl_8055D848 + 1;
+        lbl_8055D848 = next;
+        *(s32 *)(__ErrorInfo + offset + 0x2C) = tick;
+        OSRestoreInterrupts(enabled);
+        fn_8003AF1C(0, 0, fn_800373E0);
+    }
+        } else {
+            lbl_8055D860 = zero;
+            fn_8003BCDC(0);
+            {
+        u32 tick, offset, next;
+        enabled = OSDisableInterrupts();
+        if ((u32)lbl_8055D848 >= 5U) lbl_8055D848 = zero;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x1C) = 0x21;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x20) = 0x10000;
+        *(s32 *)(__ErrorInfo + (u32)*(volatile u32 *)&lbl_8055D848 * 0x14 + 0x24) = 0x20;
+        tick = OSGetTick();
+        offset = *(volatile u32 *)&lbl_8055D848 * 0x14;
+        next = *(volatile u32 *)&lbl_8055D848 + 1;
+        lbl_8055D848 = next;
+        *(s32 *)(__ErrorInfo + offset + 0x2C) = tick;
+        OSRestoreInterrupts(enabled);
+        fn_8003AD88(idBase + 0xA0, 0x20, 0x10000, (u32)fn_80036B84);
+    }
+        }
+        break;
+    }
 }
 
 extern s32 MotorState_8055D8A8;
