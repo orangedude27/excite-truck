@@ -40,7 +40,7 @@ extern int fn_802E317C(const char *, ...);
 extern int GXInitLightDir(unsigned short, unsigned short, unsigned long *);
 extern float lbl_80564FAC, lbl_80564FA8, lbl_80564F88;
 extern char lbl_804C97D0;
-extern void GXSetTevColor(int, int *, void *, signed char);
+extern void GXSetTevColor(int, ...);
 
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
@@ -218,33 +218,33 @@ void fn_802CF850(void) {
     extern float lbl_80564F90;
     extern float lbl_80564F98;
     extern float lbl_80564F9C;
-    float sp44, sp40, sp3C, sp38, sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18;
-    float sp14, sp10, spC;
-    unsigned char clear[4];
+    register unsigned char *base = (unsigned char *)lbl_804C5650;
+    float spC[3];
+    float sp18[12];
+    volatile unsigned char spB, spA, sp9;
+    volatile signed char sp8;
     unsigned int clearWord;
     unsigned short width, height;
-    unsigned char *base;
-    float *m70, *m40, *mA0;
+    register volatile float *m70, *m40, *mA0;
 
     fn_802CF104();
-    base = (unsigned char *)lbl_804C5650;
     width = *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4);
     height = *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6);
     ((void (*)(float, float, float, float, float, float))GXSetViewport)(
         0.0f, 0.0f, (float)width, (float)height, 0.0f, 1.0f);
-    GXSetScissor(0, 0, width, height);
+    GXSetScissor(0, 0, *(unsigned short *)((unsigned char *)lbl_8055FD64 + 4), *(unsigned short *)((unsigned char *)lbl_8055FD64 + 6));
     GXSetPixelFmt(1, 0);
     GXSetDispCopyGamma(0);
     clearWord = ((unsigned int (*)(unsigned int, unsigned int, unsigned int, unsigned int))fn_802CE9FC)(0, 0, 0, 0);
-    clear[3] = (unsigned char)clearWord;
-    clear[0] = (unsigned char)(clearWord >> 24);
-    clear[1] = (unsigned char)(clearWord >> 16);
-    clear[2] = (unsigned char)(clearWord >> 8);
-    GXSetCopyClear(clear, 0xFFFFFF);
+    spB = (unsigned char)clearWord;
+    sp8 = (signed char)(clearWord >> 24);
+    sp9 = (unsigned char)(clearWord >> 16);
+    spA = (unsigned char)(clearWord >> 8);
+    GXSetCopyClear((unsigned char *)(void *)&sp8, 0xFFFFFF);
     GXSetDither(1);
     VIWaitForRetrace();
     VISetNextFrameBuffer(*(void **)(base + 0x4110));
-    *(void **)(base + 0x4114) = *(void **)(base + 0x4110);
+    *(void **)((void **)(base + 0x4110) + 1) = *(void **)(base + 0x4110);
     VIFlush();
 
     if ((*(unsigned int *)lbl_8055FD64 & 1) != 0) {
@@ -275,21 +275,21 @@ void fn_802CF850(void) {
     lbl_8055FD70 = 1;
     base[0xB0] = 1;
     ((void (*)(unsigned char, unsigned char, unsigned char, void *, void *, void *, float))fn_802D0188)(
-        0xFF, 0xFF, 0xFF, mA0, m70, m40, lbl_80564F8C);
+        0xFF, 0xFF, 0xFF, (void *)mA0, (void *)m70, (void *)m40, lbl_80564F8C);
 
     fn_802D0160(0x20, 0x20, 0x20);
     fn_802D007C(lbl_80564F8C);
-    spC = lbl_80564F88;
-    sp10 = lbl_80564F90;
-    sp14 = lbl_80564F88;
-    fn_802D01B0(&spC, lbl_80564F8C);
+    spC[0] = lbl_80564F88;
+    spC[1] = lbl_80564F90;
+    spC[2] = lbl_80564F88;
+    fn_802D01B0(spC, lbl_80564F8C);
     fn_802D01E0(0, 0, lbl_8055CFF0, lbl_8055CFF4);
     fn_802D0368(lbl_80564F94, lbl_80564F98, lbl_80564F9C, lbl_80564F8C);
 
-    sp18 = lbl_80564F8C; sp1C = lbl_80564F88; sp20 = lbl_80564F88; sp24 = lbl_80564F88;
-    sp28 = lbl_80564F8C; sp2C = lbl_80564F88; sp30 = lbl_80564F88; sp34 = lbl_80564F88;
-    sp38 = lbl_80564F8C; sp3C = lbl_80564F88; sp40 = lbl_80564F88; sp44 = lbl_80564F88;
-    fn_802D03F4(&sp18, lbl_80564F8C);
+    sp18[0] = lbl_80564F8C; sp18[1] = lbl_80564F88; sp18[2] = lbl_80564F88; sp18[3] = lbl_80564F88;
+    sp18[4] = lbl_80564F8C; sp18[5] = lbl_80564F88; sp18[6] = lbl_80564F88; sp18[7] = lbl_80564F88;
+    sp18[8] = lbl_80564F8C; sp18[9] = lbl_80564F88; sp18[10] = lbl_80564F88; sp18[11] = lbl_80564F88;
+    fn_802D03F4(sp18, lbl_80564F8C);
     fn_802D0610(0);
     lbl_8055FD85 = 1;
     lbl_8055FD25 = 0;
