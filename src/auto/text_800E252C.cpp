@@ -512,6 +512,7 @@ extern "C" void *__dt__Q46nw4hbm3snd6detail7AxVoiceFv(void *this_, int arg1) {
     return this_;
 }
 
+#pragma dont_inline on
 extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *self, int count, int arg2, void (*callback)(void *, int, void *), void *arg4) {
     int i;
     for (i = 0; i < count; i++) *(int *)((char *)self + 0x2C + i * 0x34) = 0;
