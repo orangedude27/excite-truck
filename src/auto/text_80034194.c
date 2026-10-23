@@ -247,7 +247,7 @@ u32 DVDConvertEntrynumToPath(s32 entry, char *path, u32 max) {
     return pos + 1 + (max - pos - 1 - left);
 }
 
-extern void OSPanic(const char *, s32, const char *);
+extern void OSPanic(const char *, s32, const char *, ...);
 extern s32 DVDReadAbsAsyncPrio(void *, void *, s32, s32, void *, s32);
 extern void cbForCancelSync(void);
 extern void cbForReadAsync(void *, void *);
@@ -643,6 +643,98 @@ void fn_8003801C(void) {
     }
     lbl_8055D880 = 1;
     fn_8003BB58(fn_80037E94);
+}
+
+extern s32 __DVDCheckWaitingQueue(void);
+extern void *__DVDPopWaitingQueue(void);
+extern void OSSetPeriodicAlarm(void *, u32, u32, s32, u32, u32, void (*)(void));
+extern s32 lbl_8055D8B4, lbl_8055D878;
+void fn_80038040(void) {
+    void (*callback)(s32);
+    void *temp_r3, *temp_r4;
+    if (__DVDCheckWaitingQueue() == 0) {
+        executing_8055D8C8 = 0;
+        return;
+    }
+    if (lbl_8055D84C != 0) {
+        PausingFlag_8055D850 = 1;
+        executing_8055D8C8 = 0;
+        return;
+    }
+    temp_r3 = __DVDPopWaitingQueue();
+    executing_8055D8C8 = (s32)temp_r3;
+    if (FatalErrorFlag_8055D854 != 0) {
+        *(s32 *)((u8 *)temp_r3 + 0xC) = -1;
+        temp_r4 = (void *)executing_8055D8C8;
+        executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+        callback = *(void (**)(s32))((u8 *)temp_r4 + 0x28);
+        if (callback != 0) callback(-1);
+        fn_80038040();
+        return;
+    }
+    lbl_8055D8BC = *(u32 *)((u8 *)temp_r3 + 8);
+    if ((lbl_8055D8BC == 0x20) || (lbl_8055D8BC == 0xE) ||
+        (lbl_8055D8BC == 0x23)) lbl_8055D85C = 0;
+    if (lbl_8055D85C != 0) {
+        switch (lbl_8055D85C) {
+        case 2:
+            *(s32 *)((u8 *)temp_r3 + 0xC) = 0xB;
+            MotorState_8055D8A8 = 1;
+            if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+                lbl_8055D870 = 1;
+                OSCreateAlarm(lbl_80376AD0);
+                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
+                    (*(volatile u32 *)0x800000F8 / 4000) * 0x64, fn_8003801C);
+            }
+            break;
+        case 3:
+            *(s32 *)((u8 *)temp_r3 + 0xC) = 4;
+            MotorState_8055D8A8 = 1;
+            if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+                lbl_8055D870 = 1;
+                OSCreateAlarm(lbl_80376AD0);
+                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
+                    (*(volatile u32 *)0x800000F8 / 4000) * 0x64, fn_8003801C);
+            }
+            break;
+        case 4:
+            *(s32 *)((u8 *)temp_r3 + 0xC) = 5;
+            MotorState_8055D8A8 = 1;
+            if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+                lbl_8055D870 = 1;
+                OSCreateAlarm(lbl_80376AD0);
+                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
+                    (*(volatile u32 *)0x800000F8 / 4000) * 0x64, fn_8003801C);
+            }
+            break;
+        case 5:
+            fn_8003A1A0(lbl_8055D8B4, fn_80035C64);
+            break;
+        default:
+            *(s32 *)((u8 *)temp_r3 + 0xC) = 3;
+            fn_8003773C();
+            break;
+        }
+        lbl_8055D85C = 0;
+        return;
+    }
+    switch (MotorState_8055D8A8) {
+    case 2:
+        if (lbl_8055D878 != 0) {
+            *(s32 *)((u8 *)temp_r3 + 0xC) = 0xC;
+            return;
+        }
+        *(s32 *)((u8 *)temp_r3 + 0xC) = 3;
+        fn_8003773C();
+        return;
+    case 0:
+        *(s32 *)((u8 *)temp_r3 + 0xC) = 1;
+        fn_80038368((void *)executing_8055D8C8);
+        return;
+    default:
+        fn_8003773C();
+        return;
+    }
 }
 
 extern void DCInvalidateRange(void *, u32);
