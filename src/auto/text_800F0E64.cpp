@@ -34,8 +34,6 @@ struct DummyStrmUpdate { virtual void f0(); virtual void f1(); virtual void f2()
 struct DummyStrmLoadStream {
     virtual void f0();
     virtual void f1();
-    virtual void f2();
-    virtual void f3();
     virtual void f4();
     virtual s32 f5(void *, u32);
     virtual void f6();
@@ -1463,7 +1461,6 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(v
     s16 sp8;
     u8 padding[6];
     u8 sp10[0x200];
-    void **var_r3;
     s16 *var_r31;
     s32 temp_r25;
     s32 temp_r26;
@@ -1487,6 +1484,7 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(v
     void **temp_r3_8;
     void **temp_r3_9;
     void **var_r29;
+    void **var_r3;
 
     DCInvalidateRange(M2C_FIELD(arg0, s32 *, 0x20), M2C_FIELD(arg0, u32 *, 0x24));
     temp_r29 = M2C_FIELD(arg0, s32 *, 0x3C);
@@ -1497,19 +1495,19 @@ extern "C" void Execute__Q46nw4hbm3snd18SoundArchivePlayer16StrmDataLoadTaskFv(v
     if (temp_r3 == 0) {
         temp_r3_2 = M2C_FIELD(arg0, void ***, 0x10);
         if (temp_r3_2 != 0) {
-            ((void (*)(void *, s32))(*(void ***)temp_r3_2)[2])(temp_r3_2, 0);
+            ((DummyStrmLoadTaskCallback *)temp_r3_2)->f2(0);
         }
-    } else if ((((s32 (*)(void *))(*(void ***)temp_r3)[0x50 / 4])(temp_r3) == 0) || (temp_r3_3 = M2C_FIELD(arg0, void ***, 0x14), ((((s32 (*)(void *))(*(void ***)temp_r3_3)[0x2C / 4])(temp_r3_3) == 0) != 0))) {
+    } else if ((((DummyStrmLoadStream *)temp_r3)->f20() == 0) || (temp_r3_3 = M2C_FIELD(arg0, void ***, 0x14), ((DummyStrmLoadStream *)temp_r3_3)->f11() == 0)) {
         temp_r3_4 = M2C_FIELD(arg0, void ***, 0x14);
-        ((void (*)(void *))(*(void ***)temp_r3_4)[0x10 / 4])(temp_r3_4);
+        ((DummyStrmLoadStream *)temp_r3_4)->f4();
         temp_r3_5 = M2C_FIELD(arg0, void ***, 0x10);
         M2C_FIELD(arg0, void ***, 0x14) = 0;
         if (temp_r3_5 != 0) {
-            ((void (*)(void *, s32))(*(void ***)temp_r3_5)[2])(temp_r3_5, 0);
+            ((DummyStrmLoadTaskCallback *)temp_r3_5)->f2(0);
         }
     } else {
         var_r29 = M2C_FIELD(arg0, void ***, 0x14);
-        var_r3 = M2C_FIELD(*var_r29, void **(**)(void **), 8)(var_r29);
+        var_r3 = (void **)((DummyStrmLoadCallback *)var_r29)->f2();
 loop_11:
         if (var_r3 == 0) {
             var_r0 = 0;
@@ -1528,17 +1526,17 @@ loop_11:
             M2C_FIELD(var_r29, s32 *, 0x68) = 1;
         }
         temp_r3_6 = M2C_FIELD(arg0, void ***, 0x14);
-        ((void (*)(void *, s32, s32))(*(void ***)temp_r3_6)[0x44 / 4])(temp_r3_6, M2C_FIELD(arg0, s32 *, 0x28), 0);
+        ((DummyStrmLoadStream *)temp_r3_6)->f17(M2C_FIELD(arg0, s32 *, 0x28), 0);
         temp_r3_7 = M2C_FIELD(arg0, void ***, 0x14);
         temp_r30 = M2C_FIELD(arg0, s32 *, 0x3C);
-        temp_r29_2 = ((s32 (*)(void *, void *, u32))(*(void ***)temp_r3_7)[0x14 / 4])(temp_r3_7, M2C_FIELD(arg0, void **, 0x20), M2C_FIELD(arg0, u32 *, 0x24));
+        temp_r29_2 = ((DummyStrmLoadStream *)temp_r3_7)->f5((void *)M2C_FIELD(arg0, void **, 0x20), M2C_FIELD(arg0, u32 *, 0x24));
         OSLockMutex((void *)temp_r30);
         temp_r3_8 = M2C_FIELD(arg0, void ***, 0x14);
-        ((void (*)(void *))(*(void ***)temp_r3_8)[0x10 / 4])(temp_r3_8);
+        ((DummyStrmLoadStream *)temp_r3_8)->f4();
         M2C_FIELD(arg0, void ***, 0x14) = 0;
         OSUnlockMutex((void *)temp_r30);
         if (temp_r29_2 != -3) {
-            if ((u32) temp_r29_2 != (u32) M2C_FIELD(arg0, u32 *, 0x24)) {
+            if ((u32)temp_r29_2 != (u32)M2C_FIELD(arg0, u32 *, 0x24)) {
                 if (temp_r29_2 == 0) {
                     Warning__Q26nw4hbm2dbFPCciPCce((const char *)&lbl_80324E88, 0x79C, (const char *)&lbl_80325624);
                 }
@@ -1546,18 +1544,18 @@ loop_11:
                 ((void (*)(void *, unsigned long))CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl)(temp_r3, M2C_FIELD(arg0, u32 *, 0xC));
                 temp_r3_9 = M2C_FIELD(arg0, void ***, 0x10);
                 if (temp_r3_9 != 0) {
-                    ((void (*)(void *, s32))(*(void ***)temp_r3_9)[2])(temp_r3_9, 0);
+                    ((DummyStrmLoadTaskCallback *)temp_r3_9)->f2(0);
                 }
             } else {
                 temp_r30_2 = M2C_FIELD(arg0, s32 *, 0x20);
                 var_r31 = &sp8;
                 var_r29_2 = 0;
 loop_30:
-                if (var_r29_2 < (s32) M2C_FIELD(arg0, s32 *, 0x2C)) {
-                    if ((s32) M2C_FIELD(arg0, u8 *, 0x38) != 0) {
+                if (var_r29_2 < (s32)M2C_FIELD(arg0, s32 *, 0x2C)) {
+                    if ((s32)M2C_FIELD(arg0, u8 *, 0x38) != 0) {
                         *var_r31 = *(u8 *)(var_r29_2 * ((M2C_FIELD(arg0, s32 *, 0x30) + 0x1F) & 0xFFFFFFE0) + (temp_r30_2 + M2C_FIELD(arg0, s32 *, 0x34)));
                     }
-                    if ((void **) M2C_FIELD(arg0, void ***, 0x10) != 0) {
+                    if ((void **)M2C_FIELD(arg0, void ***, 0x10) != 0) {
                         temp_r6 = M2C_FIELD(arg0, s32 *, 0x20);
                         temp_r26 = (M2C_FIELD(arg0, s32 *, 0x30) + 0x1F) & 0xFFFFFFE0;
                         temp_r5 = var_r29_2 * temp_r26;
@@ -1570,12 +1568,12 @@ loop_30:
                     var_r29_2 += 1;
                     goto loop_30;
                 }
-                if (((s32) M2C_FIELD(arg0, u8 *, 0x38) != 0) && ((void **) M2C_FIELD(arg0, void ***, 0x10) != 0)) {
+                if (((s32)M2C_FIELD(arg0, u8 *, 0x38) != 0) && ((void **)M2C_FIELD(arg0, void ***, 0x10) != 0)) {
                     SetAdpcmLoopContext__Q56nw4hbm3snd6detail10StrmPlayer11LoadCommandFiPUs(M2C_FIELD(arg0, void **, 0x10), M2C_FIELD(arg0, s32 *, 0x2C), (u16 *)&sp8);
                 }
                 temp_r3_10 = M2C_FIELD(arg0, void ***, 0x10);
                 if (temp_r3_10 != 0) {
-                    ((void (*)(void *, s32))(*(void ***)temp_r3_10)[2])(temp_r3_10, 1);
+                    ((DummyStrmLoadTaskCallback *)temp_r3_10)->f2(1);
                 }
             }
         }
