@@ -590,6 +590,7 @@ s16 fn_802B6ED8(s32 arg0, s32 arg1, u32 arg2) {
     return (s16)(arg0 + ((arg1 - (arg2 >> 1)) * (s16)fn_802B6E30()));
 }
 
+__declspec(section ".sdata") extern s32 lbl_8055CEA0;
 s32 fn_802B7300(s16 x, s16 y, s32 arg2, s32 arg3, f32 farg0) {
     extern float lbl_80564C78;
     extern float lbl_80564C88;
