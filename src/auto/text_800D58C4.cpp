@@ -471,6 +471,47 @@ extern "C" void GetLayoutRect__Q34nw4r3lyt6LayoutCFv(void* pOut, void* self) {
     }
 }
 
+extern "C" void fn_800D6CA0(s32, s32);
+extern "C" void fn_800D77DC(void* arg0, s32 arg1, void*) {
+    void* pane = *(void**)((u8*)arg0 + 0x10);
+    void* state = ((PaneAnimRet*)pane)->f3();
+    while (state != 0 && state != &lbl_8055DE08) state = *(void**)state;
+    if (state != 0) *(s32*)((u8*)pane + 0xF4) = arg1;
+    void* list = (u8*)pane + 0x14;
+    for (void* node = *(void**)list; node != list; node = *(void**)node) {
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+        void* child = (u8*)node - 4;
+        void* childState = ((PaneAnimRet*)child)->f3();
+        while (childState != 0 && childState != &lbl_8055DE08) childState = *(void**)childState;
+        if (childState != 0) *(s32*)((u8*)child + 0xF4) = arg1;
+        void* sublist = (u8*)child + 0x14;
+        for (void* subnode = *(void**)sublist; subnode != sublist; subnode = *(void**)subnode) {
+            if (subnode == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+            void* subchild = (u8*)subnode - 4;
+            void* substate = ((PaneAnimRet*)subchild)->f3();
+            while (substate != 0 && substate != &lbl_8055DE08) substate = *(void**)substate;
+            if (substate != 0) *(s32*)((u8*)subchild + 0xF4) = arg1;
+            void* subsublist = (u8*)subchild + 0x14;
+            for (void* subsubnode = *(void**)subsublist; subsubnode != subsublist; subsubnode = *(void**)subsubnode) {
+                if (subsubnode == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+                void* subsubchild = (u8*)subsubnode - 4;
+                void* subsubstate = ((PaneAnimRet*)subsubchild)->f3();
+                while (subsubstate != 0 && subsubstate != &lbl_8055DE08) subsubstate = *(void**)subsubstate;
+                if (subsubstate != 0) *(s32*)((u8*)subsubchild + 0xF4) = arg1;
+                void* finalList = (u8*)subsubchild + 0x14;
+                for (void* finalNode = *(void**)finalList; finalNode != finalList; finalNode = *(void**)finalNode) {
+                    if (finalNode == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+                    void* item = (u8*)finalNode - 4;
+                    void* itemState = ((PaneAnimRet*)item)->f3();
+                    while (itemState != 0 && itemState != &lbl_8055DE08) itemState = *(void**)itemState;
+                    if (itemState != 0) *(s32*)((u8*)item + 0xF4) = arg1;
+                    fn_800D6CA0((s32)item, arg1);
+                }
+            }
+        }
+    }
+}
+
 extern "C" void* __ct__Q36nw4hbm3lyt4PaneFPCQ46nw4hbm3lyt3res4Pane(void*, const void*);
 extern "C" void* __ct__Q36nw4hbm3lyt7PictureFPCQ46nw4hbm3lyt3res7PictureRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
 extern "C" void* __ct__Q36nw4hbm3lyt7TextBoxFPCQ46nw4hbm3lyt3res7TextBoxRCQ36nw4hbm3lyt11ResBlockSet(void*, const void*, const void*);
@@ -924,6 +965,33 @@ extern "C" void SetTexCoordGenNum__Q36nw4hbm3lyt8MaterialFUc(void* self, unsigne
             }
         }
         p[0x50 / 4] = (p[0x50 / 4] & ~0x00f00000) | ((u32)count << 20);
+    }
+}
+
+extern "C" void fn_800D9844(void* arg0, u32 arg1, s32 arg2) {
+    u32 format = *(u32*)((u8*)arg0 + 0x4C);
+    if (arg1 > ((format >> 9) & 0x1F))
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3AD, lbl_8031F990 + 0x3C4);
+    if (arg1 != 0) {
+        if (*(void**)((u8*)arg0 + 0x58) == 0)
+            Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F990, 0x3B0, lbl_8031F990 + 0x360);
+        u32 pitch = ((((format >> 18) & 3) + ((format >> 4) & 0xF)) * 0x14)
+            + ((format >> 6) & 4) + ((format >> 22) & 0x3C)
+            + ((format >> 20) & 4) + ((format >> 27) & 4)
+            + ((format >> 29) & 4) + ((format >> 28) & 4)
+            + ((format >> 26) & 4) + ((format >> 25) & 4)
+            + ((format >> 3) & 4) + ((format >> 12) & 4);
+        u32 count = (*(u32*)((u8*)arg0 + 0x50) >> 9) & 0x1F;
+        u8* dst = (u8*)*(u8**)((u8*)arg0 + 0x58) + pitch + count * 0x10;
+        if (count < arg1) {
+            u8 pattern[16] = {0xFF,4,0xFF,0, 0xFF,0xAF,0,0x61,0x77,0x57,0,0x81,0,0,0,0};
+            u32 remaining = arg1 - count;
+            while (remaining--) {
+                for (u32 i=0;i<16;i++) dst[i]=pattern[i];
+                dst += 0x10;
+            }
+        }
+        *(u32*)((u8*)arg0 + 0x50) = (*(u32*)((u8*)arg0 + 0x50) & ~0x3E00) | ((arg1 << 9) & 0x3E00);
     }
 }
 
@@ -2059,3 +2127,16 @@ extern "C" s32 fn_800DC6DC(void *arg0) {
     return *(s32 *)((u8 *)arg0 + 0x28);
 }
 struct GetTextureSizeMaterial { u8 pad[0x50]; u32 textureCount; u8 pad54[4]; void* textureObjects; };
+namespace nw4hbm { namespace lyt {
+struct DrawInfo;
+class Pane { public: void CalculateMtx(const DrawInfo &); };
+struct PaneMtxDispatch {
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void Apply(const DrawInfo &);
+};
+}}
+extern "C" void PSMTXScale(f32 *, f32, f32, f32);
+extern "C" u32 PSMTXInverse(f32 *, s32, f32);
+extern "C" void PSMTXRotTrig(f32 *, void *, f32, f32, f32);
+extern "C" f64 lbl_80560EB8;
+extern "C" f32 lbl_80560EB4;
