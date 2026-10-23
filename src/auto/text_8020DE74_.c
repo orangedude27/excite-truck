@@ -1,3 +1,4 @@
+#include "types.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -9,6 +10,109 @@ extern float lbl_805633F8;
 extern float lbl_805633FC;
 
 #pragma scheduling off
+#pragma cplusplus on
+extern void *lbl_8033C8C4[];
+extern void fn_80128668(void *);
+extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
+    struct Dummy {
+        virtual void release(s32);
+        virtual void v1();
+        virtual void v2();
+    };
+    void *child;
+    u8 *p;
+    u32 i;
+
+    if (arg0 != 0) {
+        child = *(void **)((u8 *)arg0 + 8);
+        *(void **)arg0 = lbl_8033C8C4;
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+
+        p = (u8 *)arg0;
+        i = 0;
+        do {
+            child = *(void **)(p + 0x10);
+            if (child != 0) {
+                if (child != 0) ((Dummy *)child)->release(1);
+            }
+            i++;
+            p += 4;
+        } while (i < 2);
+
+        child = *(void **)((u8 *)arg0 + 0x18);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x28);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x30);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x1C);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x20);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x24);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x2C);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x48);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x4C);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x50);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x44);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x34);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x38);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x3C);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x40);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+        child = *(void **)((u8 *)arg0 + 0x54);
+        if (child != 0) {
+            if (child != 0) ((Dummy *)child)->release(1);
+        }
+    }
+
+    if (arg1 > 0) fn_80128668(arg0);
+    return arg0;
+}
+#pragma scheduling off
+#pragma cplusplus reset
+
 void fn_8020F1F8(void *arg0) {
     void *temp_r3;
     temp_r3 = *(void **)((char *)arg0 + 0x50);
