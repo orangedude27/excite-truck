@@ -14,6 +14,7 @@ typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
 struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
+namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
