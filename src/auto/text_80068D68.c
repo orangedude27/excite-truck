@@ -4698,24 +4698,6 @@ void BTM_DeviceAuthorized(u8 *bd_addr, u8 res, u32 *trusted_mask) {
 
 extern u8 lbl_80316DC8[];
 
-static inline tBTM_SEC_SERV_REC *btm_sec_find_mx_serv(BOOLEAN is_originator, UINT16 psm,
-                                               UINT32 mx_proto_id, UINT32 mx_chan_id)
-{
-    tBTM_SEC_SERV_REC *p = (tBTM_SEC_SERV_REC *)(lbl_803C0F78 + 0x1990);
-    u32 i;
-
-    for (i = 0; i < 0x18; i++, (u8 *)p += 0x3C) {
-        if ((((u8 *)p)[0xE] & 0x80) &&
-            *(u16 *)((u8 *)p + 0xC) == psm &&
-            *(u32 *)((u8 *)p + 0x0) == mx_proto_id &&
-            ((is_originator && *(u32 *)((u8 *)p + 0x4) == mx_chan_id) ||
-             (!is_originator && *(u32 *)((u8 *)p + 0x8) == mx_chan_id))) {
-            return p;
-        }
-    }
-    return 0;
-}
-
 tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_originator,
                                UINT32 mx_proto_id, UINT32 mx_chan_id,
                                tBTM_SEC_CALLBACK *p_callback, void *p_ref_data)
