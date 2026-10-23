@@ -9,6 +9,8 @@ extern void *lbl_8055E604;
 extern void *lbl_8033596C;
 extern void *lbl_8055A8B8;
 extern f32 lbl_80562520;
+extern f32 lbl_8056254C;
+extern f32 lbl_80562550;
 
 extern void fn_801AD888(void **);
 void fn_801ADAF4(void *arg0) {
