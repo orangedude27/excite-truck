@@ -412,7 +412,7 @@ extern "C" void fn_8012B328(void) {
 
 }
 
-extern char *fn_80029004(char *, int);
+extern "C" char *fn_80029004(char *, int);
 void fn_8012B3D4(char *arg0, int arg1, char *arg2, int arg3, char *arg4) {
     char *src;
     char *dst;
