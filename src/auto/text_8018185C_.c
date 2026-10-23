@@ -3,7 +3,7 @@
 extern signed char lbl_8055E4F8;
 extern unsigned char lbl_8055A3B5;
 extern int lbl_8055A3A4, lbl_8055A3A8, lbl_8055E4F0;
-extern float lbl_8055E4D8;
+extern float lbl_8055E4D8, lbl_8055E4E8;
 extern char lbl_803322B0[];
 extern float lbl_80561CD4, lbl_80561CE0, lbl_80561CE4, lbl_80561CE8;
 extern float lbl_80561CEC, lbl_80561CF0, lbl_80561CF4, lbl_80561CF8, lbl_80561CFC;
