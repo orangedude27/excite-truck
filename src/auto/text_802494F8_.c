@@ -212,6 +212,11 @@ void *fn_8024AC54(void *arg0, int arg1) {
     return arg0;
 }
 
+s32 fn_8024ACB4(s32 *arg0, s32 arg1, void *arg2) {
+    #pragma unused(arg0, arg1, arg2)
+    return 0;
+}
+
 void *fn_8024AFF8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         fn_80236074((char *)arg0 + 0x4C, -1);
@@ -229,11 +234,45 @@ void *fn_8024AFF8(void *arg0, s32 arg1) {
     return arg0;
 }
 
+extern s32 fn_80215228(void);
+extern s32 fn_8024A6EC(s32 *, void *);
+extern s32 fn_8024ACB4(s32 *, s32, void *);
+extern u8 lbl_8055F298;
+u8 fn_8024B070(s32 *arg0, void *arg1) {
+ s32 sp8; s32 i=0; s32 offset=0; s32 count=*(s32 *)((u8 *)arg1+4);
+ s32 *items=*(s32 **)arg1;
+ if(count>0) do { if(*(s32 *)((u8 *)items+offset)==*arg0) break; offset+=0x18; i++; } while(--count);
+ else i=-1;
+ if(count==0) i=-1;
+ sp8=i>=0?*(s32 *)((u8 *)items+i*0x18+0xC):0;
+ if(fn_80215228()!=0) lbl_8055F298=0;
+ if(lbl_8055F298==0) {
+   if(fn_8024A6EC(&sp8,arg1)==0) {
+     do { lbl_8055F298=0; if(fn_8024ACB4(arg0,sp8,arg1)!=0){lbl_8055F298=1;break;} } while(lbl_8055F298==0);
+   }
+ }
+ return lbl_8055F298;
+}
+
 int fn_8024B214(char *arg0, char *arg1) {
     unsigned char first = ((unsigned char *)arg0)[4];
     if (first != 0 && ((unsigned char *)arg1)[4] == 0) return 1;
     if (((unsigned char *)arg1)[4] != 0 && first == 0) return -1;
     return stricmp(*(char **)arg0, *(char **)arg1);
+}
+
+extern void fn_80265DCC(void *, int, int, void *);
+extern char lbl_80343BD0[];
+extern int stricmp(const char *, const char *);
+extern void *memset(void *, int, unsigned int);
+void *fn_8024B3E8(void *arg0, void *arg1, int arg2) {
+ int i,j,n,found; unsigned char *e; void **items;
+ arg2=arg2; *(void **)((char*)arg0+0x74)=arg1; *(int*)((char*)arg0+0x14)=0; *(char**)arg0=lbl_80343BD0;
+ items=(void**)((char*)arg0+0x24); *(void***)((char*)arg0+0x18)=items; *(int*)((char*)arg0+0x20)=10; *(int*)((char*)arg0+0x1c)=0; *((unsigned char*)arg0+0x284)=0;
+ for(i=0;i<((int*)arg1)[1];i++){e=(unsigned char*)*(void**)arg1+i*0x18; found=1; for(j=0;j<*(int*)((char*)arg0+0x1c);j++) if(e[0x14]&&stricmp((char*)items[j],*(char**)(e+0xc))==0) found=0;
+ if(found){n=*(int*)((char*)arg0+0x1c); *(int*)((char*)arg0+0x1c)=n+1; items[n]=*(void**)(e+0xc); *((unsigned char*)&items[n]+4)=e[0x15];}
+ if(e[0x14]&&e[0x15])*((unsigned char*)arg0+0x284)=1; }
+ fn_80265DCC(items,*(int*)((char*)arg0+0x1c),8,fn_8024B214); memset((char*)arg0+0x78,0,0x208); *(int*)((char*)arg0+0x280)=-1; return arg0;
 }
 
 void fn_8024B544(void *arg0, char *arg1) {
@@ -415,8 +454,8 @@ s32 fn_8024B8D4(s32 arg0) {
 }
 
 void fn_8024B8DC(void *arg0) {
-    s32 offset;
-    s32 index;
+    unsigned offset;
+    long index;
     fn_80214CB4(*(s32 *)((char *)arg0 + 0x9C));
     index = 0;
     offset = 0;
@@ -428,8 +467,8 @@ void fn_8024B8DC(void *arg0) {
         } else {
             fn_80214A9C(index + 1);
         }
+        index += 1;
         offset += 4;
-        index++;
     }
 }
 
@@ -542,6 +581,42 @@ void fn_8024BBF4(void *arg0) {
         *(char *)((char *)arg0 + 0x38) = 0;
     }
 }
+
+void fn_8024BCC0(void *arg0) {
+    s32 spC, sp8;
+    void *obj;
+    void *result;
+    char *src, *dst;
+    s32 count;
+    int (*get_name)(void *, char *);
+    obj = *(void **)((char *)arg0 + 0x30);
+    if (obj != 0) {
+        ((void (*)(void *, s32 *, s32 *))*(void **)((char *)*(void **)((char *)obj + 0xC) + 0x38))(obj, &sp8, &spC);
+        result = fn_80012870(sp8, spC);
+        *(s32 *)((char *)arg0 + 0x34) = *(s32 *)result;
+        obj = *(void **)((char *)result + 0x20);
+        get_name = *(int (**)(void *, char *))((char *)*(void **)obj + 0x14);
+        src = (char *)get_name(obj, lbl_80343E60);
+        dst = (char *)arg0 + 0x38;
+        count = 0x64;
+        do {
+            count--;
+            if (count <= 0) {
+                dst[-1] = 0;
+                break;
+            }
+            {
+                char c = *src++;
+                *dst++ = c;
+                if ((signed char)c == 0) break;
+            }
+        } while (1);
+    } else {
+        *(s32 *)((char *)arg0 + 0x34) = -1;
+        *(char *)((char *)arg0 + 0x38) = 0;
+    }
+}
+
 extern void *lbl_8055F28C;
 static inline int find_sound_entry(int id) {
     int i;
