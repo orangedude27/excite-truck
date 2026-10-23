@@ -391,7 +391,7 @@ extern void fn_802DC464();
 extern float fn_801DCF48(int, float, float);
 #pragma push
   #pragma ppc_psq_save off
-    #pragma scheduling off
+    #pragma scheduling on
 void fn_802B1758(void *arg0) {
     float setupA[3];
     float setupB[3];
