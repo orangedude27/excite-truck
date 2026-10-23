@@ -267,6 +267,18 @@ extern "C" char lbl_8055C5A4[];
 extern "C" char lbl_8055C5AC[];
 extern "C" char lbl_8055C5B4[];
 extern "C" int fn_80272028(void *arg0, Parser *arg1, int arg_sp0) {
+    struct ParserLocal {
+        virtual void slot0();
+        virtual void slot1();
+        virtual void slot2();
+        virtual int has(const char *);
+        virtual int enumerate(int, char **, int *);
+        virtual void slot5();
+        virtual void slot6();
+        virtual int getCount(const char *);
+        virtual int getOption(const char *, int);
+        virtual float getFloat(const char *);
+    };
     struct Stack {
         char *path;
         int hash;
