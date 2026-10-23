@@ -31,9 +31,15 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
     f32 outZ;
 
     if (src == dst) {
-        outX = x * matrix[0] + y * matrix[3] + z * matrix[6];
-        outY = x * matrix[1] + y * matrix[4] + z * matrix[7];
-        outZ = x * matrix[2] + y * matrix[5] + z * matrix[8];
+        f32 xy3 = y * matrix[3];
+        f32 xx0 = x * matrix[0];
+        f32 xx1 = x * matrix[1];
+        f32 yy4 = y * matrix[4];
+        f32 xx2 = x * matrix[2];
+        f32 yy5 = y * matrix[5];
+        outX = (xx0 + xy3) + z * matrix[6];
+        outY = (xx1 + yy4) + z * matrix[7];
+        outZ = (xx2 + yy5) + z * matrix[8];
     } else {
         x = src[0];
         y = src[1];
