@@ -755,7 +755,7 @@ void fn_8003773C(void) {
 
 extern s32 lbl_8055D8A0;
 extern u32 lbl_8055D8A4;
-extern void OSCreateAlarm(void *);
+
 extern void OSSetAlarm(void *, u64, u32, void (*)(void));
 extern u64 __OSGetSystemTime(void);
 extern void fn_80037800(void);
