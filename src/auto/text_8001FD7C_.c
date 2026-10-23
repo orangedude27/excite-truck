@@ -218,6 +218,121 @@ void fn_80020430(void) {
     fn_8001FF24();
 }
 
+int fn_80020434(void* arg0, float* arg1) {
+    float out1[2], out2[2];
+    float mat[12];
+    float dbl_tmp[2];
+    float var_f1;
+    float var_f3;
+    float var_f31;
+    float temp_f0;
+    float temp_f1;
+    float temp_f2;
+    float temp_f3;
+    float temp_f4;
+    float temp_f5;
+    float temp_f6;
+    float temp_f7;
+    s32 temp_r3;
+    s32 temp_r4;
+    s32 temp_r6;
+    s32 temp_r0;
+    void* temp_r28;
+
+    mat[0] = lbl_805604B8;
+    mat[1] = lbl_805604B4;
+    mat[2] = lbl_805604B4;
+    mat[3] = lbl_805604B4;
+    mat[4] = lbl_805604B8;
+    mat[5] = lbl_805604B4;
+    mat[6] = lbl_805604B4;
+    mat[7] = lbl_805604B4;
+    mat[8] = lbl_805604B8;
+    mat[9] = lbl_805604B4;
+    mat[10] = lbl_805604B4;
+    mat[11] = lbl_805604B4;
+    fn_802A1120(out1, out2, lbl_805604B8);
+    mat[9] = out1[0];
+    mat[10] = lbl_805604B4;
+    mat[11] = out1[1];
+    mat[6] = out2[0];
+    mat[7] = lbl_805604B4;
+    mat[8] = out2[1];
+    ((Cross7)PSVECCrossProduct)(&mat[3], &mat[6], &mat[0], out2[0], out1[1], lbl_805604B4, out1[0]);
+    temp_r3 = fn_802E2C20();
+    temp_r6 = temp_r3 - lbl_8055D63C;
+    temp_r0 = temp_r6 / 50000;
+    temp_r0 = temp_r6 - temp_r0 * 50000;
+    dbl_tmp[0] = 176.0f;
+    *(s32*)&dbl_tmp[1] = temp_r0 ^ 0x8000;
+    temp_f2 = (*(double*)&dbl_tmp[0] - lbl_805604E8) / lbl_805604BC * lbl_805604C0;
+    temp_f7 = lbl_805604C4 + (lbl_805604C8 * (lbl_805604B8 - cos(temp_f2)));
+    temp_f5 = mat[9];
+    temp_f3 = mat[10];
+    temp_f6 = mat[6] * temp_f7;
+    temp_f4 = mat[7] * temp_f7;
+    temp_f1 = temp_f5 + temp_f6;
+    temp_f2 = mat[11] + (mat[8] * temp_f7);
+    mat[9] = temp_f1;
+    mat[10] = temp_f3 + temp_f4;
+    mat[11] = temp_f2;
+    mat[10] = lbl_805604CC + fn_801EA0E8(temp_f1, temp_f2, temp_f3, temp_f4, temp_f5, temp_f6, temp_f7);
+    var_f1 = lbl_805604D0;
+    if (lbl_8055D630 > 0) {
+        temp_r28 = &lbl_8035B758[lbl_8055D634 * 0x70];
+        dbl_tmp[0] = 176.0f;
+        temp_r3 = fn_802E2C20();
+        temp_r0 = (temp_r3 - lbl_8055D638) ^ 0x8000;
+        *(s32*)&dbl_tmp[1] = temp_r0;
+        var_f31 = lbl_805604D4 * (*(double*)&dbl_tmp[0] - lbl_805604E8);
+        temp_f3 = *(float*)&((char*)temp_r28)[0x68];
+        if (var_f31 > temp_f3) {
+            temp_r4 = lbl_8055D634 + 1;
+            lbl_8055D634 = (lbl_8055D634 + 1) % lbl_8055D630;
+            lbl_8055D638 = fn_802E2C20();
+        }
+        var_f3 = lbl_805604B8;
+        temp_f0 = (var_f31 - lbl_805604B4) / (temp_f3 - lbl_805604B4);
+        if (var_f3 >= temp_f0) {
+            var_f3 = temp_f0;
+        }
+        if (var_f3 <= lbl_805604B4) {
+            var_f3 = lbl_805604B4;
+        }
+        var_f31 = lbl_805604B4 + var_f3 * lbl_805604B8;
+        if (*(unsigned char*)&((char*)temp_r28)[0x6C] != 0) {
+            var_f1 = lbl_805604D8;
+            if (var_f31 < var_f1) {
+            } else if (var_f31 > lbl_805604B8) {
+                var_f1 = lbl_805604B8;
+            } else if (var_f31 > lbl_805604B4) {
+                var_f1 = var_f31 * (lbl_805604DC * var_f31 * var_f31) + lbl_805604E0 * var_f31 * var_f31;
+            } else {
+                var_f1 = var_f31 * (lbl_805604DC * var_f31 * var_f31) - lbl_805604E0 * var_f31 * var_f31;
+            }
+            var_f31 = var_f1;
+        }
+        fn_8026E22C(mat, temp_r28, (char*)temp_r28 + 0x30, var_f31);
+        fn_80020070(mat);
+        temp_f1 = *(float*)&((char*)temp_r28)[0x60];
+        var_f1 = temp_f1 + var_f31 * (*(float*)&((char*)temp_r28)[0x64] - temp_f1);
+    }
+    ((s32*)arg0)[0] = ((s32*)mat)[0];
+    ((s32*)arg0)[1] = ((s32*)mat)[1];
+    ((s32*)arg0)[2] = ((s32*)mat)[2];
+    ((s32*)arg0)[3] = ((s32*)mat)[3];
+    ((s32*)arg0)[4] = ((s32*)mat)[4];
+    ((s32*)arg0)[5] = ((s32*)mat)[5];
+    ((s32*)arg0)[6] = ((s32*)mat)[6];
+    ((s32*)arg0)[7] = ((s32*)mat)[7];
+    ((s32*)arg0)[8] = ((s32*)mat)[8];
+    ((s32*)arg0)[9] = ((s32*)mat)[9];
+    ((s32*)arg0)[10] = ((s32*)mat)[10];
+    ((s32*)arg0)[11] = ((s32*)mat)[11];
+    *arg1 = var_f1;
+    return 0;
+}
+
 extern int fn_80020434(void*, float*);
 extern int fn_8026A2CC(void*, int, float);
 extern int fn_8000C630(int, int);
