@@ -35,7 +35,24 @@ static inline void transform_vec(float *out, const float *m, volatile float *in)
     }
 }
 #pragma cplusplus on
-extern "C" void fn_801B8E28(int arg0) {
+extern "C" static inline void transform_vec_struct(Vec *out, const float *m, volatile Vec *in) {
+    if (out == in) {
+        float x = in->x;
+        float y = in->y;
+        float z = in->z;
+        float x0 = x * m[0] + y * m[3] + z * m[6];
+        float x1 = x * m[1] + y * m[4] + z * m[7];
+        float x2 = x * m[2] + y * m[5] + z * m[8];
+        out->x = x0;
+        out->y = x1;
+        out->z = x2;
+    } else {
+        out->x = in->y * m[3] + in->x * m[0] + in->z * m[6];
+        out->y = in->y * m[4] + in->x * m[1] + in->z * m[7];
+        out->z = in->y * m[5] + in->x * m[2] + in->z * m[8];
+    }
+}
+void fn_801B8E28(int arg0) {
     struct Dummy {
         virtual void v0();
         virtual void v1();
