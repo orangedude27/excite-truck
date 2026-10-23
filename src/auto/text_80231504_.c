@@ -70,6 +70,7 @@ s32 fn_80231504(void) {
     return 0;
 }
 
+#pragma dont_inline on
 s32 fn_8023150C(const char *arg0) {
     s32 i = 0;
     s32 offset = 0;
@@ -168,74 +169,65 @@ void fn_80231780(void *arg0) {
     s32 index;
     s32 color;
 
-    f29 = lbl_80563680;
+    f31 = lbl_80563680;
     f30 = lbl_80563684;
-    f31 = lbl_80563688;
+    f29 = lbl_80563688;
     i = 0;
     offset = 0;
-    for (;;) {
-        if (i >= lbl_8049846C[1]) break;
-        record = *(u8 **)&lbl_8049846C[0] + offset;
-        index = *(s32 *)record;
-        object = lbl_80497F14 + index * 0x1C;
+    goto loop_test;
 
-        if (object[0x14] != 0)
-            color = *(s32 *)(record + 0x18);
-        else
-            color = fn_80230B9C((*(s32 *)(record + 0x18) & 0xFF000000) | 0x00FFFFFF);
+loop_body:
+    record = *(u8 **)&lbl_8049846C[0] + offset;
+    index = *(s32 *)record;
+    object = lbl_80497F14 + index * 0x1C;
 
-        if (*(s32 *)(object + 0x0C) != 0) {
-            sp8 = *(f32 *)(record + 4);
-            spC = *(f32 *)(record + 8);
-            sp10 = *(f32 *)(record + 0x0C);
-            if (arg0 != 0) {
-                f32 *input = &sp8;
-                f32 *output = &sp8;
-                if (output == input) {
-                    sp8 = sp8 * ((f32 *)arg0)[0] + spC * ((f32 *)arg0)[3] + sp10 * ((f32 *)arg0)[6] + ((f32 *)arg0)[9];
-                    spC = sp8 * ((f32 *)arg0)[1] + spC * ((f32 *)arg0)[4] + sp10 * ((f32 *)arg0)[7] + ((f32 *)arg0)[10];
-                    sp10 = sp8 * ((f32 *)arg0)[2] + spC * ((f32 *)arg0)[5] + sp10 * ((f32 *)arg0)[8] + ((f32 *)arg0)[11];
-                } else {
-                    sp8 = sp8 * ((f32 *)arg0)[0] + spC * ((f32 *)arg0)[3];
-                    spC = sp8 * ((f32 *)arg0)[1] + spC * ((f32 *)arg0)[4];
-                    sp10 = sp8 * ((f32 *)arg0)[2] + spC * ((f32 *)arg0)[5];
-                    sp8 += ((f32 *)arg0)[9];
-                    spC += ((f32 *)arg0)[10];
-                    sp10 += ((f32 *)arg0)[11];
-                }
+    if (object[0x14] != 0)
+        color = *(s32 *)(record + 0x18);
+    else
+        color = fn_80230B9C((*(s32 *)(record + 0x18) & 0xFF000000) | 0x00FFFFFF);
+
+    if (*(s32 *)(object + 0x0C) != 0) {
+        sp8 = *(f32 *)(record + 4);
+        spC = *(f32 *)(record + 8);
+        sp10 = *(f32 *)(record + 0x0C);
+        if (arg0 != 0) transform_vec((f32 *)arg0, &sp8, &sp8);
+        {
+            f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
+            f32 ratio;
+            f32 width = *(f32 *)(record + 0x14);
+            f32 height = *(f32 *)(record + 0x10);
+            if (rate > f31) {
+            } else {
+                rate = f31;
             }
-            {
-                f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
-                f32 ratio;
-                f32 width = *(f32 *)(record + 0x14);
-                f32 height = *(f32 *)(record + 0x10);
-                if (rate <= f29) rate = f29;
-                ratio = f30 / rate;
-                fn_802354A0(*(s32 *)(object + 0x0C), *(s32 *)(object + 0x10), color,
-                            sp8 - f31 * (ratio * width - width),
-                            spC + f31 * (ratio * height - height),
-                            sp10, ratio * width, ratio * height);
-            }
-        } else {
-            if (arg0 != 0)
-                fn_802C8B98(*(s32 *)(lbl_80497F14 + index * 0x1C + 8), (s32)arg0);
-            else
-                fn_802C8B98(*(s32 *)(lbl_80497F14 + index * 0x1C + 8), fn_8022EDC4());
-            fn_802C8DBC(4);
-            f28 = *(f32 *)(record + 4);
-            f27 = *(f32 *)(record + 8);
-            f26 = f28 + *(f32 *)(record + 0x14);
-            f25 = f27 - *(f32 *)(record + 0x10);
-            fn_802C8E00(color, 0, f28, f27, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_8056368C);
-            fn_802C8E00(color, 0, f26, f27, *(f32 *)(record + 0x0C), lbl_80563684, lbl_8056368C);
-            fn_802C8E00(color, 1, f28, f25, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_80563684);
-            fn_802C8E00(color, 1, f26, f25, *(f32 *)(record + 0x0C), lbl_80563684, lbl_80563684);
-            fn_802C8E48();
-            fn_802C8D74();
+            ratio = f30 / rate;
+            fn_802354A0(*(s32 *)(object + 0x0C), *(s32 *)(object + 0x10), color,
+                        sp8 - f29 * (ratio * width - width),
+                        spC + f29 * (ratio * height - height),
+                        sp10, ratio * width, ratio * height);
         }
-        offset += 0x1C;
-        i += 1;
+    } else {
+        if (arg0 != 0)
+            fn_802C8B98(*(s32 *)(lbl_80497F14 + index * 0x1C + 8), (s32)arg0);
+        else
+            fn_802C8B98(*(s32 *)(lbl_80497F14 + index * 0x1C + 8), fn_8022EDC4());
+        fn_802C8DBC(4);
+        f27 = *(f32 *)(record + 4);
+        f26 = *(f32 *)(record + 8);
+        f25 = f27 + *(f32 *)(record + 0x14);
+        f28 = f26 - *(f32 *)(record + 0x10);
+        fn_802C8E00(color, 0, f27, f26, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_8056368C);
+        fn_802C8E00(color, 0, f25, f26, *(f32 *)(record + 0x0C), lbl_80563684, lbl_8056368C);
+        fn_802C8E00(color, 1, f27, f28, *(f32 *)(record + 0x0C), lbl_8056368C, lbl_80563684);
+        fn_802C8E00(color, 1, f25, f28, *(f32 *)(record + 0x0C), lbl_80563684, lbl_80563684);
+        fn_802C8E48();
+        fn_802C8D74();
     }
+    offset += 0x1C;
+    i += 1;
+
+loop_test:
+    if (i < lbl_8049846C[1]) goto loop_body;
     lbl_8049846C[1] = 0;
 }
 
@@ -253,6 +245,103 @@ void fn_802321D8(void) {
     if (lbl_8055F068 != 0) fn_802E317C(lbl_80340488);
     lbl_8055F068 = fn_801284F8(0x16C, lbl_803404C0);
     memset(lbl_8055F068, 0, 0x16C);
+}
+
+extern void *fn_8012C370(const char *, s32, u32 *, s32 *, u8 *, u8 *);
+extern void fn_80028E00(char *, const char *);
+extern s32 fn_802CAC34(char *, s32);
+extern char lbl_8055B9D4[];
+s32 fn_80232578(const char *arg0) {
+    s32 index;
+    s32 offset;
+    u8 *entry;
+    u8 *data;
+    u8 *record;
+    u32 size;
+    s32 unused;
+    u8 valid;
+    u8 swap;
+    void *parsed;
+    char name[0xC];
+    s32 i;
+    u8 temp;
+    u32 value;
+
+    index = fn_8023150C(arg0);
+    if (index >= 0) {
+        offset = index * 0xC;
+        entry = lbl_8055F068 + offset;
+        value = *(u32 *)(entry + 8);
+        *(u32 *)(entry + 8) = value + 1;
+        value = (u32)fn_80231730((s32)arg0);
+        *(u32 *)(*(u32 **)entry + 8) = value;
+        return *(s32 *)entry;
+    }
+
+    valid = 0;
+    swap = 0;
+    unused = 0;
+    parsed = fn_8012C370(arg0, 0x47544558, &size, &unused, &valid, &swap);
+    if (parsed == 0) {
+        ((void (*)(const char *, ...))fn_802E30C8)(lbl_80340440 + 0x144, arg0);
+        return 0;
+    }
+
+    if (size != 8) {
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340440 + 0xE4, arg0);
+    }
+    if (valid == 0) {
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340440 + 0x108, arg0);
+    }
+
+    data = (u8 *)parsed;
+    if (swap != 0) {
+        temp = data[0xC]; data[0xC] = data[0xD]; data[0xD] = temp;
+        temp = data[0x14]; data[0x14] = data[0x17]; data[0x17] = temp;
+        temp = data[0x15]; data[0x15] = data[0x16]; data[0x16] = temp;
+        temp = data[0x10]; data[0x10] = data[0x13]; data[0x13] = temp;
+        temp = data[0x11]; data[0x11] = data[0x12]; data[0x12] = temp;
+        temp = data[0x18]; data[0x18] = data[0x1B]; data[0x1B] = temp;
+        temp = data[0x19]; data[0x19] = data[0x1A]; data[0x1A] = temp;
+        *(u32 *)(data + 0x10) += (u32)data;
+        *(u32 *)(data + 0x18) += (u32)data;
+
+        offset = 0;
+        for (i = 0; i < *(u16 *)(data + 0xC); i++, offset += 0x1C) {
+            record = (u8 *)*(u32 *)(data + 0x10) + offset;
+            temp = record[0xC]; record[0xC] = record[0xF]; record[0xF] = temp;
+            temp = record[0xD]; record[0xD] = record[0xE]; record[0xE] = temp;
+            temp = record[0x10]; record[0x10] = record[0x13]; record[0x13] = temp;
+            temp = record[0x11]; record[0x11] = record[0x12]; record[0x12] = temp;
+            temp = record[0x14]; record[0x14] = record[0x17]; record[0x17] = temp;
+            temp = record[0x15]; record[0x15] = record[0x16]; record[0x16] = temp;
+            temp = record[0x18]; record[0x18] = record[0x1B]; record[0x1B] = temp;
+            temp = record[0x19]; record[0x19] = record[0x1A]; record[0x1A] = temp;
+
+            temp = record[0]; record[0] = record[3]; record[3] = temp;
+            temp = record[1]; record[1] = record[2]; record[2] = temp;
+            temp = record[8]; record[8] = record[0xB]; record[0xB] = temp;
+            temp = record[9]; record[9] = record[0xA]; record[0xA] = temp;
+            temp = record[4]; record[4] = record[7]; record[7] = temp;
+            temp = record[5]; record[5] = record[6]; record[6] = temp;
+        }
+    }
+
+    strncpy(name, arg0, 0xB);
+    name[0xB] = 0;
+    fn_80028E00(name, lbl_8055B9D4);
+    if (strlen(name) > 0x10) {
+        ((void (*)(const char *, ...))fn_802E317C)(lbl_80340440 + 0x15C, name, 0x10, strlen(name));
+    }
+    index = fn_802CAC34(name, *(s32 *)(data + 0x18));
+    if (index == -1) {
+        fn_802E30C8(lbl_80340440 + 0x190);
+        return 0;
+    }
+    *(s32 *)data = index;
+    *(s32 *)(data + 8) = fn_80231730((s32)arg0);
+    fn_8023158C(data, arg0);
+    return (s32)data;
 }
 
 void fn_80232928(void* hi) {
