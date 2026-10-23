@@ -6701,6 +6701,61 @@ static void hidh_l2cif_config_ind(UINT16 l2cap_cid, tL2CAP_CFG_INFO *p_cfg)
     }
 }
 
+extern char lbl_80317AD8[];
+extern char lbl_80317B04[];
+static void hidh_l2cif_disconnect_ind(UINT16 l2cap_cid, BOOLEAN ack_needed)
+{
+    UINT8 dhandle;
+    UINT8 *p_hcon = NULL;
+    UINT16 disc_res = 0;
+    UINT16 hid_close_evt_reason;
+
+    for (dhandle = 0; dhandle < 0x10; dhandle++) {
+        UINT8 *p_dev = lbl_803C3C38 + dhandle * 0x34;
+        if (p_dev[0] != 0 && p_dev[0x10] != 0 &&
+            (l2cap_cid == *(UINT16 *)(p_dev + 0x14) ||
+             l2cap_cid == *(UINT16 *)(p_dev + 0x16)))
+            break;
+    }
+
+    if (dhandle != 0x10)
+        p_hcon = lbl_803C3C38 + dhandle * 0x34 + 0x10;
+
+    if (p_hcon == NULL) {
+        if (lbl_803C3C38[0x401] >= 2)
+            fn_80070954(0x1E0001, lbl_80317AD8, l2cap_cid);
+    } else {
+        if (ack_needed)
+            L2CA_DisconnectRsp(l2cap_cid);
+
+        if (lbl_803C3C38[0x401] >= 4)
+            fn_80070954(0x1E0003, lbl_80317B04, l2cap_cid);
+
+        p_hcon[0] = 5;
+        if (l2cap_cid == *(UINT16 *)(p_hcon + 4))
+            *(UINT16 *)(p_hcon + 4) = 0;
+        else
+            *(UINT16 *)(p_hcon + 6) = 0;
+
+        if (*(UINT16 *)(p_hcon + 4) == 0 && *(UINT16 *)(p_hcon + 6) == 0) {
+            *(UINT8 *)(lbl_803C3C38 + dhandle * 0x34 + 0xA) = 0;
+            p_hcon[0] = 0;
+
+            if (!ack_needed)
+                disc_res = ((UINT16 (*)(void))fn_80077DD8)();
+
+            hid_close_evt_reason = *(UINT16 *)(p_hcon + 0xA);
+            if (disc_res == 5 || disc_res == 6 || disc_res == 0xE ||
+                disc_res == 0x18 || disc_res == 0x26 || disc_res == 0x29 ||
+                disc_res == 0x25 || disc_res == 0x17)
+                hid_close_evt_reason = 0xF;
+
+            ((void (*)(UINT8, UINT32, UINT16, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
+                dhandle, 1, hid_close_evt_reason, 0);
+        }
+    }
+}
+
 extern char lbl_80317B28[];
 extern char lbl_80317B58[];
 void hidh_l2cif_disconnect_cfm(u32 handle) {
