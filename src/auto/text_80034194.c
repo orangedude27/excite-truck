@@ -6,6 +6,7 @@
 
 extern u8 *FstStart_8055D840;
 extern u8 *FstStringStart_8055D83C;
+extern u8 lbl_802FE850[];
 extern s32 lbl_8055D828;
 extern BOOL __DVDLongFileNameFlag;
 extern void OSPanic(const char *, s32, const char *);
@@ -182,6 +183,80 @@ void __DSP_remove_task(void *task) {
     lbl_8055D824 = *(void **)((u8 *)task + 0x38);
     *(void **)((u8 *)*(void **)((u8 *)task + 0x3c) + 0x38) = *(void **)((u8 *)task + 0x38);
     *(void **)((u8 *)*(void **)((u8 *)task + 0x38) + 0x3c) = *(void **)((u8 *)task + 0x3c);
+}
+
+s32 DVDConvertPathToEntrynum(const char *path) {
+    u32 *fst = (u32 *)FstStart_8055D840;
+    char *strings = (char *)FstStringStart_8055D83C;
+    const char *backup = path;
+    u32 current = lbl_8055D828;
+    u32 anchor;
+    const char *end;
+    const char *item_name;
+    const char *lhs;
+    const char *rhs;
+    const char *extension_start;
+    s32 name_length;
+    BOOL delimited;
+    BOOL has_extension;
+    BOOL illegal;
+    for (;;) {
+        if (*path == '\0') return current;
+        if (*path == '/') { current = 0; path++; continue; }
+        if (path[0] == '.') {
+            if (path[1] == '.') {
+                if (path[2] == '/') { current = fst[current * 3 + 1]; path += 3; continue; }
+                if (path[2] == '\0') return fst[current * 3 + 1];
+                goto check_format;
+            }
+            if (path[1] == '/') { path += 2; continue; }
+            if (path[1] == '\0') return current;
+        }
+check_format:
+        if (!__DVDLongFileNameFlag) {
+            has_extension = FALSE;
+            illegal = FALSE;
+            end = path;
+            while (*end != '\0' && *end != '/') {
+                if (*end == '.') {
+                    if (end - path > 8 || has_extension) { illegal = TRUE; goto validate_format; }
+                    has_extension = TRUE;
+                    extension_start = end + 1;
+                } else if (*end == ' ') illegal = TRUE;
+                end++;
+            }
+validate_format:
+            if (has_extension && end - extension_start > 3) illegal = TRUE;
+            if (illegal)
+                ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558DF8, 0x1B9, lbl_80301F70, backup);
+        } else {
+            end = path;
+            while (*end != '\0' && *end != '/') end++;
+        }
+        delimited = (*end == '\0') ? FALSE : TRUE;
+        name_length = end - path;
+        anchor = current + 1;
+        while (anchor < fst[current * 3 + 2]) {
+            if ((fst[anchor * 3] & 0xFF000000) != 0 || delimited != TRUE) {
+                item_name = strings + (fst[anchor * 3] & 0xFFFFFF);
+                lhs = item_name;
+                rhs = path;
+                for (;;) {
+                    if (*rhs == '\0') break;
+                    if (tolower(*lhs++) != tolower(*rhs++)) goto no_match;
+                }
+                if (*lhs == '/' || *lhs == '\0') goto found;
+            }
+no_match:
+            if ((fst[anchor * 3] & 0xFF000000) != 0) anchor = fst[anchor * 3 + 2];
+            else anchor++;
+        }
+        return -1;
+found:
+        if (!delimited) return anchor;
+        current = anchor;
+        path += name_length + 1;
+    }
 }
 
 extern s32 DVDCancel();
@@ -693,7 +768,7 @@ void fn_80038040(void) {
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
                 OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
-                    (((*(volatile u32 *)0x800000F8 >> 2) * 0x10624DD3U) >> 6) * 0x64, fn_8003801C);
+                    ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
             }
             break;
         case 3:
@@ -703,7 +778,7 @@ void fn_80038040(void) {
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
                 OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
-                    (((*(volatile u32 *)0x800000F8 >> 2) * 0x10624DD3U) >> 6) * 0x64, fn_8003801C);
+                    ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
             }
             break;
         case 4:
@@ -713,17 +788,17 @@ void fn_80038040(void) {
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
                 OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
-                    (((*(volatile u32 *)0x800000F8 >> 2) * 0x10624DD3U) >> 6) * 0x64, fn_8003801C);
+                    ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
             }
+            break;
+        case 5:
+            *(s32 *)((u8 *)temp_r3 + 0xC) = 3;
+            fn_8003773C();
             break;
         case 1:
         case 6:
         case 7:
             fn_8003A1A0(lbl_8055D8B4, fn_80035C64);
-            break;
-        case 5:
-            *(s32 *)((u8 *)temp_r3 + 0xC) = 3;
-            fn_8003773C();
             break;
         default:
             break;
