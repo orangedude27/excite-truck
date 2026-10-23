@@ -1,3 +1,4 @@
+#include <revolution/MTX/mtxtypes.h>
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 extern float lbl_80562754;
 extern float lbl_80562758;
@@ -33,7 +34,30 @@ static inline void transform_vec(float *out, const float *m, volatile float *in)
         out[2] = in[1] * m[5] + in[0] * m[2] + in[2] * m[8];
     }
 }
-void fn_801B8E28(int arg0) {
+#pragma cplusplus on
+extern "C" void fn_801B8E28(int arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19(unsigned int *, void *);
+    };
     register void *obj = lbl_80436D28[arg0];
     struct Work {
         volatile float input[3];
@@ -81,11 +105,7 @@ void fn_801B8E28(int arg0) {
     w.fy = ((float *)w.copy)[7] * dot;
     w.fz = ((float *)w.copy)[8] * dot;
     w.h = *(short *)((char *)*(void **)((char *)obj + 0x2754) + 0x6c);
-    {
-        typedef void (*VFunc)(void *, unsigned int *, void *);
-        VFunc method = (VFunc)(*(void **)((char *)*(void **)obj + 0x54));
-        method(obj, w.copy, *(void **)((char *)obj + 0x2754));
-    }
+    ((struct Dummy *)obj)->v19(w.copy, *(void **)((char *)obj + 0x2754));
     *(void **)((char *)obj + 0x2738) = obj;
     if (*(unsigned char *)((char *)obj + 0x275d) == 0) {
         w.sp14[0] = *(float *)((char *)obj + 0x273c) + *(float *)((char *)obj + 0x30);
@@ -102,7 +122,7 @@ void fn_801B8E28(int arg0) {
     }
     fn_8018A08C(obj);
 }
-
+#pragma cplusplus reset
 void fn_801B916C(void* arg0) {
     char* p = (char*)arg0 + 4;
     int i = 0;
