@@ -236,10 +236,7 @@ void fn_80233010(char *arg0, s32 font, s32 color, s32 flags, s32 mode, f32 x, f3
 #pragma scheduling reset
 
 #pragma scheduling reset
-extern s32 fn_8022EDC4(void);
-extern s32 fn_80230B9C(s32);
 extern void fn_8022C8B98(void);
-extern void fn_802C8B98(s32, s32);
 extern s32 lbl_8055F050;
 extern void fn_80232040(u8 *, s32, s32, s32, s32, f32, f32, f32, f32, f32, f32);
 extern void fn_80233600(u8 *, s32, s32, s32, f32, f32, f32);
