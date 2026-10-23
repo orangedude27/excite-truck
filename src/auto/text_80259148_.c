@@ -8,9 +8,9 @@ extern float lbl_80498EAC[3];
 extern float lbl_8055F398;
 extern float lbl_80563AEC;
 extern float lbl_80563AF0;
-extern double lbl_80563B00;
-extern float lbl_80558DC4;
-extern unsigned char lbl_8055C380[];
+__declspec(section ".sdata") extern double lbl_80563B00;
+__declspec(section ".rodata") extern float lbl_80558DC4;
+__declspec(section ".sdata") extern unsigned char lbl_8055C380[];
 extern unsigned char lbl_8055F67C;
 
 extern void *fn_80258354(void);
@@ -122,6 +122,7 @@ extern int fn_80259224(void **);
 extern int fn_8025978C(void **);
 extern void fn_802E317C(const char *, int);
 #pragma push
+#pragma processor 750
 #pragma use_lmw_stmw off
 void fn_8025A50C(void) {
     extern unsigned char *fn_8001EFAC(int, int);
