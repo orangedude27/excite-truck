@@ -3,6 +3,12 @@
 
 #include <types.h>
 
+extern int fn_801C5B60(void);
+extern void fn_801DF074(int, int);
+extern int fn_801B2F24(void);
+extern void fn_80276DC8(int);
+extern void fn_80176734(void);
+
 #pragma cplusplus on
 struct Dummy_80163550 {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
