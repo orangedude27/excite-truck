@@ -94,6 +94,7 @@ void fn_8023158C(void *arg0, const char *arg1) {
     *(s32 *)(lbl_8055F068 + offset + 8) = 1;
     strcpy(fn_8012850C(0x40, lbl_80340440, offset, count + 1, lbl_8055F068), arg1);
 }
+#pragma dont_inline off
 
 s32 fn_802315FC(s32 arg0) {
     s32 offset = arg0 * 0xC;
