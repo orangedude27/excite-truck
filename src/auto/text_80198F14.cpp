@@ -6,6 +6,21 @@ extern "C" void* fn_801284F8(s32, const char*);
 extern "C" void fn_801A0378(void*, void*);
 extern "C" void fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
+
+static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
+    f32 x = src[0];
+    f32 y = src[1];
+    f32 z = src[2];
+    if (dst == src) {
+        dst[0] = (x * matrix[0] + y * matrix[3]) + z * matrix[6];
+        dst[1] = (x * matrix[1] + y * matrix[4]) + z * matrix[7];
+        dst[2] = (x * matrix[2] + y * matrix[5]) + z * matrix[8];
+    } else {
+        dst[0] = (y * matrix[3] + x * matrix[0]) + z * matrix[6];
+        dst[1] = (y * matrix[4] + x * matrix[1]) + z * matrix[7];
+        dst[2] = (y * matrix[5] + x * matrix[2]) + z * matrix[8];
+    }
+}
 class VTab1A1E7C {
  public:
  virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
