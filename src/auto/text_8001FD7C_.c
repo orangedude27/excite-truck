@@ -175,6 +175,7 @@ extern void PSVECNormalize(float *, float *);
 typedef void (*Cross3)(float *, float *, float *);
 typedef void (*Cross4)(float *, float *, float *, float);
 typedef void (*Cross5)(float *, float *, float *, float, float);
+typedef void (*Cross7)(float *, float *, float *, float, float, float, float);
 void fn_80020070(float *arg0) {
     extern float lbl_805604B4, lbl_805604B8;
     float sp34, sp30, sp2C, sp28, sp24, sp20, sp1C, sp18, sp14, sp10, spC, sp8;
