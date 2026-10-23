@@ -16,7 +16,7 @@ extern int lbl_8055E774;
 extern float lbl_80562764;
 extern void* lbl_80436D28[];
 
-static inline void transform_vec(float *out, const float *m, const float *in) {
+static inline void transform_vec(float *out, const float *m, volatile float *in) {
     if (out == in) {
         float x = in[0];
         float y = in[1];
@@ -39,7 +39,6 @@ void fn_801B8E28(int arg0) {
     float sp8[3], sp50[3], sp14[3], sp20[3];
     float temp_f1, temp_f1_2, temp_f1_3, temp_f2, temp_f2_2, temp_f3, temp_f3_3, temp_f3_4;
     void *matrix;
-    float *dst, *src;
     float dot, factorX, factorY, factorZ;
 
     fn_80189C64(obj, lbl_80436D28);
@@ -58,17 +57,7 @@ void fn_801B8E28(int arg0) {
         sp6c = -1;
     }
     matrix = *(void **)((char *)obj + 0x2754);
-    dst = sp50;
-    src = sp8;
-    if (dst == src) {
-        sp50[0] = sp8[1] * ((float *)matrix)[0x7c/4] + sp8[0] * ((float *)matrix)[0x70/4] + sp8[2] * ((float *)matrix)[0x88/4];
-        sp50[1] = sp8[1] * ((float *)matrix)[0x80/4] + sp8[0] * ((float *)matrix)[0x74/4] + sp8[2] * ((float *)matrix)[0x8c/4];
-        sp50[2] = sp8[1] * ((float *)matrix)[0x84/4] + sp8[0] * ((float *)matrix)[0x78/4] + sp8[2] * ((float *)matrix)[0x90/4];
-    } else {
-        sp50[0] = sp8[1] * ((float *)matrix)[0x7c/4] + sp8[0] * ((float *)matrix)[0x70/4] + sp8[2] * ((float *)matrix)[0x88/4];
-        sp50[1] = sp8[1] * ((float *)matrix)[0x80/4] + sp8[0] * ((float *)matrix)[0x74/4] + sp8[2] * ((float *)matrix)[0x8c/4];
-        sp50[2] = sp8[1] * ((float *)matrix)[0x84/4] + sp8[0] * ((float *)matrix)[0x78/4] + sp8[2] * ((float *)matrix)[0x90/4];
-    }
+    transform_vec(sp50, (float *)((char *)matrix + 0x70), sp8);
     temp_f2_2 = sp50[1];
     temp_f1_3 = sp50[2];
     sp50[0] += ((float *)matrix)[0x94/4];
