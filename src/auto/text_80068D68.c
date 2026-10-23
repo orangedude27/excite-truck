@@ -6862,6 +6862,64 @@ static void hidh_l2cif_config_ind(UINT16 l2cap_cid, tL2CAP_CFG_INFO *p_cfg)
     }
 }
 
+static void hidh_l2cif_config_cfm(u32 l2cap_cid, UINT16 *p_result) {
+    char *strings = lbl_80317838;
+    UINT8 dhandle;
+    UINT8 *p_dev;
+    UINT8 *p_hcon = NULL;
+
+    if (lbl_803C3C38[0x401] >= 4)
+        ((void (*)(u32, void *, u32, u16))fn_8007096C)(0x1E0003, strings + 0x274, l2cap_cid, *p_result);
+
+    for (dhandle = 0; dhandle < 0x10; dhandle++) {
+        p_dev = lbl_803C3C38 + dhandle * 0x34;
+        if (p_dev[0] != 0 && p_dev[0x10] != 0 &&
+            (l2cap_cid == *(UINT16 *)(p_dev + 0x14) ||
+             l2cap_cid == *(UINT16 *)(p_dev + 0x16)))
+            break;
+    }
+
+    if (dhandle != 0x10)
+        p_hcon = lbl_803C3C38 + dhandle * 0x34 + 0x10;
+
+    if (p_hcon == NULL) {
+        if (lbl_803C3C38[0x401] >= 2)
+            ((void (*)(u32, void *, u32))fn_80070954)(0x1E0001, strings + 0x21C, l2cap_cid);
+        return;
+    }
+
+    if (*p_result != 0) {
+        p_dev = lbl_803C3C38 + dhandle * 0x34;
+        if (lbl_803C3C38[0x401] >= 4)
+            fn_8007093C(0x1E0003, strings + 0x44);
+        if (*(UINT16 *)(p_dev + 0x14) != 0 || *(UINT16 *)(p_dev + 0x16) != 0) {
+            p_dev[0x10] = 5;
+            if (*(UINT16 *)(p_dev + 0x16) != 0)
+                L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x16));
+            if (*(UINT16 *)(p_dev + 0x14) != 0)
+                L2CA_DisconnectReq(*(UINT16 *)(p_dev + 0x14));
+        } else {
+            p_dev[0x10] = 0;
+        }
+        ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
+            dhandle, 1, *p_result | 0x400, 0);
+        return;
+    }
+
+    if (l2cap_cid == *(UINT16 *)(p_hcon + 4))
+        p_hcon[1] |= 4;
+    else
+        p_hcon[1] |= 0x10;
+
+    if ((p_hcon[1] & 0x1E) == 0x1E && p_hcon[0] == 3) {
+        p_hcon[0] = 4;
+        p_dev = lbl_803C3C38 + dhandle * 0x34;
+        p_dev[0xA] = 1;
+        ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(
+            dhandle, 0, 0, 0);
+    }
+}
+
 extern char lbl_80317AD8[];
 extern char lbl_80317B04[];
 static void hidh_l2cif_disconnect_ind(UINT16 l2cap_cid, BOOLEAN ack_needed)
@@ -11642,6 +11700,86 @@ void WUDDeviceStatusCallback(u32 arg0) {
     DBPrintf_8006CFA8(lbl_80313BB0);
     if (arg0 == 2) {
         OSReport(lbl_80313BCC);
+    }
+}
+
+void WUDStoredLinkKeyCallback(void *msg);
+extern void *WUDiGetNewDevInfo(void);
+extern const char lbl_80558FE8;
+void WUDStoredLinkKeyCallback(void *msg) {
+    u8 *base = (u8 *)msg;
+    char *fmt;
+    u8 *dev_info;
+    u8 *dev;
+    u8 *new_dev;
+    u8 *gbase;
+    s32 i;
+
+    fmt = (char *)lbl_803130C8;
+    gbase = lbl_80392960;
+    switch (base[0]) {
+    case 1:
+        DBPrintf_8006CFA8(fmt + 0xb2c);
+        dev_info = base + 2;
+        i = 0;
+        while (i < base[1]) {
+            dev = WUDiGetDevInfo(dev_info);
+            DBPrintf_8006CFA8(fmt + 0xb4c, dev_info[0], dev_info[1], dev_info[2], dev_info[3], dev_info[4], dev_info[5]);
+            DBPrintf_8006CFA8(fmt + 0xb78, dev_info[6], dev_info[7], dev_info[8], dev_info[9],
+                              dev_info[10], dev_info[11], dev_info[12], dev_info[0xD], dev_info[0xE], dev_info[0xF],
+                              dev_info[0x10], dev_info[0x11], dev_info[0x12], dev_info[0x13], dev_info[0x14], dev_info[0x15]);
+            if (dev == 0) {
+                DBPrintf_8006CFA8(fmt + 0xbd4);
+                new_dev = WUDiGetNewDevInfo();
+                if (new_dev == 0) {
+                    for (i = 0; i < 6; i++) {
+                        if (gbase[i * 0x60 + 0x47d] == 0) {
+                            new_dev = gbase + i * 0x60 + 0x424;
+                            break;
+                        }
+                    }
+                }
+                if (new_dev != 0) {
+                    new_dev[0x5c] = 1;
+                    new_dev[0x59] = 1;
+                    memcpy(new_dev + 0x40, dev_info, 6);
+                    memcpy(new_dev + 0x46, dev_info + 6, 0x10);
+                }
+            } else {
+                memcpy(dev + 0x40, dev_info, 6);
+                memcpy(dev + 0x46, dev_info + 6, 0x10);
+                if (dev[0x5c] == 2) {
+                    dev[0x5c] = 3;
+                }
+                memcpy(gbase + 0x67c, dev_info, 6);
+                DBPrintf_8006CFA8(fmt + 0xbf8, gbase[0x67c], gbase[0x67d], gbase[0x67e],
+                                  gbase[0x67f], gbase[0x680], gbase[0x681]);
+            }
+            dev_info += 0x16;
+            i++;
+        }
+        break;
+    case 2:
+        DBPrintf_8006CFA8(fmt + 0xc20);
+        DBPrintf_8006CFA8(fmt + 0xc44, base[1], *(u16 *)(base + 2), *(u16 *)(base + 4));
+        gbase[0xe] = 0;
+        break;
+    case 3:
+        DBPrintf_8006CFA8(fmt + 0xc70);
+        DBPrintf_8006CFA8(fmt + 0xc94, base[1], base[2]);
+        gbase[0xe] = 0;
+        break;
+    case 4:
+        DBPrintf_8006CFA8(fmt + 0xcb0);
+        DBPrintf_8006CFA8(fmt + 0xc94, base[1], *(u16 *)(base + 2));
+        if (*(u16 *)(base + 2) == 0) {
+            DBPrintf_8006CFA8(fmt + 0xcd4);
+        }
+        gbase[0xe] = 0;
+        break;
+    default:
+        OSPanic((char *)&lbl_80558FE8, 0xe34, fmt + 0xcf4);
+        break;
     }
 }
 
