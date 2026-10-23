@@ -139,14 +139,14 @@ second_check:
     fn_80128658(allocation);
     if (success == 0) {
         int anyMissing = 0;
-        unsigned char *p = flags;
+        flagIt = flags;
         {
-            unsigned int remaining = (unsigned int)lbl_8055FFC0;
-            if (remaining > 0) {
-                do {
-                    if (*p == 0) anyMissing = 1;
-                    p++;
-                } while (--remaining != 0);
+            int scanCount = lbl_8055FFC0;
+            if (scanCount > 0) {
+                while (scanCount--) {
+                    if (*flagIt == 0) anyMissing = 1;
+                    flagIt++;
+                }
             }
         }
         if (anyMissing != 0) {
@@ -171,5 +171,5 @@ second_check:
 void fn_802E7128(void) { fn_802E6FBC(); }
 
 void fn_802E712C(void) {}
-#pragma scheduling off
+#pragma scheduling on
 
