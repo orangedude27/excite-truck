@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern void fn_8024CC54(void *, void *, int);
-extern void fn_8024C768(void);
+extern unsigned int fn_8024C768(void);
 extern signed char lbl_8055F2C8;
 int fn_8024CEF0(void);
 extern int fn_8000D984(int);
@@ -217,6 +217,44 @@ int fn_8024D054(void *arg0, int arg1) {
     default:
         return 0;
     }
+}
+
+void fn_8024D0EC(void *arg0) {
+    float x, y;
+    char buf[0x18];
+    int font, color, flags, count;
+    int scale;
+    float f40, f44;
+    float w;
+
+    fn_80230C30(&x, &y, *(int *)((char *)arg0 + 4), *(int *)((char *)arg0 + 8));
+    if (*(unsigned char *)((char *)arg0 + 0x48) != 0) {
+        *(int *)((char *)arg0 + 0x38) = -1;
+    } else {
+        scale = *(int *)((char *)arg0 + 0x10);
+        *(int *)((char *)arg0 + 0x38) = 0xFF000000;
+        font = *(int *)((char *)arg0 + 0x34);
+        f44 = *(float *)((char *)arg0 + 0x44);
+        w = ((float (*)(int, char *, float))fn_8023293C)(font, *(char **)((char *)arg0 + 0x2C), f44);
+        f40 = *(float *)((char *)arg0 + 0x40);
+        x += f40 * w;
+        fn_80230924((void *)-1, x, y, x + f40 * w, y - (float)scale, lbl_80563940);
+    }
+    font = *(int *)((char *)arg0 + 0x34);
+    color = *(int *)((char *)arg0 + 0x38);
+    flags = *(int *)((char *)arg0 + 0x3C);
+    f40 = *(float *)((char *)arg0 + 0x40);
+    f44 = *(float *)((char *)arg0 + 0x44);
+    fn_80232BA4((char *)arg0 + 0x18, font, color, flags, x, y, f40, lbl_80563930, f44);
+    count = *(int *)((char *)arg0 + 0x30);
+    sprintf(buf, lbl_8055C08C, count, count, *(char **)((char *)arg0 + 0x2C));
+    font = *(int *)((char *)arg0 + 0x34);
+    f44 = *(float *)((char *)arg0 + 0x44);
+    w = ((float (*)(int, char *, float))fn_8023293C)(font, buf, f44);
+    f40 = *(float *)((char *)arg0 + 0x40);
+    scale = *(int *)((char *)arg0 + 0x10);
+    x += f40 * w;
+    fn_80230924((void *)-0x2FC1, x - lbl_80563930, y, lbl_80563930 + x, y - (float)scale, lbl_80563940);
 }
 
 extern float lbl_80563948, lbl_80563944, lbl_8056394C;
