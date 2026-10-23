@@ -76,6 +76,7 @@ extern float lbl_80561CC4;
 extern float lbl_80561CC8;
 extern void fn_8018185C(float *, float, float, float, float, float, float);
 extern void fn_8017B6A8(void *);
+extern void fn_8018A750(void *, int);
 extern void fn_801B30C0(int, int, int);
 extern void fn_801BE400(int, float *, float);
 extern void fn_801D1810(int, int);
