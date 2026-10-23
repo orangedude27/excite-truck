@@ -52,6 +52,7 @@ extern char lbl_8031806C[];
 extern char lbl_80318090[];
 extern void *l2cu_find_lcb_by_bd_addr(u8 *addr);
 extern void l2cu_create_conn_after_switch(void *p_lcb);
+extern u8 lbl_803130C8[];
 extern u8 lbl_80392960[];
 extern u8 lbl_80393058[];
 extern char lbl_80313238[];
