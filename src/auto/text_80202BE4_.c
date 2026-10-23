@@ -56,7 +56,7 @@ extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 extern double cos(double);
 extern double sin(double);
-extern f32 lbl_805630D8, lbl_805630F0, lbl_805630F4, lbl_805630FC;
+extern f32 lbl_805630D8, lbl_805630F0, lbl_805630F4, lbl_805630F8, lbl_805630FC;
 extern f32 lbl_80563100, lbl_80563104, lbl_80563110;
 extern f64 lbl_80563108, lbl_80563118;
 
