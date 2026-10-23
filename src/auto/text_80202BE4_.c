@@ -72,7 +72,7 @@ void fn_80202BFC(s32 arg0) {
     } while(i<2);
 }
 
-extern void fn_802C8DBC(s32, s32, s32, s32);
+extern s32 fn_802C8DBC(s32, ...);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 extern double fn_801DCF48(s32, f32, f32);
@@ -90,7 +90,7 @@ extern f32 lbl_80563124;
 extern f32 lbl_80563128;
 extern f32 lbl_805630CC, lbl_805630D4, lbl_805630E0, lbl_805630F8;
 extern f32 lbl_80563120, lbl_80563124, lbl_80563128;
-#pragma scheduling on
+#pragma scheduling invalid_target
 void fn_80203380(void *argp) {
     f32 *arg0 = (f32 *)argp;
     struct {
@@ -147,8 +147,8 @@ void fn_80203380(void *argp) {
             cvt->w[0] = 0x43300000;
             cvt->w[1] = ((u32)angle) ^ 0x80000000U;
             theta = angleScale * (f32)(cvt->d - bias) / angleDivisor;
-            c = (f32)cos(theta);
-            s = (f32)sin(theta);
+            c = (f32)cos((double)theta);
+            s = (f32)sin((double)theta);
             baseX = arg0[9];
             q0 = h * c;
             q1 = radius * s;
@@ -230,7 +230,7 @@ void fn_80203380(void *argp) {
     fn_802C8E48();
     fn_802C8D74();
 }
-#pragma scheduling reset
+#pragma scheduling on
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     struct lbl_80488B88_t* var_r28;
     s32 temp_r0;
