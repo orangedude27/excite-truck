@@ -715,6 +715,134 @@ void fn_8003684C(void) {
     }
 }
 
+extern s32 lbl_8055D858, lbl_8055D870, lbl_8055D874;
+extern u32 *lbl_8055D894;
+extern u8 *lbl_8055D898;
+extern u32 *lbl_8055D89C;
+extern void fn_800370F4(u32);
+extern void fn_8003727C(u32);
+extern void fn_8003801C(void);
+extern void DVDLowOpenPartition(u32, u32, u32, u32, void *, void (*)(u32));
+void fn_80036D24(u32 arg0) {
+    u8 *base;
+    u32 *entry;
+    u32 *freeEntry;
+    u32 *limit;
+    s32 enabled;
+    s32 index;
+    s32 value;
+    s32 oldBlock;
+
+    base = lbl_80376A80;
+    enabled = OSDisableInterrupts();
+    if (*(volatile u32 *)&lbl_8055D848 == 0)
+        *(u32 *)(__ErrorInfo + 0x78) = arg0;
+    else
+        *(u32 *)(__ErrorInfo + 0x28 + (*(volatile u32 *)&lbl_8055D848 - 1) * 0x14) = arg0;
+    OSRestoreInterrupts(enabled);
+
+    if (arg0 == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+        return;
+    }
+    if (arg0 == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+        return;
+    }
+
+    if (arg0 & 1) {
+        lbl_8055D860 = 0;
+        entry = (u32 *)(base + 0xC0);
+        index = 0;
+        freeEntry = 0;
+        limit = lbl_8055D89C;
+        lbl_8055D898 = (u8 *)entry;
+        lbl_8055D894 = 0;
+        do {
+            if (entry[1] == 0) {
+                freeEntry = entry;
+                lbl_8055D894 = entry;
+            }
+            entry += 2;
+            index++;
+            lbl_8055D898 = (u8 *)entry;
+        } while ((u32)(s16)index < (u32)*limit);
+
+        if (freeEntry != 0) {
+            if (lbl_8055D8BC == 3) {
+                s32 localEnabled;
+                s32 logIndex;
+                lbl_8055D860 = 0;
+                fn_8003BCDC(0);
+                value = *lbl_8055D894;
+                localEnabled = OSDisableInterrupts();
+                if (*(volatile u32 *)&lbl_8055D848 >= 5)
+                    lbl_8055D848 = 0;
+                logIndex = *(volatile u32 *)&lbl_8055D848;
+                *(s32 *)(__ErrorInfo + logIndex * 0x14 + 0x1C) = 0x22;
+                *(s32 *)(__ErrorInfo + logIndex * 0x14 + 0x20) = value;
+                *(s32 *)(__ErrorInfo + logIndex * 0x14 + 0x24) = 0;
+                *(s32 *)(__ErrorInfo + logIndex * 0x14 + 0x2C) = OSGetTick();
+                lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+                OSRestoreInterrupts(localEnabled);
+                DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, fn_800370F4);
+                return;
+            } else {
+                s32 localEnabled;
+                s32 logIndex;
+                lbl_8055D860 = 0;
+                fn_8003BCDC(0);
+                value = *lbl_8055D894;
+                localEnabled = OSDisableInterrupts();
+                if (*(volatile u32 *)&lbl_8055D848 >= 5)
+                    lbl_8055D848 = 0;
+                logIndex = *(volatile u32 *)&lbl_8055D848;
+                *(s32 *)(__ErrorInfo + logIndex * 0x14 + 0x1C) = 0x22;
+                *(s32 *)(__ErrorInfo + logIndex * 0x14 + 0x20) = value;
+                *(s32 *)(__ErrorInfo + logIndex * 0x14 + 0x24) = 0;
+                *(s32 *)(__ErrorInfo + logIndex * 0x14 + 0x2C) = OSGetTick();
+                lbl_8055D848 = *(volatile u32 *)&lbl_8055D848 + 1;
+                OSRestoreInterrupts(localEnabled);
+                DVDLowOpenPartition(*lbl_8055D894, 0, 0, 0, base + 0x100, fn_8003727C);
+                return;
+            }
+        }
+
+        if (lbl_8055D858 != 0) {
+            oldBlock = executing_8055D8C8;
+            lbl_8055D85C = 1;
+            lbl_8055D858 = 0;
+            executing_8055D8C8 = (s32)(base + 0x20);
+            *(s32 *)((u8 *)oldBlock + 0xC) = 0xA;
+            {
+                void (*cb)(s32, void *) = *(void (**)(s32, void *))((u8 *)oldBlock + 0x28);
+                if (cb != 0)
+                    cb(-3, (void *)oldBlock);
+            }
+            if (lbl_8055D8B8 != 0)
+                lbl_8055D8B8(0, (void *)oldBlock);
+            fn_80038040();
+            return;
+        }
+
+        *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = 6;
+        MotorState_8055D8A8 = 1;
+        if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+            u32 period;
+            lbl_8055D870 = 1;
+            OSCreateAlarm(base + 0x50);
+            value = OSGetTick();
+            period = (u32)(((u64)(*(volatile u32 *)0x800000F8 >> 2) * 0x10624DD3) >> 32);
+            period = (period >> 6) * 100;
+            OSSetPeriodicAlarm(base + 0x50, 0x10624DD3, 0, value, 0, period, fn_8003801C);
+        }
+        return;
+    }
+
+    fn_800356F4(0x27, 0, 0);
+    fn_8003B218(fn_80035E6C);
+}
+
 extern s32 MotorState_8055D8A8;
 extern s32 lbl_8055D8BC;
 extern void __DVDClearWaitingQueue(void);
