@@ -384,7 +384,7 @@ extern "C" s32 fn_800DF1C8(s32 arg0, s32 arg1) {
 
 extern "C" void SetCursor__Q36nw4hbm2ut10CharWriterFff(void *, f32, f32);
 extern "C" s32 fn_800DDDF4(f32 *, void *, const u16 *, s32, u8 *, f32);
-extern "C" const u16 lbl_80559800[];
+extern "C" unsigned long lbl_80559800;
 extern "C" void fn_800DF81C(f32 *arg0, void *arg1, const u16 *arg2, s32 arg3, f32 arg4) {
     f32 out[4];
     u8 sp8;
