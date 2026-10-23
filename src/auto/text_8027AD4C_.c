@@ -74,8 +74,6 @@ test:
 
 #pragma cplusplus on
 struct NameObject {
-    virtual void pad0();
-    virtual void pad1();
     virtual char *name();
 };
 #pragma cplusplus reset
