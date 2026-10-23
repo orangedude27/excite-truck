@@ -76,6 +76,7 @@ extern double cos(double);
 extern float fn_801EA0E8(float, float, float, float, float, float, float);
 extern void fn_8026E22C(float*, void*, void*, float);
 extern void fn_80020070(float*);
+extern double lbl_805604E8;
 void fn_80176734(void);
 int fn_801312EC(void*, void*);
 void fn_80131318();
