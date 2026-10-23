@@ -40,9 +40,9 @@ public:
     virtual void v6();
     virtual void v7();
     virtual void v8();
-    virtual void v9();
+    virtual void v9(float *, float *, int *);
     virtual void v10();
-    virtual void v11(float *, float *, int *);
+    virtual void v11();
 };
 #pragma cplusplus reset
 typedef unsigned char u8;
