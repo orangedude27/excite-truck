@@ -48,9 +48,12 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, volat
         outY = x * matrix[1] + y * matrix[4] + z * matrix[7];
         outZ = x * matrix[2] + y * matrix[5] + z * matrix[8];
     }
-    dst[0] = outX + matrix[9];
-    dst[1] = outY + matrix[10];
-    dst[2] = outZ + matrix[11];
+    dst[0] = outX;
+    dst[1] = outY;
+    dst[2] = outZ;
+    dst[0] = dst[0] + matrix[9];
+    dst[1] = dst[1] + matrix[10];
+    dst[2] = dst[2] + matrix[11];
 }
 #define transform_vec(matrix, src, dst) transform_vec_values(matrix, src, dst, (src)[0], (src)[1], (src)[2])
 extern s32 fn_802315FC(s32);
