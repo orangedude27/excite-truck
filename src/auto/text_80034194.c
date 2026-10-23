@@ -14,6 +14,17 @@ extern void OSPanic(const char *, s32, const char *);
 extern char lbl_80558DF8[];
 extern char lbl_80301F70[];
 
+typedef struct DVDNode {
+    u32 packed_type_name;
+    u32 parent_or_offset;
+    u32 sibling_or_size;
+} DVDNode;
+
+static inline int DVDPathLower(int c) {
+    return (c < 0 || c >= 256) ? c :
+           (int)lbl_802FE850.cmap->to_lower_table[c];
+}
+
 extern void fn_80035C78(void);
 extern void fn_80035E6C(void);
 extern void fn_8003A1A0(u32, void (*)(void));
@@ -188,23 +199,21 @@ void __DSP_remove_task(void *task) {
 
 #pragma use_lmw_stmw off
 s32 DVDConvertPathToEntrynum(const char *path) {
-    u32 *fst = (u32 *)FstStart_8055D840;
+    const char *name_end;
     u32 it;
     u32 anchor;
-    const char *name_end;
     const char *item_name;
-    const char *compare_path;
+    const char *lhs;
+    const char *rhs;
     BOOL name_delimited_by_slash;
     s32 name_length;
     const char *backup_path;
     const char *extension_start;
     BOOL illegal_format;
     BOOL has_extension;
-    __Locale *locale;
 
     backup_path = path;
     it = lbl_8055D828;
-    locale = &lbl_802FE850;
     for (;;) {
         if (*path == '\0')
             return it;
@@ -216,12 +225,12 @@ s32 DVDConvertPathToEntrynum(const char *path) {
         if (path[0] == '.') {
             if (path[1] == '.') {
                 if (path[2] == '/') {
-                    it = fst[it * 3 + 1];
+                    it = ((u32 *)FstStart_8055D840)[it * 3 + 1];
                     path += 3;
                     continue;
                 }
                 if (path[2] == '\0')
-                    return fst[it * 3 + 1];
+                    return ((u32 *)FstStart_8055D840)[it * 3 + 1];
                 goto check_format;
             }
             if (path[1] == '/') {
@@ -264,26 +273,29 @@ validate_format:
         name_delimited_by_slash = (*name_end == '\0') ? FALSE : TRUE;
         name_length = name_end - path;
         anchor = it + 1;
-        while (anchor < fst[it * 3 + 2]) {
-            if ((fst[anchor * 3] & 0xFF000000) || name_delimited_by_slash != TRUE) {
+        while (anchor < ((u32 *)FstStart_8055D840)[it * 3 + 2]) {
+            if ((((u32 *)FstStart_8055D840)[anchor * 3] & 0xFF000000) ||
+                name_delimited_by_slash != TRUE) {
                 item_name = (const char *)FstStringStart_8055D83C +
-                            (fst[anchor * 3] & 0xFFFFFF);
-                compare_path = path;
-                while (*item_name != '\0') {
-                    if (tolower(*compare_path++) !=
-                        (int)(*item_name < 0 || *item_name >= 256
-                                  ? *item_name
-                                  : locale->cmap->to_lower_table[(u8)*item_name])) {
+                            (((u32 *)FstStart_8055D840)[anchor * 3] & 0xFFFFFF);
+                lhs = path;
+                rhs = item_name;
+                while (*rhs != '\0') {
+                    int c1 = *lhs++;
+                    int c2 = *rhs++;
+                    c1 = (c1 < 0 || c1 >= 256) ? c1 :
+                         lbl_802FE850.cmap->to_lower_table[c1];
+                    c2 = (c2 < 0 || c2 >= 256) ? c2 :
+                         lbl_802FE850.cmap->to_lower_table[c2];
+                    if (c1 != c2)
                         goto next_item;
-                    }
-                    item_name++;
                 }
-                if (*compare_path == '/' || *compare_path == '\0')
+                if (*lhs == '/' || *lhs == '\0')
                     goto descend;
             }
 next_item:
-            if (fst[anchor * 3] & 0xFF000000)
-                anchor = fst[anchor * 3 + 2];
+            if (((u32 *)FstStart_8055D840)[anchor * 3] & 0xFF000000)
+                anchor = ((u32 *)FstStart_8055D840)[anchor * 3 + 2];
             else
                 anchor++;
         }
@@ -803,9 +815,11 @@ void fn_80038040(void) {
             *(s32 *)((u8 *)temp_r3 + 0xC) = 0xB;
             MotorState_8055D8A8 = 1;
             if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+                s32 tick;
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
-                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
+                tick = OSGetTick();
+                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, tick, 0,
                     ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
             }
             break;
@@ -813,9 +827,11 @@ void fn_80038040(void) {
             *(s32 *)((u8 *)temp_r3 + 0xC) = 4;
             MotorState_8055D8A8 = 1;
             if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+                s32 tick;
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
-                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
+                tick = OSGetTick();
+                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, tick, 0,
                     ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
             }
             break;
@@ -823,9 +839,11 @@ void fn_80038040(void) {
             *(s32 *)((u8 *)temp_r3 + 0xC) = 5;
             MotorState_8055D8A8 = 1;
             if (lbl_8055D870 == 0 && lbl_8055D874 == 0) {
+                s32 tick;
                 lbl_8055D870 = 1;
                 OSCreateAlarm(lbl_80376AD0);
-                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, OSGetTick(), 0,
+                tick = OSGetTick();
+                OSSetPeriodicAlarm(lbl_80376AD0, 0x10624DD3, 0, tick, 0,
                     ((*(volatile u32 *)0x800000F8 >> 2) / 1000) * 0x64, fn_8003801C);
             }
             break;
