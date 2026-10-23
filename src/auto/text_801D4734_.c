@@ -589,8 +589,8 @@ extern char lbl_80338B40[];
 extern char lbl_80338C08[];
 extern char lbl_80338CB0[];
 extern char lbl_80338CE8[];
-extern char lbl_8055ACFC[];
-extern char lbl_8055AD08[];
+extern char lbl_8055ACFC;
+extern char lbl_8055AD08;
 #pragma cplusplus on
 extern "C" void *fn_801D7334(void *arg0) {
     extern char lbl_80338460;
