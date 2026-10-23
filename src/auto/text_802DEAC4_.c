@@ -457,6 +457,7 @@ void fn_802E0B68(void) {
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
 }
 #pragma pop
+#pragma dont_inline on
 void *fn_802E0BA4(void) {
 }
 #pragma dont_inline reset
@@ -563,6 +564,96 @@ void fn_802E1290(void *arg0) {
     ((void (*)(void *))fn_802E0BA4)(arg0);
     fn_802E0E60();
     ((void (*)(void *))fn_802E0BE0)(arg0);
+}
+
+extern void GXSetZMode(GXBool, GXCompare, GXBool);
+extern void fn_802C8C04(s32);
+extern void fn_802C8D74(void);
+extern void fn_802C8DB8(void *, s32, u16 *, s32, u16, u16, u16, u16);
+extern void fn_802D007C(f32);
+extern void fn_802D3360(void);
+extern void fn_802E2C20(void);
+extern void fn_802E1DA4(void *, u32, u32, f32, f32, f32, f32, f32);
+extern const u16 lbl_802FAE28[];
+extern const u8 lbl_805650C8, lbl_805650C9, lbl_805650CA, lbl_805650CB;
+extern const f32 lbl_805650CC, lbl_805650D0, lbl_805650D4, lbl_805650D8, lbl_805650DC, lbl_805650E0;
+extern const u16 lbl_80565238, lbl_8056523A, lbl_8056523C, lbl_8056523E;
+void fn_802E13D8(f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
+    f32 vertices[12];
+    u16 indices[6];
+    GXColorS10 tevColor;
+    GXColor kColor;
+    void *state;
+    u32 *data;
+    f32 translatedX;
+    f32 translatedY;
+    f32 width;
+    f32 height;
+    s32 i;
+    state = fn_802E0BA4();
+    fn_802D3360();
+    data = *(u32 **)((u8 *)state + 4);
+    if (data != 0) {
+        fn_802C8C04(-1);
+        for (i = 0; i < 4; i += 2) {
+            u32 a = (u32)i;
+            u32 b = a + 1;
+            f32 x0 = (a & 1) ? lbl_805650CC : lbl_805650D0;
+            f32 y0 = (a & 2) ? lbl_805650D4 : lbl_805650D0;
+            f32 x1 = (a & 1) ? lbl_805650D8 : lbl_805650D0;
+            f32 y1 = (a & 2) ? lbl_805650D8 : lbl_805650D0;
+            f32 x2 = (b & 1) ? lbl_805650CC : lbl_805650D0;
+            f32 y2 = (b & 2) ? lbl_805650D4 : lbl_805650D0;
+            f32 x3 = (b & 1) ? lbl_805650D8 : lbl_805650D0;
+            f32 y3 = (b & 2) ? lbl_805650D8 : lbl_805650D0;
+            vertices[0] = x0;
+            vertices[1] = y0;
+            vertices[2] = lbl_805650D0;
+            vertices[3] = -1.0f;
+            vertices[4] = x1;
+            vertices[5] = y1;
+            vertices[6] = x2;
+            vertices[7] = y2;
+            vertices[8] = lbl_805650D0;
+            vertices[9] = -1.0f;
+            vertices[10] = x3;
+            vertices[11] = y3;
+        }
+        for (i = 0; i < 6; i++) indices[i] = lbl_802FAE28[i];
+        fn_802C8DB8(vertices, 4, indices, 6, lbl_802FAE28[4], lbl_802FAE28[3], lbl_802FAE28[2], lbl_802FAE28[1]);
+        fn_802C8D74();
+        data = *(u32 **)((u8 *)state + 4);
+        translatedX = lbl_805650DC + farg0;
+        translatedY = lbl_805650E0 - farg1;
+        width = (f32)data[0];
+        height = (f32)data[1];
+        GXSetZMode(0, 7, 0);
+        width = farg2 / width;
+        height = farg3 / height;
+        GXSetColorUpdate(1);
+        GXSetAlphaCompare(7, 0, 1, 0, 0);
+        fn_802E1DA4((u8 *)state + 0x50, data[0], data[1], translatedX, translatedY, width, height, lbl_805650D8);
+        fn_802D007C(lbl_805650D8);
+        GXSetTevSwapMode(0, 0, 0);
+        GXSetTevSwapMode(1, 0, 0);
+        GXSetTevSwapMode(2, 0, 0);
+        GXSetTevSwapMode(3, 0, 0);
+        tevColor.r = lbl_80565238;
+        tevColor.g = lbl_8056523A;
+        tevColor.b = lbl_8056523C;
+        tevColor.a = lbl_8056523E;
+        GXSetTevColorS10(1, tevColor);
+        kColor.r = lbl_805650C8;
+        kColor.g = lbl_805650C9;
+        kColor.b = lbl_805650CA;
+        kColor.a = lbl_805650CB;
+        GXSetTevKColor(0, kColor);
+        GXSetTevKColor(1, kColor);
+        GXSetTevKColor(2, kColor);
+        GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+        fn_802D3360();
+        fn_802E2C20();
+    }
 }
 
 extern void fn_802E30C8(const char *, ...);
