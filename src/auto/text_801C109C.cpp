@@ -355,6 +355,8 @@ void fn_801C2BDC(void *arg0, unsigned int *arg1, unsigned int *arg2, unsigned in
 extern "C" int lbl_8055E7C8;
 extern "C" float lbl_80562948;
 extern "C" void fn_801E41D8(float *, float *, int, float);
+#pragma push
+#pragma inline_depth 8
 static inline void transform3(volatile float *out, volatile float *in, float *m) {
     if (out == in) {
         out[0] = in[2] * m[6] + (in[0] * m[0] + in[1] * m[3]);
@@ -366,6 +368,7 @@ static inline void transform3(volatile float *out, volatile float *in, float *m)
         out[2] = in[2] * m[8] + (in[0] * m[2] + in[1] * m[5]);
     }
 }
+#pragma pop
 
 extern "C" void fn_801C2BF8(void *arg0, float *arg1) {
     char *base = (char *)arg0;
@@ -399,25 +402,25 @@ loop:
         *(volatile unsigned int *)&pInB[1] = *(unsigned int *)(points + second * 12 + 4);
         *(volatile unsigned int *)&pInB[2] = *(unsigned int *)(points + second * 12 + 8);
         if (pOutA == pInA) {
-            pOutA[0] = pInA[2] * matrix[6] + (pInA[0] * matrix[0] + pInA[1] * matrix[3]);
-            pOutA[1] = pInA[2] * matrix[7] + (pInA[0] * matrix[1] + pInA[1] * matrix[4]);
-            pOutA[2] = pInA[2] * matrix[8] + (pInA[0] * matrix[2] + pInA[1] * matrix[5]);
+            pOutA[0] = pInA[0] * matrix[0] + pInA[1] * matrix[3] + pInA[2] * matrix[6];
+            pOutA[1] = pInA[0] * matrix[1] + pInA[1] * matrix[4] + pInA[2] * matrix[7];
+            pOutA[2] = pInA[0] * matrix[2] + pInA[1] * matrix[5] + pInA[2] * matrix[8];
         } else {
-            pOutA[0] = pInA[2] * matrix[6] + (pInA[0] * matrix[0] + pInA[1] * matrix[3]);
-            pOutA[1] = pInA[2] * matrix[7] + (pInA[0] * matrix[1] + pInA[1] * matrix[4]);
-            pOutA[2] = pInA[2] * matrix[8] + (pInA[0] * matrix[2] + pInA[1] * matrix[5]);
+            pOutA[0] = pInA[0] * matrix[0] + pInA[1] * matrix[3] + pInA[2] * matrix[6];
+            pOutA[1] = pInA[0] * matrix[1] + pInA[1] * matrix[4] + pInA[2] * matrix[7];
+            pOutA[2] = pInA[0] * matrix[2] + pInA[1] * matrix[5] + pInA[2] * matrix[8];
         }
         pOutA[0] += matrix[9];
         pOutA[1] += matrix[10];
         pOutA[2] += matrix[11];
         if (pOutB == pInB) {
-            pOutB[0] = pInB[2] * matrix[6] + (pInB[0] * matrix[0] + pInB[1] * matrix[3]);
-            pOutB[1] = pInB[2] * matrix[7] + (pInB[0] * matrix[1] + pInB[1] * matrix[4]);
-            pOutB[2] = pInB[2] * matrix[8] + (pInB[0] * matrix[2] + pInB[1] * matrix[5]);
+            pOutB[0] = pInB[0] * matrix[0] + pInB[1] * matrix[3] + pInB[2] * matrix[6];
+            pOutB[1] = pInB[0] * matrix[1] + pInB[1] * matrix[4] + pInB[2] * matrix[7];
+            pOutB[2] = pInB[0] * matrix[2] + pInB[1] * matrix[5] + pInB[2] * matrix[8];
         } else {
-            pOutB[0] = pInB[2] * matrix[6] + (pInB[0] * matrix[0] + pInB[1] * matrix[3]);
-            pOutB[1] = pInB[2] * matrix[7] + (pInB[0] * matrix[1] + pInB[1] * matrix[4]);
-            pOutB[2] = pInB[2] * matrix[8] + (pInB[0] * matrix[2] + pInB[1] * matrix[5]);
+            pOutB[0] = pInB[0] * matrix[0] + pInB[1] * matrix[3] + pInB[2] * matrix[6];
+            pOutB[1] = pInB[0] * matrix[1] + pInB[1] * matrix[4] + pInB[2] * matrix[7];
+            pOutB[2] = pInB[0] * matrix[2] + pInB[1] * matrix[5] + pInB[2] * matrix[8];
         }
         pOutB[0] += matrix[9];
         pOutB[1] += matrix[10];
