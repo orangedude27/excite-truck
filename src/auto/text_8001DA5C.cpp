@@ -407,7 +407,7 @@ extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
             if (lower > lbl_80560474) lower = lbl_80560474;
             f32 value = lbl_80560474 + lower * lbl_80560470;
             fn_80232928(-1);
-            fn_80147ABC(idsB[index], idsB[index + 1], lbl_80558D08, nameA, value);
+            fn_80147ABC(idsB[index], idsB[index + 1], lbl_80558D08, value, nameA);
             fn_80147ABC(idsA[index], idsA[index + 1], lbl_80558D08, nameB, value);
             fn_80232930();
         }
