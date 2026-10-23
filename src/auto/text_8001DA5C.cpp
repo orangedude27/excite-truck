@@ -302,6 +302,100 @@ extern "C" s32 fn_8001E974(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern "C" void* fn_801EA9A0(s32);
+extern "C" f32 fn_801E7E18(void);
+extern "C" void* fn_801E7E3C(void);
+extern "C" void fn_801345D8(char*, s32, const char*, ...);
+extern "C" s32 fn_80147ABC(s32, s32, const char*, char*, ...);
+extern "C" u32 lbl_802ED840[];
+extern "C" char lbl_80558D14[];
+extern "C" char lbl_80558D1C[];
+extern "C" char lbl_80558D24[];
+extern "C" void fn_8001E9B4(s32 arg0, s32 arg1) {
+    s32* record = (s32*)(arg0 + arg1 * 8);
+    void* object = fn_801EA9A0(arg1);
+    f32 now = fn_801E7E18();
+    s32 rank = *(s32*)((u8*)object + 0x1C);
+    f32 delta;
+    f32 thresholds[4];
+    void* widget;
+    s32 idsA[4];
+    s32 idsB[4];
+    char nameA[32];
+    char nameB[32];
+    char temp[30];
+
+    if (rank > record[1]) {
+        *(f32*)((u8*)record + 8) = now;
+        record[1] = rank;
+    }
+    delta = now - *(f32*)((u8*)record + 8);
+    thresholds[0] = *(f32*)((u8*)&lbl_802ED840[0]);
+    thresholds[1] = *(f32*)((u8*)&lbl_802ED840[1]);
+    thresholds[2] = *(f32*)((u8*)&lbl_802ED840[2]);
+    thresholds[3] = *(f32*)((u8*)&lbl_802ED840[3]);
+    widget = lbl_8055D604;
+    if (widget != 0 && delta < thresholds[3]) {
+        for (s32 row = 0; row < 2; row++) {
+            s32* out = row == 0 ? idsB : idsA;
+            for (s32 col = 0; col < 4; col++) {
+                char text[32];
+                fn_801345D8(text, 0x20, lbl_80558D14,
+                            row == 0 ? lbl_80558D1C : lbl_80558D24, col);
+                out[col] = ((s32 (**)(void*, char*))(*(void***)widget))[3](widget, text);
+            }
+        }
+        void* menu = fn_801E7E3C();
+        s32 current = *(s32*)((u8*)record + 4);
+        s32 count = *(s32*)((u8*)menu + 8);
+        if (current != 1 && current <= 3) {
+            if (current < count) {
+                const char* text = fn_80131234(lbl_802FDB68 + 0x278);
+                for (s32 i = 0; i < 32; i++) {
+                    nameA[i] = text[i];
+                    if ((s8)text[i] == 0) break;
+                }
+                fn_801345D8(temp, 0x1E, lbl_802FDB68 + 0x28C, current);
+                text = fn_80131234(temp);
+                for (s32 i = 0; i < 32; i++) {
+                    nameB[i] = text[i];
+                    if ((s8)text[i] == 0) break;
+                }
+            } else if (current == count) {
+                const char* text = fn_80131234(lbl_802FDB68 + 0x2A4);
+                for (s32 i = 0; i < 32; i++) {
+                    nameA[i] = text[i];
+                    if ((s8)text[i] == 0) break;
+                }
+                text = fn_80131234(lbl_802FDB68 + 0x2B8);
+                for (s32 i = 0; i < 32; i++) {
+                    nameB[i] = text[i];
+                    if ((s8)text[i] == 0) break;
+                }
+            } else {
+                return;
+            }
+            s32 index = 0;
+            if (delta < thresholds[1]) {
+                index = 0;
+            } else if (delta < thresholds[2]) {
+                index = 1;
+            } else if (delta < thresholds[3]) {
+                index = 2;
+            }
+            f32 t = (delta - thresholds[index]) /
+                    (thresholds[index + 1] - thresholds[index]);
+            if (t < lbl_80560470) t = lbl_80560470;
+            if (t > lbl_80560474) t = lbl_80560474;
+            f32 value = lbl_80560474 + t * lbl_80560470;
+            fn_80232928(-1);
+            fn_80147ABC(idsB[index], idsB[index + 1], lbl_80558D08, nameA, value);
+            fn_80147ABC(idsA[index], idsA[index + 1], lbl_80558D08, nameB, value);
+            fn_80232930();
+        }
+    }
+}
+
 extern "C" void fn_8001ED2C(void* arg0) {
     f32 value = lbl_80560490;
     *(s32*)((u8*)arg0 + 0x04) = 0;
