@@ -183,15 +183,15 @@ extern "C" void *fn_801399FC(void);
 extern "C" u8 lbl_8032E238[];
 extern "C" u8 lbl_8032E424[];
 extern "C" u8 lbl_8032E3F8[];
-extern "C" char lbl_80559FD0[];
-extern "C" char lbl_80559FD4[];
-extern "C" char lbl_80559FD8[];
-extern "C" char lbl_80559FE0[];
-extern "C" char lbl_80559FE8[];
-extern "C" char lbl_80559FF0[];
+extern "C" char lbl_80559FD0;
+extern "C" char lbl_80559FD4;
+extern "C" char lbl_80559FD8;
+extern "C" char lbl_80559FE0;
+extern "C" char lbl_80559FE8;
+extern "C" char lbl_80559FF0;
 extern "C" f32 lbl_80561738;
 extern "C" f32 lbl_8056173C;
-#pragma dont_inline fn_8015621C
+#pragma dont_inline on
 extern "C" void fn_801564B0(void) {
     struct Entry { s32 id; s32 kind; };
     struct Config {
@@ -201,14 +201,13 @@ extern "C" void fn_801564B0(void) {
     };
     struct Helper { void *vtable; s32 id; };
     struct Reader {
-        virtual void v0(); virtual void v1(); virtual void v2();
-        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual char *read(char *, const char *);
-        virtual void v7(); virtual void v8(); virtual void v9();
+        virtual void v5(); virtual void v6(); virtual void v7();
         virtual f32 value(const char *, f32);
-        virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
-        virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18();
-        virtual void v19(); virtual void v20(); virtual void v21(); virtual void v22();
+        virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12();
+        virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16();
+        virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20();
         virtual Reader *open(const char *);
     };
     struct IndexReader {
@@ -221,16 +220,14 @@ extern "C" void fn_801564B0(void) {
         virtual s32 valid(s32);
     };
     struct TextManager {
-        virtual void v0(); virtual void v1(); virtual void v2();
-        virtual void v3(); virtual void v4(); virtual void v5();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual char *get(const char *, const char *);
     };
     struct ConfigVtable {
         virtual void v0(); virtual void v1(); virtual void v2();
-        virtual void v3(); virtual void v4(); virtual void dispose();
+        virtual void dispose();
     };
 
-    extern char lbl_80559FC0[];
     u8 path[0x40];
     char input[0x10], text[0x20];
     void *helper;
@@ -240,7 +237,7 @@ extern "C" void fn_801564B0(void) {
     Config *config;
 
     fn_8012E81C(lbl_8032E238 + 0xAC);
-    helper = fn_801284F8(8, lbl_80559FD0);
+    helper = fn_801284F8(8, (const char *)&lbl_80559FD0);
     if (helper != 0) {
         *(void **)helper = lbl_8032E46C;
         fn_80156248(path, 0x40);
@@ -252,7 +249,7 @@ extern "C" void fn_801564B0(void) {
 
     reader = ((Reader *)(long)fn_8015621C())->open((const char *)lbl_8032E238 + 0xD8);
     if (reader != 0) {
-        config = (Config *)fn_801284F8(0x124, lbl_80559FD4);
+        config = (Config *)fn_801284F8(0x124, (const char *)&lbl_80559FD4);
         resource = config;
         if (config != 0) {
             config->vtable = lbl_8032E424;
@@ -263,7 +260,7 @@ extern "C" void fn_801564B0(void) {
             config->objectCapacity = 0x10;
             config->objectCount = 0;
             for (s32 line = 1;; ++line) {
-                fn_801345D8((s32)input, 0x10, lbl_80559FE0, lbl_80559FD8, line);
+                fn_801345D8((s32)input, 0x10, (const char *)&lbl_80559FE0, (const char *)&lbl_80559FD8, line);
                 char *result = reader->read(input, 0);
                 if (result == 0)
                     break;
@@ -289,7 +286,7 @@ extern "C" void fn_801564B0(void) {
                 remaining = 0x20;
                 while ((s8)*dst != 0) { remaining--; dst++; }
                 if (remaining > 0) {
-                    src = lbl_80559FE8;
+                    src = (char *)&lbl_80559FE8;
                     do {
                         u8 c = *src++;
                         *dst++ = c;
@@ -300,11 +297,13 @@ extern "C" void fn_801564B0(void) {
                 }
 
                 s8 kindChar = (s8)*reader->read(text, lbl_80559FC0);
+                s32 category;
                 switch (kindChar) {
-                case 0x72: entry->kind = 1; break;
-                case 0x6C: entry->kind = 0; break;
-                default: entry->kind = 2; break;
+                case 0x72: category = 1; break;
+                case 0x6C: category = 0; break;
+                default: category = 2; break;
                 }
+                entry->kind = category;
             }
             if (config->count == 0)
                 fn_802E317C((const char *)lbl_8032E238 + 0xE8);
@@ -323,13 +322,13 @@ extern "C" void fn_801564B0(void) {
             config->value1 = reader->value((const char *)lbl_8032E238 + 0x154, lbl_8056173C);
             ((void (*)(const char *, s32, const char *, s32, const char *, f32, f32))fn_802E30C8)(
                 (const char *)lbl_8032E238 + 0x168,
-                config->count, config->count == 1 ? lbl_80559FC0 : lbl_80559FF0,
-                config->objectCount, config->objectCount == 1 ? lbl_80559FC0 : lbl_80559FF0,
+                config->count, config->count == 1 ? lbl_80559FC0 : (const char *)&lbl_80559FF0,
+                config->objectCount, config->objectCount == 1 ? lbl_80559FC0 : (const char *)&lbl_80559FF0,
                 config->value0, config->value1);
             ((ConfigVtable *)config)->dispose();
         }
     } else {
-        Helper *fallback = (Helper *)fn_801284F8(8, lbl_80559FD4);
+        Helper *fallback = (Helper *)fn_801284F8(8, (const char *)&lbl_80559FD4);
         resource = fallback;
         if (fallback != 0) {
             fallback->vtable = lbl_8032E448;
@@ -348,6 +347,7 @@ extern "C" void fn_801564B0(void) {
     }
     lbl_8055E27C = (void **)wrapper;
 }
+#pragma dont_inline reset
 s32 fn_801568E0(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
