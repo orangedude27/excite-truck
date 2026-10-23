@@ -390,7 +390,7 @@ extern void fn_802DC440(void);
 extern void fn_802DC464();
 extern float fn_801DCF48(int, float, float);
 #pragma push
-#pragma ppc_psq_save on
+
 void fn_802B1758(void *arg0) {
     float setupA[3];
     float setupB[3];
@@ -486,7 +486,20 @@ void fn_802B1758(void *arg0) {
                 point += 3;
             }
 
-            for (i = 0; i < 14; i++) values[i] = lbl_802FAAB0[i];
+            values[0] = lbl_802FAAB0[0];
+            values[1] = lbl_802FAAB0[1];
+            values[2] = lbl_802FAAB0[2];
+            values[3] = lbl_802FAAB0[3];
+            values[4] = lbl_802FAAB0[4];
+            values[5] = lbl_802FAAB0[5];
+            values[6] = lbl_802FAAB0[6];
+            values[7] = lbl_802FAAB0[7];
+            values[8] = lbl_802FAAB0[8];
+            values[9] = lbl_802FAAB0[9];
+            values[10] = lbl_802FAAB0[10];
+            values[11] = lbl_802FAAB0[11];
+            values[12] = lbl_802FAAB0[12];
+            values[13] = lbl_802FAAB0[13];
             fn_802DC464(lbl_804BE190, 8, values, 0xE,
                 lbl_802FAAB0[0x18 / 2], lbl_802FAAB0[0x16 / 2],
                 lbl_802FAAB0[0x14 / 2], lbl_802FAAB0[0x12 / 2]);
