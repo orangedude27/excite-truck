@@ -95,7 +95,7 @@ extern "C" void fn_801EB13C(void *, s32);
 extern "C" s32 fn_801EB0F0(s32);
 extern "C" s32 fn_801EB110(void *);
 extern "C" void fn_802E317C(const char *, ...);
-extern "C" void fn_802E30C8(const char *, s32);
+extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_80339F7C[];
 extern "C" char lbl_80339FA0[];
 #pragma cplusplus reset
