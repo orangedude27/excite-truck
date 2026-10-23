@@ -32,6 +32,19 @@ public:
     virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19(); virtual void d20();
     virtual Dummy80165B78 *getObject(const char *);
 };
+class Dummy80165B78D {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2();
+    virtual char *getString(const char *);
+    virtual void d4(); virtual void d5(); virtual void d6();
+    virtual float getFloat(const char *);
+    virtual double getFloatDefaultDouble(const char *, float);
+    virtual void d9();
+    virtual unsigned char getFlag(const char *, int);
+    virtual void d11(); virtual void d12(); virtual void d13(); virtual void d14(); virtual void d15();
+    virtual void d16(); virtual void d17(); virtual void d18(); virtual void d19(); virtual void d20();
+    virtual Dummy80165B78D *getObject(const char *);
+};
 #pragma cplusplus off
 #pragma pop
 extern float fn_801660C0(void);
@@ -242,7 +255,7 @@ extern "C" void fn_80165B78(void **arg0) {
     *(float *)((char *)&lbl_8042FE38 + 0x54) = fn_80204CFC(strings + 0x164);
     *(float *)((char *)&lbl_8042FE38 + 0x58) = fn_80204CFC(strings + 0x178);
     *(float *)((char *)&lbl_8042FE38 + 0x5c) = obj->getFloatDefault(strings + 0x194, lbl_805618C4);
-    *(float *)((char *)&lbl_8042FE38 + 0x60) = obj->getFloatDefault(strings + 0x1A8, lbl_805618C8) * lbl_805618CC;
+    *(float *)((char *)&lbl_8042FE38 + 0x60) = lbl_805618CC * (float)((double (*)(Dummy80165B78 *, const char *, float))(*(void ***)obj)[10])(obj, strings + 0x1A8, lbl_805618C8);
 }
 #pragma cplusplus off
 #pragma scheduling on
