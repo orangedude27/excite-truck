@@ -734,8 +734,10 @@ void fn_8002EFB0(void) {
     __ieee754_atan2();
 }
 
-void fn_8002EFB4(void) {
-    __ieee754_fmod();
+extern double __ieee754_fmod(double, double);
+
+double fn_8002EFB4(double x, double y) {
+    return __ieee754_fmod(x, y);
 }
 
 void fn_8002EFB8(void) {
