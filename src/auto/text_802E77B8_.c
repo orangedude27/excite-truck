@@ -4,7 +4,8 @@
 extern float lbl_80565160, lbl_80565164, lbl_80565168, lbl_8056516C;
 extern float lbl_80565170, lbl_80565174, lbl_80565178;
 extern int lbl_8055D208, lbl_8055D210, lbl_8055D218, lbl_8055D220;
-extern int lbl_8034D898, lbl_8034D8A8;
+__declspec(section ".rodata") extern int lbl_8034D898;
+extern int lbl_8034D8A8;
 extern int fn_801282EC(int);
 extern int fn_801282F4(void);
 extern int fn_801284E8(void *, int);
@@ -221,6 +222,7 @@ extern void fn_802E2E38(int);
 extern void fn_802E7C14(void);
 extern void *memset(void *, int, unsigned int);
 #pragma push
+#pragma small_data off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 void fn_802E7FD0(void) {
