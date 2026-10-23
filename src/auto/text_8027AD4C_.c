@@ -72,6 +72,13 @@ test:
     *(long *)((char *)arg0 + 0x10) = 0;
 }
 
+#pragma cplusplus on
+struct NameObject {
+    virtual void pad0();
+    virtual void pad1();
+    virtual char *name();
+};
+#pragma cplusplus reset
 extern long fn_80131810(long *);
 extern long fn_8027AFA0(void *, void *, void *);
 extern int strcmp(const char *, const char *);
@@ -81,7 +88,7 @@ void fn_8027B2F8(long arg0, long *arg1, signed char arg2) {
     long i;
     void *item;
 
-    self[0xBCC] = arg2;
+    ((char *)arg0)[0xBCC] = arg2;
     *(void **)(self + 4) = (void *)fn_80131810(arg1);
     if (*(void **)(self + 4) == 0)
         return;
@@ -106,6 +113,7 @@ process_item:
                         char *dst = base2 + index * 0x1F4;
                         char *src = base2 + last * 0x1F4;
                         long j;
+                        long offset;
                         dst[4] = src[4];
                         *(long *)(dst + 8) = *(long *)(src + 8);
                         *(long *)(dst + 0xC) = *(long *)(src + 0xC);
@@ -116,26 +124,42 @@ process_item:
                             long cap = *(long *)(dst + 0x20);
                             if (cap < len) {
                                 *(long *)(dst + 0x1C) = cap;
+                                offset = 0;
                                 j = 0;
                                 do {
-                                    char *d = *(char **)(dst + 0x18) + j * 0x3C;
-                                    char *s = *(char **)(src + 0x18) + j * 0x3C;
+                                    char *sbase;
+                                    char *dbase;
+                                    char *s;
+                                    char *d;
+                                    sbase = *(char **)(src + 0x18);
+                                    j++;
+                                    dbase = *(char **)(dst + 0x18);
+                                    s = sbase + offset;
+                                    d = dbase + offset;
                                     d[4] = s[4];
                                     *(long *)(d + 8) = *(long *)(s + 8);
                                     *(long *)(d + 0xC) = *(long *)(s + 0xC);
                                     d[0x10] = s[0x10]; d[0x11] = s[0x11]; d[0x12] = s[0x12];
-                                    *(long *)(d + 0x14) = *(long *)(s + 0x14);
-                                    *(long *)(d + 0x18) = *(long *)(s + 0x18);
-                                    *(long *)(d + 0x1C) = *(long *)(s + 0x1C);
-                                    *(long *)(d + 0x20) = *(long *)(s + 0x20);
+                                    {
+                                        long w14 = *(long *)(s + 0x14);
+                                        long w18 = *(long *)(s + 0x18);
+                                        *(long *)(d + 0x14) = w14;
+                                        *(long *)(d + 0x18) = w18;
+                                    }
+                                    {
+                                        long w1c = *(long *)(s + 0x1C);
+                                        long w20 = *(long *)(s + 0x20);
+                                        *(long *)(d + 0x1C) = w1c;
+                                        *(long *)(d + 0x20) = w20;
+                                    }
                                     *(long *)(d + 0x24) = *(long *)(s + 0x24);
                                     *(long *)(d + 0x28) = *(long *)(s + 0x28);
                                     *(long *)(d + 0x2C) = *(long *)(s + 0x2C);
                                     *(long *)(d + 0x30) = *(long *)(s + 0x30);
                                     *(long *)(d + 0x34) = *(long *)(s + 0x34);
                                     d[0x38] = s[0x38];
-                                    j++;
-                                } while (j < cap);
+                                    offset += 0x3C;
+                                } while (j < *(long *)(dst + 0x1C));
                             }
                         }
                         {
@@ -164,12 +188,13 @@ process_item:
                         {
                             char *d = dst + 0x18B;
                             char *s = src + 0x18B;
-                            for (j = 0; j < 0x32; j++) {
+                            j = 0x32;
+                            do {
                                 d[1] = s[1];
                                 d[2] = s[2];
                                 d += 2;
                                 s += 2;
-                            }
+                            } while (--j != 0);
                         }
                         dst[0x1F0] = src[0x1F0]; dst[0x1F1] = src[0x1F1];
                         dst[0x1F2] = src[0x1F2]; dst[0x1F3] = src[0x1F3];
