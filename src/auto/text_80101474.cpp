@@ -11,6 +11,7 @@ extern int fn_800EAD00(void *);
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
 typedef int s32;
+struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
 struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
 #pragma cplusplus reset
@@ -146,6 +147,76 @@ void nw4hbm::snd::detail::WsdTrack::ChannelCallbackFunc(nw4hbm::snd::detail::Cha
  }
 }
 
+extern "C" int IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(const void *arg0, unsigned long arg1, unsigned short arg2, unsigned short arg3) {
+    const char *base=lbl_80327EE0;
+    const unsigned char *header=(const unsigned char *)arg0;
+    unsigned int top=(unsigned int)arg0&0xFF000000U;
+    int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
+    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)arg0&0xFF800000U)+0x7F000000U)!=0U)r10=0;
+    if(r10==0&&(unsigned int)(((unsigned int)arg0&0xF8000000U)+0x70000000U)!=0U)r9=0;
+    if(r9==0&&(unsigned int)(top+0x40000000U)!=0U)r8=0;
+    if(r8==0&&(unsigned int)(((unsigned int)arg0&0xFF800000U)+0x3F000000U)!=0U)r7=0;
+    if(r7==0&&(unsigned int)(((unsigned int)arg0&0xF8000000U)+0x30000000U)!=0U)r6=0;
+    if(r6==0&&(unsigned int)(((unsigned int)arg0&0xFFFFC000U)+0x20000000U)!=0U)r5=0;
+    if(r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x30,base+0x18,arg0);
+    unsigned int magic=*(unsigned int *)header;
+    if(magic!=(unsigned int)arg1) {
+        Warning__Q26nw4hbm2dbFPCciPCce(base,0x3C,base+0x50,
+            (signed char)(magic>>24),(signed char)(magic>>16),(signed char)(magic>>8),(signed char)magic,
+            (signed char)((unsigned int)arg1>>24),(signed char)((unsigned int)arg1>>16),(signed char)((unsigned int)arg1>>8),(signed char)arg1);
+        return 0;
+    }
+    if(*(unsigned short *)(header+4)!=0xFEFF) {
+        Warning__Q26nw4hbm2dbFPCciPCce(base,0x41,base+0x88);
+        return 0;
+    }
+    unsigned short version=*(unsigned short *)(header+6);
+    if(version!=arg2) {
+        Warning__Q26nw4hbm2dbFPCciPCce(base,0x4B,base+0xA0,
+            (signed char)(version>>8),(signed char)version,(signed char)(arg2>>8),(signed char)arg2);
+        return 0;
+    }
+    if(*(unsigned int *)(header+8)<(((unsigned int)arg3<<3)+0x10)) {
+        Warning__Q26nw4hbm2dbFPCciPCce(base,0x50,base+0xD0);
+        return 0;
+    }
+    if(*(unsigned short *)(header+0xE)<arg3) {
+        Warning__Q26nw4hbm2dbFPCciPCce(base,0x55,base+0xEC);
+        return 0;
+    }
+    return 1;
+}
+
+extern "C" unsigned char ReadNextCharUTF8__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
+    void *reader=arg0;const char *base=lbl_80328030;unsigned int top=(unsigned int)reader&0xFF000000U;
+    int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
+    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x7F000000U)!=0U)r10=0;
+    if(r10==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x70000000U)!=0U)r9=0;
+    if(r9==0&&(unsigned int)(top+0x40000000U)!=0U)r8=0;
+    if(r8==0&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x3F000000U)!=0U)r7=0;
+    if(r7==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x30000000U)!=0U)r6=0;
+    if(r6==0&&(unsigned int)(((unsigned int)reader&0xFFFFC000U)+0x20000000U)!=0U)r5=0;
+    if(r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4C,base+0x18,reader);
+    unsigned int p=*(unsigned int *)reader;top=p&0xFF000000U;
+    int r4=1;r5=1;r6=1;r7=1;r8=1;r9=1;
+    if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)((p&0xFF800000U)+0x7F000000U)!=0U)r9=0;
+    if(r9==0&&(unsigned int)((p&0xF8000000U)+0x70000000U)!=0U)r8=0;
+    if(r8==0&&(unsigned int)(top+0x40000000U)!=0U)r7=0;
+    if(r7==0&&(unsigned int)((p&0xFF800000U)+0x3F000000U)!=0U)r6=0;
+    if(r6==0&&(unsigned int)((p&0xF8000000U)+0x30000000U)!=0U)r5=0;
+    if(r5==0&&(unsigned int)((p&0xFFFFC000U)+0x20000000U)!=0U)r4=0;
+    if(r4==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4D,base+0x50);
+    unsigned char *ptr=*(unsigned char **)reader;
+    unsigned char first=*ptr;
+    if((first&0xC0)==0x80)Panic__Q26nw4hbm2dbFPCciPCce(base,0x4F,base+0x8C);
+    if(!(first&0x80)){*(unsigned int *)reader=p+1;return first;}
+    if((first&0xE0)==0xC0){unsigned char second=ptr[1];*(unsigned int *)reader=p+2;return (unsigned char)(((first&0x1F)<<6)|(second&0x3F));}
+    if((first&0xF0)!=0xE0)Panic__Q26nw4hbm2dbFPCciPCce(base,0x64,base+0xC4);
+    unsigned char second=ptr[1],third=ptr[2];
+    *(unsigned int *)reader=p+3;
+    return (unsigned char)(((first&0x0F)<<12)|((second&0x3F)<<6)|(third&0x3F));
+}
+
 extern "C" unsigned short ReadNextCharUTF16__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
     void *reader=arg0;
     const char *base=lbl_80328030;
@@ -196,6 +267,30 @@ extern "C" unsigned char ReadNextCharCP1252__Q36nw4hbm2ut14CharStrmReaderFv(void
     unsigned char result = *ptr;
     *(unsigned int *)arg0 = value + 1;
     return result;
+}
+
+extern "C" unsigned char ReadNextCharSJIS__Q36nw4hbm2ut14CharStrmReaderFv(void *arg0) {
+void *reader=arg0;const char *base=lbl_80328030;unsigned int top=(unsigned int)reader&0xFF000000U;
+int r5=1,r6=1,r7=1,r8=1,r9=1,r10=1;
+if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x7F000000U)!=0U)r10=0;
+if(r10==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x70000000U)!=0U)r9=0;
+if(r9==0&&(unsigned int)(top+0x40000000U)!=0U)r8=0;
+if(r8==0&&(unsigned int)(((unsigned int)reader&0xFF800000U)+0x3F000000U)!=0U)r7=0;
+if(r7==0&&(unsigned int)(((unsigned int)reader&0xF8000000U)+0x30000000U)!=0U)r6=0;
+if(r6==0&&(unsigned int)(((unsigned int)reader&0xFFFFC000U)+0x20000000U)!=0U)r5=0;
+if(r5==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0xB4,base+0x18,reader);
+unsigned int p=*(unsigned int *)reader;top=p&0xFF000000U;
+int r4=1;r5=1;r6=1;r7=1;r8=1;r9=1;
+if((unsigned int)(top+0x80000000U)!=0U&&(unsigned int)((p&0xFF800000U)+0x7F000000U)!=0U)r9=0;
+if(r9==0&&(unsigned int)((p&0xF8000000U)+0x70000000U)!=0U)r8=0;
+if(r8==0&&(unsigned int)(top+0x40000000U)!=0U)r7=0;
+if(r7==0&&(unsigned int)((p&0xFF800000U)+0x3F000000U)!=0U)r6=0;
+if(r6==0&&(unsigned int)((p&0xF8000000U)+0x30000000U)!=0U)r5=0;
+if(r5==0&&(unsigned int)((p&0xFFFFC000U)+0x20000000U)!=0U)r4=0;
+if(r4==0)Panic__Q26nw4hbm2dbFPCciPCce(base,0xB5,base+0x50);
+unsigned char first=*(unsigned char *)p;
+if((first>=0x81&&first<0xA0)||first>=0xE0){unsigned char second=*((unsigned char *)p+1);*(unsigned int *)reader=p+2;return (unsigned char)((first<<8)|second);}
+*(unsigned int *)reader=p+1;return first;
 }
 
 extern "C" s32 fn_801033F0(s32 arg0, s32 arg1) {
@@ -258,6 +353,89 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
     *(unsigned char *)((char *)arg0 + 5) = *(unsigned char *)((char *)arg2 + 1);
     *(unsigned char *)((char *)arg0 + 6) = *(unsigned char *)((char *)arg2 + 2);
     *(unsigned char *)((char *)arg0 + 7) = *(unsigned char *)((char *)arg2 + 3);
+}
+
+extern "C" void SetTextColor__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5Color(void *arg0, void *arg1) {
+    unsigned int address = (unsigned int)arg0;
+    unsigned int top;
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10;
+    unsigned char *self = (unsigned char *)arg0;
+    unsigned char *color = (unsigned char *)arg1;
+    unsigned char *source;
+    int alpha;
+
+    top = address & 0xFF000000U;
+    r10 = 1;
+    if ((unsigned int)(top + 0x80000000U) != 0U &&
+        (unsigned int)((address & 0xFF800000U) + 0x7F000000U) != 0U)
+        r10 = 0;
+    if (r10 == 0 &&
+        (unsigned int)((address & 0xF8000000U) + 0x70000000U) != 0U)
+        r9 = 0;
+    if (r9 == 0 && (unsigned int)(top + 0x40000000U) != 0U)
+        r8 = 0;
+    if (r8 == 0 &&
+        (unsigned int)((address & 0xFF800000U) + 0x3F000000U) != 0U)
+        r7 = 0;
+    if (r7 == 0 &&
+        (unsigned int)((address & 0xF8000000U) + 0x30000000U) != 0U)
+        r6 = 0;
+    if (r6 == 0 &&
+        (unsigned int)((address & 0xFFFFC000U) + 0x20000000U) != 0U)
+        r5 = 0;
+    if (r5 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x185, lbl_8032818C, arg0);
+
+    self[0x18] = color[0];
+    self[0x19] = color[1];
+    self[0x1A] = color[2];
+    self[0x1B] = color[3];
+
+    r5 = 0;
+    if ((unsigned int)(top + 0x80000000U) == 0U ||
+        (unsigned int)((address & 0xFF800000U) + 0x7F000000U) == 0U ||
+        (unsigned int)((address & 0xF8000000U) + 0x70000000U) == 0U ||
+        (unsigned int)(top + 0x40000000U) == 0U ||
+        (unsigned int)((address & 0xFF800000U) + 0x3F000000U) == 0U ||
+        (unsigned int)((address & 0xF8000000U) + 0x30000000U) == 0U ||
+        (unsigned int)((address & 0xFFFFC000U) + 0x20000000U) == 0U)
+        r5 = 1;
+    if (r5 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x4DA, lbl_8032818C, arg0);
+
+    self[8] = self[0x18];
+    self[9] = self[0x19];
+    self[0xA] = self[0x1A];
+    self[0xB] = self[0x1B];
+    if (*(volatile int *)(self + 0x20) == 1)
+        source = self + 0x18;
+    else
+        source = self + 0x1C;
+    self[0xC] = source[0];
+    self[0xD] = source[1];
+    self[0xE] = source[2];
+    self[0xF] = source[3];
+    if (*(volatile int *)(self + 0x20) == 2)
+        source = self + 0x18;
+    else
+        source = self + 0x1C;
+    self[0x10] = source[0];
+    self[0x11] = source[1];
+    self[0x12] = source[2];
+    self[0x13] = source[3];
+    if (*(volatile int *)(self + 0x20) == 0)
+        source = self + 0x18;
+    else
+        source = self + 0x1C;
+    self[0x14] = source[0];
+    self[0x15] = source[1];
+    self[0x16] = source[2];
+
+    alpha = self[0x42];
+    self[0xB] = (self[0xB] * alpha) / 255;
+    self[0xF] = (self[0xF] * alpha) / 255;
+    self[0x13] = (self[0x13] * alpha) / 255;
+    self[0x17] = (source[3] * alpha) / 255;
 }
 
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
