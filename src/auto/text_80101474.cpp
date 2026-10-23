@@ -14,7 +14,7 @@ typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
 struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
-namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); float Print(unsigned short); }; }}
+namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); float Print(unsigned short); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
@@ -561,6 +561,59 @@ extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80105C2C(void *arg0) {
     if ((var_r6 == 0) && ((unsigned int)(((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0U)) var_r5 = 0;
     if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x301, lbl_8032818C, arg0);
     return *(float *)((char *)arg0 + 0x44);
+}
+
+extern "C" double lbl_80561158;
+extern "C" float lbl_80561160;
+float nw4hbm::ut::CharWriter::Print(unsigned short character) {
+    const char *base = lbl_80328178;
+    unsigned int address = (unsigned int)this;
+    unsigned int top = address & 0xFF000000U;
+    int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+    unsigned int fontAddress;
+    unsigned char glyph[0x18];
+    float advance;
+    float xOffset;
+
+    if ((unsigned int)(top + 0x80000000U) >= 1U && (unsigned int)((address & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
+    if (r10 == 0 && (unsigned int)((address & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
+    if (r9 == 0 && (unsigned int)(top + 0x40000000U) >= 1U) r8 = 0;
+    if (r8 == 0 && (unsigned int)((address & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
+    if (r7 == 0 && (unsigned int)((address & 0xF8000000U) + 0x30000000U) >= 1U) r6 = 0;
+    if (r6 == 0 && (unsigned int)((address & 0xFFFFC000U) + 0x20000000U) >= 1U) r5 = 0;
+    if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x328, base + 0x14, this);
+
+    fontAddress = *(unsigned int *)((unsigned char *)this + 0x48);
+    top = fontAddress & 0xFF000000U;
+    int r4 = 1;
+    r5 = 1; r6 = 1; r7 = 1; r8 = 1; r9 = 1; r10 = 1;
+    if ((unsigned int)(top + 0x80000000U) >= 1U &&
+        (unsigned int)((fontAddress & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
+    if (r10 == 0 && (unsigned int)((fontAddress & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
+    if (r9 == 0 && (unsigned int)(top + 0x40000000U) >= 1U) r8 = 0;
+    if (r8 == 0 && (unsigned int)((fontAddress & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
+    if (r7 == 0 && (unsigned int)((fontAddress & 0xF8000000U) + 0x30000000U) >= 1U) r5 = 0;
+    if (r5 == 0 && (unsigned int)((fontAddress & 0xFFFFC000U) + 0x20000000U) >= 1U) r4 = 0;
+    if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x329, base + 0xF4);
+    if (character == 0xFFFF) Panic__Q26nw4hbm2dbFPCciPCce(base, 0x32A, base + 0x1D0);
+
+    ((PrintFont *)*(void **)((unsigned char *)this + 0x48))->GetGlyph(glyph, character);
+    if (*(unsigned char *)((unsigned char *)this + 0x43) != 0) {
+        float scale = *(float *)((unsigned char *)this + 0x24);
+        advance = *(float *)((unsigned char *)this + 0x44);
+        xOffset = ((advance - (float)(signed char)glyph[6] * scale) * lbl_80561160) +
+                  (float)(signed char)glyph[4] * scale;
+    } else {
+        float scale = *(float *)((unsigned char *)this + 0x24);
+        advance = (float)(signed char)glyph[6] * scale;
+        xOffset = (float)(signed char)glyph[4] * scale;
+    }
+    PrintGlyph(*(float *)((unsigned char *)this + 0x2C) + xOffset,
+               *(float *)((unsigned char *)this + 0x30),
+               *(float *)((unsigned char *)this + 0x34),
+               *(const Glyph *)glyph);
+    *(float *)((unsigned char *)this + 0x2C) += advance;
+    return advance;
 }
 
 extern "C" const char lbl_80328178[];
