@@ -762,6 +762,44 @@ void DBPrintf_8006CFA8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+extern void gki_init_free_queue(UINT8, UINT16, UINT16, void *);
+void gki_buffer_init(void)
+{
+    UINT8 i, tt, mb;
+    tGKI_COM_CB *p_cb = &gki_cb.com;
+
+    for (tt = 0; tt < GKI_MAX_TASKS; tt++) {
+        for (mb = 0; mb < NUM_TASK_MBOX; mb++) {
+            p_cb->OSTaskQFirst[tt][mb] = NULL;
+            p_cb->OSTaskQLast[tt][mb] = NULL;
+        }
+    }
+
+    for (tt = 0; tt < GKI_NUM_TOTAL_BUF_POOLS; tt++) {
+        p_cb->pool_start[tt] = NULL;
+        p_cb->pool_end[tt] = NULL;
+        p_cb->pool_size[tt] = 0;
+        p_cb->freeq[tt].p_first = 0;
+        p_cb->freeq[tt].p_last = 0;
+        p_cb->freeq[tt].size = 0;
+        p_cb->freeq[tt].total = 0;
+        p_cb->freeq[tt].cur_cnt = 0;
+        p_cb->freeq[tt].max_cnt = 0;
+    }
+
+    p_cb->pool_access_mask = GKI_DEF_BUFPOOL_PERM_MASK;
+
+    gki_init_free_queue(0, GKI_BUF0_SIZE, GKI_BUF0_MAX, p_cb->bufpool0);
+    gki_init_free_queue(1, GKI_BUF1_SIZE, GKI_BUF1_MAX, p_cb->bufpool1);
+    gki_init_free_queue(2, GKI_BUF2_SIZE, GKI_BUF2_MAX, p_cb->bufpool2);
+    gki_init_free_queue(3, GKI_BUF3_SIZE, GKI_BUF3_MAX, p_cb->bufpool3);
+    gki_init_free_queue(4, GKI_BUF4_SIZE, GKI_BUF4_MAX, p_cb->bufpool4);
+
+    for (i = 0; i < GKI_NUM_FIXED_BUF_POOLS; i++)
+        p_cb->pool_list[i] = i;
+    p_cb->curr_total_no_of_pools = GKI_NUM_FIXED_BUF_POOLS;
+}
+
 void fn_8006D4C4(void *arg) {
     ((s32 *)arg)[1] = 0;
     ((s32 *)arg)[0] = 0;
