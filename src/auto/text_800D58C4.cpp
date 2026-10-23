@@ -45,6 +45,21 @@ extern "C" f32 lbl_80560E88;
 extern "C" f32 lbl_80560E90;
 extern "C" f32 lbl_80560E94;
 extern "C" int lbl_80565230;
+namespace nw4hbm { namespace lyt {
+struct DrawInfo;
+class Pane { public: void CalculateMtx(const DrawInfo &); };
+struct PaneMtxDispatch {
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void Apply(const DrawInfo &);
+};
+}}
+extern "C" void PSMTXScale(f32 *, f32, f32, f32);
+extern "C" u32 PSMTXInverse(f32 *, s32, f32);
+extern "C" void PSMTXRotTrig(f32 *, void *, f32, f32, f32);
+extern "C" f64 lbl_80560EB8;
+extern "C" f32 lbl_80560EB4;
+extern "C" f32 lbl_80560EAC;
+extern "C" f32 lbl_80560EB0;
 
 
 
