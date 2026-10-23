@@ -48,9 +48,12 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
         outY = x * matrix[1] + y * matrix[4] + z * matrix[7];
         outZ = x * matrix[2] + y * matrix[5] + z * matrix[8];
     }
-    dst[0] = outX + matrix[9];
-    dst[1] = outY + matrix[10];
-    dst[2] = outZ + matrix[11];
+    dst[0] = outX;
+    dst[1] = outY;
+    dst[2] = outZ;
+    dst[0] = dst[0] + matrix[9];
+    dst[1] = dst[1] + matrix[10];
+    dst[2] = dst[2] + matrix[11];
 }
 #define transform_vec(matrix, src, dst) transform_vec_values(matrix, src, dst, (src)[0], (src)[1], (src)[2])
 extern s32 fn_802315FC(s32);
@@ -176,18 +179,18 @@ void fn_80231780(void *arg0) {
     f32 f29;
     f32 f30;
     f32 f31;
-    volatile f32 sp8;
-    volatile f32 spC;
     volatile f32 sp10;
+    volatile f32 spC;
+    volatile f32 sp8;
     f32 x;
     f32 y;
     f32 z;
-    s32 i;
-    s32 offset;
     u8 *record;
+    s32 color;
+    s32 offset;
+    s32 i;
     u8 *object;
     s32 index;
-    s32 color;
 
     f31 = lbl_80563680;
     f30 = lbl_80563684;
@@ -231,9 +234,9 @@ loop_body:
         }
     } else {
         if (arg0 != 0)
-            fn_802C8B98(*(s32 *)(*(u8 **)lbl_80497F14 + index * 0x1C + 8), (s32)arg0);
+            fn_802C8B98(*(s32 *)(*(u8 **)lbl_80497F14 + *(s32 *)record * 0x1C + 8), (s32)arg0);
         else
-            fn_802C8B98(*(s32 *)(*(u8 **)lbl_80497F14 + index * 0x1C + 8), fn_8022EDC4());
+            fn_802C8B98(*(s32 *)(*(u8 **)lbl_80497F14 + *(s32 *)record * 0x1C + 8), fn_8022EDC4());
         fn_802C8DBC(4);
         f27 = *(f32 *)(record + 4);
         f26 = *(f32 *)(record + 8);
