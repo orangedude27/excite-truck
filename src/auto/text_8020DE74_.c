@@ -1,4 +1,39 @@
 #include "types.h"
+
+typedef struct UiObj {
+    void *vtable;
+    void *owner;
+    void *child8;
+    void *last_child;
+    void *children[2];
+    void *child18;
+    void *child1c;
+    void *child20;
+    void *child24;
+    void *child28;
+    void *child2c;
+    void *child30;
+    void *child34;
+    void *child38;
+    void *child3c;
+    void *child40;
+    void *child44;
+    void *child48;
+    void *child4c;
+    void *child50;
+    void *child54;
+    u8 flags58;
+    u8 pad59[3];
+    u32 child_count;
+    float value60;
+    float value64;
+    float value68;
+    float value6c;
+    u8 flag70;
+    u8 flag71;
+    u8 flag72;
+    u8 pad73;
+} UiObj;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -24,31 +59,29 @@ extern const char lbl_8055B648;
 extern float lbl_8056336C;
 extern "C" void *fn_8020DE74(void *arg0) {
     char name[0x20];
-    void *obj;
-    void *group;
-    void *left;
-    void *right;
+    register void *saved_arg __asm("r25") = arg0;
+    register const char *labels __asm("r31") = lbl_8033C7A0;
+    register void *obj __asm("r30");
+    register void *group __asm("r26");
+    register void *left __asm("r27");
+    register void *right __asm("r29");
+    register u32 is_race __asm("r28");
+    register u32 i __asm("r23");
+    register u32 offset __asm("r22");
+    register u8 *slot __asm("r21");
+    register u32 one __asm("r24") = 1;
+    register float initial asm("f31");
     void *child;
-    u8 *base;
-    const char *labels;
-    float initial;
-    u32 is_race;
-    u32 i;
     u32 bit;
-    u32 offset;
-    u8 *slot;
 
-    labels = lbl_8033C7A0;
-    base = (u8 *)arg0;
     obj = fn_801284F8(0x74, (const char *)&lbl_8055B648);
-    if (obj == 0) return obj;
-
+    if (obj != 0) {
     *(void **)obj = lbl_8033C8C4;
-    *(void **)((u8 *)obj + 4) = base;
-    group = *(void **)(base + 0x1ec);
-    is_race = *(u32 *)(base + 0x10) == 0x50434152;
-    left = base + 0x118;
-    right = base + 0x60;
+    *(void **)((u8 *)obj + 4) = saved_arg;
+    group = *(void **)((u8 *)saved_arg + 0x1ec);
+    is_race = *(u32 *)((u8 *)saved_arg + 0x10) == 0x50434152;
+    left = (u8 *)saved_arg + 0x118;
+    right = (u8 *)saved_arg + 0x60;
 
     if (is_race != 0) {
         *(void **)((u8 *)obj + 0x28) = fn_802077A4(labels, 5, left, right);
@@ -74,13 +107,13 @@ extern "C" void *fn_8020DE74(void *arg0) {
         *(void **)((u8 *)child + 0x10) = group;
         child = *(void **)(slot + 0x10);
         if (initial != *(float *)((u8 *)child + 4)) {
-            *(u8 *)((u8 *)child + 0x4e) = 1;
+            *(u8 *)((u8 *)child + 0x4e) = one;
             *(float *)((u8 *)child + 4) = initial;
         }
         i++;
         *(void **)((u8 *)obj + 0x0c) = *(void **)(slot + 0x10);
         offset += 4;
-        *(u32 *)((u8 *)obj + 0x5c) += 1;
+        *(u32 *)((u8 *)obj + 0x5c) += one;
     } while (i < 2);
 
     if (is_race != 0) *(void **)((u8 *)obj + 0x18) = fn_802077A4(labels + 0x38, 5, left, right);
@@ -90,7 +123,7 @@ extern "C" void *fn_8020DE74(void *arg0) {
         float desired = lbl_8056336C;
         *(void **)((u8 *)child + 0x10) = group;
         if (desired != *(float *)((u8 *)child + 4)) {
-            *(u8 *)((u8 *)child + 0x4e) = 1;
+            *(u8 *)((u8 *)child + 0x4e) = one;
             *(float *)((u8 *)child + 4) = desired;
         }
     }
@@ -147,9 +180,10 @@ extern "C" void *fn_8020DE74(void *arg0) {
     }
     *(u8 *)((u8 *)obj + 0x58) = 0;
     *(u8 *)((u8 *)obj + 0x72) = 0;
-    child = fn_80016544(*(s32 *)(base + 0x25c));
+    child = fn_80016544(*(s32 *)((u8 *)saved_arg + 0x25c));
     bit = (*(u32 *)((u8 *)child + 0xa0) >> 2) & 1;
     *(u8 *)((u8 *)obj + 0x71) = bit;
+    }
     return obj;
 }
 
