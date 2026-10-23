@@ -14,7 +14,7 @@ typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
 struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
-namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); float Print(unsigned short); }; }}
+namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
@@ -587,8 +587,7 @@ float nw4hbm::ut::CharWriter::Print(unsigned short character) {
     top = fontAddress & 0xFF000000U;
     int r4 = 1;
     r5 = 1; r6 = 1; r7 = 1; r8 = 1; r9 = 1; r10 = 1;
-    if ((unsigned int)(top + 0x80000000U) >= 1U &&
-        (unsigned int)((fontAddress & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
+    if ((unsigned int)(top + 0x80000000U) >= 1U && (unsigned int)((fontAddress & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
     if (r10 == 0 && (unsigned int)((fontAddress & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
     if (r9 == 0 && (unsigned int)(top + 0x40000000U) >= 1U) r8 = 0;
     if (r8 == 0 && (unsigned int)((fontAddress & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
