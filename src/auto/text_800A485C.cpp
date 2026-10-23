@@ -2135,17 +2135,15 @@ extern "C" s32 fn_800AF584(void *arg0) {
     return *(s32 *)((char *)lbl_802EEF40 + idx * 0x14 + 8);
 }
 
+#pragma use_lmw_stmw off
 extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
     extern s32 fn_800B5260(void *, void *, u32, u32, s32);
     extern s32 fn_800B5618(void *, void *, u32, u32, s32);
-    u8 *data = *(u8 **)((char *)arg3 + 8);
-    u8 shift = *(u8 *)((char *)arg0 + 0x20);
-    u32 size = *(u16 *)arg0;
-    u32 r9 = (arg1 + (arg1 >> 1)) & 0xFFFF;
-    u32 value = (*(u32 *)((char *)arg0 + 0x28) + (r9 >> shift)) & 0xFFFF;
-    u32 index = r9 & (size - 1);
-    s32 oldResult = 0;
+    s32 r9 = (arg1 + (arg1 >> 1)) & 0xFFFF;
+    u32 value = (*(u32 *)((char *)arg0 + 0x28) + (r9 >> *(u8 *)((char *)arg0 + 0x20))) & 0xFFFF;
+    u16 index = r9 & (*(u16 *)arg0 - 1);
     s32 result = 0;
+    s32 oldResult = 0;
     u16 i;
 
     if (*(u32 *)((char *)arg3 + 0x18) != value) {
@@ -2160,8 +2158,9 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
         *(u32 *)((char *)arg3 + 0x18) = value;
     }
     if (arg1 & 1) {
-        data[index] = (data[index] & 0xF) | ((arg2 & 0xF) << 4);
-        if (index == size - 1) {
+        *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) =
+            (*(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) & 0xF) | ((arg2 & 0xF) << 4);
+        if ((u32)index == (u32)*(u16 *)arg0 - 1) {
             for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
                 s32 r = fn_800B5618(arg0, *(void **)((char *)arg3 + 8),
                     *(u32 *)((char *)arg3 + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
@@ -2172,14 +2171,14 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
             result = fn_800B5260(arg0, *(void **)((char *)arg3 + 8), nv, 0, *(u16 *)arg0);
             if (result != 0) return result;
             *(u32 *)((char *)arg3 + 0x18) = nv;
-            data[0] = (u8)(arg2 >> 8);
+            *(u8 *)*(s32 *)((char *)arg3 + 8) = (u8)(arg2 >> 4);
         } else {
-            data[index + 1] = (u8)(arg2 >> 8);
+            *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index + 1) = (u8)(arg2 >> 4);
         }
     } else {
         *(u32 *)((char *)arg3 + 0x18) = index;
-        data[index] = (u8)arg2;
-        if (index == size - 1) {
+        *(u8 *)((u8 *)*(s32 *)((char *)arg3 + 8) + index) = (u8)arg2;
+        if ((u32)index == (u32)*(u16 *)arg0 - 1) {
             for (i = 0; (s32)i < *(u8 *)((char *)arg0 + 0x22); i++) {
                 s32 r = fn_800B5618(arg0, *(void **)((char *)arg3 + 8),
                     *(u32 *)((char *)arg3 + 0x18) + (s32)i * *(s32 *)((char *)arg0 + 0xC),
@@ -2190,15 +2189,17 @@ extern "C" s32 fn_800AF8EC(void *arg0, s32 arg1, u32 arg2, void *arg3) {
             result = fn_800B5260(arg0, *(void **)((char *)arg3 + 8), nv, 0, *(u16 *)arg0);
             if (result != 0) return result;
             *(u32 *)((char *)arg3 + 0x18) = nv;
-            data[0] = (data[0] & 0xF0) | (u8)(arg2 >> 8);
+            *(u8 *)*(s32 *)((char *)arg3 + 8) =
+                (*(u8 *)*(s32 *)((char *)arg3 + 8) & 0xF0) | (u8)(arg2 >> 8);
         } else {
-            data[index + 1] = (data[index + 1] & 0xF0) | (u8)(arg2 >> 8);
+            u8 *p = (u8 *)*(s32 *)((char *)arg3 + 8) + index + 1;
+            *p = (*p & 0xF0) | (u8)(arg2 >> 8);
         }
     }
     if (result != 0) oldResult = result;
     return oldResult;
 }
-
+#pragma use_lmw_stmw reset
 extern "C" s32 fn_800AFF28(void *arg0, s32 arg1, u16 arg2) {
     extern s32 fn_800B5618(void *, void *, u16, u16, s32);
     u16 sp8;
@@ -6128,6 +6129,124 @@ void fn_800C57B0(s32 arg0, s32 arg1, s32 arg2, s32 *arg3) {
     }
 }
 
+extern "C" s32 WENCGetEncodeData(void *infoArg, u32 flag, const s16 *pcmData, s32 samples, void *adpcmArg) {
+    const f64 table[] = {0.89843750, 0.89843750, 0.89843750, 0.89843750,
+                         1.19921875, 1.59765625, 2.00000000, 2.39843750};
+
+    u8 *dst;
+    const s16 *src;
+    int i;
+    s32 da;
+    s32 l3, l2, l1, l0;
+    s32 dlx;
+    s32 xnc;
+    s32 offset;
+    s32 index;
+    s32 encodeSize;
+    s32 xn;
+    s32 dl;
+    s32 qn;
+    s32 dn;
+    s32 dlh;
+    s32 dlq;
+    u8 by;
+
+    encodeSize = (samples + 1) / 2;
+    memset(adpcmArg, 0, encodeSize);
+
+    src = pcmData;
+    dst = (u8 *)adpcmArg;
+
+    if ((flag & 1) == 0) {
+        xn = 0;
+        dl = 127;
+        qn = 0;
+        dn = 0;
+        dlh = 0;
+        dlq = 0;
+    } else {
+        xn = ((s32 *)infoArg)[0];
+        dl = ((s32 *)infoArg)[1];
+        qn = ((s32 *)infoArg)[2];
+        dn = ((s32 *)infoArg)[3];
+        dlh = ((s32 *)infoArg)[4];
+        dlq = ((s32 *)infoArg)[5];
+    }
+
+    for (i = 0; i < samples; i++) {
+        l0 = 0;
+        l1 = 0;
+        l2 = 0;
+        l3 = 0;
+
+        da = *src++;
+        if (da < xn) {
+            l3 = 1;
+        }
+
+        dn = __abs(da - xn);
+        if (dn >= dl) {
+            l2 = 1;
+            dn -= dl;
+        }
+
+        dlh = dl / 2;
+        if (dn >= dlh) {
+            l1 = 1;
+            dn -= dlh;
+        }
+
+        dlq = dlh / 2;
+        if (dn >= dlq) {
+            l0 = 1;
+            dn -= dlq;
+        }
+
+        dlx = dlq / 2;
+        qn = (1 - l3 * 2) * (dl * l2 + dlh * l1 + dlq * l0 + dlx);
+
+        if (qn > 0xFFFF) {
+            qn = 0xFFFF;
+        }
+        if (qn < -0x10000) {
+            qn = -0x10000;
+        }
+
+        xnc = xn + qn;
+        if (xnc > 0x7FFF) {
+            xnc = 0x7FFF;
+        }
+        if (xnc < -0x8000) {
+            xnc = -0x8000;
+        }
+
+        xn = xnc;
+        offset = (i & 1) == 0 ? 4 : 0;
+
+        by = l3 * 8 + l2 * 4 + l1 * 2 + l0;
+        dst[i / 2] |= by << offset;
+
+        index = l2 * 4 + l1 * 2 + l0;
+        dl *= table[index];
+
+        if (dl <= 127) {
+            dl = 127;
+        }
+        if (dl >= 0x6000) {
+            dl = 0x6000;
+        }
+    }
+
+    ((s32 *)infoArg)[0] = xn;
+    ((s32 *)infoArg)[1] = dl;
+    ((s32 *)infoArg)[2] = qn;
+    ((s32 *)infoArg)[3] = dn;
+    ((s32 *)infoArg)[4] = dlh;
+    ((s32 *)infoArg)[5] = dlq;
+
+    return samples;
+}
+
 extern "C" void* fn_800C64DC(u32 size) {
     return MEMAllocFromAllocator(lbl_80559708, size);
 }
@@ -7943,6 +8062,134 @@ void fn_800C790C(void *arg0) {
         var_r9++;
     }
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+#pragma dont_inline on
+extern "C" void fn_800C7998(void *arg0) {
+    class HomeButtonDispatch {
+    public:
+        virtual void d0(); virtual void setup(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8();
+        virtual void apply(s32, s32, s32, s32, s32, f32, f32);
+    };
+    class LayoutDispatch {
+    public:
+        virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+        virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+        virtual void d8(); virtual void d9(); virtual void d10(); virtual void d11();
+        virtual void d12();
+        virtual void *findPane(u32, s32);
+    };
+    f32 rect[4];
+    f32 temp_f31;
+    u8 *home = (u8 *)arg0;
+    u8 *data = lbl_8031D840;
+    register s32 zero = 0;
+    register s32 one = 1;
+    s32 var_r30;
+    u8 *child;
+    s32 childCount;
+    void *pane, *layout;
+    HomeButtonDispatch *soundControl;
+    LayoutDispatch *layoutDispatch;
+    u32 *paneNames;
+    s32 paneCount;
+    u32 soundIndex;
+    u8 flags;
+
+    if (home[0x8B] != 0) return;
+    home[0x8C] = zero;
+    home[0x8B] = one;
+    home[0x8D] = zero;
+    home[0x8F] = zero;
+    if (*(s32 *)(home + 0xAC) != 3) home[0x8E] = zero;
+    GXSetCullMode(0);
+    *(s32 *)(home + 0x1C) = zero;
+    *(s32 *)(home + 0x20) = zero;
+    *(s32 *)(home + 0x24) = zero;
+    *(s32 *)(home + 0x28) = zero;
+    *(s32 *)(home + 0x2C) = zero;
+    *(s32 *)(home + 0x30) = zero;
+    *(s32 *)(home + 0x34) = zero;
+    *(s32 *)(home + 0x38) = zero;
+    *(s32 *)(home + 0x3C) = zero;
+    *(s32 *)(home + 0x40) = zero;
+    *(s32 *)(home + 0x44) = zero;
+    *(s32 *)(home + 0x48) = zero;
+    *(s32 *)(home + 0x4C) = zero;
+    *(s32 *)(home + 0x50) = zero;
+    *(s32 *)(home + 0x10) = zero;
+    *(s32 *)home = zero;
+    home[0x88] = zero;
+    updateTrigPane__Q210homebutton10HomeButtonFv(arg0);
+
+    soundControl = *(HomeButtonDispatch **)(home + 0x1F8);
+    soundControl->setup();
+    for (var_r30 = 0; var_r30 < 8; var_r30++) {
+        soundControl = *(HomeButtonDispatch **)(home + 0x1F8);
+        soundControl->apply(var_r30, 0, 0, 0, 0, lbl_80560DD8, lbl_80560DD8);
+    }
+
+    temp_f31 = lbl_80560DC8;
+    child = home;
+    childCount = 0;
+    var_r30 = 0;
+    for (; childCount < 4; childCount++, child += 4) {
+        *(s32 *)(child + 0x54) = var_r30;
+        fn_800D11E0(*(void **)(child + 0x254));
+        fn_800D11CC(*(void **)(child + 0x254));
+        ((void (*)(void *))fn_800D1200)(*(void **)(child + 0x254));
+        fn_800D16A8((s32 *)*(void **)(child + 0x254));
+        fn_800D0F78(*(void **)(child + 0x254));
+        fn_800D1300(*(void **)(child + 0x254));
+        *(f32 *)(child + 0x1BC) = temp_f31;
+        *(f32 *)(child + 0x1CC) = temp_f31;
+    }
+
+    layout = *(void **)(home + 0x1E0);
+    GetLayoutRect__Q34nw4lyt6LayoutCFv(rect, layout);
+    *(f32 *)(home + 0x234) = rect[0];
+    *(f32 *)(home + 0x238) = rect[1];
+    *(f32 *)(home + 0x23C) = rect[2];
+    *(f32 *)(home + 0x240) = rect[3];
+
+    layoutDispatch = *(LayoutDispatch **)((u8 *)layout + 0x10);
+    pane = layoutDispatch->findPane(*(u32 *)(data + 0x950), 1);
+    flags = ((u8 *)pane)[0xCF];
+    ((u8 *)pane)[0xCF] = flags & 0xFE;
+
+    paneNames = (u32 *)(data + 0x9D8);
+    paneNames += 2;
+    for (paneCount = 2; paneCount < 7; paneCount++) {
+        pane = (*(LayoutDispatch **)((u8 *)*(void **)(home + 0x1E0) + 0x10))->findPane(*paneNames, 1);
+        flags = ((u8 *)pane)[0xCF];
+        ((u8 *)pane)[0xCF] = flags & 0xFE;
+        paneNames++;
+    }
+    data += 0xA24;
+    for (paneCount = 0; paneCount < 3; paneCount++) {
+        pane = (*(LayoutDispatch **)((u8 *)*(void **)(home + 0x1E0) + 0x10))->findPane(*(u32 *)data, 1);
+        flags = ((u8 *)pane)[0xCF];
+        ((u8 *)pane)[0xCF] = flags & 0xFE;
+        data += 4;
+    }
+
+    Start__Q210homebutton9RemoteSpkFv(*(void **)(home + 0x264));
+    if (*(void **)(home + 0x5C0) != 0) {
+        for (soundIndex = 0; soundIndex < *(u32 *)(*(u8 **)(home + 0x5C0) + 0x70); soundIndex++) {
+            void *soundPlayer = GetSoundPlayer__Q36nw4hbm3snd18SoundArchivePlayerFUl(*(void **)(home + 0x5C0), soundIndex);
+            SetInitialVolume__Q46nw4hbm3snd6detail10BasicSoundFf_800F877C(soundPlayer, lbl_80560DCC);
+        }
+    }
+    fn_800C81F0(arg0, 0);
+    *(s32 *)(home + 0x3FC) = zero;
+    *(s32 *)(home + 0x400) = 0x1E;
+    *(s32 *)(home + 0x404) = zero;
+}
+#pragma dont_inline reset
+#pragma pop
 
 extern "C" u32* fn_800C7C68(void) {
     return &lbl_8055DDF8;
