@@ -130,6 +130,174 @@ s32 *fn_80167874(s32 arg0) {
         entry = (s32 *)((u8 *)entry + 0x20);
     }
 }
+
+extern double cos(float);
+extern double sin(float);
+extern int lbl_8055E3C4;
+extern float lbl_8055E460;
+extern float lbl_80561918, lbl_8056191C, lbl_80561920, lbl_80561924, lbl_80561928;
+extern double lbl_80561930;
+void fn_801678D8(void) {
+    extern unsigned char lbl_8042FF60[];
+    float *out;
+    float temp_f1, temp_f25, temp_f26, temp_f28, temp_f29, temp_f30, temp_f31;
+    int index;
+    out = (float *)lbl_8042FF60;
+    index = 0;
+    temp_f28 = lbl_80561920;
+    temp_f29 = lbl_8056191C;
+    temp_f30 = lbl_80561924;
+    temp_f31 = lbl_80561928;
+    temp_f25 = lbl_80561918 * ((float)lbl_8055E3C4 + lbl_8055E460);
+    do {
+        temp_f26 = (float)cos(temp_f29 * (temp_f25 + ((float)index * temp_f28)));
+        temp_f1 = (float)sin(temp_f29 * (temp_f25 + ((float)index * temp_f28)));
+        out[0] = temp_f26;
+        index += 1;
+        out[1] = temp_f30;
+        out[2] = -temp_f1;
+        out[3] = temp_f30;
+        out[4] = temp_f31;
+        out[5] = temp_f30;
+        out[6] = temp_f1;
+        out[7] = temp_f30;
+        out[8] = temp_f26;
+        out += 12;
+    } while (index < 0x10);
+}
+
+extern s32 *__AXFXGetLfoSinTable_801769CC(void);
+extern void *fn_8001285C(s32);
+extern void *fn_801284F8(s32, void *, void *, void *);
+extern void fn_8002F53C(void *, void *, void *, s32, s32);
+extern s32 fn_802C6FC0(s32, s32, s32);
+extern void fn_802C77F0();
+extern void *fn_80131810(void);
+extern void fn_80131818(void *);
+extern void fn_80168020(void);
+extern void fn_80167EE0(s32 *);
+extern int *fn_80167E98(int *, int);
+void fn_801679F0(void) {
+    extern char lbl_80330000[];
+    extern char lbl_80330234[], lbl_80330248[], lbl_8033025C[], lbl_80330270[];
+    extern f32 lbl_802F9514[3];
+    extern s32 lbl_8055E354;
+    extern f32 lbl_80561938;
+    char *sp8;
+    char *spC;
+    char *sp10;
+    char *sp14;
+    char **sp40[5];
+    s32 sp18[3];
+    f32 sp28[6];
+    u8 *base;
+    u8 *entry;
+    void *object;
+    void *manager;
+    void *container;
+    void *item;
+    void *child;
+    void **vtable;
+    char **slot;
+    s32 i;
+    s32 value;
+    s32 result;
+    f32 f0;
+    f32 f1;
+    f32 f2;
+    f32 scale;
+
+    base = (u8 *)lbl_80330000;
+    object = *(void **)((u8 *)fn_8001285C(*__AXFXGetLfoSinTable_801769CC()) + 0x20);
+    sp14 = lbl_80330270;
+    sp10 = lbl_8033025C;
+    spC = lbl_80330248;
+    sp8 = lbl_80330234;
+    sp40[0] = &sp8;
+    sp40[1] = &sp14;
+    sp40[2] = &sp10;
+    sp40[3] = &spC;
+    sp40[4] = 0;
+
+    manager = fn_801284F8(0x1E15C, base + 0x1D8, &sp10, &sp14);
+    if (manager != 0) {
+        *(void **)manager = (u8 *)manager + 0xC;
+        *(s32 *)((u8 *)manager + 8) = 0x1388;
+        *(s32 *)((u8 *)manager + 4) = 0;
+        fn_8002F53C((u8 *)manager + 0xC, fn_80167EE0, fn_80167E98, 0x18, 0x1388);
+        scale = lbl_80561938;
+        *(u8 **)((u8 *)manager + 0x1D4CC) = (u8 *)manager + 0x1D4D8;
+        *(s32 *)((u8 *)manager + 0x1D4D4) = 0x64;
+        *(s32 *)((u8 *)manager + 0x1D4D0) = 0;
+        entry = base + 0x20;
+        i = 0;
+        do {
+            value = fn_802C6FC0(*(s32 *)(entry + 4), 0, 0);
+            *(s32 *)(entry + 0x10) = value;
+            *(s32 *)(entry + 0x1C) = 0;
+            if (value != -1) {
+                fn_802C77F0(sp28);
+                f2 = sp28[5] - sp28[4];
+                f1 = sp28[3] - sp28[2];
+                if (f1 > f2)
+                    f2 = f1;
+                f0 = sp28[1] - sp28[0];
+                if (f0 > f2)
+                    f0 = f2;
+                *(f32 *)(entry + 0x14) = scale * f0;
+                *(f32 *)(entry + 0x18) = -sp28[2];
+            }
+            i += 1;
+            entry += 0x20;
+        } while (i < 5);
+        *((u8 *)manager + 0x1E158) = 0;
+    }
+    lbl_8055E354 = (s32)manager;
+    vtable = *(void ***)object;
+    if (((s32 (*)(void *, void *))vtable[3])(object, base + 0x1E8) != 0) {
+        sp18[0] = ((s32 *)lbl_802F9514)[0];
+        sp18[1] = ((s32 *)lbl_802F9514)[1];
+        sp18[2] = ((s32 *)lbl_802F9514)[2];
+        result = ((s32 (*)(void *, void *, s32, s32, void *))vtable[23])(
+            object, base + 0x1F4, sp18[1], sp18[0], lbl_802F9514);
+        if (((u32)(-result | result) >> 31) != 0) {
+            child = ((void *(*)(void *, void *))vtable[23])(object, base + 0x1F4);
+            f1 = ((f32 (*)(void *, void *, f32))(*(void ***)child)[10])(
+                child, base + 0x200, *(f32 *)&sp18[0]);
+            *(f32 *)&sp18[0] = f1;
+            f1 = ((f32 (*)(void *, void *, f32))(*(void ***)child)[10])(
+                child, base + 0x210, *(f32 *)&sp18[1]);
+            *(f32 *)&sp18[1] = f1;
+            f1 = ((f32 (*)(void *, void *, f32))(*(void ***)child)[10])(
+                child, base + 0x220, *(f32 *)&sp18[2]);
+            *(f32 *)&sp18[2] = f1;
+        }
+        ((void (*)(void *, void *))vtable[5])(object, base + 0x1E8);
+        container = fn_80131810();
+        if (container != 0) {
+            i = 0;
+            item = ((void *(*)(void *, s32))(*(void ***)container)[3])(container, i);
+            while (item != 0) {
+                slot = (char **)sp40;
+                value = ((s32 (*)(void *))(*(void ***)item)[2])(item);
+                while (*slot != 0) {
+                    vtable = *(void ***)*slot;
+                    if (((s32 (*)(void *, s32))vtable[3])(*slot, value) != 0) {
+                        ((void (*)(void *, void *, void *, s32 *))vtable[4])(
+                            *slot, item, (void *)lbl_8055E354, sp18);
+                        break;
+                    }
+                    slot++;
+                }
+                i += 1;
+                item = ((void *(*)(void *, s32))(*(void ***)container)[3])(container, i);
+            }
+            fn_80131818(container);
+        }
+    }
+    fn_80168020();
+}
+
 #pragma dont_inline reset
 
 s32 fn_80167D58(s32 arg0, s32 arg1) {
