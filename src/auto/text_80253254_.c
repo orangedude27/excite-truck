@@ -51,7 +51,7 @@ void *__dt__Q210JASDrumSet5TPercFv_802534B0(void *arg0, s32 arg1) {
 extern "C" void fn_801345D8(void *, int, const char *, ...);
 extern "C" int fn_802C6FC0(void *, int, int);
 extern "C" void *fn_80131808(void *);
-extern "C" int fn_801F0010(int, int = 0);
+extern "C" int fn_801F0010(int, int);
 extern "C" float fn_801F159C(int);
 extern "C" void fn_80131818(void *, float, float, float);
 extern "C" void fn_8027A714(void *, void *);
@@ -76,7 +76,7 @@ extern "C" void fn_80253510(void *arg0, unsigned char *arg1) {
                 virtual Dummy *lookup(const char *);
         virtual void v3();
                 virtual void v4();
-        virtual void load(const char *);
+        virtual int load(const char *);
     };
     unsigned char *var_r4;
     unsigned char *var_r6;
@@ -127,13 +127,13 @@ loop_3:
     fn_801345D8(stack.sp18, 0x20, lbl_803447C0 + 0x34, stack.sp38);
     manager = fn_80131808(stack.sp18);
     resource = ((Dummy *)manager)->lookup(lbl_8055C130);
-    ((Dummy *)resource)->load(lbl_803447C0 + 0x44);
     *(int *)((unsigned char *)arg0 + 0x18) =
-        fn_801F0010(*(int *)((unsigned char *)arg0 + 0x20));
+        fn_801F0010(((Dummy *)resource)->load(lbl_803447C0 + 0x44),
+                    *(int *)((unsigned char *)arg0 + 0x20));
     resource = ((Dummy *)manager)->lookup(lbl_8055C138);
-    ((Dummy *)resource)->load(lbl_803447C0 + 0x44);
     *(int *)((unsigned char *)arg0 + 0x1C) =
-        fn_801F0010(*(int *)((unsigned char *)arg0 + 0x24));
+        fn_801F0010(((Dummy *)resource)->load(lbl_803447C0 + 0x44),
+                    *(int *)((unsigned char *)arg0 + 0x24));
     fn_8027A714((unsigned char *)arg0 + 0x45C, arg1);
 
     var_r30 = arg0;
