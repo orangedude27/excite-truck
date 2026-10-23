@@ -45,6 +45,7 @@ extern char DummyCommandBlock_80376AA0[];
 extern void __DVDFSInit(void);
 extern void fn_80038040(void);
 extern s32 OSGetTick(void);
+extern s32 fn_8003BCDC(s32);
 
 extern s32 DVDInitialized_8055D888;
 extern s32 FirstTimeInBootrom_8055D868;
@@ -212,8 +213,6 @@ s32 DVDConvertPathToEntrynum(const char *path) {
     u32 it;
     u32 anchor;
     const char *item_name;
-    const char *lhs;
-    const char *rhs;
     BOOL name_delimited_by_slash;
     s32 name_length;
     const char *backup_path;
@@ -258,9 +257,11 @@ check_format:
 validate_format:
             if (has_extension == TRUE && name_end - extension_start > 3)
                 illegal_format = TRUE;
-            if (illegal_format == TRUE)
-                ((void (*)(const char *, s32, const char *, ...))OSPanic)(
-                    lbl_80558DF8, 0x1B9, lbl_80301F70, backup_path);
+            if (illegal_format == FALSE)
+                goto skip_panic;
+            ((void (*)(const char *, s32, const char *, ...))OSPanic)(
+                lbl_80558DF8, 0x1B9, lbl_80301F70, backup_path);
+skip_panic:;
         } else {
             name_end = path;
             while (*name_end != '\0' && *name_end != '/') name_end++;
@@ -275,13 +276,8 @@ validate_format:
                     name_delimited_by_slash != TRUE) {
                     item_name = (const char *)FstStringStart_8055D83C +
                                 (new_var[anchor].packed_type_name & 0xFFFFFF);
-                    lhs = path;
-                    rhs = item_name;
-                    while (*rhs != '\0') {
-                        if (DVDPathLower(*lhs++) != DVDPathLower(*rhs++))
-                            goto next_item;
-                    }
-                    if (*lhs == '/' || *lhs == '\0') goto descend;
+                    if (DVDPathSame(path, item_name))
+                        goto descend;
                 }
                 if (new_var[anchor].packed_type_name & 0xFF000000) {
                     anchor = new_var[anchor].sibling_or_size;
@@ -297,11 +293,6 @@ descend:
         it = anchor;
         path += name_length + 1;
         continue;
-next_item:
-        if (new_var[anchor].packed_type_name & 0xFF000000)
-            anchor = new_var[anchor].sibling_or_size;
-        else
-            anchor++;
     }
 }
 #pragma use_lmw_stmw reset
