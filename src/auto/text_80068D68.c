@@ -4718,9 +4718,8 @@ tBTM_STATUS btm_sec_mx_access_request(BD_ADDR bd_addr, UINT16 psm, BOOLEAN is_or
         }
     }
 
-    index = 0;
     p_serv_rec = lbl_803C0F78 + 0x1990;
-    for (; index < 0x18; index++, p_serv_rec += 0x3C) {
+    for (index = 0; index < 0x18; index++, p_serv_rec += 0x3C) {
         if ((p_serv_rec[0xE] & 0x80) &&
             *(u16 *)(p_serv_rec + 0xC) == psm &&
             *(u32 *)(p_serv_rec + 0x0) == mx_proto_id &&
@@ -4824,6 +4823,100 @@ void btm_sec_abort_access_req(BD_ADDR arg0) {
     }
 done:
     return;
+}
+
+extern char lbl_80316E44[];
+void btm_sec_rmt_name_request_complete(UINT8 *p_bd_addr, UINT8 *p_bd_name, UINT8 status)
+{
+    UINT8 *p_dev_rec;
+    int i;
+    int j;
+    UINT8 *p;
+    UINT8 state;
+    UINT8 result;
+    void (*name_cb)(void *, void *, void *);
+    void (*security_cb)(void *, void *, void *, void *, UINT8);
+    void (*complete_cb)(void *, void *, UINT8);
+
+    if (p_bd_addr) {
+        p_dev_rec = (UINT8 *)btm_find_dev(p_bd_addr);
+    } else {
+        p_dev_rec = (UINT8 *)lbl_803C0F78 + 0x1F30;
+        for (i = 0; i < 0x10; i++, p_dev_rec += 0x88) {
+            if (!(p_dev_rec[0x76] & 0x80))
+                continue;
+            if (p_dev_rec[0x7F] == 3)
+                break;
+        }
+        if (i == 0x10)
+            p_dev_rec = NULL;
+    }
+
+    if (lbl_803C0F78[0x27C0] >= 4)
+        fn_8007096C(0xD0003, lbl_80316E44, status,
+                    p_dev_rec ? p_dev_rec[0x7F] : 0);
+
+    if (!p_dev_rec)
+        return;
+
+    if (status == 0) {
+        memcpy(p_dev_rec + 0x35, p_bd_name, 0x40);
+        p_dev_rec[0x76] |= 8;
+        p = (UINT8 *)lbl_803C0F78;
+        for (j = 0; j < 2; j++, p += 4) {
+            name_cb = *(void (**)(void *, void *, void *))(p + 0x192C);
+            if (name_cb)
+                name_cb(p_bd_addr, p_dev_rec + 0x22, p_dev_rec + 0x35);
+        }
+    }
+
+    if (p_dev_rec[0x82]) {
+        if ((p_dev_rec[0x81] & 0x40) && !p_dev_rec[0x85])
+            return;
+        p_dev_rec[0x82] = 0;
+        security_cb = *(void (**)(void *, void *, void *, void *, UINT8))
+                          ((UINT8 *)lbl_803C0F78 + 0x1914);
+        if (security_cb)
+            security_cb(p_dev_rec + 0x1C, p_dev_rec + 0x22,
+                        p_dev_rec + 0x35, p_dev_rec + 0x25,
+                        p_dev_rec[0x83]);
+        p = (UINT8 *)lbl_803C0F78;
+        for (j = 0; j < 2; j++, p += 4) {
+            security_cb = *(void (**)(void *, void *, void *, void *, UINT8))(p + 0x1924);
+            if (security_cb)
+                security_cb(p_dev_rec + 0x1C, p_dev_rec + 0x22,
+                            p_dev_rec + 0x35, p_dev_rec + 0x25,
+                            p_dev_rec[0x83]);
+        }
+    }
+
+    state = p_dev_rec[0x81];
+    if ((state & 0x40) && (p_dev_rec[0x76] & 2)) {
+        p_dev_rec[0x81] = state & ~0x50;
+        btsnd_hcic_disconnect(*(UINT16 *)(p_dev_rec + 0x18), 0x13);
+        return;
+    }
+
+    if (p_dev_rec[0x7F] == 3) {
+        p_dev_rec[0x7F] = 0;
+        if (status != 0) {
+            if (*(void **)(p_dev_rec + 4)) {
+                ((void (*)(void *, void *, UINT8))*(void **)(p_dev_rec + 4))(
+                    p_dev_rec + 0x1C, *(void **)(p_dev_rec + 8), 0xA);
+                *(void **)(p_dev_rec + 4) = NULL;
+            }
+            return;
+        }
+
+        result = btm_sec_execute_procedure(p_dev_rec);
+        if (result != 1) {
+            if (*(void **)(p_dev_rec + 4)) {
+                complete_cb = (void (*)(void *, void *, UINT8))*(void **)(p_dev_rec + 4);
+                complete_cb(p_dev_rec + 0x1C, *(void **)(p_dev_rec + 8), result);
+                *(void **)(p_dev_rec + 4) = NULL;
+            }
+        }
+    }
 }
 
 s32 fn_8007FEFC(u16 handle) {
