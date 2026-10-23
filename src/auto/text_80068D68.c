@@ -914,6 +914,21 @@ u8 fn_8006DF84(void *arg0) {
     return tmp >> 5;
 }
 
+static UINT8 gki_set_pool_permission_local(UINT8 pool_id, UINT8 permission)
+{
+    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
+
+    if (pool_id < GKI_NUM_TOTAL_BUF_POOLS) {
+        if (permission == GKI_RESTRICTED_POOL)
+            p_cb->pool_access_mask = (UINT16)(p_cb->pool_access_mask | (1 << pool_id));
+        else
+            p_cb->pool_access_mask = (UINT16)(p_cb->pool_access_mask & ~(1 << pool_id));
+        return GKI_SUCCESS;
+    }
+
+    return GKI_INVALID_POOL;
+}
+
 static void gki_add_to_pool_list(UINT8 pool_id)
 {
     INT32 i;
@@ -929,21 +944,6 @@ static void gki_add_to_pool_list(UINT8 pool_id)
         p_cb->pool_list[j] = p_cb->pool_list[j - 1];
 
     p_cb->pool_list[i] = pool_id;
-}
-
-static UINT8 gki_set_pool_permission_local(UINT8 pool_id, UINT8 permission)
-{
-    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
-
-    if (pool_id < GKI_NUM_TOTAL_BUF_POOLS) {
-        if (permission == GKI_RESTRICTED_POOL)
-            p_cb->pool_access_mask = (UINT16)(p_cb->pool_access_mask | (1 << pool_id));
-        else
-            p_cb->pool_access_mask = (UINT16)(p_cb->pool_access_mask & ~(1 << pool_id));
-        return GKI_SUCCESS;
-    }
-
-    return GKI_INVALID_POOL;
 }
 
 extern s32 fn_8006EBF4(void);
