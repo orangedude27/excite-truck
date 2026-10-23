@@ -555,6 +555,115 @@ void fn_802735F4(int arg0, signed char arg1) {
     }
 }
 
+#pragma push
+#pragma small_data off
+#pragma pop
+#pragma push
+#pragma small_data off
+void fn_80273604(void *arg0, s32 arg1) {
+    extern float PSVECMag(float *);
+    extern double sin(float), cos(float);
+    extern void fn_80015B20(void *, float *, void *);
+    extern void fn_801BFD34(void *, float *, void *);
+    extern void fn_802704D0();
+    extern void fn_802704D4(s32, void *);
+    extern s32 fn_80273494(s32);
+    extern void fn_80273BD0(void);
+    extern void fn_80274268(void);
+    extern void fn_802E30C8(const char *, ...);
+    extern int lbl_8049A258;
+    extern u8 lbl_80346BA0[];
+    extern char lbl_80347310[];
+    extern float lbl_80563F48, lbl_80563F4C, lbl_80563F50, lbl_80563F9C;
+    u8 *table = (u8 *)&lbl_8049A258 + arg1 * 0x14;
+    s32 start = *(s32 *)(table + 4);
+    s32 count = *(s32 *)(table + 0xC);
+    u8 *state = lbl_80346BA0 + (start + count) * 0x28;
+    s32 kind = *(s32 *)state;
+    switch (kind) {
+    case 0x22: {
+        float vec[3], matrix[9], pos[3];
+        float scale = lbl_80563F4C;
+        float mag, nx, ny, nz, sine, cosine, oneMinusCos, t0, t1, t2, t3, t4, t5;
+        *(s32 *)((u8 *)arg0 + 88) = *(s32 *)((u8 *)arg0 + 192); *(s32 *)((u8 *)arg0 + 92) = *(s32 *)((u8 *)arg0 + 196); *(s32 *)((u8 *)arg0 + 96) = *(s32 *)((u8 *)arg0 + 200); *(s32 *)((u8 *)arg0 + 100) = *(s32 *)((u8 *)arg0 + 204);
+        *(s32 *)((u8 *)arg0 + 104) = *(s32 *)((u8 *)arg0 + 208); *(s32 *)((u8 *)arg0 + 108) = *(s32 *)((u8 *)arg0 + 212); *(s32 *)((u8 *)arg0 + 112) = *(s32 *)((u8 *)arg0 + 216); *(s32 *)((u8 *)arg0 + 116) = *(s32 *)((u8 *)arg0 + 220);
+        *(s32 *)((u8 *)arg0 + 120) = *(s32 *)((u8 *)arg0 + 224); *(s32 *)((u8 *)arg0 + 124) = *(s32 *)((u8 *)arg0 + 228); *(s32 *)((u8 *)arg0 + 128) = *(s32 *)((u8 *)arg0 + 232); *(s32 *)((u8 *)arg0 + 132) = *(s32 *)((u8 *)arg0 + 236);
+        vec[0] = *(float *)(state + 0x14) * scale;
+        vec[1] = *(float *)(state + 0x18) * scale;
+        vec[2] = *(float *)(state + 0x1C) * scale;
+        pos[0] = *(float *)(state + 8);
+        pos[1] = *(float *)(state + 0xC);
+        pos[2] = *(float *)(state + 0x10);
+        mag = PSVECMag(vec);
+        if (mag > lbl_80563F9C) {
+            t0 = lbl_80563F50 / mag;
+            nx = t0 * vec[0]; ny = t0 * vec[1]; nz = t0 * vec[2];
+            sine = (float)sin(mag);
+            cosine = (float)cos(mag);
+            oneMinusCos = lbl_80563F50 - cosine;
+            t1 = sine * nz;
+            t2 = oneMinusCos * nx;
+            t3 = ny * t2;
+            matrix[0] = cosine + (oneMinusCos * (nx * nx));
+            t4 = nz * t2;
+            t5 = sine * ny;
+            matrix[1] = t3 + t1;
+            t0 = nz * (oneMinusCos * ny);
+            t2 = sine * nx;
+            matrix[3] = t3 - t1;
+            matrix[2] = t4 - t5;
+            matrix[4] = cosine + (oneMinusCos * (ny * ny));
+            matrix[5] = t0 + t2;
+            matrix[6] = t4 + t5;
+            matrix[7] = t0 - t2;
+            matrix[8] = cosine + (oneMinusCos * (nz * nz));
+        } else {
+            matrix[1] = lbl_80563F48;
+            matrix[0] = lbl_80563F50;
+            matrix[2] = lbl_80563F48;
+            matrix[3] = lbl_80563F48;
+            matrix[4] = lbl_80563F50;
+            matrix[5] = lbl_80563F48;
+            matrix[6] = lbl_80563F48;
+            matrix[7] = lbl_80563F48;
+            matrix[8] = lbl_80563F50;
+        }
+        fn_801BFD34((u8 *)arg0 + 0x7C, pos, (u8 *)arg0 + 0xC0);
+        fn_80015B20((u8 *)arg0 + 0x58, matrix, (u8 *)arg0 + 0xC0);
+        *(float *)((u8 *)arg0 + 0xBC) = lbl_80563F4C * *(float *)(state + 0x20);
+        return;
+    }
+    case 0:
+        fn_80273BD0();
+        return;
+    case 2:
+        fn_80274268();
+        return;
+    case 4:
+    case 5:
+    case 7: {
+        s32 other = fn_80273494(*(s32 *)((u8 *)arg0 + 4));
+        if (other != 6 && other != 0 && other != arg1) {
+            u8 *otherTable = (u8 *)&lbl_8049A258 + other * 0x14;
+            s32 otherStart = *(s32 *)(otherTable + 4);
+            s32 otherCount = *(s32 *)(otherTable + 0xC);
+            u8 *otherState = lbl_80346BA0 + (otherStart + otherCount) * 0x28;
+            fn_802704D0(*(s32 *)state, *(s32 *)otherState, arg0, otherStart);
+        } else {
+            s32 wrap = *(s32 *)(table + 8);
+            s32 index = start + ((wrap + count - 1) % wrap);
+            u8 *prevState = lbl_80346BA0 + index * 0x28;
+            fn_802704D0(*(s32 *)state, *(s32 *)prevState, arg0, start, wrap);
+        }
+        return;
+    }
+    default:
+        fn_802E30C8(lbl_80347310, kind);
+        fn_802704D4(4, arg0);
+        return;
+    }
+}
+#pragma pop
 extern int fn_80128668(void);
 int fn_80273978(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
@@ -564,7 +673,10 @@ int fn_80273978(int arg0, int arg1) {
 }
 
 extern int lbl_8049F9D8;
+#pragma push
+#pragma small_data off
 extern int lbl_8049A258;
+#pragma pop
 extern int lbl_8055F554;
 extern f32 lbl_80563E78;
 extern int stricmp(const char *, const char *);
