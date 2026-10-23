@@ -266,7 +266,7 @@ extern "C" char lbl_80346B00[];
 extern "C" char lbl_8055C5A4[];
 extern "C" char lbl_8055C5AC[];
 extern "C" char lbl_8055C5B4[];
-extern "C" int fn_80272028(void *arg0, Parser *arg1, int arg_sp0) {
+extern "C" int fn_80272028(void *arg0, void *arg1, int arg_sp0) {
     struct ParserLocal {
         virtual void slot0();
         virtual void slot1();
