@@ -30,9 +30,9 @@ extern void* fn_8000AC38(void);
 extern s32 fn_8002F37C(void*, void*, void*, s32, s32);
 extern s32 fn_8012850C(s32, void*);
 extern s32 fn_8012C33C(void*);
-extern void fn_801345D8(void*, s32, void*, s32);
+extern void fn_801345D8(void*, s32, void*, ...);
 extern s32 fn_802C6FC0(void*, s32, s32);
-extern void fn_802E30C8(void*, s32, void*);
+extern void fn_802E30C8(void*, ...);
 extern s32 fn_8016A8F8(void*);
 extern void fn_8016AC18(u8*);
 extern void* fn_8016AC24(void*, s32);
@@ -149,7 +149,7 @@ s32 fn_8016A878(const char* arg0) {
 }
 
 s32 fn_8016A8F8(void* alarm) {
-    Ctr804302F0* c = (Ctr804302F0*)&lbl_804302F0;
+    Ctr804302F0* c = &lbl_804302F0;
     void* obj;
     void** vtable;
     Entry28* entry;
