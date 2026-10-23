@@ -77,8 +77,8 @@ extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 extern double fn_801DCF48(s32, f32, f32);
 extern f32 PSVECMag(const void *);
-extern double cos(f32);
-extern double sin(f32);
+extern double cos(double);
+extern double sin(double);
 extern u32 lbl_802F9D58[4];
 extern f32 lbl_805630CC;
 extern f32 lbl_805630D4;
@@ -140,16 +140,15 @@ void fn_80203380(void *argp) {
         f32 h = *height;
         for (count = 0, angle = 0; count < 0x14; count++, angle += 2) {
             union { f64 d; u32 w[2]; } *cvt = (void *)work.cvt;
-            register f32 s;
-            f32 c, theta, x, z, y, q0, q1, q2, q3, baseX, baseZ, dx, dy, dz, mag, scale, denom, t0, t1, t2, t3, t4, t5;
+            f32 c, theta, s, x, z, y, q0, q1, q2, q3, baseX, baseZ, dx, dy, dz, mag, scale, denom, t0, t1, t2, t3, t4, t5;
 
             work.radius = radius;
             work.height = h;
             cvt->w[0] = 0x43300000;
             cvt->w[1] = ((u32)angle) ^ 0x80000000U;
             theta = angleScale * (f32)(cvt->d - bias) / angleDivisor;
-            c = (f32)cos((double)theta);
-            s = (f32)sin((double)theta);
+            c = (f32)cos(theta);
+            s = (f32)sin(theta);
             baseX = arg0[9];
             q0 = h * c;
             q1 = radius * s;
