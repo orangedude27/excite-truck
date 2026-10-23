@@ -6,7 +6,7 @@
 
 extern u8 *FstStart_8055D840;
 extern u8 *FstStringStart_8055D83C;
-extern u8 lbl_802FE850[];
+extern __Locale lbl_802FE850;
 extern s32 lbl_8055D828;
 extern BOOL __DVDLongFileNameFlag;
 extern void OSPanic(const char *, s32, const char *);
@@ -734,7 +734,8 @@ extern void OSSetPeriodicAlarm(void *, u32, u32, s32, u32, u32, void (*)(void));
 extern s32 lbl_8055D8B4, lbl_8055D878;
 void fn_80038040(void) {
     void (*callback)(s32);
-    void *temp_r3, *temp_r4;
+    void *temp_r3;
+    register void *temp_r4;
     if (__DVDCheckWaitingQueue() == 0) {
         executing_8055D8C8 = 0;
         return;
