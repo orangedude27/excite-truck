@@ -14,6 +14,8 @@ extern int lbl_8056000C;
 void fn_802E8528(int, float, float);
 int fn_802E77B8(void) { return 0; }
 
+#pragma push
+#pragma dont_inline on
 void *fn_802E77C0(int x) {
     if (x < -2) {
         if (x == -4) return &lbl_8034D8A8;
@@ -25,6 +27,7 @@ void *fn_802E77C0(int x) {
     if (x == 0) return &lbl_8055D208;
     return &lbl_8055D220;
 }
+#pragma pop
 
 float fn_802E7824(float arg0, float arg1) {
     float t = lbl_80565160 / (lbl_80565160 - arg1);
@@ -155,9 +158,245 @@ void fn_802E7D0C(void) {
     lbl_8056000C = 0;
 }
 
+extern double fn_8002EFB0(float, float);
+extern float fn_802E78A4(float);
+extern float lbl_80565160, lbl_8056517C, lbl_80565180, lbl_80565184, lbl_80565188;
+extern float lbl_8056518C, lbl_80565190, lbl_80565194, lbl_80565198;
+void fn_802E7DDC(void *arg0, void *arg1) {
+    float f0, f02, f1, f31, f4;
+    double df1;
+    int r5;
+    unsigned int r31 = *(unsigned int *)arg1;
+    *(int *)((char *)arg0 + 0x48) = 0x800F;
+    *((signed char *)arg0 + 0x64) = *(int *)((char *)arg0 + 0x624) != 0;
+    *(int *)((char *)arg0 + 0x4C) = 0xFF;
+    r5 = 0;
+    *(int *)((char *)arg0 + 0x54) |= 0x10;
+    if (r31 & 2) r5 = 1;
+    if (r31 & 1) r5 |= 4;
+    if (r31 & 8) r5 |= 8;
+    if (r31 & 4) r5 |= 2;
+    *(int *)((char *)arg0 + 0x44) = r5;
+    df1 = -(float)fn_8002EFB0(*(float *)((char *)arg1 + 0xC), -*(float *)((char *)arg1 + 0x10));
+    f31 = (float)df1;
+    *(float *)((char *)arg0 + 0x6C) = (float)df1;
+    if (f31 > lbl_80565180) f31 -= lbl_80565184;
+    else if (f31 < lbl_80565188) f31 += lbl_80565184;
+    f1 = lbl_80565160;
+    f0 = lbl_8056518C * *(float *)((char *)arg1 + 0x14);
+    if (f1 >= f0) f1 = f0;
+    f0 = lbl_8056517C;
+    if (f1 <= f0) f1 = f0;
+    *(float *)((char *)arg0 + 4) = fn_802E78A4(f1);
+    f02 = lbl_80565194 * f31;
+    f1 = (lbl_80565190 * (f02 / lbl_80565180));
+    f4 = lbl_80565160;
+    if (f4 >= f1) f4 = f1;
+    f0 = lbl_8056517C;
+    if (f4 <= f0) f4 = f0;
+    *(float *)((char *)arg0 + 8) = f4;
+    *((signed char *)arg0 + 0x25) = (r31 >> 9) & 1;
+    *((signed char *)arg0 + 0x24) = (r31 >> 8) & 1;
+    *((signed char *)arg0 + 0x28) = (r31 >> 11) & 1;
+    *((signed char *)arg0 + 0x26) = (r31 >> 10) & 1;
+    *((signed char *)arg0 + 0x2B) = (r31 >> 4) & 1;
+    *((signed char *)arg0 + 0x27) = (r31 >> 12) & 1;
+    *((signed char *)arg0 + 0x29) = (r31 >> 15) & 1;
+    *(int *)((char *)arg0 + 0x54) |= 0x20;
+    *(float *)((char *)arg0 + 0x58) = lbl_80565198 * -*(float *)((char *)arg1 + 0x14);
+    *(float *)((char *)arg0 + 0x5C) = lbl_80565198 * *(float *)((char *)arg1 + 0x10);
+    *(float *)((char *)arg0 + 0x60) = lbl_80565198 * -*(float *)((char *)arg1 + 0xC);
+}
+
+extern int KPADRead(int, void *, int);
+extern int WPADProbe(int, int *);
+extern void WPADiClearQueue(int);
+extern void WPADiDisableRecalibration(int);
+extern unsigned char fn_8005EE80(int);
+extern int fn_800604E8(int, int, void *);
+extern int fn_802ECC10(void);
+extern void fn_802EC884(void);
+extern void fn_802ECBF8(void);
+extern void fn_802E2E38(int);
+extern void fn_802E7C14(void);
+extern void *memset(void *, int, unsigned int);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_802E7FD0(void) {
+    extern int lbl_8034D898;
+    extern unsigned char lbl_80505978[];
+    extern int lbl_80507278[];
+    extern unsigned char lbl_8055D230;
+    extern unsigned char lbl_80560009;
+    extern int lbl_80560010;
+    extern int lbl_80560014;
+
+    int now;
+    int previous;
+    int elapsed;
+    int count;
+    register int changed;
+    register int queueIndex;
+    register int channel;
+    int active;
+    int result;
+    char *formatBase;
+    int probe;
+    int readCount;
+    int current;
+    int old;
+    int filtered;
+    int timeNow;
+    unsigned char *record;
+    int *devices;
+    unsigned char *base;
+    unsigned char *lastState;
+
+    formatBase = (char *)&lbl_8034D898;
+    now = fn_802E2C20();
+    previous = lbl_80560010;
+    if (previous < now) {
+        elapsed = now - previous;
+        if (elapsed < 0xF)
+            return;
+        count = lbl_80560014;
+        lbl_80560010 = now;
+        lbl_80560014 = count + 1;
+        changed = fn_802ECC10();
+        if ((unsigned int)changed != (unsigned int)lbl_80560009) {
+            lbl_80560009 = changed;
+            queueIndex = 0;
+            do {
+                if (changed != 0)
+                    WPADiClearQueue(queueIndex);
+                else
+                    WPADiDisableRecalibration(queueIndex);
+                queueIndex += 1;
+            } while (queueIndex < 4);
+        }
+    }
+
+    record = lbl_80505978;
+    devices = lbl_80507278;
+    base = record;
+    channel = 0;
+    lastState = &lbl_8055D230;
+    do {
+        memset(record + 0xC8, 0, 0x550);
+        active = 0;
+        if (base[0x631] != 0)
+            active = 1;
+        if (base[0xC69] != 0)
+            active = 1;
+        if (base[0x12A1] != 0)
+            active = 1;
+        if (base[0x18D9] != 0)
+            active = 1;
+        if (active == 0 && now - *(int *)(record + 0x634) > 0x2710) {
+            *(int *)(record + 0x634) = now;
+            record[0x631] = 1;
+            result = fn_800604E8(channel, (int)(record + 0x618), fn_802E7C14);
+            if (result != 0) {
+                record[0x631] = 0;
+                if (result == -1)
+                    memset(record + 0x618, 0, 0x18);
+            }
+        }
+
+        probe = WPADProbe(channel, devices);
+        result = KPADRead(channel, record + 0xC8, 1);
+        if (result >= 1 && probe == 0 && record[0xC4] != 0) {
+            current = *(signed char *)(record + 0x14D);
+            old = *(signed char *)lastState;
+            if (current != old) {
+                result = (int)fn_802E77C0((signed char)current);
+                probe = (int)fn_802E77C0((signed char)old);
+                ((void (*)(const char *, ...))fn_802E30C8)(
+                    formatBase + 0x94, channel, probe, result);
+                *lastState = (unsigned char)current;
+            }
+            if ((signed char)current == 0) {
+                if (record[0] == 0) {
+                    record[0] = 1;
+                    *(int *)(record + 0xB4) = 0;
+                    record[0xC5] = 1;
+                    ((void (*)(const char *, ...))fn_802E30C8)(
+                        formatBase + 0xA8, channel);
+                }
+                record[0x630] = fn_8005EE80(channel);
+                if (fn_802ECC10() == 0)
+                    ((void (*)(int, int))fn_802E7920)(channel, 0x3091);
+                fn_802E7DDC(record, record + 0xC8);
+            }
+        } else if (record[0xC4] == 0 && record[0] != 0) {
+            record[0] = 0;
+            ((void (*)(const char *, ...))fn_802E30C8)(
+                formatBase + 0xC0, channel);
+        }
+
+        if (record[0x29] != 0) {
+            if (record[0xC5] == 0) {
+                record[0xC5] = 1;
+                fn_802ECBF8();
+            }
+        } else {
+            record[0xC5] = 0;
+        }
+
+        filtered = 0;
+        if (((int (*)(int))fn_802E77B8)(channel) != 0 &&
+            record[0x2B] != 0 && record[0x29] != 0 &&
+            record[0x27] != 0)
+            filtered = 1;
+        timeNow = fn_802E2C20();
+        if (filtered == 0)
+            *(int *)(record + 0xC0) = timeNow;
+        else if (timeNow - *(int *)(record + 0xC0) > 0x3E8)
+            fn_802E2E38(0);
+
+        channel += 1;
+        record += 0x638;
+        devices += 1;
+        lastState += 1;
+    } while (channel < 4);
+    fn_802EC884();
+}
+#pragma pop
 void fn_802E830C(int *p) {
  p[0]=3; p[1]=0; p[2]=2; p[9]=-1; p[3]=1; p[4]=7; p[12]=4; p[13]=-1; p[10]=-1; p[11]=-1; p[5]=5; p[6]=6;
 }
+
+unsigned char fn_802E8364(void *arg0,int arg1){extern unsigned char lbl_80505978[]; unsigned char *src=lbl_80505978+arg1*0x638; unsigned char *dst=(unsigned char*)arg0; unsigned char a,b; unsigned int x,y;
+*(float*)(dst+0)=*(float*)(src+4);
+*(float*)(dst+4)=*(float*)(src+8);
+*(float*)(dst+8)=*(float*)(src+12);
+*(float*)(dst+12)=*(float*)(src+16);
+*(float*)(dst+16)=*(float*)(src+20);
+*(float*)(dst+20)=*(float*)(src+24);
+*(float*)(dst+24)=*(float*)(src+28);
+*(float*)(dst+28)=*(float*)(src+32);
+b=src[36]; a=src[37]; dst[32]=b; dst[33]=a;
+a=src[38]; b=src[39]; dst[34]=a; dst[35]=b;
+a=src[40]; b=src[41]; dst[36]=a; dst[37]=b;
+a=src[42]; b=src[43]; dst[38]=a; dst[39]=b;
+a=src[44]; b=src[45]; dst[40]=a; dst[41]=b;
+a=src[46]; b=src[47]; dst[42]=a; dst[43]=b;
+a=src[48]; b=src[49]; dst[44]=a; dst[45]=b;
+a=src[50]; b=src[51]; dst[46]=a; dst[47]=b;
+a=src[52]; b=src[53]; dst[48]=a; dst[49]=b;
+a=src[54]; b=src[55]; dst[50]=a; dst[51]=b;
+a=src[56]; b=src[57]; dst[52]=a; dst[53]=b;
+a=src[58]; b=src[59]; dst[54]=a; dst[55]=b;
+a=src[60]; b=src[61]; dst[56]=a; dst[57]=b;
+a=src[62]; b=src[63]; dst[58]=a; dst[59]=b;
+a=src[64]; b=src[65]; dst[60]=a; dst[61]=b;
+a=src[66]; b=src[67]; dst[62]=a; dst[63]=b;
+*(unsigned int*)(dst+0x40)=*(unsigned int*)(src+0x44);
+y=*(unsigned int*)(src+0x4c); x=*(unsigned int*)(src+0x48); *(unsigned int*)(dst+0x44)=x; *(unsigned int*)(dst+0x48)=y;
+y=*(unsigned int*)(src+0x54); x=*(unsigned int*)(src+0x50); *(unsigned int*)(dst+0x4c)=x; *(unsigned int*)(dst+0x50)=y;
+y=*(unsigned int*)(src+0x5c); x=*(unsigned int*)(src+0x58); *(unsigned int*)(dst+0x54)=x; *(unsigned int*)(dst+0x58)=y;
+*(unsigned int*)(dst+0x5c)=*(unsigned int*)(src+0x60); dst[0x60]=src[0x64]; return src[0];}
 
 unsigned char fn_802E8504(int index) {
     extern unsigned char lbl_80505978[];
