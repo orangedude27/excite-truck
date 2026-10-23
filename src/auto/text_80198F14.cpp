@@ -7,12 +7,12 @@ extern "C" void fn_801A0378(void*, void*);
 extern "C" void fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
 class VTab1A1E7C {
-public:
+ public:
  virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
  virtual void v05(); virtual void v06(); virtual void v07(); virtual void v08(); virtual void v09();
  virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14();
  virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
- virtual void Call();
+ virtual void *Call();
 };
 class Fn801A401CDispatch {
 public:
@@ -1485,6 +1485,30 @@ extern "C" void fn_801A2EC8(void) {
 
 }
 
+void fn_801A2ECC(void *obj, void *min, void *max) {
+    float a = *(float *)((char *)obj + 0x24);
+    float b = *(float *)((char *)obj + 0x28);
+    float c = a + b;
+    float x[8] = {-c,-c,-c,-c,c,c,c,c};
+    float y[8] = {-c,-c,-c,c,c,c,-c,b};
+    float z[8] = {-b,-b,c,c,c,c,c,b};
+    float *m = *(float **)((char *)obj + 12);
+    float *lo = (float *)min;
+    float *hi = (float *)max;
+    lo[0]=hi[0]=m[9]; lo[1]=hi[1]=m[10]; lo[2]=hi[2]=m[11];
+    for (int i=0;i<8;i++) {
+        float px = x[i]*m[0] + y[i]*m[3] + z[i]*m[6] + m[9];
+        float py = x[i]*m[1] + y[i]*m[4] + z[i]*m[7] + m[10];
+        float pz = x[i]*m[2] + y[i]*m[5] + z[i]*m[8] + m[11];
+        if (lo[0] < px) lo[0]=px;
+        if (lo[1] < py) lo[1]=py;
+        if (lo[2] < pz) lo[2]=pz;
+        if (hi[0] > px) hi[0]=px;
+        if (hi[1] > py) hi[1]=py;
+        if (hi[2] > pz) hi[2]=pz;
+    }
+}
+
 extern "C" void fn_801A3174(void *arg0) {
     ((void (*)(s32, s32, f32))fn_801E3FC8)(*(s32*)((u8*)arg0 + 0xC) + 0x24, lbl_8055E598, *(f32*)((u8*)arg0 + 0x24) + *(f32*)((u8*)arg0 + 0x28));
 }
@@ -1530,6 +1554,42 @@ f32 fn_801A3880(void* arg0) {
         first = second;
     }
     return (f32)fn_8002F234(first);
+}
+
+extern float lbl_805622D0, lbl_805622DC, lbl_805623C0;
+extern float PSVECDotProduct(float *, void *);
+extern int fn_80198F64(void *, int, void *, float *, void *, float *, float);
+extern int fn_8019A788(void *, int, void *, void *, int, int, float, float, float);
+void fn_801A38E4(int arg0, void *arg1) {
+    int type = *(int *)((char *)arg1 + 0x18);
+    switch (type) {
+    case 0x464c5352: {
+        float axis[3] = {lbl_805622D0, lbl_805622DC, lbl_805622D0};
+        float dot = PSVECDotProduct(axis, *(void **)((char *)arg1 + 0xc));
+        float cur = *(float *)((char *)arg1 + 0x54);
+        *(float *)((char *)arg1 + 0x24) = cur + dot * (*(float *)((char *)arg1 + 0x58) - cur);
+    }
+    case 0x53504852: {
+        void *owner = *(void **)((char *)arg1 + 4);
+        if (owner != 0) {
+            void *node = *(void **)((char *)owner + 0xd0);
+            while (node != 0) {
+                float p[3], out1[3], out2[3], q[3] = {0.0f,0.0f,0.0f};
+                float *m = (float *)((char *)owner + 0x3c);
+                float *v = (float *)((char *)node + 4);
+                q[0] = v[0]*m[0] + v[1]*m[3] + v[2]*m[6] + m[9];
+                q[1] = v[0]*m[1] + v[1]*m[4] + v[2]*m[7] + m[10];
+                q[2] = v[0]*m[2] + v[1]*m[5] + v[2]*m[8] + m[11];
+                fn_80198F64(q,arg0,out1,p,out2,q,lbl_805623C0);
+                node = *(void **)node;
+            }
+        }
+        float p[3] = {lbl_805622D0,lbl_805622D0,lbl_805622D0}, a[3], b[3], c[3];
+        if (fn_80198F64((char *)arg1+0x34,arg0,a,p,b,c,*(float *)((char *)arg1+0x24)))
+            fn_8019A788(arg1,arg0,a,b,0,0,p[0],lbl_805622D0,lbl_805622D0);
+        return;
+    }
+    }
 }
 
 extern f32 lbl_80562314;
@@ -1665,6 +1725,54 @@ check:
 extern "C" void fn_801A4538(void* arg0) {
     fn_8012C4E4(arg0, &fn_801A44D4, 0);
 }
+
+extern "C" s32 fn_8012C370(s32, s32*, s32, s32, s32, s32);
+extern "C" void fn_8019EB14(s32, s32);
+extern "C" void fn_801A4768(s32*, s32);
+extern "C" void fn_801A4780(s32*, s32);
+extern "C" void fn_801A4798(s32*, s32);
+extern "C" void fn_801A47B0(s32*, s32);
+extern "C" void fn_801A4B5C(s32);
+extern "C" void fn_801A4538(void*);
+extern "C" void* fn_801A4548(s32 arg0) {
+    s32 size;
+    u8 ok = 0;
+    u8* p = (u8*)((s32 (*)(s32, s32, s32*, s32, s32, s32))fn_8012C370)(arg0, 0x534F424C, &size, 0, 0, (s32)&ok);
+    if (p && ok) {
+        u8 t;
+        t=p[0]; p[0]=p[3]; p[3]=t;
+        t=p[1]; p[1]=p[2]; p[2]=t;
+        t=p[8]; p[8]=p[11]; p[11]=t;
+        t=p[9]; p[9]=p[10]; p[10]=t;
+        t=p[4]; p[4]=p[7]; p[7]=t;
+        t=p[5]; p[5]=p[6]; p[6]=t;
+        t=p[12]; p[12]=p[15]; p[15]=t;
+        t=p[13]; p[13]=p[14]; p[14]=t;
+        t=p[16]; p[16]=p[19]; p[19]=t;
+        t=p[17]; p[17]=p[18]; p[18]=t;
+        fn_801A4768((s32*)(p+4), (s32)p);
+        fn_801A4780((s32*)(p+16), (s32)p);
+        fn_801A4798((s32*)(p+12), (s32)p);
+        for (s32 i=0; i<*(s32*)p; i++) {
+            u8* q=(u8*)*(s32*)(p+4)+i*4;
+            t=q[0]; q[0]=q[3]; q[3]=t;
+            t=q[1]; q[1]=q[2]; q[2]=t;
+            fn_801A47B0((s32*)q, (s32)p);
+        }
+        for (s32 i=0; i<*(s32*)(p+8); i++) {
+            u8* q=(u8*)*(s32*)(p+12)+i*2;
+            t=q[0]; q[0]=q[1]; q[1]=t;
+        }
+        fn_8019EB14(*(s32*)(p+16), 0);
+        for (s32 i=0; i<*(s32*)p; i++) {
+            s32 q=*(s32*)(*(s32*)(p+4)+i*4);
+            if (q) fn_801A4B5C(q+0x4c);
+        }
+        *(void**)(p+20)=(void*)fn_801A4538;
+    }
+    return p;
+}
+
 #pragma scheduling on
 extern "C" void fn_801A4768(s32* arg0, s32 arg1) {
     s32 val = *arg0;
