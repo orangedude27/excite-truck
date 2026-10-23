@@ -4561,7 +4561,7 @@ static inline void fn_8022A210_transform(f32 *out, f32 *in, f32 *matrix, f32 x, 
         out[2] = x * matrix[8] + (z * matrix[2] + y * matrix[5]);
     } else {
         out[0] = x * matrix[6] + (z * matrix[0] + y * matrix[3]);
-        out[1] = x * matrix[7] + (out[0] * matrix[1] + z * matrix[4]);
+        out[1] = x * matrix[7] + (out[0] * matrix[1] + y * matrix[4]);
         out[2] = x * matrix[8] + (out[0] * matrix[2] + out[1] * matrix[5]);
     }
 }
