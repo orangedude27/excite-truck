@@ -2,6 +2,7 @@
 extern int lbl_804C5650[];
 extern char lbl_8055FD70;
 extern float lbl_80564F8C, lbl_80564FCC, lbl_80564FDC;
+extern double lbl_80564FB0;
 extern int GXLoadPosMtxImm(void *, int);
 extern int GXSetDstAlpha(int, int);
 extern void C_MTXOrtho(void *, float, float, float, float, float, float);
@@ -845,8 +846,8 @@ void fn_802D2218(void) {
     float temp_f1_2;
     float vertexZ;
     register volatile float *fifo;
-    float temp_f30;
-    float temp_f31;
+    register float temp_f30;
+    register float temp_f31;
     int temp_r4;
     int screenWidth;
     int screenHeight;
@@ -898,10 +899,10 @@ void fn_802D2218(void) {
         GXSetAlphaUpdate(temp_r30[0x2D]);
         GXSetZMode(1, 7, temp_r30[0x2C]);
         temp_r7 = temp_r30 + 0x38;
-        temp_r6 = temp_r7[2];
-        temp_r5 = temp_r7[3];
         fogColor[0] = temp_r7[1];
+        temp_r6 = temp_r7[2];
         fogColor[1] = temp_r6;
+        temp_r5 = temp_r7[3];
         fogColor[2] = temp_r5;
         fogColor[3] = temp_r7[4];
         GXSetFog(0, fogColor, temp_r5, temp_r6, temp_r7, lbl_80564F88, lbl_80564F88, lbl_80564F88, lbl_80564F88);
