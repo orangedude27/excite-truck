@@ -4206,10 +4206,10 @@ extern "C" void fn_800B7684(OSAlarm *alarm, OSContext *ctx) {
     fn_800B73BC((s32)fn_800A9B0C(alarm));
 }
 
-extern "C" s32 fn_800B6A8C(s8);
+extern "C" s32 fn_800B6A8C(s8, s32);
 extern "C" s32 fn_800B76E8(s8 arg0) {
     extern void fn_800B73E4(void*);
-    fn_800B6A8C(arg0);
+    ((s32 (*)(s8))fn_800B6A8C)(arg0);
     return ((s32 (*)(void))fn_800B73E4)();
 }
 
@@ -5300,6 +5300,46 @@ extern "C" s32 fn_800BB4C8(s32 a,s32 b,s32 c,s32 d) {
 
 extern "C" s32 fn_800BB4D4(s32 a,s32 b,s32 c,s32 d) {
     return fn_800BB81C(a,b,c,d,0,0);
+}
+
+extern "C" s32 fn_800BB81C(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5) {
+u32 size=(u32)arg3, var_r30=size<=0x200?size:0x200, var_r29=size>>9;
+s32 var_r20, sp18[4], sp28[4]; void* dev=(void*)arg0; const char *str=lbl_8031B838;
+if(lbl_80559248<0) var_r20=(s32)0xC1000000;
+else if(size!=var_r30*var_r29){OSReport(str+0x3B0,str+0x438,size);var_r20=-4;}
+else if((u32)arg1!=((u32)arg1&0xFFFFFE00)){OSReport(str+0x454,str+0x438,arg1);var_r20=-4;}
+else if((*(u32*)((u8*)dev+0x20)!=0)&&((u32)arg1>*(u32*)((u8*)dev+0x20))){OSReport(str+0x3E0,str+0x438,arg1);var_r20=-4;}
+else if(*(s32*)((u8*)dev+0x24)==0){OSReport(str+0x3FC,str+0x438);var_r20=(s32)0xC1000000;}
+else {
+OSLockMutex(lbl_80407560);
+if(lbl_8055DD6C!=0){OSUnlockMutex(lbl_80407560);var_r20=(s32)0xC1000000;}
+else {
+lbl_8055DD6C=1; OSUnlockMutex(lbl_80407560);
+if(*(u32*)((u8*)dev+0x24)==2){
+var_r20=fn_800BB0A8(*(s32*)dev,7,3,2,*(s32*)((u8*)dev+0x10),0,0,0,0,(s32)sp18,0,0);
+if(var_r20!=0) OSReport(str+0x338,var_r20);
+else {
+*(s32*)((u8*)dev+0x24)=1;
+var_r20=fn_800BB0A8(*(s32*)dev,0x10,3,1,0x200,0,0,0,0,(s32)sp28,0,0);
+if(var_r20!=0) OSReport(str+0x358,str+0x234,var_r20);
+else {
+var_r20=((s32(*)(void*,s32))fn_800BC134)(dev,4);
+if(var_r20!=0) OSReport(str+0x358,str+0x234,var_r20);
+else {
+*lbl_8055DD70=1;
+if(IOS_Ioctl(*(s32*)dev,6,lbl_8055DD70,4,0,0)!=0){OSReport(str+0x148);var_r20=(s32)0xC1000000;}
+}
+}
+}
+if(var_r20!=0){lbl_8055DD6C=0;return var_r20;}
+}
+DCFlushRange((void*)arg2,size);
+var_r20=fn_800BB0A8(*(s32*)dev,0x19,3,1,arg1,arg2,var_r29,var_r30,1,lbl_8055DD78,arg4,arg5);
+if(var_r20!=0){OSReport(str+0x474,str+0x438,var_r20);lbl_8055DD6C=0;}
+if(arg4==0)lbl_8055DD6C=0;
+}
+}
+return var_r20;
 }
 
 struct IosDevice {
