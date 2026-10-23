@@ -85,6 +85,7 @@ s32 fn_8023150C(const char *arg0) {
 }
 #pragma dont_inline off
 
+#pragma dont_inline on
 void fn_8023158C(void *arg0, const char *arg1) {
     s32 count = *(s32 *)(lbl_8055F068 + 0x168);
     s32 offset = count * 0xC;
