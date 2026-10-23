@@ -117,9 +117,13 @@ extern "C" void UnregisterCallback__Q46nw4hbm3snd6detail9AxManagerFPQ56nw4hbm3sn
 extern "C" void memset(void*, s32, u32);
     extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void);
-    extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void);
+      extern "C" void UpdateBufferAllPlayers__Q46nw4hbm3snd6detail10StrmPlayerFv(void);
+extern "C" s32 DVDGetDriveStatus(void);
+extern "C" u32 GetCurrentPlayingSample__Q46nw4hbm3snd6detail7AxVoiceCFv(s32);
+extern "C" void UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(void);
+extern "C" void UpdateLoadingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFQ66nw4hbm3snd6detail10StrmPlayer11LoadCommand6Status(void *, s32);
 
-M2C_UNK GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
+  M2C_UNK GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
 
 extern "C" s32 GetPlayerCount__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFv(s32);
 extern "C" s32 ConvertLabelStringToId__Q46nw4hbm3snd6detail22SoundArchiveFileReaderCFPCQ56nw4hbm3snd6detail16SoundArchiveFile10StringTreePCc(void *, void *, s32);
@@ -2128,6 +2132,117 @@ extern "C" void ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" void fn_800FB620(void *self) {
     if (*(u8 *)((u8 *)self + 0x48) != 0) {
         ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(self);
+    }
+}
+
+extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
+    f32 slots[11];
+    register u32 temp_r31;
+    register s32 var_r28;
+    register s32 var_r30;
+    register f32 *var_r29;
+    register f32 *var_r29_2;
+    register f32 *var_r30_2;
+    f32 temp_f0;
+    f32 temp_f1;
+    f32 temp_f2;
+    f32 temp_f3;
+    f32 temp_f4;
+    f32 temp_f5;
+    f32 temp_f6;
+    f32 temp_f7;
+    register f32 temp_f8;
+    f32 temp_f9;
+    f32 temp_f10;
+    register f32 temp_f25;
+    register f32 temp_f26;
+    register f32 temp_f27;
+    register f32 temp_f28;
+    register f32 temp_f29;
+    register f32 temp_f30;
+    register f32 temp_f31;
+
+    if ((s32)M2C_FIELD(arg0, u8 *, 0x49) != 0) {
+        if ((s32)M2C_FIELD(arg0, s32 *, 0x438) == 0) {
+            ForceStop__Q46nw4hbm3snd6detail10StrmPlayerFv(arg0);
+            return;
+        }
+        temp_r31 = OSDisableInterrupts();
+        temp_f8 = lbl_805610C4;
+        temp_f7 = temp_f8 + M2C_FIELD(arg0, volatile f32 *, 0x464);
+        temp_f6 = temp_f8 + M2C_FIELD(arg0, volatile f32 *, 0x468);
+        temp_f30 = temp_f8;
+        temp_f4 = temp_f8 + M2C_FIELD(arg0, volatile f32 *, 0x480);
+        temp_f5 = temp_f8 + M2C_FIELD(arg0, volatile f32 *, 0x46C);
+        temp_f3 = temp_f8 + M2C_FIELD(arg0, volatile f32 *, 0x484);
+        temp_f2 = temp_f8 + M2C_FIELD(arg0, volatile f32 *, 0x488);
+        temp_f1 = lbl_805610C0 * M2C_FIELD(arg0, volatile f32 *, 0x43C);
+        slots[8] = temp_f30;
+        temp_f30 += M2C_FIELD(arg0, volatile f32 *, 0x440);
+        temp_f0 = temp_f8 + M2C_FIELD(arg0, volatile f32 *, 0x48C);
+        temp_f29 = temp_f8;
+        temp_f29 += M2C_FIELD(arg0, volatile f32 *, 0x444);
+        temp_f28 = temp_f8;
+        slots[9] = temp_f29;
+        slots[10] = temp_f28;
+        temp_f28 += M2C_FIELD(arg0, volatile f32 *, 0x448);
+        temp_f31 = lbl_805610C0;
+        slots[4] = temp_f28;
+        slots[5] = temp_f8;
+        slots[6] = temp_f8;
+        slots[7] = temp_f8;
+        temp_f10 = M2C_FIELD(arg0, volatile f32 *, 0x450);
+        temp_f31 *= temp_f10;
+        temp_f26 = lbl_805610C0;
+        temp_f9 = M2C_FIELD(arg0, volatile f32 *, 0x454);
+        temp_f26 += temp_f9;
+        temp_f27 = temp_f8;
+        temp_f27 += M2C_FIELD(arg0, volatile f32 *, 0x44C);
+        temp_f25 = temp_f8;
+        temp_f25 += M2C_FIELD(arg0, volatile f32 *, 0x460);
+        slots[8] = temp_f7;
+        slots[9] = temp_f6;
+        slots[10] = temp_f5;
+        slots[4] = temp_f4;
+        slots[0] = temp_f4;
+        slots[5] = temp_f3;
+        slots[1] = temp_f3;
+        slots[6] = temp_f2;
+        slots[2] = temp_f2;
+        slots[7] = temp_f0;
+        slots[3] = temp_f0;
+
+        fn_800E5338(M2C_FIELD(arg0, s32 *, 0x438), temp_f1);
+        fn_800E5444(M2C_FIELD(arg0, s32 *, 0x438), temp_f31);
+        fn_800E5464(M2C_FIELD(arg0, s32 *, 0x438), temp_f30);
+        fn_800E54A8(M2C_FIELD(arg0, s32 *, 0x438), temp_f29);
+        fn_800E54EC(M2C_FIELD(arg0, s32 *, 0x438), temp_f28);
+        fn_800E550C(M2C_FIELD(arg0, s32 *, 0x438), temp_f27);
+        fn_800E5550(M2C_FIELD(arg0, s32 *, 0x438), temp_f26);
+        fn_800E5594(M2C_FIELD(arg0, s32 *, 0x438), M2C_FIELD(arg0, s32 *, 0x458));
+        ((DummyStrmUpdate *)arg0)->f30();
+        fn_800E55B4(M2C_FIELD(arg0, s32 *, 0x438));
+        fn_800E56D0(M2C_FIELD(arg0, s32 *, 0x438), temp_f25);
+        var_r29 = &slots[8];
+        var_r30 = 0;
+        do {
+            SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(M2C_FIELD(arg0, s32 *, 0x438), var_r30, *var_r29);
+            var_r30 += 1;
+            var_r29 += 1;
+        } while (var_r30 < 3);
+        var_r30_2 = &slots[4];
+        var_r29_2 = &slots[0];
+        var_r28 = 0;
+        do {
+            ((DummyStrmUpdate *)arg0)->f33(var_r28);
+            SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(M2C_FIELD(arg0, s32 *, 0x438), var_r28);
+            SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(M2C_FIELD(arg0, s32 *, 0x438), var_r28, *var_r30_2);
+            SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(M2C_FIELD(arg0, s32 *, 0x438), var_r28, *var_r29_2);
+            var_r28 += 1;
+            var_r29_2 += 1;
+            var_r30_2 += 1;
+        } while (var_r28 < 4);
+        OSRestoreInterrupts(temp_r31);
     }
 }
 
