@@ -5288,6 +5288,7 @@ extern "C" const char lbl_8031B838[];
 extern "C" s32 fn_800BB0A8(s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32, s32);
 extern "C" s32 fn_800BC134(void *, s32, s32);
 extern "C" s32 IOS_Ioctl(s32, s32, void *, s32, void *, s32);
+extern "C" void DCFlushRange(void *, u32);
 extern "C" s32 fn_800BB81C(s32,s32,s32,s32,s32,s32);
 extern "C" s32 fn_800BB4BC(s32 a,s32 b,s32 c,s32 d) {
     return fn_800BB81C(a,b,c,d,0,0);
