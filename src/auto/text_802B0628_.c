@@ -387,7 +387,7 @@ extern void fn_802C8BD0(void);
 extern void fn_802C8D74(void);
 extern void fn_802DC3C0(int);
 extern void fn_802DC440(void);
-extern void fn_802DC464(void *, int, void *, int, ...);
+extern void fn_802DC464();
 extern float fn_801DCF48(int, float, float);
 void fn_802B1758(void *arg0) {
     float setup[3];
@@ -411,6 +411,7 @@ void fn_802B1758(void *arg0) {
         setup[0] = lbl_80564BD0 / (lbl_80564BD4 * lbl_80564BB8);
         setup[1] = lbl_80564BD8;
         fn_802DA704(1, setup, 1);
+        fn_802DAA18();
         fn_802C28C0();
         fn_802C8BD0();
         fn_802DC3C0(state);
@@ -428,6 +429,7 @@ void fn_802B1758(void *arg0) {
             char *entry = (char *)*(void **)((char *)arg0 + 0x324) + offset;
             setup[2] = *(float *)(entry + 4);
             fn_802DA704(1, setup, 1);
+            fn_802DAA18();
             node = *(void **)entry;
             fn_802DC464(cache, cacheCount, node, *(unsigned short *)node + 1);
             offset += 8;
@@ -447,6 +449,7 @@ void fn_802B1758(void *arg0) {
             setup[1] = lbl_80564BD8;
             setup[2] = lbl_80564BD0;
             fn_802DA704(1, setup, 1);
+            fn_802DAA18();
             fn_802C28C0();
             fn_802C8BD0();
             fn_802DC3C0(state);
