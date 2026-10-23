@@ -2146,7 +2146,7 @@ public:
     virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
     virtual Vec* GetVector();
 };
-static inline void fn801A1F98Transform(f32 *dst, f32 *src, f32 *matrix) {
+static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
     f32 x = src[0];
     f32 y = src[1];
     f32 z = src[2];
