@@ -95,6 +95,7 @@ extern "C" void fn_802E30C8(const char *, s32);
 extern "C" char lbl_80339F7C[];
 extern "C" char lbl_80339FA0[];
 extern "C" void fn_801EB2D4(s32, s32 *);
+#pragma dont_inline on
 extern "C" void fn_801EB2D4(s32 arg0, s32 *arg1) {
     struct Dummy {
         virtual void f0();
@@ -254,6 +255,7 @@ block_23:
         goto loop_25;
     }
 }
+#pragma dont_inline off
 #pragma cplusplus reset
 
 void fn_801EB634(void *arg0, s32 arg1) {
