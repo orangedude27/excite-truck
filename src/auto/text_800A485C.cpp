@@ -1,5 +1,10 @@
   #include <types.h>
 #include <macros.h>
+extern "C" s32 fn_800A4D44(void *);
+extern "C" s16 fn_800B4D5C(void *, u32, u32);
+extern "C" u8 lbl_80559210, lbl_80559214, lbl_80559230, lbl_80559231;
+extern "C" u32 fn_800B25CC(s32 *, s32);
+extern "C" u32 VFiPFPATH_DoMatchFileNameWithPattern(u16, s32 *, u16, s32 *, s32);
 extern "C" s32 fn_800A4E80(void *, s32, u32);
 extern "C" void fn_800A4D4C(void *, void *);
 extern "C" s32 fn_800AF530(void *, void *, s32, s32);
@@ -363,8 +368,10 @@ extern "C" s32 fn_800A59FC(void *);
 extern "C" s32 fn_800A6A40(void *);
 extern "C" s32 fn_800A5AE4(void *arg0, void *arg1) {
     u16 temp;
-    u16 var_r3, var_r3_2, var_r3_3, var_r3_4, var_r3_5, var_r3_6;
-    u16 var_r3_7, var_r3_8, var_r3_9, var_r5, var_r0, temp_r3;
+    u16 var_r3, var_r3_2, var_r3_3;
+    u32 var_r3_4, var_r3_5, var_r3_6;
+    u16 var_r3_7, var_r3_8, var_r3_9, var_r5, temp_r3;
+    u32 var_r0;
     u32 temp_r4, temp_r4_2, temp_r4_3;
     s32 temp_r0_6;
     s32 var_r30 = 0;
@@ -373,58 +380,58 @@ extern "C" s32 fn_800A5AE4(void *arg0, void *arg1) {
         var_r30 = 3;
     } else {
 
-        if ((s32)((u8 *)arg1 + 0xB) & 1) {
+        if (((u32)arg1 + 0xB) & 1) {
             var_r3 = (M2C_FIELD(arg1, u8 *, 0xB) & 0xFF) | ((M2C_FIELD(arg1, u8 *, 12) << 8) & 0xFF00);
         } else {
             temp = *(u16 *)((u8 *)arg1 + 0xC);
-            var_r3 = ((temp << 8) & 0xFF00) | ((temp >> 8) & 0xFF);
+            var_r3 = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
         }
         M2C_FIELD(arg0, u16 *, 0) = var_r3;
         M2C_FIELD(arg0, u8 *, 6) = M2C_FIELD(arg1, u8 *, 0xD);
 
-        if ((s32)((u8 *)arg1 + 0xE) & 1) {
+        if (((u32)arg1 + 0xE) & 1) {
             var_r3_2 = (M2C_FIELD(arg1, u8 *, 0xE) & 0xFF) | ((M2C_FIELD(arg1, u8 *, 15) << 8) & 0xFF00);
         } else {
             temp = *(u16 *)((u8 *)arg1 + 0xE);
-            var_r3_2 = ((temp << 8) & 0xFF00) | ((temp >> 8) & 0xFF);
+            var_r3_2 = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
         }
         M2C_FIELD(arg0, u16 *, 2) = var_r3_2;
         M2C_FIELD(arg0, u8 *, 7) = M2C_FIELD(arg1, u8 *, 0x10);
 
-        if ((s32)((u8 *)arg1 + 0x11) & 1) {
+        if (((u32)arg1 + 0x11) & 1) {
             var_r3_3 = (M2C_FIELD(arg1, u8 *, 0x11) & 0xFF) | ((M2C_FIELD(arg1, u8 *, 18) << 8) & 0xFF00);
         } else {
             temp = *(u16 *)((u8 *)arg1 + 0x12);
-            var_r3_3 = ((temp << 8) & 0xFF00) | ((temp >> 8) & 0xFF);
+            var_r3_3 = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
         }
         M2C_FIELD(arg0, u16 *, 4) = var_r3_3;
         M2C_FIELD(arg0, u8 *, 0x1A) = M2C_FIELD(arg1, u8 *, 0x15);
 
-        if ((s32)((u8 *)arg1 + 0x13) & 1) {
+        if (((u32)arg1 + 0x13) & 1) {
             var_r3_4 = (M2C_FIELD(arg1, u8 *, 0x13) & 0xFF) | ((M2C_FIELD(arg1, u8 *, 20) << 8) & 0xFF00);
         } else {
             temp = *(u16 *)((u8 *)arg1 + 0x14);
-            var_r3_4 = ((temp << 8) & 0xFF00) | ((temp >> 8) & 0xFF);
+            var_r3_4 = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
         }
         if (var_r3_4 == 0) {
             temp_r4 = M2C_FIELD(arg1, u32 *, 0x20);
-            var_r3_5 = ((temp_r4 << 8) & 0x00FF0000) | (temp_r4 << 0x18) |
-                       (((temp_r4 >> 8) & 0x0000FF00) | (temp_r4 >> 0x18));
+            var_r3_5 = ((temp_r4 << 8) & 0xFF0000 & ~0xFF000000) | (temp_r4 << 0x18) |
+                       (((temp_r4 >> 8U) & 0xFF00 & ~0xFF) | (temp_r4 >> 0x18U));
         } else {
             var_r3_5 = var_r3_4;
         }
         M2C_FIELD(arg0, s32 *, 8) = var_r3_5;
 
-        if ((s32)((u8 *)arg1 + 0x16) & 1) {
+        if (((u32)arg1 + 0x16) & 1) {
             var_r3_6 = (M2C_FIELD(arg1, u8 *, 0x16) & 0xFF) | ((M2C_FIELD(arg1, u8 *, 23) << 8) & 0xFF00);
         } else {
             temp = *(u16 *)((u8 *)arg1 + 0x16);
-            var_r3_6 = ((temp << 8) & 0xFF00) | ((temp >> 8) & 0xFF);
+            var_r3_6 = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
         }
         if (var_r3_6 == 0) {
             temp_r4_2 = M2C_FIELD(arg1, u32 *, 0x24);
-            var_r0 = ((temp_r4_2 << 8) & 0x00FF0000) | (temp_r4_2 << 0x18) |
-                     (((temp_r4_2 >> 8) & 0x0000FF00) | (temp_r4_2 >> 0x18));
+            var_r0 = ((temp_r4_2 << 8) & 0xFF0000 & ~0xFF000000) | (temp_r4_2 << 0x18) |
+                     (((temp_r4_2 >> 8U) & 0xFF00 & ~0xFF) | (temp_r4_2 >> 0x18U));
         } else {
             var_r0 = var_r3_6;
         }
@@ -432,41 +439,54 @@ extern "C" s32 fn_800A5AE4(void *arg0, void *arg1) {
         fn_800A59FC(arg0);
         temp_r0_6 = M2C_FIELD(arg0, s32 *, 0x1C);
         if (temp_r0_6 == 2) {
-            if (var_r3_4 != 0 || var_r3_6 != 0)
-                var_r30 = 4;
-
-        if ((s32)((u8 *)arg1 + 0x2A) & 1) {
+            goto mode2;
+        }
+        if (temp_r0_6 >= 2) {
+            goto invalid_type;
+        }
+        if (temp_r0_6 < 0) {
+            goto invalid_type;
+        }
+        if (var_r3_6 == 0) {
+            var_r30 = 4;
+        }
+        goto status_done;
+mode2:
+        if (var_r3_4 != 0 || var_r3_6 != 0) {
+            var_r30 = 4;
+        }
+        if (((u32)arg1 + 0x2A) & 1) {
             var_r3_7 = (M2C_FIELD(arg1, u8 *, 0x2A) & 0xFF) | ((M2C_FIELD(arg1, u8 *, 43) << 8) & 0xFF00);
         } else {
             temp = *(u16 *)((u8 *)arg1 + 0x2A);
-            var_r3_7 = ((temp << 8) & 0xFF00) | ((temp >> 8) & 0xFF);
+            var_r3_7 = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
         }
 
-        if ((s32)((u8 *)arg1 + 0x28) & 1) {
+        if (((u32)arg1 + 0x28) & 1) {
             var_r3_8 = (M2C_FIELD(arg1, u8 *, 0x28) & 0xFF) | ((M2C_FIELD(arg1, u8 *, 41) << 8) & 0xFF00);
         } else {
             temp = *(u16 *)((u8 *)arg1 + 0x28);
-            var_r3_8 = ((temp << 8) & 0xFF00) | ((temp >> 8) & 0xFF);
+            var_r3_8 = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
         }
             M2C_FIELD(arg0, u16 *, 0x18) = var_r3_8;
             temp_r4_3 = M2C_FIELD(arg1, u32 *, 0x2C);
             M2C_FIELD(arg0, s32 *, 0x10) =
-                ((temp_r4_3 << 8) & 0x00FF0000) | (temp_r4_3 << 0x18) |
-                (((temp_r4_3 >> 8) & 0x0000FF00) | (temp_r4_3 >> 0x18));
+                ((temp_r4_3 << 8) & 0xFF0000 & ~0xFF000000) | (temp_r4_3 << 0x18) |
+                (((temp_r4_3 >> 8U) & 0xFF00 & ~0xFF) | (temp_r4_3 >> 0x18U));
 
-        if ((s32)((u8 *)arg1 + 0x30) & 1) {
+        if (((u32)arg1 + 0x30) & 1) {
             var_r3_9 = (M2C_FIELD(arg1, u8 *, 0x30) & 0xFF) | ((M2C_FIELD(arg1, u8 *, 49) << 8) & 0xFF00);
         } else {
             temp = *(u16 *)((u8 *)arg1 + 0x30);
-            var_r3_9 = ((temp << 8) & 0xFF00) | ((temp >> 8) & 0xFF);
+            var_r3_9 = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
         }
             M2C_FIELD(arg0, u16 *, 0x14) = var_r3_9;
 
-        if ((s32)((u8 *)arg1 + 0x32) & 1) {
+        if (((u32)arg1 + 0x32) & 1) {
             var_r5 = (M2C_FIELD(arg1, u8 *, 0x32) & 0xFF) | ((M2C_FIELD(arg1, u8 *, 51) << 8) & 0xFF00);
         } else {
             temp = *(u16 *)((u8 *)arg1 + 0x32);
-            var_r5 = ((temp << 8) & 0xFF00) | ((temp >> 8) & 0xFF);
+            var_r5 = ((temp & 0xFF) << 8) | ((temp & 0xFF00) >> 8);
         }
             M2C_FIELD(arg0, u16 *, 0x16) = var_r5;
             M2C_FIELD(arg0, s32 *, 0x2C) =
@@ -474,11 +494,10 @@ extern "C" s32 fn_800A5AE4(void *arg0, void *arg1) {
                 ((M2C_FIELD(arg0, s32 *, 0x10) - 2) << M2C_FIELD(arg0, u8 *, 0x21));
             if (var_r3_7 != 0)
                 var_r30 = 4;
-        } else if (temp_r0_6 >= 2 || temp_r0_6 < 0) {
-            var_r30 = 4;
-        } else if (var_r3_6 == 0) {
-            var_r30 = 4;
-        }
+        goto status_done;
+invalid_type:
+        var_r30 = 4;
+status_done:
         temp_r3 = M2C_FIELD(arg0, u16 *, 0x18);
         if (temp_r3 & 0x80) {
             M2C_FIELD(arg0, u8 *, 0x22) = 1;
@@ -3174,63 +3193,83 @@ extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559228[]; }
 extern "C" { DECL_SECTION(".sdata") extern const u8 lbl_80559234[]; }
 extern "C" const u8 lbl_80560D98;
 extern "C" const u8 lbl_80560D99;
-extern "C" s16 fn_800B4D5C(void *arg0, u32 arg1, s32 arg2) {
-    u8 prefix[2];
-    s16 result = 0;
-    s16 index;
-    s16 value;
-    s32 offset;
-    s32 special;
-    u32 found = 0;
-    prefix[0] = lbl_80560D98;
-    prefix[1] = lbl_80560D99;
-    if (VFiPFSTR_StrNCmp((s32)arg0, prefix, (s32)arg1, 0, 2) == 0 ||
-        (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, 0, 1) == 0 &&
-         (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, 1, 1) == 0 ||
-          VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, 0, 1) == 0)) ||
-        VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, 0, 1) == 0) {
-        index = 2;
-        offset = 4;
-        while (index < 8) {
-            special = 0;
-            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, (s32)arg1, index, 1) == 0 ||
-                VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, index, 1) == 0)
-                special = 1;
-            if (special != 0 ||
-                VFiPFSTR_StrNCmp((s32)arg0, lbl_80559234, (s32)arg1, index, 1) == 0 ||
-                VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, index, 1) == 0)
-                break;
-            if (fn_800A4D44(arg0) == 1)
-                value = (s16)((s8)((u8 *)(u32)fn_800A4D74(arg0, arg1))[index] - 0x30);
-            else
-                value = (s16)(((u16 *)(u32)fn_800A4D74(arg0, arg1))[offset / 2] - 0x30);
-            if (value < 0 || value > 9) {
-                if (arg2 == 0 ||
-                    (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, index, 1) != 0 &&
-                     VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, index, 1) != 0))
-                    break;
-                if (arg2 == 1 &&
-                    VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, index, 1) == 0)
-                    found = 1;
-            }
-            offset += 2;
-            index += 1;
-        }
-        if (index == 8 || found == 1) {
-            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559234, (s32)arg1, index, 1) != 0) {
-                special = 0;
-                if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, (s32)arg1, index, 1) == 0 ||
-                    VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, index, 1) == 0)
-                    special = 1;
-                if (special == 0 ||
-                    VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, index, 1) == 0)
-                    result = index;
-            } else result = index;
-        }
-    }
-    return result;
+#pragma push
+#pragma scheduling on
+extern "C" s16 fn_800B4D5C(register void *arg0, register u32 arg1, register u32 arg2) {
+u8 sp9;
+volatile u8 sp8;
+u32 found;
+s16 value;
+s32 index;
+s16 result;
+s32 offset;
+s32 special;
+s32 special2;
+sp8 = lbl_80560D98;
+sp9 = lbl_80560D99;
+result = 0;
+found = 0;
+if (VFiPFSTR_StrNCmp((s32)arg0, (const void *)&sp8, (s32)arg1, 0, 2) == 0)
+goto begin;
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, 0, 1) == 0) {
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, 1, 1) == 0)
+goto begin;
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, 0, 1) == 0)
+goto begin;
 }
-
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, 0, 1) != 0)
+goto return_result;
+begin:
+index = 2;
+offset = 4;
+parse:
+if (fn_800A4D44(arg0) == 1U)
+value = (s16)((s8)((u8 *)(u32)fn_800A4D74(arg0, arg1))[(s16)index] - 0x30);
+else
+value = (s16)(((u16 *)(u32)fn_800A4D74(arg0, arg1))[offset / 2] - 0x30);
+if (value < 0 || value > 9) {
+if ((s32)arg2 == 0)
+goto after_loop;
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, (s16)index, 1) != 0 &&
+VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, (s32)arg1, (s16)index, 1) != 0)
+goto after_loop;
+if ((u32)arg2 == 1U &&
+VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, (s32)arg1, (s16)index, 1) == 0)
+found = 1;
+}
+offset += 2;
+index = (s16)(index + 1);
+if (index >= 8)
+goto after_loop;
+special = 0;
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, (s32)arg1, (s16)index, 1) == 0 ||
+VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, (s16)index, 1) == 0)
+special = 1;
+if (special != 0)
+goto after_loop;
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559234, (s32)arg1, (s16)index, 1) == 0)
+goto after_loop;
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, (s16)index, 1) == 0)
+goto after_loop;
+goto parse;
+after_loop:
+if (index == 8 || found == 1) {
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559234, (s32)arg1, (s16)index, 1) != 0) {
+special2 = 0;
+if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, (s32)arg1, (s16)index, 1) == 0 ||
+VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, (s32)arg1, (s16)index, 1) == 0)
+special2 = 1;
+if (special2 == 0 ||
+VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, (s32)arg1, (s16)index, 1) == 0)
+result = index;
+} else {
+result = index;
+}
+}
+return_result:
+return result;
+}
+#pragma pop
 s32 fn_800B51FC(u8 *arg0, s32 arg1) {
     s32 value = arg1;
     u32 divisor = 10;
