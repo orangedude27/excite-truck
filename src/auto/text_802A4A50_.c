@@ -32,7 +32,7 @@ s32 fn_802C990C(s32);
 s32 fn_802C2B78(f32, f32, f32);
 f32 fn_802A4A50(void);
 s32 fn_802A6A7C(void);
-s32 fn_802A5CA4(void);
+void fn_802A5CA4();
 void fn_802A5A38(void);
 extern s32 lbl_8055F888;
 extern s32 lbl_8055F88C;
@@ -146,6 +146,75 @@ void fn_802A4CA8(void) {
 
 void fn_802A4D00(void) { fn_802C2C00(0); }
 
+extern void PSVECCrossProduct(float *, float *, float *);
+extern float PSVECMag(float *);
+extern void fn_802E317C(const char *);
+extern const char lbl_80349C48[];
+extern const char lbl_8055CBD0[], lbl_8055CBD4[], lbl_8055CBDC[], lbl_8055CBE0[];
+extern float lbl_80564860, lbl_80564864;
+s32 fn_802A4FA8(float *out, void *object) {
+    float v0[3], v1[3], v2[3], v3[3], cross[3];
+    void (**vtable)(void *, void *, const char *);
+    if (object == 0) return 0;
+    vtable = *(void (***)(void *, void *, const char *))object;
+    vtable[13](v0, object, lbl_8055CBD0);
+    out[0] = v0[0]; out[1] = v0[1]; out[2] = v0[2];
+    vtable[13](v1, object, lbl_8055CBD4);
+    out[3] = v1[0]; out[4] = v1[1]; out[5] = v1[2];
+    vtable[13](v2, object, lbl_8055CBDC);
+    out[6] = v2[0]; out[7] = v2[1]; out[8] = v2[2];
+    vtable[13](v3, object, lbl_8055CBE0);
+    out[9] = v3[0]; out[10] = v3[1]; out[11] = v3[2];
+    PSVECCrossProduct(out + 6, out + 9, cross);
+    if (lbl_80564864 * PSVECMag(cross) < lbl_80564860) fn_802E317C(lbl_80349C48);
+    return 1;
+}
+
+extern f32 lbl_8056485C, lbl_80564868, lbl_8056486C, lbl_80564870, lbl_80564874;
+extern s32 lbl_8055F894;
+extern unsigned char lbl_80349BF0[];
+extern unsigned char lbl_804BCFB8[];
+extern s32 lbl_8055CBE8;
+s32 fn_80287B14(void);
+void *fn_80288208(s32);
+s32 fn_80287E20(s32);
+void *fn_80287E80(void *, s32);
+void fn_8028E61C(void *);
+s32 fn_8028E2F8(void *, void *, void *, f32, f32, f32, f32);
+int sprintf(char *, const char *, ...);
+void fn_802A50F8(void) {
+    struct { s32 a; s32 b; f32 c[28]; } init;
+    char name[4];
+    s32 i = 0, j;
+    void *obj;
+    fn_8028E61C(&init);
+    init.b = 0x100; init.a = 0;
+    init.c[0] = lbl_80564868; init.c[1] = lbl_8056485C;
+    init.c[2] = lbl_8056486C; init.c[3] = lbl_8056486C; init.c[4] = lbl_8056486C;
+    init.c[5] = lbl_8056485C; init.c[6] = lbl_8056485C; init.c[7] = lbl_8056485C;
+    init.c[10] = lbl_8056485C; init.c[16] = 5;
+    init.c[20] = lbl_80564874; init.c[19] = lbl_80564870; init.c[18] = lbl_80564870;
+    init.c[21] = lbl_8056485C; init.c[22] = lbl_8056485C;
+    init.c[24] = lbl_8056485C; init.c[25] = lbl_8056485C; init.c[26] = lbl_8056485C;
+    lbl_8055F894 = fn_8028E2F8(&init, lbl_80349BF0 + 0x80, lbl_80349BF0 + 0x1c, lbl_80564870, lbl_8056486C, lbl_8056485C, lbl_80564868);
+    for (i = 0; i < fn_80287B14(); i++) {
+        unsigned char *entry = lbl_804BCFB8 + i * 0xC4;
+        *(s32 *)(entry + 0xC0) = 0;
+        obj = fn_80288208(i);
+        if (fn_80287E20(lbl_8055CBE8)) {
+            obj = fn_80287E80(obj, lbl_8055CBE8);
+            *(s32 *)(entry + 0xC0) = 0;
+            for (j = 0; j < 4; ) {
+                void *value;
+                sprintf(name, (char *)lbl_80349BF0 + 0x8c, j + 1);
+                value = ((void *(*)(void *, const char *))(*(void ***)obj)[0x5c/4])(obj, name);
+                if (!fn_802A4FA8((float *)(entry + j * 0x30), value)) break;
+                *(s32 *)(entry + 0xC0) = ++j;
+            }
+        }
+    }
+}
+
 extern f32 lbl_80564858, lbl_8056485C, lbl_80564878;
 extern s32 lbl_80349C94;
 s32 fn_801284F8(s32, s32 *);
@@ -250,6 +319,7 @@ void fn_802A6758(void *arg0, f32 *arg1) {
     *(f32 *)(dst + 8) = z;
     *(s32 *)((u8 *)arg0 + 4) += 1;
 }
+#pragma scheduling on
 #pragma pop
 void fn_802A6790(void *arg0) {
     f32 sp8;
