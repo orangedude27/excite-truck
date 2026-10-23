@@ -1,4 +1,5 @@
 #include <types.h>
+#include <revolution/OS/OSHardware.h>
 
 extern BOOL __OSInIPL;
 extern const char lbl_80558F0C[4];
