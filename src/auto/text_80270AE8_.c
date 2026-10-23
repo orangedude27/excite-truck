@@ -577,17 +577,4 @@ typedef float (*Get3)(Obj *, const char *, float,float,float,float,float,float,f
 extern int lbl_8055F548;
 extern int lbl_8055F550;
 extern unsigned char lbl_8055F55B;
-#pragma cplusplus on
-struct Parser {
-    virtual void slot0();
-    virtual void slot1();
-    virtual void slot2();
-    virtual int has(const char *);
-    virtual int enumerate(int, char **, int *);
-    virtual void slot5();
-    virtual void slot6();
-    virtual int getCount(const char *);
-    virtual int getOption(const char *, int);
-    virtual float getFloat(const char *);
-};
-#pragma cplusplus reset
+
