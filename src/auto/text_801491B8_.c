@@ -47,6 +47,12 @@ typedef struct { s32 a, b, c, d; f32 e, f; s32 g; } Copy8014C6F0;
 extern s32 lbl_8032E1A0[];
 extern f32 lbl_80561648;
 extern f32 lbl_8056171C;
+extern f32 lbl_805616CC;
+extern s32 lbl_8055E244;
+extern s32 lbl_8055E248;
+extern s32 lbl_8055E250;
+extern void *lbl_8055E268;
+extern u8 lbl_8032D970[];
 
 extern s32 lbl_8055E238;
 extern s32 lbl_8055E23C;
@@ -798,6 +804,35 @@ void fn_8014D700(void *arg0, s32 arg1) {
         var_r6 = 0;
     }
     fn_80149658(arg1, (void *)((u8 *)arg0 + 0x6C), *(void **)((u8 *)arg0 + 0xC), var_r6);
+}
+
+s32 fn_8014D918(void *arg0, s32 arg1, s32 arg2) {
+    void **accessor=(void **)arg1; void *a,*b,*obj; u8 storage[0x1C];
+    f32 t,d,time,vals[7],x,y,w,h;
+    obj=*(void **)((u8 *)arg0+0x68); t=lbl_80561648;
+    d=*(f32 *)((u8 *)obj+0x8DC)-*(f32 *)((u8 *)obj+0x8D4); if(t>d)t=d;
+    if(d<lbl_8056164C)return 0;
+    fn_801345D8((char *)storage,0x64,(char *)lbl_8032D358+0x384,arg2);
+    a=((void *(*)(void *,void *))(*(void ***)accessor)[5])(accessor,storage);
+    fn_801345D8((char *)storage,0x64,(char *)lbl_8032D358+0x398,arg2);
+    b=((void *(*)(void *,void *))(*(void ***)accessor)[5])(accessor,storage);
+    fn_80149F00((u8 *)arg0+0x6C,arg0);
+    if(!a||!b)return 0;
+    time=(f32)fn_8002EFB4(lbl_805616A0,0.0);
+    *(s32 *)&vals[0]=*(s32 *)a; vals[1]=*(f32 *)((u8 *)a+4); vals[2]=*(f32 *)((u8 *)a+8);
+    *(s32 *)&vals[3]=*(s32 *)((u8 *)a+0xC); vals[4]=*(f32 *)((u8 *)a+0x10); vals[5]=*(f32 *)((u8 *)a+0x14);
+    *(s32 *)&vals[6]=*(s32 *)((u8 *)a+0x18);
+    if(time<lbl_8056163C){
+        x=(time-lbl_80561648)/lbl_805616C8;
+        if(lbl_8056164C<x)x=lbl_8056164C;if(x<lbl_80561648)x=lbl_80561648;
+        *(s32 *)&vals[6]=fn_80147C50(*(s32 *)((u8 *)a+0x18),*(s32 *)((u8 *)a+0x18),lbl_80561648+x*lbl_8056164C,0,0,0);
+    }else{
+        x=lbl_80561670*time-lbl_8056164C;y=lbl_8056164C-x;w=x*x;h=lbl_8056164C-y*y;
+        vals[1]+=h*(*(f32 *)((u8 *)b+4)-vals[1]); vals[2]+=w*(*(f32 *)((u8 *)b+8)-vals[2]);
+        vals[4]+=w*(*(f32 *)((u8 *)b+0x10)-vals[4]); vals[5]+=w*(*(f32 *)((u8 *)b+0x14)-vals[5]);
+        *(s32 *)&vals[6]=fn_80147C50(*(s32 *)((u8 *)a+0x18),*(s32 *)((u8 *)b+0x18),x,vals[5],h,w);
+    }
+    return fn_80147940(accessor,vals,(char *)lbl_8032D358+0x27C,0);
 }
 
 void fn_8014DB94(void *arg0) {
