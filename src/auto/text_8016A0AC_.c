@@ -14,7 +14,7 @@ extern Unk8016A0AC lbl_80430340;
 
 typedef struct {
     u8 flag;
-    char name[31];
+    char name[30];
     s32 handle;
     s32 id;
 } Entry28;
@@ -149,36 +149,34 @@ s32 fn_8016A878(const char* arg0) {
 }
 
 s32 fn_8016A8F8(void* alarm) {
-    Ctr804302F0* c = &lbl_804302F0;
     void* obj;
-    void** vtable;
     Entry28* entry;
+    volatile Ctr804302F0* vc;
     s32 cur;
     s32 i;
     s32 var24 = 1;
 
     obj = *(void**)((char*)fn_8000AC38() + 0x20);
-    vtable = *(void**)obj;
-    lbl_8055E364 = ((s32(*)(void*, void*, s32))vtable[0xC])(obj, &lbl_80330460, 0);
+    lbl_8055E364 = ((s32(*)(void*, void*, s32))((*(void***)obj)[0xC]))(obj, &lbl_80330460, 0);
 
-    if (c->ptr10 != 0) {
-        fn_8002F6AC(c->ptr10, fn_8016AC24);
-        c->ptr10 = 0;
-        c->cap = 0;
-        c->data = 0;
-        c->count = 0;
-        c->limit = 0;
+    if (lbl_804302F0.ptr10 != 0) {
+        fn_8002F6AC(lbl_804302F0.ptr10, fn_8016AC24);
+        lbl_804302F0.ptr10 = 0;
+        lbl_804302F0.cap = 0;
+        lbl_804302F0.data = 0;
+        lbl_804302F0.count = 0;
+        lbl_804302F0.limit = 0;
     }
-    c->cap = 5;
-    c->ptr10 = (Entry28*)fn_8002F37C((void*)fn_8012850C(5 * 0x28 + 0x10, &lbl_80330528), fn_8016AC18, fn_8016AC24, 0x28, 5);
-    c->data = c->ptr10;
-    c->limit = c->cap;
-    c->count = 0;
+    lbl_804302F0.cap = 5;
+    lbl_804302F0.ptr10 = (Entry28*)fn_8002F37C((void*)fn_8012850C(lbl_804302F0.cap * 0x28 + 0x10, &lbl_80330528), fn_8016AC18, fn_8016AC24, 0x28, lbl_804302F0.cap);
+    lbl_804302F0.data = lbl_804302F0.ptr10;
+    lbl_804302F0.limit = lbl_804302F0.cap;
+    lbl_804302F0.count = 0;
 
-    while (c->count + 1 <= c->limit && var24 < 0x64) {
-        cur = c->count;
-        entry = &c->data[cur];
-        c->count = cur + 1;
+    while (lbl_804302F0.count + 1 <= lbl_804302F0.limit && var24 < 0x64) {
+        cur = lbl_804302F0.count;
+        entry = &lbl_804302F0.data[cur];
+        lbl_804302F0.count = cur + 1;
         if (entry->flag != 0) {
             fn_802C6CF8((void*)entry->handle);
             entry->flag = 0;
@@ -195,19 +193,19 @@ s32 fn_8016A8F8(void* alarm) {
             fn_802E30C8(&lbl_80330688, var24, entry->name);
         }
         if (entry->flag == 0) {
-            i = c->count - 1;
+            vc = &lbl_804302F0;
+            i = vc->count - 1;
             if (i >= 0) {
-                if (i < c->count) {
-                    if (i != c->count - 1) {
-                        c->data[i] = c->data[c->count - 1];
+                if (i < vc->count) {
+                    if (i != vc->count - 1) {
+                        lbl_804302F0.data[i] = lbl_804302F0.data[vc->count - 1];
                     }
-                    c->count = c->count - 1;
+                    vc->count = vc->count - 1;
                 }
             }
         }
         var24++;
     }
-    return 0;
 }
 
 #pragma use_lmw_stmw on
