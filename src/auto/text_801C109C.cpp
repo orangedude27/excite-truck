@@ -355,6 +355,18 @@ void fn_801C2BDC(void *arg0, unsigned int *arg1, unsigned int *arg2, unsigned in
 extern "C" int lbl_8055E7C8;
 extern "C" float lbl_80562948;
 extern "C" void fn_801E41D8(float *, float *, int, float);
+static inline void transform3(volatile float *out, volatile float *in, float *m) {
+    if (out == in) {
+        out[0] = in[2] * m[6] + (in[0] * m[0] + in[1] * m[3]);
+        out[1] = in[2] * m[7] + (in[0] * m[1] + in[1] * m[4]);
+        out[2] = in[2] * m[8] + (in[0] * m[2] + in[1] * m[5]);
+    } else {
+        out[0] = in[2] * m[6] + (in[0] * m[0] + in[1] * m[3]);
+        out[1] = in[2] * m[7] + (in[0] * m[1] + in[1] * m[4]);
+        out[2] = in[2] * m[8] + (in[0] * m[2] + in[1] * m[5]);
+    }
+}
+
 extern "C" void fn_801C2BF8(void *arg0, float *arg1) {
     char *base = (char *)arg0;
     float *matrix = arg1;
@@ -362,45 +374,55 @@ extern "C" void fn_801C2BF8(void *arg0, float *arg1) {
     int i = 0;
     int offset = 0;
     int color;
-    float sp2C, sp30, sp34, sp20, sp24, sp28;
-    float sp14, sp18, sp1C, sp8, spC, sp10;
-    float x, y, z;
+    volatile float inA[3];
+    volatile float inB[3];
+    volatile float outA[3];
+    volatile float outB[3];
+    register volatile float *pInA = inA;
+    register volatile float *pInB = inB;
+    register volatile float *pOutA = outA;
+    register volatile float *pOutB = outB;
+
     if (count <= 0) return;
     color = lbl_8055E7C8;
     goto check;
 loop:
     {
         int *indices = *(int **)(base + 0x48);
-        int *points = *(int **)(base + 0x24);
+        unsigned char *points = *(unsigned char **)(base + 0x24);
         int first = *(int *)((char *)indices + offset);
         int second = *(int *)((char *)indices + offset + 4);
-        float *a = (float *)((char *)points + first * 12);
-        float *b = (float *)((char *)points + second * 12);
-        sp2C = a[0]; sp30 = a[1]; sp34 = a[2];
-        sp20 = b[0]; sp24 = b[1]; sp28 = b[2];
-        if (&sp14 == &sp2C) {
-            sp14 = sp34 * matrix[6] + (sp2C * matrix[0] + sp30 * matrix[3]);
-            sp18 = sp34 * matrix[7] + (sp2C * matrix[1] + sp30 * matrix[4]);
-            sp1C = sp34 * matrix[8] + (sp2C * matrix[2] + sp30 * matrix[5]);
+        *(volatile unsigned int *)&pInA[0] = *(unsigned int *)(points + first * 12);
+        *(volatile unsigned int *)&pInA[1] = *(unsigned int *)(points + first * 12 + 4);
+        *(volatile unsigned int *)&pInA[2] = *(unsigned int *)(points + first * 12 + 8);
+        *(volatile unsigned int *)&pInB[0] = *(unsigned int *)(points + second * 12);
+        *(volatile unsigned int *)&pInB[1] = *(unsigned int *)(points + second * 12 + 4);
+        *(volatile unsigned int *)&pInB[2] = *(unsigned int *)(points + second * 12 + 8);
+        if (pOutA == pInA) {
+            pOutA[0] = pInA[2] * matrix[6] + (pInA[0] * matrix[0] + pInA[1] * matrix[3]);
+            pOutA[1] = pInA[2] * matrix[7] + (pInA[0] * matrix[1] + pInA[1] * matrix[4]);
+            pOutA[2] = pInA[2] * matrix[8] + (pInA[0] * matrix[2] + pInA[1] * matrix[5]);
         } else {
-            sp14 = sp34 * matrix[6] + (sp2C * matrix[0] + sp30 * matrix[3]);
-            sp18 = sp34 * matrix[7] + (sp2C * matrix[1] + sp30 * matrix[4]);
-            sp1C = sp34 * matrix[8] + (sp2C * matrix[2] + sp30 * matrix[5]);
+            pOutA[0] = pInA[2] * matrix[6] + (pInA[0] * matrix[0] + pInA[1] * matrix[3]);
+            pOutA[1] = pInA[2] * matrix[7] + (pInA[0] * matrix[1] + pInA[1] * matrix[4]);
+            pOutA[2] = pInA[2] * matrix[8] + (pInA[0] * matrix[2] + pInA[1] * matrix[5]);
         }
-        sp14 += matrix[9]; sp18 += matrix[10]; sp1C += matrix[11];
-        if (&sp8 == &sp20) {
-            sp8 = sp28 * matrix[6] + (sp20 * matrix[0] + sp24 * matrix[3]);
-            spC = sp28 * matrix[7] + (sp20 * matrix[1] + sp24 * matrix[4]);
-            sp10 = sp28 * matrix[8] + (sp20 * matrix[2] + sp24 * matrix[5]);
+        pOutA[0] += matrix[9];
+        pOutA[1] += matrix[10];
+        pOutA[2] += matrix[11];
+        if (pOutB == pInB) {
+            pOutB[0] = pInB[2] * matrix[6] + (pInB[0] * matrix[0] + pInB[1] * matrix[3]);
+            pOutB[1] = pInB[2] * matrix[7] + (pInB[0] * matrix[1] + pInB[1] * matrix[4]);
+            pOutB[2] = pInB[2] * matrix[8] + (pInB[0] * matrix[2] + pInB[1] * matrix[5]);
         } else {
-            sp8 = sp28 * matrix[6] + (sp20 * matrix[0] + sp24 * matrix[3]);
-            spC = sp28 * matrix[7] + (sp20 * matrix[1] + sp24 * matrix[4]);
-            sp10 = sp28 * matrix[8] + (sp20 * matrix[2] + sp24 * matrix[5]);
+            pOutB[0] = pInB[2] * matrix[6] + (pInB[0] * matrix[0] + pInB[1] * matrix[3]);
+            pOutB[1] = pInB[2] * matrix[7] + (pInB[0] * matrix[1] + pInB[1] * matrix[4]);
+            pOutB[2] = pInB[2] * matrix[8] + (pInB[0] * matrix[2] + pInB[1] * matrix[5]);
         }
-        x = sp8 + matrix[9];
-        y = spC + matrix[10];
-        z = sp10 + matrix[11];
-        fn_801E41D8(&sp14, &sp8, color, lbl_80562948);
+        pOutB[0] += matrix[9];
+        pOutB[1] += matrix[10];
+        pOutB[2] += matrix[11];
+        fn_801E41D8((float *)pOutA, (float *)pOutB, color, lbl_80562948);
         offset += 0x14;
         i++;
     }
