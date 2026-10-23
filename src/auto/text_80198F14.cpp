@@ -1281,23 +1281,29 @@ extern "C" void fn_801A1F44(void* arg0, void* arg1) {
 }
 
 extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
-    f32 x = *(f32 *)((char *)arg0 + 0x24);
-    f32 y = *(f32 *)((char *)arg0 + 0x28);
+    struct Work {
+        volatile f32 point[3];
+        f32 gap;
+        volatile f32 corners[24];
+    } workArea;
     f32 z = *(f32 *)((char *)arg0 + 0x2C);
-    f32 nx = -x;
-    f32 ny = -y;
-    f32 nz = -z;
-    f32 corners[24] = {
-        x, y, z, nx, y, z,
-        x, ny, z, nx, ny, z,
-        x, y, nz, nx, y, nz,
-        x, ny, nz, nx, ny, nz
-    };
-    f32 point[3];
-    f32 *corner = corners;
-    f32 *sameCorner = corners;
-    f32 *work = point;
     VTab1A1E7C *shape = (VTab1A1E7C *)arg0;
+    f32 y = *(f32 *)((char *)arg0 + 0x28);
+    f32 x = *(f32 *)((char *)arg0 + 0x24);
+    f32 ny = -y;
+    f32 nx = -x;
+    f32 nz = -z;
+    workArea.corners[0]=x; workArea.corners[1]=y; workArea.corners[2]=z;
+    workArea.corners[3]=nx; workArea.corners[4]=y; workArea.corners[5]=z;
+    workArea.corners[6]=x; workArea.corners[7]=ny; workArea.corners[8]=z;
+    workArea.corners[9]=nx; workArea.corners[10]=ny; workArea.corners[11]=z;
+    workArea.corners[12]=x; workArea.corners[13]=y; workArea.corners[14]=nz;
+    workArea.corners[15]=nx; workArea.corners[16]=y; workArea.corners[17]=nz;
+    workArea.corners[18]=x; workArea.corners[19]=ny; workArea.corners[20]=nz;
+    workArea.corners[21]=nx; workArea.corners[22]=ny; workArea.corners[23]=nz;
+    volatile f32 *corner = workArea.corners;
+    volatile f32 *sameCorner = workArea.corners;
+    volatile f32 *point = workArea.point;
     f32 *matrix = (f32 *)shape->Call();
     min[0] = matrix[9];
     min[1] = matrix[10];
@@ -1311,30 +1317,21 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
         f32 cx = corner[0];
         f32 cy = corner[1];
         f32 cz = corner[2];
-        f32 px;
-        f32 py;
-        f32 pz;
-        if (work == sameCorner) {
-            px = (cx * matrix[0] + cy * matrix[3]) + cz * matrix[6];
-            py = (cx * matrix[1] + cy * matrix[4]) + cz * matrix[7];
-            pz = (cx * matrix[2] + cy * matrix[5]) + cz * matrix[8];
+        if (point == sameCorner) {
+            point[0] = (cx * matrix[0] + cy * matrix[3]) + cz * matrix[6] + matrix[9];
+            point[1] = (cx * matrix[1] + cy * matrix[4]) + cz * matrix[7] + matrix[10];
+            point[2] = (cx * matrix[2] + cy * matrix[5]) + cz * matrix[8] + matrix[11];
         } else {
-            px = (cy * matrix[3] + cx * matrix[0]) + cz * matrix[6];
-            py = (cy * matrix[4] + cx * matrix[1]) + cz * matrix[7];
-            pz = (cy * matrix[5] + cx * matrix[2]) + cz * matrix[8];
+            point[0] = (cy * matrix[3] + cx * matrix[0]) + cz * matrix[6] + matrix[9];
+            point[1] = (cy * matrix[4] + cx * matrix[1]) + cz * matrix[7] + matrix[10];
+            point[2] = (cy * matrix[5] + cx * matrix[2]) + cz * matrix[8] + matrix[11];
         }
-        px += matrix[9];
-        py += matrix[10];
-        pz += matrix[11];
-        work[0] = px;
-        work[1] = py;
-        work[2] = pz;
-        if (min[0] < px) min[0] = px;
-        if (min[1] < py) min[1] = py;
-        if (min[2] < pz) min[2] = pz;
-        if (max[0] > px) max[0] = px;
-        if (max[1] > py) max[1] = py;
-        if (max[2] > pz) max[2] = pz;
+        if (min[0] < point[0]) min[0] = point[0];
+        if (min[1] < point[1]) min[1] = point[1];
+        if (min[2] < point[2]) min[2] = point[2];
+        if (max[0] > point[0]) max[0] = point[0];
+        if (max[1] > point[1]) max[1] = point[1];
+        if (max[2] > point[2]) max[2] = point[2];
         corner += 3;
         sameCorner += 3;
     }
@@ -2149,3 +2146,17 @@ public:
     virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
     virtual Vec* GetVector();
 };
+static inline void fn801A1F98Transform(f32 *dst, f32 *src, f32 *matrix) {
+    f32 x = src[0];
+    f32 y = src[1];
+    f32 z = src[2];
+    if (dst == src) {
+        dst[0] = (x * matrix[0] + y * matrix[3]) + z * matrix[6];
+        dst[1] = (x * matrix[1] + y * matrix[4]) + z * matrix[7];
+        dst[2] = (x * matrix[2] + y * matrix[5]) + z * matrix[8];
+    } else {
+        dst[0] = (y * matrix[3] + x * matrix[0]) + z * matrix[6];
+        dst[1] = (y * matrix[4] + x * matrix[1]) + z * matrix[7];
+        dst[2] = (y * matrix[5] + x * matrix[2]) + z * matrix[8];
+    }
+}
