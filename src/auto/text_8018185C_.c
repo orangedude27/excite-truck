@@ -1,6 +1,18 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 extern signed char lbl_8055E4F8;
+extern unsigned char lbl_8055A3B5;
+extern int lbl_8055A3A4, lbl_8055A3A8, lbl_8055E4F0;
+extern float lbl_8055E4D8;
+extern char lbl_803322B0[];
+extern float lbl_80561CD4, lbl_80561CE0, lbl_80561CE4, lbl_80561CE8;
+extern float lbl_80561CEC, lbl_80561CF0, lbl_80561CF4, lbl_80561CF8, lbl_80561CFC;
+extern float lbl_80561D04, lbl_80561D08, lbl_80561D0C, lbl_80561D10, lbl_80561D14;
+extern float lbl_80561D18, lbl_80561D1C, lbl_80561D20, lbl_80561D24, lbl_80561D28;
+extern float lbl_80561D2C, lbl_80561D30;
+extern int fn_80019BA8(void);
+extern void fn_802049DC(int, int, float, float, float);
+extern int fn_8020503C(void *);
 extern char lbl_80434990[];
 extern float lbl_80561CDC;
 extern float lbl_80561DE0;
@@ -358,7 +370,7 @@ extern float lbl_80561DE4, lbl_80561E5C, lbl_80561EE0, lbl_80561EE4;
 extern float lbl_80561EE8, lbl_80561EEC, lbl_80561EF0, lbl_80561EF4;
 #pragma cplusplus on
 #pragma opt_propagation off
-extern "C" void fn_80188A80(void *arg0) {
+extern "C" void fn_80188A80(void *arg0, int arg_sp0) {
 struct ObjArg {
 virtual int v0(); virtual int v1(int); virtual int v2(); virtual int v3();
 virtual int v4(); virtual int v5(); virtual int v6(); virtual int v7();
@@ -372,6 +384,7 @@ virtual int v8(); virtual int v9(); virtual int v10(); virtual int v11();
 virtual int v12();
 };
 char *p = (char *)arg0;
+(void)arg_sp0;
 int temp_i;
 float sp1C;
 float sp18;
@@ -379,40 +392,40 @@ float sp14;
 float sp10;
 float spC;
 float sp8;
-float temp_f0;
-float temp_f0_2;
-float temp_f0_3;
-float temp_f0_4;
-float temp_f0_5;
-float temp_f10;
-float temp_f10_2;
-float temp_f11;
-float temp_f11_2;
-float temp_f13;
-float temp_f1;
-float temp_f1_2;
-float temp_f24;
-float temp_f25;
-float temp_f26;
-float temp_f27;
-float temp_f28;
-float temp_f29;
-float temp_f2;
-float temp_f30;
-float temp_f31;
-float temp_f5;
-float temp_f5_2;
-float temp_f6;
-float temp_f6_2;
-float temp_f7;
-float temp_f7_2;
-float temp_f8;
-float temp_f8_2;
-float temp_f9;
-float temp_f9_2;
-float var_f2;
-float var_f2_2;
-float var_f3;
+register float temp_f0;
+register float temp_f0_2;
+register float temp_f0_3;
+register float temp_f0_4;
+register float temp_f0_5;
+register float temp_f10;
+register float temp_f10_2;
+register float temp_f11;
+register float temp_f11_2;
+register float temp_f13;
+register float temp_f1;
+register float temp_f1_2;
+register float temp_f24;
+register float temp_f25;
+register float temp_f26;
+register float temp_f27;
+register float temp_f28;
+register float temp_f29;
+register float temp_f2;
+register float temp_f30;
+register float temp_f31;
+register float temp_f5;
+register float temp_f5_2;
+register float temp_f6;
+register float temp_f6_2;
+register float temp_f7;
+register float temp_f7_2;
+register float temp_f8;
+register float temp_f8_2;
+register float temp_f9;
+register float temp_f9_2;
+register float var_f2;
+register float var_f2_2;
+register float var_f3;
 ObjArg *temp_r3;
 ObjArg *temp_r3_2;
 ObjVoid *temp_r3_3;
@@ -893,19 +906,18 @@ extern float lbl_80561F54, lbl_80561F58, lbl_80561F5C, lbl_80561F60;
 extern float lbl_80561F64, lbl_80561F68, lbl_80561F6C;
 extern float lbl_80561CD0, lbl_80561CDC, lbl_80561D28, lbl_80561D34;
 extern float lbl_80561E60, lbl_80561EE4;
-#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f3;
-    float color, value3, second_offset, second_scale;
+    float color, value3, second_offset, second_scale, scaled1, middle1, output1;
     float var_f0, var_f0_2, var_f0_3, var_f0_4;
-    float var_f2, var_f3, var_f3_2, var_f4;
-    float loop_min, loop_max, loop_base, loop_scale;
-    float loop_height, loop_height_scale, loop_x, loop_x_scale, loop_y_scale;
+    register float var_f2;
+    float var_f3, var_f3_2, var_f4;
+    float loop_y_scale, loop_x_scale, loop_x, loop_height_scale, loop_height;
+    float loop_scale, loop_base, loop_max, loop_min;
     int i, var_r5;
     unsigned char *var_r3, *var_r4;
-    void *obj;
-    void *ret;
+    void *obj, *ret;
 
     fn_8017D274();
     var_f2 = lbl_80561CD0;
@@ -915,7 +927,10 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     var_f4 = lbl_80561CD0;
     second_offset = lbl_80561F64;
     second_scale = lbl_80561E60;
-    *(short *)((char *)arg1 + 0x20) = (short)(lbl_80561CDC + (lbl_80561CAC + (var_f2 * lbl_80561F54)));
+    scaled1 = var_f2 * lbl_80561F54;
+    middle1 = lbl_80561CAC + scaled1;
+    output1 = lbl_80561CDC + middle1;
+    *(short *)((char *)arg1 + 0x20) = (short)output1;
     temp_f0_2 = (*(float *)((char *)arg0 + 0x25F0) - second_offset) / second_scale;
     var_f4 = (var_f4 < temp_f0_2) ? var_f4 : temp_f0_2;
     var_f4 = (var_f4 > lbl_80561CAC) ? lbl_80561CAC : var_f4;
@@ -935,7 +950,7 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     *(signed char *)((char *)arg1 + 0x24) = (signed char)color;
     *(signed char *)((char *)arg1 + 0x3C) = (signed char)value3;
     obj = *(void **)((char *)arg0 + 0x270);
-    ret = ((BA54Obj *)obj)->method6(color, lbl_80561CDC);
+    ret = ((BA54CallObj *)obj)->method4(color, lbl_80561CDC);
     *(int *)((char *)arg1 + 0x40) = ((int (*)(void *, void *))fn_801363A0)(ret, (char *)ret + 4);
     if (*(unsigned char *)((char *)arg1 + 0x3C) == 0) *(unsigned char *)((char *)arg1 + 0x3C) = 1;
 
@@ -946,8 +961,8 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     loop_base = lbl_80561CDC;
     {
         int idx = *(int *)((char *)arg0 + 0x1EC);
-        int base = lbl_8055E918;
-        *(unsigned char *)((char *)arg1 + 0x25) = *(int *)(base + idx * 0x9C + 0x14);
+        int table = lbl_8055E918;
+        *(unsigned char *)((char *)arg1 + 0x25) = *(int *)(table + idx * 0x9C + 0x14);
     }
     loop_scale = lbl_80561F60;
     loop_height = lbl_80561F68;
@@ -982,7 +997,6 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     return 0x44;
 }
 #pragma cplusplus reset
-#pragma scheduling on
 void fn_8018BDEC(void *arg0) {
     f32 sp[12];
     int value;
