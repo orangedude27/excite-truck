@@ -490,6 +490,7 @@ void fn_80273490(void) {
     fn_80271624();
 }
 
+#pragma dont_inline on
 int fn_80273494(int arg0) {
     switch (arg0) {
     case 11: return 0;
@@ -500,6 +501,7 @@ int fn_80273494(int arg0) {
     default: return 6;
     }
 }
+#pragma dont_inline reset
 
 #pragma push
 #pragma small_data off
@@ -582,54 +584,54 @@ void fn_80273604(void *arg0, s32 arg1) {
     s32 kind = *(s32 *)state;
     switch (kind) {
     case 0x22: {
-        float vec[3], matrix[9], pos[3];
+        struct Scratch { float vec[3]; float pad; float matrix[9]; float pos[3]; } scratch;
         float scale = lbl_80563F4C;
         float mag, nx, ny, nz, sine, cosine, oneMinusCos, t0, t1, t2, t3, t4, t5;
         *(s32 *)((u8 *)arg0 + 88) = *(s32 *)((u8 *)arg0 + 192); *(s32 *)((u8 *)arg0 + 92) = *(s32 *)((u8 *)arg0 + 196); *(s32 *)((u8 *)arg0 + 96) = *(s32 *)((u8 *)arg0 + 200); *(s32 *)((u8 *)arg0 + 100) = *(s32 *)((u8 *)arg0 + 204);
         *(s32 *)((u8 *)arg0 + 104) = *(s32 *)((u8 *)arg0 + 208); *(s32 *)((u8 *)arg0 + 108) = *(s32 *)((u8 *)arg0 + 212); *(s32 *)((u8 *)arg0 + 112) = *(s32 *)((u8 *)arg0 + 216); *(s32 *)((u8 *)arg0 + 116) = *(s32 *)((u8 *)arg0 + 220);
         *(s32 *)((u8 *)arg0 + 120) = *(s32 *)((u8 *)arg0 + 224); *(s32 *)((u8 *)arg0 + 124) = *(s32 *)((u8 *)arg0 + 228); *(s32 *)((u8 *)arg0 + 128) = *(s32 *)((u8 *)arg0 + 232); *(s32 *)((u8 *)arg0 + 132) = *(s32 *)((u8 *)arg0 + 236);
-        vec[0] = *(float *)(state + 0x14) * scale;
-        vec[1] = *(float *)(state + 0x18) * scale;
-        vec[2] = *(float *)(state + 0x1C) * scale;
-        pos[0] = *(float *)(state + 8);
-        pos[1] = *(float *)(state + 0xC);
-        pos[2] = *(float *)(state + 0x10);
-        mag = PSVECMag(vec);
+        scratch.vec[0] = *(float *)(state + 0x14) * scale;
+        scratch.vec[1] = *(float *)(state + 0x18) * scale;
+        scratch.vec[2] = *(float *)(state + 0x1C) * scale;
+        scratch.pos[0] = *(float *)(state + 8);
+        scratch.pos[1] = *(float *)(state + 0xC);
+        scratch.pos[2] = *(float *)(state + 0x10);
+        mag = PSVECMag(scratch.vec);
         if (mag > lbl_80563F9C) {
             t0 = lbl_80563F50 / mag;
-            nx = t0 * vec[0]; ny = t0 * vec[1]; nz = t0 * vec[2];
+            nx = t0 * scratch.vec[0]; ny = t0 * scratch.vec[1]; nz = t0 * scratch.vec[2];
             sine = (float)sin(mag);
             cosine = (float)cos(mag);
             oneMinusCos = lbl_80563F50 - cosine;
             t1 = sine * nz;
             t2 = oneMinusCos * nx;
             t3 = ny * t2;
-            matrix[0] = cosine + (oneMinusCos * (nx * nx));
+            scratch.matrix[0] = cosine + (oneMinusCos * (nx * nx));
             t4 = nz * t2;
             t5 = sine * ny;
-            matrix[1] = t3 + t1;
+            scratch.matrix[1] = t3 + t1;
             t0 = nz * (oneMinusCos * ny);
             t2 = sine * nx;
-            matrix[3] = t3 - t1;
-            matrix[2] = t4 - t5;
-            matrix[4] = cosine + (oneMinusCos * (ny * ny));
-            matrix[5] = t0 + t2;
-            matrix[6] = t4 + t5;
-            matrix[7] = t0 - t2;
-            matrix[8] = cosine + (oneMinusCos * (nz * nz));
+            scratch.matrix[3] = t3 - t1;
+            scratch.matrix[2] = t4 - t5;
+            scratch.matrix[4] = cosine + (oneMinusCos * (ny * ny));
+            scratch.matrix[5] = t0 + t2;
+            scratch.matrix[6] = t4 + t5;
+            scratch.matrix[7] = t0 - t2;
+            scratch.matrix[8] = cosine + (oneMinusCos * (nz * nz));
         } else {
-            matrix[1] = lbl_80563F48;
-            matrix[0] = lbl_80563F50;
-            matrix[2] = lbl_80563F48;
-            matrix[3] = lbl_80563F48;
-            matrix[4] = lbl_80563F50;
-            matrix[5] = lbl_80563F48;
-            matrix[6] = lbl_80563F48;
-            matrix[7] = lbl_80563F48;
-            matrix[8] = lbl_80563F50;
+            scratch.matrix[1] = lbl_80563F48;
+            scratch.matrix[0] = lbl_80563F50;
+            scratch.matrix[2] = lbl_80563F48;
+            scratch.matrix[3] = lbl_80563F48;
+            scratch.matrix[4] = lbl_80563F50;
+            scratch.matrix[5] = lbl_80563F48;
+            scratch.matrix[6] = lbl_80563F48;
+            scratch.matrix[7] = lbl_80563F48;
+            scratch.matrix[8] = lbl_80563F50;
         }
-        fn_801BFD34((u8 *)arg0 + 0x7C, pos, (u8 *)arg0 + 0xC0);
-        fn_80015B20((u8 *)arg0 + 0x58, matrix, (u8 *)arg0 + 0xC0);
+        fn_801BFD34((u8 *)arg0 + 0x7C, scratch.pos, (u8 *)arg0 + 0xC0);
+        fn_80015B20((u8 *)arg0 + 0x58, scratch.matrix, (u8 *)arg0 + 0xC0);
         *(float *)((u8 *)arg0 + 0xBC) = lbl_80563F4C * *(float *)(state + 0x20);
         return;
     }
