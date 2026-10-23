@@ -915,7 +915,7 @@ static void gki_add_to_pool_list(UINT8 pool_id)
 {
     INT32 i;
     INT32 j;
-    tGKI_COM_CB *p_cb = &((tGKI_CB *)lbl_803946C0)->com;
+    tGKI_COM_CB *p_cb = (tGKI_COM_CB *)((u8 *)lbl_803946C0 + 0x54);
 
     for (i = 0; i < p_cb->curr_total_no_of_pools; i++) {
         if (p_cb->freeq[pool_id].size <= p_cb->freeq[p_cb->pool_list[i]].size)
