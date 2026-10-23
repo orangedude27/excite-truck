@@ -9,6 +9,7 @@ extern u8 *FstStringStart_8055D83C;
 extern __Locale lbl_802FE850;
 extern s32 lbl_8055D828;
 extern BOOL __DVDLongFileNameFlag;
+__declspec(section ".sdata") extern char lbl_80558DF8[];
 extern void OSPanic(const char *, s32, const char *);
 extern char lbl_80558DF8[];
 extern char lbl_80301F70[];
@@ -185,80 +186,116 @@ void __DSP_remove_task(void *task) {
     *(void **)((u8 *)*(void **)((u8 *)task + 0x38) + 0x3c) = *(void **)((u8 *)task + 0x3c);
 }
 
+#pragma use_lmw_stmw off
 s32 DVDConvertPathToEntrynum(const char *path) {
     u32 *fst = (u32 *)FstStart_8055D840;
-    char *strings = (char *)FstStringStart_8055D83C;
-    const char *backup = path;
-    u32 current = lbl_8055D828;
+    u32 it;
     u32 anchor;
-    const char *end;
+    const char *name_end;
     const char *item_name;
-    const char *lhs;
-    const char *rhs;
-    const char *extension_start;
+    const char *compare_path;
+    BOOL name_delimited_by_slash;
     s32 name_length;
-    BOOL delimited;
+    const char *backup_path;
+    const char *extension_start;
+    BOOL illegal_format;
     BOOL has_extension;
-    BOOL illegal;
+    __Locale *locale;
+
+    backup_path = path;
+    it = lbl_8055D828;
+    locale = &lbl_802FE850;
     for (;;) {
-        if (*path == '\0') return current;
-        if (*path == '/') { current = 0; path++; continue; }
+        if (*path == '\0')
+            return it;
+        if (*path == '/') {
+            it = 0;
+            path++;
+            continue;
+        }
         if (path[0] == '.') {
             if (path[1] == '.') {
-                if (path[2] == '/') { current = fst[current * 3 + 1]; path += 3; continue; }
-                if (path[2] == '\0') return fst[current * 3 + 1];
+                if (path[2] == '/') {
+                    it = fst[it * 3 + 1];
+                    path += 3;
+                    continue;
+                }
+                if (path[2] == '\0')
+                    return fst[it * 3 + 1];
                 goto check_format;
             }
-            if (path[1] == '/') { path += 2; continue; }
-            if (path[1] == '\0') return current;
+            if (path[1] == '/') {
+                path += 2;
+                continue;
+            }
+            if (path[1] == '\0')
+                return it;
         }
 check_format:
         if (!__DVDLongFileNameFlag) {
             has_extension = FALSE;
-            illegal = FALSE;
-            end = path;
-            while (*end != '\0' && *end != '/') {
-                if (*end == '.') {
-                    if (end - path > 8 || has_extension) { illegal = TRUE; goto validate_format; }
+            illegal_format = FALSE;
+            name_end = path;
+            while (*name_end != '\0' && *name_end != '/') {
+                if (*name_end == '.') {
+                    if (name_end - path > 8 || has_extension) {
+                        illegal_format = TRUE;
+                        goto validate_format;
+                    }
                     has_extension = TRUE;
-                    extension_start = end + 1;
-                } else if (*end == ' ') illegal = TRUE;
-                end++;
+                    extension_start = name_end + 1;
+                } else if (*name_end == ' ') {
+                    illegal_format = TRUE;
+                }
+                name_end++;
             }
 validate_format:
-            if (has_extension && end - extension_start > 3) illegal = TRUE;
-            if (illegal)
-                ((void (*)(const char *, s32, const char *, ...))OSPanic)(lbl_80558DF8, 0x1B9, lbl_80301F70, backup);
+            if (has_extension && name_end - extension_start > 3)
+                illegal_format = TRUE;
+            if (illegal_format)
+                ((void (*)(const char *, s32, const char *, ...))OSPanic)(
+                    lbl_80558DF8, 0x1B9, lbl_80301F70, backup_path);
         } else {
-            end = path;
-            while (*end != '\0' && *end != '/') end++;
+            name_end = path;
+            while (*name_end != '\0' && *name_end != '/')
+                name_end++;
         }
-        delimited = (*end == '\0') ? FALSE : TRUE;
-        name_length = end - path;
-        anchor = current + 1;
-        while (anchor < fst[current * 3 + 2]) {
-            if ((fst[anchor * 3] & 0xFF000000) != 0 || delimited != TRUE) {
-                item_name = strings + (fst[anchor * 3] & 0xFFFFFF);
-                lhs = item_name;
-                rhs = path;
-                for (;;) {
-                    if (*rhs == '\0') break;
-                    if (tolower(*lhs++) != tolower(*rhs++)) goto no_match;
+
+        name_delimited_by_slash = (*name_end == '\0') ? FALSE : TRUE;
+        name_length = name_end - path;
+        anchor = it + 1;
+        while (anchor < fst[it * 3 + 2]) {
+            if ((fst[anchor * 3] & 0xFF000000) || name_delimited_by_slash != TRUE) {
+                item_name = (const char *)FstStringStart_8055D83C +
+                            (fst[anchor * 3] & 0xFFFFFF);
+                compare_path = path;
+                while (*item_name != '\0') {
+                    if (tolower(*compare_path++) !=
+                        (int)(*item_name < 0 || *item_name >= 256
+                                  ? *item_name
+                                  : locale->cmap->to_lower_table[(u8)*item_name])) {
+                        goto next_item;
+                    }
+                    item_name++;
                 }
-                if (*lhs == '/' || *lhs == '\0') goto found;
+                if (*compare_path == '/' || *compare_path == '\0')
+                    goto descend;
             }
-no_match:
-            if ((fst[anchor * 3] & 0xFF000000) != 0) anchor = fst[anchor * 3 + 2];
-            else anchor++;
+next_item:
+            if (fst[anchor * 3] & 0xFF000000)
+                anchor = fst[anchor * 3 + 2];
+            else
+                anchor++;
         }
         return -1;
-found:
-        if (!delimited) return anchor;
-        current = anchor;
+descend:
+        if (!name_delimited_by_slash)
+            return anchor;
+        it = anchor;
         path += name_length + 1;
     }
 }
-
+#pragma use_lmw_stmw reset
 extern s32 DVDCancel();
 extern u32 MaxEntryNum_8055D838;
 extern void *BootInfo_8055D844;
