@@ -53,6 +53,7 @@ struct PaneMtxDispatch {
     virtual void Apply(const DrawInfo &);
 };
 }}
+extern "C" void PSMTXConcat(const f32 *, const f32 *, f32 *);
 extern "C" void PSMTXScale(f32 *, f32, f32, f32);
 extern "C" u32 PSMTXInverse(f32 *, s32, f32);
 extern "C" void PSMTXRotTrig(f32 *, void *, f32, f32, f32);
