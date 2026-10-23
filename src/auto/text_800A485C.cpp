@@ -1,5 +1,7 @@
   #include <types.h>
 #include <macros.h>
+extern "C" s32 fn_800A485C(s32);
+extern "C" u32 fn_800A4C04(u8 *);
 #define fn_800B4D5C_CALL fn_800B4D5##C
 extern "C" s32 fn_800A4D44(void *);
 extern "C" s32 fn_800A4D74(void *, u32);
@@ -2272,6 +2274,9 @@ extern s32 fn_800B5618(void *, s32, s32, s32, u16);
 #pragma push
 #pragma use_lmw_stmw off
 extern "C" s32 fn_800ACDF8(void *);
+#pragma push
+#pragma use_lmw_stmw off
+#pragma pop
 extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4, s32 arg5, s32 arg6) {
     void *context = *(void **)((u8 *)arg0 + 0x34);
     u32 first;
@@ -2280,15 +2285,12 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     void *page;
     u32 maxCluster;
     u32 cluster;
-    u32 count;
     s32 result;
     s32 savedResult;
-    u32 i;
     void *buffer;
     u8 *bufferData;
 
     maxCluster = lbl_802EEF40[*(s32 *)((u8 *)context + 0x1C) * 5 + 2];
-    count = arg2;
     *arg3 = -1;
     *arg4 = -1;
     end = -1;
@@ -2309,26 +2311,26 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     *(u16 *)((u8 *)page + 2) = 0;
     cluster = first;
     while (cluster < end) {
-        result = VFiPFFAT_WriteClusterPage(arg0, cluster, count, cluster + 1, 1, page);
+        result = VFiPFFAT_WriteClusterPage(arg0, cluster, arg2, cluster + 1, 1, page);
         if (result != 0) {
             VFiPFCACHE_FreeFATPage_800A8E10(context, page);
             return result;
         }
         if ((*(u16 *)((u8 *)context + 0x1FAC) & 4) != 0) {
-            u32 cached = *(u32 *)((u8 *)context + 0x38);
-            if (cached != -1 && cached != 0 &&
+            if (*(u32 *)((u8 *)context + 0x38) != -1 &&
+                *(u32 *)((u8 *)context + 0x38) != 0 &&
                 (*(s32 *)((u8 *)context + 0x1C) != 2 ||
                  end != *(u32 *)((u8 *)context + 0x10))) {
-                *(u32 *)((u8 *)context + 0x38) = cached - 1;
+                *(u32 *)((u8 *)context + 0x38) -= 1;
             }
         }
         if (*arg3 == -1) *arg3 = cluster;
         *arg4 = cluster;
-        count++;
+        arg2++;
         cluster++;
     }
     if (end != -1) {
-        result = VFiPFFAT_WriteClusterPage(arg0, end, count, maxCluster, 1, page);
+        result = VFiPFFAT_WriteClusterPage(arg0, end, arg2, maxCluster, 1, page);
         if (result != 0) {
             VFiPFCACHE_FreeFATPage_800A8E10(context, page);
             return result;
@@ -2339,21 +2341,21 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
         *arg4 = cluster;
     }
     {
-        u32 cached = *(u32 *)((u8 *)context + 0x38);
-        if (cached != -1 && cached != 0 &&
+        if (*(u32 *)((u8 *)context + 0x38) != -1 &&
+            *(u32 *)((u8 *)context + 0x38) != 0 &&
             (*(s32 *)((u8 *)context + 0x1C) != 2 ||
              end != *(u32 *)((u8 *)context + 0x10))) {
-            *(u32 *)((u8 *)context + 0x38) = cached - 1;
+            *(u32 *)((u8 *)context + 0x38) -= 1;
         }
     }
     *(u32 *)((u8 *)context + 0x3C) = end + 1;
     *(u32 *)((u8 *)arg0 + 0xC) = end;
-    *(u32 *)((u8 *)arg0 + 0x10) = count;
+    *(u32 *)((u8 *)arg0 + 0x10) = arg2;
     *arg4 = end;
-    buffer = *(void **)((u8 *)page + 8);
+    buffer = page;
     bufferData = *(u8 **)((u8 *)buffer + 0x18);
     savedResult = 0;
-    for (i = 0; i < *((u8 *)context + 0x22); i++) {
+    for (cluster = 0; (s32)(u16)cluster < (s32)*((u8 *)context + 0x22); cluster++) {
         result = fn_800B5618(context, *(s32 *)((u8 *)buffer + 8),
                              (s32)bufferData, 0, *(u16 *)context);
         if (result != 0 && savedResult == 0) savedResult = result;
@@ -2368,11 +2370,10 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
         (*(u16 *)((u8 *)context + 0x1FAC) & 2) != 0 &&
         fn_800AF144(context) != 0) {
         *(u32 *)((u8 *)context + 0x38) = -1;
-        *(u16 *)((u8 *)context + 0x1FAC) &= (u16)~4;
+        *(u16 *)((u8 *)context + 0x1FAC) &= ~4;
     }
     return 0;
 }
-#pragma pop
 extern "C" s32 fn_800AD24C(void *, s32, s32, s32 *, s32 *);
 extern "C" s32 fn_800AE108(void *arg0, s32 arg1, s32 arg2, u32 arg3, s32 *arg4, s32 arg5) {
     s32 end = -1;
@@ -6630,6 +6631,87 @@ void fn_800C4CF4(void *arg0, s32 arg1, s32 arg2, s32 arg3, s8 arg4, s32 arg5) {
  }
 }
 
+#pragma push
+#pragma opt_common_subs off
+extern "C" s32 fn_800C4E5C(s32 arg0, void *arg1) {
+    s32 sp[0x20];
+    s32 temp_r0;
+    s32 temp_r0_2;
+    s32 temp_r0_3;
+    s32 temp_r0_4;
+    s32 temp_r0_5;
+    s32 temp_r0_6;
+    s32 temp_r0_7;
+    s32 temp_r4;
+    s32 temp_r4_2;
+    s32 temp_r4_3;
+    s32 temp_r4_4;
+    s32 temp_r5;
+    s32 temp_r5_2;
+    s32 temp_r5_3;
+    s32 temp_r6;
+    s32 *out = (s32 *)arg1;
+
+    fn_800C56A4(sp, (void *)arg0, 0);
+    fn_800C51BC(sp, sp + 16, (s32 *)lbl_8031D7C0);
+    fn_800C5298(sp, sp + 8, (s32 *)((u8 *)lbl_8031D7C0 + 0x40));
+    fn_800C5430(sp, sp + 4, (s32 *)((u8 *)lbl_8031D7C0 + 0x60));
+    fn_800C5508(sp, sp + 2, (void *)((u8 *)lbl_8031D7C0 + 0x70));
+    fn_800C55D8(sp, sp + 1, (s32 *)((u8 *)lbl_8031D7C0 + 0x78));
+
+    out[0xC0 / 4] = -sp[0];
+    temp_r0 = sp[31] + sp[30] + (sp[24] + sp[28]);
+    out[0xBC / 4] = -(sp[16] + temp_r0);
+    temp_r4 = (sp[15] + sp[12]) + sp[14];
+    out[0xB8 / 4] = -(sp[8] + temp_r4);
+    temp_r5 = (sp[23] + sp[20]) + sp[22];
+    out[0xB4 / 4] = -(temp_r5 + temp_r0);
+    out[0xB0 / 4] = -((sp[7] + sp[4]) + sp[6]);
+    temp_r0_2 = temp_r0 + ((sp[26] + sp[27]) - sp[24]);
+    out[0xAC / 4] = -(temp_r5 + temp_r0_2);
+    temp_r4_2 = (temp_r4 + sp[10]) + sp[11];
+    out[0xA8 / 4] = -temp_r4_2;
+    out[0xA4 / 4] = -((temp_r0_2 + sp[18]) + sp[19]);
+    out[0xA0 / 4] = -(sp[2] + sp[3]);
+    temp_r0_3 = temp_r0_2 + (sp[29] - sp[28]);
+    out[0x9C / 4] = -((temp_r0_3 + sp[18]) + sp[19]);
+    temp_r4_3 = temp_r4_2 + (sp[13] - sp[12]);
+    out[0x98 / 4] = -temp_r4_3;
+    temp_r5_2 = temp_r5 + (sp[21] - sp[20]);
+    out[0x94 / 4] = -(temp_r5_2 + temp_r0_3);
+    out[0x90 / 4] = -((sp[7] + sp[5]) + sp[6]);
+    temp_r0_4 = temp_r0_3 + ((sp[25] - sp[26]) - sp[27]);
+    out[0x8C / 4] = -(temp_r5_2 + temp_r0_4);
+    temp_r4_4 = temp_r4_3 + ((sp[9] - sp[10]) - sp[11]);
+    out[0x88 / 4] = -temp_r4_4;
+    out[0x84 / 4] = -(sp[17] + temp_r0_4);
+    temp_r6 = sp[1];
+    out[0] = temp_r6;
+    temp_r6 = -temp_r6;
+    temp_r0_5 = temp_r0_4 - sp[30];
+    out[1] = sp[17] + temp_r0_5;
+    out[2] = temp_r4_4 - sp[14];
+    temp_r5_3 = temp_r5_2 - sp[22];
+    out[3] = temp_r5_3 + temp_r0_5;
+    out[4] = sp[5] + sp[7];
+    temp_r0_6 = temp_r0_5 + (sp[27] - sp[25]);
+    out[5] = temp_r5_3 + temp_r0_6;
+    out[6] = sp[13] + (sp[15] + sp[11]);
+    temp_r0_7 = temp_r0_6 + sp[19];
+    out[7] = temp_r0_7;
+    out[8] = sp[3];
+    out[9] = temp_r0_7 - sp[29];
+    out[10] = sp[11] + sp[15];
+    out[11] = sp[27] + (sp[31] + sp[23]);
+    out[12] = sp[7];
+    out[13] = sp[23] + sp[31];
+    out[14] = sp[15];
+    out[15] = sp[31];
+    out[16] = 0;
+    out[0x80 / 4] = temp_r6;
+    return 0;
+}
+#pragma pop
 void fn_800C51BC(s32 *arg0, s32 *arg1, s32 *arg2) {
     s32 i = 4;
     do {
