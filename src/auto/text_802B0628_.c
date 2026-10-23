@@ -390,22 +390,22 @@ extern void fn_802DC440(void);
 extern void fn_802DC464();
 extern float fn_801DCF48(int, float, float);
 #pragma push
-
-void fn_802B1758(void *arg0) {
+  #pragma ppc_psq_save off
+  void fn_802B1758(void *arg0) {
     float setupA[3];
     float setupB[3];
     void *node;
-    void *cache;
     int cacheCount;
+    void *cache;
     int state;
     int i;
     int offset;
-    int sign;
+    char *entry;
     float radius;
     float *point;
-    float x;
-    float y;
     float z;
+    float y;
+    float x;
     unsigned short values[14];
 
     node = *(void **)((char *)arg0 + 0x934);
@@ -462,10 +462,8 @@ void fn_802B1758(void *arg0) {
             radius = lbl_80564BE0 + radius;
             point = lbl_804BE190;
             for (i = 0; i < 4; i++) {
-                sign = (i & 1) ? -1 : 1;
-                x = (float)sign * radius;
-                sign = (i & 2) ? -1 : 1;
-                z = (float)sign * radius;
+                x = (float)((i & 1) ? -1 : 1) * radius;
+                z = (float)((i & 2) ? -1 : 1) * radius;
                 y = fn_801DCF48(0, x, z);
                 point[0] = x;
                 point[1] = y;
@@ -475,10 +473,8 @@ void fn_802B1758(void *arg0) {
 
             radius = lbl_80564BE8 * lbl_80564BB8;
             for (i = 4; i < 8; i++) {
-                sign = (i & 1) ? -1 : 1;
-                x = radius * (float)sign;
-                sign = (i & 2) ? -1 : 1;
-                z = radius * (float)sign;
+                x = radius * (float)((i & 1) ? -1 : 1);
+                z = radius * (float)((i & 2) ? -1 : 1);
                 y = fn_801DCF48(0, x, z);
                 point[0] = x;
                 point[1] = y;
