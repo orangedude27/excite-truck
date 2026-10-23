@@ -100,6 +100,31 @@ public:
     virtual s32 vC(s32);
 };
 
+class TDispatchStringInt20 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5();
+    virtual s32 v20(const char *, s32);
+};
+
+class TDispatchStringFloat28 {
+public:
+    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d4(); virtual void d5(); virtual void d6(); virtual void d7();
+    virtual f32 v28(const char *, f32);
+};
+
+extern "C" u8 lbl_8032C530[0x500];
+extern "C" f32 lbl_805614E0;
+extern "C" f32 lbl_805614E4;
+extern "C" f32 lbl_805614E8;
+extern "C" f32 lbl_805614EC;
+extern "C" f32 lbl_805614F0;
+extern "C" f32 lbl_805614F4;
+extern "C" f32 lbl_805614F8;
+extern "C" f64 lbl_805614D8;
+extern "C" f32 fn_80204CFC(const char *);
+
 extern "C" s32 fn_8013D1F0(s32);
 
 extern "C" s32 fn_8013CB10(void) {
