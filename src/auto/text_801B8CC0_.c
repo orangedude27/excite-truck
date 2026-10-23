@@ -19,9 +19,9 @@ extern void* lbl_80436D28[];
 
 static inline void transform_vec(float *out, const float *m, volatile float *in) {
     if (out == in) {
-        float x = in[0];
-        float y = in[1];
-        float z = in[2];
+        register float x = in[0];
+        register float y = in[1];
+        register float z = in[2];
         float x0 = x * m[0] + y * m[3] + z * m[6];
         float x1 = x * m[1] + y * m[4] + z * m[7];
         float x2 = x * m[2] + y * m[5] + z * m[8];
@@ -52,27 +52,14 @@ extern "C" static inline void transform_vec_struct(Vec *out, const float *m, vol
         out->z = in->y * m[5] + in->x * m[2] + in->z * m[8];
     }
 }
-void fn_801B8E28(int arg0) {
+#pragma cplusplus on
+extern "C" void fn_801B8E28(int arg0) {
     struct Dummy {
-        virtual void v0();
-        virtual void v1();
-        virtual void v2();
-        virtual void v3();
-        virtual void v4();
-        virtual void v5();
-        virtual void v6();
-        virtual void v7();
-        virtual void v8();
-        virtual void v9();
-        virtual void v10();
-        virtual void v11();
-        virtual void v12();
-        virtual void v13();
-        virtual void v14();
-        virtual void v15();
-        virtual void v16();
-        virtual void v17();
-        virtual void v18();
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18();
         virtual void v19(unsigned int *, void *);
     };
     register void *obj = lbl_80436D28[arg0];
@@ -86,7 +73,8 @@ void fn_801B8E28(int arg0) {
         volatile int zero;
         volatile short h;
     } w;
-    float temp_f3, temp_f2, temp_f1, temp_f1_2, dot;
+    register float temp_f2, temp_f3, temp_f1, temp_f1_2;
+    float dot;
 
     fn_80189C64(obj, lbl_80436D28);
     temp_f3 = *(float *)((char *)obj + 0x2748) - *(float *)((char *)obj + 0x273c);
