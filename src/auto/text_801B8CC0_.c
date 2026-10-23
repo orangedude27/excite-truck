@@ -79,14 +79,6 @@ void fn_801B92F0(void *arg0, int arg1) {
     *(float *)((unsigned char *)arg0+0x274c)=sp14[1]+lbl_80562778;
 }
 
-extern void fn_8018381C(void *);
-extern float PSVECDotProduct(const float *, const float *);
-extern void fn_801AD148(void *, float *, void *, float, float, float);
-extern void fn_801AD28C(void *, float *, void *, void *, float, float, float);
-extern float lbl_80562754;
-extern float lbl_80562758;
-extern float lbl_8056275C;
-extern float lbl_80562760;
 void fn_801B949C(void *arg0) {
     short sp6c;
     int sp68;
