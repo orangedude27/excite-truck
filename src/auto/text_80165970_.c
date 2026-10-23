@@ -116,8 +116,11 @@ extern float lbl_80561898;
 extern float lbl_805618A0;
 extern char lbl_8055A150[];
 extern char lbl_8055A158[];
+#pragma push
+#pragma small_data on
 extern char lbl_8055A160[];
 extern char lbl_8055A168[];
+#pragma pop
 void fn_80165A30(void *arg0, int arg1) {
     int i;
     int count;
@@ -170,11 +173,13 @@ extern float lbl_805618CC;
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma small_data on
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_80165B78(void **arg0) {
     char *strings = lbl_8032FCC0;
-    Dummy80165B78 *obj;
     Dummy80165B78 *obj2;
+    Dummy80165B78 *obj;
     char *text;
     char *match;
     float scale;
@@ -240,6 +245,7 @@ extern "C" void fn_80165B78(void **arg0) {
     *(float *)((char *)&lbl_8042FE38 + 0x60) = obj->getFloatDefault(strings + 0x1A8, lbl_805618C8) * lbl_805618CC;
 }
 #pragma cplusplus off
+#pragma scheduling on
 #pragma pop
 void *fn_80166040(int arg0) {
     void *base;
