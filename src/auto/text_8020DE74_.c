@@ -9,7 +9,7 @@ extern float lbl_805633F4;
 extern float lbl_805633F8;
 extern float lbl_805633FC;
 
-#pragma scheduling off
+#pragma scheduling on
 #pragma cplusplus on
 extern void *lbl_8033C8C4[];
 extern void fn_80128668(void *);
