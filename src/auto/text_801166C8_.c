@@ -12,18 +12,7 @@ extern f32 lbl_80561224;
 extern f64 lbl_80561228;
 extern f32 lbl_80329BC8[];
 
-static inline f32 fn_80120834_to_f32(s32 value) {
-    union {
-        f64 d;
-        struct {
-            u32 high;
-            u32 low;
-        } words;
-    } conv;
-    conv.words.high = 0x43300000;
-    conv.words.low = (u32)value ^ 0x80000000;
-    return (f32)(conv.d - lbl_80561228);
-}
+
 extern void fn_8011AF94(f32 *, s32, void *, f32 *, s32);
 extern void fn_801200BC(s32, s32, f32 *, s32, s32);
 extern void fn_8012023C(s32, s32, f32 *, s32, s32);
@@ -3524,10 +3513,12 @@ void fn_80125960(void *arg0, void *arg1, void *arg2, void *arg3) {
     s16 temp_r0, temp_r10, temp_r23, temp_r25, temp_r4, temp_r4_2, temp_r7, temp_r8, temp_r9;
     s32 temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5, temp_r0_6, temp_r0_7;
     s32 temp_r10_2, temp_r10_3, temp_r10_4, temp_r10_5, temp_r10_6;
-    s32 temp_r11, temp_r11_2, temp_r11_3, temp_r11_4, temp_r11_5;
+    register s32 temp_r11;
+    s32 temp_r11_2, temp_r11_3, temp_r11_4, temp_r11_5;
     s32 temp_r12, temp_r12_2, temp_r12_3, temp_r12_4, temp_r12_5;
     s32 temp_r23_2, temp_r23_3, temp_r23_4, temp_r23_5, temp_r23_6, temp_r23_7, temp_r23_8, temp_r23_9, temp_r23_10, temp_r23_11;
-    s32 temp_r24, temp_r24_2, temp_r24_3, temp_r24_4, temp_r24_5, temp_r24_6, temp_r24_7, temp_r24_8;
+    register s32 temp_r24;
+    s32 temp_r24_2, temp_r24_3, temp_r24_4, temp_r24_5, temp_r24_6, temp_r24_7, temp_r24_8;
     s32 temp_r25_2, temp_r25_3, temp_r25_4, temp_r25_5, temp_r25_6;
     s32 temp_r26, temp_r26_2, temp_r26_3, temp_r27, temp_r28, temp_r29, temp_r30;
     s32 temp_r4_3, temp_r4_4, temp_r5, temp_r5_2, temp_r6;
