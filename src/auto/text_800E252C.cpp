@@ -15,6 +15,7 @@ extern float lbl_80560F88, lbl_80560F8C, lbl_80560F90;
 extern double lbl_80560F98, lbl_80560FA0;
 extern "C" int IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
 extern "C" void fn_800E6A44(void);
+extern "C" void fn_80033538(unsigned short);
 extern "C" void AIRegisterDMACallback(void *);
 extern "C" void AXRegisterAuxACallback(int, int);
 extern "C" void AXRegisterAuxBCallback(int, int);
@@ -566,26 +567,27 @@ extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackMa
 extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *, int, int, void (*)(void *, int, void *), void *);
 extern const char lbl_803224E4[];
 extern const char lbl_803224C0[];
-#pragma dont_inline on
+#pragma use_lmw_stmw off
 extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *self, int count, int columns, int priority, void (*callback)(void *, int, void *), void *callbackArg) {
-    int buffers[8], valid, rows, ncols, total, made, result, remaining, i, j, available;
-    unsigned int bufferSize, interruptState;
+    int buffers[8], valid, rows, ncols, total, made, result, remaining, i, j;
+    unsigned int bufferSize, interruptState, nextSize;
     int *bufferOut, *bufferIn;
     char *voice, *row, *manager, *node, *sentinel;
+    const char *fileName = lbl_803221A8;
     valid = 0;
     if (count >= 1 && count <= 2) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x124, lbl_803221A8 + 0x10, count, 1, 2);
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x124, fileName + 0x10, count, 1, 2);
     if (count > 2) rows = 2;
     else { rows = 1; if (count >= 1) rows = count; }
     valid = 0;
     if (columns >= 1 && columns <= 4) valid = 1;
-    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x127, lbl_803221A8 + 0x5C, columns, 1, 4);
+    if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x127, fileName + 0x5C, columns, 1, 4);
     if (columns > 4) ncols = 4;
     else { ncols = 1; if (columns >= 1) ncols = columns; }
     interruptState = OSDisableInterrupts();
     bufferSize = 0x10;
     if (priority == 0xFF) bufferSize = 0x1F;
-    if (*((unsigned char *)self + 0x11C) != 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x12E, lbl_803221A8 + 0xA8);
+    if (*((unsigned char *)self + 0x11C) != 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x12E, fileName + 0xA8);
     total = rows * ncols;
     bufferOut = buffers;
     made = 0;
@@ -594,12 +596,14 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
         if (result == 0) {
             remaining = total - made;
             manager = (char *)Instance__15EmissionManagerFv();
+            const char *poolFile = lbl_803224E4;
+            const char *poolMessage = lbl_803224C0;
             node = *(char **)(manager + 0x18);
             sentinel = manager + 0x18;
             while (node != sentinel) {
-                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224E4, 0x242, lbl_803224C0);
+                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(poolFile, 0x242, poolMessage);
                 if (priority >= *(int *)(node - 0x84)) {
-                    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224E4, 0x242, lbl_803224C0);
+                    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(poolFile, 0x242, poolMessage);
                     remaining -= *(int *)(node - 0xA4) * *(int *)(node - 0xA0);
                     if (remaining > 0) { node = *(char **)node; continue; }
                 }
@@ -611,10 +615,11 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
                 OSRestoreInterrupts(interruptState);
                 return 0;
             }
-            if (bufferSize < 0x1F) result = TRKInitializeMessageBuffers(bufferSize + 1, VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv, self);
-            else result = TRKInitializeMessageBuffers(bufferSize, VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv, self);
+            nextSize = bufferSize;
+            if (bufferSize < 0x1F) nextSize = bufferSize + 1;
+            result = TRKInitializeMessageBuffers(nextSize, VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv, self);
         }
-        if (result == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x167, lbl_803221A8 + 0xD0);
+        if (result == 0) Panic__Q26nw4hbm2dbFPCciPCce(fileName, 0x167, fileName + 0xD0);
         if (result == 0) {
             bufferIn = buffers; i = 0;
             while (i < made) { TRKGetFreeBuffer((void *)(unsigned int)*bufferIn); bufferIn++; i++; }
@@ -634,12 +639,13 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
         voice += 0x10; i++;
     }
     InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(self, rows, ncols, callback, callbackArg);
-    GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
-    RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(0, self);
+    void *disposeManager = GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
+    RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(disposeManager, self);
     *((unsigned char *)self + 0x11C) = 1;
     OSRestoreInterrupts(interruptState);
     return 1;
 }
+#pragma use_lmw_stmw reset
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
 extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
 extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *, void *);
