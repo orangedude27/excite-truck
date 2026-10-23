@@ -188,7 +188,7 @@ void fn_8029C73C(void) {
             x = getval(item, lbl_8055CABC);
             y = getval(item, lbl_8055CAC4);
             result = fn_801284F8(0x78, lbl_80349560 + 0xE0, y);
-            if (result) result = fn_8029D148(init, vec, id);
+            if (result) result = (int)((void *(*)(void *, void *, float *, int))fn_8029D148)((void *)result, init, vec, id);
             lbl_804B5010[lbl_8055F7F0++] = result;
             ++i;
         }
@@ -286,6 +286,69 @@ void fn_8029CB3C(void) {
     lbl_8055F7F4 = 0;
 }
 
+extern int fn_8028E2F8(void *, void *, void *, float, float, float, float);
+extern void fn_8028E61C(int *);
+extern int lbl_8055F7F0, lbl_8055F7F4, lbl_8055F7F8;
+extern int lbl_8055CAC8, lbl_8055CAD0, lbl_8055CAD8;
+extern float lbl_8056464C, lbl_80564654, lbl_80564658, lbl_8056465C, lbl_80564660;
+#pragma push
+#pragma small_data off
+extern int lbl_8034968C, lbl_80349698;
+#pragma pop
+void fn_8029CBA0(void) {
+    extern void **fn_802AE414(void *);
+    float sp9C, sp94, sp8C, sp84, sp7C, sp78, sp74, sp70, sp68;
+    int sp64;
+    float sp54, sp50, sp48, sp44, sp40, sp3C, sp38, sp34, sp30, sp2C, sp28;
+    int sp24, sp20;
+    float sp1C, sp18, sp14, sp10, spC, sp8;
+    int *var_r31 = &lbl_8034968C;
+    float var_f31 = lbl_80564654;
+    void **obj = fn_802AE414(&lbl_8055CAC8);
+    if (obj != 0) {
+        var_r31 = ((int *(*)(void *, void *, void *))(*(void ***)*obj)[0x18 / 4])
+            (*obj, &lbl_80349698, var_r31);
+        var_f31 = ((float (*)(void *, void *, float))(*(void ***)*obj)[0x28 / 4])
+            (obj, &lbl_8055CAD0, var_f31);
+    }
+    if (fn_802BF4F0() != 0 || lbl_8055F7F0 > 0 || lbl_8055F7F4 > 0) {
+        fn_8028E61C(&sp20);
+        sp20 = 2;
+        sp24 = 0x200;
+        sp28 = lbl_80564654;
+        sp2C = lbl_80564654;
+        sp14 = lbl_80564658;
+        sp18 = lbl_80564658;
+        sp1C = lbl_80564658;
+        sp30 = lbl_80564658;
+        sp34 = lbl_80564658;
+        sp38 = lbl_80564658;
+        sp8 = lbl_80564658;
+        spC = lbl_80564658;
+        sp10 = lbl_80564658;
+        sp3C = lbl_80564658;
+        sp40 = lbl_80564658;
+        sp44 = lbl_80564658;
+        sp48 = lbl_8056465C;
+        sp50 = lbl_80564654;
+        sp54 = lbl_8056465C;
+        sp64 = 5;
+        sp68 = var_f31;
+        sp74 = lbl_80564654;
+        sp70 = lbl_8056464C;
+        sp7C = lbl_80564658;
+        sp78 = lbl_80564660;
+        sp94 = lbl_80564658;
+        sp8C = lbl_80564658;
+        sp84 = lbl_80564658;
+        sp9C = lbl_80564658;
+        lbl_8055F7F8 = fn_8028E2F8(&sp20, &lbl_8055CAD8, var_r31,
+            lbl_8056464C, lbl_8056465C, lbl_80564658, lbl_80564654);
+        return;
+    }
+    lbl_8055F7F8 = 0;
+}
+
 void fn_8029CD14(void) {
     if (lbl_8055F7F8 != 0) {
         ((void (*)(int))fn_8028E398)(lbl_8055F7F8);
@@ -350,6 +413,43 @@ void fn_8029D574(int arg0) {
     }
     fn_8029DDB8(p);
 }
+
+void fn_8029DA24(void *arg0, float *arg1, int x, int z) {
+    extern float lbl_80564628, lbl_80564658, lbl_8056465C, lbl_8056468C;
+    extern double lbl_80564680;
+    extern void PSVECNormalize(float *, float *);
+    int width = *(int *)((char *)arg0 + 0xC);
+    if (x == 0)
+        goto border;
+    if (x == width - 1)
+        goto border;
+    if (z == 0)
+        goto border;
+    if (z == *(int *)((char *)arg0 + 0x10) - 1)
+        goto border;
+    {
+        short *heights = *(short **)((char *)arg0 + 4);
+        int row = x + z * width;
+        int v0 = heights[row - width];
+        int v1 = heights[row + width];
+        int v2 = heights[row + 1];
+        int v3 = heights[row - 1];
+        float dx = lbl_8056465C * (float)(v0 - v1);
+        float dz = lbl_8056465C * (float)(v2 - v3);
+        float nx = lbl_8056468C * dx;
+        float nz = lbl_8056468C * dz;
+        arg1[0] = nx * *(float *)((char *)arg0 + 0x44) + nz * *(float *)((char *)arg0 + 0x4C);
+        arg1[1] = (lbl_80564658 - nx * nx) + (lbl_80564658 - nz * nz);
+        arg1[2] = nx * *(float *)((char *)arg0 + 0x48) + nz * *(float *)((char *)arg0 + 0x50);
+        PSVECNormalize(arg1, arg1);
+        return;
+    }
+border:
+    arg1[0] = lbl_80564628;
+    arg1[1] = lbl_80564658;
+    arg1[2] = lbl_80564628;
+}
+
 #pragma pop
 
 extern float fn_801E7E24(void);
@@ -520,6 +620,55 @@ void *__dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv_8029E888(void *a
             fn_80128668(arg0);
     }
     return arg0;
+}
+
+extern void *fn_802C86DC(void);
+extern void fn_802C8BD0(int);
+extern int fn_802C8DBC(int);
+extern void fn_802C8E48(void);
+extern void fn_802C8D74(void);
+extern void fn_802C8E00(int, unsigned int, float, float, float, float, float);
+extern float lbl_80564658, lbl_8056465C;
+void fn_8029E8E0(float *arg0, int arg1) {
+    extern void PSVECNormalize(float *, float *);
+    extern double fn_8002F234(float);
+    float *view;
+    float sp8[3];
+    float centerX, centerY, centerZ;
+    float scaleX, one, radius, norm;
+    int i;
+
+    fn_802C8BD0(*(int *)((char *)arg0 + 0x40));
+    if (fn_802C8DBC(4) != 0) {
+        view = (float *)fn_802C86DC();
+        centerX = *(float *)((char *)view + 0x24);
+        centerY = *(float *)((char *)view + 0x28);
+        centerZ = *(float *)((char *)view + 0x2C);
+        scaleX = lbl_80564658;
+        one = lbl_8056465C;
+        i = 0;
+        do {
+            float px = arg0[0];
+            float py = arg0[1];
+            float pz = arg0[2];
+            float dx = px - centerX;
+            float dy = py - centerY;
+            float dz = pz - centerZ;
+            sp8[0] = dx;
+            sp8[1] = -dy;
+            sp8[2] = dz;
+            PSVECNormalize(sp8, sp8);
+            radius = scaleX + sp8[1];
+            norm = (float)fn_8002F234(radius * radius + sp8[0] * sp8[0] + sp8[2] * sp8[2]);
+            norm = one / norm;
+            fn_802C8E00(-1, (unsigned int)(i >> 1), arg0[0], arg0[1], arg0[2],
+                one + sp8[2] * norm, one + sp8[0] * norm);
+            i++;
+            arg0 += 3;
+        } while (i < 4);
+        fn_802C8E48();
+    }
+    fn_802C8D74();
 }
 
 extern void fn_8029EC64(void *, int);
