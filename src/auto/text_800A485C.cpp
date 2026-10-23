@@ -1,4 +1,8 @@
   #include <types.h>
+extern "C" const char lbl_8031EE58[];
+extern "C" const char lbl_805597F0[];
+extern "C" const char lbl_8031F208[];
+extern "C" f32 lbl_80560E64;
 class Freeable800C6A1C { public: virtual void free(s32); };
 class Freeable28_800C6A1C { public: virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); virtual void free(s32); };
 extern "C" s32 fn_800A8D08(s32, void **, s32 *, s32, s32 *);
