@@ -230,6 +230,7 @@ extern "C" void *__dt__Q36nw4hbm3snd18MemorySoundArchiveFv_800E2CB8(void *arg0, 
     return arg0;
 }
 
+#pragma dont_inline on
 extern "C" void *Instance__15EmissionManagerFv(void) {
     if ((signed char)lbl_8055DE18 == 0) {
         int *manager = &lbl_80407F6C;
@@ -564,12 +565,12 @@ extern "C" void RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackMa
 extern "C" void InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *, int, int, void (*)(void *, int, void *), void *);
 extern const char lbl_803224E4[];
 extern const char lbl_803224C0[];
+#pragma dont_inline on
 extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *self, int count, int columns, int priority, void (*callback)(void *, int, void *), void *callbackArg) {
     int buffers[8], valid, rows, ncols, total, made, result, remaining, i, j, available;
     unsigned int bufferSize, interruptState;
     int *bufferOut, *bufferIn;
     char *voice, *row, *manager, *node, *sentinel;
-
     valid = 0;
     if (count >= 1 && count <= 2) valid = 1;
     if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803221A8, 0x124, lbl_803221A8 + 0x10, count, 1, 2);
@@ -598,8 +599,7 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
                 if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224E4, 0x242, lbl_803224C0);
                 if (priority >= *(int *)(node - 0x84)) {
                     if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803224E4, 0x242, lbl_803224C0);
-                    available = *(int *)(node - 0xA4) * *(int *)(node - 0xA0);
-                    remaining -= available;
+                    remaining -= *(int *)(node - 0xA4) * *(int *)(node - 0xA0);
                     if (remaining > 0) { node = *(char **)node; continue; }
                 }
                 break;
@@ -620,16 +620,11 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
             OSRestoreInterrupts(interruptState);
             return 0;
         }
-        *bufferOut = result;
-        bufferOut++;
-        made++;
+        *bufferOut = result; bufferOut++; made++;
     }
-    voice = (char *)self;
-    bufferIn = buffers;
-    i = 0;
+    voice = (char *)self; bufferIn = buffers; i = 0;
     while (i < rows) {
-        row = voice;
-        j = 0;
+        row = voice; j = 0;
         while (j < ncols) {
             TRKProcessInput((void *)(unsigned int)*bufferIn, bufferSize);
             *(int *)(row + 0xC) = *bufferIn;
@@ -638,12 +633,12 @@ extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7
         voice += 0x10; i++;
     }
     InitParam__Q46nw4hbm3snd6detail7AxVoiceFiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(self, rows, ncols, callback, callbackArg);
+    GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv();
     RegisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(0, self);
     *((unsigned char *)self + 0x11C) = 1;
     OSRestoreInterrupts(interruptState);
     return 1;
 }
-
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
 extern "C" void UnregisterDisposeCallback__Q46nw4hbm3snd6detail22DisposeCallbackManagerFPQ46nw4hbm3snd6detail19DisposeCallbackBase(void *, void *);
 extern "C" void FreeVoice__Q46nw4hbm3snd6detail9AxManagerFPQ46nw4hbm3snd6detail7AxVoice(void *, void *);
