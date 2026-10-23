@@ -58,9 +58,9 @@ struct DummyStrmLoadCallback {
     virtual void f1();
 };
 struct DummyStrmLoadTaskCallback {
+    virtual void f2(s32);
     virtual void f0();
     virtual void f1();
-    virtual void f2(s32);
 };
 #pragma cplusplus reset
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((s8 *)(expr) + (offset)))
