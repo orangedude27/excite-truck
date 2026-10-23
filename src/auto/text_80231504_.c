@@ -145,6 +145,7 @@ extern s32 fn_80232578(const char *);
 extern char lbl_8055B9A0[];
 #pragma small_data on
 #pragma small_data off
+#pragma dont_inline on
 s32 fn_80231730(s32 arg0) {
     char buffer[0x18];
     sprintf(buffer, lbl_8055B9A0, arg0);
