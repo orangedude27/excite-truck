@@ -66,6 +66,7 @@ extern void __DVDFSInit(void);
 extern void fn_80038040(void);
 extern s32 OSGetTick(void);
 extern s32 fn_8003BCDC(s32);
+extern void DCInvalidateRange(void *, u32);
 
 extern s32 DVDInitialized_8055D888;
 extern s32 FirstTimeInBootrom_8055D868;
@@ -248,7 +249,7 @@ s32 DVDConvertPathToEntrynum(const char *path) {
         if (path[0] == '.') {
             if (path[1] == '.') {
                 if (path[2] == '/') {
-                    it = ((DVDNode *)FstStart_8055D840)[it].parent_or_offset;
+                    it = ((DVDNode *)FstStart_8055D840)[it].folder.parent;
                     path += 3; continue;
                 }
                 if (path[2] == '\0')
@@ -290,13 +291,13 @@ skip_panic:;
         name_length = name_end - path;
         anchor = it + 1;
         new_var = (const DVDNode *)FstStart_8055D840;
-        while (anchor < new_var[it].sibling_or_size) {
+        while (anchor < new_var[it].folder.sibling_next) {
             while (TRUE) {
                 if ((new_var[anchor].packed_type_name & 0xFF000000) ||
                     name_delimited_by_slash != TRUE) {
                     item_name = (const char *)FstStringStart_8055D83C +
                                 (new_var[anchor].packed_type_name & 0xFFFFFF);
-                    if (DVDPathSame(path, item_name))
+                    if (DVDPathSame(path, item_name) == TRUE)
                         goto descend;
                 }
                 if (new_var[anchor].packed_type_name & 0xFF000000) {
