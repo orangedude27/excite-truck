@@ -49,7 +49,7 @@ namespace nw4hbm { namespace lyt {
 struct DrawInfo;
 class Pane { public: void CalculateMtx(const DrawInfo &); };
 struct PaneMtxDispatch {
-    virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
+    virtual void d0(); virtual void d1();
     virtual void Apply(const DrawInfo &);
 };
 }}
@@ -1939,6 +1939,76 @@ extern "C" int FindMaterialByName__Q36nw4hbm3lyt4PaneFPCcb(void* self, const cha
         }
     }
     return 0;
+}
+
+void nw4hbm::lyt::Pane::CalculateMtx(const nw4hbm::lyt::DrawInfo &arg1) {
+    u8 *pane = (u8 *)this;
+    const u8 *info = (const u8 *)&arg1;
+    f32 sx;
+    f32 sy;
+    f32 mtx10[12];
+    f32 mtx40[12];
+    f32 mtx70[12];
+    u8 flags;
+    f32 opacity;
+    s32 saveBit;
+    s32 changeOpacity;
+    u8 *node;
+    flags = pane[0xCF];
+    if ((flags & 1) != 0 || (info[0x50] & 0x10) == 0) return;
+    sx = *(f32 *)(pane + 0x44);
+    sy = *(f32 *)(pane + 0x48);
+    if ((info[0x50] & 0x20) != 0 && (flags & 4) != 0) {
+        sx *= *(const f32 *)(info + 0x44);
+        sy *= *(const f32 *)(info + 0x48);
+    }
+    PSMTXScale(mtx40, sx, sy, lbl_80560EAC);
+    PSMTXInverse(mtx10, 0x78, lbl_80560EB0 * *(f32 *)(pane + 0x38));
+    PSMTXConcat(mtx10, mtx40, mtx70);
+    PSMTXInverse(mtx10, 0x79, lbl_80560EB0 * *(f32 *)(pane + 0x3C));
+    PSMTXConcat(mtx10, mtx70, mtx40);
+    PSMTXInverse(mtx10, 0x7A, lbl_80560EB0 * *(f32 *)(pane + 0x40));
+    PSMTXConcat(mtx10, mtx40, mtx70);
+    PSMTXRotTrig(mtx70, pane + 0x54, *(f32 *)(pane + 0x2C), *(f32 *)(pane + 0x30), *(f32 *)(pane + 0x34));
+    if (*(u8 **)(pane + 0xC) != 0) {
+        PSMTXConcat((f32 *)(*(u8 **)(pane + 0xC) + 0x84), (f32 *)(pane + 0x54), (f32 *)(pane + 0x84));
+    } else if ((info[0x50] & 0x80) != 0) {
+        *(u32 *)(pane + 0x84) = *(u32 *)(pane + 0x54);
+        *(u32 *)(pane + 0x88) = *(u32 *)(pane + 0x58);
+        *(u32 *)(pane + 0x8C) = *(u32 *)(pane + 0x5C);
+        *(u32 *)(pane + 0x90) = *(u32 *)(pane + 0x60);
+        *(u32 *)(pane + 0x94) = *(u32 *)(pane + 0x64);
+        *(u32 *)(pane + 0x98) = *(u32 *)(pane + 0x68);
+        *(u32 *)(pane + 0x9C) = *(u32 *)(pane + 0x6C);
+        *(u32 *)(pane + 0xA0) = *(u32 *)(pane + 0x70);
+        *(u32 *)(pane + 0xA4) = *(u32 *)(pane + 0x74);
+        *(u32 *)(pane + 0xA8) = *(u32 *)(pane + 0x78);
+        *(u32 *)(pane + 0xAC) = *(u32 *)(pane + 0x7C);
+        *(u32 *)(pane + 0xB0) = *(u32 *)(pane + 0x80);
+    } else {
+        PSMTXConcat((f32 *)(info + 4), (f32 *)(pane + 0x54), (f32 *)(pane + 0x84));
+    }
+    if ((info[0x50] & 0x40) != 0 && *(u8 **)(pane + 0xC) != 0)
+        pane[0xCE] = (u8)((f32)pane[0xCD] * *(const f32 *)(info + 0x4C));
+    else pane[0xCE] = pane[0xCD];
+    changeOpacity = 0;
+    opacity = *(const f32 *)(info + 0x4C);
+    saveBit = (info[0x50] >> 6) & 1;
+    if ((pane[0xCF] & 2) != 0 && pane[0xCD] != 0xFF) changeOpacity = 1;
+    if (changeOpacity != 0) {
+        ((u8 *)info)[0x50] |= 0x40;
+        *(f32 *)((u8 *)info + 0x4C) = lbl_80560EB4 * (opacity * (f32)pane[0xCD]);
+    }
+    node = *(u8 **)(pane + 0x14);
+    while (node != pane + 0x14) {
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031E8FC, 0x23D, lbl_8031E8D8);
+        ((nw4hbm::lyt::PaneMtxDispatch *)(node - 4))->Apply(arg1);
+        node = *(u8 **)node;
+    }
+    if (changeOpacity != 0) {
+        *(f32 *)((u8 *)info + 0x4C) = opacity;
+        ((u8 *)info)[0x50] = (u8)((((u8 *)info)[0x50] & ~0x40) | ((saveBit << 6) & 0x40));
+    }
 }
 
 #pragma pop
