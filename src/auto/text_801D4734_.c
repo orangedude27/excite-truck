@@ -658,7 +658,7 @@ extern "C" void *fn_801D7334(void *arg0) {
     } else if (stricmp(name, (char *)&lbl_80338460 + 0x54C) == 0) {
         product = (Product *)fn_801284F8(0x3C, (char *)&lbl_80338460 + 0x474);
         if (product != 0) fn_801D701C((UnkStruct_801D701C *)product);
-    } else if (stricmp(name, lbl_8055AD08) == 0) {
+    } else if (stricmp(name, (const char *)&lbl_8055AD08) == 0) {
         product = (Product *)fn_801284F8(0x24, (char *)&lbl_80338460 + 0x558);
         if (product != 0) {
             *(void **)product = lbl_80338A40;
