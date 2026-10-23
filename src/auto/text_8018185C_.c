@@ -145,6 +145,115 @@ float fn_80181AC0(void) { if (lbl_8055E4F4) return lbl_80434950[15]; return lbl_
 #pragma dont_inline fn_80181AEC
 float fn_80181AEC(void) { return lbl_80434930[3]; }
 
+#pragma paired_single off
+#pragma scheduling invalid_target
+void fn_80181AFC(void) {
+register char *base = (char *)lbl_804348E8;
+register char *names = lbl_803322B0;
+char *temp_r31;
+register float temp_f31;
+float var_f1;
+float var_f1_2;
+float var_f1_3;
+int temp_r3;
+char *temp_r31_2;
+char *temp_r3_2;
+register float *temp_r4;
+register float *temp_r5;
+
+register int initialize = lbl_8055A3B5;
+if (initialize != 0) {
+temp_r5 = (float *)((char *)base + 0x20);
+temp_r4 = (float *)((char *)base + 0x48);
+(*(float *)((char *)(base) + (0x20))) = (float) lbl_80561CD4;
+temp_r5[1] = (float) lbl_80561CD8;
+temp_r5[2] = (float) lbl_80561CDC;
+temp_r5[3] = (float) lbl_80561CD0;
+temp_r5[6] = (float) lbl_80561CD8;
+temp_r5[7] = (float) lbl_80561CE0;
+temp_r5[8] = (float) lbl_80561CE4;
+temp_r5[4] = (float) lbl_80561CE8;
+temp_r5[5] = (float) lbl_80561CE8;
+(*(float *)((char *)(base) + (0x48))) = (float) lbl_80561CEC;
+temp_r4[1] = (float) lbl_80561CD0;
+temp_r4[2] = (float) lbl_80561CD8;
+temp_r4[3] = (float) lbl_80561CD0;
+temp_r4[6] = (float) lbl_80561CF0;
+temp_r4[7] = (float) lbl_80561CE0;
+temp_r4[4] = (float) lbl_80561CE8;
+(*(float *)((char *)(&lbl_8055E4E8) + (0))) = (float) lbl_80561CF4;
+(*(float *)((char *)(&lbl_8055E4E8) + (4))) = (float) lbl_80561CD8;
+}
+fn_802049DC((int)(void *)(names), (int)(void *)(&lbl_8055E4F0), lbl_80561CAC, lbl_80561CF8, lbl_80561CFC);
+fn_802049DC((int)(void *)(names + 0x18), (int)(void *)(&lbl_8055A3A4), lbl_80561D00, lbl_80561CD0, lbl_80561D00);
+fn_802049DC((int)(void *)(names + 0x30), (int)(void *)(&lbl_8055A3A8), lbl_80561D00, lbl_80561CD0, lbl_80561D00);
+temp_r3 = fn_80019BA8();
+if (temp_r3 != 0) {
+var_f1 = lbl_80561D04;
+} else {
+var_f1 = lbl_80561CD0;
+}
+temp_f31 = lbl_80561D08 * var_f1;
+if ((int) lbl_8055A3B5 != 0) {
+if (temp_r3 != 0) {
+var_f1_2 = lbl_80561CF0;
+} else {
+var_f1_2 = lbl_80561CD0;
+}
+(*(float *)((char *)(base) + (0x68))) = (float) (lbl_80561D0C * var_f1_2);
+if (temp_r3 != 0) {
+var_f1_3 = lbl_80561CF0;
+} else {
+var_f1_3 = lbl_80561CD0;
+}
+temp_r3_2 = ((char *)base + 0x68);
+(*(float *)((char *)(temp_r3_2) + (4))) = (float) (lbl_80561D00 * var_f1_3);
+(*(float *)((char *)(temp_r3_2) + (8))) = (float) lbl_80561CD8;
+(*(float *)((char *)(temp_r3_2) + (0xC))) = temp_f31;
+(*(float *)((char *)(temp_r3_2) + (0x10))) = (float) lbl_80561CD0;
+(*(float *)((char *)(temp_r3_2) + (0x14))) = (float) lbl_80561D10;
+(*(float *)((char *)(temp_r3_2) + (0x18))) = (float) lbl_80561D04;
+(*(float *)((char *)(temp_r3_2) + (0x1C))) = (float) lbl_80561CAC;
+(*(float *)((char *)(temp_r3_2) + (0x20))) = (float) lbl_80561D14;
+(*(float *)((char *)(temp_r3_2) + (0x28))) = (float) lbl_80561CDC;
+(*(float *)((char *)(temp_r3_2) + (0x24))) = (float) lbl_80561CD0;
+(*(float *)((char *)(temp_r3_2) + (0x2C))) = (float) lbl_80561D18;
+(*(float *)((char *)(temp_r3_2) + (0x30))) = (float) lbl_80561CD0;
+(*(float *)((char *)(temp_r3_2) + (0x38))) = (float) lbl_80561CD0;
+(*(float *)((char *)(temp_r3_2) + (0x3C))) = (float) lbl_80561CDC;
+(*(float *)((char *)(temp_r3_2) + (0x34))) = (float) lbl_80561D1C;
+lbl_8055E4D8 = lbl_80561D20;
+}
+if ((*(int *)((char *)(__AXFXGetLfoSinTable_801769CC()) + (4))) & 0x100000) {
+temp_r31 = ((char *)base + 0x20);
+fn_802049DC((int)(void *)(names + 0x44), (int)(void *)(temp_r31 + 4), lbl_80561CAC, lbl_80561CF0, lbl_80561D00);
+fn_802049DC((int)(void *)(names + 0x68), (int)(void *)(temp_r31 + 0x1C), lbl_80561D24, lbl_80561D28, lbl_80561CF8);
+fn_802049DC((int)(void *)(names + 0x80), (int)(void *)(temp_r31 + 0x18), lbl_80561CFC, lbl_80561CEC, lbl_80561CFC);
+fn_802049DC((int)(void *)(names + 0xA0), (int)(void *)(temp_r31 + 0xC), lbl_80561CAC, lbl_80561D2C, lbl_80561CFC);
+fn_802049DC((int)(void *)(names + 0xB8), (int)(void *)(temp_r31 + 8), lbl_80561CAC, lbl_80561D2C, lbl_80561CFC);
+fn_802049DC((int)(void *)(names + 0xE0), (int)(void *)(temp_r31), lbl_80561CD0, lbl_80561D30, lbl_80561CD0);
+}
+if ((*(int *)((char *)(__AXFXGetLfoSinTable_801769CC()) + (4))) & 0x80000) {
+fn_802049DC((int)(void *)(names + 0x100), (int)(void *)(((char *)base + 0x68)), lbl_80561CAC, lbl_80561CD8, lbl_80561D0C);
+temp_r31_2 = ((char *)base + 0x68);
+fn_802049DC((int)(void *)(names + 0x118), (int)(void *)(temp_r31_2 + 4), lbl_80561CAC, lbl_80561CD8, lbl_80561D0C);
+fn_802049DC((int)(void *)(names + 0x130), (int)(void *)(temp_r31_2 + 0xC), lbl_80561CAC, lbl_80561CD8, lbl_80561D0C);
+fn_802049DC((int)(void *)(names + 0x140), (int)(void *)(temp_r31_2 + 0x14), lbl_80561CFC, lbl_80561CEC, lbl_80561CFC);
+fn_802049DC((int)(void *)(names + 0x150), (int)(void *)(temp_r31_2 + 0x20), lbl_80561CAC, lbl_80561D34, lbl_80561CFC);
+fn_802049DC((int)(void *)(names + 0x160), (int)(void *)(temp_r31_2 + 0x28), lbl_80561CAC, lbl_80561CD0, lbl_80561D00);
+fn_802049DC((int)(void *)(names + 0x174), (int)(void *)(temp_r31_2 + 0x24), lbl_80561CAC, lbl_80561CD0, lbl_80561D00);
+fn_802049DC((int)(void *)(names + 0x188), (int)(void *)(temp_r31_2 + 0x2C), lbl_80561CAC, lbl_80561CE0, lbl_80561CF8);
+fn_802049DC((int)(void *)(names + 0x1A0), (int)(void *)(temp_r31_2 + 0x30), lbl_80561CAC, lbl_80561D34, lbl_80561CFC);
+}
+if (fn_8020503C(names + 0x1B8) != 0) {
+(*(float *)((char *)(((char *)base + 0x68)) + (0xC))) = (float) lbl_80561CAC;
+} else {
+(*(float *)((char *)(((char *)base + 0x68)) + (0xC))) = temp_f31;
+}
+lbl_8055A3B5 = 0;
+}
+#pragma paired_single reset
+#pragma scheduling on
 extern float lbl_80561D38;
 extern float lbl_80561D3C;
 extern float lbl_80561D0C;
@@ -845,7 +954,7 @@ void fn_8018AF00(void) {
 }
 
 extern int fn_801CF064(void);
-extern void fn_801BEB30(int, void **, int, int, int, float, float, float);
+extern void fn_801BEB30();
 extern int *fn_801E1F44(void);
 extern void fn_8018F6F8(void *);
 int fn_8018AF04(void *arg0) {
@@ -913,6 +1022,7 @@ extern float lbl_80561F64, lbl_80561F68, lbl_80561F6C;
 extern float lbl_80561CD0, lbl_80561CDC, lbl_80561D28, lbl_80561D34;
 extern float lbl_80561E60, lbl_80561EE4;
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     float temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f3;
     float color, value3, second_offset, second_scale, scaled1, middle1, output1;
@@ -959,7 +1069,6 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     ret = ((BA54CallObj *)obj)->method4(color, lbl_80561CDC);
     *(int *)((char *)arg1 + 0x40) = ((int (*)(void *, void *))fn_801363A0)(ret, (char *)ret + 4);
     if (*(unsigned char *)((char *)arg1 + 0x3C) == 0) *(unsigned char *)((char *)arg1 + 0x3C) = 1;
-
     *(short *)((char *)arg1 + 0x3A) = *(int *)((char *)arg0 + 4);
     loop_min = lbl_80561CAC;
     loop_max = lbl_80561CD0;
@@ -1002,6 +1111,7 @@ extern "C" int fn_8018BA54(void *arg0, void *arg1) {
     }
     return 0x44;
 }
+#pragma scheduling on
 #pragma cplusplus reset
 void fn_8018BDEC(void *arg0) {
     f32 sp[12];
