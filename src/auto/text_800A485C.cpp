@@ -2091,23 +2091,18 @@ extern "C" s32 fn_800AC708(register void *arg0, register u8 *arg1, register u32 
     register s32 zero;
     u32 sp8;
     u8 spC[13];
-    u8 flags;
+    s32 flags;
 
     status = 0;
     *arg3 = status;
     arg1[0x20A] = (u8)status;
     arg1[0x20B] = (u8)status;
     arg1[0x20C] = (u8)status;
-    if ((arg1[0x21C] & 0x10) && (*(u32 *)(arg1 + 0x234) == 1)) {
-        return 2;
-    }
+    if ((arg1[0x21C] & 0x10) && (*(u32 *)(arg1 + 0x234) == 1)) return 2;
     zero = 0;
     goto check_end;
-
 status_check:
-    if (status != 0) {
-        return status;
-    }
+    if (status != 0) return status;
 process:
     if (*(u8 *)((u8 *)arg0 + 0x4C) == 0xE5) {
         arg1[0x20A] = (u8)zero;
@@ -2150,12 +2145,11 @@ process:
             *arg3 = 1;
         }
     }
-
     flags = *(u8 *)((u8 *)arg0 + 0x58);
     if (flags & 0x18) {
         s32 length;
         VFiPFPATH_getLongNameformShortName(arg1 + 0x20E, spC, flags);
-        length = VFiPFPATH_transformInUnicode((s16 *)arg1, (s32)spC, flags);
+        length = ((s32 (*)(s16 *, s32))VFiPFPATH_transformInUnicode)((s16 *)arg1, (s32)spC);
         arg1[0x20A] = (u8)(length / 13 + (length % 13 != 0));
         arg1[0x20C] = ((u8 (*)(u8 *))VFiPFENT_CalcCheckSum)(arg1);
         arg1[0x20B] = 1;
@@ -2176,7 +2170,6 @@ process:
         *arg3 = 1;
     }
     return 0;
-
 advance:
     {
         u32 old = *(u32 *)arg0;
@@ -2193,17 +2186,13 @@ advance:
                                  *(u32 *)((u8 *)arg0 + 0x44),
                                  *(u16 *)((u8 *)arg0 + 0x48),
                                  0x20, &sp8, 0);
-            if (sp8 != 0x20) {
-                result = 0x11;
-            }
+            if (sp8 != 0x20) result = 0x11;
         }
         status = result & (s32)(-(u32)result | (u32)result) >> 31;
         status &= (s32)(-(u32)status | (u32)status) >> 31;
     }
 check_end:
-    if (VFiPFENT_ITER_IsAtLogicalEnd(arg0) == 0) {
-        goto status_check;
-    }
+    if (VFiPFENT_ITER_IsAtLogicalEnd(arg0) == 0) goto status_check;
     return 0;
 }
 #pragma pop
@@ -3038,12 +3027,12 @@ s32 fn_800B1EB8(void *arg0, void *arg1, u32 arg2, u32 arg3, void *arg4, u32 *arg
 
 extern "C" s32 fn_800B6928(s8);
 extern "C" s32 fn_800AE4C0(s32, s32, s32);
-extern "C" s32 fn_800B3754(s32, s32 *, s32);
+extern "C" s32 fn_800B3754(void *, s32 *, s32);
 extern "C" s32 fn_800AF574(void *);
 extern "C" s32 fn_800B5618(void *, void *, u16, u16, s32);
 extern "C" s32 fn_800B317C(s32 arg0, s32 arg1) {
-extern s32 fn_800B3754(s32, s32 *, s32);
-return fn_800B3754(arg0, (s32 *)arg1, 1) == 0;
+extern s32 fn_800B3754(void *, s32 *, s32);
+return fn_800B3754((void *)arg0, (s32 *)arg1, 1) == 0;
 }
 
 extern "C" void fn_800B3330(void *arg0, s32 arg1, s32 arg2) {
@@ -3073,16 +3062,17 @@ fn_800B63FC();
 
 extern "C" u8 lbl_80559230, lbl_80559231;
 extern "C" u8 lbl_80559210, lbl_80559214;
-extern "C" s32 fn_800B3754(s32 arg0, s32 *arg1, s32 arg2) {
+extern "C" s32 fn_800B3754(void *arg0, s32 *arg1, s32 arg2) {
 struct {
 s32 sp10[4];
-volatile s32 sp20;
+volatile void *sp20;
 volatile s32 sp24;
 volatile s32 sp28;
 volatile u16 sp2C;
 } frame;
 u32 var_r31 = 1;
 s32 *arg1_ptr = arg1;
+volatile s32 *copy = arg1;
 s32 *var_r29 = arg1_ptr;
 frame.sp20 = arg0;
 frame.sp24 = 0;
@@ -3095,18 +3085,19 @@ s32 var_r0;
 s32 var_r3_2;
 s8 var_r29_2;
 u16 temp_r4;
+u16 temp_r29;
 u16 temp_r6;
 u16 var_r31_2;
 u16 var_r3_3;
-u16 var_r4;
+u32 var_r4;
 u32 var_r3;
 
-var_r0 = arg1_ptr[0];
-temp_r5 = arg1_ptr[1];
+var_r0 = copy[0];
+temp_r5 = copy[1];
 frame.sp10[0] = var_r0;
 frame.sp10[1] = temp_r5;
-temp_r5 = arg1_ptr[2];
-var_r0 = arg1_ptr[3];
+temp_r5 = copy[2];
+var_r0 = copy[3];
 frame.sp10[2] = temp_r5;
 frame.sp10[3] = var_r0;
 if (fn_800A4D44(var_r29) == 1U) {
@@ -3134,7 +3125,7 @@ frame.sp10[0] += 2;
 (arg2 == 0) &&
 (VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559210, 1, 0, 1) != 0) &&
 (VFiPFSTR_StrNCmp((s32)var_r29, &lbl_80559214, 1, 0, 2) != 0) &&
-(fn_800B4D5C_CALL(var_r29, 1, 0) == 0)) {
+(((s32 (*)(void *, u32, u32))fn_800B4D5C)(var_r29, 1, 0) == 0)) {
 var_r31 = 0;
 }
 if (var_r31 == 1) {
@@ -3144,7 +3135,8 @@ if (temp_r6 > 0x20A) {
 var_r31_2 = 0;
 } else {
 var_r0 = 0;
-var_r4 = *(u16 *)((u8 *)frame.sp20 + temp_r6);
+s32 *data = (s32 *)frame.sp20;
+var_r4 = *(u16 *)((u8 *)data + temp_r6);
 frame.sp2C = temp_r6 + 2;
 if ((var_r4 >= 0x61) && (var_r4 <= 0x7A)) {
 var_r0 = 1;
@@ -3155,12 +3147,12 @@ var_r4 -= 0x20;
 var_r31_2 = var_r4;
 if ((var_r31_2 >= 0xFF41) && (var_r31_2 <= 0xFF5A)) {
 var_r3 = 1;
-var_r29 = (s32 *)(u16)(var_r31_2 - 0x20);
+temp_r29 = var_r31_2 - 0x20;
 } else {
 var_r3 = 0;
 }
 if (var_r3 == 1) {
-var_r31_2 = (u16)var_r29;
+var_r31_2 = temp_r29;
 }
 }
 } else {
