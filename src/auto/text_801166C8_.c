@@ -11,6 +11,19 @@ extern f32 lbl_80561220;
 extern f32 lbl_80561224;
 extern f64 lbl_80561228;
 extern f32 lbl_80329BC8[];
+
+static inline f32 fn_80120834_to_f32(s32 value) {
+    union {
+        f64 d;
+        struct {
+            u32 high;
+            u32 low;
+        } words;
+    } conv;
+    conv.words.high = 0x43300000;
+    conv.words.low = (u32)value ^ 0x80000000;
+    return (f32)(conv.d - lbl_80561228);
+}
 extern void fn_8011AF94(f32 *, s32, void *, f32 *, s32);
 extern void fn_801200BC(s32, s32, f32 *, s32, s32);
 extern void fn_8012023C(s32, s32, f32 *, s32, s32);
@@ -1182,16 +1195,16 @@ void fn_8011AF94(f32 *arg0, s32 arg1, void *arg2, f32 *arg3, s32 arg4) {
     u32 *var_r5_2;
     u32 *var_r7;
     s32 temp_r0;
-    register s32 temp_r18;
+    s32 temp_r18;
     s32 temp_r4;
     s32 temp_r4_2;
-    register s32 temp_r5_3;
-    register s32 temp_r6;
-    register s32 temp_r6_2;
+    s32 temp_r5_3;
+    s32 temp_r6;
+    s32 temp_r6_2;
     s32 var_ctr;
-    register s32 var_r0_2;
-    register s32 var_r0_3;
-    register s32 var_r5_3;
+    s32 var_r0_2;
+    s32 var_r0_3;
+    s32 var_r5_3;
     u32 temp_r10;
     u32 temp_r5;
     u32 temp_r5_2;
@@ -2008,6 +2021,81 @@ void fn_80120084(void *arg0) {
     base = ptr - ptr[-1];
     if (ptr[-2] == 3) ((void (*)(void *))*(void **)(ptr - 8))(base);
     else free(base);
+}
+
+void fn_80120834(s32 n, s32 *info, f32 *table) {
+    register s32 i;
+    register u32 index;
+    register s32 stage;
+    s32 half;
+    s32 j;
+    f32 endpoint;
+    f32 angle;
+    f32 angle2;
+    f32 stage_scale;
+    f32 stage_zero;
+
+    info[0] = n;
+    info[1] = 1;
+    if (n <= 2)
+        return;
+
+    half = n >> 1;
+    angle = lbl_80561214 / (f32)half;
+    endpoint = (f32)cos((f64)(angle * (f32)half));
+    table[0] = lbl_80561218;
+    table[1] = endpoint;
+
+    if (half >= 4) {
+        f32 first = (f32)cos((f64)(lbl_8056121C * angle));
+        f32 second_angle = lbl_80561220 * angle;
+        table[2] = lbl_80561210 / first;
+        table[3] = lbl_80561210 / (f32)cos((f64)second_angle);
+    }
+
+    angle2 = lbl_80561224 * angle;
+    for (i = 4; i < half; i += 4) {
+        table[i + 0] = (f32)cos((f64)(angle * (f32)i));
+        table[i + 1] = (f32)sin((f64)(angle * (f32)i));
+        table[i + 2] = (f32)cos((f64)(angle2 * (f32)i));
+        table[i + 3] = (f32)sin((f64)(angle2 * (f32)i));
+    }
+
+    stage_scale = lbl_80561210;
+    stage_zero = lbl_80561218;
+    index = 0;
+    while (half > 2) {
+        f32 *stagep;
+        stage = (s32)(index + half);
+        half >>= 1;
+        stagep = table + stage;
+        stagep[0] = stage_zero;
+        stagep[1] = endpoint;
+        if (half >= 4) {
+            f32 source_a = table[index + 4];
+            f32 source_b = table[index + 6];
+            stagep[2] = stage_scale / source_a;
+            stagep[3] = stage_scale / source_b;
+        }
+        if (half > 4) {
+            u8 *src = (u8 *)(table + index);
+            u8 *dst = (u8 *)(stagep + 4);
+            s32 offset = 0x20;
+            for (j = 0; j < ((half - 1) >> 2); j++) {
+                f32 t0 = *(f32 *)(src + offset);
+                f32 t1 = *(f32 *)(src + offset + 4);
+                f32 t2 = *(f32 *)(src + offset + 8);
+                f32 t3 = *(f32 *)(src + offset + 12);
+                *(f32 *)(dst + 0) = t0;
+                *(f32 *)(dst + 4) = t1;
+                *(f32 *)(dst + 8) = t2;
+                *(f32 *)(dst + 12) = t3;
+                offset += 0x20;
+                dst += 0x10;
+            }
+        }
+        index = (u32)stage;
+    }
 }
 
 extern f64 cos(f64);
@@ -3427,6 +3515,166 @@ void fn_801254E4(s32 arg0, f32 *arg1, s32 arg2, f32 *arg3) {
     }
 done:
     arg1[half] *= *arg3;
+}
+
+void fn_80125960(void *arg0, void *arg1, void *arg2, void *arg3) {
+    s32 sp8[64];
+    s32 *var_r12;
+    s32 *var_r4;
+    s16 temp_r0, temp_r10, temp_r23, temp_r25, temp_r4, temp_r4_2, temp_r7, temp_r8, temp_r9;
+    s32 temp_r0_2, temp_r0_3, temp_r0_4, temp_r0_5, temp_r0_6, temp_r0_7;
+    s32 temp_r10_2, temp_r10_3, temp_r10_4, temp_r10_5, temp_r10_6;
+    s32 temp_r11, temp_r11_2, temp_r11_3, temp_r11_4, temp_r11_5;
+    s32 temp_r12, temp_r12_2, temp_r12_3, temp_r12_4, temp_r12_5;
+    s32 temp_r23_2, temp_r23_3, temp_r23_4, temp_r23_5, temp_r23_6, temp_r23_7, temp_r23_8, temp_r23_9, temp_r23_10, temp_r23_11;
+    s32 temp_r24, temp_r24_2, temp_r24_3, temp_r24_4, temp_r24_5, temp_r24_6, temp_r24_7, temp_r24_8;
+    s32 temp_r25_2, temp_r25_3, temp_r25_4, temp_r25_5, temp_r25_6;
+    s32 temp_r26, temp_r26_2, temp_r26_3, temp_r27, temp_r28, temp_r29, temp_r30;
+    s32 temp_r4_3, temp_r4_4, temp_r5, temp_r5_2, temp_r6;
+    s32 temp_r7_2, temp_r7_3, temp_r7_4, temp_r7_5;
+    s32 temp_r8_2, temp_r8_3, temp_r8_4, temp_r8_5;
+    s32 temp_r9_2, temp_r9_3, temp_r9_4, temp_r9_5, temp_r9_6, temp_r9_7, temp_r9_8;
+    s32 var_ctr, var_ctr_2;
+    u32 temp_r11_6;
+    u8 *var_r31;
+    u8 *var_r3;
+    s16 *var_r5;
+    s32 *var_r6;
+    var_r3 = (u8 *)arg0;
+    var_r5 = (s16 *)arg2;
+    var_r6 = (s32 *)arg3;
+    var_r31 = var_r3 + (s32)arg1;
+    temp_r30 = (s32)arg1 * 2;
+    var_r12 = sp8;
+    for (var_ctr = 0; var_ctr < 8; var_ctr++) {
+        temp_r7 = var_r5[8];
+        temp_r8 = var_r5[24];
+        temp_r23 = var_r5[16];
+        temp_r0 = var_r5[32];
+        temp_r4 = var_r5[48];
+        temp_r9 = var_r5[40];
+        temp_r24 = temp_r8 | temp_r7;
+        temp_r4 = var_r5[48];
+        temp_r9 = var_r5[40];
+        temp_r11 = temp_r0 | temp_r23;
+        temp_r10 = var_r5[56];
+        temp_r24 = temp_r4 | temp_r24;
+        temp_r11 = temp_r9 | temp_r11;
+        temp_r24 = temp_r10 | temp_r24;
+        if ((temp_r24 | temp_r11) == 0) {
+            temp_r4_2 = var_r5[0];
+            var_r5++;
+            temp_r0_2 = var_r6[0];
+            var_r6++;
+            temp_r0_3 = (s32)(temp_r4_2 * temp_r0_2) >> 11;
+            var_r12[0] = temp_r0_3;
+            var_r12[8] = temp_r0_3;
+            var_r12[16] = temp_r0_3;
+            var_r12[24] = temp_r0_3;
+            var_r12[32] = temp_r0_3;
+            var_r12[40] = temp_r0_3;
+            var_r12[48] = temp_r0_3;
+            var_r12[56] = temp_r0_3;
+            var_r12++;
+        } else {
+            temp_r25 = var_r5[0];
+            var_r5++;
+            temp_r25_2 = var_r6[32];
+            temp_r26 = var_r6[8];
+            temp_r27 = var_r6[24];
+            temp_r11 = var_r6[48];
+            temp_r28 = var_r6[40];
+            temp_r24 = temp_r23 * var_r6[16];
+            temp_r23_2 = temp_r25 * var_r6[0] >> 11;
+            temp_r29 = var_r6[56];
+            var_r6++;
+            temp_r24_2 = temp_r24 >> 11;
+            temp_r25_3 = temp_r0 * temp_r25_2 >> 11;
+            temp_r11_2 = temp_r23_2 + temp_r25_3;
+            temp_r23_3 = temp_r23_2 - temp_r25_3;
+            temp_r0_4 = temp_r4 * temp_r11 >> 11;
+            temp_r25_4 = temp_r24_2 + temp_r0_4;
+            temp_r0_5 = temp_r11_2 + temp_r25_4;
+            temp_r11_3 = temp_r11_2 - temp_r25_4;
+            temp_r24_3 = ((temp_r24_2 - temp_r0_4) * 0xB50 >> 11) - temp_r25_4;
+            temp_r4_3 = temp_r23_3 + temp_r24_3;
+            temp_r7_2 = temp_r23_3 - temp_r24_3;
+            temp_r23_4 = temp_r7 * temp_r26 >> 11;
+            temp_r9_2 = temp_r8 * temp_r27 >> 11;
+            temp_r24_4 = temp_r9 * temp_r28 >> 11;
+            temp_r25_5 = temp_r24_4 - temp_r9_2;
+            temp_r24_5 = temp_r24_4 + temp_r9_2;
+            temp_r9_3 = temp_r10 * temp_r29 >> 11;
+            temp_r8_2 = temp_r23_4 - temp_r9_3;
+            temp_r10_2 = temp_r23_4 + temp_r9_3;
+            temp_r23_5 = temp_r10_2 + temp_r24_5;
+            var_r12[0] = temp_r0_5 + temp_r23_5;
+            temp_r24_6 = (temp_r25_5 + temp_r8_2) * 0xEC8 >> 11;
+            var_r12[56] = temp_r0_5 - temp_r23_5;
+            temp_r23_6 = temp_r24_6 + (temp_r25_5 * -0x14E8 >> 11) - temp_r23_5;
+            var_r12[8] = temp_r4_3 + temp_r23_6;
+            var_r12[48] = temp_r4_3 - temp_r23_6;
+            temp_r9_4 = ((temp_r10_2 - temp_r24_5) * 0xB50 >> 11) - temp_r23_6;
+            var_r12[16] = temp_r7_2 + temp_r9_4;
+            var_r12[40] = temp_r7_2 - temp_r9_4;
+            temp_r4_4 = ((temp_r8_2 * 0x8A9) >> 11) - temp_r24_6;
+            temp_r4_4 += temp_r9_4;
+            var_r12[32] = temp_r11_3 + temp_r4_4;
+            var_r12[24] = temp_r11_3 - temp_r4_4;
+            var_r12++;
+        }
+    }
+    var_r4 = sp8;
+    for (var_ctr_2 = 0; var_ctr_2 < 8; var_ctr_2++) {
+        temp_r9_5 = M2C_FIELD(var_r4, s32 *, 0x18);
+        temp_r11_4 = M2C_FIELD(var_r4, s32 *, 8);
+        temp_r5 = M2C_FIELD(var_r4, s32 *, 0xC);
+        temp_r7_3 = M2C_FIELD(var_r4, s32 *, 0x14);
+        temp_r12 = M2C_FIELD(var_r4, s32 *, 0x1C);
+        temp_r23_7 = M2C_FIELD(var_r4, s32 *, 4);
+        temp_r0_6 = temp_r7_3 - temp_r5;
+        temp_r26_2 = temp_r7_3 + temp_r5;
+        temp_r8_3 = M2C_FIELD(var_r4, s32 *, 0x10);
+        temp_r5_2 = temp_r23_7 - temp_r12;
+        temp_r10_3 = M2C_FIELD(var_r4, s32 *, 0);
+        temp_r24_7 = temp_r11_4 + temp_r9_5;
+        temp_r12_2 = temp_r23_7 + temp_r12;
+        temp_r23_8 = temp_r10_3 + temp_r8_3;
+        temp_r11_5 = temp_r10_3 - temp_r8_3;
+        temp_r25_6 = ((temp_r11_4 - temp_r9_5) * 0xB50 >> 11) - temp_r24_7;
+        temp_r7_4 = temp_r23_8 + temp_r24_7;
+        temp_r26_3 = temp_r12_2 + temp_r26_2;
+        temp_r6 = (temp_r0_6 + temp_r5_2) * 0xEC8 >> 11;
+        temp_r12_3 = temp_r11_5 + temp_r25_6;
+        temp_r0_7 = temp_r11_5 - temp_r25_6;
+        temp_r8_4 = temp_r7_4 + temp_r26_3 + 0x7F;
+        temp_r11_6 = (temp_r7_4 - temp_r26_3) + 0x7F;
+        temp_r7_5 = (temp_r12_2 - temp_r26_2) * 0xB50;
+        temp_r23_9 = temp_r23_8 - temp_r24_7;
+        temp_r9_6 = temp_r6 + (temp_r0_6 * -0x14E8 >> 11);
+        var_r4 += 0x20;
+        temp_r10_4 = temp_r9_6 - temp_r26_3;
+        temp_r24_8 = (temp_r7_5 >> 11) - temp_r10_4;
+        temp_r8_5 = ((temp_r5_2 * 0x8A9 >> 11) - temp_r6) + temp_r24_8;
+        temp_r12_4 = ((u8)((u32)(temp_r12_3 + temp_r10_4 + 0x7F) >> 8) & ~0xFF0000) | (((temp_r8_4 >> 8) << 16) & 0xFF0000);
+        temp_r12_5 = temp_r12_4 | (temp_r12_4 << 8);
+        temp_r23_10 = ((((temp_r12_3 - temp_r10_4) + 0x7F) << 8) & 0xFF0000 & ~0xFF) | ((temp_r11_6 >> 8) & 0xFF);
+        temp_r9_7 = ((u8)((u32)((temp_r23_9 - temp_r8_5) + 0x7F) >> 8) & ~0xFF0000) | ((((s32)(temp_r0_7 + temp_r24_8 + 0x7F) >> 8) << 16) & 0xFF0000);
+        M2C_FIELD(var_r3, s32 *, 0) = temp_r12_5;
+        temp_r9_8 = temp_r9_7 | (temp_r9_7 << 8);
+        temp_r10_5 = (((temp_r23_9 + temp_r8_5 + 0x7F) << 8) & 0xFF0000 & ~0xFF) | (((u32)(temp_r0_7 - temp_r24_8 + 0x7F) >> 8) & 0xFF);
+        M2C_FIELD(var_r3, s32 *, 4) = temp_r9_8;
+        temp_r23_11 = temp_r23_10 | (temp_r23_10 << 8);
+        temp_r10_6 = temp_r10_5 | (temp_r10_5 << 8);
+        M2C_FIELD(var_r3, s32 *, 8) = temp_r10_6;
+        M2C_FIELD(var_r3, s32 *, 0xC) = temp_r23_11;
+        var_r3 += temp_r30;
+        M2C_FIELD(var_r31, s32 *, 0) = temp_r12_5;
+        M2C_FIELD(var_r31, s32 *, 4) = temp_r9_8;
+        M2C_FIELD(var_r31, s32 *, 8) = temp_r10_6;
+        M2C_FIELD(var_r31, s32 *, 0xC) = temp_r23_11;
+        var_r31 += temp_r30;
+    }
 }
 
 extern void fn_80125664(void *p0, void *p1, void *p2, void *p3);
