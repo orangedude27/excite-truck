@@ -510,7 +510,7 @@ if (var_r30 < 0)
 ((void (*)(const char *, ...))fn_802E317C)(lbl_80337CA0, arg0);
 temp_r30 = (unsigned char *)*(void **)(*(s32 **)((unsigned char *)temp_r31 + 0x18) + var_r30);
 if (temp_r30 != 0) {
-if (((Dummy_801CCDAC *)temp_r30)->v3(arg2) != 0) {
+if (((Dummy_801CCDAC *)temp_r30)->v1(arg2) != 0) {
 var_ctr = 5;
 var_r6 = (unsigned char *)temp_r31;
 var_r7 = (unsigned char *)temp_r31 + 0x44;
