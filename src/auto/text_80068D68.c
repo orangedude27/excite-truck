@@ -6617,6 +6617,52 @@ void hidh_sec_check_complete_orig(BD_ADDR bd_addr, void *p_ref_data, UINT8 res) 
     }
 }
 
+static void hidh_l2cif_config_ind(UINT16 l2cap_cid, tL2CAP_CFG_INFO *p_cfg)
+{
+    UINT8 dhandle;
+    UINT8 *p_hcon = NULL;
+
+    for (dhandle = 0; dhandle < 0x10; dhandle++) {
+        UINT8 *p_dev = lbl_803C3C38 + dhandle * 0x34;
+        if (p_dev[0] != 0 && p_dev[0x10] != 0 &&
+            (l2cap_cid == *(UINT16 *)(p_dev + 0x14) ||
+             l2cap_cid == *(UINT16 *)(p_dev + 0x16)))
+            break;
+    }
+
+    if (dhandle != 0x10)
+        p_hcon = lbl_803C3C38 + dhandle * 0x34 + 0x10;
+
+    if (p_hcon == NULL) {
+        if (lbl_803C3C38[0x401] >= 2)
+            fn_80070954(0x1E0001, lbl_80317A54, l2cap_cid);
+    } else {
+        if (lbl_803C3C38[0x401] >= 4)
+            fn_80070954(0x1E0003, lbl_80317A80, l2cap_cid);
+
+        if (!p_cfg->mtu_present || p_cfg->mtu > 0x280)
+            *(UINT16 *)(p_hcon + 8) = 0x280;
+        else
+            *(UINT16 *)(p_hcon + 8) = p_cfg->mtu;
+
+        p_cfg->flush_to_present = 0;
+        p_cfg->mtu_present = 0;
+        p_cfg->result = 0;
+        L2CA_ConfigRsp(l2cap_cid, p_cfg);
+
+        if (l2cap_cid == *(UINT16 *)(p_hcon + 4))
+            p_hcon[1] |= 2;
+        else
+            p_hcon[1] |= 8;
+
+        if ((p_hcon[1] & 0x1E) == 0x1E && p_hcon[0] == 3) {
+            p_hcon[0] = 4;
+            *(UINT8 *)(lbl_803C3C38 + dhandle * 0x34 + 0xA) = 1;
+            ((void (*)(UINT8, UINT32, UINT32, void *))(*(void **)(lbl_803C3C38 + 0x340)))(dhandle, 0, 0, 0);
+        }
+    }
+}
+
 extern char lbl_80317B28[];
 extern char lbl_80317B58[];
 void hidh_l2cif_disconnect_cfm(u32 handle) {
