@@ -2,7 +2,7 @@
 #include <macros.h>
 namespace nw4hbm { namespace lyt { class Pane; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); }; } }
 extern "C" const char lbl_8031EE58[];
-extern "C" const char lbl_805597F0[];
+extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
 extern "C" const char lbl_8031F208[];
 extern "C" f32 lbl_80560E64;
 class Freeable800C6A1C { public: virtual void free(s32); };
