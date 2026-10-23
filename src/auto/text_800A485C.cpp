@@ -2026,7 +2026,7 @@ extern "C" s32 VFiPFENT_ITER_Advance(void *arg0, s32 arg1) {
     return result;
 }
 
-s32 fn_800AB378(void *, s32);
+extern "C" s32 fn_800AB378(void *, s32);
 s32 fn_800AEBA0(void *, u32, u32 *);
 s32 fn_800B5324(void *, void *, u16, s32, u32 *, s32);
 s32 fn_800AC4AC(void *arg0, s32 arg1) {
@@ -2079,6 +2079,121 @@ s32 fn_800AC4AC(void *arg0, s32 arg1) {
         if (var_r30 == 0) var_r30 = 0;
     } else var_r30 = 0;
     return var_r30;
+}
+
+extern "C" void VFiPFPATH_getLongNameformShortName(void *, void *, s32);
+extern "C" s32 fn_800AC708(void *arg0, u8 *arg1, u32 arg2, s32 *arg3) {
+    s32 status = 0;
+    u32 sp8;
+    u8 spC[0x20];
+    u8 flags;
+
+    *arg3 = 0;
+    arg1[0x20A] = 0;
+    arg1[0x20B] = 0;
+    arg1[0x20C] = 0;
+    flags = arg1[0x21C];
+    if ((flags & 0x10) && (*(u32 *)(arg1 + 0x234) == 1)) {
+        return 2;
+    }
+
+loop:
+    if (VFiPFENT_ITER_IsAtLogicalEnd(arg0) != 0) {
+        return 0;
+    }
+    if (status != 0) {
+        return status;
+    }
+    if (*(u8 *)((u8 *)arg0 + 0x4C) == 0xE5) {
+        arg1[0x20A] = 0;
+        *(u16 *)arg1 = 0;
+        goto advance;
+    }
+    flags = *(u8 *)((u8 *)arg0 + 0x57);
+    if ((flags & 0xF) == 0xF) {
+        if (VFiPFENT_LoadLFNEntryFieldsFromBuf(arg1, (u8 *)arg0 + 0x4C) != 0) {
+            arg1[0x20A] = 0;
+            *(u16 *)arg1 = 0;
+        }
+        goto advance;
+    }
+    if (flags & 8) {
+        arg1[0x20A] = 0;
+        *(u16 *)arg1 = 0;
+        goto advance;
+    }
+    if (!(flags & 0x10)) {
+        arg1[0x20A] = 0;
+        *(u16 *)arg1 = 0;
+        goto advance;
+    }
+    fn_800AA4EC(arg1, (u8 *)arg0 + 0x4C);
+    if (arg1[0x20A] != 0 && arg1[0x20B] == 1 &&
+        arg1[0x20C] == VFiPFENT_CalcCheckSum(arg1)) {
+        VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, (u8 *)arg0 + 0x4C);
+        *(u32 *)(arg1 + 0x238) = *(u32 *)((u8 *)arg0 + 0x44);
+        *(u16 *)(arg1 + 0x23C) = *(u16 *)((u8 *)arg0 + 0x48);
+        *(u32 *)(arg1 + 0x22C) = *(u32 *)((u8 *)arg0 + 0x3C);
+        flags = arg1[0x21C] & 0x10;
+        if (flags && *(u32 *)(arg1 + 0x234) != arg2) {
+            arg1[0x20A] = 0;
+            *(u16 *)arg1 = 0;
+            goto advance;
+        }
+        if (flags && *(u32 *)(arg1 + 0x234) == 0) {
+            *(u32 *)(arg1 + 0x234) = 1;
+            *arg3 = 1;
+        }
+    }
+
+    flags = *(u8 *)((u8 *)arg0 + 0x58);
+    if (flags & 0x18) {
+        VFiPFPATH_getLongNameformShortName(arg1 + 0x20E, spC, flags);
+        status = VFiPFPATH_transformInUnicode((s16 *)arg1, (s32)spC, flags);
+        arg1[0x20A] = (u8)(status / 13 + (status % 13 != 0));
+        arg1[0x20C] = VFiPFENT_CalcCheckSum(arg1);
+        arg1[0x20B] = 1;
+    }
+    VFiPFENT_loadEntryNumericFieldsFromBuf(arg1, (u8 *)arg0 + 0x4C);
+    *(u32 *)(arg1 + 0x238) = *(u32 *)((u8 *)arg0 + 0x44);
+    flags = arg1[0x21C] & 0x10;
+    *(u16 *)(arg1 + 0x23C) = *(u16 *)((u8 *)arg0 + 0x48);
+    *(u32 *)(arg1 + 0x22C) = *(u32 *)((u8 *)arg0 + 0x3C);
+    if (flags && *(u32 *)(arg1 + 0x234) != arg2) {
+        arg1[0x20A] = 0;
+        *(u16 *)arg1 = 0;
+        *arg3 = 0;
+        goto advance;
+    }
+    if (flags && *(u32 *)(arg1 + 0x234) == 0) {
+        *(u32 *)(arg1 + 0x234) = 1;
+        *arg3 = 1;
+    }
+    return 0;
+
+advance:
+    {
+        u32 old = *(u32 *)arg0;
+        *(u32 *)arg0 = old + 1;
+        status = fn_800AB378(arg0, 0);
+        if (status != 0) {
+            *(u32 *)arg0 = old;
+            fn_800AB378(arg0, 0);
+        } else if (*(u32 *)((u8 *)arg0 + 0x44) == 0xFFFF0000) {
+            status = 0x10;
+        } else {
+            status = fn_800B5324(*(void **)((u8 *)arg0 + 4),
+                                 (u8 *)arg0 + 0x4C,
+                                 *(u16 *)((u8 *)arg0 + 0x48),
+                                 0x20, &sp8, 0);
+            if (sp8 != 0x20) {
+                status = 0x11;
+            }
+        }
+        status &= (s32)(-(u32)status | (u32)status) >> 31;
+        status &= (s32)(-(u32)status | (u32)status) >> 31;
+    }
+    goto loop;
 }
 
 extern "C" s32 fn_800ABC60(s32 arg0, s32 arg1);
@@ -2949,21 +3064,21 @@ extern "C" u8 lbl_80559230, lbl_80559231;
 extern "C" u8 lbl_80559210, lbl_80559214;
 extern "C" s32 fn_800B3754(s32 arg0, s32 arg1, s32 arg2) {
 struct {
-    s32 sp10[4];
-    volatile s32 sp20;
-    volatile s32 sp24;
-    volatile s32 sp28;
-    volatile u16 sp2C;
+s32 sp10[4];
+volatile s32 sp20;
+volatile s32 sp24;
+volatile s32 sp28;
+volatile u16 sp2C;
 } frame;
 u32 var_r31 = 1;
 s32 *arg1_ptr = (s32 *)arg1;
+s32 *var_r29 = arg1_ptr;
 frame.sp20 = arg0;
 frame.sp24 = 0;
 frame.sp28 = arg2;
 frame.sp2C = 0;
 u8 spC[2];
 u8 sp8[2];
-s32 *var_r29 = arg1_ptr;
 s32 temp_r5;
 s32 var_r0;
 s32 var_r3_2;
@@ -2975,11 +3090,14 @@ u16 var_r3_3;
 u16 var_r4;
 u32 var_r3;
 
-frame.sp10[0] = arg1_ptr[0];
-frame.sp10[1] = arg1_ptr[1];
-temp_r5 = arg1_ptr[2];
-frame.sp10[2] = temp_r5;
-frame.sp10[3] = arg1_ptr[3];
+var_r0 = arg1_ptr[0];
+temp_r5 = arg1_ptr[1];
+frame.sp10[0] = var_r0;
+var_r0 = arg1_ptr[2];
+frame.sp10[1] = temp_r5;
+temp_r5 = arg1_ptr[3];
+frame.sp10[2] = var_r0;
+frame.sp10[3] = temp_r5;
 if (fn_800A4D44(var_r29) == 1U) {
 if ((arg2 == 0) && ((M2C_FIELD(lbl_803D2140, u32 *, 0x60) & 2) == 2)) {
 spC[0] = lbl_80559230;
@@ -3313,15 +3431,15 @@ extern "C" const u8 lbl_80560D99;
 #pragma push
 #pragma scheduling on
 extern "C" s16 fn_800B4D5C(register void *arg0, register u32 arg1, register u32 arg2) {
-u8 sp9;
 volatile u8 sp8;
-u32 found;
-s16 value;
-s32 index;
+volatile u8 sp9;
 s16 result;
+u32 found;
+s32 index;
 s32 offset;
 s32 special;
 s32 special2;
+s16 value;
 sp8 = lbl_80560D98;
 sp9 = lbl_80560D99;
 result = 0;
