@@ -142,6 +142,7 @@ extern "C" s32 fn_800D591C(void* arg0) {
     return result;
 }
 
+#pragma dont_inline fn_800D5944
 extern "C" s32 fn_800D5944(void* arg0, u32 arg1) {
     s32 result = 0;
     if (arg1 == *(u32*)arg0 &&
@@ -368,7 +369,101 @@ extern "C" void fn_800D6EEC(void* arg0) {
     *(volatile u8*)(p + 0x20) = 0;
 }
 
-#pragma dont_inline on
+extern "C" void *BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(u32, const void *, const ResBlockSetTmp *);
+extern "C" void AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(void *, void *);
+extern "C" void AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(void *, void *);
+extern "C" void *__ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(void *, const void *, void *);
+#pragma dont_inline fn_800D5944
+s32 nw4hbm::lyt::Layout::Build(const void *arg1, nw4hbm::lyt::ResourceAccessor *arg2) {
+    u32 sp8 = 0, spC = 0, sp10 = 0, sp14 = (u32)arg2;
+    s32 count, depth, groupCreated;
+    void *currentParent, *lastPane, *pane, *container;
+    const u8 *block;
+    u16 size;
+    u32 tag;
+    if (lbl_8055DDF0 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F728, 0xAB, lbl_8031F728 + 0x10);
+    if (arg1 == 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F728, 0xAC, lbl_8031F728 + 0x40);
+    if (fn_800D5944((void *)arg1, 0x524C5954) == 0)
+        return 0;
+    size = *(const u16 *)((const u8 *)arg1 + 6);
+    if (size != 8)
+        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F728, 0xBB, lbl_8031F728 + 0x6C,
+            (u8)(size >> 8), (u8)size, 0, 8);
+    count = 0;
+    depth = 0;
+    groupCreated = 0;
+    currentParent = 0;
+    lastPane = 0;
+    block = (const u8 *)arg1 + *(const u16 *)((const u8 *)arg1 + 0xC);
+    while (count < *(const u16 *)((const u8 *)arg1 + 0xE)) {
+        tag = *(const u32 *)block;
+        switch (tag) {
+        case 0x6C797431:
+            *(u8 *)((u8 *)this + 0x20) = (*(const u8 *)(block + 8) != 0);
+            *(f32 *)((u8 *)this + 0x18) = *(const f32 *)(block + 0xC);
+            *(f32 *)((u8 *)this + 0x1C) = *(const f32 *)(block + 0x10);
+            break;
+        case 0x74786C31: sp8 = (u32)block; break;
+        case 0x666E6C31: spC = (u32)block; break;
+        case 0x6D617431: sp10 = (u32)block; break;
+        case 0x776E6431:
+        case 0x74787431:
+        case 0x70696331:
+        case 0x70616E31:
+        case 0x626E6431:
+            pane = BuildPaneObj__Q36nw4hbm3lyt6LayoutFlPCvRCQ36nw4hbm3lyt11ResBlockSet(
+                tag, block, (const ResBlockSetTmp *)&sp8);
+            if (pane != 0) {
+                if (*(void **)((u8 *)this + 0x10) == 0)
+                    *(void **)((u8 *)this + 0x10) = pane;
+                if (currentParent != 0)
+                    AppendChild__Q36nw4hbm3lyt4PaneFPQ36nw4hbm3lyt4Pane(currentParent, pane);
+                lastPane = pane;
+            }
+            break;
+        case 0x70617331:
+            if (lastPane == 0)
+                Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F728, 0xF9, lbl_8031F728 + 0x9C);
+            currentParent = lastPane;
+            break;
+        case 0x70616531:
+            lastPane = currentParent;
+            currentParent = *(void **)((u8 *)currentParent + 0xC);
+            break;
+        case 0x67727031:
+            if (groupCreated == 0) {
+                groupCreated = 1;
+                container = (void *)MEMAllocFromAllocator(lbl_8055DDF0, 0xC);
+                if (container != 0) {
+                    *(void **)((u8 *)container + 4) = 0;
+                    *(void **)((u8 *)container + 8) = 0;
+                    *(void **)container = 0;
+                    *(void **)((u8 *)container + 4) = (u8 *)container + 4;
+                    *(void **)((u8 *)container + 8) = (u8 *)container + 4;
+                } else {
+                    Warning__Q26nw4hbm2dbFPCciPCce(lbl_8031F728, 0x2F, lbl_8031F728 + 0xC8);
+                }
+                *(void **)((u8 *)this + 0x14) = container;
+            } else if (*(void **)((u8 *)this + 0x14) != 0 && depth == 1) {
+                pane = (void *)MEMAllocFromAllocator(lbl_8055DDF0, 0x2C);
+                if (pane != 0)
+                    pane = __ct__Q36nw4hbm3lyt5GroupFPCQ46nw4hbm3lyt3res5GroupPQ36nw4hbm3lyt4Pane(
+                        pane, block, *(void **)((u8 *)this + 0x10));
+                if (pane != 0)
+                    AppendGroup__Q36nw4hbm3lyt14GroupContainerFPQ36nw4hbm3lyt5Group(
+                        *(void **)((u8 *)this + 0x14), pane);
+            }
+            break;
+        case 0x67727331: depth += 1; break;
+        case 0x67726531: depth -= 1; break;
+        }
+        ++count;
+        block += *(const u32 *)(block + 4);
+    }
+    return 1;
+}
 extern "C" void *CreateAnimTransform__Q36nw4hbm3lyt6LayoutFPCvPQ36nw4hbm3lyt16ResourceAccessor(void *self, const void *resource, void *accessor) {
     const char *msg=lbl_8031F728;
     int id=0x70616931;
