@@ -14,36 +14,22 @@ extern float lbl_805633FC;
 extern void *lbl_8033C8C4[];
 extern void fn_80128668(void *);
 extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
-    struct Dummy {
-        virtual void release(s32);
-        virtual void v1();
-        virtual void v2();
-    };
+    struct Dummy { virtual void release(s32); virtual void v1(); virtual void v2(); };
     void *child;
     u8 *p;
     u32 i;
-
     if (arg0 != 0) {
         child = *(void **)((u8 *)arg0 + 8);
         *(void **)arg0 = lbl_8033C8C4;
-        if (child != 0) {
-            if (child != 0) ((Dummy *)child)->release(1);
-        }
+        if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         p = (u8 *)arg0;
         i = 0;
         do {
             child = *(void **)(p + 0x10);
-            if (child != 0) {
-                if (child != 0) ((Dummy *)child)->release(1);
-            }
+            if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
+            p += 4;
             i++;
-            {
-                BOOL again = i < 2;
-                p += 4;
-                if (!again) break;
-            }
-        } while (1);
-
+        } while (i < 2);
         child = *(void **)((u8 *)arg0 + 0x18);
         if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x28);
@@ -76,9 +62,8 @@ extern "C" void *fn_8020E288(void *arg0, s32 arg1) {
         if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
         child = *(void **)((u8 *)arg0 + 0x54);
         if (child != 0) { if (child != 0) ((Dummy *)child)->release(1); }
+        if (arg1 > 0) fn_80128668(arg0);
     }
-
-    if (arg1 > 0) fn_80128668(arg0);
     return arg0;
 }
 #pragma scheduling on
