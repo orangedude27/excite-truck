@@ -548,6 +548,7 @@ s32 fn_80169978(s32 arg0, s32 arg1) {
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" s32 *fn_801399FC(DummyArg1 *);
 extern "C" s32 fn_80128658(s32 *);
