@@ -150,7 +150,7 @@ void fn_8029C73C(void) {
     extern void *fn_80131810(void *);
     extern void fn_80131818(void *);
     extern int fn_801284F8(int, void *, float);
-    extern int fn_8029D148(void *, float *, int);
+    extern void *fn_8029D148(void *, void *, float *, int);
     extern void fn_802E317C(const char *, ...);
     char init[0x20];
     float vec[3], x, y;
