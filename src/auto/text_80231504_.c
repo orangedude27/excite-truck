@@ -42,9 +42,12 @@ static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *
         outY = x * matrix[1] + y * matrix[4] + z * matrix[7];
         outZ = x * matrix[2] + y * matrix[5] + z * matrix[8];
     }
-    dst[0] = outX + matrix[9];
-    dst[1] = outY + matrix[10];
-    dst[2] = outZ + matrix[11];
+    dst[0] = outX;
+    dst[1] = outY;
+    dst[2] = outZ;
+    dst[0] = dst[0] + matrix[9];
+    dst[1] = dst[1] + matrix[10];
+    dst[2] = dst[2] + matrix[11];
 }
 #define transform_vec(matrix, src, dst) transform_vec_values(matrix, src, dst, (src)[0], (src)[1], (src)[2])
 extern s32 fn_802315FC(s32);
@@ -206,10 +209,7 @@ loop_body:
             f32 ratio;
             f32 width = *(f32 *)(record + 0x14);
             f32 height = *(f32 *)(record + 0x10);
-            if (rate > f31) {
-            } else {
-                rate = f31;
-            }
+            if (rate <= f31) rate = f31;
             ratio = f30 / rate;
             fn_802354A0(*(s32 *)(object + 0x0C), *(s32 *)(object + 0x10), color,
                         sp8 - f29 * (ratio * width - width),
@@ -270,8 +270,8 @@ s32 fn_80232578(const char *arg0) {
     s32 offset;
     u8 *data;
     u8 *record;
-    u8 temp2;
-    u8 *record2;
+    register u8 temp2;
+    register u8 *record2;
     s32 unused;
     u32 size;
     u8 valid;
