@@ -1,7 +1,7 @@
 #include <types.h>
 
 extern BOOL __OSInIPL;
-extern const char lbl_80558F0C[];
+extern const char lbl_80558F0C[4];
 
 extern void **OSExceptionTable_8055D9D0;
 extern void OSExceptionVector(void);
