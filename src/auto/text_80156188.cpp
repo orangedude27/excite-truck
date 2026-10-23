@@ -118,7 +118,7 @@ extern "C" u8 *fn_801E879C(void);
 extern "C" void fn_801561E8(u8 *);
 extern "C" s32 fn_801345D8(s32, s32, const char *, ...);
 extern "C" char lbl_8032E254[];
-extern "C" char lbl_80559FC0[];
+extern "C" char lbl_80559FC0;
 extern "C" char lbl_80559FC4[];
 extern "C" char lbl_80559FC8[];
 s32 fn_801562BC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
