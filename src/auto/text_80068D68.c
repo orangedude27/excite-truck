@@ -2537,8 +2537,8 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
     u8 callback_data[0x20];
     char *strings = lbl_80315700;
     UINT16 callback_event = 0;
-    u32 state;
-    u32 new_state;
+    u8 state;
+    u8 new_state;
     char *state_name;
     char *new_state_name;
     u8 *table;
@@ -2597,7 +2597,7 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
             case 3: state_name = strings + 0x50; break;
             default: state_name = strings + 0x60; break;
             }
-            ((void (*)(u32, void *, u32, char *, char *))fn_80070984)(0x503, strings + 0x78, state, state_name, bta_hh_evt_code(event));
+            ((void (*)(u32, void *, u8, char *, char *))fn_80070984)(0x503, strings + 0x78, state, state_name, bta_hh_evt_code(event));
         }
         table = *(u8 **)(lbl_802EEBD8 + ((*(volatile u8 *)((u8 *)p_cb + 0x1C) - 1) * 4));
         event = (u8)event;
@@ -2621,7 +2621,7 @@ void bta_hh_sm_execute(tBTA_HH_DEV_CB *p_cb, UINT16 event, void *p_data) {
             case 3: new_state_name = strings + 0x50; break;
             default: new_state_name = strings + 0x60; break;
             }
-            ((void (*)(u32, void *, u32, char *, char *))fn_80070984)(0x504, strings + 0xAC, state, new_state_name, bta_hh_evt_code((u8)event));
+            ((void (*)(u32, void *, char *, char *, char *))fn_80070984)(0x504, strings + 0xAC, state_name, new_state_name, bta_hh_evt_code((u8)event));
         }
     }
 }
@@ -11192,6 +11192,89 @@ tSDP_DISC_REC *SDP_FindServiceUUIDInDb(tSDP_DISCOVERY_DB *p_db, tBT_UUID *p_uuid
     return NULL;
 }
 
+UINT16 SDP_SetLocalDiRecord(tSDP_DI_RECORD *p_device_info, UINT32 *p_handle) {
+    UINT16 result = 0;
+    UINT32 handle;
+    UINT16 di_uuid = 0x1200;
+    UINT8 temp_u16[2];
+    UINT8 *p_temp;
+
+    *p_handle = 0;
+    if (p_device_info == NULL) return 0xB;
+
+    if (p_device_info->primary_record == TRUE &&
+        *(UINT32 *)(lbl_803C4C40 + 0x121C) != 0) {
+        handle = *(UINT32 *)(lbl_803C4C40 + 0x121C);
+    } else {
+        handle = SDP_CreateRecord();
+        if (handle == 0) return 6;
+    }
+
+    *p_handle = handle;
+    if (!SDP_AddServiceClassIdList(handle, 1, &di_uuid)) result = 7;
+
+    if (result == 0) {
+        p_temp = temp_u16;
+        UINT16_TO_BE_STREAM(p_temp, 9);
+        if (!SDP_AddAttribute(handle, 0x200, 1, 2, temp_u16)) result = 7;
+    }
+
+    if (result == 0 && p_device_info->client_executable_url[0] != '\0') {
+        if (!(((UINT32)(strlen(p_device_info->client_executable_url) + 1) <= 0x50U) &&
+              SDP_AddAttribute(handle, 0xB, 8,
+                               (UINT32)(strlen(p_device_info->client_executable_url) + 1),
+                               (UINT8 *)p_device_info->client_executable_url))) result = 7;
+    }
+
+    if (result == 0 &&
+        (p_device_info->client_executable_url + 0x50)[0] != '\0') {
+        if (!(((UINT32)(strlen(p_device_info->client_executable_url + 0x50) + 1) <= 0x50U) &&
+              SDP_AddAttribute(handle, 0x101, 4,
+                               (UINT32)(strlen(p_device_info->client_executable_url + 0x50) + 1),
+                               (UINT8 *)(p_device_info->client_executable_url + 0x50)))) result = 7;
+    }
+
+    if (result == 0 &&
+        (p_device_info->client_executable_url + 0xA0)[0] != '\0') {
+        if (!(((UINT32)(strlen(p_device_info->client_executable_url + 0xA0) + 1) <= 0x50U) &&
+              SDP_AddAttribute(handle, 0xA, 8,
+                               (UINT32)(strlen(p_device_info->client_executable_url + 0xA0) + 1),
+                               (UINT8 *)(p_device_info->client_executable_url + 0xA0)))) result = 7;
+    }
+
+    if (result == 0) {
+        p_temp = temp_u16;
+        UINT16_TO_BE_STREAM(p_temp, p_device_info->vendor);
+        if (!SDP_AddAttribute(handle, 0x201, 1, 2, temp_u16)) result = 7;
+    }
+    if (result == 0) {
+        p_temp = temp_u16;
+        UINT16_TO_BE_STREAM(p_temp, p_device_info->product);
+        if (!SDP_AddAttribute(handle, 0x202, 1, 2, temp_u16)) result = 7;
+    }
+    if (result == 0) {
+        p_temp = temp_u16;
+        UINT16_TO_BE_STREAM(p_temp, p_device_info->version);
+        if (!SDP_AddAttribute(handle, 0x203, 1, 2, temp_u16)) result = 7;
+    }
+    if (result == 0) {
+        if (!SDP_AddAttribute(handle, 0x204, 5, 1,
+                              (UINT8 *)&p_device_info->primary_record)) result = 7;
+    }
+    if (result == 0) {
+        p_temp = temp_u16;
+        UINT16_TO_BE_STREAM(p_temp, p_device_info->vendor_id_source);
+        if (!SDP_AddAttribute(handle, 0x205, 1, 2, temp_u16)) result = 7;
+    }
+
+    if (result != 0) {
+        SDP_DeleteRecord(handle);
+    } else if (p_device_info->primary_record == TRUE) {
+        *(UINT32 *)(lbl_803C4C40 + 0x121C) = handle;
+    }
+    return result;
+}
+
 extern void *fn_80096904(void *, u32, u32);
 UINT16 SDP_GetLocalDiRecord(tSDP_DI_GET_RECORD *p_device_info, UINT32 *p_handle) {
     tSDP_RECORD *record;
@@ -12250,12 +12333,11 @@ extern s32 IOS_Ioctlv(s32, s32, s32, s32, void *);
 extern s32 IOS_IoctlvAsync(s32, s32, s32, s32, void *, void *, void *);
 s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void *buffer, s32 ioctl, void (*callback)(void), void *callbackArg, s32 async) {
     register char *base = lbl_8031A620;
-    register char *blk;
-    register char *a;
-    register char *b;
-    char *msg;
     s32 ret;
-    s32 fr;
+    char *msg;
+    char *blk;
+    char *a;
+    char *b;
 
     blk = iosAllocAligned(lbl_805590A0, 0x60, 0x20);
     if (blk == 0) USB_ERR(base + 0x13C, lbl_805590A0, 0x60, blk);
@@ -12268,6 +12350,7 @@ s32 __IntrBlkMsgInt(s32 fd, u32 endpoint, u32 length, void *buffer, s32 ioctl, v
         USB_ERR(base + 0x294);
         ret = -0x16;
     } else {
+        s32 fr;
         *(u8 *)a = endpoint;
         *(u16 *)b = length;
         *(void **)(blk + 0) = a;
