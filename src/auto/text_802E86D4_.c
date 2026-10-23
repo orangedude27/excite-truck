@@ -172,6 +172,34 @@ extern char lbl_8055D250;
 extern char lbl_8034DEC4[];
 u32 fn_802E8D84(void) { return 1; }
 
+void fn_802E9010(void) {
+    char *data = (char *)(((unsigned int)&lbl_80507288 & 0xFFFF0000) |
+                         ((unsigned int)&lbl_80507288 & 0x0000FFFF));
+    int state;
+    fn_802E9254(data + 4);
+    state = *(int *)data;
+    switch (state) {
+    case 2:
+        fn_802E91D8(data + 4, lbl_8034E108, *(int *)(data + 0x260), *(int *)(data + 0x264));
+        *(int *)data = 3;
+        break;
+    case 3:
+        if (fn_802E91BC((int *)(data + 4)) != 0) {
+            if (fn_802E91AC((int *)(data + 4)) == 0) {
+                fn_802E91D8(data + 4, data + 0x270, *(int *)(data + 0x268), *(int *)(data + 0x26C));
+                *(int *)data = 4;
+            } else fn_802E9160(data);
+        }
+        break;
+    case 4:
+        if (fn_802E91BC((int *)(data + 4)) != 0) {
+            if (fn_802E91AC((int *)(data + 4)) == 0) fn_802E9118(data);
+            else fn_802E9160(data);
+        }
+        break;
+    }
+}
+
 void fn_802E9118(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)((char*)arg0+0x260)=0; *(int*)((char*)arg0+0x264)=0; *(int*)((char*)arg0+0x268)=0; *(int*)((char*)arg0+0x26c)=0; *(int*)arg0=0; }
 
 void fn_802E9160(void *arg0) { fn_8012C4D8(*(int*)((char*)arg0+0x260)); *(int*)((char*)arg0+0x260)=0; *(int*)((char*)arg0+0x264)=0; *(int*)((char*)arg0+0x268)=0; *(int*)((char*)arg0+0x26c)=0; *(int*)arg0=1; }
@@ -201,12 +229,165 @@ void fn_802E91D8(void *arg0, const char *arg1, int arg2, int arg3) {
  fn_802E30C8(lbl_8034E130,arg3,start);
 }
 
+extern void fn_802E95CC(int, void **);
+extern int NANDCreateAsync(const char *, unsigned char, unsigned char, void (*)(int, void **), void *);
+extern int NANDOpenAsync(const char *, void *, unsigned char, void (*)(int, void **), void *);
+extern int NANDWriteAsync(void *, const void *, unsigned int, void (*)(int, void **), void *);
+extern int NANDCloseAsync(void *, void (*)(int, void **), void *);
+extern char lbl_8034E114[];
+extern char lbl_8034E158[];
+extern char lbl_8034E168[];
+extern char lbl_8034E184[];
+extern char lbl_8034E194[];
+extern char lbl_8034E1B4[];
+extern char lbl_8034E1C4[];
+extern char lbl_8034E1E8[];
+extern char lbl_8034E1F8[];
+extern char lbl_8034E218[];
+#pragma scheduling invalid_target
+extern char lbl_8034E114[], lbl_8034E158[], lbl_8034E168[], lbl_8034E184[];
+extern char lbl_8034E194[], lbl_8034E1B4[], lbl_8034E1C4[], lbl_8034E1E8[];
+extern char lbl_8034E1F8[], lbl_8034E218[], lbl_80560034;
+#pragma scheduling invalid_target
+void fn_802E9254(void *arg0) {
+    char *data = (char *)arg0;
+    unsigned char *bytes = (unsigned char *)arg0;
+    int state = *(int *)data;
+    int temp = 0;
+    int result;
+
+    switch (state) {
+    case 2:
+        bytes[0x250] = temp;
+        *(int *)(data + 0x254) = temp;
+        result = NANDCreateAsync(data + 0xC, 0x30, 0, fn_802E95CC, data + 0x198);
+        if (result != 0) {
+            fn_802E30C8(lbl_8034E114, lbl_8034E218, result);
+            *(int *)data = temp;
+            *(int *)(data + 0x258) = result;
+        } else *(int *)data = 3;
+        break;
+    case 3:
+        if (bytes[0x250] != temp) {
+            temp = *(int *)(data + 0x254);
+            if (temp == 0 || temp == -6) {
+                bytes[0x250] = 0;
+                *(int *)(data + 0x254) = 0;
+                result = NANDOpenAsync(data + 0xC, data + 0x10C, 2, fn_802E95CC, data + 0x198);
+                if (result != 0) {
+                    fn_802E30C8(lbl_8034E114, lbl_8034E1F8, result);
+                    *(int *)data = 0;
+                    *(int *)(data + 0x258) = result;
+                } else *(int *)data = 4;
+            } else {
+                if (temp == -11) {
+                    lbl_80560034 = 1;
+                    fn_802E888C(5);
+                }
+                temp = *(int *)(data + 0x254);
+                fn_802E30C8(lbl_8034E114, lbl_8034E1E8, temp);
+                *(int *)(data + 0x258) = temp;
+                *(int *)data = 0;
+            }
+        }
+        break;
+    case 4:
+        if (bytes[0x250] != 0) {
+            temp = *(int *)(data + 0x254);
+            if (temp == 0) {
+                bytes[0x250] = 0;
+                *(int *)(data + 0x254) = 0;
+                result = NANDWriteAsync(data + 0x10C, (const void *)*(int *)(data + 8),
+                                        *(unsigned int *)(data + 4), fn_802E95CC, data + 0x198);
+                if (result != 0) {
+                    fn_802E30C8(lbl_8034E114, lbl_8034E1C4, result);
+                    *(int *)data = 0;
+                    *(int *)(data + 0x258) = result;
+                    NANDClose(data + 0x10C);
+                } else *(int *)data = 5;
+            } else {
+                fn_802E30C8(lbl_8034E114, lbl_8034E1B4, temp);
+                *(int *)(data + 0x258) = temp;
+                *(int *)data = 0;
+            }
+        }
+        break;
+    case 5:
+        if (bytes[0x250] != 0) {
+            temp = *(int *)(data + 0x254);
+            if (temp == *(int *)(data + 4)) {
+                bytes[0x250] = 0;
+                *(int *)(data + 0x254) = 0;
+                result = NANDCloseAsync(data + 0x10C, fn_802E95CC, data + 0x198);
+                if (result != 0) {
+                    fn_802E30C8(lbl_8034E114, lbl_8034E194, result);
+                    *(int *)data = 0;
+                    *(int *)(data + 0x258) = result;
+                    NANDClose(data + 0x10C);
+                } else *(int *)data = 6;
+            } else {
+                fn_802E30C8(lbl_8034E114, lbl_8034E184, temp);
+                *(int *)(data + 0x258) = temp;
+                *(int *)data = 0;
+                NANDClose(data + 0x10C);
+            }
+        }
+        break;
+    case 6:
+        if (bytes[0x250] != 0) {
+            temp = *(int *)(data + 0x254);
+            if (temp == 0) {
+                *(int *)data = 1;
+                fn_802E30C8(lbl_8034E168, *(int *)(data + 4), data + 0xC);
+            } else {
+                fn_802E30C8(lbl_8034E114, lbl_8034E158, temp);
+                *(int *)(data + 0x258) = temp;
+                *(int *)data = 0;
+                NANDClose(data + 0x10C);
+            }
+        }
+        break;
+    }
+}
+#pragma scheduling on
 void fn_802E95CC(int arg0, void **arg1) { void *obj=*arg1; *(int*)((char*)obj+0x254)=arg0; *(char*)((char*)obj+0x250)=1; }
 
 int fn_802E95E0(void *arg0, void (*callback)(void), int arg2) {
  int base=fn_802E2C20(); int limit=base+0xFA0;
  for (;;) { int value; if(lbl_80507288<2) return 1; value=fn_802E2C20();
  if(value<base || value>limit) { fn_802E30C8(lbl_8034E024,arg0,value-base); return 0; } callback(); }
+}
+
+extern int fn_8012C370(const char *, int, void *, void *, int, int);
+extern void fn_8012E81C(const char *);
+extern char lbl_8034D9C0[];
+extern char lbl_8034E0E8[];
+extern char lbl_8034E0F8[];
+extern void *memcpy(void *, const void *, unsigned int);
+int fn_802E967C(char *arg0, void *arg1, int arg2) {
+    char *data = (char *)&lbl_80507288;
+    char *p;
+    int sp8;
+    if (fn_802E95E0(lbl_8034D9C0 + 0x694, fn_802E8838, 0) == 0) {
+        fn_802E30C8(lbl_8034D9C0 + 0x6A8);
+        return 0;
+    }
+    if (lbl_80560034 != 0) {
+        fn_802E30C8(lbl_8034D9C0 + 0x6D8);
+        return 0;
+    }
+    memcpy((void *)lbl_80560020, arg1, arg2);
+    *(int *)data = 2;
+    fn_8012E81C(lbl_8034E0F8);
+    *(int *)(data + 0x260) = fn_8012C370(lbl_8034E0E8, 0x5256424E, &sp8, data + 0x264, 0, 0);
+    *(int *)(data + 0x268) = lbl_80560020;
+    *(int *)(data + 0x26c) = arg2;
+    p = data + 0x270;
+    do {
+        *p = *arg0++;
+    } while (*p++ != 0);
+    if (p - (data + 0x270) == 0x100) p[-1] = 0;
+    return 1;
 }
 
 void fn_802E97B4(void) {
