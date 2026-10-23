@@ -2,7 +2,6 @@
 extern int lbl_804C5650[];
 extern char lbl_8055FD70;
 extern float lbl_80564F8C, lbl_80564FCC, lbl_80564FDC;
-extern double lbl_80564FB0;
 extern int GXLoadPosMtxImm(void *, int);
 extern int GXSetDstAlpha(int, int);
 extern void C_MTXOrtho(void *, float, float, float, float, float, float);
