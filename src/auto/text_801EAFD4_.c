@@ -99,6 +99,8 @@ extern "C" void fn_802E30C8(const char *, ...);
 extern "C" char lbl_80339F7C[];
 extern "C" char lbl_80339FA0[];
 #pragma cplusplus reset
+#pragma push
+#pragma scheduling invalid_target
 void fn_801EB2D4(s32 arg0, s32 arg1) {
     u8 *var_r31;
     u8 *var_r30;
@@ -114,7 +116,6 @@ void fn_801EB2D4(s32 arg0, s32 arg1) {
     u8 *temp_r3_11;
     u8 *temp_r27;
     void *temp_obj;
-    void **vtable;
 
     do {
         temp_r5 = var_r28[0];
@@ -169,14 +170,14 @@ void fn_801EB2D4(s32 arg0, s32 arg1) {
                             }
             break;
         case 0x101:
-            temp_r5 = var_r28[8];
-                            var_r28[8] = var_r28[0xB];
-                            var_r28[0xB] = temp_r5;
-                            temp_r5 = var_r28[9];
-                            var_r28[9] = var_r28[0xA];
-                            var_r28[0xA] = temp_r5;
-                            fn_801EB634(var_r28 + 8, (s32)arg1);
-                            fn_801EB2D4(*(s32 *)(var_r28 + 8), arg1);
+            temp_r5 = var_r28[0xC];
+            var_r28[0xC] = var_r28[0xF];
+            var_r28[0xF] = temp_r5;
+            temp_r5 = var_r28[0xD];
+            var_r28[0xD] = var_r28[0xE];
+            var_r28[0xE] = temp_r5;
+            fn_801EB634(var_r28 + 8, (s32)arg1);
+            fn_801EB2D4(*(s32 *)(var_r28 + 8), arg1);
             break;
         case 0x102:
         case 0x103:
@@ -225,15 +226,14 @@ void fn_801EB2D4(s32 arg0, s32 arg1) {
                         temp_r3_11[1] = temp_r3_11[2];
                         temp_r3_11[2] = temp_r5;
                         fn_801EB13C(temp_r3_11, temp_r5);
-                        if (*(s32 *)(*(s32 *)(*(s32 *)(var_r28 + 8) + 8)) <= 0) {
+                        if (*(s32 *)(*(s32 *)((u8 *)*(volatile s32 *)(var_r28 + 8) + 8)) <= 0) {
                             *(s32 *)(var_r28 + 8) = var_r22;
                         }
                         temp_r27 = (u8 *)*(u32 *)(var_r28 + 8);
                         if (temp_r27 != 0 && *(s32 *)temp_r27 == 1) {
                             if (fn_801EB0F0(*(s32 *)(temp_r27 + 0x10)) != 0) {
                                 temp_obj = (void *)fn_801EB110(temp_r27);
-                                vtable = *(void ***)temp_obj;
-                                ((void (*)(void *, void *))vtable[3])(temp_obj, temp_r27);
+                                ((void (*)(void *, void *))(*(void ***)temp_obj)[3])(temp_obj, temp_r27);
                             } else {
                                 fn_802E30C8(var_r23, *(s32 *)(temp_r27 + 0x10));
                                 *(s32 *)(temp_r27 + 0x10) = var_r24;
@@ -247,6 +247,7 @@ void fn_801EB2D4(s32 arg0, s32 arg1) {
         var_r28 = (u8 *)*(u32 *)(var_r28 + 4);
     } while (var_r28 != 0);
 }
+#pragma pop
 void fn_801EB634(void *arg0, s32 arg1) {
     u8 a, b, c, d;
     a = ((u8 *)arg0)[0];
