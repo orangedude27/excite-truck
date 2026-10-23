@@ -291,6 +291,79 @@ s32 fn_802A5B8C(s32 arg0) {
     return arg0;
 }
 
+extern f32 lbl_8056488C;
+extern void *fn_801E8718();
+extern void fn_802A62CC(void *, s32);
+extern s32 fn_801E8758(s32);
+extern f32 PSVECDotProduct(f32 *, f32 *);
+extern void fn_802A6470(void *, f32 *, f32 *);
+extern void fn_802A6838(void *);
+extern void fn_802A6408(void *);
+extern void fn_802A6790(void *);
+void fn_802A5CA4(void *arg0) {
+    struct Work {
+        volatile f32 input[3];
+        f32 cross[3];
+        f32 transformed[3];
+        s32 pad;
+        s32 matrix[12];
+    } w;
+    f32 *m = (f32 *)w.matrix;
+    f32 x = lbl_80564858;
+    f32 y = lbl_80564874;
+    f32 z = lbl_80564858;
+    s32 *source = (s32 *)fn_801E8718(*(s32 *)((u8 *)arg0 + 0x1C));
+
+    w.matrix[0] = source[0];  w.matrix[1] = source[1];
+    w.matrix[2] = source[2];  w.matrix[3] = source[3];
+    w.matrix[4] = source[4];  w.matrix[5] = source[5];
+    w.matrix[6] = source[6];  w.matrix[7] = source[7];
+    w.matrix[8] = source[8];  w.matrix[9] = source[9];
+    w.matrix[10] = source[10]; w.matrix[11] = source[11];
+    fn_802A62CC(arg0, m[9]);
+
+    w.input[0] = x;
+    w.input[1] = y;
+    w.input[2] = z;
+    if ((f32 *)((u8 *)arg0 + 0x50) == (f32 *)&w.input[0]) {
+        *(f32 *)((u8 *)arg0 + 0x50) = x * m[0] + y * m[1] + z * m[2];
+        *(f32 *)((u8 *)arg0 + 0x54) = x * m[3] + y * m[4] + z * m[5];
+        *(f32 *)((u8 *)arg0 + 0x58) = x * m[6] + y * m[7] + z * m[8];
+    } else {
+        *(f32 *)((u8 *)arg0 + 0x50) = w.input[0] * m[0] + w.input[1] * m[1] + w.input[2] * m[2];
+        *(f32 *)((u8 *)arg0 + 0x54) = w.input[0] * m[3] + w.input[1] * m[4] + w.input[2] * m[5];
+        *(f32 *)((u8 *)arg0 + 0x58) = w.input[0] * m[6] + w.input[1] * m[7] + w.input[2] * m[8];
+    }
+    *(f32 *)((u8 *)arg0 + 0x44) = *(f32 *)((u8 *)arg0 + 0x50) * lbl_80564844;
+    *(f32 *)((u8 *)arg0 + 0x48) = *(f32 *)((u8 *)arg0 + 0x54) * lbl_80564844;
+    *(f32 *)((u8 *)arg0 + 0x4C) = *(f32 *)((u8 *)arg0 + 0x58) * lbl_80564844;
+
+    if (fn_801E8758(*(s32 *)((u8 *)arg0 + 0x1C)) == 0) {
+        f32 dx = *(f32 *)((u8 *)arg0 + 0x2C) - m[9];
+        f32 dy = *(f32 *)((u8 *)arg0 + 0x30) - m[10];
+        f32 dz = *(f32 *)((u8 *)arg0 + 0x34) - m[11];
+        w.transformed[0] = dx * m[0] + dy * m[1] + dz * m[2];
+        w.transformed[1] = dx * m[3] + dy * m[4] + dz * m[5];
+        w.transformed[2] = dx * m[6] + dy * m[7] + dz * m[8];
+        *(f32 *)((u8 *)arg0 + 0x44) += w.transformed[0] * lbl_8056488C;
+        *(f32 *)((u8 *)arg0 + 0x48) += w.transformed[1] * lbl_8056488C;
+        *(f32 *)((u8 *)arg0 + 0x4C) += w.transformed[2] * lbl_8056488C;
+        PSVECCrossProduct((f32 *)&w.matrix[6], (f32 *)((u8 *)arg0 + 0x38), w.cross);
+        PSVECDotProduct((f32 *)&w.matrix[3], w.cross);
+        fn_802A6470(arg0, (f32 *)w.matrix, w.transformed);
+        fn_802A6838(arg0);
+        fn_802A6408(arg0);
+    } else {
+        fn_802A6790(arg0);
+    }
+    *(f32 *)((u8 *)arg0 + 0x2C) = m[9];
+    *(f32 *)((u8 *)arg0 + 0x30) = m[10];
+    *(f32 *)((u8 *)arg0 + 0x34) = m[11];
+    *(f32 *)((u8 *)arg0 + 0x38) = m[6];
+    *(f32 *)((u8 *)arg0 + 0x3C) = m[7];
+    *(f32 *)((u8 *)arg0 + 0x40) = m[8];
+}
+
 f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898;
 f32 fn_802A4AD4(void);
