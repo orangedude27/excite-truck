@@ -77,8 +77,8 @@ extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
 extern double fn_801DCF48(s32, f32, f32);
 extern f32 PSVECMag(const void *);
-extern double cos(double);
-extern double sin(double);
+extern double cos(f32);
+extern double sin(f32);
 extern u32 lbl_802F9D58[4];
 extern f32 lbl_805630CC;
 extern f32 lbl_805630D4;
@@ -90,23 +90,45 @@ extern f32 lbl_80563124;
 extern f32 lbl_80563128;
 extern f32 lbl_805630CC, lbl_805630D4, lbl_805630E0, lbl_805630F8;
 extern f32 lbl_80563120, lbl_80563124, lbl_80563128;
+#pragma scheduling on
 void fn_80203380(void *argp) {
     f32 *arg0 = (f32 *)argp;
-    union { u32 words[4]; f32 values[4]; } heights;
+    struct {
+        volatile f32 radius;
+        volatile f32 height;
+        f32 vec2[3];
+        f32 vec1[3];
+        volatile f32 x;
+        volatile f32 y;
+        volatile f32 z;
+        f32 pad;
+        u32 heights[4];
+        u32 cvt[2];
+    } work;
+    u32 *data;
     f32 *height;
-    f32 minMag, one, angleScale, angleDivisor, radius, colorScale, secondY;
+    f32 secondY, colorScale, one, minMag, radius, angleDivisor, angleScale;
+    double bias;
+    s32 angle;
     u32 row;
-    s32 count, angle;
+    s32 count;
+    u32 first, second, third, fourth;
 
     fn_802C8BD0(-1);
-    heights.words[0] = lbl_802F9D58[0];
-    heights.words[1] = lbl_802F9D58[1];
-    heights.words[2] = lbl_802F9D58[2];
-    heights.words[3] = lbl_802F9D58[3];
-    fn_802C8DBC(0xA0, lbl_802F9D58[2], lbl_802F9D58[1], lbl_802F9D58[0]);
+    data = lbl_802F9D58;
+    first = *data++;
+    second = data[0];
+    third = data[1];
+    fourth = data[2];
+    work.heights[0] = first;
+    work.heights[1] = second;
+    work.heights[2] = third;
+    work.heights[3] = fourth;
+    fn_802C8DBC(0xA0, third, second, first);
 
     minMag = lbl_805630F8;
-    height = heights.values;
+    height = (f32 *)work.heights;
+    bias = lbl_805630E8;
     one = lbl_805630D4;
     angleScale = lbl_805630E0;
     angleDivisor = lbl_80563120;
@@ -115,57 +137,101 @@ void fn_80203380(void *argp) {
     secondY = lbl_80563128;
 
     for (row = 0; row < 4; row++, height++) {
+        f32 h = *height;
         for (count = 0, angle = 0; count < 0x14; count++, angle += 2) {
-            f32 theta = angleScale * (f32)angle / angleDivisor;
-            f32 c = (f32)cos((double)theta);
-            f32 s = (f32)sin((double)theta);
-            f32 x = (radius * c - *height * s) + arg0[9];
-            f32 z = (radius * s + *height * c) + arg0[11];
-            f32 y = fn_801DCF48(0, x, z);
-            f32 dx = x - arg0[9];
-            f32 dy = y - arg0[10];
-            f32 dz = z - arg0[11];
-            f32 vec[3];
-            f32 mag, scale, denom;
+            union { f64 d; u32 w[2]; } *cvt = (void *)work.cvt;
+            register f32 s;
+            f32 c, theta, x, z, y, q0, q1, q2, q3, baseX, baseZ, dx, dy, dz, mag, scale, denom, t0, t1, t2, t3, t4, t5;
 
-            vec[0] = (dx * arg0[0] + dy * arg0[1]) + dz * arg0[2];
-            vec[1] = (dx * arg0[3] + dy * arg0[4]) + dz * arg0[5];
-            vec[2] = (dx * arg0[6] + dy * arg0[7]) + dz * arg0[8];
-            mag = PSVECMag(vec);
+            work.radius = radius;
+            work.height = h;
+            cvt->w[0] = 0x43300000;
+            cvt->w[1] = ((u32)angle) ^ 0x80000000U;
+            theta = angleScale * (f32)(cvt->d - bias) / angleDivisor;
+            c = (f32)cos((double)theta);
+            s = (f32)sin((double)theta);
+            baseX = arg0[9];
+            q0 = h * c;
+            q1 = radius * s;
+            q2 = radius * c;
+            baseZ = arg0[11];
+            q3 = h * s;
+            z = (q1 + q0) + baseZ;
+            x = (q2 - q3) + baseX;
+            work.height = z;
+            work.radius = x;
+            y = (f32)fn_801DCF48(0, x, z);
+            work.y = y;
+            work.x = work.radius;
+            work.z = z;
+
+            dx = work.radius - arg0[9];
+            dy = work.y - arg0[10];
+            dz = z - arg0[11];
+            t0 = dy * arg0[1];
+            t1 = dx * arg0[0];
+            t2 = dx * arg0[3];
+            t3 = dy * arg0[4];
+            t4 = dx * arg0[6];
+            t5 = dy * arg0[7];
+            t1 = t1 + t0;
+            t2 = t2 + t3;
+            t4 = t4 + t5;
+            t0 = dz * arg0[2];
+            t3 = dz * arg0[5];
+            t5 = dz * arg0[8];
+            work.vec1[0] = t0 + t1;
+            work.vec1[1] = t3 + t2;
+            work.vec1[2] = t5 + t4;
+            mag = PSVECMag((const void *)work.vec1);
             if (minMag > mag) {
-                scale = one / minMag;
-                vec[0] *= scale;
-                vec[1] *= scale;
-                vec[2] *= scale;
-                denom = one + vec[1];
+                mag = minMag;
+                scale = one / mag;
+                work.vec1[0] *= scale;
+                work.vec1[1] *= scale;
+                work.vec1[2] *= scale;
+                denom = one + work.vec1[1];
                 fn_802C8E00((s32)0xFF000000, 1,
-                    (colorScale * vec[0]) / denom, radius,
-                    (colorScale * vec[2]) / denom, radius, radius);
+                    (colorScale * work.vec1[0]) / denom, lbl_805630CC,
+                    (colorScale * work.vec1[2]) / denom, lbl_805630CC, lbl_805630CC);
             }
 
-            dx = x - arg0[9];
+            dx = work.x - arg0[9];
             dy = secondY - arg0[10];
             dz = z - arg0[11];
-            vec[0] = (dx * arg0[0] + dy * arg0[1]) + dz * arg0[2];
-            vec[1] = (dx * arg0[3] + dy * arg0[4]) + dz * arg0[5];
-            vec[2] = (dx * arg0[6] + dy * arg0[7]) + dz * arg0[8];
-            mag = PSVECMag(vec);
+            t0 = dy * arg0[1];
+            t1 = dx * arg0[0];
+            t2 = dx * arg0[3];
+            t3 = dy * arg0[4];
+            t4 = dx * arg0[6];
+            t5 = dy * arg0[7];
+            t1 = t1 + t0;
+            t2 = t2 + t3;
+            t4 = t4 + t5;
+            t0 = dz * arg0[2];
+            t3 = dz * arg0[5];
+            t5 = dz * arg0[8];
+            work.vec2[0] = t0 + t1;
+            work.vec2[1] = t3 + t2;
+            work.vec2[2] = t5 + t4;
+            mag = PSVECMag((const void *)work.vec2);
             if (minMag > mag) {
-                scale = one / minMag;
-                vec[0] *= scale;
-                vec[1] *= scale;
-                vec[2] *= scale;
-                denom = one + vec[1];
+                mag = minMag;
+                scale = one / mag;
+                work.vec2[0] *= scale;
+                work.vec2[1] *= scale;
+                work.vec2[2] *= scale;
+                denom = one + work.vec2[1];
                 fn_802C8E00((s32)0xFF000000, 1,
-                    (colorScale * vec[0]) / denom, radius,
-                    (colorScale * vec[2]) / denom, radius, radius);
+                    (colorScale * work.vec2[0]) / denom, lbl_805630CC,
+                    (colorScale * work.vec2[2]) / denom, lbl_805630CC, lbl_805630CC);
             }
         }
     }
     fn_802C8E48();
     fn_802C8D74();
 }
-
+#pragma scheduling reset
 void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     struct lbl_80488B88_t* var_r28;
     s32 temp_r0;
