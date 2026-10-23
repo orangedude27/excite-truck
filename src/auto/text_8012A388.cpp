@@ -40,7 +40,7 @@ extern "C" void *fn_8012850C(u32, void *);
 extern "C" void *memset(void *, s32, u32);
 extern "C" u8 lbl_805599C8[];
 extern "C" u8 lbl_805599D0[];
-extern "C" u8 lbl_805599E0[];
+extern "C" u8 lbl_805599E0;
 
 extern void fn_8012E498(void);
 extern void fn_8012CC24(void);
@@ -286,7 +286,10 @@ extern "C" void fn_8012AC98(s32 arg0) {
     fn_8012AC28(arg0, 0);
 }
 
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
+    const char *messages = lbl_8032A630;
     char sp10[128];
     s32 spC;
     u8 sp8;
@@ -316,38 +319,47 @@ extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
     u8 *var_r25_2;
     u8 *var_r31;
 
-    if (lbl_8055DFFC == 0) fn_802E317C(lbl_8032A630 + 0x1D0, arg0);
+    if (lbl_8055DFFC == 0) fn_802E317C(messages + 0x1D0, arg0);
     var_r4 = (char *)arg0;
     var_r6 = sp10;
     var_r5 = 0x80;
 loop_5:
-    temp_r3 = *var_r4++;
-    *var_r6++ = temp_r3;
-    if ((s8)temp_r3 != 0) {
-        var_r5 -= 1;
-        if (var_r5 <= 0) var_r6[-1] = 0;
-        else goto loop_5;
+    temp_r3 = *var_r4;
+    var_r4 += 1;
+    *var_r6 = temp_r3;
+    var_r6 += 1;
+    if ((s8)temp_r3 != 0) goto loop_5_limit;
+    goto loop_5_done;
+loop_5_limit:
+    var_r5 -= 1;
+    if (var_r5 > 0) goto loop_5;
+    var_r6[-1] = 0;
+loop_5_done:
+    if ((s8)*fn_80029004(sp10, 0x2E) != 0) {
+        *fn_80029004(sp10, 0x2E) = 0;
     }
-    if ((s8)*fn_80029004(sp10, 0x2E) != 0) *fn_80029004(sp10, 0x2E) = 0;
     var_r6_2 = sp10;
     var_r5_2 = 0x80;
 loop_10:
-    if ((s8)*var_r6_2 != 0) {
-        var_r5_2 -= 1;
-        var_r6_2 += 1;
-        goto loop_10;
-    }
-    if (var_r5_2 > 0) {
-        var_r4_2 = (char *)lbl_805599E0;
+    if ((s8)*var_r6_2 == 0) goto loop_10_done;
+    var_r5_2 -= 1;
+    var_r6_2 += 1;
+    goto loop_10;
+loop_10_done:
+    if (var_r5_2 <= 0) goto loop_10_done2;
+    var_r4_2 = (char *)lbl_805599E0;
 loop_15:
-        temp_r3_2 = *var_r4_2++;
-        *var_r6_2++ = temp_r3_2;
-        if ((s8)temp_r3_2 != 0) {
-            var_r5_2 -= 1;
-            if (var_r5_2 <= 0) var_r6_2[-1] = 0;
-            else goto loop_15;
-        }
-    }
+    temp_r3_2 = *var_r4_2;
+    var_r4_2 += 1;
+    *var_r6_2 = temp_r3_2;
+    var_r6_2 += 1;
+    if ((s8)temp_r3_2 != 0) goto loop_15_limit;
+    goto loop_10_done2;
+loop_15_limit:
+    var_r5_2 -= 1;
+    if (var_r5_2 > 0) goto loop_15;
+    var_r6_2[-1] = 0;
+loop_10_done2:
     fn_8002B0D8(sp10);
     temp_r3_3 = (u8 *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
     if (temp_r3_3 != 0 && sp8 != 0) {
@@ -373,13 +385,13 @@ loop_23:
             goto loop_23;
         }
     }
-    if (temp_r3_3 == 0) fn_802E317C(lbl_8032A630 + 0x200, arg0);
+    if (temp_r3_3 == 0) fn_802E317C(messages + 0x200, arg0);
     if (*(u32 *)((u8 *)arg0 + 0x7C) != *(u32 *)(temp_r3_3 + 8))
-        fn_802E317C(lbl_8032A630 + 0x228, arg0);
+        fn_802E317C(messages + 0x228, arg0);
     if (*(u32 *)((u8 *)arg0 + 0x88) != *(u32 *)(temp_r3_3 + 0xC))
-        fn_802E317C(lbl_8032A630 + 0x258, arg0);
+        fn_802E317C(messages + 0x258, arg0);
     if (*(u32 *)((u8 *)arg0 + 0x8C) != *(u32 *)(temp_r3_3 + 0x10))
-        fn_802E317C(lbl_8032A630 + 0x288, arg0);
+        fn_802E317C(messages + 0x288, arg0);
     temp_r26 = temp_r3_3 + 0x14;
     var_r31 = temp_r26;
     var_r25 = 1;
@@ -398,7 +410,7 @@ loop_37:
     *(void **)((u8 *)arg0 + 0x64) = temp_r3_3;
     return var_r25;
 }
-
+#pragma pop
 extern "C" s32 fn_8012B2C4(s32, s32, s32);
 extern "C" void fn_8012B314(s32 arg0, s32 arg1, s32 arg2) {
     fn_8012B2C4(arg1, arg0, arg2);
