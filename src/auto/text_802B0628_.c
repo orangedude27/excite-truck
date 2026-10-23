@@ -517,7 +517,7 @@ int fn_802B1B50(int *arg0, int arg1) {
 
 extern float lbl_80564BF8;
 extern int fn_802DA704(int, void *, int);
-extern void fn_802DAA18();
+extern void fn_802DAA18(void);
 void fn_802B1B60(void *arg0) {
     float sp8[3];
     int count = 0;
