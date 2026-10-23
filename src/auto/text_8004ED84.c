@@ -1,3 +1,4 @@
+#include "revolution/GX/GXTypes.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -54,6 +55,66 @@ int _ES_LaunchTitle(int *fd, int arg1, int arg2, int arg3, void *arg4, int *arg5
     return IOS_IoctlvReboot(*fd, 8, 2, 0, vec, 8);
 }
 
+extern void OSGetFontTexel(char *, unsigned char *, int, int, int *);
+#pragma push
+#pragma use_lmw_stmw off
+void ScreenReport(void* fb, u16 width, u16 height, GXColor msgYUV, s32 x,
+                  s32 y, u32 lf, const char* msg) {
+    u32 texel[70];
+    u32 charWidth;
+    u8* tmp;
+    u8 bright;
+    s32 xPos;
+    u32 idx;
+    u32 idx2;
+    u32 idx3;
+    u32 i;
+    u32 j;
+new_line:
+    if (height - 24 < y) return;
+    tmp = (u8*)fb + ((x + (y * width)) * 2);
+    xPos = x;
+    while (*msg != '\0') {
+        if (*msg == '\n') {
+            msg++;
+            y += lf;
+            goto new_line;
+        } else if (width - 48 < xPos) {
+            y += lf;
+            goto new_line;
+        }
+        for (i = 0; i < 24; i++) {
+            idx = (i & 7) + ((i / 8) * 24);
+            texel[idx] = 0;
+            texel[idx + 8] = 0;
+            texel[idx + 16] = 0;
+        }
+        msg = ((const char *(*)(const char *, u32 *, s32, s32, u32 *))OSGetFontTexel)(
+            msg, texel, 0, 6, &charWidth);
+        for (i = 0; i < 24; i++) {
+            idx = (i & 7) + ((i / 8) * 24);
+            for (j = 0; j < 24; j++) {
+                idx2 = idx + ((j / 8) * 8);
+                bright = (texel[idx2] >> ((7 - (j & 7)) * 4)) & 0x0F;
+                if (bright != 0) {
+                    bright = (((msgYUV.r * (bright * 0xEF)) / 255) / 15) + 16;
+                    idx3 = (j + (width * i));
+                    tmp[idx3 * 2] = bright;
+                    if ((xPos + j) % 2 != 0) {
+                        tmp[(idx3 * 2) - 1] = msgYUV.g;
+                        tmp[(idx3 * 2) + 1] = msgYUV.b;
+                    } else {
+                        tmp[(idx3 * 2) - 1] = msgYUV.b;
+                        tmp[(idx3 * 2) + 1] = msgYUV.g;
+                    }
+                }
+            }
+        }
+        tmp += charWidth * 2;
+        xPos += charWidth;
+    }
+}
+#pragma pop
 extern int VIGetTvFormat(short, short);
 extern int VIConfigure(void *);
 extern int VIConfigurePan(int, int, int, int);
@@ -283,6 +344,163 @@ char *ParseStringS(int format, char *text, int **outWidths, int *outCode) {
     *outWidths = widths;
     *outCode = GetFontCode(format, first);
     return next;
+}
+
+extern void *OSUTF8to32(void *, int *);
+extern void *OSUTF16to32(void *, int *);
+extern int OSUTF32toANSI(void);
+extern unsigned short OSUTF32toSJIS(int);
+extern int lbl_8055DA4C;
+void *ParseStringW(int format, void *input, int *outFont, int *outCode, int unused) {
+    int code=0, mode=format;
+    unsigned short ch=0;
+    void *next=input;
+    switch(format) {
+    case 0: ch=*(unsigned char*)input; mode=(int)lbl_8055DA54; if(ch) next=(char*)input+1; break;
+    case 1:
+        ch=*(unsigned char*)input; mode=(int)lbl_8055DA50;
+        if(ch) { next=(char*)input+1;
+            if((ch>=0x81&&ch<=0x9f)||(ch>=0xe0&&ch<=0xfc)) {
+                unsigned char trail=*(unsigned char*)next;
+                if(trail>=0x40&&trail<=0xfc&&trail!=0x7f) { ch=(ch<<8)|trail; next=(char*)next+1; }
+            }
+        } break;
+    case 3: next=OSUTF8to32(input,&code); break;
+    case 4: next=OSUTF16to32(input,&code); break;
+    case 5: code=*(int*)input; if(code) next=(char*)input+4; break;
+    }
+    if(code) {
+        mode=(int)lbl_8055DA54;
+        if(!((int(*)(int))OSUTF32toANSI)(code) && lbl_8055DA4C && (unsigned int)code<=0x7f) {
+            ch=OSUTF32toSJIS(code);
+            if(ch) mode=(int)lbl_8055DA50;
+        }
+    }
+    *outFont=mode; *outCode=GetFontCode(mode,ch); return next;
+}
+
+void OSGetFontTexel(char *arg0, unsigned char *arg1, int arg2, int arg3, int *arg4) {
+    void *spC;
+    int sp8;
+    unsigned short mode = lbl_80558F58;
+    unsigned int a, b, c, d;
+    int x, y;
+    unsigned char *pixels;
+    unsigned char *table;
+    int i, j;
+    if (mode == 0xFFFF) {
+        int console = *(volatile int *)0x800000CC;
+        if (console == 0) {
+            mode = (*(volatile unsigned short *)0xCC00206E >> 1) & 1;
+            lbl_80558F58 = mode;
+        } else {
+            mode = 0;
+            lbl_80558F58 = 0;
+        }
+        lbl_8055DA48 = ParseStringS;
+    }
+    ((char *(*)(int, char *, int **, int *))lbl_8055DA48)(mode, arg0, (int **)&spC, &sp8);
+    a = *(unsigned short *)((char *)spC + 0x1A);
+    b = *(unsigned short *)((char *)spC + 0x1C);
+    pixels = (unsigned char *)spC + *(int *)((char *)spC + 0x24);
+    table = (unsigned char *)spC + 0x2C;
+    x = sp8;
+    y = arg3;
+    for (i = 0; i < *(unsigned short *)((char *)spC + 0x12); i++) {
+        for (j = 0; j < *(unsigned short *)((char *)spC + 0x10); j++) {
+            unsigned int index = (unsigned int)(j + arg2);
+            unsigned int outIndex = (unsigned int)(i + arg3);
+            unsigned char *out = arg1 + ((outIndex >> 3) * (*(unsigned short *)((char *)spC + 0x12) * 4)) + ((index >> 3) * 32) + ((outIndex & 7) * 4);
+            unsigned int src = (unsigned int)(x * *(unsigned short *)((char *)spC + 0x10) + j);
+            unsigned char v = pixels[src] & 0xF;
+            *out = (*out & 0xF0) | v;
+        }
+    }
+    if (arg4 != 0)
+        *arg4 = *(unsigned char *)((char *)spC + *(unsigned short *)((char *)spC + 0x22) + sp8);
+}
+
+extern void DCStoreRange(void *, unsigned int);
+int ExpandFontSheet(void *arg0, void *src0, void *dst0) {
+    unsigned char *src = src0, *dst = dst0;
+    unsigned char *table = (unsigned char *)arg0 + 0x2C;
+    int format = *(unsigned short *)((char *)arg0 + 0x18);
+    int size = *(int *)((char *)arg0 + 0x28);
+    if (format == 0) {
+        int count = (size + (size >> 31)) >> 1;
+        int i;
+        for (i = 0; i < count; i++) {
+            unsigned char x = src[count - i - 1];
+            dst[(count - i - 1) * 2] = table[(x >> 6) & 3];
+            dst[(count - i - 1) * 2 + 1] = table[(x >> 4) & 3];
+            dst[(count - i - 1) * 2 - 2] = table[(x >> 2) & 3];
+            dst[(count - i - 1) * 2 - 1] = table[x & 3];
+        }
+    } else if (format == 2) {
+        int count = size / 4;
+        int i;
+        for (i = 0; i < count; i++) {
+            unsigned char x = src[count - i - 1];
+            int j;
+            for (j = 0; j < 4; j++)
+                dst[(count - i - 1) * 4 + j] = table[(x >> (6 - 2 * j)) & 3];
+        }
+    }
+    DCStoreRange(dst, size);
+    return size;
+}
+
+extern int ExpandFontSheet(void *, void *, void *);
+int OSInitFont(void *arg0) {
+    unsigned short mode=lbl_80558F58;
+    int result;
+    int size, aligned;
+    void *font, *cursor;
+    if(mode==(unsigned short)-1) {
+        int console=*(volatile int*)0x800000CC;
+        if(console==0) mode=(*(volatile unsigned short*)0xCC00206E>>1)&1;
+        else mode=0;
+        lbl_80558F58=mode;
+        lbl_8055DA48=(void*)ParseStringS;
+    }
+    if(mode==2) return 1;
+    if(mode==0) {
+        lbl_8055DA54=arg0;
+        font=(char*)arg0+0x1D120;
+        result=ReadFont((int)font,0,(int)arg0);
+        if(!result)return 0;
+        size=*(int*)((char*)arg0+0x24);
+        aligned=(size+0x1f)&~0x1f;
+        *(int*)((char*)arg0+0x24)=aligned;
+        ExpandFontSheet(arg0,(char*)arg0+size,(char*)arg0+aligned);
+    } else if(mode==1) {
+        lbl_8055DA50=arg0;
+        font=(char*)arg0+0xD3F00;
+        result=ReadFont((int)font,1,(int)arg0);
+        if(!result)return 0;
+        size=*(int*)((char*)arg0+0x24);
+        aligned=(size+0x1f)&~0x1f;
+        *(int*)((char*)arg0+0x24)=aligned;
+        ExpandFontSheet(arg0,(char*)arg0+size,(char*)arg0+aligned);
+    } else if(mode<6) {
+        lbl_8055DA54=arg0;
+        font=(char*)arg0+0xF4020;
+        result=ReadFont((int)font,0,(int)arg0);
+        if(!result)return 0;
+        size=*(int*)((char*)arg0+0x24);
+        aligned=(size+0x1f)&~0x1f;
+        *(int*)((char*)arg0+0x24)=aligned;
+        ExpandFontSheet(arg0,(char*)arg0+size,(char*)arg0+aligned);
+        cursor=(char*)arg0+0x20120;
+        lbl_8055DA50=cursor;
+        result=ReadFont((int)font,1,(int)cursor);
+        if(!result)return 0;
+        size=*(int*)((char*)cursor+0x24);
+        aligned=(size+0x1f)&~0x1f;
+        *(int*)((char*)cursor+0x24)=aligned;
+        ExpandFontSheet(cursor,(char*)cursor+size,(char*)cursor+aligned);
+    } else return 1;
+    return 1;
 }
 
 void OSGetFontTexture(int arg0, void **arg1, int *arg2, int *arg3, int *arg4) {
