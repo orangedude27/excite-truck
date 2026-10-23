@@ -25,10 +25,7 @@ extern void fn_802C8DBC(s32);
 extern void fn_802C8D74(void);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
-static inline void transform_vec(const f32 *matrix, const f32 *src, f32 *dst) {
-    f32 x = src[0];
-    f32 y = src[1];
-    f32 z = src[2];
+static inline void transform_vec_values(const f32 *matrix, const f32 *src, f32 *dst, f32 x, f32 y, f32 z) {
     f32 outX;
     f32 outY;
     f32 outZ;
@@ -37,15 +34,19 @@ static inline void transform_vec(const f32 *matrix, const f32 *src, f32 *dst) {
         outX = x * matrix[0] + y * matrix[3] + z * matrix[6];
         outY = x * matrix[1] + y * matrix[4] + z * matrix[7];
         outZ = x * matrix[2] + y * matrix[5] + z * matrix[8];
-          } else {
-          outX = x * matrix[0] + y * matrix[3] + z * matrix[6];
-          outY = outX * matrix[1] + y * matrix[4] + z * matrix[7];
-          outZ = outX * matrix[2] + outY * matrix[5] + z * matrix[8];
-      }
+    } else {
+        x = src[0];
+        y = src[1];
+        z = src[2];
+        outX = x * matrix[0] + y * matrix[3] + z * matrix[6];
+        outY = x * matrix[1] + y * matrix[4] + z * matrix[7];
+        outZ = x * matrix[2] + y * matrix[5] + z * matrix[8];
+    }
     dst[0] = outX + matrix[9];
     dst[1] = outY + matrix[10];
     dst[2] = outZ + matrix[11];
 }
+#define transform_vec(matrix, src, dst) transform_vec_values(matrix, src, dst, (src)[0], (src)[1], (src)[2])
 extern s32 fn_802315FC(s32);
 extern void fn_802E30C8(const char *);
 extern void fn_802E317C(const char *);
@@ -168,9 +169,9 @@ void fn_80231780(void *arg0) {
     f32 f29;
     f32 f30;
     f32 f31;
-    volatile f32 sp8;
-    volatile f32 spC;
-    volatile f32 sp10;
+    f32 sp8;
+    f32 spC;
+    f32 sp10;
     s32 i;
     s32 offset;
     u8 *record;
@@ -199,7 +200,7 @@ loop_body:
         sp8 = *(f32 *)(record + 4);
         spC = *(f32 *)(record + 8);
         sp10 = *(f32 *)(record + 0x0C);
-        if (arg0 != 0) transform_vec((f32 *)arg0, (const f32 *)&sp8, (f32 *)&sp8);
+        if (arg0 != 0) transform_vec((f32 *)arg0, &sp8, &sp8);
         {
             f32 rate = *(f32 *)((u8 *)fn_8022EDC4() + 0x38);
             f32 ratio;
@@ -262,19 +263,24 @@ extern void fn_80028E00(char *, const char *);
 extern s32 fn_802CAC34(char *, s32);
 #pragma small_data on
 extern char lbl_8055B9D4[];
+#pragma small_data on
 #pragma small_data off
+#pragma push
+#pragma small_data on
 s32 fn_80232578(const char *arg0) {
     register char *stringBase = lbl_80340440;
     s32 index;
     s32 offset;
     u8 *data;
     u8 *record;
+    u8 temp2;
+    u8 *record2;
     s32 unused;
     u32 size;
     u8 valid;
     u8 swap;
     void *parsed;
-    struct { s32 pad; char name[0xC]; } nameBuffer;
+    struct { char name[0xC]; s32 pad; } nameBuffer;
     s32 i;
     u8 temp;
     u32 value;
@@ -318,8 +324,9 @@ s32 fn_80232578(const char *arg0) {
         *(u32 *)(data + 0x10) += (u32)data;
         *(u32 *)(data + 0x18) += (u32)data;
 
+        i = 0;
         offset = 0;
-        for (i = 0; i < *(u16 *)(data + 0xC); i++, offset += 0x1C) {
+        for (; i < *(u16 *)(data + 0xC); i++, offset += 0x1C) {
             record = (u8 *)*(u32 *)(data + 0x10) + offset;
             temp = record[0xC]; record[0xC] = record[0xF]; record[0xF] = temp;
             temp = record[0xD]; record[0xD] = record[0xE]; record[0xE] = temp;
@@ -330,17 +337,17 @@ s32 fn_80232578(const char *arg0) {
             temp = record[0x18]; record[0x18] = record[0x1B]; record[0x1B] = temp;
             temp = record[0x19]; record[0x19] = record[0x1A]; record[0x1A] = temp;
 
-            record = (u8 *)*(u32 *)(data + 0x10) + offset;
-            temp = record[0]; record[0] = record[3]; record[3] = temp;
-            temp = record[1]; record[1] = record[2]; record[2] = temp;
+            record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
+            temp2 = record2[0]; record2[0] = record2[3]; record2[3] = temp2;
+            temp2 = record2[1]; record2[1] = record2[2]; record2[2] = temp2;
 
-            record = (u8 *)*(u32 *)(data + 0x10) + offset;
-            temp = record[8]; record[8] = record[0xB]; record[0xB] = temp;
-            temp = record[9]; record[9] = record[0xA]; record[0xA] = temp;
+            record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
+            temp2 = record2[8]; record2[8] = record2[0xB]; record2[0xB] = temp2;
+            temp2 = record2[9]; record2[9] = record2[0xA]; record2[0xA] = temp2;
 
-            record = (u8 *)*(u32 *)(data + 0x10) + offset;
-            temp = record[4]; record[4] = record[7]; record[7] = temp;
-            temp = record[5]; record[5] = record[6]; record[6] = temp;
+            record2 = (u8 *)*(u32 *)(data + 0x10) + offset;
+            temp2 = record2[4]; record2[4] = record2[7]; record2[7] = temp2;
+            temp2 = record2[5]; record2[5] = record2[6]; record2[6] = temp2;
         }
     }
 
@@ -360,7 +367,7 @@ s32 fn_80232578(const char *arg0) {
     fn_8023158C(data, arg0);
     return (s32)data;
 }
-
+#pragma pop
 void fn_80232928(void* hi) {
     lbl_8055F060 = hi;
 }
