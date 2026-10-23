@@ -1246,7 +1246,7 @@ extern "C" s32 VFiPFCACHE_WriteFATSectorAndFreeIfNeeded(void *arg0, s32 arg1, u3
     return temp_r3 & ((s32)(-temp_r3 | temp_r3) >> 31);
 }
 
-extern "C" s32 fn_800A8730(void *, s32, u32, s32, s32);
+extern "C" s32 fn_800A8730(void *, u32 *, void *, u32, s32, s32 *);
 extern "C" s32 VFiPFCACHE_WriteDataNumSectorAndFreeIfNeeded_800A9098(void *arg0, void *arg1, u32 arg2, s32 arg3, s32 arg4) {
     s32 result;
     if (arg2 >= *(u32 *)((u8 *)arg0 + 8))
@@ -2389,6 +2389,159 @@ extern "C" s32 fn_800ADA24(void *arg0, s32 arg1, u32 arg2, u32 *arg3, u32 *arg4,
     }
     return 0;
 }
+
+extern "C" s32 VFiPFFAT_ReadClusterPage(void *, u32, s32, s32 *, s32 *, void *);
+extern "C" s32 VFiPFFAT_WriteCluster(void *, s32, s32, s32, s32);
+extern "C" s32 fn_800AE7A8(void *, s32, s32);
+extern "C" s32 fn_800ADD84(void *arg0, s32 arg1, s32 arg2, s32 arg3, u32 *arg4, s32 *arg5) {
+    s32 sp18;
+    s32 sp14;
+    s32 sp10;
+    s32 spC;
+    void *sp8;
+    s32 temp_cr0_eq;
+    s32 temp_r0;
+    s32 temp_r10;
+    s32 temp_r3;
+    s32 temp_r3_2;
+    s32 temp_r3_3;
+    s32 temp_r3_4;
+    s32 temp_r3_5;
+    s32 temp_r7;
+    s32 temp_r9;
+    u32 *tableEntry;
+    u32 temp_r31;
+    u32 temp_r30;
+    s32 var_r29;
+    u32 var_r28;
+    u32 var_r27;
+    s32 var_r26;
+    s32 *var_r25;
+
+    temp_r10 = *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C);
+    *arg5 = -1;
+    *arg4 = -1;
+    temp_r31 = ((volatile u32 *)lbl_802EEF40)[temp_r10 * 5];
+    temp_r0 = *(volatile s32 *)((u8 *)arg0 + 0x14);
+    tableEntry = ((u32 *)lbl_802EEF40) + temp_r10 * 5;
+    temp_r30 = tableEntry[1];
+    if ((temp_r0 != 0) && ((u32)temp_r0 <= (u32)arg1)) {
+        var_r25 = &sp14;
+        sp14 = *(s32 *)((u8 *)arg0 + 0x18);
+        temp_r7 = *(s32 *)((u8 *)arg0 + 0x14);
+        var_r28 = (u32)arg1 - temp_r7;
+        var_r26 = temp_r7 + 1;
+    } else {
+        var_r25 = *(s32 **)((u8 *)arg0 + 8);
+        var_r28 = (u32)arg1;
+        var_r26 = 1;
+    }
+    var_r29 = *var_r25;
+    sp18 = var_r29;
+    if ((u32)arg2 == 2U) {
+        if (((s32)var_r28 != 0) && (arg3 != 0)) {
+            var_r28 = (var_r28 + arg3) - 1;
+        } else {
+            var_r28 = (u32)arg3;
+        }
+        temp_r9 = *(s32 *)((u8 *)arg0 + 0xC);
+        var_r27 = var_r28;
+        if (temp_r9 != 0) {
+            var_r29 = temp_r9;
+            var_r28 = 0U;
+            var_r27 = (*(s32 *)((u8 *)arg0 + 0x10) + arg3) - arg1;
+            sp18 = *(s32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C) * 0x14 + 8);
+            var_r26 = *(s32 *)((u8 *)arg0 + 0x10) + 1;
+        }
+    } else {
+        if (((u32)arg2 == 1U) && (var_r29 == 0)) {
+            var_r28 += 1;
+        }
+        var_r27 = var_r28;
+    }
+    if ((s32)var_r28 != 0) {
+        temp_r3_4 = ((s32 (*)(void *, s32, void **, s32 *))fn_800A8D08)(
+            *(void **)((u8 *)arg0 + 0x34), -1, &sp8, &sp10);
+        if (temp_r3_4 != 0) {
+            return temp_r3_4;
+        }
+        temp_r3_3 = fn_800ACA5C(*(void **)((u8 *)arg0 + 0x34), sp8, var_r29);
+        if (temp_r3_3 != 0) {
+            VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
+            return temp_r3_3;
+        }
+        *(s16 *)((u8 *)sp8 + 2) = 0;
+        spC = 1;
+loop_33:
+        if (var_r29 != 0) {
+            temp_r3_2 = VFiPFFAT_ReadClusterPage(arg0, (u32)var_r29, var_r26, &sp18, &spC, sp8);
+            if ((temp_r3_2 != 0) && ((u32)(sp18 + 0x10000) != 0xFFFFU)) {
+                VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
+                return temp_r3_2;
+            }
+            goto block_26;
+        }
+        var_r26 -= 1;
+        sp18 = *(s32 *)((u8 *)lbl_802EEF40 + *(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x1C) * 0x14 + 8);
+block_26:
+        if ((((u32)sp18 < 2U) ||
+             ((u32)sp18 >= (u32)(*(s32 *)((u8 *)*(void **)((u8 *)arg0 + 0x34) + 0x34) + 2))) &&
+            ((u32)sp18 < temp_r30)) {
+            VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
+            return 0xE;
+        }
+        if (((s32)arg2 == 0) || ((u32)sp18 < temp_r30)) {
+            var_r29 = sp18;
+            var_r26 += 1;
+            if (var_r28 == 0)
+                goto block_35;
+            var_r28 -= 1;
+            if ((u32)var_r29 < temp_r31)
+                goto loop_33;
+        }
+block_35:
+        var_r27 = var_r28;
+        VFiPFCACHE_FreeFATPage_800A8E10(*(void **)((u8 *)arg0 + 0x34), sp8);
+        goto block_36;
+    }
+block_36:
+    if (((s32)arg2 != 0) && ((u32)sp18 >= temp_r30)) {
+        *arg4 = 0;
+        temp_r3_5 = ((s32 (*)(void *, s32, u32, u32 *, s32 *, s32))fn_800ADA24)(
+            arg0, var_r27 + 1, var_r26, arg4, &sp18, 0);
+        arg2 = temp_r3_5;
+        if (temp_r3_5 != 0) {
+            if ((u32)(*arg4 + 0x10000) != 0xFFFFU) {
+                ((s32 (*)(void *, s32, s32, s32))fn_800AE7A8)(arg0, *arg4, var_r26, -1);
+            }
+            *arg4 = -1;
+            sp18 = -1;
+        } else {
+            arg2 = 0;
+        }
+        if (arg2 != 0) {
+            return arg2;
+        }
+        if ((u32)(sp18 + 0x10000) == 0xFFFFU) {
+            return 6;
+        }
+        if ((s32)*var_r25 == 0) {
+            *var_r25 = *arg4;
+            goto block_51;
+        }
+        temp_r3 = VFiPFFAT_WriteCluster(arg0, var_r29, var_r26 - 1, *arg4, 1);
+        if (temp_r3 != 0) {
+            return temp_r3;
+        }
+block_51:
+        var_r29 = sp18;
+        goto block_52;
+    }
+block_52:
+    *arg5 = var_r29;
+    return 0;
+}
+
 extern "C" s32 fn_800AD24C(void *, s32, s32, s32 *, s32 *);
 extern "C" s32 fn_800AE108(void *arg0, s32 arg1, s32 arg2, u32 arg3, s32 *arg4, s32 arg5) {
     s32 end = -1;
@@ -3483,9 +3636,16 @@ extern "C" const u8 lbl_8055921C[];
 extern "C" const u8 lbl_80559220[];
 extern "C" const u8 lbl_80559224[];
 extern "C" const u8 lbl_80559228[];
+#pragma push
+#pragma scheduling on
 extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
     s32 var_r27;
-    s32 mode;
+    u32 mode;
+    s32 var_r4;
+    s32 var_r5;
+    u16 temp_r3_3;
+    u8 *temp_r4;
+    u8 temp_r0;
 
     var_r27 = 0;
     *(u8 **)arg0 = *(u8 **)((u8 *)arg0 + 4);
@@ -3505,10 +3665,10 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
 
     mode = fn_800A4D44(arg0);
     *(u8 **)((u8 *)arg0 + 4) = *(u8 **)arg0;
-    if ((lbl_803D2140[0x60 / 4] & 2) == 2) {
-        var_r27 = fn_800B4D5C(arg0, 2, arg1);
+    if ((u32)(lbl_803D2140[0x60 / 4] & 2) == 2U) {
+        var_r27 = ((s32 (*)(void *, u32, u32))fn_800B4D5C)(arg0, 2, arg1);
         if (var_r27 != 0) {
-            if (mode == 1)
+            if (mode == 1U)
                 *(u8 **)((u8 *)arg0 + 4) += var_r27;
             else
                 *(u8 **)((u8 *)arg0 + 4) += var_r27 * 2;
@@ -3516,57 +3676,65 @@ extern "C" s32 VFiPFPATH_GetNextTokenOfPath(void *arg0, s32 arg1) {
     }
 
     if (var_r27 == 0) {
-    loop:
-        if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 2, 0, 1) == 0)
-            return 0;
-
-        if (mode == 1 &&
-            ((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]
-                ((s8)**(u8 **)((u8 *)arg0 + 4), 1) != 0) {
-            *(u8 **)((u8 *)arg0 + 4) += 1;
-            if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]
-                    ((s8)**(u8 **)((u8 *)arg0 + 4), 2) == 0 ||
-                **(u8 **)((u8 *)arg0 + 4) == 0)
-                return 2;
-        }
-
-        if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 2, 0, 1) == 0 ||
-            VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 2, 0, 1) == 0)
-            return 0;
-
-        if ((lbl_803D2140[0x38 / 4] & 0x10000) == 0) {
-            if (mode == 1) {
-                u32 c = **(u8 **)((u8 *)arg0 + 4);
-                if (c < 0x80) {
-                    if (c < 0x20 || (lbl_802EEEE0[(u8)(c - 0x20)] & 1) == 0)
-                        goto invalid;
-                }
-            } else if (mode == 2) {
-                u8 *p = *(u8 **)((u8 *)arg0 + 4);
-                u16 c = (p[0] << 8) + p[1];
-                if (c < 0x80) {
-                    if (c < 0x20 || (c & 0xFF00) != 0 ||
-                        (lbl_802EEEE0[(u8)(c - 0x20)] & 1) == 0)
-                        goto invalid;
-                }
+        do {
+            if (mode == 1U &&
+                ((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]
+                    ((s8)**(u8 **)((u8 *)arg0 + 4), 1) != 0) {
+                *(u8 **)((u8 *)arg0 + 4) += 1;
+                if (((s32 (**)(s8, s32))((u8 *)lbl_803D2140 + 0x54))[0]
+                        ((s8)**(u8 **)((u8 *)arg0 + 4), 2) == 0 ||
+                    (s8)**(u8 **)((u8 *)arg0 + 4) == 0)
+                    return 2;
+                goto advance;
             }
-        }
-        goto advance;
-    invalid:
-        if (arg1 == 0 ||
-            (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, 2, 0, 1) != 0 &&
-             VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, 2, 0, 1) != 0))
-            return 2;
-    advance:
-        if (mode == 1)
-            *(u8 **)((u8 *)arg0 + 4) += 1;
-        else
-            *(u8 **)((u8 *)arg0 + 4) += 2;
-        goto loop;
+
+            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055921C, 2, 0, 1) == 0)
+                goto done;
+            if (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559220, 2, 0, 1) == 0)
+                goto done;
+
+            if ((lbl_803D2140[0x38 / 4] & 0x10000) == 0) {
+                if (mode != 1U ||
+                    ((temp_r0 = **(u8 **)((u8 *)arg0 + 4)) >= 0x80U) ||
+                    (temp_r0 >= 0x20U &&
+                     (*((u8 *)((u32)lbl_802EEEE0 + temp_r0) - 0x20) & 1) != 0)) {
+                    if (mode == 2U) {
+                        temp_r4 = *(u8 **)((u8 *)arg0 + 4);
+                        var_r5 = 1;
+                        temp_r3_3 = (temp_r4[0] << 8) + temp_r4[1];
+                        if (temp_r3_3 < 0x80U) {
+                            var_r4 = 0;
+                            if ((u8)temp_r3_3 >= 0x20U && (temp_r3_3 & 0xFF00) == 0 &&
+                                (lbl_802EEEE0[(u8)((u8)temp_r3_3 - 0x20)] & 1) != 0)
+                                var_r4 = 1;
+                            if (var_r4 == 0)
+                                var_r5 = 0;
+                        }
+                        if (var_r5 == 0)
+                            goto invalid;
+                        goto advance;
+                    }
+                    goto advance;
+                }
+                goto invalid;
+            }
+            goto advance;
+        invalid:
+            if (arg1 == 0 ||
+                (VFiPFSTR_StrNCmp((s32)arg0, lbl_80559224, 2, 0, 1) != 0 &&
+                 VFiPFSTR_StrNCmp((s32)arg0, lbl_80559228, 2, 0, 1) != 0))
+                return 2;
+        advance:
+            if (mode == 1U)
+                *(u8 **)((u8 *)arg0 + 4) += 1;
+            else
+                *(u8 **)((u8 *)arg0 + 4) += 2;
+        } while (VFiPFSTR_StrNCmp((s32)arg0, lbl_8055920C, 2, 0, 1) != 0);
     }
+done:
     return 0;
 }
-
+#pragma pop
 extern "C" void fn_800B36C4(s32 arg0, s32 arg1, s32 arg2) {
 fn_800B23F8(arg0, arg1, arg2, 0);
 }
