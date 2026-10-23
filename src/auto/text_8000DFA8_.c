@@ -655,7 +655,7 @@ void fn_80010F20(void) {
 }
 
 #pragma scheduling on
-extern void fn_80011280(s32, s32, f32, f32, f32, f32);
+extern void fn_80011280(s32, s32, f32, f64, f32, f32);
 extern void fn_8000E3B4(s32);
 extern void fn_8000E874(s32);
 extern void fn_8000EF74(s32);
