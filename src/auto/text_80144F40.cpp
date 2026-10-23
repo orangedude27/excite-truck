@@ -467,6 +467,24 @@ extern "C" void fn_80145B94(void *arg0, u32 arg1) {
     s32 a = *(s32 *)((u8 *)arg0 + 0x18);
     ((void (*)(s32, s32, s32, ...))fn_8000FF88)(a, b, (s32)arg1, last, value, scale);
 }
+
+#pragma dont_inline on
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_80145C08(void *arg0, const char *arg1) {
+    f32 scale = fn_801452B4(*(f32 *)((u8 *)arg0 + 8));
+    f32 input = *(f32 *)((u8 *)arg0 + 4);
+    s32 id = *(s32 *)((u8 *)arg0 + 0xC);
+    f32 value = ((f32 (*)(s32, f32))fn_801451DC)(id, input);
+    f32 last = *(f32 *)((u8 *)arg0 + 0x10);
+    s32 b = *(s32 *)((u8 *)arg0 + 0x14);
+    s32 a = *(s32 *)((u8 *)arg0 + 0x18);
+    ((void (*)(s32, s32, s32, ...))fn_800104B0)(a, b, (s32)arg1, last, value, scale);
+}
+#pragma scheduling on
+#pragma pop
+#pragma dont_inline reset
+
 #pragma scheduling on
 #pragma pop
 #pragma dont_inline reset
@@ -816,6 +834,133 @@ extern "C" void fn_80146730(void *arg0) {
         }
         *(void **)arg0 = NULL;
     }
+}
+
+extern "C" char lbl_8032D114[];
+extern "C" char lbl_8032D124[];
+extern "C" char lbl_8055E20C[];
+extern "C" char lbl_8055E210[];
+extern "C" char lbl_8055E214[];
+extern "C" char lbl_8055E218[];
+extern "C" char lbl_8055E220[];
+extern "C" f32 lbl_8056160C;
+extern "C" f32 lbl_80561610;
+extern "C" char lbl_8032D114[];
+extern "C" char lbl_8032D124[];
+extern "C" __declspec(section ".sdata") char lbl_80559E48[];
+extern "C" __declspec(section ".sdata") char lbl_8055E20C[];
+extern "C" __declspec(section ".sdata") char lbl_8055E210[];
+extern "C" __declspec(section ".sdata") char lbl_8055E214[];
+extern "C" __declspec(section ".sdata") char lbl_8055E218[];
+extern "C" __declspec(section ".sdata") char lbl_8055E220[];
+extern "C" __declspec(section ".sdata") f32 lbl_8056160C;
+extern "C" __declspec(section ".sdata") f32 lbl_80561610;
+extern "C" void fn_80146824(void *arg0) {
+    struct Block { s32 base; s32 count; };
+    struct Record { f32 f0, f4, f8, fC; s32 value; char *label; };
+    struct Data { Record *records; s32 count, capacity; Record *recordsAgain; };
+    struct Proxy { s32 a, b; u8 pad8[4]; Data *data; };
+    struct Owner {
+        u8 pad[0x2C];
+        Block *block2C;
+        Block *block30;
+        Block *block34;
+        u8 pad38[0x10];
+        Data *data;
+        Proxy *proxy;
+    };
+    typedef void *(*AllocFn)(s32, const char *, s32, s32, s32, s32);
+    Owner *owner = (Owner *)arg0;
+    Data *data = (Data *)((AllocFn)fn_801284F8)(0x10, lbl_8032D114,
+        owner->block30->count, owner->block30->count * 4,
+        owner->block2C->count, owner->block2C->count * 4);
+    if (data != 0) {
+        s32 capacity = owner->block30->count * 4 - owner->block30->count
+            + owner->block34->count * 2
+            + owner->block2C->count * 4 - owner->block2C->count + 1;
+        data->records = (Record *)fn_8012850C(capacity * 0x18, lbl_80559E48);
+        data->count = 0;
+        data->capacity = capacity;
+        data->recordsAgain = data->records;
+        owner->data = data;
+    }
+    Proxy *proxy = (Proxy *)fn_801284F8(0x18, lbl_8032D124);
+    if (proxy != 0) {
+        proxy->a = 0;
+        proxy->b = 0;
+        proxy->data = owner->data;
+        owner->proxy = proxy;
+    }
+    s32 i, offset;
+    i = 0;
+    offset = 0;
+    for (; i < owner->block2C->count; i++, offset += 0x28) {
+        Record *r = (Record *)((Data *)owner->proxy->data)->records +
+            ((Data *)owner->proxy->data)->count;
+        ((Data *)owner->proxy->data)->count++;
+        fn_80145B50(r, 0);
+        r->value = *(s32 *)owner->block2C->base + offset;
+        r->label = lbl_8055E20C;
+        r = (Record *)((Data *)owner->proxy->data)->records +
+            ((Data *)owner->proxy->data)->count;
+        ((Data *)owner->proxy->data)->count++;
+        fn_80145B50(r, 1);
+        r->value = *(s32 *)owner->block2C->base + offset;
+        r->label = lbl_8055E210;
+    }
+    i = 0;
+    offset = 0;
+    for (; i < owner->block30->count; i++, offset += 0x20) {
+        Record *r = (Record *)((Data *)owner->proxy->data)->records +
+            ((Data *)owner->proxy->data)->count;
+        ((Data *)owner->proxy->data)->count++;
+        fn_80145B50(r, 0);
+        r->value = *(s32 *)owner->block30->base + offset;
+        r->label = lbl_8055E20C;
+        r = (Record *)((Data *)owner->proxy->data)->records +
+            ((Data *)owner->proxy->data)->count;
+        ((Data *)owner->proxy->data)->count++;
+        fn_80145B50(r, 1);
+        r->value = *(s32 *)owner->block30->base + offset;
+        r->label = lbl_8055E214;
+        r = (Record *)((Data *)owner->proxy->data)->records +
+            ((Data *)owner->proxy->data)->count;
+        ((Data *)owner->proxy->data)->count++;
+        fn_80145B50(r, 2);
+        r->value = *(s32 *)owner->block30->base + offset;
+        r->label = lbl_8055E218;
+    }
+    i = 0;
+    offset = 0;
+    for (; i < owner->block34->count; i++, offset += 0x1C) {
+        Record *r = (Record *)((Data *)owner->proxy->data)->records +
+            ((Data *)owner->proxy->data)->count;
+        ((Data *)owner->proxy->data)->count++;
+        fn_80145B50(r, 0);
+        r->value = *(s32 *)owner->block34->base + offset;
+        r->label = lbl_8055E20C;
+        r = (Record *)((Data *)owner->proxy->data)->records +
+            ((Data *)owner->proxy->data)->count;
+        ((Data *)owner->proxy->data)->count++;
+        fn_80145B50(r, 1);
+        r->value = *(s32 *)owner->block34->base + offset;
+        r->label = lbl_8055E210;
+        r = (Record *)((Data *)owner->proxy->data)->records +
+            ((Data *)owner->proxy->data)->count;
+        ((Data *)owner->proxy->data)->count++;
+        fn_80145B50(r, 2);
+        r->value = *(s32 *)owner->block34->base + offset;
+        r->label = lbl_8055E220;
+    }
+    Record *last = (Record *)((Data *)owner->proxy->data)->records +
+        ((Data *)owner->proxy->data)->count;
+    ((Data *)owner->proxy->data)->count++;
+    last->label = (char *)arg0 + 0x40;
+    last->value = 0;
+    last->f0 = lbl_805615D4;
+    last->f4 = lbl_805615D4;
+    last->f8 = lbl_8056160C;
+    last->fC = lbl_80561610;
 }
 
 extern "C" f32 fn_800108C8(const char *, f32);
