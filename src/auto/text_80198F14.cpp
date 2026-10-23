@@ -21,6 +21,20 @@ static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32
         dst[2] = (y * matrix[5] + x * matrix[2]) + z * matrix[8];
     }
 }
+static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *compare, volatile f32 *src, f32 *matrix) {
+    f32 x = src[0];
+    f32 y = src[1];
+    f32 z = src[2];
+    if (dst == compare) {
+        dst[0] = (x * matrix[0] + y * matrix[3]) + z * matrix[6];
+        dst[1] = (x * matrix[1] + y * matrix[4]) + z * matrix[7];
+        dst[2] = (x * matrix[2] + y * matrix[5]) + z * matrix[8];
+    } else {
+        dst[0] = (y * matrix[3] + x * matrix[0]) + z * matrix[6];
+        dst[1] = (y * matrix[4] + x * matrix[1]) + z * matrix[7];
+        dst[2] = (y * matrix[5] + x * matrix[2]) + z * matrix[8];
+    }
+}
 class VTab1A1E7C {
  public:
  virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03(); virtual void v04();
@@ -1329,18 +1343,10 @@ extern "C" void fn_801A1F98(void *arg0, f32 *min, f32 *max) {
     max[2] = matrix[11];
     for (int i = 0; i < 8; i++) {
         matrix = (f32 *)shape->Call();
-        f32 cx = corner[0];
-        f32 cy = corner[1];
-        f32 cz = corner[2];
-        if (point == sameCorner) {
-            point[0] = (cx * matrix[0] + cy * matrix[3]) + cz * matrix[6] + matrix[9];
-            point[1] = (cx * matrix[1] + cy * matrix[4]) + cz * matrix[7] + matrix[10];
-            point[2] = (cx * matrix[2] + cy * matrix[5]) + cz * matrix[8] + matrix[11];
-        } else {
-            point[0] = (cy * matrix[3] + cx * matrix[0]) + cz * matrix[6] + matrix[9];
-            point[1] = (cy * matrix[4] + cx * matrix[1]) + cz * matrix[7] + matrix[10];
-            point[2] = (cy * matrix[5] + cx * matrix[2]) + cz * matrix[8] + matrix[11];
-        }
+        fn801A1F98Transform(point, corner, matrix);
+        point[0] += matrix[9];
+        point[1] += matrix[10];
+        point[2] += matrix[11];
         if (min[0] < point[0]) min[0] = point[0];
         if (min[1] < point[1]) min[1] = point[1];
         if (min[2] < point[2]) min[2] = point[2];
