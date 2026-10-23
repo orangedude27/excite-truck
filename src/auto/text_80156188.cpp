@@ -150,7 +150,7 @@ s32 fn_801562BC(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 extern s32 fn_801562BC(void*, s32, s32, s32);
 extern s32 fn_80156248(void*, s32);
 extern s32 fn_80138968(void*);
-extern void fn_802E30C8(const char*, void*);
+extern void fn_802E30C8(const char*, ...);
 extern s32 fn_80138BA0(s32, s32);
 extern char lbl_8032E270[];
 extern char lbl_8032E2AC[];
@@ -196,7 +196,7 @@ extern "C" f32 lbl_8056173C;
 extern "C" void fn_801564B0(void) {
     struct Entry { s32 id; s32 kind; };
     struct Config {
-        void *vtable; Entry *entries; s32 count; s32 capacity;
+        void *vtable; Entry *entries; volatile s32 count; s32 capacity;
         u8 pad10[0x80]; void **objects; s32 objectCount; s32 objectCapacity;
         u8 pad9c[0x40]; f32 value0; f32 value1;
     };
@@ -231,19 +231,18 @@ extern "C" void fn_801564B0(void) {
 
     u8 path[0x40];
     char input[0x10], text[0x20];
-    void *helper;
+    register void *helper;
     void *resource;
     void *wrapper;
-    Reader *reader;
-    Config *config;
-    u8 *base = lbl_8032E238;
+    register Reader *reader;
+    register Config *config;
+    register u8 *base = lbl_8032E238;
 
     fn_8012E81C(base + 0xAC);
     helper = fn_801284F8(8, (const char *)&lbl_80559FD0);
     if (helper != 0) {
         *(void **)helper = lbl_8032E46C;
-        fn_80156248(path, 0x40);
-        s32 helperId = fn_80138968(path);
+        s32 helperId = fn_80138968((void *)fn_80156248(path, 0x40));
         *(s32 *)((u8 *)helper + 4) = helperId;
         if (helperId == 0)
             fn_802E317C((const char *)base + 0xBC, path);
@@ -269,11 +268,11 @@ extern "C" void fn_801564B0(void) {
                 char *result = reader->read(input, 0);
                 if (result == 0)
                     break;
-                s32 oldCount = config->count;
-                if (oldCount + 1 > config->capacity)
+                if (config->count + 1 > config->capacity)
                     break;
-                config->count = oldCount + 1;
+                s32 oldCount = config->count;
                 Entry *entry = &config->entries[oldCount];
+                config->count = oldCount + 1;
                 entry->id = fn_801563BC((s32)result, helper);
 
                 char *src = input;
@@ -337,7 +336,7 @@ extern "C" void fn_801564B0(void) {
         if (fallback != 0) {
             fallback->vtable = lbl_8032E448;
             TextManager *textManager = (TextManager *)fn_8015621C();
-            char *value = textManager->get((const char *)lbl_8032E238, (const char *)&lbl_80559FC0);
+            char *value = textManager->get((const char *)base, (const char *)&lbl_80559FC0);
             value = textManager->get((const char *)base + 0x1A0, value);
             fallback->id = fn_801563BC((s32)value, helper);
         }
