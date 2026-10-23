@@ -10,7 +10,6 @@ extern int ReleaseAllChannel__Q46nw4hbm3snd6detail8WsdTrackFi_801016C0(int);
 extern int fn_800EAD00(void *);
 extern "C" const char lbl_80328178[];
 extern "C" const char lbl_8032818C[];
-extern "C" double lbl_80561158;
 typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
