@@ -2,8 +2,6 @@
 
 #pragma cplusplus on
 struct Parser {
-    virtual void slot0();
-    virtual void slot1();
     virtual void slot2();
     virtual int has(const char *);
     virtual int enumerate(int, char **, int *);
@@ -255,6 +253,94 @@ loop:
     entry++;
     goto loop;
 }
+
+#pragma cplusplus on
+extern "C" void fn_80272354(void *);
+extern "C" unsigned char fn_80008050(int);
+extern "C" int strncmp(const char *, const char *, unsigned int);
+extern "C" int sprintf(char *, const char *, ...);
+extern "C" void DBPrintf_80270B00(const char *, ...);
+extern "C" char lbl_80346B00[];
+extern "C" char lbl_8055C5A4[];
+extern "C" char lbl_8055C5AC[];
+extern "C" char lbl_8055C5B4[];
+extern "C" int fn_80272028(void *arg0, Parser *arg1, int arg_sp0) {
+    struct Stack {
+        char *path;
+        int hash;
+        char buffer[0x30];
+    } stack;
+    register char *name = lbl_80346B00;
+    register Parser *parser = arg1;
+    register void *output = arg0;
+    int index;
+    int count;
+    unsigned char bit;
+
+    #pragma unused(arg_sp0)
+    fn_80272354(arg0);
+
+    if (parser->has(name + 0x424) == 0) {
+        DBPrintf_80270B00(name + 0x430, name + 0x424);
+        return 0;
+    }
+    *(float *)output = parser->getFloat(name + 0x424);
+
+    if (parser->has(name + 0x464) == 0) {
+        DBPrintf_80270B00(name + 0x430, name + 0x464);
+        return 0;
+    }
+    *(float *)((char *)output + 4) = parser->getFloat(name + 0x464);
+
+    if (parser->has(name + 0x470) == 0) {
+        DBPrintf_80270B00(name + 0x430, name + 0x470);
+        return 0;
+    }
+    *(float *)((char *)output + 8) = parser->getFloat(name + 0x470);
+
+    if (parser->has(lbl_8055C5A4) == 0) {
+        DBPrintf_80270B00(name + 0x430, lbl_8055C5A4);
+        return 0;
+    }
+    *(float *)((char *)output + 0xC) = parser->getFloat(lbl_8055C5A4);
+    *(int *)((char *)output + 0x5C) = parser->getOption(lbl_8055C5AC, 2);
+
+    index = 0;
+    for (;;) {
+        if (parser->enumerate(index, &stack.path, &stack.hash) == 0) {
+            break;
+        }
+        if (strncmp(stack.path, lbl_8055C5B4, 5) == 0 &&
+            stack.path[5] != '_') {
+            bit = fn_80008050(stack.hash);
+            if (bit < 0x20) {
+                *(int *)((char *)output + 0x10) |= 1 << bit;
+            } else {
+                *(int *)((char *)output + 0x14) |= 1 << (bit - 0x20);
+            }
+        }
+        index++;
+    }
+
+    if (parser->has(name + 0x47C) == 0) {
+        DBPrintf_80270B00(name + 0x430, name + 0x47C);
+        return 0;
+    }
+    count = parser->getCount(name + 0x47C);
+    *(int *)((char *)output + 0x58) = count;
+
+    for (index = 0; index < count; index++) {
+        sprintf(stack.buffer, name + 0x48C, index);
+        if (parser->has(stack.buffer) == 0) {
+            DBPrintf_80270B00(name + 0x430, stack.buffer);
+            return 0;
+        }
+        *(int *)((char *)output + 0x18 + index * 4) =
+            parser->getCount(stack.buffer);
+    }
+    return 1;
+}
+#pragma cplusplus reset
 
 extern int stricmp(const char *, const char *);
 extern char *lbl_80346B54[];
