@@ -2,6 +2,15 @@
 // split_file divides it into the game's real files (file_status shows its range).
 #include <types.h>
 extern int lbl_80333918[64];
+class Fn8019E500Matrix {
+public:
+    virtual void v00(); virtual void v01(); virtual void v02(); virtual void v03();
+    virtual void v04(); virtual void v05(); virtual void v06(); virtual void v07();
+    virtual void v08(); virtual void v09(); virtual void v10(); virtual void v11();
+    virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+    virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+    virtual f32* GetMatrix();
+};
 extern "C" char lbl_80333640[];
 extern "C" void* fn_801284F8(s32, const char*);
 extern "C" void fn_801A0378(void*, void*);
@@ -457,6 +466,67 @@ extern "C" s32 fn_8019E1F4(f32* arg0, f32* arg1, f32 f0, f32 f1, f32 f2) {
     if (*arg1 < hi) *arg1 = hi;
     if (*arg0 > *arg1) return 0;
     return *arg1 < lbl_805622D0;
+}
+
+extern "C" u8 lbl_80435020[];
+extern f32 lbl_8056236C;
+extern "C" s32 fn_8019E500(void* arg0, void* arg1) {
+    f32* (*getMatrix)(void*);
+    f32 rows[3][4];
+    f32 output[12];
+    s32 result = 0;
+    s32 i, row;
+    getMatrix = (f32* (*)(void*))(*(void***)arg1)[20];
+    f32* source = getMatrix(arg1);
+    rows[0][0]=source[0]; rows[0][1]=source[1]; rows[0][2]=source[2];
+    rows[1][0]=source[3]; rows[1][1]=source[4]; rows[1][2]=source[5];
+    rows[2][0]=source[6]; rows[2][1]=source[7]; rows[2][2]=source[8];
+    rows[0][3]=*(f32*)((u8*)arg1+0x24);
+    rows[1][3]=*(f32*)((u8*)arg1+0x28);
+    rows[2][3]=*(f32*)((u8*)arg1+0x2c);
+    f32 base0=source[9], base1=source[10], base2=source[11];
+    for (row=0; row<3; row++) {
+        if (row != 1) {
+            s32 next=(row+1)%3;
+            s32 prev=(row+2)%3;
+            output[0]=rows[next][0];
+            output[1]=rows[next][1];
+            output[2]=rows[next][2];
+            output[3]=rows[prev][0];
+            output[4]=rows[prev][1];
+            output[5]=rows[prev][2];
+            output[6]=rows[row][0];
+            output[7]=rows[row][1];
+            output[8]=rows[row][2];
+            output[9]=base0;
+            output[10]=base1;
+            output[11]=base2;
+            for (i=0;i<4;i++) {
+                f32 a=(i&1) ? lbl_805622DC : lbl_805622E0;
+                f32 b=(i&2) ? lbl_805622DC : lbl_805622E0;
+                f32 d0=rows[next][3]-lbl_8056236C;
+                f32 d1=rows[prev][3]-lbl_8056236C;
+                output[9]+=rows[next][0]*d0*a + rows[prev][0]*d1*b;
+                output[10]+=rows[next][1]*d0*a + rows[prev][1]*d1*b;
+                output[11]+=rows[next][2]*d0*a + rows[prev][2]*d1*b;
+                if (lbl_80435020 != 0) {
+                    *(void**)(lbl_80435020+0x0)=lbl_80333918;
+                    *(void**)(lbl_80435020+0x4)=*(void**)((u8*)arg1+4);
+                    *(s32*)(lbl_80435020+0x8)=0;
+                    *(void**)(lbl_80435020+0xc)=output;
+                    *(f32*)(lbl_80435020+0x10)=*(f32*)((u8*)arg1+0x10);
+                    *(f32*)(lbl_80435020+0x14)=*(f32*)((u8*)arg1+0x14);
+                    *(u32*)(lbl_80435020+0x18)=0x54554245;
+                    *(s32*)(lbl_80435020+0x1c)=0;
+                    *(s32*)(lbl_80435020+0x20)=0x64;
+                    *(f32*)(lbl_80435020+0x24)=lbl_8056236C;
+                    *(f32*)(lbl_80435020+0x28)=rows[row][3];
+                }
+                result |= fn_8019D618(lbl_80435020, arg0, 1, arg1);
+            }
+        }
+    }
+    return result != 0;
 }
 
 extern "C" s32 fn_8019E834(s32 arg0, s32 arg1) {
