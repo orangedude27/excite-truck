@@ -61,6 +61,8 @@ extern u32 lbl_8055D848;
 extern s32 lbl_8055D860;
 extern char __ErrorInfo[];
 extern void (*lbl_8055D8B8)(s32, void *);
+extern void OSCreateAlarm(void *);
+extern void OSSetPeriodicAlarm(void *, u32, u32, s32, u32, u32, void (*)(void));
 extern s32 executing_8055D8C8;
 extern char DummyCommandBlock_80376AA0[];
 extern void __DVDFSInit(void);
