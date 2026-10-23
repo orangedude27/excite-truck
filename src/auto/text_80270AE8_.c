@@ -2,6 +2,8 @@
 
 #pragma cplusplus on
 struct Parser {
+    virtual void slot0();
+    virtual void slot1();
     virtual void slot2();
     virtual int has(const char *);
     virtual int enumerate(int, char **, int *);
