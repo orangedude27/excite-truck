@@ -4473,90 +4473,78 @@ extern "C" void fn_802C98DC(f32 *, f32 *, f32 *, f32 *);
 extern "C" f64 fn_8002F234(f32);
 extern "C" f64 atan(f32);
 extern "C" f32 lbl_80563584;
-static inline void fn_8022A210_transform(f32 *out, f32 *matrix, volatile f32 *in) {
-    f32 x, y, z, a, b, c;
-    if (out == in) {
-        y = in[1];
-        x = in[0];
-        z = in[2];
-        a = x * matrix[0];
-        b = y * matrix[3];
-        c = z * matrix[6];
-        out[0] = (a + b) + c;
-        a = x * matrix[1];
-        b = y * matrix[4];
-        c = z * matrix[7];
-        out[1] = (a + b) + c;
-        a = x * matrix[2];
-        b = y * matrix[5];
-        c = z * matrix[8];
-        out[2] = (a + b) + c;
-    } else {
-        x = in[0];
-        y = in[1];
-        z = in[2];
-        a = x * matrix[0];
-        b = y * matrix[3];
-        c = z * matrix[6];
-        out[0] = (a + b) + c;
-        a = x * matrix[1];
-        b = y * matrix[4];
-        c = z * matrix[7];
-        out[1] = (a + b) + c;
-        a = x * matrix[2];
-        b = y * matrix[5];
-        c = z * matrix[8];
-        out[2] = (a + b) + c;
-    }
-}
+
 
 extern "C" void fn_8022A210(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
-    register s32 width = arg3; register void *obj = arg0; register s32 height = arg4;
+    register s32 width = arg3; register void *obj = arg0; s32 height = arg4;
     f32 scratch[20];
-    f32 temp_f31, var_f30, var_f2, temp_f0, temp_f0_2, temp_f11, temp_f12;
+    register f32 temp_f31, var_f30, var_f2, temp_f0, temp_f0_2, temp_f11, temp_f12;
+    register f32 axisValue, axisZero, deltaZ, deltaY, deltaX;
+    
     u32 *source; u32 second, first; s32 matrixValue;
     if (*(s32 *)((u8 *)obj + 4) == -1) return;
     *(f32 *)((u8 *)obj + 0x38) += *(f32 *)((u8 *)obj + 0x3C) * arg5;
     source = (u32 *)fn_802C86DC();
     first = source[0]; second = source[1];
-    *(u32 *)((u8 *)obj + 8) = first; *(u32 *)((u8 *)obj + 0xC) = second;
-    first = source[2]; second = source[3];
-    *(u32 *)((u8 *)obj + 0x10) = first; *(u32 *)((u8 *)obj + 0x14) = second;
-    first = source[4]; second = source[5];
-    *(u32 *)((u8 *)obj + 0x18) = first; *(u32 *)((u8 *)obj + 0x1C) = second;
-    first = source[6]; second = source[7];
-    *(u32 *)((u8 *)obj + 0x20) = first; *(u32 *)((u8 *)obj + 0x24) = second;
+    axisValue = *(f32 *)((u8 *)obj + 0x38);
+    *(u32 *)((u8 *)obj + 8) = first;
+    axisZero = lbl_805634A8;
+    *(u32 *)((u8 *)obj + 0xC) = second;
+    second = source[2]; first = source[3];
+    *(u32 *)((u8 *)obj + 0x10) = second; *(u32 *)((u8 *)obj + 0x14) = first;
+    second = source[4]; first = source[5];
+    *(u32 *)((u8 *)obj + 0x18) = second; *(u32 *)((u8 *)obj + 0x1C) = first;
+    second = source[6]; first = source[7];
+    *(u32 *)((u8 *)obj + 0x20) = second; *(u32 *)((u8 *)obj + 0x24) = first;
     first = source[8]; second = source[9]; matrixValue = (s32)second;
     *(u32 *)((u8 *)obj + 0x28) = first; *(u32 *)((u8 *)obj + 0x2C) = second;
     first = source[10]; second = source[11];
     *(u32 *)((u8 *)obj + 0x30) = first; *(u32 *)((u8 *)obj + 0x34) = second;
-    scratch[4] = lbl_805634A8; scratch[5] = *(f32 *)((u8 *)obj + 0x38); scratch[6] = lbl_805634A8;
+    scratch[4] = axisZero; scratch[5] = axisValue; scratch[6] = axisZero;
     ((void (*)(void *, f32 *, s32, f32))fn_80015A20)(&scratch[16], &scratch[4], matrixValue, scratch[5]);
 #pragma scheduling invalid_target
-    fn_80015B20((u8 *)obj + 8, &scratch[16], (u8 *)obj + 8);
+    ((void (*)(void *, f32 *, volatile void *))fn_80015B20)((u8 *)obj + 8, &scratch[16], (volatile u8 *)obj + 8);
 #pragma scheduling on
     fn_802C77F0(*(s32 *)((u8 *)obj + 4), &scratch[10]);
-    temp_f31 = (scratch[13] - scratch[12]) * (scratch[13] - scratch[12]) +
-               (scratch[11] - scratch[10]) * (scratch[11] - scratch[10]);
-    temp_f31 += (scratch[15] - scratch[14]) * (scratch[15] - scratch[14]);
+    deltaY = scratch[13] - scratch[12];
+    deltaX = scratch[11] - scratch[10];
+    deltaZ = scratch[15] - scratch[14];
+    temp_f31 = deltaY * deltaY + deltaX * deltaX;
+    temp_f31 += deltaZ * deltaZ;
     temp_f31 = (f32)fn_8002F234(temp_f31); temp_f31 = lbl_805634C4 * temp_f31;
     fn_802C98DC(&scratch[1], &scratch[3], &scratch[2], &scratch[0]);
     var_f30 = temp_f31 / scratch[0];
     var_f2 = temp_f31 / (f32)sin((f64)(f32)atan((scratch[1] * (f32)height) / (f32)width));
     temp_f0 = temp_f31 + lbl_80563584 * scratch[3];
-    if (var_f2 <= temp_f0) var_f2 = temp_f0;
-    if (var_f30 <= var_f2) var_f30 = var_f2;
+    var_f2 = var_f2 > temp_f0 ? var_f2 : temp_f0;
+    var_f30 = var_f30 > var_f2 ? var_f30 : var_f2;
     *(f32 *)((u8 *)obj + 0x34) += var_f30;
     temp_f0_2 = scratch[14] + ((scratch[15] - scratch[14]) * lbl_805634C4);
     temp_f11 = scratch[12] + ((scratch[13] - scratch[12]) * lbl_805634C4);
     temp_f12 = scratch[10] + ((scratch[11] - scratch[10]) * lbl_805634C4);
-    scratch[9] = temp_f0_2; scratch[8] = temp_f11; scratch[7] = temp_f12;
-    scratch[7] = (temp_f0_2 * (*(f32 *)((u8 *)obj + 0x20))) +
-                 ((temp_f12 * (*(f32 *)((u8 *)obj + 8))) + (temp_f11 * (*(f32 *)((u8 *)obj + 0x14))));
-    scratch[8] = (temp_f0_2 * (*(f32 *)((u8 *)obj + 0x24))) +
-                 ((temp_f12 * (*(f32 *)((u8 *)obj + 0xC))) + (temp_f11 * (*(f32 *)((u8 *)obj + 0x18))));
-    scratch[9] = (temp_f0_2 * (*(f32 *)((u8 *)obj + 0x28))) +
-                 ((temp_f12 * (*(f32 *)((u8 *)obj + 0x10))) + (temp_f11 * (*(f32 *)((u8 *)obj + 0x1C))));
+    scratch[7] = temp_f12; scratch[8] = temp_f11; scratch[9] = temp_f0_2;
+    f32 *out = &scratch[7];
+    volatile f32 *in = &scratch[7];
+    f32 x, y, z, a, b, c;
+    if (out == in) {
+        volatile f32 *mat = (volatile f32 *)obj;
+        f32 m3 = mat[5], m0 = mat[2], m4 = mat[6], m1 = mat[3], m5 = mat[7];
+        f32 m6 = mat[8], m2 = mat[4], m7 = mat[9], m8 = mat[10];
+        f32 p0 = temp_f12 * m0, p1 = temp_f11 * m3;
+        f32 p3 = temp_f12 * m1, p4 = temp_f11 * m4, p2 = temp_f12 * m2;
+        f32 p5 = temp_f0_2 * m6;
+        out[0] = (p0 + p1) + p5;
+        f32 p6 = temp_f11 * m5, p7 = temp_f0_2 * m7, p8 = temp_f0_2 * m8;
+        out[1] = (p3 + p4) + p7;
+        out[2] = (p2 + p6) + p8;
+    } else {
+        a = temp_f12 * (*(f32 *)((u8 *)obj + 8)); b = temp_f11 * (*(f32 *)((u8 *)obj + 0x14)); c = temp_f0_2 * (*(f32 *)((u8 *)obj + 0x20));
+        out[0] = (a + b) + c;
+        a = x * (*(f32 *)((u8 *)obj + 0xC)); b = y * (*(f32 *)((u8 *)obj + 0x18)); c = z * (*(f32 *)((u8 *)obj + 0x24));
+        out[1] = (a + b) + c;
+        a = x * (*(f32 *)((u8 *)obj + 0x10)); b = y * (*(f32 *)((u8 *)obj + 0x1C)); c = z * (*(f32 *)((u8 *)obj + 0x28));
+        out[2] = (a + b) + c;
+    }
     *(f32 *)((u8 *)obj + 0x2C) -= scratch[7];
     *(f32 *)((u8 *)obj + 0x30) -= scratch[8];
     *(f32 *)((u8 *)obj + 0x34) -= scratch[9];
