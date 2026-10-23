@@ -355,14 +355,16 @@ extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36n
     *(unsigned char *)((char *)arg0 + 7) = *(unsigned char *)((char *)arg2 + 3);
 }
 
-extern "C" void SetTextColor__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5Color(void *arg0, void *arg1) {
+extern "C" void SetTextColor__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5Color(void *arg0, Color4 color) {
     unsigned int address = (unsigned int)arg0;
     unsigned int top;
     int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10;
+    int temp_r4, temp_r3, valid;
     unsigned char *self = (unsigned char *)arg0;
-    unsigned char *color = (unsigned char *)arg1;
-    unsigned char *source;
-    int alpha;
+    unsigned char *source1;
+    unsigned char *source2;
+    unsigned char *source3;
+    int alpha, product_b, product_f, product_13, product_17;
 
     top = address & 0xFF000000U;
     r10 = 1;
@@ -386,56 +388,62 @@ extern "C" void SetTextColor__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5Color(void *
     if (r5 == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x185, lbl_8032818C, arg0);
 
-    self[0x18] = color[0];
-    self[0x19] = color[1];
-    self[0x1A] = color[2];
-    self[0x1B] = color[3];
+    self[0x18] = color.r;
+    self[0x19] = color.g;
+    self[0x1A] = color.b;
+    self[0x1B] = color.a;
 
-    r5 = 0;
+    valid = 0;
     if ((unsigned int)(top + 0x80000000U) == 0U ||
-        (unsigned int)((address & 0xFF800000U) + 0x7F000000U) == 0U ||
-        (unsigned int)((address & 0xF8000000U) + 0x70000000U) == 0U ||
+        (temp_r4 = address & 0xFF800000U,
+         (unsigned int)(temp_r4 + 0x7F000000U) == 0U) ||
+        (temp_r3 = address & 0xF8000000U,
+         (unsigned int)(temp_r3 + 0x70000000U) == 0U) ||
         (unsigned int)(top + 0x40000000U) == 0U ||
         (unsigned int)((address & 0xFF800000U) + 0x3F000000U) == 0U ||
         (unsigned int)((address & 0xF8000000U) + 0x30000000U) == 0U ||
         (unsigned int)((address & 0xFFFFC000U) + 0x20000000U) == 0U)
-        r5 = 1;
-    if (r5 == 0)
+        valid = 1;
+    if (valid == 0)
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328178, 0x4DA, lbl_8032818C, arg0);
 
     self[8] = self[0x18];
     self[9] = self[0x19];
     self[0xA] = self[0x1A];
     self[0xB] = self[0x1B];
-    if (*(volatile int *)(self + 0x20) == 1)
-        source = self + 0x18;
+    if (*(volatile int *)(self + 0x20) != 1)
+        source1 = self + 0x18;
     else
-        source = self + 0x1C;
-    self[0xC] = source[0];
-    self[0xD] = source[1];
-    self[0xE] = source[2];
-    self[0xF] = source[3];
-    if (*(volatile int *)(self + 0x20) == 2)
-        source = self + 0x18;
+        source1 = self + 0x1C;
+    self[0xC] = source1[0];
+    self[0xD] = source1[1];
+    self[0xE] = source1[2];
+    self[0xF] = source1[3];
+    if (*(volatile int *)(self + 0x20) != 2)
+        source2 = self + 0x18;
     else
-        source = self + 0x1C;
-    self[0x10] = source[0];
-    self[0x11] = source[1];
-    self[0x12] = source[2];
-    self[0x13] = source[3];
+        source2 = self + 0x1C;
+    self[0x10] = source2[0];
+    self[0x11] = source2[1];
+    self[0x12] = source2[2];
+    self[0x13] = source2[3];
     if (*(volatile int *)(self + 0x20) == 0)
-        source = self + 0x18;
+        source3 = self + 0x18;
     else
-        source = self + 0x1C;
-    self[0x14] = source[0];
-    self[0x15] = source[1];
-    self[0x16] = source[2];
+        source3 = self + 0x1C;
+    self[0x14] = source3[0];
+    self[0x15] = source3[1];
+    self[0x16] = source3[2];
 
-    alpha = self[0x42];
-    self[0xB] = (self[0xB] * alpha) / 255;
-    self[0xF] = (self[0xF] * alpha) / 255;
-    self[0x13] = (self[0x13] * alpha) / 255;
-    self[0x17] = (source[3] * alpha) / 255;
+    alpha = *(volatile unsigned char *)(self + 0x42);
+    product_b = self[0xB] * alpha;
+    product_f = self[0xF] * alpha;
+    product_13 = self[0x13] * alpha;
+    product_17 = source3[3] * alpha;
+    self[0xB] = product_b / 255;
+    self[0xF] = product_f / 255;
+    self[0x13] = product_13 / 255;
+    self[0x17] = product_17 / 255;
 }
 
 extern "C" float GetScaleH__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
@@ -769,4 +777,4 @@ extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5C
     GXSetVtxAttrFmt(0,9,1,4,0); GXSetVtxAttrFmt(0,0xb,1,5,0); GXSetVtxAttrFmt(0,0xd,1,2,0xf);
     GXClearVtxDesc(); GXSetVtxDesc(9,1); GXSetVtxDesc(0xb,1); GXSetVtxDesc(0xd,1);
 }
-namespace nw4hbm { namespace ut { struct Glyph { unsigned char pad[0x14]; unsigned short x; unsigned char pad16[2]; unsigned char y; unsigned char pad19[7]; unsigned short width; unsigned short height; unsigned char pad20[0x20]; }; class CharWriter { public: void PrintGlyph(float, float, float, const Glyph&); }; }}
+namespace nw4hbm { namespace ut { struct Glyph { unsigned char pad[0x14]; unsigned short x; unsigned char pad16[2]; unsigned char y; unsigned char pad19[7]; unsigned short width; unsigned short height; unsigned char pad20[0x20]; }; }}
