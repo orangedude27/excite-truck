@@ -18,8 +18,8 @@ struct Obj_80164CDC {
     virtual void f0();
     virtual void f1(void *, s32, s32);
 };
-static inline void fn_80164CDC_call(void *obj, void *arg1, s32 a, s32 b) {
-    ((Obj_80164CDC *)obj)->f1(arg1, a, b);
+static inline void fn_80164CDC_call(void *arg0) {
+    ((Obj_80164CDC *)*(void **)((char *)arg0 + 4))->f1(*(void **)((char *)arg0 + 4), lbl_8055A0E0, lbl_8055A0E8);
 }
 #pragma cplusplus off
 
