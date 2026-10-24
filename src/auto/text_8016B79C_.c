@@ -1816,7 +1816,6 @@ extern char lbl_80330AEC[];
 extern char lbl_8033072C[];
 extern char lbl_803308A0[];
 extern f32 lbl_80561980;
-extern void fn_801345D8(void *, s32, void *, s32);
 extern void fn_802E317C(const char *, ...);
 void fn_80170E98(void *arg0, void *arg1, s32 arg2) {
     s32 value = *(s32 *)((u8 *)arg0 + 0x44);
