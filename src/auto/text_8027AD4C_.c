@@ -409,15 +409,19 @@ void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
 }
 
 extern char lbl_80347B30[];
-void fn_8027C0D0(void *arg0, long arg1, void **arg2) {
-    void **vtable;
-    long (*method)(void *, char **);
+#pragma cplusplus on
+extern "C" void fn_8027C0D0(void *arg0, long arg1, void *arg2) {
+    struct Dummy {
+        virtual long m0(char **);
+        virtual long m1(char **);
+        virtual long m2(char **);
+        virtual long m3(char **);
+    };
     *(long *)arg0 = arg1;
     *(long *)((char *)arg0 + 8) = (long)arg2;
-    vtable = *(void ***)arg2;
-    method = (long (*)(void *, char **))vtable[5];
-    *(long *)((char *)arg0 + 4) = method(arg2, (char **)&lbl_80347B30);
+    *(long *)((char *)arg0 + 4) = ((Dummy *)arg2)->m3((char **)&lbl_80347B30);
 }
+#pragma cplusplus reset
 long *fn_8027C120(long arg0, long arg1) {
     long index = 0;
     long offset = 0;
