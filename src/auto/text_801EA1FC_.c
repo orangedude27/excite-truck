@@ -5,7 +5,6 @@ typedef signed int s32;
 typedef unsigned char u8;
 typedef float f32;
 extern f32 fn_801E8738(s32);
-extern void fn_801EA210();
 extern void fn_801EA28C(s32, f32);
 extern void fn_801FC904(void);
 extern void fn_801EBF00(void);
@@ -34,11 +33,14 @@ void fn_801EA1FC(void) {
     lbl_8055AF68 = x;
 }
 
+#pragma dont_inline next
 void fn_801EA2E8(void) {
+    f32 a = lbl_80562E40;
+    f32 b = lbl_80562E48;
+    f32 c = lbl_80562E4C;
     fn_801EA1FC();
-    fn_802C974C(lbl_80562E40, lbl_80562E48, lbl_80562E4C);
+    fn_802C974C(a, b, c);
 }
-
 void fn_801EA318(void) {
 
 }
