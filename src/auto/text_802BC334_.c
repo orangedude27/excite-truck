@@ -216,7 +216,6 @@ void fn_802BC588(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
         m0[8] = m0[8] * scale;
     }
 }
-#pragma scheduling on
 
 #pragma push
 #pragma processor 750
