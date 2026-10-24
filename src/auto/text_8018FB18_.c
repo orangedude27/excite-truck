@@ -24,7 +24,7 @@ int fn_8018FD38(void) {
 extern s32 fn_801293A4(void);
 extern void fn_8018FC38(void);
 extern void fn_801B664C(void);
-extern s32 fn_801B6668(s32, s32, s32);
+extern s32 fn_801B6668();
 extern u8 lbl_80333018[];
 extern void* lbl_804349A0[];
 extern f32 lbl_8055A468, lbl_8055A46C;
@@ -88,6 +88,75 @@ extern "C" void fn_80190184(void *arg0, void *arg1) {
     obj2->v2(arg1);
 }
 
+extern "C" int fn_801B526C(void);
+extern "C" int fn_801769F8(void);
+extern "C" unsigned char lbl_8055E521;
+#pragma cplusplus on
+extern "C" int fn_801901F0(void *arg0) {
+    class VT1 {
+    public:
+        virtual int d0(void );
+        virtual int d1(void );
+        virtual int d2(void );
+        virtual int d3(void );
+        virtual int d4(void );
+        virtual int d5(void );
+        virtual int d6(void );
+        virtual int d7(void );
+        virtual int d8(void );
+        virtual int d9(void );
+        virtual int d10(void );
+        virtual int d11(void );
+        virtual int d12(void );
+        virtual int d13(void );
+        virtual int d14(void );
+        virtual int d15(void );
+        virtual int d16(void );
+        virtual int d17(void );
+        virtual int d18(void );
+        virtual int d19(void );
+        virtual int d20(void );
+        virtual int d21(void );
+        virtual int d22(void );
+        virtual int d23(void );
+        virtual int d24(void );
+        virtual int d25(void );
+        virtual int d26(void );
+        virtual int d27(void );
+        virtual int d28(void );
+        virtual int d29(void );
+        virtual int d28(int arg);
+    };
+    class VT2 {
+    public:
+        virtual int e0();
+        virtual int e1();
+        virtual int e2();
+        virtual int e3();
+        virtual int e4();
+        virtual int e5();
+    };
+    int result;
+    if (fn_801B526C() == 0) {
+        if (*(void **)((char *)arg0 + 4) != 0 && fn_801769F8() != 0) {
+            VT1 *obj = *(VT1 **)((char *)arg0 + 4);
+            obj->d28(0);
+        }
+        if (*(void **)((char *)arg0 + 0x10) != 0) {
+            VT2 *obj = *(VT2 **)((char *)arg0 + 0x10);
+            result = obj->e3();
+            if (*(unsigned char *)((char *)arg0 + 0x34) == 0)
+                result |= 0x10;
+            if (lbl_8055E521 != 0)
+                result |= 0x100;
+        } else {
+            result = 4;
+        }
+    } else {
+        result = 0;
+    }
+    return result;
+}
 extern void fn_801B6650(int);
 extern void fn_802793B0(int);
 #pragma cplusplus on
@@ -359,7 +428,7 @@ void fn_80191AB4(void *arg0) {
         u8 pad[0x50];
         f32 vectorB[3];
         f32 vectorA[3];
-        u8 rest[0x18];
+        u8 rest[0x28];
     } frame;
     void *physics;
     void *sub;
@@ -392,10 +461,10 @@ void fn_80191AB4(void *arg0) {
     ((void (*)(void *, s32))vtable[2])(sub, result);
     fn_80136EA4(lbl_8055E0D0, *(s32 *)((u8 *)arg0 + 0x3C));
     dot = PSVECDotProduct((u8 *)physics + 0x118, (u8 *)physics + 0x54);
+    if (dot < 0) dot = -dot;
     sub = *(void **)((u8 *)arg0 + 0x38);
     vtable = *(void ***)sub;
     value = ((f32 (*)(void *))vtable[3])(sub);
-    if (dot < 0) dot = -dot;
     fn_8018ADA4(physics, amplitude * (lbl_8056208C + value));
     sub = *(void **)((u8 *)arg0 + 0x38);
     vtable = *(void ***)sub;
@@ -439,6 +508,7 @@ void fn_80191AB4(void *arg0) {
     }
     (void)dot;
     (void)result;
+    /* compile budget probe 9 */
 }
 
 void fn_80192BE4(void) {
