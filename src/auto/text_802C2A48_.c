@@ -17,6 +17,19 @@ unsigned char fn_802C2C00(unsigned char);
 void fn_801E6978(void);
 
 extern unsigned char lbl_804C1328[];
+void fn_802C2AA8(void) {
+    fn_802C2A48(2);
+    fn_802CF5F8(*(int *)((char *)fn_802CE344(2) + 0x10));
+    fn_802CA0E4();
+    lbl_8055FBA8 = 0;
+    fn_801E2F00();
+    fn_802C83CC();
+    fn_802C990C(0xFF00FF00);
+    fn_802C2B78(lbl_80564ED8, lbl_80564EDC, lbl_80564ED8);
+    fn_802C2C00(1);
+    fn_801E6978();
+}
+
 void fn_802C2B18(void) {
     fn_801E69EC();
     fn_802C84EC();
