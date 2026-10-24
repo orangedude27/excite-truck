@@ -23,9 +23,10 @@ extern float lbl_80558DC4;
 extern void *fn_8012850C(int, const char *);
 extern char lbl_80340108[];
 extern char lbl_80340114[];
+#pragma scheduling invalid_target
 void *fn_8022D228(void *arg0, int arg1, int arg2, int arg3) {
-    int i;
     int offset;
+    int i;
     void *result;
     *(int *)arg0 = arg1;
     *(int *)((char *)arg0 + 4) = arg2;
@@ -35,14 +36,13 @@ void *fn_8022D228(void *arg0, int arg1, int arg2, int arg3) {
     i = 0;
     offset = 0;
     while (i < arg1) {
-        *(void **)(*(char ***)((char *)result + 0x10) + offset) = fn_8012850C(arg2 + 1, lbl_80340114);
+        *(void **)((char *)*(void **)((char *)result + 0x10) + offset) = fn_8012850C(arg2 + 1, lbl_80340114);
         i++;
         offset += 4;
     }
     return result;
 }
-
-#pragma scheduling invalid_target
+#pragma scheduling on
 void *fn_8022D2BC(void *arg0, int arg1) {
     int offset;
     int i;
