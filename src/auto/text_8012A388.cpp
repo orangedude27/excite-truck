@@ -711,8 +711,175 @@ extern "C" void fn_8012C4D8(void *arg0) {
 }
 
 extern "C" void fn_8012CC20(void) {
-    fn_8012CC24();
+    ((s32 (*)(void))fn_8012CC24)();
 }
+
+#pragma dont_inline on
+extern "C" void fn_8012CC24(s32 arg0, void *arg1) {
+    u8 *self = (u8 *)arg0;
+    s32 *object = (s32 *)arg0;
+    s32 state, count, index, value, result, temp, handle, size, done;
+    s32 *record;
+    u8 *source, *destination, byte;
+    void *parser;
+    u8 parseBuffer[0x40];
+
+    if (object[0xB8 / 4] == 2 && fn_802E7544(object[0xB4 / 4]) != 0 &&
+        ((u32 (*)(s32))fn_8012D3D0)(arg0) != 0) {
+        fn_802E7548(object[0xB4 / 4]);
+        object[0xB4 / 4] = -1;
+        fn_8012D33C((u32 *)(self + 0x6C), (u32 *)*(void **)(self + 0xC8));
+        fn_8012A80C((s32)(self + 0x6C));
+        object[0xA4 / 4] = 0;
+        if (object[0x84 / 4] + object[0x90 / 4] > object[0xCC / 4])
+            fn_802E317C(lbl_8032ADF4);
+        if (object[0x78 / 4] & 1) {
+            object[0x64 / 4] = 0;
+            result = ((s32 (*)(void *, void *, s32, s32))fn_8012ACA0)(
+                self + 4, (u8 *)*(void **)(self + 0xC8) + object[0x84 / 4],
+                object[0xC0 / 4] - object[0x84 / 4], object[0x84 / 4]);
+        } else {
+            object[0x64 / 4] = (s32)((u8 *)*(void **)(self + 0xC8) + object[0x84 / 4]);
+            result = fn_8012AA60(self + 4, object[0xC0 / 4] - object[0x84 / 4], object[0x84 / 4]);
+        }
+        if (result != 0) {
+            ((void (*)(void *))fn_8012B328)(self + 4);
+            object[0xAC / 4] = (s32)lbl_8055E000;
+            lbl_8055E000 = self + 4;
+            object[0xB8 / 4] = 3;
+        } else {
+            fn_8012D1A8(arg0);
+            ((void (*)(void *))fn_8012B324)(self + 0x24);
+            index = object[0xBC / 4];
+            object[0xBC / 4] = index + 1;
+            fn_8012D024((void *)arg0, (s32)(self + 4), index);
+        }
+    }
+    switch (object[0xB8 / 4]) {
+    case 2:
+        if (object[0xB4 / 4] != -1) {
+            fn_802E7548(object[0xB4 / 4]);
+            object[0xB4 / 4] = -1;
+        }
+        count = 0;
+        index = 0;
+        goto record_check_two;
+    record_body_two:
+        record = (s32 *)(object[0x64 / 4] + index);
+        if (record[0x34 / 4] & 4)
+            fn_802E317C(lbl_8032AE20);
+        count++;
+        record = (s32 *)(object[0x64 / 4] + index);
+        value = record[0x34 / 4];
+        index += 0x44;
+        record[0x34 / 4] = value & ~0xF;
+    record_check_two:
+        if (count < object[0x8C / 4])
+            goto record_body_two;
+        if (object[0x68 / 4] != 0)
+            fn_8012C4D8((void *)object[0x68 / 4]);
+        if (object[0xA4 / 4] != 0)
+            fn_80128660(object[0xA4 / 4]);
+        *(u8 *)(self + 0xB0) = 0;
+        break;
+    case 3:
+        fn_8012BA1C(self + 4);
+        fn_8012BC24((void **)&lbl_8055E000, self + 4);
+        count = 0;
+        index = 0;
+        goto record_check_three;
+    record_body_three:
+        record = (s32 *)(object[0x64 / 4] + index);
+        if (record[0x34 / 4] & 4)
+            fn_802E317C(lbl_8032AE20);
+        count++;
+        record = (s32 *)(object[0x64 / 4] + index);
+        value = record[0x34 / 4];
+        index += 0x44;
+        record[0x34 / 4] = value & ~0xF;
+    record_check_three:
+        if (count < object[0x8C / 4])
+            goto record_body_three;
+        if (object[0x68 / 4] != 0)
+            fn_8012C4D8((void *)object[0x68 / 4]);
+        if (object[0xA4 / 4] != 0)
+            fn_80128660(object[0xA4 / 4]);
+        *(u8 *)(self + 0xB0) = 0;
+        break;
+    default:
+        break;
+    }
+    object[0xB8 / 4] = 1;
+    done = 0;
+    object[0xBC / 4] = 0;
+    while (!done) {
+        parser = ((void *(*)(void *, void *, s32))fn_8012B314)(arg1, parseBuffer, object[0xBC / 4]);
+        if (!parser)
+            return;
+        temp = ((s32 (*)(s32, s32 *))fn_8012AC28)((s32)parser, &size);
+        if (temp != -1) {
+            value = object[0xCC / 4];
+            object[0xC0 / 4] = value;
+            if (value > value)
+                goto parse_next;
+            handle = ((s32 (*)(s32, s32, void *))fn_802E748C)(0x20, temp, *(void **)(self + 0xC8));
+            object[0xB4 / 4] = handle;
+            if (handle != -1) {
+                object[0xB8 / 4] = 2;
+                source = (u8 *)arg1;
+                destination = self + 4;
+                {
+                    s32 limit = 32;
+                    goto copy_name_body;
+                copy_name_limit:
+                    limit--;
+                    if (limit > 0)
+                        goto copy_name_body;
+                    destination[-1] = 0;
+                    goto copy_name_done;
+                copy_name_body:
+                    byte = *source++;
+                    *destination++ = byte;
+                    if ((s8)byte != 0)
+                        goto copy_name_limit;
+                }
+            copy_name_done:
+                source = (u8 *)parser;
+                destination = self + 0x24;
+                {
+                    s32 limit = 64;
+                    goto copy_path_body;
+                copy_path_limit:
+                    limit--;
+                    if (limit > 0)
+                        goto copy_path_body;
+                    destination[-1] = 0;
+                    goto copy_path_done;
+                copy_path_body:
+                    byte = *source++;
+                    *destination++ = byte;
+                    if ((s8)byte != 0)
+                        goto copy_path_limit;
+                }
+            copy_path_done:
+                object[0xAC / 4] = 0;
+                object[0x64 / 4] = 0;
+                memset(self + 0x6C, 0, 0x34);
+                object[0xA0 / 4] = 1;
+                done = 1;
+                object[0xA4 / 4] = 0;
+                object[0xA8 / 4] = temp;
+                *(u8 *)(self + 0xB0) = 1;
+                object[0x68 / 4] = 0;
+                *(u8 *)(self + 0xB1) = 0;
+                object[0] = fn_802E2C20() + object[0xC0 / 4] / 3000 + 0x1F4;
+            }
+        }
+    parse_next:
+        object[0xBC / 4]++;
+    }
+}
+#pragma dont_inline reset
 
 extern "C" void fn_8012D33C(u32 *arg0, u32 *arg1) {
     arg0[0] = arg1[0];
