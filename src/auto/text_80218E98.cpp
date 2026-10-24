@@ -887,7 +887,6 @@ extern "C" void fn_8021B224(void *arg0) {
     }
 }
 
-#pragma dont_inline fn_8021B2B0
 extern "C" void fn_8021B2B0(void *arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, s32 arg6) {
     fn_80219568(arg0, arg1, arg2, arg6, arg4, 0, 0, arg5);
     *(s32 *)((u8 *)arg0 + 0x254) = (s32)arg3;
@@ -2485,7 +2484,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
         u8 pad0[4]; s32 x; s32 y; u8 padC[4]; s32 end;
         u8 pad14[0x230]; Child *child; s32 texture; s32 overlay; s32 state; s32 flag;
     };
-    Object *self = (Object *)arg0;
+    register Object *self = (Object *)arg0;
     Child *child;
     s32 childBase;
     fn_802C3034(arg1);
@@ -2504,7 +2503,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
         if (self->flag == 0) {
             s32 left = self->x + 1;
             s32 top = self->y;
-            register f32 scale = (f32)(self->end - top) / (f32)childBase;
+            f32 scale = (f32)(self->end - top) / (f32)childBase;
             s32 scroll = ((Vf78 *)arg0)->get();
             s32 right = self->x + scroll - 1;
             child = self->child;
@@ -2529,7 +2528,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
         } else {
             s32 scroll = ((Vf78 *)arg0)->get();
             child = self->child;
-            register f32 scale = (f32)scroll / (f32)childBase;
+            f32 scale = (f32)scroll / (f32)childBase;
             s32 left = self->x + (s32)(scale * (f32)child->offset) + 5;
             s32 right = self->x + (s32)(scale * (f32)(child->offset + child->length)) - 5;
             s32 top = self->y + 1;
