@@ -587,6 +587,7 @@ s32 *fn_8011770C(s32 *arg0, u32 arg1) {
     *(u32 *)(local.state + 4) = height;
     return result;
 }
+#undef lbl_8041D608
 
 void fn_80118C1C(void *arg0, s32 arg1) {
     s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0x264);
