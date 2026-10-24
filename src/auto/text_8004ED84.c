@@ -119,10 +119,10 @@ extern int VIGetTvFormat(short, short);
 extern int VIConfigure(void *);
 extern int VIConfigurePan(int, int, int, int);
 void ConfigureVideo(short arg0, short arg1) {
-    struct VideoConfig { int mode; short a,b,c,d,e,f,g; int last; volatile int padding[12]; } config;
+    struct VideoConfig { int mode; volatile short a,b,c,d,e,f,g; int last; volatile int padding[12]; } config;
     int format;
     config.a=arg0; config.b=0x1E0; config.c=arg1;
-    config.g=arg1; config.f=0x280; config.d=0x28;
+    config.d=0x28; config.f=0x280; config.g=arg1;
     format=VIGetTvFormat(arg0,arg1);
     switch(format) {
     case 0: case 2:
