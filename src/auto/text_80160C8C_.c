@@ -327,13 +327,20 @@ void fn_80161618(void) {
     }
 }
 
-#pragma push
-#pragma use_lmw_stmw off
-void fn_801617BC(void) {
-    s32 offset, i;
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801617BC(void) {
+    class Item {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void setup();
+    };
+    s32 offset;
+    s32 i;
     s32 *count;
     void *item;
-    register void **vtable;
     lbl_8055E2E0 = fn_80145E70(lbl_8032F588 + 0x11C);
     lbl_8055E2E4 = (int)fn_80145E70(lbl_8032F588 + 0x12C);
     lbl_8055E2E8 = (int)fn_802CAC28(lbl_8032F588 + 0x138, 0);
@@ -343,15 +350,17 @@ void fn_801617BC(void) {
     lbl_8055E2F8 = (int)fn_802CAC28(lbl_8032F588 + 0x178, 0);
     lbl_8055E2FC = (int)fn_8023512C(lbl_8032F588 + 0x188);
     count = (s32 *)(lbl_8042FDEC + 4);
-    i = 0; offset = 0;
+    i = 0;
+    offset = 0;
     while (i < *count) {
         item = *(void **)(*(s32 *)lbl_8042FDEC + offset);
-        vtable = *(void ***)item;
-        ((void (*)(void *))vtable[5])(item);
-        offset += 4; i++;
+        ((Item *)item)->setup();
+        offset += 4;
+        i++;
     }
 }
-#pragma pop
+#pragma scheduling on
+#pragma cplusplus reset
 extern s32 lbl_8055A0B0;
 extern s32 lbl_8055A0B8;
 #pragma cplusplus on
