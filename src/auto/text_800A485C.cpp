@@ -6746,6 +6746,8 @@ extern "C" s32 fn_800BC474(s32 *arg0, s32 arg1, s32 *arg2) {
 
 extern "C" s16 fn_800BDD7C(s32, s32 *);
 extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
+extern s16 lbl_802F3418[];
+extern s16 lbl_802F3478[];
 extern "C" s32 lbl_802F33C8[];
 extern "C" s32 lbl_802F33E8[];
 extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
@@ -6801,16 +6803,18 @@ extern "C" u32 lbl_80560DA0;
 extern "C" u32 lbl_80560DA8;
 extern "C" s32 fn_800BDF4C(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
     volatile u8 frame[0x1A0];
-    volatile s32 sp164;
-    volatile s32 sp28 = arg6;
-    s32 table = 0x802F0000;
+    s32 sp164 = 0x802F0000;
+    s32 sp28 = arg6;
+    void *obj = arg0;
+    s32 index = arg2;
     frame[0] = 0;
-    sp164 = table;
     sp164 += 0x3418;
-    *(s32 *)((u8 *)arg0 + 0x278) = arg3;
-    *(s32 *)((u8 *)arg0 + 8) = 0;
+    *(s32 *)((u8 *)obj + 0x278) = arg3;
+    *(s32 *)((u8 *)obj + 8) = 0;
     lbl_8055DD88 = arg1;
-    return arg2 + arg4 + arg5 + sp28 + sp164 + frame[0];
+    if (((s16 (*)(s32, s32, s32))fn_800BDD7C)(*(s32 *)((u8 *)obj + 0x278), index, (s32)((u8 *)obj + 8)) == 0)
+        return 8;
+    return sp28 + sp164 + arg4 + arg5 + frame[0];
 }
 
 void fn_800BEDE0(void *arg0, void *arg1) {
