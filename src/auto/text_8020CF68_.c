@@ -102,10 +102,13 @@ void fn_8020D178(void) {
 
 #pragma cplusplus on
 extern "C" void fn_8020D1C8(void) {
-    Dummy_8020D1C8 *obj = (Dummy_8020D1C8 *)lbl_8055EEA0;
+    struct Dummy_8020D1C8_Local {
+        virtual void d1(int);
+    };
+    Dummy_8020D1C8_Local *obj = (Dummy_8020D1C8_Local *)lbl_8055EEA0;
     if (obj != 0) {
         if (obj != 0) {
-            obj->d2(1);
+            obj->d1(1);
         }
         lbl_8055EEA0 = 0;
     }
