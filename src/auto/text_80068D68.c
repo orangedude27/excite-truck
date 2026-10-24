@@ -10,6 +10,7 @@
 #include "revolution/BTE/gki/platform/gki_int.h"
 #include "revolution/BTE/gki/common/gki.h"
 #include <revolution/OS.h>
+#include "revolution/BTE/stack/include/hiddefs.h"
 extern void DBPrintf_8006CFA8(const char *, ...);
 extern char lbl_80313464[];
 extern char lbl_8031347C[];
@@ -7625,6 +7626,116 @@ s32 HID_HostGetSDPRecord(void *addr, void *p_db, u32 db_len, void *sdp_cback) {
     return 3;
 }
 
+void *fn_80095C64(void **head, u32 attr);
+void hidh_search_callback(UINT16 sdp_result) {
+    u8 *cb = lbl_803C3C38;
+    tSDP_DISCOVERY_DB *p_db = *(tSDP_DISCOVERY_DB **)(cb + 0x388);
+    tSDP_DISC_REC *p_rec;
+    tSDP_DISC_ATTR *p_attr;
+    tSDP_DISC_ATTR *p_subattr1;
+    tSDP_DISC_ATTR *p_subattr2;
+    tSDP_DISC_ATTR *p_repdesc;
+    tBT_UUID hid_uuid;
+    u8 *p_nvi = cb + 0x38c;
+    UINT16 attr_mask = 0;
+    UINT16 len;
+
+    hid_uuid.len = LEN_UUID_16;
+    hid_uuid.uu.uuid16 = UUID_SERVCLASS_HUMAN_INTERFACE;
+    cb[0x380] = FALSE;
+    if (sdp_result != SDP_SUCCESS) {
+        (*(void (**)(UINT16, UINT16, void *))(cb + 0x384))(sdp_result, 0, NULL);
+        return;
+    }
+    if ((p_rec = SDP_FindServiceUUIDInDb(p_db, &hid_uuid, NULL)) == NULL) {
+        (*(void (**)(UINT16, UINT16, void *))(cb + 0x384))(0xC, 0, NULL);
+        return;
+    }
+    memset(p_nvi, 0, 0x74);
+    if (((p_attr = fn_80095C64((void **)p_rec, 0x206)) == NULL)
+        || ((*(UINT16 *)((u8 *)p_attr + 6) >> 12) != 6)
+        || ((p_subattr1 = *(tSDP_DISC_ATTR **)((u8 *)p_attr + 8)) == NULL)
+        || ((*(UINT16 *)((u8 *)p_subattr1 + 6) >> 12) != 6)
+        || ((p_subattr2 = *(tSDP_DISC_ATTR **)((u8 *)p_subattr1 + 8)) == NULL)
+        || ((p_repdesc = *(tSDP_DISC_ATTR **)p_subattr2) == NULL)
+        || ((*(UINT16 *)((u8 *)p_repdesc + 6) >> 12) != 4)) {
+        (*(void (**)(UINT16, UINT16, void *))(cb + 0x384))(0xD, 0, NULL);
+        return;
+    }
+    len = *(UINT16 *)((u8 *)p_repdesc + 6) & 0xFFF;
+    *(UINT16 *)(p_nvi + 0x68) = len;
+    if (len != 0)
+        *(u8 **)(p_nvi + 0x6C) = (u8 *)p_repdesc + 8;
+
+    p_attr = fn_80095C64((void **)p_rec, 0x204);
+    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 1;
+    p_attr = fn_80095C64((void **)p_rec, 0x205);
+    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 4;
+    p_attr = fn_80095C64((void **)p_rec, 0x20D);
+    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 2;
+    p_attr = fn_80095C64((void **)p_rec, 0x208);
+    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 8;
+    p_attr = fn_80095C64((void **)p_rec, 0x209);
+    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 0x10;
+    p_attr = fn_80095C64((void **)p_rec, 0x20A);
+    if (p_attr != NULL && *((u8 *)p_attr + 8)) attr_mask |= 0x20;
+
+    p_attr = fn_80095C64((void **)p_rec, 0x100);
+    if (p_attr != NULL) {
+        len = *(UINT16 *)((u8 *)p_attr + 6) & 0xFFF;
+        if (len < 0x20) {
+            memcpy(p_nvi, (u8 *)p_attr + 8, len);
+            p_nvi[len] = 0;
+        } else {
+            memcpy(p_nvi, (u8 *)p_attr + 8, 0x1F);
+            p_nvi[0x20] = 0;
+        }
+    } else
+        p_nvi[0] = 0;
+
+    p_attr = fn_80095C64((void **)p_rec, 0x101);
+    if (p_attr != NULL) {
+        len = *(UINT16 *)((u8 *)p_attr + 6) & 0xFFF;
+        if (len < 0x20) {
+            memcpy(p_nvi + 0x20, (u8 *)p_attr + 8, len);
+            p_nvi[0x20 + len] = 0;
+        } else {
+            memcpy(p_nvi + 0x20, (u8 *)p_attr + 8, 0x1F);
+            p_nvi[0x40] = 0;
+        }
+    } else
+        p_nvi[0x20] = 0;
+
+    p_attr = fn_80095C64((void **)p_rec, 0x102);
+    if (p_attr != NULL) {
+        len = *(UINT16 *)((u8 *)p_attr + 6) & 0xFFF;
+        if (len < 0x20) {
+            memcpy(p_nvi + 0x40, (u8 *)p_attr + 8, len);
+            p_nvi[0x40 + len] = 0;
+        } else {
+            memcpy(p_nvi + 0x40, (u8 *)p_attr + 8, 0x1F);
+            p_nvi[0x60] = 0;
+        }
+    } else
+        p_nvi[0x40] = 0;
+
+    p_attr = fn_80095C64((void **)p_rec, 0x200);
+    if (p_attr != NULL) *(UINT16 *)(p_nvi + 0x60) = *(UINT16 *)((u8 *)p_attr + 8);
+    p_attr = fn_80095C64((void **)p_rec, 0x203);
+    if (p_attr != NULL) p_nvi[0x65] = *((u8 *)p_attr + 8);
+    p_attr = fn_80095C64((void **)p_rec, 0x202);
+    if (p_attr != NULL) p_nvi[0x64] = *((u8 *)p_attr + 8);
+    p_attr = fn_80095C64((void **)p_rec, 0x201);
+    if (p_attr != NULL) *(UINT16 *)(p_nvi + 0x62) = *(UINT16 *)((u8 *)p_attr + 8);
+    p_attr = fn_80095C64((void **)p_rec, 0x20C);
+    if (p_attr != NULL) {
+        attr_mask |= 0x40;
+        *(UINT16 *)(p_nvi + 0x66) = *(UINT16 *)((u8 *)p_attr + 8);
+    }
+    *(tSDP_DISC_REC **)(cb + 0x3FC) = p_rec;
+    (*(void (**)(UINT16, UINT16, void *))(cb + 0x384))(0, attr_mask, p_nvi);
+}
+
 extern u8 lbl_803C3C38[];
 extern u8 lbl_803C3AF0[];
 extern u8 hidh_conn_reg(void);
@@ -12669,17 +12780,20 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
     UINT16 num_uids;
     UINT16 start_offset;
     UINT16 count;
-    UINT8 cont_request_needed;
-    UINT8 *p_param_len;
-    UINT8 *p_end;
-    UINT16 param_len2;
+    UINT8 *sp17c;
+    u8 *p_param_len;
+    u8 *p_end;
+    u32 param_len2;
     BT_HDR *buf;
+    u8 *uid;
+    s32 div;
+    s32 total;
 
-    cont_request_needed = 0;
+    sp17c = (u8 *)0;
     p_rec = NULL;
     total_handles = 0;
-    p = sdpu_extract_uid_seq(p, param_len, &seq);
-    if (p == NULL) {
+    uid = sdpu_extract_uid_seq(p, param_len, &seq);
+    if (uid == NULL) {
         sdpu_build_n_send_error(p_ccb, trans_num, 3, 0);
         return;
     }
@@ -12687,7 +12801,7 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         sdpu_build_n_send_error(p_ccb, trans_num, 3, 0);
         return;
     }
-    num_uids = ((UINT16) p[0] << 8) + p[1];
+    num_uids = ((UINT16) uid[0] << 8) + uid[1];
     if (num_uids > 0x14) {
         num_uids = 0x14;
     }
@@ -12699,12 +12813,12 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         handles[total_handles] = p_rec->record_handle;
         total_handles++;
     }
-    if (p[2] != 0) {
-        if (p[2] != 2) {
+    if (uid[2] != 0) {
+        if (uid[2] != 2) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
             return;
         }
-        p += 3;
+        p = uid + 3;
         start_offset = ((UINT16) p[0] << 8) + p[1];
         if (start_offset != ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset) {
             sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
@@ -12715,11 +12829,12 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         count = total_handles;
         start_offset = 0;
     }
-    max_handles = (UINT16)(((s32)((u16)p_ccb->rem_mtu_size - 0xc)) >> 2);
+    div = (s32)((u16)p_ccb->rem_mtu_size - 0xc);
+    max_handles = (UINT16)((((div >> 2) + ((div & 3) != 0)) ) & 0xffff);
     if (count <= max_handles) {
         max_handles = count;
     } else {
-        cont_request_needed = 1;
+        sp17c = (u8 *)1;
         ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset += max_handles;
     }
     buf = (BT_HDR *)GKI_getpoolbuf(2);
@@ -12730,20 +12845,20 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         return;
     }
     buf->offset = 9;
-    p_param_len = (UINT8 *)buf + 0x11;
-    p_end = p_param_len + 3;
-    *p_param_len = 3;
-    count = start_offset + max_handles;
-    p_param_len[1] = (UINT8)(trans_num >> 8);
-    p_param_len[2] = (UINT8)trans_num;
+    p_end = (UINT8 *)buf + 0x11;
+    p_param_len = p_end + 3;
+    p_end[0] = 3;
+    total = start_offset + max_handles;
+    p_end[1] = (UINT8)(trans_num >> 8);
+    p_end[2] = (UINT8)trans_num;
     p[0] = (UINT8)(total_handles >> 8);
     p[1] = (UINT8)total_handles;
-    p_param_len[5] = (UINT8)(max_handles >> 8);
-    p_param_len[6] = (UINT8)max_handles;
-    p_end = p_param_len + 6;
-    if (start_offset < count) {
-        if (count - start_offset > 8 && start_offset <= count) {
-            while (start_offset < count - 8) {
+    p_param_len[2] = (UINT8)(max_handles >> 8);
+    p_param_len[3] = (UINT8)max_handles;
+    p_end = p_param_len + 3;
+    if (start_offset < total) {
+        if ((total - start_offset) > 8) {
+            while (start_offset < total - 8) {
                 u32 h = handles[start_offset];
                 p_end[0] = (UINT8)(h >> 24);
                 p_end[1] = (UINT8)(h >> 16);
@@ -12753,7 +12868,7 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
                 p_end += 0x20;
             }
         }
-        while (start_offset < count) {
+        while (start_offset < total) {
             u32 h = handles[start_offset];
             p_end[0] = (UINT8)(h >> 24);
             p_end[1] = (UINT8)(h >> 16);
@@ -12763,7 +12878,7 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
             p_end += 4;
         }
     }
-    if (cont_request_needed != 0) {
+    if (sp17c != 0) {
         p_end[0] = 2;
         p_end[1] = (UINT8)(((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset >> 8);
         p_end[2] = (UINT8)((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset;
@@ -12772,11 +12887,10 @@ void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len,
         p_end[0] = 0;
         p_end += 1;
     }
-    param_len2 = (UINT16)(p_end - p_param_len - 2);
-    p_param_len = (UINT8 *)buf + 0x14;
+    param_len2 = (u32)p_end - (u32)p_param_len - 2;
     p_param_len[0] = (UINT8)(param_len2 >> 8);
     p_param_len[1] = (UINT8)param_len2;
-    *(UINT16 *)((UINT8 *)buf + 2) = (UINT16)(p_end - ((UINT8 *)buf + 0x11));
+    buf->len = (UINT16)((u32)p_end - ((u32)buf + 0x11));
     L2CA_DataWrite(p_ccb->connection_id, buf);
 }
 
@@ -12908,6 +13022,153 @@ build_response:
     param_len_ptr[1] = send_len;
     *(UINT16 *)((UINT8 *)buf + 2) = p - out;
     L2CA_DataWrite(*(UINT16 *)((UINT8 *)arg0 + 0x22), buf);
+}
+
+static void process_service_search_attr_req(tCONN_CB *p_ccb, UINT16 trans_num,
+                                               UINT16 param_len, UINT8 *p_req,
+                                               UINT8 *p_req_end) {
+    UINT16 max_list_len;
+    UINT16 len_to_send, cont_offset;
+    UINT16 rsp_param_len, xx;
+    tSDP_UUID_SEQ uid_seq;
+    tSDP_ATTR_SEQ attr_seq, attr_seq_sav;
+    UINT8 *p_rsp;
+    UINT8 *p_rsp_start;
+    UINT8 *p_rsp_param_len;
+    UINT8 *p;
+    UINT8 *p_seq_start;
+    UINT16 seq_len;
+    tSDP_RECORD *p_rec;
+    tSDP_ATTRIBUTE *p_attr;
+    BT_HDR *p_buf;
+    BOOLEAN maxxed_out = FALSE;
+    (void)p_req_end;
+
+    p_req = sdpu_extract_uid_seq(p_req, param_len, &uid_seq);
+    if (p_req == NULL || uid_seq.num_uids == 0) {
+        sdpu_build_n_send_error(p_ccb, trans_num, 3, NULL);
+        return;
+    }
+
+    max_list_len = ((UINT16)p_req[0] << 8) + p_req[1];
+    if (max_list_len > p_ccb->rem_mtu_size - 0xA)
+        max_list_len = p_ccb->rem_mtu_size - 0xA;
+
+    p_req = sdpu_extract_attr_seq(p_req + 2, param_len, &attr_seq);
+    if (p_req == NULL || attr_seq.num_attr == 0) {
+        sdpu_build_n_send_error(p_ccb, trans_num, 3, NULL);
+        return;
+    }
+    {
+        volatile UINT32 *src = (volatile UINT32 *)&attr_seq.num_attr;
+        volatile UINT32 *dst = (volatile UINT32 *)&attr_seq_sav.num_attr;
+        xx = 8;
+        do {
+            *dst++ = *src++;
+            *dst++ = *src++;
+        } while (--xx != 0);
+        *(volatile UINT16 *)dst = *(volatile UINT16 *)src;
+    }
+
+    if (*p_req != 0) {
+        if (*p_req != 2) {
+            sdpu_build_n_send_error(p_ccb, trans_num, 5, NULL);
+            return;
+        }
+        if ((((UINT16)p_req[1] << 8) + p_req[2]) != *(UINT16 *)((UINT8 *)p_ccb + 0x476)) {
+            sdpu_build_n_send_error(p_ccb, trans_num, 5, NULL);
+            return;
+        }
+    } else {
+        p_rsp = (UINT8 *)p_ccb + 0x29;
+        *(UINT16 *)((UINT8 *)p_ccb + 0x476) = 0;
+        p_rec = sdp_db_service_search(NULL, &uid_seq);
+        while (p_rec != NULL) {
+            attr_seq = attr_seq_sav;
+            p_seq_start = p_rsp;
+            for (xx = 0; xx < attr_seq.num_attr; xx++) {
+                tATT_ENT *entry = &attr_seq.attr_entry[xx];
+                p_attr = fn_80096904(p_rec, entry->start, entry->end);
+                if (p_attr != NULL) {
+                    if ((UINT32)p_attr->len >
+                        (UINT32)((UINT16)(0x3E8 - (UINT16)(p_rsp - ((UINT8 *)p_ccb + 0x26))) - 6)) {
+                        maxxed_out = TRUE;
+                        break;
+                    }
+                    p_rsp = sdpu_build_attrib_entry(p_rsp, p_attr);
+                    if (entry->start != entry->end) {
+                        entry->start = p_attr->id + 1;
+                        xx--;
+                    }
+                }
+            }
+            if (maxxed_out)
+                break;
+            seq_len = (UINT16)(p_rsp - p_seq_start) - 3;
+            if (seq_len != 0) {
+                p_seq_start[0] = 0x36;
+                p_seq_start[1] = seq_len >> 8;
+                p_seq_start[2] = (UINT8)seq_len;
+            } else {
+                p_rsp = p_seq_start;
+            }
+            p_rec = sdp_db_service_search(p_rec, &uid_seq);
+        }
+        len_to_send = (UINT16)(p_rsp - ((UINT8 *)p_ccb + 0x26));
+        p_ccb->list_len = len_to_send;
+        if (len_to_send > 0xFF) {
+            UINT16 adjusted = len_to_send - 3;
+            *((UINT8 *)p_ccb + 0x26) = 0x36;
+            *((UINT8 *)p_ccb + 0x27) = adjusted >> 8;
+            *((UINT8 *)p_ccb + 0x28) = adjusted;
+        } else {
+            *(UINT16 *)((UINT8 *)p_ccb + 0x476) = 1;
+            *((UINT8 *)p_ccb + 0x27) = 0x35;
+            *((UINT8 *)p_ccb + 0x28) = len_to_send - 3;
+            p_ccb->list_len = len_to_send - 1;
+        }
+    }
+
+    p_buf = (BT_HDR *)GKI_getpoolbuf(2);
+    if (p_buf == NULL) {
+        if (lbl_803C4C40[0x4630] >= 1)
+            fn_8007093C(0xA0000, lbl_8031A50C);
+        return;
+    }
+
+    p_buf->offset = 9;
+    p_rsp = p_rsp_start = (UINT8 *)p_buf + 0x11;
+    p_rsp[0] = 7;
+    p_rsp[1] = trans_num >> 8;
+    p_rsp[2] = trans_num;
+    p_rsp_param_len = p_rsp + 3;
+    p = p_rsp_param_len;
+    len_to_send = p_ccb->list_len;
+    if (len_to_send > max_list_len)
+        len_to_send = max_list_len;
+    p[2] = len_to_send >> 8;
+    p[3] = len_to_send;
+    p += 4;
+    cont_offset = *(UINT16 *)((UINT8 *)p_ccb + 0x476);
+    memcpy(p, (UINT8 *)p_ccb + cont_offset + 0x26, len_to_send);
+    p += len_to_send;
+    p_ccb->list_len -= len_to_send;
+    cont_offset += len_to_send;
+    *(UINT16 *)((UINT8 *)p_ccb + 0x476) = cont_offset;
+    if (p_ccb->list_len != 0) {
+        p[0] = 2;
+        p[1] = cont_offset >> 8;
+        p[2] = cont_offset;
+        p += 3;
+    } else {
+        p[0] = 0;
+        p++;
+    }
+    rsp_param_len = (UINT16)(p - p_rsp_param_len - 2);
+    p_rsp_param_len[0] = rsp_param_len >> 8;
+    p_rsp_param_len[1] = rsp_param_len;
+    p_buf->len = p - p_rsp_start;
+    L2CA_DataWrite(p_ccb->connection_id, p_buf);
 }
 
 tCONN_CB *l2cu_find_lcb_by_handle_80099E54(UINT16 handle) {
