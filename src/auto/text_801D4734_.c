@@ -895,6 +895,36 @@ int fn_801D7C78(int arg0) {
     return ((int *)arg0)[10];
 }
 
+extern int fn_802E317C(const char *, ...);
+extern char lbl_80338F50[];
+#pragma push
+#pragma scheduling invalid_target
+int fn_801D7C80(void *arg0, int arg1) {
+    int *ptr = (int *)arg0;
+    float *fptr = (float *)arg0;
+
+    if (ptr[0xA] == 1) {
+        ptr[7] = lbl_8055E3C4;
+        switch (arg1) {
+        case 0:
+            fptr[8] = fptr[5];
+            fptr[9] = fptr[6];
+            break;
+        case 1:
+            fptr[8] = fptr[6];
+            fptr[9] = fptr[5];
+            break;
+        default:
+            fn_802E317C(lbl_80338F50, arg1);
+            break;
+        }
+        ptr[0xA] = 2;
+        return 1;
+    }
+    return 0;
+}
+#pragma pop
+
 void fn_801D7E3C(int arg0) {
     if (((int *)arg0)[10] != 0) {
         ((int *)arg0)[10] = 1;
