@@ -310,8 +310,8 @@ void fn_801C4B10(void) {
 }
 void fn_801C4B74(void) {
     fn_801C98F0();
-    if ((void *)(unsigned long)lbl_8055E7F8 != 0) {
-        fn_80128670();
+    if (lbl_8055E7F8 != 0) {
+        fn_80128670(lbl_8055E7F8);
         lbl_8055E7F8 = 0;
     }
 }
