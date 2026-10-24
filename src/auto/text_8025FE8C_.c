@@ -41,7 +41,7 @@ extern void fn_800167FC(s32);
 extern void *fn_80012820(s32);
 extern void *fn_8025007C(s32);
 extern s32 fn_8024DAE0(s32,s32,s32,void*,s32);
-extern void fn_802E317C(u8 *, ...);
+extern void fn_802E317C(void *);
 extern s32 lbl_8055C400;
 #pragma push
 #pragma small_data off
