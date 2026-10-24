@@ -1087,8 +1087,8 @@ extern void *fn_801399FC(void);
 extern void PSVECNormalize(f32 *, f32 *);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
 extern int sscanf(const char *, const char *, ...);
-extern char lbl_8055A108[];
-extern char lbl_8055A10C[];
+extern const char lbl_8055A108[4];
+extern const char lbl_8055A10C[4];
 extern f32 lbl_80561864;
 extern s32 fn_802C6FC0(const char *, s32, s32);
 #pragma cplusplus on
@@ -1118,9 +1118,9 @@ extern "C" void fn_80163F7C(void *arg0) {
         ((void (*)(s32, f32 *))fn_802C77F0)(result, work.bounds);
         first = work.bounds[5] - work.bounds[4];
         second = work.bounds[3] - work.bounds[2];
-        if (second > first) first = second;
+        first = second > first ? second : first;
         second = work.bounds[1] - work.bounds[0];
-        if (second > first) first = second;
+        first = second > first ? second : first;
         *(f32 *)(self + 0xCC) = first * lbl_8056185C;
     }
     *(void **)(self + 0xD0) = fn_802CAC28(base + 0x5C0, 0);
@@ -1145,12 +1145,12 @@ extern "C" void fn_80163F7C(void *arg0) {
             ((Dummy_80163F7C_VT3 *)obj)->f21((const char *)lbl_8055A10C, entryIndex, *(void **)(self + 0xE0));
             table = (f32 *)fn_801399FC();
             *(f32 **)(out + 0x34) = table;
-            register s32 count;
-            register s32 i;
-            register s32 bestIndex;
             register f32 *points;
-            count = *(s32 *)table;
+            register s32 bestIndex;
+            register s32 i;
+            register s32 count;
             points = (f32 *)((u8 *)table + 8);
+            count = *(s32 *)table;
             {
                 f32 best = lbl_80561864;
                 f32 dx, dy, score;
