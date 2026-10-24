@@ -344,6 +344,103 @@ void fn_80253C48(void *arg0) {
     }
 }
 
+void fn_80253CA4(void *arg0, void *arg1, float *arg2, void *arg3) {
+    extern float lbl_80563A04, lbl_80563A10, lbl_80563A14, lbl_80563A1C;
+    u8 *base = (u8 *)arg0;
+    int *srcp = (int *)arg1;
+    float *p2 = arg2;
+    float *p3 = (float *)arg3;
+    u8 *sca = base;
+    u8 *vecp = base;
+    u8 *outp = base;
+    float t1[3];
+    float res[3];
+    int ibuf[12];
+    float *buf = (float *)ibuf;
+    int rot1[9];
+    int rot2[9];
+    float pin1[3];
+    float pin2[3];
+    float zero;
+    float pi;
+    int i;
+    int r30;
+
+    *(int *)(base + 0x598) = srcp[0];
+    *(int *)(base + 0x59C) = srcp[1];
+    *(int *)(base + 0x5A0) = srcp[2];
+    *(int *)(base + 0x5A4) = srcp[3];
+    *(int *)(base + 0x5A8) = srcp[4];
+    *(int *)(base + 0x5AC) = srcp[5];
+    *(int *)(base + 0x5B0) = srcp[6];
+    *(int *)(base + 0x5B4) = srcp[7];
+    *(int *)(base + 0x5B8) = srcp[8];
+    *(int *)(base + 0x5BC) = srcp[9];
+    *(int *)(base + 0x5C0) = srcp[10];
+    *(int *)(base + 0x5C4) = srcp[11];
+    mtx33_mult_vec((float *)(base + 0x598), (float *)(base + 0x420), t1);
+    *(float *)(base + 0x5BC) = *(float *)(base + 0x5BC) + t1[0];
+    *(float *)(base + 0x5C0) = *(float *)(base + 0x5C0) + t1[1];
+    *(float *)(base + 0x5C4) = *(float *)(base + 0x5C4) + t1[2];
+
+    zero = lbl_80563A04;
+    pi = lbl_80563A1C;
+    for (i = 0; i < 4; i++) {
+        float s = *p2;
+        *(float *)(sca + 0x5C8) = s;
+        r30 = (i == 0 || i == 2) ? 1 : 0;
+        ibuf[0] = srcp[0];
+        ibuf[1] = srcp[1];
+        ibuf[2] = srcp[2];
+        ibuf[3] = srcp[3];
+        ibuf[4] = srcp[4];
+        ibuf[5] = srcp[5];
+        ibuf[6] = srcp[6];
+        ibuf[7] = srcp[7];
+        ibuf[8] = srcp[8];
+        ibuf[9] = srcp[9];
+        ibuf[10] = srcp[10];
+        ibuf[11] = srcp[11];
+        mtx33_mult_vec(buf, (float *)(vecp + 0x42C), res);
+        buf[9] = (buf[9] + res[0]) + buf[3] * s;
+        buf[10] = (buf[10] + res[1]) + buf[4] * s;
+        buf[11] = (buf[11] + res[2]) + buf[5] * s;
+        if (r30 == 0) {
+            pin2[0] = zero;
+            pin2[1] = pi;
+            pin2[2] = zero;
+            fn_80015A20(rot1, pin2);
+            fn_80015B20(buf, rot1, buf);
+        }
+        if (r30 != 0) {
+            pin1[0] = *p3 * lbl_80563A14;
+        } else {
+            pin1[0] = *p3 * lbl_80563A10;
+        }
+        pin1[1] = zero;
+        pin1[2] = zero;
+        fn_80015A20(rot2, pin1);
+        fn_80015B20(buf, rot2, buf);
+        *(int *)(outp + 0x5D8) = ibuf[0];
+        *(int *)(outp + 0x5DC) = ibuf[1];
+        *(int *)(outp + 0x5E0) = ibuf[2];
+        *(int *)(outp + 0x5E4) = ibuf[3];
+        *(int *)(outp + 0x5E8) = ibuf[4];
+        *(int *)(outp + 0x5EC) = ibuf[5];
+        *(int *)(outp + 0x5F0) = ibuf[6];
+        *(int *)(outp + 0x5F4) = ibuf[7];
+        *(int *)(outp + 0x5F8) = ibuf[8];
+        *(int *)(outp + 0x5FC) = ibuf[9];
+        *(int *)(outp + 0x600) = ibuf[10];
+        *(int *)(outp + 0x604) = ibuf[11];
+        p2 += 1;
+        sca += 4;
+        vecp += 0xC;
+        p3 += 1;
+        outp += 0x30;
+    }
+}
+
 void fn_8025419C(void *arg0) {
  extern float fn_8023659C(void); extern s32 fn_80147C50(s32,s32,float);
  extern void fn_8018BF44(s32 *); extern void fn_801F1394(s32,void *);
@@ -638,14 +735,10 @@ void fn_8025567C(void) {
 }
 
 void *fn_802556BC(void *arg0, s32 arg1) {
-    extern char lbl_80344B98[];
-    extern char lbl_80344BC0[];
-    extern void fn_80255200(void *, s32);
-    void *p = lbl_80344B98;
     *(s32 *)((u8 *)arg0 + 0x120) = arg1;
-    *(void **)((u8 *)arg0 + 0xFC) = (void *)lbl_80344BC0;
+    *(void **)arg0 = lbl_80344B98;
+    *(void **)((u8 *)arg0 + 0xFC) = lbl_80344BC0;
     *(s32 *)((u8 *)arg0 + 0x110) = 0;
-    *(void **)arg0 = p;
     *(u8 *)((u8 *)arg0 + 0x114) = 0;
     fn_80255200(arg0, 0);
     return arg0;
