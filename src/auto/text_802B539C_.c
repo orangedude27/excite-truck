@@ -70,4 +70,4 @@ extern const char lbl_8034A510[];
 extern int fn_8012E96C(const char *);
 extern int fn_802B5510(const char *);
 extern int fn_8013184C(void);
-  extern const char lbl_8034A588[];
+extern const char lbl_8034A588[];
