@@ -115,16 +115,16 @@ extern "C" s32 Alloc__Q46nw4hbm3snd6detail11TaskManagerFv(void *arg0)
     s32 var_r29;
 
     if (*(s32 *)((u8 *)arg0 + 0x18) == 0) {
-        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x45, base + 0x68);
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u8 *)base + 0), 0x45, base + 0x68);
     }
     temp_r31 = OSDisableInterrupts();
     var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
-    do {
+    while (var_r29 == 0) {
         if (ExecuteSingle__Q46nw4hbm3snd6detail11TaskManagerFv(arg0) == 0) {
-            Panic__Q26nw4hbm2dbFPCciPCce(base, 0x4C, base + 0xA8);
+            Panic__Q26nw4hbm2dbFPCciPCce((const char *)((u8 *)base + 0), 0x4C, base + 0xA8);
         }
         var_r29 = MEMFreeByStateToFrmHeap(*(s32 *)((u8 *)arg0 + 0x18));
-    } while (var_r29 == 0);
+    }
     OSRestoreInterrupts(temp_r31);
     return var_r29;
 }
@@ -142,6 +142,18 @@ extern u8 lbl_80326FC8[];
 #pragma push
 #pragma small_data off
 #pragma pop
+namespace nw4hbm {
+namespace snd {
+namespace detail {
+struct Task;
+struct TaskManager {
+    enum TaskPriority { TaskPriority0 = 0 };
+    void AppendTask(Task *, TaskPriority);
+};
+}
+}
+}
+
 extern "C" void AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6detail4TaskQ56nw4hbm3snd6detail11TaskManager12TaskPriority(void *arg0, void *arg1, s32 arg2) {
     u32 level;
     void *manager;
@@ -163,6 +175,40 @@ extern "C" void AppendTask__Q46nw4hbm3snd6detail11TaskManagerFPQ46nw4hbm3snd6det
     Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode(list, &it, (u8 *)task + 4);
     OSRestoreInterrupts(level);
 }
+
+extern "C" void Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(void *, void *);
+extern "C" void *MEMAdjustFrmHeap(void *, void *);
+extern "C" void OSRestoreInterrupts(u32);
+extern u8 lbl_80326F38[], lbl_80326F14[], lbl_80326F68[], lbl_80326F44[], lbl_80326E08[], lbl_80326E70[];
+extern "C" void CancelByTaskId__Q46nw4hbm3snd6detail11TaskManagerFUl(void *arg0, u32 taskId) {
+    u32 level = OSDisableInterrupts();
+    s32 listOffset, count;
+    void *list, *node, *next, *it;
+    for (listOffset = 0; listOffset < 0x24; listOffset += 0xC) {
+        list = (u8 *)arg0 + 0x20 + listOffset;
+        node = *(void **)((u8 *)list + 4);
+        while (node != (u8 *)list + 8) {
+            it = node;
+            next = *(void **)node;
+            if (!it) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F38, 0x23d, (char *)lbl_80326F14);
+            node = next;
+            if (*(u32 *)((u8 *)it + 8) == taskId) {
+                Erase__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8Iterator(list, &it);
+                if (!it) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F38, 0x23d, (char *)lbl_80326F14);
+                if (!((u8 *)it - 4)) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326F68, 0x193, (char *)lbl_80326F44);
+                if (!*(void **)((u8 *)arg0 + 0x18)) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80326E08, 0x5d, (char *)lbl_80326E70);
+                level = OSDisableInterrupts();
+                MEMAdjustFrmHeap(*(void **)((u8 *)arg0 + 0x18), (u8 *)it - 4);
+                OSRestoreInterrupts(level);
+            }
+        }
+    }
+    node = *(void **)((u8 *)arg0 + 0x1c);
+    if (node && *(u32 *)((u8 *)node + 0xC) == taskId)
+        ((void (*)(void *))(*(void ***)node)[4])(node);
+    OSRestoreInterrupts(level);
+}
+
 extern "C" void *fn_800FE648(void) {
     s8 initialized = (s8)lbl_8055DE80;
     if (initialized != 0) {
@@ -230,6 +276,34 @@ extern "C" s32 fn_800FE814(s32 arg0) {
     }
 }
 
+extern f32 lbl_802F4DE0[];
+extern f32 lbl_802F4E10[];
+f32 CalcPitchRatio__Q46nw4hbm3snd6detail4UtilFi(s32 pitch) {
+    s32 octave = 0;
+    s32 note = pitch;
+    f32 ratio = lbl_805610C8;
+    if (note < 0) {
+        s32 count = (0xBFF - note) / 0xC00;
+        note += count * 0xC00;
+        octave -= count;
+    }
+    if (note >= 0xC00) {
+        s32 count = note / 0xC00;
+        note -= count * 0xC00;
+        octave += count;
+    }
+    if (octave > 0) {
+        do { ratio *= lbl_805610CC; --octave; } while (octave > 0);
+    } else if (octave < 0) {
+        do { ratio *= lbl_805610D0; ++octave; } while (octave < 0);
+    }
+    s32 semitone = note >> 8;
+    s32 fraction = note & 0xFF;
+    if (semitone != 0) ratio *= lbl_802F4DE0[semitone];
+    if (fraction != 0) ratio *= lbl_802F4E10[fraction];
+    return ratio;
+}
+
 extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
     f32 v;
     s32 idx;
@@ -247,7 +321,7 @@ extern "C" f32 CalcVolumeRatio__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
 }
 
 #pragma push
-#pragma schedule off
+#pragma scheduling invalid_target
 extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     f32 v;
     f32 t;
@@ -267,6 +341,7 @@ extern "C" f32 CalcPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
 #pragma pop
 extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     f32 v;
+
     if (pan > lbl_805610CC) {
         v = lbl_805610CC;
     } else if (pan < lbl_805610E8) {
@@ -274,7 +349,9 @@ extern "C" f32 CalcSurroundPanRatio__Q46nw4hbm3snd6detail4UtilFf(f32 pan) {
     } else {
         v = pan;
     }
-    return lbl_802F6124[(s32)(lbl_805610D0 + lbl_805610E4 * (v * lbl_805610D0))];
+
+    return lbl_802F6124[(s32)(lbl_805610D0 +
+                              lbl_805610E4 * (v * lbl_805610D0))];
 }
 
 extern "C" s32 CalcLpfFreq__Q46nw4hbm3snd6detail4UtilFf(f32 value) {
@@ -342,6 +419,102 @@ extern "C" void* __dt__Q36nw4hbm3snd10WavePlayerFv(void *this_, s32 arg1, u32 ar
         }
     }
     return this_;
+}
+
+extern "C" u32 GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
+extern "C" u32 GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(const void *, u32, u32);
+extern "C" u32 GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(u32, u32);
+extern "C" s32 IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(void *);
+extern u8 lbl_8032737C[], lbl_803273A0[], lbl_803273AC[], lbl_803273D0[], lbl_803273DC[], lbl_80327400[];
+extern "C" s32 IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(void *arg0) {
+    s32 sample;
+    u32 current, format, start, end;
+    void *wave;
+    if (!*(void **)((u8 *)arg0 + 0x18)) return 0;
+    if (IsPlayFinished__Q46nw4hbm3snd6detail7AxVoiceCFv(*(void **)((u8 *)arg0 + 0x18))) return 0;
+    if (*(s32 *)((u8 *)arg0 + 4) == 0) return 0;
+    if (*(s32 *)((u8 *)arg0 + 4) != 0)
+        Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_80327400, 0x1f6, (const char *)lbl_803273DC);
+    wave = *(void **)((u8 *)arg0 + 8);
+    if (!wave) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803273A0, 0x242, (const char *)lbl_8032737C);
+    wave = (u8 *)wave - 0x18;
+    if (!wave) Panic__Q26nw4hbm2dbFPCciPCce((const char *)lbl_803273D0, 0x1bf, (const char *)lbl_803273AC);
+    current = GetCurrentPlayingDspAddress__Q46nw4hbm3snd6detail7AxVoiceCFv(*(void **)((u8 *)arg0 + 0x18));
+    format = *(u32 *)((u8 *)*(void **)((u8 *)arg0 + 0x18) + 0x118);
+    sample = GetSampleByByte__Q46nw4hbm3snd6detail7AxVoiceFUlQ56nw4hbm3snd6detail7AxVoice6Format(*(u32 *)((u8 *)wave + 0x10), format);
+    start = GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(*(void **)((u8 *)wave + 8), 0, format);
+    end = GetDspAddressBySample__Q46nw4hbm3snd6detail7AxVoiceFPCvUlQ56nw4hbm3snd6detail7AxVoice6Format(*(void **)((u8 *)wave + 8), sample, format);
+    return current >= start && current <= end;
+}
+
+extern "C" s32 IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(void *);
+extern "C" void UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(void *);
+extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *, BOOL);
+extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *, s32, const void *, u32);
+extern "C" void fn_800FF090(void *);
+extern u8 lbl_8032734C[], lbl_80327370[], lbl_8032746C[], lbl_80327490[];
+extern "C" void detail_UpdateBufferAllPlayers__Q36nw4hbm3snd10WavePlayerFv(void *arg0) {
+    extern u8 lbl_8041D4AC[];
+    void **node = (void **)*(void **)(lbl_8041D4AC + 4);
+    void **end = (void **)(lbl_8041D4AC + 4);
+    void *entry, *player, *wave;
+    s32 i, count, offset;
+    while (node != end) {
+        entry = node;
+        node = (void **)*node;
+        if (!entry) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327370, 0x23d, (char *)lbl_8032734C);
+        player = (u8 *)entry - 0x94;
+        if (*((u8 *)entry - 0x77)) {
+            if (IsNextWavePacket__Q36nw4hbm3snd10WavePlayerCFv(player)) UpdateWavePacket__Q36nw4hbm3snd10WavePlayerFv(player);
+            if (!*((u8 *)player + 0x1e) && *(u32 *)((u8 *)player + 4) >= 2) {
+                count = *(s32 *)((u8 *)player + 0x10);
+                wave = *(void **)((u8 *)player + 8);
+                if (count > 0) {
+                    void *list = *(void **)wave;
+                    offset = 0;
+                    for (i = 0; i < count; i++) {
+                        if (!list) Panic__Q26nw4hbm2dbFPCciPCce((char *)lbl_80327490, 0x23d, (char *)lbl_8032746C);
+                        SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)((u8 *)player + 0x18), i, *(void **)((u8 *)list + offset + 8), 0);
+                        offset += 4;
+                    }
+                }
+                SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)((u8 *)player + 0x18), 1);
+                *((u8 *)player + 0x1e) = 1;
+            }
+        } else if (*(s32 *)((u8 *)player + 4)) fn_800FF090(player);
+    }
+}
+
+extern "C" void fn_800E5338(s32, f32);
+extern "C" void fn_800E5444(s32, f32);
+extern "C" void fn_800E5464(s32, f32);
+extern "C" void fn_800E54A8(s32, f32);
+extern "C" void fn_800E5550(s32, f32);
+extern "C" void fn_800E5594(s32, s32);
+extern "C" void fn_800E55B4(s32, f32);
+extern "C" void fn_800E56D0(s32, f32);
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(s32, s32, f32);
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(s32, s32, f32);
+extern "C" void SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(s32, s32, f32);
+extern "C" void SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(s32, s32, f32);
+extern f32 lbl_80561110;
+extern "C" void fn_800FF708(void *arg0) {
+ u8 *p=(u8*)arg0; s32 i; s32 voice=*(s32*)(p+0x18);
+ if (!voice) return;
+ fn_800E5338(voice,*(f32*)(p+0x30));
+ fn_800E5444(*(s32*)(p+0x18),*(f32*)(p+0x3c));
+ fn_800E5464(*(s32*)(p+0x18),*(f32*)(p+0x34));
+ fn_800E54A8(*(s32*)(p+0x18),*(f32*)(p+0x38));
+ fn_800E5550(*(s32*)(p+0x18),lbl_80561110+*(f32*)(p+0x40));
+ fn_800E5594(*(s32*)(p+0x18),*(s32*)(p+0x44));
+ fn_800E55B4(*(s32*)(p+0x18),*(f32*)(p+0x48));
+ fn_800E56D0(*(s32*)(p+0x18),*(f32*)(p+0x5c));
+ for(i=0;i<3;i++) SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E5718(*(s32*)(p+0x18),i,*(f32*)(p+0x60+i*4));
+ for(i=0;i<4;i++) {
+  SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32*)(p+0x18),i,*(f32*)(p+0x4c+i*4));
+  SetRemoteSend__Q46nw4hbm3snd6detail7AxVoiceFif(*(s32*)(p+0x18),i,*(f32*)(p+0x6c+i*4));
+  SetRemoteOutVolume__Q46nw4hbm3snd6detail7AxVoiceFif_800E58CC(*(s32*)(p+0x18),i,*(f32*)(p+0x6c+i*4));
+ }
 }
 
 #pragma push
