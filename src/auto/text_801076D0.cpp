@@ -1711,9 +1711,9 @@ block_268:
     }
 }
 
+#pragma dont_inline fn_8010F430
 #pragma push
 #pragma optimize_for_size on
-#pragma dont_inline fn_8010F430
 extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     extern const char lbl_80329530[];
     extern f32 lbl_80561178;
@@ -2471,7 +2471,7 @@ block_275:
 }
 
 #pragma dont_inline fn_8010F430
-extern "C" f32 fn_80110D68(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
+extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
     const char *base = lbl_80329530;
     u8 copyA[0x60], copyB[0x60], copyC[0x60];
     f32 rectA[4], rectB[4], rectC[4];
@@ -2818,7 +2818,7 @@ extern "C" f32 fn_80110D68(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4)
         temp_f2 = rectB[2] - rectB[0];
         fn_801033F0(&copyB[0x0], 0);
         temp_f2 = var_f31 - temp_f2;
-        SetCursorX__Q36nw4hbm2ut10CharWriterFf((s32)arg0, *arg1 + (temp_f2 * lbl_80561188));
+        SetCursorX__Q36nw4hbm2ut10CharWriterFf(arg0, *arg1 + (temp_f2 * lbl_80561188));
     } else if (temp_r0_4 == 2) {
         temp_r10_5 = (s32) arg0 & 0xFF000000;
         var_r4_5 = 1;
@@ -2939,14 +2939,14 @@ extern "C" f32 fn_80110D68(void *arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4)
         temp_f2 = rectC[2] - rectC[0];
         fn_801033F0(&copyC[0x0], 0);
         temp_f2 = var_f31 - temp_f2;
-        SetCursorX__Q36nw4hbm2ut10CharWriterFf((s32)arg0, *arg1 + temp_f2);
+        SetCursorX__Q36nw4hbm2ut10CharWriterFf(arg0, *arg1 + temp_f2);
     } else {
-        SetCursorX__Q36nw4hbm2ut10CharWriterFf((s32)arg0, *arg1);
+        SetCursorX__Q36nw4hbm2ut10CharWriterFf(arg0, *arg1);
     }
     if ((u32) ((*(s32 *)((u8*)(arg0) + (0x58))) & 0x300) == 0x300) {
-        SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC((s32)arg0, *arg2);
+        SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC(arg0, *arg2);
     } else {
-        SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC((s32)arg0, *arg2 + GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC((s32)arg0));
+        SetCursorX__Q36nw4hbm2ut10CharWriterFf_801062CC(arg0, *arg2 + GetFontWidth__Q36nw4hbm2ut10CharWriterCFv_801058DC(arg0));
     }
     return var_f31;
 }
