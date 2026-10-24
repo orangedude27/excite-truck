@@ -1,7 +1,6 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 typedef struct { unsigned char r, g, b, a; } fn_802DCAE4_GXColor;
-typedef struct { unsigned int w[12]; float alpha; } fn_802DCAE4_Entry;
 extern void GXSetTevKColor(int, fn_802DCAE4_GXColor);
 
 extern unsigned char lbl_8055FEC0;
@@ -346,38 +345,38 @@ extern unsigned char lbl_804DB480[];
 #pragma push
 #pragma processor 750
 void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
-     void *state;
      void *input;
+     void *state;
      float alpha;
      unsigned char *g;
-     state = arg0;
      input = arg1;
+     state = arg0;
      alpha = farg0;
      if (lbl_8055FEBB != 0) {
          unsigned int first;
-         unsigned char *records;
+         unsigned int *records;
          int count;
-         unsigned char *dest;
+         unsigned int *dest;
          g = lbl_804DB480;
          first = *(unsigned int *)input;
-         records = *(unsigned char **)g;
+         records = (unsigned int *)*(void **)g;
          count = *(int *)(g + 4);
-         dest = (unsigned char *)(count * 0x34 + (int)records);
+         dest = records + count * 13;
          *(void **)(g + 0x214) = state;
          *(int *)(g + 4) = count + 1;
-         *(unsigned int *)(dest + 0x00) = first;
-         *(unsigned int *)(dest + 0x04) = *(unsigned int *)((unsigned char *)input + 0x04);
-         *(unsigned int *)(dest + 0x08) = *(unsigned int *)((unsigned char *)input + 0x08);
-         *(unsigned int *)(dest + 0x0C) = *(unsigned int *)((unsigned char *)input + 0x0C);
-         *(unsigned int *)(dest + 0x10) = *(unsigned int *)((unsigned char *)input + 0x10);
-         *(unsigned int *)(dest + 0x14) = *(unsigned int *)((unsigned char *)input + 0x14);
-         *(unsigned int *)(dest + 0x18) = *(unsigned int *)((unsigned char *)input + 0x18);
-         *(unsigned int *)(dest + 0x1C) = *(unsigned int *)((unsigned char *)input + 0x1C);
-         *(unsigned int *)(dest + 0x20) = *(unsigned int *)((unsigned char *)input + 0x20);
-         *(unsigned int *)(dest + 0x24) = *(unsigned int *)((unsigned char *)input + 0x24);
-         *(unsigned int *)(dest + 0x28) = *(unsigned int *)((unsigned char *)input + 0x28);
-         *(unsigned int *)(dest + 0x2C) = *(unsigned int *)((unsigned char *)input + 0x2C);
-         *(float *)(dest + 0x30) = alpha;
+         dest[0] = first;
+         dest[1] = *(unsigned int *)((unsigned char *)input + 0x04);
+         dest[2] = *(unsigned int *)((unsigned char *)input + 0x08);
+         dest[3] = *(unsigned int *)((unsigned char *)input + 0x0C);
+         dest[4] = *(unsigned int *)((unsigned char *)input + 0x10);
+         dest[5] = *(unsigned int *)((unsigned char *)input + 0x14);
+         dest[6] = *(unsigned int *)((unsigned char *)input + 0x18);
+         dest[7] = *(unsigned int *)((unsigned char *)input + 0x1C);
+         dest[8] = *(unsigned int *)((unsigned char *)input + 0x20);
+         dest[9] = *(unsigned int *)((unsigned char *)input + 0x24);
+         dest[10] = *(unsigned int *)((unsigned char *)input + 0x28);
+         dest[11] = *(unsigned int *)((unsigned char *)input + 0x2C);
+         *(float *)&dest[12] = alpha;
          if (*(int *)(g + 4) + 1 > *(int *)(g + 8)) {
              unsigned char *colors = (unsigned char *)fn_802CFF64(0x28);
              unsigned char *coords = (unsigned char *)fn_802CFF64(0x50);
@@ -440,20 +439,27 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
          if (lbl_8055FEB9 != 0) {
              fn_802DCAE4_GXColor col;
              float t = lbl_80565040 * alpha;
-             int a, pixel;
-             if (t < lbl_80565048) t -= lbl_80565044; else t += lbl_80565044;
-             a = (int)t;
+             float rounded;
+             int a; unsigned int pixel;
+             if (t < lbl_80565048)
+                 rounded = t - lbl_80565044;
+             else
+                 rounded = lbl_80565044 + t;
+             a = (int)rounded;
              a = a & ((-a & ~a) >> 31);
              if (a >= 0xFF) a = 0xFF;
              pixel = fn_802DC6AC(((int)*(float *)((unsigned char *)input + 0x24) / 4) + 0x100,
                                  ((int)*(float *)((unsigned char *)input + 0x2C) / 4) + 0x100);
-             col.r = (pixel >> 24); col.g = (pixel >> 16); col.b = (pixel >> 8); col.a = a;
+             col.r = (unsigned char)(pixel >> 16);
+             col.g = (unsigned char)(pixel >> 8);
+             col.b = (unsigned char)pixel;
+             col.a = a;
              GXSetTevKColor(1, col);
          } else {
              float matrix[2][4];
              float x = *(float *)((unsigned char *)input + 0x24);
-             float y = *(float *)((unsigned char *)input + 0x2C);
              float scale = lbl_8056504C;
+             float y = *(float *)((unsigned char *)input + 0x2C);
              matrix[0][0] = lbl_80565048;
              matrix[0][1] = lbl_80565048;
              matrix[0][2] = lbl_80565048;
@@ -466,7 +472,13 @@ void fn_802DCAE4(void *arg0, void *arg1, float farg0) {
              {
                  fn_802DCAE4_GXColor col;
                  float t = lbl_80565040 * alpha;
-                 int a = (int)(t < lbl_80565048 ? t - lbl_80565044 : t + lbl_80565044);
+                 float rounded;
+                 int a;
+                 if (t < lbl_80565048)
+                     rounded = t - lbl_80565044;
+                 else
+                     rounded = lbl_80565044 + t;
+                 a = (int)rounded;
                  a = a & ((-a & ~a) >> 31);
                  if (a >= 0xFF) a = 0xFF;
                  if (a != lbl_8055FEA0) {
