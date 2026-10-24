@@ -2,6 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 #include <types.h>
+#include <revolution/OS/OSContext.h>
 #include <ctype.h>
 
 extern u8 *FstStart_8055D840;
@@ -725,13 +726,13 @@ extern void fn_8003801C(void);
 extern void DVDLowOpenPartition(u32, u32, u32, u32, void *, void (*)(u32));
 #pragma dont_inline on
 void fn_80036D24(u32 arg0) {
-    register u8 *base = lbl_80376A80;
-    u8 *logBase;
+    u8 *base = lbl_80376A80;
+    register u8 *logBase;
     register u32 *limit;
-    register u32 *entry;
+    register u8 *entry;
     register u32 *freeEntry;
     s32 enabled;
-    s32 index;
+    s16 index;
     register s32 signedIndex;
     s32 value;
     s32 oldBlock;
@@ -754,26 +755,26 @@ void fn_80036D24(u32 arg0) {
     }
 
     if (arg0 & 1) {
-        entry = (u32 *)(base + 0xC0);
+        entry = base + 0xC0;
         *(volatile s32 *)&lbl_8055D860 = 0;
         index = 0;
         freeEntry = 0;
         limit = *(u32 * volatile *)&lbl_8055D89C;
-        *(volatile u8 **)&lbl_8055D898 = (u8 *)entry;
+        *(volatile u8 **)&lbl_8055D898 = entry;
         *(u32 * volatile *)&lbl_8055D894 = 0;
-        do {
-            if (entry[1] == 0) {
-                freeEntry = entry;
-                *(u32 * volatile *)&lbl_8055D894 = entry;
+        while ((u32)(s16)index < *limit) {
+            if (*(u32 *)(entry + 4) == 0) {
+                freeEntry = (u32 *)entry;
+                *(u32 * volatile *)&lbl_8055D894 = (u32 *)entry;
             }
-            entry += 2;
+            entry += 8;
             index++;
             *(volatile u8 **)&lbl_8055D898 = (u8 *)entry;
-        } while ((u32)signedIndex < *limit);
+        }
 
         if (freeEntry != 0) {
             if (lbl_8055D8BC != 3) {
-                s32 localEnabled;
+                register s32 localEnabled;
                 lbl_8055D860 = 0;
                 fn_8003BCDC(0);
                 value = *lbl_8055D894;
@@ -791,7 +792,7 @@ void fn_80036D24(u32 arg0) {
                 return;
             }
             {
-                s32 localEnabled;
+                register s32 localEnabled;
                 lbl_8055D860 = 0;
                 fn_8003BCDC(0);
                 value = *lbl_8055D894;
@@ -849,7 +850,6 @@ void fn_80036D24(u32 arg0) {
     fn_8003B218(fn_80035E6C);
 }
 #pragma dont_inline reset
-#pragma scheduling on
 extern s32 MotorState_8055D8A8;
 extern s32 lbl_8055D8BC;
 extern void __DVDClearWaitingQueue(void);
