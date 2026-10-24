@@ -3542,6 +3542,73 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
         OSRestoreInterrupts(queueEnabled); \
     }
 
+#define WPADiPushCommandInline(pQueue, localCommand) \
+    { \
+        BOOL queueEnabled; \
+        BOOL innerEnabled; \
+        s8 queueSize; \
+        queueEnabled = OSDisableInterrupts(); \
+        innerEnabled = OSDisableInterrupts(); \
+        queueSize = (pQueue)->back - (pQueue)->front; \
+        if (queueSize < 0) queueSize += (pQueue)->capacity; \
+        OSRestoreInterrupts(innerEnabled); \
+        if ((pQueue)->capacity - 1 != queueSize) { \
+            memset(&(pQueue)->buffer[(pQueue)->back], 0, sizeof(WPADCommand)); \
+            memcpy(&(pQueue)->buffer[(pQueue)->back], &(localCommand), sizeof(WPADCommand)); \
+            (pQueue)->back = (pQueue)->back == (pQueue)->capacity - 1 ? 0 : (pQueue)->back + 1; \
+        } \
+        OSRestoreInterrupts(queueEnabled); \
+    }
+
+#define WPADiSendEnableSpeakerInline(pQueue, enableValue, callbackValue) \
+    { \
+        WPADCommand command; \
+        command.reportID = RPTID_ENABLE_SPEAKER; \
+        command.dataLength = RPT14_SIZE; \
+        command.dataBuf[RPT14_SPEAKER_ENABLE] = (enableValue) ? 4 : 0; \
+        command.cmdCB = (callbackValue); \
+        WPADiPushCommandInline((pQueue), command); \
+    }
+
+#define WPADiSendWriteDataCmdInline(pQueue, commandValue, addressValue, callbackValue) \
+    { \
+        WPADCommand command; \
+        u8 byteValue; \
+        byteValue = (commandValue); \
+        command.reportID = RPTID_WRITE_DATA; \
+        command.dataLength = RPT16_SIZE; \
+        command.cmdCB = (callbackValue); \
+        memcpy(&command.dataBuf[RPT16_DATA_DST_ADDRESS], &(addressValue), sizeof(u32)); \
+        memcpy(&command.dataBuf[RPT16_DATA_LENGTH], &byteValue, sizeof(u8)); \
+        memcpy(&command.dataBuf[RPT16_DATA], &byteValue, sizeof(u8)); \
+        WPADiPushCommandInline((pQueue), command); \
+    }
+
+#define WPADiSendWriteDataInline(pQueue, sourceData, dataLength, addressValue, callbackValue) \
+    { \
+        WPADCommand command; \
+        u8 packedLength; \
+        packedLength = (dataLength) & 31; \
+        command.reportID = RPTID_WRITE_DATA; \
+        command.dataLength = RPT16_SIZE; \
+        command.cmdCB = (callbackValue); \
+        memcpy(&command.dataBuf[RPT16_DATA_DST_ADDRESS], &(addressValue), sizeof(u32)); \
+        memcpy(&command.dataBuf[RPT16_DATA_LENGTH], &packedLength, sizeof(u8)); \
+        memcpy(&command.dataBuf[RPT16_DATA], (sourceData), (dataLength)); \
+        WPADiPushCommandInline((pQueue), command); \
+    }
+
+#define WPADiSendGetContStatInline(pQueue, infoValue, callbackValue) \
+    { \
+        WPADCommand command; \
+        command.reportID = RPTID_REQUEST_STATUS; \
+        command.dataLength = RPT15_SIZE; \
+        command.dataBuf[0] = 0; \
+        command.cmdCB = (callbackValue); \
+        command.statusReportOut = (infoValue); \
+        WPADiPushCommandInline((pQueue), command); \
+    }
+
 // fn_80060CC0: WPAD processing (large - stub)
 #pragma inline_max_size(1000)
 #pragma inline_max_total_size(10000)
@@ -3599,7 +3666,7 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
             OSRestoreInterrupts(innerEnabled0);
             if ((u32)(queueSize0 + 5) <=
                 ((WPADCommandQueue*)(p + 0x160))->capacity - 1) {
-                WPADiSendMuteSpeaker((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
+                WPADiSendMuteSpeakerInline((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
 
                 WPADiSendWriteDataCmd((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_01,
                                       NULL);
@@ -3632,7 +3699,7 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
             if ((u32)(queueSize1 + 7) <=
                 ((WPADCommandQueue*)(p + 0x160))->capacity - 1) {
                 WPADiSendEnableSpeaker((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
-                WPADiSendMuteSpeaker((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
+                WPADiSendMuteSpeakerInline((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
 
                 WPADiSendWriteDataCmd((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_09,
                                       NULL);
@@ -3645,7 +3712,7 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
                 WPADiSendWriteData((WPADCommandQueue*)(p + 0x160), &config, SPK_CONFIG_SIZE,
                                    WM_REG_SPEAKER_01, NULL);
 
-                WPADiSendMuteSpeaker((WPADCommandQueue*)(p + 0x160), FALSE, NULL);
+                WPADiSendMuteSpeakerInline((WPADCommandQueue*)(p + 0x160), FALSE, NULL);
 
                 WPADiSendGetContStat((WPADCommandQueue*)(p + 0x160), NULL, pCallback);
 
