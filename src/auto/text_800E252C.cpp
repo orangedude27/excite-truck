@@ -1,3 +1,6 @@
+typedef int s32;
+typedef unsigned int u32;
+typedef signed char s8;
 typedef int M2C_UNK;
 #define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
 extern "C" void *GetInstance__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv(void);
