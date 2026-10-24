@@ -497,7 +497,7 @@ void fn_80117618(void *arg0, void *arg1) {
 void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
 
 extern u32 lbl_80559944;
-extern u32 lbl_8041D608[1];
+extern u32 lbl_8041D608[0x100];
 #define lbl_8041D608 lbl_8041D608[0]
 extern u32 lbl_8055DED8;
 extern u8 lbl_802F6528[];
