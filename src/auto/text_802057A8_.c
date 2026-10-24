@@ -36,6 +36,7 @@ void fn_80205850(void) {
     fn_802C8D74();
 }
 
+#pragma dont_inline
 int fn_80205964(void) {
     int i = 0;
     while (i < fn_801E85A4()) {
