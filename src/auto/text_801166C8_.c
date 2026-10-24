@@ -504,46 +504,55 @@ extern u8 lbl_802F6528[];
 extern void fn_8011FE20(u32 **, u32);
 extern void fn_8011DFAC(void *, u32);
 extern void memset(void *, int, unsigned int);
-s32 *fn_8011770C(s32 *arg0, u32 arg1) {
+extern s32 fn_8011ACC4(void *, void *, s32);
+extern s32 lbl_80559938;
+extern s32 lbl_8055993C;
+extern s32 lbl_80559940;
+extern u32 lbl_8055DEDC;
+extern s32 lbl_8055DED4;
+extern void *fn_8011B584(u32, s32, s32, s32);
+extern void *fn_8011BE48(s32);
+extern void fn_8011BEC8(void *, void *, s32, s32);
+s32 *fn_8011770C(s32 arg0, s32 arg1) {
     struct {
         u8 header[0x2C];
-        u8 padding[0x7C];
+        u8 headPad[4];
+        u8 metadata[0x78];
         u8 state[0x388];
-        volatile u32 conversion[16];
     } local;
     u32 magic;
     u32 flags;
     u32 mode;
     u32 width;
     u32 height;
+    u32 count;
+    u32 roundedHeight;
+    u32 blockBytes;
+    void *allocated;
+    u32 activeFlags;
     u32 format;
-    s32 clock = (s32)arg0;
     s32 *result = 0;
-    local.conversion[0] = 0x43300000;
-    local.conversion[2] = 0x43300000;
-    if ((arg1 & 0x4000) == 0) {
-        lbl_8041D608 = 0;
+    s32 (*openStream)(void *, void *, s32) = fn_8011ACC4;
+    if (!(arg1 & 0x4000)) {
         lbl_80559944 = 1;
+        *(volatile u32 *)&lbl_8041D608 = 0;
         memset(local.state, 0, 0x388);
-        clock = fn_80116D30();
+        *(s32 *)(local.state + 0x2A0) = fn_80116D30();
     }
-    ((s32 *)local.state)[0x2A0 / 4] = clock;
     lbl_8041D508[0] = 0;
     if (arg1 & 0x04000000) {
-        memcpy(local.header, arg0, 0x2C);
-    } else if ((arg1 & 0x02000000) && lbl_8055DED8 != 0) {
-        s32 (*callback)(void *, s32 *, u32) = (s32 (*)(void *, s32 *, u32))lbl_8055DED8;
+        memcpy(local.header, (void *)arg0, 0x2C);
+    } else {
+        if ((arg1 & 0x02000000) && lbl_8055DED8 != 0)
+            openStream = (s32 (*)(void *, void *, s32))lbl_8055DED8;
         lbl_8055DED8 = 0;
-        result = (s32 *)callback(local.state + 0xF0, arg0, arg1);
-        if (result == 0 && (s8)lbl_8041D508[0] == 0) {
-            fn_80116E2C(lbl_802F6528);
+        if (openStream(local.state + 0xF0, (void *)arg0, arg1) == 0) {
+            if ((s8)lbl_8041D508[0] == 0)
+                fn_80116E2C(lbl_802F6528);
             return 0;
         }
-    }
-    if (result == 0) {
-        s32 (*readHeader)(void *, s32, void *, s32) = *(s32 (**)(void *, s32, void *, s32))(local.state + 0xF0);
-        if (readHeader != 0)
-            readHeader(local.state + 0xF0, 0, local.header, 0x2C);
+        ((s32 (*)(void *, s32, void *, s32))*(void **)(local.state + 0xF0))(
+            local.state + 0xF0, 0, local.header, 0x2C);
     }
     magic = *(u32 *)local.header;
     if (magic == 0x664B4942 || magic == 0x674B4942 || magic == 0x684B4942 || magic == 0x694B4942) {
@@ -566,29 +575,379 @@ s32 *fn_8011770C(s32 *arg0, u32 arg1) {
     *(u32 *)(local.state + 0x14) = *(u32 *)(local.header + 0x1C);
     *(u32 *)(local.state + 0x18) = *(u32 *)(local.header + 0x20);
     *(u32 *)(local.state + 0x28) = *(u32 *)(local.header + 4);
-    *(u32 *)(local.state + 0x68) = *(u32 *)(local.header + 0xC);
-    *(u32 *)(local.state + 0x70) = *(u32 *)(local.header + 0x28);
+    *(u32 *)(local.state + 0xC8) = *(u32 *)(local.header + 0xC);
+    *(u32 *)(local.state + 0xD0) = *(u32 *)(local.header + 0x28);
     *(u32 *)(local.state + 0xCC) = *(u32 *)(local.header + 0x10);
     *(u32 *)(local.state + 0x24) = format;
     *(u32 *)(local.state + 0xC0) = (width + 15) >> 4;
-    flags = (arg1 & 0xF8000001) | (format & 0x4000);
-    if ((format & 0x800) != 0) flags &= ~0x1000;
+    flags = (arg1 & 0x8FFFFFFF) | (format & 0x20000);
+    if ((format & 0x100000) == 0) flags &= ~0x100000;
     mode = arg1 & 0x70000000;
     if (mode != 0x70000000)
         flags |= mode;
     else
         flags |= format & 0x70000000;
-    if (mode == 0x30000000) height <<= 1;
-    else if (mode == 0x20000000 || mode == 0x10000000) width <<= 1;
+    if (mode == 0x30000000) width <<= 1;
+    else if (mode == 0x20000000 || mode == 0x10000000) height <<= 1;
     else if (mode == 0x50000000 || mode == 0x40000000) {
         width <<= 1;
         height <<= 1;
     }
     if (magic == 0x674B4942) flags |= 0x18000;
     else if (magic == 0x684B4942) flags |= 0x8000;
+    if ((arg1 & 0x1000) && (s32)lbl_80559938 != -1) {
+        *(u32 *)(local.state + 0x14) = lbl_80559938;
+        *(u32 *)(local.state + 0x18) = lbl_8055DEDC;
+        lbl_80559938 = -1;
+    }
     *(u32 *)(local.state + 0x20) = flags;
     *(u32 *)(local.state + 0) = width;
     *(u32 *)(local.state + 4) = height;
+    *(u32 *)(local.state + 0x23C) = width;
+    *(u32 *)(local.state + 0x240) = height;
+    count = (*(u32 *)(local.header + 0x1C) +
+              (*(u32 *)(local.header + 0x20) >> 1)) /
+             *(u32 *)(local.header + 0x20);
+    if (!count) count = 1;
+    *(u32 *)(local.state + 0x2AC) = count;
+    *(u32 *)(local.state + 0x2A4) = *(u32 *)(local.header + 0x1C);
+    *(u32 *)(local.state + 0x2A8) = *(u32 *)(local.header + 0x20);
+    roundedHeight = (*(u32 *)(local.header + 0x20) + 15) >> 4;
+    blockBytes = *(u32 *)(local.state + 0xC0) * roundedHeight;
+    *(u32 *)(local.state + 0xC4) = blockBytes;
+    *(u32 *)(local.state + 0x2E4) = blockBytes >> 2;
+    fn_8011FE20((u32 **)(local.state + 0xBC), blockBytes + 0x10);
+    fn_8011FE20((u32 **)(local.state + 0x2B4), count * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2B8), count * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2BC), count * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2C0), count * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2C4), count * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2C8), count * 4);
+    fn_8011FE20((u32 **)(local.state + 0x2CC), count * 4);
+    count = lbl_80559944;
+    if (count == 0) count = 1;
+    fn_8011FE20((u32 **)(local.state + 0x2F0), count * 0x17C);
+    fn_8011FE20((u32 **)(local.state + 0x244), lbl_80559944 * 4);
+    fn_8011DFAC(local.state + 0x300, (width + 15) & ~15);
+    fn_8011FE20((u32 **)(local.state + 0x300), *(u32 *)(local.state + 0x300));
+    fn_8011FE20((u32 **)(local.state + 0x304), *(u32 *)(local.state + 0x304));
+    fn_8011FE20((u32 **)(local.state + 0x308), *(u32 *)(local.state + 0x308));
+    fn_8011FE20((u32 **)(local.state + 0x30C), *(u32 *)(local.state + 0x30C));
+    fn_8011FE20((u32 **)(local.state + 0x310), *(u32 *)(local.state + 0x310));
+    fn_8011FE20((u32 **)(local.state + 0x314), *(u32 *)(local.state + 0x314));
+    fn_8011FE20((u32 **)(local.state + 0x318), *(u32 *)(local.state + 0x318));
+    fn_8011FE20((u32 **)(local.state + 0x31C), *(u32 *)(local.state + 0x31C));
+    fn_8011FE20((u32 **)(local.state + 0x320), *(u32 *)(local.state + 0x320));
+    if ((arg1 & 0x04000000) == 0) {
+        fn_8011FE20((u32 **)(local.state + 0xEC), (*(u32 *)(local.state + 0xCC) + 1) * 4);
+        fn_8011FE20((u32 **)(local.state + 0x248), *(u32 *)(local.state + 0xD0) * 4);
+        fn_8011FE20((u32 **)(local.state + 0x24C), *(u32 *)(local.state + 0xD0) * 4);
+        fn_8011FE20((u32 **)(local.state + 0x250), *(u32 *)(local.state + 0xD0) * 4);
+    }
+    if ((s32)result == 0) {
+        allocated = ((void *(*)(void *, s32))fn_80116DDC)(local.state, 0x388);
+        if (allocated == 0) {
+            fn_80116E2C((const u8 *)(lbl_802F6528 + 0x59));
+            return 0;
+        }
+        memcpy(allocated, local.state, 0x388);
+        *(void **)((u8 *)allocated + 0x10C) = allocated;
+        **(u32 **)((u8 *)allocated + 0x2B8) = 0;
+        **(u32 **)((u8 *)allocated + 0x2BC) = 0;
+        **(u32 **)((u8 *)allocated + 0x2C0) = 0;
+        **(u32 **)((u8 *)allocated + 0x2C4) = 0;
+        **(u32 **)((u8 *)allocated + 0x2C8) = 0;
+        **(u32 **)((u8 *)allocated + 0x2CC) = 0;
+        activeFlags = *(u32 *)((u8 *)allocated + 0xD0);
+        if (arg1 & 0x04000000) {
+            *(u32 **)((u8 *)allocated + 0x248) = (u32 *)((u8 *)arg0 + 0x2C);
+            *(u32 **)((u8 *)allocated + 0x24C) = (u32 *)((u8 *)arg0 + (activeFlags << 2) + 0x2C);
+            *(u32 **)((u8 *)allocated + 0x250) = (u32 *)((u8 *)arg0 + (activeFlags << 3) + 0x2C);
+            *(u32 **)((u8 *)allocated + 0xEC) = (u32 *)((u8 *)arg0 + (activeFlags * 12) + 0x2C);
+        } else {
+            do {
+                ((void (*)(void *, s32, void *, s32))*(void **)((u8 *)allocated + 0xF0))(
+                    (u8 *)allocated + 0xF0, -1,
+                    *(void **)((u8 *)allocated + 0x248), activeFlags << 2);
+                ((void (*)(void *, s32, void *, s32))*(void **)((u8 *)allocated + 0xF0))(
+                    (u8 *)allocated + 0xF0, -1,
+                    *(void **)((u8 *)allocated + 0x24C), activeFlags << 2);
+                ((void (*)(void *, s32, void *, s32))*(void **)((u8 *)allocated + 0xF0))(
+                    (u8 *)allocated + 0xF0, -1,
+                    *(void **)((u8 *)allocated + 0x250), activeFlags << 2);
+                ((void (*)(void *, s32, void *, s32))*(void **)((u8 *)allocated + 0xF0))(
+                    (u8 *)allocated + 0xF0, -1,
+                    *(void **)((u8 *)allocated + 0xEC),
+                    (*(u32 *)((u8 *)allocated + 0xCC) + 1) << 2);
+            } while (*(s32 *)((u8 *)allocated + 0x110) == 0);
+            fn_80116E2C((const u8 *)(lbl_802F6528 + 0x68));
+            return 0;
+        }
+        *(u32 *)((u8 *)allocated + 0xD4) = fn_801174B0(
+            *(s32 *)((u8 *)allocated + 8),
+            *(u32 **)((u8 *)allocated + 0xEC),
+            *(s32 *)((u8 *)allocated + 0x2AC),
+            (s32 *)((u8 *)allocated + 0xD8),
+            (s32 *)((u8 *)allocated + 0x380));
+        if ((arg1 & 0x400) == 0) {
+            u8 *record, *records, *outA, *outB, *outC, *outD;
+            void *copiedMetadata;
+            u32 metadataCount, metadataIndex, alignedRows;
+            s32 needsCopy;
+            records = local.metadata;
+            outA = local.metadata + 0x1C;
+            outB = local.metadata + 0x2C;
+            outC = local.metadata + 0x38;
+            outD = local.metadata + 0x54;
+            needsCopy = 0;
+            fn_80117618(allocated, local.metadata);
+            metadataCount = *(u32 *)local.metadata;
+            for (metadataIndex = 0; metadataIndex < metadataCount; metadataIndex++) {
+                alignedRows = (*(u32 *)(local.metadata + 0x44) + 15) & ~15;
+                record = records + metadataIndex * 0x30;
+                if (*(u32 *)(record + 0x18) != 0) {
+                    fn_8011FE20((u32 **)outA, *(u32 *)(local.metadata + 0x3C) *
+                                                *(u32 *)(local.metadata + 0x40));
+                    *(u32 *)(record + 0x20) = *(u32 *)(local.metadata + 0x3C);
+                    needsCopy = 1;
+                }
+                if (*(u32 *)(record + 0x24) != 0) {
+                    fn_8011FE20((u32 **)outB, alignedRows * *(u32 *)(local.metadata + 0x48));
+                    *(u32 *)(record + 0x2C) = alignedRows;
+                    needsCopy = 1;
+                }
+                if (*(u32 *)(record + 0x30) != 0) {
+                    fn_8011FE20((u32 **)outC, alignedRows * *(u32 *)(local.metadata + 0x48));
+                    *(u32 *)(record + 0x38) = alignedRows;
+                    needsCopy = 1;
+                }
+                if (*(u32 *)(record + 0x3C) != 0) {
+                    fn_8011FE20((u32 **)outD, *(u32 *)(local.metadata + 0x3C) *
+                                                *(u32 *)(local.metadata + 0x40));
+                    *(u32 *)(record + 0x44) = *(u32 *)(local.metadata + 0x3C);
+                    needsCopy = 1;
+                }
+                outA += 0x30;
+                outB += 0x30;
+                outC += 0x30;
+                outD += 0x30;
+            }
+            for (; metadataIndex < 2; metadataIndex++) {
+                record = records + metadataIndex * 0x30;
+                *(u32 *)(record + 0x28) = 0;
+                *(u32 *)(record + 0x34) = 0;
+                *(u32 *)(record + 0x1C) = 0;
+            }
+            if (needsCopy) {
+                copiedMetadata = ((void *(*)(void *, s32))fn_80116DDC)(allocated, 0x78);
+                *(void **)((u8 *)allocated + 0x384) = copiedMetadata;
+                if (copiedMetadata == 0) {
+                    ((void (*)(void *))fn_80120084)(allocated);
+                    fn_80116E2C((const u8 *)(lbl_802F6528 + 0x59));
+                    return 0;
+                }
+                *(void **)((u8 *)allocated + 0xB8) = copiedMetadata;
+                memcpy(copiedMetadata, local.metadata, 0x78);
+            }
+        }
+        {
+            u8 *entry;
+            void *buffer, *oldBuffer, *texture;
+            u32 filePosition, begin, i, j, kept, dstOffset, tableOffset;
+            u32 scanIndex, listCount, entryIndex, flags2, size, inputFlags, n;
+            u32 *input, *inputA, *table, *indices;
+            u16 id;
+            s32 room, lastFlag, textureMode, stride;
+            s32 (*getPosition)(void *, s32);
+        if ((arg1 & 0x01000000) && (s32)lbl_8055993C != -1) {
+            *(u32 *)((u8 *)allocated + 0x238) = lbl_8055993C;
+            lbl_8055993C = -1;
+        } else {
+            *(u32 *)((u8 *)allocated + 0x238) = *(u32 *)((u8 *)allocated + 0xD4);
+        }
+        activeFlags = 0;
+        if ((arg1 & 0x00400000) && (s32)lbl_80559940 != -1) {
+            activeFlags = lbl_80559940;
+            lbl_80559940 = -1;
+        }
+        if (arg1 & 0x04000000) {
+            *(u32 **)((u8 *)allocated + 0xE8) =
+                (u32 *)((u8 *)arg0 + (*(u32 *)(*(u32 **)((u8 *)allocated + 0xEC)) & ~1));
+        } else {
+            getPosition = *(s32 (**)(void *, s32))((u8 *)allocated + 0xF8);
+            filePosition = (u32)getPosition((u8 *)allocated + 0xF0,
+                                             *(s32 *)((u8 *)allocated + 0x238));
+            *(u32 *)((u8 *)allocated + 0x238) = filePosition;
+            if (filePosition >= ((*(u32 *)((u8 *)allocated + 0x28) * 9) / 10)) {
+                arg1 |= 0x2000;
+                *(u32 *)((u8 *)allocated + 0x20) |= 0x2000;
+            }
+            if (arg1 & 0x2000) {
+                input = *(u32 **)((u8 *)allocated + 0xEC);
+                begin = (*(u32 *)((u8 *)allocated + 0x28) + 8) - (input[0] & ~1);
+                buffer = ((void *(*)(void *, s32, ...))fn_80116DDC)(
+                    allocated, begin, input[0]);
+                *(void **)((u8 *)allocated + 0xE8) = buffer;
+                if (buffer == 0) {
+                    oldBuffer = *(void **)((u8 *)allocated + 0xB8);
+                    if (oldBuffer != 0)
+                        ((void (*)(void *))fn_80120084)(oldBuffer);
+                    ((void (*)(void *))fn_80120084)(allocated);
+                    fn_80116E2C((const u8 *)(lbl_802F6528 + 0x59));
+                    return 0;
+                }
+                ((void (*)(void *, void *, s32, s32, s32))*(void **)((u8 *)allocated + 0xFC))(
+                    (u8 *)allocated + 0xF0, 0, 0,
+                    *(s32 *)((u8 *)allocated + 0x28) + 8, activeFlags);
+                ((void (*)(void *, s32, u32, void *, s32))*(void **)((u8 *)allocated + 0xF4))(
+                    (u8 *)allocated + 0xF0, 0, input[0] & ~1, buffer, begin);
+                ((void (*)(void *))*(void **)((u8 *)allocated + 0x104))((u8 *)allocated + 0xF0);
+                *(u32 *)((u8 *)allocated + 0x124) = 0;
+            } else {
+                fn_8011FE20((u32 **)((u8 *)allocated + 0xE4),
+                            *(u32 *)((u8 *)allocated + 0xC8));
+                buffer = ((void *(*)(void *, s32))fn_80116DDC)(
+                    allocated, *(s32 *)((u8 *)allocated + 0x238));
+                *(void **)((u8 *)allocated + 0x234) = buffer;
+                if (buffer == 0)
+                    *(u32 *)((u8 *)allocated + 0x238) = 0;
+                ((void (*)(void *, void *, s32, s32, s32))*(void **)((u8 *)allocated + 0xFC))(
+                    (u8 *)allocated + 0xF0, buffer,
+                    *(s32 *)((u8 *)allocated + 0x238),
+                    *(s32 *)((u8 *)allocated + 0x28) + 8, activeFlags);
+            }
+        }
+        **(u32 **)((u8 *)allocated + 0xBC) = 0;
+        *(s32 *)((u8 *)allocated + 0x0C) = -1;
+        if (*(s32 *)((u8 *)allocated + 0x14) != 0) {
+            *(s32 *)((u8 *)allocated + 0x270) =
+                fn_80116BD4(0x7D0, *(s32 *)((u8 *)allocated + 0x18), 0);
+        } else {
+            *(s32 *)((u8 *)allocated + 0x270) = 0x7D0;
+        }
+        *(s32 *)((u8 *)allocated + 0x28C) = 1;
+        fn_80117380(allocated, 1);
+        *(s32 *)((u8 *)allocated + 0x2A0) =
+            fn_80116D30() - *(s32 *)((u8 *)allocated + 0x2A0);
+        *(u32 *)(*(u32 **)((u8 *)allocated + 0x2F0) + 0x6C / 4) = 0x10000;
+        *(u32 *)((u8 *)allocated + 0x2E8) = 0;
+        if (*(s32 *)((u8 *)allocated + 0xD0) != 0 && lbl_80559944 != 0) {
+            for (i = 0; i < lbl_80559944; i++) {
+                table = *(u32 **)((u8 *)allocated + 0x250);
+                for (j = 0; j < (u32)*(s32 *)((u8 *)allocated + 0xD0); j++) {
+                    if (table[j] == ((u32 *)&lbl_8041D608)[i]) {
+                        n = *(u32 *)((u8 *)allocated + 0x2E8);
+                        ((u32 *)*(u32 **)((u8 *)allocated + 0x244))[n] = j;
+                        *(u32 *)((u8 *)allocated + 0x2E8) = n + 1;
+                        break;
+                    }
+                }
+            }
+        }
+        lbl_80559944 = 1;
+        *(volatile u32 *)&lbl_8041D608 = 0;
+        dstOffset = 0;
+        tableOffset = 0;
+        scanIndex = 0;
+        kept = 0;
+        listCount = *(u32 *)((u8 *)allocated + 0x2E8);
+        while (scanIndex < listCount) {
+            entry = *(u8 **)((u8 *)allocated + 0x2F0) + dstOffset;
+            *(u32 *)(entry + 0x2C) = 0;
+            entryIndex = ((u32 *)*(u32 **)((u8 *)allocated + 0x244))[tableOffset / 4];
+            flags2 = ((u32 *)*(u32 **)((u8 *)allocated + 0x24C))[entryIndex];
+            if (((flags2 >> 31) || ((flags2 >> 28) & 1)) && lbl_8055DECC != 0) {
+                id = (u16)flags2;
+                if (*(u32 *)((u8 *)allocated + 0x14) != 0 &&
+                    *(u32 *)((u8 *)allocated + 0x18) != 0) {
+                    id = (u16)((f64)*(u32 *)((u8 *)allocated + 0x358) *
+                        ((f64)id * (f64)*(u32 *)((u8 *)allocated + 0x14)) /
+                        ((f64)*(u32 *)((u8 *)allocated + 0x18) *
+                         (f64)*(u32 *)((u8 *)allocated + 0x354)));
+                }
+                if (((s32 (*)(void *, s32, s32, s32, s32, void *))lbl_8055DECC)(
+                    entry, id, ((flags2 >> 27) & 8) + 8,
+                    ((flags2 >> 29) & 1) + 1,
+                    *(s32 *)((u8 *)allocated + 0x20), allocated) != 0) {
+                    if (*(s32 *)(entry + 0x58) == 0)
+                        *(s32 *)(entry + 0x58) = -1;
+                    inputA = *(u32 **)((u8 *)allocated + 0x248);
+                    size = inputA[entryIndex];
+                    *(u32 *)(entry + 0x28) = (size + 0xFF) & ~0xFF;
+                    *(void **)(entry + 0x2C) =
+                        ((void *(*)(void *, s32, ...))fn_80116DDC)(
+                            allocated, *(s32 *)(entry + 0x28), size, inputA);
+                    if (*(u32 *)(entry + 0x2C) == 0) {
+                        ((void (*)(void *))*(void **)(entry + 0x1C))(entry);
+                    } else {
+                        room = 0x2EE - *(s32 *)(entry + 0x68);
+                        if (room < 0) room = 0;
+                        inputFlags = ((u32 *)*(u32 **)((u8 *)allocated + 0x24C))[entryIndex];
+                        *(s32 *)(entry + 0x44) = (((inputFlags >> 27) & 8) == 0);
+                        *(u32 *)(entry + 0x30) =
+                            *(u32 *)(entry + 0x2C) + *(u32 *)(entry + 0x28);
+                        *(u32 *)(entry + 0x34) = *(u32 *)(entry + 0x2C);
+                        *(u32 *)(entry + 0x38) = *(u32 *)(entry + 0x2C);
+                        *(u32 *)(entry + 0x4C) =
+                            fn_80116BD4(id * ((((inputFlags >> 29) & 1) + 1) * 2),
+                                        room, 0x3E8) & ~3;
+                        if (*(u32 *)(entry + 0x4C) > *(u32 *)(entry + 0x28))
+                            *(u32 *)(entry + 0x4C) = *(u32 *)(entry + 0x28);
+                        lastFlag = ((u32 *)*(u32 **)((u8 *)allocated + 0x24C))[entryIndex];
+                        textureMode = (lastFlag >> 28) & 1;
+                        texture = fn_8011B584((u16)lastFlag,
+                                              ((lastFlag >> 29) & 1) + 1,
+                                              textureMode, 0);
+                        *(void **)(entry + 0x3C) = texture;
+                        if (texture == 0) {
+                            ((void (*)(void *))*(void **)(entry + 0x1C))(entry);
+                            *(u32 *)(entry + 0x2C) = 0;
+                        }
+                        lbl_8055DED0 += 1;
+                        stride = *(s32 *)((u8 *)allocated + 0x2A4);
+                        *(s32 *)(entry + 0x48) =
+                            *(s32 *)((u8 *)allocated + 8) -
+                            ((stride * 3) / (*(s32 *)((u8 *)allocated + 0x2A8) * 4));
+                        *(s32 *)(entry + 0x40) = 0;
+                    }
+                }
+            }
+            if (*(s32 *)(entry + 0x6C) == 0)
+                *(s32 *)(entry + 0x6C) = 0x10000;
+            if (*(u32 *)(entry + 0x2C) == 0) {
+                n = *(u32 *)((u8 *)allocated + 0x2E8) - 1;
+                *(u32 *)((u8 *)allocated + 0x2E8) = n;
+                indices = *(u32 **)((u8 *)allocated + 0x244);
+                memcpy(&indices[tableOffset / 4],
+                       &indices[scanIndex + 1], (n - scanIndex) * 4);
+            } else {
+                dstOffset += 0x17C;
+                tableOffset += 4;
+                scanIndex++;
+            }
+            kept = scanIndex;
+        }
+        if (*(s32 *)((u8 *)allocated + 0x2E8) != 0) {
+            *(s32 *)((u8 *)allocated + 0x288) = 1;
+            if (*(s32 *)(*(u8 **)((u8 *)allocated + 0x2F0) + 0x60) == 0) {
+                if (lbl_8055DED4 == 0) {
+                    lbl_8055DED4 = (s32)fn_8011BE48(-0xD);
+                    if (lbl_8055DED4 != 0)
+                        fn_8011C120();
+                }
+                if (lbl_8055DED4 != 0)
+                    fn_8011BEC8((void *)(u32)lbl_8055DED4, (u8 *)allocated + 0x340,
+                                (s32)fn_80117598, (s32)fn_801175C4);
+            }
+        }
+        if (*(void **)((u8 *)allocated + 0xE8) == 0 && !(arg1 & 0x200000)) {
+            while (((s32 (*)(void *))*(void **)((u8 *)allocated + 0x100))(
+                       (u8 *)allocated + 0xF0) != 0) {
+            }
+        }
+        }
+        result = (s32 *)allocated;
+    }
     return result;
 }
 #undef lbl_8041D608
@@ -1274,7 +1633,7 @@ void fn_8011AC10(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     p[0xA4/4] = arg1;
     p[0x9C/4] = arg1;
     p[0xAC/4] = arg1;
-    p[0xA8/4] = temp_r4;
+    p[0xA8/4] = arg1 + arg2;
     p[0x4C/4] = 0;
     p[0xB8/4] = arg3;
     p[0xBC/4] = arg4;
@@ -1905,9 +2264,9 @@ void *fn_8011BE48(s32 arg0) {
 }
 
 void fn_8011BEC8(void *arg0, void *arg1, s32 arg2, s32 arg3) {
+    s32 interruptState = OSDisableInterrupts();
     s32 one = 1;
     s32 old;
-    OSDisableInterrupts();
     *(s32 *)((u8 *)arg1 + 0xC) = one;
     *(s32 *)((u8 *)arg1 + 0x14) = arg2;
     *(s32 *)((u8 *)arg1 + 0x18) = arg3;
@@ -1916,7 +2275,7 @@ void fn_8011BEC8(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     old = *(s32 *)((u8 *)arg0 + 0x38);
     *(void **)((u8 *)arg0 + 0x30) = arg1;
     *(s32 *)((u8 *)arg0 + 0x38) = old + 1;
-    OSRestoreInterrupts(old);
+    OSRestoreInterrupts(interruptState);
 }
 
 s32 fn_8011BFFC(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
