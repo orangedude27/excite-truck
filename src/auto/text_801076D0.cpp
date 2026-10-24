@@ -1,6 +1,9 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
+
+struct ETCharWriterSourceLayout { u8 bytes00[0x20]; s32 words20[8]; u8 bytes40[4]; f32 f44; s32 word48; f32 f4c, f50; s32 words54[3]; };
+struct ETCharWriterCopyLayout { u8 bytes00[0x20]; s32 words20[8]; u8 bytes40[4]; f32 f44; s32 word48; f32 f4c, f50; s32 words54[3]; };
 extern "C" const char lbl_80329530[];
 extern f32 lbl_80561178, lbl_80561188;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
@@ -2470,7 +2473,7 @@ block_275:
     return var_f29;
 }
 
-#pragma dont_inline fn_8010F430
+#pragma dont_inline on
 extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
     const char *base = lbl_80329530;
     u8 copyA[0x60], copyB[0x60], copyC[0x60];
@@ -2484,43 +2487,43 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
     s32 temp_r10_4;
     s32 temp_r10_5;
     s32 temp_r10_6;
-    s32 temp_r11;
-    s32 var_r10;
+    register s32 temp_r11;
+    register s32 var_r10;
     s32 var_r4;
     s32 var_r4_2;
     s32 var_r4_3;
     s32 var_r4_4;
     s32 var_r4_5;
     s32 var_r4_6;
-    s32 var_r5;
+    register s32 var_r5;
     s32 var_r5_2;
     s32 var_r5_3;
     s32 var_r5_4;
     s32 var_r5_5;
     s32 var_r5_6;
     s32 var_r5_7;
-    s32 var_r6;
+    register s32 var_r6;
     s32 var_r6_2;
     s32 var_r6_3;
     s32 var_r6_4;
     s32 var_r6_5;
     s32 var_r6_6;
     s32 var_r6_7;
-    s32 var_r7;
+    register s32 var_r7;
     s32 var_r7_2;
     s32 var_r7_3;
     s32 var_r7_4;
     s32 var_r7_5;
     s32 var_r7_6;
     s32 var_r7_7;
-    s32 var_r8;
+    register s32 var_r8;
     s32 var_r8_2;
     s32 var_r8_3;
     s32 var_r8_4;
     s32 var_r8_5;
     s32 var_r8_6;
     s32 var_r8_7;
-    s32 var_r9;
+    register s32 var_r9;
     s32 var_r9_2;
     s32 var_r9_3;
     s32 var_r9_4;
@@ -2662,13 +2665,19 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyA[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyA[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyA+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        (*(s32*)(copyA+0x24)) = (*(s32 *)((u8*)(arg0) + (0x24)));
-        (*(s32*)(copyA+0x28)) = (*(s32 *)((u8*)(arg0) + (0x28)));
-        (*(s32*)(copyA+0x2C)) = (*(s32 *)((u8*)(arg0) + (0x2C)));
-        (*(s32*)(copyA+0x30)) = (*(s32 *)((u8*)(arg0) + (0x30)));
+        s32 copyA_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
+        s32 copyA_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
+        (*(s32*)(copyA+0x24)) = copyA_24;
+        (*(s32*)(copyA+0x28)) = copyA_28;
+        s32 copyA_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
+        s32 copyA_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
+        (*(s32*)(copyA+0x2C)) = copyA_2C;
+        (*(s32*)(copyA+0x30)) = copyA_30;
         (*(s32*)(copyA+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        (*(s32*)(copyA+0x38)) = (*(s32 *)((u8*)(arg0) + (0x38)));
-        (*(s32*)(copyA+0x3C)) = (*(s32 *)((u8*)(arg0) + (0x3C)));
+        s32 copyA_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
+        s32 copyA_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
+        (*(s32*)(copyA+0x38)) = copyA_38;
+        (*(s32*)(copyA+0x3C)) = copyA_3C;
         copyA[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
         copyA[0x41] = (*(u8 *)((u8*)(arg0) + (0x41)));
         copyA[0x42] = (*(u8 *)((u8*)(arg0) + (0x42)));
@@ -2795,13 +2804,19 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyB[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyB[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyB+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        (*(s32*)(copyB+0x24)) = (*(s32 *)((u8*)(arg0) + (0x24)));
-        (*(s32*)(copyB+0x28)) = (*(s32 *)((u8*)(arg0) + (0x28)));
-        (*(s32*)(copyB+0x2C)) = (*(s32 *)((u8*)(arg0) + (0x2C)));
-        (*(s32*)(copyB+0x30)) = (*(s32 *)((u8*)(arg0) + (0x30)));
+        s32 copyB_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
+        s32 copyB_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
+        (*(s32*)(copyB+0x24)) = copyB_24;
+        (*(s32*)(copyB+0x28)) = copyB_28;
+        s32 copyB_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
+        s32 copyB_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
+        (*(s32*)(copyB+0x2C)) = copyB_2C;
+        (*(s32*)(copyB+0x30)) = copyB_30;
         (*(s32*)(copyB+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        (*(s32*)(copyB+0x38)) = (*(s32 *)((u8*)(arg0) + (0x38)));
-        (*(s32*)(copyB+0x3C)) = (*(s32 *)((u8*)(arg0) + (0x3C)));
+        s32 copyB_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
+        s32 copyB_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
+        (*(s32*)(copyB+0x38)) = copyB_38;
+        (*(s32*)(copyB+0x3C)) = copyB_3C;
         copyB[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
         copyB[0x41] = (*(u8 *)((u8*)(arg0) + (0x41)));
         copyB[0x42] = (*(u8 *)((u8*)(arg0) + (0x42)));
@@ -2916,13 +2931,19 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
         copyC[0x1E] = (*(u8 *)((u8*)(arg0) + (0x1E)));
         copyC[0x1F] = (*(u8 *)((u8*)(arg0) + (0x1F)));
         (*(s32*)(copyC+0x20)) = (*(s32 *)((u8*)(arg0) + (0x20)));
-        (*(s32*)(copyC+0x24)) = (*(s32 *)((u8*)(arg0) + (0x24)));
-        (*(s32*)(copyC+0x28)) = (*(s32 *)((u8*)(arg0) + (0x28)));
-        (*(s32*)(copyC+0x2C)) = (*(s32 *)((u8*)(arg0) + (0x2C)));
-        (*(s32*)(copyC+0x30)) = (*(s32 *)((u8*)(arg0) + (0x30)));
+        s32 copyC_24 = (*(s32 *)((u8*)(arg0) + (0x24)));
+        s32 copyC_28 = (*(s32 *)((u8*)(arg0) + (0x28)));
+        (*(s32*)(copyC+0x24)) = copyC_24;
+        (*(s32*)(copyC+0x28)) = copyC_28;
+        s32 copyC_2C = (*(s32 *)((u8*)(arg0) + (0x2C)));
+        s32 copyC_30 = (*(s32 *)((u8*)(arg0) + (0x30)));
+        (*(s32*)(copyC+0x2C)) = copyC_2C;
+        (*(s32*)(copyC+0x30)) = copyC_30;
         (*(s32*)(copyC+0x34)) = (*(s32 *)((u8*)(arg0) + (0x34)));
-        (*(s32*)(copyC+0x38)) = (*(s32 *)((u8*)(arg0) + (0x38)));
-        (*(s32*)(copyC+0x3C)) = (*(s32 *)((u8*)(arg0) + (0x3C)));
+        s32 copyC_38 = (*(s32 *)((u8*)(arg0) + (0x38)));
+        s32 copyC_3C = (*(s32 *)((u8*)(arg0) + (0x3C)));
+        (*(s32*)(copyC+0x38)) = copyC_38;
+        (*(s32*)(copyC+0x3C)) = copyC_3C;
         copyC[0x40] = (*(u8 *)((u8*)(arg0) + (0x40)));
         copyC[0x41] = (*(u8 *)((u8*)(arg0) + (0x41)));
         copyC[0x42] = (*(u8 *)((u8*)(arg0) + (0x42)));
@@ -2950,6 +2971,7 @@ extern "C" f32 fn_80110D68(s32 arg0, f32 *arg1, f32 *arg2, s32 arg3, s32 arg4) {
     }
     return var_f31;
 }
+#pragma dont_inline reset
 extern "C" void* fn_80111B64(void* arg0) {
     extern void __ct__Q36nw4hbm2ut10CharWriterFv(void*);
     extern f32 lbl_80561178;
