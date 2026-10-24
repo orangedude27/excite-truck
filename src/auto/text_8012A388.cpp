@@ -557,11 +557,11 @@ extern "C" u8 lbl_805599D8;
 #pragma push
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-extern "C" void fn_8012BF28(void) {
+#pragma cplusplus reset
+void fn_8012BF28(void) {
     s32 paths[3], header[5], inner, size;
     s32 *pathPtr, *table;
     u32 i;
-    s32 handle;
     char filename[128], name[128], ch;
     char *src;
     s32 remaining;
@@ -575,7 +575,7 @@ extern "C" void fn_8012BF28(void) {
     do {
         s32 opened = fn_802E3BB4(*pathPtr, filename, 0x80);
         if ((u32)(opened + 0x10000) != 0xFFFF) {
-            handle = opened;
+            s32 handle = opened;
             do {
                 *fn_80029004(filename, '.') = 0;
                 dst = filename; remaining = 0x80; goto scan_test_1;
@@ -649,6 +649,7 @@ read_rest:
         ++pathPtr; ++i;
     } while (i < 3);
 }
+#pragma cplusplus on
 extern "C" s32 fn_8012B534(s32 *, s32);
 extern "C" s32 fn_8012C33C(void) {
     s32 sp8;
