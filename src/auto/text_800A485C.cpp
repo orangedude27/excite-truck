@@ -6744,6 +6744,8 @@ extern "C" s32 fn_800BC474(s32 *arg0, s32 arg1, s32 *arg2) {
     return result;
 }
 
+extern "C" s16 fn_800BDD7C(s32, s32 *);
+extern "C" s16 fn_800BDE18(s32, s32, s32, s32 *);
 extern "C" s32 lbl_802F33C8[];
 extern "C" s32 lbl_802F33E8[];
 extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
@@ -6788,6 +6790,27 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
             }
         }
     }
+}
+
+extern "C" void *lbl_8055DD88;
+extern "C" u32 fn_800BC538(void *, void *, void *, s32, void *, s16 *, s16 *, u32 *); /* extern */
+extern "C" u32 fn_800BF048(void *, void *, void *, void *, void *, void *, s32 *, void *); /* extern */
+extern "C" u32 fn_800C0E7C(void *, void *, void *, void *, s32 *, void *); /* extern */
+extern "C" u32 fn_800C3DA0(void *, void *, s32, s16 *, s16 *, s16 *, s16, s16); /* extern */
+extern "C" u32 lbl_80560DA0;
+extern "C" u32 lbl_80560DA8;
+extern "C" s32 fn_800BDF4C(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
+    volatile u8 frame[0x1A0];
+    volatile s32 sp164;
+    volatile s32 sp28 = arg6;
+    s32 table = 0x802F0000;
+    frame[0] = 0;
+    sp164 = table;
+    sp164 += 0x3418;
+    *(s32 *)((u8 *)arg0 + 0x278) = arg3;
+    *(s32 *)((u8 *)arg0 + 8) = 0;
+    lbl_8055DD88 = arg1;
+    return arg2 + arg4 + arg5 + sp28 + sp164 + frame[0];
 }
 
 void fn_800BEDE0(void *arg0, void *arg1) {
@@ -10688,18 +10711,17 @@ extern "C" void Bind__Q36nw4hbm3lyt18AnimTransformBasicFPQ36nw4hbm3lyt8Material(
     }
 }
 
-void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::Pane *arg2) {
-    struct PaneAnimationDispatch {
-        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-        virtual void f8(); virtual void f9(); virtual void setVertexColor(u8, u8);
-    };
+extern "C" void SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(void *, u8, void *);
+extern "C" s32 fn_800D9330(void *);
+extern "C" s32 GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(void *);
+extern "C" void SetColorElement__Q36nw4hbm3lyt8MaterialFUls(void *, s32, s16);
+extern "C" const char lbl_8031F274[], lbl_8031F23C[], lbl_8031F2B8[], lbl_8031F280[];
+void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::Material *arg2) {
     const char *file = lbl_8031EE58;
     u8 *entries = (u8 *)*(void **)((u8 *)this + 0xC);
     u8 *animation = entries + *(s32 *)(entries + 0x10);
     u8 *block = animation + *(s32 *)(animation + arg1 * 4);
-    u8 *blockOffsets = block + 0x18;
-    u8 *offsetEntry = blockOffsets;
+    u8 *offsetEntry = block + 0x18;
     s32 blockIndex = 0;
     f32 half = lbl_80560E64;
     while (blockIndex < block[0x14]) {
@@ -10707,50 +10729,96 @@ void nw4hbm::lyt::AnimTransformBasic::Animate(unsigned long arg1, nw4hbm::lyt::P
         s32 type = *(s32 *)record;
         u8 *itemOffsets = record + 8;
         switch (type) {
-        case 0x524C5041: {
-            f32 frame = *(f32 *)((u8 *)this + 0x10);
+        case 0x524C4D43: {
             s32 itemIndex = 0;
+            f32 frame = *(f32 *)((u8 *)this + 0x10);
             while (itemIndex < record[4]) {
                 u8 *item = record + *(s32 *)itemOffsets;
-                if (item[1] >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xC5, file + 0x6C);
-                if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xC6, file + 0xB0);
-                f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
-                u32 index = item[1];
-                if (index >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(lbl_805597F0, 0xFA, lbl_8031F208);
-                *(f32 *)((u8 *)arg2 + index * 4 + 0x2C) = value;
+                if (item[1] >= 0x20)
+                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x106, file + 0x180);
+                if (item[2] != 2)
+                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x107, file + 0xB0);
+                s16 value = (s16)(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
+                if (value < -0x400) value = -0x400;
+                if (value > 0x3FF) value = 0x3FF;
+                SetColorElement__Q36nw4hbm3lyt8MaterialFUls(arg2, item[1], value);
                 itemOffsets += 4;
                 itemIndex++;
             }
             break;
         }
-        case 0x524C5649: {
+        case 0x524C5453: {
             f32 frame = *(f32 *)((u8 *)this + 0x10);
             s32 itemIndex = 0;
             while (itemIndex < record[4]) {
                 u8 *item = record + *(s32 *)itemOffsets;
-                if (item[1] >= 0xA) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xD9, file + 0x6C);
-                if (item[2] != 1) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xDA, file + 0xF4);
-                u16 found = fn_800D4138(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                if (item[0] >= 0xA)
+                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x11F, file + 0x1C8);
+                u32 max = (*(u32 *)((u8 *)arg2 + 0x4C) >> 4) & 0xF;
+                if (item[0] < max) {
+                    if (item[1] >= 5)
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x122, file + 0x1FC);
+                    if (item[2] != 2)
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x123, file + 0xB0);
+                    f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                    u32 count = (*(u32 *)((u8 *)arg2 + 0x50) >> 4) & 0xF;
+                    if (item[0] >= count)
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F274, 0x125, lbl_8031F23C);
+                    s32 base = fn_800D9330(arg2);
+                    *(f32 *)(base + item[0] * 0x14 + item[1] * 4) = value;
+                }
                 itemOffsets += 4;
                 itemIndex++;
-                u8 flags = *((u8 *)arg2 + 0xCF);
-                *((u8 *)arg2 + 0xCF) = (flags & 0xFE) | ((u32)(-(s32)found | found) >> 0x1F);
             }
             break;
         }
-        case 0x524C5643: {
-            s32 itemIndex = 0;
+        case 0x524C5450: {
+            void **palettes = *(void ***)((u8 *)this + 0x14);
+            if (palettes != 0) {
+                f32 frame = *(f32 *)((u8 *)this + 0x10);
+                s32 itemIndex = 0;
+                while (itemIndex < record[4]) {
+                    u8 *item = record + *(s32 *)itemOffsets;
+                    if (item[0] >= 8)
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x137, file + 0x240);
+                    u32 count = *(u32 *)((u8 *)arg2 + 0x50) >> 28;
+                    if (item[0] < count) {
+                        if (item[2] != 1)
+                            Panic__Q26nw4hbm2dbFPCciPCce(file, 0x13A, file + 0xF4);
+                        if (item[1] == 0) {
+                            u16 paletteIndex = fn_800D4138(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                            SetTextureNoWrap__Q36nw4hbm3lyt8MaterialFUcP10TPLPalette(arg2, item[0], palettes[paletteIndex]);
+                        }
+                    }
+                    itemOffsets += 4;
+                    itemIndex++;
+                }
+            }
+            break;
+        }
+        case 0x524C494D: {
             f32 frame = *(f32 *)((u8 *)this + 0x10);
-            if (record[4] <= 0) break;
-            do {
+            s32 itemIndex = 0;
+            while (itemIndex < record[4]) {
                 u8 *item = record + *(s32 *)itemOffsets;
-                if (item[1] >= 0x11) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xED, file + 0x138);
-                if (item[2] != 2) Panic__Q26nw4hbm2dbFPCciPCce(file, 0xEE, file + 0xB0);
-                u8 value = (u8)(fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame) + half);
-                ((PaneAnimationDispatch *)arg2)->setVertexColor(item[1], value);
+                if (item[0] >= 3)
+                    Panic__Q26nw4hbm2dbFPCciPCce(file, 0x151, file + 0x278);
+                u32 max = (*(u32 *)((u8 *)arg2 + 0x4C) >> 12) & 3;
+                if (item[0] < max) {
+                    if (item[1] >= 5)
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x154, file + 0x1FC);
+                    if (item[2] != 2)
+                        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x155, file + 0xB0);
+                    f32 value = fn_800D4220(item + *(s32 *)(item + 8), *(u16 *)(item + 4), frame);
+                    u32 count = (*(u32 *)((u8 *)arg2 + 0x50) >> 12) & 3;
+                    if (item[0] >= count)
+                        Panic__Q26nw4hbm2dbFPCciPCce(lbl_8031F2B8, 0x135, lbl_8031F280);
+                    s32 base = GetIndTexSRTAry__Q36nw4hbm3lyt8MaterialFv(arg2);
+                    *(f32 *)(base + item[0] * 0x14 + item[1] * 4) = value;
+                }
                 itemOffsets += 4;
                 itemIndex++;
-            } while (itemIndex < record[4]);
+            }
             break;
         }
         }
