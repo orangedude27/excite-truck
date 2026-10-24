@@ -18,17 +18,23 @@ void __AXDSPInitCallback_801D0CF0(void) {
     lbl_8055E8E8 = 0;
 }
 
-void fn_801D0CFC(void) {
+#pragma cplusplus on
+extern "C" void fn_801D0CFC(void) {
+    class CallbackObj_801D0CFC {
+    public:
+        virtual void destroy(int);
+    };
     int i;
+
     for (i = lbl_8055E8E8 - 1; i >= 0; i--) {
-        void *obj = lbl_80438818[i];
+        CallbackObj_801D0CFC *obj = (CallbackObj_801D0CFC *)lbl_80438818[i];
         if (obj != 0) {
-            ((void (*)(void *, int))(*(void **)((char *)*(void **)obj + 8)))(obj, 1);
+            obj->destroy(1);
         }
     }
     lbl_8055E8E8 = 0;
 }
-#pragma scheduling on
+#pragma cplusplus off
 void *__dt__Q34nw4r2ef6EffectFv_801D0D7C(void *arg0, int arg1) {
     extern void fn_801D0DFC(void);
     extern void *lbl_803381C0[];
