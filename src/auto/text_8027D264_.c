@@ -41,6 +41,7 @@ void fn_8027D264(void) {
     fn_8002F634((char *)&lbl_804A4380, fn_8027D280, 0x3B10, 4);
 }
 
+#pragma scheduling invalid_target
 void *fn_8027D280(void *arg0, int arg1) {
     if (arg0 != 0) {
         fn_8002F634((char *)arg0 + 0x2370, fn_8027D304, 0xBD0, 2);
@@ -49,7 +50,7 @@ void *fn_8027D280(void *arg0, int arg1) {
     }
     return arg0;
 }
-
+#pragma scheduling on
 void *fn_8027D304(void *arg0, int arg1) {
     void *obj = arg0;
     if (obj != 0) {
@@ -134,9 +135,12 @@ void fn_8027D77C(void *arg0) {
     (*(void (**)(void *, int))(*(void ***)obj + 5))(obj, (int)&lbl_8055C784);
 }
 
+#pragma scheduling invalid_target
 void fn_8027D7B8(void *arg0) {
-    fn_80007F90(*(int *)((char *)fn_8001285C(*(int *)((char *)arg0 + 0xC)) + 8));
+    int id = *(int *)((char *)arg0 + 0xC);
+    fn_80007F90(*(int *)((char *)fn_8001285C(id) + 8));
 }
+#pragma scheduling on
 void fn_8027D810(void *arg0) {
     int id = *(int *)((char *)arg0 + 0xC);
     void *res = fn_8001285C(id);
