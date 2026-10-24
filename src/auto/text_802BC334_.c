@@ -626,11 +626,11 @@ void fn_8012C4D8(void);
 void fn_802C13A4(void);
 void deleteThreads__6SystemFv_802BDCA4(void **);
 void fn_802BDC60(void) {
-    register int flag;
+    int flag;
     fn_802BCF04();
     flag = lbl_8055FAB8;
     if (flag != 0) {
-        fn_8012C4D8();
+        ((int (*)(int))fn_8012C4D8)(flag);
         lbl_8055FAB8 = 0;
     }
     fn_802C13A4();
@@ -779,15 +779,8 @@ void fn_802BDFBC(void *arg0, int arg1, float farg0) {
     float value;
     void *node;
     value = farg0;
-    if (arg1 >= 8) goto check;
-    value = lbl_80564D18;
-    goto selected;
-check:
-    if (arg1 != 8) goto high;
-    goto selected;
-high:
-    value = lbl_80564D14;
-selected:
+    if (arg1 < 8) value = lbl_80564D18;
+    else if (arg1 > 8) value = lbl_80564D14;
     node = *(void **)((char *)arg0 + 4);
     while (node != 0) {
         *(float *)((char *)node + 0xC) = value;
