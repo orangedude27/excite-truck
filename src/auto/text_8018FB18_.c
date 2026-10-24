@@ -351,6 +351,9 @@ extern void fn_8018ADBC(void *, f32);
 extern f32 lbl_8055E51C;
 extern int lbl_8055E0D0;
 extern f32 lbl_8056208C, lbl_80562090, lbl_80562094, lbl_805620D0;
+extern f32 lbl_805620D4, lbl_805620D8;
+extern u8 lbl_8055E52A;
+extern void fn_8017B3A8(void *, f32 *, f32 *);
 void fn_80191AB4(void *arg0) {
     struct Frame {
         u8 pad[0x50];
