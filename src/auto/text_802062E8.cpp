@@ -207,6 +207,74 @@ extern "C" void fn_80206750(void *arg0, int arg1, int arg2) {
 extern "C" void fn_80206820(void) {
 }
 
+extern "C" void fn_80206824(void *arg0, int arg1, int arg2) {
+    struct Obj {
+        virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3();
+        virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7();
+        virtual int f8(); virtual int f9(); virtual int f10(); virtual int f11();
+        virtual int f12(); virtual int f13(); virtual int f14();
+    };
+    struct Callback {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+        virtual void f16(); virtual void f17(); virtual void f18(); virtual void f19();
+        virtual void f20(); virtual void f21(); virtual void f22(); virtual void f23();
+        virtual void f24(); virtual void f25(); virtual void f26(void *);
+    };
+    extern int lbl_8055D430;
+    int state = ((Obj *)*(void **)((char *)arg0 + 0xC))->f8();
+    *(u8 *)((char *)arg0 + 0x19) = 1;
+    if (state == 2) {
+        if (!*((u8 *)arg0 + 0x48)) {
+            if (*((u8 *)arg0 + 0x4A))
+                ((Callback *)*(void **)((char *)arg0 + 0xC))->f10();
+            else
+                ((Callback *)*(void **)((char *)arg0 + 0xC))->f15();
+        }
+    } else if (state < 2) {
+        if (state >= 1) {
+            if (*((u8 *)arg0 + 0x4A))
+                ((Callback *)*(void **)((char *)arg0 + 0xC))->f10();
+            else if (*((u8 *)arg0 + 0x48))
+                ((Callback *)*(void **)((char *)arg0 + 0xC))->f14();
+            else if (*((u8 *)arg0 + 0x4C)) {
+                *((u8 *)arg0 + 0x4C) = 0;
+                ((Callback *)*(void **)((char *)arg0 + 0xC))->f10();
+            }
+        }
+    } else if (state < 4) {
+        if (*((u8 *)arg0 + 0x49)) {
+            int ok = 0;
+            if ((lbl_8055D430 & 1) && (lbl_8055D430 & 0x200))
+                ok = 1;
+            if (ok && *(int *)((char *)arg0 + 0x44) != 0)
+                goto skip;
+            *((u8 *)arg0 + 0x49) = 0;
+            if (*((u8 *)arg0 + 0x4B))
+                ((Callback *)*(void **)((char *)arg0 + 0xC))->f9();
+            else
+                ((Callback *)*(void **)((char *)arg0 + 0xC))->f8();
+        } else {
+skip:
+            *((u8 *)arg0 + 0x19) = 0;
+        }
+        if (*((u8 *)arg0 + 0x48))
+            ((Callback *)*(void **)((char *)arg0 + 0xC))->f14();
+    }
+    if (state == 2 && !*((u8 *)arg0 + 0x48) && !*((u8 *)arg0 + 0x4A))
+        ((Callback *)*(void **)((char *)arg0 + 0xC))->f15();
+    if (*(int *)((char *)arg0 + 0x50)) {
+        ((Callback *)*(void **)((char *)arg0 + 0xC))->f26((char *)arg0 + 0x50);
+        *(int *)((char *)arg0 + 0x50) = 0;
+    }
+    if (!*((u8 *)arg0 + 0x48)) {
+        struct Parent { virtual void f0(); virtual void f1(); virtual void f2(int, int); };
+        ((Parent *)arg0)->f2(arg1, arg2);
+    }
+}
+
 extern "C" void fn_80206A5C(void* arg0) {
     if (*(unsigned char*)((char*)arg0 + 0x34)) {
         float value = *(float*)((char*)arg0 + 0x28);
@@ -293,8 +361,40 @@ extern "C" float fn_80206CD0(void* arg0, float arg1) {
     return arg1 / y;
 }
 
+extern "C" float PSVECDotProduct(const void*, const void*);
+extern float lbl_805631F8, lbl_805631FC, lbl_80563208;
+void fn_80206D3C(void* self, void* list, int count) {
+    unsigned char* p=(unsigned char*)self;
+    unsigned char* it=(unsigned char*)list;
+    float vec[3];
+    int i;
+    p[0x64]=0; *(float*)(p+0x68)=lbl_805631FC;
+    if (p[0x18]) {
+        float threshold=lbl_805631F8, margin=lbl_80563208;
+        for(i=0;i<count;i++,it+=0xC) {
+            unsigned char* item=*(unsigned char**)(it+4);
+            float* pos=*(float**)(p+0x74);
+            float x=pos[0]-*(float*)(item+0x24);
+            float y=pos[1]-*(float*)(item+0x28);
+            float z=pos[2]-*(float*)(item+0x2C);
+            vec[0]=x**(float*)(item)+y**(float*)(item+4)+z**(float*)(item+8);
+            vec[1]=x**(float*)(item+0xC)+y**(float*)(item+0x10)+z**(float*)(item+0x14);
+            vec[2]=x**(float*)(item+0x18)+y**(float*)(item+0x1C)+z**(float*)(item+0x20);
+            float radius=*(float*)(p+0x6C)+margin;
+            if(PSVECDotProduct(vec,vec)<radius*radius) {
+                float value=*(float*)(p+8);
+                p[0x64]=1;
+                if(value>=threshold)value=threshold;
+                value*=fn_80206CD0(vec,*(float*)(p+0x6C));
+                if(*(float*)(p+0x68)<=value)*(float*)(p+0x68)=value;
+            }
+        }
+        if(!p[0x64])p[0x18]=0;
+    }
+}
+
 extern "C" void fn_802065F8(void);
-extern "C" void *fn_80208998(int, int, int, float);
+extern "C" void *fn_80208998(int);
 extern "C" void fn_802085EC(int, void *);
 extern float lbl_80563220;
 extern char lbl_8033BDA8;
@@ -310,7 +410,7 @@ extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4)
     *(char *)((char *)arg0 + 0x64) = 1;
     *(int *)((char *)arg0 + 0x70) = arg3;
     *(int *)((char *)arg0 + 0x74) = arg4;
-    obj = (ObjIface80207218 *)fn_80208998(lbl_8055ED80, arg1, arg2, lbl_805631FC);
+    obj = (ObjIface80207218 *)fn_80208998(lbl_8055ED80);
     *(ObjIface80207218 **)((char *)arg0 + 0xC) = obj;
     if (obj != 0)
         fn_802085EC(lbl_8055ED80, arg0);
@@ -366,11 +466,12 @@ extern char lbl_8033BD78;
 #pragma dont_inline on
 __declspec(section ".rodata") extern char lbl_8033BD78;
 extern "C" void *fn_80207428(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    fn_802072E4(arg0, arg1, arg2);
-    *(void **)arg0 = &lbl_8033BD78;
-    *(int *)((char *)arg0 + 0x10) = arg3;
-    fn_80206750(arg0, arg3, arg4);
-    return arg0;
+    void *self = arg0;
+    fn_802072E4(self, arg1, arg2);
+    *(int *)((char *)self + 0x10) = arg3;
+    *(void **)self = &lbl_8033BD78;
+    fn_80206750(self, arg3, arg4);
+    return self;
 }
 
 extern "C" void fn_80207490(void *arg0, void *arg1, int arg2) {
