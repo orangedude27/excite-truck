@@ -36,7 +36,7 @@ s32 fn_802E98C8(void);
 __declspec(section ".sdata") extern char lbl_8055D1A0[];
 s32 fn_802E321C(const char *arg0) {
     const char *prefix = lbl_8055D1A0;
-    return strncmp(prefix, arg0, strlen(prefix)) == 0;
+    return strncmp(arg0, prefix, strlen(prefix)) == 0;
 }
 #pragma small_data off
 s32 *fn_802E333C(void) {
@@ -222,14 +222,19 @@ extern "C" void fn_802E3A14(s32 arg0, s32 arg1) {
     s32 entry = *(s32 *)(obj + 0x24);
     ((Obj *)entry)->v8(arg1);
 }
-#pragma cplusplus off
-s32 fn_802E3A64(s32 arg0, s32 arg1, s32 arg2) {
+#pragma cplusplus on
+extern "C" s32 fn_802E3A64(s32 arg0, s32 arg1, s32 arg2) {
+    class Obj {
+    public:
+        virtual void v0();
+        virtual s32 v1(s32, s32);
+    };
     s32 obj = fn_802E33D8(arg0, lbl_8034CFB4, 0x1c3);
-    CallbackObject *entry = (CallbackObject *)*(s32 *)(obj + 0x24);
-    s32 result = ((s32 (*)(CallbackObject *, s32, s32))entry->vtable[3])(entry, arg1, arg2);
+    s32 entry = *(s32 *)(obj + 0x24);
+    s32 result = ((Obj *)entry)->v1(arg1, arg2);
     return arg2 == result;
 }
-
+#pragma cplusplus off
 void fn_802E3D00(void) {
 }
 
