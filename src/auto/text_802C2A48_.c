@@ -9,6 +9,17 @@ void fn_802C2B18(void) {
     fn_802CF5FC();
 }
 
+void fn_802CFF10(void);
+void fn_80127468(void);
+void fn_801279B8(void);
+void fn_802E4C18(int);
+void fn_802C2B48(void) {
+    fn_802CFF10();
+    fn_80127468();
+    fn_801279B8();
+    fn_802E4C18(0);
+}
+
 void fn_802DD63C(void);
 void fn_802DD738(void);
 void fn_802DD750(void);
