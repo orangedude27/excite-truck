@@ -141,8 +141,13 @@ extern "C" void fn_80297FA4(void) {
 extern "C" void fn_80298124(void) {
     fn_80298BBC(lbl_8055F7C8);
     fn_8029BA8C(lbl_8055F7D8);
-    void *&value = lbl_8055F7C4;
-    if (value != (void *)0) fn_80299628();
+    switch ((int)lbl_8055F7C4) {
+    case 0:
+        break;
+    default:
+        fn_80299628();
+        break;
+    }
 }
 
 void fn_80298160(void) {
@@ -325,15 +330,47 @@ extern "C" void fn_80298AD8(void* arg0) {
     }
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_80298B48(void* arg0) {
     int offset = 0;
     int i = 0;
     while (i < fn_80287B14()) {
-        char* base = (char*)*(void**)arg0;
-        unsigned char value = *(unsigned char*)(base + offset + 0x19);
-        if (value) fn_80298FBC(arg0);
+        unsigned char* base = (unsigned char*)*(void**)arg0;
+        unsigned char* current = base + offset;
+        if (current[0x19] != 0) {
+            fn_80298FBC(arg0);
+        }
         offset += 0x20;
         i++;
+    }
+}
+#pragma scheduling on
+extern "C" void fn_80298BBC(void *arg0) {
+    float sp8, spC, sp10;
+    float now=fn_801E7E18();
+    float reset=lbl_805645B8, threshold=lbl_8056459C;
+    int i=0, offset=0;
+    for (;;) {
+        if (*(float *)((char *)*(void **)arg0+offset+0x1C)>threshold) {
+            void *m=(void *)fn_80287B24(i);
+            void *p=(char *)*(void **)arg0+offset;
+            if (&sp8==p) {
+                float x=*(float *)p, y=*(float *)((char *)p+4), z=*(float *)((char *)p+8);
+                sp8=y* *(float *)((char *)m+0xC)+x* *(float *)m+z* *(float *)((char *)m+0x18);
+                spC=y* *(float *)((char *)m+0x10)+x* *(float *)((char *)m+4)+z* *(float *)((char *)m+0x1C);
+                sp10=y* *(float *)((char *)m+0x14)+x* *(float *)((char *)m+8)+z* *(float *)((char *)m+0x20);
+            } else {
+                sp8=*(float *)((char *)p+4)* *(float *)((char *)m+0xC)+*(float *)p* *(float *)m+*(float *)((char *)p+8)* *(float *)((char *)m+0x18);
+                spC=*(float *)((char *)p+4)* *(float *)((char *)m+0x10)+*(float *)p* *(float *)((char *)m+4)+*(float *)((char *)p+8)* *(float *)((char *)m+0x1C);
+                sp10=*(float *)((char *)p+4)* *(float *)((char *)m+0x14)+*(float *)p* *(float *)((char *)m+8)+*(float *)((char *)p+8)* *(float *)((char *)m+0x20);
+            }
+            sp8+=*(float *)((char *)m+0x24); spC+=*(float *)((char *)m+0x28); sp10+=*(float *)((char *)m+0x2C);
+            p=(char *)*(void **)arg0+offset;
+            if (fn_8029771C(*(void **)((char *)arg0+8),&sp8,p,now-*(float *)((char *)p+0x1C))==0)
+                *(float *)((char *)*(void **)arg0+offset+0x1C)=reset;
+        }
+        offset+=0x20;i++;
+        if(i>=fn_80287B14())break;
     }
 }
 
@@ -510,24 +547,20 @@ extern "C" int fn_802C8DBC(int);
 extern "C" void fn_802C8E48(void);
 extern "C" void fn_802C8D74(void);
 extern "C" void* fn_80299FA8(void*, void*);
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" void* fn_802998F4(void* arg0, int arg1) {
     if (arg0 != 0) {
         void* p = arg0;
         int i = 0;
-        do {
+        for (; i < *(int*)((char*)arg0 + 0x138); p = (char*)p + 0x9c, i++) {
             fn_80299FA8(arg0, p);
-            p = (char*)p + 0x9c;
-            i++;
-        } while (i < *(int*)((char*)arg0 + 0x138));
-        *(int*)((char*)arg0 + 0x138) = 0;
-        if (arg1 > 0) {
-            fn_80128668(arg0);
         }
+        *(int*)((char*)arg0 + 0x138) = 0;
+        if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-#pragma scheduling reset
+#pragma scheduling on
 extern "C" void fn_80299988(void) {
 }
 
