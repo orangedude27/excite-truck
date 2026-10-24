@@ -281,6 +281,44 @@ loop_41_test:
     }
     *(unsigned int *)((char *)arg0 + 8) |= 2;
 }
+
+#pragma use_lmw_stmw off
+extern void fn_802CAC54(int);
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" void fn_802CD254(void *arg0) {
+    int index;
+    int byteOffset;
+    int reset;
+    char *entry;
+    index = 0;
+    byteOffset = 0;
+    reset = -2;
+    while (index < *(int *)((char *)arg0 + 0x30)) {
+        entry = *(char **)((char *)arg0 + 0x34) + byteOffset;
+        fn_802CAC54(*(int *)(entry + 0x10));
+        *(int *)(entry + 0x10) = reset;
+        byteOffset += 0x1C;
+        index++;
+    }
+    byteOffset = 0;
+    index = 0;
+    reset = 0;
+    while (byteOffset < *(int *)((char *)arg0 + 0x88)) {
+        void **items = *(void ***)((char *)arg0 + 0x90);
+        void *obj = *(void **)((char *)items + index);
+        if (obj != 0)
+            ((Dummy *)obj)->method0(1);
+        items = *(void ***)((char *)arg0 + 0x90);
+        byteOffset++;
+        *(void **)((char *)items + index) = (void *)reset;
+        index += 4;
+    }
+    *(int *)((char *)arg0 + 0x88) = 0;
+    *(int *)((char *)arg0 + 8) &= ~2;
+}
+#pragma cplusplus reset
+
 #pragma scheduling on
 #pragma scheduling on
 #pragma scheduling on
