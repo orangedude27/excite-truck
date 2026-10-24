@@ -42,6 +42,12 @@ extern void fn_801345D8(void *, s32, void *, ...);
 extern void *lbl_8055F2E4;
 extern s32 lbl_8055F2E8;
 extern unsigned int lbl_8055F2EC;
+extern void *fn_80018A8C(void *, void *);
+extern s32 fn_80019258(void *, s32 *, s32 *);
+extern void *fn_8001EFC0(s32, void *);
+extern void fn_80130FCC(void *, s32, void *);
+extern void fn_801345D8(void *, s32, void *, ...);
+extern void fn_80255918(void *, s32);
 extern void fn_8024739C(void);
 #pragma push
 #pragma use_lmw_stmw off
