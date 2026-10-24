@@ -166,6 +166,48 @@ s32 fn_80131920(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+extern void *lbl_8032B5E0;
+extern s32 fn_80131234(char *);
+void fn_80131960(void *arg0, void *arg1) {
+    u8 *obj = (u8 *)arg0;
+    u8 *base = (u8 *)arg1;
+    u8 t;
+    s32 i;
+    s32 count;
+
+    t = obj[0x10]; obj[0x10] = obj[0x13]; obj[0x13] = t;
+    t = obj[0x11]; obj[0x11] = obj[0x12]; obj[0x12] = t;
+    t = obj[4]; obj[4] = obj[7]; obj[7] = t;
+    t = obj[5]; obj[5] = obj[6]; obj[6] = t;
+    t = obj[0xC]; obj[0xC] = obj[0xF]; obj[0xF] = t;
+    t = obj[0xD]; obj[0xD] = obj[0xE]; obj[0xE] = t;
+    t = obj[8]; obj[8] = obj[0xB]; obj[0xB] = t;
+    t = obj[9]; obj[9] = obj[0xA]; obj[0xA] = t;
+
+    *(u32 *)(obj + 0x14) = 0;
+    *(void **)obj = lbl_8032B5E0;
+    *(u32 *)(obj + 0x10) += (u32)base;
+    if (*(u32 *)(obj + 4) != 0)
+        *(u32 *)(obj + 4) += (u32)base;
+    if (*(u32 *)(obj + 8) != 0)
+        *(u32 *)(obj + 8) += (u32)base;
+
+    count = *(s32 *)(obj + 0xC);
+    for (i = 0; i < count; i++) {
+        u8 *entry = (u8 *)(*(u32 *)(obj + 0x10) + i * 8);
+        t = entry[0]; entry[0] = entry[3]; entry[3] = t;
+        t = entry[1]; entry[1] = entry[2]; entry[2] = t;
+        t = entry[4]; entry[4] = entry[7]; entry[7] = t;
+        t = entry[5]; entry[5] = entry[6]; entry[6] = t;
+        *(u32 *)entry += (u32)base;
+        *(u32 *)(entry + 4) += (u32)base;
+        if ((s8)*(u8 *)(base + *(u32 *)(entry + 4)) == 0x7C)
+            *(u32 *)(entry + 4) = (u32)fn_80131234((char *)(base + *(u32 *)(entry + 4)) + 1);
+        else if ((s8)*(u8 *)(base + *(u32 *)(entry + 4)) == 0x7E)
+            *(u8 *)(base + *(u32 *)(entry + 4)) = 1;
+    }
+}
+
 s32 fn_80131B10(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
@@ -212,7 +254,7 @@ s32 fn_80131BD0(void* arg0, const char* name) {
         index++;
     }
     if (found == NULL && *(void**)((char*)arg0 + 0x14) != NULL) {
-        found = (char*)fn_80131C88((s32)name);
+        found = ((char *(*)(void *, const char *))fn_80131C88)(*(void **)((char *)arg0 + 0x14), name);
     }
     return found != NULL;
 }
