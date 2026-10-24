@@ -702,7 +702,6 @@ extern "C" void fn_80193D30(void *arg0) {
     *(int *)(p + 4) = *(int *)(p + 0x290) * 4;
 }
 #pragma cplusplus reset
-#pragma cplusplus reset
 void fn_8019416C(void) {
 
 }
