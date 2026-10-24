@@ -103,6 +103,160 @@ extern void *lbl_8055F680;
 #pragma dont_inline on
 #pragma push
 #pragma cplusplus on
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_80258354(void);
+extern "C" const char *fn_80007F90(unsigned int);
+extern "C" void *lbl_8055F680;
+extern "C" char lbl_80347E50[];
+extern "C" char lbl_8055C798;
+extern "C" char lbl_8055C7A0;
+extern "C" char lbl_8055C7A8;
+extern "C" char lbl_8055C7B0;
+extern "C" char lbl_8055C7B8;
+extern "C" char lbl_8055C7C0;
+extern "C" void fn_8027E908(void) {
+    class InitObj {
+    public:
+        virtual void v0();
+        virtual void v1(const void *, const void *, int);
+        virtual void v2(const void *, const void *);
+        virtual void v3(const void *, const void *, int);
+        virtual void v4();
+        virtual void v5();
+    };
+    register const char *base = lbl_80347E50;
+    register unsigned int idBase = 0x180000;
+    InitObj *object;
+    const char *idName;
+    const void *argA, *argB;
+    object = (InitObj *)fn_80258354();
+    lbl_8055F680 = object;
+    argA = base+0x0;
+    argB = base+0x14;
+    object->v1(argA, argB, 4);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x24;
+    argB = base+0x14;
+    object->v1(argA, argB, 3);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x30;
+    argB = base+0x14;
+    object->v1(argA, argB, 1);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x3c;
+    argB = base+0x14;
+    object->v1(argA, argB, 2);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x48;
+    argB = base+0x14;
+    object->v1(argA, argB, 4);
+    idName = fn_80007F90(idBase + 0x201);
+    object = (InitObj *)lbl_8055F680;
+    argA = idName;
+    argB = base+0x58;
+    object->v1(argA, argB, 1);
+    idName = fn_80007F90(idBase + 0x302);
+    object = (InitObj *)lbl_8055F680;
+    argA = idName;
+    argB = base+0x58;
+    object->v1(argA, argB, 2);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x68;
+    argB = base+0x58;
+    object->v1(argA, argB, 1);
+    object = (InitObj *)lbl_8055F680;
+    argA = &lbl_8055C798;
+    argB = base+0x78;
+    object->v1(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = &lbl_8055C7A0;
+    argB = base+0x78;
+    object->v1(argA, argB, 1);
+    object = (InitObj *)lbl_8055F680;
+    argA = &lbl_8055C7A8;
+    argB = base+0x78;
+    object->v1(argA, argB, 2);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x88;
+    argB = base+0x78;
+    object->v1(argA, argB, 3);
+    object = (InitObj *)lbl_8055F680;
+    argA = &lbl_8055C7B0;
+    argB = base+0x78;
+    object->v1(argA, argB, 4);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x94;
+    argB = base+0x78;
+    object->v1(argA, argB, 5);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0xA0;
+    argB = base+0xB4;
+    object->v1(argA, argB, 1);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0xC0;
+    argB = base+0xB4;
+    object->v1(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0xD0;
+    argB = base+0xE0;
+    object->v1(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0xF0;
+    argB = base+0xE0;
+    object->v1(argA, argB, 1);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x100;
+    argB = base+0x110;
+    object->v1(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x120;
+    argB = base+0x110;
+    object->v1(argA, argB, 1);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x130;
+    argB = base+0x140;
+    object->v1(argA, argB, 6);
+    object = (InitObj *)lbl_8055F680;
+    object->v2(&lbl_8055C7B8, base+0x14C);
+    object = (InitObj *)lbl_8055F680;
+    object->v2(&lbl_8055C7C0, base+0x158);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x164;
+    argB = base+0x174;
+    object->v3(argA, argB, 1);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x180;
+    argB = base+0x190;
+    object->v3(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x1A0;
+    argB = base+0x1AC;
+    object->v3(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x1BC;
+    argB = base+0x1D0;
+    object->v3(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x1E0;
+    argB = base+0x1D0;
+    object->v3(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x1F8;
+    argB = base+0x204;
+    object->v3(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x214;
+    argB = base+0x190;
+    object->v3(argA, argB, 0);
+    object = (InitObj *)lbl_8055F680;
+    argA = base+0x228;
+    argB = base+0x238;
+    object->v3(argA, argB, 0);
+}
+#pragma cplusplus reset
+#pragma pop
+
 extern "C" void fn_8027ED2C(void) {
     class Obj {
     public:
@@ -1188,16 +1342,17 @@ extern "C" void fn_802869B8(void* arg0) {
 }
 #pragma cplusplus off
 int fn_802869CC(void *arg0, int arg1) {
-    extern double lbl_80564220;
     void *p;
     int d;
-    if (arg1 == 13) {
+    switch (arg1) {
+    case 13:
         p = *(void **)((char *)arg0 + 0x20);
         if (p != 0 && *(unsigned char *)((char *)arg0 + 0x29) == 0) {
             d = *(int *)((char *)p + 4) - *(int *)p;
-            *(float *)((char *)p + 0x10) = (float)((double)d - lbl_80564220);
+            *(float *)((char *)p + 0x10) = (float)d;
             return 1;
         }
+        break;
     }
     return 0;
 }
