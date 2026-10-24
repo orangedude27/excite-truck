@@ -68,6 +68,8 @@ extern f32 lbl_805622DC;
 extern f32 lbl_805622E8;
 extern f32 lbl_805622E0;
 extern f32 lbl_805622D0;
+extern f32 lbl_8056231C, lbl_80562320, lbl_80562324, lbl_80562328, lbl_80562330, lbl_805622D4;
+extern s32 lbl_8055E5A0;
 extern "C" void fn_8019AC44(void*, void*, void*, f32);
 inline void fn_8019AC44(f32* a, f32* b, f32 c) {}
 extern char lbl_803339B8;
@@ -1684,6 +1686,89 @@ extern "C" void fn_801A3190(void *arg0, s32 arg1, void *arg2, s32 arg3, void *ar
     *(f32*)((u8*)arg0 + 0x38) = ((f32*)arg5)[2];
 }
 
+#pragma scheduling invalid_target
+extern "C" void fn_801A34D0(void *arg0, Vec *arg1, Vec *arg2) {
+    extern f32 lbl_80562380;
+    struct Bounds { u8 pad0[0xC]; f32 *matrix; u8 pad1[0x14]; Vec min; Vec max; };
+    Bounds *box = (Bounds *)arg0;
+    f32 sp1C;
+    f32 sp18;
+    f32 sp14[3];
+    f32 sp10;
+    f32 spC;
+    f32 sp8[3];
+    f32 *mat = box->matrix;
+    if (&sp8[0] == &box->min.x) {
+        f32 y = box->min.y;
+        f32 x = *&box->min.x;
+        f32 z = box->min.z;
+        f32 y0 = y * mat[3];
+        f32 y1 = y * mat[4];
+        f32 x0 = x * mat[0];
+        f32 x1 = x * mat[1];
+        f32 y2 = y * mat[5];
+        f32 x2 = x * mat[2];
+        f32 z0 = z * mat[6];
+        f32 z1 = z * mat[7];
+        f32 z2 = z * mat[8];
+        sp8[0] = x0 + y0 + z0;
+        sp8[1] = x1 + y1 + z1;
+        sp8[2] = x2 + y2 + z2;
+    } else {
+        sp8[0] = (mat[6] * box->min.z) + ((*&mat[0] * box->min.x) + (mat[3] * box->min.y));
+        sp8[1] = (mat[7] * box->min.z) + ((*&mat[1] * box->min.x) + (mat[4] * box->min.y));
+        sp8[2] = (mat[8] * box->min.z) + ((*&mat[2] * box->min.x) + (mat[5] * box->min.y));
+    }
+    sp8[0] += mat[9]; sp8[1] += mat[10]; sp8[2] += mat[11];
+    f32 *mat2 = *(f32 * volatile *)((u8 *)box + 0xC);
+    if (&sp14[0] == &box->max.x) {
+        f32 temp_f6 = box->max.y;
+        f32 temp_f0 = *&box->max.x;
+        f32 temp_f7 = box->max.z;
+        f32 q0 = temp_f0 * mat2[0] + temp_f6 * mat2[3];
+        f32 q1 = temp_f0 * mat2[1] + temp_f6 * mat2[4];
+        f32 q2 = temp_f0 * mat2[2] + temp_f6 * mat2[5];
+        f32 r0 = temp_f7 * mat2[6];
+        f32 r1 = temp_f7 * mat2[7];
+        f32 r2 = temp_f7 * mat2[8];
+        sp14[0] = q0 + r0; sp14[1] = q1 + r1; sp14[2] = q2 + r2;
+    } else {
+        sp14[0] = (mat2[6] * box->max.z) + ((*&mat2[0] * box->max.x) + (mat2[3] * box->max.y));
+        sp14[1] = (mat2[7] * box->max.z) + ((*&mat2[1] * box->max.x) + (mat2[4] * box->max.y));
+        sp14[2] = (mat2[8] * box->max.z) + ((*&mat2[2] * box->max.x) + (mat2[5] * box->max.y));
+    }
+    sp14[0] += mat2[9]; sp14[1] += mat2[10]; sp14[2] += mat2[11];
+    f32 var_f4 = sp8[0];
+    arg2->x = var_f4;
+    arg2->y = sp8[1];
+    arg2->z = sp8[2];
+    arg1->x = var_f4;
+    arg1->y = arg2->y;
+    arg1->z = arg2->z;
+    if (var_f4 < sp14[0]) var_f4 = sp14[0];
+    arg1->x = var_f4;
+    f32 var_f1 = arg1->y;
+    if (var_f1 < sp14[1]) var_f1 = sp14[1];
+    arg1->y = var_f1;
+    f32 var_f2 = arg1->z;
+    if (var_f2 < sp14[2]) var_f2 = sp14[2];
+    arg1->z = var_f2;
+    var_f1 = arg2->x;
+    if (var_f1 > sp14[0]) var_f1 = sp14[0];
+    arg2->x = var_f1;
+    var_f1 = arg2->y;
+    if (var_f1 > sp14[1]) var_f1 = sp14[1];
+    arg2->y = var_f1;
+    var_f1 = arg2->z;
+    if (var_f1 > sp14[2]) var_f1 = sp14[2];
+    arg2->z = var_f1;
+    f32 pad = lbl_80562380;
+    arg2->x = arg2->x + pad;
+    arg2->z = arg2->z + pad;
+    arg1->x = arg1->x - pad;
+    arg1->z = arg1->z - pad;
+}
+#pragma scheduling on
 f32 fn_801A3880(void* arg0) {
     f32 first;
     f32 second;
