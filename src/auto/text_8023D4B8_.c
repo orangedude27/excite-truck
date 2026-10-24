@@ -114,20 +114,26 @@ char *fn_8023DC38(char *arg0) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 char *fn_8023DCCC(char *arg0) {
-    char **var_r31 = (char **)&lbl_802FA190;
-    s32 var_r30 = 0;
-    do {
-        if (stricmp(*var_r31, arg0) == 0)
-            return (char *)&lbl_802FA190 + var_r30 * 8;
-        var_r30++;
-        if (var_r30 >= 0x11)
-            break;
-        var_r31 += 2;
-    } while (1);
+    char **var_r31;
+    s32 var_r30;
+    s32 repeat;
+    var_r31 = (char **)&lbl_802FA190;
+    var_r30 = 0;
+loop_1:
+    if (stricmp(*var_r31, arg0) == 0) {
+        return (char *)&lbl_802FA190 + (var_r30 * 8);
+    }
+    var_r30 += 1;
+    repeat = var_r30 < 0x11;
+    var_r31 += 2;
+    if (repeat) {
+        goto loop_1;
+    }
     return 0;
 }
-
+#pragma scheduling on
 int fn_8023DF70(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
