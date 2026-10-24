@@ -1252,30 +1252,36 @@ extern "C" void fn_801A1474(void* arg0, f32 scale) {
 }
 
 extern "C" void fn_8019ECC4(void);
-extern void* lbl_80333968;
+__declspec(section ".data") extern void* lbl_80333968;
 extern f32 lbl_80562370;
+#pragma push
+#pragma small_data off
 extern "C" void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
+    u8 temp_r6;
+    u8 temp_r7;
+    u8 temp_r8;
+    u8 temp_r9;
     fn_8019ECC4();
     *(void**)arg0 = &lbl_80333968;
     if (arg2 != 0) {
-        u8 a = *((u8*)arg0 + 0x24);
-        u8 b = *((u8*)arg0 + 0x25);
-        u8 c = *((u8*)arg0 + 0x28);
-        u8 d = *((u8*)arg0 + 0x29);
-        *((u8*)arg0 + 0x24) = *((u8*)arg0 + 0x27);
-        *((u8*)arg0 + 0x27) = a;
-        *((u8*)arg0 + 0x25) = *((u8*)arg0 + 0x26);
-        *((u8*)arg0 + 0x26) = b;
-        *((u8*)arg0 + 0x28) = *((u8*)arg0 + 0x2b);
-        *((u8*)arg0 + 0x2b) = c;
-        *((u8*)arg0 + 0x29) = *((u8*)arg0 + 0x2a);
-        *((u8*)arg0 + 0x2a) = d;
-        if (*(s32*)((u8*)arg0 + 0x20) == 0x3eb)
+        temp_r6 = *(u8*)((u8*)arg0 + 0x24);
+        temp_r8 = *(u8*)((u8*)arg0 + 0x25);
+        temp_r7 = *(u8*)((u8*)arg0 + 0x28);
+        temp_r9 = *(u8*)((u8*)arg0 + 0x29);
+        *(u8*)((u8*)arg0 + 0x24) = *(u8*)((u8*)arg0 + 0x27);
+        *(u8*)((u8*)arg0 + 0x27) = temp_r6;
+        *(u8*)((u8*)arg0 + 0x25) = *(u8*)((u8*)arg0 + 0x26);
+        *(u8*)((u8*)arg0 + 0x26) = temp_r8;
+        *(u8*)((u8*)arg0 + 0x28) = *(u8*)((u8*)arg0 + 0x2B);
+        *(u8*)((u8*)arg0 + 0x2B) = temp_r7;
+        *(u8*)((u8*)arg0 + 0x29) = *(u8*)((u8*)arg0 + 0x2A);
+        *(u8*)((u8*)arg0 + 0x2A) = temp_r9;
+        if (*(s32*)((u8*)arg0 + 0x20) == 0x3EB)
             *(f32*)((u8*)arg0 + 0x24) += lbl_80562370;
     }
     return arg0;
 }
-
+#pragma pop
 extern f32 lbl_805622D0, lbl_805622D4, lbl_805622E0;
 extern "C" s32 fn_801A15CC(void* arg0, Vec* arg1, Vec* arg2, f32* arg3, Vec* arg4) {
     f32 t0 = lbl_805622D0;
