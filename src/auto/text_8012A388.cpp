@@ -711,7 +711,7 @@ extern "C" void fn_8012C4D8(void *arg0) {
 }
 
 extern "C" void fn_8012CC20(void) {
-    ((s32 (*)(void))fn_8012CC24)();
+    ((s32 (*)(void))(void *)&fn_8012CC24)();
 }
 
 #pragma dont_inline on
