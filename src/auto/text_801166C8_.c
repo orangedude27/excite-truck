@@ -4964,12 +4964,12 @@ void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg
     }
 }
 
-extern void fn_80126A10(s32 *, s32, s32);
+extern void fn_80126A10(s8 *, void *, u32);
 void fn_80126EF0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4, s32 arg5) {
     u32 temp[16] = {0};
     u8 *dst = arg0;
     u8 *src = arg4;
-    fn_80126A10((s32 *)temp, arg2, arg3);
+    fn_80126A10((s8 *)temp, (void *)arg2, (u32)arg3);
     dst[0] = ((u8 *)temp)[0] + src[0];
     dst[1] = ((u8 *)temp)[1] + src[1];
     dst[2] = ((u8 *)temp)[4] + src[2];
