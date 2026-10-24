@@ -60,6 +60,29 @@ int fn_8018FF84(int arg0, int arg1) {
     return arg0;
 }
 
+#pragma cplusplus on
+extern "C" void fn_80190184(void *arg0, void *arg1) {
+    struct Dummy0 {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+    };
+    struct Dummy1 {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2(void *);
+    };
+    Dummy0 *obj;
+    Dummy1 *obj2;
+
+    *(void **)((char *)arg0 + 0x20) = arg1;
+    *(s32 *)((char *)arg0 + 0x1C) = *(s32 *)((char *)arg1 + 0x1EC);
+    obj = *(Dummy0 **)((char *)arg0 + 8);
+    obj->v2();
+    obj2 = *(Dummy1 **)((char *)arg0 + 0xC);
+    obj2->v2(arg1);
+}
+#pragma cplusplus reset
 void fn_80190360(int arg0) {
     fn_80191084(arg0, 0);
 }
