@@ -312,7 +312,7 @@ void fn_802C8E70(float *arg0, float *arg1) {
 
 float fn_802C8FEC(void) { return lbl_8055FC6C; }
 
-extern float lbl_80558DC4;
+extern char lbl_80558DC4[];
 extern float lbl_8055FC38, lbl_8055FC3C;
 #pragma scheduling off
 int fn_802C8FF4(float *arg0, float arg1) {
