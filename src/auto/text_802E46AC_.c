@@ -56,8 +56,8 @@ void fn_802E4800(u16 arg0) {
  lbl_8055FF50=lbl_8055FF50; 
 }
 
-#pragma dont_inline on
-#pragma dont_inline off
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_802E499C(u16 *str) {
     s32 len;
     u16 *p;
@@ -71,18 +71,30 @@ s32 fn_802E499C(u16 *str) {
     while (len > 0) {
         a = *str;
         b = *q;
-        if (a != b && a != 0xFFFF) return 0;
+        if (b != a && a != 0xFFFF) return 0;
         str++;
         q++;
         len--;
     }
     return 1;
 }
-
+#pragma pop
 s32 fn_802E4A10(void) { return (lbl_8055FF5A >> 12) & 0xF; }
 
 extern u8 lbl_804FC458[];
 u8 fn_802E4A1C(s32 arg0) { return lbl_804FC458[arg0]; }
+
+void fn_802E4A2C(void) {
+    volatile u32 stack[64];
+    volatile u32 *p;
+    if ((s32)lbl_8055D1C0 < 0) return;
+    p = &stack[0];
+    do {
+        *p = 0;
+        p[1] = 0;
+        p += 2;
+    } while (p < &stack[64]);
+}
 
 extern unsigned char lbl_8055FF58;
 extern unsigned char lbl_804FC3B0[];
