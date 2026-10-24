@@ -7471,7 +7471,7 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
 
 extern "C" void *lbl_8055DD88;
 extern "C" void fn_800BC538(u8 *, u8 *, u8 *, s32, u8 *, s16 *, s16 *, u8 *, s16); /* extern */
-extern "C" u32 fn_800BF048(void *, void *, void *, void *, void *, void *, s32 *, void *); /* extern */
+extern "C" void fn_800BF048(void *, u8 *, u8 *, u8 *, void *, void *, s32 *, void *, s16 *, s16 *, s16 *, s16 *, s16 *, s16 *, s16 *); /* extern */
 extern "C" u32 fn_800C0E7C(void *, void *, void *, void *, s32 *, void *); /* extern */
 extern "C" u32 fn_800C3DA0(void *, void *, s32, s16 *, s16 *, s16 *, s16, s16); /* extern */
 extern "C" u32 lbl_80560DA0;
@@ -12614,7 +12614,9 @@ void homebutton::HomeButton::updateTrigPane() {
 
 extern "C" s32 lbl_802F4528[];
 extern "C" f32 lbl_80560E18;
+#pragma push
 #pragma dont_inline on
+extern "C" f32 lbl_80560DC8;
 extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
     s32 paneNo = ((homebutton::HomeButton *)arg0)->getPaneNo(arg1);
     s32 changed = 0;
@@ -13067,7 +13069,7 @@ found_entry_8:;
         }
     }
 }
-#pragma dont_inline reset
+#pragma pop
 s32 homebutton::HomeButton::getPaneNo(const char *name) {
     register s32 count = *(s32 *)((u8 *)this + 8);
     register s32 result = -1;
