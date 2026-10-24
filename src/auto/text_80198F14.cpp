@@ -6,7 +6,7 @@ extern "C" s32 fn_8019D618(void*, void*, s32, void*);
 extern "C" char lbl_80333640[];
 extern "C" void* fn_801284F8(s32, const char*);
 extern "C" void fn_801A0378(void*, void*);
-extern "C" void fn_8019C854(void*, void*);
+extern "C" s32 fn_8019C854(void*, void*);
 #include <revolution/MTX/vec.h>
 
 static inline void fn801A1F98Transform(volatile f32 *dst, volatile f32 *src, f32 *matrix) {
@@ -210,6 +210,37 @@ void fn_8019A788(void* arg0, void* arg1, void* arg3, void* arg4, s32 arg5, f32 f
 extern "C" void fn_8019A820(void*, void*, s32, s32, s32, f32);
 extern "C" void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_8019A820(arg0, (u8*)arg0 + 0x34, arg1, arg2, arg3, *(f32*)((u8*)arg0 + 0x24));
+}
+
+extern "C" void fn_8019AC44(void* arg0, void* arg1, void* arg2, f32 farg0) {
+    Vec work[64]; s32 count=0x40, sp8; Vec p70,p64,delta,p4c,p34,p28,p40,p1c,p10;
+    f32 dot,mag,limit,scale,varf1,f31,f30; void* body=*(void**)((u8*)arg0+4); Vec* out=(Vec*)arg2; f30=farg0;
+    if (lbl_8055E5A0!=0) { fn_801CF080((s32)lbl_8055E5A0,arg1,work,&count,0,f30); for(s32 i=0;i<count;++i) fn_8019A820(arg0,arg1,(s32)&work[i],0x6e,0,f30); }
+    if (fn_801E9F08((u8*)body+0x6c,arg1,&p70,(s32)&p64,(s32)&sp8,f30)!=0) {
+        delta.x=((Vec*)arg1)->x-p70.x; delta.y=((Vec*)arg1)->y-((f32*)&p70)[1]; delta.z=((Vec*)arg1)->z-((f32*)&p70)[2];
+        dot=PSVECDotProduct(&p64,&delta); f31=f30-dot; fn_8017B6D4((s32)body,&p4c,(s32)&p70);
+        f30=f31* *(f32*)((u8*)arg0+0x10); dot=-PSVECDotProduct(&p4c,&p64);
+        p34.x=p4c.x+p64.x*dot; p34.y=p4c.y+p64.y*dot; p34.z=p4c.z+p64.z*dot;
+        p40.x=p64.x*f30; p40.y=p64.y*f30; p40.z=p64.z*f30;
+        out->x+=p34.x*lbl_8056231C; out->y+=p34.y*lbl_8056231C; out->z+=p34.z*lbl_8056231C;
+        mag=PSVECMag(out); if(mag>lbl_80562320){scale=lbl_80562320/mag;out->x*=scale;out->y*=scale;out->z*=scale;}
+        p28.x=p34.x*lbl_80562324; p28.y=p34.y*lbl_80562324; p28.z=p34.z*lbl_80562324;
+        limit=lbl_80562328* *(f32*)((u8*)body+0xd4); p28.x+=out->x*limit;p28.y+=out->y*limit;p28.z+=out->z*limit;
+        mag=PSVECMag(&p28); scale=f30* *(f32*)((u8*)arg0+0x14); if(scale>lbl_80562320)scale=lbl_80562320;
+        if(mag>scale){limit=scale/mag;p28.x*=limit;p28.y*=limit;p28.z*=limit;}
+        p40.x+=p28.x;p40.y+=p28.y;p40.z+=p28.z;
+        dot=-PSVECDotProduct((Vec*)((u8*)body+0x124),&p64)*f30*lbl_8056232C;
+        p1c.x=p64.x*dot;p1c.y=p64.y*dot;p1c.z=p64.z*dot;
+        fn_8017B4AC(body,&p1c);
+        { typedef void(*Call)(void*,Vec*,Vec*,s32,s32); Call call=(Call)(*(u32*)(*(u32*)arg0+0x1c)); call(arg0,&p40,&p70,sp8,0); }
+        scale=lbl_80562330*fn_8019DF88((u8*)body+0x60,(f32*)&p4c,(void*)((u8*)body+0x148),(f32*)&p70,(f32*)&p64,*(f32*)((u8*)body+0xd4),lbl_805622D0);
+        if(scale>lbl_805622D0){
+            p10.x=p64.x*scale;p10.y=p64.y*scale;p10.z=p64.z*scale;
+            varf1=lbl_805622D4;if(varf1>f31)varf1=f31;
+            typedef void(*Call2)(void*,s32,Vec*,Vec*,s32,s32,s32,f32);
+            Call2 c=(Call2)(*(u32*)(*(u32*)arg0+0x20));c(arg0,0,&p10,&p70,sp8,0,0,varf1);
+        } else fn_801B34DC(arg0,0,&p70,&p10,&p64,sp8);
+    } else {out->x=lbl_805622D0;out->y=lbl_805622D0;out->z=lbl_805622D0;}
 }
 
 void fn_8019B068(void* arg0, void* arg1, s32 arg2, s32 arg3) {
