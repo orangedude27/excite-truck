@@ -3,7 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); struct Font; struct Glyph; struct CharWidths; class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; void SetFont(const Font&); }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; s32 GetDefaultCharWidths() const; void GetGlyph(nw4hbm::ut::Glyph*, unsigned short) const; void GetGlyphFromIndex(nw4hbm::ut::Glyph*, unsigned short) const; void SetLineFeed(int); void SetDefaultCharWidths(const CharWidths&); }; } } }
+namespace nw4hbm { namespace ut { class ResFont { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual void v20(); virtual int GetEncoding(); bool SetResource(void*); }; struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); struct Font; struct Glyph; struct CharWidths; class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; void SetFont(const Font&); }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; s32 GetDefaultCharWidths() const; void GetGlyph(nw4hbm::ut::Glyph*, unsigned short) const; void GetGlyphFromIndex(nw4hbm::ut::Glyph*, unsigned short) const; void SetLineFeed(int); void SetDefaultCharWidths(const CharWidths&); }; } } }
 
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
@@ -513,6 +513,143 @@ void nw4hbm::ut::detail::ResFontBase::SetDefaultCharWidths(const CharWidths& wid
     ((u8*)data)[6] = ((const u8*)&widths)[2];
 }
 
+extern "C" u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void *, void *, u16);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" s32 SetAlternateChar__Q46nw4hbm2ut6detail11ResFontBaseFUs(void *self, u16 code) {
+    const char *file = lbl_80329140;
+    register u32 top = (u32)self & 0xFF000000U;
+    {
+        register int r5=1, r6=1, r7=1, r8=1, r9=1, r10=1;
+        if ((u32)(top+0x80000000U)<=0U) goto skip_first_0;
+        if ((u32)(((u32)self&0xFF800000U)+0x7F000000U)<=0U) goto skip_first_0;
+        r10=0;
+skip_first_0: ;
+        if (r10==0) {
+            if ((u32)(((u32)self&0xF8000000U)+0x70000000U)<=0U) goto skip_next_3;
+            r9=0;
+        }
+skip_next_3: ;
+        if (r9==0) {
+            if ((u32)(top+0x40000000U)<=0U) goto skip_next_4;
+            r8=0;
+        }
+skip_next_4: ;
+        if (r8==0) {
+            if ((u32)(((u32)self&0xFF800000U)+0x3F000000U)<=0U) goto skip_next_5;
+            r7=0;
+        }
+skip_next_5: ;
+        if (r7==0) {
+            if ((u32)(((u32)self&0xF8000000U)+0x30000000U)<=0U) goto skip_next_6;
+            r6=0;
+        }
+skip_next_6: ;
+        if (r6==0) {
+            if ((u32)(((u32)self&0xFFFFC000U)+0x20000000U)<=0U) goto skip_next_7;
+            r5=0;
+        }
+skip_next_7: ;
+        if (r5==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x15E,file+0xF0,self);
+    }
+    register u8 *info;
+    {
+        register int r4=1, r5=1;
+        info=*(u8**)((u8*)self+0x14);
+        register int r7=1;
+        register int r8=1, r9=1, r10=1;
+        register u32 infoTop=(u32)info&0xFF000000U;
+        if ((u32)(infoTop+0x80000000U)<=0U) goto skip_first_1;
+        if ((u32)(((u32)info&0xFF800000U)+0x7F000000U)<=0U) goto skip_first_1;
+        r10=0;
+skip_first_1: ;
+        if (r10==0) {
+            if ((u32)(((u32)info&0xF8000000U)+0x70000000U)<=0U) goto skip_next_8;
+            r9=0;
+        }
+skip_next_8: ;
+        if (r9==0) {
+            if ((u32)(infoTop+0x40000000U)<=0U) goto skip_next_9;
+            r8=0;
+        }
+skip_next_9: ;
+        if (r8==0) {
+            if ((u32)(((u32)info&0xFF800000U)+0x3F000000U)<=0U) goto skip_next_10;
+            r7=0;
+        }
+skip_next_10: ;
+        if (r7==0) {
+            if ((u32)(((u32)info&0xF8000000U)+0x30000000U)<=0U) goto skip_next_11;
+            r5=0;
+        }
+skip_next_11: ;
+        if (r5==0 && (u32)(((u32)info&0xFFFFC000U)+0x20000000U)>0U) r4=0;
+        if (r4==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x15F,file+0x128);
+    }
+    {
+        register int valid=0;
+        u32 p=(u32)self, part1, part2;
+        if ((u32)(top+0x80000000U)<=0U ||
+            ((part1=p&0xFF800000U),(u32)(part1+0x7F000000U)<=0U) ||
+            ((part2=p&0xF8000000U),(u32)(part2+0x70000000U)<=0U) ||
+            (u32)(top+0x40000000U)<=0U ||
+            (u32)(part1+0x3F000000U)<=0U ||
+            (u32)(part2+0x30000000U)<=0U ||
+            (u32)((p&0xFFFFC000U)+0x20000000U)<=0U) valid=1;
+        if (valid==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x1F6,file+0xF0,self);
+    }
+    {
+        register int r4=1, r5=1;
+        info=*(u8**)((u8*)self+0x14);
+        register int r7=1;
+        register int r8=1, r9=1, r10=1;
+        register u32 infoTop=(u32)info&0xFF000000U;
+        if ((u32)(infoTop+0x80000000U)<=0U) goto skip_first_2;
+        if ((u32)(((u32)info&0xFF800000U)+0x7F000000U)<=0U) goto skip_first_2;
+        r10=0;
+skip_first_2: ;
+        if (r10==0) {
+            if ((u32)(((u32)info&0xF8000000U)+0x70000000U)<=0U) goto skip_next_12;
+            r9=0;
+        }
+skip_next_12: ;
+        if (r9==0) {
+            if ((u32)(infoTop+0x40000000U)<=0U) goto skip_next_13;
+            r8=0;
+        }
+skip_next_13: ;
+        if (r8==0) {
+            if ((u32)(((u32)info&0xFF800000U)+0x3F000000U)<=0U) goto skip_next_14;
+            r7=0;
+        }
+skip_next_14: ;
+        if (r7==0) {
+            if ((u32)(((u32)info&0xF8000000U)+0x30000000U)<=0U) goto skip_next_15;
+            r5=0;
+        }
+skip_next_15: ;
+        if (r5==0 && (u32)(((u32)info&0xFFFFC000U)+0x20000000U)>0U) r4=0;
+        if (r4==0) Panic__Q26nw4hbm2dbFPCciPCce(file+0xC,0x1F7,file+0x128);
+    }
+    register u8 *map=*(u8**)(*(u8**)((u8*)self+0x14)+0x10);
+    register u16 index;
+    while (map!=0) {
+        if (*(u16*)map<=code && code<=*(u16*)(map+2)) {
+            index=::FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(self,map,code);
+            goto checkIndex;
+        }
+        map=*(u8**)(map+8);
+    }
+    index=0xFFFF;
+checkIndex:
+    if (index!=0xFFFF) {
+        *(u16*)(*(u8**)((u8*)self+0x14)+2)=index;
+        return 1;
+    }
+    return 0;
+}
+#pragma pop
+
 void nw4hbm::ut::detail::ResFontBase::SetLineFeed(int lineFeed) {
     u32 p = (u32)this;
     int a = 1, b = 1, c = 1, d = 1, e = 1, f = 1;
@@ -567,6 +704,77 @@ u32 GetCharWidths__Q46nw4hbm2ut6detail11ResFontBaseCFUs(void *self, u16 code) {
     else entry=info+4;
     return ((u32)*(u16*)(entry+4)<<16) | ((u32)entry[6]<<8);
 }
+
+#pragma push
+#pragma use_lmw_stmw off
+void nw4hbm::ut::detail::ResFontBase::GetGlyph(nw4hbm::ut::Glyph* glyph, unsigned short code) const {
+    const char* file = lbl_80329140;
+    register u32 top = (u32)this & 0xFF000000U;
+    {
+        register int r5 = 1, r6 = 1, r7 = 1, r8 = 1, r9 = 1, r10 = 1;
+        if ((u32)(top + 0x80000000U) >= 1U && (u32)(((u32)this & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
+        if (r10 == 0 && (u32)(((u32)this & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
+        if (r9 == 0 && (u32)(top + 0x40000000U) >= 1U) r8 = 0;
+        if (r8 == 0 && (u32)(((u32)this & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
+        if (r7 == 0 && (u32)(((u32)this & 0xF8000000U) + 0x30000000U) >= 1U) r6 = 0;
+        if (r6 == 0 && (u32)(((u32)this & 0xFFFFC000U) + 0x20000000U) >= 1U) r5 = 0;
+        if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E2, file + 0xF0, this);
+    }
+    {
+        register int r4 = 1, r5 = 1;
+        u8* info = *(u8**)((char*)this + 0x14);
+        register int r7 = 1;
+        register int r8 = 1, r9 = 1, r10 = 1;
+        register u32 infoTop = (u32)info & 0xFF000000U;
+        if ((u32)(infoTop + 0x80000000U) >= 1U && (u32)(((u32)info & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
+        if (r10 == 0 && (u32)(((u32)info & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
+        if (r9 == 0 && (u32)(infoTop + 0x40000000U) >= 1U) r8 = 0;
+        if (r8 == 0 && (u32)(((u32)info & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
+        if (r7 == 0 && (u32)(((u32)info & 0xF8000000U) + 0x30000000U) >= 1U) r5 = 0;
+        if (r5 == 0 && (u32)(((u32)info & 0xFFFFC000U) + 0x20000000U) >= 1U) r4 = 0;
+        if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1E3, file + 0x128);
+    }
+    {
+        register int valid = 0;
+        if ((u32)(top + 0x80000000U) < 1U ||
+            (u32)(((u32)this & 0xFF800000U) + 0x7F000000U) < 1U ||
+            (u32)(((u32)this & 0xF8000000U) + 0x70000000U) < 1U ||
+            (u32)(top + 0x40000000U) < 1U ||
+            (u32)(((u32)this & 0xFF800000U) + 0x3F000000U) < 1U ||
+            (u32)(((u32)this & 0xF8000000U) + 0x30000000U) < 1U ||
+            (u32)(((u32)this & 0xFFFFC000U) + 0x20000000U) < 1U)
+            valid = 1;
+        if (valid == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F6, file + 0xF0, this);
+    }
+    {
+        register int r4 = 1, r5 = 1;
+        u8* info = *(u8**)((char*)this + 0x14);
+        register int r7 = 1;
+        register int r8 = 1, r9 = 1, r10 = 1;
+        register u32 infoTop = (u32)info & 0xFF000000U;
+        if ((u32)(infoTop + 0x80000000U) >= 1U && (u32)(((u32)info & 0xFF800000U) + 0x7F000000U) >= 1U) r10 = 0;
+        if (r10 == 0 && (u32)(((u32)info & 0xF8000000U) + 0x70000000U) >= 1U) r9 = 0;
+        if (r9 == 0 && (u32)(infoTop + 0x40000000U) >= 1U) r8 = 0;
+        if (r8 == 0 && (u32)(((u32)info & 0xFF800000U) + 0x3F000000U) >= 1U) r7 = 0;
+        if (r7 == 0 && (u32)(((u32)info & 0xF8000000U) + 0x30000000U) >= 1U) r5 = 0;
+        if (r5 == 0 && (u32)(((u32)info & 0xFFFFC000U) + 0x20000000U) >= 1U) r4 = 0;
+        if (r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(file + 0xC, 0x1F7, file + 0x128);
+    }
+    u8* map = *(u8**)(*(u8**)((char*)this + 0x14) + 0x10);
+    u16 index;
+    while (map != 0) {
+        if (*(u16*)map <= code && code <= *(u16*)(map + 2)) {
+            index = ::FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs((void*)this, map, code);
+            goto check_index;
+        }
+        map = *(u8**)(map + 8);
+    }
+    index = 0xFFFF;
+check_index:
+    index = index != 0xFFFF ? index : *(u16*)(*(u8**)((char*)this + 0x14) + 2);
+    GetGlyphFromIndex(glyph, index);
+}
+#pragma pop
 
 u16 FindGlyphIndex__Q46nw4hbm2ut6detail11ResFontBaseCFPCQ36nw4hbm2ut11FontCodeMapUs(void *self, const void *mapArg, u16 code) {
     const u16 *map=(const u16 *)mapArg;
@@ -1388,6 +1596,116 @@ block_268:
     }
 }
 
+#pragma push
+#pragma optimize_for_size on
+extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    extern const char lbl_80329530[];
+    extern f32 lbl_80561178;
+    extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32, f32, f32);
+    volatile f32 sp14, sp10, spC, sp8;
+    f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f31;
+    f32 var_f1, var_f1_2, var_f1_3, var_f1_4;
+    s32 temp_r10, temp_r10_2, temp_r11, temp_r3;
+    s32 var_r10, var_r29, var_r30;
+    s32 var_r4, var_r4_2, var_r5, var_r5_2, var_r5_3;
+    s32 var_r6, var_r6_2, var_r6_3, var_r7, var_r7_2, var_r7_3;
+    s32 var_r8, var_r8_2, var_r8_3, var_r9, var_r9_2, var_r9_3;
+    const char *base = lbl_80329530;
+    temp_r11 = arg0 & 0xFF000000;
+    var_r29 = arg2;
+    var_r30 = arg3;
+    var_r5 = 1;
+    var_r6 = 1;
+    var_r7 = 1;
+    var_r8 = 1;
+    var_r9 = 1;
+    var_r10 = 1;
+    if (((u32)(temp_r11 + 0x80000000U) >= 1U) &&
+        ((u32)((arg0 & 0xFF800000U) + 0x7F000000U) >= 1U)) var_r10 = 0;
+    if ((var_r10 == 0) && ((u32)((arg0 & 0xF8000000U) + 0x70000000U) >= 1U)) var_r9 = 0;
+    if ((var_r9 == 0) && ((u32)(temp_r11 + 0x40000000U) >= 1U)) var_r8 = 0;
+    if ((var_r8 == 0) && ((u32)((arg0 & 0xFF800000U) + 0x3F000000U) >= 1U)) var_r7 = 0;
+    if ((var_r7 == 0) && ((u32)((arg0 & 0xF8000000U) + 0x30000000U) >= 1U)) var_r6 = 0;
+    if ((var_r6 == 0) && ((u32)((arg0 & 0xFFFFC000U) + 0x20000000U) >= 1U)) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F2, base + 0x48, arg0);
+    temp_r10 = arg1 & 0xFF000000;
+    var_r4 = 1;
+    var_r5_2 = 1;
+    var_r6_2 = 1;
+    var_r7_2 = 1;
+    var_r8_2 = 1;
+    var_r9_2 = 1;
+    if (((u32)(temp_r10 + 0x80000000U) >= 1U) &&
+        ((u32)((arg1 & 0xFF800000U) + 0x7F000000U) >= 1U)) var_r9_2 = 0;
+    if ((var_r9_2 == 0) && ((u32)((arg1 & 0xF8000000U) + 0x70000000U) >= 1U)) var_r8_2 = 0;
+    if ((var_r8_2 == 0) && ((u32)(temp_r10 + 0x40000000U) >= 1U)) var_r7_2 = 0;
+    if ((var_r7_2 == 0) && ((u32)((arg1 & 0xFF800000U) + 0x3F000000U) >= 1U)) var_r6_2 = 0;
+    if ((var_r6_2 == 0) && ((u32)((arg1 & 0xF8000000U) + 0x30000000U) >= 1U)) var_r5_2 = 0;
+    if ((var_r5_2 == 0) && ((u32)((arg1 & 0xFFFFC000U) + 0x20000000U) >= 1U)) var_r4 = 0;
+    if (var_r4 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F3, base + 0xF8, arg1);
+    temp_r10_2 = var_r29 & 0xFF000000;
+    var_r4_2 = 1;
+    var_r5_3 = 1;
+    var_r6_3 = 1;
+    var_r7_3 = 1;
+    var_r8_3 = 1;
+    var_r9_3 = 1;
+    if (((u32)(temp_r10_2 + 0x80000000U) >= 1U) &&
+        ((u32)((var_r29 & 0xFF800000U) + 0x7F000000U) >= 1U)) var_r9_3 = 0;
+    if ((var_r9_3 == 0) && ((u32)((var_r29 & 0xF8000000U) + 0x70000000U) >= 1U)) var_r8_3 = 0;
+    if ((var_r8_3 == 0) && ((u32)(temp_r10_2 + 0x40000000U) >= 1U)) var_r7_3 = 0;
+    if ((var_r7_3 == 0) && ((u32)((var_r29 & 0xFF800000U) + 0x3F000000U) >= 1U)) var_r6_3 = 0;
+    if ((var_r6_3 == 0) && ((u32)((var_r29 & 0xF8000000U) + 0x30000000U) >= 1U)) var_r5_3 = 0;
+    if ((var_r5_3 == 0) && ((u32)((var_r29 & 0xFFFFC000U) + 0x20000000U) >= 1U)) var_r4_2 = 0;
+    if (var_r4_2 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F4, base + 0x130, var_r29);
+    if (var_r30 < 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F5, base + 0x168, var_r30, 0);
+    register f32 zero = lbl_80561178;
+    *(f32 *)arg1 = zero;
+    *(f32 *)(arg1 + 8) = zero;
+    *(f32 *)(arg1 + 4) = zero;
+    *(f32 *)(arg1 + 0xC) = zero;
+    SetCursor__Q36nw4hbm2ut10CharWriterFff(arg0, zero, zero);
+    temp_f31 = lbl_80561178;
+    do {
+        sp8 = temp_f31;
+        spC = temp_f31;
+        sp10 = temp_f31;
+        sp14 = temp_f31;
+        temp_r3 = fn_8010E3BC(arg0, (s32)&sp8, var_r29, var_r30);
+        var_f1 = sp8;
+        var_r29 += temp_r3;
+        temp_f0 = *(f32 *)arg1;
+        var_r30 -= temp_r3;
+        if (temp_f0 > var_f1) {
+        } else {
+            var_f1 = temp_f0;
+        }
+        *(f32 *)arg1 = var_f1;
+        temp_f0_2 = *(f32 *)(arg1 + 4);
+        var_f1_2 = spC;
+        if (temp_f0_2 > var_f1_2) {
+        } else {
+            var_f1_2 = temp_f0_2;
+        }
+        *(f32 *)(arg1 + 4) = var_f1_2;
+        temp_f0_3 = *(f32 *)(arg1 + 8);
+        var_f1_3 = sp10;
+        if (temp_f0_3 < var_f1_3) {
+        } else {
+            var_f1_3 = temp_f0_3;
+        }
+        *(f32 *)(arg1 + 8) = var_f1_3;
+        temp_f0_4 = *(f32 *)(arg1 + 0xC);
+        var_f1_4 = sp14;
+        if (temp_f0_4 < var_f1_4) {
+        } else {
+            var_f1_4 = temp_f0_4;
+        }
+        *(f32 *)(arg1 + 0xC) = var_f1_4;
+    } while (var_r30 > 0);
+}
+#pragma pop
 extern "C" f32 fn_8010F81C(void *writer, s32 arg1, s32 arg2) {
 extern void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void*,s32);
 extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
@@ -2701,6 +3019,105 @@ block_264:
     }
 }
 
+#pragma push
+#pragma optimize_for_size on
+extern "C" void fn_80113F08(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    extern const char lbl_80329530[];
+    extern f32 lbl_80561178;
+    extern void SetCursor__Q36nw4hbm2ut10CharWriterFff(s32, f32, f32);
+    volatile f32 sp14, sp10, spC, sp8;
+    f32 temp_f0, temp_f0_2, temp_f0_3, temp_f0_4, temp_f31;
+    f32 var_f1, var_f1_2, var_f1_3, var_f1_4;
+    s32 temp_r3;
+    s32 var_r29, var_r30;
+    s32 var_r4, var_r5, var_r6, var_r7, var_r8, var_r9, var_r10;
+    s32 temp_r10, temp_r10_2;
+    s32 temp_r11;
+    const char *base = lbl_80329530;
+    volatile f32 *rect = (volatile f32 *)arg1;
+    temp_r11 = arg0 & 0xFF000000;
+    var_r29 = arg2;
+    var_r30 = arg3;
+    var_r5 = 1;
+    var_r6 = 1;
+    var_r7 = 1;
+    var_r8 = 1;
+    var_r9 = 1;
+    var_r10 = 1;
+    if (((u32)(temp_r11 + 0x80000000U) >= 1U) &&
+        ((u32)((arg0 & 0xFF800000U) + 0x7F000000U) >= 1U)) var_r10 = 0;
+    if ((var_r10 == 0) && ((u32)((arg0 & 0xF8000000U) + 0x70000000U) >= 1U)) var_r9 = 0;
+    if ((var_r9 == 0) && ((u32)(temp_r11 + 0x40000000U) >= 1U)) var_r8 = 0;
+    if ((var_r8 == 0) && ((u32)((arg0 & 0xFF800000U) + 0x3F000000U) >= 1U)) var_r7 = 0;
+    if ((var_r7 == 0) && ((u32)((arg0 & 0xF8000000U) + 0x30000000U) >= 1U)) var_r6 = 0;
+    if ((var_r6 == 0) && ((u32)((arg0 & 0xFFFFC000U) + 0x20000000U) >= 1U)) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F2, base + 0x48, arg0);
+    temp_r10 = arg1 & 0xFF000000;
+    var_r5 = 1;
+    var_r6 = 1;
+    var_r7 = 1;
+    var_r8 = 1;
+    var_r9 = 1;
+    var_r4 = 1;
+    if (((u32)(temp_r10 + 0x80000000U) >= 1U) &&
+        ((u32)((arg1 & 0xFF800000U) + 0x7F000000U) >= 1U)) var_r4 = 0;
+    if ((var_r4 == 0) && ((u32)((arg1 & 0xF8000000U) + 0x70000000U) >= 1U)) var_r9 = 0;
+    if ((var_r9 == 0) && ((u32)(temp_r10 + 0x40000000U) >= 1U)) var_r8 = 0;
+    if ((var_r8 == 0) && ((u32)((arg1 & 0xFF800000U) + 0x3F000000U) >= 1U)) var_r7 = 0;
+    if ((var_r7 == 0) && ((u32)((arg1 & 0xF8000000U) + 0x30000000U) >= 1U)) var_r6 = 0;
+    if ((var_r6 == 0) && ((u32)((arg1 & 0xFFFFC000U) + 0x20000000U) >= 1U)) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F3, base + 0xF8, arg1);
+    temp_r10_2 = var_r29 & 0xFF000000;
+    var_r5 = 1;
+    var_r6 = 1;
+    var_r7 = 1;
+    var_r8 = 1;
+    var_r9 = 1;
+    var_r4 = 1;
+    if (((u32)(temp_r10_2 + 0x80000000U) >= 1U) &&
+        ((u32)((var_r29 & 0xFF800000U) + 0x7F000000U) >= 1U)) var_r4 = 0;
+    if ((var_r4 == 0) && ((u32)((var_r29 & 0xF8000000U) + 0x70000000U) >= 1U)) var_r9 = 0;
+    if ((var_r9 == 0) && ((u32)(temp_r10_2 + 0x40000000U) >= 1U)) var_r8 = 0;
+    if ((var_r8 == 0) && ((u32)((var_r29 & 0xFF800000U) + 0x3F000000U) >= 1U)) var_r7 = 0;
+    if ((var_r7 == 0) && ((u32)((var_r29 & 0xF8000000U) + 0x30000000U) >= 1U)) var_r6 = 0;
+    if ((var_r6 == 0) && ((u32)((var_r29 & 0xFFFFC000U) + 0x20000000U) >= 1U)) var_r5 = 0;
+    if (var_r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F4, base + 0x130, var_r29);
+    if (var_r30 < 0)
+        Panic__Q26nw4hbm2dbFPCciPCce(base + 0x30, 0x3F5, base + 0x168, var_r30, 0);
+    register f32 zero = lbl_80561178;
+    *(f32 *)arg1 = zero;
+    rect[2] = zero;
+    rect[1] = zero;
+    rect[3] = zero;
+    SetCursor__Q36nw4hbm2ut10CharWriterFff(arg0, zero, zero);
+    temp_f31 = lbl_80561178;
+    do {
+        sp8 = temp_f31;
+        spC = temp_f31;
+        sp10 = temp_f31;
+        sp14 = temp_f31;
+        temp_r3 = fn_80112EA0(arg0, (s32)&sp8, var_r29, var_r30);
+        var_f1 = sp8;
+        var_r29 += temp_r3 * 2;
+        temp_f0 = rect[0];
+        var_r30 -= temp_r3;
+        var_f1 = temp_f0 > var_f1 ? var_f1 : temp_f0;
+        rect[0] = var_f1;
+        temp_f0_2 = rect[1];
+        var_f1_2 = spC;
+        var_f1_2 = temp_f0_2 > var_f1_2 ? var_f1_2 : temp_f0_2;
+        rect[1] = var_f1_2;
+        temp_f0_3 = rect[2];
+        var_f1_3 = sp10;
+        var_f1_3 = temp_f0_3 < var_f1_3 ? var_f1_3 : temp_f0_3;
+        rect[2] = var_f1_3;
+        temp_f0_4 = rect[3];
+        var_f1_4 = sp14;
+        var_f1_4 = temp_f0_4 < var_f1_4 ? var_f1_4 : temp_f0_4;
+        rect[3] = var_f1_4;
+    } while (var_r30 > 0);
+}
+#pragma pop
 extern "C" f32 fn_801142F8(void *writer, s32 arg1, s32 arg2) {
 extern void GetCharStrmReader__Q36nw4hbm2ut4FontCFv(void*,s32);
 extern s32 GetFont__Q36nw4hbm2ut10CharWriterCFv(s32);
