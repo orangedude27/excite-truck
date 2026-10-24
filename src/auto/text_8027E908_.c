@@ -91,6 +91,10 @@ typedef struct Fn8027F958Menu {
     Fn8027F958Entry entries[32];
     int footer[5];
 } Fn8027F958Menu;
+typedef struct Fn8027F958Local {
+    int textIds[3][3];
+    Fn8027F958Menu menu;
+} Fn8027F958Local;
 
 extern int fn_80128668();
 extern void fn_8027E908(void);
@@ -353,30 +357,30 @@ struct Fn8027F204State {
 extern "C" void fn_802E30C8(const char *, ...);
 extern "C" int lbl_8055F69C;
 extern "C" const char lbl_80348270[];
+#pragma scheduling invalid_target
 extern "C" void fn_8027F204(char *src) {
     char *dst;
     int len;
     struct Fn8027F204State *state = (struct Fn8027F204State *)lbl_8055F69C;
 
     if (state == 0) return;
-    if (state->count + 1 <= state->max) {
-        len = 0x1e;
-        dst = state->buffer + state->count++ * 0x1e;
-        goto enter;
-        for (;;) {
-            if (--len <= 0) {
-                dst[-1] = 0;
-                return;
-            }
-        enter:
-            if ((*dst++ = *src++) == 0) {
-                return;
-            }
+    if (state->count + 1 > state->max) goto report_error;
+    len = 0x1e;
+    dst = state->buffer + state->count++ * 0x1e;
+    goto enter;
+    for (;;) {
+        if (--len <= 0) {
+            dst[-1] = 0;
+            return;
+        }
+    enter:
+        if ((*dst++ = *src++) == 0) {
+            return;
         }
     }
+report_error:
     fn_802E30C8(lbl_80348270);
 }
-#pragma scheduling invalid_target
 #pragma scheduling reset
 #pragma cplusplus off
 void *fn_8027F834(void *arg0, int arg1) {
@@ -423,8 +427,7 @@ block_7:
 }
 
 #pragma push
-#pragma inline_max_size(10000)
-#pragma inline_max_total_size(10000)
+#pragma scheduling invalid_target
 int fn_8027F958(int *selection, void *collection) {
     extern char lbl_80347E50[];
     extern int lbl_8055BAB8, lbl_8055BAC0, lbl_8055C7EC;
@@ -443,15 +446,16 @@ int fn_8027F958(int *selection, void *collection) {
     Fn8027F958Widget widgets[5];
     Fn8027F958Menu menu;
     int textIds[3][3];
-    struct Fn8027F834List *list;
+    register struct Fn8027F834List *list;
     void *object, *item;
     Fn8027F958Widget *widget;
-    void **items, **storage;
+    void **items;
+    register void **storage;
     char *constants = (char *)&lbl_802FA848;
     char *state = (char *)&lbl_804B2FF8;
     char *strings = lbl_80347E50;
-    float defaultScale;
     float defaultValue;
+    float defaultScale;
     void *widgetVtable;
     char *src, *dst;
     int mode, count, reported, i, j, index, remaining, result;
@@ -946,6 +950,7 @@ int fn_8027F958(int *selection, void *collection) {
     widget->unk44 = 0;
     return result;
 }
+#pragma scheduling on
 #pragma pop
 
 extern int fn_80216D28(void);
@@ -1083,13 +1088,13 @@ int fn_802837D4(int arg0, int arg1) {
 }
 
 void *fn_80283938(void *arg0, int arg1) {
-    void *base;
-    void *next;
-    void *field;
+    register void *base;
+    register void *next;
+    register void *field;
     if (arg0 != 0) {
         base = lbl_80348678;
-        *(void **)arg0 = base;
         next = (char *)base + 0x50;
+        *(void **)arg0 = base;
         *(void **)((char *)arg0 + 4) = next;
         lbl_8055F69C = 0;
         field = *(void **)((char *)arg0 + 0x20);
@@ -1140,25 +1145,33 @@ int fn_80283A50(void) {
     return 0;
 }
 
+#pragma scheduling invalid_target
 int fn_80283AC8(void) {
- int i=0;
- int count=(int)lbl_804B30D8[1];
- unsigned int *p=(unsigned int*)lbl_804B30D8[0];
- unsigned int value=(unsigned int)lbl_8055F698;
- if (count > 0) {
-   do {
-     if (*p == value) goto found;
-     p++;
-     ++i;
-   } while (--count != 0);
- }
- i=-1;
+    int i;
+    int count;
+    unsigned int value;
+    void **p;
+    void **base;
+    count = (int)lbl_804B30D8[1];
+    i = 0;
+    value = (unsigned int)lbl_8055F698;
+    base = (void **)lbl_804B30D8[0];
+    p = base;
+    for (; i < count; ++i) {
+        if (*p != (void *)value) goto increment;
+        goto found;
+increment:
+        ++p;
+    }
+    i = -1;
 found:
- if (i >= 0 && *(int *)((char *)lbl_804B30D8[0] + i * 16 + 0x60)) return 1;
- fn_80216D28();
- return 0;
+    if (i >= 0 && *(int *)((char *)base[i] + 0x60)) {
+        return 1;
+    }
+    fn_80216D28();
+    return 0;
 }
-
+#pragma scheduling on
 void fn_802840F4(void) {
     fn_8027E908();
 }
@@ -1166,6 +1179,178 @@ void fn_802840F4(void) {
 void fn_802840F8(void) {
     fn_8027ED2C();
 }
+
+#pragma cplusplus on
+extern "C" unsigned char lbl_8055F67C;
+extern "C" int fn_8027F958(int *, void *);
+extern "C" int fn_802812B4(int *, void *, int *, void *);
+extern "C" void fn_8027EEE4(int);
+extern "C" void *fn_8025007C(int);
+extern "C" int fn_80019664(void);
+extern "C" int fn_800196F0(void);
+extern "C" void fn_80284580(int, int, void *, int);
+extern "C" int fn_80263F30(int, int, int);
+extern "C" void fn_8027F09C(int);
+extern "C" void *memset(void *, int, unsigned int);
+#pragma cplusplus on
+extern "C" int fn_802840FC(int *arg0, void *arg1, int *arg2, void *arg3) {
+    class Child {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5();
+        virtual int value();
+        virtual void f9(); virtual void f10(); virtual void f11(); virtual void f12();
+        virtual void f13(); virtual void f14(); virtual void f15();
+        virtual int isZero();
+    };
+    class Node {
+    public:
+        virtual void f0(); virtual void f1(); virtual void f2();
+        virtual int state();
+        virtual int count();
+        virtual Child *at(int);
+        virtual int isEmpty();
+    };
+    class List {
+    public:
+        virtual void f0();
+        virtual int count();
+        virtual Node *at(int);
+    };
+    class Sequence {
+    public:
+        virtual void hide(int);
+        virtual void setup(int, int, int);
+        virtual void finish(int, int);
+    };
+    int options[5];
+    int copy0;
+    int copy1;
+    int copy2;
+    int copy3;
+    int copy4;
+    Sequence *sequence;
+    Node *node2;
+    Node *node;
+    Child *child;
+    List *list;
+    int spC;
+    int sp8;
+    int temp_r25;
+    int temp_r26;
+    int var_r0;
+    int var_r26;
+    int var_r26_2;
+    int var_r26_3;
+    int var_r30;
+    int var_r31;
+    unsigned char *stateBytes;
+
+    lbl_8055F67C = 0;
+    copy0 = arg2[0];
+    copy1 = arg2[1];
+    copy2 = arg2[2];
+    copy3 = arg2[3];
+    copy4 = arg2[4];
+    options[0] = copy0;
+    options[1] = copy1;
+    options[2] = copy2;
+    options[3] = copy3;
+    options[4] = copy4;
+    spC = -1;
+    temp_r25 = (*arg0 + 1) == 0;
+    sp8 = -1;
+    list = (List *)arg1;
+    if (temp_r25 != 0) {
+        var_r26 = 0;
+        while (var_r26 < list->count()) {
+            node = list->at(var_r26);
+            if (node->isEmpty() == 0) {
+                spC = var_r26;
+                var_r26_2 = 0;
+                while (var_r26_2 < node->count()) {
+                    child = node->at(var_r26_2);
+                    if (child->isZero() == 0) {
+                        sp8 = var_r26_2;
+                        break;
+                    }
+                    var_r26_2++;
+                }
+            } else {
+                var_r26++;
+                continue;
+            }
+            break;
+        }
+        if (spC < 0) {
+            spC = 0;
+        }
+        if (sp8 < 0) {
+            sp8 = 0;
+        }
+    } else {
+        var_r26_3 = 0;
+        while (var_r26_3 < list->count()) {
+            node = list->at(var_r26_3);
+            var_r30 = 0;
+            while (var_r30 < node->count()) {
+                child = node->at(var_r30);
+                if (*arg0 == child->value()) {
+                    spC = var_r26_3;
+                    sp8 = var_r30;
+                }
+                var_r30++;
+            }
+            var_r26_3++;
+        }
+    }
+    var_r0 = temp_r25 == 0;
+    var_r31 = 0;
+    var_r30 = spC;
+    do {
+        node2 = list->at(spC);
+        if (spC != var_r30) {
+            sp8 = temp_r25;
+            var_r30 = spC;
+            temp_r26 = fn_802812B4(&sp8, node2, options, arg1);
+        }
+        stateBytes = (unsigned char *)&options[4];
+        if (stateBytes[1] != 0) {
+            fn_8027EEE4(node2->state() + 1);
+        }
+        if (stateBytes[2] != 0) {
+            sequence = (Sequence *)fn_8025007C(1);
+            sequence->setup(fn_80019664(), 1, 0);
+            sequence->finish(0, fn_800196F0());
+            fn_80284580(0, 0, sequence, 0);
+            if (sequence != 0) {
+                sequence->hide(1);
+            }
+        }
+        if ((stateBytes[0] != 0 && node2->state() == 1) ||
+            (stateBytes[1] != 0 && node2->state() == 2)) {
+            fn_80263F30(stateBytes[2] == 0, node2->state() == 2, 1);
+        }
+        if (stateBytes[1] != 0) {
+            var_r31 = 0;
+            goto exit_loop;
+        }
+        if (stateBytes[0] != 0 && node2->state() < 2) {
+            fn_8027F09C(node2->state() + 1);
+        }
+        memset(options, 0, 0x14);
+        if (temp_r26 != 0) {
+            child = node2->at(sp8);
+            *arg0 = child->value();
+            var_r31 = 1;
+            goto exit_loop;
+        }
+        var_r0 = 0;
+    } while (fn_8027F958(&spC, arg1) != 0);
+exit_loop:
+    return var_r31;
+}
+#pragma cplusplus reset
 
 #pragma push
 #pragma processor 750
@@ -1328,12 +1513,8 @@ typedef unsigned int (*GetFn)(void *);
 typedef int (*CmpFn)(void *);
 int fn_80286950(void **arg0) {
     unsigned int a;
-    GetFn get;
-    CmpFn cmp;
-    get = *(GetFn *)((char *)*arg0 + 0x4C);
-    a = get(arg0);
-    cmp = *(CmpFn *)((char *)*arg0 + 0x28);
-    return (int)a <= cmp(arg0);
+    a = (*(GetFn *)((char *)*arg0 + 0x4C))(arg0);
+    return (int)a <= (*(CmpFn *)((char *)*arg0 + 0x28))(arg0);
 }
 
 #pragma cplusplus on
