@@ -34,6 +34,9 @@ void fn_802C2C6C(void) { fn_802DE774(); }
 void fn_802D0014(void *, void *, float, float, float);
 extern unsigned char lbl_804C1328[];
 extern float lbl_80564ED8;
+void fn_802D0014(void *, void *, float, float, float);
+extern unsigned char lbl_804C1328[];
+extern float lbl_80564ED8;
 extern float lbl_80564EDC;
 extern unsigned char lbl_8055FBA8;
 void fn_802C2A48(int);
