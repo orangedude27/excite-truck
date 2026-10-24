@@ -171,6 +171,7 @@ extern "C" void fn_80211F64(void) {
     lbl_8055EF14 = temp_r31;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_80211FF0(void) {
     s32 sp8;
     s32 (*cb)(s32 *);
@@ -182,7 +183,7 @@ extern "C" void fn_80211FF0(void) {
         }
     }
 }
-
+#pragma scheduling on
 extern "C" void *fn_801284F8(s32, const char *);
 extern "C" s32 fn_8012C33C(s32);
 extern "C" s32 fn_802C49E8(s32);
