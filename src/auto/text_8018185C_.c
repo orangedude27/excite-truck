@@ -345,23 +345,33 @@ int fn_801837DC(int arg0, int arg1) {
 }
 
 void fn_8018381C(void *arg0) {
-    volatile int *p = (volatile int *)arg0;
-    int l = p[0x2A0 / 4];
-    int k = p[0x29C / 4];
-    int j = p[0x298 / 4];
-    int i = p[0x294 / 4];
-    int h = p[0x290 / 4];
-    int g = p[0x28C / 4];
-    int f = p[0x288 / 4];
-    int e = p[0x284 / 4];
-    int d = p[0x280 / 4];
-    int c = p[0x27C / 4];
-    int b = p[0x278 / 4];
-    int a = p[0x274 / 4];
-    p[0x3C / 4] = a; p[0x40 / 4] = b; p[0x44 / 4] = c; p[0x48 / 4] = d;
-    p[0x4C / 4] = e; p[0x50 / 4] = f; p[0x54 / 4] = g; p[0x58 / 4] = h;
-    p[0x5C / 4] = i; p[0x60 / 4] = j; p[0x64 / 4] = k; p[0x68 / 4] = l;
-    fn_8017A580(k, j, i, h, g, f, e);
+    int l, k, j, i, h, g, f, e, d, c, b, a;
+
+    a = *(volatile int *)((char *)arg0 + 0x274);
+    b = *(volatile int *)((char *)arg0 + 0x278);
+    c = *(volatile int *)((char *)arg0 + 0x27C);
+    d = *(volatile int *)((char *)arg0 + 0x280);
+    e = *(volatile int *)((char *)arg0 + 0x284);
+    f = *(volatile int *)((char *)arg0 + 0x288);
+    g = *(volatile int *)((char *)arg0 + 0x28C);
+    h = *(volatile int *)((char *)arg0 + 0x290);
+    i = *(volatile int *)((char *)arg0 + 0x294);
+    j = *(volatile int *)((char *)arg0 + 0x298);
+    k = *(volatile int *)((char *)arg0 + 0x29C);
+    l = *(volatile int *)((char *)arg0 + 0x2A0);
+    *(int *)((char *)arg0 + 0x3C) = a;
+    *(int *)((char *)arg0 + 0x40) = b;
+    *(int *)((char *)arg0 + 0x44) = c;
+    *(int *)((char *)arg0 + 0x48) = d;
+    *(int *)((char *)arg0 + 0x4C) = e;
+    *(int *)((char *)arg0 + 0x50) = f;
+    *(int *)((char *)arg0 + 0x54) = g;
+    *(int *)((char *)arg0 + 0x58) = h;
+    *(int *)((char *)arg0 + 0x5C) = i;
+    *(int *)((char *)arg0 + 0x60) = j;
+    *(int *)((char *)arg0 + 0x64) = k;
+    *(int *)((char *)arg0 + 0x68) = l;
+    ((void (*)(void *))fn_8017A580)(arg0);
     fn_8017B164(arg0);
     fn_801838C8(arg0);
 }
@@ -682,44 +692,56 @@ void fn_80189C64(void *arg0) {
     *(float *)((char *)arg0 + 0x26A8) = lbl_80561CAC;
 }
 
+#pragma opt_propagation off
 #pragma dont_inline on
 void fn_80189CB4(void *arg0, void *arg1) {
-    volatile float out[3];
     volatile float scale[3];
+    volatile float out[3];
     volatile int matrix[12];
     float temp_f1, temp_f6, temp_f7;
-    int i, count, index;
+    int count, index;
+    register int i;
+    int word0, word1, word2, word3, word4, word5;
+    int word6, word7, word8, word9;
     char *cursor;
-    register char *object = (char *)arg0;
-    register char *input = (char *)arg1;
     {
         float zero = lbl_80561CAC;
-        *(float *)((char *)object + 0x130) = zero;
-        *(float *)((char *)object + 0x134) = zero;
-        *(float *)((char *)object + 0x138) = zero;
-        *(float *)((char *)object + 0x13C) = zero;
-        *(float *)((char *)object + 0x140) = zero;
-        *(float *)((char *)object + 0x144) = zero;
+        *(float *)((char *)arg0 + 0x130) = zero;
+        *(float *)((char *)arg0 + 0x134) = zero;
+        *(float *)((char *)arg0 + 0x138) = zero;
+        *(float *)((char *)arg0 + 0x13C) = zero;
+        *(float *)((char *)arg0 + 0x140) = zero;
+        *(float *)((char *)arg0 + 0x144) = zero;
     }
-    fn_8017B6A8(object);
-    fn_80189C64(object);
-    matrix[0] = *(int *)((char *)input + 0x00);
-    matrix[1] = *(int *)((char *)input + 0x04);
-    matrix[2] = *(int *)((char *)input + 0x08);
-    matrix[3] = *(int *)((char *)input + 0x0C);
-    matrix[4] = *(int *)((char *)input + 0x10);
-    matrix[5] = *(int *)((char *)input + 0x14);
-    matrix[6] = *(int *)((char *)input + 0x18);
-    matrix[7] = *(int *)((char *)input + 0x1C);
-    matrix[8] = *(int *)((char *)input + 0x20);
-    matrix[9] = *(int *)((char *)input + 0x24);
-    matrix[10] = *(int *)((char *)input + 0x28);
-    matrix[11] = *(int *)((char *)input + 0x2C);
-    temp_f1 = *(float *)((char *)object + 0x30) * lbl_80561DE4;
+    fn_8017B6A8(arg0);
+    fn_80189C64(arg0);
+    word0 = *(int *)(((char *)arg1) + 0x00);
+    word1 = *(int *)(((char *)arg1) + 0x04);
+    word2 = *(int *)(((char *)arg1) + 0x08);
+    word3 = *(int *)(((char *)arg1) + 0x0C);
+    word4 = *(int *)(((char *)arg1) + 0x10);
+    word5 = *(int *)(((char *)arg1) + 0x14);
+    word6 = *(int *)(((char *)arg1) + 0x18);
+    word7 = *(int *)(((char *)arg1) + 0x1C);
+    word8 = *(int *)(((char *)arg1) + 0x20);
+    word9 = *(int *)(((char *)arg1) + 0x24);
+    matrix[0] = word0;
+    matrix[1] = word1;
+    matrix[2] = word2;
+    matrix[3] = word3;
+    matrix[4] = word4;
+    matrix[5] = word5;
+    matrix[6] = word6;
+    matrix[7] = word7;
+    matrix[8] = word8;
+    matrix[9] = word9;
+    matrix[10] = *(int *)(((char *)arg1) + 0x28);
+    matrix[11] = *(int *)(((char *)arg1) + 0x2C);
+    temp_f1 = *(float *)((char *)arg0 + 0x30) * lbl_80561DE4;
     scale[0] = temp_f1;
-    temp_f6 = *(float *)((char *)object + 0x34) * lbl_80561DE4;
+    temp_f6 = *(float *)((char *)arg0 + 0x34) * lbl_80561DE4;
     scale[1] = temp_f6;
-    temp_f7 = *(float *)((char *)object + 0x38) * lbl_80561DE4;
+    temp_f7 = *(float *)((char *)arg0 + 0x38) * lbl_80561DE4;
     scale[2] = temp_f7;
     if (&out[0] == &scale[0]) {
         out[0] = temp_f7 * ((volatile float *)matrix)[6] + (temp_f1 * ((volatile float *)matrix)[0] + temp_f6 * ((volatile float *)matrix)[3]);
@@ -739,55 +761,55 @@ void fn_80189CB4(void *arg0, void *arg1) {
         ((volatile float *)matrix)[10] = f2;
         ((volatile float *)matrix)[11] = f1 + out[2];
     }
-    *(int *)((char *)object + 0x3C) = matrix[0];
-    *(int *)((char *)object + 0x40) = matrix[1];
-    *(int *)((char *)object + 0x44) = matrix[2];
-    *(int *)((char *)object + 0x48) = matrix[3];
-    *(int *)((char *)object + 0x4C) = matrix[4];
-    *(int *)((char *)object + 0x50) = matrix[5];
-    *(int *)((char *)object + 0x54) = matrix[6];
-    *(int *)((char *)object + 0x58) = matrix[7];
-    *(int *)((char *)object + 0x5C) = matrix[8];
-    *(int *)((char *)object + 0x60) = matrix[9];
-    *(int *)((char *)object + 0x64) = matrix[10];
-    *(int *)((char *)object + 0x68) = matrix[11];
-    ((void (*)(void *))fn_8017A580)(object);
-    *(float *)((char *)object + 0x2A4) = *(float *)((char *)input + 0x30);
-    *(float *)((char *)object + 0x2A8) = *(float *)((char *)input + 0x34);
-    *(float *)((char *)object + 0x2AC) = *(float *)((char *)input + 0x38);
-    *(float *)((char *)object + 0x118) = *(float *)((char *)input + 0x30);
-    *(float *)((char *)object + 0x11C) = *(float *)((char *)input + 0x34);
-    *(float *)((char *)object + 0x120) = *(float *)((char *)input + 0x38);
+    *(int *)((char *)arg0 + 0x3C) = matrix[0];
+    *(int *)((char *)arg0 + 0x40) = matrix[1];
+    *(int *)((char *)arg0 + 0x44) = matrix[2];
+    *(int *)((char *)arg0 + 0x48) = matrix[3];
+    *(int *)((char *)arg0 + 0x4C) = matrix[4];
+    *(int *)((char *)arg0 + 0x50) = matrix[5];
+    *(int *)((char *)arg0 + 0x54) = matrix[6];
+    *(int *)((char *)arg0 + 0x58) = matrix[7];
+    *(int *)((char *)arg0 + 0x5C) = matrix[8];
+    *(int *)((char *)arg0 + 0x60) = matrix[9];
+    *(int *)((char *)arg0 + 0x64) = matrix[10];
+    *(int *)((char *)arg0 + 0x68) = matrix[11];
+    ((void (*)(void *))fn_8017A580)(arg0);
+    *(float *)((char *)arg0 + 0x2A4) = *(float *)((char *)((char *)arg1) + 0x30);
+    *(float *)((char *)arg0 + 0x2A8) = *(float *)((char *)((char *)arg1) + 0x34);
+    *(float *)((char *)arg0 + 0x2AC) = *(float *)((char *)((char *)arg1) + 0x38);
+    *(float *)((char *)arg0 + 0x118) = *(float *)((char *)((char *)arg1) + 0x30);
+    *(float *)((char *)arg0 + 0x11C) = *(float *)((char *)((char *)arg1) + 0x34);
+    *(float *)((char *)arg0 + 0x120) = *(float *)((char *)((char *)arg1) + 0x38);
     {
         float zero = lbl_80561CAC;
-        *(float *)((char *)object + 0x124) = zero;
-        *(float *)((char *)object + 0x128) = zero;
-        *(float *)((char *)object + 0x12C) = zero;
+        *(float *)((char *)arg0 + 0x124) = zero;
+        *(float *)((char *)arg0 + 0x128) = zero;
+        *(float *)((char *)arg0 + 0x12C) = zero;
     }
-    temp_f1 = PSVECDotProduct((char *)object + 0x118, (char *)object + 0x54);
-    *(float *)((char *)object + 0x25CC) = temp_f1;
-    *(float *)((char *)object + 0x25D8) = temp_f1;
-    temp_f1 = PSVECMag((char *)object + 0x118);
-    *(float *)((char *)object + 0x25D4) = temp_f1;
-    *(float *)((char *)object + 0x261C) = temp_f1;
+    temp_f1 = PSVECDotProduct((char *)arg0 + 0x118, (char *)arg0 + 0x54);
+    *(float *)((char *)arg0 + 0x25CC) = temp_f1;
+    *(float *)((char *)arg0 + 0x25D8) = temp_f1;
+    temp_f1 = PSVECMag((void *)((unsigned int)arg0 + 0x118));
+    *(float *)((char *)arg0 + 0x25D4) = temp_f1;
+    *(float *)((char *)arg0 + 0x261C) = temp_f1;
     {
         float zero = lbl_80561CAC;
-        *(float *)((char *)object + 0x16C) = zero;
-        *(float *)((char *)object + 0x170) = zero;
-        *(float *)((char *)object + 0x174) = zero;
-        *(float *)((char *)object + 0x26B4) = zero;
-        *(float *)((char *)object + 0x26B8) = zero;
-        *(float *)((char *)object + 0x26BC) = zero;
+        *(float *)((char *)arg0 + 0x16C) = zero;
+        *(float *)((char *)arg0 + 0x170) = zero;
+        *(float *)((char *)arg0 + 0x174) = zero;
+        *(float *)((char *)arg0 + 0x26B4) = zero;
+        *(float *)((char *)arg0 + 0x26B8) = zero;
+        *(float *)((char *)arg0 + 0x26BC) = zero;
     }
-    *(short *)((char *)object + 0x6C) = *(short *)((char *)input + 0x40);
-    fn_801E9DD0((char *)object + 0x6C, ((volatile float *)matrix)[9], ((volatile float *)matrix)[11]);
-    index = *(int *)((char *)object + 0x1EC);
+    *(short *)((char *)arg0 + 0x6C) = *(short *)((char *)((char *)arg1) + 0x40);
+    fn_801E9DD0((char *)arg0 + 0x6C, ((volatile float *)matrix)[9], ((volatile float *)matrix)[11]);
+    index = *(int *)((char *)arg0 + 0x1EC);
     fn_801D1810(lbl_8055E918 + index * 0x9C, index);
-    fn_801BE400(*(int *)((char *)object + 0x1EC), (float *)matrix, *(float *)((char *)object + 0x25CC));
-    fn_801B30C0(*(int *)((char *)object + 0x1EC), 0, *(int *)((char *)input + 0x3C));
-    cursor = (char *)object;
+    fn_801BE400(*(int *)((char *)arg0 + 0x1EC), (float *)matrix, *(float *)((char *)arg0 + 0x25CC));
+    fn_801B30C0(*(int *)((char *)arg0 + 0x1EC), 0, *(int *)((char *)((char *)arg1) + 0x3C));
+    cursor = (char *)arg0;
     i = 0;
-    count = *(int *)((char *)object + 0x24);
+    count = *(int *)((char *)arg0 + 0x24);
     while (i < count) {
         void *item;
         if (i < 0 || i >= count) item = 0;
@@ -795,32 +817,33 @@ void fn_80189CB4(void *arg0, void *arg1) {
         ((void (*)(void *))(*(void **)((char *)(*(void **)item) + 0x48)))(item);
         cursor += 4;
         i += 1;
-        count = *(int *)((char *)object + 0x24);
+        count = *(int *)((char *)arg0 + 0x24);
     }
     {
         float zero = lbl_80561CAC;
-        *(float *)((char *)object + 0x23AC) = zero;
-        *(float *)((char *)object + 0x2414) = zero;
-        *(float *)((char *)object + 0x2420) = zero;
-        *(float *)((char *)object + 0x2488) = zero;
-        *(float *)((char *)object + 0x2494) = zero;
-        *(float *)((char *)object + 0x24FC) = zero;
-        *(float *)((char *)object + 0x2508) = zero;
-        *(float *)((char *)object + 0x2570) = zero;
+        *(float *)((char *)arg0 + 0x23AC) = zero;
+        *(float *)((char *)arg0 + 0x2414) = zero;
+        *(float *)((char *)arg0 + 0x2420) = zero;
+        *(float *)((char *)arg0 + 0x2488) = zero;
+        *(float *)((char *)arg0 + 0x2494) = zero;
+        *(float *)((char *)arg0 + 0x24FC) = zero;
+        *(float *)((char *)arg0 + 0x2508) = zero;
+        *(float *)((char *)arg0 + 0x2570) = zero;
     }
-    ((void (*)(void *))fn_8018A750)(object);
-    index = *(int *)((char *)object + 0x26D4);
-    *(int *)((char *)object + 0x2638) = 0;
+    ((void (*)(void *))fn_8018A750)(arg0);
+    index = *(int *)((char *)arg0 + 0x26D4);
+    *(int *)((char *)arg0 + 0x2638) = 0;
     {
         float zero = lbl_80561CAC;
-        *(float *)((char *)object + 0x2628) = zero;
-        *(float *)((char *)object + 0x262C) = zero;
+        *(float *)((char *)arg0 + 0x2628) = zero;
+        *(float *)((char *)arg0 + 0x262C) = zero;
     }
-    *(signed char *)((char *)object + 0x2640) = 0;
-    *(int *)((char *)object + 0x26D4) = index + 1;
-    fn_8026A394(object, index, 0);
+    *(signed char *)((char *)arg0 + 0x2640) = 0;
+    *(int *)((char *)arg0 + 0x26D4) = index + 1;
+    fn_8026A394(arg0, index, 0);
 }
 #pragma dont_inline reset
+#pragma opt_propagation reset
 void fn_8018A088(void) {
 
 }
