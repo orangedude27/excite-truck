@@ -141,14 +141,10 @@ extern s32 fn_802328D4(s32);
 extern s32 fn_80235380(s32, s32 *);
 #pragma push
 #pragma small_data off
-extern u8 lbl_80345EA0;
-#pragma pop
-#pragma push
-#pragma small_data off
 void *fn_802608D4(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = (void *)(u32)&lbl_80345EA0;
-        fn_80235380(*(s32 *)((u8 *)arg0 + 0x20), (s32 *)(u32)&lbl_80345EA0);
+        *(void **)arg0 = &lbl_80345EA0;
+        fn_80235380(*(s32 *)((u8 *)arg0 + 0x20), (s32 *)&lbl_80345EA0);
         *(s32 *)((u8 *)arg0 + 0x20) = 0;
         fn_802328D4(*(s32 *)((u8 *)arg0 + 0x24));
         *(s32 *)((u8 *)arg0 + 0x24) = 0;
