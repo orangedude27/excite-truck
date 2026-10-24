@@ -84,7 +84,54 @@ extern "C" void fn_80190184(void *arg0, void *arg1) {
     obj2 = *(Dummy1 **)((char *)arg0 + 0xC);
     obj2->v2(arg1);
 }
-#pragma cplusplus reset
+
+extern void fn_801B6650(int);
+extern void fn_802793B0(int);
+#pragma cplusplus on
+extern "C" void fn_801B6650(int);
+extern "C" void fn_802793B0(int);
+#pragma cplusplus on
+extern "C" void fn_80191084(int, int);
+extern "C" int fn_80191100(void *);
+extern "C" void fn_801902B4(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+    };
+    unsigned int temp_r3;
+    unsigned int field;
+    VTable *obj;
+    int (*callback)(void *);
+
+    fn_80191084((int)arg0, 0);
+    fn_801B6650(*(int *)((char *)arg0 + 0x20));
+    callback = (int (*)(void *))fn_80191100;
+    temp_r3 = callback(arg0);
+    field = *(unsigned int *)((char *)arg0 + 8);
+    if (temp_r3 != field) {
+        fn_80191084((int)arg0, field);
+    } else {
+        fn_80191084((int)arg0, *(unsigned int *)((char *)arg0 + 0xC));
+    }
+    fn_80191084((int)arg0, temp_r3);
+    if (*(unsigned char *)((char *)arg0 + 0x38) != 0) {
+        *(unsigned char *)((char *)arg0 + 0x38) = 0;
+        fn_802793B0(*(int *)((char *)arg0 + 0x28));
+    }
+    obj = (VTable *)arg0;
+    obj->f10();
+}
+#pragma cplusplus off
 void fn_80190360(int arg0) {
     fn_80191084(arg0, 0);
 }
