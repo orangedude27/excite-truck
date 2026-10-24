@@ -126,8 +126,8 @@ void fn_80260848(void *arg0) {
 #pragma small_data off
 void *fn_80260854(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = &lbl_80345E28;
-        fn_80235380(*(s32 *)((u8 *)arg0 + 0x24), (s32 *)&lbl_80345E28);
+        *(void **)arg0 = lbl_80345E28;
+        fn_80235380(*(s32 *)((u8 *)arg0 + 0x24), (s32 *)lbl_80345E28);
         *(s32 *)((u8 *)arg0 + 0x24) = 0;
         fn_802328D4(*(s32 *)((u8 *)arg0 + 0x28));
         *(s32 *)((u8 *)arg0 + 0x28) = 0;
