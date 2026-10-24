@@ -1,6 +1,16 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#pragma cplusplus on
+struct QueryObject_80292114 {
+    virtual int f0(int *);
+    virtual int f1(int *);
+    virtual int f2(int *);
+    virtual int f3(int *);
+    virtual int f4(int *);
+};
+#pragma cplusplus reset
+
 extern int lbl_804B4010;
 extern unsigned char lbl_8055F75C;
 extern float fn_801EC114(void);
@@ -119,6 +129,48 @@ void fn_80291B9C(void *arg0, float *arg1, float arg2) {
             i++;
         } while (i < *((int *)((char *)arg0 + 0x120)));
     }
+}
+
+extern double fabs(double);
+extern double sin(double);
+extern double cos(double);
+extern double fn_8002EFB4(float, double);
+extern void fn_802D3BB4(int, float *, float *, float *, unsigned int, float);
+extern int lbl_8055CFF0;
+extern float lbl_80564494, lbl_805644A4, lbl_805644A8, lbl_805644AC;
+extern double lbl_805644B0;
+extern float lbl_805644B8, lbl_805644BC;
+void fn_80291C7C(void *arg0, int arg1) {
+    float *p = (float *)arg0;
+    float ratio;
+    float alpha;
+    unsigned int color;
+    float a[3], b[3];
+    int amount;
+    double angle;
+    double s, c;
+    double d;
+    d = (double)p[0] - (double)(lbl_80564494 * (float)lbl_8055CFF0);
+    if (d < 0.0) d = -d;
+    ratio = ((float)d - lbl_805644A4 * (float)lbl_8055CFF0) /
+        (lbl_80564494 * (float)lbl_8055CFF0 - lbl_805644A4 * (float)lbl_8055CFF0);
+    if (ratio < 0.0f) ratio = 0.0f;
+    if (ratio > 1.0f) ratio = 1.0f;
+    color = *(unsigned int *)((char *)arg0 + 0x18);
+    amount = (int)((1.0f + ratio * lbl_805644A8) * (float)(color >> 24));
+    if (amount <= 0) return;
+    color = (color & 0xFFFFFF) | (amount << 24);
+    if (arg1 == 0) {
+        angle = fn_8002EFB4((p[0] - p[1]) / lbl_805644AC, lbl_805644B0);
+        s = sin(angle);
+        c = cos(angle);
+        a[0] = (float)c; a[1] = (float)s; a[2] = 1.0f;
+        b[0] = (float)s; b[1] = (float)-c; b[2] = 1.0f;
+    } else {
+        a[0] = lbl_805644B8; a[1] = lbl_805644BC; a[2] = 1.0f;
+        b[0] = lbl_805644BC; b[1] = lbl_805644BC; b[2] = 1.0f;
+    }
+    fn_802D3BB4(*(int *)((char *)&lbl_804B4010 + 0x10), p, a, b, color, p[7]);
 }
 
 #pragma dont_inline off
