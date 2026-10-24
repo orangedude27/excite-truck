@@ -87,7 +87,7 @@ void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
 #pragma cplusplus on
 extern "C" void fn_80292B48(void *arg0) {
     if (fn_80292FB4(lbl_804B4168, arg0) != 0 && arg0 != 0) {
-        ((Dummy_80292B48 *)arg0)->f1(1);
+        ((Dummy_80292B48 *)arg0)->f0(1);
     }
 }
 #pragma cplusplus off
