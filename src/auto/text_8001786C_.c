@@ -205,16 +205,23 @@ extern void fn_802E30C8(const char*, ...);
 extern const char lbl_802FD0C8[];
 extern const char lbl_802FD0D8[];
 extern const char lbl_80357DC0[];
-void fn_80018030(void *arg0, s32 arg1) {
-    s32 i;
+#pragma cplusplus on
+extern "C" void fn_80018030(void *arg0, s32 arg1) {
+    struct V {
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual char *m4(const char *, const char *);
+    };
+    struct H {
+        char pad[0x80];
+        V *iface;
+    };
     char *str;
-    void *obj;
-    void **iface;
-    void ***vt;
-    obj = fn_80012820(arg1);
-    iface = (void **)((char *)obj + 0x80);
-    vt = (void ***)*iface;
-    str = ((char *(*)(void *, const char *, const char *))(*vt)[6])(iface, lbl_802FD0C8, lbl_80357DC0);
+    s32 i;
+    H *obj = (H *)fn_80012820(arg1);
+    str = obj->iface->m4(lbl_802FD0C8, lbl_80357DC0);
     if (str != 0 && (signed char)*str != 0) {
         fn_802E30C8(lbl_802FD0D8, str);
         for (i = 0; i < *(s32 *)((char *)arg0 + 0x24); i++) {
@@ -222,8 +229,7 @@ void fn_80018030(void *arg0, s32 arg1) {
         }
     }
 }
-
-#pragma dont_inline off
+#pragma cplusplus reset
 void fn_800182A0(void* arg0, void* arg1) {
     s32 i;
     s32 index;
