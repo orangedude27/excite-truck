@@ -3,6 +3,8 @@
 
 #include <types.h>
 
+extern "C" void fn_802E30C8(const char *, ...);
+
 extern "C" s32 fn_80218C14(s32, s32);
 extern "C" s32 fn_802E317C(const char *);
 extern "C" s32 fn_80214934(const void *, s32, void *, s32);
@@ -295,6 +297,73 @@ extern "C" void fn_80212340(void *arg0) {
         }
         p[3] = 0;
     }
+}
+
+extern "C" s32 fn_8021B2B0(void *, s32, s32, s32, s32, s32, s32);
+extern "C" s32 fn_8021D044(void *, s32, s32, s32, s32, s32, s32, s32, s32);
+extern "C" void fn_802168EC(void *, void *, s32);
+extern "C" char lbl_8055B758[];
+extern "C" void fn_802123B8(void *arg0, void *arg1, void *arg2) {
+    extern void *lbl_8055EF38;
+    s32 type = *(s32 *)arg1;
+    void *results[4];
+    s32 count = 0;
+    s32 i;
+    results[0] = 0;
+    results[1] = 0;
+    results[2] = 0;
+    results[3] = 0;
+    *(s32 *)&lbl_8055EF38 = *(s32 *)((char *)arg1 + 0x8C);
+    switch (type) {
+    case 5: {
+        void *child = fn_8021227C(arg2, (char *)arg1 + 0x20, 3);
+        void *node;
+        if (child != 0) {
+            void *child2 = fn_8021227C(arg2, (char *)arg1 + 0x20, 2);
+            node = fn_801284F8(0x368, (const char *)lbl_8033CAE8 + 0x2FC);
+            if (node != 0) {
+                s32 child2Value = child2 != 0 ? *(s32 *)((char *)child2 + 8) : 0;
+                node = (void *)fn_8021B2B0(node,
+                    *(s32 *)((char *)arg1 + 8),
+                    *(s32 *)((char *)arg1 + 0xC),
+                    *(s32 *)((char *)child + 8),
+                    *(s32 *)((char *)arg1 + 4),
+                    child2Value,
+                    0);
+            }
+        } else {
+            child = fn_8021227C(arg2, (char *)arg1 + 0x20, 7);
+            node = fn_801284F8(0x2C4, lbl_8055B758);
+            if (node != 0) {
+                node = (void *)fn_8021D044(node,
+                    *(s32 *)((char *)arg1 + 8),
+                    *(s32 *)((char *)arg1 + 0xC),
+                    *(s32 *)((char *)child + 8),
+                    *(s32 *)((char *)child + 0xC),
+                    *(s32 *)((char *)arg1 + 4),
+                    0, 0, 0);
+            }
+        }
+        results[0] = node;
+        count = 1;
+        break;
+    }
+    default:
+        if ((u32)type > 0x36) {
+            ((s32 (*)(const char *, ...))fn_802E317C)((const char *)lbl_8033CAE8 + 0x5A4, type);
+        }
+        break;
+    }
+    {
+        void *child = fn_8021227C(arg2, (char *)arg1 + 0x20, 0x14);
+        if (child == 0) child = fn_8021227C(arg2, (char *)arg1 + 0x40, 0x14);
+        for (i = 0; i < count; i++) {
+            if (child != 0)
+                *(s32 *)((char *)results[i] + 0x240) = *(s32 *)((char *)child + 8);
+            fn_802168EC(arg0, results[i], *(s32 *)((char *)arg1 + 0x88));
+        }
+    }
+    *(s32 *)&lbl_8055EF38 = -1;
 }
 
 extern "C" s32 fn_802ECEEC(void);
