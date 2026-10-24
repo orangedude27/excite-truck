@@ -358,14 +358,14 @@ extern long fn_8001BBB4(long, long, void *, long, long, float);
 extern long fn_80012854(void);
 extern float lbl_805641F0;
 extern char lbl_8055C768;
+#pragma scheduling invalid_target
 void fn_8027BF38(void) {
-    long j, i, state, now;
+    long state, j, i, now;
     state = fn_80012810();
     if (state != 0x130) {
-        if (state != 0x134) {
+        if (state != 0x134)
             fn_80012794();
-            fn_80012790(0x130);
-        }
+        fn_80012790(0x130);
     }
     fn_8001683C(0, 0);
     j = 0;
@@ -373,7 +373,7 @@ void fn_8027BF38(void) {
         i = 0;
         while (i < fn_80012854()) {
             ((long (*)(float, long, long, long, long, long, long))fn_8001BBB4)(
-                lbl_805641F0, fn_8000DA10(), i, j, (long)lbl_8055C768, 0x1F4, 0);
+                lbl_805641F0, fn_8000DA10(), i, j, (long)&lbl_8055C768, 0x1F4, 0);
             i++;
         }
         j++;
@@ -387,7 +387,7 @@ void fn_8027BF38(void) {
             fn_80012790(state);
     }
 }
-
+#pragma scheduling on
 void fn_8027C014(void *arg0, long arg1, long arg2, void *arg3) {
     long i;
     void *p, *q;
@@ -741,11 +741,11 @@ extern "C" long fn_8027CFB4(long arg0) {
     } while (i < 5);
     return 0;
 }
-#pragma cplusplus reset
+void fn_8027C8B8(long, char *, long);
+#pragma scheduling invalid_target
 void fn_8027D158(long arg0, char *arg1, long arg2) {
     long *result = fn_8027C26C((void *)lbl_8055F654, (const char *)arg0);
-    register long status = *result;
-    switch (status) {
+    switch (*result) {
     case 0:
         fn_8027C8B8((long)result, arg1, arg2);
         break;
