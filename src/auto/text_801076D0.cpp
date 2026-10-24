@@ -3,7 +3,7 @@
 #include "revolution/BTE/gki/common/gki.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
-namespace nw4hbm { namespace ut { class ResFont { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19(); virtual int GetEncoding(); bool SetResource(void*); }; struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); struct Font; struct Glyph; struct CharWidths; class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; void SetFont(const Font&); }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; s32 GetDefaultCharWidths() const; void GetGlyph(nw4hbm::ut::Glyph*, unsigned short) const; void GetGlyphFromIndex(nw4hbm::ut::Glyph*, unsigned short) const; void SetLineFeed(int); void SetDefaultCharWidths(const CharWidths&); }; } } }
+namespace nw4hbm { namespace ut { class ResFont { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void v18(); virtual int GetEncoding(); bool SetResource(void*); }; struct List; void List_Init(List*, unsigned short); void List_Append(List*, void*); void* List_GetNth(const List*, unsigned short); void* List_GetNext(const List*, const void*); struct Font; struct Glyph; struct CharWidths; class CharWriter { public: void* pad[23]; void* font; void* GetFont() const; void SetFont(const Font&); }; namespace detail { class ResFontBase { public: u16 GetTextureFormat() const; s8 GetLineFeed() const; s32 GetDescent() const; s8 GetBaselinePos() const; s32 GetDefaultCharWidths() const; void GetGlyph(nw4hbm::ut::Glyph*, unsigned short) const; void GetGlyphFromIndex(nw4hbm::ut::Glyph*, unsigned short) const; void SetLineFeed(int); void SetDefaultCharWidths(const CharWidths&); }; } } }
 
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
@@ -238,49 +238,52 @@ extern "C" int IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderU
 extern "C" void* Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(void*);
 extern "C" void SetResourceBuffer__Q46nw4hbm2ut6detail11ResFontBaseFPvPQ36nw4hbm2ut15FontInformation(void*, void*, void*);
 extern "C" void InitReaderFunc__Q36nw4hbm2ut4FontFQ36nw4hbm2ut12FontEncoding(void*, int);
+#pragma push
+#pragma use_lmw_stmw off
 bool nw4hbm::ut::ResFont::SetResource(void* resource) {
+    const char* file = lbl_80328888;
     u32 p = (u32)this;
     s32 v5 = 1, v6 = 1, v7 = 1, v8 = 1, v9 = 1, v10 = 1;
     u32 t11 = p & 0xFF000000;
-    if (((u32)(t11 + 0x80000000U) != 0) &&
-        ((u32)((p & 0xFF800000) + 0x7F000000U) != 0))
+    if (((u32)(t11 + 0x80000000U) != 0U) &&
+        ((u32)((p & 0xFF800000) + 0x7F000000U) != 0U))
         v10 = 0;
-    if ((v10 == 0) && ((u32)((p & 0xF8000000) + 0x70000000U) != 0))
+    if ((v10 == 0) && ((u32)((p & 0xF8000000) + 0x70000000U) != 0U))
         v9 = 0;
-    if ((v9 == 0) && ((u32)(t11 + 0x40000000U) != 0))
+    if ((v9 == 0) && ((u32)(t11 + 0x40000000U) != 0U))
         v8 = 0;
-    if ((v8 == 0) && ((u32)((p & 0xFF800000) + 0x3F000000U) != 0))
+    if ((v8 == 0) && ((u32)((p & 0xFF800000) + 0x3F000000U) != 0U))
         v7 = 0;
-    if ((v7 == 0) && ((u32)((p & 0xF8000000) + 0x30000000U) != 0))
+    if ((v7 == 0) && ((u32)((p & 0xF8000000) + 0x30000000U) != 0U))
         v6 = 0;
-    if ((v6 == 0) && ((u32)((p & 0xFFFFC000) + 0x20000000U) != 0))
+    if ((v6 == 0) && ((u32)((p & 0xFFFFC000) + 0x20000000U) != 0U))
         v5 = 0;
     if (v5 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328888, 0x61, lbl_80328888 + 0x10, this);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x61, file + 0x10, this);
 
     u32 q = (u32)resource;
     s32 v4b = 1, v5b = 1, v6b = 1, v7b = 1, v8b = 1, v9b = 1;
     u32 t10 = q & 0xFF000000;
-    if (((u32)(t10 + 0x80000000U) != 0) &&
-        ((u32)((q & 0xFF800000) + 0x7F000000U) != 0))
+    if (((u32)(t10 + 0x80000000U) != 0U) &&
+        ((u32)((q & 0xFF800000) + 0x7F000000U) != 0U))
         v9b = 0;
-    if ((v9b == 0) && ((u32)((q & 0xF8000000) + 0x70000000U) != 0))
+    if ((v9b == 0) && ((u32)((q & 0xF8000000) + 0x70000000U) != 0U))
         v8b = 0;
-    if ((v8b == 0) && ((u32)(t10 + 0x40000000U) != 0))
+    if ((v8b == 0) && ((u32)(t10 + 0x40000000U) != 0U))
         v7b = 0;
-    if ((v7b == 0) && ((u32)((q & 0xFF800000) + 0x3F000000U) != 0))
+    if ((v7b == 0) && ((u32)((q & 0xFF800000) + 0x3F000000U) != 0U))
         v6b = 0;
-    if ((v6b == 0) && ((u32)((q & 0xF8000000) + 0x30000000U) != 0))
+    if ((v6b == 0) && ((u32)((q & 0xF8000000) + 0x30000000U) != 0U))
         v5b = 0;
-    if ((v5b == 0) && ((u32)((q & 0xFFFFC000) + 0x20000000U) != 0))
+    if ((v5b == 0) && ((u32)((q & 0xFFFFC000) + 0x20000000U) != 0U))
         v4b = 0;
     if (v4b == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328888, 0x62, lbl_80328888 + 0x48, resource);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x62, file + 0x48, resource);
     if (q & 0x1F)
-        Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328888, 0x63, lbl_80328888 + 0x80, resource);
+        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x63, file + 0x80, resource);
 
-    if (*(void**)((u8*)this + 0x10) != 0) {
-        Warning__Q26nw4hbm2dbFPCciPCce(lbl_80328888, 0x6B, lbl_80328888 + 0xCC);
+    if (*(void**)((u8*)this + 0x10) != 0U) {
+        Warning__Q26nw4hbm2dbFPCciPCce(file, 0x6B, file + 0xCC);
         return false;
     }
 
@@ -292,21 +295,21 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
             u32 r = (u32)block;
             u32 t = r & 0xFF000000;
             s32 a = 1, b = 1, c = 1, d = 1, e = 1, f = 1;
-            if (((u32)(t + 0x80000000U) != 0) &&
-                ((u32)((r & 0xFF800000) + 0x7F000000U) != 0))
+            if (((u32)(t + 0x80000000U) != 0U) &&
+                ((u32)((r & 0xFF800000) + 0x7F000000U) != 0U))
                 f = 0;
-            if ((f == 0) && ((u32)((r & 0xF8000000) + 0x70000000U) != 0))
+            if ((f == 0) && ((u32)((r & 0xF8000000) + 0x70000000U) != 0U))
                 e = 0;
-            if ((e == 0) && ((u32)(t + 0x40000000U) != 0))
+            if ((e == 0) && ((u32)(t + 0x40000000U) != 0U))
                 d = 0;
-            if ((d == 0) && ((u32)((r & 0xFF800000) + 0x3F000000U) != 0))
+            if ((d == 0) && ((u32)((r & 0xFF800000) + 0x3F000000U) != 0U))
                 c = 0;
-            if ((c == 0) && ((u32)((r & 0xF8000000) + 0x30000000U) != 0))
+            if ((c == 0) && ((u32)((r & 0xF8000000) + 0x30000000U) != 0U))
                 b = 0;
-            if ((b == 0) && ((u32)((r & 0xFFFFC000) + 0x20000000U) != 0))
+            if ((b == 0) && ((u32)((r & 0xFFFFC000) + 0x20000000U) != 0U))
                 a = 0;
             if (a == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(lbl_80328888, 0x7C, lbl_80328888 + 0xEC, block);
+                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x7C, file + 0xEC, block);
             if (*(u32*)block == 0x46494E46) {
                 info = block + 8;
                 break;
@@ -319,12 +322,12 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
         if (version == 0x104) {
             if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(
                     resource, 0x52464E54, 0x104, 2) == 0) {
-                Warning__Q26nw4hbm2dbFPCciPCce(lbl_80328888, 0x96, lbl_80328888 + 0x128);
+                Warning__Q26nw4hbm2dbFPCciPCce(file, 0x96, file + 0x128);
                 return false;
             }
         } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(
                        resource, 0x52464E54, 0x102, 2) == 0) {
-            Warning__Q26nw4hbm2dbFPCciPCce(lbl_80328888, 0xA0, lbl_80328888 + 0x128);
+            Warning__Q26nw4hbm2dbFPCciPCce(file, 0xA0, file + 0x128);
             return false;
         }
         info = Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(resource);
@@ -335,7 +338,7 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     InitReaderFunc__Q36nw4hbm2ut4FontFQ36nw4hbm2ut12FontEncoding(this, GetEncoding());
     return true;
 }
-
+#pragma pop
 extern "C" void* memcpy(void*, const void*, unsigned long);
 #pragma push
 #pragma scheduling off
@@ -2659,7 +2662,59 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2C3, file + 0x168, arg2, 0);
     }
 
-    WriterCopy copy = *(WriterCopy *)arg0;
+    WriterCopy *source = (WriterCopy *)arg0;
+    WriterCopy copy;
+    copy.prefix[0] = source->prefix[0];
+    copy.prefix[1] = source->prefix[1];
+    copy.prefix[2] = source->prefix[2];
+    copy.prefix[3] = source->prefix[3];
+    copy.prefix[4] = source->prefix[4];
+    copy.prefix[5] = source->prefix[5];
+    copy.prefix[6] = source->prefix[6];
+    copy.prefix[7] = source->prefix[7];
+    copy.prefix[8] = source->prefix[8];
+    copy.prefix[9] = source->prefix[9];
+    copy.prefix[10] = source->prefix[10];
+    copy.prefix[11] = source->prefix[11];
+    copy.prefix[12] = source->prefix[12];
+    copy.prefix[13] = source->prefix[13];
+    copy.prefix[14] = source->prefix[14];
+    copy.prefix[15] = source->prefix[15];
+    copy.prefix[16] = source->prefix[16];
+    copy.prefix[17] = source->prefix[17];
+    copy.prefix[18] = source->prefix[18];
+    copy.prefix[19] = source->prefix[19];
+    copy.prefix[20] = source->prefix[20];
+    copy.prefix[21] = source->prefix[21];
+    copy.prefix[22] = source->prefix[22];
+    copy.prefix[23] = source->prefix[23];
+    copy.prefix[24] = source->prefix[24];
+    copy.prefix[25] = source->prefix[25];
+    copy.prefix[26] = source->prefix[26];
+    copy.prefix[27] = source->prefix[27];
+    copy.prefix[28] = source->prefix[28];
+    copy.prefix[29] = source->prefix[29];
+    copy.prefix[30] = source->prefix[30];
+    copy.prefix[31] = source->prefix[31];
+    copy.word20 = source->word20;
+    copy.word24 = source->word24;
+    copy.word28 = source->word28;
+    copy.word2C = source->word2C;
+    copy.word30 = source->word30;
+    copy.word34 = source->word34;
+    copy.word38 = source->word38;
+    copy.word3C = source->word3C;
+    copy.bytes40[0] = source->bytes40[0];
+    copy.bytes40[1] = source->bytes40[1];
+    copy.bytes40[2] = source->bytes40[2];
+    copy.bytes40[3] = source->bytes40[3];
+    copy.float44 = source->float44;
+    copy.word48 = source->word48;
+    copy.float4C = source->float4C;
+    copy.float50 = source->float50;
+    copy.word54 = source->word54;
+    copy.word58 = source->word58;
+    copy.word5C = source->word5C;
     f32 result = fn_801142F8(&copy, (s32)arg1, arg2);
     f32 scale = GetScaleH__Q36nw4hbm2ut10CharWriterCFv_80106770((s32)&copy);
     SetCursor__Q36nw4hbm2ut10CharWriterFff((s32)arg0,
