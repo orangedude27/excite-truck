@@ -49,16 +49,20 @@ void fn_801D0DFC(void) {
     lbl_8055E8E8--;
 }
 
-void fn_801D0E0C(void) {
+#pragma cplusplus on
+extern "C" void fn_801D0E0C(void) {
+    class Dummy_801D0E0C {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+    };
     int i;
     for (i = 0; i < lbl_8055E8E8; i++) {
-        void *obj = lbl_80438818[i];
-        void (*cb)(void *);
-        cb = (void (*)(void *))(*(void ***)obj)[3];
-        cb(obj);
+        Dummy_801D0E0C *obj = (Dummy_801D0E0C *)lbl_80438818[i];
+        obj->m1();
     }
 }
-#pragma cplusplus on
 extern "C" void fn_801D0E70(void) {
     class CallbackObj {
     public:
