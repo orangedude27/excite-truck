@@ -89,7 +89,7 @@ void fn_802662D8(float *arg0, float *arg1, float *arg2, float *arg3, int arg4) {
     arg1[2] = arg2[2] + arg3[2] * factor;
 }
 
-void fn_802670A0(int arg0, int *arg1) {
+void fn_802670A0(int *arg1, int arg0) {
     int count;
     int x;
     int y;
@@ -247,6 +247,32 @@ int fn_80268BA4(int arg0) {
     return ((1U << shift) & 0x80037) != 0;
 }
 
+extern float lbl_80563C20, lbl_80563C2C, lbl_80563C8C, lbl_80563C90, lbl_80563C94;
+extern float fn_8002F234(void*, float, float, float, float, float, float, float, float);
+extern void fn_801EA140(void*, float, float, float, float, float, float, float);
+extern void PSVECCrossProduct(void*, void*, void*);
+extern double cos(float);
+extern double sin(float);
+void fn_80268BD4(void *out, int arg1, float t, float angle) {
+    float *inp=(float*)arg1;
+    float *b = *(float **)((char *)inp + 0x14);
+    float x,y,z,w,mag,scale,xx,yy,rot,cs,sn;
+    x=inp[2]; y=inp[3]; z=inp[0]; w=inp[1];
+    x += t*(b[2]-x); y += t*(b[3]-y); z += t*(b[0]-z); w += t*(b[1]-w);
+    mag=fn_8002F234(b,x*x+y*y,x*x,y*t,w,z,inp[0],y,x);
+    scale=lbl_80563C2C/mag; xx=x*scale; yy=y*scale;
+    *(float*)((char*)out+0x28)=lbl_80563C20;
+    rot=lbl_80563C8C*inp[10]-lbl_80563C90;
+    cs=yy*rot; sn=-xx*rot;
+    *(float*)((char*)out+0x24)=w+cs; *(float*)((char*)out+0x2c)=inp[1]+sn;
+    fn_801EA140((char*)out+0x24,inp[1],w+cs,cs,rot,-xx,yy,xx);
+    *(float*)((char*)out+0x28)+=lbl_80563C94;
+    cs=cos(angle); sn=sin(angle);
+    *(float*)((char*)out+0xc)=lbl_80563C20; *(float*)((char*)out+0x10)=lbl_80563C2C; *(float*)((char*)out+0x14)=lbl_80563C20;
+    *(float*)((char*)out+0x18)=xx*cs-yy*sn; *(float*)((char*)out+0x1c)=lbl_80563C20; *(float*)((char*)out+0x20)=xx*sn+yy*cs;
+    PSVECCrossProduct((char*)out+0xc,(char*)out+0x18,out);
+}
+
 void fn_8026A248(int arg0, int arg1) {
     *(int *)((char *)fn_80267EE4(arg1) + 0x24) = arg0;
 }
@@ -305,6 +331,29 @@ int fn_8026A368(void) {
 }
 char fn_8026A38C(void) {
     return lbl_8055F488;
+}
+
+extern float lbl_80563CBC, lbl_80563C2C, lbl_80563C20, lbl_8055E3C8;
+void fn_8026A394(void *arg0) {
+ int i=0;
+ while (i<4) {
+  char *p=(char *)fn_80267EE4(i);
+  if (*(void **)(p+0x140)==arg0) {
+   float f=lbl_80563CBC * *(float *)((char *)arg0+0x25d4);
+   *(char *)(p+0x139)=1; *(char *)(p+0x138)=1;
+   *(float *)(p+0x13c)= f < lbl_80563C2C ? lbl_80563C2C : f;
+   *(float *)(p+0x154)=lbl_80563C20; *(float *)(p+0x158)=lbl_80563C20;
+   *(int *)(p+0x1f8)=*(int *)(p+0x58); *(int *)(p+0x1fc)=*(int *)(p+0x5c);
+   *(int *)(p+0x200)=*(int *)(p+0x60); *(int *)(p+0x204)=*(int *)(p+0x64);
+   *(int *)(p+0x208)=*(int *)(p+0x68); *(int *)(p+0x20c)=*(int *)(p+0x6c);
+   *(int *)(p+0x210)=*(int *)(p+0x70); *(int *)(p+0x214)=*(int *)(p+0x74);
+   *(int *)(p+0x218)=*(int *)(p+0x78); *(int *)(p+0x21c)=*(int *)(p+0x7c);
+   *(int *)(p+0x220)=*(int *)(p+0x80); *(int *)(p+0x224)=*(int *)(p+0x84);
+   *(float *)(p+0x1f4)=*(float *)(p+0xbc); *(float *)(p+0x1f0)=lbl_8055E3C8;
+   return;
+  }
+  i++;
+ }
 }
 
 extern void fn_80269BB0(void);
