@@ -476,6 +476,17 @@ void fn_802C6C30(void) {}
 
 void fn_802C6C34(void) { fn_802C53A8(); }
 
+void fn_802C6CF8(int arg0) {
+    int temp_r31;
+    if (arg0 == -1) {
+        ((int (*)(const char *, ...))fn_802E30C8)(lbl_8034B34C);
+        return;
+    }
+    temp_r31 = fn_802C53A8();
+    fn_802C6C38(arg0);
+    fn_802C6C20(temp_r31);
+}
+
 #pragma push
 #pragma small_data off
 #pragma pop
