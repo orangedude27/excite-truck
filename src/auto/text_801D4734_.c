@@ -1169,6 +1169,32 @@ extern "C" void fn_801D88AC(void *arg0) {
     };
     ((Dummy *)arg0)->v11();
 }
+
+#pragma push
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_801D88BC(void *arg0) {
+    struct Entry {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void dispatch(int);
+    };
+    int i;
+    *(int *)((char *)arg0 + 0x18) = 1;
+    for (i = 0; i < *(int *)((char *)arg0 + 0x28); i++) {
+        Entry *entry = *(Entry **)((char *)*(void **)((char *)arg0 + 0x24) + i * 0xC);
+        entry->dispatch(-1);
+    }
+}
+#pragma pop
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 
 void fn_801D8938(void) {
