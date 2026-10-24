@@ -299,7 +299,7 @@ void fn_802DC628(void) {}
 #pragma push
 #pragma small_data off
 void fn_802DC62C(void) {
-    volatile unsigned char *p = (volatile unsigned char *)lbl_804DB468;
+    volatile unsigned char *p = (volatile unsigned char *)*(void **)&lbl_804DB468;
     if (GXGetTexObjMipMap((void *)(p + 0x24)) != 6)
         fn_802E317C(lbl_8034CB00);
     if (GXGetTexObjWrapS((void *)(p + 0x24)) != 0x200)
