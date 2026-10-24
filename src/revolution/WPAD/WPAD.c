@@ -40,6 +40,20 @@ extern void (*lbl_80312338[])(u8 port, u8* p_rpt);
 void fn_80060AFC(s32 chan);
 void WPADiDecode(s32 chan, u8* data, s32 len, s32 seed);
 
+typedef struct WPADCB_8011_View {
+    u8 _unk0[0x7F8];
+    u32 dataFormat;
+    u8 _unk7FC[6];
+    u8 devMode;
+    u8 _unk803[0x35];
+    u16 filterDiffDpd;
+    u16 filterSameDpd;
+    u16 filterDiffAcc;
+    u16 filterSameAcc;
+    u16 filterDiffExt;
+    u16 filterSameExt;
+} WPADCB_8011_View;
+
 // debug_msg.c is NonMatching, provide stub here
 void DEBUGPrint(const char* pFmt, ...) {
 #pragma unused(pFmt)
