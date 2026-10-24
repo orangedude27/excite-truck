@@ -4,9 +4,6 @@
 #include <types.h>
 #include <macros.h>
 #pragma small_data off
-#include <types.h>
-#include <macros.h>
-#pragma small_data off
 extern void fn_8000D838(void*);
 extern int lbl_80507288[3];
 extern int lbl_80560018;
