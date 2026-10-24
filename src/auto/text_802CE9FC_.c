@@ -847,7 +847,6 @@ void fn_802D2218(void) {
     register volatile float *fifo;
     register float temp_f30;
     register float temp_f31;
-    int temp_r4;
     int screenWidth;
     int screenHeight;
     int var_ctr;
@@ -1002,6 +1001,8 @@ void fn_802D2640(void) {
     } while (i < 4);
 }
 
+void fn_802D2684(void) {}
+
 void fn_802D2AC4(void) {
     GXSetNumChans(1);
     GXSetChanCtrl(1, 0, 0, 0, 0, 0, 2);
@@ -1102,7 +1103,7 @@ extern unsigned char lbl_8055FD84;
 extern void fn_802CF5D4(void);
 extern void fn_802D2640(void);
 extern void fn_802D92B0(void);
-extern void GXSetTexCoordGen2(int, int, int, int, int, int);
+
 extern void GXSetTevOrder(int, int, int, int);
 extern void GXSetTevOp(int, int);
 extern void GXSetCurrentMtx(int);
