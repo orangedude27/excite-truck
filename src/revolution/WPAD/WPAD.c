@@ -275,12 +275,9 @@ static u8 IsButtonChanged(u16 lhs, u16 rhs) {
     return lhs != rhs ? TRUE : FALSE;
 }
 
-#pragma inline_max_size(10000)
-static inline u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
+static u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
     s32 diff = lhs - rhs < 0 ? rhs - lhs : lhs - rhs;
-    s32 value = diff ^ threshold;
-    value = (value >> 1) - (value & diff);
-    return (u8)((u32)value >> 31);
+    return diff > threshold ? TRUE : FALSE;
 }
 
 static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
