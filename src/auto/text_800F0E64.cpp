@@ -1823,9 +1823,9 @@ extern "C" void fn_800F822C(s32 arg0) {
     detail_ConvertLabelStringToSoundId__Q36nw4hbm3snd18SoundArchivePlayerFPCc(arg0 - 0xC);
 }
 
-extern "C" s32 fn_800F65F0(s32);
+extern "C" s32 fn_800F65F0(void *, void **, u32, s32, s32, s32, void *, s32);
 extern "C" void fn_800F8234(s32 arg0) {
-    fn_800F65F0(arg0 - 0xC);
+    ((s32 (*)(s32))fn_800F65F0)(arg0 - 0xC);
 }
 
 extern "C" s32 __dt__Q36nw4hbm3snd18SoundArchivePlayerFv(s32);
