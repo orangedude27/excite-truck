@@ -346,12 +346,11 @@ void fn_801B885C(void *arg0) {
 extern "C" int fn_801B8874(void) {
     extern int fn_80161C38(void);
     extern void fn_80161A70(void);
-    Dummy_801B8874 *obj = (Dummy_801B8874 *)lbl_8055E744;
     if (fn_80161C38() != 0) {
         fn_80161A70();
         return 1;
     }
-    return obj->d34(obj);
+    return ((Dummy_801B8874 *)lbl_8055E744)->d32();
 }
 #pragma cplusplus on
 extern "C" void fn_801B88BC(void) {
