@@ -3,9 +3,11 @@
 
 #define M2C_FIELD(expr, type, offset) (*(type)((unsigned char *)(expr) + (offset)))
 
+typedef struct { float x, y, z; } Vec80295;
+
 #include <math.h>
-extern float PSVECDotProduct(void *, void *);
-extern void PSVECNormalize(void *, void *);
+extern float PSVECDotProduct(const Vec80295 *, const Vec80295 *);
+extern void PSVECNormalize(const Vec80295 *, Vec80295 *);
 extern float fn_801E88F0(int);
 extern void *fn_80287B24(int);
 extern void fn_80294CCC(void *, void *, void *, unsigned int, int, float, float);
@@ -15,8 +17,6 @@ extern void fn_802C8BD0(int);
 extern void fn_802C8D74(void);
 extern char lbl_804B42F0[];
 extern float lbl_80564518, lbl_8056452C, lbl_80564538, lbl_8056453C, lbl_80564540;
-
-typedef struct { float x, y, z; } Vec80295;
 extern char lbl_80349338[];
 extern char lbl_8055C998[8], lbl_8055C9A0[4], lbl_8055C9A4[8], lbl_8055C9AC[4];
 extern float lbl_8056451C, lbl_80564520, lbl_80564544;
@@ -51,57 +51,40 @@ void fn_80294ED4(void);
 void fn_80294CC8(void) { fn_80294ED4(); }
 
 void fn_80294ED4(void) {
-    int spD4[3];
-    int spC8[3];
+    Vec80295 spD4;
+    Vec80295 spC8;
     int spF0;
-    float spC4;
-    float spC0;
-    float spBC;
-    float spB8;
-    float spB4;
-    float spB0;
-    float spAC;
-    float spA8;
-    float spA4;
-    float spA0;
-    float sp9C;
-    float sp98;
-    float sp94;
-    float sp90;
-    float sp8C;
-    float sp88;
-    float sp84;
-    float sp80;
-    float sp7C;
-    float sp78;
-    float sp74;
-    float sp70;
-    float sp6C;
-    float sp68;
-    float sp64;
-    float sp60;
-    float sp5C;
-    float sp58;
-    float sp54;
-    float sp50;
-    float sp4C;
-    float sp48;
-    float sp44;
-    float sp40;
-    float sp3C;
-    float sp38;
-    float sp34;
-    float sp30;
-    float sp2C;
-    float sp28;
-    float sp24;
-    float sp20;
-    float sp1C;
-    float sp18;
-    float sp14;
-    float sp10;
-    float spC;
-    float sp8;
+
+    Vec80295 spBC;
+
+    Vec80295 spB0;
+
+    Vec80295 spA4;
+
+    Vec80295 sp98;
+
+    Vec80295 sp8C;
+
+    Vec80295 sp80;
+
+    Vec80295 sp74;
+    Vec80295 sp68;
+
+    Vec80295 sp5C;
+
+    Vec80295 sp50;
+
+    Vec80295 sp44;
+
+    Vec80295 sp38;
+
+    Vec80295 sp2C;
+
+    Vec80295 sp20;
+
+    Vec80295 sp14;
+
+    Vec80295 sp8;
     unsigned char *var_r14;
     unsigned char *var_r17;
     unsigned char *var_r18;
@@ -174,12 +157,8 @@ void fn_80294ED4(void) {
 
     temp_f27 = lbl_80564538;
     temp_r3 = fn_802C86DC();
-    spD4[0] = M2C_FIELD(temp_r3, int *, 0);
-    spD4[1] = M2C_FIELD(temp_r3, int *, 4);
-    spD4[2] = M2C_FIELD(temp_r3, int *, 8);
-    spC8[0] = M2C_FIELD(temp_r3, int *, 0xC);
-    spC8[1] = M2C_FIELD(temp_r3, int *, 0x10);
-    spC8[2] = M2C_FIELD(temp_r3, int *, 0x14);
+    spD4 = *(Vec80295 *) temp_r3;
+    spC8 = *(Vec80295 *) ((unsigned char *) temp_r3 + 0xC);
     fn_802C8BD0(lbl_8055C990);
     temp_f29 = lbl_80564518;
     temp_f30 = lbl_8056451C;
@@ -200,43 +179,43 @@ loop_38:
                 if (1) {
                     temp_r3_2 = M2C_FIELD(var_r17, void **, 0);
                     temp_r3_3 = (unsigned char *) temp_r3_2 + 0x24;
-                    if (&spBC == temp_r3_3) {
+                    if (&spBC.x == temp_r3_3) {
                         temp_f6 = M2C_FIELD(temp_r3_3, float *, 4);
                         temp_f0 = M2C_FIELD(temp_r3_2, float *, 0x24);
                         temp_f7 = M2C_FIELD(temp_r3_3, float *, 8);
-                        spBC = (temp_f7 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f0 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f6 * M2C_FIELD(temp_r16, float *, 0xC)));
-                        spC0 = (temp_f7 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f0 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f6 * M2C_FIELD(temp_r16, float *, 0x10)));
-                        spC4 = (temp_f7 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f0 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f6 * M2C_FIELD(temp_r16, float *, 0x14)));
+                        spBC.x = (temp_f7 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f0 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f6 * M2C_FIELD(temp_r16, float *, 0xC)));
+                        spBC.y = (temp_f7 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f0 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f6 * M2C_FIELD(temp_r16, float *, 0x10)));
+                        spBC.z = (temp_f7 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f0 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f6 * M2C_FIELD(temp_r16, float *, 0x14)));
                     } else {
-                        spBC = (M2C_FIELD(temp_r3_3, float *, 8) * M2C_FIELD(temp_r16, float *, 0x18)) + ((M2C_FIELD(temp_r3_2, float *, 0x24) * M2C_FIELD(temp_r16, float *, 0)) + (M2C_FIELD(temp_r3_3, float *, 4) * M2C_FIELD(temp_r16, float *, 0xC)));
-                        spC0 = (M2C_FIELD(temp_r3_3, float *, 8) * M2C_FIELD(temp_r16, float *, 0x1C)) + ((M2C_FIELD(temp_r3_2, float *, 0x24) * M2C_FIELD(temp_r16, float *, 4)) + (M2C_FIELD(temp_r3_3, float *, 4) * M2C_FIELD(temp_r16, float *, 0x10)));
-                        spC4 = (M2C_FIELD(temp_r3_3, float *, 8) * M2C_FIELD(temp_r16, float *, 0x20)) + ((M2C_FIELD(temp_r3_2, float *, 0x24) * M2C_FIELD(temp_r16, float *, 8)) + (M2C_FIELD(temp_r3_3, float *, 4) * M2C_FIELD(temp_r16, float *, 0x14)));
+                        spBC.x = (M2C_FIELD(temp_r3_3, float *, 8) * M2C_FIELD(temp_r16, float *, 0x18)) + ((M2C_FIELD(temp_r3_2, float *, 0x24) * M2C_FIELD(temp_r16, float *, 0)) + (M2C_FIELD(temp_r3_3, float *, 4) * M2C_FIELD(temp_r16, float *, 0xC)));
+                        spBC.y = (M2C_FIELD(temp_r3_3, float *, 8) * M2C_FIELD(temp_r16, float *, 0x1C)) + ((M2C_FIELD(temp_r3_2, float *, 0x24) * M2C_FIELD(temp_r16, float *, 4)) + (M2C_FIELD(temp_r3_3, float *, 4) * M2C_FIELD(temp_r16, float *, 0x10)));
+                        spBC.z = (M2C_FIELD(temp_r3_3, float *, 8) * M2C_FIELD(temp_r16, float *, 0x20)) + ((M2C_FIELD(temp_r3_2, float *, 0x24) * M2C_FIELD(temp_r16, float *, 8)) + (M2C_FIELD(temp_r3_3, float *, 4) * M2C_FIELD(temp_r16, float *, 0x14)));
                     }
-                    temp_f3 = spBC + M2C_FIELD(temp_r16, float *, 0x24);
-                    spBC = temp_f3;
-                    temp_f2 = spC0 + M2C_FIELD(temp_r16, float *, 0x28);
-                    spC0 = temp_f2;
-                    temp_f1 = spC4 + M2C_FIELD(temp_r16, float *, 0x2C);
-                    spC4 = temp_f1;
-                    spB0 = temp_f3 - M2C_FIELD(temp_r3, float *, 0x24);
-                    spB4 = temp_f2 - M2C_FIELD(temp_r3, float *, 0x28);
-                    spB8 = temp_f1 - M2C_FIELD(temp_r3, float *, 0x2C);
+                    temp_f3 = spBC.x + M2C_FIELD(temp_r16, float *, 0x24);
+                    spBC.x = temp_f3;
+                    temp_f2 = spBC.y + M2C_FIELD(temp_r16, float *, 0x28);
+                    spBC.y = temp_f2;
+                    temp_f1 = spBC.z + M2C_FIELD(temp_r16, float *, 0x2C);
+                    spBC.z = temp_f1;
+                    spB0.x = temp_f3 - M2C_FIELD(temp_r3, float *, 0x24);
+                    spB0.y = temp_f2 - M2C_FIELD(temp_r3, float *, 0x28);
+                    spB0.z = temp_f1 - M2C_FIELD(temp_r3, float *, 0x2C);
                     if (PSVECDotProduct(&spB0, &spB0) > temp_f28) {
                         PSVECNormalize(&spB0, &spB0);
-                        if (&spA4 == (void *) (var_r17 + 4)) {
+                        if (&spA4.x == (void *) (var_r17 + 4)) {
                             temp_f6_2 = M2C_FIELD(var_r17, float *, 8);
                             temp_f0_2 = M2C_FIELD(var_r17, float *, 4);
                             temp_f7_2 = M2C_FIELD(var_r17, float *, 0xC);
-                            spA4 = (temp_f7_2 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f0_2 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f6_2 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            spA8 = (temp_f7_2 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f0_2 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f6_2 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            spAC = (temp_f7_2 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f0_2 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f6_2 * M2C_FIELD(temp_r16, float *, 0x14)));
+                            spA4.x = (temp_f7_2 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f0_2 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f6_2 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            spA4.y = (temp_f7_2 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f0_2 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f6_2 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            spA4.z = (temp_f7_2 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f0_2 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f6_2 * M2C_FIELD(temp_r16, float *, 0x14)));
                         } else {
                             temp_f4 = M2C_FIELD(var_r17, float *, 8);
                             temp_f3_2 = M2C_FIELD(var_r17, float *, 4);
                             temp_f5 = M2C_FIELD(var_r17, float *, 0xC);
-                            spA4 = (temp_f5 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f3_2 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f4 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            spA8 = (temp_f5 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f3_2 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f4 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            spAC = (temp_f5 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f3_2 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f4 * M2C_FIELD(temp_r16, float *, 0x14)));
+                            spA4.x = (temp_f5 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f3_2 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f4 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            spA4.y = (temp_f5 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f3_2 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f4 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            spA4.z = (temp_f5 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f3_2 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f4 * M2C_FIELD(temp_r16, float *, 0x14)));
                         }
                         var_f1 = PSVECDotProduct(&spB0, &spA4);
                         if (temp_f29 < var_f1) {
@@ -248,29 +227,29 @@ loop_38:
                             var_f1 = temp_f30;
                         }
                         temp_f26_2 = temp_f29 - var_f1;
-                        sp38 = temp_f30;
-                        sp3C = temp_f30;
-                        sp40 = temp_f29;
-                        if (&sp98 == &sp38) {
-                            sp98 = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp9C = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            spA0 = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
+                        sp38.x = temp_f30;
+                        sp38.y = temp_f30;
+                        sp38.z = temp_f29;
+                        if (&sp98.x == &sp38.x) {
+                            sp98.x = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp98.y = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp98.z = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
                         } else {
-                            sp98 = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp9C = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            spA0 = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
+                            sp98.x = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp98.y = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp98.z = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
                         }
-                        sp2C = temp_f29;
-                        sp30 = temp_f30;
-                        sp34 = temp_f30;
-                        if (&sp8C == &sp2C) {
-                            sp8C = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp90 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            sp94 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
+                        sp2C.x = temp_f29;
+                        sp2C.y = temp_f30;
+                        sp2C.z = temp_f30;
+                        if (&sp8C.x == &sp2C.x) {
+                            sp8C.x = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp8C.y = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp8C.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
                         } else {
-                            sp8C = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp90 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            sp94 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
+                            sp8C.x = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp8C.y = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp8C.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
                         }
                         var_r27 = 0xFF;
                         temp_r3_4 = (int) (temp_f31 * (float) fabs(PSVECDotProduct(&spB0, &sp98)));
@@ -287,41 +266,41 @@ loop_38:
                         temp_r5 = M2C_FIELD(var_r17, unsigned char *, 0x18);
                         temp_r0_3 = M2C_FIELD(var_r17, unsigned char *, 0x19);
                         temp_r7 = M2C_FIELD(var_r17, unsigned char *, 0x1A);
-                        sp20 = temp_f29;
-                        sp24 = temp_f30;
-                        sp28 = temp_f30;
-                        if (&sp80 == &sp20) {
-                            sp80 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp84 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            sp88 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
+                        sp20.x = temp_f29;
+                        sp20.y = temp_f30;
+                        sp20.z = temp_f30;
+                        if (&sp80.x == &sp20.x) {
+                            sp80.x = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp80.y = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp80.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
                         } else {
-                            sp80 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp84 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            sp88 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
+                            sp80.x = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp80.y = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp80.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
                         }
-                        sp14 = temp_f30;
-                        sp18 = temp_f30;
-                        sp1C = temp_f29;
-                        if (&sp68 == &sp14) {
-                            sp68 = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp6C = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            sp70 = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
+                        sp14.x = temp_f30;
+                        sp14.y = temp_f30;
+                        sp14.z = temp_f29;
+                        if (&sp68.x == &sp14.x) {
+                            sp68.x = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp68.y = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp68.z = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
                         } else {
-                            sp68 = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp6C = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            sp70 = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
+                            sp68.x = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp68.y = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp68.z = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
                         }
-                        sp8 = temp_f30;
-                        spC = temp_f29;
-                        sp10 = temp_f30;
-                        if (&sp74 == &sp8) {
-                            sp74 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp78 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            sp7C = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x14)));
+                        sp8.x = temp_f30;
+                        sp8.y = temp_f29;
+                        sp8.z = temp_f30;
+                        if (&sp74.x == &sp8.x) {
+                            sp74.x = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp74.y = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp74.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x14)));
                         } else {
-                            sp74 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0xC)));
-                            sp78 = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x10)));
-                            sp7C = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x14)));
+                            sp74.x = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0xC)));
+                            sp74.y = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x10)));
+                            sp74.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x14)));
                         }
                         temp_f1_2 = M2C_FIELD(var_r17, float *, 0x14);
                         temp_f2_2 = temp_f26_2 * temp_f1_2;
@@ -360,43 +339,43 @@ loop_60:
                 if (1) {
                     temp_r3_6 = M2C_FIELD(var_r21, void **, 0);
                     temp_r3_7 = (unsigned char *) temp_r3_6 + 0x24;
-                    if (&sp5C == temp_r3_7) {
+                    if (&sp5C.x == temp_r3_7) {
                         temp_f6_3 = M2C_FIELD(temp_r3_7, float *, 4);
                         temp_f0_3 = M2C_FIELD(temp_r3_6, float *, 0x24);
                         temp_f7_3 = M2C_FIELD(temp_r3_7, float *, 8);
-                        sp5C = (temp_f7_3 * M2C_FIELD(temp_r16_2, float *, 0x18)) + ((temp_f0_3 * M2C_FIELD(temp_r16_2, float *, 0)) + (temp_f6_3 * M2C_FIELD(temp_r16_2, float *, 0xC)));
-                        sp60 = (temp_f7_3 * M2C_FIELD(temp_r16_2, float *, 0x1C)) + ((temp_f0_3 * M2C_FIELD(temp_r16_2, float *, 4)) + (temp_f6_3 * M2C_FIELD(temp_r16_2, float *, 0x10)));
-                        sp64 = (temp_f7_3 * M2C_FIELD(temp_r16_2, float *, 0x20)) + ((temp_f0_3 * M2C_FIELD(temp_r16_2, float *, 8)) + (temp_f6_3 * M2C_FIELD(temp_r16_2, float *, 0x14)));
+                        sp5C.x = (temp_f7_3 * M2C_FIELD(temp_r16_2, float *, 0x18)) + ((temp_f0_3 * M2C_FIELD(temp_r16_2, float *, 0)) + (temp_f6_3 * M2C_FIELD(temp_r16_2, float *, 0xC)));
+                        sp5C.y = (temp_f7_3 * M2C_FIELD(temp_r16_2, float *, 0x1C)) + ((temp_f0_3 * M2C_FIELD(temp_r16_2, float *, 4)) + (temp_f6_3 * M2C_FIELD(temp_r16_2, float *, 0x10)));
+                        sp5C.z = (temp_f7_3 * M2C_FIELD(temp_r16_2, float *, 0x20)) + ((temp_f0_3 * M2C_FIELD(temp_r16_2, float *, 8)) + (temp_f6_3 * M2C_FIELD(temp_r16_2, float *, 0x14)));
                     } else {
-                        sp5C = (M2C_FIELD(temp_r3_7, float *, 8) * M2C_FIELD(temp_r16_2, float *, 0x18)) + ((M2C_FIELD(temp_r3_6, float *, 0x24) * M2C_FIELD(temp_r16_2, float *, 0)) + (M2C_FIELD(temp_r3_7, float *, 4) * M2C_FIELD(temp_r16_2, float *, 0xC)));
-                        sp60 = (M2C_FIELD(temp_r3_7, float *, 8) * M2C_FIELD(temp_r16_2, float *, 0x1C)) + ((M2C_FIELD(temp_r3_6, float *, 0x24) * M2C_FIELD(temp_r16_2, float *, 4)) + (M2C_FIELD(temp_r3_7, float *, 4) * M2C_FIELD(temp_r16_2, float *, 0x10)));
-                        sp64 = (M2C_FIELD(temp_r3_7, float *, 8) * M2C_FIELD(temp_r16_2, float *, 0x20)) + ((M2C_FIELD(temp_r3_6, float *, 0x24) * M2C_FIELD(temp_r16_2, float *, 8)) + (M2C_FIELD(temp_r3_7, float *, 4) * M2C_FIELD(temp_r16_2, float *, 0x14)));
+                        sp5C.x = (M2C_FIELD(temp_r3_7, float *, 8) * M2C_FIELD(temp_r16_2, float *, 0x18)) + ((M2C_FIELD(temp_r3_6, float *, 0x24) * M2C_FIELD(temp_r16_2, float *, 0)) + (M2C_FIELD(temp_r3_7, float *, 4) * M2C_FIELD(temp_r16_2, float *, 0xC)));
+                        sp5C.y = (M2C_FIELD(temp_r3_7, float *, 8) * M2C_FIELD(temp_r16_2, float *, 0x1C)) + ((M2C_FIELD(temp_r3_6, float *, 0x24) * M2C_FIELD(temp_r16_2, float *, 4)) + (M2C_FIELD(temp_r3_7, float *, 4) * M2C_FIELD(temp_r16_2, float *, 0x10)));
+                        sp5C.z = (M2C_FIELD(temp_r3_7, float *, 8) * M2C_FIELD(temp_r16_2, float *, 0x20)) + ((M2C_FIELD(temp_r3_6, float *, 0x24) * M2C_FIELD(temp_r16_2, float *, 8)) + (M2C_FIELD(temp_r3_7, float *, 4) * M2C_FIELD(temp_r16_2, float *, 0x14)));
                     }
-                    temp_f3_3 = sp5C + M2C_FIELD(temp_r16_2, float *, 0x24);
-                    sp5C = temp_f3_3;
-                    temp_f2_4 = sp60 + M2C_FIELD(temp_r16_2, float *, 0x28);
-                    sp60 = temp_f2_4;
-                    temp_f1_4 = sp64 + M2C_FIELD(temp_r16_2, float *, 0x2C);
-                    sp64 = temp_f1_4;
-                    sp50 = temp_f3_3 - M2C_FIELD(temp_r3, float *, 0x24);
-                    sp54 = temp_f2_4 - M2C_FIELD(temp_r3, float *, 0x28);
-                    sp58 = temp_f1_4 - M2C_FIELD(temp_r3, float *, 0x2C);
+                    temp_f3_3 = sp5C.x + M2C_FIELD(temp_r16_2, float *, 0x24);
+                    sp5C.x = temp_f3_3;
+                    temp_f2_4 = sp5C.y + M2C_FIELD(temp_r16_2, float *, 0x28);
+                    sp5C.y = temp_f2_4;
+                    temp_f1_4 = sp5C.z + M2C_FIELD(temp_r16_2, float *, 0x2C);
+                    sp5C.z = temp_f1_4;
+                    sp50.x = temp_f3_3 - M2C_FIELD(temp_r3, float *, 0x24);
+                    sp50.y = temp_f2_4 - M2C_FIELD(temp_r3, float *, 0x28);
+                    sp50.z = temp_f1_4 - M2C_FIELD(temp_r3, float *, 0x2C);
                     if (PSVECDotProduct(&sp50, &sp50) > temp_f31_2) {
                         PSVECNormalize(&sp50, &sp50);
-                        if (&sp44 == (void *) (var_r21 + 4)) {
+                        if (&sp44.x == (void *) (var_r21 + 4)) {
                             temp_f6_4 = M2C_FIELD(var_r21, float *, 8);
                             temp_f0_4 = M2C_FIELD(var_r21, float *, 4);
                             temp_f7_4 = M2C_FIELD(var_r21, float *, 0xC);
-                            sp44 = (temp_f7_4 * M2C_FIELD(temp_r16_2, float *, 0x18)) + ((temp_f0_4 * M2C_FIELD(temp_r16_2, float *, 0)) + (temp_f6_4 * M2C_FIELD(temp_r16_2, float *, 0xC)));
-                            sp48 = (temp_f7_4 * M2C_FIELD(temp_r16_2, float *, 0x1C)) + ((temp_f0_4 * M2C_FIELD(temp_r16_2, float *, 4)) + (temp_f6_4 * M2C_FIELD(temp_r16_2, float *, 0x10)));
-                            sp4C = (temp_f7_4 * M2C_FIELD(temp_r16_2, float *, 0x20)) + ((temp_f0_4 * M2C_FIELD(temp_r16_2, float *, 8)) + (temp_f6_4 * M2C_FIELD(temp_r16_2, float *, 0x14)));
+                            sp44.x = (temp_f7_4 * M2C_FIELD(temp_r16_2, float *, 0x18)) + ((temp_f0_4 * M2C_FIELD(temp_r16_2, float *, 0)) + (temp_f6_4 * M2C_FIELD(temp_r16_2, float *, 0xC)));
+                            sp44.y = (temp_f7_4 * M2C_FIELD(temp_r16_2, float *, 0x1C)) + ((temp_f0_4 * M2C_FIELD(temp_r16_2, float *, 4)) + (temp_f6_4 * M2C_FIELD(temp_r16_2, float *, 0x10)));
+                            sp44.z = (temp_f7_4 * M2C_FIELD(temp_r16_2, float *, 0x20)) + ((temp_f0_4 * M2C_FIELD(temp_r16_2, float *, 8)) + (temp_f6_4 * M2C_FIELD(temp_r16_2, float *, 0x14)));
                         } else {
                             temp_f4_2 = M2C_FIELD(var_r21, float *, 8);
                             temp_f3_4 = M2C_FIELD(var_r21, float *, 4);
                             temp_f5_2 = M2C_FIELD(var_r21, float *, 0xC);
-                            sp44 = (temp_f5_2 * M2C_FIELD(temp_r16_2, float *, 0x18)) + ((temp_f3_4 * M2C_FIELD(temp_r16_2, float *, 0)) + (temp_f4_2 * M2C_FIELD(temp_r16_2, float *, 0xC)));
-                            sp48 = (temp_f5_2 * M2C_FIELD(temp_r16_2, float *, 0x1C)) + ((temp_f3_4 * M2C_FIELD(temp_r16_2, float *, 4)) + (temp_f4_2 * M2C_FIELD(temp_r16_2, float *, 0x10)));
-                            sp4C = (temp_f5_2 * M2C_FIELD(temp_r16_2, float *, 0x20)) + ((temp_f3_4 * M2C_FIELD(temp_r16_2, float *, 8)) + (temp_f4_2 * M2C_FIELD(temp_r16_2, float *, 0x14)));
+                            sp44.x = (temp_f5_2 * M2C_FIELD(temp_r16_2, float *, 0x18)) + ((temp_f3_4 * M2C_FIELD(temp_r16_2, float *, 0)) + (temp_f4_2 * M2C_FIELD(temp_r16_2, float *, 0xC)));
+                            sp44.y = (temp_f5_2 * M2C_FIELD(temp_r16_2, float *, 0x1C)) + ((temp_f3_4 * M2C_FIELD(temp_r16_2, float *, 4)) + (temp_f4_2 * M2C_FIELD(temp_r16_2, float *, 0x10)));
+                            sp44.z = (temp_f5_2 * M2C_FIELD(temp_r16_2, float *, 0x20)) + ((temp_f3_4 * M2C_FIELD(temp_r16_2, float *, 8)) + (temp_f4_2 * M2C_FIELD(temp_r16_2, float *, 0x14)));
                         }
                         var_f1_2 = PSVECDotProduct(&sp50, &sp44);
                         if (temp_f29_2 < var_f1_2) {
@@ -410,7 +389,7 @@ loop_60:
                         temp_f0_5 = temp_f29_2 - var_f1_2;
                         temp_f3_5 = M2C_FIELD(var_r21, float *, 0x14);
                         temp_f1_5 = M2C_FIELD(var_r21, float *, 0x10);
-                        fn_80294CCC(&sp5C, spD4, spC8, M2C_FIELD(var_r21, unsigned char *, 0x1A) | ((((M2C_FIELD(var_r21, unsigned char *, 0x18) << 0x10) | 0x80000000) & ~0xFF00) | ((M2C_FIELD(var_r21, unsigned char *, 0x19) << 8) & 0xFF00)), -1, (temp_f3_5 + (temp_f0_5 * temp_f3_5)) * temp_f26_3, (temp_f1_5 + (temp_f0_5 * temp_f1_5)) * temp_f26_3);
+                        fn_80294CCC(&sp5C, &spD4, &spC8, M2C_FIELD(var_r21, unsigned char *, 0x1A) | ((((M2C_FIELD(var_r21, unsigned char *, 0x18) << 0x10) | 0x80000000) & ~0xFF00) | ((M2C_FIELD(var_r21, unsigned char *, 0x19) << 8) & 0xFF00)), -1, (temp_f3_5 + (temp_f0_5 * temp_f3_5)) * temp_f26_3, (temp_f1_5 + (temp_f0_5 * temp_f1_5)) * temp_f26_3);
                     }
                     var_r21 += 0x20;
                     var_r17_2 += 1;
