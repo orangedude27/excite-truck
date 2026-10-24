@@ -66,6 +66,7 @@ void fn_801E6978(void) {
     } while (var_r28 < 8);
 }
 
+#pragma scheduling invalid_target
 void fn_801E69EC(void) {
     s32* var_r31 = lbl_80487CC0;
     s32 var_r30 = 0;
@@ -75,7 +76,7 @@ void fn_801E69EC(void) {
         var_r31 += 1;
     } while (var_r30 < 8);
 }
-
+#pragma scheduling reset
 void fn_801E6B98(void* arg0) {
     s32* var_r31 = (s32*)arg0;
     s32 temp = var_r31[5];
