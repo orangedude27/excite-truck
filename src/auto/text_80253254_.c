@@ -25,6 +25,7 @@ void fn_80253258(void) {
     v[0] = x * scale; v[1] = y * scale; v[2] = z * scale;
     PSVECNormalize(v, v); fn_802C9A1C(v);
 }
+#pragma dont_inline reset
 
 void *fn_8025343C(void *arg0) {
     extern void fn_802532BC(void);
