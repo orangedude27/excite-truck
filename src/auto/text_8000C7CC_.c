@@ -141,6 +141,7 @@ void fn_8000D070(void) {
     fn_80230E90(1);
 }
 
+#pragma scheduling invalid_target
 void fn_8000D100(void) {
     u8 *base;
     if (lbl_8055D41C != NULL) {
@@ -158,13 +159,13 @@ void fn_8000D100(void) {
     fn_80209190_s32_f32(lbl_8055D410, lbl_80560218);
     fn_80206454();
     if (lbl_8055D404 != 0) {
-        fn_802E30C8((void*)0x802FC1CC);
+        fn_802E30C8(lbl_802FC1CC);
         lbl_8055D404 = 0;
         return;
     }
     fn_801769EC();
 }
-
+#pragma scheduling on
 void fn_8000D19C(void) {
     if (lbl_8055D407 != 0) {
         lbl_8055D420 = fn_8000CCB8();
@@ -181,11 +182,9 @@ __declspec(section ".sdata") extern char lbl_80558A7C[];
 extern "C" void fn_8000D1DC(void) {
     struct Dummy {
         virtual void *v0();
-        virtual void *v1();
+        virtual s32 *v1(char *);
         virtual void *v2();
         virtual s32 *v3(char *);
-        virtual void *v4();
-        virtual s32 *v5(char *);
     };
     struct Info {
         u32 a, b, c, d;
@@ -210,7 +209,6 @@ extern "C" void fn_8000D1DC(void) {
     s32 temp_r8;
     register u8 *base = lbl_802FC058;
     register s32 i, selected;
-    register u32 *entry;
     register s32 *obj;
 
     if (lbl_8055D405 != 0) {
@@ -218,7 +216,7 @@ extern "C" void fn_8000D1DC(void) {
         goto done;
     }
     if (lbl_8055D40C != 0) {
-        ((void (*)(void))(u32)lbl_8055D40C)();
+        ((void (*)(void))lbl_8055D40C)();
     }
     fn_80230B5C(matrix);
     fn_802C8638(matrix);
@@ -232,7 +230,6 @@ extern "C" void fn_8000D1DC(void) {
         fn_801473F8(lbl_8055D414, lbl_80558A7C, lbl_80558A70,
                     fn_80131234((s32)(base + 0x198)));
         factor = lbl_80560234;
-        entry = (u32 *)(base + 0x40);
         scale = lbl_80560238;
         i = 0;
         baseVal = lbl_80560218;
@@ -241,7 +238,7 @@ extern "C" void fn_8000D1DC(void) {
                 fn_801345D8(name0, 0x20, (const char *)base + 0x94, i);
                 fn_801345D8(name1, 0x20, lbl_80558A74, i);
                 selected = i == lbl_8055D400;
-                obj = ((Dummy *)lbl_8055D414)->v3(name1);
+                obj = ((Dummy *)lbl_8055D414)->v1(name1);
                 info.a = (u32)obj[0];
                 info.b = (u32)obj[1];
                 info.c = (u32)obj[2];
@@ -255,7 +252,7 @@ extern "C" void fn_8000D1DC(void) {
                 if (selected != 0) fn_80230F78(&alpha, &selectedVal, &info.g, 1);
                 if (((s32 (*)(s32))fn_8000C840)(i) == 0)
                     info.g = (info.g & 0xFFFFFF) | 0x80000000;
-                obj = ((Dummy *)lbl_8055D414)->v5(name0);
+                obj = ((Dummy *)lbl_8055D414)->v3(name0);
                 if (obj != 0) {
                     if (((s32 (*)(s32))fn_8000C840)(i) == 0)
                         obj[6] = (obj[6] & 0xFFFFFF) | 0x80000000;
@@ -290,14 +287,13 @@ extern "C" void fn_8000D1DC(void) {
                             temp_f4, temp_f5, selectedVal, temp_f7);
                     }
                 }
-                fn_80147230(&info, lbl_80558A70, fn_80131234((s32)*entry));
+                fn_80147230(&info, lbl_80558A70, fn_80131234(*(s32 *)(base + 0x40 + i * 4)));
             }
             ++i;
-            ++entry;
         } while (i < 4);
-        ((Dummy *)lbl_8055D414)->v3((char *)base + 0xB0);
+        ((Dummy *)lbl_8055D414)->v1((char *)base + 0xB0);
         fn_801476C4();
-        ((Dummy *)lbl_8055D414)->v3((char *)base + 0xC0);
+        ((Dummy *)lbl_8055D414)->v1((char *)base + 0xC0);
         fn_801476C4();
     }
 done:
@@ -379,6 +375,7 @@ extern f32 lbl_8056021C, lbl_80560220, lbl_80560224, lbl_80560228;
 extern f32 lbl_8056022C, lbl_80560230, lbl_80560234, lbl_80560238;
 #pragma scheduling invalid_target
 #pragma opt_propagation off
+#pragma opt_pointer_aliasing on
 #pragma cplusplus on
 extern "C" void fn_8000C964(void) {
     class Dummy { public: virtual void *f2(); virtual s32 *get3(const char *); virtual void *f4(); virtual s32 *get5(const char *); };
@@ -389,13 +386,14 @@ extern "C" void fn_8000C964(void) {
     struct Info item;
     struct Update out;
     s32 labels[2];
+    register s32 *entries;
     u8 alpha;
-    f32 selectedVal, factor, scale, baseVal;
+    f32 baseVal, scale, factor, selectedVal;
     f32 temp_f0, temp_f1, temp_f1_2, temp_f2, temp_f3, temp_f4, temp_f5, temp_f7;
     s32 temp_r8, drawMode;
     register u8 *base = lbl_802FC058;
-    register s32 *labelp;
     register s32 i, selected;
+    register s32 *labelp;
     register s32 *obj;
     fn_80230B5C(matrix);
     fn_802C8638(matrix);
@@ -404,8 +402,9 @@ extern "C" void fn_8000C964(void) {
     if (lbl_8055D414 != 0) {
         labels[0] = lbl_80560210;
         labels[1] = lbl_80560214;
+        entries = (s32 *)(base + 0x40);
         fn_801473F8(lbl_8055D414, (const char *)base + 0x68, lbl_80558A70,
-                    fn_80131234(((s32 *)(base + 0x40))[lbl_8055D400]));
+                    fn_80131234(entries[lbl_8055D400]));
         fn_801473F8(lbl_8055D414, (const char *)base + 0x78, lbl_80558A70,
                     fn_80131234((s32)(base + 0x84)));
         factor = lbl_80560234;
@@ -463,6 +462,7 @@ extern "C" void fn_8000C964(void) {
     fn_802C9904();
 }
 #pragma cplusplus reset
+#pragma opt_pointer_aliasing reset
 #pragma opt_propagation reset
 #pragma scheduling on
 s32 fn_8000CCB8(void) {
