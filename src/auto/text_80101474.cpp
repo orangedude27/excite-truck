@@ -44,6 +44,7 @@ typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
 struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
+struct SetupGXFontType { virtual int f0(); virtual int f1(); virtual int f2(); virtual int f3(); virtual int f4(); virtual int f5(); virtual int f6(); virtual int f7(); virtual int f8(); virtual int f9(); virtual int f10(); virtual int f11(); virtual int GetType(); };
 namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); void SetFontSize(float, float); void SetupGX(); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
@@ -435,10 +436,10 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     temp_r3_2 = (*(void ***)((signed char*)(arg0) + (0x48)));
     if (temp_r3_2 != 0) {
         temp_r3_3 = (*(int (**)())((signed char*)(*temp_r3_2) + (0x30)))();
-        if (temp_r3_3 < 4) {
-            if (temp_r3_3 < 2) {
-                if (temp_r3_3 >= 0) {
-                if ((signed char) lbl_8055DE90 == 0) {
+        switch (temp_r3_3) {
+        case 0:
+        case 1:
+            if ((signed char) lbl_8055DE90 == 0) {
                     *(int *)&lbl_8055DE94 = 0;
                     __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
                     lbl_8055DE90 = 1;
@@ -473,9 +474,9 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
                 GXSetVtxDesc(0xB, 1);
                 GXSetVtxDesc(0xD, 1);
                 return;
-            }
-                goto block_49;
-            }
+            break;
+        case 2:
+        case 3:
             if ((signed char) lbl_8055DE90 == 0) {
                 *(int *)&lbl_8055DE94 = 0;
                 __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
@@ -508,8 +509,10 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
             GXSetVtxDesc(0xB, 1);
             GXSetVtxDesc(0xD, 1);
             return;
-        }
-        if (temp_r3_3 < 7) {
+            break;
+        case 4:
+        case 5:
+        case 6:
             if ((signed char) lbl_8055DE90 == 0) {
                 *(int *)&lbl_8055DE94 = 0;
                 __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
@@ -542,9 +545,12 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
             GXSetVtxDesc(0xB, 1);
             GXSetVtxDesc(0xD, 1);
             return;
+            break;
+        default:
+            goto block_49;
         }
-block_49:
-        Warning__Q26nw4hbm2dbFPCciPCce(base, 0xCF, lbl_80328178 + 0x84, temp_r3_3);
+        block_49:
+        Warning__Q26nw4hbm2dbFPCciPCce(base, 0xCF, base + 0x84, temp_r3_3);
         if ((signed char) lbl_8055DE90 == 0) {
             *(int *)&lbl_8055DE94 = 0;
             __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
