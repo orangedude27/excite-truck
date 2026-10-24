@@ -6,6 +6,7 @@ typedef unsigned char u8;
 extern int fn_80131234(void *);
 extern void *fn_8027DB40(s32);
 extern void *memset(void *, int, unsigned int);
+extern int fn_801345D8(void *, int, void *, int);
 extern void *fn_8001668C(void *, s32);
 extern void *fn_80016BC8(void *, s32);
 extern void *fn_80018A8C(void *, s32, s32 *, s32);
@@ -933,6 +934,11 @@ mode_done:
                 fn_80214AF0(*(s32 *)(base + 8));
                 fn_80214A9C(*(s32 *)(base + 0x0C));
                 fn_80214AF0(*(s32 *)(base + 0x14));
+                if (outer != 0 && current == 2) {
+                    fn_80214A9C(*(s32 *)(base + 0x10));
+                } else {
+                    fn_80214AF0(*(s32 *)(base + 0x10));
+                }
                 list = *(u8 **)base;
                 *(u8 *)(list + 0x38) = 1;
                 entry = list;
@@ -957,14 +963,13 @@ on_child_check:
                 list = *(u8 **)base;
                 *(u8 *)(list + 0x38) = 0;
                 entry = list;
-                selected = *(s32 *)(list + 0x30);
-                selectedValue = **(s32 **)(list + 0x34);
                 i = 0;
                 goto off_child_check;
 off_child_body:
                 child = *(u8 **)(entry + 0x18);
-                *(u8 *)child = (*(u8 *)(list + 0x38) != 0 && i == selected);
-                *(s32 *)(child + 4) = selectedValue;
+                *(u8 *)child = (*(u8 *)(list + 0x38) != 0 &&
+                                i == *(s32 *)(list + 0x30));
+                *(s32 *)(child + 4) = **(s32 **)(list + 0x34);
                 entry += 4;
                 i++;
 off_child_check:
