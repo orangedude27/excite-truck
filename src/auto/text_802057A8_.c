@@ -14,6 +14,7 @@ extern void fn_80205FCC(void);
 extern void fn_802059C0(void);
 extern int fn_801B8570(void);
 extern void fn_801E866C(int);
+#pragma inline no fn_80205964
 extern void fn_802C8CBC(int);
 extern void fn_802C8DBC(int);
 extern void fn_802C8E48(void);
