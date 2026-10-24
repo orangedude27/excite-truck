@@ -78,14 +78,28 @@ struct Dummy_801A5258 {
 };
 #pragma cplusplus on
 extern "C" void fn_801A5258(void *arg0, void *arg1) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f2(void *, void *);
+        virtual void f1();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f9();
+    };
+    VTable *obj;
     float zero;
     fn_80182074();
     fn_80265D38(arg0, *(int *)((char *)arg0 + 0x1EC));
+    obj = (VTable *)*(void **)((char *)arg0 + 0x270C);
     *(int *)((char *)arg0 + 0x2708) = 0;
     *(unsigned char *)((char *)arg0 + 0x2704) = 0;
     *(int *)((char *)arg0 + 0x2700) = 0;
-    ((Dummy_801A5258_v2 *)*(void **)((char *)arg0 + 0x270C))->d2(arg0, arg1);
-    ((Dummy_801A5258_v2 *)*(void **)((char *)arg0 + 0x270C))->d9();
+    obj->f2(arg0, arg1);
+    obj = (VTable *)*(void **)((char *)arg0 + 0x270C);
+    obj->f9();
     zero = lbl_805623C8;
     *(int *)((char *)arg0 + 0x2714) = 1;
     *(int *)((char *)arg0 + 0x2720) = 0;
