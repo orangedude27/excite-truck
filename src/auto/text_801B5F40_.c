@@ -11,6 +11,7 @@ extern f32 lbl_805626B0;
 extern f32 lbl_805626B4;
 extern void *lbl_8055E710;
 extern void *lbl_80335EE0;
+extern void fn_802E317C(const char *);
 void __AXPushCallbackStack(void *arg0) {
     *((void **)arg0 + 1) = lbl_8055E710;
     lbl_8055E710 = arg0;
@@ -91,3 +92,23 @@ void fn_801B63E0(void **head, s32 value) {
     *head = node;
 }
 
+#pragma scheduling invalid_target
+void fn_801B6428(void **head, void *value) {
+    void *node = *head;
+    void *next;
+    if (*(void **)node == value) {
+        *head = *(void **)((u8 *)node + 4);
+        __AXPushCallbackStack(node);
+        return;
+    }
+    next = *(void **)((u8 *)node + 4);
+    if (next != 0) {
+        if (*(void **)next == value) {
+            *(void **)((u8 *)node + 4) = *(void **)((u8 *)next + 4);
+            __AXPushCallbackStack(next);
+        } else {
+            fn_802E317C((const char *)&lbl_80335F20);
+        }
+    }
+}
+#pragma scheduling on
