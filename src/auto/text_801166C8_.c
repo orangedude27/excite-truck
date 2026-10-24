@@ -1848,17 +1848,19 @@ u32 fn_8011C06C(void *arg0) {
 
 #pragma dont_inline on
 u32 fn_8011C1E0(s32 arg0, void *arg1) {
-    register s32 temp_r4;
+    BOOL enabled;
+    s32 temp_r4;
     s32 temp_r4_2;
+
     if (arg0 != 0 && arg1 != 0 &&
         *(s32 *)((u8 *)arg1 + 0x18) != 0 &&
         *(s32 *)((u8 *)arg1 + 0x14) != 0) {
-        OSDisableInterrupts();
+        enabled = OSDisableInterrupts();
         if (*(s32 *)((u8 *)arg1 + 0xC) == 1)
             *(s32 *)((u8 *)arg1 + 0xC) = 2;
         temp_r4 = *(s32 *)((u8 *)arg1 + 0x10);
         *(s32 *)((u8 *)arg1 + 0x10) = temp_r4 + 1;
-        OSRestoreInterrupts(temp_r4);
+        OSRestoreInterrupts(enabled);
         temp_r4_2 = *(s32 *)((u8 *)arg1 + 0xC);
         return (u32)((1 - temp_r4_2) | (temp_r4_2 - 1)) >> 31;
     }
