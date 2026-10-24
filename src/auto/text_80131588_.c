@@ -9,7 +9,7 @@ extern int sscanf(const char*, ...);
 
 extern s32 fn_80128668(void);
 extern int stricmp(const char*, const char*);
-extern s32 fn_80131C88(s32);
+extern s32 fn_80131C88(void *, const char *);
 extern int sprintf(char *, const char *, ...);
 extern char lbl_80559B50[];
 typedef struct {
