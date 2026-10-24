@@ -483,12 +483,19 @@ s32 fn_801320D8(void* arg0, const char* name) {
 #pragma pop
 extern int atoi(const char*);
 extern int atoi();
-s32 fn_801321BC(void **arg0) {
-    volatile void **vtable = (volatile void **)*arg0;
-    ((s32 (*)(void))vtable[5])();
+#pragma cplusplus on
+extern "C" s32 fn_801321BC(void **arg0) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+    };
+    ((Dummy *)arg0)->v3();
     return atoi();
 }
-
+#pragma cplusplus reset
 extern double atof(const char*);
 f32 fn_801321EC(void *arg0) {
     char *(* volatile get)(void) = (char *(*)(void))(*(void **)((char *)*(void **)arg0 + 0x14));
