@@ -13,6 +13,8 @@ extern u8 lbl_8055E691;
 extern u8 lbl_8055E692;
 extern void *fn_801B2EC0(s32);
 extern s32 fn_80128668(void);
+extern void fn_801B2118(void);
+extern void *fn_801B21B8(void *);
 extern char lbl_80335BFC[];
 extern f32 lbl_805625BC;
 extern f32 lbl_80562604;
