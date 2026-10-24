@@ -12,21 +12,19 @@ extern int fn_802E30C8(const char*, ...);
 extern unsigned int strlen(const char*);
 extern char lbl_8034B178[];
 extern unsigned char lbl_8055FC14;
+#pragma push
+#pragma scheduling invalid_target
 int fn_802C5130(char* arg0) {
-    char* fmt;
-    char* text;
     if (strlen(arg0) > 15) {
         if (lbl_8055FC14 == 0) {
-            fmt = lbl_8034B178;
-            text = arg0;
-            fn_802E30C8(fmt, text);
+            fn_802E30C8(lbl_8034B178, arg0);
         }
         lbl_8055FC14 = 1;
         return 0;
     }
     return fn_8023512C(arg0);
 }
-
+#pragma pop
 void fn_802C519C(void* arg0) {
     if (arg0 == 0) return;
     fn_80235380();
@@ -68,4 +66,9 @@ extern void fn_80235758(void*, float, float, float, float, float, float, int);
 void fn_802C5310(void* arg0) { if (arg0 != 0) fn_802353F4(); }
 
 void fn_802C5320(void* arg0, void* arg1) { if (arg0 != 0) fn_802354A0(arg0, arg1, -1); }
+
+void fn_802C5334(void* arg0, float arg1, float arg2, float arg3, float arg4, float arg5, float arg6) {
+    if (arg0 != 0)
+        fn_80235758(arg0, arg1, arg2, arg3, arg4, arg5, arg6, -1);
+}
 
