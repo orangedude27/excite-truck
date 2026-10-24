@@ -1073,8 +1073,8 @@ extern void *fn_801399FC(void);
 extern void PSVECNormalize(f32 *, f32 *);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
 extern int sscanf(const char *, const char *, ...);
-extern unsigned char lbl_8055A108[];
-extern unsigned char lbl_8055A10C[];
+extern const char lbl_8055A108[];
+extern const char lbl_8055A10C[];
 extern f32 lbl_80561864;
 extern s32 fn_802C6FC0(const char *, s32, s32);
 #pragma cplusplus on
@@ -1082,13 +1082,13 @@ extern "C" void fn_80163F7C(void *arg0) {
     u8 *self = (u8 *)arg0;
     register const char *name = (const char *)(lbl_8032F588 + 0x588);
     s32 result = fn_802C6FC0(name, 0, 0);
-    s32 count, i, bestIndex, counter;
+    s32 keyResult;
     u8 *obj;
     u8 *out;
     f32 *table;
     f32 *points;
     struct {
-        u8 pad0[0x10];
+        u8 pad0[0x18];
         f32 vectors[9];
         u8 pad1[4];
         f32 bounds[6];
@@ -1110,10 +1110,10 @@ extern "C" void fn_80163F7C(void *arg0) {
     *(void **)(self + 0xD0) = fn_802CAC28(lbl_8032F588 + 0x5C0, 0);
     *(s32 *)(self + 0xDC) = fn_80207848(lbl_8032F588 + 0x5D0, 1);
     obj = *(u8 **)(self + 4);
-    *(u8 *)(self + 0xD8) = (u8)((Dummy_80163F7C *)obj)->f12((const char *)(lbl_8032F588 + 0x5DC), 0);
+    *(u8 *)(self + 0xD8) = (u8)((Dummy_80163F7C_VT1 *)obj)->f10((const char *)(lbl_8032F588 + 0x5DC), 0);
     obj = *(u8 **)(self + 4);
     {
-        const char *value = ((Dummy_80163F7C *)obj)->f6((const char *)(lbl_8032F588 + 0x5EC), (const char *)(lbl_8032F588 + 0x5FC));
+        const char *value = ((Dummy_80163F7C_VT1 *)obj)->f4((const char *)(lbl_8032F588 + 0x5EC), (const char *)(lbl_8032F588 + 0x5FC));
         if (sscanf(value, (const char *)lbl_8055A108, (s32 *)(self + 0xD4)) != 1) {
             *(s32 *)(self + 0xD4) = -1;
         }
@@ -1121,46 +1121,47 @@ extern "C" void fn_80163F7C(void *arg0) {
     obj = *(u8 **)(self + 4);
     *(s32 *)(self + 0xE4) = 0;
     if (obj != 0) {
-        if (((Dummy_80163F7C *)obj)->f23((const char *)lbl_8055A10C) != 0) {
-            i = *(s32 *)(self + 0xE4);
-            out = (u8 *)(*(u8 **)(self + 0xE0) + i * 0x48);
-            *(s32 *)(self + 0xE4) = i + 1;
-            ((Dummy_80163F7C *)obj)->f23((const char *)lbl_8055A10C, i, *(void **)(self + 0xE0));
+        keyResult = ((Dummy_80163F7C_VT1 *)obj)->f21((const char *)lbl_8055A10C);
+        if ((u32)(-keyResult | keyResult) >> 31) {
+            s32 entryIndex = *(s32 *)(self + 0xE4);
+            out = (u8 *)(*(u8 **)(self + 0xE0) + entryIndex * 0x48);
+            *(s32 *)(self + 0xE4) = entryIndex + 1;
+            ((Dummy_80163F7C_VT3 *)obj)->f21((const char *)lbl_8055A10C, entryIndex, *(void **)(self + 0xE0));
             table = (f32 *)fn_801399FC();
             *(f32 **)(out + 0x34) = table;
+            register s32 count;
+            register s32 i;
+            register s32 bestIndex;
+            register f32 *points;
             count = *(s32 *)table;
             points = (f32 *)((u8 *)table + 8);
             {
                 f32 best = lbl_80561864;
                 f32 dx, dy, score;
                 bestIndex = -1;
-                counter = count;
-                i = 1;
-                if (counter >= 1) {
-                    do {
-                        s32 n = *(s32 *)table;
+                for (i = 1; i <= count; i++) {
+                        register s32 n = *(volatile s32 *)table;
                         s32 next = i % n;
                         s32 prev = (i - 1) % n;
-                        dx = points[next * 2 + 1] - points[prev * 2 + 1];
-                        dy = points[next * 2] - points[prev * 2];
+                        dx = *((f32 *)((u8 *)points + next * 8 + 4)) - *((f32 *)((u8 *)points + prev * 8 + 4));
+                        dy = *((f32 *)((u8 *)points + next * 8)) - *((f32 *)((u8 *)points + prev * 8));
                         score = dy * dy + dx * dx;
                         if (score > best) {
                             best = score;
                             bestIndex = i;
                         }
-                        i++;
-                    } while (--counter != 0);
                 }
             }
+            register s32 count2 = *(s32 *)table;
             {
-                f32 x0, y0, x1, y1;
-                i = (bestIndex - 1) % count;
+                volatile f32 x0, y0, x1, y1;
+                i = (bestIndex - 1) % count2;
                 x0 = points[i * 2];
                 y0 = points[i * 2 + 1];
                 *(f32 *)(out + 0x0C) = x0;
                 *(f32 *)(out + 0x10) = lbl_80561848;
                 *(f32 *)(out + 0x14) = y0;
-                i = bestIndex % count;
+                i = bestIndex % count2;
                 x1 = points[i * 2];
                 y1 = points[i * 2 + 1];
                 *(f32 *)(out + 0x18) = x1;
@@ -1168,7 +1169,7 @@ extern "C" void fn_80163F7C(void *arg0) {
                 *(f32 *)(out + 0x20) = y1;
                 *(f32 *)(out + 0x24) = (x0 + x1) * lbl_8056185C;
                 *(f32 *)(out + 0x28) = (y0 + y1) * lbl_8056185C;
-                i = (bestIndex + 1) % count;
+                i = (bestIndex + 1) % count2;
                 work.vectors[0] = points[i * 2] - x1;
                 work.vectors[1] = lbl_80561848;
                 work.vectors[2] = points[i * 2 + 1] - y1;
