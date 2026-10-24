@@ -1560,23 +1560,42 @@ extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer11SeqLoadTaskFv(void* s
     OSUnlockMutex(mutex);
 }
 
-void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void *arg0) {
-    class SoundLike {
+extern "C" void Cancel__Q46nw4hbm3snd18SoundArchivePlayer18StrmHeaderLoadTaskFv(void* self) {
+    class Sound {
     public:
-        virtual void v0() {} virtual void v1() {} virtual void v2() {} virtual void v3() {} virtual void v4() {} virtual void v5() {} virtual void v6() {} virtual void v7() {} virtual void v8() {} virtual void v9() {} virtual int v10() {} virtual void v11() {} virtual void v12() {} virtual void v13() {} virtual void v14() {} virtual void v15() {} virtual void v16() {} virtual void v17() {} virtual void v18() {} virtual void v19() {} virtual void v20() {} virtual int v21() {} };
-    void *mutex = *(void **)((char *)arg0 + 0x24);
-    SoundLike *sound;
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual s32 v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19(s32, s32);
+        virtual void v20();
+        virtual s32 v21();
+    };
+    void* mutex = *(void**)((u8*)self + 0x24);
     OSLockMutex(mutex);
-    sound = (SoundLike *)*(void **)((char *)arg0 + 0x10);
-    *(int *)((char *)arg0 + 0x1c) = 0;
+    Sound* sound = *(Sound**)((u8*)self + 0x10);
+    *(u32*)((u8*)self + 0x1c) = 0;
     if (sound != 0 && sound->v21() != 0) {
-        sound = (SoundLike *)*(void **)((char *)arg0 + 0x10);
+        sound = *(Sound**)((u8*)self + 0x10);
         if (sound->v10() != 0) {
-            sound = (SoundLike *)*(void **)((char *)arg0 + 0x10);
-            ((void (*)(SoundLike *, int, int))((void **)*(void **)sound)[19])(sound, 0, 0);
+            sound = *(Sound**)((u8*)self + 0x10);
+            sound->v19(0, 0);
         } else {
-            sound = (SoundLike *)*(void **)((char *)arg0 + 0x10);
-            ((void (*)(SoundLike *))((void **)*(void **)sound)[18])(sound);
+            sound = *(Sound**)((u8*)self + 0x10);
+            sound->v18();
         }
     }
     OSUnlockMutex(mutex);
@@ -2813,6 +2832,139 @@ extern "C" void Update__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
     }
 }
 
+extern "C" void SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *, s32, const void *, u32);
+extern "C" void SetLoopEnd__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(void *, s32, const void *, u32);
+extern "C" void SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(void *, BOOL);
+extern "C" void SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7AxVoice9VoiceType(void *, s32);
+extern "C" void fn_800E5A8C(void *, s32, u32, const void *);
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void UpdatePlayingBlockIndex__Q46nw4hbm3snd6detail10StrmPlayerFv(void *arg0) {
+    const char *file = lbl_80326768;
+    s32 player = (s32)arg0;
+    u8 *p;
+    s32 value;
+
+    value = *(s32 *)(((u8 *)player) + 0x80) + 1;
+    *(s32 *)(((u8 *)player) + 0x80) = value;
+    if (value > *(s32 *)(((u8 *)player) + 0x88)) {
+        if (((u8 *)player)[0x11] != 0) {
+            s32 block, i;
+            u32 irq, loopEnd;
+            block = *(s32 *)(((u8 *)player) + 0x54);
+            *(s32 *)(((u8 *)player) + 0x80) = *(s32 *)(((u8 *)player) + 0x84);
+            if (block < 0x7FFFFFFF) *(s32 *)(((u8 *)player) + 0x54) = block + 1;
+            loopEnd = (u32)(*(s32 *)(((u8 *)player) + 0x78) * *(s32 *)(((u8 *)player) + 0x30));
+            
+            if (*(void **)(((u8 *)player) + 0x438) == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x19E, file + 0x44);
+            irq = OSDisableInterrupts();
+            p = ((u8 *)player);
+            for (i = 0; i < *(s32 *)(((u8 *)player) + 0x4A0); ++i) {
+                SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)(((u8 *)player) + 0x438), i, *(void **)(p + 0x4A8), 0);
+                SetLoopEnd__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)(((u8 *)player) + 0x438), i, *(void **)(p + 0x4A8), loopEnd);
+                p += 0x38;
+            }
+            SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)(((u8 *)player) + 0x438), 1);
+            OSRestoreInterrupts(irq);
+        } else Panic__Q26nw4hbm2dbFPCciPCce(file, 0x1C6, file + 0x94);
+    }
+
+    value = *(s32 *)(((u8 *)player) + 0x7C) + 1;
+    *(s32 *)(((u8 *)player) + 0x7C) = value;
+    if (value >= *(s32 *)(((u8 *)player) + 0x78)) {
+        s32 block, i;
+        u32 irq, loopEnd;
+        block = *(s32 *)(((u8 *)player) + 0x6C);
+        loopEnd = (u32)(block * *(s32 *)(((u8 *)player) + 0x30));
+        *(s32 *)(((u8 *)player) + 0x7C) = 0;
+        *(s32 *)(((u8 *)player) + 0x78) = block;
+        
+        if (*(void **)(((u8 *)player) + 0x438) == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x19E, file + 0x44);
+        irq = OSDisableInterrupts();
+        p = ((u8 *)player);
+        for (i = 0; i < *(s32 *)(((u8 *)player) + 0x4A0); ++i) {
+            SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)(((u8 *)player) + 0x438), i, *(void **)(p + 0x4A8), 0);
+            SetLoopEnd__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)(((u8 *)player) + 0x438), i, *(void **)(p + 0x4A8), loopEnd);
+            p += 0x38;
+        }
+        SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)(((u8 *)player) + 0x438), 1);
+        OSRestoreInterrupts(irq);
+    }
+
+    if (*(s32 *)(((u8 *)player) + 0x7C) == *(s32 *)(((u8 *)player) + 0x78) - 1 && *(u32 *)((u8 *)*(void **)(((u8 *)player) + 0x438) + 0x118) == 0) {
+        if (((u8 *)player)[0x51] == 0) Warning__Q26nw4hbm2dbFPCciPCce(file, 0x1DC, file + 0xB4);
+        if (((u8 *)player)[0x50] == 0 && ((u8 *)player)[0x51] != 0) {
+            s32 i;
+            u32 irq;
+            u16 samples[3];
+            irq = OSDisableInterrupts();
+            p = ((u8 *)player);
+            for (i = 0; i < *(s32 *)(((u8 *)player) + 0x4A0); ++i) {
+                samples[0] = *(u16 *)(p + 0x518);
+                samples[1] = 0;
+                samples[2] = 0;
+                fn_800E5A8C(*(void **)(((u8 *)player) + 0x438), i, *(u32 *)((u8 *)*(void **)(((u8 *)player) + 0x438) + 0x118), samples);
+                p += 2;
+            }
+            SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7AxVoice9VoiceType(*(void **)(((u8 *)player) + 0x438), 1);
+            OSRestoreInterrupts(irq);
+        }
+        ((u8 *)player)[0x51] = ((u8 *)player)[0x50] = 0;
+    }
+
+    if (*(s32 *)(((u8 *)player) + 0x80) == *(s32 *)(((u8 *)player) + 0x88) - 1) {
+        s32 next = *(s32 *)(((u8 *)player) + 0x7C) + 1;
+        if (((u8 *)player)[0x11] != 0) {
+            s32 i, following, block;
+            u32 irq, loopStart, loopEnd;
+            following = next + 1;
+            block = *(s32 *)(((u8 *)player) + 0x78);
+            if (following >= block) following -= block;
+            irq = OSDisableInterrupts();
+            loopEnd = (u32)(*(s32 *)(((u8 *)player) + 0x38) + next * *(s32 *)(((u8 *)player) + 0x30));
+            loopStart = (u32)(following * *(s32 *)(((u8 *)player) + 0x30));
+            
+            if (*(void **)(((u8 *)player) + 0x438) == 0) Panic__Q26nw4hbm2dbFPCciPCce(file, 0x19E, file + 0x44);
+            {
+                u32 innerIrq = OSDisableInterrupts();
+                p = ((u8 *)player);
+                for (i = 0; i < *(s32 *)(((u8 *)player) + 0x4A0); ++i) {
+                    SetLoopStart__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)(((u8 *)player) + 0x438), i, *(void **)(p + 0x4A8), loopStart);
+                    SetLoopEnd__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(*(void **)(((u8 *)player) + 0x438), i, *(void **)(p + 0x4A8), loopEnd);
+                    p += 0x38;
+                }
+                SetLoopFlag__Q46nw4hbm3snd6detail7AxVoiceFb(*(void **)(((u8 *)player) + 0x438), 1);
+                OSRestoreInterrupts(innerIrq);
+            }
+            if (((u8 *)player)[0x10] == 2) {
+                if (*(u32 *)((u8 *)*(void **)(((u8 *)player) + 0x438) + 0x118) == 0) {
+                    SetVoiceType__Q46nw4hbm3snd6detail7AxVoiceFQ56nw4hbm3snd6detail7AxVoice9VoiceType(*(void **)(((u8 *)player) + 0x438), 0);
+                    s32 j;
+                    p = ((u8 *)player) + 0x4D8;
+                    for (j = 0; j < *(s32 *)(((u8 *)player) + 0x4A0); ++j) {
+                        fn_800E5A8C(*(void **)(((u8 *)player) + 0x438), j, *(u32 *)((u8 *)*(void **)(((u8 *)player) + 0x438) + 0x118), p);
+                        p += 0x38;
+                    }
+                }
+                if (next == *(s32 *)(((u8 *)player) + 0x78) - 1) ((u8 *)player)[0x50] = 1;
+            }
+            OSRestoreInterrupts(irq);
+            return;
+        }
+        s32 i;
+        u32 irq;
+        irq = OSDisableInterrupts();
+        p = ((u8 *)player);
+        for (i = 0; i < *(s32 *)(((u8 *)player) + 0x4A0); ++i) {
+            
+            StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl((s32)*(void **)(((u8 *)player) + 0x438), i, *(void **)(p + 0x4A8), (u32)(*(s32 *)(((u8 *)player) + 0x38) + next * *(s32 *)(((u8 *)player) + 0x30)));
+            p += 0x38;
+        }
+        OSRestoreInterrupts(irq);
+        ((u8 *)player)[0x52] = 1;
+    }
+}
+#pragma pop
 extern "C" void UpdateBuffer__Q46nw4hbm3snd6detail10StrmPlayerFv(void *);
 extern "C" const char lbl_80326B68[];
 extern "C" const char lbl_80326B8C[];
