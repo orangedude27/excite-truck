@@ -30,11 +30,9 @@ extern "C" void fn_802E759C(void) {
     }
 }
 #pragma cplusplus reset
-#pragma scheduling invalid_target
 void fn_802E75E4(s32 arg0) {
     ((void (*)(void*, s32))(*(void***)lbl_8055FFF0)[3])(lbl_8055FFF0, arg0);
 }
-#pragma scheduling on
 
 void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
     ((void (*)(void*, s32, s32, s32))(*(void***)lbl_8055FFF0)[5])(lbl_8055FFF0, arg0, arg1, arg2);
