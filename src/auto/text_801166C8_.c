@@ -515,23 +515,25 @@ s32 *fn_8011770C(s32 *arg0, u32 arg1) {
     u32 width;
     u32 height;
     u32 format;
+    s32 clock = (s32)arg0;
     s32 *result = 0;
     local.conversion[0] = 0x43300000;
     local.conversion[2] = 0x43300000;
     if ((arg1 & 0x4000) == 0) {
-        lbl_80559944 = 1;
         lbl_8041D608 = 0;
+        lbl_80559944 = 1;
         memset(local.state, 0, 0x388);
-        ((s32 *)local.state)[0x2A0 / 4] = fn_80116D30();
-        lbl_8041D508[0] = 0;
+        clock = fn_80116D30();
     }
+    ((s32 *)local.state)[0x2A0 / 4] = clock;
+    lbl_8041D508[0] = 0;
     if (arg1 & 0x04000000) {
         memcpy(local.header, arg0, 0x2C);
     } else if ((arg1 & 0x02000000) && lbl_8055DED8 != 0) {
         s32 (*callback)(void *, s32 *, u32) = (s32 (*)(void *, s32 *, u32))lbl_8055DED8;
         lbl_8055DED8 = 0;
         result = (s32 *)callback(local.state + 0xF0, arg0, arg1);
-        if (result == 0 && lbl_8041D508[0] == 0) {
+        if (result == 0 && (s8)lbl_8041D508[0] == 0) {
             fn_80116E2C(lbl_802F6528);
             return 0;
         }
@@ -1639,7 +1641,6 @@ s32 fn_8011B2AC(s32 size, u32 channels, s32 flags, s32 arg3, s32 arg4, s32 outpu
     return ((u32)bits.next - (u32)bits.start) & 0x1fffffff;
 }
 
-extern void fn_8011FE20(u32 **, u32);
 extern u32 lbl_80329B60[25];
 extern f64 lbl_805611E8;
 extern f64 lbl_805611F0;
