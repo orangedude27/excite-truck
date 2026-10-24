@@ -36,10 +36,8 @@ void fn_802D7564(void) {
     }
 }
 
-#pragma scheduling off
 int fn_802D76DC(int arg0) {
-    int value = arg0;
-    switch (value) {
+    switch (arg0) {
     case 3:
     case 0x40:
     case 0x41:
@@ -58,11 +56,10 @@ int fn_802D76DC(int arg0) {
     case 0x4C:
         return 0;
     default:
-        fn_802E317C(lbl_8034C4B0, value);
+        fn_802E317C(lbl_8034C4B0, arg0);
         return 1;
     }
 }
-#pragma scheduling reset
 
 #pragma dont_inline on
 void fn_802D78D4(void *arg0, void *arg1, unsigned int arg2, unsigned int arg3) {
