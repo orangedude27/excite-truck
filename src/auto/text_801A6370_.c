@@ -123,7 +123,8 @@ void fn_801A69F4(void *arg0, float *arg1) {
 
 extern void fn_801E9DC4(void *);
 void fn_801A6C14(void *arg0) {
-    struct { float matrix[9]; float vec[3]; float zero[3]; int count; short tag; } data;
+    struct { float prefix[3]; float matrix[9]; float vec[3]; float zero[3]; int count; short tag; } data;
+    float *matrix;
     int sp50;
     float sp4C;
     float sp48;
@@ -139,7 +140,7 @@ void fn_801A6C14(void *arg0) {
     float sp20;
     float sp1C;
     float sp18;
-
+    float sp14;
     float sp10;
     float spC;
     float sp8;
@@ -172,6 +173,7 @@ void fn_801A6C14(void *arg0) {
     void *temp_r4_4;
     void *temp_r4_5;
 
+    matrix = data.matrix;
     data.tag = -1;
     temp_r4 = M2C_FIELD(arg0, void **, 0x2700);
     temp_f8 = M2C_FIELD(temp_r4, float *, 0x2A);
@@ -214,7 +216,7 @@ void fn_801A6C14(void *arg0) {
     data.zero[2] = lbl_80562430;
     data.count = 0;
     fn_801E9DC4(&data.tag);
-    M2C_FIELD(M2C_FIELD(arg0, void **, 0), int (**)(void *, float *), 0x54)(arg0, data.matrix);
+    M2C_FIELD(M2C_FIELD(arg0, void **, 0), int (**)(void *, float *), 0x54)(arg0, matrix);
     temp_r4_3 = M2C_FIELD(arg0, void **, 0x2700);
     M2C_FIELD(temp_r4_3, int *, 0x9A) = (int) M2C_FIELD(temp_r4_3, int *, 0);
     M2C_FIELD(temp_r4_3, int *, 0x9E) = (int) M2C_FIELD(temp_r4_3, int *, 4);
