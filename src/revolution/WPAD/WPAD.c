@@ -275,87 +275,91 @@ static u8 IsButtonChanged(u16 lhs, u16 rhs) {
     return lhs != rhs ? TRUE : FALSE;
 }
 
+#pragma inline_max_size(10000)
 static inline u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
     s32 diff = lhs - rhs < 0 ? rhs - lhs : lhs - rhs;
-    return diff > threshold ? TRUE : FALSE;
+    s32 value = diff ^ threshold;
+    value = (value >> 1) - (value & diff);
+    return (u8)((u32)value >> 31);
 }
 
 static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #define WPAD_BUTTON_CHANGED(lhs, rhs) ((lhs) != (rhs))
 #define WPAD_ANALOG_CHANGED(lhs, rhs, threshold) \
     (((lhs) - (rhs) < 0 ? (rhs) - (lhs) : (lhs) - (rhs)) > (threshold))
+    WPADCB_8011_View* q = (WPADCB_8011_View*)p;
     WPADStatus* pLhsCR = (WPADStatus*)pLhs;
     WPADStatus* pRhsCR = (WPADStatus*)pRhs;
-    u8 devMode = p->devMode;
+    u8 devMode = q->devMode;
     BOOL analogChanged;
     u8 changed;
     int i;
 
 #define CALC_ANALOG_NOISE_ACC(CHANGED)                                         \
     if (CHANGED) {                                                             \
-        p->filterDiffAcc++;                                                    \
+        q->filterDiffAcc++;                                                    \
                                                                                \
-        if (p->filterDiffAcc > __WPAD_acc_diff_count_threshold) {              \
-            p->filterDiffAcc = 0;                                              \
-            p->filterSameAcc = 0;                                              \
+        if (q->filterDiffAcc > __WPAD_acc_diff_count_threshold) {              \
+            q->filterDiffAcc = 0;                                              \
+            q->filterSameAcc = 0;                                              \
             changed |= TRUE;                                                   \
         }                                                                      \
                                                                                \
     } else {                                                                   \
-        p->filterSameAcc =                                                     \
-            (p->filterSameAcc + 1) % __WPAD_acc_hyst_count_threshold;          \
+        q->filterSameAcc =                                                     \
+            (q->filterSameAcc + 1) % __WPAD_acc_hyst_count_threshold;          \
                                                                                \
-        if (p->filterSameAcc == __WPAD_acc_hyst_count_threshold - 1 &&         \
-            p->filterDiffAcc > 0) {                                            \
+        if (q->filterSameAcc == __WPAD_acc_hyst_count_threshold - 1 &&         \
+            q->filterDiffAcc > 0) {                                            \
                                                                                \
-            p->filterDiffAcc--;                                                \
+            q->filterDiffAcc--;                                                \
         }                                                                      \
     }
 
 #define CALC_ANALOG_NOISE_DPD(CHANGED)                                         \
     if (CHANGED) {                                                             \
-        p->filterDiffDpd++;                                                    \
+        q->filterDiffDpd++;                                                    \
                                                                                \
-        if (p->filterDiffDpd > __WPAD_dpd_diff_count_threshold) {              \
-            p->filterDiffDpd = 0;                                              \
+        if (q->filterDiffDpd > __WPAD_dpd_diff_count_threshold) {              \
+            q->filterDiffDpd = 0;                                              \
             changed |= TRUE;                                                   \
         }                                                                      \
                                                                                \
     } else {                                                                   \
-        p->filterSameDpd =                                                     \
-            (p->filterSameDpd + 1) % __WPAD_dpd_hyst_count_threshold;          \
+        q->filterSameDpd =                                                     \
+            (q->filterSameDpd + 1) % __WPAD_dpd_hyst_count_threshold;          \
                                                                                \
-        if (p->filterSameDpd == __WPAD_dpd_hyst_count_threshold - 1 &&         \
-            p->filterDiffDpd > 0) {                                            \
+        if (q->filterSameDpd == __WPAD_dpd_hyst_count_threshold - 1 &&         \
+            q->filterDiffDpd > 0) {                                            \
                                                                                \
-            p->filterDiffDpd--;                                                \
+            q->filterDiffDpd--;                                                \
         }                                                                      \
     }
 
 #define CALC_ANALOG_NOISE_EXT(CHANGED)                                         \
     if (CHANGED) {                                                             \
-        p->filterDiffExt++;                                                    \
+        q->filterDiffExt++;                                                    \
                                                                                \
-        if (p->filterDiffExt > __WPAD_acc_diff_count_threshold) {              \
-            p->filterDiffExt = 0;                                              \
-            p->filterSameExt = 0;                                              \
+        if (q->filterDiffExt > __WPAD_acc_diff_count_threshold) {              \
+            q->filterDiffExt = 0;                                              \
+            q->filterSameExt = 0;                                              \
             changed |= TRUE;                                                   \
         }                                                                      \
                                                                                \
     } else {                                                                   \
-        p->filterSameExt =                                                     \
-            (p->filterSameExt + 1) % __WPAD_acc_hyst_count_threshold;          \
+        q->filterSameExt =                                                     \
+            (q->filterSameExt + 1) % __WPAD_acc_hyst_count_threshold;          \
                                                                                \
-        if (p->filterSameExt == __WPAD_acc_hyst_count_threshold - 1 &&         \
-            p->filterDiffExt > 0) {                                            \
+        if (q->filterSameExt == __WPAD_acc_hyst_count_threshold - 1 &&         \
+            q->filterDiffExt > 0) {                                            \
                                                                                \
-            p->filterDiffExt--;                                                \
+            q->filterDiffExt--;                                                \
         }                                                                      \
     }
 
-    if (p->dataFormat == WPAD_FMT_CORE_BTN ||
-        p->dataFormat == WPAD_FMT_CORE_BTN_ACC ||
-        p->dataFormat == WPAD_FMT_CORE_BTN_ACC_DPD) {
+    if (q->dataFormat == WPAD_FMT_CORE_BTN ||
+        q->dataFormat == WPAD_FMT_CORE_BTN_ACC ||
+        q->dataFormat == WPAD_FMT_CORE_BTN_ACC_DPD) {
 
         changed = WPAD_BUTTON_CHANGED(pLhsCR->button, pRhsCR->button);
 
@@ -371,9 +375,9 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
                     WPAD_ANALOG_CHANGED(pLhsCR->obj[i].y, pRhsCR->obj[i].y, 2));
             }
         }
-    } else if (p->dataFormat == WPAD_FMT_FS_BTN ||
-               p->dataFormat == WPAD_FMT_FS_BTN_ACC ||
-               p->dataFormat == WPAD_FMT_FS_BTN_ACC_DPD) {
+    } else if (q->dataFormat == WPAD_FMT_FS_BTN ||
+               q->dataFormat == WPAD_FMT_FS_BTN_ACC ||
+               q->dataFormat == WPAD_FMT_FS_BTN_ACC_DPD) {
 
         WPADFSStatus* pLhsFS = (WPADFSStatus*)pLhs;
         WPADFSStatus* pRhsFS = (WPADFSStatus*)pRhs;
@@ -401,9 +405,9 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
             changed |= WPAD_ANALOG_CHANGED(pLhsFS->fsStickY, pRhsFS->fsStickY, 1);
         }
     } else {
-        if (p->dataFormat == WPAD_FMT_CLASSIC_BTN ||
-            p->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC ||
-            p->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
+        if (q->dataFormat == WPAD_FMT_CLASSIC_BTN ||
+            q->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC ||
+            q->dataFormat == WPAD_FMT_CLASSIC_BTN_ACC_DPD) {
 
             WPADCLStatus* pLhsCL = (WPADCLStatus*)pLhs;
             WPADCLStatus* pRhsCL = (WPADCLStatus*)pRhs;
@@ -4606,9 +4610,9 @@ void fn_80066EB0(s32 arg0, u8 *arg1) {
     }
     (*(u8 *)((s8*)(temp_r30) + (0x28))) = (u8) (*(u8 *)((s8*)(temp_r31) + (0x801)));
     (*(s32 *)((s8*)(temp_r31) + (0x788))) = (s32) ((s32) ((*(u8 *)((s8*)(arg1) + (1))) & 0x80) >> 7);
-    (*(s16 *)((s8*)(temp_r30) + (2))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (3))) * 4) & 0xFFFFFFFC) | (((u8) (*(u8 *)((s8*)(arg1) + (1))) >> 5U) & 3)) - (*(s16 *)((s8*)(temp_r31) + (0x7B4))));
-    (*(s16 *)((s8*)(temp_r30) + (4))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (4))) * 4) & 0xFFFFFFFC) | (s16) (((u8) (*(u8 *)((s8*)(arg1) + (2))) >> 4U) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B6))));
-    (*(s16 *)((s8*)(temp_r30) + (6))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (5))) * 4) & 0xFFFFFFFC) | (s16) (((u8) (*(u8 *)((s8*)(arg1) + (2))) >> 5U) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B8))));
+    (*(s16 *)((s8*)(temp_r30) + (2))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (3))) * 4) & 0xFFFFFFFC) | (((s8) (*(u8 *)((s8*)(arg1) + (1))) >> 5) & 3)) - (*(s16 *)((s8*)(temp_r31) + (0x7B4))));
+    (*(s16 *)((s8*)(temp_r30) + (4))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (4))) * 4) & 0xFFFFFFFC) | (s16) (((s8) (*(u8 *)((s8*)(arg1) + (2))) >> 4) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B6))));
+    (*(s16 *)((s8*)(temp_r30) + (6))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (5))) * 4) & 0xFFFFFFFC) | (s16) (((s8) (*(u8 *)((s8*)(arg1) + (2))) >> 5) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B8))));
     temp_r0 = (s16) (*(u8 *)((s8*)(arg1) + (6))) | (((*(u8 *)((s8*)(arg1) + (8))) * 0x10) & 0x300);
     (*(s16 *)((s8*)(temp_r30) + (8))) = temp_r0;
     (*(s16 *)((s8*)(temp_r30) + (0xA))) = (s16) (0x2FF - (s16) ((s16) (*(u8 *)((s8*)(arg1) + (7))) | (((*(u8 *)((s8*)(arg1) + (8))) * 4) & 0x300)));
