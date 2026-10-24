@@ -253,6 +253,22 @@ void *fn_80287C30(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x24) = 0;
     return arg0;
 }
+
+#pragma scheduling invalid_target
+void *fn_80287C80(void *arg0, s32 arg1) {
+    if (arg0 != 0) {
+        if (*(s32 *)arg0 != 0) {
+            fn_80131818(*(s32 *)arg0);
+            *(s32 *)arg0 = 0;
+        }
+        if (arg1 > 0) {
+            fn_80128668(arg0);
+        }
+    }
+    return arg0;
+}
+#pragma scheduling on
+
 #pragma scheduling on
 extern void fn_801346B4(void *, s32, s32);
 extern s32 fn_8012C33C(const char *);
