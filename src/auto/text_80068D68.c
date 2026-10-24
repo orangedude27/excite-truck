@@ -12660,6 +12660,126 @@ void sdp_conn_timeout(tCONN_CB *p_ccb) {
     fn_80099F58(p_ccb);
 }
 
+void process_service_search(tCONN_CB *p_ccb, UINT16 trans_num, UINT16 param_len, UINT8 *p) {
+    tSDP_UUID_SEQ seq;
+    tSDP_RECORD *p_rec;
+    u32 handles[20];
+    UINT16 total_handles;
+    UINT16 max_handles;
+    UINT16 num_uids;
+    UINT16 start_offset;
+    UINT16 count;
+    UINT8 cont_request_needed;
+    UINT8 *p_param_len;
+    UINT8 *p_end;
+    UINT16 param_len2;
+    BT_HDR *buf;
+
+    cont_request_needed = 0;
+    p_rec = NULL;
+    total_handles = 0;
+    p = sdpu_extract_uid_seq(p, param_len, &seq);
+    if (p == NULL) {
+        sdpu_build_n_send_error(p_ccb, trans_num, 3, 0);
+        return;
+    }
+    if (seq.num_uids == 0) {
+        sdpu_build_n_send_error(p_ccb, trans_num, 3, 0);
+        return;
+    }
+    num_uids = ((UINT16) p[0] << 8) + p[1];
+    if (num_uids > 0x14) {
+        num_uids = 0x14;
+    }
+    while (total_handles < num_uids) {
+        p_rec = sdp_db_service_search(p_rec, &seq);
+        if (p_rec == 0) {
+            break;
+        }
+        handles[total_handles] = p_rec->record_handle;
+        total_handles++;
+    }
+    if (p[2] != 0) {
+        if (p[2] != 2) {
+            sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
+            return;
+        }
+        p += 3;
+        start_offset = ((UINT16) p[0] << 8) + p[1];
+        if (start_offset != ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset) {
+            sdpu_build_n_send_error(p_ccb, trans_num, 5, 0);
+            return;
+        }
+        count = total_handles - start_offset;
+    } else {
+        count = total_handles;
+        start_offset = 0;
+    }
+    max_handles = (UINT16)(((s32)((u16)p_ccb->rem_mtu_size - 0xc)) >> 2);
+    if (count <= max_handles) {
+        max_handles = count;
+    } else {
+        cont_request_needed = 1;
+        ((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset += max_handles;
+    }
+    buf = (BT_HDR *)GKI_getpoolbuf(2);
+    if (buf == NULL) {
+        if (lbl_803C4C40[0x4630] >= 1) {
+            fn_8007093C(0xA0000, lbl_8031A50C);
+        }
+        return;
+    }
+    buf->offset = 9;
+    p_param_len = (UINT8 *)buf + 0x11;
+    p_end = p_param_len + 3;
+    *p_param_len = 3;
+    count = start_offset + max_handles;
+    p_param_len[1] = (UINT8)(trans_num >> 8);
+    p_param_len[2] = (UINT8)trans_num;
+    p[0] = (UINT8)(total_handles >> 8);
+    p[1] = (UINT8)total_handles;
+    p_param_len[5] = (UINT8)(max_handles >> 8);
+    p_param_len[6] = (UINT8)max_handles;
+    p_end = p_param_len + 6;
+    if (start_offset < count) {
+        if (count - start_offset > 8 && start_offset <= count) {
+            while (start_offset < count - 8) {
+                u32 h = handles[start_offset];
+                p_end[0] = (UINT8)(h >> 24);
+                p_end[1] = (UINT8)(h >> 16);
+                p_end[2] = (UINT8)(h >> 8);
+                p_end[3] = (UINT8)h;
+                start_offset += 8;
+                p_end += 0x20;
+            }
+        }
+        while (start_offset < count) {
+            u32 h = handles[start_offset];
+            p_end[0] = (UINT8)(h >> 24);
+            p_end[1] = (UINT8)(h >> 16);
+            p_end[2] = (UINT8)(h >> 8);
+            p_end[3] = (UINT8)h;
+            start_offset++;
+            p_end += 4;
+        }
+    }
+    if (cont_request_needed != 0) {
+        p_end[0] = 2;
+        p_end[1] = (UINT8)(((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset >> 8);
+        p_end[2] = (UINT8)((tSDP_CCB_CONT_VIEW *)p_ccb)->cont_offset;
+        p_end += 3;
+    } else {
+        p_end[0] = 0;
+        p_end += 1;
+    }
+    param_len2 = (UINT16)(p_end - p_param_len - 2);
+    p_param_len = (UINT8 *)buf + 0x14;
+    p_param_len[0] = (UINT8)(param_len2 >> 8);
+    p_param_len[1] = (UINT8)param_len2;
+    *(UINT16 *)((UINT8 *)buf + 2) = (UINT16)(p_end - ((UINT8 *)buf + 0x11));
+    L2CA_DataWrite(p_ccb->connection_id, buf);
+}
+
 static void process_service_attr_req(tCONN_CB *arg0, UINT16 arg1, UINT16 arg2, UINT8 *arg3, UINT8 *arg4) {
     tSDP_ATTR_SEQ attr_seq;
     register UINT32 record_handle;
