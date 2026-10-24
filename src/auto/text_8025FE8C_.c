@@ -14,7 +14,7 @@ extern u8 lbl_8055F3EA;
 extern u8 lbl_8055F3EB;
 #pragma push
 #pragma small_data on
-extern u8 lbl_8055F420[];
+extern u8 *lbl_8055F420;
 #pragma pop
 extern u8 lbl_8055BAC0;
 extern u8 lbl_8055BAB8;
