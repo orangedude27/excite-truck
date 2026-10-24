@@ -4,6 +4,12 @@
 #include <types.h>
 #include <stddef.h>
 
+#pragma cplusplus on
+struct VTable_801B3C98 {
+    virtual void destroy(s32);
+};
+#pragma cplusplus reset
+
 extern f32 lbl_8055E3C8;
 extern f32 lbl_80562630;
 extern f32 lbl_80562650;
