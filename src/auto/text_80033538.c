@@ -229,13 +229,20 @@ void fn_80033CD8(void *arg0, void *arg1) {
     OSRestoreInterrupts(0);
 }
 
-void *__AXGetCurrentProfile(void) {
-    unsigned int index;
-    if (lbl_8055D7F0 != 0) {
-        index = lbl_8055D7F4;
-        lbl_8055D7F4 = (index + 1) % lbl_8055D7F8;
-        return lbl_8055D7FC + index * 0x38;
-    }
-    return 0;
+void *__AXGetCurrentProfile(void)
+{
+  unsigned char *new_var;
+  unsigned int index;
+  int new_var2;
+  if (lbl_8055D7F0 != 0)
+  {
+    index = lbl_8055D7F4;
+    new_var = lbl_8055D7FC;
+    new_var2 = index * 0x38;
+    new_var = new_var + new_var2;
+    lbl_8055D7F4 = (index + 1) % lbl_8055D7F8;
+    return new_var;
+  }
+  return 0;
 }
 
