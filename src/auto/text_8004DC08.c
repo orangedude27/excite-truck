@@ -1,7 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
-extern void *lbl_8055DA2C;
+extern void * volatile lbl_8055DA2C;
 #pragma small_data on
 extern char lbl_80558F40[];
 #pragma small_data off
@@ -78,14 +78,14 @@ extern void __OSLaunchMenu(void);
 void fn_8004DDFC(void) {
     unsigned char *mem;
     unsigned char *base;
-    unsigned char *selected;
-    unsigned char *entry;
+    register unsigned char *selected;
+    register unsigned char *entry;
     unsigned char b0, b1, b2, b3;
     volatile unsigned char saved[4];
+    int error;
     unsigned int i;
     unsigned long long title;
     int fd;
-    int error;
     int result;
     unsigned int count;
 
@@ -102,8 +102,8 @@ void fn_8004DDFC(void) {
     fd = -1;
     count = 1;
     lbl_8055DA2C = 0;
-    fn_8003AC24((void *)fn_8004DDF4, b2, b1, b0, 0, -1, 1, mem);
-    if (*(volatile void **)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
+    ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, b2, b1, b0, 0, -1, 1, mem);
+    if (*(void * volatile *)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
         OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
         __OSLaunchMenu();
     }
