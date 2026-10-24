@@ -9,12 +9,15 @@ extern s16 lbl_8055FD08, lbl_8055FD0A, lbl_8055FD0C;
 extern unsigned char lbl_8055FD00;
 extern unsigned char lbl_804CA088[];
 extern void fn_802D3F30(void);
-#pragma scheduling off
+#pragma push
+#pragma scheduling invalid_target
 void fn_802D3ED4(void) {
+    register int value;
     fn_8000D838(&lbl_8055FD00);
+    value = 0x405;
     lbl_8055FD08 = 0x100;
-    lbl_8055FD0A = 0x405;
+    lbl_8055FD0A = value;
     lbl_8055FD0C = 0x401;
-    fn_8002F53C(&lbl_804CA088, &fn_802D3F30, 0, 0x14, 7);
+    fn_8002F53C(lbl_804CA088, &fn_802D3F30, 0, 0x14, 7);
 }
-#pragma scheduling on
+#pragma pop
