@@ -862,6 +862,7 @@ secondBody:
 secondCheck:
     if (i < (s32)(*(u32 **)&lbl_8055F420)[3]) goto secondBody;
 }
+#pragma scheduling on
 #pragma cplusplus reset
 
 void fn_80262120(void *arg0) {
