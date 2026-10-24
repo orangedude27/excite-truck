@@ -288,78 +288,55 @@ extern "C" void fn_8012AC98(s32 arg0) {
 
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" s32 fn_8012ACA0(void *arg0, void *arg1, s32 arg2) {
-    const char *messages = lbl_8032A630;
+    u32 messages = (u32)lbl_8032A630;
     char sp10[128];
     s32 spC;
     u8 sp8;
-    s32 var_r25;
-    s32 var_r5;
-    s32 var_r5_2;
-    u32 var_r24;
-    u32 var_r26;
-    char *var_r4;
-    char *var_r4_2;
-    char *var_r6;
-    char *var_r6_2;
-    u8 temp_r3;
-    u8 temp_r3_2;
-    u8 temp_r4;
-    u8 temp_r4_2;
-    u8 temp_r4_3;
-    u8 temp_r4_4;
-    u8 temp_r4_5;
-    u8 temp_r4_6;
-    u8 temp_r4_7;
-    u8 temp_r4_8;
-    u8 temp_r4_9;
-    u8 temp_r4_10;
-    u8 *temp_r3_3;
-    u8 *temp_r26;
-    u8 *var_r25_2;
-    u8 *var_r31;
+    s32 var_r25, var_r5, var_r5_2;
+    u32 var_r24, var_r26;
+    char *var_r4, *var_r4_2, *var_r6, *var_r6_2;
+    u8 temp_r3, temp_r3_2;
+    u8 temp_r4, temp_r4_2, temp_r4_3, temp_r4_4, temp_r4_5;
+    u8 temp_r4_6, temp_r4_7, temp_r4_8, temp_r4_9, temp_r4_10;
+    u32 temp_r4_11;
+    u8 *temp_r3_3, *temp_r26, *var_r25_2, *var_r31;
 
-    if (lbl_8055DFFC == 0) fn_802E317C(messages + 0x1D0, arg0);
-    var_r4 = (char *)arg0;
-    var_r6 = sp10;
-    var_r5 = 0x80;
-loop_5:
-    temp_r3 = *var_r4;
-    var_r4 += 1;
-    *var_r6 = temp_r3;
-    var_r6 += 1;
-    if ((s8)temp_r3 != 0) goto loop_5_limit;
-    goto loop_5_done;
+    if (lbl_8055DFFC == 0) fn_802E317C((const char *)(messages + 0x1D0), arg0);
+    var_r4 = (char *)arg0; var_r6 = sp10; var_r5 = 0x80;
+    goto loop_5_copy;
 loop_5_limit:
     var_r5 -= 1;
-    if (var_r5 > 0) goto loop_5;
+    if (var_r5 > 0) goto loop_5_copy;
     var_r6[-1] = 0;
+    goto loop_5_done;
+loop_5_copy:
+    temp_r3 = *var_r4++;
+    *var_r6++ = temp_r3;
+    if ((s8)temp_r3 != 0) goto loop_5_limit;
 loop_5_done:
-    if ((s8)*fn_80029004(sp10, 0x2E) != 0) {
-        *fn_80029004(sp10, 0x2E) = 0;
-    }
-    var_r6_2 = sp10;
-    var_r5_2 = 0x80;
-loop_10:
-    if ((s8)*var_r6_2 == 0) goto loop_10_done;
+    if ((s8)*fn_80029004(sp10, 0x2E) != 0) *fn_80029004(sp10, 0x2E) = 0;
+    var_r6_2 = sp10; var_r5_2 = 0x80;
+    goto loop_10_test;
+loop_10_step:
     var_r5_2 -= 1;
     var_r6_2 += 1;
-    goto loop_10;
-loop_10_done:
-    if (var_r5_2 <= 0) goto loop_10_done2;
-    var_r4_2 = (char *)lbl_805599E0;
-loop_15:
-    temp_r3_2 = *var_r4_2;
-    var_r4_2 += 1;
-    *var_r6_2 = temp_r3_2;
-    var_r6_2 += 1;
-    if ((s8)temp_r3_2 != 0) goto loop_15_limit;
-    goto loop_10_done2;
+loop_10_test:
+    if ((s8)*var_r6_2 != 0) goto loop_10_step;
+    if (var_r5_2 <= 0) goto loop_10_done;
+    var_r4_2 = (char *)&lbl_805599E0;
+    goto loop_15_copy;
 loop_15_limit:
     var_r5_2 -= 1;
-    if (var_r5_2 > 0) goto loop_15;
+    if (var_r5_2 > 0) goto loop_15_copy;
     var_r6_2[-1] = 0;
-loop_10_done2:
+    goto loop_10_done;
+loop_15_copy:
+    temp_r3_2 = *var_r4_2++;
+    *var_r6_2++ = temp_r3_2;
+    if ((s8)temp_r3_2 != 0) goto loop_15_limit;
+loop_10_done:
     fn_8002B0D8(sp10);
     temp_r3_3 = (u8 *)fn_8012C370((s32)sp10, 0x45544F43, (s32)&spC, 0, 0, (s32)&sp8);
     if (temp_r3_3 != 0 && sp8 != 0) {
@@ -373,39 +350,34 @@ loop_10_done2:
         temp_r4_8 = temp_r3_3[0xD]; temp_r3_3[0xD] = temp_r3_3[0xE]; temp_r3_3[0xE] = temp_r4_8;
         temp_r4_9 = temp_r3_3[0x10]; temp_r3_3[0x10] = temp_r3_3[0x13]; temp_r3_3[0x13] = temp_r4_9;
         temp_r4_10 = temp_r3_3[0x11]; temp_r3_3[0x11] = temp_r3_3[0x12]; temp_r3_3[0x12] = temp_r4_10;
-        if (*(u32 *)temp_r3_3 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14)
-            fn_802E317C(lbl_8032AE60, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
-        var_r25_2 = temp_r3_3 + 0x14;
-        var_r26 = 0;
+        temp_r4_11 = *(u32 *)temp_r3_3;
+        if (temp_r4_11 != 0 || *(u32 *)(temp_r3_3 + 4) != 0x14)
+            fn_802E317C(lbl_8032AE60, 0, 0, *(u32 *)(temp_r3_3 + 4), 0x14);
+        var_r25_2 = temp_r3_3 + 0x14; var_r26 = 0;
+        goto loop_23_test;
 loop_23:
-        if (var_r26 < *(u32 *)(temp_r3_3 + 0xC)) {
-            fn_8012A388(var_r25_2);
-            var_r25_2 += 0x44;
-            var_r26 += 1;
-            goto loop_23;
-        }
+        fn_8012A388(var_r25_2);
+        var_r25_2 += 0x44; var_r26 += 1;
+loop_23_test:
+        if (var_r26 < *(u32 *)(temp_r3_3 + 0xC)) goto loop_23;
     }
-    if (temp_r3_3 == 0) fn_802E317C(messages + 0x200, arg0);
+    if (temp_r3_3 == 0) fn_802E317C((const char *)(messages + 0x200), arg0);
     if (*(u32 *)((u8 *)arg0 + 0x7C) != *(u32 *)(temp_r3_3 + 8))
-        fn_802E317C(messages + 0x228, arg0);
+        fn_802E317C((const char *)(messages + 0x228), arg0);
     if (*(u32 *)((u8 *)arg0 + 0x88) != *(u32 *)(temp_r3_3 + 0xC))
-        fn_802E317C(messages + 0x258, arg0);
+        fn_802E317C((const char *)(messages + 0x258), arg0);
     if (*(u32 *)((u8 *)arg0 + 0x8C) != *(u32 *)(temp_r3_3 + 0x10))
-        fn_802E317C(messages + 0x288, arg0);
-    temp_r26 = temp_r3_3 + 0x14;
-    var_r31 = temp_r26;
-    var_r25 = 1;
-    var_r24 = 0;
+        fn_802E317C((const char *)(messages + 0x288), arg0);
+    temp_r26 = temp_r3_3 + 0x14; var_r31 = temp_r26; var_r25 = 1; var_r24 = 0;
+    goto loop_37_test;
 loop_37:
-    if (var_r24 < *(u32 *)(temp_r3_3 + 0xC)) {
-        if (*(s32 *)(var_r31 + 0x2C) + *(s32 *)(var_r31 + 0x28) <= arg2 &&
-            fn_8012A470(arg0, var_r24, var_r31, arg1) == 0) var_r25 = 0;
-        else {
-            var_r31 += 0x44;
-            var_r24 += 1;
-            goto loop_37;
-        }
+    if (*(s32 *)(var_r31 + 0x2C) + *(s32 *)(var_r31 + 0x28) <= arg2) {
+        if (fn_8012A470(arg0, var_r24, var_r31, arg1) == 0) { var_r25 = 0; goto loop_37_done; }
     }
+    var_r31 += 0x44; var_r24 += 1;
+loop_37_test:
+    if (var_r24 < *(u32 *)(temp_r3_3 + 0xC)) goto loop_37;
+loop_37_done:
     *(void **)((u8 *)arg0 + 0x60) = temp_r26;
     *(void **)((u8 *)arg0 + 0x64) = temp_r3_3;
     return var_r25;
@@ -567,6 +539,108 @@ extern "C" void fn_8012BEF0(s32 arg0) {
 extern "C" void fn_8012E498(void *);
 extern "C" void fn_8012BF24(void *arg0) {
     fn_8012E498(arg0);
+}
+
+extern "C" s32 fn_802E3BB4(s32, char *, s32);
+extern "C" void fn_802E3A14(s32, s32);
+extern "C" s32 fn_802E3804(s32, void *, s32);
+extern "C" s32 fn_802E3C24(s32, char *, s32);
+extern "C" void fn_802E3CA4(s32);
+extern "C" void fn_8012C4D8(void *);
+extern "C" s32 lbl_802F8E50[3];
+extern "C" const char lbl_8032AF4C[];
+extern "C" const char lbl_8032AF0C[];
+extern "C" const char lbl_8032AEF4[];
+extern "C" const char lbl_8032AED4[];
+extern "C" const char lbl_8032AEB4[];
+extern "C" char lbl_805599D8[];
+extern "C" void fn_8012BF28(void) {
+    s32 paths[3], header[5], handle, inner, size;
+    s32 *pathPtr, *table;
+    char filename[128], name[128], *src, *dst, ch;
+    u8 ok;
+    u8 *data;
+    u32 i;
+    s32 remaining;
+    if (lbl_8055DFFC == 0) return;
+    table = lbl_802F8E50;
+    paths[0] = *table++; paths[1] = *table++; paths[2] = *table;
+    pathPtr = paths; i = 0;
+    do {
+        handle = fn_802E3BB4(*pathPtr, filename, 0x80);
+        if ((u32)(handle + 0x10000) != 0xFFFF) {
+            do {
+                *fn_80029004(filename, '.') = 0;
+                dst = filename; remaining = 0x80; goto scan_test_1;
+scan_step_1:
+                --remaining; ++dst;
+scan_test_1:
+                if ((s8)*dst != 0) goto scan_step_1;
+                if (remaining <= 0) goto suffix_done_1;
+                src = (char *)&lbl_805599D8; goto append_1;
+limit_1:
+                --remaining; if (remaining > 0) goto append_1; dst[-1] = 0; goto suffix_done_1;
+append_1:
+                ch = *src++; *dst++ = ch; if ((s8)ch != 0) goto limit_1;
+suffix_done_1:
+                inner = ((s32 (*)(char *))fn_802E36D8)(filename);
+                if (inner != -1) {
+                    fn_802E3A14(inner, 0x14); fn_802E3804(inner, header, 0x14);
+                    if (header[0] == 0) {
+                        src = filename; dst = name; remaining = 0x80; goto copy_name_body;
+copy_name_limit:
+                        --remaining; if (remaining > 0) goto copy_name_body; dst[-1] = 0; goto copy_name_done;
+copy_name_body:
+                        ch = *src++; *dst++ = ch; if ((s8)ch != 0) goto copy_name_limit;
+copy_name_done:
+                        ;
+                        if ((s8)*fn_80029004(name, '.') != 0) *fn_80029004(name, '.') = 0;
+                        dst = name; remaining = 0x80; goto scan_test_2;
+scan_step_2:
+                        --remaining; ++dst;
+scan_test_2:
+                        if ((s8)*dst != 0) goto scan_step_2;
+                        if (remaining <= 0) goto suffix_done_2;
+                        src = (char *)&lbl_805599E0; goto append_2;
+limit_2:
+                        --remaining; if (remaining > 0) goto append_2; dst[-1] = 0; goto suffix_done_2;
+append_2:
+                        ch = *src++; *dst++ = ch; if ((s8)ch != 0) goto limit_2;
+suffix_done_2:
+                        fn_8002B0D8(name);
+                        data = (u8 *)fn_8012C370((s32)name, 0x45544F43, (s32)&size, 0, 0, (s32)&ok);
+                        if (data != 0 && ok != 0) {
+                            u8 t; u32 n;
+                            t=data[0]; data[0]=data[3]; data[3]=t; t=data[1]; data[1]=data[2]; data[2]=t;
+                            t=data[4]; data[4]=data[7]; data[7]=t; t=data[5]; data[5]=data[6]; data[6]=t;
+                            t=data[8]; data[8]=data[0xB]; data[0xB]=t; t=data[9]; data[9]=data[0xA]; data[0xA]=t;
+                            t=data[0xC]; data[0xC]=data[0xF]; data[0xF]=t; t=data[0xD]; data[0xD]=data[0xE]; data[0xE]=t;
+                            t=data[0x10]; data[0x10]=data[0x13]; data[0x13]=t; t=data[0x11]; data[0x11]=data[0x12]; data[0x12]=t;
+                            if (*(u32 *)data != 0 || *(u32 *)(data+4) != 0x14)
+                                fn_802E317C(lbl_8032AE60, 0, 0, *(u32 *)(data+4), 0x14);
+                            n=0; while (n < *(u32 *)(data+0xC)) { fn_8012A388(data+0x14+n*0x44); ++n; }
+                        }
+                        if (data != 0) {
+                            if ((u32)header[2] != *(u32 *)(data+8)) {
+                                if (*(u32 *)(data+0xC) == (u32)header[3]) {
+                                    fn_802E30C8(lbl_8032AF4C, filename);
+                                    *(u32 *)(data+8)=header[2]; *(u32 *)(data+0x10)=header[4];
+                                    fn_802E3804(inner, data+0x14, header[3]*0x44);
+                                } else fn_802E30C8(lbl_8032AF0C, filename);
+                            }
+                            fn_8012C4D8(data);
+                        } else fn_802E30C8(lbl_8032AEF4, filename);
+                    } else {
+                        fn_802E30C8(lbl_8032AED4, filename); fn_802E3734(&inner); goto read_rest;
+                    }
+                } else fn_802E30C8(lbl_8032AEB4, filename);
+read_rest:
+                ;
+            } while (fn_802E3C24(handle, filename, 0x80) != 0);
+            fn_802E3CA4(handle);
+        }
+        ++pathPtr; ++i;
+    } while (i < 3);
 }
 
 extern "C" s32 fn_8012B534(s32 *, s32);
