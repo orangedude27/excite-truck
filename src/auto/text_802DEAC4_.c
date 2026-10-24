@@ -179,15 +179,14 @@ void fn_802DF4A8(void) {
     GXLoadTexObj(fn_802D3100(), 6);
 }
 
-#pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802DF684(void) {
     GXSetTevSwapMode(GX_TEVSTAGE0, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetTevSwapMode(GX_TEVSTAGE1, (GXTevSwapSel)0, (GXTevSwapSel)0);
     GXSetNumIndStages(0);
     GXSetTevDirect(1);
 }
-#pragma pop
+#pragma scheduling on
 void fn_802DF6D0(void) {
     volatile s32 spC = 0;
     volatile s32 sp8 = 0;
@@ -578,71 +577,115 @@ extern const u16 lbl_802FAE28[];
 extern const u8 lbl_805650C8, lbl_805650C9, lbl_805650CA, lbl_805650CB;
 extern const f32 lbl_805650CC, lbl_805650D0, lbl_805650D4, lbl_805650D8, lbl_805650DC, lbl_805650E0;
 extern const u16 lbl_80565238, lbl_8056523A, lbl_8056523C, lbl_8056523E;
-void fn_802E13D8(f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
-    f32 vertices[12];
-    u16 indices[6];
-    GXColorS10 tevColor;
+#pragma push
+#pragma scheduling invalid_target
+#pragma optimization_level 3
+void fn_802E13D8(f32 farg0, f32 farg1, f32 farg2, f32 farg3, void *arg0) {
+    f32 sp30[24];
+    u16 sp20[6];
     GXColor kColor;
-    void *state;
-    u32 *data;
-    f32 translatedX;
-    f32 translatedY;
-    f32 width;
-    f32 height;
-    s32 i;
-    state = fn_802E0BA4();
+    u16 tevColor[4];
+    u8 *var_r3;
+    f32 temp_f31;
+    f32 temp_f28;
+    f32 temp_f30;
+    f32 temp_f29;
+    f32 temp_f1;
+    f32 temp_f2;
+    f32 var_f1;
+    f32 var_f1_2;
+    f32 var_f1_3;
+    f32 var_f1_4;
+    f32 var_f1_5;
+    f32 var_f1_6;
+    f32 var_f1_7;
+    f32 var_f1_8;
+    s32 temp_r4;
+    s32 temp_r4_2;
+    s32 temp_r5;
+    s32 temp_r5_2;
+    s32 temp_r6;
+    s32 var_ctr;
+    s32 var_r6;
+    void *temp_r31;
+    u32 *temp_r5_3;
+    u32 *temp_r3;
+    temp_r31 = fn_802E0BA4();
     fn_802D3360();
-    data = *(u32 **)((u8 *)state + 4);
-    if (data != 0) {
+    if (*(u32 **)((u8 *)temp_r31 + 4) != 0) {
         fn_802C8C04(-1);
-        for (i = 0; i < 4; i += 2) {
-            u32 a = (u32)i;
-            u32 b = a + 1;
-            f32 x0 = (a & 1) ? lbl_805650CC : lbl_805650D0;
-            f32 y0 = (a & 2) ? lbl_805650D4 : lbl_805650D0;
-            f32 x1 = (a & 1) ? lbl_805650D8 : lbl_805650D0;
-            f32 y1 = (a & 2) ? lbl_805650D8 : lbl_805650D0;
-            f32 x2 = (b & 1) ? lbl_805650CC : lbl_805650D0;
-            f32 y2 = (b & 2) ? lbl_805650D4 : lbl_805650D0;
-            f32 x3 = (b & 1) ? lbl_805650D8 : lbl_805650D0;
-            f32 y3 = (b & 2) ? lbl_805650D8 : lbl_805650D0;
-            vertices[0] = x0;
-            vertices[1] = y0;
-            vertices[2] = lbl_805650D0;
-            vertices[3] = -1.0f;
-            vertices[4] = x1;
-            vertices[5] = y1;
-            vertices[6] = x2;
-            vertices[7] = y2;
-            vertices[8] = lbl_805650D0;
-            vertices[9] = -1.0f;
-            vertices[10] = x3;
-            vertices[11] = y3;
+        var_r3 = (u8 *)sp30;
+        var_r6 = 0;
+        for (var_ctr = 0; var_ctr < 2; var_ctr++) {
+            temp_r4 = var_r6 & 1;
+            if (temp_r4 != 0) var_f1 = lbl_805650CC;
+            else var_f1 = lbl_805650D0;
+            temp_r5 = var_r6 & 2;
+            *(f32 *)(var_r3 + 0) = var_f1;
+            if (temp_r5 != 0) var_f1_2 = lbl_805650D4;
+            else var_f1_2 = lbl_805650D0;
+            *(f32 *)(var_r3 + 4) = var_f1_2;
+            *(f32 *)(var_r3 + 8) = lbl_805650D0;
+            if (temp_r4 != 0) var_f1_3 = lbl_805650D8;
+            else var_f1_3 = lbl_805650D0;
+            *(f32 *)(var_r3 + 0x10) = var_f1_3;
+            if (temp_r5 != 0) var_f1_4 = lbl_805650D8;
+            else var_f1_4 = lbl_805650D0;
+            *(f32 *)(var_r3 + 0x14) = var_f1_4;
+            temp_r6 = var_r6 + 1;
+            temp_r4_2 = temp_r6 & 1;
+            *(s32 *)(var_r3 + 0xC) = -1;
+            if (temp_r4_2 != 0) var_f1_5 = lbl_805650CC;
+            else var_f1_5 = lbl_805650D0;
+            temp_r5_2 = temp_r6 & 2;
+            *(f32 *)(var_r3 + 0x18) = var_f1_5;
+            if (temp_r5_2 != 0) var_f1_6 = lbl_805650D4;
+            else var_f1_6 = lbl_805650D0;
+            *(f32 *)(var_r3 + 0x1C) = var_f1_6;
+            *(f32 *)(var_r3 + 0x20) = lbl_805650D0;
+            if (temp_r4_2 != 0) var_f1_7 = lbl_805650D8;
+            else var_f1_7 = lbl_805650D0;
+            *(f32 *)(var_r3 + 0x28) = var_f1_7;
+            if (temp_r5_2 != 0) var_f1_8 = lbl_805650D8;
+            else var_f1_8 = lbl_805650D0;
+            *(f32 *)(var_r3 + 0x2C) = var_f1_8;
+            var_r6 = temp_r6 + 1;
+            *(s32 *)(var_r3 + 0x24) = -1;
+            var_r3 += 0x30;
         }
-        for (i = 0; i < 6; i++) indices[i] = lbl_802FAE28[i];
-        fn_802C8DB8(vertices, 4, indices, 6, lbl_802FAE28[4], lbl_802FAE28[3], lbl_802FAE28[2], lbl_802FAE28[1]);
+        {
+            register volatile const u16 *indexPtr = lbl_802FAE28;
+            sp20[0] = *indexPtr++;
+            sp20[1] = *indexPtr++;
+            sp20[2] = *indexPtr++;
+            sp20[3] = *indexPtr++;
+            sp20[4] = *indexPtr++;
+            sp20[5] = *indexPtr++;
+        }
+        fn_802C8DB8(sp30, 4, sp20, 6, sp20[4], sp20[3], sp20[2], sp20[1]);
         fn_802C8D74();
-        data = *(u32 **)((u8 *)state + 4);
-        translatedX = lbl_805650DC + farg0;
-        translatedY = lbl_805650E0 - farg1;
-        width = (f32)data[0];
-        height = (f32)data[1];
+        temp_r5_3 = *(u32 **)((u8 *)temp_r31 + 4);
+        temp_f31 = lbl_805650DC + farg0;
+        temp_f28 = lbl_805650E0 + -farg1;
+        temp_f1 = (f32)temp_r5_3[0];
+        temp_f2 = (f32)temp_r5_3[1];
+        temp_f30 = farg2 / temp_f1;
+        temp_f29 = farg3 / temp_f2;
         GXSetZMode(0, 7, 0);
-        width = farg2 / width;
-        height = farg3 / height;
         GXSetColorUpdate(1);
         GXSetAlphaCompare(7, 0, 1, 0, 0);
-        fn_802E1DA4((u8 *)state + 0x50, data[0], data[1], translatedX, translatedY, width, height, lbl_805650D8);
+        temp_r3 = *(u32 **)((u8 *)temp_r31 + 4);
+        fn_802E1DA4((u8 *)temp_r31 + 0x50, temp_r3[0], temp_r3[1], temp_f31, temp_f28, temp_f30, temp_f29, lbl_805650D8);
         fn_802D007C(lbl_805650D8);
         GXSetTevSwapMode(0, 0, 0);
         GXSetTevSwapMode(1, 0, 0);
         GXSetTevSwapMode(2, 0, 0);
         GXSetTevSwapMode(3, 0, 0);
-        tevColor.r = lbl_80565238;
-        tevColor.g = lbl_8056523A;
-        tevColor.b = lbl_8056523C;
-        tevColor.a = lbl_8056523E;
-        GXSetTevColorS10(1, tevColor);
+        tevColor[0] = lbl_80565238;
+        tevColor[1] = lbl_8056523A;
+        tevColor[2] = lbl_8056523C;
+        tevColor[3] = lbl_8056523E;
+        ((void (*)(s32, void *))GXSetTevColorS10)(1, tevColor);
         kColor.r = lbl_805650C8;
         kColor.g = lbl_805650C9;
         kColor.b = lbl_805650CA;
@@ -655,7 +698,8 @@ void fn_802E13D8(f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
         fn_802E2C20();
     }
 }
-
+#pragma optimization_level reset
+#pragma pop
 extern void fn_802E30C8(const char *, ...);
 extern void fn_80119214(void *, void *);
 extern void fn_80116E54(void *, void *);
