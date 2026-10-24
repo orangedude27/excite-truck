@@ -20,10 +20,6 @@ void fn_802C2C64(void) { fn_802DD738(); }
 void fn_802C2C68(void) { fn_802DD750(); }
 
 void fn_802C2C6C(void) { fn_802DE774(); }
-void fn_802CFF10(void);
-void fn_80127468(void);
-void fn_801279B8(void);
-void fn_802E4C18(int);
 void fn_802D0014(void *, void *, float, float, float);
 extern unsigned char lbl_804C1328[];
 extern float lbl_80564ED8;
