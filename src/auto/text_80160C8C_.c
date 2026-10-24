@@ -430,17 +430,27 @@ extern "C" f32 fn_80161B70(void) {
     }
     return lbl_80561848;
 }
-#pragma cplusplus off
-s32 fn_80161B94(void) {
-    if (lbl_8055E300 != 0) {
-        volatile void * volatile *vptr = (volatile void * volatile *)lbl_8055E300;
-        volatile void **vt = (volatile void **)*vptr;
-        s32 (*fn)(void *) = (s32 (*)(void *))vt[11];
-        return fn((void *)lbl_8055E300);
+#pragma cplusplus on
+extern "C" s32 fn_80161B94(void) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual s32 v9();
+    };
+    Dummy *p = (Dummy *)lbl_8055E300;
+    if (p != 0) {
+        return p->v9();
     }
     return 0;
 }
-
+#pragma cplusplus off
 s32 fn_80161BDC(s32 a, s32 b, s32 c) {
     register s32 arg0 = a;
     register s32 arg1 = b;
