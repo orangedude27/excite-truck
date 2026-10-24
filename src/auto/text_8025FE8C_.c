@@ -865,6 +865,7 @@ secondCheck:
     if (i < (s32)base[3]) goto secondBody;
 }
 #pragma cplusplus reset
+#pragma pop
 
 void fn_80262120(void *arg0) {
     s32 zero;
