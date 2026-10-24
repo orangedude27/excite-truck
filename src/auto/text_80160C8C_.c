@@ -393,24 +393,23 @@ extern "C" void fn_80161AEC(void) {
         p->f17();
     }
 }
-#pragma cplusplus off
-s32 fn_80161B0C(void) {
-    s32 result = 0;
-    if (lbl_8055E300 != 0) {
-        typedef struct { void *pad[12]; s32 (*method)(void); } Vtable;
-        Vtable *vtable = *(Vtable **)lbl_8055E300;
-        if (vtable->method() != 0) {
-            if (lbl_8055E2DD == 0) {
-                fn_800121A4();
-            }
-            *(volatile u8 *)&lbl_8055E2DD = 0;
-            result = 1;
-        }
-    }
-    return result;
-}
-
 #pragma cplusplus on
+extern "C" int fn_800121A4(void);
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" s32 fn_80161B0C(void) {
+    if (lbl_8055E300 != 0 &&
+        ((Dummy_801638A0 *)lbl_8055E300)->f10() != 0) {
+        if (lbl_8055E2DD == 0) {
+            fn_800121A4();
+        }
+        lbl_8055E2DD = 0;
+        return 1;
+    }
+    return 0;
+}
+#pragma scheduling on
+#pragma cplusplus reset
 extern "C" f32 fn_80161B70(void) {
     struct Dummy {
         virtual void v0();
