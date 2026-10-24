@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
+
 extern float lbl_80562418;
 extern float lbl_8056241C;
 extern float lbl_80562420;
@@ -78,6 +80,45 @@ void fn_801A6558(void *arg0) {
     memset(*(void **)((char *)arg0 + 0x2700), 0, 0xE7);
     if (*(unsigned char *)((char *)arg0 + 0x2740))
         fn_801A67B0(arg0);
+}
+
+extern int lbl_8055E3C4;
+extern double lbl_80562440;
+void fn_801A69F4(void *arg0, float *arg1) {
+    char *p = (char *)arg0;
+    char *data = *(char **)(p + 0x2700);
+    float t0, t1, t2;
+    float out0[3], out1[3];
+    double a, b, c, d, e, f;
+    double x, y, z;
+    float *v = (float *)(p + 0x2700);
+
+    a = fn_801A63C4(lbl_8055E3C4, *(int *)(data + 4));
+    t0 = fn_801A6370(*(float *)(data + 0x1e), *(float *)(p + 0x2708), *(float *)(p + 0x272c), (float)a);
+    t1 = fn_801A6370(*(float *)(data + 0x22), *(float *)(p + 0x270c), *(float *)(p + 0x2730), (float)a);
+    t2 = fn_801A6370(*(float *)(data + 0x26), *(float *)(p + 0x2710), *(float *)(p + 0x2734), (float)a);
+
+    a = fn_801A63C4(*(int *)(data + 0x51), *(int *)(data + 0x9e));
+    b = fn_801A63C4(*(int *)(data + 4), *(int *)(data + 0x9e));
+    c = fn_801A63C4(lbl_8055E3C4, *(int *)(data + 0x9e));
+    d = c + c;
+    e = d - lbl_80562440;
+    f = a - b;
+    x = (e - b) / ((a - lbl_80562440) * (a - b));
+    y = ((d - a) - b) / ((lbl_80562440 - a) * (lbl_80562440 - b));
+    z = (e - a) / ((b - lbl_80562440) * (b - a));
+    out0[0] = (float)(*(float *)(data + 0x6b) * x + *(float *)(data + 0xb8) * y + *(float *)(data + 0x1e) * z);
+    out0[1] = (float)(*(float *)(data + 0x6f) * x + *(float *)(data + 0xbc) * y + *(float *)(data + 0x22) * z);
+    out0[2] = (float)(*(float *)(data + 0x73) * x + *(float *)(data + 0xc0) * y + *(float *)(data + 0x26) * z);
+    fn_801A63F4(out1, p + 0x60, &t0, arg1 + 1);
+    *(float *)(p + 0x60) = out1[0];
+    *(float *)(p + 0x64) = out1[1];
+    *(float *)(p + 0x68) = out1[2];
+    fn_8017A580(arg0);
+    fn_801A63F4(out1, p + 0x118, out0, arg1 + 1);
+    *(float *)(p + 0x118) = out1[0];
+    *(float *)(p + 0x11c) = out1[1];
+    *(float *)(p + 0x120) = out1[2];
 }
 
 float fn_801A70EC(int arg0, void* arg1, void* arg2, int arg3) {
