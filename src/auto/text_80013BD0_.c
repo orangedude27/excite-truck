@@ -35,6 +35,12 @@ extern void fn_80130FCC(void *, s32, s32);
 extern void fn_801473F8(void *, void *, ...);
 extern char lbl_80558BA4[], lbl_80558BA8[], lbl_80558BAC[], lbl_80558BB4[];
 extern f32 lbl_805603B8;
+void fn_80014B9C(void *);
+s32 fn_800151DC(void *);
+void fn_800154B8(void);
+void fn_80015658(void *);
+s32 fn_80016214(void);
+void fn_80015F30(void *);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
