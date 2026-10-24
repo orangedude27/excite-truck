@@ -553,7 +553,7 @@ extern "C" const char lbl_8032AF0C[];
 extern "C" const char lbl_8032AEF4[];
 extern "C" const char lbl_8032AED4[];
 extern "C" const char lbl_8032AEB4[];
-extern "C" char lbl_805599D8[];
+extern "C" u8 lbl_805599D8;
 extern "C" void fn_8012BF28(void) {
     s32 paths[3], header[5], handle, inner, size;
     s32 *pathPtr, *table;
