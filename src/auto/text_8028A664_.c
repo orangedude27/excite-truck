@@ -45,8 +45,8 @@ void fn_8028A664(void) {
     extern void fn_8028ABE8(void *);
     extern void fn_8028B3CC(void);
     extern void fn_801EEFDC(void *, s32);
-    extern void fn_8028B93C(void), fn_8028BA44(void), fn_8028BA9C(void), fn_8028BB14(void);
-      extern void fn_8028B500(void);
+      extern void fn_8028B93C(void), fn_8028BA44(void), fn_8028BA9C(void), fn_8028BB14(void);
+        extern s32 fn_8028B500(void *);
     void *p;
 
     p = fn_801284F8(0xDC, lbl_80348B98);
