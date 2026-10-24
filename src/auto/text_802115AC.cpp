@@ -755,16 +755,17 @@ extern "C" s32 fn_8021583C(void *arg0, s32 unused1, s32 unused2, s32 arg1, s32 a
         virtual void f0();
         virtual void f1();
         virtual void f2();
-        virtual void call(s32*, s32*, s32*, s32*);
+        virtual void call(s32, s32, s32*, s32*, s32*, s32*);
     };
     s32 sp14;
     s32 sp10;
     s32 spC;
     s32 sp8;
     s32 result;
-    ((Local*)arg0)->call(&sp14, &sp10, &spC, &sp8);
+    ((Local*)arg0)->call(unused1, unused2, &sp14, &sp10, &spC, &sp8);
     result = 0;
-    if (arg1 >= sp14 && arg1 < spC && arg2 >= sp10 && arg2 < sp8) result=1;
+    if (arg1 >= sp14 && arg1 < spC && arg2 >= sp10 && arg2 < sp8)
+        result = 1;
     return result;
 }
 
