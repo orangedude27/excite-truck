@@ -1022,18 +1022,22 @@ extern "C" s32 fn_80158F98(void *arg0, f32 *arg1) {
 
 extern "C" void fn_801590A8(void* arg0) {
     ((Unk801577F0*)arg0)->v31();
-    volatile f32* p260 = (volatile f32*)((u8*)arg0 + 0x260);
-    volatile f32* p24c = (volatile f32*)((u8*)arg0 + 0x24c);
+    f32 f0 = *(f32*)((char*)arg0 + 0x24c);
+    f32 f1 = *(f32*)((char*)arg0 + 0x260);
     f32 f2 = lbl_80561754;
-    *(f32*)((u8*)arg0 + 0x25c) = f2;
-    if (*p260 > *p24c) {
-        s32 object = *(s32*)((u8*)arg0 + 0x268);
-        if (object != 0) fn_801CB750(object, *(s32*)((u8*)arg0 + 4));
-        *p260 = lbl_80561754;
+    *(f32*)((char*)arg0 + 0x25c) = f2;
+    if (f1 > f0) {
+        s32 object = *(s32*)((char*)arg0 + 0x268);
+        if (object != 0) {
+            fn_801CB750(object, *(s32*)((char*)arg0 + 4));
+        }
+        f2 = lbl_80561754;
+        *(f32*)((char*)arg0 + 0x260) = f2;
     }
-    f32 f1 = lbl_80561754;
-    *(f32*)((u8*)arg0 + 0x264) = f1;
-    *(f32*)((u8*)arg0 + 0x258) = lbl_8056177C;
+    f1 = lbl_80561754;
+    f0 = lbl_8056177C;
+    *(f32*)((char*)arg0 + 0x264) = f1;
+    *(f32*)((char*)arg0 + 0x258) = f0;
 }
 
 extern "C" void fn_80159724(void) {
@@ -1975,12 +1979,13 @@ extern "C" f32 fn_8015CD10(Unk801577F0* arg0) {
 extern "C" void fn_8015CDD8(void) {
 }
 
-extern "C" void fn_8015CDDC(Unk801577F0* arg0, void* arg1, s32 arg2, f32 farg0) {
-    if (*(s32*)((u8*)arg0 + 0x24C) == *(s32*)((u8*)arg1 + 0x1EC) && arg2 == arg0->v35()) {
+#pragma scheduling invalid_target
+extern "C" void fn_8015CDDC(Unk801577F0 *arg0, void *arg1, s32 arg2, f32 farg0) {
+    if (*(s32 *)((u8 *)arg0 + 0x24C) == *(s32 *)((u8 *)arg1 + 0x1EC) && arg2 == arg0->v35()) {
         arg0->m250 = farg0;
     }
 }
-
+#pragma scheduling on
 extern "C" s32 fn_8015CE48(void) {
     return 0xE;
 }
