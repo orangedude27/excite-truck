@@ -64,17 +64,19 @@ void fn_80179D8C(void *arg0, s32 arg1) {
 void fn_80179D94(void *arg0, void *arg1) {
     f32 b;
     f32 a;
-    b = lbl_80561B78;
-    *(s32 *)((u8 *)arg0 + 0xC) = (s32)arg1;
+    s32 zero;
     a = lbl_80561B7C;
+    zero = 0;
+    *(s32 *)((u8 *)arg0 + 0xC) = (s32)arg1;
+    b = lbl_80561B78;
     *(f32 *)((u8 *)arg0 + 0x30) = a;
     *(f32 *)((u8 *)arg0 + 0x34) = a;
     *(f32 *)((u8 *)arg0 + 0x38) = a;
-    *(s32 *)((u8 *)arg0 + 0x24) = 0;
-    *(s32 *)((u8 *)arg0 + 0x28) = 0;
+    *(s32 *)((u8 *)arg0 + 0x24) = zero;
+    *(s32 *)((u8 *)arg0 + 0x28) = zero;
     *(f32 *)((u8 *)arg0 + 0x2C) = a;
     *(s32 *)((u8 *)arg0 + 0x10) = *(s32 *)arg1;
-    *(s32 *)((u8 *)arg0 + 0x4) = 0;
+    *(s32 *)((u8 *)arg0 + 0x4) = zero;
     *(f32 *)((u8 *)arg0 + 0x3C) = b;
     *(f32 *)((u8 *)arg0 + 0x40) = a;
     *(f32 *)((u8 *)arg0 + 0x44) = a;
@@ -92,17 +94,6 @@ void fn_80179D94(void *arg0, void *arg1) {
 
 #pragma cplusplus on
 extern "C" void fn_80179E00(void *arg0) {
-    struct Dummy {
-        virtual void m0() = 0;
-        virtual void m1() = 0;
-        virtual void m2() = 0;
-        virtual void m3() = 0;
-        virtual void m4() = 0;
-        virtual void m5() = 0;
-        virtual void m6() = 0;
-        virtual void m7() = 0;
-        virtual void m8() = 0;
-    };
     s32 i;
     void *p;
     s32 last;
@@ -112,7 +103,7 @@ extern "C" void fn_80179E00(void *arg0) {
     *(s32 *)((u8 *)arg0 + 4) = 0;
     goto check;
 loop:
-    ((struct Dummy *)*(void **)((u8 *)p + 0x14))->m8();
+    fn_80179E00_virtual_call(*(void **)((u8 *)p + 0x14));
     p = (u8 *)p + 4;
     i++;
 check:
