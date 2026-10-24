@@ -5,7 +5,7 @@ extern void *lbl_8055E744;
 #pragma cplusplus on
 struct Dummy_801B8318 {
     virtual void f0(int);
-    virtual void f1(int);
+    virtual void f1();
     virtual void f2();
     virtual void f3(void *);
     virtual void f4();
