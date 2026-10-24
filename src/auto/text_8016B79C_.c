@@ -1840,7 +1840,7 @@ s32 fn_80170F1C(void *arg0) {
 
 #pragma cplusplus on
 extern "C" s32 fn_80170F7C(void *arg0) {
-    if (((TObj4C *)arg0)->d9() != 0) {
+    if (((TObj4C *)arg0)->d7() != 0) {
         return *(s32 *)((u8 *)arg0 + 0xAC) == 2;
     }
     return 0;
