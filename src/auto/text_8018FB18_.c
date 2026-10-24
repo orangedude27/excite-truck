@@ -338,6 +338,69 @@ int fn_80191A98(void *arg0) {
     return (int)((unsigned int)(-bit | bit) >> 31);
 }
 
+extern void fn_80191928(void *);
+extern char *fn_8018AE5C(void);
+extern f32 PSVECMag(const void *);
+extern f32 PSVECDotProduct(const void *, const void *);
+extern void *__AXFXGetLfoSinTable_801769CC(void);
+extern int fn_8018B084(void *);
+extern void fn_80136EA4(int, int);
+extern void fn_8018ADA4(void *, f32);
+extern void fn_8018ADB4(void *, f32);
+extern void fn_8018ADBC(void *, f32);
+extern f32 lbl_8055E51C;
+extern int lbl_8055E0D0;
+extern f32 lbl_8056208C, lbl_80562090, lbl_80562094, lbl_805620D0;
+void fn_80191AB4(void *arg0) {
+    struct Frame {
+        u8 pad[0x50];
+        f32 vectorA[3];
+        f32 vectorB[3];
+        u8 rest[0x70];
+    } frame;
+    void *sub;
+    void **vtable;
+    void *table;
+    int result;
+    f32 dot;
+    f32 amplitude;
+    float value;
+
+    fn_80191928(arg0);
+    lbl_8055E51C = PSVECMag(fn_8018AE5C());
+    dot = PSVECDotProduct((u8 *)arg0 + 0x34 + 0x118, (u8 *)arg0 + 0x34 + 0x54);
+    sub = *(void **)((u8 *)arg0 + 0x38);
+    vtable = *(void ***)sub;
+    result = ((int (*)(void *))vtable[25])(sub);
+    table = __AXFXGetLfoSinTable_801769CC();
+    if ((*(u32 *)((u8 *)table + 0x10) & 2) != 0) amplitude = lbl_80562094;
+    else amplitude = lbl_80562090;
+    value = fn_8018B084((u8 *)arg0 + 0x34);
+    sub = *(void **)((u8 *)arg0 + 0x38);
+    vtable = *(void ***)sub;
+    ((void (*)(void *, int))vtable[2])(sub, (int)value);
+    fn_80136EA4((int)lbl_8055E0D0, *(int *)((u8 *)arg0 + 0x3C));
+    dot = PSVECDotProduct((u8 *)arg0 + 0x34 + 0x118, (u8 *)arg0 + 0x34 + 0x54);
+    sub = *(void **)((u8 *)arg0 + 0x38);
+    vtable = *(void ***)sub;
+    value = ((float (*)(void *))vtable[3])(sub);
+    fn_8018ADA4((u8 *)arg0 + 0x34, amplitude * (lbl_8056208C + (value < 0 ? -value : value)));
+    sub = *(void **)((u8 *)arg0 + 0x38);
+    vtable = *(void ***)sub;
+    value = ((float (*)(void *))vtable[7])(sub);
+    if (value < lbl_805620D0) {
+        sub = *(void **)((u8 *)arg0 + 0x38);
+        vtable = *(void ***)sub;
+        value = ((float (*)(void *))vtable[4])(sub);
+        fn_8018ADB4((u8 *)arg0 + 0x34, value);
+    } else {
+        fn_8018ADB4((u8 *)arg0 + 0x34, lbl_8056208C);
+    }
+    (void)dot;
+    (void)result;
+    (void)frame;
+}
+
 void fn_80192BE4(void) {
 
 }
