@@ -4968,8 +4968,15 @@ void bta_dm_auth_reply(void *arg0) {
     }
 }
 
+extern void bta_dm_inq_results_cb(u8 *);
+extern void fn_80072A98(void *);
 void bta_dm_search_start(void *arg0) {
     BTM_ClearInqDb(0);
+    *(u32 *)lbl_803C0B98 = *(u32 *)((u8 *)arg0 + 0x18);
+    *(u32 *)(lbl_803C0B98 + 8) = *(u32 *)((u8 *)arg0 + 0x14);
+    BTM_StartInquiry((tBTM_INQ_PARMS *)((u8 *)arg0 + 8),
+                     (tBTM_INQ_RESULTS_CB *)bta_dm_inq_results_cb,
+                     (tBTM_CMPL_CB *)fn_80072A98);
 }
 
 void bta_dm_search_cancel(void) {
@@ -13653,7 +13660,7 @@ u8 fn_8006CA6C(void) {
 }
 
 void fn_8006CF44(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4, u32 arg8) {
-    register u32 *ptr = (u32 *)&lbl_80392960;
+    u32 *ptr = (u32 *)&lbl_80392960;
     void (*func)(void);
     if (arg8 == 3) {
         func = (void (*)(void))ptr[0x66C / 4];
