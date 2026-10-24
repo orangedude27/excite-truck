@@ -52,19 +52,27 @@ void *fn_8027D280(void *arg0, int arg1) {
 }
 #pragma scheduling on
 void *fn_8027D304(void *arg0, int arg1) {
-    void *obj = arg0;
-    if (obj != 0) {
-        *(void **)obj = lbl_80347CA8;
+    struct Local {
+        void *field_00;
+        int field_04;
+        int field_08;
+        int field_0C;
+        int field_10;
+        int field_14;
+    };
+    struct Local *obj = (struct Local *)arg0;
+    if (arg0 != 0) {
+        obj->field_00 = lbl_80347CA8;
         fn_8027B60C(obj);
-        if ((char *)obj + 8 != 0) {
+        if (&obj->field_08 != 0) {
             fn_8002F634((char *)obj + 0x14, fn_8027D39C, 0x1F4, 6);
-            if (((volatile char *)obj) + 8 != 0) {
-                *(int *)((char *)obj + 8) = 0;
-                *(int *)((char *)obj + 0xC) = 0;
-                *(int *)((char *)obj + 0x10) = 0;
+            if (&obj->field_08 != 0) {
+                obj->field_08 = 0;
+                obj->field_0C = 0;
+                obj->field_10 = 0;
             }
         }
-        if (arg1 > 0) fn_80128668();
+        if (arg1 > 0) ((void (*)(void *))fn_80128668)(obj);
     }
     return obj;
 }
