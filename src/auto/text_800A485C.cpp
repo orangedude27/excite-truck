@@ -1892,14 +1892,15 @@ extern "C" u8 VFiPFENT_CalcCheckSum(u8 *p_ent) {
     return (u8)sum;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 extern "C" void fn_800AA4EC(u8 *p_ent, u8 *p_buf) {
-    register u32 value = p_buf[0xB];
-    ((void (*)(u8 *, u8 *, u32))fn_800B3BEC)(&p_ent[0x20E], p_buf, value);
+    ((void (*)(u8 *, u8 *, u8))fn_800B3BEC)(&p_ent[0x20E], p_buf, p_buf[0xB]);
     if ((s8)p_ent[0x20E] == 5) {
         ((s8 *)p_ent)[0x20E] = -0x1B;
     }
 }
-
+#pragma pop
 extern "C" void VFiPFENT_loadEntryNumericFieldsFromBuf(u8 *p_ent, u8 *p_buf) {
     u16 tmp;
     u32 tmp32;
@@ -9737,12 +9738,13 @@ extern "C" void fn_800D155C(void *arg0) {
     WPADControlMotor(*(s32 *)arg0, 1);
 }
 
-extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void *this_ptr, void *arg1) {
-    if (*(s32 *)this_ptr >= 4) return -2;
-    s32 result = fn_800D1E5C(*(s32 **)((u8 *)this_ptr + 0x24), *(s32 *)this_ptr);
-    if (result == 0) return -2;
-    if (*(u8 *)((u8 *)this_ptr + 0x1C)) return -2;
-    return fn_800604E8(*(s32 *)this_ptr, (s32)arg1, (void *)&fn_800D1668);
+extern "C" s32 getInfoAsync__Q210homebutton10ControllerFP8WPADInfo(void* this_ptr, void* arg1) {
+    if (*(s32*)this_ptr >= 4) return -2;
+    if (fn_800D1E5C(*(s32**)((u8*)this_ptr + 0x24), *(s32*)this_ptr) != 0 ||
+        *(u8*)((u8*)this_ptr + 0x1c) != 0) {
+        return -2;
+    }
+    return fn_800604E8(*(s32*)this_ptr, (s32)arg1, (void*)&fn_800D1668);
 }
 
 extern "C" void fn_800D1668(s32 arg0, s32 arg1) {
