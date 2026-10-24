@@ -142,7 +142,7 @@ extern "C" void fn_801B832C(void) {
     extern float lbl_80562744;
     fn_801616FC();
     if (lbl_8055E744 != 0)
-        ((Dummy_801B8318 *)lbl_8055E744)->f1(1);
+        ((Dummy_801B8318 *)lbl_8055E744)->f0(1);
     lbl_80436D08[0] = lbl_80562744;
     lbl_8055E744 = 0;
     lbl_80436D08[1] = lbl_80562744;
