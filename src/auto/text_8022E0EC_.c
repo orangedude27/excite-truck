@@ -214,7 +214,6 @@ extern char lbl_8055B974[];
 extern char lbl_8055B978[];
 extern float lbl_805635D8;
 extern float lbl_805635DC;
-#pragma small_data off
 #pragma scheduling invalid_target
 void *fn_8022E4C0(void *arg0) {
     unsigned char *base;
