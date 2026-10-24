@@ -113,7 +113,7 @@ extern void fn_80037E94(void);
 extern void fn_8003BB58(void (*callback)(void));
 extern void fn_8003B380(s32);
 extern void fn_8003B38C(void *);
-  extern void fn_80035B88();
+  extern void fn_80035B88(u32);
   extern void fn_80036624(s32);
   extern void fn_8003AF1C(s32, s32, void *);
   
