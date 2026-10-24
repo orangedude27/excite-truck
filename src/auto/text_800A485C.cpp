@@ -10858,6 +10858,8 @@ int fn_800D5500(void *obj, const char *name) {
     return 0;
 }
 
+#pragma push
+#pragma opt_common_subs off
 extern "C" void* fn_800D55B0(void *self, s32 arg1) {
     if (self != NULL) {
         *(void **)self = lbl_8031F428;
@@ -10875,9 +10877,7 @@ extern "C" void* fn_800D55B0(void *self, s32 arg1) {
     }
     return self;
 }
-
-#pragma push
-#pragma use_lmw_stmw off
+#pragma pop
 extern "C" s32 fn_800D5640(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     void *node = *(void **)((u8 *)arg0 + 8);
     s32 a = arg1;
