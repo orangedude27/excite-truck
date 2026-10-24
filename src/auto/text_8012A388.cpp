@@ -492,13 +492,12 @@ extern "C" void fn_8012BC24(void **arg0, void *arg1) {
 
 extern "C" void *fn_8012BD3C(void *arg0, const char *arg1) {
     void *entry = arg0;
-    goto check;
-check:
-    {
-        if (stricmp(arg1, (const char *)entry) == 0) goto done;
-        entry = *(void **)((char *)entry + 0xA8);
-        if (entry != 0) goto check;
-    }
+    goto test;
+body:
+    if (stricmp(arg1, (const char *)entry) == 0) goto done;
+    entry = *(void **)((char *)entry + 0xA8);
+test:
+    if (entry != 0) goto body;
 done:
     return entry;
 }
@@ -718,7 +717,7 @@ extern "C" void fn_8012CC20(void) {
 #pragma dont_inline on
 extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
     u8 *self = (u8 *)arg0;
-    s32 count, value, result, temp, handle, size, done;
+    s32 sum, count, value, result, temp, handle, size, done;
     s32 *record;
     u8 *source, *destination, byte;
     void *parser;
@@ -730,8 +729,9 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         *(s32 *)(self + 0xB4) = -1;
         fn_8012D33C((u32 *)(self + 0x6C), (u32 *)*(void **)(self + 0xC8));
         fn_8012A80C((s32)(self + 0x6C));
+        sum = *(s32 *)(self + 0x90) + *(s32 *)(self + 0x84);
         *(s32 *)(self + 0xA4) = 0;
-        if (*(s32 *)(self + 0x90) + *(s32 *)(self + 0x84) > *(s32 *)(self + 0xCC))
+        if (sum > *(s32 *)(self + 0xCC))
             fn_802E317C(lbl_8032ADF4);
         if (*(s32 *)(self + 0x78) & 1) {
             *(s32 *)(self + 0x64) = 0;
@@ -774,8 +774,9 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
             fn_802E317C(lbl_8032AE20);
         count++;
         record = (s32 *)(*(s32 *)(self + 0x64) + index);
+        value = record[0x34 / 4];
         index += 0x44;
-        record[0x34 / 4] &= ~0xF;
+        record[0x34 / 4] = value & ~0xF;
     record_check_two:
         if (count < *(s32 *)(self + 0x8C))
             goto record_body_two;
@@ -801,8 +802,9 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
             fn_802E317C(lbl_8032AE20);
         count++;
         record = (s32 *)(*(s32 *)(self + 0x64) + index);
+        value = record[0x34 / 4];
         index += 0x44;
-        record[0x34 / 4] &= ~0xF;
+        record[0x34 / 4] = value & ~0xF;
     record_check_three:
         if (count < *(s32 *)(self + 0x8C))
             goto record_body_three;
@@ -817,9 +819,9 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         break;
     }
     *(s32 *)(self + 0xB8) = 1;
-    done = 0;
     *(s32 *)(self + 0xBC) = 0;
-    while (!done) {
+    done = 0;
+    do {
         parser = ((void *(*)(void *, void *, s32))fn_8012B314)(arg1, parseBuffer,
                                                                *(s32 *)(self + 0xBC));
         if (!parser)
@@ -886,7 +888,7 @@ extern "C" s32 fn_8012CC24(void *arg0, void *arg1) {
         }
     parse_next:
         *(s32 *)(self + 0xBC) = *(s32 *)(self + 0xBC) + 1;
-    }
+    } while (!done);
 func_exit:
     return done;
 }
