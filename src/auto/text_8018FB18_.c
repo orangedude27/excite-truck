@@ -123,8 +123,6 @@ extern "C" int fn_801901F0(void *arg0) {
         virtual int d25(void );
         virtual int d26(void );
         virtual int d27(void );
-        virtual int d28(void );
-        virtual int d29(void );
         virtual int d28(int arg);
     };
     class VT2 {
