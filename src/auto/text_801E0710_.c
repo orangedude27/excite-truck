@@ -18,7 +18,7 @@ public:
     virtual void d2() {}
     virtual void d3() {}
     virtual void d4() {}
-    virtual void d5() {}
+    virtual void d5(s32 arg0) {}
     virtual void d6() {}
     virtual void d7(s32 arg0) {}
 };
@@ -202,15 +202,17 @@ s32 fn_801E137C(void *arg0) { return ((s32 *)arg0)[1]; }
 
 s32 fn_801E1510(s32 *arg0, s32 arg1) { return *arg0 + arg1 * 0x1C; }
 
+void fn_801E1520(void);
+#pragma cplusplus on
 void fn_801E1520(void) {
-    void *obj = lbl_8055EA10;
+    Dummy801E1520 *obj = (Dummy801E1520 *)lbl_8055EA10;
     if (obj != 0) {
         if (obj != 0)
-            ((void (*)(void *, s32))(*(void ***)obj)[7])(obj, 1);
+            obj->d7(1);
         lbl_8055EA10 = 0;
     }
 }
-
+#pragma cplusplus off
 void *fn_801E1568(void *arg0, int arg1, int arg2) {
     int i = 0;
     int offset = 0;
