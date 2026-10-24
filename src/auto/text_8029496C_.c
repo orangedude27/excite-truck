@@ -10,7 +10,7 @@ extern float PSVECDotProduct(const Vec80295 *, const Vec80295 *);
 extern void PSVECNormalize(const Vec80295 *, Vec80295 *);
 extern float fn_801E88F0(int);
 extern void *fn_80287B24(int);
-extern void fn_80294CCC(void *, void *, void *, unsigned int, int, float, float);
+extern void fn_80294CCC(Vec80295 *, Vec80295 *, Vec80295 *, unsigned int, int, float, float);
 extern void *fn_802C86DC(void);
 extern float fn_802C88E8(void *);
 extern void fn_802C8BD0(int);
@@ -50,45 +50,60 @@ void fn_80294CC4(void) {}
 void fn_80294ED4(void);
 void fn_80294CC8(void) { fn_80294ED4(); }
 
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma dont_inline on
 void fn_80294ED4(void) {
-    Vec80295 spD4;
+    Vec80295 sp8;
+    Vec80295 sp14;
+    Vec80295 sp20;
+    Vec80295 sp2C;
+    Vec80295 sp38;
+    Vec80295 sp44;
+    Vec80295 sp50;
+    Vec80295 sp5C;
+    Vec80295 sp68;
+    Vec80295 sp74;
+    Vec80295 sp80;
+    Vec80295 sp8C;
+    Vec80295 sp98;
+    Vec80295 spA4;
+    Vec80295 spB0;
+    Vec80295 spBC;
     Vec80295 spC8;
+    Vec80295 spD4;
+
+    Vec80295 *ptr_sp74;
+    Vec80295 *ptr_sp14;
+    Vec80295 *ptr_sp68;
+    Vec80295 *ptr_sp20;
+    Vec80295 *ptr_sp80;
+    Vec80295 *ptr_sp2C;
+    Vec80295 *ptr_sp8C;
+    Vec80295 *ptr_sp38;
+    Vec80295 *ptr_sp98;
+    Vec80295 *ptr_spA4;
+    Vec80295 *ptr_spBC;
+
     int spF0;
 
-    Vec80295 spBC;
-
-    Vec80295 spB0;
-
-    Vec80295 spA4;
-
-    Vec80295 sp98;
-
-    Vec80295 sp8C;
-
-    Vec80295 sp80;
-
-    Vec80295 sp74;
-    Vec80295 sp68;
-
-    Vec80295 sp5C;
-
-    Vec80295 sp50;
-
-    Vec80295 sp44;
-
-    Vec80295 sp38;
-
-    Vec80295 sp2C;
-
-    Vec80295 sp20;
-
-    Vec80295 sp14;
-
-    Vec80295 sp8;
     unsigned char *var_r14;
     unsigned char *var_r17;
     unsigned char *var_r18;
     unsigned char *var_r21;
+    float temp_f31;
+    float temp_f30;
+    float temp_f29;
+    float temp_f28;
+    float temp_f27;
+    float temp_f26;
+    float temp_f25;
+    float temp_f31_2;
+    float temp_f30_2;
+    float temp_f29_2;
+    float temp_f28_2;
+    float temp_f26_3;
     float temp_f0;
     float temp_f0_2;
     float temp_f0_3;
@@ -99,23 +114,11 @@ void fn_80294ED4(void) {
     float temp_f1_3;
     float temp_f1_4;
     float temp_f1_5;
-    float temp_f25;
-    float temp_f26;
     float temp_f26_2;
-    float temp_f26_3;
-    float temp_f27;
-    float temp_f28;
-    float temp_f28_2;
-    float temp_f29;
-    float temp_f29_2;
     float temp_f2;
     float temp_f2_2;
     float temp_f2_3;
     float temp_f2_4;
-    float temp_f30;
-    float temp_f30_2;
-    float temp_f31;
-    float temp_f31_2;
     float temp_f3;
     float temp_f3_2;
     float temp_f3_3;
@@ -166,20 +169,29 @@ void fn_80294ED4(void) {
     var_r18 = (unsigned char *) lbl_804B42F0;
     temp_f25 = lbl_8056452C;
     temp_f28 = lbl_8056453C;
+    ptr_sp74 = &sp74;
+    ptr_sp14 = &sp14;
+    ptr_sp68 = &sp68;
+    ptr_sp20 = &sp20;
+    ptr_sp80 = &sp80;
+    ptr_sp2C = &sp2C;
+    ptr_sp8C = &sp8C;
+    ptr_sp38 = &sp38;
+    ptr_sp98 = &sp98;
+    ptr_spA4 = &spA4;
+    ptr_spBC = &spBC;
     spF0 = 0;
-loop_40:
-    if (1) {
+    do {
         temp_r16 = fn_80287B24(spF0);
         temp_f26 = fn_801E88F0(-1);
         if (!((fn_802C88E8((unsigned char *) temp_r16 + 0x24) * temp_f26) > temp_f27) && !(M2C_FIELD(temp_r16, int *, 0x68) & 8)) {
             var_r15 = 0;
             if ((int) M2C_FIELD(var_r18, int *, 0x180) > 0) {
                 var_r17 = var_r18;
-loop_38:
-                if (1) {
+                do {
                     temp_r3_2 = M2C_FIELD(var_r17, void **, 0);
                     temp_r3_3 = (unsigned char *) temp_r3_2 + 0x24;
-                    if (&spBC.x == temp_r3_3) {
+                    if (ptr_spBC == temp_r3_3) {
                         temp_f6 = M2C_FIELD(temp_r3_3, float *, 4);
                         temp_f0 = M2C_FIELD(temp_r3_2, float *, 0x24);
                         temp_f7 = M2C_FIELD(temp_r3_3, float *, 8);
@@ -202,7 +214,7 @@ loop_38:
                     spB0.z = temp_f1 - M2C_FIELD(temp_r3, float *, 0x2C);
                     if (PSVECDotProduct(&spB0, &spB0) > temp_f28) {
                         PSVECNormalize(&spB0, &spB0);
-                        if (&spA4.x == (void *) (var_r17 + 4)) {
+                        if (ptr_spA4 == (void *) (var_r17 + 4)) {
                             temp_f6_2 = M2C_FIELD(var_r17, float *, 8);
                             temp_f0_2 = M2C_FIELD(var_r17, float *, 4);
                             temp_f7_2 = M2C_FIELD(var_r17, float *, 0xC);
@@ -217,7 +229,7 @@ loop_38:
                             spA4.y = (temp_f5 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f3_2 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f4 * M2C_FIELD(temp_r16, float *, 0x10)));
                             spA4.z = (temp_f5 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f3_2 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f4 * M2C_FIELD(temp_r16, float *, 0x14)));
                         }
-                        var_f1 = PSVECDotProduct(&spB0, &spA4);
+                        var_f1 = PSVECDotProduct(&spB0, ptr_spA4);
                         if (temp_f29 < var_f1) {
                             var_f1 = temp_f29;
                         }
@@ -230,7 +242,7 @@ loop_38:
                         sp38.x = temp_f30;
                         sp38.y = temp_f30;
                         sp38.z = temp_f29;
-                        if (&sp98.x == &sp38.x) {
+                        if (ptr_sp98 == ptr_sp38) {
                             sp98.x = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
                             sp98.y = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
                             sp98.z = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
@@ -242,7 +254,7 @@ loop_38:
                         sp2C.x = temp_f29;
                         sp2C.y = temp_f30;
                         sp2C.z = temp_f30;
-                        if (&sp8C.x == &sp2C.x) {
+                        if (ptr_sp8C == ptr_sp2C) {
                             sp8C.x = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
                             sp8C.y = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
                             sp8C.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
@@ -252,13 +264,13 @@ loop_38:
                             sp8C.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
                         }
                         var_r27 = 0xFF;
-                        temp_r3_4 = (int) (temp_f31 * (float) fabs(PSVECDotProduct(&spB0, &sp98)));
+                        temp_r3_4 = (int) (temp_f31 * (float) fabs(PSVECDotProduct(&spB0, ptr_sp98)));
                         temp_r0 = temp_r3_4 & ((int) (-temp_r3_4 & ~temp_r3_4) >> 0x1F);
                         if (temp_r0 < 0xFF) {
                             var_r27 = temp_r0;
                         }
                         var_r4 = 0xFF;
-                        temp_r3_5 = (int) (temp_f31 * (float) fabs(PSVECDotProduct(&spB0, &sp8C)));
+                        temp_r3_5 = (int) (temp_f31 * (float) fabs(PSVECDotProduct(&spB0, ptr_sp8C)));
                         temp_r0_2 = temp_r3_5 & ((int) (-temp_r3_5 & ~temp_r3_5) >> 0x1F);
                         if (temp_r0_2 < 0xFF) {
                             var_r4 = temp_r0_2;
@@ -269,7 +281,7 @@ loop_38:
                         sp20.x = temp_f29;
                         sp20.y = temp_f30;
                         sp20.z = temp_f30;
-                        if (&sp80.x == &sp20.x) {
+                        if (ptr_sp80 == ptr_sp20) {
                             sp80.x = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
                             sp80.y = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
                             sp80.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f29 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
@@ -281,7 +293,7 @@ loop_38:
                         sp14.x = temp_f30;
                         sp14.y = temp_f30;
                         sp14.z = temp_f29;
-                        if (&sp68.x == &sp14.x) {
+                        if (ptr_sp68 == ptr_sp14) {
                             sp68.x = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0xC)));
                             sp68.y = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x10)));
                             sp68.z = (temp_f29 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f30 * M2C_FIELD(temp_r16, float *, 0x14)));
@@ -293,7 +305,7 @@ loop_38:
                         sp8.x = temp_f30;
                         sp8.y = temp_f29;
                         sp8.z = temp_f30;
-                        if (&sp74.x == &sp8.x) {
+                        if (ptr_sp74 == &sp8) {
                             sp74.x = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x18)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 0)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0xC)));
                             sp74.y = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x1C)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 4)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x10)));
                             sp74.z = (temp_f30 * M2C_FIELD(temp_r16, float *, 0x20)) + ((temp_f30 * M2C_FIELD(temp_r16, float *, 8)) + (temp_f29 * M2C_FIELD(temp_r16, float *, 0x14)));
@@ -304,21 +316,19 @@ loop_38:
                         }
                         temp_f1_2 = M2C_FIELD(var_r17, float *, 0x14);
                         temp_f2_2 = temp_f26_2 * temp_f1_2;
-                        fn_80294CCC(&spBC, &sp80, &sp74, ((temp_r7 | (((temp_r5 << 0x10) & ~0xFF00) | ((temp_r0_3 << 8) & 0xFF00))) & ~0xFF000000) | (var_r27 << 0x18), M2C_FIELD(var_r17, int *, 0x1C), (temp_f1_2 + temp_f2_2) * temp_f25, (M2C_FIELD(var_r17, float *, 0x10) + temp_f2_2) * temp_f25);
+                        fn_80294CCC(ptr_spBC, ptr_sp80, ptr_sp74, ((temp_r7 | (((temp_r5 << 0x10) & ~0xFF00) | ((temp_r0_3 << 8) & 0xFF00))) & ~0xFF000000) | (var_r27 << 0x18), M2C_FIELD(var_r17, int *, 0x1C), (temp_f1_2 + temp_f2_2) * temp_f25, (M2C_FIELD(var_r17, float *, 0x10) + temp_f2_2) * temp_f25);
                         temp_f1_3 = M2C_FIELD(var_r17, float *, 0x14);
                         temp_f2_3 = temp_f26_2 * temp_f1_3;
-                        fn_80294CCC(&spBC, &sp68, &sp74, ((temp_r7 | (((temp_r0_3 << 8) & ~0xFF0000) | ((temp_r5 << 0x10) & 0xFF0000))) & ~0xFF000000) | (var_r4 << 0x18), M2C_FIELD(var_r17, int *, 0x1C), (temp_f1_3 + temp_f2_3) * temp_f25, (M2C_FIELD(var_r17, float *, 0x10) + temp_f2_3) * temp_f25);
+                        fn_80294CCC(ptr_spBC, ptr_sp68, ptr_sp74, ((temp_r7 | (((temp_r0_3 << 8) & ~0xFF0000) | ((temp_r5 << 0x10) & 0xFF0000))) & ~0xFF000000) | (var_r4 << 0x18), M2C_FIELD(var_r17, int *, 0x1C), (temp_f1_3 + temp_f2_3) * temp_f25, (M2C_FIELD(var_r17, float *, 0x10) + temp_f2_3) * temp_f25);
                     }
                     var_r17 += 0x20;
                     var_r15 += 1;
-                    if (var_r15 < (int) M2C_FIELD(var_r18, int *, 0x180)) goto loop_38;
-                }
+                    } while (var_r15 < (int) M2C_FIELD(var_r18, int *, 0x180));
             }
         }
         var_r18 += 0x184;
         spF0 += 1;
-        if (spF0 < fn_80287B14()) goto loop_40;
-    }
+        } while (spF0 < fn_80287B14());
     fn_802C8D74();
     fn_802C8BD0(lbl_8055C994);
     temp_f29_2 = lbl_80564518;
@@ -327,16 +337,14 @@ loop_38:
     temp_f26_3 = lbl_8056452C;
     temp_f31_2 = lbl_8056453C;
     var_r15_2 = 0;
-loop_62:
-    if (1) {
+    do {
         temp_r16_2 = fn_80287B24(var_r15_2);
         temp_f30_2 = fn_801E88F0(-1);
         if (!((fn_802C88E8((unsigned char *) temp_r16_2 + 0x24) * temp_f30_2) > temp_f27) && !(M2C_FIELD(temp_r16_2, int *, 0x68) & 8)) {
             var_r17_2 = 0;
             if ((int) M2C_FIELD(var_r14, int *, 0x180) > 0) {
                 var_r21 = var_r14;
-loop_60:
-                if (1) {
+                do {
                     temp_r3_6 = M2C_FIELD(var_r21, void **, 0);
                     temp_r3_7 = (unsigned char *) temp_r3_6 + 0x24;
                     if (&sp5C.x == temp_r3_7) {
@@ -393,17 +401,15 @@ loop_60:
                     }
                     var_r21 += 0x20;
                     var_r17_2 += 1;
-                    if (var_r17_2 < (int) M2C_FIELD(var_r14, int *, 0x180)) goto loop_60;
-                }
+                    } while (var_r17_2 < (int) M2C_FIELD(var_r14, int *, 0x180));
             }
         }
         var_r14 += 0x184;
         var_r15_2 += 1;
-        if (var_r15_2 < fn_80287B14()) goto loop_62;
-    }
+        } while (var_r15_2 < fn_80287B14());
     fn_802C8D74();
 }
-
+#pragma pop
 void fn_80295C70(void *arg0, int arg1, float *arg2, unsigned int arg3, int arg4, float farg0, float farg1) {
     struct Entry { int value; float a,b,c,d,e; unsigned char flags[3]; int tail; };
     struct Obj { unsigned char pad[0x180]; int count; };
