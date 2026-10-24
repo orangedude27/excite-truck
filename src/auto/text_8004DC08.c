@@ -3,7 +3,7 @@
 
 extern void * volatile lbl_8055DA2C;
 #pragma small_data on
-extern char lbl_80558F40[];
+extern const char lbl_80558F40;
 #pragma small_data off
 extern int lbl_8055DA44;
 extern unsigned int lbl_800030F0;
@@ -103,7 +103,7 @@ void fn_8004DDFC(void) {
     count = 1;
     lbl_8055DA2C = 0;
     ((int (*)(void *, int, int, int, int, int, int, void *))fn_8003AC24)((void *)fn_8004DDF4, b2, b1, b0, 0, -1, 1, mem);
-    if (*(void * volatile *)&lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
+    if (lbl_8055DA2C != 0 && *(volatile void **)&lbl_8055DA2C != (void *)1) {
         OSReport(lbl_803049C0, *(volatile void **)&lbl_8055DA2C);
         __OSLaunchMenu();
     }
@@ -155,7 +155,7 @@ void fn_8004DDFC(void) {
     lbl_8055DA34 = entry;
     title = *(unsigned long long *)(entry + 0x184);
     error = 0;
-    result = IOS_Open(lbl_80558F40, 0);
+    result = IOS_Open(&lbl_80558F40, 0);
     fd = result;
     if (result < 0)
         error = result;
@@ -230,7 +230,7 @@ extern int IOS_Open(const char *, int);
 extern int IOS_Ioctlv(int, int, int, int, void *);
 extern int _ES_GetTicketViews(int *, unsigned int, unsigned int, void *, unsigned int *);
 extern int _ES_LaunchTitle(int *, unsigned int, unsigned int, void *);
-extern char lbl_80558F40[];
+extern const char lbl_80558F40;
 void fn_8004E3F0(void) {
     int fd;
     int result;
@@ -243,7 +243,7 @@ void fn_8004E3F0(void) {
 
     count = 1;
     fd = -1;
-    result = IOS_Open(lbl_80558F40, 0);
+    result = IOS_Open(&lbl_80558F40, 0);
     fd = result;
     if (result < 0)
         goto out;
