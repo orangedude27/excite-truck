@@ -327,24 +327,32 @@ check:
     if (i < lbl_8055F81C) goto loop;
 }
 
-void fn_802A002C(void) {
-    unsigned char *current = lbl_804B5070;
+#pragma cplusplus on
+extern "C" void fn_802A002C(void) {
+    struct Dummy {
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+    };
+    unsigned char *current = (unsigned char *)lbl_804B5070;
     int i = 0;
     goto check;
 loop:
     {
-        void *object = *(void **)(current + 0x70);
+        Dummy *object = (Dummy *)*(void **)(current + 0x70);
         if (object != 0) {
-            ((void (*)(void *))(*(void ***)object)[3])(object);
+            object->m1();
         }
     }
     current += 0x78;
     i++;
 check:
-    if (i < lbl_8055F81C)
+    if (i < lbl_8055F81C) {
         goto loop;
+    }
 }
-
+#pragma cplusplus reset
 extern float PSVECMag(void *);
 extern float lbl_805646BC;
 extern "C" float PSVECMag(void *);
