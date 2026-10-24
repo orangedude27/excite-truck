@@ -6801,20 +6801,322 @@ extern "C" u32 fn_800C0E7C(void *, void *, void *, void *, s32 *, void *); /* ex
 extern "C" u32 fn_800C3DA0(void *, void *, s32, s16 *, s16 *, s16 *, s16, s16); /* extern */
 extern "C" u32 lbl_80560DA0;
 extern "C" u32 lbl_80560DA8;
-extern "C" s32 fn_800BDF4C(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 arg5, s32 arg6) {
-    volatile u8 frame[0x1A0];
-    s32 sp164 = 0x802F0000;
-    s32 sp28 = arg6;
-    void *obj = arg0;
-    s32 index = arg2;
-    frame[0] = 0;
-    sp164 += 0x3418;
-    *(s32 *)((u8 *)obj + 0x278) = arg3;
-    *(s32 *)((u8 *)obj + 8) = 0;
+extern "C" s32 fn_800C0440(void *, s32, void *, s32, s32, s32, s32, s16, s32, s16 *, s16 *);
+extern "C" void fn_800C57B0(s32, s32, s32, s32 *);
+extern "C" void fn_800C4CF4(void *, s32, s32, s32, s8, s32);
+extern "C" s32 fn_800BDF4C(void *arg0, void *arg1, s32 arg2, s32 arg3, s32 arg4, s32 *arg5, s32 arg6) {
+    struct LocalFrame { u8 pad0[0x28]; s32 arg6; u8 pad1[0x164 - 0x2C]; s32 table; u8 pad2[0x178 - 0x168]; };
+    volatile LocalFrame layout;
+    layout.table = 0x802F0000;
+    layout.arg6 = arg6;
+    s16 spA0[12];
+    volatile u8 frame[0x170];
+    s16 *spCursor;
+    s32 spE4, spE8, var_r14;
+    s16 spE2, spE0;
+    s32 temp_r17;
+    s8 spEC, var_r17;
+    s32 result, type, bitDepth, tile;
+    s16 samplesC[4], samples9[4], samples8[4], samples4[4];
+    s16 colorA[4][3], colorB[4][3], colorC[4], colorD[4], colorE[4], colorF[4], colorG[4];
+    u8 flags[4], secondary[4], modeBits[4];
+    s32 rowBits[4];
+    s16 status;
+    s32 temp_r0_2;
+    s32 temp_r4_2, var_r5, temp_r0_5, temp_r0_6, temp_r0_7;
+    u32 temp_r0_4, var_ctr, var_ctr_2;
+    u8 temp_r4_3, temp_r4_4;
+    u8 *var_r7;
+    s32 temp_r7, temp_r6, temp_r3_8, zeroPass, zeroCount;
+    u8 *zeroBase, *zeroRow, *zeroGroup;
+    layout.table += 0x3418;
+    *(s32 *)((u8 *)arg0 + 0x278) = arg3;
+    *(s32 *)((u8 *)arg0 + 8) = 0;
     lbl_8055DD88 = arg1;
-    if (((s16 (*)(s32, s32, s32))fn_800BDD7C)(*(s32 *)((u8 *)obj + 0x278), index, (s32)((u8 *)obj + 8)) == 0)
+    if (((s16 (*)(s32, s32, s32))fn_800BDD7C)(*(s32 *)((u8 *)arg0 + 0x278), arg2, (s32)((u8 *)arg0 + 8)) == 0)
         return 8;
-    return sp28 + sp164 + arg4 + arg5 + frame[0];
+    temp_r17 = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 1, (s32 *)((u8 *)arg0 + 8));
+    if (fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 2, (s32 *)((u8 *)arg0 + 8)) != 1)
+        return 0xD;
+    var_r14 = *(s32 *)((u8 *)arg0 + 8) - 0xF;
+    if (var_r14 < 0)
+        var_r14 += *(s32 *)((u8 *)arg0 + 0x278) * 8;
+    if (temp_r17 == 0) {
+        spEC = 1;
+        *(s32 *)((u8 *)arg0 + 4) = 1;
+    } else {
+        spEC = 2;
+        *(s32 *)((u8 *)arg0 + 4) = 0;
+    }
+    spE2 = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 1, (s32 *)((u8 *)arg0 + 8));
+    result = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 0x10, (s32 *)((u8 *)arg0 + 8));
+    type = (result >> 12) & 0xF;
+    if (type == 0) return 0xE;
+    if (type == 0xF) return 0xE;
+    status = (result >> 10) & 3;
+    *(s16 *)((u8 *)arg0 + 0x1C) = status;
+    if (status == 3) return 0xF;
+    tile = (result >> 6) & 3;
+    *(u8 *)arg0 = tile == 3 ? 1 : 2;
+    *(s16 *)((u8 *)arg0 + 0x1E) = (result >> 4) & 3;
+    if (*(s32 *)((u8 *)arg0 + 4) == 0)
+        spE4 = ((s16 *)(layout.table + (status << 5)))[type] * 8;
+    else
+        spE4 = ((s16 *)(layout.table + 0x60 + (status << 5)))[type] * 8;
+    if (((result >> 9) & 1) == 1) spE4 += 8;
+    *arg5 = spE4 / 8;
+    spE8 = var_r14 + spE4;
+    if (spE2 == 0)
+        fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 0x10, (s32 *)((u8 *)arg0 + 8));
+    spE0 = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 9 - *(s32 *)((u8 *)arg0 + 4), (s32 *)((u8 *)arg0 + 8));
+    bitDepth = (result >> 6) & 3;
+    if (bitDepth == 3)
+        fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 5 - (*(s32 *)((u8 *)arg0 + 4) * 4), (s32 *)((u8 *)arg0 + 8));
+    else
+        fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 3 - *(s32 *)((u8 *)arg0 + 4), (s32 *)((u8 *)arg0 + 8));
+    if (*(s32 *)((u8 *)arg0 + 4) == 0) {
+        spCursor = spA0;
+        var_r17 = 0;
+    loop31:
+        if (var_r17 < (s8)*(u8 *)arg0) {
+            result = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 4, (s32 *)((u8 *)arg0 + 8));
+            spCursor[0] = (result >> 3) & 1;
+            var_r17 += 1;
+            spCursor[1] = (result >> 2) & 1;
+            spCursor[2] = (result >> 1) & 1;
+            spCursor[3] = result & 1;
+            spCursor += 4;
+            goto loop31;
+        }
+    }
+    for (s32 pass = 0; pass < spEC; ++pass) {
+        for (s32 i = 0; i < (s8)*(u8 *)arg0; ++i) {
+            s32 index = pass * 2 + i;
+            s32 value;
+            samplesC[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 0xC, (s32 *)((u8 *)arg0 + 8));
+            samples9[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 9, (s32 *)((u8 *)arg0 + 8));
+            samples8[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 8, (s32 *)((u8 *)arg0 + 8));
+            if (*(s32 *)((u8 *)arg0 + 4) == 0)
+                samples4[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 4, (s32 *)((u8 *)arg0 + 8));
+            else
+                samples4[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 9, (s32 *)((u8 *)arg0 + 8));
+            value = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 1, (s32 *)((u8 *)arg0 + 8));
+            flags[index] = value;
+            if ((s8)value == 1) {
+                modeBits[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 2, (s32 *)((u8 *)arg0 + 8));
+                secondary[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 1, (s32 *)((u8 *)arg0 + 8));
+                value = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 0xA, (s32 *)((u8 *)arg0 + 8));
+                colorA[index][0] = (value >> 5) & 0x1F;
+                colorA[index][1] = value & 0x1F;
+                value = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 9, (s32 *)((u8 *)arg0 + 8));
+                colorB[index][0] = (value >> 6) & 7;
+                colorB[index][1] = (value >> 3) & 7;
+                colorB[index][2] = value & 7;
+                switch ((s8)modeBits[index]) {
+                case 0: rowBits[index] = 1; break;
+                case 1: rowBits[index] = 2; break;
+                case 3: rowBits[index] = 4; break;
+                default: rowBits[index] = secondary[index] != 0 ? 8 : 0x10; break;
+                }
+            } else {
+                rowBits[index] = 0;
+                secondary[index] = 0;
+                value = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 0xF, (s32 *)((u8 *)arg0 + 8));
+                colorA[index][0] = (value >> 10) & 0x1F;
+                colorA[index][1] = (value >> 5) & 0x1F;
+                colorA[index][2] = value & 0x1F;
+                value = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 7, (s32 *)((u8 *)arg0 + 8));
+                colorC[index] = (value >> 3) & 0xF;
+                colorD[index] = value & 7;
+                rowBits[index] = 1;
+            }
+            if (*(s32 *)((u8 *)arg0 + 4) == 0)
+                colorE[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 1, (s32 *)((u8 *)arg0 + 8));
+            colorF[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 1, (s32 *)((u8 *)arg0 + 8));
+            colorG[index] = fn_800BDE18(*(s32 *)((u8 *)arg0 + 0x278), arg2, 1, (s32 *)((u8 *)arg0 + 8));
+        }
+    }
+    temp_r4_2 = *(s32 *)((u8 *)arg0 + 8);
+    if (temp_r4_2 < 0)
+        var_r5 = (spE8 >> 3) - ((temp_r4_2 >> 3) + *(s32 *)((u8 *)arg0 + 0x278));
+    else
+        var_r5 = (spE8 >> 3) - (temp_r4_2 >> 3);
+    *(s32 *)((u8 *)arg0 + 0x18) = *(s32 *)((u8 *)arg0 + 0x14) >> 3;
+    var_r7 = (u8 *)arg2 + (*(s32 *)((u8 *)arg0 + 8) >> 3);
+    if (var_r5 != 0) {
+        temp_r0_4 = (u32)var_r5 >> 2;
+        var_ctr = temp_r0_4;
+        if (temp_r0_4 != 0) {
+            do {
+                *(u8 *)((u8 *)arg0 + 0xCD70 + (*(s32 *)((u8 *)arg0 + 0x18) & 0x1FFF)) = var_r7[0];
+                temp_r0_5 = *(s32 *)((u8 *)arg0 + 0x18) + 1;
+                *(s32 *)((u8 *)arg0 + 0x18) = temp_r0_5;
+                *(u8 *)((u8 *)arg0 + 0xCD70 + (temp_r0_5 & 0x1FFF)) = var_r7[1];
+                temp_r0_6 = *(s32 *)((u8 *)arg0 + 0x18) + 1;
+                *(s32 *)((u8 *)arg0 + 0x18) = temp_r0_6;
+                *(u8 *)((u8 *)arg0 + 0xCD70 + (temp_r0_6 & 0x1FFF)) = var_r7[2];
+                temp_r4_3 = var_r7[3];
+                var_r7 += 4;
+                temp_r0_7 = *(s32 *)((u8 *)arg0 + 0x18) + 1;
+                *(s32 *)((u8 *)arg0 + 0x18) = temp_r0_7;
+                *(u8 *)((u8 *)arg0 + 0xCD70 + (temp_r0_7 & 0x1FFF)) = temp_r4_3;
+                *(s32 *)((u8 *)arg0 + 0x18) = *(s32 *)((u8 *)arg0 + 0x18) + 1;
+                var_ctr -= 1;
+            } while (var_ctr != 0);
+            var_r5 &= 3;
+            if (var_r5 != 0)
+                goto block61;
+        } else {
+block61:
+            var_ctr_2 = var_r5;
+            do {
+                temp_r4_4 = *var_r7;
+                var_r7 += 1;
+                *(u8 *)((u8 *)arg0 + 0xCD70 + (*(s32 *)((u8 *)arg0 + 0x18) & 0x1FFF)) = temp_r4_4;
+                *(s32 *)((u8 *)arg0 + 0x18) = *(s32 *)((u8 *)arg0 + 0x18) + 1;
+                var_ctr_2 -= 1;
+            } while (var_ctr_2 != 0);
+        }
+    }
+    temp_r7 = (*(s32 *)((u8 *)arg0 + 0x18) * 8) & 0xFFF8;
+    *(s32 *)((u8 *)arg0 + 0x14) = temp_r7;
+    if (*(s32 *)((u8 *)arg0 + 4) == 0) {
+        temp_r6 = *(s32 *)((u8 *)arg0 + 0x10);
+        *(s32 *)((u8 *)arg0 + 0x10) = (temp_r7 - (spE0 * 8)) - (spE4 - *(s16 *)((u8 *)&lbl_80560DA0 + (((s8)*(u8 *)arg0 - 1) * 4) + (spE2 * 2)));
+    } else {
+        temp_r6 = *(s32 *)((u8 *)arg0 + 0x10);
+        *(s32 *)((u8 *)arg0 + 0x10) = (temp_r7 - (spE0 * 8)) - (spE4 - *(s16 *)((u8 *)&lbl_80560DA8 + (((s8)*(u8 *)arg0 - 1) * 4) + (spE2 * 2)));
+    }
+    temp_r6 = *(s32 *)((u8 *)arg0 + 0x10);
+    *(s16 *)((u8 *)arg0 + 0x288) = ((s16 *)(layout.table + 0xC0 + (*(s32 *)((u8 *)arg0 + 4) * 6)))[*(s16 *)((u8 *)arg0 + 0x1C)];
+    if (temp_r6 < 0) {
+        temp_r3_8 = *(s32 *)((u8 *)arg0 + 0xC);
+        if (temp_r3_8 == 0 && ((-temp_r6 + 0x200000) - temp_r3_8) > 0x200000) {
+            zeroBase = (u8 *)lbl_8055DD88;
+            zeroPass = 0;
+            while (zeroPass < spEC) {
+                zeroRow = zeroBase;
+                zeroCount = 0x30;
+                do {
+                    ((s16 *)zeroRow)[0] = 0;
+                    ((s16 *)zeroRow)[1] = 0;
+                    ((s16 *)zeroRow)[2] = 0;
+                    ((s16 *)zeroRow)[3] = 0;
+                    ((s16 *)zeroRow)[4] = 0;
+                    ((s16 *)zeroRow)[5] = 0;
+                    ((s16 *)zeroRow)[6] = 0;
+                    ((s16 *)zeroRow)[7] = 0;
+                    zeroGroup = zeroRow + 0x10;
+                    lbl_8055DD88 = zeroGroup;
+                    ((s16 *)zeroRow)[8] = 0;
+                    ((s16 *)zeroRow)[9] = 0;
+                    ((s16 *)zeroRow)[10] = 0;
+                    ((s16 *)zeroRow)[11] = 0;
+                    ((s16 *)zeroRow)[12] = 0;
+                    ((s16 *)zeroRow)[13] = 0;
+                    ((s16 *)zeroRow)[14] = 0;
+                    ((s16 *)zeroRow)[15] = 0;
+                    zeroRow += 0x10;
+                    zeroGroup = zeroRow + 0x10;
+                    lbl_8055DD88 = zeroGroup;
+                    ((s16 *)zeroRow)[8] = 0;
+                    ((s16 *)zeroGroup)[1] = 0;
+                    ((s16 *)zeroGroup)[2] = 0;
+                    ((s16 *)zeroGroup)[3] = 0;
+                    ((s16 *)zeroGroup)[4] = 0;
+                    ((s16 *)zeroGroup)[5] = 0;
+                    ((s16 *)zeroGroup)[6] = 0;
+                    ((s16 *)zeroGroup)[7] = 0;
+                    zeroBase = zeroGroup + 0x10;
+                    zeroRow = zeroBase;
+                    lbl_8055DD88 = zeroBase;
+                    zeroCount -= 1;
+                } while (zeroCount != 0);
+                zeroPass += 1;
+            }
+        }
+    }
+    {
+        s16 *p40 = (s16 *)(u8 *)&frame[0x40];
+        s16 *p58 = (s16 *)(u8 *)&frame[0x58];
+        s16 *pB0 = (s16 *)(u8 *)&frame[0xB0];
+        s16 *p50 = (s16 *)(u8 *)&frame[0x50];
+        s32 *p90 = rowBits;
+        s16 *p2C = (s16 *)(u8 *)&frame[0x2C];
+        s16 *p78 = (s16 *)(u8 *)&frame[0x78];
+        s16 *p68 = (s16 *)(u8 *)&frame[0x68];
+        s16 *p70 = (s16 *)(u8 *)&frame[0x70];
+        s16 *p60 = samplesC;
+        s16 *p48 = samples9;
+        s16 *p80 = samples4;
+        s16 *p88 = colorG;
+        s16 *p20a = (s16 *)((u8 *)arg0 + 0x20);
+        s16 *p20b = (s16 *)((u8 *)arg0 + 0x20);
+        s16 *pC8 = (s16 *)((u8 *)arg0 + 0xC8);
+        s16 *pC8aux = (s16 *)((u8 *)arg0 + 0xC8);
+        s16 *pBBA0 = (s16 *)((u8 *)arg0 + 0xBBA0);
+        u8 *outRing = (u8 *)arg0 + 0xCD70;
+        s8 row = 0;
+        while (row < (s8)*(u8 *)arg0) {
+            fn_800C3DA0(arg0, outRing, *p90, p20a, p20b, pC8, *p60, *p80);
+            fn_800C0440(arg0, (s32)outRing, pBBA0, *p48, *p90, *p70, *p68, *p88,
+                        row, pC8aux, p2C);
+            p40 += 1; p58 += 1; p68 += 1; p70 += 1; p90 += 1; p2C += 1;
+            p60 += 1; pC8 += 0x24; pC8aux += 3; p20a += 0x15; p20b += 0x15;
+            p80 += 1; p88 += 1; p48 += 1; pBBA0 += 0x258; row += 1;
+        }
+        p40 = (s16 *)(u8 *)&frame[0x40];
+        p58 = (s16 *)(u8 *)&frame[0x58];
+        pB0 = (s16 *)(u8 *)&frame[0xB0];
+        p50 = (s16 *)(u8 *)&frame[0x50];
+        p90 = rowBits;
+        p2C = (s16 *)(u8 *)&frame[0x2C];
+        p78 = (s16 *)(u8 *)&frame[0x78];
+        row = 0;
+        while (row < (s8)*(u8 *)arg0) {
+            ((u32 (*)(void *, void *, void *, void *, void *, void *, s32 *, void *,
+                      void *, void *, void *, void *, void *, void *, void *))fn_800BF048)(
+                arg0, (u8 *)arg0 + 0x28A, (u8 *)arg0 + 0x4CA,
+                (u8 *)arg0 + 0x70A, (u8 *)arg0 + 0x94A,
+                (u8 *)arg0 + 0x974, p90, (u8 *)arg0 + 0xAB0,
+                (u8 *)arg0 + 0xBBA0, p70, p68, p40,
+                (u8 *)arg0 + 0x20, (u8 *)arg0 + 0xC8, p78);
+            if (*(s16 *)((u8 *)arg0 + 0x1E) & 2)
+                fn_800C57B0(*(s32 *)((u8 *)arg0 + 0x9BC),
+                            *(s32 *)((u8 *)arg0 + 0x9C0),
+                            *p90, (s32 *)((u8 *)arg0 + 0xAB0));
+            if (*(s16 *)((u8 *)arg0 + 0x1E) & 1) {
+                ((u32 (*)(void *, void *, void *, s32, void *, s16 *, s16 *, u32 *, s16))fn_800BC538)(
+                    arg0, (u8 *)arg0 + 0x28A, (u8 *)arg0 + 0x94A,
+                    p90[1], (void *)((u8 *)arg0 + 0xAB0),
+                    (s16 *)((u8 *)arg0 + 0x20),
+                    (s16 *)((u8 *)arg0 + 0xC8), (u32 *)p78, *p2C);
+            }
+            if ((*p90 & 0xF) != 0)
+                fn_800BD970(*(s32 *)((u8 *)arg0 + 0x9C8),
+                            *(s32 *)((u8 *)arg0 + 0x9BC),
+                            (s8)*(u8 *)arg0, *p90, (s32 *)((u8 *)arg0 + 0xAB0));
+            fn_800C0E7C(arg0, (u8 *)arg0 + 0x72B0,
+                        (u8 *)arg0 + 0x96B0, (u8 *)arg0 + 0xA8B0,
+                        p90, (u8 *)arg0 + 0xAB0);
+            if (arg6 == 0) {
+                fn_800C4CF4(arg0, (s32)((u8 *)arg0 + 0x52B0),
+                            (s32)((u8 *)arg0 + 0xA8B0),
+                            (s32)lbl_8055DD88, (s8)*(u8 *)arg0, arg6);
+                lbl_8055DD88 = (u8 *)lbl_8055DD88 + (*(u8 *)arg0 * 0x480);
+            } else {
+                fn_800C4CF4(arg0, (s32)((u8 *)arg0 + 0x52B0),
+                            (s32)((u8 *)arg0 + 0xA8B0),
+                            (s32)lbl_8055DD88, (s8)*(u8 *)arg0, arg6);
+                lbl_8055DD88 = (u8 *)lbl_8055DD88 + 0x480;
+            }
+            p40 += 2; p58 += 2; pB0 += 6; p50 += 2; p90 += 2; p2C += 1;
+            p78 += 2; p68 += 2; p70 += 2; p60 += 2; p48 += 2;
+            pC8 += 0x24; pC8aux += 0x24; p20a += 0x15; p20b += 0x15;
+            pBBA0 += 0x4B0; row += 1;
+        }
+    }
+    return 0;
 }
 
 void fn_800BEDE0(void *arg0, void *arg1) {
@@ -10562,20 +10864,17 @@ block_58:
 }
 
 #pragma opt_tail_call on
-#pragma opt_tail_call on
-#pragma opt_tail_call on
 extern "C" s32 fn_800D40B4(s32 arg0, s32 arg1, s32 arg2, void *arg3, void *arg4) {
-    void *r31 = lbl_8055DDD4_ptr;
+    void *r31 = (void *)lbl_8055DDD4;
     s32 r28 = arg2;
     s32 r29 = arg1;
     s32 r30 = arg0;
     while (r31 != NULL) {
-        if (fn_800D3F94(r31, r28, r29, r30) != 0) return 1;
+        if (fn_800D3F94(r31, r30, r29, r28) != 0) return 1;
         r31 = *(void **)((u8 *)r31 + 0xC);
     }
     return 0;
 }
-
 extern "C" f32 lbl_80560E48;
 extern "C" f32 lbl_80560E4C;
 extern "C" u16 fn_800D4138(const void *arg0, u32 arg1, f32 farg0) {
@@ -11947,13 +12246,17 @@ extern "C" s32 fn_800A4B08(u8 *arg0, u8 *arg1, s32 arg2) {
     u8 b;
     while (arg2 != 0) {
         a = *arg0;
-        if (a == 0) break;
-        b = *arg1;
-        if (b == 0) break;
-        if (a != b) return a - *(volatile u8 *)arg1;
-        arg0++;
-        arg1++;
-        arg2--;
+        if (a != 0) {
+            b = *arg1;
+            if (b != 0) {
+                if (a != b) return a - *(volatile u8 *)arg1;
+                arg0++;
+                arg1++;
+                arg2--;
+                continue;
+            }
+        }
+        break;
     }
     return 0;
 }
