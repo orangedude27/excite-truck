@@ -3664,7 +3664,7 @@ slot_found:
 #pragma pop
 
 extern "C" s32 fn_800B0DEC(void *, s32, u32 *);
-extern "C" s32 VFiPFFILE_p_fread(void *, void *, u32 arg2, u32 arg3, void *arg4, u32 *arg5) {
+extern "C" s32 VFiPFFILE_p_fread(void *, void *arg1, u32 arg2, u32 arg3, void *arg4, u32 *arg5) {
     u32 bytesRead = 0;
     *arg5 = 0;
     s32 mode = *(s32 *)((u8 *)arg4 + 4);
@@ -3672,7 +3672,8 @@ extern "C" s32 VFiPFFILE_p_fread(void *, void *, u32 arg2, u32 arg3, void *arg4,
     if ((*(u16 *)((u8 *)*(void **)((u8 *)arg4 + 8) + 0x27c) & 3) &&
         *(u16 *)((u8 *)arg4 + 0x2c) == 0) return 0x19;
     if (*(u32 *)((u8 *)arg4 + 0x1c) >= *(u32 *)((u8 *)*(void **)((u8 *)arg4 + 8) + 0x264)) return 0x1c;
-    s32 result = fn_800B0DEC(arg4, arg2 * arg3, &bytesRead);
+    s32 result = ((s32 (*)(void *, s32, u32, s32 *, s32))fn_800B0DEC)(
+        arg4, (s32)arg1, arg2 * arg3, (s32 *)&bytesRead, (s32)arg4);
     s32 ret = result & ((-result | result) >> 31);
     *arg5 = bytesRead / arg2;
     return ret;
