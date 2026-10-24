@@ -123,31 +123,60 @@ extern "C" void fn_80217590(void *arg0, int arg1, int arg2) {
 #pragma cplusplus off
 void fn_80218198(void *, void **);
 int fn_80218214(void *, int, int);
-void fn_802175F0(void *arg0, int arg1, int arg2) {
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_802175F0(void *arg0, int arg1, int arg2) {
+    class Dummy {
+    public:
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15(int, int);
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual void v21();
+        virtual void v22();
+        virtual void v23();
+        virtual int v24();
+    };
     char *base = (char *)arg0;
     int x;
     int y;
     int index;
-    void *obj;
+    Dummy *obj;
     if (*(void **)(base + 0x44C) == 0) {
         x = arg1 - *(int *)(base + 0x454);
         y = arg2 - *(int *)(base + 0x458);
         index = fn_80218214(arg0, x, y);
         obj = 0;
-        if (index >= 0) obj = *(void **)(base + index * 4 + 0x30);
+        if (index >= 0) obj = (Dummy *)*(void **)(base + index * 4 + 0x30);
         *(void **)(base + 0x44C) = obj;
         if (obj != 0 && *(void **)(base + 0x450) != obj) {
-            if (((int (*)(void *))(*(void ***)obj)[26])(obj) != 0) {
+            if (obj->v24() != 0) {
                 fn_80218198(arg0, (void **)obj);
             }
         }
         if (obj != 0) {
-            ((void (*)(void *, int, int))(*(void ***)obj)[17])(obj, x, y);
+            obj->v15(x, y);
         }
     }
 }
-
-#pragma cplusplus on
+#pragma scheduling on
 extern "C" void fn_802176D4(void *arg0, int arg1, int arg2) {
     class Obj {
     public:
@@ -398,21 +427,15 @@ void fn_80217D84(void *arg0) {
     entry = base + count * 8;
     last = -1;
     matches = 0;
-    while (i > 0) {
-        i -= 1;
+    do {
         entry -= 8;
-        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) {
-            last = i;
-        }
+        if (*(int *)(base + 0x498) == *(int *)(entry + 0x4A0)) last = i - 1;
         item = *(char **)(entry + 0x4A4);
         item_ok = 0;
-        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) <= lbl_80563490) {
-            item_ok = 1;
-        }
-        if (item_ok && *(unsigned char *)(item + 0x1B) != 0) {
-            matches++;
-        }
-    }
+        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) <= lbl_80563490) item_ok = 1;
+        if (item_ok && *(unsigned char *)(item + 0x1B) != 0) matches++;
+        i--;
+    } while (i > 0);
     step = 1;
     found = -1;
     while (step < count) {
@@ -420,18 +443,12 @@ void fn_80217D84(void *arg0) {
         e2 = base + idx * 8;
         item = *(char **)(e2 + 0x4A4);
         item_ok = 0;
-        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) <= lbl_80563490) {
-            item_ok = 1;
-        }
-        if (item_ok && *(unsigned char *)(item + 0x1B) != 0) {
-            found = idx;
-            break;
-        }
+        if (*(unsigned char *)(item + 0x1A) == 0 && *(float *)(item + 0x20) <= lbl_80563490) item_ok = 1;
+        if (item_ok && *(unsigned char *)(item + 0x1B) != 0) { found = idx; break; }
         step++;
     }
-    if (found >= 0 && (found < last || matches > 3)) {
+    if (found >= 0 && (found < last || matches > 3))
         *(int *)(base + 0x498) = *(int *)(base + found * 8 + 0x4A0);
-    }
 }
 
 void fn_802180B0(void *arg0) { fn_80217EC0(arg0, 1, 0); }
@@ -487,10 +504,37 @@ void fn_80218198(void *arg0, void **arg1) {
     }
 }
 
-#pragma push
-#pragma processor 750
-#pragma dont_inline on
-int fn_80218214(void *arg0, int arg1, int arg2) {
+#pragma cplusplus on
+extern "C" int fn_80218214(void *arg0, int arg1, int arg2) {
+    struct Dummy {
+        virtual int f0();
+        virtual int f1();
+        virtual int f2();
+        virtual int f3();
+        virtual int f4();
+        virtual int f5();
+        virtual int f6();
+        virtual int f7();
+        virtual int f8();
+        virtual int f9();
+        virtual int f10();
+        virtual int f11();
+        virtual int f12();
+        virtual int f13();
+        virtual int f14();
+        virtual int f15();
+        virtual int f16();
+        virtual int f17();
+        virtual int f18();
+        virtual int f19();
+        virtual int f20();
+        virtual int f21();
+        virtual int f22();
+        virtual int f23();
+        virtual int f24();
+        virtual int f25();
+        virtual int f26(int, int);
+    };
     char *entry;
     int i;
     float threshold = lbl_80563490;
@@ -501,21 +545,18 @@ int fn_80218214(void *arg0, int arg1, int arg2) {
         if (*(unsigned char *)((char *)obj + 0x1B) != 0) {
             int eligible = 0;
             if (*(unsigned char *)((char *)obj + 0x1A) == 0) {
-                if (*(float *)((char *)obj + 0x20) < threshold)
+                if (*(float *)((char *)obj + 0x20) >= threshold)
                     eligible = 1;
             }
-            if (eligible != 0 &&
-                ((int (**)(void *, int, int))(*(void ***)obj))[28](obj, arg1, arg2) != 0) {
+            if (eligible != 0 && ((Dummy *)obj)->f26(arg1, arg2) != 0)
                 return i;
-            }
         }
         entry -= 4;
         i--;
     }
     return -1;
 }
-#pragma dont_inline reset
-#pragma pop
+#pragma cplusplus reset
 int fn_802182F0(void *arg0, void *arg1) {
     int i;
     for (i = 0; i < *(int *)((char *)arg0 + 0x430); i++) {
