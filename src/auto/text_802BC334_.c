@@ -85,6 +85,7 @@ float fn_802BC540(void *arg0, float farg0) {
 void PSVECCrossProduct(Vec *, Vec *, Vec *);
 void PSVECNormalize(const Vec *, Vec *);
 void fn_801EA18C(void *, s32, s32);
+#pragma push
 #pragma scheduling invalid_target
 void fn_802BC588(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
     volatile float sp14[3];
