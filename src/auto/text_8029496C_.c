@@ -3,6 +3,19 @@
 
 #define M2C_FIELD(expr, type, offset) (*(type)((unsigned char *)(expr) + (offset)))
 
+#include <math.h>
+extern float PSVECDotProduct(float *, float *);
+extern void PSVECNormalize(float *, float *);
+extern float fn_801E88F0(int);
+extern void *fn_80287B24(int);
+extern void fn_80294CCC(float *, float *, float *, unsigned int, int, float, float);
+extern void *fn_802C86DC(void);
+extern float fn_802C88E8(void *);
+extern void fn_802C8BD0(int);
+extern void fn_802C8D74(void);
+extern char lbl_804B42F0[];
+extern float lbl_80564518, lbl_8056452C, lbl_80564538, lbl_8056453C, lbl_80564540;
+
 typedef struct { float x, y, z; } Vec80295;
 extern char lbl_80349338[];
 extern char lbl_8055C998[8], lbl_8055C9A0[4], lbl_8055C9A4[8], lbl_8055C9AC[4];
