@@ -1228,7 +1228,7 @@ void fn_801C82E0(void) {
 void fn_801C83D0(void) {
     f32 value = (f32)atof(lbl_804380F0);
     lbl_8055A958 = value;
-    sprintf(lbl_80437FC0, lbl_80336FDC, (double)value);
+    sprintf(lbl_80437FC0, lbl_80336FDC, value);
     fn_801C957C(0);
 }
 
