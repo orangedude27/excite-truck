@@ -322,8 +322,8 @@ int fn_802C8FF4(float *arg0, float arg1) {
     int result = 0;
 
     z = arg0[2];
-    if (z > lbl_8055FC38 + lbl_80558DC4 &&
-        z < lbl_8055FC3C - lbl_80558DC4) {
+    if (z > lbl_8055FC38 + (*(float *)&lbl_80558DC4) &&
+        z < lbl_8055FC3C - (*(float *)&lbl_80558DC4)) {
         x = arg0[0];
         if (x >= (float)(int)lbl_8055FC5C - arg1 &&
             x < arg1 + (float)((int)lbl_8055FC5C + (int)lbl_8055FC64)) {
@@ -476,9 +476,13 @@ extern double __fabs(double);
 #pragma scheduling invalid_target
 void fn_802C974C(float f0, float f1, float f2) {
     float *view = lbl_804C144C;
-    float angle = f2;
+    register float angle = f2;
     float f4;
-    float theta, s, t, a, ratio;
+    register float theta;
+    register float s;
+    register float t;
+    register float a;
+    register float ratio;
     unsigned char mode = lbl_8055FC74;
     lbl_8055FC38 = f0;
     lbl_8055FC3C = f1;
