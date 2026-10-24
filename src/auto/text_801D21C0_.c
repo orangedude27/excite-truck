@@ -234,22 +234,29 @@ extern "C" void fn_801D2A24(void *obj_) {
 #pragma scheduling on
 #pragma cplusplus reset
 
-void fn_801D2AD4(void *arg0) {
-    UnkObj *list = (UnkObj *)fn_80131810();
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801D2AD4(void *arg0) {
+    struct Dummy {
+        virtual char *fn8();
+        virtual Dummy *child(s32);
+    };
+    Dummy *list = (Dummy *)fn_80131810();
     s32 i;
 
     if (list == NULL) {
         return;
     }
     i = 0;
-    while (list->vt->child(list, i) != NULL) {
-        UnkObj *obj = (UnkObj *)list->vt->child(list, i);
-        if (strncmp(obj->vt->fn8(obj), (char *)&lbl_8055AC28, 7) == 0) {
+    while (list->child(i) != NULL) {
+        Dummy *obj = list->child(i);
+        if (strncmp(obj->fn8(), (char *)&lbl_8055AC28, 7) == 0) {
             fn_801D2A24(obj);
         }
         i++;
     }
     fn_80131818(list);
 }
-#pragma dont_inline off
+#pragma scheduling on
+#pragma cplusplus reset
 
