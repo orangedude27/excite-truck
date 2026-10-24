@@ -19,6 +19,7 @@ extern void fn_80127D58(void (*)(void));
 extern void fn_802E30C8(const char*, ...);
 extern void fn_802E2C20(void);
 extern s32 lbl_8055DF30;
+extern void fn_801274C8(s32);
 extern u32 lbl_8055DF34;
 extern u64 lbl_8055DF18;
 extern u64 lbl_8055DF20;
