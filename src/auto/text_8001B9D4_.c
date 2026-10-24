@@ -399,6 +399,19 @@ void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
         fn_8001C35C(arg0, arg1, arg2);
     }
 }
+
+extern void *fn_8001C540(s32, s32, s32, s32);
+s32 fn_8001CE34(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
+    void *result;
+    if (arg1 != 0) {
+        result = fn_8001C540(arg0, arg1, arg2, 0);
+        if (result != 0) {
+            return *(s32 *)((u8 *)result + 0x6C);
+        }
+    }
+    return 0;
+}
+
 #pragma scheduling on
 s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     void *ptr = (void *)fn_8001285C(arg1);
