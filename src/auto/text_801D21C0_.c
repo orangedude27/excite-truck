@@ -74,6 +74,53 @@ s32 fn_801D2C20(s32 arg0) {
     }
     return fn_800241DC(&sp8, lbl_80438958, lbl_8055E930, 0x4C4, fn_801D2BF4);
 }
+
+extern u8 lbl_80438898[];
+extern f32 lbl_8055E3C8;
+extern void fn_801796CC(s32, f32 *, s32);
+void fn_801D2C70(void *arg0, s32 arg1, void *arg2, s32 arg3) {
+    s32 i;
+    u8 *entry;
+    f32 *vec;
+    f32 x, y, z;
+    s32 index;
+
+    vec = (f32 *)arg1;
+    i = 0;
+    while (i < *(s32 *)((u8 *)arg0 + 0x28)) {
+        entry = (u8 *)arg0 + i * 8;
+        if (*(s32 *)(entry + 8) < 0) {
+            f32 tmp[8];
+            s32 id = arg3;
+            tmp[0] = vec[0]; tmp[1] = vec[1]; tmp[2] = vec[2];
+            tmp[3] = *(f32 *)((u8 *)arg2 + 0x118);
+            tmp[4] = *(f32 *)((u8 *)arg2 + 0x11C);
+            tmp[5] = *(f32 *)((u8 *)arg2 + 0x120);
+            *(s16 *)(tmp + 6) = *(s16 *)((u8 *)arg2 + 0x6C);
+            fn_801796CC(10, tmp, 0x20);
+            if (*(u32 *)((u8 *)arg2 + 0x10) == 0x43415220 ||
+                *(u32 *)((u8 *)arg2 + 0x10) == 0x50434152 ||
+                *(u32 *)((u8 *)arg2 + 0x10) == 0x41434152 ||
+                *(u32 *)((u8 *)arg2 + 0x10) == 0x4E434152) {
+                index = *(s32 *)((u8 *)arg2 + 0x1EC) * 0x18;
+                *(u8 *)(lbl_80438898 + index) = 1;
+                *(s32 *)(lbl_80438898 + index + 4) = id;
+                *(f32 *)(lbl_80438898 + index + 8) = *(f32 *)(entry + 0xC) + lbl_8055E3C8;
+                x = vec[0] - *(f32 *)((u8 *)arg2 + 0x60);
+                y = vec[1] - *(f32 *)((u8 *)arg2 + 0x64);
+                z = vec[2] - *(f32 *)((u8 *)arg2 + 0x68);
+                *(f32 *)(lbl_80438898 + index + 0xC) = x;
+                *(f32 *)(lbl_80438898 + index + 0x10) = y;
+                *(f32 *)(lbl_80438898 + index + 0x14) = z;
+                *(f32 *)(lbl_80438898 + index + 0xC) = x * *(f32 *)((u8 *)arg2 + 0x3C) + y * *(f32 *)((u8 *)arg2 + 0x40) + z * *(f32 *)((u8 *)arg2 + 0x44);
+                *(f32 *)(lbl_80438898 + index + 0x10) = x * *(f32 *)((u8 *)arg2 + 0x48) + y * *(f32 *)((u8 *)arg2 + 0x4C) + z * *(f32 *)((u8 *)arg2 + 0x50);
+                *(f32 *)(lbl_80438898 + index + 0x14) = x * *(f32 *)((u8 *)arg2 + 0x54) + y * *(f32 *)((u8 *)arg2 + 0x58) + z * *(f32 *)((u8 *)arg2 + 0x5C);
+            }
+        }
+        i++;
+    }
+}
+
 #pragma scheduling on
 
 void fn_801D2210(void) {
@@ -150,17 +197,42 @@ void fn_801D25BC(void* arg0, void* arg1) {
         } while (*(s32*)((char*)arg0 + 0x28) < 4);
     }
 }
-#pragma dont_inline off
-void fn_801D2A24(void *obj_) {
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801D2A24(void *obj_) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual s32 fn1C(u32);
+        virtual void v20();
+        virtual void v24();
+        virtual void v28();
+        virtual void v2C();
+        virtual void v30();
+        virtual void v34();
+        virtual void v38();
+        virtual void v3C();
+        virtual void v40();
+        virtual void v44();
+        virtual void v48();
+        virtual void v4C();
+        virtual void v50();
+        virtual void v54();
+        virtual void v58();
+        virtual void *fn5C(u32);
+    };
     s32 *entry = (s32 *)(lbl_80438958 + lbl_8055E930 * 0x4C4);
-    UnkObj *obj = (UnkObj *)obj_;
-
-    entry[0] = obj->vt->fn1C(obj, (u32)&lbl_8055ABE0);
-    fn_801D25BC(&entry[1], obj->vt->fn5C(obj, (u32)&lbl_8055AC18));
-    fn_801D26C8(&entry[12], obj->vt->fn5C(obj, (u32)&lbl_8055AC20));
+    Dummy *obj = (Dummy *)obj_;
+    entry[0] = obj->fn1C((u32)&lbl_8055ABE0);
+    fn_801D25BC(&entry[1], obj->fn5C((u32)&lbl_8055AC18));
+    fn_801D26C8(&entry[12], obj->fn5C((u32)&lbl_8055AC20));
     lbl_8055E930 += 1;
 }
-#pragma dont_inline off
+#pragma scheduling on
+#pragma cplusplus reset
 
 void fn_801D2AD4(void *arg0) {
     UnkObj *list = (UnkObj *)fn_80131810();
