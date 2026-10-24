@@ -3519,17 +3519,43 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
     return (u32)(queueSize + num) <= pQueue->capacity - 1;
 }
 
+#define WPADiSendMuteSpeakerInline(q, muteValue, callbackValue) \
+    { \
+        WPADCommand command; \
+        BOOL queueEnabled; \
+        BOOL innerEnabled; \
+        s8 queueSize; \
+        command.reportID = RPTID_MUTE_SPEAKER; \
+        command.dataLength = RPT19_SIZE; \
+        command.dataBuf[RPT19_SPEAKER_MUTE] = (muteValue) ? 4 : 0; \
+        command.cmdCB = (callbackValue); \
+        queueEnabled = OSDisableInterrupts(); \
+        innerEnabled = OSDisableInterrupts(); \
+        queueSize = (q)->back - (q)->front; \
+        if (queueSize < 0) queueSize += (q)->capacity; \
+        OSRestoreInterrupts(innerEnabled); \
+        if ((q)->capacity - 1 != queueSize) { \
+            memset(&(q)->buffer[(q)->back], 0, sizeof(WPADCommand)); \
+            memcpy(&(q)->buffer[(q)->back], &command, sizeof(WPADCommand)); \
+            (q)->back = (q)->back == (q)->capacity - 1 ? 0 : (q)->back + 1; \
+        } \
+        OSRestoreInterrupts(queueEnabled); \
+    }
+
 // fn_80060CC0: WPAD processing (large - stub)
 #pragma inline_max_size(1000)
 #pragma inline_max_total_size(10000)
 extern u8 lbl_80560CC0, lbl_80560CC1, lbl_80560CC2, lbl_80560CC3;
 extern u8 lbl_80560CC4, lbl_80560CC5, lbl_80560CC6;
+#pragma inline_depth(3)
 s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
     u8* p;
     BOOL enabled;
     BOOL spkEnable;
     BOOL handshake;
     s32 status;
+    BOOL innerEnabled0, innerEnabled1;
+    s8 queueSize0, queueSize1;
 
     u8 config[SPK_CONFIG_SIZE];
 
@@ -3565,7 +3591,14 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         } else {
             enabled = OSDisableInterrupts();
 
-            if (__CanPushCmdQueue((WPADCommandQueue*)(p + 0x160), 5)) {
+            innerEnabled0 = OSDisableInterrupts();
+            queueSize0 = ((WPADCommandQueue*)(p + 0x160))->back -
+                         ((WPADCommandQueue*)(p + 0x160))->front;
+            if (queueSize0 < 0)
+                queueSize0 += ((WPADCommandQueue*)(p + 0x160))->capacity;
+            OSRestoreInterrupts(innerEnabled0);
+            if ((u32)(queueSize0 + 5) <=
+                ((WPADCommandQueue*)(p + 0x160))->capacity - 1) {
                 WPADiSendMuteSpeaker((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
 
                 WPADiSendWriteDataCmd((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_01,
@@ -3590,7 +3623,14 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         case WPAD_SPEAKER_5: {
             enabled = OSDisableInterrupts();
 
-            if (__CanPushCmdQueue((WPADCommandQueue*)(p + 0x160), 7)) {
+            innerEnabled1 = OSDisableInterrupts();
+            queueSize1 = ((WPADCommandQueue*)(p + 0x160))->back -
+                         ((WPADCommandQueue*)(p + 0x160))->front;
+            if (queueSize1 < 0)
+                queueSize1 += ((WPADCommandQueue*)(p + 0x160))->capacity;
+            OSRestoreInterrupts(innerEnabled1);
+            if ((u32)(queueSize1 + 7) <=
+                ((WPADCommandQueue*)(p + 0x160))->capacity - 1) {
                 WPADiSendEnableSpeaker((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
                 WPADiSendMuteSpeaker((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
 
@@ -3657,6 +3697,7 @@ _end:
 
     return status;
 }
+#pragma inline_depth(1)
 // fn_80062054: get data format
 u32 fn_80062054(s32 chan) {
 #pragma unused(chan)
