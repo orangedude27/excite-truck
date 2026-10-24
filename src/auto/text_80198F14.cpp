@@ -194,6 +194,7 @@ extern "C" void fn_80199870(void* arg0) {
         fn_801A5C4C();
     }
 }
+#pragma dont_inline reset
 
 extern f32 lbl_805622D0, lbl_805622D4, lbl_805622DC, lbl_805622E0, lbl_805622E8, lbl_805622EC, lbl_805622F0, lbl_805622F4, lbl_805622F8, lbl_805622FC, lbl_80562300, lbl_80562304, lbl_80562308, lbl_8056230C, lbl_80562310;
 extern f32 fn_8018AE7C(void*);
