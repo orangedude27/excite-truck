@@ -145,6 +145,38 @@ void fn_801D4F9C(void) {
 void fn_801D5010(void) {
 }
 
+#pragma push
+#pragma use_lmw_stmw off
+#pragma cplusplus on
+extern "C" int fn_801D5014(void *arg0, int arg1, int arg2, int arg3) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual int test(int, int);
+    };
+    int offset;
+    int i;
+    Dummy *obj;
+
+    i = 0;
+    offset = 0;
+    while (i < *(int *)((char *)arg0 + 0x34)) {
+        obj = *(Dummy **)(*(char **)((char *)arg0 + 0x30) + offset);
+        if (obj->test(arg1, arg2) != 0) {
+            return 1;
+        }
+        offset += 4;
+        i += 1;
+    }
+    return 0;
+}
+#pragma cplusplus reset
+#pragma pop
+
 int fn_801D50A0(void) {
     return 0;
 }
