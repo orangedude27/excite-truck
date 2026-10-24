@@ -1,6 +1,28 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+typedef struct {
+    unsigned int field_00;
+    unsigned int field_04;
+    unsigned int field_08;
+    unsigned int field_0C;
+    unsigned int field_10;
+    unsigned int field_14;
+    unsigned int field_18;
+    unsigned int field_1C;
+    unsigned int field_20;
+    unsigned int field_24;
+    unsigned int field_28;
+    unsigned int field_2C;
+    short field_30;
+    short padding_32;
+    unsigned int field_34;
+    unsigned int field_38;
+    float field_3C;
+    unsigned char flag;
+    unsigned char padding_41[3];
+} Fn801F1B1CSource;
+
 void fn_801EFF4C(void* alarm) {
     fn_801F17C8(fn_801F0AA0(alarm));
 }
@@ -144,6 +166,45 @@ int fn_801F09FC(const char *arg0) {
         fn_801F08AC(result, arg0);
         return result;
     }
+}
+
+extern int fn_8012850C(int, void *);
+extern int lbl_8033A4D4;
+extern float lbl_80562F2C;
+int fn_801F0AA0(void *unused) {
+    int i = 0;
+    int offset = 0;
+    int base = fn_8012850C(0x9C0, &lbl_8033A4D4);
+    float value = lbl_80562F2C;
+    lbl_8055EBEC = base;
+    lbl_8055EBF0 = 0;
+    do {
+        int *p = (int *)(base + offset);
+        *(char *)p = 0;
+        p[4] = i;
+        p[5] = i + 1;
+        p[10] = -1; p[12] = -1; p[11] = -1; p[13] = -1;
+        *(float *)((char *)p + 0x38) = value; *(char *)((char *)p + 0x3C) = 0;
+        p[16] = -1; p[18] = -1; p[17] = -1; p[19] = -1;
+        *(float *)((char *)p + 0x50) = value; *(char *)((char *)p + 0x54) = 0;
+        p[22] = -1; p[24] = -1; p[23] = -1; p[25] = -1;
+        *(float *)((char *)p + 0x68) = value; *(char *)((char *)p + 0x6C) = 0;
+        p[28] = -1; p[30] = -1; p[29] = -1; p[31] = -1;
+        *(float *)((char *)p + 0x80) = value; *(char *)((char *)p + 0x84) = 0;
+        p[34] = -1; p[36] = -1; p[35] = -1; p[37] = -1;
+        *(float *)((char *)p + 0x98) = value; *(char *)((char *)p + 0x9C) = 0;
+        p[40] = -1; p[42] = -1; p[41] = -1; p[43] = -1;
+        *(float *)((char *)p + 0xB0) = value; *(char *)((char *)p + 0xB4) = 0;
+        p[46] = -1; p[48] = -1; p[47] = -1; p[49] = -1;
+        *(float *)((char *)p + 0xC8) = value; *(char *)((char *)p + 0xCC) = 0;
+        p[52] = -1; p[54] = -1; p[53] = -1; p[55] = -1;
+        *(float *)((char *)p + 0xE0) = value; *(char *)((char *)p + 0xE4) = 0;
+        p[58] = 0;
+        p[75] = 0;
+        offset += 0x138;
+        i += 2;
+    } while (i < 10);
+    return base;
 }
 
 int fn_80128670(int);
@@ -327,6 +388,31 @@ void fn_801F1474(int *arg0, void *arg1) {
     int base = *arg0;
     if (*(int *)(base + 0x12C) <= 0) return;
     fn_802C7AE0(*(int *)(base + 0xEC), arg1, -1);
+}
+
+int fn_801F1494(int arg0, void *arg1, short arg2) {
+    int base = *(int *)arg0;
+    char *table = (char *)(base + 0xEC);
+    short saved = arg2;
+    float speed = ((float (*)(int, int))fn_801E88F0)(-1, base);
+    float squared = speed * speed;
+    float value = ((float (*)(void *))fn_802C88E8)((char *)arg0 + 0x3C) * squared;
+    int index = *(int *)(table + 0x40) - 1;
+    char *cursor = table + index * 8;
+    while (index >= 0 && value < *(float *)(cursor + 4)) { cursor -= 8; index--; }
+    if (value < *(float *)(table + 0x48) && index >= 0) {
+        int vec[3];
+        vec[0] = *(int *)((char *)arg1 + 0x24);
+        vec[1] = *(int *)((char *)arg1 + 0x28);
+        vec[2] = *(int *)((char *)arg1 + 0x2C);
+        if (fn_801EA03C(&saved, vec)) {
+            float second = *(float *)((char *)arg1 + 0x28);
+            if (second > *(float *)&vec[1]) {
+                float f = *(float *)(table + 0x44) + second - *(float *)&vec[1];
+                fn_802C7AE0(*(int *)(table + index * 8), arg1, -1, f);
+            }
+        }
+    }
 }
 
 float fn_801F159C(void **arg0) {
