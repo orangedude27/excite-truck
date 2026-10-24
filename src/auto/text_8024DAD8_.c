@@ -204,6 +204,7 @@ extern unsigned char lbl_803442E4[];
 extern "C" s32 fn_80129D18(s32, s32);
 #pragma push
 #pragma scheduling invalid_target
+#pragma use_lmw_stmw off
 extern "C" s32 fn_8024ECD4(void) {
     typedef signed char s8;
     typedef void *(*VCall)(void *, s32);
@@ -220,6 +221,8 @@ extern "C" s32 fn_8024ECD4(void) {
     s32 spC;
     s32 sp8;
     s32 *temp_r4;
+    s32 copy_a;
+    s32 copy_b;
     s32 temp_r3;
     s32 temp_r3_14;
     s32 var_r0;
@@ -320,16 +323,26 @@ loop_12:
         var_r27 = temp_r30;
         var_r25 = temp_r30;
         M2C_FIELD(temp_r30, s32, 0) = M2C_FIELD(temp_r3_10, s32, 0);
-        M2C_FIELD(temp_r30, s32, 4) = M2C_FIELD(temp_r3_10, s32, 4);
-        M2C_FIELD(temp_r30, s32, 8) = M2C_FIELD(temp_r3_10, s32, 8);
-        M2C_FIELD(temp_r30, s32, 0xC) = M2C_FIELD(temp_r3_10, s32, 0xC);
-        M2C_FIELD(temp_r30, s32, 0x10) = M2C_FIELD(temp_r3_10, s32, 0x10);
-        M2C_FIELD(temp_r30, s32, 0x14) = M2C_FIELD(temp_r3_10, s32, 0x14);
-        M2C_FIELD(temp_r30, s32, 0x18) = M2C_FIELD(temp_r3_10, s32, 0x18);
-        M2C_FIELD(temp_r30, s32, 0x1C) = M2C_FIELD(temp_r3_10, s32, 0x1C);
-        M2C_FIELD(temp_r30, s32, 0x20) = M2C_FIELD(temp_r3_10, s32, 0x20);
-        M2C_FIELD(temp_r30, s32, 0x24) = M2C_FIELD(temp_r3_10, s32, 0x24);
-        M2C_FIELD(temp_r30, s32, 0x28) = M2C_FIELD(temp_r3_10, s32, 0x28);
+        copy_a = M2C_FIELD(temp_r3_10, s32, 4);
+        copy_b = M2C_FIELD(temp_r3_10, s32, 8);
+        M2C_FIELD(temp_r30, s32, 4) = copy_a;
+        M2C_FIELD(temp_r30, s32, 8) = copy_b;
+        copy_a = M2C_FIELD(temp_r3_10, s32, 0xC);
+        copy_b = M2C_FIELD(temp_r3_10, s32, 0x10);
+        M2C_FIELD(temp_r30, s32, 0xC) = copy_a;
+        M2C_FIELD(temp_r30, s32, 0x10) = copy_b;
+        copy_a = M2C_FIELD(temp_r3_10, s32, 0x14);
+        copy_b = M2C_FIELD(temp_r3_10, s32, 0x18);
+        M2C_FIELD(temp_r30, s32, 0x14) = copy_a;
+        M2C_FIELD(temp_r30, s32, 0x18) = copy_b;
+        copy_a = M2C_FIELD(temp_r3_10, s32, 0x1C);
+        copy_b = M2C_FIELD(temp_r3_10, s32, 0x20);
+        M2C_FIELD(temp_r30, s32, 0x1C) = copy_a;
+        M2C_FIELD(temp_r30, s32, 0x20) = copy_b;
+        copy_a = M2C_FIELD(temp_r3_10, s32, 0x24);
+        copy_b = M2C_FIELD(temp_r3_10, s32, 0x28);
+        M2C_FIELD(temp_r30, s32, 0x24) = copy_a;
+        M2C_FIELD(temp_r30, s32, 0x28) = copy_b;
         var_r26 = temp_r30 + 0xF4;
         var_r24 = temp_r30 + 8;
         var_r23 = temp_r30 + 0x2C;
@@ -381,20 +394,20 @@ loop_21:
         sp8 = -1;
     }
     if (((*(Selector **)(temp_r22 + 0xD0))->get3(temp_r3) == 0) && (sp8 >= 0) && (spC >= 0)) {
-        fn_801345D8(temp_r22 + 0x3C, 0x10, &lbl_8055C0C0, fn_8001EFC0(0, temp_r22 + 0x60), sp8);
-        fn_801345D8(temp_r22 + 0x50, 0x10, &lbl_8055C0C0, fn_8001EFC0(1, temp_r22 + 0x60), spC);
+        fn_801345D8(temp_r22 + 0x3C, 0x10, lbl_8055C0C0, fn_8001EFC0(0, temp_r22 + 0x60), sp8);
+        fn_801345D8(temp_r22 + 0x50, 0x10, lbl_8055C0C0, fn_8001EFC0(1, temp_r22 + 0x60), spC);
     } else {
         fn_80130FCC(temp_r22 + 0x3C, 0x10, fn_8001EFC0(0, temp_r22 + 0x60));
         fn_80130FCC(temp_r22 + 0x50, 0x10, fn_8001EFC0(1, temp_r22 + 0x60));
     }
     temp_r23 = (u8 *)fn_8001668C((s32)(temp_r22 + 0x60), 0);
     temp_r3 = fn_8001668C((s32)(temp_r22 + 0x60), 0);
-    if ((s32) M2C_FIELD(&lbl_80498C48, u8 *, 4) != 0) {
+    if ((s32) M2C_FIELD(&lbl_80498C48, u8, 4) != 0) {
         var_r5_4 = *((s32 *(*)(s32, s32))fn_80016BC8)(temp_r3, 0);
     } else {
         var_r5_4 = M2C_FIELD(((s32 *(*)(s32, s32))fn_80016BC8)(temp_r3, 0), s32, 4);
     }
-    var_r4_4 = M2C_FIELD((M2C_FIELD(temp_r22, s32 *, 0xCC) + (M2C_FIELD(temp_r22, s32, 0x2C) * 0x14)), s32, 0x10);
+    var_r4_4 = M2C_FIELD(((u8 *)M2C_FIELD(temp_r22, s32 *, 0xCC) + (M2C_FIELD(temp_r22, s32, 0x2C) * 0x14)), s32, 0x10);
     if (var_r4_4 != 0) {
 
     } else {
