@@ -8,6 +8,9 @@ namespace nw4hbm { namespace ut { class ResFont { public: virtual void v0(); vir
 extern "C" const char lbl_80328828[];
 extern "C" const char lbl_80328834[];
 extern "C" void Panic__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char*, int, const char*, ...);
+static inline void PanicResourceCheck(const char* file, int line, const char* text, void* value) { Panic__Q26nw4hbm2dbFPCciPCce(file, line, text, value); }
+static inline void WarningResourceCheck(const char* file, int line, const char* text) { Warning__Q26nw4hbm2dbFPCciPCce(file, line, text); }
 extern "C" u8 fn_8010A33C(void);
 extern "C" s32 fn_80109040(s32, s32);
 extern "C" s32 fn_80128668(void);
@@ -245,71 +248,71 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
     u32 p = (u32)this;
     s32 v5 = 1, v6 = 1, v7 = 1, v8 = 1, v9 = 1, v10 = 1;
     u32 t11 = p & 0xFF000000;
-    if (((u32)(t11 + 0x80000000U) != 0U) &&
-        ((u32)((p & 0xFF800000) + 0x7F000000U) != 0U))
+    if ((t11 != 0x80000000U) &&
+        ((p & 0xFF800000U) != 0x81000000U))
         v10 = 0;
-    if ((v10 == 0) && ((u32)((p & 0xF8000000) + 0x70000000U) != 0U))
+    if ((v10 == 0) && ((p & 0xF8000000U) != 0x90000000U))
         v9 = 0;
-    if ((v9 == 0) && ((u32)(t11 + 0x40000000U) != 0U))
+    if ((v9 == 0) && (t11 != 0xC0000000U))
         v8 = 0;
-    if ((v8 == 0) && ((u32)((p & 0xFF800000) + 0x3F000000U) != 0U))
+    if ((v8 == 0) && ((p & 0xFF800000U) != 0xC1000000U))
         v7 = 0;
-    if ((v7 == 0) && ((u32)((p & 0xF8000000) + 0x30000000U) != 0U))
+    if ((v7 == 0) && ((p & 0xF8000000U) != 0xD0000000U))
         v6 = 0;
-    if ((v6 == 0) && ((u32)((p & 0xFFFFC000) + 0x20000000U) != 0U))
+    if ((v6 == 0) && ((p & 0xFFFFC000U) != 0xE0000000U))
         v5 = 0;
     if (v5 == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x61, file + 0x10, this);
+        ((void (*)(const char*, int, const char*, ...))Panic__Q26nw4hbm2dbFPCciPCce)(file + 0, 0x61, file + 0x10, this);
 
     u32 q = (u32)resource;
     s32 v4b = 1, v5b = 1, v6b = 1, v7b = 1, v8b = 1, v9b = 1;
     u32 t10 = q & 0xFF000000;
-    if (((u32)(t10 + 0x80000000U) != 0U) &&
-        ((u32)((q & 0xFF800000) + 0x7F000000U) != 0U))
+    if ((t10 != 0x80000000U) &&
+        ((q & 0xFF800000U) != 0x81000000U))
         v9b = 0;
-    if ((v9b == 0) && ((u32)((q & 0xF8000000) + 0x70000000U) != 0U))
+    if ((v9b == 0) && ((q & 0xF8000000U) != 0x90000000U))
         v8b = 0;
-    if ((v8b == 0) && ((u32)(t10 + 0x40000000U) != 0U))
+    if ((v8b == 0) && (t10 != 0xC0000000U))
         v7b = 0;
-    if ((v7b == 0) && ((u32)((q & 0xFF800000) + 0x3F000000U) != 0U))
+    if ((v7b == 0) && ((q & 0xFF800000U) != 0xC1000000U))
         v6b = 0;
-    if ((v6b == 0) && ((u32)((q & 0xF8000000) + 0x30000000U) != 0U))
+    if ((v6b == 0) && ((q & 0xF8000000U) != 0xD0000000U))
         v5b = 0;
-    if ((v5b == 0) && ((u32)((q & 0xFFFFC000) + 0x20000000U) != 0U))
+    if ((v5b == 0) && ((q & 0xFFFFC000U) != 0xE0000000U))
         v4b = 0;
     if (v4b == 0)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x62, file + 0x48, resource);
+        ((void (*)(const char*, int, const char*, ...))Panic__Q26nw4hbm2dbFPCciPCce)(file + 0, 0x62, file + 0x48, resource);
     if (q & 0x1F)
-        Panic__Q26nw4hbm2dbFPCciPCce(file, 0x63, file + 0x80, resource);
+        ((void (*)(const char*, int, const char*, ...))Panic__Q26nw4hbm2dbFPCciPCce)(file + 0, 0x63, file + 0x80, resource);
 
-    if (*(void**)((u8*)this + 0x10) != 0U) {
-        Warning__Q26nw4hbm2dbFPCciPCce(file, 0x6B, file + 0xCC);
+    s32 existing = *(s32*)((u8*)this + 0x10);
+    void* info = 0;
+    if (existing != 0) {
+        ((void (*)(const char*, int, const char*, ...))Warning__Q26nw4hbm2dbFPCciPCce)(file + 0, 0x6B, file + 0xCC);
         return false;
     }
-
-    void* info = 0;
     if (*(u32*)resource == 0x52464E55) {
-        s32 i = 0;
         u8* block = (u8*)resource + *(u16*)((u8*)resource + 0xC);
+        s32 i = 0;
         while (i < (s32)*(u16*)((u8*)resource + 0xE)) {
+            s32 a = 1, b = 1, c = 1, d = 1, e = 1, f = 1;
             u32 r = (u32)block;
             u32 t = r & 0xFF000000;
-            s32 a = 1, b = 1, c = 1, d = 1, e = 1, f = 1;
-            if (((u32)(t + 0x80000000U) != 0U) &&
-                ((u32)((r & 0xFF800000) + 0x7F000000U) != 0U))
+            if ((t != 0x80000000U) &&
+                ((r & 0xFF800000U) != 0x81000000U))
                 f = 0;
-            if ((f == 0) && ((u32)((r & 0xF8000000) + 0x70000000U) != 0U))
+            if ((f == 0) && ((r & 0xF8000000U) != 0x90000000U))
                 e = 0;
-            if ((e == 0) && ((u32)(t + 0x40000000U) != 0U))
+            if ((e == 0) && (t != 0xC0000000U))
                 d = 0;
-            if ((d == 0) && ((u32)((r & 0xFF800000) + 0x3F000000U) != 0U))
+            if ((d == 0) && ((r & 0xFF800000U) != 0xC1000000U))
                 c = 0;
-            if ((c == 0) && ((u32)((r & 0xF8000000) + 0x30000000U) != 0U))
+            if ((c == 0) && ((r & 0xF8000000U) != 0xD0000000U))
                 b = 0;
-            if ((b == 0) && ((u32)((r & 0xFFFFC000) + 0x20000000U) != 0U))
+            if ((b == 0) && ((r & 0xFFFFC000U) != 0xE0000000U))
                 a = 0;
             if (a == 0)
-                Panic__Q26nw4hbm2dbFPCciPCce(file, 0x7C, file + 0xEC, block);
+                ((void (*)(const char*, int, const char*, ...))Panic__Q26nw4hbm2dbFPCciPCce)(file + 0, 0x7C, file + 0xEC, block);
             if (*(u32*)block == 0x46494E46) {
                 info = block + 8;
                 break;
@@ -322,12 +325,12 @@ bool nw4hbm::ut::ResFont::SetResource(void* resource) {
         if (version == 0x104) {
             if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(
                     resource, 0x52464E54, 0x104, 2) == 0) {
-                Warning__Q26nw4hbm2dbFPCciPCce(file, 0x96, file + 0x128);
+                ((void (*)(const char*, int, const char*, ...))Warning__Q26nw4hbm2dbFPCciPCce)(file + 0, 0x96, file + 0x128);
                 return false;
             }
         } else if (IsValidBinaryFile__Q26nw4hbm2utFPCQ36nw4hbm2ut16BinaryFileHeaderUlUsUs(
                        resource, 0x52464E54, 0x102, 2) == 0) {
-            Warning__Q26nw4hbm2dbFPCciPCce(file, 0xA0, file + 0x128);
+            ((void (*)(const char*, int, const char*, ...))Warning__Q26nw4hbm2dbFPCciPCce)(file + 0, 0xA0, file + 0x128);
             return false;
         }
         info = Rebuild__Q36nw4hbm2ut7ResFontFPQ36nw4hbm2ut16BinaryFileHeader(resource);
@@ -2601,20 +2604,21 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
         u32 word5C;
     };
     register const char *file = lbl_80329530;
-    s32 r6 = 1;
-    s32 r7 = 1;
-    s32 r5 = 1;
-    s32 r8 = 1;
-    s32 r9 = 1;
-    s32 r10 = 1;
-    if (((u32)(((u32)arg0 & 0xFF000000U) + 0x80000000U) >= 1U) &&
+    register s32 r6 = 1;
+    register s32 r7 = 1;
+    register s32 r5 = 1;
+    register s32 r8 = 1;
+    register s32 r9 = 1;
+    register s32 r10 = 1;
+    register u32 hi0 = (u32)arg0 & 0xFF000000U;
+    if (((u32)(hi0 + 0x80000000U) >= 1U) &&
         ((u32)(((u32)arg0 & 0xFF800000U) + 0x7F000000U) >= 1U)) {
         r10 = 0;
     }
     if ((r10 == 0) && ((u32)(((u32)arg0 & 0xF8000000U) + 0x70000000U) >= 1U)) {
         r9 = 0;
     }
-    if ((r9 == 0) && ((u32)(((u32)arg0 & 0xFF000000U) + 0x40000000U) >= 1U)) {
+    if ((r9 == 0) && ((u32)(hi0 + 0x40000000U) >= 1U)) {
         r8 = 0;
     }
     if ((r8 == 0) && ((u32)(((u32)arg0 & 0xFF800000U) + 0x3F000000U) >= 1U)) {
@@ -2630,20 +2634,21 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
         Panic__Q26nw4hbm2dbFPCciPCce(file + 0x30, 0x2C1, file + 0x48, arg0);
     }
 
-    s32 r4 = 1;
-    s32 r5_2 = 1;
-    s32 r6_2 = 1;
-    s32 r7_2 = 1;
-    s32 r8_2 = 1;
-    s32 r9_2 = 1;
-    if (((u32)(((u32)arg1 & 0xFF000000U) + 0x80000000U) >= 1U) &&
+    register s32 r4 = 1;
+    register s32 r5_2 = 1;
+    register s32 r6_2 = 1;
+    register s32 r7_2 = 1;
+    register s32 r8_2 = 1;
+    register s32 r9_2 = 1;
+    register u32 hi1 = (u32)arg1 & 0xFF000000U;
+    if (((u32)(hi1 + 0x80000000U) >= 1U) &&
         ((u32)(((u32)arg1 & 0xFF800000U) + 0x7F000000U) >= 1U)) {
         r9_2 = 0;
     }
     if ((r9_2 == 0) && ((u32)(((u32)arg1 & 0xF8000000U) + 0x70000000U) >= 1U)) {
         r8_2 = 0;
     }
-    if ((r8_2 == 0) && ((u32)(((u32)arg1 & 0xFF000000U) + 0x40000000U) >= 1U)) {
+    if ((r8_2 == 0) && ((u32)(hi1 + 0x40000000U) >= 1U)) {
         r7_2 = 0;
     }
     if ((r7_2 == 0) && ((u32)(((u32)arg1 & 0xFF800000U) + 0x3F000000U) >= 1U)) {
@@ -2697,13 +2702,19 @@ extern "C" f32 fn_80112528(void *arg0, const char *arg1, s32 arg2) {
     copy.prefix[30] = source->prefix[30];
     copy.prefix[31] = source->prefix[31];
     copy.word20 = source->word20;
-    copy.word24 = source->word24;
-    copy.word28 = source->word28;
-    copy.word2C = source->word2C;
-    copy.word30 = source->word30;
+    u32 pair24 = source->word24;
+    u32 pair28 = source->word28;
+    copy.word24 = pair24;
+    copy.word28 = pair28;
+    u32 pair2C = source->word2C;
+    u32 pair30 = source->word30;
+    copy.word2C = pair2C;
+    copy.word30 = pair30;
     copy.word34 = source->word34;
-    copy.word38 = source->word38;
-    copy.word3C = source->word3C;
+    u32 pair38 = source->word38;
+    u32 pair3C = source->word3C;
+    copy.word38 = pair38;
+    copy.word3C = pair3C;
     copy.bytes40[0] = source->bytes40[0];
     copy.bytes40[1] = source->bytes40[1];
     copy.bytes40[2] = source->bytes40[2];
