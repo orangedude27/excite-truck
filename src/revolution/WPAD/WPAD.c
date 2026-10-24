@@ -3898,6 +3898,13 @@ _end:
 }
 #pragma inline_depth(1)
 #undef WPADiSendMuteSpeakerInline
+#undef WPADiSendMuteSpeakerStorage
+#undef WPADiSendEnableSpeakerStorage
+#undef WPADiSendWriteDataCmdStorage
+#undef WPADiSendWriteDataStorage
+#undef WPADiSendGetContStatStorage
+#undef WPADiSendMuteSpeakerResultStorage
+#undef WPADiSendWriteDataCmdResultStorage
 #undef WPADiPushCommandInlineResult
 #undef WPADiSendMuteSpeakerResultInline
 #undef WPADiSendWriteDataCmdResultInline
