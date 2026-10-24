@@ -325,19 +325,24 @@ int fn_80005158(const char *name) {
     int saved;
     int found;
     int count;
+    char first;
     fn_80127434();
     fn_8023D7CC();
     fn_8023D70C();
     SaveMenuFlag(&saved);
     found = 0;
     count = fn_80012818();
-    if (lbl_8034EC58[0] == '$') goto dollar;
-    if (lbl_8034EC58[0] != '@') goto generic;
-    result = fn_80004F00(&count, &found, lbl_8034EC58 + 1);
-    if (!result) MenuLog(data + 0x150, lbl_8034EC58 + 1);
+    first = lbl_8034EC58[0];
+    if (first == '$') goto dollar;
+    if (first != '@') goto generic;
+    {
+        char *text = lbl_8034EC58;
+        result = fn_80004F00(&count, &found, text + 1);
+        if (!result) MenuLog(data + 0x150, text + 1);
+    }
     goto after_lookup;
 dollar:
-    if (lbl_8034EC58[0] != '\0') {
+    if (first != '\0') {
         result = fn_80005044(&count, &found, lbl_8034EC58);
         if (!result) MenuLog(data + 0x180, lbl_8034EC58);
     }
@@ -427,17 +432,23 @@ void fn_80004EC0(const char* source) {
     }
 }
 
-u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback) {
-    int (*isReady)();
-    u32 (*getValue)();
-    isReady = (int (*)())object->vtable->isReady;
-    if (isReady(object)) {
-        getValue = (u32 (*)())object->vtable->getValue;
-        return getValue(object, argument);
+#pragma cplusplus on
+extern "C" u32 fn_80004FCC(GameVirtualObject* object, u32 argument, u32 fallback) {
+    struct Dummy {
+        virtual s32 f0();
+        virtual s32 f1();
+        virtual s32 f2();
+        virtual u32 f3(u32);
+    };
+    u32 result;
+    if (((Dummy*)object)->f1()) {
+        result = ((Dummy*)object)->f3(argument);
+    } else {
+        result = fallback;
     }
-    return fallback;
+    return result;
 }
-
+#pragma cplusplus reset
 void fn_80005364(void) {
     u32 var1, var2, var3, var4, var5;
     fn_8000D838(&lbl_8055D320);
