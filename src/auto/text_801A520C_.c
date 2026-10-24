@@ -132,7 +132,17 @@ extern void fn_801A5434(void *);
 extern void fn_801A56A0(void *, void *, float *);
 extern void fn_801A61B0(void *, void *, float);
 extern unsigned char lbl_8055A518;
-void fn_801A54EC(void *arg0) {
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_801A54EC(void *arg0) {
+    struct Dummy11 {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
+        virtual void f5(); virtual void f6(); virtual void f7(); virtual void f8(); virtual void f9();
+    };
+    struct Dummy7 {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4();
+        virtual void *f5();
+    };
     void *obj;
     void *ret;
     float vec[3];
@@ -140,26 +150,24 @@ void fn_801A54EC(void *arg0) {
     char *base = (char *)arg0;
     fn_80186DE4();
     fn_801A5434(arg0);
-    obj = *(void **)(base + 0x270C);
-    ((void (*)(void *))(*(void ***)*(void **)obj)[11])(obj);
+    ((Dummy11 *)*(void **)(base + 0x270C))->f9();
     if (*(unsigned char *)(base + 0x2710) != 0 && lbl_8055A518 != 0) {
-        obj = *(void **)(base + 0x270);
-        ret = ((void *(*)(void *))(*(void ***)*(void **)obj)[7])(obj);
+        ret = ((Dummy7 *)*(void **)(base + 0x270))->f5();
         fn_801A61B0(base + 0x2714, arg0, *(float *)((char *)*(void **)((char *)ret + 4) + 0x20));
     }
     vec[0] = lbl_805623C8;
     vec[1] = lbl_805623C8;
     vec[2] = lbl_805623C8;
-    obj = base + 0x2724;
     i = 0;
+    obj = base + 0x2724;
     do {
         fn_801A56A0(obj, arg0, vec);
         i++;
-        if (i >= 8) break;
         obj = (char *)obj + 0x24;
-    } while (1);
+    } while (i < 8);
 }
-
+#pragma scheduling on
+#pragma cplusplus reset
 void fn_801A55BC(void *arg0) {
     void *obj;
     fn_8018381C();
@@ -187,6 +195,14 @@ void fn_801A55BC(void *arg0) {
 extern "C" void fn_801A5660(void *arg0) {
     fn_80183DF8();
     ((Dummy_801A5660 *)*(void **)((char *)arg0 + 0x270C))->d11();
+}
+
+float fn_801A5A7C(void *arg0, float *arg1, float *arg2) {
+    float diff[3];
+    diff[0] = arg1[0] - arg2[0];
+    diff[1] = arg1[1] - arg2[1];
+    diff[2] = arg1[2] - arg2[2];
+    return PSVECDotProduct(diff, arg2);
 }
 
 #pragma cplusplus on
@@ -352,12 +368,13 @@ extern float lbl_80562404;
 extern float lbl_80562408;
 extern float lbl_8056240C;
 extern void fn_8017B3A8(void *, float *, float *, float);
+#pragma scheduling invalid_target
 void fn_801A60E0(void *arg0, void *arg1) {
     float sp14[3];
     float sp8[3];
-    float f2;
-    float f0;
     float f1;
+    float f0;
+    float f2;
     char *p = (char *)arg1;
 
     if (*(float *)(p + 0x124) > lbl_80562404) {
@@ -382,7 +399,7 @@ void fn_801A60E0(void *arg0, void *arg1) {
     sp8[2] = lbl_805623C8;
     fn_8017B3A8(arg1, sp8, sp14, f1);
 }
-
+#pragma scheduling on
 extern void fn_801A60E0(void *, void *);
 extern float lbl_8055E3C8, lbl_805623C8, lbl_805623CC, lbl_805623D4, lbl_80562410, lbl_80562414;
 void fn_801A61B0(void *arg0, void *arg1, float arg2) {
