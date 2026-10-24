@@ -717,7 +717,7 @@ loop_80:
                         var_r21_2 += 0x40;
                     } while (var_r20_2 < 0x11);
                     temp_f25_2 = lbl_80561FEC;
-                    var_r24 = &lbl_80332758 + 0x5B0;
+                    var_r24 = (char *)&lbl_80332758 + 0x5B0;
                     temp_f23_4 = lbl_80561F8C;
                     var_r20_3 = 0;
                     do {
