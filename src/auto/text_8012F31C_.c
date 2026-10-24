@@ -2,7 +2,7 @@
 #include "string.h"
 extern void fn_80128668(void);
 extern void fn_80128670(s32);
-extern void *fn_801284F8(s32, s32 *);
+extern void *fn_801284F8(s32, void *);
 extern s32 lbl_8032AFC4;
 extern s32 fn_8012850C(s32, s32 *);
 // Code of main that had no source file yet: decomp.wtf gave it this one.
