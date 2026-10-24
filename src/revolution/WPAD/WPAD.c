@@ -3661,6 +3661,88 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
         WPADiPushCommandInlineResult((pQueue), command, resultValue); \
     }
 
+#define WPADiSendMuteSpeakerStorage(pQueue, muteValue, callbackValue, commandStorage) \
+    { \
+        (commandStorage).reportID = RPTID_MUTE_SPEAKER; \
+        (commandStorage).dataLength = RPT19_SIZE; \
+        (commandStorage).dataBuf[RPT19_SPEAKER_MUTE] = (muteValue) ? 4 : 0; \
+        (commandStorage).cmdCB = (callbackValue); \
+        WPADiPushCommandInline((pQueue), commandStorage); \
+    }
+
+#define WPADiSendEnableSpeakerStorage(pQueue, enableValue, callbackValue, commandStorage) \
+    { \
+        (commandStorage).reportID = RPTID_ENABLE_SPEAKER; \
+        (commandStorage).dataLength = RPT14_SIZE; \
+        (commandStorage).dataBuf[RPT14_SPEAKER_ENABLE] = (enableValue) ? 4 : 0; \
+        (commandStorage).cmdCB = (callbackValue); \
+        WPADiPushCommandInline((pQueue), commandStorage); \
+    }
+
+#define WPADiSendWriteDataCmdStorage(pQueue, commandValue, addressValue, callbackValue, commandStorage) \
+    { \
+        u8 byteValue; \
+        u32 address; \
+        byteValue = (commandValue); \
+        address = (addressValue); \
+        (commandStorage).reportID = RPTID_WRITE_DATA; \
+        (commandStorage).dataLength = RPT16_SIZE; \
+        (commandStorage).cmdCB = (callbackValue); \
+        memcpy(&(commandStorage).dataBuf[RPT16_DATA_DST_ADDRESS], &address, sizeof(u32)); \
+        memcpy(&(commandStorage).dataBuf[RPT16_DATA_LENGTH], &byteValue, sizeof(u8)); \
+        memcpy(&(commandStorage).dataBuf[RPT16_DATA], &byteValue, sizeof(u8)); \
+        WPADiPushCommandInline((pQueue), commandStorage); \
+    }
+
+#define WPADiSendWriteDataStorage(pQueue, sourceData, argLength, addressValue, callbackValue, commandStorage) \
+    { \
+        u8 packedLength; \
+        u32 address; \
+        packedLength = (argLength) & 31; \
+        address = (addressValue); \
+        (commandStorage).reportID = RPTID_WRITE_DATA; \
+        (commandStorage).dataLength = RPT16_SIZE; \
+        (commandStorage).cmdCB = (callbackValue); \
+        memcpy(&(commandStorage).dataBuf[RPT16_DATA_DST_ADDRESS], &address, sizeof(u32)); \
+        memcpy(&(commandStorage).dataBuf[RPT16_DATA_LENGTH], &packedLength, sizeof(u8)); \
+        memcpy(&(commandStorage).dataBuf[RPT16_DATA], (sourceData), (argLength)); \
+        WPADiPushCommandInline((pQueue), commandStorage); \
+    }
+
+#define WPADiSendGetContStatStorage(pQueue, infoValue, callbackValue, commandStorage) \
+    { \
+        (commandStorage).reportID = RPTID_REQUEST_STATUS; \
+        (commandStorage).dataLength = RPT15_SIZE; \
+        (commandStorage).dataBuf[0] = 0; \
+        (commandStorage).cmdCB = (callbackValue); \
+        (commandStorage).statusReportOut = (infoValue); \
+        WPADiPushCommandInline((pQueue), commandStorage); \
+    }
+
+#define WPADiSendMuteSpeakerResultStorage(pQueue, muteValue, callbackValue, resultValue, commandStorage) \
+    { \
+        (commandStorage).reportID = RPTID_MUTE_SPEAKER; \
+        (commandStorage).dataLength = RPT19_SIZE; \
+        (commandStorage).dataBuf[RPT19_SPEAKER_MUTE] = (muteValue) ? 4 : 0; \
+        (commandStorage).cmdCB = (callbackValue); \
+        WPADiPushCommandInlineResult((pQueue), commandStorage, resultValue); \
+    }
+
+#define WPADiSendWriteDataCmdResultStorage(pQueue, commandValue, addressValue, callbackValue, resultValue, commandStorage) \
+    { \
+        u8 byteValue; \
+        u32 address; \
+        byteValue = (commandValue); \
+        address = (addressValue); \
+        (commandStorage).reportID = RPTID_WRITE_DATA; \
+        (commandStorage).dataLength = RPT16_SIZE; \
+        (commandStorage).cmdCB = (callbackValue); \
+        memcpy(&(commandStorage).dataBuf[RPT16_DATA_DST_ADDRESS], &address, sizeof(u32)); \
+        memcpy(&(commandStorage).dataBuf[RPT16_DATA_LENGTH], &byteValue, sizeof(u8)); \
+        memcpy(&(commandStorage).dataBuf[RPT16_DATA], &byteValue, sizeof(u8)); \
+        WPADiPushCommandInlineResult((pQueue), commandStorage, resultValue); \
+    }
+
 // fn_80060CC0: WPAD processing (large - stub)
 #pragma inline_max_size(1000)
 #pragma inline_max_total_size(10000)
@@ -3673,6 +3755,7 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
     BOOL spkEnable;
     BOOL handshake;
     s32 status;
+    BOOL sendResult;
     BOOL innerEnabled0, innerEnabled1;
     s8 queueSize0, queueSize1;
 
@@ -3774,7 +3857,8 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         }
 
         case WPAD_SPEAKER_MUTE: {
-            if (!WPADiSendMuteSpeaker((WPADCommandQueue*)(p + 0x160), TRUE, pCallback)) {
+            WPADiSendMuteSpeakerResultInline((WPADCommandQueue*)(p + 0x160), TRUE, pCallback, sendResult);
+            if (!sendResult) {
                 status = WPAD_ERR_COMMUNICATION_ERROR;
                 break;
             }
@@ -3783,7 +3867,8 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         }
 
         case WPAD_SPEAKER_UNMUTE: {
-            if (!WPADiSendMuteSpeaker((WPADCommandQueue*)(p + 0x160), FALSE, pCallback)) {
+            WPADiSendMuteSpeakerResultInline((WPADCommandQueue*)(p + 0x160), FALSE, pCallback, sendResult);
+            if (!sendResult) {
                 status = WPAD_ERR_COMMUNICATION_ERROR;
                 break;
             }
@@ -3792,8 +3877,8 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         }
 
         case WPAD_SPEAKER_PLAY: {
-            if (!WPADiSendWriteDataCmd((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_08,
-                                       pCallback)) {
+            WPADiSendWriteDataCmdResultInline((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_08, pCallback, sendResult);
+            if (!sendResult) {
 
                 status = WPAD_ERR_COMMUNICATION_ERROR;
                 break;
