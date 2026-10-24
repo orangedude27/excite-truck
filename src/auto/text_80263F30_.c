@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+
+
 extern void *lbl_8055F444;
 extern void *lbl_8055F448;
 extern void fn_80235380(void *);
@@ -157,37 +159,52 @@ void fn_80264618(void *arg0) {
 }
 
 void *fn_80264968(void *arg0, int arg1) {
+    struct Local {
+        char pad_00[0x54];
+        void *field_54;
+        void *field_58;
+        void *field_5C;
+        void *field_60;
+        void *field_64;
+        char pad_68[0x4C];
+        void *field_B4;
+        void *field_B8;
+        void *field_BC;
+        void *field_C0;
+        void *field_C4;
+    };
+    struct Local *p = (struct Local *)arg0;
     if (arg0 != 0) {
         lbl_8055F448 = 0;
         if ((char *)arg0 + 0x78 != 0) {
-            if (*(void **)((char *)arg0 + 0xB4) != 0) {
-                fn_80235380(*(void **)((char *)arg0 + 0xB4));
-                *(void **)((char *)arg0 + 0xB4) = 0;
+            if (p->field_B4 != 0) {
+                fn_80235380(p->field_B4);
+                p->field_B4 = 0;
             }
-            if ((char *)arg0 + 0xB8 != 0) {
-                fn_80128670(*(void **)((char *)arg0 + 0xC4));
-                if ((volatile char *)arg0 + 0xB8 != 0) {
-                    *(int *)((char *)arg0 + 0xB8) = 0;
-                    *(int *)((char *)arg0 + 0xBC) = 0;
-                    *(int *)((char *)arg0 + 0xC0) = 0;
+            if (&p->field_B8 != 0) {
+                fn_80128670(p->field_C4);
+                if (&p->field_B8 != 0) {
+                    p->field_B8 = 0;
+                    p->field_BC = 0;
+                    p->field_C0 = 0;
                 }
             }
         }
         if ((char *)arg0 + 0x18 != 0) {
-            if (*(void **)((char *)arg0 + 0x54) != 0) {
-                fn_80235380(*(void **)((char *)arg0 + 0x54));
-                *(void **)((char *)arg0 + 0x54) = 0;
+            if (p->field_54 != 0) {
+                fn_80235380(p->field_54);
+                p->field_54 = 0;
             }
-            if ((char *)arg0 + 0x58 != 0) {
-                fn_80128670(*(void **)((char *)arg0 + 0x64));
-                if ((volatile char *)arg0 + 0x58 != 0) {
-                    *(int *)((char *)arg0 + 0x58) = 0;
-                    *(int *)((char *)arg0 + 0x5C) = 0;
-                    *(int *)((char *)arg0 + 0x60) = 0;
+            if (&p->field_58 != 0) {
+                fn_80128670(p->field_64);
+                if (&p->field_58 != 0) {
+                    p->field_58 = 0;
+                    p->field_5C = 0;
+                    p->field_60 = 0;
                 }
             }
         }
-        if (arg1 > 0) fn_80128668();
+        if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
@@ -298,6 +315,20 @@ void fn_80264A5C(float farg0, float farg1) {
         }
     }
 }
+
+void fn_80264D5C(void *arg0) {
+ extern float fn_80214D48(void); extern float lbl_80558DC4[];
+ int i,off,count; float dt,x,y; unsigned char *p,*last;
+ dt=fn_80214D48(); i=0; off=0;
+ while(i<*(int*)((char*)arg0+0x5C)){p=*(unsigned char**)((char*)arg0+0x58)+off; *(float*)(p+0x18)-=dt;
+ if(*(float*)(p+0x18)<lbl_80558DC4[0]){count=*(int*)((char*)arg0+0x5C);if(i>=0&&i<count){last=*(unsigned char**)((char*)arg0+0x58)+(count-1)*32;if(i!=count-1){*(int*)p=*(int*)last;*(int*)(p+4)=*(int*)(last+4);*(int*)(p+8)=*(int*)(last+8);*(int*)(p+12)=*(int*)(last+12);*(float*)(p+16)=*(float*)(last+16);*(float*)(p+20)=*(float*)(last+20);*(float*)(p+24)=*(float*)(last+24);*(int*)(p+28)=*(int*)(last+28);}*(int*)((char*)arg0+0x5C)=count-1;}}
+ else{off+=32;i++;x=*(float*)(p+8)+*(float*)((char*)arg0+0x2C)*dt;*(float*)(p+8)=x;y=*(float*)(p+12)+*(float*)((char*)arg0+0x30)*dt;*(float*)(p+12)=y;*(float*)p+=x*dt;*(float*)(p+4)+=y*dt;*(float*)(p+16)+=*(float*)(p+20)*dt;}}
+ dt=fn_80214D48();i=0;off=0;
+ while(i<*(int*)((char*)arg0+0xBC)){p=*(unsigned char**)((char*)arg0+0xB8)+off;*(float*)(p+0x18)-=dt;
+ if(*(float*)(p+0x18)<lbl_80558DC4[0]){count=*(int*)((char*)arg0+0xBC);if(i>=0&&i<count){last=*(unsigned char**)((char*)arg0+0xB8)+(count-1)*32;if(i!=count-1){*(int*)p=*(int*)last;*(int*)(p+4)=*(int*)(last+4);*(int*)(p+8)=*(int*)(last+8);*(int*)(p+12)=*(int*)(last+12);*(float*)(p+16)=*(float*)(last+16);*(float*)(p+20)=*(float*)(last+20);*(float*)(p+24)=*(float*)(last+24);*(int*)(p+28)=*(int*)(last+28);}*(int*)((char*)arg0+0xBC)=count-1;}}
+ else{off+=32;i++;x=*(float*)(p+8)+*(float*)((char*)arg0+0x8C)*dt;*(float*)(p+8)=x;y=*(float*)(p+12)+*(float*)((char*)arg0+0x90)*dt;*(float*)(p+12)=y;*(float*)p+=x*dt;*(float*)(p+4)+=y*dt;*(float*)(p+16)+=*(float*)(p+20)*dt;}}
+}
+
 #pragma cplusplus on
 extern "C" void fn_80264FD4(void *arg0) {
     struct Dummy {
@@ -310,6 +341,52 @@ extern "C" void fn_80264FD4(void *arg0) {
     };
     ((Dummy*)arg0)->f5();
 }
+
+void fn_80264FE4(void *arg0) {
+    extern float lbl_80563BF0, lbl_80563C00;
+    extern float fn_80235F64(void *, int), fn_80235EF0(void *, int);
+    extern void fn_80235AFC(void *, int, unsigned int, float, float, float, float, float, float);
+    int i, offset, alpha, id;
+    unsigned char *item;
+    float limit, value, scale, base, intensity;
+    void *renderer;
+    limit = lbl_80563C00;
+    i=0; offset=0;
+    while (i < *(int *)((char *)arg0+0xBC)) {
+      item=*(unsigned char **)((char *)arg0+0xB8)+offset;
+      value=*(float *)((char *)arg0+0xD0)*(*(float *)((char *)arg0+0xA4)-*(float *)(item+0x18));
+      if(limit<value)value=limit;
+      if(value<=lbl_80563BF0)value=lbl_80563BF0;
+      alpha=(int)(value*(*(float *)(item+0x18)**(float *)((char *)arg0+0xCC)));
+      if(alpha<0)alpha=-alpha; if(alpha>255)alpha=255;
+      id=*(int *)(item+0x1C);
+      scale=*(float *)(item+0x18)**(float *)((char *)arg0+0xC8);
+      base=*(float *)((char *)arg0+0xAC)+*(float *)((char *)arg0+0xB0)*(limit-scale);
+      renderer=*(void **)((char *)arg0+0xB4);
+      intensity=base*fn_80235F64(renderer,id);
+      scale=base*fn_80235EF0(renderer,id);
+      fn_80235AFC(renderer,id,((unsigned int)alpha<<24)|0xFFFFFF,*(float *)item,*(float *)(item+4),lbl_80563BF0,scale,intensity,*(float *)(item+0x10));
+      offset+=32; i++;
+    }
+    limit=lbl_80563C00; i=0; offset=0;
+    while(i<*(int *)((char *)arg0+0x5C)){
+      item=*(unsigned char **)((char *)arg0+0x58)+offset;
+      value=*(float *)((char *)arg0+0x70)*(*(float *)((char *)arg0+0x44)-*(float *)(item+0x18));
+      if(limit<value)value=limit;
+      if(value<=lbl_80563BF0)value=lbl_80563BF0;
+      alpha=(int)(value*(*(float *)(item+0x18)**(float *)((char *)arg0+0x6C)));
+      if(alpha<0)alpha=-alpha; if(alpha>255)alpha=255;
+      id=*(int *)(item+0x1C);
+      scale=*(float *)(item+0x18)**(float *)((char *)arg0+0x68);
+      base=*(float *)((char *)arg0+0x4C)+*(float *)((char *)arg0+0x50)*(limit-scale);
+      renderer=*(void **)((char *)arg0+0x54);
+      intensity=base*fn_80235F64(renderer,id);
+      scale=base*fn_80235EF0(renderer,id);
+      fn_80235AFC(renderer,id,((unsigned int)alpha<<24)|0xFFFFFF,*(float *)item,*(float *)(item+4),lbl_80563BF0,scale,intensity,*(float *)(item+0x10));
+      offset+=32; i++;
+    }
+}
+
 #pragma cplusplus off
 void fn_8026523C(void *arg0) {
     extern char lbl_80346618[];
@@ -425,30 +502,26 @@ extern void fn_80265904(void);
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80265940(void) {
-    int data[20];
+    struct Data {
+        int value0; int value1; int value2; int value3; int value4;
+        int value5; int value6; int value7; int value8; int value9;
+        int value10; int value11; int value12; int value13; int value14;
+        int value15; int value16; int value17; int value18; int value19;
+    } data;
     int *v;
+    data.value15 = lbl_80498F58[0];
+    data.value16 = lbl_80498F58[1];
+    data.value17 = lbl_80498F58[2];
+    data.value18 = lbl_80498F58[3];
+    data.value19 = lbl_80498F58[4];
     v = lbl_802FA73C;
-    data[0] = v[0];
-    data[1] = (int)&data[5];
-    data[2] = v[2];
-    data[3] = v[3];
-    data[4] = v[4];
-    data[5] = (int)lbl_8055BAC0;
-    data[6] = 8;
-    data[7] = (int)fn_802658FC;
-    data[8] = 0;
-    data[9] = 0;
-    data[10] = (int)lbl_8055BAB8;
-    data[11] = 8;
-    data[12] = (int)fn_80265904;
-    data[13] = 2;
-    data[14] = 0;
-    data[15] = lbl_80498F58[0];
-    data[16] = lbl_80498F58[1];
-    data[17] = lbl_80498F58[2];
-    data[18] = lbl_80498F58[3];
-    data[19] = lbl_80498F58[4];
-    fn_802146BC(data, -999, -999, 1, v[4], v[3], v[2], v[0]);
+    data.value0 = v[0]; data.value1 = (int)&data.value5;
+    data.value2 = v[2]; data.value3 = v[3]; data.value4 = v[4];
+    data.value7 = (int)fn_802658FC; data.value12 = (int)fn_80265904;
+    data.value5 = (int)lbl_8055BAC0; data.value10 = (int)lbl_8055BAB8;
+    data.value13 = 2; data.value6 = 8; data.value11 = 8;
+    data.value8 = 0; data.value9 = 0; data.value14 = 0;
+    fn_802146BC((int*)&data, -999, -999, 1, v[4], v[3], v[2], v[0]);
 }
 #pragma pop
 extern void fn_80236954(void *);
