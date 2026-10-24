@@ -739,11 +739,11 @@ found:
 
 extern "C" s32 fn_80158618(const char* arg0) {
     const char** item = (const char**)lbl_8032E540;
-    s32 i = 0;
+    u32 i = 0;
     for (;;) {
         if (stricmp(*item, arg0) == 0) return i;
-        ++i;
-        ++item;
+        item++;
+        i += 1;
         if (i >= 0xF) return -1;
     }
 }
@@ -1757,25 +1757,26 @@ extern "C" void fn_8015C5D0(void* arg0) {
         fn_8015A368(arg0);
 }
 
-extern "C" void fn_8015C5E4(void* arg0) {
-    register f32 value = *(f32*)((u8*)arg0 + 0x278);
+#pragma scheduling invalid_target
+extern "C" void fn_8015C5E4(Unk801577F0* self) {
+    f32 value = self->m278;
     f32 offset;
-    if (lbl_80561754 > value) {
+    if (value < lbl_80561754) {
         offset = value - lbl_80561760;
     } else {
         offset = lbl_80561760 + value;
     }
-    *(s32*)((u8*)arg0 + 0x26c) = offset;
-    ((Unk801577F0*)arg0)->v13();
-    if (*(s32*)((u8*)arg0 + 0x26c) > 0) {
-        if (*(s32*)((u8*)arg0 + 0x26c) > 0) {
-            fn_801CB6E4((void*)0x4F8203, *(s32*)((u8*)arg0 + 4));
+    self->m26c = (s32)offset;
+    self->v13();
+    if (self->m26c > 0) {
+        if (self->m26c > 0) {
+            fn_801CB6E4((void*)0x48203, self->m4);
         }
-        *(s32*)((u8*)arg0 + 0x26c) = 0;
-        *(f32*)((u8*)arg0 + 0x278) = lbl_80561754;
+        self->m26c = 0;
+        self->m278 = lbl_80561754;
     }
 }
-
+#pragma scheduling on
 extern "C" s32 fn_8015C684(void) {
     return 4;
 }
