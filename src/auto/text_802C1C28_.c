@@ -56,6 +56,13 @@ static int fn_802C2074_noinline(void *arg0) {
     return -2;
 }
 
+static int fn_802C2074_noinline2(void *arg0) {
+    int valid = 0;
+    if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
+    if (valid != 0) return fn_802CAC28((int)arg0, 0);
+    return -2;
+}
+
 void fn_802C20DC(int *arg0) {
     int temp_r0 = *arg0;
     if (temp_r0 != -2) {
