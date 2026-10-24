@@ -240,6 +240,37 @@ extern "C" void fn_80192C10(void *arg0) {
     VTable *obj = *(VTable **)((char *)arg0 + 4);
     obj->f20();
 }
+
+#pragma cplusplus on
+extern "C" void fn_80192C24(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 4);
+    obj->f19();
+}
+#pragma cplusplus off
+
 #pragma cplusplus off
 
 #pragma cplusplus on
