@@ -61,7 +61,6 @@ extern f32 fn_80209028(void);
 extern s32 fn_80265D64(void);
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_80206444(void);
-extern void fn_80209190_s32_f32(s32, f32);
 extern void fn_80230E90(s32);
 extern f32 lbl_80560234;
 
