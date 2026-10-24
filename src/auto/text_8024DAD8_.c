@@ -40,6 +40,7 @@ s32 *fn_80016BC8(s32);
 extern unsigned char lbl_803444D8[];
 extern void *lbl_8055F2E4;
 extern s32 lbl_8055F2E8;
+extern unsigned int lbl_8055F2EC;
 extern void fn_8024739C(void);
 #pragma push
 #pragma use_lmw_stmw off
@@ -664,6 +665,172 @@ void *fn_8024FB64(void *arg0, s32 arg1) {
     return arg0;
 }
 
+void fn_8024FBD8(void *arg0, s32 arg1) {
+    extern void fn_8013C804(void);
+    extern void fn_8001880C(void);
+    extern void fn_802556BC(void *, s32);
+    extern s32 fn_802E4A10(void);
+    extern void fn_8002F53C(void *, void *, void *, s32, s32);
+    extern void fn_8002F634(void *, void *, s32, s32);
+    extern void fn_80018B24(void);
+    extern void fn_8013C8B8(void);
+    extern void fn_802146BC(s32 *, s32, s32, s32);
+    extern void fn_80255758(void *, s32);
+    extern void *fn_80258354(void);
+    extern unsigned char lbl_80344170[];
+    extern char lbl_803443B0[];
+    extern unsigned char lbl_803446AC[];
+    extern unsigned char lbl_803446B8[];
+    extern unsigned char lbl_803446C8[];
+    extern unsigned char lbl_80498C30[];
+    extern unsigned char lbl_802FA594[];
+    extern unsigned char lbl_8055C0D8;
+    extern const f32 lbl_80563964;
+    extern s32 fn_80241098(void);
+    extern s32 fn_80240928(void);
+    u8 stack[0x778];
+    u8 *s = stack;
+    s32 i, count;
+    void *object;
+    fn_8013C804();
+    fn_8001880C();
+    fn_802556BC(s+0x320, 1);
+    *(s32 *)(s+0x3f8) = fn_802E4A10();
+    fn_8002F53C(s+0x470, fn_80241098, fn_80240928, 0x28, 5);
+    memset(s+0x444, 0, 0x2c);
+    *(void **)(s+0x198) = arg0;
+    *(s32 *)(s+0x194) = 0;
+    *(void **)(s+0x180) = lbl_803443B0;
+    *(void **)(s+0x1a0) = s+0x320;
+    *(void **)(s+0x1a4) = s+0x444;
+    *(s32 *)(s+0x19c) = 0;
+    if (arg1 != 0) *(s32 *)(s+0x19c) = arg1;
+    *(u8 *)(s+0x538) = 0;
+    *(u8 *)(s+0x59c) = 0;
+    *(u8 *)(s+0x5fc) = 0;
+    *(u8 *)(s+0x660) = 0;
+    *(u8 *)(s+0x6c4) = 0;
+    object = fn_80258354();
+    *(void **)(s+0x308) = object;
+    if (object != 0) {
+        (*(void (**)(void *, void *, void *, s32))(*(void ***)object+5))
+            (object, lbl_803446C8, lbl_803446B8, 0);
+        (*(void (**)(void *, void *, f32))(*(void ***)object+16))
+            (object, lbl_803446AC, lbl_80563964);
+    }
+    *(void **)(s+0x18)=s+0x180;
+*(s32 *)(s+0x1c)=5;
+*(void **)(s+0x20)=lbl_80344170+0x40;
+*(s32 *)(s+0x24)=0;
+*(s32 *)(s+0x28)=0;
+*(void **)(s+0x2c)=&lbl_8055C0D8;
+*(s32 *)(s+0x30)=3;
+*(void **)(s+0x34)=s+0x288;
+*(s32 *)(s+0x38)=0;
+*(s32 *)(s+0x3c)=0;
+*(void **)(s+0x40)=lbl_80344170+0x40;
+*(s32 *)(s+0x44)=0x13;
+*(void **)(s+0x48)=s+0x320;
+*(s32 *)(s+0x4c)=0;
+*(s32 *)(s+0x50)=0;
+*(void **)(s+0x54)=lbl_80344170+0x40;
+*(s32 *)(s+0x58)=3;
+*(void **)(s+0x5c)=s+0x1a8;
+*(s32 *)(s+0x60)=0;
+*(s32 *)(s+0x64)=0;
+*(s32 *)(s+0x68)=5;
+*(void **)(s+0x6c)=lbl_80344170+0x58;
+*(void **)(s+0x70)=s+0x41c;
+*(s32 *)(s+0x74)=0;
+*(s32 *)(s+0x78)=0;
+*(void **)(s+0x7c)=lbl_80344170+0x1f0;
+*(s32 *)(s+0x80)=3;
+*(void **)(s+0x84)=s+0x208;
+*(s32 *)(s+0x88)=0;
+*(s32 *)(s+0x8c)=0;
+*(void **)(s+0x90)=lbl_80344170+0x1fc;
+*(s32 *)(s+0x94)=3;
+*(void **)(s+0x98)=s+0x1c8;
+*(s32 *)(s+0x9c)=0;
+*(s32 *)(s+0xa0)=0;
+*(void **)(s+0xa4)=lbl_80344170+0x68;
+*(s32 *)(s+0xa8)=3;
+*(void **)(s+0xac)=s+0x538;
+*(s32 *)(s+0xb0)=0;
+*(s32 *)(s+0xb4)=0;
+*(void **)(s+0xb8)=lbl_80344170+0x78;
+*(s32 *)(s+0xbc)=2;
+*(void **)(s+0xc0)=s+0x444;
+*(s32 *)(s+0xc4)=0;
+*(s32 *)(s+0xc8)=0;
+*(void **)(s+0xcc)=lbl_80344170+0x84;
+*(s32 *)(s+0xd0)=3;
+*(void **)(s+0xd4)=s+0x59c;
+*(s32 *)(s+0xd8)=0;
+*(s32 *)(s+0xdc)=0;
+*(void **)(s+0xe0)=lbl_80344170+0x94;
+*(s32 *)(s+0xe4)=2;
+*(void **)(s+0xe8)=s+0x454;
+*(s32 *)(s+0xec)=0;
+*(s32 *)(s+0xf0)=0;
+*(void **)(s+0xf4)=lbl_80344170+0xa0;
+*(s32 *)(s+0xf8)=3;
+*(void **)(s+0xfc)=s+0x5fc;
+*(s32 *)(s+0x100)=0;
+*(s32 *)(s+0x104)=0;
+*(void **)(s+0x108)=lbl_80344170+0xb0;
+*(s32 *)(s+0x10c)=2;
+*(void **)(s+0x110)=s+0x45c;
+*(s32 *)(s+0x114)=0;
+*(s32 *)(s+0x118)=0;
+*(void **)(s+0x11c)=lbl_80344170+0xbc;
+*(s32 *)(s+0x120)=3;
+*(void **)(s+0x124)=s+0x660;
+*(s32 *)(s+0x128)=0;
+*(s32 *)(s+0x12c)=0;
+*(void **)(s+0x130)=lbl_80344170+0xcc;
+*(s32 *)(s+0x134)=5;
+*(void **)(s+0x138)=s+0x4e8;
+*(s32 *)(s+0x13c)=0;
+*(s32 *)(s+0x140)=0;
+*(void **)(s+0x144)=lbl_80344170+0xdc;
+*(s32 *)(s+0x148)=3;
+*(void **)(s+0x14c)=s+0x6c4;
+*(s32 *)(s+0x150)=0;
+*(s32 *)(s+0x154)=0;
+*(void **)(s+0x158)=lbl_80344170+0xec;
+*(s32 *)(s+0x15c)=2;
+*(void **)(s+0x160)=s+0x46c;
+*(s32 *)(s+0x164)=0;
+*(s32 *)(s+0x168)=0;
+    *(s32 *)(s+0x16c) = *(s32 *)lbl_80498C30;
+    *(s32 *)(s+0x170) = *(s32 *)(lbl_80498C30+4);
+    *(s32 *)(s+0x174) = *(s32 *)(lbl_80498C30+8);
+    *(s32 *)(s+0x178) = *(s32 *)(lbl_80498C30+0xc);
+    *(s32 *)(s+0x17c) = *(s32 *)(lbl_80498C30+0x10);
+    *(s32 *)(s+0x0) = *(s32 *)lbl_802FA594;
+    *(s32 *)(s+0x8) = *(s32 *)(lbl_802FA594+8);
+    *(s32 *)(s+0xc) = *(s32 *)(lbl_802FA594+0xc);
+    *(s32 *)(s+0x10) = *(s32 *)(lbl_802FA594+0x10);
+    *(void **)(s+0x4) = s+0x18;
+    i=0;
+    do {
+        *(s32 *)(s+0x30c)=i;
+        fn_802146BC((s32 *)s, -0x3e7, -0x3e7, 1);
+        ++i;
+        count = (*(s32 (**)(void *))(*(void ***)arg0+5))(arg0);
+    } while (i<count);
+    fn_80018B24();
+    fn_8013C8B8();
+    *(void **)(s+0x180)=lbl_803443B0;
+    if (object != 0) {
+        if (object != 0)
+            (*(void (**)(void *, s32))(*(void ***)object+2))(object, 1);
+    }
+    fn_8002F634(s+0x470, fn_80240928, 0x28, 5);
+    fn_80255758(s+0x320, -1);
+}
+
 void *fn_8024FFF8(void *arg0, s32 arg1) {
     extern char lbl_803443B0[];
     if (arg0) {
@@ -722,7 +889,153 @@ void fn_802514B4(void *arg0, s32 arg1, f32 x, f32 y, f32 w, f32 h) {
     fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 3, value, x, y, lbl_80563960, w, h);
     fn_802354A0(*(s32 *)((char *)arg0 + 0x24), 6, -1, x, y, lbl_80563960, w, h);
 }
-#pragma pop
+
+#pragma cplusplus on
+extern "C" void fn_80216D28(void);
+extern "C" s32 fn_80214D50(s32);
+extern "C" void fn_80255918(void *, s32);
+extern "C" void fn_801345D8(void *, s32, void *, ...);
+#pragma cplusplus on
+#pragma cplusplus off
+#pragma optimize_for_size off
+#pragma scheduling invalid_target
+s32 fn_8025157C(char *arg0, s32 arg1) {
+    u8 *source, *dest;
+    s32 count;
+    s32 index, newIndex, context;
+    u8 ch;
+
+    switch (arg1) {
+    case 0x125: {
+        
+        index = *(s32 *)(arg0 + 0x2C);
+        if (index <= 0)
+            goto done_prev;
+        newIndex = index - 1;
+        *(s32 *)(arg0 + 0x2C) = newIndex;
+
+        context = fn_8001668C((s32)(arg0 + 0x60), 0);
+        if (lbl_80498C48[4] != 0)
+            ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0] = newIndex;
+        else
+            ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1] = newIndex;
+
+        newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
+        if (lbl_80498C48[4] != 0)
+            ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = *(s32 *)(arg0 + 0x2C);
+        else
+            ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = *(s32 *)(arg0 + 0x2C);
+
+        index = *(s32 *)(arg0 + 0x2C);
+        *(*(s32 **)(arg0 + 0xDC)) =
+            *(s32 *)((u8 *)newIndex + index * 4 + 0x64);
+
+        newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
+        context = fn_8001668C((s32)(arg0 + 0x60), 0);
+        if (lbl_80498C48[4] != 0)
+            context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0];
+        else
+            context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1];
+
+        index = *(s32 *)((u8 *)*(s32 **)(arg0 + 0xCC) +
+                         *(s32 *)(arg0 + 0x2C) * 0x14 + 0x10);
+        source = *(u8 **)(arg0 + 0x4C);
+        fn_80255918(source,
+                     index != 0 ? index :
+                     *(s32 *)((u8 *)newIndex + context * 4 + 0x64));
+
+        fn_801345D8(arg0 + 0xE0, 0x100, lbl_8034287C,
+                    *(s32 *)(arg0 + 0x2C) + 1);
+        source = fn_80131234(arg0 + 0xE0);
+        dest = (u8 *)(arg0 + 0xE0);
+        count = 0x100;
+        goto copy_loop_1;
+    copy_count_1:
+        count -= 1;
+        if (count > 0)
+            goto copy_loop_1;
+        dest[-1] = 0;
+        goto copy_done_1;
+    copy_loop_1:
+        ch = *source++;
+        *dest++ = ch;
+        if ((signed char)ch != 0)
+            goto copy_count_1;
+    copy_done_1:;
+
+    done_prev:
+        fn_80216D28();
+        fn_80214D50(1);
+        return 1;
+    }
+    case 0x127: {
+        
+        index = *(s32 *)(arg0 + 0x2C);
+        if (index >= *(s32 *)(arg0 + 0x1C) - 1)
+            goto done_next;
+        newIndex = index + 1;
+        *(s32 *)(arg0 + 0x2C) = newIndex;
+
+        context = fn_8001668C((s32)(arg0 + 0x60), 0);
+        if (lbl_80498C48[4] != 0)
+            ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0] = newIndex;
+        else
+            ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1] = newIndex;
+
+        newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
+        if (lbl_80498C48[4] != 0)
+            ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[0] = *(s32 *)(arg0 + 0x2C);
+        else
+            ((s32 *(*)(s32, s32))fn_80016BC8)(newIndex, 0)[1] = *(s32 *)(arg0 + 0x2C);
+
+        index = *(s32 *)(arg0 + 0x2C);
+        *(*(s32 **)(arg0 + 0xDC)) =
+            *(s32 *)((u8 *)newIndex + index * 4 + 0x64);
+
+        newIndex = fn_8001668C((s32)(arg0 + 0x60), 0);
+        context = fn_8001668C((s32)(arg0 + 0x60), 0);
+        if (lbl_80498C48[4] != 0)
+            context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[0];
+        else
+            context = ((s32 *(*)(s32, s32))fn_80016BC8)(context, 0)[1];
+
+        index = *(s32 *)((u8 *)*(s32 **)(arg0 + 0xCC) +
+                         *(s32 *)(arg0 + 0x2C) * 0x14 + 0x10);
+        source = *(u8 **)(arg0 + 0x4C);
+        fn_80255918(source,
+                     index != 0 ? index :
+                     *(s32 *)((u8 *)newIndex + context * 4 + 0x64));
+
+        fn_801345D8(arg0 + 0xE0, 0x100, lbl_8034287C,
+                    *(s32 *)(arg0 + 0x2C) + 1);
+        source = fn_80131234(arg0 + 0xE0);
+        dest = (u8 *)(arg0 + 0xE0);
+        count = 0x100;
+        goto copy_loop_2;
+    copy_count_2:
+        count -= 1;
+        if (count > 0)
+            goto copy_loop_2;
+        dest[-1] = 0;
+        goto copy_done_2;
+    copy_loop_2:
+        ch = *source++;
+        *dest++ = ch;
+        if ((signed char)ch != 0)
+            goto copy_count_2;
+    copy_done_2:;
+
+    done_next:
+        fn_80216D28();
+        fn_80214D50(1);
+        return 1;
+    }
+    default:
+        return 0;
+    }
+}
+#pragma scheduling on
+#pragma optimize_for_size reset
 extern void fn_80255904(s32);
 extern void fn_80214A9C(s32, f32);
 extern void fn_80221F94(void *, s32);
