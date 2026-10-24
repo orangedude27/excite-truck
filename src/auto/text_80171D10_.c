@@ -255,7 +255,7 @@ void fn_801308F4(void *, int, int);          /* extern */
 void fn_80130980(void *, int, int, float); /* extern */
 int fn_801312EC(int *, int *);          /* extern */
 int fn_80131318();                              /* extern */
-void fn_801345D8(void *, int, const void *, ...); /* extern */
+void fn_801345D8(void *, int, void *, int); /* extern */
 int fn_801609C4(int);                               /* extern */
 void fn_802ADFF4(void *, void *);                      /* extern */
 void fn_802AE02C(void *, void *);                      /* extern */
