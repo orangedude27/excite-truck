@@ -4009,11 +4009,11 @@ extern "C" void fn_80226B6C(void *arg0) {
     }
 }
 
-extern "C" void *lbl_8033E038;
+extern "C" char lbl_8033E038;
 extern "C" void fn_80235380(void);
 extern "C" void *fn_80226F00(void *arg0, s32 arg1) {
     if (arg0 != 0) {
-        *(void **)arg0 = lbl_8033E038;
+        *(void **)arg0 = &lbl_8033E038;
         if (*(u8 *)((u8 *)arg0 + 0x260) != 0)
             fn_8022EE98(*(void **)((u8 *)arg0 + 0x25C));
         if (*(void **)((u8 *)arg0 + 0x244) != 0)
