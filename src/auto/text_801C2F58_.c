@@ -6,6 +6,10 @@ extern void fn_801C6E40(void);
 extern void fn_801C80E8(void);
 extern void fn_801C811C(void);
 extern void fn_801C8150(void);
+extern void fn_801C73DC(void);
+extern void fn_801C7480(void);
+extern void fn_801C756C(void);
+extern void fn_801C7698(void);
 extern void fn_801C84E0(void);
 extern void fn_801C8500(void);
 #include <internal/printf.h>
