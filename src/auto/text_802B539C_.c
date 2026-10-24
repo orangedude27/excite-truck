@@ -8,6 +8,7 @@ int fn_8012C33C(void);
 int fn_802CAC28(int, int);
 extern void fn_80131818(int);
 extern void fn_802C6CF8(void);
+struct TplLike { void *entries; unsigned int count; };
 int fn_802B539C(int arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
