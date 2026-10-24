@@ -6,7 +6,7 @@ extern signed char lbl_8055FE9E;
 extern int lbl_8055FEA0, lbl_8055FEA4;
 #pragma push
 #pragma small_data off
-extern void *lbl_804DB468;
+extern void *lbl_804DB468[];
 #pragma pop
 extern void *fn_802D94DC(void);
 extern void *lbl_8055FEA8;
