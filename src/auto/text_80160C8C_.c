@@ -98,6 +98,35 @@ struct Dummy_801638A0 {
 };
 #pragma cplusplus off
 
+#pragma cplusplus on
+struct Dummy_80163F7C {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual const char *f6(const char *, const char *);
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
+    virtual void f10();
+    virtual void f11();
+    virtual s32 f12(const char *, s32);
+    virtual void f13();
+    virtual void f14();
+    virtual void f15();
+    virtual void f16();
+    virtual void f17();
+    virtual void f18();
+    virtual void f19();
+    virtual void f20();
+    virtual void f21();
+    virtual void f22();
+    virtual s32 f23(const char *, ...);
+};
+#pragma cplusplus off
+
 extern s32 lbl_8055E300;
 extern unsigned char lbl_8032F858[];
 extern int lbl_8055E2E4;
@@ -869,23 +898,22 @@ void fn_8016386C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma processor 750
 extern "C" void fn_801638A0(void *arg0) {
     s32 i,j;
-    int *cars;
-    u8 *self = (u8 *)arg0;
+    int *cars, *cars2;
+    u8 *self=(u8 *)arg0;
     u8 *entry;
     s32 offset;
     u8 *car,*flags,*ui;
-    f32 velocity[2], length, scale;
-    f32 threshold, one, epsilon;
-    if (((*(f32 *)(self+0x98) > *(f32 *)(self+0x84)) & 1) != 0)
-        self[0x56D]=1;
-    if (fn_801C5B60() == 0) fn_801DF074(8,0);
-    if (((Dummy_801638A0 *)self)->f7() == 0) {
+    f32 velocity[2],length,scale;
+    f32 threshold,one,epsilon;
+    if (((*(f32 *)(self+0x98)>*(f32 *)(self+0x84))&1)!=0) self[0x56D]=1;
+    if (fn_801C5B60()==0) fn_801DF074(8,0);
+    if (((Dummy_801638A0 *)self)->f7()==0) {
         one=lbl_80561840; threshold=lbl_80561854; epsilon=lbl_80561850;
-        for (i=0,cars=lbl_804348E8; i<fn_801B2F24(); cars++,i++) {
+        for (i=0,cars=lbl_804348E8;i<fn_801B2F24();cars++,i++) {
             car=(u8 *)*cars;
-            if (*(u32 *)(car+0x10) != 0x50434152) continue;
-            for (j=0,offset=0; j<*(s32 *)(self+0xE4); offset+=0x48,j++) {
-                entry=*(u8 **)(self+0xE0)+offset;
+            if (*(u32 *)(car+0x10)!=0x50434152) continue;
+            for (j=0,offset=0;j<*(s32 *)(self+0xE4);offset+=0x48,j++) {
+                entry=(u8 *)*(s32 *)(self+0xE0)+offset;
                 if (!entry[0x3C]) continue;
                 if (*(s32 *)(entry+0x34)) {
                     if (fn_80139B5C(car,*(s32 *)(entry+0x34))) {
@@ -898,7 +926,7 @@ extern "C" void fn_801638A0(void *arg0) {
                                 scale=one/(f32)fn_8002F234(length);
                                 velocity[0]*=scale;
                                 velocity[1]*=scale;
-                                if (velocity[0]* *(f32 *)(entry+0x2C)+velocity[1]* *(f32 *)(entry+0x30)>threshold) {
+                                if (velocity[1]**(f32 *)(entry+0x30)+velocity[0]**(f32 *)(entry+0x2C)>threshold) {
                                     ++*(s32 *)(self+0x94);
                                     entry[0x3C]=0;
                                     ui=*(u8 **)(self+0xDC);
@@ -909,7 +937,7 @@ extern "C" void fn_801638A0(void *arg0) {
                         flags[0x3D]=1;
                         break;
                     } else if (entry[0x3C]) (entry+i)[0x3D]=0;
-                } else if (PSVECSquareDistance(entry,car+0x60)<*(f32 *)(self+0xCC)* *(f32 *)(self+0xCC)) {
+                } else if (PSVECSquareDistance(entry,car+0x60)<*(f32 *)(self+0xCC)**(f32 *)(self+0xCC)) {
                     ++*(s32 *)(self+0x94);
                     entry[0x3C]=0;
                     ui=*(u8 **)(self+0xDC);
@@ -919,28 +947,32 @@ extern "C" void fn_801638A0(void *arg0) {
             }
         }
         *(f32 *)(self+0x98)+=lbl_80561858;
-        if (*(f32 *)(self+0x98)>=*(f32 *)(self+0x84))
-            ((Dummy_801638A0 *)self)->f22(3);
-        if (*(s32 *)(self+0x94)>=*(s32 *)(self+0x80) && self[0x9C]) {
+        if (*(f32 *)(self+0x98)>=*(f32 *)(self+0x84)) ((Dummy_801638A0 *)self)->f22(3);
+        if (*(s32 *)(self+0x94)>=*(s32 *)(self+0x80)&&self[0x9C]) {
             ((Dummy_801638A0 *)self)->f22(1);
             self[0x88]=1;
         }
     } else {
         if ((f32)__fabs(*(f32 *)(self+0x8C))<=lbl_80558DC4) {
             fn_80276DC8(0);
-            for(i=0,cars=lbl_804348E8;i<fn_801B2F24();i++,cars++) {
+            for (cars2=lbl_804348E8,i=0;i<fn_801B2F24();cars2++,i++) {
                 Dummy_801638A0 *manager=(Dummy_801638A0 *)fn_801B83A0();
-                manager->f35((void *)*cars,i);
+                manager->f35((void *)*cars2,i);
             }
         }
         *(f32 *)(self+0x8C)+=lbl_80561858;
-        if(self[0x90]) {
-            if (((Dummy_801638A0 *)self)->f8() && lbl_8055E304==fn_80160CE4()) {
+        if (self[0x90]) {
+            if (((Dummy_801638A0 *)self)->f8()&&lbl_8055E304==fn_80160CE4()) {
+                s32 old=lbl_8055A0B8;
                 lbl_8055E2DC=1;
-                lbl_8055A0B4=lbl_8055A0B8++;
+                lbl_8055A0B4=old;
+                lbl_8055A0B8=old+1;
             } else lbl_8055E2DC=0;
-            lbl_8055E304=0;
-            if (*(s32 *)(lbl_8042FDEC+4)>0) fn_80176734();
+            {
+                s32 count=*(volatile s32 *)(lbl_8042FDEC+4);
+                *(volatile s32 *)&lbl_8055E304=0;
+                if (count>0) fn_80176734();
+            }
         }
     }
 }
@@ -980,6 +1012,133 @@ unsigned char fn_80163F6C(void *arg0) {
 
 unsigned char fn_80163F74(void *arg0) {
     return *((unsigned char *)arg0 + 0x56D);
+}
+
+extern void fn_802E30C8(const char *, const char *);
+extern void fn_802C77F0(f32 *);
+extern s32 fn_80207848(void *, s32);
+extern void *fn_801399FC(void);
+extern void PSVECNormalize(f32 *, f32 *);
+extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
+extern int sscanf(const char *, const char *, ...);
+extern unsigned char lbl_8055A108[];
+extern unsigned char lbl_8055A10C[];
+extern f32 lbl_80561864;
+void fn_80163F7C(void *arg0) {
+    u8 *self = (u8 *)arg0;
+    u8 *obj;
+    u8 *out;
+    f32 bounds[6];
+    f32 *table;
+    f32 *points;
+    f32 dx, dy, best, x0, y0, x1, y1, x2, y2;
+    f32 vx, vy, cross[3], scale;
+    int count, i, bestIndex, keyResult;
+
+    obj = *(u8 **)(self + 4);
+    *(s32 *)(self + 0xA0) = fn_802C6FC0(lbl_8032F588 + 0x588, 0, 0);
+    if (*(s32 *)(self + 0xA0) == -1) {
+        fn_802E30C8((const char *)(lbl_8032F588 + 0x598), (const char *)(lbl_8032F588 + 0x588));
+    } else {
+        fn_802C77F0(bounds);
+        dx = bounds[3] - bounds[2];
+        dy = bounds[1] - bounds[0];
+        if (dy > dx) dx = dy;
+        dy = bounds[5] - bounds[4];
+        if (dy > dx) dx = dy;
+        *(f32 *)(self + 0xCC) = dx * lbl_8056185C;
+    }
+    *(void **)(self + 0xD0) = fn_802CAC28(lbl_8032F588 + 0x5C0, 0);
+    *(s32 *)(self + 0xDC) = fn_80207848(lbl_8032F588 + 0x5D0, 1);
+    obj = *(u8 **)(self + 4);
+    *(u8 *)(self + 0xD8) = (u8)((s32 (*)(void *, const char *, s32))(*(void ***)obj)[12])(obj, (const char *)(lbl_8032F588 + 0x5DC), 0);
+    obj = *(u8 **)(self + 4);
+    {
+        const char *value = ((const char *(*)(void *, const char *, const char *))(*(void ***)obj)[6])(obj, (const char *)(lbl_8032F588 + 0x5EC), (const char *)(lbl_8032F588 + 0x5FC));
+        if (sscanf(value, (const char *)lbl_8055A108, (s32 *)(self + 0xD4)) != 1) {
+            *(s32 *)(self + 0xD4) = -1;
+        }
+    }
+    obj = *(u8 **)(self + 4);
+    *(s32 *)(self + 0xE4) = 0;
+    if (obj != 0) {
+        keyResult = ((s32 (*)(void *, const char *))(*(void ***)obj)[23])(obj, (const char *)lbl_8055A10C);
+        if (keyResult != 0) {
+            i = *(s32 *)(self + 0xE4);
+            out = (u8 *)(*(u8 **)(self + 0xE0) + i * 0x48);
+            ((s32 (*)(void *, const char *, s32, void *))(*(void ***)obj)[23])(obj, (const char *)lbl_8055A10C, i, *(void **)(self + 0xE0));
+            table = (f32 *)fn_801399FC();
+            *(f32 **)(out + 0x34) = table;
+            count = *(s32 *)table;
+            points = (f32 *)((u8 *)table + 8);
+            best = lbl_80561864;
+            bestIndex = -1;
+            for (i = 1; i <= count; i++) {
+                s32 n = *(s32 *)table;
+                s32 next = i % n;
+                s32 prev = (i - 1) % n;
+                dx = points[next * 2 + 1] - points[prev * 2 + 1];
+                dy = points[next * 2] - points[prev * 2];
+                scale = dy * dy + dx * dx;
+                if (scale > best) {
+                    best = scale;
+                    bestIndex = i;
+                }
+            }
+            i = (bestIndex - 1) % count;
+            x0 = ((f32 *)table)[i * 2 + 2];
+            y0 = ((f32 *)table)[i * 2 + 3];
+            *(f32 *)(out + 0x0C) = x0;
+            *(f32 *)(out + 0x10) = lbl_80561848;
+            *(f32 *)(out + 0x14) = y0;
+            i = bestIndex % count;
+            x1 = ((f32 *)table)[i * 2 + 2];
+            y1 = ((f32 *)table)[i * 2 + 3];
+            *(f32 *)(out + 0x18) = x1;
+            *(f32 *)(out + 0x1C) = lbl_80561848;
+            *(f32 *)(out + 0x20) = y1;
+            *(f32 *)(out + 0x24) = (x0 + x1) * lbl_8056185C;
+            x2 = x0 - x1;
+            *(f32 *)(out + 0x28) = (y0 + y1) * lbl_8056185C;
+            y2 = y0 - y1;
+            i = (bestIndex + 1) % count;
+            vx = ((f32 *)table)[i * 2 + 2] - x1;
+            vy = ((f32 *)table)[i * 2 + 3] - y1;
+            cross[0] = vx;
+            cross[1] = lbl_80561848;
+            cross[2] = vy;
+            PSVECNormalize(cross, cross);
+            cross[0] = x2;
+            cross[1] = lbl_80561848;
+            cross[2] = y2;
+            PSVECNormalize(cross, cross);
+            PSVECCrossProduct(&vx, &x2, cross);
+            if (cross[1] > lbl_80561848) {
+                *(f32 *)(out + 0x2C) = x0 - *(f32 *)(out + 0x24);
+                *(f32 *)(out + 0x30) = y0 - *(f32 *)(out + 0x28);
+            } else {
+                *(f32 *)(out + 0x2C) = x1 - *(f32 *)(out + 0x24);
+                *(f32 *)(out + 0x30) = y1 - *(f32 *)(out + 0x28);
+            }
+            x0 = *(f32 *)(out + 0x2C);
+            y0 = -*(f32 *)(out + 0x30);
+            *(f32 *)(out + 0x2C) = y0;
+            *(f32 *)(out + 0x30) = x0;
+            scale = lbl_80561840 / (f32)fn_8002F234(y0 * y0 + x0 * x0);
+            *(f32 *)(out + 0x2C) *= scale;
+            *(f32 *)(out + 0x30) *= scale;
+            *(u8 *)(out + 0x3D) = 0;
+            *(u8 *)(out + 0x3E) = 0;
+            *(u8 *)(out + 0x3F) = 0;
+            *(u8 *)(out + 0x40) = 0;
+            *(u8 *)(out + 0x41) = 0;
+            *(u8 *)(out + 0x42) = 0;
+            *(u8 *)(out + 0x43) = 0;
+            *(u8 *)(out + 0x44) = 0;
+            *(u8 *)(out + 0x3C) = 1;
+            *(s32 *)(self + 0x80) += 1;
+        }
+    }
 }
 
 int fn_801643C8(void *arg0) {
