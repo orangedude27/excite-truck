@@ -264,7 +264,7 @@ void fn_80232024(u8 **arg0) {
 }
 
 void fn_802321D8(void) {
-    if (lbl_8055F068 != 0) fn_802E317C(lbl_80340488);
+    if (lbl_8055F068 != 0) ((void (*)(const char *, ...))fn_802E317C)(lbl_80340488);
     lbl_8055F068 = fn_801284F8(0x16C, lbl_803404C0);
     memset(lbl_8055F068, 0, 0x16C);
 }
@@ -727,26 +727,26 @@ extern void fn_802C8BD0(s32);
 #pragma scheduling invalid_target
 #pragma dont_inline on
 void fn_802346C8(void) {
-f32 f24;
-f32 f25;
-f32 f26;
-f32 f27;
+register f32 f30 = lbl_80563688;
+register f32 f31 = lbl_8056368C;
 f32 f28;
-f32 f30 = lbl_80563688;
-f32 f31 = lbl_8056368C;
+f32 f27;
+f32 f26;
+f32 f25;
+f32 f24;
 volatile f32 sp8;
-s32 mode;
-s32 i;
-s32 textOffset;
-s32 charIndex;
-s32 nameIndex;
-s32 glyphOffset;
-s32 *colorPtr;
-u8 *object;
-u8 *record;
-u8 *glyphDef;
-s32 fontColor;
-s8 *start;
+register s32 mode;
+register s32 i;
+register s32 textOffset;
+register s32 charIndex;
+register s32 nameIndex;
+register s32 glyphOffset;
+register u32 *colorPtr;
+register u8 *object;
+register u8 *record;
+register u8 *glyphDef;
+register u32 fontColor;
+register s8 *start;
 s32 totalChars;
 s32 charStep;
 s32 glyphIndex;
@@ -776,8 +776,8 @@ record = (u8 *)lbl_8055F06C + textOffset;
 f26 = *(f32 *)(record + 0x44);
 f28 = (f32)object[4] * *(f32 *)(record + 0x50);
 f27 = f28 + f26;
-if (mode == 2) colorPtr = (s32 *)(record + 0x4C);
-else colorPtr = (s32 *)(record + 0x48);
+if (mode == 2) colorPtr = (u32 *)(record + 0x4C);
+else colorPtr = (u32 *)(record + 0x48);
 f25 = *(f32 *)(record + 0x40);
 strlen((const char *)((u8 *)lbl_8055F06C + textOffset));
 charIndex = 0;
@@ -786,7 +786,7 @@ char_body:
 sp8 = f28;
 start = (s8 *)(record + charIndex);
 fontColor = *colorPtr;
-if ((s8)(((u8 *)lbl_8055F06C + textOffset)[charIndex]) == '\\') {
+if ((s32)((u8 *)lbl_8055F06C + textOffset)[charIndex] == '\\') {
 nameIndex = 0;
 glyphOffset = 0;
 goto name_test;
