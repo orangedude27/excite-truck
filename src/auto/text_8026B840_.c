@@ -55,6 +55,7 @@ extern f32 lbl_80563DE0;
 extern f32 lbl_80563DE4;
 extern u32 lbl_802FA768[4];
 extern u32 lbl_802FA778[4];
+extern void fn_80015A20(void *, float *, float, float, float, float);
 void fn_8026C014(s32 arg0, void *arg1) {
     struct Snapshot { f32 f[8]; s32 i[16]; u8 flag; };
     u8 localFrame[0x328];
@@ -65,14 +66,15 @@ void fn_8026C014(s32 arg0, void *arg1) {
     s32 command;
     s32 flag;
     u8 active;
-    f32 *base = &lbl_8049A168;
+    f32 *base = (f32 *)(void *)&lbl_8049A168;
     f32 dt;
     f32 step;
     f32 scale;
-    f32 x, y, z;
+    f32 ax, ay, az;
+    f32 bx, by, bz;
     f32 a, b, c;
+    f32 *matrix;
     s32 now;
-
     (void)arg1;
     *(u32 *)(localFrame + 0x300) = 0x43300000;
     *(u32 *)(localFrame + 0x308) = 0x43300000;
@@ -131,6 +133,7 @@ void fn_8026C014(s32 arg0, void *arg1) {
             base[0x27] = lbl_80563D78;
             lbl_8055F502 = 1;
         }
+        ax = ay = az = bx = by = bz = lbl_80563D78;
         counter = fn_802E2C20() - lbl_8055F504;
         *(u32 *)(localFrame + 0x304) = (u32)counter ^ 0x80000000;
         dt = (f32)(*(f64 *)(localFrame + 0x300) - lbl_80563DD0) / lbl_80563D88;
@@ -155,31 +158,55 @@ void fn_8026C014(s32 arg0, void *arg1) {
         index = ((command << 1) | flag) * 4;
         a = scale * *(f32 *)(localFrame + 0x128 + index);
         b = scale * *(f32 *)(localFrame + 0x118 + index);
-        if (fn_802E4A1C(0x1E) != 0) z = a;
-        else if (fn_802E4A1C(0x2C) != 0) z = -a;
-        if (fn_802E4A1C(0x51) != 0) x = a;
-        else if (fn_802E4A1C(0x4F) != 0) x = -a;
-        if (fn_802E4A1C(0x53) != 0) y = a * lbl_80563D9C;
-        else if (fn_802E4A1C(0x52) != 0) y = -a * lbl_80563D9C;
+        if (fn_802E4A1C(0x1E) != 0) az = a;
+        else if (fn_802E4A1C(0x2C) != 0) az = -a;
+        if (fn_802E4A1C(0x51) != 0) ax = a;
+        else if (fn_802E4A1C(0x4F) != 0) ax = -a;
+        if (fn_802E4A1C(0x53) != 0) ay = a * lbl_80563D9C;
+        else if (fn_802E4A1C(0x52) != 0) ay = -a * lbl_80563D9C;
         if (fn_802E4A1C(0x4D) != 0) {
-            if (fn_802E4A1C(0x4F) != 0) c = b * lbl_80563D9C;
-            else c = b;
+            if (fn_802E4A1C(0x4F) != 0) by = b * lbl_80563D9C;
+            else by = b;
         } else if (fn_802E4A1C(0x4B) != 0) {
-            if (fn_802E4A1C(0x51) != 0) c = -b * lbl_80563D9C;
-            else c = -b;
+            if (fn_802E4A1C(0x51) != 0) by = -b * lbl_80563D9C;
+            else by = -b;
         }
-        if (fn_802E4A1C(0x48) != 0) z = b * lbl_80563D9C;
-        else if (fn_802E4A1C(0x50) != 0) z = -b * lbl_80563D9C;
-        if (fn_802E4A1C(0x47) != 0) x = b;
-        else if (fn_802E4A1C(0x49) != 0) x = -b;
+        if (fn_802E4A1C(0x48) != 0) bx = b * lbl_80563D9C;
+        else if (fn_802E4A1C(0x50) != 0) bx = -b * lbl_80563D9C;
+        if (fn_802E4A1C(0x47) != 0) bz = b;
+        else if (fn_802E4A1C(0x49) != 0) bz = -b;
         if (fn_802E4A1C(0x37) != 0) lbl_8055F47C += lbl_80563DDC;
         else if (fn_802E4A1C(0xB5) != 0) lbl_8055F47C -= lbl_80563DDC;
         if (lbl_8055F47C < lbl_80563DE0) lbl_8055F47C = lbl_80563DE0;
         if (lbl_8055F47C > lbl_80563DE4) lbl_8055F47C = lbl_80563DE4;
-        *(f32 *)(localFrame + 0x13C) = x;
-        *(f32 *)(localFrame + 0x140) = y;
-        *(f32 *)(localFrame + 0x144) = z;
-        *(f32 *)(localFrame + 0x148) = c;
+        *(f32 *)(localFrame + 0x138) = bx;
+        *(f32 *)(localFrame + 0x13C) = by;
+        *(f32 *)(localFrame + 0x140) = bz;
+        *(f32 *)(localFrame + 0x144) = ax;
+        *(f32 *)(localFrame + 0x148) = ay;
+        *(f32 *)(localFrame + 0x14C) = az;
+        if (bx != lbl_80563D78 || by != lbl_80563D78 || bz != lbl_80563D78) {
+            base[0x25] = bx;
+            base[0x26] = by;
+            base[0x27] = bz;
+        }
+        if (ax != lbl_80563D78 || ay != lbl_80563D78 || az != lbl_80563D78) {
+            base[0x22] = ax;
+            base[0x23] = ay;
+            base[0x24] = az;
+        }
+        matrix = (f32 *)lbl_80499050;
+        a = base[0x22] * matrix[0] + base[0x23] * matrix[3] + base[0x24] * matrix[6];
+        b = base[0x22] * matrix[1] + base[0x23] * matrix[4] + base[0x24] * matrix[7];
+        c = base[0x22] * matrix[2] + base[0x23] * matrix[5] + base[0x24] * matrix[8];
+        *(f32 *)(localFrame + 0x60) = a;
+        *(f32 *)(localFrame + 0x64) = b;
+        *(f32 *)(localFrame + 0x68) = c;
+        matrix[9] += a;
+        matrix[10] += b;
+        matrix[11] += c;
+        fn_80015A20(localFrame + 0x1E0, base + 0x25, a, b, c, 0.0f);
+        fn_80015B20(matrix, localFrame + 0x1E0, matrix);
     }
 }
 
