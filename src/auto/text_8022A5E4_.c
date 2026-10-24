@@ -1,5 +1,34 @@
 __declspec(section ".sdata") extern char lbl_8055B8B8[];
 
+typedef struct CfgObj CfgObj;
+typedef struct CfgVTab {
+    void* v0;
+    void* v4;
+    char* (*getName)(CfgObj*);
+    int   (*hasProp)(CfgObj*, const char*);
+    char* (*getStr)(CfgObj*, const char*);
+    int   (*getIntDef)(CfgObj*, const char*, int);
+    int   (*getInt)(CfgObj*, const char*);
+    int   (*v20)(CfgObj*, const char*, int);
+    void* v24;
+    float (*getFloat)(CfgObj*, const char*, float);
+    void* v2c;
+    void* v30;
+    void* v34;
+    void* v38;
+    void* v3c;
+    void* v40;
+    void* v44;
+    void* v48;
+    void* v4c;
+    void* v50;
+    void* v54;
+    void* v58;
+    int   (*v5c)(CfgObj*, const char*);
+} CfgVTab;
+struct CfgObj { CfgVTab* vt; };
+
+
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
