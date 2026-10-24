@@ -64,7 +64,6 @@ void fn_801D1B48(void) {
     }
 }
 
-void fn_801D1810(int, int);
 void fn_801D1BA4(void) {
     int offset = 0;
     int i = 0;
