@@ -190,6 +190,13 @@ public:
     virtual void v36();
     virtual void Call(void*, s32, void*);
 };
+class Fn80199894TempVTab {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4();
+    virtual s32 Get();
+    virtual void Set(s32);
+};
 
 extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_801A4A10(s32, s32, s32);
