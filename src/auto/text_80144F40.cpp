@@ -1441,11 +1441,9 @@ extern "C" void fn_80147ABC(void *arg0, void *arg1, const char *format, f64 valu
 }
 
 extern "C" void fn_80147BD0(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, f32 arg5) {
-    f32 pad[8];
-    s32 sp[4];
-    u32 *tmp = (u32 *)sp;
-    fn_80147DC0(tmp, arg0, arg1);
-    fn_801476D8(tmp, fn_80147C50(arg2, arg3, arg5), arg4);
+    s32 temp[12];
+    fn_80147DC0((u32 *)temp, arg0, arg1);
+    fn_801476D8((u32 *)temp, fn_80147C50(arg2, arg3, arg5), arg4);
 }
 
 #pragma push
