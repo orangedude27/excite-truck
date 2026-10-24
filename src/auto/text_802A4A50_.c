@@ -300,70 +300,72 @@ extern void fn_802A6470(void *, f32 *, f32 *);
 extern void fn_802A6838(void *);
 extern void fn_802A6408(void *);
 extern void fn_802A6790(void *);
+#pragma scheduling invalid_target
 void fn_802A5CA4(void *arg0) {
-    struct Work {
-        volatile f32 input[3];
-        f32 cross[3];
-        f32 transformed[3];
-        s32 pad;
-        s32 matrix[12];
-    } w;
-    f32 *m = (f32 *)w.matrix;
-    f32 x = lbl_80564858;
-    f32 y = lbl_80564874;
-    f32 z = lbl_80564858;
-    s32 *source = (s32 *)fn_801E8718(*(s32 *)((u8 *)arg0 + 0x1C));
-
-    w.matrix[0] = source[0];  w.matrix[1] = source[1];
-    w.matrix[2] = source[2];  w.matrix[3] = source[3];
-    w.matrix[4] = source[4];  w.matrix[5] = source[5];
-    w.matrix[6] = source[6];  w.matrix[7] = source[7];
-    w.matrix[8] = source[8];  w.matrix[9] = source[9];
-    w.matrix[10] = source[10]; w.matrix[11] = source[11];
-    fn_802A62CC(arg0, m[9]);
-
-    w.input[0] = x;
-    w.input[1] = y;
-    w.input[2] = z;
-    if ((f32 *)((u8 *)arg0 + 0x50) == (f32 *)&w.input[0]) {
-        *(f32 *)((u8 *)arg0 + 0x50) = x * m[0] + y * m[1] + z * m[2];
-        *(f32 *)((u8 *)arg0 + 0x54) = x * m[3] + y * m[4] + z * m[5];
-        *(f32 *)((u8 *)arg0 + 0x58) = x * m[6] + y * m[7] + z * m[8];
-    } else {
-        *(f32 *)((u8 *)arg0 + 0x50) = w.input[0] * m[0] + w.input[1] * m[1] + w.input[2] * m[2];
-        *(f32 *)((u8 *)arg0 + 0x54) = w.input[0] * m[3] + w.input[1] * m[4] + w.input[2] * m[5];
-        *(f32 *)((u8 *)arg0 + 0x58) = w.input[0] * m[6] + w.input[1] * m[7] + w.input[2] * m[8];
+    struct Obj { u8 pad0[0x1C]; s32 model; u8 pad20[0x0C]; f32 pos[3]; f32 axis[3]; f32 scaled[3]; f32 base[3]; };
+    struct Work { f32 input[3]; f32 cross[3]; f32 transformed[3]; s32 pad; s32 matrix[12]; } w;
+    register f32 *m = (f32 *)w.matrix;
+    struct Obj *obj = (struct Obj *)arg0;
+    s32 *source = (s32 *)fn_801E8718(obj->model);
+    s32 a, b;
+    b=source[0]; a=source[1]; w.matrix[0]=b; w.matrix[1]=a;
+    a=source[2]; b=source[3]; w.matrix[2]=a; w.matrix[3]=b;
+    a=source[4]; b=source[5]; w.matrix[4]=a; w.matrix[5]=b;
+    a=source[6]; b=source[7]; w.matrix[6]=a; w.matrix[7]=b;
+    a=source[8]; w.matrix[8]=a;
+    a=source[9]; b=source[10]; w.matrix[9]=a; w.matrix[10]=b;
+    a=source[11]; w.matrix[11]=a;
+    fn_802A62CC(obj, w.matrix[9]);
+    {
+        f32 y=lbl_80564874, x=lbl_80564858, z=x;
+        f32 xy3,xx0,xx1,yy4,xx2,yy5,out0,out1,out2;
+        w.input[0]=x; w.input[1]=y; w.input[2]=z;
+        if (obj->base==(f32 *)&w.input[0]) {
+            xy3=y*m[1]; xx0=x*m[0];
+            xx1=x*m[3]; yy4=y*m[4];
+            xx2=x*m[6]; yy5=y*m[7];
+            out0=(xx0+xy3)+z*m[2];
+            out1=(xx1+yy4)+z*m[5];
+            out2=(xx2+yy5)+z*m[8];
+            obj->base[0]=out0; obj->base[1]=out1; obj->base[2]=out2;
+        } else {
+            obj->base[0]=w.input[0]*m[0]+w.input[1]*m[1]+w.input[2]*m[2];
+            obj->base[1]=w.input[0]*m[3]+w.input[1]*m[4]+w.input[2]*m[5];
+            obj->base[2]=w.input[0]*m[6]+w.input[1]*m[7]+w.input[2]*m[8];
+        }
     }
-    *(f32 *)((u8 *)arg0 + 0x44) = *(f32 *)((u8 *)arg0 + 0x50) * lbl_80564844;
-    *(f32 *)((u8 *)arg0 + 0x48) = *(f32 *)((u8 *)arg0 + 0x54) * lbl_80564844;
-    *(f32 *)((u8 *)arg0 + 0x4C) = *(f32 *)((u8 *)arg0 + 0x58) * lbl_80564844;
-
-    if (fn_801E8758(*(s32 *)((u8 *)arg0 + 0x1C)) == 0) {
-        f32 dx = *(f32 *)((u8 *)arg0 + 0x2C) - m[9];
-        f32 dy = *(f32 *)((u8 *)arg0 + 0x30) - m[10];
-        f32 dz = *(f32 *)((u8 *)arg0 + 0x34) - m[11];
-        w.transformed[0] = dx * m[0] + dy * m[1] + dz * m[2];
-        w.transformed[1] = dx * m[3] + dy * m[4] + dz * m[5];
-        w.transformed[2] = dx * m[6] + dy * m[7] + dz * m[8];
-        *(f32 *)((u8 *)arg0 + 0x44) += w.transformed[0] * lbl_8056488C;
-        *(f32 *)((u8 *)arg0 + 0x48) += w.transformed[1] * lbl_8056488C;
-        *(f32 *)((u8 *)arg0 + 0x4C) += w.transformed[2] * lbl_8056488C;
-        PSVECCrossProduct((f32 *)&w.matrix[6], (f32 *)((u8 *)arg0 + 0x38), w.cross);
-        PSVECDotProduct((f32 *)&w.matrix[3], w.cross);
-        fn_802A6470(arg0, (f32 *)w.matrix, w.transformed);
-        fn_802A6838(arg0);
-        fn_802A6408(arg0);
-    } else {
-        fn_802A6790(arg0);
+    {
+        f32 scale=lbl_80564844;
+        obj->scaled[0]=obj->base[0]*scale;
+        obj->scaled[1]=obj->base[1]*scale;
+        obj->scaled[2]=obj->base[2]*scale;
     }
-    *(f32 *)((u8 *)arg0 + 0x2C) = m[9];
-    *(f32 *)((u8 *)arg0 + 0x30) = m[10];
-    *(f32 *)((u8 *)arg0 + 0x34) = m[11];
-    *(f32 *)((u8 *)arg0 + 0x38) = m[6];
-    *(f32 *)((u8 *)arg0 + 0x3C) = m[7];
-    *(f32 *)((u8 *)arg0 + 0x40) = m[8];
+    if (fn_801E8758(obj->model)==0) {
+        w.transformed[0]=obj->pos[0]-m[9];
+        w.transformed[1]=obj->pos[1]-m[10];
+        w.transformed[2]=obj->pos[2]-m[11];
+        {
+            f32 x=w.transformed[0], y=w.transformed[1], z=w.transformed[2];
+            f32 out0=x*m[0]+y*m[1]+z*m[2];
+            f32 out1=x*m[3]+y*m[4]+z*m[5];
+            f32 out2=x*m[6]+y*m[7]+z*m[8];
+            w.transformed[0]=out0; w.transformed[1]=out1; w.transformed[2]=out2;
+        }
+        {
+            f32 posScale=lbl_8056488C;
+            obj->scaled[0]+=w.transformed[0]*posScale;
+            obj->scaled[1]+=w.transformed[1]*posScale;
+            obj->scaled[2]+=w.transformed[2]*posScale;
+        }
+        PSVECCrossProduct((f32 *)&w.matrix[6],obj->axis,w.cross);
+        PSVECDotProduct((f32 *)&w.matrix[3],w.cross);
+        fn_802A6470(obj,m,w.transformed);
+        fn_802A6838(obj); fn_802A6408(obj);
+    } else fn_802A6790(obj);
+    obj->pos[0]=m[9]; obj->pos[1]=m[10]; obj->pos[2]=m[11];
+    obj->axis[0]=m[6]; obj->axis[1]=m[7]; obj->axis[2]=m[8];
 }
-
+#pragma scheduling on
 f32 fn_80129DC4(s32, f32, f32);
 extern f32 lbl_80564894, lbl_80564898;
 f32 fn_802A4AD4(void);
@@ -434,7 +436,6 @@ extern void fn_801E5174(void *, float, float, float);
 extern void fn_801E5348(void);
 extern void fn_802C8D74(void);
 #pragma push
-#pragma scheduling off
 #pragma processor 750
 void fn_802A6D68(void *arg0) {
     float saved;
