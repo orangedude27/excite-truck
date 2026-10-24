@@ -13,3 +13,4 @@ typedef s32 (*M2CS32_1)(void *, const char *);
 typedef f32 (*M2CF32_2)(void *, const char *, f32);
 typedef f32 (*M2CF32_1)(void *, const char *);
 typedef f32 (*M2CF32_0)(void *);
+typedef void *(*M2CPtr2)(void *, const char *, s32);
