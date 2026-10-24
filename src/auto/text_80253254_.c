@@ -14,7 +14,7 @@ extern char lbl_80344BC0[];
 extern void fn_80255200(void *, s32);
 void fn_80253254(void) {}
 
-#pragma dont_inline fn_80253258
+#pragma dont_inline on
 void fn_80253258(void) {
     extern float lbl_80563A04, lbl_80563A08, lbl_80563A0C, lbl_80563A10;
     extern void PSVECNormalize(float *, float *);
@@ -887,7 +887,6 @@ void fn_802566A4(void *arg0) {
     } while (i < 4);
 }
 
-#pragma dont_inline fn_80253258
 #pragma scheduling invalid_target
 void fn_80256DD8(void *arg0) {
 
