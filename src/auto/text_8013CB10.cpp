@@ -96,7 +96,13 @@ class TObjC_C {
 public:
     virtual void d0();
     virtual void d1();
-    virtual s32 vC(s32); // 0xC
+    virtual s32 vC(s32); // 0x10
+};
+
+class TObjCPtr {
+public:
+    virtual void d0();
+    virtual TObj10 *vC(s32); // 0xC
 };
 
 class TObj20b {
