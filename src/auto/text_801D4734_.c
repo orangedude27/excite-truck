@@ -566,6 +566,8 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
  return 1;
 }
 
+#pragma push
+#pragma scheduling invalid_target
 #pragma cplusplus on
 extern "C" void fn_801D71A8(void *arg0) {
     struct ThreadObject {
@@ -577,6 +579,7 @@ extern "C" void fn_801D71A8(void *arg0) {
     }
     *(ThreadObject **)((char *)arg0 + 0x38) = 0;
 }
+#pragma pop
 #pragma cplusplus reset
 
 #pragma cplusplus reset
