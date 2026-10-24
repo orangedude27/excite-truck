@@ -2,6 +2,8 @@
 
 #include <types.h>
 
+extern int fn_80191100(void *);
+
 extern float lbl_8056208C;
 extern float lbl_80562090;
 extern float lbl_805620AC;
