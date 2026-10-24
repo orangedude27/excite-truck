@@ -315,6 +315,153 @@ extern "C" f32 fn_800E310C(void *arg0) {
         (float)e * (*(float *)((char *)arg0 + 0x6C38) - *(float *)((char *)arg0 + 0x6C34)) / (float)f;
     return x * y * z;
 }
+
+extern "C" int DVDGetDriveStatus(void);
+extern "C" void fn_80031C8C(unsigned short);
+extern "C" void fn_80031C94(unsigned short);
+extern "C" void fn_80031C9C(unsigned short);
+extern float lbl_80560F20, lbl_80560F24, lbl_80560F30;
+extern "C" void fn_800E3228(void *arg0) {
+    int status = DVDGetDriveStatus();
+    if (status == 0) {
+        if (*((unsigned char *)arg0 + 0x6C33) != 0) {
+            unsigned char *node, *current, *sentinel;
+            unsigned int interruptState;
+            *((unsigned char *)arg0 + 0x6C33) = 0;
+            interruptState = OSDisableInterrupts();
+            node = *(unsigned char **)((unsigned char *)arg0 + 0x18);
+            sentinel = (unsigned char *)arg0 + 0x18;
+            do {
+                current = node;
+                node = *(unsigned char **)current;
+                if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+                if (*(unsigned char *)(current - 0x8C) != 0) {
+                    if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+                    *(unsigned char *)(current - 0x85) |= 2;
+                }
+            } while (node != sentinel);
+            OSRestoreInterrupts(interruptState);
+        }
+    } else if (status != 1 && *((unsigned char *)arg0 + 0x6C33) == 0) {
+        unsigned char *node, *current, *sentinel;
+        unsigned int interruptState;
+        *((unsigned char *)arg0 + 0x6C33) = 1;
+        interruptState = OSDisableInterrupts();
+        node = *(unsigned char **)((unsigned char *)arg0 + 0x18);
+        sentinel = (unsigned char *)arg0 + 0x18;
+        do {
+            current = node;
+            node = *(unsigned char **)current;
+            if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+            if (*(unsigned char *)(current - 0x8C) != 0) {
+                if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+                *(unsigned char *)(current - 0x85) |= 2;
+            }
+        } while (node != sentinel);
+        OSRestoreInterrupts(interruptState);
+    }
+    {
+        float scale = lbl_80560F30;
+        float lower = lbl_80560F20;
+        float upper = lbl_80560F24;
+        unsigned char *entry = (unsigned char *)arg0;
+        int i;
+        for (i = 0; i < 3; i++, entry += 0x10) {
+            int changed = 0;
+            int limit, value;
+            volatile int *v = (volatile int *)(entry + 0x6CA8);
+            value = *v; limit = *(volatile int *)(entry + 0x6CA4);
+            if (value < limit) {
+                value = *v; limit = *(volatile int *)(entry + 0x6CA4);
+                if (value < limit) *v = value + 1;
+                changed = 1;
+            }
+            v = (volatile int *)(entry + 0x6C78);
+            value = *v; limit = *(volatile int *)(entry + 0x6C74);
+            if (value < limit) {
+                value = *v; limit = *(volatile int *)(entry + 0x6C74);
+                if (value < limit) *v = value + 1;
+                value = *v; limit = *(volatile int *)(entry + 0x6C74);
+                if (value >= limit) fn_800E4364(arg0, i);
+                changed = 1;
+            }
+            if (changed != 0) {
+                float first, second, product;
+                int total, count;
+                count = *(volatile int *)(entry + 0x6CA8);
+                total = *(volatile int *)(entry + 0x6CA4);
+                product = lbl_80560F24;
+                if (count >= total) first = *(float *)(entry + 0x6CA0);
+                else {
+                    float start = *(float *)(entry + 0x6C9C);
+                    first = start + ((float)count * (*(float *)(entry + 0x6CA0) - start)) / (float)total;
+                }
+                if (first > upper) first = upper;
+                else if (first < lower) first = lower;
+                count = *(volatile int *)(entry + 0x6C78);
+                total = *(volatile int *)(entry + 0x6C74);
+                if (count >= total) second = *(float *)(entry + 0x6C70);
+                else {
+                    float start = *(float *)(entry + 0x6C6C);
+                    second = start + ((float)count * (*(float *)(entry + 0x6C70) - start)) / (float)total;
+                }
+                if (second > upper) second = upper;
+                else if (second < lower) second = lower;
+                product = product * first;
+                product = product * second;
+                value = (int)(scale * product);
+                switch (i) {
+                case 0: fn_80031C8C((unsigned short)value); break;
+                case 1: fn_80031C94((unsigned short)value); break;
+                case 2: fn_80031C9C((unsigned short)value); break;
+                }
+            }
+        }
+    }
+    {
+        int changed = 0;
+        volatile int *v;
+        int value;
+        v = (volatile int *)((unsigned char *)arg0 + 0x6C50);
+        value = *v;
+        if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C4C)) {
+            value = *v;
+            if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C4C)) *v = value + 1;
+            changed = 1;
+        }
+        v = (volatile int *)((unsigned char *)arg0 + 0x6C60);
+        value = *v;
+        if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C5C)) {
+            value = *v;
+            if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C5C)) *v = value + 1;
+            changed = 1;
+        }
+        v = (volatile int *)((unsigned char *)arg0 + 0x6C40);
+        value = *v;
+        if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C3C)) {
+            value = *v;
+            if (value < *(volatile int *)((unsigned char *)arg0 + 0x6C3C)) *v = value + 1;
+            changed = 1;
+        }
+        if (changed != 0) {
+            unsigned char *base = (unsigned char *)arg0;
+            unsigned char *node, *current;
+            unsigned int interruptState = OSDisableInterrupts();
+            node = *(unsigned char **)(base += 0x18);
+            do {
+                current = node;
+                node = *(unsigned char **)current;
+                if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+                if (*(unsigned char *)(current - 0x8C) != 0) {
+                    if (current == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+                    *(unsigned char *)(current - 0x85) |= 0x10;
+                }
+            } while (node != base);
+            OSRestoreInterrupts(interruptState);
+        }
+    }
+}
+
 extern "C" void *GetZeroBufferAddress__Q46nw4hbm3snd6detail9AxManagerFv(void *self) {
     if (*(void **)((char *)self + 4) == 0) {
         Panic__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x172, lbl_80321FAC);
@@ -372,6 +519,101 @@ extern "C" void SetOutputMode__Q46nw4hbm3snd6detail9AxManagerFQ36nw4hbm3snd10Out
 
 extern "C" int fn_800E394C(int *arg0) { return *arg0; }
 
+extern "C" int Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(void *, int, int, int, void (*)(void *, int, void *), void *);
+extern "C" void Warning__Q26nw4hbm2dbFPCciPCce(const char *, int, const char *, ...);
+extern const char lbl_80321FC8[];
+extern const char lbl_80322154[];
+extern const char lbl_80322130[];
+#pragma push
+#pragma use_lmw_stmw off
+extern "C" void *fn_800E3954(char *self, int count, int columns, int priority, void (*callback)(void *, int, void *), void *callbackArg) {
+
+    int stolen;
+    void *oldVoice;
+    void *node;
+    void *voice;
+    unsigned int interruptState = OSDisableInterrupts();
+
+    if (*(int *)((char *)self + 0x20) != 0) goto acquire_setup;
+    stolen = 0;
+    if (*(int *)((char *)self + 0x20) != 0) goto stolen_result;
+    if (*(int *)((char *)self + 0x14) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322124, 0x1F1, lbl_80322100);
+    node = *(void **)((char *)self + 0x18);
+    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+    oldVoice = (char *)node - 0x1A8;
+    if (oldVoice == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220F4, 0x193, lbl_803220D0);
+    if (*(int *)((char *)oldVoice + 0x124) <= priority) goto steal_voice;
+    stolen = 0;
+    goto stolen_result;
+steal_voice:
+    stolen = *(int *)((char *)oldVoice + 0x104) * *(int *)((char *)oldVoice + 0x108);
+    Stop__Q46nw4hbm3snd6detail7AxVoiceFv(oldVoice);
+    Free__Q46nw4hbm3snd6detail7AxVoiceFv(oldVoice);
+    {
+        void (*done)(void *, int, void *) = *(void (**)(void *, int, void *))((char *)oldVoice + 0x10C);
+        if (done != 0) done(oldVoice, 2, *(void **)((char *)oldVoice + 0x110));
+    }
+stolen_result:
+    if (stolen == 0) {
+        OSRestoreInterrupts(interruptState);
+        return 0;
+    }
+acquire_setup:
+    if (*(int *)((char *)self + 0x20) == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322124, 0x1F1, lbl_80322100);
+    node = *(void **)((char *)self + 0x24);
+    if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+    voice = (char *)node - 0x1A8;
+    if (voice == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220F4, 0x193, lbl_803220D0);
+    if (!Acquire__Q46nw4hbm3snd6detail7AxVoiceFiiiPFPQ46nw4hbm3snd6detail7AxVoiceQ56nw4hbm3snd6detail7AxVoice14CallbackStatusPv_vPv(voice, count, columns, priority, callback, callbackArg)) {
+        Warning__Q26nw4hbm2dbFPCciPCce(lbl_80321F80, 0x1F1, lbl_80321FC8);
+        OSRestoreInterrupts(interruptState);
+        return 0;
+    }
+    *(unsigned int *)((char *)voice + 0x124) = (unsigned char)priority;
+    unsigned int secondState = OSDisableInterrupts();
+    if (voice == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+    void *link = (char *)voice + 0x1A8;
+    Erase__Q46nw4hbm2ut6detail12LinkListImplFPQ36nw4hbm2ut12LinkListNode((char *)self + 0x20, link);
+    void *sentinel = (char *)self + 0x18;
+    node = *(void **)((char *)self + 0x18);
+    while (node != sentinel) {
+        if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+        if (*(int *)((char *)node - 0x84) > *(int *)((char *)voice + 0x124)) break;
+        node = *(void **)node;
+    }
+    if (voice == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_80322154, 0x233, lbl_80322130);
+    void *iterator = node;
+    Insert__Q46nw4hbm2ut6detail12LinkListImplFQ56nw4hbm2ut6detail12LinkListImpl8IteratorPQ36nw4hbm2ut12LinkListNode((char *)self + 0x14, &iterator, link);
+    OSRestoreInterrupts(secondState);
+    if (*((unsigned char *)self + 0x6C31) != 0) {
+        node = *(void **)(self += 0x18);
+        while (node != (void *)self) {
+            if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+            if (*(int *)((char *)node - 0x84) != 0xFF) {
+                if (node == 0) Panic__Q26nw4hbm2dbFPCciPCce(lbl_803220C4, 0x23D, lbl_803220A0);
+                void *entryVoice = (char *)node - 0x1A8;
+                int row = 0;
+                char *rowData = (char *)entryVoice;
+                while (row < *(int *)((char *)entryVoice + 0x104)) {
+                    char *buffer = rowData;
+                    int column = 0;
+                    while (column < *(int *)((char *)entryVoice + 0x108)) {
+                        void *input = *(void **)(buffer + 0xC);
+                        if (input != 0) TRKProcessInput(input, 0x10);
+                        buffer += 4;
+                        column++;
+                    }
+                    rowData += 0x10;
+                    row++;
+                }
+            }
+            node = *(void **)node;
+        }
+    }
+    OSRestoreInterrupts(interruptState);
+    return voice;
+}
+#pragma pop
 extern "C" void fn_800E402C(void *arg0) {
     OSDisableInterrupts();
     *(u8 *)((char *)arg0 + 0x6C31) = 0;
@@ -2191,3 +2433,5 @@ extern "C" void VoiceCallback__Q46nw4hbm3snd6detail7AxVoiceFPv(void *arg0) {
     *(unsigned char *)(voice + 0x11C) = zero;
     OSRestoreInterrupts(level);
 }
+typedef int M2C_UNK;
+#define M2C_FIELD(expr, type_ptr, offset) (*(type_ptr)((char *)(expr) + (offset)))
