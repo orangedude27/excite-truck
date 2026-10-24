@@ -1949,8 +1949,8 @@ s32 fn_8011C400(u32 arg0, u8 *arg1, u8 *arg2, u8 *arg3, s32 arg4) {
 #pragma scheduling on
 void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     register const u8 *var_r31;
-    register u32 var_r30;
-    register u32 var_r29;
+    u32 var_r30;
+    u32 var_r29;
     s32 temp_r0;
     s32 temp_r5_14;
     s32 temp_r5_15;
@@ -1975,8 +1975,8 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     s32 var_r3_9;
     s32 var_r8;
     s8 *var_r3;
-    s8 *var_r3_15;
-    s8 *var_r3_16;
+    u8 *var_r3_15;
+    u8 *var_r3_16;
     s32 temp_r4_2;
     s32 temp_r4_3;
     s8 var_r0_6;
@@ -2047,11 +2047,11 @@ void fn_8011C4A0(s32 arg0_raw, s32 arg1_raw, s32 arg2_raw, s32 arg3_raw) {
     u32 var_r7;
     u32 var_r8_2;
 
-    s8 buffers[0x20];
+    u8 buffers[0x20];
     void *arg0 = (void *)arg0_raw;
     s32 *arg1 = (s32 *)arg1_raw;
     s32 *arg2 = (s32 *)arg2_raw;
-    s8 *arg3 = (s8 *)arg3_raw;
+    u8 *arg3 = (u8 *)arg3_raw;
 
     var_r29 = ((BitReader8011 *)arg0)->count;
     var_r31 = (const u8 *)((BitReader8011 *)arg0)->next;
@@ -4962,6 +4962,92 @@ void fn_80125CC8(void *arg0, s32 arg1, void *arg2, s32 arg3, void *arg4, s32 arg
         M2C_FIELD(var_r3, s8 *, 4) = (s8) (temp_r5_3 + ((s32) (temp_r31_4 + temp_r0_10 + 0x7F) >> 8));
         var_r3 += arg1;
     }
+}
+
+extern void fn_80126A10(s32 *, s32, s32);
+void fn_80126EF0(u8 *arg0, s32 arg1, s32 arg2, s32 arg3, u8 *arg4, s32 arg5) {
+    u32 temp[16] = {0};
+    u8 *dst = arg0;
+    u8 *src = arg4;
+    fn_80126A10((s32 *)temp, arg2, arg3);
+    dst[0] = ((u8 *)temp)[0] + src[0];
+    dst[1] = ((u8 *)temp)[1] + src[1];
+    dst[2] = ((u8 *)temp)[4] + src[2];
+    dst[3] = ((u8 *)temp)[5] + src[3];
+    dst[4] = ((u8 *)temp)[8] + src[4];
+    dst[5] = ((u8 *)temp)[9] + src[5];
+    dst[6] = ((u8 *)temp)[12] + src[6];
+    dst[7] = ((u8 *)temp)[13] + src[7];
+    dst += arg1;
+    src += arg5;
+    dst[0] = ((u8 *)temp)[2] + src[0];
+    dst[1] = ((u8 *)temp)[3] + src[1];
+    dst[2] = ((u8 *)temp)[6] + src[2];
+    dst[3] = ((u8 *)temp)[7] + src[3];
+    dst[4] = ((u8 *)temp)[10] + src[4];
+    dst[5] = ((u8 *)temp)[11] + src[5];
+    dst[6] = ((u8 *)temp)[14] + src[6];
+    dst[7] = ((u8 *)temp)[15] + src[7];
+    dst += arg1;
+    src += arg5;
+    dst[0] = ((u8 *)temp)[24] + src[0];
+    dst[1] = ((u8 *)temp)[25] + src[1];
+    dst[2] = ((u8 *)temp)[44] + src[2];
+    dst[3] = ((u8 *)temp)[45] + src[3];
+    dst[4] = ((u8 *)temp)[16] + src[4];
+    dst[5] = ((u8 *)temp)[17] + src[5];
+    dst[6] = ((u8 *)temp)[20] + src[6];
+    dst[7] = ((u8 *)temp)[21] + src[7];
+    dst += arg1;
+    src += arg5;
+    dst[0] = ((u8 *)temp)[26] + src[0];
+    dst[1] = ((u8 *)temp)[27] + src[1];
+    dst[2] = ((u8 *)temp)[46] + src[2];
+    dst[3] = ((u8 *)temp)[47] + src[3];
+    dst[4] = ((u8 *)temp)[18] + src[4];
+    dst[5] = ((u8 *)temp)[19] + src[5];
+    dst[6] = ((u8 *)temp)[22] + src[6];
+    dst[7] = ((u8 *)temp)[23] + src[7];
+    dst += arg1;
+    src += arg5;
+    dst[0] = ((u8 *)temp)[28] + src[0];
+    dst[1] = ((u8 *)temp)[29] + src[1];
+    dst[2] = ((u8 *)temp)[32] + src[2];
+    dst[3] = ((u8 *)temp)[33] + src[3];
+    dst[4] = ((u8 *)temp)[48] + src[4];
+    dst[5] = ((u8 *)temp)[49] + src[5];
+    dst[6] = ((u8 *)temp)[52] + src[6];
+    dst[7] = ((u8 *)temp)[53] + src[7];
+    dst += arg1;
+    src += arg5;
+    dst[0] = ((u8 *)temp)[30] + src[0];
+    dst[1] = ((u8 *)temp)[31] + src[1];
+    dst[2] = ((u8 *)temp)[34] + src[2];
+    dst[3] = ((u8 *)temp)[35] + src[3];
+    dst[4] = ((u8 *)temp)[50] + src[4];
+    dst[5] = ((u8 *)temp)[51] + src[5];
+    dst[6] = ((u8 *)temp)[54] + src[6];
+    dst[7] = ((u8 *)temp)[55] + src[7];
+    dst += arg1;
+    src += arg5;
+    dst[0] = ((u8 *)temp)[36] + src[0];
+    dst[1] = ((u8 *)temp)[37] + src[1];
+    dst[2] = ((u8 *)temp)[40] + src[2];
+    dst[3] = ((u8 *)temp)[41] + src[3];
+    dst[4] = ((u8 *)temp)[56] + src[4];
+    dst[5] = ((u8 *)temp)[57] + src[5];
+    dst[6] = ((u8 *)temp)[60] + src[6];
+    dst[7] = ((u8 *)temp)[61] + src[7];
+    dst += arg1;
+    src += arg5;
+    dst[0] = ((u8 *)temp)[38] + src[0];
+    dst[1] = ((u8 *)temp)[39] + src[1];
+    dst[2] = ((u8 *)temp)[42] + src[2];
+    dst[3] = ((u8 *)temp)[43] + src[3];
+    dst[4] = ((u8 *)temp)[58] + src[4];
+    dst[5] = ((u8 *)temp)[59] + src[5];
+    dst[6] = ((u8 *)temp)[62] + src[6];
+    dst[7] = ((u8 *)temp)[63] + src[7];
 }
 
 extern char lbl_8055DF08;
