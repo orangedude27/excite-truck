@@ -16,14 +16,15 @@ void fn_802E7578(void) {
 }
 
 #pragma cplusplus on
-struct Dummy_8055FFF0 {
-    virtual ~Dummy_8055FFF0();
-    virtual void f4(void);
-    virtual void f8(void);
-    virtual void f12(s32);
-          virtual void f16(s32, s32, s32);
+  struct Dummy_8055FFF0 {
+      virtual ~Dummy_8055FFF0();
+      virtual void f4(void);
+      virtual void f8(void);
+      virtual void f12(s32);
+      virtual void f16(s32, s32, s32);
       virtual void f20(s32);
-};
+      virtual void f24(s32);
+  };
 extern "C" void fn_802E759C(void) {
     if (lbl_8055FFF0) {
         delete (Dummy*)lbl_8055FFF0;
@@ -35,10 +36,11 @@ void fn_802E75E4(s32 arg0) {
     ((void (*)(void*, s32))(*(void***)lbl_8055FFF0)[3])(lbl_8055FFF0, arg0);
 }
 
-void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
-    ((void (*)(void*, s32, s32, s32))(*(void***)lbl_8055FFF0)[5])(lbl_8055FFF0, arg0, arg1, arg2);
+#pragma cplusplus on
+extern "C" void fn_802E765C(s32 arg0, s32 arg1, s32 arg2) {
+    ((Dummy_8055FFF0*)lbl_8055FFF0)->f16(arg0, arg1, arg2);
 }
-
+#pragma cplusplus reset
 extern s32 fn_80128668(void);
 extern s32 OSGetConsoleType(void);
 extern s32 fn_802E30C8(const char*, ...);
