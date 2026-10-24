@@ -274,17 +274,25 @@ extern "C" void fn_802A1B20(void* arg0, s32 count) {
 }
 
 extern "C" s32 fn_802A1C30(void* arg0) {
-    void* saved = arg0;
+    struct TPlaneSubCall {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+        virtual void v6(void*);
+        virtual void v7(void*);
+    };
     s32 index = *(s32*)((char*)arg0 + 0x2C);
     if (index >= 0 && index < 8) {
-        void** table = lbl_804BCF88;
-        ebi::title::TPlaneSub* obj = (ebi::title::TPlaneSub*)*(table + index);
+        TPlaneSubCall* obj = (TPlaneSubCall*)lbl_804BCF88[index];
         if (obj != 0) {
-            if (*(f32*)((char*)arg0 + 0x24) > lbl_80564728) obj->v6();
-            else obj->v7();
+            if (*(f32*)((char*)arg0 + 0x24) > lbl_80564728) obj->v6(arg0);
+            else obj->v7(arg0);
         }
     }
-    return (s32)(saved != 0) * 0 + 0x30;
+    return 0x30;
 }
 
 extern "C" void fn_802A1CBC(void) {}
