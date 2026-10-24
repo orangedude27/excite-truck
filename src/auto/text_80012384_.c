@@ -10,7 +10,7 @@ extern char lbl_8055D4EC;
 extern char *strncpy(char *, const char *, size_t);
 extern void *memset(void *, int, size_t);
 extern int fn_802E2C20(void);
-void fn_8001255C(const char *, float);
+  int fn_8001255C(const char *, float);
 extern float lbl_80560348;
 extern int lbl_8055FB9C;
 extern int lbl_8055FBA0;
@@ -19,16 +19,18 @@ extern void fn_802C92D8(void);
 extern void fn_802C92DC(int, int, int, int, int);
 extern void fn_80235380(void);
 extern void fn_80128668(void *);
+#pragma scheduling invalid_target
 void *fn_80012384(void *arg0, int arg1) {
     if (arg0 != 0) {
-        if (!(*(int *)((char *)arg0 + 0x50) == 0)) fn_80235380();
+        if (*(volatile int *)((char *)arg0 + 0x50)) {
+            fn_80235380();
+        }
         *(int *)((char *)arg0 + 0x50) = 0;
         if (arg1 > 0) fn_80128668(arg0);
     }
     return arg0;
 }
-
-#pragma dont_inline on
+#pragma scheduling on
 void fn_800123EC(float arg0) {
     float f;
     int value;
