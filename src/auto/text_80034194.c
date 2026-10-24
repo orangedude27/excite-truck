@@ -3,6 +3,13 @@
 
 #include <types.h>
 #include <revolution/OS/OSContext.h>
+extern s32 lbl_8055D810;
+extern void *lbl_8055D814;
+extern void *lbl_8055D81C;
+extern void *lbl_8055D820;
+extern void *lbl_8055D824;
+extern void __DSP_exec_task(void *, void *);
+extern void __DSP_remove_task(void *);
 #include <ctype.h>
 
 extern u8 *FstStart_8055D840;
