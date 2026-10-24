@@ -242,6 +242,7 @@ void fn_80014820(void *arg0) {
  if (lbl_80560368>lbl_805603AC) {} else { lbl_80560368=lbl_805603AC; }
  *(f32 *)((u8 *)arg0+0x10)=*(f32 *)((u8 *)arg0+0x10)+(lbl_80560368*(*(f32 *)((u8 *)p+0x4C)-*(f32 *)((u8 *)arg0+0x10)));
 }
+#pragma dont_inline off
 
 void fn_80014A98(void *arg0) {
  void *p=*(void **)((u8 *)lbl_8055D350+0x30);
