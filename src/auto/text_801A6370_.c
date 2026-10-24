@@ -133,7 +133,9 @@ void fn_801A69F4(void *arg0, float *arg1) {
 }
 
 extern void fn_801E9DC4(void *);
-void fn_801A6C14(void *arg0) {
+#pragma scheduling on
+#pragma cplusplus on
+extern "C" void fn_801A6C14(void *arg0) {
     struct { float prefix[3]; float matrix[9]; float vec[3]; float zero[3]; int count; short tag; } data;
     float *matrix;
     unsigned char temp_b2, temp_b1;
@@ -228,7 +230,7 @@ void fn_801A6C14(void *arg0) {
     data.zero[2] = zero;
     data.count = 0;
     fn_801E9DC4(&data.tag);
-    M2C_FIELD(M2C_FIELD(arg0, void **, 0), int (**)(void *, float *), 0x54)(arg0, matrix);
+    ((Fn801A6C14Dispatch *)arg0)->d21(matrix);
     temp_r4_3 = M2C_FIELD(arg0, void **, 0x2700);
     M2C_FIELD(temp_r4_3, int *, 0x9A) = (int) M2C_FIELD(temp_r4_3, int *, 0);
     M2C_FIELD(temp_r4_3, int *, 0x9E) = (int) M2C_FIELD(temp_r4_3, int *, 4);
@@ -387,6 +389,7 @@ void fn_801A6C14(void *arg0) {
     M2C_FIELD(arg0, float *, 0x270C) = zero;
     M2C_FIELD(arg0, float *, 0x2710) = zero;
 }
+#pragma cplusplus reset
 #pragma scheduling reset
 float fn_801A70EC(int arg0, void* arg1, void* arg2, int arg3) {
     float den=fn_801A63C4(*(int*)((char*)arg2+4),*(int*)((char*)arg1+4));
@@ -427,25 +430,21 @@ void fn_801A7444(void *arg0) {
 }
 
 #pragma scheduling reset
-void fn_801A7530(void* arg0, void* arg1) {
+void fn_801A7530(void *arg0, void *arg1) {
+    typedef struct { int first; int second; } Pair;
     float zero;
-    float* v;
-    int second;
-    int third;
-    if (*(int*)((char*)arg0 + 0x2610) == 0 || *(unsigned char*)((char*)arg0 + 0x2741) != 0) {
+    float *v;
+    if (*(int *)((char *)arg0 + 0x2610) == 0 || *(unsigned char *)((char *)arg0 + 0x2741) != 0) {
         zero = lbl_8056242C;
-        *(float*)((char*)arg1 + 4) = zero;
-        *(float*)((char*)arg1 + 8) = zero;
-        *(float*)((char*)arg1 + 0xc) = zero;
-        *(float*)arg1 = zero;
+        *(float *)((char *)arg1 + 4) = zero;
+        *(float *)((char *)arg1 + 8) = zero;
+        *(float *)((char *)arg1 + 0xC) = zero;
+        *(float *)arg1 = zero;
     } else {
         v = fn_80265D98();
-        *(float*)arg1 = *v;
-        second = *(int*)((char*)v + 8);
-        third = *(int*)((char*)v + 4);
-        *(int*)((char*)arg1 + 4) = third;
-        *(int*)((char*)arg1 + 8) = second;
-        *(int*)((char*)arg1 + 0xc) = *(int*)((char*)v + 0xc);
+        *(float *)arg1 = *v;
+        *(Pair *)((char *)arg1 + 4) = *(Pair *)((char *)v + 4);
+        *(int *)((char *)arg1 + 0xC) = *(int *)((char *)v + 0xC);
     }
 }
 
