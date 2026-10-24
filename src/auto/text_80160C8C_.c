@@ -1087,13 +1087,12 @@ extern void *fn_801399FC(void);
 extern void PSVECNormalize(f32 *, f32 *);
 extern void PSVECCrossProduct(f32 *, f32 *, f32 *);
 extern int sscanf(const char *, const char *, ...);
-extern const char lbl_8055A108[];
-extern const char lbl_8055A10C[];
+extern char lbl_8055A108[];
+extern char lbl_8055A10C[];
 extern f32 lbl_80561864;
 extern s32 fn_802C6FC0(const char *, s32, s32);
-#pragma push
-#pragma small_data on
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_80163F7C(void *arg0) {
     u8 *self = (u8 *)arg0;
     register const char *name = (const char *)(lbl_8032F588 + 0x588);
@@ -1227,6 +1226,7 @@ extern "C" void fn_80163F7C(void *arg0) {
         }
     }
 }
+#pragma scheduling on
 #pragma cplusplus off
 int fn_801643C8(void *arg0) {
     int var_r30;
