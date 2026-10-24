@@ -656,6 +656,38 @@ void fn_80035A04(u32 arg0) {
     fn_8003B218(fn_80035E6C);
 }
 
+extern void __DVDPrintFatalMessage(void);
+extern s32 lbl_8055D858;
+void fn_80035B88(u32 arg0) {
+    u32 *task;
+    void (*callback)(s32, void *);
+
+    *(s32 *)((u8 *)executing_8055D8C8 + 0xC) = -1;
+    if (arg0 == 0x10) {
+        fn_8003A1A0(0x1234568, fn_80035C78);
+        return;
+    }
+    if (arg0 == 0x20) {
+        fn_8003A1A0(0x1234569, fn_80035C78);
+        return;
+    }
+
+    __DVDPrintFatalMessage();
+    task = (u32 *)executing_8055D8C8;
+    FatalErrorFlag_8055D854 = 1;
+    executing_8055D8C8 = (s32)DummyCommandBlock_80376AA0;
+    callback = *(void (**)(s32, void *))((u8 *)task + 0x28);
+    if (callback != 0)
+        callback(-1, task);
+    if (lbl_8055D858 != 0) {
+        callback = lbl_8055D8B8;
+        lbl_8055D858 = 0;
+        if (callback != 0)
+            callback(0, task);
+    }
+    fn_80038040();
+}
+
 void fn_80035C64(void) {
     fn_8003AF1C(0, 0, fn_80035B88);
 }
