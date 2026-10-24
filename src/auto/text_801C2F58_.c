@@ -1187,15 +1187,15 @@ void fn_801C821C(void) {
     lbl_8055E83C = 0;
 }
 #pragma push
-#pragma scheduling off
+#pragma scheduling on
 #pragma dont_inline on
 void fn_801C8298(void) {
-    char *dst = lbl_804384A8;
-    strcpy(dst, lbl_8055AA44);
+    strcpy(lbl_804384A8, lbl_8055AA44);
     strcpy(lbl_804385A8, lbl_8055AA44);
     lbl_8055E864 = 0;
     fn_801C7BA0();
 }
+#pragma scheduling off
 
 void fn_801C82E0(void) {
     extern char lbl_80336FC4[];
@@ -1229,7 +1229,7 @@ void fn_801C82E0(void) {
 void fn_801C83D0(void) {
     f32 value = (f32)atof(lbl_804380F0);
     lbl_8055A958 = value;
-    sprintf(lbl_80437FC0, lbl_80336FDC, value);
+    sprintf(lbl_80437FC0, lbl_80336FDC, (double)value);
     fn_801C957C(0);
 }
 
