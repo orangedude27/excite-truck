@@ -198,6 +198,7 @@ int fn_80176F9C(void) {
     return 1;
 }
 
+#pragma scheduling invalid_target
 void fn_80176FC4(void) {
     if (*(s32 *)(lbl_80430558 + 0xC) == 3) {
         fn_80176F28();
@@ -212,13 +213,13 @@ void fn_80176FC4(void) {
     }
     fn_801769EC();
 }
-
+#pragma scheduling on
 void fn_80177048(void) {
     if (*(s32 *)(lbl_80430558 + 0xC) == 3) {
         fn_80176F28();
         return;
     }
-    *(void **)(lbl_80430558 + 0x10) = (void *)fn_80176F28;
+    *(void **)((short)lbl_80430558 + 0x10) = (void *)fn_80176F28;
     *(s32 *)(lbl_80430558 + 0xC) = 2;
     *(s32 *)(lbl_80430558 + 4) = fn_802E2C20((void *)fn_80176F28);
     *(s32 *)lbl_80430558 = lbl_8055E3C4;
