@@ -42,7 +42,7 @@ extern void fn_800167FC(s32);
 extern void *fn_80012820(s32);
 extern void *fn_8025007C(s32);
 extern s32 fn_8024DAE0(s32,s32,s32,void*,s32);
-extern void fn_802E317C(void *);
+extern void fn_802E317C(void *, ...);
 extern s32 lbl_8055C400;
 #pragma push
 #pragma small_data off
@@ -717,8 +717,6 @@ extern "C" void fn_80261C68(s32 *arg0) {
     };
     s32 i;
     s32 j;
-    s32 count;
-    s32 max;
     s32 outer;
     s32 inner;
     void *object;
@@ -752,15 +750,19 @@ outerBody:
         *(void **)((u8 *)object + 0x24) = fn_8023512C(stringBase + 0x150);
         *(void **)((u8 *)object + 0x28) = fn_80232578(stringBase + 0x15C);
     }
-    count = *(s32 *)((u8 *)arg0 + 0x40);
-    *(s32 *)((u8 *)arg0 + 0x40) = count + 1;
-    *(void **)(*(u32 **)((u8 *)arg0 + 0x3C) + count) = object;
+    {
+        s32 index = *(s32 *)((u8 *)arg0 + 0x40);
+        *(s32 *)((u8 *)arg0 + 0x40) = index + 1;
+        *(void **)(*(u32 **)((u8 *)arg0 + 0x3C) + index) = object;
+    }
     inner = 0;
     goto innerCheck;
 innerBody:
     item = ((Dummy *)*(void **)(group + 0x54))->slot5(inner);
-    count = *(s32 *)((u8 *)arg0 + 8);
-    *(void **)((u8 *)arg0 + 0x60 + count * 4) = item;
+    {
+        s32 index = *(s32 *)((u8 *)arg0 + 8);
+        *(void **)((u8 *)arg0 + 0x60 + index * 4) = item;
+    }
     item = fn_801284F8(0x28, stringBase + 0x168);
     if (item != 0) {
         object = ((Dummy *)lbl_8055F3E4)->slot2(outer);
@@ -774,23 +776,29 @@ innerBody:
         *(void **)((u8 *)item + 0x20) = fn_8023512C(stringBase + 0x150);
         *(void **)((u8 *)item + 0x24) = fn_80232578(stringBase + 0x15C);
     }
-    count = *(s32 *)((u8 *)arg0 + 0x1C);
-    *(s32 *)((u8 *)arg0 + 0x1C) = count + 1;
-    *(void **)(*(u32 **)((u8 *)arg0 + 0x18) + count) = item;
+    {
+        s32 index = *(s32 *)((u8 *)arg0 + 0x1C);
+        *(s32 *)((u8 *)arg0 + 0x1C) = index + 1;
+        *(void **)(*(u32 **)((u8 *)arg0 + 0x18) + index) = item;
+    }
     inner++;
     *(s32 *)((u8 *)arg0 + 8) += 1;
 innerCheck:
-    count = ((Dummy *)*(void **)(group + 0x54))->slot4();
-    max = 6;
-    if (count < 6) max = count;
-    if (inner < max) goto innerBody;
+    {
+        s32 count = ((Dummy *)*(void **)(group + 0x54))->slot4();
+        s32 max = 6;
+        if (count < 6) max = count;
+        if (inner < max) goto innerBody;
+    }
     group += 4;
     outer++;
 outerCheck:
-    count = ((Dummy *)lbl_8055F3E4)->slot1();
-    max = 3;
-    if (count < 3) max = count;
-    if (outer < max) goto outerBody;
+    {
+        s32 count = ((Dummy *)lbl_8055F3E4)->slot1();
+        s32 max = 3;
+        if (count < 3) max = count;
+        if (outer < max) goto outerBody;
+    }
 
     object = fn_80207848(stringBase + 0x178, 0);
     *(void **)((u8 *)arg0 + 0x14) = object;
@@ -812,10 +820,10 @@ firstBody:
         ((Dummy *)object)->slot22();
         object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
         ((Dummy *)object)->slot25();
-    } else if (i == (*(u32 **)&lbl_8055F420)[0]) {
+    } else if (i == (s32)(*(u32 **)&lbl_8055F420)[0]) {
         object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
         ((Dummy *)object)->slot24();
-    } else if (i == (*(u32 **)&lbl_8055F420)[1] * 2 || i == (*(u32 **)&lbl_8055F420)[1] * 2 + 1) {
+    } else if (i == (s32)(*(u32 **)&lbl_8055F420)[1] * 2 || i == (s32)(*(u32 **)&lbl_8055F420)[1] * 2 + 1) {
         object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
         ((Dummy *)object)->slot23();
         object = *(void **)((u8 *)(*(u32 **)&lbl_8055F420)[6] + j);
