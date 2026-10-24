@@ -265,6 +265,41 @@ void fn_801D5A1C(int arg0) {
 }
 
 #pragma cplusplus on
+#pragma push
+#pragma scheduling invalid_target
+extern "C" void fn_801D6080(void *arg0) {
+    int *p = (int *)arg0;
+    int offset;
+    int count;
+    void *obj;
+    struct TObjD1Call {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+    };
+    if (p[2] == 2 && lbl_8055E3C4 - p[0x1B] >= p[0x1A]) {
+        count = 0;
+        offset = 0;
+        while (count < p[0x1D]) {
+            obj = *(void **)((char *)p[0x1C] + offset);
+            ((TObjD1Call *)obj)->f9();
+            offset += 4;
+            count++;
+        }
+        p[2] = 3;
+    }
+}
+#pragma pop
+#pragma cplusplus reset
+
+#pragma cplusplus on
 extern "C" void fn_801D611C(void *arg0, void *arg1, void *arg2) {
     struct Dummy {
         virtual void *get();
