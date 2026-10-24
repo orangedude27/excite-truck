@@ -1206,10 +1206,6 @@ extern "C" void fn_8021C478(void *arg0) {
 }
 
 extern "C" void fn_8021C6D0(void);
-#pragma push
-#pragma small_data off
-extern "C" void *lbl_8033F180;
-#pragma pop
 extern "C" void fn_8022EE98(void *);
 extern "C" void *lbl_8033E248[];
 extern "C" u8 lbl_8033E0BC[];
