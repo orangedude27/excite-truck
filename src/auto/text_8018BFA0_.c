@@ -1485,7 +1485,6 @@ extern float lbl_80562050;
 extern float lbl_80561F8C;
 extern float lbl_8055E3C8;
 extern float lbl_80561F70;
-extern int lbl_80332840;
 int fn_80161A38(int, int, int);
 int fn_801DFF1C(int);
 float PSQUATMultiply(void *, void *);
