@@ -173,12 +173,14 @@ void fn_802B5E58(s32 arg0) {
     lbl_8055FA10 = lbl_80564C5C;
 }
 
-#pragma pop
+#pragma push
+#pragma processor 750
+#pragma scheduling invalid_target
 u32 fn_802B5E8C(s32 arg0) {
     s32 result = fn_802B5D2C(lbl_8055CE50, arg0);
     return (u32)((-1 - result) | (result + 1)) >> 31;
 }
-
+#pragma pop
 extern void* lbl_8055FA44;
 extern s32 fn_802B5D94();
 
@@ -625,12 +627,14 @@ void fn_802B6F34(void *arg0, void *arg1, void (*arg2)(s16, s16, u8)) {
         yBase = (s16)rounded & ~(scale - 1);
         if (lbl_8055FA38 == 5) {
             f32 temp = lbl_80564C58 * (f32)fn_802B6ED8(yBase, 0, height);
-            sp[2] = lbl_80564C58 * (f32)fn_802B6E7C(xBase, 0, width);
+            f32 raw = (f32)fn_802B6E7C(xBase, 0, width);
+            sp[2] = lbl_80564C58 * raw;
             sp[3] = temp;
             temp = lbl_80564C58 * (f32)fn_802B6ED8(yBase, height - 1, height);
-            sp[0] = lbl_80564C58 * (f32)fn_802B6E7C(xBase, width - 1, width);
+            raw = (f32)fn_802B6E7C(xBase, width - 1, width);
             sp[1] = temp;
-            fn_80204048(&sp[2], &sp[0]);
+            sp[0] = lbl_80564C58 * raw;
+            fn_80204048(&sp[2], &sp[0], raw);
         }
 
         for (row = 0; row < width; row++) {
