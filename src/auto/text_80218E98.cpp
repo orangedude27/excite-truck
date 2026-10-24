@@ -4,7 +4,7 @@
 #include <types.h>
 #pragma push
 #pragma small_data off
-extern "C" void *lbl_8033F180;
+extern "C" u8 lbl_8033F180[];
 #pragma pop
 extern f32 lbl_805634F0;
 extern f32 lbl_805634F4;
