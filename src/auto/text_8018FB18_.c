@@ -92,6 +92,38 @@ int fn_80190D38(float a, float b, float c) { float lower; float value; lower = l
 #pragma scheduling on
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
 
+#pragma dont_inline on
+#pragma cplusplus on
+extern "C" void fn_80190E08(void) {
+    class Dummy_80190E08 {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual void m5();
+        virtual void m6();
+        virtual void m7();
+        virtual void m8();
+        virtual void m9();
+        virtual void m10();
+        virtual void m11();
+        virtual void m12();
+        virtual void m13();
+        virtual void m14();
+        virtual void m15();
+        virtual void m16();
+    };
+    int i;
+    for (i = 0; i < lbl_8055E518; i++) {
+        Dummy_80190E08 *obj = (Dummy_80190E08 *)lbl_804349A0[i];
+        obj->m16();
+    }
+}
+#pragma cplusplus reset
+#pragma dont_inline reset
+
 void fn_80190E6C(void) {
     fn_80190E08();
 }
