@@ -4,9 +4,14 @@
 #include <types.h>
 #include <macros.h>
 #pragma small_data off
+#include <types.h>
+#include <macros.h>
+#pragma small_data off
 extern void fn_8000D838(void*);
 extern int lbl_80507288[3];
 extern int lbl_80560018;
+void fn_802E988C(void);
+DECL_SECTION(".ctors") funcptr_t D_802ED61C = fn_802E988C;
 #pragma scheduling invalid_target
 void fn_802E988C(void) {
     fn_8000D838(&lbl_80560018);
