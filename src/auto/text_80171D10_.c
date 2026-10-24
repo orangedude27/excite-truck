@@ -7,6 +7,11 @@ extern float fn_80129DC4(int,float,float);
 extern unsigned long long fn_80171FF0(void *,int,float,float);
 extern int fn_80171EF8(void *,void *);
 extern float lbl_80558DC4[];
+#pragma push
+#pragma small_data off
+extern char lbl_80330F54[];
+extern char lbl_804303B8[];
+#pragma pop
 extern float lbl_8055E3C8,lbl_80561A38,lbl_80561A78,lbl_80561A80,lbl_80561AB4,lbl_80561ABC,lbl_80561AC8,lbl_80561AF8,lbl_80561AFC,lbl_80561B00,lbl_80561B04,lbl_80561B08,lbl_80561B0C;
 
 #pragma cplusplus on
