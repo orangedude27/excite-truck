@@ -403,6 +403,7 @@ loop_21:
     fn_80255918(M2C_FIELD(temp_r22, void **, 0x4C), var_r4_4);
     return 0;
 }
+#pragma pop
 
 #pragma cplusplus off
 
