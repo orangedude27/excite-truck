@@ -9,7 +9,14 @@ void fn_802E3028(const char *fmt, va_list args, int flag) {}
 
 int fn_802E302C(void) { return 1; }
 
-void fn_802E3090(void) {}
+extern void fn_802E3734(int *);
+extern int lbl_8055D178;
+void fn_802E3090(void) {
+    if (lbl_8055D178 != -1) {
+        fn_802E3734(&lbl_8055D178);
+        lbl_8055D178 = -1;
+    }
+}
 
 extern void fn_802E30C8(const char *, ...);
 extern char lbl_8034CF34[];
