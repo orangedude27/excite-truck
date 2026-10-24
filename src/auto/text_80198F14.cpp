@@ -152,6 +152,12 @@ public:
     virtual void v08(); virtual void v09(); virtual void v10();
     virtual void slot0x34(s32);
 };
+class Fn80199894VTab1C {
+public:
+    virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+    virtual void v4(); virtual void v5(); virtual void v6();
+    virtual void Call(f32*, f32*, s32, void*);
+};
 
 extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_801A4A10(s32, s32, s32);
@@ -206,7 +212,7 @@ extern "C" void **fn_801B83A0();
 #pragma dont_inline on
 #pragma scheduling invalid_target
 extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_raw, s32 arg4_raw, s32 arg5_raw, f32 farg0, f32 farg1, f32 farg2) {
-    volatile f32 sp[0x59];
+    volatile f32 sp[0x50];
     f32 *arg2 = (f32 *)arg2_raw;
     f32 *arg3 = (f32 *)arg3_raw;
     void *arg4 = (void *)arg4_raw;
@@ -302,13 +308,15 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     if (temp_r26 >= 0x3E8) {
         if (temp_r29 != NULL) {
             temp_r4 = (*(s32 *)((u8 *)temp_r29 + 0x10));
-            var_r0 = 0;
             switch (temp_r4) {
             case 0x4E434152:
             case 0x43415220:
             case 0x41434152:
             case 0x50434152:
                 var_r0 = 1;
+                break;
+            default:
+                var_r0 = 0;
                 break;
             }
             if (var_r0 != 0) {
@@ -317,13 +325,13 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
         }
     }
     if ((temp_r26 >= 0x3E8) || (temp_r27 >= 0x3E8)) {
-        sp[0xB] = lbl_805622D0;
-        sp[0xC] = lbl_805622D0;
-        sp[0xD] = lbl_805622D0;
-        (*(void (**)(void *, f32 *, f32 *, s32, void *))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x1C)))(arg0, (f32 *)&sp[0xB], arg2, temp_r26, temp_r28);
+        sp[0x2] = lbl_805622D0;
+        sp[0x3] = lbl_805622D0;
+        sp[0x4] = lbl_805622D0;
+        (*(void (**)(void *, f32 *, f32 *, s32, void *))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x1C)))(arg0, (f32 *)&sp[0x2], arg2, temp_r26, temp_r28);
         sp[0x8] = lbl_805622D0;
-        sp[0x9] = lbl_805622D0;
-        sp[0xA] = lbl_805622D0;
+        sp[0x0] = lbl_805622D0;
+        sp[0x1] = lbl_805622D0;
         (*(void (**)(void *, f32 *, f32 *, s32, void *))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x1C)))(arg1, (f32 *)&sp[0x8], arg2, temp_r27, temp_r29);
         sp[0x5] = lbl_805622D0;
         sp[0x6] = lbl_805622D0;
@@ -338,12 +346,12 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     temp_f2 = (*(f32 *)((u8 *)(arg2) + (0)));
     temp_f1 = (*(f32 *)((u8 *)(arg2) + (4)));
     temp_f0 = (*(f32 *)((u8 *)(arg2) + (8)));
-    sp[0x56] = temp_f2;
-    sp[0x57] = temp_f1;
-    sp[0x58] = temp_f0;
-    sp[0x53] = temp_f2;
-    sp[0x54] = temp_f1;
-    sp[0x55] = temp_f0;
+    sp[0x4D] = temp_f2;
+    sp[0x4E] = temp_f1;
+    sp[0x4F] = temp_f0;
+    sp[0x4A] = temp_f2;
+    sp[0x4B] = temp_f1;
+    sp[0x4C] = temp_f0;
     if ((temp_r29 != NULL) && (temp_r28 != NULL)) {
         var_f3 = lbl_805622EC;
         temp_f0_2 = (*(f32 *)((u8 *)((*(void **)((u8 *)(arg0) + (0xC)))) + (0x28))) - temp_f1;
@@ -370,29 +378,29 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
             var_f4 = lbl_805622F0;
         }
         temp_f2_2 = (*(f32 *)((u8 *)(arg2) + (4)));
-        sp[0x57] = temp_f2_2 + (lbl_805622F4 * var_f3);
-        sp[0x54] = temp_f2_2 + (lbl_805622F4 * var_f4);
+        sp[0x4E] = temp_f2_2 + (lbl_805622F4 * var_f3);
+        sp[0x4B] = temp_f2_2 + (lbl_805622F4 * var_f4);
     }
     if (temp_r29 != NULL) {
-        fn_8017B6D4((s32)temp_r29, (Vec*)(f32 *)&sp[0x4D], (s32)arg2);
+        fn_8017B6D4((s32)temp_r29, (Vec*)(f32 *)&sp[0x44], (s32)arg2);
     } else {
-        sp[0x4D] = lbl_805622D0;
-        sp[0x4E] = lbl_805622D0;
-        sp[0x4F] = lbl_805622D0;
+        sp[0x44] = lbl_805622D0;
+        sp[0x45] = lbl_805622D0;
+        sp[0x46] = lbl_805622D0;
     }
     if (temp_r28 != NULL) {
-        fn_8017B6D4((s32)temp_r28, (Vec*)(f32 *)&sp[0x4A], (s32)arg2);
+        fn_8017B6D4((s32)temp_r28, (Vec*)(f32 *)&sp[0x41], (s32)arg2);
     } else {
-        sp[0x4A] = lbl_805622D0;
-        sp[0x4B] = lbl_805622D0;
-        sp[0x4C] = lbl_805622D0;
+        sp[0x41] = lbl_805622D0;
+        sp[0x42] = lbl_805622D0;
+        sp[0x43] = lbl_805622D0;
     }
-    temp_f4 = sp[0x4D] - sp[0x4A];
-    temp_f2_3 = sp[0x4E] - sp[0x4B];
-    sp[0x47] = temp_f4;
-    sp[0x48] = temp_f2_3;
-    sp[0x49] = sp[0x4F] - sp[0x4C];
-    temp_f1_2 = PSVECDotProduct((const Vec*)(f32 *)&sp[0x47], (const Vec*)arg3);
+    temp_f4 = sp[0x44] - sp[0x41];
+    temp_f2_3 = sp[0x45] - sp[0x42];
+    sp[0x3E] = temp_f4;
+    sp[0x3F] = temp_f2_3;
+    sp[0x40] = sp[0x46] - sp[0x43];
+    temp_f1_2 = PSVECDotProduct((const Vec*)(f32 *)&sp[0x3E], (const Vec*)arg3);
     temp_f0_4 = (*(f32 *)((u8 *)(arg1) + (0x10)));
     temp_f31 = temp_f1_2;
     var_f2 = (*(f32 *)((u8 *)(arg0) + (0x10)));
@@ -411,64 +419,64 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     temp_f5 = lbl_805622E8 * var_f1;
     temp_f4_2 = (*(f32 *)((u8 *)(arg3) + (0))) * temp_f5;
     temp_f3 = (*(f32 *)((u8 *)(arg3) + (4))) * temp_f5;
-    sp[0x44] = lbl_805622D0;
+    sp[0x3B] = lbl_805622D0;
     temp_f2_4 = (*(f32 *)((u8 *)(arg3) + (8))) * temp_f5;
-    sp[0x50] = temp_f4_2;
-    sp[0x51] = temp_f3;
-    sp[0x52] = temp_f2_4;
-    sp[0x45] = lbl_805622D0;
-    sp[0x46] = lbl_805622D0;
-    fn_801996BC((Vec*)(f32 *)&sp[0x44], (s32)arg2, (Vec*)arg3, arg0, arg1, var_f1);
-    sp[0x51] += sp[0x45];
+    sp[0x47] = temp_f4_2;
+    sp[0x48] = temp_f3;
+    sp[0x49] = temp_f2_4;
+    sp[0x3C] = lbl_805622D0;
+    sp[0x3D] = lbl_805622D0;
+    fn_801996BC((Vec*)(f32 *)&sp[0x3B], (s32)arg2, (Vec*)arg3, arg0, arg1, var_f1);
+    sp[0x48] += sp[0x3C];
     temp_f3_2 = (*(f32 *)((u8 *)(arg2) + (0)));
-    sp[0x52] += sp[0x46];
+    sp[0x49] += sp[0x3D];
     temp_f2_5 = (*(f32 *)((u8 *)(arg2) + (4)));
-    sp[0x50] += sp[0x44];
+    sp[0x47] += sp[0x3B];
     temp_f1_3 = (*(f32 *)((u8 *)(arg2) + (8)));
-    sp[0x41] = temp_f3_2 - (*(f32 *)((u8 *)(temp_r31) + (0x24)));
-    sp[0x42] = temp_f2_5 - (*(f32 *)((u8 *)(temp_r31) + (0x28)));
-    sp[0x43] = temp_f1_3 - (*(f32 *)((u8 *)(temp_r31) + (0x2C)));
-    sp[0x3E] = temp_f3_2 - (*(f32 *)((u8 *)(temp_r30) + (0x24)));
-    sp[0x3F] = temp_f2_5 - (*(f32 *)((u8 *)(temp_r30) + (0x28)));
-    sp[0x40] = temp_f1_3 - (*(f32 *)((u8 *)(temp_r30) + (0x2C)));
+    sp[0x38] = temp_f3_2 - (*(f32 *)((u8 *)(temp_r31) + (0x24)));
+    sp[0x39] = temp_f2_5 - (*(f32 *)((u8 *)(temp_r31) + (0x28)));
+    sp[0x3A] = temp_f1_3 - (*(f32 *)((u8 *)(temp_r31) + (0x2C)));
+    sp[0x35] = temp_f3_2 - (*(f32 *)((u8 *)(temp_r30) + (0x24)));
+    sp[0x36] = temp_f2_5 - (*(f32 *)((u8 *)(temp_r30) + (0x28)));
+    sp[0x37] = temp_f1_3 - (*(f32 *)((u8 *)(temp_r30) + (0x2C)));
     if (temp_f31 < lbl_805622D0) {
-        PSVECCrossProduct((const Vec*)(f32 *)&sp[0x41], (const Vec*)arg3, (Vec*)(f32 *)&sp[0x38]);
-        PSVECCrossProduct((const Vec*)(f32 *)&sp[0x3E], (const Vec*)arg3, (Vec*)(f32 *)&sp[0x35]);
+        PSVECCrossProduct((const Vec*)(f32 *)&sp[0x38], (const Vec*)arg3, (Vec*)(f32 *)&sp[0x2F]);
+        PSVECCrossProduct((const Vec*)(f32 *)&sp[0x35], (const Vec*)arg3, (Vec*)(f32 *)&sp[0x2C]);
         if (temp_r29 != NULL) {
-            if ((f32 *)&sp[0x32] == (f32 *)&sp[0x38]) {
-                sp[0x32] = (sp[0x3A] * (*(f32 *)((u8 *)(temp_r29) + (0x160)))) + ((sp[0x38] * (*(f32 *)((u8 *)(temp_r29) + (0x148)))) + (sp[0x39] * (*(f32 *)((u8 *)(temp_r29) + (0x154)))));
-                sp[0x33] = (sp[0x3A] * (*(f32 *)((u8 *)(temp_r29) + (0x164)))) + ((sp[0x38] * (*(f32 *)((u8 *)(temp_r29) + (0x14C)))) + (sp[0x39] * (*(f32 *)((u8 *)(temp_r29) + (0x158)))));
-                sp[0x34] = (sp[0x3A] * (*(f32 *)((u8 *)(temp_r29) + (0x168)))) + ((sp[0x38] * (*(f32 *)((u8 *)(temp_r29) + (0x150)))) + (sp[0x39] * (*(f32 *)((u8 *)(temp_r29) + (0x15C)))));
+            if ((f32 *)&sp[0x29] == (f32 *)&sp[0x2F]) {
+                sp[0x29] = (sp[0x31] * (*(f32 *)((u8 *)(temp_r29) + (0x160)))) + ((sp[0x2F] * (*(f32 *)((u8 *)(temp_r29) + (0x148)))) + (sp[0x30] * (*(f32 *)((u8 *)(temp_r29) + (0x154)))));
+                sp[0x2A] = (sp[0x31] * (*(f32 *)((u8 *)(temp_r29) + (0x164)))) + ((sp[0x2F] * (*(f32 *)((u8 *)(temp_r29) + (0x14C)))) + (sp[0x30] * (*(f32 *)((u8 *)(temp_r29) + (0x158)))));
+                sp[0x2B] = (sp[0x31] * (*(f32 *)((u8 *)(temp_r29) + (0x168)))) + ((sp[0x2F] * (*(f32 *)((u8 *)(temp_r29) + (0x150)))) + (sp[0x30] * (*(f32 *)((u8 *)(temp_r29) + (0x15C)))));
             } else {
-                sp[0x32] = (sp[0x3A] * (*(f32 *)((u8 *)(temp_r29) + (0x160)))) + ((sp[0x38] * (*(f32 *)((u8 *)(temp_r29) + (0x148)))) + (sp[0x39] * (*(f32 *)((u8 *)(temp_r29) + (0x154)))));
-                sp[0x33] = (sp[0x3A] * (*(f32 *)((u8 *)(temp_r29) + (0x164)))) + ((sp[0x38] * (*(f32 *)((u8 *)(temp_r29) + (0x14C)))) + (sp[0x39] * (*(f32 *)((u8 *)(temp_r29) + (0x158)))));
-                sp[0x34] = (sp[0x3A] * (*(f32 *)((u8 *)(temp_r29) + (0x168)))) + ((sp[0x38] * (*(f32 *)((u8 *)(temp_r29) + (0x150)))) + (sp[0x39] * (*(f32 *)((u8 *)(temp_r29) + (0x15C)))));
+                sp[0x29] = (sp[0x31] * (*(f32 *)((u8 *)(temp_r29) + (0x160)))) + ((sp[0x2F] * (*(f32 *)((u8 *)(temp_r29) + (0x148)))) + (sp[0x30] * (*(f32 *)((u8 *)(temp_r29) + (0x154)))));
+                sp[0x2A] = (sp[0x31] * (*(f32 *)((u8 *)(temp_r29) + (0x164)))) + ((sp[0x2F] * (*(f32 *)((u8 *)(temp_r29) + (0x14C)))) + (sp[0x30] * (*(f32 *)((u8 *)(temp_r29) + (0x158)))));
+                sp[0x2B] = (sp[0x31] * (*(f32 *)((u8 *)(temp_r29) + (0x168)))) + ((sp[0x2F] * (*(f32 *)((u8 *)(temp_r29) + (0x150)))) + (sp[0x30] * (*(f32 *)((u8 *)(temp_r29) + (0x15C)))));
             }
         } else {
-            sp[0x32] = lbl_805622D0;
-            sp[0x33] = lbl_805622D0;
-            sp[0x34] = lbl_805622D0;
+            sp[0x29] = lbl_805622D0;
+            sp[0x2A] = lbl_805622D0;
+            sp[0x2B] = lbl_805622D0;
         }
-        PSVECCrossProduct((const Vec*)(f32 *)&sp[0x32], (const Vec*)(f32 *)&sp[0x41], (Vec*)(f32 *)&sp[0x2C]);
+        PSVECCrossProduct((const Vec*)(f32 *)&sp[0x29], (const Vec*)(f32 *)&sp[0x38], (Vec*)(f32 *)&sp[0x23]);
         if (temp_r28 != NULL) {
-            if ((f32 *)&sp[0x2F] == (f32 *)&sp[0x35]) {
-                sp[0x2F] = (sp[0x37] * (*(f32 *)((u8 *)(temp_r28) + (0x160)))) + ((sp[0x35] * (*(f32 *)((u8 *)(temp_r28) + (0x148)))) + (sp[0x36] * (*(f32 *)((u8 *)(temp_r28) + (0x154)))));
-                sp[0x30] = (sp[0x37] * (*(f32 *)((u8 *)(temp_r28) + (0x164)))) + ((sp[0x35] * (*(f32 *)((u8 *)(temp_r28) + (0x14C)))) + (sp[0x36] * (*(f32 *)((u8 *)(temp_r28) + (0x158)))));
-                sp[0x31] = (sp[0x37] * (*(f32 *)((u8 *)(temp_r28) + (0x168)))) + ((sp[0x35] * (*(f32 *)((u8 *)(temp_r28) + (0x150)))) + (sp[0x36] * (*(f32 *)((u8 *)(temp_r28) + (0x15C)))));
+            if ((f32 *)&sp[0x26] == (f32 *)&sp[0x2C]) {
+                sp[0x26] = (sp[0x2E] * (*(f32 *)((u8 *)(temp_r28) + (0x160)))) + ((sp[0x2C] * (*(f32 *)((u8 *)(temp_r28) + (0x148)))) + (sp[0x2D] * (*(f32 *)((u8 *)(temp_r28) + (0x154)))));
+                sp[0x27] = (sp[0x2E] * (*(f32 *)((u8 *)(temp_r28) + (0x164)))) + ((sp[0x2C] * (*(f32 *)((u8 *)(temp_r28) + (0x14C)))) + (sp[0x2D] * (*(f32 *)((u8 *)(temp_r28) + (0x158)))));
+                sp[0x28] = (sp[0x2E] * (*(f32 *)((u8 *)(temp_r28) + (0x168)))) + ((sp[0x2C] * (*(f32 *)((u8 *)(temp_r28) + (0x150)))) + (sp[0x2D] * (*(f32 *)((u8 *)(temp_r28) + (0x15C)))));
             } else {
-                sp[0x2F] = (sp[0x37] * (*(f32 *)((u8 *)(temp_r28) + (0x160)))) + ((sp[0x35] * (*(f32 *)((u8 *)(temp_r28) + (0x148)))) + (sp[0x36] * (*(f32 *)((u8 *)(temp_r28) + (0x154)))));
-                sp[0x30] = (sp[0x37] * (*(f32 *)((u8 *)(temp_r28) + (0x164)))) + ((sp[0x35] * (*(f32 *)((u8 *)(temp_r28) + (0x14C)))) + (sp[0x36] * (*(f32 *)((u8 *)(temp_r28) + (0x158)))));
-                sp[0x31] = (sp[0x37] * (*(f32 *)((u8 *)(temp_r28) + (0x168)))) + ((sp[0x35] * (*(f32 *)((u8 *)(temp_r28) + (0x150)))) + (sp[0x36] * (*(f32 *)((u8 *)(temp_r28) + (0x15C)))));
+                sp[0x26] = (sp[0x2E] * (*(f32 *)((u8 *)(temp_r28) + (0x160)))) + ((sp[0x2C] * (*(f32 *)((u8 *)(temp_r28) + (0x148)))) + (sp[0x2D] * (*(f32 *)((u8 *)(temp_r28) + (0x154)))));
+                sp[0x27] = (sp[0x2E] * (*(f32 *)((u8 *)(temp_r28) + (0x164)))) + ((sp[0x2C] * (*(f32 *)((u8 *)(temp_r28) + (0x14C)))) + (sp[0x2D] * (*(f32 *)((u8 *)(temp_r28) + (0x158)))));
+                sp[0x28] = (sp[0x2E] * (*(f32 *)((u8 *)(temp_r28) + (0x168)))) + ((sp[0x2C] * (*(f32 *)((u8 *)(temp_r28) + (0x150)))) + (sp[0x2D] * (*(f32 *)((u8 *)(temp_r28) + (0x15C)))));
             }
         } else {
-            sp[0x2F] = lbl_805622D0;
-            sp[0x30] = lbl_805622D0;
-            sp[0x31] = lbl_805622D0;
+            sp[0x26] = lbl_805622D0;
+            sp[0x27] = lbl_805622D0;
+            sp[0x28] = lbl_805622D0;
         }
-        PSVECCrossProduct((const Vec*)(f32 *)&sp[0x2F], (const Vec*)(f32 *)&sp[0x3E], (Vec*)(f32 *)&sp[0x29]);
-        sp[0x3B] = sp[0x2C] + sp[0x29];
-        sp[0x3C] = sp[0x2D] + sp[0x2A];
-        sp[0x3D] = sp[0x2E] + sp[0x2B];
+        PSVECCrossProduct((const Vec*)(f32 *)&sp[0x26], (const Vec*)(f32 *)&sp[0x35], (Vec*)(f32 *)&sp[0x20]);
+        sp[0x32] = sp[0x23] + sp[0x20];
+        sp[0x33] = sp[0x24] + sp[0x21];
+        sp[0x34] = sp[0x25] + sp[0x22];
         if (temp_r29 != NULL) {
             var_f30 = lbl_805622E0 / (*(f32 *)((u8 *)(temp_r29) + (0xD4)));
         } else {
@@ -483,29 +491,29 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
         if (-temp_f31 < lbl_80562304) {
             var_f28 = lbl_80562300;
         }
-        temp_f27 = PSVECDotProduct((const Vec*)arg3, (const Vec*)(f32 *)&sp[0x3B]);
+        temp_f27 = PSVECDotProduct((const Vec*)arg3, (const Vec*)(f32 *)&sp[0x32]);
         temp_f0_5 = -temp_f31;
         temp_f9 = (*(f32 *)((u8 *)(arg3) + (0)));
         temp_f8 = (*(f32 *)((u8 *)(arg3) + (4)));
         temp_f7 = (*(f32 *)((u8 *)(arg3) + (8)));
         temp_f5_2 = temp_f9 * temp_f0_5;
-        temp_f10 = -(lbl_805622E0 + var_f28) * PSVECDotProduct((const Vec*)(f32 *)&sp[0x47], (const Vec*)arg3);
-        temp_f2_6 = sp[0x48] + (temp_f8 * temp_f0_5);
+        temp_f10 = -(lbl_805622E0 + var_f28) * PSVECDotProduct((const Vec*)(f32 *)&sp[0x3E], (const Vec*)arg3);
+        temp_f2_6 = sp[0x3F] + (temp_f8 * temp_f0_5);
         temp_f31_2 = temp_f10 / (var_f30 + var_f29 + temp_f27);
         temp_f9_2 = temp_f9 * temp_f31_2;
         temp_f8_2 = temp_f8 * temp_f31_2;
         temp_f7_2 = temp_f7 * temp_f31_2;
-        sp[0x26] = temp_f9_2;
-        temp_f4_3 = sp[0x47] + temp_f5_2;
-        sp[0x27] = temp_f8_2;
-        sp[0x28] = temp_f7_2;
+        sp[0x1D] = temp_f9_2;
+        temp_f4_3 = sp[0x3E] + temp_f5_2;
+        sp[0x1E] = temp_f8_2;
+        sp[0x1F] = temp_f7_2;
         temp_f3_3 = (*(f32 *)((u8 *)(arg0) + (0x14)));
         temp_f1_4 = temp_f3_3 + (*(f32 *)((u8 *)(arg1) + (0x14)));
-        sp[0x23] = temp_f4_3;
-        sp[0x24] = temp_f2_6;
+        sp[0x1A] = temp_f4_3;
+        sp[0x1B] = temp_f2_6;
         temp_f28 = lbl_805622E8 * temp_f1_4;
-        sp[0x25] = sp[0x49] + (temp_f7 * temp_f0_5);
-        var_f1_2 = PSVECMag((const Vec*)(f32 *)&sp[0x23]);
+        sp[0x1C] = sp[0x40] + (temp_f7 * temp_f0_5);
+        var_f1_2 = PSVECMag((const Vec*)(f32 *)&sp[0x1A]);
         temp_cr0_gt = var_f1_2 > lbl_80562308;
         if (temp_cr0_gt != 0) {
             if (temp_cr0_gt != 0) {
@@ -514,52 +522,52 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
                 var_f1_2 = lbl_80562308;
             }
             temp_f3_4 = lbl_805622E0 / var_f1_2;
-            temp_f2_7 = sp[0x23] * temp_f3_4;
-            temp_f1_5 = sp[0x24] * temp_f3_4;
-            sp[0x23] = temp_f2_7;
-            sp[0x24] = temp_f1_5;
-            sp[0x25] *= temp_f3_4;
-            PSVECCrossProduct((const Vec*)(f32 *)&sp[0x41], (const Vec*)(f32 *)&sp[0x23], (Vec*)(f32 *)&sp[0x1D]);
-            PSVECCrossProduct((const Vec*)(f32 *)&sp[0x3E], (const Vec*)(f32 *)&sp[0x23], (Vec*)(f32 *)&sp[0x1A]);
+            temp_f2_7 = sp[0x1A] * temp_f3_4;
+            temp_f1_5 = sp[0x1B] * temp_f3_4;
+            sp[0x1A] = temp_f2_7;
+            sp[0x1B] = temp_f1_5;
+            sp[0x1C] *= temp_f3_4;
+            PSVECCrossProduct((const Vec*)(f32 *)&sp[0x38], (const Vec*)(f32 *)&sp[0x1A], (Vec*)(f32 *)&sp[0x14]);
+            PSVECCrossProduct((const Vec*)(f32 *)&sp[0x35], (const Vec*)(f32 *)&sp[0x1A], (Vec*)(f32 *)&sp[0x11]);
             if (temp_r29 != NULL) {
-                if ((f32 *)&sp[0x17] == (f32 *)&sp[0x1D]) {
-                    sp[0x17] = (sp[0x1F] * (*(f32 *)((u8 *)(temp_r29) + (0x160)))) + ((sp[0x1D] * (*(f32 *)((u8 *)(temp_r29) + (0x148)))) + (sp[0x1E] * (*(f32 *)((u8 *)(temp_r29) + (0x154)))));
-                    sp[0x18] = (sp[0x1F] * (*(f32 *)((u8 *)(temp_r29) + (0x164)))) + ((sp[0x1D] * (*(f32 *)((u8 *)(temp_r29) + (0x14C)))) + (sp[0x1E] * (*(f32 *)((u8 *)(temp_r29) + (0x158)))));
-                    sp[0x19] = (sp[0x1F] * (*(f32 *)((u8 *)(temp_r29) + (0x168)))) + ((sp[0x1D] * (*(f32 *)((u8 *)(temp_r29) + (0x150)))) + (sp[0x1E] * (*(f32 *)((u8 *)(temp_r29) + (0x15C)))));
+                if ((f32 *)&sp[0xE] == (f32 *)&sp[0x14]) {
+                    sp[0xE] = (sp[0x16] * (*(f32 *)((u8 *)(temp_r29) + (0x160)))) + ((sp[0x14] * (*(f32 *)((u8 *)(temp_r29) + (0x148)))) + (sp[0x15] * (*(f32 *)((u8 *)(temp_r29) + (0x154)))));
+                    sp[0xF] = (sp[0x16] * (*(f32 *)((u8 *)(temp_r29) + (0x164)))) + ((sp[0x14] * (*(f32 *)((u8 *)(temp_r29) + (0x14C)))) + (sp[0x15] * (*(f32 *)((u8 *)(temp_r29) + (0x158)))));
+                    sp[0x10] = (sp[0x16] * (*(f32 *)((u8 *)(temp_r29) + (0x168)))) + ((sp[0x14] * (*(f32 *)((u8 *)(temp_r29) + (0x150)))) + (sp[0x15] * (*(f32 *)((u8 *)(temp_r29) + (0x15C)))));
                 } else {
-                    sp[0x17] = (sp[0x1F] * (*(f32 *)((u8 *)(temp_r29) + (0x160)))) + ((sp[0x1D] * (*(f32 *)((u8 *)(temp_r29) + (0x148)))) + (sp[0x1E] * (*(f32 *)((u8 *)(temp_r29) + (0x154)))));
-                    sp[0x18] = (sp[0x1F] * (*(f32 *)((u8 *)(temp_r29) + (0x164)))) + ((sp[0x1D] * (*(f32 *)((u8 *)(temp_r29) + (0x14C)))) + (sp[0x1E] * (*(f32 *)((u8 *)(temp_r29) + (0x158)))));
-                    sp[0x19] = (sp[0x1F] * (*(f32 *)((u8 *)(temp_r29) + (0x168)))) + ((sp[0x1D] * (*(f32 *)((u8 *)(temp_r29) + (0x150)))) + (sp[0x1E] * (*(f32 *)((u8 *)(temp_r29) + (0x15C)))));
+                    sp[0xE] = (sp[0x16] * (*(f32 *)((u8 *)(temp_r29) + (0x160)))) + ((sp[0x14] * (*(f32 *)((u8 *)(temp_r29) + (0x148)))) + (sp[0x15] * (*(f32 *)((u8 *)(temp_r29) + (0x154)))));
+                    sp[0xF] = (sp[0x16] * (*(f32 *)((u8 *)(temp_r29) + (0x164)))) + ((sp[0x14] * (*(f32 *)((u8 *)(temp_r29) + (0x14C)))) + (sp[0x15] * (*(f32 *)((u8 *)(temp_r29) + (0x158)))));
+                    sp[0x10] = (sp[0x16] * (*(f32 *)((u8 *)(temp_r29) + (0x168)))) + ((sp[0x14] * (*(f32 *)((u8 *)(temp_r29) + (0x150)))) + (sp[0x15] * (*(f32 *)((u8 *)(temp_r29) + (0x15C)))));
                 }
             } else {
-                sp[0x17] = lbl_805622D0;
-                sp[0x18] = lbl_805622D0;
-                sp[0x19] = lbl_805622D0;
+                sp[0xE] = lbl_805622D0;
+                sp[0xF] = lbl_805622D0;
+                sp[0x10] = lbl_805622D0;
             }
-            PSVECCrossProduct((const Vec*)(f32 *)&sp[0x17], (const Vec*)(f32 *)&sp[0x41], (Vec*)(f32 *)&sp[0x11]);
+            PSVECCrossProduct((const Vec*)(f32 *)&sp[0xE], (const Vec*)(f32 *)&sp[0x38], (Vec*)(f32 *)&sp[0x8]);
             if (temp_r28 != NULL) {
-                if ((f32 *)&sp[0x14] == (f32 *)&sp[0x1A]) {
-                    sp[0x14] = (sp[0x1C] * (*(f32 *)((u8 *)(temp_r28) + (0x160)))) + ((sp[0x1A] * (*(f32 *)((u8 *)(temp_r28) + (0x148)))) + (sp[0x1B] * (*(f32 *)((u8 *)(temp_r28) + (0x154)))));
-                    sp[0x15] = (sp[0x1C] * (*(f32 *)((u8 *)(temp_r28) + (0x164)))) + ((sp[0x1A] * (*(f32 *)((u8 *)(temp_r28) + (0x14C)))) + (sp[0x1B] * (*(f32 *)((u8 *)(temp_r28) + (0x158)))));
-                    sp[0x16] = (sp[0x1C] * (*(f32 *)((u8 *)(temp_r28) + (0x168)))) + ((sp[0x1A] * (*(f32 *)((u8 *)(temp_r28) + (0x150)))) + (sp[0x1B] * (*(f32 *)((u8 *)(temp_r28) + (0x15C)))));
+                if ((f32 *)&sp[0xB] == (f32 *)&sp[0x11]) {
+                    sp[0xB] = (sp[0x13] * (*(f32 *)((u8 *)(temp_r28) + (0x160)))) + ((sp[0x11] * (*(f32 *)((u8 *)(temp_r28) + (0x148)))) + (sp[0x12] * (*(f32 *)((u8 *)(temp_r28) + (0x154)))));
+                    sp[0xC] = (sp[0x13] * (*(f32 *)((u8 *)(temp_r28) + (0x164)))) + ((sp[0x11] * (*(f32 *)((u8 *)(temp_r28) + (0x14C)))) + (sp[0x12] * (*(f32 *)((u8 *)(temp_r28) + (0x158)))));
+                    sp[0xD] = (sp[0x13] * (*(f32 *)((u8 *)(temp_r28) + (0x168)))) + ((sp[0x11] * (*(f32 *)((u8 *)(temp_r28) + (0x150)))) + (sp[0x12] * (*(f32 *)((u8 *)(temp_r28) + (0x15C)))));
                 } else {
-                    sp[0x14] = (sp[0x1C] * (*(f32 *)((u8 *)(temp_r28) + (0x160)))) + ((sp[0x1A] * (*(f32 *)((u8 *)(temp_r28) + (0x148)))) + (sp[0x1B] * (*(f32 *)((u8 *)(temp_r28) + (0x154)))));
-                    sp[0x15] = (sp[0x1C] * (*(f32 *)((u8 *)(temp_r28) + (0x164)))) + ((sp[0x1A] * (*(f32 *)((u8 *)(temp_r28) + (0x14C)))) + (sp[0x1B] * (*(f32 *)((u8 *)(temp_r28) + (0x158)))));
-                    sp[0x16] = (sp[0x1C] * (*(f32 *)((u8 *)(temp_r28) + (0x168)))) + ((sp[0x1A] * (*(f32 *)((u8 *)(temp_r28) + (0x150)))) + (sp[0x1B] * (*(f32 *)((u8 *)(temp_r28) + (0x15C)))));
+                    sp[0xB] = (sp[0x13] * (*(f32 *)((u8 *)(temp_r28) + (0x160)))) + ((sp[0x11] * (*(f32 *)((u8 *)(temp_r28) + (0x148)))) + (sp[0x12] * (*(f32 *)((u8 *)(temp_r28) + (0x154)))));
+                    sp[0xC] = (sp[0x13] * (*(f32 *)((u8 *)(temp_r28) + (0x164)))) + ((sp[0x11] * (*(f32 *)((u8 *)(temp_r28) + (0x14C)))) + (sp[0x12] * (*(f32 *)((u8 *)(temp_r28) + (0x158)))));
+                    sp[0xD] = (sp[0x13] * (*(f32 *)((u8 *)(temp_r28) + (0x168)))) + ((sp[0x11] * (*(f32 *)((u8 *)(temp_r28) + (0x150)))) + (sp[0x12] * (*(f32 *)((u8 *)(temp_r28) + (0x15C)))));
                 }
             } else {
-                sp[0x14] = lbl_805622D0;
-                sp[0x15] = lbl_805622D0;
-                sp[0x16] = lbl_805622D0;
+                sp[0xB] = lbl_805622D0;
+                sp[0xC] = lbl_805622D0;
+                sp[0xD] = lbl_805622D0;
             }
-            PSVECCrossProduct((const Vec*)(f32 *)&sp[0x14], (const Vec*)(f32 *)&sp[0x3E], (Vec*)(f32 *)&sp[0xE]);
-            temp_f4_4 = sp[0x11] + sp[0xE];
-            temp_f2_8 = sp[0x12] + sp[0xF];
-            sp[0x20] = temp_f4_4;
-            sp[0x21] = temp_f2_8;
-            sp[0x22] = sp[0x13] + sp[0x10];
-            temp_f27_2 = PSVECDotProduct((const Vec*)(f32 *)&sp[0x23], (const Vec*)(f32 *)&sp[0x20]);
-            var_f5 = (lbl_805622DC * PSVECDotProduct((const Vec*)(f32 *)&sp[0x47], (const Vec*)(f32 *)&sp[0x23])) / (var_f30 + var_f29 + temp_f27_2);
+            PSVECCrossProduct((const Vec*)(f32 *)&sp[0xB], (const Vec*)(f32 *)&sp[0x35], (Vec*)(f32 *)&sp[0x5]);
+            temp_f4_4 = sp[0x8] + sp[0x5];
+            temp_f2_8 = sp[0x9] + sp[0x6];
+            sp[0x17] = temp_f4_4;
+            sp[0x18] = temp_f2_8;
+            sp[0x19] = sp[0xA] + sp[0x7];
+            temp_f27_2 = PSVECDotProduct((const Vec*)(f32 *)&sp[0x1A], (const Vec*)(f32 *)&sp[0x17]);
+            var_f5 = (lbl_805622DC * PSVECDotProduct((const Vec*)(f32 *)&sp[0x3E], (const Vec*)(f32 *)&sp[0x1A])) / (var_f30 + var_f29 + temp_f27_2);
             temp_f0_6 = (f32) __fabsf(temp_f31_2 * temp_f28);
             if (temp_f0_6 < var_f5) {
                 var_f5 = temp_f0_6;
@@ -570,9 +578,9 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
             } else {
                 var_f5 = temp_f0_7;
             }
-            sp[0x27] += sp[0x24] * var_f5;
-            sp[0x26] += sp[0x23] * var_f5;
-            sp[0x28] += sp[0x25] * var_f5;
+            sp[0x1E] += sp[0x1B] * var_f5;
+            sp[0x1D] += sp[0x1A] * var_f5;
+            sp[0x1F] += sp[0x1C] * var_f5;
         }
         temp_cr0_eq_2 = temp_r29 == NULL;
         temp_f27_3 = lbl_805622E0;
@@ -610,13 +618,13 @@ block_98:
                 }
                 if ((var_r4 != 0) || (temp_r26 == 0x74)) {
                     ;
-                    if ((PSVECDotProduct((const Vec*)(f32 *)&sp[0x26], (const Vec*)(f32 *)&sp[0x26]) == lbl_8056230C) && ((*(f32 *)((u8 *)(temp_r29) + (0x25D4))) > lbl_80562310) && ((*(void *(**)(void *))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x30)))(arg1) != NULL)) {
+                    if ((PSVECDotProduct((const Vec*)(f32 *)&sp[0x1D], (const Vec*)(f32 *)&sp[0x1D]) == lbl_8056230C) && ((*(f32 *)((u8 *)(temp_r29) + (0x25D4))) > lbl_80562310) && ((*(void *(**)(void *))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x30)))(arg1) != NULL)) {
                         temp_f1_6 = fn_8018AE7C(temp_r29);
-                        temp_f3_5 = sp[0x26] * temp_f1_6;
-                        temp_f2_9 = sp[0x27] * temp_f1_6;
-                        sp[0x26] = temp_f3_5;
-                        sp[0x27] = temp_f2_9;
-                        sp[0x28] *= temp_f1_6;
+                        temp_f3_5 = sp[0x1D] * temp_f1_6;
+                        temp_f2_9 = sp[0x1E] * temp_f1_6;
+                        sp[0x1D] = temp_f3_5;
+                        sp[0x1E] = temp_f2_9;
+                        sp[0x1F] *= temp_f1_6;
                         temp_r3 = (*(void **(**)(void *, f32, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x30)))(arg1, temp_f2_9, temp_f3_5);
                         temp_r27_2 = (*(s32 (**)())((u8 *)(*temp_r3) + (0x14)))();
                         fn_802C1A0C(temp_r3, (*(s32 *)((u8 *)(temp_r29) + (0x1EC))));
@@ -631,26 +639,26 @@ block_98:
                 }
             }
         }
-        (*(void (**)(void *, void *, f32 *, f32 *, s32, f32 *, void *, f32))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x20)))(arg0, arg1, (f32 *)&sp[0x26], (f32 *)&sp[0x56], (*(s32 *)((u8 *)(arg1) + (0x20))), arg2, temp_r28, temp_f27_3);
-        temp_f3_6 = sp[0x26] * lbl_805622DC;
-        temp_f2_10 = sp[0x27] * lbl_805622DC;
-        sp[0x26] = temp_f3_6;
-        sp[0x27] = temp_f2_10;
-        sp[0x28] *= lbl_805622DC;
-        (*(void (**)(void *, void *, f32 *, f32 *, s32, f32 *, void *, f32, f32, f32, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x20)))(arg1, arg0, (f32 *)&sp[0x26], (f32 *)&sp[0x53], (*(s32 *)((u8 *)(arg0) + (0x20))), arg2, temp_r29, temp_f27_3, temp_f2_10, temp_f3_6, lbl_805622DC);
+        (*(void (**)(void *, void *, f32 *, f32 *, s32, f32 *, void *, f32))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x20)))(arg0, arg1, (f32 *)&sp[0x1D], (f32 *)&sp[0x4D], (*(s32 *)((u8 *)(arg1) + (0x20))), arg2, temp_r28, temp_f27_3);
+        temp_f3_6 = sp[0x1D] * lbl_805622DC;
+        temp_f2_10 = sp[0x1E] * lbl_805622DC;
+        sp[0x1D] = temp_f3_6;
+        sp[0x1E] = temp_f2_10;
+        sp[0x1F] *= lbl_805622DC;
+        (*(void (**)(void *, void *, f32 *, f32 *, s32, f32 *, void *, f32, f32, f32, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x20)))(arg1, arg0, (f32 *)&sp[0x1D], (f32 *)&sp[0x4A], (*(s32 *)((u8 *)(arg0) + (0x20))), arg2, temp_r29, temp_f27_3, temp_f2_10, temp_f3_6, lbl_805622DC);
         if (arg4 != NULL) {
-            fn_801B34DC(arg4, (s32)arg5, (Vec*)arg2, (Vec*)(f32 *)&sp[0x26], (Vec*)arg3, (s32)(*(s32 *)((u8 *)(arg1) + (0x20))));
+            fn_801B34DC(arg4, (s32)arg5, (Vec*)arg2, (Vec*)(f32 *)&sp[0x1D], (Vec*)arg3, (s32)(*(s32 *)((u8 *)(arg1) + (0x20))));
         } else {
-            fn_801B34DC(arg0, (s32)arg1, (Vec*)arg2, (Vec*)(f32 *)&sp[0x26], (Vec*)arg3, (s32)(*(s32 *)((u8 *)(arg1) + (0x20))));
+            fn_801B34DC(arg0, (s32)arg1, (Vec*)arg2, (Vec*)(f32 *)&sp[0x1D], (Vec*)arg3, (s32)(*(s32 *)((u8 *)(arg1) + (0x20))));
         }
     }
-    (*(void (**)(void *, f32 *, f32 *, s32, void *))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x1C)))(arg0, (f32 *)&sp[0x50], (f32 *)&sp[0x56], (*(s32 *)((u8 *)(arg1) + (0x20))), temp_r28);
-    temp_f2_11 = sp[0x50] * lbl_805622DC;
-    temp_f1_7 = sp[0x51] * lbl_805622DC;
-    sp[0x50] = temp_f2_11;
-    sp[0x51] = temp_f1_7;
-    sp[0x52] *= lbl_805622DC;
-    (*(void (**)(void *, f32 *, f32 *, s32, void *, f32, f32, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x1C)))(arg1, (f32 *)&sp[0x50], (f32 *)&sp[0x53], (*(s32 *)((u8 *)(arg0) + (0x20))), temp_r29, temp_f1_7, temp_f2_11, lbl_805622DC);
+    (*(void (**)(void *, f32 *, f32 *, s32, void *))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x1C)))(arg0, (f32 *)&sp[0x47], (f32 *)&sp[0x4D], (*(s32 *)((u8 *)(arg1) + (0x20))), temp_r28);
+    temp_f2_11 = sp[0x47] * lbl_805622DC;
+    temp_f1_7 = sp[0x48] * lbl_805622DC;
+    sp[0x47] = temp_f2_11;
+    sp[0x48] = temp_f1_7;
+    sp[0x49] *= lbl_805622DC;
+    (*(void (**)(void *, f32 *, f32 *, s32, void *, f32, f32, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x1C)))(arg1, (f32 *)&sp[0x47], (f32 *)&sp[0x4A], (*(s32 *)((u8 *)(arg0) + (0x20))), temp_r29, temp_f1_7, temp_f2_11, lbl_805622DC);
 }
 #pragma dont_inline reset
 #pragma scheduling on
