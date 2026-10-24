@@ -208,7 +208,7 @@ void fn_801E1520(void) {
     Dummy801E1520 *obj = (Dummy801E1520 *)lbl_8055EA10;
     if (obj != 0) {
         if (obj != 0)
-            obj->d7(1);
+            obj->d5(1);
         lbl_8055EA10 = 0;
     }
 }
