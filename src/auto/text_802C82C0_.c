@@ -473,27 +473,21 @@ float fn_802C9744(void) { return lbl_8055FC40; }
 
 extern float __fabsf(float);
 extern double __fabs(double);
-#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_802C974C(float f0, float f1, float f2) {
     float *view = lbl_804C144C;
-    register float angle = f2;
+    float angle = f2;
     float f4;
-    register float theta;
-    register float s;
-    register float t;
-    register float a;
-    register float ratio;
+    float ratio, a, t, s, theta;
     unsigned char mode = lbl_8055FC74;
     lbl_8055FC38 = f0;
     lbl_8055FC3C = f1;
     lbl_8055FC40 = f2;
     view[2] = f2;
-    if (mode != 0) {
-        if ((unsigned char)lbl_8055FC75 == 0) goto keep_angle;
-        if ((float)__fabs((double)(lbl_8055D020 - lbl_80564EF8)) <= (*(float *)&lbl_80558DC4)) goto keep_angle;
+    if (mode != 0 && (unsigned char)lbl_8055FC75 != 0 &&
+        (float)__fabs((double)(lbl_8055D020 - lbl_80564EF8)) > (*(float *)&lbl_80558DC4)) {
         angle = lbl_80564F24 * (float)atan((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020);
     }
-keep_angle:
     lbl_8055FC4C = angle;
     theta = lbl_80564F18 * angle;
     s = (float)sin(theta);
