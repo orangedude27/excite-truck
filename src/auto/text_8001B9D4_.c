@@ -284,6 +284,38 @@ s32 fn_8001C2CC(s32 arg0, u32 arg1, const char *arg2, s32 arg3) {
     }
 }
 
+extern const char lbl_802FD750[];
+s32 fn_8001C35C(s32 arg0, s32 arg1, s32 arg2) {
+ char *list=(char *)lbl_80358658[arg0];
+ s32 count=*(s32 *)(list+4);
+ char *base,*p,*out,*input=(char *)arg2;
+ s32 room,i;
+ char *entry;
+ if(count+1>*(s32 *)(list+8))
+  ((s32 (*)(const char *, ...))fn_802E317C)(lbl_802FD750,arg0,0x280);
+ list=(char *)lbl_80358658[arg0];
+ count=*(s32 *)(list+4);
+ *(s32 *)(list+4)=count+1;
+ entry=(char *)*(void **)list+count*0x2c;
+ *(s32 *)entry=arg1;
+ base=(char *)lbl_8055D5D0;
+ base[8]=0;
+ p=*(char **)base;
+ while(*p && stricmp(p,input)!=0){while(*p)p++;p++;}
+ if(*p==0){
+  out=p;
+  room=(s32)(*(char **)(base+0)-p)+*(s32 *)(base+4)-1;
+  while((*out++=*input++)!=0){if(--room<=0){out[-1]=0;break;}}
+ }
+ *(char **)(entry+4)=p;
+ *(char *)(entry+0x10)=0;
+ *(char *)(entry+0x1c)=0;
+ *(char *)(entry+0x28)=0;
+ i=arg0*0xdac4;
+ *(s32 *)(lbl_8055D5CC+i+0x6e00)=*(s32 *)(list+4);
+ return (s32)entry;
+}
+
 void fn_8001C4D4(void) {
 
 }
@@ -358,15 +390,15 @@ s32 fn_8001CB8C(s32 flags, const char *name, void *out) {
     return 1;
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
+#pragma dont_inline fn_8001C4D8
 void fn_8001CD4C(s32 arg0, s32 arg1, s32 arg2) {
-    void (* volatile init)(void) = fn_8001C4D8;
-    init();
+    fn_8001C4D8();
     if (((s32 (*)(s32, s32, s32))fn_8001C2CC)(arg0, arg1, arg2) == 0) {
         fn_8001C35C(arg0, arg1, arg2);
     }
 }
-#pragma scheduling reset
+#pragma scheduling on
 s32 fn_8001CED4(void *arg0, s32 arg1, s32 arg2, f32 arg3) {
     void *ptr = (void *)fn_8001285C(arg1);
     s32 count = *(s32 *)((u8 *)arg0 + 0x6C);
