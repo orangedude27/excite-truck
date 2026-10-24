@@ -784,16 +784,18 @@ void fn_80194590(void *arg0) {
 
 extern float lbl_8055A488;
 extern float lbl_8056215C;
+#pragma dont_inline on
 void fn_801945F8(void *arg0) {
-    int first = *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0);
-    if (first == 0x50) {
-        int second = *(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24);
-        if (second != 3)
+    if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x294) + 0x1F0) == 0x50) {
+        if (*(int *)((unsigned char *)*(void **)((unsigned char *)arg0 + 0x288) + 0x24) != 3) {
             return;
+        }
+        fn_80194590(arg0);
+        return;
     }
     fn_80194590(arg0);
 }
-
+#pragma dont_inline reset
 void fn_80194AF4(void *unused, float *out, float *a, float *b, float t) {
     float x, y;
     double pair;
