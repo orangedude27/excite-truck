@@ -184,19 +184,18 @@ void fn_8000F330(void *arg0, void *arg1, s32 arg2) {
 }
 
 void fn_8000F384(void) {
-    if (lbl_8055D4C0 == 0) goto next0;
-    fn_80235380();
-    lbl_8055D4C0 = 0;
-next0:
-    if (lbl_8055D4C4 == 0) goto next1;
-    fn_802328D4();
-    lbl_8055D4C4 = 0;
-next1:
-    if (lbl_8055D4C8 == 0) goto done;
-    fn_802328D4();
-    lbl_8055D4C8 = 0;
-done:
-    return;
+    if (lbl_8055D4C0 != 0) {
+        fn_80235380(lbl_8055D4C0);
+        lbl_8055D4C0 = 0;
+    }
+    if (lbl_8055D4C4 != 0) {
+        fn_802328D4(lbl_8055D4C4);
+        lbl_8055D4C4 = 0;
+    }
+    if (lbl_8055D4C8 != 0) {
+        fn_802328D4(lbl_8055D4C8);
+        lbl_8055D4C8 = 0;
+    }
 }
 
 void fn_8000F3E8(void) {
