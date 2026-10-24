@@ -49,7 +49,7 @@ void fn_802ECF00(void) {
 }
 
 void fn_802ECF04(void) {
-    fn_802ECDF4();
+    (void)fn_802ECDF4();
 }
 
 void *fn_802ECF08(void *arg0, s32 arg1) {
