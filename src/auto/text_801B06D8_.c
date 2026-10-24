@@ -516,6 +516,7 @@ extern void *fn_800081F0(void);
 extern void *fn_801B83A0(void);
 extern void *fn_8013C9F4(s32);
 #pragma cplusplus on
+#pragma scheduling invalid_target
 extern "C" void fn_801B2024(void *arg0) {
     class InitObject {
     public:
@@ -539,6 +540,7 @@ extern "C" void fn_801B2024(void *arg0) {
     u32 flags;
     u8 index;
     s32 count;
+    s32 pool;
     void *result;
     lbl_8055E66C = fn_80139D4C(base + 0xF8);
     lbl_8055E670 = fn_80139D4C(base + 0x10C);
@@ -550,8 +552,10 @@ extern "C" void fn_801B2024(void *arg0) {
     count = *fn_801769D8(index);
     lbl_8055E678 = (void *)count;
     lbl_8055E67C = 0;
-    fn_8012850C((count << 7) + 0x10, base + 0x130);
-    lbl_8055E684 = fn_8002F37C(fn_801B21B8, fn_801B2118, 0x80, count);
+    pool = fn_8012850C((count << 7) + 0x10, base + 0x130);
+    lbl_8055E684 =
+        ((void *(*)(s32, void *(*)(void *), void (*)(void), s32, s32))fn_8002F37C)(
+            pool, fn_801B21B8, fn_801B2118, 0x80, count);
     __AXFXGetLfoSinTable_801769CC();
     lbl_8055E680 = fn_800081F0();
     result = ((InitObject *)fn_801B83A0())->initialize();
@@ -562,6 +566,7 @@ extern "C" void fn_801B2024(void *arg0) {
     }
     lbl_8055E674 = 0;
 }
+#pragma scheduling on
 #pragma cplusplus reset
 
 void fn_801B2118(void) {}
