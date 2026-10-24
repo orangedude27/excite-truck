@@ -1,6 +1,8 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
+#define M2C_FIELD(expr, type, offset) (*(type)((unsigned char *)(expr) + (offset)))
+
 typedef struct { float x, y, z; } Vec80295;
 extern char lbl_80349338[];
 extern char lbl_8055C998[8], lbl_8055C9A0[4], lbl_8055C9A4[8], lbl_8055C9AC[4];
