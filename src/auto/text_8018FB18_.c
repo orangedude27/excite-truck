@@ -348,7 +348,7 @@ extern void fn_80136EA4(int, int);
 extern void fn_8018ADA4(void *, f32);
 extern void fn_8018ADB4(void *, f32);
 extern void fn_8018ADBC(void *, f32);
-extern f32 lbl_8055E51C;
+extern volatile f32 lbl_8055E51C;
 extern int lbl_8055E0D0;
 extern f32 lbl_8056208C, lbl_80562090, lbl_80562094, lbl_805620D0;
 extern f32 lbl_805620D4, lbl_805620D8;
@@ -357,51 +357,88 @@ extern void fn_8017B3A8(void *, f32 *, f32 *);
 void fn_80191AB4(void *arg0) {
     struct Frame {
         u8 pad[0x50];
-        f32 vectorA[3];
         f32 vectorB[3];
-        u8 rest[0x70];
+        f32 vectorA[3];
+        u8 rest[0x18];
     } frame;
+    void *physics;
     void *sub;
     void **vtable;
     void *table;
-    int result;
+    s32 result;
+    s32 elapsed;
+    s32 frameCount;
+    s32 setting;
+    f32 initialDot;
     f32 dot;
     f32 amplitude;
-    float value;
+    f32 value;
+    f32 vectorScale;
+    f32 vx, vy, vz;
 
     fn_80191928(arg0);
-    lbl_8055E51C = PSVECMag(fn_8018AE5C());
-    dot = PSVECDotProduct((u8 *)arg0 + 0x34 + 0x118, (u8 *)arg0 + 0x34 + 0x54);
+    lbl_8055E51C = PSVECMag(((char *(*)(void *))fn_8018AE5C)(*(void **)((u8 *)arg0 + 0x34)));
+    physics = (u8 *)arg0 + 0x34;
+    initialDot = PSVECDotProduct((u8 *)physics + 0x118, (u8 *)physics + 0x54);
     sub = *(void **)((u8 *)arg0 + 0x38);
     vtable = *(void ***)sub;
-    result = ((int (*)(void *))vtable[25])(sub);
+    result = ((s32 (*)(void *))vtable[25])(sub);
     table = __AXFXGetLfoSinTable_801769CC();
     if ((*(u32 *)((u8 *)table + 0x10) & 2) != 0) amplitude = lbl_80562094;
     else amplitude = lbl_80562090;
-    value = fn_8018B084((u8 *)arg0 + 0x34);
+    result = fn_8018B084(physics);
     sub = *(void **)((u8 *)arg0 + 0x38);
     vtable = *(void ***)sub;
-    ((void (*)(void *, int))vtable[2])(sub, (int)value);
-    fn_80136EA4((int)lbl_8055E0D0, *(int *)((u8 *)arg0 + 0x3C));
-    dot = PSVECDotProduct((u8 *)arg0 + 0x34 + 0x118, (u8 *)arg0 + 0x34 + 0x54);
+    ((void (*)(void *, s32))vtable[2])(sub, result);
+    fn_80136EA4(lbl_8055E0D0, *(s32 *)((u8 *)arg0 + 0x3C));
+    dot = PSVECDotProduct((u8 *)physics + 0x118, (u8 *)physics + 0x54);
     sub = *(void **)((u8 *)arg0 + 0x38);
     vtable = *(void ***)sub;
-    value = ((float (*)(void *))vtable[3])(sub);
-    fn_8018ADA4((u8 *)arg0 + 0x34, amplitude * (lbl_8056208C + (value < 0 ? -value : value)));
+    value = ((f32 (*)(void *))vtable[3])(sub);
+    if (dot < 0) dot = -dot;
+    fn_8018ADA4(physics, amplitude * (lbl_8056208C + value));
     sub = *(void **)((u8 *)arg0 + 0x38);
     vtable = *(void ***)sub;
-    value = ((float (*)(void *))vtable[7])(sub);
+    value = ((f32 (*)(void *))vtable[7])(sub);
     if (value < lbl_805620D0) {
         sub = *(void **)((u8 *)arg0 + 0x38);
         vtable = *(void ***)sub;
-        value = ((float (*)(void *))vtable[4])(sub);
-        fn_8018ADB4((u8 *)arg0 + 0x34, value);
+        value = ((f32 (*)(void *))vtable[4])(sub);
+        fn_8018ADB4(physics, value);
     } else {
-        fn_8018ADB4((u8 *)arg0 + 0x34, lbl_8056208C);
+        fn_8018ADB4(physics, lbl_8056208C);
+    }
+    sub = *(void **)((u8 *)arg0 + 0x38);
+    vtable = *(void ***)sub;
+    *(u8 *)((u8 *)physics + 0x260E) = (u8)((int (*)(void *))vtable[12])(sub);
+    table = __AXFXGetLfoSinTable_801769CC();
+    if ((*(u32 *)((u8 *)table + 4) & 0x4000) != 0) amplitude = lbl_80562090;
+    else amplitude = lbl_80562080;
+    elapsed = *(s32 *)((u8 *)arg0 + 0xC);
+    elapsed = lbl_8055E3C4 - elapsed;
+    frameCount = *(s32 *)((u8 *)physics + 0x2620);
+    setting = lbl_8055E52A;
+    if (elapsed > 10 && *(f32 *)((u8 *)physics + 0x25F4) > lbl_805620D4 &&
+        initialDot < lbl_805620D8 && frameCount >= 3 && setting == 0) {
+        vx = *(f32 *)((u8 *)physics + 0x48);
+        vy = *(f32 *)((u8 *)physics + 0x4C);
+        vz = *(f32 *)((u8 *)physics + 0x50);
+        frame.vectorA[0] = *(f32 *)((u8 *)physics + 0x54) + vx * lbl_8056208C;
+        frame.vectorA[1] = *(f32 *)((u8 *)physics + 0x58) + vy * lbl_8056208C;
+        frame.vectorA[2] = *(f32 *)((u8 *)physics + 0x5C) + vz * lbl_8056208C;
+        vectorScale = *(f32 *)((u8 *)physics + 0x25F0);
+        if (vectorScale < lbl_80562090) vectorScale = lbl_80562090;
+        if (vectorScale > lbl_80562094) vectorScale = lbl_80562094;
+        frame.vectorA[0] *= vectorScale;
+        frame.vectorA[1] *= vectorScale;
+        frame.vectorA[2] *= vectorScale;
+        frame.vectorB[0] = *(f32 *)((u8 *)physics + 0x54);
+        frame.vectorB[1] = *(f32 *)((u8 *)physics + 0x58);
+        frame.vectorB[2] = *(f32 *)((u8 *)physics + 0x5C);
+        fn_8017B3A8(physics, frame.vectorA, frame.vectorB);
     }
     (void)dot;
     (void)result;
-    (void)frame;
 }
 
 void fn_80192BE4(void) {
