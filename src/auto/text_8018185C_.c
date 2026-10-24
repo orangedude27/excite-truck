@@ -84,6 +84,59 @@ extern void fn_801E9DD0(void *, float, float);
 extern void fn_8026A394(void *, int, int);
 typedef struct Mtx3x4Words { int value[12]; } Mtx3x4Words;
 #pragma cplusplus on
+struct Fn80186DE8CallObject {
+    virtual void d0();
+    virtual void d1();
+    virtual void d2();
+    virtual void d3();
+    virtual void d4();
+    virtual void d5();
+    virtual void d6();
+    virtual void d7();
+    virtual void d8();
+    virtual void d9();
+    virtual void d10();
+    virtual void d11();
+    virtual void d12();
+    virtual void d13();
+    virtual void d14();
+    virtual void d15();
+    virtual void d16();
+    virtual void d17();
+    virtual void d18();
+    virtual void d19();
+    virtual void d20();
+    virtual void d21();
+    virtual void d22();
+    virtual void d23();
+    virtual void d24();
+    virtual void d25();
+    virtual void d26();
+    virtual void d27();
+    virtual void d28();
+    virtual void d29();
+    virtual void d30();
+    virtual void d31();
+    virtual void d32();
+    virtual void d33();
+    virtual void d34();
+    virtual void d35();
+    virtual void d36();
+    virtual void d37();
+    virtual void d38();
+    virtual void d39();
+    virtual void d40();
+    virtual void d41();
+    virtual void d42();
+    virtual void d43();
+    virtual void d44();
+    virtual void d45();
+    virtual void d46();
+    virtual void d47();
+    virtual void d48();
+    virtual void d49();
+    virtual void invoke();
+};
 struct BA54Obj {
     virtual void unused0();
     virtual void unused1();
@@ -460,24 +513,28 @@ extern float lbl_80561E5C;
 extern float lbl_80561E80;
 extern float lbl_80561ED8;
 extern float lbl_8055E4E8;
+extern float lbl_80561DC0;
 void fn_80186DE8(void) {
-    int sp78;
-    int sp84;
-    int sp88;
-    int sp80;
-    int sp7C;
-    int i;
-    int count;
+    int sp78, sp84, sp88, sp80, sp7C;
+    int i, count, j;
     int *table;
+    int tableBase;
+    volatile int state[8];
+    volatile double values[37];
     float f18, f14, f15;
-    void *r18;
+    float first[3], second[3];
+    float *velocity;
+    void *r18, *node;
+    char *r19;
+    void **vtable;
 
     fn_80190E6C();
     if (fn_801C5B60() != 0) return;
     fn_80196A9C();
     fn_801C56AC();
     r18 = *fn_801B83A0();
-    ((void (*)(void))r18)();
+    vtable = *(void ***)r18;
+    ((void (*)(void *))vtable[0xC8 / 4])(r18);
     sp78 = 0;
     fn_801BEDA8(&sp88, &sp84, &sp80, &sp7C, &sp78);
     table = (int *)lbl_804348E8;
@@ -486,17 +543,85 @@ void fn_80186DE8(void) {
     f15 = lbl_80561CE4;
     i = 0;
     count = 0;
-    while (i < 1) {
+    while (count < sp78) {
         r18 = (void *)table[0];
+        r19 = (char *)(void *)sp88 + i;
         fn_80183E7C(r18);
-        if (*((float *)r18 + 0x4C / 4) >= f18) {
-            /* body */
+        *((unsigned char *)r18 + 0x1E9) = 1;
+        if (*(float *)((char *)r18 + 0x4C) < f18) {
+            node = *(void **)((char *)r18 + 0xD0);
+            while (node != 0) {
+                fn_801ADB44(node, r18);
+                node = *(void **)node;
+            }
+            fn_8017C7C8(r18, first, second);
+            if (*((unsigned char *)r18 + 0x26AC)) {
+                first[0] = first[1] = first[2] = f18;
+                second[0] = second[1] = second[2] = f18;
+            }
+            velocity = (float *)((char *)r18 + 0x124);
+            if (PSVECDotProduct(velocity, velocity) > f15) {
+                PSVECNormalize(velocity, velocity);
+                velocity[0] *= f14;
+                velocity[1] *= f14;
+                velocity[2] *= f14;
+            }
+            for (j = 0; j < 3; j++) {
+                *(float *)(r19 + 0x90 + j * 4) += first[j];
+                *(float *)(r19 + 0xA0 + j * 4) += second[j];
+            }
         }
         table += 1;
         i += 0xB0;
         count += 1;
     }
     fn_801BEDD4();
+    values[1] = lbl_80561D2C;
+    tableBase = (int)(void *)lbl_804348E8;
+    values[0] = lbl_80561D44;
+    state[0] = 0;
+    values[2] = lbl_80561DD0;
+    state[1] = 0;
+    values[3] = lbl_80561D00;
+    state[2] = 0;
+    values[4] = lbl_80561DA0;
+    values[5] = lbl_80561DC0;
+    values[6] = lbl_80561CB0;
+    state[3] = 0;
+    values[7] = lbl_80561CD8;
+    state[4] = 0;
+    values[8] = lbl_80561E58;
+    state[5] = 0;
+    values[10] = lbl_80561D38;
+    values[11] = lbl_80561E60;
+    values[12] = lbl_80561E64;
+    values[13] = lbl_80561E68;
+    tableBase += 0x4950;
+    values[9] = lbl_80561E5C;
+    values[14] = lbl_80561E70;
+    values[15] = lbl_80561E74;
+    state[6] = 0;
+    values[16] = lbl_80561E78;
+    values[17] = lbl_80561E7C;
+    values[18] = lbl_80561D04;
+    values[19] = lbl_80561DA4;
+    values[20] = lbl_80561EA4;
+    values[21] = lbl_80561EAC;
+    values[22] = lbl_80561EA8;
+    values[23] = lbl_80561DEC;
+    values[24] = lbl_80561EB0;
+    values[25] = lbl_80561DE4;
+    values[26] = lbl_80561EB8;
+    values[27] = lbl_80561EB4;
+    values[28] = lbl_80561EBC;
+    values[29] = lbl_80561EC0;
+    values[30] = lbl_80561DA4;
+    values[31] = lbl_80561EC4;
+    values[32] = *(double *)&lbl_80561ED8;
+    values[33] = lbl_80561EC8;
+    values[34] = lbl_80561ECC;
+    values[35] = lbl_80561ED0;
+    values[36] = lbl_80561D50;
 }
 
 extern float lbl_80561CAC, lbl_80561CDC, lbl_80561D90, lbl_80561D9C;
