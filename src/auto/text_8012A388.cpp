@@ -556,6 +556,7 @@ extern "C" const char lbl_8032AEB4[];
 extern "C" u8 lbl_805599D8;
 #pragma push
 #pragma use_lmw_stmw off
+#pragma scheduling invalid_target
 extern "C" void fn_8012BF28(void) {
     s32 paths[3], header[5], inner, size;
     s32 *pathPtr, *table;
@@ -648,7 +649,6 @@ read_rest:
         ++pathPtr; ++i;
     } while (i < 3);
 }
-#pragma pop
 extern "C" s32 fn_8012B534(s32 *, s32);
 extern "C" s32 fn_8012C33C(void) {
     s32 sp8;
