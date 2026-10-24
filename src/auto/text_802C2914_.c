@@ -2,7 +2,7 @@
 // split_file divides it into the game's real files (file_status shows its range).
 
 extern char lbl_8055FB84;
-extern unsigned int lbl_8034B008;
+__declspec(section ".data") extern unsigned int lbl_8034B008;
 extern void *lbl_8055FB80;
 extern int fn_80128668(void *);
 extern int fn_802BAD9C(int);
@@ -32,18 +32,14 @@ void fn_802C29A0(void) {
     struct Node { struct Node *next; struct Vtable *vtable; };
     {
         struct Node *node;
-        for (node = (struct Node *)lbl_8055FB80; node != 0; node = node->next) {
-            struct Vtable *vtable = node->vtable;
-            sum += vtable->calc(node);
-        }
+        for (node = (struct Node *)lbl_8055FB80; node != 0; node = node->next)
+            sum += node->vtable->calc(node);
     }
     fn_802BAD9C(sum);
     {
         struct Node *node;
-        for (node = (struct Node *)lbl_8055FB80; node != 0; node = node->next) {
-            struct Vtable *vtable = node->vtable;
-            vtable->finish(node);
-        }
+        for (node = (struct Node *)lbl_8055FB80; node != 0; node = node->next)
+            node->vtable->finish(node);
     }
     lbl_8055FB84 = 1;
 }
