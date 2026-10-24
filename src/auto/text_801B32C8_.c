@@ -8,13 +8,8 @@
 struct VTable_801B3C98 {
     virtual void destroy(s32);
 };
-struct PrevDtorVTable_801B3BD4 {
-    virtual void f0();
-    virtual void f1();
-    virtual void destroy(s32);
-};
 extern "C" static inline void callPrevDtorCpp_801B3BD4(void *p) {
-    ((PrevDtorVTable_801B3BD4 *)p)->destroy(1);
+    ((VTable_801B3C98 *)p)->destroy(1);
 }
 #pragma cplusplus reset
 
@@ -166,15 +161,13 @@ void* fn_801B3BD4(void* arg0, s32 arg1) {
             void* prev = *(void**)((u8*)arg0 + 0x1C);
             *(void**)arg0 = (void*)&lbl_80335DAC;
             if (prev != NULL) {
-                if (prev != NULL) {
-                    (*(void (**)(void*, s32))(*(void***)prev + 2))(prev, 1);
-                }
+                if (prev != NULL)
+                    callPrevDtorCpp_801B3BD4(prev);
                 *(void**)((u8*)arg0 + 0x1C) = NULL;
             }
         }
-        if (arg1 > 0) {
+        if (arg1 > 0)
             fn_80128668(arg0);
-        }
     }
     return arg0;
 }
