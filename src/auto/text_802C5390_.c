@@ -347,21 +347,19 @@ s32 fn_802C5EB8(void *arg0, u32 arg1) {
     }
     return (s32)result;
 }
-#pragma scheduling on
+#pragma scheduling invalid_target
 void *fn_802C5EFC(int arg0) {
     int count = lbl_804C13A8[0];
     void *entry = (void *)(unsigned long)lbl_804C13A8[2];
-    if (count > 0) {
-        while (count-- > 0) {
-            if (*(u16 *)((char *)entry + 4) != 0 && *(int *)entry == arg0) {
-                return entry;
-            }
-            entry = (void *)((char *)entry + 0x10);
+    int i;
+    for (i = 0; i < count; i++, entry = (void *)((char *)entry + 0x10)) {
+        if (*(u16 *)((char *)entry + 4) != 0 && *(int *)entry == arg0) {
+            return entry;
         }
     }
     return 0;
 }
-
+#pragma scheduling on
 void fn_802C6068(void *arg0) {
     *(s16 *)((char *)arg0 + 4) = 0;
 }
