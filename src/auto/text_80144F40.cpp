@@ -244,6 +244,7 @@ extern "C" s32 lbl_80559DE8;
 extern "C" s32 lbl_80559DEC;
 extern "C" s32 lbl_80559DF0;
 extern "C" s32 lbl_80559DF4;
+extern "C" __declspec(section ".sdata") char lbl_80559DFC[];
 extern "C" void fn_80145438(void *arg0, void *arg1) {
     class V { public: virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3(); virtual void f4(); virtual void f5(); virtual void f6(); virtual f32 f7(const char *); };
     V *obj = (V *)arg1;
