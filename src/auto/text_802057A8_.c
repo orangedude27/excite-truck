@@ -14,7 +14,6 @@ extern void fn_80205FCC(void);
 extern void fn_802059C0(void);
 extern int fn_801B8570(void);
 extern void fn_801E866C(int);
-#pragma dont_inline fn_80205964
 extern void fn_802C8CBC(int);
 extern void fn_802C8DBC(int);
 extern void fn_802C8E48(void);
@@ -51,20 +50,24 @@ extern void *fn_801E7E3C(void);
 extern void *fn_801EA9A0(int);
 extern float lbl_80563194,lbl_805631A8,lbl_805631B8,lbl_805631C4,lbl_805631C8,lbl_805631CC,lbl_805631D0,lbl_805631D4,lbl_805631D8,lbl_805631DC,lbl_805631E0,lbl_805631E4,lbl_805631E8;
 extern double lbl_805631B0;
-#pragma ppc_psq_save off
+#pragma ppc_psq_save on
 #pragma scheduling invalid_target
 void fn_802059C0(void) {
-    double sp18,sp20;
+    double sp18,sp20,bias2;
     float temp_f14,temp_f14_2,temp_f15,temp_f16,temp_f17,temp_f19,temp_f21,temp_f23,temp_f24,temp_f25,temp_f26,temp_f27,temp_f28,temp_f29,temp_f30,temp_f31;
     float var_f0,var_f18,var_f1,var_f1_2,var_f1_3,var_f20,var_f20_2,var_f2;
     int var_r25,temp_r29,temp_r26,temp_r26_2,temp_r27,temp_r24,temp_r23,temp_r4,var_r0,var_r4;
     void *temp_r3;
+    register unsigned int raw;
+    union { struct { unsigned int hi,lo; } words; double d; } conv;
     temp_f21=fn_8013672C();
-    temp_f19=temp_f21*(float)*(int*)((char*)fn_801E7E3C()+8);
+    raw=(unsigned int)*(int*)((char*)fn_801E7E3C()+8);
+    conv.words.hi=0x43300000; conv.words.lo=raw^0x80000000U;
+    temp_f19=temp_f21*(float)(conv.d-lbl_805631B0);
     temp_r29=fn_801E85A4(); temp_f24=lbl_805631A8; var_r25=0;
     sp18=(double)lbl_805631E8; temp_f23=lbl_805631B8; temp_f25=lbl_805631C4; temp_f26=lbl_805631C8;
     temp_f17=lbl_805631CC; temp_f27=lbl_805631D4; temp_f28=lbl_805631D0; temp_f29=lbl_805631D8;
-    temp_f30=lbl_805631DC; temp_f31=lbl_805631E0; sp20=(double)lbl_805631E4;
+    temp_f30=lbl_805631DC; temp_f31=lbl_805631E0; sp20=(double)lbl_805631E4; bias2=lbl_805631B0;
     goto loop_condition;
 loop_body:
         temp_r26=((int(*)(int))fn_801E866C)(var_r25);
@@ -73,18 +76,18 @@ loop_body:
             var_r4=*(int*)((char*)temp_r3+0x1C);
             var_f1=*(float*)((char*)*(void**)((char*)temp_r3+8)+0x2C8);
             if(var_r4==0){var_r4=1;var_f1=lbl_805631A8;}
-            var_f1_2=(var_f1+((float)(var_r4-1)*temp_f21))/temp_f19;
+            raw=(unsigned int)(var_r4-1); conv.words.hi=0x43300000; conv.words.lo=raw^0x80000000U;
+            var_f1_2=(var_f1+((float)(conv.d-bias2)*temp_f21))/temp_f19;
             if(temp_f23<var_f1_2)var_f1_2=temp_f23;
             var_f0=(var_f1_2-temp_f24)/temp_f25;
             if(temp_f23<var_f0)var_f0=temp_f23;
-            if(var_f0>temp_f24){}else{var_f0=temp_f24;}
-            var_r0=0xFF0000FF; temp_r4=(int)(temp_f24+var_f0*temp_f26);
-            if(var_r25==0)var_r0=0xFFFF0000;
-            temp_r24=(temp_r4<<24)|(var_r0&0xFFFFFF); temp_r23=temp_r24&0xFF7F7F7F;
+            if(temp_f24>var_f0)var_f0=temp_f24;
+            temp_r4=(int)(temp_f24+var_f0*temp_f26);
+            temp_r24=(temp_r4<<24)|(var_r25==0 ? 0xFFFF0000 : 0xFF0000FF); temp_r23=temp_r24&0xFF7F7F7F;
             if(var_r25==0)var_f18=lbl_80563194;else var_f18=lbl_805631B8;
             temp_f16=var_f18*temp_f17; var_f2=(var_f1_2-temp_f24)/temp_f23; temp_f15=temp_f28*(temp_f27*temp_f17);
             if(temp_f23<var_f2)var_f2=temp_f23;
-            if(var_f2>temp_f24){}else{var_f2=temp_f24;}
+            if(temp_f24>var_f2)var_f2=temp_f24;
             temp_f14=temp_f15+var_f2*(temp_f23-temp_f15);
             if((unsigned char)temp_r4!=0) {
                 fn_802C8CBC(-1); fn_802C8DBC(6);
@@ -96,7 +99,7 @@ loop_body:
                 fn_802057A8(temp_r24,1,var_f18,var_f20,lbl_805631A8,lbl_805631A8);
                 fn_802057A8(temp_r23,1,lbl_805631A8,var_f20,lbl_805631A8,lbl_805631A8);
                 var_f1_3=(var_f20-temp_f30)/temp_f31; if(temp_f23<var_f1_3)var_f1_3=temp_f23;
-                if(var_f1_3>temp_f24){}else{var_f1_3=temp_f24;}
+                if(temp_f24>var_f1_3)var_f1_3=temp_f24;
                 var_f20_2=var_f20-((float)sp20+(var_f1_3*(float)sp18));
                 if(temp_f24>var_f20_2)var_f20_2=temp_f24;
                 fn_802057A8(temp_r27,1,var_f18,var_f20_2,lbl_805631A8,lbl_805631A8);
