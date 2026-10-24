@@ -16,6 +16,7 @@ void fn_801D14EC(void) {
 }
 #pragma scheduling on
 
+extern float lbl_80562A58;
 void fn_801D153C(void) {
     fn_801D1540();
 }
