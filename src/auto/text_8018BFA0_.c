@@ -199,9 +199,10 @@ void fn_8018F76C(void *, int);                   /* extern */
 int fn_801B8610(int, int);                      /* extern */
 void fn_801BF2A4(void *, int, float *, void *, void *, int, void *, float, float, float); /* extern */
 void fn_802E30C8(void *, int);                   /* extern */
+#pragma push
 #pragma small_data off
 extern char lbl_80332758;
-#pragma small_data on
+#pragma pop
 extern float lbl_80558DC4;
 extern float lbl_8055A460;
 extern float lbl_80561F98;
