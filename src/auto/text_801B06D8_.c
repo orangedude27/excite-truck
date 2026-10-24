@@ -507,6 +507,63 @@ void fn_801B1FEC(void *arg0, s32 arg1, s32 arg2, s32 *arg3) {
         *(s32 *)((u8 *)arg0 + 0x60), (u8 *)arg0 + 0x7C);
 }
 
+extern s32 fn_80139D4C(const char *);
+extern void fn_80204A1C(const char *, u8 *);
+extern s32 *fn_801769D8(u8);
+extern s32 fn_8012850C(s32, void *);
+extern void *fn_8002F37C(void *, void *, s32, s32);
+extern void *fn_800081F0(void);
+extern void *fn_801B83A0(void);
+extern void *fn_8013C9F4(s32);
+#pragma cplusplus on
+extern "C" void fn_801B2024(void *arg0) {
+    class InitObject {
+    public:
+        virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
+        virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
+        virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
+        virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
+        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
+        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v24(); virtual void v25(); virtual void v26(); virtual void v27();
+        virtual void v28(); virtual void v29(); virtual void v30(); virtual void v31();
+        virtual void v32(); virtual void v33(); virtual void v34(); virtual void v35();
+        virtual void v36(); virtual void v37(); virtual void v38(); virtual void v39();
+        virtual void v40(); virtual void v41(); virtual void v42(); virtual void v43();
+        virtual void v44(); virtual void v45(); virtual void v46(); virtual void v47();
+        virtual void v48(); virtual void v49(); virtual void v50(); virtual void v51();
+        virtual void v52(); virtual void v53(); virtual void v54(); virtual void v55();
+        virtual void *initialize();
+    };
+    register char *base = lbl_80335A58;
+    u32 flags;
+    u8 index;
+    s32 count;
+    void *result;
+    lbl_8055E66C = fn_80139D4C(base + 0xF8);
+    lbl_8055E670 = fn_80139D4C(base + 0x10C);
+    fn_80204A1C(base + 0x120, &lbl_8055E692);
+    flags = *(u32 *)((u8 *)arg0 + 4);
+    index = (flags >> 8) & 1;
+    lbl_8055E690 = index;
+    lbl_8055E691 = (flags >> 9) & 1;
+    count = *fn_801769D8(index);
+    lbl_8055E678 = (void *)count;
+    lbl_8055E67C = 0;
+    fn_8012850C((count << 7) + 0x10, base + 0x130);
+    lbl_8055E684 = fn_8002F37C(fn_801B21B8, fn_801B2118, 0x80, count);
+    __AXFXGetLfoSinTable_801769CC();
+    lbl_8055E680 = fn_800081F0();
+    result = ((InitObject *)fn_801B83A0())->initialize();
+    lbl_8055E68C = result;
+    if (result == 0) {
+        result = fn_8013C9F4(0);
+        lbl_8055E68C = result;
+    }
+    lbl_8055E674 = 0;
+}
+#pragma cplusplus reset
+
 void fn_801B2118(void) {}
 
 void *fn_801B21B8(void *arg0) {
