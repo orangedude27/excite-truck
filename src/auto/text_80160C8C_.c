@@ -125,6 +125,58 @@ struct Dummy_80163F7C {
     virtual void f22();
     virtual s32 f23(const char *, ...);
 };
+struct Dummy_80163F7C_VT1 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual const char *f4(const char *, const char *);
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
+    virtual s32 f10(const char *, s32);
+    virtual void f11();
+    virtual void f12();
+    virtual void f13();
+    virtual void f14();
+    virtual void f15();
+    virtual void f16();
+    virtual void f17();
+    virtual void f18();
+    virtual void f19();
+    virtual void f20();
+    virtual s32 f21(const char *);
+    virtual void f22();
+    virtual void f23();
+};
+struct Dummy_80163F7C_VT3 {
+    virtual void f0();
+    virtual void f1();
+    virtual void f2();
+    virtual void f3();
+    virtual const char *f4(const char *, const char *);
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
+    virtual s32 f10(const char *, s32);
+    virtual void f11();
+    virtual void f12();
+    virtual void f13();
+    virtual void f14();
+    virtual void f15();
+    virtual void f16();
+    virtual void f17();
+    virtual void f18();
+    virtual void f19();
+    virtual void f20();
+    virtual s32 f21(const char *, s32, void *);
+    virtual void f22();
+    virtual void f23();
+};
 #pragma cplusplus off
 
 extern s32 lbl_8055E300;
@@ -1024,37 +1076,44 @@ extern int sscanf(const char *, const char *, ...);
 extern unsigned char lbl_8055A108[];
 extern unsigned char lbl_8055A10C[];
 extern f32 lbl_80561864;
-void fn_80163F7C(void *arg0) {
+extern s32 fn_802C6FC0(const char *, s32, s32);
+#pragma cplusplus on
+extern "C" void fn_80163F7C(void *arg0) {
     u8 *self = (u8 *)arg0;
+    register const char *name = (const char *)(lbl_8032F588 + 0x588);
+    s32 result = fn_802C6FC0(name, 0, 0);
+    s32 count, i, bestIndex, counter;
     u8 *obj;
     u8 *out;
-    f32 bounds[6];
     f32 *table;
     f32 *points;
-    f32 dx, dy, best, x0, y0, x1, y1, x2, y2;
-    f32 vx, vy, cross[3], scale;
-    int count, i, bestIndex, keyResult;
+    struct {
+        u8 pad0[0x10];
+        f32 vectors[9];
+        u8 pad1[4];
+        f32 bounds[6];
+    } work;
 
-    obj = *(u8 **)(self + 4);
-    *(s32 *)(self + 0xA0) = fn_802C6FC0(lbl_8032F588 + 0x588, 0, 0);
-    if (*(s32 *)(self + 0xA0) == -1) {
-        fn_802E30C8((const char *)(lbl_8032F588 + 0x598), (const char *)(lbl_8032F588 + 0x588));
+    *(s32 *)(self + 0xA0) = result;
+    if (result == -1) {
+        ((void (*)(const char *, ...))fn_802E30C8)((const char *)(lbl_8032F588 + 0x598), name);
     } else {
-        fn_802C77F0(bounds);
-        dx = bounds[3] - bounds[2];
-        dy = bounds[1] - bounds[0];
-        if (dy > dx) dx = dy;
-        dy = bounds[5] - bounds[4];
-        if (dy > dx) dx = dy;
-        *(f32 *)(self + 0xCC) = dx * lbl_8056185C;
+        f32 first, second;
+        ((void (*)(s32, f32 *))fn_802C77F0)(result, work.bounds);
+        first = work.bounds[3] - work.bounds[2];
+        second = work.bounds[1] - work.bounds[0];
+        if (second > first) first = second;
+        second = work.bounds[5] - work.bounds[4];
+        if (second > first) first = second;
+        *(f32 *)(self + 0xCC) = first * lbl_8056185C;
     }
     *(void **)(self + 0xD0) = fn_802CAC28(lbl_8032F588 + 0x5C0, 0);
     *(s32 *)(self + 0xDC) = fn_80207848(lbl_8032F588 + 0x5D0, 1);
     obj = *(u8 **)(self + 4);
-    *(u8 *)(self + 0xD8) = (u8)((s32 (*)(void *, const char *, s32))(*(void ***)obj)[12])(obj, (const char *)(lbl_8032F588 + 0x5DC), 0);
+    *(u8 *)(self + 0xD8) = (u8)((Dummy_80163F7C *)obj)->f12((const char *)(lbl_8032F588 + 0x5DC), 0);
     obj = *(u8 **)(self + 4);
     {
-        const char *value = ((const char *(*)(void *, const char *, const char *))(*(void ***)obj)[6])(obj, (const char *)(lbl_8032F588 + 0x5EC), (const char *)(lbl_8032F588 + 0x5FC));
+        const char *value = ((Dummy_80163F7C *)obj)->f6((const char *)(lbl_8032F588 + 0x5EC), (const char *)(lbl_8032F588 + 0x5FC));
         if (sscanf(value, (const char *)lbl_8055A108, (s32 *)(self + 0xD4)) != 1) {
             *(s32 *)(self + 0xD4) = -1;
         }
@@ -1062,71 +1121,81 @@ void fn_80163F7C(void *arg0) {
     obj = *(u8 **)(self + 4);
     *(s32 *)(self + 0xE4) = 0;
     if (obj != 0) {
-        keyResult = ((s32 (*)(void *, const char *))(*(void ***)obj)[23])(obj, (const char *)lbl_8055A10C);
-        if (keyResult != 0) {
+        if (((Dummy_80163F7C *)obj)->f23((const char *)lbl_8055A10C) != 0) {
             i = *(s32 *)(self + 0xE4);
             out = (u8 *)(*(u8 **)(self + 0xE0) + i * 0x48);
-            ((s32 (*)(void *, const char *, s32, void *))(*(void ***)obj)[23])(obj, (const char *)lbl_8055A10C, i, *(void **)(self + 0xE0));
+            *(s32 *)(self + 0xE4) = i + 1;
+            ((Dummy_80163F7C *)obj)->f23((const char *)lbl_8055A10C, i, *(void **)(self + 0xE0));
             table = (f32 *)fn_801399FC();
             *(f32 **)(out + 0x34) = table;
             count = *(s32 *)table;
             points = (f32 *)((u8 *)table + 8);
-            best = lbl_80561864;
-            bestIndex = -1;
-            for (i = 1; i <= count; i++) {
-                s32 n = *(s32 *)table;
-                s32 next = i % n;
-                s32 prev = (i - 1) % n;
-                dx = points[next * 2 + 1] - points[prev * 2 + 1];
-                dy = points[next * 2] - points[prev * 2];
-                scale = dy * dy + dx * dx;
-                if (scale > best) {
-                    best = scale;
-                    bestIndex = i;
+            {
+                f32 best = lbl_80561864;
+                f32 dx, dy, score;
+                bestIndex = -1;
+                counter = count;
+                i = 1;
+                if (counter >= 1) {
+                    do {
+                        s32 n = *(s32 *)table;
+                        s32 next = i % n;
+                        s32 prev = (i - 1) % n;
+                        dx = points[next * 2 + 1] - points[prev * 2 + 1];
+                        dy = points[next * 2] - points[prev * 2];
+                        score = dy * dy + dx * dx;
+                        if (score > best) {
+                            best = score;
+                            bestIndex = i;
+                        }
+                        i++;
+                    } while (--counter != 0);
                 }
             }
-            i = (bestIndex - 1) % count;
-            x0 = ((f32 *)table)[i * 2 + 2];
-            y0 = ((f32 *)table)[i * 2 + 3];
-            *(f32 *)(out + 0x0C) = x0;
-            *(f32 *)(out + 0x10) = lbl_80561848;
-            *(f32 *)(out + 0x14) = y0;
-            i = bestIndex % count;
-            x1 = ((f32 *)table)[i * 2 + 2];
-            y1 = ((f32 *)table)[i * 2 + 3];
-            *(f32 *)(out + 0x18) = x1;
-            *(f32 *)(out + 0x1C) = lbl_80561848;
-            *(f32 *)(out + 0x20) = y1;
-            *(f32 *)(out + 0x24) = (x0 + x1) * lbl_8056185C;
-            x2 = x0 - x1;
-            *(f32 *)(out + 0x28) = (y0 + y1) * lbl_8056185C;
-            y2 = y0 - y1;
-            i = (bestIndex + 1) % count;
-            vx = ((f32 *)table)[i * 2 + 2] - x1;
-            vy = ((f32 *)table)[i * 2 + 3] - y1;
-            cross[0] = vx;
-            cross[1] = lbl_80561848;
-            cross[2] = vy;
-            PSVECNormalize(cross, cross);
-            cross[0] = x2;
-            cross[1] = lbl_80561848;
-            cross[2] = y2;
-            PSVECNormalize(cross, cross);
-            PSVECCrossProduct(&vx, &x2, cross);
-            if (cross[1] > lbl_80561848) {
-                *(f32 *)(out + 0x2C) = x0 - *(f32 *)(out + 0x24);
-                *(f32 *)(out + 0x30) = y0 - *(f32 *)(out + 0x28);
-            } else {
-                *(f32 *)(out + 0x2C) = x1 - *(f32 *)(out + 0x24);
-                *(f32 *)(out + 0x30) = y1 - *(f32 *)(out + 0x28);
+            {
+                f32 x0, y0, x1, y1;
+                i = (bestIndex - 1) % count;
+                x0 = points[i * 2];
+                y0 = points[i * 2 + 1];
+                *(f32 *)(out + 0x0C) = x0;
+                *(f32 *)(out + 0x10) = lbl_80561848;
+                *(f32 *)(out + 0x14) = y0;
+                i = bestIndex % count;
+                x1 = points[i * 2];
+                y1 = points[i * 2 + 1];
+                *(f32 *)(out + 0x18) = x1;
+                *(f32 *)(out + 0x1C) = lbl_80561848;
+                *(f32 *)(out + 0x20) = y1;
+                *(f32 *)(out + 0x24) = (x0 + x1) * lbl_8056185C;
+                *(f32 *)(out + 0x28) = (y0 + y1) * lbl_8056185C;
+                i = (bestIndex + 1) % count;
+                work.vectors[0] = points[i * 2] - x1;
+                work.vectors[1] = lbl_80561848;
+                work.vectors[2] = points[i * 2 + 1] - y1;
+                work.vectors[3] = x0 - x1;
+                work.vectors[4] = lbl_80561848;
+                work.vectors[5] = y0 - y1;
+                PSVECNormalize(&work.vectors[0], &work.vectors[0]);
+                PSVECNormalize(&work.vectors[3], &work.vectors[3]);
+                PSVECCrossProduct(&work.vectors[0], &work.vectors[3], &work.vectors[6]);
+                if (work.vectors[7] > lbl_80561848) {
+                    *(f32 *)(out + 0x2C) = x0 - *(f32 *)(out + 0x24);
+                    *(f32 *)(out + 0x30) = y0 - *(f32 *)(out + 0x28);
+                } else {
+                    *(f32 *)(out + 0x2C) = x1 - *(f32 *)(out + 0x24);
+                    *(f32 *)(out + 0x30) = y1 - *(f32 *)(out + 0x28);
+                }
             }
-            x0 = *(f32 *)(out + 0x2C);
-            y0 = -*(f32 *)(out + 0x30);
-            *(f32 *)(out + 0x2C) = y0;
-            *(f32 *)(out + 0x30) = x0;
-            scale = lbl_80561840 / (f32)fn_8002F234(y0 * y0 + x0 * x0);
-            *(f32 *)(out + 0x2C) *= scale;
-            *(f32 *)(out + 0x30) *= scale;
+            {
+                f32 dx = *(f32 *)(out + 0x2C);
+                f32 dy = -*(f32 *)(out + 0x30);
+                f32 scale;
+                *(f32 *)(out + 0x2C) = dy;
+                *(f32 *)(out + 0x30) = dx;
+                scale = lbl_80561840 / (f32)fn_8002F234(dy * dy + dx * dx);
+                *(f32 *)(out + 0x2C) *= scale;
+                *(f32 *)(out + 0x30) *= scale;
+            }
             *(u8 *)(out + 0x3D) = 0;
             *(u8 *)(out + 0x3E) = 0;
             *(u8 *)(out + 0x3F) = 0;
@@ -1140,7 +1209,7 @@ void fn_80163F7C(void *arg0) {
         }
     }
 }
-
+#pragma cplusplus off
 int fn_801643C8(void *arg0) {
     int var_r30;
     int var_r31;
