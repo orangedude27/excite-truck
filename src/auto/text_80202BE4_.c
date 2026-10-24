@@ -89,51 +89,19 @@ void fn_80202BFC(s32 arg0) {
     } while(i<2);
 }
 
-#pragma scheduling invalid_target
+#pragma paired_single off
 void fn_80202F58(void *arg0, void *arg1, void *arg2) {
-    volatile f32 work[28];
-    f32 temp_f0;
-    f32 temp_f0_2;
-    f32 temp_f0_3;
-    f32 temp_f1;
-    f32 temp_f1_2;
-    f32 temp_f1_3;
-    f32 temp_f1_4;
-    f32 temp_f1_5;
-    f32 temp_f1_6;
-    f32 temp_f1_7;
-    f32 temp_f1_8;
-    f32 temp_f2;
-    f32 temp_f2_2;
-    f32 temp_f2_3;
-    f32 temp_f30;
-    f32 temp_f30_2;
-    f32 temp_f30_3;
-    f32 temp_f31;
-    f32 temp_f3;
-    f32 temp_f3_10;
-    f32 temp_f3_2;
-    f32 temp_f3_3;
-    f32 temp_f3_4;
-    f32 temp_f3_5;
-    f32 temp_f3_6;
-    f32 temp_f3_7;
-    f32 temp_f3_8;
-    f32 temp_f3_9;
-    f32 temp_f4;
-    f32 temp_f4_2;
-    f32 temp_f4_3;
-    f32 temp_f5;
-    f32 temp_f5_2;
-    f32 temp_f6;
-    f32 temp_f6_2;
-    f32 temp_f7;
-    f32 var_f1;
-    f32 var_f2;
+    union { f32 f; u32 u; } work[28];
+    f32 temp_f0, temp_f0_2, temp_f0_3;
+    f32 temp_f1, temp_f1_2, temp_f1_3, temp_f1_4, temp_f1_5, temp_f1_6, temp_f1_7, temp_f1_8;
+    f32 temp_f2, temp_f2_2, temp_f2_3;
+    f32 temp_f30, temp_f30_2, temp_f30_3, temp_f31;
+    f32 temp_f3, temp_f3_10, temp_f3_2, temp_f3_3, temp_f3_4, temp_f3_5, temp_f3_6, temp_f3_7, temp_f3_8, temp_f3_9;
+    f32 temp_f4, temp_f4_2, temp_f4_3, temp_f5, temp_f5_2, temp_f6, temp_f6_2, temp_f7;
+    f32 var_f1, var_f2;
     f64 temp_f29;
     void *temp_r3;
-    f32 scale;
-    f32 zero, one;
+    f32 scale, zero, one;
     u32 copy0, copy1;
 
     if ((f32)__fabs((double)(*(f32 *)((u8 *)arg1 + 0x1C))) < lbl_805630F0) {
@@ -141,66 +109,62 @@ void fn_80202F58(void *arg0, void *arg1, void *arg2) {
         temp_f3 = (*(f32 *)((u8 *)arg0 + 8)) - (*(f32 *)((u8 *)arg1 + 0x2C));
         temp_f5 = (*(f32 *)((u8 *)arg0 + 4));
         temp_f1 = temp_f6 * lbl_805630F4;
-        work[13] = temp_f6;
+        work[13].f = temp_f6;
         temp_f4 = temp_f5 - (*(f32 *)((u8 *)arg1 + 0x28));
         temp_f0 = temp_f3 * lbl_805630F4;
-        work[15] = temp_f3;
-        work[14] = temp_f4;
-        work[25] = lbl_805630CC;
-        work[26] = lbl_805630CC;
-        work[27] = lbl_805630CC;
-        work[22] = temp_f1;
-        work[24] = temp_f0;
-        work[23] = lbl_805630CC;
-        temp_f1_2 = PSVECMag((const void *)&work[22]);
+        work[15].f = temp_f3;
+        work[14].f = temp_f4;
+        work[25].f = lbl_805630CC;
+        work[26].f = lbl_805630CC;
+        work[27].f = lbl_805630CC;
+        work[22].f = temp_f1;
+        work[24].f = temp_f0;
+        work[23].f = lbl_805630CC;
+        temp_f1_2 = PSVECMag((const void *)&work[22].f);
         var_f2 = lbl_805630D8;
-        if (var_f2 > temp_f1_2) {
-
-        } else {
-            var_f2 = temp_f1_2;
-        }
+        var_f2 = var_f2 > temp_f1_2 ? var_f2 : temp_f1_2;
         temp_f4_2 = lbl_805630D4 / var_f2;
-        temp_f3_2 = work[22] * temp_f4_2;
-        temp_f2 = work[23] * temp_f4_2;
-        temp_f1_3 = work[24] * temp_f4_2;
-        work[22] = temp_f3_2;
-        work[23] = temp_f2;
-        work[24] = temp_f1_3;
-        work[19] = lbl_805630CC;
-        work[20] = lbl_805630D4;
-        work[21] = lbl_805630CC;
-        work[10] = work[13];
-        work[11] = work[14];
-        work[12] = work[15];
-        fn_80202D50((void *)&work[10], work[14], work[13], temp_f1_3, temp_f2, temp_f3_2, temp_f4_2, lbl_805630D4);
-        PSVECCrossProduct((f32 *)&work[19], (f32 *)&work[22], (f32 *)&work[16]);
-        fn_802C8B98(lbl_8055ED00, (s32)&work[16]);
-        copy0 = ((volatile u32 *)&work[16])[0];
-        copy1 = ((volatile u32 *)&work[16])[1];
+        temp_f3_2 = work[22].f * temp_f4_2;
+        temp_f2 = work[23].f * temp_f4_2;
+        temp_f1_3 = work[24].f * temp_f4_2;
+        work[22].f = temp_f3_2;
+        work[23].f = temp_f2;
+        work[24].f = temp_f1_3;
+        work[19].f = lbl_805630CC;
+        work[20].f = lbl_805630D4;
+        work[21].f = lbl_805630CC;
+        work[10].u = work[13].u;
+        work[11].u = work[14].u;
+        work[12].u = work[15].u;
+        fn_80202D50((void *)&work[10].f);
+        PSVECCrossProduct((f32 *)&work[19].f, (f32 *)&work[22].f, (f32 *)&work[16].f);
+        fn_802C8B98(lbl_8055ED00, (s32)&work[16].f);
+        copy0 = ((volatile u32 *)&work[16].f)[0];
+        copy1 = ((volatile u32 *)&work[16].f)[1];
         scale = lbl_805630F4;
         (*(u32 *)((u8 *)arg2 + 0)) = copy0;
         (*(u32 *)((u8 *)arg2 + 4)) = copy1;
-        (*(f32 *)((u8 *)arg2 + 8)) = work[18];
-        (*(u32 *)((u8 *)arg2 + 0xC)) = ((volatile u32 *)&work[16])[3];
-        (*(u32 *)((u8 *)arg2 + 0x10)) = ((volatile u32 *)&work[16])[4];
-        (*(u32 *)((u8 *)arg2 + 0x14)) = ((volatile u32 *)&work[16])[5];
-        (*(u32 *)((u8 *)arg2 + 0x18)) = ((volatile u32 *)&work[16])[6];
-        (*(u32 *)((u8 *)arg2 + 0x1C)) = ((volatile u32 *)&work[16])[7];
-        (*(u32 *)((u8 *)arg2 + 0x20)) = ((volatile u32 *)&work[16])[8];
-        (*(u32 *)((u8 *)arg2 + 0x24)) = ((volatile u32 *)&work[16])[9];
-        (*(u32 *)((u8 *)arg2 + 0x28)) = ((volatile u32 *)&work[16])[10];
-        (*(u32 *)((u8 *)arg2 + 0x2C)) = ((volatile u32 *)&work[16])[11];
-        (*(f32 *)((u8 *)arg2 + 0)) = (f32) ((*(f32 *)((u8 *)arg2 + 0)) * scale);
-        (*(f32 *)((u8 *)arg2 + 4)) = (f32) ((*(f32 *)((u8 *)arg2 + 4)) * scale);
-        (*(f32 *)((u8 *)arg2 + 8)) = (f32) ((*(f32 *)((u8 *)arg2 + 8)) * scale);
+        (*(u32 *)((u8 *)arg2 + 8)) = ((volatile u32 *)&work[16])[2];
+        (*(u32 *)((u8 *)arg2 + 0xC)) = ((volatile u32 *)&work[16].f)[3];
+        (*(u32 *)((u8 *)arg2 + 0x10)) = ((volatile u32 *)&work[16].f)[4];
+        (*(u32 *)((u8 *)arg2 + 0x14)) = ((volatile u32 *)&work[16].f)[5];
+        (*(u32 *)((u8 *)arg2 + 0x18)) = ((volatile u32 *)&work[16].f)[6];
+        (*(u32 *)((u8 *)arg2 + 0x1C)) = ((volatile u32 *)&work[16].f)[7];
+        (*(u32 *)((u8 *)arg2 + 0x20)) = ((volatile u32 *)&work[16].f)[8];
+        (*(u32 *)((u8 *)arg2 + 0x24)) = ((volatile u32 *)&work[16].f)[9];
+        (*(u32 *)((u8 *)arg2 + 0x28)) = ((volatile u32 *)&work[16].f)[10];
+        (*(u32 *)((u8 *)arg2 + 0x2C)) = ((volatile u32 *)&work[16].f)[11];
+        (*(f32 *)((u8 *)arg2 + 0)) = (f32)((*(f32 *)((u8 *)arg2 + 0)) * scale);
+        (*(f32 *)((u8 *)arg2 + 4)) = (f32)((*(f32 *)((u8 *)arg2 + 4)) * scale);
+        (*(f32 *)((u8 *)arg2 + 8)) = (f32)((*(f32 *)((u8 *)arg2 + 8)) * scale);
     } else {
-        work[4] = lbl_805630CC;
-        work[5] = lbl_805630CC;
-        work[6] = lbl_805630D4;
-        work[7] = work[4];
-        work[8] = work[5];
-        work[9] = work[6];
-        fn_80202D50((void *)&work[7], work[5], work[4], lbl_805630CC);
+        work[4].f = lbl_805630CC;
+        work[5].f = lbl_805630CC;
+        work[6].f = lbl_805630D4;
+        work[7].f = work[4].f;
+        work[8].f = work[5].f;
+        work[9].f = work[6].f;
+        fn_80202D50((void *)&work[7].f);
         fn_802C8BD0(lbl_8055ED00);
         zero = lbl_805630CC;
         one = lbl_805630D4;
@@ -221,59 +185,60 @@ void fn_80202F58(void *arg0, void *arg1, void *arg2) {
         temp_r3 = fn_802C9A40();
         temp_f0 = (*(f32 *)((u8 *)temp_r3 + 0));
         temp_f2_2 = (*(f32 *)((u8 *)temp_r3 + 8));
-        work[2] = temp_f0;
-        work[3] = temp_f2_2;
-        temp_f0_2 = (f32) fn_8002F234((temp_f0 * temp_f0) + (temp_f2_2 * temp_f2_2), temp_f2_2);
+        work[2].f = temp_f0;
+        work[3].f = temp_f2_2;
+        temp_f0_2 = (f32)fn_8002F234((temp_f0 * temp_f0) + (temp_f2_2 * temp_f2_2), temp_f2_2);
         var_f1 = lbl_805630F8;
-        if (var_f1 > temp_f0_2) {
-
-        } else {
-            var_f1 = temp_f0_2;
-        }
+        var_f1 = var_f1 > temp_f0_2 ? var_f1 : temp_f0_2;
         temp_f4_3 = lbl_805630D4 / var_f1;
-        temp_f3_3 = work[2] * temp_f4_3;
+        temp_f3_3 = work[2].f * temp_f4_3;
         temp_f0_3 = temp_f3_3 * lbl_805630F4;
-        temp_f2_3 = work[3] * temp_f4_3 * lbl_805630F4;
-        work[2] = temp_f0_3;
-        work[3] = temp_f2_3;
-        temp_f1_4 = (f32) fn_8002EFB0(-temp_f0_3, temp_f2_3);
+        temp_f2_3 = work[3].f * temp_f4_3 * lbl_805630F4;
+        work[2].f = temp_f0_3;
+        work[3].f = temp_f2_3;
+        temp_f1_4 = (f32)fn_8002EFB0(-temp_f0_3, temp_f2_3);
         temp_f31 = lbl_805630FC;
-        work[0] = temp_f31;
+        work[0].f = temp_f31;
         temp_f29 = -temp_f1_4;
-        work[1] = lbl_80563100;
-        temp_f30 = (f32) cos(temp_f29);
-        temp_f3_4 = (f32) sin(temp_f29);
-        temp_f1_5 = ((f32) temp_f31 * temp_f30) - (work[1] * temp_f3_4);
-        work[0] = temp_f1_5;
-        temp_f3_5 = (temp_f31 * temp_f3_4) + (work[1] * temp_f30);
-        work[1] = temp_f3_5;
+        work[1].f = lbl_80563100;
+        temp_f30 = (f32)cos(temp_f29);
+        temp_f3_4 = (f32)sin(temp_f29);
+        temp_f1_5 = ((f32)temp_f31 * temp_f30) - (work[1].f * temp_f3_4);
+        work[0].f = temp_f1_5;
+        temp_f3_5 = (temp_f31 * temp_f3_4) + (work[1].f * temp_f30);
+        work[1].f = temp_f3_5;
         fn_802C8E00(-1, 0, temp_f1_5, lbl_805630CC, temp_f3_5, lbl_80563104, lbl_80563104);
-        temp_f30_2 = (f32) cos(lbl_80563108);
-        temp_f5_2 = (f32) sin(lbl_80563108);
-        temp_f7 = work[0] * temp_f30_2;
+        temp_f30_2 = (f32)cos(lbl_80563108);
+        temp_f5_2 = (f32)sin(lbl_80563108);
+        temp_f7 = work[0].f * temp_f30_2;
         temp_f6_2 = temp_f3_5 * temp_f5_2;
-        temp_f3_6 = (work[0] * temp_f5_2) + (temp_f3_5 * temp_f30_2);
+        temp_f3_6 = (work[0].f * temp_f5_2) + (temp_f3_5 * temp_f30_2);
         temp_f1_6 = temp_f7 - temp_f6_2;
-        work[1] = temp_f3_6;
-        work[0] = temp_f1_6;
+        work[1].f = temp_f3_6;
+        work[0].f = temp_f1_6;
         ((void (*)(s32, s32, f32, f32, f32, f32, f32, f32, f32))fn_802C8E00)(-1, 0, temp_f1_6, lbl_805630CC, temp_f3_6, lbl_80563110, lbl_80563104, temp_f6_2, temp_f7);
         temp_f1_7 = temp_f1_6 * lbl_805630F4;
-        temp_f3_7 = work[1] * lbl_805630F4;
-        work[0] = temp_f1_7;
-        work[1] = temp_f3_7;
+        temp_f3_7 = work[1].f * lbl_805630F4;
+        work[0].f = temp_f1_7;
+        work[1].f = temp_f3_7;
         fn_802C8E00(-1, 1, temp_f1_7, lbl_805630CC, temp_f3_7, lbl_80563104, lbl_80563110);
-        temp_f30_3 = (f32) cos(lbl_80563118);
-        temp_f3_8 = (f32) sin(lbl_80563118);
-        temp_f3_9 = work[0] * temp_f3_8;
-        temp_f1_8 = (work[0] * temp_f30_3) - (work[1] * temp_f3_8);
-        work[0] = temp_f1_8;
-        temp_f3_10 = temp_f3_9 + (work[1] * temp_f30_3);
-        work[1] = temp_f3_10;
+        temp_f30_3 = (f32)cos(lbl_80563118);
+        temp_f3_8 = (f32)sin(lbl_80563118);
+        temp_f3_9 = work[0].f * temp_f3_8;
+        temp_f1_8 = (work[0].f * temp_f30_3) - (work[1].f * temp_f3_8);
+        work[0].f = temp_f1_8;
+        temp_f3_10 = temp_f3_9 + (work[1].f * temp_f30_3);
+        work[1].f = temp_f3_10;
         fn_802C8E00(-1, 1, temp_f1_8, lbl_805630CC, temp_f3_10, lbl_80563110, lbl_80563110);
         fn_802C8E48();
     }
     fn_802C8D74();
 }
+#pragma scheduling invalid_target
+#pragma scheduling invalid_target
+#pragma scheduling invalid_target
+#pragma scheduling invalid_target
+#pragma paired_single reset
 extern s32 fn_802C8DBC(s32, ...);
 extern void fn_802C8E00(s32, s32, f32, f32, f32, f32, f32);
 extern void fn_802C8E48(void);
@@ -479,26 +444,30 @@ void fn_802039CC(s32 arg0, struct lbl_80488B88_t* arg1) {
     fn_802C8D74();
 }
 
+#pragma scheduling on
 void fn_80203A88(void* arg0, s32 arg1, unk_80203A88_dest* arg2) {
+    f32 var_f0;
+    f32 var_f1;
     f32 var_f2;
     f32 var_f3;
-    f32 var_f1;
 
     if (fn_80202BE4() == 0) {
         fn_802D3050(1);
         fn_802D306C(0x5A);
         var_f2 = ((f32*)arg0)[1];
+        var_f0 = lbl_80563130;
         var_f3 = ((f32*)arg0)[0];
+        var_f0 = var_f2 + var_f0;
         var_f1 = ((f32*)arg0)[2];
         arg2->x = var_f3;
         arg2->z = var_f1;
-        arg2->y = var_f2 + lbl_80563130;
+        arg2->y = var_f0;
         fn_802039CC(arg1, (struct lbl_80488B88_t*)arg2);
         fn_80203380(arg2);
         fn_802D306C(0);
     }
 }
-
+#pragma scheduling reset
 extern s32 fn_8012C33C(char *);
 extern void fn_801345D8(char *, s32, const char *, s32);
 extern s32 fn_802CAC28(const char *, s32);
@@ -547,14 +516,17 @@ void fn_80203D84(s32* arg0) {
 }
 #pragma dont_inline off
 
+#pragma scheduling invalid_target
 void fn_80203DC8(void) {
     struct lbl_8048897C_t* var_r30;
     struct lbl_8048897C_t* var_r31;
-    s32 var_r28;
     s32 var_r29;
+    s32 var_r28;
+    s32 temp;
 
-    lbl_8055ED18 = 0;
-    if (lbl_8055ECFC != -2) {
+    temp = lbl_8055ECFC;
+    *(volatile u8*)&lbl_8055ED18 = 0;
+    if (temp != -2) {
         fn_802CB228();
         lbl_8055ECFC = -2;
     }
@@ -565,16 +537,16 @@ void fn_80203DC8(void) {
     fn_802D30DC(0);
     var_r30 = (struct lbl_8048897C_t*)((s32)&lbl_8048897C - 0x8000);
     var_r31 = (struct lbl_8048897C_t*)((s32)var_r30 + 0x8000);
-    var_r29 = 0;
     var_r28 = 0;
-    while (var_r29 < var_r31->count) {
-        fn_80203D84((s32*)((u8*)lbl_8048897C.ptr + var_r28));
-        var_r28 += 8;
-        var_r29 += 1;
+    var_r29 = 0;
+    while (var_r28 < var_r31->count) {
+        fn_80203D84((s32*)((u8*)lbl_8048897C.ptr + var_r29));
+        var_r29 += 8;
+        var_r28 += 1;
     }
     var_r31->count = 0;
 }
-
+#pragma scheduling on
 extern void fn_802D050C(void*);
 void fn_80203E88(void) {
     fn_80203B20();
