@@ -187,7 +187,7 @@ public:
     virtual void v24();     virtual void v25();     virtual void v26();     virtual void v27();
     virtual void v28();     virtual void v29();     virtual void v30();     virtual void v31();
     virtual void v32();     virtual void v33();     virtual void v34();     virtual void v35();
-    virtual void v36();     virtual void v37();     virtual void v38();
+    virtual void v36();
     virtual void Call(void*, s32, void*);
 };
 
@@ -352,7 +352,7 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
                 break;
             }
             if (var_r0 != 0) {
-                (*(void (**)(void *, s32, void *))((u8 *)(*fn_801B83A0()) + 0x9C))(temp_r29, temp_r26, arg1);
+                ((Fn80199894GlobalVTab *)fn_801B83A0())->Call(temp_r29, temp_r26, arg1);
             }
         }
     }
