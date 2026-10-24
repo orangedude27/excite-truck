@@ -67,7 +67,4 @@ void* fn_802B59CC(void) {
 }
 extern int stricmp(const char *, const char *);
 extern const char lbl_8034A510[];
-extern int fn_8012E96C(const char *);
-extern int fn_802B5510(const char *);
-extern int fn_8013184C(void);
-extern const char lbl_8034A588[];
+
