@@ -1251,7 +1251,7 @@ extern "C" void fn_801A1474(void* arg0, f32 scale) {
     *(f32*)((u8*)obj + 0x2c) = *(f32*)(p + 0x16c) * scale;
 }
 
-extern void fn_8019ECC4(void);
+extern "C" void fn_8019ECC4(void);
 extern void* lbl_80333968;
 extern f32 lbl_80562370;
 extern "C" void* fn_801A1520(void* arg0, void* arg1, s32 arg2) {
