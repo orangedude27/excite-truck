@@ -2,6 +2,9 @@
 
 #include <types.h>
 
+extern void fn_801B6650(int);
+extern void fn_802793B0(int);
+
 extern int fn_80191100(void *);
 
 extern float lbl_8056208C;
