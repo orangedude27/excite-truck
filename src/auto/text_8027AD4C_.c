@@ -357,7 +357,7 @@ extern long fn_80016A44(long);
 extern long fn_8001BBB4(long, long, void *, long, long, float);
 extern long fn_80012854(void);
 extern float lbl_805641F0;
-extern char lbl_8055C768[];
+extern char lbl_8055C768;
 void fn_8027BF38(void) {
     long j, i, state, now;
     state = fn_80012810();
