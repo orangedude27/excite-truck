@@ -16,6 +16,45 @@ int fn_8018FD38(void) {
     return result;
 }
 
+extern s32 fn_801293A4(void);
+extern void fn_8018FC38(void);
+extern void fn_801B664C(void);
+extern s32 fn_801B6668(s32, s32, s32);
+extern u8 lbl_80333018[];
+extern void* lbl_804349A0[];
+extern f32 lbl_8055A468, lbl_8055A46C;
+extern s32 lbl_8055E518;
+extern u8 lbl_8055E520, lbl_8055E523;
+extern f64 lbl_80562070;
+extern f32 lbl_80562078, lbl_8056207C, lbl_80562080;
+void* fn_8018FD88(void* arg0, s32 arg1, s32 arg2) {
+    f32 value;
+    f32 result;
+    f32 limit;
+    s32 index;
+    *(void**)arg0 = lbl_80333018;
+    if (lbl_8055E518 == 0) fn_8018FC38();
+    index = lbl_8055E518;
+    lbl_804349A0[index] = arg0;
+    lbl_8055E518 = index + 1;
+    ((u8*)arg0)[0x38] = 1;
+    lbl_8055E520 = 0;
+    lbl_8055E523 = 0;
+    *(s32*)((u8*)arg0 + 8) = arg1;
+    *(s32*)((u8*)arg0 + 0xC) = arg2;
+    *(s32*)((u8*)arg0 + 0x10) = 0;
+    *(s32*)((u8*)arg0 + 4) = 0;
+    *(s32*)((u8*)arg0 + 0x28) = 0x10000;
+    if (fn_801B6668(0, 1, index + 1) == 0) fn_801B664C();
+    value = lbl_80562078 * (f32)fn_801293A4();
+    result = value - lbl_8056207C;
+    limit = lbl_80562080;
+    lbl_8055A46C = value;
+    if (limit > result) limit = result;
+    lbl_8055A468 = limit;
+    return arg0;
+}
+
 int fn_8018FF84(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
@@ -25,6 +64,9 @@ void fn_80190360(int arg0) {
     fn_80191084(arg0, 0);
 }
 
+#pragma scheduling off
+int fn_80190D38(float a, float b, float c) { float lower; float value; lower = lbl_80562090; value = (a - b) / (c - b); if (lower < value) { lower = value; } else { lower = lower; } if (lower > lbl_8056208C) { lower = lbl_8056208C; } else { lower = lower; } return (int)(lbl_80562080 + (lbl_8056208C + (lower * lbl_805620AC))); }
+#pragma scheduling on
 int fn_80190E00(void *arg0) { return ((int *)arg0)[2]; }
 
 void fn_80190E6C(void) {
@@ -74,6 +116,52 @@ void *fn_801916AC(void *arg0, int arg1) {
     return arg0;
 }
 
+extern char *strcpy(char *, const char *);
+extern unsigned char lbl_804A16E8[];
+int fn_80191758(arg0)
+void *arg0;
+{
+    char *dst;
+    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    strcpy(dst, *(char **)((char *)arg0 + 0x20) + 0x234);
+    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    *(float *)(dst + 0x28) = lbl_8056208C;
+    *(float *)(dst + 0x24) = lbl_8056208C;
+    *(float *)(dst + 0x20) = lbl_8056208C;
+    *(float *)(dst + 0x34) = lbl_80562090;
+    *(float *)(dst + 0x30) = lbl_80562090;
+    *(float *)(dst + 0x2C) = lbl_80562090;
+    *(float *)(dst + 0x38) = lbl_80562090;
+    *(float *)(dst + 0x3C) = lbl_80562090;
+    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    *(float *)(dst + 0x48) = lbl_8056208C;
+    *(float *)(dst + 0x44) = lbl_8056208C;
+    *(float *)(dst + 0x40) = lbl_8056208C;
+    *(float *)(dst + 0x54) = lbl_80562090;
+    *(float *)(dst + 0x50) = lbl_80562090;
+    *(float *)(dst + 0x4C) = lbl_80562090;
+    *(float *)(dst + 0x58) = lbl_80562090;
+    *(float *)(dst + 0x5C) = lbl_80562090;
+    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    *(float *)(dst + 0x68) = lbl_8056208C;
+    *(float *)(dst + 0x64) = lbl_8056208C;
+    *(float *)(dst + 0x60) = lbl_8056208C;
+    *(float *)(dst + 0x74) = lbl_80562090;
+    *(float *)(dst + 0x70) = lbl_80562090;
+    *(float *)(dst + 0x6C) = lbl_80562090;
+    *(float *)(dst + 0x78) = lbl_80562090;
+    *(float *)(dst + 0x7C) = lbl_80562090;
+    dst = (char *)lbl_804A16E8 + *(int *)((char *)arg0 + 0x28) * 0xA0;
+    *(float *)(dst + 0x88) = lbl_8056208C;
+    *(float *)(dst + 0x84) = lbl_8056208C;
+    *(float *)(dst + 0x80) = lbl_8056208C;
+    *(float *)(dst + 0x94) = lbl_80562090;
+    *(float *)(dst + 0x90) = lbl_80562090;
+    *(float *)(dst + 0x8C) = lbl_80562090;
+    *(float *)(dst + 0x98) = lbl_80562090;
+    *(float *)(dst + 0x9C) = lbl_80562090;
+}
+
 int fn_80191A98(void *arg0) {
     int bit = (*(unsigned char *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 1) & 1;
     return (int)((unsigned int)(-bit | bit) >> 31);
@@ -82,6 +170,35 @@ int fn_80191A98(void *arg0) {
 void fn_80192BE4(void) {
 
 }
+
+#pragma cplusplus on
+extern "C" void fn_80192C38(void *arg0) {
+    class VTable {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+    };
+    VTable *obj = *(VTable **)((char *)arg0 + 4);
+    obj->f18();
+}
+#pragma cplusplus reset
 
 s32 fn_80192C4C(void *arg0) {
     s32 bit = (*(u8 *)((char *)*(void **)((char *)arg0 + 8) + 7) >> 2) & 1;
