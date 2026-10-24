@@ -203,14 +203,16 @@ void fn_801E3488(void *arg0, void *arg1) {
     ((void (*)(void *, void *, f32 *))fn_801E3440)(arg0, arg1, sp);
 }
 
+#pragma scheduling on
 void fn_801E34E4(s32 *arg0, s32 arg1) {
     s32 sp8[12];
-    if (*arg0 != -1) {
+    s32 sentinel = *arg0;
+    if (sentinel != -1) {
         fn_801E3284(&sp8[0], arg0, arg1);
         fn_802C744C(*arg0, &sp8[0]);
     }
 }
-
+#pragma scheduling default
 s32 fn_801E3534(s32 *arg0) {
     return *arg0;
 }
@@ -236,18 +238,19 @@ void fn_801E353C(s32 arg0, f32 angle) {
 
 void fn_801E35D4(void *arg0, void *arg1) {
     f32 val = lbl_80562CEC;
-    s32 i = ((s32 *)arg1)[8];
-    s32 h = ((s32 *)arg1)[7];
-    s32 g = ((s32 *)arg1)[6];
-    s32 f = ((s32 *)arg1)[5];
-    s32 e = ((s32 *)arg1)[4];
-    s32 d = ((s32 *)arg1)[3];
-    s32 c = ((s32 *)arg1)[2];
-    s32 b = ((s32 *)arg1)[1];
-    s32 a = ((s32 *)arg1)[0];
+    s32 *src = (s32 *)arg1;
     s32 *dst = (s32 *)arg0;
     f32 *fdst = (f32 *)((u8 *)arg0 + 0x2C);
-
+    s32 i, h, g, f, e, d, c, b, a;
+    a = src[0];
+    b = src[1];
+    c = src[2];
+    d = src[3];
+    e = src[4];
+    f = src[5];
+    g = src[6];
+    h = src[7];
+    i = src[8];
     fdst[0] = val;
     fdst[1] = val;
     fdst[2] = val;
