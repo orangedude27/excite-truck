@@ -82,6 +82,7 @@ s32 fn_8023B9AC(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_8023BB0C(void) {
     s32 sp10, spC, sp8;
     s32 temp_r31 = fn_802411CC();
@@ -96,7 +97,7 @@ void fn_8023BB0C(void) {
         fn_80016970(var_r30, temp_r29, sp10, sp8);
     }
 }
-
+#pragma scheduling on
 int fn_8023BC24(int ignored, int arg1, int arg2) {
     int *obj = (int *)fn_8027DB40(1);
     int result = fn_8024DAE0(arg1, arg2, 0, (int)obj, 0, 0);
@@ -184,6 +185,30 @@ void fn_8023BF68(void) {
     if (value == 0 || (((value >> 31) ^ value) - (value >> 31)) > 4) {
         ((void (*)(const char *, ...))fn_802E317C)(lbl_80341354, value);
     }
+}
+
+extern void fn_8000824C(void *, s32);
+extern const char lbl_8055BB3C[];
+void fn_8023C0EC(void *arg0, s32 arg1, s32 arg2) {
+    s32 *temp_r30 = fn_80012820(arg1);
+    s32 *temp_r31 = fn_80012870(arg1, arg2);
+    void *obj = *(void **)((u8 *)temp_r31 + 0x20);
+    s32 (*check)(void *, const char *) = (s32 (*)(void *, const char *))(*(u32 **)(obj))[3];
+    char *str;
+    s32 i;
+    if (check(obj, lbl_8055BB3C) != 0) {
+        obj = *(void **)((u8 *)temp_r31 + 0x20);
+        str = ((char *(*)(void *, const char *))(*(u32 **)obj)[5])(obj, lbl_8055BB3C);
+    } else {
+        str = (char *)temp_r30 + 8;
+    }
+    for (i = 0; i < 0x20; i++) {
+        char c = *str++;
+        ((char *)arg0)[i] = c;
+        if (c == 0) break;
+    }
+    if (i == 0x20) ((char *)arg0)[0x1f] = 0;
+    fn_8000824C((u8 *)arg0 + 0x3e4, *temp_r31);
 }
 
 void fn_8023C20C(void) {}
