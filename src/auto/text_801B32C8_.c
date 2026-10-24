@@ -184,25 +184,24 @@ void fn_801B3C64(void* arg0) {
 }
 
 typedef void (*Vfn2)(void*, s32);
-void* fn_801B3C98(void* arg0, s32 arg1) {
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void *fn_801B3C98(void *arg0, s32 arg1) {
     if (arg0 != NULL) {
-        void* prev = *(void**)((u8*)arg0 + 0x1C);
-        *(void**)arg0 = (void*)&lbl_80335DAC;
+        void *prev = *(void **)((u8 *)arg0 + 0x1C);
+        *(void **)arg0 = (void *)&lbl_80335DAC;
         if (prev != NULL) {
-            if (prev != NULL) {
-                Vfn2 fn = ((Vfn2*)*(void***)prev)[2];
-                fn(prev, 1);
-            }
-            *(void**)((u8*)arg0 + 0x1C) = NULL;
+            if (prev != NULL)
+                ((VTable_801B3C98 *)prev)->destroy(1);
+            *(void **)((u8 *)arg0 + 0x1C) = NULL;
         }
-        if (arg1 > 0) {
+        if (arg1 > 0)
             fn_80128668(arg0);
-        }
     }
     return arg0;
 }
-
-#pragma scheduling off
+#pragma cplusplus reset
+#pragma scheduling on
 void* fn_801B3D24(void* arg0, s32 arg1) {
     if (arg0 != NULL) {
         s32* p = (s32*)arg0;
