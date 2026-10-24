@@ -346,6 +346,131 @@ void fn_8013605C(void *arg0) {
     *(signed char *)((char *)arg0 + 0x64) = 0;
 }
 
+#pragma scheduling invalid_target
+int fn_80136068(Unk_80135278 *arg0, void *arg1, int arg2) {
+    extern float lbl_8055E3C8;
+    extern float lbl_80561324;
+    extern float lbl_80561338;
+    extern float lbl_80561340;
+    extern float lbl_80561344;
+    extern float lbl_80561348;
+    struct { char *node; float fraction; int saved; } locals;
+    int changed;
+    int status;
+    int base;
+    unsigned int start;
+    unsigned int end;
+    int keep;
+    float dist;
+    float length;
+    float old48;
+    float old40;
+    float value;
+    float edge;
+    float delta;
+
+    if ((void *)arg0->unk_2c == 0) {
+        return 2;
+    }
+    locals.node = (char *)arg0->unk_4;
+    locals.fraction = arg0->unk_8;
+    changed = (((unsigned int)locals.node - (unsigned int)(char *)arg0->unk_60) | ((unsigned int)(char *)arg0->unk_60 - (unsigned int)locals.node)) >> 31;
+    locals.saved = arg0->unk_c;
+    status = fn_801353C4();
+    base = arg0->unk_34;
+    start = *(unsigned int *)(locals.node + 0x10);
+    if (base != 0) {
+        end = *(unsigned int *)((char *)(void *)arg0->unk_2c + 0x18);
+        start = (end + (start - base)) % end;
+    }
+
+    if (status == 0) {
+        char *head = (char *)arg0->unk_4;
+        if (arg2 != 0) {
+        char *walk = locals.node;
+        float total = lbl_80561324 - locals.fraction;
+        {
+            unsigned int index;
+            do {
+                total += lbl_80561324;
+                walk = *(char **)(walk + 0x14);
+                index = *(unsigned int *)(walk + 0x10);
+                if (base != 0) {
+                    unsigned int size = *(unsigned int *)((char *)(void *)arg0->unk_2c + 0x18);
+                    index = (size + (index - base)) % size;
+                }
+            } while (index > start);
+        }
+        walk = locals.node;
+        length = lbl_80561324 - locals.fraction;
+        do {
+            length += lbl_80561324;
+            walk = *(char **)(walk + 0x14);
+        } while (walk != head);
+        *(float *)arg2 = lbl_80561340 * (lbl_80561324 - (total / (length + arg0->unk_8)));
+        }
+    }
+
+    {
+        char *saved = (char *)arg0->unk_5c;
+        if (saved != 0 && (status == 2 || status == 0)) {
+            int cleanupBase = *(volatile s32 *)&arg0->unk_34;
+            float fill = lbl_8055E3C8;
+            unsigned int a = *(unsigned int *)(saved + 0x10);
+            if (cleanupBase != 0) {
+                unsigned int size = *(unsigned int *)((char *)(void *)arg0->unk_2c + 0x18);
+                a = (size + (a - cleanupBase)) % size;
+            }
+            start = ((int)a) >> 16;
+            {
+                unsigned int b = *(unsigned int *)((char *)arg0->unk_4 + 0x10);
+                if (cleanupBase != 0) {
+                    unsigned int size = *(unsigned int *)((char *)(void *)arg0->unk_2c + 0x18);
+                    b = (size + (b - cleanupBase)) % size;
+                }
+                end = ((int)b) >> 16;
+            }
+            while ((unsigned int)start != (unsigned int)end) {
+                *(float *)((char *)arg0->unk_50 + start * 4) = fill;
+                start = (start + 1) % (unsigned int)arg0->unk_54;
+            }
+        }
+    }
+    arg0->unk_5c = arg0->unk_4;
+    fn_80136714(arg0);
+
+    {
+        old48 = arg0->unk_48;
+        old40 = arg0->unk_40;
+        arg0->unk_48 = *(float *)((char *)arg0->unk_4 + 0x1C) +
+                                  *(float *)((char *)arg0->unk_4 + 0x18) * arg0->unk_8;
+    arg0->unk_40 = arg0->unk_14 * arg0->unk_18 +
+                              -arg0->unk_10 * arg0->unk_1c;
+
+        keep = 1;
+        if (!changed) {
+            if (*(unsigned char *)((char *)arg0->unk_4 + 0x35) == *(unsigned char *)(locals.node + 0x35) &&
+                *(unsigned char *)((char *)arg0->unk_4 + 0x34) == *(unsigned char *)(locals.node + 0x34)) {
+                keep = 0;
+            }
+        }
+    if (!keep) {
+        value = arg0->unk_48 - old48;
+        arg0->unk_4c = value;
+        edge = *(float *)((char *)arg0->unk_2c +
+                          *(unsigned char *)((char *)arg0->unk_4 + 0x34) * 4 + 8);
+        if (value < -edge * lbl_80561338) {
+            arg0->unk_4c = value + edge;
+        }
+        delta = lbl_80561344 * (arg0->unk_40 - old40);
+        arg0->unk_4c *= lbl_80561344;
+        arg0->unk_44 = delta + lbl_80561348 * (arg0->unk_44 - delta);
+        }
+    }
+    arg0->unk_60 = arg0->unk_4;
+    return status;
+}
+#pragma scheduling on
 int fn_801363A0(void *arg0, void *arg1) {
     int temp_r31 = *(int *)((char *)*(void **)arg1 + 0x10);
     int var = *(int *)((char *)*((void **)*(void **)arg1 + 0x14) + 0x10);
@@ -458,12 +583,17 @@ typedef struct {
     Vt_8013672C *vtbl;
 } Unk_8013672C_vt;
 
-float fn_8013672C(void) {
-    void *obj = fn_80156A40();
-    void *ret = ((void *(*)(void *, s32))((void **)*(void **)obj)[2])(obj, 0);
+#pragma cplusplus on
+extern "C" float fn_8013672C(void) {
+    class Obj {
+    public:
+        virtual void *get(s32 index);
+    };
+    Obj *obj = (Obj *)fn_80156A40();
+    void *ret = obj->get(0);
     return *(float *)((char *)ret + 8);
 }
-
+#pragma cplusplus reset
 void fn_80136764(void) {
     fn_801564B0();
 }
