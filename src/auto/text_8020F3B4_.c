@@ -135,17 +135,19 @@ void fn_8020F730(void) {
     lbl_8055EEC4 = 0;
 }
 
+#pragma scheduling invalid_target
 void fn_8020FC6C(void) {
-    struct Unk_804900AC *state = &lbl_804900AC;
-    if (state->m_count == 0) {
-        ((long (*)(long))fn_8020F3B4)(0);
+    long zero;
+    zero = 0;
+    if (lbl_804900AC.m_count == 0) {
+        ((long (*)(long))fn_8020F3B4)(zero);
     } else if (fn_8020FC04() != 0) {
         fn_8020FB80();
     } else {
-        ((long (*)(long))fn_8020F3B4)(0);
+        ((long (*)(long))fn_8020F3B4)(zero);
     }
 }
-
+#pragma scheduling on
 extern long lbl_8055EEBC;
 extern long lbl_8055EEE0;
 extern long lbl_8055EEE4;
@@ -262,8 +264,8 @@ extern long fn_80009C84(long);
 extern signed char lbl_8055EEC0, lbl_8055EEC8, lbl_8055B660;
 extern long lbl_8055EECC, lbl_8055B658;
 void fn_80210444(void) {
+    register lbl_8055B660 = 1;
     lbl_8055EEC0 = 0;
-    lbl_8055B660 = 1;
     lbl_8055EEC8 = 0;
     lbl_8055EECC = 0;
     if (fn_80009C84(1) == 0 && fn_801B85CC() == 0 &&
@@ -322,6 +324,7 @@ void AXFXSetHooks_80210950(void *arg0, void *arg1) {
 extern long fn_8020FEF0(long);
 extern long fn_802100AC(void);
 extern long fn_80012158(void);
+#pragma scheduling invalid_target
 long fn_802111E4(long arg0) {
     switch (arg0) {
     case 0x126:
@@ -336,12 +339,10 @@ long fn_802111E4(long arg0) {
     case 0x125:
         fn_8020FEF0(-1);
         break;
-    case 0x53: {
-        long (* volatile hook)(long) = (long (*)(long))lbl_8055EED8;
-        hook((arg0 - 0x58) == 0);
+    case 0x53:
+        ((long (* volatile)(long))lbl_8055EED8)((arg0 - 0x58) == 0);
         fn_802100AC();
         break;
-    }
     case 0x113:
     case 0x1B:
         break;
@@ -351,7 +352,7 @@ long fn_802111E4(long arg0) {
     fn_80012158();
     return 1;
 }
-
+#pragma scheduling on
 extern long fn_80265D64(void);
 extern void __AXDSPInitCallback_801769E0(void);
 extern void fn_80206444(void);
