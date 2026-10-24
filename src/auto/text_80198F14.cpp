@@ -91,6 +91,8 @@ extern void* lbl_80333B48;
 extern f32 lbl_80562370;
 extern f32 lbl_8056232C;
 extern "C" void** fn_801B83A0(void);
+extern "C" f32 fn_8018AE7C(void*);
+extern "C" void fn_802C1A0C(void**, s32);
 
 extern "C" void fn_8019CE4C(void*, void*);
 extern "C" void fn_8019BD54(void*, void*, s32, s32);
@@ -198,6 +200,7 @@ extern "C" f32 __fabsf(f32);
 #pragma dont_inline on
 extern "C" void **fn_801B83A0();
 #pragma dont_inline on
+#pragma scheduling invalid_target
 extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_raw, s32 arg4_raw, s32 arg5_raw, f32 farg0, f32 farg1, f32 farg2) {
     f32 *arg2 = (f32 *)arg2_raw;
     f32 *arg3 = (f32 *)arg3_raw;
@@ -366,13 +369,17 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
     if (temp_r26 >= 0x3E8) {
         if (temp_r29 != NULL) {
             temp_r4 = (*(s32 *)((u8 *)temp_r29 + 0x10));
+            var_r0 = 0;
             switch (temp_r4) {
             case 0x4E434152:
             case 0x43415220:
             case 0x41434152:
             case 0x50434152:
-                (*(void (**)(void *, s32, void *))((u8 *)(*fn_801B83A0()) + 0x9C))(temp_r29, temp_r26, arg1);
+                var_r0 = 1;
                 break;
+            }
+            if (var_r0 != 0) {
+                (*(void (**)(void *, s32, void *))((u8 *)(*fn_801B83A0()) + 0x9C))(temp_r29, temp_r26, arg1);
             }
         }
     }
@@ -713,6 +720,7 @@ block_98:
     (*(void (**)(void *, f32 *, f32 *, s32, void *, f32, f32, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x1C)))(arg1, &sp140, &sp14C, (*(s32 *)((u8 *)(arg0) + (0x20))), temp_r29, temp_f1_7, temp_f2_11, lbl_805622DC);
 }
 #pragma dont_inline reset
+#pragma scheduling on
 extern "C" s32 fn_8019A780(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
 }
