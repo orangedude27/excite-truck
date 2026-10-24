@@ -77,6 +77,45 @@ void fn_80136EA4(void *arg0, s32 arg1) {
     fn_801376A8(base + arg1 * stride + index * 8 + 0x18, (s32 *)((char *)&values[0]), arg1, base, &lbl_8032BEB4);
 }
 
+extern void *fn_801B2ED0(int);
+extern void fn_8013776C(void*);
+void fn_80136F08(void *arg0) {
+    int i = 0;
+    int count;
+    int pairCount;
+    int pairOffset;
+    while (i < *(int*)arg0) {
+        int stride = *(int*)((char*)arg0 + 0xC);
+        void *entry = (char*)*(void**)((char*)arg0 + 0x10) + i * stride;
+        void *obj = fn_801B2ED0(i);
+        obj = (*(void* (**)(void*))((char*)*(void**)obj + 0x20))(obj);
+        *(float*)entry = *(float*)((char*)obj + 0x60);
+        *(float*)((char*)entry + 4) = *(float*)((char*)obj + 0x68);
+        *(float*)((char*)entry + 8) = *(float*)((char*)obj + 0x118);
+        *(float*)((char*)entry + 0xC) = *(float*)((char*)obj + 0x120);
+        *((unsigned char*)entry + 0x16) = 1;
+        i++;
+    }
+    count = *(int*)arg0;
+    pairCount = count * (count - 1) / 2;
+    pairOffset = 0;
+    i = 0;
+    while (i < pairCount) {
+        void *pair = (char*)*(void**)((char*)arg0 + 8) + pairOffset;
+        int stride = *(int*)((char*)arg0 + 0xC);
+        void *base = *(void**)((char*)arg0 + 0x10);
+        void *a = (char*)base + *(int*)((char*)pair + 0xC) * stride;
+        void *b = (char*)base + *(int*)((char*)pair + 0x14) * stride;
+        *(float*)((char*)pair + 0x24) = *(float*)((char*)b + 8) - *(float*)((char*)a + 8);
+        *(float*)((char*)pair + 0x28) = *(float*)((char*)b + 0xC) - *(float*)((char*)a + 0xC);
+        *(float*)((char*)pair + 0x1C) = *(float*)b - *(float*)a;
+        *(float*)((char*)pair + 0x20) = *(float*)((char*)b + 4) - *(float*)((char*)a + 4);
+        fn_8013776C(pair);
+        pairOffset += 0x2C;
+        i++;
+    }
+}
+
 s32 fn_8013705C(f32 arg0, f32 arg1) {
     return arg0 * arg1 >= lbl_80561368;
 }
@@ -120,6 +159,50 @@ s32 fn_80137140(s32 arg0, s32 arg1) {
         if (fn_80137078((char *)p28 + 0x3C, (char *)p27 + 0x3C, *(f32 *)((char *)p30 + 0x40), *(f32 *)((char *)p29 + 0x3C))) result = 1;
     }
     return result;
+}
+
+extern float lbl_80561368;
+extern float lbl_80561394;
+extern float __fabsf(float);
+extern double __fabs(double);
+int fn_80137598(void *arg0, void *arg1, void *arg2) {
+    unsigned int id;
+    unsigned char a;
+    unsigned char b;
+    float diff;
+    if (arg1 == 0 || arg2 == 0)
+        goto null_arg;
+    id = *(unsigned int*)((char*)arg0 + 4);
+    if (id == *(unsigned int*)((char*)arg1 + 0xC))
+        a = *(unsigned char*)((char*)arg1 + 8);
+    else
+        a = *(unsigned char*)((char*)arg1 + 0x10);
+    if (id == *(unsigned int*)((char*)arg2 + 0xC))
+        b = *(unsigned char*)((char*)arg2 + 8);
+    else
+        b = *(unsigned char*)((char*)arg2 + 0x10);
+    if (a != b)
+        return a == 0 ? 1 : -1;
+    if (a == 0 || b == 0)
+        return 0;
+    a = *(unsigned char*)arg1;
+    if (a == 0) {
+        b = *(unsigned char*)arg2;
+        if (b == 0)
+            goto compare_float;
+        return -1;
+    }
+    b = *(unsigned char*)arg2;
+    if (a != b)
+        return 1;
+    return 0;
+compare_float:
+    diff = *(float*)((char*)arg1 + 4) - *(float*)((char*)arg2 + 4);
+    if (__fabsf(diff) < lbl_80561394)
+        return 0;
+    return diff > lbl_80561368 ? 1 : -1;
+null_arg:
+    return arg1 == 0 ? 1 : -1;
 }
 
 s32 fn_8002F768(void *, s32, s32);
@@ -167,11 +250,15 @@ void fn_8013776C(void *arg0) {
     *(f32 *)((char *)arg0 + 0x18) = temp_f1 * temp_f1 + temp_f0 * temp_f0;
 }
 
-float fn_80137850(void *arg0) {
- int index = *(int*)((char*)arg0+0x18) * *(int*)(lbl_8055E0D0+0xC);
- int base = *(int*)(lbl_8055E0D0+0x10);
- float *p=(float*)(base+index);
- return p[0]+(*(float**)arg0)[1]*p[2];
+float fn_80137850(void *arg0)
+{
+  float new_var;
+  float *new_var2;
+  int index = (*((int *) (((char *) arg0) - (-0x18)))) * (*((int *) (lbl_8055E0D0 + 0xC)));
+  int base;
+  float *p = (float *) ((*((int *) (lbl_8055E0D0 + 0x10))) + index);
+  new_var2 = *((float **) arg0);
+  return p[0] + ((new_var = new_var2[1]) * p[2]);
 }
 
 void fn_80137884(s32 arg0) {
