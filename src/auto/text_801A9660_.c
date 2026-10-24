@@ -55,7 +55,66 @@ void *__dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_801A973C(void *this_,
     return this_;
 }
 
-#pragma scheduling off
+extern void *fn_801AE180(void);
+extern f32 lbl_80562478, lbl_8056247C;
+#pragma scheduling invalid_target
+void fn_801A9798(void *arg0, f32 farg0, f32 farg1, f32 farg2, f32 farg3) {
+    struct Node_801A9798 { void *next; f32 values[9]; };
+    register struct Node_801A9798 *node;
+    volatile f32 sp64, sp60, sp5c, sp58, sp54, sp50, sp4c, sp48, sp44;
+    volatile f32 sp40, sp3c, sp38, sp34, sp30, sp2c, sp28, sp24, sp20;
+    volatile f32 sp1c, sp18, sp14, sp10, spC, sp8;
+    register f32 constA, constB;
+    sp60 = farg1; sp5c = -farg0; sp64 = -farg2;
+    node = (struct Node_801A9798 *)fn_801AE180();
+    node->values[0] = sp5c; node->values[1] = sp60; node->values[2] = sp64; node->values[3] = farg3;
+    constA = lbl_80562478; node->values[4] = constA;
+    constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
+    node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
+    sp50 = farg0; sp54 = farg1; sp58 = -farg2;
+    node = (struct Node_801A9798 *)fn_801AE180();
+    node->values[0] = sp50; node->values[1] = sp54; node->values[2] = sp58; node->values[3] = farg3;
+    constA = lbl_80562478; node->values[4] = constA;
+    constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
+    node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
+    sp48 = farg1; sp44 = -farg0; sp4c = farg2;
+    node = (struct Node_801A9798 *)fn_801AE180();
+    node->values[0] = sp44; node->values[1] = sp48; node->values[2] = sp4c; node->values[3] = farg3;
+    constA = lbl_80562478; node->values[4] = constA;
+    constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
+    node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
+    sp38 = farg0; sp3c = farg1; sp40 = farg2;
+    node = (struct Node_801A9798 *)fn_801AE180();
+    node->values[0] = sp38; node->values[1] = sp3c; node->values[2] = sp40; node->values[3] = farg3;
+    constA = lbl_80562478; node->values[4] = constA;
+    constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
+    node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
+    sp2c = -farg0; sp30 = -farg1; sp34 = -farg2;
+    node = (struct Node_801A9798 *)fn_801AE180();
+    node->values[0] = sp2c; node->values[1] = sp30; node->values[2] = sp34; node->values[3] = farg3;
+    constA = lbl_80562478; node->values[4] = constA;
+    constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
+    node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
+    sp20 = farg0; sp24 = -farg1; sp28 = -farg2;
+    node = (struct Node_801A9798 *)fn_801AE180();
+    node->values[0] = sp20; node->values[1] = sp24; node->values[2] = sp28; node->values[3] = farg3;
+    constA = lbl_80562478; node->values[4] = constA;
+    constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
+    node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
+    sp1c = farg2; sp14 = -farg0; sp18 = -farg1;
+    node = (struct Node_801A9798 *)fn_801AE180();
+    node->values[0] = sp14; node->values[1] = sp18; node->values[2] = sp1c; node->values[3] = farg3;
+    constA = lbl_80562478; node->values[4] = constA;
+    constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
+    node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
+    sp8 = farg0; spC = -farg1; sp10 = farg2;
+    node = (struct Node_801A9798 *)fn_801AE180();
+    node->values[0] = sp8; node->values[1] = spC; node->values[2] = sp10; node->values[3] = farg3;
+    constA = lbl_80562478; node->values[4] = constA;
+    constB = lbl_8056247C; node->values[6] = constB; node->values[7] = constB; node->values[8] = constB; node->values[5] = constB;
+    node->next = *(void **)((u8 *)arg0 + 0xD0); *(void **)((u8 *)arg0 + 0xD0) = node;
+}
+#pragma scheduling on
 void fn_801ABB54(void *arg0) {
     extern float lbl_80562478, lbl_8056247C, lbl_805624A4, lbl_805624AC, lbl_805624D8;
     float dot, magnitude, sign, limit;
@@ -86,6 +145,179 @@ void fn_801ABB54(void *arg0) {
     *(float *)(p + 0x124) = x;
     *(float *)(p + 0x12C) = z;
 }
+
+extern void fn_8017B81C(void *);
+extern void fn_8017C7C8(void *, float *, float *);
+extern float lbl_805624AC, lbl_805624DC, lbl_805624E0, lbl_805624E4;
+#pragma cplusplus on
+extern "C" void fn_801ABC28(void *arg0) {
+    extern void fn_8017A580(void *, int, int, int, int, int, int, int);
+    extern void fn_801796CC(int, void *, int);
+    struct Work {
+        float first[3];
+        float second[3];
+        Vec output;
+        void *object;
+        unsigned char flag;
+    } work;
+    char *p = (char *)arg0;
+    register int t11, t10, t9, t8, t7, t6, t5, t4, t3, t2, t1, t0;
+    int flag;
+    float first, scale;
+
+    if (*(unsigned char *)(p + 0x222) != 0) {
+        *(unsigned char *)(p + 0x1e9) = 0;
+        fn_8017C7C8(arg0, work.second, work.first);
+        return;
+    }
+    if (PSVECDotProduct((Vec *)(p + 0x118), (Vec *)(p + 0x118)) > lbl_805624DC ||
+        PSVECDotProduct((Vec *)(p + 0x124), (Vec *)(p + 0x124)) > lbl_805624DC) {
+        if (*(float *)(p + 0x64) > lbl_805624E0)
+            fn_801AC240(arg0);
+    }
+    if (*(unsigned char *)(p + 0x220) != 0) {
+        if (lbl_8055E3C4 == 1 ||
+            lbl_8055E3C8 > lbl_805624AC + *(float *)(p + 0x21c)) {
+            fn_801AC254(arg0);
+            scale = lbl_8056247C;
+            *(float *)(p + 0x124) = scale;
+            *(float *)(p + 0x128) = scale;
+            *(float *)(p + 0x12c) = scale;
+            *(float *)(p + 0x118) = scale;
+            *(float *)(p + 0x11c) = scale;
+            *(float *)(p + 0x120) = scale;
+        } else if (*(unsigned char *)(p + 0x221) == 0) {
+            fn_8017B81C(arg0);
+            #pragma scheduling off
+            {
+                float a, b, c, d, e, f;
+                float r0, r1, r2, r3, r4, r5, check;
+                a = *(volatile float *)(p + 0x118);
+                scale = *(volatile float *)&lbl_805624E4;
+                b = *(volatile float *)(p + 0x11c);
+                r0 = a * scale;
+                c = *(volatile float *)(p + 0x120);
+                r1 = b * scale;
+                d = *(volatile float *)(p + 0x124);
+                r2 = c * scale;
+                e = *(volatile float *)(p + 0x128);
+                r3 = d * scale;
+                f = *(volatile float *)(p + 0x12c);
+                r4 = e * scale;
+                r5 = f * scale;
+                check = *(volatile float *)(p + 0x238);
+                *(float *)(p + 0x118) = r0;
+                *(float *)(p + 0x11c) = r1;
+                *(float *)(p + 0x120) = r2;
+                *(float *)(p + 0x124) = r3;
+                *(float *)(p + 0x128) = r4;
+                *(float *)(p + 0x12c) = r5;
+                if (check > lbl_8056247C)
+                    fn_801ABB54(arg0);
+            }
+            #pragma scheduling on
+            flag = 0;
+            if (*(unsigned char *)(p + 0x234) != 0 &&
+                *(float *)(p + 0x4c) > lbl_80562478)
+                flag = 1;
+            *(unsigned char *)(p + 0x234) = (unsigned char)flag;
+        } else {
+            fn_8017B81C(arg0);
+            t0 = *(int *)(p + 0x1ec);
+            t1 = *(int *)(p + 0x1f0);
+            t2 = *(int *)(p + 0x1f4);
+            t3 = *(int *)(p + 0x1f8);
+            t4 = *(int *)(p + 0x1fc);
+            t5 = *(int *)(p + 0x200);
+            t6 = *(int *)(p + 0x204);
+            t7 = *(int *)(p + 0x208);
+            t8 = *(int *)(p + 0x20c);
+            t9 = *(int *)(p + 0x210);
+            t10 = *(int *)(p + 0x214);
+            t11 = *(int *)(p + 0x218);
+            scale = lbl_8056247C;
+            *(float *)(p + 0x124) = scale;
+            *(float *)(p + 0x128) = scale;
+            *(float *)(p + 0x12c) = scale;
+            *(float *)(p + 0x118) = scale;
+            *(float *)(p + 0x11c) = scale;
+            *(float *)(p + 0x120) = scale;
+            *(int *)(p + 0x3c) = t0;
+            *(int *)(p + 0x40) = t1;
+            *(int *)(p + 0x44) = t2;
+            *(int *)(p + 0x48) = t3;
+            *(int *)(p + 0x4c) = t4;
+            *(int *)(p + 0x50) = t5;
+            *(int *)(p + 0x54) = t6;
+            *(int *)(p + 0x58) = t7;
+            *(int *)(p + 0x5c) = t8;
+            *(int *)(p + 0x60) = t9;
+            *(int *)(p + 0x64) = t10;
+            *(int *)(p + 0x68) = t11;
+            ((void (*)(void *))fn_8017A580)(arg0);
+        }
+        if (*(float *)(p + 0x64) < lbl_805624E0) {
+            struct Dummy { virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3(); virtual void d4(); };
+            ((Dummy *)arg0)->d2();
+        }
+    }
+    if (*(unsigned char *)(p + 0x235) != 0) {
+        #pragma scheduling off
+        if ((char *)&work.output == p + 0x228) {
+            register float f0, f1, f2, f3, f4, f5, f6, f7, f8, f9, f10, f11, f12;
+            f0 = *(volatile float *)(p + 0x7c);
+            f6 = *(volatile float *)(p + 0x22c);
+            f2 = *(volatile float *)(p + 0x80);
+            f4 = f6 * f0;
+            f11 = *(volatile float *)(p + 0x84);
+            f1 = *(volatile float *)(p + 0x70);
+            f2 = f6 * f2;
+            f0 = *(volatile float *)(p + 0x228);
+            f3 = *(volatile float *)(p + 0x74);
+            f5 = f0 * f1;
+            f10 = *(volatile float *)(p + 0x78);
+            f3 = f0 * f3;
+            f8 = *(volatile float *)(p + 0x88);
+            f1 = f0 * f10;
+            f0 = f6 * f11;
+            f7 = *(volatile float *)(p + 0x230);
+            f9 = *(volatile float *)(p + 0x8c);
+            f5 = f5 + f4;
+            f6 = f7 * f8;
+            f12 = *(volatile float *)(p + 0x90);
+            f3 = f3 + f2;
+            f4 = f7 * f9;
+            f0 = f1 + f0;
+            f2 = f7 * f12;
+            f5 = f6 + f5;
+            f1 = f4 + f3;
+            f0 = f2 + f0;
+            work.output.x = f5;
+            work.output.y = f1;
+            work.output.z = f0;
+        } else {
+            work.output.x = *(float *)(p + 0x230) * *(float *)(p + 0x88) +
+                (*(float *)(p + 0x228) * *(float *)(p + 0x70) +
+                *(float *)(p + 0x22c) * *(float *)(p + 0x7c));
+            work.output.y = *(float *)(p + 0x230) * *(float *)(p + 0x8c) +
+                (*(float *)(p + 0x228) * *(float *)(p + 0x74) +
+                *(float *)(p + 0x22c) * *(float *)(p + 0x80));
+            work.output.z = *(float *)(p + 0x230) * *(float *)(p + 0x90) +
+                (*(float *)(p + 0x228) * *(float *)(p + 0x78) +
+                *(float *)(p + 0x22c) * *(float *)(p + 0x84));
+        }
+        #pragma scheduling invalid_target
+        work.output.x += *(float *)(p + 0x94);
+        work.output.y += *(float *)(p + 0x98);
+        work.output.z += *(float *)(p + 0x9c);
+        work.object = arg0;
+        work.flag = *(unsigned char *)(p + 0x234);
+        fn_801796CC(9, &work.output, 0x14);
+    }
+    *(int *)(p + 0x1e4) = 0;
+}
+#pragma cplusplus reset
+
 #pragma scheduling on
 void fn_801ABFF4(void) {
     fn_8017A57C();
@@ -123,20 +355,20 @@ void fn_801AC0A0(void *arg0, float *arg1, float *arg2, int arg3, int arg4) {
 extern void fn_8017A580(void *, int, int, int, int, int, int, int);
 extern void fn_8017B164(void *);
 void fn_801AC184(void *arg0) {
-    int t0, t1, t2, t3, t4, t5, t6, t7, t8, t9, t10, t11;
+    int t11, t3, t2, t1, t0, t4, t5, t6, t7, t8, t9, t10;
     fn_801AC240(arg0);
-    t0 = *(int *)((char *)arg0 + 0x1EC);
-    t1 = *(int *)((char *)arg0 + 0x1F0);
-    t2 = *(int *)((char *)arg0 + 0x1F4);
-    t3 = *(int *)((char *)arg0 + 0x1F8);
-    t4 = *(int *)((char *)arg0 + 0x1FC);
-    t5 = *(int *)((char *)arg0 + 0x200);
-    t6 = *(int *)((char *)arg0 + 0x204);
-    t7 = *(int *)((char *)arg0 + 0x208);
-    t8 = *(int *)((char *)arg0 + 0x20C);
-    t9 = *(int *)((char *)arg0 + 0x210);
-    t10 = *(int *)((char *)arg0 + 0x214);
-    t11 = *(int *)((char *)arg0 + 0x218);
+    t0 = *(volatile int *)((char *)arg0 + 0x1EC);
+    t1 = *(volatile int *)((char *)arg0 + 0x1F0);
+    t2 = *(volatile int *)((char *)arg0 + 0x1F4);
+    t3 = *(volatile int *)((char *)arg0 + 0x1F8);
+    t4 = *(volatile int *)((char *)arg0 + 0x1FC);
+    t5 = *(volatile int *)((char *)arg0 + 0x200);
+    t6 = *(volatile int *)((char *)arg0 + 0x204);
+    t7 = *(volatile int *)((char *)arg0 + 0x208);
+    t8 = *(volatile int *)((char *)arg0 + 0x20C);
+    t9 = *(volatile int *)((char *)arg0 + 0x210);
+    t10 = *(volatile int *)((char *)arg0 + 0x214);
+    t11 = *(volatile int *)((char *)arg0 + 0x218);
     *(int *)((char *)arg0 + 0x3C) = t0;
     *(int *)((char *)arg0 + 0x40) = t1;
     *(int *)((char *)arg0 + 0x44) = t2;
@@ -223,13 +455,14 @@ void **fn_801AC3AC(void **arg0, int arg1) {
 }
 
 #pragma dont_inline on
+#pragma scheduling off
 void fn_801AC508(void) {
-    register s32 value;
-    value = lbl_8055E5EC;
+    s32 value = lbl_8055E5EC;
     if (value > 0) {
         lbl_8055E5F0 = fn_801C1BA4(value * 5, value * 5 - 1);
     }
 }
+#pragma scheduling on
 #pragma dont_inline reset
 
 #pragma push
@@ -314,6 +547,76 @@ void fn_801ACB30(void *arg0, int arg1) {
             *(float *)(p + 0x8 + i*4) = x;
         }
     }
+}
+
+extern int lbl_8055E5EC, lbl_8055E5F0;
+extern float lbl_8056247C, lbl_805624AC, lbl_80562510;
+extern void fn_801C2694(void *, int *, float *, float *, float *, float *, float, float);
+extern void fn_801796CC(int, void *, int);
+void fn_801ACF94(void) {
+    char sp90[0x13C];
+    int sp8[1];
+    float *p;
+    int i, j, count;
+    void **obj;
+    float *src;
+    char sp3c[0x18];
+
+    if (lbl_8055E5F0 != 0) {
+        sp8[0] = 0x13C;
+        *(float *)&sp8[1] = lbl_8056247C;
+        p = (float *)((char *)sp8 + 4);
+        p[1] = lbl_8056247C; p[2] = lbl_8056247C;
+        p[3] = lbl_8056247C; p[4] = lbl_8056247C;
+        p[5] = lbl_8056247C; p[6] = lbl_8056247C;
+        p[7] = lbl_805624AC; p[8] = lbl_8056247C;
+        p[9] = lbl_8056247C; p[10] = lbl_80562510;
+        p[11] = lbl_8056247C;
+        fn_801C2694(sp90, sp8, p + 8, p + 6, p + 4, p, lbl_805624AC, lbl_8056247C);
+        obj = (void **)lbl_80435628;
+        i = 0;
+        j = 0;
+        do {
+            void *o = *obj;
+            void *a = *(void **)((char *)o + 0x23C);
+            if (a != 0) {
+                int first = *(int *)((char *)a + 0x254);
+                count = *(int *)((char *)o + 0x254) - first + 1;
+                src = (float *)(sp90 + first * 12);
+                *(int *)sp3c = j;
+                *(int *)(sp3c + 4) = i;
+                *(int *)(sp3c + 8) = count;
+                for (i = 0; i < count; i++) {
+                    *(float *)(sp3c + 12 + i * 12) = src[0];
+                    *(float *)(sp3c + 16 + i * 12) = src[1];
+                    *(float *)(sp3c + 20 + i * 12) = src[2];
+                    src += 3;
+                }
+                fn_801796CC(6, sp3c, 0x54);
+            }
+            obj++;
+            i = ++j;
+        } while (j < lbl_8055E5EC);
+    }
+}
+
+extern void fn_8017AB84(void *, Vec *, void *);
+extern void fn_801AD0E0(void *, void *, void *, void *, f32, f32);
+void fn_801AD28C(void *arg0, void *arg1, void *arg2, Vec *arg3, f32 farg0, f32 farg1) {
+    Vec sp20;
+    Vec sp14;
+    Vec delta;
+    f32 distance;
+    fn_8017AB84(*(void **)((char *)arg0 + 0x34), &sp20, arg1);
+    if (arg2 != 0) fn_8017AB84(arg2, &sp14, arg3);
+    else sp14 = *arg3;
+    delta.x = sp14.x - sp20.x;
+    delta.y = sp14.y - sp20.y;
+    delta.z = sp14.z - sp20.z;
+    distance = PSVECMag(&delta);
+    *(f32 *)((char *)arg0 + 0x28) = distance;
+    fn_801AD0E0(arg0, arg3, arg2, arg1, farg0, farg1);
+    *(f32 *)((char *)arg0 + 0x28) = distance;
 }
 
 #pragma pop
