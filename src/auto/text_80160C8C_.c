@@ -617,8 +617,8 @@ int fn_8016208C(void) {
     return count;
 }
 #pragma pop
-void fn_8016212C(s32 arg0) {
-    fn_801613E0(arg0);
+s32 fn_8016212C(s32 arg0) {
+    return fn_801613E0(arg0);
 }
 
 int fn_80162130(int arg0, int arg1) {
