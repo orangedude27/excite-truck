@@ -565,6 +565,20 @@ extern "C" int fn_801D707C(void *arg0, void *arg1) {
  *(int *)((char *)arg0+0x38)=fn_80207848(lbl_803388C8,1);
  return 1;
 }
+
+#pragma cplusplus on
+extern "C" void fn_801D71A8(void *arg0) {
+    struct ThreadObject {
+        virtual void destroy(int);
+    };
+    ThreadObject *obj = *(ThreadObject **)((char *)arg0 + 0x38);
+    if (obj != 0 && obj != 0) {
+        obj->destroy(1);
+    }
+    *(ThreadObject **)((char *)arg0 + 0x38) = 0;
+}
+#pragma cplusplus reset
+
 #pragma cplusplus reset
 
 void *fn_801D7200(void) {
@@ -873,6 +887,26 @@ void fn_801D832C(void *arg0) {
         *(int *)((char *)arg0 + 0x40) = 1;
     }
 }
+
+#pragma cplusplus on
+extern "C" void fn_801D8344(void *arg0) {
+    struct Dummy {
+        virtual void v0();
+        virtual void v1();
+        virtual void v2();
+        virtual void v3();
+        virtual void v4();
+        virtual void v5();
+    };
+    if (*(int *)((char *)arg0 + 0x40) != 0) {
+        Dummy *p = *(Dummy **)((char *)arg0 + 0x2C);
+        if (p != 0) {
+            p->v5();
+        }
+        *(int *)((char *)arg0 + 0x40) = 1;
+    }
+}
+#pragma cplusplus reset
 
 int fn_801D839C(void *arg0) {
     return (unsigned int)__cntlzw(*(unsigned char *)((char *)arg0 + 0x18)) >> 5;
