@@ -518,7 +518,7 @@ void fn_802AEB3C(u8 *arg0, s32 arg_sp0) {
     temp_r3 = workspace + 0x7C8;
     *(f32 *)((u8 *)(temp_r3) + (0x30)) = temp_f3;
     temp_r3_2 = workspace + 0x7C8;
-    temp_f2_2 = lbl_80564B80 / (f32) sin(temp_r3, lbl_80564B7C - (temp_f1 * lbl_80564B6C), lbl_80564B6C, temp_f3);
+    temp_f2_2 = lbl_80564B80 / (f32) sin(lbl_80564B7C - (temp_f1 * lbl_80564B6C));
     *(f32 *)((u8 *)(temp_r3_2) + (0x34)) = temp_f2_2;
     temp_f3_2 = (f32) fn_8002EF30(*(f32 *)&(temp_r3_2), temp_f18_2 * lbl_80564B6C, temp_f2_2);
     temp_r3_3 = workspace + 0x7C8;
