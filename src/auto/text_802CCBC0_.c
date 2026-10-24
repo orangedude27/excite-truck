@@ -7,7 +7,7 @@ extern int fn_802CAFF0(int);
 extern int stricmp(const char *, const char *);
 #pragma cplusplus on
 struct Dummy {
-    virtual void method0();
+    virtual void method0(int);
     virtual void method1();
     virtual void method2(int);
 };
