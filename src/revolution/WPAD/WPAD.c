@@ -3766,6 +3766,11 @@ _end:
 }
 #pragma inline_depth(1)
 #undef WPADiSendMuteSpeakerInline
+#undef WPADiPushCommandInline
+#undef WPADiSendEnableSpeakerInline
+#undef WPADiSendWriteDataCmdInline
+#undef WPADiSendWriteDataInline
+#undef WPADiSendGetContStatInline
 // fn_80062054: get data format
 u32 fn_80062054(s32 chan) {
 #pragma unused(chan)
