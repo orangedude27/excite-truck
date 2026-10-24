@@ -7471,7 +7471,7 @@ extern "C" void fn_800BD970(s32 arg0, s32 arg1, s8 arg2, s32 arg3, s32 *arg4) {
 
 extern "C" void *lbl_8055DD88;
 extern "C" void fn_800BC538(u8 *, u8 *, u8 *, s32, u8 *, s16 *, s16 *, u8 *, s16); /* extern */
-extern "C" void fn_800BF048(void *, u8 *, u8 *, u8 *, void *, void *, s32 *, void *, s16 *, s16 *, s16 *, s16 *, s16 *, s16 *, s16 *); /* extern */
+extern "C" void fn_800BF048(void *, u8 *, u8 *, u8 *, u8 *, u8 *, s32 *, u8 *, s16 *, s16 *, s16 *, s16 *, s16 *, s16 *, s16 *); /* extern */
 extern "C" u32 fn_800C0E7C(void *, void *, void *, void *, s32 *, void *); /* extern */
 extern "C" u32 fn_800C3DA0(void *, void *, s32, s16 *, s16 *, s16 *, s16, s16); /* extern */
 extern "C" u32 lbl_80560DA0;
