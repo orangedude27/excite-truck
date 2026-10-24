@@ -113,6 +113,182 @@ void *fn_8016B8CC(void *arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma cplusplus on
+extern "C" s32 strlen(const char *);
+extern "C" void fn_801308F4(void *, ...);
+extern "C" void fn_80130980(void *, s32, s32, f32);
+extern "C" void fn_801345D8(void *, s32, void *, s32);
+extern "C" void fn_801312EC(void *, void *);
+extern "C" void fn_80131318();
+extern "C" void fn_802ADFF4(s32, s32);
+extern "C" void fn_802AE02C(s32, s32);
+extern "C" void fn_802AE0B8(s32, s32);
+extern "C" void fn_802AE168(s32);
+extern "C" u8 *__AXGetStackHead(void);
+extern "C" u8 lbl_8055A208[];
+extern "C" u8 lbl_8055A20C, lbl_8055A210;
+extern "C" u32 lbl_8055E044;
+extern "C" u8 lbl_8055E374;
+extern "C" f32 lbl_8055E3C8, lbl_80561984, lbl_80561988;
+extern "C" f64 lbl_80561990;
+extern "C" u8 lbl_8043036C[];
+extern "C" void fn_8016B964(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
+    f32 f0, f1, f2, f4;
+    s32 count, var_r28, var_r6, state;
+    u8 *src, *dst;
+    u8 c;
+    void *obj;
+    if (*(s32 *)((u8 *)arg0 + 0xC) == 0) return;
+    ((void (*)(void *, s32))fn_801308F4)((u8 *)arg0 + 0x30, 0x14);
+    var_r28 = arg3;
+    var_r6 = 0;
+    if (arg3 != 0) {
+        f1 = *(f32 *)((u8 *)arg0 + 4);
+        f0 = lbl_80561980;
+        if (f1 > f0) {
+            f2 = lbl_8055E3C8;
+            f4 = lbl_80561984;
+            f1 = f2 - f1;
+            f0 = f1 - f0;
+            f0 = f0 / f4;
+            if (f4 < f0) f4 = f0;
+            if (f4 > lbl_80561980) f4 = lbl_80561980;
+            var_r6 = (s32)(lbl_80561980 + f4 * (lbl_80561988 + (f32)arg3 - lbl_80561980));
+            var_r28 = arg3 - var_r6;
+        }
+    }
+    ((void (*)(void *, s32, void *, ...))fn_801345D8)((u8 *)arg0 + 0x44, 0x14, &lbl_8055A208, var_r6);
+    if ((s8)lbl_8055E374 == 0) {
+        fn_801312EC(lbl_8043036C, lbl_803306D0);
+        lbl_8055E374 = 1;
+    }
+    if (*(u8 *)((u8 *)arg0 + 0x10) != 0) {
+        dst = (u8 *)arg0 + 0x9E; src = &lbl_8055A20C; count = 0x14;
+        goto copy1;
+loop1:
+        if (--count > 0) goto copy1;
+        dst[-1] = 0;
+        goto after1;
+copy1:
+        c = *src++;
+        *dst++ = c;
+        if ((s8)c != 0) goto loop1;
+after1:
+        dst = (u8 *)arg0 + 0x58; src = &lbl_8055A20C; count = 0x14;
+        goto loop2;
+loop2:
+        if (--count > 0) goto copy2;
+        dst[-1] = 0;
+        goto after2;
+copy2:
+        c = *src++;
+        *dst++ = c;
+        if ((s8)c != 0) goto loop2;
+after2:
+        ;
+    } else {
+        fn_80130980((u8 *)arg0 + 0x9E, 0x14, 2, (f32)var_r28);
+        if (*(u32 *)(lbl_8043036C + 8) != lbl_8055E044) fn_80131318();
+        src = *(u8 **)(lbl_8043036C + 4); dst = (u8 *)arg0 + 0x58; count = 0x14;
+        goto loop3;
+loop3:
+        if (--count > 0) goto copy3;
+        dst[-1] = 0;
+        goto after3;
+copy3:
+        c = *src++;
+        *dst++ = c;
+        if ((s8)c != 0) goto loop3;
+after3:
+        ;
+    }
+    ((void (*)(void *, s32, s32))fn_801308F4)((u8 *)arg0 + 0x6C, 0x14, arg1);
+    ((void (*)(void *, s32, s32))fn_801308F4)((u8 *)arg0 + 0x8A, 0x14, arg1 - arg3);
+    if (fn_801609C4(arg1) != -1) {
+        src = __AXGetStackHead(); dst = (u8 *)arg0 + 0x80; count = 0xA;
+        goto loop4;
+loop4:
+        if (--count > 0) goto copy4;
+        dst[-1] = 0;
+        goto after4;
+copy4:
+        c = *src++;
+        *dst++ = c;
+        if ((s8)c != 0) goto loop4;
+after4:
+        ;
+    } else {
+        src = &lbl_8055A210; dst = (u8 *)arg0 + 0x80; count = 0xA;
+        goto loop5;
+loop5:
+        if (--count > 0) goto copy5;
+        dst[-1] = 0;
+        goto after5;
+copy5:
+        c = *src++;
+        *dst++ = c;
+        if ((s8)c != 0) goto loop5;
+after5:
+        ;
+    }
+    if (*(s32 *)((u8 *)arg0 + 0xF8) != 0) *((u8 *)arg0 + 8) = 0;
+    state = *(s32 *)arg0;
+    switch (state) {
+    case 0:
+        fn_802ADFF4(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4));
+        if (strlen((const char *)arg0 + 0xDA) != 0) {
+            obj = *(void **)((u8 *)arg0 + 0x2C);
+            if (obj != 0 && *((u8 *)obj + 0x19) == 0) {
+                *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0;
+            }
+        } else {
+            obj = *(void **)((u8 *)arg0 + 0x28);
+            if (obj != 0 && *((u8 *)obj + 0x19) == 0) {
+                *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0;
+            }
+        }
+        if (arg3 > 0) {
+            obj = *(void **)((u8 *)arg0 + 0x14);
+            if (obj != 0) {
+                *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0;
+            }
+        } else {
+            obj = *(void **)((u8 *)arg0 + 0x18);
+            if (obj != 0) {
+                *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0;
+            }
+        }
+        *(s32 *)arg0 = 1;
+        break;
+    case 1:
+        if (*(s32 *)((u8 *)arg0 + 0xFC) != 0 && *(f32 *)((u8 *)arg0 + 4) < lbl_80561980)
+            *(f32 *)((u8 *)arg0 + 4) = lbl_8055E3C8;
+        if (*(s32 *)((u8 *)arg0 + 0xFC) == 2 && *(u8 *)((u8 *)arg0 + 0x20) == 0) {
+            obj = *(void **)((u8 *)arg0 + 0x1C); *(u8 *)((u8 *)arg0 + 0x20) = 1;
+            if (obj != 0) { *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0; }
+        }
+        if (*(s32 *)((u8 *)arg0 + 0x100) != 0) {
+            fn_802AE02C(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4)); *(s32 *)arg0 = 2;
+        }
+        break;
+    case 2:
+        if (*(u8 *)((u8 *)arg0 + 9) != 0) {
+            fn_802AE0B8(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4));
+            obj = *(void **)((u8 *)arg0 + 0x24);
+            if (obj != 0) { *((u8 *)obj + 0x49) = 1; *((u8 *)obj + 0x4B) = 0; *((u8 *)obj + 0x4A) = 0; }
+            *(s32 *)arg0 = 3;
+        }
+        break;
+    case 3:
+        if (*(s32 *)((u8 *)arg0 + 0x104) != 0) {
+            fn_802AE02C(*(s32 *)((u8 *)arg0 + 0xC), *(s32 *)((u8 *)arg0 + 0xF4)); *(s32 *)arg0 = 4;
+        }
+        break;
+    }
+    fn_802AE168(*(s32 *)((u8 *)arg0 + 0xC));
+}
+#pragma cplusplus reset
+
 void *fn_8016C168(void *arg0, s32 arg1) {
     void *temp_r30;
     void *temp_r30_2;
