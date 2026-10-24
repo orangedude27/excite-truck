@@ -497,7 +497,8 @@ void fn_80117618(void *arg0, void *arg1) {
 void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
 
 extern u32 lbl_80559944;
-extern u32 lbl_8041D608;
+extern u32 lbl_8041D608[1];
+#define lbl_8041D608 lbl_8041D608[0]
 extern u32 lbl_8055DED8;
 extern u8 lbl_802F6528[];
 extern void memset(void *, int, unsigned int);
@@ -508,7 +509,6 @@ s32 *fn_8011770C(s32 *arg0, u32 arg1) {
         u8 state[0x388];
         volatile u32 conversion[16];
     } local;
-    u32 i;
     u32 magic;
     u32 flags;
     u32 mode;
@@ -521,11 +521,12 @@ s32 *fn_8011770C(s32 *arg0, u32 arg1) {
     if ((arg1 & 0x4000) == 0) {
         lbl_80559944 = 1;
         lbl_8041D608 = 0;
-        for (i = 0; i < 0x388; i++) local.state[i] = 0;
-        *(s32 *)(local.state + 0x2A0) = fn_80116D30();
+        memset(local.state, 0, 0x388);
+        ((s32 *)local.state)[0x2A0 / 4] = fn_80116D30();
+        lbl_8041D508[0] = 0;
     }
     if (arg1 & 0x04000000) {
-        for (i = 0; i < 0x2C; i++) local.header[i] = ((u8 *)arg0)[i];
+        memcpy(local.header, arg0, 0x2C);
     } else if ((arg1 & 0x02000000) && lbl_8055DED8 != 0) {
         s32 (*callback)(void *, s32 *, u32) = (s32 (*)(void *, s32 *, u32))lbl_8055DED8;
         lbl_8055DED8 = 0;
