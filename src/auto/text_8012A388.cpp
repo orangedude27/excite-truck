@@ -554,21 +554,27 @@ extern "C" const char lbl_8032AEF4[];
 extern "C" const char lbl_8032AED4[];
 extern "C" const char lbl_8032AEB4[];
 extern "C" u8 lbl_805599D8;
+#pragma push
+#pragma use_lmw_stmw off
 extern "C" void fn_8012BF28(void) {
-    s32 paths[3], header[5], handle, inner, size;
+    s32 paths[3], header[5], inner, size;
     s32 *pathPtr, *table;
-    char filename[128], name[128], *src, *dst, ch;
+    u32 i;
+    s32 handle;
+    char filename[128], name[128], ch;
+    char *src;
+    s32 remaining;
+    char *dst;
     u8 ok;
     u8 *data;
-    u32 i;
-    s32 remaining;
     if (lbl_8055DFFC == 0) return;
     table = lbl_802F8E50;
     paths[0] = *table++; paths[1] = *table++; paths[2] = *table;
     pathPtr = paths; i = 0;
     do {
-        handle = fn_802E3BB4(*pathPtr, filename, 0x80);
-        if ((u32)(handle + 0x10000) != 0xFFFF) {
+        s32 opened = fn_802E3BB4(*pathPtr, filename, 0x80);
+        if ((u32)(opened + 0x10000) != 0xFFFF) {
+            handle = opened;
             do {
                 *fn_80029004(filename, '.') = 0;
                 dst = filename; remaining = 0x80; goto scan_test_1;
@@ -610,7 +616,7 @@ suffix_done_2:
                         fn_8002B0D8(name);
                         data = (u8 *)fn_8012C370((s32)name, 0x45544F43, (s32)&size, 0, 0, (s32)&ok);
                         if (data != 0 && ok != 0) {
-                            u8 t; u32 n;
+                            u8 t; u8 *entry; u32 n;
                             t=data[0]; data[0]=data[3]; data[3]=t; t=data[1]; data[1]=data[2]; data[2]=t;
                             t=data[4]; data[4]=data[7]; data[7]=t; t=data[5]; data[5]=data[6]; data[6]=t;
                             t=data[8]; data[8]=data[0xB]; data[0xB]=t; t=data[9]; data[9]=data[0xA]; data[0xA]=t;
@@ -618,11 +624,11 @@ suffix_done_2:
                             t=data[0x10]; data[0x10]=data[0x13]; data[0x13]=t; t=data[0x11]; data[0x11]=data[0x12]; data[0x12]=t;
                             if (*(u32 *)data != 0 || *(u32 *)(data+4) != 0x14)
                                 fn_802E317C(lbl_8032AE60, 0, 0, *(u32 *)(data+4), 0x14);
-                            n=0; while (n < *(u32 *)(data+0xC)) { fn_8012A388(data+0x14+n*0x44); ++n; }
+                            entry = data+0x14; n=0; while (n < *(u32 *)(data+0xC)) { fn_8012A388(entry); entry += 0x44; ++n; }
                         }
                         if (data != 0) {
                             if ((u32)header[2] != *(u32 *)(data+8)) {
-                                if (*(u32 *)(data+0xC) == (u32)header[3]) {
+                                if ((u32)header[3] == *(u32 *)(data+0xC)) {
                                     fn_802E30C8(lbl_8032AF4C, filename);
                                     *(u32 *)(data+8)=header[2]; *(u32 *)(data+0x10)=header[4];
                                     fn_802E3804(inner, data+0x14, header[3]*0x44);
@@ -642,7 +648,7 @@ read_rest:
         ++pathPtr; ++i;
     } while (i < 3);
 }
-
+#pragma pop
 extern "C" s32 fn_8012B534(s32 *, s32);
 extern "C" s32 fn_8012C33C(void) {
     s32 sp8;
