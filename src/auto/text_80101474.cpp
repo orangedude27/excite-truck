@@ -44,7 +44,7 @@ typedef int s32;
 struct Color4 { unsigned char r, g, b, a; };
 #pragma cplusplus on
 struct FontForWidth { virtual int v0(); virtual int v1(); virtual int v2(); virtual int v3(); };
-namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); void SetFontSize(float, float); }; }}
+namespace nw4hbm { namespace ut { struct Color { unsigned char r, g, b, a; }; struct Glyph; struct PrintFont { virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7(); virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11(); virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15(); virtual void v16(); virtual void v17(); virtual void GetGlyph(void*, unsigned short); }; class CharWriter { public: enum GradationMode { GRADATION_SOLID, GRADATION_VERTICAL, GRADATION_HORIZONTAL }; void PrintGlyph(float, float, float, const Glyph&); void SetTextColor(Color); void SetTextColor(Color, Color); float Print(unsigned short); void SetGradationMode(GradationMode); void SetFontSize(float, float); void SetupGX(); }; }}
 #pragma cplusplus reset
 namespace nw4hbm { namespace snd { namespace detail {
 class Channel { public: enum ChannelCallbackStatus { Status }; };
@@ -364,6 +364,278 @@ extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
     if (r6 == 0 && (((unsigned int)arg0 & 0xFFFFC000U) + 0x20000000U) != 0) r5 = 0;
     if (r5 == 0) Panic__Q26nw4hbm2dbFPCciPCce("nw4hbm/ut/CharWriter.cpp", 0x97, "this", arg0);
     return *(int *)((char *)arg0 + 0x48);
+}
+
+extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
+    int arg0_int = (int)arg0;
+    const char *base = lbl_80328178;
+    unsigned char sp23;
+    unsigned char sp22;
+    unsigned char sp21;
+    unsigned char sp20;
+    unsigned char sp1F;
+    unsigned char sp1E;
+    unsigned char sp1D;
+    unsigned char sp1C;
+    unsigned char sp1B;
+    unsigned char sp1A;
+    unsigned char sp19;
+    unsigned char sp18;
+    unsigned char sp17;
+    unsigned char sp16;
+    unsigned char sp15;
+    unsigned char sp14;
+    unsigned char sp13;
+    unsigned char sp12;
+    unsigned char sp11;
+    unsigned char sp10;
+    unsigned char spF;
+    unsigned char spE;
+    unsigned char spD;
+    unsigned char spC;
+    unsigned char spB;
+    unsigned char spA;
+    unsigned char sp9;
+    unsigned char sp8;
+    unsigned int temp_r30;
+    unsigned int temp_r3;
+    int temp_r3_3;
+    unsigned int temp_r4;
+    int var_r10;
+    int var_r5;
+    int var_r5_2;
+    int var_r6;
+    int var_r7;
+    int var_r8;
+    int var_r9;
+    void **temp_r3_2;
+
+    var_r5 = 1;
+    var_r6 = 1;
+    var_r7 = 1;
+    var_r8 = 1;
+    var_r9 = 1;
+    var_r10 = 1;
+    temp_r30 = arg0_int & 0xFF000000;
+    if (((unsigned int) (temp_r30 + 0x80000000) != 0U) && ((unsigned int) ((arg0_int & 0xFF800000) + 0x7F000000) != 0U)) {
+        var_r10 = 0;
+    }
+    if ((var_r10 == 0) && ((unsigned int) ((arg0_int & 0xF8000000) + 0x70000000) != 0U)) {
+        var_r9 = 0;
+    }
+    if ((var_r9 == 0) && ((unsigned int) (temp_r30 + 0x40000000) != 0U)) {
+        var_r8 = 0;
+    }
+    if ((var_r8 == 0) && ((unsigned int) ((arg0_int & 0xFF800000) + 0x3F000000) != 0U)) {
+        var_r7 = 0;
+    }
+    if ((var_r7 == 0) && ((unsigned int) ((arg0_int & 0xF8000000) + 0x30000000) != 0U)) {
+        var_r6 = 0;
+    }
+    if ((var_r6 == 0) && ((unsigned int) ((arg0_int & 0xFFFFC000) + 0x20000000) != 0U)) {
+        var_r5 = 0;
+    }
+    if (var_r5 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0xAD, base + 0x14, arg0_int);
+    }
+    var_r5_2 = 0;
+    if (((unsigned int) (temp_r30 + 0x80000000) == 0U) || (temp_r4 = arg0_int & 0xFF800000, (((unsigned int) (temp_r4 + 0x7F000000) == 0U) != 0)) || (temp_r3 = arg0_int & 0xF8000000, (((unsigned int) (temp_r3 + 0x70000000) == 0U) != 0)) || ((unsigned int) (temp_r30 + 0x40000000) == 0U) || ((unsigned int) (temp_r4 + 0x3F000000) == 0U) || ((unsigned int) (temp_r3 + 0x30000000) == 0U) || ((unsigned int) ((arg0_int & 0xFFFFC000) + 0x20000000) == 0U)) {
+        var_r5_2 = 1;
+    }
+    if (var_r5_2 == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce(base, 0x12C, base + 0x14, arg0_int);
+    }
+    (*(int *)((signed char*)(&lbl_8041D4E0) + (0))) = 0xFF;
+    (*(int *)((signed char*)(&lbl_8041D4E0) + (4))) = 0;
+    if (((int) (*(int *)((signed char*)(arg0) + (0))) != 0) || ((unsigned int) ((*(int *)((signed char*)(arg0) + (4))) + 0x10000) != -1U)) {
+        sp20 = (unsigned char) (*(int *)((signed char*)(arg0) + (0)));
+        sp21 = (*(unsigned char *)((signed char*)(arg0) + (1)));
+        sp22 = (*(unsigned char *)((signed char*)(arg0) + (2)));
+        sp23 = (*(unsigned char *)((signed char*)(arg0) + (3)));
+        sp1C = (unsigned char) (*(int *)((signed char*)(arg0) + (4)));
+        sp1D = (*(unsigned char *)((signed char*)(arg0) + (5)));
+        sp1E = (*(unsigned char *)((signed char*)(arg0) + (6)));
+        sp1F = (*(unsigned char *)((signed char*)(arg0) + (7)));
+        SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color((unsigned int)&sp20, (unsigned int)&sp1C);
+        return;
+    }
+    temp_r3_2 = (*(void ***)((signed char*)(arg0) + (0x48)));
+    if (temp_r3_2 != 0) {
+        temp_r3_3 = (*(int (**)())((signed char*)(*temp_r3_2) + (0x30)))();
+        if (temp_r3_3 < 4) {
+            if (temp_r3_3 < 2) {
+                if (temp_r3_3 < 0) {
+                    goto block_49;
+                }
+                if ((signed char) lbl_8055DE90 == 0) {
+                    *(int *)&lbl_8055DE94 = 0;
+                    __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
+                    lbl_8055DE90 = 1;
+                }
+                sp18 = (unsigned char) lbl_8055DE94;
+                sp19 = lbl_8055DE95;
+                sp1A = lbl_8055DE96;
+                sp1B = lbl_8055DE97;
+                GXSetFog(0, &sp18, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+                GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+                GXSetZTexture(0, 0x11, 0);
+                GXSetNumChans(1);
+                GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
+                GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
+                GXSetNumTexGens(1);
+                GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+                GXSetNumIndStages(0);
+                GXSetBlendMode(1, 4, 5, 0xF);
+                GXSetNumTevStages(1);
+                GXSetTevDirect(0);
+                GXSetTevSwapMode(0, 0, 0);
+                GXSetTevOrder(0, 0, 0, 4);
+                GXSetTevColorIn(0, 0xF, 0xF, 0xF, 0xA);
+                GXSetTevAlphaIn(0, 7, 4, 5, 7);
+                GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+                GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+                GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+                GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+                GXSetVtxAttrFmt(0, 0xD, 1, 2, 0xF);
+                GXClearVtxDesc();
+                GXSetVtxDesc(9, 1);
+                GXSetVtxDesc(0xB, 1);
+                GXSetVtxDesc(0xD, 1);
+                return;
+            }
+            if ((signed char) lbl_8055DE90 == 0) {
+                *(int *)&lbl_8055DE94 = 0;
+                __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
+                lbl_8055DE90 = 1;
+            }
+            sp14 = (unsigned char) lbl_8055DE94;
+            sp15 = lbl_8055DE95;
+            sp16 = lbl_8055DE96;
+            sp17 = lbl_8055DE97;
+            GXSetFog(0, &sp14, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+            GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+            GXSetZTexture(0, 0x11, 0);
+            GXSetNumChans(1);
+            GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
+            GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
+            GXSetNumTexGens(1);
+            GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+            GXSetNumIndStages(0);
+            GXSetBlendMode(1, 4, 5, 0xF);
+            GXSetNumTevStages(1);
+            GXSetTevDirect(0);
+            GXSetTevSwapMode(0, 0, 0);
+            GXSetTevOrder(0, 0, 0, 4);
+            GXSetTevOp(0, 0);
+            GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+            GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+            GXSetVtxAttrFmt(0, 0xD, 1, 2, 0xF);
+            GXClearVtxDesc();
+            GXSetVtxDesc(9, 1);
+            GXSetVtxDesc(0xB, 1);
+            GXSetVtxDesc(0xD, 1);
+            return;
+        }
+        if (temp_r3_3 < 7) {
+            if ((signed char) lbl_8055DE90 == 0) {
+                *(int *)&lbl_8055DE94 = 0;
+                __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
+                lbl_8055DE90 = 1;
+            }
+            sp10 = (unsigned char) lbl_8055DE94;
+            sp11 = lbl_8055DE95;
+            sp12 = lbl_8055DE96;
+            sp13 = lbl_8055DE97;
+            GXSetFog(0, &sp10, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+            GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+            GXSetZTexture(0, 0x11, 0);
+            GXSetNumChans(1);
+            GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
+            GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
+            GXSetNumTexGens(1);
+            GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+            GXSetNumIndStages(0);
+            GXSetBlendMode(1, 4, 5, 0xF);
+            GXSetNumTevStages(1);
+            GXSetTevDirect(0);
+            GXSetTevSwapMode(0, 0, 0);
+            GXSetTevOrder(0, 0, 0, 4);
+            GXSetTevOp(0, 0);
+            GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+            GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+            GXSetVtxAttrFmt(0, 0xD, 1, 2, 0xF);
+            GXClearVtxDesc();
+            GXSetVtxDesc(9, 1);
+            GXSetVtxDesc(0xB, 1);
+            GXSetVtxDesc(0xD, 1);
+            return;
+        }
+block_49:
+        Warning__Q26nw4hbm2dbFPCciPCce(base, 0xCF, lbl_80328178 + 0x84, temp_r3_3);
+        if ((signed char) lbl_8055DE90 == 0) {
+            *(int *)&lbl_8055DE94 = 0;
+            __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
+            lbl_8055DE90 = 1;
+        }
+        spC = (unsigned char) lbl_8055DE94;
+        spD = lbl_8055DE95;
+        spE = lbl_8055DE96;
+        spF = lbl_8055DE97;
+        GXSetFog(0, &spC, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+        GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+        GXSetZTexture(0, 0x11, 0);
+        GXSetNumChans(1);
+        GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
+        GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
+        GXSetNumTexGens(1);
+        GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+        GXSetNumIndStages(0);
+        GXSetBlendMode(1, 4, 5, 0xF);
+        GXSetNumTevStages(1);
+        GXSetTevDirect(0);
+        GXSetTevSwapMode(0, 0, 0);
+        GXSetTevOrder(0, 0, 0, 4);
+        GXSetTevOp(0, 0);
+        GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+        GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+        GXSetVtxAttrFmt(0, 0xD, 1, 2, 0xF);
+        GXClearVtxDesc();
+        GXSetVtxDesc(9, 1);
+        GXSetVtxDesc(0xB, 1);
+        GXSetVtxDesc(0xD, 1);
+        return;
+    }
+    if ((signed char) lbl_8055DE90 == 0) {
+        *(int *)&lbl_8055DE94 = 0;
+        __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
+        lbl_8055DE90 = 1;
+    }
+    sp8 = (unsigned char) lbl_8055DE94;
+    sp9 = lbl_8055DE95;
+    spA = lbl_8055DE96;
+    spB = lbl_8055DE97;
+    GXSetFog(0, &sp8, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+    GXSetTevSwapModeTable(0, 0, 1, 2, 3);
+    GXSetZTexture(0, 0x11, 0);
+    GXSetNumChans(1);
+    GXSetChanCtrl(4, 0, 0, 1, 0, 0, 2);
+    GXSetChanCtrl(5, 0, 0, 0, 0, 0, 2);
+    GXSetNumTexGens(1);
+    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
+    GXSetNumIndStages(0);
+    GXSetBlendMode(1, 4, 5, 0xF);
+    GXSetNumTevStages(1);
+    GXSetTevDirect(0);
+    GXSetTevSwapMode(0, 0, 0);
+    GXSetTevOrder(0, 0, 0, 4);
+    GXSetTevOp(0, 0);
+    GXSetVtxAttrFmt(0, 9, 1, 4, 0);
+    GXSetVtxAttrFmt(0, 0xB, 1, 5, 0);
+    GXSetVtxAttrFmt(0, 0xD, 1, 2, 0xF);
+    GXClearVtxDesc();
+    GXSetVtxDesc(9, 1);
+    GXSetVtxDesc(0xB, 1);
+    GXSetVtxDesc(0xD, 1);
 }
 
 extern "C" void SetColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(void *arg0, void *arg1, void *arg2) {
