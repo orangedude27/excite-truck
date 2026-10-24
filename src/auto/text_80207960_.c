@@ -179,27 +179,37 @@ void fn_80207DE0(void* arg0) {
 extern void* memmove(void*, const void*, unsigned long);
 #pragma push
 #pragma use_lmw_stmw off
-void fn_80207E70(void* arg0) {
-    void* base = arg0;
-    void* cur = base;
-    void* src = (char*)base + 0x98;
-    void* dst = (char*)base + 0x94;
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void fn_80207E70(void *arg0) {
+    void *base = arg0;
+    void *cur = base;
+    void *src = (char *)base + 0x98;
+    void *dst = (char *)base + 0x94;
     signed long i = 0;
-    void* temp; void* sub;
+    void *temp;
+    void *sub;
     signed long n;
-    while (i < *(signed long*)((char*)base + 0x114)) {
-        temp = *(void**)((char*)cur + 0x94);
-        sub = *(void**)((char*)temp + 0xC);
-        if (((long (*)(void*))(*(void***)sub)[9])(sub) == 3) {
-            temp = *(void**)((char*)cur + 0x94);
-            if (temp != 0) ((void (*)(void*, signed long))(*(void***)temp)[2])(temp, 1);
-            n = *(signed long*)((char*)base + 0x114) - 1;
-            *(signed long*)((char*)base + 0x114) = n;
+    while (i < *(signed long *)((char *)base + 0x114)) {
+        temp = *(void **)((char *)cur + 0x94);
+        sub = *(void **)((char *)temp + 0xC);
+        if (((LoopItem_80207E70 *)sub)->f7() == 3) {
+            temp = *(void **)((char *)cur + 0x94);
+            if (temp != 0)
+                ((LoopItem_80207E70 *)temp)->f0(1);
+            n = *(signed long *)((char *)base + 0x114) - 1;
+            *(signed long *)((char *)base + 0x114) = n;
             memmove(dst, src, (unsigned long)(n - i) * 4);
-        } else { cur = (char*)cur + 4; src = (char*)src + 4; dst = (char*)dst + 4; i++; }
+        } else {
+            cur = (char *)cur + 4;
+            src = (char *)src + 4;
+            dst = (char *)dst + 4;
+            i++;
+        }
     }
 }
-#pragma pop
+#pragma cplusplus reset
+#pragma scheduling on
 
 #pragma push
 #pragma use_lmw_stmw off
