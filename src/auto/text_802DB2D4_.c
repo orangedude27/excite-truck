@@ -151,7 +151,7 @@ void fn_802DBD88(void) {
     lbl_8055FEA0 = -1;
     value = fn_802D94DC();
     lbl_8055FEA4 = 1;
-    slot = &lbl_804DB468;
+    slot = (void **)&lbl_804DB468;
     *slot = value;
 }
 #pragma pop
