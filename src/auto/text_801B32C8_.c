@@ -9,7 +9,7 @@ struct VTable_801B3C98 {
     virtual void destroy(s32);
 };
 #pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" static inline void callPrevDtorCpp_801B3BD4(void *p) {
     ((VTable_801B3C98 *)p)->destroy(1);
 }
