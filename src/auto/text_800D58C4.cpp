@@ -114,7 +114,7 @@ struct PaneAnimRet { virtual void f0(); virtual void f1(); virtual void f2(); vi
 struct StateObject_800D6CA0 { virtual void v0(); virtual void v1(); virtual void* v2(); };
 struct Dummy_800DB1E8 {
     virtual void d0(); virtual void d1(); virtual void d2(); virtual void d3();
-    virtual void d4(); virtual void d5(); virtual void d6();
+    virtual void d4(); virtual void d5();
     virtual void *call();
 };
 struct StateNode_800D6CA0 { StateNode_800D6CA0* next; };
