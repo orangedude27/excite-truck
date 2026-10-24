@@ -429,7 +429,7 @@ extern float lbl_804C144C[];
 extern float lbl_80564F24, lbl_80564F28, lbl_8055FC88;
 extern float lbl_8055FC50, lbl_8055FC54, lbl_8055FC58;
 extern double fn_8002EF30(float);
-extern double atan(float, float, float);
+extern double atan(float);
 extern double sin(float);
 extern double cos(float);
 extern void fn_802D0368(float, float, float, float);
@@ -471,19 +471,21 @@ float fn_802C973C(void) { return lbl_8055FC4C; }
 
 float fn_802C9744(void) { return lbl_8055FC40; }
 
+extern float __fabsf(float);
 void fn_802C974C(float f0, float f1, float f2) {
+    float *view = lbl_804C144C;
     float angle = f2;
     float f4;
     float s, c, t;
     float a;
-    int mode = (int)lbl_8055FC74;
+    unsigned char mode = lbl_8055FC74;
     lbl_8055FC38 = f0;
     lbl_8055FC3C = f1;
     lbl_8055FC40 = f2;
-    lbl_804C144C[2] = f2;
-    if (mode != 0 && lbl_8055FC75 != 0) {
-        if (fabsf(lbl_8055D020 - lbl_80564EF8) > lbl_80558DC4) {
-            angle = lbl_80564F24 * (float)atan((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020, lbl_80564EF8, f2);
+    view[2] = f2;
+    if (mode != 0 && (unsigned char)lbl_8055FC75 != 0) {
+        if (!(__fabsf(lbl_8055D020 - lbl_80564EF8) <= lbl_80558DC4)) {
+            angle = lbl_80564F24 * (float)((double (*)(float))atan)((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020);
         }
     }
     lbl_8055FC4C = angle;
@@ -497,7 +499,7 @@ void fn_802C974C(float f0, float f1, float f2) {
     a = lbl_80564F28 - lbl_80564F18 * angle;
     lbl_8055FC50 = t / lbl_8055FC6C;
     lbl_8055FC54 = lbl_80564EF8 / (float)sin(a);
-    a = lbl_80564F24 * (float)atan(lbl_8055FC50, lbl_80564EF8, lbl_8055FC54);
+    a = lbl_80564F24 * (float)((double (*)(float))atan)(lbl_8055FC50);
     f4 = lbl_80564EF8;
     lbl_8055FC58 = f4 / (float)sin(lbl_80564F28 - lbl_80564F18 * a);
     if (mode == 0) f4 = lbl_8055D020 / lbl_8055D024;
