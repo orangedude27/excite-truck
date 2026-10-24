@@ -394,23 +394,25 @@ void fn_80206D3C(void* self, void* list, int count) {
 }
 
 extern "C" void fn_802065F8(void);
-extern "C" void *fn_80208998(int, int, int);
+extern "C" void *fn_80208998(int, int, int, float);
 extern "C" void fn_802085EC(int, void *);
 extern float lbl_80563220;
 extern char lbl_8033BDA8;
 __declspec(section ".rodata") extern char lbl_8033BDA8;
 extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-    float value;
     ObjIface80207218 *obj;
+    float value;
+    float value2;
     fn_802065F8();
-    value = lbl_805631FC;
-    *(void **)arg0 = &lbl_8033BDA8;
+    value = *(volatile float *)&lbl_805631FC;
+    *(volatile void **)arg0 = &lbl_8033BDA8;
+    value2 = *(volatile float *)&lbl_80563220;
     *(float *)((char *)arg0 + 0x68) = value;
-    *(float *)((char *)arg0 + 0x6C) = lbl_80563220;
+    *(float *)((char *)arg0 + 0x6C) = value2;
     *(char *)((char *)arg0 + 0x64) = 1;
     *(int *)((char *)arg0 + 0x70) = arg3;
     *(int *)((char *)arg0 + 0x74) = arg4;
-    obj = (ObjIface80207218 *)fn_80208998(lbl_8055ED80, arg1, arg2);
+    obj = (ObjIface80207218 *)fn_80208998(lbl_8055ED80, arg1, arg2, value);
     *(ObjIface80207218 **)((char *)arg0 + 0xC) = obj;
     if (obj != 0)
         fn_802085EC(lbl_8055ED80, arg0);
