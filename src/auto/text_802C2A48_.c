@@ -41,9 +41,6 @@ void fn_802C2BB8(float *arg0, float *arg1, float *arg2) {
     }
 }
 
-extern float lbl_80564ED8;
-extern float lbl_80564EDC;
-extern unsigned char lbl_8055FBA8;
 unsigned char fn_802C2C00(unsigned char arg0) {
     unsigned char saved = lbl_804C1328[0xC];
     float f;
