@@ -264,8 +264,8 @@ void fn_802AE168(void *);                           /* extern */
 unsigned int strlen(const char *); /* extern */
 #pragma scheduling invalid_target
 void fn_8017272C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
-extern int lbl_80330F54;
-extern int lbl_804303B8;
+extern char lbl_80330F54[];
+extern char lbl_804303B8[];
 extern int lbl_8055A2A0;
 extern unsigned char lbl_8055A2A4;
 extern unsigned char lbl_8055A2A8;
