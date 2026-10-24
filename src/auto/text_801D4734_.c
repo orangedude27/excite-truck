@@ -29,6 +29,21 @@ void fn_801D47F8(void* alarm) {
     fn_801D5488(fn_801D5650(alarm));
 }
 
+#pragma cplusplus on
+extern "C" signed char lbl_8055E954;
+extern "C" char lbl_804422F0[];
+extern "C" void fn_801D5730(void);
+extern "C" void fn_801D483C(void) {
+    struct TObjD1Arg { virtual void d0(int); };
+    lbl_8055E954 = 0;
+    TObjD1Arg *obj = *(TObjD1Arg **)lbl_804422F0;
+    if (obj != 0) {
+        obj->d0(1);
+    }
+    fn_801D5730();
+}
+#pragma cplusplus reset
+
 void fn_801D4888(void) {
     fn_801D5860();
 }
@@ -592,7 +607,6 @@ extern char lbl_80338CB0[];
 extern char lbl_80338CE8[];
 extern char lbl_8055ACFC;
 extern char lbl_8055AD08;
-#pragma small_data off
 #pragma dont_inline on
 #pragma scheduling invalid_target
 #pragma cplusplus on
@@ -605,6 +619,8 @@ extern "C" void *fn_801D7334(void *arg0) {
         virtual void f2();
         virtual const char *getName(const char *);
     };
+    struct Object28 { void *vtable; char pad[0x24]; int value; };
+    struct Object40 { void *vtable; char pad[0x3C]; int value; };
     struct Product {
         virtual void destroy(int);
         virtual int accept(void *);
@@ -612,51 +628,61 @@ extern "C" void *fn_801D7334(void *arg0) {
     char *strings = (char *)&lbl_80338460;
     Request *request = (Request *)arg0;
     const char *name = request->getName((const char *)&lbl_8055ACFC);
-    Product *product = 0;
-    void *object;
+    void *product = 0;
+    register void *object;
 
     if (stricmp(name, strings + 0x484) == 0) {
         object = fn_801284F8(0x17C, strings + 0x490);
-        if (object != 0) product = (Product *)((void *(*)(void *))fn_801D5AA8)(object);
-        goto done;
+        if (object != 0) {
+            product = (Product *)((void *(*)(void *))fn_801D5AA8)(object);
+            goto done;
+        }
     }
     if (stricmp(name, strings + 0x4A0) == 0) {
         object = fn_801284F8(0x2C, strings + 0x4AC);
         if (object != 0) {
-            *(void **)object = lbl_80338CE8;
-            *(int *)((char *)object + 0x28) = 0;
+            ((Object28 *)object)->vtable = lbl_80338CE8;
+            ((Object28 *)object)->value = 0;
             product = (Product *)object;
+            goto done;
         }
-        goto done;
     }
     if (stricmp(name, strings + 0x4BC) == 0) {
         object = fn_801284F8(0x44, strings + 0x4C8);
         if (object != 0) {
-            *(void **)object = lbl_80338CB0;
-            *(int *)((char *)object + 0x40) = 0;
+            ((Object40 *)object)->vtable = lbl_80338CB0;
+            ((Object40 *)object)->value = 0;
             product = (Product *)object;
+            goto done;
         }
-        goto done;
     }
     if (stricmp(name, strings + 0x4D8) == 0) {
         object = fn_801284F8(0x20, strings + 0x348);
-        if (object != 0) product = (Product *)((void *(*)(void *))fn_801D628C)(object);
-        goto done;
+        if (object != 0) {
+            product = (Product *)((void *(*)(void *))fn_801D628C)(object);
+            goto done;
+        }
     }
     if (stricmp(name, strings + 0x4E8) == 0) {
         object = fn_801284F8(0x34, strings + 0x368);
-        if (object != 0) product = (Product *)((void *(*)(void *))fn_801D6618)(object);
-        goto done;
+        if (object != 0) {
+            product = (Product *)((void *(*)(void *))fn_801D6618)(object);
+            goto done;
+        }
     }
     if (stricmp(name, strings + 0x4F8) == 0) {
         object = fn_801284F8(0x34, strings + 0x408);
-        if (object != 0) product = (Product *)((void *(*)(void *))fn_801D68E8)(object);
-        goto done;
+        if (object != 0) {
+            product = (Product *)((void *(*)(void *))fn_801D68E8)(object);
+            goto done;
+        }
     }
     if (stricmp(name, (const char *)&lbl_8055ACF4) == 0) {
         object = fn_801284F8(0x8C, strings + 0x418);
-        if (object != 0) product = (Product *)((void *(*)(void *))fn_801D6D68)(object);
-        goto done;
+        if (object != 0) {
+            product = (Product *)((void *(*)(void *))fn_801D6D68)(object);
+            goto done;
+        }
     }
     if (stricmp(name, strings + 0x508) == 0) {
         object = fn_801284F8(0x1B0, strings + 0x514);
@@ -667,8 +693,8 @@ extern "C" void *fn_801D7334(void *arg0) {
             *(int *)((char *)object + 0x2C) = 0x20;
             *(int *)((char *)object + 0x28) = 0;
             product = (Product *)object;
+            goto done;
         }
-        goto done;
     }
     if (stricmp(name, strings + 0x528) == 0) {
         object = fn_801284F8(0x18, strings + 0x538);
@@ -676,13 +702,15 @@ extern "C" void *fn_801D7334(void *arg0) {
             *(void **)object = lbl_80338C08;
             *(int *)((char *)object + 4) = 0;
             product = (Product *)object;
+            goto done;
         }
-        goto done;
     }
     if (stricmp(name, strings + 0x54C) == 0) {
         object = fn_801284F8(0x3C, strings + 0x474);
-        if (object != 0) product = (Product *)((void *(*)(void *))fn_801D701C)(object);
-        goto done;
+        if (object != 0) {
+            product = (Product *)((void *(*)(void *))fn_801D701C)(object);
+            goto done;
+        }
     }
     if (stricmp(name, (const char *)&lbl_8055AD08) == 0) {
         object = fn_801284F8(0x24, strings + 0x558);
@@ -690,8 +718,8 @@ extern "C" void *fn_801D7334(void *arg0) {
             *(void **)object = lbl_80338A40;
             *(int *)((char *)object + 4) = 0;
             product = (Product *)object;
+            goto done;
         }
-        goto done;
     }
     if (stricmp(name, strings + 0x564) == 0) {
         object = fn_801284F8(0x1C, strings + 0x570);
@@ -703,15 +731,14 @@ extern "C" void *fn_801D7334(void *arg0) {
     }
 done:
     if (product != 0) {
-        if (product->accept(arg0) != 0) return product;
-        product->destroy(1);
+        if (((Product *)product)->accept(arg0) != 0) return product;
     }
+    if (product != 0) ((Product *)product)->destroy(1);
     return 0;
 }
 #pragma cplusplus reset
 #pragma scheduling reset
 #pragma dont_inline reset
-#pragma small_data on
 
 int fn_801D76CC(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
