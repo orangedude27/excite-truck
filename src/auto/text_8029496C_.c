@@ -10,7 +10,7 @@ extern float PSVECDotProduct(const Vec80295 *, const Vec80295 *);
 extern void PSVECNormalize(const Vec80295 *, Vec80295 *);
 extern float fn_801E88F0(int);
 extern void *fn_80287B24(int);
-extern void fn_80294CCC(Vec80295 *, Vec80295 *, Vec80295 *, unsigned int, int, float, float);
+extern void fn_80294CCC(const Vec80295 *, const Vec80295 *, const Vec80295 *, unsigned int, int, float, float);
 extern void *fn_802C86DC(void);
 extern float fn_802C88E8(void *);
 extern void fn_802C8BD0(int);
@@ -53,7 +53,6 @@ void fn_80294CC8(void) { fn_80294ED4(); }
 #pragma push
 #pragma processor 750
 #pragma use_lmw_stmw off
-#pragma dont_inline on
 void fn_80294ED4(void) {
     Vec80295 sp8;
     Vec80295 sp14;
