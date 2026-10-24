@@ -24,3 +24,6 @@ void fn_80179CBC(void) {
     *(volatile int *)(p + 0x18) = zero;
 }
 #pragma pop
+
+#include "types.h"
+DECL_SECTION(".ctors") funcptr_t D_802ED204 = fn_80179CBC;
