@@ -90,6 +90,7 @@ extern "C" void fn_8019ECC4(void);
 extern void* lbl_80333B48;
 extern f32 lbl_80562370;
 extern f32 lbl_8056232C;
+extern "C" void** fn_801B83A0(void);
 
 extern "C" void fn_8019CE4C(void*, void*);
 extern "C" void fn_8019BD54(void*, void*, s32, s32);
@@ -194,6 +195,8 @@ extern f32 fn_8018AE7C(void*);
 extern void **fn_801B83A0();
 extern void fn_802C1A0C(void**, s32);
 extern "C" f32 __fabsf(f32);
+#pragma dont_inline on
+extern "C" void **fn_801B83A0();
 #pragma dont_inline on
 extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_raw, s32 arg4_raw, s32 arg5_raw, f32 farg0, f32 farg1, f32 farg2) {
     f32 *arg2 = (f32 *)arg2_raw;
@@ -361,36 +364,15 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
         return;
     }
     if (temp_r26 >= 0x3E8) {
-        temp_cr0_eq = temp_r29 == NULL;
-        if (temp_cr0_eq == 0) {
-            if (temp_cr0_eq == 0) {
-                temp_r4 = (*(s32 *)((u8 *)(temp_r29) + (0x10)));
-                if (temp_r4 != 0x4E434152) {
-                    if (temp_r4 < 0x4E434152) {
-                        if (temp_r4 != 0x43415220) {
-                            if (temp_r4 < 0x43415220) {
-                                if (temp_r4 != 0x41434152) {
-                                    goto block_14;
-                                }
-                                goto block_13;
-                            }
-                            goto block_14;
-                        }
-                        goto block_13;
-                    }
-                    if (temp_r4 != 0x50434152) {
-                        goto block_14;
-                    }
-                    goto block_13;
-                }
-block_13:
-                var_r0 = 1;
-            } else {
-block_14:
-                var_r0 = 0;
-            }
-            if (var_r0 != 0) {
-                (*(void (**)(void *, s32, void *))((u8 *)(*fn_801B83A0()) + (0x9C)))(temp_r29, temp_r26, arg1);
+        if (temp_r29 != NULL) {
+            temp_r4 = (*(s32 *)((u8 *)temp_r29 + 0x10));
+            switch (temp_r4) {
+            case 0x4E434152:
+            case 0x43415220:
+            case 0x41434152:
+            case 0x50434152:
+                (*(void (**)(void *, s32, void *))((u8 *)(*fn_801B83A0()) + 0x9C))(temp_r29, temp_r26, arg1);
+                break;
             }
         }
     }
