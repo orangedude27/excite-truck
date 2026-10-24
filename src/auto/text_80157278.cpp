@@ -685,7 +685,7 @@ extern "C" void fn_801584A4(void) {
 }
 
 extern "C" void fn_801584A8(void* arg0) {
-    *(u32*)((u8*)arg0) = (u32)((u8*)arg0 + 0xC);
+    *(u32*)((u8*)arg0 + 0) = (u32)arg0 + 0xC;
     *(u32*)((u8*)arg0 + 8) = 0x10;
     *(u32*)((u8*)arg0 + 4) = 0;
 }
@@ -1133,12 +1133,12 @@ extern "C" void fn_80159BB4(Unk801577F0* arg0) {
         *(f32*)(arg0->mData + r7 + 0xC) = f;
         r7 += 0x38;
     }
-    f32 b = lbl_80561750;
     f32 a = lbl_80561754;
+    f = lbl_80561750;
     arg0->m264 = 0;
     arg0->m260 = 0;
     arg0->m254 = a;
-    arg0->m25c = b;
+    arg0->m25c = f;
     arg0->v31();
 }
 
@@ -1198,14 +1198,16 @@ extern "C" f32 fn_80159F2C(void* arg0, void* arg1, void* arg2) {
 }
 
 extern "C" void fn_8015A318(Unk8015A368C* arg0) {
-    if (arg0->m260 <= 0)
+    if (arg0->m260 <= 0) {
         return;
-    s32 value = arg0->m258;
-    if (value != 0) {
-        void fn_801CB6E4(void*, s32);
-        fn_801CB6E4((void*)value, *(s32*)&arg0->m4);
+    } else {
+        s32 buffer = arg0->m258;
+        if (buffer != 0) {
+            void fn_801CB6E4(void*, s32);
+            fn_801CB6E4((void*)buffer, *(s32*)&arg0->m4);
+        }
+        arg0->m260 = 0;
     }
-    arg0->m260 = 0;
 }
 
 #pragma dont_inline on
@@ -2717,10 +2719,13 @@ extern "C" void fn_80159624(void *arg0, void *arg1) {
     }
 }
 
+#pragma scheduling off
 extern "C" s32 fn_80159708(void* arg0) {
-    f32 f0 = *(f32*)((char*)arg0 + 0x25c);
-    return (s32)f0;
+    f32 f = *(f32*)((char*)arg0 + 0x25c);
+    f64 d = f;
+    return (s32)d;
 }
+#pragma scheduling on
 class Fn8015E338Item {
 public:
  virtual void v0(); virtual void v1(); virtual void v2(); virtual f32 v3(void*);
