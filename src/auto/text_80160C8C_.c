@@ -385,13 +385,14 @@ s32 fn_80161A70(void) {
     return 0;
 }
 
-void fn_80161AEC(void) {
-    if (lbl_8055E300 != 0) {
-        void * volatile *vtable = (void * volatile *)*(void ***)lbl_8055E300;
-        ((void (*)(void))vtable[0x4C / 4])();
+#pragma cplusplus on
+extern "C" void fn_80161AEC(void) {
+    Dummy_801638A0 *p = (Dummy_801638A0 *)lbl_8055E300;
+    if (p != 0) {
+        p->f17();
     }
 }
-
+#pragma cplusplus off
 s32 fn_80161B0C(void) {
     s32 result = 0;
     if (lbl_8055E300 != 0) {
