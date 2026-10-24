@@ -428,10 +428,10 @@ extern float lbl_8055FC40;
 extern float lbl_804C144C[];
 extern float lbl_80564F24, lbl_80564F28, lbl_8055FC88;
 extern float lbl_8055FC50, lbl_8055FC54, lbl_8055FC58;
-extern double fn_8002EF30(float);
-extern double atan(float);
-extern double sin(float);
-extern double cos(float);
+extern double fn_8002EF30(double);
+extern double atan(double);
+extern double sin(double);
+extern double cos(double);
 extern void fn_802D0368(float, float, float, float);
 void fn_802C9648(float arg0) {
     float f3 = lbl_8055FC38;
@@ -472,41 +472,44 @@ float fn_802C973C(void) { return lbl_8055FC4C; }
 float fn_802C9744(void) { return lbl_8055FC40; }
 
 extern float __fabsf(float);
+extern double __fabs(double);
+#pragma scheduling invalid_target
 void fn_802C974C(float f0, float f1, float f2) {
     float *view = lbl_804C144C;
     float angle = f2;
     float f4;
-    float s, c, t;
-    float a;
+    float theta, s, t, a, ratio;
     unsigned char mode = lbl_8055FC74;
     lbl_8055FC38 = f0;
     lbl_8055FC3C = f1;
     lbl_8055FC40 = f2;
     view[2] = f2;
-    if (mode != 0 && (unsigned char)lbl_8055FC75 != 0) {
-        if (!(__fabsf(lbl_8055D020 - lbl_80564EF8) <= lbl_80558DC4)) {
-            angle = lbl_80564F24 * (float)((double (*)(float))atan)((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020);
-        }
+    if (mode != 0) {
+        if ((unsigned char)lbl_8055FC75 == 0) goto keep_angle;
+        if ((float)__fabs((double)(lbl_8055D020 - lbl_80564EF8)) <= lbl_80558DC4) goto keep_angle;
+        angle = lbl_80564F24 * (float)atan((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020);
     }
+keep_angle:
     lbl_8055FC4C = angle;
-    a = lbl_80564F18 * angle;
-    s = (float)sin(a);
-    c = (float)cos(a);
+    theta = lbl_80564F18 * angle;
+    s = (float)sin(theta);
     lbl_8055FC48 = s;
-    t = s / c;
+    t = s / (float)cos(theta);
+    a = lbl_80564F28 - lbl_80564F18 * angle;
     lbl_8055FC44 = t;
     lbl_8055FC88 = t;
-    a = lbl_80564F28 - lbl_80564F18 * angle;
-    lbl_8055FC50 = t / lbl_8055FC6C;
-    lbl_8055FC54 = lbl_80564EF8 / (float)sin(a);
-    a = lbl_80564F24 * (float)((double (*)(float))atan)(lbl_8055FC50);
+    s = (float)sin(a);
+    ratio = t / lbl_8055FC6C;
+    lbl_8055FC50 = ratio;
+    lbl_8055FC54 = lbl_80564EF8 / s;
+    a = lbl_80564F24 * (float)atan(ratio);
     f4 = lbl_80564EF8;
     lbl_8055FC58 = f4 / (float)sin(lbl_80564F28 - lbl_80564F18 * a);
     if (mode == 0) f4 = lbl_8055D020 / lbl_8055D024;
     fn_802D0368(lbl_8055FC38, lbl_8055FC3C, angle, f4);
     fn_802CC518((int)lbl_8055FC64, lbl_8055FC44);
 }
-
+#pragma scheduling on
 void fn_802C98DC(float *arg0, float *arg1, float *arg2, float *arg3) {
     *arg0 = lbl_8055FC44;
     *arg1 = lbl_8055FC38;
