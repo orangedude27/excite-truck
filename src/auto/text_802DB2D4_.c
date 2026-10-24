@@ -4,7 +4,10 @@
 extern unsigned char lbl_8055FEC0;
 extern signed char lbl_8055FE9E;
 extern int lbl_8055FEA0, lbl_8055FEA4;
+#pragma push
+#pragma small_data off
 extern void *lbl_804DB468;
+#pragma pop
 extern void *fn_802D94DC(void);
 extern void *lbl_8055FEA8;
 extern void *lbl_8055FEAC;
@@ -137,8 +140,19 @@ void fn_802DBCFC(int arg0, int arg1) {
     }
 }
 
-void fn_802DBD88(void) { void *value; lbl_8055FEA8 = 0; lbl_8055FEAC = 0; lbl_8055FE9E = 1; lbl_8055FEA0 = -1; value = fn_802D94DC(); lbl_8055FEA4 = 1; lbl_804DB468 = value; }
-
+#pragma push
+#pragma small_data off
+void fn_802DBD88(void) {
+    void *value;
+    lbl_8055FEA8 = 0;
+    lbl_8055FEAC = 0;
+    lbl_8055FE9E = 1;
+    lbl_8055FEA0 = -1;
+    value = fn_802D94DC();
+    lbl_8055FEA4 = 1;
+    lbl_804DB468 = value;
+}
+#pragma pop
 void fn_802DBDD8(void) {
     lbl_8055FEA8 = 0;
     lbl_8055FEAC = 0;
