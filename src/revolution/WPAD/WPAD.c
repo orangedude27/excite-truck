@@ -3698,6 +3698,7 @@ _end:
     return status;
 }
 #pragma inline_depth(1)
+#undef WPADiSendMuteSpeakerInline
 // fn_80062054: get data format
 u32 fn_80062054(s32 chan) {
 #pragma unused(chan)
