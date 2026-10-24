@@ -311,6 +311,7 @@ extern "C" void fn_80206B10(void) {
 	return;
 }
 
+#pragma scheduling invalid_target
 extern "C" void fn_80206B14(void *arg0, int arg1, int arg2) {
     unsigned char *p = (unsigned char *)arg0;
     if (p[0x4D]) {
@@ -329,7 +330,7 @@ extern "C" void fn_80206B14(void *arg0, int arg1, int arg2) {
     }
     ((Dispatch4_80206B14 *)arg0)->f4(arg1, arg2);
 }
-
+#pragma scheduling on
 extern "C" void fn_80206BF4(void) {
 	return;
 }
