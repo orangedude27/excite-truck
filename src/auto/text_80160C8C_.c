@@ -271,6 +271,20 @@ s32 fn_801613A0(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma dont_inline on
+s32 fn_801613E0(s32 arg0) {
+    if (fn_80161C38() != 0) {
+        switch (arg0) {
+        case 3:
+            lbl_8055E304 = 0;
+            fn_80176734();
+            return 1;
+        }
+    }
+    return 0;
+}
+#pragma dont_inline reset
+
 s32 fn_801615B4(s32 arg0) {
     s32 total = 0;
     s32 i = 0;
