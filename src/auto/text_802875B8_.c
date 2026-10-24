@@ -192,14 +192,23 @@ void fn_802879E4(s32 arg0) {
     }
 }
 
-void fn_80287A34(void) {
-    Fn80287A34Obj *obj;
+#pragma cplusplus on
+extern "C" void fn_80287A34(void) {
+    struct Dummy {
+        virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
+        virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
+        virtual void f8(); virtual void f9(); virtual void f10(); virtual void f11();
+        virtual void f12(); virtual void f13(); virtual void f14(); virtual void f15();
+        virtual void f16();
+    };
+    extern void fn_801E12A4(void);
+    extern void fn_802A1548(void);
+    extern void *fn_801B83A0(void);
     fn_801E12A4();
     fn_802A1548();
-    obj = (Fn80287A34Obj *)fn_801B83A0();
-    ((void (*)(void))obj->vtable[18])();
+    ((Dummy *)fn_801B83A0())->f16();
 }
-
+#pragma cplusplus off
 void fn_80287A6C(s32 arg0) {
     if (arg0 == 1 && (u8)lbl_8055F6BC == 0) return;
     fn_80294CC8(arg0); fn_801B8834(); fn_802A1584(); fn_8029C2D4();
