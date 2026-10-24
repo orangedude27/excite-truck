@@ -139,7 +139,10 @@ void *fn_80260854(void *arg0, s32 arg1) {
 extern s32 fn_80128668(void);
 extern s32 fn_802328D4(s32);
 extern s32 fn_80235380(s32, s32 *);
+#pragma push
+#pragma small_data off
 extern u8 lbl_80345EA0;
+#pragma pop
 #pragma push
 #pragma small_data off
 void *fn_802608D4(void *arg0, s32 arg1) {
