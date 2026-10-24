@@ -52,6 +52,7 @@ extern void fn_8012CC24(void);
 extern "C" u32 fn_8012D3D0(void);
 extern "C" void fn_8012D33C(u32 *, u32 *);
 extern "C" void fn_8012D1A8(s32);
+extern "C" void fn_8012D024(void *, s32, s32);
 
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012A388(void *arg0) {
