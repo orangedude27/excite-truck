@@ -273,11 +273,23 @@ extern "C" s32 fn_801454E8(void *arg0, const char *arg1) {
 #pragma pop
 
 extern "C" void fn_80145538(void *arg0, void *arg1) {
-    extern s32 fn_80145368();
+    extern void fn_80145368(void *, void *);
     extern s32 fn_801454E8(void *, const char *);
-    fn_80145368();
-    *(f32 *)((u8 *)arg0 + 0x10) = (*(f32 (**)(void *, const char *))(*(u8 **)arg1 + 0x24))(arg1, (const char *)&lbl_80559DE0);
-    *(f32 *)((u8 *)arg0 + 0x14) = (*(f32 (**)(void *, const char *))(*(u8 **)arg1 + 0x24))(arg1, (const char *)&lbl_80559DE4);
+    class V {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual f32 f7(const char *);
+    };
+    V *obj = (V *)arg1;
+    fn_80145368(arg0, arg1);
+    *(f32 *)((u8 *)arg0 + 0x10) = obj->f7((const char *)&lbl_80559DE0);
+    *(f32 *)((u8 *)arg0 + 0x14) = obj->f7((const char *)&lbl_80559DE4);
     *(s32 *)((u8 *)arg0 + 0x18) = fn_801454E8(arg1, lbl_80559DFC);
 }
 
