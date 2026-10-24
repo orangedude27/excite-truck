@@ -451,12 +451,12 @@ void fn_80193CD4(void *arg0) {
     *(signed char *)((char *)arg0 + 0x2A5) = 1;
 }
 
-void fn_80193CE0(void *arg0) {
-    ((void (*)(void *))(*(void **)((char *)*(void **)arg0 + 0x30)))(arg0);
+#pragma cplusplus on
+extern "C" void fn_80193CE0(void *arg0) {
+    ((DummyVt_80193CE0 *)arg0)->d10();
     *(u8 *)((char *)arg0 + 0x2A5) = 0;
 }
-
-#pragma dont_inline reset
+#pragma cplusplus reset
 
 void fn_80193D20(void) {
     fn_80129DC4(3, lbl_8055E584, lbl_8055E588);
