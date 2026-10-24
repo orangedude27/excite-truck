@@ -8,9 +8,12 @@
 struct VTable_801B3C98 {
     virtual void destroy(s32);
 };
+#pragma push
+#pragma scheduling off
 extern "C" static inline void callPrevDtorCpp_801B3BD4(void *p) {
     ((VTable_801B3C98 *)p)->destroy(1);
 }
+#pragma pop
 #pragma cplusplus reset
 
 extern f32 lbl_8055E3C8;
@@ -166,8 +169,9 @@ void* fn_801B3BD4(void* arg0, s32 arg1) {
                 *(void**)((u8*)arg0 + 0x1C) = NULL;
             }
         }
-        if (arg1 > 0)
+        if (arg1 > 0) {
             fn_80128668(arg0);
+        }
     }
     return arg0;
 }
