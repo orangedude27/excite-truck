@@ -51,6 +51,8 @@ extern void* lbl_8041D728[];
 extern u8 lbl_802F6A40[];
 extern u8 lbl_8041D508[];
 extern u32 lbl_80559950;
+extern u32 lbl_80329DA8[];
+extern u8 lbl_802F6990[];
 
 BOOL ARCFastOpen(ARCHandle *handle, s32 entrynum, ARCFileInfo *info) {
     u32 *nodes = (u32 *)handle->FSTStart;
@@ -894,15 +896,16 @@ void fn_8011A45C(void *arg0, s32 arg1, s32 arg2) {
     temp_r3 = fn_80116D30();
     var_r31 = temp_r3;
     *counter = *counter + (temp_r31 - (temp_r3 - arg2));
-    goto loop;
-loop:
-    temp_r3_2 = fn_80116D30();
-    temp_r0 = *counter;
-    temp_r4 = temp_r3_2 - var_r31;
-    if (temp_r4 < temp_r0) goto loop;
-    var_r31 = temp_r3_2;
-    *counter = temp_r0 - temp_r4;
-    if (*counter > 0) goto loop;
+    for (;;) {
+        temp_r3_2 = fn_80116D30();
+        temp_r0 = *counter;
+        temp_r4 = temp_r3_2 - var_r31;
+        if (temp_r4 >= temp_r0) {
+            var_r31 = temp_r3_2;
+            *counter = temp_r0 - temp_r4;
+            if (*counter <= 0) break;
+        }
+    }
 }
 
 void fn_8011A4F8(u32 arg0, void *arg1) {
@@ -1730,8 +1733,8 @@ void fn_8011BC48(void) {
 }
 
 s32 fn_8011BC4C(void *arg0, void *arg1) {
-    void *var_r5;
     void *temp_r0;
+    void *var_r5;
     if (arg0 == NULL) return 0;
     var_r5 = *(void **)((u8 *)arg0 + 0x30);
     if (var_r5 == arg1) {
@@ -1739,7 +1742,7 @@ s32 fn_8011BC4C(void *arg0, void *arg1) {
         return 1;
     }
     temp_r0 = *(void **)var_r5;
-loop:
+check:
     if (temp_r0 == arg1) {
         *(void **)var_r5 = *(void **)arg1;
         return 1;
@@ -1747,7 +1750,7 @@ loop:
     var_r5 = temp_r0;
     temp_r0 = *(void **)var_r5;
     if (temp_r0 == NULL) return 0;
-    goto loop;
+    goto check;
 }
 
 void fn_8011BCAC(void **head, void *node) {
@@ -1791,18 +1794,17 @@ void fn_8011BDF0(s32 arg0) {
 void *fn_8011BE48(s32 arg0) {
     void *ptr;
     s32 sign;
-    s32 value;
     ptr = fn_8011FFC4(0x40);
     if (ptr != NULL) {
         memset(ptr, 0, 0x40);
         sign = arg0 >> 31;
         *(s32 *)((u8 *)ptr + 0x00) = 0;
-        value = (sign ^ arg0) - sign;
         *(s32 *)((u8 *)ptr + 0x04) = 1;
+        arg0 = (sign ^ arg0) - sign;
         *(s32 *)((u8 *)ptr + 0x30) = 0;
         *(s32 *)((u8 *)ptr + 0x34) = 1;
         *(s32 *)((u8 *)ptr + 0x38) = 0;
-        *(s32 *)((u8 *)ptr + 0x3C) = value;
+        *(s32 *)((u8 *)ptr + 0x3C) = arg0;
     }
     return ptr;
 }
@@ -3930,9 +3932,9 @@ void fn_80125098(void *arg0) {
     f1 = *(f32 *)((u8 *)arg0 + 8);
     f2 = *(f32 *)((u8 *)arg0 + 4);
     f0 = *(f32 *)((u8 *)arg0 + 12);
+    *(f32 *)((u8 *)arg0 + 4) = f2 - f0;
     *(f32 *)((u8 *)arg0 + 8) = f3 - f1;
     *(f32 *)((u8 *)arg0 + 0) = f3 + f1;
-    *(f32 *)((u8 *)arg0 + 4) = f2 - f0;
     *(f32 *)((u8 *)arg0 + 12) = f2 + f0;
 }
 
