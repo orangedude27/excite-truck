@@ -54,7 +54,7 @@ extern int lbl_80333390;
   void fn_801964D0(void);
   void fn_80128668(void *);
   void fn_80193138(int);
-  void fn_80193CE0(void);
+  void fn_80193CE0();
 
 #pragma cplusplus on
 class DummyVt_80193CE0 {
