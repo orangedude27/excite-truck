@@ -935,10 +935,7 @@ public:
     virtual void f4();
     virtual void f5();
     virtual void f6();
-    virtual void f7();
     virtual int f8();
-    virtual void f9();
-    virtual void f10();
 };
 #pragma cplusplus on
 extern "C" void fn_802B869C(void) {
@@ -992,15 +989,15 @@ void fn_802B87A0(void) {
 }
 #pragma pop
 void fn_802B87F4(void) {
-    s32 value;
+    volatile s32* state;
     if (lbl_8055FA48 != 0) {
         fn_802B869C();
         fn_802B59A4(lbl_8055FA3C);
         fn_802B0288();
         if (lbl_8055FA38 == 1)
             return;
-        value = lbl_8055FA40;
-        if (value == 6)
+        state = (volatile s32*)&lbl_8055FA40;
+        if (*state == 6)
             return;
         fn_802B4E3C();
     }
