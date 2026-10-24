@@ -86,6 +86,7 @@ s32 fn_8000CFA8(s32 arg0, s32 arg1) {
     return arg0;
 }
 
+#pragma scheduling invalid_target
 void fn_8000D000(s32 arg0, s32 arg1, s32 arg2) {
     lbl_8055D408 = arg0;
     lbl_8055D404 = 1;
@@ -96,7 +97,7 @@ void fn_8000D000(s32 arg0, s32 arg1, s32 arg2) {
     lbl_8055D400 = arg2;
     lbl_8055D420 = fn_8000CCB8();
 }
-
+#pragma scheduling on
 void fn_8000D000(s32, s32, s32);
 void fn_8000D048(void) {
     ((void (*)(void))fn_8000D000)();
