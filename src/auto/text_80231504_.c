@@ -715,6 +715,181 @@ s32 fn_80234654(void) {
     return total;
 }
 
+extern s32 fn_8002B1D8(const char *, const char *, s32);
+extern f32 fn_80235EF0(s32, s32);
+extern f32 fn_80235F64(s32, s32);
+extern void fn_802C8BD0(s32);
+#pragma cplusplus reset
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma small_data off
+#pragma scheduling invalid_target
+#pragma dont_inline on
+void fn_802346C8(void) {
+f32 f24;
+f32 f25;
+f32 f26;
+f32 f27;
+f32 f28;
+f32 f30 = lbl_80563688;
+f32 f31 = lbl_8056368C;
+volatile f32 sp8;
+s32 mode;
+s32 i;
+s32 textOffset;
+s32 charIndex;
+s32 nameIndex;
+s32 glyphOffset;
+s32 *colorPtr;
+u8 *object;
+u8 *record;
+u8 *glyphDef;
+s32 fontColor;
+s8 *start;
+s32 totalChars;
+s32 charStep;
+s32 glyphIndex;
+u16 decoded;
+s32 code;
+s32 *queue;
+u8 *render;
+u8 *glyphs;
+
+s8 *end;
+
+object = (u8 *)lbl_8055F058;
+mode = (*(u8 **)(object + 8) != 0) + 1;
+goto outer_test;
+outer_body:
+if (mode == 2) object = *(u8 **)(lbl_8055F058 + 8);
+else object = (u8 *)lbl_8055F058;
+fn_802C8BD0(*(s32 *)object);
+totalChars = fn_80234654();
+totalChars <<= 2;
+if (totalChars > 0 && fn_802C8DBC(totalChars) != 0) {
+i = 0;
+textOffset = 0;
+goto record_test;
+record_body:
+record = (u8 *)lbl_8055F06C + textOffset;
+f26 = *(f32 *)(record + 0x44);
+f28 = (f32)object[4] * *(f32 *)(record + 0x50);
+f27 = f28 + f26;
+if (mode == 2) colorPtr = (s32 *)(record + 0x4C);
+else colorPtr = (s32 *)(record + 0x48);
+f25 = *(f32 *)(record + 0x40);
+strlen((const char *)((u8 *)lbl_8055F06C + textOffset));
+charIndex = 0;
+goto char_test;
+char_body:
+sp8 = f28;
+start = (s8 *)(record + charIndex);
+fontColor = *colorPtr;
+if ((s8)(((u8 *)lbl_8055F06C + textOffset)[charIndex]) == '\\') {
+nameIndex = 0;
+glyphOffset = 0;
+goto name_test;
+name_body:
+glyphDef = *(u8 **)lbl_80497F14 + glyphOffset;
+if (fn_8002B1D8((const char *)(start + 1),
+(const char *)*(u8 **)glyphDef,
+strlen((const char *)*(u8 **)glyphDef)) == 0) {
+queue = (s32 *)lbl_8049846C;
+f24 = lbl_8056368C;
+glyphIndex = queue[1];
+render = *(u8 **)queue + glyphIndex * 0x1C;
+queue[1] = glyphIndex + 1;
+*(s32 *)render = nameIndex;
+if (*(s32 *)(glyphDef + 0x0C) != 0) {
+f24 = f28 / fn_80235F64(*(s32 *)(glyphDef + 0x0C),
+*(s32 *)(glyphDef + 0x10));
+*(f32 *)(render + 0x10) = f28 * *(f32 *)(glyphDef + 4);
+*(f32 *)(render + 0x14) =
+f24 * *(f32 *)(glyphDef + 4) *
+fn_80235EF0(*(s32 *)(glyphDef + 0x0C),
+*(s32 *)(glyphDef + 0x10));
+f24 = *(f32 *)(glyphDef + 4) *
+(*(f32 *)(glyphDef + 0x18) * f24);
+} else {
+*(f32 *)(render + 0x14) = f28 * *(f32 *)(glyphDef + 4);
+*(f32 *)(render + 0x10) = f28 * *(f32 *)(glyphDef + 4);
+}
+*(f32 *)(render + 4) = f25;
+*(f32 *)(render + 8) =
+f27 + f30 * (*(f32 *)(render + 0x10) - f28);
+*(f32 *)(render + 0x0C) = f31;
+*(s32 *)(render + 0x18) = fontColor;
+if (&sp8 != 0) {
+sp8 = *(f32 *)(render + 0x14) + f24;
+charStep = (s32)strlen((const char *)*(u8 **)glyphDef) + 1;
+}
+goto icon_found;
+} else {
+glyphOffset += 0x1C;
+nameIndex++;
+goto name_test;
+}
+name_test:
+if (nameIndex < ((s32 *)lbl_80497F14)[1]) goto name_body;
+}
+charStep = 0;
+icon_found:
+;
+if (charStep > 0) {
+charIndex += charStep;
+f25 += sp8;
+goto char_test;
+}
+if ((start[0] & 0xF0) == 0xE0) {
+decoded = ((start[0] & 0x0F) << 12) |
+((start[1] & 0x3F) << 6) | (start[2] & 0x3F);
+end = start + 3;
+} else if ((start[0] & 0xE0) == 0xC0) {
+decoded = ((start[0] & 0x1F) << 6) | (start[1] & 0x3F);
+end = start + 2;
+} else {
+decoded = start[0] & 0x7F;
+end = start + 1;
+}
+code = decoded;
+glyphOffset = code * 0x1C;
+glyphs = *(u8 **)(object + 0x10);
+f25 += *(f32 *)(record + 0x54) * *(f32 *)(glyphs += glyphOffset);
+f24 = f25 + *(f32 *)(record + 0x50) * *(f32 *)(glyphs + 4);
+if (code != 0x20) {
+fn_802C8E00(*colorPtr, 0, f25, f27, lbl_8056368C,
+*(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x10));
+fn_802C8E00(*colorPtr, 0, f24, f27, lbl_8056368C,
+*(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x10));
+fn_802C8E00(*colorPtr, 1, f25, f26, lbl_8056368C,
+*(f32 *)(glyphs + 0x0C), *(f32 *)(glyphs + 0x18));
+fn_802C8E00(*colorPtr, 1, f24, f26, lbl_8056368C,
+*(f32 *)(glyphs + 0x14), *(f32 *)(glyphs + 0x18));
+}
+charIndex += end - start;
+f25 += *(f32 *)(record + 0x50) * *(f32 *)(glyphs + 4);
+f25 += *(f32 *)(record + 0x54) * *(f32 *)(glyphs + 8);
+char_test:
+if ((s8)(((u8 *)lbl_8055F06C + textOffset)[charIndex]) != 0) goto char_body;
+textOffset += 0x58;
+i++;
+record_test:
+if (i < *(s32 *)((u8 *)lbl_8055F058 + 4)) goto record_body;
+fn_802C8E48();
+}
+fn_802C8D74();
+if (mode == 2) fn_80231ADC();
+else fn_80231780(0);
+mode--;
+outer_test:
+if (mode > 0) goto outer_body;
+*(s32 *)((u8 *)lbl_8055F058 + 4) = 0;
+}
+#pragma dont_inline off
+#pragma scheduling on
+#pragma pop
+
 void fn_80234AEC(void) {
     *(s32 *)((u8 *)&lbl_8055F058 + 4) = 0;
 }
