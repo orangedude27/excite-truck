@@ -3,6 +3,9 @@
 
 #include <types.h>
 
+extern s32 lbl_8055A0E0;
+extern s32 lbl_8055A0E8;
+
 extern int fn_801C5B60(void);
 extern void fn_801DF074(int, int);
 extern int fn_801B2F24(void);
