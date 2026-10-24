@@ -1001,8 +1001,98 @@ void fn_802D2640(void) {
     } while (i < 4);
 }
 
-void fn_802D2684(void) {}
+extern void (*lbl_8055FD80)(void);
+#pragma scheduling invalid_target
+void fn_802D2684(void) {
+    unsigned int tevFlag;
+    unsigned char texFlag;
+    unsigned char tevFlag2;
+    unsigned char indirectFlag;
+    int coordType;
+    int tevStage;
+    int texGen;
+    int coordCount;
+    int coordMap[2];
+    int arg8;
+    int argC;
 
+    tevFlag = ((unsigned long)lbl_8055FD1C >> 6) & 1;
+    tevFlag2 = (unsigned char)lbl_804C5700[9];
+    tevStage = 0;
+    texFlag = (unsigned char)lbl_804C5700[8];
+    texGen = 0;
+    indirectFlag = (unsigned char)lbl_804C5700[10];
+    coordType = lbl_804C5700[12] != 0 ? 0x1E : 0x3C;
+
+    GXSetTexCoordGen2(0, 1, 4, coordType, 0, 0x7D);
+    GXSetTevOrder(0, 0, 0, 4);
+    if (tevFlag != 0) {
+        GXSetTevOp(0, 3);
+    } else if (tevFlag2 != 0) {
+        GXSetTevOp(0, 3);
+        texGen = 1;
+        GXSetTexCoordGen2(1, 1, 5, 0x3C, 0, 0x7D);
+        tevStage = 1;
+        GXSetTevOrder(1, 1, 3, 4);
+        GXSetTevOp(1, 0);
+    } else {
+        GXSetTevColorOp(0, 0, 0, 0, 1, 0);
+        GXSetTevColorIn(0, 0xF, 8, 0xA, 0xF);
+        coordCount = 0;
+        if (((unsigned long)lbl_8055FD1C & 0x100) != 0) {
+            coordMap[0] = 4;
+            coordCount = 1;
+        }
+        if (((unsigned char *)&lbl_804C97D0)[8] < 0xFF) {
+            coordMap[coordCount] = 1;
+            coordCount++;
+        }
+        if (((unsigned char *)&lbl_8055FD25)[0] == 0 && coordCount < 2) {
+            coordMap[coordCount] = 5;
+            coordCount++;
+        }
+        if (coordCount < 2) {
+            coordMap[coordCount] = 6;
+            if (coordCount == 0)
+                coordMap[coordCount + 1] = 6;
+        }
+        GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
+        GXSetTevAlphaIn(0, 7, coordMap[0], coordMap[1], 7);
+    }
+
+    if (texFlag != 0) {
+        tevStage++;
+        GXSetTevOrder(tevStage, 0, 1, 4);
+        GXSetTevColorOp(tevStage, 0, 0, 0, 1, 0);
+        GXSetTevColorIn(tevStage, 0, 0xF, 0xF, 0xF);
+        GXSetTevAlphaOp(tevStage, 0, 0, 0, 1, 0);
+        GXSetTevAlphaIn(tevStage, 7, 0, 4, 7);
+    }
+    if (indirectFlag != 0) {
+        texGen++;
+        GXSetTexCoordGen2(texGen, 1, 0, 0x2D, 0, 0x7D);
+        tevStage++;
+        GXSetTevOrder(tevStage, texGen, 5, 0xFF);
+        GXSetTevColorIn(tevStage, 0, 8, 9, 0xF);
+        GXSetTevColorOp(tevStage, 0, 0, 0, 1, 0);
+        GXSetTevAlphaIn(tevStage, 0, 7, 7, 7);
+        GXSetTevAlphaOp(tevStage, 0, 0, 0, 1, 0);
+    }
+    GXSetNumTevStages((unsigned char)(tevStage + 1));
+    GXSetNumTexGens((unsigned char)(texGen + 1));
+    if (lbl_804C5700[13] != 0) {
+        GXSetBlendMode(1, 4, 5, 5);
+        GXSetNumIndStages(1);
+        arg8 = 0;
+        argC = 0;
+        GXSetTevIndirect(0, 0, 0, 3, 1, 0, 0, 0, arg8, argC);
+        GXSetIndTexOrder(0, 1, 2);
+        GXSetNumTexGens(2);
+        GXSetTexCoordGen2(1, 1, 0, 0x21, 0, 0x7D);
+        lbl_8055FD80 = fn_802D2640;
+    }
+}
+#pragma scheduling on
 void fn_802D2AC4(void) {
     GXSetNumChans(1);
     GXSetChanCtrl(1, 0, 0, 0, 0, 0, 2);
@@ -1167,16 +1257,18 @@ void fn_802D3894(void) {
 }
 
 void fn_802D3900(void) {
-    unsigned char *base = lbl_804C9984;
-    unsigned char *slot = base;
+    unsigned char *base;
+    unsigned char *slot;
     int count = 0;
     void *light;
     unsigned long result;
+    slot = lbl_804C9984;
+    base = slot;
     while (count < *(int *)(base + 0x700)) {
         light = *(void **)(slot + 0x600);
         GXInitLightDir(*(unsigned long *)light, *(unsigned long *)((char *)light + 4), &result);
         *(unsigned char *)((char *)light + 0xD) =
-            result > *(unsigned long *)((char *)light + 8);
+            *(unsigned long *)((char *)light + 8) < result;
         slot += 4;
         count++;
     }
