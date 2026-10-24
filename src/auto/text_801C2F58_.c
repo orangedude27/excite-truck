@@ -270,7 +270,7 @@ void *fn_801C3C80(void) {
     return entry;
 }
 
-extern void fn_80128670(void);
+extern void fn_80128670();
 extern s32 fn_8012850C(s32, void *);
 extern void fn_801C3D88(void *);
 extern char lbl_80336D84[];
@@ -1319,10 +1319,13 @@ void fn_801C98F0(void) {
 #pragma scheduling off
 void fn_801C98F4(u8 *p, s32 n) {
     s32 i;
-    if (n <= 0) return;
-    for (i = 0; i < n; i++) {
-        while ((s8)*p != 0) p++;
-        p++;
+    if (n > 0) {
+        for (i = 0; i < n; ++i) {
+            while ((s8)*p != 0) {
+                ++p;
+            }
+            ++p;
+        }
     }
 }
 
