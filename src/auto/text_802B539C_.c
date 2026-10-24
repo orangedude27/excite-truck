@@ -11,6 +11,7 @@ extern void fn_802C6CF8(void);
 struct TplLike { void *entries; unsigned int count; };
 extern struct TplLike lbl_804BE4AC;
 extern struct TplLike lbl_804BE454;
+void* fn_802B59A4(unsigned int);
 
 int fn_802B539C(int arg0) {
     int valid = 0;
