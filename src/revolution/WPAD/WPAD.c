@@ -3544,9 +3544,11 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
 
 #define WPADiPushCommandInline(pQueue, localCommand) \
     { \
+        WPADCommand commandArgument; \
         BOOL queueEnabled; \
         BOOL innerEnabled; \
         s8 queueSize; \
+        commandArgument = (localCommand); \
         queueEnabled = OSDisableInterrupts(); \
         innerEnabled = OSDisableInterrupts(); \
         queueSize = (pQueue)->back - (pQueue)->front; \
@@ -3554,7 +3556,7 @@ static inline BOOL fn_80060CC0_CanQueue(WPADCommandQueue* pQueue, s8 num) {
         OSRestoreInterrupts(innerEnabled); \
         if ((pQueue)->capacity - 1 != queueSize) { \
             memset(&(pQueue)->buffer[(pQueue)->back], 0, sizeof(WPADCommand)); \
-            memcpy(&(pQueue)->buffer[(pQueue)->back], &(localCommand), sizeof(WPADCommand)); \
+            memcpy(&(pQueue)->buffer[(pQueue)->back], &commandArgument, sizeof(WPADCommand)); \
             (pQueue)->back = (pQueue)->back == (pQueue)->capacity - 1 ? 0 : (pQueue)->back + 1; \
         } \
         OSRestoreInterrupts(queueEnabled); \
@@ -3760,6 +3762,7 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
     s8 queueSize0, queueSize1;
 
     u8 config[SPK_CONFIG_SIZE];
+    WPADCommand commands[15];
 
     config[0] = lbl_80560CC0;
     config[1] = lbl_80560CC1;
@@ -3801,14 +3804,14 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
             OSRestoreInterrupts(innerEnabled0);
             if ((u32)(queueSize0 + 5) <=
                 ((WPADCommandQueue*)(p + 0x160))->capacity - 1) {
-                WPADiSendMuteSpeakerInline((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
+                WPADiSendMuteSpeakerStorage((WPADCommandQueue*)(p + 0x160), TRUE, NULL, commands[0]);
 
-                WPADiSendWriteDataCmdInline((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_01, NULL);
-                WPADiSendWriteDataCmdInline((WPADCommandQueue*)(p + 0x160), 0x00, WM_REG_SPEAKER_09, NULL);
+                WPADiSendWriteDataCmdStorage((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_01, NULL, commands[1]);
+                WPADiSendWriteDataCmdStorage((WPADCommandQueue*)(p + 0x160), 0x00, WM_REG_SPEAKER_09, NULL, commands[2]);
 
-                WPADiSendEnableSpeakerInline((WPADCommandQueue*)(p + 0x160), FALSE, NULL);
+                WPADiSendEnableSpeakerStorage((WPADCommandQueue*)(p + 0x160), FALSE, NULL, commands[3]);
 
-                WPADiSendGetContStatInline((WPADCommandQueue*)(p + 0x160), NULL, pCallback);
+                WPADiSendGetContStatStorage((WPADCommandQueue*)(p + 0x160), NULL, pCallback, commands[4]);
 
                 OSRestoreInterrupts(enabled);
                 return WPAD_ERR_OK;
@@ -3831,20 +3834,20 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
             OSRestoreInterrupts(innerEnabled1);
             if ((u32)(queueSize1 + 7) <=
                 ((WPADCommandQueue*)(p + 0x160))->capacity - 1) {
-                WPADiSendEnableSpeakerInline((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
-                WPADiSendMuteSpeakerInline((WPADCommandQueue*)(p + 0x160), TRUE, NULL);
+                WPADiSendEnableSpeakerStorage((WPADCommandQueue*)(p + 0x160), TRUE, NULL, commands[5]);
+                WPADiSendMuteSpeakerStorage((WPADCommandQueue*)(p + 0x160), TRUE, NULL, commands[6]);
 
-                WPADiSendWriteDataCmdInline((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_09, NULL);
+                WPADiSendWriteDataCmdStorage((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_09, NULL, commands[7]);
                 // Sends 0x80 instead of 0x08?
-                WPADiSendWriteDataCmdInline((WPADCommandQueue*)(p + 0x160), 0x80, WM_REG_SPEAKER_01, NULL);
+                WPADiSendWriteDataCmdStorage((WPADCommandQueue*)(p + 0x160), 0x80, WM_REG_SPEAKER_01, NULL, commands[8]);
 
                 config[4] = _speakerVolume;
 
-                WPADiSendWriteDataInline((WPADCommandQueue*)(p + 0x160), &config, SPK_CONFIG_SIZE, WM_REG_SPEAKER_01, NULL);
+                WPADiSendWriteDataStorage((WPADCommandQueue*)(p + 0x160), &config, SPK_CONFIG_SIZE, WM_REG_SPEAKER_01, NULL, commands[9]);
 
-                WPADiSendMuteSpeakerInline((WPADCommandQueue*)(p + 0x160), FALSE, NULL);
+                WPADiSendMuteSpeakerStorage((WPADCommandQueue*)(p + 0x160), FALSE, NULL, commands[10]);
 
-                WPADiSendGetContStatInline((WPADCommandQueue*)(p + 0x160), NULL, pCallback);
+                WPADiSendGetContStatStorage((WPADCommandQueue*)(p + 0x160), NULL, pCallback, commands[11]);
 
                 OSRestoreInterrupts(enabled);
                 return WPAD_ERR_OK;
@@ -3857,7 +3860,7 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         }
 
         case WPAD_SPEAKER_MUTE: {
-            WPADiSendMuteSpeakerResultInline((WPADCommandQueue*)(p + 0x160), TRUE, pCallback, sendResult);
+            WPADiSendMuteSpeakerResultStorage((WPADCommandQueue*)(p + 0x160), TRUE, pCallback, sendResult, commands[12]);
             if (!sendResult) {
                 status = WPAD_ERR_COMMUNICATION_ERROR;
                 break;
@@ -3867,7 +3870,7 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         }
 
         case WPAD_SPEAKER_UNMUTE: {
-            WPADiSendMuteSpeakerResultInline((WPADCommandQueue*)(p + 0x160), FALSE, pCallback, sendResult);
+            WPADiSendMuteSpeakerResultStorage((WPADCommandQueue*)(p + 0x160), FALSE, pCallback, sendResult, commands[13]);
             if (!sendResult) {
                 status = WPAD_ERR_COMMUNICATION_ERROR;
                 break;
@@ -3877,7 +3880,7 @@ s32 fn_80060CC0(s32 chan, u32 command, WPADCallback pCallback) {
         }
 
         case WPAD_SPEAKER_PLAY: {
-            WPADiSendWriteDataCmdResultInline((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_08, pCallback, sendResult);
+            WPADiSendWriteDataCmdResultStorage((WPADCommandQueue*)(p + 0x160), 0x01, WM_REG_SPEAKER_08, pCallback, sendResult, commands[14]);
             if (!sendResult) {
 
                 status = WPAD_ERR_COMMUNICATION_ERROR;
