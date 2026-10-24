@@ -6,6 +6,7 @@ extern void fn_802E12DC(void *);
 extern void fn_802E1290(void *);
 extern void fn_80128668(void *);
 extern s32 lbl_805600F8;
+extern char lbl_8034EC04[];
 extern char lbl_8034EC18[];
 extern void fn_802ECCE4(char *, void *, s32);
 extern s32 stricmp(const char *, const char *);
