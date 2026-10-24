@@ -1,6 +1,7 @@
 __declspec(section ".sdata") extern char lbl_8055B8B8[];
 
-extern char lbl_802F9F58[];
+typedef struct { unsigned int w[22]; } Cfg58;
+extern Cfg58 lbl_802F9F58;
 extern char lbl_8033FBE8[];
 __declspec(section ".sdata2") extern char lbl_8055B8C4[];
 __declspec(section ".sdata2") extern char lbl_8055B8CC[];
@@ -22,7 +23,6 @@ extern void* fn_80131818(void*);
 extern void fn_80131820(void*);
 extern void fn_802E30C8(void*, ...);
 extern void fn_8022A858(int);
-typedef struct { unsigned int w[22]; } Cfg58;
 typedef struct CfgObj CfgObj;
 typedef struct CfgVTab {
     void* v0;
@@ -432,8 +432,8 @@ unsigned int fn_8022BC30(unsigned int arg0, unsigned int arg1, float farg0) {
 }
 
 void fn_8022C520(void) {
-    unsigned int tmpl[24];
-    int work[24];
+    Cfg58 tmpl;
+    Cfg58 work;
     int i;
     void* list;
     void* entry;
@@ -443,17 +443,15 @@ void fn_8022C520(void) {
     char* s;
     void** v;
 
-    for (i = 0; i < 22; i++) {
-        tmpl[i] = ((unsigned int*)lbl_802F9F58)[i];
-    }
-    tmpl[4] = 0xffd6003c;
-    tmpl[5] = 0xffd6003c;
-    tmpl[6] = 0xff2dc82d;
-    tmpl[7] = 0xff2dc82d;
-    tmpl[11] = 0xff2d2dc8;
-    tmpl[12] = 0xff2d2dc8;
-    tmpl[13] = 0xffd6003c;
-    tmpl[14] = 0xffd6003c;
+    tmpl = *(Cfg58*)&lbl_802F9F58;
+    tmpl.w[4] = 0xffd6003c;
+    tmpl.w[5] = 0xffd6003c;
+    tmpl.w[6] = 0xff2dc82d;
+    tmpl.w[7] = 0xff2dc82d;
+    tmpl.w[11] = 0xff2d2dc8;
+    tmpl.w[12] = 0xff2d2dc8;
+    tmpl.w[13] = 0xffd6003c;
+    tmpl.w[14] = 0xffd6003c;
     list = fn_80131810(lbl_8033FBE8 + 0x64, 0xff2dc82d, 0xffd6003c);
     if (list != 0) {
         for (i = 0; (entry = fn_80131818(list)) != 0; i++) {
@@ -483,13 +481,11 @@ void fn_8022C520(void) {
                     ((int (*)(void*, const char*, int))v[6])(entry, lbl_8033FBE8 + 0x7c, (int)(lbl_8033FBE8 + 0xe4)));
                 continue;
             }
-            for (i = 0; i < 22; i++) {
-                work[i] = (int)tmpl[i];
-            }
+            work = tmpl;
             v = *(void***)entry;
-            work[1] = ((int (*)(void*, const char*, int))v[6])(entry, lbl_8033FBE8 + 0xf0, work[1]);
+            work.w[1] = ((int (*)(void*, const char*, int))v[6])(entry, lbl_8033FBE8 + 0xf0, work.w[1]);
             v = *(void***)entry;
-            *(float*)&work[2] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0xfc, *(float*)&work[2]);
+            *(float*)&work.w[2] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0xfc, *(float*)&work.w[2]);
             flag1 = 1;
             v = *(void***)entry;
             if (((int (*)(void*, const char*))v[3])(entry, lbl_8033FBE8 + 0x108) != 0) {
@@ -522,25 +518,25 @@ void fn_8022C520(void) {
                     fn_802E30C8(lbl_8033FBE8 + 0x174, s);
                 }
             }
-            work[3] = flag1 | flag2;
+            work.w[3] = flag1 | flag2;
             v = *(void***)entry;
-            fn_8022CDE4(&work[4], ((void* (*)(void*, const char*))v[23])(entry, lbl_8055B8F8));
+            fn_8022CDE4((int*)&work.w[3], ((void* (*)(void*, const char*))v[23])(entry, lbl_8055B8F8));
             v = *(void***)entry;
-            fn_8022CDE4(&work[11], ((void* (*)(void*, const char*))v[23])(entry, lbl_8055B8FC));
+            fn_8022CDE4((int*)&work.w[10], ((void* (*)(void*, const char*))v[23])(entry, lbl_8055B8FC));
             v = *(void***)entry;
             if (((int (*)(void*, const char*))v[3])(entry, lbl_8055B900) != 0) {
                 v = *(void***)entry;
-                work[18] = (int)((char* (*)(void*, const char*))v[5])(entry, lbl_8055B900);
+                work.w[17] = (int)((char* (*)(void*, const char*))v[5])(entry, lbl_8055B900);
             }
             v = *(void***)entry;
-            work[22] = ((int (*)(void*, const char*, int))v[8])(entry, lbl_8055B908, work[22]);
+            work.w[18] = ((int (*)(void*, const char*, int))v[8])(entry, lbl_8055B908, work.w[18]);
             v = *(void***)entry;
-            work[19] = ((int (*)(void*, const char*, int))v[8])(entry, lbl_8055B910, work[19]);
+            work.w[20] = ((int (*)(void*, const char*, int))v[8])(entry, lbl_8055B910, work.w[20]);
             v = *(void***)entry;
-            *(float*)&work[20] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0x1a8, *(float*)&work[20]);
+            *(float*)&work.w[19] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0x1a8, *(float*)&work.w[19]);
             v = *(void***)entry;
-            *(float*)&work[21] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0x1b4, *(float*)&work[21]);
-            ((void (*)(int, void*))fn_8022A858)(value, &work[1]);
+            *(float*)&work.w[21] = ((float (*)(void*, const char*, float))v[10])(entry, lbl_8033FBE8 + 0x1b4, *(float*)&work.w[21]);
+            ((void (*)(int, void*))fn_8022A858)(value, &work);
         }
         fn_80131820(list);
     }
