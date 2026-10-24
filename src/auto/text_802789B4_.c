@@ -5,9 +5,9 @@
 
 extern void *lbl_8055F5D0;
 extern s32 lbl_8055F5E0;
-extern volatile s16 lbl_8055F5D8;
-extern volatile s16 lbl_8055F5DA;
-extern volatile s16 lbl_8055F5DC;
+extern s16 lbl_8055F5D8;
+extern s16 lbl_8055F5DA;
+extern s16 lbl_8055F5DC;
 extern s32 lbl_804A16D0[];
 void fn_8000D838(void *);
 
