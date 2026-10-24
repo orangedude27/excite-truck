@@ -23,7 +23,7 @@ extern f32 lbl_805619A4;
 extern void fn_802AE0E0(s32);
 extern char lbl_80330AEC[];
 extern char lbl_803306D0[];
-extern void fn_801345D8(void *, s32, void *, s32);
+extern void fn_801345D8(void *, s32, const char *, ...);
 extern void fn_802E317C(const char *, ...);
 extern void fn_8016A15C(char *);
 void *fn_80128668(void *);
