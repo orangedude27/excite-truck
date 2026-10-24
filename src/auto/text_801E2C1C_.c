@@ -47,6 +47,50 @@ int fn_801E2C1C(void *arg0, int arg1, void **arg2, void **arg3) {
     return 0;
 }
 
+#pragma push
+#pragma small_data on
+int fn_801E2CCC(void *arg0, const char *arg1, void **arg2) {
+    void *name;
+    void *value;
+    char buffer[64];
+    int index;
+    BOOL hasSpace;
+
+    name = 0;
+    value = 0;
+    hasSpace = strchr(arg1, ' ') != 0;
+    index = 0;
+    while (fn_801E2C1C(arg0, index, &name, &value) != 0) {
+        buffer[0] = 0;
+        buffer[1] = 0;
+        buffer[2] = 0;
+        buffer[3] = 0;
+        buffer[4] = 0;
+        buffer[5] = 0;
+        buffer[6] = 0;
+        buffer[7] = 0;
+        buffer[8] = 0;
+        buffer[9] = 0;
+        buffer[10] = 0;
+        buffer[11] = 0;
+        buffer[12] = 0;
+        buffer[13] = 0;
+        buffer[14] = 0;
+        buffer[15] = 0;
+        if (!hasSpace)
+            sscanf(name, lbl_8055AEB0, buffer);
+        else
+            strcpy(buffer, name);
+        if (stricmp(buffer, arg1) == 0) {
+            *arg2 = value;
+            return 1;
+        }
+        index++;
+    }
+    *arg2 = 0;
+    return 0;
+}
+#pragma pop
 void fn_801E2F00(void) {
     void *p = fn_801284F8(0x20, &lbl_803398D8);
     if (p != 0) {
@@ -86,8 +130,32 @@ void fn_801E31D8(s32 *arg0) {
     *(s32 **)((u8 *)fn_801E3004(*arg0) + 4) = arg0;
 }
 
-s32 fn_801E320C(void) {
-    return fn_801E2DEC(0) != 0;
+s32 fn_801E320C(s32 arg0, s32 arg1) {
+    extern s32 fn_801E2DEC(s32, s32, s32);
+    return fn_801E2DEC(arg0, arg1, 0) != 0;
+}
+
+void fn_801E3284(void *out, void *in, s32 arg2) {
+    s32 sp68[12];
+    s32 sp5C[3];
+    s32 sp38[9];
+    s32 sp2C[3];
+    s32 sp8[12];
+    s32 *src = (s32 *)arg2;
+    if (*(void **)((u8 *)in + 4) != 0) {
+        fn_801E3284(sp68, *(void **)((u8 *)in + 4), arg2);
+    } else {
+        sp68[0]=src[0]; sp68[1]=src[1]; sp68[2]=src[2]; sp68[3]=src[3];
+        sp68[4]=src[4]; sp68[5]=src[5]; sp68[6]=src[6]; sp68[7]=src[7];
+        sp68[8]=src[8]; sp68[9]=src[9]; sp68[10]=src[10]; sp68[11]=src[11];
+    }
+    fn_801BFD34(sp5C, (u8 *)in + 0x5C, sp68);
+    fn_80015B20(sp38, (u8 *)in + 0x38, sp68);
+    fn_801BFD34(sp2C, (u8 *)in + 0x2C, sp38);
+    fn_80015B20(sp8, (u8 *)in + 8, sp38);
+    ((s32*)out)[0]=sp8[0]; ((s32*)out)[1]=sp8[1]; ((s32*)out)[2]=sp8[2]; ((s32*)out)[3]=sp8[3];
+    ((s32*)out)[4]=sp8[4]; ((s32*)out)[5]=sp8[5]; ((s32*)out)[6]=sp8[6]; ((s32*)out)[7]=sp8[7];
+    ((s32*)out)[8]=sp8[8]; ((s32*)out)[9]=sp8[9]; ((s32*)out)[10]=sp8[10]; ((s32*)out)[11]=sp8[11];
 }
 
 #pragma push
@@ -137,10 +205,9 @@ void fn_801E3488(void *arg0, void *arg1) {
 
 void fn_801E34E4(s32 *arg0, s32 arg1) {
     s32 sp8[12];
-    volatile s32 *p = arg0;
-    if (*p != -1) {
+    if (*arg0 != -1) {
         fn_801E3284(&sp8[0], arg0, arg1);
-        fn_802C744C(*p, &sp8[0]);
+        fn_802C744C(*arg0, &sp8[0]);
     }
 }
 
