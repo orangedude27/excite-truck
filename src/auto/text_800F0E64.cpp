@@ -9,6 +9,7 @@ typedef unsigned long long u64;
 typedef float f32;
 typedef double f64;
 typedef int BOOL;
+extern "C" void StopAtPoint__Q46nw4hbm3snd6detail7AxVoiceFiPCvUl(s32, s32, const void *, unsigned long);
 extern "C" f32 lbl_805610C0;
 extern "C" f32 lbl_805610C4;
 extern "C" void fn_800E5338(s32, f32);
