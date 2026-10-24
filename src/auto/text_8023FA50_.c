@@ -6,17 +6,13 @@ extern int fn_80214AF0(int);
 extern int fn_8024683C(void);
 extern int fn_80244550(int);
 extern int lbl_8055F1E0;
-#pragma scheduling off
+#pragma scheduling invalid_target
 int fn_8023FA50(int *arg0) {
-    int result;
-    if (fn_80244550(lbl_8055F1E0) == 0) goto done;
-    *arg0 = -2;
-    result = 1;
-    goto out;
-done:
-    result = 0;
-out:
-    return result;
+    if (fn_80244550(lbl_8055F1E0) != 0) {
+        *arg0 = -2;
+        return 1;
+    }
+    return 0;
 }
 #pragma scheduling on
 void fn_8023FA9C(void) {
