@@ -253,7 +253,7 @@ void *fn_801726C4(void *arg0) {
 unsigned char *__AXGetStackHead();                             /* extern */
 void fn_801308F4(void *, int, int);          /* extern */
 void fn_80130980(void *, int, int, float); /* extern */
-int fn_801312EC(int *, int *);          /* extern */
+void fn_801312EC(void *, void *);      /* extern */
 int fn_80131318();                              /* extern */
 void fn_801345D8(void *, int, void *, int); /* extern */
 int fn_801609C4(int);                               /* extern */
@@ -262,6 +262,7 @@ void fn_802AE02C(void *, void *);                      /* extern */
 void fn_802AE0B8(void *, void *);                      /* extern */
 void fn_802AE168(void *);                           /* extern */
 unsigned int strlen(const char *); /* extern */
+#pragma scheduling invalid_target
 void fn_8017272C(void *arg0, int arg1, int arg2, int arg3, int arg4) {
 extern int lbl_80330F54;
 extern int lbl_804303B8;
@@ -277,6 +278,7 @@ extern float lbl_80561A54;
 
     float temp_f0;
     float temp_f1;
+    float temp_f2;
     float var_f4;
     int temp_r0;
     int var_r28;
@@ -314,24 +316,19 @@ extern float lbl_80561A54;
         var_r6 = 0;
         if (arg3 != 0) {
             temp_f1 = (*(float *)((char *)(arg0) + (4)));
-            if (temp_f1 > lbl_80561A44) {
+            if ((*(float *)((char *)(arg0) + (4))) > lbl_80561A44) {
+                temp_f2 = lbl_8055E3C8;
                 var_f4 = lbl_80561A40;
-                temp_f0 = ((lbl_8055E3C8 - temp_f1) - lbl_80561A44) / var_f4;
-                if (var_f4 < temp_f0) {
-
-                } else {
-                    var_f4 = temp_f0;
-                }
-                if (var_f4 > lbl_80561A44) {
-
-                } else {
-                    var_f4 = lbl_80561A44;
-                }
+                temp_f1 = temp_f2 - temp_f1;
+                temp_f0 = temp_f1 - lbl_80561A44;
+                temp_f0 = temp_f0 / var_f4;
+                var_f4 = (var_f4 < temp_f0) ? var_f4 : temp_f0;
+                var_f4 = (var_f4 > lbl_80561A44) ? var_f4 : lbl_80561A44;
                 var_r6 = (int) (lbl_80561A44 + (var_f4 * ((lbl_80561A54 + (float) arg3) - lbl_80561A44)));
                 var_r28 = arg3 - var_r6;
             }
         }
-        fn_801345D8((unsigned char *)arg0 + 0x44, 0x14, &lbl_8055A2A0, var_r6);
+        ((void (*)(void *, int, const void *, ...))fn_801345D8)((unsigned char *)arg0 + 0x44, 0x14, &lbl_8055A2A0, var_r6);
         if ((int) (*(unsigned char *)((char *)(arg0) + (0x10))) != 0) {
             var_r6_2 = (unsigned char *)arg0 + 0x9E;
             var_r4 = &lbl_8055A2A4;
@@ -513,7 +510,7 @@ loop_37:
         fn_802AE168((*(void **)((char *)(arg0) + (0xC))));
     }
 }
-
+#pragma scheduling on
 int fn_80172E24(int arg0, int arg1) {
     extern int fn_80128668(void);
     if (arg0 != 0 && arg1 > 0)
