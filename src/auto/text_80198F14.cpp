@@ -176,6 +176,20 @@ public:
     virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
     virtual void Call(void*, f32*, f32*, s32, f32*, void*, f32, f32, f32, f32);
 };
+class Fn80199894GlobalVTab {
+public:
+    virtual void v0();     virtual void v1();     virtual void v2();     virtual void v3();
+    virtual void v4();     virtual void v5();     virtual void v6();     virtual void v7();
+    virtual void v8();     virtual void v9();     virtual void v10();     virtual void v11();
+    virtual void v12();     virtual void v13();     virtual void v14();     virtual void v15();
+    virtual void v16();     virtual void v17();     virtual void v18();     virtual void v19();
+    virtual void v20();     virtual void v21();     virtual void v22();     virtual void v23();
+    virtual void v24();     virtual void v25();     virtual void v26();     virtual void v27();
+    virtual void v28();     virtual void v29();     virtual void v30();     virtual void v31();
+    virtual void v32();     virtual void v33();     virtual void v34();     virtual void v35();
+    virtual void v36();     virtual void v37();     virtual void v38();
+    virtual void Call(void*, s32, void*);
+};
 
 extern "C" void fn_8017B5D4(s32, s32, s32, s32, s32, s32, s32);
 extern "C" void fn_801A4A10(s32, s32, s32);
@@ -354,11 +368,11 @@ extern "C" void fn_80199894(void *arg0, void *arg1, void *arg2_raw, void *arg3_r
         sp[0x5] = lbl_805622D0;
         sp[0x6] = lbl_805622D0;
         sp[0x7] = lbl_805622D0;
-        (*(void (**)(void *, void *, f32 *, f32 *, s32, f32 *, void *, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x20)))(arg1, arg0, (f32 *)&sp[0x5], arg2, temp_r26, arg2, temp_r29, lbl_805622D4);
+        ((Fn80199894VTab20 *)arg1)->Call(arg0, (f32 *)&sp[0x5], arg2, temp_r26, arg2, temp_r29, lbl_805622D4);
         sp[0x2] = lbl_805622D0;
         sp[0x3] = lbl_805622D0;
         sp[0x4] = lbl_805622D0;
-        (*(void (**)(void *, void *, f32 *, f32 *, s32, f32 *, void *, f32))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x20)))(arg0, arg1, (f32 *)&sp[0x2], arg2, temp_r27, arg2, temp_r28, lbl_805622D4);
+        ((Fn80199894VTab20 *)arg0)->Call(arg1, (f32 *)&sp[0x2], arg2, temp_r27, arg2, temp_r28, lbl_805622D4);
         return;
     }
     temp_f2 = (*(f32 *)((u8 *)(arg2) + (0)));
@@ -657,13 +671,13 @@ block_98:
                 }
             }
         }
-        (*(void (**)(void *, void *, f32 *, f32 *, s32, f32 *, void *, f32))((u8 *)((*(void **)((u8 *)(arg0) + (0)))) + (0x20)))(arg0, arg1, (f32 *)&sp[0x1D], (f32 *)&sp[0x4D], (*(s32 *)((u8 *)(arg1) + (0x20))), arg2, temp_r28, temp_f27_3);
+        ((Fn80199894VTab20 *)arg0)->Call(arg1, (f32 *)&sp[0x1D], (f32 *)&sp[0x4D], (*(s32 *)((u8 *)(arg1) + (0x20))), arg2, temp_r28, temp_f27_3);
         temp_f3_6 = sp[0x1D] * lbl_805622DC;
         temp_f2_10 = sp[0x1E] * lbl_805622DC;
         sp[0x1D] = temp_f3_6;
         sp[0x1E] = temp_f2_10;
         sp[0x1F] *= lbl_805622DC;
-        (*(void (**)(void *, void *, f32 *, f32 *, s32, f32 *, void *, f32, f32, f32, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x20)))(arg1, arg0, (f32 *)&sp[0x1D], (f32 *)&sp[0x4A], (*(s32 *)((u8 *)(arg0) + (0x20))), arg2, temp_r29, temp_f27_3, temp_f2_10, temp_f3_6, lbl_805622DC);
+        ((Fn80199894VTab20Wide *)arg1)->Call(arg0, (f32 *)&sp[0x1D], (f32 *)&sp[0x4A], (*(s32 *)((u8 *)(arg0) + (0x20))), arg2, temp_r29, temp_f27_3, temp_f2_10, temp_f3_6, lbl_805622DC);
         if (arg4 != NULL) {
             fn_801B34DC(arg4, (s32)arg5, (Vec*)arg2, (Vec*)(f32 *)&sp[0x1D], (Vec*)arg3, (s32)(*(s32 *)((u8 *)(arg1) + (0x20))));
         } else {
@@ -676,7 +690,7 @@ block_98:
     sp[0x47] = temp_f2_11;
     sp[0x48] = temp_f1_7;
     sp[0x49] *= lbl_805622DC;
-    (*(void (**)(void *, f32 *, f32 *, s32, void *, f32, f32, f32))((u8 *)((*(void **)((u8 *)(arg1) + (0)))) + (0x1C)))(arg1, (f32 *)&sp[0x47], (f32 *)&sp[0x4A], (*(s32 *)((u8 *)(arg0) + (0x20))), temp_r29, temp_f1_7, temp_f2_11, lbl_805622DC);
+    ((Fn80199894VTab1CWide *)arg1)->Call((f32 *)&sp[0x47], (f32 *)&sp[0x4A], (*(s32 *)((u8 *)(arg0) + (0x20))), temp_r29, temp_f1_7, temp_f2_11, lbl_805622DC);
 }
 #pragma dont_inline reset
 #pragma scheduling on
