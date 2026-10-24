@@ -261,12 +261,15 @@ static u8 IsButtonChanged(u16 lhs, u16 rhs) {
     return lhs != rhs ? TRUE : FALSE;
 }
 
-static u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
+static inline u8 IsAnalogChanged(s32 lhs, s32 rhs, s32 threshold) {
     s32 diff = lhs - rhs < 0 ? rhs - lhs : lhs - rhs;
     return diff > threshold ? TRUE : FALSE;
 }
 
 static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
+#define WPAD_BUTTON_CHANGED(lhs, rhs) ((lhs) != (rhs))
+#define WPAD_ANALOG_CHANGED(lhs, rhs, threshold) \
+    (((lhs) - (rhs) < 0 ? (rhs) - (lhs) : (lhs) - (rhs)) > (threshold))
     WPADStatus* pLhsCR = (WPADStatus*)pLhs;
     WPADStatus* pRhsCR = (WPADStatus*)pRhs;
     u8 devMode = p->devMode;
@@ -340,18 +343,18 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
         p->dataFormat == WPAD_FMT_CORE_BTN_ACC ||
         p->dataFormat == WPAD_FMT_CORE_BTN_ACC_DPD) {
 
-        changed = IsButtonChanged(pLhsCR->button, pRhsCR->button);
+        changed = WPAD_BUTTON_CHANGED(pLhsCR->button, pRhsCR->button);
 
         if (pLhsCR->err == WPAD_ERR_OK && pRhsCR->err == WPAD_ERR_OK) {
             CALC_ANALOG_NOISE_ACC(
-                IsAnalogChanged(pLhsCR->accX, pRhsCR->accX, 12) |
-                IsAnalogChanged(pLhsCR->accY, pRhsCR->accY, 12) |
-                IsAnalogChanged(pLhsCR->accZ, pRhsCR->accZ, 12));
+                WPAD_ANALOG_CHANGED(pLhsCR->accX, pRhsCR->accX, 12) |
+                WPAD_ANALOG_CHANGED(pLhsCR->accY, pRhsCR->accY, 12) |
+                WPAD_ANALOG_CHANGED(pLhsCR->accZ, pRhsCR->accZ, 12));
 
             for (i = 0; i < WPAD_MAX_DPD_OBJECTS; i++) {
                 CALC_ANALOG_NOISE_DPD(
-                    IsAnalogChanged(pLhsCR->obj[i].x, pRhsCR->obj[i].x, 2) |
-                    IsAnalogChanged(pLhsCR->obj[i].y, pRhsCR->obj[i].y, 2));
+                    WPAD_ANALOG_CHANGED(pLhsCR->obj[i].x, pRhsCR->obj[i].x, 2) |
+                    WPAD_ANALOG_CHANGED(pLhsCR->obj[i].y, pRhsCR->obj[i].y, 2));
             }
         }
     } else if (p->dataFormat == WPAD_FMT_FS_BTN ||
@@ -361,27 +364,27 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
         WPADFSStatus* pLhsFS = (WPADFSStatus*)pLhs;
         WPADFSStatus* pRhsFS = (WPADFSStatus*)pRhs;
 
-        changed = IsButtonChanged(pLhsFS->button, pRhsFS->button);
+        changed = WPAD_BUTTON_CHANGED(pLhsFS->button, pRhsFS->button);
 
         if (pLhsFS->err == WPAD_ERR_OK && pRhsFS->err == WPAD_ERR_OK) {
             CALC_ANALOG_NOISE_ACC(
-                IsAnalogChanged(pLhsFS->accX, pRhsFS->accX, 12) |
-                IsAnalogChanged(pLhsFS->accY, pRhsFS->accY, 12) |
-                IsAnalogChanged(pLhsFS->accZ, pRhsFS->accZ, 12));
+                WPAD_ANALOG_CHANGED(pLhsFS->accX, pRhsFS->accX, 12) |
+                WPAD_ANALOG_CHANGED(pLhsFS->accY, pRhsFS->accY, 12) |
+                WPAD_ANALOG_CHANGED(pLhsFS->accZ, pRhsFS->accZ, 12));
 
             for (i = 0; i < WPAD_MAX_DPD_OBJECTS; i++) {
                 CALC_ANALOG_NOISE_DPD(
-                    IsAnalogChanged(pLhsFS->obj[i].x, pRhsFS->obj[i].x, 2) |
-                    IsAnalogChanged(pLhsFS->obj[i].y, pRhsFS->obj[i].y, 2));
+                    WPAD_ANALOG_CHANGED(pLhsFS->obj[i].x, pRhsFS->obj[i].x, 2) |
+                    WPAD_ANALOG_CHANGED(pLhsFS->obj[i].y, pRhsFS->obj[i].y, 2));
             }
 
             CALC_ANALOG_NOISE_EXT(
-                IsAnalogChanged(pLhsFS->fsAccX, pRhsFS->fsAccX, 12) |
-                IsAnalogChanged(pLhsFS->fsAccY, pRhsFS->fsAccY, 12) |
-                IsAnalogChanged(pLhsFS->fsAccZ, pRhsFS->fsAccZ, 12));
+                WPAD_ANALOG_CHANGED(pLhsFS->fsAccX, pRhsFS->fsAccX, 12) |
+                WPAD_ANALOG_CHANGED(pLhsFS->fsAccY, pRhsFS->fsAccY, 12) |
+                WPAD_ANALOG_CHANGED(pLhsFS->fsAccZ, pRhsFS->fsAccZ, 12));
 
-            changed |= IsAnalogChanged(pLhsFS->fsStickX, pRhsFS->fsStickX, 1);
-            changed |= IsAnalogChanged(pLhsFS->fsStickY, pRhsFS->fsStickY, 1);
+            changed |= WPAD_ANALOG_CHANGED(pLhsFS->fsStickX, pRhsFS->fsStickX, 1);
+            changed |= WPAD_ANALOG_CHANGED(pLhsFS->fsStickY, pRhsFS->fsStickY, 1);
         }
     } else {
         if (p->dataFormat == WPAD_FMT_CLASSIC_BTN ||
@@ -417,53 +420,53 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
             }
             }
 
-            changed = IsButtonChanged(pLhsCL->button, pRhsCL->button);
+            changed = WPAD_BUTTON_CHANGED(pLhsCL->button, pRhsCL->button);
 
             if (pLhsCL->err == WPAD_ERR_OK && pRhsCL->err == WPAD_ERR_OK) {
                 CALC_ANALOG_NOISE_ACC(
-                    IsAnalogChanged(pLhsCL->accX, pRhsCL->accX, 12) |
-                    IsAnalogChanged(pLhsCL->accY, pRhsCL->accY, 12) |
-                    IsAnalogChanged(pLhsCL->accZ, pRhsCL->accZ, 12));
+                    WPAD_ANALOG_CHANGED(pLhsCL->accX, pRhsCL->accX, 12) |
+                    WPAD_ANALOG_CHANGED(pLhsCL->accY, pRhsCL->accY, 12) |
+                    WPAD_ANALOG_CHANGED(pLhsCL->accZ, pRhsCL->accZ, 12));
 
                 for (i = 0; i < WPAD_MAX_DPD_OBJECTS; i++) {
                     CALC_ANALOG_NOISE_DPD(
-                        IsAnalogChanged(pLhsCL->obj[i].x, pRhsCL->obj[i].x, 2) |
-                        IsAnalogChanged(pLhsCL->obj[i].y, pRhsCL->obj[i].y, 2));
+                        WPAD_ANALOG_CHANGED(pLhsCL->obj[i].x, pRhsCL->obj[i].x, 2) |
+                        WPAD_ANALOG_CHANGED(pLhsCL->obj[i].y, pRhsCL->obj[i].y, 2));
                 }
 
-                changed |= IsButtonChanged(pLhsCL->clButton, pRhsCL->clButton);
+                changed |= WPAD_BUTTON_CHANGED(pLhsCL->clButton, pRhsCL->clButton);
 
-                changed |= IsAnalogChanged(pLhsCL->clLStickX / leftStickDiv,
+                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clLStickX / leftStickDiv,
                                            pRhsCL->clLStickX / leftStickDiv, 1);
-                changed |= IsAnalogChanged(pLhsCL->clLStickY / leftStickDiv,
+                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clLStickY / leftStickDiv,
                                            pRhsCL->clLStickY / leftStickDiv, 1);
 
                 changed |=
-                    IsAnalogChanged(pLhsCL->clRStickX / rightStickDiv,
+                    WPAD_ANALOG_CHANGED(pLhsCL->clRStickX / rightStickDiv,
                                     pRhsCL->clRStickX / rightStickDiv, 1);
                 changed |=
-                    IsAnalogChanged(pLhsCL->clRStickY / rightStickDiv,
+                    WPAD_ANALOG_CHANGED(pLhsCL->clRStickY / rightStickDiv,
                                     pRhsCL->clRStickY / rightStickDiv, 1);
 
-                changed |= IsAnalogChanged(pLhsCL->clTriggerL / triggerDiv,
+                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clTriggerL / triggerDiv,
                                            pRhsCL->clTriggerL / triggerDiv, 1);
-                changed |= IsAnalogChanged(pLhsCL->clTriggerR / triggerDiv,
+                changed |= WPAD_ANALOG_CHANGED(pLhsCL->clTriggerR / triggerDiv,
                                            pRhsCL->clTriggerR / triggerDiv, 1);
             }
 
         } else {
-            changed = IsButtonChanged(pLhsCR->button, pRhsCR->button);
+            changed = WPAD_BUTTON_CHANGED(pLhsCR->button, pRhsCR->button);
 
             if (pLhsCR->err == WPAD_ERR_OK && pRhsCR->err == WPAD_ERR_OK) {
                 CALC_ANALOG_NOISE_ACC(
-                    IsAnalogChanged(pLhsCR->accX, pRhsCR->accX, 12) |
-                    IsAnalogChanged(pLhsCR->accY, pRhsCR->accY, 12) |
-                    IsAnalogChanged(pLhsCR->accZ, pRhsCR->accZ, 12));
+                    WPAD_ANALOG_CHANGED(pLhsCR->accX, pRhsCR->accX, 12) |
+                    WPAD_ANALOG_CHANGED(pLhsCR->accY, pRhsCR->accY, 12) |
+                    WPAD_ANALOG_CHANGED(pLhsCR->accZ, pRhsCR->accZ, 12));
 
                 for (i = 0; i < WPAD_MAX_DPD_OBJECTS; i++) {
                     CALC_ANALOG_NOISE_DPD(
-                        IsAnalogChanged(pLhsCR->obj[i].x, pRhsCR->obj[i].x, 2) |
-                        IsAnalogChanged(pLhsCR->obj[i].y, pRhsCR->obj[i].y, 2));
+                        WPAD_ANALOG_CHANGED(pLhsCR->obj[i].x, pRhsCR->obj[i].x, 2) |
+                        WPAD_ANALOG_CHANGED(pLhsCR->obj[i].y, pRhsCR->obj[i].y, 2));
                 }
             }
         }
@@ -474,6 +477,8 @@ static BOOL IsControllerDataChanged(WPADCB* p, void* pLhs, void* pRhs) {
 #undef CALC_ANALOG_NOISE_EXT
 #undef CALC_ANALOG_NOISE_ACC
 #undef CALC_ANALOG_NOISE_DPD
+#undef WPAD_BUTTON_CHANGED
+#undef WPAD_ANALOG_CHANGED
 }
 
 static void CheckButtonCombination(s32 chan) {
@@ -3391,89 +3396,68 @@ void fn_8006022C(s32 chan)
 s32 fn_800604E8(s32 chan, s32 format, void* data) {
     WPADCB* cb = lbl_8038F4F0[chan];
     s32 enabled;
+    s32 innerEnabled;
+    s32 result;
     s32 status;
-    s32 handshake;
-    
+    register s32 scratch asm("r4");
+    register s32 mask asm("r3");
+    u8 command[0x60] ALIGN(8);
+    u8* queue;
+    s8 diff;
+    s8 index;
+    s32 lastIndex;
+    s32 wrapMask;
+
     enabled = OSDisableInterrupts();
-    status = cb->status;
-    handshake = *(s32*)((u8*)cb + 0x7FC);
+    status = *(s32*)((u8*)cb + 0x81C);
+    result = *(s32*)((u8*)cb + 0x7FC);
     OSRestoreInterrupts(enabled);
-    
-    if (handshake == -1) {
-        return -1;
+
+    if (result != -1) {
+        if (status == 0) {
+            result = -2;
+        } else {
+            *(u32*)&command[0] = 0x15;
+            *(u16*)&command[0x1A] = 1;
+            command[4] = 0;
+            *(void**)&command[0x2C] = data;
+            *(u32*)&command[0x28] = format;
+            *(double*)&command[0x30] = *(double*)&command[0];
+            *(double*)&command[0x38] = *(double*)&command[8];
+            *(double*)&command[0x40] = *(double*)&command[0x10];
+            *(double*)&command[0x48] = *(double*)&command[0x18];
+            *(double*)&command[0x50] = *(double*)&command[0x20];
+            *(double*)&command[0x58] = *(double*)&command[0x28];
+
+            queue = (u8*)cb + 0x160;
+            enabled = OSDisableInterrupts();
+            innerEnabled = OSDisableInterrupts();
+            scratch = queue[0];
+            diff = (s8)(queue[1] - scratch);
+            if (diff < 0) {
+                diff = (s8)(diff + *(u32*)(queue + 8));
+                OSRestoreInterrupts(innerEnabled);
+            }
+            if (*(u32*)(queue + 8) - 1 == (u32)diff) {
+                OSRestoreInterrupts(enabled);
+                scratch = 0;
+            } else {
+                memset(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, 0, 0x30);
+                memcpy(*(u8**)(queue + 4) + (s8)queue[1] * 0x30, command + 0x30, 0x30);
+                index = (s8)queue[1];
+                lastIndex = *(s32*)(queue + 8) - 1;
+                wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
+                queue[1] = (index + 1) & ~wrapMask;
+                OSRestoreInterrupts(enabled);
+                scratch = 1;
+            }
+            mask = -scratch;
+            mask |= scratch;
+            mask >>= 31;
+            result = -2 & ~mask;
+        }
     }
-    
-    if (status != 0) {
-        u8 front;
-        u8 back;
-        s32 diff;
-        s32 capacity;
-        u8* buffer;
-        s32 result;
-        u8 newBack;
-        
-        // Setup command structure on stack
-        // Header: type=1, length=0x15, padding=0
-        // Data: 6 double-precision values
-        struct {
-            u8 padding[0x20];
-            u8 type;
-            u8 pad2;
-            u32 length;
-            u8 pad3;
-            f64 values[6];
-        } cmd __attribute__((aligned(8)));
-        
-        cmd.type = 1;
-        cmd.length = 0x15;
-        cmd.values[0] = *(f64*)((u8*)data + 0x0);
-        cmd.values[1] = *(f64*)((u8*)data + 0x8);
-        cmd.values[2] = *(f64*)((u8*)data + 0x10);
-        cmd.values[3] = *(f64*)((u8*)data + 0x18);
-        cmd.values[4] = *(f64*)((u8*)data + 0x20);
-        cmd.values[5] = *(f64*)((u8*)data + 0x28);
-        
-        enabled = OSDisableInterrupts();
-        result = enabled;
-        enabled = OSDisableInterrupts();
-        
-        front = cb->stdCmdQueue.front;
-        back = cb->stdCmdQueue.back;
-        diff = back - front;
-        
-        if (diff < 0) {
-            capacity = cb->stdCmdQueue.capacity;
-            diff += capacity;
-        }
-        
-        OSRestoreInterrupts(enabled);
-        
-        capacity = cb->stdCmdQueue.capacity;
-        if (diff == capacity - 1) {
-            cb = lbl_8038F4F0[chan];
-            OSRestoreInterrupts(result);
-            return -1;
-        }
-        
-        // Clear the new entry
-        buffer = (u8*)cb->stdCmdQueue.buffer;
-        memset(buffer + back * 0x30, 0, 0x30);
-        
-        // Copy command data
-        memcpy(buffer + back * 0x30, &cmd, 0x30);
-        
-        // Update back index
-        newBack = back + 1;
-        if (newBack >= capacity) {
-            newBack = 0;
-        }
-        cb->stdCmdQueue.back = newBack;
-        
-        OSRestoreInterrupts(result);
-        return 1;
-    }
-    
-    return -2;
+    return result;
 }
 
 // fn_80060750: setter for lbl_8055DC14
@@ -4057,36 +4041,33 @@ void fn_80064740(s32 chan, s32 param_2) {
 WPADCB* getGameInfo(s32 chan, s32 param_2, s32 param_3) {
     WPADCB* cb = lbl_8038F4F0[chan];
     u8* src = (u8*)cb->samplingBufSize;
-    u32 sum;
+    register u32 sum asm("r9") = 0;
+    register u32 offset asm("r8");
     u32 i;
+    u32 j;
     u8* p;
 
     if (param_2 == 0) {
-        sum = 0;
-        sum += src[0];
-        sum += src[1];
-        sum += src[2];
-        sum += src[3];
-        sum += src[4];
-        sum += src[5];
-        sum += src[6];
-        
+        offset = 0;
         for (i = 0; i < 2; i++) {
-            sum += src[7 + i * 7 + 0];
-            sum += src[7 + i * 7 + 1];
-            sum += src[7 + i * 7 + 2];
-            sum += src[7 + i * 7 + 3];
-            sum += src[7 + i * 7 + 4];
-            sum += src[7 + i * 7 + 5];
-            sum += src[7 + i * 7 + 6];
+            for (j = 0; j < 3; j++) {
+                p = src + offset;
+                sum += src[offset];
+                sum += p[1];
+                sum += p[2];
+                sum += p[3];
+                sum += p[4];
+                sum += p[5];
+                sum += p[6];
+                offset += 7;
+            }
         }
-        
-        sum += src[21];
-        sum += src[22];
-        sum += src[23];
-        sum += src[24];
-        sum += src[25];
-        
+        sum += src[offset];
+        sum += src[offset + 1];
+        sum += src[offset + 2];
+        sum += src[offset + 3];
+        sum += src[offset + 4];
+
         if (src[0x2F] == (u8)(sum + 0x55)) {
             memcpy(cb, src, 0x38);
             *(s32*)((u8*)cb + (u8)param_3 * 4 + 0x38) = 0;
@@ -4496,7 +4477,301 @@ void fn_80066634(s32 chan, void* data) { /* stub */ }
 void fn_80066EAC(void) { /* stub */ }
 
 // fn_80066EB0: WPAD data processing
-void fn_80066EB0(void) { /* stub */ }
+void fn_80066EB0(s32 arg0, u8 *arg1) {
+    s32 enabled;
+    s16 temp_r0;
+    s16 temp_r0_10;
+    s16 temp_r0_11;
+    s16 temp_r0_2;
+    s16 temp_r0_3;
+    s16 temp_r0_4;
+    s16 temp_r0_7;
+    s16 temp_r0_9;
+    s16 temp_r4_4;
+    s16 temp_r4_5;
+    s16 temp_r4_6;
+    s16 temp_r5_8;
+    s32 temp_r6;
+    s32 temp_r6_2;
+    s32 temp_r6_3;
+    s32 temp_r6_4;
+    s32 temp_r6_5;
+    s32 var_ctr;
+    WPADCB *temp_r31;
+    u8 *temp_r30;
+    u8 *base;
+    s32 var_r29;
+    register s32 var_r6 asm("r6") = 0;
+    u8 temp_r0_5;
+    u8 temp_r0_6;
+    u8 temp_r0_8;
+    u8 *temp_r3;
+    u8 *temp_r4;
+    u8 *temp_r4_2;
+    u8 *temp_r4_3;
+    u8 *temp_r5;
+    u8 *temp_r5_2;
+    u8 *temp_r5_3;
+    u8 *temp_r5_4;
+    u8 *temp_r5_5;
+    u8 *temp_r5_6;
+    u8 *temp_r5_7;
+
+    temp_r31 = lbl_8038F4F0[(u8)arg0];
+    temp_r5 = (u8*)temp_r31 + ((*(u8 *)((s8*)(temp_r31) + (0x806))) * 0x60);
+    temp_r30 = temp_r5 + 0xA0;
+    base = temp_r30;
+    var_ctr = 0;
+    for (; var_ctr < 2; var_ctr++) {
+        *(base + var_r6) = 0;
+        temp_r5_2 = base + var_r6;
+        temp_r6 = var_r6 + 8;
+        (*(s8 *)((s8*)(temp_r5_2) + (1))) = 0;
+        (*(s8 *)((s8*)(temp_r5_2) + (2))) = 0;
+        (*(s8 *)((s8*)(temp_r5_2) + (3))) = 0;
+        (*(s8 *)((s8*)(temp_r5_2) + (4))) = 0;
+        (*(s8 *)((s8*)(temp_r5_2) + (5))) = 0;
+        (*(s8 *)((s8*)(temp_r5_2) + (6))) = 0;
+        (*(s8 *)((s8*)(temp_r5_2) + (7))) = 0;
+        temp_r5_3 = base + temp_r6;
+        *(base + temp_r6) = 0;
+        temp_r6_2 = temp_r6 + 8;
+        (*(s8 *)((s8*)(temp_r5_3) + (1))) = 0;
+        (*(s8 *)((s8*)(temp_r5_3) + (2))) = 0;
+        (*(s8 *)((s8*)(temp_r5_3) + (3))) = 0;
+        (*(s8 *)((s8*)(temp_r5_3) + (4))) = 0;
+        (*(s8 *)((s8*)(temp_r5_3) + (5))) = 0;
+        (*(s8 *)((s8*)(temp_r5_3) + (6))) = 0;
+        (*(s8 *)((s8*)(temp_r5_3) + (7))) = 0;
+        temp_r5_4 = base + temp_r6_2;
+        *(base + temp_r6_2) = 0;
+        temp_r6_3 = temp_r6_2 + 8;
+        (*(s8 *)((s8*)(temp_r5_4) + (1))) = 0;
+        (*(s8 *)((s8*)(temp_r5_4) + (2))) = 0;
+        (*(s8 *)((s8*)(temp_r5_4) + (3))) = 0;
+        (*(s8 *)((s8*)(temp_r5_4) + (4))) = 0;
+        (*(s8 *)((s8*)(temp_r5_4) + (5))) = 0;
+        (*(s8 *)((s8*)(temp_r5_4) + (6))) = 0;
+        (*(s8 *)((s8*)(temp_r5_4) + (7))) = 0;
+        temp_r5_5 = base + temp_r6_3;
+        *(base + temp_r6_3) = 0;
+        temp_r6_4 = temp_r6_3 + 8;
+        (*(s8 *)((s8*)(temp_r5_5) + (1))) = 0;
+        (*(s8 *)((s8*)(temp_r5_5) + (2))) = 0;
+        (*(s8 *)((s8*)(temp_r5_5) + (3))) = 0;
+        (*(s8 *)((s8*)(temp_r5_5) + (4))) = 0;
+        (*(s8 *)((s8*)(temp_r5_5) + (5))) = 0;
+        (*(s8 *)((s8*)(temp_r5_5) + (6))) = 0;
+        (*(s8 *)((s8*)(temp_r5_5) + (7))) = 0;
+        temp_r5_6 = base + temp_r6_4;
+        *(base + temp_r6_4) = 0;
+        temp_r6_5 = temp_r6_4 + 8;
+        (*(s8 *)((s8*)(temp_r5_6) + (1))) = 0;
+        (*(s8 *)((s8*)(temp_r5_6) + (2))) = 0;
+        (*(s8 *)((s8*)(temp_r5_6) + (3))) = 0;
+        (*(s8 *)((s8*)(temp_r5_6) + (4))) = 0;
+        (*(s8 *)((s8*)(temp_r5_6) + (5))) = 0;
+        (*(s8 *)((s8*)(temp_r5_6) + (6))) = 0;
+        (*(s8 *)((s8*)(temp_r5_6) + (7))) = 0;
+        temp_r5_7 = base + temp_r6_5;
+        *(base + temp_r6_5) = 0;
+        var_r6 = temp_r6_5 + 8;
+        (*(s8 *)((s8*)(temp_r5_7) + (1))) = 0;
+        (*(s8 *)((s8*)(temp_r5_7) + (2))) = 0;
+        (*(s8 *)((s8*)(temp_r5_7) + (3))) = 0;
+        (*(s8 *)((s8*)(temp_r5_7) + (4))) = 0;
+        (*(s8 *)((s8*)(temp_r5_7) + (5))) = 0;
+        (*(s8 *)((s8*)(temp_r5_7) + (6))) = 0;
+        (*(s8 *)((s8*)(temp_r5_7) + (7))) = 0;
+    }
+    (*(s16 *)((s8*)(temp_r5) + (0xA0))) = (s16) ((((*(u8 *)((s8*)(arg1) + (1))) & ~0xFF00) | (((*(u8 *)((s8*)(arg1) + (2))) << 8) & 0xFF00)) & 0x9F1F);
+    if ((u32) (*(u32 *)((s8*)(temp_r31) + (0x7F8))) <= 8U) {
+        (*(u8 *)((s8*)(temp_r30) + (0x29))) = (u8) (*(s32 *)((s8*)(temp_r31) + (0x7FC)));
+    } else if ((s32) (*(s32 *)((s8*)(temp_r31) + (0x7FC))) == 0) {
+        (*(s8 *)((s8*)(temp_r30) + (0x29))) = -4;
+    }
+    (*(u8 *)((s8*)(temp_r30) + (0x28))) = (u8) (*(u8 *)((s8*)(temp_r31) + (0x801)));
+    (*(s32 *)((s8*)(temp_r31) + (0x788))) = (s32) ((s32) ((*(u8 *)((s8*)(arg1) + (1))) & 0x80) >> 7);
+    (*(s16 *)((s8*)(temp_r30) + (2))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (3))) * 4) & 0xFFFFFFFC) | (((u8) (*(u8 *)((s8*)(arg1) + (1))) >> 5U) & 3)) - (*(s16 *)((s8*)(temp_r31) + (0x7B4))));
+    (*(s16 *)((s8*)(temp_r30) + (4))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (4))) * 4) & 0xFFFFFFFC) | (s16) (((u8) (*(u8 *)((s8*)(arg1) + (2))) >> 4U) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B6))));
+    (*(s16 *)((s8*)(temp_r30) + (6))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (5))) * 4) & 0xFFFFFFFC) | (s16) (((u8) (*(u8 *)((s8*)(arg1) + (2))) >> 5U) & 2)) - (*(s16 *)((s8*)(temp_r31) + (0x7B8))));
+    temp_r0 = (s16) (*(u8 *)((s8*)(arg1) + (6))) | (((*(u8 *)((s8*)(arg1) + (8))) * 0x10) & 0x300);
+    (*(s16 *)((s8*)(temp_r30) + (8))) = temp_r0;
+    (*(s16 *)((s8*)(temp_r30) + (0xA))) = (s16) (0x2FF - (s16) ((s16) (*(u8 *)((s8*)(arg1) + (7))) | (((*(u8 *)((s8*)(arg1) + (8))) * 4) & 0x300)));
+    if ((temp_r0 == 0x3FF) || ((s16) (*(s16 *)((s8*)(temp_r30) + (0xA))) == 0x2FF)) {
+        (*(s16 *)((s8*)(temp_r30) + (8))) = 0;
+        (*(s16 *)((s8*)(temp_r30) + (0xA))) = 0x2FF;
+        (*(u16 *)((s8*)(temp_r30) + (0xC))) = 0U;
+    } else {
+        (*(u16 *)((s8*)(temp_r30) + (0xC))) = (u16) (*(u16 *)((s8*)(temp_r31) + (0x804)));
+    }
+    (*(s8 *)((s8*)(temp_r30) + (0xE))) = 0;
+    temp_r0_2 = (s16) (*(u8 *)((s8*)(arg1) + (9))) | (((*(u8 *)((s8*)(arg1) + (8))) << 8) & 0x300);
+    (*(s16 *)((s8*)(temp_r30) + (0x10))) = temp_r0_2;
+    (*(s16 *)((s8*)(temp_r30) + (0x12))) = (s16) (0x2FF - (s16) ((s16) (*(u8 *)((s8*)(arg1) + (0xA))) | (((*(u8 *)((s8*)(arg1) + (8))) << 6) & 0x300)));
+    if ((temp_r0_2 == 0x3FF) || ((s16) (*(s16 *)((s8*)(temp_r30) + (0x12))) == 0x2FF)) {
+        (*(s16 *)((s8*)(temp_r30) + (0x10))) = 0;
+        (*(s16 *)((s8*)(temp_r30) + (0x12))) = 0x2FF;
+        (*(u16 *)((s8*)(temp_r30) + (0x14))) = 0U;
+    } else {
+        (*(u16 *)((s8*)(temp_r30) + (0x14))) = (u16) (*(u16 *)((s8*)(temp_r31) + (0x804)));
+    }
+    (*(s8 *)((s8*)(temp_r30) + (0x16))) = 1;
+    temp_r0_3 = (s16) (*(u8 *)((s8*)(arg1) + (0xB))) | (((*(u8 *)((s8*)(arg1) + (0xD))) * 0x10) & 0x300);
+    (*(s16 *)((s8*)(temp_r30) + (0x18))) = temp_r0_3;
+    (*(s16 *)((s8*)(temp_r30) + (0x1A))) = (s16) (0x2FF - (s16) ((s16) (*(u8 *)((s8*)(arg1) + (0xC))) | (((*(u8 *)((s8*)(arg1) + (0xD))) * 4) & 0x300)));
+    if ((temp_r0_3 == 0x3FF) || ((s16) (*(s16 *)((s8*)(temp_r30) + (0x1A))) == 0x2FF)) {
+        (*(s16 *)((s8*)(temp_r30) + (0x18))) = 0;
+        (*(s16 *)((s8*)(temp_r30) + (0x1A))) = 0x2FF;
+        (*(u16 *)((s8*)(temp_r30) + (0x1C))) = 0U;
+    } else {
+        (*(u16 *)((s8*)(temp_r30) + (0x1C))) = (u16) (*(u16 *)((s8*)(temp_r31) + (0x804)));
+    }
+    (*(s8 *)((s8*)(temp_r30) + (0x1E))) = 2;
+    temp_r0_4 = (s16) (*(u8 *)((s8*)(arg1) + (0xE))) | (((*(u8 *)((s8*)(arg1) + (0xD))) << 8) & 0xC00);
+    (*(s16 *)((s8*)(temp_r30) + (0x20))) = temp_r0_4;
+    (*(s16 *)((s8*)(temp_r30) + (0x22))) = (s16) (0x2FF - (s16) ((s16) (*(u8 *)((s8*)(arg1) + (0xF))) | (((*(u8 *)((s8*)(arg1) + (0xD))) << 6) & 0x300)));
+    if ((temp_r0_4 == 0x3FF) || ((s16) (*(s16 *)((s8*)(temp_r30) + (0x22))) == 0x2FF)) {
+        (*(s16 *)((s8*)(temp_r30) + (0x20))) = 0;
+        (*(s16 *)((s8*)(temp_r30) + (0x22))) = 0x2FF;
+        (*(u16 *)((s8*)(temp_r30) + (0x24))) = 0U;
+    } else {
+        (*(u16 *)((s8*)(temp_r30) + (0x24))) = (u16) (*(u16 *)((s8*)(temp_r31) + (0x804)));
+    }
+    (*(s8 *)((s8*)(temp_r30) + (0x26))) = 3;
+    memcpy(&lbl_803928E8, arg1 + 0x10, 6);
+    WPADiDecode(var_r29, arg1 + 0x10, 6, 0);
+    if ((s32) (*(s32 *)((s8*)(temp_r31) + (0x780))) != 0) {
+        temp_r0_5 = (*(u8 *)((s8*)(temp_r31) + (0x801)));
+        if (temp_r0_5 == 1) {
+            temp_r3 = (u8*)temp_r31 + ((*(u8 *)((s8*)(temp_r31) + (0x806))) * 0x60);
+            (*(u8 *)((s8*)(temp_r3) + (0xD0))) = (u8) (*(u8 *)((s8*)(arg1) + (0x10)));
+            (*(u8 *)((s8*)(temp_r3) + (0xD1))) = (u8) (*(u8 *)((s8*)(arg1) + (0x11)));
+            (*(s16 *)((s8*)(temp_r3) + (0xCA))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (0x12))) * 4) & 0xFFFFFFFC) | (((u8) (*(u8 *)((s8*)(arg1) + (0x15))) >> 2U) & 3)) - (*(s16 *)((s8*)(temp_r31) + (0x7CE))));
+            (*(s16 *)((s8*)(temp_r3) + (0xCC))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (0x13))) * 4) & 0xFFFFFFFC) | (((u8) (*(u8 *)((s8*)(arg1) + (0x15))) >> 4U) & 3)) - (*(s16 *)((s8*)(temp_r31) + (0x7D0))));
+            (*(s16 *)((s8*)(temp_r3) + (0xCE))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (0x14))) * 4) & 0xFFFFFFFC) | ((s32) (*(u8 *)((s8*)(arg1) + (0x15))) >> 6)) - (*(s16 *)((s8*)(temp_r31) + (0x7D2))));
+            temp_r0_6 = (*(u8 *)((s8*)(arg1) + (0x15)));
+            (*(u16 *)((s8*)(temp_r3) + (0xA0))) = (u16) ((*(u16 *)((s8*)(temp_r3) + (0xA0))) | ((~(temp_r0_6 | temp_r0_6) << 0xD) & 0x6000));
+            if ((s32) (*(u8 *)((s8*)(temp_r31) + (0x851))) == 0) {
+                (*(u8 *)((s8*)(temp_r31) + (0x851))) = 1U;
+                (*(s16 *)((s8*)(temp_r31) + (0x7C2))) = (s16) (s8) (*(u8 *)((s8*)(temp_r3) + (0xD0)));
+                (*(s16 *)((s8*)(temp_r31) + (0x7C8))) = (s16) (s8) (*(u8 *)((s8*)(temp_r3) + (0xD1)));
+            }
+            temp_r5_8 = (*(u8 *)((s8*)(temp_r3) + (0xD0))) - (u8) (*(s16 *)((s8*)(temp_r31) + (0x7C2)));
+            temp_r0_7 = (*(u8 *)((s8*)(temp_r3) + (0xD1))) - (u8) (*(s16 *)((s8*)(temp_r31) + (0x7C8)));
+            if (temp_r5_8 < -0x80) {
+                (*(u8 *)((s8*)(temp_r3) + (0xD0))) = -0x80U;
+            } else if (temp_r5_8 > 0x7F) {
+                (*(u8 *)((s8*)(temp_r3) + (0xD0))) = 0x7FU;
+            } else {
+                (*(u8 *)((s8*)(temp_r3) + (0xD0))) = (u8) temp_r5_8;
+            }
+            if (temp_r0_7 < -0x80) {
+                (*(u8 *)((s8*)(temp_r3) + (0xD1))) = -0x80U;
+            } else if (temp_r0_7 > 0x7F) {
+                (*(u8 *)((s8*)(temp_r3) + (0xD1))) = 0x7FU;
+            } else {
+                (*(u8 *)((s8*)(temp_r3) + (0xD1))) = (u8) temp_r0_7;
+            }
+        } else if (temp_r0_5 == 2) {
+            temp_r0_8 = (*(u8 *)((s8*)(temp_r31) + (0x802)));
+            switch ((s32) temp_r0_8) {              /* irregular */
+            case 1:
+                temp_r4 = (u8*)temp_r31 + ((*(u8 *)((s8*)(temp_r31) + (0x806))) * 0x60);
+                var_r29 = (s32) (temp_r4 + 0xA0);
+                (*(s16 *)((s8*)(temp_r4) + (0xCC))) = (s16) ((s16) (((*(u8 *)((s8*)(arg1) + (0x10))) * 0x10) & 0x3F0) - 0x200);
+                (*(s16 *)((s8*)(temp_r4) + (0xCE))) = (s16) ((s16) (((*(u8 *)((s8*)(arg1) + (0x11))) * 0x10) & 0x3F0) - 0x200);
+                (*(s16 *)((s8*)(var_r29) + (0x30))) = (s16) ((s16) ((s16) (((s32) (*(u8 *)((s8*)(arg1) + (0x12))) >> 7) | ((((u8) (*(u8 *)((s8*)(arg1) + (0x11))) >> 5U) & 6 & ~0x18) | (((u8) (*(u8 *)((s8*)(arg1) + (0x10))) >> 3U) & 0x18))) << 5) - 0x200);
+                (*(s16 *)((s8*)(var_r29) + (0x32))) = (s16) ((s16) (((*(u8 *)((s8*)(arg1) + (0x12))) << 5) & 0x3E0) - 0x200);
+                (*(s8 *)((s8*)(var_r29) + (0x34))) = (s8) ((((((s32) (*(u8 *)((s8*)(arg1) + (0x13))) >> 5) & ~0x18) | (((s32) (*(u8 *)((s8*)(arg1) + (0x12))) >> 2) & 0x18)) * 8) & 0xF8);
+                (*(s8 *)((s8*)(var_r29) + (0x35))) = (s8) (((*(u8 *)((s8*)(arg1) + (0x13))) * 8) & 0xF8);
+                (*(s16 *)((s8*)(var_r29) + (0x2A))) = (s16) ((((*(u8 *)((s8*)(arg1) + (0x15))) & ~0xFF00) | (((*(u8 *)((s8*)(arg1) + (0x14))) << 8) & 0xFF00)) ^ 0xFFFF);
+                break;
+            case 2:
+                temp_r4_2 = (u8*)temp_r31 + ((*(u8 *)((s8*)(temp_r31) + (0x806))) * 0x60);
+                (*(s16 *)((s8*)(temp_r4_2) + (0xCC))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (0x10))) * 4) & 0xFFFFFFFC) | ((*(u8 *)((s8*)(arg1) + (0x14))) & 3)) - 0x200);
+                var_r29 = (s32) (temp_r4_2 + 0xA0);
+                (*(s16 *)((s8*)(var_r29) + (0x30))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (0x11))) * 4) & 0xFFFFFFFC) | (((u8) (*(u8 *)((s8*)(arg1) + (0x14))) >> 2U) & 3)) - 0x200);
+                (*(s16 *)((s8*)(var_r29) + (0x2E))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (0x12))) * 4) & 0xFFFFFFFC) | (((u8) (*(u8 *)((s8*)(arg1) + (0x14))) >> 4U) & 3)) - 0x200);
+                (*(s16 *)((s8*)(var_r29) + (0x32))) = (s16) ((s16) ((s16) ((s16) ((*(u8 *)((s8*)(arg1) + (0x13))) * 4) & 0xFFFFFFFC) | ((s32) (*(u8 *)((s8*)(arg1) + (0x14))) >> 6)) - 0x200);
+                (*(u8 *)((s8*)(var_r29) + (0x34))) = (u8) (*(u8 *)((s8*)(arg1) + (0x15)));
+                (*(s8 *)((s8*)(var_r29) + (0x35))) = 0;
+                (*(s16 *)((s8*)(var_r29) + (0x2A))) = 0;
+                break;
+            case 3:
+                temp_r4_3 = (u8*)temp_r31 + ((*(u8 *)((s8*)(temp_r31) + (0x806))) * 0x60);
+                (*(s16 *)((s8*)(temp_r4_3) + (0xCC))) = (s16) ((s16) ((s16) (*(u8 *)((s8*)(arg1) + (0x10))) * 4) - 0x200);
+                var_r29 = (s32) (temp_r4_3 + 0xA0);
+                (*(s16 *)((s8*)(temp_r4_3) + (0xD0))) = (s16) ((s16) ((s16) (*(u8 *)((s8*)(arg1) + (0x11))) * 4) - 0x200);
+                (*(s16 *)((s8*)(temp_r4_3) + (0xCE))) = (s16) ((s16) ((s16) (*(u8 *)((s8*)(arg1) + (0x12))) * 4) - 0x200);
+                (*(s16 *)((s8*)(temp_r4_3) + (0xD2))) = (s16) ((s16) ((s16) (*(u8 *)((s8*)(arg1) + (0x13))) * 4) - 0x200);
+                (*(u8 *)((s8*)(temp_r4_3) + (0xD4))) = (u8) (*(u8 *)((s8*)(arg1) + (0x14)));
+                (*(u8 *)((s8*)(temp_r4_3) + (0xD5))) = (u8) (*(u8 *)((s8*)(arg1) + (0x15)));
+                (*(s16 *)((s8*)(temp_r4_3) + (0xCA))) = 0;
+                break;
+            }
+            if ((s32) (*(u8 *)((s8*)(temp_r31) + (0x851))) == 0) {
+                (*(u8 *)((s8*)(temp_r31) + (0x851))) = 1U;
+                (*(s16 *)((s8*)(temp_r31) + (0x7C2))) = (s16) (*(s16 *)((s8*)(var_r29) + (0x2C)));
+                (*(s16 *)((s8*)(temp_r31) + (0x7C8))) = (s16) (*(s16 *)((s8*)(var_r29) + (0x2E)));
+                (*(s16 *)((s8*)(temp_r31) + (0x7CE))) = (s16) (*(s16 *)((s8*)(var_r29) + (0x30)));
+                (*(s16 *)((s8*)(temp_r31) + (0x7D4))) = (s16) (*(s16 *)((s8*)(var_r29) + (0x32)));
+                (*(u8 *)((s8*)(temp_r31) + (0x7DA))) = (u8) (*(u8 *)((s8*)(var_r29) + (0x34)));
+                (*(u8 *)((s8*)(temp_r31) + (0x7DB))) = (u8) (*(u8 *)((s8*)(var_r29) + (0x35)));
+            }
+            temp_r4_4 = (*(s16 *)((s8*)(var_r29) + (0x2C))) - (*(s16 *)((s8*)(temp_r31) + (0x7C2)));
+            temp_r0_9 = (*(s16 *)((s8*)(var_r29) + (0x2E))) - (*(s16 *)((s8*)(temp_r31) + (0x7C8)));
+            if (temp_r4_4 < -0x400) {
+                (*(s16 *)((s8*)(var_r29) + (0x2C))) = -0x400;
+            } else if (temp_r4_4 > 0x3FF) {
+                (*(s16 *)((s8*)(var_r29) + (0x2C))) = 0x3FF;
+            } else {
+                (*(s16 *)((s8*)(var_r29) + (0x2C))) = temp_r4_4;
+            }
+            if (temp_r0_9 < -0x400) {
+                (*(s16 *)((s8*)(var_r29) + (0x2E))) = -0x400;
+            } else if (temp_r0_9 > 0x3FF) {
+                (*(s16 *)((s8*)(var_r29) + (0x2E))) = 0x3FF;
+            } else {
+                (*(s16 *)((s8*)(var_r29) + (0x2E))) = temp_r0_9;
+            }
+            temp_r4_5 = (*(s16 *)((s8*)(var_r29) + (0x30))) - (*(s16 *)((s8*)(temp_r31) + (0x7CE)));
+            temp_r0_10 = (*(s16 *)((s8*)(var_r29) + (0x32))) - (*(s16 *)((s8*)(temp_r31) + (0x7D4)));
+            if (temp_r4_5 < -0x400) {
+                (*(s16 *)((s8*)(var_r29) + (0x30))) = -0x400;
+            } else if (temp_r4_5 > 0x3FF) {
+                (*(s16 *)((s8*)(var_r29) + (0x30))) = 0x3FF;
+            } else {
+                (*(s16 *)((s8*)(var_r29) + (0x30))) = temp_r4_5;
+            }
+            if (temp_r0_10 < -0x400) {
+                (*(s16 *)((s8*)(var_r29) + (0x32))) = -0x400;
+            } else if (temp_r0_10 > 0x3FF) {
+                (*(s16 *)((s8*)(var_r29) + (0x32))) = 0x3FF;
+            } else {
+                (*(s16 *)((s8*)(var_r29) + (0x32))) = temp_r0_10;
+            }
+            temp_r4_6 = (*(u8 *)((s8*)(var_r29) + (0x34))) - (*(u8 *)((s8*)(temp_r31) + (0x7DA)));
+            temp_r0_11 = (*(u8 *)((s8*)(var_r29) + (0x35))) - (*(u8 *)((s8*)(temp_r31) + (0x7DB)));
+            if (temp_r4_6 < 0) {
+                (*(u8 *)((s8*)(var_r29) + (0x34))) = 0U;
+            } else {
+                (*(u8 *)((s8*)(var_r29) + (0x34))) = (u8) temp_r4_6;
+            }
+            if (temp_r0_11 < 0) {
+                (*(u8 *)((s8*)(var_r29) + (0x35))) = 0U;
+            } else {
+                (*(u8 *)((s8*)(var_r29) + (0x35))) = (u8) temp_r0_11;
+            }
+        }
+        if ((memcmp(&lbl_803928E8, &lbl_803123B8, 6) == 0) && ((s8) (*(u8 *)((s8*)(temp_r30) + (0x29))) == 0)) {
+            (*(s8 *)((s8*)(temp_r30) + (0x29))) = -7;
+        }
+    }
+    enabled = OSDisableInterrupts();
+    (*(u8 *)((s8*)(temp_r31) + (0x806))) = (u8) ((*(u8 *)((s8*)(temp_r31) + (0x806))) == 0);
+    OSRestoreInterrupts(enabled);
+}
 
 // fn_800678D8: WPAD data processing
 void fn_800678D8(void) { /* stub */ }
