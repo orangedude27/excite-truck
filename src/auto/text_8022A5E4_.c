@@ -1,5 +1,27 @@
 __declspec(section ".sdata") extern char lbl_8055B8B8[];
 
+extern char lbl_802F9F58[];
+extern char lbl_8033FBE8[];
+extern char lbl_8055B8C4[];
+extern char lbl_8055B8CC[];
+extern char lbl_8055B8D4[];
+extern char lbl_8055B8DC[];
+extern char lbl_8055B8E4[];
+extern char lbl_8055B8E8[];
+extern char lbl_8055B8F0[];
+extern char lbl_8055B8F8[];
+extern char lbl_8055B8FC[];
+extern char lbl_8055B900[];
+extern char lbl_8055B908[];
+extern char lbl_8055B910[];
+extern int fn_8022CC8C(const char*);
+extern void fn_8022CDE4(int*, void*);
+extern int stricmp(const char*, const char*);
+extern void* fn_80131810(const char*, int, int);
+extern void* fn_80131818(void*);
+extern void fn_80131820(void*);
+extern void fn_802E30C8(void*, ...);
+extern void fn_8022A858(int);
 typedef struct CfgObj CfgObj;
 typedef struct CfgVTab {
     void* v0;
