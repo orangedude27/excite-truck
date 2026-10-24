@@ -313,7 +313,6 @@ extern int GXGetTexObjFmt(void *);
 extern void fn_802E317C(const char *);
 extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
-extern void *lbl_804DB468;
 extern unsigned int lbl_8055FEBC;
 extern unsigned int lbl_8055FEBC;
 int fn_802DC6AC(int a, unsigned int b) {
