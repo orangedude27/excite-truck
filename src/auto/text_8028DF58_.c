@@ -299,6 +299,69 @@ int fn_8028F040(int *arg0, int *arg1, int arg2) {
     return -2;
 }
 
+void fn_8028F114(int *arg0, int arg1, int arg2) {
+    void *tmp[64];
+    int n1=0,n2=0,n3=0;
+    int i,j,k;
+    memset(tmp,0,0x100);
+    if (arg1 != -2) {
+        int *p=arg0;
+        for (i=0;i<*(int*)((char*)arg0+0x100);i++,p++) {
+            void *v=*(void**)p;
+            if (*(int*)((char*)v+0xa4)==arg1) tmp[n1++]=v;
+        }
+    }
+    if (arg2 != -2) {
+        int *p=arg0;
+        for (i=0;i<*(int*)((char*)arg0+0x100);i++,p++) {
+            void *v=*(void**)p;
+            if (*(int*)((char*)v+0xa4)==arg2) tmp[*(int*)((char*)arg0+0x100)-n2-1]=v,n2++;
+        }
+    }
+    {
+        int *p=arg0;
+        for (i=0;i<*(int*)((char*)arg0+0x100);i++,p++) {
+            void *v=*(void**)p;
+            int id=*(int*)((char*)v+0xa4),found=0;
+            if (id!=arg1 && id!=arg2) {
+                for (j=0;j<n3;j++) if (*(int*)((char*)tmp[n1+j]+0xa4)==id) { found=1; break; }
+                if (!found) {
+                    tmp[n1+n3++]=v;
+                    for (k=i+1;k<*(int*)((char*)arg0+0x100);k++) {
+                        void *q=*(void**)((char*)arg0+k*4);
+                        if (*(int*)((char*)q+0xa4)==id) tmp[n1+n3++]=q;
+                    }
+                }
+            }
+        }
+    }
+    memcpy(arg0,tmp,*(int*)((char*)arg0+0x100)*4);
+}
+
+void fn_8028F2EC(int *arg0) {
+    int workspace[8][65];
+    int finalValue;
+    int descriptor[65];
+    int i, last, index, size;
+    int result;
+    int *block = descriptor;
+    int *nextBlock;
+    for (i = 0; i < 8; i++) workspace[i][64] = 0;
+    finalValue = 0;
+    fn_8028EFC4((int)descriptor, arg0);
+    last = -2;
+    index = 0;
+    for (i = 0; i < 9; i++) {
+        result = fn_8028F0C0(descriptor, i, last);
+        fn_8028F114(block, last, result);
+        size = block[64];
+        memcpy((char *)arg0 + index * 4, block, size * 4);
+        last = result;
+        index += size;
+        block = (int *)((char *)block + 0x104);
+    }
+}
+
 extern float fn_80129DC4(int, float, float);
 #pragma push
 #pragma processor 750
@@ -435,6 +498,36 @@ done:
     return 0;
 }
 
+extern int fn_8028F534(int);
+extern double lbl_80564440;
+void fn_8028FD00(void *arg0, void *arg1, int arg2) {
+    struct Data {
+        int f0; int f4; float f8; float fc;
+        int f10; int f14; int f18; int f1c; int f20; int f24;
+        float f28; float f2c; float f30; float f34;
+        unsigned char f38; unsigned char pad39[3];
+        float f3c; float f40; int f44; float f48; float f4c;
+        float f50; float f54; float f58; float f5c; float f60; float f64;
+        float f68; float f6c; float f70; float f74; float f78; float f7c; float f80;
+        int f84; unsigned char f88; unsigned char f89; unsigned char pad8a[6];
+        float a0; int pad_a4; int a8; float ac;
+    } *dst = (struct Data *)arg0, *src = (struct Data *)arg1;
+    float temp;
+
+    *dst = *src;
+    dst->a0 = lbl_80564424 / src->f8;
+    if (src->f0 == 1) {
+        int result = fn_8028F534(src->f84);
+        dst->a8 = result;
+        dst->ac = lbl_80564424 / (float)result;
+    }
+    temp = dst->f34;
+    if (temp < lbl_80564424) temp = lbl_80564424;
+    if (temp > lbl_80564420) temp = lbl_80564420;
+    dst->f34 = temp;
+    fn_8028F8C4((int)arg0);
+}
+
 extern float lbl_80564424, lbl_80564448, lbl_8056444C, lbl_80564450, lbl_80564454, lbl_80564458;
 void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
     float a, b, c, d, e, f, g, h, i, j, k;
@@ -487,10 +580,10 @@ void fn_80290160(void *arg0, void *arg1, void *arg2, float farg0) {
     *(float *)((char *)arg1 + 4) = b;
 }
 
-extern int fn_80128668(void);
+extern int fn_80128668(void *);
 int fn_8029169C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) {
-        fn_80128668();
+        fn_80128668((void *)arg0);
     }
     return arg0;
 }
