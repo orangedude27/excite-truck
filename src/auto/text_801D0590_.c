@@ -17,6 +17,8 @@ void fn_801D0590(void* arg0) {
     int count = list->count++;
     items[count] = arg0;
 }
+#pragma push
+#pragma use_lmw_stmw off
 void fn_801D0650(void *arg0) {
     int offset = 0;
     int i = 0;
@@ -32,11 +34,9 @@ void fn_801D0650(void *arg0) {
 void fn_801D06C4(void *arg0) {
     int offset = 0;
     int i = 0;
-    while (i < lbl_804386B4[0].count) {
+    for (; i < lbl_804386B4[0].count; offset += 4, i++) {
         void *obj = *(void **)((char *)lbl_804386B4[0].items + offset);
-        ((void (*)(void *, void *))(*(void ***)obj)[3])(obj, arg0);
-        offset += 4;
-        i++;
+        (*(void (**)(void *, void *))(*(char **)obj + 0xC))(obj, arg0);
     }
 }
 #pragma pop
@@ -69,9 +69,24 @@ void fn_801D0800(s32 arg0) {
     items[count] = arg0;
 }
 
-#pragma push
-#pragma use_lmw_stmw off
-void fn_801D09A8(void *arg0, void *arg1) { int offset = 0; int i = 0; while (i < lbl_8043870C[0].count) { void *obj = *(void **)((char *)lbl_8043870C[0].items + offset); ((void (*)(void *, void *, void *))(*(void ***)obj)[4])(obj, arg0, arg1); offset += 4; i++; } }
-#pragma pop
+#pragma cplusplus on
+extern "C" void fn_801D09A8(void *arg0, void *arg1) {
+    struct Dummy {
+        virtual void f0();
+        virtual void f1();
+        virtual void f2(void *, void *);
+    };
+    int offset;
+    int i;
+    i = 0;
+    offset = 0;
+    while (i < lbl_8043870C[0].count) {
+        void *obj = *(void **)((char *)lbl_8043870C[0].items + offset);
+        ((Dummy *)obj)->f2(arg0, arg1);
+        offset += 4;
+        i++;
+    }
+}
+#pragma cplusplus reset
 void fn_801D0A24(void *arg0,void *arg1) { int i=0, offset=0; while(i < lbl_8043870C[0].count) { void *obj=*(void **)((char *)lbl_8043870C[0].items+offset); ((void (*)(void *,void *,void *))(*(void ***)obj)[5])(obj,arg0,arg1); offset+=4; i++; } }
 #pragma pop
