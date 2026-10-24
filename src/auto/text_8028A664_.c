@@ -31,6 +31,49 @@ extern f32 lbl_8056434C;
 
 extern s32 fn_80128668(void);
 #pragma cplusplus on
+void fn_8028A664(void) {
+    extern char lbl_80348B98[];
+    extern char lbl_8055C8A0[];
+    extern s32 lbl_804B32B8[];
+    extern s32 lbl_8055F6F0, lbl_8055F6F4, lbl_8055F6F8, lbl_8055F700;
+    extern f32 lbl_80564328, lbl_8056432C;
+    extern void *fn_801284F8(s32, void *);
+    extern void *fn_8028BB68(void *, s32, f32);
+    extern void *fn_8028C824(void *, s32);
+    extern void *fn_802929D8(s32, void *, s32, s32);
+    extern void *fn_802974CC(void *);
+    extern void fn_8028ABE8(void *);
+    extern void fn_8028B3CC(void);
+    extern void fn_801EEFDC(void *, s32);
+    extern void fn_8028B93C(void), fn_8028BA44(void), fn_8028BA9C(void), fn_8028BB14(void);
+      extern s32 fn_8028B500(void *);
+    void *p;
+
+    p = fn_801284F8(0xDC, lbl_80348B98);
+    if (p != 0)
+        p = fn_8028BB68(p, 0x80, lbl_80564328);
+    lbl_8055F6F0 = (s32)p;
+    p = fn_801284F8(0xDC, lbl_80348B98 + 0x10);
+    if (p != 0)
+        p = fn_8028BB68(p, 0x60, lbl_8056432C);
+    lbl_8055F6F4 = (s32)p;
+    p = fn_801284F8(0x14, lbl_80348B98 + 0x1C);
+    if (p != 0)
+        p = fn_8028C824(p, 0x60);
+    lbl_8055F6F8 = (s32)p;
+    lbl_8055F6FC = fn_802929D8(1, lbl_8055C8A0, 0, 0);
+    p = fn_802974CC(lbl_80348B98 + 0x2C);
+    lbl_8055F700 = (s32)p;
+    lbl_804B32B8[0x50] = 0;
+    fn_8028ABE8(p);
+    fn_8028B3CC();
+    fn_801EEFDC(fn_8028B93C, 0);
+    fn_801EEFDC(fn_8028B500, 1);
+    fn_801EEFDC(fn_8028BA44, 2);
+    fn_801EEFDC(fn_8028BA9C, 7);
+    fn_801EEFDC(fn_8028BB14, 8);
+}
+
 extern "C" void fn_8028A784(void) {
     class Obj {
     public:
@@ -220,6 +263,30 @@ void fn_8028B4CC(void) {
     }
 }
 
+extern f32 PSVECMag(f32 *);
+extern f32 fn_80287BC8(f32, f32);
+extern f32 lbl_80564328, lbl_805643A4, lbl_805643A8;
+extern void fn_8028BED4(void *, s32, void *, void *, f32);
+extern s32 lbl_8055F6F0, lbl_8055F6F4;
+s32 fn_8028B93C(f32 *arg0) {
+    f32 dir[3];
+    f32 pos[3];
+    f32 radius;
+    s32 i;
+    dir[0] = arg0[0] * lbl_80564328;
+    dir[1] = arg0[1] * lbl_80564328;
+    dir[2] = arg0[2] * lbl_80564328;
+    radius = lbl_805643A0 * PSVECMag(dir);
+    for (i = 0; i < 2; i++) {
+        pos[1] = arg0[5] + fn_80287BC8(lbl_805643A4, lbl_805643A8);
+        pos[2] = arg0[4] + fn_80287BC8(lbl_805643A4, lbl_805643A8);
+        pos[0] = arg0[3] + fn_80287BC8(lbl_805643A4, lbl_805643A8);
+        fn_8028BED4((void *)lbl_8055F6F0, 1, pos, dir, radius);
+        fn_8028BED4((void *)lbl_8055F6F4, 1, pos, dir, radius);
+    }
+    return 0x20;
+}
+
 #pragma push
 #pragma scheduling off
 s32 fn_8028BA44(void *arg0) {
@@ -339,6 +406,32 @@ void fn_8028BD5C(s32 arg0) {
     fn_8028BFEC(arg0);
 }
 
+extern s32 fn_801E85B4(void);
+extern void *fn_801E8718(void);
+extern s32 fn_801E8758(s32);
+extern void fn_8028C11C(void *, s32 *, s32 *);
+extern void fn_802C8BD0(s32);
+extern void fn_802C8D74(void);
+extern f32 fn_802C9A4C(f32);
+void fn_8028BD60(s32 arg0) {
+    s32 sp[12];
+    f32 temp_f31;
+    s32 temp_r30 = fn_801E85B4();
+    s32 *src = (s32 *)fn_801E8718();
+    int i;
+    for (i = 0; i < 12; i++) sp[i] = src[i];
+    if (*(s32 *)(arg0 + 4) > 0) {
+        temp_f31 = fn_802C9A4C(*(f32 *)(arg0 + 0x18));
+        fn_802C8BD0(*(s32 *)(arg0 + 0x14));
+        if (fn_801E8758(temp_r30) == 0)
+            fn_8028C11C((void *)arg0, sp, (s32 *)(arg0 + temp_r30 * 0x30 + 0x1C));
+        else fn_8028C11C((void *)arg0, sp, sp);
+        fn_802C8D74();
+        fn_802C9A4C(temp_f31);
+    }
+    for (i = 0; i < 12; i++) *(s32 *)(arg0 + temp_r30 * 0x30 + 0x1C + i * 4) = sp[i];
+}
+
 #pragma pop
 void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
     struct Entry { f32 f[7]; } *dst;
@@ -363,6 +456,44 @@ void fn_8028BED4(void *arg0, s32 arg1, void *arg2, void *arg3, f32 farg0) {
         dst->f[6] = now;
     }
     arr[1] += count;
+}
+
+extern f32 fn_801E7E24(void);
+extern f32 lbl_80564328, lbl_8056432C, lbl_80564338, lbl_805643B8;
+void fn_8028BFEC(s32 arg0) {
+    f32 sp10, spC, sp8, temp_f1, temp_f31, temp_f4, temp_f5, temp_f6, temp_f7, temp_f8;
+    s32 var_r3, var_r5;
+    void *temp_r6;
+    void *var_r4;
+    temp_f31 = fn_801E7E18() - *(f32 *)(arg0 + 0xC);
+    temp_f1 = fn_801E7E24();
+    var_r5 = 0;
+    var_r3 = 0;
+    temp_f7 = lbl_80564338 * (lbl_805643B8 * temp_f1);
+    temp_f8 = lbl_8056432C - (lbl_80564328 * temp_f1);
+    var_r4 = *(void **)arg0;
+loop_4:
+    if (var_r5 < *(s32 *)(arg0 + 4)) {
+        temp_r6 = (void *)(*(s32 *)arg0 + var_r3);
+        if (*(f32 *)((s32)temp_r6 + 0x18) > temp_f31) {
+            temp_f6 = *(f32 *)((s32)temp_r6 + 0xC) * temp_f8;
+            temp_f5 = *(f32 *)((s32)temp_r6 + 0x14) * temp_f8;
+            sp8 = temp_f6;
+            temp_f4 = (*(f32 *)((s32)temp_r6 + 0x10) * temp_f8) - temp_f7;
+            sp10 = temp_f5; spC = temp_f4;
+            *(f32 *)var_r4 = *(f32 *)temp_r6 + temp_f6 * temp_f1;
+            *(f32 *)((s32)var_r4 + 4) = *(f32 *)((s32)temp_r6 + 4) + temp_f4 * temp_f1;
+            *(f32 *)((s32)var_r4 + 8) = *(f32 *)((s32)temp_r6 + 8) + temp_f5 * temp_f1;
+            *(f32 *)((s32)var_r4 + 0xC) = temp_f6;
+            *(f32 *)((s32)var_r4 + 0x10) = temp_f4;
+            *(f32 *)((s32)var_r4 + 0x14) = temp_f5;
+            *(f32 *)((s32)var_r4 + 0x18) = *(f32 *)((s32)temp_r6 + 0x18);
+            var_r4 = (void *)((s32)var_r4 + 0x1C);
+        }
+        var_r3 += 0x1C; var_r5++;
+        goto loop_4;
+    }
+    *(s32 *)(arg0 + 4) = ((s32)var_r4 - *(s32 *)arg0) / 28;
 }
 
 #pragma pop
@@ -393,6 +524,163 @@ void fn_8028C92C(void *arg0) {
     ((s32 *)arg0)[1] = 0;
 }
 
+void fn_8028C938(s32 arg0) {
+    extern f32 fn_801E7E24(void);
+    extern f32 lbl_8056432C, lbl_805643B8, lbl_805643D0, lbl_805643D4;
+    f32 elapsed = fn_801E7E18() - lbl_805643D0;
+    f32 step = fn_801E7E24();
+    f32 scale = lbl_805643B8 * step;
+    f32 delta = lbl_805643D4 * scale;
+    s32 i = 0;
+    s32 offset = 0;
+    void *dst = *(void **)arg0;
+    void *src;
+    while (i < *(s32 *)(arg0 + 4)) {
+        src = (u8 *)*(void **)arg0 + offset;
+        if (*(f32 *)((u8 *)src + 0x24) > elapsed) {
+            f32 vx = *(f32 *)((u8 *)src + 0xC) * lbl_8056432C;
+            f32 vy = *(f32 *)((u8 *)src + 0x10) * lbl_8056432C - delta;
+            f32 vz = *(f32 *)((u8 *)src + 0x14) * lbl_8056432C;
+            *(f32 *)((u8 *)dst + 0x0) = *(f32 *)((u8 *)src + 0x0) + vx * step;
+            *(f32 *)((u8 *)dst + 0x4) = *(f32 *)((u8 *)src + 0x4) + vy * step;
+            *(f32 *)((u8 *)dst + 0x8) = *(f32 *)((u8 *)src + 0x8) + vz * step;
+            *(f32 *)((u8 *)dst + 0xC) = vx;
+            *(f32 *)((u8 *)dst + 0x10) = vy;
+            *(f32 *)((u8 *)dst + 0x14) = vz;
+            *(f32 *)((u8 *)dst + 0x18) = *(f32 *)((u8 *)src + 0x18);
+            *(f32 *)((u8 *)dst + 0x1C) = *(f32 *)((u8 *)src + 0x1C);
+            *(f32 *)((u8 *)dst + 0x20) = *(f32 *)((u8 *)src + 0x20);
+            *(f32 *)((u8 *)dst + 0x24) = *(f32 *)((u8 *)src + 0x24);
+            dst = (u8 *)dst + 0x28;
+        }
+        offset += 0x28;
+        i++;
+    }
+    *(s32 *)(arg0 + 4) = ((u8 *)dst - (u8 *)*(void **)arg0) / 0x28;
+}
+
+#pragma push
+#pragma processor 750
+#pragma use_lmw_stmw off
+#pragma scheduling invalid_target
+void fn_8028CA70(s32 arg0) {
+    extern f32 PSVECDotProduct(f32 *, f32 *);
+    extern f32 PSVECMag(f32 *);
+    extern f64 cos(f32);
+    extern f32 fn_801E7E18(void);
+    extern void fn_802C8BD0(s32);
+    extern void fn_802C8D74(void);
+    extern s32 fn_802C8DBC(s32);
+    extern void fn_802C8E00();
+    extern void fn_802C8E48(void);
+    extern void *fn_802C9A40(void);
+    extern f32 fn_802C9A4C(f32);
+    extern f64 sin(f32);
+    extern f32 lbl_8056432C, lbl_8056434C, lbl_80564358, lbl_805643D8, lbl_805643DC;
+    struct Stack { f32 out[3]; f32 diff[3]; s32 axisX, axisY, axisZ; f32 sp2C, sp30, sp34, sp38, sp3C, sp40, sp44, sp48, sp4C; } stack;
+    struct Axis { s32 x, y, z; };
+    struct Entry { f32 f[10]; };
+    f32 alphaScale, zero, one, threshold, time, saved, drawScale;
+    f32 temp_f0, temp_f0_2, temp_f1, temp_f1_2, temp_f1_3, temp_f1_4, temp_f1_5;
+    f32 temp_f22, temp_f23, temp_f24, temp_f25, temp_f2, temp_f2_2, temp_f2_3;
+    f32 temp_f3, temp_f3_2, temp_f3_3, temp_f3_4, temp_f4, temp_f4_2, temp_f6, temp_f6_2, temp_f6_3, temp_f6_4, temp_f9;
+    s32 temp_r30, temp_r3, temp_r3_3, temp_r4_2, var_r0, var_r28, var_r29;
+    s32 *temp_r27;
+    s32 firstCount = *(s32 *)(arg0 + 4);
+    if (firstCount >= 1) {
+        saved = fn_802C9A4C(*(f32 *)(arg0 + 0x10));
+        fn_802C8BD0(*(s32 *)(arg0 + 0xC));
+        temp_r3 = *(s32 *)(arg0 + 4);
+        if (fn_802C8DBC((temp_r3 * 4) - temp_r3) != 0) {
+            *(struct Axis *)&stack.axisX = *(struct Axis *)fn_802C9A40();
+            time = fn_801E7E18();
+            one = lbl_8056432C;
+            threshold = lbl_805643D8;
+            zero = lbl_8056434C;
+            alphaScale = lbl_805643DC;
+            drawScale = lbl_80564358;
+            var_r29 = 0;
+            var_r28 = 0;
+            goto check;
+        body:
+            temp_r27 = (s32 *)((u8 *)*(s32 *)arg0 + var_r28);
+            temp_f1 = time - *(f32 *)((u8 *)temp_r27 + 0x24);
+            stack.diff[0] = *(f32 *)((u8 *)temp_r27 + 0x18) * temp_f1;
+            stack.diff[1] = *(f32 *)((u8 *)temp_r27 + 0x1C) * temp_f1;
+            stack.diff[2] = *(f32 *)((u8 *)temp_r27 + 0x20) * temp_f1;
+            temp_f1_2 = PSVECMag(stack.diff);
+            if (temp_f1_2 > threshold) {
+                temp_f4 = one / temp_f1_2;
+                temp_f23 = temp_f4 * stack.diff[0];
+                temp_f22 = temp_f4 * stack.diff[1];
+                temp_f25 = temp_f4 * stack.diff[2];
+                temp_f24 = (f32)sin(temp_f1_2);
+                temp_f9 = (f32)cos(temp_f1_2);
+                temp_f0 = one - temp_f9;
+                temp_f3 = temp_f24 * temp_f25;
+                temp_f6 = temp_f0 * temp_f23;
+                temp_f4_2 = temp_f22 * temp_f6;
+                stack.sp2C = temp_f9 + (temp_f0 * (temp_f23 * temp_f23));
+                temp_f6_2 = temp_f25 * temp_f6;
+                temp_f2 = temp_f24 * temp_f22;
+                stack.sp30 = temp_f4_2 + temp_f3;
+                temp_f3_2 = temp_f25 * (temp_f0 * temp_f22);
+                temp_f0_2 = temp_f24 * temp_f23;
+                stack.sp38 = temp_f4_2 - temp_f3;
+                stack.sp34 = temp_f6_2 - temp_f2;
+                stack.sp3C = temp_f9 + (temp_f0 * (temp_f22 * temp_f22));
+                stack.sp40 = temp_f3_2 + temp_f0_2;
+                stack.sp44 = temp_f6_2 + temp_f2;
+                stack.sp48 = temp_f3_2 - temp_f0_2;
+                stack.sp4C = temp_f9 + (temp_f0 * (temp_f25 * temp_f25));
+            } else {
+                stack.sp2C = one;
+                stack.sp30 = zero;
+                stack.sp34 = zero;
+                stack.sp38 = zero;
+                stack.sp3C = one;
+                stack.sp40 = zero;
+                stack.sp44 = zero;
+                stack.sp48 = zero;
+                stack.sp4C = one;
+            }
+            temp_f1_3 = PSVECDotProduct(&stack.sp38, (f32 *)&stack.axisX);
+            var_r0 = 0xFF;
+            temp_r4_2 = (s32)(alphaScale * (temp_f1_3 * temp_f1_3));
+            temp_r3_3 = temp_r4_2 & ((-temp_r4_2 & ~temp_r4_2) >> 31);
+            if (temp_r3_3 >= 0xFF) goto skip_render;
+            var_r0 = temp_r3_3;
+            temp_r30 = (var_r0 << 24) | 0x00FFFFFF;
+            fn_802C8E00(temp_r30, 0, *(f32 *)temp_r27, *(f32 *)((u8 *)temp_r27 + 4), *(f32 *)((u8 *)temp_r27 + 8), lbl_8056434C, lbl_8056432C);
+            temp_f6_3 = stack.sp2C * drawScale;
+            temp_f2_2 = *(f32 *)((u8 *)temp_r27 + 4) + (stack.sp30 * drawScale);
+            temp_f1_4 = *(f32 *)temp_r27 + temp_f6_3;
+            temp_f3_3 = *(f32 *)((u8 *)temp_r27 + 8) + (stack.sp34 * drawScale);
+            stack.out[0] = temp_f1_4;
+            stack.out[1] = temp_f2_2;
+            stack.out[2] = temp_f3_3;
+            fn_802C8E00(temp_r30, 0, temp_f1_4, temp_f2_2, temp_f3_3, lbl_8056432C, lbl_8056432C, temp_f6_3);
+            temp_f6_4 = stack.sp44 * drawScale;
+            temp_f2_3 = *(f32 *)((u8 *)temp_r27 + 4) + (stack.sp48 * drawScale);
+            temp_f1_5 = *(f32 *)temp_r27 + temp_f6_4;
+            temp_f3_4 = *(f32 *)((u8 *)temp_r27 + 8) + (stack.sp4C * drawScale);
+            stack.out[0] = temp_f1_5;
+            stack.out[1] = temp_f2_3;
+            stack.out[2] = temp_f3_4;
+            fn_802C8E00(temp_r30, 1, temp_f1_5, temp_f2_3, temp_f3_4, lbl_8056434C, lbl_8056434C, temp_f6_4);
+        skip_render:
+            var_r28 += 0x28;
+            var_r29 += 1;
+        check:
+            if (var_r29 < *(s32 *)(arg0 + 4)) goto body;
+            fn_802C8E48();
+        }
+        fn_802C8D74();
+        fn_802C9A4C(saved);
+    }
+}
+#pragma scheduling on
+#pragma pop
 extern f32 lbl_805643E0;
 extern f32 lbl_805643E4;
 #pragma push
