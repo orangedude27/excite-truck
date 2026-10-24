@@ -18,3 +18,5 @@ void fn_80270A84(void) {
     fn_8002F53C(lbl_8049A218, fn_80270AE8, 0, 0x10, 4);
 }
 #pragma scheduling on
+#include <types.h>
+DECL_SECTION(".ctors") funcptr_t D_802ED498 = fn_80270A84;
