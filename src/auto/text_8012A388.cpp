@@ -3,6 +3,9 @@ extern "C" s32 lbl_8055DFFC;
 extern "C" const char lbl_8032AE60[];
 extern "C" const char lbl_8032ADF4[];
 extern "C" const char lbl_8032AE20[];
+extern "C" void fn_80128660(s32);
+extern "C" s32 fn_802E748C(s32, s32, void *);
+extern "C" s32 fn_802E2C20(void);
 extern "C" void fn_8002B0D8(char *);
 extern "C" char *fn_80029004(char *, int);
 extern "C" s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
@@ -560,10 +563,11 @@ extern "C" u8 lbl_805599D8;
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
 #pragma cplusplus reset
-void fn_8012BF28(void) {
+extern "C" void fn_8012BF28(void) {
     s32 paths[3], header[5], inner, size;
     s32 *pathPtr, *table;
     u32 i;
+    s32 handle;
     char filename[128], name[128], ch;
     char *src;
     s32 remaining;
@@ -577,7 +581,7 @@ void fn_8012BF28(void) {
     do {
         s32 opened = fn_802E3BB4(*pathPtr, filename, 0x80);
         if ((u32)(opened + 0x10000) != 0xFFFF) {
-            s32 handle = opened;
+            handle = opened;
             do {
                 *fn_80029004(filename, '.') = 0;
                 dst = filename; remaining = 0x80; goto scan_test_1;
