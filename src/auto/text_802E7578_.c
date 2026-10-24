@@ -21,7 +21,8 @@ struct Dummy_8055FFF0 {
     virtual void f4(void);
     virtual void f8(void);
     virtual void f12(s32);
-    virtual void f16(s32, s32, s32);
+          virtual void f16(s32, s32, s32);
+      virtual void f20(s32);
 };
 extern "C" void fn_802E759C(void) {
     if (lbl_8055FFF0) {
