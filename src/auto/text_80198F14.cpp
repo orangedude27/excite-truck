@@ -70,6 +70,14 @@ extern f32 lbl_805622E0;
 extern f32 lbl_805622D0;
 extern f32 lbl_8056231C, lbl_80562320, lbl_80562324, lbl_80562328, lbl_80562330, lbl_805622D4;
 extern s32 lbl_8055E5A0;
+extern "C" s32 fn_801CF080(s32, void*, void*, s32*, s32, f32);
+extern "C" void fn_8019A820(void*, void*, s32, s32, s32, f32);
+extern "C" s32 fn_801E9F08(void*, void*, void*, s32, s32, f32);
+extern "C" void fn_8017B4AC(void*, Vec*);
+extern "C" f32 fn_8019DF88(void*, f32*, void*, f32*, f32*, f32, f32);
+extern "C" void fn_801B34DC(void*, s32, Vec*, Vec*, Vec*, s32);
+extern "C" f32 PSVECMag(const Vec*);
+extern "C" f32 PSVECDotProduct(const Vec*, const Vec*);
 extern "C" void fn_8019AC44(void*, void*, void*, f32);
 inline void fn_8019AC44(f32* a, f32* b, f32 c) {}
 extern char lbl_803339B8;
