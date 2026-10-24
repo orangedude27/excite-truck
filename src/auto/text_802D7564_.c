@@ -331,7 +331,6 @@ void fn_802D9418(void) {
 
 extern void *lbl_8055FE28;
 extern void *lbl_8034C5B8;
-extern void *lbl_8034C4B0;
 extern void *fn_8012850C(void *, void *);
 void* fn_802D94DC(void) {
     return lbl_8055FE18;
@@ -373,6 +372,53 @@ void fn_802D9628(void *arg0, s32 arg1, s32 arg2, u8 arg3) {
       }
   }
 
+#pragma push
+#pragma use_lmw_stmw off
+int fn_802D972C(void *arg0, int arg1, int arg2) {
+    int mip;
+    int base;
+    int wrap;
+    unsigned int ysign, yoff, xsign, xoff, ysign2, yoff2, xsign2, xoff2;
+    int tile;
+    int pixel;
+    unsigned int value;
+    int doubled;
+    mip = GXGetTexObjMipMap((char *)arg0 + 0x24);
+    wrap = GXGetTexObjWrapS((char *)arg0 + 0x24);
+    GXGetTexObjWrapT((char *)arg0 + 0x24);
+    base = (int)GXGetTexObjFmt((char *)arg0 + 0x24) - 0x40000000;
+    if (mip == 0) {
+        ysign = (unsigned int)arg2 >> 31;
+        yoff = (arg2 << 29) - ysign;
+        xsign = (unsigned int)arg1 >> 31;
+        xoff = (arg1 << 29) - xsign;
+        pixel = (int)((((xoff << 3) | (xoff >> 29)) + xsign +
+                       ((((yoff << 3) | (yoff >> 29)) + ysign) * 8)) * 4) / 8;
+        tile = (arg1 / 8) + ((arg2 / 8) * (wrap / 8));
+        base += tile << 5;
+        if (!(arg1 & 1)) {
+            value = (*(unsigned char *)(base + pixel) >> 4) & 0xF;
+        } else {
+            value = *(unsigned char *)(base + pixel) & 0xF;
+        }
+        doubled = value | (value * 0x10);
+        return (doubled << 24) | ((doubled << 16) | doubled | (doubled << 8));
+    }
+    if (mip == 6) {
+        ysign2 = (unsigned int)arg2 >> 31;
+        yoff2 = (arg2 << 30) - ysign2;
+        xsign2 = (unsigned int)arg1 >> 31;
+        xoff2 = (arg1 << 30) - xsign2;
+        pixel = (int)((((xoff2 << 2) | (xoff2 >> 30)) + xsign2 +
+                       ((((yoff2 << 2) | (yoff2 >> 30)) + ysign2) * 4)) * 0x10) / 8;
+        tile = (arg1 / 4) + ((arg2 / 4) * (wrap / 4));
+        base += tile << 6;
+        value = *(unsigned short *)(base + pixel);
+        return (*(unsigned short *)(base + pixel + 0x20) & ~0xFFFF0000) | (value << 16);
+    }
+    return 0;
+}
+#pragma pop
 extern void DCFlushRange(void *, unsigned int);
 extern unsigned int GXGetTexBufferSize(unsigned short, unsigned short, int, int, int);
 extern void GXInitTexObj(void *, void *, unsigned short, unsigned short, int, int, int, unsigned int);
@@ -381,24 +427,21 @@ extern float lbl_80565018;
 extern float lbl_8056501C;
 
 void *fn_802D8C00(void *arg0, void *arg1) {
-    int w = *(int *)((char *)arg0 + 0x24);
-    int h = *(int *)((char *)arg0 + 0x28);
-    unsigned char *tex = *(unsigned char **)((char *)arg0 + 0x2C);
-    unsigned char *p = *(unsigned char **)(tex + 8);
-    int fmt = *(int *)((char *)arg0 + 0x20);
     void *obj;
-    int size, align;
-    int lod;
+    int h = *(int *)((char *)arg0 + 0x28);
+    int w = *(int *)((char *)arg0 + 0x24);
+    unsigned char *p;
+    int fmt, size, align, lod;
 
     obj = fn_802D8A84(arg0, arg1);
     *(unsigned char *)((char *)obj + 0xCC) = 1;
     GXGetTexBufferSize((unsigned short)w, (unsigned short)h, 0xE, 0, 1);
     size = w * h;
-    align = (size >> 31) + size;
-    align >>= 1;
+    p = *(unsigned char **)(*(unsigned char **)((char *)arg0 + 0x2C) + 8);
+    align = ((size >> 31) + size) >> 1;
     DCFlushRange(p, (unsigned int)align);
-    lod = ((fmt ^ 2) >> 1) - ((fmt ^ 2) & fmt);
-    lod >>= 31;
+    fmt = *(int *)((char *)arg0 + 0x20);
+    lod = (((fmt ^ 2) >> 1) - ((fmt ^ 2) & fmt)) >> 31;
     GXInitTexObj((char *)obj + 0x78, p, (unsigned short)w, (unsigned short)h, 0, 1, 1, (unsigned int)lod);
     if (lod != 0) {
         GXInitTexObjLOD((char *)obj + 0x78, 5, 1, 0, 1, 0, lbl_80565018, (float)(fmt - 1), lbl_8056501C);
