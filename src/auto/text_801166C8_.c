@@ -500,6 +500,7 @@ extern u32 lbl_80559944;
 extern u32 lbl_8041D608;
 extern u32 lbl_8055DED8;
 extern u8 lbl_802F6528[];
+extern void memset(void *, int, unsigned int);
 s32 *fn_8011770C(s32 *arg0, u32 arg1) {
     struct {
         u8 header[0x2C];
