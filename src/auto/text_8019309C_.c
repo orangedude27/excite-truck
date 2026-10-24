@@ -289,8 +289,8 @@ void fn_80193604(void *arg0, void *arg1, int arg2, void *arg3) {
     if (arg2 == 0x6D) *(u8 *)(obj + 0x2FE) = 0;
 }
 
-void fn_8019386C(void) {
-    fn_80193CE0();
+void fn_8019386C(void *arg0) {
+    fn_80193CE0(arg0);
 }
 
 void fn_80193870(void *arg0) {
@@ -451,9 +451,9 @@ void fn_80193CD4(void *arg0) {
     *(signed char *)((char *)arg0 + 0x2A5) = 1;
 }
 
-void fn_80193CE0(void) {
-    ((void (*)(void))(*(void (**)(void))(*(void **)0)))();
-    *(unsigned char *)0x2A5 = 0;
+void fn_80193CE0(void *arg0) {
+    ((void (*)(void *))(*(void **)((char *)*(void **)arg0 + 0x30)))(arg0);
+    *(u8 *)((char *)arg0 + 0x2A5) = 0;
 }
 
 #pragma dont_inline reset
