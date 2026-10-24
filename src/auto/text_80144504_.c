@@ -54,16 +54,27 @@ void fn_80144B54(void *dst, void *src) {
 }
 
 f32 fn_80144BD8(f32 farg0) {
-    if (farg0 < lbl_805615C8) {
-        return lbl_805615C8;
-    }
-    if (farg0 > lbl_805615B8) {
-        return lbl_805615B8;
-    }
+    f32 c4, cc;
+    if (farg0 < lbl_805615C8) return lbl_805615C8;
+    if (farg0 > lbl_805615B8) return lbl_805615B8;
     if (farg0 > lbl_805615BC) {
-        return (farg0 * farg0 * lbl_805615C4) + (farg0 * farg0 * farg0 * lbl_805615CC);
+        c4 = lbl_805615C4;
+        cc = lbl_805615CC;
+        cc *= farg0;
+        c4 *= farg0;
+        cc *= farg0;
+        c4 *= farg0;
+        farg0 *= cc;
+        return farg0 + c4;
     }
-    return (farg0 * farg0 * lbl_805615C4) - (farg0 * farg0 * farg0 * lbl_805615CC);
+    c4 = lbl_805615C4;
+    cc = lbl_805615CC;
+    cc *= farg0;
+    c4 *= farg0;
+    cc *= farg0;
+    c4 *= farg0;
+    farg0 *= cc;
+    return farg0 - c4;
 }
 
 void fn_80144C54(void *arg0) {
