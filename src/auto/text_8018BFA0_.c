@@ -243,7 +243,7 @@ void fn_8018CB3C(char *arg0) {
             world[0] += M2C_FIELD(arg0, float *, 0x60);
             world[1] = temp_f2_5 + M2C_FIELD(arg0, float *, 0x64);
             world[2] = temp_f1_2 + M2C_FIELD(arg0, float *, 0x68);
-            fn_8017B6D4(arg0, &velocity[0], &world[0]);
+            fn_8017B6D4(arg0, &velocity[0], &world[0], temp_f1_2, temp_f2_5);
             fn_8017B778(arg0, &force[0], &origin[0]);
             temp_f2_6 = force[0] * temp_f18;
             temp_f1_3 = (force[1] + temp_f17) * temp_f18;
