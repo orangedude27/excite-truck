@@ -938,7 +938,7 @@ extern "C" void *fn_8021B460(void *arg0, void *arg1, s32 arg2, s32 arg3) {
     void (* volatile setup)(void *, s32, s32, const char *, s32, s32, s32) = fn_8021B2B0;
     setup(arg0, *(s32 *)((u8 *)arg1 + 8), *(s32 *)((u8 *)arg1 + 0xC),
           (const char *)arg2, 8, arg3, *(s32 *)((u8 *)arg1 + 0x10));
-    *(void **)arg0 = &lbl_8033F180;
+    *(void **)arg0 = (void *)&lbl_8033F180;
     i = 11;
     do {
         *zp++ = 0;
@@ -1206,7 +1206,10 @@ extern "C" void fn_8021C478(void *arg0) {
 }
 
 extern "C" void fn_8021C6D0(void);
+#pragma push
+#pragma small_data off
 extern "C" void *lbl_8033F180;
+#pragma pop
 extern "C" void fn_8022EE98(void *);
 extern "C" void *lbl_8033E248[];
 extern "C" u8 lbl_8033E0BC[];
