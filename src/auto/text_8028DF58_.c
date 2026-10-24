@@ -414,7 +414,7 @@ int fn_8028F858(int arg0, int arg1) {
         fn_802CAC54(*(int *)(arg0 + 0xA4));
         value = *(int *)(arg0 + 0x8C);
         if (value != 0) fn_80128670(value - 0x10);
-        if (arg1 > 0) fn_80128668(arg0);
+        if (arg1 > 0) fn_80128668((void *)arg0);
     }
     return arg0;
 }
