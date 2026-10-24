@@ -22,6 +22,7 @@ extern void* fn_80131818(void*);
 extern void fn_80131820(void*);
 extern void fn_802E30C8(void*, ...);
 extern void fn_8022A858(int);
+typedef struct { unsigned int w[22]; } Cfg58;
 typedef struct CfgObj CfgObj;
 typedef struct CfgVTab {
     void* v0;
