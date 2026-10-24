@@ -16,7 +16,7 @@ extern "C" void fn_800D2DD4(void);
 extern "C" unsigned char lbl_8055DE90;
 extern "C" unsigned char lbl_8055DE94, lbl_8055DE95, lbl_8055DE96, lbl_8055DE97;
 extern "C" float lbl_80561150;
-extern "C" unsigned char lbl_8041D4D0;
+extern "C" unsigned char lbl_8041D4D0[];
 extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(unsigned int, unsigned int);
 extern "C" void GXSetFog(int, void *, unsigned char, unsigned char, float, float, float, float);
 extern "C" void GXSetTevSwapModeTable(int, int, int, int, int);
@@ -369,45 +369,18 @@ extern "C" int GetFont__Q36nw4hbm2ut10CharWriterCFv(void *arg0) {
 extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     int arg0_int = (int)arg0;
     const char *base = lbl_80328178;
-    unsigned char sp23;
-    unsigned char sp22;
-    unsigned char sp21;
-    unsigned char sp20;
-    unsigned char sp1F;
-    unsigned char sp1E;
-    unsigned char sp1D;
-    unsigned char sp1C;
-    unsigned char sp1B;
-    unsigned char sp1A;
-    unsigned char sp19;
-    unsigned char sp18;
-    unsigned char sp17;
-    unsigned char sp16;
-    unsigned char sp15;
-    unsigned char sp14;
-    unsigned char sp13;
-    unsigned char sp12;
-    unsigned char sp11;
-    unsigned char sp10;
-    unsigned char spF;
-    unsigned char spE;
-    unsigned char spD;
-    unsigned char spC;
-    unsigned char spB;
-    unsigned char spA;
-    unsigned char sp9;
-    unsigned char sp8;
+    unsigned char sp20[4], sp1C[4], sp18[4], sp14[4], sp10[4], spC[4], sp8[4];
     unsigned int temp_r30;
     unsigned int temp_r3;
     int temp_r3_3;
     unsigned int temp_r4;
-    int var_r10;
     int var_r5;
-    int var_r5_2;
     int var_r6;
     int var_r7;
     int var_r8;
     int var_r9;
+    int var_r10;
+    int var_r5_2;
     void **temp_r3_2;
 
     var_r5 = 1;
@@ -448,15 +421,15 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
     (*(int *)((signed char*)(&lbl_8041D4E0) + (0))) = 0xFF;
     (*(int *)((signed char*)(&lbl_8041D4E0) + (4))) = 0;
     if (((int) (*(int *)((signed char*)(arg0) + (0))) != 0) || ((unsigned int) ((*(int *)((signed char*)(arg0) + (4))) + 0x10000) != -1U)) {
-        sp20 = (unsigned char) (*(int *)((signed char*)(arg0) + (0)));
-        sp21 = (*(unsigned char *)((signed char*)(arg0) + (1)));
-        sp22 = (*(unsigned char *)((signed char*)(arg0) + (2)));
-        sp23 = (*(unsigned char *)((signed char*)(arg0) + (3)));
-        sp1C = (unsigned char) (*(int *)((signed char*)(arg0) + (4)));
-        sp1D = (*(unsigned char *)((signed char*)(arg0) + (5)));
-        sp1E = (*(unsigned char *)((signed char*)(arg0) + (6)));
-        sp1F = (*(unsigned char *)((signed char*)(arg0) + (7)));
-        SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color((unsigned int)&sp20, (unsigned int)&sp1C);
+        sp20[0] = (unsigned char) (*(int *)((signed char*)(arg0) + (0)));
+        sp20[1] = (*(unsigned char *)((signed char*)(arg0) + (1)));
+        sp20[2] = (*(unsigned char *)((signed char*)(arg0) + (2)));
+        sp20[3] = (*(unsigned char *)((signed char*)(arg0) + (3)));
+        sp1C[0] = (unsigned char) (*(int *)((signed char*)(arg0) + (4)));
+        sp1C[1] = (*(unsigned char *)((signed char*)(arg0) + (5)));
+        sp1C[2] = (*(unsigned char *)((signed char*)(arg0) + (6)));
+        sp1C[3] = (*(unsigned char *)((signed char*)(arg0) + (7)));
+        SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color((unsigned int)&sp20[0], (unsigned int)&sp1C[0]);
         return;
     }
     temp_r3_2 = (*(void ***)((signed char*)(arg0) + (0x48)));
@@ -464,19 +437,17 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
         temp_r3_3 = (*(int (**)())((signed char*)(*temp_r3_2) + (0x30)))();
         if (temp_r3_3 < 4) {
             if (temp_r3_3 < 2) {
-                if (temp_r3_3 < 0) {
-                    goto block_49;
-                }
+                if (temp_r3_3 >= 0) {
                 if ((signed char) lbl_8055DE90 == 0) {
                     *(int *)&lbl_8055DE94 = 0;
                     __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
                     lbl_8055DE90 = 1;
                 }
-                sp18 = (unsigned char) lbl_8055DE94;
-                sp19 = lbl_8055DE95;
-                sp1A = lbl_8055DE96;
-                sp1B = lbl_8055DE97;
-                GXSetFog(0, &sp18, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+                sp18[0] = (unsigned char) lbl_8055DE94;
+                sp18[1] = lbl_8055DE95;
+                sp18[2] = lbl_8055DE96;
+                sp18[3] = lbl_8055DE97;
+                GXSetFog(0, &sp18[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
                 GXSetTevSwapModeTable(0, 0, 1, 2, 3);
                 GXSetZTexture(0, 0x11, 0);
                 GXSetNumChans(1);
@@ -503,16 +474,18 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
                 GXSetVtxDesc(0xD, 1);
                 return;
             }
+                goto block_49;
+            }
             if ((signed char) lbl_8055DE90 == 0) {
                 *(int *)&lbl_8055DE94 = 0;
                 __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
                 lbl_8055DE90 = 1;
             }
-            sp14 = (unsigned char) lbl_8055DE94;
-            sp15 = lbl_8055DE95;
-            sp16 = lbl_8055DE96;
-            sp17 = lbl_8055DE97;
-            GXSetFog(0, &sp14, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+            sp14[0] = (unsigned char) lbl_8055DE94;
+            sp14[1] = lbl_8055DE95;
+            sp14[2] = lbl_8055DE96;
+            sp14[3] = lbl_8055DE97;
+            GXSetFog(0, &sp14[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
             GXSetTevSwapModeTable(0, 0, 1, 2, 3);
             GXSetZTexture(0, 0x11, 0);
             GXSetNumChans(1);
@@ -542,11 +515,11 @@ extern "C" void SetupGX__Q36nw4hbm2ut10CharWriterFv(void *arg0) {
                 __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
                 lbl_8055DE90 = 1;
             }
-            sp10 = (unsigned char) lbl_8055DE94;
-            sp11 = lbl_8055DE95;
-            sp12 = lbl_8055DE96;
-            sp13 = lbl_8055DE97;
-            GXSetFog(0, &sp10, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+            sp10[0] = (unsigned char) lbl_8055DE94;
+            sp10[1] = lbl_8055DE95;
+            sp10[2] = lbl_8055DE96;
+            sp10[3] = lbl_8055DE97;
+            GXSetFog(0, &sp10[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
             GXSetTevSwapModeTable(0, 0, 1, 2, 3);
             GXSetZTexture(0, 0x11, 0);
             GXSetNumChans(1);
@@ -577,11 +550,11 @@ block_49:
             __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
             lbl_8055DE90 = 1;
         }
-        spC = (unsigned char) lbl_8055DE94;
-        spD = lbl_8055DE95;
-        spE = lbl_8055DE96;
-        spF = lbl_8055DE97;
-        GXSetFog(0, &spC, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+        spC[0] = (unsigned char) lbl_8055DE94;
+        spC[1] = lbl_8055DE95;
+        spC[2] = lbl_8055DE96;
+        spC[3] = lbl_8055DE97;
+        GXSetFog(0, &spC[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
         GXSetTevSwapModeTable(0, 0, 1, 2, 3);
         GXSetZTexture(0, 0x11, 0);
         GXSetNumChans(1);
@@ -610,11 +583,11 @@ block_49:
         __register_global_object(&lbl_8055DE94, &fn_800D2DD4, &lbl_8041D4D0);
         lbl_8055DE90 = 1;
     }
-    sp8 = (unsigned char) lbl_8055DE94;
-    sp9 = lbl_8055DE95;
-    spA = lbl_8055DE96;
-    spB = lbl_8055DE97;
-    GXSetFog(0, &sp8, lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
+    sp8[0] = (unsigned char) lbl_8055DE94;
+    sp8[1] = lbl_8055DE95;
+    sp8[2] = lbl_8055DE96;
+    sp8[3] = lbl_8055DE97;
+    GXSetFog(0, &sp8[0], lbl_8055DE96, lbl_8055DE95, lbl_80561150, lbl_80561150, lbl_80561150, lbl_80561150);
     GXSetTevSwapModeTable(0, 0, 1, 2, 3);
     GXSetZTexture(0, 0x11, 0);
     GXSetNumChans(1);
@@ -1179,7 +1152,7 @@ extern "C" void fn_800D2DD4(void);
 extern "C" unsigned char lbl_8055DE90;
 extern "C" unsigned char lbl_8055DE94, lbl_8055DE95, lbl_8055DE96, lbl_8055DE97;
 extern "C" float lbl_80561150;
-extern "C" unsigned char lbl_8041D4D0;
+extern "C" unsigned char lbl_8041D4D0[];
 extern "C" void SetupGXWithColorMapping__Q36nw4hbm2ut10CharWriterFQ36nw4hbm2ut5ColorQ36nw4hbm2ut5Color(unsigned int arg0, unsigned int arg1) {
     unsigned char sp8[4], spc[4], sp10[4];
     unsigned char r, g, b;
