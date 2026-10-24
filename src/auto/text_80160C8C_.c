@@ -1081,7 +1081,7 @@ unsigned char fn_80163F74(void *arg0) {
 }
 
 extern void fn_802E30C8(const char *, const char *);
-extern void fn_802C77F0(f32 *);
+extern void fn_802C77F0(s32, f32 *);
 extern s32 fn_80207848(void *, s32);
 extern void *fn_801399FC(void);
 extern void PSVECNormalize(f32 *, f32 *);
@@ -1161,7 +1161,7 @@ extern "C" void fn_80163F7C(void *arg0) {
                         s32 prev = (i - 1) % n;
                         dx = *((f32 *)((u8 *)points + next * 8 + 4)) - *((f32 *)((u8 *)points + prev * 8 + 4));
                         dy = *((f32 *)((u8 *)points + next * 8)) - *((f32 *)((u8 *)points + prev * 8));
-                        score = dy * dy + dx * dx;
+                        score = dx * dx + dy * dy;
                         if (score > best) {
                             best = score;
                             bestIndex = i;
