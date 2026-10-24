@@ -1,9 +1,6 @@
 #include "revolution/BTE/stack/include/btm_api.h"
 #include "revolution/BTE/stack/btm/btm_int.h"
 #include "revolution/BTE/gki/common/gki.h"
-
-struct ETCharWriterSourceLayout { u8 bytes00[0x20]; s32 words20[8]; u8 bytes40[4]; f32 f44; s32 word48; f32 f4c, f50; s32 words54[3]; };
-struct ETCharWriterCopyLayout { u8 bytes00[0x20]; s32 words20[8]; u8 bytes40[4]; f32 f44; s32 word48; f32 f4c, f50; s32 words54[3]; };
 extern "C" const char lbl_80329530[];
 extern f32 lbl_80561178, lbl_80561188;
 // Code of main that had no source file yet: decomp.wtf gave it this one.
