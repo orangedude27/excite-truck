@@ -304,13 +304,13 @@ extern "C" void fn_80298A48(void) {
 
 extern "C" void* fn_80298A4C(void* arg0, int arg1) {
     if (arg0 != 0) {
-        int* p = (int*)arg0;
-        if (p[2]) {
-            fn_802976DC();
+        void **p = (void **)arg0;
+        if (p[2] != 0) {
+            ((void (*)(void *))fn_802976DC)(p[2]);
             p[2] = 0;
         }
-        fn_8028E398(*(void**)(p + 1));
-        if (p[0]) fn_80128670(p[0] - 0x10);
+        fn_8028E398(p[1]);
+        if (p[0] != 0) fn_80128670((int)p[0] - 0x10);
         p[0] = 0;
         if (arg1 > 0) fn_80128668(arg0);
     }
