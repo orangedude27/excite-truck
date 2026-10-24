@@ -887,6 +887,7 @@ extern "C" void fn_8021B224(void *arg0) {
     }
 }
 
+#pragma dont_inline fn_8021B2B0
 extern "C" void fn_8021B2B0(void *arg0, s32 arg1, s32 arg2, const char *arg3, s32 arg4, s32 arg5, s32 arg6) {
     fn_80219568(arg0, arg1, arg2, arg6, arg4, 0, 0, arg5);
     *(s32 *)((u8 *)arg0 + 0x254) = (s32)arg3;
@@ -925,9 +926,69 @@ extern "C" void* __dt__Q46nw4hbm3snd6detail22DisposeCallbackManagerFv_8021B404(
 }
 
 extern "C" void *fn_8021B460(void *arg0, void *arg1, s32 arg2, s32 arg3) {
-    *(s32 *)((u8 *)arg0 + 0x36C) = *(s32 *)((u8 *)arg1 + 4) >> 31;
+    volatile u32 zeros[22];
+    u8 parms[0x3C];
+    f32 matrix[12], matrix2[12];
+    f32 vector[3], vector2[3], transformed[3];
+    s32 i, made;
+    void (* volatile setup)(void *, s32, s32, const char *, s32, s32, s32) = fn_8021B2B0;
+    setup(arg0, *(s32 *)((u8 *)arg1 + 8), *(s32 *)((u8 *)arg1 + 0xC),
+          (const char *)arg2, 8, arg3, *(s32 *)((u8 *)arg1 + 0x10));
+    *(void **)arg0 = lbl_8033F180;
+    for (i = 0; i < 22; i++) zeros[i] = 0;
+    *(u8 *)((u8 *)arg0 + 0x36C) = (u8)((u32)*(s32 *)((u8 *)arg1 + 4) >> 31);
+    *(void **)(parms + 0) = (u8 *)arg1 + 0x20;
+    *(f32 *)(parms + 4) = *(f32 *)((u8 *)arg1 + 0x1C);
+    *(s32 *)(parms + 8) = *(s32 *)((u8 *)arg1 + 4);
+    *(s32 *)(parms + 0xC) = *(s32 *)((u8 *)arg1 + 0x90);
+    *(s32 *)(parms + 0x10) = *(s32 *)((u8 *)arg1 + 0x90);
+    *(s32 *)(parms + 0x1C) = *(s32 *)((u8 *)arg1 + 0x84);
+    *(s32 *)(parms + 0x28) = *(s32 *)((u8 *)arg1 + 0x94);
+    *(s32 *)(parms + 0x2C) = *(s32 *)((u8 *)arg1 + 0x94);
+    *(s32 *)(parms + 0x38) = *(s32 *)((u8 *)arg1 + 0x84);
+    made = fn_8022A86C(parms);
+    *(s32 *)((u8 *)arg0 + 0x368) = made;
+    *(s32 *)((u8 *)arg0 + 0x250) = made;
     fn_80219718(arg0);
-    *(s32 *)((u8 *)arg0 + 0x250) = *(s32 *)((u8 *)arg1 + 0x90);
+    matrix[0]=lbl_805634A4; matrix[1]=lbl_805634A8; matrix[2]=lbl_805634A8; matrix[3]=lbl_805634A8;
+    matrix[4]=lbl_805634A4; matrix[5]=lbl_805634A8; matrix[6]=lbl_805634A8; matrix[7]=lbl_805634A8;
+    matrix[8]=lbl_805634A4; matrix[9]=lbl_805634A8; matrix[10]=lbl_805634A8; matrix[11]=lbl_805634A8;
+    vector[0]=(f32)*(s32 *)((u8 *)arg1+8)-lbl_805634F0;
+    vector[1]=lbl_805634F4-(f32)*(s32 *)((u8 *)arg1+0xC);
+    vector[2]=0.0f;
+    transformed[0]=matrix[0]*vector[0]+matrix[1]*vector[1]+matrix[2]*vector[2];
+    transformed[1]=matrix[4]*vector[0]+matrix[5]*vector[1]+matrix[6]*vector[2];
+    transformed[2]=matrix[8]*vector[0]+matrix[9]*vector[1]+matrix[10]*vector[2];
+    *(f32 *)((u8 *)arg0+0x68)=lbl_805634A4;
+    *(f32 *)((u8 *)arg0+0x6C)=lbl_805634A8; *(f32 *)((u8 *)arg0+0x70)=lbl_805634A8;
+    *(f32 *)((u8 *)arg0+0x74)=lbl_805634A8; *(f32 *)((u8 *)arg0+0x78)=lbl_805634A4;
+    *(f32 *)((u8 *)arg0+0x7C)=lbl_805634A8; *(f32 *)((u8 *)arg0+0x80)=lbl_805634A8;
+    *(f32 *)((u8 *)arg0+0x84)=lbl_805634A8; *(f32 *)((u8 *)arg0+0x88)=lbl_805634A4;
+    *(f32 *)((u8 *)arg0+0x8C)=lbl_805634A8+transformed[0];
+    *(f32 *)((u8 *)arg0+0x90)=lbl_805634A8+transformed[1];
+    *(f32 *)((u8 *)arg0+0x94)=lbl_805634A8+transformed[2];
+    memcpy(vector2,(u8 *)arg1+0xA4,4);
+    memcpy(vector2+1,(u8 *)arg1+0xA8,4);
+    memcpy(vector2+2,(u8 *)arg1+0xAC,4);
+    if(vector2[0]==lbl_805634A8 && vector2[1]==lbl_805634A8 && vector2[2]==lbl_805634A8) {
+        *(s32 *)((u8 *)arg0+0x370)=0;
+    } else {
+        matrix2[0]=lbl_805634A8; matrix2[1]=lbl_805634A4; matrix2[2]=lbl_805634A8; matrix2[3]=lbl_805634A8;
+        matrix2[4]=lbl_805634A4; matrix2[5]=lbl_805634A8; matrix2[6]=lbl_805634A8; matrix2[7]=lbl_805634A8;
+        matrix2[8]=lbl_805634A4; matrix2[9]=lbl_805634A8; matrix2[10]=lbl_805634A8; matrix2[11]=lbl_805634A8;
+        vector[0]=-vector[0]; vector[1]=-vector[1];
+        fn_80015A20(matrix2,vector2,(s32)(vector2[0]*lbl_805634F8),
+                    vector2[0]*lbl_805634F8,vector2[1]*lbl_805634F8,vector2[2]*lbl_805634F8);
+        fn_80015B20(matrix,matrix2,matrix);
+        vector[0]=matrix[0]*vector[0]+matrix[1]*vector[1];
+        vector[1]=matrix[4]*vector[0]+matrix[5]*vector[1];
+        vector[2]=matrix[8]*vector[0]+matrix[9]*vector[1];
+        *(f32 *)((u8 *)arg0+0x8C)+=vector[0]; *(f32 *)((u8 *)arg0+0x90)+=vector[1];
+        *(f32 *)((u8 *)arg0+0x94)+=vector[2];
+        *(s32 *)((u8 *)arg0+0x370)=((s32 (*)(f32 *,f32,f32,f32,f32))fn_8022EDE4)(
+            (f32 *)((u8 *)arg0+0x68),lbl_805634A4,*(f32 *)((u8 *)arg0+0x90),
+            *(f32 *)((u8 *)arg0+0x8C),*(f32 *)((u8 *)arg0+0x8C));
+    }
     return arg0;
 }
 
@@ -2443,7 +2504,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
         if (self->flag == 0) {
             s32 left = self->x + 1;
             s32 top = self->y;
-            f32 scale = (f32)(self->end - top) / (f32)childBase;
+            register f32 scale = (f32)(self->end - top) / (f32)childBase;
             s32 scroll = ((Vf78 *)arg0)->get();
             s32 right = self->x + scroll - 1;
             child = self->child;
@@ -2468,7 +2529,7 @@ extern "C" void fn_80221544(void *arg0, s32 arg1) {
         } else {
             s32 scroll = ((Vf78 *)arg0)->get();
             child = self->child;
-            f32 scale = (f32)scroll / (f32)childBase;
+            register f32 scale = (f32)scroll / (f32)childBase;
             s32 left = self->x + (s32)(scale * (f32)child->offset) + 5;
             s32 right = self->x + (s32)(scale * (f32)(child->offset + child->length)) - 5;
             s32 top = self->y + 1;
