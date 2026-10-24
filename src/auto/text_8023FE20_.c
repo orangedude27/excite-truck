@@ -3,6 +3,8 @@
 
 typedef signed int s32;
 typedef unsigned char u8;
+extern int fn_80131234(void *);
+extern void *fn_8027DB40(s32);
 extern void *fn_8001668C(void *, s32);
 extern void *fn_80016BC8(void *, s32);
 extern void *fn_80018A8C(void *, s32, s32 *, s32);
@@ -806,13 +808,21 @@ off_child_check:
 
 extern s32 lbl_8055F1F8;
 extern s32 fn_802E8504(s32);
+#pragma cplusplus on
+extern "C" s32 lbl_8055F1F8;
+extern "C" s32 fn_802E8504(s32);
+extern "C" u8 *fn_802E85B8(s32);
+extern "C" void fn_80214A9C(s32);
+extern "C" void fn_80214AF0(s32);
+extern "C" void fn_802E317C(char *, ...);
 #pragma optimize_for_size off
 #pragma use_lmw_stmw off
 #pragma scheduling invalid_target
-#pragma dont_inline fn_802411D4
-void fn_80242B1C(void *arg0) {
+#pragma dont_inline on
+extern "C" void fn_80242B1C(void *arg0) {
     unsigned int refreshIndex;
-    s32 outer, i, n, selected, selectedValue, current, previous;
+    unsigned int outer;
+    s32 i, n, selected, selectedValue, current, previous;
     s32 modeA, modeB, mode;
     s32 tick;
     u8 *slot, *base, *widget, *entry, *child, *list;
@@ -821,7 +831,7 @@ void fn_80242B1C(void *arg0) {
 
     tick = lbl_8055F1F8 + 1;
     lbl_8055F1F8 = tick;
-    if (tick % 10 == 0) {
+    if (tick - (tick / 10) * 10 == 0) {
         base = (u8 *)arg0;
         slot = base + 0x18;
         refreshIndex = 0;
@@ -860,7 +870,6 @@ void fn_80242B1C(void *arg0) {
                     } while (c != 0);
                 }
 
-                selectedValue = **(s32 **)(widget + 0x34);
                 entry = widget;
                 i = 0;
                 goto init_child_check;
@@ -868,7 +877,7 @@ init_child_body:
                 child = *(u8 **)(entry + 0x18);
                 *(u8 *)child = (*(u8 *)(widget + 0x38) != 0 &&
                                 i == *(s32 *)(widget + 0x30));
-                *(s32 *)(child + 4) = selectedValue;
+                *(s32 *)(child + 4) = **(s32 **)(widget + 0x34);
                 entry += 4;
                 i++;
 init_child_check:
@@ -905,7 +914,7 @@ mode_done:
     }
 
     base = (u8 *)arg0 + 0x18;
-    for (outer = 0; outer < 2; outer++, base += 0x20) {
+    for (outer = 0; outer < 2U; outer++, base += 0x20) {
         current = *(s32 *)(base + 0x1C);
         previous = *(s32 *)(base + 0x18);
         if (current != previous) {
@@ -926,23 +935,17 @@ mode_done:
                 list = *(u8 **)base;
                 *(u8 *)(list + 0x38) = 1;
                 entry = list;
-                selected = *(s32 *)(list + 0x30);
-                selectedValue = **(s32 **)(list + 0x34);
                 i = 0;
                 goto on_child_check;
 on_child_body:
                 child = *(u8 **)(entry + 0x18);
-                *(u8 *)child = (*(u8 *)(list + 0x38) != 0 && i == selected);
-                *(s32 *)(child + 4) = selectedValue;
+                *(u8 *)child = (*(u8 *)(list + 0x38) != 0 &&
+                                i == *(s32 *)(list + 0x30));
+                *(s32 *)(child + 4) = **(s32 **)(list + 0x34);
                 entry += 4;
                 i++;
 on_child_check:
                 if (i < *(volatile s32 *)(list + 0x2C)) goto on_child_body;
-                if (outer != 0 && current == 2) {
-                    fn_80214A9C(*(s32 *)(base + 0x10));
-                } else {
-                    fn_80214AF0(*(s32 *)(base + 0x10));
-                }
                 break;
             case 4:
                 fn_80214A9C(*(s32 *)(base + 4));
@@ -986,6 +989,7 @@ off_child_check:
         lbl_8055F200 = 0;
     }
 }
+#pragma dont_inline reset
 #pragma scheduling on
 #pragma use_lmw_stmw reset
 #pragma optimize_for_size on
