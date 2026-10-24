@@ -154,7 +154,13 @@ extern void fn_802E30C8(const char*, ...);
 extern s32 fn_80138BA0(s32, s32);
 extern char lbl_8032E270[];
 extern char lbl_8032E2AC[];
+#pragma push
+#pragma scheduling invalid_target
 s32 fn_801563BC(s32 arg0, void* arg1) {
+    struct Obj {
+        virtual void v0();
+        virtual s32 get(s32);
+    };
     char buffer[0x40];
     s32 result;
     fn_801562BC(buffer, 0x40, arg0, 0);
@@ -166,16 +172,14 @@ s32 fn_801563BC(s32 arg0, void* arg1) {
     }
     if (result == 0) {
         fn_802E30C8(lbl_8032E2AC, buffer);
-        fn_80156248(buffer, 0x40);
-        result = fn_80138968(buffer);
+        result = fn_80138968((void *)fn_80156248(buffer, 0x40));
     } else {
-        void** vtable = *(void***)arg1;
-        s32 value = ((s32 (*)(void*, s32))vtable[3])(arg1, 0);
+        s32 value = ((Obj *)arg1)->get(0);
         fn_80138BA0(result, value);
     }
     return result;
 }
-
+#pragma pop
 extern "C" void *fn_801284F8(s32, const char *);
 extern "C" void fn_8012E81C(void *);
 extern "C" void fn_802E317C(const char *, ...);
@@ -217,7 +221,7 @@ extern "C" void fn_801564B0(void) {
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
         virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20(); virtual void v21(); virtual void v22(); virtual void v23();
+        virtual void v20(); virtual void v21();
         virtual s32 valid(s32);
     };
     struct TextManager {
@@ -231,12 +235,11 @@ extern "C" void fn_801564B0(void) {
 
     u8 path[0x40];
     char input[0x10], text[0x20];
-    register void *helper;
-    void *resource;
-    void *wrapper;
-    register Reader *reader;
-    register Config *config;
     register u8 *base = lbl_8032E238;
+    register void *helper;
+    Config *resource;
+    register Reader *reader;
+    void *wrapper;
 
     fn_8012E81C(base + 0xAC);
     helper = fn_801284F8(8, (const char *)&lbl_80559FD0);
@@ -250,16 +253,15 @@ extern "C" void fn_801564B0(void) {
 
     reader = ((Reader *)(long)fn_8015621C())->open((const char *)base + 0xD8);
     if (reader != 0) {
-        config = (Config *)fn_801284F8(0x124, (const char *)&lbl_80559FD4);
-        resource = config;
-        if (config != 0) {
-            config->vtable = lbl_8032E424;
-            config->entries = (Entry *)((u8 *)config + 0x10);
-            config->capacity = 0x10;
-            config->count = 0;
-            config->objects = (void **)((u8 *)config + 0x9C);
-            config->objectCapacity = 0x10;
-            config->objectCount = 0;
+        resource = (Config *)fn_801284F8(0x124, (const char *)&lbl_80559FD4);
+        if (resource != 0) {
+            resource->vtable = lbl_8032E424;
+            resource->entries = (Entry *)((u8 *)resource + 0x10);
+            resource->capacity = 0x10;
+            resource->count = 0;
+            resource->objects = (void **)((u8 *)resource + 0x9C);
+            resource->objectCapacity = 0x10;
+            resource->objectCount = 0;
             const char *format = (const char *)&lbl_80559FD8;
             s32 line = 1;
             const char *suffix = (const char *)&lbl_80559FE8;
@@ -268,21 +270,29 @@ extern "C" void fn_801564B0(void) {
                 char *result = reader->read(input, 0);
                 if (result == 0)
                     break;
-                if (config->count + 1 > config->capacity)
+                if (resource->count + 1 > resource->capacity)
                     break;
-                s32 oldCount = config->count;
-                Entry *entry = &config->entries[oldCount];
-                config->count = oldCount + 1;
+                s32 oldCount = resource->count;
+                Entry *entry = &resource->entries[oldCount];
+                resource->count = oldCount + 1;
                 entry->id = fn_801563BC((s32)result, helper);
 
                 char *src = input;
-                char *dst = text;
                 s32 remaining = 0x20;
-                for (;;) {
-                    u8 c = *src++;
+                char *dst = text;
+                {
+                    u8 c;
+                    goto copy_body;
+                copy_count:
+                    if (--remaining > 0) goto copy_body;
+                    dst[-1] = 0;
+                    goto copy_done;
+                copy_body:
+                    c = *src++;
                     *dst++ = c;
-                    if ((s8)c == 0) break;
-                    if (--remaining <= 0) { dst[-1] = 0; break; }
+                    if ((s8)c != 0) goto copy_count;
+                copy_done:
+                    ;
                 }
 
                 dst = text;
@@ -290,13 +300,20 @@ extern "C" void fn_801564B0(void) {
                 do { remaining--; dst++; } while ((s8)*dst != 0);
                 if (remaining > 0) {
                     src = (char *)suffix;
-                    do {
-                        u8 c = *src++;
+                    {
+                        u8 c;
+                        goto suffix_body;
+                    suffix_count:
+                        if (--remaining > 0) goto suffix_body;
+                        dst[-1] = 0;
+                        goto suffix_done;
+                    suffix_body:
+                        c = *src++;
                         *dst++ = c;
-                        if ((s8)c == 0) break;
-                        remaining--;
-                        if (remaining <= 0) { dst[-1] = 0; break; }
-                    } while (1);
+                        if ((s8)c != 0) goto suffix_count;
+                    suffix_done:
+                        ;
+                    }
                 }
 
                 s8 kindChar = (s8)*reader->read(text, (const char *)&lbl_80559FC0);
@@ -308,37 +325,36 @@ extern "C" void fn_801564B0(void) {
                 }
                 entry->kind = category;
             }
-            if (config->count == 0)
+            if (resource->count == 0)
                 fn_802E317C((const char *)base + 0xE8);
 
             IndexReader *list = (IndexReader *)reader->open((const char *)base + 0x128);
             if (list != 0) {
                 s32 index = 0;
                 do {
-                    config->objects[config->objectCount++] = fn_801399FC();
+                    resource->objects[resource->objectCount++] = fn_801399FC();
                     index++;
                     if (list->valid(index) == 0) break;
-                } while (config->objectCount + 1 <= config->objectCapacity);
+                } while (resource->objectCount + 1 <= resource->objectCapacity);
             }
 
-            config->value0 = reader->value((const char *)base + 0x144, lbl_80561738);
-            config->value1 = reader->value((const char *)base + 0x154, lbl_8056173C);
-            ((void (*)(const char *, s32, const char *, s32, const char *, f32, f32))fn_802E30C8)(
+            resource->value0 = reader->value((const char *)base + 0x144, lbl_80561738);
+            resource->value1 = reader->value((const char *)base + 0x154, lbl_8056173C);
+            fn_802E30C8(
                 (const char *)base + 0x168,
-                config->count, config->count == 1 ? (const char *)&lbl_80559FC0 : (const char *)&lbl_80559FF0,
-                config->objectCount, config->objectCount == 1 ? (const char *)&lbl_80559FC0 : (const char *)&lbl_80559FF0,
-                config->value0, config->value1);
-            ((ConfigVtable *)config)->dispose();
+                resource->count, resource->count == 1 ? (const char *)&lbl_80559FC0 : (const char *)&lbl_80559FF0,
+                resource->objectCount, resource->objectCount == 1 ? (const char *)&lbl_80559FC0 : (const char *)&lbl_80559FF0,
+                resource->value0, resource->value1);
+            ((ConfigVtable *)resource)->dispose();
         }
     } else {
-        Helper *fallback = (Helper *)fn_801284F8(8, (const char *)&lbl_80559FD4);
-        resource = fallback;
-        if (fallback != 0) {
-            fallback->vtable = lbl_8032E448;
+        resource = (Config *)fn_801284F8(8, (const char *)&lbl_80559FD4);
+        if (resource != 0) {
+            resource->vtable = lbl_8032E448;
             TextManager *textManager = (TextManager *)fn_8015621C();
             char *value = textManager->get((const char *)base, (const char *)&lbl_80559FC0);
             value = textManager->get((const char *)base + 0x1A0, value);
-            fallback->id = fn_801563BC((s32)value, helper);
+            ((Helper *)resource)->id = fn_801563BC((s32)value, helper);
         }
     }
 
