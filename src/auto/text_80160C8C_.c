@@ -11,6 +11,13 @@ extern void fn_80176734(void);
 extern s32 fn_80161C38(void);
 
 #pragma cplusplus on
+struct Obj_80164CDC {
+    virtual void f0();
+    virtual void f1(void *, s32, s32);
+};
+#pragma cplusplus off
+
+#pragma cplusplus on
 struct Dummy_80163550 {
     virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
     virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7(); virtual s32 f8();
