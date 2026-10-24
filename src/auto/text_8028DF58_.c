@@ -381,6 +381,16 @@ void fn_8028F5A0(int arg0, int arg1) {
 void fn_8028F5A4(void) {
 }
 
+extern void fn_802916E4(void);
+void *__dt__Q34nw4r2ef6EffectFv_8028F5A8(void *arg0, int arg1) {
+    if (arg0) {
+        *(void **)arg0 = lbl_803490D4;
+        fn_802916E4();
+        if (arg1 > 0) fn_80128668(arg0);
+    }
+    return arg0;
+}
+
 extern double fn_8002EFB4(double, double);
 extern float lbl_80564424, lbl_80564430, lbl_80564434, lbl_80564438;
 extern double lbl_80564428;
