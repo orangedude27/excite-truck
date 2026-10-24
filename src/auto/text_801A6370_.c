@@ -121,9 +121,9 @@ void fn_801A69F4(void *arg0, float *arg1) {
     *(float *)(p + 0x120) = out1[2];
 }
 
-extern void fn_801E9DC4(short *, void *, float, float, float, float, float, float, float, float, float, float, float, float);
+extern void fn_801E9DC4(void *);
 void fn_801A6C14(void *arg0) {
-    short sp54;
+    struct { float matrix[9]; float vec[3]; float zero[3]; int count; short tag; } data;
     int sp50;
     float sp4C;
     float sp48;
@@ -139,7 +139,7 @@ void fn_801A6C14(void *arg0) {
     float sp20;
     float sp1C;
     float sp18;
-    float sp14[9];
+
     float sp10;
     float spC;
     float sp8;
@@ -172,7 +172,7 @@ void fn_801A6C14(void *arg0) {
     void *temp_r4_4;
     void *temp_r4_5;
 
-    sp54 = -1;
+    data.tag = -1;
     temp_r4 = M2C_FIELD(arg0, void **, 0x2700);
     temp_f8 = M2C_FIELD(temp_r4, float *, 0x2A);
     temp_f2 = M2C_FIELD(temp_r4, float *, 0x2E);
@@ -186,35 +186,35 @@ void fn_801A6C14(void *arg0) {
     temp_f1_2 = temp_f1 * temp_f11;
     temp_f10 = temp_f7 * temp_f3;
     temp_f9 = temp_f2 * temp_f11;
-    sp14[0] = lbl_8056242C - (temp_f4 + temp_f1_2);
+    data.matrix[0] = lbl_8056242C - (temp_f4 + temp_f1_2);
     temp_f2_2 = temp_f9 + temp_f10;
     temp_f10_2 = temp_f7 * temp_f12;
     temp_f6 = temp_f8 * temp_f11;
     temp_f9_2 = temp_f7 * temp_f11;
-    sp14[4] = lbl_8056242C - (temp_f5 + temp_f1_2);
+    data.matrix[4] = lbl_8056242C - (temp_f5 + temp_f1_2);
     temp_f7_2 = temp_f8 * temp_f12;
     temp_f5_2 = temp_f6 + temp_f10_2;
     temp_f3_2 = temp_f6 - temp_f10_2;
     temp_f6_2 = temp_f7_2 - temp_f9_2;
-    sp14[7] = temp_f9 - temp_f10;
+    data.matrix[7] = temp_f9 - temp_f10;
     temp_f4_2 = temp_f7_2 + temp_f9_2;
-    sp14[6] = temp_f5_2;
-    sp14[3] = temp_f6_2;
-    sp14[1] = temp_f4_2;
-    sp14[2] = temp_f3_2;
-    sp14[5] = temp_f2_2;
-    sp14[8] = lbl_8056242C - (temp_f5 + temp_f4);
+    data.matrix[6] = temp_f5_2;
+    data.matrix[3] = temp_f6_2;
+    data.matrix[1] = temp_f4_2;
+    data.matrix[2] = temp_f3_2;
+    data.matrix[5] = temp_f2_2;
+    data.matrix[8] = lbl_8056242C - (temp_f5 + temp_f4);
     temp_r4_2 = M2C_FIELD(arg0, void **, 0x2700);
-    sp38 = M2C_FIELD(temp_r4_2, float *, 0x1E);
-    sp3C = M2C_FIELD(temp_r4_2, float *, 0x22);
+    data.vec[0] = M2C_FIELD(temp_r4_2, float *, 0x1E);
+    data.vec[1] = M2C_FIELD(temp_r4_2, float *, 0x22);
     temp_f1_3 = M2C_FIELD(temp_r4_2, float *, 0x26);
-    sp40 = temp_f1_3;
-    sp44 = lbl_80562430;
-    sp48 = lbl_80562430;
-    sp4C = lbl_80562430;
-    sp50 = 0;
-    fn_801E9DC4(&sp54, temp_r4_2, temp_f1_3, temp_f2_2, temp_f3_2, temp_f4_2, temp_f5_2, temp_f6_2, temp_f7_2, temp_f8, temp_f9_2, temp_f10_2, temp_f11, temp_f12);
-    M2C_FIELD(M2C_FIELD(arg0, void **, 0), int (**)(void *, float *), 0x54)(arg0, sp14);
+    data.vec[2] = temp_f1_3;
+    data.zero[0] = lbl_80562430;
+    data.zero[1] = lbl_80562430;
+    data.zero[2] = lbl_80562430;
+    data.count = 0;
+    fn_801E9DC4(&data.tag);
+    M2C_FIELD(M2C_FIELD(arg0, void **, 0), int (**)(void *, float *), 0x54)(arg0, data.matrix);
     temp_r4_3 = M2C_FIELD(arg0, void **, 0x2700);
     M2C_FIELD(temp_r4_3, int *, 0x9A) = (int) M2C_FIELD(temp_r4_3, int *, 0);
     M2C_FIELD(temp_r4_3, int *, 0x9E) = (int) M2C_FIELD(temp_r4_3, int *, 4);
