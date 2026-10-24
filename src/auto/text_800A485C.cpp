@@ -6746,7 +6746,7 @@ extern "C" s32 fn_800BC474(s32 *arg0, s32 arg1, s32 *arg2) {
 }
 
 extern "C" void fn_800BD710(void *, s16, s16, void *, void *);
-extern "C" { DECL_SECTION(".data") extern u8 lbl_8031BFA8; }
+extern "C" { DECL_SECTION(".rodata") extern u8 lbl_8031BFA8; }
 extern "C" u8 lbl_80559250;
 extern "C" u8 lbl_80559258;
 extern "C" u8 lbl_80559260;
@@ -6817,7 +6817,9 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s3
     u8 *var_r3_2;
     u8 *var_r3_3;
 
-            var_r31 = arg4;
+            u8 *arg5p = (u8 *)arg5;
+    u8 *arg6p = (u8 *)arg6;
+    var_r31 = arg4;
     if (arg3 & 7) {
         if ((s32) M2C_FIELD(arg0, s32 *, 0x9E0) == 0) {
             M2C_FIELD(arg0, s32 *, 0x9E0) = 1;
@@ -6848,8 +6850,7 @@ extern "C" void fn_800BC538(u8 *arg0, u8 *arg1, u8 *arg2, s32 arg3, u8 *arg4, s3
         var_r27 = arg4 + 0x3F00;
         var_r28 = arg4 + 0x1B00;
         var_r24_2 = 0;
-loop_13:
-        if (var_r24_2 < (s32) M2C_FIELD(arg0, s32 *, 0x9BC)) {
+do {
             if ((s32) M2C_FIELD(var_r31, s32 *, 0x1B00) == 0) {
                 M2C_FIELD(var_r31, s32 *, 0x3F00) = 0;
             } else {
@@ -6868,7 +6869,7 @@ loop_7:
                     }
                 }
                 if (var_r24_2 >= var_r23) {
-                    fn_800BD710(arg0, M2C_FIELD(arg7, s16 *, 2), M2C_FIELD((arg5 + (*var_r19 * 2)), s16 *, 0x2A), var_r28, var_r27);
+                    fn_800BD710(arg0, M2C_FIELD(arg7, s16 *, 2), M2C_FIELD((arg5p + (*var_r19 * 2)), s16 *, 0x2A), var_r28, var_r27);
                 }
             }
             var_r31 += 4;
@@ -6876,8 +6877,7 @@ loop_7:
             var_r28 += 4;
             var_r24_2 += 1;
             var_r19 += 1;
-            goto loop_13;
-        }
+            } while (var_r24_2 < (s32) M2C_FIELD(arg0, s32 *, 0x9BC));
         return;
     }
     if (arg3 & 0x10) {
@@ -7050,8 +7050,7 @@ loop_7:
         var_r28_2 = var_r31;
         var_r26 = 0;
         var_r27_2 = 0;
-loop_58:
-        if (var_r26 < (s32) M2C_FIELD(arg0, s32 *, 0x9C0)) {
+do {
             if ((s32) M2C_FIELD(var_r28_2, s32 *, 0x1B00) == 0) {
                 M2C_FIELD(var_r28_2, s32 *, 0x3F00) = 0;
             } else {
@@ -7110,7 +7109,7 @@ loop_42:
                     var_r16 = var_r31;
                     var_r17 = var_r31 + 0x2400;
                     var_r25 = 0;
-                    var_r15 = (u8 *)arg6 + (var_r24 * 6);
+                    var_r15 = arg6p + (var_r24 * 6);
                     do {
                         fn_800BD710(arg0, M2C_FIELD(arg7, s16 *, 2), M2C_FIELD(var_r15, s16 *, 0x48), var_r16 + var_r27_2, var_r17 + var_r27_2);
                         var_r25 += 1;
@@ -7123,8 +7122,7 @@ loop_42:
             var_r28_2 += 4;
             var_r27_2 += 4;
             var_r26 += 1;
-            goto loop_58;
-        }
+            } while (var_r26 < (s32) M2C_FIELD(arg0, s32 *, 0x9C0));
         return;
     }
     if ((s32) M2C_FIELD(arg0, s32 *, 0x9DC) == 0) {
@@ -12622,15 +12620,16 @@ void homebutton::HomeButton::updateTrigPane() {
 
 extern "C" s32 lbl_802F4528[];
 extern "C" f32 lbl_80560E18;
+#pragma dont_inline on
 extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
     u8 *self = (u8 *)arg0;
     s32 paneNo = ((homebutton::HomeButton *)arg0)->getPaneNo(arg1);
-    register s32 mode;
-    register s32 changed = 0;
+    s32 mode;
+    s32 changed = 0;
     if (*(s32 *)(self + 0x10) == 2 && paneNo != -1 &&
         *(s32 *)(self + 0x1C + paneNo * 4) == 0) {
         mode = *(s32 *)self;
-        if (mode == 2 || *(s32 *)(self + 8) <= paneNo) {
+        if (mode == 2 || paneNo >= *(s32 *)(self + 8)) {
             switch (paneNo - *(s32 *)(self + 8)) {
             case 0: {
                 if (arg2 == 0) {
@@ -12661,6 +12660,8 @@ extern "C" void fn_800CB820(void *arg0, const char *arg1, void *arg2) {
                                     *(s32 *)(self + 0x64) = 0;
                                 }
                                 changed = 1;
+                            } else {
+                                *(s32 *)(self + 0x68) = 3;
                             }
                         }
                     } else {
@@ -13065,7 +13066,7 @@ found_entry:
     } else {
         ++*(s32 *)(self + 0x1C + paneNo * 4);
     }
-    if (changed && arg2 != 0) {
+    if (arg2 != 0 && changed) {
         s32 i = *(s32 *)arg2;
         void *pane = *(void **)(self + 0x254 + i * 4);
         if (*(u8 *)((u8 *)pane + 0x1C) == 0 &&
@@ -13075,7 +13076,7 @@ found_entry:
         }
     }
 }
-
+#pragma dont_inline reset
 s32 homebutton::HomeButton::getPaneNo(const char *name) {
     register s32 count = *(s32 *)((u8 *)this + 8);
     register s32 result = -1;
