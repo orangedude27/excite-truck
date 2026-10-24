@@ -1,6 +1,7 @@
 #include <types.h>
 extern char lbl_80336B00[];
 extern void fn_801C8420(void);
+extern void fn_801C6D94(void);
 extern void fn_801C84E0(void);
 extern void fn_801C8500(void);
 #include <internal/printf.h>
