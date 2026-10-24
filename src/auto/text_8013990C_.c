@@ -136,6 +136,44 @@ int fn_80139EC4(void *arg0, float arg1, float arg2) {
     return 0;
 }
 
+extern int fn_80007F90(int);
+extern void *__AXGetStudio_8000AC2C(void);
+extern int fn_80029004(char *, int);
+extern int sprintf(char *, const char *, ...);
+extern char *strchr(const char *, int);
+extern char *strncpy(char *, const char *, unsigned int);
+extern char *strcpy(char *, const char *);
+extern const char lbl_80559C50[];
+extern const char lbl_80559C58[];
+extern const char lbl_8032C0D4[];
+extern const char lbl_8032C0E4[];
+void fn_80139F5C(void *arg0) {
+    char name[0x40];
+    char path[0x80];
+    char *result;
+    int hasSlash;
+    void *obj;
+    void **vtable;
+    sprintf(name, lbl_80559C50, fn_80007F90(*(int *)((char *)arg0 + 8)));
+    obj = *(void **)((char *)arg0 + 0x20);
+    vtable = *(void ***)obj;
+    result = ((char *(*)(void *, const char *, char *))vtable[6])(obj, lbl_8032C0D4, name);
+    hasSlash = strchr(result, '/') != 0;
+    if (hasSlash) {
+        strncpy(path, result, 0x80);
+    } else {
+        sprintf(path, lbl_8032C0E4, __AXGetStudio_8000AC2C(), result);
+    }
+    lbl_8055E138 = ((int (*)(char *))fn_80131810)(path);
+    if (lbl_8055E138 == 0 && !hasSlash) {
+        fn_80029004(path, '.');
+        strcpy(path, lbl_80559C58);
+        lbl_8055E138 = ((int (*)(char *))fn_80131810)(path + 1);
+    }
+    strcpy((char *)&lbl_8042F7C0, path);
+    lbl_8055E13C = (int)obj;
+}
+
 extern __declspec(section ".data") unsigned char lbl_8042F7C0;
 void fn_8013A074(void) {
     int state = lbl_8055E138;
@@ -149,26 +187,49 @@ extern int fn_802E30C8(const char *, ...);
 extern __declspec(section ".sdata") int lbl_8055E138;
 extern __declspec(section ".sdata") int lbl_8055E13C;
 extern const char lbl_8032C0F0[];
-int *fn_8013A0B0(int *arg0, int arg1, char *arg2) {
-    int (**vtable)(char *);
-    int value;
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" int *fn_8013A0B0(int *arg0, int arg1, char *arg2) {
+    class Dispatch {
+    public:
+        virtual int f0(char *);
+        virtual int f1(char *);
+        virtual int f2(char *);
+        virtual int f3(char *);
+        virtual int f4(char *);
+        virtual int f5(char *);
+        virtual int f6(char *);
+        virtual int f7(char *);
+        virtual int f8(char *);
+        virtual int f9(char *);
+        virtual int f10(char *);
+        virtual int f11(char *);
+        virtual int f12(char *);
+        virtual int f13(char *);
+        virtual int f14(char *);
+        virtual int f15(char *);
+        virtual int f16(char *);
+        virtual int f17(char *);
+        virtual int f18(char *);
+        virtual int f19(char *);
+        virtual int f20(char *);
+        virtual int f21(char *);
+    };
+
     *arg0 = 0;
     if (lbl_8055E138 != 0 && *arg2 != 0) {
-        vtable = *(int (***)(char *))lbl_8055E138;
-        if (vtable[4](arg2) != 0) {
-            *arg0 = vtable[2](arg2);
+        if (((Dispatch *)lbl_8055E138)->f2(arg2) != 0) {
+            *arg0 = ((Dispatch *)lbl_8055E138)->f0(arg2);
         } else {
             fn_802E30C8(lbl_8032C0F0, arg1, arg2, &lbl_8042F7C0);
         }
     }
-    value = *arg0;
-    if (value == 0) {
-        vtable = *(int (***)(char *))lbl_8055E13C;
-        *arg0 = vtable[23](arg2);
-    }
+    if (*arg0 == 0)
+        *arg0 = ((Dispatch *)lbl_8055E13C)->f21(arg2);
     return arg0;
 }
-
+#pragma cplusplus reset
+#pragma scheduling on
 int *fn_8013A198(int *arg0, int arg1) {
     if (arg0 != 0) {
         *arg0 = 0;
