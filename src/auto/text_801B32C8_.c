@@ -13,6 +13,9 @@ struct VTable_801B3C98 {
 extern "C" static inline void callPrevDtorCpp_801B3BD4(void *p) {
     ((VTable_801B3C98 *)p)->destroy(1);
 }
+extern "C" static inline void callPrevDtorCppArg_801B3BD4(void *p, s32 value) {
+    ((VTable_801B3C98 *)p)->destroy(value);
+}
 #pragma pop
 #pragma cplusplus reset
 
