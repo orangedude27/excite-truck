@@ -1,6 +1,8 @@
   #include <types.h>
 #include <macros.h>
-static inline s32 fixedMul20(s32 lhs, s32 rhs) { u32 low = (u32)lhs * (u32)rhs; s32 high = (s32)(((s64)lhs * rhs) >> 32); return (s32)((((low << 12) | (low >> 20)) & 0xFFF) | ((u32)high << 12)); }
+static inline s32 fixedMul20(s32 lhs, s32 rhs) {
+    return (s32)(((s64)lhs * rhs) >> 20);
+}
 struct Fn800C0440Context { u8 pad[0xC]; volatile u32 bitIndex; volatile s32 limit; };
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_80559270[]; }
 extern "C" s32 fn_800A485C(s32);
