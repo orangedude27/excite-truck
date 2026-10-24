@@ -46,7 +46,7 @@ struct DummyStrmLoadStream {
     virtual void f12();
     virtual void f13();
     virtual void f14();
-    virtual void f15();
+    virtual void f15(f32);
     virtual void f16();
     virtual void f17(s32, s32);
     virtual void f18();
