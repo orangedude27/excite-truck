@@ -32,7 +32,7 @@ public:
 class Dummy_80292B48 {
 public:
     virtual void f0();
-    virtual void f1();
+          virtual void f1(int);
     virtual void f2(int);
 };
 #pragma cplusplus off
