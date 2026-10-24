@@ -8,5 +8,5 @@ extern char lbl_8048929C[];
 extern char lbl_8033C1B0[];
 void fn_80209410(void) {
     fn_8000D838(&lbl_8055EDA0);
-    fn_801312EC(&lbl_8048929C, &lbl_8033C1B0);
+    fn_801312EC(lbl_8048929C, lbl_8033C1B0);
 }
