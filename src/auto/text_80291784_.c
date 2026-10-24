@@ -188,14 +188,13 @@ extern int fn_802917C0(void *, void *, void *);
 extern void fn_80291A1C(void);
 extern int lbl_80349164;
 __declspec(section ".data") extern int lbl_80349164;
-void fn_80292114(void) {
+#pragma cplusplus on
+#pragma scheduling invalid_target
+extern "C" void fn_80292114(void) {
     void *state;
     void *object;
     int enabled;
     unsigned char active;
-    void **vtable;
-    int (*query)(void *, int *);
-    int (*get)(void *, int *);
     state = fn_801E1F44();
     active = 0;
     enabled = 0;
@@ -207,21 +206,20 @@ void fn_80292114(void) {
     if (active != 0) {
         object = fn_80131810(&lbl_80349164);
         if (object != 0) {
-            vtable = *(void ***)object;
-            query = (int (*)(void *, int *))vtable[4];
-            if (query(object, &lbl_8055C948) != 0) {
-                vtable = *(void ***)object;
-                get = (int (*)(void *, int *))vtable[2];
-                fn_802917C0(&lbl_804B3EC0, (void *)get(object, &lbl_8055C948), &lbl_804B3EC0);
+            if (((QueryObject_80292114 *)object)->f2(&lbl_8055C948) != 0) {
+                int value = ((QueryObject_80292114 *)object)->f0(&lbl_8055C948);
+                ((int (*)(void *, void *))fn_802917C0)(&lbl_804B3EC0, (void *)value);
             }
             fn_80131818(object);
         } else {
-            *((int *)((char *)&lbl_804B3EC0 + 0x120)) = 0;
+            int *p = (int *)((char *)&lbl_804B3EC0 + 0x120);
+            *p = 0;
         }
         fn_80291A1C();
     }
 }
-
+#pragma scheduling on
+#pragma cplusplus reset
 void fn_802921F4(void) {
     if (lbl_8055F75C != 0) {
         fn_80291AC8();
