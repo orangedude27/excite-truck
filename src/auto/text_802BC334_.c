@@ -1,3 +1,4 @@
+#include "revolution/MTX/mtxtypes.h"
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
 
@@ -81,6 +82,141 @@ float fn_802BC540(void *arg0, float farg0) {
     return farg0 * (float)fn_8002F234(x * x + z * z, z);
 }
 
+void PSVECCrossProduct(Vec *, Vec *, Vec *);
+void PSVECNormalize(const Vec *, Vec *);
+void fn_801EA18C(void *, s32, s32);
+#pragma scheduling invalid_target
+void fn_802BC588(void *arg0, void *arg1, void *arg2, void *arg3, void *arg4) {
+    volatile float sp14[3];
+    volatile float sp8[3];
+    register float *m0;
+    register float *m1;
+    register float *v;
+    register float *in;
+    register float *basis;
+    float zero, f5, f3, f2, f1, one;
+
+    zero = lbl_80564D14;
+    m1 = (float *)arg1;
+    f5 = ((float *)arg3)[0];
+    m0 = (float *)arg0;
+    f3 = ((float *)arg3)[1];
+    f2 = ((float *)arg3)[2];
+    v = (float *)arg2;
+    f1 = ((float *)arg3)[3];
+    in = (float *)arg3;
+    one = lbl_80564D18;
+
+    m0[9] = f5;
+    m0[10] = zero;
+    m0[11] = f3;
+    m0[6] = f2;
+    m0[7] = zero;
+    m0[8] = f1;
+    m0[3] = zero;
+    m0[4] = one;
+    m0[5] = zero;
+    basis = (float *)arg4;
+    PSVECCrossProduct((Vec *)(m0 + 3), (Vec *)(m0 + 6), (Vec *)m0);
+
+    sp14[0] = lbl_80564D14;
+    sp14[1] = lbl_80564D18;
+    sp14[2] = lbl_80564D14;
+    fn_801EA18C(m0 + 9, (s32)sp14, 0);
+    v[0] = sp14[0];
+    v[1] = sp14[1];
+    v[2] = sp14[2];
+    m0[10] = m0[10] - fn_802BC540((void *)sp14, basis[21]);
+
+    if ((u32)sp8 == (u32)((char *)arg4 + 0x34)) {
+        float a = basis[13];
+        float b = basis[14];
+        float c = basis[15];
+        float x3 = m0[3];
+        float x4 = m0[4];
+        float x5 = m0[5];
+        float x0 = m0[0];
+        float x1 = m0[1];
+        float x2 = m0[2];
+        float x6 = m0[6];
+        float x7 = m0[7];
+        float x8 = m0[8];
+        float q0 = b * x3;
+        float q1 = b * x4;
+        float q2 = b * x5;
+        float p0 = a * x0;
+        float p1 = a * x1;
+        float p2 = a * x2;
+        float r0 = c * x6;
+        float r1 = c * x7;
+        float r2 = c * x8;
+        sp8[0] = r0 + (p0 + q0);
+        sp8[1] = r1 + (p1 + q1);
+        sp8[2] = r2 + (p2 + q2);
+    } else {
+        sp8[0] = basis[15] * m0[6] + (basis[13] * m0[0] + basis[14] * m0[3]);
+        sp8[1] = basis[15] * m0[7] + (basis[13] * m0[1] + basis[14] * m0[4]);
+        sp8[2] = basis[15] * m0[8] + (basis[13] * m0[2] + basis[14] * m0[5]);
+    }
+    sp8[0] *= in[4];
+    sp8[1] *= in[4];
+    sp8[2] *= in[4];
+    m1[9] = m0[9] + sp8[0];
+    m1[10] = m0[10] + sp8[1];
+    m1[11] = m0[11] + sp8[2];
+
+    if ((u32)(m1 + 6) == (u32)((char *)arg4 + 0x40)) {
+        float a = basis[16];
+        float b = basis[17];
+        float c = basis[18];
+        float x3 = m0[3];
+        float x4 = m0[4];
+        float x5 = m0[5];
+        float x0 = m0[0];
+        float x1 = m0[1];
+        float x2 = m0[2];
+        float x6 = m0[6];
+        float x7 = m0[7];
+        float x8 = m0[8];
+        float q0 = b * x3;
+        float q1 = b * x4;
+        float q2 = b * x5;
+        float p0 = a * x0;
+        float p1 = a * x1;
+        float p2 = a * x2;
+        float r0 = c * x6;
+        float r1 = c * x7;
+        float r2 = c * x8;
+        m1[6] = r0 + (p0 + q0);
+        m1[7] = r1 + (p1 + q1);
+        m1[8] = r2 + (p2 + q2);
+    } else {
+        m1[6] = basis[18] * m0[6] + (basis[16] * m0[0] + basis[17] * m0[3]);
+        m1[7] = basis[18] * m0[7] + (basis[16] * m0[1] + basis[17] * m0[4]);
+        m1[8] = basis[18] * m0[8] + (basis[16] * m0[2] + basis[17] * m0[5]);
+    }
+    m1[1] = lbl_80564D14;
+    m1[0] = lbl_80564D18;
+    m1[2] = lbl_80564D14;
+    PSVECCrossProduct((Vec *)(m1 + 6), (Vec *)m1, (Vec *)(m1 + 3));
+    PSVECCrossProduct((Vec *)(m1 + 3), (Vec *)(m1 + 6), (Vec *)m1);
+    PSVECNormalize((Vec *)(m1 + 3), (Vec *)(m1 + 3));
+    PSVECNormalize((Vec *)m1, (Vec *)m1);
+
+    {
+        float scale = in[4];
+        m0[0] = m0[0] * scale;
+        m0[1] = m0[1] * scale;
+        m0[2] = m0[2] * scale;
+        m0[3] = m0[3] * scale;
+        m0[4] = m0[4] * scale;
+        m0[5] = m0[5] * scale;
+        m0[6] = m0[6] * scale;
+        m0[7] = m0[7] * scale;
+        m0[8] = m0[8] * scale;
+    }
+}
+
 #pragma push
 #pragma processor 750
 #pragma scheduling 750
@@ -151,6 +287,120 @@ void fn_802BCA8C(void *arg0, void *arg1, void *arg2) {
     *(int *)((char *)arg0 + 4) = 0;
 }
 
+extern void fn_80131810(void);
+extern void fn_802C6B44(void);
+extern void *fn_802B561C(void *, const char *);
+extern void *fn_802B2C34(void *, int);
+extern int fn_802BC4E0(void *);
+extern int fn_802B1DA0(void *);
+extern int fn_801D04D0(void);
+extern int fn_802C143C(void *);
+extern float PSVECMag(const Vec *);
+extern void PSVECNormalize(const Vec *, Vec *);
+extern int lbl_8034AB38;
+extern void *lbl_8055FAB4;
+__declspec(section ".sdata") extern const char lbl_8055CF40[];
+__declspec(section ".sdata") extern const char lbl_8055CF48[];
+__declspec(section ".sdata") extern const char lbl_8055CF50[];
+__declspec(section ".sdata") extern const char lbl_8055CF58[];
+__declspec(section ".sdata") extern const char lbl_8055CF60[];
+extern float lbl_80564D2C;
+__declspec(section ".data") extern int lbl_8034AB38;
+__declspec(section ".data") extern int lbl_804C00D4;
+extern void *fn_802BC4D4(void *);
+#pragma push
+#pragma scheduling invalid_target
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_802BCBDC(void) {
+    class Query {
+    public:
+        virtual void m0();
+        virtual void m1();
+        virtual void m2();
+        virtual void m3();
+        virtual void m4();
+        virtual void m5();
+        virtual void m6();
+        virtual void m7();
+        virtual void m8();
+        virtual void m9();
+        virtual void m10();
+        virtual Vec get(const char *, ...);
+    };
+    void *list;
+    register void *item;
+    register int i;
+    int count;
+    register char *entry;
+    register char *rdata = (char *)&lbl_8034AB38;
+    float half;
+    float min[3], max[3], center[3];
+    float dx, nx, dy, dz;
+    float cx, cy, cz;
+    void *value;
+
+    list = fn_802B561C(fn_80131810, rdata + 0x28);
+    lbl_8055FAB4 = list;
+    if (list == 0)
+        return;
+    half = lbl_80564D2C;
+    for (i = 0; (item = ((void *(*)(void *, int))(*(void ***)lbl_8055FAB4)[3])(lbl_8055FAB4, i)) != 0; i++) {
+        if (((int (*)(void *))fn_802BC3DC)(item) != 0) {
+            count = *(int *)((char *)&lbl_804C00D4 + 4);
+            *(int *)((char *)&lbl_804C00D4 + 4) = count + 1;
+            entry = *(char **)&lbl_804C00D4 + count * 0x60;
+            *(void **)entry = ((void *(*)(void *, const char *))(*(void ***)item)[5])(item, lbl_8055CF40);
+            *(void **)(entry + 4) = ((void *(*)(void *, const char *))(*(void ***)item)[23])(item, rdata + 0x38);
+            value = ((void *(*)(void *, const char *))(*(void ***)item)[5])(item, rdata + 0x44);
+            *(void **)(entry + 0x18) = fn_802B2C34(fn_802C6B44, (int)value);
+            *(void **)(entry + 0x1C) = fn_802BC4D4(*(void **)(entry + 0x18));
+            *(int *)(entry + 0x20) = fn_802BC4E0(*(void **)(entry + 0x18));
+            *(int *)(entry + 0x24) = fn_802B1DA0(*(void **)(entry + 0x1C));
+            value = ((void *(*)(void *, const char *))(*(void ***)item)[5])(item, rdata + 0x50);
+            *(void **)(entry + 8) = fn_802B2C34(fn_802C6B44, (int)value);
+            *(void **)(entry + 0xC) = fn_802BC4D4(*(void **)(entry + 8));
+            *(int *)(entry + 0x10) = fn_802BC4E0(*(void **)(entry + 8));
+            *(int *)(entry + 0x14) = fn_802B1DA0(*(void **)(entry + 0xC));
+            *(float *)(entry + 0x5C) = ((float (*)(void *, const char *, float))(*(void ***)item)[10])(item, rdata + 0x5C, lbl_80564D14);
+            *(unsigned char *)(entry + 0x30) = ((int (*)(void *, const char *, int))(*(void ***)item)[12])(item, rdata + 0x68, 1);
+            ((void (*)(void *, const char *, const char *))(*(void ***)item)[6])(item, rdata + 0x74, lbl_8055CF48);
+            *(int *)(entry + 0x2C) = fn_801D04D0();
+            *(int *)(entry + 0x28) = fn_802C143C(item);
+            *(Vec *)min = ((Query *)item)->get(lbl_8055CF50);
+            *(Vec *)max = ((Query *)item)->get(lbl_8055CF58, *(unsigned int *)&min[0], *(unsigned int *)&min[1], *(unsigned int *)&min[2]);
+            {
+                float minX = min[0], minY = min[1], minZ = min[2];
+                float maxX = max[0], maxY = max[1], maxZ = max[2];
+                dx = maxX - minX;
+                nx = minX - maxX;
+                dy = maxY - minY;
+                dz = maxZ - minZ;
+                cx = minX + half * dx;
+                cy = minY + half * dy;
+                cz = minZ + half * dz;
+            }
+            *(float *)(entry + 0x34) = cx;
+            *(float *)(entry + 0x38) = cy;
+            *(float *)(entry + 0x3C) = cz;
+            center[0] = cx;
+            center[1] = cy;
+            center[2] = cz;
+            *(float *)(entry + 0x40) = nx;
+            *(float *)(entry + 0x44) = min[1] - max[1];
+            *(float *)(entry + 0x48) = min[2] - max[2];
+            *(float *)(entry + 0x4C) = PSVECMag((Vec *)(entry + 0x40)) * half;
+            PSVECNormalize((Vec *)(entry + 0x40), (Vec *)(entry + 0x40));
+            *(float *)(entry + 0x50) = ((float (*)(void *, const char *))(*(void ***)item)[9])(item, lbl_8055CF60);
+            *(float *)(entry + 0x54) = ((float (*)(void *, const char *))(*(void ***)item)[9])(item, rdata + 0x80);
+            *(int *)(entry + 0x58) = 0;
+        }
+        i++;
+    }
+}
+#pragma cplusplus reset
+#pragma pop
+#pragma pop
 void fn_802BCFB0(int *arg0) {
     int temp_r31;
     temp_r31 = *arg0;
