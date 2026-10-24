@@ -33,6 +33,8 @@ extern u8 lbl_802FCB98[];
 extern u8 lbl_802FCE18[];
 extern void fn_80130FCC(void *, s32, s32);
 extern void fn_801473F8(void *, void *, ...);
+extern char lbl_80558BA4[], lbl_80558BA8[], lbl_80558BAC[], lbl_80558BB4[];
+extern f32 lbl_805603B8;
 #pragma push
 #pragma use_lmw_stmw off
 void fn_80013BD0(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
@@ -116,6 +118,33 @@ void fn_80013EAC(s32 arg0, s32 arg1) {
     if (arg1 < 1) arg1 = 1;
     fn_80013BD0(obj, arg1, 0, 0);
 }
+
+extern u8 lbl_80558B80;
+extern void *fn_8023512C(void *);
+extern void *fn_802CAC28(void *, s32);
+extern void fn_801333E8(s32, void *, void *);
+extern void *fn_80019C68(s32);
+extern s32 fn_800167F4(void);
+extern void *fn_80145E70(void *);
+#pragma push
+#pragma cplusplus on
+extern "C" void *fn_80014524(void *arg0, s32 arg1) {
+ class Obj { public: virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3(); virtual void v4(); };
+ u8 *obj=(u8 *)arg0; u8 *base=lbl_802FCB98;
+ *(void **)obj=lbl_802FCE18; lbl_803577E0[arg1]=arg0; obj[8]=0;
+ *(void **)(obj+0x34)=fn_8023512C(base+0x130);
+ *(void **)(obj+0x38)=fn_8023512C(base+0x140);
+ *(void **)(obj+0x3C)=fn_8023512C(base+0x14C);
+ *(void **)(obj+0x40)=fn_8023512C(base+0x158);
+ *(void **)(obj+0x44)=fn_802CAC28(base+0x168,0);
+ *(s32 *)(obj+4)=arg1; obj[0x4C]=0;
+ fn_801333E8(5,&lbl_80558B80,obj+0x4C);
+ *(void **)(obj+0x48)=fn_80019C68(arg1);
+ if(fn_800167F4()==1) *(void **)(obj+0x50)=fn_80145E70(base+0x178);
+ else *(void **)(obj+0x50)=fn_80145E70(base+0x184);
+ ((Obj *)obj)->v4(); return arg0;
+}
+#pragma pop
 
 void fn_80014638(void *arg0) {
     f32 zero;
@@ -227,6 +256,46 @@ s32 fn_80014AE4(void) {
  return 1;
 }
 
+extern void fn_80013C98(f32 *);
+extern void fn_80013CFC(f32 *);
+extern void fn_800148A0(void *);
+extern void fn_80014A98(void *);
+extern s32 fn_80014ADC(void);
+void fn_80014B9C(void *arg0) {
+    s32 state, reverse, result;
+    f32 *value = (f32 *)((u8 *)arg0 + 0x2C);
+    reverse = fn_80014ADC();
+    result = fn_80014AE4();
+    state = *(s32 *)((u8 *)arg0 + 0x24);
+    if (state == 0) {
+        if (reverse != 0 || result != 0) {
+            fn_80013CFC(value);
+            if (reverse != 0) fn_80014A98(arg0);
+            else fn_800148A0(arg0);
+            if (lbl_80560360 == *value)
+                *(s32 *)((u8 *)arg0 + 0x24) = reverse != 0 ? 2 : 1;
+        } else *value = lbl_80560368;
+    } else if (state == 2) {
+        if (reverse != 0) {
+            if (*value > lbl_80560360) fn_80013CFC(value);
+            fn_80014A98(arg0);
+        } else {
+            fn_80013C98(value);
+            fn_80014A98(arg0);
+            if (lbl_80560368 == *value) *(s32 *)((u8 *)arg0 + 0x24) = 0;
+        }
+    } else {
+        if (result != 0) {
+            if (*value > lbl_80560360) fn_80013CFC(value);
+            fn_800148A0(arg0);
+        } else {
+            fn_80013C98(value);
+            fn_800148A0(arg0);
+            if (lbl_80560368 == *value) *(s32 *)((u8 *)arg0 + 0x24) = 0;
+        }
+    }
+}
+
 s32 fn_800151D4(void) { return 1; }
 
 s32 fn_800151DC(void *arg0) {
@@ -307,6 +376,30 @@ void fn_800154B8(void) {
     }
 }
 
+extern s32 fn_80144F34(void *, s32, void *);
+extern f32 fn_80011DEC(void *);
+extern f32 fn_80011DC0(void *);
+extern void fn_802354A0(void *, s32, s32, f32, f32, f32, f32, f32);
+extern f32 lbl_805603D4, lbl_805603D8, lbl_805603DC, lbl_805603E0, lbl_805603E4;
+extern f32 lbl_80560360, lbl_805603A0;
+extern char lbl_80558BA4[];
+#pragma push
+#pragma use_lmw_stmw off
+void fn_80015658(void *arg0) {
+    char sp9;
+    char sp8;
+    f32 temp_f31;
+    f32 temp_f30;
+    s32 temp_r31;
+    s32 temp_r30;
+    temp_r31 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 0, &sp9);
+    temp_r30 = fn_80144F34(*(void **)((u8 *)lbl_8055D350 + 0x24), 1, &sp8);
+    temp_f31 = fn_80011DEC(*(void **)((u8 *)lbl_8055D350 + 0x1C)) - lbl_805603D4;
+    temp_f30 = fn_80011DC0(*(void **)((u8 *)lbl_8055D350 + 0x1C)) - lbl_805603D8;
+    fn_802354A0(*(void **)((u8 *)arg0 + 0x3C), 3, -1, temp_f31, temp_f30, lbl_80560360, lbl_805603D4, lbl_805603DC);
+    fn_8000FF88(-0x100, 0xA, lbl_80558BA4, temp_r31, 0, lbl_805603E0, temp_f31 - lbl_805603A0, temp_f30);
+    fn_8000FF88(-0x100, 0xA, lbl_80558BA4, temp_r30, 0, lbl_805603E0, temp_f31 - lbl_805603A0, temp_f30 - lbl_805603E4);
+}
 #pragma pop
 extern void fn_801476C4(void);
 extern u8 lbl_80558BBC[];
@@ -324,6 +417,45 @@ void fn_80015AA0(void *arg0, f32 angle) {
     m[8]=lbl_80560368;
 }
 
+#pragma scheduling invalid_target
+void fn_80015B20(void *arg0, void *arg1, void *arg2) {
+    f32 *out = (f32 *)arg0;
+    f32 *a = (f32 *)arg1;
+    f32 *b = (f32 *)arg2;
+
+    if ((arg0 == arg1) || (arg0 == arg2)) {
+        register f32 temp_f10, temp_f1, temp_f19, temp_f12, temp_f3, temp_f9, temp_f0, temp_f20;
+        register f32 temp_f11, temp_f18, temp_f7, temp_f6, temp_f1_2, temp_f0_2, temp_f2;
+        register f32 temp_f4, temp_f5, temp_f8;
+
+        temp_f10 = a[1]; temp_f1 = b[3]; temp_f19 = a[4]; temp_f12 = b[4];
+        temp_f3 = a[7]; temp_f9 = a[0]; temp_f0 = b[0]; temp_f20 = a[3];
+        temp_f11 = b[1]; temp_f18 = a[6]; temp_f7 = b[5]; temp_f6 = b[2];
+        temp_f1_2 = a[2]; temp_f0_2 = b[6]; temp_f2 = a[5]; temp_f4 = a[8];
+        temp_f5 = b[7]; temp_f8 = b[8];
+
+        out[0] = (temp_f0_2 * temp_f1_2) + ((temp_f0 * temp_f9) + (temp_f1 * temp_f10));
+        out[3] = (temp_f0_2 * temp_f2) + ((temp_f0 * temp_f20) + (temp_f1 * temp_f19));
+        out[6] = (temp_f0_2 * temp_f4) + ((temp_f0 * temp_f18) + (temp_f1 * temp_f3));
+        out[1] = (temp_f5 * temp_f1_2) + ((temp_f11 * temp_f9) + (temp_f12 * temp_f10));
+        out[4] = (temp_f5 * temp_f2) + ((temp_f11 * temp_f20) + (temp_f12 * temp_f19));
+        out[7] = (temp_f5 * temp_f4) + ((temp_f11 * temp_f18) + (temp_f12 * temp_f3));
+        out[2] = (temp_f8 * temp_f1_2) + ((temp_f6 * temp_f9) + (temp_f7 * temp_f10));
+        out[5] = (temp_f8 * temp_f2) + ((temp_f6 * temp_f20) + (temp_f7 * temp_f19));
+        out[8] = (temp_f8 * temp_f4) + ((temp_f6 * temp_f18) + (temp_f7 * temp_f3));
+    } else {
+        out[0] = (b[6] * a[2]) + ((b[0] * a[0]) + (b[3] * a[1]));
+        out[3] = (b[7] * a[2]) + ((b[1] * a[0]) + (b[4] * a[1]));
+        out[6] = (b[8] * a[2]) + ((b[2] * a[0]) + (b[5] * a[1]));
+        out[1] = (b[6] * a[5]) + ((b[0] * a[3]) + (b[3] * a[4]));
+        out[4] = (b[7] * a[5]) + ((b[1] * a[3]) + (b[4] * a[4]));
+        out[7] = (b[8] * a[5]) + ((b[2] * a[3]) + (b[5] * a[4]));
+        out[2] = (b[6] * a[8]) + ((b[0] * a[6]) + (b[3] * a[7]));
+        out[5] = (b[7] * a[8]) + ((b[1] * a[6]) + (b[3] * a[7]));
+        out[8] = (b[8] * a[8]) + ((b[2] * a[6]) + (b[5] * a[7]));
+    }
+}
+#pragma scheduling on
 void fn_80015E30(void *arg0, f32 angle) {
     f32 temp_f31 = (f32)cos();
     f32 temp_f3 = (f32)sin(angle);
