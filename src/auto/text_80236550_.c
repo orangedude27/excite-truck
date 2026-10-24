@@ -36,14 +36,14 @@ void fn_80236600(void) {
 
 void fn_8023660C(void) {
     int temp;
-    int value;
 
     lbl_8055BA00 = 0;
     if (lbl_8055F0A0 != 0) {
-        value = 1;
-        temp = fn_802E2C20() - lbl_8055F09C + lbl_8055F094 - 0x10;
-        if (temp > 1) value = temp;
-        lbl_8055F094 = value;
+        temp = 1;
+        temp = fn_802E2C20() - lbl_8055F09C;
+        temp += lbl_8055F094;
+        temp -= 0x10;
+        if (temp > 1) lbl_8055F094 = temp; else lbl_8055F094 = 1;
         lbl_8055F0A0 = 0;
     }
     fn_80236674();
