@@ -11,6 +11,7 @@ extern void fn_802C6CF8(void);
 struct TplLike { void *entries; unsigned int count; };
 extern struct TplLike lbl_804BE4AC;
 extern struct TplLike lbl_804BE454;
+extern char *lbl_804BE4AC_ptr;
 int fn_802B539C(int arg0) {
     int valid = 0;
     if (arg0 != 0 && fn_8012C33C() != 0) valid = 1;
@@ -52,6 +53,13 @@ extern "C" int fn_802B54CC(void *arg0) {
 void fn_802B561C(void (*fn)(void *), void *arg0) {
     fn(arg0);
 }
+
+void* fn_802B59A4(unsigned int index) {
+    unsigned int count = lbl_804BE4AC.count;
+    char* entries = lbl_804BE4AC.entries;
+    return entries + (index % count) * 0x30;
+}
+
 #pragma scheduling reset
 void* fn_802B59CC(void) {
     return lbl_8055F9E8;
