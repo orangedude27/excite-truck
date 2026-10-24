@@ -31,7 +31,6 @@ public:
     virtual void vf10();
     virtual void vf11();
     virtual void vf12();
-    virtual void vf13();
     virtual u32 Seek(s32 off, u32 origin);  // vtable 0x54
 };
 class FileStream54 : public IOStream54 {};
