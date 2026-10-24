@@ -3776,7 +3776,7 @@ BOOL fn_80063564(WPADCommandQueue* pQueue, s32 format, WPADCallback pCallback) {
 
 BOOL fn_80063744(u8 *p, s8 idx, u32 val1, WPADCallback callback) {
     u8 buffer[0x60] ALIGN(8);
-    register u8 *queue asm("r31") = p;
+    register volatile u8 *queue asm("r31") = p;
     register BOOL enabled asm("r30");
     s8 diff;
     s8 index;
@@ -3818,51 +3818,47 @@ BOOL fn_80063744(u8 *p, s8 idx, u32 val1, WPADCallback callback) {
     return TRUE;
 }
 
-static BOOL fn_800638C8(u8* p, const void* src, u32 len, u32 val1, u32 val2) {
-    u8 buffer[0x70] ALIGN(8);
-    s32 enabled;
-    s8 diff;
-    u32 length;
-    u8 nextIdx;
+BOOL fn_800638C8(u8* p, const void* src, u32 len, u32 val1, u32 val2) {
+    u8 buf[0x60] ALIGN(8);
     u8 lenMask;
+    s8 diff;
+    BOOL enabled;
+    BOOL innerEnabled;
+    s8 index;
+    s32 lastIndex;
+    s32 wrapMask;
 
     lenMask = len & 0x1F;
-    buffer[0x40] = 0x16;
-    buffer[0x44] = (u8)(val1 >> 24);
-    buffer[0x45] = (u8)(val1 >> 16);
-    buffer[0x46] = (u8)(val1 >> 8);
-    buffer[0x47] = (u8)val1;
-    buffer[0x48] = lenMask;
-    memcpy(buffer + 0x49, src, len);
-    buffer[0x5A] = 0x15;
-    buffer[0x6C] = (u8)(val2 >> 24);
-    buffer[0x6D] = (u8)(val2 >> 16);
-    buffer[0x6E] = (u8)(val2 >> 8);
-    buffer[0x6F] = (u8)val2;
-
-    memcpy(buffer + 0x10, buffer + 0x40, 0x30);
+    *(u32*)&buf[0x30] = 0x16;
+    *(u16*)&buf[0x4A] = 0x15;
+    *(u32*)&buf[0x5C] = val2;
+    memcpy(&buf[0x34], &val1, 4);
+    memcpy(&buf[0x38], &lenMask, 1);
+    memcpy(&buf[0x39], src, len);
+    *(double*)&buf[0] = *(double*)&buf[0x30];
+    *(double*)&buf[8] = *(double*)&buf[0x38];
+    *(double*)&buf[0x10] = *(double*)&buf[0x40];
+    *(double*)&buf[0x18] = *(double*)&buf[0x48];
+    *(double*)&buf[0x20] = *(double*)&buf[0x50];
+    *(double*)&buf[0x28] = *(double*)&buf[0x58];
 
     enabled = OSDisableInterrupts();
-    enabled = OSDisableInterrupts();
-    diff = p[1] - p[0];
-    if (diff < 0) {
-        diff += (s8)p[8];
-    }
-    OSRestoreInterrupts(enabled);
+    innerEnabled = OSDisableInterrupts();
+    diff = (s8)(p[1] - p[0]);
+    if (diff < 0)
+        diff = (s8)(diff + *(u32*)(p + 8));
+    OSRestoreInterrupts(innerEnabled);
 
-    if (p[8] - 1 == diff) {
+    if (*(u32*)(p + 8) - 1 == (u32)diff) {
         OSRestoreInterrupts(enabled);
         return FALSE;
     }
-
-    nextIdx = p[1];
-    memset((u8*)(*(u32*)&p[4] + nextIdx * 0x30), 0, 0x30);
-    memcpy((u8*)(*(u32*)&p[4] + nextIdx * 0x30), buffer, 0x30);
-
-    length = p[8];
-    nextIdx = p[1];
-    nextIdx = (u8)((nextIdx + 1) & ~(((s32)(nextIdx - length) >> 31) | ((s32)(length - 1 - nextIdx) >> 31)));
-    p[1] = nextIdx;
+    memset(*(u8**)(p + 4) + (s8)p[1] * 0x30, 0, 0x30);
+    memcpy(*(u8**)(p + 4) + (s8)p[1] * 0x30, buf, 0x30);
+    index = (s8)p[1];
+    lastIndex = *(u32*)(p + 8) - 1;
+    wrapMask = ~(((s32)index - lastIndex) | (lastIndex - (s32)index)) >> 31;
+    p[1] = (index + 1) & ~wrapMask;
     OSRestoreInterrupts(enabled);
     return TRUE;
 }
