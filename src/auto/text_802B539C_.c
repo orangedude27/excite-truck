@@ -6,8 +6,6 @@ extern int stricmp(const char *, const char *);
 extern const char lbl_8034A510[];
 int fn_8012C33C(void);
 int fn_802CAC28(int, int);
-extern struct TplLike lbl_804BE4AC;
-extern struct TplLike lbl_804BE454;
 extern void fn_80131818(int);
 extern void fn_802C6CF8(void);
 int fn_802B539C(int arg0) {
