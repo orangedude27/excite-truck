@@ -82,7 +82,6 @@ void fn_801B619C(void *arg0, int *arg1, float *arg2) {
 #pragma scheduling on
 extern void *fn_801B5F40(void);
 extern void __AXPushCallbackStack(void *);
-extern void fn_802E317C(const char *);
 extern void *lbl_80335EE0;
 extern void *lbl_80335F20;
 void fn_801B63E0(void **head, s32 value) {
