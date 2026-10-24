@@ -199,6 +199,7 @@ void fn_80207E70(void* arg0) {
         } else { cur = (char*)cur + 4; src = (char*)src + 4; dst = (char*)dst + 4; i++; }
     }
 }
+#pragma pop
 
 #pragma push
 #pragma use_lmw_stmw off
