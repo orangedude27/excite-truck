@@ -7628,27 +7628,26 @@ s32 HID_HostGetSDPRecord(void *addr, void *p_db, u32 db_len, void *sdp_cback) {
 
 void *fn_80095C64(void **head, u32 attr);
 void hidh_search_callback(UINT16 sdp_result) {
-    u8 *cb = lbl_803C3C38;
-    tSDP_DISCOVERY_DB *p_db = *(tSDP_DISCOVERY_DB **)(cb + 0x388);
+    tSDP_DISCOVERY_DB *p_db = *(tSDP_DISCOVERY_DB **)(lbl_803C3C38 + 0x388);
     tSDP_DISC_REC *p_rec;
     tSDP_DISC_ATTR *p_attr;
     tSDP_DISC_ATTR *p_subattr1;
     tSDP_DISC_ATTR *p_subattr2;
     tSDP_DISC_ATTR *p_repdesc;
     tBT_UUID hid_uuid;
-    u8 *p_nvi = cb + 0x38c;
+    u8 *p_nvi = lbl_803C3C38 + 0x38c;
     UINT16 attr_mask = 0;
     UINT16 len;
 
     hid_uuid.len = LEN_UUID_16;
     hid_uuid.uu.uuid16 = UUID_SERVCLASS_HUMAN_INTERFACE;
-    cb[0x380] = FALSE;
+    lbl_803C3C38[0x380] = FALSE;
     if (sdp_result != SDP_SUCCESS) {
-        (*(void (**)(UINT16, UINT16, void *))(cb + 0x384))(sdp_result, 0, NULL);
+        (*(void (**)(UINT16, UINT16, void *))(lbl_803C3C38 + 0x384))(sdp_result, 0, NULL);
         return;
     }
     if ((p_rec = SDP_FindServiceUUIDInDb(p_db, &hid_uuid, NULL)) == NULL) {
-        (*(void (**)(UINT16, UINT16, void *))(cb + 0x384))(0xC, 0, NULL);
+        (*(void (**)(UINT16, UINT16, void *))(lbl_803C3C38 + 0x384))(0xC, 0, NULL);
         return;
     }
     memset(p_nvi, 0, 0x74);
@@ -7659,7 +7658,7 @@ void hidh_search_callback(UINT16 sdp_result) {
         || ((p_subattr2 = *(tSDP_DISC_ATTR **)((u8 *)p_subattr1 + 8)) == NULL)
         || ((p_repdesc = *(tSDP_DISC_ATTR **)p_subattr2) == NULL)
         || ((*(UINT16 *)((u8 *)p_repdesc + 6) >> 12) != 4)) {
-        (*(void (**)(UINT16, UINT16, void *))(cb + 0x384))(0xD, 0, NULL);
+        (*(void (**)(UINT16, UINT16, void *))(lbl_803C3C38 + 0x384))(0xD, 0, NULL);
         return;
     }
     len = *(UINT16 *)((u8 *)p_repdesc + 6) & 0xFFF;
@@ -7698,7 +7697,7 @@ void hidh_search_callback(UINT16 sdp_result) {
         len = *(UINT16 *)((u8 *)p_attr + 6) & 0xFFF;
         if (len < 0x20) {
             memcpy(p_nvi + 0x20, (u8 *)p_attr + 8, len);
-            p_nvi[0x20 + len] = 0;
+            *(p_nvi + len + 0x20) = 0;
         } else {
             memcpy(p_nvi + 0x20, (u8 *)p_attr + 8, 0x1F);
             p_nvi[0x40] = 0;
@@ -7711,7 +7710,7 @@ void hidh_search_callback(UINT16 sdp_result) {
         len = *(UINT16 *)((u8 *)p_attr + 6) & 0xFFF;
         if (len < 0x20) {
             memcpy(p_nvi + 0x40, (u8 *)p_attr + 8, len);
-            p_nvi[0x40 + len] = 0;
+            *(p_nvi + len + 0x40) = 0;
         } else {
             memcpy(p_nvi + 0x40, (u8 *)p_attr + 8, 0x1F);
             p_nvi[0x60] = 0;
@@ -7732,8 +7731,8 @@ void hidh_search_callback(UINT16 sdp_result) {
         attr_mask |= 0x40;
         *(UINT16 *)(p_nvi + 0x66) = *(UINT16 *)((u8 *)p_attr + 8);
     }
-    *(tSDP_DISC_REC **)(cb + 0x3FC) = p_rec;
-    (*(void (**)(UINT16, UINT16, void *))(cb + 0x384))(0, attr_mask, p_nvi);
+    *(tSDP_DISC_REC **)(lbl_803C3C38 + 0x3FC) = p_rec;
+    (*(void (**)(UINT16, UINT16, void *))(lbl_803C3C38 + 0x384))(0, attr_mask, lbl_803C3C38 + 0x38c);
 }
 
 extern u8 lbl_803C3C38[];
