@@ -261,7 +261,7 @@ extern int fn_802CAC28(void *, int);
 extern void *fn_802C5A60(int, int, u16);
 #pragma push
 #pragma small_data off
-extern int lbl_8034B1F0;
+extern int lbl_8034B1F0[];
 #pragma pop
 #pragma push
 #pragma small_data off
