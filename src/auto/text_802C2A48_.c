@@ -44,14 +44,6 @@ void fn_802C2C64(void) { fn_802DD738(); }
 void fn_802C2C68(void) { fn_802DD750(); }
 
 void fn_802C2C6C(void) { fn_802DE774(); }
-void fn_802D0014(void *, void *, float, float, float);
-extern unsigned char lbl_804C1328[];
-extern float lbl_80564ED8;
-void fn_802D0014(void *, void *, float, float, float);
-extern unsigned char lbl_804C1328[];
-extern float lbl_80564ED8;
-extern float lbl_80564EDC;
-extern unsigned char lbl_8055FBA8;
 extern unsigned int lbl_8055CFF0, lbl_8055CFF4, lbl_8055FB98, lbl_8055FB9C, lbl_8055FBA0, lbl_8055FBA4;
 extern unsigned char lbl_8055CFF8;
 void *fn_802CE344(int);
