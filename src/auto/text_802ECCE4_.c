@@ -30,7 +30,7 @@ s32 fn_802ECD68(void *arg0, void *arg1, s32 arg2) {
 }
 
 void fn_802ECEC0(void) {
-    fn_802ECDF4();
+    (void)fn_802ECDF4();
 }
 
 void fn_802ECEC4(void) {
