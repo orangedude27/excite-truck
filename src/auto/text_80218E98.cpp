@@ -2608,21 +2608,15 @@ extern "C" void fn_80222178(void *arg0) {
     s32 idx;
     void *obj;
     s32 (*callback)(void *);
-    s32 val250;
     ((VfObj *)arg0)->vf17();
     idx = *(s32 *)((u8 *)arg0 + 0x24C);
     *(u8 *)((u8 *)arg0 + 0x248) = 0;
-    if (idx < 0)
-        goto done;
-    val250 = *(s32 *)((u8 *)arg0 + 0x250);
-    if (val250 < 0)
+    if (idx < 0 || *(s32 *)((u8 *)arg0 + 0x250) < 0)
         goto done;
     obj = fn_8022D97C(*(s32 *)(*(s32 *)((u8 *)arg0 + 0x244) + idx * 0x24));
     callback = *(s32 (**)(void *))((u8 *)obj + 0x24);
-    if (callback != 0) {
-        if (callback(*(void **)((u8 *)obj + 0x20)) != 0)
-            fn_802168BC(*(void **)((u8 *)obj + 0x20));
-    }
+    if (callback == 0 || callback(*(void **)((u8 *)obj + 0x20)) != 0)
+        fn_802168BC(*(void **)((u8 *)obj + 0x20));
 done:
     *(s32 *)((u8 *)arg0 + 0x24C) = -1;
     *(s32 *)((u8 *)arg0 + 0x250) = -1;
@@ -2835,11 +2829,20 @@ extern "C" void fn_80222AFC(void *arg0, s32 arg1, s32 arg2, s32 *arg3, s32 *arg4
 }
 
 extern "C" s32 fn_80222B48(void *arg0, s32 unused1, s32 unused2, s32 arg1, s32 arg2) {
-    struct V { virtual void a0(); virtual void a1(); virtual void a2(); virtual void Call(s32*, s32*, s32*, s32*); };
+    struct V {
+        virtual void a0();
+        virtual void a1();
+        virtual void a2();
+        virtual void Call(s32, s32, s32*, s32*, s32*, s32*);
+    };
     s32 sp14, sp10, spC, sp8, result;
-    ((V*)arg0)->Call(&sp10, &sp14, &sp8, &spC);
+
+    // Forward unused inputs and pass bounds in low-to-high order for the target registers.
+    ((V*)arg0)->Call(unused1, unused2, &sp8, &spC, &sp10, &sp14);
     result = 0;
-    if (arg1 >= sp8 && arg1 < sp10 && arg2 >= spC && arg2 < sp14) result = 1;
+    if (arg1 >= sp8 && arg1 < sp10 && arg2 >= spC && arg2 < sp14) {
+        result = 1;
+    }
     return result;
 }
 
@@ -3764,6 +3767,7 @@ extern "C" s32 fn_8022DBFC(void *);
 extern "C" s32 fn_8022DC20(void *);
 extern "C" s32 fn_802263CC(void *arg0, s32 arg1) {
     void *temp_r6 = *(void **)((u8 *)arg0 + 0x27C);
+    s32 result;
     if (temp_r6 != 0 && (s32)*(void **)((u8 *)arg0 + 0x280) != (s32)*(void **)temp_r6)
         return 0;
 
@@ -3793,10 +3797,10 @@ extern "C" s32 fn_802263CC(void *arg0, s32 arg1) {
     case 0xD: {
         void *obj = *(void **)((u8 *)arg0 + 0x244);
         s32 (*callback)(void) = *(s32 (**)(void))((u8 *)obj + 0x14);
-        s32 result = fn_8022DBE8(obj);
+        result = fn_8022DBE8(obj);
         if (callback != 0 && callback() != 0)
-            fn_802168BC((void *)result);
-        return 1;
+            fn_802168BC((void *)(u32)result);
+        return (s32)1;
     }
     default_case:
     default:
