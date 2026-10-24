@@ -371,6 +371,7 @@ extern "C" void fn_80260954(s32 arg0) {
           }
       }
 #pragma cplusplus reset
+#pragma cplusplus reset
 s32 fn_80260DC4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
