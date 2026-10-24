@@ -49,6 +49,8 @@ extern "C" u8 lbl_805599E0;
 
 extern void fn_8012E498(void);
 extern void fn_8012CC24(void);
+extern "C" u32 fn_8012D3D0(void);
+extern "C" void fn_8012D33C(u32 *, u32 *);
 
 #pragma use_lmw_stmw off
 extern "C" s32 fn_8012A388(void *arg0) {
@@ -568,10 +570,11 @@ extern "C" void fn_8012BF28(void) {
     s32 *pathPtr, *table;
     u32 i;
     s32 handle;
-    char filename[128], name[128], ch;
-    char *src;
-    s32 remaining;
-    char *dst;
+    char filename[128], name[128];
+    char *src1;
+    s32 pathNameLength, remaining2;
+    char *src2, *dst1, *dst2;
+    u8 ch1, ch2;
     u8 ok;
     u8 *data;
     if (lbl_8055DFFC == 0) return;
@@ -584,53 +587,53 @@ extern "C" void fn_8012BF28(void) {
             handle = opened;
             do {
                 *fn_80029004(filename, '.') = 0;
-                dst = filename; remaining = 0x80; goto scan_test_1;
+                dst1 = filename; pathNameLength = 0x80; goto scan_test_1;
 scan_step_1:
-                --remaining; ++dst;
+                --pathNameLength; ++dst1;
 scan_test_1:
-                if ((s8)*dst != 0) goto scan_step_1;
-                if (remaining <= 0) goto suffix_done_1;
-                src = (char *)&lbl_805599D8; goto append_1;
+                if ((s8)*dst1 != 0) goto scan_step_1;
+                if (pathNameLength <= 0) goto suffix_done_1;
+                src1 = (char *)&lbl_805599D8; goto append_1;
 limit_1:
-                --remaining; if (remaining > 0) goto append_1; dst[-1] = 0; goto suffix_done_1;
+                --pathNameLength; if (pathNameLength > 0) goto append_1; dst1[-1] = 0; goto suffix_done_1;
 append_1:
-                ch = *src++; *dst++ = ch; if ((s8)ch != 0) goto limit_1;
+                ch1 = *src1++; *dst1++ = ch1; if ((s8)ch1 != 0) goto limit_1;
 suffix_done_1:
                 inner = ((s32 (*)(char *))fn_802E36D8)(filename);
                 if (inner != -1) {
                     fn_802E3A14(inner, 0x14); fn_802E3804(inner, header, 0x14);
                     if (header[0] == 0) {
-                        src = filename; dst = name; remaining = 0x80; goto copy_name_body;
+                        src2 = filename; dst2 = name; remaining2 = 0x80; goto copy_name_body;
 copy_name_limit:
-                        --remaining; if (remaining > 0) goto copy_name_body; dst[-1] = 0; goto copy_name_done;
+                        --remaining2; if (remaining2 > 0) goto copy_name_body; dst2[-1] = 0; goto copy_name_done;
 copy_name_body:
-                        ch = *src++; *dst++ = ch; if ((s8)ch != 0) goto copy_name_limit;
+                        ch2 = *src2++; *dst2++ = ch2; if ((s8)ch2 != 0) goto copy_name_limit;
 copy_name_done:
                         ;
                         if ((s8)*fn_80029004(name, '.') != 0) *fn_80029004(name, '.') = 0;
-                        dst = name; remaining = 0x80; goto scan_test_2;
+                        dst1 = name; pathNameLength = 0x80; goto scan_test_2;
 scan_step_2:
-                        --remaining; ++dst;
+                        --pathNameLength; ++dst1;
 scan_test_2:
-                        if ((s8)*dst != 0) goto scan_step_2;
-                        if (remaining <= 0) goto suffix_done_2;
-                        src = (char *)&lbl_805599E0; goto append_2;
+                        if ((s8)*dst1 != 0) goto scan_step_2;
+                        if (pathNameLength <= 0) goto suffix_done_2;
+                        src1 = (char *)&lbl_805599E0; goto append_2;
 limit_2:
-                        --remaining; if (remaining > 0) goto append_2; dst[-1] = 0; goto suffix_done_2;
+                        --pathNameLength; if (pathNameLength > 0) goto append_2; dst1[-1] = 0; goto suffix_done_2;
 append_2:
-                        ch = *src++; *dst++ = ch; if ((s8)ch != 0) goto limit_2;
+                        ch1 = *src1++; *dst1++ = ch1; if ((s8)ch1 != 0) goto limit_2;
 suffix_done_2:
                         fn_8002B0D8(name);
                         data = (u8 *)fn_8012C370((s32)name, 0x45544F43, (s32)&size, 0, 0, (s32)&ok);
                         if (data != 0 && ok != 0) {
-                            u8 t; u8 *entry; u32 n;
+                            u8 t; u32 n; u8 *entry;
                             t=data[0]; data[0]=data[3]; data[3]=t; t=data[1]; data[1]=data[2]; data[2]=t;
                             t=data[4]; data[4]=data[7]; data[7]=t; t=data[5]; data[5]=data[6]; data[6]=t;
                             t=data[8]; data[8]=data[0xB]; data[0xB]=t; t=data[9]; data[9]=data[0xA]; data[0xA]=t;
                             t=data[0xC]; data[0xC]=data[0xF]; data[0xF]=t; t=data[0xD]; data[0xD]=data[0xE]; data[0xE]=t;
                             t=data[0x10]; data[0x10]=data[0x13]; data[0x13]=t; t=data[0x11]; data[0x11]=data[0x12]; data[0x12]=t;
-                            if (*(u32 *)data != 0 || *(u32 *)(data+4) != 0x14)
-                                fn_802E317C(lbl_8032AE60, 0, 0, *(u32 *)(data+4), 0x14);
+                            u32 magic = *(u32 *)data; if (magic != 0 || *(u32 *)(data+4) != 0x14)
+                                fn_802E317C(lbl_8032AE60, magic, 0, *(u32 *)(data+4), 0x14);
                             entry = data+0x14; n=0; while (n < *(u32 *)(data+0xC)) { fn_8012A388(entry); entry += 0x44; ++n; }
                         }
                         if (data != 0) {
@@ -734,6 +737,173 @@ extern "C" void fn_8012D3D8(s32 arg0) {
     fn_8012D1A8(arg0);
 }
 
+#pragma dont_inline on
+#pragma scheduling invalid_target
+extern "C" void fn_8012D40C(s32 arg0) {
+    u8 *self = (u8 *)arg0;
+    s32 *object = (s32 *)self;
+    s32 state, count, index, value, result, temp, handle, size, limit, done;
+    s32 *record;
+    u8 *data, *source, *destination, byte;
+    void *parser;
+    u8 parseBuffer[0x40];
+
+    state = object[0xB8 / 4];
+    if (state == 2 && fn_802E7544(object[0xB4 / 4]) != 0) {
+        fn_802E7548(object[0xB4 / 4]);
+        data = *(u8 **)(self + 0xC8);
+        object[0xB4 / 4] = -1;
+        *(s32 *)(self + 0x6C) = *(s32 *)(data + 0);
+        *(s32 *)(self + 0x70) = *(s32 *)(data + 4);
+        *(s32 *)(self + 0x74) = *(s32 *)(data + 8);
+        *(s32 *)(self + 0x78) = *(s32 *)(data + 12);
+        *(s32 *)(self + 0x7C) = *(s32 *)(data + 16);
+        *(s32 *)(self + 0x80) = *(s32 *)(data + 20);
+        *(s32 *)(self + 0x84) = *(s32 *)(data + 24);
+        *(s32 *)(self + 0x88) = *(s32 *)(data + 28);
+        *(s32 *)(self + 0x8C) = *(s32 *)(data + 32);
+        *(s32 *)(self + 0x90) = *(s32 *)(data + 36);
+        *(s32 *)(self + 0x94) = *(s32 *)(data + 40);
+        *(s32 *)(self + 0x98) = *(s32 *)(data + 44);
+        *(s32 *)(self + 0x9C) = *(s32 *)(data + 48);
+        fn_8012A80C((s32)(self + 0x6C));
+        object[0xA4 / 4] = 0;
+        if (object[0x84 / 4] + object[0x90 / 4] > object[0xCC / 4])
+            fn_802E317C(lbl_8032ADF4);
+        if (object[0x78 / 4] & 1) {
+            object[0x64 / 4] = 0;
+            result = fn_8012ACA0(self + 4, (u8 *)*(void **)(self + 0xC8) + object[0x84 / 4], object[0xC0 / 4] - object[0x84 / 4]);
+        } else {
+            object[0x64 / 4] = (s32)((u8 *)*(void **)(self + 0xC8) + object[0x84 / 4]);
+            result = fn_8012AA60(self + 4, object[0xC0 / 4] - object[0x84 / 4], object[0x84 / 4]);
+        }
+        if (result != 0) {
+            ((void (*)(void *))fn_8012B328)(self + 4);
+            object[0xAC / 4] = (s32)lbl_8055E000;
+            lbl_8055E000 = self + 4;
+            object[0xB8 / 4] = 3;
+            return;
+        }
+    }
+    state = object[0xB8 / 4];
+    if (state == 2) {
+        if (object[0xB4 / 4] != -1) {
+            fn_802E7548(object[0xB4 / 4]);
+            object[0xB4 / 4] = -1;
+        }
+        count = 0;
+        index = 0;
+        goto record_check_two;
+    record_body_two:
+        record = (s32 *)(object[0x64 / 4] + index);
+        if (record[0x34 / 4] & 4)
+            fn_802E317C(lbl_8032AE20);
+        count++;
+        record = (s32 *)(object[0x64 / 4] + index);
+        value = record[0x34 / 4];
+        index += 0x44;
+        record[0x34 / 4] = value & ~0xF;
+    record_check_two:
+        if (count < object[0x8C / 4])
+            goto record_body_two;
+        if (object[0x68 / 4] != 0)
+            fn_8012C4D8((void *)object[0x68 / 4]);
+        if (object[0xA4 / 4] != 0)
+            fn_80128660(object[0xA4 / 4]);
+        *(u8 *)(self + 0xB0) = 0;
+    } else if (state == 3) {
+        fn_8012BA1C(self + 4);
+        fn_8012BC24((void **)&lbl_8055E000, self + 4);
+        count = 0;
+        index = 0;
+        goto record_check_three;
+    record_body_three:
+        record = (s32 *)(object[0x64 / 4] + index);
+        if (record[0x34 / 4] & 4)
+            fn_802E317C(lbl_8032AE20);
+        count++;
+        record = (s32 *)(object[0x64 / 4] + index);
+        value = record[0x34 / 4];
+        index += 0x44;
+        record[0x34 / 4] = value & ~0xF;
+    record_check_three:
+        if (count < object[0x8C / 4])
+            goto record_body_three;
+        if (object[0x68 / 4] != 0)
+            fn_8012C4D8((void *)object[0x68 / 4]);
+        if (object[0xA4 / 4] != 0)
+            fn_80128660(object[0xA4 / 4]);
+        *(u8 *)(self + 0xB0) = 0;
+    }
+    object[0xB8 / 4] = 1;
+    ((void (*)(void *))fn_8012B324)(self + 0x24);
+    object[0xBC / 4]++;
+    done = 0;
+    while (!done) {
+        parser = ((void *(*)(void *, void *, s32))fn_8012B314)(self + 4, parseBuffer, object[0xBC / 4]);
+        if (!parser)
+            return;
+        temp = ((s32 (*)(s32, s32 *))fn_8012AC28)((s32)parser, &size);
+        if (temp != -1) {
+            value = object[0xCC / 4];
+            object[0xC0 / 4] = value;
+            if (value > value)
+                goto parse_next;
+            handle = ((s32 (*)(s32, void *))fn_802E748C)(temp, *(void **)(self + 0xC8));
+            object[0xB4 / 4] = handle;
+            if (handle != -1) {
+                source = self + 4;
+                destination = source;
+                object[0xB8 / 4] = 2;
+                limit = 32;
+                goto copy_name_body;
+            copy_name_limit:
+                limit--;
+                if (limit > 0)
+                    goto copy_name_body;
+                destination[-1] = 0;
+                goto copy_name_done;
+            copy_name_body:
+                byte = *source++;
+                *destination++ = byte;
+                if ((s8)byte != 0)
+                    goto copy_name_limit;
+            copy_name_done:
+                source = (u8 *)parser;
+                destination = self + 0x24;
+                limit = 64;
+                goto copy_path_body;
+            copy_path_limit:
+                limit--;
+                if (limit > 0)
+                    goto copy_path_body;
+                destination[-1] = 0;
+                goto copy_path_done;
+            copy_path_body:
+                byte = *source++;
+                *destination++ = byte;
+                if ((s8)byte != 0)
+                    goto copy_path_limit;
+            copy_path_done:
+                object[0xAC / 4] = 0;
+                object[0x64 / 4] = 0;
+                memset(self + 0x6C, 0, 0x34);
+                object[0xA0 / 4] = 1;
+                done = 1;
+                object[0xA4 / 4] = 0;
+                object[0xA8 / 4] = temp;
+                *(u8 *)(self + 0xB0) = 1;
+                object[0x68 / 4] = 0;
+                *(u8 *)(self + 0xB1) = 0;
+                object[0] = fn_802E2C20() + object[0xC0 / 4] / 3000 + 0x1F4;
+            }
+        }
+    parse_next:
+        object[0xBC / 4]++;
+    }
+}
+#pragma scheduling on
+#pragma dont_inline reset
 s32 fn_8012D838(void *arg0) {
     s32 temp_r0;
 
