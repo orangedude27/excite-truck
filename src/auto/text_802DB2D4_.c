@@ -1,5 +1,7 @@
 // Code of main that had no source file yet: decomp.wtf gave it this one.
 // split_file divides it into the game's real files (file_status shows its range).
+typedef struct { unsigned char r, g, b, a; } fn_802DCAE4_GXColor;
+extern void GXSetTevKColor(int, fn_802DCAE4_GXColor);
 
 extern unsigned char lbl_8055FEC0;
 extern signed char lbl_8055FE9E;
@@ -322,6 +324,8 @@ int fn_802DC6AC(int a, unsigned int b) {
     unsigned short v = *(unsigned short *)((char *)base + ((i + (j << 7)) << 6));
     return (*(int *)((char *)base + ((i + (j << 7)) << 6) + 0x20) & 0xffff) | ((unsigned int)v << 16);
 }
+
+void fn_802DCAE4(void *arg0, void *arg1, float farg0) { }
 
 void fn_802DD228(void) { if (lbl_8055FEC0 != 0) { fn_802D3E88(); lbl_8055FEC0 = 0; } fn_802DBDD8(); fn_802CADD0(-1, 1); GXSetNumIndStages(0); GXSetTevDirect(0); }
 
