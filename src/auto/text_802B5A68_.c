@@ -195,19 +195,22 @@ extern void *fn_80156A40(void);
 extern s32 fn_802A7BDC(s32, s32);
 extern void fn_802BBEE4(void);
 extern void fn_802C21C0(void);
-void fn_802B5F24(s32 arg0) {
+#pragma push
+#pragma cplusplus on
+extern "C" void fn_802B5F24(s32 arg0) {
+    class V {
+    public:
+        virtual void a();
+        virtual s32 b(s32);
+    };
     s32 i;
     s32 result;
-    void *object;
-    void **vtable;
-    s32 (*method)(void *, s32);
+    V *object;
     fn_80128684();
     i = 0;
     do {
-        object = fn_80156A40();
-        vtable = *(void ***)object;
-        method = (s32 (*)(void *, s32))vtable[3];
-        result = method(object, 0);
+        object = (V *)fn_80156A40();
+        result = object->b(0);
         if (result == 0)
             break;
         fn_802A7BDC(arg0, result);
@@ -215,7 +218,8 @@ void fn_802B5F24(s32 arg0) {
     } while (i < 10);
     fn_80128678();
 }
-
+#pragma cplusplus reset
+#pragma pop
 void fn_802B5F98(void) {
     s32 handle;
     s32 i, j, index;
