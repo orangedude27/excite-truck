@@ -8,6 +8,7 @@ extern f32 lbl_80563D7C;
 extern f32 lbl_80563D80;
 extern f32 lbl_80563D84;
 extern f32 lbl_8055F47C;
+extern u32 lbl_80499050[];
 
 void fn_8026B840(void) {}
 
@@ -48,6 +49,11 @@ extern f64 lbl_80563DD0;
 extern s32 fn_802E4A1C();
 extern f32 lbl_80563DD8;
 extern f32 lbl_80563D9C;
+extern f32 lbl_80563DDC;
+extern f32 lbl_80563DE0;
+extern f32 lbl_80563DE4;
+extern u32 lbl_802FA768[4];
+extern u32 lbl_802FA778[4];
 void fn_8026C014(s32 arg0, void *arg1) {
     struct Snapshot { f32 f[8]; s32 i[16]; u8 flag; };
     u8 localFrame[0x328];
@@ -55,12 +61,16 @@ void fn_8026C014(s32 arg0, void *arg1) {
     s32 index;
     s32 counter;
     s32 ok;
+    s32 command;
+    s32 flag;
     u8 active;
     f32 *base = &lbl_8049A168;
     f32 dt;
     f32 step;
-    s32 command;
-    s32 flag;
+    f32 scale;
+    f32 x, y, z;
+    f32 a, b, c;
+    s32 now;
 
     (void)arg1;
     *(u32 *)(localFrame + 0x300) = 0x43300000;
@@ -83,30 +93,18 @@ void fn_8026C014(s32 arg0, void *arg1) {
     if (fn_802E4A60((f32 *)(localFrame + 0x238)) != 0) {
         struct Snapshot *state = (struct Snapshot *)(localFrame + 0x29C);
         struct Snapshot *scratch = (struct Snapshot *)(localFrame + 0x238);
-        state->f[0] = scratch->f[0];
-        state->f[1] = scratch->f[1];
-        state->f[2] = scratch->f[2];
-        state->f[3] = scratch->f[3];
-        state->f[4] = scratch->f[4];
-        state->f[5] = scratch->f[5];
-        state->f[6] = scratch->f[6];
-        state->f[7] = scratch->f[7];
-        state->i[0] = scratch->i[0];
-        state->i[1] = scratch->i[1];
-        state->i[2] = scratch->i[2];
-        state->i[3] = scratch->i[3];
-        state->i[4] = scratch->i[4];
-        state->i[5] = scratch->i[5];
-        state->i[6] = scratch->i[6];
-        state->i[7] = scratch->i[7];
-        state->i[8] = scratch->i[8];
-        state->i[9] = scratch->i[9];
-        state->i[10] = scratch->i[10];
-        state->i[11] = scratch->i[11];
-        state->i[12] = scratch->i[12];
-        state->i[13] = scratch->i[13];
-        state->i[14] = scratch->i[14];
-        state->i[15] = scratch->i[15];
+        state->f[0] = scratch->f[0]; state->f[1] = scratch->f[1];
+        state->f[2] = scratch->f[2]; state->f[3] = scratch->f[3];
+        state->f[4] = scratch->f[4]; state->f[5] = scratch->f[5];
+        state->f[6] = scratch->f[6]; state->f[7] = scratch->f[7];
+        state->i[0] = scratch->i[0]; state->i[1] = scratch->i[1];
+        state->i[2] = scratch->i[2]; state->i[3] = scratch->i[3];
+        state->i[4] = scratch->i[4]; state->i[5] = scratch->i[5];
+        state->i[6] = scratch->i[6]; state->i[7] = scratch->i[7];
+        state->i[8] = scratch->i[8]; state->i[9] = scratch->i[9];
+        state->i[10] = scratch->i[10]; state->i[11] = scratch->i[11];
+        state->i[12] = scratch->i[12]; state->i[13] = scratch->i[13];
+        state->i[14] = scratch->i[14]; state->i[15] = scratch->i[15];
         state->flag = scratch->flag;
     }
     counter = lbl_8055F4EC;
@@ -136,8 +134,8 @@ void fn_8026C014(s32 arg0, void *arg1) {
         *(u32 *)(localFrame + 0x304) = (u32)counter ^ 0x80000000;
         dt = (f32)(*(f64 *)(localFrame + 0x300) - lbl_80563DD0) / lbl_80563D88;
         if (dt < lbl_80563D8C) dt = lbl_80563D8C;
-        counter = fn_802E2C20();
-        lbl_8055F504 = counter;
+        now = fn_802E2C20();
+        lbl_8055F504 = now;
         step = lbl_80563DD8;
         base[0x22] = base[0x22] * step;
         base[0x23] = base[0x23] * step;
@@ -148,11 +146,40 @@ void fn_8026C014(s32 arg0, void *arg1) {
         command = fn_802E4A1C(0xFD, &base[0x25], &base[0x22]);
         flag = 0;
         if (fn_802E4A1C(0xFE) == 0 && fn_802E4A1C(0x3A) != 0) flag = 1;
-        (void)dt;
-        (void)command;
-        (void)flag;
+        scale = dt / lbl_80563D8C;
+        for (index = 0; index < 4; index++) {
+            *(u32 *)(localFrame + 0x128 + index * 4) = lbl_802FA768[index];
+            *(u32 *)(localFrame + 0x118 + index * 4) = lbl_802FA778[index];
+        }
+        index = ((command << 1) | flag) * 4;
+        a = scale * *(f32 *)(localFrame + 0x128 + index);
+        b = scale * *(f32 *)(localFrame + 0x118 + index);
+        if (fn_802E4A1C(0x1E) != 0) z = a;
+        else if (fn_802E4A1C(0x2C) != 0) z = -a;
+        if (fn_802E4A1C(0x51) != 0) x = a;
+        else if (fn_802E4A1C(0x4F) != 0) x = -a;
+        if (fn_802E4A1C(0x53) != 0) y = a * lbl_80563D9C;
+        else if (fn_802E4A1C(0x52) != 0) y = -a * lbl_80563D9C;
+        if (fn_802E4A1C(0x4D) != 0) {
+            if (fn_802E4A1C(0x4F) != 0) c = b * lbl_80563D9C;
+            else c = b;
+        } else if (fn_802E4A1C(0x4B) != 0) {
+            if (fn_802E4A1C(0x51) != 0) c = -b * lbl_80563D9C;
+            else c = -b;
+        }
+        if (fn_802E4A1C(0x48) != 0) z = b * lbl_80563D9C;
+        else if (fn_802E4A1C(0x50) != 0) z = -b * lbl_80563D9C;
+        if (fn_802E4A1C(0x47) != 0) x = b;
+        else if (fn_802E4A1C(0x49) != 0) x = -b;
+        if (fn_802E4A1C(0x37) != 0) lbl_8055F47C += lbl_80563DDC;
+        else if (fn_802E4A1C(0xB5) != 0) lbl_8055F47C -= lbl_80563DDC;
+        if (lbl_8055F47C < lbl_80563DE0) lbl_8055F47C = lbl_80563DE0;
+        if (lbl_8055F47C > lbl_80563DE4) lbl_8055F47C = lbl_80563DE4;
+        *(f32 *)(localFrame + 0x13C) = x;
+        *(f32 *)(localFrame + 0x140) = y;
+        *(f32 *)(localFrame + 0x144) = z;
+        *(f32 *)(localFrame + 0x148) = c;
     }
-    (void)lbl_80563D9C;
 }
 
 extern u32 lbl_80499050[];
