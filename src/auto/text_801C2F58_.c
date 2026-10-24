@@ -1,4 +1,5 @@
 #include <types.h>
+extern char lbl_80336B00[];
 #include <internal/printf.h>
 #include <revolution/MTX/vec.h>
 
@@ -147,9 +148,11 @@ s32 fn_801C3508(s32 arg0, s32 arg1) {
 #pragma auto_inline off
 s32 fn_801C3954(s32 arg0) {
     char buf[0x100];
-    char *p;
-    s32 result;
-    p = strcpy(buf, (char *)arg0);
+    register char *token;
+    register char *p;
+    register s32 result;
+    strcpy(buf, (char *)arg0);
+    p = token = buf;
     result = 0;
     do {
         s32 found = 0;
@@ -157,9 +160,10 @@ s32 fn_801C3954(s32 arg0) {
         while ((c = *p) != ' ' && c != 0) p++;
         if (c == 0) found = 1;
         *p = 0;
-        result |= fn_801C3524(buf);
+        result |= fn_801C3524(token);
         if (found) break;
         p++;
+        token = p;
     } while (1);
     return result;
 }
@@ -1231,6 +1235,8 @@ void fn_801C83D0(void) {
     sprintf(lbl_80437FC0, lbl_80336FDC, value);
     fn_801C957C(0);
 }
+
+void fn_801C855C(void) { }
 
 void fn_801C94B8(void) {
     fn_80238A74();
