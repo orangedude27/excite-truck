@@ -318,50 +318,46 @@ void fn_80004B5C(void) {
     fn_800049C0();
 }
 
-int fn_80005158(const char* name) {
-    char* data = lbl_802FAEA0;
+#pragma scheduling invalid_target
+int fn_80005158(const char *name) {
+    char *data = lbl_802FAEA0;
     int result;
     int saved;
     int found;
     int count;
-    char first;
-
     fn_80127434();
     fn_8023D7CC();
     fn_8023D70C();
-
     SaveMenuFlag(&saved);
     found = 0;
     count = fn_80012818();
-    first = lbl_8034EC58[0];
-    if (first == '$') {
-        result = fn_80004F00(&count, &found, lbl_8034EC58 + 1);
-        if (!result) {
-            fn_802E30C8(data + 0x150, 0, lbl_8034EC58 + 1);
-        }
-    } else if (first == '@') {
+    if (lbl_8034EC58[0] == '$') goto dollar;
+    if (lbl_8034EC58[0] != '@') goto generic;
+    result = fn_80004F00(&count, &found, lbl_8034EC58 + 1);
+    if (!result) MenuLog(data + 0x150, lbl_8034EC58 + 1);
+    goto after_lookup;
+dollar:
+    if (lbl_8034EC58[0] != '\0') {
         result = fn_80005044(&count, &found, lbl_8034EC58);
-        if (!result) {
-            fn_802E30C8(data + 0x180, 0, lbl_8034EC58);
-        }
-    } else {
-        result = fn_800050D0(&count, &found, name);
-        if (!result) {
-            fn_802E30C8(data + 0x1b0, 0, name);
-        }
+        if (!result) MenuLog(data + 0x180, lbl_8034EC58);
     }
+    goto after_lookup;
+generic:
+    result = fn_800050D0(&count, &found, name);
+    if (!result) MenuLog(data + 0x1b0, name);
+after_lookup:
     if (result) {
         fn_8020A600();
         fn_8023BFBC(count, found);
     } else if (lbl_8034EC58[0] != '\0') {
-        fn_802E30C8(data + 0x1dc, 0, lbl_8034EC58);
+        MenuLog(data + 0x1dc, lbl_8034EC58);
     } else {
-        fn_802E30C8(data + 0x1f0, 0, name);
+        MenuLog(data + 0x1f0, name);
     }
     RestoreMenuFlag(&saved);
     return 0;
 }
-
+#pragma scheduling on
 void fn_80004CB4(void) {
     fn_8020A634();
     fn_802E9880(0);
@@ -420,7 +416,7 @@ void fn_80004E20(void) {
 
 void fn_80004EC0(const char* source) {
     int remaining = 0x20;
-    volatile char* destination = lbl_8034EC58;
+    volatile char* destination = (volatile char *)&lbl_8034EC58;
 
     while ((*destination++ = *source++) != '\0') {
         if (--remaining > 0) {
