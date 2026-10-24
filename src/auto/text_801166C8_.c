@@ -496,6 +496,96 @@ void fn_80117618(void *arg0, void *arg1) {
 
 void fn_801176FC(void* arg0,s32 arg1){if(arg0)*(s32*)((u8*)arg0+0xb8)=arg1;}
 
+extern u32 lbl_80559944;
+extern u32 lbl_8041D608;
+extern u32 lbl_8055DED8;
+extern u8 lbl_802F6528[];
+s32 *fn_8011770C(s32 *arg0, u32 arg1) {
+    struct {
+        u8 header[0x2C];
+        u8 padding[0x7C];
+        u8 state[0x388];
+        volatile u32 conversion[16];
+    } local;
+    u32 i;
+    u32 magic;
+    u32 flags;
+    u32 mode;
+    u32 width;
+    u32 height;
+    u32 format;
+    s32 *result = 0;
+    local.conversion[0] = 0x43300000;
+    local.conversion[2] = 0x43300000;
+    if ((arg1 & 0x4000) == 0) {
+        lbl_80559944 = 1;
+        lbl_8041D608 = 0;
+        for (i = 0; i < 0x388; i++) local.state[i] = 0;
+        *(s32 *)(local.state + 0x2A0) = fn_80116D30();
+    }
+    if (arg1 & 0x04000000) {
+        for (i = 0; i < 0x2C; i++) local.header[i] = ((u8 *)arg0)[i];
+    } else if ((arg1 & 0x02000000) && lbl_8055DED8 != 0) {
+        s32 (*callback)(void *, s32 *, u32) = (s32 (*)(void *, s32 *, u32))lbl_8055DED8;
+        lbl_8055DED8 = 0;
+        result = (s32 *)callback(local.state + 0xF0, arg0, arg1);
+        if (result == 0 && lbl_8041D508[0] == 0) {
+            fn_80116E2C(lbl_802F6528);
+            return 0;
+        }
+    }
+    if (result == 0) {
+        s32 (*readHeader)(void *, s32, void *, s32) = *(s32 (**)(void *, s32, void *, s32))(local.state + 0xF0);
+        if (readHeader != 0)
+            readHeader(local.state + 0xF0, 0, local.header, 0x2C);
+    }
+    magic = *(u32 *)local.header;
+    if (magic == 0x664B4942 || magic == 0x674B4942 || magic == 0x684B4942 || magic == 0x694B4942) {
+        if (*(s32 *)(local.state + 0x110) != 0) {
+            fn_80116E2C((const u8 *)(lbl_802F6528 + 0x14));
+            if ((arg1 & 0x04000000) == 0) {
+                s32 (*close)(void *) = *(s32 (**)(void *))(local.state + 0x104);
+                if (close != 0) close(local.state + 0xF0);
+            }
+            return 0;
+        }
+    } else if (*(s32 *)(local.header + 8) == 0) {
+        fn_80116E2C((const u8 *)(lbl_802F6528 + 0x25));
+    }
+    width = *(u32 *)(local.header + 0x14);
+    height = *(u32 *)(local.header + 0x18);
+    format = *(u32 *)(local.header + 0x24);
+    *(u32 *)(local.state + 0) = width;
+    *(u32 *)(local.state + 4) = height;
+    *(u32 *)(local.state + 0x14) = *(u32 *)(local.header + 0x1C);
+    *(u32 *)(local.state + 0x18) = *(u32 *)(local.header + 0x20);
+    *(u32 *)(local.state + 0x28) = *(u32 *)(local.header + 4);
+    *(u32 *)(local.state + 0x68) = *(u32 *)(local.header + 0xC);
+    *(u32 *)(local.state + 0x70) = *(u32 *)(local.header + 0x28);
+    *(u32 *)(local.state + 0xCC) = *(u32 *)(local.header + 0x10);
+    *(u32 *)(local.state + 0x24) = format;
+    *(u32 *)(local.state + 0xC0) = (width + 15) >> 4;
+    flags = (arg1 & 0xF8000001) | (format & 0x4000);
+    if ((format & 0x800) != 0) flags &= ~0x1000;
+    mode = arg1 & 0x70000000;
+    if (mode != 0x70000000)
+        flags |= mode;
+    else
+        flags |= format & 0x70000000;
+    if (mode == 0x30000000) height <<= 1;
+    else if (mode == 0x20000000 || mode == 0x10000000) width <<= 1;
+    else if (mode == 0x50000000 || mode == 0x40000000) {
+        width <<= 1;
+        height <<= 1;
+    }
+    if (magic == 0x674B4942) flags |= 0x18000;
+    else if (magic == 0x684B4942) flags |= 0x8000;
+    *(u32 *)(local.state + 0x20) = flags;
+    *(u32 *)(local.state + 0) = width;
+    *(u32 *)(local.state + 4) = height;
+    return result;
+}
+
 void fn_80118C1C(void *arg0, s32 arg1) {
     s32 temp_r0 = *(s32 *)((u8 *)arg0 + 0x264);
     if (temp_r0 != 0) {
@@ -527,7 +617,6 @@ void fn_80119214(void) {
     AXFXSetHooks_8011FFB8();
 }
 
-extern void memset(void *, int, unsigned int);
 void fn_80119218(void *arg0, s16 arg1, s16 arg2, s16 arg3) {
     void *temp_r31 = (u8*)arg0 + 0x14C;
     memset(temp_r31, 0, 0x30);
