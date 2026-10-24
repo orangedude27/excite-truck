@@ -165,7 +165,7 @@ void* fn_801B3BD4(void* arg0, s32 arg1) {
             *(void**)arg0 = (void*)&lbl_80335DAC;
             if (prev != NULL) {
                 if (prev != NULL)
-                    callPrevDtorCppArg_801B3BD4(prev, 1);
+                    callPrevDtorCpp_801B3BD4(prev);
                 *(void**)((u8*)arg0 + 0x1C) = NULL;
             }
         }
