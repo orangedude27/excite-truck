@@ -2134,21 +2134,20 @@ extern "C" s32 fn_8015D504(Unk801577F0* arg0, s32 arg1) {
     return i;
 }
 
-void fn_8015D554(void* arg0) {
+extern "C" void fn_8015D554(void *arg0) {
     class Local {
     public:
         virtual void v0(); virtual void v1(); virtual void v2(); virtual void v3();
         virtual void v4(); virtual void v5(); virtual void v6(); virtual void v7();
         virtual void v8(); virtual void v9(); virtual void v10(); virtual void v11();
         virtual void v12(); virtual void v13(); virtual void v14(); virtual void v15();
-        virtual void v16(); virtual void v17(); virtual void v18(); virtual void v19();
-        virtual void v20();
-        virtual void v21(void*);
-        virtual void* v22();
+        virtual void v16(); virtual void v17(); virtual void v18();
+        virtual void v19(void *);
+        virtual void *v20();
     };
-    Local* obj = (Local*)arg0;
-    void* value = obj->v22();
-    obj->v21(value);
+    Local *obj = (Local *)arg0;
+    void *value = obj->v20();
+    obj->v19(value);
 }
 
 extern "C" f32 fn_8015D5A4(void *arg0) {
