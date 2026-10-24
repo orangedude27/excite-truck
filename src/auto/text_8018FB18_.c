@@ -103,6 +103,46 @@ extern "C" void fn_801914F8(void *arg0) {
 #pragma cplusplus off
 u8 fn_8019157C(void *arg0) { return *((u8 *)arg0 + 0x14); }
 
+#pragma cplusplus on
+extern "C" void fn_80191688(void *arg0) {
+    class Inner {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual void f3();
+        virtual void f4();
+        virtual void f5();
+        virtual void f6();
+        virtual void f7();
+        virtual void f8();
+        virtual void f9();
+        virtual void f10();
+        virtual void f11();
+        virtual void f12();
+        virtual void f13();
+        virtual void f14();
+        virtual void f15();
+        virtual void f16();
+        virtual void f17();
+        virtual void f18();
+        virtual void f19();
+        virtual void f20();
+        virtual void f21();
+        virtual void f22();
+        virtual void f23();
+        virtual void f24();
+        virtual void f25();
+        virtual void f26();
+    };
+    struct DummyWrapper {
+        int pad;
+        Inner *inner;
+    };
+    ((DummyWrapper *)arg0)->inner->f26();
+}
+#pragma cplusplus off
+
 void fn_8019169C(void *arg0, void *arg1) {
     *(void **)((char *)arg0 + 0x34) = arg1;
     *(int *)((char *)arg0 + 0x3C) = *(int *)((char *)arg1 + 0x1EC);
