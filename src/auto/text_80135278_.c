@@ -82,8 +82,8 @@ void *fn_8013530C(void *arg0, s32 arg1) {
 
 void fn_80135354(Unk_80135278 *arg0) {
     float g, f;
-    g = lbl_80561324;
     f = lbl_80561320;
+    g = lbl_80561324;
     arg0->unk_8 = f;
     arg0->unk_4 = 0;
     arg0->unk_c = 0;
