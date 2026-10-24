@@ -11,7 +11,10 @@ extern void fn_80236914(void);
 extern u8 lbl_8055F3E9;
 extern u8 lbl_8055F3EA;
 extern u8 lbl_8055F3EB;
+#pragma push
+#pragma small_data on
 extern u8 lbl_8055F420[];
+#pragma pop
 extern u8 lbl_8055BAC0;
 extern u8 lbl_8055BAB8;
 extern s32 lbl_802FA6A8[];
@@ -190,162 +193,172 @@ extern s32 fn_80260E30(void);
 #pragma push
 #pragma small_data off
 #pragma pop
+extern s32 table[];
+#pragma push
+#pragma small_data on
+#pragma pop
 #pragma push
 #pragma small_data off
-void fn_80260954(s32 arg0) {
-    typedef struct {
-        s32 word[5];
-    } Obj20;
-    typedef struct {
-        s32 header[6];
-        s32 bufA[9];
-        s32 bufB[15];
-        Obj20 objects[19];
-    } Frame;
-
-    Frame frame;
-    s32 sp8;
-    s32 args[5];
-    s32 initialMode;
-    s32 currentMode;
-    s32 result;
-    s32 i;
-    s32 offset;
-    u8 *stringBase = &lbl_80345B40;
-    void *object;
-    void **vtable;
-
-    initialMode = fn_80012810();
-    if (initialMode != 0x130) {
-        if (initialMode != 0x134) {
-            fn_80012794();
-        }
-        fn_80012790(0x130);
-    }
-    lbl_8055F3E4 = fn_8027B878(arg0);
-    fn_8026213C(frame.bufA);
-    fn_80262120(frame.bufB);
-    *(void **)&lbl_8055F420 = &frame.header[0];
-    frame.header[4] = arg0;
-    frame.header[1] = 0;
-    frame.header[0] = 0;
-    frame.header[5] = 0;
-    fn_80261C68(frame.header);
-
-loop_6:
-    fn_8026003C();
-    if (lbl_8055F3E8 != 0) {
-        fn_80261AF0(frame.header, frame.header[4] + 1);
-        lbl_8055F3E8 = 0;
-        if (frame.header[4] == 0) {
-            lbl_8055F3EB = 0;
-            result = -1;
-            goto loop_end;
-        }
-    }
-
-    fn_80261AE8(&sp8, frame.header[4]);
-    fn_80261A7C(&frame.objects[0], (s32)fn_80261AA0);
-    fn_80261A18(&frame.objects[1], (s32)fn_80261A40);
-
-    fn_802619E8(&frame.objects[2], (s32)(stringBase + 0x1B8),
-                *(s32 *)(u32)fn_80261A08(frame.bufB, 0));
-    fn_802619E8(&frame.objects[3], (s32)((u8 *)&lbl_80345B40 + 0x1C8),
-                *(s32 *)(u32)fn_80261A08(frame.bufB, 1));
-    fn_802619E8(&frame.objects[4], (s32)((u8 *)&lbl_80345B40 + 0x1D8),
-                *(s32 *)(u32)fn_80261A08(frame.bufB, 2));
-    fn_802619E8(&frame.objects[5], (s32)((u8 *)&lbl_80345B40 + 0x1E8),
-                *(s32 *)(u32)fn_802619D8(frame.bufA, 0));
-    fn_802619E8(&frame.objects[6], (s32)((u8 *)&lbl_80345B40 + 0x1F8),
-                *(s32 *)(u32)fn_802619D8(frame.bufA, 1));
-    fn_802619E8(&frame.objects[7], (s32)((u8 *)&lbl_80345B40 + 0x208),
-                *(s32 *)(u32)fn_802619D8(frame.bufA, 2));
-    fn_802619E8(&frame.objects[8], (s32)((u8 *)&lbl_80345B40 + 0x218),
-                *(s32 *)(u32)fn_802619D8(frame.bufA, 3));
-    fn_802619E8(&frame.objects[9], (s32)((u8 *)&lbl_80345B40 + 0x228),
-                *(s32 *)(u32)fn_802619D8(frame.bufA, 4));
-    fn_802619E8(&frame.objects[10], (s32)((u8 *)&lbl_80345B40 + 0x238),
-                *(s32 *)(u32)fn_802619D8(frame.bufA, 5));
-    fn_80261980(&frame.objects[11], (s32)((u8 *)&lbl_80345B40 + 0x248),
-                fn_802619A0(&sp8), 0);
-    fn_80261980(&frame.objects[12], (s32)((u8 *)&lbl_80345B40 + 0x258),
-                fn_80261948(&sp8), 0);
-    fn_80261688(&frame.objects[13], 0x126, 0, (s32)fn_802616A8);
-    fn_80261688(&frame.objects[14], 0x128, 0, (s32)fn_802613E0);
-    fn_80261688(&frame.objects[15], 0xD, -2, (s32)fn_80261178);
-    fn_80261688(&frame.objects[16], 0x121, 0, (s32)fn_802610C8);
-    fn_80261688(&frame.objects[17], 0x1B, -1, (s32)fn_80260E30);
-    fn_80260E04((s32 *)&frame.objects[18], (s32 *)&lbl_80498F00);
-
-    args[0] = lbl_802FA6C0[0];
-    args[1] = lbl_802FA6C0[1];
-    args[2] = lbl_802FA6C0[2];
-    args[3] = lbl_802FA6C0[3];
-    args[4] = lbl_802FA6C0[4];
-    args[1] = (s32)&frame.objects[0];
-
-loop_10:
-    result = fn_802146BC(args, -0x3E7, -0x3E7, 1);
-    if (result == -2) {
-        fn_80260DC4((s32)&sp8, -1);
-        result = -2;
-    } else if (result == -1) {
-        fn_80260DC4((s32)&sp8, -1);
-        result = -1;
-    } else {
-        fn_802E317C((u8 *)&lbl_80345B40 + 0x268);
-        goto loop_10;
-    }
-
-loop_end:
-    if (result != -1) {
-        goto loop_6;
-    }
-
-    *(void **)&lbl_8055F420 = 0;
-    if (frame.header[5] != 0) {
-        if (frame.header[5] != 0) {
-            object = (void *)frame.header[5];
-            vtable = *(void ***)object;
-            ((void (*)(void *, s32))vtable[2])(object, 1);
-        }
-        frame.header[5] = 0;
-    }
-    lbl_8055F3EC = 0;
-
-    for (i = 0, offset = 0; i < frame.header[2]; i++, offset += 4) {
-        object = *(void **)((u8 *)(u32)frame.bufA[0] + offset);
-        if (object != 0) {
-            vtable = *(void ***)object;
-            ((void (*)(void *, s32))vtable[2])(object, 1);
-        }
-    }
-    for (i = 0, offset = 0; i < frame.header[3]; i++, offset += 4) {
-        object = *(void **)((u8 *)(u32)frame.bufB[0] + offset);
-        if (object != 0) {
-            vtable = *(void ***)object;
-            ((void (*)(void *, s32))vtable[2])(object, 1);
-        }
-    }
-
-    frame.bufB[0] = 0;
-    frame.bufB[1] = 0;
-    frame.bufB[2] = 0;
-    frame.bufA[0] = 0;
-    frame.bufA[1] = 0;
-    frame.bufA[2] = 0;
-
-    currentMode = fn_80012810();
-    if (initialMode != currentMode) {
-        if (currentMode != 0x134) {
-            fn_80012794();
-        }
-        if (initialMode != 0x134) {
-            fn_80012790(initialMode);
-        }
-    }
-}
 #pragma pop
+void fn_80260954(s32 arg0) {
+       typedef struct {
+           s32 word[5];
+       } Obj20;
+       typedef struct {
+           s32 header[6];
+           s32 bufA[9];
+           s32 bufB[15];
+           Obj20 objects[19];
+       } Frame;
+   
+       Frame frame;
+     s32 *header;
+    s32 value;
+       s32 sp8;
+       s32 args[5];
+       s32 initialMode;
+       s32 currentMode;
+       s32 result;
+       s32 i;
+       s32 offset;
+       u8 *stringBase = &lbl_80345B40;
+       void *object;
+       void **vtable;
+   
+       header = frame.header;
+     initialMode = fn_80012810();
+       if (initialMode != 0x130) {
+           if (initialMode != 0x134) {
+               fn_80012794();
+           }
+           fn_80012790(0x130);
+       }
+       lbl_8055F3E4 = fn_8027B878(arg0);
+       fn_8026213C(frame.bufA);
+       fn_80262120(frame.bufB);
+       *(void **)&lbl_8055F420 = &header[0];
+       header[4] = arg0;
+       header[1] = 0;
+       header[0] = 0;
+       header[5] = 0;
+       fn_80261C68(header);
+   
+   loop_6:
+       fn_8026003C();
+       if (lbl_8055F3E8 != 0) {
+           fn_80261AF0(header, header[4] + 1);
+           lbl_8055F3E8 = 0;
+           if (header[4] == 0) {
+               lbl_8055F3EB = 0;
+               result = -1;
+               goto loop_end;
+           }
+       }
+   
+       fn_80261AE8(&sp8, header[4]);
+       fn_80261A7C(&frame.objects[0], (s32)fn_80261AA0);
+       fn_80261A18(&frame.objects[1], (s32)fn_80261A40);
+   
+       value = *(s32 *)(u32)fn_80261A08(frame.bufB, 0);
+        fn_802619E8(&frame.objects[2], (s32)(stringBase + 0x1B8), value);
+       value = *(s32 *)(u32)fn_80261A08(frame.bufB, 1);
+        fn_802619E8(&frame.objects[3], (s32)(stringBase + 0x1C8), value);
+       value = *(s32 *)(u32)fn_80261A08(frame.bufB, 2);
+        fn_802619E8(&frame.objects[4], (s32)(stringBase + 0x1D8), value);
+       value = *(s32 *)(u32)fn_802619D8(frame.bufA, 0);
+        fn_802619E8(&frame.objects[5], (s32)(stringBase + 0x1E8), value);
+       value = *(s32 *)(u32)fn_802619D8(frame.bufA, 1);
+        fn_802619E8(&frame.objects[6], (s32)(stringBase + 0x1F8), value);
+       value = *(s32 *)(u32)fn_802619D8(frame.bufA, 2);
+        fn_802619E8(&frame.objects[7], (s32)(stringBase + 0x208), value);
+       value = *(s32 *)(u32)fn_802619D8(frame.bufA, 3);
+        fn_802619E8(&frame.objects[8], (s32)(stringBase + 0x218), value);
+       value = *(s32 *)(u32)fn_802619D8(frame.bufA, 4);
+        fn_802619E8(&frame.objects[9], (s32)(stringBase + 0x228), value);
+       value = *(s32 *)(u32)fn_802619D8(frame.bufA, 5);
+        fn_802619E8(&frame.objects[10], (s32)(stringBase + 0x238), value);
+       fn_80261980(&frame.objects[11], (s32)(stringBase + 0x248),
+                   fn_802619A0(&sp8), 0);
+       fn_80261980(&frame.objects[12], (s32)(stringBase + 0x258),
+                   fn_80261948(&sp8), 0);
+       fn_80261688(&frame.objects[13], 0x126, 0, (s32)fn_802616A8);
+       fn_80261688(&frame.objects[14], 0x128, 0, (s32)fn_802613E0);
+       fn_80261688(&frame.objects[15], 0xD, -2, (s32)fn_80261178);
+       fn_80261688(&frame.objects[16], 0x121, 0, (s32)fn_802610C8);
+       fn_80261688(&frame.objects[17], 0x1B, -1, (s32)fn_80260E30);
+       fn_80260E04((s32 *)&frame.objects[18], (s32 *)&lbl_80498F00);
+   
+       args[0] = lbl_802FA6C0[0];
+       args[1] = lbl_802FA6C0[1];
+       args[2] = lbl_802FA6C0[2];
+       args[3] = lbl_802FA6C0[3];
+       args[4] = lbl_802FA6C0[4];
+       args[1] = (s32)header;
+   
+   loop_10:
+       result = fn_802146BC(args, -0x3E7, -0x3E7, 1);
+       if (result == -1) {
+            fn_80260DC4((s32)&sp8, -1);
+            result = -1;
+        } else if (result >= 0) {
+            fn_802E317C(stringBase + 0x268);
+            goto loop_10;
+        } else if (result >= -2) {
+            fn_80260DC4((s32)&sp8, -1);
+            result = -2;
+        } else {
+            fn_802E317C(stringBase + 0x268);
+            goto loop_10;
+        }
+   
+   loop_end:
+       if (result != -1) {
+           goto loop_6;
+       }
+   
+       *(void **)&lbl_8055F420 = 0;
+       if (header[5] != 0) {
+           if (header[5] != 0) {
+               object = (void *)header[5];
+               vtable = *(void ***)object;
+               ((void (*)(void *, s32))vtable[2])(object, 1);
+           }
+           header[5] = 0;
+       }
+       lbl_8055F3EC = 0;
+   
+       for (i = 0, offset = 0; i < header[2]; i++, offset += 4) {
+           object = *(void **)((u8 *)(u32)frame.bufA[0] + offset);
+           if (object != 0) {
+               vtable = *(void ***)object;
+               ((void (*)(void *, s32))vtable[2])(object, 1);
+           }
+       }
+       for (i = 0, offset = 0; i < header[3]; i++, offset += 4) {
+           object = *(void **)((u8 *)(u32)frame.bufB[0] + offset);
+           if (object != 0) {
+               vtable = *(void ***)object;
+               ((void (*)(void *, s32))vtable[2])(object, 1);
+           }
+       }
+   
+       frame.bufB[0] = 0;
+       frame.bufB[1] = 0;
+       frame.bufB[2] = 0;
+       frame.bufA[0] = 0;
+       frame.bufA[1] = 0;
+       frame.bufA[2] = 0;
+   
+       currentMode = fn_80012810();
+       if (initialMode != currentMode) {
+           if (currentMode != 0x134) {
+               fn_80012794();
+           }
+           if (initialMode != 0x134) {
+               fn_80012790(initialMode);
+           }
+       }
+   }
 s32 fn_80260DC4(s32 arg0, s32 arg1) {
     if (arg0 != 0 && arg1 > 0) {
         fn_80128668();
