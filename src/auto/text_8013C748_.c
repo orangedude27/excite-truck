@@ -3,11 +3,15 @@
 
 void fn_8013C7D0(void);
 
+extern int lbl_8055E188;
+void fn_80131818(int);
+void fn_8013C748(void);
+
 extern char lbl_8032C478[];
 void fn_8013C748(void) {
     int *p = (int *)&lbl_8032C478;
-    while (*p != 0) {
-        p[2] = 0;
+    while (*p) {
+        *(int *)(p + 2) = 0;
         p += 3;
     }
 }
