@@ -177,6 +177,20 @@ struct Dummy_80163F7C_VT3 {
     virtual void f22();
     virtual void f23();
 };
+extern "C" {
+static inline s32 fn_80163F7C_method_flag(void *obj, const char *key, s32 value) {
+    return ((Dummy_80163F7C_VT1 *)obj)->f10(key, value);
+}
+static inline const char *fn_80163F7C_method_string(void *obj, const char *key, const char *fallback) {
+    return ((Dummy_80163F7C_VT1 *)obj)->f4(key, fallback);
+}
+static inline s32 fn_80163F7C_method_has(void *obj, const char *key) {
+    return ((Dummy_80163F7C_VT1 *)obj)->f21(key);
+}
+static inline s32 fn_80163F7C_method_read(void *obj, const char *key, s32 index, void *data) {
+    return ((Dummy_80163F7C_VT3 *)obj)->f21(key, index, data);
+}
+}
 #pragma cplusplus off
 
 extern s32 lbl_8055E300;
@@ -1077,10 +1091,13 @@ extern const char lbl_8055A108[];
 extern const char lbl_8055A10C[];
 extern f32 lbl_80561864;
 extern s32 fn_802C6FC0(const char *, s32, s32);
+#pragma push
+#pragma small_data on
 #pragma cplusplus on
 extern "C" void fn_80163F7C(void *arg0) {
     u8 *self = (u8 *)arg0;
     register const char *name = (const char *)(lbl_8032F588 + 0x588);
+    register u8 *base = lbl_8032F588;
     s32 result = fn_802C6FC0(name, 0, 0);
     s32 keyResult;
     u8 *obj;
@@ -1096,24 +1113,24 @@ extern "C" void fn_80163F7C(void *arg0) {
 
     *(s32 *)(self + 0xA0) = result;
     if (result == -1) {
-        ((void (*)(const char *, ...))fn_802E30C8)((const char *)(lbl_8032F588 + 0x598), name);
+        ((void (*)(const char *, ...))fn_802E30C8)((const char *)(base + 0x598), name);
     } else {
         f32 first, second;
         ((void (*)(s32, f32 *))fn_802C77F0)(result, work.bounds);
-        first = work.bounds[3] - work.bounds[2];
-        second = work.bounds[1] - work.bounds[0];
+        first = work.bounds[5] - work.bounds[4];
+        second = work.bounds[3] - work.bounds[2];
         if (second > first) first = second;
-        second = work.bounds[5] - work.bounds[4];
+        second = work.bounds[1] - work.bounds[0];
         if (second > first) first = second;
         *(f32 *)(self + 0xCC) = first * lbl_8056185C;
     }
-    *(void **)(self + 0xD0) = fn_802CAC28(lbl_8032F588 + 0x5C0, 0);
-    *(s32 *)(self + 0xDC) = fn_80207848(lbl_8032F588 + 0x5D0, 1);
+    *(void **)(self + 0xD0) = fn_802CAC28(base + 0x5C0, 0);
+    *(s32 *)(self + 0xDC) = fn_80207848(base + 0x5D0, 1);
     obj = *(u8 **)(self + 4);
-    *(u8 *)(self + 0xD8) = (u8)((Dummy_80163F7C_VT1 *)obj)->f10((const char *)(lbl_8032F588 + 0x5DC), 0);
+    *(u8 *)(self + 0xD8) = (u8)((Dummy_80163F7C_VT1 *)obj)->f10((const char *)(base + 0x5DC), 0);
     obj = *(u8 **)(self + 4);
     {
-        const char *value = ((Dummy_80163F7C_VT1 *)obj)->f4((const char *)(lbl_8032F588 + 0x5EC), (const char *)(lbl_8032F588 + 0x5FC));
+        const char *value = ((Dummy_80163F7C_VT1 *)obj)->f4((const char *)(base + 0x5EC), (const char *)(base + 0x5FC));
         if (sscanf(value, (const char *)lbl_8055A108, (s32 *)(self + 0xD4)) != 1) {
             *(s32 *)(self + 0xD4) = -1;
         }
