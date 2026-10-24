@@ -1786,6 +1786,8 @@ extern "C" void VFiPFDIR_FinalizeAllDirs(u8 *arg0) {
 }
 
 #pragma dont_inline on
+#pragma push
+#pragma opt_common_subs off
 extern "C" void *fn_800A9B0C(void *arg0) {
     void *vol;
     s32 temp_r3;
@@ -1807,7 +1809,8 @@ extern "C" void *fn_800A9B0C(void *arg0) {
     fn_800B783C((u8 *)vol + 0x1F90);
     return (void *)temp_r3;
 }
-
+#pragma pop
+#pragma dont_inline reset
 extern "C" s32 fn_800A9BB4(void *arg0, void *arg1, s32 arg2, s32 arg3, u32 arg4, s32 arg5, s32 *arg6, s32 arg_sp0) {
  extern s32 VFiPFPATH_cmpName(void*,s32,s32); extern s32 fn_800B317C(void*,s32); extern s32 fn_800B3A70(void*,void*,s32); extern void fn_800B3BEC(void*,u8); extern s32 lbl_803D2140[];
  s32 sp8; s32 mask=arg3; s32 ret=1, valid=1, i; u8 sum=0;
