@@ -9,6 +9,7 @@ extern f32 lbl_80563D80;
 extern f32 lbl_80563D84;
 extern f32 lbl_8055F47C;
 extern u32 lbl_80499050[];
+extern void fn_80015B20(void *, void *, void *);
 
 void fn_8026B840(void) {}
 
