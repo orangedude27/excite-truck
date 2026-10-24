@@ -679,6 +679,184 @@ void fn_80261AA0(void) {
 
 void fn_80261AE8(s32 *arg0, s32 arg1) { *arg0 = arg1; }
 
+#pragma cplusplus on
+extern "C" void *fn_801284F8(s32, void *);
+extern "C" void *fn_80207848(void *, s32);
+extern "C" void *fn_8023512C(void *);
+extern "C" void *fn_80232578(void *);
+extern "C" void *memset(void *, int, unsigned int);
+extern "C" void fn_80261C68(s32 *arg0) {
+    struct Dummy {
+        virtual void slot0();
+        virtual void slot1();
+        virtual void slot2();
+        virtual s32 slot3();
+        virtual void *slot4(s32);
+        virtual void slot5();
+        virtual s32 slot6();
+        virtual void *slot7(s32);
+        virtual void slot8();
+        virtual void slot9();
+        virtual void slot10();
+        virtual void slot11();
+        virtual void slot12();
+        virtual void slot13();
+        virtual void slot14();
+        virtual void slot15();
+        virtual void slot16();
+        virtual void slot17();
+        virtual void slot18();
+        virtual void slot19();
+        virtual void slot20();
+        virtual void slot21();
+        virtual void slot22();
+        virtual void slot23();
+        virtual void slot24();
+        virtual void slot25();
+        virtual void slot26();
+        virtual void slot27();
+        virtual void slot28();
+    };
+    Dummy *manager;
+    Dummy *groupObject;
+    Dummy *itemObject;
+    s32 i;
+    s32 j;
+    s32 count;
+    s32 max;
+    s32 outer;
+    s32 inner;
+    void *object;
+    void *item;
+    u8 *group;
+    u32 *base;
+
+    *(s32 *)((u8 *)arg0 + 8) = 0;
+    manager = (Dummy *)lbl_8055F3E4;
+    *(s32 *)((u8 *)arg0 + 0xC) = manager->slot3();
+    memset((u8 *)arg0 + 0x60, 0, 0x18);
+    memset((u8 *)arg0 + 0x54, 0, 0xC);
+    *(s32 *)((u8 *)arg0 + 0x1C) = 0;
+    *(s32 *)((u8 *)arg0 + 0x40) = 0;
+    group = (u8 *)arg0;
+    outer = 0;
+    for (;;) {
+        max = manager->slot3();
+        if (max >= 3) {
+            max = 3;
+        }
+        if (outer >= max) {
+            break;
+        }
+        *(void **)(group + 0x54) = manager->slot4(outer);
+        object = fn_801284F8(0x2C, (u8 *)&lbl_80345B40 + 0x144);
+        if (object != 0) {
+            *(s32 *)((u8 *)object + 0x14) = 0;
+            *(void **)object = lbl_80345E28;
+            *(s32 *)((u8 *)object + 0x20) = outer;
+            *(void **)((u8 *)object + 0x18) = manager->slot4(outer);
+            *(u8 *)((u8 *)object + 0x1C) = 0;
+            *(u8 *)((u8 *)object + 0x1D) = 1;
+            *(u8 *)((u8 *)object + 0x1E) = 0;
+            *(u8 *)((u8 *)object + 0x1F) = 0;
+            *(void **)((u8 *)object + 0x24) = fn_8023512C((u8 *)&lbl_80345B40 + 0x150);
+            *(void **)((u8 *)object + 0x28) = fn_80232578((u8 *)&lbl_80345B40 + 0x15C);
+        }
+        count = *(s32 *)((u8 *)arg0 + 0x40);
+        *(s32 *)((u8 *)arg0 + 0x40) = count + 1;
+        *(void **)(*(u32 **)((u8 *)arg0 + 0x3C) + count) = object;
+        groupObject = *(Dummy **)(group + 0x54);
+        inner = 0;
+        for (;;) {
+            max = groupObject->slot6();
+            if (max >= 6) {
+                max = 6;
+            }
+            if (inner >= max) {
+                break;
+            }
+            item = groupObject->slot7(inner);
+            count = *(s32 *)((u8 *)arg0 + 8);
+            *(void **)((u8 *)arg0 + 0x60 + count * 4) = item;
+            item = fn_801284F8(0x28, (u8 *)&lbl_80345B40 + 0x168);
+            if (item != 0) {
+                groupObject = (Dummy *)manager->slot4(outer);
+                itemObject = (Dummy *)groupObject->slot7(inner);
+                *(s32 *)((u8 *)item + 0x14) = 0;
+                *(void **)item = lbl_80345EA0;
+                *(void **)((u8 *)item + 0x18) = itemObject;
+                *(u8 *)((u8 *)item + 0x1E) = 0;
+                *(u8 *)((u8 *)item + 0x1C) = 0;
+                *(u8 *)((u8 *)item + 0x1D) = 1;
+                *(void **)((u8 *)item + 0x20) = fn_8023512C((u8 *)&lbl_80345B40 + 0x150);
+                *(void **)((u8 *)item + 0x24) = fn_80232578((u8 *)&lbl_80345B40 + 0x15C);
+            }
+            count = *(s32 *)((u8 *)arg0 + 0x1C);
+            *(s32 *)((u8 *)arg0 + 0x1C) = count + 1;
+            *(void **)(*(u32 **)((u8 *)arg0 + 0x18) + count) = item;
+            inner++;
+            *(s32 *)((u8 *)arg0 + 8) += 1;
+        }
+        group += 4;
+        outer++;
+    }
+    object = fn_80207848((u8 *)&lbl_80345B40 + 0x178, 0);
+    *(void **)((u8 *)arg0 + 0x14) = object;
+    if (object != 0) {
+        if (lbl_80563B88 != *(float *)((u8 *)object + 8)) {
+            *(u8 *)((u8 *)object + 0x4D) = 1;
+            *(float *)((u8 *)object + 8) = lbl_80563B88;
+        }
+    } else {
+        fn_802E317C((u8 *)&lbl_80345B40 + 0x188);
+    }
+
+    base = (u32 *)lbl_8055F420;
+    for (i = 0, j = 0; i < (s32)base[2]; i++, j += 4) {
+        if (lbl_8055F3EB == 0) {
+            object = *(void **)((u8 *)base[6] + j);
+            ((Dummy *)object)->slot24();
+            object = *(void **)((u8 *)base[6] + j);
+            ((Dummy *)object)->slot27();
+        } else if (i == (s32)base[0]) {
+            object = *(void **)((u8 *)base[6] + j);
+            ((Dummy *)object)->slot26();
+        } else if (i == (s32)(base[1] * 2) || i == (s32)(base[1] * 2 + 1)) {
+            object = *(void **)((u8 *)base[6] + j);
+            ((Dummy *)object)->slot25();
+            object = *(void **)((u8 *)base[6] + j);
+            ((Dummy *)object)->slot27();
+        } else {
+            object = *(void **)((u8 *)base[6] + j);
+            ((Dummy *)object)->slot27();
+        }
+    }
+    for (i = 0, j = 0; i < (s32)base[3]; i++, j += 4) {
+        if (lbl_8055F3EB == 0) {
+            if (i == (s32)base[1]) {
+                object = *(void **)((u8 *)base[0xF] + j);
+                ((Dummy *)object)->slot26();
+            } else {
+                object = *(void **)((u8 *)base[0xF] + j);
+                ((Dummy *)object)->slot25();
+                object = *(void **)((u8 *)base[0xF] + j);
+                ((Dummy *)object)->slot27();
+            }
+        } else if (i == (s32)base[1]) {
+            object = *(void **)((u8 *)base[0xF] + j);
+            ((Dummy *)object)->slot26();
+            object = *(void **)((u8 *)base[0xF] + base[1] * 4);
+            ((Dummy *)object)->slot28();
+        } else {
+            object = *(void **)((u8 *)base[0xF] + j);
+            ((Dummy *)object)->slot24();
+            object = *(void **)((u8 *)base[0xF] + j);
+            ((Dummy *)object)->slot27();
+        }
+    }
+}
+#pragma cplusplus reset
+
 void fn_80262120(void *arg0) {
     s32 zero;
     *(s32 *)arg0 = (s32)((u8 *)arg0 + 0xC);
