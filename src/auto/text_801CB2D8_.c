@@ -845,83 +845,32 @@ extern s32 fn_801345D8(char *, s32, const char *, ...);
 extern void fn_80147230(void *, const char *, void *, ...);
 extern void fn_801476C4(void *, f32, f32);
 #pragma push
-#pragma paired_single off
+#pragma paired_single reset
 void fn_801CD970(int arg0) {
-    typedef struct {
-        s32 field0;
-        f32 field4;
-        s32 field8;
-        s32 fieldC;
-        f32 field10;
-        f32 field14;
-        s32 field18;
-    } DataA;
-    typedef struct {
-        s32 field0;
-        f32 field4;
-        s32 field8;
-        s32 fieldC;
-        f32 field10;
-        f32 field14;
-        s32 field18;
-        s32 field1C;
-    } DataB;
-    typedef struct {
-        u8 field0;
-        u8 active;
-        u8 pad2[2];
-        f32 timer;
-        void *data;
-        u32 padC;
-        void *next;
-    } Item;
-    void *manager;
-    Item *item;
-    f32 threshold;
-    f32 delta;
-    f32 temp;
-    f32 ratio;
-    f32 value;
-    f32 blend;
-    f32 clamp;
-    char *strings;
-    void *iface;
-    DataA *record0;
-    DataB *recordA;
-    DataB *recordB;
-    DataB *recordC;
-    DataA local0;
-    DataB local1;
-    s32 choices[3];
-    char out1[0x40];
-    char out2[0x10];
-    char vec[0x14];
-    s32 index;
-    s32 zero;
-    s32 active;
-
+    typedef struct { s32 field0; f32 field4; s32 field8; s32 fieldC; f32 field10; f32 field14; s32 field18; } DataA;
+    typedef struct { s32 field0; f32 field4; s32 field8; s32 fieldC; f32 field10; f32 field14; s32 field18; s32 field1C; } DataB;
+    typedef struct { u8 field0; u8 active; u8 pad2[2]; f32 timer; void *data; u32 padC; void *next; } Item;
+    void *manager; Item *item;
+    f32 threshold, delta, temp, ratio, value, blend, clamp;
+    char *strings; void *iface;
+    DataA *record0; DataB *recordA, *recordB, *recordC;
+    DataB local1; DataA local0;
+    char out2[0x10]; s32 choices[3]; char out1[0x40]; char vec[0x14];
+    s32 index, zero, active;
     strings = lbl_80337AC8;
-    if (fn_801CE898() != 0)
-        return;
+    if (fn_801CE898() != 0) return;
     manager = lbl_8055E884;
-    if (*(s32 *)((char *)manager + 0x40) == 0)
-        return;
-    if (*(s32 *)((char *)manager + 0x29C) == 0)
-        return;
-    delta = fn_801E7E24();
-    threshold = lbl_805629FC;
-    active = 1;
-    zero = 0;
+    if (*(s32 *)((char *)manager + 0x40) == 0) return;
+    if (*(s32 *)((char *)manager + 0x29C) == 0) return;
+    delta = fn_801E7E24(); threshold = lbl_805629FC; active = 1; zero = 0;
     goto check_head;
-
 process_item:
     if (fn_8026B0C0(arg0) != 0) {
         if (*(u8 *)((char *)item + 1) != 0) {
             if (*(f32 *)((char *)item + 4) < lbl_80562A0C) {
                 Item *next = *(Item **)((char *)item + 0x10);
                 *(Item **)((char *)manager + 0x29C) = next;
-                if (next == 0)
-                    *(void **)((char *)manager + 0x2A0) = (char *)manager + 0x29C;
+                if (next == 0) *(void **)((char *)manager + 0x2A0) = (char *)manager + 0x29C;
                 *(void **)((char *)item + 0x10) = (void *)zero;
                 *(f32 *)((char *)item + 4) = lbl_80562A10;
                 *(u8 *)item = (u8)zero;
@@ -929,77 +878,70 @@ process_item:
             }
             *(f32 *)((char *)item + 4) = lbl_80562A14;
         }
-        item = 0;
-        goto render_item;
+        item = 0; goto render_item;
     }
-
     *(u8 *)((char *)item + 1) = (u8)active;
     temp = *(f32 *)((char *)item + 4) - delta;
     *(f32 *)((char *)item + 4) = temp;
     if (temp < threshold) {
         Item *next = *(Item **)((char *)item + 0x10);
         *(Item **)((char *)manager + 0x29C) = next;
-        if (next == 0)
-            *(void **)((char *)manager + 0x2A0) = (char *)manager + 0x29C;
+        if (next == 0) *(void **)((char *)manager + 0x2A0) = (char *)manager + 0x29C;
         *(void **)((char *)item + 0x10) = (void *)zero;
         *(u8 *)item = (u8)zero;
         goto check_head;
     }
     goto render_item;
-
 check_head:
     item = *(Item **)((char *)manager + 0x29C);
-    if (item != 0)
-        goto process_item;
+    if (item != 0) goto process_item;
     item = 0;
-    if (item == 0)
-        return;
-
+    if (item == 0) return;
 render_item:
     if (item != 0) {
         iface = *(void **)((char *)manager + 0x40);
         record0 = ((DataA *(*)(void *, char *))(*(void ***)iface)[5])(iface, strings + 0x310);
         if (record0 != 0) {
             value = *(f32 *)((char *)item + 4);
-            if (value >= lbl_80562A0C)
-                value = lbl_805629F0 - value;
+            if (value >= lbl_80562A0C) value = lbl_805629F0 - value;
             temp = record0->field10;
             ratio = (value - lbl_805629FC) / lbl_80562A0C;
             blend = temp + (lbl_80562A18 - (record0->field4 + temp));
             clamp = lbl_805629E4;
-            if (clamp >= ratio)
-                clamp = ratio;
-            if (clamp > lbl_805629FC)
-                clamp = lbl_805629FC;
+            if (clamp >= ratio) clamp = ratio;
+            if (clamp > lbl_805629FC) clamp = lbl_805629FC;
             blend = blend + (clamp * (lbl_805629FC - blend));
-
             if (record0 != 0) {
-                local0 = *record0;
+                local0.field0 = record0->field0;
+                *(s32 *)((char *)&local0 + 4) = *(s32 *)((char *)record0 + 4);
+                local0.field8 = record0->field8;
+                local0.fieldC = record0->fieldC;
+                local0.field10 = record0->field10;
+                local0.field14 = record0->field14;
+                local0.field18 = record0->field18;
                 local0.field4 += blend;
                 fn_80148070(&local0, -1, *(s32 *)((char *)manager + 0xC), record0->field14);
             }
-
             recordA = ((DataB *(*)(void *, char *))(*(void ***)iface)[3])(iface, strings + 0x320);
-            choices[0] = lbl_802F9930[0];
-            choices[1] = lbl_802F9930[1];
-            choices[2] = lbl_802F9930[2];
+            choices[0] = lbl_802F9930[0]; choices[1] = lbl_802F9930[1]; choices[2] = lbl_802F9930[2];
             index = fn_80204CF0(lbl_802F9930[1], lbl_802F9930[0], lbl_802F9930);
             recordB = ((DataB *(*)(void *, s32))(*(void ***)iface)[3])(iface, choices[index]);
             recordC = ((DataB *(*)(void *, char *))(*(void ***)iface)[3])(iface, strings + 0x334);
             if (recordA != 0 && recordB != 0 && recordC != 0) {
-                local1 = *recordA;
+                local1.field0 = recordA->field0; *(s32 *)((char *)&local1 + 4) = *(s32 *)((char *)recordA + 4); local1.field8 = recordA->field8; local1.fieldC = recordA->fieldC;
+                local1.field10 = recordA->field10; local1.field14 = recordA->field14; local1.field18 = recordA->field18; local1.field1C = recordA->field1C;
                 local1.field4 += blend;
                 fn_8001BD38(*(s32 *)((char *)item->data), vec, 0x14, recordA->field10);
                 fn_8001BD28(*(s32 *)((char *)item->data));
                 fn_801345D8(out1, 0x40, lbl_8055AB38, fn_8001BA6C());
                 fn_801345D8(out2, 0x10, lbl_8055AB38, vec);
                 fn_80147230(&local1, lbl_8055AB38, out1);
-
-                local1 = *recordB;
+                local1.field0 = recordB->field0; *(s32 *)((char *)&local1 + 4) = *(s32 *)((char *)recordB + 4); local1.field8 = recordB->field8; local1.fieldC = recordB->fieldC;
+                local1.field10 = recordB->field10; local1.field14 = recordB->field14; local1.field18 = recordB->field18; local1.field1C = recordB->field1C;
                 local1.field4 += blend;
                 fn_80147230(&local1, lbl_8055AB38, out2, recordB->field4, recordB->field10);
-
-                local1 = *recordC;
+                local1.field0 = recordC->field0; *(s32 *)((char *)&local1 + 4) = *(s32 *)((char *)recordC + 4); local1.field8 = recordC->field8; local1.fieldC = recordC->fieldC;
+                local1.field10 = recordC->field10; local1.field14 = recordC->field14; local1.field18 = recordC->field18; local1.field1C = recordC->field1C;
                 local1.field4 += blend;
                 fn_801476C4(&local1, recordC->field4, recordC->field10);
             }
