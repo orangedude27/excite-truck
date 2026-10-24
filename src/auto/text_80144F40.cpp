@@ -297,7 +297,6 @@ extern "C" s32 fn_801455B8(void *arg0, void *arg1) {
     extern char lbl_8032CEC8[];
     extern char lbl_80559E04[];
     extern char lbl_80559E0C[];
-    extern char lbl_80559DFC[];
     extern s32 fn_80145368(void);
     extern s32 fn_80144F40(const char *);
     extern s32 fn_801454E8(void *, const char *);
