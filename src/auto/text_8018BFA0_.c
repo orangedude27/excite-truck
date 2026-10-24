@@ -258,7 +258,7 @@ void fn_8018F6F8(void *arg0) {
 
 void fn_8018F76C(void *arg0, int arg1) {
     extern void fn_801BEB30(int, void **);
-    extern void fn_802E30C8(int *, int);
+    extern void fn_802E30C8(void *, int);
     extern float lbl_80562054;
     extern float lbl_80561F74;
     extern float lbl_80561F9C;
