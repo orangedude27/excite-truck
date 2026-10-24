@@ -5,6 +5,7 @@ typedef signed int s32;
 typedef unsigned char u8;
 extern int fn_80131234(void *);
 extern void *fn_8027DB40(s32);
+extern void *memset(void *, int, unsigned int);
 extern void *fn_8001668C(void *, s32);
 extern void *fn_80016BC8(void *, s32);
 extern void *fn_80018A8C(void *, s32, s32 *, s32);
@@ -824,7 +825,7 @@ extern "C" void fn_80242B1C(void *arg0) {
     unsigned int outer;
     s32 i, n, selected, selectedValue, current, previous;
     s32 modeA, modeB, mode;
-    s32 tick;
+    s32 tick, quotient;
     u8 *slot, *base, *widget, *entry, *child, *list;
     u8 *src, *dst;
     signed char c;
