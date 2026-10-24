@@ -92,8 +92,7 @@ void fn_802DEFA0(void) {
     GXLoadTexObj(fn_802D30F0(), 6);
 }
 
-#pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802DF1B4(void) {
     register u32 stage = 1;
     register u32 zero = 0;
@@ -105,7 +104,7 @@ void fn_802DF1B4(void) {
     GXSetNumIndStages(0);
     GXSetTevDirect(1);
 }
-#pragma pop
+#pragma scheduling on
 void fn_802DF21C(void) {
     GXSetTexCoordGen2(0, 1, 1, 0x2A, 0, 0x7D);
     GXSetNumTexGens(1);
