@@ -18,24 +18,50 @@ typedef struct { void *pad[2]; void (*method)(void *, s32); } Vtbl8;
 extern char lbl_80349368[];
 extern char lbl_80349378[];
 __declspec(section ".sdata") extern char lbl_8055CA30[];
-void *fn_802971B0(void *arg0) {
+#pragma scheduling invalid_target
+#pragma cplusplus on
+extern "C" void *fn_802971B0(void *arg0) {
+    struct Dummy {
+        virtual void v0(int);
+        virtual int v1();
+        virtual void v2();
+        virtual int v3(char *);
+        virtual void v4();
+        virtual void v5();
+        virtual void v6();
+        virtual void v7();
+        virtual void v8();
+        virtual void v9();
+        virtual void v10();
+        virtual void v11();
+        virtual void v12();
+        virtual void v13();
+        virtual void v14();
+        virtual void v15();
+        virtual void v16();
+        virtual void v17();
+        virtual void v18();
+        virtual void v19();
+        virtual void v20();
+        virtual int v21(char *);
+    };
     s32 value;
     void *obj;
     obj = fn_801284F8(8, lbl_80349368);
     if (obj != 0) {
         *(void **)obj = &lbl_803493C0;
-        value = ((Vtbl14 *)*(void **)arg0)->method(arg0, lbl_80349378);
-        *(s32 *)((char *)obj + 4) = fn_80296B10(value,
-            ((Vtbl5C *)*(void **)arg0)->method(arg0, lbl_8055CA30));
+        value = ((Dummy *)arg0)->v3(lbl_80349378);
+        *(s32 *)((char *)obj + 4) = fn_80296B10(value, ((Dummy *)arg0)->v21(lbl_8055CA30));
     }
-    if (obj != 0 && ((VtblC *)*(void **)obj)->method(obj) == 0) {
+    if (obj != 0 && ((Dummy *)obj)->v1() == 0) {
         if (obj != 0)
-            ((Vtbl8 *)*(void **)obj)->method(obj, 1);
+            ((Dummy *)obj)->v0(1);
         obj = 0;
     }
     return obj;
 }
-
+#pragma cplusplus reset
+#pragma scheduling on
 extern char lbl_8055CA40[];
 extern char *lbl_8055CA38[];
 extern char lbl_80349384[];
