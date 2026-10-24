@@ -145,7 +145,7 @@ void fn_801E43BC(void *arg0, float scale, float alpha) {
     fn_801E41D8((char *)arg0 + 0x24, p, 0xFF0000FF, alpha);
 }
 
-extern void fn_801E370C(float *, int, float, float, float, float, float, float, float, float, float, float, float);
+extern void fn_801E370C();
 void fn_801E44F4(void *arg0, int arg1, float farg0, float farg1, float farg2) {
     float sp[12];
     sp[0] = *(float *)((char *)arg0 + 0x0) * farg0;
