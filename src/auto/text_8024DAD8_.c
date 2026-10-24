@@ -187,8 +187,10 @@ extern "C" s32 fn_8024EC3C(void) {
         u8 *base = (u8 *)lbl_8055F2EC;
         void *obj = *(void **)(base + 0xD0);
         s32 arg = *(s32 *)(base + 0x2C);
-        if (((Dummy_8024EC3C *)obj)->f5(arg) != 0) return 1;
+        if (((Dummy_8024EC3C *)obj)->f5(arg) == 0) goto do_callback;
     }
+    return 1;
+do_callback:
     fn_80216D28();
     fn_80214D50(1);
     return 0;
