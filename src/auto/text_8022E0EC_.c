@@ -200,6 +200,210 @@ void fn_8022E4BC(void) {
     fn_8012C4D8();
 }
 
+void *memset(void *, int, unsigned int);
+char *strcpy(char *, const char *);
+int sprintf(char *, const char *, ...);
+int strcmp(const char *, const char *);
+void *fn_801284F8(unsigned int, const char *);
+void *fn_8012850C(unsigned int, const void *);
+#pragma small_data on
+extern char lbl_8055B960[];
+extern char lbl_8055B968[];
+extern char lbl_8055B96C[];
+extern char lbl_8055B974[];
+extern char lbl_8055B978[];
+extern float lbl_805635D8;
+extern float lbl_805635DC;
+#pragma small_data off
+#pragma scheduling invalid_target
+void *fn_8022E4C0(void *arg0) {
+    unsigned char *base;
+    unsigned char *entry;
+    unsigned char *cur;
+    unsigned char *next;
+    char *strings;
+    register int zero;
+    int index;
+    int type;
+    int y;
+    int dy;
+    int add_default;
+    float scale;
+
+    strings = lbl_803401F8;
+    base = fn_801284F8(0x68, lbl_8055B960);
+    memset(base, 0, 0x68);
+    *(unsigned char **)(base + 0x64) =
+        fn_8012850C(0x13400, strings + 0x60);
+    memset(*(void **)(base + 0x64), 0, 0x13400);
+    zero = 0;
+    entry = *(unsigned char **)(base + 0x64) + zero * 0x134;
+    *(int *)(entry + 0x00) = 0x21;
+    *(int *)(entry + 0x04) = 6;
+    *(int *)(entry + 0x08) = 0;
+    *(int *)(entry + 0x0c) = 0;
+    *(int *)(entry + 0x14) = 0x280;
+    *(int *)(entry + 0x18) = 0x1e0;
+    strcpy((char *)(entry + 0x40), strings + 0x6c);
+    zero = 1;
+    entry = *(unsigned char **)(base + 0x64) + zero * 0x134;
+    *(int *)(entry + 0x00) = 0x1c;
+    strcpy((char *)(entry + 0x40), *(char **)arg0);
+    *(int *)(entry + 0x08) = 0x140;
+    *(int *)(entry + 0x0c) = 0x1e;
+    *(int *)(entry + 0x14) = 0x20;
+    *(int *)(entry + 0x18) = 0x20;
+    *(int *)(entry + 0x04) = 0xc;
+    *(float *)(entry + 0x1c) = lbl_805635D8;
+    strcpy((char *)(entry + 0x20), strings + 0x7c);
+    *(int *)(entry + 0x90) = -1;
+    *(int *)(entry + 0x9c) = 0xff000000;
+    *(int *)(entry + 0xb0) = 0x1a;
+    *(int *)(entry + 0x84) = 2;
+    index = 0x268;
+    cur = *(unsigned char **)((unsigned char *)arg0 + 4);
+    scale = lbl_805635DC;
+    y = 0x5a;
+    type = *(int *)(cur + 4);
+    while (type != 0x7b) {
+        dy = 0x1e;
+        add_default = 1;
+        if (type == 6) {
+            cur += 0x14;
+            type = *(int *)(cur + 4);
+            continue;
+        } else if (type == 9) {
+            next = *(unsigned char **)(base + 0x64) + index;
+            *(int *)(next + 0x00) = 0x32;
+            *(int *)(next + 0x08) = 0x10e;
+            *(int *)(next + 0x0c) = y;
+            *(int *)(next + 0x14) = 0x8a;
+            *(int *)(next + 0x18) = 0xe;
+            strcpy((char *)(next + 0x20), *(char **)cur);
+            index += 0x134;
+            y += dy;
+        } else if (type == 3) {
+            next = *(unsigned char **)(base + 0x64) + index;
+            *(int *)(next + 0x00) = 0x1c;
+            sprintf((char *)(next + 0x40), lbl_8055B968, *(char **)cur);
+            index += 0x134;
+            *(int *)(next + 0x08) = 0x12c;
+            *(int *)(next + 0x0c) = y;
+            *(int *)(next + 0x14) = 0x20;
+            *(int *)(next + 0x18) = 0x20;
+            *(int *)(next + 0x04) = 0xc;
+            *(float *)(next + 0x1c) = scale;
+            strcpy((char *)(next + 0x20), strings + 0x7c);
+            *(int *)(next + 0x90) = -1;
+            *(int *)(next + 0x9c) = 0xff000000;
+            *(int *)(next + 0xb0) = 0x1a;
+            *(int *)(next + 0x84) = 2;
+            y += dy;
+        } else if (type == 0x10 || type == 7) {
+            next = *(unsigned char **)(base + 0x64) + index;
+            index += 0x134;
+            *(int *)(next + 0x00) = (type == 0x10) ? 0x31 : 0xa;
+            *(int *)(next + 0x08) = 0x12c;
+            *(int *)(next + 0x0c) = y;
+            *(int *)(next + 0x14) = 0x72;
+            *(int *)(next + 0x18) = 0x23;
+            strcpy((char *)(next + 0x20), *(char **)cur);
+            strcpy((char *)(next + 0x40), lbl_8055B96C);
+            y += dy;
+        } else if (type == 0) {
+            next = *(unsigned char **)(base + 0x64) + index;
+            *(int *)(next + 0x00) = 2;
+            *(int *)(next + 0x04) = 0x19;
+            *(int *)(next + 0x08) = 0xc8;
+            *(int *)(next + 0x0c) = y;
+            *(int *)(next + 0x14) = 0x72;
+            *(int *)(next + 0x18) = 0x23;
+            strcpy((char *)(next + 0x20), *(char **)cur);
+            strcpy((char *)(next + 0x40), *(char **)cur);
+            index += 0x134;
+            add_default = 0;
+            y += dy;
+        } else if (type == 2) {
+            if (cur == *(unsigned char **)((unsigned char *)arg0 + 4)
+                || *(int *)(cur - 0x10) != 9
+                || strcmp(*(char **)cur, *(char **)(cur - 0x14)) != 0) {
+                next = *(unsigned char **)(base + 0x64) + index;
+                *(int *)(next + 0x00) = 7;
+                *(int *)(next + 0x08) = 0xc8;
+                *(int *)(next + 0x0c) = y;
+                *(int *)(next + 0x14) = 0x72;
+                *(int *)(next + 0x18) = 0x23;
+                strcpy((char *)(next + 0x20), *(char **)cur);
+                strcpy((char *)(next + 0x40), lbl_8055B974);
+                index += 0x134;
+                add_default = 0;
+                y += dy;
+            } else {
+                cur += 0x14;
+                type = *(int *)(cur + 4);
+                continue;
+            }
+        } else if (type == 0xc) {
+            next = *(unsigned char **)(base + 0x64) + index;
+            *(int *)(next + 0x00) = 9;
+            *(int *)(next + 0x08) = 0xc8;
+            *(int *)(next + 0x0c) = y;
+            *(int *)(next + 0x14) = 0x72;
+            *(int *)(next + 0x18) = 0x23;
+            strcpy((char *)(next + 0x20), *(char **)cur);
+            strcpy((char *)(next + 0x40), lbl_8055B978);
+            index += 0x134;
+        } else if (type == 0xa) {
+            next = *(unsigned char **)(base + 0x64) + index;
+            *(int *)(next + 0x00) = 0x17;
+            *(int *)(next + 0x08) = 0xc8;
+            *(int *)(next + 0x0c) = y;
+            *(int *)(next + 0x14) = 0xc8;
+            *(int *)(next + 0x18) = 0x50;
+            strcpy((char *)(next + 0x20), *(char **)cur);
+            dy = *(int *)(next + 0x18) + 5;
+            index += 0x134;
+        } else if (type == 5) {
+            if (*(char **)cur != 0) {
+                next = *(unsigned char **)(base + 0x64) + index;
+                *(int *)(next + 0x00) = 0x1a;
+                *(int *)(next + 0x08) = 0xc8;
+                *(int *)(next + 0x0c) = y;
+                *(int *)(next + 0x14) = 0xc8;
+                *(int *)(next + 0x18) = 0x32;
+                strcpy((char *)(next + 0x20), *(char **)cur);
+                index += 0x134;
+                dy = 0x32;
+            }
+        }
+        if (add_default && *(char **)cur != 0) {
+            next = *(unsigned char **)(base + 0x64) + index;
+            *(int *)(next + 0x00) = 0x1c;
+            strcpy((char *)(next + 0x40), *(char **)cur);
+            index += 0x134;
+            *(int *)(next + 0x08) = 0x64;
+            *(int *)(next + 0x0c) = y;
+            *(int *)(next + 0x14) = 0x20;
+            *(int *)(next + 0x18) = 0x20;
+            *(int *)(next + 0x04) = 0xc;
+            *(float *)(next + 0x1c) = scale;
+            strcpy((char *)(next + 0x20), strings + 0x7c);
+            *(int *)(next + 0x90) = -1;
+            *(int *)(next + 0x9c) = 0xff000000;
+            *(int *)(next + 0xb0) = 0x1a;
+            *(int *)(next + 0x84) = 2;
+        }
+        if (type == 0xc || type == 0xa || type == 5) {
+            y += dy;
+        }
+        cur += 0x14;
+        type = *(int *)(cur + 4);
+    }
+    return base;
+}
+#pragma scheduling on
+#pragma small_data off
+
 void fn_8022E960(void *arg0) {
     fn_80128670(*(int *)((char *)arg0 + 0x64));
     fn_80128668(arg0);
