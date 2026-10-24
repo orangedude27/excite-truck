@@ -310,22 +310,22 @@ struct Dummy_801A5ED8 {
   };
   #pragma cplusplus off
   
-  #pragma cplusplus on
-  extern "C" void fn_801A5ED8(void *arg0) {
-      fn_80189CB4();
-      void *obj = *(void **)((char *)arg0 + 0x270C);
-      *(unsigned char *)((char *)arg0 + 0x2704) = 1;
-      ((Dummy_801A5ED8 *)obj)->f16();
-      *(int *)((char *)arg0 + 0x2744) = 0;
-      *(int *)((char *)arg0 + 0x2768) = 0;
-      *(int *)((char *)arg0 + 0x278C) = 0;
-      *(int *)((char *)arg0 + 0x27B0) = 0;
-      *(int *)((char *)arg0 + 0x27D4) = 0;
-      *(int *)((char *)arg0 + 0x27F8) = 0;
-      *(int *)((char *)arg0 + 0x281C) = 0;
-      *(int *)((char *)arg0 + 0x2840) = 0;
-  }
-  #pragma cplusplus off
+#pragma cplusplus on
+extern "C" void fn_801A5ED8(void *arg0) {
+    fn_80189CB4();
+    void *obj = *(void **)((char *)arg0 + 0x270C);
+    *(unsigned char *)((char *)arg0 + 0x2704) = 1;
+    ((Dummy_801A5ED8 *)obj)->f15();
+    *(int *)((char *)arg0 + 0x2744) = 0;
+    *(int *)((char *)arg0 + 0x2768) = 0;
+    *(int *)((char *)arg0 + 0x278C) = 0;
+    *(int *)((char *)arg0 + 0x27B0) = 0;
+    *(int *)((char *)arg0 + 0x27D4) = 0;
+    *(int *)((char *)arg0 + 0x27F8) = 0;
+    *(int *)((char *)arg0 + 0x281C) = 0;
+    *(int *)((char *)arg0 + 0x2840) = 0;
+}
+#pragma cplusplus off
   
   int fn_801A5F44(void *arg0, int arg1) {
       void *obj = *(void **)((char *)arg0 + 0x270C);
