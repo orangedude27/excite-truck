@@ -1425,24 +1425,34 @@ extern "C" f32 lbl_805614A4;
 extern "C" f32 lbl_805615A0;
 extern "C" f32 lbl_805615A4;
 extern "C" f32 lbl_805615A8;
+#pragma scheduling invalid_target
 extern "C" s32 fn_80143218(s32 arg0, u8 *arg1) {
     u8 obj[0x38];
+    volatile f32 *input = (volatile f32 *)(arg1 + 0x18);
+    f32 *output = (f32 *)(arg1 + 0x30);
+    f32 fx, fy, fz;
+
     fn_801352B8(obj);
     fn_80135D60(obj, ((TObjC *)fn_80156A40())->vC(0));
     u8 *v = *(u8 **)(obj + 0x2C);
     fn_801B8048(arg1, obj, v, lbl_805614A4,
                 (*(f32 *)(v + 8) - lbl_805615A0) - lbl_805615A4);
-    f32 fx = *(f32 *)(arg1 + 0x18) * lbl_805615A8;
-    f32 fy = *(f32 *)(arg1 + 0x1C) * lbl_805615A8;
-    f32 fz = *(f32 *)(arg1 + 0x20) * lbl_805615A8;
-    *(f32 *)(arg1 + 0x30) = fx;
-    *(f32 *)(arg1 + 0x34) = fy;
+
+    fx = input[0];
+    register f32 scale = *(volatile f32 *)&lbl_805615A8;
+    fy = input[1];
+    fz = input[2];
+    fx *= scale;
+    fy *= scale;
+    fz *= scale;
+    output[0] = fx;
+    output[1] = fy;
     *(s32 *)(arg1 + 0x44) = 1;
-    *(f32 *)(arg1 + 0x38) = fz;
-    fn_8013530C(obj, -1, fy, fx, lbl_805615A8);
+    output[2] = fz;
+    fn_8013530C(obj, -1, fy, fx, scale);
     return 1;
 }
-
+#pragma scheduling on
 extern "C" void fn_801B8A68(void *, s32);
 extern "C" void fn_801432D4(TObj20b *arg0, s32 arg1) {
     u8 *obj = *(u8 **)((u8 *)arg0 + 0xB8) + arg1 * 0x12C;
