@@ -117,13 +117,17 @@ float fn_801DFE94(void) {
 }
 
 typedef void (*Fn)(void *);
-void fn_801DFEB8(void *arg0, int arg1, int arg2, int arg3) {
-    Fn volatile *vtable = *(Fn **)arg0;
-    Fn call = vtable[4];
-    call(arg0);
-    fn_801476D8(arg2, arg3);
+#pragma cplusplus on
+extern "C" void fn_801DFEB8(void *arg0, int arg1, int arg2, int arg3) {
+    struct Dummy_801DFEB8_Local {
+        virtual void d0();
+        virtual void d1();
+        virtual void* d2();
+    };
+    void *result = ((Dummy_801DFEB8_Local *)arg0)->d2();
+    ((void (*)(void *, int, int))fn_801476D8)(result, arg2, arg3);
 }
-
+#pragma cplusplus reset
 int fn_801DFF08(int index) { return lbl_804348E8[index]; }
 
 void fn_801DFF1C(int arg0) {
