@@ -371,11 +371,9 @@ void fn_802E0218(void) {
     GXSetNumTevStages(3);
 }
 
-#pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802E0420(void) {
-    volatile u32 mode = 1;
-    GXSetTexCoordGen2(0, mode, 4, 0x3C, 0, 0x7D);
+    GXSetTexCoordGen2(0, 1, 4, 0x3C, 0, 0x7D);
     GXSetNumTexGens(1);
     GXSetTevOrder(0, 0, 1, 0xFF);
     GXSetTevSwapMode(0, 0, 0);
@@ -387,7 +385,7 @@ void fn_802E0420(void) {
     GXSetTevAlphaOp(0, 0, 0, 0, 1, 0);
     GXSetNumTevStages(1);
 }
-#pragma pop
+#pragma scheduling on
 void fn_802E050C(void) {
     register u32 stage = 0;
     register u32 type = 1;
