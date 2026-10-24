@@ -640,7 +640,7 @@ loop_80:
                     temp_f26_2 = lbl_80561FF4;
                     var_r22 = (char *)arg0 + 0x152C;
                     temp_f25 = lbl_80561FD0;
-                    var_r21_2 = &lbl_80332758 + 0xE8;
+                    var_r21_2 = (char *)&lbl_80332758 + 0xE8;
                     temp_f23_3 = lbl_80561FE4;
                     var_r20_2 = 0;
                     do {
