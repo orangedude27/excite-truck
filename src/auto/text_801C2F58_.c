@@ -1012,12 +1012,10 @@ void fn_801C7AC4(void) {
 void fn_801C7B28(void) {
     strcpy(lbl_80438380, lbl_804380F0);
     strcpy(lbl_804380F0, lbl_8055AA44);
-    if (lbl_80438380[0] == 0) strcpy(lbl_80438380, lbl_8055A95C);
+    if (lbl_80438380[0] == 0)
+        strcpy(lbl_80438380, lbl_8055A95C);
     lbl_8055E868 = fn_801C6CB0;
-    {
-        volatile s32 zero = 0;
-        lbl_8055E83A = zero;
-    }
+    lbl_8055E83A = 0;
 }
 
 #pragma push
