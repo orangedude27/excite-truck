@@ -399,14 +399,17 @@ extern "C" void fn_802085EC(int, void *);
 extern float lbl_80563220;
 extern char lbl_8033BDA8;
 __declspec(section ".rodata") extern char lbl_8033BDA8;
+#pragma scheduling invalid_target
 extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4) {
     ObjIface80207218 *obj;
     float value;
     float value2;
+    void *vtable;
     fn_802065F8();
     value = *(volatile float *)&lbl_805631FC;
-    *(volatile void **)arg0 = &lbl_8033BDA8;
+    vtable = &lbl_8033BDA8;
     value2 = *(volatile float *)&lbl_80563220;
+    *(volatile void **)arg0 = vtable;
     *(float *)((char *)arg0 + 0x68) = value;
     *(float *)((char *)arg0 + 0x6C) = value2;
     *(char *)((char *)arg0 + 0x64) = 1;
@@ -424,7 +427,7 @@ extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4)
     *(float *)((char *)arg0 + 0x24) = value;
     return arg0;
 }
-
+#pragma scheduling on
 extern "C" f32 fn_802072DC(void) {
     return lbl_805631FC;
 }
