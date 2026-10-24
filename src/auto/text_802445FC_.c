@@ -17,6 +17,13 @@ void fn_80244738(void) {
     fn_800216C4();
 }
 
+void fn_8024477C(void *arg0) {
+    extern int lbl_80342E28[];
+    fn_8012E81C(&lbl_80342E28);
+    fn_80021464(*(int *)((char *)arg0 + 0x18), *(int *)((char *)arg0 + 0x1C));
+    *(int *)((char *)arg0 + 0x20) = fn_802E2C20();
+}
+
 extern int lbl_80342E28[];
 extern float lbl_805637F0;
 extern float lbl_805637F4;
