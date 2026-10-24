@@ -1,4 +1,5 @@
 #include <types.h>
+#include <internal/printf.h>
 #include <revolution/MTX/vec.h>
 
 extern char lbl_8055E839;
