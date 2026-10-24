@@ -21,7 +21,7 @@ void fn_8018C510(void) {
 
 }
 
-extern int lbl_80332840;
+extern float lbl_80332840[16];
 extern float lbl_80561F74;
 extern float lbl_80562050;
 extern float lbl_80561F8C;
