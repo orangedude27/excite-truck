@@ -29,13 +29,18 @@ void fn_80160B7C(float *arg0, float *arg1, float *arg2) {
 }
 
 void fn_80160BA0(float *arg0, float *arg1, float farg0) {
-    arg0[0] = arg1[0] * farg0;
-    arg0[1] = arg1[1] * farg0;
+    float scale = farg0;
+    float x = arg1[0];
+    float y = arg1[1];
+    arg0[0] = x * scale;
+    arg0[1] = y * scale;
 }
 
 void fn_80160BBC(float *arg0, float *arg1, float *arg2) {
-    arg0[0] = arg1[0] + arg2[0];
-    arg0[1] = arg1[1] + arg2[1];
+    float x = arg1[0] + arg2[0];
+    float y = arg1[1] + arg2[1];
+    arg0[0] = x;
+    arg0[1] = y;
 }
 
 #pragma scheduling off
