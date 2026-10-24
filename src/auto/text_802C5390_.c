@@ -262,20 +262,19 @@ extern void *fn_802C5A60(int, int, u16);
 #pragma push
 #pragma small_data off
 extern int lbl_8034B1F0[];
-#pragma pop
 #pragma push
 #pragma small_data off
-#pragma pop
-#pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_802C5C40(int *arg0, int arg1, int arg2) {
     int temp_r30 = *arg0;
-    int result = fn_802CAC28(&lbl_8034B1F0, 0);
+    int result = fn_802CAC28(lbl_8034B1F0, 0);
+    int *entry = *(int **)((char *)arg2 + arg1 * 4 + 0x14);
+    s16 field = *(s16 *)((char *)entry + 6);
+    u16 adjusted = field - 1;
     *(int *)((char *)arg0 + arg1 * 4 + 0x14) =
-        (int)fn_802C5A60(result, temp_r30,
-            (u16)(*(s16 *)(*(int *)((char *)arg2 + arg1 * 4 + 0x14) + 6) - 1));
+        (int)fn_802C5A60(result, temp_r30, adjusted);
 }
-
+#pragma pop
 extern int fn_8012C33C(char *);
 extern void fn_801345D8(char *, int, const char *, int, char *);
 extern int fn_802CAC44(char *, int);
