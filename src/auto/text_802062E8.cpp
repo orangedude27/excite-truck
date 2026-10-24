@@ -394,7 +394,7 @@ void fn_80206D3C(void* self, void* list, int count) {
 }
 
 extern "C" void fn_802065F8(void);
-extern "C" void *fn_80208998(int);
+extern "C" void *fn_80208998(int, int, int);
 extern "C" void fn_802085EC(int, void *);
 extern float lbl_80563220;
 extern char lbl_8033BDA8;
@@ -410,7 +410,7 @@ extern "C" void *fn_80207218(void *arg0, int arg1, int arg2, int arg3, int arg4)
     *(char *)((char *)arg0 + 0x64) = 1;
     *(int *)((char *)arg0 + 0x70) = arg3;
     *(int *)((char *)arg0 + 0x74) = arg4;
-    obj = (ObjIface80207218 *)fn_80208998(lbl_8055ED80);
+    obj = (ObjIface80207218 *)fn_80208998(lbl_8055ED80, arg1, arg2);
     *(ObjIface80207218 **)((char *)arg0 + 0xC) = obj;
     if (obj != 0)
         fn_802085EC(lbl_8055ED80, arg0);
