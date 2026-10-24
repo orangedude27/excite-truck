@@ -1711,7 +1711,6 @@ block_268:
     }
 }
 
-#pragma dont_inline fn_8010F430
 #pragma push
 #pragma optimize_for_size on
 extern "C" void fn_8010F430(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
