@@ -32,7 +32,6 @@ public:
     virtual void vf11();
     virtual void vf12();
     virtual void vf13();
-    virtual void vf14();
     virtual u32 Seek(s32 off, u32 origin);  // vtable 0x54
 };
 class FileStream54 : public IOStream54 {};
@@ -47,3 +46,13 @@ extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl(void* this_, s32 off,
                                      (const char*)lbl_8032846C);
     }
 }
+
+extern "C" void Seek__Q36nw4hbm2ut10FileStreamFlUl_801071DC(nw4hbm::ut::FileStream54* this_,
+                                                            s32 off,
+                                                            u32 origin) {
+    if (this_->Seek(off, origin) == 0) {
+        Panic__Q26nw4hbm2dbFPCciPCce((const char*)lbl_80328458, 0x3C,
+                                     (const char*)lbl_80328490);
+    }
+}
+
