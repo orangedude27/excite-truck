@@ -93,6 +93,8 @@ extern "C" void fn_802793B0(int);
 #pragma cplusplus on
 extern "C" void fn_80191084(int, int);
 extern "C" int fn_80191100(void *);
+#pragma cplusplus off
+#pragma cplusplus on
 extern "C" void fn_801902B4(void *arg0) {
     class VTable {
     public:
