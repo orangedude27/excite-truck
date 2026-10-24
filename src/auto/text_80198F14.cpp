@@ -186,6 +186,7 @@ extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* ar
 }
 #pragma dont_inline reset
 
+#pragma dont_inline on
 extern "C" void fn_80199870(void* arg0) {
     u32 value = *(u32*)((u8*)arg0 + 0x10);
     if ((u32)(value - 0x50430000) == 0x4152 ||
