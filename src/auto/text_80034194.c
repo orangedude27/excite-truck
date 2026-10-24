@@ -140,6 +140,131 @@ void DBPrintf_800343C8(const char *fmt, ...) {
 #pragma unused(fmt)
 }
 
+void __DSPHandler_80034418(s16 interrupt, OSContext *oldContext) {
+OSContext context;
+u16 dspControl;
+u32 mail;
+dspControl = *(volatile u16 *)0xCC00500A;
+*(volatile u16 *)0xCC00500A = (dspControl & ~0x28) | 0x80;
+OSClearContext(&context);
+OSSetCurrentContext(&context);
+while (DSPCheckMailFromDSP() == 0) {}
+mail = DSPReadMailFromDSP();
+if ((*(u32 *)((u8 *)lbl_8055D824 + 8) & 2) != 0 && mail == 0xDCD10002) mail = 0xDCD10003;
+switch (mail) {
+case 0xDCD10000:
+*(s32 *)lbl_8055D824 = 1;
+if (*(void **)((u8 *)lbl_8055D824 + 0x28) != 0) ((void (*)(void))*(void **)((u8 *)lbl_8055D824 + 0x28))();
+break;
+case 0xDCD10001:
+*(s32 *)lbl_8055D824 = 1;
+if (*(void **)((u8 *)lbl_8055D824 + 0x2C) != 0) ((void (*)(void))*(void **)((u8 *)lbl_8055D824 + 0x2C))();
+break;
+case 0xDCD10002:
+if (lbl_8055D810 != 0) {
+if (lbl_8055D824 == lbl_8055D814) {
+DSPSendMailToDSP(0xCDD10003);
+while (DSPCheckMailToDSP() != 0) {}
+lbl_8055D814 = 0;
+lbl_8055D810 = 0;
+if (*(void **)((u8 *)lbl_8055D824 + 0x2C) != 0) ((void (*)(void))*(void **)((u8 *)lbl_8055D824 + 0x2C))();
+} else {
+DSPSendMailToDSP(0xCDD10001);
+while (DSPCheckMailToDSP() != 0) {}
+__DSP_exec_task(lbl_8055D824, lbl_8055D814);
+{
+void *currentTask = lbl_8055D824;
+s32 taskState = 2;
+s32 zero = 0;
+*(s32 *)currentTask = taskState;
+lbl_8055D810 = zero;
+lbl_8055D824 = lbl_8055D814;
+lbl_8055D814 = (void *)zero;
+}
+}
+} else {
+if (*(void **)((u8 *)lbl_8055D824 + 0x38) == 0) {
+if (lbl_8055D824 == lbl_8055D820) {
+DSPSendMailToDSP(0xCDD10003);
+while (DSPCheckMailToDSP() != 0) {}
+if (*(void **)((u8 *)lbl_8055D824 + 0x2C) != 0) ((void (*)(void))*(void **)((u8 *)lbl_8055D824 + 0x2C))();
+} else {
+DSPSendMailToDSP(0xCDD10001);
+while (DSPCheckMailToDSP() != 0) {}
+__DSP_exec_task(lbl_8055D824, lbl_8055D820);
+*(s32 *)lbl_8055D824 = 2;
+lbl_8055D824 = lbl_8055D820;
+}
+} else {
+DSPSendMailToDSP(0xCDD10001);
+while (DSPCheckMailToDSP() != 0) {}
+__DSP_exec_task(lbl_8055D824, *(void **)((u8 *)lbl_8055D824 + 0x38));
+*(s32 *)lbl_8055D824 = 2;
+lbl_8055D824 = *(void **)((u8 *)lbl_8055D824 + 0x38);
+}
+}
+break;
+case 0xDCD10003:
+if (lbl_8055D810 != 0) {
+if (lbl_8055D824 != lbl_8055D814) {
+if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x30))(lbl_8055D824);
+DSPSendMailToDSP(0xCDD10001);
+while (DSPCheckMailToDSP() != 0) {}
+__DSP_exec_task(0, lbl_8055D814);
+__DSP_remove_task(lbl_8055D824);
+{
+void *pendingTask = lbl_8055D814;
+s32 zero = 0;
+lbl_8055D810 = zero;
+lbl_8055D824 = pendingTask;
+lbl_8055D814 = (void *)zero;
+}
+} else {
+lbl_8055D814 = 0;
+lbl_8055D810 = 0;
+goto case_done;
+}
+}
+case_done: {
+register void *task = lbl_8055D824;
+if (*(void **)((u8 *)task + 0x38) == 0) {
+if (task == lbl_8055D820) {
+if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)task + 0x30))(task);
+DSPSendMailToDSP(0xCDD10002);
+while (DSPCheckMailToDSP() != 0) {}
+*(s32 *)lbl_8055D824 = 3;
+__DSP_remove_task(lbl_8055D824);
+} else {
+if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)task + 0x30))(task);
+DSPSendMailToDSP(0xCDD10001);
+while (DSPCheckMailToDSP() != 0) {}
+*(s32 *)lbl_8055D824 = 3;
+__DSP_exec_task(0, lbl_8055D820);
+lbl_8055D824 = lbl_8055D820;
+__DSP_remove_task(lbl_8055D81C);
+}
+} else {
+if (*(void **)((u8 *)lbl_8055D824 + 0x30) != 0) ((void (*)(void *))*(void **)((u8 *)task + 0x30))(task);
+DSPSendMailToDSP(0xCDD10001);
+while (DSPCheckMailToDSP() != 0) {}
+*(s32 *)lbl_8055D824 = 3;
+__DSP_exec_task(0, *(void **)((u8 *)lbl_8055D824 + 0x38));
+{
+void *next = *(void **)((u8 *)lbl_8055D824 + 0x38);
+lbl_8055D824 = next;
+__DSP_remove_task(*(void **)((u8 *)next + 0x3C));
+}
+}
+break;
+}
+case 0xDCD10004:
+if (*(void **)((u8 *)lbl_8055D824 + 0x34) != 0) ((void (*)(void *))*(void **)((u8 *)lbl_8055D824 + 0x34))(lbl_8055D824);
+break;
+}
+OSClearContext(&context);
+OSSetCurrentContext(oldContext);
+}
+
 extern s32 DSPCheckMailFromDSP(void);
 extern s32 DSPCheckMailToDSP(void);
 extern s32 DSPReadMailFromDSP(void);
@@ -620,18 +745,20 @@ extern void fn_8003A1A0(u32, void (*)(void));
 extern void fn_8003BCC0(void);
 extern void fn_80035C64(void);
 extern void fn_80035C78(void);
+#pragma push
+#pragma scheduling invalid_target
 void fn_80036550(u32 arg0) {
     register u32 value = arg0;
-    OSDisableInterrupts();
+    s32 interrupts = OSDisableInterrupts();
     if (*(volatile u32 *)&lbl_8055D848 == 0) *(u32 *)(__ErrorInfo + 0x78) = value;
     else *(u32 *)(__ErrorInfo + *(volatile u32 *)&lbl_8055D848 * 0x14 + 0x14) = value;
-    ((void (*)(void))OSRestoreInterrupts)();
+    OSRestoreInterrupts(interrupts);
     if (value == 0x10) fn_8003A1A0(0x1234568, fn_80035C78);
     else if (value == 0x20) fn_8003A1A0(0x1234569, fn_80035C78);
     else if (value & 2) fn_8003A1A0(0x1234567, fn_80035C64);
     else ((void (*)(void *, void (*)(void)))fn_8003A1A0)(((void *(*)(void))fn_8003BCC0)(), fn_80035C64);
 }
-
+#pragma pop
 extern u8 lbl_80376A80[];
 extern s32 lbl_8055D87C, lbl_8055D8BC;
 extern s32 IDShouldBe_8055D8C4, executing_8055D8C8, lbl_8055D860;
