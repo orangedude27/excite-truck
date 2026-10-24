@@ -230,7 +230,6 @@ extern float lbl_80562034;
 void fn_8018E3EC(char *arg0, float *arg1, void *arg2, int arg3, int arg4, int arg5, int arg_sp0) {
     extern float __fabsf(float);
 extern float lbl_80561FE8;
-extern char lbl_80332758;
 extern float lbl_80558DC4;
 extern float lbl_8055A460;
 extern float lbl_80561F74;
