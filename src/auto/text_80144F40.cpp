@@ -1396,7 +1396,14 @@ extern "C" void fn_8014784C(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
 #pragma push
 #pragma dont_inline on
 extern "C" void fn_801478E0(void *arg0, s32 unused, s32 arg1, s32 arg2) {
-    s32 result = ((s32 (**)(void *))(*(void ***)arg0))[5](arg0);
+    class V {
+    public:
+        virtual void f0();
+        virtual void f1();
+        virtual void f2();
+        virtual s32 f3();
+    };
+    s32 result = ((V *)arg0)->f3();
     if (result != 0 && arg1 != 0)
         fn_80145CF4((void *)result, (void *)arg1, (u32)arg2);
 }
