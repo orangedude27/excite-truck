@@ -82,10 +82,10 @@ int fn_801312EC(void*, void*);
 void fn_80131318();
 int fn_80232BA4(int, int, int, int, float, float, float, float, float);
 
-#pragma dont_inline on
+#pragma scheduling invalid_target
 void fn_8001FD7C(void) {
-    struct cfg_t* p = (struct cfg_t*) lbl_802FE138;
-    fn_8012E81C(&p->f0);
+    struct cfg_t *p = (struct cfg_t *)lbl_802FE138;
+    fn_8012E81C(p);
     lbl_8055D64C = fn_80232578(p->f1);
     lbl_8055D650 = fn_80232578(p->f2);
     lbl_8055D654 = fn_8023512C(p->f3);
@@ -95,7 +95,7 @@ void fn_8001FD7C(void) {
     lbl_80558D80 = fn_802CAC28(p->f7, 0);
     lbl_80558D84 = fn_802CAC28(&p->f7[0x10], 0);
 }
-#pragma dont_inline off
+#pragma scheduling on
 
 void fn_8001FE20(void) {
     lbl_8055D62C = 0;
@@ -204,13 +204,11 @@ void fn_8002017C(void) {
 
 int fn_80020184(void) {
     s32 temp_r3;
-    s32 temp_r3_2;
+    u32 temp_r3_2;
 
     temp_r3_2 = (((fn_802E2C20() - lbl_8055D63C) - 0x12C) << 8) / 1000;
     temp_r3 = temp_r3_2 & ((s32) (-(s32) temp_r3_2 & ~temp_r3_2) >> 0x1F);
-    if (temp_r3 >= 0xFF) {
-        temp_r3 = 0xFF;
-    }
+    temp_r3 = (temp_r3 < 0xFF) ? temp_r3 : 0xFF;
     return 0xFF - temp_r3;
 }
 
@@ -221,7 +219,7 @@ void fn_80020430(void) {
 int fn_80020434(void* arg0, float* arg1) {
     float out1[2], out2[2];
     float mat[12];
-    float dbl_tmp[2];
+    double dbl;
     float var_f1;
     float var_f3;
     float var_f31;
@@ -263,9 +261,9 @@ int fn_80020434(void* arg0, float* arg1) {
     temp_r6 = temp_r3 - lbl_8055D63C;
     temp_r0 = temp_r6 / 50000;
     temp_r0 = temp_r6 - temp_r0 * 50000;
-    dbl_tmp[0] = 176.0f;
-    *(s32*)&dbl_tmp[1] = temp_r0 ^ 0x8000;
-    temp_f2 = (*(double*)&dbl_tmp[0] - lbl_805604E8) / lbl_805604BC * lbl_805604C0;
+    ((s32*)&dbl)[0] = 0x43300000;
+    ((s32*)&dbl)[1] = temp_r0 ^ 0x8000;
+    temp_f2 = (dbl - lbl_805604E8) / lbl_805604BC * lbl_805604C0;
     temp_f7 = lbl_805604C4 + (lbl_805604C8 * (lbl_805604B8 - cos(temp_f2)));
     temp_f5 = mat[9];
     temp_f3 = mat[10];
@@ -280,11 +278,10 @@ int fn_80020434(void* arg0, float* arg1) {
     var_f1 = lbl_805604D0;
     if (lbl_8055D630 > 0) {
         temp_r28 = &lbl_8035B758[lbl_8055D634 * 0x70];
-        dbl_tmp[0] = 176.0f;
+        ((s32*)&dbl)[0] = 0x43300000;
         temp_r3 = fn_802E2C20();
-        temp_r0 = (temp_r3 - lbl_8055D638) ^ 0x8000;
-        *(s32*)&dbl_tmp[1] = temp_r0;
-        var_f31 = lbl_805604D4 * (*(double*)&dbl_tmp[0] - lbl_805604E8);
+        ((s32*)&dbl)[1] = (temp_r3 - lbl_8055D638) ^ 0x8000;
+        var_f31 = lbl_805604D4 * (dbl - lbl_805604E8);
         temp_f3 = *(float*)&((char*)temp_r28)[0x68];
         if (var_f31 > temp_f3) {
             temp_r4 = lbl_8055D634 + 1;
