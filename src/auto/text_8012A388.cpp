@@ -1054,13 +1054,13 @@ extern "C" void *fn_8012E3D4(void *arg0) {
     return var_r5;
 }
 
-extern "C" void fn_8012D024(void *, s32);
+extern "C" void fn_8012D024(void *, s32, s32);
 extern "C" void fn_8012E40C(void *arg0, s32 arg1) {
     void *self = arg0;
     fn_8012D40C((s32)self);
     fn_8012D1A8((s32)self);
     *(s32 *)((u8 *)self + 0xBC) = 0;
-    fn_8012D024(self, arg1);
+    ((void (*)(void *, s32))fn_8012D024)(self, arg1);
 }
 
 extern "C" void *fn_8012E460(void *arg0) {
