@@ -1,6 +1,8 @@
 #include <types.h>
 extern "C" s32 lbl_8055DFFC;
 extern "C" const char lbl_8032AE60[];
+extern "C" const char lbl_8032ADF4[];
+extern "C" const char lbl_8032AE20[];
 extern "C" void fn_8002B0D8(char *);
 extern "C" char *fn_80029004(char *, int);
 extern "C" s32 fn_8012C370(s32, s32, s32, s32, s32, s32);
