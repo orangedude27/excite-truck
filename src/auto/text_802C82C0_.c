@@ -65,25 +65,28 @@ extern void *lbl_8055FC90;
 void fn_802C82C0(void) {
 }
 
-void fn_802C82C4(int arg0) {
-    char *base;
+#pragma cplusplus on
+extern "C" int fn_80133010(void);
+extern "C" void fn_802C82C4(int arg0) {
+    struct Base { char first; char rest[0x38]; };
+    Base *base;
     int mode;
-    base = lbl_8034B498;
+    base = (Base *)lbl_8034B498;
     mode = arg0;
     if (fn_80019B9C() != 0 || fn_802E9A0C() == 1) mode = 1;
     lbl_8055FC90 = (void *)mode;
-    if (fn_80133010() != 0) fn_80133348(1, (char *)((unsigned long)base + 0), (int)lbl_8055FC90);
+    if (fn_80133010() != 0) fn_80133348(1, &base->first, (int)lbl_8055FC90);
     lbl_8055FC8C = 0;
     lbl_8055D020 = lbl_80564EF8;
     lbl_8055D024 = lbl_80564EF8;
     lbl_8055FC8D = 0;
     switch (mode) {
-    case 0: fn_802E30C8(base + 0x10); break;
-    case 1: fn_802E30C8(base + 0x20); lbl_8055FC8C = 1; lbl_8055D020 = lbl_80564EFC; break;
-    case 2: fn_802E30C8(base + 0x34); lbl_8055FC8D = 1; lbl_8055D020 = lbl_80564EFC; lbl_8055D024 = lbl_80564EFC; break;
+    case 0: fn_802E30C8((char *)base + 0x10); break;
+    case 1: fn_802E30C8((char *)base + 0x20); lbl_8055FC8C = 1; lbl_8055D020 = lbl_80564EFC; break;
+    case 2: fn_802E30C8((char *)base + 0x34); lbl_8055FC8D = 1; lbl_8055D020 = lbl_80564EFC; lbl_8055D024 = lbl_80564EFC; break;
     }
 }
-
+#pragma cplusplus reset
 void* fn_802C83C4(void) {
     return lbl_8055FC90;
 }
@@ -418,11 +421,18 @@ void fn_802C9640(int arg0) {
 }
 #pragma dont_inline off
 extern void fn_802C9638(int, int);
-extern void fn_802C974C();
+extern void fn_802C974C(float, float, float);
 extern float lbl_8055FC38;
 extern float lbl_8055FC3C;
 extern float lbl_8055FC40;
 extern float lbl_804C144C[];
+extern float lbl_80564F24, lbl_80564F28, lbl_8055FC88;
+extern float lbl_8055FC50, lbl_8055FC54, lbl_8055FC58;
+extern double fn_8002EF30(float);
+extern double atan(float, float, float);
+extern double sin(float);
+extern double cos(float);
+extern void fn_802D0368(float, float, float, float);
 void fn_802C9648(float arg0) {
     float f3 = lbl_8055FC38;
     float f4 = lbl_8055FC3C;
@@ -432,18 +442,18 @@ void fn_802C9648(float arg0) {
     lbl_804C144C[1] = f4;
     lbl_8055FC38 = f0;
     lbl_8055FC3C = f2;
-    fn_802C974C(lbl_804C144C, f0, f2, lbl_804C144C[2], f4);
+    fn_802C974C(f0, f2, lbl_804C144C[2]);
 }
 
 void fn_802C967C(void) {
-    fn_802C974C(lbl_804C144C, lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
+    fn_802C974C(lbl_804C144C[0], lbl_804C144C[1], lbl_804C144C[2]);
 }
 
 void *fn_802C9694(void *arg0) {
     ((float *)arg0)[0] = lbl_8055FC38;
     ((float *)arg0)[1] = lbl_8055FC3C;
     ((float *)arg0)[2] = lbl_8055FC40;
-    fn_802C974C(arg0);
+    ((void (*)())fn_802C974C)(arg0);
     return arg0;
 }
 
@@ -460,6 +470,40 @@ void *fn_802C96DC(void *arg0, int arg1) {
 float fn_802C973C(void) { return lbl_8055FC4C; }
 
 float fn_802C9744(void) { return lbl_8055FC40; }
+
+void fn_802C974C(float f0, float f1, float f2) {
+    float angle = f2;
+    float f4;
+    float s, c, t;
+    float a;
+    int mode = (int)lbl_8055FC74;
+    lbl_8055FC38 = f0;
+    lbl_8055FC3C = f1;
+    lbl_8055FC40 = f2;
+    lbl_804C144C[2] = f2;
+    if (mode != 0 && lbl_8055FC75 != 0) {
+        if (fabsf(lbl_8055D020 - lbl_80564EF8) > lbl_80558DC4) {
+            angle = lbl_80564F24 * (float)atan((float)fn_8002EF30(lbl_80564F18 * f2) / lbl_8055D020, lbl_80564EF8, f2);
+        }
+    }
+    lbl_8055FC4C = angle;
+    a = lbl_80564F18 * angle;
+    s = (float)sin(a);
+    c = (float)cos(a);
+    lbl_8055FC48 = s;
+    t = s / c;
+    lbl_8055FC44 = t;
+    lbl_8055FC88 = t;
+    a = lbl_80564F28 - lbl_80564F18 * angle;
+    lbl_8055FC50 = t / lbl_8055FC6C;
+    lbl_8055FC54 = lbl_80564EF8 / (float)sin(a);
+    a = lbl_80564F24 * (float)atan(lbl_8055FC50, lbl_80564EF8, lbl_8055FC54);
+    f4 = lbl_80564EF8;
+    lbl_8055FC58 = f4 / (float)sin(lbl_80564F28 - lbl_80564F18 * a);
+    if (mode == 0) f4 = lbl_8055D020 / lbl_8055D024;
+    fn_802D0368(lbl_8055FC38, lbl_8055FC3C, angle, f4);
+    fn_802CC518((int)lbl_8055FC64, lbl_8055FC44);
+}
 
 void fn_802C98DC(float *arg0, float *arg1, float *arg2, float *arg3) {
     *arg0 = lbl_8055FC44;
