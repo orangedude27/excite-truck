@@ -15,41 +15,41 @@ void fn_802D68C4(s32, s32, s32, s32);
 void fn_802CFDE0(void);
 void fn_802CFF10(void);
 void fn_80127464(void);
-extern s32 fn_802E9A0C(void);
-extern u32 lbl_80558860;
-extern char lbl_8034E9E0[];
-extern void *jumptable_8034EA80[];
-void fn_801345D8(void *, s32, void *, s32);
-s32 fn_802E36D8(void *);
-void fn_802E317C(void *, void *);
-s32 fn_802E37C4(s32);
-void fn_801282EC(s32);
-s32 fn_8012850C(s32, void *);
-void fn_802E3804(s32, s32, s32);
-void fn_802E3734(s32 *);
-s32 fn_802EC4BC(void) {
-    return fn_802E9A0C() == 1;
-}
-
-s32 fn_802EC4E8(s32 arg0) {
-    char sp10[0x40];
-    s32 sp8;
-    s32 temp_r30;
-    s32 temp_r31;
-    fn_801345D8(sp10, 0x40, lbl_8034E9E0, arg0);
-    sp8 = fn_802E36D8(sp10);
-    if (sp8 == -1) fn_802E317C(lbl_8034E9E0 + 0x10, sp10);
-    temp_r30 = fn_802E37C4(sp8);
-    fn_801282EC(0x20);
-    temp_r31 = fn_8012850C(temp_r30, lbl_8034E9E0 + 0x28);
-    fn_802E3804(sp8, temp_r31, temp_r30);
-    fn_802E3734(&sp8);
-    return temp_r31;
-}
-
-extern u32 lbl_80558860;
-extern char lbl_8034E9E0[];
-extern void *jumptable_8034EA80[];
+  extern s32 fn_802E9A0C(void);
+  extern char lbl_80558860[];
+  extern char lbl_8034E9E0[];
+  extern void *jumptable_8034EA80[];
+  void fn_801345D8(void *, s32, void *, s32);
+  s32 fn_802E36D8(void *);
+  void fn_802E317C(void *, void *);
+  s32 fn_802E37C4(s32);
+  void fn_801282EC(s32);
+  s32 fn_8012850C(s32, void *);
+  void fn_802E3804(s32, s32, s32);
+  void fn_802E3734(s32 *);
+  s32 fn_802EC4BC(void) {
+      return fn_802E9A0C() == 1;
+  }
+  
+  s32 fn_802EC4E8(s32 arg0) {
+      char sp10[0x40];
+      s32 sp8;
+      s32 temp_r30;
+      s32 temp_r31;
+      fn_801345D8(sp10, 0x40, lbl_8034E9E0, arg0);
+      sp8 = fn_802E36D8(sp10);
+      if (sp8 == -1) fn_802E317C(lbl_8034E9E0 + 0x10, sp10);
+      temp_r30 = fn_802E37C4(sp8);
+      fn_801282EC(0x20);
+      temp_r31 = fn_8012850C(temp_r30, lbl_8034E9E0 + 0x28);
+      fn_802E3804(sp8, temp_r31, temp_r30);
+      fn_802E3734(&sp8);
+      return temp_r31;
+  }
+  
+  extern char lbl_80558860[];
+  extern char lbl_8034E9E0[];
+  extern void *jumptable_8034EA80[];
 extern void fn_801345D8(void *, s32, void *, s32);
 extern s32 fn_802E36D8(void *);
 extern void fn_802E317C(void *, void *);
@@ -108,6 +108,69 @@ void fn_802EC7AC(void) {
         fn_80128670(lbl_805600E0);
     if (lbl_805600E4 != 0)
         fn_80128670(lbl_805600E4);
+}
+
+extern void WPADControlMotor(s32, s32);
+extern void fn_800C65C4(void);
+extern s32 fn_800C65CC(void *);
+extern s32 fn_800C673C(void);
+extern s32 fn_800C6768(void);
+extern void fn_800C675C(void);
+extern void fn_800C6774(s32, s32, s32);
+extern void fn_800C687C(void);
+extern void fn_800C68B0(void);
+extern s32 fn_802D9BF0(void);
+extern void fn_802E2C20(void);
+extern void fn_802E2E38(s32);
+extern void fn_802E30C8(const char *, ...);
+extern void fn_802E5438(void);
+extern void fn_802E7C40(void);
+extern s32 fn_802E8668(s32);
+extern void fn_802E99AC(void);
+extern s32 lbl_80558898[];
+void fn_802EC884(void) {
+    // Fix note: reproduces the startup, controller, and menu state paths with the original loops and calls.
+    s32 i;
+    if (lbl_805600EC == 0) return;
+    if (lbl_805600EA != 0) {
+        lbl_805600EA = 0;
+        if (fn_802D9BF0() == 0) {
+            lbl_805600EB = lbl_805600E9 == 0;
+            if (lbl_805600EB != 0)
+                fn_802E30C8(lbl_8034E9E0 + 0x16C, lbl_8034E9E0 + 0x198);
+            else
+                fn_802E30C8(lbl_8034E9E0 + 0x16C, (const char *)0x8055D2F8);
+            lbl_805600E8 = 1;
+            for (i = 0; i < 4; i++) WPADControlMotor(i, 0);
+            fn_800C6774(lbl_805600E4, lbl_805600E0, 0x19000);
+            fn_800C65C4();
+            fn_802EC4BC();
+            fn_800C675C();
+        }
+    }
+    fn_802E2C20();
+    if (lbl_805600E8 == 0) return;
+    for (i = 0; i < 4; i++) lbl_80558898[i * 4] = fn_802E8668(i);
+    if (fn_800C65CC(lbl_80558898) < 0) return;
+    fn_802E99AC();
+    fn_802E7C40();
+    fn_802E5438();
+    fn_802E30C8(lbl_8034E9E0 + 0x1A4);
+    fn_802E30C8(lbl_8034E9E0 + 0x1C0, fn_800C673C());
+    fn_802E30C8(lbl_8034E9E0 + 0x1D0, fn_800C6768());
+    switch (fn_800C673C()) {
+    case 1:
+        fn_802E30C8(lbl_8034E9E0 + 0x1E0);
+        fn_802E2E38(1);
+        break;
+    case 2:
+        fn_802E30C8(lbl_8034E9E0 + 0x200);
+        fn_802E2E38(0);
+        break;
+    }
+    fn_800C687C();
+    lbl_805600E8 = 0;
+    if (lbl_805600E8 != 0) fn_800C68B0();
 }
 
 extern void *fn_802D2D14(void);
