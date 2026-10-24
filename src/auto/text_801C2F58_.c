@@ -270,7 +270,7 @@ void *fn_801C3C80(void) {
     return entry;
 }
 
-extern void fn_80128670();
+extern void fn_80128670(s32);
 extern s32 fn_8012850C(s32, void *);
 extern void fn_801C3D88(void *);
 extern char lbl_80336D84[];
