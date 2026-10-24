@@ -4,7 +4,7 @@
 extern void *lbl_8055E744;
 #pragma cplusplus on
 struct Dummy_801B8318 {
-    virtual void f0();
+    virtual void f0(int);
     virtual void f1(int);
     virtual void f2();
     virtual void f3(void *);
@@ -142,7 +142,7 @@ extern "C" void fn_801B832C(void) {
     extern float lbl_80562744;
     fn_801616FC();
     if (lbl_8055E744 != 0)
-        ((Dummy_801B8318 *)lbl_8055E744)->f2();
+        ((Dummy_801B8318 *)lbl_8055E744)->f1(1);
     lbl_80436D08[0] = lbl_80562744;
     lbl_8055E744 = 0;
     lbl_80436D08[1] = lbl_80562744;
