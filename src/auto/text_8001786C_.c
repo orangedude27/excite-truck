@@ -104,6 +104,70 @@ void fn_80017B40(void *arg0, s32 arg1) {
     }
     fn_80017AC8(arg0);
 }
+
+extern void *fn_80016510(s32);
+extern void *fn_80016474(s32);
+extern void fn_80017D5C(void *);
+void fn_80017C18(void *arg0, s32 *arg1) {
+    s32 i, j, n, found;
+    s32 *items = *(s32 **)arg0;
+    void *obj = fn_80016510(0);
+    i = 0;
+    while (i < *(s32 *)((char *)obj + 0x98)) {
+        n = *(s32 *)((char *)arg0 + 4);
+        *(s32 *)((char *)arg0 + 4) = n + 1;
+        items[n] = *(s32 *)((char *)obj + 0x64);
+        obj = (char *)obj + 4;
+        i++;
+    }
+    for (i = 0; i < arg1[0]; i++) {
+        obj = fn_80016474(arg1[i + 1]);
+        n = *(s32 *)((char *)arg0 + 4);
+        found = -1;
+        for (j = 0; j < n; j++) {
+            if (*(s32 *)((char *)obj + 0x50) == items[j]) {
+                found = j;
+                break;
+            }
+        }
+        if (found >= 0 && found < n) {
+            if (found != n - 1)
+                items[found] = items[n - 1];
+            *(s32 *)((char *)arg0 + 4) = n - 1;
+        }
+    }
+    fn_80017D5C(arg0);
+}
+
+extern void fn_80017A2C(void *, s32);
+extern void fn_800178BC(void *, s32, s32);
+extern void fn_80016928(s32, s32);
+void fn_80017DD4(s32 *arg0, s32 arg1, s32 *arg2) {
+    struct { s32 *items; s32 count; s32 capacity; } a, b, c;
+    s32 i, x, y, z;
+    *(s32 *)((char *)arg0 + 0x24) = 0;
+    *arg0 = 0;
+    if (arg1 > 0) {
+        a.items = 0; a.count = 0; a.capacity = 50;
+        fn_80017A2C(&a, (s32)arg2);
+        b.items = 0; b.count = 0; b.capacity = 50;
+        fn_80017B40(&b, (s32)arg2);
+        c.items = 0; c.count = 0; c.capacity = 50;
+        fn_80017C18(&c, arg2);
+        for (i = 0; i < arg1; i++) {
+            x = a.items[i % a.count];
+            y = b.items[i % b.count];
+            z = c.items[i % c.count];
+            fn_800178BC(arg0, x, y);
+            if (fn_800178F0()) fn_800178F8(x, y);
+            else fn_80016928(x, z);
+        }
+        a.items = 0; a.count = 0; a.capacity = 0;
+        b.items = 0; b.count = 0; b.capacity = 0;
+        c.items = 0; c.count = 0; c.capacity = 0;
+    }
+}
+
 #pragma dont_inline off
 s32 fn_80017F40(void) {
     return fn_800167F4() == 1;
@@ -112,6 +176,7 @@ s32 fn_80017F40(void) {
 extern void* fn_80012820(s32);
 extern void* fn_80012870(s32, s32);
 extern s32 fn_80017F40(void);
+#pragma scheduling invalid_target
 #pragma dont_inline on
 s32 fn_80017F6C(s32 arg0) {
     s32 temp, max, i;
@@ -134,6 +199,7 @@ s32 fn_80017F6C(s32 arg0) {
     return max;
 }
 #pragma dont_inline off
+#pragma scheduling on
 extern void* fn_8001668C(void*, s32);
 extern s32 fn_802E30C8(const char*, const char*);
 extern const char lbl_802FD0C8[];
