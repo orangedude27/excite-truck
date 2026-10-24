@@ -275,7 +275,6 @@ extern "C" s32 fn_801454E8(void *arg0, const char *arg1) {
 extern "C" void fn_80145538(void *arg0, void *arg1) {
     extern s32 fn_80145368();
     extern s32 fn_801454E8(void *, const char *);
-    extern char lbl_80559DFC[];
     fn_80145368();
     *(f32 *)((u8 *)arg0 + 0x10) = (*(f32 (**)(void *, const char *))(*(u8 **)arg1 + 0x24))(arg1, (const char *)&lbl_80559DE0);
     *(f32 *)((u8 *)arg0 + 0x14) = (*(f32 (**)(void *, const char *))(*(u8 **)arg1 + 0x24))(arg1, (const char *)&lbl_80559DE4);
