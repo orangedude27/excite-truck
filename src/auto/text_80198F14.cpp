@@ -184,6 +184,7 @@ extern "C" void fn_801996BC(Vec* arg0, s32 arg1, Vec* arg2, void* arg3, void* ar
     if (mag>limit) { f32 s=limit/mag; p.x*=s; p.y*=s; p.z*=s; }
     *arg0=p;
 }
+#pragma dont_inline reset
 
 extern "C" void fn_80199870(void* arg0) {
     u32 value = *(u32*)((u8*)arg0 + 0x10);
