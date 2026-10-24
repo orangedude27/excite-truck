@@ -8,6 +8,14 @@
 struct VTable_801B3C98 {
     virtual void destroy(s32);
 };
+struct PrevDtorVTable_801B3BD4 {
+    virtual void f0();
+    virtual void f1();
+    virtual void destroy(s32);
+};
+extern "C" static inline void callPrevDtorCpp_801B3BD4(void *p) {
+    ((PrevDtorVTable_801B3BD4 *)p)->destroy(1);
+}
 #pragma cplusplus reset
 
 extern f32 lbl_8055E3C8;
@@ -262,6 +270,30 @@ void fn_801B42D0(void* arg0) {
  }
  *(s32*)((u8*)arg0+0x5bc)=0;
 }
+
+#pragma scheduling off
+void fn_801B435C(void *arg0) {
+    register s32 zero = 0;
+    register f32 value = lbl_80562650;
+    register s32 *p = (s32 *)arg0;
+    p[0x31C / 4] = zero; p[0x320 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x324) = value;
+    p[0x348 / 4] = zero; p[0x34C / 4] = zero; *(f32 *)((u8 *)arg0 + 0x350) = value;
+    p[0x374 / 4] = zero; p[0x378 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x37C) = value;
+    p[0x3A0 / 4] = zero; p[0x3A4 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x3A8) = value;
+    p[0x3CC / 4] = zero; p[0x3D0 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x3D4) = value;
+    p[0x3F8 / 4] = zero; p[0x3FC / 4] = zero; *(f32 *)((u8 *)arg0 + 0x400) = value;
+    p[0x424 / 4] = zero; p[0x428 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x42C) = value;
+    p[0x450 / 4] = zero; p[0x454 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x458) = value;
+    p[0x47C / 4] = zero; p[0x480 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x484) = value;
+    p[0x4A8 / 4] = zero; p[0x4AC / 4] = zero; *(f32 *)((u8 *)arg0 + 0x4B0) = value;
+    p[0x4D4 / 4] = zero; p[0x4D8 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x4DC) = value;
+    p[0x500 / 4] = zero; p[0x504 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x508) = value;
+    p[0x52C / 4] = zero; p[0x530 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x534) = value;
+    p[0x558 / 4] = zero; p[0x55C / 4] = zero; *(f32 *)((u8 *)arg0 + 0x560) = value;
+    p[0x584 / 4] = zero; p[0x588 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x58C) = value;
+    p[0x5B0 / 4] = zero; p[0x5B4 / 4] = zero; *(f32 *)((u8 *)arg0 + 0x5B8) = value;
+}
+#pragma scheduling on
 
 extern void fn_802E317C(const char *, ...);
 extern u8 lbl_80335D80[];
