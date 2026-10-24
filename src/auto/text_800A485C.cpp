@@ -1,5 +1,6 @@
   #include <types.h>
 #include <macros.h>
+static inline s32 fixedMul20(s32 lhs, s32 rhs) { return (s32)(((s64)lhs * rhs) >> 20); }
 struct Fn800C0440Context { u8 pad[0xC]; volatile u32 bitIndex; volatile s32 limit; };
 extern "C" { DECL_SECTION(".sdata") extern s32 lbl_80559270[]; }
 extern "C" s32 fn_800A485C(s32);
@@ -3398,6 +3399,168 @@ extern "C" s32 fn_800B10E0(void *arg0, void *arg1, void *arg2, s32 arg3) {
     }
     return fn_800AB0C0((u8 *)arg1, 1);
 }
+
+extern "C" void fn_800B36C4(s32, s32, s32);
+extern "C" s32 fn_800B143C(void *arg0, s32 arg1, s32 arg2, void **arg3) {
+    struct LocalFrame {
+        u32 value8; u32 valueC; u8 pad10[8];
+        u8 path18[0x10]; u8 path28[0x10]; u8 pad38[0x38];
+        u8 temp70[0x70]; u8 unicodeE0[0x200]; u8 main2e0[0x21C];
+        u8 flags4FC; u8 pad4FD[5]; u16 name502; u16 name504; u16 name506;
+        u32 record508; void *context50C; u32 pad510; u32 output514;
+        u32 value518; u16 value51C;
+    } f;
+    s32 status;
+    s32 i;
+    u8 *entry;
+    u32 address;
+    void *opened;
+    void *base;
+    u8 *slot;
+    void *object;
+
+    *arg3 = 0;
+    status = ((s32 (*)(s32, s32, s32))fn_800B36C4)(arg1, (s32)f.path18, (s32)f.path28);
+    if (status != 0)
+        return 1;
+    status = ((s32 (*)(s32, s32, s32, s32, s32))fn_800ACA44)(
+        (s32)f.temp70, (s32)f.main2e0, (s32)arg0, arg1, 1);
+    if (status != 0)
+        return status;
+    if ((f.flags4FC & 0x10) == 0)
+        return 1;
+    {
+        u32 pathType = (u32)fn_800A4D44(f.path28);
+        if (pathType == 2U) {
+            s32 charCount = (u16)VFiPFSTR_StrNumChar((s32)f.path28, 1);
+            if (charCount > 0xFF)
+                return 1;
+            VFiPFPATH_transformFromUnicodeToNormal((u16 *)f.unicodeE0,
+                (u16 *)fn_800A4D74(f.path28, 1));
+        }
+    }
+    fn_800A4D4C(f.path28, f.unicodeE0);
+
+    if ((arg2 & 2) != 0) {
+        ((s32 (*)(void *, void *, s32, s32))fn_800AF530)(f.pad38, &f.valueC, (s32)f.context50C, (s32)&f.output514);
+        status = ((s32 (*)(void *, void *, s32, void *, s32, s32))fn_800AABE0)(
+            f.pad38, f.main2e0, 0, f.path28, 0x7F, 0);
+        if (status != 0)
+            return 3;
+        if ((arg2 & 8) && (f.flags4FC & 1))
+            return 10;
+        if (f.flags4FC & 0x10)
+            return 0x17;
+        ((void (*)(u16 *, u32 *))fn_800AB2F4)(&f.name502, &f.value8);
+    } else {
+        status = ((s32 (*)(s32, void *, void *))fn_800B10E0)((s32)arg0, f.main2e0, f.path28);
+        if (status == 8) {
+            if (arg2 & 0x10)
+                return 8;
+            register u8 *scan;
+            register u32 compareValue;
+            register u16 compareName;
+            register void *context;
+            register u32 flags;
+            s32 option;
+            option = arg2 & 1;
+            if (option) {
+                s32 found;
+                context = f.context50C;
+                compareValue = f.value518;
+                scan = (u8 *)context + 0x40;
+                compareName = f.value51C;
+                for (i = 0; i < 5; i++, scan += 0x29C) {
+                    flags = *(u32 *)scan;
+                    if ((flags & 1) && (flags & 2) &&
+                        context == *(void **)(scan + 0x268) &&
+                        compareValue == *(u32 *)(scan + 0x274) &&
+                        compareName == *(u16 *)(scan + 0x278)) {
+                        found = 1;
+                        goto scan_complete;
+                    }
+                }
+                found = 0;
+            scan_complete:
+                if (found)
+                    return 8;
+            }
+            if ((f.flags4FC & 1) == 0)
+                goto after_create_flag;
+            if (option != 0)
+                goto check_create_flag;
+            if (arg2 & 4)
+                goto check_create_flag;
+            if (arg2 & 8)
+                return 10;
+        check_create_flag:
+        after_create_flag:
+            if (f.flags4FC & 0x10)
+                return 0x17;
+            if (option) {
+                if (f.output514 >= 2 && f.output514 + 0x10000 != 0xFFFF && f.record508 != 0)
+                    ((s32 (*)(void *, u32, s32, u32))fn_800AE7A8)(f.temp70 + 8, f.output514, -1, f.record508);
+                f.output514 = 0;
+                f.record508 = 0;
+                ((void (*)(u16 *, u16 *))fn_800AB2F4)(&f.name506, &f.name504);
+                f.name502 = f.name506;
+            } else {
+                ((void (*)(u16 *, u32 *))fn_800AB2F4)(&f.name502, &f.value8);
+            }
+        } else if (status != 0) {
+            return status;
+        }
+    }
+
+    arg0 = f.context50C;
+    opened = ((void *(*)(void *, void *))fn_800B0F1C)(arg0, f.main2e0);
+    if (opened == 0)
+        return 0x15;
+    entry = (u8 *)arg0;
+    for (i = 0; i < 5; entry += 0x30, i++) {
+        if ((*(u32 *)(entry + 0xD4C) & 1) == 0) {
+            address = (u32)arg0 + i * 0x30;
+            slot = (u8 *)(address + 0xD4C);
+            goto slot_found;
+        }
+    }
+    slot = 0;
+slot_found:
+    if (slot == 0)
+        return 0x16;
+    *(void * volatile *)(slot + 8) = opened;
+    *(s32 *)(slot + 0) = 1;
+    *(s32 *)(slot + 4) = arg2;
+    *(s32 *)(slot + 0x18) = 0;
+    *(u16 *)(slot + 0x2C) = 0;
+    ((void (*)(void *))fn_800AF2B8)(slot + 0xC);
+    *(s32 *)(slot + 0x20) = -1;
+    *(s32 *)(slot + 0x1C) = 0;
+    if (slot == 0) {
+        object = 0;
+    } else {
+        object = *(void * volatile *)(slot + 8);
+        object = *(void **)((u8 *)object + 0x268);
+    }
+    *(u32 *)(slot + 0x24) = (u32)(*(u32 *)(slot + 0x1C) >> *(u8 *)((u8 *)object + 0x20));
+    *(u16 *)(slot + 0x28) = (u16)(*(u32 *)(slot + 0x1C) & (*(u16 *)object - 1));
+    if (arg2 & 1)
+        *(u32 *)(*(void **)(slot + 8)) |= 4;
+    if (*(s32 *)(slot + 4) & 4) {
+        object = *(void **)(slot + 8);
+        *(u32 *)(slot + 0x1C) = *(u32 *)((u8 *)object + 0x264);
+        if (slot == 0)
+            object = 0;
+        else
+            object = *(void **)((u8 *)*(void * volatile *)(slot + 8) + 0x268);
+        *(u32 *)(slot + 0x24) = *(volatile u32 *)(slot + 0x1C) >> *(u8 *)((u8 *)object + 0x20);
+        *(u16 *)(slot + 0x28) = (u16)(*(volatile u32 *)(slot + 0x1C) & (*(u16 *)object - 1));
+    }
+    ++*(u16 *)((u8 *)opened + 0x298);
+    *arg3 = slot;
+    return 0;
+}
+
 #pragma pop
 
 extern "C" s32 fn_800B0DEC(void *, s32, u32 *);
@@ -6589,18 +6752,22 @@ void* arg0, s32 arg1, void* arg2,
 s32 arg3, s32 arg4, s32 arg5, s32 arg6, s16 arg7,
 s32 arg8, s16* arg9, s16* arg10
 ) {
+Fn800C0440Context* ctx = (Fn800C0440Context*)arg0;
 s32 sp14 = arg4 & 1;
 s16 spC = arg7;
 void* sp8 = arg2;
 s32 sp1C = 0x80320000 - 0x3D68;
 s32 sp20 = 0x80320000 - 0x2A80;
-s16 sp10;
+volatile s16 sp10;
 s16 spE;
 register s32 maxOutput;
-register s32 sp18;
+  register u8* table = (u8*)lbl_802F3D60;
+  u32* maskTable = (u32*)(table + 0x1F4);
+  s16* decodeTable = (s16*)(table + 0x1D0);
+volatile s32 sp18;
 register s32 i = 0;
 register s32 outputIndex = 0;
-register s16* output = (s16*)sp8;
+register s16* output;
 register s16* inputCursor = arg9;
 register s8 status;
 register s32 type;
@@ -6615,10 +6782,10 @@ register s16 x;
 register s16 y;
 
 if (sp14 != 0) {
-s32 tile = *(s32*)((u8*)arg0 + 4);
-s16 row = *(s16*)((u8*)arg0 + 0x1C);
-sp10 = *(s16*)((u8*)lbl_802F3D60 + tile * 0x60 + row * 0x20 + (arg5 + arg6) * 2);
-spE = *(s16*)((u8*)lbl_802F3D60 + 0xC0 + tile * 0x78 + row * 0x28 + arg5 * 2);
+register s32 tile = *(s32*)((u8*)arg0 + 4);
+register s16 row = *(s16*)((u8*)arg0 + 0x1C);
+sp10 = ((s16*)(table + tile * 0x60 + row * 0x20))[arg5 + arg6];
+spE = ((s16*)(table + 0xC0 + tile * 0x78 + row * 0x28))[arg5];
 } else if (arg4 & 0x10) {
 sp10 = 0x24;
 } else {
@@ -6626,7 +6793,8 @@ sp10 = (s16)lbl_80559270[*(s32*)((u8*)arg0 + 4)];
 }
 
 maxOutput = arg3 * 2;
-sp18 = ((u32)(-sp14 | sp14) >> 31) + 2;
+  output = (s16*)sp8;
+  sp18 = ((u32)(-sp14 | sp14) >> 31) + 2;
 inputCursor = arg9;
 while (i < sp18) {
 type = *inputCursor;
@@ -6655,32 +6823,32 @@ maxForPass = maxOutput;
 }
 
 while (outputIndex < maxForPass) {
-raw = (u32)fn_800C0DF8((u8*)arg1, 0x10, (u32*)((u8*)arg0 + 0xC)) << 16;
+raw = (u32)fn_800C0DF8((u8*)arg1, 0x10, (u32*)&ctx->bitIndex) << 16;
 if (type == 0xD || type == 0x10) {
-bits = *(volatile u32*)((u8*)arg0 + 0xC);
-*(volatile u32*)((u8*)arg0 + 0xC) = bits + 4;
+bits = ctx->bitIndex;
+ctx->bitIndex = bits + 4;
 byteIndex = (bits >> 3) & 0x1FFF;
 shift = 0x10 - (bits & 7);
-*(volatile u32*)((u8*)arg0 + 0xC) = shift - 0x14;
+ctx->bitIndex -= 0x14;
 sign = ((u32)((u8*)arg1)[(byteIndex + 1) & 0x1FFF] << 8) | ((u8*)arg1)[byteIndex];
-sign &= *(u32*)((u8*)lbl_802F3D60 + 0x1F4 + shift * 4);
+sign &= maskTable[shift];
 sign >>= shift - 4;
 raw |= ((sign & 0xF) << 12);
 } else {
-*(volatile u32*)((u8*)arg0 + 0xC) -= 0x10;
+ctx->bitIndex -= 0x10;
 }
 
-decoded = (s16)fn_800C083C(raw, *(s16*)((u8*)lbl_802F3D60 + 0x1D0 + type * 2), (s32*)(sp20 + type * 4));
+decoded = (s16)fn_800C083C(raw, decodeTable[type], (s32*)(sp20 + type * 4));
 x = (s16)((decoded & 0xF0) >> 4);
 y = (s16)(decoded & 0xF);
-*(volatile u32*)((u8*)arg0 + 0xC) += (s16)decoded >> 8;
+ctx->bitIndex += (s16)decoded >> 8;
 
 if (x == 0xF && status != 0) {
-x = (s16)(x + (u16)fn_800BDEB4((const u8*)arg1, status, (u32*)((u8*)arg0 + 0xC)));
+x = (s16)(x + (u16)fn_800BDEB4((const u8*)arg1, status, (u32*)&ctx->bitIndex));
 }
 if (x != 0) {
-bits = *(volatile u32*)((u8*)arg0 + 0xC);
-*(volatile u32*)((u8*)arg0 + 0xC) = bits + 1;
+bits = ctx->bitIndex;
+ctx->bitIndex = bits + 1;
 byteIndex = (bits >> 3) & 0x1FFF;
 shift = 8 - (bits & 7);
 sign = (s32)((u8*)arg1)[byteIndex];
@@ -6692,11 +6860,11 @@ x = -x;
 }
 
 if (y == 0xF && status != 0) {
-y = (s16)(y + (u16)fn_800BDEB4((const u8*)arg1, status, (u32*)((u8*)arg0 + 0xC)));
+y = (s16)(y + (u16)fn_800BDEB4((const u8*)arg1, status, (u32*)&ctx->bitIndex));
 }
 if (y != 0) {
-bits = *(volatile u32*)((u8*)arg0 + 0xC);
-*(volatile u32*)((u8*)arg0 + 0xC) = bits + 1;
+bits = ctx->bitIndex;
+ctx->bitIndex = bits + 1;
 byteIndex = (bits >> 3) & 0x1FFF;
 shift = 8 - (bits & 7);
 sign = (s32)((u8*)arg1)[byteIndex];
@@ -6709,7 +6877,7 @@ y = -y;
 
 output[0] = x;
 output[1] = y;
-if ((s32)*(volatile u32*)((u8*)arg0 + 0xC) > *(volatile s32*)((u8*)arg0 + 0x10)) {
+if ((s32)ctx->bitIndex > ctx->limit) {
 if (arg8 == 1 && *arg10 == 0) {
 *arg10 = (s16)outputIndex;
 }
@@ -7229,6 +7397,73 @@ void fn_800C2F98(s32 *in, s32 *out, s32 *negOut) {
     negOut[-7] = ((s64)in[7] * lbl_8031D778[3]) >> 20;
     out[8] = ((s64)in[8] * lbl_8031D778[4]) >> 20;
     negOut[-8] = ((s64)in[8] * lbl_8031D778[5]) >> 20;
+}
+
+extern "C" const s32 lbl_8031D790[];
+extern "C" void fn_800C3088(volatile s32 *out, const volatile s32 *a, const volatile s32 *b, const volatile s32 *c) {
+    s32 term1;
+    s32 term2;
+    out[0] = 0;
+    out[1] = 0;
+    out[2] = 0;
+    out[3] = 0;
+    out[4] = 0;
+    out[5] = 0;
+    out[6] = (s32)(((s64)a[0] * (s64)((const volatile s32 *)lbl_8031D790)[0]) >> 20);
+    out[7] = (s32)(((s64)a[1] * (s64)((const volatile s32 *)lbl_8031D790)[1]) >> 20);
+    out[8] = (s32)(((s64)a[2] * (s64)((const volatile s32 *)lbl_8031D790)[2]) >> 20);
+    out[9] = (s32)(((s64)a[2] * (s64)((const volatile s32 *)lbl_8031D790)[3]) >> 20);
+    out[10] = (s32)(((s64)a[1] * (s64)((const volatile s32 *)lbl_8031D790)[4]) >> 20);
+    out[11] = (s32)(((s64)a[0] * (s64)((const volatile s32 *)lbl_8031D790)[5]) >> 20);
+    term1 = (s32)(((s64)a[6] * (s64)((const volatile s32 *)lbl_8031D790)[6]) >> 20);
+    term2 = (s32)(((s64)b[0] * (s64)((const volatile s32 *)lbl_8031D790)[0]) >> 20);
+    out[12] = term1 + term2;
+    term1 = (s32)(((s64)a[7] * (s64)((const volatile s32 *)lbl_8031D790)[7]) >> 20);
+    term2 = (s32)(((s64)b[1] * (s64)((const volatile s32 *)lbl_8031D790)[1]) >> 20);
+    out[13] = term1 + term2;
+    term1 = (s32)(((s64)a[8] * (s64)((const volatile s32 *)lbl_8031D790)[8]) >> 20);
+    term2 = (s32)(((s64)b[2] * (s64)((const volatile s32 *)lbl_8031D790)[2]) >> 20);
+    out[14] = term1 + term2;
+    term1 = (s32)(((s64)a[8] * (s64)((const volatile s32 *)lbl_8031D790)[9]) >> 20);
+    term2 = (s32)(((s64)b[2] * (s64)((const volatile s32 *)lbl_8031D790)[3]) >> 20);
+    out[15] = term1 + term2;
+    term1 = (s32)(((s64)a[7] * (s64)((const volatile s32 *)lbl_8031D790)[10]) >> 20);
+    term2 = (s32)(((s64)b[1] * (s64)((const volatile s32 *)lbl_8031D790)[4]) >> 20);
+    out[16] = term1 + term2;
+    term1 = (s32)(((s64)a[6] * (s64)((const volatile s32 *)lbl_8031D790)[11]) >> 20);
+    term2 = (s32)(((s64)b[0] * (s64)((const volatile s32 *)lbl_8031D790)[5]) >> 20);
+    out[17] = term1 + term2;
+    term1 = (s32)(((s64)b[6] * (s64)((const volatile s32 *)lbl_8031D790)[6]) >> 20);
+    term2 = (s32)(((s64)c[0] * (s64)((const volatile s32 *)lbl_8031D790)[0]) >> 20);
+    out[18] = term1 + term2;
+    term1 = (s32)(((s64)b[7] * (s64)((const volatile s32 *)lbl_8031D790)[7]) >> 20);
+    term2 = (s32)(((s64)c[1] * (s64)((const volatile s32 *)lbl_8031D790)[1]) >> 20);
+    out[19] = term1 + term2;
+    term1 = (s32)(((s64)b[8] * (s64)((const volatile s32 *)lbl_8031D790)[8]) >> 20);
+    term2 = (s32)(((s64)c[2] * (s64)((const volatile s32 *)lbl_8031D790)[2]) >> 20);
+    out[20] = term1 + term2;
+    term1 = (s32)(((s64)b[8] * (s64)((const volatile s32 *)lbl_8031D790)[9]) >> 20);
+    term2 = (s32)(((s64)c[2] * (s64)((const volatile s32 *)lbl_8031D790)[3]) >> 20);
+    out[21] = term1 + term2;
+    term1 = (s32)(((s64)b[7] * (s64)((const volatile s32 *)lbl_8031D790)[10]) >> 20);
+    term2 = (s32)(((s64)c[1] * (s64)((const volatile s32 *)lbl_8031D790)[4]) >> 20);
+    out[22] = term1 + term2;
+    term1 = (s32)(((s64)b[6] * (s64)((const volatile s32 *)lbl_8031D790)[11]) >> 20);
+    term2 = (s32)(((s64)c[0] * (s64)((const volatile s32 *)lbl_8031D790)[5]) >> 20);
+    out[23] = term1 + term2;
+    out[24] = (s32)(((s64)c[6] * (s64)((const volatile s32 *)lbl_8031D790)[6]) >> 20);
+    out[25] = (s32)(((s64)c[7] * (s64)((const volatile s32 *)lbl_8031D790)[7]) >> 20);
+    out[26] = (s32)(((s64)c[8] * (s64)((const volatile s32 *)lbl_8031D790)[8]) >> 20);
+    out[27] = (s32)(((s64)c[8] * (s64)((const volatile s32 *)lbl_8031D790)[9]) >> 20);
+    out[28] = (s32)(((s64)c[7] * (s64)((const volatile s32 *)lbl_8031D790)[10]) >> 20);
+    term1 = (s32)(((s64)c[6] * (s64)((const volatile s32 *)lbl_8031D790)[11]) >> 20);
+    out[30] = 0;
+    out[31] = 0;
+    out[32] = 0;
+    out[33] = 0;
+    out[34] = 0;
+    out[35] = 0;
+    out[29] = term1;
 }
 
 extern "C" void fn_800C34B4(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
