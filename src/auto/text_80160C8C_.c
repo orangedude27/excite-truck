@@ -17,6 +17,14 @@ extern s32 fn_80161C38(void);
 struct Obj_80164CDC {
     virtual void f0();
     virtual void f1(void *, s32, s32);
+    virtual void f2();
+    virtual void f3();
+    virtual void f4();
+    virtual void f5();
+    virtual void f6();
+    virtual void f7();
+    virtual void f8();
+    virtual void f9();
 };
 static inline void fn_80164CDC_call(void *arg0) {
     ((Obj_80164CDC *)*(void **)((char *)arg0 + 4))->f1(*(void **)((char *)arg0 + 4), lbl_8055A0E0, lbl_8055A0E8);
