@@ -640,8 +640,7 @@ void fn_8013F498(void *arg0, void *arg1, float farg0) {
     *(float*)((char*)arg1 + 4) = lbl_805614A4 + f * lbl_80561548 - e;
 }
 
-#pragma push
-#pragma scheduling off
+#pragma scheduling invalid_target
 extern "C" int fn_8013FC6C(void* arg0) {
     struct V {
         virtual int a0(int); virtual int a1(int); virtual int a2(int);
@@ -662,7 +661,7 @@ extern "C" int fn_8013FC6C(void* arg0) {
     }
     return 0;
 }
-#pragma pop
+#pragma scheduling on
 extern "C" int fn_8013FD20(void* arg0, int arg1) {
     int result = 1;
     if (*(int*)(*(char**)((char*)arg0 + 0xB8) + arg1 * 0x12C + 0x11C) != 0) {
