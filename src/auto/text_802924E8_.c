@@ -31,7 +31,7 @@ public:
 };
 class Dummy_80292B48 {
 public:
-    virtual void f0();
+          virtual void f0(int);
           virtual void f1(int);
     virtual void f2(int);
 };
@@ -84,14 +84,13 @@ void fn_802929D8(int arg0, int arg1, int arg2, int arg3) {
     fn_802928D4(0, arg0, arg1, arg2, arg3, arg1);
 }
 
-void fn_80292B48(void *arg0) {
+#pragma cplusplus on
+extern "C" void fn_80292B48(void *arg0) {
     if (fn_80292FB4(lbl_804B4168, arg0) != 0 && arg0 != 0) {
-        void *vtable = *(void **)arg0;
-        void (*method)(void *, int) = *(void (**)(void *, int))((char *)vtable + 8);
-        method(arg0, 1);
+        ((Dummy_80292B48 *)arg0)->f1(1);
     }
 }
-
+#pragma cplusplus off
 extern float PSVECDotProduct(void *, void *);
 extern float lbl_805644D8, lbl_805644E8;
 extern double fabs(double);
