@@ -193,20 +193,30 @@ extern "C" s32 fn_8019A780(void *arg0) {
     return *(s32*)((u8*)arg0 + 8);
 }
 
-void fn_8019A788(void* arg0, void* arg1, void* arg3, void* arg4, s32 arg5, f32 farg1, f32 farg2) {
-    extern s32 fn_80199894(void*, void*, f32*, s32, void*, f32, f32, f32, f32, f32);
-    f32 sp10, spC, sp8;
-    f32 scale = lbl_805622DC;
-    if (*(s32*)((u8*)arg0 + 4) != 0 || arg4 != 0) {
-        fn_80199894(arg0, arg4, (f32*)0, arg5, arg4, farg2, farg1, 0.0f, 0.0f, 0.0f);
-        return;
-    }
-    sp8 = *(f32*)arg3 * scale;
-    spC = *((f32*)arg3 + 1) * scale;
-    sp10 = *((f32*)arg3 + 2) * scale;
-    fn_80199894(arg1, arg0, &sp8, arg5, arg4, farg2, farg1, 0.0f, 0.0f, 0.0f);
-}
+extern "C" void fn_80199894(void*, void*, void*, void*, s32, s32, f32, f32, f32);
+#pragma scheduling invalid_target
+extern "C" void fn_8019A788(void* arg0, void* arg1, void* arg2,
+                                 Vec* arg3, s32 arg4, s32 arg5,
+                                 f32 farg0, f32 farg1, f32 farg2) {
+    f32 savedFarg1 = farg1;
 
+    if (*(s32*)((u8*)arg0 + 4) != 0 || arg4 != 0) {
+        fn_80199894(arg0, arg1, arg2, arg3, arg4, arg5,
+                    farg0, savedFarg1, farg2);
+    } else {
+        register f32 x = arg3->x;
+        register f32 scale = lbl_805622DC;
+        register f32 y = arg3->y;
+        register f32 z = arg3->z;
+        Vec scaled;
+        scaled.x = x * scale;
+        scaled.y = y * scale;
+        scaled.z = z * scale;
+        fn_80199894(arg1, arg0, arg2, &scaled, arg5, arg4,
+                    farg0, farg2, savedFarg1);
+    }
+}
+#pragma scheduling on
 extern "C" void fn_8019A820(void*, void*, s32, s32, s32, f32);
 extern "C" void fn_8019AA18(void* arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_8019A820(arg0, (u8*)arg0 + 0x34, arg1, arg2, arg3, *(f32*)((u8*)arg0 + 0x24));
@@ -279,6 +289,73 @@ extern "C" s32 fn_8019B08C(void* arg0, Vec* arg1, void* arg2, f32 farg0) {
 
 extern "C" s32 fn_8019BD4C(void *arg0) {
     return ((s32 *)arg0)[0xC / 4];
+}
+
+extern "C" s32 fn_8019C854(void* arg0, void* arg1) {
+    void* matrix = *(void**)((u8*)arg1 + 0xC);
+    f32 x = *(f32*)((u8*)arg0 + 0x34) - *(f32*)((u8*)matrix + 0x24);
+    f32 y = *(f32*)((u8*)arg0 + 0x38) - *(f32*)((u8*)matrix + 0x28);
+    f32 z = *(f32*)((u8*)arg0 + 0x3C) - *(f32*)((u8*)matrix + 0x2C);
+
+    f32 axis = (x * *(f32*)((u8*)matrix + 0x18) +
+                y * *(f32*)((u8*)matrix + 0x1C)) +
+               z * *(f32*)((u8*)matrix + 0x20);
+    f32 sideX = (x * *(f32*)matrix +
+                 y * *(f32*)((u8*)matrix + 4)) +
+                z * *(f32*)((u8*)matrix + 8);
+    f32 sideY = (x * *(f32*)((u8*)matrix + 0xC) +
+                 y * *(f32*)((u8*)matrix + 0x10)) +
+                z * *(f32*)((u8*)matrix + 0x14);
+
+    f32 radius = *(f32*)((u8*)arg0 + 0x24);
+    f32 halfHeight = *(f32*)((u8*)arg1 + 0x28);
+    f32 otherRadius = *(f32*)((u8*)arg1 + 0x24);
+    f32 extent = radius + halfHeight;
+    if (axis >= extent || axis <= -extent)
+        return 0;
+
+    f32 distance = (f32)fn_8002F234(sideY * sideY + sideX * sideX);
+    f32 depth = extent - __fabsf(distance - otherRadius);
+    if (depth <= lbl_805622D0)
+        return 0;
+
+    Vec point;
+    point.x = sideX;
+    point.y = sideY;
+    point.z = axis;
+    if (distance > otherRadius + halfHeight) {
+        f32 scale = (distance - radius) / distance;
+        point.x *= scale;
+        point.y *= scale;
+        point.z *= scale;
+    } else if (distance < otherRadius - halfHeight) {
+        f32 scale = (distance + radius) / distance;
+        point.x *= scale;
+        point.y *= scale;
+        point.z *= scale;
+    }
+
+    Vec normal;
+    normal.x = sideX - point.x;
+    normal.y = sideY - point.y;
+    normal.z = axis - lbl_805622D0;
+    PSVECNormalize(&normal, &normal);
+
+    Vec worldPoint;
+    fn801A1F98Transform((volatile f32*)&worldPoint, (volatile f32*)&point,
+                        (f32*)matrix);
+    worldPoint.x += *(f32*)((u8*)matrix + 0x24);
+    worldPoint.y += *(f32*)((u8*)matrix + 0x28);
+    worldPoint.z += *(f32*)((u8*)matrix + 0x2C);
+
+    Vec worldNormal;
+    fn801A1F98Transform((volatile f32*)&worldNormal, (volatile f32*)&normal,
+                        (f32*)matrix);
+
+    typedef void (*Call)(void*, void*, Vec*, Vec*, s32, s32, f32, f32, f32);
+    ((Call)fn_8019A788)(arg0, arg1, &worldPoint, &worldNormal, 0, 0,
+                        depth, lbl_805622D0, lbl_805622D0);
+    return 1;
 }
 
 extern void fn_8019CCCC(void*, f32, s32);
@@ -1906,7 +1983,7 @@ extern "C" void *fn_801A3DAC(void *arg0,s32 arg1,s32 arg2,s32 arg3) {
 
 extern "C" void fn_8019ECC4(void);
 extern "C" void fn_801CFA48(void*);
-extern s32 lbl_80333728;
+__declspec(section ".data") extern s32 lbl_80333728;
 void* fn_801A3F5C(void* arg0, s32 arg1, s32 arg2) {
     fn_8019ECC4();
     *(s32*)arg0 = (s32)&lbl_80333728;
@@ -1919,7 +1996,7 @@ void* fn_801A3F5C(void* arg0, s32 arg1, s32 arg2) {
 
 #pragma push
 #pragma small_data off
-void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
+extern "C" void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
     if (arg0 != 0) {
         *(void **)arg0 = &lbl_80333728;
         ((void (*)(void *))fn_801CFF14)(*(void **)((u8 *)arg0 + 0x24));
@@ -1928,7 +2005,7 @@ void *__dt__Q28PSSystem7SeqHeapFv_801A3FB8(void *arg0, s32 arg1) {
     }
     return arg0;
 }
-
+#pragma pop
 extern "C" void fn_801A401C(void *arg0, void *arg1) {
     s32 tag = *(s32 *)((u8 *)arg1 + 0x18);
     if ((u32)(tag + 0xB8AE0000) == 0x5550U) {
