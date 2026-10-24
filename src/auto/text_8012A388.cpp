@@ -674,12 +674,11 @@ extern "C" s32 fn_8012C370(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4, s32
     do {
         lbl_8055DFF9 = 0;
         result = fn_8012B85C(arg0, arg1, arg2, arg3, arg4, arg5);
-        if (lbl_8055DFF9 != 0 && result == 0) {
-            const char *message = lbl_8032AB78;
-            fn_802E30C8(message, arg0);
-            fn_80127464();
-            i++;
-        }
+        if (lbl_8055DFF9 == 0 || result != 0)
+            break;
+        fn_802E30C8(lbl_8032AB78, arg0);
+        fn_80127464();
+        i++;
     } while (i < 10);
     return result;
 }
@@ -1348,33 +1347,26 @@ extern "C" s32 fn_8012C5B8(s32, s32, s32);
 extern "C" s32 fn_8012C6F0(void *);
 extern "C" void fn_8012EE80(void *);
 extern "C" s32 fn_8012EDA8(void *arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
-    s32 *base=(s32*)((char*)arg0+4);
     s32 *p;
+    s32 *base = (s32*)((char*)arg0 + 4);
+    s32 j;
     s32 i;
     s32 result;
-    p=base;
-    i=0;
-    do {
+    for (p = base, i = 0; i < 2; i++, p += 4) {
         if (p[1]) {
             fn_8012C90C((void*)p[1]);
             fn_8012C958((void*)p[1]);
-            p[1]=0;
-            p[3]=0;
+            p[1] = 0;
+            p[3] = 0;
         }
-        i++;
-        if (i >= 2) break;
-        p+=4;
-    } while (1);
-    *(s32*)((char*)arg0+0x28)=0;
-    i=0;
-    do {
-        result=fn_8012C5B8(arg1,arg2,arg3);
-        base[1]=result;
+    }
+    *(s32*)((char*)arg0 + 0x28) = 0;
+    for (j = 0; j < 2; j++, base += 4) {
+        result = fn_8012C5B8(arg1, arg2, arg3);
+        base[1] = result;
         if (!result) return 0;
-        *(s32*)((char*)arg0+0x24)=fn_8012C6F0((void*)result);
-        i++;
-        base+=4;
-    } while (i<2);
+        *(s32*)((char*)arg0 + 0x24) = fn_8012C6F0((void*)result);
+    }
     fn_8012EE80(arg0);
     return 1;
 }
