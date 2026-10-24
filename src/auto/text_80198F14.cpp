@@ -68,7 +68,7 @@ extern f32 lbl_805622DC;
 extern f32 lbl_805622E8;
 extern f32 lbl_805622E0;
 extern f32 lbl_805622D0;
-extern f32 lbl_8056231C, lbl_80562320, lbl_80562324, lbl_80562328, lbl_80562330, lbl_805622D4;
+extern f32 lbl_8056231C, lbl_80562320, lbl_80562324, lbl_80562328, lbl_80562330, lbl_805622D4, lbl_8056232C;
 extern s32 lbl_8055E5A0;
 extern "C" s32 fn_801CF080(s32, void*, void*, s32*, s32, f32);
 extern "C" void fn_8019A820(void*, void*, s32, s32, s32, f32);
