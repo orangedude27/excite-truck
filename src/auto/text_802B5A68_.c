@@ -192,7 +192,7 @@ extern s32 lbl_8055FA38;
 extern s32 fn_80128678(void);
 extern s32 fn_80128684(void);
 extern void *fn_80156A40(void);
-extern s32 fn_802A7BDC(s32);
+extern s32 fn_802A7BDC(s32, s32);
 extern void fn_802BBEE4(void);
 extern void fn_802C21C0(void);
 void fn_802B5F24(s32 arg0) {
@@ -210,7 +210,7 @@ void fn_802B5F24(s32 arg0) {
         result = method(object, 0);
         if (result == 0)
             break;
-        fn_802A7BDC(arg0);
+        fn_802A7BDC(arg0, result);
         i++;
     } while (i < 10);
     fn_80128678();
