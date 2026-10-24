@@ -312,6 +312,7 @@ extern "C" void fn_80206B10(void) {
 }
 
 #pragma scheduling invalid_target
+#pragma dont_inline on
 extern "C" void fn_80206B14(void *arg0, int arg1, int arg2) {
     unsigned char *p = (unsigned char *)arg0;
     if (p[0x4D]) {
