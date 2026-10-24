@@ -1006,6 +1006,7 @@ render_item:
         }
     }
 }
+#pragma pop
 #pragma paired_single off
 #pragma scheduling invalid_target
 void fn_801CE670(Struct_801CE670 *arg0, s32 arg1, s32 arg2) {
