@@ -5000,3 +5000,4 @@ extern void fn_80119288(void *, f32);
 extern s32 fn_80119300(void *, s32, s32);
 extern s32 fn_8011943C(void *, s32);
 extern s32 fn_801199A4(void *, s32);
+extern void fn_8011C4A0(s32, s32, s32, s32);
