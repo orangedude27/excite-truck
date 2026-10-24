@@ -337,7 +337,7 @@ void fn_80294348(void* arg0) {
     if (!(abs <= lbl_80558DC4)) fn_80294780(arg0);
 }
 
-#pragma scheduling off
+#pragma scheduling invalid_target
 void fn_80294398(void *arg0) {
     u8 *record = (u8 *)arg0 + 0x2C;
     s32 i = 0;
@@ -349,7 +349,7 @@ body:
 check:
     if (i < *(s32 *)((u8 *)arg0 + 0x222C)) goto body;
 }
-
+#pragma scheduling on
 extern int fn_80287B5C(int, void *, float, float, float);
 void fn_80294408(void *arg0, float *arg1, float *arg2) {
     int count = *(int *)((char *)arg0 + 0x222C);
