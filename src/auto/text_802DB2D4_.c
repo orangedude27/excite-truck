@@ -144,13 +144,15 @@ void fn_802DBCFC(int arg0, int arg1) {
 #pragma small_data off
 void fn_802DBD88(void) {
     void *value;
+    void **slot;
     lbl_8055FEA8 = 0;
     lbl_8055FEAC = 0;
     lbl_8055FE9E = 1;
     lbl_8055FEA0 = -1;
     value = fn_802D94DC();
     lbl_8055FEA4 = 1;
-    lbl_804DB468 = value;
+    slot = &lbl_804DB468;
+    *slot = value;
 }
 #pragma pop
 void fn_802DBDD8(void) {
@@ -288,9 +290,8 @@ extern int GXGetTexObjFmt(void *);
 extern void fn_802E317C(const char *);
 extern char lbl_8034CB00[];
 extern char lbl_8034CB24[];
-extern void *lbl_804DB468;
 extern unsigned int lbl_8055FEBC;
-
+  
 void fn_802DC440(void) { ((void (*)(void))fn_802DBDD8)(); fn_802DFCC0(); }
 
 void fn_802DC628(void) {}
