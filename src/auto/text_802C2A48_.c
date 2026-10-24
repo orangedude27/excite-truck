@@ -21,6 +21,18 @@ void fn_802C2B48(void) {
     fn_802E4C18(0);
 }
 
+void fn_802C2BB8(float *arg0, float *arg1, float *arg2) {
+    if (arg0 != 0) {
+        *arg0 = *(float *)lbl_804C1328;
+    }
+    if (arg1 != 0) {
+        *arg1 = *(float *)(lbl_804C1328 + 4);
+    }
+    if (arg2 != 0) {
+        *arg2 = *(float *)(lbl_804C1328 + 8);
+    }
+}
+
 void fn_802DD63C(void);
 void fn_802DD738(void);
 void fn_802DD750(void);
