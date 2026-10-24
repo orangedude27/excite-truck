@@ -16,7 +16,7 @@ extern char lbl_803318E8[];
 #pragma scheduling invalid_target
 void fn_801777D4(void) {
     fn_8000D838(&lbl_8055E3B0);
-    lbl_8055E3B8 = 0xFFFF0000;
+    *(volatile int *)&lbl_8055E3B8 = 0xFFFF0000;
     fn_801312EC(lbl_80430448, lbl_803318E8);
 }
 #pragma scheduling on
