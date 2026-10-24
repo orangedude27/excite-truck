@@ -963,6 +963,22 @@ void fn_801D7E3C(int arg0) {
     }
 }
 
+extern void fn_801D9AB8(void *, float);
+extern void fn_80178DBC(int, float);
+void fn_801D7E54(void *arg0) {
+    void *temp;
+    float f;
+    if (*(int *)((char *)arg0 + 0x28) != 0) {
+        if (*(int *)((char *)arg0 + 0x10) == 0) {
+            temp = *(void **)((char *)arg0 + 4);
+            f = *(float *)((char *)arg0 + 0x14);
+            if (temp != 0) fn_801D9AB8(temp, f);
+            else fn_80178DBC(*(int *)((char *)arg0 + 8), f);
+        }
+        *(int *)((char *)arg0 + 0x28) = 1;
+    }
+}
+
 int fn_801D7F5C(int arg0, int arg1) {
     if (arg0 != 0 && arg1 > 0) fn_80128668();
     return arg0;
