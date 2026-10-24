@@ -26,7 +26,7 @@ extern "C" char *fn_800A4AAC(char *, char *);
 extern "C" void fn_800A4B78(u16 *, u16 *);
 extern "C" s32 VFiPFPATH_transformInUnicode(s16 *, s32, s32);
 extern "C" void VFiPFPATH_transformFromUnicodeToNormal(u16 *, u16 *);
-namespace nw4hbm { namespace lyt { class Pane; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); }; } }
+namespace nw4hbm { namespace lyt { class Pane; class Material; class AnimTransformBasic { public: void Animate(unsigned long, Pane *); void Animate(unsigned long, Material *); }; } }
 extern "C" const char lbl_8031EE58[];
 extern "C" { DECL_SECTION(".sdata") extern const char lbl_805597F0[]; }
 extern "C" const char lbl_8031F208[];
@@ -5372,19 +5372,25 @@ extern "C" void fn_800B7408(volatile s32* arg0, void* arg1) {
  extern s32 fn_800B6628(void*, void*, s32);
  extern s32 fn_800B73BC(s32);
  extern s32 lbl_803D2140[];
- register s32 result = 0;
- if (arg0 != 0) {
-   if (*arg0 == 0) {
-     result = 10;
-     *(s32*)((u8*)lbl_803D2140 + 0x40) = result;
-   } else {
-     while (*arg0 != 0) {
-       if (arg1 != 0) result = fn_800B6628((void*)arg0, arg1, *(s32*)((u8*)arg1 + 0x50));
-       else result = fn_800B6628((void*)arg0, 0, 0);
-       if (result != 0) { fn_800B73BC(result); return; }
-       arg0 = arg0 + 1;
+ s32 result;
+ s32 entry;
+ if ((arg0 == 0) || (*arg0 == 0)) {
+   result = 10;
+   *(s32*)((u8*)lbl_803D2140 + 0x40) = 10;
+ } else {
+   entry = *arg0;
+   do {
+     if (arg1 != 0)
+       result = fn_800B6628((void*)entry, arg1, *(s32*)((u8*)arg1 + 0x50));
+     else
+       result = fn_800B6628((void*)entry, 0, 0);
+     if (result != 0) {
+       fn_800B73BC(result);
+       return;
      }
-   }
+     arg0 = (volatile s32*)((u8*)arg0 + 4);
+     entry = *(volatile s32*)((u8*)arg0);
+   } while (entry != 0);
  }
  fn_800B73BC(result);
 }
