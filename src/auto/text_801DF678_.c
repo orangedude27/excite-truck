@@ -40,6 +40,56 @@ void fn_801DF6D0(void* arg0) {
     *(int*)((char*)arg0 + 0x14) = -1;
 }
 
+extern void *fn_801284F8(int, void *);
+extern void *fn_80131808(void *);
+extern void fn_80131818(void *);
+extern int fn_80145E70(void *);
+extern void fn_801D0DDC(void *);
+extern int fn_80207848(void *, int);
+extern int fn_802CAC28(void *, int);
+extern int stricmp(const char *, const char *);
+extern char lbl_803381C0[], lbl_803395D8[], lbl_80339744[];
+extern char lbl_8055AE44[], lbl_8055AE4C[];
+extern void *lbl_8055EA04;
+void fn_801DF6FC(void) {
+ void *obj,*iter,*entry; int i,j,n; char *p,*q; float f,keep;
+ obj=fn_801284F8(0x1B4,lbl_803395D8);
+ if(obj){
+  *(void**)obj=lbl_803381C0; fn_801D0DDC(lbl_803381C0);
+  *(void**)obj=lbl_80339744; lbl_8055EA04=obj;
+  *(int*)((char*)obj+0xE4)=fn_80145E70(lbl_803395D8+0xC);
+  *(int*)((char*)obj+0xF0)=fn_802CAC28(lbl_803395D8+0x1C,0);
+  *(int*)((char*)obj+0xE8)=fn_802CAC28(lbl_803395D8+0x28,0);
+  *(int*)((char*)obj+0xEC)=fn_802CAC28(lbl_803395D8+0x34,0);
+  *(int*)((char*)obj+0xF4)=fn_802CAC28(lbl_803395D8+0x40,0);
+  *(int*)((char*)obj+0xF8)=fn_80207848(lbl_803395D8+0x50,1);
+  for(i=0;i<3;i++) *(int*)((char*)obj+0xFC+i*4)=fn_80207848(lbl_803395D8+0x60,1);
+  *(int*)((char*)obj+0x108)=0;
+  *(int*)((char*)obj+0x10C)=fn_80207848(lbl_803395D8+0x70,1);
+  *(int*)((char*)obj+0x1B0)=0;
+  iter=fn_80131808(lbl_803395D8+0x80);
+  if(iter){
+   entry=((void*(*)(void*,void*))(*(void***)iter)[2])(iter,lbl_803395D8+0x8C);
+   j=0;
+   while((entry=((void*(*)(void*,int))(*(void***)entry)[0x18])(entry,j))!=0){
+    p=((char*(*)(void*))(*(void***)entry)[2])(entry);
+    if(stricmp(p,lbl_8055AE44)==0){
+     keep=((float(*)(void*,const char*))(*(void***)entry)[9])(entry,lbl_8055AE44);
+     p=((char*(*)(void*,const char*))(*(void***)entry)[5])(entry,lbl_8055AE4C);
+     f=((float(*)(void*,const char*))(*(void***)entry)[9])(entry,lbl_803395D8+0x9C);
+     n=*(int*)((char*)obj+0x1B0); *(int*)((char*)obj+0x1B0)=n+1;
+     q=(char*)obj+n*0x28+0x114;
+     *(float*)(q-4)=f;
+     for(i=0;i<0x20;i++){char c=*p++;*q++=c;if(c==0)break;}
+     *(float*)(q+0x1C)=keep;
+    }
+    j++;
+   }
+   fn_80131818(iter);
+  }
+ }
+}
+
 void fn_801476D8(int, int);
 void fn_801DFE44(int a1, int a2) { ((void (*)(int, int, int))fn_801476D8)(a1, -1, a2); }
 
@@ -52,8 +102,13 @@ struct Dummy_801DFE50 {
     virtual void d4() {}
 };
 extern "C" void fn_801DFE50(void *arg0, int arg1, int arg2) {
-    ((Dummy_801DFE50 *)arg0)->d2();
-    fn_801476D8(-1, arg2);
+    struct Dummy_801DFE50_Local {
+        virtual void d0();
+        virtual void d1();
+        virtual void* d2();
+    };
+    void *result = ((Dummy_801DFE50_Local *)arg0)->d2();
+    ((void (*)(void *, int, int))fn_801476D8)(result, -1, arg2);
 }
 #pragma cplusplus reset
 
