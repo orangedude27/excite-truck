@@ -192,7 +192,7 @@ void fn_8018CB3C(char *arg0) {
             axis[0] = temp_f2;
             axis[1] = temp_f1;
             axis[2] = M2C_FIELD(var_r19, float *, 0x14) * temp_f3;
-            fn_80015A20((int *)scaleMatrix, &axis[0], temp_r6, temp_f1, temp_f2, temp_f3);
+            fn_80015A20((int *)scaleMatrix, &axis[0]);
             fn_80015B20(&matrix[0], (int *)scaleMatrix, &matrix[0]);
             if (&point[0] == (void *) (var_r19 + 0x18)) {
                 temp_f7 = M2C_FIELD(var_r19, float *, 0x1C);
