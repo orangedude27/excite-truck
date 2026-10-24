@@ -333,7 +333,7 @@ void fn_801C4B74(void) {
     }
 }
 #pragma scheduling on
-char fn_801C5B60(void) {
+u8 fn_801C5B60(void) {
     return lbl_8055E7E2;
 }
 
@@ -1265,18 +1265,20 @@ extern char lbl_8055AAD0;
 extern char lbl_8055AAD8;
 extern char lbl_8055AAE0;
 extern char lbl_8055AAE8;
+#pragma push
+#pragma scheduling invalid_target
 void fn_801C855C(void) {
     struct Entry { void *name; void *callback; s32 id; s32 flags; };
-    register char *base = lbl_80336B00;
+    char *base = lbl_80336B00;
     void *root;
     struct Entry *items;
     root = (void *)fn_8012850C(0x210, &lbl_8055AA70);
-    lbl_8055E86C = (void (*)(void))root;
+    lbl_8055E86C = root;
     memset(root, 0, 0x210);
-    ((void **)((char *)(void *)lbl_8055E86C + 0x4))[0] = (void *)(base + 0x5a0);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x8) = 0xb;
+    ((void **)((char *)root + 0x4))[0] = (void *)(base + 0x5a0);
+    *(s32 *)((char *)root + 0x8) = 0xb;
     items = (struct Entry *)fn_8012850C(0xb0, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x0) = items;
+    *(struct Entry **)((char *)root + 0x0) = items;
     items[0].name = (void *)(base + 0x5b4);
     items[0].callback = (void *)fn_801C6CB4;
     items[0].id = 0x1;
@@ -1321,10 +1323,10 @@ void fn_801C855C(void) {
     items[10].callback = (void *)fn_801C6CB0;
     items[10].id = 0x9;
     items[10].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x94))[0] = (void *)(base + 0x680);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x98) = 0x3;
+    ((void **)((char *)root + 0x94))[0] = (void *)(base + 0x680);
+    *(s32 *)((char *)root + 0x98) = 0x3;
     items = (struct Entry *)fn_8012850C(0x30, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x90) = items;
+    *(struct Entry **)((char *)root + 0x90) = items;
     items[0].name = (void *)&lbl_8055AA7C;
     items[0].callback = (void *)fn_801C6CB4;
     items[0].id = 0xa;
@@ -1337,10 +1339,10 @@ void fn_801C855C(void) {
     items[2].callback = (void *)fn_801C6CB0;
     items[2].id = 0x0;
     items[2].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0xa4))[0] = (void *)(base + 0x6a0);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0xa8) = 0x2;
+    ((void **)((char *)root + 0xa4))[0] = (void *)(base + 0x6a0);
+    *(s32 *)((char *)root + 0xa8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0xa0) = items;
+    *(struct Entry **)((char *)root + 0xa0) = items;
     items[0].name = (void *)&lbl_8055AA7C;
     items[0].callback = (void *)fn_801C8500;
     items[0].id = 0x0;
@@ -1349,10 +1351,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7374;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x84))[0] = (void *)(base + 0x6b0);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x88) = 0x2;
+    ((void **)((char *)root + 0x84))[0] = (void *)(base + 0x6b0);
+    *(s32 *)((char *)root + 0x88) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x80) = items;
+    *(struct Entry **)((char *)root + 0x80) = items;
     items[0].name = (void *)&lbl_8055AA88;
     items[0].callback = (void *)fn_801C6CB0;
     items[0].id = 0x0;
@@ -1361,10 +1363,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C8420;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0xc4))[0] = (void *)(base + 0x6cc);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0xc8) = 0x2;
+    ((void **)((char *)root + 0xc4))[0] = (void *)(base + 0x6cc);
+    *(s32 *)((char *)root + 0xc8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0xc0) = items;
+    *(struct Entry **)((char *)root + 0xc0) = items;
     items[0].name = (void *)(base + 0x6dc);
     items[0].callback = (void *)fn_801C83D0;
     items[0].id = 0x0;
@@ -1373,10 +1375,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7374;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x14))[0] = (void *)(base + 0x6ec);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x18) = 0x2;
+    ((void **)((char *)root + 0x14))[0] = (void *)(base + 0x6ec);
+    *(s32 *)((char *)root + 0x18) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x10) = items;
+    *(struct Entry **)((char *)root + 0x10) = items;
     items[0].name = (void *)(base + 0x704);
     items[0].callback = (void *)fn_801C72F0;
     items[0].id = 0x0;
@@ -1385,10 +1387,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7374;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x34))[0] = (void *)&lbl_8055AA90;
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x38) = 0x2;
+    ((void **)((char *)root + 0x34))[0] = (void *)&lbl_8055AA90;
+    *(s32 *)((char *)root + 0x38) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x30) = items;
+    *(struct Entry **)((char *)root + 0x30) = items;
     items[0].name = (void *)(base + 0x710);
     items[0].callback = (void *)fn_801C7290;
     items[0].id = 0x0;
@@ -1397,10 +1399,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C6CB0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x24))[0] = (void *)(base + 0x71c);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x28) = 0x2;
+    ((void **)((char *)root + 0x24))[0] = (void *)(base + 0x71c);
+    *(s32 *)((char *)root + 0x28) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x20) = items;
+    *(struct Entry **)((char *)root + 0x20) = items;
     items[0].name = (void *)(base + 0x730);
     items[0].callback = (void *)fn_801C6D94;
     items[0].id = 0x20;
@@ -1409,10 +1411,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7288;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x204))[0] = (void *)(base + 0x750);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x208) = 0x2;
+    ((void **)((char *)root + 0x204))[0] = (void *)(base + 0x750);
+    *(s32 *)((char *)root + 0x208) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x200) = items;
+    *(struct Entry **)((char *)root + 0x200) = items;
     items[0].name = (void *)(base + 0x768);
     items[0].callback = (void *)fn_801C6E40;
     items[0].id = 0x0;
@@ -1421,10 +1423,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7288;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x44))[0] = (void *)(base + 0x774);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x48) = 0x7;
+    ((void **)((char *)root + 0x44))[0] = (void *)(base + 0x774);
+    *(s32 *)((char *)root + 0x48) = 0x7;
     items = (struct Entry *)fn_8012850C(0x70, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x40) = items;
+    *(struct Entry **)((char *)root + 0x40) = items;
     items[0].name = (void *)&lbl_8055AA98;
     items[0].callback = (void *)fn_801C7798;
     items[0].id = 0x4;
@@ -1453,10 +1455,10 @@ void fn_801C855C(void) {
     items[6].callback = (void *)fn_801C6CB0;
     items[6].id = 0x0;
     items[6].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x1f4))[0] = (void *)(base + 0x7ac);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x1f8) = 0x2;
+    ((void **)((char *)root + 0x1f4))[0] = (void *)(base + 0x7ac);
+    *(s32 *)((char *)root + 0x1f8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x1f0) = items;
+    *(struct Entry **)((char *)root + 0x1f0) = items;
     items[0].name = (void *)(base + 0x7bc);
     items[0].callback = (void *)fn_801C77C0;
     items[0].id = 0x4;
@@ -1465,10 +1467,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7374;
     items[1].id = 0x4;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x54))[0] = (void *)(base + 0x7c8);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x58) = 0x3;
+    ((void **)((char *)root + 0x54))[0] = (void *)(base + 0x7c8);
+    *(s32 *)((char *)root + 0x58) = 0x3;
     items = (struct Entry *)fn_8012850C(0x30, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x50) = items;
+    *(struct Entry **)((char *)root + 0x50) = items;
     items[0].name = (void *)(base + 0x7d8);
     items[0].callback = (void *)fn_801C791C;
     items[0].id = 0xd;
@@ -1481,10 +1483,10 @@ void fn_801C855C(void) {
     items[2].callback = (void *)fn_801C7BA0;
     items[2].id = 0x0;
     items[2].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0xd4))[0] = (void *)&lbl_8055AAB0;
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0xd8) = 0x2;
+    ((void **)((char *)root + 0xd4))[0] = (void *)&lbl_8055AAB0;
+    *(s32 *)((char *)root + 0xd8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0xd0) = items;
+    *(struct Entry **)((char *)root + 0xd0) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C7A6C;
     items[0].id = 0xe;
@@ -1493,10 +1495,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0xe4))[0] = (void *)(base + 0x804);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0xe8) = 0x2;
+    ((void **)((char *)root + 0xe4))[0] = (void *)(base + 0x804);
+    *(s32 *)((char *)root + 0xe8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0xe0) = items;
+    *(struct Entry **)((char *)root + 0xe0) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C7AC4;
     items[0].id = 0xf;
@@ -1505,10 +1507,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0xf4))[0] = (void *)(base + 0x814);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0xf8) = 0x2;
+    ((void **)((char *)root + 0xf4))[0] = (void *)(base + 0x814);
+    *(s32 *)((char *)root + 0xf8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0xf0) = items;
+    *(struct Entry **)((char *)root + 0xf0) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C7B28;
     items[0].id = 0x13;
@@ -1517,10 +1519,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x104))[0] = (void *)(base + 0x820);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x108) = 0x2;
+    ((void **)((char *)root + 0x104))[0] = (void *)(base + 0x820);
+    *(s32 *)((char *)root + 0x108) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x100) = items;
+    *(struct Entry **)((char *)root + 0x100) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C7990;
     items[0].id = 0x11;
@@ -1529,10 +1531,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x114))[0] = (void *)(base + 0x830);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x118) = 0x2;
+    ((void **)((char *)root + 0x114))[0] = (void *)(base + 0x830);
+    *(s32 *)((char *)root + 0x118) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x110) = items;
+    *(struct Entry **)((char *)root + 0x110) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C79E0;
     items[0].id = 0x12;
@@ -1541,10 +1543,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x124))[0] = (void *)(base + 0x840);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x128) = 0x2;
+    ((void **)((char *)root + 0x124))[0] = (void *)(base + 0x840);
+    *(s32 *)((char *)root + 0x128) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x120) = items;
+    *(struct Entry **)((char *)root + 0x120) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C7A28;
     items[0].id = 0xe;
@@ -1553,10 +1555,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x134))[0] = (void *)(base + 0x854);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x138) = 0x2;
+    ((void **)((char *)root + 0x134))[0] = (void *)(base + 0x854);
+    *(s32 *)((char *)root + 0x138) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x130) = items;
+    *(struct Entry **)((char *)root + 0x130) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C7C04;
     items[0].id = 0x0;
@@ -1565,10 +1567,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x64))[0] = (void *)(base + 0x860);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x68) = 0x6;
+    ((void **)((char *)root + 0x64))[0] = (void *)(base + 0x860);
+    *(s32 *)((char *)root + 0x68) = 0x6;
     items = (struct Entry *)fn_8012850C(0x60, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x60) = items;
+    *(struct Entry **)((char *)root + 0x60) = items;
     items[0].name = (void *)(base + 0x86c);
     items[0].callback = (void *)fn_801C80C8;
     items[0].id = 0x17;
@@ -1593,10 +1595,10 @@ void fn_801C855C(void) {
     items[5].callback = (void *)fn_801C6CB0;
     items[5].id = 0x0;
     items[5].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x174))[0] = (void *)(base + 0x89c);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x178) = 0x2;
+    ((void **)((char *)root + 0x174))[0] = (void *)(base + 0x89c);
+    *(s32 *)((char *)root + 0x178) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x170) = items;
+    *(struct Entry **)((char *)root + 0x170) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C819C;
     items[0].id = 0x18;
@@ -1605,10 +1607,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C8298;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x1b4))[0] = (void *)(base + 0x8a8);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x1b8) = 0x2;
+    ((void **)((char *)root + 0x1b4))[0] = (void *)(base + 0x8a8);
+    *(s32 *)((char *)root + 0x1b8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x1b0) = items;
+    *(struct Entry **)((char *)root + 0x1b0) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C8150;
     items[0].id = 0x18;
@@ -1617,10 +1619,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C8298;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x184))[0] = (void *)&lbl_8055AAC8;
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x188) = 0x2;
+    ((void **)((char *)root + 0x184))[0] = (void *)&lbl_8055AAC8;
+    *(s32 *)((char *)root + 0x188) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x180) = items;
+    *(struct Entry **)((char *)root + 0x180) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C81B8;
     items[0].id = 0x19;
@@ -1629,10 +1631,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C8298;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x194))[0] = (void *)&lbl_8055AAD0;
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x198) = 0x2;
+    ((void **)((char *)root + 0x194))[0] = (void *)&lbl_8055AAD0;
+    *(s32 *)((char *)root + 0x198) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x190) = items;
+    *(struct Entry **)((char *)root + 0x190) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C821C;
     items[0].id = 0x1a;
@@ -1641,10 +1643,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C8298;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x1a4))[0] = (void *)&lbl_8055AAD8;
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x1a8) = 0x2;
+    ((void **)((char *)root + 0x1a4))[0] = (void *)&lbl_8055AAD8;
+    *(s32 *)((char *)root + 0x1a8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x1a0) = items;
+    *(struct Entry **)((char *)root + 0x1a0) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C82E0;
     items[0].id = 0x0;
@@ -1653,10 +1655,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C8298;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x74))[0] = (void *)(base + 0x8b4);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x78) = 0x2;
+    ((void **)((char *)root + 0x74))[0] = (void *)(base + 0x8b4);
+    *(s32 *)((char *)root + 0x78) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x70) = items;
+    *(struct Entry **)((char *)root + 0x70) = items;
     items[0].name = (void *)(base + 0x8c0);
     items[0].callback = (void *)fn_801C7EF4;
     items[0].id = 0x14;
@@ -1665,10 +1667,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C6CB0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x144))[0] = (void *)(base + 0x8cc);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x148) = 0x2;
+    ((void **)((char *)root + 0x144))[0] = (void *)(base + 0x8cc);
+    *(s32 *)((char *)root + 0x148) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x140) = items;
+    *(struct Entry **)((char *)root + 0x140) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C7F00;
     items[0].id = 0x15;
@@ -1677,10 +1679,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x154))[0] = (void *)(base + 0x8dc);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x158) = 0x2;
+    ((void **)((char *)root + 0x154))[0] = (void *)(base + 0x8dc);
+    *(s32 *)((char *)root + 0x158) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x150) = items;
+    *(struct Entry **)((char *)root + 0x150) = items;
     items[0].name = (void *)(base + 0x7f8);
     items[0].callback = (void *)fn_801C7F64;
     items[0].id = 0x16;
@@ -1689,10 +1691,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x164))[0] = (void *)(base + 0x8f0);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x168) = 0x2;
+    ((void **)((char *)root + 0x164))[0] = (void *)(base + 0x8f0);
+    *(s32 *)((char *)root + 0x168) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x160) = items;
+    *(struct Entry **)((char *)root + 0x160) = items;
     items[0].name = (void *)(base + 0x8fc);
     items[0].callback = (void *)fn_801C7FE4;
     items[0].id = 0x0;
@@ -1701,10 +1703,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7BA0;
     items[1].id = 0x0;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0xb4))[0] = (void *)(base + 0x90c);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0xb8) = 0x6;
+    ((void **)((char *)root + 0xb4))[0] = (void *)(base + 0x90c);
+    *(s32 *)((char *)root + 0xb8) = 0x6;
     items = (struct Entry *)fn_8012850C(0x60, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0xb0) = items;
+    *(struct Entry **)((char *)root + 0xb0) = items;
     items[0].name = (void *)&lbl_8055AAE0;
     items[0].callback = (void *)fn_801C73DC;
     items[0].id = 0xb;
@@ -1729,10 +1731,10 @@ void fn_801C855C(void) {
     items[5].callback = (void *)fn_801C7388;
     items[5].id = 0x0;
     items[5].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x1c4))[0] = (void *)(base + 0x940);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x1c8) = 0x2;
+    ((void **)((char *)root + 0x1c4))[0] = (void *)(base + 0x940);
+    *(s32 *)((char *)root + 0x1c8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x1c0) = items;
+    *(struct Entry **)((char *)root + 0x1c0) = items;
     items[0].name = (void *)&lbl_8055AA80;
     items[0].callback = (void *)fn_801C6CB0;
     items[0].id = 0xb;
@@ -1741,10 +1743,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7394;
     items[1].id = 0xb;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x1d4))[0] = (void *)(base + 0x950);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x1d8) = 0x2;
+    ((void **)((char *)root + 0x1d4))[0] = (void *)(base + 0x950);
+    *(s32 *)((char *)root + 0x1d8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x1d0) = items;
+    *(struct Entry **)((char *)root + 0x1d0) = items;
     items[0].name = (void *)(base + 0x95c);
     items[0].callback = (void *)fn_801C756C;
     items[0].id = 0xb;
@@ -1753,10 +1755,10 @@ void fn_801C855C(void) {
     items[1].callback = (void *)fn_801C7374;
     items[1].id = 0xb;
     items[1].flags = 0x0;
-    ((void **)((char *)(void *)lbl_8055E86C + 0x1e4))[0] = (void *)(base + 0x950);
-    *(s32 *)((char *)(void *)lbl_8055E86C + 0x1e8) = 0x2;
+    ((void **)((char *)root + 0x1e4))[0] = (void *)(base + 0x950);
+    *(s32 *)((char *)root + 0x1e8) = 0x2;
     items = (struct Entry *)fn_8012850C(0x20, &lbl_8055AA78);
-    *(struct Entry **)((char *)(void *)lbl_8055E86C + 0x1e0) = items;
+    *(struct Entry **)((char *)root + 0x1e0) = items;
     items[0].name = (void *)(base + 0x968);
     items[0].callback = (void *)fn_801C7698;
     items[0].id = 0xb;
@@ -1768,7 +1770,7 @@ void fn_801C855C(void) {
     lbl_8055E81C = 0;
     lbl_8055E820 = 0;
 }
-
+#pragma pop
 void fn_801C94B8(void) {
     fn_80238A74();
 }
