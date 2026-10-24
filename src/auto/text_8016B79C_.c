@@ -125,7 +125,7 @@ extern "C" void fn_802AE02C(s32, s32);
 extern "C" void fn_802AE0B8(s32, s32);
 extern "C" void fn_802AE168(s32);
 extern "C" u8 *__AXGetStackHead(void);
-extern "C" u8 lbl_8055A208[];
+extern "C" u8 lbl_8055A208;
 extern "C" u8 lbl_8055A20C, lbl_8055A210;
 extern "C" u32 lbl_8055E044;
 extern "C" u8 lbl_8055E374;
