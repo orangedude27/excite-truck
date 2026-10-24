@@ -65,6 +65,4 @@ void* fn_802B59A4(unsigned int index) {
 void* fn_802B59CC(void) {
     return lbl_8055F9E8;
 }
-extern int stricmp(const char *, const char *);
-extern const char lbl_8034A510[];
 
