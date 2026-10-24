@@ -24,7 +24,7 @@ extern "C" void fn_801C1320(void*);
 extern "C" void fn_801C1B60(int);
 extern "C" int fn_801284F8(int, int *);
 extern int fn_801C109C(int, int, int, int);
-extern int fn_80128668(int);
+extern "C" int fn_80128668(int);
 extern int lbl_8055A950;
 extern "C" void __dt__Q216J2DAnmTexPattern27J2DAnmTexPatternTIMGPointerFv(int, int);
 extern int fn_80128670(int);
