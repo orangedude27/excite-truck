@@ -373,11 +373,12 @@ extern "C" void fn_80219358(void *arg0, f32 value) {
 
 extern "C" void fn_802193C8(void *arg0, f32 value) {
     const f32 threshold = 0.1f;
-    s32 flag = value < threshold;
-    if (flag) {
+    if (value < threshold) {
         u8 enabled = *(u8 *)((u8 *)arg0 + 0x1A);
-        if (enabled == 0) return;
-        if (enabled != 0) *(u8 *)((u8 *)arg0 + 0x234) = 1;
+        if (enabled == 0)
+            return;
+        if (enabled != 0)
+            *(u8 *)((u8 *)arg0 + 0x234) = 1;
         *(u8 *)((u8 *)arg0 + 0x1A) = 0;
         return;
     }
