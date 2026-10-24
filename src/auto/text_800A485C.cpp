@@ -5370,8 +5370,9 @@ extern "C" s32 fn_800B73BC(s32);
 
 extern "C" void fn_800B7408(volatile s32* arg0, void* arg1) {
  extern s32 fn_800B6628(void*, void*, s32);
+ extern s32 fn_800B73BC(s32);
  extern s32 lbl_803D2140[];
- s32 result = 0;
+ register s32 result = 0;
  if (arg0 != 0) {
    if (*arg0 == 0) {
      result = 10;
@@ -7604,6 +7605,8 @@ extern "C" void fn_800C3960(void *arg0, s32 arg1, s32 arg2, s32 arg3) {
     }
 }
 
+#pragma push
+#pragma opt_dead_assignments off
 extern "C" s32 fn_800C3CDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     s32 *p;
     fn_800C4B5C(arg2, arg3);
@@ -7627,7 +7630,7 @@ extern "C" s32 fn_800C3CDC(s32 arg0, s32 arg1, s32 arg2, s32 arg3) {
     fn_800BEE64(p, arg0, 0);
     return (s32)p;
 }
-
+#pragma pop
 extern "C" void fn_800C3D9C(void) {
     fn_800C4BD0();
 }
@@ -10544,23 +10547,24 @@ extern "C" f32 lbl_80560E48;
 extern "C" f32 lbl_80560E4C;
 extern "C" u16 fn_800D4138(const void *arg0, u32 arg1, f32 farg0) {
     const u8 *base = (const u8 *)arg0;
-    if (arg1 != 1) {
-        if (farg0 <= *(f32 *)base) return *(u16 *)(base + 4);
-        const u8 *end = base + arg1 * 8;
-        if (farg0 >= *(f32 *)(end - 8)) return *(u16 *)(end - 4);
-        s32 low = 0, high = arg1 - 1;
-        while (low != high - 1 && low != high) {
-            s32 mid = (low + high) / 2;
-            if (farg0 < *(f32 *)(base + mid * 8)) high = mid;
-            else low = mid;
-        }
-        s32 offset = high * 8;
-        f32 delta = farg0 - *(f32 *)(base + offset);
-        s32 found = delta > lbl_80560E48 && delta < lbl_80560E4C;
-        if (found) return *(u16 *)(base + offset + 4);
-        return *(u16 *)(base + low * 8 + 4);
+    if (arg1 == 1 || farg0 <= *(f32 *)base) {
+        return *(u16 *)(base + 4);
     }
-    return *(u16 *)(base + 4);
+    const u8 *end = base + arg1 * 8;
+    if (farg0 >= *(f32 *)(end - 8)) return *(u16 *)(end - 4);
+    s32 low = 0;
+    s32 high = arg1 - 1;
+    while (low != high - 1 && low != high) {
+        s32 mid = (low + high) / 2;
+        if (farg0 < *(f32 *)(base + mid * 8)) high = mid;
+        else low = mid;
+    }
+    s32 offset = high * 8;
+    f32 delta = farg0 - ((const f32 *)base)[high * 2];
+    s32 found = 0;
+    if (lbl_80560E48 < delta && delta < lbl_80560E4C) found = 1;
+    if (found) return *(u16 *)(base + offset + 4);
+    return *(u16 *)(base + low * 8 + 4);
 }
 
 extern "C" f32 lbl_80560E48, lbl_80560E4C, lbl_80560E50, lbl_80560E54, lbl_80560E58, lbl_80560E5C;
