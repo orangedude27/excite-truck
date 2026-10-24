@@ -17,14 +17,6 @@ struct Dummy_80163550 {
 };
 #pragma cplusplus off
 
-#pragma cplusplus on
-struct Dummy_80164480 {
-    virtual void f0(); virtual void f1(); virtual void f2(); virtual void f3();
-    virtual void f4(); virtual void f5(); virtual void f6(); virtual void f7();
-    virtual void f8(); virtual s32 f9();
-};
-#pragma cplusplus off
-
 extern s32 fn_8000DA10(void);
 extern void fn_801332D0(s32, s32, s32 *);
 extern void fn_80160CF4(void);
@@ -1347,9 +1339,9 @@ int fn_80164468(void *arg0) {
 void fn_80164480(void *arg0) {
     int sp10[12];
     float sp8;
-    register void **vtable = *(void ***)arg0;
+    int (*call)(void *) = *(int (**)(void *))((char *)(*(void **)arg0) + 0x24);
 
-    if (((int (*)(void *))vtable[9])(arg0) != 0) {
+    if (call(arg0) != 0) {
         if ((lbl_8055E3C8 - *((float *)((char *)arg0 + 0xC))) > lbl_80561868) {
             fn_80020434(sp10, &sp8);
             fn_8026A2CC(sp10, 0, sp8);
