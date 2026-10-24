@@ -8,7 +8,7 @@ typedef struct GlobalObject {
 extern void fn_8000D838(void *);
 extern void fn_80203F88(void);
 extern void lbl_80488970(void);
-extern GlobalObject lbl_8048897C;
+  extern int lbl_8048897C[];
 extern unsigned char lbl_8055ECE8[];
 extern short lbl_8055ECF0;
 extern short lbl_8055ECF2;
