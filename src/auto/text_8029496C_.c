@@ -4,8 +4,8 @@
 #define M2C_FIELD(expr, type, offset) (*(type)((unsigned char *)(expr) + (offset)))
 
 #include <math.h>
-extern float PSVECDotProduct(float *, float *);
-extern void PSVECNormalize(float *, float *);
+extern float PSVECDotProduct(void *, void *);
+extern void PSVECNormalize(void *, void *);
 extern float fn_801E88F0(int);
 extern void *fn_80287B24(int);
 extern void fn_80294CCC(void *, void *, void *, unsigned int, int, float, float);
@@ -51,13 +51,9 @@ void fn_80294ED4(void);
 void fn_80294CC8(void) { fn_80294ED4(); }
 
 void fn_80294ED4(void) {
+    int spD4[3];
+    int spC8[3];
     int spF0;
-    int spDC;
-    int spD8;
-    float spD4;
-    int spD0;
-    int spCC;
-    float spC8;
     float spC4;
     float spC0;
     float spBC;
@@ -154,7 +150,6 @@ void fn_80294ED4(void) {
     float temp_f7_2;
     float temp_f7_3;
     float temp_f7_4;
-    float temp_r4;
     float var_f1;
     float var_f1_2;
     int temp_r0;
@@ -179,13 +174,12 @@ void fn_80294ED4(void) {
 
     temp_f27 = lbl_80564538;
     temp_r3 = fn_802C86DC();
-    spD4 = M2C_FIELD(temp_r3, float *, 0);
-    spD8 = M2C_FIELD(temp_r3, int *, 4);
-    spDC = M2C_FIELD(temp_r3, int *, 8);
-    temp_r4 = M2C_FIELD(temp_r3, float *, 0xC);
-    spC8 = temp_r4;
-    spCC = M2C_FIELD(temp_r3, int *, 0x10);
-    spD0 = M2C_FIELD(temp_r3, int *, 0x14);
+    spD4[0] = M2C_FIELD(temp_r3, int *, 0);
+    spD4[1] = M2C_FIELD(temp_r3, int *, 4);
+    spD4[2] = M2C_FIELD(temp_r3, int *, 8);
+    spC8[0] = M2C_FIELD(temp_r3, int *, 0xC);
+    spC8[1] = M2C_FIELD(temp_r3, int *, 0x10);
+    spC8[2] = M2C_FIELD(temp_r3, int *, 0x14);
     fn_802C8BD0(lbl_8055C990);
     temp_f29 = lbl_80564518;
     temp_f30 = lbl_8056451C;
@@ -195,7 +189,7 @@ void fn_80294ED4(void) {
     temp_f28 = lbl_8056453C;
     spF0 = 0;
 loop_40:
-    if (spF0 < fn_80287B14()) {
+    if (1) {
         temp_r16 = fn_80287B24(spF0);
         temp_f26 = fn_801E88F0(-1);
         if (!((fn_802C88E8((unsigned char *) temp_r16 + 0x24) * temp_f26) > temp_f27) && !(M2C_FIELD(temp_r16, int *, 0x68) & 8)) {
@@ -203,7 +197,7 @@ loop_40:
             if ((int) M2C_FIELD(var_r18, int *, 0x180) > 0) {
                 var_r17 = var_r18;
 loop_38:
-                if (var_r15 < (int) M2C_FIELD(var_r18, int *, 0x180)) {
+                if (1) {
                     temp_r3_2 = M2C_FIELD(var_r17, void **, 0);
                     temp_r3_3 = (unsigned char *) temp_r3_2 + 0x24;
                     if (&spBC == temp_r3_3) {
@@ -338,13 +332,13 @@ loop_38:
                     }
                     var_r17 += 0x20;
                     var_r15 += 1;
-                    goto loop_38;
+                    if (var_r15 < (int) M2C_FIELD(var_r18, int *, 0x180)) goto loop_38;
                 }
             }
         }
         var_r18 += 0x184;
         spF0 += 1;
-        goto loop_40;
+        if (spF0 < fn_80287B14()) goto loop_40;
     }
     fn_802C8D74();
     fn_802C8BD0(lbl_8055C994);
@@ -355,7 +349,7 @@ loop_38:
     temp_f31_2 = lbl_8056453C;
     var_r15_2 = 0;
 loop_62:
-    if (var_r15_2 < fn_80287B14()) {
+    if (1) {
         temp_r16_2 = fn_80287B24(var_r15_2);
         temp_f30_2 = fn_801E88F0(-1);
         if (!((fn_802C88E8((unsigned char *) temp_r16_2 + 0x24) * temp_f30_2) > temp_f27) && !(M2C_FIELD(temp_r16_2, int *, 0x68) & 8)) {
@@ -363,7 +357,7 @@ loop_62:
             if ((int) M2C_FIELD(var_r14, int *, 0x180) > 0) {
                 var_r21 = var_r14;
 loop_60:
-                if (var_r17_2 < (int) M2C_FIELD(var_r14, int *, 0x180)) {
+                if (1) {
                     temp_r3_6 = M2C_FIELD(var_r21, void **, 0);
                     temp_r3_7 = (unsigned char *) temp_r3_6 + 0x24;
                     if (&sp5C == temp_r3_7) {
@@ -416,17 +410,17 @@ loop_60:
                         temp_f0_5 = temp_f29_2 - var_f1_2;
                         temp_f3_5 = M2C_FIELD(var_r21, float *, 0x14);
                         temp_f1_5 = M2C_FIELD(var_r21, float *, 0x10);
-                        fn_80294CCC(&sp5C, &spD4, &spC8, M2C_FIELD(var_r21, unsigned char *, 0x1A) | ((((M2C_FIELD(var_r21, unsigned char *, 0x18) << 0x10) | 0x80000000) & ~0xFF00) | ((M2C_FIELD(var_r21, unsigned char *, 0x19) << 8) & 0xFF00)), -1, (temp_f3_5 + (temp_f0_5 * temp_f3_5)) * temp_f26_3, (temp_f1_5 + (temp_f0_5 * temp_f1_5)) * temp_f26_3);
+                        fn_80294CCC(&sp5C, spD4, spC8, M2C_FIELD(var_r21, unsigned char *, 0x1A) | ((((M2C_FIELD(var_r21, unsigned char *, 0x18) << 0x10) | 0x80000000) & ~0xFF00) | ((M2C_FIELD(var_r21, unsigned char *, 0x19) << 8) & 0xFF00)), -1, (temp_f3_5 + (temp_f0_5 * temp_f3_5)) * temp_f26_3, (temp_f1_5 + (temp_f0_5 * temp_f1_5)) * temp_f26_3);
                     }
                     var_r21 += 0x20;
                     var_r17_2 += 1;
-                    goto loop_60;
+                    if (var_r17_2 < (int) M2C_FIELD(var_r14, int *, 0x180)) goto loop_60;
                 }
             }
         }
         var_r14 += 0x184;
         var_r15_2 += 1;
-        goto loop_62;
+        if (var_r15_2 < fn_80287B14()) goto loop_62;
     }
     fn_802C8D74();
 }
