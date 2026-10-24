@@ -105,6 +105,70 @@ void fn_801B022C(void *arg0) {
     *(s32 *)((u8 *)arg0 + 0x24) = 0;
 }
 
+extern f32 PSVECMag(void *);
+extern void PSVECCrossProduct(void *, void *, void *);
+extern f32 PSVECDotProduct(void *, void *);
+extern void fn_8017B81C(void);
+extern void fn_8017B4AC(void *, void *);
+extern s32 fn_801E9E30(void *, void *);
+extern f32 lbl_80562578, lbl_80562588, lbl_80562598, lbl_8056259C;
+extern f32 lbl_805625A0, lbl_805625A4, lbl_805625A8, lbl_805625AC;
+void fn_801B02E0(void *arg0) {
+    u8 *self = (u8 *)arg0;
+    f32 velocityMag;
+    f32 speed;
+    f32 scale;
+    f32 vec[3];
+    f32 axis[3];
+    s32 result[3];
+    s32 active;
+
+    if (*(u8 *)(self + 0x1F8) != 0) {
+        fn_8017B81C();
+        if (*(f32 *)(self + 0x64) < lbl_80562598)
+            *(f32 *)(self + 0x64) = lbl_80562598;
+
+        *(f32 *)(self + 0x124) *= lbl_8056259C;
+        *(f32 *)(self + 0x128) *= lbl_8056259C;
+        *(f32 *)(self + 0x12C) *= lbl_8056259C;
+        *(f32 *)(self + 0x118) *= lbl_805625A0;
+        *(f32 *)(self + 0x11C) *= lbl_805625A0;
+        *(f32 *)(self + 0x120) *= lbl_805625A0;
+        velocityMag = PSVECMag(self + 0x124);
+        active = 1;
+        if (velocityMag > lbl_805625A4) {
+            speed = *(f32 *)(self + 0x40);
+            axis[0] = lbl_80562578;
+            axis[1] = lbl_80562588;
+            axis[2] = lbl_80562578;
+            PSVECCrossProduct(self + 0x3C, axis, vec);
+            scale = lbl_805625A8 * speed;
+            speed = PSVECMag(vec);
+            if (lbl_80562588 > speed)
+                speed = lbl_80562588;
+            scale /= speed;
+            vec[0] *= scale;
+            vec[1] *= scale;
+            vec[2] *= scale;
+            fn_8017B4AC(arg0, vec);
+            scale = PSVECDotProduct(self + 0x3C, self + 0x118) / velocityMag;
+            axis[0] = lbl_80562578;
+            axis[1] = lbl_805625AC * scale;
+            axis[2] = lbl_80562578;
+            fn_8017B4AC(arg0, axis);
+            result[0] = *(s32 *)(self + 0x60);
+            result[1] = *(s32 *)(self + 0x64);
+            result[2] = *(s32 *)(self + 0x68);
+            if (fn_801E9E30(self + 0x6C, result) != 0)
+                active = 0;
+        }
+        if (active != 0)
+            *(f32 *)(self + 0x64) = lbl_80562598;
+    } else {
+        *(s32 *)(self + 0x1E4) = 0;
+    }
+}
+
 void fn_801B04B0(void *arg0, s32 arg1, s32 arg2, s32 arg3, void *arg4) {
     s32 temp_r10;
     s32 temp_r9;
@@ -160,6 +224,7 @@ void __AXDSPInitCallback_801AFC38(void) {
 extern void *lbl_80435BA8[];
 extern void *fn_8017960C(void *);
 extern void fn_801B04B0(void *, s32, s32, s32, void *);
+#pragma scheduling invalid_target
 void fn_801AFC44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     void *obj;
     void *base;
@@ -167,10 +232,9 @@ void fn_801AFC44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     void *p;
     f32 value;
 
-    n = (s32)lbl_8055E650;
-    if (n < 1) return;
+    if ((s32)lbl_8055E650 < 1) return;
     obj = lbl_80435BA8[(s32)lbl_8055E654];
-    base = fn_8017960C(lbl_80435BA8);
+    base = fn_8017960C((void *)arg0);
     fn_801B04B0(obj, arg2, arg3, arg4, (u8 *)base + 0x6C);
     value = lbl_8055E3C8;
     *(s32 *)((u8 *)obj + 0x1F0) = arg0;
@@ -184,6 +248,7 @@ void fn_801AFC44(s32 arg0, s32 arg1, s32 arg2, s32 arg3, s32 arg4) {
     *(f32 *)((u8 *)p + 0x24) = value;
     n = (s32)lbl_8055E654 + 1;
     lbl_8055E654 = (void *)n;
-    if (n >= (s32)lbl_8055E650) lbl_8055E654 = 0;
+    if (n < (s32)lbl_8055E650) return;
+    lbl_8055E654 = 0;
 }
-
+#pragma scheduling on
