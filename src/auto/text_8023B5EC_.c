@@ -34,8 +34,11 @@ extern char lbl_803412D8[];
 extern char lbl_803412EC[];
 #pragma dont_inline on
 void fn_8023B640(void) { fn_802E30C8(lbl_803412D8); fn_802473A4(); }
+#pragma push
+#pragma scheduling invalid_target
+#pragma scheduling on
 void fn_8023B670(void) { fn_802E30C8(lbl_803412EC); fn_80012794(); fn_80012788(); fn_80247210(); fn_80012794(); fn_80012778(); }
-
+#pragma pop
 void fn_8023B6B0(void) {
     fn_80129AEC(0); fn_802E47E8(); fn_80127A24(); fn_8023B618(); fn_8027B690();
     if (fn_8012742C() != 0) fn_80127434();
